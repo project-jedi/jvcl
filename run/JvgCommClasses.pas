@@ -72,6 +72,7 @@ type
     procedure Changed; virtual;
   public
     constructor Create; virtual;
+    procedure Assign(Source: TPersistent); override;
     property RGBFromColor: Longint read FRGBFromColor write FRGBFromColor;
     property RGBToColor: Longint read FRGBToColor write FRGBToColor;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
@@ -103,6 +104,7 @@ type
     property BrushStyle: TBrushStyle read FBrushStyle write SetBrushStyle default bsSolid;
   public
     constructor Create; override;
+    procedure Assign(Source: TPersistent); override;
     procedure TextOut(DC: HDC; const Str: string; TextR: TRect; X, Y: Integer);
     function GetColorFromGradientLine(GradientLineWidth, Position: Word): COLORREF;
   end;
@@ -182,6 +184,7 @@ type
     procedure Changed; virtual;
   public
     constructor Create; virtual;
+    procedure Assign(Source: TPersistent); override;
     function BordersHeight: Integer;
     function BordersWidth: Integer;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
@@ -368,6 +371,7 @@ type
     procedure SetColor(Value: TColor);
     procedure SetDelineateColor(Value: TColor);
     procedure SetFont(Value: TFont);
+    procedure SetBevel(Value: TJvgBevelOptions);
     procedure SetTextStyle(Value: TglTextStyle);
   protected
     procedure SetOnChanged(Value: TNotifyEvent); virtual;
@@ -381,7 +385,7 @@ type
     property Color: TColor read FColor write SetColor;
     property DelineateColor: TColor read FDelineateColor write SetDelineateColor;
     property Font: TFont read FFont write SetFont;
-    property Bevel: TJvgBevelOptions read FBevel write FBevel;
+    property Bevel: TJvgBevelOptions read FBevel write SetBevel;
     property TextStyle: TglTextStyle read FTextStyle write SetTextStyle;
   end;
 
@@ -389,14 +393,16 @@ type
   private
     FGradient: TJvgGradient;
     FTextGradient: TJvgGradient;
+    procedure SetGradient(Value: TJvgGradient);
+    procedure SetTextGradient(Value: TJvgGradient);
   protected
-    property TextGradient: TJvgGradient read FTextGradient write FTextGradient;
+    property TextGradient: TJvgGradient read FTextGradient write SetTextGradient;
     procedure SetOnChanged(Value: TNotifyEvent); override;
   public
     constructor Create; override;
     destructor Destroy; override;
   published
-    property Gradient: TJvgGradient read FGradient write FGradient;
+    property Gradient: TJvgGradient read FGradient write SetGradient;
     property Color;
     property DelineateColor;
     property Font;
@@ -510,9 +516,9 @@ type
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
+{$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
   Math,
   JvgUtils;
 
@@ -526,6 +532,21 @@ begin
   FRGBFromColor := ColorToRGB(FFromColor);
   FToColor := clBlack;
   FRGBToColor := ColorToRGB(FToColor);
+end;
+
+procedure TJvgTwainColors.Assign(Source: TPersistent);
+var sourceColors: TJvgTwainColors;
+begin
+  if Source is TJvgTwainColors then
+  begin
+    if Source = Self then Exit;
+    sourceColors := TJvgTwainColors(Source);
+    RGBFromColor := sourceColors.RGBFromColor;
+    RGBToColor := sourceColors.RGBToColor;
+    Changed;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvgTwainColors.Changed;
@@ -568,6 +589,24 @@ begin
   FBrushStyle := bsSolid;
 end;
 
+procedure TJvgCustomGradient.Assign(Source: TPersistent);
+var sourceGradient: TJvgCustomGradient;
+begin
+  // always call inherited, because TJvgTwainColors copies some data as well
+  inherited Assign(Source);
+  if Source is TJvgCustomGradient then
+  begin
+    if Source = Self then Exit;
+    sourceGradient := TJvgCustomGradient(Source);
+    Active := sourceGradient.Active;
+    BufferedDraw := sourceGradient.BufferedDraw;
+    Orientation := sourceGradient.Orientation;
+    Steps := sourceGradient.Steps;
+    PercentFilling := sourceGradient.PercentFilling;
+    BrushStyle := sourceGradient.BrushStyle;
+  end;
+end;
+
 procedure TJvgCustomGradient.SetActive(Value: Boolean);
 begin
   if FActive <> Value then
@@ -591,8 +630,8 @@ begin
   if Value > 255 then
     Value := 255
   else
-  if Value < 1 then
-    Value := 1;
+    if Value < 1 then
+      Value := 1;
   if FSteps <> Value then
   begin
     FSteps := Value;
@@ -794,6 +833,22 @@ constructor TJvgBevelOptions.Create;
 begin
   inherited Create;
   FSides := ALLGLSIDES;
+end;
+
+procedure TJvgBevelOptions.Assign(Source: TPersistent);
+var sourceBevel: TJvgBevelOptions;
+begin
+  if Source is TJvgBevelOptions then
+  begin
+    if Source = Self then Exit;
+    sourceBevel := TJvgBevelOptions(Source);
+    Inner := sourceBevel.Inner;
+    Outer := sourceBevel.Outer;
+    Sides := sourceBevel.Sides;
+    Bold := sourceBevel.Bold;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvgBevelOptions.Changed;
@@ -1248,6 +1303,11 @@ begin
   end;
 end;
 
+procedure TJvgCustomListBoxItemStyle.SetBevel(Value: TJvgBevelOptions);
+begin
+  FBevel.Assign(Value);
+end;
+
 procedure TJvgCustomListBoxItemStyle.SetTextStyle(Value: TglTextStyle);
 begin
   if Value <> FTextStyle then
@@ -1287,6 +1347,17 @@ procedure TJvgListBoxItemStyle.SetOnChanged(Value: TNotifyEvent);
 begin
   inherited SetOnChanged(Value);
   FGradient.OnChanged := Value;
+  FTextGradient.OnChanged := Value;
+end;
+
+procedure TJvgListBoxItemStyle.SetGradient(Value: TJvgGradient);
+begin
+  FGradient.Assign(Value);
+end;
+
+procedure TJvgListBoxItemStyle.SetTextGradient(Value: TJvgGradient);
+begin
+  FTextGradient.Assign(Value);
 end;
 
 //=== { TJvgAskListBoxItemStyle } ============================================
@@ -1300,7 +1371,7 @@ end;
 destructor TJvgAskListBoxItemStyle.Destroy;
 begin
   FBtnFont.Free;
-  inherited Destroy; 
+  inherited Destroy;
 end;
 
 procedure TJvgAskListBoxItemStyle.SetBtnColor(Value: TColor);
@@ -1720,7 +1791,7 @@ const
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
-  );
+    );
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
