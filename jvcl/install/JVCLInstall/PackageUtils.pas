@@ -94,6 +94,8 @@ type
     function GetContains(Index: Integer): TContainedFile;
     function GetRequireCount: Integer;
     function GetRequires(Index: Integer): TRequiredPackage;
+    function GetJclDependenciesReqPkg(Index: Integer): TRequiredPackage;
+    function GetJvDependenciesReqPkg(Index: Integer): TRequiredPackage;
   protected
     procedure UpdateContainList; virtual;
     procedure UpdateRequireList; virtual;
@@ -111,7 +113,9 @@ type
 
     property Info: TPackageInfo read FInfo;
     property JvDependencies: TStringList read FJvDependencies;
+    property JvDependenciesReqPkg[Index: Integer]: TRequiredPackage read GetJvDependenciesReqPkg;
     property JclDependencies: TStringList read FJclDependencies;
+    property JclDependenciesReqPkg[Index: Integer]: TRequiredPackage read GetJclDependenciesReqPkg;
 
     // In contrast to Info.Xxx these properties only returns the
     // required/contained for this target.
@@ -151,8 +155,8 @@ type
     destructor Destroy; override;
     procedure AddPackage(Pkg: TPackageTarget);
 
-    function FindPackagebyXmlName(const XmlName: string): TPackageTarget;
-      { FindPackagebyXmlName returns the TPackageTarget object that contains
+    function FindPackageByXmlName(const XmlName: string): TPackageTarget;
+      { FindPackageByXmlName returns the TPackageTarget object that contains
         the specified .xml file. }
 
     property Count: Integer read GetCount;
@@ -389,7 +393,7 @@ begin
     FOnCompileChange(Self);
 end;
 
-function TProjectGroup.FindPackagebyXmlName(const XmlName: string): TPackageTarget;
+function TProjectGroup.FindPackageByXmlName(const XmlName: string): TPackageTarget;
 var
   i: Integer;
 begin
@@ -577,6 +581,16 @@ begin
         FJclDependencies.AddObject(Info.Requires[i].Name, Info.Requires[i]);
     end;
   end;
+end;
+
+function TPackageTarget.GetJclDependenciesReqPkg(Index: Integer): TRequiredPackage;
+begin
+  Result := TRequiredPackage(JclDependencies.Objects[Index]);
+end;
+
+function TPackageTarget.GetJvDependenciesReqPkg(Index: Integer): TRequiredPackage;
+begin
+  Result := TRequiredPackage(JvDependencies.Objects[Index]);
 end;
 
 function TPackageTarget.GetRelSourceDir: string;

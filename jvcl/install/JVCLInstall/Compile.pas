@@ -79,6 +79,11 @@ type
 
     FAbortReason: string;
     FQuiet: string;
+
+    function IsPackageUsed(ProjectGroup: TProjectGroup;
+      RequiredPackage: TRequiredPackage): Boolean;
+    function IsFileUsed(ProjectGroup: TProjectGroup;
+      ContainedFile: TContainedFile): Boolean;
   protected
     function Make(TargetConfig: ITargetConfig; const Args: string;
       CaptureLine: TCaptureLine; StartDir: string = ''): Integer;
@@ -911,9 +916,10 @@ var
   Lines: TStrings;
   i, depI: Integer;
   Pkg: TPackageTarget;
-  Dependencies, S, PasFile: string;
+  Dependencies, S, PasFile, ObjFile, FilenameOnly: string;
   DeleteFiles: Boolean;
   BplFilename: string;
+  PasFileSearchDirs: string;
 begin
   BplFilename := ProjectGroup.TargetConfig.BplDir + '\' + ProjectGroup.BpgName;
 
@@ -938,9 +944,10 @@ begin
     if AutoDepend then
     begin
       S := ProjectGroup.TargetConfig.JVCLDir;
-      Lines.Add(Format('.path.pas = "%s\common";"%s\run";"%s\design";"%s\qcommon";"%s\qrun";"%s\qdesign";"%s"',
-        [S, S, S, S, S, S,
-         ProjectGroup.TargetConfig.DxgettextDir]));
+      PasFileSearchDirs :=
+        Format('"%s\common";"%s\run";"%s\design";"%s\qcommon";"%s\qrun";"%s\qdesign";"%s"',
+               [S, S, S, S, S, S, ProjectGroup.TargetConfig.DxgettextDir]);
+      Lines.Add('.path.pas = ' + PasFileSearchDirs);
       Lines.Add(Format('.path.dfm = "%s\run";"%s\design";"%s\qrun";"%s\qdesign"',
         [S, S, S, S]));
       Lines.Add(Format('.path.xfm = "%s\run";"%s\design";"%s\qrun";"%s\qdesign"',
@@ -978,34 +985,39 @@ begin
      // add package dependency lists
       Dependencies := '';
       for depI := 0 to Pkg.JvDependencies.Count - 1 do
-        Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
-           ProjectGroup.FindPackagebyXmlName(Pkg.JvDependencies[depI]).TargetName;
+      begin
+        if IsPackageUsed(ProjectGroup, Pkg.JvDependenciesReqPkg[depI]) then
+          Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
+             ProjectGroup.FindPackageByXmlName(Pkg.JvDependencies[depI]).TargetName;
+      end;
 
      // add JCL dependencies
       for depI := 0 to Pkg.JclDependencies.Count - 1 do
-        Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
-           Pkg.JclDependencies[depI] + '.dcp';
+      begin
+        if IsPackageUsed(ProjectGroup, Pkg.JclDependenciesReqPkg[depI]) then
+          Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
+             Pkg.JclDependencies[depI] + '.dcp';
+      end;
 
       if AutoDepend then
       begin
        // Add all contained files and test for their condition.
         for depI := 0 to Pkg.Info.ContainCount - 1 do
-          if Pkg.Info.Contains[depI].IsUsedByTarget(ProjectGroup.TargetConfig) then
+        begin
+          if IsFileUsed(ProjectGroup, Pkg.Info.Contains[depI]) then
           begin
-            if IsCondition(Pkg.Info.Contains[depI].Condition) then
+            Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
+              ExtractFileName(Pkg.Info.Contains[depI].Name);
+            {if Pkg.Info.Contains[depI].FormName <> '' then
             begin
-              Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
-                ExtractFileName(Pkg.Info.Contains[depI].Name);
-              {if Pkg.Info.Contains[depI].FormName <> '' then
-              begin
-                if ProjectGroup.IsVCLX then
-                  S := ChangeFileExt(ExtractFileName(Pkg.Info.Contains[depI].Name), '.xfm')
-                else
-                  S := ChangeFileExt(ExtractFileName(Pkg.Info.Contains[depI].Name), '.dfm');
-                Dependencies := Dependencies + '\' + sLineBreak + #9#9 + S;
-              end;}
-            end;
+              if ProjectGroup.IsVCLX then
+                S := ChangeFileExt(ExtractFileName(Pkg.Info.Contains[depI].Name), '.xfm')
+              else
+                S := ChangeFileExt(ExtractFileName(Pkg.Info.Contains[depI].Name), '.dfm');
+              Dependencies := Dependencies + '\' + sLineBreak + #9#9 + S;
+            end;}
           end;
+        end;
         Dependencies := Dependencies + '\' + sLineBreak + #9#9'$(CommonDependencies)';
       end;
 
@@ -1017,29 +1029,39 @@ begin
         if not ProjectGroup.TargetConfig.Build then
         begin
          // dcc32.exe does not recreate the .obj files when they already exist.
-         // So we must delete them before compilation.
-         // This is not needed when building the JVCL for BCB because all .obj
-         // files will be deleted by the installer before entering compilation
-         // process.
+         // So we must delete them before compilation. This is not needed when
+         // building the JVCL for BCB because all .obj files will be deleted by
+         // the Installer before entering the compilation process.
           DeleteFiles := False;
           for depI := 0 to Pkg.Info.ContainCount - 1 do
           begin
-            PasFile := FollowRelativeFilename(Data.JVCLPackagesXmlDir, Pkg.Info.Contains[depI].Name);
-            S := ExtractFileName(Pkg.Info.Contains[depI].Name);
-            if CompareText(ExtractFileExt(S), '.pas') = 0 then
+            if IsFileUsed(ProjectGroup, Pkg.Info.Contains[depI]) then
             begin
-              S := ProjectGroup.TargetConfig.UnitOutDir + '\obj\' + ChangeFileExt(S, '.obj');
-              if FileExists(S) then
-                if not FileExists(PasFile) or // unknown directory for the .pas file
-                   (CompareFileAge(S, [], PasFile, []) < 0) or
+              FilenameOnly := ExtractFileName(Pkg.Info.Contains[depI].Name);
+              PasFile := FollowRelativeFilename(Data.JVCLPackagesXmlDir, Pkg.Info.Contains[depI].Name);
+              if CompareText(ExtractFileExt(FilenameOnly), '.pas') = 0 then
+              begin
+                ObjFile := ProjectGroup.TargetConfig.UnitOutDir + '\obj\' + ChangeFileExt(FilenameOnly, '.obj');
+                if not FileExists(PasFile) then
+                  PasFile := FindFilename(PasFileSearchDirs, FilenameOnly);
+
+                {
+                if FileExists(ObjFile) and not FileExists(PasFile) then
+                  Continue; // a little optimization: foreign units should not force the package to be built.
+                }
+
+                if not FileExists(ObjFile) or // dcc32.exe will not create the missing .obj file if the other files exist
+                   not FileExists(PasFile) or // unknown directory for the .pas file
+                   (CompareFileAge(ObjFile, [], PasFile, []) < 0) or
                    (FileExists(BplFilename) and (
-                    (CompareFileAge(S, [], BplFilename, []) < 0) or
+                    (CompareFileAge(ObjFile, [], BplFilename, []) < 0) or
                     (CompareFileAge(PasFile, [], BplFilename, []) < 0))
                    ) then
                 begin
                   DeleteFiles := True;
                   Break;
                 end;
+              end;
             end;
           end;
 
@@ -1047,23 +1069,26 @@ begin
           begin
             for depI := 0 to Pkg.Info.ContainCount - 1 do
             begin
-              S := ExtractFileName(Pkg.Info.Contains[depI].Name);
-              if CompareText(ExtractFileExt(S), '.pas') = 0 then
+              if IsFileUsed(ProjectGroup, Pkg.Info.Contains[depI]) then
               begin
-                S := ProjectGroup.TargetConfig.UnitOutDir + '\obj\' + ChangeFileExt(S, '.obj');
-                if FileExists(S) then
+                FilenameOnly := ExtractFileName(Pkg.Info.Contains[depI].Name);
+                if CompareText(ExtractFileExt(FilenameOnly), '.pas') = 0 then
                 begin
-                  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
-                    Lines.Add(#9'-@del "' + S + '" >NUL')
-                  else
-                    Lines.Add(#9'-@del /f /q "' + S + '" 2>NUL');
+                  ObjFile := ProjectGroup.TargetConfig.UnitOutDir + '\obj\' + ChangeFileExt(FilenameOnly, '.obj');
+                  if FileExists(ObjFile) then
+                  begin
+                    if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
+                      Lines.Add(#9'-@del "' + ObjFile + '" >NUL')
+                    else
+                      Lines.Add(#9'-@del /f /q "' + ObjFile + '" 2>NUL');
+                  end;
                 end;
               end;
             end;
           end;
         end;
         Lines.Add(#9'$(BPR2MAK) $&.bpk');
-        Lines.Add(#9'@echo.');                 // prevent the "......Borland De"
+        Lines.Add(#9'@echo.');                 // prevent "......Borland De"
         Lines.Add(#9'$(MAKE) -f $&.mak');
       end
       else
@@ -1075,6 +1100,20 @@ begin
   finally
     Lines.Free;
   end;
+end;
+
+function TJVCLCompiler.IsFileUsed(ProjectGroup: TProjectGroup;
+  ContainedFile: TContainedFile): Boolean;
+begin
+  Result := ContainedFile.IsUsedByTarget(ProjectGroup.TargetConfig) and
+            IsCondition(ContainedFile.Condition);
+end;
+
+function TJVCLCompiler.IsPackageUsed(ProjectGroup: TProjectGroup;
+  RequiredPackage: TRequiredPackage): Boolean;
+begin
+  Result := RequiredPackage.IsRequiredByTarget(ProjectGroup.TargetConfig) and
+            IsCondition(RequiredPackage.Condition);
 end;
 
 function TJVCLCompiler.IsCondition(const Condition: string): Boolean;
