@@ -33,12 +33,7 @@ unit JvGridFilter;
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Grids,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QGrids,
-  {$ENDIF VisualCLX}
   SysUtils, Classes;
 
 type

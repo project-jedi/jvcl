@@ -31,11 +31,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
   Messages, Controls, Graphics, StdCtrls, ComCtrls,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QWindows, QControls, QGraphics, QStdCtrls, QComCtrls,
+  QWindows,
   {$ENDIF VisualCLX}
   JvCustomItemViewer;
 

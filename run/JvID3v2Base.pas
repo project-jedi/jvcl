@@ -35,12 +35,7 @@ interface
 
 uses
   Classes, SysUtils,
-  {$IFDEF VCL}
   JclUnicode,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  JclWideStrings,
-  {$ENDIF VisualCLX}
   JvComponent, JvID3v2Types, JvID3v1;
 
 const
@@ -1197,7 +1192,10 @@ function NiceGenreToGenre(const ANiceGenre: string): string;
 implementation
 
 uses
-  Graphics, Windows,
+  Graphics,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
   {$IFDEF COMPILER5}
   Forms,
   JvJclUtils, // SameFileName() for Delphi 5

@@ -30,13 +30,7 @@ unit JvID3v2;
 interface
 
 uses
-  Classes,
-  {$IFDEF VCL}
-  Graphics, Controls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls,
-  {$ENDIF VisualCLX}
+  Classes, Graphics, Controls,
   JvID3v2Types, JvID3v2Base;
 
 type

@@ -33,12 +33,10 @@ unit JvImageList;
 interface
 
 uses
+  Windows,
   {$IFDEF MSWINDOWS}
-  Windows, CommCtrl,
+  CommCtrl,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VisualCLX}
-  Types, QWindows,
-  {$ENDIF VisualCLX}
   SysUtils, Classes, Graphics, Controls, ImgList;
 
 type
@@ -261,7 +259,7 @@ resourcestring
 
 {$IFDEF LINUX}
 const
-  RT_RCDATA = PChar(1);
+  RT_RCDATA = PChar(10);
 {$ENDIF LINUX}
 
 {$IFDEF VCL}

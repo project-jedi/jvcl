@@ -30,13 +30,7 @@ unit JvGroupHeader;
 interface
 
 uses
-  Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QWindows, QGraphics, QControls, QExtCtrls, Types,
-  {$ENDIF VisualCLX}
+  Classes, Windows, Messages, Graphics, Controls, ExtCtrls,
   JvComponent, JvTypes;
 
 type

@@ -30,13 +30,7 @@ unit JvGridPrinter;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows, Controls, Forms, Grids, Printers,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QForms, QGrids, QPrinters,
-  {$ENDIF VisualCLX}
-  SysUtils, Classes;
+  Windows, Controls, Forms, Grids, Printers, SysUtils, Classes;
 
 type
   TJvPrintMode = (pmPrint, pmPreview, pmPageCount);
