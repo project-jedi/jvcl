@@ -52,7 +52,7 @@ uses
 {$IFDEF COMPILER6_UP}
   DateUtils,
 {$ENDIF COMPILER6_UP}
-  JvConsts, JvTypes, JvComponent;
+  JvConsts, JvTypes, JvComponent, JvFinalize;
 
 type
   TBalloonType = (btNone, btError, btInfo, btWarning);
@@ -64,7 +64,7 @@ type
     uFlags: UINT;
     uCallbackMessage: UINT;
     hIcon: HICON;
-    szTip: array[0..127] of AnsiChar;
+    szTip: array[0..127] of AnsiChar; // 0..64 for pre 5.0 shell versions
     dwState: DWORD;
     dwStateMask: DWORD;
     szInfo: array[0..255] of AnsiChar;
@@ -74,7 +74,6 @@ type
   end;
 
   TAnimateEvent = procedure(Sender: TObject; const ImageIndex: Integer) of object;
-  TRegisterServiceProcess = function(dwProcessID, dwType: Integer): Integer; stdcall;
 
   { (rb) Change tvVisibleTaskBar to tvStartHidden or something; tvVisibleTaskBar
          is mainly used to indicate whether the application should start hidden
@@ -89,7 +88,7 @@ type
   TTrayVisibilities = set of TTrayVisibility;
 
   TJvTrayIconState = (tisTrayIconVisible, tisAnimating, tisHooked, tisHintChanged,
-    tisWaitingForDoubleClick, tisAppHiddenButNotMinimized);
+    tisWaitingForDoubleClick, tisAppHiddenButNotMinimized, tisClicked);
   TJvTrayIconStates = set of TJvTrayIconState;
 
   TJvTrayIcon = class(TJvComponent)
@@ -136,14 +135,13 @@ type
     FOnMouseMove: TMouseMoveEvent;
     FOnMouseDown: TMouseEvent;
     FOnMouseUp: TMouseEvent;
+    FOnContextPopup: TContextPopupEvent;
     FAnimated: Boolean;
     FDelay: Cardinal;
     FIcons: TCustomImageList;
     FIconIndex: Integer;
     FDropDownMenu: TPopupMenu;
     FTask: Boolean;
-    FRegisterServiceProcess: TRegisterServiceProcess;
-    FDllHandle: THandle;
     FOnBalloonHide: TNotifyEvent;
     FOnBalloonShow: TNotifyEvent;
     FOnBalloonClick: TNotifyEvent;
@@ -170,6 +168,7 @@ type
     procedure Hook;
     procedure Unhook;
     procedure WndProc(var Mesg: TMessage);
+    procedure DoContextPopup(X, Y: Integer);
     procedure DoMouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure DoMouseMove(Shift: TShiftState; X, Y: Integer);
     procedure DoMouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -224,6 +223,7 @@ type
     property OnBalloonShow: TNotifyEvent read FOnBalloonShow write FOnBalloonShow;
     property OnBalloonHide: TNotifyEvent read FOnBalloonHide write FOnBalloonHide;
     property OnBalloonClick: TNotifyEvent read FOnBalloonClick write FOnBalloonClick;
+    property OnContextPopup: TContextPopupEvent read FOnContextPopup write FOnContextPopup;
   end;
 
 implementation
@@ -231,10 +231,20 @@ implementation
 uses
   JvJCLUtils, JvJVCLUtils;
 
+type
+  TRegisterServiceProcess = function(dwProcessID, dwType: Integer): Integer; stdcall;
+
 const
+  sUnitName = 'JvTrayIcon';
+
   AnimationTimer = 1;
   CloseBalloonTimer = 2;
   DblClickTimer = 3;
+
+  // The hint size is 64 for pre IE 5.0 Shell32 versions, 128 for newer versions.
+  cHintSize: array [Boolean] of Cardinal = (64 - 1, 128 - 1);  // -1 for trailing #0
+
+  Shell32VersionIE5 = $00050000;
 
   WM_CALLBACKMESSAGE = WM_USER + 1;
 
@@ -283,6 +293,68 @@ const
   // WIN32_IE >= = $0501
   NIIF_NOSOUND    = $00000010;
 
+  Kernel32DLLName = 'kernel32.dll';
+  RegisterServiceProcessName = 'RegisterServiceProcess';
+
+var
+  GKernel32Handle: THandle = 0;
+  GTriedLoadKernel32Dll: Boolean = False;
+  RegisterServiceProcess: TRegisterServiceProcess = nil;
+
+{ We get the following messages while clicking:
+
+  Shell version < 5.0                |  Shell version >= 5.0
+                                     |
+  Single click     Double click      |  Single click          Double click
+                                     |
+  WM_BUTTONDOWN    WM_BUTTONDOWN     |  WM_BUTTONDOWN         WM_BUTTONDOWN
+  WM_BUTTONUP      WM_BUTTONUP       |  WM_BUTTONUP           WM_BUTTONUP
+                   WM_BUTTONDBLCLK   |  WM_CONTEXTMENU (*)    WM_CONTEXTMENU (*)
+                   WM_BUTTONUP       |                        WM_BUTTONDBLCLK
+                                     |                        WM_BUTTONUP
+                                     |                        WM_CONTEXTMENU (*)
+  (*) if clicked with the right mouse button.
+
+  o  We use the tisClicked flag to indicate that we received a WM_BUTTONDOWN;
+     if we receive a WM_BUTTONUP we can then make a difference between button ups
+     from double click and from single clicks. DoClick is thus not called twice
+     for double clicks.
+     (similar to csClicked flag in TControl.ControlState)
+  o  Normal behaviour for window controls is to call both DoClick and DoDoubleClick
+     when the user double clicks the control. For the tray icon we don't want that.
+     We use the tisWaitingForDoubleClick flag to indicate that we received a
+     WM_BUTTONDOWN and WM_BUTTONUP and thus want to call DoClick. But instead of
+     calling DoClick we start a timer; if we receive a WM_BUTTONDBLCLK before the
+     timer ends, the user double clicked the icon otherwise it was a single click.
+  o  For Shell32.dll versions before 5.0 we call DoContextPopup in WM_BUTTONUP
+     to simulate WM_CONTEXTMENU messages.
+
+  Thus the result is:
+
+  Shell version < 5.0                     |  Shell version >= 5.0
+                                          |
+  Single click         Double click       |  Single click         Double click
+                                          |
+  WM_BUTTONDOWN        WM_BUTTONDOWN      |  WM_BUTTONDOWN        WM_BUTTONDOWN
+    OnMouseDown          OnMouseDown      |    OnMouseDown          OnMouseDown
+  WM_BUTTONUP          WM_BUTTONUP        |  WM_BUTTONUP          WM_BUTTONUP
+    Start Timer          Start Timer      |    Start Timer          Start Timer
+    OnMouseUp            OnMouseUp        |    OnMouseUp            OnMouseUp
+    OnContextPopup (*)   OnContextPopup (*)| WM_CONTEXTMENU (*)   WM_CONTEXTMENU (*)
+  WM_TIMER             WM_BUTTONDBLCLK    |    OnContextPopup        OnContextPopup
+    OnClick      (**)    Stop Timer       |  WM_TIMER             WM_BUTTONDBLCLK
+                         OnDoubleClick    |    OnClick     (**)     Stop Timer
+                       WM_BUTTONUP        |                         OnDoubleClick
+                         OnMouseUp        |                       WM_BUTTONUP
+                         OnContextPopup   |                         OnMouseUp
+                                          |                       WM_CONTEXTMENU (*)
+                                          |                         OnContextPopup
+
+   (*) if clicked with the right mouse button.
+  (**) OnClick comes after the OnMouseUp. Another design decision could
+       be to also delay OnMouseUp.
+}
+
 {$IFNDEF COMPILER6_UP}
 function SecondsBetween(const Now: TDateTime; const FTime: TDateTime): Integer;
 begin
@@ -295,12 +367,36 @@ begin
   Result := IsIconic(Application.Handle);
 end;
 
+procedure UnloadKernel32Dll;
+begin
+  RegisterServiceProcess := nil;
+  if GKernel32Handle > 0 then
+    FreeLibrary(GKernel32Handle);
+  GKernel32Handle := 0;
+end;
+
+procedure LoadKernel32Dll;
+begin
+  if not GTriedLoadKernel32Dll then
+  begin
+    GTriedLoadKernel32Dll := True;
+
+    GKernel32Handle := Windows.LoadLibrary(Kernel32DLLName);
+    if GKernel32Handle > 0 then
+    begin
+      AddFinalizeProc(sUnitName, UnloadKernel32Dll);
+
+      RegisterServiceProcess := GetProcAddress(GKernel32Handle, RegisterServiceProcessName);
+    end;
+  end;
+end;
+
 //=== TJvTrayIcon ============================================================
 
 function TJvTrayIcon.AcceptBalloons: Boolean;
 begin
   // Balloons are only accepted with shell32.dll 5.0+
-  Result := GetShellVersion >= $00050000;
+  Result := GetShellVersion >= Shell32VersionIE5;
 end;
 
 function TJvTrayIcon.ApplicationHook(var Msg: TMessage): Boolean;
@@ -350,6 +446,7 @@ begin
 
     // if the delay is less than the system's minimum and the balloon
     // was really shown (title and value are not both empty)
+    // (rb) XP: if Value = '' then balloon is not shown
     if (ADelay < GetSystemMinimumBalloonDelay) and ((Title <> '') or (Value <> '')) then
     begin
       // then we enable the ballon closer timer which will cancel
@@ -360,21 +457,6 @@ begin
     if Assigned(FOnBalloonShow) then
       FOnBalloonShow(Self);
   end;
-end;
-
-procedure TJvTrayIcon.HideBalloon;
-var
-  I: Integer;
-begin
-  // We call BalloonHint with title and info set to
-  // empty strings which surprisingly will cancel any existing
-  // balloon for the icon. This is clearly not documented by
-  // microsoft and may not work in later releases of Windows
-  // Under Windows XP, you only need to do this once. But under
-  // Windows 2000, it seems one must do this one time more than
-  // there were calls to BalloonHint with real messages
-  for I := 0 to FBalloonCount do
-    BalloonHint('', '');
 end;
 
 constructor TJvTrayIcon.Create(AOwner: TComponent);
@@ -396,16 +478,6 @@ begin
   FTask := True;
 
   { (rb) todo: make global }
-  if not (csDesigning in ComponentState) then
-  begin
-    FDllHandle := LoadLibrary('KERNEL32.DLL');
-    if FDllHandle <> 0 then
-      @FRegisterServiceProcess := GetProcAddress(FDllHandle, 'RegisterServiceProcess')
-    else
-      @FRegisterServiceProcess := nil;
-  end;
-
-  { (rb) todo: make global }
   FTaskbarRestartMsg := RegisterWindowMessage('TaskbarCreated');
 end;
 
@@ -423,10 +495,6 @@ begin
   FCurrentIcon.Free;
   DeallocateHWndEx(FHandle);
 
-  { (rb) todo: make global }
-  if not (csDesigning in ComponentState) then
-    if FDllHandle <> 0 then
-      FreeLibrary(FDllHandle);
   inherited Destroy;
 end;
 
@@ -456,23 +524,17 @@ begin
       FDropDownMenu.Popup(X, Y);
       PostMessage(FHandle, WM_NULL, 0, 0);
     end;
-    if IsApplicationMinimized or (tisAppHiddenButNotMinimized in FState) then
+    if ApplicationVisible then
     begin
-      if tvRestoreClick in Visibility then
-        ShowApplication;
+      if tvMinimizeClick in Visibility then
+        { (rb) Call Application.Minimize instead of HideApplication
+               if tvAutoHide not in Visibility ? }
+        HideApplication;
     end
     else
-    if tvMinimizeClick in Visibility then
-      { (rb) Call Application.Minimize instead of HideApplication
-             if tvAutoHide not in Visibility ? }
-      HideApplication;
-  end
-  else if (Button = mbRight) and (FPopupMenu <> nil) then
-  begin
-    SetForegroundWindow(FHandle);
-    FPopupMenu.Popup(X, Y);
-    PostMessage(FHandle, WM_NULL, 0, 0);
-  end
+    if tvRestoreClick in Visibility then
+      ShowApplication;
+  end;
 end;
 
 procedure TJvTrayIcon.DoCloseBalloon;
@@ -480,6 +542,21 @@ begin
   // we stop the timer and hide the balloon
   StopTimer(CloseBalloonTimer);
   HideBalloon;
+end;
+
+procedure TJvTrayIcon.DoContextPopup(X, Y: Integer);
+var
+  Handled: Boolean;
+begin
+  Handled := False;
+  if Assigned(FOnContextPopup) then
+    FOnContextPopup(Self, Point(X, Y), Handled);
+  if not Handled and Assigned(FPopupMenu) then
+  begin
+    SetForegroundWindow(FHandle);
+    FPopupMenu.Popup(X, Y);
+    PostMessage(FHandle, WM_NULL, 0, 0);
+  end;
 end;
 
 procedure TJvTrayIcon.DoDoubleClick(Button: TMouseButton;
@@ -504,34 +581,23 @@ begin
           FPopupMenu.Items[I].Click;
           Break;
         end;
-    if IsApplicationMinimized or (tisAppHiddenButNotMinimized in FState) then
+    if ApplicationVisible then
     begin
-      if tvRestoreDbClick in Visibility then
-        ShowApplication;
+      if tvMinimizeDbClick in Visibility then
+        { (rb) Call Application.Minimize instead of HideApplication
+               if tvAutoHide not in Visibility ? }
+        HideApplication;
     end
     else
-    if tvMinimizeDbClick in Visibility then
-      { (rb) Call Application.Minimize instead of HideApplication
-             if tvAutoHide in Visibility ? }
-      HideApplication;
+    if tvRestoreDbClick in Visibility then
+      ShowApplication;
   end;
 end;
 
 procedure TJvTrayIcon.DoMouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  FClickedButton := Button;
-  FClickedShift := Shift;
-  FClickedX := X;
-  FClickedY := Y;
-
-  if not (tisWaitingForDoubleClick in FState) then
-  begin
-    Include(FState, tisWaitingForDoubleClick);
-
-    SetTimer(FHandle, DblClickTimer, GetDoubleClickTime, nil);
-  end;
-
+  Include(FState, tisClicked);
   if Assigned(FOnMouseDown) then
     FOnMouseDown(Self, Button, Shift, X, Y);
 end;
@@ -543,7 +609,7 @@ begin
     Exclude(FState, tisHintChanged);
 
     with FIconData do
-      StrPLCopy(szTip, GetShortHint(FHint), SizeOf(szTip) - 1);
+      StrPLCopy(szTip, GetShortHint(FHint), cHintSize[GetShellVersion >= Shell32VersionIE5]);
 
     if tisTrayIconVisible in FState then
       NotifyIcon(NIF_TIP, NIM_MODIFY);
@@ -554,9 +620,42 @@ end;
 
 procedure TJvTrayIcon.DoMouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
+
+  function HasSingleClickFunctionality: Boolean;
+  begin
+    Result :=
+        Assigned(FOnClick) or
+        ((Button = mbLeft) and (Assigned(FDropDownMenu) or
+          ([tvRestoreClick, tvMinimizeClick] * Visibility <> []))
+        );
+  end;
 begin
+  if tisClicked in FState then
+  begin
+    Exclude(FState, tisClicked);
+    if HasSingleClickFunctionality then
+    begin
+      // Delay DoClick
+      FClickedButton := Button;
+      FClickedShift := Shift;
+      FClickedX := X;
+      FClickedY := Y;
+
+      if not (tisWaitingForDoubleClick in FState) then
+      begin
+        Include(FState, tisWaitingForDoubleClick);
+
+        SetTimer(FHandle, DblClickTimer, GetDoubleClickTime, nil);
+      end;
+    end;
+    //else
+    //  DoClick(Button, Shift, X, Y);
+  end;
+
   if Assigned(FOnMouseUp) then
     FOnMouseUp(Self, Button, Shift, X, Y);
+  if (Button = mbRight) and (GetShellVersion < Shell32VersionIE5) then
+    DoContextPopup(X, Y);
 end;
 
 procedure TJvTrayIcon.DoTimerDblClick;
@@ -585,7 +684,7 @@ end;
 
 function TJvTrayIcon.GetApplicationVisible: Boolean;
 begin
-  Result := not IsApplicationMinimized;
+  Result := not (tisAppHiddenButNotMinimized in FState) and not IsApplicationMinimized;
 end;
 
 function TJvTrayIcon.GetSystemMinimumBalloonDelay: Cardinal;
@@ -598,7 +697,7 @@ end;
 
 procedure TJvTrayIcon.HideApplication;
 begin
-  if not IsApplicationMinimized and not (tisAppHiddenButNotMinimized in FState) then
+  if ApplicationVisible then
   begin
     // Minimize the application..
     if Snap then
@@ -616,6 +715,23 @@ begin
 
   if tvAutoHideIcon in Visibility then
     ShowTrayIcon;
+end;
+
+procedure TJvTrayIcon.HideBalloon;
+var
+  I: Integer;
+begin
+  // We call BalloonHint with title and info set to
+  // empty strings which surprisingly will cancel any existing
+  // balloon for the icon. This is clearly not documented by
+  // microsoft and may not work in later releases of Windows
+  // Under Windows XP, you only need to do this once. But under
+  // Windows 2000, it seems one must do this one time more than
+  // there were calls to BalloonHint with real messages
+
+  // (rb) A bit confusing because calling BalloonHint changes FBalloonCount
+  for I := 0 to FBalloonCount do
+    BalloonHint('', '');
 end;
 
 procedure TJvTrayIcon.HideTrayIcon;
@@ -677,22 +793,21 @@ begin
   // http://msdn.microsoft.com/library/default.asp?url=/library/en-us/shellcc/platform/Shell/Structures/NOTIFYICONDATA.asp
   with FIconData do
   begin
-    if AcceptBalloons then
+    if GetShellVersion >= Shell32VersionIE5 then
     begin
       cbSize := SizeOf(FIconData);
-      { (rb) todo: if AcceptBalloons then win2000 or up ?? }
       FIconData.uTimeOut := NOTIFYICON_VERSION;
     end
     else
       cbSize := SizeOf(TNotifyIconData);
     Wnd := FHandle;
-    uId := 1;
+    uId := 1; // We have only 1 icon per FHandle, so no need to uniquely identify
     uCallBackMessage := WM_CALLBACKMESSAGE;
     if not CurrentIcon.Empty then
       hIcon := CurrentIcon.Handle
     else
       CurrentIcon := Application.Icon;
-    StrPLCopy(szTip, GetShortHint(FHint), SizeOf(szTip) - 1);
+    StrPLCopy(szTip, GetShortHint(FHint), cHintSize[GetShellVersion >= Shell32VersionIE5]);
     uFlags := 0;
   end;
 end;
@@ -707,20 +822,26 @@ begin
   begin
     SetActive(True);
 
-    if not (tvVisibleTaskBar in Visibility) then
+    if not (csDesigning in ComponentState) then
     begin
-      // Start hidden 
-      Application.ShowMainForm := False;
-      // Note that the application is not really minimized
-      // (ie IsIconic(Application.Handle) = False), just hidden.
-      // Calling Application.Minimize or something would show the
-      // application's button on the taskbar for a short time.
-      // So we use the tisHiddenNotMinized flag as work-around, to indicate that
-      // the application is minimized.
+      if not (tvVisibleTaskBar in Visibility) then
+      begin
+        // Start hidden
+        Application.ShowMainForm := False;
+        // Note that the application is not really minimized
+        // (ie IsIconic(Application.Handle) = False), just hidden.
+        // Calling Application.Minimize or something would show the
+        // application's button on the taskbar for a short time.
+        // So we use the tisHiddenNotMinized flag as work-around, to indicate that
+        // the application is minimized.
 
-      ShowWindow(Application.Handle, SW_HIDE);
+        ShowWindow(Application.Handle, SW_HIDE);
 
-      Include(FState, tisAppHiddenButNotMinimized);
+        Include(FState, tisAppHiddenButNotMinimized);
+      end;
+
+      if not (tvVisibleTaskList in Visibility) then
+        SetTask(False);
     end;
   end;
 end;
@@ -764,9 +885,6 @@ begin
       Hook;
 
       ShowTrayIcon;
-
-      if AcceptBalloons then
-        NotifyIcon(0, NIM_SETVERSION);
     end
     else
     begin
@@ -831,7 +949,7 @@ end;
 procedure TJvTrayIcon.SetHint(Value: string);
 begin
   //Remove sLineBreak on w98/me as they are not supported
-  if not AcceptBalloons then
+  if GetShellVersion < Shell32VersionIE5 then
     Value := StringReplace(Value, sLineBreak, ' - ', [rfReplaceAll]);
 
   if FHint <> Value then
@@ -872,11 +990,15 @@ begin
   begin
     FTask := Value;
     if not (csDesigning in ComponentState) then
-      if Assigned(FRegisterServiceProcess) then
+    begin
+      LoadKernel32Dll;
+
+      if Assigned(RegisterServiceProcess) then
         if FTask then
-          FRegisterServiceProcess(GetCurrentProcessID, 0)
+          RegisterServiceProcess(GetCurrentProcessID, 0)
         else
-          FRegisterServiceProcess(GetCurrentProcessID, 1);
+          RegisterServiceProcess(GetCurrentProcessID, 1);
+    end;
   end;
 end;
 
@@ -903,9 +1025,11 @@ begin
     end
     else
     begin
+      VisibleInTaskList := tvVisibleTaskList in FVisibility;
+
       if tvAutoHide in ToBeSet then
       begin
-        if IsApplicationMinimized then
+        if not ApplicationVisible then
           HideApplication;
       end;
 
@@ -961,7 +1085,7 @@ begin
       Exit;
   end
   else
-  if (tvAutoHideIcon in Visibility) and not IsApplicationMinimized then
+  if (tvAutoHideIcon in Visibility) and ApplicationVisible then
     Exit;
 
   // All checks passed, make the trayicon visible:
@@ -969,6 +1093,10 @@ begin
   Include(FState, tisTrayIconVisible);
 
   NotifyIcon(NIF_MESSAGE or NIF_ICON or NIF_TIP, NIM_ADD);
+
+  // If we call NIM_SETVERSION, we must call it *after* NIM_ADD.
+  if GetShellVersion >= Shell32VersionIE5 then
+    NotifyIcon(0, NIM_SETVERSION);
 
   if Animated then
     StartAnimation;
@@ -1041,8 +1169,14 @@ begin
                 DoMouseUp(mbLeft, ShState, Pt.X, Pt.Y);
               WM_MBUTTONUP:
                 DoMouseUp(mbMiddle, ShState, Pt.X, Pt.Y);
-              WM_RBUTTONUP, NIN_KEYSELECT: //Mimics previous versions of shell32.dll
+              WM_RBUTTONUP:
                 DoMouseUp(mbRight, ShState, Pt.X, Pt.Y);
+              WM_CONTEXTMENU, NIN_KEYSELECT:
+                // WM_CONTEXTMENU: press Shift+F10 while trayicon has focus.
+                // NIN_KEYSELECT:  press Enter or Space while trayicon has focus.
+                // Windows moves the mouse pointer to the trayicon before these messages,
+                // so Pt is valid.
+                DoContextPopup(Pt.X, Pt.Y);
               WM_LBUTTONDBLCLK:
                 DoDoubleClick(mbLeft, ShState, Pt.X, Pt.Y);
               WM_RBUTTONDBLCLK:
@@ -1086,20 +1220,9 @@ begin
         WM_QUERYENDSESSION:
           Result := 1;
         WM_ENDSESSION:
-          begin
+          // (rb) Is it really necessairy to respond to WM_ENDSESSION?
+          if TWMEndSession(Mesg).EndSession then
             HideTrayIcon;
-            //if FActive then
-            //begin
-            //  SetActive(False);
-            //  FActive := True;
-            //end
-            //else
-            //begin
-            //  { (rb) Does not work anymore }
-            //  SetActive(False);
-            //  FActive := False;
-            //end;
-          end;
         WM_TIMER:
           case TWMTimer(Mesg).TimerID of
             AnimationTimer:
@@ -1136,5 +1259,8 @@ begin
   end;
 end;
 
-end.
+initialization
 
+finalization
+  FinalizeUnit(sUnitName);
+end.
