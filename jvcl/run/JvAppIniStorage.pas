@@ -84,7 +84,7 @@ type
     function PathExistsInt(const Path: string): Boolean; override;
     function ValueExists(const Section, Key: string): Boolean;
     function IsFolderInt(const Path: string; ListIsValue: Boolean = True): Boolean; override;
-    function ReadValue(const Section, Key: string): string;
+    function ReadValue(const Section, Key: string): string; virtual;
     procedure WriteValue(const Section, Key, Value: string); virtual;
     procedure RemoveValue(const Section, Key: string); virtual;
     procedure DeleteSubTreeInt(const Path: string); override;
@@ -641,7 +641,8 @@ procedure TJvAppIniFileStorage.Flush;
 var
   Path: String;
 begin
-  if (FullFileName <> '') and not ReadOnly then
+  if (FullFileName <> '') and not ReadOnly
+    and not (csDesigning in ComponentState) then
   begin
     Path := ExtractFilePath(IniFile.FileName);
     if Path <> '' then
@@ -653,7 +654,8 @@ end;
 
 procedure TJvAppIniFileStorage.Reload;
 begin
-  if not IsUpdating then
+  if not IsUpdating 
+    and not (csDesigning in ComponentState) then
   begin
     if FileExists(FullFileName) then
       IniFile.Rename(FullFileName, True)
