@@ -904,7 +904,7 @@ var
 begin
   Result := False;
   {$IFDEF JVCLThemesEnabled}
-  if (Control <> nil) and (not (csDesigning in Control.ComponentState)) and
+  if ((Control = nil) or (not (csDesigning in Control.ComponentState))) and
     ThemeServices.ThemesEnabled then
   begin
     R := Rect;
