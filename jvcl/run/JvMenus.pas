@@ -283,7 +283,7 @@ type
     FImageMargin    : TJvImageMargin;
     FImages         : TImageList;
     FImageSize      : TJvMenuImageSize;
-    FLeftMargin     : Cardinal;
+//    FLeftMargin     : Cardinal;
     FShowCheckMarks : Boolean;
     FStyle          : TJvMenuStyle;
     FTextMargin     : Integer;
@@ -291,7 +291,7 @@ type
 
     FOnDrawItem: TDrawMenuItemEvent;
     FOnMeasureItem: TMeasureMenuItemEvent;
-    FOnDrawMargin: TDrawMarginEvent;
+//    FOnDrawMargin: TDrawMarginEvent;
     FOnGetItemParams: TItemParamsEvent;
 
     FImageChangeLink: TChangeLink;
@@ -357,7 +357,7 @@ type
     property Images         : TImageList               read FImages             write SetImages;
     property ImageSize      : TJvMenuImageSize             read FImageSize          write FImageSize;
     property ItemPainter    : TJvCustomMenuItemPainter read FJvMenuItemPainter;
-    property LeftMargin     : Cardinal                 read FLeftMargin         write FLeftMargin        default 0;
+//    property LeftMargin     : Cardinal                 read FLeftMargin         write FLeftMargin        default 0;
     property OwnerDraw stored False;
     property ShowCheckMarks : Boolean                  read FShowCheckMarks     write FShowCheckMarks    default False;
     property Style          : TJvMenuStyle             read FStyle              write SetStyle           default msStandard;
@@ -368,7 +368,7 @@ type
     property OnGetDisabledImageIndex: TItemImageEvent read FOnGetDisabledImageIndex write FOnGetDisabledImageIndex;
     property OnGetHotImageIndex: TItemImageEvent read FOnGetHotImageIndex write FOnGetHotImageIndex;
     property OnDrawItem: TDrawMenuItemEvent read FOnDrawItem write FOnDrawItem;
-    property OnDrawMargin: TDrawMarginEvent read FOnDrawMargin write FOnDrawMargin;
+//    property OnDrawMargin: TDrawMarginEvent read FOnDrawMargin write FOnDrawMargin;
     property OnGetItemParams: TItemParamsEvent read FOnGetItemParams write FOnGetItemParams;
     property OnMeasureItem: TMeasureMenuItemEvent read FOnMeasureItem write FOnMeasureItem;
   end;
@@ -1560,14 +1560,14 @@ begin
       GetGValue(DefMarginColor) div 4,
       GetBValue(DefMarginColor) div 4));
   end;
-end;  }
+end; }
 
 procedure TJvPopupMenu.WMDrawItem(var Message: TWMDrawItem);
 var
   State: TMenuOwnerDrawState;
   SaveIndex: Integer;
   Item: TMenuItem;
-  MarginRect: TRect;
+//  MarginRect: TRect;
 begin
   with Message.DrawItemStruct^ do
   begin
@@ -1579,14 +1579,14 @@ begin
       SaveIndex := SaveDC(hDC);
       try
         Canvas.Handle := hDC;
-        if (Item.Parent = Self.Items) and (FLeftMargin > 0) then
+{        if (Item.Parent = Self.Items) and (FLeftMargin > 0) then
           if (itemAction = ODA_DRAWENTIRE) then
           begin
             MarginRect := Canvas.ClipRect;
             MarginRect.Left := 0;
             MarginRect.Right := FLeftMargin;
-            //DrawMargin(MarginRect); // (ahuser) obones has out commented the DrawMargin method
-          end;
+            DrawMargin(MarginRect);
+          end;}
         SetDefaultMenuFont(Canvas.Font);
         Canvas.Font.Color := clMenuText;
         Canvas.Brush.Color := clMenu;
@@ -1598,8 +1598,8 @@ begin
           Canvas.Brush.Color := clHighlight;
           Canvas.Font.Color := clHighlightText;
         end;
-        if (Item.Parent = Self.Items) then
-          Inc(rcItem.Left, LeftMargin + 1);
+{        if (Item.Parent = Self.Items) then
+          Inc(rcItem.Left, LeftMargin + 1);}
         with rcItem do
           IntersectClipRect(Canvas.Handle, Left, Top, Right, Bottom);
         DrawItem(Item, rcItem, State);
@@ -1628,8 +1628,8 @@ begin
 
         FJvMenuItemPainter.Measure(Item, Integer(itemWidth), Integer(itemHeight));
         MeasureItem(Item, Integer(itemWidth), Integer(itemHeight));
-        if (Item.Parent = Self.Items) then
-          Inc(itemWidth, LeftMargin + 1);
+{        if (Item.Parent = Self.Items) then
+          Inc(itemWidth, LeftMargin + 1);}
       finally
         ReleaseDC(0, Canvas.Handle);
         Canvas.Handle := 0;
