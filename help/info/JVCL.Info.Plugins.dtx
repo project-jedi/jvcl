@@ -39,8 +39,10 @@
   In any case, it's vital to study the host applications documentation to be able to write plugins
   the host application can actually cope with.
 
-  This chapter explains some of the basics behind writing plugins and provides a tutorial for
-  writing a simple plugin.
+  This chapter contains the following sections:
+
+  * <LINK JVCL.Info.Plugins.PluginWriting.Basics, Basics for writing plugins>.
+  * <LINK $JVCL.Info.Plugins.PluginWriting.Tutorials, Tutorials for plugin writing>.
 ----------------------------------------------------------------------------------------------------
 @@JVCL.Info.Plugins.PluginWriting.Basics
 <GROUP $JVCL.Info.Plugins.PluginWriting>
@@ -80,6 +82,9 @@
 <GROUP $JVCL.Info.Plugins.PluginWriting>
 <TITLE Writing plugins: tutorials>
   This chapter contains a number of tutorials. Most tutorials just expand on the basic tutorial.
+
+  Available tutorials:
+  * <LINK JVCL.Info.Plugins.PluginWriting.Tut01, Basic plugin tutorial>.
 ----------------------------------------------------------------------------------------------------
 @@JVCL.Info.Plugins.PluginWriting.Tut01
 <GROUP $JVCL.Info.Plugins.PluginWriting.Tutorials>
@@ -156,8 +161,84 @@
 
   It's best to fully define the possibilities of your plugins before you even start coding or
   changing your application, or you'll soon be lost.
+
+  This chapter contains the following sections:
+  * Host writing basics>.
+  * <LINK $JVCL.Info.Plugins.HostWriting.Tutorials, Tutorials for plugin hosts>.
+----------------------------------------------------------------------------------------------------
+@@JVCL.Info.Plugins.HostWriting.Basics
+<GROUP $JVCL.Info.Plugins.HostWriting>
+  Writing a host application involves various steps, most of which depend on the type of plugins you
+  need and if you need more than one type of plugins. For the most basic (and most common) type of
+  host application you should execute the following tasks:
+
+  * Drop a TJvPluginManager component on your application main form or a data module.
+  * Setup those properties of the component that will not change during run time. This is usually
+    the PluginKind property only, occasionally you would need to change the Extension property as
+    well.
+  * If you plan on block certain files from loading, assign an OnBeforeLoad event handler which will
+    set AllowLoad to False for these files.
+  * Assign an OnNewCommand event handler to register commands provided by the various plugins and
+    create menu items and/or toolbar buttons for them.
 ----------------------------------------------------------------------------------------------------
 @@$JVCL.Info.Plugins.HostWriting.Tutorials
 <GROUP $JVCL.Info.Plugins.HostWriting>
 <TITLE Writing host applications: Tutorials>
   This chapter contains a number of tutorials to make your application plugin enabled.
+
+  Available tutorials:
+    * Basic host application.
+----------------------------------------------------------------------------------------------------
+@@$JVCL.Info.Plugins.HostWriting.Tutorials.Tut01
+<GROUP $JVCL.Info.Plugins.HostWriting.Tutorials>
+<TITLE Writing host applications: Tutorial: Basic host application>
+  This tutorial will create a simple application that accepts plugins found in it's executable's
+  folder. The tutorial is the basis for most of the other tutorials. Every component dropped on
+  the form will keep it's default name, unless stated otherwise.
+
+  We start this tutorial by creating a new application. Drop a \TMainMenu on the form. The menu
+  should have a <B>\File</B> and a <B>Tools</B> menu. The file menu will have a two sub items:
+  <B>Load plugins</B> and <B>\Exit</B>. The tools menu will be left empty. It will be filled with
+  the commands provided by the loaded plugins.
+
+  Next we drop a \TJvPluginManager component on the form. We assume package plugins will be used, so
+  we set the PluginKind property to <B>plgPackage</B>. You'll notice the Extension property changes
+  to <B>bpl</B> automatically. We leave PluginFolder blank, which will make LoadPlugins load all
+  packages found in the executable's folder.
+
+  Head over to the events of the \TJvPluginManager and double click on the OnNewCommand event to
+  generate a new handler. The handler will have the following implementation:
+<CODE>
+<B>procedure</B> TForm1.JvPluginManager1NewCommand(Sender: \TObject; ACaption, AHint,
+  AData: \string; ABitmap: \TBitmap; AEvent: \TNotifyEvent);
+<B>var</B>
+  MI: \TMenuItem;
+<B>begin</B>
+  MI := \TMenuItem.\Create(Self);
+  <B>try</B>
+    MI.Caption := ACaption;
+    MI.Hint := AHint;
+    MI.Bitmap := ABitmap;
+    MI.OnClick := AEvent;
+    Tools1.Add(MI);
+  <B>except</B>
+    MI.Free; // error occured, cleanup menu item
+    <B>raise</B>;
+  <B>end</B>;
+<B>end</B>;
+</CODE>
+  The code in this handler will add a new menu item to the tools menu for each command found in each
+  loaded plugin.
+
+  Next we will implement the <B>Load plugins</B> menu item's OnClick event. The handler will get the
+  following code:
+<CODE>
+<B>procedure</B> TForm1.Loadplugins1Click(Sender: \TObject);
+<B>begin</B>
+  JvPluginManager1.LoadPlugins;
+<B>end</B>;
+</CODE>
+  This will load all plugins in the executables folder.
+
+  Implement the <B>\Exit</B> menu item's OnClick event. The handler should just call the \Close
+  method of the form.
