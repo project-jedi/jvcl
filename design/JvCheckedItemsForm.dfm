@@ -2,10 +2,10 @@ object JvCheckItemsEditor: TJvCheckItemsEditor
   Left = 285
   Top = 129
   Width = 350
-  Height = 292
+  Height = 305
   BorderIcons = [biSystemMenu]
   Color = clBtnFace
-  Constraints.MinHeight = 290
+  Constraints.MinHeight = 305
   Constraints.MinWidth = 350
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -40,118 +40,118 @@ object JvCheckItemsEditor: TJvCheckItemsEditor
   OldCreateOrder = True
   Position = poDefaultPosOnly
   Scaled = False
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object OkBtn: TButton
-    Left = 259
-    Top = 205
-    Width = 75
-    Height = 24
-    Anchors = [akRight, akBottom]
-    Caption = 'OK'
-    ModalResult = 1
-    TabOrder = 0
-  end
-  object CancelBtn: TButton
-    Left = 259
-    Top = 232
-    Width = 75
-    Height = 24
-    Anchors = [akRight, akBottom]
-    Cancel = True
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 1
-  end
-  object DownBtn: TButton
-    Left = 259
-    Top = 168
-    Width = 75
-    Height = 24
-    Anchors = [akTop, akRight]
-    Caption = 'Move do&wn'
-    TabOrder = 2
-    OnClick = UpDownBtnClick
-  end
-  object UpBtn: TButton
-    Left = 259
-    Top = 141
-    Width = 75
-    Height = 24
-    Anchors = [akTop, akRight]
-    Caption = 'Move &up'
-    TabOrder = 3
-    OnClick = UpDownBtnClick
-  end
-  object ClearBtn: TButton
-    Left = 259
-    Top = 114
-    Width = 75
-    Height = 24
-    Anchors = [akTop, akRight]
-    Caption = '&Clear all'
-    TabOrder = 4
-    OnClick = ClearBtnClick
-  end
-  object AddListBtn: TButton
-    Left = 259
-    Top = 87
-    Width = 75
-    Height = 24
-    Anchors = [akTop, akRight]
-    Caption = '&Add Strings'
-    TabOrder = 5
-    OnClick = AddListBtnClick
-  end
-  object DeleteBtn: TButton
-    Left = 259
-    Top = 60
-    Width = 75
-    Height = 24
-    Anchors = [akTop, akRight]
-    Caption = '&Delete'
-    TabOrder = 6
-    OnClick = DeleteBtnClick
-  end
-  object NewBtn: TButton
-    Left = 259
-    Top = 33
-    Width = 75
-    Height = 24
-    Anchors = [akTop, akRight]
-    Caption = '&New'
-    TabOrder = 7
-    OnClick = NewBtnClick
-  end
-  object EditBtn: TButton
-    Left = 259
-    Top = 6
-    Width = 75
-    Height = 24
-    Anchors = [akTop, akRight]
-    Caption = '&Edit'
-    Default = True
-    TabOrder = 8
-    OnClick = EditBtnClick
-  end
   object CheckList: TCheckListBox
     Left = 6
     Top = 6
     Width = 246
-    Height = 250
+    Height = 259
     AllowGrayed = True
-    Anchors = [akLeft, akTop, akRight, akBottom]
     Ctl3D = True
     DragMode = dmAutomatic
     ItemHeight = 13
     ParentCtl3D = False
     PopupMenu = Popup
-    TabOrder = 9
+    TabOrder = 0
     OnClick = CheckListClick
     OnDragDrop = CheckListDragDrop
     OnDragOver = CheckListDragOver
     OnKeyDown = CheckListKeyDown
+  end
+  object PanelButtons: TPanel
+    Left = 256
+    Top = 0
+    Width = 86
+    Height = 271
+    Align = alRight
+    BevelOuter = bvNone
+    TabOrder = 1
+    object EditBtn: TButton
+      Left = 3
+      Top = 6
+      Width = 75
+      Height = 24
+      Caption = '&Edit'
+      Default = True
+      TabOrder = 0
+      OnClick = EditBtnClick
+    end
+    object NewBtn: TButton
+      Left = 3
+      Top = 33
+      Width = 75
+      Height = 24
+      Caption = '&New'
+      TabOrder = 1
+      OnClick = NewBtnClick
+    end
+    object DeleteBtn: TButton
+      Left = 3
+      Top = 60
+      Width = 75
+      Height = 24
+      Caption = '&Delete'
+      TabOrder = 2
+      OnClick = DeleteBtnClick
+    end
+    object AddListBtn: TButton
+      Left = 3
+      Top = 87
+      Width = 75
+      Height = 24
+      Caption = '&Add Strings'
+      TabOrder = 3
+      OnClick = AddListBtnClick
+    end
+    object ClearBtn: TButton
+      Left = 3
+      Top = 114
+      Width = 75
+      Height = 24
+      Caption = '&Clear all'
+      TabOrder = 4
+      OnClick = ClearBtnClick
+    end
+    object UpBtn: TButton
+      Left = 3
+      Top = 149
+      Width = 75
+      Height = 24
+      Caption = 'Move &up'
+      TabOrder = 5
+      OnClick = UpDownBtnClick
+    end
+    object DownBtn: TButton
+      Left = 3
+      Top = 176
+      Width = 75
+      Height = 24
+      Caption = 'Move do&wn'
+      TabOrder = 6
+      OnClick = UpDownBtnClick
+    end
+    object OkBtn: TButton
+      Left = 3
+      Top = 213
+      Width = 75
+      Height = 24
+      Caption = 'OK'
+      ModalResult = 1
+      TabOrder = 7
+    end
+    object CancelBtn: TButton
+      Left = 3
+      Top = 240
+      Width = 75
+      Height = 24
+      Cancel = True
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 8
+    end
   end
   object Popup: TPopupMenu
     OnPopup = PopupPopup
