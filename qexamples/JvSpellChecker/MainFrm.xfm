@@ -1,0 +1,106 @@
+object frmMain: TfrmMain
+  Left = 310
+  Top = 400
+  Width = 535
+  Height = 398
+  VertScrollBar.Range = 19
+  ActiveControl = reText
+  Caption = 'JvSpellChecker Demo'
+  Color = clButton
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 320
+  Font.Color = clText
+  Font.Height = 11
+  Font.Name = 'MS Shell Dlg 2'
+  Font.Pitch = fpVariable
+  Font.Style = []
+  Font.Weight = 40
+  Icon.Data = {
+    0000010001001010100001001000280100001600000028000000100000002000
+    00000100040000000000C0000000000000000000000000000000000000000000
+    0000000080000080000000808000800000008000800080800000C0C0C0008080
+    80000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF000000
+    00000000000000000BBBB0000000000BB000BB000000000BB0000B000000000B
+    BB000BB00000000BBB000BB00000000000000BB00000000000000BB000000000
+    00000BB00000000000000BB00000000000000BB00000000000000BB000000000
+    00000BB0000000000000BBBB00000000000BBBBBB0000000000000000000FFFF
+    0000F87F0000E73F0000E7BF0000E39F0000E39F0000FF9F0000FF9F0000FF9F
+    0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
+  Menu = mmMain
+  ParentFont = False
+  Position = poDesktopCenter
+  Scaled = False
+  PixelsPerInch = 113
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 349
+    Width = 535
+    Height = 19
+    Panels = <
+      item
+      end>
+  end
+  object reText: TMemo
+    Left = 0
+    Top = 0
+    Width = 535
+    Height = 349
+    Align = alClient
+    Lines.Strings = (
+      'reText')
+    TabOrder = 1
+  end
+  object mmMain: TMainMenu
+    Left = 120
+    Top = 64
+    object File1: TMenuItem
+      Caption = 'File'
+      object Open1: TMenuItem
+        Caption = 'Open...'
+        ShortCut = 16463
+        OnClick = Open1Click
+      end
+      object N1: TMenuItem
+        Caption = '-'
+      end
+      object Close1: TMenuItem
+        Caption = 'Close'
+        ShortCut = 32883
+        OnClick = Close1Click
+      end
+    end
+    object Edit1: TMenuItem
+      Caption = 'Edit'
+      object SpellCheck1: TMenuItem
+        Caption = 'Spell Check...'
+        ShortCut = 118
+        OnClick = SpellCheck1Click
+      end
+      object N2: TMenuItem
+        Caption = '-'
+      end
+      object Saveasimage1: TMenuItem
+        Caption = 'Save as image...'
+        OnClick = Saveasimage1Click
+      end
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    Filter = 'Text files|*.txt|RTF files|*.rtf|All files|*.*'
+    FilterIndex = 0
+    Height = 0
+    Width = 0
+    Left = 168
+    Top = 160
+  end
+  object SaveDialog1: TSaveDialog
+    FileName = 'new.bmp'
+    FilterIndex = 0
+    Options = [ofOverwritePrompt, ofEnableSizing, ofHideReadOnly]
+    Height = 0
+    Title = 'Save'
+    Width = 0
+    Left = 272
+    Top = 192
+  end
+end
