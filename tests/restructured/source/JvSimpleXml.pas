@@ -44,6 +44,7 @@ type
   TJvSimpleXmlProps = class;
   TJvOnSimpleXmlParsed = procedure(Sender: TObject; Name: string) of object;
   TJvOnValueParsed = procedure(Sender: TObject; Name, Value: string) of object;
+  TJvOnSimpleProgress = procedure(Sender: TObject; const Position, Total: Integer) of object;
 
   TJvSimpleXmlProp = class(TObject)
   private
@@ -75,7 +76,6 @@ type
     procedure Analyse(const Value: string);
     procedure DoItemRename(var Value: TJvSimpleXmlProp; const Name: string);
   public
-    constructor Create;
     destructor Destroy; override;
     procedure Add(const Name, Value: string); overload;
     procedure Add(const Name: string; const Value: Int64); overload;
@@ -103,6 +103,7 @@ type
     procedure AddChild(var Value: TJvSimpleXmlElem);
     procedure AddChildFirst(var Value: TJvSimpleXmlElem);
     procedure DoItemRename(var Value: TJvSimpleXmlElem; const Name: string);
+    procedure CreateElems;
   public
     constructor Create(const AOwner: TJvSimpleXmlElem);
     destructor Destroy; override;
@@ -134,10 +135,13 @@ type
     FProps: TJvSimpleXmlProps;
     FValue: string;
     function GetIntValue: Int64;
-    procedure SetIntValue(const Value: Int64);
     function GetBoolValue: Boolean;
+    function GetChildsCount: Integer;
+    function GetProps: TJvSimpleXmlProps;
     procedure SetBoolValue(const Value: Boolean);
     procedure SetName(const Value: string);
+    procedure SetIntValue(const Value: Int64);
+    function GetItems: TJvSimpleXmlElems;
   protected
     procedure Analyse(const Value: string);
   public
@@ -149,12 +153,13 @@ type
     function SaveToString: string;
     procedure GetBinaryValue(const Stream: TStream);
 
+    property ChildsCount: Integer read GetChildsCount;
     property Name: string read FName write SetName;
     property Parent: TJvSimpleXmlElem read FParent write FParent;
-    property Items: TJvSimpleXmlElems read FItems;
+    property Items: TJvSimpleXmlElems read GetItems;
     property IntValue: Int64 read GetIntValue write SetIntValue;
     property BoolValue: Boolean read GetBoolValue write SetBoolValue;
-    property Properties: TJvSimpleXmlProps read FProps;
+    property Properties: TJvSimpleXmlProps read GetProps;
     property Value: string read FValue write FValue;
   end;
 
@@ -165,6 +170,8 @@ type
     FOnTagParsed: TJvOnSimpleXmlParsed;
     FOnValue: TJvOnValueParsed;
     FEncoding: string;
+    FOnLoadProg: TJvOnSimpleProgress;
+    FOnSaveProg: TJvOnSimpleProgress;
   protected
     procedure SetFileName(Value: TFileName);
   public
@@ -182,6 +189,8 @@ type
   published
     property Encoding: string read FEncoding write FEncoding;
     property FileName: TFileName read FFileName write SetFileName;
+    property OnSaveProgress:TJvOnSimpleProgress read FOnSaveProg write FOnSaveProg;
+    property OnLoadProgress:TJvOnSimpleProgress read FOnLoadProg write FOnLoadProg;
     property OnTagParsed: TJvOnSimpleXmlParsed read FOnTagParsed write FOnTagParsed;
     property OnValueParsed: TJvOnValueParsed read FOnValue write FOnValue;
   end;
@@ -515,6 +524,9 @@ var
     else
       Stream.Seek(k,soFromBeginning);
     result := Trim(Result);
+
+    if Assigned(FOnLoadProg) then
+      FOnLoadProg(self,Stream.Position,Stream.Size);
   end;
 
   function ReadValue: string;
@@ -630,6 +642,8 @@ end;
 {*************************************************}
 
 procedure TJvSimpleXml.SaveToStream(const Stream: TStream);
+var
+ lCount,lCurrent: Integer;
 
   procedure WriteString(Value: string);
   begin
@@ -661,11 +675,21 @@ procedure TJvSimpleXml.SaveToStream(const Stream: TStream);
         WriteElement(Value.Items[i], Prefix + ' ');
       WriteString(Prefix + '</' + Value.Name + '>');
     end;
+
+    inc(lCurrent);
+    if Assigned(FOnSaveProg) then
+      FOnSaveProg(self,lCurrent,lCount);
   end;
 
 begin
+  lCount := Root.ChildsCount;
+  lCurrent := 0;
+  if Assigned(FOnSaveProg) then
+    FOnSaveProg(self,0,lCount);
   WriteString('<?xml version="1.0" encoding="'+FEncoding+'" ?>');
   WriteElement(Root, '');
+  if Assigned(FOnSaveProg) then
+    FOnSaveProg(self,lCount,lCount);
 end;
 {*************************************************}
 
@@ -743,8 +767,10 @@ end;
 
 procedure TJvSimpleXmlElem.Clear;
 begin
-  Items.Clear;
-  Properties.Clear;
+  if FItems<>nil then
+    Items.Clear;
+  if FProps<>nil then
+    Properties.Clear;
 end;
 {*************************************************}
 
@@ -752,15 +778,16 @@ constructor TJvSimpleXmlElem.Create(const AOwner: TJvSimpleXmlElem);
 begin
   FName := '';
   FParent := TJvSimpleXmlElem(AOwner);
-  FItems := TJvSimpleXmlElems.Create(self);
-  FProps := TJvSimpleXmlProps.Create();
 end;
 {*************************************************}
 
 destructor TJvSimpleXmlElem.Destroy;
 begin
-  FItems.Free;
-  FProps.Free;
+  Clear;
+  if FItems<>nil then
+    FItems.Free;
+  if FProps<>nil then
+    FProps.Free;
   inherited;
 end;
 {*************************************************}
@@ -795,9 +822,36 @@ begin
 end;
 {*************************************************}
 
+function TJvSimpleXmlElem.GetChildsCount: Integer;
+var
+ i: Integer;
+begin
+  result := 1;
+  if FItems<>nil then
+    for i:=0 to FItems.Count-1 do
+      result := result + FItems[i].ChildsCount;
+end;
+{*************************************************}
+
 function TJvSimpleXmlElem.GetIntValue: Int64;
 begin
   result := StrToInt64Def(Value, -1);
+end;
+{*************************************************}
+
+function TJvSimpleXmlElem.GetItems: TJvSimpleXmlElems;
+begin
+  if FItems=nil then
+    FItems := TJvSimpleXmlElems.Create(self);
+  result := FItems;
+end;
+{*************************************************}
+
+function TJvSimpleXmlElem.GetProps: TJvSimpleXmlProps;
+begin
+  if FProps=nil then
+    FProps := TJvSimpleXmlProps.Create();
+  result := FProps;
 end;
 {*************************************************}
 
@@ -860,7 +914,7 @@ end;
 function TJvSimpleXmlElems.Add(const Name: string): TJvSimpleXmlElem;
 begin
   result := TJvSimpleXmlElem.Create(Parent);
-  result.Name := Name;
+  result.FName := Name; //Directly set parent to avoid notification
   AddChild(result);
 end;
 {*************************************************}
@@ -918,12 +972,14 @@ end;
 
 procedure TJvSimpleXmlElems.AddChild(var Value: TJvSimpleXmlElem);
 begin
+  CreateElems;
   FElems.AddObject(Value.Name,Value);
 end;
 {*************************************************}
 
 procedure TJvSimpleXmlElems.AddChildFirst(var Value: TJvSimpleXmlElem);
 begin
+  CreateElems;
   FElems.AddObject(Value.Name,Value)
 end;
 {*************************************************}
@@ -953,34 +1009,54 @@ end;
 {*************************************************}
 
 procedure TJvSimpleXmlElems.Clear;
+var
+ i: Integer;
 begin
+  if FElems=nil then
+    Exit;
+  for i:=0 to FElems.Count-1 do
+  try
+    TJvSimpleXmlElem(FElems.Objects[i]).Clear;
+    TJvSimpleXmlElem(FElems.Objects[i]).Free;
+  except
+  end;
   FElems.Clear;
 end;
 {*************************************************}
 
 constructor TJvSimpleXmlElems.Create(const AOwner: TJvSimpleXmlElem);
 begin
-  FElems := THashedStringList.Create;
   FParent := AOwner;
 end;
 {*************************************************}
 
 procedure TJvSimpleXmlElems.Delete(const Index: Integer);
 begin
-  if (Index>=0) and (Index<FElems.Count) then
+  if (FElems<>nil) and (Index>=0) and (Index<FElems.Count) then
     FElems.Delete(Index);
 end;
 {*************************************************}
 
+procedure TJvSimpleXmlElems.CreateElems;
+begin
+  if FElems=nil then
+    FElems := THashedStringList.Create;
+end;
+
+{*************************************************}
+
 procedure TJvSimpleXmlElems.Delete(const Name: string);
 begin
-  Delete(FElems.IndexOf(Name));
+  if FElems<>nil then
+    Delete(FElems.IndexOf(Name));
 end;
 {*************************************************}
 
 destructor TJvSimpleXmlElems.Destroy;
 begin
-  FElems.Free;
+  Clear;
+  if FElems<>nil then
+    FElems.Free;
   inherited;
 end;
 {*************************************************}
@@ -998,13 +1074,16 @@ end;
 
 function TJvSimpleXmlElems.GetCount: Integer;
 begin
-  result := FElems.Count;
+  if FElems = nil then
+    result := 0
+  else
+    result := FElems.Count;
 end;
 {*************************************************}
 
 function TJvSimpleXmlElems.GetItem(const Index: Integer): TJvSimpleXmlElem;
 begin
-  if Index > FElems.Count then
+  if (FElems = nil) or (Index > FElems.Count) then
     result := nil
   else
     result := TJvSimpleXmlElem(FElems.Objects[Index]);
@@ -1015,11 +1094,13 @@ function TJvSimpleXmlElems.GetItemNamed(const Name: string): TJvSimpleXmlElem;
 var
   i: Integer;
 begin
-  i := FElems.IndexOf(Name);
-  if i<>-1 then
-    result := TJvSimpleXmlElem(FElems.Objects[i])
-  else
-    result := nil;
+  result := nil;
+  if FElems<>nil then
+  begin
+    i := FElems.IndexOf(Name);
+    if i<>-1 then
+      result := TJvSimpleXmlElem(FElems.Objects[i])
+  end;
 end;
 {*************************************************}
 
@@ -1056,9 +1137,11 @@ procedure TJvSimpleXmlProps.Add(const Name, Value: string);
 var
   Elem: TJvSimpleXmlProp;
 begin
+  if FProperties=nil then
+    FProperties := THashedStringList.Create;
   Elem := TJvSimpleXmlProp.Create();
   FProperties.AddObject(Name,Elem);
-  Elem.Name := Name;
+  Elem.FName := Name; //Avoid notification
   Elem.Value := Value;
   Elem.Parent := self;
 end;
@@ -1159,33 +1242,39 @@ end;
 {*************************************************}
 
 procedure TJvSimpleXmlProps.Clear;
+var
+ i: Integer;
 begin
+  if FProperties=nil then
+    Exit;
+  for i:=0 to FProperties.Count-1 do
+  try
+    TJvSimpleXmlProp(FProperties.Objects[i]).Free;
+  except
+  end;
   FProperties.Clear;
-end;
-{*************************************************}
-
-constructor TJvSimpleXmlProps.Create;
-begin
-  FProperties := THashedStringList.Create;
 end;
 {*************************************************}
 
 procedure TJvSimpleXmlProps.Delete(const Index: Integer);
 begin
-  if (Index>=0) and (Index<FProperties.Count) then
+  if (FProperties<>nil) and (Index>=0) and (Index<FProperties.Count) then
     FProperties.Delete(Index);
 end;
 {*************************************************}
 
 procedure TJvSimpleXmlProps.Delete(const Name: string);
 begin
-  Delete(FProperties.IndexOf(Name));
+  if FProperties<>nil then
+    Delete(FProperties.IndexOf(Name));
 end;
 {*************************************************}
 
 destructor TJvSimpleXmlProps.Destroy;
 begin
-  FProperties.Free;
+  Clear;
+  if FProperties<>nil then
+    FProperties.Free;
   inherited;
 end;
 {*************************************************}
@@ -1203,13 +1292,19 @@ end;
 
 function TJvSimpleXmlProps.GetCount: Integer;
 begin
-  result := FProperties.Count;
+  if FProperties=nil then
+    result := 0
+  else
+    result := FProperties.Count;
 end;
 {*************************************************}
 
 function TJvSimpleXmlProps.GetItem(const Index: Integer): TJvSimpleXmlProp;
 begin
-  result := TJvSimpleXmlProp(FProperties.Objects[Index]);
+  if FProperties<>nil then
+    result := TJvSimpleXmlProp(FProperties.Objects[Index])
+  else
+    result := nil;
 end;
 {*************************************************}
 
@@ -1217,11 +1312,13 @@ function TJvSimpleXmlProps.GetItemNamed(const Name: string): TJvSimpleXmlProp;
 var
   i: Integer;
 begin
-  i := FProperties.IndexOf(Name);
-  if i<>-1 then
-    result := TJvSimpleXmlProp(FProperties.Objects[i])
-  else
-    result := nil;
+  result := nil;
+  if FProperties<>nil then
+  begin
+    i := FProperties.IndexOf(Name);
+    if i<>-1 then
+      result := TJvSimpleXmlProp(FProperties.Objects[i])
+  end;
 end;
 {*************************************************}
 
@@ -1362,9 +1459,9 @@ function TXmlVariant.DoFunction(var Dest: TVarData; const V: TVarData;
   const Name: string; const Arguments: TVarDataArray): Boolean;
 var
   lXml: TJvSimpleXmlElem;
-  lProp: TJvSimpleXmlProp;
   i,j,k: Integer;
 begin
+  result := false;
   if (Length(Arguments) = 1) and (Arguments[0].VType in [vtInteger,vtExtended]) then
     with TXmlVarData(V) do
     begin
@@ -1400,6 +1497,7 @@ var
   lXml: TJvSimpleXmlElem;
   lProp: TJvSimpleXmlProp;
 begin
+  result := false;
   with TXmlVarData(V) do
   begin
     lXml := Xml.Items.ItemNamed[Name];
@@ -1445,6 +1543,7 @@ var
   end;
 
 begin
+  result := false;
   with TXmlVarData(V) do
   begin
     lXml := Xml.Items.ItemNamed[Name];
