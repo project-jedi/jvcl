@@ -33,6 +33,8 @@ unit JvBrowseFolder;
 
 interface
 
+{$HPPEMIT '#include <shtypes.h>'}
+
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   ShellAPI, ShlObj, ActiveX,

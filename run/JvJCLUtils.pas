@@ -1845,8 +1845,13 @@ begin
   Result := Ch in SetOfChar;
   {$ENDIF DELPHI}
   {$IFDEF CBUILDER}
+  {$IFNDEF BCB6}
   Result := Pos(Ch, SetOfChar) > 0;
-  {$ENDIF CBUILDER}
+  {$ENDIF}
+  {$ENDIF}
+  {$IFDEF BCB6}
+  Result := Ch in SetOfChar;
+  {$ENDIF}
 end;
 
 function CharInSetW(const Ch: WideChar; const SetOfChar: TSetOfChar): Boolean;
