@@ -59,7 +59,7 @@ type
 
 const
 
-  OFN_EX_NOPLACESBAR = 1; // for new style of standard Windows dialogs
+  OFN_EX_NOPLACESBAR = 1;               // for new style of standard Windows dialogs
 
   SpecialFolders: array[0..29] of TSpecialFolderInfo = (
     (Name: 'Alt Startup'; ID: CSIDL_ALTSTARTUP),
@@ -137,13 +137,13 @@ type
     // Custom data to be passed to hook.
     lCustData: LPARAM;
     lpfnHook: function(Wnd: HWND; Msg: UINT; wParam: WPARAM;
-      lParam: LPARAM): UINT stdcall; // Hook.
+      lParam: LPARAM): UINT stdcall;    // Hook.
     // Template dialog, if applicable.
     lpTemplateName: PAnsiChar;
     // Extended structure starts here.
-    pvReserved: Pointer; // Reserved, use nil.
-    dwReserved: DWORD; // Reserved, use 0.
-    FlagsEx: DWORD; // Extended Flags.
+    pvReserved: Pointer;                // Reserved, use nil.
+    dwReserved: DWORD;                  // Reserved, use 0.
+    FlagsEx: DWORD;                     // Extended Flags.
   end;
 
   TJvFormatType = (ftFull, ftQuick);
@@ -227,10 +227,12 @@ type
   TJvChangeIconDialog = class(TjvCommonDialogP)
   private
     FIconIndex: integer;
+    FFilename: string;
   public
     procedure Execute; override;
   published
     property IconIndex: integer read FIconIndex write FIconIndex;
+    property Filename: string read FFilename write FFilename;
   end;
 
   TJvShellAboutDialog = class(TjvCommonDialog)
@@ -290,7 +292,8 @@ type
   public
     procedure Execute; override;
   published
-    property DestinationFolder: string read FDestinationFolder write FDestinationFolder;
+    property DestinationFolder: string read FDestinationFolder write
+      FDestinationFolder;
   end;
 
   TJvAddHardwareDialog = class(TjvCommonDialogP)
@@ -342,32 +345,49 @@ procedure ClearRecentDocs;
 function ExtractIconFromFile(FileName: string; Index: integer): HIcon;
 function CreateShellLink(const AppName, Desc: string; Dest: string): string;
 procedure GetShellLinkInfo(const LinkFile: WideString; var SLI: TShellLinkInfo);
-procedure SetShellLinkInfo(const LinkFile: WideString; const SLI: TShellLinkInfo);
+procedure SetShellLinkInfo(const LinkFile: WideString; const SLI:
+  TShellLinkInfo);
 function RecycleFile(FileToRecycle: string): boolean;
 function CopyFile(FromFile, ToDir: string): boolean;
 procedure ExecuteApplet(AppletName: string);
 function ShellObjectTypeEnumToConst(ShellObjectType: TShellObjectType): UINT;
 function ShellObjectTypeConstToEnum(ShellObjectType: UINT): TShellObjectType;
-function ShellMessageBox(Instance: THandle; Owner: HWND; Text: PChar; Caption: PChar;
+function ShellMessageBox(Instance: THandle; Owner: HWND; Text: PChar; Caption:
+  PChar;
   Style: UINT; Parameters: array of Pointer): Integer; cdecl;
 
 type
   FreePIDLProc = procedure(PIDL: PItemIDList); stdcall;
-  SHChangeIconProc = function(wnd: HWND; szFileName: PChar; reserved: integer; var lpIconIndex: integer): DWORD; stdcall;
-  SHFormatDriveProc = function(wnd: HWND; drive: UINT; fmtID: UINT; options: UINT): DWORD; stdcall;
+  SHChangeIconProc = function(wnd: HWND; szFileName: PChar; reserved: integer;
+    var lpIconIndex: integer): DWORD; stdcall;
+  SHChangeIconProcW = function(wnd: HWND; szFileName: PWideChar; reserved:
+    integer; var lpIconIndex: integer): DWORD; stdcall;
+  SHFormatDriveProc = function(wnd: HWND; drive: UINT; fmtID: UINT; options:
+    UINT): DWORD; stdcall;
   SHShutDownDialogProc = procedure(wnd: HWND); stdcall;
-  SHRunDialogProc = function(wnd: HWND; Unknown1: integer; Unknown2: Pointer; szTitle: PChar; szPrompt: PChar; uiFlages: integer): DWORD; stdcall;
-  SHFindFilesProc = function(Root: PItemIDList; SavedSearchFile: PItemIDList): LongBool; stdcall;
-  SHFindComputerProc = function(Reserved1: PItemIDList; Reserved2: PItemIDList): LongBool; stdcall;
-  SHObjectPropertiesProc = function(Owner: HWND; Flags: UINT; ObjectName: Pointer; InitialTabName: Pointer): LongBool; stdcall;
-  SHNetConnectionDialogProc = function(Owner: HWND; ResourceName: Pointer; ResourceType: DWORD): DWORD; stdcall;
-  SHStartNetConnectionDialogProc = function(Owner: HWND; ResourceName: PWideChar; ResourceType: DWORD): DWORD; stdcall;
-  SHOutOfMemoryMessageBoxProc = function(Owner: HWND; Caption: Pointer; Style: UINT): Integer; stdcall;
+  SHRunDialogProc = function(wnd: HWND; Unknown1: integer; Unknown2: Pointer;
+    szTitle: PChar; szPrompt: PChar; uiFlages: integer): DWORD; stdcall;
+  SHFindFilesProc = function(Root: PItemIDList; SavedSearchFile: PItemIDList):
+    LongBool; stdcall;
+  SHFindComputerProc = function(Reserved1: PItemIDList; Reserved2: PItemIDList):
+    LongBool; stdcall;
+  SHObjectPropertiesProc = function(Owner: HWND; Flags: UINT; ObjectName:
+    Pointer; InitialTabName: Pointer): LongBool; stdcall;
+  SHNetConnectionDialogProc = function(Owner: HWND; ResourceName: Pointer;
+    ResourceType: DWORD): DWORD; stdcall;
+  SHStartNetConnectionDialogProc = function(Owner: HWND; ResourceName:
+    PWideChar; ResourceType: DWORD): DWORD; stdcall;
+  SHOutOfMemoryMessageBoxProc = function(Owner: HWND; Caption: Pointer; Style:
+    UINT): Integer; stdcall;
   SHHandleDiskFullProc = procedure(Owner: HWND; uDrive: UINT); stdcall;
-  NewLinkHereProc = procedure(HWND: THandle; HInstance: THandle; CmdLine: Pchar; cmdShow: integer); stdcall;
-  SHOpenWithProc = procedure(HWND: THandle; HInstance: THandle; cmdLine: PChar; cmdShow: integer); stdcall;
-  GetOpenFileNameExProc = function(var OpenFile: TOpenFilenameEx): Bool; stdcall;
-  GetSaveFileNameExProc = function(var SaveFile: TOpenFileNameEx): bool; stdcall;
+  NewLinkHereProc = procedure(HWND: THandle; HInstance: THandle; CmdLine: Pchar;
+    cmdShow: integer); stdcall;
+  SHOpenWithProc = procedure(HWND: THandle; HInstance: THandle; cmdLine: PChar;
+    cmdShow: integer); stdcall;
+  GetOpenFileNameExProc = function(var OpenFile: TOpenFilenameEx): Bool;
+  stdcall;
+  GetSaveFileNameExProc = function(var SaveFile: TOpenFileNameEx): bool;
+  stdcall;
 
 var
   FreePIDL: FreePIDLProc = nil;
@@ -386,12 +406,15 @@ var
   NewLinkHere: NewLinkHereProc = nil;
   SHOpenWith: SHOpenWithProc = nil;
   SHChangeIcon: SHChangeIconProc = nil;
+  SHChangeIconW: SHChangeIconProcW = nil;
 
 resourcestring
-  SDiskFullError = 'TJvDiskFullDialog does not support removable media or network drives.';
+  SDiskFullError =
+    'TJvDiskFullDialog does not support removable media or network drives.';
   SNotSupported = 'This function is not supported by your version of Windows';
   SInvalidDriveChar = 'Invalid drive (%s)';
-  SUnsupportedDisk = 'Unsupported drive (%s): JvDiskFullDialog only supports fixed drives.';
+  SUnsupportedDisk =
+    'Unsupported drive (%s): JvDiskFullDialog only supports fixed drives.';
 
 implementation
 
@@ -408,7 +431,10 @@ begin
   ShellHandle := Windows.LoadLibrary(PChar(shell32));
   if ShellHandle <> 0 then
   begin
-    SHChangeIcon := GetProcAddress(ShellHandle, PChar(62));
+    if Win32Platform = VER_PLATFORM_WIN32_NT then
+      SHChangeIconW := GetProcAddress(ShellHandle, PChar(62))
+    else
+      SHChangeIcon := GetProcAddress(ShellHandle, PChar(62));
     SHFormatDrive := GetProcAddress(ShellHandle, PChar('SHFormatDrive'));
     FreePIDL := GetProcAddress(ShellHandle, PChar(155));
     SHShutDownDialog := GetProcAddress(ShellHandle, PChar(60));
@@ -511,10 +537,10 @@ const
   SHFMT_OPT_FULL = $0001;
   SHFMT_OPT_SYSONLY = $0002;
   // Special return values. PLEASE NOTE that these are DWORD values.
-  SHFMT_ERROR = $FFFFFFFF; // Error on last format
+  SHFMT_ERROR = $FFFFFFFF;              // Error on last format
   // drive may be formatable
-  SHFMT_CANCEL = $FFFFFFFE; // Last format wascanceled
-  SHFMT_NOFORMAT = $FFFFFFFD; // Drive is not formatable
+  SHFMT_CANCEL = $FFFFFFFE;             // Last format wascanceled
+  SHFMT_NOFORMAT = $FFFFFFFD;           // Drive is not formatable
 
 type
   LPFNORGFAV = function(Wnd: hWnd; Str: lptStr): integer; stdcall;
@@ -529,8 +555,7 @@ begin
     iNumberOfIcons := ExtractIcon(hInstance, PChar(FileName), Cardinal(-1));
     if ((Index > 0) and
       (Index < iNumberOfIcons) and
-      (iNumberOfIcons > 0))
-      then
+      (iNumberOfIcons > 0)) then
       Result := ExtractIcon(hInstance, PChar(FileName), Index);
   end;
 end;
@@ -552,7 +577,8 @@ begin
       Exit;
     end;
     Path := GetSpecialFolderPath('Favorites', true) + #0#0;
-    lpfnDoOrganizeFavDlg := LPFNORGFAV(GetProcAddress(SHModule, 'DoOrganizeFavDlg'));
+    lpfnDoOrganizeFavDlg := LPFNORGFAV(GetProcAddress(SHModule,
+      'DoOrganizeFavDlg'));
     if not Assigned(lpfnDoOrganizeFavDlg) then
       raise EWinDialogError.Create(SNotSupported);
     lpfnDoOrganizeFavDlg(Application.Handle, PChar(Path));
@@ -613,7 +639,8 @@ var
 begin
   Result := False;
 
-  if Failed(SHGetSpecialFolderLocation(Application.Handle, CSIDL_NETWORK, ItemIDList)) then
+  if Failed(SHGetSpecialFolderLocation(Application.Handle, CSIDL_NETWORK,
+    ItemIDList)) then
     Exit;
 
   FillChar(BrowseInfo, SizeOf(BrowseInfo), 0);
@@ -752,7 +779,9 @@ begin
   SHAddToRecentDocs(SHARD_PATH, nil);
 end;
 
-function ExecuteShellMessageBox(MethodPtr: Pointer; Instance: THandle; Owner: HWND; Text: Pointer; Caption: Pointer; Style: UINT; Parameters: array of Pointer): Integer;
+function ExecuteShellMessageBox(MethodPtr: Pointer; Instance: THandle; Owner:
+  HWND; Text: Pointer; Caption: Pointer; Style: UINT; Parameters: array of
+  Pointer): Integer;
 
 type
   PPointer = ^Pointer;
@@ -766,7 +795,8 @@ begin
   try
     for BufferIndex := 0 to High(Parameters) do
     begin
-      PPointer(@ParamBuffer[BufferIndex * SizeOf(Pointer)])^ := Parameters[High(Parameters) - BufferIndex];
+      PPointer(@ParamBuffer[BufferIndex * SizeOf(Pointer)])^ :=
+      Parameters[High(Parameters) - BufferIndex];
     end;
     asm
       mov ECX, ParamCount
@@ -792,7 +822,8 @@ begin
   end;
 end;
 
-function ShellMessageBox(Instance: THandle; Owner: HWND; Text: PChar; Caption: PChar;
+function ShellMessageBox(Instance: THandle; Owner: HWND; Text: PChar; Caption:
+  PChar;
   Style: UINT; Parameters: array of Pointer):
   Integer; cdecl;
 var
@@ -803,7 +834,8 @@ begin
   MethodPtr := GetProcAddress(ShellDLL, PChar(183));
   if (MethodPtr <> nil) then
   begin
-    Result := ExecuteShellMessageBox(MethodPtr, Instance, Owner, Text, Caption, Style, Parameters);
+    Result := ExecuteShellMessageBox(MethodPtr, Instance, Owner, Text, Caption,
+      Style, Parameters);
   end
   else
   begin
@@ -825,7 +857,8 @@ begin
   if (Win32Platform = VER_PLATFORM_WIN32_NT) then
   begin
     if (CaptionBuffer <> nil) then
-      StringToWideChar(FCaption, PWideChar(CaptionBuffer), (Length(FCaption) + 1));
+      StringToWideChar(FCaption, PWideChar(CaptionBuffer), (Length(FCaption) +
+        1));
   end
   else
   begin
@@ -833,7 +866,8 @@ begin
       StrPCopy(PChar(CaptionBuffer), FCaption);
   end;
   if Assigned(SHOutOfMemoryMessageBox) then
-    Result := Boolean(SHOutOfMemoryMessageBox(Application.Handle, CaptionBuffer, MB_OK or MB_ICONHAND))
+    Result := Boolean(SHOutOfMemoryMessageBox(Application.Handle, CaptionBuffer,
+      MB_OK or MB_ICONHAND))
   else
     raise EWinDialogError.Create(sNotSupported);
 end;
@@ -920,9 +954,11 @@ begin
   if (Win32Platform = VER_PLATFORM_WIN32_NT) then
   begin
     if (CaptionBuffer <> nil) then
-      StringToWideChar(FCaption, PWideChar(CaptionBuffer), (Length(FCaption) + 1));
+      StringToWideChar(FCaption, PWideChar(CaptionBuffer), (Length(FCaption) +
+        1));
     if (DescriptionBuffer <> nil) then
-      StringToWideChar(FDescription, PWideChar(DescriptionBuffer), (Length(FDescription) + 1));
+      StringToWideChar(FDescription, PWideChar(DescriptionBuffer),
+        (Length(FDescription) + 1));
   end
   else
   begin
@@ -933,7 +969,8 @@ begin
   end;
 
   if Assigned(SHRunDialog) then
-    SHRunDialog(Application.Handle, FIcon.Handle, nil, CaptionBuffer, DescriptionBuffer, 0)
+    SHRunDialog(Application.Handle, FIcon.Handle, nil, CaptionBuffer,
+      DescriptionBuffer, 0)
   else
     raise EWinDialogError.Create(sNotSupported);
 end;
@@ -954,7 +991,8 @@ begin
   try
     if (SysUtils.Win32Platform = VER_PLATFORM_WIN32_NT) then
     begin
-      StringToWideChar(ObjectName, PWideChar(ObjectNameBuffer), (Length(ObjectName) + 1));
+      StringToWideChar(ObjectName, PWideChar(ObjectNameBuffer),
+        (Length(ObjectName) + 1));
     end
     else
     begin
@@ -965,13 +1003,16 @@ begin
     try
       if (SysUtils.Win32Platform = VER_PLATFORM_WIN32_NT) then
       begin
-        StringToWideChar(InitialTab, PWideChar(TabNameBuffer), (Length(InitialTab) + 1));
+        StringToWideChar(InitialTab, PWideChar(TabNameBuffer),
+          (Length(InitialTab) + 1));
       end
       else
       begin
         StrPCopy(PChar(TabNameBuffer), InitialTab);
       end;
-      Result := SHObjectProperties(Application.Handle, ShellObjectTypeEnumToConst(ObjectType), ObjectNameBuffer, TabNameBuffer);
+      Result := SHObjectProperties(Application.Handle,
+        ShellObjectTypeEnumToConst(ObjectType), ObjectNameBuffer,
+        TabNameBuffer);
     finally
       FreeMem(TabNameBuffer);
     end;
@@ -1045,7 +1086,7 @@ begin
   { create a path location and filename for link file }
   LnkName := GetSpecialFolderPath(Dest, True) + '\' +
     ChangeFileExt(AppName, 'lnk');
-  PF.Save(PWideChar(LnkName), True); // save link file
+  PF.Save(PWideChar(LnkName), True);    // save link file
   Result := LnkName;
 end;
 
@@ -1084,7 +1125,8 @@ begin
   end;
 end;
 
-procedure SetShellLinkInfo(const LinkFile: WideString; const SLI: TShellLinkInfo);
+procedure SetShellLinkInfo(const LinkFile: WideString; const SLI:
+  TShellLinkInfo);
 { Sets information for an existing shell link }
 var
   SL: IShellLink;
@@ -1110,7 +1152,7 @@ begin
     OleCheck(SetShowCmd(ShowCmd));
     OleCheck(SetHotKey(HotKey));
   end;
-  PF.Save(PWideChar(LinkFile), True); // save file
+  PF.Save(PWideChar(LinkFile), True);   // save file
 end;
 
 function RecycleFile(FileToRecycle: string): boolean;
@@ -1216,9 +1258,22 @@ end;
 { TJvChangeIconDialog }
 
 procedure TJvChangeIconDialog.Execute;
+var
+  buf: array[0..MAX_PATH] of char;
+  bufW: array[0..MAX_PATH] of WideChar;
 begin
-  if Assigned(SHChangeIcon) then
-    SHChangeIcon(Application.Handle, nil, 0, FIconIndex)
+  if Assigned(SHChangeIconW) then
+  begin
+    StringToWideChar(Filename, bufW, sizeof(bufW));
+    if SHChangeIconW(Application.Handle, bufW, sizeof(bufW), FIconIndex) = 1 then
+      Filename := bufW;
+  end
+  else if Assigned(SHChangeIcon) then
+  begin
+    StrPCopy(buf, Filename);
+    if SHChangeIcon(Application.Handle, buf, sizeof(buf), FIconIndex) = 1 then
+      Filename := buf;
+  end
   else
     raise EWinDialogError.Create(SNotSupported);
 end;
