@@ -61,8 +61,7 @@ type
   TRGB = array[0..32767] of TRGBTriple;
   PRGB = ^TRGB;
   TCurveArray = array[0..255] of byte;
-  TRotateNotify = procedure(sender: Tobject; percent: byte;
-    var break: boolean) of object;
+  TRotateNotify = procedure(Sender: TObject; Percent: byte; var Cancel: boolean) of object;
   TFilterEmpty = function: Byte;
   TFilterArray = array[1..9] of byte;
 
