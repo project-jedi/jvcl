@@ -34,8 +34,7 @@ uses
   Windows, Messages, SysUtils,
   Classes, Graphics, Controls, Forms, Buttons, IniFiles,
   Dialogs, StdCtrls, ExtCtrls, jpeg,
-  JvBaseDlg, JclSysInfo, JclWin32,
-  JVCLVer, JvComponent, JvLabel, JvHotLink;
+  JvBaseDlg, JclSysInfo, JclWin32, JVCLVer, JvComponent;
 
 type
   TJvJVCLAboutForm = class(TForm)
@@ -44,9 +43,9 @@ type
     pnlImage: TPanel;
     imgStarfield: TImage;
     btnOK: TButton;
-    JvHotLink1: TJvHotLink;
-    JvHotLink4: TJvHotLink;
-    lblNews: TJvHotLink;
+    JvHotLink1: TLabel;
+    JvHotLink4: TLabel;
+    lblNews: TLabel;
     Label1: TLabel;
     Label2: TLabel;
     lblCopyRight: TLabel;
@@ -57,9 +56,9 @@ type
     lblVisitJedi: TLabel;
     lblMailingList: TLabel;
     lblNewsgroup: TLabel;
-    lblJvHotLink2: TJvHotLink;
+    lblJvHotLink2: TLabel;
     lblBugs: TLabel;
-    lblBugsURL: TJvHotLink;
+    lblBugsURL: TLabel;
     Bevel3: TBevel;
     lblWindowsVersion: TLabel;
     Label4: TLabel;
@@ -69,9 +68,8 @@ type
     procedure Panel1MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure FormDestroy(Sender: TObject);
+    procedure JvHotLink1Click(Sender: TObject);
   private
-    FHelpFile: string;
-    FHelpDirectory: string;
   public
     procedure LoadOptions;
     procedure SaveOptions;
@@ -183,6 +181,11 @@ begin
   finally
     Free;
   end;
+end;
+
+procedure TJvJVCLAboutForm.JvHotLink1Click(Sender: TObject);
+begin
+  OpenObject((Sender as TLabel).Caption);
 end;
 
 end.
