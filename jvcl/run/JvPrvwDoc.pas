@@ -108,7 +108,7 @@ type
     FPageWidth: Cardinal;
     FLogPixelsX: Cardinal;
     FOnChange: TNotifyEvent;
-    FScreenDC, FReferenceHandle: HDC;
+    FScreenDC, FReferenceHandle: LongWord;
     FPhysicalHeight: Cardinal;
     FPhysicalWidth: Cardinal;
     procedure SetLogPixelsY(const Value: Cardinal);
@@ -118,13 +118,13 @@ type
     procedure SetPageHeight(const Value: Cardinal);
     procedure SetPageWidth(const Value: Cardinal);
     procedure DefaultDeviceInfo;
-    procedure SetReferenceHandle(const Value: HDC);
+    procedure SetReferenceHandle(const Value: LongWord);
     procedure SetPhysicalHeight(const Value: Cardinal);
     procedure SetPhysicalWidth(const Value: Cardinal);
     procedure SetOffsetBottom(const Value: Cardinal);
     procedure SetOffsetRight(const Value: Cardinal);
   protected
-    function GetScreenDC: HDC;
+    function GetScreenDC: LongWord;
     procedure Change;
   public
     constructor Create;
@@ -140,7 +140,7 @@ type
 
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
-    property ReferenceHandle: HDC read FReferenceHandle write SetReferenceHandle;
+    property ReferenceHandle: LongWord read FReferenceHandle write SetReferenceHandle;
     property LogPixelsX: Cardinal read FLogPixelsX write SetLogPixesX;
     property LogPixelsY: Cardinal read FLogPixelsY write SetLogPixelsY;
     property PhysicalWidth: Cardinal read FPhysicalWidth write SetPhysicalWidth;
@@ -701,7 +701,7 @@ begin
   inherited;
 end;
 
-function TJvDeviceInfo.GetScreenDC: HDC;
+function TJvDeviceInfo.GetScreenDC: LongWord;
 begin
   if FScreenDC <> 0 then
     ReleaseDC(0, FScreenDC);
@@ -819,7 +819,7 @@ begin
   end;
 end;
 
-procedure TJvDeviceInfo.SetReferenceHandle(const Value: HDC);
+procedure TJvDeviceInfo.SetReferenceHandle(const Value: LongWord);
 begin
   FReferenceHandle := Value;
   if FReferenceHandle = 0 then
