@@ -357,9 +357,20 @@ end;
 
 
 function TJvCustomAppIniStorage.ValueExists(const Section, Key: string): Boolean;
+var ASection:string;
 begin
   if IniFile <> nil then
-    Result := IniFile.ValueExists(Section, Key)
+  begin
+    // Changed by Jens Fudickar to support DefaultSections; Similar to ReadValue
+    if (Section = '') or (Section[1] = '.') then
+      ASection := DefaultSection + Section
+    else
+      ASection := Section;
+    if (ASection = '') or (ASection[1] = '.') then
+      raise EJVCLAppStorageError.Create(RsEReadValueFailed);
+    // End of Change
+    Result := IniFile.ValueExists(ASection, Key);
+  end
   else
     Result := False;
 end;
@@ -425,18 +436,27 @@ begin
 end;
 
 procedure TJvCustomAppIniStorage.RemoveValue(const Section, Key: string);
+var ASection:string;
 begin
   if IniFile <> nil then
   begin
     if AutoReload and not IsUpdating then Reload;
-    if IniFile.ValueExists(Section, Key) then
+    // Changed by Jens Fudickar to support DefaultSections; Similar to ReadValue
+    if (Section = '') or (Section[1] = '.') then
+      ASection := DefaultSection + Section
+    else
+      ASection := Section;
+    if (ASection = '') or (ASection[1] = '.') then
+      raise EJVCLAppStorageError.Create(RsEReadValueFailed);
+    // End of Change
+    if IniFile.ValueExists(ASection, Key) then
     begin
-      IniFile.DeleteKey(Section, Key);
+      IniFile.DeleteKey(ASection, Key);
       if AutoFlush and not IsUpdating then Flush;
     end
-    else if IniFile.SectionExists(Section + '\' + Key) then
+    else if IniFile.SectionExists(ASection + '\' + Key) then
     begin
-      IniFile.EraseSection(Section + '\' + Key);
+      IniFile.EraseSection(ASection + '\' + Key);
       if AutoFlush and not IsUpdating then Flush;
     end;
   end;
