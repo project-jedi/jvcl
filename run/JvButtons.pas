@@ -239,7 +239,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DefaultDrawing(const IsDown, IsDefault: Boolean; const State: TButtonState);
-    property Canvas {$IFDEF VCL}: TCanvas read GetCanvas {$ENDIF};
+    {$IFDEF VCL}
+    property Canvas: TCanvas read GetCanvas;
+    {$ENDIF}
   published
     property Color;
     property ParentColor;
