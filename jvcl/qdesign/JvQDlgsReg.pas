@@ -53,12 +53,7 @@ uses
   JvQImageDlg, JvQDualList,
   JvQProgressDialog, JvQBaseDlgEditor;
 
-{$IFDEF MSWINDOWS}
-{$R ..\resources\JvDlgsReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
 {$R ../Resources/JvDlgsReg.dcr}
-{$ENDIF LINUX}
 
 procedure Register;
 begin
