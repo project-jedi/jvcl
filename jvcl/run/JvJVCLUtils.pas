@@ -2503,30 +2503,30 @@ begin
           RGBDelta[1] := GetGValue(StartColor) - StartRGB[1];
           RGBDelta[2] := GetBValue(StartColor) - StartRGB[2];
         end;
-    end;
-    { Calculate the color band's coordinates }
-    ColorBand := ARect;
-    if Direction in [fdTopToBottom, fdBottomToTop] then
-    begin
-      Colors := Max(2, Min(Colors, RectHeight(ARect)));
-      Delta := RectHeight(ARect) div Colors;
-    end
-    else
-    begin
-      Colors := Max(2, Min(Colors, RectWidth(ARect)));
-      Delta := RectWidth(ARect) div Colors;
-    end;
-    with Canvas.Pen do
-    begin { Set the pen style and mode }
-      Style := psSolid;
-      Mode := pmCopy;
-    end;
-    { Perform the fill }
-    if Delta > 0 then
-    begin
-      for i := 0 to Colors do
+      end;
+      { Calculate the color band's coordinates }
+      ColorBand := ARect;
+      if Direction in [fdTopToBottom, fdBottomToTop] then
       begin
-        case Direction of
+        Colors := Max(2, Min(Colors, RectHeight(ARect)));
+        Delta := RectHeight(ARect) div Colors;
+      end
+      else
+      begin
+        Colors := Max(2, Min(Colors, RectWidth(ARect)));
+        Delta := RectWidth(ARect) div Colors;
+      end;
+      with Canvas.Pen do
+      begin { Set the pen style and mode }
+        Style := psSolid;
+        Mode := pmCopy;
+      end;
+      { Perform the fill }
+      if Delta > 0 then
+      begin
+        for i := 0 to Colors do
+        begin
+          case Direction of
           { Calculate the color band's top and bottom coordinates }
           fdTopToBottom, fdBottomToTop:
             begin
@@ -2539,23 +2539,23 @@ begin
               ColorBand.Left := ARect.Left + i * Delta;
               ColorBand.Right := ColorBand.Left + Delta;
             end;
-        end;
+          end;
         { Calculate the color band's color }
-        Brush := CreateSolidBrush(RGB(
-          StartRGB[0] + MulDiv(i, RGBDelta[0], Colors - 1),
-          StartRGB[1] + MulDiv(i, RGBDelta[1], Colors - 1),
-          StartRGB[2] + MulDiv(i, RGBDelta[2], Colors - 1)));
-        FillRect(Canvas.Handle, ColorBand, Brush);
-        DeleteObject(Brush);
+          Brush := CreateSolidBrush(RGB(
+            StartRGB[0] + MulDiv(i, RGBDelta[0], Colors - 1),
+            StartRGB[1] + MulDiv(i, RGBDelta[1], Colors - 1),
+            StartRGB[2] + MulDiv(i, RGBDelta[2], Colors - 1)));
+          FillRect(Canvas.Handle, ColorBand, Brush);
+          DeleteObject(Brush);
+        end;
       end;
-    end;
-    if Direction in [fdTopToBottom, fdBottomToTop] then
-      Delta := RectHeight(ARect) mod Colors
-    else
-      Delta := RectWidth(ARect) mod Colors;
-    if Delta > 0 then
-    begin
-      case Direction of
+      if Direction in [fdTopToBottom, fdBottomToTop] then
+        Delta := RectHeight(ARect) mod Colors
+      else
+        Delta := RectWidth(ARect) mod Colors;
+      if Delta > 0 then
+      begin
+        case Direction of
         { Calculate the color band's top and bottom coordinates }
         fdTopToBottom, fdBottomToTop:
           begin
@@ -2568,18 +2568,18 @@ begin
             ColorBand.Left := ARect.Right - Delta;
             ColorBand.Right := ColorBand.Left + Delta;
           end;
-      end;
-      case Direction of
+        end;
+        case Direction of
         fdTopToBottom, fdLeftToRight:
-          Brush := CreateSolidBrush(EndColor);
-      else {fdBottomToTop, fdRightToLeft }
-        Brush := CreateSolidBrush(StartColor);
+            Brush := CreateSolidBrush(EndColor);
+        else {fdBottomToTop, fdRightToLeft }
+          Brush := CreateSolidBrush(StartColor);
+        end;
+        FillRect(Canvas.Handle, ColorBand, Brush);
+        DeleteObject(Brush);
       end;
-      FillRect(Canvas.Handle, ColorBand, Brush);
-      DeleteObject(Brush);
-    end;
+    end;  //  if Not (IsRectEmpty(ARect) and ...
   {$IFDEF VisualCLX}
-  end;  //  if Not (IsRectEmpty(ARect) and ...
   finally
     Canvas.Stop;
   end;
