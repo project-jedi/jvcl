@@ -38,6 +38,11 @@ type
   // abstract base class for simple ciphers
   // which do not change the length of the data
   TJvCipher = class(TJvComponent)
+  private
+    FEncoded: string;
+    FKey: string;
+    function GetDecoded: string;
+    procedure SetDecoded(const Value: string);
   protected
     procedure Decode(const Key: string; Buf: PChar; Size: Cardinal); virtual; abstract;
     procedure Encode(const Key: string; Buf: PChar; Size: Cardinal); virtual; abstract;
@@ -48,6 +53,12 @@ type
     procedure EncodeStream(const Key: string; Stream: TStream);
     procedure DecodeFile(const Key: string; const FileName: string);
     procedure EncodeFile(const Key: string; const FileName: string);
+    function DecodeString(const Key: string; const Value: string): string;
+    function EncodeString(const Key: string; const Value: string): string;
+  published
+    property Key: string read FKey write FKey;
+    property Encoded: string read FEncoded write FEncoded;
+    property Decoded: string read GetDecoded write SetDecoded stored False;
   end;
 
   TJvCaesarCipher = class(TJvCipher)
@@ -172,6 +183,44 @@ begin
   end;
 end;
 
+function TJvCipher.GetDecoded: string;
+begin
+  Result := DecodeString(FKey, FEncoded);
+end;
+
+procedure TJvCipher.SetDecoded(const Value: string);
+begin
+  FEncoded := EncodeString(FKey, Value);
+end;
+
+function TJvCipher.DecodeString(const Key, Value: string): string;
+var
+  Tmp : PChar;
+begin
+  GetMem(Tmp, Length(Value)+1);
+  try
+    StrPCopy(Tmp, Value);
+    Decode(Key, Tmp, Length(Value));
+    Result := Tmp;
+  finally
+    FreeMem(Tmp);
+  end;
+end;
+
+function TJvCipher.EncodeString(const Key, Value: string): string;
+var
+  Tmp : PChar;
+begin
+  GetMem(Tmp, Length(Value)+1);
+  try
+    StrPCopy(Tmp, Value);
+    Encode(Key, Tmp, Length(Value));
+    Result := Tmp;
+  finally
+    FreeMem(Tmp);
+  end;
+end;
+
 //=== TJvCaesarCipher ========================================================
 
 procedure TJvCaesarCipher.Decode(const Key: string; Buf: PChar; Size: Cardinal);
@@ -179,11 +228,14 @@ var
   N: Integer;
   I: Cardinal;
 begin
-  N := StrToIntDef(Key, 13);
-  if (N <= 0) or (N >= 256) then
-    N := 13;
-  for I := 0 to Size - 1 do
-    Buf[I] := Char(Cardinal(Buf[I]) - Cardinal(N));
+  if Size > 0 then
+  begin
+    N := StrToIntDef(Key, 13);
+    if (N <= 0) or (N >= 256) then
+      N := 13;
+    for I := 0 to Size - 1 do
+      Buf[I] := Char(Cardinal(Buf[I]) - Cardinal(N));
+  end;
 end;
 
 procedure TJvCaesarCipher.Encode(const Key: string; Buf: PChar; Size: Cardinal);
@@ -191,11 +243,14 @@ var
   N: Integer;
   I: Cardinal;
 begin
-  N := StrToIntDef(Key, 13);
-  if (N <= 0) or (N >= 256) then
-    N := 13;
-  for I := 0 to Size - 1 do
-    Buf[I] := Char(Cardinal(Buf[I]) + Cardinal(N));
+  if Size > 0 then
+  begin
+    N := StrToIntDef(Key, 13);
+    if (N <= 0) or (N >= 256) then
+      N := 13;
+    for I := 0 to Size - 1 do
+      Buf[I] := Char(Cardinal(Buf[I]) + Cardinal(N));
+  end;
 end;
 
 //=== TJvXORCipher ===========================================================
@@ -233,7 +288,7 @@ var
   I: Cardinal;
   J: Cardinal;
 begin
-  if Key <> '' then
+  if (Key <> '') and (Size > 0) then
   begin
     J := 1;
     for I := 0 to Size - 1 do
@@ -249,7 +304,7 @@ var
   I: Cardinal;
   J: Cardinal;
 begin
-  if Key <> '' then
+  if (Key <> '') and (Size > 0) then
   begin
     J := 1;
     for I := 0 to Size - 1 do
