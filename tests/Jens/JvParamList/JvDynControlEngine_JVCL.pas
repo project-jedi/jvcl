@@ -28,464 +28,471 @@ unit JvDynControlEngine_JVCL;
 
 interface
 
-uses Classes, Controls,
-  StdCtrls, ExtCtrls, ComCtrls, Mask, Forms, Graphics, Buttons,
+uses
+  Classes, Controls, StdCtrls, ExtCtrls, ComCtrls, Mask, Forms, Graphics, Buttons,
   JvMaskEdit, JvDateTimePicker, JvBitBtn, JvCheckBox,
   JvLabel, JvListBox, JvMemo, JvPanel, JvRadioGroup, JvToolEdit,
   JvScrollBox, JvStaticText, JvComboBox,
   JvDynControlEngine, JvDynControlEngine_Interface;
 
-
 type
-  TJvDynControlJVCLMaskEdit = class (TJvMaskEdit, IUnknown, IJvDynControl, IJvDynControlData)
+  TJvDynControlJVCLMaskEdit = class(TJvMaskEdit, IUnknown, IJvDynControl,
+    IJvDynControlData)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value : boolean);
-    procedure ControlSetCaption(Value : string);
-    procedure ControlSetTabOrder(Value : integer);
+    procedure ControlSetReadOnly(Value: Boolean);
+    procedure ControlSetCaption(Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
 
-    procedure ControlSetOnEnter(Value : TNotifyEvent);
-    procedure ControlSetOnExit(Value : TNotifyEvent);
-    procedure ControlSetOnChange(Value : TNotifyEvent);
-    procedure ControlSetOnClick(Value : TNotifyEvent);
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    function ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
+    function ControlValidateData(var Value: Variant; var ErrorMessage: string): Boolean;
 
-    procedure ControlSetValue(Value : variant);
-    function ControlGetValue : variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
   end;
 
-  TJvDynControlJVCLFileNameEdit = class (TJvFileNameEdit, IUnknown, IJvDynControl, IJvDynControlData)
+  TJvDynControlJVCLFileNameEdit = class(TJvFileNameEdit, IUnknown,
+    IJvDynControl, IJvDynControlData)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value : boolean);
-    procedure ControlSetCaption(Value : string);
-    procedure ControlSetTabOrder(Value : integer);
+    procedure ControlSetReadOnly(Value: Boolean);
+    procedure ControlSetCaption(Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
 
-    procedure ControlSetOnEnter(Value : TNotifyEvent);
-    procedure ControlSetOnExit(Value : TNotifyEvent);
-    procedure ControlSetOnChange(Value : TNotifyEvent);
-    procedure ControlSetOnClick(Value : TNotifyEvent);
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    function ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
+    function ControlValidateData(var Value: Variant; var ErrorMessage: string): Boolean;
 
-    procedure ControlSetValue(Value : variant);
-    function ControlGetValue : variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
   end;
 
-  TJvDynControlJVCLDirectoryEdit = class (TJvDirectoryEdit, IUnknown, IJvDynControl, IJvDynControlData)
+  TJvDynControlJVCLDirectoryEdit = class(TJvDirectoryEdit, IUnknown,
+    IJvDynControl, IJvDynControlData)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value : boolean);
-    procedure ControlSetCaption(Value : string);
-    procedure ControlSetTabOrder(Value : integer);
+    procedure ControlSetReadOnly(Value: Boolean);
+    procedure ControlSetCaption(Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
 
-    procedure ControlSetOnEnter(Value : TNotifyEvent);
-    procedure ControlSetOnExit(Value : TNotifyEvent);
-    procedure ControlSetOnChange(Value : TNotifyEvent);
-    procedure ControlSetOnClick(Value : TNotifyEvent);
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    function ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
+    function ControlValidateData(var Value: Variant; var ErrorMessage: string): Boolean;
 
-    procedure ControlSetValue(Value : variant);
-    function ControlGetValue : variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
   end;
 
-  TJvDynControlJVCLDateTimeEdit = class (TJvDateTimePicker, IUnknown, IJvDynControl, IJvDynControlData)
+  TJvDynControlJVCLDateTimeEdit = class(TJvDateTimePicker, IUnknown,
+    IJvDynControl, IJvDynControlData)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value : boolean);
-    procedure ControlSetCaption(Value : string);
-    procedure ControlSetTabOrder(Value : integer);
+    procedure ControlSetReadOnly(Value: Boolean);
+    procedure ControlSetCaption(Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
 
-    procedure ControlSetOnEnter(Value : TNotifyEvent);
-    procedure ControlSetOnExit(Value : TNotifyEvent);
-    procedure ControlSetOnChange(Value : TNotifyEvent);
-    procedure ControlSetOnClick(Value : TNotifyEvent);
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    function ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
+    function ControlValidateData(var Value: Variant; var ErrorMessage: string): Boolean;
 
-    procedure ControlSetValue(Value : variant);
-    function ControlGetValue : variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
   end;
 
-  TJvDynControlJVCLDateEdit = class (TJvDynControlJVCLDateTimeEdit)
-    procedure ControlSetDefaultProperties;
-  end;
-
-  TJvDynControlJVCLTimeEdit = class (TJvDynControlJVCLDateTimeEdit)
-    procedure ControlSetDefaultProperties;
-  end;
-
-  TJvDynControlJVCLCheckbox = class (TJvCheckbox, IUnknown, IJvDynControl, IJvDynControlData)
+  TJvDynControlJVCLDateEdit = class(TJvDynControlJVCLDateTimeEdit)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value : boolean);
-    procedure ControlSetCaption(Value : string);
-    procedure ControlSetTabOrder(Value : integer);
-
-    procedure ControlSetOnEnter(Value : TNotifyEvent);
-    procedure ControlSetOnExit(Value : TNotifyEvent);
-    procedure ControlSetOnChange(Value : TNotifyEvent);
-    procedure ControlSetOnClick(Value : TNotifyEvent);
-
-    function ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
-
-    procedure ControlSetValue(Value : variant);
-    function ControlGetValue : variant;
   end;
 
-  TJvDynControlJVCLMemo = class (TJvMemo, IUnknown, IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlMemo)
+  TJvDynControlJVCLTimeEdit = class(TJvDynControlJVCLDateTimeEdit)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value : boolean);
-    procedure ControlSetCaption(Value : string);
-    procedure ControlSetTabOrder(Value : integer);
-
-    procedure ControlSetOnEnter(Value : TNotifyEvent);
-    procedure ControlSetOnExit(Value : TNotifyEvent);
-    procedure ControlSetOnChange(Value : TNotifyEvent);
-    procedure ControlSetOnClick(Value : TNotifyEvent);
-
-    function ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
-
-    procedure ControlSetValue(Value : variant);
-    function ControlGetValue : variant;
-
-    procedure ControlSetSorted(Value : boolean);
-    procedure ControlSetItems(Value : TStrings);
-    function ControlGetItems : TStrings;
-
-    procedure ControlSetWantTabs(Value : boolean);
-    procedure ControlSetWantReturns(Value : boolean);
-    procedure ControlSetWordWrap(Value : boolean);
-    procedure ControlSetScrollbars(Value : TScrollStyle);
   end;
 
-  TJvDynControlJVCLRadioGroup = class (TJvRadioGroup, IUnknown, IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlRadioGroup)
+  TJvDynControlJVCLCheckBox = class(TJvCheckbox, IUnknown,
+    IJvDynControl, IJvDynControlData)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value : boolean);
-    procedure ControlSetCaption(Value : string);
-    procedure ControlSetTabOrder(Value : integer);
+    procedure ControlSetReadOnly(Value: Boolean);
+    procedure ControlSetCaption(Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
 
-    procedure ControlSetOnEnter(Value : TNotifyEvent);
-    procedure ControlSetOnExit(Value : TNotifyEvent);
-    procedure ControlSetOnChange(Value : TNotifyEvent);
-    procedure ControlSetOnClick(Value : TNotifyEvent);
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    function ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
+    function ControlValidateData(var Value: Variant; var ErrorMessage: string): Boolean;
 
-    procedure ControlSetValue(Value : variant);
-    function ControlGetValue : variant;
-
-    procedure ControlSetSorted(Value : boolean);
-    procedure ControlSetItems(Value : TStrings);
-    function ControlGetItems : TStrings;
-
-    procedure ControlSetColumns(Value : integer);
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
   end;
 
-  TJvDynControlJVCLListBox = class (TJvListBox, IUnknown, IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlDblClick)
+  TJvDynControlJVCLMemo = class(TJvMemo, IUnknown, IJvDynControl,
+    IJvDynControlData, IJvDynControlItems, IJvDynControlMemo)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value : boolean);
-    procedure ControlSetCaption(Value : string);
-    procedure ControlSetTabOrder(Value : integer);
+    procedure ControlSetReadOnly(Value: Boolean);
+    procedure ControlSetCaption(Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
 
-    procedure ControlSetOnEnter(Value : TNotifyEvent);
-    procedure ControlSetOnExit(Value : TNotifyEvent);
-    procedure ControlSetOnChange(Value : TNotifyEvent);
-    procedure ControlSetOnClick(Value : TNotifyEvent);
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    function ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
+    function ControlValidateData(var Value: Variant; var ErrorMessage: string): Boolean;
 
-    procedure ControlSetValue(Value : variant);
-    function ControlGetValue : variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
-    procedure ControlSetSorted(Value : boolean);
-    procedure ControlSetItems(Value : TStrings);
-    function ControlGetItems : TStrings;
+    procedure ControlSetSorted(Value: Boolean);
+    procedure ControlSetItems(Value: TStrings);
+    function ControlGetItems: TStrings;
 
-    procedure ControlSetOnDblClick(Value : TNotifyEvent);
+    procedure ControlSetWantTabs(Value: Boolean);
+    procedure ControlSetWantReturns(Value: Boolean);
+    procedure ControlSetWordWrap(Value: Boolean);
+    procedure ControlSetScrollBars(Value: TScrollStyle);
   end;
 
-  TJvDynControlJVCLComboBox = class (TJvComboBox, IUnknown, IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlComboBox)
+  TJvDynControlJVCLRadioGroup = class(TJvRadioGroup, IUnknown, IJvDynControl,
+    IJvDynControlData, IJvDynControlItems, IJvDynControlRadioGroup)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value : boolean);
-    procedure ControlSetCaption(Value : string);
-    procedure ControlSetTabOrder(Value : integer);
+    procedure ControlSetReadOnly(Value: Boolean);
+    procedure ControlSetCaption(Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
 
-    procedure ControlSetOnEnter(Value : TNotifyEvent);
-    procedure ControlSetOnExit(Value : TNotifyEvent);
-    procedure ControlSetOnChange(Value : TNotifyEvent);
-    procedure ControlSetOnClick(Value : TNotifyEvent);
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    function ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
+    function ControlValidateData(var Value: Variant; var ErrorMessage: string): Boolean;
 
-    procedure ControlSetValue(Value : variant);
-    function ControlGetValue : variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
-    procedure ControlSetSorted(Value : boolean);
-    procedure ControlSetItems(Value : TStrings);
-    function ControlGetItems : TStrings;
+    procedure ControlSetSorted(Value: Boolean);
+    procedure ControlSetItems(Value: TStrings);
+    function ControlGetItems: TStrings;
 
-    procedure ControlSetNewEntriesAllowed(Value : boolean);
+    procedure ControlSetColumns(Value: Integer);
   end;
 
-  TJvDynControlJVCLPanel = class (TJvPanel, IUnknown, IJvDynControl, IJvDynControlPanel)
+  TJvDynControlJVCLListBox = class(TJvListBox, IUnknown, IJvDynControl,
+    IJvDynControlData, IJvDynControlItems, IJvDynControlDblClick)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(Value : string);
-    procedure ControlSetTabOrder(Value : integer);
+    procedure ControlSetReadOnly(Value: Boolean);
+    procedure ControlSetCaption(Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
 
-    procedure ControlSetOnEnter(Value : TNotifyEvent);
-    procedure ControlSetOnExit(Value : TNotifyEvent);
-    procedure ControlSetOnClick(Value : TNotifyEvent);
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetBorder(aBevelInner : TPanelBevel; aBevelOuter : TPanelBevel; aBevelWidth : integer; aBorderStyle : TBorderStyle; aBorderWidth : integer);
+    function ControlValidateData(var Value: Variant; var ErrorMessage: string): Boolean;
+
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
+
+    procedure ControlSetSorted(Value: Boolean);
+    procedure ControlSetItems(Value: TStrings);
+    function ControlGetItems: TStrings;
+
+    procedure ControlSetOnDblClick(Value: TNotifyEvent);
   end;
 
-  TJvDynControlJVCLScrollbox = class (TJvScrollbox, IUnknown, IJvDynControl)
+  TJvDynControlJVCLComboBox = class(TJvComboBox, IUnknown, IJvDynControl,
+    IJvDynControlData, IJvDynControlItems, IJvDynControlComboBox)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(Value : string);
-    procedure ControlSetTabOrder(Value : integer);
+    procedure ControlSetReadOnly(Value: Boolean);
+    procedure ControlSetCaption(Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
 
-    procedure ControlSetOnEnter(Value : TNotifyEvent);
-    procedure ControlSetOnExit(Value : TNotifyEvent);
-    procedure ControlSetOnClick(Value : TNotifyEvent);
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
 
+    function ControlValidateData(var Value: Variant; var ErrorMessage: string): Boolean;
+
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
+
+    procedure ControlSetSorted(Value: Boolean);
+    procedure ControlSetItems(Value: TStrings);
+    function ControlGetItems: TStrings;
+
+    procedure ControlSetNewEntriesAllowed(Value: Boolean);
   end;
 
-  TJvDynControlJVCLLabel = class (TJvLabel, IUnknown, IJvDynControl, IJvDynControlLabel)
+  TJvDynControlJVCLPanel = class(TJvPanel, IUnknown, IJvDynControl,
+    IJvDynControlPanel)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(Value : string);
-    procedure ControlSetTabOrder(Value : integer);
+    procedure ControlSetCaption(Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
 
-    procedure ControlSetOnEnter(Value : TNotifyEvent);
-    procedure ControlSetOnExit(Value : TNotifyEvent);
-    procedure ControlSetOnClick(Value : TNotifyEvent);
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetFocusControl(Value : tWinControl);
+    procedure ControlSetBorder(ABevelInner: TPanelBevel; ABevelOuter: TPanelBevel;
+      ABevelWidth: Integer; ABorderStyle: TBorderStyle; ABorderWidth: Integer);
   end;
 
-  TJvDynControlJVCLStaticText = class (TJvStaticText, IUnknown, IJvDynControl)
+  TJvDynControlJVCLScrollBox = class(TJvScrollbox, IUnknown, IJvDynControl)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(Value : string);
-    procedure ControlSetTabOrder(Value : integer);
+    procedure ControlSetCaption(Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
 
-    procedure ControlSetOnEnter(Value : TNotifyEvent);
-    procedure ControlSetOnExit(Value : TNotifyEvent);
-    procedure ControlSetOnClick(Value : TNotifyEvent);
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+
   end;
 
-  TJvDynControlJVCLButton = class (TJVBitBtn, IUnknown, IJvDynControl, IJvDynControlButton)
+  TJvDynControlJVCLLabel = class(TJvLabel, IUnknown, IJvDynControl,
+    IJvDynControlLabel)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(Value : string);
-    procedure ControlSetTabOrder(Value : integer);
+    procedure ControlSetCaption(Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
 
-    procedure ControlSetOnEnter(Value : TNotifyEvent);
-    procedure ControlSetOnExit(Value : TNotifyEvent);
-    procedure ControlSetOnClick(Value : TNotifyEvent);
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetGlyph(Value : tBitmap);
-    procedure ControlSetNumGlyphs(Value : integer);
-    procedure ControlSetLayout(Value : TButtonLayout);
+    procedure ControlSetFocusControl(Value: TWinControl);
   end;
 
-function DynControlEngine_JVCL : tJvDynControlEngine;
+  TJvDynControlJVCLStaticText = class(TJvStaticText, IUnknown, IJvDynControl)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+  end;
+
+  TJvDynControlJVCLButton = class(TJVBitBtn, IUnknown, IJvDynControl,
+    IJvDynControlButton)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+
+    procedure ControlSetGlyph(Value: TBitmap);
+    procedure ControlSetNumGlyphs(Value: Integer);
+    procedure ControlSetLayout(Value: TButtonLayout);
+  end;
+
+function DynControlEngine_JVCL: TJvDynControlEngine;
 
 implementation
 
-uses SysUtils
-     {$IFDEF COMPILER6_UP}
-  , Variants
-{$ENDIF}
-  ;
+uses
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF COMPILER6_UP}
+  SysUtils;
 
 var
-  IntDynControlEngine_JVCL : tJvDynControlEngine;
+  IntDynControlEngine_JVCL: TJvDynControlEngine;
 
- //****************************************************************************
- // TJvDynControlJVCLMaskEdit                      
- //****************************************************************************
+//=== TJvDynControlJVCLMaskEdit ==============================================
 
 procedure TJvDynControlJVCLMaskEdit.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlJVCLMaskEdit.ControlSetReadOnly(Value : boolean);
+procedure TJvDynControlJVCLMaskEdit.ControlSetReadOnly(Value: Boolean);
 begin
   ReadOnly := Value;
 end;
 
-procedure TJvDynControlJVCLMaskEdit.ControlSetCaption(Value : string);
+procedure TJvDynControlJVCLMaskEdit.ControlSetCaption(Value: string);
 begin
 end;
 
-procedure TJvDynControlJVCLMaskEdit.ControlSetTabOrder(Value : integer);
+procedure TJvDynControlJVCLMaskEdit.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
 
-procedure TJvDynControlJVCLMaskEdit.ControlSetOnEnter(Value : TNotifyEvent);
+procedure TJvDynControlJVCLMaskEdit.ControlSetOnEnter(Value: TNotifyEvent);
 begin
   OnEnter := Value;
 end;
 
-procedure TJvDynControlJVCLMaskEdit.ControlSetOnExit(Value : TNotifyEvent);
+procedure TJvDynControlJVCLMaskEdit.ControlSetOnExit(Value: TNotifyEvent);
 begin
   OnExit := Value;
 end;
 
-procedure TJvDynControlJVCLMaskEdit.ControlSetOnChange(Value : TNotifyEvent);
+procedure TJvDynControlJVCLMaskEdit.ControlSetOnChange(Value: TNotifyEvent);
 begin
   OnChange := Value;
 end;
 
-procedure TJvDynControlJVCLMaskEdit.ControlSetOnClick(Value : TNotifyEvent);
+procedure TJvDynControlJVCLMaskEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 
 end;
 
-procedure TJvDynControlJVCLMaskEdit.ControlSetValue(Value : variant);
+procedure TJvDynControlJVCLMaskEdit.ControlSetValue(Value: Variant);
 begin
   Text := Value;
 end;
 
-function TJvDynControlJVCLMaskEdit.ControlGetValue : variant;
+function TJvDynControlJVCLMaskEdit.ControlGetValue: Variant;
 begin
   Result := Text;
 end;
 
-function TJvDynControlJVCLMaskEdit.ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
+function TJvDynControlJVCLMaskEdit.ControlValidateData(var Value: Variant;
+  var ErrorMessage: string): Boolean;
 begin
-  Result := true;
+  Result := True;
 end;
 
- //****************************************************************************
- // TJvDynControlJVCLFileNameEdit
- //****************************************************************************
+//=== TJvDynControlJVCLFileNameEdit ==========================================
 
 procedure TJvDynControlJVCLFileNameEdit.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlJVCLFileNameEdit.ControlSetReadOnly(Value : boolean);
+procedure TJvDynControlJVCLFileNameEdit.ControlSetReadOnly(Value: Boolean);
 begin
   ReadOnly := Value;
 end;
 
-procedure TJvDynControlJVCLFileNameEdit.ControlSetCaption(Value : string);
+procedure TJvDynControlJVCLFileNameEdit.ControlSetCaption(Value: string);
 begin
 end;
 
-procedure TJvDynControlJVCLFileNameEdit.ControlSetTabOrder(Value : integer);
+procedure TJvDynControlJVCLFileNameEdit.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
 
-procedure TJvDynControlJVCLFileNameEdit.ControlSetOnEnter(Value : TNotifyEvent);
+procedure TJvDynControlJVCLFileNameEdit.ControlSetOnEnter(Value: TNotifyEvent);
 begin
   OnEnter := Value;
 end;
 
-procedure TJvDynControlJVCLFileNameEdit.ControlSetOnExit(Value : TNotifyEvent);
+procedure TJvDynControlJVCLFileNameEdit.ControlSetOnExit(Value: TNotifyEvent);
 begin
   OnExit := Value;
 end;
 
-procedure TJvDynControlJVCLFileNameEdit.ControlSetOnChange(Value : TNotifyEvent);
+procedure TJvDynControlJVCLFileNameEdit.ControlSetOnChange(Value: TNotifyEvent);
 begin
   OnChange := Value;
 end;
 
-procedure TJvDynControlJVCLFileNameEdit.ControlSetOnClick(Value : TNotifyEvent);
+procedure TJvDynControlJVCLFileNameEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 
 end;
 
-procedure TJvDynControlJVCLFileNameEdit.ControlSetValue(Value : variant);
+procedure TJvDynControlJVCLFileNameEdit.ControlSetValue(Value: Variant);
 begin
   Text := Value;
 end;
 
-function TJvDynControlJVCLFileNameEdit.ControlGetValue : variant;
+function TJvDynControlJVCLFileNameEdit.ControlGetValue: Variant;
 begin
   Result := Text;
 end;
 
-function TJvDynControlJVCLFileNameEdit.ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
+function TJvDynControlJVCLFileNameEdit.ControlValidateData(var Value: Variant;
+  var ErrorMessage: string): Boolean;
 begin
-  Result := true;
+  Result := True;
 end;
 
- //****************************************************************************
- // TJvDynControlJVCLDirectoryEdit
- //****************************************************************************
+//=== TJvDynControlJVCLDirectoryEdit =========================================
 
 procedure TJvDynControlJVCLDirectoryEdit.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlJVCLDirectoryEdit.ControlSetReadOnly(Value : boolean);
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetReadOnly(Value: Boolean);
 begin
   ReadOnly := Value;
 end;
 
-procedure TJvDynControlJVCLDirectoryEdit.ControlSetCaption(Value : string);
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetCaption(Value: string);
 begin
 end;
 
-procedure TJvDynControlJVCLDirectoryEdit.ControlSetTabOrder(Value : integer);
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
 
-procedure TJvDynControlJVCLDirectoryEdit.ControlSetOnEnter(Value : TNotifyEvent);
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetOnEnter(Value: TNotifyEvent);
 begin
   OnEnter := Value;
 end;
 
-procedure TJvDynControlJVCLDirectoryEdit.ControlSetOnExit(Value : TNotifyEvent);
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetOnExit(Value: TNotifyEvent);
 begin
   OnExit := Value;
 end;
 
-procedure TJvDynControlJVCLDirectoryEdit.ControlSetOnChange(Value : TNotifyEvent);
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetOnChange(Value: TNotifyEvent);
 begin
   OnChange := Value;
 end;
 
-procedure TJvDynControlJVCLDirectoryEdit.ControlSetOnClick(Value : TNotifyEvent);
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
-
 end;
 
-procedure TJvDynControlJVCLDirectoryEdit.ControlSetValue(Value : variant);
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetValue(Value: Variant);
 begin
   Text := Value;
 end;
 
-function TJvDynControlJVCLDirectoryEdit.ControlGetValue : variant;
+function TJvDynControlJVCLDirectoryEdit.ControlGetValue: Variant;
 begin
   Result := Text;
 end;
 
-function TJvDynControlJVCLDirectoryEdit.ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
+function TJvDynControlJVCLDirectoryEdit.ControlValidateData(var Value: Variant;
+  var ErrorMessage: string): Boolean;
 begin
-  Result := true;
+  Result := True;
 end;
 
- //****************************************************************************
- // TJvDynControlJVCLDateTimeEdit                      
- //****************************************************************************
-
+//=== TJvDynControlJVCLDateTimeEdit ==========================================
 
 procedure TJvDynControlJVCLDateTimeEdit.ControlSetDefaultProperties;
 begin
@@ -494,54 +501,57 @@ begin
   Kind := dtkDate;
 end;
 
-procedure TJvDynControlJVCLDateTimeEdit.ControlSetReadOnly(Value : boolean);
+procedure TJvDynControlJVCLDateTimeEdit.ControlSetReadOnly(Value: Boolean);
 begin
 //  ReadOnly := Value;
 end;
 
-procedure TJvDynControlJVCLDateTimeEdit.ControlSetCaption(Value : string);
+procedure TJvDynControlJVCLDateTimeEdit.ControlSetCaption(Value: string);
 begin
 end;
 
-procedure TJvDynControlJVCLDateTimeEdit.ControlSetTabOrder(Value : integer);
+procedure TJvDynControlJVCLDateTimeEdit.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
 
-procedure TJvDynControlJVCLDateTimeEdit.ControlSetOnEnter(Value : TNotifyEvent);
+procedure TJvDynControlJVCLDateTimeEdit.ControlSetOnEnter(Value: TNotifyEvent);
 begin
   OnEnter := Value;
 end;
 
-procedure TJvDynControlJVCLDateTimeEdit.ControlSetOnExit(Value : TNotifyEvent);
+procedure TJvDynControlJVCLDateTimeEdit.ControlSetOnExit(Value: TNotifyEvent);
 begin
   OnExit := Value;
 end;
 
-procedure TJvDynControlJVCLDateTimeEdit.ControlSetOnChange(Value : TNotifyEvent);
+procedure TJvDynControlJVCLDateTimeEdit.ControlSetOnChange(Value: TNotifyEvent);
 begin
   OnChange := Value;
 end;
 
-procedure TJvDynControlJVCLDateTimeEdit.ControlSetOnClick(Value : TNotifyEvent);
+procedure TJvDynControlJVCLDateTimeEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 
 end;
 
-procedure TJvDynControlJVCLDateTimeEdit.ControlSetValue(Value : variant);
+procedure TJvDynControlJVCLDateTimeEdit.ControlSetValue(Value: Variant);
 begin
   Text := Value;
 end;
 
-function TJvDynControlJVCLDateTimeEdit.ControlGetValue : variant;
+function TJvDynControlJVCLDateTimeEdit.ControlGetValue: Variant;
 begin
   Result := Text;
 end;
 
-function TJvDynControlJVCLDateTimeEdit.ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
+function TJvDynControlJVCLDateTimeEdit.ControlValidateData(var Value: Variant;
+  var ErrorMessage: string): Boolean;
 begin
-  Result := true;
+  Result := True;
 end;
+
+//=== TJvDynControlJVCLDateEdit ==============================================
 
 procedure TJvDynControlJVCLDateEdit.ControlSetDefaultProperties;
 begin
@@ -550,6 +560,8 @@ begin
   Kind := dtkDate;
 end;
 
+//=== TJvDynControlJVCLTimeEdit ==============================================
+
 procedure TJvDynControlJVCLTimeEdit.ControlSetDefaultProperties;
 begin
   DateFormat := dfShort;
@@ -557,401 +569,393 @@ begin
   Kind := dtkTime;
 end;
 
- //****************************************************************************
- // TJvDynControlJVCLCheckbox                      
- //****************************************************************************
+//=== TJvDynControlJVCLCheckBox ==============================================
 
 procedure TJvDynControlJVCLCheckBox.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlJVCLCheckbox.ControlSetReadOnly(Value : boolean);
+procedure TJvDynControlJVCLCheckBox.ControlSetReadOnly(Value: Boolean);
 begin
 end;
 
-procedure TJvDynControlJVCLCheckbox.ControlSetCaption(Value : string);
+procedure TJvDynControlJVCLCheckBox.ControlSetCaption(Value: string);
 begin
   Caption := Value;
 end;
 
-procedure TJvDynControlJVCLCheckbox.ControlSetTabOrder(Value : integer);
+procedure TJvDynControlJVCLCheckBox.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
 
-procedure TJvDynControlJVCLCheckbox.ControlSetOnEnter(Value : TNotifyEvent);
+procedure TJvDynControlJVCLCheckBox.ControlSetOnEnter(Value: TNotifyEvent);
 begin
   OnEnter := Value;
 end;
 
-procedure TJvDynControlJVCLCheckbox.ControlSetOnExit(Value : TNotifyEvent);
+procedure TJvDynControlJVCLCheckBox.ControlSetOnExit(Value: TNotifyEvent);
 begin
   OnExit := Value;
 end;
 
-procedure TJvDynControlJVCLCheckbox.ControlSetOnChange(Value : TNotifyEvent);
+procedure TJvDynControlJVCLCheckBox.ControlSetOnChange(Value: TNotifyEvent);
 begin
 //  OnChange := Value;
 end;
 
-procedure TJvDynControlJVCLCheckbox.ControlSetOnClick(Value : TNotifyEvent);
+procedure TJvDynControlJVCLCheckBox.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlJVCLCheckbox.ControlSetValue(Value : variant);
+procedure TJvDynControlJVCLCheckBox.ControlSetValue(Value: Variant);
 begin
   if VarType(Value) = varBoolean then
     Checked := Value
   else
-    Checked := Uppercase(Value) = 'TRUE';
+    Checked := UpperCase(Value) = 'TRUE';
 end;
 
-function TJvDynControlJVCLCheckbox.ControlGetValue : variant;
+function TJvDynControlJVCLCheckBox.ControlGetValue: Variant;
 begin
   Result := Checked;
 end;
 
-function TJvDynControlJVCLCheckbox.ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
+function TJvDynControlJVCLCheckBox.ControlValidateData(var Value: Variant;
+  var ErrorMessage: string): Boolean;
 begin
-  Result := true;
+  Result := True;
 end;
 
- //****************************************************************************
- // TJvDynControlJVCLMemo                      
- //****************************************************************************
+//=== TJvDynControlJVCLMemo ==================================================
 
 procedure TJvDynControlJVCLMemo.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlJVCLMemo.ControlSetReadOnly(Value : boolean);
+procedure TJvDynControlJVCLMemo.ControlSetReadOnly(Value: Boolean);
 begin
   ReadOnly := Value;
 end;
 
-procedure TJvDynControlJVCLMemo.ControlSetCaption(Value : string);
+procedure TJvDynControlJVCLMemo.ControlSetCaption(Value: string);
 begin
 end;
 
-procedure TJvDynControlJVCLMemo.ControlSetTabOrder(Value : integer);
+procedure TJvDynControlJVCLMemo.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
 
-
-procedure TJvDynControlJVCLMemo.ControlSetOnEnter(Value : TNotifyEvent);
+procedure TJvDynControlJVCLMemo.ControlSetOnEnter(Value: TNotifyEvent);
 begin
   OnEnter := Value;
 end;
 
-procedure TJvDynControlJVCLMemo.ControlSetOnExit(Value : TNotifyEvent);
+procedure TJvDynControlJVCLMemo.ControlSetOnExit(Value: TNotifyEvent);
 begin
   OnExit := Value;
 end;
 
-procedure TJvDynControlJVCLMemo.ControlSetOnChange(Value : TNotifyEvent);
+procedure TJvDynControlJVCLMemo.ControlSetOnChange(Value: TNotifyEvent);
 begin
   OnChange := Value;
 end;
 
-procedure TJvDynControlJVCLMemo.ControlSetOnClick(Value : TNotifyEvent);
+procedure TJvDynControlJVCLMemo.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlJVCLMemo.ControlSetValue(Value : variant);
+procedure TJvDynControlJVCLMemo.ControlSetValue(Value: Variant);
 begin
   Text := Value;
 end;
 
-function TJvDynControlJVCLMemo.ControlGetValue : variant;
+function TJvDynControlJVCLMemo.ControlGetValue: Variant;
 begin
   Result := Text;
 end;
 
-procedure TJvDynControlJVCLMemo.ControlSetSorted(Value : boolean);
+procedure TJvDynControlJVCLMemo.ControlSetSorted(Value: Boolean);
 begin
 end;
 
-procedure TJvDynControlJVCLMemo.ControlSetItems(Value : TStrings);
+procedure TJvDynControlJVCLMemo.ControlSetItems(Value: TStrings);
 begin
   Lines.Assign(Value);
 end;
 
-function TJvDynControlJVCLMemo.ControlGetItems : TStrings;
+function TJvDynControlJVCLMemo.ControlGetItems: TStrings;
 begin
   Result := Lines;
 end;
 
-function TJvDynControlJVCLMemo.ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
+function TJvDynControlJVCLMemo.ControlValidateData(var Value: Variant;
+  var ErrorMessage: string): Boolean;
 begin
-  Result := true;
+  Result := True;
 end;
 
-procedure TJvDynControlJVCLMemo.ControlSetWantTabs(Value : boolean);
+procedure TJvDynControlJVCLMemo.ControlSetWantTabs(Value: Boolean);
 begin
   WantTabs := Value;
 end;
 
-procedure TJvDynControlJVCLMemo.ControlSetWantReturns(Value : boolean);
+procedure TJvDynControlJVCLMemo.ControlSetWantReturns(Value: Boolean);
 begin
   WantReturns := Value;
 end;
 
-procedure TJvDynControlJVCLMemo.ControlSetWordWrap(Value : boolean);
+procedure TJvDynControlJVCLMemo.ControlSetWordWrap(Value: Boolean);
 begin
   WordWrap := Value;
 end;
 
-procedure TJvDynControlJVCLMemo.ControlSetScrollbars(Value : TScrollStyle);
+procedure TJvDynControlJVCLMemo.ControlSetScrollBars(Value: TScrollStyle);
 begin
-  Scrollbars := Value;
+  ScrollBars := Value;
 end;
 
-
- //****************************************************************************
- // TJvDynControlJVCLRadioGroup                      
- //****************************************************************************
+//=== TJvDynControlJVCLRadioGroup ============================================
 
 procedure TJvDynControlJVCLRadioGroup.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlJVCLRadioGroup.ControlSetReadOnly(Value : boolean);
+procedure TJvDynControlJVCLRadioGroup.ControlSetReadOnly(Value: Boolean);
 begin
 //  ReadOnly := Value;
 end;
 
-procedure TJvDynControlJVCLRadioGroup.ControlSetCaption(Value : string);
+procedure TJvDynControlJVCLRadioGroup.ControlSetCaption(Value: string);
 begin
 end;
 
-procedure TJvDynControlJVCLRadioGroup.ControlSetTabOrder(Value : integer);
+procedure TJvDynControlJVCLRadioGroup.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
 
-procedure TJvDynControlJVCLRadioGroup.ControlSetOnEnter(Value : TNotifyEvent);
+procedure TJvDynControlJVCLRadioGroup.ControlSetOnEnter(Value: TNotifyEvent);
 begin
   OnEnter := Value;
 end;
 
-procedure TJvDynControlJVCLRadioGroup.ControlSetOnExit(Value : TNotifyEvent);
+procedure TJvDynControlJVCLRadioGroup.ControlSetOnExit(Value: TNotifyEvent);
 begin
   OnExit := Value;
 end;
 
-procedure TJvDynControlJVCLRadioGroup.ControlSetOnChange(Value : TNotifyEvent);
+procedure TJvDynControlJVCLRadioGroup.ControlSetOnChange(Value: TNotifyEvent);
 begin
 //  OnChange := Value;
 end;
 
-procedure TJvDynControlJVCLRadioGroup.ControlSetOnClick(Value : TNotifyEvent);
+procedure TJvDynControlJVCLRadioGroup.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlJVCLRadioGroup.ControlSetValue(Value : variant);
+procedure TJvDynControlJVCLRadioGroup.ControlSetValue(Value: Variant);
 begin
-  if VarType(Value) in [varSmallInt, varInteger] then
+  if VarType(Value) in [varSmallint, varInteger] then
     ItemIndex := Value
   else
-    try
-      ItemIndex := Value
-    except
-      on e : Exception do
-        ItemIndex := Items.IndexOf(Value);
-    end;
+  try
+    ItemIndex := Value
+  except
+    on E: Exception do
+      ItemIndex := Items.IndexOf(Value);
+  end;
 end;
 
-function TJvDynControlJVCLRadioGroup.ControlGetValue : variant;
+function TJvDynControlJVCLRadioGroup.ControlGetValue: Variant;
 begin
   Result := ItemIndex;
 end;
 
-procedure TJvDynControlJVCLRadioGroup.ControlSetSorted(Value : boolean);
+procedure TJvDynControlJVCLRadioGroup.ControlSetSorted(Value: Boolean);
 begin
 end;
 
-procedure TJvDynControlJVCLRadioGroup.ControlSetItems(Value : TStrings);
+procedure TJvDynControlJVCLRadioGroup.ControlSetItems(Value: TStrings);
 begin
   Items.Assign(Value);
 end;
 
-function TJvDynControlJVCLRadioGroup.ControlGetItems : TStrings;
+function TJvDynControlJVCLRadioGroup.ControlGetItems: TStrings;
 begin
   Result := Items;
 end;
 
-procedure TJvDynControlJVCLRadioGroup.ControlSetColumns(Value : integer);
+procedure TJvDynControlJVCLRadioGroup.ControlSetColumns(Value: Integer);
 begin
   Columns := Value;
 end;
 
-function TJvDynControlJVCLRadioGroup.ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
+function TJvDynControlJVCLRadioGroup.ControlValidateData(var Value: Variant; var ErrorMessage: string): Boolean;
 begin
-  Result := true;
+  Result := True;
 end;
 
- //****************************************************************************
- // TJvDynControlJVCLListBox                      
- //****************************************************************************
+//=== TJvDynControlJVCLListBox ===============================================
 
 procedure TJvDynControlJVCLListBox.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlJVCLListBox.ControlSetReadOnly(Value : boolean);
+procedure TJvDynControlJVCLListBox.ControlSetReadOnly(Value: Boolean);
 begin
 //  ReadOnly := Value;
 end;
 
-procedure TJvDynControlJVCLListBox.ControlSetCaption(Value : string);
+procedure TJvDynControlJVCLListBox.ControlSetCaption(Value: string);
 begin
 end;
 
-procedure TJvDynControlJVCLListBox.ControlSetTabOrder(Value : integer);
+procedure TJvDynControlJVCLListBox.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
 
-procedure TJvDynControlJVCLListBox.ControlSetOnEnter(Value : TNotifyEvent);
+procedure TJvDynControlJVCLListBox.ControlSetOnEnter(Value: TNotifyEvent);
 begin
   OnEnter := Value;
 end;
 
-procedure TJvDynControlJVCLListBox.ControlSetOnExit(Value : TNotifyEvent);
+procedure TJvDynControlJVCLListBox.ControlSetOnExit(Value: TNotifyEvent);
 begin
   OnExit := Value;
 end;
 
-procedure TJvDynControlJVCLListBox.ControlSetOnChange(Value : TNotifyEvent);
+procedure TJvDynControlJVCLListBox.ControlSetOnChange(Value: TNotifyEvent);
 begin
 //  OnChange := Value;
 end;
 
-procedure TJvDynControlJVCLListBox.ControlSetOnClick(Value : TNotifyEvent);
+procedure TJvDynControlJVCLListBox.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlJVCLListBox.ControlSetValue(Value : variant);
+procedure TJvDynControlJVCLListBox.ControlSetValue(Value: Variant);
 begin
-  if VarType(Value) in [varSmallInt, varInteger] then
+  if VarType(Value) in [varSmallint, varInteger] then
     ItemIndex := Value
   else
-    try
-      ItemIndex := Value
-    except
-      on e : Exception do
-        ItemIndex := Items.IndexOf(Value);
-    end;
+  try
+    ItemIndex := Value
+  except
+    on E: Exception do
+      ItemIndex := Items.IndexOf(Value);
+  end;
 end;
 
-function TJvDynControlJVCLListBox.ControlGetValue : variant;
+function TJvDynControlJVCLListBox.ControlGetValue: Variant;
 begin
   Result := ItemIndex;
 end;
 
-procedure TJvDynControlJVCLListBox.ControlSetSorted(Value : boolean);
+procedure TJvDynControlJVCLListBox.ControlSetSorted(Value: Boolean);
 begin
   Sorted := Value;
 end;
 
-procedure TJvDynControlJVCLListBox.ControlSetItems(Value : TStrings);
+procedure TJvDynControlJVCLListBox.ControlSetItems(Value: TStrings);
 begin
   Items.Assign(Value);
 end;
 
-function TJvDynControlJVCLListBox.ControlGetItems : TStrings;
+function TJvDynControlJVCLListBox.ControlGetItems: TStrings;
 begin
   Result := Items;
 end;
 
-function TJvDynControlJVCLListBox.ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
+function TJvDynControlJVCLListBox.ControlValidateData(var Value: Variant;
+  var ErrorMessage: string): Boolean;
 begin
-  Result := true;
+  Result := True;
 end;
 
-procedure TJvDynControlJVCLListBox.ControlSetOnDblClick(Value : TNotifyEvent);
+procedure TJvDynControlJVCLListBox.ControlSetOnDblClick(Value: TNotifyEvent);
 begin
   OnDblClick := Value;
 end;
 
- //****************************************************************************
- // TJvDynControlJVCLComboBox
- //****************************************************************************
+//=== TJvDynControlJVCLComboBox ==============================================
 
 procedure TJvDynControlJVCLComboBox.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlJVCLComboBox.ControlSetReadOnly(Value : boolean);
+procedure TJvDynControlJVCLComboBox.ControlSetReadOnly(Value: Boolean);
 begin
 //  ReadOnly := Value;
 end;
 
-procedure TJvDynControlJVCLComboBox.ControlSetCaption(Value : string);
+procedure TJvDynControlJVCLComboBox.ControlSetCaption(Value: string);
 begin
 end;
 
-procedure TJvDynControlJVCLComboBox.ControlSetTabOrder(Value : integer);
+procedure TJvDynControlJVCLComboBox.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
 
-procedure TJvDynControlJVCLComboBox.ControlSetOnEnter(Value : TNotifyEvent);
+procedure TJvDynControlJVCLComboBox.ControlSetOnEnter(Value: TNotifyEvent);
 begin
   OnEnter := Value;
 end;
 
-procedure TJvDynControlJVCLComboBox.ControlSetOnExit(Value : TNotifyEvent);
+procedure TJvDynControlJVCLComboBox.ControlSetOnExit(Value: TNotifyEvent);
 begin
   OnExit := Value;
 end;
 
-procedure TJvDynControlJVCLComboBox.ControlSetOnChange(Value : TNotifyEvent);
+procedure TJvDynControlJVCLComboBox.ControlSetOnChange(Value: TNotifyEvent);
 begin
 //  OnChange := Value;
 end;
 
-procedure TJvDynControlJVCLComboBox.ControlSetOnClick(Value : TNotifyEvent);
+procedure TJvDynControlJVCLComboBox.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlJVCLComboBox.ControlSetValue(Value : variant);
+procedure TJvDynControlJVCLComboBox.ControlSetValue(Value: Variant);
 begin
   Text := Value;
 end;
 
-function TJvDynControlJVCLComboBox.ControlGetValue : variant;
+function TJvDynControlJVCLComboBox.ControlGetValue: Variant;
 begin
   Result := Text;
 end;
 
-procedure TJvDynControlJVCLComboBox.ControlSetSorted(Value : boolean);
+procedure TJvDynControlJVCLComboBox.ControlSetSorted(Value: Boolean);
 begin
   Sorted := Value;
 end;
 
-procedure TJvDynControlJVCLComboBox.ControlSetItems(Value : TStrings);
+procedure TJvDynControlJVCLComboBox.ControlSetItems(Value: TStrings);
 begin
   Items.Assign(Value);
 end;
 
-function TJvDynControlJVCLComboBox.ControlGetItems : TStrings;
+function TJvDynControlJVCLComboBox.ControlGetItems: TStrings;
 begin
   Result := Items;
 end;
 
-function TJvDynControlJVCLComboBox.ControlValidateData(var Value : variant; var ErrorMessage : string) : boolean;
+function TJvDynControlJVCLComboBox.ControlValidateData(var Value: Variant;
+  var ErrorMessage: string): Boolean;
 begin
-  Result := true;
+  Result := True;
 end;
 
-procedure TJvDynControlJVCLComboBox.ControlSetNewEntriesAllowed(Value : boolean);
+procedure TJvDynControlJVCLComboBox.ControlSetNewEntriesAllowed(Value: Boolean);
 begin
   if Value then
     Style := csDropDown
@@ -959,10 +963,7 @@ begin
     Style := csDropDownList;
 end;
 
-
- //****************************************************************************
- // TJvDynControlJVCLPanel                      
- //****************************************************************************
+//=== TJvDynControlJVCLPanel =================================================
 
 procedure TJvDynControlJVCLPanel.ControlSetDefaultProperties;
 begin
@@ -970,193 +971,184 @@ begin
   BevelOuter := bvNone;
 end;
 
-procedure TJvDynControlJVCLPanel.ControlSetCaption(Value : string);
+procedure TJvDynControlJVCLPanel.ControlSetCaption(Value: string);
 begin
   Caption := Value;
 end;
 
-procedure TJvDynControlJVCLPanel.ControlSetTabOrder(Value : integer);
+procedure TJvDynControlJVCLPanel.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
 
-procedure TJvDynControlJVCLPanel.ControlSetOnEnter(Value : TNotifyEvent);
+procedure TJvDynControlJVCLPanel.ControlSetOnEnter(Value: TNotifyEvent);
 begin
   OnEnter := Value;
 end;
 
-procedure TJvDynControlJVCLPanel.ControlSetOnExit(Value : TNotifyEvent);
+procedure TJvDynControlJVCLPanel.ControlSetOnExit(Value: TNotifyEvent);
 begin
   OnExit := Value;
 end;
 
-procedure TJvDynControlJVCLPanel.ControlSetOnClick(Value : TNotifyEvent);
+procedure TJvDynControlJVCLPanel.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlJVCLPanel.ControlSetBorder(aBevelInner : TPanelBevel; aBevelOuter : TPanelBevel; aBevelWidth : integer; aBorderStyle : TBorderStyle; aBorderWidth : integer);
+procedure TJvDynControlJVCLPanel.ControlSetBorder(ABevelInner: TPanelBevel;
+  ABevelOuter: TPanelBevel; ABevelWidth: Integer; ABorderStyle: TBorderStyle;
+  ABorderWidth: Integer);
 begin
-  BorderWidth := aBorderWidth;
-  BorderStyle := aBorderStyle;
-  BevelInner  := aBevelInner;
-  BevelOuter  := aBevelOuter;
-  BevelWidth  := aBevelWidth;
+  BorderWidth := ABorderWidth;
+  BorderStyle := ABorderStyle;
+  BevelInner := ABevelInner;
+  BevelOuter := ABevelOuter;
+  BevelWidth := ABevelWidth;
 end;
 
+//=== TJvDynControlJVCLScrollBox =============================================
 
- //****************************************************************************
- // TJvDynControlJVCLScrollbox                      
- //****************************************************************************
-
-procedure TJvDynControlJVCLScrollbox.ControlSetDefaultProperties;
+procedure TJvDynControlJVCLScrollBox.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlJVCLScrollbox.ControlSetCaption(Value : string);
+procedure TJvDynControlJVCLScrollBox.ControlSetCaption(Value: string);
 begin
   Caption := Value;
 end;
 
-procedure TJvDynControlJVCLScrollbox.ControlSetTabOrder(Value : integer);
+procedure TJvDynControlJVCLScrollBox.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
 
-procedure TJvDynControlJVCLScrollbox.ControlSetOnEnter(Value : TNotifyEvent);
+procedure TJvDynControlJVCLScrollBox.ControlSetOnEnter(Value: TNotifyEvent);
 begin
   OnEnter := Value;
 end;
 
-procedure TJvDynControlJVCLScrollbox.ControlSetOnExit(Value : TNotifyEvent);
+procedure TJvDynControlJVCLScrollBox.ControlSetOnExit(Value: TNotifyEvent);
 begin
   OnExit := Value;
 end;
 
-procedure TJvDynControlJVCLScrollbox.ControlSetOnClick(Value : TNotifyEvent);
+procedure TJvDynControlJVCLScrollBox.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
-
- //****************************************************************************
- // TJvDynControlJVCLLabel                      
- //****************************************************************************
+//=== TJvDynControlJVCLLabel =================================================
 
 procedure TJvDynControlJVCLLabel.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlJVCLLabel.ControlSetCaption(Value : string);
+procedure TJvDynControlJVCLLabel.ControlSetCaption(Value: string);
 begin
   Caption := Value;
 end;
 
-procedure TJvDynControlJVCLLabel.ControlSetTabOrder(Value : integer);
+procedure TJvDynControlJVCLLabel.ControlSetTabOrder(Value: Integer);
 begin
 end;
 
-procedure TJvDynControlJVCLLabel.ControlSetOnEnter(Value : TNotifyEvent);
+procedure TJvDynControlJVCLLabel.ControlSetOnEnter(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlJVCLLabel.ControlSetOnExit(Value : TNotifyEvent);
+procedure TJvDynControlJVCLLabel.ControlSetOnExit(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlJVCLLabel.ControlSetOnClick(Value : TNotifyEvent);
+procedure TJvDynControlJVCLLabel.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlJVCLLabel.ControlSetFocusControl(Value : tWinControl);
+procedure TJvDynControlJVCLLabel.ControlSetFocusControl(Value: TWinControl);
 begin
   FocusControl := Value;
 end;
 
- //****************************************************************************
- // TJvDynControlJVCLStaticText                      
- //****************************************************************************
+//=== TJvDynControlJVCLStaticText ============================================
 
 procedure TJvDynControlJVCLStaticText.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlJVCLStaticText.ControlSetCaption(Value : string);
+procedure TJvDynControlJVCLStaticText.ControlSetCaption(Value: string);
 begin
   Caption := Value;
 end;
 
-procedure TJvDynControlJVCLStaticText.ControlSetTabOrder(Value : integer);
+procedure TJvDynControlJVCLStaticText.ControlSetTabOrder(Value: Integer);
 begin
 end;
 
-procedure TJvDynControlJVCLStaticText.ControlSetOnEnter(Value : TNotifyEvent);
+procedure TJvDynControlJVCLStaticText.ControlSetOnEnter(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlJVCLStaticText.ControlSetOnExit(Value : TNotifyEvent);
+procedure TJvDynControlJVCLStaticText.ControlSetOnExit(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlJVCLStaticText.ControlSetOnClick(Value : TNotifyEvent);
+procedure TJvDynControlJVCLStaticText.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
- //****************************************************************************
- // TJvDynControlJVCLButton                      
- //****************************************************************************
+//=== TJvDynControlJVCLButton ================================================
 
 procedure TJvDynControlJVCLButton.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlJVCLButton.ControlSetCaption(Value : string);
+procedure TJvDynControlJVCLButton.ControlSetCaption(Value: string);
 begin
   Caption := Value;
 end;
 
-procedure TJvDynControlJVCLButton.ControlSetTabOrder(Value : integer);
+procedure TJvDynControlJVCLButton.ControlSetTabOrder(Value: Integer);
 begin
 end;
 
-procedure TJvDynControlJVCLButton.ControlSetOnEnter(Value : TNotifyEvent);
+procedure TJvDynControlJVCLButton.ControlSetOnEnter(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlJVCLButton.ControlSetOnExit(Value : TNotifyEvent);
+procedure TJvDynControlJVCLButton.ControlSetOnExit(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlJVCLButton.ControlSetOnClick(Value : TNotifyEvent);
+procedure TJvDynControlJVCLButton.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlJVCLButton.ControlSetGlyph(Value : tBitmap);
+procedure TJvDynControlJVCLButton.ControlSetGlyph(Value: TBitmap);
 begin
   Glyph.Assign(Value);
 end;
 
-procedure TJvDynControlJVCLButton.ControlSetNumGlyphs(Value : integer);
+procedure TJvDynControlJVCLButton.ControlSetNumGlyphs(Value: Integer);
 begin
   NumGlyphs := Value;
 end;
 
-procedure TJvDynControlJVCLButton.ControlSetLayout(Value : TButtonLayout);
+procedure TJvDynControlJVCLButton.ControlSetLayout(Value: TButtonLayout);
 begin
   Layout := Value;
 end;
 
-function DynControlEngine_JVCL : tJvDynControlEngine;
+function DynControlEngine_JVCL: TJvDynControlEngine;
 begin
   Result := IntDynControlEngine_JVCL;
 end;
 
-
 initialization
-  IntDynControlEngine_JVCL := tJvDynControlEngine.Create;
+  IntDynControlEngine_JVCL := TJvDynControlEngine.Create;
   IntDynControlEngine_JVCL.RegisterControl(jctLabel, TJvDynControlJVCLLabel);
   IntDynControlEngine_JVCL.RegisterControl(jctStaticText, TJvDynControlJVCLStaticText);
   IntDynControlEngine_JVCL.RegisterControl(jctButton, TJvDynControlJVCLButton);
-  IntDynControlEngine_JVCL.RegisterControl(jctScrollbox, TJvDynControlJVCLScrollbox);
+  IntDynControlEngine_JVCL.RegisterControl(jctScrollBox, TJvDynControlJVCLScrollBox);
   IntDynControlEngine_JVCL.RegisterControl(jctPanel, TJvDynControlJVCLPanel);
   IntDynControlEngine_JVCL.RegisterControl(jctCheckBox, TJvDynControlJVCLCheckBox);
   IntDynControlEngine_JVCL.RegisterControl(jctComboBox, TJvDynControlJVCLComboBox);
@@ -1175,4 +1167,6 @@ initialization
 
 finalization
   FreeAndNil(IntDynControlEngine_JVCL);
+
 end.
+

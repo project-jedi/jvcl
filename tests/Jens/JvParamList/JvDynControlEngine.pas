@@ -199,7 +199,7 @@ begin
   if Valid then
     FRegisteredControlTypes[ADynControlType] := AControlClass
   else
-    raise EJvclException.Create(SUnsupportedControlClass);
+    raise EJVCLException.Create(SUnsupportedControlClass);
 end;
 
 function TJvDynControlEngine.GetPropCount(Instance: TPersistent): Integer;
@@ -342,7 +342,7 @@ begin
   else
     Result := nil;
   if Result = nil then
-    raise EJvclException.Create(SNoRegisteredControlClass);
+    raise EJVCLException.Create(SNoRegisteredControlClass);
 end;
 
 function TJvDynControlEngine.CreateControlClass(AControlClass: TControlClass;
