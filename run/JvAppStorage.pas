@@ -315,7 +315,7 @@ type
     procedure Reload; virtual;
     procedure BeginUpdate;
     procedure EndUpdate;
-    property Updating:boolean read GetUpdating;
+    property IsUpdating:boolean read GetUpdating;
     property AutoFlush : Boolean read FAutoFlush write FAutoFlush default False;
 
     class function ConcatPaths(const Paths: array of string): string;
@@ -2323,7 +2323,7 @@ begin
   if FFileName <> Value then
   begin
     FFileName := Value;
-    if FLoadedFinished and not Updating then
+    if FLoadedFinished and not IsUpdating then
       Reload;
   end;
 end;
@@ -2333,7 +2333,7 @@ begin
   if FLocation <> Value then
   begin
     FLocation := Value;
-    if FLoadedFinished and not Updating then
+    if FLoadedFinished and not IsUpdating then
       Reload;
   end;
 end;
@@ -2342,7 +2342,7 @@ end;
 procedure TJvCustomAppStorage.Loaded;
 begin
   inherited;
-  if not Updating then
+  if not IsUpdating then
     Reload;
 end;
 
@@ -2354,7 +2354,7 @@ end;
 procedure TJvCustomAppStorage.EndUpdate;
 begin
   Dec(FUpdateCount);
-  if not Updating and AutoFlush then
+  if not IsUpdating and AutoFlush then
     Flush;
   if FUpdateCount < 0 then
     FUpdateCount := 0;
