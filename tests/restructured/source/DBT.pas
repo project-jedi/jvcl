@@ -19,7 +19,6 @@
 {     Robert Marquardt : pointed out that TWMDeviceChange          }
 {                        is better placed inside dbt.pas           }
 {                                                                  }
-{                        the conversion is now BCB compatible      }
 {                                                                  }
 { Obtained through:                                                }
 {                                                                  }
@@ -47,7 +46,9 @@ unit DBT;
 
 interface
 
-(*$HPPEMIT '#include <dbt.h>'*)
+(*$HPPEMIT '' *)
+(*$HPPEMIT '#include <dbt.h>' *)
+(*$HPPEMIT '' *)
 
 uses
   Windows;
@@ -59,6 +60,7 @@ uses
 const
   {$EXTERNALSYM WM_DEVICECHANGE}
   WM_DEVICECHANGE = $0219;
+
 
 { *
   * Broadcast message and receipient flags.
@@ -103,6 +105,7 @@ const
   {$EXTERNALSYM BSM_APPLICATIONS}
   BSM_APPLICATIONS = $00000008;
 
+
 { *
   * Message = WM_DEVICECHANGE
   *   wParam = DBT_APPYBEGIN
@@ -132,6 +135,7 @@ const
   {$EXTERNALSYM DBT_APPYEND}
   DBT_APPYEND = $0001;
 
+
 { *
   * Message = WM_DEVICECHANGE
   *   wParam = DBT_DEVNODES_CHANGED
@@ -148,6 +152,7 @@ const
   {$EXTERNALSYM DBT_DEVNODES_CHANGED}
   DBT_DEVNODES_CHANGED = $0007;
 
+
 { *
   * Message = WM_DEVICECHANGE
   *   wParam = DBT_QUERYCHANGECONFIG
@@ -159,6 +164,7 @@ const
 const
   {$EXTERNALSYM DBT_QUERYCHANGECONFIG}
   DBT_QUERYCHANGECONFIG = $0017;
+
 
 { *
   * Message = WM_DEVICECHANGE
@@ -172,6 +178,7 @@ const
   {$EXTERNALSYM DBT_CONFIGCHANGED}
   DBT_CONFIGCHANGED = $0018;
 
+
 { *
   * Message = WM_DEVICECHANGE
   *   wParam = DBT_CONFIGCHANGECANCELED
@@ -183,6 +190,7 @@ const
 const
   {$EXTERNALSYM DBT_CONFIGCHANGECANCELED}
   DBT_CONFIGCHANGECANCELED = $0019;
+
 
 { *
   * Message = WM_DEVICECHANGE
@@ -198,6 +206,7 @@ const
   {$EXTERNALSYM DBT_MONITORCHANGE}
   DBT_MONITORCHANGE = $001B;
 
+
 { *
   * Message = WM_DEVICECHANGE
   *   wParam = DBT_SHELLLOGGEDON
@@ -209,6 +218,7 @@ const
 const
   {$EXTERNALSYM DBT_SHELLLOGGEDON}
   DBT_SHELLLOGGEDON = $0020;
+
 
 { *
   * Message = WM_DEVICECHANGE
@@ -222,6 +232,7 @@ const
   {$EXTERNALSYM DBT_CONFIGMGAPI32}
   DBT_CONFIGMGAPI32 = $0022;
 
+
 { *
   * Message = WM_DEVICECHANGE
   *   wParam = DBT_VXDINITCOMPLETE
@@ -233,6 +244,7 @@ const
 const
   {$EXTERNALSYM DBT_VXDINITCOMPLETE}
   DBT_VXDINITCOMPLETE = $0023;
+
 
 { *
   * Message = WM_DEVICECHANGE
@@ -257,6 +269,7 @@ const
   {$EXTERNALSYM DBT_VOLLOCKUNLOCKFAILED}
   DBT_VOLLOCKUNLOCKFAILED = $8046;
 
+
 { *
   * Device broadcast header
   * }
@@ -270,6 +283,7 @@ type
     dbch_reserved: DWORD;
   end;
   TDevBroadcastHdr = DEV_BROADCAST_HDR;
+
 
 { *
   * Structure for volume lock broadcast
@@ -329,6 +343,7 @@ const
   {$EXTERNALSYM DBT_NO_DISK_SPACE}
   DBT_NO_DISK_SPACE = $0047;
 
+
 { *
   * Message = WM_DEVICECHANGE
   *   wParam = DBT_LOW_DISK_SPACE
@@ -347,6 +362,7 @@ const
 
   {$EXTERNALSYM DBT_CONFIGMGPRIVATE}
   DBT_CONFIGMGPRIVATE = $7FFF;
+
 
 { *
   * The following messages are for WM_DEVICECHANGE. The immediate list
@@ -433,27 +449,27 @@ const
   DBTF_NET = $0002;                             { network volume }
 
 type
-  PDevBroadcastPortA = ^TDevBroadcastPortA;
+  PDevBroadCastPortA = ^TDevBroadCastPortA;
   {$EXTERNALSYM DEV_BROADCAST_PORT_A}
   DEV_BROADCAST_PORT_A = packed record
     dbcp_size: DWORD;
     dbcp_devicetype: DWORD;
     dbcp_reserved: DWORD;
-    dbcp_name: array [0..0] of AnsiChar;
+    dbcp_name: array[0..0] of AnsiChar;
   end;
-  PDevBroadcastPortW = ^TDevBroadcastPortW;
+  TDevBroadCastPortA = DEV_BROADCAST_PORT_A;
+  PDevBroadCastPortW = ^TDevBroadCastPortW;
   {$EXTERNALSYM DEV_BROADCAST_PORT_W}
   DEV_BROADCAST_PORT_W = packed record
     dbcp_size: DWORD;
     dbcp_devicetype: DWORD;
     dbcp_reserved: DWORD;
-    dbcp_name: array [0..0] of WideChar;
+    dbcp_name: array[0..0] of WideChar;
   end;
-  PDevBroadcastPort = PDevBroadcastPortA;
-  TDevBroadcastPortA = DEV_BROADCAST_PORT_A;
-  TDevBroadcastPortW = DEV_BROADCAST_PORT_W;
-  TDevBroadcastPort = TDevBroadcastPortA;
+  TDevBroadCastPortW = DEV_BROADCAST_PORT_W;
+  PDevBroadCastPort = PDevBroadCastPortA;
 
+type
   PDevBroadcastNet = ^TDevBroadcastNet;
   {$EXTERNALSYM DEV_BROADCAST_NET}
   DEV_BROADCAST_NET = packed record
@@ -472,8 +488,9 @@ type
     dbcc_devicetype: DWORD;
     dbcc_reserved: DWORD;
     dbcc_classguid: TGUID;
-    dbcc_name: array [0..0] of AnsiChar;
+    dbcc_name: Array[0..0] of AnsiChar;
   end;
+  TDevBroadcastDeviceInterfaceA = DEV_BROADCAST_DEVICEINTERFACE_A;
   PDevBroadcastDeviceInterfaceW = ^TDevBroadcastDeviceInterfaceW;
   {$EXTERNALSYM DEV_BROADCAST_DEVICEINTERFACE_W}
   DEV_BROADCAST_DEVICEINTERFACE_W = packed record
@@ -481,15 +498,13 @@ type
     dbcc_devicetype: DWORD;
     dbcc_reserved: DWORD;
     dbcc_classguid: TGUID;
-    dbcc_name: array [0..0] of WideChar;
+    dbcc_name: Array[0..0] of WideChar;
   end;
-  PDevBroadcastDeviceInterface = PDevBroadcastDeviceInterfaceA;
-  TDevBroadcastDeviceInterfaceA = DEV_BROADCAST_DEVICEINTERFACE_A;
   TDevBroadcastDeviceInterfaceW = DEV_BROADCAST_DEVICEINTERFACE_W;
-  TDevBroadcastDeviceInterface = TDevBroadcastDeviceInterfaceA;
+  PDevBroadcastDeviceInterface = PDevBroadcastDeviceInterfaceA;
 
-  PDevBroadcastHandle = ^TDevBroadcastHandle;
   {$EXTERNALSYM DEV_BROADCAST_HANDLE}
+  PDevBroadcastHandle = ^TDevBroadcastHandle;
   DEV_BROADCAST_HANDLE = packed record
     dbch_size: DWORD;
     dbch_devicetype: DWORD;
@@ -501,7 +516,7 @@ type
 
     dbch_eventguid: TGUID;
     dbch_nameoffset: DWORD;           { offset (bytes) of variable-length string buffer (-1 if none)}
-    dbch_data: array [0..0] of BYTE;  { variable-sized buffer, potentially containing binary and/or text data }
+    dbch_data: Array[0..0] of BYTE;   { variable-sized buffer, potentially containing binary and/or text data }
   end;
   TDevBroadcastHandle = DEV_BROADCAST_HANDLE;
 
@@ -515,6 +530,7 @@ const
                                            { (dbcn_resource undefined for now) }
   {$EXTERNALSYM DBT_VPOWERDAPI}
   DBT_VPOWERDAPI = $8100;                  { VPOWERD API for Win95 }
+
 
 { *
   * User-defined message types all use wParam = 0xFFFF with the
@@ -540,25 +556,26 @@ const
   DBT_USERDEFINED = $FFF;
 
 type
-  PDevBroadcastUserDefined = ^TDevBroadcastUserDefined;
+  PDevBroadcastUserdefined = ^TDevBroadcastUserdefined;
   // no EXTERNALSYM because this struct is not declared as C type
   DEV_BROADCAST_USERDEFINED = packed record
     dbud_dbh: TDevBroadcastHdr;
-    dbud_szName: array [0..0] of Char; { ASCIIZ name }
+    dbud_szName: Array[0..0] of Char; { ASCIIZ name }
    {dbud_rgbUserDefined[]: Byte; // User-defined contents }
   end;
-  TDevBroadcastUserDefined = DEV_BROADCAST_USERDEFINED;
+  TDevBroadcastUserdefined = DEV_BROADCAST_USERDEFINED;
 
 { added own message type for WM_DEVICECHANGE }
 
 type
   TWMDeviceChange = record
-    Msg: Cardinal;
-    Event: UINT;
-    dwData: Pointer;
-    Result: LongInt;
+   Msg:    Cardinal;
+   Event:  UINT;
+   dwData: Pointer;
+   Result: LongInt;
   end;
 
 implementation
 
 end.
+
