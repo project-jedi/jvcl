@@ -39,7 +39,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvBaseDlg, JvJVCLAboutForm, JvRadioControl, JvComponent,
+  JvBaseDlg, JvJVCLAboutForm, JvComponent,
   JvgCheckBox, JvgLanguageLoader, JvgLabel, JvgGroupBox, JvgTab, JvgPage,
   JvgShadow, JvgWizardHeader, JvgBitBtn, JvgSpeedButton, JvgSplit;
 
