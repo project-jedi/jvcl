@@ -153,8 +153,8 @@ const
 
 type
   TMessage = QWindows.TMessage;
-  TJvMessage = JvQTypes.TJvMessage;
-  
+//  TJvMessage = JvQTypes.TJvMessage;
+
   TEMGetRect = packed record
     Msg: Cardinal;
     Reserved: Integer;
