@@ -79,7 +79,10 @@ type
     FLine: Integer;
     FCharacter: Integer;
   public
-    constructor Create(Line, Character: Integer);
+    // the extra parameter is a dummy parameter to force the generation of
+    // a unique constructor declaration in the resulting hpp file
+    // when used with BCB
+    constructor Create(Line, Character: Integer; dummyForBCB : Integer = 0);
     property Line: Integer read FLine;
     property Character: Integer read FCharacter;
   end;
@@ -706,7 +709,7 @@ implementation
 uses JvUIBConst;
 { EUIBParser }
 
-constructor EUIBParser.Create(Line, Character: Integer);
+constructor EUIBParser.Create(Line, Character: Integer; dummyForBCB : Integer);
 begin
   FLine := Line;
   FCharacter := Character;

@@ -34,6 +34,9 @@
 unit JvUIBSQLParser;
 {$I JVCL.INC}
 {$I JvUIB.inc}
+
+{$HPPEMIT '#undef MESSAGE'}
+
 interface
 uses
   Classes,
@@ -156,7 +159,7 @@ type
     procedure yymore;
     procedure yyless (n: Integer);
     procedure reject;
-    procedure return(n: Integer);
+    procedure returnn(n: Integer);
     procedure returnc(c: Char);
     procedure start(state: Integer);
     function yywrap: Boolean;
@@ -614,7 +617,7 @@ begin
   dec(yymatches);
 end;
 
-procedure TLexer.return ( n : Integer );
+procedure TLexer.returnn ( n : Integer );
 begin
   yyretval := n;
   yydone := true;
@@ -1073,14 +1076,14 @@ begin
   (* actions: *)
   case yyruleno of
   1:
-               return(KW_STRING);
+               returnn(KW_STRING);
   2:
-               return(SYMBOL);
+               returnn(SYMBOL);
 
   3:
                if IsAKeyword(yytext, id) then
-                 return(id) else
-                 return(SYMBOL);
+                 returnn(id) else
+                 returnn(SYMBOL);
 
   4:
      repeat until (get_char in [#13, #10, #0]);
@@ -1099,75 +1102,75 @@ begin
 
 
   6:
-               return(NUMBER);
+               returnn(NUMBER);
   7:
-               return(FLOAT_NUMBER);
+               returnn(FLOAT_NUMBER);
   8:
-               return(NOT_LSS);
+               returnn(NOT_LSS);
   9:
-               return(NEQ);
+               returnn(NEQ);
   10:
-               return(NOT_GTR);
+               returnn(NOT_GTR);
   11:
-               return(LSS);
+               returnn(LSS);
   12:
-               return(LEQ);
+               returnn(LEQ);
   13:
-               return(NEQ);
+               returnn(NEQ);
   14:
-               return(EQL);
+               returnn(EQL);
   15:
-               return(GTR);
+               returnn(GTR);
   16:
-               return(GEQ);
+               returnn(GEQ);
   17:
-               return(NOT_LSS);
+               returnn(NOT_LSS);
   18:
-               return(NEQ);
+               returnn(NEQ);
   19:
-               return(NOT_GTR);
+               returnn(NOT_GTR);
   20:
-               return(CONCATENATE);
+               returnn(CONCATENATE);
   21:
-               return(NOT_LSS);
+               returnn(NOT_LSS);
   22:
-               return(NEQ);
+               returnn(NEQ);
   23:
-               return(NOT_GTR);
+               returnn(NOT_GTR);
 
   24:
-               return(SCOLON);
+               returnn(SCOLON);
   25:
-               return(LPAREN);
+               returnn(LPAREN);
   26:
-               return(RPAREN);
+               returnn(RPAREN);
   27:
-               return(COMMA);
+               returnn(COMMA);
 
   28:
-               return(LARRAY);
+               returnn(LARRAY);
   29:
-               return(RARRAY);
+               returnn(RARRAY);
   30:
-               return(COLON);
+               returnn(COLON);
 
   31:
-               return(PLUS);
+               returnn(PLUS);
   32:
-               return(MINUS);
+               returnn(MINUS);
   33:
-               return(STAR);
+               returnn(STAR);
   34:
-               return(SLASH);
+               returnn(SLASH);
   35:
-               return(DOT);
+               returnn(DOT);
   36:
-               return(VPARAM);
+               returnn(VPARAM);
   37:
                ;
 
   38:
-              Return(0);
+              returnn(0);
 
 
 
@@ -1946,7 +1949,7 @@ action:
   else if not yydefault and yywrap then
     begin
       yyclear;
-      return(0);
+      returnn(0);
     end;
 
   if not yydone then goto start;
