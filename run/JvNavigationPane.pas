@@ -556,6 +556,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    function HasImage:boolean;
   published
     property Picture: TPicture read FPicture write SetPicture;
     property Stretch: Boolean read FStretch write SetStretch;
@@ -852,6 +853,7 @@ type
     FAlignment: TAlignment;
     FOnDropDownMenu: TContextPopupEvent;
     FParentStyleManager: Boolean;
+    FBackground: TJvNavPaneBackgroundImage;
     function GetDropDownMenu: TPopupMenu;
     function GetSmallImages: TCustomImageList;
     procedure SetDropDownMenu(const Value: TPopupMenu);
@@ -888,6 +890,7 @@ type
     procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
     procedure CMControlChange(var Msg: TMessage); message CM_CONTROLCHANGE;
     procedure SetParentStyleManager(const Value: Boolean);
+    procedure SetBackground(const Value: TJvNavPaneBackgroundImage);
   protected
     function IsColorsStored: Boolean;
     function IsNavPanelFontStored: Boolean;
@@ -896,6 +899,7 @@ type
     procedure UpdatePages; virtual;
     {$IFDEF VisualCLX}
     function WidgetFlags: Integer; override;
+    procedure Paint;override;
     {$ENDIF VisualCLX}
     procedure SetActivePage(Page: TJvCustomPage); override;
     procedure InsertPage(APage: TJvCustomPage); override;
@@ -916,6 +920,7 @@ type
     {$ENDIF VCL}
     property AutoHeaders: Boolean read FAutoHeaders write SetAutoHeaders default False;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
+    property Background:TJvNavPaneBackgroundImage read FBackground write SetBackground;
     property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 28;
     property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 22;
     property NavPanelFont: TFont read FNavPanelFont write SetNavPanelFont;
@@ -957,6 +962,7 @@ type
     property OnUnDock;
     property OnEndDock;
     {$ENDIF VCL}
+    property Background;
     property ButtonHeight;
     property ButtonWidth;
     property Caption;
@@ -1307,6 +1313,8 @@ end;
 constructor TJvCustomNavigationPane.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FBackground := TJvNavPaneBackgroundImage.Create;
+  FBackground.OnChange := DoColorsChange;
   ControlStyle := ControlStyle - [csAcceptsControls];
   FStyleLink := TJvNavStyleLink.Create;
   FStyleLink.OnChange := DoStyleChange;
@@ -1354,6 +1362,7 @@ begin
   FStyleLink.Free;
   FColors.Free;
   FNavPanelFont.Free;
+  FBackground.Free;
   inherited Destroy;
 end;
 
@@ -1588,6 +1597,7 @@ begin
   begin
     Canvas.Brush.Color := Color;
     Canvas.FillRect(ClientRect);
+    FBackground.DrawImage(Canvas, ClientRect);
   end;
   Msg.Result := 1;
 end;
@@ -1599,7 +1609,23 @@ function TJvCustomNavigationPane.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
 end;
+
+procedure TJvCustomNavigationPane.Paint;
+begin
+//  inherited;
+  if ActivePage = nil then
+  begin
+    Canvas.Brush.Color := Color;
+    Canvas.FillRect(ClientRect);
+    FBackground.DrawImage(Canvas, ClientRect);
+  end;
+end;
 {$ENDIF VisualCLX}
+
+procedure TJvCustomNavigationPane.SetBackground(const Value: TJvNavPaneBackgroundImage);
+begin
+  FBackground.Assign(Value);
+end;
 
 procedure TJvCustomNavigationPane.SetNavPanelFont(const Value: TFont);
 begin
@@ -2935,7 +2961,10 @@ end;
 procedure TJvNavPanelPage.Paint;
 begin
   inherited;
-  Background.DrawImage(Canvas, ClientRect);
+  if FBackground.HasImage then
+    FBackground.DrawImage(Canvas, ClientRect)
+  else if (Parent is TJvCustomNavigationPane) and TJvCustomNavigationPane(Parent).Background.HasImage then
+    TJvCustomNavigationPane(Parent).Background.DrawImage(Canvas, ClientRect);
 end;
 
 //=== TJvOutlookSplitter =====================================================
@@ -4669,6 +4698,7 @@ begin
   inherited Destroy;
 end;
 
+
 procedure TJvNavPaneBackgroundImage.DrawImage(Canvas: TCanvas; ARect: TRect);
   procedure TileImage;
   var
@@ -4697,6 +4727,12 @@ begin
   else
     with Canvas do
       StretchDraw(CalcRect(ARect), Picture.Graphic);
+end;
+
+function TJvNavPaneBackgroundImage.HasImage: boolean;
+begin
+  with Picture do
+    Result := (Graphic <> nil) and (Width <> 0) and (Height <> 0);
 end;
 
 procedure TJvNavPaneBackgroundImage.PictureChanged(Sender: TObject);
