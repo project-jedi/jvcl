@@ -47,7 +47,6 @@ type
     procedure OnINIKey(const SectionName: string; var ItemName: string; var ATypeInfo: PTypeInfo;
       var Allow: Boolean);
   private
-    { Private declarations }
     BoolsAsChecks: Boolean;
     INI: TIniFile;
     procedure AddInspectorSettings;
@@ -60,7 +59,6 @@ type
     procedure ChangeChkState(const Item: TJvCustomInspectorItem);
     procedure Edit1Change2(Sender: TObject);
   public
-    { Public declarations }
   end;
 
 var
@@ -68,7 +66,7 @@ var
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 uses
   InspectorExampleTestForm,
@@ -90,18 +88,17 @@ var
   ADate: TDateTime;
   ImgIdx: TImageIndex;
 
-{ TfrmInspector }
-
 procedure TfrmInspector.AddInspectorSettings;
 var
   InspCat: TJvInspectorCustomCategoryItem;
   I: Integer;
 const
-  PropArray: array[0..2, 0..1] of string = (
+  PropArray: array [0..2, 0..1] of string =
+   (
     ('UseBands', 'Use bands'),
     ('WantTabs', 'TAB navigates'),
     ('Painter', 'Paint style')
-    );
+   );
 begin
   InspCat := TJvInspectorCustomCategoryItem.Create(JvInspector1.Root, nil);
   InspCat.DisplayName := 'JvInspector Settings';
@@ -247,7 +244,7 @@ begin
   if Item is TJvInspectorBooleanItem then
     TJvInspectorBooleanItem(Item).ShowAsCheckbox := True;
   if (Item.Data <> nil) and (CompareText(Item.Data.Name, 'AboutJVCL') = 0) then
-    Item.Readonly := True;
+    Item.ReadOnly := True;
   if (Item.Data <> nil) and (CompareText(Item.Data.Name, 'Painter') = 0) then
     with Item as TJvInspectorComponentItem do
     begin
@@ -375,7 +372,7 @@ end;
 
 initialization
   GeneratedTestEnum := JclGenerateEnumType('TestEnum',
-    ['me, myself and I', 'Marcel Bestebroer', 'Project JEDI', 'JEDI-VCL Inspector']);
+    ['Me, myself and I', 'Marcel Bestebroer', 'Project JEDI', 'JEDI-VCL Inspector']);
   ADate := Now;
 
   TJvInspectorAlignItem.RegisterAsDefaultItem;

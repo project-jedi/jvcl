@@ -33,29 +33,27 @@ uses
   Dialogs, StdCtrls, ExtCtrls, JvComponent, JvInspector, JvExControls;
 
 type
-  TForm1 = class(TForm)
+  TSimpleMainForm = class(TForm)
     JvInspectorBorlandPainter1: TJvInspectorBorlandPainter;
     JvInspector1: TJvInspector;
     Panel1: TPanel;
     Label1: TLabel;
     procedure FormShow(Sender: TObject);
   private
-    { Private declarations }
   public
-    { Public declarations }
   end;
 
 var
-  Form1: TForm1;
+  SimpleMainForm: TSimpleMainForm;
 
 implementation
 
 {$R *.dfm}
 
-procedure TForm1.FormShow(Sender: TObject);
+procedure TSimpleMainForm.FormShow(Sender: TObject);
 begin
   JvInspector1.Clear;
-  JvInspector1.AddComponent(Self,'A Form Inspecting Itself', true {expanded?});
+  JvInspector1.AddComponent(Self, 'A Form Inspecting Itself', True);
 end;
 
 end.

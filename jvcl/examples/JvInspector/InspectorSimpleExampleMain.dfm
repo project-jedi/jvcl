@@ -1,16 +1,21 @@
-object Form1: TForm1
-  Left = 254
-  Top = 315
+object SimpleMainForm: TSimpleMainForm
+  Left = 313
+  Top = 145
   Width = 545
   Height = 542
-  Caption = 'Form1'
+  Caption = 'JvInspector simple example'
   Color = clBtnFace
+  Constraints.MinHeight = 150
+  Constraints.MinWidth = 250
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -18,7 +23,7 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 352
-    Height = 515
+    Height = 512
     Align = alClient
     BandWidth = 150
     BevelKind = bkTile
@@ -35,7 +40,7 @@ object Form1: TForm1
     Left = 352
     Top = 0
     Width = 185
-    Height = 515
+    Height = 512
     Align = alRight
     TabOrder = 1
     object Label1: TLabel
