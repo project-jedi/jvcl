@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvQCrypt" Design="-1">
+  <Description>JVCLX Encryption and Compression Components</Description>
+  <Requires>
+    <Package Name="JvQCrypt-R" Targets="D7,K3" Condition=""/>
+    <Package Name="rtl" Targets="D7,K3" Condition=""/>
+    <Package Name="visualclx" Targets="D7,K3" Condition=""/>
+    <Package Name="JvQCore-D" Targets="D7,K3" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\qdesign\JvQCryptReg.pas" Targets="D7,K3" Formname="" Condition=""/>
+  </Contains>
+</Package>

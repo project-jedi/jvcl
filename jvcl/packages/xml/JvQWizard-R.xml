@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvQWizard" Design="0">
+  <Description>JVCLX Wizard Run Time Package</Description>
+  <Requires>
+    <Package Name="JvQCore-R" Targets="D7,K3" Condition="USEJVCL"/>
+    <Package Name="rtl" Targets="D7,K3" Condition=""/>
+    <Package Name="visualclx" Targets="D7,K3" Condition=""/>
+    <Package Name="vclx" Targets="D7,K3" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\qrun\JvQWizardCommon.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQWizardRouteMapNodes.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQWizardRouteMapSteps.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQWizard.pas" Targets="D7,K3" Formname="" Condition=""/>
+  </Contains>
+</Package>

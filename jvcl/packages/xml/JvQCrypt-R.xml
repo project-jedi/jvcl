@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvQCrypt" Design="0">
+  <Description>JVCLX Encryption and Compression Runtime Package</Description>
+  <Requires>
+    <Package Name="JvQCore-R" Targets="D7,K3" Condition=""/>
+    <Package Name="rtl" Targets="D7,K3" Condition=""/>
+    <Package Name="visualclx" Targets="D7,K3" Condition=""/>
+    <Package Name="vclx" Targets="D7,K3" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\qrun\JvQZlibMultiple.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQCabFile.pas" Targets="D7" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQCaesarCipher.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQGenetic.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSerialMaker.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQVigenereCipher.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQXorCipher.pas" Targets="D7,K3" Formname="" Condition=""/>
+  </Contains>
+</Package>
