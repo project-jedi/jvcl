@@ -30,13 +30,7 @@ unit JvFormToHtml;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Graphics, Controls, Forms, StdCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QStdCtrls,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
   JvComponent;
 
 type

@@ -30,13 +30,7 @@ unit JvFooter;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Messages, Graphics, Controls, StdCtrls, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QStdCtrls, QExtCtrls,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Messages, Graphics, Controls, StdCtrls, ExtCtrls,
   JvComponent, JvBitBtn, JvTypes;
 
 type
