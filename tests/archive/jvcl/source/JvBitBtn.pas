@@ -86,7 +86,7 @@ begin
   FFontSave := TFont.Create;
   FColor := clInfoBk;
   FOver := False;
-  FGLyph := TBitmap.Create;
+  FGlyph := TBitmap.Create;
   FOldGlyph := TBitmap.Create;
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
@@ -107,6 +107,8 @@ end;
 
 destructor TJvBitBtn.Destroy;
 begin
+  FHotFont.Free;
+  FFontSave.Free;
   FGlyph.Free;
   FOldGlyph.Free;
   inherited;
