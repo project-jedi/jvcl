@@ -3,25 +3,21 @@
 <GROUP JVCL.AlarmsAndTimers.Alarms>
   The TJvAlarms component provides you with a programmable timer. You can add multiple alarms for
   different dates, times and trigger intervals.
-----------------------------------------------------------------------------------------------------
-@@$TJvAlarms.Classes
-<TITLE Classes>
-<GROUP TJvAlarms>
-----------------------------------------------------------------------------------------------------
-@@$TJvAlarms.Records
-<TITLE Records>
-<GROUP TJvAlarms>
-----------------------------------------------------------------------------------------------------
-@@$TJvAlarms.Types
-<TITLE Types>
-<GROUP TJvAlarms>
+
+  To add scheduled tasks to you application you should:
+
+  * drop a TJvAlarms on a form or data module.
+  * write a handler for the <LINK TJvAlarms.OnAlarm, OnAlarm> event.
+  * set the <LINK TJvAlarms.Active, Active> property to True.
+  * Add tasks to the component using the <LINK TJvAlarms.Add, Add> method in run time or the
+    <LINK TJvAlarms.Alarms, Alarms> property editor in design time.
 ----------------------------------------------------------------------------------------------------
 @@JvAlarms.pas
-<GROUP JVCL.FileRef, TJvAlarms>
+<GROUP JVCL.FileRef>
 Summary
   Contains the TJvAlarms component.
 <INCLUDE JVCL.UnitText.dtx>
-Author:
+Author
   Sebastien Buysse
 ----------------------------------------------------------------------------------------------------
 @@TJvAlarms

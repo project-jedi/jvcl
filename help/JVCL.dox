@@ -18,7 +18,7 @@ File2=..\..\jvcl\source\JvAnimate.pas
 Count=0
 
 [Description Files]
-Count=10
+Count=13
 File0=JvAlarms.dtx
 File1=JvAngleLabel.dtx
 File2=JvAnimate.dtx
@@ -28,7 +28,10 @@ File5=JVCL.FuncRef.dtx
 File6=JVCL.Grp.AlarmsAndTimers.Alarms.dtx
 File7=JVCL.Grp.AlarmsAndTimers.dtx
 File8=JVCL.Grp.AlarmsAndTimers.Timers.dtx
-File9=JVCL.Main.dtx
+File9=JVCL.Grp.Graphics.Animation.dtx
+File10=JVCL.Grp.Graphics.dtx
+File11=JVCL.Grp.Labels.dtx
+File12=JVCL.Main.dtx
 
 [Description Include Directories]
 Count=2
@@ -138,7 +141,7 @@ ID18=TJvAnimate.OnStartDrag
 Count=0
 
 [Filters]
-CurrentID={D3A588E0-9472-11D3-BDD1-0080C8BA053D}
+CurrentID={C81B476F-5DE3-416C-A73A-9674B8ECC110}
 
 [Disabled Filters]
 Count=0

@@ -1,26 +1,30 @@
 @@$TJvAngleLabel
 <GROUP JVCL.Labels>
-<TITLE TJvAngleLabel>
+<TITLE TJvAngleLabel: overview>
 ----------------------------------------------------------------------------------------------------
 @@JvAngleLabel.pas
-<GROUP JVCL.FileRef, TJvAngleLabel>
+<GROUP JVCL.FileRef>
 Summary
   Contains the TJvAngleLabel control.
-<INCLUDE incConditions.inc>
-Version:
-  %PROJECTVERSION%
-Author:
+<INCLUDE JVCL.UnitText.dtx>
+Author
   Sebastien Buysse
 ----------------------------------------------------------------------------------------------------
 @@TJvAngleLabel
 <GROUP TJvAngleLabel>
-Summary:
+Summary
   Can draw it's caption in any direction.
 Description
   TJvAngleLabel is a replacement for Delphi's TLabel component that can rotate the text to any
   degree (from 0 to 360).
 ----------------------------------------------------------------------------------------------------
-@@TJvAngleLabel.Create
+@@TJvAngleLabel.Angle
+Summary
+  The angle of the text.
+Description
+  Angle holds the angle at which the text is to be rendered. If set to 0, the text is rendered in
+  the usual way (ie. no rotation). Read Angle to determine the direction at which the text is
+  rendered or set it to a new direction.
 ----------------------------------------------------------------------------------------------------
 @@TJvAngleLabel.DrawText
 Summary
@@ -49,12 +53,4 @@ Description
   SetAngle is the write method for the Angle property.
 See Also
   Angle
-----------------------------------------------------------------------------------------------------
-@@TJvAngleLabel.Angle
-Summary:
-  The angle of the text.
-Description
-  Angle holds the angle at which the text is to be rendered. If set to 0, the text is rendered in
-  the usual way (ie. no rotation). Read Angle to determine the direction at which the text is
-  rendered or set it to a new direction.
 ----------------------------------------------------------------------------------------------------
