@@ -108,13 +108,14 @@ type
   public
     function GetSimpleXML: TJvSimpleXML;
     function SaveToString: string;
+    function FullName:string;
     property Parent: TJvSimpleXMLProps read FParent write FParent;
     property Name: string read FName write SetName;
     property Value: string read FValue write FValue;
     property IntValue: Int64 read GetIntValue write SetIntValue;
     property BoolValue: Boolean read GetBoolValue write SetBoolValue;
     property FloatValue: Extended read GetFloatValue write SetFloatValue;
-    property Pointer: string read FNameSpace write FNameSpace;
+    property NameSpace: string read FNameSpace write FNameSpace;
 
     property Data: Pointer read FData write FData;
   end;
@@ -2026,7 +2027,7 @@ begin
             if (GetSimpleXML <> nil) then
               GetSimpleXML.DoDecodeValue(lValue);
             with Add(lName, lValue) do
-              Pointer := lNameSpace;
+              NameSpace := lNameSpace;
             lPos := ptWaiting;
           end
           else
@@ -2085,6 +2086,14 @@ begin
   Result := StrToFloatDef(Value, 0.0);
 end;
 
+function TJvSimpleXMLProp.FullName: string;
+begin
+  if FNameSpace <> '' then
+    Result := FNameSpace + ':' + Name
+  else
+    Result := Name;
+end;
+
 function TJvSimpleXMLProp.GetIntValue: Int64;
 begin
   Result := StrToInt64Def(Value, -1);
@@ -2105,11 +2114,11 @@ var
 begin
   AEncoder := GetSimpleXML;
   tmp := FValue;
-  if Pointer <> '' then
+  if NameSpace <> '' then
   begin
     if AEncoder <> nil then
       AEncoder.DoEncodeValue(tmp);
-    Result := Format(' %s:%s="%s"', [Pointer, Name, tmp]);
+    Result := Format(' %s:%s="%s"', [NameSpace, Name, tmp]);
   end
   else
   begin
