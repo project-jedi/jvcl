@@ -180,7 +180,7 @@ type
 
   TWinControl = TWidgetControl;
   TControlClass = class of TControl;
-  TColorRef = Integer;
+  TColorRef = Integer;    // real colors
   TPointL = record
     X: Longint;
     Y: Longint;
@@ -196,11 +196,84 @@ function DrawTextBiDiModeFlagsReadingOnly: Longint;
 function DrawTextBiDiModeFlags(Flags: Longint): Longint;
 function UseRightToLeftAlignment: Boolean;
 { colors }
-function GetSysColor(Color: Integer): TColorRef;
+function GetSysColor(SysColor: Integer): TColorRef;
+function SetSysColor(RefColor: TColor; TrueColor: TColorRef): boolean;
+function SetSysColors(Elements: Integer; const lpaElements;
+  const lpaRgbValues): LongBool;
+
+
 function RGB(Red, Green, Blue: Integer): TColorRef;
 function GetBValue(Col: TColorRef): Byte;
 function GetGValue(Col: TColorRef): Byte;
 function GetRValue(Col: TColorRef): Byte;
+
+const
+  { windows symbolic colors }         { mapping VisualCLX Symbolic colors}
+  COLOR_SCROLLBAR = 0;                // clNormalButton
+  COLOR_BACKGROUND = 1;               // clNormalBackground
+  COLOR_ACTIVECAPTION = 2;            // clActiveHighlightedText
+  COLOR_INACTIVECAPTION = 3;          // clDisabledHighlightedText
+  COLOR_MENU = 4;                     // clNormalMid
+  COLOR_WINDOW = 5;                   // clNormalBase
+  COLOR_WINDOWFRAME = 6;              // clNormalHighlight
+  COLOR_MENUTEXT = 7;                 // clNormalButtonText
+  COLOR_WINDOWTEXT = 8;               // clNormalText
+  COLOR_CAPTIONTEXT = 9;              // clNormalHighlightedText
+  COLOR_ACTIVEBORDER = 10;            // clActiveHighlight
+  COLOR_INACTIVEBORDER = 11;          // clDisabledHighlight
+  COLOR_APPWORKSPACE = 12;            // clNormalMid
+  COLOR_HIGHLIGHT = 13;               // clNormalHighlight
+  COLOR_HIGHLIGHTTEXT = 14;           // clNormalHighlightedText
+  COLOR_BTNFACE = 15;                 // clNormalButton
+  COLOR_BTNSHADOW = $10;              // clNormalDark
+  COLOR_GRAYTEXT = 17;                // clNormalDisabledText
+  COLOR_BTNTEXT = 18;                 // clNormalButtonText
+  COLOR_INACTIVECAPTIONTEXT = 19;     // clDisabledHighlightedText
+  COLOR_BTNHIGHLIGHT = 20;            // clActiveLight
+  COLOR_3DDKSHADOW = 21;              // clNormalMid
+  COLOR_3DLIGHT = 22;                 // clNormalMidLight
+  COLOR_INFOTEXT = 23;                // clNormalText
+  COLOR_INFOBK = 24;                  // TColor($E1FFFF)
+//             = 25;                  // ?? (asn: defined as clBlack for now)
+  COLOR_HOTLIGHT = 26;                // clNormalHighlight (asn: ??)
+  COLOR_GRADIENTACTIVECAPTION = 27;   // clActiveHighLight (asn: ??)
+  COLOR_GRADIENTINACTIVECAPTION = 28; // clDisabledHighlight (asn: ??)
+
+  COLOR_ENDCOLORS = COLOR_GRADIENTINACTIVECAPTION;
+(*)
+  COLOR_MENUHILIGHT = 29;
+  COLOR_MENUBAR = 30;
+  COLOR_ENDCOLORS = COLOR_MENUBAR;
+(*)
+
+  COLOR_DESKTOP = COLOR_BACKGROUND;
+  COLOR_3DFACE = COLOR_BTNFACE;
+  COLOR_3DSHADOW = COLOR_BTNSHADOW;
+  COLOR_3DHIGHLIGHT = COLOR_BTNHIGHLIGHT;
+  COLOR_3DHILIGHT = COLOR_BTNHIGHLIGHT;
+  COLOR_BTNHILIGHT = COLOR_BTNHIGHLIGHT;
+
+  clHintColor = TColor($20210500);
+  clDesktop = TColor($20210501);
+  clNoRole = TColor(-15);
+  clNormalNoRole = TColor(clNoRole - cloNormal);
+  clDisabledNoRole = TColor(clNoRole - cloDisabled);
+  clActiveNoRole = TColor(clNoRole - cloActive);
+
+
+  // Windows symbolic colors to mapping VisualCLX symbolic colors
+  Win2TColor: array [0..COLOR_ENDCOLORS] of TColor = (
+  clNormalButton, clNormalBackground, clActiveHighlightedText,     // 0
+  clDisabledHighlightedText, clNormalMid, clNormalBase,            // 3
+  clNormalHighlight, clNormalButtonText, clNormalText,             // 6
+  clNormalHighlightedText, clActiveHighlight, clDisabledHighlight, // 9
+  clNormalMid, clNormalHighlight,  clNormalHighlightedText,        // 12
+  clNormalButton, clNormalDark, clDisabledText,                    // 15
+  clNormalButtonText, clDisabledHighlightedText, clActiveLight,    // 18
+  clNormalMid, clNormalMidLight, clNormalText,                     // 21
+  clHintColor, clBlack ,clNormalHighlight,                         // 24
+  clActiveHighLight, clDisabledHighlight);                         // 27
+
 function SetRect(var R: TRect; Left, Top, Right, Bottom: Integer): LongBool;
 function IsRectEmpty(R: TRect): LongBool;
 function EqualRect(R1, R2: TRect): LongBool;
@@ -285,12 +358,12 @@ function DeleteObject(Handle: QBrushH): LongBool; overload;
 
 const
   { BrushStyle mappings}
-  HS_BDIAGONAL  = BrushStyle_BDiagPattern;  // 45-degree downward left-to-right hatch
-  HS_CROSS      = BrushStyle_CrossPattern;  // Hor. and vertical crosshatch
-  HS_DIAGCROSS  = BrushStyle_DiagCrossPattern;  // 45-degree crosshatch
-  HS_FDIAGONAL  = BrushStyle_FDiagPattern;  // 45-degree upward left-to-right hatch
-  HS_HORIZONTAL = BrushStyle_HorPattern;        // Horizontal hatch
-  HS_VERTICAL   = BrushStyle_VerPattern;        // Vertical hatch
+  HS_BDIAGONAL  = BrushStyle_BDiagPattern;    // 45-degree downward left-to-right hatch
+  HS_CROSS      = BrushStyle_CrossPattern;    // Hor. and vertical crosshatch
+  HS_DIAGCROSS  = BrushStyle_DiagCrossPattern;// 45-degree crosshatch
+  HS_FDIAGONAL  = BrushStyle_FDiagPattern;    // 45-degree upward left-to-right hatch
+  HS_HORIZONTAL = BrushStyle_HorPattern;      // Horizontal hatch
+  HS_VERTICAL   = BrushStyle_VerPattern;      // Vertical hatch
 
 function CreatePen(Style, Width: Integer; Color: TColorRef): QPenH;
 function DeleteObject(Handle: QPenH): LongBool; overload;
@@ -550,20 +623,15 @@ const
   DT_CALCRECT      = $400;
   DT_NOPREFIX      = $800;
   DT_INTERNAL      = $1000;  // Uses the system font to calculate text metrics.
-  DT_EDITCONTROL   = $2000; // ignored
+  DT_EDITCONTROL   = $2000;  // ignored
   DT_PATH_ELLIPSIS = $4000;
   DT_ELLIPSIS      = $8000;
   DT_END_ELLIPSIS  = DT_ELLIPSIS;
   DT_MODIFYSTRING  = $10000;
   DT_RTLREADING    = $20000; // ignored
   DT_WORD_ELLIPSIS = $40000;
-  DT_HIDEPREFIX    = $100000; //unsupported yet
-  DT_PREFIXONLY    = $200000; //unsupported yet
-
-(*
-  function DrawFrameControl(Handle: QPainterH; const Rect: TRect;
-  uType, uState: Cardinal): LongBool;
- *)
+  DT_HIDEPREFIX    = $100000;
+  DT_PREFIXONLY    = $200000;
 
 type
   TSysMetrics = (
@@ -751,7 +819,7 @@ type
 function CombineRgn(DestRgn, Source1, Source2: QRegionH; Operation: TCombineMode): Integer;
 function CreateEllipticRgn(Left, Top, Right, Bottom: Integer): QRegionH;
 function CreateEllipticRgnIndirect(Rect: TRect): QRegionH;
-//function CreatePolygonRgn(p1: TPointArray; Count, FillMode: Integer): QRegionH;
+//function CreatePolygonRgn(p1: TPointArray; FillMode: Integer): QRegionH;
 function CreatePolygonRgn(const Points; Count, FillMode: Integer): QRegionH;
 function CreateRectRgn(Left, Top, Right, Bottom: Integer): QRegionH;
 function CreateRectRgnIndirect(Rect: TRect): QRegionH;
@@ -773,7 +841,7 @@ function SelectClipRgn(Handle: QPainterH; Region: QRegionH): Integer;
 function SetRectRgn(Rgn: QRegionH; X1, Y1, X2, Y2: Integer): LongBool;
 
 const
-// constants for CreatePolygon
+  // constants for CreatePolygon
   ALTERNATE     = 1;
   WINDING       = 2;
   // CombineRgn return values
@@ -792,8 +860,8 @@ function GetViewportExtEx(Handle: QPainterH; Size: PSize): LongBool;
 function TruncatePath(const FilePath: string; Canvas: TCanvas; MaxLen: Integer): string;
 function TruncateName(const Name: WideString; Canvas: TCanvas; MaxLen: Integer): WideString;
 
-
-procedure TextOutAngle(ACanvas: TCanvas; Angle, Left, Top: Integer; Text: WideString);
+procedure TextOutAngle(Handle: QPainterH; Angle, Left, Top: Integer; Text: WideString); overload;
+procedure TextOutAngle(ACanvas: TCanvas; Angle, Left, Top: Integer; Text: WideString); overload;
 
 procedure CopyMemory(Dest: Pointer; Src: Pointer; Len: Cardinal);
 procedure FillMemory(Dest: Pointer; Len: Cardinal; Fill: Byte);
@@ -836,8 +904,8 @@ function CopyFile(const source: string; const destination: string;
 
 function FileGetSize(const FileName: string): Cardinal;
 function FileGetAttr(const FileName: string): Integer;
-function GetUserName(lpBuffer: PChar; var nSize: DWORD): LongBool;
-function GetComputerName(lpBuffer: PChar; var nSize: DWORD): LongBool;
+//function GetUserName(lpBuffer: PChar; var nSize: DWORD): LongBool;
+//function GetComputerName(lpBuffer: PChar; var nSize: DWORD): LongBool;
 function MakeIntResource(Value: Integer): PChar;
 function GetTickCount: Cardinal;
 procedure MessageBeep(Value: Integer);   // value ignored
@@ -1062,9 +1130,78 @@ begin
   Result := False;
 end;
 
-function GetSysColor(Color: Integer): TColorRef;
+function GetSysColor(SysColor: integer): TColorRef;
 begin
-  Result := TColorRef(Application.Palette.GetColor(Color));
+  if (SysColor >= 0) and (SysColor <= COLOR_ENDCOLORS) then
+    SysColor := GetSysColor( Win2TColor[SysColor] );
+  case SysColor of
+  clHintColor:
+    Result := TColorRef(Application.HintColor);
+  clDeskTop:
+    Result := TColorRef(QColorColor(QWidget_BackgroundColor(QApplication_desktop)));
+  else
+    Result := TColorRef(Application.Palette.GetColor(SysColor));
+  end;
+end;
+
+const
+  ColorRoles: array[1..15] of TColorRole =(
+    crForeground, crButton, crLight, crMidlight, crDark, crMid,
+    crText, crBrightText, crButtonText, crBase, crBackground, crShadow,
+    crHighlight, crHighlightText, crNoRole);
+
+function SetSysColor(RefColor: TColor; TrueColor: TColorRef): boolean;
+var
+  QC: QColorH;
+begin
+  with Application.Palette do
+    if (TrueColor >= TColor(0)) and (TrueColor <= TColor($FFFFFF)) then
+    begin
+      Result := true;
+      case RefColor of
+      clNormalNoRole..clNormalForeground:
+        SetColor(cgInactive, ColorRoles[-(RefColor+cloNormal)], TrueColor);
+      clDisabledNoRole..clDisabledForeground:
+        SetColor(cgDisabled, ColorRoles[-(RefColor+cloDisabled)], TrueColor);
+      clActiveNoRole..clActiveForeground:
+        SetColor(cgActive, ColorRoles[-(RefColor+cloActive)], TrueColor);
+      clHintColor:
+        Application.HintColor := TrueColor;
+      clDeskTop:
+        begin
+          QC := QColor(TrueColor);
+          QWidget_setBackGroundColor(QApplication_desktop, QC);
+          QColor_destroy(QC);
+        end;
+      else   // case
+        Result := False
+      end;
+    end
+    else  // if
+      Result := false;   // only rgb values are accepted
+end;
+
+
+function SetSysColors(Elements: Integer; const lpaElements;
+  const lpaRgbValues): LongBool;
+var
+  i: integer;
+  refcolor : PColor;
+  realcolor : PColor;
+begin
+  Result := true;
+  refcolor := PColor(lpaElements);
+  realcolor := PColor(lpaRGBvalues);
+  Application.Palette.BeginUpdate;
+  for i := 0 to Elements-1 do
+  begin
+    if not SetSysColor( refcolor^, realcolor^)
+    then
+      Result := false;
+    inc(refcolor);
+    inc(realcolor);
+  end;
+  Application.Palette.EndUpdate;
 end;
 
 function CreatePen(Style, Width: Integer; Color: TColorRef): QPenH;
@@ -1126,6 +1263,17 @@ begin
   end;
 end;
 
+function SetWindowPos(Handle: QWidgetH; W: PWindowPlacement): LongBool;
+begin
+  try
+    with W.rcNormalPosition do
+       QWidget_setGeometry(Handle, Left, Top, Right - Left, Bottom - Top);
+    Result := ShowWindow(Handle, W.ShowCmd);
+  except
+    Result := False;
+  end;
+end;
+
 function GetWindowPlacement(Handle: QWidgetH; W: PWindowPlacement): LongBool;
 var
   R: TRect;
@@ -1161,18 +1309,8 @@ begin
 end;
 
 function GetClientRect(Handle: QWidgetH; var R: TRect): LongBool;
-// var
-//  Control: TWidgetControl;
 begin
   try
-(*)
-    // some CLX controls have a modified ClientRect
-    // asn: exactly  (no difference with VCL)
-    Control := FindControl(Handle);  // asn: define another api if you want this
-    if Control <> nil then           //      behavior ( GetCLXClientRect ? ) 
-      R := Control.ClientRect
-    else
-(*)
     QWidget_rect(Handle, @R);
     Result := True;
   except
@@ -1565,7 +1703,6 @@ begin
   end;
 end;
 
-
 function SetROP2(Handle: QPainterH; Rop: Integer): Integer;
 var
   rop2: RasterOp;
@@ -1712,7 +1849,7 @@ begin
     if WinId <> 0 then
       Result := QWidget_find(WinId);
   except
-    Result := nil; 
+    Result := nil;
   end;
 end;
 
@@ -2563,22 +2700,23 @@ begin
             (R1.Top = R2.Top) and (R1.Bottom = R2.Bottom)
 end;
 
+procedure TextOutAngle(Handle: QPainterH; Angle, Left, Top: Integer; Text: WideString);
+begin
+  try
+    QPainter_save(Handle);
+    QPainter_translate(Handle, Left, Top);
+    QPainter_rotate(Handle, -Angle);
+    QPainter_drawText(Handle, 0, 0, @Text, -1);
+  finally
+    QPainter_restore(Handle);
+  end;
+end;
+
 procedure TextOutAngle(ACanvas: TCanvas; Angle, Left, Top: Integer; Text: WideString);
 begin
- {this code is courtesy of Jon Shemitz <jon@midnightbeach.com>}
- {Outside of a Paint handler, bracket QPainter_ calls with a Start/Stop}
   ACanvas.Start;
-  try
-    QPainter_save(ACanvas.Handle);
-   {Move 0,0 to the center of the form}
-    QPainter_translate(ACanvas.Handle, Left, Top);
-   {Rotate; note negative angle:}
-    QPainter_rotate(ACanvas.Handle, -Angle);
-    ACanvas.TextOut(0, 0, Text);
-  finally
-    QPainter_restore(ACanvas.Handle);
-    ACanvas.Stop;
-  end;
+  TextOutAngle(ACanvas.Handle, Angle, Left, Top, Text);
+  ACanvas.Stop;
 end;
 
 function TextWidth(Handle: QPainterH; Caption: WideString;
@@ -3699,14 +3837,14 @@ begin
     try
       pixmap := QPixmap_create(2, 2, depth, QPixmapOptimization_NoOptim);
       tempDC := QPainter_create(pixmap);
-      Qt.bitblt(tempDC, 0, 0, 1, 1, Handle, X, Y, RasterOp_CopyROP);
+      Bitblt(tempDC, 0, 0, 1, 1, Handle, X, Y, SRCCOPY);
       img := QImage_create;
       QPixmap_convertToImage(pixmap, img);
       Result := QImage_pixelIndex(img, 0, 0);
     finally
       if Assigned(img) then
         QImage_destroy(img);
-      if Assigend(tempdc) then
+      if Assigned(tempdc) then
         QPainter_destroy(tempdc);
       if Assigned(pixmap) then
         QPixmap_destroy(pixmap);
