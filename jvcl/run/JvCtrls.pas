@@ -65,7 +65,7 @@ type
     property ItemHeight;
     property Items;
 
-    property Multiline;
+    property MultiLine;
     property SelectedColor;
     property SelectedTextColor;
     property DisabledTextColor;
