@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -19,13 +19,12 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -34,8 +33,12 @@ unit JvQGradientCaption;
 interface
 
 uses
+
+
   QClasses, QGraphics, QControls, QForms, QMenus,
-  JvQWndProcHook, JvQJCLUtils, JvQJVCLUtils;
+  JvQJCLUtils, JvQWndProcHook;
+
+
 
 type
   THideDirection = (hdLeftToRight, hdRightToLeft);
@@ -180,6 +183,7 @@ type
 function GradientFormCaption(AForm: TCustomForm; AStartColor: TColor): TJvGradientCaption;
 
 implementation
+
 uses
   SysUtils,
   JvQConsts;
@@ -906,7 +910,7 @@ var
           Flags := Flags or DT_RIGHT or DT_RTLREADING
         else
           Flags := Flags or DT_LEFT;
-        DrawText(Image.Canvas.Handle, PChar(Text), -1, R, Flags);
+        DrawText(Image.Canvas, Text, -1, R, Flags);
         if IsRightToLeft then
           Dec(R.Right, Image.Canvas.TextWidth(Text))
         else

@@ -158,7 +158,8 @@ end;
 procedure TMTInternalThread.Execute;
 begin
   RaiseName;
-  if Assigned(FOnExecute) then FOnExecute(Self);
+  if Assigned(FOnExecute) then
+    FOnExecute(Self);
 end;
 
 procedure TMTInternalThread.RaiseName;
@@ -172,13 +173,12 @@ begin
   ThreadNameInfo.FName := PChar(FName);
   ThreadNameInfo.FThreadID := $FFFFFFFF;
   ThreadNameInfo.FFlags := 0;
-  {$IFDEF MSWINDOWS}
   try
     RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(LongWord),
       @ThreadNameInfo);
   except
   end;
-  {$ENDIF MSWINDOWS}
+  
 end;
 
 //=== TMTThread ==============================================================
@@ -343,7 +343,6 @@ procedure TMTThread.SetName(const Value: string);
 begin
   FStatusChange.Acquire;
   try
-  
     if Status in [tsInitializing, tsFinished] then
       FName := Value
     else

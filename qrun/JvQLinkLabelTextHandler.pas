@@ -123,7 +123,7 @@ type
       Node: TAreaNode);
   end;
 
-  TParentTextElement = class
+  TParentTextElement = class(TObject)
   end;
 
   TStringElement = class(TParentTextElement)

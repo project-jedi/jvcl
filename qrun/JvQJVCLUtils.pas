@@ -2553,6 +2553,7 @@ type
 
 constructor TJvProcItem.Create(AProcObj: TProcObj);
 begin
+  inherited Create;
   FProcObj := AProcObj;
 end;
 
@@ -4803,9 +4804,9 @@ end;
 procedure JvFreeObjectInstance(ObjectInstance: Pointer);
 begin
   if ObjectInstance <> nil then
-    
-    Classes.FreeObjectInstance(ObjectInstance);
-    
+  
+  Classes.FreeObjectInstance(ObjectInstance);
+  
 end;
 
 {$ENDIF MSWINDOWS}

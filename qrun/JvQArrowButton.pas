@@ -145,7 +145,7 @@ uses
   
   QConsts,
   
-  JvQConsts, JvQThemes;
+  JvQConsts, JvQThemes, JvQJCLUtils;
 
 type
   TGlyphList = class(TImageList)
@@ -204,8 +204,6 @@ type
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
-
-
 
 procedure DrawLine(Canvas: TCanvas; X, Y, X2, Y2: Integer);
 begin
@@ -607,8 +605,7 @@ begin
       DrawText(Canvas, S, -1, TextBounds, 0);
     end
     else
-      DrawText(Canvas, S, -1, TextBounds,
-        DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+      DrawText(Canvas, S, -1, TextBounds, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
   end;
 end;
 

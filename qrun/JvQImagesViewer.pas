@@ -37,15 +37,17 @@ uses
   {$ENDIF MSWINDOWS}
   
   
-  Types, QWindows, QControls, QGraphics, QStdCtrls, QComCtrls, JvQCustomItemViewer;
+  Types, QWindows, QControls, QGraphics, QStdCtrls, QComCtrls,
+  
+  JvQCustomItemViewer;
 
 type
   TJvImageItem = class(TJvViewerItem)
   private
-    FFilename: string;
+    FFileName: string;
     FPicture: TPicture;
     FCaption: TCaption;
-    procedure SetFilename(const Value: string);
+    procedure SetFileName(const Value: string);
     procedure SetCaption(const Value: TCaption);
     procedure SetPicture(const Value: TPicture);
     function GetPicture: TPicture;
@@ -58,23 +60,23 @@ type
   public
     destructor Destroy; override;
   public
-    property Filename: string read FFilename write SetFilename;
+    property FileName: string read FFileName write SetFileName;
     property Picture: TPicture read GetPicture write SetPicture;
     property Caption: TCaption read FCaption write SetCaption;
   end;
 
   TJvImageViewerOptions = class(TJvCustomItemViewerOptions)
   private
-    FImagePadding: integer;
+    FImagePadding: Integer;
     FFrameColor: TColor;
-    FHotFrameSize: integer;
+    FHotFrameSize: Integer;
     FHotColor: TColor;
-    FTransparent: boolean;
-    procedure SetImagePadding(const Value: integer);
+    FTransparent: Boolean;
+    procedure SetImagePadding(const Value: Integer);
     procedure SetFrameColor(const Value: TColor);
     procedure SetHotColor(const Value: TColor);
-    procedure SetHotFrameSize(const Value: integer);
-    procedure SetTransparent(const Value: boolean);
+    procedure SetHotFrameSize(const Value: Integer);
+    procedure SetTransparent(const Value: Boolean);
   public
     constructor Create(AOwner: TJvCustomItemViewer); override;
   published
@@ -86,17 +88,17 @@ type
     property Height;
     property HorzSpacing;
     property HotColor: TColor read FHotColor write SetHotColor default clHighlight;
-    property HotFrameSize: integer read FHotFrameSize write SetHotFrameSize default 2;
+    property HotFrameSize: Integer read FHotFrameSize write SetHotFrameSize default 2;
     property HotTrack;
-    property ImagePadding: integer read FImagePadding write SetImagePadding default 8;
+    property ImagePadding: Integer read FImagePadding write SetImagePadding default 8;
     property Layout;
     property LazyRead;
     property MultiSelect;
     property ReduceMemoryUsage;
     property RightClickSelect;
-    property Transparent:boolean read FTransparent write SetTransparent default false;
+    property Transparent: Boolean read FTransparent write SetTransparent default False;
     property ScrollBar;
-    property ShowCaptions default true;
+    property ShowCaptions default True;
     property Tracking;
     property VertSpacing;
     property Width;
@@ -104,7 +106,7 @@ type
 
   TJvImageLoadEvent = procedure(Sender: TObject; Item: TJvImageItem) of object;
   TJvImageLoadErrorEvent = procedure(Sender: TObject; E: Exception;
-    const Filename: string; var Handled: boolean) of object;
+    const FileName: string; var Handled: Boolean) of object;
   TJvImageViewerLoadProgress = procedure(Sender: TObject; Item: TJvImageItem; Stage: TProgressStage;
     PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string) of object;
 
@@ -118,7 +120,7 @@ type
     FOnLoadEnd: TNotifyEvent;
     procedure SetDirectory(const Value: string);
     procedure SetFileMask(const Value: string);
-    function GetItems(Index: integer): TJvImageItem;
+    function GetItems(Index: Integer): TJvImageItem;
     procedure ExpandFileMask(const Mask: string; Strings: TStrings);
     function ScaleRect(ARect, RefRect: TRect): TRect;
     function GetOptions: TJvImageViewerOptions;
@@ -126,7 +128,7 @@ type
   protected
     function GetItemClass: TJvViewerItemClass; override;
     function GetOptionsClass: TJvItemViewerOptionsClass; override;
-    function LoadErrorHandled(E: Exception; const Filename: string): boolean;
+    function LoadErrorHandled(E: Exception; const FileName: string): Boolean;
     procedure DoLoadBegin; virtual;
     procedure DoLoadProgress(Item: TJvImageItem; Stage: TProgressStage; PercentDone: Byte; RedrawNow: Boolean; const R:
       TRect; const Msg: string);
@@ -134,8 +136,8 @@ type
     procedure DrawItem(Index: Integer; State: TCustomDrawState; Canvas: TCanvas; ItemRect, TextRect: TRect); override;
   public
     constructor Create(AOwner: TComponent); override;
-    function LoadImages: boolean;
-    property Items[Index: integer]: TJvImageItem read GetItems;
+    function LoadImages: Boolean;
+    property Items[Index: Integer]: TJvImageItem read GetItems;
     property Count;
   published
     property Directory: string read FDirectory write SetDirectory;
@@ -196,8 +198,7 @@ implementation
 uses
   JvQJCLUtils;
   
-
-{ TJvImageViewerOptions }
+//=== TJvImageViewerOptions ==================================================
 
 constructor TJvImageViewerOptions.Create(AOwner: TJvCustomItemViewer);
 begin
@@ -206,7 +207,7 @@ begin
   FFrameColor := clGray;
   FHotColor := clHighlight;
   FHotFrameSize := 2;
-  ShowCaptions := true;
+  ShowCaptions := True;
 end;
 
 procedure TJvImageViewerOptions.SetFrameColor(const Value: TCOlor);
@@ -223,12 +224,12 @@ begin
   FHotColor := Value;
 end;
 
-procedure TJvImageViewerOptions.SetHotFrameSize(const Value: integer);
+procedure TJvImageViewerOptions.SetHotFrameSize(const Value: Integer);
 begin
   FHotFrameSize := Value;
 end;
 
-procedure TJvImageViewerOptions.SetImagePadding(const Value: integer);
+procedure TJvImageViewerOptions.SetImagePadding(const Value: Integer);
 begin
   if (FImagePadding <> Value) then
   begin
@@ -237,7 +238,7 @@ begin
   end;
 end;
 
-procedure TJvImageViewerOptions.SetTransparent(const Value: boolean);
+procedure TJvImageViewerOptions.SetTransparent(const Value: Boolean);
 begin
   if FTransparent <> Value then
   begin
@@ -246,18 +247,24 @@ begin
   end;
 end;
 
+//=== TJvImageItem ===========================================================
 
-{ TJvImageItem }
+destructor TJvImageItem.Destroy;
+begin
+  FreeAndNil(FPicture);
+  inherited Destroy;
+end;
 
 procedure TJvImageItem.CreatePicture;
-var S:string;
+var
+  S: string;
 begin
   if FPicture = nil then
   begin
     FPicture := TPicture.Create;
     FPicture.OnChange := DoPictureChange;
     FPicture.OnProgress := DoLoadProgress;
-    S := ExpandUNCFilename(Filename);
+    S := ExpandUNCFilename(FileName);
     if (S <> '') and FileExists(S) then
     try
       FPicture.LoadFromFile(S);
@@ -265,7 +272,7 @@ begin
         FPicture.Graphic.Transparent := TJvImagesViewer(Owner).Options.Transparent;
     except
       on E: Exception do
-        if not TJvImagesViewer(Owner).LoadErrorHandled(E, Filename) then
+        if not TJvImagesViewer(Owner).LoadErrorHandled(E, FileName) then
           Delete
         else
         begin
@@ -274,12 +281,6 @@ begin
         end;
     end;
   end;
-end;
-
-destructor TJvImageItem.Destroy;
-begin
-  FreeAndNil(FPicture);
-  inherited Destroy;
 end;
 
 procedure TJvImageItem.DoPictureChange(Sender: TObject);
@@ -300,11 +301,11 @@ begin
   Result := FPicture;
 end;
 
-procedure TJvImageItem.SetFilename(const Value: string);
+procedure TJvImageItem.SetFileName(const Value: string);
 begin
-  if (AnsiCompareFilename(FFilename, Value) <> 0) and Changing then
+  if (AnsiCompareFilename(FFileName, Value) <> 0) and Changing then
   begin
-    FFilename := Value;
+    FFileName := Value;
     // don't load image unless necessary
     FreeAndNil(FPicture);
   end;
@@ -331,24 +332,27 @@ end;
 procedure TJvImageItem.ReduceMemoryUsage;
 begin
   inherited ReduceMemoryUsage;
-  if Filename <> '' then // release image if we can recreate it from it's filename
+  if FileName <> '' then // release image if we can recreate it from it's filename
     Picture := nil;
 end;
 
-{ TJvImagesViewer }
+//=== TJvImagesViewer ========================================================
 
 constructor TJvImagesViewer.Create(AOwner: TComponent);
-begin           
+begin
   inherited Create(AOwner);
   //  FDirectory := GetCurrentDir;
+  
+  
   FFileMask := QGraphics.GraphicFileMask(TGraphic);
+  
   Color := clWindow;
 end;
 
 function TJvImagesViewer.ScaleRect(ARect, RefRect: TRect): TRect;
 var
   w, h, cw, ch: Integer;
-  xyaspect: Double;
+  XYAspect: Double;
 begin
   w := ARect.Right - ARect.Left;
   h := ARect.Bottom - ARect.Top;
@@ -359,25 +363,25 @@ begin
   begin
     if (w > 0) and (h > 0) then
     begin
-      xyaspect := w / h;
+      XYAspect := w / h;
       if w > h then
       begin
         w := cw;
-        h := Trunc(cw / xyaspect);
+        h := Trunc(cw / XYAspect);
         if h > ch then
         begin
           h := ch;
-          w := Trunc(ch * xyaspect);
+          w := Trunc(ch * XYAspect);
         end;
       end
       else
       begin
         h := ch;
-        w := Trunc(ch * xyaspect);
+        w := Trunc(ch * XYAspect);
         if w > cw then
         begin
           w := cw;
-          h := Trunc(cw / xyaspect);
+          h := Trunc(cw / XYAspect);
         end;
       end;
     end
@@ -397,22 +401,24 @@ begin
   end;
 end;
 
-procedure TJvImagesViewer.DrawItem(Index: Integer; State: TCustomDrawState; Canvas: TCanvas; ItemRect, TextRect:
-  TRect);
+procedure TJvImagesViewer.DrawItem(Index: Integer; State: TCustomDrawState;
+  Canvas: TCanvas; ItemRect, TextRect: TRect);
 var
   ImageRect: TRect;
-  TotalPadding, BottomRightShift: integer;
+  TotalPadding, BottomRightShift: Integer;
   AItem: TJvImageItem;
   S: string;
-  procedure ModifyRect(var R:TRect; ALeft, ATop, ARight, ABottom:integer);
+
+  procedure ModifyRect(var R:TRect; ALeft, ATop, ARight, ABottom: Integer);
   begin
     Inc(R.Left, ALeft);
     Inc(R.Top, ATop);
     Inc(R.Right, ARight);
     Inc(R.Bottom, ABottom);
   end;
+
 begin
-  inherited;
+  inherited DrawItem(Index, State, Canvas, ItemRect, TextRect);
   {$IFDEF MSWINDOWS}
   if Win32Platform = VER_PLATFORM_WIN32_NT then
     BottomRightShift := 1
@@ -430,7 +436,7 @@ begin
     Inc(TextRect.Top, 2);
     S := AItem.Caption;
     if (S = '') then
-      S := ExtractFileName(AItem.Filename);
+      S := ExtractFileName(AItem.FileName);
   end;
 
   if cdsHot in State then
@@ -462,11 +468,11 @@ begin
     Canvas.Brush.Style := bsClear;
     Canvas.Pen.Color := Options.HotColor;
     Canvas.Pen.Width := Options.HotFrameSize;
-    ModifyRect(ItemRect,Options.HotFrameSize div 2,Options.HotFrameSize div 2,
-      -Options.HotFrameSize div 2 + BottomRightShift,-Options.HotFrameSize div 2 + BottomRightShift);
+    ModifyRect(ItemRect,Options.HotFrameSize div 2, Options.HotFrameSize div 2,
+      -Options.HotFrameSize div 2 + BottomRightShift, -Options.HotFrameSize div 2 + BottomRightShift);
     Canvas.Rectangle(ItemRect);
-    ModifyRect(ItemRect,-Options.HotFrameSize div 2,-Options.HotFrameSize div 2,
-      Options.HotFrameSize div 2 - BottomRightShift,Options.HotFrameSize div 2 - BottomRightShift);
+    ModifyRect(ItemRect,-Options.HotFrameSize div 2, -Options.HotFrameSize div 2,
+      Options.HotFrameSize div 2 - BottomRightShift, Options.HotFrameSize div 2 - BottomRightShift);
     Canvas.Font.Color := clHighlightText;
     Canvas.Brush.Style := bsSolid;
     Canvas.Brush.Color := clHighlight;
@@ -485,14 +491,12 @@ begin
     ImageRect := Rect(0, 0, AItem.Picture.Width, AItem.Picture.Height);
     ImageRect := CenterRect(ScaleRect(ImageRect, ItemRect), ItemRect);
     if (RectWidth(ImageRect) > 0) and (RectHeight(ImageRect) > 0) then
-    begin
-      if (AItem.Picture.Graphic is TIcon) then
+      if AItem.Picture.Graphic is TIcon then
         //        and (RectWidth(ImageRect) < RectWidth(R)) and (RectHeight(ImageRect) < RectHeight(R))  then
         with ImageRect do // TIcon doesn't scale it's content
           DrawIconEx(Canvas.Handle, Left, Top, AItem.Picture.Icon.Handle, Right - Left, Bottom - Top, 0, 0, DI_NORMAL)
       else
         Canvas.StretchDraw(ImageRect, AItem.Picture.Graphic);
-    end;
   end;
 
   if Options.ShowCaptions and (S <> '') then
@@ -500,11 +504,11 @@ begin
     if Options.Layout = tlCenter then
       S := ' ' + S + ' ';
     ViewerDrawText(Canvas, PChar(S), Length(S),
-      TextRect, DT_END_ELLIPSIS or DT_EDITCONTROL, Options.Alignment, tlCenter, false);
+      TextRect, DT_END_ELLIPSIS or DT_EDITCONTROL, Options.Alignment, tlCenter, False);
   end;
 end;
 
-function TJvImagesViewer.GetItems(Index: integer): TJvImageItem;
+function TJvImagesViewer.GetItems(Index: Integer): TJvImageItem;
 begin
   Result := TJvImageItem(inherited Items[Index]);
 end;
@@ -514,41 +518,41 @@ begin
   Result := TJvImageItem;
 end;
 
-function TJvImagesViewer.LoadImages: boolean;
+function TJvImagesViewer.LoadImages: Boolean;
 var
-  i, j: integer;
+  I, J: Integer;
   F: TSearchRec;
   Files, FileMasks: TStringList;
-  tmpDir: string;
+  TmpDir: string;
 begin
   BeginUpdate;
   try
     Count := 0;
-    tmpDir := ExpandUNCFileName(Directory);
+    TmpDir := ExpandUNCFileName(Directory);
     FileMasks := TStringList.Create;
     try
-      FileMasks.Sorted := true; // make sure no duplicates are added
+      FileMasks.Sorted := True; // make sure no duplicates are added
       ExpandFileMask(Filemask, FileMasks);
-      if tmpDir <> '' then
-        tmpDir := IncludeTrailingPathDelimiter(tmpDir);
+      if TmpDir <> '' then
+        TmpDir := IncludeTrailingPathDelimiter(TmpDir);
       DoLoadBegin;
-      Files := TStringlist.Create;
+      Files := TStringList.Create;
       try
-        Files.Sorted := true;
-        for i := 0 to FileMasks.Count - 1 do
+        Files.Sorted := True;
+        for I := 0 to FileMasks.Count - 1 do
         begin
-          if SysUtils.FindFirst(tmpDir + FileMasks[i], faAnyFile, F) = 0 then
+          if SysUtils.FindFirst(TmpDir + FileMasks[I], faAnyFile, F) = 0 then
           try
             repeat
               if F.Attr and faDirectory = 0 then
-                Files.Add(tmpDir + F.Name);
+                Files.Add(TmpDir + F.Name);
             until SysUtils.FindNext(F) <> 0;
             Count := Files.Count;
-            j := 0;
-            while j < Files.Count do
+            J := 0;
+            while J < Files.Count do
             begin
-              Items[j].Filename := Files[j];
-              Inc(j);
+              Items[J].FileName := Files[J];
+              Inc(J);
             end;
           finally
             SysUtils.FindClose(F);
@@ -589,7 +593,7 @@ procedure TJvImagesViewer.ExpandFileMask(const Mask: string;
   Strings: TStrings);
 var
   Start, Current: PChar;
-  tmpChar: char;
+  TmpChar: Char;
 begin
   Current := PChar(Mask);
   Start := Current;
@@ -597,11 +601,11 @@ begin
   begin
     if Current^ in [',', ';'] then
     begin
-      tmpChar := Current^;
+      TmpChar := Current^;
       Current^ := #0;
       if Start <> '' then
         Strings.Add(Start);
-      Current^ := tmpChar;
+      Current^ := TmpChar;
       Start := Current + 1;
     end;
     Inc(Current);
@@ -610,12 +614,11 @@ begin
     Strings.Add(Start);
 end;
 
-function TJvImagesViewer.LoadErrorHandled(E: Exception; const Filename: string):
-  boolean;
+function TJvImagesViewer.LoadErrorHandled(E: Exception; const FileName: string): Boolean;
 begin
-  Result := false;
+  Result := False;
   if Assigned(FOnLoadError) then
-    FOnLoadError(Self, E, Filename, Result);
+    FOnLoadError(Self, E, FileName, Result);
 end;
 
 procedure TJvImagesViewer.DoLoadBegin;

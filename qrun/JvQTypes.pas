@@ -48,6 +48,19 @@ uses
 const
   MaxPixelCount = 32767;
 
+{$HPPEMIT '#ifndef TDate'}
+
+
+{$HPPEMIT '#define TDate TDateTime'}
+{$HPPEMIT '#define TTime TDateTime'}
+type
+  TDate = type TDateTime;
+  {$EXTERNALSYM TDate}
+  TTime = type TDateTime;
+  {$EXTERNALSYM TTime}
+
+{$HPPEMIT '#endif'}
+
 type
   
 
@@ -405,13 +418,13 @@ type
 
 type
   // equivalent of TPoint, but that can be a published property for BCB
-  TJvPoint = class (TPersistent)
+  TJvPoint = class(TPersistent)
   private
     FY: Longint;
     FX: Longint;
     FOnChange: TNotifyEvent;
-    procedure SetX(const Value: Longint);
-    procedure SetY(const Value: Longint);
+    procedure SetX(Value: Longint);
+    procedure SetY(Value: Longint);
   protected
     procedure DoChange;
   public
@@ -423,7 +436,7 @@ type
   end;
 
   // equivalent of TRect, but that can be a published property for BCB
-  TJvRect = class (TPersistent)
+  TJvRect = class(TPersistent)
   private
     FTopLeft: TJvPoint;
     FBottomRight: TJvPoint;
@@ -432,12 +445,12 @@ type
     function GetLeft: Integer;
     function GetRight: Integer;
     function GetTop: Integer;
-    procedure SetBottom(const Value: Integer);
-    procedure SetLeft(const Value: Integer);
-    procedure SetRight(const Value: Integer);
-    procedure SetTop(const Value: Integer);
-    procedure SetBottomRight(const Value: TJvPoint);
-    procedure SetTopLeft(const Value: TJvPoint);
+    procedure SetBottom(Value: Integer);
+    procedure SetLeft(Value: Integer);
+    procedure SetRight(Value: Integer);
+    procedure SetTop(Value: Integer);
+    procedure SetBottomRight(Value: TJvPoint);
+    procedure SetTopLeft(Value: TJvPoint);
     procedure PointChange(Sender: TObject);
   protected
     procedure DoChange;
@@ -461,7 +474,7 @@ implementation
 
 constructor TJvPersistent.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
 
   SetSubComponent(True);
   Name := 'SubComponent';
@@ -479,15 +492,15 @@ begin
     DoChange;
   end
   else
-    inherited;
+    inherited Assign(Source);
 end;
 
 constructor TJvRect.Create;
 begin
-  inherited;
+  inherited Create;
   FTopLeft     := TJvPoint.Create;
   FBottomRight := TJvPoint.Create;
-  
+
   FTopLeft.OnChange     := PointChange;
   FBottomRight.OnChange := PointChange;
 end;
@@ -496,7 +509,7 @@ destructor TJvRect.Destroy;
 begin
   FTopLeft.Free;
   FBottomRight.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvRect.DoChange;
@@ -530,32 +543,32 @@ begin
   DoChange;
 end;
 
-procedure TJvRect.SetBottom(const Value: Integer);
+procedure TJvRect.SetBottom(Value: Integer);
 begin
   FBottomRight.Y := Value;
 end;
 
-procedure TJvRect.SetBottomRight(const Value: TJvPoint);
+procedure TJvRect.SetBottomRight(Value: TJvPoint);
 begin
   FBottomRight.Assign(Value);
 end;
 
-procedure TJvRect.SetLeft(const Value: Integer);
+procedure TJvRect.SetLeft(Value: Integer);
 begin
   FTopLeft.X := Value;
 end;
 
-procedure TJvRect.SetRight(const Value: Integer);
+procedure TJvRect.SetRight(Value: Integer);
 begin
   FBottomRight.X := Value;
 end;
 
-procedure TJvRect.SetTop(const Value: Integer);
+procedure TJvRect.SetTop(Value: Integer);
 begin
   FTopLeft.Y := Value;
 end;
 
-procedure TJvRect.SetTopLeft(const Value: TJvPoint);
+procedure TJvRect.SetTopLeft(Value: TJvPoint);
 begin
   FTopLeft.Assign(Value);
 end;
@@ -580,13 +593,13 @@ begin
     FOnChange(Self);
 end;
 
-procedure TJvPoint.SetX(const Value: Longint);
+procedure TJvPoint.SetX(Value: Longint);
 begin
   FX := Value;
   DoChange;
 end;
 
-procedure TJvPoint.SetY(const Value: Longint);
+procedure TJvPoint.SetY(Value: Longint);
 begin
   FY := Value;
   DoChange;

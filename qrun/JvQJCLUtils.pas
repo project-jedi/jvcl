@@ -880,6 +880,8 @@ procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin,
 // the resulting string
 function TextToValText(const AValue: string): string;
 
+
+
 implementation
 
 uses
@@ -938,7 +940,7 @@ end;
 
 function CharIsAlpha(Ch: AnsiChar): Boolean;
 begin
-  Result := true; // !!!!!!!!!!!!!!!!!!!!!!!!!!! Windows.IsCharAlpha(Ch);
+  Result := Windows.IsCharAlpha(Ch);
 end;
 
 { (ahuser) make Delphi 5 compiler happy
@@ -6048,9 +6050,8 @@ end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 begin
-  // ignoring Visibility
+  // ignores Visibility
   Libc.system(PChar(Format('kfmclient exec "%s"', [FileName])));
-    //  Libc.system(PChar(FileName));
 end;
 {$ENDIF LINUX}
 
@@ -6591,9 +6592,7 @@ begin
   b := Filename;
   UniqueString(b);
   R := Rect(0, 0, MaxLen, Canvas.TextHeight('Wq'));
-  if DrawText(Canvas.Handle, PChar(b), -1, R,
-    DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or
-    DT_CALCRECT or DT_NOPREFIX) > 0 then
+  if QWindows.DrawText(Canvas.Handle, PChar(b), Length(b), R, DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or DT_CALCRECT or DT_NOPREFIX) > 0 then
     Result := string(PChar(b))
   else
     Result := Filename;
@@ -7286,6 +7285,8 @@ begin
   if Result = '-' then
     Result := '-0';
 end;
+
+
 
 end.
 

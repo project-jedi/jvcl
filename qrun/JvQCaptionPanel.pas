@@ -583,12 +583,12 @@ end;
 
 procedure TJvCaptionPanel.DrawRotatedText(Rotation: Integer);
 var
+  tH: Integer;
   
   
   X, Y: Integer;
   
   R: TRect;
-  tH, tW: Integer;
 begin
   if FCaption = '' then
     Exit;
@@ -604,11 +604,15 @@ begin
       
       R := FCaptionRect;
       tH := ((R.Bottom - R.Top) - Canvas.TextHeight(FCaption)) div 2;
-      tW := ((R.Right - R.Left) - Canvas.TextHeight(FCaption)) div 2;
+      
+      
+      X := FCaptionRect.Left;
+      Y := FCaptionRect.Top;
+      
       if FOutlookLook then
       begin
         Dec(th);
-        Dec(tw);
+        
       end;
       case FDrawPosition of
         dpLeft:

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,22 +20,25 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
-Last Modified: 2000-02-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
-unit JvQId3v2;
+unit JvQID3v2;
 
 interface
 
 uses
-  Classes, QGraphics, QControls,  /// <<<<<<<<<<<<<
+  Classes,
+  
+  
+  QGraphics, QControls,
+  
   JvQID3v2Types, JvQID3v2Base;
 
 type
@@ -699,14 +702,12 @@ end;
 constructor TJvID3Text.Create(AController: TJvID3Controller);
 begin
   inherited Create(AController);
-
   FDummyList := TStringList.Create;
 end;
 
 destructor TJvID3Text.Destroy;
 begin
   FDummyList.Free;
-
   inherited Destroy;
 end;
 
@@ -945,14 +946,6 @@ end;
 
 //=== TJvID3v2 ===============================================================
 
-procedure TJvID3v2.ActiveChanged(Sender: TObject; Activated: Boolean);
-begin
-  if Activated then
-    FImages.Pictures.RetrievePictures
-  else
-    FImages.Pictures.RemovePictures;
-end;
-
 constructor TJvID3v2.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -987,6 +980,14 @@ begin
   FOwner.Free;
   FPopularimeter.Free;
   inherited Destroy;
+end;
+
+procedure TJvID3v2.ActiveChanged(Sender: TObject; Activated: Boolean);
+begin
+  if Activated then
+    FImages.Pictures.RetrievePictures
+  else
+    FImages.Pictures.RemovePictures;
 end;
 
 function TJvID3v2.GetPlayCounter: Cardinal;

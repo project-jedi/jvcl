@@ -55,7 +55,7 @@ type
 
   TJvCustomNetscapeSplitter = class(TJvExSplitter)
   private
-    FBusy: Boolean;
+    
     FShowButton: Boolean;
     FButtonWidthKind: TJvButtonWidthKind;
     FButtonWidth: Integer;

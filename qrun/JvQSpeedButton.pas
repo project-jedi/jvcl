@@ -50,7 +50,7 @@ uses
   QControls, QGraphics, QForms, QExtCtrls, QButtons, QMenus, QImgList,
   QActnList,
   
-  JvQComponent, JvQConsts, JvQTypes, JvQJCLUtils, JvQJVCLUtils,
+  JvQExControls, JvQComponent, JvQConsts, JvQTypes, JvQJCLUtils, JvQJVCLUtils,
   JvQThemes;
 
 type
@@ -89,7 +89,7 @@ type
     FSpacing: Integer;
     FStyle: TButtonStyle;
     FTransparent: Boolean;
-//    FDoubleBuffered: Boolean;
+    FDoubleBuffered: Boolean;
     function GetAlignment: TAlignment;
     function GetGrayNewStyle: Boolean;
     function GetWordWrap: Boolean;
@@ -154,7 +154,7 @@ type
     property Alignment: TAlignment read GetAlignment write SetAlignment default taCenter;
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default False;
     property AllowTimer: Boolean read FAllowTimer write SetAllowTimer default False;
-//    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered default True;
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered default True;
     property Down: Boolean read FDown write SetDown default False;
     property DropDownMenu: TPopupMenu read FDropDownMenu write SetDropdownMenu;
     property Flat: Boolean read FFlat write SetFlat default False;
@@ -244,7 +244,7 @@ type
     property Constraints;
     { Ensure group index is declared before Down }
     property GroupIndex;
-//    property DoubleBuffered;
+    property DoubleBuffered;
     property Down;
     property DragMode;
     property DropDownMenu;
@@ -324,7 +324,7 @@ type
     property Constraints;
     { Ensure group index is declared before Down }
     property GroupIndex;
-//    property DoubleBuffered;
+    property DoubleBuffered;
     property Down;
     property DragMode;
     property DropDownMenu;
@@ -706,14 +706,14 @@ end;
 
 function TJvCustomSpeedButton.CheckMenuDropdown(const Pos: TSmallPoint;
   Manual: Boolean): Boolean;
-
+  
 begin
   Result := False;
   if csDesigning in ComponentState then
     Exit;
   if Assigned(FDropDownMenu) and (DropDownMenu.AutoPopup or Manual) then
   begin
-
+    
     DropDownMenu.PopupComponent := Self;
     with ClientToScreen(SmallPointToPoint(Pos)) do
       DropDownMenu.Popup(X, Y);
@@ -799,7 +799,7 @@ begin
     { Don't draw a border if DragMode <> dmAutomatic since this button is meant to
       be used as a dock client. }
     NeedRepaint :=
-
+      
       FHotTrack or (FFlat and Enabled and (DragMode <> dmAutomatic) and (GetCapture = NullHandle));
 
     inherited MouseEnter(Control); // set MouseOver
@@ -817,7 +817,7 @@ begin
   if MouseOver and Enabled then
   begin
     NeedRepaint :=
-
+      
       HotTrack or (FFlat and Enabled and not FDragging);
 
     inherited MouseLeave(Control); // set MouseOver
@@ -864,7 +864,7 @@ begin
   FLayout := blGlyphTop;
   FMarkDropDown := True;
   FHotTrackFontOptions := DefaultTrackFontOptions;
-//  FDoubleBuffered := True;
+  FDoubleBuffered := True;
 
   Inc(ButtonCount);
 end;
@@ -1095,7 +1095,7 @@ var
   Offset: TPoint;
   
 begin
-  if not Enabled and not (csDesigning in ComponentState) then
+  if not Enabled {and not (csDesigning in ComponentState)} then
   begin
     FState := rbsDisabled;
     FDragging := False;
@@ -1839,11 +1839,8 @@ begin
   if Length(Caption) > 0 then
   begin
     TextBounds := Rect(0, 0, MaxSize.X, 0);
-    
-    
     DrawText(Canvas, CString, -1, TextBounds, DT_CALCRECT or DT_CENTER or
       DT_VCENTER or WordWraps[FWordWrap] or Flags);
-    
   end
   else
     TextBounds := Rect(0, 0, 0, 0);
@@ -2082,9 +2079,10 @@ begin
           with TmpImage.Canvas do
           begin
             FillRect(Rect(0, 0, iWidth, iHeight));
-
-
+            
+            
             Images.Draw(TmpImage.Canvas, 0, 0, Index, itImage);
+            
           end;
           Mask := TBitmap.Create;
           try
@@ -2097,10 +2095,10 @@ begin
             with Mask.Canvas do
             begin
               FillRect(Rect(0, 0, iWidth, iHeight));
-
-
+              
+              
               Images.Draw(TmpImage.Canvas, 0, 0, Index, itMask);
-
+              
             end;
             FIndexs[State] := TJvGlyphList(FGlyphList).Add(TmpImage, Mask);
           finally
@@ -2234,20 +2232,14 @@ begin
     begin
       OffsetRect(TextBounds, 1, 1);
       Font.Color := clBtnHighlight;
-      
-      
       DrawText(Canvas, CString, Length(Caption), TextBounds, Flags);
       OffsetRect(TextBounds, -1, -1);
       Font.Color := clBtnShadow;
       DrawText(Canvas, CString, Length(Caption), TextBounds, Flags);
-      
     end;
   end
   else
-    
-    
     DrawText(Canvas, CString, -1, TextBounds, Flags);
-    
 end;
 
 function TJvxButtonGlyph.DrawEx(Canvas: TCanvas; const Client: TRect;

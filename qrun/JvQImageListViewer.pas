@@ -32,8 +32,11 @@ interface
 
 uses
   SysUtils, Classes,
+  
+  
   QControls, QGraphics, QStdCtrls, QComCtrls, QImgList,
-  JvCustomItemViewer;
+  
+  JvQCustomItemViewer;
 
 type
   TJvImageListViewerOptions = class(TJvCustomItemViewerOptions)
@@ -135,8 +138,11 @@ type
   end;
 
 implementation
+
 uses
-  Math, JvQJCLUtils;
+  
+  Math,
+  JvQJCLUtils;
 
 //=== TJvImageListViewerOptions ==============================================
 

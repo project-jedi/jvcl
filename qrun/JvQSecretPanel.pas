@@ -438,20 +438,20 @@ begin
             bvLowered:
               begin
                 OffsetRect(R, 1, 1);
-                DrawText(FMemoryImage.Canvas.Handle, STmp, -1, R, Flags);
+                DrawText(FMemoryImage.Canvas, STmp, -1, R, Flags);
                 OffsetRect(R, -1, -1);
               end;
             bvRaised:
               begin
                 OffsetRect(R, -1, -1);
-                DrawText(FMemoryImage.Canvas.Handle, STmp, -1, R, Flags);
+                DrawText(FMemoryImage.Canvas, STmp, -1, R, Flags);
                 OffsetRect(R, 1, 1);
               end;
           end;
           FMemoryImage.Canvas.Font.Color := Self.Font.Color;
           SetBkMode(FMemoryImage.Canvas.Handle, Transparent);
         end;
-        DrawText(FMemoryImage.Canvas.Handle, STmp, -1, R, Flags);
+        DrawText(FMemoryImage.Canvas, STmp, -1, R, Flags);
       end;
       OffsetRect(R, 0, FTxtDivider);
     end;

@@ -33,8 +33,10 @@ unit JvQUrlListGrabber;
 
 interface
 
+{$HPPEMIT '#pragma link "wininet.lib"'}
+
 uses
-  {Windows,} Classes, SysUtils, Contnrs, Types,
+  Windows, Classes, SysUtils, Contnrs,
   JvQComponent, JvQTypes;
 
 type
@@ -402,6 +404,7 @@ type
   public
     constructor Create(Grabber: TJvCustomUrlGrabber); virtual;
     procedure DoProgress;
+
     property Status: DWORD read FStatus write FStatus;
   end;
 
@@ -765,6 +768,11 @@ begin
   FGrabber := Grabber;
 end;
 
+procedure TJvCustomUrlGrabberThread.DoProgress;
+begin
+  Synchronize(Progress);
+end;
+
 procedure TJvCustomUrlGrabberThread.Ended;
 begin
   FGrabber.DoEnded;
@@ -778,11 +786,6 @@ end;
 procedure TJvCustomUrlGrabberThread.Progress;
 begin
   FGrabber.DoProgress(FGrabber.BytesRead, FContinue);
-end;
-
-procedure TJvCustomUrlGrabberThread.DoProgress;
-begin
-  Synchronize(Progress);
 end;
 
 procedure TJvCustomUrlGrabberThread.ParseUrl(Value: string; Protocol: string;

@@ -237,6 +237,8 @@ const
 
 
 
+//=== TJvImageListItem =======================================================
+
 constructor TJvImageListItem.Create(Collection: TCollection);
 begin
   inherited Create(Collection);
@@ -393,6 +395,8 @@ begin
     AImageList.ReplaceMasked(AIndex, FBitmap, FTransparentColor);
 end;
 
+//=== TJvImageListItems ======================================================
+
 constructor TJvImageListItems.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner, TJvImageListItem);
@@ -530,7 +534,15 @@ begin
   end;
 end;
 
-{ TJvImageList }
+//=== TJvImageList ===========================================================
+
+destructor TJvImageList.Destroy;
+begin
+  FItems.Free;
+  FPicture.Free;
+  FResourceIds.Free;
+  inherited Destroy;
+end;
 
 procedure TJvImageList.InitializeImageList;
 begin
@@ -553,14 +565,6 @@ begin
   TStringList(FResourceIds).OnChange := DataChanged;
 
   FItems := TJvImageListItems.Create(Self);
-end;
-
-destructor TJvImageList.Destroy;
-begin
-  FItems.Free;
-  FPicture.Free;
-  FResourceIds.Free;
-  inherited Destroy;
 end;
 
 procedure TJvImageList.Assign(Source: TPersistent);
@@ -885,13 +889,10 @@ begin
   case FMode of
     imClassic:
       ; // do nothing
-
     imPicture:
       SlicePictureToImageList;
-
     imResourceIds:
       ResourceIdsToImageList;
-
     imItemList:
       ; // do nothing
   end;

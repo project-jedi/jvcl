@@ -46,13 +46,13 @@ type
   private
     FPicture: TPicture;
     FTitle: string;
+    function GetPicture: TPicture;
     procedure SetPicture(const Value: TPicture);
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Picture: TPicture read FPicture write SetPicture;
+    property Picture: TPicture read GetPicture write SetPicture;
     property Title: string read FTitle write FTitle;
     procedure Execute; override;
   end;
@@ -65,7 +65,7 @@ uses
 constructor TJvImageDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FPicture := TPicture.Create;
+  FPicture := nil;
   FTitle := RsImageTitle;
 end;
 
@@ -80,7 +80,7 @@ var
   Form: TJvForm;
   Image1: TImage;
 begin
-  if (FPicture.Height <> 0) and (FPicture.Width <> 0) then
+  if (Picture.Height <> 0) and (Picture.Width <> 0) then
   begin
     Form := TJvForm.CreateNew(Self);
     try
@@ -91,7 +91,7 @@ begin
       Form.BorderIcons := [biSystemMenu];
       Form.Position := poScreenCenter;
       Image1 := TImage.Create(Form);
-      Image1.Picture.Assign(FPicture);
+      Image1.Picture.Assign(Picture);
       Image1.Parent := Form;
       Form.ClientHeight := Image1.Height;
       Form.ClientWidth := Image1.Width;
@@ -101,6 +101,13 @@ begin
       Form.Free;
     end;
   end;
+end;
+
+function TJvImageDialog.GetPicture: TPicture;
+begin
+  if FPicture = nil then
+    FPicture := TPicture.Create;
+  Result := FPicture;
 end;
 
 procedure TJvImageDialog.SetPicture(const Value: TPicture);

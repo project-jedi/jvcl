@@ -1328,6 +1328,10 @@ resourcestring
   RsErrorConnection = 'Unable to connect';
   RsMultiAgent = 'TJvMultiHTTPGrabber Delphi Component';
 
+//=== JvNavigationPane.pas ===================================================
+resourcestring
+  RsEUnsupportedButtonType = 'ButtonType not supported';
+
 //=== JvNTEventLog.pas =======================================================
 resourcestring
   RsLogError = 'Error';
