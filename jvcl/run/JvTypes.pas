@@ -54,6 +54,11 @@ const
 {$IFDEF VisualCLX}
 {$HPPEMIT '#define TDate TDateTime'}
 {$HPPEMIT '#define TTime TDateTime'}
+type
+  TDate = type TDateTime;
+  {$EXTERNALSYM TDate}
+  TTime = type TDateTime;
+  {$EXTERNALSYM TTime}
 {$ENDIF VisualCLX}
 {$HPPEMIT '#endif'}
 

@@ -30,10 +30,10 @@ interface
 
 uses
   {$IFDEF VCL}
-  Controls, StdCtrls,
+  Windows, Graphics, Controls, StdCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QStdCtrls, Types, QWindows,
+  QGraphics, QControls, QStdCtrls, Types, QWindows,
   {$ENDIF VisualCLX}
   Classes;
 
@@ -53,13 +53,10 @@ implementation
 
 {$IFDEF VCL}
 uses
-  Windows, Graphics,
   JvxCheckListBox;
 {$ENDIF VCL}
-{$IFDEF VisualCLX}
-uses
-  QGraphics;
 
+{$IFDEF VisualCLX}
 const
   LB_ERR = -1;
 {$ENDIF VisualCLX}
@@ -241,7 +238,10 @@ end;
 
 procedure BoxMoveSelectedItems(SrcList, DstList: TWinControl);
 var
-  Index, I, NewIndex: Integer;
+  Index, I: Integer;
+  {$IFDEF VCL}
+  NewIndex: Integer;
+  {$ENDIF VCL}
 begin
   Index := BoxGetFirstSelection(SrcList);
   if Index <> LB_ERR then
@@ -253,13 +253,17 @@ begin
       while I < BoxItems(SrcList).Count do
         if BoxGetSelected(SrcList, I) then
         begin
+          {$IFDEF VCL}
           NewIndex := BoxItems(DstList).AddObject(BoxItems(SrcList).Strings[I],
             BoxItems(SrcList).Objects[I]);
-          {$IFDEF VCL}
           if (SrcList is TJvxCheckListBox) and (DstList is TJvxCheckListBox) then
             TJvxCheckListBox(DstList).State[NewIndex] :=
               TJvxCheckListBox(SrcList).State[I];
           {$ENDIF VCL}
+          {$IFDEF VisualCLX}
+          BoxItems(DstList).AddObject(BoxItems(SrcList).Strings[I],
+            BoxItems(SrcList).Objects[I]);
+          {$ENDIF VisualCLX}
           BoxItems(SrcList).Delete(I);
         end
         else
@@ -274,17 +278,24 @@ end;
 
 procedure BoxMoveAllItems(SrcList, DstList: TWinControl);
 var
-  I, NewIndex: Integer;
+  I: Integer;
+  {$IFDEF VCL}
+  NewIndex: Integer;
+  {$ENDIF VCL}
 begin
   for I := 0 to BoxItems(SrcList).Count - 1 do
   begin
+    {$IFDEF VCL}
     NewIndex := BoxItems(DstList).AddObject(BoxItems(SrcList)[I],
       BoxItems(SrcList).Objects[I]);
-    {$IFDEF VCL}
     if (SrcList is TJvxCheckListBox) and (DstList is TJvxCheckListBox) then
       TJvxCheckListBox(DstList).State[NewIndex] :=
         TJvxCheckListBox(SrcList).State[I];
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    BoxItems(DstList).AddObject(BoxItems(SrcList)[I],
+      BoxItems(SrcList).Objects[I]);
+    {$ENDIF VisualCLX}
   end;
   BoxItems(SrcList).Clear;
   BoxSetItem(SrcList, 0);
