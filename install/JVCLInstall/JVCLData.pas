@@ -157,7 +157,7 @@ type
       // found that could be installed.
 
     property CompiledJCL: Boolean read FCompiledJCL;
-      // CompiledJCL is True when D/CJcl.dcp and D/CJclVcl.dcp exist for this
+      // CompiledJCL is True if D/CJcl.dcp and D/CJclVcl.dcp exist for this
       // target.
 
     property Frameworks: TJVCLFrameworks read FFrameworks;
