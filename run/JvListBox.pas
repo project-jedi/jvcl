@@ -1293,9 +1293,11 @@ begin
   begin
     FProviderIsActive := False;
     FProviderToggle := True;
-{    TJvListBoxStrings(Items).ActivateInternal; // apply internal string list to list box
-    RecreateWnd;}
-  end;
+  end
+  else
+  if (Reason = ccrProviderSelect) and not IsProviderSelected and not FProviderToggle and
+      not TJvListBoxStrings(Items).UseInternal then
+    TJvListBoxStrings(Items).MakeListInternal;
 end;
 
 procedure TJvCustomListBox.ConsumerServiceChanged(Sender: TJvDataConsumer;
@@ -1305,14 +1307,19 @@ begin
   begin
     FProviderToggle := True;
     FProviderIsActive := True;
-    TJvListBoxStrings(Items).MakeListInternal;
     RecreateWnd;
+{    if not TJvListBoxStrings(Items).UseInternal then
+    begin
+      TJvListBoxStrings(Items).MakeListInternal;
+      RecreateWnd;
+    end;}
   end
   else
-  if (Reason = ccrProviderSelect) and not IsProviderSelected and FProviderToggle then
+  if (Reason = ccrProviderSelect) and not IsProviderSelected and FProviderToggle and
+    TJvListBoxStrings(Items).UseInternal then
   begin
-    TJvListBoxStrings(Items).ActivateInternal; // apply internal string list to list box
     RecreateWnd;
+    TJvListBoxStrings(Items).ActivateInternal; // apply internal string list to list box
 {  end
   else
   if (Reason = ccrProviderSelect) and IsProviderSelected and not FProviderToggle then
