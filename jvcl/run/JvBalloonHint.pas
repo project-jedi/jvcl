@@ -1657,12 +1657,22 @@ begin
   end;
 end;
 
+function FormHasFocus(FormHandle: HWnd): Boolean;
+var
+  H: HWnd;
+begin
+  H := GetFocus;
+  while IsWindow(H) and (H <> FormHandle) do
+    H := GetParent(H);
+  Result := H = FormHandle;
+end;            
+
 procedure TJvBalloonWindowEx.EnsureTopMost;
 begin
   if not Assigned(FCtrl.FData.RAnchorWindow) then
     Exit;
 
-  if not FCtrl.FData.RAnchorWindow.Focused then
+  if not FormHasFocus(FCtrl.FData.RAnchorWindow.Handle) then
     { Current window is not focused, thus place the balloon behind the
       window that has focus }
     NormalizeTopMost
