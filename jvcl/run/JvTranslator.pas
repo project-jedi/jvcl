@@ -32,31 +32,42 @@ interface
 
 uses
   SysUtils, Classes, IniFiles,
-  {$IFDEF VCL}
+{$IFDEF VCL}
   Forms, ComCtrls, Menus, Dialogs,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
   QForms, QComCtrls, QMenus, QDialogs,
-  {$ENDIF VisualCLX}
+{$ENDIF VisualCLX}
   JvSimpleXml, JvComponent;
 
 type
   TJvTranslator = class(TJvComponent)
   private
-    FXml: TJvSimpleXml;
-    FSkipClass: TList;
-
+    FXML: TJvSimpleXml;
+    FSkipList: TList;
+    function IsObject(const Obj: TClass; const ClassName: string): Boolean;
   protected
-    procedure TranslateComponent(const Component: TComponent;
-      const Elem: TJvSimpleXmlElem); virtual;
+    function FindItemNamed(Root: TJvSimpleXMLElem; const AName: string; ARecurse: boolean = false): TJvSimpleXMLElem; virtual;
+    procedure TranslateComponent(const Component: TComponent; const Elem: TJvSimpleXmlElem); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    // Call SkipClass to register classes that should not be added to the translation list
-    // NOTE: only used when crating the XML string in ComponentToXML, ignored by TranslateXXX methods
-    // (for the moment)
+    // Call SkipClass to register a class to skip when reading/writing
     procedure SkipClass(AClass: TClass);
-    function InSkipList(AClass: TClass): boolean;overload;
+    // Call UnskipClass to unregister a class so it won't be skip when reading/writing
+    procedure UnskipClass(AClass: TClass);
+    // Call SkipProperty to register a class property to skip when reading/writing
+    // If UnskipClass has already been called for this class, does nothing
+    procedure SkipProperty(AClass: TClass; const PropName: string);
+    // Call UnskipProperty to unregister a class property so it won't be skip when reading/writing
+    // If SkipClass has already been called for this class, does nothing
+    procedure UnskipProperty(AClass: TClass; const PropName: string);
+    // Returns true if the specifed class/object/property is in the skip list
+    function InSkipList(AClass: TClass): boolean; overload;
+    function InSkipList(Obj: TObject): boolean; overload;
+    function InSkipList(AClass: TClass; const PropName: string): boolean; overload;
+    function InSkipList(Obj: TObject; const PropName: string): boolean; overload;
+    procedure ClearSkipList;
     // ComponentToXML converts a TComponent and, optionally, it's owned components to an XML string
     // and returns it
     function ComponentToXML(const AComponent: TComponent; Recurse: boolean): string;
@@ -64,14 +75,22 @@ type
     procedure Translate(const FileName: string); overload;
     // Translate the entire Application using a stream
     procedure Translate(const Stream: TStream); overload;
+    // Translate the entire Application using a string
+    procedure TranslateString(const S: string); overload;
     // Translate a form using the file Filename
     procedure Translate(const FileName: string; const Form: TCustomForm); overload;
+    // Translate a form using a stream
+    procedure Translate(const Stream: TStream; const Form: TCustomForm); overload;
+    // Translate a form using a string
+    procedure TranslateString(const S: string; const Form: TCustomForm); overload;
     // Translate a form using the currently loaded XML (wherever it came from)
     procedure Translate(const Form: TCustomForm); overload;
     // Translates all form instances owned by the global screen object using the file Filename
     procedure TranslateScreen(const FileName: string); overload;
     // Translates all form instances owned by the global screen object using a stream
     procedure TranslateScreen(const Stream: TStream); overload;
+    // Translates all form instances owned by the global screen object using a string
+    procedure TranslateScreenString(const S: string);
     // Returns the value of a node or a property value of a node based on certain search criteria.
     // To find the value, the method first searches the root for a subnode with the name in Category.
     // If found, Category is searched for a subnode with the name in Item. If found, either the value
@@ -84,6 +103,7 @@ type
     //   ....
     // This method returns either Value or, if not found, PropValue or, if not found, an empty string
     function Translate(const Category, Item: string): string; overload;
+    property XML: TJvSimpleXml read FXML;
   end;
 
   TJvTranslatorStrings = class(TJvComponent)
@@ -100,7 +120,7 @@ type
     function Add(const Name: string; var Value: string): Integer;
     // (p3) this is weird: GetString returns the *Name* but SetString sets the *Value*...
     property Strings[Index: Integer]: string read GetString write SetString; default;
-    property Value[Index:integer]:string read GetValue;
+    property Value[Index: integer]: string read GetValue;
     property Count: integer read GetCount;
   end;
 
@@ -108,29 +128,35 @@ implementation
 
 uses
   TypInfo, JvConsts;
+type
+  PSkipPropRec = ^TSkipPropRec;
+  TSkipPropRec = record
+    AClass: TClass;
+    AProps: TStringlist;
+  end;
 
 function InternalGetWideStrProp(Instance: TObject; const PropName: string): WideString; overload;
 begin
-  {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
   Result := GetWideStrProp(Instance, PropName);
-  {$ELSE}
+{$ELSE}
   Result := GetStrProp(Instance, PropName);
-  {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
 end;
 
 function InternalGetPropList(AObject: TObject; out PropList: PPropList): Integer;
 begin
-  {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
   Result := GetPropList(AObject, PropList);
-  {$ELSE}
+{$ELSE}
   Result := GetTypeData(AObject.ClassInfo)^.PropCount;
   if Result > 0 then
   begin
     GetMem(PropList, Result * SizeOf(Pointer));
     GetPropInfos(AObject.ClassInfo, PropList);
   end;
-  Result := GetPropList(AObject.ClassInfo, [tkUnknown..tkDynArray], PropList);
-  {$ENDIF COMPILER6_UP}
+  Result := GetPropList(AObject.ClassInfo, tkProperties, PropList);
+{$ENDIF COMPILER6_UP}
 end;
 
 //=== TJvTranslator ==========================================================
@@ -138,29 +164,49 @@ end;
 constructor TJvTranslator.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FXml := TJvSimpleXml.Create(nil);
+  FXML := TJvSimpleXml.Create(nil);
+  SkipProperty(TComponent, 'Name');
 end;
 
 destructor TJvTranslator.Destroy;
 begin
-  FXml.Free;
-  FSkipClass.Free;
+  FXML.Free;
+  ClearSkipList;
+  FreeAndNil(FSkipList);
   inherited Destroy;
+end;
+
+function TJvTranslator.FindItemNamed(Root: TJvSimpleXMLElem; const AName: string; ARecurse: boolean): TJvSimpleXMLElem;
+var
+  i: integer;
+begin
+  Result := nil;
+  if Root = nil then
+    Root := FXML.Root;
+  if AnsiSameText(Root.Name, AName) then
+    Result := Root
+  else if not ARecurse then
+    Result := Root.Items.ItemNamed[AName]
+  else
+    for i := 0 to Root.Items.Count - 1 do
+    begin
+      Result := FindItemNamed(Root.Items[i], AName, true);
+      if Result <> nil then Break;
+    end;
+end;
+
+function TJvTranslator.IsObject(const Obj: TClass; const ClassName: string): Boolean;
+begin
+  if (Obj = nil) then
+    Result := False
+  else
+    Result := SameText(Obj.ClassName, ClassName) or (IsObject(Obj.ClassParent, ClassName));
 end;
 
 function TJvTranslator.ComponentToXML(const AComponent: TComponent; Recurse: boolean): string;
 var
   AName: string;
-  AXML: TJvSimpleXML;
   AElem: TJvSimpleXMLElem;
-
-  function IsObject(const Obj: TClass; const ClassName: string): Boolean;
-  begin
-    if (Obj = nil) or InSkipList(Obj) then
-      Result := False
-    else
-      Result := SameText(Obj.ClassName, ClassName) or (IsObject(Obj.ClassParent, ClassName));
-  end;
 
   procedure CollectionToXML(Collection: TCollection; Elem: TJvSimpleXmlElem); forward;
 
@@ -226,15 +272,17 @@ var
   end;
 
   procedure TranslatorStringsToXML(AStrings: TJvTranslatorStrings; Elem: TJvSimpleXMLElem);
-  var i:integer;AElem:TJvSimpleXMLElem;
+  var
+    i: integer;
+    AElem: TJvSimpleXMLElem;
   begin
     // I'm not sure how to create a translation template for this component, so this is just a guess...
     Elem.Name := 'Variables';
     for i := 0 to AStrings.Count - 1 do
     begin
       AElem := Elem.Items.Add('Item');
-      AElem.Properties.Add('Name',AStrings[i]);
-      AElem.Properties.Add('Value',AStrings.Value[i]);
+      AElem.Properties.Add('Name', AStrings[i]);
+      AElem.Properties.Add('Value', AStrings.Value[i]);
     end;
   end;
 
@@ -247,7 +295,7 @@ var
     AnObj: TObject;
   begin
 
-    if (AnObject <> nil) and not InSkipList(AnObject.ClassType) then
+    if (AnObject <> nil) and not InSkipList(AnObject) then
     begin
       Count := InternalGetPropList(AnObject, PropList);
       for j := 0 to Count - 1 do
@@ -255,7 +303,8 @@ var
         PropInfo := PropList[j];
         PropName := PropInfo^.Name;
         try
-          if SameText(PropName, 'Name') then Continue;
+          if (PropInfo^.SetProc = nil) or InSkipList(AnObject, PropName) then
+            Continue;
           case PropInfo^.PropType^.Kind of
             tkInteger:
               Elem.Properties.Add(PropName, GetOrdProp(AnObject, PropName));
@@ -277,6 +326,10 @@ var
                 else if IsObject(AnObj.ClassType, 'TCollection') then
                   CollectionToXML(TCollection(AnObj), Elem.Items.Add(PropName))
                 else if not IsObject(AnObj.ClassType, 'TComponent') then
+                  // NB! TComponents are excluded because most of the time, a published TComponent
+                  // property references another component on the form. In some cases, however, a TComponent
+                  // *can* be an internal component and this code won't list it.
+                  // No known solution yet (no, HasParent/GetparentComponent doesn't work here)
                   ObjectToXML(AnObj, Elem.Items.Add(PropName));
               end;
           end; // case
@@ -305,7 +358,7 @@ var
   begin
 
     if AComponent = nil then Exit;
-    if not InSkipList(AComponent.ClassType) then
+    if not InSkipList(AComponent) then
     begin
       if IsObject(AComponent.ClassType, 'TJvTranslatorStrings') then
       begin
@@ -318,7 +371,8 @@ var
         PropInfo := PropList[i];
         PropName := PropInfo^.Name;
         try
-          if SameText(PropName, 'Name') then Continue;
+          if InSkipList(AComponent, PropName) or (PropInfo^.SetProc = nil) then
+            Continue;
           case PropInfo^.PropType^.Kind of
             tkInteger:
               Elem.Properties.Add(PropName, GetOrdProp(AComponent, PropName));
@@ -339,10 +393,11 @@ var
                   StringsToXML(TStrings(AnObj), Elem.Items.Add(PropName))
                 else if IsObject(AnObj.ClassType, 'TCollection') then
                   CollectionToXML(TCollection(AnObj), Elem.Items.Add(PropName))
-                else if not IsObject(AnObj.ClassType, 'TComponent') and not InSkipList(AnObj.ClassType) then
+                else if not IsObject(AnObj.ClassType, 'TComponent') then
                   // NB! TComponents are excluded because most of the time, a published TComponent
-                  // property references antother component on the form. In some cases, however, a TComponent
-                  // *can* be an internal component and this code won't list it. No known solution yet (no, HasParent/GetparentComponent doesn't work here)
+                  // property references another component on the form. In some cases, however, a TComponent
+                  // *can* be an internal component and this code won't list it.
+                  // No known solution yet (no, HasParent/GetparentComponent doesn't work here)
                   ObjectToXML(AnObj, Elem.Items.Add(PropName));
               end;
           end; // case
@@ -358,27 +413,26 @@ var
   end;
 begin
   Result := '';
+  FXML.Root.Clear;
   if AComponent = nil then Exit;
-  AXML := TJvSimpleXML.Create(nil);
-  try
+  if AComponent is TApplication then
+    AName := TApplication(AComponent).Title
+  else
     AName := TComponent(AComponent).Name;
-    //    AXML.Root.Name := 'Translation'; // DO NOT LOCALIZE
-    if AName <> '' then
-    begin
-      AElem := AXML.Root.Items.Add(AComponent.Name);
-      InnerComponentToXML(AComponent, AElem, Recurse);
-      Result := AElem.SaveToString;
-    end;
-  finally
-    AXML.Free;
+  FXML.Root.Name := 'Translation'; // DO NOT LOCALIZE
+  if AName <> '' then
+  begin
+    AElem := FXML.Root.Items.Add(AName);
+    InnerComponentToXML(AComponent, AElem, Recurse);
+    Result := FXML.Root.SaveToString;
   end;
 end;
 
 procedure TJvTranslator.Translate(const FileName: string);
 begin
   try
-    FXml.LoadFromFile(FileName);
-    TranslateComponent(Application, FXml.Root);
+    FXML.LoadFromFile(FileName);
+    TranslateComponent(Application, FXML.Root);
   except
   end;
 end;
@@ -386,8 +440,8 @@ end;
 procedure TJvTranslator.Translate(const Stream: TStream);
 begin
   try
-    FXml.LoadFromStream(Stream);
-    TranslateComponent(Application, FXml.Root);
+    FXML.LoadFromStream(Stream);
+    TranslateComponent(Application, FXML.Root);
   except
   end;
 end;
@@ -397,7 +451,7 @@ var
   i: Integer;
 begin
   try
-    FXml.LoadFromFile(FileName);
+    FXML.LoadFromFile(FileName);
     for i := 0 to Screen.FormCount - 1 do
       Translate(Screen.Forms[i]);
   except
@@ -409,7 +463,7 @@ var
   i: Integer;
 begin
   try
-    FXml.LoadFromStream(Stream);
+    FXML.LoadFromStream(Stream);
     for i := 0 to Screen.FormCount - 1 do
       Translate(Screen.Forms[i]);
   except
@@ -419,7 +473,7 @@ end;
 procedure TJvTranslator.Translate(const FileName: string; const Form: TCustomForm);
 begin
   try
-    FXml.LoadFromFile(FileName);
+    FXML.LoadFromFile(FileName);
     Translate(Form);
   except
   end;
@@ -429,7 +483,7 @@ procedure TJvTranslator.TranslateComponent(const Component: TComponent;
   const Elem: TJvSimpleXmlElem);
 var
   I, J: Integer;
-  Prop: PPropInfo;
+  PropInfo: PPropInfo;
   Obj: TObject;
   Ok: Boolean;
   S: string;
@@ -439,14 +493,6 @@ var
   function AnalyseCRLF(Value: string): string;
   begin
     Result := StringReplace(Value, '\n', sLineBreak, [rfReplaceAll]);
-  end;
-
-  function IsObject(const Obj: TClass; ClassName: string): Boolean;
-  begin
-    if Obj = nil then
-      Result := False
-    else
-      Result := (Obj.ClassName = ClassName) or (IsObject(Obj.ClassParent, ClassName));
   end;
 
   procedure TransStrings(const Obj: TObject; const Elem: TJvSimpleXmlElem);
@@ -515,41 +561,41 @@ var
   procedure TransProperties(const Obj: TObject; const Elem: TJvSimpleXmlElem);
   var
     I, J: Integer;
-    Prop: PPropInfo;
+    PropInfo: PPropInfo;
     S: string;
   begin
-    if Obj = nil then
+    if (Obj = nil) then
       Exit;
     for I := 0 to Elem.Properties.Count - 1 do
     try
-      Prop := GetPropInfo(Obj, Elem.Properties[I].Name, [tkInteger,
+      PropInfo := GetPropInfo(Obj, Elem.Properties[I].Name, [tkInteger,
         tkEnumeration, tkSet, tkString, tkLString, tkWString]);
-      if Prop <> nil then
-        case Prop^.PropType^.Kind of
+      if (PropInfo <> nil) and (PropInfo^.SetProc <> nil) and not InSkipList(Obj, Elem.Properties[I].Name) then
+        case PropInfo^.PropType^.Kind of
           tkstring, tkLString, tkWString:
-            SetStrProp(Obj, Prop, StringReplace(Elem.Properties[I].Value, '\n', sLineBreak, []));
+            SetStrProp(Obj, PropInfo, StringReplace(Elem.Properties[I].Value, '\n', sLineBreak, []));
           tkSet:
-            SetSetProp(Obj, Prop, Elem.Properties[I].Value);
+            SetSetProp(Obj, PropInfo, Elem.Properties[I].Value);
           tkEnumeration:
             begin
               S := Elem.Properties[I].Value;
               if (StrToIntDef(S, 0) = 0) and (S <> '0') then
               begin
                 try
-                  J := GetEnumValue(Prop.PropType^, S);
+                  J := GetEnumValue(PropInfo.PropType^, S);
                 except
                   J := 0;
                 end;
               end
               else
                 J := StrToIntDef(S, 0);
-              SetOrdProp(Obj, Prop, J);
+              SetOrdProp(Obj, PropInfo, J);
             end;
           tkInteger:
-            if Prop^.Name = 'ShortCut' then
-              SetOrdProp(Obj, Prop, TextToShortcut(Elem.Properties[I].Value))
+            if PropInfo^.Name = 'ShortCut' then
+              SetOrdProp(Obj, PropInfo, TextToShortcut(Elem.Properties[I].Value))
             else
-              SetOrdProp(Obj, Prop, Elem.Properties[I].IntValue);
+              SetOrdProp(Obj, PropInfo, Elem.Properties[I].IntValue);
         end;
     except
     end;
@@ -559,6 +605,7 @@ var
   var
     I, J: Integer;
   begin
+    if (Obj = nil) then Exit;
     for I := 0 to Elem.Items.Count - 1 do
     begin
       J := Elem.Items[I].Properties.IntValue('Index', -1);
@@ -575,42 +622,41 @@ var
   procedure TransObject(const Obj: TObject; const Elem: TJvSimpleXmlElem);
   var
     I, J: Integer;
-    Prop: PPropInfo;
+    PropInfo: PPropInfo;
     S: string;
     lObj: TObject;
   begin
-    if Obj = nil then
-      Exit;
+    if (Obj = nil) then Exit;
     if IsObject(Obj.ClassType, 'TCollection') then
       TranslateCollection(TCollection(Obj), Elem)
     else
       for I := 0 to Elem.Items.Count - 1 do
       try
-        Prop := GetPropInfo(Obj, Elem.Items[I].Name, [tkInteger,
+        PropInfo := GetPropInfo(Obj, Elem.Items[I].Name, [tkInteger,
           tkEnumeration, tkSet, tkString, tkLString, tkClass]);
-        if Prop <> nil then
-          case Prop^.PropType^.Kind of
+        if (PropInfo <> nil) and (PropInfo^.SetProc <> nil) and not InSkipList(Obj, Elem.Items[I].Name) then
+          case PropInfo^.PropType^.Kind of
             tkString, tkLString:
-              SetStrProp(Obj, Prop, StringReplace(Elem.Items[I].Value, '\n', sLineBreak, []));
+              SetStrProp(Obj, PropInfo, StringReplace(Elem.Items[I].Value, '\n', sLineBreak, []));
             tkSet:
-              SetSetProp(Obj, Prop, Elem.Items[I].Value);
+              SetSetProp(Obj, PropInfo, Elem.Items[I].Value);
             tkEnumeration:
               begin
                 S := Elem.Items[I].Value;
                 if (StrToIntDef(S, 0) = 0) and (S <> '0') then
                 begin
                   try
-                    J := GetEnumValue(Prop.PropType^, S);
+                    J := GetEnumValue(PropInfo.PropType^, S);
                   except
                     J := 0;
                   end;
                 end
                 else
                   J := StrToIntDef(S, 0);
-                SetOrdProp(Obj, Prop, J);
+                SetOrdProp(Obj, PropInfo, J);
               end;
             tkInteger:
-              SetOrdProp(Obj, Prop, Elem.Items[I].IntValue);
+              SetOrdProp(Obj, PropInfo, Elem.Items[I].IntValue);
             tkClass:
               begin
                 lObj := GetObjectProp(Obj, Elem.Items[I].Name);
@@ -631,7 +677,8 @@ begin
 
   try
     //Transform properties
-    TransProperties(Component, Elem);
+    if not InSkipList(Component) then
+      TransProperties(Component, Elem);
 
     //Transform childs
     with Component do
@@ -641,7 +688,7 @@ begin
         for J := 0 to ComponentCount - 1 do
         begin
           S := LowerCase(Elem.Items[I].Name);
-          if LowerCase(Components[J].Name) = S then
+          if AnsiSameText(Components[J].Name, S) then
           begin
             TranslateComponent(Components[J], Elem.Items[I]);
             Ok := True;
@@ -650,10 +697,10 @@ begin
         end;
         if not Ok then
         begin
-          Prop := GetPropInfo(Component, Elem.Items[I].Name, [tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat,
+          PropInfo := GetPropInfo(Component, Elem.Items[I].Name, [tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat,
             tkString, tkSet, tkClass, tkMethod, tkWChar, tkLString, tkWString,
               tkVariant, tkArray, tkRecord, tkInterface, tkInt64, tkDynArray]);
-          if Prop <> nil then
+          if (PropInfo <> nil) and (PropInfo^.SetProc <> nil) and not InSkipList(Component, Elem.Items[I].Name) then
           begin
             Obj := GetObjectProp(Component, Elem.Items[I].Name);
             if IsObject(Obj.ClassType, 'TStrings') then
@@ -685,9 +732,9 @@ begin
     S := Form.Name
   else
     S := Copy(Form.Name, 1, J - 1);
-  lElem := FXml.Root.Items.ItemNamed[S];
+  lElem := FindItemNamed(nil, S, true);
   if lElem <> nil then
-    TranslateComponent(Form, lElem);
+    TranslateComponent(Form, lElem)
 end;
 
 function TJvTranslator.Translate(const Category, Item: string): string;
@@ -695,10 +742,10 @@ var
   lElem: TJvSimpleXmlElem;
 begin
   Result := '';
-  lElem := FXml.Root.Items.ItemNamed[Category];
+  lElem := FindItemNamed(nil, Category, true);
   if lElem <> nil then
   begin
-    lElem := lElem.Items.ItemNamed[Item];
+    lElem := FindItemNamed(lElem, Item, true);
     if lElem <> nil then
     begin
       Result := lElem.Value;
@@ -710,15 +757,99 @@ end;
 
 procedure TJvTranslator.SkipClass(AClass: TClass);
 begin
-  if FSkipClass = nil then
-    FSkipClass := TList.Create;
-  if FSkipClass.IndexOf(Pointer(AClass)) < 0 then
-    FSkipClass.Add(Pointer(AClass));
+  SkipProperty(AClass, '');
+end;
+
+procedure TJvTranslator.UnskipClass(AClass: TClass);
+begin
+  UnskipProperty(AClass,'');
 end;
 
 function TJvTranslator.InSkipList(AClass: TClass): boolean;
 begin
-  Result := (FSkipClass <> nil) and (FSkipClass.IndexOf(Pointer(AClass)) > -1);
+  Result := InSkipList(AClass,'');
+end;
+
+function TJvTranslator.InSkipList(Obj: TObject): boolean;
+begin
+  if Obj = nil then
+    Result := InSkipList(nil)
+  else
+    Result := InSkipList(Obj.ClassType);
+end;
+
+function TJvTranslator.InSkipList(Obj: TObject; const PropName: string): boolean;
+begin
+  if Obj = nil then
+    Result := InSkipList(nil, PropName)
+  else
+    Result := InSkipList(Obj.ClassType, PropName);
+end;
+
+function TJvTranslator.InSkipList(AClass: TClass; const PropName: string): boolean;
+var
+  i: integer;
+  P:PSkipPropRec;
+begin
+  Result := false;
+  if (FSkipList <> nil) then
+    for i := 0 to FSkipList.Count - 1 do
+    begin
+      P := PSkipPropRec(FSkipList[i]);
+      if (P^.AClass = AClass) or AClass.InheritsFrom(P^.AClass) then
+      begin
+        if ((PropName = '') and (P^.AProps.Count = 0)) or (P^.AProps.IndexOf(PropName) > -1) then
+        begin
+          Result := true;
+          if PropName = '' then
+            // move item to beginning of list since it is very likely that we want to access this class very soon
+            FSkipList.Move(i,0);
+          Break;
+        end;
+      end;
+    end;
+end;
+
+procedure TJvTranslator.Translate(const Stream: TStream; const Form: TCustomForm);
+begin
+  FXML.LoadFromStream(Stream);
+  Translate(Form);
+end;
+
+procedure TJvTranslator.TranslateString(const S: string);
+var
+  Stream: TStringStream;
+begin
+  Stream := TStringStream.Create(S);
+  try
+    Translate(Stream);
+  finally
+    Stream.Free;
+  end;
+end;
+
+procedure TJvTranslator.TranslateString(const S: string; const Form: TCustomForm);
+var
+  Stream: TStringStream;
+begin
+  Stream := TStringStream.Create(S);
+  try
+    Translate(Stream, Form);
+  finally
+    Stream.Free;
+  end;
+end;
+
+procedure TJvTranslator.TranslateScreenString(const S: string);
+var
+  Stream: TStringStream;
+begin
+  Stream := TStringStream.Create(S);
+  try
+    TranslateScreen(Stream);
+  finally
+    Stream.Free;
+  end;
 end;
 
 //=== TJvTranslatorStrings ===================================================
@@ -769,6 +900,76 @@ begin
     Result := '';
 end;
 
+procedure TJvTranslator.SkipProperty(AClass: TClass; const PropName: string);
+var
+  i: integer;
+  P: PSkipPropRec;
+begin
+  if FSkipList = nil then
+    FSkipList := TList.Create;
+  for i := 0 to FSkipList.Count - 1 do
+    if (PSkipPropRec(FSkipList[i])^.AClass = AClass) then
+    begin
+      P := PSkipPropRec(FSkipList[i]);
+      if PropName = '' then
+        P^.AProps.Clear // skip entire class
+      else if P^.AProps.Count > 0 then // only add if the class is not skipped as a whole
+        P^.AProps.Add(PropName); // the list is sorted, so property name will only be added once
+      Exit;
+    end;
+  // class not found, so add new class record to list
+  New(P);
+  P^.AClass := AClass;
+  P^.AProps := TStringlist.Create;
+  P^.AProps.Sorted := true;
+  if PropName <> '' then
+    P^.AProps.Add(PropName); // skip this property only
+  FSkipList.Add(P);
+  if AClass.InheritsFrom(TPersistent) then
+    RegisterClass(TPersistentClass(AClass));
+end;
+
+procedure TJvTranslator.UnskipProperty(AClass: TClass;
+  const PropName: string);
+var
+  i, j: integer;
+  P: PSkipPropRec;
+begin
+  if FSkipList <> nil then
+  begin
+    for i := 0 to FSkipList.Count - 1 do
+      if PSkipPropRec(FSkipList[i])^.AClass = AClass then
+      begin
+        P := PSkipPropRec(FSkipList[i]);
+        j := P^.AProps.IndexOf(PropName);
+        if j > -1 then P^.AProps.Delete(j);
+        if P^.AProps.Count = 0 then // remove the entry when there are no properties skipped
+        begin
+          P^.AProps.Free;
+          FSkipList.Delete(i);
+          Dispose(P);
+        end;
+        Exit;
+        if FSkipList.Count = 0 then
+          FreeAndnil(FSkipList);
+      end;
+  end;
+end;
+
+procedure TJvTranslator.ClearSkipList;
+var
+  i: integer;
+begin
+  if FSkipList <> nil then
+  begin
+    for i := 0 to FSkipList.Count - 1 do
+    begin
+      PSkipPropRec(FSkipList[i]).AProps.Free;
+      Dispose(PSkipPropRec(FSkipList[i]));
+    end;
+    FreeAndNil(FSkipList);
+  end;
+end;
 
 end.
 
