@@ -126,7 +126,7 @@ type
 type
   JV_CONTROL_EVENTS(Control)
   JV_WINCONTROL_EVENTS(WinControl)
-  JV_CONTROL(GraphicControl)
+  JV_CONTROL_EVENTS(GraphicControl)
   JV_WINCONTROL_EVENTS(CustomControl)
   JV_WINCONTROL_EVENTS(HintWindow)
 
