@@ -35,9 +35,7 @@ implementation
 
 uses
   Classes,
-  {$IFNDEF BCB}
   JvZlibMultiple,
-  {$ENDIF BCB}
   {$IFDEF MSWINDOWS}
   JvCabFile,
   {$ENDIF MSWINDOWS}
@@ -59,9 +57,7 @@ begin
     {$IFDEF MSWINDOWS}
     TJvCABFile,
     {$ENDIF MSWINDOWS}
-    {$IFNDEF BCB}
     TJvZlibMultiple,
-    {$ENDIF BCB}
     TJvSerialMaker]);
 end;
 
