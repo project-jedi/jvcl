@@ -877,7 +877,7 @@ begin
       LabelControl.Width := LabelWidth
     else
       if FramePanel is TCustomControl then
-        TAccessCustomControl(FramePanel).Canvas.TextWidth(Caption);
+        LabelControl.Width := TAccessCustomControl(FramePanel).Canvas.TextWidth(Caption);
     WinControl.Top := LabelControl.Top;
     WinControl.Left := LabelControl.Left + LabelControl.Width + 4;
     if FramePanel.Height > 0 then
