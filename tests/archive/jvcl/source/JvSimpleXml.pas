@@ -452,6 +452,12 @@ begin
   end;
 end;
 
+function StrToBoolDef(const S: string; const Default: Boolean): Boolean;
+begin
+  if not TryStrToBool(S, Result) then
+    Result := Default;
+end;
+
 function StrToBool(S: string): Boolean;
 begin
   if not TryStrToBool(S, Result) then
