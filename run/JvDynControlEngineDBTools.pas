@@ -26,43 +26,130 @@ unit JvDynControlEngineDBTools;
 interface
 
 uses
-  Controls, DB, Forms,
-  JvPanel, JvDynControlEngineTools, JvDynControlEngineDB;
+  Controls, DB, Forms, Classes,
+  JvPanel, JvDynControlEngineTools, JvDynControlEngine, JvDynControlEngineDB;
 
 type
+  TJvCreateDataControlsEvent = procedure (ADynControlEngineDB : TJvDynControlEngineDB; AParentControl : TWinControl) of object;
   TJvDynControlDataSourceEditDialog = class(TObject)
   private
     FForm: TCustomForm;
     FDynControlEngineDB: TJvDynControlEngineDB;
     FDataSource: TDataSource;
     FDialogCaption: string;
-    FPostCaption: string;
-    FCancelCaption: string;
+    FPostButtonCaption: string;
+    FCancelButtonCaption: string;
+    FCloseButtonCaption: string;
     FIncludeNavigator: Boolean;
+    FBorderStyle : TFormBorderStyle;
+    FPosition : TPosition;
+    FTop : integer;
+    FLeft : Integer;
+    FWidth : Integer;
+    FHeight : Integer;
+    FOnCreateDataControlsEvent : TJvCreateDataControlsEvent;
   protected
     procedure OnPostButtonClick(Sender: TObject);
     procedure OnCancelButtonClick(Sender: TObject);
+    procedure OnCloseButtonClick(Sender: TObject);
     function IntDynControlEngineDB: TJvDynControlEngineDB;
+    function CreateDynControlDialog(var AMainPanel: TWinControl): TCustomForm;
   public
+    constructor Create;
     function ShowDialog: TModalResult;
   published
     property DataSource: TDataSource read FDataSource write FDataSource;
-    property PostCaption: string read FPostCaption write FPostCaption;
-    property CancelCaption: string read FCancelCaption write FCancelCaption;
+    property PostButtonCaption: string read FPostButtonCaption write FPostButtonCaption;
+    property CancelButtonCaption: string read FCancelButtonCaption write FCancelButtonCaption;
+    property CloseButtonCaption: string read FCloseButtonCaption write FCloseButtonCaption;
     property DialogCaption: string read FDialogCaption write FDialogCaption;
     property DynControlEngineDB: TJvDynControlEngineDB read FDynControlEngineDB write FDynControlEngineDB;
     property IncludeNavigator: Boolean read FIncludeNavigator write FIncludeNavigator;
+    property BorderStyle : TFormBorderStyle read FBorderStyle write FBorderStyle default bsDialog	;
+    property Position : TPosition read FPosition write FPosition default poScreenCenter;
+    property Top : integer read FTop write FTop default 0;
+    property Left : Integer read FLeft write FLeft default 0;
+    property Width : Integer read FWidth write FWidth default 640;
+    property Height : Integer read FHeight write FHeight default 480;
+    property OnCreateDataControlsEvent : TJvCreateDataControlsEvent read FOnCreateDataControlsEvent write FOnCreateDataControlsEvent;
   end;
 
 function ShowDatasourceEditDialog(ADataSource: TDataSource;
-  const ADialogCaption, APostCaption, ACancelCaption: string;
+  const ADialogCaption, APostButtonCaption, ACancelButtonCaption, ACloseButtonCaption: string;
   AIncludeNavigator: Boolean;
   ADynControlEngineDB: TJvDynControlEngineDB = nil): TModalResult;
 
 implementation
 
 uses
-  SysUtils;
+  StdCtrls, SysUtils;
+
+resourcestring
+  RSSRWPostButtonCaption = '&Post';
+  RSSRWCancelButtonCaption = '&Cancel';
+  RSSRWCloseButtonCaption = 'C&lose';
+
+function TJvDynControlDataSourceEditDialog.CreateDynControlDialog(var AMainPanel: TWinControl): TCustomForm;
+var
+  DynControlEngine: TJvDynControlEngine;
+  ButtonPanel: TWinControl;
+  Form: TCustomForm;
+  PostButton, CancelButton, CloseButton: TButtonControl;
+  LeftPos : Integer;
+begin
+  if Assigned(IntDynControlEngineDB.DynControlEngine) then
+    DynControlEngine := IntDynControlEngineDB.DynControlEngine
+  else
+    DynControlEngine := DefaultDynControlEngine;
+  Form := DynControlEngine.CreateForm(DialogCaption, '');
+  TForm(Form).Position := Position;
+  TForm(Form).BorderStyle := BorderStyle;
+  TForm(Form).Top := Top;
+  TForm(Form).Left := Left;
+  TForm(Form).Height := Height;
+  TForm(Form).Width := Width;
+  with TForm(Form) do
+  begin
+    FormStyle := fsNormal;
+    BorderIcons := [];
+  end;
+
+  ButtonPanel := DynControlEngine.CreatePanelControl(Form, Form, '', '', alBottom);
+  AMainPanel := DynControlEngine.CreatePanelControl(Form, Form, '', '', alClient);
+  LeftPos := ButtonPanel.Width;
+  if CloseButtonCaption <> '' then
+  begin
+    CloseButton := DynControlEngine.CreateButton(Form, ButtonPanel, '', CloseButtonCaption, '', OnCloseButtonClick, True, False);
+    ButtonPanel.Height := CloseButton.Height + 6;
+    CloseButton.Top := 3;
+    CloseButton.Anchors := [akTop, akRight];
+    CloseButton.Left := LeftPos - CloseButton.Width - 5;
+    LeftPos := CloseButton.Left;
+    CloseButton.TabOrder := 0;
+  end;
+  if CancelButtonCaption <> '' then
+  begin
+    CancelButton := DynControlEngine.CreateButton(Form, ButtonPanel, '', CancelButtonCaption, '', OnCancelButtonClick, True, False);
+    ButtonPanel.Height := CancelButton.Height + 6;
+    CancelButton.Top := 3;
+    CancelButton.Anchors := [akTop, akRight];
+    CancelButton.Left := LeftPos - CancelButton.Width - 5;
+    LeftPos := CancelButton.Left;
+    CancelButton.TabOrder := 0;
+  end;
+  if PostButtonCaption <> '' then
+  begin
+    PostButton := DynControlEngine.CreateButton(Form, ButtonPanel, '', PostButtonCaption, '', OnPostButtonClick, True, False);
+    ButtonPanel.Height := PostButton.Height + 6;
+    PostButton.Top := 3;
+    PostButton.Anchors := [akTop, akRight];
+    PostButton.Left := LeftPos - PostButton.Width - 5;
+    PostButton.TabOrder := 0;
+  end;
+  Result := Form;
+end;
+
+
 
 procedure TJvDynControlDataSourceEditDialog.OnPostButtonClick(Sender: TObject);
 begin
@@ -82,12 +169,34 @@ begin
   FForm.ModalResult := mrCancel;
 end;
 
+procedure TJvDynControlDataSourceEditDialog.OnCloseButtonClick(Sender: TObject);
+begin
+  FForm.ModalResult := mrAbort;
+end;
+
 function TJvDynControlDataSourceEditDialog.IntDynControlEngineDB: TJvDynControlEngineDB;
 begin
   if Assigned(DynControlEngineDB) then
     Result := DynControlEngineDB
   else
     Result := DefaultDynControlEngineDB;
+end;
+
+constructor TJvDynControlDataSourceEditDialog.Create;
+begin
+  Inherited Create;
+  FDialogCaption := '';
+  FPostButtonCaption := RSSRWPostButtonCaption;
+  FCancelButtonCaption := RSSRWCancelButtonCaption;
+  FCloseButtonCaption := RSSRWCloseButtonCaption;
+  FBorderStyle := bsDialog;
+  FTop := 0;
+  FLeft := 0;
+  FWidth := 640;
+  FHeight := 480;
+  FPosition := poScreenCenter;
+  FDynControlEngineDB := nil;
+  FDatasource := nil;
 end;
 
 function TJvDynControlDataSourceEditDialog.ShowDialog: TModalResult;
@@ -98,8 +207,7 @@ var
   ScrollBox: TScrollbox;
   Navigator: TControl;
 begin
-  FForm := CreateDynControlDialog(DialogCaption, PostCaption, CancelCaption,
-    OnPostButtonClick, OnCancelButtonClick, MainPanel, IntDynControlEngineDB.DynControlEngine);
+  FForm := CreateDynControlDialog(MainPanel);
   try
     ScrollBox := TScrollBox.Create(FForm);
     ScrollBox.Parent := MainPanel;
@@ -109,11 +217,11 @@ begin
     ArrangePanel := TJvPanel.Create(FForm);
     with ArrangePanel, ArrangePanel.ArrangeSettings do
     begin
-      Align := alClient;
+      Align := alTop;
       BevelInner := bvNone;
       BevelOuter := bvNone;
       Parent := ScrollBox;
-      AutoArrange := True;
+      AutoArrange := False;
       AutoSize := asHeight;
       BorderLeft := 3;
       BorderTop := 3;
@@ -133,12 +241,20 @@ begin
         Parent := MainPanel;
         Height := Navigator.Height + 6;
       end;
-    end;
-    IntDynControlEngineDB.CreateControlsFromDatasourceOnControl(DataSource, ArrangePanel);
-    FForm.ClientWidth := 450;
-    FForm.ClientHeight := ArrangePanel.Height + 35;
+    end
+    else
+      NavigatorPanel := nil;
+    if Assigned(OnCreateDataControlsEvent) then
+      OnCreateDataControlsEvent(IntDynControlEngineDB, ArrangePanel)
+    else
+      IntDynControlEngineDB.CreateControlsFromDatasourceOnControl(DataSource, ArrangePanel);
+    ArrangePanel.ArrangeControls;  
+//    FForm.ClientWidth := 450;
     if Assigned(NavigatorPanel) then
-      FForm.ClientHeight := FForm.ClientHeight + NavigatorPanel.Height;
+      FForm.ClientHeight := ArrangePanel.Height + 35 + NavigatorPanel.Height
+    else
+      FForm.ClientHeight := ArrangePanel.Height + 35;
+    ArrangePanel.ArrangeSettings.AutoArrange := True;
     Result := FForm.ShowModal;
   finally
     FForm.Free;
@@ -146,7 +262,7 @@ begin
 end;
 
 function ShowDatasourceEditDialog(ADataSource: TDataSource;
-  const ADialogCaption, APostCaption, ACancelCaption: string;
+  const ADialogCaption, APostButtonCaption, ACancelButtonCaption, ACloseButtonCaption: string;
   AIncludeNavigator: Boolean;
   ADynControlEngineDB: TJvDynControlEngineDB = nil): TModalResult;
 var
@@ -156,8 +272,9 @@ begin
   try
     Dialog.DataSource := ADataSource;
     Dialog.DialogCaption := ADialogCaption;
-    Dialog.PostCaption := APostCaption;
-    Dialog.CancelCaption := ACancelCaption;
+    Dialog.PostButtonCaption := APostButtonCaption;
+    Dialog.CancelButtonCaption := ACancelButtonCaption;
+    Dialog.CloseButtonCaption := ACloseButtonCaption;
     Dialog.IncludeNavigator := AIncludeNavigator;
     Dialog.DynControlEngineDB := ADynControlEngineDB;
     Result := Dialog.ShowDialog;
