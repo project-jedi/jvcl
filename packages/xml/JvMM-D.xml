@@ -39,7 +39,7 @@
     <File Name="..\..\design\JvID3v2EditorForm.pas" Targets="allbutclx" Formname="JvID3FramesEditor" Condition=""/>
     <File Name="..\..\design\JvImagePreviewForm.pas" Targets="allbutclx" Formname="ImageForm" Condition=""/>
     <File Name="..\..\design\JvMMReg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvPictureEditForm.pas" Targets="all" Formname="PictureEditDialog" Condition=""/>
+    <File Name="..\..\design\JvPictureEditForm.pas" Targets="allbutclx" Formname="PictureEditDialog" Condition=""/>
     <File Name="..\..\design\JvFullColorSpacesEditors.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvFullColorEditors.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvFullColorListForm.pas" Targets="all" Formname="JvFullColorListFrm" Condition=""/>
