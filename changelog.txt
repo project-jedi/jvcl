@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2004-09-04
+- Added new component TJvMultiStringHolder and TJvLookupAutoComplete // ahuser
 2004-09-02
 - TJvCustomAppXMLStorage: Introduced the WhiteSpaceReplacement property that is used when a node
   name contains a white space. Its default value is an empty string, thus forcing people to
