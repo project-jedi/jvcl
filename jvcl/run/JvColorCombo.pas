@@ -78,6 +78,7 @@ type
     procedure InitColorNames;
     function GetDropDownWidth: Integer;
     procedure SetDropDownWidth(const Value: Integer);
+    function GetColor(Index: Integer): TColor;
   protected
     procedure FontChanged; override;
     procedure DrawItem(Index: Integer; R: TRect; State: TOwnerDrawState); override;
@@ -108,6 +109,8 @@ type
     procedure InsertColor(AIndex: Integer; AColor: TColor; const DisplayName: string);
     property Text;
     property CustomColorCount: Integer read FCustomColorCount;
+
+    property Colors[Index: Integer]: TColor read GetColor;
   published
     property Anchors;
     property AutoComplete default False;
@@ -706,6 +709,11 @@ end;
 function TJvColorComboBox.GetColorNameMap: TStrings;
 begin
   Result := FColorNameMap;
+end;
+
+function TJvColorComboBox.GetColor(Index: Integer): TColor;
+begin
+  Result := TColor(Items.Objects[Index]);
 end;
 
 procedure TJvColorComboBox.SetColorNameMap(const Value: TStrings);
