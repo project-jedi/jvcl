@@ -31,8 +31,7 @@ unit JvFormAlarms;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, StdCtrls, ComCtrls,
-  JvButton;
+  SysUtils, Classes, Controls, Forms, StdCtrls, ComCtrls;
 
 type
   TFormAlarm = class(TForm)
@@ -41,10 +40,10 @@ type
     Label1: TLabel;
     NameEdit: TEdit;
     TimePick: TDateTimePicker;
-    AddBtn: TJvButton;
-    RemoveBtn: TJvButton;
-    CancelBtn: TJvButton;
-    OkBtn: TJvButton;
+    AddBtn: TButton;
+    RemoveBtn: TButton;
+    CancelBtn: TButton;
+    OkBtn: TButton;
     DatePick: TDateTimePicker;
     procedure CancelBtnClick(Sender: TObject);
     procedure OkBtnClick(Sender: TObject);

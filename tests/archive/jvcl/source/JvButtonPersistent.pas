@@ -91,6 +91,8 @@ begin
   FFont.Free;
   inherited Destroy;
 end;
+type
+  TAccessButton = class(TJvCustomButton);
 
 procedure TJvButtonPersistent.AssignTo(Sender: TPersistent);
 begin
@@ -101,10 +103,10 @@ begin
     TButton(Sender).Caption := Caption;
     TButton(Sender).Hint := Hint;
     TButton(Sender).ShowHint := ShowHint;
-    if Sender is TJvButton then
+    if Sender is TJvCustomButton then
     begin
-      TJvButton(Sender).HotTrack := HotTrack;
-      TJvButton(Sender).HotTrackFont.Assign(FFont);
+      TAccessButton(Sender).HotTrack := HotTrack;
+      TAccessButton(Sender).HotTrackFont.Assign(FFont);
     end;
   end
   else

@@ -37,7 +37,7 @@ uses
   JvTypes, JvButton, JvDirectories, JvFunctions;
 
 type
-  TJvFavoritesButton = class(TJvButton)
+  TJvFavoritesButton = class(TJvCustomButton)
   private
     FPopup: TPopupMenu;
     FDirs: TJvDirectories;

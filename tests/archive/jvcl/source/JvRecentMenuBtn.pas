@@ -37,7 +37,7 @@ uses
   JvButton, JvDirectories, JvTypes, JvFunctions;
 
 type
-  TJvRecentMenuBtn = class(TJvButton)
+  TJvRecentMenuBtn = class(TJvCustomButton)
   private
     FPopup: TPopupMenu;
     FDirs: TJvDirectories;
@@ -175,8 +175,7 @@ begin
     PersistFile := ShellLink as IPersistFile;
     // PersistFile.Load fails if the filename is not fully qualified
     FullPath := ExpandFileName(FileName);
-    MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(FullPath), -1,
-      LinkName, MAX_PATH);
+    MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(FullPath), -1, LinkName, MAX_PATH);
     if Succeeded(PersistFile.Load(LinkName, STGM_READ)) then
     begin
       //      Result := ShellLink.Resolve(0, SLR_ANY_MATCH or SLR_NO_UI);
@@ -187,10 +186,6 @@ begin
   end;
 end;
 
-function GetLinkFilename(const LinkName: string): string;
-begin
-  Result := ShellLinkResolve(LinkName);
-end;
 
 procedure TJvRecentMenuBtn.InternalFileFind(const Path, FileMask: string; Strings: TStringList);
 var
@@ -207,7 +202,7 @@ begin
       begin
         if (Sr.FindData.cFilename[0] <> '.') then
         begin
-          Tmp := GetLinkFilename(Path + Sr.FindData.cFilename);
+          Tmp := ShellLinkResolve(Path + Sr.FindData.cFilename);
           if (Tmp <> '') and (ExtractFileExt(Tmp) <> '') then
             Strings.AddObject(Tmp, TObject(Sr.Time));
         end;

@@ -17,35 +17,25 @@ object FoWallpaperChooser: TFoWallpaperChooser
   OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
-  object Button1: TJvButton
+  object Button1: TButton
     Left = 6
     Top = 200
     Width = 75
     Height = 25
-    Caption = '&Ok'
+    Caption = '&OK'
     ModalResult = 1
     TabOrder = 2
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
   end
-  object Button2: TJvButton
-    Left = 102
+  object Button2: TButton
+    Left = 84
     Top = 200
     Width = 75
     Height = 25
     Caption = '&Cancel'
     ModalResult = 2
     TabOrder = 3
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
   end
-  object Button3: TJvButton
+  object Button3: TButton
     Left = 238
     Top = 198
     Width = 75
@@ -53,11 +43,6 @@ object FoWallpaperChooser: TFoWallpaperChooser
     Caption = '&Clear'
     TabOrder = 4
     OnClick = Button3Click
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
   end
   object GroupBox1: TGroupBox
     Left = 6

@@ -34,7 +34,17 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, StdCtrls, Menus, Controls,
   Forms, JvComponent, JVCLVer;
 
+const
+  CM_FORCESIZE = WM_USER + 777;
+
 type
+  TCmForceSize = record
+    Msg: Cardinal;
+    Sender: TWinControl;
+    NewSize: TSmallPoint;
+    Result: Longint;
+  end;
+
   TJvButtonMouseState = (bsMouseInside, bsMouseDown);
   TJvButtonMouseStates = set of TJvButtonMouseState;
 
@@ -83,7 +93,7 @@ type
     destructor Destroy; override;
   end;
 
-  TJvButton = class(TButton)
+  TJvCustomButton = class(TButton)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FOnMouseEnter: TNotifyEvent;
@@ -97,19 +107,31 @@ type
     FHotFont: TFont;
     FFontSave: TFont;
     FOver: Boolean;
+    FWordWrap: boolean;
+    FForceSameSize: boolean;
     procedure SetHotFont(const Value: TFont);
-  protected
+    procedure SetWordWrap(const Value: boolean);
+    procedure SetForceSameSize(const Value: boolean);
+    procedure CMForceSize(var Msg: TCMForceSize); message CM_FORCESIZE;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+  protected
+    procedure DoMouseEnter; dynamic;
+    procedure DoMouseLeave; dynamic;
+    procedure CreateParams(var Params: TCreateParams); override;
+    function GetRealCaption: string;dynamic;
+
   public
     procedure Click; override;
-    procedure CreateParams(var Params: TCreateParams); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
+      AHeight: Integer); override;
+  protected
+    property WordWrap:boolean read FWordWrap write SetWordWrap default true;
+    property ForceSameSize:boolean read FForceSameSize write SetForceSameSize;
     property DropDownMenu: TPopupMenu read FDropMenu write FDropMenu;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
@@ -118,9 +140,17 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
+//  TJvButton = class(TJvCustomButton);
+
 implementation
+
+const
+  JvBtnLineSeparator = '|';
+
 
 function CreateBrushPattern: TBitmap;
 var
@@ -355,25 +385,27 @@ begin
   end;
 end;
 
-constructor TJvButton.Create(AOwner: TComponent);
+constructor TJvCustomButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FColor := clInfoBk;
   FHotTrack := False;
   FHotFont := TFont.Create;
   FFontSave := TFont.Create;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+//  ControlStyle := ControlStyle + [csAcceptsControls];
   FOver := False;
+  FWordWrap := true;
+
 end;
 
-destructor TJvButton.Destroy;
+destructor TJvCustomButton.Destroy;
 begin
   FHotFont.Free;
   FFontSave.Free;
   inherited Destroy;
 end;
 
-procedure TJvButton.Click;
+procedure TJvCustomButton.Click;
 begin
   inherited Click;
   if FDropMenu <> nil then
@@ -383,27 +415,27 @@ begin
   end;
 end;
 
-procedure TJvButton.CreateParams(var Params: TCreateParams);
+procedure TJvCustomButton.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or BS_MULTILINE;
 end;
 
-procedure TJvButton.CMCtl3DChanged(var Msg: TMessage);
+procedure TJvCustomButton.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
   if Assigned(FonCtl3DChanged) then
     FOnCtl3DChanged(Self);
 end;
 
-procedure TJvButton.CMParentColorChanged(var Msg: TMessage);
+procedure TJvCustomButton.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
 
-procedure TJvButton.CMMouseEnter(var Msg: TMessage);
+procedure TJvCustomButton.CMMouseEnter(var Msg: TMessage);
 begin
   if not FOver then
   begin
@@ -419,11 +451,10 @@ begin
     end;
     FOver := True;
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  DoMouseEnter;
 end;
 
-procedure TJvButton.CMMouseLeave(var Msg: TMessage);
+procedure TJvCustomButton.CMMouseLeave(var Msg: TMessage);
 begin
   if FOver then
   begin
@@ -432,12 +463,10 @@ begin
       Font.Assign(FFontSave);
     FOver := False;
   end;
-
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  DoMouseLeave;
 end;
 
-procedure TJvButton.SetHotFont(const Value: TFont);
+procedure TJvCustomButton.SetHotFont(const Value: TFont);
 begin
   FHotFont.Assign(Value);
 end;
@@ -447,6 +476,77 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
   inherited;
+end;
+
+procedure TJvCustomButton.DoMouseEnter;
+begin
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvCustomButton.DoMouseLeave;
+begin
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+
+
+function TJvCustomButton.GetRealCaption: string;
+begin
+  if WordWrap then
+    Result := StringReplace(Caption, JvBtnLineSeparator, #10, [rfReplaceAll])
+  else
+    Result := Caption;
+end;
+
+procedure TJvCustomButton.SetWordWrap(const Value: boolean);
+begin
+  if FWordWrap <> Value then
+  begin
+    FWordWrap := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvCustomButton.SetForceSameSize(const Value: boolean);
+begin
+  if FForceSameSize <> Value then
+  begin
+    FForceSameSize := Value;
+    if FForceSameSize then
+      SetBounds(Left,Top,Width,Height);
+  end;
+end;
+
+procedure TJvCustomButton.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
+var
+  Form: TCustomForm;
+  Msg: TCMForceSize;
+begin
+  inherited;
+  if ForceSameSize then
+  begin
+    Form := GetParentForm(Self);
+    if Assigned(Form) then
+    begin
+      // (p3) what is this rect doing here?
+      // r := Rect(aLeft, aTop, aWidth, aHeight);
+      Msg.Msg := CM_FORCESIZE;
+      Msg.Sender := Self;
+      Msg.NewSize.x := AWidth;
+      Msg.NewSize.y := AHeight;
+      Form.Broadcast(Msg);
+    end;
+  end;
+end;
+
+
+procedure TJvCustomButton.CMForceSize(var Msg: TCMForceSize);
+begin
+  with Msg do
+    if Sender <> Self then
+      with NewSize do
+        inherited SetBounds(Left, Top, X, Y);
 end;
 
 end.

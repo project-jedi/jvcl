@@ -48,10 +48,10 @@ type
     Label5: TLabel;
     ComboBox1: TComboBox;
     Edit4: TEdit;
-    AddBtn: TJvButton;
-    RemoveBtn: TJvButton;
-    OkBtn: TJvButton;
-    CancelBtn: TJvButton;
+    AddBtn: TButton;
+    RemoveBtn: TButton;
+    OkBtn: TButton;
+    CancelBtn: TButton;
     procedure Edit1Change(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure ListBox1Click(Sender: TObject);

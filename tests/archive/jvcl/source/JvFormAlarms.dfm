@@ -92,7 +92,7 @@ object FormAlarm: TFormAlarm
       OnChange = TimePickChange
     end
   end
-  object AddBtn: TJvButton
+  object AddBtn: TButton
     Left = 200
     Top = 14
     Width = 75
@@ -100,13 +100,8 @@ object FormAlarm: TFormAlarm
     Caption = '&Add'
     TabOrder = 2
     OnClick = AddBtnClick
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
   end
-  object RemoveBtn: TJvButton
+  object RemoveBtn: TButton
     Left = 200
     Top = 46
     Width = 75
@@ -114,13 +109,8 @@ object FormAlarm: TFormAlarm
     Caption = '&Remove'
     TabOrder = 3
     OnClick = RemoveBtnClick
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
   end
-  object CancelBtn: TJvButton
+  object CancelBtn: TButton
     Left = 200
     Top = 256
     Width = 75
@@ -129,25 +119,15 @@ object FormAlarm: TFormAlarm
     Caption = '&Cancel'
     TabOrder = 1
     OnClick = CancelBtnClick
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
   end
-  object OkBtn: TJvButton
+  object OkBtn: TButton
     Left = 200
     Top = 220
     Width = 75
     Height = 25
-    Caption = '&Ok'
+    Caption = '&OK'
     Default = True
     TabOrder = 0
     OnClick = OkBtnClick
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
   end
 end

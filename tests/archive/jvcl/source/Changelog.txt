@@ -1,3 +1,6 @@
+2003-03-26
+- Merged JvMultilineButton and JvOneSizeFitsAllButton into JvButton. TJvButton renamed to TJvCustomButton. Removed registration for TJvButton. TJvImgBtn now derives from TJvCustomButton. // peter3
+- Moved JvObserverLabel.pas, JvObserverMessages.pas and JvObservibleCheckBox.pas to \archive. This seems to be a "proof of concept" with little real value. // peter3
 2003-03-25
 - Merged TJvDrawGrid and TJvButtonDrawGrid into TJvxDrawGrid (added DrawButtons property to TJvxDrawGrid for TJvButtonDrawGrid functionality). Renamed TJvxDrawGrid to TJvDrawGrid. Moved JvDrawGrid.pas and JvButtonDrawGrid.pas to \archive. // peter3
 - Merged TJvxLabel into TJvLabel. Removed registration of TJvxLabel. NOTE: default for ShadowSize has changed to 0 (was 1). // peter3

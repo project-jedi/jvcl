@@ -420,7 +420,7 @@ begin
       FNextTipButton := TJvSpeedButton.Create(AForm)
     else
       { ..so create a TJvButton unless Flat is set to True }
-      FNextTipButton := TJvButton.Create(AForm);
+      FNextTipButton := TJvCustomButton.Create(AForm);
 
     with TControlAccess(FNextTipButton) do
     begin
@@ -442,7 +442,7 @@ begin
       end
     else
       { ..so create a TJvButton unless Flat is set to True }
-      with TJvButton.Create(AForm) do
+      with TJvCustomButton.Create(AForm) do
       begin
         Parent := AForm;
         SetBounds(251, 232, 75, 25);
@@ -523,7 +523,7 @@ begin
       FNextTipButton := TJvSpeedButton.Create(AForm)
     else
       { ..so create a TJvButton unless Flat is set to True }
-      FNextTipButton := TJvButton.Create(AForm);
+      FNextTipButton := TJvCustomButton.Create(AForm);
 
     with TControlAccess(FNextTipButton) do
     begin
@@ -545,7 +545,7 @@ begin
       end
     else
       { ..so create a TJvButton unless Flat is set to True }
-      with TJvButton.Create(AForm) do
+      with TJvCustomButton.Create(AForm) do
       begin
         Parent := AForm;
         SetBounds(317, 225, 75, 25);

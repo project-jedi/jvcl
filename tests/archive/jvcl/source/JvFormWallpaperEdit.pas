@@ -37,9 +37,9 @@ uses
 type
   TFoWallpaperChooser = class(TForm)
     GroupBox1: TGroupBox;
-    Button1: TJvButton;
-    Button2: TJvButton;
-    Button3: TJvButton;
+    Button1: TButton;
+    Button2: TButton;
+    Button3: TButton;
     DirectoryBox1: TJvDirectoryEdit;
     Label1: TLabel;
     ScrollBox1: TScrollBox;

@@ -143,9 +143,7 @@ uses
   JvArrow,
 
   // Peter Below Goodies
-  JvCoupler, JvHighlighter, JvMLButton, JvMousePanel, JvObserverLabel,
-  JvObservibleCheckBox, JvOneSizeFitsAllButton, JvGroupBox,
-  JvPopupMemo, JvSizeablePanel, JvSpacer, JvSyncSplitter, JvTransparentPanel,
+  JvCoupler, JvHighlighter, JvMousePanel, JvGroupBox, JvPopupMemo, JvSizeablePanel, JvSpacer, JvSyncSplitter, JvTransparentPanel,
 
   // Petr Vones Components
   JVCLMiscal,
@@ -255,15 +253,13 @@ procedure RegComps;
 begin
   // Jv Standard
   RegisterComponents(srJvStandardPalette,
-    [TJvLabel, TJvEdit, TJvMemo, TJvButton, TJvCheckBox, TJvRadioButton,
+    [TJvLabel, TJvEdit, TJvMemo, TJvCheckBox, TJvRadioButton,
      TJvListBox, TJvCombobox, TJvScrollBar, TJvGroupBox, TJvRadioGroup,
      TJvPanel, TJvJVCLAboutComponent, TJvValidateEdit]);
 
   // Jv Additional
   RegisterComponents(srJvAdditionalPalette,
-    [TJvBitBtn, TJvImgBtn, TJvSpeedButton, TJvMultilineButton,
-     TJvOneSizeFitsAllButton, TJvArrowButton,
-     TJvTransparentButton, TJvTransparentButton2, 
+    [TJvBitBtn, TJvImgBtn, TJvSpeedButton, TJvArrowButton, TJvTransparentButton, TJvTransparentButton2,
 
      TJvPopupMemo, TJvStringGrid,
 
@@ -280,7 +276,7 @@ begin
      TJvMaskEdit, TJvCommandEdit,
      TJvSpinEdit, TJvSpinButton, TJvCoupler,
 
-     TJvInstallLabel, TJvObserverLabel, TJvObservibleCheckBox,
+     TJvInstallLabel,
 
      TJvMousePanel, TJvSizeablePanel, TJvTransparentPanel,
      TJvCaptionPanel, TJvItemsPanel, TJvRollout,

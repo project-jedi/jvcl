@@ -72,14 +72,11 @@
       ..\lib5\JvWaitingGradient.obj ..\lib5\JvWaitingProgress.obj 
       ..\lib5\JvWavePlayer.obj ..\lib5\JvWinampApi.obj ..\lib5\JvWinampLabel.obj 
       ..\lib5\JvWinHelp.obj ..\lib5\JvXorCipher.obj ..\lib5\JvZoom.obj 
-      ..\lib5\JvCoupler.obj ..\lib5\JvHighlighter.obj ..\lib5\JvMLButton.obj
-      ..\lib5\JvOneSizeFitsAllButton.obj ..\lib5\JvGroupBox.obj
+      ..\lib5\JvCoupler.obj ..\lib5\JvHighlighter.obj ..\lib5\JvGroupBox.obj
       ..\lib5\JvSyncSplitter.obj ..\lib5\JvPopupMemo.obj 
       ..\lib5\JvSizeablePanel.obj ..\lib5\JvSpacer.obj 
       ..\lib5\JvTransparentPanel.obj ..\lib5\JvMousePanel.obj 
-      ..\lib5\JvObserverLabel.obj ..\lib5\JvObservibleCheckBox.obj 
-      ..\lib5\JvMouseTimerU.obj ..\lib5\JvObserverMessages.obj 
-      ..\lib5\JvSysComp.obj ..\lib5\JvCtrls.obj ..\lib5\JvDdeCmd.obj 
+      ..\lib5\JvMouseTimerU.obj ..\lib5\JvSysComp.obj ..\lib5\JvCtrls.obj ..\lib5\JvDdeCmd.obj
       ..\lib5\JvDialogs.obj ..\lib5\JvPerfMon95.obj ..\lib5\JvComCtrls.obj 
       ..\lib5\JvMail.obj ..\lib5\JvPageSetupTitled.obj ..\lib5\JvPageSetup.obj 
       ..\lib5\JVCLVer.obj ..\lib5\JvComponent.obj ..\lib5\JvLinkLabel.obj 

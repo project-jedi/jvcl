@@ -28,44 +28,29 @@ object FormSer: TFormSer
     Width = 381
     Height = 3
   end
-  object Button1: TJvButton
+  object Button1: TButton
     Left = 150
     Top = 288
     Width = 75
     Height = 25
     Caption = '&Previous'
     TabOrder = 2
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
   end
-  object Button2: TJvButton
+  object Button2: TButton
     Left = 230
     Top = 288
     Width = 75
     Height = 25
     Caption = '&Next'
     TabOrder = 3
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
   end
-  object Button3: TJvButton
+  object Button3: TButton
     Left = 310
     Top = 288
     Width = 75
     Height = 25
     Caption = '&Cancel'
     TabOrder = 4
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
   end
   object StaticText1: TStaticText
     Left = 136

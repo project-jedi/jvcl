@@ -39,7 +39,7 @@ type
   TJvStartMenuOption = (smCurrentUser, smCommon, smAllUsers);
   TJvStartMenuOptions = set of TJvStartMenuOption;
 
-  TJvStartMenuBtn = class(TJvButton)
+  TJvStartMenuBtn = class(TJvCustomButton)
   private
     FPopup: TPopupMenu;
     FDirs: TJvDirectories;

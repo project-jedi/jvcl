@@ -73,15 +73,11 @@
       ..\lib6\JvWaitingGradient.obj ..\lib6\JvWaitingProgress.obj 
       ..\lib6\JvWavePlayer.obj ..\lib6\JvWinampApi.obj ..\lib6\JvWinampLabel.obj 
       ..\lib6\JvWinHelp.obj ..\lib6\JvXorCipher.obj ..\lib6\JvZoom.obj 
-      ..\lib6\JvCoupler.obj ..\lib6\JvHighlighter.obj ..\lib6\JvMLButton.obj
-      ..\lib6\JvOneSizeFitsAllButton.obj
-      ..\lib6\JvGroupBox.obj
-      ..\lib6\JvSyncSplitter.obj ..\lib6\JvPopupMemo.obj 
+      ..\lib6\JvCoupler.obj ..\lib6\JvHighlighter.obj
+      ..\lib6\JvGroupBox.obj ..\lib6\JvSyncSplitter.obj ..\lib6\JvPopupMemo.obj
       ..\lib6\JvSizeablePanel.obj ..\lib6\JvSpacer.obj 
       ..\lib6\JvTransparentPanel.obj ..\lib6\JvMousePanel.obj 
-      ..\lib6\JvObserverLabel.obj ..\lib6\JvObservibleCheckBox.obj 
-      ..\lib6\JvMouseTimerU.obj ..\lib6\JvObserverMessages.obj 
-      ..\lib6\JvSysComp.obj ..\lib6\JvCtrls.obj ..\lib6\JvDdeCmd.obj 
+      ..\lib6\JvMouseTimerU.obj ..\lib6\JvSysComp.obj ..\lib6\JvCtrls.obj ..\lib6\JvDdeCmd.obj
       ..\lib6\JvDialogs.obj ..\lib6\JvPerfMon95.obj ..\lib6\JvComCtrls.obj 
       ..\lib6\JvMail.obj ..\lib6\JvPageSetupTitled.obj ..\lib6\JvPageSetup.obj 
       ..\lib6\JVCLVer.obj ..\lib6\JvComponent.obj ..\lib6\JvLinkLabel.obj 
@@ -388,8 +384,6 @@
       <FILE FILENAME="..\source\JvZoom.pas" FORMNAME="" UNITNAME="JvZoom" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvCoupler.pas" FORMNAME="" UNITNAME="JvCoupler" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvHighlighter.pas" FORMNAME="" UNITNAME="JvHighlighter" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvMLButton.pas" FORMNAME="" UNITNAME="JvMLButton" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvOneSizeFitsAllButton.pas" FORMNAME="" UNITNAME="JvOneSizeFitsAllButton" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvGroupBox.pas" FORMNAME="" UNITNAME="JvGroupBox" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSyncSplitter.pas" FORMNAME="" UNITNAME="JvSyncSplitter" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvPopupMemo.pas" FORMNAME="" UNITNAME="JvPopupMemo" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -397,10 +391,7 @@
       <FILE FILENAME="..\source\JvSpacer.pas" FORMNAME="" UNITNAME="JvSpacer" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvTransparentPanel.pas" FORMNAME="" UNITNAME="JvTransparentPanel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvMousePanel.pas" FORMNAME="" UNITNAME="JvMousePanel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvObserverLabel.pas" FORMNAME="" UNITNAME="JvObserverLabel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvObservibleCheckBox.pas" FORMNAME="" UNITNAME="JvObservibleCheckBox" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvMouseTimerU.pas" FORMNAME="" UNITNAME="JvMouseTimerU" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvObserverMessages.pas" FORMNAME="" UNITNAME="JvObserverMessages" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSysComp.pas" FORMNAME="" UNITNAME="JvSysComp" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvCtrls.pas" FORMNAME="" UNITNAME="JvCtrls" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvDdeCmd.pas" FORMNAME="" UNITNAME="JvDdeCmd" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

@@ -44,9 +44,9 @@ type
     Edit1: TEdit;
     Label2: TLabel;
     Edit2: TEdit;
-    Button1: TJvButton;
-    Button2: TJvButton;
-    Button3: TJvButton;
+    Button1: TButton;
+    Button2: TButton;
+    Button3: TButton;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
   public

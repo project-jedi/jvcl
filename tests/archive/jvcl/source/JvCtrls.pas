@@ -36,7 +36,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, ImgList, ActnList,
-  JVCLVer, JvListBox;
+  JvButton, JVCLVer, JvListBox;
 
 type
   TJvListBox = class(TJvCustomListBox)
@@ -129,11 +129,11 @@ type
   TJvImgBtnKind = (bkCustom, bkOK, bkCancel, bkHelp, bkYes, bkNo, bkClose,
     bkAbort, bkRetry, bkIgnore, bkAll);
 
-  TJvImgBtn = class;
+  TJvCustomImageButton = class;
 
   TJvImgBtnActionLink = class(TButtonActionLink)
   protected
-    FClient: TJvImgBtn;
+    FClient: TJvCustomImageButton;
     procedure AssignClient(AClient: TObject); override;
     function IsImageIndexLinked: Boolean; override;
     procedure SetImageIndex(Value: Integer); override;
@@ -143,7 +143,7 @@ type
   TJvImgBtnAnimIndexEvent = procedure(Sender: TObject; CurrentAnimateFrame: Byte;
     var ImageIndex: Integer) of object;
 
-  TJvImgBtn = class(TButton)
+  TJvCustomImageButton = class(TJvCustomButton)
   private
     FAlignment: TAlignment;
     FAnimate: Boolean;
@@ -164,10 +164,7 @@ type
     FMouseInControl: Boolean;
     FOnButtonDraw: TJvImgBtnDrawEvent;
     FOnGetAnimateIndex: TJvImgBtnAnimIndexEvent;
-    FOnMouseLeave: TNotifyEvent;
-    FOnMouseEnter: TNotifyEvent;
     FImageVisible: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure ImageListChange(Sender: TObject);
     procedure SetAlignment(const Value: TAlignment);
     procedure SetAnimate(const Value: Boolean);
@@ -195,15 +192,13 @@ type
     procedure CalcButtonParts(ButtonRect: TRect; var RectText, RectImage: TRect);
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
-    procedure DoMouseEnter; dynamic;
-    procedure DoMouseLeave; dynamic;
     procedure DrawItem(const DrawItemStruct: TDrawItemStruct); dynamic;
     function GetActionLinkClass: TControlActionLinkClass; override;
     function GetCustomCaption: string; dynamic;
     function GetImageIndex: Integer;
     function GetImageList: TCustomImageList;
     function GetKindImageIndex: Integer;
-    function GetRealCaption: string;
+    function GetRealCaption: string;override;
     procedure InvalidateImage;
     function IsImageVisible: Boolean;
     procedure Loaded; override;
@@ -224,8 +219,7 @@ type
     property Canvas: TCanvas read FCanvas;
     property CurrentAnimateFrame: Byte read FCurrentAnimateFrame;
     property MouseInControl: Boolean read FMouseInControl;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  protected
     property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
     property Animate: Boolean read FAnimate write SetAnimate default False;
     property AnimateFrames: Integer read FAnimateFrames write SetAnimateFrames default 0;
@@ -241,8 +235,36 @@ type
     property Spacing: Integer read FSpacing write SetSpacing default 4;
     property OnButtonDraw: TJvImgBtnDrawEvent read FOnButtonDraw write FOnButtonDraw;
     property OnGetAnimateIndex: TJvImgBtnAnimIndexEvent read FOnGetAnimateIndex write FOnGetAnimateIndex;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+
+  end;
+
+  TJvImgBtn = class(TJvCustomImageButton)
+  published
+    property AboutJVCL;
+    property Alignment;
+    property Animate;
+    property AnimateFrames;
+    property AnimateInterval;
+    property Color;
+    property DropDownMenu;
+    property HotTrack;
+    property HotTrackFont;
+    property HintColor;
+    property Images;
+    property ImageIndex;
+    property ImageVisible;
+    property Kind;
+    property Layout;
+    property Margin;
+    property Spacing;
+    property WordWrap;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnCtl3DChanged;
+    property OnParentColorChange;
+    property OwnerDraw;
+    property OnButtonDraw;
+    property OnGetAnimateIndex;
   end;
 
 implementation
@@ -260,7 +282,6 @@ resourcestring
   RsLBVirtualCantBeSorted = 'ListBox doesn''t allow sorting in virtual mode';
 
 const
-  JvImgBtnLineSeparator = '|';
   JvImgBtnModalResults: array [TJvImgBtnKind] of TModalResult =
     (mrNone, mrOk, mrCancel, mrNone, mrYes, mrNo, mrNone,
      mrAbort, mrRetry, mrIgnore, mrAll);
@@ -275,7 +296,7 @@ var
 procedure TJvImgBtnActionLink.AssignClient(AClient: TObject);
 begin
   inherited AssignClient(AClient);
-  FClient := AClient as TJvImgBtn;
+  FClient := AClient as TJvCustomImageButton;
 end;
 
 function TJvImgBtnActionLink.IsImageIndexLinked: Boolean;
@@ -290,9 +311,9 @@ begin
     FClient.ImageIndex := Value;
 end;
 
-//=== TJvImgBtn ==============================================================
+//=== TJvCustomImageButton ==============================================================
 
-constructor TJvImgBtn.Create(AOwner: TComponent);
+constructor TJvCustomImageButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FCanvas := TCanvas.Create;
@@ -309,28 +330,28 @@ begin
   Color := clBtnFace;
 end;
 
-destructor TJvImgBtn.Destroy;
+destructor TJvCustomImageButton.Destroy;
 begin
   FreeAndNil(FImageChangeLink);
   FreeAndNil(FCanvas);
   inherited Destroy;
 end;
 
-procedure TJvImgBtn.CreateParams(var Params: TCreateParams);
+procedure TJvCustomImageButton.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   with Params do
     Style := Style or BS_OWNERDRAW;
 end;
 
-procedure TJvImgBtn.CreateWnd;
+procedure TJvCustomImageButton.CreateWnd;
 begin
   inherited CreateWnd;
   if FAnimate then
     StartAnimate;
 end;
 
-procedure TJvImgBtn.ActionChange(Sender: TObject; CheckDefaults: Boolean);
+procedure TJvCustomImageButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 begin
   inherited ActionChange(Sender, CheckDefaults);
   if Sender is TCustomAction then
@@ -343,7 +364,7 @@ begin
     end;
 end;
 
-procedure TJvImgBtn.CalcButtonParts(ButtonRect: TRect; var RectText, RectImage: TRect);
+procedure TJvCustomImageButton.CalcButtonParts(ButtonRect: TRect; var RectText, RectImage: TRect);
 var
   BlockWidth, ButtonWidth, ButtonHeight, BlockMargin, InternalSpacing: Integer;
 begin
@@ -385,7 +406,7 @@ begin
   OffsetRect(RectText, ButtonRect.Left, (ButtonHeight - RectText.Bottom) div 2 + ButtonRect.Top);
 end;
 
-procedure TJvImgBtn.Click;
+procedure TJvCustomImageButton.Click;
 var
   Form: TCustomForm;
   Control: TWinControl;
@@ -414,19 +435,19 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.CMEnabledChanged(var Msg: TMessage);
+procedure TJvCustomImageButton.CMEnabledChanged(var Msg: TMessage);
 begin
   inherited;
   Invalidate;
 end;
 
-procedure TJvImgBtn.CMFontChanged(var Msg: TMessage);
+procedure TJvCustomImageButton.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
   Invalidate;
 end;
 
-procedure TJvImgBtn.CMMouseEnter(var Msg: TMessage);
+procedure TJvCustomImageButton.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
   // for D7...
@@ -443,7 +464,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.CMMouseLeave(var Msg: TMessage);
+procedure TJvCustomImageButton.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
   if FMouseInControl and Enabled and not Dragging then
@@ -457,7 +478,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.CNDrawItem(var Msg: TWMDrawItem);
+procedure TJvCustomImageButton.CNDrawItem(var Msg: TWMDrawItem);
 begin
   FCanvas.Handle := Msg.DrawItemStruct^.hDC;
   try
@@ -471,7 +492,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.CNMeasureItem(var Msg: TWMMeasureItem);
+procedure TJvCustomImageButton.CNMeasureItem(var Msg: TWMMeasureItem);
 begin
   with Msg.MeasureItemStruct^ do
   begin
@@ -480,19 +501,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.DoMouseEnter;
-begin
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-end;
-
-procedure TJvImgBtn.DoMouseLeave;
-begin
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-end;
-
-procedure TJvImgBtn.DrawButtonFocusRect(const RectContent: TRect);
+procedure TJvCustomImageButton.DrawButtonFocusRect(const RectContent: TRect);
 begin
   if FIsFocused then
   begin
@@ -502,7 +511,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.DrawButtonFrame(const DrawItemStruct: TDrawItemStruct; var RectContent: TRect);
+procedure TJvCustomImageButton.DrawButtonFrame(const DrawItemStruct: TDrawItemStruct; var RectContent: TRect);
 var
   IsDown, IsEnabled, IsDefault: Boolean;
   R: TRect;
@@ -583,7 +592,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.DrawButtonImage(ImageBounds: TRect);
+procedure TJvCustomImageButton.DrawButtonImage(ImageBounds: TRect);
 begin
   with ImageBounds do
     if IsImageVisible then
@@ -595,7 +604,7 @@ begin
     end;
 end;
 
-procedure TJvImgBtn.DrawButtonText(TextBounds: TRect; TextEnabled: Boolean);
+procedure TJvCustomImageButton.DrawButtonText(TextBounds: TRect; TextEnabled: Boolean);
 var
   Flags: DWORD;
   RealCaption: string;
@@ -619,7 +628,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.DrawItem(const DrawItemStruct: TDrawItemStruct);
+procedure TJvCustomImageButton.DrawItem(const DrawItemStruct: TDrawItemStruct);
 var
   R, RectContent, RectText, RectImage: TRect;
 begin
@@ -645,12 +654,12 @@ begin
   DrawButtonFocusRect(RectContent);
 end;
 
-function TJvImgBtn.GetActionLinkClass: TControlActionLinkClass;
+function TJvCustomImageButton.GetActionLinkClass: TControlActionLinkClass;
 begin
   Result := TJvImgBtnActionLink;
 end;
 
-function TJvImgBtn.GetCustomCaption: string;
+function TJvCustomImageButton.GetCustomCaption: string;
 const
   Captions: array [TJvImgBtnKind] of string =
     ('', SOKButton, SCancelButton, SHelpButton, SYesButton, SNoButton,
@@ -659,7 +668,7 @@ begin
   Result := Captions[FKind];
 end;
 
-function TJvImgBtn.GetImageIndex: Integer;
+function TJvCustomImageButton.GetImageIndex: Integer;
 begin
   if FAnimating then
   begin
@@ -671,7 +680,7 @@ begin
     Result := FImageIndex;
 end;
 
-function TJvImgBtn.GetImageList: TCustomImageList;
+function TJvCustomImageButton.GetImageList: TCustomImageList;
 begin
   if Assigned(FImages) then
     Result := FImages
@@ -679,7 +688,7 @@ begin
     Result := DefaultImgBtnImagesList;
 end;
 
-function TJvImgBtn.GetKindImageIndex: Integer;
+function TJvCustomImageButton.GetKindImageIndex: Integer;
 const
   ImageKindIndexes: array [TJvImgBtnKind] of Integer =
     (-1, 2, 4, 0, 3, 1, 5, 8, 6, 9, 7);
@@ -687,20 +696,20 @@ begin
   Result := ImageKindIndexes[FKind];
 end;
 
-function TJvImgBtn.GetRealCaption: string;
+function TJvCustomImageButton.GetRealCaption: string;
 begin
   if (FKind <> bkCustom) and (Caption = '') then
     Result := GetCustomCaption
   else
-    Result := StringReplace(Caption, JvImgBtnLineSeparator, #10, [rfReplaceAll]);
+    Result := inherited GetRealCaption;
 end;
 
-procedure TJvImgBtn.ImageListChange(Sender: TObject);
+procedure TJvCustomImageButton.ImageListChange(Sender: TObject);
 begin
   InvalidateImage;
 end;
 
-class procedure TJvImgBtn.InitializeDefaultImageList;
+class procedure TJvCustomImageButton.InitializeDefaultImageList;
 begin
   if not Assigned(DefaultImgBtnImagesList) then
   begin
@@ -709,26 +718,26 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.InvalidateImage;
+procedure TJvCustomImageButton.InvalidateImage;
 begin
   Invalidate;
 end;
 
-function TJvImgBtn.IsImageVisible: Boolean;
+function TJvCustomImageButton.IsImageVisible: Boolean;
 begin
   Result := FImageVisible and
     ((Assigned(FImages) and (GetImageIndex <> -1)) or
     (not Assigned(FImages) and (FKind <> bkCustom)));
 end;
 
-procedure TJvImgBtn.Loaded;
+procedure TJvCustomImageButton.Loaded;
 begin
   inherited Loaded;
   if FAnimate then
     StartAnimate;
 end;
 
-procedure TJvImgBtn.RestartAnimate;
+procedure TJvCustomImageButton.RestartAnimate;
 begin
   if FAnimating then
   begin
@@ -738,7 +747,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.SetAlignment(const Value: TAlignment);
+procedure TJvCustomImageButton.SetAlignment(const Value: TAlignment);
 begin
   if FAlignment <> Value then
   begin
@@ -747,7 +756,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.SetAnimate(const Value: Boolean);
+procedure TJvCustomImageButton.SetAnimate(const Value: Boolean);
 begin
   if FAnimate <> Value then
   begin
@@ -760,7 +769,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.SetAnimateFrames(const Value: Integer);
+procedure TJvCustomImageButton.SetAnimateFrames(const Value: Integer);
 begin
   if FAnimateFrames <> Value then
   begin
@@ -769,7 +778,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.SetAnimateInterval(const Value: Cardinal);
+procedure TJvCustomImageButton.SetAnimateInterval(const Value: Cardinal);
 begin
   if FAnimateInterval <> Value then
   begin
@@ -778,7 +787,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.SetButtonStyle(ADefault: Boolean);
+procedure TJvCustomImageButton.SetButtonStyle(ADefault: Boolean);
 begin
   if ADefault <> FIsFocused then
   begin
@@ -787,7 +796,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.SetImageIndex(const Value: Integer);
+procedure TJvCustomImageButton.SetImageIndex(const Value: Integer);
 begin
   if FImageIndex <> Value then
   begin
@@ -796,7 +805,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.SetImages(const Value: TCustomImageList);
+procedure TJvCustomImageButton.SetImages(const Value: TCustomImageList);
 begin
   if FImages <> nil then
     FImages.UnRegisterChanges(FImageChangeLink);
@@ -811,7 +820,7 @@ begin
   InvalidateImage;
 end;
 
-procedure TJvImgBtn.SetImageVisible(const Value: Boolean);
+procedure TJvCustomImageButton.SetImageVisible(const Value: Boolean);
 begin
   if FImageVisible <> Value then
   begin
@@ -820,7 +829,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.SetKind(const Value: TJvImgBtnKind);
+procedure TJvCustomImageButton.SetKind(const Value: TJvImgBtnKind);
 begin
   if FKind <> Value then
   begin
@@ -841,7 +850,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.SetLayout(const Value: TJvImgBtnLayout);
+procedure TJvCustomImageButton.SetLayout(const Value: TJvImgBtnLayout);
 begin
   if FLayout <> Value then
   begin
@@ -855,7 +864,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.SetMargin(const Value: Integer);
+procedure TJvCustomImageButton.SetMargin(const Value: Integer);
 begin
   if (FMargin <> Value) and (Value >= -1) then
   begin
@@ -864,7 +873,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.SetOwnerDraw(const Value: Boolean);
+procedure TJvCustomImageButton.SetOwnerDraw(const Value: Boolean);
 begin
   if FOwnerDraw <> Value then
   begin
@@ -873,7 +882,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.SetSpacing(const Value: Integer);
+procedure TJvCustomImageButton.SetSpacing(const Value: Integer);
 begin
   if FSpacing <> Value then
   begin
@@ -882,7 +891,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.ShowNextFrame;
+procedure TJvCustomImageButton.ShowNextFrame;
 begin
   Inc(FCurrentAnimateFrame);
   if FCurrentAnimateFrame > FAnimateFrames then
@@ -890,7 +899,7 @@ begin
   InvalidateImage;
 end;
 
-procedure TJvImgBtn.StartAnimate;
+procedure TJvCustomImageButton.StartAnimate;
 begin
   if ComponentState * [csDesigning, csLoading] = [] then
   begin
@@ -902,7 +911,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.StopAnimate;
+procedure TJvCustomImageButton.StopAnimate;
 begin
   if FAnimating then
   begin
@@ -913,18 +922,18 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.WMDestroy(var Msg: TWMDestroy);
+procedure TJvCustomImageButton.WMDestroy(var Msg: TWMDestroy);
 begin
   StopAnimate;
   inherited;
 end;
 
-procedure TJvImgBtn.WMLButtonDblClk(var Msg: TWMLButtonDblClk);
+procedure TJvCustomImageButton.WMLButtonDblClk(var Msg: TWMLButtonDblClk);
 begin
   Perform(WM_LBUTTONDOWN, Msg.Keys, Longint(Msg.Pos));
 end;
 
-procedure TJvImgBtn.WMTimer(var Msg: TWMTimer);
+procedure TJvCustomImageButton.WMTimer(var Msg: TWMTimer);
 begin
   if Msg.TimerID = 1 then
   begin

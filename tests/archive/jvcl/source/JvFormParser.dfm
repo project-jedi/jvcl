@@ -32,7 +32,7 @@ object FormParsers: TFormParsers
     Left = 8
     Top = 120
     Width = 321
-    Height = 121
+    Height = 117
     ItemHeight = 13
     TabOrder = 4
     OnClick = ListBox1Click
@@ -141,7 +141,7 @@ object FormParsers: TFormParsers
       OnChange = Edit4Change
     end
   end
-  object AddBtn: TJvButton
+  object AddBtn: TButton
     Left = 339
     Top = 120
     Width = 75
@@ -150,13 +150,8 @@ object FormParsers: TFormParsers
     Caption = '&Add'
     TabOrder = 3
     OnClick = Button1Click
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
   end
-  object RemoveBtn: TJvButton
+  object RemoveBtn: TButton
     Left = 339
     Top = 152
     Width = 75
@@ -165,29 +160,19 @@ object FormParsers: TFormParsers
     Caption = '&Remove'
     TabOrder = 2
     OnClick = Button2Click
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
   end
-  object OkBtn: TJvButton
+  object OkBtn: TButton
     Left = 339
     Top = 184
     Width = 75
     Height = 25
     Hint = 'Apply changes'
-    Caption = '&Ok'
+    Caption = '&OK'
     Default = True
     TabOrder = 0
     OnClick = OkBtnClick
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
   end
-  object CancelBtn: TJvButton
+  object CancelBtn: TButton
     Left = 339
     Top = 216
     Width = 75
@@ -197,10 +182,5 @@ object FormParsers: TFormParsers
     Caption = '&Cancel'
     TabOrder = 1
     OnClick = CancelBtnClick
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
   end
 end

@@ -39,7 +39,7 @@ uses
   JvTypes, JvButton, JvDirectories, JvFunctions;
 
 type
-  TJvControlPanel = class(TJvButton)
+  TJvControlPanel = class(TJvCustomButton)
   private
     FPopup: TPopupMenu;
     FDirs: TJvDirectories;
