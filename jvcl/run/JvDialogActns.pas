@@ -21,6 +21,10 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+
+ BCB5 users, see the note at the top of JvDlgsC5R.bpk regarding this unit
+      and why it is exclued from the BCB5 package!
+
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -31,10 +35,20 @@ unit JvDialogActns;
 interface
 
 uses
-  Classes, SysUtils, ActnList, StdActns,
+  Classes,
+  SysUtils,
+  ActnList,
+  StdActns,
   {$IFNDEF COMPILER6_UP}Dialogs,{$ENDIF}
-  JvBaseDlg, JvBrowseFolder, JvSelectDirectory, JvConnectNetwork,
-  JvWinDialogs, JvDialogs, JvPageSetupTitled, JvPageSetup;
+  JvBaseDlg,
+  JvBrowseFolder,
+  JvSelectDirectory,
+  JvConnectNetwork,
+  JvWinDialogs,
+  JvDialogs,
+  JvPageSetupTitled,
+  JvPageSetup;
+
 
 type
   {$IFNDEF COMPILER6_UP}
