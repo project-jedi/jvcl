@@ -37,10 +37,9 @@ uses
 type
   { a component editor that by default opens the editor for the Items property in TTimeline }
   TJvTipPropertyEditor = class(TComponentEditor)
-  protected
+  public
     procedure ExecuteVerb(Index:integer);override;
     procedure Edit;override;
-  public
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;

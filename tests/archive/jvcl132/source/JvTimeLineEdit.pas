@@ -35,10 +35,9 @@ uses
 type
   { a component editor that by default opens the editor for the Items property in TTimeline }
   TTimeLineEditor = class(TDefaultEditor)
-  protected
+  public
     procedure ExecuteVerb(Index:integer);override;
     procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
-  public
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
