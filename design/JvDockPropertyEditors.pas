@@ -37,7 +37,6 @@ uses
   {$ENDIF COMPILER6_UP}
   JvDockControlForm, JvDockVIDStyle;
 
-
 type
   {$IFNDEF USEJVCL}
 
@@ -63,7 +62,6 @@ type
     function GetVerb(Index: Integer): string; override;
     procedure ExecuteVerb(Index: Integer); override;
   end;
-
 
 implementation
 
