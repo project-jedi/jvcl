@@ -28,142 +28,142 @@ PROJECTS = JvCoreD6R.bpl JvCoreD6D.bpl JvSystemD6R.bpl \
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
-JvCoreD6D.bpl: D6\JvCoreD6D.dpk
+JvCoreD6D.bpl: d6\JvCoreD6D.dpk
   $(DCC)
 
-JvCoreD6R.bpl: D6\JvCoreD6R.dpk
+JvCoreD6R.bpl: d6\JvCoreD6R.dpk
   $(DCC)
 
-JvAppFrmD6R.bpl: D6\JvAppFrmD6R.dpk
+JvAppFrmD6R.bpl: d6\JvAppFrmD6R.dpk
   $(DCC)
 
-JvCmpD6R.bpl: D6\JvCmpD6R.dpk
+JvCmpD6R.bpl: d6\JvCmpD6R.dpk
   $(DCC)
 
-JvCryptD6R.bpl: D6\JvCryptD6R.dpk
+JvCryptD6R.bpl: d6\JvCryptD6R.dpk
   $(DCC)
 
-JvCtrlsD6R.bpl: D6\JvCtrlsD6R.dpk
+JvCtrlsD6R.bpl: d6\JvCtrlsD6R.dpk
   $(DCC)
 
-JvCustomD6R.bpl: D6\JvCustomD6R.dpk
+JvCustomD6R.bpl: d6\JvCustomD6R.dpk
   $(DCC)
 
-JvDlgsD6R.bpl: D6\JvDlgsD6R.dpk
+JvDlgsD6R.bpl: d6\JvDlgsD6R.dpk
   $(DCC)
 
-JvInterpreterD6R.bpl: D6Per\JvInterpreterD6R.dpk
+JvInterpreterD6R.bpl: d6per\JvInterpreterD6R.dpk
   $(DCC)
 
-JvMMD6R.bpl: D6\JvMMD6R.dpk
+JvMMD6R.bpl: d6\JvMMD6R.dpk
   $(DCC)
 
-JvNetD6R.bpl: D6\JvNetD6R.dpk
+JvNetD6R.bpl: d6\JvNetD6R.dpk
   $(DCC)
 
-JvStdCtrlsD6R.bpl: D6\JvStdCtrlsD6R.dpk
+JvStdCtrlsD6R.bpl: d6\JvStdCtrlsD6R.dpk
   $(DCC)
 
-JvSystemD6R.bpl: D6\JvSystemD6R.dpk
+JvSystemD6R.bpl: d6\JvSystemD6R.dpk
   $(DCC)
 
-JvSystemD6D.bpl: D6\JvSystemD6D.dpk
+JvSystemD6D.bpl: d6\JvSystemD6D.dpk
   $(DCC)
 
-JvAppFrmD6D.bpl: D6\JvAppFrmD6D.dpk
+JvAppFrmD6D.bpl: d6\JvAppFrmD6D.dpk
   $(DCC)
 
-JvStdCtrlsD6D.bpl: D6\JvStdCtrlsD6D.dpk
+JvStdCtrlsD6D.bpl: d6\JvStdCtrlsD6D.dpk
   $(DCC)
 
-JvNetD6D.bpl: D6\JvNetD6D.dpk
+JvNetD6D.bpl: d6\JvNetD6D.dpk
   $(DCC)
 
-JvMMD6D.bpl: D6\JvMMD6D.dpk
+JvMMD6D.bpl: d6\JvMMD6D.dpk
   $(DCC)
 
-JvInterpreterD6D.bpl: D6\JvInterpreterD6D.dpk
+JvInterpreterD6D.bpl: d6\JvInterpreterD6D.dpk
   $(DCC)
 
-JvDlgsD6D.bpl: D6\JvDlgsD6D.dpk
+JvDlgsD6D.bpl: d6\JvDlgsD6D.dpk
   $(DCC)
 
-JvCustomD6D.bpl: D6\JvCustomD6D.dpk
+JvCustomD6D.bpl: d6\JvCustomD6D.dpk
   $(DCC)
 
-JvCtrlsD6D.bpl: D6\JvCtrlsD6D.dpk
+JvCtrlsD6D.bpl: d6\JvCtrlsD6D.dpk
   $(DCC)
 
-JvCryptD6D.bpl: D6\JvCryptD6D.dpk
+JvCryptD6D.bpl: d6\JvCryptD6D.dpk
   $(DCC)
 
-JvCmpD6D.bpl: D6\JvCmpD6D.dpk
+JvCmpD6D.bpl: d6\JvCmpD6D.dpk
   $(DCC)
 
-JvBandsD6D.bpl: D6\JvBandsD6D.dpk
+JvBandsD6D.bpl: d6\JvBandsD6D.dpk
   $(DCC)
 
-JvPluginD6D.bpl: D6\JvPluginD6D.dpk
+JvPluginD6D.bpl: d6\JvPluginD6D.dpk
   $(DCC)
 
-JvPluginD6R.bpl: D6\JvPluginD6R.dpk
+JvPluginD6R.bpl: d6\JvPluginD6R.dpk
   $(DCC)
 
-JvBandsD6R.bpl: D6\JvBandsD6R.dpk
+JvBandsD6R.bpl: d6\JvBandsD6R.dpk
   $(DCC)
 
-JvJansD6D.bpl: D6\JvJansD6D.dpk
+JvJansD6D.bpl: d6\JvJansD6D.dpk
   $(DCC)
 
-JvJansD6R.bpl: D6\JvJansD6R.dpk
+JvJansD6R.bpl: d6\JvJansD6R.dpk
   $(DCC)
 
-JvGlobusD6D.bpl: D6Per\JvGlobusD6D.dpk
+JvGlobusD6D.bpl: d6per\JvGlobusD6D.dpk
   $(DCC)
 
-JvGlobusD6R.bpl: D6Per\JvGlobusD6R.dpk
+JvGlobusD6R.bpl: d6per\JvGlobusD6R.dpk
   $(DCC)
 
-JvPrintPreviewD6D.bpl: D6\JvPrintPreviewD6D.dpk
+JvPrintPreviewD6D.bpl: d6\JvPrintPreviewD6D.dpk
   $(DCC)
 
-JvPageCompsD6R.bpl: D6\JvPageCompsD6R.dpk
+JvPageCompsD6R.bpl: d6\JvPageCompsD6R.dpk
   $(DCC)
 
-JvPageCompsD6D.bpl: D6\JvPageCompsD6D.dpk
+JvPageCompsD6D.bpl: d6\JvPageCompsD6D.dpk
   $(DCC)
 
-JvPrintPreviewD6R.bpl: D6\JvPrintPreviewD6R.dpk
+JvPrintPreviewD6R.bpl: d6\JvPrintPreviewD6R.dpk
   $(DCC)
 
-JvValidatorsD6D.bpl: D6\JvValidatorsD6D.dpk
+JvValidatorsD6D.bpl: d6\JvValidatorsD6D.dpk
   $(DCC)
 
-JvValidatorsD6R.bpl: D6\JvValidatorsD6R.dpk
+JvValidatorsD6R.bpl: d6\JvValidatorsD6R.dpk
   $(DCC)
 
-JvUIBD6D.bpl: D6\JvUIBD6D.dpk
+JvUIBD6D.bpl: d6\JvUIBD6D.dpk
   $(DCC)
 
-JvUIBD6R.bpl: D6Per\JvUIBD6R.dpk
+JvUIBD6R.bpl: d6per\JvUIBD6R.dpk
   $(DCC)
 
-JvWizardD6R.bpl: D6\JvWizardD6R.dpk
+JvWizardD6R.bpl: d6\JvWizardD6R.dpk
   $(DCC)
 
-JvWizardD6D.bpl: D6\JvWizardD6D.dpk
+JvWizardD6D.bpl: d6\JvWizardD6D.dpk
   $(DCC)
 
-JvTimeFrameworkD6R.bpl: D6\JvTimeFrameworkD6R.dpk
+JvTimeFrameworkD6R.bpl: d6\JvTimeFrameworkD6R.dpk
   $(DCC)
 
-JvTimeFrameworkD6D.bpl: D6\JvTimeFrameworkD6D.dpk
+JvTimeFrameworkD6D.bpl: d6\JvTimeFrameworkD6D.dpk
   $(DCC)
 
-JvHMID6R.bpl: D6\JvHMID6R.dpk
+JvHMID6R.bpl: d6\JvHMID6R.dpk
   $(DCC)
 
-JvHMID6D.bpl: D6\JvHMID6D.dpk
+JvHMID6D.bpl: d6\JvHMID6D.dpk
   $(DCC)
 
 JvManagedThreadsD6R.bpl: d6\JvManagedThreadsD6R.dpk
