@@ -35,66 +35,74 @@ unit JvWizardRouteMapList;
 interface
 uses
   SysUtils, Classes,
-{$IFDEF USEJVCL}
-  JvTypes,
+  {$IFDEF USEJVCL}
+  JvTypes, JvConsts,
   JvJVCLUtils,
-{$ENDIF}
-{$IFDEF VCL}
+  {$ENDIF}
+  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms,
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, Types, QWindows,
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
   JvWizard;
+
+{$IFNDEF USEJVCL}
+ {$IFNDEF COMPILER6_UP}
+const
+  clCream = TColor($F0FBFF);
+ {$ENDIF !COMPILER6_UP}
+{$ENDIF !USEJVCL}
 
 type
   TJvWizardDrawRouteMapListItem = procedure(Sender: TObject; ACanvas: TCanvas;
-    ARect: TRect; MousePos: TPoint; PageIndex: integer; var DefaultDraw: boolean) of object;
+    ARect: TRect; MousePos: TPoint; PageIndex: Integer; var DefaultDraw: Boolean) of object;
   TRouteMapListItemText = (itNone, itCaption, itTitle, itSubtitle);
+
   TJvWizardRouteMapList = class(TJvWizardRouteMapControl)
   private
-    FItemHeight: integer;
-    FVertOffset: integer;
-    FHorzOffset: integer;
-    FClickable: boolean;
-    FIncludeDisabled: boolean;
+    FItemHeight: Integer;
+    FVertOffset: Integer;
+    FHorzOffset: Integer;
+    FClickable: Boolean;
+    FIncludeDisabled: Boolean;
     FHotTrackFont: TFont;
     FActiveFont: TFont;
     FHotTrackCursor, FOldCursor: TCursor;
     FOnDrawItem: TJvWizardDrawRouteMapListItem;
     FAlignment: TAlignment;
-    FTextOffset: integer;
-    FShowImages: boolean;
+    FTextOffset: Integer;
+    FShowImages: Boolean;
     FItemColor: TColor;
-    FRounded: boolean;
+    FRounded: Boolean;
     FItemText: TRouteMapListItemText;
-    FHotTrack: boolean;
-    FCurvature: integer;
-    FHotTrackBorder: integer;
-{$IFDEF USEJVCL}
+    FHotTrack: Boolean;
+    FCurvature: Integer;
+    FHotTrackBorder: Integer;
+    {$IFDEF USEJVCL}
     FHotTrackFontOptions: TJvTrackFontOptions;
     FActiveFontOptions: TJvTrackFontOptions;
-{$ENDIF}
-    procedure SetItemHeight(const Value: integer);
-    procedure SetHorzOffset(const Value: integer);
-    procedure SetVertOffset(const Value: integer);
-    procedure SetIncludeDisabled(const Value: boolean);
+    {$ENDIF USEJVCL}
+    procedure SetItemHeight(const Value: Integer);
+    procedure SetHorzOffset(const Value: Integer);
+    procedure SetVertOffset(const Value: Integer);
+    procedure SetIncludeDisabled(const Value: Boolean);
     procedure SetActiveFont(const Value: TFont);
     procedure SetHotTrackFont(const Value: TFont);
     procedure DoFontChange(Sender: TObject);
     procedure SetAlignment(const Value: TAlignment);
-    procedure SetTextOffset(const Value: integer);
-    procedure SetShowImages(const Value: boolean);
+    procedure SetTextOffset(const Value: Integer);
+    procedure SetShowImages(const Value: Boolean);
     procedure SetItemColor(const Value: TColor);
-    procedure SetRounded(const Value: boolean);
+    procedure SetRounded(const Value: Boolean);
     procedure SetItemText(const Value: TRouteMapListItemText);
-    procedure SetCurvature(const Value: integer);
-{$IFDEF USEJVCL}
+    procedure SetCurvature(const Value: Integer);
+    {$IFDEF USEJVCL}
     procedure SetActiveFontOptions(const Value: TJvTrackFontOptions);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
-{$ENDIF}
+    {$ENDIF USEJVCL}
   protected
-    procedure DrawPageItem(ACanvas: TCanvas; ARect: TRect; MousePos: TPoint; PageIndex: integer); virtual;
+    procedure DrawPageItem(ACanvas: TCanvas; ARect: TRect; MousePos: TPoint; PageIndex: Integer); virtual;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     function PageAtPos(Pt: TPoint): TJvWizardCustomPage; override;
     procedure Paint; override;
@@ -111,28 +119,28 @@ type
       DefaultTrackFontOptions;
 {$ENDIF}
     property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
-    property Clickable: boolean read FClickable write FClickable default True;
+    property Clickable: Boolean read FClickable write FClickable default True;
     property Color default $00C08000;
-    property Curvature: integer read FCurvature write SetCurvature default 9;
+    property Curvature: Integer read FCurvature write SetCurvature default 9;
     property Font;
-    property HorzOffset: integer read FHorzOffset write SetHorzOffset default 8;
-    property HotTrackBorder: integer read FHotTrackBorder write FHotTrackBorder default 2;
+    property HorzOffset: Integer read FHorzOffset write SetHorzOffset default 8;
+    property HotTrackBorder: Integer read FHotTrackBorder write FHotTrackBorder default 2;
     property HotTrackCursor: TCursor read FHotTrackCursor write FHotTrackCursor default crHandPoint;
-    property HotTrack: boolean read FHotTrack write FHotTrack default True;
+    property HotTrack: Boolean read FHotTrack write FHotTrack default True;
 
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
 {$IFDEF USEJVCL}
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
 {$ENDIF}
-    property IncludeDisabled: boolean read FIncludeDisabled write SetIncludeDisabled default False;
+    property IncludeDisabled: Boolean read FIncludeDisabled write SetIncludeDisabled default False;
     property ItemColor: TColor read FItemColor write SetItemColor default clCream;
-    property ItemHeight: integer read FItemHeight write SetItemHeight default 25;
+    property ItemHeight: Integer read FItemHeight write SetItemHeight default 25;
     property ItemText: TRouteMapListItemText read FItemText write SetItemText default itCaption;
-    property Rounded: boolean read FRounded write SetRounded default false;
-    property ShowImages: boolean read FShowImages write SetShowImages default False;
-    property TextOffset: integer read FTextOffset write SetTextOffset default 8;
-    property VertOffset: integer read FVertOffset write SetVertOffset default 8;
+    property Rounded: Boolean read FRounded write SetRounded default False;
+    property ShowImages: Boolean read FShowImages write SetShowImages default False;
+    property TextOffset: Integer read FTextOffset write SetTextOffset default 8;
+    property VertOffset: Integer read FVertOffset write SetVertOffset default 8;
     property OnDrawItem: TJvWizardDrawRouteMapListItem read FOnDrawItem write FOnDrawItem;
   end;
 
@@ -159,7 +167,7 @@ begin
   FVertOffset := 8;
   FHorzOffset := 8;
   FItemHeight := 25;
-  FClickable := true;
+  FClickable := True;
   FAlignment := taCenter;
   FTextOffset := 8;
   FItemColor := clCream;
@@ -196,7 +204,7 @@ end;
 function TJvWizardRouteMapList.PageAtPos(Pt: TPoint): TJvWizardCustomPage;
 var
   R: TRect;
-  i: integer;
+  i: Integer;
 begin
   Result := nil;
   if not Clickable then Exit;
@@ -219,7 +227,7 @@ end;
 
 procedure TJvWizardRouteMapList.Paint;
 var
-  i: integer;
+  i: Integer;
   R: TRect;
   P: TPoint;
 begin
@@ -242,13 +250,13 @@ begin
     end;
 end;
 
-procedure TJvWizardRouteMapList.DrawPageItem(ACanvas: TCanvas; ARect: TRect; MousePos: TPoint; PageIndex: integer);
+procedure TJvWizardRouteMapList.DrawPageItem(ACanvas: TCanvas; ARect: TRect; MousePos: TPoint; PageIndex: Integer);
 const
   cAlignment: array[TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
-  cWordWrap: array[boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
+  cWordWrap: array[Boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
 var
-  DefaultDraw: boolean;
-  ATop, ALeft: integer;
+  DefaultDraw: Boolean;
+  ATop, ALeft: Integer;
   AOrigRect: TRect;
   BkColor: TColor;
   S: string;
@@ -265,9 +273,9 @@ begin
       ACanvas.Font.Color := clGrayText;
     ACanvas.Brush.Color := ItemColor;
     ACanvas.Pen.Color := Color;
-    DefaultDraw := true;
+    DefaultDraw := True;
     if Assigned(FOnDrawItem) then
-      FOnDrawItem(self, ACanvas, ARect, MousePos, PageIndex, DefaultDraw);
+      FOnDrawItem(Self, ACanvas, ARect, MousePos, PageIndex, DefaultDraw);
     if DefaultDraw then
     begin
       case ItemText of
@@ -353,7 +361,7 @@ begin
   end;
 end;
 
-procedure TJvWizardRouteMapList.SetHorzOffset(const Value: integer);
+procedure TJvWizardRouteMapList.SetHorzOffset(const Value: Integer);
 begin
   if FHorzoffset <> Value then
   begin
@@ -362,7 +370,7 @@ begin
   end;
 end;
 
-procedure TJvWizardRouteMapList.SetItemHeight(const Value: integer);
+procedure TJvWizardRouteMapList.SetItemHeight(const Value: Integer);
 begin
   if FItemHeight <> Value then
   begin
@@ -371,7 +379,7 @@ begin
   end;
 end;
 
-procedure TJvWizardRouteMapList.SetVertOffset(const Value: integer);
+procedure TJvWizardRouteMapList.SetVertOffset(const Value: Integer);
 begin
   if FVertOffset <> Value then
   begin
@@ -380,7 +388,7 @@ begin
   end;
 end;
 
-procedure TJvWizardRouteMapList.SetIncludeDisabled(const Value: boolean);
+procedure TJvWizardRouteMapList.SetIncludeDisabled(const Value: Boolean);
 begin
   if FIncludeDisabled <> Value then
   begin
@@ -442,7 +450,7 @@ begin
   end;
 end;
 
-procedure TJvWizardRouteMapList.SetTextOffset(const Value: integer);
+procedure TJvWizardRouteMapList.SetTextOffset(const Value: Integer);
 begin
   if FTextOffset <> Value then
   begin
@@ -451,7 +459,7 @@ begin
   end;
 end;
 
-procedure TJvWizardRouteMapList.SetShowImages(const Value: boolean);
+procedure TJvWizardRouteMapList.SetShowImages(const Value: Boolean);
 begin
   if FShowImages <> Value then
   begin
@@ -469,7 +477,7 @@ begin
   end;
 end;
 
-procedure TJvWizardRouteMapList.SetRounded(const Value: boolean);
+procedure TJvWizardRouteMapList.SetRounded(const Value: Boolean);
 begin
   if FRounded <> Value then
   begin
@@ -487,7 +495,7 @@ begin
   end;
 end;
 
-procedure TJvWizardRouteMapList.SetCurvature(const Value: integer);
+procedure TJvWizardRouteMapList.SetCurvature(const Value: Integer);
 begin
   if FCurvature <> Value then
   begin
