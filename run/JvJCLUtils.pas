@@ -655,7 +655,7 @@ procedure DeleteFileLink(const DisplayName: string; Folder: Integer);
 { begin JvXMLDatabase D5 compatiblility functions }
 function StrToDateTimeDef(const S:string;Default:TDateTime):TDateTime;
 function CompareDateTime(const A, B:TDateTime):integer;
-function StrToFloatDef(const S:String;Default:Extended):Extended;
+// function StrToFloatDef(const Str:String;Default:Extended):Extended;
 { end JvXMLDatabase D5 compatiblility functions }
 
 { D5 compatibility functions }
@@ -937,7 +937,11 @@ function BrowseForFolder(const Handle: HWND; const Title: string; var Folder: st
 
 implementation
 uses
-  Math, Consts, RTLConsts, SysConst, ComObj, Registry, ShellAPI, MMSystem,
+  Math, Consts,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts,
+  {$ENDIF}
+  SysConst, ComObj, Registry, ShellAPI, MMSystem,
   JclSysInfo, JclStrings;
 
 // (p3) duplicated from JvConsts since this unit should not rely on JVCL at all
@@ -6230,15 +6234,15 @@ begin
     Result := 1;
 end;
 
-function StrToFloatDef(const S:String;Default:Extended):Extended;
-begin
-  // stupid and slow but at least simple
-  try
-    Result := StrToFloat(S);
-  except
-    Result := Default;
-  end;
-end;
+//function StrToFloatDef(const Str:String;Def:Extended):Extended;
+//begin
+//  // stupid and slow but at least simple
+//  try
+//    Result := StrToFloat(Str);
+//  except
+//    Result := Def;
+//  end;
+//end;
 
 { end JvXMLDatabase D5 compatiblility functions }
 
@@ -6313,7 +6317,7 @@ begin
     St := Format(SWin32Error, [LastError, SysErrorMessage(LastError)]);
     if Text <> '' then
       St := Text + ':' + St;
-    raise EOSError.Create(St);
+    raise {$IFDEF COMPILER6_UP} EOSError.Create(St); {$ELSE} EWin32Error.Create(St); {$ENDIF}
   end;
 end;
 
