@@ -1398,7 +1398,7 @@ begin
             R3 := GetButtonTextRect(ActivePageIndex, I);
 //          Canvas.Rectangle(R3);  // DEBUG
             DrawText(Canvas.Handle, PChar(Pages[Index].Buttons[I].Caption), -1, R3,
-              DT_EXPANDTABS or DT_SINGLELINE or DT_LEFT or DT_VCENTER or DT_NOCLIP or DT_NOPREFIX);
+              DT_EXPANDTABS or DT_SINGLELINE or DT_LEFT or DT_VCENTER or DT_NOCLIP);
           end;
       end;
       OffsetRect(R, 0, H);
@@ -1544,7 +1544,7 @@ begin
     OffsetRect(R, 0, -1);
     SetBkMode(Canvas.Handle, TRANSPARENT);
     DrawText(Canvas.Handle, PChar(Pages[I].Caption), -1, R,
-      DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX);
+      DT_CENTER or DT_VCENTER or DT_SINGLELINE);
     OffsetRect(R, 0, -PageButtonHeight + 1);
   end;
 end;
