@@ -11,6 +11,9 @@ Changelog for JVCL 3.0
 - Changed TJvCustomComboBox into a data consumer // marcelb
 2003-09-13:
 - Changed TJvCustomLabel into a data consumer //marcelb
+2003-09-12:
+- Generic storage backend component added //marcelb
+- TJvFormStorage and components using it adapted to use the storage backend //marcelb
 2003-09-02:
 - Recased classes, properties and methods. This shouldn't affect Delphi but BCB users might have to make amendments. // peter3
 - Added HotTrackFontOptions to controls that have a HotTrackFont property. Basically, HotTrackFontOptions determines how changes to a control's Font i spropagated to the HotTrackFont. // peter3
