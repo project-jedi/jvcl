@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
 "POT-Creation-Date: 2004-02-24 22:21\n"
-"PO-Revision-Date: 2004-05-22 18:44+0100\n"
-"Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
+"PO-Revision-Date: 2004-07-15 12:02+0100\n"
+"Last-Translator: Stefano Pessina <peste1@hotmail.com>\n"
 "Language-Team: Italian <none@nowhere.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1524,8 +1524,8 @@ msgstr ""
 msgid "All after start tag"
 msgstr ""
 
-#. FormParsers..GroupBox1..ComboBox1....Items.Strings
-#. FormParsers..GroupBox1..ComboBox1....Items.Strings
+#  FormParsers..GroupBox1..ComboBox1....Items.Strings
+#  FormParsers..GroupBox1..ComboBox1....Items.Strings
 #: JvParserForm.dfm:129
 #: JvParserForm.xfm:128
 msgid "The whole line if respecting the condition"
@@ -6452,21 +6452,21 @@ msgstr ""
 msgid "Cannot set this property value while Position is bpAuto"
 msgstr ""
 
-#. === JvSpeedbarSetupForm.pas ================================================
-#. Programmer's name for it: RsCustomizeSpeedbar
+#  === JvSpeedbarSetupForm.pas ================================================
+#  Programmer's name for it: RsCustomizeSpeedbar
 #: JvResources.pas:1503
 msgid "Customize Speedbar"
-msgstr ""
+msgstr "Personalizza Speedbar"
 
-#. Programmer's name for it: RsAvailButtons
+#  Programmer's name for it: RsAvailButtons
 #: JvResources.pas:1504
 msgid "&Available buttons:"
-msgstr ""
+msgstr "Puls&anti disponibili:"
 
-#. Programmer's name for it: RsSpeedbarCategories
+#  Programmer's name for it: RsSpeedbarCategories
 #: JvResources.pas:1505
 msgid "&Categories:"
-msgstr ""
+msgstr "&Categorie:"
 
 #. Programmer's name for it: RsSpeedbarEditHint
 #: JvResources.pas:1507
@@ -6479,17 +6479,17 @@ msgstr ""
 msgid "No IJvSpellChecker implementation available!"
 msgstr ""
 
-#. === JvSpellerForm.pas ======================================================
-#. Programmer's name for it: RsENoDictionaryLoaded
+#  === JvSpellerForm.pas ======================================================
+#  Programmer's name for it: RsENoDictionaryLoaded
 #: JvResources.pas:1515
 msgid "No dictionary loaded"
-msgstr ""
+msgstr "Nessun dizionario caricato"
 
-#. === JvSpin.pas =============================================================
-#. Programmer's name for it: RsEOutOfRangeFloat
+#  === JvSpin.pas =============================================================
+#  Programmer's name for it: RsEOutOfRangeFloat
 #: JvResources.pas:1519
 msgid "Value must be between %g and %g"
-msgstr ""
+msgstr "I valori devono essere compresi tra %g e %g"
 
 #. === JvStatusBar.pas ========================================================
 #. Programmer's name for it: RsEInvalidControlSelection
@@ -6514,8 +6514,8 @@ msgstr "Impossibile caricare la risorsa: %s"
 msgid "Base64: Incorrect string format"
 msgstr ""
 
-#. === JvSyncSplitter.pas =====================================================
-#. Programmer's name for it: RsEInvalidPartner
+#  === JvSyncSplitter.pas =====================================================
+#  Programmer's name for it: RsEInvalidPartner
 #: JvResources.pas:1536
 msgid "TJvSyncSplitter.SetPartner: cannot set Partner to Self!"
 msgstr ""
@@ -6548,12 +6548,12 @@ msgstr ""
 msgid "Column index out of bounds"
 msgstr ""
 
-#. Programmer's name for it: RsERowIndexOutOfBounds
-#. Programmer's name for it: RsERowIndexOutOfBounds
+#  Programmer's name for it: RsERowIndexOutOfBounds
+#  Programmer's name for it: RsERowIndexOutOfBounds
 #: JvResources.pas:1547
 #: JvTFDays.pas:1780
 msgid "Row index out of bounds"
-msgstr ""
+msgstr "Indice colonna fuori portata"
 
 #. Programmer's name for it: RsEMapColNotFoundForAppointment
 #. Programmer's name for it: RsEMapColNotFoundForAppointment
@@ -7504,7 +7504,7 @@ msgstr ""
 msgid "Dark Shadow 3D elements"
 msgstr ""
 
-#. Programmer's name for it: RsClNormalText
+#  Programmer's name for it: RsClNormalText
 #: JvResources.pas:1782
 msgid "Normal edit text"
 msgstr ""
@@ -7574,12 +7574,12 @@ msgstr ""
 msgid "Normal dark shadow 3D elements"
 msgstr ""
 
-#. Programmer's name for it: RsClDisabledText
+#  Programmer's name for it: RsClDisabledText
 #: JvResources.pas:1797
 msgid "Disabled edit text"
 msgstr ""
 
-#. Programmer's name for it: RsClDisabledForeground
+#  Programmer's name for it: RsClDisabledForeground
 #: JvResources.pas:1798
 msgid "Disabled window text"
 msgstr ""
@@ -7599,12 +7599,12 @@ msgstr ""
 msgid "Disabled selection text"
 msgstr ""
 
-#. Programmer's name for it: RsClDisabledHighlight
+#  Programmer's name for it: RsClDisabledHighlight
 #: JvResources.pas:1802
 msgid "Disabled selection background"
 msgstr ""
 
-#. Programmer's name for it: RsClDisabledBackground
+#  Programmer's name for it: RsClDisabledBackground
 #: JvResources.pas:1803
 msgid "Disabled window background"
 msgstr ""
@@ -8205,7 +8205,7 @@ msgstr ""
 msgid "Can't load library: %s."
 msgstr "Impossibile caricare la libreria: %s."
 
-#. Programmer's name for it: EUIB_DBHANDLEALLREADYSET
+#  Programmer's name for it: EUIB_DBHANDLEALLREADYSET
 #: JvUIBConst.pas:86
 msgid "Database handle allready assigned, first disconnect database."
 msgstr ""
@@ -8872,7 +8872,7 @@ msgid "Paper"
 msgstr ""
 
 msgid "Si&ze"
-msgstr ""
+msgstr "Dimen&sione"
 
 msgid "P&ortrait"
 msgstr ""
@@ -8881,16 +8881,16 @@ msgid "L&andscape"
 msgstr ""
 
 msgid "&Left:"
-msgstr ""
+msgstr "&Destra:"
 
 msgid "&Right:"
-msgstr ""
+msgstr "&Sinistra:"
 
 msgid "&Top:"
-msgstr ""
+msgstr "&Alto:"
 
 msgid "&Bottom:"
-msgstr ""
+msgstr "&Basso:"
 
 msgid "Page Header:"
 msgstr ""
@@ -8899,8 +8899,7 @@ msgid "Page Footer:"
 msgstr ""
 
 msgid "&Printer..."
-msgstr ""
+msgstr "&Stampante..."
 
 msgid "Margins"
-msgstr ""
-
+msgstr "Margini"
