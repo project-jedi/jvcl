@@ -31,8 +31,15 @@ unit JvProviderTreeListDsgnFrame;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
   ComCtrls, ImgList, Menus, ActnList,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QWindows, QGraphics, QControls, QForms, QDialogs,
+  QComCtrls, QImgList, QMenus, QActnList,
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
   {$ELSE}
