@@ -2256,7 +2256,7 @@ begin
   FCaptions := TStringList.Create;
   FCaptions.OnChange := CaptionsChanged;
   FGlyph := TBitmap.Create;
-  FGlyph.Handle := LoadBitmap(HInstance, 'JV_DS_STATES');
+  FGlyph.Handle := LoadBitmap(HInstance, 'JvDBStatusLabelSTATES');
   Caption := '';
 end;
 

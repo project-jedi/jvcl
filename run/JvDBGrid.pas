@@ -498,12 +498,12 @@ type
 
 const
   GridBmpNames: array [TGridPicture] of PChar =
-  ('JV_DBG_BLOB', 'JV_DBG_MEMO', 'JV_DBG_PICT', 'JV_DBG_OLE', 'JV_DBG_OBJECT',
-    'JV_DBG_DATA', 'JV_DBG_NOTEMPTY', 'JV_DBG_SMDOWN', 'JV_DBG_SMUP',
-    'JV_DBG_CHECKED', 'JV_DBG_UNCHECKED', 'JV_DBG_POPUP');
+  ('JvDBGridBLOB', 'JvDBGridMEMO', 'JvDBGridPICT', 'JvDBGridOLE', 'JvDBGridOBJECT',
+    'JvDBGridDATA', 'JvDBGridNOTEMPTY', 'JvDBGridSMDOWN', 'JvDBGridSMUP',
+    'JvDBGridCHECKED', 'JvDBGridUNCHECKED', 'JvDBGridPOPUP');
 
-  bmMultiDot = 'JV_DBG_MSDOT';
-  bmMultiArrow = 'JV_DBG_MSARROW';
+  bmMultiDot = 'JvDBGridMSDOT';
+  bmMultiArrow = 'JvDBGridMSARROW';
 
 var
   GridBitmaps: array [TGridPicture] of TBitmap =
@@ -2527,8 +2527,10 @@ begin
       if DrawColumn <> nil then
       begin
         case ASortMarker of
-          smDown: Bmp := GetGridBitmap(gpMarkDown);
-          smUp: Bmp := GetGridBitmap(gpMarkUp);
+          smDown:
+            Bmp := GetGridBitmap(gpMarkDown);
+          smUp:
+            Bmp := GetGridBitmap(gpMarkUp);
         else
           Bmp := nil;
         end;

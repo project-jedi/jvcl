@@ -656,8 +656,8 @@ begin
   Bmp := TBitmap.Create; 
   try
     if Bmp <> nil then
-//      Bmp.Handle := LoadBitmap(HInstance, 'JVCALCBTNS');
-      Bmp.LoadFromResourceName(HInstance, 'JVCALCBTNS'); 
+//      Bmp.Handle := LoadBitmap(HInstance, 'JvCalculatorPanelBUTTONS');
+      Bmp.LoadFromResourceName(HInstance, 'JvCalculatorPanelBUTTONS'); 
     GlyphList := TImageList.CreateSize(Bmp.Width, Bmp.Height);
     GlyphList.Width := Bmp.Width div 6 ;  // 6 glyphs in bmp
     GlyphList.Add(Bmp, nil); 

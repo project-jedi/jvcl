@@ -294,7 +294,7 @@ uses
 {$ENDIF UNIX}
 
 const
-  sCalcBmp = 'JV_CEDITBMP'; { Numeric editor button glyph }
+  sCalcBmp = 'JvCustomNumEditBUTTONGLYPH'; { Numeric editor button glyph }
 
 var
   GCalcImageIndex: TImageIndex = -1;

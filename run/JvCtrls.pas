@@ -770,12 +770,12 @@ begin
   begin
     DefaultImgBtnImagesList := TImageList.CreateSize(18, 18);
     {$IFDEF VCL}
-    DefaultImgBtnImagesList.ResourceLoad(rtBitmap, 'JVIMGBTNDEFAULT', clOlive);
+    DefaultImgBtnImagesList.ResourceLoad(rtBitmap, 'JvCustomImageButtonDEFAULT', clOlive);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     ResBmp := TBitmap.Create;
     try
-      ResBmp.LoadFromResourceName(HInstance, 'JVIMGBTNDEFAULT');
+      ResBmp.LoadFromResourceName(HInstance, 'JvCustomImageButtonDEFAULT');
       DefaultImgBtnImagesList.Add(ResBmp, nil);
     finally
       ResBmp.Free;
@@ -1037,8 +1037,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-
-
 
 initialization
   {$IFDEF UNITVERSIONING}

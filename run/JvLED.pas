@@ -132,8 +132,8 @@ uses
 {$ENDIF UNIX}
 
 const
-  cMaskLEDName = 'JVTR_MASK_LED';
-  cGreenLEDName = 'JVTR_GREEN_LED';
+  cMaskLEDName = 'JvCustomLEDMASK';
+  cGreenLEDName = 'JvCustomLEDGREEN';
 
 //=== { TJvCustomLED } =======================================================
 
