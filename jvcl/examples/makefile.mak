@@ -123,6 +123,7 @@ JvTrayIconDemo.exe \
 JvZLibMultipleDemo.exe \
 JvFormatEditDemo.exe \
 JvProgressDialogDemo.exe \
+JvAppInstDemo.exe \
 
 #---------------------------------------------------------------------------------------------------
 
@@ -617,5 +618,10 @@ JvFormatEditDemo.exe: JvValidateEdit\JvFormatEditDemo.dpr
 
 JvProgressDialogDemo.exe: JvProgressDialog\JvProgressDialogDemo.dpr
   cd JvProgressDialog
+  $(DCC) $&.dpr
+  cd ..
+
+JvAppInstDemo.exe: JvAppInstances\JvAppInstDemo.dpr
+  cd JvAppInstances
   $(DCC) $&.dpr
   cd ..
