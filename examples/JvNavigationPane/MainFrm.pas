@@ -24,17 +24,30 @@ type
     Silver1: TMenuItem;
     Olive1: TMenuItem;
     JvNavPaneStyleManager1: TJvNavPaneStyleManager;
+    JvOutlookSplitter1: TJvOutlookSplitter;
+    N2: TMenuItem;
+    ShowToolPanel1: TMenuItem;
+    ToolImages: TImageList;
+    ShowCloseButton1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure Dontallowresize1Click(Sender: TObject);
     procedure HideAll1Click(Sender: TObject);
     procedure ShowAll1Click(Sender: TObject);
     procedure ChangeFont1Click(Sender: TObject);
     procedure SchemaClick(Sender: TObject);
+    procedure PopupMenu1Popup(Sender: TObject);
+    procedure ShowToolPanel1Click(Sender: TObject);
+    procedure ShowCloseButton1Click(Sender: TObject);
   private
     { Private declarations }
+    procedure DoToolPanelClose(Sender: TObject);
+    procedure DoToolButtonClick(Sender:TObject; Index:integer);
+    procedure DoToolEndDock(Sender, Target: TObject; X, Y: Integer);
+    procedure DoToolUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl; var Allow: Boolean);
   public
     { Public declarations }
     NP:TJvNavigationPane;
+    NT : TJvNavPaneToolPanel;
   end;
 
 var
@@ -70,7 +83,8 @@ begin
   NP.Cursor := crHandPoint;
   NP.Width := 220;
 //  NP.BorderWidth := 2;
-  NP.Align := alClient;
+  NP.Align := alLeft;
+  JvOutlookSplitter1.Left := 225;
   NP.DropDownMenu := PopupMenu1;
   NP.SmallImages := SmallImages;
   NP.LargeImages := LargeImages;
@@ -334,6 +348,29 @@ begin
   end;
   }
   NP.ActivePageIndex := 0;
+
+  NT := TJvNavPaneToolPanel.Create(Self);
+  NT.DragKind := dkDock;
+  NT.DragMode := dmAutomatic;
+  NT.Parent := Self;
+  NT.Align := alClient;
+  NT.Caption := 'Sample Tool Panel';
+  NT.StyleManager := JvNavPaneStyleManager1;
+  NT.Images := ToolImages;
+  NT.DropDownMenu := PopupMenu1;
+  NT.Buttons.Add.ImageIndex := 0;
+  NT.OnButtonClick := DoToolButtonClick;
+  NT.OnEndDock := DoToolEndDock;
+  NT.OnUnDock := DoToolUnDock;
+
+  with NT.Buttons.Add do
+  begin
+    ImageIndex := 1;
+//    Enabled := false;
+  end;
+  NT.Buttons.Add.ImageIndex := 2;
+  NT.CloseButton := false;
+  NT.OnClose := DoToolPanelClose;
   // now, set the real start theme:
   JvNavPaneStyleManager1.Theme := nptStandard;
 end;
@@ -366,6 +403,63 @@ procedure TForm1.SchemaClick(Sender: TObject);
 begin
   JvNavPaneStyleManager1.Theme := TJvNavPanelTheme((Sender as TMenuItem).Tag);
   (Sender as TMenuItem).Checked := true;
+end;
+
+procedure TForm1.DoToolPanelClose(Sender: TObject);
+begin
+  if MessageDlg('Close this window?',mtConfirmation, [mbYes, mbNo],0) = mrYes	then
+  begin
+    JvOutlookSplitter1.Visible := False;
+    NT.Visible := False;
+    NP.Align := alClient;
+  end;
+end;
+
+procedure TForm1.PopupMenu1Popup(Sender: TObject);
+begin
+  ShowToolPanel1.Enabled := not NT.Visible;
+  ShowCloseButton1.Checked := NT.CloseButton;
+end;
+
+procedure TForm1.ShowToolPanel1Click(Sender: TObject);
+begin
+  NP.Align := alLeft;
+  NP.Width := 220;
+  JvOutlookSplitter1.Visible := True;
+  JvOutlookSplitter1.Left := 225;
+  NT.Visible := True;
+end;
+
+procedure TForm1.DoToolButtonClick(Sender: TObject; Index: integer);
+begin
+  ShowMessageFmt('You clicked button %d ',[Index]);
+end;
+
+procedure TForm1.ShowCloseButton1Click(Sender: TObject);
+begin
+  ShowCloseButton1.Checked := not ShowCloseButton1.Checked;
+  NT.CloseButton := ShowCloseButton1.Checked;
+end;
+type
+  THackForm = class(TCustomForm);
+
+procedure TForm1.DoToolEndDock(Sender, Target: TObject; X, Y: Integer);
+begin
+  if (Target is TCustomForm) and (Target <> Self) then
+  begin
+    TCustomForm(Target).BorderStyle := bsSizeable;
+    SetWindowLong(TCustomForm(Target).Handle, GWL_STYLE, GetWindowLong(TCustomForm(Target).Handle, GWL_STYLE) and not WS_CAPTION);
+    TCustomForm(Target).Width := TCustomForm(Target).Width + 1;
+    TCustomForm(Target).Width := TCustomForm(Target).Width - 1;
+  end
+  else
+    NT.Align := alClient;
+end;
+
+procedure TForm1.DoToolUnDock(Sender: TObject; Client: TControl;
+  NewTarget: TWinControl; var Allow: Boolean);
+begin
+  // 
 end;
 
 end.
