@@ -1809,8 +1809,7 @@ begin
       Assigned(FWizardPageHeader.WizardPage.Wizard) and
       Assigned(FWizardPageHeader.WizardPage.Wizard.FRouteMap) then
     begin
-      FWizardPageHeader.WizardPage.Wizard.FRouteMap.DoUpdatePage(
-        FWizardPageHeader.WizardPage);
+      FWizardPageHeader.WizardPage.Wizard.FRouteMap.DoUpdatePage(FWizardPageHeader.WizardPage);
     end;
   end;
 end;
@@ -2360,7 +2359,7 @@ begin
       FPanel.PaintTo(Canvas, ARect);
     end;
     { YW - display page caption at design time. }
-    if csDesigning in ComponentState then
+    if (csDesigning in ComponentState) then
     begin
       Canvas.Brush.Style := bsClear;
       Canvas.Font.Assign(Font);
@@ -2747,7 +2746,7 @@ begin
   begin
     ParentForm := GetParentForm(Self);
     if Assigned(ParentForm) and Assigned(FActivePage) and
-      FActivePage.ContainsControl(ParentForm.ActiveControl) then
+      FActivePage.ContainsControl(ParentForm.ActiveControl) and FActivePage.CanFocus then
     begin
       ParentForm.ActiveControl := FActivePage;
     end;
@@ -2780,7 +2779,7 @@ begin
       begin
         if Page.CanFocus then
           ParentForm.ActiveControl := Page
-        else
+        else if CanFocus then
           ParentForm.ActiveControl := Self;
       end;
     end;
