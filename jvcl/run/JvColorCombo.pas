@@ -111,9 +111,9 @@ type
   published
     property Anchors;
     property AutoComplete default False;
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     property AutoDropDown;
-{$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind;
@@ -420,7 +420,8 @@ begin
       Exclude(FOptions,coHex);
       Exclude(FOptions,coRGB);
     end
-    else if coHex in Value then
+    else
+    if coHex in Value then
       Exclude(FOptions,coRGB); }
     if coCustomColors in FOptions then
       InternalInsertColor(Items.Count, $000001, FOther);
@@ -468,7 +469,8 @@ begin
     end;
     Exit;
   end
-  else if coCustomColors in Options then
+  else
+  if coCustomColors in Options then
   begin
     InsertColor(Items.Count - 1, Value, Format(FPrefix, [FCustCnt]));
         //      Items.InsertObject(Items.Count, FPrefix + IntToStr(FCustCnt), TObject(Value))
@@ -564,7 +566,8 @@ begin
       SetBkMode(Canvas.Handle, TRANSPARENT);
       DrawText(Canvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
     end
-    else if ((coText in FOptions) or (coHex in FOptions) or (coRGB in FOptions)) then
+    else
+    if (coText in FOptions) or (coHex in FOptions) or (coRGB in FOptions) then
     begin
       S := Items[Index];
       DoGetDisplayName(Index, TColor(Items.Objects[Index]), S);
@@ -572,7 +575,8 @@ begin
       begin
         if coHex in FOptions then
           S := Format('0x%.6x', [ColorToRGB(TColor(Items.Objects[Index]))])
-        else if coRGB in Foptions then
+        else
+        if coRGB in Foptions then
           S := Format('(%d,%d,%d)', [GetRValue(TColor(Items.Objects[Index])), GetGValue(TColor(Items.Objects[Index])),
             GetBValue(TColor(Items.Objects[Index]))]);
       end;
@@ -620,7 +624,8 @@ begin
       Free;
     end // with
   end
-  else if ItemIndex >= 0 then
+  else
+  if ItemIndex >= 0 then
     ColorValue := TColor(Items.Objects[ItemIndex]);
   inherited Click;
   FExecutingDialog := False;
@@ -915,7 +920,8 @@ begin
     //    aWidth  := 20;
     if (Integer(Items.Objects[Index]) and TRUETYPE_FONTTYPE) <> 0 then
       aBmp := FTrueTypeBmp
-    else if (Integer(Items.Objects[Index]) and DEVICE_FONTTYPE) <> 0 then
+    else
+    if (Integer(Items.Objects[Index]) and DEVICE_FONTTYPE) <> 0 then
       aBmp := FDeviceBmp
     else
       aBmp := FFixBmp;
@@ -989,7 +995,7 @@ procedure TJvFontComboBox.SetFontName(const Value: string);
 begin
   if Value = '' then Exit;
   ItemIndex := Items.IndexOf(Value);
-  if (ItemIndex = -1) then // try to find the font substitute name
+  if ItemIndex = -1 then // try to find the font substitute name
     ItemIndex := Items.IndexOf(FontSubstitute(Value));
   if (ItemIndex = -1) and (foDisableVerify in Options) then // add if allowed to
     ItemIndex := Items.AddObject(Value, TObject(TRUETYPE_FONTTYPE));

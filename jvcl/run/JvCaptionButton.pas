@@ -78,7 +78,7 @@ type
   {$ENDIF COMPILER6_UP}
 
   TJvStandardButton = (tsbNone, tsbClose, tsbHelp, tsbMax, tsbMin, tsbRestore,
-    tsbMinimizeToTray {a la e-Mule});
+    tsbMinimizeToTray); // a la e-Mule
   TJvCaptionButtonLayout = (cbImageLeft, cbImageRight);
   TJvRedrawKind = (rkDirect, rkIndirect, rkTotalCaptionBar);
 
@@ -293,15 +293,70 @@ uses
   CommCtrl, Buttons, SysUtils,
   JvThemes,
   {$IFDEF JVCLThemesEnabled}
-  UxTheme, JvJVCLUtils, JvJCLUtils, 
+  UxTheme,
+  JvJVCLUtils, JvJCLUtils,
   {$ENDIF JVCLThemesEnabled}
   JvDsgnIntf, JvTypes, JvResources;
 
 const
   htCaptionButton = HTSIZELAST + 1;
-  Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
 
-  { TJvCaptionButton }
+//=== TJvCaptionButton =======================================================
+
+constructor TJvCaptionButton.Create(AOwner: TComponent);
+begin
+  if not (AOwner is TCustomForm) then
+    raise EJVCLException.Create(RsEOwnerMustBeTCustomForm);
+
+  inherited Create(AOwner);
+
+  { Defaults }
+  FAlignment := taLeftJustify;
+  FHeight := 0;
+  FLeft := 0;
+  FTop := 0;
+  FWidth := 0;
+  FEnabled := True;
+  FImageIndex := -1;
+  FLayout := cbImageLeft;
+  FMargin := -1;
+  FPosition := 0;
+  FSpacing := 4;
+  FStandard := tsbNone;
+  FToggle := False;
+  FVisible := True;
+
+  FNeedRecalculate := True;
+  FCaption := '';
+  FDown := False;
+  FToolTipHandle := 0;
+
+  FFont := TFont.Create;
+  FBuffer := TBitmap.Create;
+
+  FImageChangeLink := TChangeLink.Create;
+  FImageChangeLink.OnChange := ImageListChange;
+  FParentShowHint := True;
+
+  Hook;
+end;
+
+destructor TJvCaptionButton.Destroy;
+begin
+  DestroyToolTip;
+
+  UnHook;
+  Redraw(rkTotalCaptionBar);
+
+  FFont.Free;
+  FBuffer.Free;
+
+  FreeAndNil(FActionLink);
+  FreeAndNil(FImageChangeLink);
+
+  inherited Destroy;
+end;
 
 procedure TJvCaptionButton.ActionChange(Sender: TObject;
   CheckDefaults: Boolean);
@@ -313,13 +368,13 @@ begin
         Self.Images := ActionList.Images;
       if not CheckDefaults or (Self.Caption = '') then
         Self.Caption := Caption;
-      if not CheckDefaults or (Self.Enabled = True) then
+      if not CheckDefaults or Self.Enabled then
         Self.Enabled := Enabled;
       if not CheckDefaults or (Self.Hint = '') then
         Self.Hint := Hint;
       if not CheckDefaults or (Self.ImageIndex = -1) then
         Self.ImageIndex := ImageIndex;
-      if not CheckDefaults or (Self.Visible = True) then
+      if not CheckDefaults or Self.Visible then
         Self.Visible := Visible;
       if not CheckDefaults or not Assigned(Self.OnClick) then
         Self.OnClick := OnExecute;
@@ -354,7 +409,7 @@ begin
     Visible        := TJvCaptionButton(Source).Visible;
     Exit;
   end;
-  inherited;
+  inherited Assign(Source);
 end;
 
 procedure TJvCaptionButton.CalcButtonParts(ACanvas: TCanvas;
@@ -515,56 +570,21 @@ procedure TJvCaptionButton.Click;
 begin
   if csDesigning in ComponentState then
     DesignerSelectComponent(Self)
-  else if Enabled then
+  else
+  if Enabled then
   begin
     { Call OnClick if assigned and not equal to associated action's OnExecute.
       If associated action's OnExecute assigned then call it, otherwise, call
       OnClick. }
     if Assigned(FOnClick) and (Action <> nil) and (@FOnClick <> @Action.OnExecute) then
       FOnClick(Self)
-    else if {not (csDesigning in ComponentState) and}  Assigned(ActionLink) then
+    else
+    if {not (csDesigning in ComponentState) and}  Assigned(ActionLink) then
       FActionLink.Execute{$IFDEF COMPILER6_UP}(Self){$ENDIF}
-    else if Assigned(FOnClick) then
+    else
+    if Assigned(FOnClick) then
       FOnClick(Self);
   end;
-end;
-
-constructor TJvCaptionButton.Create(AOwner: TComponent);
-begin
-  if not (AOwner is TCustomForm) then
-    raise EJVCLException.Create(RsEOwnerMustBeTCustomForm);
-
-  inherited Create(AOwner);
-
-  { Defaults }
-  FAlignment := taLeftJustify;
-  FHeight := 0;
-  FLeft := 0;
-  FTop := 0;
-  FWidth := 0;
-  FEnabled := True;
-  FImageIndex := -1;
-  FLayout := cbImageLeft;
-  FMargin := -1;
-  FPosition := 0;
-  FSpacing := 4;
-  FStandard := tsbNone;
-  FToggle := False;
-  FVisible := True;
-
-  FNeedRecalculate := True;
-  FCaption := '';
-  FDown := False;
-  FToolTipHandle := 0;
-
-  FFont := TFont.Create;
-  FBuffer := TBitmap.Create;
-
-  FImageChangeLink := TChangeLink.Create;
-  FImageChangeLink.OnChange := ImageListChange;
-  FParentShowHint := True;
-
-  Hook;
 end;
 
 procedure TJvCaptionButton.CreateToolTip(Wnd: THandle);
@@ -580,18 +600,11 @@ begin
   if Wnd = 0 then
     Exit;
 
-  FToolTipHandle := CreateWindowEx(0,
-    TOOLTIPS_CLASS,
-    nil,
-    TTS_ALWAYSTIP,
-    Integer(CW_USEDEFAULT),
-    Integer(CW_USEDEFAULT),
-    Integer(CW_USEDEFAULT),
-    Integer(CW_USEDEFAULT),
+  FToolTipHandle := CreateWindowEx(0, TOOLTIPS_CLASS, nil, TTS_ALWAYSTIP,
+    Integer(CW_USEDEFAULT), Integer(CW_USEDEFAULT),
+    Integer(CW_USEDEFAULT), Integer(CW_USEDEFAULT),
     ParentForm.Handle, // Thus automatically destroyed if ParentForm handle is destroyed.
-    0,
-    HInstance,
-    nil);
+    0, HInstance, nil);
 
   if FToolTipHandle = 0 then
     Exit;
@@ -605,22 +618,6 @@ begin
 
   // register button with tooltip
   SendMessage(FToolTipHandle, TTM_ADDTOOL, 0, Integer(@ToolInfo));
-end;
-
-destructor TJvCaptionButton.Destroy;
-begin
-  DestroyToolTip;
-
-  UnHook;
-  Redraw(rkTotalCaptionBar);
-
-  FFont.Free;
-  FBuffer.Free;
-
-  FreeAndNil(FActionLink);
-  FreeAndNil(FImageChangeLink);
-
-  inherited Destroy;
 end;
 
 procedure TJvCaptionButton.DestroyToolTip;
@@ -676,13 +673,13 @@ begin
 end;
 
 {$IFDEF JVCLThemesEnabled}
-
 procedure TJvCaptionButton.DrawButtonBackground(ACanvas: TCanvas);
 const
-  CCaption: array[Boolean, Boolean] of TThemedWindow = (
+  CCaption: array [Boolean, Boolean] of TThemedWindow =
+   (
     (twCaptionInactive, twCaptionActive),
     (twSmallCaptionInactive, twSmallCaptionActive)
-    );
+   );
 var
   Details: TThemedElementDetails;
   ClipRect: TRect;
@@ -773,12 +770,14 @@ begin
       CaptionButton := twMinButtonDisabled;
       NormalButton := tbPushButtonDisabled;
     end
-    else if FDown then
+    else
+    if FDown then
     begin
       CaptionButton := twMinButtonPushed;
       NormalButton := tbPushButtonPressed;
     end
-    else if FMouseInControl then
+    else
+    if FMouseInControl then
     begin
       CaptionButton := twMinButtonHot;
       NormalButton := tbPushButtonHot;
@@ -827,7 +826,7 @@ begin
 
     SelectClipRgn(ACanvas.Handle, DrawRgn);
   end;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 
   if FDown then
   begin
@@ -835,7 +834,7 @@ begin
     if DoThemed then
       OffsetRect(DrawRect, 1, 0)
     else
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
       OffsetRect(DrawRect, 1, 1);
   end;
   { 2b. Calc position and Draw the picture & text }
@@ -855,15 +854,15 @@ end;
 procedure TJvCaptionButton.DrawStandardButton(ACanvas: TCanvas);
 const
   {$IFDEF JVCLThemesEnabled}
-  CElements: array[TJvStandardButton] of TThemedWindow = (
-    twWindowDontCare, twCloseButtonNormal, twHelpButtonNormal, twMaxButtonNormal,
+  CElements: array [TJvStandardButton] of TThemedWindow =
+   (twWindowDontCare, twCloseButtonNormal, twHelpButtonNormal, twMaxButtonNormal,
     twMinButtonNormal, twRestoreButtonNormal, twMinButtonNormal);
   {$ENDIF JVCLThemesEnabled}
-  CDrawFlags: array[TJvStandardButton] of Word = (
-    0, DFCS_CAPTIONCLOSE, DFCS_CAPTIONHELP, DFCS_CAPTIONMAX, DFCS_CAPTIONMIN,
+  CDrawFlags: array [TJvStandardButton] of Word =
+   (0, DFCS_CAPTIONCLOSE, DFCS_CAPTIONHELP, DFCS_CAPTIONMAX, DFCS_CAPTIONMIN,
     DFCS_CAPTIONRESTORE, 0);
-  CDown: array[Boolean] of Word = (0, DFCS_PUSHED);
-  CEnabled: array[Boolean] of Word = (DFCS_INACTIVE, 0);
+  CDown: array [Boolean] of Word = (0, DFCS_PUSHED);
+  CEnabled: array [Boolean] of Word = (DFCS_INACTIVE, 0);
 var
   DrawRect: TRect;
   {$IFDEF JVCLThemesEnabled}
@@ -886,10 +885,12 @@ begin
 
     if not Enabled then
       Inc(CaptionButton, 3)
-    else if FDown then
+    else
+    if FDown then
       { If Down and inactive, draw inactive border }
       Inc(CaptionButton, 2)
-    else if FMouseInControl then
+    else
+    if FMouseInControl then
       Inc(CaptionButton);
 
     Details := ThemeServices.GetElementDetails(CaptionButton);
@@ -900,28 +901,28 @@ begin
   end
   else
   {$ENDIF JVCLThemesEnabled}
-    if Standard = tsbMinimizeToTray then
+  if Standard = tsbMinimizeToTray then
+  begin
+    DrawButtonFace(ACanvas, DrawRect, 1, bsAutoDetect, False, FDown, False);
+    if Enabled then
     begin
-      DrawButtonFace(ACanvas, DrawRect, 1, bsAutoDetect, False, FDown, False);
-      if Enabled then
-      begin
-        ACanvas.Brush.Color := clWindowText;
-        with DrawRect do
-          ACanvas.FillRect(Rect(Right - 7, Bottom - 5, Right - 4, Bottom - 3));
-      end
-      else
-      begin
-        ACanvas.Brush.Color := clBtnHighlight;
-        with DrawRect do
-          ACanvas.FillRect(Rect(Right - 6, Bottom - 4, Right - 3, Bottom - 2));
-        ACanvas.Brush.Color := clBtnShadow;
-        with DrawRect do
-          ACanvas.FillRect(Rect(Right - 7, Bottom - 5, Right - 4, Bottom - 3));
-      end;
+      ACanvas.Brush.Color := clWindowText;
+      with DrawRect do
+        ACanvas.FillRect(Rect(Right - 7, Bottom - 5, Right - 4, Bottom - 3));
     end
     else
-      DrawFrameControl(ACanvas.Handle, DrawRect, DFC_CAPTION, {DFCS_ADJUSTRECT or}
-        CDrawFlags[Standard] or CDown[Down] or CEnabled[Enabled]);
+    begin
+      ACanvas.Brush.Color := clBtnHighlight;
+      with DrawRect do
+        ACanvas.FillRect(Rect(Right - 6, Bottom - 4, Right - 3, Bottom - 2));
+      ACanvas.Brush.Color := clBtnShadow;
+      with DrawRect do
+        ACanvas.FillRect(Rect(Right - 7, Bottom - 5, Right - 4, Bottom - 3));
+    end;
+  end
+  else
+    DrawFrameControl(ACanvas.Handle, DrawRect, DFC_CAPTION, {DFCS_ADJUSTRECT or}
+      CDrawFlags[Standard] or CDown[Down] or CEnabled[Enabled]);
 end;
 
 procedure TJvCaptionButton.ForwardToToolTip(Msg: TMessage);
@@ -958,7 +959,6 @@ begin
 end;
 
 {$IFDEF JVCLThemesEnabled}
-
 function TJvCaptionButton.GetIsThemed: Boolean;
 begin
   Result := ThemeServices.ThemesAvailable and IsThemeActive;
@@ -1006,7 +1006,8 @@ begin
     if Toggle then
       Click;
   end
-  else if FDown and not Toggle then
+  else
+  if FDown and not Toggle then
   begin
     FMouseButtonDown := False;
     FDown := False;
@@ -1096,7 +1097,7 @@ procedure TJvCaptionButton.HandleNCActivate(var Msg: TWMNCActivate);
 begin
   {$IFDEF JVCLThemesEnabled}
   FCaptionActive := Msg.Active;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
   SetMouseInControl(MouseInControl and Msg.Active);
 
   Redraw(rkDirect);
@@ -1280,7 +1281,6 @@ end;
 procedure TJvCaptionButton.Loaded;
 begin
   inherited Loaded;
-
   Redraw(rkTotalCaptionBar);
 end;
 
@@ -1694,7 +1694,7 @@ begin
           * Switching from 'windows classic' style to 'windows XP' style
             ( delphi 7 bug) }
         ThemeServices.ApplyThemeChange;
-        {$ENDIF}
+        {$ENDIF JVCLThemesEnabled}
       end;
     CM_SYSFONTCHANGED:
       begin
@@ -1705,7 +1705,7 @@ begin
           * Non-themed application and switching system font size }
         if not ThemeServices.ThemesEnabled then
           ThemeServices.ApplyThemeChange;
-        {$ENDIF}
+        {$ENDIF JVCLThemesEnabled}
       end;
     WM_SETTEXT:
       { Caption text may overwrite the button, so redraw }
@@ -1789,7 +1789,7 @@ begin
   end;
 end;
 
-{ TJvCaptionButtonActionLink }
+//=== TJvCaptionButtonActionLink =============================================
 
 procedure TJvCaptionButtonActionLink.AssignClient(AClient: TObject);
 begin

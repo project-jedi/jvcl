@@ -77,7 +77,7 @@ type
     procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure FontChanged; override;
-    procedure SetAutoSize(Value: Boolean);{$IFDEF VCL} override; {$ELSE} virtual; {$ENDIF}
+    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ELSE} virtual; {$ENDIF}
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     {$ENDIF VCL}
