@@ -43,7 +43,7 @@ const
   { JvEditor }
   JvEditorCompletionChars = #8+'0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
 
-  { IParser }
+  { various units }
   StIdSymbols      = ['_', '0'..'9', 'A'..'Z', 'a'..'z'];
   StIdFirstSymbols = ['_', 'A'..'Z', 'a'..'z'];
   StConstSymbols   = ['0'..'9', 'A'..'F', 'a'..'f'];
@@ -52,8 +52,8 @@ const
 
   {$IFDEF RAINTER}
   {RAInter}
-  RAIIdSymbols      = ['0'..'9', 'A'..'Z', 'a'..'z',  '_'];
-  RAIIdFirstSymbols = ['A'..'Z', 'a'..'z', '_'];
+  RAIIdSymbols      = StIdSymbols;
+  RAIIdFirstSymbols = StIdFirstSymbols;
   {$ENDIF RAINTER}
 
   { JvDlg }
@@ -335,6 +335,9 @@ resourcestring
   SPaletteMTThreads = 'Jv Threading';
   SPalettePrintPreview = 'Jv Print Preview';
   SPaletteTimeFramework = 'Jv TimeFrameWork';
+  SPaletteUIB = 'Jv UIB';
+  SPaletteGlobusComponents1 = 'JVCL Globus Components 1';
+  SPaletteGlobusComponents2 = 'JVCL Globus Components 2';
 
   { for RegisterActions }
   srJVCLActions     = 'JVCL';

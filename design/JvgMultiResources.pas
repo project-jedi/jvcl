@@ -33,20 +33,16 @@ interface
 
 uses
   Windows, Controls, Classes, Forms, SysUtils,
-  Dialogs,
+  Dialogs, TypInfo,
   {$IFDEF COMPILER6_UP}
-  DesignIntf,
-  DesignEditors,
-  PropertyCategories,
+  DesignIntf, DesignEditors, PropertyCategories,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvComponent, TypInfo;
+  JvComponent;
 
 type
-
-  TJvgResStringList = class(TStringList)
-  end;
+  TJvgResStringList = class(TStringList);
 
   TJvgMultipleResources = class(TJvComponent)
   private
@@ -59,38 +55,37 @@ type
     //    procedure GetPropEditor(Prop: TPropertyEditor);
     //    procedure E(const S: string);
   protected
-    procedure Notification(Component: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(Component: TComponent; Operation: TOperation); override;
     procedure Loaded; override;
   public
     //    property CompList: TList read FCompList write FCompList;
-    procedure Update;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Update;
   published
     property Resources: TJvgResStringList read FResources write FResources;
     property Comps: TStringList read FComps write FComps;
   end;
 
 implementation
-uses StdCtrls,
-  Contnrs; //, JvgMultiResourceEditor;
 
-{$IFDEF COMPILER6_UP}
+uses
+  StdCtrls, Contnrs; //, JvgMultiResourceEditor;
+
 type
+  {$IFDEF COMPILER6_UP}
   TDesigner = DesignIntf.IDesigner;
   TFormDesigner = DesignIntf.IDesigner;
-{$ELSE}
-type
+  {$ELSE}
   TDesigner = IDesigner;
   TFormDesigner = IFormDesigner;
-{$ENDIF}
+  {$ENDIF}
 
 constructor TJvgMultipleResources.Create(AOwner: TComponent);
 var
-  i: integer;
+  I: Integer;
 begin
-  inherited;
+  inherited Create(AOwner);
   FResources := TJvgResStringList.Create;
   FComps := TStringList.Create;
   //  FCompList := TList.Create;
@@ -101,10 +96,10 @@ begin
   if (csDesigning in ComponentState) and (FComps.Count = 0) then
     with TForm(AOwner) do
     begin
-      for i := 0 to ControlCount - 1 do
-        if TComponent(Comps[i]) is TLabel then
-          FComps.Add(TComponent(Comps[i]).Name);
-      //FResources.Add( Comps[i].Name+'#'+TLabel(Comps[i]).Caption );
+      for I := 0 to ControlCount - 1 do
+        if TComponent(Comps[I]) is TLabel then
+          FComps.Add(TComponent(Comps[I]).Name);
+      //FResources.Add( Comps[I].Name+'#'+TLabel(Comps[I]).Caption );
     end;
 end;
 
@@ -116,10 +111,10 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvgMultipleResources.Notification(Component: TComponent; Operation:
-  TOperation);
+procedure TJvgMultipleResources.Notification(Component: TComponent;
+  Operation: TOperation);
 begin
-  inherited;
+  inherited Notification(Component, Operation);
   //  if (Component <> Self)and(Operation = opInsert) then ProcessNewComponent(Component);
     //if (Component <> Self)and(Operation = opRename)and(Assigned(LastComponent)) then ProcessNewComponent(Component);
   //    raise Exception.Create('Cannot create more than one instance of TJvgMultipleResources component');
@@ -130,62 +125,60 @@ begin
       Resources.Add('');
     end;
   {  if (Component <> Self)and(Operation = opRemove) then
-      for i := 0 to CompList.Count-1 do if CompList[i] = Component then
+      for I := 0 to CompList.Count-1 do if CompList[I] = Component then
       begin
-        CompList.Delete(i);
-        //for j := Comps.Count-1 downto 0 do
-        //  if pos( Component.Name Comps[] )
-        break;
+        CompList.Delete(I);
+        //for J := Comps.Count-1 downto 0 do
+        //  if Pos( Component.Name Comps[] )
+        Break;
       end;}
 end;
 
 procedure TJvgMultipleResources.Update;
 var
-  i, j, Ind: integer;
-  c: TComponent;
-  cName: string;
+  I, J, Ind: Integer;
+  C: TComponent;
+  NameOfC: string;
   SLNames: TStringList;
 begin
-
   SLNames := TStringList.Create;
   try
-    for i := 0 to Comps.Count - 1 do
+    for I := 0 to Comps.Count - 1 do
     begin
-      cName := '';
-      C := TComponent(Comps.Objects[i]);
+      NameOfC := '';
+      C := TComponent(Comps.Objects[I]);
       if C = nil then
       begin
-        for j := 1 to length(Comps[i]) do
-          if Comps[i][j] = '.' then
-            break;
-        cName := copy(Comps[i], 0, j - 1);
-        C := Owner.FindComponent(cName);
+        for J := 1 to length(Comps[I]) do
+          if Comps[I][J] = '.' then
+            Break;
+        NameOfC := Copy(Comps[I], 0, J - 1);
+        C := Owner.FindComponent(NameOfC);
       end;
       if C = nil then
-        exit;
+        Exit;
 
-      if cName <> '' then
-        for j := 0 to Comps.Count - 1 do
-          if pos(cName + '.', Comps[i]) = 1 then
-            Comps.Objects[i] := C;
+      if NameOfC <> '' then
+        for J := 0 to Comps.Count - 1 do
+          if Pos(NameOfC + '.', Comps[I]) = 1 then
+            Comps.Objects[I] := C;
 
       if C.Name = '' then
-        continue;
+        Continue;
       SLNames.Clear; //SLNames.Sorted := true;
       GetComponentData(C, SLNames);
-      for j := 0 to SLNames.Count - 1 do
+      for J := 0 to SLNames.Count - 1 do
       begin
         //IndexOfObject(
-        Ind := Comps.IndexOf(C.Name + '.' + SLNames.Names[j]);
+        Ind := Comps.IndexOf(C.Name + '.' + SLNames.Names[J]);
         if Ind = -1 then
         begin
-
           Comps.Insert(Comps.IndexOfObject(C), C.Name + '.' +
-            SLNames.Names[j]);
-          Resources.Add(SLNames.Values[SLNames.Names[j]]);
+            SLNames.Names[J]);
+          Resources.Add(SLNames.Values[SLNames.Names[J]]);
         end
         else
-          Resources[Ind] := SLNames.Values[SLNames.Names[j]];
+          Resources[Ind] := SLNames.Values[SLNames.Names[J]];
       end;
       if Comps[Comps.IndexOfObject(C)] = '' then
       begin
@@ -196,28 +189,24 @@ begin
   finally
     SLNames.Free;
   end;
-
 end;
 
-procedure TJvgMultipleResources.GetComponentData(C: TComponent; SLNames:
-  TStringList);
+procedure TJvgMultipleResources.GetComponentData(C: TComponent;
+  SLNames: TStringList);
 var
-  i: integer;
+  I: Integer;
 begin
   if C is TLabel then
-  begin
-    SLNames.Add('Caption=' + TLabel(C).Caption);
-  end
-  else if C is TListBox then
-    for i := 0 to TListBox(C).Items.Count - 1 do
-    begin
-      SLNames.Add('Items[' + IntToStr(i) + ']=' + TListBox(C).Items[i]);
-    end;
+    SLNames.Add('Caption=' + TLabel(C).Caption)
+  else
+  if C is TListBox then
+    for I := 0 to TListBox(C).Items.Count - 1 do
+      SLNames.Add('Items[' + IntToStr(I) + ']=' + TListBox(C).Items[I]);
 end;
 
 procedure TJvgMultipleResources.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   if not (csDesigning in ComponentState) then
   begin
   end;
@@ -226,19 +215,19 @@ end;
 (*
 function TJvgMultipleResources.GetName(Component: TComponent): string;
 var
-  i: integer;
+  I: Integer;
   BaseName: string;
 begin
   if Component.Name <> '' then
   begin
     Result := Component.Name;
-    exit;
+    Exit;
   end;
-  i := 1;
-  BaseName := copy(Component.ClassName, 2, length(Component.ClassName));
-  while Owner.FindComponent(BaseName + IntToStr(i)) <> nil do
-    inc(i);
-  Result := BaseName + IntToStr(i);
+  I := 1;
+  BaseName := Copy(Component.ClassName, 2, length(Component.ClassName));
+  while Owner.FindComponent(BaseName + IntToStr(I)) <> nil do
+    inc(I);
+  Result := BaseName + IntToStr(I);
 end;
 *)
 
@@ -262,8 +251,8 @@ begin
     {    if Component is TLabel then
           Comps.Add( GetName( Component ) );
         if Component is TListBox then //with TListBox(Component) do
-          for i:=0 to TListBox(Component).Items.Count-1 do
-            Comps.Add( GetName( Component )+'.Items['+IntToStr(i)+']' );
+          for I:=0 to TListBox(Component).Items.Count-1 do
+            Comps.Add( GetName( Component )+'.Items['+IntToStr(I)+']' );
     }
   finally
     ///    FormDesigner.Free;
@@ -283,5 +272,6 @@ begin
   //  ShowMessage(s);
 end;
 *)
+
 end.
 

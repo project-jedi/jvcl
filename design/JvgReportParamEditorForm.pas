@@ -70,23 +70,22 @@ type
     procedure eTextMaskChange(Sender: TObject);
     procedure pbDeleteItemClick(Sender: TObject);
   private
-    { Private declarations }
   public
-    { Public declarations }
   end;
 
-var
-  ReportParamEditor: TJvgReportParamEditor;
+//var
+//  ReportParamEditor: TJvgReportParamEditor;
 
 implementation
 
 {$R *.DFM}
 
-{procedure SetEnabledState( WC: TWinControl; State: boolean );
-var i: integer;
+{procedure SetEnabledState(WC: TWinControl; State: Boolean);
+var
+  I: Integer;
 begin
-  for i:=0 to WC.ControlCount-1 do
-    WC.Controls[i].Enabled := State;
+  for I :=0 to WC.ControlCount-1 do
+    WC.Controls[I].Enabled := State;
 end;}
 
 procedure TJvgReportParamEditor.rgParameterTypeClick(Sender: TObject);
@@ -97,10 +96,11 @@ end;
 procedure TJvgReportParamEditor.pbAddItemClick(Sender: TObject);
 begin
   eItemToAdd.Text := Trim(eItemToAdd.Text);
-  if length(eItemToAdd.Text) > 0 then
+  if Length(eItemToAdd.Text) > 0 then
     if TButton(Sender).Tag = 0 then
       lbRadioItems.Items.Append(eItemToAdd.Text)
-    else if lbRadioItems.ItemIndex <> -1 then
+    else
+    if lbRadioItems.ItemIndex <> -1 then
       lbRadioItems.Items.Insert(lbRadioItems.ItemIndex, eItemToAdd.Text);
 end;
 

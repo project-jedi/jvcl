@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvAnimatedEditor.PAS, released on 2002-05-26.
+The Original Code is: JvCryptReg.PAS, released on 2002-05-26.
 
 The Initial Developer of the Original Code is John Doe.
 Portions created by John Doe are Copyright (C) 2003 John Doe.
@@ -36,9 +36,9 @@ implementation
 
 uses
   Classes,
-  {$IFNDEF BCB}
+  {$IFNDEF CBUILDER}
   JvZlibMultiple,
-  {$ENDIF BCB}
+  {$ENDIF CBUILDER}
   JvConsts, JvVigenereCipher, JvCabFile, JvCaesarCipher, JvGenetic,
   JvSerialMaker, JvXorCipher;
 
@@ -48,9 +48,9 @@ procedure Register;
 begin
   RegisterComponents(SPaletteEncryptCompress, [TJvVigenereCipher,
     TJvXORCipher, TJvCaesarCipher, TJvGenetic, TJvCABFile,
-    {$IFNDEF BCB}
+    {$IFNDEF CBUILDER}
     TJvZlibMultiple,
-    {$ENDIF BCB}
+    {$ENDIF CBUILDER}
     TJvSerialMaker]);
 end;
 

@@ -55,7 +55,8 @@ uses
 procedure TJvgHelpPanelEditor.ExecuteVerb(Index: Integer);
 var
   OpenDialog: TOpenDialog;
-  ms: TMemoryStream;
+  MemStream: TMemoryStream;
+  JvgRTFPreview: TJvgRTFPreview;
 begin
   // inherited ExecuteVerb(Index);
   case Index of
@@ -68,19 +69,21 @@ begin
         OpenDialog.Free;
       end;
     1:
-      try
+      begin
         JvgRTFPreview := TJvgRTFPreview.Create(nil);
-        ms := TMemoryStream.Create;
         try
-          (Component as TJvgHelpPanel).Strings.SaveToStream(ms);
-          ms.Position := 0;
-          JvgRTFPreview.Rich.Lines.LoadFromStream(ms);
-          JvgRTFPreview.ShowModal;
+          MemStream := TMemoryStream.Create;
+          try
+            (Component as TJvgHelpPanel).Strings.SaveToStream(MemStream);
+            MemStream.Position := 0;
+            JvgRTFPreview.Rich.Lines.LoadFromStream(MemStream);
+            JvgRTFPreview.ShowModal;
+          finally
+            MemStream.Free;
+          end;
         finally
-          ms.Free;
+          JvgRTFPreview.Free;
         end;
-      finally
-        JvgRTFPreview.Free;
       end;
   end;
 end;

@@ -66,7 +66,8 @@ var
     I, NewNameIndex: Integer;
     Exists: Boolean;
   begin
-    if Sl.IndexOf(Edit.Name) <> -1 then exit;
+    if Sl.IndexOf(Edit.Name) <> -1 then
+      Exit;
 
     TEdit(Edit).BorderStyle := bsNone;
     Sh := TJvgShadow.Create(Component.Owner);

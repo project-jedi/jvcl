@@ -30,18 +30,17 @@ unit JvFormPropertiesForm;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, StdCtrls,
-  Buttons, ExtCtrls, Consts,
+  SysUtils, Classes, Controls, Forms, StdCtrls, Buttons, ExtCtrls, Consts,
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, VCLEditors, DesignEditors,
   {$ELSE}
   DsgnIntf,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvJVCLUtils, JvFormPlacement, JvPropsStorage, JvComponent;
 
 { TODO -oJVCL -cREIMPLEMENT :
-Add support for "Box" style procedures again but remove dependency on
-JvxCtrls and JvBoxProcs units }
+  Add support for "Box" style procedures again but remove dependency on
+  JvxCtrls and JvBoxProcs units }
 
 type
   TJvFormPropsDlg = class(TJvForm)
@@ -81,8 +80,8 @@ type
     procedure ListToIndex(List: TCustomListBox; Idx: Integer);
     procedure UpdateCurrent;
     procedure DeleteProp(I: Integer);
-    function FindProp(const CompName, PropName: string; var IdxComp,
-      IdxProp: Integer): Boolean;
+    function FindProp(const CompName, PropName: string;
+      var IdxComp, IdxProp: Integer): Boolean;
     procedure ClearLists;
     procedure CheckAddItem(const CompName, PropName: string);
     procedure AddItem(IdxComp, IdxProp: Integer; AUpdate: Boolean);
@@ -115,6 +114,7 @@ uses
 
 {$R *.DFM}
 
+// (rom) needs explanation
 {$D-}
 
 //=== TJvFormStorageEditor ===================================================
@@ -182,6 +182,8 @@ begin
   end;
 end;
 
+//=== TJvFormPropsDlg ========================================================
+
 function ShowStorageDesigner(ACompOwner: TComponent; ADesigner: IDesigner;
   AStoredList: TStrings; var Options: TPlacementOptions): Boolean;
 begin
@@ -215,8 +217,6 @@ begin
     Free;
   end;
 end;
-
-//=== TJvFormPropsDlg ========================================================
 
 procedure TJvFormPropsDlg.ListToIndex(List: TCustomListBox; Idx: Integer);
 
@@ -317,9 +317,7 @@ var
   I: Integer;
 begin
   for I := 0 to ComponentsList.Items.Count - 1 do
-  begin
     ComponentsList.Items.Objects[I].Free;
-  end;
   ComponentsList.Items.Clear;
   ComponentsList.Clear;
   PropertiesList.Clear;
@@ -398,10 +396,8 @@ begin
     if StoredProps <> nil then
     begin
       for I := 0 to StoredProps.Count - 1 do
-      begin
         if ParseStoredItem(StoredProps[I], CompName, PropName) then
           CheckAddItem(CompName, PropName);
-      end;
       ListToIndex(StoredList, 0);
     end;
   end
@@ -439,10 +435,8 @@ begin
   if PropertiesList.SelCount > 0 then
   begin
     for I := PropertiesList.Items.Count - 1 downto 0 do
-    begin
       if PropertiesList.Selected[I] then
         AddItem(ComponentsList.ItemIndex, I, False);
-    end;
     UpdateCurrent;
   end
   else
@@ -499,15 +493,15 @@ begin
   CheckButtons;
 end;
 
-procedure TJvFormPropsDlg.StoredListDragOver(Sender, Source: TObject; X,
-  Y: Integer; State: TDragState; var Accept: Boolean);
+procedure TJvFormPropsDlg.StoredListDragOver(Sender, Source: TObject;
+  X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
 //  BoxDragOver(StoredList, Source, X, Y, State, Accept, StoredList.Sorted);
   CheckButtons;
 end;
 
-procedure TJvFormPropsDlg.StoredListDragDrop(Sender, Source: TObject; X,
-  Y: Integer);
+procedure TJvFormPropsDlg.StoredListDragDrop(Sender, Source: TObject;
+  X, Y: Integer);
 begin
 //  BoxMoveFocusedItem(StoredList, StoredList.ItemAtPos(Point(X, Y), True));
   if FDesigner <> nil then

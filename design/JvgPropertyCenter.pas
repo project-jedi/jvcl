@@ -30,12 +30,13 @@ Known Issues:
 unit JvgPropertyCenter;
 
 interface
+
 uses
-  Windows, Messages, SysUtils, Classes, JvComponent, Graphics,
-  Controls, Forms, Dialogs, TypInfo;
+  Windows, Messages, SysUtils, Classes, Graphics,
+  Controls, Forms, Dialogs, TypInfo,
+  JvComponent;
 
 type
-
   TglProperties_ = (fupColor, fupFont, fupFontColor);
   TglProperties = set of TglProperties_;
 
@@ -49,7 +50,7 @@ type
     FFontProperty: TFont;
     FComponentList: TStringList;
     FUseProperties: TglProperties;
-    FAutoApdate: boolean;
+    FAutoApdate: Boolean;
     procedure SetColorProperty(Value: TColor);
     procedure SetFontColorProperty(Value: TColor);
     procedure SetFontProperty(Value: TFont);
@@ -70,105 +71,106 @@ type
       FComponentList;
     property UseProperties: TglProperties read FUseProperties write
       FUseProperties;
-    property AutoApdate: boolean read FAutoApdate write FAutoApdate;
+    property AutoApdate: Boolean read FAutoApdate write FAutoApdate;
   end;
 
 implementation
-uses JvgUtils,
-  JvgTypes,
-  JvgComponentListEditorForm;
+
+uses
+  JvgUtils, JvgTypes, JvgComponentListEditorForm;
 
 constructor TJvgPropertyCenter.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   ComponentList := TStringList.Create;
   CompList := TList.Create;
 end;
 
 destructor TJvgPropertyCenter.Destroy;
 begin
-  inherited;
   ComponentList.Free;
   CompList.Free;
+  inherited Destroy;
 end;
 
 procedure TJvgPropertyCenter.Loaded;
 var
-  i: integer;
+  I: Integer;
   Comp: TComponent;
 begin
-  inherited;
+  inherited Loaded;
 
-  for i := 0 to ComponentList.Count - 1 do
+  for I := 0 to ComponentList.Count - 1 do
   begin
-    Comp := Owner.FindComponent(ComponentList[i]);
-    if Comp = nil then
-      continue;
-    CompList.Add(Comp);
-    ComponentList.Add(Comp.Name);
+    Comp := Owner.FindComponent(ComponentList[I]);
+    if Comp <> nil then
+    begin
+      CompList.Add(Comp);
+      ComponentList.Add(Comp.Name);
+    end;
   end;
 end;
 
-procedure TJvgPropertyCenter.Notification(Component: TComponent; Operation:
-  TOperation);
+procedure TJvgPropertyCenter.Notification(Component: TComponent;
+  Operation: TOperation);
 begin
   if (Component <> Self) and (Operation = opRemove) then
     if CompList.IndexOf(Component) <> -1 then
       CompList.Delete(CompList.IndexOf(Component));
-  inherited;
+  inherited Notification(Component, Operation);
 end;
 
 procedure TJvgPropertyCenter.UpdateProperties(Properties: Tgl_Properties);
 var
-  i: integer;
+  I: Integer;
   ColorPropInfo: PPropInfo;
 begin
-  for i := 0 to CompList.Count - 1 do
+  for I := 0 to CompList.Count - 1 do
   begin
-
     if f_upColor in Properties then
     begin
-      ColorPropInfo := GetPropInfo(TComponent(CompList[i]).ClassInfo,
-        'Color');
+      ColorPropInfo := GetPropInfo(TComponent(CompList[I]).ClassInfo, 'Color');
       if ColorPropInfo <> nil then
-        SetOrdProp(TComponent(CompList[i]), ColorPropInfo, FColorProperty);
+        SetOrdProp(TComponent(CompList[I]), ColorPropInfo, FColorProperty);
     end;
     {    if (fupFontColor in Properties)or(fupFont in Properties) then
         begin
-          ColorPropInfo := GetPropInfo( TComponent(CompList[i]).ClassInfo, 'Font');
+          ColorPropInfo := GetPropInfo( TComponent(CompList[I]).ClassInfo, 'Font');
           if ColorPropInfo <> nil then
             if fupFontColor in Properties then
-              SetOrdProp( TComponent(CompList[i]), PropInfo, FColorProperty );
+              SetOrdProp( TComponent(CompList[I]), PropInfo, FColorProperty );
         end;}
   end;
-
 end;
 
 procedure TJvgPropertyCenter.SetColorProperty(Value: TColor);
 begin
-  if FColorProperty = Value then
-    exit;
-  FColorProperty := Value;
-  if FAutoApdate then
-    UpdateProperties([f_upColor]);
+  if FColorProperty <> Value then
+  begin
+    FColorProperty := Value;
+    if AutoApdate then
+      UpdateProperties([f_upColor]);
+  end;
 end;
 
 procedure TJvgPropertyCenter.SetFontColorProperty(Value: TColor);
 begin
-  if FFontColorProperty = Value then
-    exit;
-  FFontColorProperty := Value;
-  if FAutoApdate then
-    UpdateProperties([f_upFontColor]);
+  if FFontColorProperty <> Value then
+  begin
+    FFontColorProperty := Value;
+    if AutoApdate then
+      UpdateProperties([f_upFontColor]);
+  end;
 end;
 
 procedure TJvgPropertyCenter.SetFontProperty(Value: TFont);
 begin
-  if FFontProperty = Value then
-    exit;
-  FFontProperty.Assign(Value);
-  if FAutoApdate then
-    UpdateProperties([f_upFont]);
+  if FFontProperty <> Value then
+  begin
+    FFontProperty.Assign(Value);
+    if AutoApdate then
+      UpdateProperties([f_upFont]);
+  end;
 end;
 
 end.

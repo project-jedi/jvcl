@@ -208,11 +208,9 @@ begin
       Item.GetItems.QueryInterface(IJvDataItemsManagement, ParentMan);
   end
   else
-  begin
-    if Supports(InternalProvider, IJvDataItems, Items) then
-      if Supports(Items, IJvDataItemsManagement, Man) then
-        Supports(Items, IJvDataItemsDesigner, Dsgn);
-  end;
+  if Supports(InternalProvider, IJvDataItems, Items) then
+    if Supports(Items, IJvDataItemsManagement, Man) then
+      Supports(Items, IJvDataItemsDesigner, Dsgn);
 
   // Update OI
   if Item = nil then
@@ -249,7 +247,8 @@ begin
   fmeToolbar.aiAddItem.Enabled := (Man <> nil) and (Items <> nil);
   fmeToolbar.aiDeleteItem.Enabled := (ParentMan <> nil) and (Item <> nil) and
     (Item <> FRootItem) and Item.IsDeletable;
-  fmeToolbar.aiDeleteSubItems.Enabled := (Man <> nil) and (Items <> nil) and (Items.Count > 0);
+  fmeToolbar.aiDeleteSubItems.Enabled := (Man <> nil) and (Items <> nil) and
+    (Items.Count > 0);
 end;
 
 procedure TfrmDataProviderDesigner.InitContexts;
@@ -269,6 +268,7 @@ begin
       fmeToolbar.cbContexts.Sorted := True;
       fmeToolbar.cbContexts.Sorted := False;
     end;
+    // (rom) is <Default> language dependent? Also needs explanation.
     fmeToolbar.cbContexts.Items.InsertObject(0, '<Default>', TObject(-99));
   finally
     fmeToolbar.cbContexts.Items.EndUpdate;

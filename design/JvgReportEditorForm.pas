@@ -59,8 +59,7 @@ type
   TJvgReportEditor = class(TJvComponent)
     FReport: TJvgReport;
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     procedure Preview;
     procedure Edit;
@@ -231,12 +230,12 @@ type
     procedure RemakeComponentsList;
     procedure Read(FileName: string; ParentWnd: TWinControl);
     procedure Save(FileName: string);
-    procedure OnMouseDown_(Sender: TObject; Button: TMouseButton; Shift:
-      TShiftState; X, Y: Integer);
-    procedure OnMouseUp_(Sender: TObject; Button: TMouseButton; Shift:
-      TShiftState; X, Y: Integer);
-    procedure OnMouseMove_(Sender: TObject; Shift: TShiftState; X, Y:
-      Integer);
+    procedure OnMouseDown_(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure OnMouseUp_(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure OnMouseMove_(Sender: TObject; Shift: TShiftState;
+       X, Y: Integer);
     procedure OnResize_(Sender: TObject);
     procedure OnDrawScrollBox(Sender: TObject);
     procedure UpdatePageSize;
@@ -258,9 +257,9 @@ type
 
   TJvgPublicControlClass = class of TJvgPublicControl;
 
-var
-  glRepEditor: TJvgReportEditorForm;
-  Form2: TComponent;
+//var
+//  glRepEditor: TJvgReportEditorForm;
+//  Form2: TComponent;
 
 implementation
 
@@ -1254,7 +1253,7 @@ begin
     R := Bounds(7, Bmp.Height - 7, Bmp.Width - 7, 7);
     Bmp.Canvas.FillRect(R);
 
-    Image.Picture.bitmap := Bmp;
+    Image.Picture.Bitmap := Bmp;
     Image.Stretch := True;
     Image.Width := W div 2;
     Image.Height := H div 2;

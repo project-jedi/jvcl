@@ -33,17 +33,16 @@ interface
 
 uses
   Windows, Messages,
-  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls,
+  ComCtrls, ExtCtrls, TypInfo, Buttons, ImgList,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  StdCtrls, JvgPropertyCenter, ComCtrls, ExtCtrls, TypInfo, Buttons, ImgList,
-  JvComponent;
+  JvgPropertyCenter, JvComponent;
 
 type
-
   TJvgComponentListProperty = class(TPropertyEditor)
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;

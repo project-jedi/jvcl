@@ -24,27 +24,38 @@
 {                                                                              }
 {******************************************************************************}
 
-unit JvUIBReg;
 {$IFNDEF BCB}
 {$I JVCL.INC}
 {$ENDIF}
 {$I JvUIB.inc}
 
+unit JvUIBReg;
+
 interface
+
 {$IFNDEF UIBNOCOMPONENT}
 procedure Register;
 {$ENDIF}
 
-implementation //DesignIntf
+implementation
+
 {$IFNDEF UIBNOCOMPONENT}
-uses Classes, JvUIB {$IFNDEF DelphiPersonalEdition}, JvUIBDataSet{$ENDIF};
+
+uses
+  Classes,
+  {$IFNDEF DelphiPersonalEdition}
+  JvUIBDataSet,
+  {$ENDIF}
+  JvUIB, JvConsts;
 {$R ..\Resources\JvUIBReg.dcr}
 
 procedure Register;
 begin
-  RegisterComponents('Jv UIB', [TJvUIBDatabase, TJvUIBTransaction, TJvUIBQuery,
-    {$IFNDEF DelphiPersonalEdition}TJvUIBDataSet,{$ENDIF} TJvUIBScript, TJvUIBBackup, TJvUIBRestore]);
+  RegisterComponents(SPaletteUIB, [TJvUIBDatabase, TJvUIBTransaction, TJvUIBQuery,
+    {$IFNDEF DelphiPersonalEdition} TJvUIBDataSet, {$ENDIF}
+    TJvUIBScript, TJvUIBBackup, TJvUIBRestore]);
 end;
+
 {$ENDIF}
 
 end.

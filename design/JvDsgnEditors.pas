@@ -36,7 +36,7 @@ interface
 uses
   Windows, Forms, Classes, SysUtils,
   Controls, Graphics, ExtCtrls, Tabs, Dialogs, 
-  ExtDlgs, Menus, StdCtrls, DsnConst, 
+  ExtDlgs, Menus, StdCtrls, DsnConst,
   {$IFDEF COMPILER6_UP}
   FiltEdit, RTLConsts, DesignIntf, DesignEditors, DesignMenus, VCLEditors,
   {$ELSE}
@@ -258,10 +258,10 @@ begin
     Result := Low(Integer)
   else
   if CompareText(S, cMaxShort) = 0 then
-    Result := High(ShortInt)
+    Result := High(Shortint)
   else
   if CompareText(S, cMinShort) = 0 then
-    Result := Low(ShortInt)
+    Result := Low(Shortint)
   else
   if CompareText(S, cMaxWord) = 0 then
     Result := High(Word)
@@ -754,7 +754,7 @@ end;
 
 procedure TJvShortCutProperty.GetValues(Proc: TGetStrProc);
 var
-  Key: word;
+  Key: Word;
   Shift: TShiftState;
 begin
   Proc(SNone);
@@ -817,6 +817,7 @@ end;
 
 procedure TJvFilenameProperty.OnDialogShow(Sender: TObject);
 begin
+  // (rom) Where does chx1 come from?
   SetDlgItemText(GetParent(TOpenDialog(Sender).Handle), chx1, PChar(SStripFilePath));
 end;
 

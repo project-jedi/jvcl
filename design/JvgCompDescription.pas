@@ -31,16 +31,15 @@ Known Issues:
 unit JvgCompDescription;
 
 interface
-uses classes,
+
+uses
+  Classes, TypInfo,
   {$IFDEF COMPILER6_UP}
-  DesignIntf,
-  DesignEditors,
-  PropertyCategories,
+  DesignIntf, DesignEditors, PropertyCategories,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JVComponent,
-  TypInfo;
+  JVComponent;
 
 type
   TJvgPropInfos = class;
@@ -51,9 +50,8 @@ type
     FPropInfos: TJvgPropInfos;
     FNote: string;
     FClass_Name: string;
-
-    PropList: PPropList;
-    NumProps: word;
+    FPropList: PPropList;
+    FNumProps: Word;
   public
     constructor Create(AOwner, Component: TComponent); reintroduce;
     destructor Destroy; override;
@@ -81,8 +79,8 @@ type
     FName: string;
     FTypeName: string;
     FTypeKind: TTypeKind;
-    FChecked: boolean;
-    FMakeHref: boolean;
+    FChecked: Boolean;
+    FMakeHref: Boolean;
     FNote: string;
   public
     Info: PPropInfo;
@@ -90,12 +88,14 @@ type
     property Name: string read FName write FName;
     property TypeName: string read FTypeName write FTypeName;
     property TypeKind: TTypeKind read FTypeKind write FTypeKind;
-    property Checked: boolean read FChecked write FChecked;
-    property MakeHref: boolean read FMakeHref write FMakeHref;
+    property Checked: Boolean read FChecked write FChecked;
+    property MakeHref: Boolean read FMakeHref write FMakeHref;
     property Note: string read FNote write FNote;
   end;
 
 implementation
+
+//=== TJvgComponentDescription ===============================================
 
 constructor TJvgComponentDescription.Create(AOwner, Component: TComponent);
 begin
@@ -106,53 +106,55 @@ end;
 
 destructor TJvgComponentDescription.Destroy;
 begin
-  FreeMem(PropList, NumProps * sizeof(pointer));
+  FreeMem(FPropList, FNumProps * SizeOf(Pointer));
   PropInfos.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvgComponentDescription.LoadProperties(Component: TComponent);
 var
   TypeInf: PTypeInfo;
   TypeData: PTypeData;
-  i: integer;
+  I: Integer;
   AName, PropName: string;
 begin
-  if NumProps > 0 then
-    FreeMem(PropList, NumProps * sizeof(pointer));
+  if FNumProps > 0 then
+    FreeMem(FPropList, FNumProps * SizeOf(Pointer));
 
   { Playing with RTTI }
   TypeInf := Component.ClassInfo;
   AName := TypeInf^.Name;
   TypeData := GetTypeData(TypeInf);
-  NumProps := TypeData^.PropCount;
+  FNumProps := TypeData^.PropCount;
 
-  GetMem(PropList, NumProps * sizeof(pointer));
+  GetMem(FPropList, FNumProps * SizeOf(Pointer));
   try
     //{ Получаем список свойств }
     { Retrieving list of properties [translated] }
-    GetPropInfos(TypeInf, PropList);
+    GetPropInfos(TypeInf, FPropList);
 
-    for i := 0 to NumProps - 1 do
+    for I := 0 to FNumProps - 1 do
     begin
-      PropInfos.AddPropInfo(PropList^[i], Component);
+      PropInfos.AddPropInfo(FPropList^[I], Component);
 
-      PropName := PropList^[i]^.Name;
+      PropName := FPropList^[I]^.Name;
 
-      //      PropTypeInf := PropList^[i]^.PropType^;
-      //      PropInfo := PropList^[i];
+      //      PropTypeInf := FPropList^[I]^.PropType^;
+      //      PropInfo := FPropList^[I];
     end;
   finally
 
   end;
 end;
 
+//=== TJvgPropInfos ==========================================================
+
 procedure TJvgPropInfos.AddPropInfo(PropInfo: PPropInfo; Component: TComponent);
 var
   TypeData: PTypeData;
   TypeInfo: PTypeInfo;
-  j: integer;
-  sNote: string;
+  J: Integer;
+  NoteStr: string;
 begin
   with TJvgPropInform(Add) do
   begin
@@ -160,7 +162,7 @@ begin
     TypeName := PropInfo^.PropType^.Name;
     TypeKind := PropInfo^.PropType^.Kind;
     Info := PropInfo;
-    sNote := '';
+    NoteStr := '';
 
     if TypeKind in [tkEnumeration, tkSet] then
     begin
@@ -171,18 +173,18 @@ begin
 
       TypeData := GetTypeData(TypeInfo);
 
-      for j := TypeData^.MinValue to TypeData^.MaxValue do
+      for J := TypeData^.MinValue to TypeData^.MaxValue do
       begin
-        if sNote <> '' then
+        if NoteStr <> '' then
           if TypeKind = tkSet then
-            sNote := sNote + ' | '
+            NoteStr := NoteStr + ' | '
           else
-            sNote := sNote + ', ';
-        sNote := sNote + GetEnumName(TypeInfo, j);
+            NoteStr := NoteStr + ', ';
+        NoteStr := NoteStr + GetEnumName(TypeInfo, J);
       end;
-      sNote := '[' + sNote + ']';
+      NoteStr := '[' + NoteStr + ']';
     end;
-    Note := sNote;
+    Note := NoteStr;
 
     Checked := not IsPublishedProp(Component.ClassParent, Name);
   end;

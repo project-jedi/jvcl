@@ -899,11 +899,11 @@ type
     ParamNameAndType: array [0..100] of Char;
   end;
 const
-  {$IFDEF BCB}
+  {$IFDEF CBUILDER}
   sSender: string[7] = '*Sender';
   {$ELSE}
   sSender: string[6] = 'Sender';
-  {$ENDIF}
+  {$ENDIF CBUILDER}
   sObject: string[7] = 'TObject';
 var
   Btn: TJvSpeedItem;

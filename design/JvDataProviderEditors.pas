@@ -332,6 +332,7 @@ begin
 end;
 
 //=== TJvDataProviderTreeProperty ============================================
+
 procedure TJvDataProviderTreeProperty.Edit;
 begin
   DesignProvider(TJvCustomDataProvider(GetComponent(0)), Designer, GetName);
