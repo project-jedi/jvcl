@@ -130,7 +130,8 @@ begin
   if csDesigning in ComponentState then
     Exit;
   FActive := True;
-  Repaint;
+  if not (ActiveColor = Font.Color) and (ActiveColor <> clNone) then
+    Repaint;
   inherited MouseEnter(Control);
 end;
 
@@ -139,7 +140,8 @@ begin
   if csDesigning in ComponentState then
     Exit;
   FActive := False;
-  Repaint;
+  if not (ActiveColor = Font.Color) and (ActiveColor <> clNone) then
+    Repaint;
   inherited MouseLeave(Control);
 end;
 
