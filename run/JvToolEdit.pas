@@ -155,6 +155,7 @@ type
   TJvCustomComboEdit = class(TJvExCustomComboMaskEdit)
   {$ENDIF VisualCLX}
   private
+    FOnButtonClick: TNotifyEvent;
     FClickKey: TShortCut;
     FReadOnly: Boolean;
     FDirectInput: Boolean;
@@ -170,7 +171,9 @@ type
     FImageKind: TJvImageKind;
     FNumGlyphs: Integer;
     FStreamedButtonWidth: Integer;
+    FStreamedFixedWidth: Boolean;
     FOnEnabledChanged: TNotifyEvent;
+    { Check still necessary }
     FHold: Boolean;
     function BtnWidthStored: Boolean;
     function GetButtonFlat: Boolean;
@@ -213,8 +216,6 @@ type
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
     {$ENDIF JVCLThemesEnabled}
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
-  private
-    FOnButtonClick: TNotifyEvent;
     {$ENDIF VCL}
   protected
     FButton: TJvEditButton; // Polaris
@@ -313,17 +314,12 @@ type
 
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
   public
-    //    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
-    //      AHeight: Integer); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DoClick;
     procedure SelectAll;
     { Backwards compatibility; moved to public&published; eventually remove }
     property GlyphKind: TGlyphKind read GetGlyphKind write SetGlyphKind;
-  published
-    // testing
-    property Ctl3D;
   end;
 
   TJvComboEdit = class(TJvCustomComboEdit)
@@ -466,7 +462,6 @@ type
     {$IFDEF VCL}
     property AcceptFiles: Boolean read FAcceptFiles write SetAcceptFiles default True;
     {$ENDIF VCL}
-    //property AutoSize;
     property OnBeforeDialog: TExecOpenDialogEvent read FOnBeforeDialog
       write FOnBeforeDialog;
     property OnAfterDialog: TExecOpenDialogEvent read FOnAfterDialog
@@ -476,7 +471,6 @@ type
     property ClipboardCommands; // RDB
     property DisabledTextColor; // RDB
     property DisabledColor; // RDB
-    //property OnKeyDown; // RDB
   end;
 
   TFileDialogKind = (dkOpen, dkSave, dkOpenPicture, dkSavePicture);
@@ -732,7 +726,6 @@ type
     FOnAcceptDate: TExecDateDialog;
     FOnInvalidDate: TJvInvalidDateEvent;
     FDefaultToday: Boolean;
-    //    FHooked: Boolean;
     FPopupColor: TColor;
     FCheckOnExit: Boolean;
     FBlanksChar: Char;
@@ -748,7 +741,6 @@ type
     procedure SetMaxDate(Value: TDateTime);
     // Polaris
     function GetDate: TDateTime;
-    //    procedure SetDate(Value: TDateTime);
     procedure SetYearDigits(Value: TYearDigits);
     function GetPopupColor: TColor;
     procedure SetPopupColor(Value: TColor);
@@ -770,7 +762,6 @@ type
     function StoreMaxDate: Boolean;
     // Polaris
     function FourDigitYear: Boolean;
-    //    function FormatSettingsChange(var Msg: TMessage): Boolean;
     {$IFDEF VCL}
     procedure WMContextMenu(var Msg: TWMContextMenu); message WM_CONTEXTMENU;
     {$ENDIF VCL}
@@ -1747,6 +1738,30 @@ begin
     Height := Metrics.tmHeight + I;
 end;
 
+procedure TJvCustomComboEdit.AdjustSize;
+var
+  MinHeight: Integer;
+begin
+  inherited AdjustSize;
+  if not (csLoading in ComponentState) then
+  begin
+    MinHeight := GetMinHeight;
+    { text edit bug: if size to less than MinHeight, then edit ctrl does
+      not display the text }
+    if Height < MinHeight then
+    begin
+      Height := MinHeight;
+      Exit;
+    end;
+  end
+  else
+  begin
+    if (FPopup <> nil) and (csDesigning in ComponentState) then
+      FPopup.SetBounds(0, Height + 1, 10, 10);
+  end;
+  UpdateMargins;
+end;
+
 function TJvCustomComboEdit.BtnWidthStored: Boolean;
 begin
   if (FImageKind = ikDefault) and (DefaultImages <> nil) and (DefaultImageIndex >= 0) then
@@ -1843,7 +1858,6 @@ begin
   {$IFDEF VisualCLX}
   FBtnControl.Parent := Self.ClientArea;
   {$ENDIF VisualCLX}
-  //FBtnControl.Anchors := [akRight, akTop, akBottom];
   {$IFDEF COMPILER6_UP}
   FBtnControl.Align := alCustom;
   {$ELSE}
@@ -1886,7 +1900,6 @@ begin
   inherited CreateWidget;
   UpdateControls;
   UpdateMargins;
-  //SetEditRect;
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -1896,9 +1909,18 @@ begin
   inherited CreateWnd;
   UpdateControls;
   UpdateMargins;
-  //SetEditRect;
 end;
 {$ENDIF VCL}
+
+{$IFDEF COMPILER6_UP}
+procedure TJvCustomComboEdit.CustomAlignPosition(Control: TControl;
+  var NewLeft, NewTop, NewWidth, NewHeight: Integer; var AlignRect: TRect;
+  AlignInfo: TAlignInfo);
+begin
+  if Control = FBtnControl then
+    UpdateBtnBounds(NewLeft, NewTop, NewWidth, NewHeight);
+end;
+{$ENDIF COMPILER6_UP}
 
 class function TJvCustomComboEdit.DefaultImageIndex: TImageIndex;
 begin
@@ -1925,30 +1947,6 @@ destructor TJvCustomComboEdit.Destroy;
 begin
   FButton.OnClick := nil;
   inherited Destroy;
-end;
-
-procedure TJvCustomComboEdit.AdjustSize;
-var
-  MinHeight: Integer;
-begin
-  inherited AdjustSize;
-  if not (csLoading in ComponentState) then
-  begin
-    MinHeight := GetMinHeight;
-    { text edit bug: if size to less than MinHeight, then edit ctrl does
-      not display the text }
-    if Height < MinHeight then
-    begin
-      Height := MinHeight;
-      Exit;
-    end;
-  end
-  else
-  begin
-    if (FPopup <> nil) and (csDesigning in ComponentState) then
-      FPopup.SetBounds(0, Height + 1, 10, 10);
-  end;
-  UpdateMargins;
 end;
 
 procedure TJvCustomComboEdit.DoChange;
@@ -1979,6 +1977,12 @@ begin
   UpdateGroup;
 end;
 
+procedure TJvCustomComboEdit.DoCtl3DChanged;
+begin
+  UpdateMargins;
+  UpdateControls;
+end;
+
 procedure TJvCustomComboEdit.DoEnter;
 begin
   if AutoSelect and not (csLButtonDown in ControlState) then
@@ -1991,7 +1995,6 @@ procedure TJvCustomComboEdit.DoFlatChanged;
 begin
   inherited DoFlatChanged;
   UpdateControls;
-  //UpdateBtnBounds;
   UpdateMargins;
 end;
 {$ENDIF VisualCLX}
@@ -2050,7 +2053,6 @@ procedure TJvCustomComboEdit.FontChanged;
 begin
   inherited FontChanged;
   if HandleAllocated then
-    //SetEditRect;
     UpdateMargins;
 end;
 
@@ -2250,7 +2252,12 @@ procedure TJvCustomComboEdit.Loaded;
 begin
   inherited Loaded;
   if FStreamedButtonWidth >= 0 then
+  begin
     SetButtonWidth(FStreamedButtonWidth);
+    if FStreamedFixedWidth then
+      with FButton do
+        ControlStyle := ControlStyle + [csFixedWidth];
+  end;
 
   UpdateControls;
   UpdateMargins;
@@ -2291,6 +2298,7 @@ begin
 end;
 
 {$IFDEF VisualCLX}
+
 procedure TJvCustomComboEdit.Paint;
 begin
   if Enabled then
@@ -2302,6 +2310,7 @@ begin
       inherited Paint;
   end;
 end;
+
 {$ENDIF VisualCLX}
 
 procedure TJvCustomComboEdit.PopupChange;
@@ -2510,15 +2519,6 @@ begin
   end;
 end;
 
-//procedure TJvCustomComboEdit.SetBounds(ALeft, ATop, AWidth,
-//  AHeight: Integer);
-//begin
-//  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
-//  if HandleAllocated then
-//    //SetEditRect;
-//    UpdateMargins;
-//end;
-
 procedure TJvCustomComboEdit.SetButtonFlat(const Value: Boolean);
 begin
   FButton.Flat := Value;
@@ -2540,7 +2540,10 @@ end;
 procedure TJvCustomComboEdit.SetButtonWidth(Value: Integer);
 begin
   if csLoading in ComponentState then
-    FStreamedButtonWidth := Value
+  begin
+    FStreamedButtonWidth := Value;
+    FStreamedFixedWidth := False;
+  end
   else
   if ButtonWidth <> Value then
   begin
@@ -2563,6 +2566,7 @@ begin
     begin
       FBtnControl.SetBounds(FBtnControl.Left + FBtnControl.Width - Value,
         FBtnControl.Top, Value, FBtnControl.Height);
+      FButton.Width := Value;
       with FButton do
         ControlStyle := ControlStyle - [csFixedWidth];
       if HandleAllocated then
@@ -2611,64 +2615,6 @@ begin
       Invalidate;
   end;
 end;
-
-//procedure TJvCustomComboEdit.SetEditRect;
-//const
-//  CPixelsBetweenEditAndButton = 2;
-//var
-//  Loc: TRect;
-//  LLeft: Integer;
-//  LTop: Integer;
-//  LRight: Integer;
-//begin
-//  AdjustHeight;
-//
-//  LTop := 0;
-//  LLeft := 0;
-//  LRight := 0;
-//
-//  {$IFDEF JVCLThemesEnabled}
-//  { If flat and themes are enabled, move the left edge of the edit rectangle
-//    to the right, otherwise the theme edge paints over the border }
-//  if ThemeServices.ThemesEnabled then
-//  begin
-//    if BorderStyle = bsSingle then
-//    begin
-//      if not Ctl3D then
-//        LLeft := 3
-//      else
-//      begin
-//        LLeft := 1;
-//        LTop := 1;
-//      end;
-//    end;
-//  end;
-//  {$ENDIF JVCLThemesEnabled}
-//
-//  if NewStyleControls and (BorderStyle = bsSingle) then
-//  begin
-//    {$IFDEF VCL}
-//    if Ctl3D then
-//    {$ENDIF VCL}
-//    {$IFDEF VisualCLX}
-//    if not Flat then
-//    {$ENDIF VisualCLX}
-//      LRight := 1
-//    else
-//      LRight := 2;
-//  end;
-//
-//  SetRect(Loc, LLeft, LTop, FBtnControl.Left + LRight - CPixelsBetweenEditAndButton, ClientHeight - 1);
-//  {$IFDEF VCL}
-//  SendMessage(Handle, EM_SETRECTNP, 0, Longint(@Loc));
-//  {$ENDIF VCL}
-//  {$IFDEF VisualCLX}
-//  SetEditorRect(@Loc);
-//  {$ENDIF VisualCLX}
-//
-//  //Polaris
-//  //  SendMessage(Handle, EM_SETMARGINS, EC_RIGHTMARGIN, MakeLong(0, FBtnControl.Width));
-//end;
 
 procedure TJvCustomComboEdit.SetGlyph(Value: TBitmap);
 begin
@@ -2720,11 +2666,21 @@ begin
             ButtonWidth := Max(FButton.Images.Width + 6, FButton.Width)
         end;
       ikDropDown:
+        if csLoading in ComponentState then
         begin
-          { Dropdown has a default width; changing the buttonwidth
-            will remove the csFixedWidth flag.. }
+          if (FStreamedButtonWidth < 0) or FStreamedFixedWidth then
+          begin
+            ButtonWidth := GetSystemMetrics(SM_CXVSCROLL);
+            { Setting ButtonWidth will set FStreamedFixedWidth to False, thus
+              reapply it. }
+            FStreamedFixedWidth := True;
+          end;
+        end
+        else
+        begin
           ButtonWidth := GetSystemMetrics(SM_CXVSCROLL);
-          { ..so reapply it: }
+          { Setting ButtonWidth will remove the csFixedWidth flag, thus
+            reapply it. }
           with FButton do
             ControlStyle := ControlStyle + [csFixedWidth];
         end;
@@ -2832,20 +2788,28 @@ begin
     end
   else
     BtnRect := Bounds(Width - FButton.Width, 0, FButton.Width, Height);
-  //with BtnRect do
-  //  FBtnControl.SetBounds(Left, Top, Right - Left, Bottom - Top);
+
   NewLeft := BtnRect.Left;
   NewTop := BtnRect.Top;
   NewWidth := BtnRect.Right - BtnRect.Left;
   NewHeight := BtnRect.Bottom - BtnRect.Top;
-
-  //FButton.Height := FBtnControl.Height;
-//  SetEditRect;
 end;
 
 procedure TJvCustomComboEdit.UpdateControls;
 begin
   { Notification }
+end;
+
+procedure TJvCustomComboEdit.UpdateGroup;
+var
+  I: Integer;
+begin
+  if (FGroupIndex <> -1) and (Owner <> nil) then
+    for I := 0 to Owner.ComponentCount - 1 do
+      if Owner.Components[I] is TJvCustomComboEdit then
+        with TJvCustomComboEdit(Owner.Components[I]) do
+          if (Name <> Self.Name) and (FGroupIndex = Self.FGroupIndex) then
+            Clear;
 end;
 
 procedure TJvCustomComboEdit.UpdateMargins;
@@ -2862,8 +2826,6 @@ begin
    actual text area.}
 
   AdjustHeight;
-
-  //UpdateControls;
 
   LTop := 0;
   LLeft := 0;
@@ -2914,21 +2876,6 @@ begin
   {$IFDEF VisualCLX}
   SetEditorRect(@Loc);
   {$ENDIF VisualCLX}
-end;
-
-procedure TJvCustomComboEdit.UpdateGroup;
-var
-  I: Integer;
-begin
-  if (FGroupIndex <> -1) and (Owner <> nil) then
-    for I := 0 to Owner.ComponentCount - 1 do
-      if Owner.Components[I] is TJvCustomComboEdit then
-        with TJvCustomComboEdit(Owner.Components[I]) do
-          if (Name <> Self.Name) and
-            //(FGroupIndex <> -1) and
-             (FGroupIndex = Self.FGroupIndex) then
-            //Caption := '';
-            Clear;
 end;
 
 procedure TJvCustomComboEdit.UpdatePopupVisible;
@@ -3641,11 +3588,13 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvCustomDateEdit.WMContextMenu(var Msg: TWMContextMenu);
 begin
   if not PopupVisible then
     inherited;
 end;
+
 {$ENDIF VCL}
 
 //=== TJvDateEdit ============================================================
@@ -4627,29 +4576,6 @@ begin
   Msg.Result := MA_NOACTIVATE;
 end;
 {$ENDIF VCL}
-
-procedure TJvCustomComboEdit.DoCtl3DChanged;
-begin
-  UpdateMargins;
-  UpdateControls;
-end;
-
-//procedure TJvCustomComboEdit.WMWindowPosChanged(
-//  var Message: TWMWindowPosChanged);
-//begin
-//  inherited;
-//  UpdateMargins;
-//end;
-
-{$IFDEF COMPILER6_UP}
-procedure TJvCustomComboEdit.CustomAlignPosition(Control: TControl;
-  var NewLeft, NewTop, NewWidth, NewHeight: Integer; var AlignRect: TRect;
-  AlignInfo: TAlignInfo);
-begin
-  if Control = FBtnControl then
-    UpdateBtnBounds(NewLeft, NewTop, NewWidth, NewHeight);
-end;
-{$ENDIF COMPILER6_UP}
 
 initialization
 
