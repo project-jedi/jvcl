@@ -132,14 +132,7 @@ type
     property OnStartDrag;
   end;
 
-procedure Register;
-
 implementation
-
-procedure Register;
-begin
-  RegisterComponents('habbe', [TJvDBLookupComboEdit]);
-end;
 
 { TJvDBLookupComboEdit }
 
