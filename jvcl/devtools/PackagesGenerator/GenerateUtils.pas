@@ -391,7 +391,7 @@ begin
         expandedTargets.Add('c6p');
       end
       else
-        expandedTargets.Add(targets[i]);
+        expandedTargets.Add(trim(targets[i]));
     end;
 
     // assign the values back into the caller
