@@ -1747,9 +1747,12 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
     );
-initialization
-  RegisterUnitVersion(HInstance, UnitVersioning);
 {$ENDIF UNITVERSIONING}
+
+initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
 
 finalization
   FreeAndNil(GlobalColorSpaceManager);
@@ -1762,4 +1765,3 @@ finalization
   {$ENDIF UNITVERSIONING}
 
 end.
-
