@@ -41,8 +41,7 @@ const
     'DCC  = $(ROOT)\dcc32.exe -Q -W -H -M -$O+' + sLineBreak +
 //    'DCC  = $(ROOT)\dcc32.exe -e$(BIN) -i$(SRCP) -n$(DCU) -r$(SRCP) -u$(SRCP) -q -w -m' + sLineBreak +
     'BRCC = $(ROOT)\brcc32.exe $**' + sLineBreak +
-    '#---------------------------------------------------------------------------------------------------' + sLineBreak +
-    'default: \' + sLineBreak;
+    '#---------------------------------------------------------------------------------------------------' + sLineBreak;
 
 
 procedure ShowHelp;
@@ -89,18 +88,31 @@ begin
   Targets := TStringList.Create;
   try
     List.LoadFromFile(Filename);
-    for i := 0 to List.Count - 1 do
+
+    MkLines.Text := DefaultMakeFile;
+
+    i := 0;
+    while i < List.Count do
     begin
       S := List[i];
       ps := Pos('bpl: ', S);
       if ps <> 0 then
         Targets.Add(Trim(Copy(S, 1, ps + 2)) + '=' + Trim(Copy(S, ps + 5, MaxInt)));
+      if StrLIComp('PROJECTS =', PChar(S), 10) = 0 then
+      begin
+        s := Trim(S);
+        MkLines.Add(S);
+        while (i < List.Count) and (S <> '') and (S[Length(S)] = '\') do
+        begin
+          Inc(i);
+          S := Trim(List[i]);
+          MkLines.Add(#9 + S);
+        end;
+      end;
+      Inc(i);
     end;
-
-    MkLines.Text := DefaultMakeFile;
-    for i := 0 to Targets.Count - 1 do
-      MkLines.Add(#9 + Targets.Names[i] + ' \');
-    MkLines.Add('');
+    MkLines.Add('#---------------------------------------------------------------------------------------------------');
+    MkLines.Add('default: $(PROJECTS)');
     MkLines.Add('#---------------------------------------------------------------------------------------------------');
     MkLines.Add('');
     for i := 0 to Targets.Count - 1 do
