@@ -81,9 +81,10 @@ procedure Register;
 begin
   RegisterComponents('JVCL Globus Components 1', [
     {$IFNDEF DelphiPersonalEdition}
-      TJvgExportDBETable, TJvgDBNAvigator, TJvgPrintCrossTable, TJvgDBGrid,
-      TJvgVertDBSGrid, TJvgGridHeaderControl,
+      TJvgExportDBETable, TJvgDBNavigator, TJvgPrintCrossTable, TJvgDBGrid,
+      TJvgVertDBSGrid, 
     {$ENDIF}
+      TJvgGridHeaderControl,
       TJvgSysInfo, TJvgMaskEdit, TJvgBevel, TJvgBitBtn, TJvgGraphicButton,
       { TJvgGraph, } TJvgTreeView, TJvgCheckTreeView, TJvgSplitter, TJvgShadow,
       TJvgShade, TJvgButton, {TJvgImageGroup, }TJvgProgress, TJvgTransparentMemo,

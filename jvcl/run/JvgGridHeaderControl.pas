@@ -32,7 +32,8 @@ unit JvgGridHeaderControl;
 interface
 
 uses
-  Windows, Classes, comctrls, grids, sysutils, Forms, dbgrids,
+  Windows, Classes, comctrls, grids, sysutils, Forms,
+  {$IFNDEF DelphiPersonalEdition}dbgrids,{$ENDIF}  // Defines added by JGB
   JVCLVer, dialogs;
 
 type
@@ -134,7 +135,12 @@ begin
 
   Col := 0;
   Sect := 0;
+// DEFINE ADDED BY JGB 6-10-2003
+{$IFNDEF DelphiPersonalEdition}
   fIndicator := (Grid is TDBGrid) and (dgIndicator in TDBGrid(g).Options);
+{$ELSE}
+  fIndicator := False;
+{$ENDIF}
   if fIndicator then
     col := 1;
 
