@@ -47,7 +47,7 @@ begin
     ]);
 
   RegisterComponents(SPaletteButton,[
-    TJvBitBtn, TJvImgBtn,
+    TJvBitBtn, TJvImgBtn, TJvSpeedButton,
     TJvCheckBox, TJvRadioButton, TJvRadioGroup,
     TJvUpDown, TJvDomainUpDown,
     TJvControlPanelButton, TJvStartMenuButton, TJvRecentMenuButton, TJvFavoritesButton
@@ -81,7 +81,7 @@ begin
     TJvDrawGrid, TJvStringGrid
     ]);
   RegisterComponents(SPaletteScrollerTracker,[
-    TJvScrollBox, TJvTrackBar
+    TJvScrollBar, TJvScrollBox, TJvTrackBar
     ]);
   RegisterComponents(SPaletteSliderSplitter,[
     TJvxSlider
