@@ -427,7 +427,7 @@ begin
       Perform(CM_FOCUSCHANGED, 0, Longint(ActiveControl));
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    Perform(GetParentForm(Self), CM_FOCUSCHANGED, 0, Longint(GetParentForm(Self).ActiveControl));
+    QWindows.Perform(GetParentForm(Self), CM_FOCUSCHANGED, 0, Longint(GetParentForm(Self).ActiveControl));
     {$ENDIF VisualCLX}
   end;
 end;
@@ -609,9 +609,7 @@ begin
     // clear background.
     Rect := GetClientRect;
     Brush.Color := Self.Color;
-    {$IFDEF VCL}
     FillRect(Rect);
-    {$ENDIF VCL}
     // draw gradient borders.
     if IsSpecialDrawState then
     begin
@@ -757,7 +755,7 @@ begin
 
       // draw caption.
       {$IFDEF VisualCLX}
-      SetPenColor(Handle, Font.Color);
+      SetPainterFont(Handle, Font);
       {$ENDIF VisualCLX}
       SetBkMode(Handle, Transparent);
       JvXPRenderText(Self, Canvas, Caption, Font, Enabled, FShowAccelChar, Rect, Flags);
@@ -860,8 +858,8 @@ begin
     begin
       Bitmap := TBitmap.Create;
       try
-        Bitmap.LoadFromResourceName(hInstance, PChar(Copy(GetEnumName(TypeInfo(TJvXPToolType),
-          Ord(FToolType)), 3, MAXINT)));
+        Bitmap.LoadFromResourceName(hInstance, Copy(GetEnumName(TypeInfo(TJvXPToolType),
+          Ord(FToolType)), 3, MAXINT));
         if (dsClicked in DrawState) and (dsHighlight in DrawState) then
           JvXPColorizeBitmap(Bitmap, clWhite)
         else if not Enabled then
