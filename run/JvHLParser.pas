@@ -491,10 +491,6 @@ begin
 end;
 
 procedure TJvIParser.SetHistorySize(Size: Integer);
-{$IFDEF DEBUG}
-var
-  i: Integer;
-{$ENDIF}
 begin
   while Size > FHistorySize do
   begin
@@ -506,10 +502,6 @@ begin
     FHistory.Delete(0);
     Dec(FHistorySize);
   end;
-  {$IFDEF DEBUG}
-  for i := 0 to FHistorySize - 1 do
-    FHistory[i] := '';
-  {$ENDIF}
   FHistoryPtr := 0;
 end;
 
@@ -858,10 +850,6 @@ begin
 end;
 
 procedure TJvIParserW.SetHistorySize(Size: Integer);
-{$IFDEF DEBUG}
-var
-  i: Integer;
-{$ENDIF}
 begin
   while Size > FHistorySize do
   begin
@@ -873,10 +861,6 @@ begin
     FHistory.Delete(0);
     Dec(FHistorySize);
   end;
-  {$IFDEF DEBUG}
-  for i := 0 to FHistorySize - 1 do
-    FHistory[i] := '';
-  {$ENDIF}
   FHistoryPtr := 0;
 end;
 
