@@ -339,6 +339,8 @@ type
   end;
 
 implementation
+uses
+  Math;
 
 const
   cShadowAlpha = 100;
@@ -916,10 +918,17 @@ begin
 end;
 
 procedure TJvCustomCharMap.SetColumns(const Value: Integer);
+var
+  CurCell:integer;
 begin
   if Value > 0 then
   begin
+    // make sure the previous select character is also the new selected
+    CurCell := Row * ColCount + Col;
     ColCount := Value;
+    // Assert(ColCount >  0);
+    Col := CurCell mod ColCount;
+    Row := CurCell div ColCount;
     RecalcCells;
   end;
 end;
