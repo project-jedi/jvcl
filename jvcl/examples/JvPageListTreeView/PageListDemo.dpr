@@ -2,12 +2,12 @@ program PageListDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {frmMain};
+  JvPageListTreeViewMainForm in 'JvPageListTreeViewMainForm.pas' {JvPageListTreeViewMainFrm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TfrmMain, frmMain);
+  Application.CreateForm(TJvPageListTreeViewMainFrm, JvPageListTreeViewMainFrm);
   Application.Run;
 end.

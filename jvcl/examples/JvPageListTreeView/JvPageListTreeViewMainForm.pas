@@ -24,7 +24,7 @@
 
 ******************************************************************}
 
-unit MainFrm;
+unit JvPageListTreeViewMainForm;
 
 interface
 
@@ -36,7 +36,7 @@ uses
   JvExComCtrls, JvPageList, JvCtrls;
 
 type
-  TfrmMain = class(TForm)
+  TJvPageListTreeViewMainFrm = class(TForm)
     ImageList1: TImageList;
     StatusBar1: TStatusBar;
     Panel1: TPanel;
@@ -129,26 +129,22 @@ type
     ImageList2: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure JvFooterBtn2Click(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 var
-  frmMain: TfrmMain;
+  JvPageListTreeViewMainFrm: TJvPageListTreeViewMainFrm;
 
 implementation
 
 {$R *.dfm}
 
-procedure TfrmMain.FormCreate(Sender: TObject);
+procedure TJvPageListTreeViewMainFrm.FormCreate(Sender: TObject);
 begin
   JvColorComboBox1.InsertColor(0, clBlack, 'Automatic');
   JvColorComboBox2.InsertColor(0, clWhite, 'Automatic');
 end;
 
-procedure TfrmMain.JvFooterBtn2Click(Sender: TObject);
+procedure TJvPageListTreeViewMainFrm.JvFooterBtn2Click(Sender: TObject);
 begin
   Close;
 end;
