@@ -339,14 +339,29 @@ begin
       begin
         if Target.Version = 5 then S := '50' else S := '';
         if (not Force) and (not Build) and CompiledJCL and
-           (CompareFileAge('%s\CJcl%s.dcp', [BplDir, S],
-                          '%s\Jcl-R.xml', [TargetXmlDir]) >= 0) and
-           (CompareFileAge('%s\CJclVcl%s.dcp', [BplDir, S],
-                          '%s\JclVcl-R.xml', [TargetXmlDir]) >= 0) then
-          Continue;
+           FileExists(Format('%s\CJcl%s.dcp', [BplDir, S])) and
+           FileExists(Format('%s\CJclVcl%s.dcp', [BplDir, S])) then
+        begin
+           if (CompareFileAge('%s\CJcl%s.dcp', [BplDir, S],
+                          '%s\CJcl.lib', [DcpDir]) > 0) and
+              (CompareFileAge('%s\CJclVcl%s.dcp', [BplDir, S],
+                          '%s\CJclVcl.lib', [DcpDir]) > 0) then
+              Continue;
+        end;
+
+       // let the compiler rebuild the dcp files
+        DeleteFile(Format('%s\CJcl%s.dcp', [BplDir, S]));
+        DeleteFile(Format('%s\CJclVcl%s.dcp', [BplDir, S]));
+        DeleteFile(Format('%s\CJclVClx%s.dcp', [BplDir, S]));
+
+       // sometimes the files are in the wrong directory 
+        DeleteFile(Format('%s\CJcl%s.dcp', [DcpDir, S]));
+        DeleteFile(Format('%s\CJclVcl%s.dcp', [DcpDir, S]));
+        DeleteFile(Format('%s\CJclVClx%s.dcp', [DcpDir, S]));
       end;
 
       SetEnvironmentVariable('JCLROOT', PChar(Data.TargetConfig[i].JCLDir));
+      SetEnvironmentVariable('DCPDIR', PChar(Data.TargetConfig[i].BplDir)); // not DcpDir!!!
       Args := Format('-f MakeJCLDcp4BCB.mak -DVERSION=%d', [Data.Targets[i].Version]);
 
       DoTargetProgress(Data.TargetConfig[i], 0, 100);
