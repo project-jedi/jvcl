@@ -83,9 +83,7 @@ type
     property MaxWidth: Integer read FMaxWidth write SetMaxWidth default 0;
   end;
 
-  {$IFDEF VCL}
   TJvPanelMoveEvent = procedure(Sender: TObject; X, Y: Integer; var Allow: Boolean) of object;
-  {$ENDIF VCL}
 
   TJvPanel = class(TJvCustomPanel, IJvDenySubClassing)
   private
@@ -105,15 +103,16 @@ type
     FArrangeHeight: Integer;
     FOnResizeParent: TJvPanelResizeParentEvent;
     FOnPaint: TNotifyEvent;
-    {$IFDEF VCL}
     FMovable: Boolean;
     FWasMoved: Boolean;
     FOnAfterMove: TNotifyEvent;
     FOnBeforeMove: TJvPanelMoveEvent;
-    {$ENDIF VCL}
     {$IFDEF VisualCLX}
+    FMoving: Boolean;
     FGripBmp: TBitmap;
     procedure CreateSizeGrip;
+    function GetBorderWidth: integer;
+    function IsInsideGrip(X, Y: integer): boolean;
     {$ENDIF VisualCLX}
     function GetHeight: Integer;
     procedure SetHeight(Value: Integer);
@@ -144,9 +143,9 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     procedure WMExitSizeMove(var Msg: TMessage); message WM_EXITSIZEMOVE;
+    {$ENDIF VCL}
     function DoBeforeMove(X, Y: Integer): Boolean; dynamic;
     procedure DoAfterMove; dynamic;
-    {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure DrawMask(ACanvas: TCanvas); override;
     {$ENDIF VisualCLX}
@@ -170,9 +169,7 @@ type
     {$ENDIF VCL}
     property Canvas;
   published
-    {$IFDEF VCL}
     property Movable: Boolean read FMovable write FMovable default False;
-    {$ENDIF VCL}
     property Sizeable: Boolean read FSizeable write SetSizeable default False;
     property HintColor;
     property HotColor: TColor read FHotColor write SetHotColor default clBtnFace;
@@ -182,10 +179,8 @@ type
     property FlatBorderColor: TColor read FFlatBorderColor write SetFlatBorderColor default clBtnShadow;
     property OnMouseEnter;
     property OnMouseLeave;
-    {$IFDEF VCL}
     property OnBeforeMove: TJvPanelMoveEvent read FOnBeforeMove write FOnBeforeMove;
     property OnAfterMove: TNotifyEvent Read FOnAfterMove write FOnAfterMove;
-    {$ENDIF VCL}
     property OnParentColorChange;
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
 
@@ -454,11 +449,6 @@ begin
   end;
 end;
 
-procedure TJvPanel.DoAfterMove;
-begin
-  if Assigned(FOnAfterMove) then
-    FOnAfterMove(Self);
-end;
 
 procedure TJvPanel.WMExitSizeMove(var Msg: TMessage);
 begin
@@ -467,6 +457,7 @@ begin
     DoAfterMove;
   FWasMoved := False;
 end;
+{$ENDIF VCL}
 
 function TJvPanel.DoBeforeMove(X,Y: Integer): Boolean;
 begin
@@ -474,9 +465,39 @@ begin
   if Assigned(FOnBeforeMove) then
     FOnBeforeMove(Self, X, Y, Result);
 end;
-{$ENDIF VCL}
+
+procedure TJvPanel.DoAfterMove;
+begin
+  if Assigned(FOnAfterMove) then
+    FOnAfterMove(Self);
+end;
+
 
 {$IFDEF VisualCLX}
+function TJvPanel.GetBorderWidth: integer;
+begin
+  if FFlatBorder then
+    Result := 1
+  else
+  begin
+    Result := BorderWidth ; //Total Width of BevelInner and Outer;
+    if BevelOuter <> bvNone then
+      Inc(Result, BevelWidth);
+    if BevelInner <> bvNone then
+      Inc(Result, BevelWidth);
+  end;
+end;
+
+function TJvPanel.IsInsideGrip(X, Y: integer): boolean;
+var
+  R: TRect;
+  I: integer;
+begin
+  I := GetBorderWidth;
+  R := Bounds( Width - 12 - I, Height - 12 - I, 12, 12);
+  Result := QWindows.PtInRect(R, X, Y);
+end;
+
 procedure TJvPanel.DrawMask(ACanvas: TCanvas);
 var
   R: TRect;
@@ -485,14 +506,13 @@ begin
   inherited DrawMask(ACanvas);
   ACanvas.Brush.Style := bsClear;
   ACanvas.Pen.Color := clDontMask;
-  I := 0 ; //BorderWidth;
-  if BevelOuter <> bvNone then
-    Inc(I, BevelWidth);
-  if BevelInner <> bvNone then
-    Inc(I, BevelWidth);
-  ACanvas.Pen.Width := I;
-  R := ClientRect;
-  ACanvas.Rectangle(R);
+  R := Bounds(0, 0, Width, Height);
+  I := GetBorderWidth;
+  for J := 0 to I do
+  begin
+    ACanvas.Rectangle(R);
+    InflateRect(R, -1, -1)
+  end;
   DrawCaptionTo(ACanvas, true);
   if Sizeable then
   begin
@@ -527,7 +547,6 @@ begin
     DrawThemedBackground(Self, Canvas, ClientRect)
   else
     Canvas.Brush.Style := bsClear;
-
   if FFlatBorder then
   begin
     Canvas.Brush.Color := FFlatBorderColor;
@@ -556,11 +575,7 @@ begin
       with Canvas do
       begin
         {$IFDEF VisualCLX}
-        I := 0 ; //BorderWidth;
-        if BevelOuter <> bvNone then
-          Inc(I, BevelWidth);
-        if BevelInner <> bvNone then
-          Inc(I, BevelWidth);
+        I := GetBorderWidth;
         X := ClientWidth - FGripBmp.Width - I;
         Y := ClientHeight - FGripBmp.Height - I;
         Draw(X, Y, FGripBmp);
@@ -740,6 +755,10 @@ begin
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
       Masked := FTransparent;
+      if FTransparent then
+        ControlStyle := ControlStyle - [csOpaque]
+      else
+        ControlStyle := ControlStyle + [csOpaque]
       {$ENDIF VisualCLX}
     end;
   end;
@@ -822,6 +841,7 @@ end;
 procedure TJvPanel.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
+  {$IFDEF VCL}
   if Sizeable and (Button = mbLeft) and ((Width - X) < 12) and ((Height - Y) < 12) then
   begin
     FDragging := True;
@@ -831,6 +851,26 @@ begin
   end
   else
     inherited MouseDown(Button, Shift, X, Y);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  if Sizeable and (Button = mbLeft) and IsInsideGrip(X, Y) then
+  begin
+    FDragging := True;
+    FLastPos := Point(X, Y);
+    MouseCapture := True;
+    Screen.Cursor := crSizeNWSE;
+  end
+  else
+    if FMovable and QWindows.PtInRect(Rect( 5, 5, Width - 5, Height -5), X, Y) and DoBeforeMove( X, Y ) then
+    begin
+      FMoving := True;
+      FLastPos := Point(X, Y);
+      MouseCapture := True;
+      Screen.Cursor := crDrag;
+    end
+    else
+      inherited MouseDown(Button, Shift, X, Y);
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvPanel.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -854,12 +894,29 @@ begin
     end;
   end
   else
-  begin
+  {$IFDEF VCL}
     inherited MouseMove(Shift, X, Y);
-    if Sizeable and ((Width - X) < 12) and ((Height - Y) < 12) then
-      Cursor := crSizeNWSE
+  if Sizeable and ((Width - X) < 12) and ((Height - Y) < 12) then
+    Cursor := crSizeNWSE
+  else
+    Cursor := crDefault;
+  {$ENDIF VCL}
+  begin
+    {$IFDEF VisualCLX}
+    if Movable and FMoving then
+    begin
+      SetBounds(Left + X - FLastPos.X, Top + Y - FLastPos.Y, Width, Height);
+      FWasMoved := true;
+    end
     else
-      Cursor := crDefault;
+    begin
+      inherited MouseMove(Shift, X, Y);
+      if Sizeable and IsInsideGrip(X, Y) then
+        Cursor := crSizeNWSE
+      else
+        Cursor := crDefault;
+    end;
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -873,6 +930,19 @@ begin
     Screen.Cursor := crDefault;
     Refresh;
   end
+  {$IFDEF VisualCLX}
+  else
+  if FMoving and Movable then
+  begin
+    FMoving := False;
+    MouseCapture := False;
+    Screen.Cursor := crDefault;
+    if FWasMoved then
+      DoAfterMove;
+    FWasMoved := False;
+    Refresh;
+  end
+  {$ENDIF VisualCLX}
   else
     inherited MouseUp(Button, Shift, X, Y);
 end;
