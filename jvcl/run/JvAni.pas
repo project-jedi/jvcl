@@ -83,8 +83,10 @@ type
 
 implementation
 
-resourcestring
+const
   RC_AniExtension = 'ani';
+
+resourcestring
   RC_AniFilterName = 'ANI Image';
   SInvalidAnimatedIconImage = 'Animated icon image is not valid';
 
