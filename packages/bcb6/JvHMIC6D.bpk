@@ -7,7 +7,7 @@
     <OBJFILES value="..\..\dcu\JvHMIC6D.obj ..\..\dcu\JvHMIReg.obj 
       ..\..\dcu\JvSegmentedLEDDisplayEditors.obj 
       ..\..\dcu\JvSegmentedLEDDisplayMappingForm.obj"/>
-    <RESFILES value="JvHMIC6D.res ..\..\resources\JvHMIReg.dcr"/>
+    <RESFILES value="JvHMIC6D.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>

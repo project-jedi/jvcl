@@ -1,7 +1,6 @@
 package JvManagedThreadsD7D;
 
 {$R *.res}
-{$R 'JvMtComponentsReg.dcr'}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
