@@ -47,7 +47,8 @@ type
     FPenDown: Boolean;
     FMark: TPoint;
     FArea: TRect;
-    FPot: TStringList;
+    FBackground: string;
+    FFilter: string;
     FScript: string;
     FIP: Integer;
     FIPMax: Integer;
@@ -55,8 +56,7 @@ type
     FNSP: Integer;
     FStack: array of Integer;
     FNStack: array of Integer;
-    FBackground: string;
-    FFilter: string;
+    FVariables: TStringList;
     FAngleMark: Integer;
     FImageRect: TRect;
     FOnRepaintRequest: TNotifyEvent;
@@ -65,7 +65,7 @@ type
     FOnRequestFilter: TRequestFilterEvent;
     function GetToken(var Token: string): Boolean;
     function GetNum(var Num: Integer): Boolean;
-    function InPot(Token: string; var Num: Integer): Boolean;
+    function InVariables(Token: string; var Num: Integer): Boolean;
     function GetTex(var Tex: string): Boolean;
     function GetCol(var Col: TColor): Boolean;
     // function SkipBlock: Boolean;
@@ -213,7 +213,7 @@ type
     procedure Right(AAngle: Real);
     procedure MoveForward(ADistance: Real);
     procedure MoveBackward(ADistance: Real);
-    function Interpret(out APos: Integer; S: string): string;
+    function Interpret(var ALine, ACol: Integer; const S: TStrings): string;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
@@ -261,7 +261,8 @@ uses
 constructor TJvTurtle.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FPot := TStringList.Create;
+  FVariables := TStringList.Create;
+  FVariables.Sorted := True;
   SetLength(FStack, 256);
   SetLength(FNStack, 256);
   txDefault;
@@ -269,7 +270,7 @@ end;
 
 destructor TJvTurtle.Destroy;
 begin
-  FPot.Free;
+  FVariables.Free;
   inherited Destroy;
 end;
 
@@ -650,19 +651,13 @@ begin
       end;
 end;
 
-function TJvTurtle.InPot(Token: string; var Num: Integer): Boolean;
+function TJvTurtle.InVariables(Token: string; var Num: Integer): Boolean;
 var
-  S: string;
+  N: Integer;
 begin
-  Result := False;
-  S := FPot.Values[Token];
-  if S <> '' then
-    try
-      Num := StrToInt(S);
-      Result := True;
-    except
-      Result := False;
-    end;
+  Result := FVariables.Find(Token, N);
+  if Result then
+    Num := Integer(FVariables.Objects[N]);
 end;
 
 function TJvTurtle.GetNum(var Num: Integer): Boolean;
@@ -674,7 +669,7 @@ begin
     if Token = '=' then
       Result := NPop(Msg, Num)
     else
-    if InPot(Token, Num) then
+    if InVariables(Token, Num) then
       Result := True
     else
       try
@@ -706,15 +701,18 @@ begin
 end;
 
 function TJvTurtle.GetToken(var Token: string): Boolean;
+const
+  Delimiters = [' ', Tab, Cr, Lf];
 begin
   Token := '';
-  while (FIP <= FIPMax) and (FScript[FIP] = ' ') do
+  while (FIP <= FIPMax) and (FScript[FIP] in Delimiters) do
     Inc(FIP);
-  while (FIP <= FIPMax) and (FScript[FIP] <> ' ') do
+  while (FIP <= FIPMax) and not (FScript[FIP] in Delimiters) do
   begin
     Token := Token + FScript[FIP];
     Inc(FIP);
   end;
+  Token := LowerCase(Token);
   Result := Token <> '';
 end;
 
@@ -726,29 +724,46 @@ begin
     Result := 1;
 end;
 
-function TJvTurtle.Interpret(out APos: Integer; S: string): string;
+function TJvTurtle.Interpret(var ALine, ACol: Integer; const S: TStrings): string;
 var
+  I: Integer;
   Msg: string;
 begin
+  ALine := 0;
+  ACol := 0;
   Result := sErrorCanvasNotAssigned;
   if not Assigned(FCanvas) then
     Exit;
   txDefault;
-  S := StringReplace(S, Tab, ' ', [rfReplaceAll]);
-  S := StringReplace(S, Cr,  ' ', [rfReplaceAll]);
-  S := StringReplace(S, Lf,  ' ', [rfReplaceAll]);
-  FScript := S;
+  FScript := S.Text;
   FSP := 0;
   FIP := 1;
   FIPMax := Length(FScript);
   if FIPMax > 0 then
   begin
-    FPot.Clear;
+    FVariables.Clear;
     repeat
       Msg := DoCom;
     until Msg <> '';
     Result := Msg;
-    APos := FIP;
+    ALine := 0;
+    ACol := 0;
+    for I := 1 to FIP-1 do
+    begin
+      Inc(ACol);
+      if (FScript[I] = Cr) or (FScript[I] = Lf) then
+      begin
+        Inc(ALine);
+        ACol := 0;
+      end;
+      if (I > 1) and (FScript[I] = Lf) and (FScript[I-1] = Cr) then
+      begin
+        Dec(ALine);
+        Dec(ACol);
+      end;
+    end;
+    if ACol < 0 then
+      ACol := 0;
   end
   else
     Result := sEmptyScript;
@@ -1066,7 +1081,7 @@ begin
   Result := sInvalidCopyMode;
   if GetToken(S) then
   begin
-    S := 'cm' + LowerCase(S);
+    S := 'cm' + S;
     if StrToCopyMode(CopyMode, S) then
     begin
       Canvas.CopyMode := CopyMode;
@@ -1181,7 +1196,7 @@ begin
   Result := sInvalidPenMode;
   if GetToken(S) then
   begin
-    S := 'pm' + LowerCase(S);
+    S := 'pm' + S;
     if StrToPenMode(PenMode, S) then
     begin
       Canvas.Pen.Mode := PenMode;
@@ -2168,14 +2183,14 @@ function TJvTurtle.txIn: string;
 var
   Token: string;
   Num: Integer;
+  N: Integer;
 begin
   if NPop(Result, Num) then
     if GetToken(Token) then
     begin
-      if FPot.IndexOfName(Token) < 0 then
-        FPot.Add(Token + '=' + IntToStr(Num))
-      else
-        FPot.Values[Token] := IntToStr(Num);
+      if not FVariables.Find(Token, N) then
+        N := FVariables.Add(Token);
+      FVariables.Objects[N] := TObject(Num);
       Result := '';
     end
     else
@@ -2184,73 +2199,25 @@ end;
 
 function TJvTurtle.IsVar(Tex: string): Boolean;
 var
-  Num: Integer;
-  Msg, S: string;
+  N: Integer;
+  Msg: string;
 begin
-  S := FPot.Values[Tex];
-  if S <> '' then
-    try
-      Num := StrToInt(S);
-      Result := NPush(Msg, Num);
-    except
-      Result := False;
-    end
-  else
-    Result := False;
+  Result := FVariables.Find(Tex, N);
+  if Result then
+    Result := NPush(Msg, Integer(FVariables.Objects[N]));
 end;
 
 function TJvTurtle.txInAdd: string;
 var
   Token: string;
-  Index, Num: Integer;
+  N, Num: Integer;
 begin
   if NPop(Result, Num) then
     if GetToken(Token) then
     begin
-      Index := FPot.IndexOfName(Token);
-      if Index >= 0 then
+      if FVariables.Find(Token, N) then
       begin
-        FPot.Values[Token] := IntToStr(StrToInt(FPot.Values[Token]) + Num);
-        Result := '';
-      end
-      else
-        Result := Format(ssDoesNotExist, [Token]);
-    end
-    else
-      Result := sTokenExpected;
-end;
-
-function TJvTurtle.txInDiv: string;
-var
-  Token: string;
-  Num: Integer;
-begin
-  if NPop(Result, Num) then
-    if GetToken(Token) then
-    begin
-      if FPot.IndexOfName(Token) >= 0 then
-      begin
-        FPot.Values[Token] := IntToStr(StrToInt(FPot.Values[Token]) - Num);
-        Result := '';
-      end
-      else
-        Result := Format(ssDoesNotExist, [Token]);
-    end
-    else
-      Result := sTokenExpected;
-end;
-
-function TJvTurtle.txInMult: string;
-var
-  Token: string;
-  Num: Integer;
-begin
-  if NPop(Result, Num) then
-    if GetToken(Token) then
-    begin
-      if FPot.IndexOfName(Token) >= 0 then
-      begin
-        FPot.Values[Token] := IntToStr(StrToInt(FPot.Values[Token]) * Num);
+        FVariables.Objects[N] := TObject(Integer(FVariables.Objects[N]) + Num);
         Result := '';
       end
       else
@@ -2263,18 +2230,14 @@ end;
 function TJvTurtle.txInSub: string;
 var
   Token: string;
-  Num: Integer;
+  N, Num: Integer;
 begin
   if NPop(Result, Num) then
-  begin
-    if Num = 0 then
-      Result := sDivisionByZeroNotAllowedInIn
-    else
     if GetToken(Token) then
     begin
-      if FPot.IndexOfName(Token) >= 0 then
+      if FVariables.Find(Token, N) then
       begin
-        FPot.Values[Token] := IntToStr(StrToInt(FPot.Values[Token]) div Num);
+        FVariables.Objects[N] := TObject(Integer(FVariables.Objects[N]) - Num);
         Result := '';
       end
       else
@@ -2282,18 +2245,61 @@ begin
     end
     else
       Result := sTokenExpected;
-  end;
+end;
+
+function TJvTurtle.txInMult: string;
+var
+  Token: string;
+  N, Num: Integer;
+begin
+  if NPop(Result, Num) then
+    if GetToken(Token) then
+    begin
+      if FVariables.Find(Token, N) then
+      begin
+        FVariables.Objects[N] := TObject(Integer(FVariables.Objects[N]) * Num);
+        Result := '';
+      end
+      else
+        Result := Format(ssDoesNotExist, [Token]);
+    end
+    else
+      Result := sTokenExpected;
+end;
+
+function TJvTurtle.txInDiv: string;
+var
+  Token: string;
+  N, Num: Integer;
+begin
+  if NPop(Result, Num) then
+    if Num = 0 then
+      Result := sDivisionByZeroNotAllowedInIn
+    else
+    if GetToken(Token) then
+    begin
+      if FVariables.Find(Token, N) then
+      begin
+        FVariables.Objects[N] := TObject(Integer(FVariables.Objects[N]) div Num);
+        Result := '';
+      end
+      else
+        Result := Format(ssDoesNotExist, [Token]);
+    end
+    else
+      Result := sTokenExpected;
 end;
 
 function TJvTurtle.txInDec: string;
 var
   Token: string;
+  N: Integer;
 begin
   if GetToken(Token) then
   begin
-    if FPot.IndexOfName(Token) >= 0 then
+    if FVariables.Find(Token, N) then
     begin
-      FPot.Values[Token] := IntToStr(StrToInt(FPot.Values[Token]) - 1);
+      FVariables.Objects[N] := TObject(Integer(FVariables.Objects[N]) - 1);
       Result := '';
     end
     else
@@ -2306,12 +2312,13 @@ end;
 function TJvTurtle.txInInc: string;
 var
   Token: string;
+  N: Integer;
 begin
   if GetToken(Token) then
   begin
-    if FPot.IndexOfName(Token) >= 0 then
+    if FVariables.Find(Token, N) then
     begin
-      FPot.Values[Token] := IntToStr(StrToInt(FPot.Values[Token]) + 1);
+      FVariables.Objects[N] := TObject(Integer(FVariables.Objects[N]) + 1);
       Result := '';
     end
     else
