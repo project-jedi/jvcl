@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvEDI" Design="0">
+  <Description>JVCL EDI Components</Description>
+  <C5PFlags>-LUvcl50 -LUvcldb50 -LUCJcl50</C5PFlags>
+  <C6PFlags>-LUCJcl</C6PFlags>
+  <C5Libs/>
+  <C6Libs/>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="D6, D7" Condition=""/>
+    <Package Name="vcl" Targets="D6, D7" Condition=""/>
+    <Package Name="vcldb50" Targets="D5" Condition=""/>
+    <Package Name="vcl50" Targets="D5" Condition=""/>
+    <Package Name="dbrtl" Targets="D6, D7" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvEDIDBBuffering.pas" Targets="all" Formname="" Condition=""/>
+  </Contains>
+</Package>

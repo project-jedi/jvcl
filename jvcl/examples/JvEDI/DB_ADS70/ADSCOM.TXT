@@ -1,0 +1,228 @@
+     4.196   1308  WIN32     32-bit Windows comm dll version :  6.2
+     9.255   1308  Special Build : 
+    13.375   1308  WSCOMM32  Winsock 32-bit dll
+    17.480   1308  Start ____axCommInit____
+    23.099   1308  End ____axCommInit____SUCCESS
+    28.716   1308  Start ____axConnect60____
+    32.988   1308  	axConnect60 - pucServerName : ABITBE6
+    37.389   1308  axConnect60 - Connection Type : 2	Hex: 0x00000002
+    44.500   1308  	axConnect60 - !usFoundViaWS
+    49.187   1308  Start ____WSFindAdvantage____
+    53.914   1308  ____Start OpenAndBindSocket IPX Socket____
+    58.640   1308  socket creation FAILED
+    63.396   1308  ____MapWinsockRetCode____
+    68.240   1308  WSAGetLastError : 10047	Hex: 0x0000273F
+    73.145   1308  	WSFindAdvantage - IPX OpenAndBindSocket FAILED -- NO SAPPING will occur : 6409	Hex: 0x00001909
+    78.114   1308  Start ____GetRemoteAddress____
+    83.196   1308  Start ____GetAddressFromINI____
+    90.289   1308  Start ____ServerNameHasAddr____  : ABITBE6
+    95.486   1308  End ____ServerNameHasAddr____ Server name does not have a port value
+   102.058   1308  GetAddressFromINI - pstSin->sin_port == 0 
+   109.139   1700  Start ____MailSlotDiscoveryThread____
+   115.269   1700  MailSlotDiscoveryThread - CreateMailslot SUCCEEDED : 203	Hex: 0x000000CB
+   121.098   640  Start ____MulticastDiscoveryThread____
+   482.569   640  	MulticastDiscoveryThread - sendto SUCCEEDED
+   488.181   640  	MulticastDiscoveryThread - recvfrom FAILED
+   497.349   1700  MailSlotDiscoveryThread - WriteFile on mailslot SUCCEEDED
+   503.103   640  	MulticastDiscoveryThread - recvfrom FAILED
+   509.022   640  	MulticastDiscoveryThread - recvfrom FAILED
+   515.040   640  	MulticastDiscoveryThread - recvfrom FAILED
+   521.069   640  	MulticastDiscoveryThread - recvfrom FAILED
+   528.049   640  	MulticastDiscoveryThread - recvfrom FAILED
+   534.132   640  	MulticastDiscoveryThread - recvfrom FAILED
+   541.095   640  	MulticastDiscoveryThread - recvfrom FAILED
+   548.114   640  	MulticastDiscoveryThread - recvfrom FAILED
+   555.131   640  	MulticastDiscoveryThread - recvfrom FAILED
+   564.178   640  	MulticastDiscoveryThread - recvfrom FAILED
+   571.186   640  	MulticastDiscoveryThread - recvfrom FAILED
+   578.214   640  	MulticastDiscoveryThread - recvfrom FAILED
+   585.234   640  	MulticastDiscoveryThread - recvfrom FAILED
+   592.325   640  	MulticastDiscoveryThread - recvfrom FAILED
+   599.306   640  	MulticastDiscoveryThread - recvfrom FAILED
+   609.317   640  	MulticastDiscoveryThread - recvfrom FAILED
+   616.362   640  	MulticastDiscoveryThread - recvfrom FAILED
+   625.378   640  	MulticastDiscoveryThread - recvfrom FAILED
+   632.422   640  	MulticastDiscoveryThread - recvfrom FAILED
+   639.439   640  	MulticastDiscoveryThread - recvfrom FAILED
+   649.456   640  	MulticastDiscoveryThread - recvfrom FAILED
+   657.460   640  	MulticastDiscoveryThread - recvfrom FAILED
+   665.481   640  	MulticastDiscoveryThread - recvfrom FAILED
+   673.513   640  	MulticastDiscoveryThread - recvfrom FAILED
+   681.533   640  	MulticastDiscoveryThread - recvfrom FAILED
+   689.561   640  	MulticastDiscoveryThread - recvfrom FAILED
+   697.594   640  	MulticastDiscoveryThread - recvfrom FAILED
+   705.615   640  	MulticastDiscoveryThread - recvfrom FAILED
+   713.641   640  	MulticastDiscoveryThread - recvfrom FAILED
+   721.670   640  	MulticastDiscoveryThread - recvfrom FAILED
+   729.707   640  	MulticastDiscoveryThread - recvfrom FAILED
+   737.742   640  	MulticastDiscoveryThread - recvfrom FAILED
+   745.780   640  	MulticastDiscoveryThread - recvfrom FAILED
+   753.806   640  	MulticastDiscoveryThread - recvfrom FAILED
+   763.771   640  	MulticastDiscoveryThread - recvfrom FAILED
+   771.863   640  	MulticastDiscoveryThread - recvfrom FAILED
+   781.149   640  	MulticastDiscoveryThread - recvfrom FAILED
+   790.898   640  	MulticastDiscoveryThread - recvfrom FAILED
+   799.918   640  	MulticastDiscoveryThread - recvfrom FAILED
+   808.953   640  	MulticastDiscoveryThread - recvfrom FAILED
+   820.984   640  	MulticastDiscoveryThread - recvfrom FAILED
+   833.238   640  	MulticastDiscoveryThread - sendto SUCCEEDED
+   843.501   640  	MulticastDiscoveryThread - recvfrom FAILED
+   854.113   640  	MulticastDiscoveryThread - recvfrom FAILED
+   865.142   640  	MulticastDiscoveryThread - recvfrom FAILED
+   875.948   1700  MailSlotDiscoveryThread - WriteFile on mailslot SUCCEEDED
+   886.100   640  	MulticastDiscoveryThread - recvfrom FAILED
+   897.231   640  	MulticastDiscoveryThread - recvfrom FAILED
+   908.284   640  	MulticastDiscoveryThread - recvfrom FAILED
+   919.296   640  	MulticastDiscoveryThread - recvfrom FAILED
+   930.325   640  	MulticastDiscoveryThread - recvfrom FAILED
+   941.436   640  	MulticastDiscoveryThread - recvfrom FAILED
+   952.402   640  	MulticastDiscoveryThread - recvfrom FAILED
+   965.477   640  	MulticastDiscoveryThread - recvfrom FAILED
+   976.480   640  	MulticastDiscoveryThread - recvfrom FAILED
+   987.538   640  	MulticastDiscoveryThread - recvfrom FAILED
+   998.560   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1009.589   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1020.615   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1031.651   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1042.700   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1053.753   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1064.761   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1075.809   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1086.825   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1097.875   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1108.943   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1119.938   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1130.970   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1142.005   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1153.049   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1167.057   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1180.335   640  	MulticastDiscoveryThread - sendto SUCCEEDED
+  1190.626   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1201.229   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1212.240   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1223.266   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1234.066   1700  MailSlotDiscoveryThread - WriteFile on mailslot SUCCEEDED
+  1244.545   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1257.406   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1268.463   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1279.446   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1290.474   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1301.510   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1312.552   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1323.583   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1334.620   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1345.682   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1356.707   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1369.738   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1380.764   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1391.813   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1402.838   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1413.906   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1424.909   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1435.940   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1447.042   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1458.042   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1469.045   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1480.085   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1491.120   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1502.152   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1513.238   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1524.228   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1536.468   640  	MulticastDiscoveryThread - sendto SUCCEEDED
+  1547.771   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1558.359   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1571.377   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1582.413   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1593.310   1700  MailSlotDiscoveryThread - WriteFile on mailslot SUCCEEDED
+  1603.662   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1614.533   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1625.554   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1636.586   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1647.697   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1658.656   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1669.694   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1680.754   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1693.768   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1704.813   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1715.843   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1726.908   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1737.923   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1748.953   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1760.022   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1773.021   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1784.048   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1796.123   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1807.125   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1818.181   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1829.202   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1840.279   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1853.361   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1864.311   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1875.350   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1887.591   640  	MulticastDiscoveryThread - sendto SUCCEEDED
+  1897.801   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1908.493   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1919.493   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1930.563   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1941.633   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1952.779   1700  MailSlotDiscoveryThread - WriteFile on mailslot SUCCEEDED
+  1965.073   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1975.691   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1986.698   640  	MulticastDiscoveryThread - recvfrom FAILED
+  1997.733   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2008.787   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2019.809   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2032.086   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2042.891   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2054.926   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2065.975   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2076.992   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2088.021   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2099.082   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2110.095   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2121.140   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2132.197   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2143.199   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2154.248   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2167.279   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2179.354   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2190.347   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2201.409   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2214.277   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2225.468   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2237.710   640  	MulticastDiscoveryThread - sendto SUCCEEDED
+  2248.042   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2258.600   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2270.605   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2281.635   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2292.671   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2304.321   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2314.558   1700  MailSlotDiscoveryThread - WriteFile on mailslot SUCCEEDED
+  2325.802   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2336.851   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2347.879   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2358.897   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2371.933   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2382.965   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2394.004   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2405.034   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2416.067   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2427.109   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2438.139   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2449.176   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2462.242   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2473.256   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2484.639   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2495.333   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2506.351   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2517.388   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2528.433   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2539.470   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2550.577   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2563.385   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2574.580   640  	MulticastDiscoveryThread - recvfrom FAILED
+  2586.747   640  MulticastDiscoveryThread____FAILED
+  2662.014   1700  MailSlotDiscoveryThread____FAILED
+  2673.090   1308  GetRemoteAddress____FAILED
+  2683.234   1308  	WSFindAdvantage - GetRemoteAddress FAILED or ucFoundAdsAddr(0 means mailslot or multicast found ADS address) : 6420	Hex: 0x00001914
+  2693.487   1308  axConnect60 - WSFindAdvantage FAILED : 6420	Hex: 0x00001914
