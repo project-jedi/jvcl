@@ -178,8 +178,6 @@ procedure AssociateExtension(IconPath, ProgramName, Path, Extension: string);
 
 function GetRecentDocs: TStringList;
 procedure AddToRecentDocs(const Filename: string);
-// create a region from a bitmap
-function RegionFromBitmap(const Image: TBitmap): HRGN;
 
 // returns a list of all windows currently visible, the Objects property is filled with their window handle
 procedure GetVisibleWindows(List: Tstrings);
@@ -759,7 +757,7 @@ uses
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF}
-  JclSysInfo,  JclGraphics,
+  JclSysInfo, 
   JvConsts, JvJCLUtils, JvProgressUtils;
 
 resourcestring
@@ -1721,13 +1719,6 @@ end;
 procedure AddToRecentDocs(const Filename: string);
 begin
   SHAddToRecentDocs(SHARD_PATH, PChar(Filename));
-end;
-
-function RegionFromBitmap(const Image: TBitmap): HRGN;
-begin
-  Result := 0;
-  if Assigned(Image) and not Image.Empty then
-    Result := CreateRegionFromBitmap(Image, Image.Canvas.Pixels[0, 0], rmExclude);
 end;
 
 function EnumWindowsProc(Handle: THandle; lParam: TStrings): Boolean; stdcall;

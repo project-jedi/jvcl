@@ -60,7 +60,15 @@ type
 implementation
 
 uses
-  JvJVCLUtils;
+  JclGraphics;
+
+// create a region from a bitmap
+function RegionFromBitmap(const Image: TBitmap): HRGN;
+begin
+  Result := 0;
+  if Assigned(Image) and not Image.Empty then
+    Result := CreateRegionFromBitmap(Image, Image.Canvas.Pixels[0, 0], rmExclude);
+end;
 
 constructor TJvTransparentForm.Create(AOwner: TComponent);
 begin
