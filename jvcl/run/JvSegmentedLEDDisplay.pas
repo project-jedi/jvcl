@@ -107,6 +107,7 @@ type
     procedure UpdateText;
     procedure UpdateBounds;
 
+    property AutoSize default True;
     property CharacterMapper: TJvBaseSegmentedLEDCharacterMapper read FCharacterMapper
       write SetCharacterMapper;
     property DigitClass: TJvSegmentedLEDDigitClass read FDigitClass write SetDigitClass;
@@ -153,6 +154,9 @@ type
   public
     property DigitClass;
   published
+    property Align;
+    property Anchors;
+    property AutoSize;
     property Color;
     property CharacterMapper;
     property DigitClassName;
@@ -161,6 +165,7 @@ type
     property DigitSpacing;
     property DigitWidth;
     property DotSize;
+    property ParentColor;
     property SegmentLitColor;
     property SegmentSpacing;
     property SegmentThickness;
@@ -353,7 +358,7 @@ procedure UnregisterModuleSegmentedLEDDigitClasses(Module: HMODULE);
 implementation
 
 uses
-  SysUtils,
+  Controls, SysUtils,
   JclGraphUtils;
 
 var
@@ -494,7 +499,8 @@ begin
     if MaxHeight = 0 then
       MaxHeight := 13;
     // Adjust control height
-    if ClientHeight <> MaxHeight then
+    if AutoSize and not (Align in [alLeft, alRight, alClient]) and
+      (Anchors * [akTop, akBottom] <> [akTop, akBottom]) and (ClientHeight <> MaxHeight) then
       ClientHeight := MaxHeight;
     InvalidateView;
   end;
@@ -705,7 +711,8 @@ begin
   if MaxHeight = 0 then
     MaxHeight := 13;
   // Adjust control height
-  if ClientHeight <> MaxHeight then
+  if AutoSize and not (Align in [alLeft, alRight, alClient]) and
+    (Anchors * [akTop, akBottom] <> [akTop, akBottom]) and (ClientHeight <> MaxHeight) then
   begin
     InvalidateView;
     ClientHeight := MaxHeight;
@@ -724,7 +731,8 @@ begin
   if MaxHeight = 0 then
     MaxHeight := 13;
   // Adjust control height
-  if ClientHeight <> MaxHeight then
+  if AutoSize and not (Align in [alLeft, alRight, alClient]) and
+    (Anchors * [akTop, akBottom] <> [akTop, akBottom]) and (ClientHeight <> MaxHeight) then
   begin
     InvalidateView;
     ClientHeight := MaxHeight;
@@ -746,7 +754,8 @@ begin
       Inc(X, Digits[I].Width + DigitSpacing);
     end;
     Dec(X, DigitSpacing);
-    if ClientWidth <> X then
+    if AutoSize and not (Align in [alTop, alBottom, alClient]) and
+      (Anchors * [akLeft, akRight] <> [akLeft, akRight]) and (ClientWidth <> X) then
       ClientWidth := X;
     InvalidateView;
   end;
@@ -784,6 +793,7 @@ end;
 constructor TJvCustomSegmentedLEDDisplay.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  AutoSize := True;
   FDigitClass := TJv7SegmentedLEDDigit;
   FDigits := TJvSegmentedLEDDigits.Create(Self);
   FDigitHeight := 30;
