@@ -99,7 +99,9 @@ const
   fclRGBLime  = TJvFullColor((Ord(csRGB) shl 24) or $00FF00);
   fclRGBBlue  = TJvFullColor((Ord(csRGB) shl 24) or $FF0000);
 
-  fclDEFWindowText = TJvFullColor((Ord(csDEF) shl 24) or COLOR_WINDOWTEXT);
+  fclDEFWindowText = TJvFullColor(   (Ord(csDEF) shl 24)
+                                  or JvSystemFullColorMask
+                                  or COLOR_WINDOWTEXT);
 
 type
   TJvColorSpace = class(TPersistent)
