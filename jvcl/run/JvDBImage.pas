@@ -94,7 +94,6 @@ SUPPORT FOR TDBCtrlGrid:
    You can safely put an TJvDBImage in TDBCtrlGrid.
 }
 
-
 unit JvDBImage;
 
 interface
@@ -109,19 +108,19 @@ type
 
   TJvDBImage = class(TDBImage)
   private
-    FAutoDisplay: boolean;
+    FAutoDisplay: Boolean;
     FDataLink: TFieldDataLink;
     FOldPictureChange: TNotifyEvent;
-    FPictureLoaded: boolean;
+    FPictureLoaded: Boolean;
     FProportional: Boolean;
     FOnGetGraphicClass: TJvGetGraphicClassEvent;
-    FTransparent: boolean;
-    procedure SetAutoDisplay(Value: boolean);
+    FTransparent: Boolean;
+    procedure SetAutoDisplay(Value: Boolean);
     procedure SetProportional(Value: Boolean);
     procedure DataChange(Sender: TObject);
     procedure PictureChanged(Sender: TObject);
     procedure UpdateData(Sender: TObject);
-    procedure SetTransparent(const Value: boolean);
+    procedure SetTransparent(const Value: Boolean);
   protected
     procedure CreateHandle; override;
     procedure CheckFieldType;
@@ -139,21 +138,21 @@ type
     procedure PasteFromClipboard;
   published
     property AutoSize;
-    property AutoDisplay: boolean read FAutoDisplay write SetAutoDisplay default True;
+    property AutoDisplay: Boolean read FAutoDisplay write SetAutoDisplay default True;
     property Proportional: Boolean read FProportional write SetProportional default False;
-    property Transparent:boolean read FTransparent write SetTransparent default False;
+    property Transparent: Boolean read FTransparent write SetTransparent default False;
 
     property OnGetGraphicClass: TJvGetGraphicClassEvent read FOnGetGraphicClass write FOnGetGraphicClass;
   end;
 
 procedure RegisterGraphicSignature(ASignature: string; AOffset: Integer;
   AGraphicClass: TGraphicClass); overload;
-procedure RegisterGraphicSignature(ASignature: array of byte;
+procedure RegisterGraphicSignature(ASignature: array of Byte;
   AOffset: Integer; AGraphicClass: TGraphicClass); overload;
 
 procedure UnregisterGraphicSignature(AGraphicClass: TGraphicClass); overload;
 procedure UnregisterGraphicSignature(ASignature: string; AOffset: Integer); overload;
-procedure UnregisterGraphicSignature(ASignature: array of byte;
+procedure UnregisterGraphicSignature(ASignature: array of Byte;
   AOffset: Integer); overload;
 
 function GetGraphicClass(Stream: TStream): TGraphicClass;
@@ -165,6 +164,8 @@ uses
   DBConsts, jpeg, SysUtils,
   JvResources;
 
+//=== TGraphicSignature ======================================================
+
 // Code to manage graphic's signatures.
 type
   TGraphicSignature = class(TObject)
@@ -174,7 +175,7 @@ type
     GraphicClass: TGraphicClass;
     constructor Create(ASignature: string; AOffset: Integer;
       AGraphicClass: TGraphicClass);
-    function IsThisSignature(Stream: TStream): boolean;
+    function IsThisSignature(Stream: TStream): Boolean;
   end;
 
 constructor TGraphicSignature.Create(ASignature: string; AOffset: Integer;
@@ -186,7 +187,7 @@ begin
   GraphicClass := AGraphicClass;
 end;
 
-function TGraphicSignature.IsThisSignature(Stream: TStream): boolean;
+function TGraphicSignature.IsThisSignature(Stream: TStream): Boolean;
 var
   Buffer: string;
   Count: Integer;
@@ -224,7 +225,7 @@ begin
   end;
 end;
 
-procedure RegisterGraphicSignature(ASignature: array of byte;
+procedure RegisterGraphicSignature(ASignature: array of Byte;
   AOffset: Integer; AGraphicClass: TGraphicClass);
 var
   Signature: string;
@@ -261,7 +262,7 @@ begin
         Inc(I);
 end;
 
-procedure UnregisterGraphicSignature(ASignature: array of byte; AOffset: Integer);
+procedure UnregisterGraphicSignature(ASignature: array of Byte; AOffset: Integer);
 var
   Signature: string;
   I: Integer;
@@ -275,22 +276,24 @@ end;
 function GetGraphicClass(Stream: TStream): TGraphicClass;
 var
   I: Integer;
-  s: TGraphicSignature;
+  S: TGraphicSignature;
 begin
   Result := nil;
   I := 0;
   while (Result = nil) and (I < GraphicSignatures.Count) do
   begin
-    s := TGraphicSignature(GraphicSignatures[I]);
-    if s.IsThisSignature(Stream) then
-      Result := s.GraphicClass;
+    S := TGraphicSignature(GraphicSignatures[I]);
+    if S.IsThisSignature(Stream) then
+      Result := S.GraphicClass;
     Inc(I);
   end;
 end;
 
+//=== TJvDBImage =============================================================
+
 constructor TJvDBImage.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   // we cannot use the inherited AutoDisplay - it raises an "Invalid Bitmap" if
   // the first record in a table is an image type not supported by TDBImage
   inherited AutoDisplay := False;
@@ -320,7 +323,7 @@ end;
 
 procedure TJvDBImage.CreateHandle;
 begin
-  inherited;
+  inherited CreateHandle;
   if FDataLink = nil then
   begin
     // (p3) get a pointer to the datalink (it is private in TDBImage):
@@ -330,7 +333,10 @@ begin
       FDataLink.OnDataChange := DataChange;
       FDataLink.OnUpdateData := UpdateData;
       // (p3) it is now safe to call LoadPicture because we have control over the datalink:
-      if FAutoDisplay then LoadPicture else Invalidate;
+      if FAutoDisplay then
+        LoadPicture
+      else
+        Invalidate;
     end;
   end;
 end;
@@ -398,7 +404,7 @@ end;
 
 function TJvDBImage.DestRect(W, H, CW, CH: Integer): TRect;
 var
-  xyaspect: Double;
+  XYAspect: Double;
 begin
   if AutoSize then
   begin
@@ -409,25 +415,25 @@ begin
   begin
     if Proportional and (W > 0) and (H > 0) then
     begin
-      xyaspect := W / H;
+      XYAspect := W / H;
       if W > H then
       begin
         W := CW;
-        H := Trunc(CW / xyaspect);
+        H := Trunc(CW / XYAspect);
         if H > CH then // woops, too big
         begin
           H := CH;
-          W := Trunc(CH * xyaspect);
+          W := Trunc(CH * XYAspect);
         end;
       end
       else
       begin
         H := CH;
-        W := Trunc(CH * xyaspect);
+        W := Trunc(CH * XYAspect);
         if W > CW then // woops, too big
         begin
           W := CW;
-          H := Trunc(CW / xyaspect);
+          H := Trunc(CW / XYAspect);
         end;
       end;
     end
@@ -543,7 +549,7 @@ begin
   CheckFieldType;
 
   // If there is no graphic just clear field and exit
-  if (Picture.Graphic = nil) then
+  if Picture.Graphic = nil then
   begin
     Field.Clear;
     Exit;
@@ -559,12 +565,13 @@ begin
   end;
 end;
 
-procedure TJvDBImage.SetAutoDisplay(Value: boolean);
+procedure TJvDBImage.SetAutoDisplay(Value: Boolean);
 begin
   if FAutoDisplay <> Value then
   begin
     FAutoDisplay := Value;
-    if Value then LoadPicture;
+    if Value then
+      LoadPicture;
   end;
 end;
 
@@ -574,10 +581,12 @@ begin
   begin
     if Clipboard.HasFormat(CF_BITMAP) then
       Picture.Bitmap.Assign(Clipboard)
-    else if Clipboard.HasFormat(CF_METAFILEPICT) or
+    else
+    if Clipboard.HasFormat(CF_METAFILEPICT) or
       Clipboard.HasFormat(CF_ENHMETAFILE) then
       Picture.Metafile.Assign(Clipboard)
-    else if Clipboard.HasFormat(CF_PICTURE) then
+    else
+    if Clipboard.HasFormat(CF_PICTURE) then
       Picture.Assign(Clipboard);
   end;
 end;
@@ -595,8 +604,10 @@ begin
   // code in TControl as closely as we can
   SendCancelMode(Self);
   // inherited;
-  if csCaptureMouse in ControlStyle then MouseCapture := True;
-  if csClickEvents in ControlStyle then DblClick;
+  if csCaptureMouse in ControlStyle then
+    MouseCapture := True;
+  if csClickEvents in ControlStyle then
+    DblClick;
   if not (csNoStdEvents in ControlStyle) then
     with Message do
       if (Width > 32768) or (Height > 32768) then
@@ -610,12 +621,18 @@ end;
 procedure TJvDBImage.KeyPress(var Key: Char);
 begin
   case Key of
-    ^X: CutToClipBoard;
-    ^C: CopyToClipBoard;
-    ^V: PasteFromClipBoard;
-    #13: LoadPicture;
-    #27: if FDataLink <> nil then FDataLink.Reset;
-  else // this should be safe, TDBImage doesnät handle any other keys
+    ^X:
+      CutToClipBoard;
+    ^C:
+      CopyToClipBoard;
+    ^V:
+      PasteFromClipBoard;
+    #13:
+      LoadPicture;
+    #27:
+      if FDataLink <> nil then
+        FDataLink.Reset;
+  else // this should be safe, TDBImage doesn't handle any other keys
     inherited KeyPress(Key);
   end;
 end;
@@ -625,7 +642,7 @@ begin
   PasteFromClipboard;
 end;
 
-procedure TJvDBImage.SetTransparent(const Value: boolean);
+procedure TJvDBImage.SetTransparent(const Value: Boolean);
 begin
   if FTransparent <> Value then
   begin
@@ -648,10 +665,10 @@ end;
 
 initialization
   GraphicSignatures := TObjectList.Create(True);
-  RegisterGraphicSignature('BM', 0, TBitMap);
+  RegisterGraphicSignature('BM', 0, TBitmap);
   RegisterGraphicSignature([0, 0, 1, 0], 0, TIcon);
-  RegisterGraphicSignature([$D7, $CD], 0, TMetaFile); // WMF
-  RegisterGraphicSignature([0, 1], 0, TMetaFile); // EMF
+  RegisterGraphicSignature([$D7, $CD], 0, TMetafile); // WMF
+  RegisterGraphicSignature([0, 1], 0, TMetafile); // EMF
   RegisterGraphicSignature('JFIF', 6, TJPEGImage);
   // NB! Registering these will add a requirement on having the JvMM package installed
   // Let users register these manually

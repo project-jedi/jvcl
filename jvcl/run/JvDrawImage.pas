@@ -253,8 +253,8 @@ const
   StrongBlend = 52;
   WeakBlend = 36;
 
-  BlurFilter: TDigitalFilter = (
-    (1, 1, 1, 1, 1),
+  BlurFilter: TDigitalFilter =
+   ((1, 1, 1, 1, 1),
     (1, 0, 0, 0, 1),
     (1, 0, 0, 0, 1),
     (1, 0, 0, 0, 1),
@@ -416,8 +416,10 @@ var
 begin
   h := clientheight;
   w := clientwidth;
-  if Y1 < 10 then Y1 := 0;
-  if Y2 > (h - 10) then Y2 := h;
+  if Y1 < 10 then
+    Y1 := 0;
+  if Y2 > (h - 10) then
+    Y2 := h;
   X1 := 0;
   X2 := w;
   Canvas.FillRect(rect(X1, Y1, X2, Y2));
@@ -512,8 +514,10 @@ var
 begin
   r := sqrt(sqr(Endpoint.X - Origin.X) + sqr(Endpoint.Y - Origin.Y));
   d := Endpoint.X - Origin.X;
-  if (d >= 0) and (d < 0.001) then d := 0.001;
-  if (d < 0) and (d > -0.001) then d := -0.001;
+  if (d >= 0) and (d < 0.001) then
+    d := 0.001;
+  if (d < 0) and (d > -0.001) then
+    d := -0.001;
   a := arctan2((Endpoint.Y - Origin.Y), d);
   r := r * Factor;
   result.X := Origin.X + variant(r * cos(a));
@@ -569,8 +573,10 @@ var
 begin
 //  r := sqrt(sqr(Endpoint.X - Origin.X) + sqr(Endpoint.Y - Origin.Y));
   d := Endpoint.X - Origin.X;
-  if (d >= 0) and (d < 0.001) then d := 0.001;
-  if (d < 0) and (d > -0.001) then d := -0.001;
+  if (d >= 0) and (d < 0.001) then
+    d := 0.001;
+  if (d < 0) and (d > -0.001) then
+    d := -0.001;
   a := arctan2((Endpoint.Y - Origin.Y), d);
   a := a * 360 / (2 * pi);
   result := variant(-a);
@@ -978,11 +984,14 @@ begin
     Y2 := Y1;
     Y1 := t;
   end;
-  if (X1 < 0) or (Y1 < 0) or (X2 > Bmp.Width - 1) or (Y2 > Bmp.Height - 1) then Exit;
+  if (X1 < 0) or (Y1 < 0) or (X2 > Bmp.Width - 1) or (Y2 > Bmp.Height - 1) then
+    Exit;
   z := 0;
   iz := $100000;
-  if X2 <> X1 then t := $100000 div (X2 - X1);
-  if Y2 <> Y1 then t2 := $100000 div (Y2 - Y1);
+  if X2 <> X1 then
+    t := $100000 div (X2 - X1);
+  if Y2 <> Y1 then
+    t2 := $100000 div (Y2 - Y1);
 /////  dx := X2 - X1;
   pb := bmp.scanline[Y1];
   c00.r := pb[X1 * 3];
@@ -1072,8 +1081,10 @@ begin
   xr := abs(round(sqrt(sqr(X - X0) + sqr(Y - Y0))));
   dx := abs(X - X0);
   dy := abs(Y - Y0);
-  if dy < 3 then dy := 3;
-  if dx < 3 then dx := 3;
+  if dy < 3 then
+    dy := 3;
+  if dx < 3 then
+    dx := 3;
 //  tx := w div dx;
 //  ty := h div dy;
   yr := round(dy / dx * xr);
@@ -1131,8 +1142,10 @@ begin
   xr := abs(round(sqrt(sqr(X - X0) + sqr(Y - Y0))));
   dx := abs(X - X0);
   dy := abs(Y - Y0);
-  if dy < 3 then dy := 3;
-  if dx < 3 then dx := 3;
+  if dy < 3 then
+    dy := 3;
+  if dx < 3 then
+    dx := 3;
 //  tx := w div dx;
 //  ty := h div dy;
   yr := round(dy / dx * xr);
@@ -1190,8 +1203,10 @@ begin
   xr := abs(round(sqrt(sqr(X - X0) + sqr(Y - Y0))));
   dx := abs(X - X0);
   dy := abs(Y - Y0);
-  if dy < 3 then dy := 3;
-  if dx < 3 then dx := 3;
+  if dy < 3 then
+    dy := 3;
+  if dx < 3 then
+    dx := 3;
 //  tx := w div dx;
 //  ty := h div dy;
   yr := round(dy / dx * xr);
@@ -1247,7 +1262,8 @@ begin
   for Y := 0 to 4 do
     for X := 0 to 4 do
       sum := sum + DF[X, Y];
-  if Sum = 0 then Sum := 1;
+  if Sum = 0 then
+    Sum := 1;
   for Y := 0 to Dst.Height - 1 do
   begin
     Pcolor := Dst.scanline[Y];
@@ -1310,8 +1326,10 @@ begin
   xr := abs(round(sqrt(sqr(X - X0) + sqr(Y - Y0))));
   dx := abs(X - X0);
   dy := abs(Y - Y0);
-  if dy < 3 then dy := 3;
-  if dx < 3 then dx := 3;
+  if dy < 3 then
+    dy := 3;
+  if dx < 3 then
+    dx := 3;
 //  tx := w div dx;
 //  ty := h div dy;
   yr := round(dy / dx * xr);
@@ -1405,8 +1423,10 @@ begin
   xr := abs(round(sqrt(sqr(X - X0) + sqr(Y - Y0))));
   dx := abs(X - X0);
   dy := abs(Y - Y0);
-  if dy = 0 then dy := 1;
-  if dx = 0 then dx := 1;
+  if dy = 0 then
+    dy := 1;
+  if dx = 0 then
+    dx := 1;
 //  tx := w div dx;
 //  ty := h div dy;
   yr := round(dy / dx * xr);
@@ -1532,7 +1552,8 @@ begin
       moveto(myskew[1].X, myskew[1].Y);
       lineto(myskew[1].X + dx, myskew[1].Y + dy);
     end
-    else if (dx >= 0) and (dy > 0) then
+    else
+    if (dx >= 0) and (dy > 0) then
     begin
       moveto(myskew[1].X, myskew[1].Y);
       lineto(myskew[1].X + dx, myskew[1].Y + dy);
@@ -1542,7 +1563,8 @@ begin
       moveto(myskew[2].X, myskew[2].Y);
       lineto(myskew[2].X + dx, myskew[2].Y + dy);
     end
-    else if (dx < 0) and (dy > 0) then
+    else
+    if (dx < 0) and (dy > 0) then
     begin
       moveto(myskew[0].X, myskew[0].Y);
       lineto(myskew[0].X + dx, myskew[0].Y + dy);
@@ -1552,7 +1574,8 @@ begin
       moveto(myskew[3].X, myskew[3].Y);
       lineto(myskew[3].X + dx, myskew[3].Y + dy);
     end
-    else if (dx < 0) and (dy < 0) then
+    else
+    if (dx < 0) and (dy < 0) then
     begin
       moveto(myskew[1].X, myskew[1].Y);
       lineto(myskew[1].X + dx, myskew[1].Y + dy);
@@ -1602,16 +1625,22 @@ begin
       Line := Bitmap.scanline[i];
       valueR := valueR + advalR;
       r := round(ValueR);
-      if r > 255 then r := 255;
-      if r < 0 then r := 0;
+      if r > 255 then
+        r := 255;
+      if r < 0 then
+        r := 0;
       valueG := valueG + advalG;
       g := round(ValueG);
-      if g > 255 then g := 255;
-      if g < 0 then g := 0;
+      if g > 255 then
+        g := 255;
+      if g < 0 then
+        g := 0;
       valueB := valueB + advalB;
       b := round(ValueB);
-      if b > 255 then b := 255;
-      if b < 0 then b := 0;
+      if b > 255 then
+        b := 255;
+      if b < 0 then
+        b := 0;
       if (X >= 0) and (X < Bitmap.Width) then
       begin
         Line[X * 3] := b;
@@ -1735,16 +1764,22 @@ begin
     begin
       valueR := valueR + advalR;
       r := round(ValueR);
-      if r > 255 then r := 255;
-      if r < 0 then r := 0;
+      if r > 255 then
+        r := 255;
+      if r < 0 then
+        r := 0;
       valueG := valueG + advalG;
       g := round(ValueG);
-      if g > 255 then g := 255;
-      if g < 0 then g := 0;
+      if g > 255 then
+        g := 255;
+      if g < 0 then
+        g := 0;
       valueB := valueB + advalB;
       b := round(ValueB);
-      if b > 255 then b := 255;
-      if b < 0 then b := 0;
+      if b > 255 then
+        b := 255;
+      if b < 0 then
+        b := 0;
       if (i >= 0) and (i < Bitmap.Width) then
       begin
         Line[i * 3] := b;
@@ -1784,7 +1819,8 @@ var
   r: Integer;
 begin
   r := Canvas.pen.Width;
-  if r < 5 then r := 5;
+  if r < 5 then
+    r := 5;
   ColorCircle(Clip, point(X, Y), r, Mode);
   Picture.Bitmap.Assign(Clip);
 end;
@@ -1794,7 +1830,8 @@ var
   r: Integer;
 begin
   r := Canvas.pen.Width;
-  if r < 5 then r := 5;
+  if r < 5 then
+    r := 5;
   ColorCircle(Clip, point(X, Y), r, Mode);
   Picture.Bitmap.Assign(Clip);
 
@@ -1831,8 +1868,10 @@ begin
   for j := 0 to cm.Height - 1 do
   begin
     p := cm.scanline[j];
-    if j > 0 then p0 := cm.scanline[j - 1];
-    if j < (h - 1) then p1 := cm.scanline[j + 1];
+    if j > 0 then
+      p0 := cm.scanline[j - 1];
+    if j < (h - 1) then
+      p1 := cm.scanline[j + 1];
     for i := 0 to cm.Width - 1 do
     begin
       case Mode of
@@ -1929,7 +1968,8 @@ begin
   Clip.Assign(Picture.Bitmap);
   Clip.PixelFormat := pf24bit;
   r := Canvas.pen.Width;
-  if r < 5 then r := 5;
+  if r < 5 then
+    r := 5;
   ColorCircle(Clip, point(X, Y), r, Mode);
   Picture.Bitmap.Assign(Clip);
 end;
@@ -1939,10 +1979,14 @@ var
   Src, Dst: TBitmap;
   Rclip, Rsrc: TRect;
 begin
-  if X < Radius then X := Radius;
-  if Y < Radius then Y := Radius;
-  if (X + Radius) > Clip.Width - 1 then X := Clip.Width - 1 - Radius;
-  if (Y + Radius) > Clip.Height - 1 then Y := Clip.Height - 1 - Radius;
+  if X < Radius then
+    X := Radius;
+  if Y < Radius then
+    Y := Radius;
+  if (X + Radius) > Clip.Width - 1 then
+    X := Clip.Width - 1 - Radius;
+  if (Y + Radius) > Clip.Height - 1 then
+    Y := Clip.Height - 1 - Radius;
   Src := TBitmap.Create;
   Src.PixelFormat := pf24bit;
   Dst := TBitmap.Create;
@@ -1989,10 +2033,14 @@ var
   Rclip, Rsrc: TRect;
   dr: Integer;
 begin
-  if X < Radius then X := Radius;
-  if Y < Radius then Y := Radius;
-  if (X + Radius) > Clip.Width - 1 then X := Clip.Width - 1 - Radius;
-  if (Y + Radius) > Clip.Height - 1 then Y := Clip.Height - 1 - Radius;
+  if X < Radius then
+    X := Radius;
+  if Y < Radius then
+    Y := Radius;
+  if (X + Radius) > Clip.Width - 1 then
+    X := Clip.Width - 1 - Radius;
+  if (Y + Radius) > Clip.Height - 1 then
+    Y := Clip.Height - 1 - Radius;
   Src := TBitmap.Create;
   Src.PixelFormat := pf24bit;
   Dst := TBitmap.Create;
@@ -2002,10 +2050,13 @@ begin
   Dst.Height := RClip.bottom - Rclip.top;
   // now Change to Reduce
   Amount := abs(Amount);
-  if Amount < 1 then Amount := 1;
+  if Amount < 1 then
+    Amount := 1;
   dr := round(Radius * Amount / 180);
-  if dr < 5 then dr := 5;
-  if dr > Radius then dr := Radius;
+  if dr < 5 then
+    dr := 5;
+  if dr > Radius then
+    dr := Radius;
   //(mbVerBox,mbHorBox,mbVerOval,mbHorOval);
   case Style of
     mbVerOval, mbVerbox: Rclip := rect(X - Radius, Y - dr, X + Radius, Y + dr);
@@ -2049,7 +2100,8 @@ begin
   h := Src.Height;
   cx := w div 2;
   cy := h div 2;
-  if Amount < 1 then Amount := 1;
+  if Amount < 1 then
+    Amount := 1;
   fr := cx / Amount;
   for Y := 0 to h - 1 do
   begin
@@ -2082,10 +2134,14 @@ var
   Src, Dst: TBitmap;
   Rclip, Rsrc: TRect;
 begin
-  if X < Radius then X := Radius;
-  if Y < Radius then Y := Radius;
-  if (X + Radius) > Clip.Width - 1 then X := Clip.Width - 1 - Radius;
-  if (Y + Radius) > Clip.Height - 1 then Y := Clip.Height - 1 - Radius;
+  if X < Radius then
+    X := Radius;
+  if Y < Radius then
+    Y := Radius;
+  if (X + Radius) > Clip.Width - 1 then
+    X := Clip.Width - 1 - Radius;
+  if (Y + Radius) > Clip.Height - 1 then
+    Y := Clip.Height - 1 - Radius;
   Src := TBitmap.Create;
   Src.PixelFormat := pf24bit;
   Dst := TBitmap.Create;
@@ -2133,10 +2189,14 @@ begin
   Src := TBitmap.Create;
   ra := round(Amount);
   zoomrect := rect(X - ra, Y - ra, X + ra, Y + ra);
-  if zoomrect.left < 0 then zoomrect.left := 0;
-  if zoomrect.top < 0 then zoomrect.top := 0;
-  if zoomrect.right > (FZoomClip.Width - 1) then zoomrect.right := FZoomClip.Width - 1;
-  if zoomrect.bottom > (FZoomClip.Height - 1) then zoomrect.bottom := FZoomClip.Height - 1;
+  if zoomrect.left < 0 then
+    zoomrect.left := 0;
+  if zoomrect.top < 0 then
+    zoomrect.top := 0;
+  if zoomrect.right > (FZoomClip.Width - 1) then
+    zoomrect.right := FZoomClip.Width - 1;
+  if zoomrect.bottom > (FZoomClip.Height - 1) then
+    zoomrect.bottom := FZoomClip.Height - 1;
   w := zoomrect.right - zoomrect.left + 1;
   h := zoomrect.bottom - zoomrect.top + 1;
   Src.Width := w;
@@ -2154,8 +2214,10 @@ var
 begin
   r := sqrt(sqr(Endpoint.X - Origin.X) + sqr(Endpoint.Y - Origin.Y));
   d := Endpoint.X - Origin.X;
-  if (d >= 0) and (d < 0.001) then d := 0.001;
-  if (d < 0) and (d > -0.001) then d := -0.001;
+  if (d >= 0) and (d < 0.001) then
+    d := 0.001;
+  if (d < 0) and (d > -0.001) then
+    d := -0.001;
   a := arctan2((Endpoint.Y - Origin.Y), d);
   a := a + Angle;
   result.X := Origin.X + variant(r * cos(a));
@@ -2275,7 +2337,8 @@ begin
     bezierfix2 := False;
     myorigin := point(X, Y);
     myprevpoint := myorigin;
-    if ssalt in Shift then myDraw := False;
+    if ssalt in Shift then
+      myDraw := False;
   end;
 
   Canvas.pen.Mode := mypen;
@@ -2316,34 +2379,62 @@ begin
     end;
   end;
 
-  if Shape = 'darkerbrush' then ClipAll;
-  if Shape = 'mbHorOval' then ClipAll;
-  if Shape = 'mbVerOval' then ClipAll;
-  if Shape = 'mbVerBox' then ClipAll;
-  if Shape = 'mbHorBox' then ClipAll;
-  if Shape = 'mbHor' then ClipAll;
-  if Shape = 'mbTop' then ClipAll;
-  if Shape = 'mbBottom' then ClipAll;
-  if Shape = 'mbDiamond' then ClipAll;
-  if Shape = 'mbWaste' then ClipAll;
-  if Shape = 'mbRound' then ClipAll;
-  if Shape = 'mbRound2' then ClipAll;
-  if Shape = 'mbSplitRound' then ClipAll;
-  if Shape = 'mbSplitWaste' then ClipAll;
-  if Shape = 'zoombrush' then InitPlasma;
-  if Shape = 'zoomkeepbrush' then InitPlasma;
-  if Shape = 'brightnessbrush' then ClipAll;
-  if Shape = 'contrastbrush' then ClipAll;
-  if Shape = 'saturationbrush' then ClipAll;
-  if Shape = 'fisheyebrush' then ClipAll;
-  if Shape = 'fisheyefixbrush' then ClipAll;
-  if Shape = 'rotatebrush' then ClipAll;
-  if Shape = 'twistbrush' then ClipAll;
-  if Shape = 'rimplebrush' then ClipAll;
-  if Shape = 'lighterbrush' then ClipAll;
-  if Shape = 'graybrush' then ClipAll;
-  if Shape = 'rollmixbrush' then ClipAll;
-  if Shape = 'smoothbrush' then ClipAll;
+  if Shape = 'darkerbrush' then
+    ClipAll;
+  if Shape = 'mbHorOval' then
+    ClipAll;
+  if Shape = 'mbVerOval' then
+    ClipAll;
+  if Shape = 'mbVerBox' then
+    ClipAll;
+  if Shape = 'mbHorBox' then
+    ClipAll;
+  if Shape = 'mbHor' then
+    ClipAll;
+  if Shape = 'mbTop' then
+    ClipAll;
+  if Shape = 'mbBottom' then
+    ClipAll;
+  if Shape = 'mbDiamond' then
+    ClipAll;
+  if Shape = 'mbWaste' then
+    ClipAll;
+  if Shape = 'mbRound' then
+    ClipAll;
+  if Shape = 'mbRound2' then
+    ClipAll;
+  if Shape = 'mbSplitRound' then
+    ClipAll;
+  if Shape = 'mbSplitWaste' then
+    ClipAll;
+  if Shape = 'zoombrush' then
+    InitPlasma;
+  if Shape = 'zoomkeepbrush' then
+    InitPlasma;
+  if Shape = 'brightnessbrush' then
+    ClipAll;
+  if Shape = 'contrastbrush' then
+    ClipAll;
+  if Shape = 'saturationbrush' then
+    ClipAll;
+  if Shape = 'fisheyebrush' then
+    ClipAll;
+  if Shape = 'fisheyefixbrush' then
+    ClipAll;
+  if Shape = 'rotatebrush' then
+    ClipAll;
+  if Shape = 'twistbrush' then
+    ClipAll;
+  if Shape = 'rimplebrush' then
+    ClipAll;
+  if Shape = 'lighterbrush' then
+    ClipAll;
+  if Shape = 'graybrush' then
+    ClipAll;
+  if Shape = 'rollmixbrush' then
+    ClipAll;
+  if Shape = 'smoothbrush' then
+    ClipAll;
 
   if Shape = 'gradientbrush' then
   begin
@@ -2413,7 +2504,8 @@ var
   function rr: Integer;
   begin
     result := round(sqrt(sqr(X - myorigin.X) + sqr(Y - myorigin.Y)));
-    if result < 10 then result := 10;
+    if result < 10 then
+      result := 10;
   end;
 
   procedure moveorigin;
@@ -2427,7 +2519,8 @@ begin
   movex := X - myprevpoint.X;
   movey := Y - myprevpoint.Y;
   // test for scripting
-  if ((ssctrl in Shift) and (ssalt in Shift)) then exit;
+  if ((ssctrl in Shift) and (ssalt in Shift)) then
+    exit;
   mypen := Canvas.pen.Mode;
   h := abs(Y - myorigin.Y);
 //  w := abs(X - myorigin.X);
@@ -2450,49 +2543,61 @@ begin
     if (Shape = 'zoombrush') or (Shape = 'zoomkeepbrush') then
     begin
       w := Canvas.pen.Width;
-      if w < 5 then w := 50;
+      if w < 5 then
+        w := 50;
       DrawPlasma(X, Y, w);
     end;
     if Shape = 'fisheyebrush' then
     begin
       w := Canvas.pen.Width;
-      if w < 5 then w := 50;
+      if w < 5 then
+        w := 50;
       DrawEffectBrush(X, Y, w, 0.9, lbfisheye);
     end;
     if Shape = 'fisheyefixbrush' then
     begin
-      if ssalt in Shift then moveorigin;
+      if ssalt in Shift then
+        moveorigin;
       dx := X - myorigin.X;
-      if dx = 0 then dx := 0.01;
+      if dx = 0 then
+        dx := 0.01;
       dy := Y - myorigin.Y;
       Angle := arctan2(dy, dx) / pi * 0.5 + 0.5;
-      if Angle < 0.55 then Angle := 0.55;
-      if Angle > 0.99 then Angle := 0.99;
+      if Angle < 0.55 then
+        Angle := 0.55;
+      if Angle > 0.99 then
+        Angle := 0.99;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, lbfisheye);
     end;
     if Shape = 'twistbrush' then
     begin
-      if ssalt in Shift then moveorigin;
+      if ssalt in Shift then
+        moveorigin;
       dx := X - myorigin.X;
-      if dx = 0 then dx := 0.01;
+      if dx = 0 then
+        dx := 0.01;
       dy := Y - myorigin.Y;
       Angle := abs(arctan2(dy, dx) * 25 / pi) + 1;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, round(Angle), lbtwist);
     end;
     if Shape = 'mbHorOval' then
     begin
-      if ssalt in Shift then moveorigin;
+      if ssalt in Shift then
+        moveorigin;
       dx := X - myorigin.X;
-      if dx = 0 then dx := 0.01;
+      if dx = 0 then
+        dx := 0.01;
       dy := Y - myorigin.Y;
       Angle := arctan2(dy, dx) * 180 / pi;
       DrawStretchBrush(myorigin.X, myorigin.Y, rr, Angle, mbHorOval);
     end;
     if Shape = 'mbHorBox' then
     begin
-      if ssalt in Shift then moveorigin;
+      if ssalt in Shift then
+        moveorigin;
       dx := X - myorigin.X;
-      if dx = 0 then dx := 0.01;
+      if dx = 0 then
+        dx := 0.01;
       dy := Y - myorigin.Y;
       Angle := arctan2(dy, dx) * 180 / pi;
       DrawStretchBrush(myorigin.X, myorigin.Y, rr, Angle, mbHorBox);
@@ -2500,9 +2605,11 @@ begin
 
     if Shape = 'mbVerOval' then
     begin
-      if ssalt in Shift then moveorigin;
+      if ssalt in Shift then
+        moveorigin;
       dx := X - myorigin.X;
-      if dx = 0 then dx := 0.01;
+      if dx = 0 then
+        dx := 0.01;
       dy := Y - myorigin.Y;
       Angle := arctan2(dy, dx) * 180 / pi;
       DrawStretchBrush(myorigin.X, myorigin.Y, rr, Angle, mbVerOval);
@@ -2510,9 +2617,11 @@ begin
 
     if Shape = 'mbVerBox' then
     begin
-      if ssalt in Shift then moveorigin;
+      if ssalt in Shift then
+        moveorigin;
       dx := X - myorigin.X;
-      if dx = 0 then dx := 0.01;
+      if dx = 0 then
+        dx := 0.01;
       dy := Y - myorigin.Y;
       Angle := arctan2(dy, dx) * 180 / pi;
       DrawStretchBrush(myorigin.X, myorigin.Y, rr, Angle, mbVerBox);
@@ -2520,9 +2629,11 @@ begin
 
     if Shape = 'mbHor' then
     begin
-      if ssalt in Shift then moveorigin;
+      if ssalt in Shift then
+        moveorigin;
       dx := X - myorigin.X;
-      if dx = 0 then dx := 0.01;
+      if dx = 0 then
+        dx := 0.01;
       dy := Y - myorigin.Y;
       Angle := arctan2(dy, dx) * 180 / pi;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, mbHor);
@@ -2530,9 +2641,11 @@ begin
 
     if Shape = 'mbTop' then
     begin
-      if ssalt in Shift then moveorigin;
+      if ssalt in Shift then
+        moveorigin;
       dx := X - myorigin.X;
-      if dx = 0 then dx := 0.01;
+      if dx = 0 then
+        dx := 0.01;
       dy := Y - myorigin.Y;
       Angle := arctan2(dy, dx) * 180 / pi;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, mbTop);
@@ -2540,36 +2653,44 @@ begin
 
     if Shape = 'mbBottom' then
     begin
-      if ssalt in Shift then moveorigin;
+      if ssalt in Shift then
+        moveorigin;
       dx := X - myorigin.X;
-      if dx = 0 then dx := 0.01;
+      if dx = 0 then
+        dx := 0.01;
       dy := Y - myorigin.Y;
       Angle := arctan2(dy, dx) * 180 / pi;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, mbBottom);
     end;
     if Shape = 'mbWaste' then
     begin
-      if ssalt in Shift then moveorigin;
+      if ssalt in Shift then
+        moveorigin;
       dx := X - myorigin.X;
-      if dx = 0 then dx := 0.01;
+      if dx = 0 then
+        dx := 0.01;
       dy := Y - myorigin.Y;
       Angle := arctan2(dy, dx) * 180 / pi;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, mbWaste);
     end;
     if Shape = 'mbRound' then
     begin
-      if ssalt in Shift then moveorigin;
+      if ssalt in Shift then
+        moveorigin;
       dx := X - myorigin.X;
-      if dx = 0 then dx := 0.01;
+      if dx = 0 then
+        dx := 0.01;
       dy := Y - myorigin.Y;
       Angle := arctan2(dy, dx) * 180 / pi;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, mbRound);
     end;
     if Shape = 'mbRound2' then
     begin
-      if ssalt in Shift then moveorigin;
+      if ssalt in Shift then
+        moveorigin;
       dx := X - myorigin.X;
-      if dx = 0 then dx := 0.01;
+      if dx = 0 then
+        dx := 0.01;
       dy := Y - myorigin.Y;
       Angle := arctan2(dy, dx) * 180 / pi;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, mbRound2);
@@ -2577,27 +2698,33 @@ begin
 
     if Shape = 'mbDiamond' then
     begin
-      if ssalt in Shift then moveorigin;
+      if ssalt in Shift then
+        moveorigin;
       dx := X - myorigin.X;
-      if dx = 0 then dx := 0.01;
+      if dx = 0 then
+        dx := 0.01;
       dy := Y - myorigin.Y;
       Angle := arctan2(dy, dx) * 180 / pi;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, mbDiamond);
     end;
     if Shape = 'mbSplitRound' then
     begin
-      if ssalt in Shift then moveorigin;
+      if ssalt in Shift then
+        moveorigin;
       dx := X - myorigin.X;
-      if dx = 0 then dx := 0.01;
+      if dx = 0 then
+        dx := 0.01;
       dy := Y - myorigin.Y;
       Angle := arctan2(dy, dx) * 180 / pi;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, mbSplitRound);
     end;
     if Shape = 'mbSplitWaste' then
     begin
-      if ssalt in Shift then moveorigin;
+      if ssalt in Shift then
+        moveorigin;
       dx := X - myorigin.X;
-      if dx = 0 then dx := 0.01;
+      if dx = 0 then
+        dx := 0.01;
       dy := Y - myorigin.Y;
       Angle := arctan2(dy, dx) * 180 / pi;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, mbSplitWaste);
@@ -2605,9 +2732,11 @@ begin
 
     if Shape = 'rimplebrush' then
     begin
-      if ssalt in Shift then moveorigin;
+      if ssalt in Shift then
+        moveorigin;
       dx := X - myorigin.X;
-      if dx = 0 then dx := 0.01;
+      if dx = 0 then
+        dx := 0.01;
       dy := Y - myorigin.Y;
       Angle := arctan2(dy, dx) * 10 / pi + 1;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, lbrimple);
@@ -2615,18 +2744,22 @@ begin
 
     if Shape = 'rotatebrush' then
     begin
-      if ssalt in Shift then moveorigin;
+      if ssalt in Shift then
+        moveorigin;
       dx := X - myorigin.X;
-      if dx = 0 then dx := 0.01;
+      if dx = 0 then
+        dx := 0.01;
       dy := Y - myorigin.Y;
       Angle := arctan2(dy, dx) * 180 / pi;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, lbrotate);
     end;
     if Shape = 'brightnessbrush' then
     begin
-      if ssalt in Shift then moveorigin;
+      if ssalt in Shift then
+        moveorigin;
       dx := X - myorigin.X;
-      if dx = 0 then dx := 0.01;
+      if dx = 0 then
+        dx := 0.01;
       dy := Y - myorigin.Y;
       Angle := arctan2(dy, dx) * 100 / pi;
       DrawLightBrush(myorigin.X, myorigin.Y,
@@ -2634,9 +2767,11 @@ begin
     end;
     if Shape = 'contrastbrush' then
     begin
-      if ssalt in Shift then moveorigin;
+      if ssalt in Shift then
+        moveorigin;
       dx := X - myorigin.X;
-      if dx = 0 then dx := 0.01;
+      if dx = 0 then
+        dx := 0.01;
       dy := Y - myorigin.Y;
       Angle := arctan2(dy, dx) * 100 / pi;
       DrawLightBrush(myorigin.X, myorigin.Y,
@@ -2644,9 +2779,11 @@ begin
     end;
     if Shape = 'saturationbrush' then
     begin
-      if ssalt in Shift then moveorigin;
+      if ssalt in Shift then
+        moveorigin;
       dx := X - myorigin.X;
-      if dx = 0 then dx := 0.01;
+      if dx = 0 then
+        dx := 0.01;
       dy := Y - myorigin.Y;
       Angle := arctan2(dy, dx) * 100 / pi;
       DrawLightBrush(myorigin.X, myorigin.Y,
@@ -3068,8 +3205,10 @@ begin
   //Canvas.pen.color:=Wavepen;
   //Canvas.brush.color:=Wavebrush;
 
-  if ((ssctrl in Shift) and (ssalt in Shift)) then exit;
-  if button = mbright then exit;
+  if ((ssctrl in Shift) and (ssalt in Shift)) then
+    exit;
+  if button = mbright then
+    exit;
   mypen := Canvas.pen.Mode;
 
   if Shape = 'zoombrush' then
@@ -3602,17 +3741,20 @@ begin
     end;
   end;
 
-  {if Shape='polybezier' then begin
+  {if Shape='polybezier' then
+   begin
     Canvas.penpos:=point(myorigin.X,myorigin.Y);
      if mypen<>pmnotxor then
        begin
        mybezier[0]:=myorigin;
        mybezier[3]:=point(X,Y);
-       if not bezierfix1 then begin
+       if not bezierfix1 then
+       begin
          mybezier[1].X:=mybezier[0].X;
          mybezier[1].Y:=mybezier[3].Y;
          end;
-       if not bezierfix2 then begin
+       if not bezierfix2 then
+       begin
          mybezier[2].X:=mybezier[3].X;
          mybezier[2].Y:=mybezier[0].Y;
          end;
@@ -3633,9 +3775,12 @@ begin
     Shape := 'bezier3';
   end;
 
-  if Shape = 'bezier1' then Shape := 'bezier2';
-  if Shape = 'bezier' then Shape := 'bezier1';
-  if Shape = 'bezier3' then Shape := 'bezier';
+  if Shape = 'bezier1' then
+    Shape := 'bezier2';
+  if Shape = 'bezier' then
+    Shape := 'bezier1';
+  if Shape = 'bezier3' then
+    Shape := 'bezier';
   {$IFDEF VCL}
   if Shape = 'floodfill' then
   begin
@@ -4784,10 +4929,12 @@ begin
   w := Clip.Width;
   h := Clip.Height;
   {$IFDEF VCL}
-  if not clipboard.HasFormat(CF_BITMAP) then exit;
+  if not clipboard.HasFormat(CF_BITMAP) then
+    exit;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  if not clipboard.Provides('image/delphi.bitmap') then exit;
+  if not clipboard.Provides('image/delphi.bitmap') then
+    exit;
   {$ENDIF VisualCLX}
   src2 := TBitmap.Create;
   src2.Assign(clipboard);

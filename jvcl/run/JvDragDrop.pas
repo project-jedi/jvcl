@@ -544,7 +544,8 @@ procedure TJvDropTarget.SetAcceptDrag(Value: Boolean);
 begin
   if csLoading in ComponentState then
     FStreamedAcceptDrag := Value
-  else if Value <> FAcceptDrag then
+  else
+  if Value <> FAcceptDrag then
   begin
     UnregisterControl;
     FAcceptDrag := Value;
@@ -642,7 +643,8 @@ begin
             for I := 0 to Count - 1 do
             begin
               Len := DragQueryFile(DragH, I, nil, 0);
-              if Len > 0 then Inc(Len);
+              if Len > 0 then
+                Inc(Len);
               SetLength(Name, Len);
               if Len > 0 then
                 DragQueryFile(DragH, I, PChar(Name), Len);

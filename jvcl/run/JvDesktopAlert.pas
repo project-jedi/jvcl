@@ -22,13 +22,15 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
 
-// $Id$
 unit JvDesktopAlert;
 
 interface
+
 uses
   Windows, Classes, SysUtils, Controls, Graphics, Forms, Menus, ImgList,
   JvComponent, JvBaseDlg, JvDesktopAlertForm;
@@ -51,7 +53,6 @@ type
     FWindowTo: TColor;
     FFrame: TColor;
     FCaptionFrom: TColor;
-
     procedure SetCaptionFrom(const Value: TColor);
     procedure SetCaptionTo(const Value: TColor);
     procedure SetFrame(const Value: TColor);
@@ -60,7 +61,6 @@ type
   public
     constructor Create;
     procedure Assign(Source: TPersistent); override;
-
   published
     property Frame: TColor read FFrame write SetFrame default $00943000;
     property WindowFrom: TColor read FWindowFrom write SetWindowFrom default $00FFE7CE;
@@ -69,62 +69,61 @@ type
     property CaptionTo: TColor read FCaptionTo write SetCaptionTo default $00944110;
   end;
 
-  TJvDesktopAlertPosition = (dapTopLeft, dapTopRight, dapBottomLeft, dapBottomRight, dapCustom, dapDesktopCenter, dapMainFormCenter, dapOwnerFormCenter, dapActiveFormCenter);
+  TJvDesktopAlertPosition =
+   (dapTopLeft, dapTopRight, dapBottomLeft, dapBottomRight, dapCustom,
+    dapDesktopCenter, dapMainFormCenter, dapOwnerFormCenter, dapActiveFormCenter);
 
   TJvDesktopAlertLocation = class(TJvDesktopAlertChangePersistent)
   private
-    FTop: integer;
-    FLeft: integer;
+    FTop: Integer;
+    FLeft: Integer;
     FPosition: TJvDesktopAlertPosition;
-    FAlwaysResetPosition: boolean;
-    FHeight: integer;
-    FWidth: integer;
-    procedure SetTop(const Value: integer);
-    procedure SetLeft(const Value: integer);
+    FAlwaysResetPosition: Boolean;
+    FHeight: Integer;
+    FWidth: Integer;
+    procedure SetTop(const Value: Integer);
+    procedure SetLeft(const Value: Integer);
     procedure SetPosition(const Value: TJvDesktopAlertPosition);
-    procedure SetHeight(const Value: integer);
-    procedure SetWidth(const Value: integer);
+    procedure SetHeight(const Value: Integer);
+    procedure SetWidth(const Value: Integer);
   public
     constructor Create;
   published
     property Position: TJvDesktopAlertPosition read FPosition write SetPosition default dapBottomRight;
-    property Top: integer read FTop write SetTop;
-    property Left: integer read FLeft write SetLeft;
-    property Width:integer read FWidth write SetWidth;
-    property Height:integer read FHeight write SetHeight;
-
-    property AlwaysResetPosition: boolean read FAlwaysResetPosition write FAlwaysResetPosition default True;
+    property Top: Integer read FTop write SetTop;
+    property Left: Integer read FLeft write SetLeft;
+    property Width: Integer read FWidth write SetWidth;
+    property Height: Integer read FHeight write SetHeight;
+    property AlwaysResetPosition: Boolean read FAlwaysResetPosition write FAlwaysResetPosition default True;
   end;
 
   TJvDesktopAlertButtonItem = class(TCollectionItem)
   private
-    FImageIndex: integer;
+    FImageIndex: Integer;
     FOnClick: TNotifyEvent;
-    FTag: integer;
+    FTag: Integer;
   public
     procedure Assign(Source: TPersistent); override;
-
   published
-    property ImageIndex: integer read FImageIndex write FImageIndex;
-    property Tag: integer read FTag write FTag;
+    property ImageIndex: Integer read FImageIndex write FImageIndex;
+    property Tag: Integer read FTag write FTag;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
   end;
 
   TJvDesktopAlertButtons = class(TOwnedCollection)
   private
-    function GetItem(Index: integer): TJvDesktopAlertButtonItem;
-    procedure SetItem(Index: integer; const Value: TJvDesktopAlertButtonItem);
+    function GetItem(Index: Integer): TJvDesktopAlertButtonItem;
+    procedure SetItem(Index: Integer; const Value: TJvDesktopAlertButtonItem);
   public
     constructor Create(AOwner: TPersistent);
     function Add: TJvDesktopAlertButtonItem;
-
-    property Items[Index: integer]: TJvDesktopAlertButtonItem read GetItem write SetItem; default;
+    property Items[Index: Integer]: TJvDesktopAlertButtonItem read GetItem write SetItem; default;
     procedure Assign(Source: TPersistent); override;
   end;
 
   TJvDesktopAlertOption = (daoCanClick, daoCanMove, daoCanMoveAnywhere, daoCanClose, daoCanFade);
   TJvDesktopAlertOptions = set of TJvDesktopAlertOption;
-  
+
   TJvDesktopAlert = class(TJvCommonDialogP)
   private
     FStacker: TJvDesktopAlertStack;
@@ -139,7 +138,7 @@ type
     FOnShow: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FData: TObject;
-    FAutoFocus: boolean;
+    FAutoFocus: Boolean;
     function GetStacker: TJvDesktopAlertStack;
     procedure SetButtons(const Value: TJvDesktopAlertButtons);
     procedure SetColors(const Value: TJvDesktopAlertColors);
@@ -157,15 +156,15 @@ type
     procedure InternalOnMove(Sender: TObject);
     function GetAlertStack: TJvDesktopAlertStack;
     procedure SetAlertStack(const Value: TJvDesktopAlertStack);
-    function GetFadeInTime: integer;
-    function GetFadeOutTime: integer;
+    function GetFadeInTime: Integer;
+    function GetFadeOutTime: Integer;
     function GetFont: TFont;
     function GetHeaderFont: TFont;
     function GetImage: TPicture;
     function GetAlphaBlendValue: byte;
-    function GetWaitTime: integer;
-    procedure SetFadeInTime(const Value: integer);
-    procedure SetFadeOutTime(const Value: integer);
+    function GetWaitTime: Integer;
+    procedure SetFadeInTime(const Value: Integer);
+    procedure SetFadeOutTime(const Value: Integer);
     procedure SetAlphaBlendValue(const Value: byte);
     function GetDropDownMenu: TPopUpMenu;
     function GetHeaderText: string;
@@ -174,14 +173,14 @@ type
     procedure SetHeaderText(const Value: string);
     procedure SetLocation(const Value: TJvDesktopAlertLocation);
     procedure SetMessageText(const Value: string);
-    procedure DoLocationChange(Sender:TObject);
-    function GetParentFont: boolean;
-    function GetShowHint: boolean;
+    procedure DoLocationChange(Sender: TObject);
+    function GetParentFont: Boolean;
+    function GetShowHint: Boolean;
     function GetHint: string;
     procedure SetHint(const Value: string);
-    procedure SetParentFont(const Value: boolean);
-    procedure SetShowHint(const Value: boolean);
-    procedure SetWaitTime(const Value: integer);
+    procedure SetParentFont(const Value: Boolean);
+    procedure SetShowHint(const Value: Boolean);
+    procedure SetWaitTime(const Value: Integer);
     procedure SetOptions(const Value: TJvDesktopAlertOptions);
     function GetCloseButtonClick: TNotifyEvent;
     procedure SetCloseButtonClick(const Value: TNotifyEvent);
@@ -192,21 +191,21 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function Showing: boolean;
-    procedure Close(Immediate:boolean);
-    procedure Execute;override;
+    function Showing: Boolean;
+    procedure Close(Immediate: Boolean);
+    procedure Execute; override;
     property Data: TObject read FData write FData;
   published
     property AlertStack: TJvDesktopAlertStack read GetAlertStack write SetAlertStack;
-    property AutoFocus:boolean read FAutoFocus write FAutoFocus default False;
+    property AutoFocus: Boolean read FAutoFocus write FAutoFocus default False;
     property HeaderText: string read GetHeaderText write SetHeaderText;
     property MessageText: string read GetMessageText write SetMessageText;
 
     property HeaderFont: TFont read GetHeaderFont write SetHeaderFont;
-    property Hint:string read GetHint write SetHint;
-    property ShowHint:boolean read GetShowHint write SetShowHint;
+    property Hint: string read GetHint write SetHint;
+    property ShowHint: Boolean read GetShowHint write SetShowHint;
     property Font: TFont read GetFont write SetFont;
-    property ParentFont:boolean read GetParentFont write SetParentFont;
+    property ParentFont: Boolean read GetParentFont write SetParentFont;
     property Options: TJvDesktopAlertOptions read FOptions write SetOptions default [daoCanClick..daoCanFade];
     property Colors: TJvDesktopAlertColors read FColors write SetColors;
     property Buttons: TJvDesktopAlertButtons read FButtons write SetButtons;
@@ -216,13 +215,13 @@ type
     property DropDownMenu: TPopUpMenu read GetDropDownMenu write SetDropDownMenu;
     property PopupMenu: TPopupMenu read GetPopupMenu write SetPopupMenu;
 
-    property FadeInTime: integer read GetFadeInTime write SetFadeInTime default 25;
-    property FadeOutTime: integer read GetFadeOutTime write SetFadeOutTime default 50;
-    property WaitTime: integer read GetWaitTime write SetWaitTime default 1400;
+    property FadeInTime: Integer read GetFadeInTime write SetFadeInTime default 25;
+    property FadeOutTime: Integer read GetFadeOutTime write SetFadeOutTime default 50;
+    property WaitTime: Integer read GetWaitTime write SetWaitTime default 1400;
     property AlphaBlendValue: byte read GetAlphaBlendValue write SetAlphaBlendValue default 255;
 
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
-    property OnCloseButtonClick:TNotifyEvent read GetCloseButtonClick write SetCloseButtonClick;
+    property OnCloseButtonClick: TNotifyEvent read GetCloseButtonClick write SetCloseButtonClick;
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -231,19 +230,19 @@ type
 
   TJvDesktopAlertStack = class(TJvComponent)
   private
-    FItems: TList; 
+    FItems: TList;
     FPosition: TJvDesktopAlertPosition;
-    function GetCount: integer;
-    function GetItems(Index: integer): TJvFormDesktopAlert; 
+    function GetCount: Integer;
+    function GetItems(Index: Integer): TJvFormDesktopAlert;
     procedure SetPosition(const Value: TJvDesktopAlertPosition);
   protected
-    procedure UpdatePositions; 
+    procedure UpdatePositions;
   public
     procedure Add(AForm: TForm);
     procedure Remove(AForm: TForm);
 
-    property Items[Index: integer]: TJvFormDesktopAlert read GetItems;
-    property Count: integer read GetCount;
+    property Items[Index: Integer]: TJvFormDesktopAlert read GetItems;
+    property Count: Integer read GetCount;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
@@ -263,14 +262,25 @@ begin
   Result := FGlobalStacker;
 end;
 
-{ TJvDesktopAlertChangePersistent }
+//=== TJvDesktopAlertChangePersistent ========================================
 
 procedure TJvDesktopAlertChangePersistent.Change;
 begin
-  if Assigned(FOnChange) then FOnChange(Self);
+  if Assigned(FOnChange) then
+    FOnChange(Self);
 end;
 
-{ TJvDesktopAlertColors }
+//=== TJvDesktopAlertColors ==================================================
+
+constructor TJvDesktopAlertColors.Create;
+begin
+  inherited Create;
+  FFrame := $00943000;
+  FWindowFrom := $00FFE7CE;
+  FWindowTo := $00E7A67B;
+  FCaptionFrom := $00D68652;
+  FCaptionTo := $00944110;
+end;
 
 procedure TJvDesktopAlertColors.Assign(Source: TPersistent);
 begin
@@ -282,19 +292,9 @@ begin
     FCaptionFrom := TJvDesktopAlertColors(Source).CaptionFrom;
     FCaptionTo := TJvDesktopAlertColors(Source).CaptionTo;
     Change;
-    Exit;
-  end;
-  inherited;
-end;
-
-constructor TJvDesktopAlertColors.Create;
-begin
-  inherited Create;
-  FFrame := $00943000;
-  FWindowFrom := $00FFE7CE;
-  FWindowTo := $00E7A67B;
-  FCaptionFrom := $00D68652;
-  FCaptionTo := $00944110;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvDesktopAlertColors.SetCaptionFrom(const Value: TColor);
@@ -342,16 +342,16 @@ begin
   end;
 end;
 
-{ TJvDesktopAlertLocation }
+//=== TJvDesktopAlertLocation ================================================
 
 constructor TJvDesktopAlertLocation.Create;
 begin
   inherited Create;
   FPosition := dapBottomRight;
-  FAlwaysResetPosition := true;
+  FAlwaysResetPosition := True;
 end;
 
-procedure TJvDesktopAlertLocation.SetHeight(const Value: integer);
+procedure TJvDesktopAlertLocation.SetHeight(const Value: Integer);
 begin
   if FHeight <> Value then
   begin
@@ -360,7 +360,7 @@ begin
   end;
 end;
 
-procedure TJvDesktopAlertLocation.SetLeft(const Value: integer);
+procedure TJvDesktopAlertLocation.SetLeft(const Value: Integer);
 begin
   if FLeft <> Value then
   begin
@@ -369,8 +369,7 @@ begin
   end;
 end;
 
-procedure TJvDesktopAlertLocation.SetPosition(
-  const Value: TJvDesktopAlertPosition);
+procedure TJvDesktopAlertLocation.SetPosition(const Value: TJvDesktopAlertPosition);
 begin
 //  if FPosition <> Value then
   begin
@@ -379,7 +378,7 @@ begin
   end;
 end;
 
-procedure TJvDesktopAlertLocation.SetTop(const Value: integer);
+procedure TJvDesktopAlertLocation.SetTop(const Value: Integer);
 begin
   if FTop <> Value then
   begin
@@ -388,7 +387,7 @@ begin
   end;
 end;
 
-procedure TJvDesktopAlertLocation.SetWidth(const Value: integer);
+procedure TJvDesktopAlertLocation.SetWidth(const Value: Integer);
 begin
   if FWidth <> Value then
   begin
@@ -397,7 +396,7 @@ begin
   end;
 end;
 
-{ TJvDesktopAlertButtonItem }
+//=== TJvDesktopAlertButtonItem ==============================================
 
 procedure TJvDesktopAlertButtonItem.Assign(Source: TPersistent);
 begin
@@ -406,12 +405,17 @@ begin
     ImageIndex := TJvDesktopAlertButtonItem(Source).ImageIndex;
     OnClick := TJvDesktopAlertButtonItem(Source).OnClick;
     Tag := TJvDesktopAlertButtonItem(Source).Tag;
-    Exit;
-  end;
-  inherited;
+  end
+  else
+    inherited Assign(Source);
 end;
 
-{ TJvDesktopAlertButtons }
+//=== TJvDesktopAlertButtons =================================================
+
+constructor TJvDesktopAlertButtons.Create(AOwner: TPersistent);
+begin
+  inherited Create(AOwner, TJvDesktopAlertButtonItem);
+end;
 
 function TJvDesktopAlertButtons.Add: TJvDesktopAlertButtonItem;
 begin
@@ -420,48 +424,33 @@ end;
 
 procedure TJvDesktopAlertButtons.Assign(Source: TPersistent);
 var
-  i: integer;
+  I: Integer;
 begin
   if (Source is TJvDesktopAlertButtons) and (Source <> Self) then
   begin
     Clear;
-    for i := 0 to TJvDesktopAlertButtons(Source).Count - 1 do
-      Add.Assign(TJvDesktopAlertButtons(Source)[i]);
-    Exit;
-  end;
-  inherited;
+    for I := 0 to TJvDesktopAlertButtons(Source).Count - 1 do
+      Add.Assign(TJvDesktopAlertButtons(Source)[I]);
+  end
+  else
+    inherited Assign(Source);
 end;
 
-constructor TJvDesktopAlertButtons.Create(AOwner: TPersistent);
-begin
-  inherited Create(AOwner, TJvDesktopAlertButtonItem);
-end;
-
-function TJvDesktopAlertButtons.GetItem(Index: integer): TJvDesktopAlertButtonItem;
+function TJvDesktopAlertButtons.GetItem(Index: Integer): TJvDesktopAlertButtonItem;
 begin
   Result := TJvDesktopAlertButtonItem(inherited Items[Index]);
 end;
 
-procedure TJvDesktopAlertButtons.SetItem(Index: integer; const Value: TJvDesktopAlertButtonItem);
+procedure TJvDesktopAlertButtons.SetItem(Index: Integer; const Value: TJvDesktopAlertButtonItem);
 begin
   inherited Items[Index] := Value;
 end;
 
-{ TJvDesktopAlert }
+//=== TJvDesktopAlert ========================================================
 
-procedure TJvDesktopAlert.Close(Immediate:boolean);
-begin
-  if Showing then
-  begin
-    if Immediate then
-      FDesktopForm.Close
-    else
-      FDesktopForm.FadeClose;
-  end;
-end;
 constructor TJvDesktopAlert.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FColors := TJvDesktopAlertColors.Create;
   FButtons := TJvDesktopAlertButtons.Create(Self);
   FLocation := TJvDesktopAlertLocation.Create;
@@ -487,11 +476,22 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvDesktopAlert.Close(Immediate: Boolean);
+begin
+  if Showing then
+  begin
+    if Immediate then
+      FDesktopForm.Close
+    else
+      FDesktopForm.FadeClose;
+  end;
+end;
+
 procedure TJvDesktopAlert.DoLocationChange(Sender: TObject);
 begin
-  if (GetStacker.Position <> Location.Position) then
+  if GetStacker.Position <> Location.Position then
   begin
-    if (GetStacker = FGlobalStacker) then
+    if GetStacker = FGlobalStacker then
       GetStacker.Position := Location.Position
     else
       Location.Position := GetStacker.Position;
@@ -501,19 +501,21 @@ end;
 procedure TJvDesktopAlert.Execute;
 var
   ARect: TRect;
-  i, X, Y: integer;
-  FActiveWindow:HWND;
-  procedure CenterForm(AForm:TForm; ARect:TRect);
+  I, X, Y: Integer;
+  FActiveWindow: HWND;
+
+  procedure CenterForm(AForm: TForm; ARect: TRect);
   begin
     AForm.Top := ARect.Top + ((ARect.Bottom - ARect.Top) - AForm.Height) div 2;
     AForm.Left := ARect.Left + ((ARect.Right - ARect.Left) - AForm.Width) div 2;
   end;
+
 begin
   Assert(FDesktopForm <> nil);
   if FDesktopForm.Visible then
     FDesktopForm.Close;
   SystemParametersInfo(SPI_GETWORKAREA, 0, @ARect, 0);
-  if (Location.Width <> 0) then
+  if Location.Width <> 0 then
     FDesktopForm.Width := Location.Width
   else
     FDesktopForm.Width := cDefaultAlertFormWidth;
@@ -547,19 +549,18 @@ begin
         FDesktopForm.Top := Location.Top;
         FDesktopForm.Left := Location.Left;
       end;
-    dapDesktopCenter,
-    dapMainFormCenter,
-    dapOwnerFormCenter,
-    dapActiveFormCenter:
-    begin
-      CenterForm(FDesktopForm, ARect);
-      if (Location.Position = dapActiveFormCenter) and (Screen.ActiveForm <> nil) then
-        CenterForm(FDesktopForm, Screen.ActiveForm.BoundsRect)
-      else if (Location.Position = dapMainFormCenter) and (Application <> nil) and (Application.MainForm <> nil) then
-        CenterForm(FDesktopForm, Application.MainForm.BoundsRect)
-      else if (Location.Position = dapOwnerFormCenter) and (Owner is TCustomForm) then
-        CenterForm(FDesktopForm, TCustomForm(Owner).BoundsRect);
-    end;
+    dapDesktopCenter, dapMainFormCenter, dapOwnerFormCenter, dapActiveFormCenter:
+      begin
+        CenterForm(FDesktopForm, ARect);
+        if (Location.Position = dapActiveFormCenter) and (Screen.ActiveForm <> nil) then
+          CenterForm(FDesktopForm, Screen.ActiveForm.BoundsRect)
+        else
+        if (Location.Position = dapMainFormCenter) and (Application <> nil) and (Application.MainForm <> nil) then
+          CenterForm(FDesktopForm, Application.MainForm.BoundsRect)
+        else
+        if (Location.Position = dapOwnerFormCenter) and (Owner is TCustomForm) then
+          CenterForm(FDesktopForm, TCustomForm(Owner).BoundsRect);
+      end;
   end;
 
   FDesktopForm.OnShow := InternalOnShow;
@@ -602,22 +603,22 @@ begin
   FDesktopForm.CaptionColorTo := Colors.CaptionTo;
   FDesktopForm.FrameColor := Colors.Frame;
 
-  for i := 0 to Length(FFormButtons) - 1 do
-    FFormButtons[i].Free;
+  for I := 0 to Length(FFormButtons) - 1 do
+    FFormButtons[I].Free;
   SetLength(FFormButtons, Buttons.Count);
   X := 2;
   Y := FDesktopForm.Height - 23;
-  for i := 0 to Length(FFormButtons) - 1 do
+  for I := 0 to Length(FFormButtons) - 1 do
   begin
-    FFormButtons[i] := TJvDesktopAlertButton.Create(FDesktopForm);
-    with TJvDesktopAlertButton(FFormButtons[i]) do
+    FFormButtons[I] := TJvDesktopAlertButton.Create(FDesktopForm);
+    with TJvDesktopAlertButton(FFormButtons[I]) do
     begin
       SetBounds(X, Y, 21, 21);
       ToolType := abtImage;
       Images := Self.Images;
-      ImageIndex := Buttons[i].ImageIndex;
-      Tag := Buttons[i].Tag;
-      OnClick := Buttons[i].OnClick;
+      ImageIndex := Buttons[I].ImageIndex;
+      Tag := Buttons[I].Tag;
+      OnClick := Buttons[I].OnClick;
       Parent := FDesktopForm;
       Inc(X, 22);
     end;
@@ -646,12 +647,12 @@ begin
   Result := FDeskTopForm.tbDropDown.DropDownMenu;
 end;
 
-function TJvDesktopAlert.GetFadeInTime: integer;
+function TJvDesktopAlert.GetFadeInTime: Integer;
 begin
   Result := FDesktopForm.FadeInTime;
 end;
 
-function TJvDesktopAlert.GetFadeOutTime: integer;
+function TJvDesktopAlert.GetFadeOutTime: Integer;
 begin
   Result := FDesktopForm.FadeOutTime;
 end;
@@ -686,18 +687,17 @@ begin
   Result := FDeskTopForm.lblText.Caption;
 end;
 
-function TJvDesktopAlert.GetParentFont: boolean;
+function TJvDesktopAlert.GetParentFont: Boolean;
 begin
   Result := FDesktopForm.ParentFont;
 end;
-
 
 function TJvDesktopAlert.GetPopupMenu: TPopupMenu;
 begin
   Result := FDeskTopForm.PopupMenu;
 end;
 
-function TJvDesktopAlert.GetShowHint: boolean;
+function TJvDesktopAlert.GetShowHint: Boolean;
 begin
   Result := FDesktopForm.ShowHint;
 end;
@@ -710,7 +710,7 @@ begin
     Result := FStacker;
 end;
 
-function TJvDesktopAlert.GetWaitTime: integer;
+function TJvDesktopAlert.GetWaitTime: Integer;
 begin
   Result := FDesktopForm.WaitTime;
 end;
@@ -748,12 +748,13 @@ begin
   end;
   if Assigned(FOnClose) then
     FOnClose(Self);
-  GetStacker.Remove(FDesktopForm); 
+  GetStacker.Remove(FDesktopForm);
 end;
 
 procedure TJvDesktopAlert.InternalOnMove(Sender: TObject);
 begin
-  if not (csDesigning in ComponentState) and not Location.AlwaysResetPosition and (Location.Position <> dapCustom) then
+  if not (csDesigning in ComponentState) and not Location.AlwaysResetPosition and
+    (Location.Position <> dapCustom) then
   begin
     GetStacker.Remove(FDesktopForm);
     Location.Position := dapCustom;
@@ -769,12 +770,10 @@ end;
 procedure TJvDesktopAlert.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  inherited;
+  inherited Notification(AComponent, Operation);
   if Operation = opRemove then
-  begin
     if AComponent = FStacker then
       AlertStack := nil;
-  end;
 end;
 
 procedure TJvDesktopAlert.SetAlertStack(const Value: TJvDesktopAlertStack);
@@ -805,12 +804,12 @@ begin
   FDesktopForm.tbDropDown.DropDownMenu := Value;
 end;
 
-procedure TJvDesktopAlert.SetFadeInTime(const Value: integer);
+procedure TJvDesktopAlert.SetFadeInTime(const Value: Integer);
 begin
   FDesktopForm.FadeInTime := Value;
 end;
 
-procedure TJvDesktopAlert.SetFadeOutTime(const Value: integer);
+procedure TJvDesktopAlert.SetFadeOutTime(const Value: Integer);
 begin
   FDesktopForm.FadeOutTime := Value;
 end;
@@ -866,35 +865,34 @@ begin
   FDeskTopForm.lblText.Update;
 end;
 
-procedure TJvDesktopAlert.SetParentFont(const Value: boolean);
+procedure TJvDesktopAlert.SetParentFont(const Value: Boolean);
 begin
   FDesktopForm.ParentFont := Value;
 end;
-
 
 procedure TJvDesktopAlert.SetPopupMenu(const Value: TPopupMenu);
 begin
   FDesktopForm.PopupMenu := Value;
 end;
 
-procedure TJvDesktopAlert.SetShowHint(const Value: boolean);
+procedure TJvDesktopAlert.SetShowHint(const Value: Boolean);
 begin
   FDesktopForm.ShowHint := Value;
 end;
 
-function TJvDesktopAlert.Showing: boolean;
+function TJvDesktopAlert.Showing: Boolean;
 begin
   Result := (FDesktopForm <> nil) and FDesktopForm.Showing;
 end;
 
-procedure TJvDesktopAlert.SetWaitTime(const Value: integer);
+procedure TJvDesktopAlert.SetWaitTime(const Value: Integer);
 begin
   FDesktopForm.WaitTime := Value;
 end;
 
 procedure TJvDesktopAlert.SetOptions(const Value: TJvDesktopAlertOptions);
 begin
-  if Foptions <> Value then
+  if FOptions <> Value then
   begin
     FOptions := Value;
     if not (daoCanMove in FOptions) then
@@ -912,17 +910,11 @@ begin
   FDesktopForm.tbClose.OnClick := Value;
 end;
 
-{ TJvDesktopAlertStack }
-
-procedure TJvDesktopAlertStack.Add(AForm: TForm);
-begin
-  FItems.Add(AForm); 
-  UpdatePositions;
-end;
+//=== TJvDesktopAlertStack ===================================================
 
 constructor TJvDesktopAlertStack.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FItems := TList.Create;
   FPosition := dapBottomRight;
 end;
@@ -930,15 +922,21 @@ end;
 destructor TJvDesktopAlertStack.Destroy;
 begin
   FItems.Free;
-  inherited;
+  inherited Destroy;
 end;
 
-function TJvDesktopAlertStack.GetCount: integer;
+procedure TJvDesktopAlertStack.Add(AForm: TForm);
 begin
-  Result := FItems.Count; 
+  FItems.Add(AForm);
+  UpdatePositions;
 end;
 
-function TJvDesktopAlertStack.GetItems(Index: integer): TJvFormDesktopAlert;
+function TJvDesktopAlertStack.GetCount: Integer;
+begin
+  Result := FItems.Count;
+end;
+
+function TJvDesktopAlertStack.GetItems(Index: Integer): TJvFormDesktopAlert;
 begin
   Result := TJvFormDesktopAlert(FItems[Index]);
   Assert((Result = nil) or (Result is TJvFormDesktopAlert));
@@ -954,7 +952,7 @@ begin
     // The basic trick here is to push piling forms down in the list, while keeping the
     // static ones (i.e. a form that has the mouse pointer over it) in place.
     Index := FItems.IndexOf(AForm);
-    if (Index >= 0) then
+    if Index >= 0 then
     begin
       FItems[Index] := nil;
 
@@ -993,12 +991,11 @@ begin
   end;
 end;
 
-
 procedure TJvDesktopAlertStack.UpdatePositions;
 var
   C, I: Integer;
   Form: TJvFormDesktopAlert;
-  X,Y: Integer;
+  X, Y: Integer;
   R: TRect;
 begin
   C := Count;
@@ -1007,64 +1004,61 @@ begin
     SystemParametersInfo(SPI_GETWORKAREA, 0, @R, 0);
     case Position of
       dapBottomRight:
-      begin
-        Y := R.Bottom;
-        for I := 0 to Pred(C) do
         begin
-          Form := Items[i];
-          if Assigned(Form) and Form.Visible then
+          Y := R.Bottom;
+          for I := 0 to Pred(C) do
           begin
-            X := R.Right - Form.Width;
-            Dec(Y, Form.Height);
-            Form.SetNewOrigin(X, Y);
+            Form := Items[I];
+            if Assigned(Form) and Form.Visible then
+            begin
+              X := R.Right - Form.Width;
+              Dec(Y, Form.Height);
+              Form.SetNewOrigin(X, Y);
+            end;
           end;
         end;
-      end;
-
       dapBottomLeft:
-      begin
-        X := R.Left;
-        Y := R.Bottom;
-        for I := 0 to Pred(C) do
         begin
-          Form := Items[i];
-          if Assigned(Form) and Form.Visible then
+          X := R.Left;
+          Y := R.Bottom;
+          for I := 0 to Pred(C) do
           begin
-            Dec(Y, Form.Height);
-            Form.SetNewOrigin(X, Y);
+            Form := Items[I];
+            if Assigned(Form) and Form.Visible then
+            begin
+              Dec(Y, Form.Height);
+              Form.SetNewOrigin(X, Y);
+            end;
           end;
         end;
-      end;
-
       dapTopRight:
-      begin
-        Y := R.Top;
-        for I := 0 to Pred(C) do
         begin
-          Form := Items[i];
-          if Assigned(Form) and Form.Visible then
+          Y := R.Top;
+          for I := 0 to Pred(C) do
           begin
-            X := R.Right - Form.Width;
-            Form.SetNewOrigin(X, Y);
-            Inc(Y, Form.Height);
+            Form := Items[I];
+            if Assigned(Form) and Form.Visible then
+            begin
+              X := R.Right - Form.Width;
+              Form.SetNewOrigin(X, Y);
+              Inc(Y, Form.Height);
+            end;
           end;
         end;
-      end;
-
       dapTopLeft:
-      begin
-        Y := R.Top;
-        X := R.Left;
-        for I := 0 to Pred(C) do
         begin
-          Form := Items[i];
-          if Assigned(Form) and Form.Visible then
+          Y := R.Top;
+          X := R.Left;
+          for I := 0 to Pred(C) do
           begin
-            Form.SetNewOrigin(X, Y);
-            Inc(Y, Form.Height);
+            Form := Items[I];
+            if Assigned(Form) and Form.Visible then
+            begin
+              Form.SetNewOrigin(X, Y);
+              Inc(Y, Form.Height);
+            end;
           end;
         end;
-      end;
     end;
   end;
 end;

@@ -552,7 +552,8 @@ procedure TJvCustomDBTreeView.LinkActive(Value: Boolean);
         Warning(RsItemFieldEmpty);
         Exit;
       end;
-     { if (FDataLink.DataSet.FindField(FMasterField).DataType <> FDataLink.DataSet.FindField(FDetailField).DataType) then begin
+     { if (FDataLink.DataSet.FindField(FMasterField).DataType <> FDataLink.DataSet.FindField(FDetailField).DataType) then
+       begin
         Warning(RsMasterDetailFieldError);
         Exit;
       end; }
@@ -1275,15 +1276,20 @@ var
   AttachMode: TNodeAttachMode;
   HT: THitTests;
 begin
-  if TreeView1.Selected = nil then Exit;
+  if TreeView1.Selected = nil then
+    Exit;
   HT := TreeView1.GetHitTestInfoAt(X, Y);
   AnItem := TreeView1.GetNodeAt(X, Y);
   if (HT - [htOnItem, htOnIcon, htNowhere, htOnIndent] <> HT) then
   begin
-    if (htOnItem in HT) or (htOnIcon in HT) then AttachMode := naAddChild
-    else if htNowhere in HT then AttachMode := naAdd
-
-    else if htOnIndent in HT then AttachMode := naInsert;
+    if (htOnItem in HT) or (htOnIcon in HT) then
+      AttachMode := naAddChild
+    else
+    if htNowhere in HT then
+      AttachMode := naAdd
+    else
+    if htOnIndent in HT then
+      AttachMode := naInsert;
     TreeView1.Selected.MoveTo(AnItem, AttachMode);
   end;
 end;

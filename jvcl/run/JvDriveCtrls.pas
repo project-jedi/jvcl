@@ -492,7 +492,8 @@ begin
   begin
     if FDrives.IndexOf(GetCurrentDir[1]) > 0 then
       Drive := GetCurrentDir[1]
-    else if FDrives.Count > 0 then
+    else
+    if FDrives.Count > 0 then
       Drive := FDrives[0][1];
   end;
 end;
@@ -782,7 +783,8 @@ begin
   if Drive = #0 then
     if FDrives.IndexOf(GetCurrentDir[1]) > 0 then
       Drive := GetCurrentDir[1]
-    else if FDrives.Count > 0 then
+    else
+    if FDrives.Count > 0 then
       Drive := FDrives[0][1];
 end;
 
@@ -1082,7 +1084,8 @@ begin
         begin
           DriveChange(NewDrive)
         end
-        else if tmpDrive <> Drive then
+        else
+        if tmpDrive <> Drive then
           DriveChange(Drive); // ...if not, revert
       end;
       FDirectory := GetCurrentDir; { store correct directory name }
@@ -1407,9 +1410,11 @@ begin
   begin
     if AComponent = FFileList then
       FFileList := nil
-    else if AComponent = FDriveCombo then
+    else
+    if AComponent = FDriveCombo then
       FDriveCombo := nil
-    else if AComponent = FDirLabel then
+    else
+    if AComponent = FDirLabel then
       FDirLabel := nil;
   end;
 end;
