@@ -8,11 +8,16 @@ uses
 
 
 {
-  Segment render code based on JDLed donated by Jay Dubal (http://delphisoft.topcities.com).
+  7-Segment render code based on JDLed donated by Jay Dubal (http://delphisoft.topcities.com).
   Badly coded parts around it are written by me (Marcel Bestebroer) :-)
 
   
-  7-segment: (displays 0-9, A-F, o and r; suitable for hexadecimals and the word Error)
+  7-segment: (displays 0-9, A-F, o, r and space; suitable for hexadecimals and the word Error;
+              case insensitive
+              new: added #248, ' and " to show degree, minutes and seconds
+              new: added -
+              new: added H, L and P, to display HELP
+              new: Made Uppercase C and lowercase c)
 
         a
     ---------
@@ -29,7 +34,11 @@ uses
         d
 
 
-  14-segment: (displays 0-9, A-Z (uppercase only). Other sysmbols are to be added later)
+  14-segment: (displays space, 0-9, A-Z (uppercase only).
+               new: added #0, #4 for alternative 0 and 4
+               new: added #248, ' and " to show degrees, minutes and seconds
+               new: added (, ), +, -, /, \, *
+               changed: E and F now have a smaller middle bar)
 
         a
     ---------
@@ -46,7 +55,11 @@ uses
         d
            
 
-  16-segment: (displays 0-9, A-Z (uppercase only). Other sysmbols are to be added later)
+  16-segment: (displays space, 0-9, A-Z (uppercase only).
+               new: added #0, #4 for alternative 0 and 4
+               new: added #248, ' and " to show degrees, minutes and seconds
+               new: added (, ), +, -, /, \, *
+               changed: E and F now have a smaller middle bar)
 
      a1   a2
     ---- ----
@@ -113,6 +126,7 @@ type
 
   TJvSegmentLEDDisplay = class(TJvCustomSegmentLEDDisplay)
   public
+    procedure DisplayString(S: string; const ResizeDisplay: Boolean = False);
     property Digit;
     property DigitCount;
     property DigitHeight;
@@ -260,6 +274,23 @@ destructor TJvCustomSegmentLEDDisplay.Destroy;
 begin
   FDigits.Free;
   inherited Destroy;
+end;
+
+//===TJvSegmentLEDDisplay===========================================================================
+
+procedure TJvSegmentLEDDisplay.DisplayString(S: string; const ResizeDisplay: Boolean);
+var
+  I: Integer;
+begin
+  if not ResizeDisplay then
+  begin
+    if Length(S) > DigitCount then
+      Delete(S, DigitCount + 1, Length(S) - DigitCount)
+  end
+  else
+    DigitCount := Length(S);
+  for I := 0 to DigitCount - 1 do
+    Digit[I].SetChar(S[I + 1]);
 end;
 
 //===TJvSegmentLEDDigit=============================================================================
@@ -637,39 +668,38 @@ end;
 
 procedure TJvSegmentLEDDigit.SetChar7(Ch: Char);
 begin
-  Ch := UpCase(Ch);
-  if not (Ch in [' ', '0' .. '9', 'A' .. 'F', 'O', 'R']) then
-    raise Exception.Create('Invalid character');
-  FSegments[0] := Ch in ['0', '2', '3', '5' .. '9', 'A', 'E', 'F']; // a
-  FSegments[1] := Ch in ['0' .. '4', '7' .. '9', 'A', 'D']; // b
-  FSegments[2] := Ch in ['0', '1', '3' .. '9', 'A', 'B', 'D', 'O']; // c
-  FSegments[3] := Ch in ['0', '2', '3', '5', '6', '8', '9', 'B' .. 'E', 'O']; // d
-  FSegments[4] := Ch in ['0', '2', '6', '8', 'A' .. 'F', 'O', 'R']; // e
-  FSegments[5] := Ch in ['0', '4' .. '6', '8', '9', 'A', 'B', 'E', 'F']; // f
-  FSegments[6] := Ch in ['2' .. '6', '8', '9', 'A' .. 'F', 'O', 'R']; // g
+  if not (Upcase(Ch) in [' ', '0' .. '9', 'A' .. 'F', 'H', 'L', 'O', 'P', 'R', '''', '"', #248, '-']) then
+    raise Exception.Create('Invalid character ''' + Ch + '''');
+  FSegments[0] := (Upcase(Ch) in ['0', '2', '3', '5' .. '9', 'A', 'E', 'F', 'P', #248]) or (Ch = 'C'); // a
+  FSegments[1] := UpCase(Ch) in ['0' .. '4', '7' .. '9', 'A', 'D', 'H', 'P', '"', #248]; // b
+  FSegments[2] := UpCase(Ch) in ['0', '1', '3' .. '9', 'A', 'B', 'D', 'H', 'O']; // c
+  FSegments[3] := UpCase(Ch) in ['0', '2', '3', '5', '6', '8', '9', 'B' .. 'E', 'L', 'O']; // d
+  FSegments[4] := UpCase(Ch) in ['0', '2', '6', '8', 'A' .. 'F', 'H', 'L', 'O', 'P', 'R']; // e
+  FSegments[5] := (UpCase(Ch) in ['0', '4' .. '6', '8', '9', 'A', 'B', 'E', 'F', 'H', 'L', 'P', '''', '"', #248]) or (Ch = 'C'); // f
+  FSegments[6] := Ch in ['2' .. '6', '8', '9', 'A', 'B', 'D' .. 'F', 'a' .. 'f', 'H', 'h', 'O', 'o', 'P', 'p', 'R', 'r', #248, '-']; // g
 end;
 
 const
   ChMapToSegStr: array[#0.. #255] of string = (
+    'ABCDEFKN', '0',        '0',        '0',        'FGJM',
     '0',        '0',        '0',        '0',        '0',
     '0',        '0',        '0',        '0',        '0',
     '0',        '0',        '0',        '0',        '0',
     '0',        '0',        '0',        '0',        '0',
     '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '',          '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        'KN',       'ABCDEF',   'BC',
+    '0',        '0',        '',         '0',        'BJ',
+    '0',        '0',        '0',        '0',        'J',
+    'KL',       'HN',       'GHJKLMN',  'GJM',      '0',
+    'G',        '0',        'KN',       'ABCDEF',   'BC',
     'ABDEG',    'ABCDG',    'BCFG',     'ACDFG',    'ACDEFG',
     'ABC',      'ABCDEFG',  'ABCDFG',   '0',        '0',
     '0',        '0',        '0',        '0',        '0',
-    'ABCEFG',   'ABCDG2JM', 'ADEF',     'ABCDJM',   'ADEFG',
-    'AEFG',     'ACDEFG2',  'BCEFG',    'ADJM',     'ABCDE',
+    'ABCEFG',   'ABCDG2JM', 'ADEF',     'ABCDJM',   'ADEFG1',
+    'AEFG1',     'ACDEFG2',  'BCEFG',    'ADJM',     'ABCDE',
     'EFG1KL',   'EFD',      'BCEFHK',   'BCEFHL',   'ABCDEF',
     'ABEFG',    'ABCDEFL',  'ABEFGL',   'ACDFG',    'AJM',
     'BCDEF',    'EFKN',     'BCEFLN',   'HKLN',     'HKM',
-    'ADKN',     '0',        '0',        '0',        '0',
+    'ADKN',     '0',        'HL',       '0',        '0',
     '0',        '0',        '0',        '0',        '0',
     '0',        '0',        '0',        '0',        '0',
     '0',        '0',        '0',        '0',        '0',
@@ -700,7 +730,7 @@ const
     '0',        '0',        '0',        '0',        '0',
     '0',        '0',        '0',        '0',        '0',
     '0',        '0',        '0',        '0',        '0',
-    '0',        '0',        '0',        '0',        '0',
+    '0',        '0',        '0',        'A2BG2J',   '0',
     '0',        '0',        '0',        '0',        '0',
     '0'
   );
@@ -723,8 +753,8 @@ end;
 
 procedure TJvSegmentLEDDigit.SetChar(const Ch: Char);
 begin
-  if Ch < ' ' then
-    raise Exception.Create('Invalid character');
+{  if Ch < ' ' then
+    raise Exception.Create('Invalid character');}
   if Display.Kind = slk7 then
     SetChar7(Ch)
   else
