@@ -527,14 +527,6 @@ begin
   if FCaption = '' then
     Exit;
   SetBkMode(Canvas.Handle, TRANSPARENT);
-  R := FCaptionRect;
-  tH := ((R.Bottom - R.Top) - Canvas.TextHeight(FCaption)) div 2;
-  tW := ((R.Right - R.Left) - Canvas.TextHeight(FCaption)) div 2;
-  if FOutlookLook then
-  begin
-    Dec(th);
-    Dec(tw);
-  end;
   with Canvas do
   begin
     tf := TFont.Create;
@@ -548,6 +540,14 @@ begin
       Canvas.Font.Assign(tf);
     finally
       tf.Free;
+    end;
+    R := FCaptionRect;
+    tH := ((R.Bottom - R.Top) - Canvas.TextHeight(FCaption)) div 2;
+    tW := ((R.Right - R.Left) - Canvas.TextHeight(FCaption)) div 2;
+    if FOutlookLook then
+    begin
+      Dec(th);
+      Dec(tw);
     end;
     case FDrawPosition of
       dpLeft:
