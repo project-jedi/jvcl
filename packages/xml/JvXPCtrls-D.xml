@@ -2,13 +2,16 @@
 <Package Name="JvXPCtrls" Design="-1">
   <Description>JVCL XP Controls</Description>
   <ClxDescription>JVCLX XP Controls</ClxDescription>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50</C5PFlags>
-  <C6PFlags>-LUDesignIde</C6PFlags>
+  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50(USEJVCL)</C5PFlags>
+  <C6PFlags>-LUDesignIde -LUCJcl(USEJVCL) -LUCJclVcl(USEJVCL)</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <Requires>
     <Package Name="JvCore-D" Targets="all" Condition="USEJVCL"/>
     <Package Name="JvXPCtrls-R" Targets="all" Condition=""/>
+    <Package Name="CJCL50" Targets="C5" Condition="USEJVCL"/>
+    <Package Name="CJCL" Targets="C6,C6p" Condition="USEJVCL"/>
+    <Package Name="CJCLVCL" Targets="C6,C6p" Condition="USEJVCL"/>
     <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
