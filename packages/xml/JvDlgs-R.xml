@@ -53,5 +53,7 @@
     <File Name="..\..\run\JvDSADialogs.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDualList.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDialogActns.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDesktopAlert.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDesktopAlertForm.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
