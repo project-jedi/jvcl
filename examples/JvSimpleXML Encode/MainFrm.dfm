@@ -17,7 +17,7 @@ object Form1: TForm1
   TextHeight = 13
   object pnlBottom: TPanel
     Left = 0
-    Top = 263
+    Top = 266
     Width = 437
     Height = 230
     Align = alBottom
@@ -81,7 +81,7 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 437
-    Height = 263
+    Height = 266
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
@@ -147,7 +147,7 @@ object Form1: TForm1
       TabOrder = 5
       OnClick = btnDecodeClick
     end
-    object chkAlternate: TCheckBox
+    object chkUseUTF8: TCheckBox
       Left = 106
       Top = 220
       Width = 133

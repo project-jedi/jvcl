@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 149
   Width = 422
   Height = 133
-  Caption = 'Form1'
+  Caption = 'JvThread Demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

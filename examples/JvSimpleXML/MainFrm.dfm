@@ -46,7 +46,7 @@ object Form1: TForm1
     Anchors = [akLeft, akTop, akRight, akBottom]
     Indent = 19
     TabOrder = 2
-    LineColor = -16777216
+    LineColor = 13160660
   end
   object JvSimpleXml1: TJvSimpleXML
     IndentString = '  '

@@ -18,7 +18,7 @@ object frmMain: TfrmMain
     Left = 0
     Top = 0
     Width = 862
-    Height = 532
+    Height = 535
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -34,7 +34,7 @@ object frmMain: TfrmMain
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 532
+    Top = 535
     Width = 862
     Height = 19
     Panels = <

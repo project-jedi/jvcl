@@ -20,7 +20,7 @@ object JvMruListMainForm: TJvMruListMainForm
     Top = 4
     Width = 419
     Height = 75
-    Caption = 'GroupBox1'
+    Caption = ' Settings'
     TabOrder = 0
     object Label1: TLabel
       Left = 18

@@ -17,7 +17,7 @@ object frmMain: TfrmMain
   TextHeight = 13
   object pnlBottom: TPanel
     Left = 0
-    Top = 407
+    Top = 410
     Width = 724
     Height = 65
     Align = alBottom
@@ -239,7 +239,7 @@ object frmMain: TfrmMain
     Left = 0
     Top = 0
     Width = 724
-    Height = 407
+    Height = 410
     ActivePage = tabOriginal
     Align = alClient
     TabOrder = 1
@@ -250,7 +250,7 @@ object frmMain: TfrmMain
         Left = 0
         Top = 0
         Width = 716
-        Height = 379
+        Height = 382
         Align = alClient
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -268,7 +268,7 @@ object frmMain: TfrmMain
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 472
+    Top = 475
     Width = 724
     Height = 19
     Panels = <

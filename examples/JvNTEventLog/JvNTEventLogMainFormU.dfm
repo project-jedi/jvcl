@@ -18,7 +18,7 @@ object JvNTEventLogMainForm: TJvNTEventLogMainForm
     Left = 89
     Top = 38
     Width = 4
-    Height = 408
+    Height = 411
     Cursor = crHSplit
   end
   object ButtonsPanel: TPanel
@@ -42,7 +42,7 @@ object JvNTEventLogMainForm: TJvNTEventLogMainForm
     Left = 0
     Top = 38
     Width = 89
-    Height = 408
+    Height = 411
     Align = alLeft
     ItemHeight = 13
     TabOrder = 1
@@ -52,7 +52,7 @@ object JvNTEventLogMainForm: TJvNTEventLogMainForm
     Left = 93
     Top = 38
     Width = 512
-    Height = 408
+    Height = 411
     Align = alClient
     Columns = <
       item

@@ -32,7 +32,8 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ImgList, ComCtrls, JvPageListTreeView, ExtCtrls, StdCtrls, ActnList,
   JvButton, JvFooter, JvComponent, JvGroupHeader, JvCombobox, JvColorCombo,
-  Buttons, JvBitBtn, JvExStdCtrls, JvExControls, JvExButtons, JvExExtCtrls;
+  Buttons, JvBitBtn, JvExStdCtrls, JvExControls, JvExButtons, JvExExtCtrls,
+  JvExComCtrls;
 
 type
   TfrmMain = class(TForm)
@@ -125,7 +126,6 @@ type
     pgWebBrowser: TJvStandardPage;
     JvGroupHeader1: TJvGroupHeader;
     JvGroupHeader2: TJvGroupHeader;
-    Button7: TButton;
     ImageList2: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure JvFooterBtn2Click(Sender: TObject);

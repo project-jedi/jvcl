@@ -1,5 +1,7 @@
 program PhotoOp;
 
+{%File 'dbUTF'}
+
 uses
   Forms,
   PhotoOpUnit in 'PhotoOpUnit.pas' {PhotoOpMain},

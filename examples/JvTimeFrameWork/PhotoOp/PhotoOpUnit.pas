@@ -518,7 +518,7 @@ begin
 
   // Populate the resource related controls
   With SchedulesQuery do
-    Begin
+    try
       Open;
       First;
       While not EOF do
@@ -530,7 +530,14 @@ begin
           Next;
         End;
       Close;
-    End;
+    except
+      on E:EDBEngineError do
+      begin
+        ShowMessageFmt('%s:'#13#10'Try moving the database to a shorter path.',[E.Message]);
+        Application.Terminate;
+        Exit;
+      end;
+    end;
 
   // Initialize the resource related controls
   ResourceCombo.ItemIndex := 0;
@@ -662,7 +669,6 @@ begin
    if DataPath[Length(DataPath)] <> '\' then
       DataPath := DataPath + '\';
    DataPath := DataPath + 'Data';
-
    dbUTF.Params.Add('PATH=' + DataPath);
 end;
 

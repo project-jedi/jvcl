@@ -213,7 +213,7 @@ object ControlsForm: TControlsForm
           Width = 145
           Height = 22
           DroppedDownWidth = 145
-          FontName = 'Courier'
+          FontName = 'Roman'
           Device = fdPrinter
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
@@ -864,15 +864,14 @@ object ControlsForm: TControlsForm
           Top = 33
           Width = 225
           Height = 21
-          ButtonHint = 'Special action...|'
           ButtonFlat = False
+          ButtonHint = 'Special action...|'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
           Font.Style = []
-          GlyphKind = gkEllipsis
-          NumGlyphs = 1
+          ImageKind = ikEllipsis
           ParentFont = False
           TabOrder = 0
           OnButtonClick = ComboEdit1ButtonClick
@@ -920,7 +919,6 @@ object ControlsForm: TControlsForm
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
           Font.Style = []
-          NumGlyphs = 2
           ParentFont = False
           TabOrder = 0
         end
@@ -936,7 +934,6 @@ object ControlsForm: TControlsForm
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
           Font.Style = []
-          NumGlyphs = 2
           ParentFont = False
           TabOrder = 1
         end
@@ -982,7 +979,6 @@ object ControlsForm: TControlsForm
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
           Font.Style = []
-          NumGlyphs = 1
           ParentFont = False
           TabOrder = 0
         end
@@ -1026,7 +1022,6 @@ object ControlsForm: TControlsForm
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
           Font.Style = []
-          NumGlyphs = 1
           ParentFont = False
           TabOrder = 0
         end
@@ -1091,7 +1086,6 @@ object ControlsForm: TControlsForm
           Font.Style = []
           ParentFont = False
           PasswordChar = #0
-          ReadOnly = False
           TabOrder = 0
           Text = '0'
           Value = 0
@@ -2777,10 +2771,8 @@ object ControlsForm: TControlsForm
           Font.Name = 'MS Sans Serif'
           Font.Style = []
           ItemHeight = 13
-          ItemIndex = 0
           ParentFont = False
           TabOrder = 1
-          Text = 'Analog'
           OnChange = ComboBox8Change
           Items.Strings = (
             'Analog'

@@ -31,6 +31,8 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, ComCtrls, JvNTEventLog, JvComponent;
+const
+  CM_CHECKOSVERSION = WM_USER + 1;
 
 type
   TJvNTEventLogMainForm = class(TForm)
@@ -42,6 +44,7 @@ type
     JvNTEventLog1: TJvNTEventLog;
     procedure FormCreate(Sender: TObject);
     procedure ListBox1Click(Sender: TObject);
+    procedure CMCHECKOSVERSION(var Msg:TMEssage); message CM_CHECKOSVERSION;
   private
     { Private declarations }
     procedure ReadEvents;
@@ -54,10 +57,17 @@ implementation
 
 {$R *.dfm}
 
+procedure TJvNTEventLogMainForm.CMCHECKOSVERSION(var Msg: TMEssage);
+begin
+//  if Win32Platform <> VER_PLATFORM_WIN32_NT	then
+  ShowMessage('This demo only works on NT based OS''s (NT 4, Win2k and WinXP).');
+end;
+
 procedure TJvNTEventLogMainForm.FormCreate(Sender: TObject);
 begin
   JvNTEventLog1.ReadEventLogs(ListBox1.Items);
   JvNTEventLog1.Active := True;
+  PostMessage(Handle, CM_CHECKOSVERSION,0,0);
 end;
 
 procedure TJvNTEventLogMainForm.ListBox1Click(Sender: TObject);

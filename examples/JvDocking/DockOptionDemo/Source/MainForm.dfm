@@ -8,7 +8,7 @@ object Main_Form: TMain_Form
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
-  Font.Name = #203#206#204#229
+  Font.Name = 'ËÎÌו'
   Font.Style = []
   FormStyle = fsMDIForm
   OldCreateOrder = False
@@ -25,7 +25,6 @@ object Main_Form: TMain_Form
     Height = 137
     ActivePage = TabSheet1
     Align = alTop
-    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Conjoin Style'

@@ -1,8 +1,8 @@
 object Form1: TForm1
   Left = 193
   Top = 107
-  Width = 783
-  Height = 540
+  Width = 568
+  Height = 366
   Caption = 'JvStringGrid Demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -17,8 +17,8 @@ object Form1: TForm1
   object JvSg: TJvStringGrid
     Left = 0
     Top = 0
-    Width = 508
-    Height = 510
+    Width = 293
+    Height = 339
     Align = alClient
     ColCount = 2
     FixedCols = 0
@@ -34,10 +34,10 @@ object Form1: TForm1
     FixedFont.Style = []
   end
   object Panel1: TPanel
-    Left = 508
+    Left = 293
     Top = 0
     Width = 267
-    Height = 510
+    Height = 339
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 1
@@ -176,7 +176,8 @@ object Form1: TForm1
       Left = 24
       Top = 248
       Width = 225
-      Height = 233
+      Height = 77
+      Anchors = [akLeft, akTop, akRight, akBottom]
       Lines.Strings = (
         'The content of this memo will be inserted into '
         'the stringgrid when you click either of the '

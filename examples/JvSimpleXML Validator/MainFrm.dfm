@@ -91,7 +91,7 @@ object Form1: TForm1
   end
   object sbResults: TStatusBar
     Left = 0
-    Top = 308
+    Top = 311
     Width = 456
     Height = 19
     Panels = <
