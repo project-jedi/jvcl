@@ -1162,7 +1162,7 @@ var
 begin
   FreeAndNil(FParameterDialog);
 
-  FParameterDialog := DynControlEngine.CreateForm('', '');
+  FParameterDialog := DynControlEngine.CreateForm(Messages.Caption, '');
 
   with TForm(ParameterDialog) do
   begin

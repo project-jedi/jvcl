@@ -597,6 +597,7 @@ end;
 function TJvDynControlEngine.CreateForm(ACaption: string; AHint: string): TCustomForm;
 begin
   Result := TCustomForm(CreateControl(jctForm, Application, nil, ''));
+  Result.Caption := ACaption;
   Result.Hint := AHint;
 end;
 
