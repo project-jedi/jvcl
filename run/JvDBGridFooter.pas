@@ -446,6 +446,8 @@ end;
 procedure TJvDBGridFooter.JvDBGridLayoutChanged(Grid: TJvDBGrid; Kind: TJvDBGridLayoutChangeKind);
 begin
   case Kind of
+    lcLayoutChanged:
+      DrawPanels;
     lcSizeChanged:
       DrawPanels;
     lcTopLeftChanged:
