@@ -136,8 +136,56 @@ type
 // Define structure for passing alternate platform info into
 // SetupSetFileQueueAlternatePlatform and SetupQueryInfOriginalFileInformation.
 //
-  PSPAltPlatformInfo = ^TSPAltPlatformInfo;
-  SP_ALTPLATFORM_INFO = packed record
+  PSPAltPlatformInfoV2 = ^SP_ALTPLATFORM_INFO_V2;
+  SP_ALTPLATFORM_INFO_V2 = packed record
+    cbSize: DWORD;
+    //
+    // platform to use (VER_PLATFORM_WIN32_WINDOWS or VER_PLATFORM_WIN32_NT)
+    //
+    Platform: DWORD;
+    //
+    // major and minor version numbers to use
+    //
+    MajorVersion: DWORD;
+    MinorVersion: DWORD;
+    //
+    // processor architecture to use (PROCESSOR_ARCHITECTURE_INTEL,
+    // PROCESSOR_ARCHITECTURE_ALPHA, PROCESSOR_ARCHITECTURE_IA64, or
+    // PROCESSOR_ARCHITECTURE_ALPHA64)
+    //
+    ProcessorArchitecture: WORD;
+
+    Flags: WORD;
+    (*
+    union {
+        WORD  Reserved; // for compatibility with V1 structure
+        WORD  Flags;    // indicates validity of non V1 fields
+    };
+    *)
+
+    //
+    // specify SP_ALTPLATFORM_FLAGS_VERSION_RANGE in Flags
+    // to use FirstValidatedMajorVersion and FirstValidatedMinorVersion
+    //
+    // Major and minor versions of the oldest previous OS for which this
+    // package's digital signature may be considered valid.  For example, say
+    // the alternate platform is VER_PLATFORM_WIN32_NT, version 5.1.  However,
+    // it is wished that driver packages signed with a 5.0 osattr also be
+    // considered valid.  In this case, you'd have a  MajorVersion/MinorVersion
+    // of 5.1, and a FirstValidatedMajorVersion/FirstValidatedMinorVersion of
+    // 5.0.  To validate packages signed for any previous OS release, specify
+    // 0 for these fields.  To only validate against the target alternate
+    // platform, specify the same values as those in the MajorVersion and
+    // MinorVersion fields.
+    //
+    FirstValidatedMajorVersion: DWORD;
+    FirstValidatedMinorVersion: DWORD;
+  end;
+  {$EXTERNALSYM SP_ALTPLATFORM_INFO_V2}
+  TSPAltPlatformInfoV2 = SP_ALTPLATFORM_INFO_V2;
+
+  PSPAltPlatformInfoV1 = ^TSPAltPlatformInfoV1;
+  SP_ALTPLATFORM_INFO_V1 = packed record
     cbSize: DWORD;
     //
     // platform to use (VER_PLATFORM_WIN32_WINDOWS or VER_PLATFORM_WIN32_NT)
@@ -156,14 +204,30 @@ type
     ProcessorArchitecture: Word;
     Reserved: Word; // must be zero.
   end;
-  {$EXTERNALSYM SP_ALTPLATFORM_INFO}
-  TSPAltPlatformInfo = SP_ALTPLATFORM_INFO;
+  {$EXTERNALSYM SP_ALTPLATFORM_INFO_V1}
+  TSPAltPlatformInfoV1 = SP_ALTPLATFORM_INFO_V1;
+
+  {$IFDEF WINXP}
+  PSPAltPlatformInfo = PSPAltPlatformInfoV1;
+  TSPAltPlatformInfo = TSPAltPlatformInfoV1;
+  {$ELSE}
+  PSPAltPlatformInfo = PSPAltPlatformInfoV2;
+  TSPAltPlatformInfo = TSPAltPlatformInfoV2;
+  {$ENDIF WINXP}
+
+//
+// the following flags are available to SP_ALTPLATFORM_INFO_V2
+//
+const
+  SP_ALTPLATFORM_FLAGS_VERSION_RANGE = $0001;  // FirstValidatedMajor/MinorVersion
+  {$EXTERNALSYM SP_ALTPLATFORM_FLAGS_VERSION_RANGE}
 
 //
 // Define structure that is filled in by SetupQueryInfOriginalFileInformation
 // to indicate the INF's original name and the original name of the (potentially
 // platform-specific) catalog file specified by that INF.
 //
+type
   PSPOriginalFileInfoA = ^TSPOriginalFileInfoA;
   PSPOriginalFileInfoW = ^TSPOriginalFileInfoW;
   PSPOriginalFileInfo = PSPOriginalFileInfoA;
@@ -376,6 +440,14 @@ const
   SPFILENOTIFY_QUEUESCAN_EX = $00000018;
   {$EXTERNALSYM SPFILENOTIFY_QUEUESCAN_EX}
 
+  SPFILENOTIFY_STARTREGISTRATION = $00000019;
+  SPFILENOTIFY_ENDREGISTRATION   = $00000020;
+
+//
+// Extended notification for SetupScanFileQueue(Flags=SPQ_SCAN_USE_CALLBACK_SIGNERINFO)
+//
+  SPFILENOTIFY_QUEUESCAN_SIGNERINFO = $00000040;
+
 //
 // Copy notification. These are bit flags that may be combined.
 //
@@ -470,6 +542,35 @@ type
   TFilePathsW = FILEPATHS_W;
   TFilePaths = TFilePathsA;
 
+  {$IFDEF WINXP}
+  PFilePathsSignerInfoA = ^TFilePathsSignerInfoA;
+  PFilePathsSignerInfoW = ^TFilePathsSignerInfoW;
+  PFilePathsSignerInfo = PFilePathsSignerInfoA;
+  FILEPATHS_SIGNERINFO_A = packed record
+    Target: PChar;
+    Source: PChar;  // not used for delete operations
+    Win32Error: UINT;
+    Flags: DWORD;   // such as SP_COPY_NOSKIP for copy errors
+    DigitalSigner: PChar;
+    Version: PChar;
+    CatalogFile: PChar;
+  end;
+  {$EXTERNALSYM FILEPATHS_SIGNERINFO_A}
+  FILEPATHS_SIGNERINFO_W = packed record
+    Target: PWideChar;
+    Source: PWideChar;  // not used for delete operations
+    Win32Error: UINT;
+    Flags: DWORD;   // such as SP_COPY_NOSKIP for copy errors
+    DigitalSigner: PWideChar;
+    Version: PWideChar;
+    CatalogFile: PWideChar;
+  end;
+  {$EXTERNALSYM FILEPATHS_SIGNERINFO_W}
+  TFilePathsSignerInfoA = FILEPATHS_SIGNERINFO_A;
+  TFilePathsSignerInfoW = FILEPATHS_SIGNERINFO_W;
+  TFilePathsSignerInfo = TFilePathsPathsSignerA;
+  {$ENDIF WINXP}
+
 //
 // Structure used with SPFILENOTIFY_NEEDMEDIA
 //
@@ -563,9 +664,56 @@ type
   TFileInCabinetInfoW = FILE_IN_CABINET_INFO_W;
   TFileInCabinetInfo = TFileInCabinetInfoA;
 
+  //
+  // Structure used for SPFILENOTIFY_***REGISTRATION
+  // callback
+  //
+  {$IFDEF WINXP}
+  PSPRegisterControlStatusA = ^TSPRegisterControlStatusA;
+  PSPRegisterControlStatusW = ^TSPRegisterControlStatusW;
+  PSPRegisterControlStatus = PSPRegisterControlStatusA;
+  SP_REGISTER_CONTROL_STATUSA = packed record
+    cbSize: DWORD;
+    FileName: PChar;
+    Win32Error: DWORD;
+    FailureCode: DWORD;
+  end;
+  {$EXTERNALSYM SP_REGISTER_CONTROL_STATUSA}
+  SP_REGISTER_CONTROL_STATUSW = packed record
+    cbSize: DWORD;
+    FileName: PWideChar;
+    Win32Error: DWORD;
+    FailureCode: DWORD;
+  end;
+  {$EXTERNALSYM SP_REGISTER_CONTROL_STATUSW}
+  TSPRegisterControlStatusA = SP_REGISTER_CONTROL_STATUSA;
+  TSPRegisterControlStatusW = SP_REGISTER_CONTROL_STATUSW;
+  TSPRegisterControlStatus = TSPRegisterControlStatusA;
+  {$ENDIF WINXP}
+
+//
+// valid values for SP_REGISTER_CONTROL_STATUS.FailureCode field
+//
+const
+  SPREG_SUCCESS     = $00000000;
+  {$EXTERNALSYM SPREG_SUCCESS}
+  SPREG_LOADLIBRARY = $00000001;
+  {$EXTERNALSYM SPREG_LOADLIBRARY}
+  SPREG_GETPROCADDR = $00000002;
+  {$EXTERNALSYM SPREG_GETPROCADDR}
+  SPREG_REGSVR      = $00000003;
+  {$EXTERNALSYM SPREG_REGSVR}
+  SPREG_DLLINSTALL  = $00000004;
+  {$EXTERNALSYM SPREG_DLLINSTALL}
+  SPREG_TIMEOUT     = $00000005;
+  {$EXTERNALSYM SPREG_TIMEOUT}
+  SPREG_UNKNOWN     = $FFFFFFFF;
+  {$EXTERNALSYM SPREG_UNKNOWN}
+
 //
 // Define type for setup file queue
 //
+type
   HSPFILEQ = Pointer;
   {$EXTERNALSYM HSPFILEQ}
 
@@ -814,6 +962,12 @@ const
   {$EXTERNALSYM DIF_TROUBLESHOOTER}
   DIF_POWERMESSAGEWAKE              = $00000027;
   {$EXTERNALSYM DIF_POWERMESSAGEWAKE}
+  DIF_ADDREMOTEPROPERTYPAGE_ADVANCED = $00000028;
+  {$EXTERNALSYM DIF_ADDREMOTEPROPERTYPAGE_ADVANCED}
+  DIF_UPDATEDRIVER_UI                = $00000029;
+  {$EXTERNALSYM DIF_UPDATEDRIVER_UI}
+  DIF_RESERVED2                      = $00000030;
+  {$EXTERNALSYM DIF_RESERVED2}
 
 type
   DI_FUNCTION = UINT;    // Function type for device installer
@@ -1023,6 +1177,19 @@ const
                                                    // a driver list.
   DI_FLAGSEX_POWERPAGE_ADDED          = $01000000; // class installer added their own power page
   {$EXTERNALSYM DI_FLAGSEX_POWERPAGE_ADDED}
+
+  DI_FLAGSEX_FILTERSIMILARDRIVERS     = $02000000;  // only include similar drivers in class list
+  {$EXTERNALSYM DI_FLAGSEX_FILTERSIMILARDRIVERS}
+  DI_FLAGSEX_INSTALLEDDRIVER          = $04000000;  // only add the installed driver to the class or compat
+  {$EXTERNALSYM DI_FLAGSEX_INSTALLEDDRIVER}
+                                                    // driver list.  Used in calls to SetupDiBuildDriverInfoList
+  DI_FLAGSEX_NO_CLASSLIST_NODE_MERGE  = $08000000;  // Don't remove identical driver nodes from the class list
+  {$EXTERNALSYM DI_FLAGSEX_NO_CLASSLIST_NODE_MERGE}
+  DI_FLAGSEX_ALTPLATFORM_DRVSEARCH    = $10000000;  // Build driver list based on alternate platform information
+  {$EXTERNALSYM DI_FLAGSEX_ALTPLATFORM_DRVSEARCH}
+                                                    // specified in associated file queue
+  DI_FLAGSEX_RESTART_DEVICE_ONLY      = $20000000;  // only restart the device drivers are being installed on as
+  {$EXTERNALSYM DI_FLAGSEX_RESTART_DEVICE_ONLY}
 
 //
 // Class installation parameters header.  This must be the first field of any
@@ -1520,21 +1687,21 @@ type
   TSPDrvInfoDataV1W = SP_DRVINFO_DATA_V1_W;
   TSPDrvInfoDataV1 = TSPDrvInfoDataV1A;
 
-{$IFDEF USE_SP_DRVINFO_DATA_V1}
+  {$IFDEF USE_SP_DRVINFO_DATA_V1}
   TSPDrvInfoDataA = TSPDrvInfoDataV1A;
   TSPDrvInfoDataW = TSPDrvInfoDataV1W;
   TSPDrvInfoData = TSPDrvInfoDataA;
   PSPDrvInfoDataA = PSPDrvInfoDataV1A;
   PSPDrvInfoDataW = PSPDrvInfoDataV1W;
   PSPDrvInfoData = PSPDrvInfoDataA;
-{$ELSE}
+  {$ELSE}
   TSPDrvInfoDataA = TSPDrvInfoDataV2A;
   TSPDrvInfoDataW = TSPDrvInfoDataV2W;
   TSPDrvInfoData = TSPDrvInfoDataA;
   PSPDrvInfoDataA = PSPDrvInfoDataV2A;
   PSPDrvInfoDataW = PSPDrvInfoDataV2W;
   PSPDrvInfoData = PSPDrvInfoDataA;
-{$ENDIF}
+  {$ENDIF USE_SP_DRVINFO_DATA_V1}
 
 //
 // Driver information details structure (provides detailed information about a
@@ -1618,11 +1785,62 @@ const
   DNF_DUPPROVIDER       = $00001000; // Multiple drivers have the same provider and desc
   {$EXTERNALSYM DNF_DUPPROVIDER}
 
+  DNF_INF_IS_SIGNED     = $00002000;  // If file is digitally signed
+  {$EXTERNALSYM DNF_INF_IS_SIGNED}
+  DNF_OEM_F6_INF        = $00004000;  // INF specified from F6 during textmode setup.
+  {$EXTERNALSYM DNF_OEM_F6_INF}
+  DNF_DUPDRIVERVER      = $00008000;  // Multipe drivers have the same desc, provider, and DriverVer values
+  {$EXTERNALSYM DNF_DUPDRIVERVER}
+  DNF_BASIC_DRIVER      = $00010000;  // Driver provides basic functionality, but should
+  {$EXTERNALSYM DNF_BASIC_DRIVER}
+                                      // not be chosen if other signed drivers exist.
 //
-//Rank values (the lower the Rank number, the better the Rank)
+// Rank values (the lower the Rank number, the better the Rank)
 //
   DRIVER_HARDWAREID_RANK = $00000FFF;   // Any rank less than or equal to
-  {$EXTERNALSYM DRIVER_HARDWAREID_RANK} // this value is a HardwareID match
+  {$EXTERNALSYM DRIVER_HARDWAREID_RANK} // this value is a trusted
+                                        // HardwareID match
+
+  DRIVER_COMPATID_RANK   = $00003FFF;  // Any rank less than or equal to
+  {$EXTERNALSYM DRIVER_COMPATID_RANK}  // this (and greater than
+                                       // DRIVER_HARDWAREID_RANK) is a
+                                       // trusted CompatibleID match
+
+  DRIVER_UNTRUSTED_RANK  = $00008000;  // Any rank with this bit set is an
+  {$EXTERNALSYM DRIVER_UNTRUSTED_RANK} // "untrusted" rank, meaning that
+                                       // the INF was unsigned.
+
+  DRIVER_UNTRUSTED_HARDWAREID_RANK   = $00008FFF;  // Any rank less than or equal to
+  {$EXTERNALSYM DRIVER_UNTRUSTED_HARDWAREID_RANK}  // this value (and greater than
+                                                   // or equal to DRIVER_UNTRUSTED_RANK)
+                                                   // is an untrusted HardwareID match
+
+  DRIVER_UNTRUSTED_COMPATID_RANK     = $0000BFFF;  // Any rank less than or equal to
+  {$EXTERNALSYM DRIVER_UNTRUSTED_COMPATID_RANK}    // this value (and greater than
+                                                   // DRIVER_UNTRUSTED_HARDWAREID_RANK)
+                                                   // is an untrusted CompatibleID match
+
+  DRIVER_W9X_SUSPECT_RANK            = $0000C000; // Any rank that is greater than
+  {$EXTERNALSYM DRIVER_W9X_SUSPECT_RANK}          // or equal to this value, and lesser
+                                                  // than or equal to 0xFFFF is suspected
+                                                  // to be a Win9x-only driver, because
+                                                  // (a) it isn't signed, and (b) there
+                                                  // is no NT-specific decoration to
+                                                  // explicitly indicate that the INF
+                                                  // supports Windows NT/200x
+
+  DRIVER_W9X_SUSPECT_HARDWAREID_RANK = $0000CFFF; // Any rank less than or equal to this
+  {$EXTERNALSYM DRIVER_W9X_SUSPECT_HARDWAREID_RANK} // (and greater than or equal to
+                                                  // DRIVER_W9X_SUSPECT_RANK) is a
+                                                  // hardware ID match suspected of being
+                                                  // only for Windows 9x platforms.
+
+  DRIVER_W9X_SUSPECT_COMPATID_RANK   = $0000FFFF; // Any rank less than or equal to
+  {$EXTERNALSYM DRIVER_W9X_SUSPECT_COMPATID_RANK} // this (and greater than
+                                                  // DRIVER_W9X_SUSPECT_HARDWAREID_RANK)
+                                                  // is a compatible ID match suspected
+                                                  // of being only for Windows 9x
+                                                  // platforms.
 
 //
 // Setup callback routine for comparing detection signatures
@@ -1683,27 +1901,64 @@ const
   {$EXTERNALSYM SPPSR_ENUM_ADV_DEVICE_PROPERTIES}
 
 //
-// Structure used with SetupGetBackupQueue
+// Structure used with SetupGetBackupInformation/SetupSetBackupInformation
 //
 type
-  PSPBackupQueueParamsA = ^TSPBackupQueueParamsA;
-  PSPBackupQueueParamsW = ^TSPBackupQueueParamsW;
-  PSPBackupQueueParams = PSPBackupQueueParamsA;
-  SP_BACKUP_QUEUE_PARAMS_A = packed record
+  PSPBackupQueueParamsV2A = ^TSPBackupQueueParamsV2A;
+  PSPBackupQueueParamsV2W = ^TSPBackupQueueParamsV2W;
+  PSPBackupQueueParamsV2 = PSPBackupQueueParamsV2A;
+  SP_BACKUP_QUEUE_PARAMS_V2_A = packed record
+    cbSize: DWORD;
+    FullInfPath: array [0..MAX_PATH - 1] of AnsiChar; // buffer to hold ANSI pathname of INF file
+    FilenameOffset: Integer; // offset in CHAR's of filename part (after '\')
+    ReinstallInstance: array [0..MAX_PATH - 1] of AnsiChar;  // Instance ID (if present)
+  end;
+  {$EXTERNALSYM SP_BACKUP_QUEUE_PARAMS_V2_A}
+  SP_BACKUP_QUEUE_PARAMS_V2_W = packed record
+    cbSize: DWORD;
+    FullInfPath: array [0..MAX_PATH - 1] of WideChar;  // buffer to hold ANSI pathname of INF file
+    FilenameOffset: Integer; // offset in CHAR's of filename part (after '\')
+    ReinstallInstance: array [0..MAX_PATH - 1] of WideChar;  // Instance ID (if present)
+  end;
+  {$EXTERNALSYM SP_BACKUP_QUEUE_PARAMS_V2_W}
+  TSPBackupQueueParamsV2A = SP_BACKUP_QUEUE_PARAMS_V2_A;
+  TSPBackupQueueParamsV2W = SP_BACKUP_QUEUE_PARAMS_V2_W;
+  TSPBackupQueueParamsV2 = TSPBackupQueueParamsV2A;
+
+  PSPBackupQueueParamsV1A = ^TSPBackupQueueParamsV1A;
+  PSPBackupQueueParamsV1W = ^TSPBackupQueueParamsV1W;
+  PSPBackupQueueParamsV1 = PSPBackupQueueParamsV1A;
+  SP_BACKUP_QUEUE_PARAMS_V1_A = packed record
     cbSize: DWORD;
     FullInfPath: array [0..MAX_PATH - 1] of AnsiChar; // buffer to hold ANSI pathname of INF file
     FilenameOffset: Integer; // offset in CHAR's of filename part (after '\')
   end;
-  {$EXTERNALSYM SP_BACKUP_QUEUE_PARAMS_A}
-  SP_BACKUP_QUEUE_PARAMS_W = packed record
+  {$EXTERNALSYM SP_BACKUP_QUEUE_PARAMS_V1_A}
+  SP_BACKUP_QUEUE_PARAMS_V1_W = packed record
     cbSize: DWORD;
     FullInfPath: array [0..MAX_PATH - 1] of WideChar; // buffer to hold ANSI pathname of INF file
     FilenameOffset: Integer; // offset in CHAR's of filename part (after '\')
   end;
-  {$EXTERNALSYM SP_BACKUP_QUEUE_PARAMS_W}
-  TSPBackupQueueParamsA = SP_BACKUP_QUEUE_PARAMS_A;
-  TSPBackupQueueParamsW = SP_BACKUP_QUEUE_PARAMS_W;
-  TSPBackupQueueParams = TSPBackupQueueParamsA;
+  {$EXTERNALSYM SP_BACKUP_QUEUE_PARAMS_V1_W}
+  TSPBackupQueueParamsV1A = SP_BACKUP_QUEUE_PARAMS_V1_A;
+  TSPBackupQueueParamsV1W = SP_BACKUP_QUEUE_PARAMS_V1_W;
+  TSPBackupQueueParamsV1 = TSPBackupQueueParamsV1A;
+
+  {$IFDEF USE_SP_BACKUP_QUEUE_PARAMS_V1}
+  TSPBackupQueueParamsA = TSPBackupQueueParamsV1A;
+  TSPBackupQueueParamsW = TSPBackupQueueParamsV1W;
+  TSPBackupQueueParams = TSPBackupQueueParamsV1;
+  PSPBackupQueueParamsA = PSPBackupQueueParamsV1A;
+  PSPBackupQueueParamsW = PSPBackupQueueParamsV1W;
+  PSPBackupQueueParams = PSPBackupQueueParamsV1;
+  {$ELSE}
+  TSPBackupQueueParamsA = TSPBackupQueueParamsV2A;
+  TSPBackupQueueParamsW = TSPBackupQueueParamsV2W;
+  TSPBackupQueueParams = TSPBackupQueueParamsV2;
+  PSPBackupQueueParamsA = PSPBackupQueueParamsV2A;
+  PSPBackupQueueParamsW = PSPBackupQueueParamsV2W;
+  PSPBackupQueueParams = PSPBackupQueueParamsV2;
+  {$ENDIF USE_SP_BACKUP_QUEUE_PARAMS_V1}
 
 //
 // Setupapi-specific error codes
@@ -1842,6 +2097,18 @@ const
   {$EXTERNALSYM ERROR_NOT_DISABLEABLE}
   ERROR_CANT_REMOVE_DEVINST         = DWORD(APPLICATION_ERROR_MASK or ERROR_SEVERITY_ERROR or $232);
   {$EXTERNALSYM ERROR_CANT_REMOVE_DEVINST}
+  ERROR_INVALID_TARGET              = DWORD(APPLICATION_ERROR_MASK or ERROR_SEVERITY_ERROR or $233);
+  {$EXTERNALSYM ERROR_INVALID_TARGET}
+  ERROR_DRIVER_NONNATIVE            = DWORD(APPLICATION_ERROR_MASK or ERROR_SEVERITY_ERROR or $234);
+  {$EXTERNALSYM ERROR_DRIVER_NONNATIVE}
+  ERROR_IN_WOW64                    = DWORD(APPLICATION_ERROR_MASK or ERROR_SEVERITY_ERROR or $235);
+  {$EXTERNALSYM ERROR_IN_WOW64}
+  ERROR_SET_SYSTEM_RESTORE_POINT    = DWORD(APPLICATION_ERROR_MASK or ERROR_SEVERITY_ERROR or $236);
+  {$EXTERNALSYM ERROR_SET_SYSTEM_RESTORE_POINT}
+  ERROR_INCORRECTLY_COPIED_INF      = DWORD(APPLICATION_ERROR_MASK or ERROR_SEVERITY_ERROR or $237);
+  {$EXTERNALSYM ERROR_INCORRECTLY_COPIED_INF}
+  ERROR_SCE_DISABLED                = DWORD(APPLICATION_ERROR_MASK or ERROR_SEVERITY_ERROR or $238);
+  {$EXTERNALSYM ERROR_SCE_DISABLED}
 
 //
 // Backward compatibility--do not use.
@@ -2590,7 +2857,7 @@ function SetupQueryInfOriginalFileInformation(var InfInformation: TSPInfInformat
   InfIndex: UINT; AlternatePlatformInfo: PSPAltPlatformInfo;
   var OriginalFileInfo: TSPOriginalFileInfoA): LongBool; stdcall;
 {$EXTERNALSYM SetupQueryInfOriginalFileInformation}
-{$ENDIF}
+{$ENDIF WIN2000}
 
 function SetupQueryInfVersionInformationA(var InfInformation: TSPInfInformation;
   InfIndex: UINT; const Key, ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD;
@@ -2722,6 +2989,14 @@ function SetupGetBinaryField(var Context: TInfContext; FieldIndex: DWORD;
   ReturnBuffer: PBYTE; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
 {$EXTERNALSYM SetupGetBinaryField}
 
+//
+// SetupGetFileCompressionInfo is depreciated
+// use SetupGetFileCompressionInfoEx instead
+//
+// ActualSourceFileName returned by SetupGetFileCompressionInfo
+// must be freed by the export setupapi!MyFree (NT4+ Win95+)
+// or LocalFree (Win2k+)
+//
 function SetupGetFileCompressionInfoA(const SourceFileName: PAnsiChar;
   var ActualSourceFileName: PAnsiChar; var SourceFileSize: DWORD;
   var TargetFileSize: DWORD; var CompressionType: UINT): DWORD; stdcall;
@@ -2884,7 +3159,7 @@ function SetupBackupErrorW(hwndParent: HWND; const DialogTitle, BackupFile,
 function SetupBackupError(hwndParent: HWND; const DialogTitle, BackupFile,
   TargetFile: PChar; Win32ErrorCode: UINT; Style: DWORD): UINT; stdcall;
 {$EXTERNALSYM SetupBackupError}
-{$ENDIF}
+{$ENDIF WIN2000}
 
 function SetupSetDirectoryIdA(InfHandle: HINF; Id: DWORD; const Directory: PAnsiChar): LongBool; stdcall;
 {$EXTERNALSYM SetupSetDirectoryIdA}
@@ -2958,7 +3233,7 @@ function SetupSetFileQueueAlternatePlatform(QueueHandle: HSPFILEQ;
   AlternatePlatformInfo: PSPAltPlatformInfo;
   const AlternateDefaultCatalogFile: PChar): LongBool; stdcall;
 {$EXTERNALSYM SetupSetFileQueueAlternatePlatform}
-{$ENDIF}
+{$ENDIF WIN2000}
 
 function SetupSetPlatformPathOverrideA(const Override_: PAnsiChar): LongBool; stdcall;
 {$EXTERNALSYM SetupSetPlatformPathOverrideA}
@@ -2987,7 +3262,7 @@ function SetupQueueCopyIndirectW(var CopyParams: TSPFileCopyParamsW): LongBool; 
 {$EXTERNALSYM SetupQueueCopyIndirectW}
 function SetupQueueCopyIndirect(var CopyParams: TSPFileCopyParamsA): LongBool; stdcall;
 {$EXTERNALSYM SetupQueueCopyIndirect}
-{$ENDIF}
+{$ENDIF WIN2000}
 
 function SetupQueueDefaultCopyA(QueueHandle: HSPFILEQ; InfHandle: HINF;
   const SourceRootPath, SourceFilename, TargetFilename: PAnsiChar;
@@ -3394,7 +3669,7 @@ function SetupGetBackupInformationW(QueueHandle: HSPFILEQ;
 function SetupGetBackupInformation(QueueHandle: HSPFILEQ;
   var BackupParams: TSPBackupQueueParamsA): LongBool; stdcall;
 {$EXTERNALSYM SetupGetBackupInformation}
-{$ENDIF}
+{$ENDIF WIN2000}
 
 //
 // Device Installer APIs
@@ -4038,7 +4313,7 @@ function SetupDiGetClassRegistryProperty(var ClassGuid: TGUID;
   PropertyBufferSize: DWORD; RequiredSize: PDWORD; const MachineName: PChar;
   Reserved: Pointer): LongBool; stdcall;
 {$EXTERNALSYM SetupDiGetClassRegistryProperty}
-{$ENDIF}
+{$ENDIF WIN2000}
 
 function SetupDiSetDeviceRegistryPropertyA(DeviceInfoSet: HDEVINFO;
   var DeviceInfoData: TSPDevInfoData; Property_: DWORD;
@@ -4066,7 +4341,7 @@ function SetupDiSetClassRegistryProperty(var ClassGuid: TGUID;
   Property_: DWORD; const PropertyBuffer: PBYTE; PropertyBufferSize: DWORD;
   const MachineName: PChar; Reserved: Pointer): LongBool; stdcall;
 {$EXTERNALSYM SetupDiSetClassRegistryProperty}
-{$ENDIF}
+{$ENDIF WIN2000}
 
 function SetupDiGetDeviceInstallParamsA(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData;
@@ -4462,7 +4737,7 @@ type
     InfIndex: UINT; AlternatePlatformInfo: PSPAltPlatformInfo;
     var OriginalFileInfo: TSPOriginalFileInfoW): LongBool; stdcall;
   TSetupQueryInfOriginalFileInformation = TSetupQueryInfOriginalFileInformationA;
-  {$ENDIF}
+  {$ENDIF WIN2000}
 
   TSetupQueryInfVersionInformationA = function(var InfInformation: TSPInfInformation;
     InfIndex: UINT; const Key, ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD;
@@ -4644,7 +4919,7 @@ type
   TSetupBackupErrorW = function(hwndParent: HWND; const DialogTitle, BackupFile,
     TargetFile: PWideChar; Win32ErrorCode: UINT; Style: DWORD): UINT; stdcall;
   TSetupBackupError = TSetupBackupErrorA;
-  {$ENDIF}
+  {$ENDIF WIN2000}
 
   TSetupSetDirectoryIdA = function(InfHandle: HINF; Id: DWORD; const Directory: PAnsiChar): LongBool; stdcall;
   TSetupSetDirectoryIdW = function(InfHandle: HINF; Id: DWORD; const Directory: PWideChar): LongBool; stdcall;
@@ -4690,7 +4965,7 @@ type
     AlternatePlatformInfo: PSPAltPlatformInfo;
     const AlternateDefaultCatalogFile: PWideChar): LongBool; stdcall;
   TSetupSetFileQueueAlternatePlatform = TSetupSetFileQueueAlternatePlatformA;
-  {$ENDIF}
+  {$ENDIF WIN2000}
 
   TSetupSetPlatformPathOverrideA = function(const Override_: PAnsiChar): LongBool; stdcall;
   TSetupSetPlatformPathOverrideW = function(const Override_: PWideChar): LongBool; stdcall;
@@ -4708,7 +4983,7 @@ type
   TSetupQueueCopyIndirectA = function(var CopyParams: TSPFileCopyParamsA): LongBool; stdcall;
   TSetupQueueCopyIndirectW = function(var CopyParams: TSPFileCopyParamsW): LongBool; stdcall;
   TSetupQueueCopyIndirect = TSetupQueueCopyIndirectA;
-  {$ENDIF}
+  {$ENDIF WIN2000}
 
   TSetupQueueDefaultCopyA = function(QueueHandle: HSPFILEQ; InfHandle: HINF;
     const SourceRootPath, SourceFilename, TargetFilename: PAnsiChar;
@@ -4972,7 +5247,7 @@ type
   TSetupGetBackupInformationW = function(QueueHandle: HSPFILEQ;
     var BackupParams: TSPBackupQueueParamsW): LongBool; stdcall;
   TSetupGetBackupInformation = TSetupGetBackupInformationA;
-  {$ENDIF}
+  {$ENDIF WIN2000}
 
 //
 // Device Installer APIs
@@ -5426,7 +5701,7 @@ type
     PropertyBufferSize: DWORD; RequiredSize: PDWORD; const MachineName: PWideChar;
     Reserved: Pointer): LongBool; stdcall;
   TSetupDiGetClassRegistryProperty = TSetupDiGetClassRegistryPropertyA;
-  {$ENDIF}
+  {$ENDIF WIN2000}
 
   TSetupDiSetDeviceRegistryPropertyA = function(DeviceInfoSet: HDEVINFO;
     var DeviceInfoData: TSPDevInfoData; Property_: DWORD;
@@ -5444,7 +5719,7 @@ type
     Property_: DWORD; const PropertyBuffer: PBYTE; PropertyBufferSize: DWORD;
     const MachineName: PWideChar; Reserved: Pointer): LongBool; stdcall;
   TSetupDiSetClassRegistryProperty = TSetupDiSetClassRegistryPropertyA;
-  {$ENDIF}
+  {$ENDIF WIN2000}
 
   TSetupDiGetDeviceInstallParamsA = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData;
@@ -5608,7 +5883,7 @@ var
   SetupQueryInfOriginalFileInformationA: TSetupQueryInfOriginalFileInformationA;
   SetupQueryInfOriginalFileInformationW: TSetupQueryInfOriginalFileInformationW;
   SetupQueryInfOriginalFileInformation: TSetupQueryInfOriginalFileInformation;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupQueryInfVersionInformationA: TSetupQueryInfVersionInformationA;
   SetupQueryInfVersionInformationW: TSetupQueryInfVersionInformationW;
   SetupQueryInfVersionInformation: TSetupQueryInfVersionInformation;
@@ -5695,7 +5970,7 @@ var
   SetupBackupErrorA: TSetupBackupErrorA;
   SetupBackupErrorW: TSetupBackupErrorW;
   SetupBackupError: TSetupBackupError;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupSetDirectoryIdA: TSetupSetDirectoryIdA;
   SetupSetDirectoryIdW: TSetupSetDirectoryIdW;
   SetupSetDirectoryId: TSetupSetDirectoryId;
@@ -5717,7 +5992,7 @@ var
   SetupSetFileQueueAlternatePlatformA: TSetupSetFileQueueAlternatePlatformA;
   SetupSetFileQueueAlternatePlatformW: TSetupSetFileQueueAlternatePlatformW;
   SetupSetFileQueueAlternatePlatform: TSetupSetFileQueueAlternatePlatform;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupSetPlatformPathOverrideA: TSetupSetPlatformPathOverrideA;
   SetupSetPlatformPathOverrideW: TSetupSetPlatformPathOverrideW;
   SetupSetPlatformPathOverride: TSetupSetPlatformPathOverride;
@@ -5728,7 +6003,7 @@ var
   SetupQueueCopyIndirectA: TSetupQueueCopyIndirectA;
   SetupQueueCopyIndirectW: TSetupQueueCopyIndirectW;
   SetupQueueCopyIndirect: TSetupQueueCopyIndirect;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupQueueDefaultCopyA: TSetupQueueDefaultCopyA;
   SetupQueueDefaultCopyW: TSetupQueueDefaultCopyW;
   SetupQueueDefaultCopy: TSetupQueueDefaultCopy;
@@ -5834,7 +6109,7 @@ var
   SetupGetBackupInformationA: TSetupGetBackupInformationA;
   SetupGetBackupInformationW: TSetupGetBackupInformationW;
   SetupGetBackupInformation: TSetupGetBackupInformation;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupDiCreateDeviceInfoList: TSetupDiCreateDeviceInfoList;
   SetupDiCreateDeviceInfoListExA: TSetupDiCreateDeviceInfoListExA;
   SetupDiCreateDeviceInfoListExW: TSetupDiCreateDeviceInfoListExW;
@@ -5960,7 +6235,7 @@ var
   SetupDiGetClassRegistryPropertyA: TSetupDiGetClassRegistryPropertyA;
   SetupDiGetClassRegistryPropertyW: TSetupDiGetClassRegistryPropertyW;
   SetupDiGetClassRegistryProperty: TSetupDiGetClassRegistryProperty;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupDiSetDeviceRegistryPropertyA: TSetupDiSetDeviceRegistryPropertyA;
   SetupDiSetDeviceRegistryPropertyW: TSetupDiSetDeviceRegistryPropertyW;
   SetupDiSetDeviceRegistryProperty: TSetupDiSetDeviceRegistryProperty;
@@ -5968,7 +6243,7 @@ var
   SetupDiSetClassRegistryPropertyA: TSetupDiSetClassRegistryPropertyA;
   SetupDiSetClassRegistryPropertyW: TSetupDiSetClassRegistryPropertyW;
   SetupDiSetClassRegistryProperty: TSetupDiSetClassRegistryProperty;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupDiGetDeviceInstallParamsA: TSetupDiGetDeviceInstallParamsA;
   SetupDiGetDeviceInstallParamsW: TSetupDiGetDeviceInstallParamsW;
   SetupDiGetDeviceInstallParams: TSetupDiGetDeviceInstallParams;
@@ -6026,7 +6301,7 @@ var
   SetupDiGetActualSectionToInstallW: TSetupDiGetActualSectionToInstallW;
   SetupDiGetActualSectionToInstall: TSetupDiGetActualSectionToInstall;
 
-{$ENDIF}
+{$ENDIF SETUPAPI_LINKONREQUEST}
 
 function IsSetupApiLoaded: Boolean;
 function LoadSetupApi: Boolean;
@@ -6044,7 +6319,7 @@ const
 var
   SetupApiLib: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
   SetupApiLoadCount: Integer = 0;
-{$ENDIF}
+{$ENDIF SETUPAPI_LINKONREQUEST}
 
 function IsSetupApiLoaded: Boolean;
 begin
@@ -6052,7 +6327,7 @@ begin
   Result := SetupApiLib <> INVALID_MODULEHANDLE_VALUE;
   {$ELSE}
   Result := True;
-  {$ENDIF}
+  {$ENDIF SETUPAPI_LINKONREQUEST}
 end;
 
 function LoadSetupApi: Boolean;
@@ -6074,7 +6349,7 @@ begin
     @SetupQueryInfOriginalFileInformationA := GetModuleSymbolEx(SetupApiLib, 'SetupQueryInfOriginalFileInformationA', Result);
     @SetupQueryInfOriginalFileInformationW := GetModuleSymbolEx(SetupApiLib, 'SetupQueryInfOriginalFileInformationW', Result);
     @SetupQueryInfOriginalFileInformation := GetModuleSymbolEx(SetupApiLib, 'SetupQueryInfOriginalFileInformationA', Result);
-    {$ENDIF}
+    {$ENDIF WIN2000}
     @SetupQueryInfVersionInformationA := GetModuleSymbolEx(SetupApiLib, 'SetupQueryInfVersionInformationA', Result);
     @SetupQueryInfVersionInformationW := GetModuleSymbolEx(SetupApiLib, 'SetupQueryInfVersionInformationW', Result);
     @SetupQueryInfVersionInformation := GetModuleSymbolEx(SetupApiLib, 'SetupQueryInfVersionInformationA', Result);
@@ -6161,7 +6436,7 @@ begin
     @SetupBackupErrorA := GetModuleSymbolEx(SetupApiLib, 'SetupBackupErrorA', Result);
     @SetupBackupErrorW := GetModuleSymbolEx(SetupApiLib, 'SetupBackupErrorW', Result);
     @SetupBackupError := GetModuleSymbolEx(SetupApiLib, 'SetupBackupErrorA', Result);
-    {$ENDIF}
+    {$ENDIF WIN2000}
     @SetupSetDirectoryIdA := GetModuleSymbolEx(SetupApiLib, 'SetupSetDirectoryIdA', Result);
     @SetupSetDirectoryIdW := GetModuleSymbolEx(SetupApiLib, 'SetupSetDirectoryIdW', Result);
     @SetupSetDirectoryId := GetModuleSymbolEx(SetupApiLib, 'SetupSetDirectoryIdA', Result);
@@ -6183,7 +6458,7 @@ begin
     @SetupSetFileQueueAlternatePlatformA := GetModuleSymbolEx(SetupApiLib, 'SetupSetFileQueueAlternatePlatformA', Result);
     @SetupSetFileQueueAlternatePlatformW := GetModuleSymbolEx(SetupApiLib, 'SetupSetFileQueueAlternatePlatformW', Result);
     @SetupSetFileQueueAlternatePlatform := GetModuleSymbolEx(SetupApiLib, 'SetupSetFileQueueAlternatePlatformA', Result);
-    {$ENDIF}
+    {$ENDIF WIN2000}
     @SetupSetPlatformPathOverrideA := GetModuleSymbolEx(SetupApiLib, 'SetupSetPlatformPathOverrideA', Result);
     @SetupSetPlatformPathOverrideW := GetModuleSymbolEx(SetupApiLib, 'SetupSetPlatformPathOverrideW', Result);
     @SetupSetPlatformPathOverride := GetModuleSymbolEx(SetupApiLib, 'SetupSetPlatformPathOverrideA', Result);
@@ -6194,7 +6469,7 @@ begin
     @SetupQueueCopyIndirectA := GetModuleSymbolEx(SetupApiLib, 'SetupQueueCopyIndirectA', Result);
     @SetupQueueCopyIndirectW := GetModuleSymbolEx(SetupApiLib, 'SetupQueueCopyIndirectW', Result);
     @SetupQueueCopyIndirect := GetModuleSymbolEx(SetupApiLib, 'SetupQueueCopyIndirectA', Result);
-    {$ENDIF}
+    {$ENDIF WIN2000}
     @SetupQueueDefaultCopyA := GetModuleSymbolEx(SetupApiLib, 'SetupQueueDefaultCopyA', Result);
     @SetupQueueDefaultCopyW := GetModuleSymbolEx(SetupApiLib, 'SetupQueueDefaultCopyW', Result);
     @SetupQueueDefaultCopy := GetModuleSymbolEx(SetupApiLib, 'SetupQueueDefaultCopyA', Result);
@@ -6300,7 +6575,7 @@ begin
     @SetupGetBackupInformationA := GetModuleSymbolEx(SetupApiLib, 'SetupGetBackupInformationA', Result);
     @SetupGetBackupInformationW := GetModuleSymbolEx(SetupApiLib, 'SetupGetBackupInformationW', Result);
     @SetupGetBackupInformation := GetModuleSymbolEx(SetupApiLib, 'SetupGetBackupInformationA', Result);
-    {$ENDIF}
+    {$ENDIF WIN2000}
     @SetupDiCreateDeviceInfoList := GetModuleSymbolEx(SetupApiLib, 'SetupDiCreateDeviceInfoList', Result);
     @SetupDiCreateDeviceInfoListExA := GetModuleSymbolEx(SetupApiLib, 'SetupDiCreateDeviceInfoListExA', Result);
     @SetupDiCreateDeviceInfoListExW := GetModuleSymbolEx(SetupApiLib, 'SetupDiCreateDeviceInfoListExW', Result);
@@ -6426,7 +6701,7 @@ begin
     @SetupDiGetClassRegistryPropertyA := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetClassRegistryPropertyA', Result);
     @SetupDiGetClassRegistryPropertyW := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetClassRegistryPropertyW', Result);
     @SetupDiGetClassRegistryProperty := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetClassRegistryPropertyA', Result);
-    {$ENDIF}
+    {$ENDIF WIN2000}
     @SetupDiSetDeviceRegistryPropertyA := GetModuleSymbolEx(SetupApiLib, 'SetupDiSetDeviceRegistryPropertyA', Result);
     @SetupDiSetDeviceRegistryPropertyW := GetModuleSymbolEx(SetupApiLib, 'SetupDiSetDeviceRegistryPropertyW', Result);
     @SetupDiSetDeviceRegistryProperty := GetModuleSymbolEx(SetupApiLib, 'SetupDiSetDeviceRegistryPropertyA', Result);
@@ -6434,7 +6709,7 @@ begin
     @SetupDiSetClassRegistryPropertyA := GetModuleSymbolEx(SetupApiLib, 'SetupDiSetClassRegistryPropertyA', Result);
     @SetupDiSetClassRegistryPropertyW := GetModuleSymbolEx(SetupApiLib, 'SetupDiSetClassRegistryPropertyW', Result);
     @SetupDiSetClassRegistryProperty := GetModuleSymbolEx(SetupApiLib, 'SetupDiSetClassRegistryPropertyA', Result);
-    {$ENDIF}
+    {$ENDIF WIN2000}
     @SetupDiGetDeviceInstallParamsA := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetDeviceInstallParamsA', Result);
     @SetupDiGetDeviceInstallParamsW := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetDeviceInstallParamsW', Result);
     @SetupDiGetDeviceInstallParams := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetDeviceInstallParamsA', Result);
@@ -6496,7 +6771,7 @@ begin
   end;
   {$ELSE}
   Result := True;
-  {$ENDIF}
+  {$ENDIF SETUPAPI_LINKONREQUEST}
 end;
 
 procedure UnloadSetupApi;
@@ -6516,7 +6791,7 @@ begin
   SetupQueryInfOriginalFileInformationA := nil;
   SetupQueryInfOriginalFileInformationW := nil;
   SetupQueryInfOriginalFileInformation := nil;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupQueryInfVersionInformationA := nil;
   SetupQueryInfVersionInformationW := nil;
   SetupQueryInfVersionInformation := nil;
@@ -6603,7 +6878,7 @@ begin
   SetupBackupErrorA := nil;
   SetupBackupErrorW := nil;
   SetupBackupError := nil;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupSetDirectoryIdA := nil;
   SetupSetDirectoryIdW := nil;
   SetupSetDirectoryId := nil;
@@ -6625,7 +6900,7 @@ begin
   SetupSetFileQueueAlternatePlatformA := nil;
   SetupSetFileQueueAlternatePlatformW := nil;
   SetupSetFileQueueAlternatePlatform := nil;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupSetPlatformPathOverrideA := nil;
   SetupSetPlatformPathOverrideW := nil;
   SetupSetPlatformPathOverride := nil;
@@ -6636,7 +6911,7 @@ begin
   SetupQueueCopyIndirectA := nil;
   SetupQueueCopyIndirectW := nil;
   SetupQueueCopyIndirect := nil;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupQueueDefaultCopyA := nil;
   SetupQueueDefaultCopyW := nil;
   SetupQueueDefaultCopy := nil;
@@ -6742,7 +7017,7 @@ begin
   SetupGetBackupInformationA := nil;
   SetupGetBackupInformationW := nil;
   SetupGetBackupInformation := nil;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupDiCreateDeviceInfoList := nil;
   SetupDiCreateDeviceInfoListExA := nil;
   SetupDiCreateDeviceInfoListExW := nil;
@@ -6868,7 +7143,7 @@ begin
   SetupDiGetClassRegistryPropertyA := nil;
   SetupDiGetClassRegistryPropertyW := nil;
   SetupDiGetClassRegistryProperty := nil;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupDiSetDeviceRegistryPropertyA := nil;
   SetupDiSetDeviceRegistryPropertyW := nil;
   SetupDiSetDeviceRegistryProperty := nil;
@@ -6876,7 +7151,7 @@ begin
   SetupDiSetClassRegistryPropertyA := nil;
   SetupDiSetClassRegistryPropertyW := nil;
   SetupDiSetClassRegistryProperty := nil;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupDiGetDeviceInstallParamsA := nil;
   SetupDiGetDeviceInstallParamsW := nil;
   SetupDiGetDeviceInstallParams := nil;
@@ -6933,7 +7208,7 @@ begin
   SetupDiGetActualSectionToInstallA := nil;
   SetupDiGetActualSectionToInstallW := nil;
   SetupDiGetActualSectionToInstall := nil;
-  {$ENDIF}
+  {$ENDIF SETUPAPI_LINKONREQUEST}
 end;
 
 {$IFNDEF SETUPAPI_LINKONREQUEST}
@@ -6948,7 +7223,7 @@ function SetupQueryInfFileInformation; external SetupApiModuleName name 'SetupQu
 function SetupQueryInfOriginalFileInformationA; external SetupApiModuleName name 'SetupQueryInfOriginalFileInformationA';
 function SetupQueryInfOriginalFileInformationW; external SetupApiModuleName name 'SetupQueryInfOriginalFileInformationW';
 function SetupQueryInfOriginalFileInformation; external SetupApiModuleName name 'SetupQueryInfOriginalFileInformationA';
-{$ENDIF}
+{$ENDIF WIN2000}
 function SetupQueryInfVersionInformationA; external SetupApiModuleName name 'SetupQueryInfVersionInformationA';
 function SetupQueryInfVersionInformationW; external SetupApiModuleName name 'SetupQueryInfVersionInformationW';
 function SetupQueryInfVersionInformation; external SetupApiModuleName name 'SetupQueryInfVersionInformationA';
@@ -7035,7 +7310,7 @@ function SetupDeleteError; external SetupApiModuleName name 'SetupDeleteErrorA';
 function SetupBackupErrorA; external SetupApiModuleName name 'SetupBackupErrorA';
 function SetupBackupErrorW; external SetupApiModuleName name 'SetupBackupErrorW';
 function SetupBackupError; external SetupApiModuleName name 'SetupBackupErrorA';
-{$ENDIF}
+{$ENDIF WIN2000}
 function SetupSetDirectoryIdA; external SetupApiModuleName name 'SetupSetDirectoryIdA';
 function SetupSetDirectoryIdW; external SetupApiModuleName name 'SetupSetDirectoryIdW';
 function SetupSetDirectoryId; external SetupApiModuleName name 'SetupSetDirectoryIdA';
@@ -7057,7 +7332,7 @@ function SetupCloseFileQueue; external SetupApiModuleName name 'SetupCloseFileQu
 function SetupSetFileQueueAlternatePlatformA; external SetupApiModuleName name 'SetupSetFileQueueAlternatePlatformA';
 function SetupSetFileQueueAlternatePlatformW; external SetupApiModuleName name 'SetupSetFileQueueAlternatePlatformW';
 function SetupSetFileQueueAlternatePlatform; external SetupApiModuleName name 'SetupSetFileQueueAlternatePlatformA';
-{$ENDIF}
+{$ENDIF WIN2000}
 function SetupSetPlatformPathOverrideA; external SetupApiModuleName name 'SetupSetPlatformPathOverrideA';
 function SetupSetPlatformPathOverrideW; external SetupApiModuleName name 'SetupSetPlatformPathOverrideW';
 function SetupSetPlatformPathOverride; external SetupApiModuleName name 'SetupSetPlatformPathOverrideA';
@@ -7068,7 +7343,7 @@ function SetupQueueCopy; external SetupApiModuleName name 'SetupQueueCopyA';
 function SetupQueueCopyIndirectA; external SetupApiModuleName name 'SetupQueueCopyIndirectA';
 function SetupQueueCopyIndirectW; external SetupApiModuleName name 'SetupQueueCopyIndirectW';
 function SetupQueueCopyIndirect; external SetupApiModuleName name 'SetupQueueCopyIndirectA';
-{$ENDIF}
+{$ENDIF WIN2000}
 function SetupQueueDefaultCopyA; external SetupApiModuleName name 'SetupQueueDefaultCopyA';
 function SetupQueueDefaultCopyW; external SetupApiModuleName name 'SetupQueueDefaultCopyW';
 function SetupQueueDefaultCopy; external SetupApiModuleName name 'SetupQueueDefaultCopyA';
@@ -7174,7 +7449,7 @@ procedure SetupCloseLog; external SetupApiModuleName name 'SetupCloseLog';
 function SetupGetBackupInformationA; external SetupApiModuleName name 'SetupGetBackupInformationA';
 function SetupGetBackupInformationW; external SetupApiModuleName name 'SetupGetBackupInformationW';
 function SetupGetBackupInformation; external SetupApiModuleName name 'SetupGetBackupInformationA';
-{$ENDIF}
+{$ENDIF WIN2000}
 function SetupDiCreateDeviceInfoList; external SetupApiModuleName name 'SetupDiCreateDeviceInfoList';
 function SetupDiCreateDeviceInfoListExA; external SetupApiModuleName name 'SetupDiCreateDeviceInfoListExA';
 function SetupDiCreateDeviceInfoListExW; external SetupApiModuleName name 'SetupDiCreateDeviceInfoListExW';
@@ -7304,7 +7579,7 @@ function SetupDiGetDeviceRegistryProperty; external SetupApiModuleName name 'Set
 function SetupDiGetClassRegistryPropertyA; external SetupApiModuleName name 'SetupDiGetClassRegistryPropertyA';
 function SetupDiGetClassRegistryPropertyW; external SetupApiModuleName name 'SetupDiGetClassRegistryPropertyW';
 function SetupDiGetClassRegistryProperty; external SetupApiModuleName name 'SetupDiGetClassRegistryPropertyA';
-{$ENDIF}
+{$ENDIF WIN2000}
 function SetupDiSetDeviceRegistryPropertyA; external SetupApiModuleName name 'SetupDiSetDeviceRegistryPropertyA';
 function SetupDiSetDeviceRegistryPropertyW; external SetupApiModuleName name 'SetupDiSetDeviceRegistryPropertyW';
 function SetupDiSetDeviceRegistryProperty; external SetupApiModuleName name 'SetupDiSetDeviceRegistryPropertyA';
@@ -7312,7 +7587,7 @@ function SetupDiSetDeviceRegistryProperty; external SetupApiModuleName name 'Set
 function SetupDiSetClassRegistryPropertyA; external SetupApiModuleName name 'SetupDiSetClassRegistryPropertyA';
 function SetupDiSetClassRegistryPropertyW; external SetupApiModuleName name 'SetupDiSetClassRegistryPropertyW';
 function SetupDiSetClassRegistryProperty; external SetupApiModuleName name 'SetupDiSetClassRegistryPropertyA';
-{$ENDIF}
+{$ENDIF WIN2000}
 function SetupDiGetDeviceInstallParamsA; external SetupApiModuleName name 'SetupDiGetDeviceInstallParamsA';
 function SetupDiGetDeviceInstallParamsW; external SetupApiModuleName name 'SetupDiGetDeviceInstallParamsW';
 function SetupDiGetDeviceInstallParams; external SetupApiModuleName name 'SetupDiGetDeviceInstallParamsA';
@@ -7370,6 +7645,6 @@ function SetupDiGetActualSectionToInstallA; external SetupApiModuleName name 'Se
 function SetupDiGetActualSectionToInstallW; external SetupApiModuleName name 'SetupDiGetActualSectionToInstallW';
 function SetupDiGetActualSectionToInstall; external SetupApiModuleName name 'SetupDiGetActualSectionToInstallA';
 
-{$ENDIF}
+{$ENDIF SETUPAPI_LINKONREQUEST}
 
 end.
