@@ -1,9 +1,9 @@
 ##Package: XPCtrls
-##Status: Locked by peter3
+##Status: Completed (peter3), Review
 ----------------------------------------------------------------------------------------------------
 @@JvXPCheckCtrls.pas
 Summary
-  Contains the TJvXPCheckCtrls component.
+  Contains the TJvXPCheckCtrls components.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Marc Hoffman.
@@ -14,66 +14,36 @@ JVCLInfo
   GROUP=JVCL.XPControls
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Checkbox that draws itself in an XP style.
 Description
-  Write here a description
+  Use TJvXPCheckbox when you need to place a checkbox on youtr form that looks like checkboxes in
+  Windows XP. TJvXPCheckbox inherits from TJvXPCustomCheckControl and publishes most of its properties
+  and events but only overrides the DrawCheckSymbol to draw the different checkbox states.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomCheckControl
 Summary
-  Write here a summary (1 line)
+  Base class for check style controls that draws themselves in an XP style.
 Description
-  Write here a description
+  Use TJvXPCustomCheckControl as a base class to implement a check style control (like a checkbox or radiobutton).
+  Most implementations need only override the DrawCheckSymbol method since this class implements the
+  logic needed to manage the Checked property.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomCheckControl.BoundLines
 Summary
-  Write here a summary (1 line)
+  Indicates which border lines are drawn.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use BoundLines to specify which border lines are drawn in the control.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomCheckControl.Checked
 Summary
-  Write here a summary (1 line)
+  Specifies whether the check box is checked.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPCustomCheckControl.Click
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPCustomCheckControl.HookResized
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPCustomCheckControl.Paint
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Checked to determine whether the check box is in the checked state. Checked is automatically
+  toggled when the control is clicked
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomCheckControl.Spacing
 Summary
-  Write here a summary (1 line)
+  Sets the distance between the checkbox and the text in the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Spacing to set the distance in pixels between the right edge of the checkbox symbol and the
+  start of the text.

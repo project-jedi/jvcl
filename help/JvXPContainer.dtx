@@ -1,5 +1,5 @@
 ##Package: XPCtrls
-##Status: Locked by peter3
+##Status: Completed (peter3), review
 ----------------------------------------------------------------------------------------------------
 @@JvXPContainer.pas
 Summary
@@ -14,132 +14,127 @@ JVCLInfo
   GROUP=JVCL.XPControls
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  A panel style control.
 Description
-  Write here a description
+  Use TJvXPContainer the same way you use a panel on a form. TJvXPContainer has additional properties
+  to control the visual appearance of the control. TJvXPContainer is inherited from TJvXPCustomContainer
+  and publishes it's properties and events but does not introduce any new behavior.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomContainer
 Summary
-  Write here a summary (1 line)
+  Base class for panel style controls.
 Description
-  Write here a description
+  TJvXPCustomContainer is a base class for panel style controls with additional properties to control
+  the visual appearance of the panel. Do not create instances of TJvXPCustomContainer. Instead, drop
+  a control like TJvXPContainer on your form.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomContainer.Alignment
 Summary
-  Write here a summary (1 line)
+  Determines how the caption is aligned within the control.
 Description
-  Write here a description
+  Set Alignment to specify how the text of the control is justified within the ClientRect
+  of the control.
+
+  The effect of the Alignment property is more obvious if the WordWrap property is True and the
+  control includes more than one line of text.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Caption, Layout, WordWrap 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomContainer.BorderWidth
 Summary
-  Write here a summary (1 line)
+  Sets the width of the border around the Glyph.
 Description
-  Write here a description
+  Use BorderWidth to specify how much space is allocated around the image in Glyph. If no image is
+  assigned, this property has no effect.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Glyph, Spacing
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomContainer.BoundColor
 Summary
-  Write here a summary (1 line)
+  Indicates the color of bound lines.
 Description
-  Write here a description
+  Use BoundColor to specify the color to use for the border lines drawn with the BoundLines property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  BoundLines
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomContainer.BoundLines
 Summary
-  Write here a summary (1 line)
+  Indicates which border lines are drawn.
 Description
-  Write here a description
+  Use BoundLines to specify which border lines are drawn in the control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  BoundColor
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomContainer.EnabledMode
 Summary
-  Write here a summary (1 line)
+  Indicates how changing Enabled affects child controls.
 Description
-  Write here a description
+  Use EnabledMode to control how child controls are affected when the control's Enabled state changes. If EnabledMode is
+  emAffectChilds, the Enabled state of child controls are changed to match the control's Enabled state.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Enabled, OnEnabledChanged
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomContainer.Focusable
 Summary
-  Write here a summary (1 line)
+  Specifies if the control will recieve focus when clicked.
 Description
-  Write here a description
+  Set Focusable to true to make the control focused when it is clicked. If Focusable is false, the control can
+  only be focused by setting TabStop to true and tabbing to it.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TabStop
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomContainer.Glyph
 Summary
-  Write here a summary (1 line)
+  Specifies an image to display on the control.
 Description
-  Write here a description
+  Use Glyph to specify an image to display on the control. When Glyph contains an image, the Caption
+  is adjusted so it appears to the right of the image.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  GlyphLayout
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomContainer.GlyphLayout
 Summary
-  Write here a summary (1 line)
+  Specifies how the Glyph is aligned in the control.
 Description
-  Write here a description
+  Set GlyphLayout to specify how the image in Glyph is aligned within the control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Glyph
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomContainer.Layout
 Summary
-  Write here a summary (1 line)
+  Specifies the vertical placement of the text within the control.
 Description
-  Write here a description
+  Set Layout to specify how the text of the control is placed within the ClientRect of the control.
+  Layout is the vertical analog to the Alignment property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Alignment, Caption
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomContainer.OnEnabledChanged
 Summary
-  Write here a summary (1 line)
+  Occurs when the Enabled state changes.
 Description
-  Write here a description
+  Write a handler for the OnEnabledChanged to take specific action when the control's Enabled state
+  has changed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Enabled
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomContainer.OnPaint
 Summary
-  Write here a summary (1 line)
+  Occurs when the control needs to be painted.
 Description
-  Write here a description
+  Use OnPaint to perform special processing when the control is redrawn. Any special painting on
+  the control should be done in this event. OnPaint occurs after the borders are drawn but before the
+  image and text of the control.
 Parameters
-  Sender  - Description for this parameter
-  Rect    - Description for this parameter
-  ACanvas - Description for this parameter
-  AFont   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPCustomContainer.Paint
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Sender  - The control that triggered the event.
+  Rect    - The area to draw in.
+  ACanvas - The canvas to draw on.
+  AFont   - The font to use for text drawing. YOu can change the properties of AFont to change the
+            way the default text is drawn.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomContainer.ShowBoundLines
 Summary
-  Write here a summary (1 line)
+  Indicates whether borders are shown or not.
 Description
   Write here a description
 See Also
@@ -148,7 +143,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomContainer.ShowCaption
 Summary
-  Write here a summary (1 line)
+  Indicates whether the control's caption is drawn at run-time.
 Description
   Write here a description
 See Also
@@ -157,7 +152,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomContainer.Spacing
 Summary
-  Write here a summary (1 line)
+  Determines where the image and text appear on the control.
 Description
   Write here a description
 See Also
@@ -166,26 +161,19 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomContainer.WordWrap
 Summary
-  Write here a summary (1 line)
+  Determines whether the control inserts soft carriage returns so text wraps at the right margin.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use WordWrap to specify how the text is drawn when it doesn't fit inside the control. If WordWrap is true,
+  the text will be wrapped to as many lines as needed to fit the text inside the control.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPEnabledMode
 <TITLE TJvXPEnabledMode type>
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Specifies how changes to the Enabled property propagates to child controls.
 @@TJvXPEnabledMode.emAffectChilds
-  Description for emAffectChilds
+  Changing Enabled also changes Enabled of all child controls.
 @@TJvXPEnabledMode.emNormal
-  Description for emNormal
+  Changing Enabled does not affect child controls.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPPaintEvent
 <TITLE TJvXPPaintEvent type>
