@@ -428,7 +428,6 @@ contains
   JvEditor in '..\Source\JvEditor.pas',
   JvHint in '..\Source\JvHint.pas',
   JvHLEditor in '..\Source\JvHLEditor.pas',
-  JvHooks in '..\Source\JvHooks.pas',
   JvRegAuto in '..\Source\JvRegAuto.pas',
   JvScrollMax in '..\Source\JvScrollMax.pas',
   JvaScrollText in '..\Source\JvaScrollText.pas',

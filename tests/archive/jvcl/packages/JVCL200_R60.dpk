@@ -22,8 +22,8 @@ Known Issues:
 
 package JVCL200_R60;
 
-{$R *.RES}
-{$ALIGN ON}
+{$R *.res}
+{$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -428,7 +428,6 @@ contains
   JvEditor in '..\Source\JvEditor.pas',
   JvHint in '..\Source\JvHint.pas',
   JvHLEditor in '..\Source\JvHLEditor.pas',
-  JvHooks in '..\Source\JvHooks.pas',
   JvRegAuto in '..\Source\JvRegAuto.pas',
   JvScrollMax in '..\Source\JvScrollMax.pas',
   JvaScrollText in '..\Source\JvaScrollText.pas',
@@ -484,6 +483,7 @@ contains
   JvCheckedMaskEdit in '..\source\JvCheckedMaskEdit.pas',
   JvDropDownForm in '..\source\JvDropDownForm.pas',
   JvDBDatePickerEdit in '..\source\JvDBDatePickerEdit.pas',
-  JvScheduledEvents in '..\source\JvScheduledEvents.pas';
+  JvScheduledEvents in '..\source\JvScheduledEvents.pas',
+  JvWndProcHook in '..\source\JvWndProcHook.pas';
 
 end.
