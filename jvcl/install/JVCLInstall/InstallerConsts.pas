@@ -86,6 +86,13 @@ resourcestring
   RsError = '%s - Error';
   RsCompiling = 'Compiling: %s';
 
+ // FrmCompileMessages.pas
+resourcestring
+  RsCompilerHint = 'Hint';
+  RsCompilerWarning = 'Warning';
+  RsCompilerError = 'Error';
+  RsCompilerFatal = 'Fatal';
+
  // FrmPackageSelection.pas
 resourcestring
   RsSelectTargetIDE = 'Select an IDE';

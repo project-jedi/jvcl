@@ -25,6 +25,7 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit FrmInstall;
 
@@ -59,6 +60,7 @@ type
     FPositionProject: Integer;
     FFinished: Boolean;
     FAborted: Boolean;
+    FLastCapLine: string;
     procedure EvProgress(Sender: TObject; const Text: string;
       Position, Max: Integer; Kind: TProgressKind);
     procedure EvCaptureLine(const Text: string; var Aborted: Boolean);
@@ -72,13 +74,8 @@ type
 
 implementation
 
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF COMPILER6_UP}
-
 uses
-  InstallerConsts, FileCtrl, FrmCompile;
+  InstallerConsts, FileCtrl, FrmCompile, FrmCompileMessages;
 
 {$R *.dfm}
 
@@ -97,6 +94,8 @@ end;
 
 procedure TFrameInstall.EvProgress(Sender: TObject; const Text: string;
   Position, Max: Integer; Kind: TProgressKind);
+var
+  ps: Integer;
 begin
   case Kind of
     pkTarget:
@@ -124,7 +123,10 @@ begin
         if Text <> '' then
         begin
           LblInfo.Caption := Format(RsCompiling, [Text]);
-          FormCompile.Init(Text, False);
+          ps := Pos('(', Text);
+          if ps = 0 then
+            ps := Length(Text) + 1;
+          FormCompile.Init(Trim(Copy(Text, 1, ps - 1)), False);
         end
         else
           LblInfo.Caption := '';
@@ -203,6 +205,10 @@ begin
 
   if not IsCompileFileLine(Line) then
   begin
+    if (Line = '') and (FLastCapLine = '') then
+      Exit;
+    FLastCapLine := Line;
+    
     RichEditLog.Lines.Add(Line);
     if Text <> '' then
     begin
@@ -219,21 +225,25 @@ begin
       begin
         SetFont([], clGreen);
         FormCompile.IncHint;
+        FormCompileMessages.AddHint(Text);
       end
       else if HasText(Text, ['warning: ', 'warnung: ', 'avertissement: ']) then // do not localize
       begin
         SetFont([], clMaroon);
         FormCompile.IncWarning;
+        FormCompileMessages.AddWarning(Text);
       end
       else if HasText(Text, ['error: ', 'fehler: ', 'erreur: ']) then // do not localize
       begin
         SetFont([], clRed);
         FormCompile.IncError;
+        FormCompileMessages.AddError(Text);
       end
       else if HasText(Text, ['fatal: ']) then // do not localize
       begin
         SetFont([fsBold], clRed);
         FormCompile.IncError;
+        FormCompileMessages.AddFatal(Text);
       end
       else
       begin
@@ -329,6 +339,7 @@ var
   i: Integer;
   AbortReason: string;
   Pt: TPoint;
+  ParentForm: TWinControl;
 begin
   Aborted := False;
 
@@ -341,10 +352,17 @@ begin
   FormCompile := TFormCompile.Create(Self);
   try
     FormCompile.Position := poDesigned;
-    Pt := RichEditLog.ClientToScreen(Point(RichEditLog.Width div 2, 0));
-    FormCompile.Top := Pt.Y - 10;
+    Pt := RichEditLog.ClientToScreen(Point((RichEditLog.Width - BtnDetails.Width) div 2, 0));
+    FormCompile.Top := Pt.Y;
     FormCompile.Left := Pt.X - FormCompile.Width div 2;
-    
+
+    FormCompileMessages.Clear;
+    ParentForm := Parent;
+    while (ParentForm <> nil) and not (ParentForm is TForm) do
+      ParentForm := ParentForm.Parent;
+    FormCompileMessages.Top := ParentForm.BoundsRect.Bottom;
+    FormCompileMessages.Left := ParentForm.Left + (ParentForm.Width - FormCompileMessages.Width) div 2;
+
     Compiler := TJVCLCompiler.Create(Installer.Data);
     try
       Compiler.OnProgress := EvProgress;
@@ -361,6 +379,7 @@ begin
       LblTarget.Caption := Format(RsError, [LblTarget.Hint]);
       BtnDetails.Visible := False;
       RichEditLog.Visible := True;
+      FormCompileMessages.Show;
       FormCompile.Done(AbortReason);
       {if AbortReason <> '' then
         AbortReason := RsInstallError + #10#10 + AbortReason
@@ -371,6 +390,7 @@ begin
     else
     begin
       FormCompile.Done;
+      FormCompileMessages.Clear;
       Application.ProcessMessages;
       LblTarget.Caption := RsComplete;
     end;
