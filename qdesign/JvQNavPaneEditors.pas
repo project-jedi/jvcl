@@ -38,7 +38,7 @@ uses
   SysUtils, Classes,  
   QControls, QForms, QToolWin, QMenus, QActnList, QComCtrls, QImgList,  
   DesignEditors, DesignIntf, DesignMenus, QDesignWindows, 
-  JvQDsgnEditors, JvQNavigationPane;
+  JvQStdDsgnEditors, JvQNavigationPane;
 
 type
   TJvNavPanePageImageIndexProperty = class(TJvDefaultImageIndexProperty)

@@ -47,10 +47,11 @@ uses
   QTypes, // type TCaption
   {FiltEdit,} QImgList,
   DesignEditors, DesignIntf, 
-  JvQDsgnConsts, JvQTypes, 
+  JvQDsgnConsts, JvQTypes, Qt,
   {$IFDEF USEWINDOWS}
   JvQBrowseFolder,
   {$ENDIF USEWINDOWS}
+  JvQColorCombo, JvQComboBox,
   JvQGauges, QComCtrlsEx, JvQTimeEdit,
   JvQSpin, JvQEdit, JvQProgressBar, JvQMaskEdit, JvQBaseEdits, JvQCalc,
   JvQToolEdit, JvQBevel, JvQCheckBox, JvQSpeedButton, JvQSecretPanel,
@@ -58,7 +59,7 @@ uses
   JvQImage, JvQLabel, JvQRadioButton, JvQRadioGroup, JvQScrollBar, JvQShape,
   JvQStatusBar, JvQGrids, JvQStringGrid, JvQBitBtn, JvQPanel, JvQImageList,
   JvQTransparentPanel, JvQCheckedItemsForm, JvQProgressEditor, JvQDsgnEditors,
-  JvQCheckedMaskEdit;
+  JvQStdDsgnEditors, JvQCheckedMaskEdit;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvStdCtrlsReg.dcr}
@@ -93,6 +94,7 @@ begin
   RegisterComponents(RsPaletteLabel, [TJvLabel
     ]);
   RegisterComponents(RsPaletteListComboTree, [
+    TJvComboBox, TJvColorComboBox,
     TJvCheckListBox,
     TJvDrawGrid, TJvStringGrid]);
   RegisterComponents(RsPaletteScrollerTracker, [TJvScrollBar ]);

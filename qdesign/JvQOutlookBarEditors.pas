@@ -38,7 +38,7 @@ uses
   QWindows, QControls, QForms, QToolWin,
   QMenus, QActnList, QComCtrls, QImgList,
   DesignEditors, DesignIntf, DesignMenus, ClxDesignWindows, 
-  JvQDsgnEditors, JvQOutlookBar;
+  JvQStdDsgnEditors, JvQOutlookBar;
 
 type
   TJvOutlookBarActivePageEditor = class(TIntegerProperty)

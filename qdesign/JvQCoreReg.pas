@@ -87,10 +87,11 @@ begin
   // in this case, thus the registration of 'nil' property editors 
   RegisterPropertyEditor(TypeInfo(TComponentName), TJvPersistent, 'Name', nil);
   RegisterPropertyEditor(TypeInfo(Longint), TJvPersistent, 'Tag', nil); 
+//  RegisterPropertyEditor(TypeInfo(TColor), TPersistent, '', TColorPropertyEx);
 
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
  
-  //RegisterPropertyEditor(TypeInfo(TColor), TPersistent, '', TJvColorProperty);
+  RegisterPropertyEditor(TypeInfo(TColor), TPersistent, '', TJvColorProperty);
 
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'InitialDir', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirectoryProperty);

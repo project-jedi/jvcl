@@ -65,16 +65,16 @@ type
     procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override; 
   end;
 
-  TUnlitColorProperty = class(TColorPropertyEx , ICustomPropertyDrawing, ICustomPropertyListDrawing ) 
-    procedure ICustomPropertyListDrawing.ListDrawValue = ListDrawValue;
-    procedure ICustomPropertyDrawing.PropDrawValue = PropDrawValue; 
+  TUnlitColorProperty = class(TColorProperty )//, ICustomPropertyDrawing, ICustomPropertyListDrawing )
+//    procedure ICustomPropertyListDrawing.ListDrawValue = ListDrawValue;
+//    procedure ICustomPropertyDrawing.PropDrawValue = PropDrawValue;
   public
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
-    procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
-      const ARect: TRect; ASelected: Boolean);  
-    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean); 
+//    procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
+//      const ARect: TRect; ASelected: Boolean);
+//    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
   end;
 
 implementation
@@ -215,7 +215,7 @@ begin
   else
     inherited SetValue(Value);
 end;
-
+(*
 procedure TUnlitColorProperty.ListDrawValue(const Value: string; ACanvas: TCanvas;
   const ARect: TRect; ASelected: Boolean);
 var
@@ -252,6 +252,6 @@ begin
   else
     DefaultPropertyDrawValue(Self, ACanvas, ARect);
 end;
-
+*)
 
 end.
