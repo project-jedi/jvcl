@@ -157,8 +157,6 @@ type
 
     procedure SetEnabled(Value: boolean); virtual;
 
-    procedure HandleEnableDisable(Sender: TObject);
-
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
     function GetDynControlEngine: TJvDynControlEngine;
@@ -246,8 +244,6 @@ type
     FParameterDialog: TCustomForm;
     FWidth: integer;
     FHeight: integer;
-    FAutoWidth: boolean;
-    FAutoHeight: boolean;
     FMaxWidth: integer;
     FMaxHeight: integer;
     FOkButtonVisible: boolean;
@@ -256,11 +252,14 @@ type
     FHistoryEnabled: boolean;
     FLastHistoryName: string;
     FParameterListSelectList: TJvParameterListSelectList;
+    FOkButtonDisableReasons: TJvParameterListEnableDisableReasonList;
+    FOkButtonEnableReasons: TJvParameterListEnableDisableReasonList;
     function AddObject(const S: string; AObject: TObject): integer;
     procedure InsertObject(Index: integer; const S: string; AObject: TObject);
     procedure OnOkButtonClick(Sender: TObject);
     procedure OnCancelButtonClick(Sender: TObject);
   protected
+    OkButton: TButton;
     ArrangePanel: TJvPanel;
     ScrollBox: TScrollBox;
     RightPanel: TJvPanel;
@@ -286,6 +285,8 @@ type
     procedure HistoryLoadClick(Sender: TObject);
     procedure HistorySaveClick(Sender: TObject);
     procedure HistoryClearClick(Sender: TObject);
+
+    function GetEnableDisableReasonState(aDisableReasons, aEnableReasons: TJvParameterListEnableDisableReasonList): integer;
 
     procedure DialogShow(Sender: TObject);
 
@@ -314,6 +315,8 @@ type
     function ShowParameterDialog: boolean;
     { Creates the ParameterDialog }
     procedure CreateParameterDialog;
+    { Checks the Disable/Enable-Reason of all Parameters }
+    procedure HandleEnableDisable(Sender: TObject);
     {creates the components of all parameters on any WinControl}
     procedure CreateWinControlsOnParent(ParameterParent: TWinControl);
     {Destroy the WinControls of all parameters}
@@ -339,6 +342,9 @@ type
     property DynControlEngine: TJvDynControlEngine read FDynControlEngine write SetDynControlEngine;
     { Property to get access to the parameters }
     property Parameters[Index: integer]: TJvBaseParameter read GetParameters write SetParameters;
+    // Enable/DisableReason for the OkButton
+    property OkButtonDisableReasons: TJvParameterListEnableDisableReasonList read FOkButtonDisableReasons write FOkButtonDisableReasons;
+    property OkButtonEnableReasons: TJvParameterListEnableDisableReasonList read FOkButtonEnableReasons write FOkButtonEnableReasons;
   published
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
     property Messages: TJvParameterListMessages read FMessages;
@@ -347,10 +353,6 @@ type
     property Width: integer read FWidth write FWidth;
     {Height of the dialog. When height = 0, then the Height will be calculated }
     property Height: integer read FHeight write FHeight;
-    {Property to define that the dialog height should be calculated automaticly }
-    property AutoWidth: boolean read FAutoWidth write FAutoWidth;
-    {Property to define that the dialog height should be calculated automaticly }
-    property AutoHeight: boolean read FAutoHeight write FAutoHeight;
     {Maximum ClientWidth of the Dialog}
     property MaxWidth: integer read FMaxWidth write FMaxWidth default 400;
     {Maximum ClientHeight of the Dialog}
@@ -802,7 +804,8 @@ type
   end;
 
 procedure TJvBaseParameter.SetWinControl(Value: TWinControl);
-
+var
+  IDynControlReadOnly: IJvDynControlReadOnly;
 begin
   FJvDynControl := nil;
   FWinControl   := Value;
@@ -812,13 +815,17 @@ begin
   Supports(FWinControl, IJvDynControlData, FJvDynControlData);
 
   JvDynControl.ControlSetCaption(Caption);
-  if Assigned(JvDynControlData) then
-    JvDynControlData.ControlSetReadOnly(ReadOnly);
+  if Supports(FWinControl, IJvDynControlReadOnly, IDynControlReadOnly) then
+  begin
+    IDynControlReadOnly.ControlSetReadOnly(ReadOnly);
+    WinControl.Enabled := Enabled;
+  end
+  else
+    WinControl.Enabled := Enabled and not ReadOnly;
   WinControl.Visible := Visible;
-  WinControl.Enabled := Enabled;
-  WinControl.Hint    := Hint;
+  WinControl.Hint := Hint;
   WinControl.HelpContext := HelpContext;
-  JvDynControl.ControlSetOnExit(HandleEnableDisable);
+  JvDynControl.ControlSetOnExit(ParameterList.HandleEnableDisable);
 end;
 
 function TJvBaseParameter.GetWinControl: TWinControl;
@@ -891,81 +898,6 @@ begin
   Result := GetParameterNameBase + GetParameterNameExt;
 end;
 
-procedure TJvBaseParameter.HandleEnableDisable(Sender: TObject);
-var
-  IEnable:   integer;
-  Reason:    TJvParameterListEnableDisableReason;
-  I, J:      integer;
-  Parameter: TJvBaseParameter;
-  HandleParameter: TJvBaseParameter;
-  Data:      variant;
-begin
-  if not (Sender is TWinControl) then
-    Exit;
-  if not Assigned(ParameterList) then
-    Exit;
-  HandleParameter := nil;
-  for I := 0 to ParameterList.Count - 1 do
-    if Assigned(ParameterList.ParamByIndex(I).WinControl) then
-      if Sender = ParameterList.ParamByIndex(I).WinControl then
-      begin
-        HandleParameter := ParameterList.ParamByIndex(I);
-        Break;
-      end; {*** IF Sender = ParameterList.ParamByIndex(I).WinControl ***}
-  if not Assigned(HandleParameter) then
-    Exit;
-  Data := HandleParameter.GetWinControlData;
-  if VarIsNull(Data) then
-    Exit;
-  for I := 0 to ParameterList.Count - 1 do
-  begin
-    Parameter := ParameterList.ParamByIndex(I);
-    if not Assigned(Parameter) then
-      Continue;
-    IEnable := 0;
-    if Parameter.EnableReasons.Count > 0 then
-    begin
-      IEnable := -1;
-      for J := 0 to Parameter.EnableReasons.Count - 1 do
-      begin
-        Reason := TJvParameterListEnableDisableReason(Parameter.EnableReasons.Objects[J]);
-        if not Assigned(Reason) then
-          Continue;
-        if Reason.RemoteParameterName <> HandleParameter.SearchName then
-          Continue;
-        if VarIsNull(Reason.AsVariant) then
-          Continue;
-        if IEnable = 0 then
-          IEnable := -1;
-        if (Reason.AsVariant = Data) then
-          IEnable := 1;
-      end;
-    end;
-    if Parameter.DisableReasons.Count > 0 then
-    begin
-      for J := 0 to Parameter.DisableReasons.Count - 1 do
-      begin
-        Reason := TJvParameterListEnableDisableReason(Parameter.DisableReasons.Objects[J]);
-        if not Assigned(Reason) then
-          Continue;
-        if Reason.RemoteParameterName <> HandleParameter.SearchName then
-          Continue;
-        if VarIsNull(Reason.AsVariant) then
-          Continue;
-        if IEnable = 0 then
-          IEnable := 1;
-        if Reason.AsVariant = Data then
-          IEnable := -1;
-      end;
-    end;
-    case IEnable of
-      -1:
-        Parameter.Enabled := false;
-      1:
-        Parameter.Enabled := true;
-    end;
-  end;
-end;
 
 //=== TJvParameterList =======================================================
 
@@ -999,6 +931,8 @@ begin
   FLastHistoryName := '';
   FParameterListSelectList := TJvParameterListSelectList.Create(Self);
   FParameterListSelectList.ParameterList := Self;
+  FOkButtonDisableReasons := TJvParameterListEnableDisableReasonList.Create;
+  FOkButtonEnableReasons := TJvParameterListEnableDisableReasonList.Create;
 end;
 
 destructor TJvParameterList.Destroy;
@@ -1009,6 +943,8 @@ begin
   FreeAndNil(FParameterListPropertyStore);
   FreeAndNil(FArrangeSettings);
   FreeAndNil(FMessages);
+  FreeAndNil(FOkButtonDisableReasons);
+  FreeAndNil(FOkButtonEnableReasons);
   inherited Destroy;
 end;
 
@@ -1045,13 +981,11 @@ begin
   // (rom) no inherited Assign?
   Messages.Assign(TJvParameterList(Source).Messages);
   ArrangeSettings := TJvParameterList(Source).ArrangeSettings;
-  AppStore   := TJvParameterList(Source).AppStore;
-  Width      := TJvParameterList(Source).Width;
-  Height     := TJvParameterList(Source).Height;
-  MaxWidth   := TJvParameterList(Source).MaxWidth;
-  MaxHeight  := TJvParameterList(Source).MaxHeight;
-  AutoWidth  := TJvParameterList(Source).AutoWidth;
-  AutoHeight := TJvParameterList(Source).AutoHeight;
+  AppStore  := TJvParameterList(Source).AppStore;
+  Width     := TJvParameterList(Source).Width;
+  Height    := TJvParameterList(Source).Height;
+  MaxWidth  := TJvParameterList(Source).MaxWidth;
+  MaxHeight := TJvParameterList(Source).MaxHeight;
   OkButtonVisible := TJvParameterList(Source).OkButtonVisible;
   CancelButtonVisible := TJvParameterList(Source).CancelButtonVisible;
   FIntParameterList.Assign(TJvParameterList(Source).FIntParameterList);
@@ -1096,6 +1030,8 @@ begin
       ArrangePanel := nil;
     if AComponent = FParameterListPropertyStore then
       FParameterListPropertyStore := nil;
+    if AComponent = OkButton then
+      OkButton := nil;
   end;
 end;
 
@@ -1136,10 +1072,10 @@ type
 procedure TJvParameterList.CreateParameterDialog;
 var
   MainPanel, BottomPanel, HistoryPanel, ButtonPanel: TWinControl;
-  OkButton, CancelButton: TWinControl;
+  CancelButton: TWinControl;
   LoadButton, SaveButton, ClearButton: TWinControl;
-  ButtonLeft: integer;
-  ITmpPanel:  IJvDynControlPanel;
+  ButtonLeft:   integer;
+  ITmpPanel:    IJvDynControlPanel;
 begin
   FreeAndNil(FParameterDialog);
 
@@ -1246,18 +1182,20 @@ begin
 
   CreateWinControlsOnParent(MainPanel);
 
-  if AutoWidth then
-    if ArrangePanel.Width > TForm(ParameterDialog).ClientWidth then
-      if ArrangePanel.Width + RightPanel.Width > MaxWidth then
-        TForm(ParameterDialog).ClientWidth := MaxWidth
-      else
-        TForm(ParameterDialog).ClientWidth := ArrangePanel.Width;
-  if AutoHeight then
-    if ArrangePanel.Height + BottomPanel.Height > TForm(ParameterDialog).ClientHeight then
-      if ArrangePanel.Height + BottomPanel.Height > MaxHeight then
-        TForm(ParameterDialog).ClientHeight := MaxHeight + 5
-      else
-        TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + 5;
+  if Width <= 0 then
+    if ArrangeSettings.AutoSize in [asWidth, asBoth] then
+      if ArrangePanel.Width > TForm(ParameterDialog).ClientWidth then
+        if ArrangePanel.Width + RightPanel.Width > MaxWidth then
+          TForm(ParameterDialog).ClientWidth := MaxWidth
+        else
+          TForm(ParameterDialog).ClientWidth := ArrangePanel.Width;
+  if Height <= 0 then
+    if ArrangeSettings.AutoSize in [asHeight, asBoth] then
+      if ArrangePanel.Height + BottomPanel.Height > TForm(ParameterDialog).ClientHeight then
+        if ArrangePanel.Height + BottomPanel.Height > MaxHeight then
+          TForm(ParameterDialog).ClientHeight := MaxHeight + 5
+        else
+          TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + 5;
 
   if (ButtonPanel.Width + HistoryPanel.Width) > BottomPanel.Width then
   begin
@@ -1338,6 +1276,105 @@ begin
 end;
 
 
+function TJvParameterList.GetEnableDisableReasonState(aDisableReasons, aEnableReasons: TJvParameterListEnableDisableReasonList): integer;
+var
+  J:      integer;
+  IEnable: integer;
+  Reason: TJvParameterListEnableDisableReason;
+  SearchParameter: TJvBaseParameter;
+  Data:   variant;
+begin
+  IEnable := 0;
+  if aEnableReasons.Count > 0 then
+  begin
+    for J := 0 to aEnableReasons.Count - 1 do
+    begin
+      Reason := TJvParameterListEnableDisableReason(aEnableReasons.Objects[J]);
+      if not Assigned(Reason) then
+        Continue;
+      if VarIsNull(Reason.AsVariant) then
+        Continue;
+      SearchParameter := ParameterByName(Reason.RemoteParameterName);
+      if not Assigned(SearchParameter) then
+        Continue;
+      if not Assigned(SearchParameter.WinControl) then
+        Continue;
+      Data := SearchParameter.GetWinControlData;
+      if VarIsEmpty(Data) and Reason.IsEmpty and (IEnable <> -1) then
+        IEnable := 1;
+      if ( not VarIsEmpty(Data)) and Reason.IsNotEmpty and (IEnable <> -1) then
+        IEnable := 1;
+      try
+        if (Reason.AsVariant = Data) and (IEnable <> -1) then
+          IEnable := 1;
+      except
+        on e: Exception do
+      end;
+    end;    //*** for J := 0 to aEnableReasons.Count - 1 do
+    if IEnable = 0 then
+      IEnable := -1;
+  end;   //*** if aEnableReasons.Count > 0 then
+  if aDisableReasons.Count > 0 then
+  begin
+    for J := 0 to aDisableReasons.Count - 1 do
+    begin
+      Reason := TJvParameterListEnableDisableReason(aDisableReasons.Objects[J]);
+      if not Assigned(Reason) then
+        Continue;
+      if VarIsNull(Reason.AsVariant) then
+        Continue;
+      SearchParameter := ParameterByName(Reason.RemoteParameterName);
+      if not Assigned(SearchParameter) then
+        Continue;
+      if not Assigned(SearchParameter.WinControl) then
+        Continue;
+      Data := SearchParameter.GetWinControlData;
+      if VarIsEmpty(Data) and Reason.IsEmpty then
+        IEnable := -1;
+      if ( not VarIsEmpty(Data)) and Reason.IsNotEmpty then
+        IEnable := -1;
+      try
+        if (Reason.AsVariant = Data) then
+          IEnable := -1;
+      except
+        on e: Exception do
+      end;
+    end;    //*** for J := 0 to aDisableReasons.Count - 1 do
+    if IEnable = 0 then
+      IEnable := 1;
+  end;   //*** if aDisableReasons.Count > 0 then
+  Result := IEnable;
+end;
+
+procedure TJvParameterList.HandleEnableDisable(Sender: TObject);
+var
+  I: integer;
+  Parameter: TJvBaseParameter;
+  IEnable: integer;
+begin
+  for I := 0 to Count - 1 do
+    if Assigned(ParamByIndex(I).WinControl) then
+    begin
+      Parameter := ParamByIndex(I);
+      IEnable   := GetEnableDisableReasonState(Parameter.EnableReasons, Parameter.DisableReasons);
+      case IEnable of
+        -1:
+          Parameter.Enabled := false;
+        1:
+          Parameter.Enabled := true;
+      end;    //*** case IEnable of
+    end;  //*** if Assigned(ParamByIndex(I).WinControl) then
+  if Assigned(OkButton) then
+  begin
+    IEnable := GetEnableDisableReasonState(OkButtonDisableReasons, OkButtonEnableReasons);
+    case IEnable of
+      -1: OkButton.Enabled := false;
+      1: OkButton.Enabled  := true;
+    end;    //*** case IEnable of
+  end;
+
+end;
+
 procedure TJvParameterList.CreateWinControlsOnParent(ParameterParent: TWinControl);
 var
   I: integer;
@@ -1381,6 +1418,10 @@ begin
     Top  := 0;
   end;
   ArrangePanel.ArrangeSettings := ArrangeSettings;
+  case ArrangeSettings.AutoSize of
+    asNone: ArrangePanel.ArrangeSettings.AutoSize  := asHeight;
+    asWidth: ArrangePanel.ArrangeSettings.AutoSize := asBoth;
+  end;
   try
     ArrangePanel.DisableArrange;
     for I := 0 to Count - 1 do
@@ -1390,11 +1431,12 @@ begin
           GetParentByName(ArrangePanel, Parameters[I].ParentParameterName));
         Parameters[I].WinControlData := Parameters[I].AsVariant;
       end;
-    for I := 0 to Count - 1 do
-      if Parameters[I].Visible then
-        if Assigned(Parameters[I].WinControl) then
-          if Assigned(THackWinControl(Parameters[I].WinControl).OnExit) then
-            THackWinControl(Parameters[I].WinControl).OnExit(Parameters[I].WinControl);
+    HandleEnableDisable(nil);
+ //    for I := 0 to Count - 1 do
+ //      if Parameters[I].Visible then
+ //        if Assigned(Parameters[I].WinControl) then
+ //          if Assigned(THackWinControl(Parameters[I].WinControl).OnExit) then
+ //            THackWinControl(Parameters[I].WinControl).OnExit(Parameters[I].WinControl);
   finally
     ArrangePanel.EnableArrange;
   end;

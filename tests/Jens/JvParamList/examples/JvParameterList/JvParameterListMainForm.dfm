@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 286
-  Top = 168
+  Left = 288
+  Top = 215
   Width = 870
   Height = 640
   Caption = 'Form1'
@@ -15,10 +15,10 @@ object Form1: TForm1
   PixelsPerInch = 96
   TextHeight = 13
   object Image1: TImage
-    Left = 545
-    Top = 70
-    Width = 240
-    Height = 180
+    Left = 760
+    Top = 5
+    Width = 85
+    Height = 76
     Picture.Data = {
       07544269746D6170F6AC0000424DF6AC0000000000003604000028000000F000
       0000B40000000100080000000000C0A80000130B0000130B0000000100000000
@@ -1405,77 +1405,15 @@ object Form1: TForm1
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE8FFE8FF52E852979797819393AB
       AB9F89AB89AB9FABAB93819797E852FFE8FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFF}
-  end
-  object JvImage1: TJvImage
-    Left = 505
-    Top = 395
-    Width = 266
-    Height = 105
-    IncrementalDisplay = True
-    Proportional = True
     Stretch = True
   end
-  object Image2: TImage
-    Left = 155
-    Top = 400
-    Width = 240
-    Height = 180
-  end
-  object Edit1: TEdit
-    Left = 20
-    Top = 95
-    Width = 121
-    Height = 21
-    TabOrder = 0
-    Text = 'Edit1'
-  end
-  object Button1: TButton
-    Left = 25
-    Top = 155
-    Width = 156
-    Height = 25
-    Caption = 'Test &1 Default Engine'
-    Default = True
-    TabOrder = 1
-    OnClick = Button1Click
-  end
-  object Button2: TButton
-    Left = 25
-    Top = 190
-    Width = 156
-    Height = 25
-    Caption = 'Test &2 Base Engine'
-    Default = True
-    TabOrder = 2
-    OnClick = Button2Click
-  end
-  object Button3: TButton
-    Left = 25
-    Top = 225
-    Width = 156
-    Height = 25
-    Caption = 'Test &3 Jvcl Engine'
-    Default = True
-    TabOrder = 3
-    OnClick = Button3Click
-  end
-  object Button4: TButton
-    Left = 25
-    Top = 260
-    Width = 156
-    Height = 25
-    Caption = 'Test &4 DevExp Cx Engine'
-    Default = True
-    TabOrder = 4
-    OnClick = Button4Click
-  end
   object GroupBox1: TGroupBox
-    Left = 190
-    Top = 155
+    Left = 480
+    Top = 135
     Width = 331
-    Height = 214
+    Height = 136
     Caption = 'Parameterlist Settings'
-    TabOrder = 5
+    TabOrder = 0
     object Label1: TLabel
       Left = 138
       Top = 20
@@ -1559,26 +1497,60 @@ object Form1: TForm1
     object WidthEdit: TMaskEdit
       Left = 138
       Top = 75
-      Width = 56
+      Width = 55
       Height = 21
       EditMask = '0999;0; '
       MaxLength = 4
       TabOrder = 6
-      Text = '0'
+      Text = '600'
     end
     object HeightEdit: TMaskEdit
       Left = 218
       Top = 75
-      Width = 58
+      Width = 57
       Height = 21
       EditMask = '0999;0; '
       MaxLength = 4
       TabOrder = 7
-      Text = '0'
+      Text = '400'
     end
+    object HistoryEnabledCheckBox: TCheckBox
+      Left = 10
+      Top = 100
+      Width = 111
+      Height = 17
+      Caption = 'History Enabled'
+      TabOrder = 8
+    end
+  end
+  object BitBtn1: TBitBtn
+    Left = 260
+    Top = 25
+    Width = 90
+    Height = 25
+    Caption = '&Load Settings'
+    TabOrder = 1
+    OnClick = BitBtn1Click
+  end
+  object BitBtn2: TBitBtn
+    Left = 260
+    Top = 55
+    Width = 90
+    Height = 25
+    Caption = '&Store Settings'
+    TabOrder = 2
+    OnClick = BitBtn2Click
+  end
+  object GroupBox2: TGroupBox
+    Left = 480
+    Top = 280
+    Width = 311
+    Height = 186
+    Caption = 'JvDynControl Settings'
+    TabOrder = 3
     object DevExpCxLookAndFeelRadioGroup: TRadioGroup
       Left = 8
-      Top = 134
+      Top = 104
       Width = 137
       Height = 73
       Caption = 'DevExp Cx LookAndFeel'
@@ -1587,24 +1559,16 @@ object Form1: TForm1
         'Standard'
         'Flat'
         'UltraFlat')
-      TabOrder = 8
+      TabOrder = 0
       OnClick = DevExpCxLookAndFeelRadioGroupClick
-    end
-    object HistoryEnabledCheckBox: TCheckBox
-      Left = 10
-      Top = 100
-      Width = 111
-      Height = 17
-      Caption = 'History Enabled'
-      TabOrder = 9
     end
     object DevExpCxStyleGroupBox: TGroupBox
       Left = 150
-      Top = 135
+      Top = 105
       Width = 146
       Height = 71
       Caption = 'DevExp Cx Style'
-      TabOrder = 10
+      TabOrder = 1
       object ShadowCheckBox: TCheckBox
         Left = 5
         Top = 15
@@ -1612,6 +1576,7 @@ object Form1: TForm1
         Height = 17
         Caption = 'Shadows'
         TabOrder = 0
+        OnClick = DevExpCxLookAndFeelRadioGroupClick
       end
       object ThickLinesCheckBox: TCheckBox
         Left = 5
@@ -1620,26 +1585,262 @@ object Form1: TForm1
         Height = 17
         Caption = 'Thick Lines'
         TabOrder = 1
+        OnClick = DevExpCxLookAndFeelRadioGroupClick
+      end
+    end
+    object GroupBox3: TGroupBox
+      Left = 10
+      Top = 20
+      Width = 231
+      Height = 76
+      Caption = 'Default DynControlEngine'
+      TabOrder = 2
+      object VCLRadioButton: TRadioButton
+        Left = 5
+        Top = 15
+        Width = 81
+        Height = 17
+        Caption = 'VCL'
+        TabOrder = 0
+        OnClick = VCLRadioButtonClick
+      end
+      object JVCLRadioButton: TRadioButton
+        Left = 5
+        Top = 35
+        Width = 76
+        Height = 17
+        Caption = 'JVCL'
+        TabOrder = 1
+        OnClick = VCLRadioButtonClick
+      end
+      object CxRadioButton: TRadioButton
+        Left = 5
+        Top = 55
+        Width = 101
+        Height = 17
+        Caption = 'DevExpress Cx'
+        TabOrder = 2
+        OnClick = VCLRadioButtonClick
+      end
+      object VclRedRadioButton: TRadioButton
+        Left = 75
+        Top = 15
+        Width = 81
+        Height = 17
+        Caption = 'VCL Red'
+        Checked = True
+        TabOrder = 3
+        TabStop = True
+        OnClick = VCLRadioButtonClick
       end
     end
   end
-  object BitBtn1: TBitBtn
-    Left = 195
-    Top = 75
-    Width = 75
-    Height = 25
-    Caption = '&Load'
-    TabOrder = 6
-    OnClick = BitBtn1Click
+  object GroupBox4: TGroupBox
+    Left = 10
+    Top = 335
+    Width = 276
+    Height = 111
+    Caption = 'Message Dlg Tests'
+    TabOrder = 4
+    object JvPanel1: TJvPanel
+      Left = 2
+      Top = 15
+      Width = 272
+      Height = 94
+      MultiLine = False
+      ArrangeSettings.BorderLeft = 5
+      ArrangeSettings.BorderTop = 5
+      ArrangeSettings.DistanceVertical = 3
+      ArrangeSettings.DistanceHorizontal = 3
+      ArrangeSettings.AutoArrange = True
+      Align = alClient
+      BevelOuter = bvNone
+      TabOrder = 0
+      object Button5: TButton
+        Left = 5
+        Top = 5
+        Width = 126
+        Height = 25
+        Caption = 'MessageDlg &A'
+        TabOrder = 0
+        OnClick = Button5Click
+      end
+      object Button6: TButton
+        Left = 134
+        Top = 5
+        Width = 126
+        Height = 25
+        Caption = 'MessageDlg &B'
+        TabOrder = 1
+        OnClick = Button6Click
+      end
+      object Button7: TButton
+        Left = 5
+        Top = 33
+        Width = 126
+        Height = 25
+        Caption = 'MessageDlg &C'
+        TabOrder = 2
+        OnClick = Button7Click
+      end
+      object Button8: TButton
+        Left = 134
+        Top = 33
+        Width = 126
+        Height = 25
+        Caption = 'MessageDlg &D'
+        TabOrder = 3
+        OnClick = Button8Click
+      end
+      object Button9: TButton
+        Left = 5
+        Top = 61
+        Width = 126
+        Height = 25
+        Caption = 'MessageDlg &E'
+        Enabled = False
+        TabOrder = 4
+      end
+      object Button10: TButton
+        Left = 134
+        Top = 61
+        Width = 126
+        Height = 25
+        Caption = 'MessageDlg &F'
+        Enabled = False
+        TabOrder = 5
+      end
+    end
   end
-  object BitBtn2: TBitBtn
-    Left = 195
-    Top = 105
-    Width = 75
-    Height = 25
-    Caption = '&Store'
-    TabOrder = 7
-    OnClick = BitBtn2Click
+  object JvGroupBox1: TJvGroupBox
+    Left = 10
+    Top = 135
+    Width = 366
+    Height = 191
+    Caption = 'Parameterlist Test'
+    TabOrder = 5
+    object JvPanel2: TJvPanel
+      Left = 2
+      Top = 15
+      Width = 362
+      Height = 174
+      MultiLine = False
+      ArrangeSettings.BorderLeft = 5
+      ArrangeSettings.BorderTop = 5
+      ArrangeSettings.DistanceVertical = 5
+      ArrangeSettings.DistanceHorizontal = 5
+      ArrangeSettings.AutoArrange = True
+      Align = alClient
+      BevelOuter = bvNone
+      TabOrder = 0
+      object JvGroupBoxAllControls: TJvGroupBox
+        Left = 5
+        Top = 5
+        Width = 171
+        Height = 166
+        Caption = 'All Controls'
+        TabOrder = 0
+        object JvPanelAllControls: TJvPanel
+          Left = 2
+          Top = 15
+          Width = 167
+          Height = 149
+          MultiLine = False
+          ArrangeSettings.BorderLeft = 5
+          ArrangeSettings.BorderTop = 5
+          ArrangeSettings.DistanceVertical = 3
+          ArrangeSettings.DistanceHorizontal = 3
+          ArrangeSettings.AutoArrange = True
+          Align = alClient
+          BevelOuter = bvNone
+          TabOrder = 0
+          OnResize = JvPanelAllControlsResize
+          object Button1: TButton
+            Left = 5
+            Top = 5
+            Width = 156
+            Height = 25
+            Caption = 'Test &1 Default Engine'
+            Default = True
+            TabOrder = 0
+            OnClick = Button1Click
+          end
+          object Button2: TButton
+            Left = 5
+            Top = 33
+            Width = 156
+            Height = 25
+            Caption = 'Test &2 Vcl Engine'
+            Default = True
+            TabOrder = 1
+            OnClick = Button2Click
+          end
+          object Button3: TButton
+            Left = 5
+            Top = 61
+            Width = 156
+            Height = 25
+            Caption = 'Test &3 Jvcl Engine'
+            Default = True
+            TabOrder = 2
+            OnClick = Button3Click
+          end
+          object Button4: TButton
+            Left = 5
+            Top = 89
+            Width = 156
+            Height = 25
+            Caption = 'Test &4 DevExp Cx Engine'
+            Default = True
+            TabOrder = 3
+            OnClick = Button4Click
+          end
+          object Button11: TButton
+            Left = 5
+            Top = 117
+            Width = 156
+            Height = 25
+            Caption = 'Test &5 Vcl-Red Engine'
+            Default = True
+            TabOrder = 4
+            OnClick = Button11Click
+          end
+        end
+      end
+      object JvGroupBox3: TJvGroupBox
+        Left = 181
+        Top = 5
+        Width = 170
+        Height = 56
+        Caption = 'Disable / Enable Tests'
+        TabOrder = 1
+        object JvPanel4: TJvPanel
+          Left = 2
+          Top = 15
+          Width = 166
+          Height = 39
+          MultiLine = False
+          ArrangeSettings.BorderLeft = 5
+          ArrangeSettings.BorderTop = 5
+          ArrangeSettings.DistanceVertical = 3
+          ArrangeSettings.DistanceHorizontal = 3
+          ArrangeSettings.AutoArrange = True
+          Align = alClient
+          BevelOuter = bvNone
+          TabOrder = 0
+          object Button12: TButton
+            Left = 5
+            Top = 5
+            Width = 156
+            Height = 25
+            Caption = 'Test 2 Default Engine'
+            Default = True
+            TabOrder = 0
+            OnClick = Button12Click
+          end
+        end
+      end
+    end
   end
   object JvAppRegistryStore: TJvAppRegistryStore
     StoreOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
@@ -1664,10 +1865,13 @@ object Form1: TForm1
       'MaxWidthEdit.Text'
       'MaxHeightEdit.Text'
       'HeightEdit.Text'
-      'DevExpCxLookAndFeelRadioGroup.ItemIndex'
       'HistoryEnabledCheckBox.Checked'
+      'ThickLinesCheckBox.Checked'
       'ShadowCheckBox.Checked'
-      'ThickLinesCheckBox.Checked')
+      'DevExpCxLookAndFeelRadioGroup.ItemIndex'
+      'CxRadioButton.Checked'
+      'JVCLRadioButton.Checked'
+      'VCLRadioButton.Checked')
     StoredValues = <>
     Left = 184
     Top = 8
@@ -1684,12 +1888,15 @@ object Form1: TForm1
       'MaxWidthEdit.Text'
       'MaxHeightEdit.Text'
       'HeightEdit.Text'
-      'DevExpCxLookAndFeelRadioGroup.ItemIndex'
       'HistoryEnabledCheckBox.Checked'
+      'DevExpCxLookAndFeelRadioGroup.ItemIndex'
       'ThickLinesCheckBox.Checked'
-      'ShadowCheckBox.Checked')
+      'ShadowCheckBox.Checked'
+      'CxRadioButton.Checked'
+      'JVCLRadioButton.Checked'
+      'VCLRadioButton.Checked')
     StoredValues = <>
-    Left = 380
-    Top = 58
+    Left = 435
+    Top = 23
   end
 end

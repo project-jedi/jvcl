@@ -46,10 +46,14 @@ type
   IJvDynControlData = interface
     ['{569BFBFD-DFFF-44CF-AAD9-C67A0E48EE15}']
     procedure ControlSetOnChange(Value: TNotifyEvent);
-    procedure ControlSetReadOnly(Value: boolean);
     procedure ControlSetValue(Value: variant);
     function ControlGetValue: variant;
     property ControlValue: variant read ControlGetValue write ControlSetValue;
+  end;
+
+  IJvDynControlReadOnly = interface
+    ['{24E45D23-AC66-4644-8403-81FF81E28B89}']
+    procedure ControlSetReadOnly(Value: boolean);
   end;
 
   IJvDynControlItems = interface

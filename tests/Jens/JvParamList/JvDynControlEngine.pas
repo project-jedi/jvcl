@@ -40,9 +40,12 @@ type
     jctCalculateEdit, jctSpinEdit, jctDirectoryEdit, jctFileNameEdit,
     jctButton, jctForm);
 
+  TJvAfterCreateControl = procedure (aControl : TControl) of object;
+
   TJvDynControlEngine = class(TPersistent)
   private
     FRegisteredControlTypes: array [TJvDynControlType] of TControlClass;
+    FAfterCreateControl: TJvAfterCreateControl;
     function GetPropName(Instance: TPersistent; Index: Integer): string;
     function GetPropCount(Instance: TPersistent): Integer;
   protected
@@ -113,13 +116,17 @@ type
     procedure SetControlOnEnter(AControl: IJvDynControl; Value: TNotifyEvent);
     procedure SetControlOnExit(AControl: IJvDynControl; Value: TNotifyEvent);
     procedure SetControlOnClick(AControl: IJvDynControl; Value: TNotifyEvent);
+  published
+    property OnAfterCreateControl: TJvAfterCreateControl read FAfterCreateControl write FAfterCreateControl;
   end;
 
 {$IFNDEF COMPILER6_UP}
 function Supports(Instance: TObject; const Intf: TGUID): Boolean; overload;
 function Supports(AClass: TClass; const Intf: TGUID): Boolean; overload;
 {$ENDIF COMPILER6_UP}
+
 function IntfCast(Instance: TObject; const Intf: TGUID): IUnknown;
+
 procedure SetDefaultDynControlEngine(AEngine: TJvDynControlEngine);
 function DefaultDynControlEngine: TJvDynControlEngine;
 
@@ -334,6 +341,8 @@ end;
 
 procedure TJvDynControlEngine.AfterCreateControl (aControl : TControl);
 begin
+  if Assigned(FAfterCreateControl) then
+    FAfterCreateControl(aControl);
 end;
 
 function TJvDynControlEngine.CreateControl(AControlType: TJvDynControlType;
@@ -353,9 +362,9 @@ begin
   end
   else
     Result := nil;
-  AfterCreateControl (Result);
   if Result = nil then
     raise EJVCLException.Create(SNoRegisteredControlClass);
+  AfterCreateControl (Result);
 end;
 
 function TJvDynControlEngine.CreateControlClass(AControlClass: TControlClass;

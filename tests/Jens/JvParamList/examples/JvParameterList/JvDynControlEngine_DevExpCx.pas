@@ -56,7 +56,7 @@ type
   end;
 
   TJvDynControlCxMaskEdit = class (TcxMaskEdit, IUnknown, IJvDynControl, IJvDynControlData,
-    IJvDynControlDevExpCx)
+    IJvDynControlDevExpCx, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: boolean);
@@ -75,7 +75,7 @@ type
   end;
 
   TJvDynControlCxCalcEdit = class (TcxCalcEdit, IUnknown, IJvDynControl, IJvDynControlData,
-    IJvDynControlDevExpCx)
+    IJvDynControlDevExpCx, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: boolean);
@@ -94,7 +94,7 @@ type
   end;
 
   TJvDynControlCxSpinEdit = class (TcxSpinEdit, IUnknown, IJvDynControl, IJvDynControlData,
-    IJvDynControlDevExpCx, IJvDynControlSpin)
+    IJvDynControlDevExpCx, IJvDynControlSpin, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: boolean);
@@ -119,7 +119,7 @@ type
   end;
 
   TJvDynControlCxFileNameEdit = class (TcxButtonEdit, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlFileName)
+    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlFileName, IJvDynControlReadOnly)
   private
     FInitialDir: string;
     FFilterIndex: integer;
@@ -157,7 +157,7 @@ type
   end;
 
   TJvDynControlCxDirectoryEdit = class (TcxButtonEdit, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlDirectory)
+    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlDirectory, IJvDynControlReadOnly)
   private
     FInitialDir: string;
     FDialogOptions: TSelectDirOpts;
@@ -187,7 +187,7 @@ type
   end;
 
   TJvDynControlCxDateTimeEdit = class (TcxDateEdit, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlDate)
+    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlDate, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: boolean);
@@ -211,7 +211,7 @@ type
   end;
 
   TJvDynControlCxDateEdit = class (TcxDateEdit, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlDate)
+    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlDate, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: boolean);
@@ -235,7 +235,7 @@ type
   end;
 
   TJvDynControlCxTimeEdit = class (TcxTimeEdit, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlTime)
+    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlTime, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: boolean);
@@ -256,7 +256,7 @@ type
   end;
 
   TJvDynControlCxCheckbox = class (TcxCheckBox, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlDevExpCx)
+    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: boolean);
@@ -275,7 +275,7 @@ type
   end;
 
   TJvDynControlCxMemo = class (TcxMemo, IUnknown, IJvDynControl, IJvDynControlData,
-    IJvDynControlItems, IJvDynControlMemo, IJvDynControlDevExpCx)
+    IJvDynControlItems, IJvDynControlMemo, IJvDynControlDevExpCx, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: boolean);
@@ -304,7 +304,7 @@ type
 
   TJvDynControlCxRadioGroup = class (TcxRadioGroup, IUnknown, IJvDynControl,
     IJvDynControlData, IJvDynControlItems, IJvDynControlDevExpCx,
-    IJvDynControlRadioGroup)
+    IJvDynControlRadioGroup, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: boolean);
@@ -329,7 +329,7 @@ type
   end;
 
   TJvDynControlCxListBox = class (TcxListBox, IUnknown, IJvDynControl, IJvDynControlData,
-    IJvDynControlItems, IJvDynControlDblClick, IJvDynControlDevExpCx)
+    IJvDynControlItems, IJvDynControlDblClick, IJvDynControlDevExpCx, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: boolean);
@@ -354,7 +354,7 @@ type
   end;
 
   TJvDynControlCxComboBox = class (TcxComboBox, IUnknown, IJvDynControl, IJvDynControlData,
-    IJvDynControlItems, IJvDynControlDevExpCx, IJvDynControlComboBox)
+    IJvDynControlItems, IJvDynControlDevExpCx, IJvDynControlComboBox, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: boolean);
@@ -719,68 +719,69 @@ end;
 
 procedure TJvDynControlCxFileNameEdit.DefaultOnButtonClick(Sender: TObject; AButtonIndex: integer);
 begin
-  case FDialogKind of
-    jdkOpen:
-      with TOpenDialog.Create(Self) do
-        try
-          Options    := FDialogOptions;
-          Title      := FDialogTitle;
-          Filter     := FFilter;
-          FilterIndex := FFilterIndex;
-          InitialDir := FInitialDir;
-          DefaultExt := FDefaultExt;
-          FileName   := ControlGetValue;
-          if Execute then
-            ControlSetValue(FileName);
-        finally
-          Free;
-        end;
-    jdkOpenPicture:
-      with TOpenPictureDialog.Create(Self) do
-        try
-          Options    := FDialogOptions;
-          Title      := FDialogTitle;
-          Filter     := FFilter;
-          FilterIndex := FFilterIndex;
-          InitialDir := FInitialDir;
-          DefaultExt := FDefaultExt;
-          FileName   := ControlGetValue;
-          if Execute then
-            ControlSetValue(FileName);
-        finally
-          Free;
-        end;
-    jdkSave:
-      with TSaveDialog.Create(Self) do
-        try
-          Options    := FDialogOptions;
-          Title      := FDialogTitle;
-          Filter     := FFilter;
-          FilterIndex := FFilterIndex;
-          InitialDir := FInitialDir;
-          DefaultExt := FDefaultExt;
-          FileName   := ControlGetValue;
-          if Execute then
-            ControlSetValue(FileName);
-        finally
-          Free;
-        end;
-    jdkSavePicture:
-      with TSavePictureDialog.Create(Self) do
-        try
-          Options    := FDialogOptions;
-          Title      := FDialogTitle;
-          Filter     := FFilter;
-          FilterIndex := FFilterIndex;
-          InitialDir := FInitialDir;
-          DefaultExt := FDefaultExt;
-          FileName   := ControlGetValue;
-          if Execute then
-            ControlSetValue(FileName);
-        finally
-          Free;
-        end;
-  end;
+  if not Properties.ReadOnly then
+    case FDialogKind of
+      jdkOpen:
+        with TOpenDialog.Create(Self) do
+          try
+            Options    := FDialogOptions;
+            Title      := FDialogTitle;
+            Filter     := FFilter;
+            FilterIndex := FFilterIndex;
+            InitialDir := FInitialDir;
+            DefaultExt := FDefaultExt;
+            FileName   := ControlGetValue;
+            if Execute then
+              ControlSetValue(FileName);
+          finally
+            Free;
+          end;
+      jdkOpenPicture:
+        with TOpenPictureDialog.Create(Self) do
+          try
+            Options    := FDialogOptions;
+            Title      := FDialogTitle;
+            Filter     := FFilter;
+            FilterIndex := FFilterIndex;
+            InitialDir := FInitialDir;
+            DefaultExt := FDefaultExt;
+            FileName   := ControlGetValue;
+            if Execute then
+              ControlSetValue(FileName);
+          finally
+            Free;
+          end;
+      jdkSave:
+        with TSaveDialog.Create(Self) do
+          try
+            Options    := FDialogOptions;
+            Title      := FDialogTitle;
+            Filter     := FFilter;
+            FilterIndex := FFilterIndex;
+            InitialDir := FInitialDir;
+            DefaultExt := FDefaultExt;
+            FileName   := ControlGetValue;
+            if Execute then
+              ControlSetValue(FileName);
+          finally
+            Free;
+          end;
+      jdkSavePicture:
+        with TSavePictureDialog.Create(Self) do
+          try
+            Options    := FDialogOptions;
+            Title      := FDialogTitle;
+            Filter     := FFilter;
+            FilterIndex := FFilterIndex;
+            InitialDir := FInitialDir;
+            DefaultExt := FDefaultExt;
+            FileName   := ControlGetValue;
+            if Execute then
+              ControlSetValue(FileName);
+          finally
+            Free;
+          end;
+    end;
 end;
 
 procedure TJvDynControlCxFileNameEdit.ControlSetDefaultProperties;
@@ -795,6 +796,7 @@ end;
 
 procedure TJvDynControlCxFileNameEdit.ControlSetCaption(Value: string);
 begin
+
 end;
 
 procedure TJvDynControlCxFileNameEdit.ControlSetTabOrder(Value: integer);
@@ -879,9 +881,12 @@ var
   Dir: string;
   Opt: TSelectDirOpts;
 begin
-  Dir := FInitialDir;
-  if SelectDirectory(Dir, FDialogOptions, HelpContext) then
-    ControlSetValue(Dir);
+  if not Properties.ReadOnly then
+  begin
+    Dir := FInitialDir;
+    if SelectDirectory(Dir, FDialogOptions, HelpContext) then
+      ControlSetValue(Dir);
+  end;
 end;
 
 procedure TJvDynControlCxDirectoryEdit.ControlSetDefaultProperties;
@@ -1180,11 +1185,12 @@ end;
 
 procedure TJvDynControlCxCheckbox.ControlSetReadOnly(Value: boolean);
 begin
+  Properties.ReadOnly := Value;
 end;
 
 procedure TJvDynControlCxCheckbox.ControlSetCaption(Value: string);
 begin
-  Caption := Value;
+  Properties.Caption := Value;
 end;
 
 procedure TJvDynControlCxCheckbox.ControlSetTabOrder(Value: integer);
@@ -1420,7 +1426,7 @@ end;
 
 procedure TJvDynControlCxListBox.ControlSetReadOnly(Value: boolean);
 begin
-//  Properties.ReadOnly := Value;
+  ReadOnly := Value;
 end;
 
 procedure TJvDynControlCxListBox.ControlSetCaption(Value: string);

@@ -2,12 +2,12 @@ unit JvParameterListMainForm;
 
 interface
 
-{.$DEFINE INCLUDE_DEVEXP_CX}
+{$DEFINE INCLUDE_DEVEXP_CX}
 
 uses
   Windows, Messages, SysUtils, {Variants, }Classes, Graphics, Controls, Forms,
   Dialogs, JvDsaDialogs, jvParameterList, StdCtrls, jvParameterList_Parameter, Mask,
-  JvToolEdit,
+  JvToolEdit, jvPanel,
   {$IFDEF INCLUDE_DEVEXP_CX}
   cxButtons, cxListBox, cxRadioGroup, cxLookAndFeelPainters,
   cxDropDownEdit, cxCalendar, cxSpinEdit, cxTimeEdit, cxCheckBox, cxMemo,
@@ -18,15 +18,10 @@ uses
   ExtCtrls, JvFormPlacement, JvComponent, JvAppStore,
   JvAppRegistryStore, JvDynControlEngine, ComCtrls, Buttons, JvBitBtn,
   JvCombobox, CheckLst, ShlObj, ExtDlgs, JvImage,
-  JvMaskEdit, JvSpin, JvBaseEdits;
+  JvMaskEdit, JvSpin, JvBaseEdits, JvGroupBox;
 
 type
   TForm1 = class (TForm)
-    Edit1: TEdit;
-    Button1: TButton;
-    Button2: TButton;
-    Button3: TButton;
-    Button4: TButton;
     GroupBox1: TGroupBox;
     AutoWidthCheckBox: TCheckBox;
     AutoHeightCheckBox: TCheckBox;
@@ -47,8 +42,6 @@ type
     BitBtn2: TBitBtn;
     HistoryEnabledCheckBox: TCheckBox;
     Image1: TImage;
-    JvImage1: TJvImage;
-    Image2: TImage;
     GroupBox2: TGroupBox;
     DevExpCxLookAndFeelRadioGroup: TRadioGroup;
     DevExpCxStyleGroupBox: TGroupBox;
@@ -58,14 +51,27 @@ type
     VCLRadioButton: TRadioButton;
     JVCLRadioButton: TRadioButton;
     CxRadioButton: TRadioButton;
-    Button5: TButton;
     VclRedRadioButton: TRadioButton;
+    GroupBox4: TGroupBox;
+    JvPanel1: TJvPanel;
+    Button5: TButton;
     Button6: TButton;
     Button7: TButton;
     Button8: TButton;
     Button9: TButton;
     Button10: TButton;
+    JvGroupBox1: TJvGroupBox;
+    JvPanel2: TJvPanel;
+    JvGroupBoxAllControls: TJvGroupBox;
+    JvGroupBox3: TJvGroupBox;
+    JvPanelAllControls: TJvPanel;
+    JvPanel4: TJvPanel;
+    Button1: TButton;
+    Button2: TButton;
+    Button3: TButton;
+    Button4: TButton;
     Button11: TButton;
+    Button12: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -80,11 +86,14 @@ type
     procedure Button7Click(Sender: TObject);
     procedure Button8Click(Sender: TObject);
     procedure Button11Click(Sender: TObject);
+    procedure Button12Click(Sender: TObject);
+    procedure JvPanelAllControlsResize(Sender: TObject);
   private
     { Private-Deklarationen }
   public
     { Public-Deklarationen }
     procedure ShowTest1(const aDynControlEngine: tJvDynControlEngine);
+    procedure ShowTest2(const aDynControlEngine: tJvDynControlEngine);
   end;
 
 var
@@ -159,7 +168,7 @@ begin
       SearchName := 'TimeTest';
       Caption    := 'TimeTest';
       Format     := 'HH:mm:ss';
-      Width      := 100;
+///      Width      := 100;
       AsDate     := Now;
     end;
     ParameterList.AddParameter(Parameter);
@@ -168,7 +177,7 @@ begin
     begin
       SearchName := 'DateTest';
       Caption    := 'DateTest';
-      Width      := 80;
+//      Width      := 80;
       AsDate     := Now;
     end;
     ParameterList.AddParameter(Parameter);
@@ -178,7 +187,7 @@ begin
       SearchName := 'DateTimeTest';
       Caption    := 'DateTimeTest';
       AsDate     := Now;
-      Width      := 200;
+//      Width      := 200;
       Height     := 50;
     end;
     ParameterList.AddParameter(Parameter);
@@ -187,7 +196,7 @@ begin
     begin
       SearchName := 'EditTest';
       Caption    := 'EditTest';
-      AsString   := Edit1.Text;
+//      AsString   := Edit1.Text;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvCheckboxParameter.Create(ParameterList);
@@ -225,6 +234,7 @@ begin
     begin
       SearchName := 'FileNameTest';
       Caption    := 'FileNameTest';
+      ReadOnly   := true;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvDirectoryParameter.Create(ParameterList);
@@ -232,6 +242,7 @@ begin
     begin
       SearchName := 'DirectoryTest';
       Caption    := 'DirectoryTest';
+      ReadOnly   := true;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvMemoParameter.Create(ParameterList);
@@ -253,7 +264,9 @@ begin
       ItemList.Add('Test&3');
       ItemList.Add('Test&4');
       ItemList.Add('Test&5');
-      Columns := 2;
+      ReadOnly  := true;
+      ItemIndex := 2;
+      Columns   := 2;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvListBoxParameter.Create(ParameterList);
@@ -279,15 +292,120 @@ begin
       Width      := 240;
     end;
     ParameterList.AddParameter(Parameter);
-    ParameterList.AutoHeight := AutoHeightCheckBox.Checked;
-    ParameterList.AutoWidth := AutoWidthCheckBox.Checked;
+    if AutoHeightCheckBox.Checked then
+      if AutoWidthCheckBox.Checked then
+        ParameterList.ArrangeSettings.AutoSize := asBoth
+      else
+        ParameterList.ArrangeSettings.AutoSize := asHeight
+    else if AutoWidthCheckBox.Checked then
+      ParameterList.ArrangeSettings.AutoSize := asWidth
+    else
+      ParameterList.ArrangeSettings.AutoSize := asNone;
+
     ParameterList.MaxHeight := StrToInt(MaxHeightEdit.Text);
-    ParameterList.MaxWidth := StrToInt(MaxWidthEdit.Text);
-    ParameterList.Height := StrToInt(HeightEdit.Text);
-    ParameterList.Width := StrToInt(WidthEdit.Text);
+    ParameterList.MaxWidth  := StrToInt(MaxWidthEdit.Text);
+    ParameterList.Height    := StrToInt(HeightEdit.Text);
+    ParameterList.Width     := StrToInt(WidthEdit.Text);
     ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
-    ParameterList.AppStore := JvAppRegistryStore;
-    ParameterList.Path := 'Dialog 1';
+    ParameterList.AppStore  := JvAppRegistryStore;
+    ParameterList.Path      := 'Dialog 1';
+    if LoadFromCheckBox.Checked then
+      ParameterList.LoadData;
+    if ParameterList.ShowParameterDialog then
+      if StoreToCheckBox.Checked then
+        ParameterList.storeData;
+//    Edit1.text := ParameterList.parameterByName('RadioGroupTest').AsString;
+  finally
+    ParameterList.Free;
+  end;
+end;
+
+procedure TForm1.ShowTest2(const aDynControlEngine: tJvDynControlEngine);
+var
+  ParameterList: TJvParameterList;
+  Parameter:     TJvBaseParameter;
+begin
+  ParameterList := TJvParameterList.Create(self);
+  try
+    if Assigned(aDynControlEngine) then
+      ParameterList.DynControlEngine := aDynControlEngine;
+    {$IFDEF INCLUDE_DEVEXP_CX}
+    if ParameterList.DynControlEngine is tJvDynControlEngine_DevExpCx then
+      with tJvDynControlEngine_DevExpCx(ParameterList.DynControlEngine) do
+      begin
+        case DevExpCxLookAndFeelRadioGroup.ItemIndex of
+          1: cxProperties.LookAndFeel.Kind := lfFlat;
+          2: cxProperties.LookAndFeel.Kind := lfUltraFlat;
+          else
+            cxProperties.LookAndFeel.Kind := lfStandard;
+        end;
+        CxProperties.StyleController.Style.Shadow := ShadowCheckBox.Checked;
+        if ThickLinesCheckBox.Checked then
+          CxProperties.StyleController.Style.BorderStyle := ebsThick
+        else
+          CxProperties.StyleController.Style.BorderStyle := ebsNone;
+      end;
+    {$ENDIF}
+    Parameter := tjvRadioGroupParameter.Create(ParameterList);
+    with tjvRadioGroupParameter(Parameter) do
+    begin
+      SearchName := 'RadioGroup';
+      Caption    := '&Enabled';
+      ItemList.Add('1 Enabled');
+      ItemList.Add('2 Enabled');
+      ItemList.Add('Both Enabled');
+      ItemList.Add('Both Disabled');
+      ItemIndex := 2;
+      Columns   := 2;
+    end;
+    ParameterList.AddParameter(Parameter);
+    Parameter := tjvCheckboxParameter.Create(ParameterList);
+    with Parameter do
+    begin
+      SearchName := 'Checkbox';
+      Caption    := '2 Enabled';
+    end;
+    ParameterList.AddParameter(Parameter);
+    Parameter := tjvEditParameter.Create(ParameterList);
+    with Parameter do
+    begin
+      SearchName := 'Edit1';
+      Caption    := 'Edit Test 1';
+//      Width      := 80;
+      AsDate     := Now;
+      DisableReasons.AddReason('RadioGroup', '2 Enabled');
+      DisableReasons.AddReason('RadioGroup', 'Both Disabled');
+    end;
+    ParameterList.AddParameter(Parameter);
+    Parameter := tjvEditParameter.Create(ParameterList);
+    with Parameter do
+    begin
+      SearchName := 'Edit2';
+      Caption    := 'Edit Test 2';
+//      Width      := 80;
+      AsDate     := Now;
+      DisableReasons.AddReason('RadioGroup', '1 Enabled');
+      DisableReasons.AddReason('RadioGroup', 'Both Disabled');
+      DisableReasons.AddReason('Checkbox', false);
+    end;
+    ParameterList.AddParameter(Parameter);
+    if AutoHeightCheckBox.Checked then
+      if AutoWidthCheckBox.Checked then
+        ParameterList.ArrangeSettings.AutoSize := asBoth
+      else
+        ParameterList.ArrangeSettings.AutoSize := asHeight
+    else if AutoWidthCheckBox.Checked then
+      ParameterList.ArrangeSettings.AutoSize := asWidth
+    else
+      ParameterList.ArrangeSettings.AutoSize := asNone;
+    ParameterList.OkButtonDisableReasons.AddReason('CheckBox', true);
+    ParameterList.MaxHeight := StrToInt(MaxHeightEdit.Text);
+    ParameterList.MaxWidth  := StrToInt(MaxWidthEdit.Text);
+    ParameterList.Height    := StrToInt(HeightEdit.Text);
+    ParameterList.Width     := StrToInt(WidthEdit.Text);
+    ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
+    ParameterList.AppStore  := JvAppRegistryStore;
+    ParameterList.Path      := 'Dialog 2';
     if LoadFromCheckBox.Checked then
       ParameterList.LoadData;
     if ParameterList.ShowParameterDialog then
@@ -313,9 +431,6 @@ begin
   if CxRadioButton.Checked then
     VCLRadioButton.Checked := true;
   {$ENDIF}
-  JvImage1.Picture.Assign(Image1.Picture);
-  JvImage1.Invalidate;
-  Image2.Picture.Assign(Image1.Picture);
   VCLRadioButtonClick(nil);
   DevExpCxLookAndFeelRadioGroupClick(nil);
 end;
@@ -435,6 +550,17 @@ end;
 procedure TForm1.Button11Click(Sender: TObject);
 begin
   ShowTest1(DynControlEngine_VCLRed);
+end;
+
+procedure TForm1.Button12Click(Sender: TObject);
+begin
+  ShowTest2(nil);
+end;
+
+procedure TForm1.JvPanelAllControlsResize(Sender: TObject);
+begin
+ //  JvGroupBoxAllControls.Width := JvPanelAllControls.Width+2;
+ //  JvGroupBoxAllControls.Height := JvPanelAllControls.Height+20;
 end;
 
 end.

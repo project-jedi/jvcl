@@ -38,7 +38,7 @@ uses
 
 type
   TJvDynControlJVCLMaskEdit = class (TJvMaskEdit, IUnknown, IJvDynControl,
-    IJvDynControlData)
+    IJvDynControlData, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: boolean);
@@ -55,7 +55,7 @@ type
   end;
 
   TJvDynControlJVCLCalcEdit = class (TJvCalcEdit, IUnknown, IJvDynControl,
-    IJvDynControlData)
+    IJvDynControlData, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: boolean);
@@ -72,7 +72,7 @@ type
   end;
 
   TJvDynControlJVCLSpinEdit = class (TJvSpinEdit, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlSpin)
+    IJvDynControlData, IJvDynControlSpin, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: boolean);
@@ -95,7 +95,7 @@ type
   end;
 
   TJvDynControlJVCLFileNameEdit = class (TJvFileNameEdit, IUnknown,
-    IJvDynControl, IJvDynControlData, IJvDynControlFileName)
+    IJvDynControl, IJvDynControlData, IJvDynControlFileName, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: boolean);
@@ -121,7 +121,7 @@ type
   end;
 
   TJvDynControlJVCLDirectoryEdit = class (TJvDirectoryEdit, IUnknown,
-    IJvDynControl, IJvDynControlData, IJvDynControlDirectory)
+    IJvDynControl, IJvDynControlData, IJvDynControlDirectory, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: boolean);
@@ -154,7 +154,6 @@ type
     destructor Destroy; override;
     procedure ControlSetDefaultProperties;
 
-    procedure ControlSetReadOnly(Value: boolean);
     procedure ControlSetCaption(Value: string);
     procedure ControlSetTabOrder(Value: integer);
 
@@ -177,7 +176,6 @@ type
   public
     procedure ControlSetDefaultProperties;
 
-    procedure ControlSetReadOnly(Value: boolean);
     procedure ControlSetCaption(Value: string);
     procedure ControlSetTabOrder(Value: integer);
 
@@ -200,7 +198,6 @@ type
   public
     procedure ControlSetDefaultProperties;
 
-    procedure ControlSetReadOnly(Value: boolean);
     procedure ControlSetCaption(Value: string);
     procedure ControlSetTabOrder(Value: integer);
 
@@ -216,12 +213,12 @@ type
   end;
 
   TJvDynControlJVCLCheckBox = class (TJvCheckBox, IUnknown,
-    IJvDynControl, IJvDynControlData)
+    IJvDynControl, IJvDynControlData, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value: boolean);
     procedure ControlSetCaption(Value: string);
     procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetReadonly(Value: boolean);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
@@ -233,12 +230,12 @@ type
   end;
 
   TJvDynControlJVCLMemo = class (TJvMemo, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlItems, IJvDynControlMemo)
+    IJvDynControlData, IJvDynControlItems, IJvDynControlMemo, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value: boolean);
     procedure ControlSetCaption(Value: string);
     procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetReadonly(Value: boolean);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
@@ -259,7 +256,7 @@ type
   end;
 
   TJvDynControlJVCLRadioGroup = class (TJvRadioGroup, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlItems, IJvDynControlRadioGroup)
+    IJvDynControlData, IJvDynControlItems, IJvDynControlRadioGroup, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: boolean);
@@ -285,7 +282,6 @@ type
     IJvDynControlData, IJvDynControlItems, IJvDynControlDblClick)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value: boolean);
     procedure ControlSetCaption(Value: string);
     procedure ControlSetTabOrder(Value: integer);
 
@@ -308,7 +304,7 @@ type
     IJvDynControlData, IJvDynControlItems, IJvDynControlComboBox)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value: boolean);
+    //procedure ControlSetReadOnly(Value: boolean);
     procedure ControlSetCaption(Value: string);
     procedure ControlSetTabOrder(Value: integer);
 
@@ -817,11 +813,6 @@ procedure TJvDynControlJVCLDateTimeEdit.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlJVCLDateTimeEdit.ControlSetReadOnly(Value: boolean);
-begin
- //FTimePicker.ReadOnly := Value;
- //FDatePicker.ReadOnly := Value;
-end;
 
 procedure TJvDynControlJVCLDateTimeEdit.ControlSetCaption(Value: string);
 begin
@@ -894,11 +885,6 @@ begin
   Kind := dtkDate;
 end;
 
-procedure TJvDynControlJVCLDateEdit.ControlSetReadOnly(Value: boolean);
-begin
-  Enabled := Value;
-end;
-
 procedure TJvDynControlJVCLDateEdit.ControlSetCaption(Value: string);
 begin
 end;
@@ -960,11 +946,6 @@ begin
   DateFormat := dfShort;
   Kind     := dtkTime;
   DateMode := dmUpDown;
-end;
-
-procedure TJvDynControlJVCLTimeEdit.ControlSetReadOnly(Value: boolean);
-begin
-  Enabled := Value;
 end;
 
 procedure TJvDynControlJVCLTimeEdit.ControlSetCaption(Value: string);
@@ -1044,7 +1025,7 @@ end;
 
 procedure TJvDynControlJVCLCheckBox.ControlSetOnChange(Value: TNotifyEvent);
 begin
-//  OnChange := Value;
+  OnClick := Value;
 end;
 
 procedure TJvDynControlJVCLCheckBox.ControlSetOnClick(Value: TNotifyEvent);
@@ -1157,7 +1138,7 @@ end;
 
 procedure TJvDynControlJVCLRadioGroup.ControlSetReadOnly(Value: boolean);
 begin
-//  ReadOnly := Value;
+  ReadOnly := Value;
 end;
 
 procedure TJvDynControlJVCLRadioGroup.ControlSetCaption(Value: string);
@@ -1181,7 +1162,7 @@ end;
 
 procedure TJvDynControlJVCLRadioGroup.ControlSetOnChange(Value: TNotifyEvent);
 begin
-//  OnChange := Value;
+  OnClick := Value;
 end;
 
 procedure TJvDynControlJVCLRadioGroup.ControlSetOnClick(Value: TNotifyEvent);
@@ -1230,11 +1211,6 @@ end;
 
 procedure TJvDynControlJVCLListBox.ControlSetDefaultProperties;
 begin
-end;
-
-procedure TJvDynControlJVCLListBox.ControlSetReadOnly(Value: boolean);
-begin
-//  ReadOnly := Value;
 end;
 
 procedure TJvDynControlJVCLListBox.ControlSetCaption(Value: string);
@@ -1310,10 +1286,10 @@ procedure TJvDynControlJVCLComboBox.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlJVCLComboBox.ControlSetReadOnly(Value: boolean);
-begin
-//  ReadOnly := Value;
-end;
+ //procedure TJvDynControlJVCLComboBox.ControlSetReadOnly(Value: boolean);
+ //begin
+ //  ReadOnly := Value;
+ //end;
 
 procedure TJvDynControlJVCLComboBox.ControlSetCaption(Value: string);
 begin

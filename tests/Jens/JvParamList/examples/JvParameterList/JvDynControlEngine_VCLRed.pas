@@ -62,7 +62,7 @@ begin
   inherited AfterCreateControl(aControl);
   if aControl is TButton then
     TButton(aControl).Font.Color := clRed
-  else
+  else if aControl is tControl then
     tHackControl(aControl).Color := clRed;
 end;
 

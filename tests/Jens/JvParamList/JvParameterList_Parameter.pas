@@ -270,12 +270,19 @@ type
     FItemList: TStringList;
     FItemIndex: integer;
     FSorted: boolean;
+    FVariantAsItemIndex: boolean;
   protected
     procedure SetItemList(Value: TStringList);
     procedure SetItemIndex(Value: integer);
     procedure SetAsString(Value: string); override;
+    function GetAsString: string; override;
     procedure SetAsInteger(Value: integer); override;
     function GetAsInteger: integer; override;
+    procedure SetAsVariant(Value: variant); override;
+    function GetAsVariant: variant; override;
+    function GetWinControlData: variant; override;
+    procedure SetWinControlData(Value: variant); override;
+
   public
     constructor Create(AParameterList: TJvParameterList); override;
     destructor Destroy; override;
@@ -287,6 +294,7 @@ type
     property ItemList: TStringList read FItemList write SetItemList;
     property ItemIndex: integer read FItemIndex write SetItemIndex;
     property Sorted: boolean read FSorted write FSorted;
+    property VariantAsItemIndex: boolean read FVariantAsItemIndex write FVariantAsItemIndex default false;
   end;
 
   TJvRadioGroupParameter = class (TJvListParameter)
@@ -774,8 +782,10 @@ end;
 constructor TJvListParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
-  FItemList := TStringList.Create;
-  Sorted    := false;
+  FItemList  := TStringList.Create;
+  Sorted     := false;
+  FItemIndex := -1;
+  FVariantAsItemIndex := false;
 end;
 
 destructor TJvListParameter.Destroy;
@@ -790,13 +800,25 @@ var
 begin
   I := ItemList.IndexOf(Value);
   if (I >= 0) and (I < ItemList.Count) then
-    ItemIndex := I;
+    ItemIndex := I
+  else
+    ItemIndex := -1;
+end;
+
+function TJvListParameter.GetAsString: string;
+begin
+  if (ItemIndex >= 0) and (ItemIndex < ItemList.Count) then
+    Result := ItemList[ItemIndex]
+  else
+    Result := ''
 end;
 
 procedure TJvListParameter.SetAsInteger(Value: integer);
 begin
   if (Value >= 0) and (Value < ItemList.Count) then
-    ItemIndex := Value;
+    ItemIndex := Value
+  else
+    ItemIndex := -1;
 end;
 
 function TJvListParameter.GetAsInteger: integer;
@@ -804,12 +826,29 @@ begin
   Result := ItemIndex;
 end;
 
+procedure TJvListParameter.SetAsVariant(Value: variant);
+begin
+  if VariantAsItemIndex then
+    if VarType(Value) in [varSmallInt, varInteger, varByte, varShortInt, varWord, varLongWord] then
+      ItemIndex := Value
+    else
+      inherited SetAsString(Value)
+  else
+    inherited SetAsString(Value);
+end;
+
+function TJvListParameter.GetAsVariant: variant;
+begin
+  Result := inherited GetAsVariant;
+  if VarToStr(Result) = '-1' then
+    Result := NULL;
+end;
+
 procedure TJvListParameter.SetItemList(Value: TStringList);
 begin
   FItemList.Assign(Value);
   if Assigned(Value) then
-    if (ItemIndex >= 0) and (ItemIndex < ItemList.Count) then
-      AsVariant := ItemList[ItemIndex];
+    SetItemIndex(FItemIndex);
 end;
 
 procedure TJvListParameter.SetItemIndex(Value: integer);
@@ -818,9 +857,47 @@ begin
     FItemIndex := ItemList.Count - 1
   else
     FItemIndex := Value;
-  if (Value >= 0) and (Value < ItemList.Count) then
-    AsVariant := ItemList[Value];
+  if VariantAsItemIndex then
+    inherited SetAsVariant(FItemIndex)
+  else if (Value >= 0) and (Value < ItemList.Count) then
+    inherited SetAsVariant(ItemList[Value])
+  else
+    inherited SetAsVariant('');
 end;
+
+function TJvListParameter.GetWinControlData: variant;
+var
+  Index: integer;
+begin
+  if Assigned(JvDynControlData) then
+    Index := JvDynControlData.ControlValue
+  else
+    Index := -1;
+  if VariantAsItemIndex then
+    Result := Index
+  else if (Index >= 0) and (Index < ItemList.Count) then
+    Result := ItemList[Index]
+  else
+    Result := '';
+end;
+
+procedure TJvListParameter.SetWinControlData(Value: variant);
+var
+  Index: integer;
+begin
+  if Assigned(JvDynControlData) then
+    if VariantAsItemIndex then
+      JvDynControlData.ControlValue := Value
+    else
+    begin
+      Index := ItemList.IndexOf(Value);
+      if (Index >= 0) and (Index < ItemList.Count) then
+        JvDynControlData.ControlValue := ItemList[Index]
+      else
+        JvDynControlData.ControlValue := '';
+    end;
+end;
+
 
 procedure TJvListParameter.Assign(Source: TPersistent);
 begin
@@ -873,7 +950,7 @@ var
   ITmpRadioGroup: IJvDynControlRadioGroup;
 begin
   WinControl := DynControlEngine.CreateRadioGroupControl(Self, ParameterParent, GetParameterName, Caption, ItemList);
-  JvDynControlData.ControlSetOnChange(HandleEnableDisable);
+  JvDynControlData.ControlSetOnChange(ParameterList.HandleEnableDisable);
   if Supports(WinControl, IJvDynControlRadioGroup, ITmpRadioGroup) then
     ITmpRadioGroup.ControlSetColumns(Columns);
 end;
@@ -883,7 +960,7 @@ end;
 procedure TJvCheckBoxParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
 begin
   WinControl := DynControlEngine.CreateCheckBoxControl(Self, ParameterParent, GetParameterName, Caption);
-  JvDynControl.ControlSetOnClick(HandleEnableDisable);
+  JvDynControl.ControlSetOnClick(ParameterList.HandleEnableDisable);
 end;
 
 //=== TJvComboBoxParameter ===================================================
@@ -919,7 +996,7 @@ var
   ITmpItems:    IJvDynControlItems;
 begin
   WinControl := DynControlEngine.CreateComboBoxControl(Self, AParameterParent, GetParameterName, ItemList);
-  JvDynControlData.ControlSetOnChange(HandleEnableDisable);
+  JvDynControlData.ControlSetOnChange(ParameterList.HandleEnableDisable);
   if Supports(WinControl, IJvDynControlComboBox, ITmpComboBox) then
     ITmpComboBox.ControlSetNewEntriesAllowed(NewEntriesAllowed);
   if Supports(WinControl, IJvDynControlItems, ITmpItems) then
@@ -954,7 +1031,7 @@ var
   ITmpItems: IJvDynControlItems;
 begin
   WinControl := DynControlEngine.CreateListBoxControl(Self, AParameterParent, GetParameterName, ItemList);
-  JvDynControlData.ControlSetOnChange(HandleEnableDisable);
+  JvDynControlData.ControlSetOnChange(ParameterList.HandleEnableDisable);
   if Supports(WinControl, IJvDynControlItems, ITmpItems) then
     ITmpItems.ControlSetSorted(Sorted);
 end;
@@ -1083,7 +1160,7 @@ end;
 procedure TJvEditParameter.CreateWinControl(AParameterParent: TWinControl);
 begin
   WinControl := DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName);
-  JvDynControl.ControlSetOnExit(HandleEnableDisable);
+  JvDynControl.ControlSetOnExit(ParameterList.HandleEnableDisable);
  //  MaskEdit.PasswordChar := PasswordChar;
  //  MaskEdit.EditMask := EditMask;
  //  MaskEdit.EditText := AsString;
@@ -1118,7 +1195,7 @@ begin
     WinControl := DynControlEngine.CreateSpinControl(Self, AParameterParent, GetParameterName)
   else
     WinControl := DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName);
-  JvDynControl.ControlSetOnExit(HandleEnableDisable);
+  JvDynControl.ControlSetOnExit(ParameterList.HandleEnableDisable);
   if Supports(WinControl, IJvDynControlSpin, ITmpSpin) then
     with ITmpSpin do
     begin
@@ -1192,7 +1269,7 @@ begin
     WinControl := DynControlEngine.CreateSpinControl(Self, AParameterParent, GetParameterName)
   else
     WinControl := DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName);
-  JvDynControl.ControlSetOnExit(HandleEnableDisable);
+  JvDynControl.ControlSetOnExit(ParameterList.HandleEnableDisable);
   if Supports(WinControl, IJvDynControlSpin, ITmpSpin) then
     with ITmpSpin do
     begin
@@ -1269,7 +1346,7 @@ var
   ITmpControlFileName: IJvDynControlFileName;
 begin
   WinControl := DynControlEngine.CreateFileNameControl(Self, AParameterParent, GetParameterName);
-  JvDynControl.ControlSetOnExit(HandleEnableDisable);
+  JvDynControl.ControlSetOnExit(ParameterList.HandleEnableDisable);
   if Supports(WinControl, IJvDynControlFileName, ITmpControlFileName) then
     with ITmpControlFileName do
     begin
@@ -1344,7 +1421,7 @@ var
   ITmpControlDirectory: IJvDynControlDirectory;
 begin
   WinControl := DynControlEngine.CreateDirectoryControl(Self, AParameterParent, GetParameterName);
-  JvDynControl.ControlSetOnExit(HandleEnableDisable);
+  JvDynControl.ControlSetOnExit(ParameterList.HandleEnableDisable);
   if Supports(WinControl, IJvDynControlDirectory, ITmpControlDirectory) then
     with ITmpControlDirectory do
     begin
@@ -1406,7 +1483,7 @@ var
   Memo: TWinControl;
 begin
   WinControl := DynControlEngine.CreateMemoControl(Self, AParameterParent, GetParameterName);
-  JvDynControl.ControlSetOnExit(HandleEnableDisable);
+  JvDynControl.ControlSetOnExit(ParameterList.HandleEnableDisable);
   with IJvDynControlMemo(IntfCast(WinControl, IJvDynControlMemo)) do
   begin
     ControlSetWantTabs(WantTabs);

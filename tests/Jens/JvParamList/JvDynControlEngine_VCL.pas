@@ -34,7 +34,7 @@ uses
   JvDynControlEngine, JvDynControlEngine_Interface;
 
 type
-  TJvDynControlVCLMaskEdit = class (TMaskEdit, IUnknown, IJvDynControl, IJvDynControlData)
+  TJvDynControlVCLMaskEdit = class (TMaskEdit, IUnknown, IJvDynControl, IJvDynControlData, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: boolean);
@@ -51,7 +51,7 @@ type
   end;
 
   TJvDynControlVCLFileNameEdit = class (TPanel, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlFileName)
+    IJvDynControlData, IJvDynControlFileName, IJvDynControlReadOnly)
   private
     FEditControl: TMaskEdit;
     FButton: TBitBtn;
@@ -93,7 +93,7 @@ type
   end;
 
   TJvDynControlVCLDirectoryEdit = class (TPanel, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlDirectory)
+    IJvDynControlData, IJvDynControlDirectory, IJvDynControlReadOnly)
   private
     FEditControl: TMaskEdit;
     FButton: TBitBtn;
@@ -136,7 +136,6 @@ type
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value: boolean);
     procedure ControlSetCaption(Value: string);
     procedure ControlSetTabOrder(Value: integer);
 
@@ -159,7 +158,6 @@ type
   private
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value: boolean);
     procedure ControlSetCaption(Value: string);
     procedure ControlSetTabOrder(Value: integer);
 
@@ -182,7 +180,6 @@ type
   public
     procedure ControlSetDefaultProperties;
 
-    procedure ControlSetReadOnly(Value: boolean);
     procedure ControlSetCaption(Value: string);
     procedure ControlSetTabOrder(Value: integer);
 
@@ -202,7 +199,6 @@ type
   private
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value: boolean);
     procedure ControlSetCaption(Value: string);
     procedure ControlSetTabOrder(Value: integer);
 
@@ -216,7 +212,7 @@ type
   end;
 
   TJvDynControlVCLMemo = class (TMemo, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlItems, IJvDynControlMemo)
+    IJvDynControlData, IJvDynControlItems, IJvDynControlMemo, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: boolean);
@@ -245,7 +241,6 @@ type
     IJvDynControlData, IJvDynControlItems, IJvDynControlRadioGroup)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value: boolean);
     procedure ControlSetCaption(Value: string);
     procedure ControlSetTabOrder(Value: integer);
 
@@ -268,7 +263,6 @@ type
     IJvDynControlData, IJvDynControlItems, IJvDynControlDblClick)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value: boolean);
     procedure ControlSetCaption(Value: string);
     procedure ControlSetTabOrder(Value: integer);
 
@@ -291,7 +285,6 @@ type
     IJvDynControlData, IJvDynControlItems, IJvDynControlComboBox)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value: boolean);
     procedure ControlSetCaption(Value: string);
     procedure ControlSetTabOrder(Value: integer);
 
@@ -559,6 +552,7 @@ end;
 procedure TJvDynControlVCLFileNameEdit.ControlSetReadOnly(Value: boolean);
 begin
   FEditControl.ReadOnly := Value;
+  FButton.Enabled := not Value;
 end;
 
 procedure TJvDynControlVCLFileNameEdit.ControlSetCaption(Value: string);
@@ -679,6 +673,7 @@ end;
 procedure TJvDynControlVCLDirectoryEdit.ControlSetReadOnly(Value: boolean);
 begin
   FEditControl.ReadOnly := Value;
+  FButton.Enabled := not Value;
 end;
 
 procedure TJvDynControlVCLDirectoryEdit.ControlSetCaption(Value: string);
@@ -784,11 +779,6 @@ procedure TJvDynControlVCLDateTimeEdit.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlVCLDateTimeEdit.ControlSetReadOnly(Value: boolean);
-begin
-//  
-end;
-
 procedure TJvDynControlVCLDateTimeEdit.ControlSetCaption(Value: string);
 begin
   //Caption := Value;
@@ -859,11 +849,6 @@ begin
   Kind := dtkDate;
 end;
 
-procedure TJvDynControlVCLDateEdit.ControlSetReadOnly(Value: boolean);
-begin
-//  ReadOnly := Value;
-end;
-
 procedure TJvDynControlVCLDateEdit.ControlSetCaption(Value: string);
 begin
 end;
@@ -928,11 +913,6 @@ begin
   DateMode := dmUpDown;
 end;
 
-procedure TJvDynControlVCLTimeEdit.ControlSetReadOnly(Value: boolean);
-begin
-//  ReadOnly := Value;
-end;
-
 procedure TJvDynControlVCLTimeEdit.ControlSetCaption(Value: string);
 begin
 end;
@@ -986,10 +966,6 @@ procedure TJvDynControlVCLCheckBox.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlVCLCheckBox.ControlSetReadOnly(Value: boolean);
-begin
-end;
-
 procedure TJvDynControlVCLCheckBox.ControlSetCaption(Value: string);
 begin
   Caption := Value;
@@ -1012,7 +988,7 @@ end;
 
 procedure TJvDynControlVCLCheckBox.ControlSetOnChange(Value: TNotifyEvent);
 begin
-//  OnChange := Value;
+  OnClick := Value;
 end;
 
 procedure TJvDynControlVCLCheckBox.ControlSetOnClick(Value: TNotifyEvent);
@@ -1126,11 +1102,6 @@ procedure TJvDynControlVCLRadioGroup.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlVCLRadioGroup.ControlSetReadOnly(Value: boolean);
-begin
-//  ReadOnly := Value;
-end;
-
 procedure TJvDynControlVCLRadioGroup.ControlSetCaption(Value: string);
 begin
 end;
@@ -1152,7 +1123,7 @@ end;
 
 procedure TJvDynControlVCLRadioGroup.ControlSetOnChange(Value: TNotifyEvent);
 begin
-//  OnChange := Value;
+  OnClick := Value;
 end;
 
 procedure TJvDynControlVCLRadioGroup.ControlSetOnClick(Value: TNotifyEvent);
@@ -1203,10 +1174,6 @@ procedure TJvDynControlVCLListBox.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlVCLListBox.ControlSetReadOnly(Value: boolean);
-begin
-//  ReadOnly := Value;
-end;
 
 procedure TJvDynControlVCLListBox.ControlSetCaption(Value: string);
 begin
@@ -1280,11 +1247,6 @@ end;
 
 procedure TJvDynControlVCLComboBox.ControlSetDefaultProperties;
 begin
-end;
-
-procedure TJvDynControlVCLComboBox.ControlSetReadOnly(Value: boolean);
-begin
-//  ReadOnly := Value;
 end;
 
 procedure TJvDynControlVCLComboBox.ControlSetCaption(Value: string);

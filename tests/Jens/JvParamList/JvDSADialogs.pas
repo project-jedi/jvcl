@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, Contnrs, Controls, StdCtrls, Dialogs, ExtCtrls, Forms, Graphics, SysUtils, Windows,
-  JclBase, JvComponent, JvTypes, JvDynControlEngine;
+  JclBase, JvConsts, JvComponent, JvTypes, JvDynControlEngine;
 
 type
   TDlgCenterKind = (dckScreen, dckMainForm, dckActiveForm);
