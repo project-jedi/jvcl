@@ -1,7 +1,8 @@
 {-------------------------------------------------------------------------------
  QWindows.pas
 
- Copyright (c) 2003, Andre Snepvangers (asn@xs4all.nl)
+ Copyright (c) 2003, Andre Snepvangers (asn@xs4all.nl),
+                     Andreas Hausladen (Andreas.Hausladen@gmx.de)
  All rights reserved.
 
  Version 0.5
@@ -28,7 +29,7 @@
  THE SOFTWARE.
 --------------------------------------------------------------------------------
 
-Last Modified: 2004-01-10
+Last Modified: 2004-01-11
 
 Known Issues:
   - Covers only a small part of the Windows APIs
@@ -1097,6 +1098,42 @@ procedure MessageBeep(Value: Integer);   // value ignored
 const
   MAX_COMPUTERNAME_LENGTH = 15;
 
+type
+  PSecurityAttributes = Pointer;
+
+function CreateEvent(EventAttributes: PSecurityAttributes;
+  ManualReset, InitialState: LongBool; Name: PChar): THandle;
+function OpenEvent(DesiredAccess: Longword; InheritHandle: LongBool;
+  Name: PChar): THandle;
+function SetEvent(Event: THandle): LongBool;
+function ResetEvent(Event: THandle): LongBool;
+function PulseEvent(Event: THandle): LongBool; // calls SetEvent()
+
+function CreateMutex(MutexAttributes: PSecurityAttributes; InitialOwner: LongBool;
+  Name: PChar): THandle;
+function OpenMutex(DesiredAccess: Longword; InheritHandle: Boolean;
+  Name: PChar): THandle;
+function ReleaseMutex(Mutex: THandle): LongBool;
+
+
+function WaitForSingleObject(Handle: THandle; Milliseconds: Cardinal): Cardinal;
+
+const
+  STATUS_WAIT_0           = $00000000;
+  STATUS_ABANDONED_WAIT_0 = $00000080;
+  STATUS_TIMEOUT          = $00000102;
+  WAIT_FAILED             = Longword($FFFFFFFF);
+  WAIT_OBJECT_0           = STATUS_WAIT_0;
+  WAIT_ABANDONED          = STATUS_ABANDONED_WAIT_0;
+  WAIT_ABANDONED_0        = STATUS_ABANDONED_WAIT_0;
+  WAIT_TIMEOUT            = STATUS_TIMEOUT;
+
+// all Handles are TObject derived classes
+function CloseHandle(hObject: THandle): LongBool;
+
+
+
+
 function GlobalAllocPtr(Flags: Integer; Bytes: Longint): Pointer;
 function GlobalReAllocPtr(P: Pointer; Bytes: Longint; Flags: Integer): Pointer;
 function GlobalFreePtr(P: Pointer): THandle;
@@ -1314,6 +1351,88 @@ begin
       end;
     end;
   end;
+end;
+
+{---------------------------------------}
+
+type
+  THandleObjectList = class;
+
+  THandleObject = class(TObject)
+  private
+    FRefCount: Integer;
+    FName: string;
+    FList: THandleObjectList;
+  public
+    constructor Create(AList: THandleObjectList; const AName: string);
+    destructor Destroy; override;
+    procedure AddRef;
+    procedure Release;
+
+    property Name: string read FName;
+    property List: THandleObjectList read FList;
+  end;
+
+  TWaitObject = class(THandleObject)
+    function WaitFor(Timeout: Longword): Cardinal; virtual; abstract;
+  end;
+
+  THandleObjectList = class(TObjectList)
+  private
+    function GetItems(Index: Integer): THandleObject;
+  public
+    function Find(const AName: string): THandleObject;
+    property Items[Index: Integer]: THandleObject read GetItems;
+  end;
+
+{ THandleObject }
+constructor THandleObject.Create(AList: THandleObjectList; const AName: string);
+begin
+  inherited Create;
+  FList := AList;
+  FName := AName;
+  FRefCount := 0;
+  if Assigned(FList) then
+    FList.Add(Self);
+  AddRef;
+end;
+
+destructor THandleObject.Destroy;
+begin
+  if Assigned(FList) then
+    FList.Extract(Self);
+  inherited Destroy;
+end;
+
+procedure THandleObject.AddRef;
+begin
+  Inc(FRefCount);
+end;
+
+procedure THandleObject.Release;
+begin
+  Dec(FRefCount);
+  if FRefCount <= 0 then
+    Free;
+end;
+
+{ THandleObjectList }
+function THandleObjectList.GetItems(Index: Integer): THandleObject;
+begin
+  Result := THandleObject(inherited Items[Index]);
+end;
+
+function THandleObjectList.Find(const AName: string): THandleObject;
+var
+  I: Integer;
+begin
+  for I := 0 to Count - 1 do
+  begin
+    Result := Items[I];
+    if Result.Name = AName then
+      Exit;
+  end;
+  Result := nil;
 end;
 
 {---------------------------------------}
@@ -5305,6 +5424,321 @@ begin
   QApplication_beep;
 end;
 
+{ --------------------- }
+type
+  TTimeoutObject = class(TWaitObject)
+    procedure TimedOut; virtual; abstract;
+  end;
+
+  TEventWaitObject = class(TTimeoutObject)
+  private
+    FManualReset: Boolean;
+  public
+    Event: TEvent;
+    Signaled: Boolean;
+    constructor Create(EventAttributes: PSecurityAttributes;
+      ManualReset, InitialState: LongBool; const AName: string);
+    destructor Destroy; override;
+    function WaitFor(Timeout: Longword): Cardinal; override;
+    procedure TimedOut; override;
+  end;
+
+  TEventTimeoutThread = class(TThread)
+  private
+    FStopped: Boolean;
+    FTimeoutObject: TTimeoutObject;
+    FTimeout: Integer;
+  protected
+    procedure Execute; override;
+  public
+    constructor Create(ATimeoutObject: TTimeoutObject; ATimeout: Integer);
+    property Stopped: Boolean read FStopped write FStopped;
+  end;
+
+var
+  EventWaitObjectList: THandleObjectList = nil;
+
+{ TEventWaitObject }
+constructor TEventWaitObject.Create(EventAttributes: PSecurityAttributes;
+  ManualReset, InitialState: LongBool; const AName: string);
+begin
+  inherited Create(EventWaitObjectList, AName);
+  FManualReset := ManualReset;
+  Event := TEvent.Create(EventAttributes, ManualReset, InitialState, Name);
+  Signaled := False;
+end;
+
+type
+  TPrivateEvent = class(THandleObject)
+  protected
+    FEvent: TSemaphore;
+  end;
+
+destructor TEventWaitObject.Destroy;
+begin
+  sem_destroy(TPrivateEvent(Event).FEvent);
+  Event.Free;
+  inherited Destroy;
+end;
+
+procedure TEventWaitObject.TimedOut;
+begin
+  Event.SetEvent;
+end;
+
+function TEventWaitObject.WaitFor(Timeout: Longword): Cardinal;
+var
+  TimeoutThread: TEventTimeoutThread;
+begin
+  Result := WAIT_FAILED;
+  TimeoutThread := nil;
+  if Timeout <> INFINITE then
+    { Linux does not support events with timeout. Here we use a second thread
+      that sets the timeout. }
+    TimeoutThread := TEventTimeoutThread.Create(Event, Integer(Timeout));
+  try
+    case Event.WaitFor(Timeout) of
+      wrSignaled:
+        Result := WAIT_OBJECT_0;
+      wrTimeout:
+        Result := WAIT_TIMEOUT;
+      wrAbandoned:
+        Result := WAIT_ABANDONED; // for events ?
+    end;
+  finally
+    if Assigned(TimeoutThread) then
+    begin
+      if TimeoutThread.Stopped then
+        Result := WAIT_TIMEOUT;
+      TimeoutThread.Stopped := True;
+      TimeoutThread.WaitFor;
+      TimeoutThread.Free;
+    end;
+    if FManualReset then
+    begin
+      Signaled := True;
+      Event.SetEvent; // do not auto-reset
+    end
+    else
+    begin
+      Signaled := False;
+      Event.ResetEvent;
+    end;
+  end;
+end;
+
+{ TEventTimeoutThread }
+constructor TEventTimeoutThread.Create(ATimeoutObject: TTimeoutObject; ATimeout: Integer);
+begin
+  FTimeoutObject := ATimeoutObject;
+  FTimeout := ATimeout;
+  FStopped := False;
+  inherited Create(False);
+end;
+
+procedure TEventTimeoutThread.Execute;
+var
+  StartTime, CurrentTime: Int64;
+begin
+  StartTime := GetTickCount;
+  while not FStopped do
+  begin
+    CurrentTime := GetTickCount;
+    if CurrentTime < StartTime then
+      Inc(CurrentTime, $100000000);
+    if CurrentTime - StartTime > FTimeout then
+    begin
+      FStopped := True;
+      FTimeoutObject.TimedOut;
+      Break;
+    end;
+    Sleep(10);
+  end;
+end;
+
+function CreateEvent(EventAttributes: PSecurityAttributes;
+  ManualReset, InitialState: LongBool; Name: PChar): THandle;
+begin
+  Result := THandle(TEventWaitObject.Create(EventAttributes, ManualReset, InitialState, Name));
+end;
+
+function OpenEvent(DesiredAccess: Longword; InheritHandle: LongBool;
+  Name: PChar): THandle;
+begin
+  Result := THandle(EventWaitObjectList.Find(Name));
+  if Result <> 0 then
+    THandleObject(Result).AddRef;
+end;
+
+function SetEvent(Event: THandle): LongBool;
+begin
+  try
+    Result := (Event <> 0) and (THandleObject(Event) is TEventWaitObject);
+    if Result then
+      TEventWaitObject(Event).Event.SetEvent;
+  except
+    Result := False;
+  end;
+end;
+
+function ResetEvent(Event: THandle): LongBool;
+begin
+  try
+    Result := (Event <> 0) and (THandleObject(Event) is TEventWaitObject);
+    if Result then
+    begin
+      if TEventWaitObject(Event).Signaled then
+      begin
+        TEventWaitObject(Event).Signaled := False;
+        TEventWaitObject(Event).WaitFor(INFINITE); // auto-reset
+      end;
+      TEventWaitObject(Event).Event.ResetEvent;
+    end;
+  except
+    Result := False;
+  end;
+end;
+
+function PulseEvent(Event: THandle): LongBool;
+begin
+ // not implemented
+  Result := SetEvent(Event);
+end;
+
+{ --------------------- }
+type
+  TMutexWaitObject = class(TTimeoutObject)
+  private
+    FHandle: TSemaphore;
+  public
+    constructor Create(InitialOwner: Boolean; const AName: string);
+    destructor Destroy; override;
+    procedure TimedOut; override;
+    function WaitFor(Timeout: Longword): Cardinal; override;
+    function ReleaseMutex: LongBool;
+  end;
+
+var
+  MutexWaitObjectList: THandleObjectList = nil;
+
+{ TMutexWaitObject }
+constructor TMutexWaitObject.Create(InitialOwner: Boolean; const AName: string);
+const
+  InitOwner: array[Boolean] of Integer = (0, 1);
+begin
+  inherited Create(MutexWaitObjectList, AName);
+  sem_init(FHandle, False { private semaphore }, InitOwner[InitialOwner]);
+end;
+
+destructor TMutexWaitObject.Destroy;
+begin
+  sem_destroy(FHandle);
+  inherited Destroy;
+end;
+
+procedure TMutexWaitObject.TimedOut;
+var
+  I: Integer;
+begin
+  sem_getvalue(FHandle, I);
+  if I = 0 then
+    sem_post(FHandle);
+end;
+
+function TMutexWaitObject.WaitFor(Timeout: Longword): Cardinal;
+var
+  TimeoutThread: TEventTimeoutThread;
+begin
+  if Timeout = 0 then
+  begin
+    if sem_trywait(FHandle) = 0 then
+      Result := WAIT_OBJECT_0
+    else
+      Result := WAIT_TIMEOUT;
+    end;
+    Exit;
+  end;
+
+  Result := WAIT_FAILED;
+  TimeoutThread := nil;
+  if Timeout <> INFINITE then
+    { Linux does not support events with timeout. Here we use a second thread
+      that sets the timeout. }
+    TimeoutThread := TEventTimeoutThread.Create(Event, Integer(Timeout));
+  try
+    sem_wait(FHandle); // lock semaphore
+    Result := WAIT_OBJECT_0;
+  finally
+    if Assigned(TimeoutThread) then
+    begin
+      if TimeoutThread.Stopped then
+        Result := WAIT_TIMEOUT;
+      TimeoutThread.Stopped := True;
+      TimeoutThread.WaitFor;
+      TimeoutThread.Free;
+    end;
+end;
+
+function TMutexWaitObject.ReleaseMutex: LongBool;
+begin
+  sem_post(FHandle);
+  Result := True;
+end;
+
+function CreateMutex(MutexAttributes: PSecurityAttributes; InitialOwner: LongBbool;
+  Name: PChar): THandle;
+begin
+  Result := THandle(TMutexWaitObject.Create(MutexAttributes, InitialOwner, Name));
+end;
+
+function OpenMutex(DesiredAccess: Longword; InheritHandle: Boolean;
+  Name: PChar): THandle;
+begin
+  Result := THandle(MutexWaitObjectList.Find(Name));
+  if Result <> 0 then
+    THandleObject(Result).AddRef;
+end;
+
+function ReleaseMutex(Mutex: THandle): LongBool;
+begin
+  try
+    Result := (Mutex <> 0) and (THandleObject(Mutex) is TMutexWaitObject);
+    if Result then
+      TMutexWaitObject(Event).ReleaseMutex;
+  except
+    Result := False;
+  end;
+end;
+
+function WaitForSingleObject(Handle: THandle; Milliseconds: Cardinal): Cardinal;
+begin
+  Result := WAIT_FAILED;
+  try
+    if (Handle <> 0) and (THandleObject(Handle) is TWaitObject) then
+    begin
+      TWaitObject(Handle).AddRef;
+      try
+        Result := TWaitObject(Handle).WaitFor(Milliseconds);
+      finally
+        TWaitObject(Handle).Release;
+      end;
+    end;
+  except
+    Result := WAIT_FAILED;
+  end;
+end;
+
+// all Handles are TObject derived classes
+function CloseHandle(hObject: THandle): LongBool;
+begin
+  try
+    if (hObject <> 0) then
+      THandleObject(hObject).Release;
+    Result := True;
+  except
+    Result := False;
+  end;
+end;
 
 function GlobalAllocPtr(Flags: Integer; Bytes: Longint): Pointer;
 begin
@@ -5360,13 +5794,19 @@ begin
 end;
 
 function GlobalReAlloc(hMem: Cardinal; dwBytes: Longword; uFlags: Cardinal): Cardinal;
- // with this call the memory block meight loose its 16 Byte alignment
 var
   CurSize: Longword;
   Offset: Cardinal;
   Start: Pointer;
+  Info: PGlobalBlock;
   P: PChar;
 begin
+  if dwBytes = 0 then
+  begin
+    GlobalFree(hMem);
+    Result := 0;
+    Exit;
+  end;
   if hMem = 0 then
     Result := GlobalAlloc(uFlags, dwBytes)
   else
@@ -5378,6 +5818,19 @@ begin
     hMem := Cardinal(Start) + Offset;
     P := Pointer(hMem);
 
+    if hMem and $0F <> 0 then
+    begin
+      P := Start;
+      Inc(P, SizeOf(TGlobalBlock) + $0F);
+      P := Pointer(Cardinal(P) and not $0F);
+      Info := Pointer(Cardinal(P) - SizeOf(TGlobalBlock));
+      Move(Pointer(hMem)^, P^, CurSize); // move data
+      hMem := Cardinal(P);
+      Info^.Start := Start;
+      Info^.Size := dwBytes;
+    end;
+
+    PGlobalBlock(hMem - SizeOf(TGlobalBlock))^.Size := dwBytes; 
     if uFlags and GMEM_ZEROINIT <> 0 then
       if CurSize < dwBytes then
         FillChar(P[CurSize], dwBytes - CurSize, 0);
@@ -5817,7 +6270,6 @@ begin
 end;
 
 { ------------ Caret -------------- }
-{ (C) 2003 Andreas Hausladen <Andreas.Hausladen@gmx.de> }
 type
   TEmulatedCaret = class(TObject)
   private
@@ -6120,6 +6572,8 @@ end;
 initialization
   {$IFDEF LINUX}
   InitGetTickCount;
+  EventWaitObjectList := THandleObjectList.Create;
+  MutexWaitObjectList := THandleObjectList.Create;
   {$ENDIF LINUX}
   GlobalCaret := TEmulatedCaret.Create;
   InitializeCriticalSection(SockObjectListCritSect);
@@ -6132,5 +6586,9 @@ finalization
     QObject_hook_destroy(AppEventFilterHook);
   FreePainterInfos;
   DeleteCriticalSection(SockObjectListCritSect);
+  {$IFDEF LINUX}
+  EventWaitObjectList.Free;
+  MutexWaitObjectList.Free;
+  {$ENDIF LINUX}
 
 end.
