@@ -7,12 +7,12 @@ uses
   ActnList, IniFiles, PersistSettings;
 
 type
-  // imposer class for TListBox that implements IPersistSettings (for the skiplist)
-  TListBox = class(StdCtrls.TListBox,IUnknown, IPersistSettings)
+  // (p3) interposer class for TListBox that implements IPersistSettings (for the skiplist)
+  TListBox = class(StdCtrls.TListBox, IUnknown, IPersistSettings)
   private
     {IPersistSettings}
-    procedure Load(Storage:TCustomIniFile);
-    procedure Save(Storage:TCustomIniFile);
+    procedure Load(Storage: TCustomIniFile);
+    procedure Save(Storage: TCustomIniFile);
   end;
 
   TfrmMain = class(TForm, IUnknown, IPersistSettings)
@@ -58,13 +58,21 @@ type
     LinksFrom1: TMenuItem;
     N3: TMenuItem;
     InvertSort1: TMenuItem;
+    popDiagram: TPopupMenu;
+    acUnitStats: TAction;
+    Statistics1: TMenuItem;
+    Delete3: TMenuItem;
+    N4: TMenuItem;
+    acDelDiagram: TAction;
+    acPrint: TAction;
+    Print1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure SbMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure acSelectFilesExecute(Sender: TObject);
     procedure acExitExecute(Sender: TObject);
-    procedure acSortNameAction(Sender: TObject);
+    procedure acArrangeAction(Sender: TObject);
     procedure acInvertSortExecute(Sender: TObject);
     procedure acAddExecute(Sender: TObject);
     procedure acDeleteExecute(Sender: TObject);
@@ -72,6 +80,9 @@ type
     procedure acClearExecute(Sender: TObject);
     procedure alMainUpdate(Action: TBasicAction;
       var Handled: Boolean);
+    procedure acUnitStatsExecute(Sender: TObject);
+    procedure acDelDiagramExecute(Sender: TObject);
+    procedure acPrintExecute(Sender: TObject);
   private
     { Private declarations }
     FFileShapes: TStringlist;
@@ -82,6 +93,7 @@ type
     procedure SaveSettings;
 
     procedure Clear;
+    procedure CreatePrintOut(Strings: TStrings);
     function GetFileShape(const Filename: string): TJvBitmapShape;
     procedure ParseUnits(Files, Errors: TStrings);
     procedure ParseUnit(const Filename: string; Errors: TStrings);
@@ -97,8 +109,8 @@ type
       InvertedSort: boolean);
 
     {IPersistSettings}
-    procedure Load(Storage:TCustomIniFile);
-    procedure Save(Storage:TCustomIniFile);
+    procedure Load(Storage: TCustomIniFile);
+    procedure Save(Storage: TCustomIniFile);
   public
     { Public declarations }
   end;
@@ -108,7 +120,7 @@ var
 
 implementation
 uses
-  JCLParseUses, Clipbrd;
+  JCLParseUses, Clipbrd, StatsFrm, ShellAPI;
 
 const
   FStartX = 50;
@@ -119,24 +131,25 @@ const
 {$R *.dfm}
 
 type
-  TWaitCursor = class(TInterfacedObject)
+  // (p3) class that changes and restores the screen cursor automatically
+  TChangeCursor = class(TInterfacedObject)
   private
     FOldCursor: TCursor;
   public
-    constructor Create;
+    constructor Create(NewCursor: TCursor);
     destructor Destroy; override;
   end;
 
-  { TWaitCursor }
+{ TChangeCursor }
 
-constructor TWaitCursor.Create;
+constructor TChangeCursor.Create(NewCursor: TCursor);
 begin
   inherited Create;
   FOldCursor := Screen.Cursor;
-  Screen.Cursor := crHourGlass;
+  Screen.Cursor := NewCursor;
 end;
 
-destructor TWaitCursor.Destroy;
+destructor TChangeCursor.Destroy;
 begin
   Screen.Cursor := FOldCursor;
   inherited;
@@ -144,7 +157,12 @@ end;
 
 function WaitCursor: IUnknown;
 begin
-  Result := TWaitCursor.Create;
+  Result := TChangeCursor.Create(crHourGlass);
+end;
+
+function ChangeCursor(NewCursor: TCursor): IUnknown;
+begin
+  Result := TChangeCursor.Create(NewCursor);
 end;
 
 procedure SuspendRedraw(AControl: TWinControl; Suspend: boolean);
@@ -154,6 +172,8 @@ begin
     RedrawWindow(AControl.Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INTERNALPAINT or RDW_INVALIDATE or RDW_UPDATENOW or RDW_ALLCHILDREN);
 end;
 
+// (p3) copy Strings.Objects to TList
+
 procedure CopyObjects(Strings: TStrings; AList: TList);
 var
   i: integer;
@@ -161,6 +181,8 @@ begin
   for i := 0 to Strings.Count - 1 do
     AList.Add(Strings.Objects[i]);
 end;
+
+// (p3) returns the number of links that are connected to AShape
 
 function GetNumLinksTo(AShape: TJvCustomDiagramShape): integer;
 var
@@ -173,6 +195,8 @@ begin
       Inc(Result);
 end;
 
+// (p3) returns the number of links that are connected from AShape
+
 function GetNumLinksFrom(AShape: TJvCustomDiagramShape): integer;
 var
   i: integer;
@@ -182,6 +206,49 @@ begin
     if (AShape.Parent.Controls[i] is TJvConnector) and
       (TJvConnector(AShape.Parent.Controls[i]).StartConn.Shape = AShape) then
       Inc(Result);
+end;
+
+// (p3) retrievs the shapes that AShape is connected to and store their name and pointers in Strings
+
+procedure UsesUnits(AShape: TJvCustomDiagramShape; Strings: TStrings; const Ext: string = '.pas');
+var i: integer;
+begin
+  Strings.Clear;
+  for i := 0 to AShape.Parent.ControlCount - 1 do
+    if (AShape.Parent.Controls[i] is TJvConnector) and
+      (TJvConnector(AShape.Parent.Controls[i]).StartConn.Shape = AShape) then
+      with TJvConnector(AShape.Parent.Controls[i]).EndConn do
+        Strings.AddObject(ChangeFileExt(Shape.Caption.Text, Ext), Shape);
+end;
+
+// (p3) retrievs the shapes that connects to AShape and store their name and pointers in Strings
+
+procedure UsedByUnits(AShape: TJvCustomDiagramShape; Strings: TStrings; const Ext: string = '.pas');
+var i: integer;
+begin
+  Strings.Clear;
+  for i := 0 to AShape.Parent.ControlCount - 1 do
+    if (AShape.Parent.Controls[i] is TJvConnector) and
+      (TJvConnector(AShape.Parent.Controls[i]).EndConn.Shape = AShape) then
+      with TJvConnector(AShape.Parent.Controls[i]).StartConn do
+        Strings.AddObject(ChangeFileExt(Shape.Caption.Text, Ext), Shape);
+end;
+
+// (p3) returns the first selected shape that isn't a TJvTextShape or a TJvConnector
+// (NOTE: I'm relying on that TJvTextShape has a nil Caption and TJvConnectors cannot be selected)
+
+function GetFirstSelectedShape(Parent: TWInControl): TJvCustomDiagramShape;
+var i: integer;
+begin
+  for i := 0 to Parent.ControlCount - 1 do
+    if (Parent.Controls[i] is TJvCustomDiagramShape) and TJvCustomDiagramShape(Parent.Controls[i]).Selected and
+    // don't be fooled by captions (they are also TJvCustomDiagramShape):
+    not (TJvCustomDiagramShape(Parent.Controls[i]).Caption = nil) then
+    begin
+      Result := TJvCustomDiagramShape(Parent.Controls[i]);
+      Exit;
+    end;
+  Result := nil;
 end;
 
 function NameCompare(Item1, Item2: Pointer): integer;
@@ -205,6 +272,11 @@ begin
     NameCompare(Item1, Item2);
 end;
 
+function MaxLinksToCompare(Item1, Item2: Pointer): integer;
+begin
+  Result := -MinLinksToCompare(Item1, Item2);
+end;
+
 function MinLinksFromCompare(Item1, Item2: Pointer): integer;
 begin
   Result := GetNumLinksFrom(Item1) - GetNumLinksFrom(Item2);
@@ -214,22 +286,28 @@ begin
     NameCompare(Item1, Item2);
 end;
 
-function MaxLinksToCompare(Item1, Item2: Pointer): integer;
-begin
-  Result := GetNumLinksTo(Item2) - GetNumLinksTo(Item1);
-  if Result = 0 then
-    Result := GetNumLinksFrom(Item2) - GetNumLinksFrom(Item1);
-  if Result = 0 then
-    NameCompare(Item1, Item2);
-end;
-
 function MaxLinksFromCompare(Item1, Item2: Pointer): integer;
 begin
-  Result := GetNumLinksFrom(Item2) - GetNumLinksFrom(Item1);
-  if Result = 0 then
-    Result := GetNumLinksTo(Item2) - GetNumLinksTo(Item1);
-  if Result = 0 then
-    NameCompare(Item1, Item2);
+  Result := -MinLinksFromCompare(Item1, Item2);
+end;
+
+{ TListBox }
+
+procedure TListBox.Load(Storage: TCustomIniFile);
+begin
+  if Storage.SectionExists(Name) then
+  begin
+    Sorted := false;
+    Storage.ReadSection(Name, Items);
+    Sorted := true;
+  end;
+end;
+
+procedure TListBox.Save(Storage: TCustomIniFile);
+var i: integer;
+begin
+  for i := 0 to Items.Count - 1 do
+    Storage.WriteString(Name, Items[i], '');
 end;
 
 { TfrmMain }
@@ -247,6 +325,8 @@ begin
     TJvBitmapShape(TJvTextShape(Sender).Tag).BringToFront;
   end;
 end;
+// (p3) returns an existing or new shape
+// Filename is considered unique
 
 function TfrmMain.GetFileShape(const Filename: string): TJvBitmapShape;
 var
@@ -263,6 +343,7 @@ begin
     Result.Hint := AFilename;
     Result.ShowHint := True;
     Result.OnClick := DoShapeClick;
+    Result.PopupMenu := popDiagram;
     Result.Top := FTop;
     Result.Left := FLeft;
     Result.Parent := sb;
@@ -278,6 +359,8 @@ begin
   end;
   Result := TJvBitmapShape(FFileShapes.Objects[i]);
 end;
+
+// (p3) connects two shapes with a single head arrow pointing towards EndShape
 
 procedure TfrmMain.Connect(StartShape, EndShape: TJvCustomDiagramShape);
 var
@@ -301,6 +384,10 @@ begin
     SendToBack;
   end;
 end;
+
+// (p3) Builds a list of all units used by Filename and adds the unit names to AUses
+// returns true if no errors, any exception message is added to ErrorMessage but th eprocessing
+// is not aborted
 
 function TfrmMain.GetUses(const Filename: string; AUses: TStrings; var ErrorMessage: string): boolean;
 var
@@ -340,6 +427,8 @@ begin
   end;
 end;
 
+// (p3) reads a single file's uses. Creates, connects and positions the shapes as necessary
+
 procedure TfrmMain.ParseUnit(const Filename: string; Errors: TStrings);
 var
   AUses: TStringlist;
@@ -371,6 +460,8 @@ begin
   Application.ProcessMessages;
 end;
 
+// (p3) reads a list of filenames and calls ParseUnit for each
+
 procedure TfrmMain.ParseUnits(Files, Errors: TStrings);
 var
   i: integer;
@@ -393,13 +484,17 @@ begin
     [Files.Count, FFileShapes.Count]);
 end;
 
+// (p3) removes all shapes and links
+
 procedure TfrmMain.Clear;
 // var i: integer;
 begin
   WaitCursor;
   FFileShapes.Clear;
+  TJvCustomDiagramShape.DeleteAllShapes(sb);
+
   // this is faster than freeing explicitly:
-  CreateScrollBox(Panel1);
+//  CreateScrollBox(Panel1);
   {  for i := ComponentCount - 1 downto 0 do
       if Components[i] is TJvBitmapShape then
         TJvBitmapShape(Components[i]).Free; // this will free both the caption and the connector(s)
@@ -418,13 +513,13 @@ begin
   FTop := FStartY;
   LoadSettings;
   CreateScrollBox(Panel1);
-
 end;
 
 procedure TfrmMain.LoadSkipList;
 var
   i: integer;
 begin
+  // NB! not used: see LoadSettings
   if FileExists(ExtractFilePath(Application.Exename) + 'SkipList.txt') then
   begin
     lbSkipList.Sorted := false;
@@ -441,6 +536,7 @@ end;
 
 procedure TfrmMain.SaveSkipList;
 begin
+  // NB! not used: see SaveSettings
   lbSkipList.Items.SaveToFile(ExtractFilePath(Application.Exename) + 'SkipList.txt');
 end;
 
@@ -455,6 +551,9 @@ function TfrmMain.InSkipList(const Filename: string): boolean;
 begin
   Result := (lbSkipList.Items.IndexOf(ChangeFileExt(ExtractFileName(Filename), '')) > -1);
 end;
+
+// (p3) arranges the shapes in AList into a grid of rows and columns
+// tries to make the grid as "square" as possible (Rows = Cols)
 
 procedure TfrmMain.Arrange(AList: TList);
 var
@@ -535,6 +634,11 @@ end;
 procedure TfrmMain.SortItems(ATag: integer; AList: TList; InvertedSort: boolean);
 begin
   case ATag of
+    0:
+      if InvertedSort then
+        AList.Sort(InvertNameCompare)
+      else
+        AList.Sort(NameCompare);
     1:
       if InvertedSort then
         AList.Sort(MaxLinksToCompare)
@@ -546,33 +650,86 @@ begin
       else
         AList.Sort(MinLinksFromCompare);
   else
-    if InvertedSort then
-      AList.Sort(InvertNameCompare)
-    else
-      AList.Sort(NameCompare);
+    Exit; // no sorting
   end;
-  Arrange(AList);
 end;
 
-procedure TfrmMain.acSortNameAction(Sender: TObject);
+procedure TfrmMain.CreatePrintOut(Strings: TStrings);
+var
+  i, j, ATag: integer;
+  UsedByStrings, UsesStrings: TStringlist;
+  AList: TList;
+  AShape: TJvBitmapShape;
+begin
+  UsedByStrings := TStringlist.Create;
+  UsesStrings := TStringlist.Create;
+  AList := TList.Create;
+  try
+    Strings.Clear;
+    // (p3) use same sorting as in the current view (defaults to "by Name"):
+    CopyObjects(FFileShapes, AList);
+    if acSortName.Checked then
+      ATag := acSortName.Tag
+    else if acSortLinksTo.Checked then
+      ATag := acSortLinksTo.Tag
+    else if acSortLinksFrom.Checked then
+      ATag := acSortLinksFrom.Tag
+    else
+      ATag := -1; // no need to sort: FFileShapes already sorted by name
+    SortItems(ATag, AList, acInvertSort.Checked);
+
+    for i := 0 to AList.Count - 1 do
+    begin
+      AShape := TJvBitmapShape(AList[i]);
+      UsesUnits(AShape, UsesStrings);
+      UsedByUnits(AShape, UsedByStrings);
+
+      Strings.Add(ChangeFileExt(AShape.Caption.Text, '.pas'));
+      Strings.Add('  uses:');
+      if UsesStrings.Count < 1 then
+        Strings.Add('    (none)')
+      else
+        for j := 0 to UsesStrings.Count - 1 do
+          Strings.Add('    ' + UsesStrings[j]);
+      Strings.Add('  used by:');
+      if UsedByStrings.Count < 1 then
+        Strings.Add('    (none)')
+      else
+        for j := 0 to UsedByStrings.Count - 1 do
+          Strings.Add('    ' + UsedByStrings[j]);
+    end;
+  finally
+    UsedByStrings.Free;
+    UsesStrings.Free;
+    AList.Free;
+  end;
+end;
+
+
+procedure TfrmMain.acArrangeAction(Sender: TObject);
 var
   AList: TList;
 begin
   WaitCursor;
   SuspendRedraw(sb, true);
+  // (p3) reset checked here so it will be easier to check wich one is used as radio-item
   AList := TList.Create;
   try
+    acSortName.Checked := false;
+    acSortLinksTo.Checked := false;
+    acSortLinksFrom.Checked := false;
     sb.HorzScrollBar.Position := 0;
     sb.VertScrollBar.Position := 0;
     CopyObjects(FFileShapes, AList);
-    SortItems((Sender as TAction).Tag,Alist,acInvertSort.Checked);
+    SortItems((Sender as TAction).Tag, Alist, acInvertSort.Checked);
+    Arrange(AList);
   finally
     SuspendRedraw(sb, false);
     AList.Free;
   end;
   TAction(Sender).Checked := true;
 end;
-  
+
 procedure TfrmMain.acInvertSortExecute(Sender: TObject);
 begin
   acInvertSort.Checked := not acInvertSort.Checked;
@@ -612,71 +769,118 @@ procedure TfrmMain.alMainUpdate(Action: TBasicAction;
 begin
   acDelete.Enabled := lbSkipList.SelCount > 0;
   acClear.Enabled := sb.ControlCount > 0;
+  // (p3) this might be too slow on large sets of shapes so comment it out
+  //if it gets too sluggish
+  acDelDiagram.Enabled := GetFirstSelectedShape(sb) <> nil;
+  acUnitStats.Enabled := acDelDiagram.Enabled;
 end;
 
 procedure TfrmMain.Load(Storage: TCustomIniFile);
 begin
-  Top := Storage.ReadInteger(ClassName,'Top',Top);
-  Left := Storage.ReadInteger(ClassName,'Left',Left);
-  Width := Storage.ReadInteger(ClassName,'Width',Width);
-  Height := Storage.ReadInteger(ClassName,'Height',Height);
-  acInvertSort.Checked := Storage.ReadBool(ClassName,'InvertSort',false);
+  Top := Storage.ReadInteger(ClassName, 'Top', Top);
+  Left := Storage.ReadInteger(ClassName, 'Left', Left);
+  Width := Storage.ReadInteger(ClassName, 'Width', Width);
+  Height := Storage.ReadInteger(ClassName, 'Height', Height);
+  acInvertSort.Checked := Storage.ReadBool(ClassName, 'InvertSort', false);
 end;
 
 procedure TfrmMain.Save(Storage: TCustomIniFile);
 begin
   if not IsZoomed(Handle) and not IsIconic(Application.Handle) then
   begin
-    Storage.WriteInteger(ClassName,'Top',Top);
-    Storage.WriteInteger(ClassName,'Left',Left);
-    Storage.WriteInteger(ClassName,'Width',Width);
-    Storage.WriteInteger(ClassName,'Height',Height);
-    Storage.WriteBool(ClassName,'InvertSort',acInvertSort.Checked);
+    Storage.WriteInteger(ClassName, 'Top', Top);
+    Storage.WriteInteger(ClassName, 'Left', Left);
+    Storage.WriteInteger(ClassName, 'Width', Width);
+    Storage.WriteInteger(ClassName, 'Height', Height);
+    Storage.WriteBool(ClassName, 'InvertSort', acInvertSort.Checked);
   end;
 end;
 
 procedure TfrmMain.LoadSettings;
-var Ini:TIniFile;
+var Ini: TIniFile;
 begin
 //  LoadSkipList;
-  Ini := TIniFile.Create(ChangeFileExt(Application.ExeName,'.ini'));
+  Ini := TIniFile.Create(ChangeFileExt(Application.ExeName, '.ini'));
   try
-    PersistSettings.LoadComponents(self,Ini);
+    PersistSettings.LoadComponents(self, Ini);
   finally
     Ini.Free;
   end;
 end;
 
 procedure TfrmMain.SaveSettings;
-var Ini:TIniFile;
+var Ini: TIniFile;
 begin
 //  SaveSkipList;
-  Ini := TIniFile.Create(ChangeFileExt(Application.ExeName,'.ini'));
+  Ini := TIniFile.Create(ChangeFileExt(Application.ExeName, '.ini'));
   try
-    PersistSettings.SaveComponents(self,Ini);
+    PersistSettings.SaveComponents(self, Ini);
   finally
     Ini.Free;
   end;
 end;
 
-{ TListBox }
-
-procedure TListBox.Load(Storage: TCustomIniFile);
+procedure TfrmMain.acUnitStatsExecute(Sender: TObject);
+var
+  AShape: TJvCustomDiagramShape;
+  UsedByStrings, UsesStrings: TStringlist;
 begin
-  if Storage.SectionExists(Name) then
-  begin
-    Sorted := false;
-    Storage.ReadSection(Name,Items);
-    Sorted := true;
+  AShape := GetFirstSelectedShape(sb);
+  if AShape = nil then
+    Exit;
+  // (p3) collect the stats for the file
+  // since we can't guarantee that the file can be found
+  // on the system, only collect what we know explicitly (name, links):
+  UsedByStrings := TStringlist.Create;
+  UsesStrings := TStringlist.Create;
+  try
+    UsesUnits(AShape, UsesStrings);
+    UsedByUnits(AShape, UsedByStrings);
+    if UsedByStrings.Count < 1 then
+      UsedByStrings.Add('(none)');
+    if UsesStrings.Count < 1 then
+      UsesStrings.Add('(none)');
+    TfrmUnitStats.Execute(ChangeFileExt(AShape.Caption.Text, '.pas'), UsedByStrings, UsesStrings);
+  finally
+    UsedByStrings.Free;
+    UsesStrings.Free;
   end;
 end;
 
-procedure TListBox.Save(Storage: TCustomIniFile);
-var i:integer;
+procedure TfrmMain.acDelDiagramExecute(Sender: TObject);
+var AShape: TJvCustomDiagramShape;
+  i: integer;
 begin
-  for i := 0 to Items.Count - 1 do
-    Storage.WriteString(Name,Items[i],'');
+  // (p3) Can't use TJvCustomDiagramShape.DeleteSelecetdShapes here since
+  // we need to remove the item from the FFileShapes list as well:
+  AShape := GetFirstSelectedShape(sb);
+  if AShape <> nil then
+  begin
+    i := FFileShapes.IndexOfObject(AShape);
+    if i > -1 then
+      FFileShapes.Delete(i);
+    AShape.Free;
+  end;
 end;
+
+procedure TfrmMain.acPrintExecute(Sender: TObject);
+var S: TStringlist;
+begin
+  WaitCursor;
+  S := TStringlist.Create;
+  try
+    CreatePrintOut(S);
+    if S.Count > 0 then
+    begin
+      S.SaveToFile(ExtractFilePath(Application.Exename) + 'printout.txt');
+      // show in Notepad: let user decide whether to print or not after viewing
+      ShellExecute(Handle, 'open', PChar(ExtractFilePath(Application.Exename) + 'printout.txt'), nil, nil, SW_SHOWNORMAL);
+    end;
+  finally
+    S.Free;
+  end;
+end;
+
 
 end.
 

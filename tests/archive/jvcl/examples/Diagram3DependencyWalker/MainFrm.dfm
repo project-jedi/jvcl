@@ -836,6 +836,9 @@ object frmMain: TfrmMain
       object SelectFiles1: TMenuItem
         Action = acSelectFiles
       end
+      object Print1: TMenuItem
+        Action = acPrint
+      end
       object N1: TMenuItem
         Caption = '-'
       end
@@ -1217,21 +1220,21 @@ object frmMain: TfrmMain
       Category = 'Arrange'
       Caption = 'by Name'
       ShortCut = 16433
-      OnExecute = acSortNameAction
+      OnExecute = acArrangeAction
     end
     object acSortLinksTo: TAction
       Tag = 1
       Category = 'Arrange'
       Caption = 'by Links To'
       ShortCut = 16434
-      OnExecute = acSortNameAction
+      OnExecute = acArrangeAction
     end
     object acSortLinksFrom: TAction
       Tag = 2
       Category = 'Arrange'
       Caption = 'by Links From'
       ShortCut = 16435
-      OnExecute = acSortNameAction
+      OnExecute = acArrangeAction
     end
     object acInvertSort: TAction
       Category = 'Arrange'
@@ -1261,6 +1264,36 @@ object frmMain: TfrmMain
       Category = 'Help'
       Caption = 'About...'
       OnExecute = acAboutExecute
+    end
+    object acUnitStats: TAction
+      Category = 'Diagrams'
+      Caption = 'Statistics...'
+      ShortCut = 32781
+      OnExecute = acUnitStatsExecute
+    end
+    object acDelDiagram: TAction
+      Category = 'Diagrams'
+      Caption = 'Delete'
+      OnExecute = acDelDiagramExecute
+    end
+    object acPrint: TAction
+      Category = 'File'
+      Caption = 'Print...'
+      ShortCut = 16464
+      OnExecute = acPrintExecute
+    end
+  end
+  object popDiagram: TPopupMenu
+    Left = 168
+    Top = 96
+    object Delete3: TMenuItem
+      Action = acDelDiagram
+    end
+    object N4: TMenuItem
+      Caption = '-'
+    end
+    object Statistics1: TMenuItem
+      Action = acUnitStats
     end
   end
 end

@@ -1,4 +1,4 @@
-// simple unit that defines save/store interface
+// (p3) simple unit that defines save/store interface
 unit PersistSettings;
 
 interface
