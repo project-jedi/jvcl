@@ -78,11 +78,11 @@ type
 {$IFNDEF COMPILER6_UP}
   EOSError = class(EWin32Error);
   IInterface = IUnknown;
-{$ENDIF}
   {$M+}
   IInvokable = interface(IInterface)
   end;
   {$M-}
+{$ENDIF}
 
   TJvRegKey = (hkClassesRoot, hkCurrentUser, hkLocalMachine, hkUsers, hkPerformanceData,
     hkCurrentConfig, hkDynData);
@@ -130,13 +130,14 @@ type
     rgbGreen: Byte;
     rgbRed: Byte;
   end;
+
   TRGBTriple = packed record
     rgbtBlue: Byte;
     rgbtGreen: Byte;
     rgbtRed: Byte;
   end;
-//  TRGBArray = array[0..MaxPixelCount - 1] of TRGBQuad;
 {$ENDIF VisualCLX}
+//  TRGBArray = array[0..MaxPixelCount - 1] of TRGBQuad;
 
   PRGBArray = ^TRGBArray; // JvThumbImage, JvImageSplit, JvRegion
   TRGBArray = array [0..MaxPixelCount - 1] of TRGBTriple;
@@ -250,7 +251,7 @@ type
     TypeName: string;
     SysIconIndex: Integer;
   end;
-{$ENDIF VCL}  
+{$ENDIF VCL}
   TJvAnimation = (anLeftRight, anRightLeft, anRightAndLeft, anLeftVumeter, anRightVumeter);
   TJvAnimations = set of TJvAnimation;
   TJvDropEvent = procedure(Sender: TObject; Pos: TPoint; Value: TStringList) of object;
