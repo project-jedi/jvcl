@@ -104,7 +104,7 @@ var
 implementation
 
 uses
-  TypInfo,
+  TypInfo, JclUnicode,
   JvClipBrd;
 
 {$R *.dfm}
@@ -180,23 +180,23 @@ begin
   if GetStringTypeExW(LOCALE_USER_DEFAULT, CT_CTYPE1, @AChar, 1, ACharInfo) then
   begin
     if ACharInfo and C1_UPPER = C1_UPPER then
-      Result := Result + ',C1_UPPER';
+      Result := Result + ', UPPER CASE';
     if ACharInfo and C1_LOWER = C1_LOWER then
-      Result := Result + ',C1_LOWER';
+      Result := Result + ', LOWER CASE';
     if ACharInfo and C1_DIGIT = C1_DIGIT then
-      Result := Result + ',C1_DIGIT';
+      Result := Result + ', DIGIT';
     if ACharInfo and C1_SPACE = C1_SPACE then
-      Result := Result + ',C1_SPACE';
+      Result := Result + ', SPACE';
     if ACharInfo and C1_PUNCT = C1_PUNCT then
-      Result := Result + ',C1_PUNCT';
+      Result := Result + ', PUNCTUATION';
     if ACharInfo and C1_CNTRL = C1_CNTRL then
-      Result := Result + ',C1_CNTRL';
+      Result := Result + ', CONTROL';
     if ACharInfo and C1_BLANK = C1_BLANK then
-      Result := Result + ',C1_BLANK';
+      Result := Result + ', BLANK';
     if ACharInfo and C1_XDIGIT = C1_XDIGIT then
-      Result := Result + ',C1_XDIGIT';
+      Result := Result + ', HEX DIGIT';
     if ACharInfo and C1_ALPHA = C1_ALPHA then
-      Result := Result + ',C1_ALPHA';
+      Result := Result + ', ALPHA';
   end;
   if Result <> '' then
     Result := Copy(Result, 2, MaxInt);
@@ -211,27 +211,27 @@ begin
   if GetStringTypeExW(LOCALE_USER_DEFAULT, CT_CTYPE2, @AChar, 1, ACharInfo) then
   begin
     if ACharInfo and C2_LEFTTORIGHT = C2_LEFTTORIGHT then
-      Result := Result + ',C2_LEFTTORIGHT';
+      Result := Result + ', LEFT TO RIGHT';
     if ACharInfo and C2_RIGHTTOLEFT = C2_RIGHTTOLEFT then
-      Result := Result + ',C2_RIGHTTOLEFT';
+      Result := Result + ', RIGHT TO LEFT';
     if ACharInfo and C2_EUROPENUMBER = C2_EUROPENUMBER then
-      Result := Result + ',C2_EUROPENUMBER';
+      Result := Result + ', EUROPEAN NUMBER';
     if ACharInfo and C2_EUROPESEPARATOR = C2_EUROPESEPARATOR then
-      Result := Result + ',C2_EUROPESEPARATOR';
+      Result := Result + ', EUROPEAN SEPARATOR';
     if ACharInfo and C2_EUROPETERMINATOR = C2_EUROPETERMINATOR then
-      Result := Result + ',C2_EUROPETERMINATOR';
+      Result := Result + ', EUROPEAN TERMINATOR';
     if ACharInfo and C2_ARABICNUMBER = C2_ARABICNUMBER then
-      Result := Result + ',C2_ARABICNUMBER';
+      Result := Result + ', ARABIC NUMBER';
     if ACharInfo and C2_COMMONSEPARATOR = C2_COMMONSEPARATOR then
-      Result := Result + ',C2_COMMONSEPARATOR';
+      Result := Result + ', COMMON SEPARATOR';
     if ACharInfo and C2_BLOCKSEPARATOR = C2_BLOCKSEPARATOR then
-      Result := Result + ',C2_BLOCKSEPARATOR';
+      Result := Result + ', BLOCK SEPARATOR';
     if ACharInfo and C2_SEGMENTSEPARATOR = C2_SEGMENTSEPARATOR then
-      Result := Result + ',C2_SEGMENTSEPARATOR';
+      Result := Result + ', SEGMENT SEPARATOR';
     if ACharInfo and C2_WHITESPACE = C2_WHITESPACE then
-      Result := Result + ',C2_WHITESPACE';
+      Result := Result + ', WHITESPACE';
     if ACharInfo and C2_OTHERNEUTRAL = C2_OTHERNEUTRAL then
-      Result := Result + ',C2_OTHERNEUTRAL';
+      Result := Result + ', OTHER NEUTRAL';
   end;
   if Result <> '' then
     Result := Copy(Result, 2, MaxInt);
@@ -246,27 +246,27 @@ begin
   if GetStringTypeExW(LOCALE_USER_DEFAULT, CT_CTYPE3, @AChar, 1, ACharInfo) then
   begin
     if ACharInfo and C3_NONSPACING = C3_NONSPACING then
-      Result := Result + ',C3_NONSPACING';
+      Result := Result + ', NON SPACING';
     if ACharInfo and C3_DIACRITIC = C3_DIACRITIC then
-      Result := Result + ',C3_DIACRITIC ';
+      Result := Result + ', DIACRITIC ';
     if ACharInfo and C3_VOWELMARK = C3_VOWELMARK then
-      Result := Result + ',C3_VOWELMARK';
+      Result := Result + ', VOWELMARK';
     if ACharInfo and C3_SYMBOL = C3_SYMBOL then
-      Result := Result + ',C3_SYMBOL';
+      Result := Result + ', SYMBOL';
     if ACharInfo and C3_KATAKANA = C3_KATAKANA then
-      Result := Result + ',C1_PUNCT';
+      Result := Result + ', PUNCTUATION';
     if ACharInfo and C3_HIRAGANA = C3_HIRAGANA then
-      Result := Result + ',C3_HIRAGANA';
+      Result := Result + ', HIRAGANA';
     if ACharInfo and C3_HALFWIDTH = C3_HALFWIDTH then
-      Result := Result + ',C3_HALFWIDTH';
+      Result := Result + ', HALFWIDTH';
     if ACharInfo and C3_FULLWIDTH = C3_FULLWIDTH then
-      Result := Result + ',C3_FULLWIDTH';
+      Result := Result + ', FULLWIDTH';
     if ACharInfo and C3_IDEOGRAPH = C3_IDEOGRAPH then
-      Result := Result + ',C3_IDEOGRAPH';
+      Result := Result + ', IDEOGRAPH';
     if ACharInfo and C3_KASHIDA = C3_KASHIDA then
-      Result := Result + ',C3_KASHIDA';
+      Result := Result + ', KASHIDA';
     if ACharInfo and C3_ALPHA = C3_ALPHA then
-      Result := Result + ',C3_ALPHA';
+      Result := Result + ', ALPHA';
   end;
   if Result <> '' then
     Result := Copy(Result, 2, MaxInt);
