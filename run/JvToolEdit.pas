@@ -46,16 +46,15 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Messages, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus, Buttons,
-  FileCtrl, Mask, ImgList, ActnList, ExtDlgs,
+  Messages,
   {$ENDIF VCL}
+  Graphics, Controls, Forms, Dialogs, StdCtrls, Menus, Buttons,
+  FileCtrl, Mask, ImgList, ActnList, ExtDlgs,
   {$IFDEF COMPILER6_UP}
   RTLConsts, Variants,
   {$ENDIF COMPILER6_UP}
   {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus, QButtons,
-  QMask, QImgList, QActnList, QExtDlgs, QComboEdits, QWindows, Types,
-  JvExComboEdits,
+  Qt, QComboEdits, QWindows, Types, JvQExComboEdits,
   {$ENDIF VisualCLX}
   JvSpeedButton, JvTypes, JvExMask, JvExForms;
 
@@ -942,12 +941,12 @@ function IsInWordArray(Value: Word; const A: array of Word): Boolean;
 implementation
 
 uses
-  ShellAPI, Math,
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
+  Math, Consts,
+  {$IFDEF MSWINDOWS}
+  ShellAPI,
+  {$ENDIF WINDOWS}
   {$IFDEF VCL}
-  Consts, JvBrowseFolder, ActiveX,
+  JvBrowseFolder, ActiveX,
   {$ENDIF VCL}
   JvFinalize, JvThemes, JvResources, JvConsts, JvJCLUtils, JvExControls,
   JvPickDate, JvJVCLUtils;

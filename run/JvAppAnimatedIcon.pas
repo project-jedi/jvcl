@@ -30,13 +30,11 @@ unit JvAppAnimatedIcon;
 interface
 
 uses
-  {$IFDEF VCL}
-  Controls, Forms, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QControls, QForms, QExtCtrls, QImgList,
-  {$ENDIF VisualCLX}
   SysUtils, Classes,
+  Controls, Forms, ExtCtrls,
+  {$IFDEF VisualCLX}
+  Types, QImgList,
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type

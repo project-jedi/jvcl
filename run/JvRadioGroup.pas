@@ -31,11 +31,9 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ToolWin,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QTypes, QWindows,
+  Types, QTypes,
   {$ENDIF VisualCLX}
   JvThemes, JvExControls, JvExExtCtrls;
 
@@ -155,7 +153,7 @@ begin
     H := TextHeight('0');
     R := Rect(0, H div 2 - 1, Width, Height);  
     DrawEdge(Handle, R, InnerStyles[FEdgeInner] or OuterStyles[FEdgeOuter],
-      Byte(FEdgeBorders) or Ctl3DStyles[Ctl3D] or BF_ADJUST);
+      Byte(FEdgeBorders) {$IFDEF VCL} or Ctl3DStyles[Ctl3D] {$ENDIF} or BF_ADJUST);
     if (Text <> '') and CaptionVisible then
     begin
       if not UseRightToLeftAlignment then
@@ -163,17 +161,17 @@ begin
       else
         R := Rect(R.Right - Canvas.TextWidth(Text) - 8, 0, 0, H);
       Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
-      {$IFDEF VCL}
+      {$IFDEF _VCL}
       DrawText(Handle, PChar(Text), Length(Text), R, Flags or DT_CALCRECT);
       Brush.Color := Color;
       DrawText(Handle, PChar(Text), Length(Text), R, Flags);
       {$ENDIF VCL}
-      {$IFDEF VisualCLX}
+//      {$IFDEF VisualCLX}
       DrawText(Canvas, Text, Length(Text), R, Flags or DT_CALCRECT);
       Brush.Color := Color;
       SetBkMode(Handle, OPAQUE);
       DrawText(Canvas, Text, Length(Text), R, Flags);
-      {$ENDIF VisualCLX}
+//      {$ENDIF VisualCLX}
     end;
   end;
 end;

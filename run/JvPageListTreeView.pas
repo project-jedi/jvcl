@@ -36,12 +36,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, ImgList, ComCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QImgList, QComCtrls, QWindows,
-  {$ENDIF VisualCLX}
   JvComponent, JvThemes, JvPageList, JvExComCtrls;
 
 type
@@ -120,7 +115,9 @@ type
   protected
     property AutoExpand default True;
     property ShowButtons default False;
+    {$IFDEF VCL}
     property ShowLines default False;
+    {$ENDIF VCL}
     property ReadOnly default True;
     property Items:TJvPageIndexNodes read GetItems write SetItems;
   end;
@@ -209,7 +206,9 @@ type
   published
     property AutoExpand;
     property ShowButtons;
+    {$IFDEF VCL}
     property ShowLines;
+    {$ENDIF VCL}
     property ReadOnly;
     property PageDefault;
     property PageLinks;
@@ -221,12 +220,12 @@ type
 
     property Align;
     property Anchors;
+    {$IFDEF VCL}
     property BevelEdges;
     property BevelInner;
     property BevelOuter;
     property BevelKind default bkNone;
     property BevelWidth;
-    {$IFDEF VCL}
     property BiDiMode;
     property DragKind;
     property DragCursor;
@@ -306,7 +305,9 @@ type
   published
     property AutoExpand default True;
     property ShowButtons default False;
+    {$IFDEF VCL}
     property ShowLines default False;
+    {$ENDIF VCL}
     property ReadOnly default True;
     property PageDefault;
     property PageNodeImages;
@@ -319,12 +320,12 @@ type
 
     property Align;
     property Anchors;
+    {$IFDEF VCL}
     property BevelEdges;
     property BevelInner;
     property BevelOuter;
     property BevelKind default bkNone;
     property BevelWidth;
-    {$IFDEF VCL}
     property BiDiMode;
     property DragKind;
     property DragCursor;
@@ -402,17 +403,11 @@ type
 
 implementation
 
-{$IFDEF VCL}
 uses
   {$IFNDEF COMPILER6_UP}
   JvResources,
   {$ENDIF COMPLER6_UP}
   Forms;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-uses
-  QForms;
-{$ENDIF VisualCLX}
 
 type
   THackTab = class(TCustomTabControl);
@@ -741,7 +736,9 @@ begin
   FNodeImages.TreeView := Self;
   AutoExpand := True;
   ShowButtons := False;
+  {$IFDEF VCL}
   ShowLines := False;
+  {$ENDIF VCL}
   ReadOnly := True;
   // we need to assign to these since the TTreeView checks if they are assigned
   // and won't call GetImageIndex without them
