@@ -444,8 +444,8 @@ begin
   Result := nil;
   Mem := TMemoryStream.Create;
   try
-    Mem.Size := ASize;
-    Mem.CopyFrom(Stream, Mem.Size);
+    Mem.SetSize(ASize);
+    Mem.CopyFrom(Stream, ASize);
     HotSpot := Point(0, 0);
     IsIcon := PCursorOrIcon(Mem.Memory)^.wType = RC3_ICON;
     if PCursorOrIcon(Mem.Memory)^.wType = RC3_CURSOR then
