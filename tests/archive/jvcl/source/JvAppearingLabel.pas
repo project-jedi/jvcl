@@ -28,8 +28,6 @@ Known Issues:
 
 unit JvAppearingLabel;
 
-
-
 interface
 
 uses
@@ -75,6 +73,36 @@ implementation
 ///////////////////////////////////////////////////////////
 // TJvAppearingLabel
 ///////////////////////////////////////////////////////////
+
+constructor TJvAppearingLabel.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FFirst := 100;
+  FInterval := 20;
+  FPixel := 3;
+  FAutoStart := False;
+  FAppear := drFromRight;
+  FForm := AOwner as TControl;
+  FTag := 0;
+
+  FThread := TJvImageDrawThread.Create(True);
+  FThread.FreeOnTerminate := False;
+  FThread.Delay := FInterval;
+  FThread.OnDraw := Appearing;
+end;
+
+{**************************************************}
+
+destructor TJvAppearingLabel.Destroy;
+begin
+  FThread.OnDraw := nil;
+  FThread.Terminate;
+//  FThread.WaitFor;
+  FreeAndNil(FThread);
+  inherited Destroy;
+end;
+
+{**************************************************}
 
 procedure TJvAppearingLabel.Appear;
 begin
@@ -176,36 +204,6 @@ begin
         end;
       end;
   end;
-end;
-
-{**************************************************}
-
-constructor TJvAppearingLabel.Create(AOwner: TComponent);
-begin
-  inherited;
-  FFirst := 100;
-  FInterval := 20;
-  FPixel := 3;
-  FAutoStart := False;
-  FAppear := drFromRight;
-  FForm := AOwner as TControl;
-  FTag := 0;
-
-  FThread := TJvImageDrawThread.Create(True);
-  FThread.FreeOnTerminate := False;
-  FThread.Delay := FInterval;
-  FThread.OnDraw := Appearing;
-end;
-
-{**************************************************}
-
-destructor TJvAppearingLabel.Destroy;
-begin
-  FThread.OnDraw := nil;
-  FThread.Terminate;
-//  FThread.WaitFor;
-  FreeAndNil(FThread);
-  inherited;
 end;
 
 {**************************************************}

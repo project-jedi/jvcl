@@ -32,7 +32,12 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-{$IFDEF COMPILER5}DsgnIntf, {$ENDIF}{$IFDEF COMPILER6_UP}DesignEditors, DesignIntf, {$ENDIF}
+  {$IFDEF COMPILER5}
+  DsgnIntf,
+  {$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ENDIF}
   JvFormAlarms;
 
 type
@@ -46,6 +51,9 @@ type
   end;
 
 implementation
+
+resourcestring
+  RS_JvAlarmsEditorString = 'Click to edit...';
 
 {*************************************************}
 
@@ -72,7 +80,7 @@ end;
 
 procedure TJvAlarmsEditor.GetValues(Proc: TGetStrProc);
 begin
-  SetStrValue('Click to edit...');
+  SetStrValue(RS_JvAlarmsEditorString);
 end;
 
 {*************************************************}

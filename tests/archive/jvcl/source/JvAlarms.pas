@@ -34,7 +34,8 @@ unit JvAlarms;
 interface
 
 uses
-  Windows, SysUtils, Classes, Dialogs, Controls, ExtCtrls, JvComponent;
+  Windows, SysUtils, Classes, Dialogs, Controls, ExtCtrls,
+  JvComponent;
 
 type
   TJvTriggerKind = (tkOneShot, tkEachSecond, tkEachMinute,
@@ -84,7 +85,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Add(const AName: string; const aTime: TDateTime; const AKind: TJvTriggerKind = tkOneShot);
+    procedure Add(const AName: string; const ATime: TDateTime; const AKind: TJvTriggerKind = tkOneShot);
     procedure Delete(const Idx: Cardinal);
 
     //    property Alarms[Idx: Cardinal]: TJvAlarm read GetAlarm;
@@ -106,7 +107,6 @@ constructor TJvAlarms.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FAlarms := TJvAlarmItems.Create(Self);
-
   FActive := False;
   FRunning := False;
   FOnAlarm := nil;
@@ -128,7 +128,7 @@ end;
 
 {*****************************************************}
 
-procedure TJvAlarms.Add(const AName: string; const aTime: TDateTime; const AKind: TJvTriggerKind);
+procedure TJvAlarms.Add(const AName: string; const ATime: TDateTime; const AKind: TJvTriggerKind);
 begin
   // hs (Oneshot-) timed out ? then we ignore this alarm !
   // works only by calling this funtion directly !
@@ -137,7 +137,7 @@ begin
     with FAlarms.Add do
     begin
       Name := AName;
-      Time := aTime;
+      Time := ATime;
       Kind := AKind;
     end;
     FRunning := Active;
@@ -227,15 +227,11 @@ begin
                 Inc(Stamp.Date);
                 Dec(Stamp.Time, 24 * 60 * 60 * 1000);
               end;
-              if (Alarm.Kind <> tkOneShot) then
-              begin
-                Alarm.Time := TimeStampToDateTime(Stamp);
-              end
+              if Alarm.Kind <> tkOneShot then
+                Alarm.Time := TimeStampToDateTime(Stamp)
                 // hs a better place for 'Delete(i)'
               else
-              begin
                 Delete(I);
-              end;
             end;
           end;
         end;
@@ -263,16 +259,17 @@ begin
 end;
 
 procedure TJvAlarmItems.Assign(Source: TPersistent);
-var i: Integer;
+var
+  I: Integer;
 begin
   if Source is TJvAlarmItems then
   begin
     Clear;
-    for i := 1 to TJvAlarmItems(Source).Count do
-      Add.Assign(TJvAlarmItems(Source).Items[i - 1]);
-    Exit;
-  end;
-  inherited;
+    for I := 1 to TJvAlarmItems(Source).Count do
+      Add.Assign(TJvAlarmItems(Source).Items[I - 1]);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 constructor TJvAlarmItems.Create(AOwner: TPersistent);
@@ -285,8 +282,7 @@ begin
   Result := TJVAlarmItem(inherited Items[Index]);
 end;
 
-procedure TJvAlarmItems.SetItems(Index: Integer;
-  const Value: TJVAlarmItem);
+procedure TJvAlarmItems.SetItems(Index: Integer; const Value: TJVAlarmItem);
 begin
   inherited Items[Index] := Value;
 end;
@@ -301,7 +297,7 @@ begin
     Time := TJvAlarmItem(Source).Time;
     Kind := TJvAlarmItem(Source).Kind;
   end;
-  inherited;
+  inherited Assign(Source);
 end;
 
 procedure TJvAlarms.SetAlarms(const Value: TJvAlarmItems);

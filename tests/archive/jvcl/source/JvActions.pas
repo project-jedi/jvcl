@@ -57,11 +57,11 @@ type
     procedure SetRecipients(const Value: string);
   public
     constructor Create;
-    destructor Destroy;override;
+    destructor Destroy; override;
     function Execute: Boolean;
-    property MapiComponent:TJclEmail read FMail write FMail;
+    property MapiComponent: TJclEmail read FMail write FMail;
   published
-    property ShowDialogs: Boolean read FShowDialogs write FShowDialogs default true;
+    property ShowDialogs: Boolean read FShowDialogs write FShowDialogs default True;
 
     property Attachments: TStrings read GetAttachments write SetAttachment;
     property Body: string read GetBody write SetBody;
@@ -78,8 +78,8 @@ type
   private
     FMail: TJvSendMailOptions;
   public
-    constructor Create(AOwner: TComponent);override;
-    destructor Destroy;override;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     function Execute: Boolean; override;
   published
     property Mail: TJvSendMailOptions read FMail write FMail;
@@ -102,149 +102,196 @@ implementation
 { TJvSendMail }
 
 {**************************************************}
+
 constructor TJvSendMail.Create(AOwner: TComponent);
 begin
-  inherited;
-  DisableIfNoHandler := false;
+  inherited Create(AOwner);
+  DisableIfNoHandler := False;
   FMail := TJvSendMailOptions.Create;
 end;
+
 {**************************************************}
+
 destructor TJvSendMail.Destroy;
 begin
   FMail.Free;
-  inherited;
+  inherited Destroy;
 end;
+
 {**************************************************}
+
 function TJvSendMail.Execute: Boolean;
 begin
-  result := FMail.Execute;
+  Result := FMail.Execute;
 end;
+
 {**************************************************}
 
 { TJvSendMailOptions }
 
 {**************************************************}
+
 constructor TJvSendMailOptions.Create;
 begin
-  inherited;
-  FShowDialogs := true;
+  inherited Create;
+  FShowDialogs := True;
   FMail := TJclEmail.Create;
 end;
+
 {**************************************************}
+
 destructor TJvSendMailOptions.Destroy;
 begin
   FMail.Free;
-  inherited;
+  inherited Destroy;
 end;
+
 {**************************************************}
+
 function TJvSendMailOptions.Execute: Boolean;
 begin
-  result := Fmail.Send(FShowDialogs);
+  Result := Fmail.Send(FShowDialogs);
 end;
+
 {**************************************************}
+
 function TJvSendMailOptions.GetAttachments: TStrings;
 begin
-  result := FMail.Attachments;
+  Result := FMail.Attachments;
 end;
+
 {**************************************************}
+
 function TJvSendMailOptions.GetBody: string;
 begin
-  result := FMail.Body;
+  Result := FMail.Body;
 end;
+
 {**************************************************}
+
 function TJvSendMailOptions.GetFindOptions: TJclEmailFindOptions;
 begin
-  result := FMail.FindOptions;
+  Result := FMail.FindOptions;
 end;
+
 {**************************************************}
+
 function TJvSendMailOptions.GetHtmlBody: Boolean;
 begin
-  result := FMail.HtmlBody;
+  Result := FMail.HtmlBody;
 end;
+
 {**************************************************}
+
 function TJvSendMailOptions.GetLogonOptions: TJclEmailLogonOptions;
 begin
-  result := FMail.LogonOptions;
+  Result := FMail.LogonOptions;
 end;
+
 {**************************************************}
+
 function TJvSendMailOptions.GetReadMsg: TJclEmailReadMsg;
 begin
-  result := FMail.ReadMsg;
+  Result := FMail.ReadMsg;
 end;
+
 {**************************************************}
+
 function TJvSendMailOptions.GetRecipients: string;
 begin
-  if FMail.Recipients.Count=0 then
-    result := ''
+  if FMail.Recipients.Count = 0 then
+    Result := ''
   else
-    result := FMail.Recipients.Items[0].Address;
+    Result := FMail.Recipients.Items[0].Address;
 end;
+
 {**************************************************}
+
 function TJvSendMailOptions.GetSubject: string;
 begin
-  result := FMail.Subject;
+  Result := FMail.Subject;
 end;
+
 {**************************************************}
+
 function TJvSendMailOptions.GetUserLogged: Boolean;
 begin
-  result := FMail.UserLogged;
+  Result := FMail.UserLogged;
 end;
+
 {**************************************************}
+
 procedure TJvSendMailOptions.SetAttachment(const Value: TStrings);
 begin
   FMail.Attachments.Assign(Value);
 end;
+
 {**************************************************}
+
 procedure TJvSendMailOptions.SetBody(const Value: string);
 begin
   FMail.Body := Value;
 end;
+
 {**************************************************}
-procedure TJvSendMailOptions.SetFindOptions(
-  const Value: TJclEmailFindOptions);
+
+procedure TJvSendMailOptions.SetFindOptions(const Value: TJclEmailFindOptions);
 begin
   FMail.FindOptions := Value;
 end;
+
 {**************************************************}
+
 procedure TJvSendMailOptions.SetHtmlBody(const Value: Boolean);
 begin
   FMail.HtmlBody := Value;
 end;
+
 {**************************************************}
-procedure TJvSendMailOptions.SetLogonOptions(
-  const Value: TJclEmailLogonOptions);
+
+procedure TJvSendMailOptions.SetLogonOptions(const Value: TJclEmailLogonOptions);
 begin
   FMail.LogonOptions := Value;
 end;
+
 {**************************************************}
+
 procedure TJvSendMailOptions.SetRecipients(const Value: string);
 begin
   Fmail.Recipients.Clear;
   FMail.Recipients.Add(Value);
 end;
+
 {**************************************************}
+
 procedure TJvSendMailOptions.SetSubject(const Value: string);
 begin
   FMail.Subject := Value;
 end;
+
 {**************************************************}
 
 { TJvWebAction }
 
 {**************************************************}
+
 function TJvWebAction.Execute: Boolean;
 begin
-  result := ShellExecute(0,'open',PChar(FUrl),nil,nil,SW_SHOW)>32;
+  Result := ShellExecute(0, 'open', PChar(FUrl), nil, nil, SW_SHOW) > 32;
 end;
+
 {**************************************************}
+
 function TJvWebAction.HandlesTarget(Target: TObject): Boolean;
 begin
-  result := true;
+  Result := True;
 end;
+
 {**************************************************}
+
 procedure TJvWebAction.UpdateTarget(Target: TObject);
 begin
-  Enabled := (Length(FURL) > 0);
+  Enabled := (Length(FUrl) <> 0);
 end;
-{**************************************************}
+
 end.

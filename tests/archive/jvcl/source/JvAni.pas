@@ -28,28 +28,14 @@ Known Issues:
 
 unit JvAni;
 
-
-
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, ExtCtrls, Consts;
+  StdCtrls, ExtCtrls, Consts,
+  JvTypes;
 
 type
-  TAniHeader = record
-    dwSizeof: Longint;
-    dwFrames: Longint;
-    dwSteps: Longint;
-    dwCX: Longint;
-    dwCY: Longint;
-    dwBitCount: Longint;
-    dwPlanes: Longint;
-    dwJIFRate: Longint;
-    dwFlags: Longint;
-  end;
-{$EXTERNALSYM TAniHeader}
-
   TJvAni = class(TGraphic)
   private
     FAuthor: string;
@@ -163,7 +149,8 @@ var
 begin
   if Source = nil then
     Clear
-  else if Source is TJvAni then
+  else
+  if Source is TJvAni then
   begin
     Stream := TMemoryStream.Create;
     TJvAni(Source).SaveToStream(Stream);

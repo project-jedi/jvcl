@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvAnimTitle;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls, Forms, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls, Forms,
+  JvComponent;
 
 type
   TJvAnimTitle = class(TJvComponent)
@@ -67,6 +66,37 @@ implementation
 
 {**************************************************}
 
+constructor TJvAnimTitle.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FEnable := False;
+  FDelay := 50;
+  FBlinker := 5;
+  FForm := GetParentForm(TControl(AOwner));
+  FInitialTitle := FForm.Caption;
+  FSens := True;
+  FBlinking := False;
+  FBlinked := 0;
+  FDelay := 100;
+
+  FTimer := TTimer.Create(Self);
+  FTimer.Enabled := FEnable;
+  FTimer.Interval := FDelay;
+  FTimer.OnTimer := AnimateTitle;
+end;
+
+{**************************************************}
+
+destructor TJvAnimTitle.Destroy;
+begin
+  FTimer.Free;
+  if not (csDestroying in FForm.ComponentState) then
+    FForm.Caption := FInitialTitle;
+  inherited;
+end;
+
+{**************************************************}
+
 procedure TJvAnimTitle.AnimateTitle(Sender: TObject);
 begin
   if FBlinking then
@@ -97,43 +127,13 @@ begin
       else
         FTitle := FTitle + FInitialTitle[Length(FTitle) + 1];
     end
-    else if Length(FTitle) = 0 then
+    else
+    if Length(FTitle) = 0 then
       FSens := True
     else
       FTitle := Copy(FTitle, 0, Length(FTitle) - 1);
     FForm.Caption := FTitle;
   end;
-end;
-
-{**************************************************}
-
-constructor TJvAnimTitle.Create(AOwner: TComponent);
-begin
-  inherited;
-  FEnable := False;
-  FDelay := 50;
-  FBlinker := 5;
-  FForm := GetParentForm(TControl(AOwner));
-  FInitialTitle := FForm.Caption;
-  FSens := True;
-  FBlinking := False;
-  FBlinked := 0;
-  FDelay := 100;
-
-  FTimer := TTimer.Create(Self);
-  FTimer.Enabled := FEnable;
-  FTimer.Interval := FDelay;
-  FTimer.OnTimer := AnimateTitle;
-end;
-
-{**************************************************}
-
-destructor TJvAnimTitle.Destroy;
-begin
-  FTimer.Free;
-  if not (csDestroying in FForm.ComponentState) then
-    FForm.Caption := FInitialTitle;
-  inherited;
 end;
 
 {**************************************************}

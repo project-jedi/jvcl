@@ -63,21 +63,25 @@ uses
 {$R ..\resources\ractl.dcr}
 
 {$IFDEF COMPLIB_VCL}
-type
 
+resourcestring
+  RS_JvHLEditorMsg = 'Please select "JvHLEditor" first';
+  RS_JvHLEditorMsgTitle = 'Cannot edit';
+
+type
   TJvScrollMaxEditor = class(TComponentEditor)
   public
-    function GetVerbCount: integer; override;
-    function GetVerb(Index: integer): string; override;
-    procedure ExecuteVerb(Index: integer); override;
+    function GetVerbCount: Integer; override;
+    function GetVerb(Index: Integer): string; override;
+    procedure ExecuteVerb(Index: Integer); override;
     procedure Edit; override;
   end;
 
   TJvHLEdPropDlgEditor = class(TComponentEditor)
   public
-    function GetVerbCount: integer; override;
-    function GetVerb(Index: integer): string; override;
-    procedure ExecuteVerb(Index: integer); override;
+    function GetVerbCount: Integer; override;
+    function GetVerb(Index: Integer): string; override;
+    procedure ExecuteVerb(Index: Integer); override;
     procedure Edit; override;
   end;
 
@@ -87,14 +91,14 @@ type
     procedure Edit; override;
   end;
 
-  { TJvScrollMaxEditor }
+{ TJvScrollMaxEditor }
 
-function TJvScrollMaxEditor.GetVerbCount: integer;
+function TJvScrollMaxEditor.GetVerbCount: Integer;
 begin
   Result := inherited GetVerbCount + 1;
 end;
 
-function TJvScrollMaxEditor.GetVerb(Index: integer): string;
+function TJvScrollMaxEditor.GetVerb(Index: Integer): string;
 begin
   if Index = GetVerbCount - 1 then
     Result := 'Add Band'
@@ -102,7 +106,7 @@ begin
     Result := inherited GetVerb(Index);
 end;
 
-procedure TJvScrollMaxEditor.ExecuteVerb(Index: integer);
+procedure TJvScrollMaxEditor.ExecuteVerb(Index: Integer);
 begin
   if Index = GetVerbCount - 1 then
     Designer.CreateComponent(TJvScrollMaxBand, Component, 0, 0, 0, 50)
@@ -117,12 +121,12 @@ end;
 
 { TJvHLEdPropDlgEditor }
 
-function TJvHLEdPropDlgEditor.GetVerbCount: integer;
+function TJvHLEdPropDlgEditor.GetVerbCount: Integer;
 begin
   Result := inherited GetVerbCount + 1;
 end;
 
-function TJvHLEdPropDlgEditor.GetVerb(Index: integer): string;
+function TJvHLEdPropDlgEditor.GetVerb(Index: Integer): string;
 begin
   if Index = GetVerbCount - 1 then
     Result := 'Execute'
@@ -130,7 +134,7 @@ begin
     Result := inherited GetVerb(Index);
 end;
 
-procedure TJvHLEdPropDlgEditor.ExecuteVerb(Index: integer);
+procedure TJvHLEdPropDlgEditor.ExecuteVerb(Index: Integer);
 begin
   if Index = GetVerbCount - 1 then
     Edit
@@ -141,30 +145,33 @@ end;
 procedure TJvHLEdPropDlgEditor.Edit;
 var
   PakName: string;
-  newRegAuto: TJvRegAuto;
-  oldRegAuto: TJvRegAuto;
+  NewRegAuto: TJvRegAuto;
+  OldRegAuto: TJvRegAuto;
 begin
   if (Component as TJvHLEdPropDlg).JvHLEditor <> nil then
     begin
-      newRegAuto := TJvRegAuto.Create(nil);
+      NewRegAuto := TJvRegAuto.Create(nil);
       try
-        newRegAuto.UseReg := False;
-        newRegAuto.UseIni := True;
-        newRegAuto.UseStr := False;
-        SetLength(PakName, 260);
-        SetLength(PakName, GetModuleFileName(hInstance, PChar(PakName), 260));
-        newRegAuto.IniFile := ExtractFilePath(PakName) + 'JvHLEdPropDlg.ini';
-        oldRegAuto := (Component as TJvHLEdPropDlg).RegAuto;
-        (Component as TJvHLEdPropDlg).RegAuto := newRegAuto;
-        if (Component as TJvHLEdPropDlg).Execute then
-          Designer.Modified;
-        (Component as TJvHLEdPropDlg).RegAuto := oldRegAuto;
+        NewRegAuto.UseReg := False;
+        NewRegAuto.UseIni := True;
+        NewRegAuto.UseStr := False;
+        SetLength(PakName, MAX_PATH);
+        SetLength(PakName, GetModuleFileName(hInstance, PChar(PakName), MAX_PATH));
+        NewRegAuto.IniFile := ExtractFilePath(PakName) + 'JvHLEdPropDlg.ini';
+        with Component as TJvHLEdPropDlg do
+        begin
+          OldRegAuto := RegAuto;
+          RegAuto := NewRegAuto;
+          if Execute then
+            Designer.Modified;
+          RegAuto := OldRegAuto;
+        end;
       finally
-        newRegAuto.Free;
+        NewRegAuto.Free;
       end;
     end
   else
-    MessageBox(0, 'Please select "JvHLEditor" first', 'Cannot edit', MB_OK + MB_ICONERROR);
+    MessageBox(0, PChar(RS_JvHLEditorMsg), PChar(RS_JvHLEditorMsgTitle), MB_OK + MB_ICONERROR);
 end;
 
 procedure TJvHLEditorColorProperty.Edit;
@@ -188,54 +195,63 @@ begin
 end;
 
 {$IFDEF COMPILER5}
+
 type
   TJvEditorCategory = class(TPropertyCategory)
   public
     class function Name: string; override;
   end;
-  { TEditorCategory }
+
+{ TEditorCategory }
 
 class function TJvEditorCategory.Name: string;
 begin
   Result := 'Editor';
 end;
+
 {$ENDIF COMPILER5}
 
 {$ENDIF COMPLIB_VCL}
+
+const
+  cJvCustomPallette = 'Jv Custom';
+  cJvAdditionalPallette = 'Jv Additional';
+  cJvSystemPallette = 'Jv System';
+  cJvDialogsPallette = 'Jv Dialogs';
 
 procedure Register;
 begin
   {$IFDEF COMPLIB_VCL}
 
   {JvEditor unit}
-  RegisterComponents('Jv Custom', [TJvEditor]);
+  RegisterComponents(cJvCustomPallette, [TJvEditor]);
   {JvHLEditor unit}
-  RegisterComponents('Jv Custom', [TJvHLEditor]);
+  RegisterComponents(cJvCustomPallette, [TJvHLEditor]);
   {JvHLEdPropDlg unit}
-  RegisterComponents('Jv Custom', [TJvHLEdPropDlg]);
+  RegisterComponents(cJvCustomPallette, [TJvHLEdPropDlg]);
   RegisterComponentEditor(TJvHLEdPropDlg, TJvHLEdPropDlgEditor);
   RegisterPropertyEditor(TypeInfo(TJvColors), TJvHLEditor, 'Colors', TJvHLEditorColorProperty);
   {JvRegAuto unit}
-  RegisterComponents('Jv Custom', [TJvRegAuto]);
+  RegisterComponents(cJvCustomPallette, [TJvRegAuto]);
   RegisterComponentEditor(TJvRegAuto, TJvRegAutoEditor);
 
   {JvScrollMax unit}
-  RegisterComponents('Jv Custom', [TJvScrollMax]);
+  RegisterComponents(cJvCustomPallette, [TJvScrollMax]);
   RegisterClass(TJvScrollMaxBand);
   RegisterComponentEditor(TJvScrollMax, TJvScrollMaxEditor);
   {JvaScrollText}
-  RegisterComponents('Jv Additional', [TJvaScrollText]);
+  RegisterComponents(cJvAdditionalPallette, [TJvaScrollText]);
 
   {JvHtControls unit}
-  RegisterComponents('Jv Additional', [TJvhtListBox, TJvHTComboBox, TJvHTLabel]);
+  RegisterComponents(cJvAdditionalPallette, [TJvhtListBox, TJvHTComboBox, TJvHTLabel]);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);
   {JvButtons unit}
-  RegisterComponents('Jv Additional', [TJvHTButton]);
-  RegisterComponents('Jv System', [TJvaCaptionButton]);
+  RegisterComponents(cJvAdditionalPallette, [TJvHTButton]);
+  RegisterComponents(cJvSystemPallette, [TJvaCaptionButton]);
   {JvDlg unit}
-  RegisterComponents('Jv Dialogs', [TJvProgressForm]);
+  RegisterComponents(cJvDialogsPallette, [TJvProgressForm]);
   {JvComponentPanel unit}
-  RegisterComponents('Jv Custom', [TJvComponentPanel]);
+  RegisterComponents(cJvCustomPallette, [TJvComponentPanel]);
   {$ENDIF COMPLIB_VCL}
 
   {$IFDEF COMPLIB_CLX}
@@ -251,36 +267,36 @@ begin
   {$IFDEF COMPILER5}
   RegisterPropertiesInCategory(TJvEditorCategory, TJvCustomEditor,
     ['InsertMode', 'DoubleClickLine', 'Completion', 'SmartTab',
-    'BackSpaceUnindents', 'AutoIndent', 'KeepTrailingBlanks', 'CursorBeyondEOF',
-      'GutterColor', 'GutterWidth',
-      'RightMarginVisible', 'RightMargin', 'RightMarginColor',
+     'BackSpaceUnindents', 'AutoIndent', 'KeepTrailingBlanks', 'CursorBeyondEOF',
+     'GutterColor', 'GutterWidth',
+     'RightMarginVisible', 'RightMargin', 'RightMarginColor',
 
-    'OnGetLineAttr', 'OnReservedWord', 'OnCompletionIdentifer',
-      'OnCompletionDrawItem', 'OnCompletionMeasureItem', 'OnCompletionTemplate',
-      'OnChange', 'OnChangeStatus', 'OnSelectionChange']);
+     'OnGetLineAttr', 'OnReservedWord', 'OnCompletionIdentifer',
+     'OnCompletionDrawItem', 'OnCompletionMeasureItem', 'OnCompletionTemplate',
+     'OnChange', 'OnChangeStatus', 'OnSelectionChange']);
 
   RegisterPropertiesInCategory(TVisualCategory, TJvCustomEditor,
     ['ScrollBars',
-    'RightMarginVisible', 'RightMargin', 'RightMarginColor',
-      'OnPaintGutter', 'OnScroll', 'OnConstrainedResize']);
+     'RightMarginVisible', 'RightMargin', 'RightMarginColor',
+     'OnPaintGutter', 'OnScroll', 'OnConstrainedResize']);
   {$ENDIF}
 
   {$IFDEF COMPILER6_UP}
   {$IFDEF COMPLIB_VCL}
   RegisterPropertiesInCategory('Editor', TJvCustomEditor,
     ['InsertMode', 'DoubleClickLine', 'Completion', 'SmartTab',
-    'BackSpaceUnindents', 'AutoIndent', 'KeepTrailingBlanks', 'CursorBeyondEOF',
-      'GutterColor', 'GutterWidth',
-      'RightMarginVisible', 'RightMargin', 'RightMarginColor',
+     'BackSpaceUnindents', 'AutoIndent', 'KeepTrailingBlanks', 'CursorBeyondEOF',
+     'GutterColor', 'GutterWidth',
+     'RightMarginVisible', 'RightMargin', 'RightMarginColor',
 
-    'OnGetLineAttr', 'OnReservedWord', 'OnCompletionIdentifer',
-      'OnCompletionDrawItem', 'OnCompletionMeasureItem', 'OnCompletionTemplate',
-      'OnChange', 'OnChangeStatus', 'OnSelectionChange']);
+     'OnGetLineAttr', 'OnReservedWord', 'OnCompletionIdentifer',
+     'OnCompletionDrawItem', 'OnCompletionMeasureItem', 'OnCompletionTemplate',
+     'OnChange', 'OnChangeStatus', 'OnSelectionChange']);
 
   RegisterPropertiesInCategory('Visual', TJvCustomEditor,
     ['ScrollBars',
-    'RightMarginVisible', 'RightMargin', 'RightMarginColor',
-      'OnPaintGutter', 'OnScroll', 'OnConstrainedResize']);
+     'RightMarginVisible', 'RightMargin', 'RightMarginColor',
+     'OnPaintGutter', 'OnScroll', 'OnConstrainedResize']);
   {$ENDIF}
   {$ENDIF}
 end;

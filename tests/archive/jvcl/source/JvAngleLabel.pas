@@ -56,7 +56,7 @@ implementation
 
 constructor TJvAngleLabel.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   // (rom) not a good idea to set the font here
   // (rom) this kills ParentFont and Kylix compatibility
   Font.Name := 'Arial';
@@ -67,14 +67,15 @@ end;
 
 procedure TJvAngleLabel.DrawText(Flags: Word);
 var
-  Text: array[0..4096] of Char;
+  Text: array [0..4096] of Char;
   LogFont, NewLogFont: TLogFont;
   NewFont, OldFont: HFont;
   MRect: TRect;
   TextX, TextY: Integer;
   Phi: Real;
+  Angle10: Integer;
 begin
-  FAngle := FAngle * 10;
+  Angle10 := Angle * 10;
   GetTextBuf(Text, SizeOf(Text));
   if (Flags and DT_CALCRECT <> 0) and ((Text[0] = #0) or ShowAccelChar and
     (Text[0] = '&') and (Text[1] = #0)) then
@@ -84,12 +85,12 @@ begin
     PError('FONT');
   NewLogFont := LogFont;
   MRect := ClientRect;
-  NewLogFont.lfEscapement := FAngle;
+  NewLogFont.lfEscapement := Angle10;
   NewFont := CreateFontIndirect(NewLogFont);
   OldFont := SelectObject(Canvas.Font.Handle, NewFont);
   DeleteObject(OldFont);
   Canvas.Font.Handle := NewFont;
-  Phi := FAngle * Pi / 1800;
+  Phi := Angle10 * Pi / 1800;
   if not AutoSize then
   begin
     TextX := Trunc(0.5 * ClientWidth - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) - 0.5 * Canvas.TextHeight(Text) *
@@ -102,25 +103,24 @@ begin
     ClientWidth := 4 + Trunc(Canvas.TextWidth(Text) * Abs(Cos(Phi)) + Canvas.TextHeight(Text) * Abs(Sin(Phi)));
     ClientHeight := 4 + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)) + Canvas.TextWidth(Text) * Abs(Sin(Phi)));
     TextX := 2;
-    if (FAngle > 900) and (FAngle < 2700) then
+    if (Angle10 > 900) and (Angle10 < 2700) then
       TextX := TextX + Trunc(Canvas.TextWidth(Text) * Abs(Cos(Phi)));
-    if (FAngle > 1800) then
+    if Angle10 > 1800 then
       TextX := TextX + Trunc(Canvas.TextHeight(Text) * Abs(Sin(Phi)));
     TextY := 2;
-    if FAngle < 1800 then
+    if Angle10 < 1800 then
       TextY := TextY + Trunc(Canvas.TextWidth(Text) * Abs(Sin(Phi)));
-    if (FAngle > 900) and (FAngle < 2700) then
+    if (Angle10 > 900) and (Angle10 < 2700) then
       TextY := TextY + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)));
   end;
   Canvas.TextOut(TextX, TextY, Text);
-  FAngle := FAngle div 10;
 end;
 
 {**************************************************}
 
 procedure TJvAngleLabel.Paint;
 const
-  Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
 var
   MRect: TRect;
 begin
@@ -128,7 +128,7 @@ begin
   begin
     if not Transparent then
     begin
-      Brush.Color := Self.Color;
+      Brush.Color := Color;
       Brush.Style := bsSolid;
       FillRect(ClientRect);
     end;

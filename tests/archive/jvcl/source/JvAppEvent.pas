@@ -25,34 +25,38 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
-
 unit JvAppEvent;
 
 {$C PRELOAD}
 
-
 interface
 
-uses SysUtils, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  Messages, Classes, Graphics, Controls, Forms{, JvComponent}
-  {$IFDEF COMPILER4_UP}, ActnList {$ENDIF};
+uses
+  SysUtils,
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  Messages, Classes, Graphics, Controls, Forms,
+  {$IFDEF COMPILER4_UP}
+  ActnList,
+  {$ENDIF}
+  JvComponent;
 
 const
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   DefHintColor = clInfoBk;
   DefHintPause = 500;
   DefHintShortPause = DefHintPause div 10;
   DefHintHidePause = DefHintPause * 5;
-{$ELSE}
+  {$ELSE}
   DefHintColor = $80FFFF;
   DefHintPause = 800;
-{$ENDIF}
-
-{ TJvAppEvents }
+  {$ENDIF}
 
 type
-  TJvAppEvents = class(TComponent)
+  TJvAppEvents = class(TJvComponent)
   private
     { Private declarations }
     FChained: Boolean;
@@ -61,15 +65,15 @@ type
     FShowHint: Boolean;
     FCanvas: TCanvas;
     FUpdateFormatSettings: Boolean;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     FHintShortPause: Integer;
     FHintHidePause: Integer;
     FShowMainForm: Boolean;
-{$ENDIF}
-{$IFDEF COMPILER3_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER3_UP}
     FUpdateMetricSettings: Boolean;
-{$ENDIF}
-{$IFDEF COMPILER4_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER4_UP}
     FHintShortCuts: Boolean;
     FBiDiMode: TBiDiMode;
     FMouseDragImmediate: Boolean;
@@ -77,11 +81,11 @@ type
     FOnActionExecute: TActionEvent;
     FOnActionUpdate: TActionEvent;
     FOnShortCut: TShortCutEvent;
-{$ENDIF}
-{$IFDEF COMPILER5_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER5_UP}
     FBiDiKeyboard: string;
-    FNonBiDiKeyboard: string; 
-{$ENDIF}
+    FNonBiDiKeyboard: string;
+    {$ENDIF}
     FOnPaintIcon: TNotifyEvent;
     FOnActivate: TNotifyEvent;
     FOnDeactivate: TNotifyEvent;
@@ -106,19 +110,19 @@ type
     procedure SetShowHint(Value: Boolean);
     function GetUpdateFormatSettings: Boolean;
     procedure SetUpdateFormatSettings(Value: Boolean);
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     function GetHintShortPause: Integer;
     function GetHintHidePause: Integer;
     function GetShowMainForm: Boolean;
     procedure SetHintShortPause(Value: Integer);
     procedure SetHintHidePause(Value: Integer);
     procedure SetShowMainForm(Value: Boolean);
-{$ENDIF WIN32}
-{$IFDEF COMPILER3_UP}
+    {$ENDIF WIN32}
+    {$IFDEF COMPILER3_UP}
     function GetUpdateMetricSettings: Boolean;
     procedure SetUpdateMetricSettings(Value: Boolean);
-{$ENDIF}
-{$IFDEF COMPILER4_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER4_UP}
     function GetHintShortCuts: Boolean;
     function GetBiDiMode: TBiDiMode;
     procedure SetHintShortCuts(Value: Boolean);
@@ -127,13 +131,13 @@ type
     function GetMouseDragThreshold: Integer;
     procedure SetMouseDragImmediate(Value: Boolean);
     procedure SetMouseDragThreshold(Value: Integer);
-{$ENDIF}
-{$IFDEF COMPILER5_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER5_UP}
     function GetBiDiKeyboard: string;
-    function GetNonBiDiKeyboard: string; 
+    function GetNonBiDiKeyboard: string;
     procedure SetBiDiKeyboard(const Value: string);
     procedure SetNonBiDiKeyboard(const Value: string);
-{$ENDIF}
+    {$ENDIF}
   protected
     procedure Loaded; override;
     procedure PaintIcon; virtual;
@@ -150,19 +154,19 @@ type
     property ShowHint: Boolean read GetShowHint write SetShowHint default True;
     property UpdateFormatSettings: Boolean read GetUpdateFormatSettings
       write SetUpdateFormatSettings default True;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     property HintShortPause: Integer read GetHintShortPause write SetHintShortPause
       default DefHintShortPause;
     property HintHidePause: Integer read GetHintHidePause write SetHintHidePause
       default DefHintHidePause;
     property ShowMainForm: Boolean read GetShowMainForm write SetShowMainForm
       default True;
-{$ENDIF}
-{$IFDEF COMPILER3_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER3_UP}
     property UpdateMetricSettings: Boolean read GetUpdateMetricSettings
       write SetUpdateMetricSettings default True;
-{$ENDIF}
-{$IFDEF COMPILER4_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER4_UP}
     property HintShortCuts: Boolean read GetHintShortCuts write SetHintShortCuts
       default True;
     property BiDiMode: TBiDiMode read GetBiDiMode write SetBiDiMode
@@ -174,11 +178,11 @@ type
     property OnActionExecute: TActionEvent read FOnActionExecute write FOnActionExecute;
     property OnActionUpdate: TActionEvent read FOnActionUpdate write FOnActionUpdate;
     property OnShortCut: TShortCutEvent read FOnShortCut write FOnShortCut;
-{$ENDIF}
-{$IFDEF COMPILER5_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER5_UP}
     property BiDiKeyboard: string read GetBiDiKeyboard write SetBiDiKeyboard;
-    property NonBiDiKeyboard: string read GetNonBiDiKeyboard write SetNonBiDiKeyboard; 
-{$ENDIF}
+    property NonBiDiKeyboard: string read GetNonBiDiKeyboard write SetNonBiDiKeyboard;
+    {$ENDIF}
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
     property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
     property OnException: TExceptionEvent read FOnException write FOnException;
@@ -197,9 +201,8 @@ type
 
 implementation
 
-uses JvAppUtils, JvVCLUtils;
-
-{ TJvAppEventList }
+uses
+  JvAppUtils, JvVCLUtils;
 
 type
   TJvAppEventList = class(TObject)
@@ -218,11 +221,11 @@ type
     FOnShowHint: TShowHintEvent;
     FOnActiveControlChange: TNotifyEvent;
     FOnActiveFormChange: TNotifyEvent;
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     FOnActionExecute: TActionEvent;
     FOnActionUpdate: TActionEvent;
     FOnShortCut: TShortCutEvent;
-{$ENDIF}
+    {$ENDIF}
     procedure AddEvents(App: TJvAppEvents);
     procedure RemoveEvents(App: TJvAppEvents);
     procedure ClearEvents;
@@ -241,11 +244,11 @@ type
       var HintInfo: THintInfo);
     procedure DoActiveControlChange(Sender: TObject);
     procedure DoActiveFormChange(Sender: TObject);
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     procedure DoActionExecute(Action: TBasicAction; var Handled: Boolean);
     procedure DoActionUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure DoShortCut(var Msg: TWMKey; var Handled: Boolean);
-{$ENDIF}
+    {$ENDIF}
   public
     constructor Create;
     destructor Destroy; override;
@@ -266,7 +269,8 @@ end;
 
 procedure TJvAppEventList.ClearEvents;
 begin
-  if FHooked then begin
+  if FHooked then
+  begin
     Application.OnActivate := nil;
     Application.OnDeactivate := nil;
     Application.OnException := nil;
@@ -277,12 +281,13 @@ begin
     Application.OnMinimize := nil;
     Application.OnRestore := nil;
     Application.OnShowHint := nil;
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     Application.OnActionExecute := nil;
     Application.OnActionUpdate := nil;
     Application.OnShortCut := nil;
-{$ENDIF}
-    if Screen <> nil then begin
+    {$ENDIF}
+    if Screen <> nil then
+    begin
       Screen.OnActiveControlChange := nil;
       Screen.OnActiveFormChange := nil;
     end;
@@ -291,7 +296,8 @@ end;
 
 procedure TJvAppEventList.AddEvents(App: TJvAppEvents);
 begin
-  if (App <> nil) and (FAppEvents.IndexOf(App) = -1) then begin
+  if (App <> nil) and (FAppEvents.IndexOf(App) = -1) then
+  begin
     FAppEvents.Add(App);
     if not (csDesigning in App.ComponentState) and (FAppEvents.Count = 1) then
     begin
@@ -305,14 +311,14 @@ begin
       FOnMinimize := Application.OnMinimize;
       FOnRestore := Application.OnRestore;
       FOnShowHint := Application.OnShowHint;
-{$IFDEF COMPILER4_UP}
+      {$IFDEF COMPILER4_UP}
       FOnActionExecute := Application.OnActionExecute;
       FOnActionUpdate := Application.OnActionUpdate;
       FOnShortCut := Application.OnShortCut;
       Application.OnActionExecute := DoActionExecute;
       Application.OnActionUpdate := DoActionUpdate;
       Application.OnShortCut := DoShortCut;
-{$ENDIF}
+      {$ENDIF}
       Application.OnActivate := DoActivate;
       Application.OnDeactivate := DoDeactivate;
       Application.OnException := DoException;
@@ -323,7 +329,8 @@ begin
       Application.OnMinimize := DoMinimize;
       Application.OnRestore := DoRestore;
       Application.OnShowHint := DoShowHint;
-      if Screen <> nil then begin
+      if Screen <> nil then
+      begin
         FOnActiveControlChange := Screen.OnActiveControlChange;
         FOnActiveFormChange := Screen.OnActiveFormChange;
         Screen.OnActiveControlChange := DoActiveControlChange;
@@ -336,7 +343,8 @@ end;
 
 procedure TJvAppEventList.RemoveEvents(App: TJvAppEvents);
 begin
-  if FAppEvents.IndexOf(App) >= 0 then FAppEvents.Remove(App);
+  if FAppEvents.IndexOf(App) >= 0 then
+    FAppEvents.Remove(App);
   if not (csDesigning in App.ComponentState) and (FAppEvents.Count = 0) then
     ClearEvents;
 end;
@@ -345,24 +353,30 @@ procedure TJvAppEventList.DoActivate(Sender: TObject);
 var
   I: Integer;
 begin
-  for I := FAppEvents.Count - 1 downto 0 do begin
+  for I := FAppEvents.Count - 1 downto 0 do
+  begin
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnActivate) then
       TJvAppEvents(FAppEvents[I]).FOnActivate(Sender);
-    if not TJvAppEvents(FAppEvents[I]).Chained then Exit;
+    if not TJvAppEvents(FAppEvents[I]).Chained then
+      Exit;
   end;
-  if Assigned(FOnActivate) then FOnActivate(Sender);
+  if Assigned(FOnActivate) then
+    FOnActivate(Sender);
 end;
 
 procedure TJvAppEventList.DoDeactivate(Sender: TObject);
 var
   I: Integer;
 begin
-  for I := FAppEvents.Count - 1 downto 0 do begin
+  for I := FAppEvents.Count - 1 downto 0 do
+  begin
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnDeactivate) then
       TJvAppEvents(FAppEvents[I]).FOnDeactivate(Sender);
-    if not TJvAppEvents(FAppEvents[I]).Chained then Exit;
+    if not TJvAppEvents(FAppEvents[I]).Chained then
+      Exit;
   end;
-  if Assigned(FOnDeactivate) then FOnDeactivate(Sender);
+  if Assigned(FOnDeactivate) then
+    FOnDeactivate(Sender);
 end;
 
 procedure TJvAppEventList.DoException(Sender: TObject; E: Exception);
@@ -371,33 +385,42 @@ var
   Handled: Boolean;
 begin
   Handled := False;
-  for I := FAppEvents.Count - 1 downto 0 do begin
-    if Assigned(TJvAppEvents(FAppEvents[I]).FOnException) then begin
+  for I := FAppEvents.Count - 1 downto 0 do
+  begin
+    if Assigned(TJvAppEvents(FAppEvents[I]).FOnException) then
+    begin
       TJvAppEvents(FAppEvents[I]).FOnException(Sender, E);
       Handled := True;
     end;
-    if not TJvAppEvents(FAppEvents[I]).Chained then begin
-      if not Handled then Application.ShowException(E);
+    if not TJvAppEvents(FAppEvents[I]).Chained then
+    begin
+      if not Handled then
+        Application.ShowException(E);
       Exit;
     end;
   end;
-  if Assigned(FOnException) then begin
+  if Assigned(FOnException) then
+  begin
     FOnException(Sender, E);
     Handled := True;
   end;
-  if not Handled then Application.ShowException(E);
+  if not Handled then
+    Application.ShowException(E);
 end;
 
 procedure TJvAppEventList.DoIdle(Sender: TObject; var Done: Boolean);
 var
   I: Integer;
 begin
-  for I := FAppEvents.Count - 1 downto 0 do begin
+  for I := FAppEvents.Count - 1 downto 0 do
+  begin
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnIdle) then
       TJvAppEvents(FAppEvents[I]).FOnIdle(Sender, Done);
-    if not TJvAppEvents(FAppEvents[I]).Chained then Exit;
+    if not TJvAppEvents(FAppEvents[I]).Chained then
+      Exit;
   end;
-  if Assigned(FOnIdle) then FOnIdle(Sender, Done);
+  if Assigned(FOnIdle) then
+    FOnIdle(Sender, Done);
 end;
 
 function TJvAppEventList.DoHelp(Command: Word; Data: Longint;
@@ -406,60 +429,75 @@ var
   I: Integer;
 begin
   Result := False;
-  for I := FAppEvents.Count - 1 downto 0 do begin
+  for I := FAppEvents.Count - 1 downto 0 do
+  begin
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnHelp) then
       Result := TJvAppEvents(FAppEvents[I]).FOnHelp(Command, Data, CallHelp);
-    if not TJvAppEvents(FAppEvents[I]).Chained then Exit;
+    if not TJvAppEvents(FAppEvents[I]).Chained then
+      Exit;
   end;
-  if Assigned(FOnHelp) then Result := FOnHelp(Command, Data, CallHelp);
+  if Assigned(FOnHelp) then
+    Result := FOnHelp(Command, Data, CallHelp);
 end;
 
 procedure TJvAppEventList.DoHint(Sender: TObject);
 var
   I: Integer;
 begin
-  for I := FAppEvents.Count - 1 downto 0 do begin
+  for I := FAppEvents.Count - 1 downto 0 do
+  begin
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnHint) then
       TJvAppEvents(FAppEvents[I]).FOnHint(Sender);
-    if not TJvAppEvents(FAppEvents[I]).Chained then Exit;
+    if not TJvAppEvents(FAppEvents[I]).Chained then
+      Exit;
   end;
-  if Assigned(FOnHint) then FOnHint(Sender);
+  if Assigned(FOnHint) then
+    FOnHint(Sender);
 end;
 
 procedure TJvAppEventList.DoMessage(var Msg: TMsg; var Handled: Boolean);
 var
   I: Integer;
 begin
-  for I := FAppEvents.Count - 1 downto 0 do begin
+  for I := FAppEvents.Count - 1 downto 0 do
+  begin
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnMessage) then
       TJvAppEvents(FAppEvents[I]).FOnMessage(Msg, Handled);
-    if not TJvAppEvents(FAppEvents[I]).Chained or Handled then Exit;
+    if not TJvAppEvents(FAppEvents[I]).Chained or Handled then
+      Exit;
   end;
-  if Assigned(FOnMessage) then FOnMessage(Msg, Handled);
+  if Assigned(FOnMessage) then
+    FOnMessage(Msg, Handled);
 end;
 
 procedure TJvAppEventList.DoMinimize(Sender: TObject);
 var
   I: Integer;
 begin
-  for I := FAppEvents.Count - 1 downto 0 do begin
+  for I := FAppEvents.Count - 1 downto 0 do
+  begin
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnMinimize) then
       TJvAppEvents(FAppEvents[I]).FOnMinimize(Sender);
-    if not TJvAppEvents(FAppEvents[I]).Chained then Exit;
+    if not TJvAppEvents(FAppEvents[I]).Chained then
+      Exit;
   end;
-  if Assigned(FOnMinimize) then FOnMinimize(Sender);
+  if Assigned(FOnMinimize) then
+    FOnMinimize(Sender);
 end;
 
 procedure TJvAppEventList.DoRestore(Sender: TObject);
 var
   I: Integer;
 begin
-  for I := FAppEvents.Count - 1 downto 0 do begin
+  for I := FAppEvents.Count - 1 downto 0 do
+  begin
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnRestore) then
       TJvAppEvents(FAppEvents[I]).FOnRestore(Sender);
-    if not TJvAppEvents(FAppEvents[I]).Chained then Exit;
+    if not TJvAppEvents(FAppEvents[I]).Chained then
+      Exit;
   end;
-  if Assigned(FOnRestore) then FOnRestore(Sender);
+  if Assigned(FOnRestore) then
+    FOnRestore(Sender);
 end;
 
 procedure TJvAppEventList.DoShowHint(var HintStr: string; var CanShow: Boolean;
@@ -467,36 +505,45 @@ procedure TJvAppEventList.DoShowHint(var HintStr: string; var CanShow: Boolean;
 var
   I: Integer;
 begin
-  for I := FAppEvents.Count - 1 downto 0 do begin
+  for I := FAppEvents.Count - 1 downto 0 do
+  begin
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnShowHint) then
       TJvAppEvents(FAppEvents[I]).FOnShowHint(HintStr, CanShow, HintInfo);
-    if not TJvAppEvents(FAppEvents[I]).Chained then Exit;
+    if not TJvAppEvents(FAppEvents[I]).Chained then
+      Exit;
   end;
-  if Assigned(FOnShowHint) then FOnShowHint(HintStr, CanShow, HintInfo);
+  if Assigned(FOnShowHint) then
+    FOnShowHint(HintStr, CanShow, HintInfo);
 end;
 
 procedure TJvAppEventList.DoActiveControlChange(Sender: TObject);
 var
   I: Integer;
 begin
-  for I := FAppEvents.Count - 1 downto 0 do begin
+  for I := FAppEvents.Count - 1 downto 0 do
+  begin
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnActiveControlChange) then
       TJvAppEvents(FAppEvents[I]).FOnActiveControlChange(Sender);
-    if not TJvAppEvents(FAppEvents[I]).Chained then Exit;
+    if not TJvAppEvents(FAppEvents[I]).Chained then
+      Exit;
   end;
-  if Assigned(FOnActiveControlChange) then FOnActiveControlChange(Sender);
+  if Assigned(FOnActiveControlChange) then
+    FOnActiveControlChange(Sender);
 end;
 
 procedure TJvAppEventList.DoActiveFormChange(Sender: TObject);
 var
   I: Integer;
 begin
-  for I := FAppEvents.Count - 1 downto 0 do begin
+  for I := FAppEvents.Count - 1 downto 0 do
+  begin
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnActiveFormChange) then
       TJvAppEvents(FAppEvents[I]).FOnActiveFormChange(Sender);
-    if not TJvAppEvents(FAppEvents[I]).Chained then Exit;
+    if not TJvAppEvents(FAppEvents[I]).Chained then
+      Exit;
   end;
-  if Assigned(FOnActiveFormChange) then FOnActiveFormChange(Sender);
+  if Assigned(FOnActiveFormChange) then
+    FOnActiveFormChange(Sender);
 end;
 
 {$IFDEF COMPILER4_UP}
@@ -506,12 +553,15 @@ procedure TJvAppEventList.DoActionExecute(Action: TBasicAction;
 var
   I: Integer;
 begin
-  for I := FAppEvents.Count - 1 downto 0 do begin
+  for I := FAppEvents.Count - 1 downto 0 do
+  begin
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnActionExecute) then
       TJvAppEvents(FAppEvents[I]).FOnActionExecute(Action, Handled);
-    if not TJvAppEvents(FAppEvents[I]).Chained or Handled then Exit;
+    if not TJvAppEvents(FAppEvents[I]).Chained or Handled then
+      Exit;
   end;
-  if Assigned(FOnActionExecute) then FOnActionExecute(Action, Handled);
+  if Assigned(FOnActionExecute) then
+    FOnActionExecute(Action, Handled);
 end;
 
 procedure TJvAppEventList.DoActionUpdate(Action: TBasicAction;
@@ -519,24 +569,30 @@ procedure TJvAppEventList.DoActionUpdate(Action: TBasicAction;
 var
   I: Integer;
 begin
-  for I := FAppEvents.Count - 1 downto 0 do begin
+  for I := FAppEvents.Count - 1 downto 0 do
+  begin
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnActionUpdate) then
       TJvAppEvents(FAppEvents[I]).FOnActionUpdate(Action, Handled);
-    if not TJvAppEvents(FAppEvents[I]).Chained or Handled then Exit;
+    if not TJvAppEvents(FAppEvents[I]).Chained or Handled then
+      Exit;
   end;
-  if Assigned(FOnActionUpdate) then FOnActionUpdate(Action, Handled);
+  if Assigned(FOnActionUpdate) then
+    FOnActionUpdate(Action, Handled);
 end;
 
 procedure TJvAppEventList.DoShortCut(var Msg: TWMKey; var Handled: Boolean);
 var
   I: Integer;
 begin
-  for I := FAppEvents.Count - 1 downto 0 do begin
+  for I := FAppEvents.Count - 1 downto 0 do
+  begin
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnShortCut) then
       TJvAppEvents(FAppEvents[I]).FOnShortCut(Msg, Handled);
-    if not TJvAppEvents(FAppEvents[I]).Chained or Handled then Exit;
+    if not TJvAppEvents(FAppEvents[I]).Chained or Handled then
+      Exit;
   end;
-  if Assigned(FOnShortCut) then FOnShortCut(Msg, Handled);
+  if Assigned(FOnShortCut) then
+    FOnShortCut(Msg, Handled);
 end;
 
 {$ENDIF COMPILER4_UP}
@@ -544,30 +600,29 @@ end;
 const
   AppList: TJvAppEventList = nil;
 
-{ TJvAppEvents }
-
 constructor TJvAppEvents.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  if AppList = nil then AppList := TJvAppEventList.Create;
+  if AppList = nil then
+    AppList := TJvAppEventList.Create;
   FChained := True;
   FHintColor := DefHintColor;
   FHintPause := DefHintPause;
   FShowHint := True;
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   FUpdateMetricSettings := True;
-{$ENDIF}
-{$IFDEF WIN32}
+  {$ENDIF}
+  {$IFDEF WIN32}
   FHintShortPause := DefHintShortPause;
   FHintHidePause := DefHintHidePause;
   FShowMainForm := True;
-{$ENDIF}
-{$IFDEF COMPILER4_UP}
+  {$ENDIF}
+  {$IFDEF COMPILER4_UP}
   FHintShortCuts := True;
   FBiDiMode := bdLeftToRight;
   FMouseDragImmediate := True;
   FMouseDragThreshold := 5;
-{$ENDIF}
+  {$ENDIF}
   FUpdateFormatSettings := True;
   if not (csDesigning in ComponentState) then
     Application.HookMainWindow(MessageHook);
@@ -578,7 +633,8 @@ destructor TJvAppEvents.Destroy;
 begin
   if not (csDesigning in ComponentState) then
     Application.UnhookMainWindow(MessageHook);
-  if Self <> nil then AppList.RemoveEvents(Self);
+  if Self <> nil then
+    AppList.RemoveEvents(Self);
   FCanvas.Free;
   inherited Destroy;
 end;
@@ -591,7 +647,8 @@ end;
 
 function TJvAppEvents.GetCanvas: TCanvas;
 begin
-  if FCanvas = nil then FCanvas := TCanvas.Create;
+  if FCanvas = nil then
+    FCanvas := TCanvas.Create;
   Result := FCanvas;
 end;
 
@@ -601,13 +658,16 @@ var
 begin
   BeginPaint(Application.Handle, PS);
   try
-    if FCanvas <> nil then FCanvas.Free;
+    if FCanvas <> nil then
+      FCanvas.Free;
     FCanvas := TCanvas.Create;
     try
       Canvas.Handle := PS.hDC;
       Canvas.Brush.Color := clBackground;
-      if PS.fErase then Canvas.FillRect(PS.rcPaint);
-      if Assigned(FOnPaintIcon) then FOnPaintIcon(Self);
+      if PS.fErase then
+        Canvas.FillRect(PS.rcPaint);
+      if Assigned(FOnPaintIcon) then
+        FOnPaintIcon(Self);
     finally
       FCanvas.Free;
       FCanvas := nil;
@@ -619,7 +679,8 @@ end;
 
 procedure TJvAppEvents.SettingsChanged;
 begin
-  if Assigned(FOnSettingsChanged) then FOnSettingsChanged(Self);
+  if Assigned(FOnSettingsChanged) then
+    FOnSettingsChanged(Self);
 end;
 
 function TJvAppEvents.MessageHook(var Msg: TMessage): Boolean;
@@ -628,25 +689,29 @@ begin
   case Msg.Msg of
     WM_WININICHANGE:
       begin
-{$IFNDEF WIN32}
-        if UpdateFormatSettings then GetFormatSettings;
-{$ELSE}
-  {$IFNDEF COMPILER3_UP}
-        if Application.ShowHint then begin
+        {$IFNDEF WIN32}
+        if UpdateFormatSettings then
+          GetFormatSettings;
+        {$ELSE}
+        {$IFNDEF COMPILER3_UP}
+        if Application.ShowHint then
+        begin
           Application.ShowHint := False;
           Application.ShowHint := True;
         end;
-  {$ENDIF}
-{$ENDIF}
+        {$ENDIF}
+        {$ENDIF}
         try
           SettingsChanged;
         except
           Application.HandleException(Self);
         end;
       end;
-{$IFNDEF WIN32}
-    WM_ENDSESSION: if WordBool(Msg.wParam) then Halt;
-{$ENDIF}
+    {$IFNDEF WIN32}
+    WM_ENDSESSION:
+      if WordBool(Msg.wParam) then
+        Halt;
+    {$ENDIF}
     WM_PAINT:
       if Assigned(FOnPaintIcon) and IsIconic(Application.Handle) then
       begin
@@ -658,95 +723,115 @@ end;
 
 function TJvAppEvents.GetHintColor: TColor;
 begin
-  if (csDesigning in ComponentState) then Result := FHintColor
-  else Result := Application.HintColor;
+  if csDesigning in ComponentState then
+    Result := FHintColor
+  else
+    Result := Application.HintColor;
 end;
 
 function TJvAppEvents.GetHintPause: Integer;
 begin
-  if (csDesigning in ComponentState) then Result := FHintPause
-  else Result := Application.HintPause;
+  if csDesigning in ComponentState then
+    Result := FHintPause
+  else
+    Result := Application.HintPause;
 end;
 
 function TJvAppEvents.GetShowHint: Boolean;
 begin
-  if (csDesigning in ComponentState) then Result := FShowHint
-  else Result := Application.ShowHint;
+  if csDesigning in ComponentState then
+    Result := FShowHint
+  else
+    Result := Application.ShowHint;
 end;
 
 procedure TJvAppEvents.SetHintColor(Value: TColor);
 begin
   FHintColor := Value;
-  if not (csDesigning in ComponentState) then Application.HintColor := Value;
+  if not (csDesigning in ComponentState) then
+    Application.HintColor := Value;
 end;
 
 procedure TJvAppEvents.SetHintPause(Value: Integer);
 begin
   FHintPause := Value;
-  if not (csDesigning in ComponentState) then Application.HintPause := Value;
+  if not (csDesigning in ComponentState) then
+    Application.HintPause := Value;
 end;
 
 procedure TJvAppEvents.SetShowHint(Value: Boolean);
 begin
   FShowHint := Value;
-  if not (csDesigning in ComponentState) then Application.ShowHint := Value;
+  if not (csDesigning in ComponentState) then
+    Application.ShowHint := Value;
 end;
 
 function TJvAppEvents.GetUpdateFormatSettings: Boolean;
 begin
-{$IFDEF WIN32}
-  if (csDesigning in ComponentState) then Result := FUpdateFormatSettings
-  else Result := Application.UpdateFormatSettings;
-{$ELSE}
+  {$IFDEF WIN32}
+  if csDesigning in ComponentState then
+    Result := FUpdateFormatSettings
+  else
+    Result := Application.UpdateFormatSettings;
+  {$ELSE}
   Result := FUpdateFormatSettings;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TJvAppEvents.SetUpdateFormatSettings(Value: Boolean);
 begin
   FUpdateFormatSettings := Value;
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   if not (csDesigning in ComponentState) then
     Application.UpdateFormatSettings := Value;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 {$IFDEF WIN32}
 
 function TJvAppEvents.GetHintShortPause: Integer;
 begin
-  if (csDesigning in ComponentState) then Result := FHintShortPause
-  else Result := Application.HintShortPause;
+  if csDesigning in ComponentState then
+    Result := FHintShortPause
+  else
+    Result := Application.HintShortPause;
 end;
 
 function TJvAppEvents.GetHintHidePause: Integer;
 begin
-  if (csDesigning in ComponentState) then Result := FHintHidePause
-  else Result := Application.HintHidePause;
+  if csDesigning in ComponentState then
+    Result := FHintHidePause
+  else
+    Result := Application.HintHidePause;
 end;
 
 function TJvAppEvents.GetShowMainForm: Boolean;
 begin
-  if (csDesigning in ComponentState) then Result := FShowMainForm
-  else Result := Application.ShowMainForm;
+  if csDesigning in ComponentState then
+    Result := FShowMainForm
+  else
+    Result := Application.ShowMainForm;
 end;
 
 procedure TJvAppEvents.SetHintShortPause(Value: Integer);
 begin
   FHintShortPause := Value;
-  if not (csDesigning in ComponentState) then Application.HintShortPause := Value;
+  if not (csDesigning in ComponentState) then
+    Application.HintShortPause := Value;
 end;
 
 procedure TJvAppEvents.SetHintHidePause(Value: Integer);
 begin
   FHintHidePause := Value;
-  if not (csDesigning in ComponentState) then Application.HintHidePause := Value;
+  if not (csDesigning in ComponentState) then
+    Application.HintHidePause := Value;
 end;
 
 procedure TJvAppEvents.SetShowMainForm(Value: Boolean);
 begin
   FShowMainForm := Value;
-  if not (csDesigning in ComponentState) then Application.ShowMainForm := Value;
+  if not (csDesigning in ComponentState) then
+    Application.ShowMainForm := Value;
 end;
 
 {$ENDIF WIN32}
@@ -755,8 +840,10 @@ end;
 
 function TJvAppEvents.GetUpdateMetricSettings: Boolean;
 begin
-  if (csDesigning in ComponentState) then Result := FUpdateMetricSettings
-  else Result := Application.UpdateMetricSettings;
+  if csDesigning in ComponentState then
+    Result := FUpdateMetricSettings
+  else
+    Result := Application.UpdateMetricSettings;
 end;
 
 procedure TJvAppEvents.SetUpdateMetricSettings(Value: Boolean);
@@ -772,28 +859,34 @@ end;
 
 function TJvAppEvents.GetHintShortCuts: Boolean;
 begin
-  if (csDesigning in ComponentState) then Result := FHintShortCuts
-  else Result := Application.HintShortCuts;
+  if csDesigning in ComponentState then
+    Result := FHintShortCuts
+  else
+    Result := Application.HintShortCuts;
 end;
 
 function TJvAppEvents.GetBiDiMode: TBiDiMode;
 begin
-  if (csDesigning in ComponentState) then Result := FBiDiMode
-  else Result := Application.BiDiMode;
+  if csDesigning in ComponentState then
+    Result := FBiDiMode
+  else
+    Result := Application.BiDiMode;
 end;
 
 function TJvAppEvents.GetMouseDragImmediate: Boolean;
 begin
   if (csDesigning in ComponentState) or (Mouse = nil) then
     Result := FMouseDragImmediate
-  else Result := Mouse.DragImmediate;
+  else
+    Result := Mouse.DragImmediate;
 end;
 
 function TJvAppEvents.GetMouseDragThreshold: Integer;
 begin
   if (csDesigning in ComponentState) or (Mouse = nil) then
     Result := FMouseDragThreshold
-  else Result := Mouse.DragThreshold;
+  else
+    Result := Mouse.DragThreshold;
 end;
 
 procedure TJvAppEvents.SetMouseDragImmediate(Value: Boolean);
@@ -830,14 +923,18 @@ end;
 
 function TJvAppEvents.GetBiDiKeyboard: string;
 begin
-  if (csDesigning in ComponentState) then Result := FBiDiKeyboard
-  else Result := Application.BiDiKeyboard;
+  if csDesigning in ComponentState then
+    Result := FBiDiKeyboard
+  else
+    Result := Application.BiDiKeyboard;
 end;
 
 function TJvAppEvents.GetNonBiDiKeyboard: string; 
 begin
-  if (csDesigning in ComponentState) then Result := FNonBiDiKeyboard
-  else Result := Application.NonBiDiKeyboard;
+  if csDesigning in ComponentState then
+    Result := FNonBiDiKeyboard
+  else
+    Result := Application.NonBiDiKeyboard;
 end;
 
 procedure TJvAppEvents.SetBiDiKeyboard(const Value: string);
@@ -858,39 +955,43 @@ end;
 
 procedure TJvAppEvents.UpdateAppProps;
 begin
-  if not (csDesigning in ComponentState) then begin
-    with Application do begin
+  if not (csDesigning in ComponentState) then
+  begin
+    with Application do
+    begin
       HintColor := FHintColor;
       HintPause := FHintPause;
       ShowHint := FShowHint;
-{$IFDEF WIN32}
+      {$IFDEF WIN32}
       HintShortPause := FHintShortPause;
       HintHidePause := FHintHidePause;
       ShowMainForm := FShowMainForm;
       UpdateFormatSettings := FUpdateFormatSettings;
-{$ENDIF}
-{$IFDEF COMPILER3_UP}
+      {$ENDIF}
+      {$IFDEF COMPILER3_UP}
       UpdateMetricSettings := FUpdateMetricSettings;
-{$ENDIF}
-{$IFDEF COMPILER4_UP}
+      {$ENDIF}
+      {$IFDEF COMPILER4_UP}
       HintShortCuts := FHintShortCuts;
       BiDiMode := FBiDiMode;
-      with Mouse do begin
+      with Mouse do
+      begin
         DragImmediate := FMouseDragImmediate;
         DragThreshold := FMouseDragThreshold;
       end;
-{$ENDIF}
-{$IFDEF COMPILER5_UP}
+      {$ENDIF}
+      {$IFDEF COMPILER5_UP}
       BiDiKeyboard := FBiDiKeyboard;
-      NonBiDiKeyboard := FNonBiDiKeyboard;      
-{$ENDIF}
+      NonBiDiKeyboard := FNonBiDiKeyboard;
+      {$ENDIF}
     end;
   end;
 end;
 
 procedure DestroyLocals; far;
 begin
-  if AppList <> nil then begin
+  if AppList <> nil then
+  begin
     AppList.Free;
     AppList := nil;
   end;

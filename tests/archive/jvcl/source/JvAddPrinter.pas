@@ -29,8 +29,6 @@ Known Issues:
 
 unit JvAddPrinter;
 
-
-
 interface
 
 uses

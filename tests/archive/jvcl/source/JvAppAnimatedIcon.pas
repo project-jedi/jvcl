@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvAppAnimatedIcon;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
+  JvComponent;
 
 type
   TJvAppAnimatedIcon = class(TJvComponent)
@@ -45,14 +44,13 @@ type
     FNumber: Integer;
     procedure SetActive(const Value: Boolean);
     procedure SetDelay(const Value: Cardinal);
-    procedure SetImgList(const Value: TImageList);
+    procedure SetIcons(const Value: TImageList);
     procedure Animate(Sender: TObject);
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Icons: TImageList read FImgList write SetImgList;
+    property Icons: TImageList read FImgList write SetIcons;
     property Active: Boolean read FActive write SetActive;
     property Delay: Cardinal read FDelay write SetDelay default 100;
   end;
@@ -63,7 +61,7 @@ implementation
 
 constructor TJvAppAnimatedIcon.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FNumber := 0;
   FDelay := 100;
   FTimer := TTimer.Create(Self);
@@ -77,7 +75,7 @@ end;
 destructor TJvAppAnimatedIcon.Destroy;
 begin
   FTimer.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 {**************************************************}
@@ -86,7 +84,7 @@ procedure TJvAppAnimatedIcon.Animate(Sender: TObject);
 begin
   if (FImgList <> nil) and (FImgList.Count <> 0) then
   begin
-    FNumber := (FNumber + 1) mod FimgList.Count;
+    FNumber := (FNumber + 1) mod FImgList.Count;
     FImgList.GetIcon(FNumber, Application.Icon);
   end;
 end;
@@ -109,7 +107,7 @@ end;
 
 {**************************************************}
 
-procedure TJvAppAnimatedIcon.SetImgList(const Value: TImageList);
+procedure TJvAppAnimatedIcon.SetIcons(const Value: TImageList);
 begin
   FImgList := Value;
 end;

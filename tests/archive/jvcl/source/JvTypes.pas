@@ -31,8 +31,6 @@ Known Issues:
 
 unit JvTypes;
 
-
-
 interface
 
 uses
@@ -54,6 +52,9 @@ const
   {$ELSE}
   DEFAULT_SYSCOLOR_MASK = $80000000;
   {$ENDIF}
+  AF_ICON     = $00000001;
+  AF_SEQUENCE = $00000002;
+
 
 type
   {$IFNDEF COMPILER5_UP}
@@ -202,6 +203,26 @@ type
   TAlarm = record
     Keyword: string;
     DateTime: TDateTime;
+  end;
+
+  TFourCC = array [0..3] of Char;
+
+  PAniTag = ^TAniTag;
+  TAniTag = packed record
+    ckID: TFourCC;
+    ckSize: Longint;
+  end;
+
+  TAniHeader = record
+    dwSizeof: Longint;
+    dwFrames: Longint;
+    dwSteps: Longint;
+    dwCX: Longint;
+    dwCY: Longint;
+    dwBitCount: Longint;
+    dwPlanes: Longint;
+    dwJIFRate: Longint;
+    dwFlags: Longint;
   end;
 
   TOnChangeColor = procedure(Sender: TObject; Foreground, Background: TColor) of object;

@@ -28,13 +28,11 @@ Known Issues:
 
 unit JvAnimate;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, JVCLVer,
-  ComCtrls;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
+  JVCLVer;
 
 type
   TJvAnimate = class(TAnimate)
@@ -125,7 +123,8 @@ begin
   inherited;
   FSaved := Application.HintColor;
   // for D7...
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   Application.HintColor := FColor;
   DoMouseEnter(Msg);
 end;

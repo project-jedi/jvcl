@@ -34,28 +34,26 @@ unit JvaDsgn;
 interface
 
 uses
- {$IFDEF COMPLIB_VCL}
-  Windows, Graphics, 
- {$ENDIF COMPLIB_VCL}
- {$IFDEF COMPLIB_CLX}
+  {$IFDEF COMPLIB_VCL}
+  Windows, Graphics,
+  {$ENDIF COMPLIB_VCL}
+  {$IFDEF COMPLIB_CLX}
   Types, QGraphics,
- {$ENDIF COMPLIB_CLX}
+  {$ENDIF COMPLIB_CLX}
   SysUtils, Classes,
- {$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   DesignIntf
- {$ELSE}
+  {$ELSE}
   DsgnIntf
- {$ENDIF COMPILER6_UP},
- {$IFNDEF COMPILER4_UP}
+  {$ENDIF COMPILER6_UP},
+  {$IFNDEF COMPILER4_UP}
   Forms,
- {$ENDIF}
+  {$ENDIF}
   JvDsgnIntf;
-
 
 implementation
 
-
-procedure DrawDesignFrame(Canvas : TCanvas; Rect : TRect);
+procedure DrawDesignFrame(Canvas: TCanvas; Rect: TRect);
 begin
   if Integer(Canvas.Handle) <> 0 then
   begin
@@ -75,7 +73,8 @@ var
   Temp: TPersistent;
 begin
   Result := nil;
-  if Self = nil then Exit;
+  if Self = nil then
+    Exit;
   Temp := TMyComponent(Self).GetOwner;
   if Temp = nil then
   begin
@@ -84,8 +83,8 @@ begin
   end
   else
   begin
-    if (Self is TComponent) and
-      not (csDesigning in TComponent(Self).ComponentState) then Exit;
+    if (Self is TComponent) and not (csDesigning in TComponent(Self).ComponentState) then
+      Exit;
     GetDesigner(Temp, Result);
   end;
 end;
@@ -102,7 +101,7 @@ begin
   end;    
 end;
 
-procedure DesignerModified(Self : TComponent);
+procedure DesignerModified(Self: TComponent);
 var
   Designer: IDesignerNotify;
 begin
@@ -115,7 +114,8 @@ begin
 end;
 
 {$IFDEF COMPILER6_UP}
-procedure DesignerSelectComponent(Self : TComponent);
+
+procedure DesignerSelectComponent(Self: TComponent);
 var
   Designer: IDesignerNotify;
   Designer1: IDesigner;
@@ -134,7 +134,7 @@ end;
 
 {$ELSE}
  
-procedure DesignerSelectComponent(Self : TComponent);
+procedure DesignerSelectComponent(Self: TComponent);
 var
   Designer: IDesignerNotify;
   Designer1: IFormDesigner;
@@ -154,7 +154,7 @@ end;
 
 {$ELSE}
 
-function GetDesigner(Self : TComponent) : TDesigner;
+function GetDesigner(Self: TComponent): TDesigner;
 begin
   Result := nil;
   while (Self <> nil) and not (Self is TForm) and (Self.Owner <> nil) do
@@ -175,9 +175,9 @@ begin
   end;
 end;
 
-procedure DesignerModified(Self : TComponent);
+procedure DesignerModified(Self: TComponent);
 var
-  Designer : TDesigner;
+  Designer: TDesigner;
 begin
   if csDesigning in Self.ComponentState then
   begin
@@ -186,24 +186,24 @@ begin
   end;
 end;
 
-procedure DesignerSelectComponent(Self : TComponent);
+procedure DesignerSelectComponent(Self: TComponent);
 var
-  Designer : TDesigner;
+  Designer: TDesigner;
 begin
   if csDesigning in Self.ComponentState then
   begin
     Designer := GetDesigner(Self);
-    if (Designer is TFormDesigner) then
+    if Designer is TFormDesigner then
       (Designer as TFormDesigner).SelectComponent(Self);
   end;
 end;
 
 {$ENDIF}
 
-
 initialization
   DrawDesignFrameProc := DrawDesignFrame;
   DesignerNotifyProc := DesignerNotify;
   DesignerModifiedProc := DesignerModified;
   DesignerSelectComponentProc := DesignerSelectComponent;
+
 end.
