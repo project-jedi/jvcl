@@ -980,6 +980,8 @@ begin
     Align := alClient;
     ParentColor := True;
     ControlStyle := ControlStyle + [csReplicatable];
+    BevelOuter := bvNone;
+    BevelInner := bvNone;
   end;
 
   Control := TPanel.Create(Self);
@@ -1278,7 +1280,8 @@ begin
     Parent := Self;
     SetBounds(0, 0, 222, 22);
     Align := alTop;
-    BevelInner := bvLowered;
+    BevelOuter := bvNone;
+    BevelInner := bvNone;
     ParentColor := True;
     ParentFont := True;
   end;
@@ -1292,7 +1295,7 @@ begin
     AutoSize := False;
     Caption := '';
     ParentFont := True;
-    Font.Color := clBlue;
+    Font.Color := clNavy;
     Font.Style := [fsBold];
     Transparent := True;
     OnDblClick := TopPanelDblClick;
@@ -1306,6 +1309,7 @@ begin
     //Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[0]);
     Glyph.LoadFromResourceName(HInstance, SBtnGlyphs[0]);
     OnClick := PrevYearBtnClick;
+    Flat := True;
     Hint := RsPrevYearHint;
   end;
 
@@ -1313,10 +1317,11 @@ begin
   with FBtns[1] do
   begin
     Parent := Control;
-    SetBounds(18, 3, 16, 16);
+    SetBounds(19, 3, 16, 16);
     //Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[1]);
     Glyph.LoadFromResourceName(HInstance, SBtnGlyphs[1]);
     OnClick := PrevMonthBtnClick;
+    Flat := True;
     Hint := RsPrevMonthHint;
   end;
 
@@ -1328,6 +1333,7 @@ begin
     //Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[2]);
     Glyph.LoadFromResourceName(HInstance, SBtnGlyphs[2]);
     OnClick := NextMonthBtnClick;
+    Flat := True;
     Hint := RsNextMonthHint;
   end;
 
@@ -1335,10 +1341,11 @@ begin
   with FBtns[3] do
   begin
     Parent := Control;
-    SetBounds(203, 3, 16, 16);
+    SetBounds(204, 3, 16, 16);
     //Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[3]);
     Glyph.LoadFromResourceName(HInstance, SBtnGlyphs[3]);
     OnClick := NextYearBtnClick;
+    Flat := True;
     Hint := RsNextYearHint;
   end;
 
@@ -1371,18 +1378,24 @@ begin
       Cancel := True;
       end; }// Polaris
 
-  with TBitBtn.Create(Self) do
+  with TButton.Create(Self) do
   begin // Polaris
     Parent := Control;
     SetBounds(0, 0, 111, 25);
-    Kind := bkOk;
+    Default := True;
+    ModalResult := mrOK;
+    Caption := 'OK';
+//    Kind := bkOk;
   end;
 
-  with TBitBtn.Create(Self) do
+  with TButton.Create(Self) do
   begin // Polaris
     Parent := Control;
     SetBounds(111, 0, 111, 25);
-    Kind := bkCancel;
+    Cancel := True;
+    ModalResult := mrCancel;
+    Caption := 'Cancel';
+//    Kind := bkCancel;
   end;
 
   Control := TPanel.Create(Self);
@@ -1406,6 +1419,7 @@ begin
     Color := clWhite;
     TabOrder := 0;
     UseCurrentDate := False;
+    Options := Options - [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine]; 
     OnChange := CalendarChange;
     OnDblClick := CalendarDblClick;
   end;
