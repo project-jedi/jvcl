@@ -1,0 +1,1 @@
+<?php header("Location: http://homepages.borland.com/jedi/jvcl/"); exit; ?>
