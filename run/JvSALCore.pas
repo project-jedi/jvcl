@@ -110,9 +110,11 @@ resourcestring
 
 implementation
 
-{$IFDEF BCB}
+  {$IFDEF BCB}
+  {$IFNDEF BCB5}
 uses Variants;
-{$ENDIF}
+  {$ENDIF}
+  {$ENDIF}
 
 const
   tab = chr(9);
