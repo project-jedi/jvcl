@@ -40,6 +40,10 @@
       - .Net painter issue: divider line between two categories were missing
         the pixels where the divider between the name and value should have
         been.
+      - Various paint issues when the divider was dragged further left than
+        where the name started (expand/collapse button drawn over the value,
+        name selection rectangle partly visible above/below and to the left
+        of the value and other minor visual side effects).
     Apr 10, 2004, Marcel Bestebroer:
       - Double clicking a category item will now expand/collapse regardless
         of the position of the mouse (used to work only when clicking left of
@@ -643,6 +647,8 @@ type
   end;
 
   TJvInspectorBorlandNETBasePainter = class(TJvInspectorPainter)
+  private
+    FRealButtonAreaWidth: Integer;
   protected
     procedure ApplyNameFont; override;
     procedure ApplyValueFont; override;
@@ -651,6 +657,7 @@ type
     procedure CalcNameBasedRects; override;
     procedure CalcValueBasedRects; override;
     procedure SetupRects; override;
+    property RealButtonAreaWidth: Integer read FRealButtonAreaWidth write FRealButtonAreaWidth;
   published
     property BackgroundColor default clWindow;
     property CategoryColor default clBtnFace;
@@ -4555,11 +4562,10 @@ var
   BtnDstRect: TRect;
   Y: Integer;
 begin
-  if ButtonImage <> nil then
+  if (ButtonImage <> nil) and (RectWidth(Rects[iprButtonArea]) > 0) then
   begin
     BtnSrcRect := Rect(0, 0, ButtonImage.Width, ButtonImage.Height);
-    BtnDstRect := Rect(0, 0, RectWidth(Rects[iprButtonArea]),
-      RectHeight(Rects[iprButtonArea]));
+    BtnDstRect := Rect(0, 0, RealButtonAreaWidth, RectHeight(Rects[iprButtonArea]));
     if BtnSrcRect.Right > BtnDstRect.Right then
     begin
       BtnSrcRect.Left := (BtnDstRect.Right - BtnSrcRect.Right) div 2;
@@ -4585,6 +4591,7 @@ begin
       BtnDstRect.Bottom := BtnDstRect.Top + RectHeight(BtnSrcRect);
     end;
     OffsetRect(BtnDstRect, Rects[iprButtonArea].Left, Rects[iprButtonArea].Top);
+    IntersectRect(BtnDstRect, BtnDstRect, Rects[iprButtonArea]);
   end
   else
   begin
@@ -4678,17 +4685,28 @@ var
 begin
   inherited SetupRects;
   ItemRect2 := Rects[iprItem];
-  Rects[iprButtonArea] := Rect(ItemRect2.Left + (Item.Level *
-    Inspector.ItemHeight), ItemRect2.Top, ItemRect2.Left +
-    (Succ(Item.Level) * Inspector.ItemHeight), ItemRect2.Bottom);
+  TmpRect := Rect(ItemRect2.Left + (Item.Level * Inspector.ItemHeight), ItemRect2.Top,
+    ItemRect2.Left + (Succ(Item.Level) * Inspector.ItemHeight), ItemRect2.Bottom);
+  RealButtonAreaWidth := RectWidth(TmpRect);
+  if not Item.IsCategory and (TmpRect.Left > Pred(Inspector.DividerAbs)) then
+  begin
+    TmpRect.Left := 0;
+    TmpRect.Right := 0;
+  end;
+  if not Item.IsCategory and (TmpRect.Right > Pred(Inspector.DividerAbs)) then
+    TmpRect.Right := Pred(Inspector.DividerAbs);
+  Rects[iprButtonArea] := TmpRect;
   TmpRect := ItemRect2;
-  TmpRect.Left := Rects[iprButtonArea].Right;
+  TmpRect.Left := ItemRect2.Left + (Succ(Item.Level) * Inspector.ItemHeight);
   Rects[iprNameArea] := TmpRect;
   if Item.IsCategory then
     Rects[iprValueArea] := Rect(0, 0, 0, 0)
   else
   begin
-    TmpRect.Right := ItemRect2.Left + Pred(Inspector.DividerAbs);
+    if TmpRect.Left > Pred(Inspector.DividerAbs) then
+      TmpRect := Rect(0, 0, 0, 0)
+    else
+      TmpRect.Right := ItemRect2.Left + Pred(Inspector.DividerAbs);
     Rects[iprNameArea] := TmpRect;
     TmpRect := ItemRect2;
     TmpRect.Left := ItemRect2.Left + Inspector.DividerAbs + DividerWidth;
@@ -4862,12 +4880,20 @@ begin
   else
     EndOfCat := Item.BaseCategory <> nil;
 
-  PreNameRect := Rects[iprButtonArea];
-  PreNameRect.Left := Rects[iprItem].Left + RectWidth(Rects[iprButtonArea]);
+  PreNameRect := Rects[iprItem];
+  PreNameRect.Left := PreNameRect.Left + (Item.Level * Inspector.ItemHeight) + RealButtonAreaWidth;
+  if PreNameRect.Left > Pred(Inspector.DividerAbs) then
+    PreNameRect := Rect(0, 0, 0, 0)
+  else
+  begin
+    PreNameRect.Right := PreNameRect.Left + RealButtonAreaWidth;
+    if PreNameRect.Right > Pred(Inspector.DividerAbs) then
+      PreNameRect.Right := Pred(Inspector.DividerAbs);
+  end;
   Inc(PreNameRect.Right);
 
   CatRect := Rects[iprItem];
-  CatRect.Right := CatRect.Left + RectWidth(Rects[iprButtonArea]);
+  CatRect.Right := CatRect.Left + RealButtonAreaWidth;
   Inc(CatRect.Bottom);
   if (Item.BaseCategory <> nil) then
   begin
@@ -4913,7 +4939,7 @@ begin
   else
     Canvas.Pen.Color := clBtnFace;
   if not EndOfList and not EndOfCat then
-    LeftX := Rects[iprItem].Left + RectWidth(Rects[iprButtonArea])
+    LeftX := Rects[iprItem].Left + RealButtonAreaWidth
   else
     LeftX := Rects[iprItem].Left;
   Canvas.MoveTo(Rects[iprItem].Right, Rects[iprItem].Bottom);
@@ -4925,8 +4951,8 @@ begin
       Canvas.Pen.Color := clBtnShadow
     else
       Canvas.Pen.Color := CategoryColor;
-    Canvas.MoveTo(Rects[iprItem].Left + RectWidth(Rects[iprButtonArea]), Rects[iprItem].Top);
-    Canvas.LineTo(Rects[iprItem].Left + RectWidth(Rects[iprButtonArea]), Succ(Rects[iprItem].Bottom));
+    Canvas.MoveTo(Rects[iprItem].Left + RealButtonAreaWidth, Rects[iprItem].Top);
+    Canvas.LineTo(Rects[iprItem].Left + RealButtonAreaWidth, Succ(Rects[iprItem].Bottom));
   end;
   RestoreCanvasState(Canvas, SaveIdx);
 end;
