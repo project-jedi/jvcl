@@ -129,7 +129,7 @@ type
     property LinkColor: TColor read GetLinkColor write SetLinkColor default clBlue;
     property LinkColorClicked: TColor read GetLinkColorClicked write SetLinkColorClicked default clRed;
     property LinkColorHot: TColor read GetLinkColorHot write SetLinkColorHot default clPurple;
-    property LinkCursor : TCursor read GetLinkCursor write SetLinkCursor default crHandPoint;
+    property LinkCursor: TCursor read GetLinkCursor write SetLinkCursor default crHandPoint;
     property LinkStyle: TFontStyles read GetLinkStyle write SetLinkStyle default [fsUnderline];
     property HotLinks: Boolean read FHotLinks write FHotLinks default False;
     property AutoHeight: Boolean read FAutoHeight write SetAutoHeight default True;

@@ -379,10 +379,9 @@ begin
     FAppStoragePath := Value;
   if not (csDesigning in ComponentState) then
   begin
-    if (StrFind( cFormNameMask, FAppStoragePath) <> 0) and
-       Assigned(Owner) and
-       (Owner is TCustomForm) THEN
-      StrReplace( FAppStoragePath, cFormNameMask, Owner.Name, [rfIgnoreCase]);
+    if (StrFind(cFormNameMask, FAppStoragePath) <> 0) and
+      Assigned(Owner) and (Owner is TCustomForm) then
+      StrReplace(FAppStoragePath, cFormNameMask, Owner.Name, [rfIgnoreCase]);
   end;
 end;
 
@@ -720,7 +719,7 @@ begin
     Result := '';
 end;
 
-function TJvFormPlacement.ReadString(const Ident: string; const Default: string = '') : string;
+function TJvFormPlacement.ReadString(const Ident: string; const Default: string = ''): string;
 begin
   if Assigned(AppStorage) then
     with AppStorage do
@@ -736,7 +735,7 @@ begin
       WriteString(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Value);
 end;
 
-function TJvFormPlacement.ReadBoolean(const Ident: string; Default: Boolean) : Boolean;
+function TJvFormPlacement.ReadBoolean(const Ident: string; Default: Boolean): Boolean;
 begin
   if Assigned(AppStorage) then
     with AppStorage do
@@ -745,7 +744,7 @@ begin
     Result := Default;
 end;
 
-procedure TJvFormPlacement.WriteBoolean(const Ident : string; Value: Boolean);
+procedure TJvFormPlacement.WriteBoolean(const Ident: string; Value: Boolean);
 begin
   if Assigned(AppStorage) then
     with AppStorage do
@@ -827,17 +826,20 @@ end;
 procedure TJvFormPlacement.RestoreFormPlacement;
 var
   ActiveCtl: TComponent;
-  readVersion: Integer;
-  ContinueRestore : Boolean;
+  ReadVersion: Integer;
+  ContinueRestore: Boolean;
 begin
   if Assigned(AppStorage) then
   begin
     FSaved := False;
-    readVersion := ReadInteger(siVersion, 0);
-    Case VersionCheck of
-      fpvcNocheck : ContinueRestore := True;
-      fpvcCheckGreaterEqual : ContinueRestore := readVersion >= FVersion;
-      fpvcCheckEqual : ContinueRestore := readVersion = FVersion;
+    ReadVersion := ReadInteger(siVersion, 0);
+    case VersionCheck of
+      fpvcNocheck:
+        ContinueRestore := True;
+      fpvcCheckGreaterEqual:
+        ContinueRestore := ReadVersion >= FVersion;
+      fpvcCheckEqual:
+        ContinueRestore := ReadVersion = FVersion;
     else
       ContinueRestore := False;
     end;

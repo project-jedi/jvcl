@@ -120,23 +120,23 @@ end;
 
 procedure TJvPrint.PrintHTML(Value: TStrings);
 var
-  I, Line, Pagenum: Integer;
-  lHeight : Integer;
-  lRect   : TRect;
-  lPixels : Integer;
+  I, Line, PageNum: Integer;
+  LHeight: Integer;
+  LRect: TRect;
+  LPixels: Integer;
 begin
   //let's print
   if Assigned(FOnBeginPrint) then
     FOnBeginPrint(Self);
-  line := 0;
+  Line := 0;
   Printer.BeginDoc;
-  Pagenum := 1;
-  lPixels :=  GetScaleX;
+  PageNum := 1;
+  LPixels :=  GetScaleX;
   for I := 0 to Value.Count - 1 do
   begin
     if Assigned(FOnProgress) then
       FOnProgress(Self, I + 1, Value.Count);
-    lHeight := HTMLTextHeight(Printer.Canvas, Value[I], lPixels) + 1;
+    LHeight := HTMLTextHeight(Printer.Canvas, Value[I], LPixels) + 1;
 
     if Line + LHeight > Printer.PageHeight then
     begin
@@ -146,9 +146,9 @@ begin
       if Assigned(FOnNextPage) then
         FOnNextPage(Self, PageNum);
     end;
-    lRect := Rect(0,line, Printer.PageWidth , lHeight);
-    HTMLDrawText(Printer.Canvas,lRect,[odReserved1], Value[i], lPixels);
-    Line := Line + lHeight;
+    LRect := Rect(0,Line, Printer.PageWidth , LHeight);
+    HTMLDrawText(Printer.Canvas,LRect,[odReserved1], Value[i], LPixels);
+    Line := Line + LHeight;
   end;
   Printer.EndDoc;
   if Assigned(FOnFinishedPrint) then

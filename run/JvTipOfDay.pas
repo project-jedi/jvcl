@@ -79,7 +79,7 @@ type
     FDummyMsgSend: Boolean;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    procedure FormHide(Sender : TObject);
+    procedure FormHide(Sender: TObject);
     {$ENDIF VisualCLX}
     procedure FontChanged(Sender: TObject);
     // function GetRegKey: string;

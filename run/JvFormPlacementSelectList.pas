@@ -37,11 +37,11 @@ type
     procedure SetFormStorage(Value: TJvFormStorage); virtual;
     function GetAppStorage: TJvCustomAppStorage; override;
     procedure SetAppStorage(Value: TJvCustomAppStorage); override;
-    function GetStoragePath : string; override;
+    function GetStoragePath: string; override;
   public
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function RestoreFormStorage(const ACaption: string = '') : Boolean;
-    function SaveFormStorage(const ACaption: string = '') : Boolean;
+    function RestoreFormStorage(const ACaption: string = ''): Boolean;
+    function SaveFormStorage(const ACaption: string = ''): Boolean;
   published
     property FormStorage: TJvFormStorage read GetFormStorage write SetFormStorage;
   end;
@@ -78,7 +78,7 @@ begin
     FFormStorage.AppStorage := Value;
 end;
 
-function  TJvFormStorageSelectList.GetStoragePath : string;
+function  TJvFormStorageSelectList.GetStoragePath: string;
 begin
   if Assigned(AppStorage) then
     Result := AppStorage.ConcatPaths([FormStorage.AppStoragePath, SelectPath])
@@ -93,7 +93,7 @@ begin
     FFormStorage := nil;
 end;
 
-function TJvFormStorageSelectList.RestoreFormStorage(const ACaption: string = '') : Boolean;
+function TJvFormStorageSelectList.RestoreFormStorage(const ACaption: string = ''): Boolean;
 var
   OldPath: string;
 begin
@@ -110,7 +110,7 @@ begin
     Result := False;
 end;
 
-function TJvFormStorageSelectList.SaveFormStorage(const ACaption: string = '') : Boolean;
+function TJvFormStorageSelectList.SaveFormStorage(const ACaption: string = ''): Boolean;
 var
   OldPath: string;
 begin

@@ -321,12 +321,12 @@ begin
   end;
 end;
 
-procedure TJvInspectorAlignItem.PaintAlignBox(const Align: TAlign; const ACanvas: TCanvas;
-  const ARect: TRect; const UseUnassigned: Boolean);
+procedure TJvInspectorAlignItem.PaintAlignBox(const Align: TAlign;
+  const ACanvas: TCanvas; const ARect: TRect; const UseUnassigned: Boolean);
 var
   NoAlignColor: TColor;
 
-  procedure RenderAlign(const Check: TAlign; const X, Y : Integer);
+  procedure RenderAlign(const Check: TAlign; const X, Y: Integer);
   begin
     if (Align = alClient) or (Align = Check) then
       ACanvas.Pen.Color := ActiveColor
@@ -764,12 +764,12 @@ begin
   inherited SetItemSetFlags(Value - [isfCreateMemberItems] + [isfEditString]);
 end;
 
-procedure TJvInspectorAnchorsItem.PaintAnchorsBox(const Anchors: TAnchors; const ACanvas: TCanvas;
-  const ARect: TRect; const UseUnassigned: Boolean);
+procedure TJvInspectorAnchorsItem.PaintAnchorsBox(const Anchors: TAnchors;
+  const ACanvas: TCanvas; const ARect: TRect; const UseUnassigned: Boolean);
 var
   NoAnchorsColor: TColor;
 
-  procedure RenderAnchors(const Check: TAnchorKind; const X, Y : Integer);
+  procedure RenderAnchors(const Check: TAnchorKind; const X, Y: Integer);
   begin
     if Check in Anchors then
       ACanvas.Pen.Color := ActiveColor

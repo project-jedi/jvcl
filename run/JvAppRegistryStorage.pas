@@ -152,65 +152,67 @@ end;
 
 procedure TJvAppRegistryStorage.SetRoot(const Value: string);
 var
-  S : string;
-  HelpName : string;
+  S: string;
+  HelpName: string;
 
-    Function GetVersionInfoAppName : String;
-    var VersionInfo : TJclFileVersionInfo;
-    begin
-      VersionInfo := TJclFileVersionInfo.Create(Application.ExeName);
-      try
-        Result := VersionInfo.ProductName;
-      finally
-        VersionInfo.Free;
-      end;
+  function GetVersionInfoAppName: string;
+  var
+    VersionInfo: TJclFileVersionInfo;
+  begin
+    VersionInfo := TJclFileVersionInfo.Create(Application.ExeName);
+    try
+      Result := VersionInfo.ProductName;
+    finally
+      VersionInfo.Free;
     end;
+  end;
 
-    Function GetVersionInfoCompanyName : String;
-    var VersionInfo : TJclFileVersionInfo;
-    begin
-      VersionInfo := TJclFileVersionInfo.Create(Application.ExeName);
-      try
-        Result := VersionInfo.CompanyName;
-      finally
-        VersionInfo.Free;
-      end;
+  function GetVersionInfoCompanyName: string;
+  var
+    VersionInfo: TJclFileVersionInfo;
+  begin
+    VersionInfo := TJclFileVersionInfo.Create(Application.ExeName);
+    try
+      Result := VersionInfo.CompanyName;
+    finally
+      VersionInfo.Free;
     end;
+  end;
 
 begin
   inherited SetRoot(Value);
-  if (csDesigning in ComponentState) then
-  begin   { design time }
+  if csDesigning in ComponentState then
+  begin
     if Value <> cOldDefaultRootMask then
       FUseOldDefaultRoot := False;
-    if (Length(GetRoot) = 0) then
+    if GetRoot = '' then
       SetRoot(cNoRootMask);
   end
-  else    { NOt design time }
+  else
   begin
-    { this makes GetDefaultIniRegKey unnecessery ?!?! }
+    { this makes GetDefaultIniRegKey unnecessary ?!?! }
     if GetRoot = cNoRootMask then
       SetRoot('')
     else
-      if StrFind( cAppNameMask, GetRoot) <> 0 then
+    if StrFind(cAppNameMask, GetRoot) <> 0 then
+    begin
+      HelpName := GetVersionInfoAppName;
+      if HelpName = '' then
+        HelpName := ExtractFileName(ChangeFileExt(Application.ExeName, ''));
+      S := GetRoot;
+      StrReplace(S, cAppNameMask, HelpName, [rfIgnoreCase]);
+      SetRoot(S);
+    end
+    else
+      if StrFind(cCompanyNameMask, GetRoot) <> 0 then
       begin
-        HelpName := GetVersionInfoAppName;
+        HelpName := GetVersionInfoCompanyName;
         if HelpName = '' then
-          HelpName := ExtractFileName(ChangeFileExt(Application.ExeName, ''));
+          HelpName := DefCompanyName;
         S := GetRoot;
-        StrReplace( S, cAppNameMask, HelpName, [rfIgnoreCase]);
+        StrReplace(S, cCompanyNameMask, HelpName, [rfIgnoreCase]);
         SetRoot(S);
-      end
-      else
-        if StrFind( cCompanyNameMask, GetRoot) <> 0 then
-        begin
-          HelpName := GetVersionInfoCompanyName;
-          if HelpName = '' then
-            HelpName := DefCompanyName;
-          S := GetRoot;
-          StrReplace( S, cCompanyNameMask, HelpName, [rfIgnoreCase]);
-          SetRoot(S);
-        end;
+      end;
   end;
 end;
 

@@ -36,7 +36,8 @@ uses
   {$IFDEF VisualCLX}
   QForms,
   {$ENDIF VisualCLX}
-  JvAppStorage, TypInfo;
+  TypInfo,
+  JvAppStorage;
 
 type
   TJvPropInfoList = class(TObject)
@@ -56,7 +57,6 @@ type
     property Items[Index: Integer]: PPropInfo read Get; default;
   end;
 
-
   TJvPropertyStorage = class(TObject)
   private
     FObject: TObject;
@@ -70,8 +70,8 @@ type
     function ReadString(const APath, Item, Default: string): string; virtual;
     procedure WriteString(const APath, Item, Value: string); virtual;
 
-    procedure ReadProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName : string);
-    procedure WriteProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName : string);
+    procedure ReadProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName: string);
+    procedure WriteProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName: string);
 
     procedure EraseSection(const APath: string); virtual;
     function GetItemName(const APropName: string): string; virtual;
@@ -432,26 +432,25 @@ begin
     AppStorage.DeleteSubTree(APath);
 end;
 
-procedure TJvPropertyStorage.ReadProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName : string);
-var nPath : String;
+procedure TJvPropertyStorage.ReadProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName: string);
+var
+  NPath: string;
 begin
   if Assigned(AppStorage) then
-    With AppStorage Do
+    with AppStorage do
     begin
-      nPath := ConcatPaths([APath, TranslatePropertyName(PersObj, AStorageName, True)]);
-      if ValueStored (nPath) or IsFolder(nPath, False) then
-        ReadProperty(nPath, PersObj, PropName, True, True);
+      NPath := ConcatPaths([APath, TranslatePropertyName(PersObj, AStorageName, True)]);
+      if ValueStored(NPath) or IsFolder(NPath, False) then
+        ReadProperty(NPath, PersObj, PropName, True, True);
     end;
 end;
 
-procedure TJvPropertyStorage.WriteProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName : string);
+procedure TJvPropertyStorage.WriteProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName: string);
 begin
   if Assigned(AppStorage) then
-    With AppStorage Do
+    with AppStorage do
       WriteProperty(ConcatPaths([APath, TranslatePropertyName(PersObj, AStorageName, False)]), PersObj, PropName, True);
 end;
-
-
 
 {$IFDEF UNITVERSIONING}
 const

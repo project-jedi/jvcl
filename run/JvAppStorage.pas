@@ -167,7 +167,6 @@ type
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
-
     //Returns the property count of an instance
     function GetPropCount(Instance: TPersistent): Integer;
     //Returns the property name of an instance at a certain index

@@ -188,8 +188,8 @@ end;
 procedure TJvLogFile.EnsureSize;
 var
   SavedAutoSave: Boolean;
-  I, J : Integer;
-  Size : Cardinal;
+  I, J: Integer;
+  Size: Cardinal;
 begin
   if SizeLimit > 0 then
   begin
@@ -199,7 +199,7 @@ begin
 
     // Calculate size, starting from the last item, so that
     // we will only delete the oldest items if required.
-    I := FList.Count-1;
+    I := FList.Count - 1;
     Size := 0;
     while (I >= 0) and (Size < SizeLimit) do
     begin
@@ -240,7 +240,7 @@ var
   I, J, L: Integer;
   LogRecord: TJvLogRecord;
   Found: Boolean;
-  SavedAutoSave : Boolean;
+  SavedAutoSave: Boolean;
 begin
   SavedAutoSave := AutoSave;
   AutoSave := False;

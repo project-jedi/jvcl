@@ -53,14 +53,14 @@ type
     FCancelButtonCaption: string;
     FOwner: TJvCustomThreadDialog;
   protected
-    procedure SetEnableCancelButton (Value : Boolean);
-    procedure SetShowDialog (Value : Boolean);
-    procedure SetShowModal (Value : Boolean);
-    procedure SetShowCancelButton (Value : Boolean);
-    procedure SetShowElapsedTime (Value : Boolean);
-    procedure SetInfoText (Value : String);
-    procedure SetCaption (Value : String);
-    procedure SetCancelButtonCaption (Value : String);
+    procedure SetEnableCancelButton(Value: Boolean);
+    procedure SetShowDialog(Value: Boolean);
+    procedure SetShowModal(Value: Boolean);
+    procedure SetShowCancelButton(Value: Boolean);
+    procedure SetShowElapsedTime(Value: Boolean);
+    procedure SetInfoText(Value: string);
+    procedure SetCaption(Value: string);
+    procedure SetCancelButtonCaption(Value: string);
   public
     constructor Create(AOwner: TJvCustomThreadDialog); virtual;
   published
@@ -186,63 +186,63 @@ end;
 constructor TJvThreadBaseDialogOptions.Create(AOwner: TJvCustomThreadDialog);
 begin
   inherited Create;
-  FOwner := aOwner;
-  FEnableCancelButton := true;
-  FShowDialog := false;
-  FShowModal := true;
-  FShowCancelButton := true;
-  FShowElapsedTime := true;
+  FOwner := AOwner;
+  FEnableCancelButton := True;
+  FShowDialog := False;
+  FShowModal := True;
+  FShowCancelButton := True;
+  FShowElapsedTime := True;
   FCancelButtonCaption := RsButtonCancelCaption;
 end;
 
-procedure tJvThreadBaseDialogOptions.SetEnableCancelButton (Value : Boolean);
+procedure TJvThreadBaseDialogOptions.SetEnableCancelButton(Value: Boolean);
 begin
   FEnableCancelButton := Value;
   if Assigned(FOwner) then
     FOwner.TransferThreadDialogOptions;
 end;
 
-procedure tJvThreadBaseDialogOptions.SetShowDialog (Value : Boolean);
+procedure TJvThreadBaseDialogOptions.SetShowDialog(Value: Boolean);
 begin
   FShowDialog := Value;
 end;
 
-procedure tJvThreadBaseDialogOptions.SetShowModal (Value : Boolean);
+procedure TJvThreadBaseDialogOptions.SetShowModal(Value: Boolean);
 begin
   FShowModal := Value;
 end;
 
-procedure tJvThreadBaseDialogOptions.SetShowCancelButton (Value : Boolean);
+procedure TJvThreadBaseDialogOptions.SetShowCancelButton(Value: Boolean);
 begin
   FShowCancelButton := Value;
   if Assigned(FOwner) then
     FOwner.TransferThreadDialogOptions;
 end;
 
-procedure tJvThreadBaseDialogOptions.SetShowElapsedTime (Value : Boolean);
+procedure TJvThreadBaseDialogOptions.SetShowElapsedTime(Value: Boolean);
 begin
   FShowElapsedTime := Value;
   if Assigned(FOwner) then
     FOwner.TransferThreadDialogOptions;
 end;
 
-procedure tJvThreadBaseDialogOptions.SetInfoText (Value : String);
+procedure TJvThreadBaseDialogOptions.SetInfoText(Value: string);
 begin
   FInfoText := Value;
   if Assigned(FOwner) then
     FOwner.TransferThreadDialogOptions;
 end;
 
-procedure tJvThreadBaseDialogOptions.SetCaption (Value : String);
+procedure TJvThreadBaseDialogOptions.SetCaption(Value: string);
 begin
   FCaption := Value;
   if Assigned(FOwner) then
     FOwner.TransferThreadDialogOptions;
 end;
 
-procedure tJvThreadBaseDialogOptions.SetCancelButtonCaption (Value : String);
+procedure TJvThreadBaseDialogOptions.SetCancelButtonCaption(Value: string);
 begin
-  FCancelButtonCaption  := Value;
+  FCancelButtonCaption := Value;
   if Assigned(FOwner) then
     FOwner.TransferThreadDialogOptions;
 end;

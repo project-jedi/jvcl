@@ -70,7 +70,7 @@ type
 
     function EnsureNoWhiteSpaceInNodeName(NodeName: string): string;
 
-    function DefaultExtension : string; override;
+    function DefaultExtension: string; override;
 
     function GetRootNodeName: string;
     procedure SetRootNodeName(const Value: string);
@@ -128,13 +128,10 @@ type
     property OnGetFileName;
   end;
 
-procedure StorePropertyStoreToXmlFile (iPropertyStore : TJvCustomPropertyStore;
-                                       const iFileName : string;
-                                       const iAppStoragePath : string = '');
-procedure LoadPropertyStoreFromXmlFile (iPropertyStore : TJvCustomPropertyStore;
-                                        const iFileName : string;
-                                        const iAppStoragePath : string = '');
-
+procedure StorePropertyStoreToXmlFile(APropertyStore: TJvCustomPropertyStore;
+  const AFileName: string; const AAppStoragePath: string = '');
+procedure LoadPropertyStoreFromXmlFile(APropertyStore: TJvCustomPropertyStore;
+  const AFileName: string; const AAppStoragePath: string = '');
 
 implementation
 
@@ -720,7 +717,7 @@ begin
   Xml.LoadFromString(Value);
 end;
 
-function TJvCustomAppXMLStorage.DefaultExtension : string;
+function TJvCustomAppXMLStorage.DefaultExtension: string;
 begin
   Result := 'xml';
 end;
@@ -741,58 +738,56 @@ end;
 
 //=== { Common procedures } ===============================================
 
-procedure StorePropertyStoreToXmlFile (iPropertyStore : TJvCustomPropertyStore;
-                                       const iFileName : string;
-                                       const iAppStoragePath : string = '');
-Var
-  AppStorage : TJvAppXmlFileStorage;
-  SaveAppStorage : TJvCustomAppStorage;
-  SaveAppStoragePath : string;
+procedure StorePropertyStoreToXmlFile(APropertyStore: TJvCustomPropertyStore;
+  const AFileName: string; const AAppStoragePath: string = '');
+var
+  AppStorage: TJvAppXmlFileStorage;
+  SaveAppStorage: TJvCustomAppStorage;
+  SaveAppStoragePath: string;
 begin
-  if not Assigned(iPropertyStore) then
-    exit;
-  AppStorage := TJvAppXmlFileStorage.Create(Nil);
+  if not Assigned(APropertyStore) then
+    Exit;
+  AppStorage := TJvAppXmlFileStorage.Create(nil);
   try
     AppStorage.Location := flCustom;
-    AppStorage.FileName := iFileName;
-    SaveAppStorage := iPropertyStore.AppStorage;
-    SaveAppStoragePath := iPropertyStore.AppStoragePath;
+    AppStorage.FileName := AFileName;
+    SaveAppStorage := APropertyStore.AppStorage;
+    SaveAppStoragePath := APropertyStore.AppStoragePath;
     try
-      iPropertyStore.AppStoragePath := iAppStoragePath;
-      iPropertyStore.AppStorage := AppStorage;
-      iPropertyStore.StoreProperties;
+      APropertyStore.AppStoragePath := AAppStoragePath;
+      APropertyStore.AppStorage := AppStorage;
+      APropertyStore.StoreProperties;
     finally
-      iPropertyStore.AppStoragePath := SaveAppStoragePath;
-      iPropertyStore.AppStorage := SaveAppStorage;
+      APropertyStore.AppStoragePath := SaveAppStoragePath;
+      APropertyStore.AppStorage := SaveAppStorage;
     end;
   finally
     AppStorage.Free;
   end;
 end;
 
-procedure LoadPropertyStoreFromXmlFile (iPropertyStore : TJvCustomPropertyStore;
-                                        const iFileName : string;
-                                        const iAppStoragePath : string = '');
-Var
-  AppStorage : TJvAppXmlFileStorage;
-  SaveAppStorage : TJvCustomAppStorage;
-  SaveAppStoragePath : string;
+procedure LoadPropertyStoreFromXmlFile(APropertyStore: TJvCustomPropertyStore;
+  const AFileName: string; const AAppStoragePath: string = '');
+var
+  AppStorage: TJvAppXmlFileStorage;
+  SaveAppStorage: TJvCustomAppStorage;
+  SaveAppStoragePath: string;
 begin
-  if not Assigned(iPropertyStore) then
-    exit;
-  AppStorage := TJvAppXmlFileStorage.Create(Nil);
+  if not Assigned(APropertyStore) then
+    Exit;
+  AppStorage := TJvAppXmlFileStorage.Create(nil);
   try
     AppStorage.Location := flCustom;
-    AppStorage.FileName := iFileName;
-    SaveAppStorage := iPropertyStore.AppStorage;
-    SaveAppStoragePath := iPropertyStore.AppStoragePath;
+    AppStorage.FileName := AFileName;
+    SaveAppStorage := APropertyStore.AppStorage;
+    SaveAppStoragePath := APropertyStore.AppStoragePath;
     try
-      iPropertyStore.AppStoragePath := iAppStoragePath;
-      iPropertyStore.AppStorage := AppStorage;
-      iPropertyStore.LoadProperties;
+      APropertyStore.AppStoragePath := AAppStoragePath;
+      APropertyStore.AppStorage := AppStorage;
+      APropertyStore.LoadProperties;
     finally
-      iPropertyStore.AppStoragePath := SaveAppStoragePath;
-      iPropertyStore.AppStorage := SaveAppStorage;
+      APropertyStore.AppStoragePath := SaveAppStoragePath;
+      APropertyStore.AppStorage := SaveAppStorage;
     end;
   finally
     AppStorage.Free;

@@ -32,11 +32,11 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Controls, Graphics,
   ComCtrls, StdCtrls, ExtCtrls,
-  JvFullColorSpaces, JvFullColorRotate,
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
-  JvTypes;
+  JvTypes,
+  JvFullColorSpaces, JvFullColorRotate;
 
 type
   TJvFullColorAxisConfig = (acXYZ, acXZY, acYXZ, acYZX, acZXY, acZYX);
@@ -3587,7 +3587,7 @@ begin
         Break;
       end
       else
-      if (Y >= Sum) and (Y < (Sum + FSquareSize)) then
+      if (Y >= Sum) and (Y < Sum + FSquareSize) then
       begin
         Top := Sum;
         Bottom := Sum + FSquareSize;
@@ -3614,7 +3614,7 @@ begin
       begin
         Left := Sum;
         Right := Sum + FSquareSize;
-        if (ColorIndex <> -1) then
+        if ColorIndex <> -1 then
           ColorIndex := ColorIndex + Index;
         Break;
       end;
@@ -3638,22 +3638,16 @@ begin
           for Index := 0 to ColorCount - 1 do
             if AColor = ColorValue[Index] then
             begin
-              AHintInfo.HintStr := Format('FullColor : %.8x' + sLineBreak +
-                'ColorSpace : %s (%d)' + sLineBreak +
-                'Name : %s' + sLineBreak +
-                'Pretty name : %s', [AFullColor, AColorSpace.Name,
-                AColorID, ColorName[Index], ColorPrettyName[Index]]);
+              AHintInfo.HintStr := Format(RsColorHintFmt1, [AFullColor,
+                AColorSpace.Name, AColorID, ColorName[Index], ColorPrettyName[Index]]);
               Break;
             end;
         end
       else
-        AHintInfo.HintStr := Format('FullColor : %.8x, ColorSpace : %s (%d)' + sLineBreak +
-          'Axis %s = %d' + sLineBreak +
-          'Axis %s = %d' + sLineBreak +
-          'Axis %s = %d', [AFullColor, AColorSpace.Name, AColorID,
+        AHintInfo.HintStr := Format(RsColorHintFmt2, [AFullColor, AColorSpace.Name, AColorID,
           AColorSpace.AxisName[axIndex0], GetAxisValue(AFullColor, axIndex0),
-            AColorSpace.AxisName[axIndex1], GetAxisValue(AFullColor, axIndex1),
-            AColorSpace.AxisName[axIndex2], GetAxisValue(AFullColor, axIndex2)]);
+          AColorSpace.AxisName[axIndex1], GetAxisValue(AFullColor, axIndex1),
+          AColorSpace.AxisName[axIndex2], GetAxisValue(AFullColor, axIndex2)]);
 
       if Assigned(FOnFormatHint) then
         FOnFormatHint(Self, AFullColor, AHintInfo.HintStr);

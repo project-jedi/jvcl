@@ -99,7 +99,7 @@ type
     FOnMessage: TMessageEvent;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    FOnEvent : TEventEvent;
+    FOnEvent: TEventEvent;
     {$ENDIF VisualCLX}
     FOnMinimize: TNotifyEvent;
     FOnRestore: TNotifyEvent;
