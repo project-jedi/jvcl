@@ -77,6 +77,7 @@ type
     procedure DoChangeColor(AForegroundColor, ABackgroundColor: TColor); virtual;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   published
     property Align;
     
@@ -231,7 +232,7 @@ begin
     Visible := True;
     Stretch := False;
     Align := alNone;
-    Picture.Bitmap := TBitmap.Create;
+//    Picture.Bitmap := TBitmap.Create;
     Picture.Bitmap.Width := Width;
     Picture.Bitmap.Height := Height;
     Canvas.Brush.Color := clBlack;
@@ -246,7 +247,7 @@ begin
     Top := 5;
     Width := 25;
     Height := 25;
-    Picture.Bitmap := TBitmap.Create;
+//    Picture.Bitmap := TBitmap.Create;
     Picture.Bitmap.Width := FChoosed.Width;
     Picture.Bitmap.Height := FChoosed.Height;
     Canvas.Brush.Color := clBlack;
@@ -266,7 +267,7 @@ begin
     Top := 20;
     Height := 25;
     Width := 25;
-    Picture.Bitmap := TBitmap.Create;
+//    Picture.Bitmap := TBitmap.Create;
     Picture.Bitmap.Width := FChoosed.Width;
     Picture.Bitmap.Height := FChoosed.Height;
     Canvas.Brush.Color := clWhite;
@@ -402,6 +403,11 @@ procedure TJvGammaPanel.DoChangeColor(AForegroundColor, ABackgroundColor: TColor
 begin
   if Assigned(FOnChangeColor) then
     FOnChangeColor(Self, FForegroundColor, FBackgroundColor);
+end;
+
+destructor TJvGammaPanel.Destroy;
+begin
+  inherited;
 end;
 
 end.

@@ -124,6 +124,7 @@ type
   TFileLocation = (
     flCustom,       // FileName property will contain full path
     flWindows,      // Store in %WINDOWS%; only use file name part of FileName property.
+    flTemp,         // Store in %TEMP%; only use file name part of FileName property.
     flExeFile,      // Store in same folder as application's exe file; only use file name part of FileName property.
     flUserFolder);  // Store in %USER%\Application Data. Use the FileName property if it's a relative path or only the file name part of FileName property.
 
@@ -600,6 +601,7 @@ type
     FAutoFlush: Boolean;
     FFileName: TFileName;
     FLocation: TFileLocation;
+    FLoadedFinished: Boolean;
     FOnGetFileName: TJvAppStorageGetFileNameEvent;
 
     function GetAsString: string; virtual; abstract;
@@ -620,6 +622,9 @@ type
     property OnGetFileName: TJvAppStorageGetFileNameEvent
       read FOnGetFileName write FOnGetFileName;
       // OnGetFileName triggered on Location = flCustom
+
+    procedure Loaded; override;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -2227,6 +2232,8 @@ begin
     case Location of
       flCustom:
         Result := FileName;
+      flTemp:
+        Result := PathAddSeparator(GetWindowsTempFolder) + NameOnly;
       flWindows:
         Result := PathAddSeparator(GetWindowsFolder) + NameOnly;
       flExeFile:
@@ -2251,12 +2258,23 @@ begin
   inherited Create(AOwner);
   FLocation := flExeFile;
   FAutoFlush := False;
+  FLoadedFinished := False;
 end;
 
 destructor TJvCustomAppMemoryFileStorage.Destroy;
 begin
   Flush;
   inherited Destroy;
+end;
+
+procedure TJvCustomAppMemoryFileStorage.Loaded;
+begin
+  try
+    inherited loaded;
+  finally
+    FLoadedFinished := True;
+  end;
+  Reload;
 end;
 
 function TJvCustomAppMemoryFileStorage.DoGetFileName: TFileName;
@@ -2271,7 +2289,7 @@ var
   NameOnly: string;
   RelPathName: string;
 begin
-  if FileName = '' then
+  if (FileName = '') then
     Result := ''
   else
   begin
@@ -2283,14 +2301,14 @@ begin
     case Location of
       flCustom:
         Result := DoGetFilename;
-      {$IFDEF MSWINDOWS}
+      flTemp:
+        Result := PathAddSeparator(GetWindowsTempFolder) + NameOnly;
       flWindows:
         Result := PathAddSeparator(GetWindowsFolder) + NameOnly;
       flExeFile:
         Result := PathAddSeparator(ExtractFilePath(ParamStr(0))) + NameOnly;
       flUserFolder:
         Result := PathAddSeparator(GetAppdataFolder) + RelPathName;
-      {$ENDIF MSWINDOWS}
     end;
   end;
 end;
@@ -2300,7 +2318,8 @@ begin
   if FFileName <> Value then
   begin
     FFileName := Value;
-    Reload;
+    if FLoadedFinished then
+      Reload;
   end;
 end;
 
@@ -2309,7 +2328,8 @@ begin
   if FLocation <> Value then
   begin
     FLocation := Value;
-    Reload;
+    if FLoadedFinished then
+      Reload;
   end;
 end;
 

@@ -559,7 +559,7 @@ begin
 //  OldBrushColor := 0;
 //  RemFontColor := 0;
 //  RemBrushColor := 0;
-  OldAlignment := taLeftJustify;
+// OldAlignment := taLeftJustify;
 
   if Canvas <> nil then
   begin
