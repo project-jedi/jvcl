@@ -15,7 +15,7 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
+Last Modified: 2004-02-02
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -473,13 +473,13 @@ end;
 
 procedure TJvMRUManager.IniSave(Sender: TObject);
 begin
-  if (Name <> '') and (IniStorage.IsActive) then
+  if (Name <> '') and Assigned(IniStorage) then
     InternalSave(GetDefaultSection(Self));
 end;
 
 procedure TJvMRUManager.IniLoad(Sender: TObject);
 begin
-  if (Name <> '') and (IniStorage.IsActive) then
+  if (Name <> '') and Assigned(IniStorage) then
     InternalLoad(GetDefaultSection(Self));
 end;
 
@@ -523,14 +523,14 @@ end;
 
 procedure TJvMRUManager.InternalLoad(const Section: string);
 begin
-  if IniStorage.IsActive then
+  if Assigned(IniStorage) then
     with IniStorage do
       LoadFromAppStorage(AppStorage, AppStorage.ConcatPaths([AppStoragePath, Section]));
 end;
 
 procedure TJvMRUManager.InternalSave(const Section: string);
 begin
-  if IniStorage.IsActive then
+  if Assigned(IniStorage) then
     with IniStorage do
       SaveToAppStorage(AppStorage, AppStorage.ConcatPaths([AppStoragePath, Section]));
 end;
