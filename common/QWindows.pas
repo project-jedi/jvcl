@@ -712,6 +712,9 @@ function SetParent(hWndChild, hWndNewParent: QWidgetH): QWidgetH;
 function GetWindowPlacement(Handle: QWidgetH; W: PWindowPlacement): LongBool;
 function GetWindowRect(Handle: QWidgetH; var  R: TRect): LongBool;
 function WindowFromDC(Handle: QPainterH): QWidgetH;
+function ChildWindowFromPoint(hWndParent: QWidgetH; Point: TPoint): QWidgetH; // hWndParent is ignored under Linux
+function WindowFromPoint(Point: TPoint): QWidgetH;
+function GetClassName(Handle: QWidgetH; Buffer: PChar; MaxCount: Integer): Integer;
 
 function HWND_DESKTOP: QWidgetH;
 function InvalidateRect(Handle: QWidgetH; R: PRect; erasebackground: Boolean): LongBool;
@@ -722,14 +725,45 @@ function MapWindowPoints(WidgetTo, WidgetFrom: QWidgetH; var Points; nr: Cardina
 function SetFocus(Handle: QWidgetH): QWidgetH;
 function SetForegroundWindow(Handle: QWidgetH): LongBool;
 function SetWindowPlacement(Handle: QWidgetH; W: PWindowPlacement): LongBool;
-function ShowWindow(Handle: QWidgetH; showCmd: UInt): LongBool;
 function SwitchToThisWindow(Handle: QWidgetH; Restore: Boolean): LongBool;
 
 function ClientToScreen(Handle: QWidgetH; var Point: TPoint): LongBool;
 function ScreenToClient(Handle: QWidgetH; var Point: TPoint): LongBool;
+function SmallPointToPoint(const P: TSmallPoint): TPoint;
+function PointToSmallPoint(const P: TPoint): TSmallPoint;
+
+function SetWindowPos(Wnd, WndInsertAfter: QWidgetH; X, Y, cx, cy: Integer;
+  uFlags: LongWord): LongBool; overload;
+function SetWindowPos(Wnd, WndInsertAfter: Cardinal; X, Y, cx, cy: Integer;
+  uFlags: LongWord): LongBool; overload;
+function SetWindowPos(Wnd: QWidgetH; WndInsertAfter: Cardinal; X, Y, cx, cy: Integer;
+  uFlags: LongWord): LongBool; overload;
 
 
-//function WindowFromPoint(Point: TPoint): QWidgetH;   // structure with point
+const
+  { SetWindowPos Flags }
+  SWP_NOSIZE = 1;
+  SWP_NOMOVE = 2;
+  SWP_NOZORDER = 4;
+  SWP_NOREDRAW = 8;
+  SWP_NOACTIVATE = $10;
+  SWP_FRAMECHANGED = $20;    { The frame changed: send WM_NCCALCSIZE }
+  SWP_SHOWWINDOW = $40;
+  SWP_HIDEWINDOW = $80;
+  SWP_NOCOPYBITS = $100; // ignored
+  SWP_NOOWNERZORDER = $200;  { Don't do owner Z ordering }
+  SWP_NOSENDCHANGING = $400;  // ignores
+  SWP_DRAWFRAME = SWP_FRAMECHANGED;
+  SWP_NOREPOSITION = SWP_NOOWNERZORDER;
+  SWP_DEFERERASE = $2000;
+  SWP_ASYNCWINDOWPOS = $4000; // ignored
+
+  HWND_TOP = Cardinal(0);
+  HWND_BOTTOM = Cardinal(1);
+  HWND_TOPMOST = Cardinal(-1);
+  HWND_NOTOPMOST = Cardinal(-2);
+
+function ShowWindow(Handle: QWidgetH; showCmd: UInt): LongBool;
 
 const
   { ShowWindow() Commands }
@@ -916,7 +950,7 @@ implementation
 
 {$IFDEF LINUX}
 uses
-  Libc;
+  Libc, Xlib, Windows;
 {$ENDIF LINUX}
 {$IFDEF MSWINDOWS}
 uses
@@ -1263,8 +1297,8 @@ begin
   end;
 end;
 
-function SetWindowPos(Handle: QWidgetH; W: PWindowPlacement): LongBool;
-begin
+{function SetWindowPos(Handle: QWidgetH; W: PWindowPlacement): LongBool;
+begin // (ahuser) unused and not in the interface section
   try
     with W.rcNormalPosition do
        QWidget_setGeometry(Handle, Left, Top, Right - Left, Bottom - Top);
@@ -1272,7 +1306,7 @@ begin
   except
     Result := False;
   end;
-end;
+end;}
 
 function GetWindowPlacement(Handle: QWidgetH; W: PWindowPlacement): LongBool;
 var
@@ -1347,6 +1381,143 @@ begin
   except
     Result := False;
   end;
+end;
+
+type
+  TOpenWidgetControl = class(TWidgetControl);
+
+function SetWindowPos(Wnd, WndInsertAfter: QWidgetH; X, Y, cx, cy: Integer;
+  uFlags: LongWord): LongBool;
+var
+  R, Geometry: TRect;
+  WidgetFlags: Cardinal;
+  Control: TOpenWidgetControl;
+  LastActiveWidget: QWidgetH;
+  LastActiveWinId: Cardinal;
+begin
+  Result := False;
+  if Wnd = nil then
+    Exit;
+  try
+    LastActiveWidget := QApplication_activeWindow(Application.Handle);
+    LastActiveWinId := QWidget_winId(LastActiveWidget);
+
+    // we must use CLX methods or CLX will be a pain.
+    Control := TOpenWidgetControl(FindControl(Wnd));
+
+    if Control <> nil then
+      Geometry := Control.BoundsRect
+    else
+      QWidget_geometry(Wnd, @Geometry);
+
+    if uFlags and SWP_HIDEWINDOW <> 0 then
+    begin
+      if Control <> nil then
+        Control.Hide
+      else
+        QWidget_hide(Wnd);
+    end;
+
+    if uFlags and SWP_NOSIZE <> 0 then
+    begin
+      cx := Geometry.Right - Geometry.Left;
+      cy := Geometry.Bottom - Geometry.Top;
+    end;
+    if uFlags and SWP_NOMOVE <> 0 then
+    begin
+      X := Geometry.Left;
+      Y := Geometry.Top;
+    end;
+    R := Rect(X, Y, X + cx, Y + cy);
+    if not EqualRect(R, Geometry) then
+    begin
+      if Control <> nil then
+        Control.BoundsRect := R
+      else
+        QWidget_setGeometry(Wnd, X, Y, cx, cy);
+    end;
+
+    if uFlags and SWP_FRAMECHANGED <> 0 then
+    begin
+      QWidget_adjustSize(Wnd);
+      if Control <> nil then
+        Control.AdjustSize;
+    end;
+
+    if (uFlags and SWP_NOOWNERZORDER = 0) then
+      if (not QWidget_isTopLevel(Wnd)) and (QWidget_parentWidget(Wnd) <> nil) then
+        SetWindowPos(QWidget_parentWidget(Wnd), WndInsertAfter, 0, 0, 0, 0,
+          SWP_NOSIZE or SWP_NOMOVE or SWP_NOREDRAW or SWP_NOACTIVATE or
+          SWP_NOCOPYBITS or SWP_NOSENDCHANGING);
+
+    if (uFlags and SWP_NOZORDER = 0) then
+    begin
+      WidgetFlags := QOpenWidget_getWFlags(QOpenWidgetH(Wnd));
+
+      case Cardinal(WndInsertAfter) of
+        HWND_TOP:
+          QWidget_raise(Wnd);
+        HWND_BOTTOM:
+          QWidget_lower(Wnd);
+        HWND_TOPMOST:
+          if (Control <> nil) and (TWidgetControl(Control) is TForm) then
+            TForm(Control).FormStyle := fsStayOnTop
+          else
+            QOpenWidget_setWFlags(QOpenWidgetH(Wnd),
+              WidgetFlags or Cardinal(WidgetFlags_WStyle_StaysOnTop));
+        HWND_NOTOPMOST:
+          if (Control <> nil) and (TWidgetControl(Control) is TForm) then
+            TForm(Control).FormStyle := fsNormal
+          else
+            QOpenWidget_setWFlags(QOpenWidgetH(Wnd),
+              WidgetFlags and not Cardinal(WidgetFlags_WStyle_StaysOnTop));
+      else
+       // remove top most state
+        if WidgetFlags and Cardinal(WidgetFlags_WStyle_StaysOnTop) <> 0 then
+        begin
+          if (Control <> nil) and (TWidgetControl(Control) is TForm) then
+            TForm(Control).FormStyle := fsNormal
+          else
+            QOpenWidget_setWFlags(QOpenWidgetH(Wnd),
+              WidgetFlags and not Cardinal(WidgetFlags_WStyle_StaysOnTop));
+        end;
+        // after widget
+        QWidget_stackUnder(Wnd, WndInsertAfter);
+      end;
+    end;
+
+    if uFlags and SWP_SHOWWINDOW <> 0 then
+    begin
+      if Control <> nil then
+        Control.Show
+      else
+        QWidget_show(Wnd);
+    end;
+
+    if (uFlags and SWP_NOACTIVATE = 0) and (QWidget_isVisible(Wnd)) then
+      QWidget_setActiveWindow(Wnd);
+
+    if (uFlags and SWP_NOREDRAW = 0) and (QWidget_isVisible(Wnd)) then
+      QWidget_update(Wnd);
+
+    if (uFlags and SWP_NOACTIVATE <> 0) and Assigned(LastActiveWidget) then
+      if QWidget_find(LastActiveWinId) = LastActiveWidget then // valid LastActiveWidget
+        QWidget_setActiveWindow(LastActiveWidget);
+  except
+    Result := False;
+  end;
+end;
+
+function SetWindowPos(Wnd, WndInsertAfter: Cardinal; X, Y, cx, cy: Integer;
+  uFlags: LongWord): LongBool;
+begin
+  Result := SetWindowPos(QWidgetH(Wnd), QWidgetH(WndInsertAfter), X, Y, cx, cy, uFlags);
+end;
+
+function SetWindowPos(Wnd: QWidgetH; WndInsertAfter: Cardinal; X, Y, cx, cy: Integer;
+  uFlags: LongWord): LongBool;
+begin
+  Result := SetWindowPos(Wnd, QWidgetH(WndInsertAfter), X, Y, cx, cy, uFlags);
 end;
 
 function IsWindowVisible(Handle: QWidgetH): LongBool;
@@ -1853,6 +2024,63 @@ begin
   end;
 end;
 
+function ChildWindowFromPoint(hWndParent: QWidgetH; Point: TPoint): QWidgetH;
+{$IFDEF MSWINDOWS}
+var
+  WinId, ChildWinId: Cardinal;
+  Widget: QWidgetH;
+  Pt: TPoint;
+{$ENDIF MSWINDOWS}
+begin
+  Result := nil;
+  if hWndParent = nil then
+    Exit;
+  try
+    {$IFDEF MSWINDOWS}
+    WinId := QWidget_winId(hWndParent);
+    if WinId <> 0 then
+    begin
+      Widget := QWidget_find(WinId);
+      if Widget <> nil then
+      begin
+        Pt := Point;
+        QWidget_mapFromGlobal(Widget, @Pt, @Pt); // missing in QApplicatin::WidgetAt() Windows implementation
+        ChildWinId := Cardinal(Windows.ChildWindowFromPoint(WinId, Pt));
+        if (ChildWinId <> 0) and (ChildWinId <> WinId) then
+          Result := QWidget_find(ChildWinId)
+        else
+          Result := Widget;
+      end;
+    end;
+    {$ENDIF MSWINDOWS}
+    {$IFDEF LINUX}
+    Result := QApplication_widgetAt(@Point, True);
+    {$ENDIF LINUX}
+  except
+    Result := nil;
+  end;
+end;
+
+function WindowFromPoint(Point: TPoint): QWidgetH;
+begin
+  try
+    Result := QApplication_widgetAt(@Point, False);
+  except
+    Result := nil;
+  end;
+end;
+
+function GetClassName(Handle: QWidgetH; Buffer: PChar; MaxCount: Integer): Integer;
+begin
+  Result := 0;
+  if Handle <> nil then
+  begin
+    Result := Length(QObject_className(Handle));
+    if Buffer <> nil then
+      StrLCopy(Buffer, QObject_className(Handle), MaxCount);
+  end;
+end;
+
 function ClientToScreen(Handle: QWidgetH; var Point: TPoint): LongBool;
 begin
   try
@@ -1871,6 +2099,17 @@ begin
   except
     Result := False;
   end;
+end;
+
+function SmallPointToPoint(const P: TSmallPoint): TPoint;
+begin
+  Result := Point(P.x, P.y);
+end;
+
+function PointToSmallPoint(const P: TPoint): TSmallPoint;
+begin
+  Result.x := SmallInt(P.X);
+  Result.y := SmallInt(P.Y);
 end;
 
 function MapWindowPoints(WidgetTo, WidgetFrom: QWidgetH; var Points; nr: Cardinal): Integer;
