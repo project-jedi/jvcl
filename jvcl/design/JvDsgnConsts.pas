@@ -97,6 +97,7 @@ resourcestring
   RsPaletteDotNet = 'Jv DotNet';
   RsPaletteDotNetDB = 'Jv DotNet DB';
   {$ENDIF USEJVCL}
+  RsPalettePlugin = 'Jv Plugin';
 
 //=== JvAnimatedEditor.pas ===================================================
 resourcestring

@@ -94,9 +94,8 @@ begin
     TJvColorComboBox, TJvFontComboBox, TJvTextListBox, TJvxCheckListBox,
     TJvDateTimePicker, TJvMonthCalendar, {TJvMonthCalendar2,}
     TJvDrawGrid, TJvStringGrid]);
-  RegisterComponents(RsPaletteScrollerTracker, [TJvScrollBar, TJvScrollBox,
-    TJvTrackBar]);
-  RegisterComponents(RsPaletteSliderSplitter, [TJvxSlider]);
+  RegisterComponents(RsPaletteScrollerTracker, [TJvScrollBar, TJvScrollBox]);
+  RegisterComponents(RsPaletteSliderSplitter, [TJvTrackBar,TJvxSlider]);
 
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'Gauge', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);
