@@ -13,9 +13,13 @@ JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Makes a hole in the form.
 Description
-  Write here a description
+  This is a visual component. If Transparent is set to True the region of the component
+  is no longer considered a part of the form. I.e. firstly, you can look though the form.
+  In addition, if you click "into the hole" the underlying, visible window becomes
+  active. So be careful setting Transparent to True while being in design mode. It may become impossible
+  to click at the component (thus you'd have to use the object inspector which is time consuming)!
 ----------------------------------------------------------------------------------------------------
 @@TJvPerforated.Resize
 Summary
@@ -31,6 +35,6 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Activate the function of this component by setting it to True. False deactivates the behavior and
+  the component becomes a custom panel.
 See Also
-  List here other properties, methods (comma seperated)
