@@ -28,12 +28,14 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
 --------------------------------------------------------------------------------
+The Original Code is: QMessages.pas, released on 2004-05-21.
 
 
 Known Issues:
   - Under development. It contains all message related stuff, taken from QWindows.
     No new functionality has been added yet.
 {-----------------------------------------------------------------------------}
+// $Id$
 
 unit QMessages;
 
@@ -41,13 +43,9 @@ interface
 
 uses
   SysUtils, Classes,
-  Qt, QControls;
+  Qt, QControls, QWindows;
 
 const
-
-  WM_USER             = $0400;
-  WM_TIMER            = $0113;
-  WM_NCPAINT          = $0085;
 
   EM_GETRECT          = $00B2;
   EM_SETRECT          = $00B3;
@@ -132,8 +130,9 @@ const
   WM_HSCROLL                = CM_BASE + 100;
   WM_VSCROLL                = CM_BASE + 101;
 
-
-
+  WM_USER             = $0400;
+  WM_TIMER            = $0113;
+  WM_NCPAINT          = $0085;
 
 type
   IPerformControl = interface
@@ -171,6 +170,35 @@ type
     LParam: Longint;
     Result: Integer;
   end;
+
+  TCMFocusChanged = record
+    Msg: Cardinal;
+    Unused: Integer;
+    Sender: TWinControl;
+    Result: Longint;
+  end;
+
+  TCMControlListChange = record
+    Msg: Cardinal;
+    Control: TControl;
+    Inserting: LongBool;
+    Result: Longint;
+  end;
+
+  TCMControlChange = record
+    Msg: Cardinal;
+    Control: TControl;
+    Inserting: LongBool;
+    Result: Longint;
+  end;
+
+  TCMChanged = record
+    Msg: Cardinal;
+    Unused: Longint;
+    Child: TControl;
+    Result: Longint;
+  end;
+
 
   { Message }
 function Perform(Control: TControl; Msg: Cardinal; WParam, LParam: Longint): Longint;
