@@ -284,6 +284,8 @@ end;
 procedure TJvCustomEdit.CMMouseEnter(var Msg: TMessage);
 var i, j: integer;
 begin
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
@@ -305,6 +307,8 @@ end;
 procedure TJvCustomEdit.CMMouseLeave(var Msg: TMessage);
 var i, j: integer;
 begin
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;

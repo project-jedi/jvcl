@@ -145,6 +145,8 @@ end;
 procedure TJvSpeedButton.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
@@ -170,6 +172,8 @@ end;
 procedure TJvSpeedButton.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;

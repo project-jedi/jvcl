@@ -194,6 +194,8 @@ begin
   if not FOver then
   begin
     FSaved := Application.HintColor;
+    // for D7...
+    if csDesigning in ComponentState then Exit;
     Application.HintColor := FColor;
     State := stEntered;
     FOver := True;

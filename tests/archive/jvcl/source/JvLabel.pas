@@ -117,6 +117,8 @@ end;
 
 procedure TJvLabel.CMMouseEnter(var Msg: TMessage);
 begin
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   if not (FOver) then
   begin
     FHintSaved := Application.HintColor;
@@ -136,6 +138,8 @@ end;
 
 procedure TJvLabel.CMMouseLeave(var Msg: TMessage);
 begin
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   if FOver then
   begin
     Application.HintColor := FHintSaved;

@@ -268,6 +268,8 @@ end;
 
 procedure TJvColorSquare.CMMouseEnter(var Message: TMessage);
 begin
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   inherited;
   FInside := True;
   Repaint;

@@ -386,6 +386,8 @@ end;
 procedure TJvImgBtn.CMMouseEnter(var Message: TMessage);
 begin
   inherited;
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   if not FMouseInControl and Enabled and (GetCapture = 0) then
   begin
     FMouseInControl := True;

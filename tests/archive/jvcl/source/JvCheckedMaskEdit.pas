@@ -438,6 +438,8 @@ begin
   if(not FMouseOver) then
   begin
     FSavedHintColor := Application.HintColor;
+    // for D7...
+    if csDesigning in ComponentState then Exit;
     Application.HintColor := FHintColor;
     if(HotTrack) then
       Ctl3d := True;

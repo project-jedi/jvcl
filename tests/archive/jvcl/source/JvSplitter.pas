@@ -89,6 +89,8 @@ begin
   begin
     FOver := True;
     FSaved := Application.HintColor;
+    // for D7...
+    if csDesigning in ComponentState then Exit;
     Application.HintColor := FColor;
   end;
   if Assigned(FOnMouseEnter) then

@@ -70,6 +70,8 @@ uses JvMouseTimerU;
 procedure TJvMousePanel.CMMouseEnter(var Message: TMessage);
 begin
   inherited;
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   if not MouseInControl then
   begin
     FOldColor := Color;
@@ -83,6 +85,8 @@ end;
 procedure TJvMousePanel.CMMouseLeave(var Message: TMessage);
 begin
   inherited;
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   if MouseInControl then
   begin
     FMouseInControl := false;

@@ -247,6 +247,7 @@ end;
 procedure TJvSpecialProgress.MouseEnter(var Msg: TMessage);
 begin
   FSavedHintColor := Application.HintColor;
+  // for D7...
   if csDesigning in ComponentState then Exit;
   Application.HintColor := FHintColor;
   if Assigned(FOnMouseEnter) then

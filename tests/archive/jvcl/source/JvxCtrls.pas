@@ -3063,6 +3063,8 @@ end;
 procedure TJvCustomLabel.CMMouseEnter(var Message: TMessage);
 begin
   inherited;
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   if not FMouseInControl and Enabled and IsForegroundTask then begin
     FMouseInControl := True;
     MouseEnter;
@@ -3072,6 +3074,8 @@ end;
 procedure TJvCustomLabel.CMMouseLeave(var Message: TMessage);
 begin
   inherited;
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   if FMouseInControl and Enabled and not FDragging then begin
     FMouseInControl := False;
     MouseLeave;
@@ -5016,6 +5020,8 @@ end;
 procedure TJvxSpeedButton.CMMouseEnter(var Message: TMessage);
 begin
   inherited;
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   if (not FMouseInControl) and Enabled and IsForegroundTask then begin
     FMouseInControl := True;
     if FFlat then Repaint;
@@ -5026,6 +5032,8 @@ end;
 procedure TJvxSpeedButton.CMMouseLeave(var Message: TMessage);
 begin
   inherited;
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   if FMouseInControl and Enabled and not FDragging then begin
     FMouseInControl := False;
     if FFlat then Invalidate;

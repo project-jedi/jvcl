@@ -170,6 +170,8 @@ procedure TJvClock.CMMouseEnter(var Msg: TMessage);
 begin
   FOver := True;
   FSaved := Application.HintColor;
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   Application.HintColor := FColor;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);

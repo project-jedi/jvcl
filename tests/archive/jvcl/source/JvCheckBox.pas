@@ -146,6 +146,8 @@ end;
 
 procedure TJvCheckBox.CMMouseEnter(var Msg: TMessage);
 begin
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
@@ -165,6 +167,8 @@ end;
 
 procedure TJvCheckBox.CMMouseLeave(var Msg: TMessage);
 begin
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;

@@ -1207,6 +1207,8 @@ end;
 procedure TJvArrowButton.CMMouseEnter(var Message: TMessage);
 begin
   inherited;
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   if FFlat and not FMouseInControl and Enabled then
   begin
     FMouseInControl := True;

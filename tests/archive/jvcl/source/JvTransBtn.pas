@@ -842,6 +842,8 @@ end;
 
 procedure TJvTransparentButton.MouseEnter;
 begin
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   if Enabled then
   begin
     FInsideButton := True;
@@ -854,6 +856,8 @@ end;
 
 procedure TJvTransparentButton.MouseExit;
 begin
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   if Enabled then
   begin
     if FInsideButton then
