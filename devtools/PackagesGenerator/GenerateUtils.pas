@@ -244,6 +244,103 @@ begin
   end;
 end;
 
+function MacroReplace(var Text: string; MacroChar: Char;
+  const Macros: array of string; CaseSensitive: Boolean = True): Boolean;
+const
+  Delta = 1024;
+var
+  Index, i, Count, Len, SLen, MacroHigh: Integer;
+  S: string;
+  Found: Boolean;
+  Cmp: function(const Str1, Str2: PChar; MaxLen: Cardinal): Integer;
+begin
+  Result := False;
+  if CaseSensitive then
+    Cmp := StrLComp
+  else
+    Cmp := StrLIComp;
+
+  MacroHigh := Length(Macros) div 2 - 1;
+  Len := Length(Text);
+  i := 1;
+  SetLength(S, Delta);
+  SLen := 0;
+  while i <= Len do
+  begin
+    Count := 0;
+   // add normal chars in one step
+    while (i <= Len) and (Text[i] <> MacroChar) do
+    begin
+      Inc(Count);
+      Inc(i);
+    end;
+    if Count > 0 then
+    begin
+      if SLen + Count > Length(S) then
+        SetLength(S, SLen + Count + Delta);
+      Move(Text[i - Count], S[SLen + 1], Count);
+      Inc(SLen, Count);
+    end;
+
+    if i <= Len then
+    begin
+     // replace macros
+      Found := False;
+      for Index := 0 to MacroHigh do
+      begin
+        Count := Length(Macros[Index * 2]);
+        if Cmp(PChar(Pointer(Text)) + i, PChar(Macros[Index * 2]), Count) = 0 then
+        begin
+          Inc(i, Count);
+          Count := Length(Macros[Index * 2 + 1]);
+          if Count > 0 then
+          begin
+            if SLen + Count > Length(S) then
+              SetLength(S, SLen + Count + Delta);
+            Move(Macros[Index * 2 + 1][1], S[SLen + 1], Count);
+            Inc(SLen, Count);
+          end;
+          Result := True;
+          Found := True;
+          Break;
+        end;
+      end;
+      if not Found then
+      begin
+        // copy macro-text
+        if Macros[0][Length(Macros[0])] = MacroChar then
+        begin
+          Count := 1;
+          while (i + Count <= Len) and (Text[i + Count] <> MacroChar) do
+            Inc(Count);
+          Inc(Count);
+          if SLen + Count > Length(S) then
+            SetLength(S, SLen + Count + Delta);
+          Move(Text[i], S[SLen + 1], Count);
+          Inc(SLen, Count);
+          Inc(i, Count - 1);
+        end;
+      end;
+    end;
+    Inc(i);
+  end;
+  SetLength(S, SLen);
+  Text := S;
+end;
+
+procedure MacroReplaceLines(Lines: TStrings; MacroChar: Char;
+  const Macros: array of string; CaseSensitive: Boolean = True);
+var
+  i: Integer;
+  S: string;
+begin
+  for i := 0 to Lines.Count - 1 do
+  begin
+    S := Lines[i];
+    if MacroReplace(S, MacroChar, Macros, CaseSensitive) then
+      Lines[i] := S;
+  end;
+end;
 
 procedure SendMsg(const Msg : string);
 begin
@@ -504,14 +601,21 @@ begin
   else
     Result := FormatGeneral;
 
-  if Pos('%', Result) > 0 then
+{  if Pos('%', Result) > 0 then
   begin
     StrReplace(Result, '%p', Prefix, [rfReplaceAll]);
     StrReplace(Result, '%n', Name, [rfReplaceAll]);
     StrReplace(Result, '%e', Env, [rfReplaceAll]);
     StrReplace(Result, '%v', Ver, [rfReplaceAll]);
     StrReplace(Result, '%t', Typ, [rfReplaceAll]);
-  end;
+  end;}
+
+  MacroReplace(Result, '%',
+    ['p', Prefix,
+     'n', Name,
+     'e', Env,
+     'v', Ver,
+     't', Typ]);
 end;
 
 function BuildPackageName(packageNode : TJvSimpleXmlElem;
@@ -532,15 +636,15 @@ end;
 
 function IsNotInPerso(Node : TJvSimpleXmlElem; const target : string) : Boolean;
 var
-  persoTarget : string;
-  targets : TStringList;
+  S, persoTarget : string;
+//  targets : TStringList;
 begin
   persoTarget := GetPersoTarget(target);
   if persoTarget = '' then
     Result := False
   else
   begin
-    targets := TStringList.Create;
+{    targets := TStringList.Create;
     try
       StrToStrings(Node.Properties.ItemNamed['Targets'].Value,
                    ',',
@@ -549,21 +653,24 @@ begin
                 (targets.IndexOf(target) > -1);
     finally
       targets.Free;
-    end;
+    end;}
+    S := ',' + AnsiLowerCase(target) + ',';
+    Result := (Pos(',' + LowerCase(persoTarget) + ',', S) <> 0) and
+              (Pos(',' + LowerCase(target) + ',', S) <> 0);
   end;
 end;
 
 function IsOnlyInPerso(Node : TJvSimpleXmlElem; const target : string) : Boolean;
 var
-  persoTarget : string;
-  targets : TStringList;
+  S, persoTarget : string;
+//  targets : TStringList;
 begin
   persoTarget := GetPersoTarget(target);
   if persoTarget = '' then
     Result := False
   else
   begin
-    targets := TStringList.Create;
+{    targets := TStringList.Create;
     try
       StrToStrings(Node.Properties.ItemNamed['Targets'].Value,
                    ',',
@@ -572,7 +679,10 @@ begin
                 (targets.IndexOf(target) = -1);
     finally
       targets.Free;
-    end;
+    end;}
+    S := ',' + AnsiLowerCase(target) + ',';
+    Result := (Pos(',' + LowerCase(persoTarget) + ',', S) <> 0) and
+              (Pos(',' + LowerCase(target) + ',', S) <> 0);
   end;
 end;
 
@@ -723,9 +833,9 @@ begin
     formType := Copy(formNameAndType, ps+2, MaxInt);
   end;
 
-  StrReplaceLines(Lines, '%FILENAME%', incFileName);
+{  StrReplaceLines(Lines, '%FILENAME%', incFileName);
   StrReplaceLines(Lines, '%UNITNAME%', unitname);
-  StrReplaceLines(Lines, '%Unitname%', punitname);
+  StrReplaceLines(Lines, '%Unitname%', punitname);}
 
   if (formType = '') or (formName = '') then
   begin
@@ -749,18 +859,32 @@ begin
       Delete(S, openPos, closePos + 1 - openPos);
       Lines.Text := S;
     end;
-    StrReplaceLines(Lines, '%FORMNAME%', '');
+{    StrReplaceLines(Lines, '%FORMNAME%', '');
     StrReplaceLines(Lines, '%FORMTYPE%', '');
     StrReplaceLines(Lines, '%FORMNAMEANDTYPE%', '');
-    StrReplaceLines(Lines, '%FORMPATHNAME%', '');
+    StrReplaceLines(Lines, '%FORMPATHNAME%', '');}
+    formName := '';
+    formType := '';
+    formNameAndType := '';
+    formpathname := '';
   end
   else
   begin
-    StrReplaceLines(Lines, '%FORMNAME%', formName);
+{    StrReplaceLines(Lines, '%FORMNAME%', formName);
     StrReplaceLines(Lines, '%FORMTYPE%', formType);
     StrReplaceLines(Lines, '%FORMNAMEANDTYPE%', formNameAndType);
-    StrReplaceLines(Lines, '%FORMPATHNAME%', formpathname);
+    StrReplaceLines(Lines, '%FORMPATHNAME%', formpathname);}
   end;
+
+  MacroReplaceLines(Lines, '%',
+    ['FILENAME%', incFileName,
+     'UNITNAME%', unitname,
+     'Unitname%', punitname,
+
+     'FORMNAME%', formName,
+     'FORMTYPE%', formType,
+     'FORMNAMEANDTYPE%', formNameAndType,
+     'FORMPATHNAME%', formpathname]);
 end;
 
 procedure ExpandTargets(targets : TStrings);
@@ -783,7 +907,7 @@ begin
       if Assigned(Alias) then
         expandedTargets.AddStrings(Alias.ValueAsTStrings)
       else
-        expandedTargets.Add(trim(targets[i]));
+        expandedTargets.Add(Trim(targets[i]));
     end;
 
     // assign the values back into the caller
@@ -801,10 +925,8 @@ begin
   ExpandTargets(targets);
   // now remove "perso" targets
   for i := targets.Count - 1 downto 0 do
-  begin
     if not Assigned(TargetList.ItemsByName[targets[i]]) then
       targets.Delete(i);
-  end;
 end;
 
 function IsIncluded(Node : TJvSimpleXmlElem; const target : string) : Boolean;
@@ -954,7 +1076,7 @@ end;
 
 function ApplyTemplateAndSave(const path, target, package, extension,
   prefix, format : string; template : TStrings; xml : TJvSimpleXml;
-  const templateName, xmlName : string; const mostRecentFileDate : TDateTime) : string;
+  const templateName, xmlName : string) : string;
 var
   OutFileName : string;
   oneLetterType : string;
@@ -975,6 +1097,7 @@ var
   bcblibs : string;
   bcblibsList : TStringList;
   TimeStampLine : Integer;
+  Count: Integer;
   containsSomething : Boolean; // true if package will contain something
   repeatSectionUsed : Boolean; // true if at least one repeat section was used
 begin
@@ -1014,7 +1137,8 @@ begin
 
     // read the lines of the templates and do some replacements
     i := 0;
-    while i < template.Count do
+    Count := template.Count;
+    while i < Count do
     begin
       curLine := template[i];
       if IsTrimmedStartsWith('<%%% ', curLine) then
@@ -1025,7 +1149,7 @@ begin
           Inc(i);
           repeatSectionUsed := True;
           repeatLines.Clear;
-          while (i < template.count) and
+          while (i < Count) and
                 not IsTrimmedString(template[i], '<%%% END REQUIRES %%%>') do
           begin
             repeatLines.Add(template[i]);
@@ -1060,7 +1184,7 @@ begin
           Inc(i);
           repeatSectionUsed := True;
           repeatLines.Clear;
-          while (i < template.count) and
+          while (i < Count) and
                 not IsTrimmedString(template[i], '<%%% END FILES %%%>') do
           begin
             repeatLines.Add(template[i]);
@@ -1093,7 +1217,7 @@ begin
           Inc(i);
           repeatSectionUsed := True;
           repeatLines.Clear;
-          while (i < template.count) and
+          while (i < Count) and
                 not IsTrimmedString(template[i], '<%%% END FORMS %%%>') do
           begin
             repeatLines.Add(template[i]);
@@ -1129,7 +1253,7 @@ begin
         begin
           Inc(i);
           repeatLines.Clear;
-          while (i < template.count) and
+          while (i < Count) and
                 not IsTrimmedString(template[i], '<%%% END LIBS %%%>') do
           begin
             repeatLines.Add(template[i]);
@@ -1145,8 +1269,13 @@ begin
             for j := 0 to bcbLibsList.Count - 1 do
             begin
               tmpLines.Assign(repeatLines);
+              {
               StrReplaceLines(tmpLines, '%FILENAME%', bcblibsList[j]);
               StrReplaceLines(tmpLines, '%UNITNAME%', GetUnitName(bcblibsList[j]));
+              }
+              MacroReplaceLines(tmpLines, '%',
+                ['FILENAME%', bcblibsList[j],
+                 'UNITNAME%', GetUnitName(bcblibsList[j])]);
               outFile.AddStrings(tmpLines);
             end;
           end;
@@ -1156,9 +1285,7 @@ begin
       begin
         if Pos('%', curLine) > 0 then
         begin
-          if Pos('%DATETIME%', curLine) > 0 then
-            TimeStampLine := I;
-
+          {
           StrReplace(curLine, '%NAME%',
                      PathExtractFileNameNoExt(OutFileName),
                      [rfReplaceAll]);
@@ -1186,6 +1313,25 @@ begin
                       FormatDateTime('dd-mm-yyyy  hh:nn:ss', NowUTC) + ' UTC',
                       [rfReplaceAll]);
           StrReplace(curLine, '%type%', OneLetterType, [rfReplaceAll]);
+          }
+          tmpStr := curLine;
+          if MacroReplace(curLine, '%',
+            ['NAME%', PathExtractFileNameNoExt(OutFileName),
+             'XMLNAME%', ExtractFileName(xmlName),
+             'DESCRIPTION%', rootNode.Items.ItemNamed['Description'].Value,
+             'C5PFLAGS%', EnsurePFlagsCondition(
+                            rootNode.Items.ItemNamed['C5PFlags'].Value, target
+                          ),
+             'C6PFLAGS%', EnsurePFlagsCondition(
+                             rootNode.Items.ItemNamed['C6PFlags'].Value, target
+                          ),
+             'TYPE%', Iff(rootNode.Properties.ItemNamed['Design'].BoolValue, 'DESIGN', 'RUN'),
+             'DATETIME%', FormatDateTime('dd-mm-yyyy  hh:nn:ss', NowUTC) + ' UTC',
+             'type%', OneLetterType]) then
+           begin
+             if Pos('%DATETIME%', tmpStr) > 0 then
+               TimeStampLine := I;
+           end;
         end;
         outFile.Add(curLine);
       end;
@@ -1327,17 +1473,13 @@ var
   rec : TSearchRec;
   i : Integer;
   j : Integer;
-  templateName : string;
+  templateName, templateNamePers : string;
   xml : TJvSimpleXml;
   xmlName : string;
-  template : TStringList;
+  template, templatePers : TStringList;
   persoTarget : string;
   target : string;
-
-  mostRecentFileDate : TDateTime;
-
   incfile : TStringList;
-
   XmlFileCache: TObjectList;
 
   function GetXmlFile(const xmlName: string): TJvSimpleXML;
@@ -1358,7 +1500,6 @@ var
   end;
 
 begin
-  mostRecentFileDate := 0;
   Result := True;
   if not LoadConfig(XmlFileName, ModelName, ErrMsg) then
   begin
@@ -1376,10 +1517,7 @@ begin
   incfile := TStringList.Create;
   try
     if FileExists(IncFileName) then
-    begin
       incfile.LoadFromFile(IncFileName);
-      mostRecentFileDate := FileDateToDateTime(FileAge(IncFileName));
-    end;
     DefinesList := TDefinesList.Create(incfile);
   finally
     incfile.free;
@@ -1414,23 +1552,41 @@ begin
       begin
         repeat
           template := TStringList.Create;
+          templatePers := TStringList.Create;
           try
             SendMsg(SysUtils.Format(#9'Loaded %s', [rec.Name]));
+
+            templateName := path+TargetToDir(target)+PathSeparator+rec.Name;
+            if IsBinaryFile(templateName) then
+              template.Clear
+            else
+              template.LoadFromFile(templateName);
+
+            // if the generation requested a perso target to be done
+            // then generate it now. If we find a template file
+            // named the same as the current one in the perso
+            // directory then use it instead
+            templateNamePers := '';
+            if (persoTarget <> '') and
+               DirectoryExists(path+TargetToDir(persoTarget)) then
+            begin
+              templateNamePers := path+TargetToDir(persoTarget)+PathSeparator+rec.Name;
+              if FileExists(templateNamePers) then
+              begin
+                if IsBinaryFile(templateNamePers) then
+                  templatePers.Clear
+                else
+                  templatePers.LoadFromFile(templateName);
+              end;
+            end;
+
             // apply the template for all packages
             for j := 0 to packages.Count-1 do
             begin
-              templateName := path+TargetToDir(target)+PathSeparator+rec.Name;
-              if IsBinaryFile(templateName) then
-                template.Clear
-              else
-                template.LoadFromFile(templateName);
-              mostRecentFileDate := Max(mostRecentFileDate, FileDateToDateTime(FileAge(templateName)));
-
-             // load (buffered) xml file 
+             // load (buffered) xml file
               xmlName := path+'xml'+PathSeparator+packages[j]+'.xml';
               xml := GetXmlFile(xmlName);
 
-              mostRecentFileDate := Max(mostRecentFileDate, FileDateToDateTime(FileAge(xmlName)));
               persoTarget := ApplyTemplateAndSave(
                                    path,
                                    target,
@@ -1441,26 +1597,14 @@ begin
                                    template,
                                    xml,
                                    templateName,
-                                   xmlName,
-                                   mostRecentFileDate);
+                                   xmlName);
 
               // if the generation requested a perso target to be done
               // then generate it now. If we find a template file
               // named the same as the current one in the perso
               // directory then use it instead
-              if (persoTarget <> '') and
-                 DirectoryExists(path+TargetToDir(persoTarget)) then
+              if templateNamePers <> '' then
               begin
-                if FileExists(path+TargetToDir(persoTarget)+PathSeparator+rec.Name) then
-                begin
-                  templateName := path+TargetToDir(persoTarget)+PathSeparator+rec.Name;
-                  if IsBinaryFile(templateName) then
-                    template.Clear
-                  else
-                    template.LoadFromFile(templateName);
-                  mostRecentFileDate := Max(mostRecentFileDate, FileDateToDateTime(FileAge(templateName)));
-                end;
-
                 ApplyTemplateAndSave(
                    path,
                    persoTarget,
@@ -1471,12 +1615,12 @@ begin
                    template,
                    xml,
                    templateName,
-                   xmlName,
-                   mostRecentFileDate);
+                   xmlName);
               end;
             end;
           finally
             template.Free;
+            templatePers.Free;
           end;
         until FindNext(rec) <> 0;
       end
@@ -1506,9 +1650,7 @@ var
 begin
   targets.clear;
   for i := 0 to TargetList.Count - 1 do
-  begin
     targets.Add(TargetList.Items[I].Name);
-  end;
 end;
 
 procedure EnumeratePackages(const Path : string; packages : TStrings);
@@ -1771,7 +1913,7 @@ begin
   Define := nil;
   for i := 0 to DefineLimit - 1 do
   begin
-    if CompareText(Items[I].Name, Condition) = 0 then
+    if SameText(Items[I].Name, Condition) then
     begin
       Result := True;
       Define := Items[I];
