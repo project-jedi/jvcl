@@ -139,7 +139,7 @@ begin
     AFont.Handle := CreateFontIndirect(NonClientMetrics.lfStatusFont)
   else
   begin
-    AFont.Name := 'MS Shell Dlg 2';
+    AFont.Name := 'MS Sans Serif';
     AFont.Size := 8;
   end;
   AFont.Color := clInfoText;

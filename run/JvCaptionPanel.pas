@@ -391,7 +391,7 @@ begin
   FIcon := TIcon.Create;
   {$IFDEF MSWINDOWS}
   // (rom) Warning! This seems no standard Windows font
-  FCaptionFont.Name := 'MS Shell Dlg 2';
+//  FCaptionFont.Name := 'MS Shell Dlg 2';
   FCaptionFont.Size := 10;
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}

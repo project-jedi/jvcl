@@ -113,7 +113,7 @@ begin
   BorderStyle := fbsDialog;
   {$ENDIF VisualCLX}
   // (rom) this is not a standard Windows font
-  Font.Name := 'MS Shell Dlg 2';
+//  Font.Name := 'MS Shell Dlg 2';
   FormStyle := fsStayOnTop;
   KeyPreview := True;
   OnActivate := FormActivate;
