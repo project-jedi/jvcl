@@ -5,13 +5,15 @@ object Form1: TForm1
   Height = 660
   Caption = 'JvDynControlEngine / JvParameterList Sample'
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Position = poScreenCenter
+  Position = poDesktopCenter
+  Scaled = False
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -1594,7 +1596,9 @@ object Form1: TForm1
         Width = 76
         Height = 17
         Caption = 'JVCL'
+        Checked = True
         TabOrder = 1
+        TabStop = True
         OnClick = VCLRadioButtonClick
       end
       object CxRadioButton: TRadioButton
@@ -1612,9 +1616,7 @@ object Form1: TForm1
         Width = 81
         Height = 17
         Caption = 'VCL Red'
-        Checked = True
         TabOrder = 3
-        TabStop = True
         OnClick = VCLRadioButtonClick
       end
     end
@@ -1962,6 +1964,7 @@ object Form1: TForm1
     Top = 63
   end
   object JvFormStorage1: TJvFormStorage
+    AppStorage = JvAppRegistryStorage
     AppStoragePath = 'Form\'
     StoredProps.Strings = (
       'AutoHeightCheckBox.Checked'
@@ -1984,6 +1987,7 @@ object Form1: TForm1
     Top = 3
   end
   object JvFormStorage2: TJvFormStorage
+    AppStorage = JvAppRegistryStorage
     AppStoragePath = 'Form\'
     StoredProps.Strings = (
       'AutoHeightCheckBox.Checked'
