@@ -466,8 +466,8 @@ begin
       SRCCOPY);
     DeleteObject(SelectObject(MaskDC, OldMask));
     DeleteDC(MaskDC);
-    Bmp.free;
-    Bmp2.free;
+    Bmp.Free;
+    Bmp2.Free;
     fPaintingNow := false;
     if Assigned(FOnDraw) then
       FOnDraw(Self, Message);

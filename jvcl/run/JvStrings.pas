@@ -1048,7 +1048,7 @@ begin
   c := alist.count;
   if c = 0 then
   begin
-    alist.free;
+    alist.Free;
     Exit
   end;
   xml := '<accountdata>' + cr;
@@ -1062,7 +1062,7 @@ begin
     xml := xml + '</' + iname + '>' + cr;
   end;
   xml := xml + '</accountdata>' + cr;
-  alist.free;
+  alist.Free;
   Result := xml;
 end;
 
@@ -1222,7 +1222,7 @@ begin
       dst.Append(src[i]);
   end;
   src.Assign(dst);
-  dst.free;
+  dst.Free;
 end;
 
 procedure ListOrderBy(src: TStringList; aKey: string; numeric: Boolean);
@@ -1256,9 +1256,9 @@ begin
     index := Integer(lit.Objects[i]);
     dst.Append(src[index]);
   end;
-  lit.free;
+  lit.Free;
   src.Assign(dst);
-  dst.free;
+  dst.Free;
 end;
 
 // converts a csv list to a tagged string list
@@ -1288,8 +1288,8 @@ begin
         dst.Append(s);
       end;
   finally
-    rec.free;
-    names.free;
+    rec.Free;
+    names.Free;
   end;
 end;
 
@@ -1324,8 +1324,8 @@ begin
       end;
     end;
   finally
-    rec.free;
-    names.free;
+    rec.Free;
+    names.Free;
   end;
 end;
 
@@ -1659,7 +1659,7 @@ begin
   lit := TStringList.create;
   splitset(aText, lit);
   Result := lit.count;
-  lit.free;
+  lit.Free;
 end;
 
 function SetRotateRight(aText: string): string;
@@ -1677,7 +1677,7 @@ begin
   end
   else
     Result := '';
-  lit.free;
+  lit.Free;
 end;
 
 function SetRotateLeft(aText: string): string;
@@ -1695,7 +1695,7 @@ begin
   end
   else
     Result := '';
-  lit.free;
+  lit.Free;
 end;
 
 procedure SplitSet(aText: string; aList: TStringList);
@@ -1760,7 +1760,7 @@ begin
     Result := lit[aIndex]
   else
     Result := '';
-  lit.free;
+  lit.Free;
 end;
 
 function SetSort(aText: string): string;
@@ -1778,7 +1778,7 @@ begin
   end
   else
     Result := '';
-  lit.free;
+  lit.Free;
 end;
 
 function SetUnion(set1, set2: string): string;
@@ -1804,9 +1804,9 @@ begin
   begin
     Result := JoinSet(lit1);
   end;
-  lit1.free;
-  lit2.free;
-  lit3.free;
+  lit1.Free;
+  lit2.Free;
+  lit3.Free;
 end;
 
 function SetIntersect(set1, set2: string): string;
@@ -1831,9 +1831,9 @@ begin
   begin
     Result := '';
   end;
-  lit1.free;
-  lit2.free;
-  lit3.free;
+  lit1.Free;
+  lit2.Free;
+  lit3.Free;
 end;
 
 function SetExclude(set1, set2: string): string;
@@ -1860,8 +1860,8 @@ begin
   begin
     Result := JoinSet(lit1);
   end;
-  lit1.free;
-  lit2.free;
+  lit1.Free;
+  lit2.Free;
 end;
 
 // This function converts a string into a RFC 1630 compliant URL

@@ -229,7 +229,7 @@ end;
 destructor TJvJanTreeView.Destroy;
 begin
   FParser.Free;
-  FKeyMappings.free;
+  FKeyMappings.Free;
   FVarList.Free;
   inherited Destroy;
 end;
@@ -687,7 +687,7 @@ begin
       Recalculate;
     end;
   finally
-    dlg.free;
+    dlg.Free;
   end;
 end;
 
@@ -709,7 +709,7 @@ begin
       FFileName := dlg.FileName;
     end;
   finally
-    dlg.free;
+    dlg.Free;
   end;
 end;
 

@@ -1937,7 +1937,7 @@ begin
     ms.ReadComponent(Component);
   finally
     ms.Free;
-    fs.free;
+    fs.Free;
   end;
 end;
 
@@ -1959,7 +1959,7 @@ begin
     Result := ss.DataString;
   finally
     ms.Free;
-    ss.free;
+    ss.Free;
   end;
 end;
 
@@ -1979,7 +1979,7 @@ begin
     ObjectBinaryToText(ms, fs);
   finally
     ms.Free;
-    fs.free;
+    fs.Free;
   end;
 end;
 
