@@ -430,7 +430,13 @@ type
 implementation
 
 uses
-  Consts, Math, TypInfo,
+  Math, TypInfo,
+  {$IFDEF VCL}
+  Consts,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QConsts,
+  {$ENDIF VisualCLX}
   JclRegistry, JclSysUtils,
   JvResources, JvDynControlEngineIntf;
 
