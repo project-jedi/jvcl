@@ -108,8 +108,8 @@ begin
         LblTarget.Caption := Text;
         LblTarget.Hint := Text;
         ProgressBarTarget.Max := Max * ProjectMax;
-        ProgressBarTarget.Position := {FPositionProject +} (FPositionTarget * ProjectMax);
-        FormCompile.Init('JVCL - ' + Text);
+        ProgressBarTarget.Position := (FPositionTarget * ProjectMax);
+        FormCompile.Init('JVCL - ' + Text, not FInstaller.Data.IgnoreMakeErrors);
       end;
 
     pkProject:
@@ -166,6 +166,7 @@ var
 var
   LText: string;
   CompileLine: TCompileLineType;
+  ps: Integer;
 begin
   Aborted := FAborted;
   Line := Text;
@@ -210,6 +211,19 @@ begin
           begin
             SetFont([fsItalic], clGray);
           end
+        end;
+
+        if Pos('Turbo Incremental Link', Line) <> 0 then
+        begin
+          ps := Pos(':', LblInfo.Caption);
+          if ps > 0 then
+            LText := Copy(LblInfo.Caption, ps + 1, MaxInt)
+          else
+            LText := LblInfo.Caption;
+          ps := Pos('(', LText);
+          if ps = 0 then
+            ps := Length(LText) + 1;
+          FormCompile.Linking(Trim(Copy(LText, 1, ps - 1)));
         end;
 
       end;
@@ -339,6 +353,9 @@ begin
       Compiler.Free;
     end;
 
+    if Success and Installer.Data.IgnoreMakeErrors then
+      Success := FormCompileMessages.Count = 0;
+
     if not Success then
     begin
       LblTarget.Caption := Format(RsError, [LblTarget.Hint]);
@@ -347,11 +364,6 @@ begin
       if FormCompileMessages.Count > 0 then
         FormCompileMessages.Show;
       FormCompile.Done(AbortReason);
-      {if AbortReason <> '' then
-        AbortReason := RsInstallError + #10#10 + AbortReason
-      else
-        AbortReason := RsInstallError;
-      MessageDlg(AbortReason, mtError, [mbOk], 0);}
     end
     else
     begin

@@ -229,6 +229,7 @@ type
     FDeleteFilesOnUninstall: Boolean;
     FCompileJclDcp: Boolean;
     FVerbose: Boolean;
+    FIgnoreMakeErrors: Boolean;
 
     function GetTargetConfig(Index: Integer): TTargetConfig;
     function GetJVCLDir: string;
@@ -273,6 +274,7 @@ type
     property DeleteFilesOnUninstall: Boolean read FDeleteFilesOnUninstall write FDeleteFilesOnUninstall default True;
     property CompileJclDcp: Boolean read FCompileJclDcp write FCompileJclDcp default True;
     property Verbose: Boolean read FVerbose write FVerbose default False;
+    property IgnoreMakeErrors: Boolean read FIgnoreMakeErrors write FIgnoreMakeErrors default False;
 
     property TargetConfig[Index: Integer]: TTargetConfig read GetTargetConfig;
     property Targets: TCompileTargetList read FTargets;

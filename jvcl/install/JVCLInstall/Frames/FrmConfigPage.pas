@@ -63,6 +63,7 @@ type
     CheckBoxVerbose: TCheckBox;
     CheckBoxGenerateMapFiles: TCheckBox;
     CheckBoxUnitVersioning: TCheckBox;
+    CheckBoxIgnoreMakeErrors: TCheckBox;
     procedure CheckBoxDeveloperInstallClick(Sender: TObject);
     procedure CheckBoxXPThemingClick(Sender: TObject);
     procedure ComboBoxTargetIDEChange(Sender: TObject);
@@ -213,6 +214,7 @@ begin
     CheckBoxCompileJclDcp.Visible := HasBCB;
     
     CheckBoxVerbose.Checked := Installer.Data.Verbose;
+    CheckBoxIgnoreMakeErrors.Checked := Installer.Data.IgnoreMakeErrors;
 
     UpdateJvclIncSettings;
   finally
@@ -272,6 +274,8 @@ begin
     Installer.Data.CompileJclDcp := CheckBoxCompileJclDcp.Checked
   else if Sender = CheckBoxVerbose then
     Installer.Data.Verbose := CheckBoxVerbose.Checked
+  else if Sender = CheckBoxIgnoreMakeErrors then
+    Installer.Data.IgnoreMakeErrors := CheckBoxIgnoreMakeErrors.Checked
   ;
 end;
 

@@ -351,7 +351,7 @@ object FrameConfigPage: TFrameConfigPage
   end
   object CheckBoxCompileJclDcp: TCheckBox
     Left = 272
-    Top = 224
+    Top = 248
     Width = 241
     Height = 17
     Hint = 
@@ -361,7 +361,7 @@ object FrameConfigPage: TFrameConfigPage
     Caption = 'Co&mpile JCL .dcp files for C++Builder'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 3
+    TabOrder = 4
     OnClick = CheckBoxCompileJclDcpClick
   end
   object CheckBoxVerbose: TCheckBox
@@ -376,6 +376,20 @@ object FrameConfigPage: TFrameConfigPage
     ParentShowHint = False
     ShowHint = True
     TabOrder = 2
+    OnClick = CheckBoxCompileJclDcpClick
+  end
+  object CheckBoxIgnoreMakeErrors: TCheckBox
+    Left = 272
+    Top = 224
+    Width = 241
+    Height = 17
+    Hint = 
+      'Activate this option if the installer should not stop when an er' +
+      'ror occured while'#13#10'compiling the packages.'
+    Caption = 'D&o not stop on errors'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 3
     OnClick = CheckBoxCompileJclDcpClick
   end
   object ImageListTargets: TImageList

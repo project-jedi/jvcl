@@ -85,7 +85,7 @@ type
     function IsFileUsed(ProjectGroup: TProjectGroup;
       ContainedFile: TContainedFile): Boolean;
   protected
-    function Make(TargetConfig: ITargetConfig; const Args: string;
+    function Make(TargetConfig: ITargetConfig; Args: string;
       CaptureLine: TCaptureLine; StartDir: string = ''): Integer;
     procedure DoIdle(Sender: TObject);
 
@@ -314,20 +314,23 @@ end;
 /// the JVCLPackageDir\bin directory is used. If the command could not be
 /// executed a message dialog is shown with the complete command line.
 /// </summary>
-function TJVCLCompiler.Make(TargetConfig: ITargetConfig; const Args: string;
+function TJVCLCompiler.Make(TargetConfig: ITargetConfig; Args: string;
   CaptureLine: TCaptureLine; StartDir: string): Integer;
 begin
   if StartDir = '' then
     StartDir := Data.JVCLPackagesDir + '\bin';
 
+  if Data.IgnoreMakeErrors then
+    Args := Trim('-i ' + Args);
+
   if Data.Verbose then
   begin
     // output command line
     if Assigned(CaptureLine) then
-      CaptureLine(#1 + '"' + TargetConfig.Target.Make + '" -l+ ' + Args, FAborted);
+      CaptureLine(#1 + '"' + TargetConfig.Target.Make + '" ' + Args, FAborted);
   end;
 
-  Result := CaptureExecute('"' + TargetConfig.Target.Make + '"', '-l+ ' + Args,
+  Result := CaptureExecute('"' + TargetConfig.Target.Make + '"', Args,
                            StartDir, CaptureLine, DoIdle);
   if Result < 0 then // command not found
     MessageBox(0, PChar(Format(RsCommandNotFound,
@@ -828,7 +831,7 @@ begin
     end;
 
     DccOpt := '-Q- -M';
-   // setup environment variables
+    // setup environment variables
     if TargetConfig.Build then
       DccOpt := '-Q- -M -B';
     if TargetConfig.GenerateMapFiles then
@@ -864,7 +867,7 @@ begin
     SetEnvironmentVariable('HPPDIR', Pointer(TargetConfig.HppDir)); // for BCB
     SetEnvironmentVariable('BPILIBDIR', Pointer(TargetConfig.DcpDir)); // for BCB
 
-   // add dxgettext unit directory
+    // add dxgettext unit directory
     { Dxgettext is now included in the JVCL as JvGnugettext
     if Data.JVCLConfig.Enabled['USE_DXGETTEXT'] then
       SetEnvironmentVariable('EXTRAUNITDIRS', Pointer(TargetConfig.DxgettextDir))
@@ -889,7 +892,7 @@ begin
       end;
     end;
 
-   // generate template.cfg file for PkgDir
+    // generate template.cfg file for PkgDir
     SetEnvironmentVariable('EDITION', PChar(Edition));
     SetEnvironmentVariable('PKGDIR', PChar(PkgDir));
     SetEnvironmentVariable('PKGDIR_MASTEREDITION', PChar(PkgDir));
@@ -910,7 +913,7 @@ begin
         Exit; // AbortReason is set in GeneratePackages
     end;
 
-   // generate the packages and .cfg files for PkgDir
+    // generate the packages and .cfg files for PkgDir
     if not GeneratePackages('JVCL', Edition, TargetConfig.JVCLPackagesDir) then
       Exit; // AbortReason is set in GeneratePackages
 
@@ -960,7 +963,7 @@ begin
           AbortReason := RsErrorCompilingPackages;
           Exit;
         end;
-       // update FPkgCount with the number of packages that MAKE will compile
+        // update FPkgCount with the number of packages that MAKE will compile
         FPkgCount := FCount;
       end;
       SetEnvironmentVariable('MAKEOPTIONS', nil);
@@ -1044,7 +1047,7 @@ begin
     Lines.Add('DCC = "$(ROOT)\bin\dcc32.exe" $(DCCOPT)');
     Lines.Add('');
 
-   // for JCL .dcp files
+    // for JCL .dcp files
     Lines.Add(Format('.path.dcp = "%s";"%s";"%s";"%s"',
       [ProjectGroup.TargetConfig.BplDir, ProjectGroup.TargetConfig.DcpDir,
        ProjectGroup.Target.BplDir, ProjectGroup.Target.DcpDir]));
@@ -1066,7 +1069,7 @@ begin
         [ProjectGroup.TargetConfig.BplDir, ProjectGroup.TargetConfig.DcpDir]));
       Lines.Add('');
 
-     // add files like jvcl.inc
+      // add files like jvcl.inc
       Dependencies := '';
       for depI := 0 to High(CommonDependencyFiles) do
         Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
@@ -1090,7 +1093,7 @@ begin
     for i := 0 to ProjectGroup.Count - 1 do
     begin
       Pkg := ProjectGroup.Packages[i];
-     // add package dependency lists
+      // add package dependency lists
       Dependencies := '';
       for depI := 0 to Pkg.JvDependencies.Count - 1 do
       begin
@@ -1110,7 +1113,7 @@ begin
         end;
       end;
 
-     // add JCL dependencies
+      // add JCL dependencies
       for depI := 0 to Pkg.JclDependencies.Count - 1 do
       begin
         if IsPackageUsed(ProjectGroup, Pkg.JclDependenciesReqPkg[depI]) then
@@ -1120,7 +1123,7 @@ begin
 
       if AutoDepend then
       begin
-       // Add all contained files and test for their condition.
+        // Add all contained files and test for their condition.
         for depI := 0 to Pkg.Info.ContainCount - 1 do
         begin
           if IsFileUsed(ProjectGroup, Pkg.Info.Contains[depI]) then
@@ -1161,10 +1164,10 @@ begin
       begin
         if not ProjectGroup.TargetConfig.Build then
         begin
-         // dcc32.exe does not recreate the .obj files when they already exist.
-         // So we must delete them before compilation. This is not needed when
-         // building the JVCL for BCB because all .obj files will be deleted by
-         // the Installer before entering the compilation process.
+          // dcc32.exe does not recreate the .obj files when they already exist.
+          // So we must delete them before compilation. This is not needed when
+          // building the JVCL for BCB because all .obj files will be deleted by
+          // the Installer before entering the compilation process.
           DeleteFiles := False;
           for depI := 0 to Pkg.Info.ContainCount - 1 do
           begin
