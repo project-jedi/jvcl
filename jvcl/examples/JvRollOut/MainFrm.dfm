@@ -1,8 +1,9 @@
 object Form1: TForm1
   Left = 241
   Top = 108
-  Width = 836
-  Height = 683
+  Width = 816
+  Height = 562
+  ActiveControl = RO1
   Caption = 'JvRollOut Demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -18,7 +19,7 @@ object Form1: TForm1
     Left = 280
     Top = 0
     Width = 5
-    Height = 568
+    Height = 447
     Cursor = crSizeWE
     AutoSnap = False
     Color = clMaroon
@@ -27,8 +28,8 @@ object Form1: TForm1
   end
   object Panel4: TPanel
     Left = 0
-    Top = 568
-    Width = 828
+    Top = 447
+    Width = 808
     Height = 88
     Align = alBottom
     BevelInner = bvRaised
@@ -61,7 +62,7 @@ object Form1: TForm1
       Top = 16
       Width = 113
       Height = 17
-      Caption = 'To&ggle Anywhere'
+      Caption = 'Toggle Anywhere'
       TabOrder = 2
       OnClick = chkToggleAnywhereClick
     end
@@ -76,19 +77,48 @@ object Form1: TForm1
       TabOrder = 3
       OnClick = chkGroupIndexClick
     end
+    object chkHideButton: TCheckBox
+      Left = 264
+      Top = 16
+      Width = 121
+      Height = 17
+      Caption = 'Hide Button Frame'
+      TabOrder = 4
+      OnClick = chkHideButtonClick
+    end
+    object chkHideFrame: TCheckBox
+      Left = 264
+      Top = 40
+      Width = 121
+      Height = 17
+      Caption = 'Hide Rollout Frame'
+      TabOrder = 5
+      OnClick = chkHideFrameClick
+    end
+    object chkImages: TCheckBox
+      Left = 400
+      Top = 16
+      Width = 97
+      Height = 17
+      Caption = 'Images'
+      Checked = True
+      State = cbChecked
+      TabOrder = 6
+      OnClick = chkImagesClick
+    end
   end
   object Panel3: TPanel
     Left = 285
     Top = 0
-    Width = 543
-    Height = 568
+    Width = 523
+    Height = 447
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
     object Splitter3: TSplitter
       Left = 0
       Top = 265
-      Width = 543
+      Width = 523
       Height = 5
       Cursor = crSizeNS
       Align = alTop
@@ -100,17 +130,17 @@ object Form1: TForm1
     object pnlRightAlign: TPanel
       Left = 0
       Top = 270
-      Width = 543
-      Height = 298
+      Width = 523
+      Height = 177
       Align = alClient
       BevelOuter = bvNone
       Color = clGray
       TabOrder = 0
       object Label3: TLabel
-        Left = 443
+        Left = 433
         Top = 0
-        Width = 100
-        Height = 298
+        Width = 90
+        Height = 177
         Align = alRight
         Alignment = taCenter
         AutoSize = False
@@ -118,26 +148,27 @@ object Form1: TForm1
         Color = clGray
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
-        Font.Height = -11
+        Font.Height = -13
         Font.Name = 'MS Shell Dlg 2'
-        Font.Style = []
+        Font.Style = [fsBold]
         ParentColor = False
         ParentFont = False
         Layout = tlCenter
       end
       object RO40: TJvRollOut
-        Left = 298
+        Left = 411
         Top = 0
-        Width = 145
-        Height = 298
+        Width = 22
+        Height = 177
         Align = alRight
         Caption = 'T'
+        Collapsed = True
         GroupIndex = 1
         ImageOptions.IndexCollapsed = 3
         ImageOptions.IndexExpanded = 2
         ImageOptions.Images = ImageList1
         Placement = plLeft
-        TabOrder = 0
+        TabOrder = 9
         TabStop = True
         ToggleAnywhere = False
         FAWidth = 145
@@ -146,159 +177,12 @@ object Form1: TForm1
         FCHeight = 152
       end
       object RO39: TJvRollOut
-        Left = 276
+        Left = 389
         Top = 0
         Width = 22
-        Height = 298
+        Height = 177
         Align = alRight
         Caption = 'S'
-        Collapsed = True
-        GroupIndex = 1
-        ImageOptions.IndexCollapsed = 3
-        ImageOptions.IndexExpanded = 2
-        ImageOptions.Images = ImageList1
-        Placement = plLeft
-        TabOrder = 1
-        TabStop = True
-        ToggleAnywhere = False
-        FAWidth = 145
-        FAHeight = 170
-        FCWidth = 22
-        FCHeight = 152
-      end
-      object RO38: TJvRollOut
-        Left = 254
-        Top = 0
-        Width = 22
-        Height = 298
-        Align = alRight
-        Caption = 'R'
-        Collapsed = True
-        GroupIndex = 1
-        ImageOptions.IndexCollapsed = 3
-        ImageOptions.IndexExpanded = 2
-        ImageOptions.Images = ImageList1
-        Placement = plLeft
-        TabOrder = 2
-        TabStop = True
-        ToggleAnywhere = False
-        FAWidth = 145
-        FAHeight = 170
-        FCWidth = 22
-        FCHeight = 152
-      end
-      object RO37: TJvRollOut
-        Left = 232
-        Top = 0
-        Width = 22
-        Height = 298
-        Align = alRight
-        Caption = 'Q'
-        Collapsed = True
-        GroupIndex = 1
-        ImageOptions.IndexCollapsed = 3
-        ImageOptions.IndexExpanded = 2
-        ImageOptions.Images = ImageList1
-        Placement = plLeft
-        TabOrder = 3
-        TabStop = True
-        ToggleAnywhere = False
-        FAWidth = 145
-        FAHeight = 170
-        FCWidth = 22
-        FCHeight = 152
-      end
-      object RO36: TJvRollOut
-        Left = 210
-        Top = 0
-        Width = 22
-        Height = 298
-        Align = alRight
-        Caption = 'P && &Z'
-        Collapsed = True
-        GroupIndex = 1
-        ImageOptions.IndexCollapsed = 3
-        ImageOptions.IndexExpanded = 2
-        ImageOptions.Images = ImageList1
-        Placement = plLeft
-        TabOrder = 4
-        TabStop = True
-        ToggleAnywhere = False
-        FAWidth = 145
-        FAHeight = 170
-        FCWidth = 22
-        FCHeight = 152
-      end
-      object RO35: TJvRollOut
-        Left = 188
-        Top = 0
-        Width = 22
-        Height = 298
-        Align = alRight
-        Caption = 'O && &Y'
-        Collapsed = True
-        GroupIndex = 1
-        ImageOptions.IndexCollapsed = 3
-        ImageOptions.IndexExpanded = 2
-        ImageOptions.Images = ImageList1
-        Placement = plLeft
-        TabOrder = 5
-        TabStop = True
-        ToggleAnywhere = False
-        FAWidth = 145
-        FAHeight = 170
-        FCWidth = 22
-        FCHeight = 152
-      end
-      object RO34: TJvRollOut
-        Left = 166
-        Top = 0
-        Width = 22
-        Height = 298
-        Align = alRight
-        Caption = 'N && &X'
-        Collapsed = True
-        GroupIndex = 1
-        ImageOptions.IndexCollapsed = 3
-        ImageOptions.IndexExpanded = 2
-        ImageOptions.Images = ImageList1
-        Placement = plLeft
-        TabOrder = 6
-        TabStop = True
-        ToggleAnywhere = False
-        FAWidth = 145
-        FAHeight = 170
-        FCWidth = 22
-        FCHeight = 152
-      end
-      object RO33: TJvRollOut
-        Left = 144
-        Top = 0
-        Width = 22
-        Height = 298
-        Align = alRight
-        Caption = 'M && &W'
-        Collapsed = True
-        GroupIndex = 1
-        ImageOptions.IndexCollapsed = 3
-        ImageOptions.IndexExpanded = 2
-        ImageOptions.Images = ImageList1
-        Placement = plLeft
-        TabOrder = 7
-        TabStop = True
-        ToggleAnywhere = False
-        FAWidth = 145
-        FAHeight = 170
-        FCWidth = 22
-        FCHeight = 152
-      end
-      object RO32: TJvRollOut
-        Left = 122
-        Top = 0
-        Width = 22
-        Height = 298
-        Align = alRight
-        Caption = 'L && &V'
         Collapsed = True
         GroupIndex = 1
         ImageOptions.IndexCollapsed = 3
@@ -313,11 +197,157 @@ object Form1: TForm1
         FCWidth = 22
         FCHeight = 152
       end
-      object RO31: TJvRollOut
-        Left = 100
+      object RO38: TJvRollOut
+        Left = 367
         Top = 0
         Width = 22
-        Height = 298
+        Height = 177
+        Align = alRight
+        Caption = 'R'
+        Collapsed = True
+        GroupIndex = 1
+        ImageOptions.IndexCollapsed = 3
+        ImageOptions.IndexExpanded = 2
+        ImageOptions.Images = ImageList1
+        Placement = plLeft
+        TabOrder = 7
+        TabStop = True
+        ToggleAnywhere = False
+        FAWidth = 145
+        FAHeight = 170
+        FCWidth = 22
+        FCHeight = 152
+      end
+      object RO37: TJvRollOut
+        Left = 222
+        Top = 0
+        Width = 145
+        Height = 177
+        Align = alRight
+        Caption = 'Q'
+        GroupIndex = 1
+        ImageOptions.IndexCollapsed = 3
+        ImageOptions.IndexExpanded = 2
+        ImageOptions.Images = ImageList1
+        Placement = plLeft
+        TabOrder = 6
+        TabStop = True
+        ToggleAnywhere = False
+        FAWidth = 145
+        FAHeight = 170
+        FCWidth = 22
+        FCHeight = 152
+      end
+      object RO36: TJvRollOut
+        Left = 200
+        Top = 0
+        Width = 22
+        Height = 177
+        Align = alRight
+        Caption = 'P && &Z'
+        Collapsed = True
+        GroupIndex = 1
+        ImageOptions.IndexCollapsed = 3
+        ImageOptions.IndexExpanded = 2
+        ImageOptions.Images = ImageList1
+        Placement = plLeft
+        TabOrder = 5
+        TabStop = True
+        ToggleAnywhere = False
+        FAWidth = 145
+        FAHeight = 170
+        FCWidth = 22
+        FCHeight = 152
+      end
+      object RO35: TJvRollOut
+        Left = 178
+        Top = 0
+        Width = 22
+        Height = 177
+        Align = alRight
+        Caption = 'O && &Y'
+        Collapsed = True
+        GroupIndex = 1
+        ImageOptions.IndexCollapsed = 3
+        ImageOptions.IndexExpanded = 2
+        ImageOptions.Images = ImageList1
+        Placement = plLeft
+        TabOrder = 4
+        TabStop = True
+        ToggleAnywhere = False
+        FAWidth = 145
+        FAHeight = 170
+        FCWidth = 22
+        FCHeight = 152
+      end
+      object RO34: TJvRollOut
+        Left = 156
+        Top = 0
+        Width = 22
+        Height = 177
+        Align = alRight
+        Caption = 'N && &X'
+        Collapsed = True
+        GroupIndex = 1
+        ImageOptions.IndexCollapsed = 3
+        ImageOptions.IndexExpanded = 2
+        ImageOptions.Images = ImageList1
+        Placement = plLeft
+        TabOrder = 3
+        TabStop = True
+        ToggleAnywhere = False
+        FAWidth = 145
+        FAHeight = 170
+        FCWidth = 22
+        FCHeight = 152
+      end
+      object RO33: TJvRollOut
+        Left = 134
+        Top = 0
+        Width = 22
+        Height = 177
+        Align = alRight
+        Caption = 'M && &W'
+        Collapsed = True
+        GroupIndex = 1
+        ImageOptions.IndexCollapsed = 3
+        ImageOptions.IndexExpanded = 2
+        ImageOptions.Images = ImageList1
+        Placement = plLeft
+        TabOrder = 2
+        TabStop = True
+        ToggleAnywhere = False
+        FAWidth = 145
+        FAHeight = 170
+        FCWidth = 22
+        FCHeight = 152
+      end
+      object RO32: TJvRollOut
+        Left = 112
+        Top = 0
+        Width = 22
+        Height = 177
+        Align = alRight
+        Caption = 'L && &V'
+        Collapsed = True
+        GroupIndex = 1
+        ImageOptions.IndexCollapsed = 3
+        ImageOptions.IndexExpanded = 2
+        ImageOptions.Images = ImageList1
+        Placement = plLeft
+        TabOrder = 1
+        TabStop = True
+        ToggleAnywhere = False
+        FAWidth = 145
+        FAHeight = 170
+        FCWidth = 22
+        FCHeight = 152
+      end
+      object RO31: TJvRollOut
+        Left = 90
+        Top = 0
+        Width = 22
+        Height = 177
         Align = alRight
         Caption = 'K && &U'
         Collapsed = True
@@ -326,7 +356,7 @@ object Form1: TForm1
         ImageOptions.IndexExpanded = 2
         ImageOptions.Images = ImageList1
         Placement = plLeft
-        TabOrder = 9
+        TabOrder = 0
         TabStop = True
         ToggleAnywhere = False
         FAWidth = 145
@@ -338,7 +368,7 @@ object Form1: TForm1
     object pnlLeftAlign: TPanel
       Left = 0
       Top = 0
-      Width = 543
+      Width = 523
       Height = 265
       Align = alTop
       BevelOuter = bvNone
@@ -347,7 +377,7 @@ object Form1: TForm1
       object Label4: TLabel
         Left = 0
         Top = 0
-        Width = 100
+        Width = 90
         Height = 265
         Align = alLeft
         Alignment = taCenter
@@ -356,26 +386,27 @@ object Form1: TForm1
         Color = clGray
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
-        Font.Height = -11
+        Font.Height = -13
         Font.Name = 'MS Shell Dlg 2'
-        Font.Style = []
+        Font.Style = [fsBold]
         ParentColor = False
         ParentFont = False
         Layout = tlCenter
       end
       object RO30: TJvRollOut
-        Left = 298
+        Left = 534
         Top = 0
-        Width = 145
+        Width = 22
         Height = 265
         Align = alLeft
         Caption = 'J && &T'
+        Collapsed = True
         GroupIndex = 1
         ImageOptions.IndexCollapsed = 7
         ImageOptions.IndexExpanded = 6
         ImageOptions.Images = ImageList1
         Placement = plLeft
-        TabOrder = 0
+        TabOrder = 9
         TabStop = True
         ToggleAnywhere = False
         FAWidth = 145
@@ -384,9 +415,9 @@ object Form1: TForm1
         FCHeight = 22
       end
       object RO29: TJvRollOut
-        Left = 276
+        Left = 389
         Top = 0
-        Width = 22
+        Width = 145
         Height = 265
         Align = alLeft
         Caption = 'I && &S'
@@ -396,126 +427,21 @@ object Form1: TForm1
         ImageOptions.IndexExpanded = 6
         ImageOptions.Images = ImageList1
         Placement = plLeft
-        TabOrder = 1
+        TabOrder = 8
         TabStop = True
         ToggleAnywhere = False
         FAWidth = 145
         FAHeight = 170
-        FCWidth = 22
+        FCWidth = 145
         FCHeight = 129
       end
       object RO28: TJvRollOut
-        Left = 254
+        Left = 367
         Top = 0
         Width = 22
         Height = 265
         Align = alLeft
         Caption = 'H && &R'
-        Collapsed = True
-        GroupIndex = 1
-        ImageOptions.IndexCollapsed = 7
-        ImageOptions.IndexExpanded = 6
-        ImageOptions.Images = ImageList1
-        Placement = plLeft
-        TabOrder = 2
-        TabStop = True
-        ToggleAnywhere = False
-        FAWidth = 145
-        FAHeight = 170
-        FCWidth = 22
-        FCHeight = 129
-      end
-      object RO27: TJvRollOut
-        Left = 232
-        Top = 0
-        Width = 22
-        Height = 265
-        Align = alLeft
-        Caption = 'G && &Q'
-        Collapsed = True
-        GroupIndex = 1
-        ImageOptions.IndexCollapsed = 7
-        ImageOptions.IndexExpanded = 6
-        ImageOptions.Images = ImageList1
-        Placement = plLeft
-        TabOrder = 3
-        TabStop = True
-        ToggleAnywhere = False
-        FAWidth = 145
-        FAHeight = 170
-        FCWidth = 22
-        FCHeight = 129
-      end
-      object RO26: TJvRollOut
-        Left = 210
-        Top = 0
-        Width = 22
-        Height = 265
-        Align = alLeft
-        Caption = 'F && &P'
-        Collapsed = True
-        GroupIndex = 1
-        ImageOptions.IndexCollapsed = 7
-        ImageOptions.IndexExpanded = 6
-        ImageOptions.Images = ImageList1
-        Placement = plLeft
-        TabOrder = 4
-        TabStop = True
-        ToggleAnywhere = False
-        FAWidth = 145
-        FAHeight = 170
-        FCWidth = 22
-        FCHeight = 129
-      end
-      object RO25: TJvRollOut
-        Left = 188
-        Top = 0
-        Width = 22
-        Height = 265
-        Align = alLeft
-        Caption = 'E && &O'
-        Collapsed = True
-        GroupIndex = 1
-        ImageOptions.IndexCollapsed = 7
-        ImageOptions.IndexExpanded = 6
-        ImageOptions.Images = ImageList1
-        Placement = plLeft
-        TabOrder = 5
-        TabStop = True
-        ToggleAnywhere = False
-        FAWidth = 145
-        FAHeight = 170
-        FCWidth = 22
-        FCHeight = 129
-      end
-      object RO24: TJvRollOut
-        Left = 166
-        Top = 0
-        Width = 22
-        Height = 265
-        Align = alLeft
-        Caption = 'D && &N'
-        Collapsed = True
-        GroupIndex = 1
-        ImageOptions.IndexCollapsed = 7
-        ImageOptions.IndexExpanded = 6
-        ImageOptions.Images = ImageList1
-        Placement = plLeft
-        TabOrder = 6
-        TabStop = True
-        ToggleAnywhere = False
-        FAWidth = 145
-        FAHeight = 170
-        FCWidth = 22
-        FCHeight = 129
-      end
-      object RO23: TJvRollOut
-        Left = 144
-        Top = 0
-        Width = 22
-        Height = 265
-        Align = alLeft
-        Caption = 'C && &M'
         Collapsed = True
         GroupIndex = 1
         ImageOptions.IndexCollapsed = 7
@@ -530,8 +456,112 @@ object Form1: TForm1
         FCWidth = 22
         FCHeight = 129
       end
+      object RO27: TJvRollOut
+        Left = 345
+        Top = 0
+        Width = 22
+        Height = 265
+        Align = alLeft
+        Caption = 'G && &Q'
+        Collapsed = True
+        GroupIndex = 1
+        ImageOptions.IndexCollapsed = 7
+        ImageOptions.IndexExpanded = 6
+        ImageOptions.Images = ImageList1
+        Placement = plLeft
+        TabOrder = 6
+        TabStop = True
+        ToggleAnywhere = False
+        FAWidth = 145
+        FAHeight = 170
+        FCWidth = 22
+        FCHeight = 129
+      end
+      object RO26: TJvRollOut
+        Left = 323
+        Top = 0
+        Width = 22
+        Height = 265
+        Align = alLeft
+        Caption = 'F && &P'
+        Collapsed = True
+        GroupIndex = 1
+        ImageOptions.IndexCollapsed = 7
+        ImageOptions.IndexExpanded = 6
+        ImageOptions.Images = ImageList1
+        Placement = plLeft
+        TabOrder = 5
+        TabStop = True
+        ToggleAnywhere = False
+        FAWidth = 145
+        FAHeight = 170
+        FCWidth = 22
+        FCHeight = 129
+      end
+      object RO25: TJvRollOut
+        Left = 301
+        Top = 0
+        Width = 22
+        Height = 265
+        Align = alLeft
+        Caption = 'E && &O'
+        Collapsed = True
+        GroupIndex = 1
+        ImageOptions.IndexCollapsed = 7
+        ImageOptions.IndexExpanded = 6
+        ImageOptions.Images = ImageList1
+        Placement = plLeft
+        TabOrder = 4
+        TabStop = True
+        ToggleAnywhere = False
+        FAWidth = 145
+        FAHeight = 170
+        FCWidth = 22
+        FCHeight = 129
+      end
+      object RO24: TJvRollOut
+        Left = 279
+        Top = 0
+        Width = 22
+        Height = 265
+        Align = alLeft
+        Caption = 'D && &N'
+        Collapsed = True
+        GroupIndex = 1
+        ImageOptions.IndexCollapsed = 7
+        ImageOptions.IndexExpanded = 6
+        ImageOptions.Images = ImageList1
+        Placement = plLeft
+        TabOrder = 3
+        TabStop = True
+        ToggleAnywhere = False
+        FAWidth = 145
+        FAHeight = 170
+        FCWidth = 22
+        FCHeight = 129
+      end
+      object RO23: TJvRollOut
+        Left = 134
+        Top = 0
+        Width = 145
+        Height = 265
+        Align = alLeft
+        Caption = 'C && &M'
+        GroupIndex = 1
+        ImageOptions.IndexCollapsed = 7
+        ImageOptions.IndexExpanded = 6
+        ImageOptions.Images = ImageList1
+        Placement = plLeft
+        TabOrder = 2
+        TabStop = True
+        ToggleAnywhere = False
+        FAWidth = 145
+        FAHeight = 170
+        FCWidth = 22
+        FCHeight = 129
+      end
       object RO22: TJvRollOut
-        Left = 122
+        Left = 112
         Top = 0
         Width = 22
         Height = 265
@@ -543,7 +573,7 @@ object Form1: TForm1
         ImageOptions.IndexExpanded = 6
         ImageOptions.Images = ImageList1
         Placement = plLeft
-        TabOrder = 8
+        TabOrder = 1
         TabStop = True
         ToggleAnywhere = False
         FAWidth = 145
@@ -552,7 +582,7 @@ object Form1: TForm1
         FCHeight = 129
       end
       object RO21: TJvRollOut
-        Left = 100
+        Left = 90
         Top = 0
         Width = 22
         Height = 265
@@ -564,7 +594,7 @@ object Form1: TForm1
         ImageOptions.IndexExpanded = 6
         ImageOptions.Images = ImageList1
         Placement = plLeft
-        TabOrder = 9
+        TabOrder = 0
         TabStop = True
         ToggleAnywhere = False
         FAWidth = 145
@@ -578,7 +608,7 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 280
-    Height = 568
+    Height = 447
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 2
@@ -586,7 +616,7 @@ object Form1: TForm1
       Left = 144
       Top = 0
       Width = 5
-      Height = 568
+      Height = 447
       Cursor = crSizeWE
       AutoSnap = False
       Color = clMaroon
@@ -597,7 +627,7 @@ object Form1: TForm1
       Left = 0
       Top = 0
       Width = 144
-      Height = 568
+      Height = 447
       Align = alLeft
       BevelOuter = bvNone
       Color = clGray
@@ -606,7 +636,7 @@ object Form1: TForm1
         Left = 0
         Top = 0
         Width = 144
-        Height = 100
+        Height = 40
         Align = alTop
         Alignment = taCenter
         AutoSize = False
@@ -614,16 +644,16 @@ object Form1: TForm1
         Color = clGray
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
-        Font.Height = -11
+        Font.Height = -13
         Font.Name = 'MS Shell Dlg 2'
-        Font.Style = []
+        Font.Style = [fsBold]
         ParentColor = False
         ParentFont = False
         Layout = tlCenter
       end
       object RO1: TJvRollOut
         Left = 0
-        Top = 100
+        Top = 40
         Width = 144
         Height = 22
         Align = alTop
@@ -638,15 +668,46 @@ object Form1: TForm1
         FAHeight = 170
         FCWidth = 22
         FCHeight = 22
+        object Edit1: TEdit
+          Left = 8
+          Top = 40
+          Width = 121
+          Height = 21
+          TabOrder = 0
+          Text = 'Edit1'
+        end
+        object Edit2: TEdit
+          Left = 8
+          Top = 72
+          Width = 121
+          Height = 21
+          TabOrder = 1
+          Text = 'Edit2'
+        end
+        object Edit3: TEdit
+          Left = 8
+          Top = 104
+          Width = 121
+          Height = 21
+          TabOrder = 2
+          Text = 'Edit3'
+        end
+        object Edit4: TEdit
+          Left = 8
+          Top = 136
+          Width = 121
+          Height = 21
+          TabOrder = 3
+          Text = 'Edit4'
+        end
       end
       object RO2: TJvRollOut
         Left = 0
-        Top = 122
+        Top = 62
         Width = 144
-        Height = 22
+        Height = 170
         Align = alTop
         Caption = '&2'
-        Collapsed = True
         GroupIndex = 1
         ImageOptions.Images = ImageList1
         TabOrder = 1
@@ -656,10 +717,46 @@ object Form1: TForm1
         FAHeight = 170
         FCWidth = 22
         FCHeight = 22
+        object Edit5: TEdit
+          Left = 8
+          Top = 40
+          Width = 121
+          Height = 21
+          TabStop = False
+          Color = clBtnFace
+          TabOrder = 0
+          Text = 'Edit1'
+        end
+        object Edit6: TEdit
+          Left = 8
+          Top = 72
+          Width = 121
+          Height = 21
+          TabStop = False
+          Color = clBtnFace
+          TabOrder = 1
+          Text = 'Edit2'
+        end
+        object Edit7: TEdit
+          Left = 8
+          Top = 104
+          Width = 121
+          Height = 21
+          TabOrder = 2
+          Text = 'Edit3'
+        end
+        object Edit8: TEdit
+          Left = 8
+          Top = 136
+          Width = 121
+          Height = 21
+          TabOrder = 3
+          Text = 'Edit4'
+        end
       end
       object RO3: TJvRollOut
         Left = 0
-        Top = 144
+        Top = 232
         Width = 144
         Height = 22
         Align = alTop
@@ -674,10 +771,46 @@ object Form1: TForm1
         FAHeight = 170
         FCWidth = 22
         FCHeight = 22
+        object Edit9: TEdit
+          Left = 8
+          Top = 40
+          Width = 121
+          Height = 21
+          TabOrder = 0
+          Text = 'Edit1'
+        end
+        object Edit10: TEdit
+          Left = 8
+          Top = 72
+          Width = 121
+          Height = 21
+          TabOrder = 1
+          Text = 'Edit2'
+        end
+        object Edit11: TEdit
+          Left = 8
+          Top = 104
+          Width = 121
+          Height = 21
+          TabStop = False
+          Color = clBtnFace
+          TabOrder = 2
+          Text = 'Edit3'
+        end
+        object Edit12: TEdit
+          Left = 8
+          Top = 136
+          Width = 121
+          Height = 21
+          TabStop = False
+          Color = clBtnFace
+          TabOrder = 3
+          Text = 'Edit4'
+        end
       end
       object RO4: TJvRollOut
         Left = 0
-        Top = 166
+        Top = 254
         Width = 144
         Height = 22
         Align = alTop
@@ -695,7 +828,7 @@ object Form1: TForm1
       end
       object RO5: TJvRollOut
         Left = 0
-        Top = 188
+        Top = 276
         Width = 144
         Height = 22
         Align = alTop
@@ -713,7 +846,7 @@ object Form1: TForm1
       end
       object RO6: TJvRollOut
         Left = 0
-        Top = 210
+        Top = 298
         Width = 144
         Height = 22
         Align = alTop
@@ -731,7 +864,7 @@ object Form1: TForm1
       end
       object RO7: TJvRollOut
         Left = 0
-        Top = 232
+        Top = 320
         Width = 144
         Height = 22
         Align = alTop
@@ -749,7 +882,7 @@ object Form1: TForm1
       end
       object RO8: TJvRollOut
         Left = 0
-        Top = 254
+        Top = 342
         Width = 144
         Height = 22
         Align = alTop
@@ -767,7 +900,7 @@ object Form1: TForm1
       end
       object RO9: TJvRollOut
         Left = 0
-        Top = 276
+        Top = 364
         Width = 144
         Height = 22
         Align = alTop
@@ -785,11 +918,12 @@ object Form1: TForm1
       end
       object RO10: TJvRollOut
         Left = 0
-        Top = 298
+        Top = 386
         Width = 144
-        Height = 170
+        Height = 22
         Align = alTop
         Caption = '1&0'
+        Collapsed = True
         GroupIndex = 1
         ImageOptions.Images = ImageList1
         TabOrder = 9
@@ -805,16 +939,16 @@ object Form1: TForm1
       Left = 149
       Top = 0
       Width = 131
-      Height = 568
+      Height = 447
       Align = alClient
       BevelOuter = bvNone
       Color = clGray
       TabOrder = 1
       object Label2: TLabel
         Left = 0
-        Top = 468
+        Top = 407
         Width = 131
-        Height = 100
+        Height = 40
         Align = alBottom
         Alignment = taCenter
         AutoSize = False
@@ -822,25 +956,26 @@ object Form1: TForm1
         Color = clGray
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
-        Font.Height = -11
+        Font.Height = -13
         Font.Name = 'MS Shell Dlg 2'
-        Font.Style = []
+        Font.Style = [fsBold]
         ParentColor = False
         ParentFont = False
         Layout = tlCenter
       end
       object RO20: TJvRollOut
         Left = 0
-        Top = 298
+        Top = 385
         Width = 131
-        Height = 170
+        Height = 22
         Align = alBottom
         Caption = '&J'
+        Collapsed = True
         GroupIndex = 1
         ImageOptions.IndexCollapsed = 5
         ImageOptions.IndexExpanded = 4
         ImageOptions.Images = ImageList1
-        TabOrder = 0
+        TabOrder = 9
         TabStop = True
         ToggleAnywhere = False
         FAWidth = 145
@@ -850,7 +985,7 @@ object Form1: TForm1
       end
       object RO19: TJvRollOut
         Left = 0
-        Top = 276
+        Top = 363
         Width = 131
         Height = 22
         Align = alBottom
@@ -860,7 +995,7 @@ object Form1: TForm1
         ImageOptions.IndexCollapsed = 5
         ImageOptions.IndexExpanded = 4
         ImageOptions.Images = ImageList1
-        TabOrder = 1
+        TabOrder = 8
         TabStop = True
         ToggleAnywhere = False
         FAWidth = 145
@@ -870,7 +1005,7 @@ object Form1: TForm1
       end
       object RO18: TJvRollOut
         Left = 0
-        Top = 254
+        Top = 341
         Width = 131
         Height = 22
         Align = alBottom
@@ -880,7 +1015,7 @@ object Form1: TForm1
         ImageOptions.IndexCollapsed = 5
         ImageOptions.IndexExpanded = 4
         ImageOptions.Images = ImageList1
-        TabOrder = 2
+        TabOrder = 7
         TabStop = True
         ToggleAnywhere = False
         FAWidth = 145
@@ -890,17 +1025,17 @@ object Form1: TForm1
       end
       object RO17: TJvRollOut
         Left = 0
-        Top = 210
+        Top = 319
         Width = 131
         Height = 22
         Align = alBottom
-        Caption = '&F'
+        Caption = '&G'
         Collapsed = True
         GroupIndex = 1
         ImageOptions.IndexCollapsed = 5
         ImageOptions.IndexExpanded = 4
         ImageOptions.Images = ImageList1
-        TabOrder = 3
+        TabOrder = 6
         TabStop = True
         ToggleAnywhere = False
         FAWidth = 145
@@ -910,7 +1045,27 @@ object Form1: TForm1
       end
       object RO16: TJvRollOut
         Left = 0
-        Top = 188
+        Top = 297
+        Width = 131
+        Height = 22
+        Align = alBottom
+        Caption = '&F'
+        Collapsed = True
+        GroupIndex = 1
+        ImageOptions.IndexCollapsed = 5
+        ImageOptions.IndexExpanded = 4
+        ImageOptions.Images = ImageList1
+        TabOrder = 5
+        TabStop = True
+        ToggleAnywhere = False
+        FAWidth = 145
+        FAHeight = 170
+        FCWidth = 22
+        FCHeight = 22
+      end
+      object RO15: TJvRollOut
+        Left = 0
+        Top = 275
         Width = 131
         Height = 22
         Align = alBottom
@@ -928,9 +1083,9 @@ object Form1: TForm1
         FCWidth = 22
         FCHeight = 22
       end
-      object RO15: TJvRollOut
+      object RO14: TJvRollOut
         Left = 0
-        Top = 166
+        Top = 253
         Width = 131
         Height = 22
         Align = alBottom
@@ -940,27 +1095,7 @@ object Form1: TForm1
         ImageOptions.IndexCollapsed = 5
         ImageOptions.IndexExpanded = 4
         ImageOptions.Images = ImageList1
-        TabOrder = 5
-        TabStop = True
-        ToggleAnywhere = False
-        FAWidth = 145
-        FAHeight = 170
-        FCWidth = 22
-        FCHeight = 22
-      end
-      object RO14: TJvRollOut
-        Left = 0
-        Top = 144
-        Width = 131
-        Height = 22
-        Align = alBottom
-        Caption = '&C'
-        Collapsed = True
-        GroupIndex = 1
-        ImageOptions.IndexCollapsed = 5
-        ImageOptions.IndexExpanded = 4
-        ImageOptions.Images = ImageList1
-        TabOrder = 6
+        TabOrder = 3
         TabStop = True
         ToggleAnywhere = False
         FAWidth = 145
@@ -970,17 +1105,17 @@ object Form1: TForm1
       end
       object RO13: TJvRollOut
         Left = 0
-        Top = 122
+        Top = 231
         Width = 131
         Height = 22
         Align = alBottom
-        Caption = '&B'
+        Caption = '&C'
         Collapsed = True
         GroupIndex = 1
         ImageOptions.IndexCollapsed = 5
         ImageOptions.IndexExpanded = 4
         ImageOptions.Images = ImageList1
-        TabOrder = 7
+        TabOrder = 2
         TabStop = True
         ToggleAnywhere = False
         FAWidth = 145
@@ -990,17 +1125,16 @@ object Form1: TForm1
       end
       object RO12: TJvRollOut
         Left = 0
-        Top = 100
+        Top = 61
         Width = 131
-        Height = 22
+        Height = 170
         Align = alBottom
-        Caption = '&A'
-        Collapsed = True
+        Caption = '&B'
         GroupIndex = 1
         ImageOptions.IndexCollapsed = 5
         ImageOptions.IndexExpanded = 4
         ImageOptions.Images = ImageList1
-        TabOrder = 8
+        TabOrder = 1
         TabStop = True
         ToggleAnywhere = False
         FAWidth = 145
@@ -1010,17 +1144,17 @@ object Form1: TForm1
       end
       object RO11: TJvRollOut
         Left = 0
-        Top = 232
+        Top = 39
         Width = 131
         Height = 22
         Align = alBottom
-        Caption = '&G'
+        Caption = '&A'
         Collapsed = True
         GroupIndex = 1
         ImageOptions.IndexCollapsed = 5
         ImageOptions.IndexExpanded = 4
         ImageOptions.Images = ImageList1
-        TabOrder = 9
+        TabOrder = 0
         TabStop = True
         ToggleAnywhere = False
         FAWidth = 145
@@ -1031,8 +1165,8 @@ object Form1: TForm1
     end
   end
   object ImageList1: TImageList
-    Left = 453
-    Top = 114
+    Left = 157
+    Top = 10
     Bitmap = {
       494C010108000900040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001001000000000000018

@@ -68,10 +68,28 @@ type
     Label3: TLabel;
     Label4: TLabel;
     chkGroupIndex: TCheckBox;
+    chkHideButton: TCheckBox;
+    chkHideFrame: TCheckBox;
+    Edit1: TEdit;
+    Edit2: TEdit;
+    Edit3: TEdit;
+    Edit4: TEdit;
+    Edit5: TEdit;
+    Edit6: TEdit;
+    Edit7: TEdit;
+    Edit8: TEdit;
+    Edit9: TEdit;
+    Edit10: TEdit;
+    Edit11: TEdit;
+    Edit12: TEdit;
+    chkImages: TCheckBox;
     procedure chkShowFocusClick(Sender: TObject);
     procedure chkTabStopClick(Sender: TObject);
     procedure chkToggleAnywhereClick(Sender: TObject);
     procedure chkGroupIndexClick(Sender: TObject);
+    procedure chkHideButtonClick(Sender: TObject);
+    procedure chkHideFrameClick(Sender: TObject);
+    procedure chkImagesClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -115,6 +133,47 @@ begin
   for i := 0 to ComponentCount - 1 do
     if Components[i] is TJvRollOut then
       TJvRollOut(Components[i]).GroupIndex := Ord(chkGroupIndex.Checked);
+end;
+
+procedure TForm1.chkHideButtonClick(Sender: TObject);
+const
+  cTopColor:array[boolean] of TColor = (clBtnHighlight, clNone);
+  cBtmColor:array[boolean] of TColor = (clBtnShadow, clNone);
+var i:integer;
+begin
+  for i := 0 to ComponentCount - 1 do
+    if Components[i] is TJvRollOut then
+    begin
+      TJvRollOut(Components[i]).Colors.ButtonTop := cTopColor[chkHideButton.Checked];
+      TJvRollOut(Components[i]).Colors.ButtonBottom := cBtmColor[chkHideButton.Checked];
+    end;
+end;
+
+procedure TForm1.chkHideFrameClick(Sender: TObject);
+const
+  cTopColor:array[boolean] of TColor = (clBtnShadow, clNone);
+  cBtmColor:array[boolean] of TColor = (clBtnHighlight, clNone);
+var i:integer;
+begin
+  for i := 0 to ComponentCount - 1 do
+    if Components[i] is TJvRollOut then
+    begin
+      TJvRollOut(Components[i]).Colors.FrameTop := cTopColor[chkHideFrame.Checked];
+      TJvRollOut(Components[i]).Colors.FrameBottom := cBtmColor[chkHideFrame.Checked];
+    end;
+end;
+
+procedure TForm1.chkImagesClick(Sender: TObject);
+var i:integer;
+begin
+  for i := 0 to ComponentCount - 1 do
+    if Components[i] is TJvRollOut then
+    begin
+      if chkImages.Checked then
+        TJvRollOut(Components[i]).ImageOptions.Images := ImageList1
+      else
+        TJvRollOut(Components[i]).ImageOptions.Images := nil;
+    end;
 end;
 
 end.
