@@ -100,7 +100,18 @@ implementation
 {$R-}
 
 uses
-  Consts, JvMaxMin;
+  Consts;
+
+// (rom) moved here to make JvMaxMin obsolete
+function MaxFloat(const Values: array of Extended): Extended;
+var
+  I: Cardinal;
+begin
+  Result := Values[Low(Values)];
+  for I := Low(Values)+1 to High(Values) do
+    if Values[I] > Result then
+      Result := Values[I];
+end;
 
 procedure InvalidBitmap; near;
 begin

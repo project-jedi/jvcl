@@ -200,11 +200,11 @@ procedure InitRSRUN(Database: TDatabase; const ConName: string;
 implementation
 
 uses
-  Forms, Controls, Dialogs, Consts, DBConsts,
+  Forms, Controls, Dialogs, Consts, DBConsts, Math,
   {$IFDEF COMPILER3_UP}
   BDEConst, DBCommon,
   {$ENDIF}
-  JvxConst, JvVCLUtils, JvFileUtil, JvStrUtils, JvMaxMin,
+  JvxConst, JvVCLUtils, JvFileUtil, JvStrUtils,
   {$IFNDEF WIN32}
   JvStr16,
   {$ENDIF}

@@ -37,7 +37,8 @@ uses
   Variants,
   {$ENDIF}
   Windows, SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Menus, ExtCtrls, Buttons, JvxCtrls, Clipbrd {, JvComponent};
+  StdCtrls, Menus, ExtCtrls, Buttons, Clipbrd,
+  JvxCtrls, JvBaseDlg;
 
 const
   DefCalcPrecision = 15;
@@ -46,7 +47,7 @@ type
   TJvCalcState = (csFirst, csValid, csError);
   TJvCalculatorForm = class;
 
-  TJvCalculator = class(TComponent)
+  TJvCalculator = class(TJvCommonDialogF)
   private
     FValue: Double;
     FMemory: Double;
@@ -70,7 +71,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function Execute: Boolean;
+    function Execute: Boolean; override;
     property CalcDisplay: Double read GetDisplay;
     property Memory: Double read FMemory;
   published
@@ -119,10 +120,11 @@ procedure SetupPopupCalculator(PopupCalc: TWinControl; APrecision: Byte;
 implementation
 
 uses
+  Math,
   {$IFNDEF WIN32}
   JvStr16,
   {$ENDIF}
-  JvVCLUtils, JvMaxMin, JvStrUtils, JvToolEdit;
+  JvVCLUtils, JvStrUtils, JvToolEdit;
 
 {$IFDEF WIN32}
 {$R *.Res}

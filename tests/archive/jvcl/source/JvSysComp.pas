@@ -220,8 +220,9 @@ type
 implementation
 
 uses
+  Math,
   JclSysUtils,
-  JvMaxMin, JvFunctions;
+  JvFunctions;
 
 resourcestring
   RsListIndex = 'Process list index error';

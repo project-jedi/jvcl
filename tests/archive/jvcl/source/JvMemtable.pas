@@ -110,11 +110,11 @@ type
 implementation
 
 uses
-  DBConsts,
+  DBConsts, Math,
   {$IFDEF COMPILER3_UP}
   BDEConst,
   {$ENDIF}
-  JvMaxMin, JvDBUtils, JvBdeUtils;
+  JvDBUtils, JvBdeUtils;
 
 { Memory tables are created in RAM and deleted when you close them. They
   are much faster and are very useful when you need fast operations on

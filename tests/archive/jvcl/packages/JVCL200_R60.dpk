@@ -337,7 +337,6 @@ contains
   JvIcoList in '..\source\JvIcoList.pas',
   JvObjStr in '..\source\JvObjStr.pas',
   JvPickDate in '..\source\JvPickDate.pas',
-  JvMaxMin in '..\source\JvMaxMin.pas',
   JvConst in '..\source\JvConst.pas',
   JvAppUtils in '..\source\JvAppUtils.pas',
   JvStrUtils in '..\source\JvStrUtils.pas',

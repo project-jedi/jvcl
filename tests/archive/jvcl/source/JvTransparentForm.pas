@@ -40,20 +40,20 @@ type
     FMask: TBitmap;
     FComponentOwner: TCustomForm;
     FAutoSize: Boolean;
-    FEnable: Boolean;
+    FActive: Boolean;
     procedure SetAutoSize(Value: Boolean);
-    procedure SetEnable(Value: Boolean);
+    procedure SetActive(Value: Boolean);
     procedure SetMask(Value: TBitmap);
   protected
     procedure UpdateRegion;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    { (RB) Must be published before Enable; better enable in Loaded }
+    // (rom) renamed to Active as (RB) asked for here
+    property Active: Boolean read FActive write SetActive;
     property Mask: TBitmap read FMask write SetMask;
-    { (RB) Rename Enable to Active? }
-    property Enable: Boolean read FEnable write SetEnable;
     property AutoSize: Boolean read FAutoSize write SetAutoSize;
   end;
 
@@ -83,41 +83,51 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvTransparentForm.Loaded;
+begin
+  inherited Loaded;
+  Mask := FMask;
+  Active := FActive;
+  AutoSize := FAutoSize;
+end;
+
 procedure TJvTransparentForm.SetMask(Value: TBitmap);
 begin
   FMask.Assign(Value);
-  if FEnable then
-    UpdateRegion
-  else
-    { Remove region }
-    SetWindowRgn(FComponentOwner.Handle, 0, True);
+  if not (csLoading in ComponentState) then
+    if Active then
+      UpdateRegion
+    else
+      { Remove region }
+      SetWindowRgn(FComponentOwner.Handle, 0, True);
 end;
 
-procedure TJvTransparentForm.SetEnable(Value: Boolean);
+procedure TJvTransparentForm.SetActive(Value: Boolean);
 begin
-  FEnable := Value;
-  if Value then
-  begin
-    { Remove caption }
-    SetWindowLong(FComponentOwner.Handle, GWL_STYLE,
-      GetWindowLong(FComponentOwner.Handle, GWL_STYLE) and not WS_CAPTION);
-    { Set region }
-    UpdateRegion;
-  end
-  else
-  begin
-    { Enable caption }
-    SetWindowLong(FComponentOwner.Handle, GWL_STYLE,
-      GetWindowLong(FComponentOwner.Handle, GWL_STYLE) or WS_CAPTION);
-    { Remove region }
-    SetWindowRgn(FComponentOwner.Handle, 0, True);
-  end;
+  FActive := Value;
+  if not (csLoading in ComponentState) then
+    if Value then
+    begin
+      { Remove caption }
+      SetWindowLong(FComponentOwner.Handle, GWL_STYLE,
+        GetWindowLong(FComponentOwner.Handle, GWL_STYLE) and not WS_CAPTION);
+      { Set region }
+      UpdateRegion;
+    end
+    else
+    begin
+     { Enable caption }
+      SetWindowLong(FComponentOwner.Handle, GWL_STYLE,
+        GetWindowLong(FComponentOwner.Handle, GWL_STYLE) or WS_CAPTION);
+      { Remove region }
+      SetWindowRgn(FComponentOwner.Handle, 0, True);
+    end;
 end;
 
 procedure TJvTransparentForm.SetAutoSize(Value: Boolean);
 begin
   FAutoSize := Value;
-  if Value and FEnable then
+  if Value and Active and not (csLoading in ComponentState) then
   begin
     FComponentOwner.Width := FMask.Width;
     FComponentOwner.Height := FMask.Height;

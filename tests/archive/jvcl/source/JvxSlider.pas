@@ -286,8 +286,8 @@ type
 implementation
 
 uses
-  Consts, Forms, SysUtils,
-  JvVCLUtils, JvMaxMin, JvConst, JvTypes;
+  Consts, Forms, SysUtils, Math,
+  JvVCLUtils, JvConst, JvTypes;
 
 {$IFDEF WIN32}
 {$R *.Res}

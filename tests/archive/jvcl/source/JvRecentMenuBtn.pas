@@ -61,8 +61,7 @@ type
 implementation
 
 uses
-  ShlObj, ActiveX,
-  JvMaxMin;
+  ShlObj, ActiveX, Math;
 
 resourcestring
   RC_EmptyItem = '<Empty>';

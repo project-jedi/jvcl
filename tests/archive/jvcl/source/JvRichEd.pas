@@ -607,11 +607,10 @@ var
 implementation
 
 uses
-  Printers, ComStrs, OleConst, OleDlg,
   {$IFDEF COMPILER3_UP}
   OleCtnrs,
   {$ENDIF}
-  JvMaxMin;
+  Printers, ComStrs, OleConst, OleDlg, Math;
 
 const
   RTFConversionFormat: TRichConversionFormat =

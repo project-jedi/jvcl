@@ -63,7 +63,7 @@ var
 implementation
 
 uses
-  JvMaxMin;
+  Math;
 
 const
   defSplashHeight = 64;

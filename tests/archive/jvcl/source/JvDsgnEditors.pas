@@ -162,8 +162,8 @@ type
 implementation
 
 uses
-  FileCtrl, TypInfo, Menus,
-  JvTypes, JvGroupHeader, JvFooter, JvStrLEdit, JvDateTimeDlg, JvMaxMin;
+  FileCtrl, TypInfo, Menus, Math,
+  JvTypes, JvGroupHeader, JvFooter, JvStrLEdit, JvDateTimeDlg;
 
 //=== TFilenameProperty ======================================================
 

@@ -82,8 +82,8 @@ function GetHintControl: TControl;
 implementation
 
 uses
-  SysUtils,
-  JvVCLUtils, JvMaxMin;
+  SysUtils, Math,
+  JvVCLUtils;
 
 var
   HintStyle: THintStyle = hsRectangle;

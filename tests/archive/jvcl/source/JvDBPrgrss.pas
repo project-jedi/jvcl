@@ -141,13 +141,14 @@ type
 implementation
 
 uses
+  Math,
   {$IFDEF WIN32}
   Windows,
   {$ELSE}
   WinTypes, WinProcs, JvStr16,
   {$ENDIF WIN32}
   Forms, SysUtils, StdCtrls,
-  JvMaxMin, JvPrgrss;
+  JvPrgrss;
 
 const
   cbQRYPROGRESS = cbRESERVED4;

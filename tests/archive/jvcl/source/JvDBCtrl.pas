@@ -862,12 +862,12 @@ type
 implementation
 
 uses
-  SysUtils, JvStrUtils, Dialogs, DbConsts, JvAppUtils, JvVCLUtils,
-  JvDBUtils,
+  SysUtils, Dialogs, DbConsts, Math,
+  JvStrUtils, JvAppUtils, JvVCLUtils, JvDBUtils,
   {$IFNDEF COMPILER3_UP}
   JvBdeUtils,
   {$ENDIF}
-  JvCalc, JvMaxMin, JvxConst;
+  JvCalc, JvxConst;
 
 {$IFDEF WIN32}
 {$R *.Res}

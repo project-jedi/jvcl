@@ -189,7 +189,8 @@ type
 implementation
 
 uses
-  JvTypes, JvMaxMin;
+  Math,
+  JvTypes;
 
 //=== TJvImageWindow =========================================================
 

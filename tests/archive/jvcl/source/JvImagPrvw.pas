@@ -84,7 +84,8 @@ function SelectImage(var AFileName: string; const Extensions, Filter: string): B
 implementation
 
 uses
-  JvMaxMin, JvConst, JvVCLUtils, JvGraph;
+  Math,
+  JvConst, JvVCLUtils, JvGraph;
 
 {$R *.DFM}
 

@@ -106,8 +106,8 @@ function ClipboardFormatToView(Value: Word): TClipboardViewFormat;
 implementation
 
 uses
-  Grids, JvClipIcon,
-  JvMaxMin, JvxConst,
+  Grids, Math,
+  JvClipIcon, JvxConst,
   {$IFNDEF WIN32}
   JvStr16,
   {$ENDIF}

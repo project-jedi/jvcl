@@ -171,8 +171,8 @@ type
 implementation
 
 uses
-  TypInfo,
-  JvMaxMin, JvxConst, JvProps;
+  TypInfo, Math,
+  JvxConst, JvProps;
 
 {$R *.DFM}
 

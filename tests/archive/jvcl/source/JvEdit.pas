@@ -231,7 +231,7 @@ type
 implementation
 
 uses
-  JvMaxMin;
+  Math;
 
 constructor TJvCustomEdit.Create(AOwner: TComponent);
 begin

@@ -541,8 +541,8 @@ function NewSpeedItem(AOwner: TComponent; ASpeedbar: TJvSpeedBar; Section: Integ
 implementation
 
 uses
-  Consts,
-  JvMaxMin, JvVCLUtils, JvAppUtils, JvStrUtils, JvConst, JvSbSetup;
+  Consts, Math,
+  JvVCLUtils, JvAppUtils, JvStrUtils, JvConst, JvSbSetup;
 
 {$IFDEF COMPILER3_UP}
 resourcestring
@@ -562,6 +562,16 @@ var
 
 const
   Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
+
+// (rom) moved here to make JvMaxMin obsolete
+procedure SwapInt(var Int1, Int2: Integer);
+var
+  I: Integer;
+begin
+  I := Int1;
+  Int1 := Int2;
+  Int2 := I;
+end;
 
 //=== TJvSpeedBarSection =====================================================
 

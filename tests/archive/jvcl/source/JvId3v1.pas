@@ -107,7 +107,7 @@ function WriteID3v1Tag(const AFileName: string; const ATag: TId3v1Tag): Boolean;
 implementation
 
 uses
-  JvMaxMin;
+  Math;
 
 const
   CID3v1Tag = 'TAG';

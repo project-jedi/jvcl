@@ -697,7 +697,7 @@ type
 implementation
 
 uses
-  DBConsts, Dialogs,
+  DBConsts, Dialogs, Math,
   {$IFDEF COMPILER7_UP}
   Themes,
   {$ENDIF}
@@ -707,7 +707,7 @@ uses
   {$IFNDEF COMPILER3_UP}
   JvBdeUtils,
   {$ENDIF}
-  JvVCLUtils, JvMaxMin, JvClipIcon;
+  JvVCLUtils, JvClipIcon;
 
 procedure CheckLookupFormat(const AFormat: string);
 var

@@ -220,8 +220,8 @@ uses
   {$IFDEF WIN32}
   CommCtrl,
   {$ENDIF}
-  Forms, ExtCtrls,
-  JvConst, JvMaxMin, JvVCLUtils, JvClipIcon, JvStrUtils;
+  Forms, ExtCtrls, Math,
+  JvConst, JvVCLUtils, JvClipIcon, JvStrUtils;
 
 const
   DefMarginColor: TColor = clBlue;

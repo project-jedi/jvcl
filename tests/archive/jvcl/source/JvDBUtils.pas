@@ -157,8 +157,8 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF}
-  Forms, Controls, Dialogs, DBConsts,
-  JvxConst, JvVCLUtils, JvAppUtils, JvStrUtils, JvMaxMin, JvDateUtil;
+  Forms, Controls, Dialogs, DBConsts, Math,
+  JvxConst, JvVCLUtils, JvAppUtils, JvStrUtils, JvDateUtil;
 
 { Utility routines }
 

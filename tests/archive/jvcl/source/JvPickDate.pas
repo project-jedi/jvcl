@@ -74,11 +74,11 @@ const
 implementation
 
 uses
-  Messages, Consts, Forms, Buttons, StdCtrls, Grids, ExtCtrls,
+  Messages, Consts, Forms, Buttons, StdCtrls, Grids, ExtCtrls, Math,
   {$IFDEF COMPILER7_UP}
   Themes,
   {$ENDIF}
-  JvxCtrls, JvxConst, JvToolEdit, JvVCLUtils, JvMaxMin, JvStrUtils;
+  JvxCtrls, JvxConst, JvToolEdit, JvVCLUtils, JvStrUtils;
 
 {$IFDEF WIN32}
 {$R *.Res}

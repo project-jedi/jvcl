@@ -177,7 +177,8 @@ const
 implementation
 
 uses
-  JvCtlConst, JvStrUtil, JvMaxMin;
+  Math,
+  JvCtlConst, JvStrUtil;
 
 {$R *.DFM}
 

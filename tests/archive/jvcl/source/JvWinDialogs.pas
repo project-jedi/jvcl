@@ -279,7 +279,7 @@ type
     property Icon: TIcon read FIcon write SetIcon;
   end;
 
-  TJvObjectPropertiesDialog = class(TJvCommonDialog)
+  TJvObjectPropertiesDialog = class(TJvCommonDialogF)
   private
     FObjectName: TFileName;
     FObjectType: TShellObjectType;

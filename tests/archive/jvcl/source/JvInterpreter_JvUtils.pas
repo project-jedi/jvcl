@@ -41,8 +41,8 @@ implementation
 
 uses
   SysUtils, Classes, Graphics, Forms, Controls, StdCtrls, ExtCtrls,
-  Dialogs, Menus,
-  JvUtils, JvMaxMin, JvInterpreter_Windows;
+  Dialogs, Menus, Math,
+  JvUtils, JvInterpreter_Windows;
 
 { function ReplaceAllSokr(S: string; Words, Frases: TStrings): string; }
 

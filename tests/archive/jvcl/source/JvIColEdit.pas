@@ -124,8 +124,8 @@ procedure EditIconList(IconList: TJvIconList);
 implementation
 
 uses
-  SysUtils, Clipbrd, Consts,
-  JvClipIcon, JvVCLUtils, JvxConst, JvMaxMin, JvAniFile;
+  SysUtils, Clipbrd, Consts, Math,
+  JvClipIcon, JvVCLUtils, JvxConst, JvAniFile;
 
 {$B-}
 {$IFDEF WIN32}

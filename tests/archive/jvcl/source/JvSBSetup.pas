@@ -94,8 +94,8 @@ procedure ShowSpeedbarSetupWindow(JvSpeedBar: TJvSpeedBar; HelpCtx: THelpContext
 implementation
 
 uses
-  Consts,
-  JvVCLUtils, JvMaxMin, JvxConst;
+  Consts, Math,
+  JvVCLUtils, JvxConst;
 
 {$R *.DFM}
 

@@ -326,8 +326,8 @@ type
 implementation
 
 uses
-  Consts,
-  JvStrUtils, JvMaxMin, JvCalc;
+  Consts, Math,
+  JvStrUtils, JvCalc;
 
 {$R *.Res}
 

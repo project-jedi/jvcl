@@ -255,7 +255,7 @@ type
 implementation
 
 uses
-  JvMaxMin;
+  Math;
 
 { utility }
 

@@ -443,6 +443,9 @@ type
 
 implementation
 
+uses
+  JvFunctions;
+
 {$R RES_Breathe.res}
 
 resourcestring
@@ -959,62 +962,6 @@ begin
   OptionsChanged(Self);
   if Assigned(FOnSkinLoaded) then
     FOnSkinLoaded(Self);
-end;
-
-// (rom) replace with JCL version
-
-function RegionFromBitmap(Image: TBitmap): HRGN;
-var
-  rgn1, rgn2: HRGN;
-  startx, endx, x, y: Integer;
-  TransParentColor: TRGBTriple;
-  bmp: TBitmap;
-  p: PRGBArray;
-begin
-  rgn1 := 0;
-
-  bmp := TBitmap.Create;
-  bmp.Assign(Image);
-  bmp.PixelFormat := pf24Bit;
-
-  if (bmp.Height > 0) and (bmp.Width > 0) then
-  begin
-    p := bmp.ScanLine[0];
-    TransParentColor := p[0];
-  end;
-
-  for y := 0 to bmp.Height - 1 do
-  begin
-    x := 0;
-    p := bmp.ScanLine[y];
-    repeat
-      while (x < bmp.Width) and CompareMem(@p[x], @TransParentColor, 3) do
-        Inc(x);
-      Inc(x);
-      startx := x;
-      while (x < bmp.Width) and not CompareMem(@p[x], @TransParentColor, 3) do
-        Inc(x);
-      endx := x;
-
-      // do we have some pixels?
-      if startx < bmp.Width then
-      begin
-        if rgn1 = 0 then
-          // Create a region to start with
-          rgn1 := CreateRectRgn(startx + 1, y, endx, y + 1)
-        else
-        begin
-          rgn2 := CreateRectRgn(startx + 1, y, endx, y + 1);
-          if rgn2 <> 0 then
-            CombineRgn(rgn1, rgn1, rgn2, RGN_OR);
-          DeleteObject(rgn2);
-        end;
-      end;
-    until x >= Image.Width;
-  end;
-
-  bmp.Free;
-  Result := rgn1;
 end;
 
 procedure TJvBreatheSkin.OptionsChanged(Sender: TObject);

@@ -235,8 +235,7 @@ implementation
 {$IFDEF COMPILER3_UP}
 
 uses
-  Forms, DbConsts,
-  JvMaxMin;
+  Forms, DbConsts, Math;
 
 resourcestring
   SMemNoRecords = 'No data found';

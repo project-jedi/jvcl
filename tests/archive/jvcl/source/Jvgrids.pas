@@ -185,8 +185,8 @@ type
 implementation
 
 uses
-  SysUtils,
-  JvVCLUtils, JvMaxMin, JvAppUtils;
+  SysUtils, Math,
+  JvVCLUtils, JvAppUtils;
 
 const
   {$IFDEF WIN32}

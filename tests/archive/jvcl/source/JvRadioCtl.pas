@@ -232,7 +232,7 @@ procedure Register;
 implementation
 
 uses
-  Consts, JvMaxMin;
+  Consts, Math;
 
 const
   dAngleToRadian = Pi / 1800;
@@ -739,10 +739,10 @@ begin
         Canvas.MoveTo(Outer.X, Outer.Y);
         Inner := AngleToPoint(Angle, Center, (101 - FPointerSize) * InnerRadius div 100);
         Canvas.LineTo(Inner.X, Inner.Y);
-        FPointerRect := Rect(JvMaxMin.Min(Inner.X, Outer.X),
-          JvMaxMin.Min(Inner.Y, Outer.Y),
-          JvMaxMin.Max(Inner.X, Outer.X),
-          JvMaxMin.Max(Inner.Y, Outer.Y));
+        FPointerRect := Rect(Math.Min(Inner.X, Outer.X),
+          Math.Min(Inner.Y, Outer.Y),
+          Math.Max(Inner.X, Outer.X),
+          Math.Max(Inner.Y, Outer.Y));
       end;
     psTriangle:
       begin

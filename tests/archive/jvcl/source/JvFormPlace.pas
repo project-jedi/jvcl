@@ -52,7 +52,7 @@ type
 implementation
 
 uses
-  MultiMon, JvMaxMin;
+  MultiMon, Math;
 
 resourcestring
   // (rom) changed to JVCL

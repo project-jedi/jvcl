@@ -186,7 +186,7 @@ type
 implementation
 
 uses
-  JvMaxMin;
+  Math;
 
 const
   cInitTime = 360;

@@ -173,7 +173,8 @@ type
 implementation
 
 uses
-  JvStrUtil, JvMaxMin;
+  Math,
+  JvStrUtil;
 
 //=== TJvSymbolColor =========================================================
 

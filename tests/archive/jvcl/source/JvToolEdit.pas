@@ -868,14 +868,14 @@ function PaintComboEdit(Editor: TJvCustomComboEdit; const AText: string;
 implementation
 
 uses
-  ShellAPI, Consts,
+  ShellAPI, Consts, Math,
   {$IFDEF COMPILER7_UP}
   Themes,
   {$ENDIF}
   {$IFDEF COMPILER3_UP}
   ExtDlgs,
   {$ENDIF}
-  JvxConst, JvVCLUtils, JvStrUtils, JvFileUtil, JvPickDate, JvMaxMin;
+  JvxConst, JvVCLUtils, JvStrUtils, JvFileUtil, JvPickDate;
 
 {$IFDEF WIN32}
 {$R *.Res}

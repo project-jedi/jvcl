@@ -424,7 +424,8 @@ function iif(const Test: Boolean; const ATrue, AFalse: Variant): Variant;
 implementation
 
 uses
-  JvCtlConst, JvMaxMin;
+  Math,
+  JvCtlConst;
 
 function GetLineByPos(const S: string; const Pos: Integer): Integer;
 var
@@ -2339,7 +2340,7 @@ begin
         Form.Height := 0;
         Form.Width := 0;
         Form.Show;
-        for I := 0 to max(h div 5, w div 5) do
+        for I := 0 to Max(h div 5, w div 5) do
         begin
           if Form.Height < h then
             Form.Height := Form.Height + 5;

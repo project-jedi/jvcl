@@ -104,8 +104,8 @@ implementation
   (ANIEDIT.C, copyright (C) Microsoft Corp., 1993-1996) }
 
 uses
-  Consts,
-  JvVCLUtils, JvMaxMin, JvGraph, JvIcoList, JvClipIcon;
+  Consts, Math,
+  JvVCLUtils, JvGraph, JvIcoList, JvClipIcon;
 
 const
   FOURCC_ACON = 'ACON';

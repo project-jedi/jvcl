@@ -145,8 +145,8 @@ type
 implementation
 
 uses
-  Consts, Forms, SysUtils,
-  JvVCLUtils, JvMaxMin;
+  Consts, Forms, SysUtils, Math,
+  JvVCLUtils;
 
 const
   MinInterval = 100; { 0.1 sec }

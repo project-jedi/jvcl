@@ -486,7 +486,7 @@ uses
   {$IFDEF COMPILER6_UP}
   DateUtils,
   {$ENDIF COMPILER6_UP}
-  JvMaxMin;
+  Math;
 
 {$R JvTIMELINEBITMAPS.RES}
 

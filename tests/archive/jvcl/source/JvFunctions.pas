@@ -177,7 +177,7 @@ procedure AssociateExtension(IconPath, ProgramName, Path, Extension: string);
 function GetRecentDocs: TStringList;
 procedure AddToRecentDocs(const Filename: string);
 // create a region from a bitmap
-function RegionFromBitmap(Image: TBitmap): HRGN;
+function RegionFromBitmap(const Image: TBitmap): HRGN;
 
 // returns a list of all windows currently visible, the Objects property is filled with their window handle
 procedure GetVisibleWindows(List: Tstrings);
@@ -309,7 +309,7 @@ uses
   MMSystem,
   ShlObj, CommCtrl,
   JvDirectories,
-  JclStrings;
+  JclStrings, JclGraphics;
 
 resourcestring
   SWin32Error = 'Win32 Error.  Code: %d.'#10'%s';
@@ -1223,58 +1223,11 @@ begin
   SHAddToRecentDocs(SHARD_PATH, PChar(Filename));
 end;
 
-function RegionFromBitmap(Image: TBitmap): HRGN;
-var
-  rgn1, rgn2: HRGN;
-  startx, endx, x, y: Integer;
-  TransparentColor: TRGBTriple;
-  Bmp: TBitmap;
-  p: PRGBArray;
+function RegionFromBitmap(const Image: TBitmap): HRGN;
 begin
-  rgn1 := 0;
-
-  Bmp := TBitmap.Create;
-  Bmp.Assign(Image);
-  Bmp.PixelFormat := pf24Bit;
-
-  if (Bmp.Height > 0) and (Bmp.Width > 0) then
-  begin
-    p := Bmp.ScanLine[0];
-    TransparentColor := p[0];
-  end;
-
-  for y := 0 to Bmp.Height - 1 do
-  begin
-    x := 0;
-    p := Bmp.ScanLine[y];
-    repeat
-      while (x < Bmp.Width) and (CompareMem(@p[x], @TransparentColor, 3)) do
-        Inc(x);
-      Inc(x);
-      startx := x;
-      while (x < Bmp.Width) and (not (CompareMem(@p[x], @TransparentColor, 3))) do
-        Inc(x);
-      endx := x;
-
-      // do we have some pixels?
-      if startx < Bmp.Width then
-      begin
-        if rgn1 = 0 then
-          // Create a region to start with
-          rgn1 := CreateRectRgn(startx + 1, y, endx, y + 1)
-        else
-        begin
-          rgn2 := CreateRectRgn(startx + 1, y, endx, y + 1);
-          if rgn2 <> 0 then
-            CombineRgn(rgn1, rgn1, rgn2, RGN_OR);
-          DeleteObject(rgn2);
-        end;
-      end;
-    until x >= Image.Width;
-  end;
-
-  Bmp.Free;
-  Result := rgn1;
+  Result := 0;
+  if Assigned(Image) and not Image.Empty then
+    Result := CreateRegionFromBitmap(Image, Image.Canvas.Pixels[0, 0], rmExclude);
 end;
 
 function EnumWindowsProc(Handle: THandle; lParam: TStrings): Boolean; stdcall;

@@ -231,7 +231,8 @@ type
 implementation
 
 uses
-  JvHtControls, JvDsgnIntf, JvMaxMin;
+  Math,
+  JvHtControls, JvDsgnIntf;
 
 type
   TJvGlyphList = class(TImageList)

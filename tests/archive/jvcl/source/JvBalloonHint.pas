@@ -219,11 +219,12 @@ type
 implementation
 
 uses
-  SysUtils, CommCtrl, Registry, MMSystem, // needed for sndPlaySound
+  SysUtils, CommCtrl, Registry, Math, MMSystem, // needed for sndPlaySound
+  ComCtrls, // needed for GetComCtlVersion
   {$IFDEF COMPILER7_UP}
   Themes,
   {$ENDIF}
-  JvMaxMin, JvWndProcHook, ComCtrls; // needed for GetComCtlVersion
+  JvWndProcHook;
 
 const
   { TJvStemSize = (ssSmall, ssNormal, ssLarge);

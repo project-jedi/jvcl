@@ -289,11 +289,11 @@ procedure JvGif_Dummy;
 implementation
 
 uses
-  Consts,
+  Consts, Math,
   {$IFNDEF WIN32}
   JvStr16,
   {$ENDIF}
-  JvVCLUtils, JvAniFile, JvMaxMin, JvxConst;
+  JvVCLUtils, JvAniFile, JvxConst;
 
 {$R-}
 

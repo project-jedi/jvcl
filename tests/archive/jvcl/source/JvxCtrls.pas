@@ -949,7 +949,7 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, Consts,
+  SysUtils, Consts, Math,
   {$IFDEF COMPILER4_UP}
   ImgList, ActnList,
   {$ENDIF}
@@ -961,7 +961,7 @@ uses
   {$ELSE}
   JvStr16,
   {$ENDIF}
-  JvVCLUtils, JvMaxMin, JvAppUtils;
+  JvVCLUtils, JvAppUtils;
 
 const
   Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);

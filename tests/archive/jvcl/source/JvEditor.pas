@@ -1007,8 +1007,8 @@ const
 implementation
 
 uses
-  Consts,
-  JvCtlConst, JvStrUtil, JvMaxMin;
+  Consts, Math,
+  JvCtlConst, JvStrUtil;
 
 {$IFDEF RAEDITOR_UNDO}
 

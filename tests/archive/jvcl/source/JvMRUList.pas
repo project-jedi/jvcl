@@ -174,8 +174,8 @@ type
 implementation
 
 uses
-  Controls,
-  JvMaxMin, JvAppUtils;
+  Controls, Math,
+  JvAppUtils;
 
 const
   siRecentItem = 'Item_%d';

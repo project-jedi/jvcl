@@ -359,7 +359,7 @@ type
 implementation
 
 uses
-  SysUtils, Messages, Consts,
+  SysUtils, Messages, Consts, Math,
   {$IFDEF COMPILER35_UP}
   SysConst,
   {$ENDIF}
@@ -368,7 +368,7 @@ uses
   {$ELSE}
   JvStr16,
   {$ENDIF}
-  JvMaxMin, JvConst, JvxConst, JvFunctions;
+  JvConst, JvxConst, JvFunctions;
 
 { Exceptions }
 
