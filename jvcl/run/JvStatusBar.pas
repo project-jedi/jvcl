@@ -81,9 +81,11 @@ type
     {$IFDEF VisualCLX}
     procedure Paint; override;
     {$ENDIF VisualCLX}
+    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    {$ENDIF VCL}
     {$IFDEF COMPILER6_UP}
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MovePanelControls;
     function GetPanelClass: TStatusPanelClass; override;
     {$ENDIF COMPILER6_UP}
@@ -114,13 +116,6 @@ begin
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
-procedure TJvStatusBar.CreateParams(var Params: TCreateParams);
-begin
-  inherited CreateParams(Params);
-  with Params do
-    WindowClass.Style := WindowClass.Style and not CS_HREDRAW;
-end;
-
 procedure TJvStatusBar.DoBoundsChanged;
 begin
   inherited DoBoundsChanged;
@@ -132,6 +127,13 @@ begin
 end;
 
 {$IFDEF VCL}
+
+procedure TJvStatusBar.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  with Params do
+    WindowClass.Style := WindowClass.Style and not CS_HREDRAW;
+end;
 
 procedure TJvStatusBar.WMPaint(var Msg: TWMPaint);
 begin
@@ -224,22 +226,20 @@ begin
   end;
 end;
 
-procedure TJvStatusBar.Notification(AComponent: TComponent; Operation: TOperation);
 {$IFDEF COMPILER6_UP}
+
+procedure TJvStatusBar.Notification(AComponent: TComponent; Operation: TOperation);
 var
   I: Integer;
-{$ENDIF COMPILER6_UP}
 begin
-  {$IFDEF COMPILER6_UP}
   inherited Notification(AComponent, Operation);
-  if Operation = opRemove then
+  if (Operation = opRemove) and not (csDestroying in ComponentState) then
     for I := 0 to Panels.Count - 1 do
+    begin
       if TJvStatusPanel(Panels[I]).Control = AComponent then
         TJvStatusPanel(Panels[I]).Control := nil;
-  {$ENDIF COMPILER6_UP}
+    end;
 end;
-
-{$IFDEF COMPILER6_UP}
 
 procedure TJvStatusBar.MovePanelControls;
 var
@@ -302,7 +302,10 @@ begin
   if FControl <> nil then
   begin
     if FControl = S then
+    begin
+      FControl := nil; // discard new control
       raise EJVCLException.Create(RsEInvalidControlSelection);
+    end;
     FControl.Parent := S;
     FControl.Height := S.ClientHeight - 4;
     FControl.FreeNotification(S);
