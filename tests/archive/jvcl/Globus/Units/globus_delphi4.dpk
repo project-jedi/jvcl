@@ -1,0 +1,49 @@
+package globus_delphi4;
+
+{
+- Предупреждения типа "Unit '<Name>' implicitly imported into package '<Name>'" нормальны!
+
+- При проблемах компиляции установитие параметр Options/Description/Build Control/Explict Rebuild
+  в окне Package
+
+- (c) Chudin Andrey(aka Xelby) 1998-2002 - avchudin@yandex.ru
+}
+
+{$R *.RES}
+{$R 'reggllib.dcr'}
+{$ALIGN ON}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $00400000}
+{$DESCRIPTION 'GLOBUS Library'}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl40,
+  Vclx40,
+  Vcldb40,
+  VclSmp40,
+  Qrpt40,
+  vcljpg40;
+
+contains
+  reggllib_Delphi in 'reggllib_Delphi.pas';
+
+end.
