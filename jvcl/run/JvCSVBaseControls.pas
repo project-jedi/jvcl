@@ -31,6 +31,7 @@ unit JvCSVBaseControls;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
   Buttons,
@@ -39,7 +40,6 @@ uses
   QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, QButtons,
   Types,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
   JvComponent;
 
 type
@@ -703,11 +703,16 @@ end;
 constructor TJvCSVNavigator.Create(AOwner: Tcomponent);
 begin
   inherited Create(AOwner);
+  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
+  Caption := '';
+  {$ENDIF VCL}
   Height := 24;
   Width := 217;
   CreateButtons;
-  Caption := '';
+  {$IFDEF VisualCLX}
+  ControlStyle := ControlStyle - [csSetCaption];
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvCSVNavigator.CreateButtons;
