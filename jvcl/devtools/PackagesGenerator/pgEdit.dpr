@@ -8,8 +8,8 @@ uses
   TargetDialog in 'TargetDialog.pas' {frmTargets},
   GenerateUtils in 'GenerateUtils.pas',
   KnownTagsForm in 'KnownTagsForm.pas' {frmKnownTags},
-  FormTypeDialog in 'FormTypeDialog.pas' {frmFormType}
-  ;
+  FormTypeDialog in 'FormTypeDialog.pas' {frmFormType},
+  AdvancedBCBForm in 'AdvancedBCBForm.pas' {frmAdvancedBCB};
 
 {$R *.res}
 
@@ -20,5 +20,6 @@ begin
   Application.CreateForm(TfrmTargets, frmTargets);
   Application.CreateForm(TfrmKnownTags, frmKnownTags);
   Application.CreateForm(TfrmFormType, frmFormType);
+  Application.CreateForm(TfrmAdvancedBCB, frmAdvancedBCB);
   Application.Run;
 end.

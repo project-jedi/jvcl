@@ -17,6 +17,7 @@ object frmMain: TfrmMain
   Position = poScreenCenter
   OnCloseQuery = FormCloseQuery
   OnKeyDown = FormKeyDown
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object jspLeft: TJvSplitter
@@ -302,7 +303,7 @@ object frmMain: TfrmMain
     object ledC5PFlags: TEdit
       Left = 92
       Top = 448
-      Width = 545
+      Width = 453
       Height = 21
       Anchors = [akLeft, akRight, akBottom]
       TabOrder = 4
@@ -311,7 +312,7 @@ object frmMain: TfrmMain
     object ledC6PFlags: TEdit
       Left = 92
       Top = 472
-      Width = 545
+      Width = 453
       Height = 21
       Anchors = [akLeft, akRight, akBottom]
       TabOrder = 5
@@ -383,6 +384,16 @@ object frmMain: TfrmMain
         OnExitCell = jsgDependenciesExitCell
         OnGetCellAlignment = jsgDependenciesGetCellAlignment
       end
+    end
+    object btnAdvancedBCB: TButton
+      Left = 548
+      Top = 448
+      Width = 89
+      Height = 45
+      Anchors = [akTop, akRight]
+      Caption = 'Advanced BCB'
+      TabOrder = 7
+      OnClick = btnAdvancedBCBClick
     end
   end
   object jmmMain: TJvMainMenu
