@@ -71,6 +71,7 @@ type
     procedure SetDisplayFormat(const Value: string);
     function GetDisplayFormat: string;
     procedure SetDecimalPlaces(Value: Cardinal);
+    procedure SetDecimalPlacesAlwaysShown( Value:Boolean );
     function GetValue: Extended;
     procedure SetValue(AValue: Extended);
     function GetAsInteger: Longint;
@@ -119,7 +120,7 @@ type
     property ImageKind default ikDefault;
     property ButtonWidth default 21; //Polaris 20;
     property DecimalPlaces: Cardinal read FDecimalPlaces write SetDecimalPlaces default 2;
-    property DecimalPlacesAlwaysShown :Boolean read FDecimalPlacesAlwaysShown write FDecimalPlacesAlwaysShown; // WAP Added. True means Use 0 instead of # in FormatFloat picture (ie 0.000 versus 0.####). NEW.
+    property DecimalPlacesAlwaysShown :Boolean read FDecimalPlacesAlwaysShown write SetDecimalPlacesAlwaysShown; // WAP Added. True means Use 0 instead of # in FormatFloat picture (ie 0.000 versus 0.####). NEW.
 
     property DisplayFormat: string read GetDisplayFormat write SetDisplayFormat stored IsFormatStored;
     property MaxValue: Extended read FMaxValue write SetMaxValue;
@@ -583,12 +584,28 @@ begin
       // FDisplayFormat, which causes both designtime and runtime problems!
     SetDisplayFormat( GetEditFormat );
 
-    
+
     SetValue(CheckValue(FValue, False)); // Polaris (?)
     DataChanged;
     Invalidate;
   end;
 end;
+
+{WAP added this new property: Switches between using 0.000
+     and 0.### as a FormatFloat picture. }
+procedure TJvCustomNumEdit.SetDecimalPlacesAlwaysShown( Value:Boolean );
+begin
+  if FDecimalPlacesAlwaysShown <> Value then
+  begin
+    FDecimalPlacesAlwaysShown := Value;
+    SetDisplayFormat( GetEditFormat ); // Redo format picture
+    SetValue(CheckValue(FValue, False)); // Polaris (?)
+    DataChanged;
+    Invalidate;
+  end;
+end;
+
+
 
 function TJvCustomNumEdit.FormatDisplayText(Value: Extended): string;
 begin
