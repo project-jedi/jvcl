@@ -30,13 +30,8 @@ unit JvGradient;
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls,
-  {$ENDIF VCL}
   SysUtils, Classes,
-  {$IFDEF VisualCLX}
-  Types, QWindows, QGraphics, QControls,
-  {$ENDIF VisualCLX}
   JvTypes, JvComponent;
 
 type

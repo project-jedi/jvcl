@@ -30,13 +30,8 @@ unit JvFormAnimatedIcon;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Controls, Forms, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QForms, QExtCtrls, QImgList, QGraphics,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Controls, Forms, ExtCtrls,
+  ImgList, Graphics,   // clx required
   JvComponent;
 
 type

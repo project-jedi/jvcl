@@ -30,13 +30,7 @@ unit JvFormWallpaper;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Graphics, Controls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, Types,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Graphics, Controls,
   JvComponent;
 
 type

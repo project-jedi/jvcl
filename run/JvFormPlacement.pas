@@ -37,13 +37,11 @@ uses
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages,
-  Controls, Forms, JvWndProcHook,
+  Controls, Forms,
+  {$IFDEF VCL}
+  JvWndProcHook,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QForms, Types, QWindows,
-  {$ENDIF VisualCLX}
   JvAppStorage, JvComponent, JvJVCLUtils, JvTypes;
 
 type

@@ -31,12 +31,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
-  Messages, Graphics, Controls, StdCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QStdCtrls,
-  {$ENDIF VisualCLX}
+  Windows, Messages, Graphics, Controls, StdCtrls,
   JvGradient, JvTypes, JvComponent;
 
 type

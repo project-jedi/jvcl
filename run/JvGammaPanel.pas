@@ -34,14 +34,8 @@ unit JvGammaPanel;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Dialogs,
+  SysUtils, Classes, Windows, Messages, Graphics, Controls, Dialogs,
   ExtCtrls, StdCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QDialogs, QExtCtrls, QStdCtrls, Types, QWindows,
-  {$ENDIF VisualCLX}
   JvTypes, JvComponent;
 
 type
