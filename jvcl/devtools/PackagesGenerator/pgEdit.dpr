@@ -9,7 +9,8 @@ uses
   GenerateUtils in 'GenerateUtils.pas',
   KnownTagsForm in 'KnownTagsForm.pas' {frmKnownTags},
   FormTypeDialog in 'FormTypeDialog.pas' {frmFormType},
-  AdvancedBCBForm in 'AdvancedBCBForm.pas' {frmAdvancedBCB};
+  AdvancedBCBForm in 'AdvancedBCBForm.pas' {frmAdvancedBCB},
+  GenerationMessagesForm in 'GenerationMessagesForm.pas' {frmGenMessages};
 
 {$R *.res}
 
@@ -21,5 +22,6 @@ begin
   Application.CreateForm(TfrmKnownTags, frmKnownTags);
   Application.CreateForm(TfrmFormType, frmFormType);
   Application.CreateForm(TfrmAdvancedBCB, frmAdvancedBCB);
+  Application.CreateForm(TfrmGenMessages, frmGenMessages);
   Application.Run;
 end.
