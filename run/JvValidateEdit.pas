@@ -798,7 +798,8 @@ end;
 
 procedure TJvCustomValidateEdit.DoKillFocus(FocusedWnd: HWND);
 begin
-  EditText := inherited Text;
+  if not (csDestroying in ComponentState) then
+    EditText := inherited Text;
   inherited DoKillFocus(FocusedWnd);
 end;
 
