@@ -55,6 +55,7 @@ type
     FNullDate: TDateTime;
     FDropDownDate: TDate;
     FWeekNumbers: Boolean;
+    FKeepNullText: string;
     {$IFDEF COMPILER5}
     FFormat: string;
     procedure SetFormat(const Value: string);
@@ -149,6 +150,7 @@ begin
   if FNullText <> Value then
   begin
     FNullText := Value;
+    FKeepNullText := Value;
     CheckNullValue;
   end;
 end;
@@ -237,6 +239,17 @@ begin
               dwFlags := Ord(False);
             DateTimeToSystemTime(Dt, St);
           end;
+        end;
+      NM_SETFOCUS:
+        begin
+          FKeepNullText := NullText;
+          NullText := '';
+          inherited;
+        end;
+      NM_KILLFOCUS:
+        begin
+          NullText := FKeepNullText;
+          inherited;
         end;
     else
       inherited;
