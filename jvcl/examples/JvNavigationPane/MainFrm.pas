@@ -30,6 +30,7 @@ type
     ShowToolPanel1: TMenuItem;
     ToolImages: TImageList;
     ShowCloseButton1: TMenuItem;
+    N3: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure Dontallowresize1Click(Sender: TObject);
     procedure HideAll1Click(Sender: TObject);
@@ -41,15 +42,15 @@ type
     procedure ShowCloseButton1Click(Sender: TObject);
   private
     { Private declarations }
-    procedure DoToolMouseDown(Sender:TObject; Button:TMouseButton; Shift:TShiftState; X, Y: integer);
-    procedure DoToolMouseMove(Sender:TObject; Shift:TShiftState; X, Y:integer);
+    procedure DoToolMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+    procedure DoToolMouseMove(Sender: TObject; Shift: TShiftState; X, Y: integer);
     procedure DoToolPanelClose(Sender: TObject);
-    procedure DoToolButtonClick(Sender:TObject; Index:integer);
+    procedure DoToolButtonClick(Sender: TObject; Index: integer);
     procedure DoToolEndDock(Sender, Target: TObject; X, Y: Integer);
   public
     { Public declarations }
-    NP:TJvNavigationPane;
-    NT : TJvNavPaneToolPanel;
+    NP: TJvNavigationPane;
+    NT: TJvNavPaneToolPanel;
   end;
 
 var
@@ -63,18 +64,11 @@ uses
 
 procedure TForm1.FormCreate(Sender: TObject);
 var
-  Page:TJvNavPanelPage;
-  GH:TJvNavPanelHeader;
-  N:TTreeNode;
-  R:TRect;
-  i:integer;
-  function StripAccel(const S:string):string;
-  begin
-    // quick and dirty ;-)
-    Result := StringReplace(S, '&&', #1, [rfReplaceAll]);
-    Result := StringReplace(Result, '&', '', [rfReplaceAll]);
-    Result := StringReplace(Result, #1, '&', [rfReplaceAll]);
-  end;
+  Page: TJvNavPanelPage;
+  GH: TJvNavPanelHeader;
+  N: TTreeNode;
+  R: TRect;
+  i: integer;
 begin
 
   JvNavPaneStyleManager1.Theme := nptCustom;
@@ -85,7 +79,7 @@ begin
   NP.Parent := Self;
   NP.Cursor := crHandPoint;
   NP.Width := 220;
-//  NP.BorderWidth := 2;
+  //  NP.BorderWidth := 2;
   NP.Align := alLeft;
   JvOutlookSplitter1.Left := 225;
   JvOutlookSplitter1.MinSize := 220;
@@ -103,7 +97,8 @@ begin
   GH.Align := alTop;
   GH.Images := SmallImages;
   GH.ImageIndex := -1;
-  GH.Caption := StripAccel(Page.Caption);
+
+  GH.Caption := StripHotkey(Page.Caption);
   GH.StyleManager := JvNavPaneStyleManager1;
   // use a button here instead of the icon:
   with TJvNavIconButton.Create(Self) do
@@ -111,8 +106,8 @@ begin
     Parent := GH;
     Align := alRight;
     ButtonType := nibImage;
-//    Colors.SelectedColorFrom := clNone;
-//    Colors.SelectedColorTo := clNone;
+    //    Colors.SelectedColorFrom := clNone;
+    //    Colors.SelectedColorTo := clNone;
     Colors.ButtonHotColorFrom := clNone;
     Colors.ButtonHotColorTo := clNone;
     Images := SmallImages;
@@ -139,10 +134,10 @@ begin
     Align := alTop;
     Font.Style := [];
     BorderStyle := bsNone;
-    Items.Add(nil,'Inbox');
-    Items.Add(nil,'Unread Mail');
-    Items.Add(nil,'For Follow Up [4]');
-    Items.Add(nil,'Sent Items');
+    Items.Add(nil, 'Inbox');
+    Items.Add(nil, 'Unread Mail');
+    Items.Add(nil, 'For Follow Up [4]');
+    Items.Add(nil, 'Sent Items');
     Height := 100;
   end;
 
@@ -162,17 +157,17 @@ begin
     Align := alClient;
     BorderStyle := bsNone;
     Font.Style := [];
-    N := Items.Add(nil,'Mailbox - Chris Gray');
-    Items.AddChild(N,'Deleted Items');
-    Items.AddChild(N,'Drafts');
-    Items.AddChild(N,'Inbox');
-    Items.AddChild(N,'Junk E-mail');
-    Items.AddChild(N,'Outbox');
-    Items.AddChild(N,'Sent Items');
-    N := Items.AddChild(N,'Search Folders');
-    Items.AddChild(N,'For Follow Up [4]');
-    Items.AddChild(N,'Large Mail');
-    Items.AddChild(N,'Unread Mail');
+    N := Items.Add(nil, 'Mailbox - Chris Gray');
+    Items.AddChild(N, 'Deleted Items');
+    Items.AddChild(N, 'Drafts');
+    Items.AddChild(N, 'Inbox');
+    Items.AddChild(N, 'Junk E-mail');
+    Items.AddChild(N, 'Outbox');
+    Items.AddChild(N, 'Sent Items');
+    N := Items.AddChild(N, 'Search Folders');
+    Items.AddChild(N, 'For Follow Up [4]');
+    Items.AddChild(N, 'Large Mail');
+    Items.AddChild(N, 'Unread Mail');
     FullExpand;
   end;
 
@@ -183,7 +178,7 @@ begin
   GH := TJvNavPanelHeader.Create(Self);
   GH.Parent := Page;
   GH.Align := alTop;
-  GH.Caption := StripAccel(Page.Caption);
+  GH.Caption := StripHotKey(Page.Caption);
   GH.Images := SmallImages;
   GH.ImageIndex := Page.ImageIndex;
   GH.StyleManager := JvNavPaneStyleManager1;
@@ -199,7 +194,6 @@ begin
   end;
   Constraints.MinHeight := R.Bottom - R.Top + 12;
   Constraints.MinWidth := R.Right - R.Left + 12;
-
 
   with TJvNavPanelDivider.Create(Self) do
   begin
@@ -268,7 +262,7 @@ begin
   GH := TJvNavPanelHeader.Create(Self);
   GH.Parent := Page;
   GH.Align := alTop;
-  GH.Caption := StripAccel(Page.Caption);
+  GH.Caption := StripHotkey(Page.Caption);
   GH.Images := SmallImages;
   GH.ImageIndex := Page.ImageIndex;
   GH.StyleManager := JvNavPaneStyleManager1;
@@ -303,7 +297,6 @@ begin
     Items.Add('Warren Postma');
   end;
 
-
   Page := TJvNavPanelPage.Create(Self);
   Page.Caption := '&Tasks';
   Page.ImageIndex := 3;
@@ -311,7 +304,7 @@ begin
   GH := TJvNavPanelHeader.Create(Self);
   GH.Parent := Page;
   GH.Align := alTop;
-  GH.Caption := StripAccel(Page.Caption);
+  GH.Caption := StripHotkey(Page.Caption);
   GH.Images := SmallImages;
   GH.ImageIndex := Page.ImageIndex;
   GH.StyleManager := JvNavPaneStyleManager1;
@@ -323,11 +316,10 @@ begin
   GH := TJvNavPanelHeader.Create(Self);
   GH.Parent := Page;
   GH.Align := alTop;
-  GH.Caption := StripAccel(Page.Caption);
+  GH.Caption := StripHotkey(Page.Caption);
   GH.Images := SmallImages;
   GH.ImageIndex := Page.ImageIndex;
   GH.StyleManager := JvNavPaneStyleManager1;
-
 
   Page := TJvNavPanelPage.Create(Self);
   Page.Caption := '&Folder List';
@@ -336,33 +328,33 @@ begin
   GH := TJvNavPanelHeader.Create(Self);
   GH.Parent := Page;
   GH.Align := alTop;
-  GH.Caption := StripAccel(Page.Caption);
+  GH.Caption := StripHotkey(Page.Caption);
   GH.Images := SmallImages;
   GH.ImageIndex := Page.ImageIndex;
   GH.StyleManager := JvNavPaneStyleManager1;
 
-{  with TJvOutlookSplitter.Create(Self) do
-  begin
-    Align := alNone;
-    Parent := Self;
-    Left := NP.Width + 100;
-    Align := alLeft;
-    Width := 7;
-    Cursor := crSizeWE;
-  end;
-  }
+  {  with TJvOutlookSplitter.Create(Self) do
+    begin
+      Align := alNone;
+      Parent := Self;
+      Left := NP.Width + 100;
+      Align := alLeft;
+      Width := 7;
+      Cursor := crSizeWE;
+    end;
+    }
   NP.ActivePageIndex := 0;
 
   NT := TJvNavPaneToolPanel.Create(Self);
   NT.DragKind := dkDock;
-//  NT.DragMode := dmAutomatic;
+  //  NT.DragMode := dmAutomatic;
   NT.Parent := Self;
   NT.Align := alClient;
   NT.Caption := 'Sample Tool Panel';
   NT.StyleManager := JvNavPaneStyleManager1;
   NT.Images := ToolImages;
   NT.DropDownMenu := PopupMenu1;
-  for i := 0 to ToolImages.Count  - 1 do
+  for i := 0 to ToolImages.Count - 1 do
     NT.Buttons.Add.ImageIndex := i;
   NT.OnButtonClick := DoToolButtonClick;
   NT.OnMouseDown := DoToolMouseDown;
@@ -392,11 +384,17 @@ begin
 end;
 
 procedure TForm1.ChangeFont1Click(Sender: TObject);
+var
+  FD: TFontDialog;
 begin
- if NP.NavPanelFont.Style = [fsBold] then
-   NP.NavPanelFont.Style := [fsItalic, fsBold]
- else
-   NP.NavPanelFont.Style := [fsBold];
+  FD := TFontDialog.Create(nil);
+  try
+    FD.Font := NP.NavPanelFont;
+    if FD.Execute then
+      NP.NavPanelFont := FD.Font;
+  finally
+    FD.Free;
+  end;
 end;
 
 procedure TForm1.SchemaClick(Sender: TObject);
@@ -407,7 +405,7 @@ end;
 
 procedure TForm1.DoToolPanelClose(Sender: TObject);
 begin
-  if MessageDlg('Close this window?',mtConfirmation, [mbYes, mbNo],0) = mrYes	then
+  if MessageDlg('Close this window?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
   begin
     JvOutlookSplitter1.Visible := False;
     NT.Visible := False;
@@ -432,7 +430,7 @@ end;
 
 procedure TForm1.DoToolButtonClick(Sender: TObject; Index: integer);
 begin
-  ShowMessageFmt('You clicked button %d ',[Index]);
+  ShowMessageFmt('You clicked button %d ', [Index]);
 end;
 
 procedure TForm1.ShowCloseButton1Click(Sender: TObject);
@@ -460,19 +458,18 @@ end;
 procedure TForm1.DoToolMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: integer);
 begin
-  if phtGrabber in NT.GetHitTestInfoAt(X,Y) then
+  if phtGrabber in NT.GetHitTestInfoAt(X, Y) then
     NT.BeginDrag(false);
 end;
 
 procedure TForm1.DoToolMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: integer);
 begin
-  if phtGrabber in NT.GetHitTestInfoAt(X,Y) then
+  if phtGrabber in NT.GetHitTestInfoAt(X, Y) then
     NT.Cursor := crSize
   else
     NT.Cursor := crDefault;
 end;
 
 end.
-
 

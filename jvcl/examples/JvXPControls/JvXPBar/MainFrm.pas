@@ -51,6 +51,8 @@ type
     dxWinXPBar1: TJvXPBar;
     tvSelfView: TTreeView;
     StatusBar1: TStatusBar;
+    ilMSN: TImageList;
+    ilMSN2: TImageList;
     procedure acConnectRemoteServerExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnCollapseAllClick(Sender: TObject);
