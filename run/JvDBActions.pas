@@ -476,6 +476,10 @@ uses
   {$ENDIF USE_3RDPARTY_SMEXPORT}
   JvResources, JvParameterList, JvParameterListParameter;
 
+const
+  StoDateFormatLong = 'TO_DATE(''%s'', ''DD.MM.YYYY HH24:MI:SS'')';
+  SToDateFormatShort = 'TO_DATE(''%s'', ''DD.MM.YYYY'')';
+
 var
   IntRegisteredActionEngineList: TJvDatabaseActionEngineList;
 
@@ -1606,11 +1610,9 @@ begin
           Text := 'NULL'
         else
         if DT = Trunc(DT) then
-          Text := 'TO_DATE(''' + FormatDateTime('dd.mm.yyyy', DT) +
-            ''', ''DD.MM.YYYY'')'
-        else
-          Text := 'TO_DATE(''' + FormatDateTime('dd.mm.yyyy hh:nn:ss', DT) +
-            ''', ''DD.MM.YYYY HH24:MI:SS'')';
+        Text := Format(SToDateFormatShort, [FormatDateTime('dd.mm.yyyy', DT)])
+      else
+        Text := Format(StoDateFormatLong, [FormatDateTime('dd.mm.yyyy hh:nn:ss', DT)]);
         CellType := ctBlank;
       end
       else
@@ -1634,11 +1636,9 @@ begin
         Text := 'NULL'
       else
       if DT = Trunc(DT) then
-        Text := 'TO_DATE(''' + FormatDateTime('dd.mm.yyyy', DT) +
-          ''', ''DD.MM.YYYY'')'
+        Text := Format(SToDateFormatShort, [FormatDateTime('dd.mm.yyyy', DT)])
       else
-        Text := 'TO_DATE(''' + FormatDateTime('dd.mm.yyyy hh:nn:ss', DT) +
-          ''', ''DD.MM.YYYY HH24:MI:SS'')';
+        Text := Format(StoDateFormatLong, [FormatDateTime('dd.mm.yyyy hh:nn:ss', DT)]);
       CellType := ctBlank;
     end
     else
