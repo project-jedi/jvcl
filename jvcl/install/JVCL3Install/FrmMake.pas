@@ -11,19 +11,20 @@ the specific language governing rights and limitations under the License.
 The Original Code is: FrmMake.pas, released on 2003-11-27.
 
 The Initial Developer of the Original Code is Andreas Hausladen [Andreas.Hausladen@gmx.de]
-Portions created by Andreas Hausladen are Copyright (C) 2003 Andreas Hausladen.
+Portions created by Andreas Hausladen are Copyright (C) 2003-2004 Andreas Hausladen.
 All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-12-07
+Last Modified: 2004-01-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$I JVCL.INC}
+{$I jvcl.inc}
+
 {$IFDEF COMPILER6_UP}
   {$WARN UNIT_PLATFORM OFF}
 {$ENDIF}
@@ -311,10 +312,11 @@ begin
   if (not IsJCL) or (FTarget.InstallJcl and FTarget.IsBCB) then
   begin
    // create make file
-    PrepareBpgData := PrepareBpg(BpgFilename, FTarget);
+    PrepareBpgData := PrepareBpg(BpgFilename, FTarget, IsJCL);
     try
       FMaxPackages := PrepareBpgData.Make.Projects.Count;
-      if (FTarget.IsBCB) and (IsJcl) then FMaxPackages := FMaxPackages * 2; // include DCP creation steps
+      if (FTarget.IsBCB) and (IsJcl) then
+        FMaxPackages := FMaxPackages * 2; // include DCP creation steps
       Synchronize(InitPkgProgressBar);
 
      // compile
@@ -344,10 +346,10 @@ begin
     // create Delphi packages for BCB .dcp compilation
     Files := TStringList.Create; // files that were created
     try
-      if IsJcl then
-        PackageList := CreateJclPackageList(FTarget)
-      else
-        PackageList := FTarget.Packages; // WRONG. contains only design-time packages and have generic names instead of BCB x.0 names
+      //if IsJcl then
+        PackageList := CreateJclPackageList(FTarget);
+      //else
+      //  PackageList := FTarget.Packages; // WRONG. contains only design-time packages and have generic names instead of BCB x.0 names
       try
         for i := 0 to PackageList.Count - 1 do
           CreateDelphiPackageForBCB(PackageList[i], Files, IsJcl);

@@ -11,26 +11,26 @@ the specific language governing rights and limitations under the License.
 The Original Code is: CoreData.pas, released on 2003-11-27.
 
 The Initial Developer of the Original Code is Andreas Hausladen [Andreas.Hausladen@gmx.de]
-Portions created by Andreas Hausladen are Copyright (C) 2003 Andreas Hausladen.
+Portions created by Andreas Hausladen are Copyright (C) 2003-2004 Andreas Hausladen.
 All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-12-07
+Last Modified: 2004-01-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 {.$define DoNotTouchRegistry}
 
 unit CoreData;
 interface
 uses
-  Windows, SysUtils, Classes, Contnrs, Registry, JvSimpleXML;
+  Windows, SysUtils, Classes, Contnrs, Registry, JvSimpleXML, IniFiles;
 
 type
   TPackageList = class;
@@ -84,6 +84,7 @@ type
     procedure AddRemoveJCLPaths(Add: Boolean);
     function GetJCLPackageDir: string;
     function GetJCLPackageXmlDir: string;
+    function GetPackageGeneratorTarget: string;
   protected
     procedure ClearPalette(reg: TRegistry; const Name: string);
     procedure DoClearJVCLPalette;
@@ -95,6 +96,9 @@ type
   public
     constructor Create(ATargetList: TTargetList);
     destructor Destroy; override;
+
+    procedure SaveConfig(Ini: TMemIniFile);
+    procedure LoadConfig(Ini: TMemIniFile);
 
     procedure RegistryInstall;
     procedure RegistryUninstall;
@@ -125,6 +129,7 @@ type
     property JclDirName: string read GetJclDirName; // c5, c6, d5, d6, d7(, k3)
     property JVCLDirName: string read GetJVCLDirName; // directory in Packages\
     property LibDir: string read GetLibDir; // relative to $(JVCL)
+    property PackageGeneratorTarget: string read GetPackageGeneratorTarget; // c5, c6, d5, d5s, d6, d6p, d7, d7p
 
     property JCLDir: string read FJCLDir; // directory where JCL is installed or the global JCLDir
     property JCLPackageDir: string read GetJCLPackageDir;
@@ -164,6 +169,9 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+
+    procedure SaveToFile(const Filename: string);
+    procedure LoadFromFile(const Filename: string);
 
     property Count: Integer read GetCount;
     property Items[Index: Integer]: TTargetInfo read GetItems; default;
@@ -1308,6 +1316,61 @@ begin
   FJCLDir := NewDir;
 end;
 
+function TTargetInfo.GetPackageGeneratorTarget: string;
+begin
+  if IsDelphi then
+    Result := 'd'
+  else
+    Result := 'c';
+  Result := Result + IntToStr(MajorVersion);
+  if IsPersonal then
+  begin
+    if MajorVersion = 5 then
+      Result := Result + 's'
+    else
+      Result := Result + 'p';
+  end;
+end;
+
+procedure TTargetInfo.LoadConfig(Ini: TMemIniFile);
+var
+  i: Integer;
+begin
+  CompileFor := Ini.ReadBool(Symbol, 'CompileFor', CompileFor);
+  ClearJVCLPalette := Ini.ReadBool(Symbol, 'ClearJVCLPalette', ClearJVCLPalette);
+  Build := Ini.ReadBool(Symbol, 'Build', Build);
+  DeveloperInstall := Ini.ReadBool(Symbol, 'DeveloperInstall', DeveloperInstall);
+  //InstallJcl := Ini.ReadBool(Symbol, 'InstallJcl', InstallJcl);
+  CompileOnly := Ini.ReadBool(Symbol, 'CompileOnly', CompileOnly);
+  HppFilesDir := Ini.ReadString(Symbol, 'HppFilesDir', HppFilesDir);
+  MoveHppFiles := Ini.ReadBool(Symbol, 'MoveHppFiles', MoveHppFiles);
+
+  for i := 0 to Packages.Count - 1 do
+    if (not Packages[i].IsDesign) then
+     // WARNING: setting <Install> to False may deactivate other packages 
+      Packages[i].Install := Ini.ReadBool(Symbol + ' Runtime', Packages[i].BplName, False);
+end;
+
+procedure TTargetInfo.SaveConfig(Ini: TMemIniFile);
+var
+  i: Integer;
+begin
+  Ini.WriteBool(Symbol, 'CompileFor', CompileFor);
+  Ini.WriteBool(Symbol, 'ClearJVCLPalette', ClearJVCLPalette);
+  Ini.WriteBool(Symbol, 'Build', Build);
+  Ini.WriteBool(Symbol, 'DeveloperInstall', DeveloperInstall);
+  //Ini.WriteBool(Symbol, 'InstallJcl', InstallJcl);
+  Ini.WriteBool(Symbol, 'CompileOnly', CompileOnly);
+  Ini.WriteString(Symbol, 'HppFilesDir', HppFilesDir);
+  Ini.WriteBool(Symbol, 'MoveHppFiles', MoveHppFiles);
+
+  Ini.EraseSection(Symbol + ' Runtime');
+  for i := 0 to Packages.Count - 1 do
+    if (not Packages[i].IsDesign) and
+       ((Packages[i].Install) or (Packages[i].IsInstalled)) then
+      Ini.WriteString(Symbol + ' Runtime', Packages[i].BplName, '1');
+end;
+
 { TTargetList }
 
 constructor TTargetList.Create;
@@ -1379,7 +1442,7 @@ begin
     Names.Free;
   end;
 
- // limit to Delphi/BCB 5 
+ // limit to Delphi/BCB 5
   for i := Count - 1 downto 0 do
     if Items[i].MajorVersion < 5 then
       FItems.Delete(i);
@@ -1411,6 +1474,38 @@ begin
     end;
   finally
     reg.Free;
+  end;
+end;
+
+procedure TTargetList.LoadFromFile(const Filename: string);
+var
+  Ini: TMemIniFile;
+  i: Integer;
+begin
+  if FileExists(Filename) then
+  begin
+    Ini := TMemIniFile.Create(Filename);
+    try
+      for i := 0 to Count - 1 do
+        Items[i].LoadConfig(Ini);
+    finally
+      Ini.Free;
+    end;
+  end;
+end;
+
+procedure TTargetList.SaveToFile(const Filename: string);
+var
+  Ini: TMemIniFile;
+  i: Integer;
+begin
+  Ini := TMemIniFile.Create(Filename);
+  try
+    for i := 0 to Count - 1 do
+      Items[i].SaveConfig(Ini);
+    Ini.UpdateFile;
+  finally
+    Ini.Free;
   end;
 end;
 

@@ -16,20 +16,22 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-12-07
+Last Modified: 2004-01-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$I JVCL.INC}
+{$I jvcl.inc}
+{$I windowsonly.inc}
+
 {
 command line switches:
   -NoUpdateCheck     Do not check for installed updates
   -IgnoreIDE         Do not check for running Delphi/BCB instances
-  -NoDelphi          Ignore Delphi product targets      (see CodeData.TTargetList.GetTargets)
-  -NoBCB             Ignore C++Builder product targets  (see CodeData.TTargetList.GetTargets)
+  -NoDelphi          Ignore Delphi product targets      (see CoreData.pas.TTargetList.GetTargets)
+  -NoBCB             Ignore C++Builder product targets  (see CoreData.pas.TTargetList.GetTargets)
 }
 
 unit FrmMain;
@@ -89,6 +91,8 @@ type
     LblBCBInstallation: TLabel;
     CheckBoxHppFilesDir: TCheckBox;
     Bevel7: TBevel;
+    CheckBoxPersonalEdition: TCheckBox;
+    Bevel8: TBevel;
     procedure BtnQuitClick(Sender: TObject);
     procedure BtnAdvancedOptionsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -113,6 +117,7 @@ type
     procedure CheckBoxShowRuntimePackagesClick(Sender: TObject);
     procedure BtnHppFilesBrowseClick(Sender: TObject);
     procedure LblBCBInstallationClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private-Deklarationen }
     FXPThemeSupportFirstClick: Boolean;
@@ -344,7 +349,7 @@ begin
   if Target.NeedsUpdate then
   begin
     Target.CompileFor := False;
-    if not FInFillingList then
+    if not FInFillingList then // set in FillTargetList()
       MessageDlg(Format('Please install the latest updates for %s from www.borland.com.',
         [Target.DisplayName]), mtInformation, [mbOk], 0);
   end
@@ -414,6 +419,9 @@ begin
         CheckBoxHppFilesDir.Enabled := SelTarget.IsBCB;
         BtnHppFilesBrowse.Enabled := SelTarget.IsBCB;
         LblBCBInstallation.Visible := SelTarget.IsBCB;
+
+        CheckBoxPersonalEdition.Checked := SelTarget.IsPersonal or
+          FormMainConfig.Config.Enabled['DelphiPersonalEdition'];
       end
       else
       begin
@@ -425,6 +433,7 @@ begin
         CheckBoxCompileOnly.Checked := False;
         CheckBoxHppFilesDir.Checked := False;
         EditHppFilesDir.Text := '';
+        CheckBoxPersonalEdition.Checked := False;
       end;
       UpdatePackageList;
     end;
@@ -460,6 +469,9 @@ begin
       Exit;
     end;
   end;
+
+   // load user configuration, config is saved in BtnInstallClick
+  TargetList.LoadFromFile(ChangeFileExt(ParamStr(0), '.ini'));
 
   FXPThemeSupportFirstClick := True;
   FillTargetList;
@@ -567,7 +579,7 @@ begin
         else if (not Target.IsJCLInstalled) and (Target.JCLDir = '') then
         begin
           Item.Checked := False;
-          if not FInFillingList then
+          if not FInFillingList then // set in FillTargetList()
           begin
            // ask user for JCL root directory
             Dir := Target.RootDir;
@@ -619,6 +631,9 @@ begin
  // save JVCL.INC if modified
   if FormMainConfig.Config.Modified then
     FormMainConfig.BtnSave.Click;
+
+  TargetList.SaveToFile(ChangeFileExt(ParamStr(0), '.ini'));
+
 
   // (ahuser) Should we really ask the user?
 //  if MessageDlg('Are you sure?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
@@ -775,6 +790,11 @@ procedure TFormMain.LblBCBInstallationClick(Sender: TObject);
 begin
   if not OpenAtAnchor(JVCLDir + '\install.htm', 'AddJVCLPathToBCB') then
     MessageDlg('Cannot open install.htm', mtError, [mbOk], 0);
+end;
+
+procedure TFormMain.FormDestroy(Sender: TObject);
+begin
+  TargetList.SaveToFile(ChangeFileExt(ParamStr(0), '.ini'));
 end;
 
 initialization
