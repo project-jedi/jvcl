@@ -819,7 +819,8 @@ function IsInWordArray(Value: Word; const A: array of Word): Boolean;
 implementation
 
 uses
-  ShellAPI, Math,
+//  ShellAPI,
+  Math,
   
   QConsts,
   

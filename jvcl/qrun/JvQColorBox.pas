@@ -59,7 +59,7 @@ uses
   
   
   QForms, QGraphics, QControls, QDialogs, QExtCtrls, QStdCtrls, QButtons,
-  QMenus,
+  QMenus, Types,
   
   SysUtils, Classes,
   JvQComponent;

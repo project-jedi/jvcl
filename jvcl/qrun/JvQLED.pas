@@ -24,13 +24,12 @@ Contributor(s):
   peter3 (load new image only when needed, center image in control, draw border at designtime)
   marcelb (merging of JvTransLED and JvBlinkingLED)
 
-Last Modified: 2002-12-23
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

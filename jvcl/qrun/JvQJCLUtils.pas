@@ -21,14 +21,13 @@ All Rights Reserved.
 Contributor(s):
     Andreas Hausladen
 
-Last Modified: 2004-02-27
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -5216,26 +5215,22 @@ end;
 
 function StringStartsWith(const Str, SubStr: string): Boolean;
 var
-  {$IFDEF MSWINDOWS}
   P: PChar;
-  {$ENDIF MSWINDOWS}
   L, L2: Integer;
 begin
+  P := PChar(Str);
   L := Length(SubStr);
   L2 := Length(Str);
   if L > L2 then
     Result := False
   else
-  begin
     {$IFDEF MSWINDOWS}
-    P := PChar(Str);
     Result := CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
       P, L, PChar(SubStr), L) = 2;
     {$ENDIF MSWINDOWS}
     {$IFDEF LINUX}
     Result := AnsiStartsText(SubStr, Str);
     {$ENDIF LINUX}
-  end;  
 end;
 
 function StringEndsWith(const Str, SubStr: string): Boolean;

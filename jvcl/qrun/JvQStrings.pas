@@ -45,7 +45,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  
+  {$IFDEF LINUX}
+  Libc,
+  {$ENDIF}
   
   QGraphics,
   

@@ -16,7 +16,6 @@ The Original Code is by Warren Postma.
 
 Contributor(s):  Warren Postma (warrenpstma@hotmail.com)
 
-Last Modified: 2004-01-31
 2003-07-29 Warren Postma - New features (Sorting, Indexing, UserData)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -96,6 +95,7 @@ Known Issues and Updates:
                  when the boolean (ftBoolean, csv type '!') was encountered.
                  Search for the WordBool to see the changes.
 -----------------------------------------------------------------------------}
+// $Id$
 
 //------------------------------------------------------------------------
 //
@@ -4059,8 +4059,12 @@ begin
   // extension number to use.
   if FileExists(RemoveFile) then
     DeleteFile(RemoveFile);
-
+{$IFDEF MSWINDOWS}
   Windows.CopyFile(PChar(FileName), PChar(BackupFilename), False);
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+  QWindows.CopyFile(PChar(FileName), PChar(BackupFilename), False);
+{$ENDIF LINUX}
   Result := True;
 end;
 

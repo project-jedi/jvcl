@@ -49,7 +49,7 @@ uses
 
 type
   TJvContentScrollDirection = (sdUp, sdDown);
-  TJvScrollAmount = 1..MaxWord;
+  TJvScrollAmount = 1..MaxInt;
 
   TJvContentScroller = class(TJvCustomPanel)
   private

@@ -39,7 +39,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  Libc,
+  Libc, QWindows,
   {$ENDIF LINUX}
   JvQMTConsts, JvQMTSync, JvQFinalize;
 
@@ -173,8 +173,8 @@ begin
   ThreadNameInfo.FThreadID := $FFFFFFFF;
   ThreadNameInfo.FFlags := 0;
   try
-    RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(LongWord),
-      @ThreadNameInfo);
+//    RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(LongWord),
+//      @ThreadNameInfo);
   except
   end;
   
