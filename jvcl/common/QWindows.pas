@@ -457,6 +457,7 @@ function GetTextExtentPoint32(Handle: QPainterH; pText: PChar; Len: Integer;
 function GetTextExtentPoint32W(Handle: QPainterH; pText: PWideChar; Len: Integer;
   var Size: TSize): LongBool;
 
+procedure FrameRect(Canvas: TCanvas; const R: TRect);
 function DrawFocusRect(Handle: QPainterH; const R: TRect): LongBool;
 function InvertRect(Handle: QPainterH; const R: TRect): LongBool;
 function RoundRect(Handle: QPainterH; Left, Top, Right, Bottom, X3, Y3: Integer): LongBool;
@@ -480,7 +481,9 @@ const
 function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
 { limited implementation of }
-function DrawText(Handle: QPainterH; Text: PChar; Len: Integer;
+function DrawText(Handle: QPainterH; Text: PAnsiChar; Len: Integer;
+  var R: TRect; WinFlags: Integer): Integer; overload;
+function DrawTextW(Handle: QPainterH; Text: PWideChar; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
 
 const
@@ -795,7 +798,7 @@ implementation
 
 {$IFDEF LINUX}
 uses
-  Libc;
+  Libc, Windows;
 {$ENDIF LINUX}
 {$IFDEF MSWINDOWS}
 uses
@@ -2811,7 +2814,7 @@ begin
     QPainter_setFont(Handle, FontSaved);
 end;
 
-function DrawText(Handle :QPainterH; Text: PChar; Len: Integer;
+function DrawText(Handle :QPainterH; Text: PAnsiChar; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer;
 var
   WText: WideString;
@@ -2819,10 +2822,24 @@ var
 begin
   WText := Text;
   Result := DrawText(Handle, WText, Len, R, WinFlags);
-  if DT_MODIFYSTRING and WinFlags <> 0 then
+  if (DT_MODIFYSTRING and WinFlags <> 0) and (Text <> nil) then
   begin
     AText := WText;
     StrCopy(Text, PChar(AText));
+  end;
+end;
+
+function DrawTextW(Handle :QPainterH; Text: PWideChar; Len: Integer;
+  var R: TRect; WinFlags: Integer): Integer;
+var
+  WText: WideString;
+begin
+  WText := Text;
+  Result := DrawText(Handle, WText, Len, R, WinFlags);
+  if (DT_MODIFYSTRING and WinFlags <> 0) and (Text <> nil) then
+  begin
+    Move(WText[1], Text^, Length(WText) * SizeOf(WideChar));
+    //WStrCopy(Text, PChar(AText));
   end;
 end;
 
@@ -3089,6 +3106,27 @@ begin
     Result := True;
   except
     Result := False;
+  end;
+end;
+
+procedure FrameRect(Canvas: TCanvas; const R: TRect);
+var
+  BorderR: TRect;
+  Brush: TBrush;
+begin
+  BorderR := R;
+  InflateRect(BorderR, 1, 1);
+  Brush := TBrush.Create;
+  try
+    Brush.Assign(Canvas.Brush);
+    try
+      Canvas.Brush.Style := bsClear;
+      Canvas.Rectangle(BorderR);
+    finally
+      Canvas.Brush.Assign(Brush);
+    end;
+  finally
+    Brush.Free;
   end;
 end;
 
