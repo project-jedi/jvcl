@@ -96,8 +96,9 @@ var
   i: Integer;
 begin
   inherited;
-  for i := 0 to ControlCount - 1 do
-    Controls[i].Enabled := Enabled;
+  if PropagateEnable then
+    for i := 0 to ControlCount - 1 do
+      Controls[i].Enabled := Enabled;
 end;
 
 procedure TJvGroupBox.CMMouseEnter(var Msg: TMsg);
@@ -155,3 +156,4 @@ begin
 end;
 
 end.
+
