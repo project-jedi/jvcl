@@ -170,7 +170,7 @@ uses
   {$IFDEF VisualCLX}
   Qt, QTypes, JvQExExtCtrls,
   {$ENDIF VisualCLX}
-  JvJVCLUtils, JvComponent, JvTypes, JvExControls, JvFinalize;
+  JvAutoComplete, JvJVCLUtils, JvComponent, JvTypes, JvExControls, JvFinalize;
 
 const
   { Inspector Row Size constants }
@@ -5904,7 +5904,7 @@ begin
     if not Assigned(FAutoComplete) then
     begin
       FAutoComplete := TJvEditListBoxAutoComplete.Create(EditCtrl, ListBox);
-      FAutoComplete.OnAutoComplete := AutoCompleteStart;
+      FAutoComplete.OnDropDown := AutoCompleteStart;
     end;
     FAutoComplete.AutoComplete(Key);
   end;
