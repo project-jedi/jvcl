@@ -31,7 +31,8 @@ requires
   JvQSystemD7R,
   rtl,
   visualclx,
-  DJcl;
+  DJcl,
+  DJclVClx;
 
 contains
   JvQClock in '..\..\qrun\JvQClock.pas',
@@ -66,6 +67,8 @@ contains
   JvQOfficeColorPanel in '..\..\qrun\JvQOfficeColorPanel.pas',
   JvQSplitter in '..\..\qrun\JvQSplitter.pas',
   JvQTransparentButton in '..\..\qrun\JvQTransparentButton.pas',
-  JvQScrollPanel in '..\..\qrun\JvQScrollPanel.pas';
+  JvQScrollPanel in '..\..\qrun\JvQScrollPanel.pas',
+  JvQSpeedbar in '..\..\qrun\JvQSpeedbar.pas',
+  JvQSpeedbarSetupForm in '..\..\qrun\JvQSpeedbarSetupForm.pas' {JvSpeedbarSetupWindow};
 
 end.

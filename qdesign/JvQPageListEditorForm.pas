@@ -229,20 +229,17 @@ end;
 
 function TfrmPageListEditor.UniqueName(Component: TComponent): string;
 var
-  I: Integer;
-  BaseName: string;
+  Temp: string;
 begin
-  I := 0;
-  BaseName := RightStr(Component.Name, Length(Component.Name) - 1);
-  Result := BaseName;
-  while not IsUniqueGlobalComponentName(Result) do
-  begin
-    Inc(I);
-    Result := Format('%s%d', [BaseName, I]);
-  end;
+  Result := '';
+  if Component <> nil then
+    Temp := Component.ClassName
+  else
+    Temp := TJvStandardPage.ClassName;
+  if (UpCase(Temp[1]) = 'T') and (Length(Temp) > 1) then
+    System.Delete(Temp, 1, 1);
+  Result := Designer.UniqueName(Temp);
 end;
-
-
 
 function TfrmPageListEditor.GetEditState: TEditState;
 begin

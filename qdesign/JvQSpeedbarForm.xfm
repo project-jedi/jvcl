@@ -1,21 +1,22 @@
 object JvSpeedbarEditor: TJvSpeedbarEditor
-  Left = 378
-  Top = 221
+  Left = 393
+  Top = 299
   Width = 437
   Height = 285
   HorzScrollBar.Range = 434
   VertScrollBar.Range = 281
   ActiveControl = SectionList
-  BorderIcons = [biSystemMenu]
-  BorderStyle = fbsSingle
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = fbsDialog
   Caption = 'JvSpeedbar Designer'
   Color = clButton
   Font.Color = clText
   Font.Height = 11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'adobe-helvetica'
   Font.Pitch = fpVariable
   Font.Style = []
   Font.Weight = 40
+  FormStyle = fsStayOnTop
   Icon.Data = {
     0000010001002020100000000000E80200001600000028000000200000004000
     0000010004000000000000020000000000000000000000000000000000000000
@@ -42,6 +43,7 @@ object JvSpeedbarEditor: TJvSpeedbarEditor
     0001000000010000000100000001000000010000000100000001000000010000
     00010000000100000001000000030000000700001FFF00003FFF80007FFFBA00}
   ParentFont = False
+  Position = poDefault
   Scaled = False
   OnClose = FormClose
   OnCreate = FormCreate
@@ -52,7 +54,7 @@ object JvSpeedbarEditor: TJvSpeedbarEditor
     Left = 180
     Top = 10
     Width = 68
-    Height = 18
+    Height = 13
     Caption = '&Section name: '
     FocusControl = SectionName
   end
@@ -195,7 +197,7 @@ object JvSpeedbarEditor: TJvSpeedbarEditor
       Left = 8
       Top = 16
       Width = 219
-      Height = 158
+      Height = 137
       ColCount = 1
       DefaultColWidth = 215
       DefaultRowHeight = 26
@@ -219,7 +221,7 @@ object JvSpeedbarEditor: TJvSpeedbarEditor
     Left = 268
     Top = 7
     Width = 165
-    Height = 26
+    Height = 21
     MaxLength = 255
     TabOrder = 1
     OnExit = SectionNameExit

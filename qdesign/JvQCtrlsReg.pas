@@ -55,9 +55,7 @@ uses
   {JvQZoom,} JvQBehaviorLabel, JvQArrowButton,
   JvQaScrollText, JvQScrollPanel,
 
-  {$IFDEF LINUX}
   JvQSpeedBar, JvQSpeedbarSetupForm, JvQSpeedbarForm,
-  {$ENDIF LINUX}
   JvQClock, JvQContentScroller, JvQColorBox,
   JvQColorButton,
   JvQDice,

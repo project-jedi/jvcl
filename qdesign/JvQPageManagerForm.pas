@@ -37,8 +37,7 @@ uses
   
   
   QGrids, QStdCtrls, QControls, QExtCtrls, QGraphics, Types,
-  ClxDesignWindows,
-  
+
   
   RTLConsts, DesignIntf, DesignEditors,
   
@@ -49,7 +48,7 @@ uses
   JvQSpeedButton, JvQPageManager, JvQJVCLUtils, JvQComponent;
 
 type
-  TJvProxyEditor = class(TDesignWindow)
+  TJvProxyEditor = class(TClxDesignWindow)
     BtnPanel: TPanel;
     CloseBtn: TButton;
     DeleteBtn: TButton;

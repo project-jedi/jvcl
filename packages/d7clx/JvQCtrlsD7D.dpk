@@ -33,7 +33,11 @@ requires
   rtl,
   JvQCoreD7R,
   JvQSystemD7R,
-  JvQStdCtrlsD7R;
+  JvQStdCtrlsD7R,
+  visualclx,
+  clxdesigner,
+  DJclVClx,
+  DJcl;
 
 contains
   JvQHTHintForm in '..\..\qdesign\JvQHTHintForm.pas' {JvHintEditor},
@@ -41,6 +45,7 @@ contains
   JvQCtrlsReg in '..\..\qdesign\JvQCtrlsReg.pas',
   JvQFooterEditor in '..\..\qdesign\JvQFooterEditor.pas',
   JvQGroupHeaderEditor in '..\..\qdesign\JvQGroupHeaderEditor.pas',
-  JvQRollOutEditor in '..\..\qdesign\JvQRollOutEditor.pas';
+  JvQRollOutEditor in '..\..\qdesign\JvQRollOutEditor.pas',
+  JvQSpeedbarForm in '..\..\qdesign\JvQSpeedbarForm.pas' {JvSpeedbarEditor};
 
 end.

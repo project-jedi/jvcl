@@ -45,46 +45,58 @@ uses
 
   JvQDsgnConsts,
   JvQAlarms, JvQConverter, JvQDataEmbedded,
-  JvQMergeManager, JvQPatchFile, JvQStringHolder,
+  JvQMergeManager, {JvQPageManager,} JvQPatchFile, JvQStringHolder,
   JvQTimeLimit, JvQTranslator, JvQPrint,
   JvQLogFile, JvQDataEmbeddedEditor, JvQPatcherEditor,
-  JvQProfilerForm, JvQDsgnEditors
+  JvQProfilerForm, {JvQPageManagerForm,} JvQDsgnEditors
   {$IFDEF MSWINDOWS}
   , JvQWinHelp
   {$ENDIF MSWINDOWS}
   ;
 
-{$IFDEF MSWINDOWS}
-{$R ..\resources\JvCmpReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
 {$R ../Resources/JvCmpReg.dcr}
-{$ENDIF LINUX}
 
 procedure Register;
 begin
   RegisterComponents(RsPaletteNonVisual,[TJvAlarms, TJvConverter, TJvDataEmbedded,
-    
-    TJvMergeManager,
-    
+
+    TJvMergeManager, //TJvPageManager,
+
     TJvPatchFile, TJvProfiler,
     TJvStrHolder, TJvTimeLimit,
     {$IFDEF MSWINDOWS}
     TJvWinHelp,
     {$ENDIF MSWINDOWS}
     TJvTranslator, TJvTranslatorStrings,  TJvPrint,
-    
+
     TJvLogFile]);
-  
+
   RegisterPropertyEditor(TypeInfo(TStrings), TJvPatchFile,
     'Differences', TJvPatcherEditor);
-  
+
   RegisterPropertyEditor(TypeInfo(TWinControl), TJvMergeManager,
     'MergeFrame', TJvComponentFormProperty);
-  
+  RegisterPropertyEditor(TypeInfo(TStrings), TJvPatchFile,
+    'Differences', TJvPatcherEditor);
+(*)
+  RegisterPropertyEditor(TypeInfo(TList), TJvPageManager,
+    'PageProxies', TJvProxyListProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvPageProxy,
+    'PageName', TJvPageNameProperty);
+  RegisterPropertyEditor(TypeInfo(TControl), TJvPageManager,
+    'PriorBtn', TJvPageBtnProperty);
+  RegisterPropertyEditor(TypeInfo(TControl), TJvPageManager,
+    'NextBtn', TJvPageBtnProperty);
+  (*)
+  RegisterPropertyEditor(TypeInfo(TWinControl), TJvMergeManager,
+    'MergeFrame', TJvComponentFormProperty);
+
+  // RegisterComponentEditor(TJvPageManager, TJvPageManagerEditor);
   RegisterComponentEditor(TJvStrHolder, TJvStringsEditor);
   RegisterComponentEditor(TJvDataEmbedded,TJvDataEmbeddedComponentEditor);
-  
+
+//  RegisterNoIcon([TJvPageProxy]);
+
 end;
 
 end.
