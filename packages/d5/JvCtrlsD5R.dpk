@@ -1,7 +1,7 @@
 package JvCtrlsD5R;
 
-{$R *.res}
-
+{$R *.RES}
+{$ALIGN ON}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -64,7 +64,6 @@ contains
   JvxClock in '..\..\run\JvxClock.pas',
   JvSpeedbarSetupForm in '..\..\run\JvSpeedbarSetupForm.pas' {JvSpeedbarSetupWindow},
   JvColorForm in '..\..\run\JvColorForm.pas',
-  JvRegAuto in '..\..\run\JvRegAuto.pas',
   JvWinampLabel in '..\..\run\JvWinampLabel.pas',
   JvButtons in '..\..\run\JvButtons.pas',
   JvCaptionPanel in '..\..\run\JvCaptionPanel.pas',

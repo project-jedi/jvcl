@@ -35,7 +35,6 @@ requires
 contains
   JvCtrlsReg in '..\..\design\JvCtrlsReg.pas',
   JvBehaviorLabelEditor in '..\..\design\JvBehaviorLabelEditor.pas',
-  JvRegAutoEditorForm in '..\..\design\JvRegAutoEditorForm.pas' {JvRegEditor},
   JvScrollMaxEditor in '..\..\design\JvScrollMaxEditor.pas',
   JvFooterEditor in '..\..\design\JvFooterEditor.pas',
   JvGroupHeaderEditor in '..\..\design\JvGroupHeaderEditor.pas',

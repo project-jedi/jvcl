@@ -40,7 +40,6 @@ contains
   JvJCLUtils in '..\..\run\JvJCLUtils.pas',
   JvMaxPixel in '..\..\run\JvMaxPixel.pas',
   JvProgressUtils in '..\..\run\JvProgressUtils.pas',
-  JvAutoSave in '..\..\run\JvAutoSave.pas',
   JvBaseDlg in '..\..\run\JvBaseDlg.pas',
   JvJVCLAboutForm in '..\..\run\JvJVCLAboutForm.pas' {JvJVCLAboutForm},
   JvActions in '..\..\run\JvActions.pas',

@@ -49,6 +49,7 @@ contains
   JvDBControls in '..\..\run\JvDBControls.pas',
   JvDBQueryParamsForm in '..\..\run\JvDBQueryParamsForm.pas' {JvQueryParamsDialog},
   JvDBRemoteLogin in '..\..\run\JvDBRemoteLogin.pas',
-  JvMemoryDataset in '..\..\run\JvMemoryDataset.pas';
+  JvMemoryDataset in '..\..\run\JvMemoryDataset.pas',
+  JvDBRadioPanel in '..\..\run\JvDBRadioPanel.pas';
 
 end.
