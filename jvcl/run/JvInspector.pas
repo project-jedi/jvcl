@@ -26,6 +26,9 @@
 
  RECENT CHANGES:
     Apr 30, 2004, Marcel Bestebroer:
+      - Using the MouseWheel during drop down, will no longer result in the
+        scrolling of the inspector. Unfortunately, it will also not scroll
+        the drop down list.
       - Mantis 1617: Allow Ctrl+Enter to toggle Expanded state, Ctrl+Left to
         collapse and Ctrl+Right to expand.
       - Added UseFont property to TJvInspectorFontNameItem. When set to True
@@ -5691,6 +5694,11 @@ begin
     ExecInherited := False;
     GetEditCtrl.SelectAll;
 //    FEditChanged := True; // sets a flag that a change should be accepted whenever focus shifts away!
+  end;
+  if (Msg.Msg = WM_MOUSEWHEEL) then
+  begin
+    Msg.Result := 1;
+    ExecInherited := False;
   end;
   if ExecInherited and (@EditWndPrc <> nil) then
     EditWndPrc(Msg);
@@ -12224,11 +12232,21 @@ function TJvCustomInspector.DoMouseWheel(Shift: TShiftState;
 var
   Count: Integer;
   Index: Integer;
+  lbPos: TPoint;
 begin
-  Count := -WheelDelta div (120 div 5); // 5 items per scroll
-  Index := TopIndex + Count;
-  if Index > -1 then
+  if (Selected <> nil) and Selected.DroppedDown then
+  begin
+    lbPos := Selected.ListBox.ScreenToClient(ClientToScreen(MousePos));
+    Selected.ListBox.Perform(WM_MOUSEWHEEL, WheelDelta shl 16, lbPos.x + (lbPos.y shl 16));
+  end
+  else
+  begin
+    Count := -WheelDelta div (120 div 5); // 5 items per scroll
+    Index := TopIndex + Count;
+    if Index < 0 then
+      Index := 0;
     TopIndex := Index;
+  end;
   Result := True;
 end;
 
