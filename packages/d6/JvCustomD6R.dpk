@@ -36,6 +36,7 @@ contains
   JvTrayIcon in '..\..\run\JvTrayIcon.pas',
   JvDiagramShape in '..\..\run\JvDiagramShape.pas',
   JvGammaPanel in '..\..\run\JvGammaPanel.pas',
+  JvChart in '..\..\run\JvChart.pas',
   JvInspector in '..\..\run\JvInspector.pas',
   JvInspExtraEditors in '..\..\run\JvInspExtraEditors.pas',
   JvLinkLabel in '..\..\run\JvLinkLabel.pas',
