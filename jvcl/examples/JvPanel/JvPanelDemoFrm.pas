@@ -34,7 +34,7 @@ uses
   JvComponent, JvFormPlacement, JvExExtCtrls, JvExMask;
 
 type
-  TForm1 = class(TForm)
+  TJvPanelDemoMainFrm = class(TForm)
     JvPanel1: TJvPanel;
     Edit1: TEdit;
     JvFilenameEdit1: TJvFilenameEdit;
@@ -44,25 +44,21 @@ type
     Label1: TLabel;
     procedure CheckBox1Click(Sender: TObject);
     procedure CheckBox2Click(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 var
-  Form1: TForm1;
+  JvPanelDemoMainFrm: TJvPanelDemoMainFrm;
 
 implementation
 
 {$R *.DFM}
 
-procedure TForm1.CheckBox1Click(Sender: TObject);
+procedure TJvPanelDemoMainFrm.CheckBox1Click(Sender: TObject);
 begin
   JvPanel1.Transparent := CheckBox1.Checked;
 end;
 
-procedure TForm1.CheckBox2Click(Sender: TObject);
+procedure TJvPanelDemoMainFrm.CheckBox2Click(Sender: TObject);
 begin
   JvPanel1.ArrangeSettings.AutoArrange := CheckBox2.Checked;
 end;

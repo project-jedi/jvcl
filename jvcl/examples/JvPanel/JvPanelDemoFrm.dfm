@@ -1,4 +1,4 @@
-object Form1: TForm1
+object JvPanelDemoMainFrm: TJvPanelDemoMainFrm
   Left = 260
   Top = 127
   Width = 549
@@ -55,7 +55,6 @@ object Form1: TForm1
       Width = 455
       Height = 21
       AddQuotes = False
-      ButtonFlat = False
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 1
       Text = 'JvFilenameEdit1'
@@ -82,6 +81,7 @@ object Form1: TForm1
     end
   end
   object JvFormStorage1: TJvFormStorage
+    AppStoragePath = '%FORM_NAME%'
     StoredValues = <>
     Left = 184
     Top = 56
