@@ -1,3 +1,6 @@
+2002-09-05
+- Added JvPlugin donated by Tim Sullivan
+
 2002-09-03
 - Added donations from Fernando Silva - JvFooter, JvNTEventLog and JvGroupHeader
 
