@@ -33,9 +33,9 @@ uses
   Classes,
   {$IFDEF RTL140_UP}
   DesignEditors, DesignIntf,
-  {$ELSE !RTL140_UP}
+  {$ELSE}
   DsgnIntf,
-  {$ENDIF !RTL140_UP}
+  {$ENDIF RTL140_UP}
   JvBackgrounds, JvBackgroundEditForm;
 
 type
@@ -84,13 +84,13 @@ begin
     Clients := TJvBackgroundClients(GetOrdValue);
     {$IFDEF RTL140_UP}
     EditorAddControl(Designer.Root.Name);
-    {$ELSE !RTL140_UP}
+    {$ELSE}
     EditorAddControl(Designer.GetRoot.Name);
-    {$ENDIF !RTL140_UP}
+    {$ENDIF RTL140_UP}
     Proc := EditorAddControl;
     Designer.GetComponentNames(GetTypeData(TWinControl.ClassInfo), Proc);
     Editor.SetButtons;
-    if Editor.ShowModal = mrOK then
+    if Editor.ShowModal = mrOk then
     begin
       Clients.Clear;
       with Editor.DstList do
