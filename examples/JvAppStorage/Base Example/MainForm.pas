@@ -10,7 +10,7 @@ uses
   ShellAPI, Menus;
 
 type
-  TMainFormDlg = class(TForm, IAppStorageHandler)
+  TMainFormDlg = class(TForm, IJvAppStorageHandler)
     StatusBar1: TStatusBar;
     JvAppIniFileStorage1: TJvAppIniFileStorage;
     JvFormStorage1: TJvFormStorage;

@@ -1031,23 +1031,23 @@ end;
 
 procedure TJvFormStorage.SavePlacement;
 Var
-  AppStorageHandler: IAppStorageHandler;
+  JvAppStorageHandler: IJvAppStorageHandler;
 begin
   inherited SavePlacement;
-  if Supports(Owner, IAppStorageHandler, AppStorageHandler)then
-    AppStorageHandler.WriteToAppStorage(AppStorage, AppStoragePath);
+  if Supports(Owner, IJvAppStorageHandler, JvAppStorageHandler)then
+    JvAppStorageHandler.WriteToAppStorage(AppStorage, AppStoragePath);
   SaveProperties;
   StoredValues.SaveValues;
 end;
 
 procedure TJvFormStorage.RestorePlacement;
 Var
-  AppStorageHandler: IAppStorageHandler;
+  JvAppStorageHandler: IJvAppStorageHandler;
 begin
   inherited RestorePlacement;
   FRestored := True;
-  if Supports(Owner, IAppStorageHandler, AppStorageHandler)then
-    AppStorageHandler.ReadFromAppStorage(AppStorage, AppStoragePath);
+  if Supports(Owner, IJvAppStorageHandler, JvAppStorageHandler)then
+    JvAppStorageHandler.ReadFromAppStorage(AppStorage, AppStoragePath);
   RestoreProperties;
   StoredValues.RestoreValues;
 end;
