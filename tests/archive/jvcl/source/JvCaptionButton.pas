@@ -406,6 +406,9 @@ begin
 {$IFDEF COMPILER6_UP}Classes.{$ENDIF}FreeObjectInstance(FWndProc);
   end;
   FWindowHandle := 0;
+  if ParentForm <> nil then
+    ReDrawWindow(ParentForm.Handle,nil,0,
+      RDW_ERASE or RDW_FRAME or RDW_INTERNALPAINT or RDW_INVALIDATE or RDW_UPDATENOW);	
 end;
 
 procedure TJvCaptionButton.WndProc(var Msg: TMessage);
