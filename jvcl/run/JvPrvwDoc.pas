@@ -693,12 +693,12 @@ end;
 
 function TJvDeviceInfo.MMToXPx(MM: single): Integer;
 begin
-  Result := InchToXPx(MM * 25.4);
+  Result := InchToXPx(MM / 25.4);
 end;
 
 function TJvDeviceInfo.MMToYPx(MM: single): Integer;
 begin
-  Result := InchToYPx(MM * 25.4);
+  Result := InchToYPx(MM / 25.4);
 end;
 
 procedure TJvDeviceInfo.SetLogPixelsY(const Value: Cardinal);
