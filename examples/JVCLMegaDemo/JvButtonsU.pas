@@ -30,8 +30,9 @@ interface
 
 uses 
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvGIF, ExtCtrls, JvImage, ImgList, ComCtrls, JvArrowBtn, JvComponent,
-  JvTransBtn, StdCtrls, JvButton, Buttons, JvBitBtn;
+  JvGIF, ExtCtrls, JvImage, ImgList, ComCtrls, JvComponent,
+  StdCtrls, JvButton, Buttons, JvBitBtn, JvExButtons,
+  JvExExtCtrls, JvArrowButton, JvExControls, JvTransparentButton;
 
 type
   TJvButtons = class(TForm)

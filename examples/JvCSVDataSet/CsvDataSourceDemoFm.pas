@@ -31,7 +31,7 @@ unit CsvDataSourceDemoFm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, DB, Grids, DBGrids, ExtCtrls, DBCtrls, JvCsvData, StdCtrls,
   JvCsvParse, ComCtrls;
 

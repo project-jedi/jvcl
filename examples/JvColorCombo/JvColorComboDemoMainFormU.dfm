@@ -41,8 +41,6 @@ object JvColorComboDemoMainForm: TJvColorComboDemoMainForm
     Top = 24
     Width = 145
     Height = 20
-    AutoSave.Registry.Key = 'DefaultColor'
-    AutoSave.Registry.Path = '\Software\JEDI\ColorTest'
     ColorNameMap.Strings = (
       'clBlack=Black'
       'clMaroon=Maroon'
@@ -100,9 +98,9 @@ object JvColorComboDemoMainForm: TJvColorComboDemoMainForm
       'clDefault=Default')
     ColorValue = clNavy
     ColorDialogText = '(Other...)'
+    DroppedDownWidth = 145
     NewColorText = 'Custom Color %d'
     Options = [coText, coSysColors, coCustomColors]
-    DroppedDownWidth = 145
     OnNewColor = JvColorComboBox1NewColor
     TabOrder = 0
   end

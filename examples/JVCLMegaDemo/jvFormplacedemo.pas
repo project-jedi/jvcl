@@ -30,11 +30,10 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvComponent, JvFormPlace, JvLabel;
+  JvComponent, JvLabel, JvExControls;
 
 type
   TfrFormplace = class(TForm)
-    JvFormPlace1: TJvFormPlace;
     JvxLabel1: TJvLabel;
   private
   public

@@ -420,15 +420,17 @@ object WelcomeForm: TWelcomeForm
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
-    ParentFont = False
     Layout = tlCenter
+    ParentFont = False
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = [fsBold, fsUnderline]
-    Url = 'mailto:RalfGSpam@gmx.de?subject=JVCL MegaDemo'
+    ImageIndex = 0
+    URL = 'mailto:RalfGSpam@gmx.de?subject=JVCL MegaDemo'
   end
   object JvHotLink3: TJvLabel
     Left = 0
@@ -447,23 +449,25 @@ object WelcomeForm: TWelcomeForm
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
-    ParentFont = False
     Layout = tlCenter
+    ParentFont = False
     OnClick = JvHotLink3Click
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = [fsBold, fsUnderline]
-    Url = ' '
+    ImageIndex = 0
+    URL = ' '
   end
   object frmh_st: TJvScrollText
     Left = 0
     Top = 173
     Width = 531
     Height = 137
-    TextAlignment = taCenter
+    Alignment = taLeftJustify
     Items.Strings = (
       'Welcome to the Demo Program of the JEDI-VCL components.'
       ''

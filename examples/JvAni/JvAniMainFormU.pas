@@ -29,7 +29,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, FileCtrl, ExtCtrls,
-  JvAni, JvCombobox, JvDriveCtrls, JvListBox;
+  JvAni, JvCombobox, JvDriveCtrls, JvListBox, JvExStdCtrls;
 
 type
   TJvAniMainForm = class(TForm)

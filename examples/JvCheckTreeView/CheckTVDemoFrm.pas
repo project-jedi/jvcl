@@ -27,7 +27,7 @@ unit CheckTVDemoFrm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, Menus, ImgList, ComCtrls, StdCtrls, ExtCtrls,
   JvCheckTreeView;
 

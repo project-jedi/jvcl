@@ -39,7 +39,7 @@ interface
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, ExtCtrls, StdCtrls, Buttons, JvComponent,
-  JvSecretPanel;
+  JvSecretPanel, JvExExtCtrls;
 
 type
   TAboutDlg = class(TForm)

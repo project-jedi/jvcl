@@ -28,8 +28,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Menus, ExtCtrls, Buttons, JvArrowBtn, ComCtrls, StdCtrls, ImgList,
-  JvComponent;
+  Menus, ExtCtrls, Buttons, ComCtrls, StdCtrls, ImgList,
+  JvComponent, JvExControls, JvArrowButton;
 
 type
   TArrowButtonMainForm = class(TForm)

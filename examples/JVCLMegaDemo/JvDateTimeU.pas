@@ -32,7 +32,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvComponent, JvCalendar, ComCtrls, JvMonthCalendar, JvDateTimePicker,
   StdCtrls, JvEdit, JvValidateEdit, Mask, JvToolEdit, ExtCtrls,
-  JvAnalogClock, JvClock;
+  JvClock, JvExExtCtrls, JvExMask, JvExStdCtrls, JvExComCtrls;
 
 type
   TJvDateTimeFrm = class(TForm)

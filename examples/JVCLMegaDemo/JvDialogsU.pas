@@ -32,16 +32,16 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvComponent, JvBaseDlg, StdCtrls, JvNagScreen, JvImageDlg, JvWinDialogs,
+  JvComponent, JvBaseDlg, StdCtrls, JvImageDlg, JvWinDialogs,
   JvCommonDialogD, JvDiskPrompt, JvCopyError,
-  JvDeleteError, JvPageSetup, JvPageSetupTitled, JvObjPickerComp,
+  JvDeleteError, JvPageSetup, JvPageSetupTitled, 
   JvCalc, JvTipOfDay, ExtCtrls, JvCaptionPanel, JvFindFiles,
-  JvGroupBox, Buttons, JvBitBtn, JvDlg, JvBrowseFolder, JvSelectDirectory,
-  JvDialogs, JvConnectNetwork, JvAddPrinter, JvRenameError, JvFindReplace;
+  JvGroupBox, Buttons, JvBitBtn, JvBrowseFolder, JvSelectDirectory,
+  JvDialogs, JvConnectNetwork, JvAddPrinter, JvRenameError, JvFindReplace,
+  JvObjectPickerDialog, JvExButtons, JvExExtCtrls;
 
 type
   TJvDialogs = class(TForm)
-    JvImageDlg1: TJvImageDlg;
     JvCalculator1: TJvCalculator;
     JvDiskPrompt1: TJvDiskPrompt;
     JvCopyError1: TJvCopyError;
@@ -52,7 +52,6 @@ type
     JvCaptionPanel1: TJvCaptionPanel;
     Button17: TButton;
     JvFindFilesDialog1: TJvFindFilesDialog;
-    JvProgressForm1: TJvProgressForm;
     JvBitBtn2: TJvBitBtn;
     JvBitBtn3: TJvBitBtn;
     JvBrowseForFolderDialog1: TJvBrowseForFolderDialog;
@@ -126,8 +125,6 @@ type
     procedure JvPasswordForm1Ok(Sender: TObject; Password: String;
       var Accept: Boolean);
     procedure JvPasswordForm1Cancel(Sender: TObject);
-    procedure JvBitBtn2Click(Sender: TObject);
-    procedure JvProgressForm1Show(Sender: TObject);
     procedure JvBitBtn3Click(Sender: TObject);
     procedure JvBitBtn4Click(Sender: TObject);
     procedure JvBitBtn5Click(Sender: TObject);
@@ -154,8 +151,6 @@ type
     procedure JvBitBtn29Click(Sender: TObject);
     procedure JvBitBtn30Click(Sender: TObject);
     procedure JvBitBtn31Click(Sender: TObject);
-    procedure JvBitBtn36Click(Sender: TObject);
-    procedure JvBitBtn39Click(Sender: TObject);
     procedure JvBitBtn40Click(Sender: TObject);
     procedure JvBitBtn42Click(Sender: TObject);
     procedure JvBitBtn45Click(Sender: TObject);
@@ -188,27 +183,6 @@ end;
 procedure TJvDialogs.JvPasswordForm1Cancel(Sender: TObject);
 begin
   Application.MessageBox(PChar('You pressed Cancel'),'OnCancel event handle',MB_OK);
-end;
-
-procedure TJvDialogs.JvBitBtn2Click(Sender: TObject);
-var
-  I: integer;
-begin
-  jvProgressForm1.Execute;
-end;
-
-procedure TJvDialogs.JvProgressForm1Show(Sender: TObject);
-begin
- jvProgressForm1.ProgressPosition := jvProgressForm1.ProgressMin;
-  while jvProgressForm1.ProgressPosition < jvProgressForm1.ProgressMax do
-  begin
-    Sleep(50);
-    jvProgressForm1.InfoLabel := 'Long operation in progress: item'+ IntToStr(Random(100));
-    jvProgressForm1.ProgressPosition := jvProgressForm1.ProgressPosition + 1;
-    Application.ProcessMessages;
-    if jvProgressForm1.Cancel then Exit;
-  end;    { while }
-
 end;
 
 procedure TJvDialogs.JvBitBtn3Click(Sender: TObject);
@@ -350,23 +324,6 @@ end;
 procedure TJvDialogs.JvBitBtn31Click(Sender: TObject);
 begin
   jvObjectPickerDialog1.Execute;
-end;
-
-procedure TJvDialogs.JvBitBtn36Click(Sender: TObject);
-begin
-  with TJvNagScreen.Create(Application) do
-  try
-    Picture.LoadFromResourceName(HInstance, 'NAGPIC');
-    Execute;
-  finally
-    Free;
-  end;
-
-end;
-
-procedure TJvDialogs.JvBitBtn39Click(Sender: TObject);
-begin
-  JvImageDlg1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn40Click(Sender: TObject);

@@ -34,7 +34,6 @@ object JvDataEmbeddedMainForm: TJvDataEmbeddedMainForm
     TabOrder = 1
   end
   object JvDataEmbedded1: TJvDataEmbedded
-    Size = 298
     Left = 30
     Top = 10
     EmbeddedData = {

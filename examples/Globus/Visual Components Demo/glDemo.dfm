@@ -83,6 +83,7 @@ object Form1: TForm1
     Font.Style = []
     MultiLine = True
     ParentShowHint = False
+    ShowHint = False
     TabHeight = 110
     TabOrder = 0
     TabStop = False
@@ -8513,6 +8514,7 @@ object Form1: TForm1
         Top = 0
         Width = 538
         Height = 17
+        DragReorder = False
         Sections = <
           item
             AllowClick = False
@@ -8531,6 +8533,7 @@ object Form1: TForm1
         Top = 141
         Width = 538
         Height = 17
+        DragReorder = False
         Sections = <
           item
             AllowClick = False
@@ -9356,8 +9359,8 @@ object Form1: TForm1
       object glLabel10: TJvgLabel
         Left = 145
         Top = 94
-        Width = 78
-        Height = 20
+        Width = 80
+        Height = 22
         Caption = 'tsShadow'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
@@ -9749,8 +9752,8 @@ object Form1: TForm1
       object glLabel2: TJvgLabel
         Left = 245
         Top = 94
-        Width = 103
-        Height = 20
+        Width = 105
+        Height = 22
         Caption = 'fstVolumetric'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
@@ -14112,6 +14115,7 @@ object Form1: TForm1
         Top = 0
         Width = 5
         Height = 336
+        Cursor = crHSplit
         Align = alRight
         ResizeStyle = rsUpdate
       end
@@ -14372,7 +14376,7 @@ object Form1: TForm1
           Width = 274
           Height = 158
           GlyphChecked.Data = {
-            460B0000424D460B00000000000036080000280000000E0000000E0000000100
+            46070000424D460700000000000036040000280000000E0000000E0000000100
             2000000000001003000000000000000000000001000000000000000000000000
             FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00C0DCC0000000
             FF0000FF000000FFFF00FF000000FF00FF00FFFF000000FFFF00FF000000FF00
@@ -14432,7 +14436,7 @@ object Form1: TForm1
             000000FF00006F706F006F706F006F706F006F706F0000FF000000FF000000FF
             000000FF000000FF0000}
           GlyphUnChecked.Data = {
-            460B0000424D460B00000000000036080000280000000E0000000E0000000100
+            46070000424D460700000000000036040000280000000E0000000E0000000100
             2000000000001003000000000000000000000001000000000000000000000000
             FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00C0DCC0000000
             FF0000FF000000FFFF00FF000000FF00FF00FFFF000000FFFF00FF000000FF00
@@ -15124,7 +15128,6 @@ object Form1: TForm1
           Top = 1
           Width = 500
           Height = 83
-          Align = alTop
           Bitmap.Data = {
             A6020000424DA60200000000000036000000280000000C0000000D0000000100
             2000000000007002000000000000000000000000000000000000BFBFBF00BFBF
@@ -15151,13 +15154,13 @@ object Form1: TForm1
           BitmapOption = fwoTile
           Transparent = True
           TransparentColor = 12566463
+          Align = alTop
         end
         object glBitmapImage1: TJvgBitmapImage
           Left = 1
           Top = 84
           Width = 500
           Height = 251
-          Align = alClient
           Bitmap.Data = {
             3E020000424D3E0200000000000036000000280000000D0000000D0000000100
             1800000000000802000000000000000000000000000000000000BFBFBFBFBFBF
@@ -15182,6 +15185,7 @@ object Form1: TForm1
           DrawState = fdsDisabled
           Transparent = True
           AutoTransparentColor = ftcUser
+          Align = alClient
         end
       end
     end
@@ -15212,7 +15216,7 @@ object Form1: TForm1
           Gradient3D.Depth = 10
           Gradient3D.GType = fgt3D
           ScalePercent = 10
-          StepScaleFactor = 1.080000042915344000
+          StepScaleFactor = 1.08000004291534
           ResultFont.Charset = DEFAULT_CHARSET
           ResultFont.Color = clWhite
           ResultFont.Height = -120
@@ -15243,13 +15247,11 @@ object Form1: TForm1
         Top = -1
         Width = 534
         Height = 17
-        Value = 1025.000000000000000000
+        Value = 1025
         DigitSize.X = 6
         DigitSize.Y = 7
         PassiveColor = clBlack
         Alignment = taRightJustify
-        InsertSpSymbolAt = 3
-        SpecialSymbol = _colon_
         Bevel.Inner = bvLowered
         Bevel.Outer = bvNone
         Bevel.Bold = False
@@ -15261,15 +15263,11 @@ object Form1: TForm1
       object glDigits5: TJvgDigits
         Left = 6
         Top = 59
-        Width = 160
-        Height = 28
-        Value = 566745.000000000000000000
+        Value = 566745
         DigitSize.X = 10
         DigitSize.Y = 21
         Positions = 10
         Alignment = taRightJustify
-        InsertSpSymbolAt = 10
-        SpecialSymbol = _slash_
         Bevel.Inner = bvLowered
         Bevel.Outer = bvNone
         Bevel.Bold = False
@@ -15279,15 +15277,11 @@ object Form1: TForm1
       object glDigits6: TJvgDigits
         Left = 7
         Top = 160
-        Width = 160
-        Height = 28
-        Value = 123.000000000000000000
+        Value = 123
         DigitSize.X = 10
         DigitSize.Y = 21
         Gap = 2
         Interspace = 19
-        InsertSpSymbolAt = 2
-        SpecialSymbol = _backslash_
         Bevel.Inner = bvLowered
         Bevel.Outer = bvNone
         Bevel.Bold = False
@@ -15297,9 +15291,7 @@ object Form1: TForm1
       object glDigits7: TJvgDigits
         Left = 6
         Top = 191
-        Width = 160
-        Height = 28
-        Value = 1.123456789000000000
+        Value = 1.123456789
         DigitSize.X = 10
         DigitSize.Y = 21
         ActiveColor = clAqua
@@ -15314,8 +15306,7 @@ object Form1: TForm1
         Left = 65
         Top = 224
         Width = 100
-        Height = 28
-        Value = 1.123456789000000000
+        Value = 1.123456789
         DigitSize.X = 5
         DigitSize.Y = 21
         Bevel.Inner = bvLowered
@@ -15328,9 +15319,7 @@ object Form1: TForm1
       object glDigits9: TJvgDigits
         Left = 8
         Top = 94
-        Width = 160
-        Height = 28
-        Value = 1.123456789000000000
+        Value = 1.123456789
         DigitSize.X = 10
         DigitSize.Y = 11
         Bevel.Inner = bvLowered
@@ -15345,7 +15334,7 @@ object Form1: TForm1
         Top = 287
         Width = 73
         Height = 16
-        Value = 1.123456789000000000
+        Value = 1.123456789
         DigitSize.X = 3
         DigitSize.Y = 7
         Bevel.Inner = bvLowered
@@ -15359,7 +15348,7 @@ object Form1: TForm1
         Top = 306
         Width = 73
         Height = 16
-        Value = 1.123456789000000000
+        Value = 1.123456789
         DigitSize.X = 3
         DigitSize.Y = 5
         Gap = 0
@@ -15372,9 +15361,8 @@ object Form1: TForm1
       object glDigits2: TJvgDigits
         Left = 6
         Top = 22
-        Width = 160
         Height = 32
-        Value = 1.123456789000000000
+        Value = 1.123456789
         DigitSize.X = 10
         DigitSize.Y = 23
         ActiveColor = clBtnHighlight
@@ -15391,9 +15379,8 @@ object Form1: TForm1
       object glDigits3: TJvgDigits
         Left = 5
         Top = 21
-        Width = 160
         Height = 32
-        Value = 1.123456789000000000
+        Value = 1.123456789
         DigitSize.X = 10
         DigitSize.Y = 23
         ActiveColor = clBtnShadow
@@ -15410,9 +15397,7 @@ object Form1: TForm1
       object glDigits1a: TJvgDigits
         Left = 7
         Top = 127
-        Width = 160
-        Height = 28
-        Value = 1.123456789000000000
+        Value = 1.123456789
         DigitSize.X = 10
         DigitSize.Y = 21
         Gap = 3
@@ -15429,7 +15414,7 @@ object Form1: TForm1
         Top = 306
         Width = 73
         Height = 16
-        Value = 1.123456789000000000
+        Value = 1.123456789
         DigitSize.X = 3
         DigitSize.Y = 7
         ActiveColor = clYellow
@@ -15444,8 +15429,7 @@ object Form1: TForm1
         Left = 65
         Top = 256
         Width = 100
-        Height = 28
-        Value = 1.123456789000000000
+        Value = 1.123456789
         DigitSize.X = 5
         DigitSize.Y = 21
         ActiveColor = clLime
@@ -15585,7 +15569,7 @@ object Form1: TForm1
               Top = 0
               Width = 33
               Height = 17
-              Value = 30.300000000000000000
+              Value = 30.3
               DigitSize.X = 5
               DigitSize.Y = 9
               ActiveColor = 4227327
@@ -15635,7 +15619,7 @@ object Form1: TForm1
               Top = 0
               Width = 33
               Height = 17
-              Value = 2.230000000000000000
+              Value = 2.23
               DigitSize.X = 5
               DigitSize.Y = 9
               ActiveColor = 12451773
@@ -15685,7 +15669,7 @@ object Form1: TForm1
               Top = 0
               Width = 33
               Height = 17
-              Value = 0.230000000000000000
+              Value = 0.23
               DigitSize.X = 5
               DigitSize.Y = 9
               ActiveColor = 16761152
@@ -15811,7 +15795,7 @@ object Form1: TForm1
             Top = 68
             Width = 54
             Height = 20
-            Value = 2.000000000000000000
+            Value = 2
             DigitSize.X = 6
             DigitSize.Y = 11
             ActiveColor = 8421631
@@ -15828,7 +15812,7 @@ object Form1: TForm1
             Top = 44
             Width = 54
             Height = 20
-            Value = 456.000000000000000000
+            Value = 456
             DigitSize.X = 6
             DigitSize.Y = 11
             ActiveColor = 16763742
@@ -15845,7 +15829,7 @@ object Form1: TForm1
             Top = 20
             Width = 54
             Height = 20
-            Value = 36.000000000000000000
+            Value = 36
             DigitSize.X = 6
             DigitSize.Y = 11
             ActiveColor = 8453888
@@ -15978,7 +15962,7 @@ object Form1: TForm1
             Top = 0
             Width = 33
             Height = 17
-            Value = 30.300000000000000000
+            Value = 30.3
             DigitSize.X = 5
             DigitSize.Y = 9
             ActiveColor = 4227327
@@ -16027,7 +16011,7 @@ object Form1: TForm1
             Top = 0
             Width = 33
             Height = 17
-            Value = 2.230000000000000000
+            Value = 2.23
             DigitSize.X = 5
             DigitSize.Y = 9
             ActiveColor = 12451773
@@ -16076,7 +16060,7 @@ object Form1: TForm1
             Top = 0
             Width = 33
             Height = 17
-            Value = 0.230000000000000000
+            Value = 0.23
             DigitSize.X = 5
             DigitSize.Y = 9
             ActiveColor = 16761152
@@ -16260,7 +16244,7 @@ object Form1: TForm1
         FullHeight = 105
         object Shape1: TShape
           Left = 2
-          Top = 16
+          Top = 17
           Width = 196
           Height = 1
           Align = alTop
@@ -16624,7 +16608,7 @@ object Form1: TForm1
         FullHeight = 106
         object Shape3: TShape
           Left = 2
-          Top = 16
+          Top = 17
           Width = 196
           Height = 1
           Align = alTop
@@ -16692,7 +16676,7 @@ object Form1: TForm1
         FullHeight = 106
         object Shape4: TShape
           Left = 2
-          Top = 16
+          Top = 17
           Width = 196
           Height = 1
           Align = alTop
@@ -20475,6 +20459,7 @@ object Form1: TForm1
         Top = 0
         Width = 5
         Height = 336
+        Cursor = crHSplit
       end
       object glBevel6a: TJvgBevel
         Left = 0
@@ -20796,12 +20781,6 @@ object Form1: TForm1
         Top = 16
         Width = 513
         Height = 25
-        Caption = 'progress...[%d%%]'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
         Colors.Delineate = clGray
         Colors.Shadow = clBlack
         Colors.Background = clBlack
@@ -20816,23 +20795,18 @@ object Form1: TForm1
         GradientBack.Orientation = fgdVertical
         Percent = 47
         CaptionAlignment = taCenter
-        CaptionDirection = fldLeftRight
-        CaptionStyle = fstShadow
-        Step = 3
-        Interspace = 1
         Options = []
-      end
-      object glProgress2: TJvgProgress
-        Left = 8
-        Top = 56
-        Width = 150
-        Height = 25
-        Caption = 'Wait [%d%%]'
+        Caption = 'progress...[%d%%]'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
+        Font.Style = []
+      end
+      object glProgress2: TJvgProgress
+        Left = 8
+        Top = 56
+        Height = 25
         Colors.Delineate = clGray
         Colors.Shadow = clBlack
         Colors.Background = clBlack
@@ -20847,23 +20821,19 @@ object Form1: TForm1
         GradientBack.Orientation = fgdVertical
         Percent = 47
         CaptionAlignment = taCenter
-        CaptionDirection = fldLeftRight
-        CaptionStyle = fstShadow
-        Step = 3
-        Interspace = 1
         Options = []
-      end
-      object glProgress3: TJvgProgress
-        Left = 184
-        Top = 56
-        Width = 337
-        Height = 25
         Caption = 'Wait [%d%%]'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
         Font.Style = [fsBold]
+      end
+      object glProgress3: TJvgProgress
+        Left = 184
+        Top = 56
+        Width = 337
+        Height = 25
         Colors.Delineate = clGray
         Colors.Shadow = clBlack
         Colors.Background = clBlack
@@ -20878,23 +20848,19 @@ object Form1: TForm1
         GradientBack.Orientation = fgdVertical
         Percent = 47
         CaptionAlignment = taCenter
-        CaptionDirection = fldLeftRight
-        CaptionStyle = fstShadow
-        Step = 3
-        Interspace = 1
         Options = []
+        Caption = 'Wait [%d%%]'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = [fsBold]
       end
       object glProgress5: TJvgProgress
         Left = 8
         Top = 136
         Width = 337
         Height = 25
-        Caption = ' Loading [%d%%]'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clYellow
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
         BevelInner = bvSpace
         Colors.Delineate = clSilver
         Colors.Shadow = clBlack
@@ -20911,24 +20877,20 @@ object Form1: TForm1
         GradientBack.Orientation = fgdVertical
         GradientBack.BrushStyle = bsDiagCross
         Percent = 47
-        CaptionAlignment = taLeftJustify
-        CaptionDirection = fldLeftRight
         CaptionStyle = fstNone
-        Step = 3
         Interspace = 3
         Options = [fpoTransparent]
+        Caption = ' Loading [%d%%]'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clYellow
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = [fsBold]
       end
       object glProgress6: TJvgProgress
         Left = 368
         Top = 96
-        Width = 150
         Height = 65
-        Caption = 'Wait [%d%%]'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
         Colors.Delineate = clGray
         Colors.Shadow = clBlack
         Colors.Background = clBlack
@@ -20943,23 +20905,20 @@ object Form1: TForm1
         GradientBack.Orientation = fgdVertical
         Percent = 47
         CaptionAlignment = taCenter
-        CaptionDirection = fldLeftRight
-        CaptionStyle = fstShadow
-        Step = 3
         Interspace = 0
         Options = []
+        Caption = 'Wait [%d%%]'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = [fsBold]
       end
       object glProgress7: TJvgProgress
         Left = 432
         Top = 176
         Width = 85
         Height = 153
-        Caption = '%d%% - Init'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
         BevelInner = bvRaised
         Colors.Delineate = clSilver
         Colors.Shadow = clBlack
@@ -20975,23 +20934,20 @@ object Form1: TForm1
         GradientBack.Orientation = fgdVertical
         Percent = 47
         CaptionAlignment = taCenter
-        CaptionDirection = fldLeftRight
-        CaptionStyle = fstShadow
-        Step = 3
         Interspace = 0
         Options = []
+        Caption = '%d%% - Init'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = [fsBold]
       end
       object glProgress8: TJvgProgress
         Left = 8
         Top = 176
         Width = 404
         Height = 23
-        Caption = '-=== %d%% ===-'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
         Colors.Delineate = clGray
         Colors.Shadow = clBlack
         Colors.Background = clBlack
@@ -21006,23 +20962,20 @@ object Form1: TForm1
         GradientBack.Orientation = fgdVertical
         Percent = 47
         CaptionAlignment = taCenter
-        CaptionDirection = fldLeftRight
-        CaptionStyle = fstShadow
-        Step = 3
         Interspace = 7
         Options = []
+        Caption = '-=== %d%% ===-'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = [fsBold]
       end
       object glProgress4: TJvgProgress
         Left = 8
         Top = 96
         Width = 337
         Height = 25
-        Caption = 'Wait [%d%%]'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
         BevelInner = bvRaised
         Colors.Delineate = clSilver
         Colors.Shadow = clBlack
@@ -21038,11 +20991,14 @@ object Form1: TForm1
         GradientBack.Orientation = fgdVertical
         Percent = 47
         CaptionAlignment = taCenter
-        CaptionDirection = fldLeftRight
-        CaptionStyle = fstShadow
-        Step = 3
         Interspace = 0
         Options = [fpoDelineatedText]
+        Caption = 'Wait [%d%%]'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = [fsBold]
       end
       object TrackBar: TTrackBar
         Left = 8
@@ -21050,11 +21006,16 @@ object Form1: TForm1
         Width = 417
         Height = 49
         Max = 100
+        Orientation = trHorizontal
         PageSize = 1
+        Frequency = 1
         Position = 45
+        SelEnd = 0
+        SelStart = 0
         TabOrder = 0
         ThumbLength = 15
         TickMarks = tmTopLeft
+        TickStyle = tsAuto
         OnChange = TrackBarChange
       end
     end
@@ -25372,8 +25333,6 @@ object Form1: TForm1
       000000000000}
   end
   object glHint1: TJvgHint
-    Active = False
-    ShowHint = False
     Glyph.Data = {
       26050000424D260500000000000036040000280000000E0000000F0000000100
       080000000000F000000000000000000000000001000000000000000000000000
@@ -25430,8 +25389,6 @@ object Form1: TForm1
     Style.TextStyle = fstNone
     Style.Gradient.Active = False
     Style.Gradient.Orientation = fgdHorizontal
-    Spacing = 0
-    Alignment = taLeftJustify
     Left = 79
     Top = 293
   end
@@ -25676,11 +25633,6 @@ object Form1: TForm1
       F83F80014007E000F87FC8132007E00FFCFFFC3F407FF07FFFFFFFFF00FFF07F
       FFFFFFFF01FFF8FFFFFFFFFFFFFFFFFF00000000000000000000000000000000
       000000000000}
-  end
-  object glSmallFontsDefence1: TJvgSmallFontsDefence
-    Options = []
-    Left = 56
-    Top = 93
   end
   object ImageList2: TImageList
     Left = 109

@@ -28,7 +28,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvComponent, JvTransparentForm;
+  StdCtrls, JvComponent, JvFormTransparent;
 
 type
   TfrTransparentForm = class(TForm)

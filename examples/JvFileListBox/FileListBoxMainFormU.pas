@@ -31,7 +31,8 @@ interface
 uses 
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   FileCtrl, JvDriveCtrls, StdCtrls, JvCombobox, JvListBox, JvLabel,
-  JvComponent, ExtCtrls, JvCaptionPanel;
+  JvComponent, ExtCtrls, JvCaptionPanel, JvExStdCtrls, JvExExtCtrls,
+  JvExControls;
 
 type
   TFileListBoxMainForm = class(TForm)

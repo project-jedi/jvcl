@@ -30,8 +30,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvColorBox, Menus, Buttons,ExtCtrls, JvColorBtn,
-  JvComponent;
+  StdCtrls, JvColorBox, Menus, Buttons,ExtCtrls, 
+  JvComponent, JvExControls, JvColorButton;
 
 type
   TForm2 = class(TForm)

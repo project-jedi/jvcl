@@ -17,16 +17,16 @@ object JvDBDateTimePickerMainForm: TJvDBDateTimePickerMainForm
   object Label1: TLabel
     Left = 48
     Top = 27
-    Width = 111
+    Width = 112
     Height = 26
-    Caption = 'a JvDBDateTimePicker'#13#10'with kind dtkDate:'
+    Caption = 'A JvDBDateTimePicker'#13#10'with kind dtkDate:'
   end
   object Label2: TLabel
     Left = 240
     Top = 28
-    Width = 111
+    Width = 112
     Height = 26
-    Caption = 'a JvDBDateTimePicker'#13#10'with kind dtkTime:'
+    Caption = 'A JvDBDateTimePicker'#13#10'with kind dtkTime:'
   end
   object DBGrid1: TDBGrid
     Left = 42
@@ -42,7 +42,7 @@ object JvDBDateTimePickerMainForm: TJvDBDateTimePickerMainForm
     TitleFont.Style = []
   end
   object DBNavigator1: TDBNavigator
-    Left = 82
+    Left = 42
     Top = 98
     Width = 240
     Height = 25
@@ -54,10 +54,15 @@ object JvDBDateTimePickerMainForm: TJvDBDateTimePickerMainForm
     Top = 60
     Width = 186
     Height = 21
-    Date = 35231.569609768500000000
-    Time = 35231.569609768500000000
+    CalAlignment = dtaLeft
+    Date = 35231.5696097685
+    Time = 35231.5696097685
+    DateFormat = dfShort
+    DateMode = dmComboBox
+    Kind = dtkDate
+    ParseInput = False
     TabOrder = 2
-    DropDownDate = 37579.000000000000000000
+    DropDownDate = 37579
     NullText = '(none)'
     DataField = 'Event_Date'
     DataSource = DataSource1
@@ -67,11 +72,15 @@ object JvDBDateTimePickerMainForm: TJvDBDateTimePickerMainForm
     Top = 60
     Width = 186
     Height = 21
-    Date = 2.569609768521330000
-    Time = 2.569609768521330000
+    CalAlignment = dtaLeft
+    Date = 2.56960976852133
+    Time = 2.56960976852133
+    DateFormat = dfShort
+    DateMode = dmComboBox
     Kind = dtkTime
+    ParseInput = False
     TabOrder = 3
-    DropDownDate = 37579.000000000000000000
+    DropDownDate = 37579
     NullText = '(none)'
     DataField = 'Event_Time'
     DataSource = DataSource1

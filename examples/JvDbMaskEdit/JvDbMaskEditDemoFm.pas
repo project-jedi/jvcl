@@ -29,9 +29,9 @@ unit JvDbMaskEditDemoFm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Mask, JvMaskEdit, JvDBControls, ExtCtrls, DBCtrls,
-  dbcgrids, DB, JvCsvData, JvEdit, JvValidateEdit;
+  dbcgrids, DB, JvCsvData, JvEdit, JvValidateEdit, JvExMask;
 
 type
   TForm1 = class(TForm)

@@ -27,8 +27,9 @@ unit BmpAnimMainFormU;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JvBmpAnim,
-  ExtCtrls, Menus, ComCtrls, StdCtrls, ImgList, JvComponent, JvBmpAnimator;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, 
+  ExtCtrls, Menus, ComCtrls, StdCtrls, ImgList, JvComponent, JvBmpAnimator,
+  JvExControls;
 
 type
   TBmpAnimMainForm = class(TForm)

@@ -39,7 +39,8 @@ interface
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, JvSplit, DB,
-  ComCtrls, Grids, Menus, JvComponent, JvFormPlacement, JvGrids;
+  ComCtrls, Grids, Menus, JvComponent, JvFormPlacement, JvGrids,
+  JvExExtCtrls, JvExGrids;
 
 type
   TTraceSQL = class(TForm)

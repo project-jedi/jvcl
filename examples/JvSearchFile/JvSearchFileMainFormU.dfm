@@ -48,7 +48,6 @@ object JvSearchFileMainForm: TJvSearchFileMainForm
       Width = 281
       Height = 21
       ButtonFlat = False
-      NumGlyphs = 1
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 0
       Text = 'C:\'
@@ -192,7 +191,6 @@ object JvSearchFileMainForm: TJvSearchFileMainForm
     Top = 72
   end
   object JvFormStorage1: TJvFormStorage
-    AppStorage = JvAppINIFileStore1
     StoredProps.Strings = (
       'edFileMask.Text'
       'chkRecursive.Checked'
@@ -206,10 +204,5 @@ object JvSearchFileMainForm: TJvSearchFileMainForm
     StoredValues = <>
     Left = 186
     Top = 72
-  end
-  object JvAppINIFileStore1: TJvAppINIFileStore
-    Buffered = False
-    Left = 90
-    Top = 84
   end
 end

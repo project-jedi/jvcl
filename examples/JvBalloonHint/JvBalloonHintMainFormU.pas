@@ -27,8 +27,9 @@ unit JvBalloonHintMainFormU;
 interface
 
 uses
-  Windows, Messages, Forms,JvButton, JvComponent, ImgList, Controls,
-  StdCtrls, JvGradientCaption, JvListComb, JvBalloonHint, ExtCtrls, Classes;
+  Windows, Messages, Forms, JvButton, JvComponent, ImgList, Controls,
+  StdCtrls, JvGradientCaption, JvBalloonHint, ExtCtrls, Classes,
+  JvExStdCtrls, JvListComb;
 
 type
   TJvBalloonHintMainForm = class(TForm)

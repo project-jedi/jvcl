@@ -38,7 +38,7 @@ interface
 
 uses WinTypes, WinProcs, Classes, Graphics, Forms, Controls, Buttons, Dialogs,
   StdCtrls, ComCtrls, ExtCtrls, DBCtrls, DB, 
-  JvComponent, JvFormPlacement, JvRichEdit, JvDBRichEdit;
+  JvComponent, JvFormPlacement, JvRichEdit, JvDBRichEdit, JvExStdCtrls;
 
 type
   TJvStrEditDlg  = class(TForm)

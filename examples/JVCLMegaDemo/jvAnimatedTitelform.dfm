@@ -13,11 +13,4 @@ object frAnimatedTitel: TfrAnimatedTitel
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
-  object JvAnimTitle1: TJvAnimTitle
-    Title = 'Animated Title Form'
-    Enabled = True
-    Delay = 100
-    Left = 48
-    Top = 32
-  end
 end

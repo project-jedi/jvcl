@@ -16,13 +16,14 @@ object MonthCalendarMainForm: TMonthCalendarMainForm
   TextHeight = 13
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 179
+    Top = 177
     Width = 405
     Height = 23
     Panels = <
       item
         Width = 50
       end>
+    SimplePanel = False
   end
   object chkMulti: TCheckBox
     Left = 211
@@ -65,22 +66,5 @@ object MonthCalendarMainForm: TMonthCalendarMainForm
     Caption = '&WeekNumbers'
     TabOrder = 4
     OnClick = chkWeeksClick
-  end
-  object mc: TJvMonthCalendar2
-    Left = 0
-    Top = 0
-    Width = 191
-    Height = 153
-    ParentColor = False
-    TabStop = True
-    TabOrder = 5
-    AutoSize = True
-    DateFirst = 37400.000000000000000000
-    DateLast = 37400.000000000000000000
-    MaxSelCount = 30
-    MultiSelect = True
-    Today = 37400.620631446800000000
-    OnSelect = mcSelect
-    OnSelChange = mcSelChange
   end
 end

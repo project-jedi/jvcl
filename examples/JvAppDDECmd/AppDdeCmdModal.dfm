@@ -3,7 +3,7 @@ object Form2: TForm2
   Top = 194
   BorderStyle = bsDialog
   Caption = 'Modal dialog'
-  ClientHeight = 91
+  ClientHeight = 73
   ClientWidth = 153
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

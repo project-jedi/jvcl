@@ -28,7 +28,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvGradient;
+  JvGradient, JvExControls, JvComponent;
 
 type
   Tfrgradient = class(TForm)

@@ -67,7 +67,7 @@ type
     MapBtn: TButton;
     BottomPanel: TPanel;
     Label3: TLabel;
-    MapGrid: TJvDBGrid ;
+    MapGrid: TJvDBGrid;
     RecordCntEdit: TJvValidateEdit ;
     procedure FormCreate(Sender: TObject);
     procedure MapBtnClick(Sender: TObject);

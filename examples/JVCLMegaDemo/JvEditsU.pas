@@ -30,8 +30,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvEdit, JvValidateEdit, JvCurrEdit, JvToolEdit, Mask,
-  ExtCtrls, JvComponent, JvCaptionPanel, JvComCtrls, JvMaskEdit, JvSpin;
+  StdCtrls, JvEdit, JvValidateEdit, Mask,
+  ExtCtrls, JvComponent, JvCaptionPanel, JvComCtrls, JvMaskEdit, JvSpin,
+  JvExControls, JvToolEdit, JvBaseEdits, JvExStdCtrls, JvExMask;
 
 type
   TJvEdits = class(TForm)

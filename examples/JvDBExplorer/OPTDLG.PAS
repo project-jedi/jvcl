@@ -41,7 +41,8 @@ uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, TabNotBk, DB, JvBDELists,
   Mask, ComCtrls, DBTables, JvToolEdit, JvValidateEdit,
-  JvComponent, JvFormPlacement, JvDBLookup, JvEdit;
+  JvComponent, JvFormPlacement, JvDBLookup, JvEdit, JvExControls,
+  JvExStdCtrls;
 
 type
   TOptionsDialog = class(TForm)
@@ -237,8 +238,10 @@ end;
 
 procedure TOptionsDialog.FormCreate(Sender: TObject);
 begin
+  LangDrivList := TJvLangDrivList.Create(self);
   StartWait;
   try
+    LangDrivList.AfterOpen := LangDrivListAfterOpen;
     LangDrivList.Open;
     Notebook.PageIndex := 0;
     BufferSizeEdit.MinValue := MinSQLTraceBuffer;
@@ -272,5 +275,7 @@ begin
   end
   else AllowChange := False;
 end;
-
+initialization
+  RegisterClass(TOptionsDialog);
+  
 end.

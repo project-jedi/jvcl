@@ -22,7 +22,6 @@ object JvControls: TJvControls
     Align = alBottom
     Color = clBtnFace
     EndColor = clNavy
-    Enabled = True
     GradientWidth = 70
     ParentColor = False
   end
@@ -41,25 +40,6 @@ object JvControls: TJvControls
     Height = 13
     Caption = 'Here you can see a JvZoom in action'
   end
-  object JvGradientCaption1: TJvGradientCaption
-    Left = 0
-    Top = 0
-    Width = 652
-    Height = 25
-    GradientEndColor = clBlue
-    GradientSteps = 30
-    GradientStyle = grHorizontal
-    LabelCaption = 'I think this JvGradientCaption has a nice gradient ...'
-    LabelFont.Charset = DEFAULT_CHARSET
-    LabelFont.Color = clWhite
-    LabelFont.Height = -11
-    LabelFont.Name = 'MS Sans Serif'
-    LabelFont.Style = []
-    LabelAlignment = taLeftJustify
-    Align = alTop
-    DoubleBuffered = False
-    TabOrder = 0
-  end
   object JvImageListBox1: TJvImageListBox
     Left = 40
     Top = 192
@@ -68,51 +48,51 @@ object JvControls: TJvControls
     Color = clScrollBar
     Items = <
       item
-        Text = 'in an JvImageListBox'
         ImageIndex = 0
         Indent = 0
+        Text = 'in an JvImageListBox'
       end
       item
-        Text = 'you can show images'
         ImageIndex = 1
         Indent = 0
+        Text = 'you can show images'
       end
       item
-        Text = '- also at design time'
         ImageIndex = 0
         Indent = 0
+        Text = '- also at design time'
       end>
+    ImageHeight = 0
+    ImageWidth = 0
     ButtonStyle = fsLighter
-    ImageList = ImageList1
     ItemHeight = 20
-    TabOrder = 1
+    TabOrder = 0
   end
   object JvMultilineListbox1: TJvListBox
     Left = 40
     Top = 288
     Width = 169
     Height = 73
-    Style = lbOwnerDrawVariable
     ItemHeight = 16
     Items.Strings = (
       'JvMultilineListbox'
       'Allows you to show more than one line per list item. '
       'This is the third item here. '
       'Select the second!')
-    ScrollWidth = 244
-    TabOrder = 2
-    Multiline = True
+    MultiLine = True
     Background.FillMode = bfmTile
     Background.Visible = False
     ScrollBars = ssVertical
+    Style = lbOwnerDrawVariable
+    TabOrder = 2
   end
   object JvTimeLine1: TJvTimeLine
     Left = 0
-    Top = 25
+    Top = 0
     Width = 652
     Height = 152
     Color = clWhite
-    TabOrder = 3
+    TabOrder = 1
     YearFont.Charset = DEFAULT_CHARSET
     YearFont.Color = clWindowText
     YearFont.Height = -16
@@ -124,7 +104,7 @@ object JvControls: TJvControls
     Items = <
       item
         Left = 182
-        Top = 117
+        Top = 97
         Caption = 'Birthday from Mr.X!!!'
         Color = clMenuText
         Date = 37865
@@ -136,7 +116,7 @@ object JvControls: TJvControls
       end
       item
         Left = 7
-        Top = 117
+        Top = 97
         Caption = 'Birthday of Mrs. Y'
         Color = clBlack
         Date = 37421
@@ -146,7 +126,7 @@ object JvControls: TJvControls
       end
       item
         Left = 12
-        Top = 129
+        Top = 109
         Caption = 'is over'
         Color = clRed
         Date = 37434
@@ -155,7 +135,7 @@ object JvControls: TJvControls
       end
       item
         Left = 36
-        Top = 141
+        Top = 121
         Caption = 'I guess'
         Color = clYellow
         Date = 37495
@@ -163,6 +143,10 @@ object JvControls: TJvControls
         Level = 3
       end>
     HorzSupports = True
+  end
+  object JvGradientCaption1: TJvGradientCaption
+    Captions = <>
+    GradientSteps = 30
   end
   object ImageList1: TImageList
     Left = 312

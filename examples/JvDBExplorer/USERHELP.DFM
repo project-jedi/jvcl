@@ -5,14 +5,17 @@ object CustomizeHelpDlg: TCustomizeHelpDlg
   Caption = 'User Help Files'
   ClientHeight = 194
   ClientWidth = 339
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  PixelsPerInch = 96
+  OldCreateOrder = True
   Position = poDefaultPosOnly
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
     Left = 8
@@ -30,17 +33,17 @@ object CustomizeHelpDlg: TCustomizeHelpDlg
     Caption = '&Assosiated help file path:  '
     FocusControl = FileName
   end
-  object FileName: TJvFilenameEdit 
+  object FileName: TJvFilenameEdit
     Left = 8
     Top = 131
     Width = 321
     Height = 21
-    AcceptFiles = True
+    AddQuotes = False
     DefaultExt = 'HLP'
     Filter = 'Help files (*.hlp)|*.hlp|All files (*.*)|*.*'
     DialogOptions = [ofHideReadOnly, ofFileMustExist]
     DialogTitle = 'Browse Help Files'
-    NumGlyphs = 1
+    ButtonFlat = False
     TabOrder = 1
     OnChange = FileNameChange
   end
@@ -62,6 +65,7 @@ object CustomizeHelpDlg: TCustomizeHelpDlg
     OnRowMoved = HelpListRowMoved
     OnSelectCell = HelpListSelectCell
     OnSetEditText = HelpListSetEditText
+    DrawButtons = False
     OnGetEditLimit = HelpListGetEditLimit
     ColWidths = (
       23
@@ -88,9 +92,10 @@ object CustomizeHelpDlg: TCustomizeHelpDlg
     ModalResult = 2
     TabOrder = 3
   end
-  object FormStorage: TJvFormStorage 
+  object FormStorage: TJvFormStorage
     StoredProps.Strings = (
       'FileName.InitialDir')
+    StoredValues = <>
     Left = 8
     Top = 159
   end
