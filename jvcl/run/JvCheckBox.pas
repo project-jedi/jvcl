@@ -109,6 +109,7 @@ begin
   FOver := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
   FHotTrackFontOptions := DefaultTrackFontOptions;
+  FAutoSize := true;
 end;
 
 destructor TJvCheckBox.Destroy;
@@ -274,6 +275,8 @@ begin
         AWidth := 14;
       AHeight := cy + 4;
       if AHeight < 14 then AHeight := 14;
+      if Caption <> '' then
+        Inc(AWidth,4);
       ClientWidth := AWidth;
       ClientHeight := AHeight;
     end;
