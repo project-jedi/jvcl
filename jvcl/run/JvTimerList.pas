@@ -658,7 +658,7 @@ end;
 function TJvTimerEvents.IndexOfName(const AName: string): integer;
 begin
   for Result := 0 to Count - 1 do
-    if AnsiSameText(AName, Items[i].Name) then
+    if AnsiSameText(AName, Items[Result].Name) then
       Exit;
   Result := -1;
 end;
