@@ -37,8 +37,8 @@ procedure Register;
 implementation
 
 {$R JVCLReg.dcr}
-{$R JvP3Reg.dcr}
-{$R jvWinDialogs.dcr}
+{.$R JvP3Reg.dcr}
+{.$R jvWinDialogs.dcr}
 
 
 uses
