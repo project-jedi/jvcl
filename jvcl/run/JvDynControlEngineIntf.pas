@@ -225,6 +225,9 @@ type
     function ControlGetItems: TTreeNodes;
     procedure ControlSetImages(Value: TCustomImageList);
     procedure ControlSetStateImages(Value: TCustomImageList);
+    function ControlGetSelected: TTreeNode;
+    procedure ControlSetOnChange(Value: TTVChangedEvent);
+    procedure ControlSetSortType(Value: TSortType);
   end;
 
 {$IFDEF UNITVERSIONING}

@@ -680,6 +680,9 @@ type
     function ControlGetItems: TTreeNodes;
     procedure ControlSetImages(Value: TCustomImageList);
     procedure ControlSetStateImages(Value: TCustomImageList);
+    function ControlGetSelected: TTreeNode;
+    procedure ControlSetOnChange(Value: TTVChangedEvent);
+    procedure ControlSetSortType(Value: TSortType);
 
     // IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -2716,7 +2719,8 @@ end;
 
 procedure TJvDynControlCxTreeView.ControlSetItems(Value: TTreeNodes);
 begin
-  Items.Assign(Value);
+//  Items.Assign(Value);
+  Items := Value;
 end;
 
 function TJvDynControlCxTreeView.ControlGetItems: TTreeNodes;
@@ -2732,6 +2736,21 @@ end;
 procedure TJvDynControlCxTreeView.ControlSetStateImages(Value: TCustomImageList);
 begin
   StateImages.Assign(Value);
+end;
+
+function TJvDynControlCxTreeView.ControlGetSelected: TTreeNode;
+begin
+  Result := Selected;
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetOnChange(Value: TTVChangedEvent);
+begin
+  OnChange := Value;
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetSortType(Value: TSortType);
+begin
+  SortType := Value;
 end;
 
 procedure TJvDynControlCxTreeView.ControlSetCxProperties(Value: TCxDynControlWrapper);
