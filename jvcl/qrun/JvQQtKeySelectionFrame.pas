@@ -39,7 +39,7 @@ interface
 uses
   Qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls,
   {$IFDEF USE_DXGETTEXT}
-  gnugettext,
+  JvGnugettext,
   {$ENDIF USE_DXGETTEXT}
   SysUtils, Classes;
 
