@@ -30,24 +30,19 @@ unit JvSlider;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  Types,
-  {$ENDIF LINUX}
-  Messages, SysUtils, Classes,
+  SysUtils, Classes,
   {$IFDEF VCL}
-  Graphics, Controls, ExtCtrls,
+  Windows, Messages,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QExtCtrls,
-  {$ENDIF VisualCLX}
+  Types, Graphics, Controls, ExtCtrls,
   JvComponent;
 
 type
   TJvSlider = class(TJvCustomControl)
   private
+    {$IFDEF VisualCLX}
+    FAutoSize: boolean
+    {$ENDIF VisualCLX}
     FImageRuler: TBitmap;
     FImageThumb: TBitmap;
     FThumb1: TBitmap;
@@ -85,7 +80,7 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Paint; override;
-    function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
+    function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;{$IFDEF VCL} override;{$ENDIF}
   published
     property ImageRuler: TBitmap read FImageRuler write SetImageRuler;
     property ImageThumb: TBitmap read FImageThumb write SetImageThumb;
@@ -94,13 +89,20 @@ type
     property Enabled;
     property Cursor;
     property DragMode;
+    {$IFDEF VCL}
     property DragCursor;
+    {$ENDIF VCL}
     property ParentShowHint;
     property ShowHint;
     property TabOrder;
     property Width default 191;
     property Height default 11;
+    {$IFDEF VCL}
     property AutoSize default True;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    property AutoSize: boolean read FAutoSize write FAutoSize default True;
+    {$ENDIF VisualCLX}
     property Horizontal: Boolean read FHorizontal write FHorizontal default True;
     property Maximum: Integer read FMaximum write SetMaximum default 100;
     property Position: Integer read FPosition write SetPosition default 0;
@@ -132,7 +134,7 @@ implementation
 constructor TJvSlider.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := ControlStyle + [csOpaque]; 
+  ControlStyle := ControlStyle + [csOpaque];
   Width := 191;
   Height := 11;
   FImageRuler := TBitmap.Create;

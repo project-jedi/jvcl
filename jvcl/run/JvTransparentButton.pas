@@ -31,13 +31,13 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, CommCtrl,
+  Windows, Messages, Graphics, Controls,
   ExtCtrls, Menus, Forms, ImgList, ActnList, Buttons,
+  {$IFDEF VCL}
+  CommCtrl,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls,
-  QExtCtrls, QMenus, QForms, QImgList, QActnList, QButtons, QWindows,
+  Types,
   {$ENDIF VisualCLX}
   JvComponent, JvButton;
 
@@ -764,7 +764,7 @@ begin
   DrawText(DC, PChar(Caption), Length(Caption), TmpRect, Flags or DT_CALCRECT);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  DrawText(Cnvas, Caption, Length(Caption), TmpRect, Flags or DT_CALCRECT);
+  DrawText(Canvas, Caption, Length(Caption), TmpRect, Flags or DT_CALCRECT);
 {
   if FWordWrap then
     Canvas.TextExtent(Caption, TmpRect, WordBreak)

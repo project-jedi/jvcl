@@ -34,17 +34,15 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs, ExtCtrls,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QForms, QDialogs, QExtCtrls, QTypes,
+  Types, QTypes,
   {$ENDIF VisualCLX}
   JvComponent;
 
 type
   TJvContentScrollDirection = (sdUp, sdDown);
-  TJvScrollAmount = 1..MaxWord;
+  TJvScrollAmount = 1..MaxInt;
 
   TJvContentScroller = class(TJvCustomPanel)
   private

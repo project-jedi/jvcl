@@ -32,15 +32,16 @@ interface
 uses
   SysUtils, Classes, Contnrs,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, ComCtrls, CommCtrl, StdActns,
+  Windows, Messages,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QComCtrls, QStdActns,
-  {$ENDIF VisualCLX}
+  Graphics, Controls, Forms, ComCtrls, CommCtrl, StdActns,
   JVCLVer, JvExComCtrls;
 
 type
   {$IFDEF COMPILER6_UP}
+  {$IFDEF VisualCLX}
+  TStatusPanelClass = class of TStatusPanel;
+  {$ENDIF VisualCLX}
   TJvStatusPanel = class(TStatusPanel)
   private
     FAboutJVCL: TJVCLAboutInfo;
@@ -87,7 +88,7 @@ type
     {$IFDEF COMPILER6_UP}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MovePanelControls;
-    function GetPanelClass: TStatusPanelClass; override;
+    function GetPanelClass: TStatusPanelClass; {$IFDEF VCL} override;{$ENDIF}
     {$ENDIF COMPILER6_UP}
   public
     constructor Create(AOwner: TComponent); override;

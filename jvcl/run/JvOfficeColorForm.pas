@@ -35,11 +35,9 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, Types, Qt, QGraphics, QControls, QStdCtrls, QForms, QExtCtrls,
+  Types, QStdCtrls, QExtCtrls,
   {$ENDIF VisualCLX}
   JvComponent, JvLabel, JvOfficeColorPanel;
 
@@ -549,7 +547,7 @@ begin
       TJvOfficeColorForm(FOwnerForm).MoveStart := False;
       TJvOfficeColorForm(FOwnerForm).ToolWindowStyle := True;
       P := ClientToScreen(Point(X, Y));
-      OwnerForm.Top := P.Y + 10;
+      FOwnerForm.Top := P.Y + 10;
       FPos.X := 0;
       FPos.Y := 0;
     end;

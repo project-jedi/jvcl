@@ -36,19 +36,15 @@ unit JvSpeedButton;
 
 interface
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
+  SysUtils, Classes,
   {$IFDEF VCL}
-  Controls, Graphics, Forms, ExtCtrls, Buttons, Menus, ImgList, ActnList,
   CommCtrl,
   {$ENDIF VCL}
-  SysUtils, Classes,
   {$IFDEF VisualCLX}
-  Types, Qt, QTypes, QWindows,
-  QControls, QGraphics, QForms, QExtCtrls, QButtons, QMenus, QImgList,
-  QActnList,
+  Types, Qt, QTypes,
   {$ENDIF VisualCLX}
+  Windows, Messages,
+  Controls, Graphics, Forms, ExtCtrls, Buttons, Menus, ImgList, ActnList,
   JvExControls, JvComponent, JvConsts, JvTypes, JvJCLUtils, JvJVCLUtils,
   JvThemes;
 
@@ -58,7 +54,7 @@ type
   TJvButtonState = (rbsUp, rbsDisabled, rbsDown, rbsExclusive, rbsInactive);
 
   {$IFDEF VisualCLX}
-  TButtonStyle = JvThemes.TButtonStyle;
+  TButtonStyle = JvQThemes.TButtonStyle;
   {$ENDIF VisualCLX}
 
   TJvCustomSpeedButton = class(TJvGraphicControl)

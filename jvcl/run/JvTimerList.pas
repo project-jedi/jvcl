@@ -169,12 +169,7 @@ type
 implementation
 
 uses
-  {$IFDEF VCL}
   Consts, Forms, // for Application.HandleException
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConst,
-  {$ENDIF VisualCLX}
   Math,
   JvJVCLUtils, JvResources, JvTypes;
 
