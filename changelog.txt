@@ -1,5 +1,18 @@
 Changelog for JVCL 3.0
 ======================
+2004-04-01
+- Major rewrite of TJvYearGrid:  // obones
+   * Now inherits from TCustomGrid under v6 and upper
+   * Doesn't save nor reloads its state automatically anymore (too dangerous)
+   * GridYear property is renamed to Year
+   * Introduced Orientation, the grid can now be vertical
+   * Introduced AutoSize and AutoSize options for the grid to adapt to its contents
+   * Introduced FirstColWidth and FirstRowHeight
+   * Introduced YearFile to be used as default name with LoadYear and SaveYear
+   * Introduced CellMargins (if USEJVCL is defined)
+   * Introduced WeekendDays (not yet used in the display)
+   * Introduced Text Alignment for Month names, Day names, Days, and Year
+   * It should now be safe to use more than one grid year in the same project
 2004-03-31:
 - Added JvNavigationPane and related components // peter3
 2004-03-30
