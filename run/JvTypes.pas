@@ -76,6 +76,14 @@ type
   TJvHTTPProgressEvent = procedure(Sender: TObject; UserData, Position: Integer; TotalSize: Integer; Url: string; var Continue: Boolean) of object;
   TJvFTPProgressEvent = procedure(Sender: TObject; Position: Integer; Url: string) of object;
 
+  // used in JvSpeedButton
+  TCMJvButtonPressed = packed record
+    Msg: Cardinal;
+    Control: TControl;
+    Index: Integer;
+    Result: Longint;
+  end;
+
   {$IFDEF VisualCLX}
   //  HWND = QWidgetH;
   HCURSOR = QCursorH;
