@@ -425,7 +425,12 @@ function _(const Fmt: string; const Args: array of const): string; overload;
 
 implementation
 
+{$IFDEF WINDOWS}
 {$R ..\resources\JvConsts.res}
+{$ENDIF}
+{$IFDEF LINUX}
+{$R ../Resources/JvConsts.res}
+{$ENDIF}
 
 {$IFDEF USE_DXGETTEXT}
 
