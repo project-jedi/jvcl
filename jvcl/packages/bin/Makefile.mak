@@ -160,8 +160,7 @@ configfile:
 	@echo -U"$(ROOT)\Lib;$(ROOT)\Lib\Obj">>"$(CFG)"
 	@echo -R"$(ROOT)\Lib">>"$(CFG)"
 	@echo -I"$(ROOT)\Include;$(ROOT)\Include\Vcl">>"$(CFG)"
-	@echo -U"$(DCPDIR);$(LIBDIR);$(BPLDIR)>>"$(CFG)"
-	#@echo -U"$(MAINDCPDIR);$(MAINLIBDIR);$(MAINBPLDIR)">>"$(CFG)"
+	@echo -U"$(DCPDIR);$(LIBDIR);$(BPLDIR)">>"$(CFG)"
 	#
 	@echo -I"$(JCLINCLUDEDIRS)">>"$(CFG)"
 	@echo -U"$(JCLSOURCEDIRS1)">>"$(CFG)"
@@ -234,6 +233,7 @@ Installer_nomo:
 	@echo -DNO_JCL>>JVCLInstall.cfg
 	@echo -DNO_UNITVERSIONING>>JVCLInstall.cfg
 	@echo -DUSE_DXGETTEXT>>JVCLInstall.cfg
+	@echo -DDEFAULT_JVCL_INC>>JVCLInstall.cfg
 	#
 	#
 	$(DCC) -B $(DXGETTEXT) -DNO_JCL JVCLInstall.dpr
