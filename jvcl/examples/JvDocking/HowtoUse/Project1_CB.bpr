@@ -11,18 +11,9 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) Unit1.dfm Unit2.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="DockControl_CB6.lib indy.lib dbxcds.lib soaprtl.lib dbexpress.lib 
-      inetdbxpress.lib inetdbbde.lib dsnapcon.lib dsnapcrba.lib visualdbclx.lib 
-      bdecds.lib cds.lib"/>
-    <SPARELIBS value="rtl.lib vcl.lib vcldb.lib adortl.lib bdertl.lib vcldbx.lib ibxpress.lib 
-      cds.lib bdecds.lib qrpt.lib teeui.lib teedb.lib tee.lib dss.lib teeqr.lib 
-      visualdbclx.lib dsnapcrba.lib dsnapcon.lib bcbsmp.lib inetdbbde.lib 
-      inetdbxpress.lib dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib dclocx.lib 
-      dbxcds.lib indy.lib bcb2kaxserver.lib DockControl_CB6.lib"/>
-    <PACKAGES value="rtl.bpi vcl.bpi vclx.bpi bcbsmp.bpi dbrtl.bpi vcldb.bpi adortl.bpi 
-      ibsmp.bpi bdertl.bpi vcldbx.bpi qrpt.bpi teeui.bpi teedb.bpi tee.bpi 
-      dss.bpi teeqr.bpi ibxpress.bpi dsnap.bpi vclie.bpi inetdb.bpi inet.bpi 
-      nmfast.bpi webdsnap.bpi bcbie.bpi dclocx.bpi bcb2kaxserver.bpi"/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
+    <PACKAGES value=""/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
@@ -34,7 +25,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="Project1_CB.cpp"/>
     <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;..\..\Source"/>
-    <LIBPATH value="$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\Bin"/>
+    <LIBPATH value="$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\dcu"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -92,6 +83,13 @@ ProductName=
 ProductVersion=1.0.0.0
 Comments=
 
+[Excluded Packages]
+c:\prog\cbuilder6\Projects\Bpl\JvCryptC6D.bpl=JVCL Encryption and Compression Components
+c:\prog\cbuilder6\Projects\Bpl\JvBandsC6D.bpl=JVCL Band Objects
+c:\prog\cbuilder6\Projects\Bpl\JvPluginC6D.bpl=JVCL Plugin Components
+c:\prog\cbuilder6\Projects\Bpl\JvJansC6D.bpl=JVCL Jans Components
+c:\prog\cbuilder6\Projects\Bpl\JvValidatorsC6D.bpl=JVCL Validators and Error Provider Components
+
 [HistoryLists\hlIncludePath]
 Count=3
 Item0=$(BCB)\include;$(BCB)\include\vcl;..\..\Source
@@ -99,22 +97,24 @@ Item1=$(BCB)\include;$(BCB)\include\vcl..\..\Source
 Item2=$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
-Count=2
-Item0=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\Bin
-Item1=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Count=3
+Item0=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\dcu
+Item1=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\Bin
+Item2=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
-Count=3
-Item0=$(BCB)\source\vcl;..\..\Source
-Item1=$(BCB)\source\vcl;..\..\..\Source
-Item2=$(BCB)\source\vcl
+Count=4
+Item0=$(BCB)\source\vcl;..\..\..\run
+Item1=$(BCB)\source\vcl;..\..\Source
+Item2=$(BCB)\source\vcl;..\..\..\Source
+Item3=$(BCB)\source\vcl
 
 [HistoryLists\hlConditionals]
 Count=1
 Item0=_DEBUG
 
 [Debugging]
-DebugSourceDirs=$(BCB)\source\vcl;..\..\Source
+DebugSourceDirs=$(BCB)\source\vcl;..\..\..\run
 
 [Parameters]
 RunParams=
