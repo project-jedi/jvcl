@@ -188,7 +188,9 @@ procedure TJvChangeItem.SetSubTrees(Value: boolean);
 begin
   if (FSubTrees <> Value) then
   begin
-    if Value then
+    if csDesigning in FParent.FOwner.ComponentState then
+      FSubTrees := Value
+    else if Value then
       FSubTrees := Value and (Win32Platform = VER_PLATFORM_WIN32_NT)
     else
       FSubTrees := false;
@@ -349,7 +351,6 @@ begin
       if FNotifyArray[i] = INVALID_HANDLE_VALUE then
         NotifyError(FCollection[i].Directory);
     end;
-    // use thread instead
     if FThread <> nil then
     begin
       FThread.Terminate;
