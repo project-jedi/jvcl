@@ -909,6 +909,8 @@ procedure TJvClock.PaintAnalogClock(PaintMode: TPaintMode);
 var
   NewTime: TJvClockTime;
 begin
+  if not Enabled then Exit;
+  
   Canvas.Pen.Color := Font.Color;
   Canvas.Brush.Color := Color;
   SetBkMode(Canvas.Handle, TRANSPARENT);
@@ -1001,6 +1003,8 @@ var
   end;
 
 begin
+  if not Enabled then Exit;
+
   GetTime(NewTime);
   H := NewTime.Hour;
   if NewTime.Hour >= 12 then
