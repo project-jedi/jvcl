@@ -67,7 +67,9 @@ begin
     ButtonPanel.Height := Button1.Height + 6;
     Button1.Top := 3;
     Button1.Anchors := [akTop, akRight];
-  end;
+  end
+  else
+    Button1 := nil;
   if AButton2Caption <> '' then
   begin
     Button2 := DynControlEngine.CreateButton(Form, ButtonPanel, '', AButton2Caption, '', AButton2Click, True, False);
@@ -75,10 +77,12 @@ begin
     Button2.Top := 3;
     Button2.Anchors := [akTop, akRight];
     Button2.Left := ButtonPanel.Width - Button2.Width - 5;
-    Button1.Left := Button2.Left - Button1.Width - 5;
+    if Assigned(Button1) then
+      Button1.Left := Button2.Left - Button1.Width - 5;
   end
   else
-    Button1.Left := ButtonPanel.Width - Button1.Width - 5;
+    if Assigned(Button1) then
+      Button1.Left := ButtonPanel.Width - Button1.Width - 5;
   Result := Form;
 end;
 
