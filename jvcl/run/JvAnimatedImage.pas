@@ -694,11 +694,11 @@ end;
 
 procedure TJvAnimatedImage.AdjustSize;
 begin
-{$IFDEF VCL}
+  {$IFDEF VCL}
   if not (csReading in ComponentState) then
     if AutoSize and (FImageWidth > 0) and (FImageHeight > 0) then
       SetBounds(Left, Top, FImageWidth, FImageHeight);
-{$ENDIF VCL}
+  {$ENDIF VCL}
 end;
 
 procedure TJvAnimatedImage.DoPaintImage;
@@ -757,7 +757,7 @@ end;
 procedure TJvAnimatedImage.BufferedPaint;
 begin
   PaintImage;
-  if {$IFDEF VCL}Transparent or {$ENDIF VCL}FGlyph.Empty then
+  if {$IFDEF VCL} Transparent or {$ENDIF} FGlyph.Empty then
     PaintDesignRect;
 end;
 
@@ -821,8 +821,8 @@ end;
 function TJvAnimatedImage.CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;
 begin
   Result := True;
-  if not (csDesigning in ComponentState) and (FImageWidth > 0) and
-    (FImageHeight > 0) then
+  if not (csDesigning in ComponentState) and
+    (FImageWidth > 0) and (FImageHeight > 0) then
   begin
     if Align in [alNone, alLeft, alRight] then
       NewWidth := FImageWidth;
@@ -882,7 +882,9 @@ begin
     end;
   end;
 end;
+
 {$IFDEF VCL}
+
 procedure TJvAnimatedImage.ReadOpaque(Reader:TReader);
 begin
   Transparent := not Reader.ReadBoolean;
@@ -891,8 +893,10 @@ end;
 procedure TJvAnimatedImage.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
-  Filer.DefineProperty('Opaque', ReadOpaque, nil, false);
+  Filer.DefineProperty('Opaque', ReadOpaque, nil, False);
 end;
+
 {$ENDIF VCL}
+
 end.
 

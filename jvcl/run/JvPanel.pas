@@ -157,8 +157,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Invalidate; override;
-    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
-      AHeight: Integer); override;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     procedure ArrangeControls;
     procedure EnableArrange;
     procedure DisableArrange;
@@ -388,7 +387,7 @@ end;
 
 procedure TJvArrangeSettings.Rearrange;
 begin
-  if (FPanel <> nil) and (AutoArrange) and
+  if (FPanel <> nil) and AutoArrange and
     not (csLoading in FPanel.ComponentState) then
     FPanel.ArrangeControls;
 end;
@@ -413,11 +412,7 @@ destructor TJvPanel.Destroy;
 begin
   FArrangeSettings.Free;
   {$IFDEF VisualCLX}
-  if assigned(FGripBmp) then
-  begin
-    FGripBmp.Free;
-    FGripBmp := nil;
-  end;
+  FreeAndNil(FGripBmp);
   {$ENDIF VisualCLX}
   inherited Destroy;
 end;
@@ -484,42 +479,40 @@ end;
 procedure TJvPanel.DrawMask(ACanvas: TCanvas);
 var
   R: TRect;
-  i, j, X, Y: integer;
+  I, J, X, Y: Integer;
 begin
   inherited DrawMask(ACanvas);
   ACanvas.Brush.Style := bsClear;
   ACanvas.Pen.Color := clDontMask;
-  i := 0 ; //BorderWidth;
+  I := 0 ; //BorderWidth;
   if BevelOuter <> bvNone then
-    Inc(i, BevelWidth);
+    Inc(I, BevelWidth);
   if BevelInner <> bvNone then
-    Inc(i, BevelWidth);
-  ACanvas.Pen.Width := i;
+    Inc(I, BevelWidth);
+  ACanvas.Pen.Width := I;
   R := ClientRect;
   ACanvas.Rectangle(R);
   if Sizeable then
   begin
-    X := ClientWidth - FGripBmp.Width - i;
-    Y := ClientHeight - FGripBmp.Height - i;
-    for i := 0 to 2 do
+    X := ClientWidth - FGripBmp.Width - I;
+    Y := ClientHeight - FGripBmp.Height - I;
+    for I := 0 to 2 do
     begin
-      for j := 0 to 2 do
+      for J := 0 to 2 do
       begin
-        ACanvas.moveto(X + 4 * i + j, Y + FGripBmp.Height);
-        ACanvas.lineto(X + FGripBmp.Width, Y + 4 * i + j);
+        ACanvas.MoveTo(X + 4 * I + J, Y + FGripBmp.Height);
+        ACanvas.LineTo(X + FGripBmp.Width, Y + 4 * I + J);
       end
     end;
   end;
 end;
 {$ENDIF VisualCLX}
 
-
-
 procedure TJvPanel.Paint;
 var
   X, Y: Integer;
   {$IFDEF VisualCLX}
-  i: integer;
+  I: Integer;
   {$ENDIF VisualCLX}
 begin
   if Assigned(FOnPaint) then
@@ -561,13 +554,13 @@ begin
       with Canvas do
       begin
         {$IFDEF VisualCLX}
-        i := 0 ; //BorderWidth;
+        I := 0 ; //BorderWidth;
         if BevelOuter <> bvNone then
-          Inc(i, BevelWidth);
+          Inc(I, BevelWidth);
         if BevelInner <> bvNone then
-          Inc(i, BevelWidth);
-        X := ClientWidth - FGripBmp.Width - i;
-        Y := ClientHeight - FGripBmp.Height - i;
+          Inc(I, BevelWidth);
+        X := ClientWidth - FGripBmp.Width - I;
+        Y := ClientHeight - FGripBmp.Height - I;
         Draw(X, Y, FGripBmp);
         {$ENDIF VisualCLX}
         {$IFDEF VCL}
@@ -584,7 +577,7 @@ begin
           SetBkMode(Handle, BkModeTransparent);
         TextOut(X, Y, 'o');
         {$ENDIF VCL}
-      end;  // end with Canvas do
+      end;
 end;
 
 {$IFDEF VCL}
@@ -806,16 +799,9 @@ begin
     FSizeable := Value;
     {$IFDEF VisualCLX}
     if Value then
-    begin
-      if not assigned(FGripBmp) then
-        CreateSizeGrip;
-    end
+      CreateSizeGrip
     else
-      if assigned(FGripBmp) then
-      begin
-        FGripBmp.Destroy;
-        FGripBmp := nil;
-      end;
+      FreeAndNil(FGripBmp);
     {$ENDIF VisualCLX}
     Invalidate;
   end;
@@ -1105,35 +1091,34 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvPanel.CreateSizeGrip;
 var
-  i: integer;
+  I: Integer;
 begin
   FGripBmp := TBitmap.Create;
   FGripBmp.Width := 13; //GetSystemMetrics(SM_CXVSCROLL);
   FGripBmp.Height := 13; //GetSystemMetrics(SM_CXYSCROLL);
   with FGripBmp.Canvas do
   begin
-    Brush.Color := clBackGround;
+    Brush.Color := clBackground;
     FillRect(Bounds(0, 0, Width, Height));
     Pen.Width := 1;
-    for i := 0 to 2 do
+    for I := 0 to 2 do
     begin
       Pen.Color := clLight;
-      moveto(3 * i, FGripBmp.Height);
-      lineto(FGripBmp.Width, 3 * i);
+      MoveTo(3 * I, FGripBmp.Height);
+      LineTo(FGripBmp.Width, 3 * I);
       Pen.Color := clDark;
-      moveto(3 * i + 1, FGripBmp.Height);
-      lineto(FGripBmp.Width, 3 * i + 1);
+      MoveTo(3 * I + 1, FGripBmp.Height);
+      LineTo(FGripBmp.Width, 3 * I + 1);
 //      Pen.Color := clMid;
-      moveto(3 * i + 2, FGripBmp.Height);
-      lineto(FGripBmp.Width, 3 * i + 2);
+      MoveTo(3 * I + 2, FGripBmp.Height);
+      LineTo(FGripBmp.Width, 3 * I + 2);
     end;
   end;
-  FGripBmp.TransparentColor := clBackGround;
+  FGripBmp.TransparentColor := clBackground;
   FGripBmp.TransparentMode := tmFixed;
-  FGripBmp.Transparent := true;
+  FGripBmp.Transparent := True;
 end;
 {$ENDIF VisualCLX}
-
 
 end.
 

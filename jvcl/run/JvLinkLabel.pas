@@ -281,7 +281,7 @@ end;
 
 procedure TJvCustomLinkLabel.DeactivateActiveLinkNode;
 var
-  TmpRect : TRect;
+  TmpRect: TRect;
 begin
   if Assigned(FActiveLinkNode) then
   try
@@ -352,8 +352,7 @@ begin
     FOnCaptionChanged(Self);
 end;
 
-procedure TJvCustomLinkLabel.DoDynamicTagInit(out Source: string;
-  Number: Integer);
+procedure TJvCustomLinkLabel.DoDynamicTagInit(out Source: string; Number: Integer);
 begin
   if Assigned(FOnDynamicTagInit) then
     FOnDynamicTagInit(Self, Source, Number);
@@ -405,8 +404,7 @@ begin
   Result := not (csOpaque in ControlStyle);
 end;
 
-procedure TJvCustomLinkLabel.HandleDynamicNode(out Source: string;
-  const Node: TDynamicNode);
+procedure TJvCustomLinkLabel.HandleDynamicNode(out Source: string; const Node: TDynamicNode);
 begin
   if Assigned(Node) then
     DoDynamicTagInit(Source, Node.Number);
@@ -652,9 +650,9 @@ procedure TJvCustomLinkLabel.SetMarginWidth(const Value: Integer);
 begin
   if FMarginWidth <> Value then
   begin
-  FMarginWidth := Value;
-  Resize;
-  Invalidate;
+    FMarginWidth := Value;
+    Resize;
+    Invalidate;
   end;
 end;
 
@@ -712,8 +710,7 @@ begin
     end;
 end;
 
-procedure TJvCustomLinkLabel.UpdateDynamicTag(Number: Integer;
-  const Source: string);
+procedure TJvCustomLinkLabel.UpdateDynamicTag(Number: Integer; const Source: string);
 var
   NodeEnum: INodeEnumerator;
   Parser: IParser;

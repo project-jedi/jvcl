@@ -179,9 +179,7 @@ begin
   {$IFDEF VisualCLX}
   GetCursorPos(P);
   //Only draw if on a different position
-  if (P.X = FLastPoint.X) and (P.Y = FLastPoint.Y) then
-    Exit;
-  else
+  if (P.X <> FLastPoint.X) or (P.Y <> FLastPoint.Y) then
     Invalidate;
   {$ENDIF VisualCLX}
 end;
@@ -191,12 +189,12 @@ var
   P: TPoint;
   X, Y, Dx, Dy: Integer;
   SourceRect: TRect;
-{$IFDEF VCL}
+  {$IFDEF VCL}
   DesktopCanvas: TJvDesktopCanvas;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-  bmp: TBitmap;
-{$ENDIF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Bmp: TBitmap;
+  {$ENDIF VisualCLX}
 begin
   GetCursorPos(P);
 
@@ -228,7 +226,7 @@ begin
   if P.Y < Y then
   begin
     Dy := (P.Y - Y - 1) * 100 div FZoomLevel;
-    P.Y := Y
+    P.Y := Y;
   end
   else
   if P.Y + Y > Screen.Height then
@@ -249,14 +247,14 @@ begin
   DesktopCanvas.Free;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  bmp := TBitmap.Create;
-  bmp.Handle := QPixmap_create;
+  Bmp := TBitmap.Create;
+  Bmp.Handle := QPixmap_create;
   try
     with SourceRect do
-      QPixmap_grabWindow(bmp.Handle, QWidget_winID(GetDesktopWindow), Left, Top, 2 * X, 2 * Y);
+      QPixmap_grabWindow(Bmp.Handle, QWidget_winID(GetDesktopWindow), Left, Top, 2 * X, 2 * Y);
     CopyRect(Canvas, Rect(0, 0, Width, Height), Bmp.Canvas, Rect(0,0, Bmp.Width, Bmp.Height));
   finally
-    bmp.free;
+    Bmp.Free;
   end;
   {$ENDIF VisualCLX}
 
@@ -296,16 +294,16 @@ end;
 
 procedure TJvZoom.SetCacheOnDeactivate(const Value: Boolean);
 begin
-  if Value = FCacheOnDeactivate then
-    Exit;
-
-  FCacheOnDeactivate := Value;
-
-  if not FCacheOnDeactivate then
+  if Value <> FCacheOnDeactivate then
   begin
-    FlushCache;
-    if not Active then
-      Invalidate;
+    FCacheOnDeactivate := Value;
+
+    if not Value then
+    begin
+      FlushCache;
+      if not Active then
+        Invalidate;
+    end;
   end;
 end;
 
