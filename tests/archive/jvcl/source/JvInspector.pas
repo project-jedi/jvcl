@@ -93,6 +93,9 @@ type
   TInspectorComponentFlags = set of TInspectorComponentFlag;
   TInspectorCompoundItemFlag = (icifSingleName, icifSingleNameUseFirstCol);
   TInspectorCompoundItemFlags = set of TInspectorCompoundItemFlag;
+  TInspectorTMethodFlag = (imfShowInstanceNames, imfNoShowFirstInstanceName, imfSortMethods,
+    imfSortInstances, imfKeepFirstInstanceAsFirst);
+  TInspectorTMethodFlags = set of TInspectorTMethodFlag;
 
   TInspectorPaintRect = (iprItem, iprButtonArea, iprBtnSrcRect, iprBtnDstRect,
     iprNameArea, iprName, iprValueArea, iprValue, iprEditValue, iprEditButton,
@@ -121,6 +124,7 @@ type
   TJvInspAsMethod = procedure(Sender: TJvInspectorEventData; var Value: TMethod) of object;
   TJvInspAsString = procedure(Sender: TJvInspectorEventData; var Value: string) of object;
   TJvInspAsSet = procedure(Sender: TJvInspectorEventData; var Value; var BufSize: Integer) of object;
+  TJvInspSupportsMethodPointers = procedure(Sender: TJvInspectorEventData; var SupportsTMethod: Boolean) of object;
   TJvInspConfSectionEvent = procedure(var SectionName: string; var Parse: Boolean) of object;
   TJvInspConfKeyEvent = procedure(const SectionName: string; var ItemName: string; var ATypeInfo: PTypeInfo; var Allow: Boolean) of object;
 
@@ -1083,6 +1087,102 @@ type
   published
   end;
 
+  {
+  /------------------------------------------------------------------------------------------------\
+  | TMethod item editor.                                                                           |
+  |                                                                                                |
+  | WARNING: This item editor is currently not usable because you can't provide a list of valid    |
+  |          methods. Unfortunately, I can't figure out how to provide it. There are two AddMethod |
+  |          methods declared that should add methods to the list, but I can't use them, as the    |
+  |          compiler complains about invalid typecasts and/or requiring a variable (which doesn't |
+  |          help, as the @ operator seems to be unallowed on methods.                             |
+  \------------------------------------------------------------------------------------------------/
+  }
+  TJvInspectorTMethodItem = class(TJvCustomInspectorItem)
+  private
+    FList: TStrings; // list of object instances with list of methods attached.
+    FItemTMethodFlags: TInspectorTMethodFlags;
+  protected
+    // property accessors
+    function GetInstanceCount: Integer;
+    function GetInstances(I: Integer): TObject;
+    function GetInstanceNames(I: Integer): string;
+    function GetItemTMethodFlags: TInspectorTMethodFlags;
+    function GetKeepFirstInstanceAsFirst: Boolean;
+    function GetMethodCount(Instance: TObject): Integer;
+    function GetMethods(Instance: TObject; I: Integer): TMethod;
+    function GetMethodNames(Instance: TObject; I: Integer): string;
+    function GetNoShowFirstInstanceName: Boolean;
+    function GetShowInstanceNames: Boolean;
+    function GetSortMethods: Boolean;
+    function GetSortInstances: Boolean;
+    procedure SetItemTMethodFlags(Value: TInspectorTMethodFlags);
+    procedure SetKeepFirstInstanceAsFirst(Value: Boolean);
+    procedure SetNoShowFirstInstanceName(Value: Boolean);
+    procedure SetShowInstanceNames(Value: Boolean);
+    procedure SetSortMethods(Value: Boolean);
+    procedure SetSortInstances(Value: Boolean);
+
+    // internal methods
+    procedure AddInstancePrim(const Instance: TObject; const InstanceName: string); virtual;
+    procedure AddMethodPrim(const Instance: TObject; const MethodAddr: Pointer; const MethodName: string); virtual;
+
+    // translations
+    function MethodFromName(const Name: string): TMethod;
+    function MethodFromAbsIndex(const Idx: Integer): TMethod;
+    function NameFromMethod(const Method: TMethod): string;
+    function AbsIndexFromMethod(const Method: TMethod): Integer;
+
+    // inherited methods
+    function GetDisplayValue: string; override;
+    procedure GetValueList(const Strings: TStrings); override;
+    procedure SetDisplayValue(const Value: string); override;
+    procedure SetFlags(const Value: TInspectorItemFlags); override;
+  public
+    procedure AfterConstruction; override;
+    procedure BeforeDestruction; override;
+
+    procedure AddInstance(const Instance: TObject; const InstanceName: string);
+    procedure AddMethod(const Method: TMethod; const MethodName: string); overload;
+    procedure AddMethod(const Instance: TObject; MethodAddr: Pointer; const MethodName: string); overload;
+
+    procedure DeleteInstance(const Index: Integer); overload;
+    procedure DeleteInstance(const Instance: TObject); overload;
+    procedure DeleteInstance(const InstanceName: string); overload;
+    procedure DeleteMethod(const Method: TMethod); overload;
+    procedure DeleteMethod(const InstanceIndex: Integer; const Index: Integer); overload;
+    procedure DeleteMethod(const Instance: TObject; const Index: Integer); overload;
+    procedure DeleteMethod(const InstanceName: string; const Index: Integer); overload;
+    procedure DeleteMethod(const InstanceIndex: Integer; const MethodName: string); overload;
+    procedure DeleteMethod(const Instance: TObject; const MethodName: string); overload;
+    procedure DeleteMethod(const InstanceName: string; const MethodName: string); overload;
+
+    procedure ClearInstances;
+    procedure ClearMethods(const InstanceIndex: Integer); overload;
+    procedure ClearMethods(const Instance: TObject); overload;
+    procedure ClearMethods(const InstanceName: string); overload;
+
+    function IndexOfInstance(const Instance: TObject): Integer; overload;
+    function IndexOfInstance(const InstanceName: string): Integer; overload;
+    function IndexOfMethod(const Method: TMethod): Integer; overload;
+    function IndexOfMethod(const InstanceIndex: Integer; const MethodName: string): Integer; overload;
+    function IndexOfMethod(const Instance: TObject; const MethodName: string): Integer; overload;
+    function IndexOfMethod(const InstanceName: string; const MethodName: string): Integer; overload;
+
+    property InstanceCount: Integer read GetInstanceCount;
+    property Instances[I: Integer]: TObject read GetInstances;
+    property InstanceNames[I: Integer]: string read GetInstanceNames;
+    property ItemTMethodFlags: TInspectorTMethodFlags read GetItemTMethodFlags write SetItemTMethodFlags;
+    property KeepFirstInstanceAsFirst: Boolean read GetKeepFirstInstanceAsFirst write SetKeepFirstInstanceAsFirst;
+    property MethodCount[Instance: TObject]: Integer read GetMethodCount;
+    property Methods[Instance: TObject; I: Integer]: TMethod read GetMethods;
+    property MethodNames[Instance: TObject; I: Integer]: string read GetMethodNames;
+    property NoShowFirstInstanceName: Boolean read GetNoShowFirstInstanceName write SetNoShowFirstInstanceName;
+    property ShowInstanceNames: Boolean read GetShowInstanceNames write SetShowInstanceNames;
+    property SortInstances: Boolean read GetSortInstances write SetSortInstances;
+    property SortMethods: Boolean read GetSortMethods write SetSortMethods;
+  end;
+
   //----------------------------------------------------------------------------
   // Inspector data classes
   //----------------------------------------------------------------------------
@@ -1123,6 +1223,7 @@ type
     procedure SetAsString(const Value: string); virtual; abstract;
     procedure SetName(const Value: string); virtual;
     procedure SetTypeInfo(const Value: PTypeInfo); virtual;
+    function SupportsMethodPointers: Boolean; virtual;
   public
     constructor Create;
     procedure BeforeDestruction; override;
@@ -1137,7 +1238,7 @@ type
 
     property AsFloat: Extended read GetAsFloat write SetAsFloat;
     property AsInt64: Int64 read GetAsInt64 write SetAsInt64;
-    property AsMethod: TMethod read GetAsMethod;
+    property AsMethod: TMethod read GetAsMethod write SetAsMethod;
     property AsOrdinal: Int64 read GetAsOrdinal write SetAsOrdinal;
     property AsString: string read GetAsString write SetAsString;
     property ItemCount: Integer read GetItemCount;
@@ -1193,6 +1294,7 @@ type
     procedure SetAsMethod(const Value: TMethod); override;
     procedure SetAsOrdinal(const Value: Int64); override;
     procedure SetAsString(const Value: string); override;
+    function SupportsMethodPointers: Boolean; override;
   public
     procedure GetAsSet(var Buf); override;
     function HasValue: Boolean; override;
@@ -1227,6 +1329,7 @@ type
     procedure SetAsString(const Value: string); override;
     procedure SetInstance(const Value: TObject); virtual;
     procedure SetProp(const Value: PPropInfo); virtual;
+    function SupportsMethodPointers: Boolean; override;
   public
     procedure GetAsSet(var Buf); override;
     function HasValue: Boolean; override;
@@ -1235,6 +1338,8 @@ type
     class function ItemRegister: TJvInspectorRegister; override;
     class function New(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
       const PropInfo: PPropInfo): TJvCustomInspectorItem; overload;
+    class function New(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
+      const PropName: string): TJvCustomInspectorItem; overload;
     class function New(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
       const TypeKinds: TTypeKinds = tkProperties): TJvInspectorItemInstances; overload;
     class function NewByNames(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
@@ -1262,6 +1367,7 @@ type
     FOnSetAsOrdinal: TJvInspAsInt64;
     FOnSetAsString: TJvInspAsString;
     FOnSetAsSet: TJvInspAsSet;
+    FOnSupportsMethodPointers: TJvInspSupportsMethodPointers;
   protected
     function DoGetAsFloat: Extended;
     function DoGetAsInt64: Int64;
@@ -1275,6 +1381,7 @@ type
     procedure DoSetAsOrdinal(Value: Int64);
     procedure DoSetAsString(Value: string);
     procedure DoSetAsSet(const Buf; var BufSize: Integer);
+    function DoSupportsMethodPointers: Boolean; 
     function GetAsFloat: Extended; override;
     function GetAsInt64: Int64; override;
     function GetAsMethod: TMethod; override;
@@ -1294,16 +1401,18 @@ type
     procedure SetOnGetAsSet(Value: TJvInspAsSet);
     procedure SetOnSetAsFloat(Value: TJvInspAsFloat);
     procedure SetOnSetAsInt64(Value: TJvInspAsInt64);
-    procedure SetOnSetAsMethod(Value: TJvInspAsMethod);                  
+    procedure SetOnSetAsMethod(Value: TJvInspAsMethod);
     procedure SetOnSetAsOrdinal(Value: TJvInspAsInt64);
     procedure SetOnSetAsString(Value: TJvInspAsString);
     procedure SetOnSetAsSet(Value: TJvInspAsSet);
+    procedure SetOnSupportsMethodPointers(Value: TJvInspSupportsMethodPointers);
+    function SupportsMethodPointers: Boolean; override;
   public
     procedure GetAsSet(var Buf); override;
     function HasValue: Boolean; override;
     function IsAssigned: Boolean; override;
     function IsInitialized: Boolean; override;
-    class function New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo): TJvCustomInspectorItem; 
+    class function New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo): TJvCustomInspectorItem;
     procedure SetAsSet(const Buf); override;
 
     property OnGetAsFloat: TJvInspAsFloat read FOnGetAsFloat write SetOnGetAsFloat;
@@ -1318,6 +1427,7 @@ type
     property OnSetAsOrdinal: TJvInspAsInt64 read FOnSetAsOrdinal write SetOnSetAsOrdinal;
     property OnSetAsString: TJvInspAsString read FOnSetAsString write SetOnSetAsString;
     property OnSetAsSet: TJvInspAsSet read FOnSetAsSet write SetOnSetAsSet;
+    property OnSupportsMethodPointers: TJvInspSupportsMethodPointers read FOnSupportsMethodPointers write SetOnSupportsMethodPointers;
   end;
 
   TJvInspectorCustomConfData = class(TJvCustomInspectorData)
@@ -7546,6 +7656,650 @@ begin
   Flags := Flags + [iifEditButton];
 end;
 
+{ TJvInspectorTMethodItem instance list item }
+
+type
+  TInstanceItem = class
+  public
+    Instance: TObject;
+    Methods: TStrings;
+    MethodStartIdx: Integer;
+    Item: TJvInspectorTMethodItem;
+
+    procedure AfterConstruction; override;
+    procedure BeforeDestruction; override;
+    procedure AddMethod(const Name: string; const MethodAddr: Pointer);
+    procedure DeleteMethod(const Name: string); overload;
+    procedure DeleteMethod(const MethodAddr: Pointer); overload;
+    procedure DeleteMethod(const Index: Integer); overload;
+    procedure Clear;
+    function IndexOf(const Name: string): Integer; overload;
+    function IndexOf(const MethodAddr: Pointer): Integer; overload;
+  end;
+
+procedure TInstanceItem.AfterConstruction;
+begin
+  inherited AfterConstruction;
+  Methods := TStringList.Create;
+end;
+
+procedure TInstanceItem.BeforeDestruction;
+begin
+  Methods.Free;
+  inherited BeforeDestruction; 
+end;
+
+procedure TInstanceItem.AddMethod(const Name: string; const MethodAddr: Pointer);
+var
+  I: Integer;
+begin
+  I := Methods.IndexOf(Name);
+  if I = -1 then
+  begin
+    I := Methods.IndexOfObject(TObject(MethodAddr));
+    if I = -1 then
+    begin
+      Methods.AddObject(Name, TObject(MethodAddr));
+      I := Item.FList.IndexOfObject(Self) + 1;
+      while I < Item.InstanceCount do
+      begin
+        Inc(TInstanceItem(Item.FList[I]).MethodStartIdx);
+        Inc(I);
+      end;
+    end
+    else
+      Methods[I] := Name;
+  end
+  else
+    Methods.Objects[I] := TObject(MethodAddr);
+end;
+
+procedure TInstanceItem.DeleteMethod(const Name: string);
+var
+  I: Integer;
+begin
+  I := Methods.IndexOf(Name);
+  if I <> -1 then
+    DeleteMethod(I); 
+end;
+
+procedure TInstanceItem.DeleteMethod(const MethodAddr: Pointer);
+var
+  I: Integer;
+begin
+  I := Methods.IndexOfObject(TObject(MethodAddr));
+  if I <> -1 then
+    DeleteMethod(I);
+end;
+
+procedure TInstanceItem.DeleteMethod(const Index: Integer);
+begin
+  Methods.Delete(Index);
+end;
+
+procedure TInstanceItem.Clear;
+begin
+  Methods.Clear;
+end;
+
+function TInstanceItem.IndexOf(const Name: string): Integer;
+begin
+  Result := Methods.IndexOf(Name);
+end;
+
+function TInstanceItem.IndexOf(const MethodAddr: Pointer): Integer;
+begin
+  Result := Methods.IndexOfObject(TObject(MethodAddr));
+end;
+
+{ TJvInspectorTMethodItem }
+
+function TJvInspectorTMethodItem.GetInstanceCount: Integer;
+begin
+  Result := FList.Count;
+end;
+
+function TJvInspectorTMethodItem.GetInstances(I: Integer): TObject;
+begin
+  Result := TInstanceItem(FList.Objects[I]).Instance;
+end;
+
+function TJvInspectorTMethodItem.GetInstanceNames(I: Integer): string;
+begin
+  Result := FList[I];
+end;
+
+function TJvInspectorTMethodItem.GetItemTMethodFlags: TInspectorTMethodFlags;
+begin
+  Result := FItemTMethodFlags;
+end;
+
+function TJvInspectorTMethodItem.GetKeepFirstInstanceAsFirst: Boolean;
+begin
+  Result := imfKeepFirstInstanceAsFirst in FItemTMethodFlags;
+end;
+
+function TJvInspectorTMethodItem.GetMethodCount(Instance: TObject): Integer;
+begin
+  Result := IndexOfInstance(Instance);
+  if Result > -1 then
+    Result := TInstanceItem(FList.Objects[Result]).Methods.Count
+  else
+    Result := 0;
+end;
+
+function TJvInspectorTMethodItem.GetMethods(Instance: TObject; I: Integer): TMethod;
+var
+  Idx: Integer;
+begin
+  Idx := IndexOfInstance(Instance);
+  if Idx > -1 then
+  begin
+    Result.Data := Instance;
+    Result.COde := TInstanceItem(FList.Objects[Idx]).Methods.Objects[I];
+  end;
+end;
+
+function TJvInspectorTMethodItem.GetMethodNames(Instance: TObject; I: Integer): string;
+var
+  Idx: Integer;
+begin
+  Idx := IndexOfInstance(Instance);
+  if Idx > -1 then
+    Result := TInstanceItem(FList.Objects[Idx]).Methods[I];
+end;
+
+function TJvInspectorTMethodItem.GetNoShowFirstInstanceName: Boolean;
+begin
+  Result := imfNoShowFirstInstanceName in FItemTMethodFlags;
+end;
+
+function TJvInspectorTMethodItem.GetShowInstanceNames: Boolean;
+begin
+  Result := imfShowInstanceNames in FItemTMethodFlags;
+end;
+
+function TJvInspectorTMethodItem.GetSortMethods: Boolean;
+begin
+  Result := imfSortMethods in FItemTMethodFlags;
+end;
+
+function TJvInspectorTMethodItem.GetSortInstances: Boolean;
+begin
+  Result := imfSortInstances in FItemTMethodFlags;
+end;
+
+procedure TJvInspectorTMethodItem.SetItemTMethodFlags(Value: TInspectorTMethodFlags);
+begin
+  if ItemTMethodFlags <> Value then
+  begin
+    FItemTMethodFlags := Value;
+    InvalidateMetaData;
+  end;
+end;
+
+procedure TJvInspectorTMethodItem.SetKeepFirstInstanceAsFirst(Value: Boolean);
+begin
+  if Value then
+    ItemTMethodFlags := ItemTMethodFlags + [imfKeepFirstInstanceAsFirst]
+  else
+    ItemTMethodFlags := ItemTMethodFlags - [imfKeepFirstInstanceAsFirst];
+end;
+
+procedure TJvInspectorTMethodItem.SetNoShowFirstInstanceName(Value: Boolean);
+begin
+  if Value then
+    ItemTMethodFlags := ItemTMethodFlags + [imfNoShowFirstInstanceName]
+  else
+    ItemTMethodFlags := ItemTMethodFlags - [imfNoShowFirstInstanceName];
+end;
+
+procedure TJvInspectorTMethodItem.SetShowInstanceNames(Value: Boolean);
+begin
+  if Value then
+    ItemTMethodFlags := ItemTMethodFlags + [imfShowInstanceNames]
+  else
+    ItemTMethodFlags := ItemTMethodFlags - [imfShowInstanceNames];
+end;
+
+procedure TJvInspectorTMethodItem.SetSortMethods(Value: Boolean);
+begin
+  if Value then
+    ItemTMethodFlags := ItemTMethodFlags + [imfSortMethods]
+  else
+    ItemTMethodFlags := ItemTMethodFlags - [imfSortMethods];
+end;
+
+procedure TJvInspectorTMethodItem.SetSortInstances(Value: Boolean);
+begin
+  if Value then
+    ItemTMethodFlags := ItemTMethodFlags + [imfSortInstances]
+  else
+    ItemTMethodFlags := ItemTMethodFlags - [imfSortInstances];
+end;
+
+procedure TJvInspectorTMethodItem.AddInstancePrim(const Instance: TObject; const InstanceName: string);
+var
+  IdxInst: Integer;
+  IdxName: Integer;
+begin
+  IdxInst := IndexOfInstance(Instance);
+  IdxName := IndexOfInstance(InstanceName);
+  if (IdxInst <> -1) and (IdxInst <> IdxName) then
+    raise EJvInspectorItem.Create('Instance already exists with another name.');
+  if (IdxName <> -1) and (IdxInst <> IdxName) then
+    raise EJvInspectorItem.Create('Name already exists for another instance.');
+  if IdxInst = -1 then
+  begin
+    IdxInst := FList.AddObject(InstanceName, TInstanceItem.Create);
+    TInstanceItem(FList.Objects[IdxInst]).Instance := Instance;
+  end;
+end;
+
+procedure TJvInspectorTMethodItem.AddMethodPrim(const Instance: TObject; const MethodAddr: Pointer; const MethodName: string);
+var
+  InstIdx: Integer;
+  InstItem: TInstanceItem;
+  MethodIdx: Integer;
+  MethodNameIdx: Integer;
+begin
+  InstIdx := IndexOfInstance(Instance);
+  if InstIdx = -1 then
+    raise EJvInspectorItem.Create('Instance does not exist.');
+  InstItem := TInstanceItem(FList.Objects[InstIdx]);
+  MethodIdx := InstItem.IndexOf(MethodAddr);
+  MethodNameIdx := InstItem.IndexOf(MethodName);
+  if (MethodIdx <> -1) and (MethodNameIdx <> MethodIdx) then
+    raise EJvInspectorItem.Create('Method already exists with another name.');
+  if (MethodNameIdx <> -1) and (MethodNameIdx <> MethodIdx) then
+    raise EJvInspectorItem.Create('Name already exists for another method.');
+  if MethodIdx = -1 then
+    InstItem.AddMethod(MethodName, MethodAddr);
+end;
+
+function TJvInspectorTMethodItem.MethodFromName(const Name: string): TMethod;
+var
+  IPeriod: Integer;
+  InstIdx: Integer;
+  MethodIdx: Integer;
+begin
+  IPeriod := Pos('.', Name);
+  if IPeriod > 0 then
+    InstIdx := IndexOfInstance(Copy(Name, 1, IPeriod - 1))
+  else
+    InstIdx := 0;
+  if InstIdx < 0 then
+  begin
+    Result.Data := nil;
+    Result.Code := nil;
+  end
+  else
+  begin
+    MethodIdx := IndexOfMethod(InstIdx, Copy(Name, IPeriod + 1, Length(Name) - IPeriod));
+    if MethodIdx < 0 then
+    begin
+      Result.Data := nil;
+      Result.Code := nil;
+    end
+    else
+      Result := Methods[Instances[InstIdx], MethodIdx];
+  end;
+end;
+
+function TJvInspectorTMethodItem.MethodFromAbsIndex(const Idx: Integer): TMethod;
+var
+  InstIdx: Integer;
+  InstItem: TInstanceItem;
+begin
+  Result.Data := nil;
+  Result.Code := nil;
+  InstIdx := InstanceCount - 1;
+  repeat
+    InstItem := TInstanceItem(FList.Objects[InstIdx]);
+    if InstItem.MethodStartIdx <= Idx then
+    begin
+      Result.Data := InstItem.Instance;
+      Result.Code := InstItem.Methods.Objects[Idx - InstItem.MethodStartIdx];
+      Break;
+    end;
+  until False;
+end;
+
+function TJvInspectorTMethodItem.NameFromMethod(const Method: TMethod): string;
+var
+  Instance: TObject;
+  InstanceIdx: Integer;
+  MethodIdx: Integer;
+begin
+  Instance := Method.Data;
+  InstanceIdx := IndexOfInstance(Instance);
+  MethodIdx :=IndexOfMethod(Method);
+  Result := '';
+  if (InstanceIdx <> -1) and (MethodIdx <> -1) then
+  begin
+    if ShowInstanceNames and ((InstanceIdx > 0) or NoShowFirstInstanceName) then
+      Result := InstanceNames[InstanceIdx] + '.';
+    Result := Result + MethodNames[Instance, MethodIdx];
+  end;
+end;
+
+function TJvInspectorTMethodItem.AbsIndexFromMethod(const Method: TMethod): Integer;
+var
+  InstIdx: Integer;
+  MethodIdx: Integer;
+begin
+  InstIdx := IndexOfInstance(TObject(Method.Data));
+  if InstIdx > -1 then
+  begin
+    MethodIdx := TInstanceItem(FList.Objects[InstIdx]).IndexOf(Method.Code);
+    if MethodIdx > -1 then
+      Result := TInstanceItem(FList.Objects[InstIdx]).MethodStartIdx + MethodIdx
+    else
+      Result := -1;
+  end
+  else
+    Result := -1;
+end;
+
+function TJvInspectorTMethodItem.GetDisplayValue: string;
+begin
+  if Data.SupportsMethodPointers then
+    Result := NameFromMethod(Data.AsMethod)
+  else
+    Result := Data.GetAsString;
+end;
+
+procedure TJvInspectorTMethodItem.GetValueList(const Strings: TStrings);
+var
+  SL: TStringList;
+  InstanceList: TStringList;
+  I: Integer;
+  CurInstance: TInstanceItem;
+  PrefixWithInstance: string;
+  J: Integer;
+begin
+  SL := TStringList.Create;
+  try
+    InstanceList := TStringList.Create;
+    try
+      for I := 0 to InstanceCount - 1 do
+        InstanceList.AddObject(InstanceNames[I], Instances[I]);
+      if SortInstances then
+        InstanceList.Sort;
+      if (InstanceCount > 0) and KeepFirstInstanceAsFirst then
+      begin
+        I := InstanceList.IndexOfObject(Instances[0]);
+        if I > 0 then
+        begin
+          InstanceList.Delete(I);
+          InstanceList.InsertObject(0, InstanceNames[0], Instances[0]);
+        end;
+      end;
+      for I := 0 to InstanceCount - 1 do
+      begin
+        SL.Clear;
+        CurInstance := TInstanceItem(FList.Objects[I]);
+        if ShowInstanceNames then
+        begin
+          if (I > 0) or not NoShowFirstInstanceName then
+            PrefixWithInstance := InstanceList[I] + '.';
+        end
+        else
+          PrefixWithInstance := '';
+        for J := 0 to CurInstance.Methods.Count - 1 do
+          SL.AddObject(PrefixWithInstance + MethodNames[CurInstance, J], TObject(CurInstance.MethodStartIdx + J));
+        if SL.Count > 0 then
+        begin
+          if SortMethods then
+            SL.Sort;
+          Strings.AddStrings(SL);
+        end;
+      end;
+      SL.Clear;
+      inherited GetValueList(SL);
+      if SortMethods then
+        SL.Sort;
+      if SL.Count > 0 then
+        Strings.AddStrings(SL);
+    finally
+      InstanceList.Free;
+    end;
+  finally
+    SL.Free;
+  end;
+end;
+
+procedure TJvInspectorTMethodItem.SetDisplayValue(const Value: string);
+var
+  M: TMethod;
+begin
+  M := MethodFromName(Value);
+  if Data.SupportsMethodPointers then
+    Data.AsMethod := M
+  else
+    Data.AsString := NameFromMethod(M);
+end;
+
+procedure TJvInspectorTMethodItem.SetFlags(const Value: TInspectorItemFlags);
+begin
+  inherited SetFlags(Value + [iifValueList]);
+end;
+
+procedure TJvInspectorTMethodItem.AfterConstruction;
+begin
+  inherited AfterConstruction;
+  FList := TStringList.Create;
+end;
+
+procedure TJvInspectorTMethodItem.BeforeDestruction;
+begin
+  ClearInstances;
+  FreeAndNil(FList);
+  inherited BeforeDestruction;
+end;
+
+procedure TJvInspectorTMethodItem.AddInstance(const Instance: TObject; const InstanceName: string);
+begin
+  AddInstancePrim(Instance, InstanceName);
+end;
+
+procedure TJvInspectorTMethodItem.AddMethod(const Method: TMethod; const MethodName: string);
+begin
+  AddMethodPrim(Tobject(Method.Data), Method.Code, MethodName);
+end;
+
+procedure TJvInspectorTMethodItem.AddMethod(const Instance: TObject; MethodAddr: Pointer;
+  const MethodName: string);
+begin
+  AddMethodPrim(Instance, MethodAddr, MethodName);
+end;
+
+procedure TJvInspectorTMethodItem.DeleteInstance(const Index: Integer);
+var
+  InstItem: TInstanceItem;
+begin
+  InstItem := TInstanceItem(FList.Objects[Index]);
+  InstItem.Free;
+  FList.Delete(Index);
+end;
+
+procedure TJvInspectorTMethodItem.DeleteInstance(const Instance: TObject);
+var
+  Idx: Integer;
+begin
+  Idx := IndexOfInstance(Instance);
+  if Idx > -1 then
+    DeleteInstance(Idx)
+  else
+    raise EJvInspectorItem.Create('Instance does not exist.');
+end;
+
+procedure TJvInspectorTMethodItem.DeleteInstance(const InstanceName: string);
+var
+  Idx: Integer;
+begin
+  Idx := IndexOfInstance(InstanceName);
+  if Idx > -1 then
+    DeleteInstance(Idx)
+  else
+    raise EJvInspectorItem.CreateFmt('Instance named ''%s'' does not exist.', [InstanceName]);
+end;
+
+procedure TJvInspectorTMethodItem.DeleteMethod(const Method: TMethod);
+var
+  InstIdx: Integer;
+  InstItem: TInstanceItem;
+  MethodIdx: Integer;
+begin
+  InstIdx := IndexOfInstance(TObject(Method.Data));
+  if InstIdx > -1 then
+  begin
+    InstItem := TInstanceItem(FList.Objects[InstIdx]);
+    MethodIdx := InstItem.IndexOf(Method.Code);
+    if MethodIdx > -1 then
+      InstItem.DeleteMethod(MethodIdx)
+    else
+      raise EJvInspectorItem.Create('Method does not exist.');
+  end
+  else
+    raise EJvInspectorItem.Create('Instance does not exist.');
+end;
+
+procedure TJvInspectorTMethodItem.DeleteMethod(const InstanceIndex: Integer; const Index: Integer);
+begin
+  TInstanceItem(FList.Objects[InstanceIndex]).DeleteMethod(Index);
+end;
+
+procedure TJvInspectorTMethodItem.DeleteMethod(const Instance: TObject; const Index: Integer);
+var
+  InstIdx: Integer;
+begin
+  InstIdx := IndexOfInstance(Instance);
+  if InstIdx > -1 then
+    DeleteMethod(InstIdx, Index)
+  else
+    raise EJvInspectorItem.Create('Instance does not exist.');
+end;
+
+procedure TJvInspectorTMethodItem.DeleteMethod(const InstanceName: string; const Index: Integer);
+var
+  InstIdx: Integer;
+begin
+  InstIdx := IndexOfInstance(InstanceName);
+  if InstIdx > -1 then
+    DeleteMethod(InstIdx, Index)
+  else
+    raise EJvInspectorItem.CreateFmt('Instance named ''%s'' does not exist.', [InstanceName]);
+end;
+
+procedure TJvInspectorTMethodItem.DeleteMethod(const InstanceIndex: Integer; const MethodName: string);
+var
+  MethodIdx: Integer;
+begin
+  MethodIdx := TInstanceItem(FList.Objects[InstanceIndex]).IndexOf(MethodName);
+  if MethodIdx > -1 then
+    DeleteMethod(InstanceIndex, MethodIdx)
+  else
+    raise EJvInspectorItem.CreateFmt('Method named ''%s'' does not exist.', [MethodName]);
+end;
+
+procedure TJvInspectorTMethodItem.DeleteMethod(const Instance: TObject; const MethodName: string);
+var
+  InstIdx: Integer;
+begin
+  InstIdx := IndexOfInstance(Instance);
+  if InstIdx > -1 then
+    DeleteMethod(InstIdx, MethodName)
+  else
+    raise EJvInspectorItem.Create('Instance does not exist.');
+end;
+
+procedure TJvInspectorTMethodItem.DeleteMethod(const InstanceName: string; const MethodName: string);
+var
+  InstIdx: Integer;
+begin
+  InstIdx := IndexOfInstance(InstanceName);
+  if InstIdx > -1 then
+    DeleteMethod(InstIdx, MethodName)
+  else
+    raise EJvInspectorItem.CreateFmt('Instance named ''%s'' does not exist.', [InstanceName]);
+end;
+
+procedure TJvInspectorTMethodItem.ClearInstances;
+var
+  I: Integer;
+begin
+  for I := InstanceCount - 1 downto 0 do
+    DeleteInstance(I);
+end;
+
+procedure TJvInspectorTMethodItem.ClearMethods(const InstanceIndex: Integer);
+begin
+  TInstanceItem(FList.Objects[InstanceIndex]).Clear;
+end;
+
+procedure TJvInspectorTMethodItem.ClearMethods(const Instance: TObject);
+var
+  InstIdx: Integer;
+begin
+  InstIdx := IndexOfInstance(Instance);
+  if InstIdx > -1 then
+    ClearMethods(InstIdx)
+  else
+    raise EJvInspectorItem.Create('Instance does not exist.');
+end;
+
+procedure TJvInspectorTMethodItem.ClearMethods(const InstanceName: string);
+var
+  InstIdx: Integer;
+begin
+  InstIdx := IndexOfInstance(InstanceName);
+  if InstIdx > -1 then
+    ClearMethods(InstIdx)
+  else
+    raise EJvInspectorItem.CreateFmt('Instance named ''%s'' does not exist.', [InstanceName]);
+end;
+
+function TJvInspectorTMethodItem.IndexOfInstance(const Instance: TObject): Integer;
+begin
+  Result := InstanceCount - 1;
+  while (Result >= 0) and (TInstanceItem(FList.Objects[Result]).Instance <> Instance) do
+    Dec(Result);
+end;
+
+function TJvInspectorTMethodItem.IndexOfInstance(const InstanceName: string): Integer;
+begin
+  Result := InstanceCount - 1;
+  while (Result >= 0) and not AnsiSameText(FList[Result], InstanceName) do
+    Dec(Result);
+end;
+
+function TJvInspectorTMethodItem.IndexOfMethod(const Method: TMethod): Integer;
+begin
+  Result := IndexOfInstance(TObject(Method.Data));
+  if Result > -1 then
+    Result := TInstanceItem(FList.Objects[Result]).IndexOf(Method.Code);
+end;
+
+function TJvInspectorTMethodItem.IndexOfMethod(const InstanceIndex: Integer; const MethodName: string): Integer;
+begin
+  Result := TInstanceItem(FList.Objects[InstanceIndex]).IndexOf(MethodName);
+end;
+
+function TJvInspectorTMethodItem.IndexOfMethod(const Instance: TObject; const MethodName: string): Integer;
+begin
+  Result := IndexOfInstance(Instance);
+  if Result > -1 then
+    Result := IndexOfMethod(Result, MethodName);
+end;
+
+function TJvInspectorTMethodItem.IndexOfMethod(const InstanceName: string; const MethodName: string): Integer;
+begin
+  Result := IndexOfInstance(InstanceName);
+  if Result > -1 then
+    Result := IndexOfMethod(Result, MethodName);
+end;
+
 { TJvCustomInspectorData }
 
 constructor TJvCustomInspectorData.CreatePrim(const AName: string;
@@ -7714,6 +8468,11 @@ begin
     FTypeInfo := Value;
     Invalidate;
   end;
+end;
+
+function TJvCustomInspectorData.SupportsMethodPointers: Boolean;
+begin
+  Result := False;
 end;
 
 constructor TJvCustomInspectorData.Create;
@@ -7994,6 +8753,11 @@ begin
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['String']);
 end;
 
+function TJvInspectorVarData.SupportsMethodPointers: Boolean;
+begin
+  Result := True;
+end;
+
 procedure TJvInspectorVarData.GetAsSet(var Buf);
 var
   CompType: PTypeInfo;
@@ -8232,6 +8996,11 @@ begin
   end;
 end;
 
+function TJvInspectorPropData.SupportsMethodPointers: Boolean;
+begin
+  Result := True;
+end;
+
 procedure TJvInspectorPropData.GetAsSet(var Buf);
 begin
   Integer(Buf) := AsOrdinal;
@@ -8271,6 +9040,18 @@ begin
   Data := TJvInspectorPropData(DataRegister.Add(Data));
   if Data <> nil then
     Result := Data.NewItem(AParent)
+  else
+    Result := nil;
+end;
+
+class function TJvInspectorPropData.New(const AParent: TJvCustomInspectorItem;
+  const AInstance: TObject; const PropName: string): TJvCustomInspectorItem;
+var
+  PI: PPropInfo;
+begin
+  PI := GetPropInfo(AInstance, PropName, tkAny);
+  if PI <> nil then
+    Result := New(AParent, AInstance, PI)
   else
     Result := nil;
 end;
@@ -8429,6 +9210,13 @@ begin
     OnSetAsString(Self, Value)
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['string']);
+end;
+
+function TJvInspectorEventData.DoSupportsMethodPointers: Boolean;
+begin
+  Result := False;
+  if @FOnSupportsMethodPointers <> nil then
+    OnSupportsMethodPointers(Self, Result);
 end;
 
 procedure TJvInspectorEventData.DoSetAsSet(const Buf; var BufSize: Integer);
@@ -8713,6 +9501,20 @@ begin
     FOnSetAsSet := Value;
     Invalidate;
   end;
+end;
+
+procedure TJvInspectorEventData.SetOnSupportsMethodPointers(Value: TJvInspSupportsMethodPointers);
+begin
+  if @FOnSupportsMethodPointers <> @Value then
+  begin
+    FOnSupportsMethodPointers := Value;
+    Invalidate;
+  end;
+end;
+
+function TJvInspectorEventData.SupportsMethodPointers: Boolean;
+begin
+  Result := DoSupportsMethodPointers;
 end;
 
 procedure TJvInspectorEventData.GetAsSet(var Buf);
@@ -9523,6 +10325,8 @@ begin
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorCharItem, tkWChar));
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorInt64Item, tkInt64));
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorClassItem, tkClass));
+    // TMethodEditor is disabled because it doesn't work
+//    Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorTMethodItem, tkMethod));
     Add(TJvInspectorTCaptionRegItem.Create(TJvInspectorStringItem, TypeInfo(TCaption)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorFontItem, TypeInfo(TFont)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorBooleanItem, TypeInfo(Boolean)));
