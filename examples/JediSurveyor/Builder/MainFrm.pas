@@ -7,7 +7,7 @@ uses
   ComCtrls, ExtCtrls, StdCtrls, Menus, StdActns, ActnList, ImgList,
   JvPageScroller, JvComCtrls, JvStatusBar, JvDateTimePicker, JvCombobox, JvLinkLabel,
   JvEdit, JvSurveyIntf, JvDialogs, JvImage, JvCheckBox, JvValidateEdit,
-  JvRichEdit;
+  JvRichEdit, JvExExtCtrls, JvExStdCtrls, JvExComCtrls;
 
 type
   TfrmMain = class(TForm)
