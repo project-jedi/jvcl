@@ -48,7 +48,7 @@ object frmComment: TfrmComment
     ScrollBars = ssBoth
     TabOrder = 0
     WantTabs = True
-    Wordwrap = False
+    WordWrap = False
   end
   object alCommentFrm: TActionList
     Left = 84
