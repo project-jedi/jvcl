@@ -163,7 +163,7 @@ Upcoming JVCL 3.00
    - fixed record bugs with Delphi 6
    - fixed OLE bugs
    - (rom) added fix for default properties from ivan_ra  26 Dec 2003
-   
+
    - (wap) fixed bug: memory leak in local-function LeaveFunction, part of
       TJvInterpreterFunction.InFunction.  See code marker VARLEAKFIX.
       (Fix suggested by ivan_ra@mail.ru)
@@ -190,7 +190,7 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  JvInterpreterParser, JvComponent;
+  JvInterpreterParser, JvComponent, JvFinalize;
 
 const
   // (rom) renamed to longer names
@@ -1100,8 +1100,7 @@ function JvInterpreterArrayHigh(const AArray: Variant): Integer;
 procedure JvInterpreterArrayElementDelete(AArray: Variant; AElement: Integer);
 procedure JvInterpreterArrayElementInsert(AArray: Variant; AElement: Integer; Value: Variant);
 
-var
-  GlobalJvInterpreterAdapter: TJvInterpreterAdapter = nil;
+function GlobalJvInterpreterAdapter: TJvInterpreterAdapter;
 
 const
   prArgsNoCheck = -1;
@@ -1191,6 +1190,22 @@ uses
   {$ENDIF JvInterpreter_OLEAUTO}
   JvConsts, JvInterpreterConst, JvJVCLUtils, JvJCLUtils, JvResources, JvTypes;
 
+const
+  sUnitName = 'JvInterpreter';
+
+var
+  FieldGlobalJvInterpreterAdapter: TJvInterpreterAdapter = nil;
+
+function GlobalJvInterpreterAdapter: TJvInterpreterAdapter;
+begin
+  if not Assigned(FieldGlobalJvInterpreterAdapter) then
+  begin
+    FieldGlobalJvInterpreterAdapter := TJvInterpreterAdapter.Create(nil);
+    AddFinalizeObjectNil(sUnitName, TObject(FieldGlobalJvInterpreterAdapter))
+  end;
+  Result := FieldGlobalJvInterpreterAdapter;
+end;
+  
 { internal structures }
 type
   TJvInterpreterRecordDataType = class(TInterfacedObject, IJvInterpreterDataType)
@@ -1248,12 +1263,72 @@ var
 {$IFDEF COMPILER6_UP}
 
 var
-  VariantRecordInstance: TJvRecordVariantType = nil;
-  VariantObjectInstance: TJvObjectVariantType = nil;
-  VariantClassInstance: TJvClassVariantType = nil;
-  VariantPointerInstance: TJvPointerVariantType = nil;
-  VariantSetInstance: TJvSetVariantType = nil;
-  VariantArrayInstance: TJvArrayVariantType = nil;
+  GlobalVariantRecordInstance: TJvRecordVariantType = nil;
+  GlobalVariantObjectInstance: TJvObjectVariantType = nil;
+  GlobalVariantClassInstance: TJvClassVariantType = nil;
+  GlobalVariantPointerInstance: TJvPointerVariantType = nil;
+  GlobalVariantSetInstance: TJvSetVariantType = nil;
+  GlobalVariantArrayInstance: TJvArrayVariantType = nil;
+
+function VariantRecordInstance: TJvRecordVariantType;
+begin
+  if not Assigned(GlobalVariantRecordInstance) then
+  begin
+    GlobalVariantRecordInstance := TJvRecordVariantType.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalVariantRecordInstance));
+  end;
+  Result := GlobalVariantRecordInstance;
+end;
+
+function VariantObjectInstance: TJvObjectVariantType;
+begin
+  if not Assigned(GlobalVariantObjectInstance) then
+  begin
+    GlobalVariantObjectInstance := TJvObjectVariantType.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalVariantObjectInstance));
+  end;
+  Result := GlobalVariantObjectInstance;
+end;
+
+function VariantClassInstance: TJvClassVariantType;
+begin
+  if not Assigned(GlobalVariantClassInstance) then
+  begin
+    GlobalVariantClassInstance := TJvClassVariantType.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalVariantClassInstance));
+  end;
+  Result := GlobalVariantClassInstance;
+end;
+
+function VariantPointerInstance: TJvPointerVariantType;
+begin
+  if not Assigned(GlobalVariantPointerInstance) then
+  begin
+    GlobalVariantPointerInstance := TJvPointerVariantType.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalVariantPointerInstance));
+  end;
+  Result := GlobalVariantPointerInstance;
+end;
+
+function VariantSetInstance: TJvSetVariantType;
+begin
+  if not Assigned(GlobalVariantSetInstance) then
+  begin
+    GlobalVariantSetInstance := TJvSetVariantType.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalVariantSetInstance));
+  end;
+  Result := GlobalVariantSetInstance;
+end;
+
+function VariantArrayInstance: TJvArrayVariantType;
+begin
+  if not Assigned(GlobalVariantArrayInstance) then
+  begin
+    GlobalVariantArrayInstance := TJvArrayVariantType.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalVariantArrayInstance));
+  end;
+  Result := GlobalVariantArrayInstance;
+end;
 
 //=== TJvSimpleVariantType ===================================================
 
@@ -5326,8 +5401,8 @@ begin
   begin
     if TVarData(Result).VType = varRecord then
       if not (FAdapter.SetRecord(Result) or
-        (Assigned(GlobalJvInterpreterAdapter) and (FAdapter <> GlobalJvInterpreterAdapter) and
-        GlobalJvInterpreterAdapter.SetRecord(Result))) then
+        (FAdapter <> GlobalJvInterpreterAdapter) and
+        GlobalJvInterpreterAdapter.SetRecord(Result)) then
         JvInterpreterErrorN(ieRecordNotDefined, -1, RsEUnknownRecordType);
     { Args.HasVars may be changed in previous call to GetValue }
     if FCurrArgs.FHasVars then
@@ -7682,11 +7757,6 @@ begin
   end;
 end;
 
-{$IFDEF JvInterpreter_OLEAUTO}
-var
-  OleInitialized: Boolean;
-{$ENDIF JvInterpreter_OLEAUTO}
-
 function TJvInterpreterFunction.GetDebugPointerToGlobalVars: TJvInterpreterVarList;
 begin
   Result := Adapter.FSrcVarList;
@@ -7843,41 +7913,28 @@ begin
   Result := FUsesList;
 end;
 
-initialization
-  {$IFDEF COMPILER6_UP}
-  VariantRecordInstance := TJvRecordVariantType.Create;
-  VariantObjectInstance := TJvObjectVariantType.Create;
-  VariantClassInstance := TJvClassVariantType.Create;
-  VariantPointerInstance := TJvPointerVariantType.Create;
-  VariantSetInstance := TJvSetVariantType.Create;
-  VariantArrayInstance := TJvArrayVariantType.Create;
-  {$ENDIF COMPILER6_UP}
+{$IFDEF JvInterpreter_OLEAUTO}
+var
+  OleInitialized: Boolean;
+{$ENDIF JvInterpreter_OLEAUTO}
 
-  GlobalJvInterpreterAdapter := TJvInterpreterAdapter.Create(nil);
+initialization
   {$IFDEF JvInterpreter_OLEAUTO}
   OleInitialized := OleInitialize(nil) = S_OK;
   {$ENDIF JvInterpreter_OLEAUTO}
 
 finalization
+  FinalizeUnit(sUnitName);
+
   {$IFDEF JvInterpreter_OLEAUTO}
   if OleInitialized then
     OleUnInitialize;
   {$ENDIF JvInterpreter_OLEAUTO}
   {$IFDEF JvInterpreter_DEBUG}
   if ObjCount <> 0 then
-    Windows.MessageBox(0, PChar('Memory leak in JvInterpreter.pas'#13 +
+    Windows.MessageBox(0, PChar('Memory leak in JvInterpreter.pas'#10 +
       'ObjCount = ' + IntToStr(ObjCount)),
       'JvInterpreter Internal Error', MB_ICONERROR);
   {$ENDIF JvInterpreter_DEBUG}
-  FreeAndNil(GlobalJvInterpreterAdapter);
-
-  {$IFDEF COMPILER6_UP}
-  FreeAndNil(VariantRecordInstance);
-  FreeAndNil(VariantObjectInstance);
-  FreeAndNil(VariantClassInstance);
-  FreeAndNil(VariantPointerInstance);
-  FreeAndNil(VariantSetInstance);
-  FreeAndNil(VariantArrayInstance);
-  {$ENDIF COMPILER6_UP}
 
 end.

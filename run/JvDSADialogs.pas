@@ -44,7 +44,7 @@ uses
   QClipbrd,
   {$ENDIF VisualCLX}
   JclBase,
-  JvConsts, JvComponent, JvTypes, JvDynControlEngine;
+  JvConsts, JvComponent, JvTypes, JvDynControlEngine, JvFinalize;
 
 type
   TDlgCenterKind = (dckScreen, dckMainForm, dckActiveForm);
@@ -436,6 +436,9 @@ uses
   JvResources, JvDynControlEngineIntf;
 
 const
+  sUnitName = 'JvDSADialogs';
+
+const
   cDSAStateValueName = 'DSA_State'; // do not localize
   cDSAStateLastResultName = 'LastResult'; // do not localize
 
@@ -452,7 +455,10 @@ var
 function CheckMarkTexts: TStrings;
 begin
   if GlobalCheckMarkTexts = nil then
+  begin
     GlobalCheckMarkTexts := TStringList.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalCheckMarkTexts));
+  end;
   Result := GlobalCheckMarkTexts;
 end;
 
@@ -912,7 +918,21 @@ const
   EmptyItem: TDSARegItem = (ID: High(Integer); Name: ''; Storage: nil);
 
 var
-  DSARegister: TDSARegister = nil;
+  GlobalDSARegister: TDSARegister = nil;
+
+function DSARegister: TDSARegister;
+begin
+  if not Assigned(GlobalDSARegister) then
+  begin
+    GlobalDSARegister := TDSARegister.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalDSARegister));
+   // register
+    RegisterDSACheckMarkText(ctkShow, RsDSActkShowText);
+    RegisterDSACheckMarkText(ctkAsk, RsDSActkAskText);
+    RegisterDSACheckMarkText(ctkWarn, RsDSActkWarnText);
+  end;
+  Result := GlobalDSARegister;
+end;
 
 destructor TDSARegister.Destroy;
 begin
@@ -2043,17 +2063,22 @@ end;
 // Standard DSA storage devices
 //----------------------------------------------------------------------------
 
+{$IFDEF MSWINDOWS}
+
 var
   GlobalRegStore: TDSAStorage = nil;
 
-{$IFDEF MSWINDOWS}
 function DSARegStore: TDSARegStorage;
 begin
   if GlobalRegStore = nil then
+  begin
     GlobalRegStore :=
       TDSARegStorage.Create(HKEY_CURRENT_USER, 'Software\' + Application.Title + '\DSA');
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalRegStore));
+  end;
   Result := TDSARegStorage(GlobalRegStore);
 end;
+
 {$ENDIF MSWINDOWS}
 
 var
@@ -2062,7 +2087,10 @@ var
 function DSAQueueStore: TDSAQueueStorage;
 begin
   if GlobalQueueStore = nil then
+  begin
     GlobalQueueStore := TDSAQueueStorage.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalQueueStore));
+  end;
   Result := TDSAQueueStorage(GlobalQueueStore);
 end;
 
@@ -2388,17 +2416,9 @@ begin
 end;
 
 initialization
-  DSARegister := TDSARegister.Create;
-  RegisterDSACheckMarkText(ctkShow, RsDSActkShowText);
-  RegisterDSACheckMarkText(ctkAsk, RsDSActkAskText);
-  RegisterDSACheckMarkText(ctkWarn, RsDSActkWarnText);
 
 finalization
-  DSARegister.Free;
-  DSARegister := nil;
-  FreeAndNil(GlobalRegStore);
-  FreeAndNil(GlobalQueueStore);
-  FreeAndNil(GlobalCheckMarkTexts);
+  FinalizeUnit(sUnitName);
 
 end.
 

@@ -37,8 +37,8 @@ unit JvWndProcHook;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls,
-  JvComponent;
+  Windows, Messages, SysUtils, Classes, Controls, Forms,
+  JvComponent, JvFinalize;
 
 type
   TJvControlHook = function(var Msg: TMessage): Boolean of object;
@@ -91,8 +91,10 @@ procedure ReleaseObj(AObject: TObject);
 implementation
 
 uses
-  Forms,
   JvJVCLUtils;
+
+const
+  sUnitName = 'JvWndProcHook';
 
 type
   PPJvHookInfo = ^PJvHookInfo;
@@ -201,7 +203,10 @@ var
 function WndProcHook: TJvWndProcHook;
 begin
   if GJvWndProcHook = nil then
+  begin
     GJvWndProcHook := TJvWndProcHook.Create(nil);
+    AddFinalizeObjectNil(sUnitName, TObject(GJvWndProcHook));
+  end;
   Result := GJvWndProcHook;
 end;
 
@@ -963,7 +968,13 @@ end;
 class function TJvReleaser.Instance: TJvReleaser;
 begin
   if GReleaser = nil then
+  begin
     GReleaser := TJvReleaser.Create;
+  { Don't call FreeAndNil for GReleaser, it's (hypothetically) possible that
+    objects need access to the GReleaser var (via call to ReleaseObj) during
+    GReleaser.Destroy }
+    AddFinalizeObjectNil(sUnitName, TObject(GReleaser));
+  end;
   Result := GReleaser;
 end;
 
@@ -994,12 +1005,7 @@ end;
 initialization
 
 finalization
-  FreeAndNil(GJvWndProcHook);
-  { Don't call FreeAndNil for GReleaser, it's (hypothetically) possible that
-    objects need access to the GReleaser var (via call to ReleaseObj) during
-    GReleaser.Destroy }
-  GReleaser.Free;
-  GReleaser := nil;
-
+  FinalizeUnit(sUnitName);
+  
 end.
 

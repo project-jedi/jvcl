@@ -242,6 +242,9 @@ uses
   Consts,
   JvTypes, JvJVCLUtils, JvResources;
 
+const
+  sUnitName = 'JvClipbrd';
+
 {$IFNDEF COMPILER6_UP}
   // Delphi 5 implementation
 type
@@ -677,10 +680,15 @@ begin
   if GlobalClipboard = nil then
   begin
     GlobalClipboard := TJvClipboard.Create;
-    AddFinalizeObjectNil(TObject(GlobalClipboard));
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalClipboard));
   end;
   Result := GlobalClipboard;
 end;
+
+initialization
+
+finalization
+  FinalizeUnit(sUnitName);
 
 end.
 

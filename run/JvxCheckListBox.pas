@@ -42,7 +42,7 @@ uses
   RTLConsts,
   {$ENDIF COMPILER6_UP}
   Messages, Classes, Controls, Graphics, StdCtrls, Forms,
-  JvAppStorage, JvFormPlacement, JvComponent;
+  JvAppStorage, JvFormPlacement, JvComponent, JvFinalize;
 
 type
   TGetItemWidthEvent = procedure(Control: TWinControl; Index: Integer;
@@ -310,6 +310,9 @@ implementation
 uses
   SysUtils, Consts, Math,
   JvConsts, JvJVCLUtils;
+
+const
+  sUnitName = 'JvxCheckListBox';
 
 
 //=== TJvListBoxStrings ======================================================
@@ -1241,14 +1244,10 @@ begin
   if GCheckBitmap = nil then
   begin
     GCheckBitmap := TBitmap.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GCheckBitmap));
     GCheckBitmap.Handle := LoadBitmap(HInstance, 'JV_CHECK_IMAGES');
   end;
   Result := GCheckBitmap;
-end;
-
-procedure DestroyLocals;
-begin
-  FreeAndNil(GCheckBitmap);
 end;
 
 const
@@ -1970,6 +1969,6 @@ end;
 initialization
 
 finalization
-  DestroyLocals;
+  FinalizeUnit(sUnitName);
 
 end.

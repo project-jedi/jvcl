@@ -47,7 +47,7 @@ interface
 uses
   Windows, ActiveX, ComObj, CommCtrl, Messages, SysUtils, Classes, Controls,
   Forms, Graphics, StdCtrls, Dialogs, RichEdit, Menus, ComCtrls, SyncObjs,
-  JVCLVer, JvExStdCtrls;
+  JVCLVer, JvExStdCtrls, JvFinalize;
 
 type
   TRichEditVersion = 1..4;
@@ -875,6 +875,9 @@ uses
   Printers, ComStrs, OleConst, OleDlg, Math, Registry, Contnrs,
   JvThemes, JvConsts, JvResources;
 
+const
+  sUnitName = 'JvRichEdit';
+
 type
   PENLink = ^TENLink;
   PENOleOpFailed = ^TENOleOpFailed;
@@ -1326,11 +1329,22 @@ var
   CFRtfNoObjs: Integer;
 
   { Global converter vars }
-  GConversionFormatList: TConversionFormatList;
-  GCurrentConverter: TJvMSTextConversion;
+  GlobalConversionFormatList: TConversionFormatList = nil;
+  GCurrentConverter: TJvMSTextConversion = nil;
   GMSTextConvertersRegistered: Boolean;
 
   Painting: Boolean = False;
+
+function GConversionFormatList: TConversionFormatList;
+begin
+  if not Assigned(GlobalConversionFormatList) then
+  begin
+    GlobalConversionFormatList := TConversionFormatList.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalConversionFormatList));
+  end;
+  Result := GlobalConversionFormatList;
+end;
+
 
 
 //=== Local procedures =======================================================
@@ -7060,15 +7074,14 @@ end;
 initialization
   InitRichEditDll;
 
-  GConversionFormatList := TConversionFormatList.Create;
-
   CFEmbeddedObject := RegisterClipboardFormat(CF_EMBEDDEDOBJECT);
   CFLinkSource := RegisterClipboardFormat(CF_LINKSOURCE);
   CFRtf := RegisterClipboardFormat(CF_RTF);
   CFRtfNoObjs := RegisterClipboardFormat(CF_RTFNOOBJS);
 
 finalization
-  FreeAndNil(GConversionFormatList);
+  FinalizeUnit(sUnitName);
   FinalRichEditDll;
+
 end.
 

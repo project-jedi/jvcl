@@ -56,7 +56,8 @@ uses
   {$IFDEF COMPILER6_UP}
   RTLConsts, Variants,
   {$ENDIF COMPILER6_UP}
-  JvComponent, JvSpeedButton, JvJCLUtils, JvTypes, JvExControls, JvExMask;
+  JvComponent, JvSpeedButton, JvJCLUtils, JvTypes, JvExControls, JvExMask,
+  JvFinalize;
 
 const
   scAltDown = scAlt + VK_DOWN;
@@ -909,6 +910,9 @@ uses
   {$ENDIF VCL}
   JvConsts;
 
+const
+  sUnitName = 'JvToolEdit';
+
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvToolEdit.res}
 {$ENDIF MSWINDOWS}
@@ -966,7 +970,10 @@ var
 function DateHook: TDateHook;
 begin
   if GDateHook = nil then
+  begin
     GDateHook := TDateHook.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GDateHook));
+  end;
   Result := GDateHook;
 end;
 {$ENDIF VCL}
@@ -1035,16 +1042,6 @@ begin
     Result := DefaultValue
   else
     Result := DateValue;
-end;
-
-procedure DestroyLocals;
-begin
-  {$IFDEF VCL}
-  GDateHook.Free;
-  GDateHook := nil;
-  {$ENDIF VCL}
-  GDefaultComboEditImagesList.Free;
-  GDefaultComboEditImagesList := nil;
 end;
 
 //=== Global procedures ======================================================
@@ -1738,7 +1735,10 @@ end;
 class function TJvCustomComboEdit.DefaultImages: TCustomImageList;
 begin
   if GDefaultComboEditImagesList = nil then
+  begin
     GDefaultComboEditImagesList := TImageList.CreateSize(14, 12);
+    AddFinalizeObjectNil(sUnitName, TObject(GDefaultComboEditImagesList));
+  end;
   Result := GDefaultComboEditImagesList;
 end;
 
@@ -4133,6 +4133,6 @@ end;
 initialization
 
 finalization
-  DestroyLocals;
+  FinalizeUnit(sUnitName);
 
 end.

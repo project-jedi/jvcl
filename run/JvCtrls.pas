@@ -36,7 +36,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, ImgList, ActnList,
-  JvButton;
+  JvButton, JvFinalize;
 
 type
   TJvImgBtnLayout = (blImageLeft, blImageRight);
@@ -187,6 +187,9 @@ uses
   JvThemes, JvJCLUtils;
 
 {$R ..\Resources\JvCtrls.res}
+
+const
+  sUnitName = 'JvCtrls';
 
 const
   JvImgBtnModalResults: array [TJvImgBtnKind] of TModalResult =
@@ -626,6 +629,7 @@ begin
   if not Assigned(DefaultImgBtnImagesList) then
   begin
     DefaultImgBtnImagesList := TImageList.CreateSize(18, 18);
+    AddFinalizeObjectNil(sUnitName, TObject(DefaultImgBtnImagesList));
     DefaultImgBtnImagesList.ResourceLoad(rtBitmap, 'JVIMGBTNDEFAULT', clOlive);
   end;
 end;
@@ -858,7 +862,7 @@ end;
 initialization
 
 finalization
-  FreeAndNil(DefaultImgBtnImagesList);
+  FinalizeUnit(sUnitName);
 
 end.
 

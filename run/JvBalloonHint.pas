@@ -274,6 +274,9 @@ uses
   JvJVCLUtils, JvThemes, JvWndProcHook, JvResources;
 
 const
+  sUnitName = 'JvBalloonHint';
+
+const
   { TJvStemSize = (ssSmall, ssNormal, ssLarge);
     ssLarge isn't used (yet)
   }
@@ -1567,7 +1570,7 @@ begin
   if not Assigned(GGlobalCtrl) then
   begin
     GGlobalCtrl := TGlobalCtrl.Create(nil);
-    AddFinalizeObjectNil(TObject(GGlobalCtrl));
+    AddFinalizeObjectNil(sUnitName, TObject(GGlobalCtrl));
   end;
   Result := GGlobalCtrl;
 end;
@@ -1950,6 +1953,11 @@ begin
   else
     inherited;
 end;
+
+initialization
+
+finalization
+  FinalizeUnit(sUnitName);
 
 end.
 

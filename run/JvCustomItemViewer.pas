@@ -41,7 +41,7 @@ uses
   {$IFNDEF COMPILER6_UP}
   JvConsts,  // for clSkyBlue
   {$ENDIF COMPILER6_UP}
-  JvExControls, JvExForms;
+  JvExControls, JvExForms, JvFinalize;
 
 const
   CM_UNSELECTITEMS = WM_USER + 1;
@@ -329,6 +329,9 @@ uses
   JvJCLUtils, JvJVCLUtils;
 
 const
+  sUnitName = 'JvCustomItemViewer';
+
+const
   cScrollDelay = 400;
   cScrollIntervall = 30;
 
@@ -347,7 +350,8 @@ type
   end;
 
 var
-  GlobalPatterns: array of TColorPattern;
+  GlobalPatterns: array of TColorPattern = nil;
+  FirstGlobalPatterns: Boolean = True;
 
 procedure ReleasePattern(EvenColor, OddColor: TColor);
 var
@@ -392,6 +396,11 @@ begin
   if not Found then
   begin
     I := Length(GlobalPatterns);
+    if FirstGlobalPatterns then
+    begin
+      FirstGlobalPatterns := False;
+      AddFinalizeProc(sUnitName, ClearBrushPatterns);
+    end;
     SetLength(GlobalPatterns, I + 1);
   end;
   if Result = nil then
@@ -1860,11 +1869,10 @@ begin
 end;
 
 initialization
-  SetLength(GlobalPatterns, 0);
   LoadOLEDragCursors;
 
 finalization
-  ClearBrushPatterns;
+  FinalizeUnit(sUnitName);
 
 end.
 

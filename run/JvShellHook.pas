@@ -38,7 +38,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes,
-  JvComponent;
+  JvComponent, JvFinalize;
 
 const
   HSHELL_WINDOWCREATED = 1;
@@ -257,6 +257,9 @@ uses
   JvJVCLUtils;
 
 const
+  sUnitName = 'JvShellHook';
+  
+const
   cUser32 = 'user32.dll';
 
 // converted macros
@@ -294,6 +297,15 @@ var
   DeregisterShellHookWindow: TRegisterShellHookWindowFunc = nil;
   GlobalLibHandle: HMODULE = 0;
 
+procedure UnInitJvShellHooks;
+begin
+  RegisterShellHookWindow := nil;
+  DeregisterShellHookWindow := nil;
+  if GlobalLibHandle > 0 then
+    FreeLibrary(GlobalLibHandle);
+  GlobalLibHandle := 0;
+end;
+
 function InitJvShellHooks: Boolean;
 begin
   Result := True;
@@ -306,15 +318,8 @@ begin
     DeregisterShellHookWindow := GetProcAddress(GlobalLibHandle, 'DeregisterShellHookWindow');
   end;
   Result := (GlobalLibHandle > 0) and Assigned(RegisterShellHookWindow) and Assigned(DeregisterShellHookWindow);
-end;
 
-procedure UnInitJvShellHooks;
-begin
-  RegisterShellHookWindow := nil;
-  DeregisterShellHookWindow := nil;
-  if GlobalLibHandle > 0 then
-    FreeLibrary(GlobalLibHandle);
-  GlobalLibHandle := 0;
+  AddFinalizeProc(sUnitName, UninitJvShellHooks);
 end;
 
 destructor TJvShellHook.Destroy;
@@ -369,7 +374,7 @@ end;
 initialization
 
 finalization
-  UnInitJvShellHooks;
+  FinalizeUnit(sUnitName);
   
 end.
 

@@ -41,7 +41,8 @@ uses
 {$ENDIF COMPILER6_UP}
   Messages, Classes, Controls, Forms, Grids, Graphics, Menus, StdCtrls,
   ExtCtrls, DB, DBGrids,
-  JvAppStorage, JvFormPlacement, JvJCLUtils, JvDBLookup, JvExDBGrids;
+  JvAppStorage, JvFormPlacement, JvJCLUtils, JvDBLookup, JvExDBGrids,
+  JvFinalize;
 
 const
   DefJvGridOptions = [dgEditing, dgTitles, dgIndicator, dgColumnResize,
@@ -336,6 +337,9 @@ uses
 
 {$R ..\Resources\JvDBGrid.res}
 
+const
+  sUnitName = 'JvDBGrid';
+
 type
   TBookmarks = class(TBookmarkList);
   TGridPicture = (gpBlob, gpMemo, gpPicture, gpOle, gpObject, gpData,
@@ -353,24 +357,30 @@ const
 // (rom) changed to var
 var
   GridBitmaps: array[TGridPicture] of TBitmap =
-  (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+    (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+  FirstGridBitmaps: Boolean = True;
 
-function GetGridBitmap(BmpType: TGridPicture): TBitmap;
-begin
-  if GridBitmaps[BmpType] = nil then
-  begin
-    GridBitmaps[BmpType] := TBitmap.Create;
-    GridBitmaps[BmpType].LoadFromResourceName(HInstance, GridBmpNames[BmpType]);
-  end;
-  Result := GridBitmaps[BmpType];
-end;
-
-procedure DestroyLocals;
+procedure FinalizeGridBitmaps;
 var
   I: TGridPicture;
 begin
   for I := Low(TGridPicture) to High(TGridPicture) do
     FreeAndNil(GridBitmaps[I]);
+end;
+
+function GetGridBitmap(BmpType: TGridPicture): TBitmap;
+begin
+  if GridBitmaps[BmpType] = nil then
+  begin
+    if FirstGridBitmaps then
+    begin
+      FirstGridBitmaps := False;
+      AddFinalizeProc(sUnitName, FinalizeGridBitmaps);
+    end;
+    GridBitmaps[BmpType] := TBitmap.Create;
+    GridBitmaps[BmpType].LoadFromResourceName(HInstance, GridBmpNames[BmpType]);
+  end;
+  Result := GridBitmaps[BmpType];
 end;
 
 procedure GridInvalidateRow(Grid: TJvDBGrid; Row: Longint);
@@ -2822,7 +2832,7 @@ end;
 initialization
 
 finalization
-  DestroyLocals;
+  FinalizeUnit(sUnitName);
 
 end.
 
