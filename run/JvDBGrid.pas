@@ -1052,13 +1052,10 @@ var
   end;
 
 begin
-  Background := Color;
   if (FCurrentDrawRow >= FixedRows) and Odd(FCurrentDrawRow + FixedRows) and
     (FAlternateRowColor <> clNone) and (FAlternateRowColor <> Color) and
     IsAfterFixedCols then
-    Background := AlternateRowColor
-  else
-    Background := Color;
+    Background := AlternateRowColor;
 
   if Assigned(FOnGetCellParams) then
     FOnGetCellParams(Self, Field, AFont, Background, Highlight)
