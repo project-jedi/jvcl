@@ -155,14 +155,16 @@ resourcestring
   Rs3DNow   = '3DNow!';
   RsExMMX   = 'Extensions to MMX';
   RsEx3DNow = 'Extensions to 3DNow!';
-  RsLong    = '64-Bit';
+  RsLong    = '64-Bit-Core';
 
   RsTrademarks = 'MMX is a trademark of Intel Corporation.'+sLineBreak+
                  '3DNow! is a registered trademark of Advanced Micro Devices.';
                  // SSE not registered by Intel Corp. ???? cannot find any reference
                  // to the registered name
 
-  RsNo128BitSIMD = 'No 128-bit-wide-registers SIMD';
+  RsNoSIMD    = 'No SIMD registers found';
+  RsNo128SIMD = 'No 128-bit-wide-register SIMD';
+  RsNo64SIMD  = 'No 64-bit-wide-register SIMD';
 
   RsVectorIE  = 'IE  ';
   RsVectorDE  = 'DE  ';
@@ -315,6 +317,8 @@ type
     CPUIDSupported: Boolean;
     Vendor: string;
     SIMDString: string;
+    SIMD64String: string;
+    SIMD128String: string;
     case VendorID: TVendorID of
       viIntel : (IntelSIMD: TIntelSIMD);
       viAMD   : (AMDSIMD: TAMDSIMD);
@@ -455,31 +459,44 @@ begin
   end;
 end;
 
-function GetIntelSIMDString: string;
+procedure GetIntelSIMDStrings;
   function AppendStr(Left, Right: string): string;
   begin
     if Left = '' then
-      Result := ''
+      Result := Right
     else
-      Result := Left+',';
-    Result := Result + Right;
+      Result := Left+','+Right;
   end;
 begin
   if (not ProcessorInfoValid) then
     GetProcessorInfo;
   with ProcessorInfo do
   begin
-    Result := '';
+    SIMDString := '';
+    SIMD64String := '';
+    SIMD128String := '';
     if (VendorID <> viIntel) then
       Exit;
     if (isMMX in IntelSIMD) then
-      Result := AppendStr(Result,RsMMX);
+    begin
+      SIMDString := AppendStr(SIMDString,RsMMX);
+      SIMD64String := AppendStr(SIMD64String,RsMMX);
+    end;
     if (isSSE1 in IntelSIMD) then
-      Result := AppendStr(Result,RsSSE1);
+    begin
+      SIMDString := AppendStr(SIMDString,RsSSE1);
+      SIMD128String := AppendStr(SIMD128String,RsSSE1);
+    end;
     if (isSSE2 in IntelSIMD) then
-      Result := AppendStr(Result,RsSSE2);
+    begin
+      SIMDString := AppendStr(SIMDString,RsSSE2);
+      SIMD128String := AppendStr(SIMD128String,RsSSE2);
+    end;
     if (isSSE3 in IntelSIMD) then
-      Result := AppendStr(Result,RsSSE3);
+    begin
+      SIMDString := AppendStr(SIMDString,RsSSE3);
+      SIMD128String := AppendStr(SIMD128String,RsSSE3);
+    end;
   end;
 end;
 
@@ -522,59 +539,59 @@ begin
   end;
 end;
 
-function Is128BitSIMDPresent: Boolean;
-// SSE and 3dNow! are 128-bit-wide operands
-begin
-  case ProcessorVendorID of
-    viIntel : Result := (IntelSIMD * [isSSE1, isSSE2, isSSE3])<>[];
-    viAMD   : Result := (AMDSIMD * [as3DNow, asEx3DNow, asSSE1, asSSE2])<>[];
-    //viOther,
-    else      Result := False;
-  end;
-end;
-
-function Is64BitSIMDPresent: Boolean;
-// MMX are 64-bit-wide operands
-begin
-  case ProcessorVendorID of
-    viIntel : Result := isMMX in IntelSIMD;
-    viAMD   : Result := (AMDSIMD * [asMMX, asExMMX])<>[];
-    //viOther,
-    else      Result := False;
-  end;
-end;
-
-function GetAMDSIMDString: string;
+procedure GetAMDSIMDStrings;
   function AppendStr(Left, Right: string): string;
   begin
     if Left = '' then
-      Result := ''
+      Result := Right
     else
-      Result := Left+',';
-    Result := Result + Right;
+      Result := Left+','+Right;
   end;
 begin
   if (not ProcessorInfoValid) then
     GetProcessorInfo;
   with ProcessorInfo do
   begin
-    Result := '';
+    SIMDString := '';
+    SIMD64String := '';
+    SIMD128String := '';
     if (VendorID <> viAMD) then
       Exit;
     if (asMMX in AMDSIMD) then
-      Result := AppendStr(Result,RsMMX);
+    begin
+      SIMDString := AppendStr(SIMDString,RsMMX);
+      SIMD64String := AppendStr(SIMD64String,RsMMX);
+    end;
     if (as3DNow in AMDSIMD) then
-      Result := AppendStr(Result,Rs3DNow);
+    begin
+      SIMDString := AppendStr(SIMDString,Rs3DNow);
+      SIMD64String := AppendStr(SIMD64String,Rs3DNow);
+    end;
     if (asExMMX in AMDSIMD) then
-      Result := AppendStr(Result,RsExMMX);
+    begin
+      SIMDString := AppendStr(SIMDString,RsExMMX);
+      SIMD64String := AppendStr(SIMD64String,RsExMMX);
+    end;
     if (asEx3DNow in AMDSIMD) then
-      Result := AppendStr(Result,RsEx3DNow);
+    begin
+      SIMDString := AppendStr(SIMDString,RsEx3DNow);
+      SIMD64String := AppendStr(SIMD64String,RsEx3DNow);
+    end;
     if (asSSE1 in AMDSIMD) then
-      Result := AppendStr(Result,RsSSE1);
+    begin
+      SIMDString := AppendStr(SIMDString,RsSSE1);
+      SIMD128String := AppendStr(SIMD128String,RsSSE1);
+    end;
     if (asSSE2 in AMDSIMD) then
-      Result := AppendStr(Result,RsSSE2);
+    begin
+      SIMDString := AppendStr(SIMDString,RsSSE2);
+      SIMD128String := AppendStr(SIMD128String,RsSSE2);
+    end;
     if (asLong in AMDSIMD) then
-      Result := AppendStr(Result,RsLong);
+    begin
+      SIMDString := AppendStr(SIMDString,RsLong);
+      SIMD128String := AppendStr(SIMD128String,RsLong);
+    end;
   end;
 end;
 
@@ -600,17 +617,43 @@ begin
         viIntel :
           begin
             IntelSIMD := GetIntelSIMD;
-            SIMDString := GetIntelSIMDString;
+            GetIntelSIMDStrings;
           end;
         viAMD   :
           begin
             AMDSIMD := GetAMDSIMD;
-            SIMDString := GetAMDSIMDString;
+            GetAMDSIMDStrings;
           end;
       end;
-      if (SIMDString = '') then
-        SIMDString := RsNo128BitSIMD;
+      if SIMDString = '' then
+        SIMDString := RsNoSIMD;
+      if SIMD128String = '' then
+        SIMD128String := RsNo128SIMD;
+      if SIMD64String = '' then
+        SIMD64String := RsNo64SIMD;
     end;
+  end;
+end;
+
+function Is128BitSIMDPresent: Boolean;
+// SSE and 3dNow! are 128-bit-wide operands
+begin
+  case ProcessorVendorID of
+    viIntel : Result := (IntelSIMD * [isSSE1, isSSE2, isSSE3])<>[];
+    viAMD   : Result := (AMDSIMD * [as3DNow, asEx3DNow, asSSE1, asSSE2])<>[];
+    //viOther,
+    else      Result := False;
+  end;
+end;
+
+function Is64BitSIMDPresent: Boolean;
+// MMX are 64-bit-wide operands
+begin
+  case ProcessorVendorID of
+    viIntel : Result := isMMX in IntelSIMD;
+    viAMD   : Result := (AMDSIMD * [asMMX, asExMMX])<>[];
+    //viOther,
+    else      Result := False;
   end;
 end;
 

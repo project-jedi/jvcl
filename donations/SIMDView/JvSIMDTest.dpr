@@ -67,7 +67,7 @@ begin
     addps  xmm0, xmm0       // xmm0 <- xmm0 + xmm0
     movups Values, xmm0     // moving xmm0 to Values
   end;
-  WriteLn('Computation ended');
+  WriteLn('Computations ended');
   WriteLn;
   WriteLn('Now values are :');
   for Index:=Low(Values) to High(Values) do

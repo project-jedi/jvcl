@@ -132,7 +132,7 @@ object SSEForm: TSSEForm
   end
   object PopupMenuMXCSR: TPopupMenu
     AutoPopup = False
-    Left = 136
+    Left = 800
     Top = 48
     object MenuItemComplement: TMenuItem
       Caption = '&Complement bit'

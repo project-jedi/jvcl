@@ -130,7 +130,7 @@ procedure TIDESSEWizard.ActionExecute(Sender: TObject);
 begin
   if not (Is128BitSIMDPresent) then
   begin
-    MessageDlg(RsNo128BitSIMD,mtError,[mbAbort],0);
+    MessageDlg(RsNo128SIMD,mtError,[mbAbort],0);
     Exit;
   end;
   if not Assigned(FForm) then
@@ -327,7 +327,6 @@ end;
 constructor TDebuggerNotifier.Create(AOwner: TIDESSEWizard);
 begin
   inherited Create;
-
   FOwner:=AOwner;
   FProcessList:=TList.Create;
   FThreadList:=TList.Create;
