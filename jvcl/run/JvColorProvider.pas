@@ -90,7 +90,7 @@ procedure Register;
 implementation
 
 uses
-  Graphics, SysUtils,
+  Controls, Graphics, SysUtils,
   JclRTTI,
   JvConsts;
 
@@ -135,11 +135,15 @@ type
     CurrentSettings: IJvColorProviderSettings;
     CurrentItemIsColorItem: Boolean;
     CurrentColorValue: TColor;
+    function GetRenderText: string;
     procedure RenderColorBox;
     procedure RenderColorText;
+    procedure MeasureColorBox(var Size: TSize);
+    procedure MeasureColorText(var Size: TSize);
     procedure DoDrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IJvDataItem;
       State: TProviderDrawStates); override;
     function DoMeasureItem(ACanvas: TCanvas; Item: IJvDataItem): TSize; override;
+    function AvgItemSize(ACanvas: TCanvas): TSize; override;
     function GetConsumerSettings: IJvColorProviderSettings;
   end;
 
@@ -156,13 +160,13 @@ type
     FColorBoxSettings: TJvColorProviderColorBoxSettings;
     FTextSettings: TJvColorProviderTextSettings;
   protected
-    function KeepOnProviderChange: Boolean; override;
     function Get_ColorBoxSettings: TJvColorProviderColorBoxSettings;
     function Get_TextSettings: TJvColorProviderTextSettings;
     procedure Set_ColorBoxSettings(Value: TJvColorProviderColorBoxSettings);
     procedure Set_TextSettings(Value: TJvColorProviderTextSettings);
   public
     constructor Create(AOwner: TExtensibleInterfacedPersistent); override;
+    destructor Destroy; override;
   published
     property ColorBoxSettings: TJvColorProviderColorBoxSettings read Get_ColorBoxSettings
       write Set_ColorBoxSettings;
@@ -410,6 +414,55 @@ end;
 
 //===TJvColorItemsRenderer==========================================================================
 
+function TJvColorItemsRenderer.GetRenderText: string;
+var
+  ItemText: IJvDataItemText;
+begin
+  with CurrentSettings.TextSettings do
+  begin
+    if Active then
+    begin
+      if ShowName and Supports(CurrentItem, IJvDataItemText, ItemText) then
+        Result := ItemText.Caption
+      else
+        Result := '';
+      if CurrentItemIsColorItem then
+      begin
+        if ShowHex then
+        begin
+          if Result <> '' then
+            Result := Result + Format(' (%s%.8x)', [HexDisplayPrefix, CurrentColorValue])
+          else
+            Result := Format('%s%.8x', [HexDisplayPrefix, CurrentColorValue]);
+        end;
+        if ShowRGB then
+        begin
+          if Result <> '' then
+            Result := Result + Format(' (%d, %d, %d)', [
+              GetRValue(ColorToRGB(CurrentColorValue)),
+              GetGValue(ColorToRGB(CurrentColorValue)),
+              GetBValue(ColorToRGB(CurrentColorValue))])
+          else
+            Result := Format('(%d, %d, %d)', [
+              GetRValue(ColorToRGB(CurrentColorValue)),
+              GetGValue(ColorToRGB(CurrentColorValue)),
+              GetBValue(ColorToRGB(CurrentColorValue))]);
+        end;
+      end;
+    end
+    else
+    if not CurrentItemIsColorItem then
+    begin
+      if Supports(CurrentItem, IJvDataItemText, ItemText) then
+        Result := ItemText.Caption
+      else
+        Result := SDataItemRenderHasNoText;
+    end
+    else
+      Result := '';
+  end;
+end;
+
 procedure TJvColorItemsRenderer.RenderColorBox;
 var
   Margin: Integer;
@@ -421,7 +474,6 @@ var
 begin
   if CurrentSettings.ColorBoxSettings.Active then
   begin
-    // We want a color box
     Margin := CurrentSettings.ColorBoxSettings.Margin;
     if CurrentSettings.TextSettings.Active then
       BoxW := CurrentSettings.ColorBoxSettings.Width
@@ -463,53 +515,13 @@ end;
 
 procedure TJvColorItemsRenderer.RenderColorText;
 var
-  ItemText: IJvDataItemText;
   S: string;
   R: TRect;
   OldBkMode: Integer;
 begin
-  with CurrentSettings.TextSettings do
+  if CurrentSettings.TextSettings.Active then
   begin
-    if Active then
-    begin
-      if ShowName and Supports(CurrentItem, IJvDataItemText, ItemText) then
-        S := ItemText.Caption
-      else
-        S := '';
-      if CurrentItemIsColorItem then
-      begin
-        if ShowHex then
-        begin
-          if S <> '' then
-            S := S + Format(' (%s%.8x)', [HexDisplayPrefix, CurrentColorValue])
-          else
-            S := Format('%s%.8x', [HexDisplayPrefix, CurrentColorValue]);
-        end;
-        if ShowRGB then
-        begin
-          if S <> '' then
-            S := S + Format(' (%d, %d, %d)', [
-              GetRValue(ColorToRGB(CurrentColorValue)),
-              GetGValue(ColorToRGB(CurrentColorValue)),
-              GetBValue(ColorToRGB(CurrentColorValue))])
-          else
-            S := Format('(%d, %d, %d)', [
-              GetRValue(ColorToRGB(CurrentColorValue)),
-              GetGValue(ColorToRGB(CurrentColorValue)),
-              GetBValue(ColorToRGB(CurrentColorValue))]);
-        end;
-      end;
-    end
-    else
-    if not CurrentItemIsColorItem then
-    begin
-      if Supports(CurrentItem, IJvDataItemText, ItemText) then
-        S := ItemText.Caption
-      else
-        S := SDataItemRenderHasNoText;
-    end
-    else
-      S := '';
+    S := GetRenderText;
     R := CurrentRect;
     OldBkMode := SetBkMode(CurrentCanvas.Handle, TRANSPARENT);
     try
@@ -518,6 +530,55 @@ begin
     finally
       SetBkMode(CurrentCanvas.Handle, OldBkMode);
     end;
+  end;
+end;
+
+procedure TJvColorItemsRenderer.MeasureColorBox(var Size: TSize);
+var
+  Margin: Integer;
+  BoxW: Integer;
+  BoxH: Integer;
+  XSize: Integer;
+  YSize: Integer;
+begin
+  if CurrentSettings.ColorBoxSettings.Active then
+  begin
+    Margin := CurrentSettings.ColorBoxSettings.Margin;
+    if CurrentSettings.TextSettings.Active then
+      BoxW := CurrentSettings.ColorBoxSettings.Width
+    else
+      BoxW := CurrentSettings.ColorBoxSettings.Width + Margin;
+    BoxH := CurrentSettings.ColorBoxSettings.Height;
+
+    XSize := Margin + BoxW;
+    YSize := 2 * Margin + BoxH;
+    if Size.cx < XSize then
+      Size.cx := XSize;
+    if Size.cy < YSize then
+      Size.cy := YSize;
+  end;
+end;
+
+procedure TJvColorItemsRenderer.MeasureColorText(var Size: TSize);
+var
+  XAdd: Integer;
+  S: string;
+  R: TRect;
+begin
+  if CurrentSettings.TextSettings.Active then
+  begin
+    XAdd := Size.cx;
+    if XAdd > 0 then
+      Inc(XAdd, CurrentSettings.ColorBoxSettings.Spacing);
+    S := GetRenderText;
+    R := Rect(0, 0, 0, 0);
+    DrawText(CurrentCanvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_NOPREFIX or
+      DT_CALCRECT);
+    Inc(R.Right, XAdd);
+    if R.Right > Size.cx then
+      Size.cx := R.Right;
+    if R.Bottom > Size.cy then
+      Size.cy := R.Bottom;
   end;
 end;
 
@@ -536,58 +597,55 @@ begin
   RenderColorText;
 end;
 
-(*
-procedure TJvColorItemsRenderer.DoDrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IJvDataItem;
-  State: TProviderDrawStates);
-var
-  Color: TColor;
-  OldBrush: TBrush;
-  OldPen: TPen;
-begin
-  if GetItemColorValue(Item, Color) then
-  begin
-    if Color < clNone then
-    begin
-      // Actual color; clNone and clDefault aren't real colors
-      OldBrush := TBrush.Create;
-      try
-        OldBrush.Assign(ACanvas.Brush);
-        OldPen := TPen.Create;
-        try
-          OldPen.Assign(ACanvas.Pen);
-          ACanvas.Brush.Color := Color;
-          ACanvas.Brush.Style := bsSolid;
-          ACanvas.Pen.Color := Color;
-          ACanvas.Pen.Style := psSolid;
-          ACanvas.Rectangle(ARect.Left + 4, ARect.Top + 4,
-            ARect.Left + (ARect.Bottom - ARect.Top) - 4, ARect.Bottom - 4);
-        finally
-          ACanvas.Pen := OldPen;
-          OldPen.Free;
-        end;
-      finally
-        ACanvas.Brush := OldBrush;
-        OldBrush.Free;
-      end;
-    end;
-    Inc(ARect.Left, (ARect.Bottom - ARect.Top));
-  end;
-  inherited DoDrawItem(ACanvas, ARect, Item, State);
-end;
-*)
-
 function TJvColorItemsRenderer.DoMeasureItem(ACanvas: TCanvas; Item: IJvDataItem): TSize;
 begin
+  // setup protected fields
+  CurrentCanvas := ACanvas;
+  CurrentItem := Item;
+  CurrentSettings := GetConsumerSettings;
+  CurrentItemIsColorItem := GetItemColorValue(Item, CurrentColorValue);
+  Result.cx := 0;
+  Result.cy := 0;
+  MeasureColorBox(Result);
+  MeasureColorText(Result);
 end;
 
-(*function TJvColorItemsRenderer.DoMeasureItem(ACanvas: TCanvas; Item: IJvDataItem): TSize;
+type
+  TOpenControl = class(TControl);
+
+function TJvColorItemsRenderer.AvgItemSize(ACanvas: TCanvas): TSize;
 var
-  Temp: TColor;
+  Comp: TComponent;
+  ChWdth: Integer;
 begin
-  Result := inherited DoMeasureItem(ACanvas, Item);
-  if GetItemColorValue(Item, Temp) then
-    Inc(Result.cx, Result.cy);
-end;*)
+  CurrentSettings := GetConsumerSettings;
+  Result.cx := 0;
+  Result.cy := 0;
+  MeasureColorBox(Result);
+  if CurrentSettings.TextSettings.Active then
+  begin
+    Comp := Items.GetProvider.SelectedConsumer.VCLComponent;
+    if (Comp <> nil) and (Comp is TControl) then
+    begin
+      with TOpenControl(Comp) do
+      begin
+        if (Abs(Font.Height) + 2) > Result.cy then
+          Result.cy := Abs(Font.Height) + 2;
+        ChWdth := Abs(Font.Height) div 3;
+      end;
+    end
+    else
+    begin
+      if Result.cy < 15 then
+        Result.cy := 15;
+      ChWdth := 4;
+    end;
+    if CurrentSettings.ColorBoxSettings.Active then
+      Result.cx := Result.cx + CurrentSettings.ColorBoxSettings.Spacing + (10 * ChWdth)
+    else
+      Result.cx := 10 * ChWdth;
+  end;
+end;
 
 function TJvColorItemsRenderer.GetConsumerSettings: IJvColorProviderSettings;
 begin
@@ -604,31 +662,6 @@ end;
 {$ENDIF TestContexts}
 
 //===TJvColorProviderSettings=======================================================================
-
-function TJvColorProviderSettings.KeepOnProviderChange: Boolean;
-var
-  Classes: TClassArray;
-  I: Integer;
-begin
-  SetLength(Classes, 0);
-  if ConsumerImpl.ProviderIntf <> nil then
-  begin
-    Classes := ConsumerImpl.ProviderIntf.ConsumerClasses;
-    I := High(Classes);
-    while I >= Low(Classes) do
-    begin
-      if Classes[I].InheritsFrom(Self.ClassType) then
-      begin
-        Result := True;
-        Exit;
-      end;
-      Dec(I);
-    end;
-    Result := False;
-  end
-  else
-    Result := False;
-end;
 
 function TJvColorProviderSettings.Get_ColorBoxSettings: TJvColorProviderColorBoxSettings;
 begin
@@ -653,6 +686,13 @@ begin
   inherited Create(AOwner);
   FColorBoxSettings := TJvColorProviderColorBoxSettings.Create(Self);
   FTextSettings := TJvColorProviderTextSettings.Create(Self);
+end;
+
+destructor TJvColorProviderSettings.Destroy;
+begin
+  FreeAndNil(FColorBoxSettings);
+  FreeAndNil(FTextSettings);
+  inherited Destroy;
 end;
 
 procedure Register;
