@@ -36,7 +36,8 @@ uses
   StdCtrls, Buttons, ActnList,
   {$IFNDEF COMPILER6_UP} DsgnIntf, {$ELSE} DesignIntf, DesignEditors, {$ENDIF}
   JvBaseDsgnForm, JvProviderTreeListFrame, JvComponent,
-  JvDataProvider, JvDataProviderImpl, JvContextProvider;
+  JvDataProvider, JvDataProviderImpl, JvContextProvider,
+  JvProviderTreeListDsgnFrame, JvColorProvider;
 
 type
   {$IFDEF COMPILER6_UP}
@@ -44,57 +45,39 @@ type
   {$ENDIF}
   TfrmJvColorProviderDesigner = class(TJvBaseDesign)
     lblColors: TLabel;
-    fmeColors: TfmeJvProviderTreeList;
     lblMappings: TLabel;
-    lbMappings: TListBox;
     lblContext: TLabel;
-    fmeContexts: TfmeJvProviderTreeList;
     dpContexts: TJvContextProvider;
     btnOK: TButton;
-    btnAddContext: TSpeedButton;
-    btnDeleteContext: TSpeedButton;
-    btnAddMapping: TSpeedButton;
-    btnDeleteMapping: TSpeedButton;
-    alColorProvider: TActionList;
-    aiNewMapping: TAction;
-    aiDeleteMapping: TAction;
-    aiAddContext: TAction;
-    aiDeleteContext: TAction;
-    lblColorName: TLabel;
-    edColorName: TEdit;
-    procedure lbMappingsClick(Sender: TObject);
+    fmeColors: TfmeJvProviderTreeListDsgn;
+    fmeMappings: TfmeJvProviderTreeListDsgn;
+    fmeContexts: TfmeJvProviderTreeListDsgn;
+    dpColorMapping: TJvColorMappingProvider;
     procedure btnOKClick(Sender: TObject);
-    procedure btnAddMappingClick(Sender: TObject);
-    procedure btnDeleteMappingClick(Sender: TObject);
   private
     { Private declarations }
     FDesigner: IFormDesigner;
     FDesignConsumer: TJvDataConsumer;
-    FUpdateConsumer: TJvDataConsumer;
+    FMappingConsumer: TJvDataConsumer;
     FCtxConsumer: TJvDataConsumer;
-    FLastSelectedColor: IJvDataItem;
-    FLastSelectedMapping: Integer;
-    FLastSelectedContext: IJvDataContext;
+    FNewCtxResult: Integer;
     function GetProvider: IJvDataProvider;
     procedure SetProvider(Value: IJvDataProvider);
-    procedure UpdateColorName;
-    procedure SaveChangedName(const NewName: string; Item: IJvDataItem; const MappingIndex: Integer;
-      Context: IJvDataContext);
-    procedure ColorChanged(Sender: TObject);
-    procedure ContextChanged(Sender: TObject);
+    procedure SetDesigner(Value: IFormDesigner);
   protected
     function DesignConsumer: TJvDataConsumer;
-    function UpdateConsumer: TJvDataConsumer;
+    function MappingConsumer: TJvDataConsumer;
     function CtxConsumer: TJvDataConsumer;
+    procedure BeforeNewContext(Sender: TObject; Kind: Integer; var Allow: Boolean);
+    procedure AfterNewContext(Sender: TObject; Item: IJvDataItem);
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     { Public declarations }
-    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure BeforeDestruction; override;
     property Provider: IJvDataProvider read GetProvider write SetProvider;
-    property Designer: IFormDesigner read FDesigner write FDesigner;
+    property Designer: IFormDesigner read FDesigner write SetDesigner;
   end;
 
 procedure DesignColorProvider(AProvider: IJvDataProvider; ADesigner: IFormDesigner);
@@ -102,7 +85,7 @@ procedure DesignColorProvider(AProvider: IJvDataProvider; ADesigner: IFormDesign
 implementation
 
 uses
-  JvColorProvider, JvConsts, JvDsgnConsts;
+  JvConsts, JvDsgnConsts;
 
 {$R *.DFM}
 
@@ -151,31 +134,17 @@ end;
 procedure TfrmJvColorProviderDesigner.SetProvider(Value: IJvDataProvider);
 var
   ICR: IInterfaceComponentReference;
-  I: Integer;
   ColorSettings: IJvColorProviderSettings;
 begin
-  if fmeColors.Provider.ProviderIntf <> nil then
+  if DesignConsumer.ProviderIntf <> nil then
   begin
-    if Supports(fmeColors.Provider.ProviderIntf, IInterfaceComponentReference, ICR) then
+    if Supports(DesignConsumer.ProviderIntf, IInterfaceComponentReference, ICR) then
       ICR.GetComponent.RemoveFreeNotification(Self);
   end;
-  fmeColors.Provider.Slave.SetProviderIntf(Value);
-  UpdateConsumer.SetProviderIntf(Value);
-  dpContexts.ProviderIntf := Value;
-  lbMappings.Items.Clear;
-  if fmeColors.Provider.ProviderIntf <> nil then
-  begin
-    if Supports(fmeColors.Provider.ProviderIntf, IInterfaceComponentReference, ICR) then
-      ICR.GetComponent.FreeNotification(Self);
-    with fmeColors.Provider.Slave.ProviderIntf as IJvColorProvider do
-      for I := 0 to Get_MappingCount - 1 do
-        lbMappings.Items.Add(Get_Mapping(I).Name);
-  end;
-  if lbMappings.Items.Count <> 0 then
-    lbMappings.ItemIndex := 0;
-  if (dpContexts as IJvDataProvider).GetItems.GetCount > 0 then
-    fmeContexts.SelectItemID((dpContexts as IJvDataProvider).GetItems.GetItem(0).GetID);
-  if (Value <> nil) and Supports(fmeColors.Provider.Slave as IJvDataConsumer, IJvColorProviderSettings, ColorSettings) then
+  (MappingConsumer as IJvDataConsumerServerNotify).RemoveClient(DesignConsumer);
+  (CtxConsumer as IJvDataConsumerServerNotify).RemoveClient(DesignConsumer);
+  DesignConsumer.SetProviderIntf(Value);
+  if (Value <> nil) and Supports(DesignConsumer as IJvDataConsumer, IJvColorProviderSettings, ColorSettings) then
   begin
     ColorSettings.ColorBoxSettings.Active := False;
     with ColorSettings.TextSettings do
@@ -212,112 +181,45 @@ begin
       HeaderStyle := [ghsBoldFont, ghsDoubleCenterLine];
     end;
   end;
-end;
-
-procedure TfrmJvColorProviderDesigner.UpdateColorName;
-var
-  ColorSettings: IJvColorProviderSettings;
-  Item: IJvDataItem;
-  CtxItem: IJvDataContextItem;
-  ColItem: IJvColorItem;
-begin
-  if Provider = nil then
-    Exit;
-  // Store changed name in old context/mapping for previously selected color.
-  if edColorName.Modified and (FLastSelectedColor <> nil) and (FLastSelectedMapping <> -1) then
-    SaveChangedName(edColorName.Text, FLastSelectedColor, FLastSelectedMapping,
-      FLastSelectedContext);
-
-  // Apply new mapping
-  if Supports(fmeColors.Provider as IJvDataConsumer, IJvColorProviderSettings, ColorSettings) then
+  dpColorMapping.ProviderIntf := Value as IJvColorProvider;
+  dpContexts.ProviderIntf := Value;
+  if Value <> nil then
   begin
-    ColorSettings.NameMappingIndex := lbMappings.ItemIndex;
-    FLastSelectedMapping := lbMappings.ItemIndex;
-  end;
-
-  // Apply new context
-  if fmeContexts.GetSelectedIndex <> -1 then
-  begin
-    Item := fmeContexts.GetDataItem(fmeContexts.GetSelectedIndex);
-    if Supports(Item, IJvDataContextItem, CtxItem) then
-      FLastSelectedContext := CtxItem.GetContext
-    else
-      FLastSelectedContext := nil;
-  end
-  else
-    FLastSelectedContext := nil;
-  fmeColors.Provider.SetContextIntf(FLastSelectedContext);
-
-  // Get color name
-  if fmeColors.GetSelectedIndex <> -1 then
-  begin
-    Item := fmeColors.GetDataItem(fmeColors.GetSelectedIndex);
-    if Supports(Item, IJvColorItem, ColItem) and (ColItem.Color <> ColorProvider_NotAColor) then
-      FLastSelectedColor := Item
-    else
-      FLastSelectedColor := nil;
-  end;
-  if FLastSelectedColor <> nil then
-  begin
-    fmeColors.Provider.Enter;
-    try
-      edColorName.Text := (FLastSelectedColor as IJvDataItemText).Caption;
-    finally
-      fmeColors.Provider.Leave;
-    end;
-    edColorName.ReadOnly := False;
-  end
-  else
-  begin
-    edColorName.Text := '';
-    edColorName.ReadOnly := True;
-  end;
-  edColorName.Modified := False;
-end;
-
-procedure TfrmJvColorProviderDesigner.SaveChangedName(const NewName: string; Item: IJvDataItem;
-  const MappingIndex: Integer; Context: IJvDataContext);
-var
-  ColSettings: IJvColorProviderSettings;
-  ItemText: IJvDataItemText;
-begin
-  if Supports(UpdateConsumer as IJvDataConsumer, IJvColorProviderSettings, ColSettings) then
-  begin
-    ColSettings.NameMappingIndex := MappingIndex;
-    UpdateConsumer.SetContextIntf(Context);
-    UpdateConsumer.Enter;
-    try
-      if Supports(Item, IJvDataItemText, ItemText) then
-        ItemText.Caption := NewName;
-    finally
-      UpdateConsumer.Leave;
-    end;
+    (MappingConsumer as IJvDataConsumerServerNotify).AddClient(DesignConsumer);
+    (CtxConsumer as IJvDataConsumerServerNotify).AddClient(DesignConsumer);
+    if (dpColorMapping as IJvDataProvider).GetItems.GetCount > 0 then
+      fmeMappings.SelectItemID((dpColorMapping as IJvDataProvider).GetItems.GetItem(0).GetID);
+    if (dpContexts as IJvDataProvider).GetItems.GetCount > 0 then
+      fmeContexts.SelectItemID((dpContexts as IJvDataProvider).GetItems.GetItem(0).GetID);
   end;
 end;
 
-procedure TfrmJvColorProviderDesigner.ColorChanged(Sender: TObject);
+procedure TfrmJvColorProviderDesigner.SetDesigner(Value: IFormDesigner);
 begin
-  UpdateColorName;
-end;
-
-procedure TfrmJvColorProviderDesigner.ContextChanged(Sender: TObject);
-begin
-  UpdateColorName;
+  if Value <> FDesigner then
+  begin
+    FDesigner := Value;
+    fmeColors.Designer := Value;
+    fmeMappings.Designer := Value;
+    fmeContexts.Designer := Value;
+  end;
 end;
 
 function TfrmJvColorProviderDesigner.DesignConsumer: TJvDataConsumer;
 begin
   if FDesignConsumer = nil then
-  begin
     FDesignConsumer := TJvDataConsumer.Create(Self, [DPA_ConsumerDisplaysList]);
-    FUpdateConsumer := TJvDataConsumer.Create(Self, [DPA_ConsumerDisplaysList]);
-  end;
   Result := FDesignConsumer;
 end;
 
-function TfrmJvColorProviderDesigner.UpdateConsumer: TJvDataConsumer;
+function TfrmJvColorProviderDesigner.MappingConsumer: TJvDataConsumer;
 begin
-  Result := FUpdateConsumer;
+  if FMappingConsumer = nil then
+  begin
+    FMappingConsumer := TJvDataConsumer.Create(Self, [DPA_ConsumerDisplaysList]);
+    FMappingConsumer.SetProviderIntf(dpColorMapping);
+  end;
+  Result := FMappingConsumer;
 end;
 
 function TfrmJvColorProviderDesigner.CtxConsumer: TJvDataConsumer;
@@ -330,6 +232,33 @@ begin
   Result := FCtxConsumer;
 end;
 
+procedure TfrmJvColorProviderDesigner.BeforeNewContext(Sender: TObject; Kind: Integer; var Allow: Boolean);
+begin
+  if Kind = -1 then
+  begin
+    FNewCtxResult := MessageDlg('Copy standard and system colors from the default context?',
+      mtConfirmation, [mbYes, mbNo, mbCancel], 0);
+    Allow := FNewCtxResult in [mrYes, mrNo];
+  end;
+end;
+
+type
+  TOpenColorProvider = class(TJvColorProvider);
+
+procedure TfrmJvColorProviderDesigner.AfterNewContext(Sender: TObject; Item: IJvDataItem);
+var
+  CtxItem: IJvDataContextItem;
+  NewCtxIdx: Integer;
+  CPImpl: TJvColorProvider;
+begin
+  if (FNewCtxResult = mrYes) and Supports(Item, IJvDataContextItem, CtxItem) then
+  begin
+    NewCtxIdx := CtxItem.GetContext.Contexts.IndexOf(CtxItem.GetContext);
+    CPImpl := TJvColorProvider(CtxItem.GetContext.Contexts.Provider.GetImplementer);
+    TOpenColorProvider(CPImpl).CopyFromDefCtx(NewCtxIdx);
+  end;
+end;
+
 procedure TfrmJvColorProviderDesigner.Loaded;
 begin
   inherited Loaded;
@@ -337,15 +266,21 @@ begin
     with fmeColors do
     begin
       UseVirtualRoot := False;
-      OnItemSelect := ColorChanged;
       Provider.Slave := DesignConsumer;
+    end;
+  if fmeMappings <> nil then
+    with fmeMappings do
+    begin
+      UseVirtualRoot := False;
+      Provider.Slave := MappingConsumer;
     end;
   if fmeContexts <> nil then
     with fmeContexts do
     begin
       UseVirtualRoot := False;
-      OnItemSelect := ContextChanged;
       Provider.Slave := CtxConsumer;
+      BeforeNewItem := BeforeNewContext;
+      AfterNewItem := AfterNewContext;
     end;
 end;
 
@@ -359,18 +294,10 @@ begin
     Provider := nil;
 end;
 
-constructor TfrmJvColorProviderDesigner.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FLastSelectedColor := nil;
-  FLastSelectedMapping := -1;
-  FLastSelectedContext := nil;
-end;
-
 destructor TfrmJvColorProviderDesigner.Destroy;
 begin
   FreeAndNil(FCtxConsumer);
-  FreeAndNil(FUpdateConsumer);
+  FreeAndNil(FMappingConsumer);
   FreeAndNil(FDesignConsumer);
   inherited Destroy;
 end;
@@ -381,40 +308,10 @@ begin
   Provider := nil;
 end;
 
-procedure TfrmJvColorProviderDesigner.lbMappingsClick(Sender: TObject);
-begin
-  inherited;
-  with fmeColors.lvProvider do
-    UpdateItems(TopItem.Index, TopItem.Index + VisibleRowCount);
-  UpdateColorName;
-end;
-
 procedure TfrmJvColorProviderDesigner.btnOKClick(Sender: TObject);
 begin
   inherited;
   Close;
-end;
-
-procedure TfrmJvColorProviderDesigner.btnAddMappingClick(Sender: TObject);
-var
-  NewName: string;
-  AddIdx: Integer;
-begin
-  inherited;
-  NewName := '';
-  if InputQuery('Add a color name mapping', 'Enter the name for the new mapping:', NewName) then
-  with Provider as IJvColorProvider do
-  begin
-    AddIdx := AddMapping(NewName);
-    lbMappings.Items.Insert(AddIdx, NewName);
-    lbMappings.ItemIndex := AddIdx;
-  end;
-end;
-
-procedure TfrmJvColorProviderDesigner.btnDeleteMappingClick(Sender: TObject);
-begin
-  inherited;
-  //
 end;
 
 end.

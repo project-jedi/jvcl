@@ -46,7 +46,6 @@ contains
   JvCalc in '..\..\run\JvCalc.pas',
   JvToolEdit in '..\..\run\JvToolEdit.pas',
   JvPickDate in '..\..\run\JvPickDate.pas',
-
   JvxSlider in '..\..\run\JvxSlider.pas',
   JvBevel in '..\..\run\JvBevel.pas',
   JvButton in '..\..\run\JvButton.pas',

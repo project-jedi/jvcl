@@ -137,6 +137,7 @@ type
     { IJvDataItemText methods }
     function GetCaption: string;
     procedure SetCaption(const Value: string);
+    function Editable: Boolean;
   protected
     procedure InitID; override;
     function IsDeletable: Boolean; override;
@@ -429,6 +430,11 @@ begin
   end
   else
     raise EJVCLException.Create('No context has been assigned to this item.');
+end;
+
+function TContextItem.Editable: Boolean;
+begin
+  Result := True;
 end;
 
 procedure TContextItem.InitID;

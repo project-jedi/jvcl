@@ -221,6 +221,7 @@ type
   protected
     function GetCaption: string; virtual; abstract;
     procedure SetCaption(const Value: string); virtual; abstract;
+    function Editable: Boolean; virtual; abstract;
   public
     property Caption: string read GetCaption write SetCaption;
   end;
@@ -357,6 +358,7 @@ type
   protected
     function GetCaption: string; override;
     procedure SetCaption(const Value: string); override;
+    function Editable: Boolean; override;
   published
     property Caption: string read GetCaption write SetCaption;
   end;
@@ -372,6 +374,7 @@ type
   protected
     function GetCaption: string; override;
     procedure SetCaption(const Value: string); override;
+    function Editable: Boolean; override;
   public
     constructor Create(AOwner: TExtensibleInterfacedPersistent); override;
     destructor Destroy; override;
@@ -523,7 +526,7 @@ type
     procedure WriteRoot(Writer: TWriter);
     procedure ReadContexts(Reader: TReader);
     procedure WriteContexts(Writer: TWriter);
-    procedure ReadContext(Reader: TReader);
+    procedure ReadContext(Reader: TReader; Index: Integer); 
     procedure WriteContext(Writer: TWriter; AContext: IJvDataContext);
     procedure AddToArray(var ClassArray: TClassArray; AClass: TClass);
     procedure DeleteFromArray(var ClassArray: TClassArray; Index: Integer);
@@ -553,6 +556,7 @@ type
     function AllowContextManager: Boolean; dynamic;
     function GetNotifierCount: Integer;
     function GetNotifier(Index: Integer): IJvDataProviderNotify;
+    function GetImplementer: TObject;
 
     property DataItemsImpl: TJvBaseDataItems read GetDataItemsImpl;
     property DataContextsImpl: TJvBaseDataContexts read FDataContextsImpl;
@@ -616,6 +620,7 @@ type
     function Contexts: IJvDataContexts;
     function Name: string; virtual; abstract;
     function IsDeletable: Boolean; dynamic;
+    function IsStreamable: Boolean; dynamic;
   public
     constructor Create(AContexts: TJvBaseDataContexts; AName: string); virtual;
   end;
@@ -803,8 +808,8 @@ type
       IFDEF's in the code; always refer to ProviderIntf and it's working in all Delphi versions). }
     function ProviderIntf: IJvDataProvider; virtual;
     procedure SetProviderIntf(Value: IJvDataProvider); virtual;
-    function ContextIntf: IJvDataContext;
-    procedure SetContextIntf(Value: IJvDataContext);
+    function ContextIntf: IJvDataContext; virtual;
+    procedure SetContextIntf(Value: IJvDataContext); virtual;
     procedure Loaded; virtual;
     procedure Enter;
     procedure Leave;
@@ -1685,6 +1690,11 @@ begin
   Result := FCaption;
 end;
 
+function TJvDataItemTextImpl.Editable: Boolean;
+begin
+  Result := True;
+end;
+
 procedure TJvDataItemTextImpl.SetCaption(const Value: string);
 begin
   if Caption <> Value then
@@ -1708,6 +1718,11 @@ begin
     Result := FContextStrings[FContextStrings.IndexOfObject(TObject(CurCtx))]
   else
     Result := inherited GetCaption;
+end;
+
+function TJvDataItemContextTextImpl.Editable: Boolean;
+begin
+  Result := True;
 end;
 
 procedure TJvDataItemContextTextImpl.SetCaption(const Value: string);
@@ -3046,11 +3061,20 @@ begin
 end;
 
 procedure TJvCustomDataProvider.ReadContexts(Reader: TReader);
+var
+  I: Integer;
 begin
   if Reader.ReadValue <> vaCollection then
     raise EReadError.Create(SExtensibleIntObjCollectionExpected);
+  for I := DataContextsImpl.GetCount - 1 downto 0 do
+    if DataContextsImpl.GetContext(I).IsDeletable then
+      DataContextsImpl.DoDeleteContext(I);
+  I := 0;
   while not Reader.EndOfList do
-    ReadContext(Reader);
+  begin
+    ReadContext(Reader, I);
+    Inc(I);
+  end;
   Reader.ReadListEnd;
 end;
 
@@ -3060,12 +3084,16 @@ var
 begin
   TOpenWriter(Writer).WriteValue(vaCollection);
   for I := 0 to FDataContextsImpl.GetCount - 1 do
+    if not FDataContextsImpl.GetContext(I).IsDeletable and
+        TJvBaseDataContext(FDataContextsImpl.GetContext(I).GetImplementer).IsStreamable then
+      WriteContext(Writer, FDataContextsImpl.GetContext(I));
+  for I := 0 to FDataContextsImpl.GetCount - 1 do
     if FDataContextsImpl.GetContext(I).IsDeletable then
       WriteContext(Writer, FDataContextsImpl.GetContext(I));
   Writer.WriteListEnd;
 end;
 
-procedure TJvCustomDataProvider.ReadContext(Reader: TReader);
+procedure TJvCustomDataProvider.ReadContext(Reader: TReader; Index: Integer);
 var
   ClassName: string;
   ClassType: TClass;
@@ -3073,24 +3101,33 @@ var
   CtxInst: TJvBaseDataContext;
 begin
   Reader.ReadListBegin;
-  ClassName := Reader.ReadStr;
-  if not AnsiSameText(ClassName, 'ClassName') then
-    raise EReadError.Create(SExtensibleIntObjClassNameExpected);
-  ClassName := Reader.ReadString;
-  ClassType := FindClass(ClassName);
-  if not ClassType.InheritsFrom(TJvBaseDataContext) then
-    raise EReadError.Create(SExtensibleIntObjInvalidClass);
+  ClassType := nil;
+  if Index >= DataContextsImpl.GetCount then
+  begin
+    ClassName := Reader.ReadStr;
+    if not AnsiSameText(ClassName, 'ClassName') then
+      raise EReadError.Create(SExtensibleIntObjClassNameExpected);
+    ClassName := Reader.ReadString;
+    ClassType := FindClass(ClassName);
+    if not ClassType.InheritsFrom(TJvBaseDataContext) then
+      raise EReadError.Create(SExtensibleIntObjInvalidClass);
+  end;
   CtxName := Reader.ReadStr;
   if not AnsiSameText(CtxName, 'Name') then
     raise EReadError.Create(sContextNameExpected);
   CtxName := Reader.ReadString;
-  CtxInst := TJvDataContextClass(ClassType).Create(FDataContextsImpl, CtxName);
-  try
-    FDataContextsImpl.DoAddContext(CtxInst);
-  except
-    CtxInst.Free;
-    raise;
-  end;
+  if Index >= DataContextsImpl.GetCount then
+  begin
+    CtxInst := TJvDataContextClass(ClassType).Create(FDataContextsImpl, CtxName);
+    try
+      FDataContextsImpl.DoAddContext(CtxInst);
+    except
+      CtxInst.Free;
+      raise;
+    end;
+  end
+  else
+    CtxInst := TJvBaseDataContext(DataContextsImpl.GetContextByName(CtxName).GetImplementer);
   while not Reader.EndOfList do
     TOpenReader(Reader).ReadProperty(CtxInst);
   Reader.ReadListEnd;
@@ -3099,8 +3136,11 @@ end;
 procedure TJvCustomDataProvider.WriteContext(Writer: TWriter; AContext: IJvDataContext);
 begin
   Writer.WriteListBegin;
-  Writer.WriteStr('ClassName');
-  Writer.WriteString(AContext.GetImplementer.ClassName);
+  if AContext.IsDeletable then
+  begin
+    Writer.WriteStr('ClassName');
+    Writer.WriteString(AContext.GetImplementer.ClassName);
+  end;
   Writer.WriteStr('Name');
   Writer.WriteString(AContext.Name);
   TOpenWriter(Writer).WriteProperties(TPersistent(AContext.GetImplementer));
@@ -3282,6 +3322,11 @@ begin
   Result := IJvDataProviderNotify(FNotifiers[Index]);
 end;
 
+function TJvCustomDataProvider.GetImplementer: TObject;
+begin
+  Result := Self;
+end;
+
 constructor TJvCustomDataProvider.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -3353,7 +3398,7 @@ begin
       Result := Ancestor.Contexts.GetContextByName(Copy(Name, PathSep + 1, Length(Name) - PathSep));
   end
   else if (ThisPath = '') and (Ancestor <> nil) and (PathSep <> 0) then
-    (Provider as IJvDataContexts).GetContextByName(Copy(Name, PathSep + 1, Length(Name) - PathSep))
+    Result := (Provider as IJvDataContexts).GetContextByName(Copy(Name, PathSep + 1, Length(Name) - PathSep))
   else
   begin
     Idx := GetCount - 1;
@@ -3447,6 +3492,11 @@ end;
 function TJvBaseDataContext.IsDeletable: Boolean;
 begin
   Result := True;
+end;
+
+function TJvBaseDataContext.IsStreamable: Boolean;
+begin
+  Result := not IsDeletable;
 end;
 
 constructor TJvBaseDataContext.Create(AContexts: TJvBaseDataContexts; AName: string);
