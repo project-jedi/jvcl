@@ -6,13 +6,6 @@ body
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 70%;
 	}
-div
-	{
-	width: 90%;
-	border: 2px solid #999999;
-	padding: 4px 8px;
-	background: #cccccc;
-	}
 h1, h2, h3, h4
 	{
 	font-family: Verdana, Arial, Helvetica, sans-serif;
@@ -207,3 +200,10 @@ a:hover
 	border-width: 1px;
 	border-style: solid;
 	}
+.InfoField
+	{
+	border: 2px solid #AAAAAA;
+	padding: 4px 4px;
+	background: #EFEFEF;
+	}
+	
