@@ -1,5 +1,8 @@
 Changelog for JVCL 3.0
 ======================
+2004-10-24
+- TJvCustomMenuItemPainter.DrawText renamed to DrawItemText to avoid problems in C++ Builder
+  (see JvMenus.pas for further details) // obones
 2004-09-15
 - Added FitCell property to JvDBGrid (Pete Stove and Fred) // obones
 2004-09-14

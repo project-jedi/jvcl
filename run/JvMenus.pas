@@ -518,15 +518,15 @@ type
     // draws a separator
     procedure DrawSeparator(ARect: TRect); virtual;
 
-    // draws the text at the given place
-    procedure DrawText(ARect: TRect; const Text: string; Flags: Longint); virtual;
-
-    // same version of DrawText but with a suffix so that BCB users can actually
-    // use the DrawText because of the #define DrawText DrawTextA from windows.h
-    // This compiler directive means that the header file will define DrawTextA
-    // when the object file defines DrawText. Using DrawTextBCB goes around
-    // this problem, and simply calls DrawText internally in the Delphi code
-    procedure DrawTextBCB(ARect: TRect; const Text: string; Flags: Longint); virtual;
+    // draws the text at the given place.
+    // This procedure CAN NOT be called DrawText because BCB users wouldn't be
+    // able to override it in a component written in C++. The error would be
+    // that the linker cannot find DrawTextA. This comes from windows. which
+    // defines this:
+    // #define DrawText DrawTextA
+    // because of ANSI support (over Unicode). Not using the DrawText name
+    // solves this problem.
+    procedure DrawItemText(ARect: TRect; const Text: string; Flags: Longint); virtual;
 
     procedure DrawLeftMargin(ARect: TRect); virtual;
     procedure DefaultDrawLeftMargin(ARect: TRect; StartColor, EndColor: TColor);
@@ -597,8 +597,7 @@ type
     procedure UpdateFieldsFromMenu; override;
     function GetTextMargin: Integer; override;
     procedure DrawCheckImage(ARect: TRect); override;
-    procedure DrawText(ARect: TRect; const Text: string; Flags: Longint); override;
-    procedure DrawTextBCB(ARect: TRect; const Text: string; Flags: Longint); override;
+    procedure DrawItemText(ARect: TRect; const Text: string; Flags: Longint); override;
     procedure DrawItemBackground(ARect: TRect); override;
   public
     procedure Paint(Item: TMenuItem; ItemRect: TRect; State: TMenuOwnerDrawState); override;
@@ -674,8 +673,7 @@ type
     procedure DrawDisabledImage(X, Y: Integer); override;
     procedure DrawSelectedFrame(ARect: TRect); override;
     procedure DrawSeparator(ARect: TRect); override;
-    procedure DrawText(ARect: TRect; const Text: string; Flags: Longint); override;
-    procedure DrawTextBCB(ARect: TRect; const Text: string; Flags: Longint); override;
+    procedure DrawItemText(ARect: TRect; const Text: string; Flags: Longint); override;
     function GetDrawHighlight: Boolean; override;
     procedure UpdateFieldsFromMenu; override;
     function GetTextMargin: Integer; override;
@@ -2029,7 +2027,7 @@ begin
     (FImageIndex < DisabledImages.Count) and DisabledImages.HandleAllocated;
 end;
 
-procedure TJvCustomMenuItemPainter.DrawText(ARect: TRect; const Text: string; Flags: Longint);
+procedure TJvCustomMenuItemPainter.DrawItemText(ARect: TRect; const Text: string; Flags: Longint);
 begin
   if Length(Text) = 0 then
     Exit;
@@ -2066,11 +2064,6 @@ begin
     Canvas.Font.Color := GrayColor;
   end;
   Windows.DrawText(Canvas.Handle, PChar(Text), Length(Text), ARect, Flags)
-end;
-
-procedure TJvCustomMenuItemPainter.DrawTextBCB(ARect: TRect; const Text: string; Flags: Longint);
-begin
-  DrawText(ARect, Text, Flags);
 end;
 
 procedure TJvCustomMenuItemPainter.PreparePaint(Item: TMenuItem;
@@ -2322,11 +2315,11 @@ begin
 
       // draw the text
       Canvas.Brush.Style := bsClear;
-      DrawText(TextRect, Item.Caption, DT_EXPANDTABS or DT_LEFT or DT_SINGLELINE);
+      DrawItemText(TextRect, Item.Caption, DT_EXPANDTABS or DT_LEFT or DT_SINGLELINE);
       if (Item.ShortCut <> scNone) and (Item.Count = 0) and IsPopup then
       begin
         // draw the shortcut
-        DrawText(Rect(TextRect.Left + MaxWidth, TextRect.Top, TextRect.Right, TextRect.Bottom),
+        DrawItemText(Rect(TextRect.Left + MaxWidth, TextRect.Top, TextRect.Right, TextRect.Bottom),
           ShortCutToText(Item.ShortCut), DT_EXPANDTABS or DT_LEFT or DT_SINGLELINE);
       end;
     end;
@@ -2845,18 +2838,12 @@ begin
   inherited DrawCheckImage(Rect(ARect.Left + 2, ARect.Top, ARect.Right, ARect.Bottom - 1));
 end;
 
-procedure TJvOfficeMenuItemPainter.DrawText(ARect: TRect;
+procedure TJvOfficeMenuItemPainter.DrawItemText(ARect: TRect;
   const Text: string; Flags: Integer);
 begin
   if not IsPopup then
     Canvas.Font.Color := clMenuText;
-  inherited DrawText(Rect(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom - 1), Text, Flags);
-end;
-
-procedure TJvOfficeMenuItemPainter.DrawTextBCB(ARect: TRect;
-  const Text: string; Flags: Integer);
-begin
-  DrawText(ARect, Text, Flags);
+  inherited DrawItemText(Rect(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom - 1), Text, Flags);
 end;
 
 procedure TJvOfficeMenuItemPainter.DrawItemBackground(ARect: TRect);
@@ -3294,16 +3281,10 @@ begin
   FImageMargin.Bottom := FImageMargin.Bottom + 4;
 end;
 
-procedure TJvXPMenuItemPainter.DrawText(ARect: TRect; const Text: string;
+procedure TJvXPMenuItemPainter.DrawItemText(ARect: TRect; const Text: string;
   Flags: Integer);
 begin
-  inherited DrawText(Rect(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom - 1), Text, Flags);
-end;
-
-procedure TJvXPMenuItemPainter.DrawTextBCB(ARect: TRect; const Text: string;
-  Flags: Integer);
-begin
-  DrawText(ARect, Text, Flags);
+  inherited DrawItemText(Rect(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom - 1), Text, Flags);
 end;
 
 function TJvXPMenuItemPainter.GetTextMargin: Integer;
