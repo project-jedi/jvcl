@@ -87,6 +87,9 @@
         <replacement original="\run\Jv" replacement="\qrun\JvQ"/>
         <replacement original="\design\Jv" replacement="\qdesign\JvQ"/>
         <replacement original="\common\Jv" replacement="\qcommon\JvQ"/>
+        <ignoredFile filename="JvFinilize.pas"/>
+        <ignoredFile filename="JvGnugettext.pas"/>
+        <ignoredFile filename="JvWStrUtils.pas"/>
       </ClxReplacements>
     </model>
     <Model Name="JCL" format="%e%p%n" NoLibSuffixFormat="%e%p%n%v0" prefix="Jcl" packages="" incfile="">
