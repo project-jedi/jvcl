@@ -30,6 +30,9 @@ unit JvItemsSearchs;
 interface
 
 uses
+  {$IFDEF COMPILER9_UP}
+  Windows,
+  {$ENDIF COMPILER9_UP}
   SysUtils, Classes;
 
 type

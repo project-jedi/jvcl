@@ -83,6 +83,9 @@ unit JvAppStorage;
 interface
 
 uses
+  {$IFDEF COMPILER9_UP}
+  Windows,
+  {$ENDIF COMPILER9_UP}
   SysUtils, Classes, TypInfo,
   {$IFDEF UNIX}
   JvQJCLUtils,
