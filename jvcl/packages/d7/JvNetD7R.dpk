@@ -22,6 +22,7 @@ package JvNetD7R;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Network Components Runtime Package'}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 

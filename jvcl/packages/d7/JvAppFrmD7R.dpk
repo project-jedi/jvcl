@@ -22,12 +22,16 @@ package JvAppFrmD7R;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Application and Form Components Runtime Package'}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 
 requires
   rtl,
-  JvCoreD7R;
+  JvCoreD7R,
+  JvStdCtrlsD7R,
+  vcl,
+  JvMMD7R;
 
 contains
   JvAppAnimatedIcon in '..\..\run\JvAppAnimatedIcon.pas',
@@ -40,7 +44,8 @@ contains
   JvFormImage in '..\..\run\JvFormImage.pas' {FormImg},
   JvFormWallpaper in '..\..\run\JvFormWallpaper.pas',
   JvFormWallpaperEdit in '..\..\run\JvFormWallpaperEdit.pas',
-  JvMagnet in '..\..\run\JvMagnet.pas',
-  JvSplshWnd in '..\..\run\JvSplshWnd.pas';
+  JvFormMagnet in '..\..\run\JvFormMagnet.pas',
+  JvAnimTitle in '..\..\run\JvAnimTitle.pas',
+  JvFormAutoSize in '..\..\run\JvFormAutoSize.pas';
 
 end.

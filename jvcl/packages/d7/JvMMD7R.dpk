@@ -22,7 +22,7 @@ package JvMMD7R;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Multi-media and Image Components'}
+{$DESCRIPTION 'JVCL Multimedia and Image Components'}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 
@@ -31,7 +31,9 @@ requires
   vcljpg,
   vcl,
   vclx,
-  JvCoreD7R;
+  JvCoreD7R,
+  JvSystemD7R,
+  JvCmpD7R;
 
 contains
   JvVisualId3v2 in '..\..\run\JvVisualId3v2.pas',
@@ -45,7 +47,7 @@ contains
   JvImageTransform in '..\..\run\JvImageTransform.pas',
   JvImageWindow in '..\..\run\JvImageWindow.pas',
   JvPcx in '..\..\run\JvPcx.pas',
-  JvSplshWnd in '..\..\run\JvSplshWnd.pas',
+  JvSplashWindow in '..\..\run\JvSplashWindow.pas',
   JvStarfield in '..\..\run\JvStarfield.pas',
   JvWaitingGradient in '..\..\run\JvWaitingGradient.pas',
   JvWaitingProgress in '..\..\run\JvWaitingProgress.pas',
@@ -56,11 +58,8 @@ contains
   JvGIF in '..\..\run\JvGIF.pas',
   JvGIFCtrl in '..\..\run\JvGIFCtrl.pas',
   JvID3v2Base in '..\..\run\JvID3v2Base.pas',
-  JvAniFile in '..\..\run\JvAniFile.pas',
-  JvIcoList in '..\..\run\JvIcoList.pas',
-  JvGraph in '..\..\run\JvGraph.pas',
-  JvxAnimate in '..\..\run\JvxAnimate.pas',
-  JvRle in '..\..\run\JvRle.pas',
-  JvImageDrawThread in '..\..\run\JvImageDrawThread.pas';
+  JvAnimatedImage in '..\..\run\JvAnimatedImage.pas',
+  JvImageDrawThread in '..\..\run\JvImageDrawThread.pas',
+  JvSpecialImage in '..\..\run\JvSpecialImage.pas';
 
 end.

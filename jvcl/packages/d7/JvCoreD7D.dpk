@@ -22,6 +22,7 @@ package JvCoreD7D;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Core Designtime Package'}
 {$DESIGNONLY}
 {$IMPLICITBUILD ON}
 
@@ -32,7 +33,6 @@ requires
 
 contains
   JvJVCLAboutProperty in '..\..\design\JvJVCLAboutProperty.pas',
-  JvActnRes in '..\..\design\JvActnRes.pas' {JvStandardActions: TDataModule},
   JvxDConst in '..\..\design\JvxDConst.pas',
   JvCoreReg in '..\..\design\JvCoreReg.pas';
 

@@ -22,6 +22,7 @@ package JvBDED7R;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL BDE Components Runtime Package'}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 
@@ -29,28 +30,31 @@ requires
   rtl,
   JvCoreD7R,
   JvDBD7R,
-  bdertl;
+  bdertl,
+  vcl,
+  dbrtl,
+  vcldb;
 
 contains
   JvBdeUtils in '..\..\run\JvBdeUtils.pas',
-  JvChPswDlg in '..\..\run\JvChPswDlg.pas' {JvChPswdForm},
-  JvDbExcpt in '..\..\run\JvDBExcpt.pas' {JvBdeErrorDlg},
+  JvCheckPasswordForm in '..\..\run\JvCheckPasswordForm.pas' {JvChPswdForm},
+  JvDBExceptionForm in '..\..\run\JvDBExceptionForm.pas' {JvBdeErrorDlg},
   JvDBFilter in '..\..\run\JvDBFilter.pas',
   JvDBIndex in '..\..\run\JvDBIndex.pas',
   JvDBLists in '..\..\run\JvDBLists.pas',
   JvDBMove in '..\..\run\JvDBMove.pas',
-  JvDbPrgrss in '..\..\run\JvDBPrgrss.pas',
+  JvDBProgress in '..\..\run\JvDBProgress.pas',
   JvDBQBE in '..\..\run\JvDBQBE.pas',
-  JvDBSecur in '..\..\run\JvDBSecur.pas',
+  JvDBSecurity in '..\..\run\JvDBSecurity.pas',
   JvDBUtil in '..\..\run\JvDBUtil.pas',
   JvMemTable in '..\..\run\JvMemTable.pas',
   JvQuery in '..\..\run\JvQuery.pas',
-  JvSQLS in '..\..\run\JvSQLS.pas',
-  JvxLoginDlg in '..\..\run\JvxLoginDlg.pas',
-  JvQBndDlg in '..\..\run\JvQbnddlg.pas' {JvQueryParamsDialog},
-  JvDBComb in '..\..\run\JvDBComb.pas',
-  JvDBCtrl in '..\..\run\JvDbCtrl.pas',
-  JvxLogin in '..\..\run\JvxLogin.pas' {JvLoginForm},
-  JvRemLog in '..\..\run\JvRemlog.pas';
+  JvSQLScript in '..\..\run\JvSQLScript.pas',
+  JvDBLoginDialog in '..\..\run\JvDBLoginDialog.pas',
+  JvQueryParamsForm in '..\..\run\JvQueryParamsForm.pas' {JvQueryParamsDialog},
+  JvDBCombobox in '..\..\run\JvDBCombobox.pas',
+  JvDBControls in '..\..\run\JvDBControls.pas',
+  JvLoginForm in '..\..\run\JvLoginForm.pas' {JvLoginForm},
+  JvRemoteLogin in '..\..\run\JvRemoteLogin.pas';
 
 end.
