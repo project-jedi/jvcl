@@ -24,6 +24,8 @@ Known Issues:
 * This form is used by the TJvDeskTop component
 
 -----------------------------------------------------------------------------}
+{$I jvcl.inc}
+{$I windowsonly.inc}
 // $Id$
 
 unit JvDesktopAlertForm;
@@ -87,7 +89,6 @@ type
     procedure CMMouseleave(var Message: TMessage); message CM_MOUSELEAVE;
     procedure DoMouseTimer(Sender:TObject);
     procedure FormPaint(Sender: TObject);
-    procedure acCloseExecute(Sender: TObject);
   protected
     procedure FadeIn;
     procedure FadeOut;
@@ -111,6 +112,7 @@ type
     property AlphaBlendValue:byte read FAlphaBlendValue write SetAlphaBlendValue;
     {$ENDIF !COMPILER6_UP}
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
+    procedure acCloseExecute(Sender: TObject);
     procedure SetNewTop(const Value: integer);
     procedure SetNewLeft(const Value:integer);
     procedure SetNewOrigin(ALeft, ATop:integer);
@@ -583,7 +585,6 @@ begin
   tbClose.Parent := Self;
   tbClose.SetBounds(Width - 17, cCaptionHeight + 2, 15,15);
   tbClose.Anchors := [akRight, akTop];
-  tbClose.OnClick := acCloseExecute;
 
   tbDropDown := TJvDesktopAlertButton.Create(Self);
   tbDropDown.ToolType := abtDropDown;
