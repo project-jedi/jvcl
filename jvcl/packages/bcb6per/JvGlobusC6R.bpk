@@ -35,7 +35,7 @@
       ..\..\dcu\JvgTab.obj ..\..\dcu\JvgTabComm.obj
       ..\..\dcu\JvgTransparentMemo.obj ..\..\dcu\JvgTreeView.obj
       ..\..\dcu\JvgTypes.obj ..\..\dcu\JvgUtils.obj
-      ..\..\dcu\JvgWizardHeader.obj
+      ..\..\dcu\JvgWizardHeader.obj ..\..\dcu\JvgGridHeaderControl.obj',
       ..\..\dcu\JvgXMLSerializer.obj"/>
     <RESFILES value="JvGlobusC6R.res"/>
     <IDLFILES value=""/>
@@ -145,6 +145,7 @@
       <FILE FILENAME="..\..\run\JvgUtils.pas" FORMNAME="" UNITNAME="JvgUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvgWizardHeader.pas" FORMNAME="" UNITNAME="JvgWizardHeader" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvgXMLSerializer.pas" FORMNAME="" UNITNAME="JvgXMLSerializer" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvgGridHeaderControl.pas" FORMNAME="" UNITNAME="JvgXMLSerializer" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
