@@ -32,12 +32,7 @@ interface
 
 uses
   Classes,
-  {$IFDEF VCL}
   Windows, Graphics, Controls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QWindows,
-  {$ENDIF VisualCLX}
   JvXPCore, JvXPCoreUtils;
 
 type

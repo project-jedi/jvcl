@@ -37,15 +37,13 @@ uses
   {$IFDEF VCL}
   VCLEditors,
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  JvQDsgnEditors,
+  {$ENDIF VisualCLX}
   {$ELSE}
   Contnrs, DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF VCL}
   Windows, Forms, ImgList, ActnList, Graphics,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QForms, QImgList, QActnList, QGraphics, Types,
-  {$ENDIF VisualCLX}
   TypInfo;
 
 type
@@ -216,14 +214,24 @@ begin
         HeaderFont.Color := cFontColor;
         HotTrackColor := cHotTrackColor;
         if csDesigning in ComponentState then
+          {$IFDEF VCL}
           TCustomForm(Owner).Designer.Modified;
+          {$ENDIF VCL}
+          {$IFDEF VisualCLX}
+          TCustomForm(Owner).DesignerHook.Modified;
+          {$ENDIF VisualCLX}
       end;
     2: // 'Restore Default Fonts'
       with TCustomWinXPBar(Component) do
       begin
         ParentFont := True;
         if csDesigning in ComponentState then
+          {$IFDEF VCL}
           TCustomForm(Owner).Designer.Modified;
+          {$ENDIF VCL}
+          {$IFDEF VisualCLX}
+          TCustomForm(Owner).DesignerHook.Modified;
+          {$ENDIF VisualCLX}
       end;
   end;
 end;
