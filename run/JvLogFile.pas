@@ -338,7 +338,8 @@ end;
 procedure TJvLogFile.SetFilename(const Value: TFilename);
 begin
   FFilename := Value;
-  LoadFromFile(Filename);
+  if FileExists(Filename) then
+      LoadFromFile(Filename);
 end;
 
 procedure TJvLogFile.ShowLog(Title: string);
