@@ -172,12 +172,22 @@ uses
 type
   TNoEventLabel = class(TLabel)
   public
+    {$IFDEF VCL}
     procedure Dispatch(var Message); override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    constructor Create(AOwner: TComponent); override;
+    {$ENDIF VisualCLX}
   end;
 
   TNoEventGradient = class(TJvGradient)
   public
+    {$IFDEF VCL}
     procedure Dispatch(var Message); override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    constructor Create(AOwner: TComponent); override;
+    {$ENDIF VisualCLX}
   end;
 
 constructor TJvGradientHeaderPanel.Create(AOwner: TComponent);
@@ -439,7 +449,7 @@ end;
 *)
 
 { TNoEventLabel }
-
+{$IFDEF VCL}
 procedure TNoEventLabel.Dispatch(var Message);
 begin
   with TMessage(Message) do
@@ -463,6 +473,21 @@ begin
   else
     inherited;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+constructor TNoEventLabel.Create(AOwner: TComponent);
+begin
+  inherited;
+  ControlStyle := ControlStyle - [csNoStdEvents];
+end;
+
+constructor TNoEventGradient.Create(AOwner: TComponent);
+begin
+  inherited;
+  ControlStyle := ControlStyle - [csNoStdEvents];
+end;
+{$ENDIF VisualCLX}
 
 end.
 
