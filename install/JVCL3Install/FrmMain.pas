@@ -752,7 +752,10 @@ var
 begin
   Dir := SelTarget.HppFilesDir;
   if BrowseDirectory(Dir, 'Select the directory where the .hpp files should go.', 0) then
+  begin
     SelTarget.HppFilesDir := Dir;
+    EditHppFilesDir.Text := SelTarget.InsertDirMacros(SelTarget.HppFilesDir);
+  end;
 end;
 
 function FileNameToURL(const S: string): string;
