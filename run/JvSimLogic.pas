@@ -31,13 +31,13 @@ interface
 
 uses
   {$IFDEF COMPLIB_VCL}
-  Windows, Messages, Graphics, Controls, Forms, Dialogs, extctrls,
+  Windows, Messages, Graphics, Controls, Forms, Dialogs, Extctrls,
   {$ENDIF}
   {$IFDEF COMPLIB_CLX}
-  QGraphics, QControls, QForms, QDialogs, QExtCtrls, Types, JvTypes,
-  JvFunctionsClx,
+  QGraphics, QControls, QForms, QDialogs, QExtCtrls, Types,
   {$ENDIF}
-  SysUtils, Classes;
+  SysUtils, Classes,
+  JvClxUtils, JvTypes;
   
 { Copyright 2000 by Jan Verhoeven
 This unit includes several visual logic blocks that can be used without any programming.
@@ -320,7 +320,7 @@ type
 
 implementation
 
-{$IFDEF WINDOWS}
+{$IFDEF MSWINDOWS}
 {$R ..\resources\JvSimImages.res}
 {$ELSE}
 {$R ../Resources/JvSimImages.res}
@@ -1600,7 +1600,7 @@ begin
       jlfNOT: s := 'NOT'; // do not localize
     end;
     brush.style := bsclear;
-    drawtextex(canvas, s, R, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
+    ClxDrawText(Canvas, s, R, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
   end;
 end;
 

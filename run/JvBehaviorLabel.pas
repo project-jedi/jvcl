@@ -407,7 +407,7 @@ implementation
 
 resourcestring
   sNone = '(none)';
-  sNeedBehaviorLabel = 'Cannot call TJvLabelBehavior.Create with ALabel = nil!'
+  sNeedBehaviorLabel = 'Cannot call TJvLabelBehavior.Create with ALabel = nil!';
   sNoOwnerLabelParent = 'OwnerLabel.Parent is nil in %s.Start!';
 
 var
@@ -590,6 +590,7 @@ procedure TJvCustomBehaviorLabel.MouseLeave(AControl: TControl);
 {$ENDIF}
 {$IFDEF COMPLIB_VCL}
 procedure TJvCustomBehaviorLabel.MouseLeave(var Msg: TMessage);
+{$ENDIF}
 begin
   inherited;
   if Assigned(FOnMouseLeave) then
