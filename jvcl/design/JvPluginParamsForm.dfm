@@ -1,12 +1,13 @@
 object frmPluginParams: TfrmPluginParams
-  Left = 424
-  Top = 232
-  Width = 355
-  Height = 459
-  ActiveControl = edtPluginName
+  Left = 348
+  Top = 47
+  Width = 482
+  Height = 552
   BorderIcons = [biSystemMenu]
   Caption = 'Setup Plugin Parameters'
   Color = clBtnFace
+  Constraints.MinHeight = 247
+  Constraints.MinWidth = 343
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -24,139 +25,183 @@ object frmPluginParams: TfrmPluginParams
     0000F87F0000E73F0000E7BF0000E39F0000E39F0000FF9F0000FF9F0000FF9F
     0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = False
+  Position = poScreenCenter
   OnShow = FormShow
+  DesignSize = (
+    474
+    525)
   PixelsPerInch = 96
   TextHeight = 13
   object lblCreateInfo: TLabel
-    Left = 8
-    Top = 344
-    Width = 325
-    Height = 50
-    Anchors = [akLeft, akRight, akBottom]
+    Left = 5
+    Top = 376
+    Width = 464
+    Height = 110
+    Anchors = [akLeft, akTop, akRight, akBottom]
     AutoSize = False
     WordWrap = True
   end
-  object Label1: TLabel
-    Left = 8
-    Top = 112
-    Width = 34
-    Height = 13
-    Caption = '&Author:'
-  end
-  object Label2: TLabel
-    Left = 8
-    Top = 152
-    Width = 47
-    Height = 13
-    Caption = '&Copyright:'
-  end
-  object Label3: TLabel
-    Left = 8
-    Top = 192
-    Width = 56
-    Height = 13
-    Caption = '&Description:'
-  end
-  object Label4: TLabel
-    Left = 8
-    Top = 288
-    Width = 22
-    Height = 13
-    Caption = '&UID:'
-  end
   object butOK: TButton
-    Left = 179
-    Top = 402
+    Left = 306
+    Top = 495
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
     Caption = 'OK'
     Default = True
     ModalResult = 1
-    TabOrder = 5
+    TabOrder = 0
   end
   object butCancel: TButton
-    Left = 267
-    Top = 402
+    Left = 394
+    Top = 495
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 6
+    TabOrder = 1
   end
   object gbPluginSettings: TGroupBox
     Left = 5
     Top = 5
-    Width = 337
-    Height = 96
+    Width = 464
+    Height = 356
     Anchors = [akLeft, akTop, akRight]
     Caption = ' Plugin settings '
-    TabOrder = 0
+    TabOrder = 2
+    DesignSize = (
+      464
+      356)
+    object lblPluginName: TLabel
+      Left = 10
+      Top = 16
+      Width = 31
+      Height = 13
+      Caption = '&Name:'
+      FocusControl = edtPluginName
+    end
+    object lblLabel1: TLabel
+      Left = 10
+      Top = 136
+      Width = 34
+      Height = 13
+      Caption = '&Author:'
+      FocusControl = edtPluginAuthor
+    end
+    object lblDescription: TLabel
+      Left = 10
+      Top = 56
+      Width = 56
+      Height = 13
+      Caption = '&Description:'
+    end
+    object lblLabel2: TLabel
+      Left = 10
+      Top = 176
+      Width = 47
+      Height = 13
+      Caption = '&Copyright:'
+      FocusControl = edtPluginCopyright
+    end
+    object lblLabel3: TLabel
+      Left = 10
+      Top = 256
+      Width = 51
+      Height = 13
+      Caption = '&Unique ID:'
+      FocusControl = edtPluginUID
+    end
+    object lblLabel4: TLabel
+      Left = 10
+      Top = 216
+      Width = 93
+      Height = 13
+      Caption = 'Plugin &Host Project:'
+      FocusControl = edtPluginHostProject
+    end
     object edtPluginName: TEdit
       Left = 10
-      Top = 20
-      Width = 317
+      Top = 32
+      Width = 444
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 0
+      Text = 'PluginName'
       OnChange = SettingsChanged
     end
     object rbPackage: TRadioButton
       Left = 10
-      Top = 50
-      Width = 317
+      Top = 306
+      Width = 444
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = 'Package plugin'
       Checked = True
-      TabOrder = 1
+      TabOrder = 6
       TabStop = True
       OnClick = SettingsChanged
     end
     object rbDLL: TRadioButton
       Left = 10
-      Top = 70
-      Width = 317
+      Top = 326
+      Width = 444
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = 'DLL plugin (old style)'
-      TabOrder = 2
+      TabOrder = 7
       OnClick = SettingsChanged
     end
-  end
-  object edtPluginAuthor: TEdit
-    Left = 8
-    Top = 128
-    Width = 325
-    Height = 21
-    Anchors = [akLeft, akTop, akRight]
-    TabOrder = 1
-  end
-  object edtPluginCopyright: TEdit
-    Left = 8
-    Top = 168
-    Width = 325
-    Height = 21
-    Anchors = [akLeft, akTop, akRight]
-    TabOrder = 2
-  end
-  object mmoDescripton: TRichEdit
-    Left = 8
-    Top = 208
-    Width = 325
-    Height = 73
-    Anchors = [akLeft, akTop, akRight]
-    PlainText = True
-    ScrollBars = ssBoth
-    TabOrder = 3
-  end
-  object edtPluginUID: TEdit
-    Left = 8
-    Top = 304
-    Width = 325
-    Height = 21
-    Anchors = [akLeft, akTop, akRight]
-    TabOrder = 4
+    object edtPluginAuthor: TEdit
+      Left = 10
+      Top = 152
+      Width = 443
+      Height = 21
+      Anchors = [akLeft, akTop, akRight]
+      TabOrder = 2
+      Text = 'JEDI VCL'
+      OnChange = SettingsChanged
+    end
+    object mmoDescripton: TMemo
+      Left = 10
+      Top = 72
+      Width = 444
+      Height = 57
+      Anchors = [akLeft, akTop, akRight]
+      Lines.Strings = (
+        'Plugin Description')
+      TabOrder = 1
+    end
+    object edtPluginCopyright: TEdit
+      Left = 10
+      Top = 192
+      Width = 443
+      Height = 21
+      Anchors = [akLeft, akTop, akRight]
+      TabOrder = 3
+      Text = 'Copyright '#169' 2003 by JVCL; all rights reserved.'
+      OnChange = SettingsChanged
+    end
+    object edtPluginUID: TEdit
+      Left = 10
+      Top = 272
+      Width = 443
+      Height = 21
+      Anchors = [akLeft, akTop, akRight]
+      ReadOnly = True
+      TabOrder = 5
+      Text = 'JVCL.<ProjectName>'
+      OnChange = SettingsChanged
+    end
+    object edtPluginHostProject: TEdit
+      Left = 10
+      Top = 232
+      Width = 443
+      Height = 21
+      Anchors = [akLeft, akTop, akRight]
+      TabOrder = 4
+      Text = 'PluginHostProject'
+      OnChange = SettingsChanged
+    end
   end
 end
