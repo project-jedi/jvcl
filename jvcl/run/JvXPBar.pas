@@ -1299,6 +1299,9 @@ begin
     if ((FRollDirection = rdCollapse) and (NewOffset = 0)) or
       ((FRollDirection = rdExpand) and (NewOffset = FWinXPBar.FItemHeight)) then
       Terminate;
+    {$IFDEF VisualCLX}
+    WakeUpGUIThread;
+    {$ENDIF VisualCLX}
 
     { idle process }
     Sleep(FWinXPBar.FRollDelay);
@@ -1322,6 +1325,9 @@ begin
   else
     PostMessage(FWinXPBar.Handle, WM_XPBARAFTERCOLLAPSE,
       Ord(FRollDirection = rdCollapse), 0);
+  {$IFDEF VisualCLX}
+  WakeUpGUIThread;
+  {$ENDIF VisualCLX}
 end;
 
 //=== { TJvXPBarColors } =====================================================
