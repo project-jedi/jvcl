@@ -244,7 +244,7 @@ Description
 This function will compare D1 and D2 and return True if the two dates are equal, False otherwise.
 
 EJvTFDaysError
- 	
+
 Unit
 JvTFDays
 EJvTFDaysError=class(Exception);
@@ -8787,9 +8787,9 @@ The Schedules property contains a list of all schedule objects that currently re
 ----------------------------------------------------------------------------------------------------
 TJvTFScheduleManager.StateImageMap
 TJvTFScheduleManager	See also
-property StateImageMap: TStateImageMap;
+property StateImageMap: TJvTFStateImageMap;
 Description
-Allows you to display specific images for specific appointment states. See TStateImageMap for more details.
+Allows you to display specific images for specific appointment states. See TJvTFStateImageMap for more details.
 
 
 
@@ -9058,12 +9058,12 @@ soHorizontal	Split left to right
 soVertical	Split top to bottom
 
 ----------------------------------------------------------------------------------------------------
-TStateImageMap
+TJvTFStateImageMap
 See also
 Unit
 JvTFServer
 Description
-The TStateImageMap object is part of the system that allows you to embed images within a TJvTFAppt object. Specifically, it allows you to assign images to certain states that the appointment may be in. The different states are implemented as properties. You need to specify the index position where the image can be found in the ImageList.
+The TJvTFStateImageMap object is part of the system that allows you to embed images within a TJvTFAppt object. Specifically, it allows you to assign images to certain states that the appointment may be in. The different states are implemented as properties. You need to specify the index position where the image can be found in the ImageList.
 
 Set the state property value to -1 to indicate that no image should be shown for the given state.
 
@@ -9072,16 +9072,16 @@ Note that the ImageList being referenced is found in the TJvTFScheduleManager.St
 
 
 ----------------------------------------------------------------------------------------------------
-TStateImageMap.BeginUpdate
-TStateImageMap	See also
+TJvTFStateImageMap.BeginUpdate
+TJvTFStateImageMap	See also
 procedure BeginUpdate;
 Description
 If you are setting several of the state properties at once you should call BeginUpdate. This will not allow any connected controls to be redrawn while you are setting the properties. Don't forget to call EndUpdate when you are done setting the properties.
 
 
 ----------------------------------------------------------------------------------------------------
-TStateImageMap.Clear
-TStateImageMap
+TJvTFStateImageMap.Clear
+TJvTFStateImageMap
 procedure Clear;
 Description
 This will set the values of all of the state properties to -1.
@@ -9089,16 +9089,16 @@ This will set the values of all of the state properties to -1.
 
 
 ----------------------------------------------------------------------------------------------------
-TStateImageMap.Create
-TStateImageMap
+TJvTFStateImageMap.Create
+TJvTFStateImageMap
 constructor Create(Serv: TJvTFScheduleManager );
 Description
-You should never have to create a TStateImageMap object. This is done for you by the server. If you do however, you need to specify the "owning" server in the Serv parameter.
+You should never have to create a TJvTFStateImageMap object. This is done for you by the server. If you do however, you need to specify the "owning" server in the Serv parameter.
 
 
 ----------------------------------------------------------------------------------------------------
-TStateImageMap.EndUpdate
-TStateImageMap	See also
+TJvTFStateImageMap.EndUpdate
+TJvTFStateImageMap	See also
 procedure EndUpdate;
 Description
 This signals the server that you are done changing the state properties and that it should now tell its controls to redraw themselves to reflect the changes you have made. EndUpdate should be paired with a call to BeginUpdate.
@@ -9106,8 +9106,8 @@ This signals the server that you are done changing the state properties and that
 
 
 ----------------------------------------------------------------------------------------------------
-TStateImageMap.AlarmDisabled
-TStateImageMap	See also
+TJvTFStateImageMap.AlarmDisabled
+TJvTFStateImageMap	See also
 property AlarmDisabled: Integer;
 Description
 Set this property to the position of the image in the ImageList that should display when Appt.AlarmEnabled = False.
@@ -9116,8 +9116,8 @@ Set it to -1 to indicate that no image should be shown for this state.
 
 
 ----------------------------------------------------------------------------------------------------
-TStateImageMap.AlarmEnabled
-TStateImageMap	See also
+TJvTFStateImageMap.AlarmEnabled
+TJvTFStateImageMap	See also
 property AlarmEnabled: Integer;
 Description
 Set the value of this property to the position of the image in the ImageList that should display when Appt.AlarmEnabled = True.
@@ -9126,8 +9126,8 @@ Set it to -1 to indicate that no image should be shown for this state.
 
 
 ----------------------------------------------------------------------------------------------------
-TStateImageMap.Modified
-TStateImageMap	See also
+TJvTFStateImageMap.Modified
+TJvTFStateImageMap	See also
 property Modified: Integer;
 Description
 Set the value of this property to the position of the image in the ImageList that should display when an appointment's data has been changed but not yet posted (Appt.Modified = True) .
@@ -9136,16 +9136,16 @@ Set it to -1 to indicate that no image should be shown for this state.
 
 
 ----------------------------------------------------------------------------------------------------
-TStateImageMap.Pics
-TStateImageMap
+TJvTFStateImageMap.Pics
+TJvTFStateImageMap
 property Pics [ Index: Integer ]: Integer;
 Description
 Returns the position of the image specified by Index in the ImageList. This is handy if you need to loop through the possible states to get image map information.
 
 
 ----------------------------------------------------------------------------------------------------
-TStateImageMap.Recurring
-TStateImageMap
+TJvTFStateImageMap.Recurring
+TJvTFStateImageMap
 property Recurring: Integer;
 Description
 Set the value of this property to the position of the image in the ImageList that should display when Appt.Recurring = False. Note that recurring appointments are not yet supported.
@@ -9155,8 +9155,8 @@ Set it to -1 to indicate that no image should be shown for this state.
 
 
 ----------------------------------------------------------------------------------------------------
-TStateImageMap.Shared
-TStateImageMap	See also
+TJvTFStateImageMap.Shared
+TJvTFStateImageMap	See also
 property Shared: Integer;
 Description
 Set the value of this property to the position of the image in the ImageList that should display when Appt.Shared = True.
