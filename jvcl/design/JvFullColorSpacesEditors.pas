@@ -143,16 +143,6 @@ type
     procedure RequiresUnits(Proc: TGetStrProc); override;
     procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override;
   end;
-
-  TJvFullColorDialogSelection = class(TJvFullColorSelection)
-  public
-    procedure RequiresUnits(Proc: TGetStrProc); override;
-  end;
-
-  TJvFullColorCircleDialogSelection = class(TJvFullColorSelection)
-  public
-    procedure RequiresUnits(Proc: TGetStrProc); override;
-  end;
   {$ENDIF COMPILER6_UP}
 
   TJvFullColorListEditor = class(TClassProperty)
@@ -660,30 +650,6 @@ begin
   with ColorSpaceManager do
     for I := 0 to Count - 1 do
       RequireClass(Proc, ColorSpaceByIndex[I].ClassType);
-end;
-{$ENDIF COMPILER6_UP}
-
-//=== { TJvFullColorDialogSelection } ========================================
-
-{$IFDEF COMPILER6_UP}
-procedure TJvFullColorDialogSelection.RequiresUnits(Proc: TGetStrProc);
-begin
-  inherited RequiresUnits(Proc);
-
-  if FullColorFormClass <> nil then
-    RequireClass(Proc, FullColorFormClass);
-end;
-{$ENDIF COMPILER6_UP}
-
-//=== { TJvColorCircleDialogSelection } ======================================
-
-{$IFDEF COMPILER6_UP}
-procedure TJvFullColorCircleDialogSelection.RequiresUnits(Proc: TGetStrProc);
-begin
-  inherited RequiresUnits(Proc);
-
-  if ColorCircleBaseFormClass <> nil then
-    RequireClass(Proc, ColorCircleBaseFormClass);
 end;
 {$ENDIF COMPILER6_UP}
 
