@@ -60,7 +60,7 @@ uses
 procedure Register;
 begin
   RegisterComponents(RsPaletteAppForm,
-    [TJvAppEvents, TJvAppAnimatedIcon, TJvFormAnimatedIcon,
+    [TJvAppEvents, TJvAppAnimatedIcon, TJvFormAnimatedIcon, TJvAnimTitle,
      {$IFDEF VCL}
      TJvApplicationHotKey, TJvTransparentForm, TJvFormMagnet, TJvGradientCaption,
      {$ENDIF VCL}
