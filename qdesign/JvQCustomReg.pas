@@ -39,22 +39,16 @@ implementation
 
 uses
   Classes,
-  
-  
+
   QImgList,
-  
-  
   DesignEditors, DesignIntf,
-  
-
-
   ToolsAPI,
   JvQDsgnConsts,
   JclSchedule,
-
   JvQGammaPanel, JvQLinkLabel, JvQLookOut, JvQOutlookBar, {JvQScheduledEvents,}
   JvQTimeLine, JvQTMTimeLine, JvQValidateEdit, JvQChart,
-  JvQTimeLineEditor, JvQOutlookBarEditors, JvQLookoutEditor;
+  JvQTimeLineEditor, JvQOutlookBarEditors, JvQLookoutEditor,
+  JvQTabBar;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCustomReg.dcr}
@@ -74,7 +68,7 @@ begin
   RegisterComponents(RsPaletteButton, [TJvLookOutButton, TJvExpressButton]);
   RegisterComponents(RsPaletteEdit, [TJvValidateEdit]);
   RegisterComponents(RsPaletteBarPanel, [TJvGammaPanel, TJvOutlookBar,
-    TJvLookout, {TJvLookOutPage, } TJvExpress]);
+    TJvLookout, {TJvLookOutPage, } TJvExpress, TJvTabBar, TJvModernTabBarPainter]);
   RegisterComponents(RsPaletteLabel, [TJvLinkLabel]);
   RegisterComponents(RsPaletteVisual, [TJvTimeLine, TJvTMTimeLine, TJvChart]);
 //  RegisterComponents(RsPaletteNonVisual, [TJvScheduledEvents]);
@@ -94,10 +88,6 @@ begin
     cImageIndex, TJvLookOutImageIndexProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvExpressButton,
     cImageIndex, TJvLookOutImageIndexProperty);
-
-
-
-
   RegisterComponentEditor(TJvCustomOutlookBar, TJvOutlookBarEditor);
   RegisterComponentEditor(TJvCustomTimeLine, TJvTimeLineEditor);
   RegisterComponentEditor(TJvLookOut, TJvLookOutEditor);
