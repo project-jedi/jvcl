@@ -536,16 +536,27 @@ type
   TBlobDesc = TISCBlobDesc;
 {$ENDIF}
 
+  TUIBLibrary = class;
+
   TStatusVector = array[0..19] of ISCStatus;
   PStatusVector = ^TStatusVector;
+  TOnConnectionLost = procedure(Lib: TUIBLibrary) of object;
 
   TUIBLibrary = class(TUIBaseLibrary)
   private
     FStatusVector: TStatusVector;
+    FOnConnectionLost: TOnConnectionLost;
+    FRaiseErrors: boolean;
     procedure GetDSQLInfoData(var StmtHandle: IscStmtHandle;
       var DSQLInfoData: TDSQLInfoData; InfoCode: Byte);
-    procedure CheckUIBApiCall(Status: ISCStatus);
+    procedure CheckUIBApiCall(const Status: ISCStatus);
   public
+    constructor Create; override;
+
+    property OnConnectionLost: TOnConnectionLost read FOnConnectionLost write FOnConnectionLost;
+    property RaiseErrors: boolean read FRaiseErrors write FRaiseErrors default True;
+
+
     {Attaches to an existing database.
      Ex: AttachDatabase('c:\DataBase.gdb', DBHandle, 'user_name=SYSDBA; password=masterkey'); }
     procedure AttachDatabase(FileName: String; var DbHandle: IscDbHandle; Params: String; Sep: Char = ';');
@@ -619,6 +630,9 @@ type
     procedure BlobWriteString(var BlobHandle: IscBlobHandle; var Str: String);
     procedure BlobWriteStream(var BlobHandle: IscBlobHandle; Stream: TStream);
 
+    function StreamBlobOpen(var BlobId: TISCQuad; var Database: IscDbHandle;
+      var Transaction: IscTrHandle; mode: Char): PBStream;
+    function StreamBlobClose(Stream: PBStream): integer;
 {$IFDEF IB71_UP}
     procedure SavepointRelease(var TrHandle: IscTrHandle; const Name: string);
     procedure SavepointRollback(var TrHandle: IscTrHandle; const Name: string; Option: Word);
@@ -783,11 +797,11 @@ const
     Result := (code and CODE_MASK) shr 0;
   end;
 
-  procedure TUIBLibrary.CheckUIBApiCall(Status: ISCStatus);
+  procedure TUIBLibrary.CheckUIBApiCall(const Status: ISCStatus);
   var
     Exception: EUIBError;
   begin
-    if (Status <> 0) then
+    if (Status <> 0) and FRaiseErrors then
     if (GetClass(Status) = CLASS_ERROR) then // only raise CLASS_ERROR
     begin
       case GetFacility(Status) of
@@ -808,6 +822,8 @@ const
       if Exception.FSQLCode <> 0 then
         Exception.Message := Exception.Message + #13 + ErrSQLInterprete(Exception.FSQLCode) +
           #13'SQL Code: ' + IntToStr(Exception.FSQLCode);
+      if (Exception.FErrorCode = 401) and Assigned(FOnConnectionLost) then
+        FOnConnectionLost(Self);
       raise Exception;
     end;
   end;
@@ -816,6 +832,12 @@ const
 // Database
 //******************************************************************************
 
+
+constructor TUIBLibrary.Create;
+begin
+  inherited;
+  FRaiseErrors := True;
+end;
 
 type
   TParamType = (
@@ -1068,6 +1090,8 @@ var
     Lock;
     try
       CheckUIBApiCall(isc_detach_database(@FStatusVector, @DBHandle));
+      // if connection lost DBHandle must be set manually to nil.
+      DBHandle := nil;
     finally
       UnLock;
     end;
@@ -1094,7 +1118,7 @@ var
   var Vector: TISCTEB;
   begin
     Vector.Handle  := @DbHandle;
-    Vector.Length  := Length(TPB);
+    Vector.Len     := Length(TPB);
     Vector.Address := PChar(TPB);
     TransactionStartMultiple(TraHandle, 1, @Vector);
   end;
@@ -1114,6 +1138,8 @@ var
     Lock;
     try
       CheckUIBApiCall(isc_commit_transaction(@FStatusVector, @TraHandle));
+      // if connection lost TraHandle must be set manually to nil.
+      TraHandle := nil;
     finally
       UnLock;
     end;
@@ -1124,6 +1150,8 @@ var
     Lock;
     try
       CheckUIBApiCall(isc_rollback_transaction(@FStatusVector, @TraHandle));
+      // if connection lost TraHandle must be set manually to nil.
+      TraHandle := nil;
     finally
       UnLock;
     end;
@@ -1260,6 +1288,9 @@ var
     Lock;
     try
       CheckUIBApiCall(isc_dsql_free_statement(@FStatusVector, @StmtHandle, Option));
+      // if connection lost StmtHandle must be set manually to nil.
+      if option = DSQL_DROP then
+         StmtHandle := nil;
     finally
       UnLock;
     end;
@@ -1805,8 +1836,7 @@ type
   var
     BlobInfos: array[0..2] of TBlobInfo;
     CurrentLength: Word;
-    TMP: PChar;
-    Pos: Integer;
+    Len: Cardinal;
     Buffer: Pointer;
   begin
     Lock;
@@ -1818,17 +1848,17 @@ type
       UnLock;
     end;
     Value := VarArrayCreate([0, BlobInfos[1].CardType - 1], varByte);
-    Pos := 0;
-    Getmem(TMP, BlobInfos[0].CardType);
+    Len := 0;
     Buffer := VarArrayLock(Value);
     try
-      while BlobGetSegment(BlobHandle, CurrentLength, BlobInfos[0].CardType, TMP) do
+      while BlobGetSegment(BlobHandle, CurrentLength, BlobInfos[0].CardType, Buffer) do
       begin
-        move(TMP^, PChar(Buffer)[Pos], CurrentLength);
-        inc(Pos, CurrentLength);
+        inc(Integer(Buffer), CurrentLength);
+        inc(Len, CurrentLength);
+        if Len = BlobInfos[1].CardType then
+          Break;
       end;
     finally
-      FreeMem(TMP);
       VarArrayUnlock(Value);
     end;
   end;
@@ -1877,6 +1907,28 @@ type
       finally
         FreeMem(buffer);
       end;
+    end;
+  end;
+
+  function TUIBLibrary.StreamBlobOpen(var BlobId: TISCQuad;
+    var Database: IscDbHandle; var Transaction: IscTrHandle;
+    Mode: Char): PBStream;
+  begin
+    Lock;
+    try
+      Result := Bopen(@BlobId, @Database, @Transaction, @Mode);
+    finally
+      UnLock;
+    end;
+  end;
+
+  function TUIBLibrary.StreamBlobClose(Stream: PBStream): integer;
+  begin
+    Lock;
+    try
+      Result := BLOB_close(Stream);
+    finally
+      UnLock;
     end;
   end;
 

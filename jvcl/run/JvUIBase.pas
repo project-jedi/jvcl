@@ -813,7 +813,7 @@ type
   PISCTEB = ^TISCTEB;
   TISCTEB = packed record
     Handle  : PIscDbHandle;
-    Length  : Integer;
+    Len     : Integer;
     Address : PChar;
   end;
 
@@ -4000,7 +4000,7 @@ type
     procedure Lock;
     procedure UnLock;
   public
-    constructor Create;
+    constructor Create; virtual;
     destructor Destroy; override;
     function getb(p: PBStream): Char;
     function putb(x: Char; p: PBStream): Integer;
