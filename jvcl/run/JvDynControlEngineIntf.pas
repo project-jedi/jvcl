@@ -29,7 +29,13 @@ unit JvDynControlEngineIntf;
 interface
 
 uses
-  Classes, Controls, Forms, StdCtrls, ExtCtrls, Graphics, Buttons, Dialogs,
+  {$IFDEF MSWINDOWS}
+  ActnList, Graphics,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  QActnList, QGraphics,
+  {$ENDIF UNIX}
+  Classes, Controls, Forms, StdCtrls, ExtCtrls, Buttons, Dialogs,
   FileCtrl, SysUtils;
 
 type
@@ -42,6 +48,11 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
     procedure ControlSetHint(const Value: String);
+  end;
+
+  IJvDynControlAction = interface
+    ['{8AB9511C-A03A-4388-A00A-AB95B7041133}']
+    procedure ControlSetAction(Value: TCustomAction);
   end;
 
   IJvDynControlData = interface
