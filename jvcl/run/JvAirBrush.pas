@@ -30,16 +30,7 @@ unit JvAirBrush;
 interface
 
 uses
-  Classes,
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
-  Graphics,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QWindows, QGraphics,
-  {$ENDIF VisualCLX}
+  Classes, Windows, Graphics,
   JvComponent;
 
 type
