@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,12 +36,12 @@ unit JvQWinDialogs;
 interface
 
 uses
-  Windows, ShellAPI, ShlObj, ComObj, ActiveX, CommDlg, UrlMon,
+  
+  Qt, Windows,
+  
+  QWindows, ShellAPI, ShlObj, ComObj, ActiveX, CommDlg, UrlMon,
   SysUtils, Classes,
-  
-  
-  Qt, QGraphics, QControls, QForms, QDialogs, Types, QWindows,
-  
+  Types, QGraphics, QControls, QForms, QDialogs,
   JvQBaseDlg, JvQTypes, JvQComponent, JvQJCLUtils; // For OSCheck
 
 {$HPPEMIT '#include "dbt.h"'}
@@ -182,6 +183,33 @@ type
 
   
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   TJvComputerNameDialog = class(TJvCommonDialog)
   private
     FComputerName: string;
@@ -321,6 +349,18 @@ type
   end;
 
   
+
+
+
+
+
+
+
+
+
+
+
+
 
   TJvURLAssociationDialogOption = (uaDefaultName, uaRegisterAssoc);
   TJvURLAssociationDialogOptions = set of TJvURLAssociationDialogOption;
@@ -578,9 +618,25 @@ var
   URLHandle: THandle = 0;
   SHDocvwHandle: THandle = 0;
 
+
+function GetForegroundWindow: HWND;
+begin
+  Result := Windows.GetForegroundWindow ;
+end;
+
+function GetDesktopWindow: HWND;
+begin
+  Result := Windows.GetDeskTopWindow ;
+end;
+
+
+
+
+
+
 procedure LoadJvDialogs;
 begin
-  ShellHandle := Windows.LoadLibrary(PChar(Shell32));
+  ShellHandle := LoadLibrary(PChar(Shell32));
   if ShellHandle > 0 then
   begin
     if Win32Platform = VER_PLATFORM_WIN32_NT then
@@ -601,17 +657,17 @@ begin
     SHOpenWith := GetProcAddress(ShellHandle, PChar('OpenAs_RunDLLA'));
   end;
 
-  CommHandle := Windows.LoadLibrary('comdlg32.dll');
+  CommHandle := LoadLibrary('comdlg32.dll');
   if CommHandle > 0 then
   begin
     GetOpenFileNameEx := GetProcAddress(CommHandle, PChar('GetOpenFileNameA'));
     GetSaveFileNameEx := GetProcAddress(CommHandle, PChar('GetSaveFileNameA'));
   end;
 
-  AppWizHandle := Windows.LoadLibrary('appwiz.cpl');
+  AppWizHandle := LoadLibrary('appwiz.cpl');
   if AppWizHandle > 0 then
     NewLinkHere := GetProcAddress(AppWizHandle, PChar('NewLinkHereA'));
-  URLHandle := Windows.LoadLibrary('url.dll');
+  URLHandle := LoadLibrary('url.dll');
   if URLHandle > 0 then
   begin
     @URLAssociationDialogA := GetProcAddress(URLHandle, 'URLAssociationDialogA');
@@ -620,7 +676,7 @@ begin
 //    @URLAssociationDialogW  := GetProcAddress(URLHandle,'URLAssociationDialogW');
 //    @MIMEAssociationDialogW := GetProcAddress(URLHandle,'MIMEAssociationDialogW');
   end;
-  SHDocvwHandle := Windows.LoadLibrary('shdocvw.dll');
+  SHDocvwHandle := LoadLibrary('shdocvw.dll');
   if SHDocvwHandle > 0 then
     SoftwareUpdateMessageBox := GetProcAddress(SHDocvwHandle, 'SoftwareUpdateMessageBox');
 end;
@@ -749,7 +805,7 @@ begin
       'DoOrganizeFavDlg'));
     if not Assigned(lpfnDoOrganizeFavDlg) then
       raise EWinDialogError.CreateRes(@RsEFunctionNotSupported);
-    lpfnDoOrganizeFavDlg(Windows.GetForegroundWindow, PChar(Path));
+    lpfnDoOrganizeFavDlg(GetForegroundWindow, PChar(Path));
   finally
     FreeLibrary(SHModule);
   end;
@@ -779,6 +835,113 @@ type
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //=== TJvComputerNameDialog ==================================================
 
 constructor TJvComputerNameDialog.Create(AOwner: TComponent);
@@ -793,6 +956,8 @@ var
   ItemIDList: PItemIDList;
   NameBuffer: array[0..MAX_PATH] of Char;
   
+
+
 begin
   Result := False;
 
@@ -807,10 +972,14 @@ begin
   BrowseInfo.lpszTitle := PChar(FCaption);
   BrowseInfo.ulFlags := BIF_BROWSEFORCOMPUTER;
   
+
+
   try
     Result := SHBrowseForFolder(BrowseInfo) <> nil;
   finally
     
+
+
     FreePidl(BrowseInfo.pidlRoot);
   end;
   if Result then
@@ -832,6 +1001,8 @@ var
   ItemSelected: PItemIDList;
   NameBuffer: array[0..MAX_PATH] of Char;
   
+
+
 begin
   ItemIDList := nil;
   FillChar(BrowseInfo, SizeOf(BrowseInfo), 0);
@@ -841,11 +1012,15 @@ begin
   BrowseInfo.lpszTitle := PChar(FCaption);
   BrowseInfo.ulFlags := BIF_RETURNONLYFSDIRS;
   
+
+
   try
     ItemSelected := SHBrowseForFolder(BrowseInfo);
     Result := ItemSelected <> nil;
   finally
     
+
+
   end;
 
   if Result then
@@ -863,6 +1038,11 @@ begin
   inherited Create(AOwner);
   FDrive := 'A';
   
+
+
+
+
+
   
   if AOwner is TCustomForm then
     FHandle := QWidget_winId(TCustomForm(AOwner).Handle)
@@ -1109,6 +1289,9 @@ begin
   CaptionText := CaptionText + CaptionSeparator + Product;
 
   
+
+
+
   
   OSCheck(LongBool(ShellAbout(QWidget_winId(Application.MainForm.Handle),
     PChar(CaptionText), PChar(OtherText), 0)));
@@ -1164,6 +1347,9 @@ begin
 
   if Assigned(SHRunDialog) then
     
+
+
+
     
     SHRunDialog(GetForegroundWindow, 0, nil, CaptionBuffer,
       DescriptionBuffer, 0)
@@ -1493,6 +1679,26 @@ end;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 { TJvURLAssociationDialog }
 
 constructor TJvURLAssociationDialog.Create(AOwner: TComponent);
@@ -1536,14 +1742,16 @@ begin
     F := GetParentForm(TControl(Owner));
     if F <> nil then
       
+
+
       
       Result := QWidget_winId(F.Handle);
       
   end;
   if Result = 0 then
-    Result := Windows.GetForegroundWindow;
+    Result := GetForegroundWindow;
   if Result = 0 then
-    Result := Windows.GetDesktopWindow;
+    Result := GetDesktopWindow;
 end;
 
 { TJvMIMEAssociationDialog }
@@ -1580,14 +1788,16 @@ begin
     F := GetParentForm(TControl(Owner));
     if F <> nil then
       
+
+
       
       Result := QWidget_winId(F.Handle);
       
   end;
   if Result = 0 then
-    Result := Windows.GetForegroundWindow;
+    Result := GetForegroundWindow;
   if Result = 0 then
-    Result := Windows.GetDesktopWindow;
+    Result := GetDesktopWindow;
 end;
 
 { TJvSoftwareUpdateDialog }
@@ -1613,7 +1823,7 @@ begin
   if Assigned(SoftwareUpdateMessageBox) then
   begin
     psdi := FDistInfo.SoftDistInfo;
-    FReturnValue := SoftwareUpdateMessageBox(Windows.GetDesktopWindow, '', 0, psdi);
+    FReturnValue := SoftwareUpdateMessageBox(GetDesktopWindow, '', 0, psdi);
     Result := ReturnValue = IDYES;
     if ReturnValue <> IDABORT then
       FDistInfo.SoftDistInfo := psdi;
