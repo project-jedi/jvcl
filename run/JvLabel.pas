@@ -1070,15 +1070,11 @@ begin
   if FImageIndex <> Value then
   begin
     if Images <> nil then
-    begin
-      FNeedsResize := true;
       NonProviderChange;
-    end;
+    FNeedsResize := true;
     FImageIndex := Value;
-    if FNeedsResize then
-      AdjustBounds
-    else
-      Invalidate;
+    AdjustBounds;
+    Invalidate;
   end;
 end;
 
