@@ -21,9 +21,8 @@ contact the JVCL team through the newsgroups on talkto.net:<br>
 <h3>Making your component work with BCB</h3>
 <ul>
   <li><b>Do not use structures like TPoint and TRect as published
-property types.</b> Instead, if you need this functionality, define and
-implement a TPersistent class that provides the same functionality
-(There are some in JvTypes.pas).</li>
+property types.</b> Instead, if you need this functionality, use
+TJvPoint and TJvRect respectively. They are defined in JvTypes.pas.</li>
   <li><b>Do not use HDC as a published property type.</b> The reason
 for
 this error is still not found but in the meantime, use LongWord instead.</li>
