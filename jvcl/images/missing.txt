@@ -1,5 +1,3 @@
 ;no images for these components at present:
 
-TJVBDEITEMS.BMP
-TJVDBLISTDATASET.BMP
 TJVDATEPICKEREDIT.BMP
