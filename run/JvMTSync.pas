@@ -30,8 +30,15 @@ unit JvMTSync;
 interface
 
 uses
-  SysUtils, Windows, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, SyncObjs, Contnrs, JvMTConsts;
+{$IFDEF MSWINDOWS}
+  Windows,
+{$ENDIF}
+{$IFDEF LINUX}
+  Libc,
+{$ENDIF}
+  SysUtils, Classes, SyncObjs, JvMTConsts;
+
+{ TODO -oAndreas : Linux support } 
 
 type
   TMTSynchroObject = class (TSynchroObject)
@@ -106,7 +113,6 @@ begin
   else
     FName := Name;
   FHandle := CreateHandle;
-//  FHandle := CreateSemaphore(nil, InitialCount, MaximumCount, '');
 end;
 
 destructor TMTSynchroObject.Destroy;
@@ -155,7 +161,7 @@ end;
 function TMTSynchroObject.WaitFor(Timeout: LongWord): Boolean;
 var
   HandleArray: array[0..1] of THandle;
-  
+
   {
   WaitFor()
   
@@ -271,7 +277,7 @@ function TMTCriticalSection.WaitFor(Timeout: LongWord): Boolean;
 begin
   if CurrentMTThread <> FOwnerThread then
   begin
-  Result := inherited WaitFor(Timeout);
+    Result := inherited WaitFor(Timeout);
     if Result then
     begin
       FOwnerThread := CurrentMTThread;
