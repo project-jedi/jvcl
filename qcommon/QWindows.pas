@@ -2907,7 +2907,6 @@ var
   X, Y: integer;
 begin
   Bmp := TBitmap.Create;
-  { create the "brush" }
   with Bmp do
   begin
     Width := Source.Right - Source.Left;
@@ -2916,23 +2915,26 @@ begin
     Canvas.Draw( -Source.Left, -Source.Top, Bitmap);
     TransparentColor := Color;
     Transparent := True;
-    { fill the Dest with the bitmap }
-    DstCanvas.Start;
+    Canvas.Stop;
+  end;
+  with DstCanvas do
+  begin
+    Start;
+    FillRect(Dest);
     X := Dest.Left;
     while X < Dest.Right do
     begin
       Y := Dest.Top;
       while Y < Dest.Bottom do
       begin
-        DstCanvas.Draw(X, Y, Bmp);
-        Y := Y + Height;
+        Draw(X, Y, Bmp);
+        Y := Y + Bmp.Height;
       end;
-      X := X + Width;
+      X := X + Bmp.Width;
     end;
-    DstCanvas.Stop;
-    Canvas.Stop;
-    Free;
+    Stop;
   end;
+  Bmp.Free;
 end;
 
 function PatBlt(Handle: QPainterH; X, Y, Width, Height: Integer; WinRop: Cardinal): LongBool;
