@@ -237,3 +237,4 @@ TGetLineFontEvent=TJvGetLineFontEvent
 TJvFtpGrabber=TJvFtpUrlGrabber
 TJvHttpGrabber=TJvHttpUrlGrabber
 TJvMultiHttpGrabber=TJvUrlListGrabber
+TJvButton=TJvBitBtn

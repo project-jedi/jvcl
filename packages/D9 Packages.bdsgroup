@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <PersonalityInfo>
+    <Option>
+      <Option Name="Personality" Type="String">Default.Personality</Option>
+      <Option Name="ProjectType" Type="String"></Option>
+      <Option Name="Version" Type="String">1.0</Option>
+      <Option Name="GUID" Type="String">{9BFB5221-5288-4756-A733-F2859A051C9C}</Option>
+    </Option>
+  </PersonalityInfo>
+  <Default.Personality>
+    
+    <Projects ActiveProject="JvJansD9R.bpl">
+      <Projects Name="Jv3rdD9R.bpl" Type="String">d9\Jv3rdD9R.bdsproj</Projects>
+      <Projects Name="JvCoreD9R.bpl" Type="String">d9\JvCoreD9R.bdsproj</Projects>
+      <Projects Name="JvCoreD9D.bpl" Type="String">d9\JvCoreD9D.bdsproj</Projects>
+      <Projects Name="JvSystemD9R.bpl" Type="String">d9\JvSystemD9R.bdsproj</Projects>
+      <Projects Name="JvSystemD9D.bpl" Type="String">d9\JvSystemD9D.bdsproj</Projects>
+      <Projects Name="JvStdCtrlsD9R.bpl" Type="String">d9\JvStdCtrlsD9R.bdsproj</Projects>
+      <Projects Name="JvStdCtrlsD9D.bpl" Type="String">d9\JvStdCtrlsD9D.bdsproj</Projects>
+      <Projects Name="JvCtrlsD9R.bpl" Type="String">d9\JvCtrlsD9R.bdsproj</Projects>
+      <Projects Name="JvCtrlsD9D.bpl" Type="String">d9\JvCtrlsD9D.bdsproj</Projects>
+      <Projects Name="JvCmpD9R.bpl" Type="String">d9\JvCmpD9R.bdsproj</Projects>
+      <Projects Name="JvCmpD9D.bpl" Type="String">d9\JvCmpD9D.bdsproj</Projects>
+      <Projects Name="JvCustomD9R.bpl" Type="String">d9\JvCustomD9R.bdsproj</Projects>
+      <Projects Name="JvCustomD9D.bpl" Type="String">d9\JvCustomD9D.bdsproj</Projects>
+      <Projects Name="JvDlgsD9R.bpl" Type="String">d9\JvDlgsD9R.bdsproj</Projects>
+      <Projects Name="JvDlgsD9D.bpl" Type="String">d9\JvDlgsD9D.bdsproj</Projects>
+      <Projects Name="JvCryptD9R.bpl" Type="String">d9\JvCryptD9R.bdsproj</Projects>
+      <Projects Name="JvCryptD9D.bpl" Type="String">d9\JvCryptD9D.bdsproj</Projects>
+      <Projects Name="JvMMD9R.bpl" Type="String">d9\JvMMD9R.bdsproj</Projects>
+      <Projects Name="JvMMD9D.bpl" Type="String">d9\JvMMD9D.bdsproj</Projects>
+      <Projects Name="JvNetD9R.bpl" Type="String">d9\JvNetD9R.bdsproj</Projects>
+      <Projects Name="JvNetD9D.bpl" Type="String">d9\JvNetD9D.bdsproj</Projects>
+      <Projects Name="JvAppFrmD9R.bpl" Type="String">d9\JvAppFrmD9R.bdsproj</Projects>
+      <Projects Name="JvAppFrmD9D.bpl" Type="String">d9\JvAppFrmD9D.bdsproj</Projects>
+      <Projects Name="JvDBD9R.bpl" Type="String">d9\JvDBD9R.bdsproj</Projects>
+      <Projects Name="JvDBD9D.bpl" Type="String">d9\JvDBD9D.bdsproj</Projects>
+      <Projects Name="JvBDED9R.bpl" Type="String">d9\JvBDED9R.bdsproj</Projects>
+      <Projects Name="JvBDED9D.bpl" Type="String">d9\JvBDED9D.bdsproj</Projects>
+      <Projects Name="JvInterpreterD9R.bpl" Type="String">d9\JvInterpreterD9R.bdsproj</Projects>
+      <Projects Name="JvInterpreterD9D.bpl" Type="String">d9\JvInterpreterD9D.bdsproj</Projects>
+      <Projects Name="JvBandsD9R.bpl" Type="String">d9\JvBandsD9R.bdsproj</Projects>
+      <Projects Name="JvBandsD9D.bpl" Type="String">d9\JvBandsD9D.bdsproj</Projects>
+      <Projects Name="JvPluginD9R.bpl" Type="String">d9\JvPluginD9R.bdsproj</Projects>
+      <Projects Name="JvPluginD9D.bpl" Type="String">d9\JvPluginD9D.bdsproj</Projects>
+      <Projects Name="JvJansD9R.bpl" Type="String">d9\JvJansD9R.bdsproj</Projects>
+      <Projects Name="JvJansD9D.bpl" Type="String">d9\JvJansD9D.bdsproj</Projects>
+      <Projects Name="JvGlobusD9R.bpl" Type="String">d9\JvGlobusD9R.bdsproj</Projects>
+      <Projects Name="JvGlobusD9D.bpl" Type="String">d9\JvGlobusD9D.bdsproj</Projects>
+      <Projects Name="JvPrintPreviewD9R.bpl" Type="String">d9\JvPrintPreviewD9R.bdsproj</Projects>
+      <Projects Name="JvPrintPreviewD9D.bpl" Type="String">d9\JvPrintPreviewD9D.bdsproj</Projects>
+      <Projects Name="JvPageCompsD9R.bpl" Type="String">d9\JvPageCompsD9R.bdsproj</Projects>
+      <Projects Name="JvPageCompsD9D.bpl" Type="String">d9\JvPageCompsD9D.bdsproj</Projects>
+      <Projects Name="JvValidatorsD9R.bpl" Type="String">d9\JvValidatorsD9R.bdsproj</Projects>
+      <Projects Name="JvValidatorsD9D.bpl" Type="String">d9\JvValidatorsD9D.bdsproj</Projects>
+      <Projects Name="JvUIBD9R.bpl" Type="String">d9\JvUIBD9R.bdsproj</Projects>
+      <Projects Name="JvUIBD9D.bpl" Type="String">d9\JvUIBD9D.bdsproj</Projects>
+      <Projects Name="JvWizardD9R.bpl" Type="String">d9\JvWizardD9R.bdsproj</Projects>
+      <Projects Name="JvWizardD9D.bpl" Type="String">d9\JvWizardD9D.bdsproj</Projects>
+      <Projects Name="JvTimeFrameworkD9R.bpl" Type="String">d9\JvTimeFrameworkD9R.bdsproj</Projects>
+      <Projects Name="JvTimeFrameworkD9D.bpl" Type="String">d9\JvTimeFrameworkD9D.bdsproj</Projects>
+      <Projects Name="JvHMID9R.bpl" Type="String">d9\JvHMID9R.bdsproj</Projects>
+      <Projects Name="JvHMID9D.bpl" Type="String">d9\JvHMID9D.bdsproj</Projects>
+      <Projects Name="JvManagedThreadsD9R.bpl" Type="String">d9\JvManagedThreadsD9R.bdsproj</Projects>
+      <Projects Name="JvManagedThreadsD9D.bpl" Type="String">d9\JvManagedThreadsD9D.bdsproj</Projects>
+      <Projects Name="JvXPCtrlsD9R.bpl" Type="String">d9\JvXPCtrlsD9R.bdsproj</Projects>
+      <Projects Name="JvXPCtrlsD9D.bpl" Type="String">d9\JvXPCtrlsD9D.bdsproj</Projects>
+      <Projects Name="JvDockingD9R.bpl" Type="String">d9\JvDockingD9R.bdsproj</Projects>
+      <Projects Name="JvDockingD9D.bpl" Type="String">d9\JvDockingD9D.bdsproj</Projects>
+      <Projects Name="JvDotNetCtrlsD9R.bpl" Type="String">d9\JvDotNetCtrlsD9R.bdsproj</Projects>
+      <Projects Name="JvDotNetCtrlsD9D.bpl" Type="String">d9\JvDotNetCtrlsD9D.bdsproj</Projects>
+      <Projects Name="JvEDID9R.bpl" Type="String">d9\JvEDID9R.bdsproj</Projects>
+      <Projects Name="JvEDID9D.bpl" Type="String">d9\JvEDID9D.bdsproj</Projects>
+      <Projects Name="JvInspectorD9R.bpl" Type="String">d9\JvInspectorD9R.bdsproj</Projects>
+      <Projects Name="JvInspectorD9D.bpl" Type="String">d9\JvInspectorD9D.bdsproj</Projects>
+      <Projects Name="Targets" Type="String">Jv3rdD9R.bpl JvCoreD9R.bpl JvCoreD9D.bpl JvSystemD9R.bpl JvSystemD9D.bpl JvStdCtrlsD9R.bpl JvStdCtrlsD9D.bpl JvCtrlsD9R.bpl JvCtrlsD9D.bpl JvCmpD9R.bpl JvCmpD9D.bpl JvCustomD9R.bpl JvCustomD9D.bpl JvDlgsD9R.bpl JvDlgsD9D.bpl JvCryptD9R.bpl JvCryptD9D.bpl JvMMD9R.bpl JvMMD9D.bpl JvNetD9R.bpl JvNetD9D.bpl JvAppFrmD9R.bpl JvAppFrmD9D.bpl JvDBD9R.bpl JvDBD9D.bpl JvBDED9R.bpl JvBDED9D.bpl JvInterpreterD9R.bpl JvInterpreterD9D.bpl JvBandsD9R.bpl JvBandsD9D.bpl JvPluginD9R.bpl JvPluginD9D.bpl JvJansD9R.bpl JvJansD9D.bpl JvGlobusD9R.bpl JvGlobusD9D.bpl JvPrintPreviewD9R.bpl JvPrintPreviewD9D.bpl JvPageCompsD9R.bpl JvPageCompsD9D.bpl JvValidatorsD9R.bpl JvValidatorsD9D.bpl JvUIBD9R.bpl JvUIBD9D.bpl JvWizardD9R.bpl JvWizardD9D.bpl JvTimeFrameworkD9R.bpl JvTimeFrameworkD9D.bpl JvHMID9R.bpl JvHMID9D.bpl JvManagedThreadsD9R.bpl JvManagedThreadsD9D.bpl JvXPCtrlsD9R.bpl JvXPCtrlsD9D.bpl JvDockingD9R.bpl JvDockingD9D.bpl JvDotNetCtrlsD9R.bpl JvDotNetCtrlsD9D.bpl JvEDID9R.bpl JvEDID9D.bpl JvInspectorD9R.bpl JvInspectorD9D.bpl</Projects>
+    </Projects>
+    <Dependencies/>
+  </Default.Personality>
+</BorlandProject>

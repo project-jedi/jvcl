@@ -1,7 +1,9 @@
 Changelog for JVCL 3.0
 ======================
+2004-11-04:
+- Added packages and support files for Delphi2005 (D9) // peter3
 2004-11-01:
--Support for drawing HTML text in a more generic fashion (support functions in JvJVCLUtils) // peter3
+- Support for drawing HTML text in a more generic fashion (support functions in JvJVCLUtils) // peter3
 - Previous HTML routines in JvHTControls now only calls equivalent in JvJVCLUtils // peter3
 - Added custom drawing to JvPrint and also a PrintHTML function // peter3
 2004-10-24
@@ -9,6 +11,7 @@ Changelog for JVCL 3.0
   (see JvMenus.pas for further details) // obones
 2004-09-15
 - Added FitCell property to JvDBGrid (Pete Stove and Fred) // obones
+- JvButton is no longer registered on the palette. Use JvImgBtn or JvBitbtn instead. This change happened a long time ago, but has not been documented. // peter3
 2004-09-14
 - JvFormStorage now has two new properties: StoredValuesPath and StoredPropsPath controling
   the path prefix to add for StoredProps and StoredValues. These should not be left empty
