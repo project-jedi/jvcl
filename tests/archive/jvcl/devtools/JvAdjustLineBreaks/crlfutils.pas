@@ -21,10 +21,15 @@ begin
   writeln('');
   writeln('Example:');
   writeln('crlf /l *.pas /w *.dfm');
-  writeln('Converts all pas files to LF and all dfm files to CRLF');
+  writeln('Converts the pas files to LF and the dfm files to CRLF');
+  writeln('');
+  writeln('Example:');
+  writeln('crlf *.pas *.dfm');
+  writeln('Converts the pas and dfm files to LF on Linux and CRLF on Windows (system default)');
+  writeln('');
   writeln('');
   writeln('NOTE: if you compile in Delphi 5 or earlier,');
-  writeln('      only LF->CRLF (/w option) is supported!');
+  writeln('      CRLF->LF is NOT supported!');
 end;
 
 procedure ConvertFile(const Filename:string;ToWindows:boolean);
@@ -32,47 +37,62 @@ procedure ConvertFile(const Filename:string;ToWindows:boolean);
 const
   cStyle:array[boolean] of TTextLineBreakStyle = (tlbsLF,tlbsCRLF);
 {$ENDIF COMPILER6_UP}
-var S:TStringlist;
+var S:TFileStream;tmp:string;
 begin
-  S := TStringlist.Create;
+  S := TFileStream.Create(Filename,fmOpenReadWrite or fmShareExclusive );
   try
-    S.LoadFromFile(Filename);
-    S.Text := AdjustLineBreaks(S.Text{$IFDEF COMPILER6_UP},cStyle[ToWindows]{$ENDIF});
-    S.SaveToFile(Filename);
+    SetLength(tmp,S.Size);
+    if S.Size > 0 then
+    begin
+      S.Read(tmp[1],S.Size);
+      tmp := AdjustLineBreaks(tmp{$IFDEF COMPILER6_UP},cStyle[ToWindows]{$ENDIF});
+      S.Size := 0; 
+      S.Write(tmp[1],Length(tmp));
+    end;
   finally
     S.Free;
   end;
 end;
 
-procedure ConvertFiles(const FileMask:string;ToWindows:boolean);
+function ConvertFiles(const FileMask:string;ToWindows:boolean):integer;
 var
   SearchHandle:DWORD;
   FindData:TWin32FindData;
   APath:string;
 begin
+  Result := 0;
   APath := ExtractFilePath(Filemask);
   SearchHandle := FindFirstFile(PChar(Filemask),FindData);
   if SearchHandle <> INVALID_HANDLE_VALUE then
   try
     repeat
       if (FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY = 0) then
-         ConvertFile(APath + FindData.cFileName,ToWindows);
+      begin
+        if (FindData.dwFileAttributes and FILE_ATTRIBUTE_READONLY = FILE_ATTRIBUTE_READONLY) then
+          writeln('ERROR: ',FindData.cFileName,' is read-only!')
+        else
+        begin
+          writeln('Converting ',FindData.cFileName,'...');
+          ConvertFile(APath + FindData.cFileName,ToWindows);
+          Inc(Result);
+        end;
+      end;
     until not FindNextFile(SearchHandle,FindData);
   finally
     Windows.FindClose(SearchHandle);
   end;
-
 end;
 
 procedure Run;
 var
   ToWindows:boolean;
-  i:integer;
+  i,Count:integer;
 begin
   // cmd line: -l *.pas *.dfm *.txt -w *.xfm
   // where
   // -l - convert CRLF to LF (to linux)
   // -w - convert LF to CRLF (to windows)
+  Count := 0;
   if ParamCount = 0 then
   begin
     ShowHelp;
@@ -101,8 +121,9 @@ begin
       ShowHelp;
       Exit;
     end;
-    ConvertFiles(ExpandUNCFilename(ParamStr(i)),ToWindows);
+    Inc(Count,ConvertFiles(ExpandUNCFilename(ParamStr(i)),ToWindows));
   end;
+  writeln(Count,' files converted.')
 end;
 
 end.
