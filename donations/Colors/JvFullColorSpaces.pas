@@ -1280,7 +1280,7 @@ begin
   Y := EnsureRange(Y, 0.0, 1.0);
   Z := EnsureRange(Z, 0.0, 1.0);
 
-  if (Y > 0.008856) then
+  if Y > 0.008856 then
     L := Round(116.0 * Power(Y, 1.0 / 3.0) - 16.0)
   else
     L := Round(903.3 * Y);
@@ -1414,10 +1414,12 @@ begin
   if NewColor = clNone then
     // mark it as clNone
     Result := Result or ($03 shl 24)
-  else if NewColor = clDefault then
+  else
+  if NewColor = clDefault then
     // mark it as clDefault
     Result := Result or ($03 shl 24)
-  else if (NewColor and ($80 shl 24)) <> 0 then
+  else
+  if (NewColor and ($80 shl 24)) <> 0 then
     // mark it as predefined color
     Result := Result or ($01 shl 24);
 end;

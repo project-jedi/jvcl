@@ -85,7 +85,7 @@ begin
     for I := 0 to Count - 1 do
     begin
       CS := ColorSpaceByIndex[I];
-      if (CompareText(CS.ShortName,Value)=0) then
+      if CompareText(CS.ShortName, Value) = 0 then
       begin
         SetOrdValue(Ord(CS.ID));
         Exit;

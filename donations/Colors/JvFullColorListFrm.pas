@@ -135,7 +135,7 @@ end;
 procedure TJvFullColorListForm.ActionInsertExecute(Sender: TObject);
 begin
   JvFullColorDialog.Options := JvFullColorDialog.Options - [foShowApply];
-  if (JvFullColorDialog.Execute) then
+  if JvFullColorDialog.Execute then
     ListBoxColors.Items.InsertObject(ListBoxColors.ItemIndex, '',
       TObject(JvFullColorDialog.FullColor));
 end;

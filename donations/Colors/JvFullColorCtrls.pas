@@ -380,8 +380,8 @@ type
 
   TJvFullColorSpaceFormat = (cfName, cfShortName, cfBoth);
 
-  TJvFullColorSpaceFormatEvent = procedure (Sender:TObject; AColorSpace:TJvColorSpace;
-                                            out ACaption:string) of object;
+  TJvFullColorSpaceFormatEvent = procedure(Sender: TObject; AColorSpace: TJvColorSpace;
+    out ACaption: string) of object;
 
   TJvFullColorSpaceCombo = class(TCustomComboBox)
   private
@@ -460,8 +460,8 @@ type
 
   TJvFullColorAxisConfigFormat = (afShort, afIndent, afComplete);
 
-  TJvFullColorAxisFormatEvent = procedure (Sender:TObject; AAxisConfig:TJvFullColorAxisConfig;
-                                            out ACaption:string) of object;
+  TJvFullColorAxisFormatEvent = procedure(Sender: TObject; AAxisConfig: TJvFullColorAxisConfig;
+    out ACaption: string) of object;
 
   TJvFullColorAxisCombo = class(TCustomComboBox)
   private
@@ -3023,9 +3023,10 @@ begin
       LColorSpace := ColorSpaceByIndex[Index];
       if (LColorSpace.ID <> csDEF) or AllowVariable then
       begin
-        if Assigned(FOnFormatItem)
-          then FOnFormatItem(Self,LColorSpace,ACaption)
-          else ACaption:=ColorSpaceToString(LColorSpace, ItemFormat);
+        if Assigned(FOnFormatItem) then
+          FOnFormatItem(Self, LColorSpace, ACaption)
+        else
+          ACaption := ColorSpaceToString(LColorSpace, ItemFormat);
         AddObject(ACaption, LColorSpace);
       end;
     end;
