@@ -513,10 +513,10 @@ See Also
 Summary
   Returns the indentation to use for each level.
 Description
-  Get_LevelIndex returns how much an item is indented in the consumer's graphical representation for
-  each level of the tree. Get_LevelIndex is the read method for the LevelIndent property.
+  Get_LevelIndent returns how much an item is indented in the consumer's graphical representation for
+  each level of the tree. Get_LevelIndent is the read method for the LevelIndent property.
 See Also
-  LevelIndex, Set_LevelIndent
+  LevelIndent, Set_LevelIndent
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.IndexOfID
 Summary
@@ -678,7 +678,7 @@ See Also
 Summary
   Indentation to use for each level.
 Description
-  LevelIndex specifies how much an item is indented in the consumer's graphical representation for
+  LevelIndent specifies how much an item is indented in the consumer's graphical representation for
   each level of the tree. What the value actually represents (e.g. pixels, characters, etc) depends
   solely on the consumer. Most consumers will represent the indentation in pixels.
 See Also
@@ -724,12 +724,12 @@ See Also
 Summary
   Sets the indentation to use for each level.
 Description
-  Set_LevelIndex specifies how much an item is indented in the consumer's graphical representation
-  for each level of the tree. Set_LevelIndex is the write method for the LevelIndent property.
+  Set_LevelIndent specifies how much an item is indented in the consumer's graphical representation
+  for each level of the tree. Set_LevelIndent is the write method for the LevelIndent property.
 Parameters
   Value - New indentation to set.
 See Also
-  LevelIndex, Get_LevelIndent
+  LevelIndent, Get_LevelIndent
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.SubItem@IJvDataItem@Integer
 Summary
@@ -1563,7 +1563,7 @@ Description
 Parameters
   IndexPath - array of item index values considered to be the path to the item to retrieve.
 See Also
-  GetItem, GetItemByIDPath, IJvDataItem.GetIndex
+  GetItem, GetItemByID, IJvDataItem.GetIndex
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItems.GetParent
 Summary
@@ -1709,7 +1709,7 @@ Description
   normally use the normal image list (specified by Images) and render that bitmap in a
   greyed-out/disabled state.
 See Also
-  Images, HotImages, GetDisabledImage, SetDisabledImages.
+  Images, HotImages, GetDisabledImages, SetDisabledImages
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsImages.GetDisabledImages
 Summary
@@ -1748,7 +1748,7 @@ Description
   If an item is "hot" but HotImages is not assigned, the rendering code will normally use the normal
   image list (specified by Images).
 See Also
-  Images, DisabledImages, GetHotImage, SetHotImages.
+  Images, DisabledImages, GetHotImages, SetHotImages
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsImages.Images
 Summary

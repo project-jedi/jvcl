@@ -39,7 +39,7 @@ Description
   called. BeginUpdate can be called multiple times but every call should be matched with a call to
   EndUpdate to have the changes take effect.
 See Also
-  Changed, EndUpdate, Updatecount
+  Changed, EndUpdate, UpdateCount
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.Bitmap
 Summary
@@ -70,9 +70,9 @@ Summary
   Generates the OnChange event.
 Description
   Changed will generate an OnChange event if a handler is assigned and change notifications are not
-  supressed (every BeginUpdate has been matched with an EndUpdate).
+  suppressed (every BeginUpdate has been matched with an EndUpdate).
 See Also
-  BeginUpdate, EndUpdate, OnChanged, Updatecount
+  BeginUpdate, EndUpdate, OnChanged, UpdateCount
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.CreateCaret
 Summary
@@ -105,7 +105,7 @@ Description
   EndUpdate will re-enable change notifications when the number of calls to BeginUpdate equals the
   number of calls to EndUpdate.
 See Also
-  BeginUpdate, Changed, Updatecount
+  BeginUpdate, Changed, UpdateCount
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.Gray
 Summary
@@ -152,8 +152,8 @@ Description
 Summary
   Number of BeginUpdate calls to matched by an EndUpdate.
 Description
-  Updatecount indicates the number of calls to BeginUpdate issued that have not been matched by a
-  call to EndUpdate. While Updatecount > 0, the OnChanged event will never fire.
+  UpdateCount indicates the number of calls to BeginUpdate issued that have not been matched by a
+  call to EndUpdate. While UpdateCount > 0, the OnChanged event will never fire.
 See Also
   BeginUpdate, EndUpdate, OnChanged
 ----------------------------------------------------------------------------------------------------

@@ -41,7 +41,7 @@ Return Value
   Should return true if the page at AIndex can be activated or false otherwise. If AIndex is outside
   the allowable range for the page list, return false.
 ----------------------------------------------------------------------------------------------------
-@@IPageList.getPageCaption
+@@IPageList.GetPageCaption
 Summary
   Returns the caption for a page.
 Description
@@ -54,7 +54,7 @@ Return Value
   A string representing the caption of the page. If AIndex is outside the allowable range, this function should return an
   empty string or the value "unknown" or similar and not raise an exception or generate an error.
 ----------------------------------------------------------------------------------------------------
-@@IPageList.getPageCount
+@@IPageList.GetPageCount
 Summary
   Returns the number of available pages.
 Description
@@ -443,25 +443,6 @@ Note
 See Also
   AddChildFirst, AddChild, AddChildObjectFirst, AddChildObject, AddFirst, Add, AddObjectFirst, AddObject, Insert, TJvPageIndexNode
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomPageListTreeView.OnMouseEnter
-Summary
-  Occurs when the mouse pointer moves over the treeview.
-Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
-  treeview.
-See Also
-  OnMouseLeave
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPageListTreeView.OnMouseLeave
-Summary
-  Occurs when the mouse pointer moves off the treeview.
-Description
-  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  treeview. For example, you can use this event to undo changes that were made in an OnMouseEnter
-  event handler.
-See Also
-  OnMouseEnter
-----------------------------------------------------------------------------------------------------
 @@TJvCustomPageListTreeView.OnParentColorChange
 Summary
   Occurs when the Parents color changes
@@ -645,7 +626,7 @@ Parameters
   ACanvas - The canvas to draw on
   ARect   - The area on the canvas to draw inside
 See Also
-  TJvCustomPage.OnAfterPaint, TJvCustomPage.OnPaint, TJvPagePaintingEvent
+  TJvCustomPage.OnAfterPaint, TJvCustomPage.OnPaint
 ----------------------------------------------------------------------------------------------------
 @@TJvSettingsTreeImages
 Summary
