@@ -360,13 +360,13 @@ function ReadFolders(const Folder: TFileName; FolderList: TStrings): Integer;
 
 { RATextOut same with TCanvas.TextOut procedure, but
   can clipping drawing with rectangle, RClip. }
-// procedure RATextOut(Canvas: TCanvas; const R, RClip: TRect; const S: string);
+procedure RATextOut(Canvas: TCanvas; const R, RClip: TRect; const S: string);
 { RATextOutEx same with RATextOut function, but
   can calculate needed height for correct output }
-// function RATextOutEx(Canvas: TCanvas; const R, RClip: TRect; const S: string; const CalcHeight: Boolean): Integer;
+function RATextOutEx(Canvas: TCanvas; const R, RClip: TRect; const S: string; const CalcHeight: Boolean): Integer;
 { RATextCalcHeight calculate needed height for
   correct output, using RATextOut or RATextOutEx functions }
-// function RATextCalcHeight(Canvas: TCanvas; const R: TRect; const S: string): Integer;
+function RATextCalcHeight(Canvas: TCanvas; const R: TRect; const S: string): Integer;
 { Cinema draws some visual effect }
 procedure Cinema(Canvas: TCanvas; rS {Source}, rD {Dest}: TRect);
 { Roughed fills rect with special 3D pattern }
@@ -2511,11 +2511,6 @@ begin
   Result := (S = '1') or Cmp(S, 'True') or Cmp(S, 'yes');
 end;
 
-procedure WordBreak(Canvas: TCanvas; const S: string; Ss: TStrings);
-begin
-  Ss.Text := S;
-end;
-
 function RATextOutEx(Canvas: TCanvas; const R, RClip: TRect; const S: string; const CalcHeight: Boolean): Integer;
 var
   Ss: TStrings;
@@ -2524,7 +2519,7 @@ var
 begin
   Ss := TStringList.Create;
   try
-    WordBreak(Canvas, S, Ss);
+    Ss.Text := S;
     H := Canvas.TextHeight('A');
     Result := H * Ss.Count;
     if not CalcHeight then
