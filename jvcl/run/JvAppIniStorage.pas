@@ -665,8 +665,13 @@ end;
 
 procedure TJvAppIniFileStorage.Reload;
 begin
-  if FileExists(FullFileName) and not IsUpdating then
-    IniFile.Rename(FullFileName, True);
+  if not IsUpdating then
+  begin
+    if FileExists(FullFileName) then
+      IniFile.Rename(FullFileName, True)
+    else  // file may have disappeared. If so, clear the file
+      IniFile.Clear;
+  end;
 end;
 
 //=== { Common procedures } ==================================================
