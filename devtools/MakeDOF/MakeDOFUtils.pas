@@ -6,7 +6,7 @@ procedure Run;
 
 implementation
 uses
-  Windows, Classes, SysUtils, JvSearchFiles;
+  Windows, Classes, SysUtils, JFileSearch;
 
 procedure ShowHelp;
 begin
