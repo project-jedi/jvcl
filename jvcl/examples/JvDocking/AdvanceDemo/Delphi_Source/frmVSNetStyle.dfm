@@ -96,7 +96,7 @@ object Form4: TForm4
     Height = 172
     Align = alClient
     BorderStyle = bsNone
-    ImeName = '◊œπ‚∆¥“Ù ‰»Î∑®'
+    ImeName = #215#207#185#226#198#180#210#244#202#228#200#235#183#168
     TabOrder = 0
   end
   object lbDockClient1: TJvDockClient
@@ -104,9 +104,11 @@ object Form4: TForm4
     OnFormHide = lbDockClient1FormHide
     LRDockWidth = 100
     TBDockHeight = 100
+    NCPopupMenu = MainForm.PopupMenu2
     DirectDrag = False
     ShowHint = True
     EnableCloseButton = True
+    DockStyle = MainForm.JvDockVSNetStyle1
     Left = 32
     Top = 40
   end

@@ -18,7 +18,7 @@ object Form2: TForm2
   OldCreateOrder = False
   Visible = True
   PixelsPerInch = 96
-  TextHeight = 14
+  TextHeight = 12
   object Panel1: TPanel
     Left = 0
     Top = 0
@@ -30,7 +30,7 @@ object Form2: TForm2
     Caption = 'Panel1'
     Font.Charset = GB2312_CHARSET
     Font.Color = clWindowText
-    Font.Height = -12
+    Font.Height = -11
     Font.Name = 'MS Shell Dlg 2'
     Font.Style = []
     ParentFont = False
@@ -42,7 +42,6 @@ object Form2: TForm2
       Height = 157
       Align = alClient
       BorderStyle = bsNone
-      ImeName = #215#207#185#226#198#180#210#244#202#228#200#235#183#168
       TabOrder = 0
     end
   end
@@ -51,10 +50,12 @@ object Form2: TForm2
     OnFormHide = lbDockClient1FormHide
     LRDockWidth = 100
     TBDockHeight = 100
+    NCPopupMenu = MainForm.PopupMenu2
     DirectDrag = True
     ShowHint = True
     EnableCloseButton = True
     EachOtherDock = False
+    DockStyle = MainForm.JvDockVCStyle1
     Left = 48
     Top = 40
   end

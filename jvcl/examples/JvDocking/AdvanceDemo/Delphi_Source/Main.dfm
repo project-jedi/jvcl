@@ -1,8 +1,8 @@
 object MainForm: TMainForm
-  Left = 300
-  Top = 190
-  Width = 385
-  Height = 347
+  Left = 228
+  Top = 269
+  Width = 430
+  Height = 341
   Anchors = []
   Caption = 'Main Window'
   Color = clGray
@@ -25,7 +25,7 @@ object MainForm: TMainForm
   object ToolBar1: TToolBar
     Left = 0
     Top = 0
-    Width = 377
+    Width = 422
     Height = 26
     Anchors = []
     AutoSize = True
@@ -71,11 +71,18 @@ object MainForm: TMainForm
       ImageIndex = 3
       OnClick = DockForm4Click
     end
+    object ToolButton1: TToolButton
+      Left = 290
+      Top = 0
+      Caption = 'Close All'
+      ImageIndex = 4
+      OnClick = CloseAllClick
+    end
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 282
-    Width = 377
+    Top = 276
+    Width = 422
     Height = 19
     Panels = <>
     SimplePanel = False
@@ -83,8 +90,8 @@ object MainForm: TMainForm
   object Memo1: TMemo
     Left = 0
     Top = 26
-    Width = 377
-    Height = 256
+    Width = 422
+    Height = 250
     Align = alClient
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
@@ -291,7 +298,7 @@ object MainForm: TMainForm
   end
   object PopupMenu2: TPopupMenu
     OnPopup = PopupMenu2Popup
-    Left = 96
+    Left = 136
     Top = 48
     object ClientTopDocked: TMenuItem
       Caption = 'Top Dockable'
@@ -375,7 +382,6 @@ object MainForm: TMainForm
     TabServerOption.ShowTabImages = True
     ChannelOption.ActivePaneSize = 150
     ChannelOption.ShowImage = True
-    ChannelOption.MouseleaveHide = True
     ChannelOption.HideHoldTime = 1000
     Left = 128
     Top = 112

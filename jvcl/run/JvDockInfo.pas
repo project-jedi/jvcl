@@ -117,6 +117,9 @@ type
     FDataStream: TMemoryStream;
     function FindDockForm(FormName: string): TCustomForm;
     function CreateHostControl(ATreeZone: TJvDockInfoZone): TWinControl;
+    {$IFDEF USEJVCL}
+    function GetAppStoragePath: string;
+    {$ENDIF}
   protected
     procedure ScanTreeZone(TreeZone: TJvDockBaseZone); override;
     {$IFDEF USEJVCL}
@@ -134,7 +137,7 @@ type
     procedure ReadInfoFromAppStorage;
     procedure WriteInfoToAppStorage;
     property AppStorage: TJvCustomAppStorage read FAppStorage write FAppStorage;
-    property AppStoragePath: string read FAppStoragePath write FAppStoragePath;
+    property AppStoragePath: string read GetAppStoragePath write FAppStoragePath;
     {$ENDIF USEJVCL}
     procedure ReadInfoFromIni;
     procedure ReadInfoFromReg(RegName: string);
@@ -831,11 +834,11 @@ begin
     if TreeZone <> TopTreeZone then
       with TJvDockInfoZone(TreeZone), FAppStorage do
       begin
-        APath := ConcatPaths([FAppStoragePath, 'Forms', 'FormNames']);
+        APath := ConcatPaths([AppStoragePath, 'Forms', 'FormNames']);
         WriteString(APath, ReadString(APath) + DockFormName + ';');
         try
           OldPath := Path;
-          Path := ConcatPaths([OldPath, FAppStoragePath, 'Forms', DockFormName]);
+          Path := ConcatPaths([OldPath, AppStoragePath, 'Forms', DockFormName]);
           WriteString('ParentName', ParentName);
           WriteInteger('DockLeft', DockRect.Left);
           WriteInteger('DockTop', DockRect.Top);
@@ -1114,6 +1117,15 @@ begin
     DockInfoReg.CloseKey;
   end;
 end;
+
+{$IFDEF USEJVCL}
+function TJvDockInfoTree.GetAppStoragePath: string;
+begin
+  Result := FAppStoragePath;
+  if (Result = '') and (FAppStorage <> nil) then
+    Result := FAppStorage.Path;
+end;
+{$ENDIF}
 
 end.
 
