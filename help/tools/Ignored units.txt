@@ -21,10 +21,13 @@ JvDBQueryParamsForm
 JvDBReg
 JvDBRemoteLogin
 JvDBSecurityEditor
+JvDesktopAlertForm
+JvDockControlForm
 JvDropDownForm
 JvDsgnEditors
 JvDualListForm
 JvExceptionForm
+JvExComboEdits
 JvFooterEditor
 JvFormWallpaperEdit
 JvFormWallpaperEditor
@@ -84,6 +87,7 @@ JvOutEdit
 JvPaintBoxEditor
 JvPainterEffectsForm
 JvPainterQBForm
+JvParameterListTools
 JvParserForm
 JvPatcherEditor
 JvPatchForm
