@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, ExtCtrls, {$IFDEF COMPILER6_UP}Types,{$ENDIF}
+  StdCtrls, ExtCtrls,
   JVCLVer, JvThemes;
 
 type
@@ -58,7 +58,6 @@ type
     procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
 {$IFDEF JVCLThemesEnabledD56}
     procedure Paint; override;
-    procedure CMControlChange(var Msg: TCMControlChange); message CM_CONTROLCHANGE;
 {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
@@ -98,7 +97,9 @@ begin
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   ControlStyle := ControlStyle + [csAcceptsControls];
+{$IFDEF JVCLThemesEnabledD56}
   IncludeThemeStyle(Self, [csParentBackground]);
+{$ENDIF}  
   FOver := False;
 end;
 
@@ -172,11 +173,6 @@ begin
   end
   else
     inherited Paint;
-end;
-
-procedure TJvRadioGroup.CMControlChange(var Msg: TCMControlChange);
-begin
-  inherited;
 end;
 
 {$ENDIF}
