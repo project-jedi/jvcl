@@ -79,6 +79,9 @@ type
     procedure FixupMethods;
   protected
     procedure ReadState(Reader: TReader); override;
+    property MethodList: TList read  FMethodList;
+    property ClassIdentifier: string read FClassIdentifier;
+    property UnitName: string read FUnitName;
   public
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
     destructor Destroy; override;
@@ -114,6 +117,7 @@ type
     function RunUnit(const FileName: TFileName): Variant;
     procedure RunReportPreview(const FileName: string);
     property Form: TJvInterpreterForm read FForm;
+    property FileName: string read FFileName;
   published
     property OnGetDfmFileName: TJvInterpreterGetDfmFileName read FOnGetDfmFileName write FOnGetDfmFileName;
     property OnCreateDfmStream: TJvInterpreterCreateDfmStream read FOnCreateDfmStream write FOnCreateDfmStream;
@@ -255,7 +259,7 @@ procedure TJvInterpreterForm.FixupMethods;
             begin
               SetMethodProp(Com, PropList^[I],
                 TMethod(FJvInterpreterFm.NewEvent(FUnitName,
-                PChar(FMethodList[F]), PropList^[I]^.PropType^.Name, Self)));
+                PChar(FMethodList[F]), PropList^[I]^.PropType^.Name, {Self}Com,PropList^[I]^.Name)));
             end;
           end;
         end;

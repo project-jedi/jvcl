@@ -212,6 +212,11 @@ type
   PNameArray = ^TNameArray;
   TNameArray = array [0..cJvInterpreterMaxArgs] of string;
 
+
+{$IFNDEF COMPILER6_UP}
+  TVarType = Word;
+{$ENDIF COMPILER6_UP}
+
   TJvInterpreterArgs = class;
   IJvInterpreterDataType = interface;
 
@@ -284,21 +289,25 @@ type
     FParamTypeNames:TNameArray;//dejoy added
     FParamNames: TNameArray;
     FResTyp: Word;
+    FResTypName: String;
     FResDataType: IJvInterpreterDataType;
     FPosBeg: Integer; { position in source }
     FPosEnd: Integer;
     function GetParamName(Index: Integer): string;
     function GetParamType(Index: Integer): Word;
     function GetParamTypeNames(Index: Integer): string;
+    function GetDefine: string;
   public
     property UnitName: string read FUnitName;
     property Identifier: string read FIdentifier;
     property ClassIdentifier: string read FClassIdentifier;
+    property Define: string read GetDefine;
     property ParamCount: Integer read FParamCount;
     property ParamTypes[Index: Integer]: Word read GetParamType;
     property ParamNames[Index: Integer]: string read GetParamName;
     property ParamTypeNames[Index: Integer]: string read GetParamTypeNames; //dejoy added
     property ResTyp: Word read FResTyp;
+    property ResTypName: string read FResTypName;
     property ResDataType: IJvInterpreterDataType read FResDataType;
     property PosBeg: Integer read FPosBeg;
     property PosEnd: Integer read FPosEnd;
@@ -314,17 +323,19 @@ type
     FInstance: TObject;
     FUnitName: string;
     FFunctionName: string;
+    FPropName: string;
     FArgs: TJvInterpreterArgs;
     function GetArgs: TJvInterpreterArgs;
   protected
     constructor Create(AOwner: TJvInterpreterExpression; AInstance: TObject;
-      AUnitName, AFunctionName: string); virtual;
+      AUnitName, AFunctionName, APropName: string); virtual;
     function CallFunction(Args: TJvInterpreterArgs; Params: array of Variant): Variant;
     property Args: TJvInterpreterArgs read GetArgs;
     property Owner: TJvInterpreterExpression read FOwner;
     property Instance: TObject read FInstance;
     property UnitName: string read FUnitName;
     property FunctionName: string read FFunctionName;
+    property PropName: string read FPropName;
   public
     destructor Destroy; override;
   end;
@@ -466,7 +477,7 @@ type
   end;
 
   TJvInterpreterRecHolder = class(TJvInterpreterIdentifier)
-  private
+  protected
     FRecordType: string;
     JvInterpreterRecord: TJvInterpreterRecord;
     Rec: Pointer; { data }
@@ -517,6 +528,46 @@ type
     Code: Pointer;
   end;
 
+  TJvInterpreterRecordDataType = class(TInterfacedObject, IJvInterpreterDataType)
+  protected
+    FRecordDesc: TJvInterpreterRecord;
+  public
+    constructor Create(ARecordDesc: TJvInterpreterRecord);
+    procedure Init(var V: Variant);
+    function GetTyp: Word;
+  end;
+
+  TJvInterpreterArrayDataType = class(TInterfacedObject, IJvInterpreterDataType)
+  protected
+    FArrayBegin, FArrayEnd: TJvInterpreterArrayValues;
+    FDimension: Integer;
+    FArrayType: Integer;
+    FDT: IJvInterpreterDataType;
+  public
+    constructor Create(AArrayBegin, AArrayEnd: TJvInterpreterArrayValues;
+      ADimension: Integer; AArrayType: Integer; ADT: IJvInterpreterDataType);
+    procedure Init(var V: Variant);
+    function GetTyp: Word;
+  end;
+
+  TJvInterpreterSimpleDataType = class(TInterfacedObject, IJvInterpreterDataType)
+  protected
+    FTyp: TVarType;
+  public
+    constructor Create(ATyp: TVarType);
+    procedure Init(var V: Variant);
+    function GetTyp: Word;
+  end;
+
+  PMethod = ^TMethod;
+
+  { function context - stack }
+  PFunctionContext = ^TFunctionContext;
+  TFunctionContext = record
+    PrevFunContext: PFunctionContext;
+    LocalVars: TJvInterpreterVarList;
+    Fun: TJvInterpreterSrcFunction;
+  end;
   //dejoy change end
 
   { TJvInterpreterAdapter - route JvInterpreter calls to Delphi functions }
@@ -577,7 +628,8 @@ type
     function UnitExists(const Identifier: string): Boolean; virtual;
     function IsEvent(Obj: TObject; const Identifier: string): Boolean; virtual;
     function NewEvent(const UnitName: string; const FunctionName, EventType: string;
-      AOwner: TJvInterpreterExpression; AObject: TObject): TSimpleEvent; virtual;
+      AOwner: TJvInterpreterExpression; AObject: TObject;
+      const APropName: string): TSimpleEvent; virtual;
     procedure ClearSource; dynamic;
     procedure ClearNonSource; dynamic;
     procedure Sort; dynamic;
@@ -686,13 +738,13 @@ type
     procedure AddSrcFun(UnitName: string; Identifier: string;
       PosBeg, PosEnd: Integer; ParamCount: Integer; ParamTypes: array of Word;
       ParamTypeNames: array of string; //dejoy added
-      ParamNames: array of string;ResTyp: Word;
+      ParamNames: array of string;ResTyp: Word;AResTypName: string;
       AResDataType: IJvInterpreterDataType;
       Data: Pointer); dynamic;
     procedure AddSrcFunEx(AUnitName: string; AIdentifier: string;
       APosBeg, APosEnd: Integer; AParamCount: Integer; AParamTypes: array of Word;
       AParamTypeNames: array of string; //dejoy added
-      AParamNames: array of string; AResTyp: Word;
+      AParamNames: array of string; AResTyp: Word;AResTypName: string;
       AResDataType: IJvInterpreterDataType;
       AData: Pointer); dynamic;
     procedure AddHandler(UnitName: string; Identifier: string;
@@ -882,7 +934,7 @@ type
     procedure InterpretRaise;
     function ParseDataType: IJvInterpreterDataType;
     function NewEvent(const UnitName: string; const FunctionName, EventType: string;
-      Instance: TObject): TSimpleEvent;
+      Instance: TObject; const APropName:string): TSimpleEvent;
     function FindEvent(const UnitName: string;Instance: TObject;
       const PropName: string ): TJvInterpreterEvent;
     procedure InternalSetValue(const Identifier: string);
@@ -1116,6 +1168,8 @@ const
   noInstance = HINST(0);
   RFDNull: TJvInterpreterRecField = (Identifier: ''; Offset: 0; Typ: 0);
 
+  varByConst    = $8000;
+
   {JvInterpreter error codes}
   ieOk = 0; { Okay - no errors }
   ieUnknown = 1;
@@ -1220,47 +1274,6 @@ begin
 end;
   
 { internal structures }
-type
-  TJvInterpreterRecordDataType = class(TInterfacedObject, IJvInterpreterDataType)
-  private
-    FRecordDesc: TJvInterpreterRecord;
-  public
-    constructor Create(ARecordDesc: TJvInterpreterRecord);
-    procedure Init(var V: Variant);
-    function GetTyp: Word;
-  end;
-
-  TJvInterpreterArrayDataType = class(TInterfacedObject, IJvInterpreterDataType)
-  private
-    FArrayBegin, FArrayEnd: TJvInterpreterArrayValues;
-    FDimension: Integer;
-    FArrayType: Integer;
-    FDT: IJvInterpreterDataType;
-  public
-    constructor Create(AArrayBegin, AArrayEnd: TJvInterpreterArrayValues;
-      ADimension: Integer; AArrayType: Integer; ADT: IJvInterpreterDataType);
-    procedure Init(var V: Variant);
-    function GetTyp: Word;
-  end;
-
-  TJvInterpreterSimpleDataType = class(TInterfacedObject, IJvInterpreterDataType)
-  private
-    FTyp: TVarType;
-  public
-    constructor Create(ATyp: TVarType);
-    procedure Init(var V: Variant);
-    function GetTyp: Word;
-  end;
-
-  PMethod = ^TMethod;
-
-  { function context - stack }
-  PFunctionContext = ^TFunctionContext;
-  TFunctionContext = record
-    PrevFunContext: PFunctionContext;
-    LocalVars: TJvInterpreterVarList;
-    Fun: TJvInterpreterSrcFunction;
-  end;
 
 {$IFDEF VisualCLX}
 type
@@ -1612,7 +1625,7 @@ begin
       if Cmp(TypeName, 'smallint') then
         Result := varSmallInt;
     'T', 't':
-      if Cmp(TypeName, 'tobject') then
+      if Cmp(TypeName, 'TObject') then
         Result := varObject
       else
       if Cmp(TypeName, 'tdatetime') then
@@ -2628,6 +2641,45 @@ function TJvInterpreterFunctionDesc.GetParamTypeNames(Index: Integer): string;
 begin
    Result := FParamTypeNames[Index];
 end;
+
+function TJvInterpreterFunctionDesc.GetDefine: string;
+var
+  Fun,s,t:string;
+  Param,Ret:string;
+  i:integer;
+begin
+  Result:='';
+  if FIdentifier='' then Exit;
+
+  t:='%s %s(%s)%s;';
+
+  if FResTyp=varEmpty then
+  begin
+    Fun := 'procedure';
+    Ret := '';
+  end
+  else
+  begin
+    Fun := 'function';
+    Ret := ': '+ResTypName;
+  end;
+
+  for i := 0 to ParamCount-1 do
+  begin
+    if (ParamTypes[i] and  varByRef) = varByRef then
+       s := 'Var '+ ParamNames[i]
+    else
+    if (ParamTypes[i] and  varByConst) = varByConst then
+       s := 'Const '+ ParamNames[i]
+    else
+       s := ParamNames[i];
+
+    Param:=Param+s+': '+ParamTypeNames[i];
+    if i<> ParamCount-1 then
+      Param := Param+'; ';
+  end;
+  Result :=  Format(t,[Fun,FIdentifier,Param,Ret]);
+end;
 //dejoy added end
 
 function TJvInterpreterFunctionDesc.GetParamName(Index: Integer): string;
@@ -2704,7 +2756,7 @@ end;
 //=== TJvInterpreterEvent ====================================================
 
 constructor TJvInterpreterEvent.Create(AOwner: TJvInterpreterExpression;
-  AInstance: TObject; AUnitName, AFunctionName: string);
+  AInstance: TObject; AUnitName, AFunctionName,APropName: string);
 begin
   // (rom) added inherited Create
   inherited Create;
@@ -2712,6 +2764,7 @@ begin
   FInstance := AInstance;
   FUnitName := AUnitName;
   FFunctionName := AFunctionName;
+  FPropName := APropName;
   {$IFDEF JvInterpreter_DEBUG}
   Inc(ObjCount);
   {$ENDIF JvInterpreter_DEBUG}
@@ -2850,6 +2903,9 @@ begin
   FSetList.Duplicates := dupAccept;
   FIGetList.Duplicates := dupAccept;
   FISetList.Duplicates := dupAccept;
+
+  FDisableExternalFunctions :=False;      
+
 end;
 
 destructor TJvInterpreterAdapter.Destroy;
@@ -3425,19 +3481,19 @@ end;
 procedure TJvInterpreterAdapter.AddSrcFun(UnitName: string; Identifier: string;
   PosBeg, PosEnd: Integer; ParamCount: Integer; ParamTypes: array of Word;
   ParamTypeNames: array of string; //dejoy added
-  ParamNames: array of string; ResTyp: Word;
+  ParamNames: array of string; ResTyp: Word;AResTypName: string;
   AResDataType: IJvInterpreterDataType;
   Data: Pointer);
 begin
   AddSrcFunEx(UnitName, Identifier, PosBeg, PosEnd, ParamCount, ParamTypes,
     ParamTypeNames, //dejoy added
-    ParamNames,ResTyp, AResDataType, nil);
+    ParamNames,ResTyp,AResTypName, AResDataType, nil);
 end;
 
 procedure TJvInterpreterAdapter.AddSrcFunEx(AUnitName: string; AIdentifier: string;
   APosBeg, APosEnd: Integer; AParamCount: Integer; AParamTypes: array of Word;
   AParamTypeNames: array of string; //dejoy added
-  AParamNames: array of string; AResTyp: Word;
+  AParamNames: array of string; AResTyp: Word;AResTypName: string;
   AResDataType: IJvInterpreterDataType;
   AData: Pointer);
 var
@@ -3452,6 +3508,7 @@ begin
     FunctionDesc.FPosEnd := APosEnd;
     FunctionDesc.FParamCount := AParamCount;
     FunctionDesc.FResTyp := AResTyp;
+    FunctionDesc.FResTypName := AResTypName;
     FunctionDesc.FResDataType := AResDataType;
     Identifier := AIdentifier;
     Data := AData;
@@ -4632,7 +4689,8 @@ begin
 end;
 
 function TJvInterpreterAdapter.NewEvent(const UnitName: string; const FunctionName,
-  EventType: string; AOwner: TJvInterpreterExpression; AObject: TObject): TSimpleEvent;
+  EventType: string; AOwner: TJvInterpreterExpression; AObject: TObject;
+  const APropName: string): TSimpleEvent;
 var
   Event: TJvInterpreterEvent;
   I: Integer;
@@ -4643,7 +4701,7 @@ begin
     JvInterpreterEventDesc := TJvInterpreterEventDesc(FEventHandlerList.Items[I]);
     if Cmp(JvInterpreterEventDesc.Identifier, EventType) then
     begin
-      Event := JvInterpreterEventDesc.EventClass.Create(AOwner, AObject, UnitName, FunctionName);
+      Event := JvInterpreterEventDesc.EventClass.Create(AOwner, AObject, UnitName, FunctionName, APropName);
       TMethod(Result).Code := JvInterpreterEventDesc.Code;
       TMethod(Result).Data := Event;
       Exit;
@@ -4740,6 +4798,9 @@ begin
   FSharedAdapter := GlobalJvInterpreterAdapter;
   FLastError := EJvInterpreterError.Create(-1, -1, '', '');
   FAllowAssignment := True;
+  FCompiled :=False;
+  FDisableExternalFunctions :=False;      
+
 end;
 
 destructor TJvInterpreterExpression.Destroy;
@@ -6172,11 +6233,11 @@ begin
 end;
 
 function TJvInterpreterFunction.NewEvent(const UnitName: string; const FunctionName,
-  EventType: string; Instance: TObject): TSimpleEvent;
+  EventType: string; Instance: TObject; const APropName:string): TSimpleEvent;
 begin
-  Result := FAdapter.NewEvent(UnitName, FunctionName, EventType, Self, Instance);
+  Result := FAdapter.NewEvent(UnitName, FunctionName, EventType, Self, Instance, APropName);
   if not Assigned(Result) then
-    Result := GlobalJvInterpreterAdapter.NewEvent(UnitName, FunctionName, EventType, Self, Instance);
+    Result := GlobalJvInterpreterAdapter.NewEvent(UnitName, FunctionName, EventType, Self, Instance,APropName);
   if not Assigned(Result) then
     JvInterpreterErrorN(ieEventNotRegistered, -1, EventType);
 end;
@@ -6194,9 +6255,10 @@ begin
   for i :=0  to FEventList.Count-1 do
   begin
     Event := TJvInterpreterEvent(FEventList[i]);
-    if (Event.FUnitName=UnitName) and
+    if (Event1=Event) or
+      (cmp(Event.FUnitName,UnitName) and
       (Event.FInstance=Instance) and
-      (Event=Event1) then
+      cmp(Event.FPropName,PropName)) then
     begin
       Result:= Event;
       Exit;
@@ -6236,14 +6298,14 @@ begin
            { method assignment }
             if  not cmp(Token,kwNIL) then
             begin
-              Event:=FindEvent(FCurUnitName,FCurrArgs.Obj,Identifier);
+              Event:=FindEvent(FCurUnitName,FCurrArgs.Obj,PropInf^.Name);
               if Event<>nil then
               begin
                 FEventList.Remove(Event);
                 Event.Free;
               end;
               Method := TMethod(NewEvent(FCurUnitName, FunctionName,
-                PropInf^.PropType^.Name,FCurrArgs.Obj {FCurInstance}));
+                PropInf^.PropType^.Name,FCurrArgs.Obj {FCurInstance},PropInf^.Name));
               SetMethodProp(FCurrArgs.Obj, PropInf, Method);
               FEventList.Add(Method.Data);
             end else
@@ -7130,13 +7192,14 @@ var
 
   procedure ReadParams;
   var
-    VarParam: Boolean;
+    VarParam,VarConst: Boolean;
     ParamType: string;
     iBeg: Integer;
   begin
     while True do
     begin
       VarParam := False;
+      VarConst := False;
       NextToken;
       FunctionDesc.FParamNames[FunctionDesc.ParamCount] := Token;
       if TTyp = ttRB then
@@ -7146,8 +7209,11 @@ var
         VarParam := True;
         NextToken;
       end;
-      { if TTyp = ttConst then
-        NextToken; }
+       if TTyp = ttConst then
+      begin
+        VarConst := True;
+//        NextToken;
+      end;
       iBeg := FunctionDesc.ParamCount;
       while True do
       begin
@@ -7179,6 +7245,10 @@ var
                 if VarParam then
                   FunctionDesc.FParamTypes[iBeg] := FunctionDesc.FParamTypes[iBeg] or
                     varByRef;
+                if VarConst then
+                  FunctionDesc.FParamTypes[iBeg] := FunctionDesc.FParamTypes[iBeg] or
+                    varByConst;
+
                 Inc(iBeg);
               end;
               Break;
@@ -7224,6 +7294,8 @@ begin
       TypName := Token;
       FunctionDesc.FResDataType := ParseDataType;
       FunctionDesc.FResTyp := FunctionDesc.FResDataType.GetTyp;
+      FunctionDesc.FResTypName := TypName;
+      
       if FunctionDesc.FResTyp = 0 then
         FunctionDesc.FResTyp := varVariant;
       NextToken;
@@ -7306,7 +7378,7 @@ begin
       SkipToEnd;
       with FunctionDesc do
         FAdapter.AddSrcFun(FCurUnitName {??!!}, FIdentifier, FPosBeg, CurPos,
-          FParamCount, FParamTypes,FParamTypeNames{dejoy added}, FParamNames, FResTyp, FResDataType, nil);
+          FParamCount, FParamTypes,FParamTypeNames{dejoy added}, FParamNames, FResTyp,FResTypName, FResDataType, nil);
     end;
   finally
     FunctionDesc.Free;
@@ -7985,7 +8057,7 @@ procedure TJvInterpreterSimpleDataType.Init(var V: Variant);
 begin
   V := Null;
   TVarData(V).VType := varEmpty;
-  if FTyp <> 0 then
+  if (FTyp <> 0) and (FTyp<>varObject) then //dejoy fixed: can't define tobject up d6
     V := Var2Type(V, FTyp);
 end;
 
