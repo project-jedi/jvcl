@@ -1,5 +1,6 @@
 To:
 borland.public.delphi.third-party
+borland.public.cppbuilder.thirdpartytools
 jedi.jvcl
 jedi.general
 Delphi Magazine (info@TheDelphiMagazine.com)
@@ -16,6 +17,9 @@ The JVCL Team is proud to announce that a beta release of JVCL 3 is available fo
 
 This release contains changes, additions and bugfixes too numerous to list here, but here are some of the highlights:
 
+- Support for Delphi 5,6 and 7
+- Support for C++ Builder 5 and 6
+- Partial support for Kylix 3
 - The monolithic package structure of JVCL 2.10 has been broken into smaller packages. 
 - Files have been renamed and arranged using a more logical naming scheme and folder structure, making it easier to find what you are looking for.
 - Numerous components have been merged. This means there are almost no duplicates in JVCL anymore.
@@ -36,7 +40,7 @@ This release is available in three flavors:
 - Source only
 
 Later on we will also provide separate downloads for those packages that can be installed in a "stand-alone" mode (JvUIB, JvWizard, JvGlobus, JvManagedThreads, JvDocking, JvXPCtrls and JvDotNetCtrls)
-To download JVCL 3, go to http://sourceforge.net/projects/jvcl and click the "Files" link at the top.
+To download JVCL 3, go to http://sourceforge.net/projects/jvcl and click the "Files" link at the top or go directly at this address: http://sourceforge.net/project/showfiles.php?group_id=45786
 
 The current version is JVCL 3.00 BETA 1.
 
