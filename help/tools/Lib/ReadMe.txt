@@ -1,0 +1,1 @@
+Folder where .dcu files are generated for our help tools
