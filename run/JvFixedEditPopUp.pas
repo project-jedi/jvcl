@@ -112,7 +112,7 @@ type
 
 // Returns a popup menu with the standard actions associated with edit controls (Undo, Cut, Copy, Paste, Delete, Select All).
 // The actions are handled autmatically by sending messages (WM_COPY, WM_CUT etc) to the control
-function FixedDefaultEditPopup(AEdit:TWinControl; Update: Boolean = true): TPopupMenu;
+function FixedDefaultEditPopup(AEdit: TWinControl; Update: Boolean = True): TPopupMenu;
 // Call with Value set to true to use the internal resourcestrings instead of those
 // provided by Windows. These strings can subsequently be translated using the ITE.
 // By default, the Windows provided strings are used.
@@ -182,7 +182,7 @@ var
   FHiddenPopup: THiddenPopupObject = nil;
   FUseResourceStrings: Boolean = False;
 
-function FixedDefaultEditPopup(AEdit: TWinControl; Update: Boolean = true): TPopupMenu;
+function FixedDefaultEditPopup(AEdit: TWinControl; Update: Boolean = True): TPopupMenu;
 begin
   if FHiddenPopup = nil then
     FHiddenPopup := THiddenPopupObject.Create(nil);
@@ -215,7 +215,7 @@ procedure THiddenPopupObject.DoCopy(Sender: TObject);
 var PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
-    if Supports(Edit, IFixedPopupIntf, PopupIntf) then
+    if Edit.GetInterface(IFixedPopupIntf, PopupIntf) then
       PopupIntf.Copy
     else
       Edit.Perform(WM_COPY, 0, 0);
@@ -225,7 +225,7 @@ procedure THiddenPopupObject.DoCut(Sender: TObject);
 var PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
-    if Supports(Edit, IFixedPopupIntf, PopupIntf) then
+    if Edit.GetInterface(IFixedPopupIntf, PopupIntf) then
       PopupIntf.Cut
     else
       Edit.Perform(WM_CUT, 0, 0);
@@ -235,7 +235,7 @@ procedure THiddenPopupObject.DoDelete(Sender: TObject);
 var PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
-    if Supports(Edit, IFixedPopupIntf, PopupIntf) then
+    if Edit.GetInterface(IFixedPopupIntf, PopupIntf) then
       PopupIntf.Delete
     else
       Edit.Perform(WM_CLEAR, 0, 0);
@@ -245,7 +245,7 @@ procedure THiddenPopupObject.DoPaste(Sender: TObject);
 var PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
-    if Supports(Edit, IFixedPopupIntf, PopupIntf) then
+    if Edit.GetInterface(IFixedPopupIntf, PopupIntf) then
       PopupIntf.Paste
     else
       Edit.Perform(WM_PASTE,0,0);
@@ -255,7 +255,7 @@ procedure THiddenPopupObject.DoSelectAll(Sender: TObject);
 var PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
-    if Supports(Edit, IFixedPopupIntf, PopupIntf) then
+    if Edit.GetInterface(IFixedPopupIntf, PopupIntf) then
       PopupIntf.SelectAll
     else
       Edit.Perform(EM_SETSEL, 0, -1);
@@ -266,7 +266,7 @@ var PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
   begin
-    if Supports(Edit, IFixedPopupIntf, PopupIntf) then
+    if Edit.GetInterface(IFixedPopupIntf, PopupIntf) then
       PopupIntf.Undo
     else
       Edit.Perform(WM_UNDO, 0, 0);
