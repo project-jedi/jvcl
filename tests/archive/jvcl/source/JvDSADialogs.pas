@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): 
 
-Last Modified: 2002-08-23
+Last Modified: 2002-08-27
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -680,6 +680,8 @@ begin
           ButtonSpacing * (ButtonCount - 1);
       ClientWidth := Max(17 + ChkTextWidth, Max(IconTextWidth, ButtonGroupWidth)) + HorzMargin * 2;
       ClientHeight := IconTextHeight + ButtonHeight + VertSpacing * 2 + VertMargin;
+      if CheckCaption <> '' then
+        Result.ClientHeight := Result.ClientHeight + VertMargin + 17 + 17;
       Left := (CenterParWidth div 2) - (Width div 2) + CenterParLeft;
       Top := (CenterParHeight div 2) - (Height div 2) + CenterParTop;
       if ACaption <> '' then
@@ -730,7 +732,6 @@ begin
         begin
           Name := 'DontShowAgain';
           Parent := Result;
-          Result.ClientHeight := Result.ClientHeight + VertMargin + 17 + Height;
           BiDiMode := Result.BiDiMode;
           Caption := CheckCaption;
           SetBounds(HorzMargin, IconTextHeight + VertMargin + VertSpacing * 2 + ButtonHeight,
@@ -1097,8 +1098,8 @@ end;
 
 procedure TDSARegStorage.CreateKey(const DSAInfo: TDSARegItem);
 begin
-  if not (RegKeyExists(RootKey, Key + '\' + DSAInfo.Name) and (RegCreateKey(RootKey, Key + '\' +
-      DSAInfo.Name, '') <> ERROR_SUCCESS)) then
+  if not (RegKeyExists(RootKey, Key + '\' + DSAInfo.Name) or (RegCreateKey(RootKey, Key + '\' +
+      DSAInfo.Name, '') = ERROR_SUCCESS)) then
     raise EJvDSADialog.CreateFmt(sDSARegKeyCreateError, [Key + '\' + DSAInfo.Name]);
 end;
 
