@@ -32,12 +32,12 @@ interface
 
 uses
   {$IFDEF MSWINDOWS}
-  Windows, Messages,
+  Windows,
   JclWin32,
   {$ENDIF MSWINDOWS}
   SysUtils, Classes, IniFiles,
   {$IFDEF VCL}
-  Controls, Forms, StdCtrls, ExtCtrls, Dialogs, Buttons, jpeg,
+  Messages, Controls, Forms, StdCtrls, ExtCtrls, Dialogs, Buttons, jpeg,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QDialogs, QButtons,
@@ -125,7 +125,7 @@ const
   cJVCLIni = '\JVCL.ini';
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  cJVCLIni = '/.JVCL.ini';
+  cJVCLIni = '/.JVCL';
   {$ENDIF}
 
 procedure TJvJVCLAboutForm.FormShow(Sender: TObject);
@@ -134,7 +134,12 @@ var
   VersionInfo: TOSVersionInfoEx;
 {$ENDIF MSWINDOWS}
 begin
+  {$IFDEF VCL}
   lblVersion.Caption := 'Version: ' + JVCL_VERSIONSTRING;
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  lblVersion.Caption := 'Version: ' + JVCLX_VERSIONSTRING;
+  {$ENDIF}
   {$IFDEF MSWINDOWS}
   FillChar(VersionInfo, SizeOf(TOSVersionInfoEx), #0);
   VersionInfo.dwOSVersionInfoSize := SizeOf(TOSVersionInfoEx);
@@ -186,7 +191,12 @@ procedure TJvJVCLAboutForm.LoadOptions;
 var
   L, T: Integer;
 begin
+  {$IFDEF MSWINDOWS}
   with TIniFile.Create(ExtractFileDir(Application.ExeName) + cJVCLIni) do
+  {$ENDIF}
+  {$IFDEF LINUX}
+  with TIniFile.Create( GetEnvironmentVariable('HOME') + cJVCLIni ) do
+  {$ENDIF}
   try
     L := ReadInteger(cOptions, cBoundsLeft, -1);
     T := ReadInteger(cOptions, cBoundsTop, -1);
