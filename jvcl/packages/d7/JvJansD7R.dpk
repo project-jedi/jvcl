@@ -23,6 +23,7 @@ package JvJansD7R;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Jans Runtime Components'}
+{$RUNONLY}
 {$IMPLICITBUILD OFF}
 
 requires
@@ -63,9 +64,9 @@ contains
   JvSimPIDLinker in '..\..\run\JvSimPIDLinker.pas',
   JvSimIndicator in '..\..\run\JvSimIndicator.pas',
   JvShapedButton in '..\..\run\JvShapedButton.pas',
-  JvPainterEffectsForm in '..\..\run\JvPainterEffectsForm.pas',
-  JvPainterQBForm in '..\..\run\JvPainterQBForm.pas',
-  JvQuickPreviewForm in '..\..\run\JvQuickPreviewForm.pas',
+  JvPainterEffectsForm in '..\..\run\JvPainterEffectsForm.pas' {PainterEffectsF},
+  JvPainterQBForm in '..\..\run\JvPainterQBForm.pas' {PainterQBF},
+  JvQuickPreviewForm in '..\..\run\JvQuickPreviewForm.pas' {QuickPreviewF},
   JvResample in '..\..\run\JvResample.pas',
   JvDrawImage in '..\..\run\JvDrawImage.pas',
   JvCSVBaseControls in '..\..\run\JvCSVBaseControls.pas';
