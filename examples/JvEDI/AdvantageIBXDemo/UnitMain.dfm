@@ -25,9 +25,6 @@ object FormMain: TFormMain
     TabOrder = 0
     object TabSheet6: TTabSheet
       Caption = 'Demo Options'
-      DesignSize = (
-        614
-        337)
       object rgDemoDatabaseOption: TRadioGroup
         Left = 8
         Top = 4
@@ -106,9 +103,6 @@ object FormMain: TFormMain
     end
     object TabSheet1: TTabSheet
       Caption = 'Profile'
-      DesignSize = (
-        614
-        337)
       object PageControl2: TPageControl
         Left = 8
         Top = 8

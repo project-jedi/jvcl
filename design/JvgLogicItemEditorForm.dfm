@@ -16,9 +16,6 @@ object JvgLogicItemEditor: TJvgLogicItemEditor
   Scaled = False
   OnCreate = FormCreate
   OnShow = FormShow
-  DesignSize = (
-    446
-    408)
   PixelsPerInch = 96
   TextHeight = 13
   object Label2: TLabel
@@ -118,9 +115,6 @@ object JvgLogicItemEditor: TJvgLogicItemEditor
     Height = 16
     BevelOuter = bvNone
     TabOrder = 4
-    DesignSize = (
-      302
-      16)
     object Panel10: TPanel
       Left = 0
       Top = 0
@@ -185,9 +179,6 @@ object JvgLogicItemEditor: TJvgLogicItemEditor
     Height = 16
     BevelOuter = bvNone
     TabOrder = 5
-    DesignSize = (
-      302
-      16)
     object Panel15: TPanel
       Left = 0
       Top = 15
@@ -252,9 +243,6 @@ object JvgLogicItemEditor: TJvgLogicItemEditor
     Height = 16
     BevelOuter = bvNone
     TabOrder = 6
-    DesignSize = (
-      302
-      16)
     object Panel20: TPanel
       Left = 0
       Top = 15

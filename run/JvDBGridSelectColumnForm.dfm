@@ -34,9 +34,6 @@ object frmSelectColumn: TfrmSelectColumn
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    DesignSize = (
-      185
-      41)
     object ButtonOK: TButton
       Left = 56
       Top = 8

@@ -49,9 +49,6 @@ object JvgLogicsEditor: TJvgLogicsEditor
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
-    DesignSize = (
-      782
-      48)
     object iPKey: TImage
       Left = 5
       Top = 5

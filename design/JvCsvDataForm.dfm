@@ -27,9 +27,6 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
   Position = poScreenCenter
   Scaled = False
   OnCreate = FormCreate
-  DesignSize = (
-    434
-    303)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
