@@ -75,6 +75,8 @@ type
     mnuLocationBar: TMenuItem;
     mnuUp: TMenuItem;
     mnuDown: TMenuItem;
+    pnlDepAndFiles: TPanel;
+    sptDepAndFiles: TSplitter;
     procedure actExitExecute(Sender: TObject);
     procedure actNewExecute(Sender: TObject);
     procedure aevEventsHint(Sender: TObject);
@@ -112,6 +114,9 @@ type
     procedure mnuUpClick(Sender: TObject);
     procedure mnuDownClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure jlbListMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure sptDepAndFilesMoved(Sender: TObject);
   private
     { Private declarations }
     Changed : Boolean; // true if current file has changed
@@ -729,6 +734,21 @@ end;
 procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   CanClose := IsOkToChange;
+end;
+
+procedure TfrmMain.jlbListMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  IsOkToChange;
+end;
+
+procedure TfrmMain.sptDepAndFilesMoved(Sender: TObject);
+begin
+  lblDependencies.Top := pnlDepAndFiles.Top +
+                        (jsgDependencies.Height - lblDependencies.Height) div 2;
+  lblFiles.Top := pnlDepAndFiles.Top +
+                  pnlDepAndFiles.Height - jsgFiles.Height +
+                        (jsgFiles.Height - lblFiles.Height) div 2;
 end;
 
 end.
