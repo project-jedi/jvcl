@@ -100,7 +100,7 @@ type
     property TopDocked: Boolean read FTopDocked write FTopDocked;
     property RightDocked: Boolean read FRightDocked write FRightDocked;
     property BottomDocked: Boolean read FBottomDocked write FBottomDocked;
-    property CustomDocked: Boolean read FCustomDocked  write FCustomDocked; {NEW! Contains custom dock panel! }
+    property CustomDocked: Boolean read FCustomDocked write FCustomDocked; {NEW! Contains custom dock panel! }
     property DockFormStyle: TJvDockFormStyle read FDockFormStyle write FDockFormStyle;
     property DockClientData: string read FDockClientData write FDockClientData;
     property DockControl: TWinControl read FDockControl write FDockControl;
@@ -140,9 +140,6 @@ type
     FDataStream: TMemoryStream;
     function FindDockForm(const FormName: string): TCustomForm;
     function CreateHostControl(ATreeZone: TJvDockInfoZone): TWinControl;
-    {$IFDEF USEJVCL}
-    function GetAppStoragePath: string;
-    {$ENDIF USEJVCL}
   protected
     procedure ScanTreeZone(TreeZone: TJvDockBaseZone); override;
     {$IFDEF USEJVCL}
@@ -164,7 +161,7 @@ type
     procedure ReadInfoFromAppStorage;
     procedure WriteInfoToAppStorage;
     property AppStorage: TJvCustomAppStorage read FAppStorage write FAppStorage;
-    property AppStoragePath: string read GetAppStoragePath write FAppStoragePath;
+    property AppStoragePath: string read FAppStoragePath write FAppStoragePath;
     {$ENDIF USEJVCL}
     procedure ReadInfoFromIni;
     procedure ReadInfoFromReg(const RegName: string);
@@ -260,6 +257,7 @@ begin
   inherited Destroy;
   FreeAndNil(FDataStream);
 end;
+
 { Create an TJvDockConjoinHostForm or  TJvDockTabHostForm when restoring a docking layout }
 function TJvDockInfoTree.CreateHostControl(ATreeZone: TJvDockInfoZone): TWinControl;
 var
@@ -290,7 +288,6 @@ begin
   if Result <> nil then
     Result.Name := ATreeZone.DockFormName;
 end;
-
 
 // CreateZoneAndAddInfoFromApp
 //
@@ -360,10 +357,10 @@ begin
         // Changed to persist ALL DockPanels, not just Top,Left,Right,Bottom.
         // This is a hardcoded assumption throughout the component that is
         // proving hard to overcome.
-        for I := Low(TJvDockPosition) to High(TJvDockPosition)  do  // There are 5 TJvDockPositions now ! {NEW!}
+        for I := Low(TJvDockPosition) to High(TJvDockPosition) do // There are 5 TJvDockPositions now ! {NEW!}
         begin
           CurrTreeZone := TreeZone;
-          TmpDockPanel := TJvDockServer(DockBaseControl).DockPanel[ I];
+          TmpDockPanel := TJvDockServer(DockBaseControl).DockPanel[I];
           if Assigned(TmpDockPanel) then
           begin
             CreateZoneAndAddInfoFromApp(TmpDockPanel);
@@ -404,56 +401,56 @@ procedure TJvDockInfoTree.CreateZoneAndAddInfoFromAppStorage;
 var
   FormList: TStringList;
   CP, CP1: PChar;
-  S, APath: string;
+  S: string;
   I: Integer;
+  OldPath: string;
 
   procedure CreateZoneAndAddInfo(Index: Integer);
   var
     I: Integer;
     TreeZone: TJvDockInfoZone;
-    APath, OldPath: string;
   begin
-    APath := FAppStorage.ConcatPaths([AppStoragePath, 'Forms', FormList[Index]]);
-    if FAppStorage.PathExists(APath) then
+    if FAppStorage.PathExists(FormList[Index]) then
     begin
       TreeZone := TJvDockInfoZone(AddChildZone(CurrTreeZone, nil));
       with TreeZone, FAppStorage do
       begin
-        try
-          OldPath := Path;
-          Path := APath;
-          DockFormName := FormList[Index];
-          ParentName := ReadString('ParentName');
-          DockRect := Rect(ReadInteger('DockLeft'), ReadInteger('DockTop'),
-            ReadInteger('DockRight'), ReadInteger('DockBottom'));
-          LRDockWidth := ReadInteger('LRDockWidth');
-          LastDockSiteName := ReadString('LastDockSiteName');
-          UnDockLeft := ReadInteger('UnDockLeft');
-          UnDockTop := ReadInteger('UnDockTop');
-          TBDockHeight := ReadInteger('TBDockHeight');
-          UnDockWidth := ReadInteger('UnDockWidth');
-          UnDockHeight := ReadInteger('UnDockHeight');
-          VSPaneWidth := ReadInteger('VSPaneWidth');
-          Visible := ReadBoolean('Visible');
-          BorderStyle := TBorderStyle(ReadInteger('BorderStyle'));
-          FormStyle := TFormStyle(ReadInteger('FormStyle'));
-          WindowState := TWindowState(ReadInteger('WindowState'));
-          DockFormStyle := TJvDockFormStyle(ReadInteger('DockFormStyle'));
-          CanDocked := ReadBoolean('CanDocked');
-          EachOtherDocked := ReadBoolean('EachOtherDocked');
-          LeftDocked := ReadBoolean('LeftDocked');
-          TopDocked := ReadBoolean('TopDocked');
-          RightDocked := ReadBoolean('RightDocked');
-          BottomDocked := ReadBoolean('BottomDocked');
-          CustomDocked := ReadBoolean('CustomDocked'); {NEW}
-          DockClientData := ReadString('DockClientData');
-        finally
-          FAppStorage.Path := OldPath;
-        end;
+        { Move down into the folder of the form.. }
+        Path := ConcatPaths([Path, FormList[Index]]);
+
+        DockFormName := FormList[Index];
+        ParentName := ReadString('ParentName');
+        DockRect := Rect(ReadInteger('DockLeft'), ReadInteger('DockTop'),
+          ReadInteger('DockRight'), ReadInteger('DockBottom'));
+        LRDockWidth := ReadInteger('LRDockWidth');
+        LastDockSiteName := ReadString('LastDockSiteName');
+        UnDockLeft := ReadInteger('UnDockLeft');
+        UnDockTop := ReadInteger('UnDockTop');
+        TBDockHeight := ReadInteger('TBDockHeight');
+        UnDockWidth := ReadInteger('UnDockWidth');
+        UnDockHeight := ReadInteger('UnDockHeight');
+        VSPaneWidth := ReadInteger('VSPaneWidth');
+        Visible := ReadBoolean('Visible');
+        BorderStyle := TBorderStyle(ReadInteger('BorderStyle'));
+        FormStyle := TFormStyle(ReadInteger('FormStyle'));
+        WindowState := TWindowState(ReadInteger('WindowState'));
+        DockFormStyle := TJvDockFormStyle(ReadInteger('DockFormStyle'));
+        CanDocked := ReadBoolean('CanDocked');
+        EachOtherDocked := ReadBoolean('EachOtherDocked');
+        LeftDocked := ReadBoolean('LeftDocked');
+        TopDocked := ReadBoolean('TopDocked');
+        RightDocked := ReadBoolean('RightDocked');
+        BottomDocked := ReadBoolean('BottomDocked');
+        CustomDocked := ReadBoolean('CustomDocked'); {NEW}
+        DockClientData := ReadString('DockClientData');
+
+        { ..and move up a level }
+        Path := ConcatPaths([Path, '..']);
       end;
       for I := Index - 1 downto 0 do
       begin
-        if FAppStorage.ReadString(FAppStorage.ConcatPaths([AppStoragePath, 'Forms', FormList[I], 'ParentName'])) = FormList[Index] then
+        { Search for forms that have this form (FormList[I]) as parent }
+        if FAppStorage.ReadString(FAppStorage.ConcatPaths([FormList[I], 'ParentName'])) = FormList[Index] then
         begin
           CurrTreeZone := TreeZone;
           CreateZoneAndAddInfo(I);
@@ -465,29 +462,36 @@ var
 
 begin
   FormList := TStringList.Create;
-  FJvDockInfoStyle := isJVCLReadInfo;  // set mode for Scan.
+  FJvDockInfoStyle := isJVCLReadInfo; // set mode for Scan.
   try
-    APath := FAppStorage.ConcatPaths([AppStoragePath, 'Forms', 'FormNames']);
-    if FAppStorage.ValueStored(APath) then
-    begin
-      S := FAppStorage.ReadString(APath);
-      { UniqueString is used because we modify the contents of S after
-        casting S to a PChar. S might point to an actual string in a storage,
-        as is the case with TJvAppXMLFileStorage. Not using UniqueString would
-        change the value in the storage too. }
-      UniqueString(S);
-      CP := PChar(S);
-      CP1 := StrPos(CP, ';');
-      while CP1 <> nil do
+    { Normally, we wouldn't find duplicate names, but if so ignore them otherwise havoc }
+    FormList.Duplicates := dupIgnore;
+    OldPath := FAppStorage.Path;
+    try
+      FAppStorage.Path := FAppStorage.ConcatPaths([FAppStorage.Path, AppStoragePath, 'Forms']);
+      if FAppStorage.ValueStored('FormNames') then
       begin
-        CP1^ := #0;
-        FormList.Add(CP);
-        CP := CP1 + 1;
+        S := FAppStorage.ReadString('FormNames');
+        { UniqueString is used because we modify the contents of S after
+          casting S to a PChar. S might point to an actual string in a storage,
+          as is the case with TJvAppXMLFileStorage. Not using UniqueString would
+          change the value in the storage too. }
+        UniqueString(S);
+        CP := PChar(S);
         CP1 := StrPos(CP, ';');
+        while CP1 <> nil do
+        begin
+          CP1^ := #0;
+          FormList.Add(string(CP));
+          CP := CP1 + 1;
+          CP1 := StrPos(CP, ';');
+        end;
+        for I := FormList.Count - 1 downto 0 do
+          if FAppStorage.ReadString(FAppStorage.ConcatPaths([FormList[I], 'ParentName'])) = '' then
+            CreateZoneAndAddInfo(I);
       end;
-      for I := FormList.Count - 1 downto 0 do
-        if FAppStorage.ReadString(FAppStorage.ConcatPaths([AppStoragePath, 'Forms', FormList[I], 'ParentName'])) = '' then
-          CreateZoneAndAddInfo(I);
+    finally
+      FAppStorage.Path := OldPath;
     end;
   finally
     FormList.Free;
@@ -538,7 +542,7 @@ var
         TopDocked := ReadBool(DockFormName, 'TopDocked', True);
         RightDocked := ReadBool(DockFormName, 'RightDocked', True);
         BottomDocked := ReadBool(DockFormName, 'BottomDocked', True);
-        CustomDocked := ReadBool(DockFormName, 'CustomDocked', True );
+        CustomDocked := ReadBool(DockFormName, 'CustomDocked', True);
         DockClientData := ReadString(DockFormName, 'DockClientData', '');
       end;
     end;
@@ -709,13 +713,6 @@ end;
 
 {$IFDEF USEJVCL}
 
-function TJvDockInfoTree.GetAppStoragePath: string;
-begin
-  Result := FAppStoragePath;
-  if (Result = '') and (FAppStorage <> nil) then
-    Result := FAppStorage.Path;
-end;
-
 procedure TJvDockInfoTree.ReadInfoFromAppStorage;
 begin
   AppStorage.BeginUpdate;
@@ -775,7 +772,7 @@ end;
 procedure TJvDockInfoTree.ScanTreeZone(TreeZone: TJvDockBaseZone);
 var
   I: Integer;
-  APath, OldPath: string;
+  OldPath: string;
 begin
   if FJvDockInfoStyle = isJVCLReadInfo then { JVCL Mode persistance : READ }
   begin
@@ -790,11 +787,11 @@ begin
     if TreeZone <> TopTreeZone then
       with TJvDockInfoZone(TreeZone), FAppStorage do
       begin
-        APath := ConcatPaths([AppStoragePath, 'Forms', 'FormNames']);
-        WriteString(APath, ReadString(APath) + DockFormName + ';');
+        OldPath := Path;
         try
-          OldPath := Path;
-          Path := ConcatPaths([OldPath, AppStoragePath, 'Forms', DockFormName]);
+          Path := ConcatPaths([Path, AppStoragePath, 'Forms']);
+          WriteString('FormNames', ReadString('FormNames') + DockFormName + ';');
+          Path := ConcatPaths([Path, DockFormName]);
           WriteString('ParentName', ParentName);
           WriteInteger('DockLeft', DockRect.Left);
           WriteInteger('DockTop', DockRect.Top);
@@ -819,7 +816,7 @@ begin
           WriteBoolean('TopDocked', TopDocked);
           WriteBoolean('RightDocked', RightDocked);
           WriteBoolean('BottomDocked', BottomDocked);
-          WriteBoolean('CustomDocked',CustomDocked); {NEW!}
+          WriteBoolean('CustomDocked', CustomDocked); {NEW!}
           WriteString('DockClientData', DockClientData);
         finally
           FAppStorage.Path := OldPath;
