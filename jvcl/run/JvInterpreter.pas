@@ -5292,7 +5292,9 @@ var
   VV: TJvInterpreterArrayValues;
   PP: PJvInterpreterArrayRec;
   Bound: Integer;
+{$IFDEF COMPILER6_UP}
   AI: array of integer;
+{$ENDIF}  
 begin
   Result := False;
   if Args.Count <> 0 then
@@ -5371,7 +5373,9 @@ var
   VV: TJvInterpreterArrayValues;
   PP: PJvInterpreterArrayRec;
   Bound: Integer;
+{$IFDEF COMPILER6_UP}
   AI: array of integer;
+{$ENDIF}  
 begin
   Result := False;
   if Args.Count <> 0 then

@@ -2179,11 +2179,13 @@ const
   RECO_CUT = $00000003; { cut to the clipboard  }
   RECO_DRAG = $00000004; { drag                  }
 
+(*  make Delphi 5 compiler happy // andreas
   { RichEdit GUIDs }
   IID_IRichEditOle: TGUID = (
     D1: $00020D00; D2: $0000; D3: $0000; D4: ($C0, $00, $00, $00, $00, $00, $00, $46));
   IID_IRichEditOleCallback: TGUID = (
     D1: $00020D03; D2: $0000; D3: $0000; D4: ($C0, $00, $00, $00, $00, $00, $00, $46));
+*)
 
   //=== TRichEditOleCallback ===================================================
 

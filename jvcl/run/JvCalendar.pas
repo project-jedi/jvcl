@@ -281,7 +281,6 @@ function DayStatesToString(Days: TMonthDayState): string;
 implementation
 
 resourcestring
-  sInvalidDate = 'Invalid date to TJvMonthCalendar2 (%d,%d,%d)';
   sInvalidDateStr = 'Invalid date specification to TMonthCalStrings (%s)';
   SCannotAssign = 'Cannot assign %s to a %s';
   SInvalidArgumentToSetDayStates = 'Invalid argument to SetDayStates';

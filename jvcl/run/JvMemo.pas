@@ -204,50 +204,6 @@ implementation
 uses
   JclStrings;
 
-function GetFontHeight(phFont: hFont): Integer;
-var
-  hWin: HDC;
-  tm: TTextMetric;
-  hOldFont: HFONT;
-begin
-  Result := -1;
-
-  if phFont = 0 then
-    Exit;
-
-  hWin := GetDC(0); // use the main screen window Handle
-
-  { according to the API help for GetDC, a return value of 'null' is error }
-  if hWin = 0 then
-    Exit;
-
-  try
-    hOldFont := SelectObject(hWin, phFont);
-    GetTextMetrics(hWin, tm);
-    SelectObject(hWin, hOldFont);
-  finally
-    ReleaseDC(0, hWin);
-  end;
-
-  Result := tm.tmHeight;
-end;
-
-function AddVScrollbar(Sb: TScrollStyle): TScrollStyle;
-begin
-  if Sb = ssHorizontal then
-    Result := ssBoth
-  else
-    Result := ssVertical;
-end;
-
-function RemoveVScrollbar(Sb: TScrollStyle): TScrollStyle;
-begin
-  if Sb = ssBoth then
-    Result := ssHorizontal
-  else
-    Result := ssNone;
-end;
-
 constructor TJvCustomMemo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);

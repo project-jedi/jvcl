@@ -141,10 +141,12 @@ begin
     ExtractAssociatedIcon(GetFocus, PChar(Filename), w);
 end;
 
+(* make Delphi 5 compiler happy // andreas
 function SortByName(List: TStringList; Index1, Index2: Integer): Integer;
 begin
   Result := AnsiCompareText(ExtractFileName(List[Index2]), ExtractFileName(List[Index2]));
 end;
+*)
 
 function SortByObject(List: TStringList; Index1, Index2: Integer): Integer;
 begin

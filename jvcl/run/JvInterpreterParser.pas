@@ -395,11 +395,6 @@ const
 
 {######################## tokenizer ########################}
 
-function HasChar(const Ch: Char; const S: string): Boolean;
-begin
-  Result := Pos(Ch, S) > 0;
-end;
-
 function TokenTyp(const Token: string): TTokenTyp;
 var
   I: Integer;

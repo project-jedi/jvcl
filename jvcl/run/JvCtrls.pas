@@ -276,9 +276,6 @@ uses
 
 {$R ..\resources\JvCtrls.res}
 
-resourcestring
-  RsLBVirtualCantBeSorted = 'ListBox doesn''t allow sorting in virtual mode';
-
 const
   JvImgBtnModalResults: array [TJvImgBtnKind] of TModalResult =
     (mrNone, mrOk, mrCancel, mrNone, mrYes, mrNo, mrNone,
