@@ -55,14 +55,12 @@ type
     FAutoSize: Boolean;
     FStart, FStop: Integer;
     FPosition: Integer;
-    FColor: TColor;
     FDirection: TJvAnimateDirection;
     FGoingUp: Boolean;
     FCenter: Boolean;
     FImageChangeLink: TChangeLink;
     procedure SetCenter(Value: Boolean);
     procedure SetDirection(Value: TJvAnimateDirection);
-    procedure SetColor(Value: TColor);
     procedure SetPosition(Value: Integer);
     procedure SetStart(Value: Integer);
     procedure SetStop(Value: Integer);
@@ -81,7 +79,7 @@ type
     {$ENDIF}
     procedure Notification(AComponent: TComponent; AOperation: TOperation); override;
     property Centered: Boolean read FCenter write SetCenter;
-    property Color: TColor read FColor write SetColor default clBtnFace;
+    property Color default clBtnFace;
     property Direction: TJvAnimateDirection read FDirection write SetDirection;
     property Active: Boolean read FActive write SetActive default False;
     property ImageList: TImagelist read FImageList write SetImage;
@@ -147,7 +145,7 @@ begin
   FStop := 0;
   FPosition := 0;
   FActive := False;
-  FColor := clBtnFace;
+  Color := clBtnFace;
   FTimer := TTimer.Create(nil);
   FTimer.OnTimer := TimerEvent;
   FTimer.Enabled := FActive;
@@ -360,15 +358,6 @@ begin
   end;
 end;
 
-procedure TJvCustomBmpAnimator.SetColor(Value: TColor);
-begin
-  if FColor <> Value then
-  begin
-    FColor := Value;
-    Invalidate;
-  end;
-end;
-
 procedure TJvCustomBmpAnimator.SetPosition(Value: Integer);
 begin
   FPosition := Value;
@@ -395,7 +384,7 @@ begin
     end;
     if not FTransparent then
     begin
-      Canvas.Brush.Color := FColor;
+      Canvas.Brush.Color := Color;
       Canvas.FillRect(ClientRect);
     end
     else

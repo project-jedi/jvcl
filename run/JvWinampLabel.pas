@@ -31,7 +31,7 @@ unit JvWinampLabel;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls, StdCtrls,
+  Windows, SysUtils, Messages, Classes, Graphics, Controls, StdCtrls,
   JVCLVer;
 
 type
@@ -57,12 +57,10 @@ type
     FCurPos: Integer;
     FWait: Integer;
     FWaiting: Boolean;
-    FColor: TColor;
     FScale: Real;
     // (p3) renamed
     FText: string;
     function GetCol(Ch: Char): Word;
-    procedure SetColor(Value: TColor);
     function GetScrollBy: Integer;
     procedure SetActive(Value: Boolean);
     procedure SetStretch(Value: Boolean);
@@ -75,6 +73,7 @@ type
     procedure DoOnTimer(Sender: TObject);
     function GetRow(Ch: Char): Word;
     procedure SetText(Value: string);
+    procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
   protected
     // (rom) made protected
     CharWidth: Integer;
@@ -91,7 +90,7 @@ type
     property ScrollInterval: Cardinal read FScrollInterval write SetInterval;
     property WaitOnEnd: Integer read FWait write FWait;
     property Skin: TPicture read FPicture write SetPicture;
-    property Color: TColor read FColor write SetColor;
+    property Color;
     property Text: string read FText write SetText;
     property Align;
     property Alignment;
@@ -224,16 +223,6 @@ begin
     raise EJVCLException.Create(RC_InvalidSkin);
   FText := '';
   Invalidate;
-end;
-
-procedure TJvWinampLabel.SetColor(Value: TColor);
-begin
-  if Value <> FColor then
-  begin
-    FColor := Value;
-    FText := '';
-    Invalidate;
-  end;
 end;
 
 procedure TJvWinampLabel.SetActive(Value: Boolean);
@@ -460,6 +449,12 @@ begin
     FCurPos := 0;
     FScrollBy := Abs(FScrollBy);
   end;
+end;
+
+procedure TJvWinampLabel.CMColorChanged(var Message: TMessage);
+begin
+  FText := '';
+  inherited;
 end;
 
 end.

@@ -143,8 +143,7 @@ type
     procedure ImageListChange(Sender: Tobject);
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    function GetColor: TColor;
-    procedure SetColor(const Value: TColor);
+    procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
   protected
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -155,7 +154,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Color: TColor read GetColor write SetColor default clWindow;
+    property Color default clWindow;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property HiColor: TColor read FHiColor write SetHiColor default clActiveCaption;
     property ImageList: TImageList read FImageList write SetImageList;
@@ -749,19 +748,13 @@ begin
   end;
 end;
 
-function TJvImageSquare.GetColor: TColor;
+procedure TJvImageSquare.CMColorChanged(var Message: TMessage);
 begin
-  Result := inherited Color;
-end;
-
-procedure TJvImageSquare.SetColor(const Value: TColor);
-begin
-  inherited Color := Value;
-  FBackColor := Value;
-  TmpColor := Value;
+  inherited;
+  FBackColor := Color;
+  TmpColor := Color;
   Repaint;
 end;
-
 
 end.
 

@@ -116,8 +116,6 @@ type
     procedure DrawImage(ACanvas: TCanvas; ADate: TDate; const ARect: TRect);
     procedure DrawToday(ACanvas: TCanvas; const ARect: TRect);
     procedure SetImageCursor(const Value: TCursor);
-    function GetCursor: TCursor;
-    procedure SetCursor(const Value: TCursor);
     procedure SetSelection(const Value: TJvTLSelFrame);
     procedure DoLMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -128,6 +126,7 @@ type
     // this is needed so we receive the arrow keys
     procedure WMGetDlgCode(var Msg: TWmGetDlgCode); message WM_GETDLGCODE;
     procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
+    procedure CMCursorChanged(var Message: TMessage); message CM_CURSORCHANGED;
 
     procedure DrawFrame(ACanvas: TCanvas; AColor: TColor;
       ALineWidth: Integer; ARect: TRect);
@@ -167,7 +166,7 @@ type
 
     property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle;
     property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 12;
-    property Cursor: TCursor read GetCursor write SetCursor;
+    property Cursor;
     property DayWidth: Integer read FDayWidth write SetDayWidth default 19;
     property ObjectsFontStyle: TFontStyles read FObjectsFontStyle write SetObjectsFontStyle default [fsUnderline];
     property ImageCursor: TCursor read FImageCursor write SetImageCursor default crHandPoint;
@@ -983,17 +982,6 @@ begin
   end;
 end;
 
-function TJvCustomTMTimeline.GetCursor: TCursor;
-begin
-  Result := inherited Cursor;
-end;
-
-procedure TJvCustomTMTimeline.SetCursor(const Value: TCursor);
-begin
-  inherited Cursor := Value;
-  FRealCursor := Value;
-end;
-
 procedure TJvCustomTMTimeline.SetSelection(const Value: TJvTLSelFrame);
 begin
   FSelection.Assign(Value);
@@ -1317,6 +1305,12 @@ begin
   end;
 end;
 
+
+procedure TJvCustomTMTimeline.CMCursorChanged(var Message: TMessage);
+begin
+  inherited;
+  FRealCursor := Cursor;
+end;
 
 end.
 

@@ -194,8 +194,6 @@ type
     procedure DoChangeLinkChange(Sender: TObject);
     procedure SetActivePageIndex(const Value: Integer);
     procedure SetButtonSize(const Value: TJvBarButtonSize);
-    function GetColor: TColor;
-    procedure SetColor(const Value: TColor);
     procedure SetLargeImages(const Value: TImageList);
     procedure SetSmallImages(const Value: TImageList);
     procedure SetPageButtonHeight(const Value: Integer);
@@ -220,12 +218,12 @@ type
     procedure CMCaptionEditing(var Msg: TMessage); message CM_CAPTION_EDITING;
     procedure CMCaptionEditAccept(var Msg: TMessage); message CM_CAPTION_EDIT_ACCEPT;
     procedure CMCaptionEditCancel(var Msg: TMessage); message CM_CAPTION_EDIT_CANCEL;
-    function GetFont: TFont;
-    procedure SetFont(const Value: TFont);
     procedure DoButtonEdit(NewText: string; B: TJvOutlookBarButton);
     procedure DoPageEdit(NewText: string; P: TJvOutlookBarPage);
     function GetActivePage: TJvOutlookBarPage;
     function GetActivePageIndex: Integer;
+    procedure CMColorChanged(var Message: TMessage);message CM_COLORCHANGED;
+    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     function GetButtonHeight(PageIndex: Integer): Integer;
@@ -256,8 +254,8 @@ type
     property TopButton: TSpeedButton read FTopButton;
     property BtmButton: TSpeedButton read FBtmButton;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
-    property Font: TFont read GetFont write SetFont;
-    property Color: TColor read GetColor write SetColor default clBtnShadow;
+    property Font;
+    property Color default clBtnShadow;
     property Pages: TJvOutlookBarPages read FPages write SetPages;
     property LargeImages: TImageList read FLargeImages write SetLargeImages;
     property SmallImages: TImageList read FSmallImages write SetSmallImages;
@@ -1125,11 +1123,6 @@ begin
   Invalidate;
 end;
 
-function TJvCustomOutlookBar.GetColor: TColor;
-begin
-  Result := inherited Color;
-end;
-
 procedure TJvCustomOutlookBar.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
@@ -1700,40 +1693,6 @@ begin
   end;
 end;
 
-procedure TJvCustomOutlookBar.SetColor(const Value: TColor);
-var
-  I: Integer;
-begin
-  if inherited Color <> Value then
-  begin
-    inherited Color := Value;
-    for I := 0 to Pages.Count - 1 do
-      if Pages[I].ParentColor then
-      begin
-        Pages[I].ParentColor := False;
-        Pages[I].ParentColor := True; // reset flag
-      end;
-  end;
-end;
-
-function TJvCustomOutlookBar.GetFont: TFont;
-begin
-  Result := inherited Font;
-end;
-
-procedure TJvCustomOutlookBar.SetFont(const Value: TFont);
-var
-  I: Integer;
-begin
-  inherited Font := Value;
-  for I := 0 to Pages.Count - 1 do
-    if Pages[I].ParentFont then
-    begin
-      Pages[I].ParentFont := False;
-      Pages[I].ParentFont := True; // reset flag
-    end;
-end;
-
 procedure TJvCustomOutlookBar.SetLargeImages(const Value: TImageList);
 begin
   if FLargeImages <> Value then
@@ -2133,6 +2092,32 @@ begin
   end;
 end;
 {$ENDIF}
+
+procedure TJvCustomOutlookBar.CMColorChanged(var Message: TMessage);
+var
+  I: Integer;
+begin
+  inherited;
+  for I := 0 to Pages.Count - 1 do
+    if Pages[I].ParentColor then
+    begin
+      Pages[I].ParentColor := False;
+      Pages[I].ParentColor := True; // reset flag
+    end;
+end;
+
+procedure TJvCustomOutlookBar.CMFontChanged(var Message: TMessage);
+var
+  I: Integer;
+begin
+  inherited;
+  for I := 0 to Pages.Count - 1 do
+    if Pages[I].ParentFont then
+    begin
+      Pages[I].ParentFont := False;
+      Pages[I].ParentFont := True; // reset flag
+    end;
+end;
 
 end.
 

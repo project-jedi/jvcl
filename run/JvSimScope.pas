@@ -87,7 +87,6 @@ type
     DrawTimer: TTimer;
     fActive: boolean;
     fBaseColor,
-    fColor,
     fGridColor : TColor;
     fBaseLine, fGridSize, fInterval: integer;
     FLines: TJvScopeLines;
@@ -114,7 +113,7 @@ type
     property Active: boolean read fActive write SetActive;
     property Interval: Integer read fInterval write SetInterval;
     { Color properties }
-    property Color: TColor read fColor write fColor;
+    property Color;
     property GridColor: TColor read fGridColor write fGridColor;
     property Lines:TJvScopeLines read FLines write SetLines;
     property BaseColor: TColor read fBaseColor write fBaseColor;
@@ -211,7 +210,7 @@ begin
   inherited Create(AnOwner);
   fAllowed := FALSE;
   DrawBuffer := TBitmap.Create;
-  DrawBuffer.Canvas.Brush.Color := FColor;
+  DrawBuffer.Canvas.Brush.Color := Color;
   DrawBuffer.Canvas.Brush.Style := bsSolid;
   DrawBuffer.Canvas.Pen.Width := 1;
   DrawBuffer.Canvas.Pen.Style := psSolid;
@@ -257,7 +256,7 @@ begin
   CalcBase := (height - round(height / 100 * FBaseline));
   with DrawBuffer.Canvas do
   begin
-    Brush.Color := FColor;
+    Brush.Color := Color;
     Pen.Style := psClear;
     Rectangle(0, 0, Width + 1, height + 1);
     Pen.Style := psSolid;
@@ -384,7 +383,7 @@ begin
     CopyRect(Des, DrawBuffer.Canvas, Src);
 
     { Draw new area }
-    Pen.Color := FColor;
+    Pen.Color := Color;
     Pen.Width := 2;
     MoveTo(Width - 1, 0);
     LineTo(Width - 1, Height);
@@ -440,7 +439,7 @@ procedure TJvSimScope.Paint;
 var
   Rect: TRect;
 begin
-  inherited Paint;
+//  inherited Paint;
   DrawBuffer.Height := Height;
   DrawBuffer.Width := Width;
   Rect.Top := 0;
