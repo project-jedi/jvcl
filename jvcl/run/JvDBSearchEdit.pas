@@ -34,18 +34,11 @@ unit JvDBSearchEdit;
 interface
 
 uses
-  SysUtils, Classes, DB,
+  Windows,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls,
-  Forms, Menus, Dialogs, StdCtrls, DBCtrls,
+  Messages,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QMenus, QDialogs, QStdCtrls,
-  QDBCtrls,
-  {$ENDIF VisualCLX}
-  {$IFDEF COMPILER6_UP}
-  Variants,
-  {$ENDIF COMPILER6_UP}
+  Classes, Controls, DB, DBCtrls,
   JvEdit;
 
 type
@@ -145,6 +138,10 @@ type
 implementation
 
 uses
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF COMPILER6_UP}
+  Forms, 
   JvConsts;
 
 //=== { TJvDBCustomSearchEdit } ==============================================

@@ -30,15 +30,8 @@ unit JvDBGridSelectColumnForm;
 interface
 
 uses
-  SysUtils, Classes, DB,
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, CheckLst, ExtCtrls, DBGrids,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms,
-  QDialogs, QStdCtrls, QButtons, QCheckLst, QExtCtrls, QDBGrids,
-  {$ENDIF VisualCLX}
+  Windows,
+  Classes, Controls, Forms, StdCtrls, Dialogs, CheckLst, ExtCtrls, DB, DBGrids,
   JvDBGrid;
 
 type

@@ -32,7 +32,7 @@ unit JvDBUtils;
 interface
 
 uses
-  Classes, SysUtils, DB, IniFiles,
+  Classes, SysUtils, DB,
   JvAppStorage;
 
 type
@@ -166,9 +166,8 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  DBConsts, Math,
-  Forms, Controls, Dialogs,
-  JvConsts, JvResources, JvTypes, JvJVCLUtils, JvJCLUtils;
+  DBConsts, Math, Controls, Forms, Dialogs,
+  JvJVCLUtils, JvJCLUtils, JvTypes, JvConsts, JvResources;
 
 { Utility routines }
 

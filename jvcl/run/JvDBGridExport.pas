@@ -32,8 +32,7 @@ interface
 
 uses
   Windows, Classes, SysUtils, DB, DBGrids,
-//  Word2000,
-  JvComponent, JvTypes, JvSimpleXml;
+  JvComponent, JvSimpleXml, JvTypes;
 
 type
   TExportDestination = (edFile, edClipboard);
@@ -243,11 +242,10 @@ procedure GetWordGridFormatValues(Proc: TGetStrProc);
 implementation
 
 uses
-  //  Excel2000,
-  Forms, Controls, Clipbrd, ComObj, Graphics,
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
+  ComObj, Graphics, Clipbrd,
   JclRegistry,
   JvConsts, JvResources;
 

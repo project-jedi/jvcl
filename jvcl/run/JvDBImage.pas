@@ -99,8 +99,7 @@ unit JvDBImage;
 interface
 
 uses
-  Windows, Classes, Clipbrd, Controls, DB,
-  DBCtrls, Forms, Graphics, Messages;
+  Windows, Messages, Classes, Graphics, Controls, Clipbrd, DB, DBCtrls; 
 
 type
   TJvGetGraphicClassEvent = procedure(Sender: TObject; Stream: TMemoryStream;
@@ -160,8 +159,7 @@ function GetGraphicClass(Stream: TStream): TGraphicClass;
 implementation
 
 uses
-  Contnrs,
-  DBConsts, jpeg, SysUtils,
+  DBConsts, jpeg, SysUtils, Contnrs, Forms,
   JvConsts, JvResources, JvFinalize;
 
 const

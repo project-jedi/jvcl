@@ -34,13 +34,11 @@ unit JvDBRadioPanel;
 interface
 
 uses
-  Classes,  DB,
+  Windows, 
   {$IFDEF VCL}
-  Windows, Messages, Controls, ExtCtrls, StdCtrls, Forms, DBCtrls,
+  Messages,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QExtCtrls, QStdCtrls, QForms, QDBCtrls,
-  {$ENDIF VisualCLX}
+  Classes, Controls, StdCtrls, DB, DBCtrls,
   JvComponent;
 
 type
@@ -152,6 +150,7 @@ type
 implementation
 
 uses
+  Forms, 
   JvConsts;
 
 //=== { TGroupButton } =======================================================

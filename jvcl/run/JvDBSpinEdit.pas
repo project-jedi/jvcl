@@ -30,7 +30,7 @@ unit JvDBSpinEdit;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, StdCtrls, DB, DBCtrls,
+  Windows, Messages, Classes, Controls, DB, DBCtrls,
   JvSpin;
 
 type

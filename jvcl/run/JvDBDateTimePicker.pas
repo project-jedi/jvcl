@@ -44,14 +44,12 @@ unit JvDBDateTimePicker;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls,
-  ComCtrls, DB, DBCtrls,
-  JVCLVer, JvDateTimePicker;
+  Windows, Classes, DB, DBCtrls,
+  JvDateTimePicker;
 
 type
   TJvDBDateTimePicker = class(TJvDateTimePicker)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FDataLink: TFieldDataLink;
     FBeepOnError: Boolean;
     FTrimValue: boolean;
@@ -76,7 +74,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
@@ -89,7 +86,8 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  JvConsts; 
+  SysUtils, ComCtrls,
+  JvConsts;
 
 ///////////////////////////////////////////////////////////////////////////
 //constructor TJvDBDateTimePicker.Create

@@ -34,14 +34,10 @@ unit JvDBGrid;
 interface
 
 uses
-  Classes, DB,
-  {$IFDEF COMPILER6_UP}
-  Variants,
-  {$ENDIF COMPILER6_UP}
   {$IFDEF VCL}
   Windows, Messages,
   {$ENDIF VCL}
-  Controls, Grids, Graphics, Menus, DBGrids,
+  Classes, Graphics, Controls, Grids, Menus, DBGrids, DB,
   JvAppStorage, JvFormPlacement, JvExDBGrids;
 
 const
@@ -331,9 +327,11 @@ type
 implementation
 
 uses
-  SysUtils, DbConsts, Math, TypInfo,
-  Forms, StdCtrls, Dialogs,
-  JvConsts, JvResources, JvTypes,
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF COMPILER6_UP}
+  SysUtils, Math, TypInfo, Forms, StdCtrls, Dialogs, DBConsts,
+  JvTypes, JvConsts, JvResources,
   JvDBLookup, JvDBUtils, JvJCLUtils, JvJVCLUtils, JvDBGridSelectColumnForm,
   JvFinalize;
 

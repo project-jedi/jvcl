@@ -28,12 +28,15 @@ object frmSelectColumn: TfrmSelectColumn
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
-    Top = 122
+    Top = 118
     Width = 185
     Height = 41
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
+    DesignSize = (
+      185
+      41)
     object ButtonOK: TButton
       Left = 56
       Top = 8
@@ -50,7 +53,7 @@ object frmSelectColumn: TfrmSelectColumn
     Left = 0
     Top = 0
     Width = 185
-    Height = 122
+    Height = 118
     OnClickCheck = clbListClickCheck
     Align = alClient
     ItemHeight = 13

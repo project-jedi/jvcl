@@ -32,8 +32,9 @@ unit JvDdeCmd;
 interface
 
 uses
-  DdeMan, Messages, SysUtils, Classes, JclBase, Forms,
-  JvComponent, JvFinalize;
+  Messages, DdeMan, Classes,
+  JclBase,
+  JvComponent;
 
 type
   EJvADCParserError = class(EJclError);
@@ -82,7 +83,8 @@ type
 implementation
 
 uses
-  JvResources;
+  SysUtils, Forms,
+  JvResources, JvFinalize;
 
 const
   sUnitName = 'JvDdeCmd';

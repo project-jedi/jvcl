@@ -39,13 +39,9 @@ implementation
 interface
 
 uses
-  Forms, Classes, Windows, Messages, Graphics, Controls, StdCtrls,
-  ComCtrls, Mask, DBCtrls,
+  Windows, Messages, Classes, Controls {D5}, DBCtrls,
   {$IFDEF USEJVCL}
-  CheckLst,
   JvDBFindEdit, JVCLVer;
-  {$ELSE}
-  CheckLst;
   {$ENDIF USEJVCL}
 
 type

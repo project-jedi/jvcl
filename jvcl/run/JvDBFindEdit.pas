@@ -32,9 +32,8 @@ unit JvDBFindEdit;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, ExtCtrls, DB, DBCtrls, CheckLst,
-  JVCLVer, JvExMask, JvToolEdit, JvMaskEdit;
+  Windows, Classes, ExtCtrls, DB, DBCtrls,
+  JvMaskEdit;
 
 type
   TJvEditFindStyle = (fsNavigate, fsFilter);
@@ -42,7 +41,6 @@ type
 
   TJvDBFindEdit = class(TJvMaskEdit)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FTimer: TTimer;
     FOldFiltered: Boolean;
     FOldFilterRecord: TFilterRecordEvent;
@@ -74,7 +72,6 @@ type
     procedure Find(AText: string);
     procedure ResetFilter;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property FindStyle: TJvEditFindStyle read FFindStyle write SetFindStyle default fsNavigate;
@@ -125,6 +122,9 @@ type
   end;
 
 implementation
+
+uses
+  SysUtils;
 
 constructor TJvDBFindEdit.Create(AOwner: TComponent);
 begin
