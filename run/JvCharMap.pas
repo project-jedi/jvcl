@@ -200,6 +200,7 @@ type
     procedure SetShowShadow(const Value: Boolean);
     procedure SetShadowSize(const Value: Integer);
     procedure SetHighlightInvalid(const Value: Boolean);
+  protected
     // The locale to use when looking up character info and translating codepages to Unicode.
     // Only effective on non-NT OS's (NT doesn't use codepages)
     property Locale: LCID read FLocale write SetLocale default LOCALE_USER_DEFAULT;
