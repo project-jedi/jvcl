@@ -25,7 +25,7 @@ Known Issues: This component does not parse the !DOCTYPE tags but preserves them
 
 {$I jvcl.inc}
 
-unit JvSimpleXML;
+unit JvSimpleXml;
 
 interface
 

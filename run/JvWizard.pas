@@ -906,16 +906,17 @@ type
 
 implementation
 
+{$IFDEF VCL}
 uses
   {$IFDEF USEJVCL}
   JvResources,
   {$ENDIF USEJVCL}
-  {$IFDEF VCL}
   Consts;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts;
-  {$ENDIF VisualCLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+uses
+  QConsts, JvResources;
+{$ENDIF VisualCLX}
 
 const
   ciButtonWidth = 75;

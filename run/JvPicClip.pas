@@ -34,7 +34,7 @@ uses
   Windows, Graphics, Controls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, QGraphics, QControls,
+  QWindows, QGraphics, QControls, Types, QImgList,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   RTLConsts,

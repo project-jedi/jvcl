@@ -36,7 +36,12 @@ interface
 
 uses
   Classes, SysUtils,
+  {$IFDEF VCL}
   JclUnicode,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  JvWStrUtils,
+  {$ENDIF VisualCLX}
   JvComponent, JvID3v2Types, JvID3v1;
 
 const

@@ -52,7 +52,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls, QForms, QGrids, QGraphics, QButtons, QMenus,
-  QStdCtrls, QMask, QDBGrids, QDBCtrls,
+  QStdCtrls, QMask, QDBGrids, QDBCtrls, QWindows,
   {$ENDIF VisualCLX}
   JvAppStorage, JvSecretPanel, JvLabel, JvToolEdit, JvFormPlacement,
   JvJCLUtils, JvMaskEdit, JvBaseEdits;
@@ -676,12 +676,12 @@ uses
   SysUtils, Dialogs, DbConsts, Math,
   JvDBUtils, JvJVCLUtils, JvCalc, JvConsts, JvResources, JvTypes;
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 {$R ..\Resources\JvDBControls.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$R ../Resources/JvDBControls.res}
-{$ENDIF LINUX}
+{$ENDIF VisualCLX}
 
 //=== NEW IN JVCL 3.0 ==
 //=== TJvDBMaskEdit ==============================================================

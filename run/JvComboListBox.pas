@@ -37,9 +37,15 @@ unit JvComboListBox;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Graphics, StdCtrls,
-  ExtCtrls, Menus,
-  JvListBox, JvTypes;
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Controls, Graphics, StdCtrls, ExtCtrls, Menus, JvListBox,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QWindows, QControls, QGraphics, QStdCtrls, QExtCtrls, QMenus, Types,
+  JvExStdCtrls,
+  {$ENDIF VisualCLX}
+  JvTypes;
 
 type
   // (p3) these types should *not* be moved to JvTypes (they are only used here)!
@@ -51,7 +57,12 @@ type
   TJvComboListDrawImageEvent = procedure(Sender: TObject; Index: Integer;
     const APicture: TPicture; R: TRect; var DefaultDraw: Boolean) of object;
 
+  {$IFDEF VCL}
   TJvComboListBox = class(TJvCustomListBox)
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  TJvComboListBox = class(TJvExCustomListBox)
+  {$ENDIF VisualCLX}
   private
     FMouseOver: Boolean;
     FPushed: Boolean;
@@ -99,13 +110,21 @@ type
     property OnDropDown: TJvComboListDropDownEvent read FOnDropDown write FOnDropDown;
     property Align;
     property Anchors;
+    {$IFDEF VCL}
     property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property ImeMode;
+    property ImeName;
+    property IntegralHeight;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF VCL}
     property BorderStyle;
     property Color;
     property Columns;
     property Constraints;
-    property DragCursor;
-    property DragKind;
     property DragMode;
     property Enabled;
     property ExtendedSelect;
@@ -119,7 +138,6 @@ type
     property ItemIndex default -1;
     property Items;
     property MultiSelect;
-    property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -136,7 +154,6 @@ type
     property OnDragDrop;
     property OnDragOver;
     property OnDrawItem;
-    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -148,7 +165,6 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnStartDock;
     property OnStartDrag;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -502,9 +518,11 @@ begin
         P := ClientToScreen(P);
         DropdownMenu.PopupComponent := Self;
         DropdownMenu.Popup(P.X, P.Y);
+        {$IFDEF VCL}
         // wait for popup to disappear
         while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
           ;
+        {$ENDIF VCL}
       end;
       MouseUp(Button, Shift, X, Y);
     end;

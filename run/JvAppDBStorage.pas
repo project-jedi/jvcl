@@ -30,11 +30,17 @@ unit JvAppDBStorage;
 
 interface
 uses
-  SysUtils, Classes, JvAppStorage, DB,
+  SysUtils, Classes, DB,
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  DBCtrls;
+  {$IFDEF VCL}
+  DBCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QDBCtrls,
+  {$ENDIF VisualCLX}
+  JvAppStorage;
 
 // DB table must contain 3 fields for the storage
 // performance is probably improved if there is an index on the section and key fields (this can be unique)

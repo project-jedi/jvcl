@@ -133,12 +133,12 @@ uses
   Math,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvResources;
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 {$R ..\Resources\JvCalc.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$R ../Resources/JvCalc.res}
-{$ENDIF LINUX}
+{$ENDIF VisualCLX}
 
 type
   TCalcBtnKind =

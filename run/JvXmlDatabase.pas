@@ -28,7 +28,7 @@ Known Issues:
 
 {$I jvcl.inc}
 
-unit JvXMLDatabase;
+unit JvXmlDatabase;
 
 interface
 

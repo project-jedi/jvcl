@@ -193,7 +193,12 @@ type
     procedure MouseLeave(Control: TControl); override;
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
     procedure ParentColorChanged; override;
+    {$IFDEF VCL}
     procedure CreateWnd; override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure CreateWidget; override;
+    {$ENDIF VisualCLX}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -258,9 +263,12 @@ type
     property ButtonHeight;
     property Caption;
     property ChildOffset;
+    property Placement;
     property Collapsed;
     property Colors;
+    {$IFDEF VCL}
     property DragCursor;
+    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property Font;
@@ -269,7 +277,6 @@ type
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
-    property Placement;
     property PopupMenu;
     property ShowFocus;
     property ShowHint;
@@ -562,12 +569,23 @@ begin
   RedrawControl(False);
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomRollOut.CreateWnd;
 begin
   inherited CreateWnd;
   if not Collapsed then
     UpdateGroup;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvCustomRollOut.CreateWidget;
+begin
+  inherited CreateWidget;
+  if not Collapsed then
+    UpdateGroup;
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvCustomRollOut.AlignControls(AControl: TControl; var Rect: TRect);
 begin
@@ -956,6 +974,7 @@ begin
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     ws := Caption;
+    SetPenColor(Canvas.Handle, Font.Color);
     if Placement = plLeft then
       DrawText(Canvas.Handle, ws , -1, FButtonHeight , BevelWidth + 2, Canvas.Textwidth(ws), FButtonHeight, DT_VCENTER, 270)
     else
