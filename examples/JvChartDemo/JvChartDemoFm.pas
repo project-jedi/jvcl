@@ -118,7 +118,7 @@ type
      Fhgt, Fhg0, Fhg2p: Double;
      FStatHgt,FStatHg0:TStatArray;
      Fdt,Fds:Double;
-     
+
   protected
     procedure _Generate;
     procedure _StoreValue(I:integer);
@@ -146,6 +146,22 @@ begin
         FHgt := Abs(Random(80)+(Random(((FGenerationIndex div foo) mod foo1) * 250) * 5 + 9500));
         FHg0 := Abs(Random(280)+Random(((FGenerationIndex div foo) mod foo2) * 650)*5 + 1003);
         Inc(FGenerationIndex);
+end;
+
+{ bogus random function that looks like real world QA-problem data }
+function QAProblemScatter:Integer;
+var
+ n:Double;
+begin
+  n := Log10(Random(10000)); // Value from 0 to ten, logarithmically curved.
+  n := n - Log10(Random(10000)); // Value from 0 to ten, logarithmically curved.
+  n := Abs(100 + (n*3));
+  if (n<0) then
+      n := 0;
+  if (n>150) then
+      n := 150;
+
+  result := Round(n);
 end;
 
 procedure TJvChartDemoForm._StoreValue(I:integer);
@@ -180,7 +196,15 @@ begin
         Chart.Options.XLegends.Add(FormatDateTime('hh:nn:ss', Fds) );
 
    if MenuSecondaryAxisMode.Checked then begin
-      Chart.Data.Value[3,I] :=  Random(120); // scatter
+      if I = 1 then
+         Chart.Data.Value[3,I] := 100
+      else if (I mod 4) = 3 then begin
+        //Chart.Data.Value[3,I] :=  1+ ((I mod 12) * 10) // stairstep
+        //random:
+        Chart.Data.Value[3,I] :=  QAProblemScatter;
+      end else
+         Chart.Data.Value[3,I] := NaN; // leave some blanks.
+
    end;
 
 
@@ -281,17 +305,23 @@ begin
 
     if MenuSecondaryAxisMode.Checked then begin
         PenCount := 4; // Add a pen for right side demo.
-        SecondaryYAxis.YMax := 120; // Example shows Q/A percentage. Experimental results
+        SecondaryYAxis.YMax := 140; // Example shows Q/A percentage. Experimental results
                                     // results are compared to expected results, and the
-                                    // response percentage, is plotted from 0% to 120%
+                                    // response percentage, is plotted from 0% to 140%
                                     // of expected value.
         SecondaryYAxis.YMin := 0;
         SecondaryYAxis.YLegendDecimalPlaces := 2;
         PenSecondaryAxisFlag[3] := True; // Move pen index 3 (Fourth pen) to secondary axis.
         PenMarkerKind[3] := pmkDiamond;
+        PenValueLabels[3] := true; // Label with text.
         PenStyle[3]      := psClear; // Markers only, no lines.
-    end else
+        PenColor[3]      := clGray;
+        MarkerSize       := 5; // Make 'em bigger.
+    end else begin
         PenCount := 3;
+        MarkerSize       := 3; // Make 'em little
+    end;
+
 
     PenLegends.Clear;
     PenLegends.Add('HgT');
@@ -409,8 +439,6 @@ end;
 
 procedure TJvChartDemoForm.Button2Click(Sender: TObject);
 begin
-//   Chart.SetYGap(15);
-//   Chart.SetYGapCount(15);
   Chart.PlotGraph;
 end;
 
