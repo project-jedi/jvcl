@@ -213,7 +213,8 @@ object ControlsForm: TControlsForm
           Width = 145
           Height = 22
           DroppedDownWidth = 145
-          FontName = 'Roman'
+          MaxMRUCount = 0
+          FontName = 'Courier'
           Device = fdPrinter
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
@@ -1650,7 +1651,7 @@ object ControlsForm: TControlsForm
         end
         object RunnerImage: TImage
           Left = 64
-          Top = 56
+          Top = 39
           Width = 33
           Height = 37
           Picture.Data = {
@@ -1897,7 +1898,7 @@ object ControlsForm: TControlsForm
         end
         object FlagImage: TImage
           Left = 64
-          Top = 52
+          Top = 39
           Width = 33
           Height = 37
           Picture.Data = {
@@ -1980,7 +1981,7 @@ object ControlsForm: TControlsForm
         end
         object SearchImage: TImage
           Left = 64
-          Top = 56
+          Top = 39
           Width = 33
           Height = 37
           Picture.Data = {
@@ -2425,9 +2426,9 @@ object ControlsForm: TControlsForm
         end
         object BookImage: TImage
           Left = 64
-          Top = 56
+          Top = 39
           Width = 33
-          Height = 37
+          Height = 36
           Picture.Data = {
             07544269746D6170660D0000424D660D0000000000007600000028000000B400
             0000240000000100040000000000F00C00000000000000000000100000000000
@@ -2538,6 +2539,13 @@ object ControlsForm: TControlsForm
             3333333333333333333333333333333333333333333333333333333333333333
             333333333333333333333333333333330000}
           Visible = False
+        end
+        object AnimatedImage1: TJvAnimatedImage
+          Left = 32
+          Top = 62
+          Width = 50
+          Height = 50
+          TransparentColor = clNone
         end
         object ComboBox7: TComboBox
           Left = 104
@@ -2742,23 +2750,6 @@ object ControlsForm: TControlsForm
           Font.Style = []
           ParentFont = False
         end
-        object JvClock: TJvClock
-          Left = 6
-          Top = 32
-          Width = 115
-          Height = 111
-          AlarmHour = 12
-          AutoSize = True
-          BevelOuter = bvLowered
-          ShowMode = scAnalog
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -19
-          Font.Name = 'MS Sans Serif'
-          Font.Style = []
-          ParentFont = False
-          OnAlarm = JvClockAlarm
-        end
         object ComboBox8: TComboBox
           Left = 128
           Top = 28
@@ -2772,11 +2763,11 @@ object ControlsForm: TControlsForm
           Font.Style = []
           ItemHeight = 13
           ParentFont = False
-          TabOrder = 1
+          TabOrder = 0
           OnChange = ComboBox8Change
           Items.Strings = (
-            'Analog'
-            'Digital')
+            'Digital'
+            'Analog')
         end
         object Button3: TButton
           Left = 128
@@ -2790,7 +2781,7 @@ object ControlsForm: TControlsForm
           Font.Name = 'MS Sans Serif'
           Font.Style = []
           ParentFont = False
-          TabOrder = 2
+          TabOrder = 1
           OnClick = Button3Click
         end
         object CheckBox6: TCheckBox
@@ -2805,13 +2796,13 @@ object ControlsForm: TControlsForm
           Font.Name = 'MS Sans Serif'
           Font.Style = []
           ParentFont = False
-          TabOrder = 3
+          TabOrder = 2
           OnClick = CheckBox6Click
         end
         object SpinEdit5: TSpinEdit
           Left = 128
           Top = 120
-          Width = 33
+          Width = 35
           Height = 22
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
@@ -2821,14 +2812,31 @@ object ControlsForm: TControlsForm
           MaxValue = 24
           MinValue = 0
           ParentFont = False
-          TabOrder = 4
+          TabOrder = 3
           Value = 12
           OnChange = SpinEdit5Change
         end
         object SpinEdit6: TSpinEdit
-          Left = 160
+          Left = 162
           Top = 120
-          Width = 33
+          Width = 35
+          Height = 22
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          MaxValue = 59
+          MinValue = 0
+          ParentFont = False
+          TabOrder = 4
+          Value = 0
+          OnChange = SpinEdit6Change
+        end
+        object SpinEdit7: TSpinEdit
+          Left = 196
+          Top = 120
+          Width = 35
           Height = 22
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
@@ -2840,24 +2848,37 @@ object ControlsForm: TControlsForm
           ParentFont = False
           TabOrder = 5
           Value = 0
-          OnChange = SpinEdit6Change
-        end
-        object SpinEdit7: TSpinEdit
-          Left = 192
-          Top = 120
-          Width = 33
-          Height = 22
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'MS Sans Serif'
-          Font.Style = []
-          MaxValue = 59
-          MinValue = 0
-          ParentFont = False
-          TabOrder = 6
-          Value = 0
           OnChange = SpinEdit7Change
+        end
+        object Panel3: TPanel
+          Left = 6
+          Top = 32
+          Width = 110
+          Height = 110
+          BevelOuter = bvNone
+          TabOrder = 6
+          object JvClock1: TJvClock
+            Left = 0
+            Top = 0
+            Width = 110
+            Height = 110
+            AlarmHour = 12
+            AutoSize = True
+            BevelInner = bvNone
+            BevelOuter = bvNone
+            ShowMode = scAnalog
+            Align = alClient
+            BorderWidth = 1
+            BorderStyle = bsSingle
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -17
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentColor = True
+            ParentFont = False
+            OnAlarm = JvClock1Alarm
+          end
         end
       end
       object GroupBox15: TGroupBox
@@ -2999,7 +3020,6 @@ object ControlsForm: TControlsForm
       'CheckBox4.Checked'
       'CheckBox7.Checked'
       'Edit1.Text'
-      'JvClock.Font'
       'Panel2.Width'
       'DirectoryListBox1.Height'
       'OpenDialog.InitialDir')

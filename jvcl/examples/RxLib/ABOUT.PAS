@@ -49,7 +49,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure AppIconDblClick(Sender: TObject);
     procedure SecretPanel1DblClick(Sender: TObject);
-    procedure LabelMouseEnter(Sender: TObject);
     procedure LabelClick(Sender: TObject);
   private
     { Private declarations }
@@ -88,18 +87,6 @@ end;
 procedure TAboutForm.SecretPanel1DblClick(Sender: TObject);
 begin
   SecretPanel1.Active := False;
-end;
-
-procedure TAboutForm.LabelMouseEnter(Sender: TObject);
-begin
-  with Sender as TJvLabel  do begin
-    if MouseInControl then begin
-      Font.Color := clHighlight;
-    end
-    else begin
-      Font.Color := clWindowText;
-    end;
-  end;
 end;
 
 procedure TAboutForm.LabelClick(Sender: TObject);
