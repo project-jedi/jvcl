@@ -446,6 +446,7 @@ type
     FIconPanel: TJvIconPanel;
     FStyleManager: TJvNavPaneStyleManager;
     FStyleLink: TJvNavStyleLink;
+    FHeader:TJvNavPanelHeader;
     procedure SetCaption(const Value: TCaption);
     procedure SetIconic(const Value: Boolean);
     procedure SetImageIndex(const Value: TImageIndex);
@@ -461,6 +462,8 @@ type
     procedure SetColors(const Value: TJvNavPanelColors);
     procedure SetStyleManager(const Value: TJvNavPaneStyleManager);
     procedure DoStyleChange(Sender: TObject);
+    procedure SetAutoHeader(const Value: boolean);
+    function GetAutoHeader: boolean;
   protected
     procedure UpdatePageList;
     procedure SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl); override;
@@ -471,9 +474,11 @@ type
     property IconPanel: TJvIconPanel read FIconPanel write SetIconPanel;
     property Colors: TJvNavPanelColors read GetColors write SetColors;
     property StyleManager: TJvNavPaneStyleManager read FStyleManager write SetStyleManager;
+    property Header:TJvNavPanelHeader read FHeader;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property AutoHeader:boolean read GetAutoHeader write SetAutoHeader;
 
   published
     property Color;
@@ -670,6 +675,7 @@ type
     FStyleLink: TJvNavStyleLink;
     FNavPanelHotTrackFont: TFont;
     FNavPanelHotTrackFontOptions: TJvTrackFontOptions;
+    FAutoHeaders: boolean;
     function GetDropDownMenu: TPopupMenu;
     function GetSmallImages: TCustomImageList;
     procedure SetDropDownMenu(const Value: TPopupMenu);
@@ -700,6 +706,7 @@ type
     function GetSplitterHeight: Integer;
     procedure SetStyleManager(const Value: TJvNavPaneStyleManager);
     procedure DoStyleChange(Sender: TObject);
+    procedure SetAutoHeaders(const Value: boolean);
   protected
     {$IFDEF VisualCLX}
     function WidgetFlags: Integer; override;
@@ -720,6 +727,7 @@ type
     {$IFDEF VCL}
     property BorderWidth default 1;
     {$ENDIF VCL}
+    property AutoHeaders:boolean read FAutoHeaders write SetAutoHeaders;
     property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 28;
     property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 22;
     property NavPanelFont: TFont read FNavPanelFont write SetNavPanelFont stored IsNavPanelFontStored;
@@ -744,6 +752,7 @@ type
     property ActivePage;
     property Align;
     property Anchors;
+    property AutoHeaders;
     {$IFDEF VCL}
     property BorderWidth;
     property DragCursor;
@@ -1082,7 +1091,11 @@ begin
   begin
     FLargeImages := Value;
     for i := 0 to PageCount - 1 do
+    begin
       NavPages[i].NavPanel.Images := FLargeImages;
+      if NavPages[i].AutoHeader then
+        NavPages[i].Header.Images := FLargeImages;
+    end;
   end;
 end;
 
@@ -1389,6 +1402,17 @@ begin
   NavPanelFont := (Sender as TJvNavPaneStyleManager).Fonts.NavPanelFont;
   NavPanelHotTrackFont := (Sender as TJvNavPaneStyleManager).Fonts.NavPanelHotTrackFont;
   NavPanelHotTrackFontOptions := (Sender as TJvNavPaneStyleManager).Fonts.NavPanelHotTrackFontOptions;
+end;
+
+procedure TJvCustomNavigationPane.SetAutoHeaders(const Value: boolean);
+var i:integer;
+begin
+  if FAutoHeaders <> Value then
+  begin
+    FAutoHeaders := Value;
+    for i := 0 to PageCount - 1 do
+      NavPages[i].AutoHeader := Value;
+  end;
 end;
 
 { TJvNavIconButton }
@@ -2206,12 +2230,19 @@ procedure TJvNavPanelPage.SetCaption(const Value: TCaption);
 begin
   if NavPanel <> nil then
     NavPanel.Caption := Value;
+  if AutoHeader then
+    Header.Caption := StripHotKey(Value);
 end;
 
 procedure TJvNavPanelPage.SetColors(const Value: TJvNavPanelColors);
 begin
   NavPanel.Colors := Value;
   IconButton.Colors := Value;
+  if AutoHeader then
+  begin
+    Header.ColorFrom := Value.HeaderColorFrom;
+    Header.ColorTo := Value.HeaderColorTo;
+  end;
 end;
 
 procedure TJvNavPanelPage.SetStyleManager(const Value: TJvNavPaneStyleManager);
@@ -2230,6 +2261,8 @@ begin
   end;
   FNavPanel.StyleManager := Value;
   FIconButton.StyleManager := Value;
+  if AutoHeader then
+    Header.StyleManager := Value;
 end;
 
 procedure TJvNavPanelPage.SetHint(const Value: string);
@@ -2269,6 +2302,8 @@ procedure TJvNavPanelPage.SetImageIndex(const Value: TImageIndex);
 begin
   NavPanel.ImageIndex := Value;
   IconButton.ImageIndex := Value;
+  if AutoHeader then
+    Header.ImageIndex := Value;
 end;
 
 procedure TJvNavPanelPage.SetPageIndex(Value: Integer);
@@ -2299,6 +2334,7 @@ begin
     IconButton.Images := TJvCustomNavigationPane(AParent).SmallImages;
     IconButton.Width := TJvCustomNavigationPane(AParent).ButtonWidth;
     IconButton.StyleManager := StyleManager;
+    AutoHeader := TJvCustomNavigationPane(AParent).AutoHeaders;
   end
   else
     IconButton.Parent := nil;
@@ -2308,6 +2344,32 @@ procedure TJvNavPanelPage.UpdatePageList;
 begin
   if PageList <> nil then
     TJvCustomNavigationPane(PageList).UpdatePositions;
+end;
+
+procedure TJvNavPanelPage.SetAutoHeader(const Value: boolean);
+begin
+  if AutoHeader <> Value then
+  begin
+    FreeAndNil(FHeader);
+    if Value then
+    begin
+      FHeader := TJvNavPanelHeader.Create(nil);
+      FHeader.ColorFrom := Colors.HeaderColorFrom;
+      FHeader.ColorTo := Colors.HeaderColorTo;
+      FHeader.Images := NavPanel.Images;
+      FHeader.ImageIndex := ImageIndex;
+      FHeader.Caption := StripHotkey(Caption);
+      // make sure header is top-most
+      FHeader.Top := -10;
+      FHeader.Parent := Self;
+      FHeader.Align := alTop;
+    end;
+  end;
+end;
+
+function TJvNavPanelPage.GetAutoHeader: boolean;
+begin
+  Result := FHeader <> nil;
 end;
 
 { TJvOutlookSplitter }
