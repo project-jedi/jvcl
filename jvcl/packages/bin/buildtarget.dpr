@@ -440,8 +440,8 @@ begin
   WriteLn('    --jcl-path=X    sets the JCLROOT environment variable to X.');
   WriteLn('    --bpl-path=X    sets the BPLDIR and DCPDIR environment variable to X.');
   WriteLn('    --lib-path=X    sets the LIBDIR environment variable to X (BCB only).');
-  WriteLn('    --build         forces the Delphi compiler to build instead the targets.');
-  WriteLn('    --targets=X     sets the TARGET environment variable to X. Only these .bpl');
+  WriteLn('    --build         forces the Delphi compiler to build the targets.');
+  WriteLn('    --targets=X     sets the TARGETS environment variable to X. Only these .bpl');
   WriteLn('                    files will be compiled.');
   WriteLn('                    (Example:');
   WriteLn('                      buildtarget "--targets=JvCoreD7R.bpl JvCoreD7R.bpl" )');
