@@ -37,7 +37,7 @@ unit JvQDice;
 interface
 
 uses
-  QWindows, QMessages, Classes, QGraphics, QControls,
+  Qt, QWindows, QMessages, Classes, QGraphics, QControls,
   JvQTimer, JvQComponent, JvQExControls;
 
 type
@@ -45,7 +45,6 @@ type
 
   TJvDice = class(TJvCustomControl) // , IJvDenySubClassing
   private
-    FActive: Boolean;
     FBitmap: array [TJvDiceValue] of TBitmap;
     FInterval: Cardinal;
     FAutoStopInterval: Cardinal;
@@ -65,9 +64,9 @@ type
     procedure TimerFires(Sender: TObject);
     procedure NewRandomValue;
   protected
-    procedure FocusChanged; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
-    procedure SetAutoSize(Value: Boolean);  
+    procedure DoEnter; override;
+    procedure DoExit; override;
+    procedure SetAutoSize(Value: Boolean);
     procedure AdjustSize; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Paint; override;
@@ -153,6 +152,7 @@ begin
   AutoSize := True;
   Width := FBitmap[Value].Width + 2;
   Height := FBitmap[Value].Height + 2;
+  QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground);
 end;
 
 destructor TJvDice.Destroy;
@@ -194,23 +194,18 @@ begin
     FOnStop(Self);
 end;
 
-procedure TJvDice.FocusChanged;
-var
-  Active: Boolean;
+procedure TJvDice.DoEnter;
 begin
-  Active := (GetFocusedControl(Self) = Self);
-  if Active <> FActive then
-  begin
-    FActive := Active;
-    if FShowFocus then
-      Invalidate;
-  end;
-  inherited FocusChanged;
+  if FShowFocus then
+    Invalidate;
+  inherited DoEnter;
 end;
 
-function TJvDice.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+procedure TJvDice.DoExit;
 begin
-  Result := True; // Paint clears the background
+  if FShowFocus then
+    Invalidate;
+  inherited DoExit;
 end;
 
 procedure TJvDice.AdjustSize;

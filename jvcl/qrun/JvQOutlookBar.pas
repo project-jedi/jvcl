@@ -45,7 +45,7 @@ interface
 
 uses
   SysUtils, Classes, QActnList,
-  QWindows, QMessages, QButtons, QControls, QGraphics, QImgList, QForms, QStdCtrls, QExtCtrls, 
+  Qt, QWindows, QMessages, QButtons, QControls, QGraphics, QImgList, QForms, QStdCtrls, QExtCtrls, 
   JvQJCLUtils, JvQThemes, JvQComponent, JvQExButtons;
 
 const
@@ -275,7 +275,6 @@ type
   protected 
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override; 
-    function DoPaintBackGround(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure FontChanged; override; 
     function GetButtonHeight(PageIndex: Integer): Integer;
     function GetButtonFrameRect(PageIndex, ButtonIndex: Integer): TRect;
@@ -1267,6 +1266,7 @@ begin
   FLastButtonIndex := -1;
   FPressedButtonIndex := -1; 
   ActivePageIndex := 0;
+  QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground);
 end;
 
 destructor TJvCustomOutlookBar.Destroy;
@@ -2158,12 +2158,6 @@ begin
     end;
   end;
   Inc(Result, 4);
-end;
-
-function TJvCustomOutlookBar.DoPaintBackGround(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  // don't redraw background: we always fill it anyway
-  Result := True;
 end;
 
 procedure TJvCustomOutlookBar.RedrawRect(R: TRect; Erase: Boolean = False);
