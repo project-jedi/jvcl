@@ -1,6 +1,9 @@
 Changelog for JVCL 3.0
 ======================
 2003-12-07:
+- Modified TJvThumbView: To be consistent with the VCL behaviour, OnChange is now triggered after the change and an OnChanging event has been added. OnChanging is triggered before the actual change  // obones
+- Modified the package generator to use an XML configuration file. // obones
+- Added TJvAppXmlStore and all the required files for it. It is in the JvSystem package. // obones
 - Added JvCustomItemViewer, JvImagesViewer, JvImageListViewer and JvOwnerDrawViewer and demos // peter3
 2003-12-06:
 - Moved JvAnalogClock and JvClock to \archive. Renamed JvxClock/TJvxClock to JvClock/TJvClock. // peter3
