@@ -7,7 +7,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, JvHtControls, Buttons, JvButtons, JvRegAuto, JvInterpreter, JvInterpreterFm,
-  QuickRpt {$IFDEF COMPILER6_UP}, Variants {$ENDIF};
+  QuickRpt {$IFDEF COMPILER6_UP}, Variants, JvComponent {$ENDIF};
 {$ELSE}
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,

@@ -33,7 +33,7 @@ interface
      
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvHint, JvRegAuto;
+  StdCtrls, JvHint, JvRegAuto, JvComponent;
 
 type
   TForm1 = class(TForm)

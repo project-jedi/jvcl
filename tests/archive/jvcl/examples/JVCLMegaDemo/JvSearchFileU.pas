@@ -2,25 +2,25 @@ unit JvSearchFileU;
 
 interface
 
-uses 
+uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvComponent, JvSearchFile, StdCtrls, JvListBox, JvCtrls, JvCustomBox,
-  JvDirectoryBox;
+  JvDirectoryBox, JvSearchFiles, Mask, JvToolEdit;
 
 type
   TJvSearchFileFrm = class(TFrame)
     GroupBox1: TGroupBox;
     Label1: TLabel;
     Label2: TLabel;
-    JvDirectoryBox1: TJvDirectoryBox;
-    CheckBox1: TCheckBox;
-    Edit1: TEdit;
-    Button1: TButton;
+    edDirectory: TJvDirectoryEdit;
+    chkRecursive: TCheckBox;
+    edFileMask: TEdit;
+    btnSearch: TButton;
     GroupBox2: TGroupBox;
-    JvListBox1: TJvListBox;
-    JvSearchFile1: TJvSearchFile;
-    procedure Button1Click(Sender: TObject);
-    procedure JvSearchFile1Found(Sender: TObject; Path: String);
+    lbFoundFiles: TJvListBox;
+    JvSearchFile1: TJvSearchFiles;
+    procedure btnSearchClick(Sender: TObject);
+    procedure JvSearchFile1FindFile(Sender: TObject; const AName: string);
   private
     { Private declarations }
   public
@@ -31,17 +31,23 @@ implementation
 
 {$R *.DFM}
 
-procedure TJvSearchFileFrm.Button1Click(Sender: TObject);
+procedure TJvSearchFileFrm.btnSearchClick(Sender: TObject);
 begin
-  JvListBox1.Clear;
-  JvSearchFile1.Mask := Edit1.Text;
-  JvSearchFile1.Recursive := CheckBox1.Checked;
-  JvSearchFile1.Execute(JvDirectoryBox1.Directory);
+  lbFoundFiles.Clear;
+  JvSearchFile1.RootDirectory := edDirectory.Text;
+  JvSearchFile1.FileParams.FileMasks.Text := edFileMask.Text;
+  if chkRecursive.Checked then
+    JvSearchFile1.DirOption := doIncludeSubDirs
+  else
+    JvSearchFile1.DirOption := doExcludeSubDirs;
+  JvSearchFile1.Search;
 end;
 
-procedure TJvSearchFileFrm.JvSearchFile1Found(Sender: TObject; Path: String);
+procedure TJvSearchFileFrm.JvSearchFile1FindFile(Sender: TObject;
+  const AName: string);
 begin
-  JvListBox1.Items.Add(Path);
+  lbFoundFiles.Items.Add(AName);
 end;
 
 end.
+

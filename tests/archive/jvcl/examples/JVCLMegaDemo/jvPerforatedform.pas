@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, JvPerforated;
+  ExtCtrls, JvPerforated, JvComponent;
 
 type
   TfrPerforatedForm = class(TForm)

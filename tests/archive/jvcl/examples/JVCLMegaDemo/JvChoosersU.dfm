@@ -114,7 +114,7 @@ object JvChoosersFrm: TJvChoosersFrm
     Top = 117
     Width = 145
     Height = 22
-    FontName = 'Arial'
+    FontName = '@Arial Unicode MS'
     ItemIndex = 0
     Options = [foWysiWyg]
     Sorted = True

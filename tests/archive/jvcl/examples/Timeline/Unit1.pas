@@ -351,6 +351,7 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   FCurColor := TimeLine1.Color;
+  cbDragging.ItemIndex := 0;
 end;
 
 procedure TForm1.TimeLine1SaveItem(Sender: TObject; Item: TJvTimeItem;

@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 198
-  Top = 109
+  Left = 382
+  Top = 134
   Width = 544
   Height = 375
   Caption = 'TJvCreateProcess example'

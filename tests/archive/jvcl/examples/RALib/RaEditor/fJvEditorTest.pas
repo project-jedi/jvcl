@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvEditor, JvHLParser, StdCtrls, ExtCtrls, ComCtrls, JvRegAuto, JvHLEditor
-  {$IFDEF COMPILER4_UP}, ImgList {$ENDIF COMPILER4_UP};
+  {$IFDEF COMPILER4_UP}, ImgList, JvComponent {$ENDIF COMPILER4_UP};
 
 type
   TfrmEditor  = class(TForm)

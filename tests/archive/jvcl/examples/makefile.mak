@@ -24,105 +24,111 @@ DCCH = $(ROOT)\dcc32.exe -e..\$(BIN) -i$(SRCH) -n..\$(DCU) -r$(SRCH) -u$(SRCH) -
 BRCC = $(ROOT)\brcc32.exe $**
 #---------------------------------------------------------------------------------------------------
 default: \
+AppDdeCmdExample.exe \
 ArrowButtonDemo.exe \
 BmpAnimDemo.exe \
 CaptionButtonDemo.exe \
 ChangeNotifyDemo.exe \
 ColorButtonDemo.exe \
 ContentScrollerDemo.exe \
-DBDTPDemo.exe \
+ControlsExample.exe \
+CreateProcessExample.exe \
+WebMapper.exe \
+UseCase.exe \
+DSAExamples.exe \
+MessageDlgEditor.exe \
+EnvironmentList.exe \
 FileDirDemo.exe \
 FindReplaceDemo.exe \
-ImageWindowDemo.exe \
-Install2LabelDemo.exe \
-JvAniProj.exe \
-JvBrowserFolder.exe \
-JvClipboardViewerProj.exe \
-JvDataEmbeddedProj.exe \
-JvDialogs.exe \
-JvEdits.exe \
-JvHtmlParserProj.exe \
-JvLinkLabelDemo.exe \
-JvMousePositionnerProj.exe \
-JvMruList.exe \
-JvPlayListProj.exe \
-JvScreenCaptureProj.exe \
-JvSearchFileProj.exe \
-JvSystemPopupProj.exe \
-JvThreadProj.exe \
-JvTreeViewAsMenu.exe \
-JvWinDialogsDemo.exe \
-JvWindowsTitleProj.exe \
-JvZoomProj.exe \
-ListCombDemo.exe \
-MonthCalendarDemo.exe \
-OLBarDemo.exe \
-ProfilerDemo.exe \
-RegEditDemo.exe \
-ScrollWinDemo.exe \
-SimpleTLTest1.exe \
-TimeLineDemo.exe \
-TipsDemo.exe \
-TransparentButtonDemo.exe \
-UseCase.exe \
-WebMapper.exe \
-AppDdeCmdExample.exe \
-ControlsExample.exe \
-CreateProcessExample.exe \ 
-EnvironmentList.exe \
-MailExample.exe \
-DBexpl32.exe \
-RxDemo.exe \
-RxGIFAnm.exe \
-JvTranslatorProj.exe \
-JvThumbnailDemo.exe \
 BasicDemo.exe \
 CollectionDemo.exe \
 SimpleHIDWrite.exe \
 GreyMouser.exe \
+ImageWindowDemo.exe \
+Install2LabelDemo.exe \
+JvAniProj.exe \
+JvAppHotKeyDemo.exe \
+JvBrowserFolder.exe \
+JvClipboardViewerProj.exe \
+JVCLDemo.exe \
+ColorComboDemo.exe \
+JvDataEmbeddedProj.exe \
+DBDTPDemo.exe \
+JvDialogs.exe \
+JvEdits.exe \
+prjControls.exe \
+JvHtmlParserProj.exe \
 InspectorDBExample.exe \
 InspExample.exe \
-JvOutlookPanelProj.exe \
-RunDLL32Demo.exe \
-SpecialProgressTestPrj.exe \
-SystemPopupTest.exe \
+JvLinkLabelDemo.exe \
+JvMousePositionnerProj.exe \
+JvMruList.exe \
+EventViewer.exe \
+JvPlayListProj.exe \
+PlugInDemo.exe \
+SamplePluginOne.dll \
+MDIPlugin.dll \
+MDISample.exe \
+ChangePropertiesPlugin.dll \
+PropertiesPlugInDemo.exe \
+ExceptionPlugin.dll \
+ExceptionPlugInDemo.exe \
+DataPlugin.dll \
+DataPlugInDemo.exe \
+JvScreenCaptureProj.exe \
+JvSearchFileProj.exe \
 ShFileOpDemo.exe \
+SpecialProgressTestPrj.exe \
+JvSystemPopupProj.exe \
+SystemPopupTest.exe \
+JvThreadProj.exe \
+JvThumbnailDemo.exe \
+JvTranslatorProj.exe \
+JvTreeViewAsMenu.exe \
+JvWinDialogsDemo.exe \
+JvWindowsTitleProj.exe \
+JvZoomProj.exe \
+WndProcHookDemo.exe \
+ListCombDemo.exe \
+MailExample.exe \
+MonthCalendarDemo.exe \
+JvObjPickerDemo.exe \
+OLBarDemo.exe \
+ProfilerDemo.exe \
 RAControls.exe \
 DBMove.exe \
-DBTree.exe \
-RAEditorTest.exe \
 LineNumbers.exe \
+RAEditorTest.exe \
+RAHLEdPropDlgTest.exe \
 ColorHintsTest.exe \
 JvInterpreterTest.exe \
 JvInterpreterEndUser.exe \
 MDIapp.exe \
 RANotepad.exe \
-JVCLDemo.exe \
-prjControls.exe \
-JvAppHotKeyDemo.exe \
-ColorComboDemo.exe \
-EventViewer.exe \
-PlugInDemo.exe \
-SamplePluginOne.dll \
-MDISample.exe \
-MDIPlugin.dll \
-PropertiesPlugInDemo.exe \
-ChangePropertiesPlugin.dll \
-ExceptionPlugInDemo.exe \
-ExceptionPlugin.dll \
-DataPlugInDemo.exe \
-DataPlugin.dll \
-
- 
+RegEditDemo.exe \
+RunDLL32Demo.exe \
+DBEXPL32.exe \
+Rxdemo.exe \
+RxGIFAnm.exe \
+ScrollWinDemo.exe \
+TimeLineDemo.exe \
+TipsDemo.exe \
+SimpleTLTest1.exe \
+TransparentButtonDemo.exe \
 #---------------------------------------------------------------------------------------------------
+
+AppDdeCmdExample.exe: AppDdeCmdExample\AppDdeCmdExample.dpr
+  cd AppDdeCmdExample
+  $(DCC) $&.dpr
+  cd ..
 
 ArrowButtonDemo.exe: ArrowButton\ArrowButtonDemo.dpr
   cd ArrowButton
   $(DCC) $&.dpr
   cd ..
 
-BmpAnimDemo.exe: BMPAnim\BmpAnimDemo.dpr
-  cd BMPAnim
+BmpAnimDemo.exe: BmpAnim\BmpAnimDemo.dpr
+  cd BmpAnim
   $(DCC) $&.dpr
   cd ..
 
@@ -146,8 +152,38 @@ ContentScrollerDemo.exe: ContentScroller\ContentScrollerDemo.dpr
   $(DCC) $&.dpr
   cd ..
 
-DBDTPDemo.exe: JvDBDateTimePicker\DBDTPDemo.dpr
-  cd JvDBDateTimePicker
+ControlsExample.exe: ControlsExample\ControlsExample.dpr
+  cd ControlsExample
+  $(DCC) $&.dpr
+  cd ..
+
+CreateProcessExample.exe: CreateProcessExample\CreateProcessExample.dpr
+  cd CreateProcessExample
+  $(DCC) $&.dpr
+  cd ..
+
+WebMapper.exe: Diagram1WebSiteScanner\WebMapper.dpr
+  cd Diagram1WebSiteScanner
+  $(DCC) $&.dpr
+  cd ..
+
+UseCase.exe: Diagram2UseCaseEditor\UseCase.dpr
+  cd Diagram2UseCaseEditor
+  $(DCC) $&.dpr
+  cd ..
+
+DSAExamples.exe: DSADialogs\DSAExamples.dpr
+  cd DSADialogs
+  $(DCC) $&.dpr
+  cd ..
+
+MessageDlgEditor.exe: DSADialogs\MessageDlgEditor.dpr
+  cd DSADialogs
+  $(DCC) $&.dpr
+  cd ..
+
+EnvironmentList.exe: EnvironmentList\EnvironmentList.dpr
+  cd EnvironmentList
   $(DCC) $&.dpr
   cd ..
 
@@ -158,226 +194,6 @@ FileDirDemo.exe: FileListBox\FileDirDemo.dpr
 
 FindReplaceDemo.exe: FindReplace\FindReplaceDemo.dpr
   cd FindReplace
-  $(DCC) $&.dpr
-  cd ..
-
-ImageWindowDemo.exe: ImageWindow\ImageWindowDemo.dpr
-  cd ImageWindow
-  $(DCC) $&.dpr
-  cd ..
-
-InstallLabelDemo.exe: InstallLabel\InstallLabelDemo.dpr
-  cd InstallLabel
-  $(DCC) $&.dpr
-  cd ..
-
-JvAniProj.exe: JvAni\JvAniProj.dpr
-  cd JvAni
-  $(DCC) $&.dpr
-  cd ..
-
-JvBrowserFolder.exe: JvBrowseFolder\JvBrowserFolder.dpr
-  cd JvBrowseFolder
-  $(DCC) $&.dpr
-  cd ..
-
-Install2LabelDemo.exe: InstallLabel\Install2LabelDemo.dpr
-  cd InstallLabel
-  $(DCC) $&.dpr
-  cd ..
-
-JvClipboardViewerProj.exe: JvClipboardViewer\JvClipboardViewerProj.dpr
-  cd JvClipboardViewer
-  $(DCC) $&.dpr
-  cd ..
-
-JvDataEmbeddedProj.exe: JvDataEmbedded\JvDataEmbeddedProj.dpr
-  cd JvDataEmbedded
-  $(DCC) $&.dpr
-  cd ..
-
-JvDialogs.exe: JvDialogs\JvDialogs.dpr
-  cd JvDialogs
-  $(DCC) $&.dpr
-  cd ..
-
-JvEdits.exe: JvEdits\JvEdits.dpr
-  cd JvEdits
-  $(DCC) $&.dpr
-  cd ..
-
-JvHTMLParserProj.exe: JvHTMLParser\JvHTMLParserProj.dpr
-  cd JvHTMLParser
-  $(DCC) $&.dpr
-  cd ..
-
-JvLinkLabelDemo.exe: JvLinkLabel\JvLinkLabelDemo.dpr
-  cd JvLinkLabel
-  $(DCC) $&.dpr
-  cd ..
-
-JvMousePositionnerProj.exe: JvMousePositionner\JvMousePositionnerProj.dpr
-  cd JvMousePositionner
-  $(DCC) $&.dpr
-  cd ..
-
-JvMruList.exe: JvMruList/JvMruList.dpr
-  cd JvMruList
-  $(DCC) $&.dpr
-  cd ..
-
-JvPlayListProj.exe: JvPlayList\JvPlayListProj.dpr
-  cd JvPlayList
-  $(DCC) $&.dpr
-  cd ..
-
-JvScreenCaptureProj.exe: JvScreenCapture\JvScreenCaptureProj.dpr
-  cd JvScreenCapture
-  $(DCC) $&.dpr
-  cd ..
-
-JvSearchFileProj.exe: JvSearchFile/JvSearchFileProj.dpr
-  cd JvSearchFile
-  $(DCC) $&.dpr
-  cd ..
-
-JvSystemPopupProj.exe: JvSystemPopup\JvSystemPopupProj.dpr
-  cd JvSystemPopup
-  $(DCC) $&.dpr
-  cd ..
-
-JvThreadProj.exe: JvThread\JvThreadProj.dpr
-  cd  JvThread
-  $(DCC) $&.dpr
-  cd ..
-
-JvTreeViewAsMenu.exe: JvTreeViewAsMenu\JvTreeViewAsMenu.dpr
-  cd JvTreeViewAsMenu
-  $(DCC) $&.dpr
-  cd ..
-
-JvWinDialogsDemo.exe: JvWinDialogs\JvWinDialogsDemo.dpr
-  cd JvWinDialogs
-  $(DCC) $&.dpr
-  cd ..
-
-JvWindowsTitleProj.exe: JvWindowsTitle\JvWindowsTitleProj.dpr
-  cd JvWindowsTitle
-  $(DCC) $&.dpr
-  cd ..
-
-JvZoomProj.exe: JvZoom\JvZoomProj.dpr
-  cd JvZoom
-  $(DCC) $&.dpr
-  cd ..
-
-ListCombDemo.exe: ListComb\ListCombDemo.dpr
-  cd ListComb
-  $(DCC) $&.dpr
-  cd ..
-
-MonthCalendarDemo.exe: MonthCalendar\MonthCalendarDemo.dpr
-  cd MonthCalendar
-  $(DCC) $&.dpr
-  cd ..
-
-OLBarDemo.exe: OLBar\OLBarDemo.dpr
-  cd OLBar
-  $(DCC) $&.dpr
-  cd ..
-
-ProfilerDemo.exe: Profiler32\ProfilerDemo.dpr
-  cd Profiler32
-  $(DCC) $&.dpr
-  cd ..
-
-RegEditDemo.exe: RegTV\RegEditDemo.dpr
-  cd RegTV
-  $(DCC) $&.dpr
-  cd ..
-
-ScrollWinDemo.exe: ScrollWin\ScrollWinDemo.dpr
-  cd ScrollWin
-  $(DCC) $&.dpr
-  cd ..
-
-SimpleTLTest1.exe: TMTimeLine\SimpleTLTest1.dpr
-  cd TMTimeLine
-  $(DCC) $&.dpr
-  cd ..
-
-TimeLineDemo.exe: TimeLine\TimeLineDemo.dpr
-  cd TimeLine
-  $(DCC) $&.dpr
-  cd ..
-
-TipsDemo.exe: TipOfDay\TipsDemo.dpr
-  cd TipOfDay
-  $(DCC) $&.dpr
-  cd ..
-
-TransparentButtonDemo.exe: TransBtn\TransparentButtonDemo.dpr
-  cd TransBtn
-  $(DCC) $&.dpr
-  cd ..
-
-UseCase.exe: Diagram2UseCaseEditor\UseCase.dpr
-  cd Diagram2UseCaseEditor
-  $(DCC) $&.dpr
-  cd ..
-
-WebMapper.exe: Diagram1WebSiteScanner\WebMapper.dpr
-  cd Diagram1WebSiteScanner
-  $(DCC) $&.dpr
-  cd ..
-
-AppDdeCmdExample.exe: AppDdeCmdExample\AppDdeCmdExample.dpr
-  cd AppDdeCmdExample
-  $(DCC) $&.dpr
-  cd ..
-  
-ControlsExample.exe: ControlsExample\ControlsExample.dpr
-  cd ControlsExample
-  $(DCC) $&.dpr
-  cd ..
-  
-CreateProcessExample.exe: CreateProcessExample\CreateProcessExample.dpr
-  cd CreateProcessExample
-  $(DCC) $&.dpr
-  cd ..
-  
-EnvironmentList.exe: EnvironmentList\EnvironmentList.dpr
-  cd EnvironmentList
-  $(DCC) $&.dpr
-  cd ..
-  
-MailExample.exe: MailExample\MailExample.dpr
-  cd MailExample
-  $(DCC) $&.dpr
-  cd ..
-
-DBexpl32.exe: RxDBExplorer\DBexpl32.dpr
-  cd RxDBExplorer
-  $(DCC) $&.dpr
-  cd ..
-
-RxDemo.exe: RxDemo\RxDemo.dpr
-  cd RxDemo
-  $(DCC) $&.dpr
-  cd ..
-
-RxGIFAnm.exe: RxGIFAnimator\RxGIFAnm.dpr
-  cd RxGIFAnimator
-  $(DCC) $&.dpr
-  cd ..
-
-JvTranslatorProj.exe: JvTranslator\JvTranslatorProj.dpr
-  cd JvTranslator
-  $(DCC) $&.dpr
-  cd ..
-
-JvThumbnailDemo.exe: JvThumbnail\JvThumbnailDemo.dpr
-  cd JvThumbnail
   $(DCC) $&.dpr
   cd ..
 
@@ -401,6 +217,76 @@ GreyMouser.exe: HID\ThreadDemo\GreyMouser.dpr
   $(DCCH) $&.dpr
   cd ..\..
 
+ImageWindowDemo.exe: ImageWindow\ImageWindowDemo.dpr
+  cd ImageWindow
+  $(DCC) $&.dpr
+  cd ..
+
+Install2LabelDemo.exe: InstallLabel\Install2LabelDemo.dpr
+  cd InstallLabel
+  $(DCC) $&.dpr
+  cd ..
+
+JvAniProj.exe: JvAni\JvAniProj.dpr
+  cd JvAni
+  $(DCC) $&.dpr
+  cd ..
+
+JvAppHotKeyDemo.exe: JvAppHotKeyDemo\JvAppHotKeyDemo.dpr
+  cd JvAppHotKeyDemo
+  $(DCC) $&.dpr
+  cd ..
+
+JvBrowserFolder.exe: JvBrowseFolder\JvBrowserFolder.dpr
+  cd JvBrowseFolder
+  $(DCC) $&.dpr
+  cd ..
+
+JvClipboardViewerProj.exe: JvClipboardViewer\JvClipboardViewerProj.dpr
+  cd JvClipboardViewer
+  $(DCC) $&.dpr
+  cd ..
+
+JVCLDemo.exe: JVCLMegaDemo\JVCLDemo.dpr
+  cd JVCLMegaDemo
+  $(DCC) $&.dpr
+  cd ..
+
+ColorComboDemo.exe: JvColorComboDemo\ColorComboDemo.dpr
+  cd JvColorComboDemo
+  $(DCC) $&.dpr
+  cd ..
+
+JvDataEmbeddedProj.exe: JvDataEmbedded\JvDataEmbeddedProj.dpr
+  cd JvDataEmbedded
+  $(DCC) $&.dpr
+  cd ..
+
+DBDTPDemo.exe: JvDBDateTimePicker\DBDTPDemo.dpr
+  cd JvDBDateTimePicker
+  $(DCC) $&.dpr
+  cd ..
+
+JvDialogs.exe: JvDialogs\JvDialogs.dpr
+  cd JvDialogs
+  $(DCC) $&.dpr
+  cd ..
+
+JvEdits.exe: JvEdits\JvEdits.dpr
+  cd JvEdits
+  $(DCC) $&.dpr
+  cd ..
+
+prjControls.exe: JvFooterAndGroupHeader\prjControls.dpr
+  cd JvFooterAndGroupHeader
+  $(DCC) $&.dpr
+  cd ..
+
+JvHtmlParserProj.exe: JvHTMLParser\JvHtmlParserProj.dpr
+  cd JvHTMLParser
+  $(DCC) $&.dpr
+  cd ..
+
 InspectorDBExample.exe: JvInspectorDBDemo\InspectorDBExample.dpr
   cd JvInspectorDBDemo
   $(DCC) $&.dpr
@@ -411,108 +297,28 @@ InspExample.exe: JvInspectorDemo\InspExample.dpr
   $(DCC) $&.dpr
   cd ..
 
-JvOutlookPanelProj.exe: JvOutlookPanel\JvOutlookPanelProj.dpr
-  cd JvOutlookPanel
+JvLinkLabelDemo.exe: JvLinkLabel\JvLinkLabelDemo.dpr
+  cd JvLinkLabel
   $(DCC) $&.dpr
   cd ..
 
-RunDLL32Demo.exe: RunDll32\RunDLL32Demo.dpr
-  cd RunDll32
+JvMousePositionnerProj.exe: JvMousePositionner\JvMousePositionnerProj.dpr
+  cd JvMousePositionner
   $(DCC) $&.dpr
   cd ..
 
-SpecialProgressTestPrj.exe: JvSpecialProgress\SpecialProgressTestPrj.dpr
-  cd JvSpecialProgress
-  $(DCC) $&.dpr
-  cd ..
-
-SystemPopupTest.exe: JvSystemPopUp2\SystemPopupTest.dpr
-  cd JvSystemPopUp2
-  $(DCC) $&.dpr
-  cd ..
-
-ShFileOpDemo.exe: JvShFileOperation\ShFileOpDemo.dpr
-  cd JvShFileOperation
-  $(DCC) $&.dpr
-  cd ..
-
-RAControls.exe: RaLib\RaControls\RAControls.dpr
-  cd RaLib\RaControls
-  $(DCCH) $&.dpr
-  cd ..\..
-
-DBMove.exe: RaLib\RaDBMove\DBMove.dpr
-  cd RaLib\RaDBMove
-  $(DCCH) $&.dpr
-  cd ..\..
-  
-DBTree.exe: RaLib\RaDBTreeView\DBTree.dpr
-  cd RaLib\RaDBTreeView
-  $(DCCH) $&.dpr
-  cd ..\..
-
-RAEditorTest.exe: RaLib\RaEditor\RAEditorTest.dpr
-  cd RaLib\RaEditor
-  $(DCCH) $&.dpr
-  cd ..\..
-
-LineNumbers.exe: RaLib\RaEditor\LineNumbers.dpr
-  cd RaLib\RaEditor
-  $(DCCH) $&.dpr
-  cd ..\..
-  
-ColorHintsTest.exe: RaLib\RaHtHints\ColorHintsTest.dpr
-  cd RaLib\RaHtHints
-  $(DCCH) $&.dpr
-  cd ..\..
-
-JvInterpreterTest.exe: RaLib\RaInterpreter\JvInterpreterTest.dpr
-  cd RaLib\RaInterpreter
-  $(DCCH) $&.dpr
-  cd ..\..
-
-DynamicLoad.exe: RaLib\RaInterpreterDynamicLoad\DynamicLoad.dpr
-  cd RaLib\RaInterpreterDynamicLoad
-  $(DCCH) $&.dpr
-  cd ..\..
-
-JvInterpreterEndUser.exe: RaLib\RaInterpreterEndUser\JvInterpreterEndUser.dpr
-  cd RaLib\RaInterpreterEndUser
-  $(DCCH) $&.dpr
-  cd ..\..
-
-MDIapp.exe: RaLib\RaInterpreterMDI\MDIapp.dpr
-  cd RaLib\RaInterpreterMDI
-  $(DCCH) $&.dpr
-  cd ..\..
-
-RANotepad.exe: RaLib\RaInterpreterNotepad\RANotepad.dpr
-  cd RaLib\RaInterpreterNotepad
-  $(DCCH) $&.dpr
-  cd ..\..
-
-JVCLDemo.exe: JVCLMegaDemo\JVCLDemo.dpr
-  cd JVCLMegaDemo
-  $(DCC) $&.dpr
-  cd ..
-  
-prjControls.exe: JVFooterAndGroupHeader\prjControls.dpr
-  cd JVFooterAndGroupHeader
-  $(DCC) $&.dpr
-  cd ..
-
-JvAppHotKeyDemo.exe: JvAppHotKeyDemo\JvAppHotKeyDemo.dpr
-  cd JvAppHotKeyDemo
-  $(DCC) $&.dpr
-  cd ..
-
-ColorComboDemo.exe: JvColorComboDemo\ColorComboDemo.dpr
-  cd JvColorComboDemo
+JvMruList.exe: JvMruList\JvMruList.dpr
+  cd JvMruList
   $(DCC) $&.dpr
   cd ..
 
 EventViewer.exe: JvNTEventLog\EventViewer.dpr
   cd JvNTEventLog
+  $(DCC) $&.dpr
+  cd ..
+
+JvPlayListProj.exe: JvPlayList\JvPlayListProj.dpr
+  cd JvPlayList
   $(DCC) $&.dpr
   cd ..
 
@@ -526,18 +332,13 @@ SamplePluginOne.dll: JvPlugin\1SimplePlugin\SamplePluginOne.dpr
   $(DCCH) $&.dpr
   cd ..\..
 
-MDISample.exe: JvPlugin\2MDI\MDISample.dpr
-  cd JvPlugin\2MDI
-  $(DCCH) $&.dpr
-  cd ..\..
-
 MDIPlugin.dll: JvPlugin\2MDI\MDIPlugin.dpr
   cd JvPlugin\2MDI
   $(DCCH) $&.dpr
   cd ..\..
 
-PropertiesPlugInDemo.exe: JvPlugin\3ChangingProperties\PropertiesPlugInDemo.dpr
-  cd JvPlugin\3ChangingProperties
+MDISample.exe: JvPlugin\2MDI\MDISample.dpr
+  cd JvPlugin\2MDI
   $(DCCH) $&.dpr
   cd ..\..
 
@@ -546,8 +347,8 @@ ChangePropertiesPlugin.dll: JvPlugin\3ChangingProperties\ChangePropertiesPlugin.
   $(DCCH) $&.dpr
   cd ..\..
 
-ExceptionPlugInDemo.exe: JvPlugin\4ApplicationHook\ExceptionPlugInDemo.dpr
-  cd JvPlugin\4ApplicationHook
+PropertiesPlugInDemo.exe: JvPlugin\3ChangingProperties\PropertiesPlugInDemo.dpr
+  cd JvPlugin\3ChangingProperties
   $(DCCH) $&.dpr
   cd ..\..
 
@@ -556,8 +357,8 @@ ExceptionPlugin.dll: JvPlugin\4ApplicationHook\ExceptionPlugin.dpr
   $(DCCH) $&.dpr
   cd ..\..
 
-DataPlugInDemo.exe: JvPlugin\5DataAware\DataPlugInDemo.dpr
-  cd JvPlugin\5DataAware
+ExceptionPlugInDemo.exe: JvPlugin\4ApplicationHook\ExceptionPlugInDemo.dpr
+  cd JvPlugin\4ApplicationHook
   $(DCCH) $&.dpr
   cd ..\..
 
@@ -566,3 +367,207 @@ DataPlugin.dll: JvPlugin\5DataAware\DataPlugin.dpr
   $(DCCH) $&.dpr
   cd ..\..
 
+DataPlugInDemo.exe: JvPlugin\5DataAware\DataPlugInDemo.dpr
+  cd JvPlugin\5DataAware
+  $(DCCH) $&.dpr
+  cd ..\..
+
+JvScreenCaptureProj.exe: JvScreenCapture\JvScreenCaptureProj.dpr
+  cd JvScreenCapture
+  $(DCC) $&.dpr
+  cd ..
+
+JvSearchFileProj.exe: JvSearchFile\JvSearchFileProj.dpr
+  cd JvSearchFile
+  $(DCC) $&.dpr
+  cd ..
+
+ShFileOpDemo.exe: JvShFileOperation\ShFileOpDemo.dpr
+  cd JvShFileOperation
+  $(DCC) $&.dpr
+  cd ..
+
+SpecialProgressTestPrj.exe: JvSpecialProgress\SpecialProgressTestPrj.dpr
+  cd JvSpecialProgress
+  $(DCC) $&.dpr
+  cd ..
+
+JvSystemPopupProj.exe: JvSystemPopup\JvSystemPopupProj.dpr
+  cd JvSystemPopup
+  $(DCC) $&.dpr
+  cd ..
+
+SystemPopupTest.exe: JvSystemPopUp2\SystemPopupTest.dpr
+  cd JvSystemPopUp2
+  $(DCC) $&.dpr
+  cd ..
+
+JvThreadProj.exe: JvThread\JvThreadProj.dpr
+  cd JvThread
+  $(DCC) $&.dpr
+  cd ..
+
+JvThumbnailDemo.exe: JvThumbnail\JvThumbnailDemo.dpr
+  cd JvThumbnail
+  $(DCC) $&.dpr
+  cd ..
+
+JvTranslatorProj.exe: JvTranslator\JvTranslatorProj.dpr
+  cd JvTranslator
+  $(DCC) $&.dpr
+  cd ..
+
+JvTreeViewAsMenu.exe: JvTreeViewAsMenu\JvTreeViewAsMenu.dpr
+  cd JvTreeViewAsMenu
+  $(DCC) $&.dpr
+  cd ..
+
+JvWinDialogsDemo.exe: JvWinDialogs\JvWinDialogsDemo.dpr
+  cd JvWinDialogs
+  $(DCC) $&.dpr
+  cd ..
+
+JvWindowsTitleProj.exe: JvWindowsTitle\JvWindowsTitleProj.dpr
+  cd JvWindowsTitle
+  $(DCC) $&.dpr
+  cd ..
+
+JvZoomProj.exe: JvZoom\JvZoomProj.dpr
+  cd JvZoom
+  $(DCC) $&.dpr
+  cd ..
+
+WndProcHookDemo.exe: JvWndProcHookDemo\WndProcHookDemo.dpr
+  cd JvWndProcHookDemo
+  $(DCC) $&.dpr
+  cd ..
+
+ListCombDemo.exe: ListComb\ListCombDemo.dpr
+  cd ListComb
+  $(DCC) $&.dpr
+  cd ..
+
+MailExample.exe: MailExample\MailExample.dpr
+  cd MailExample
+  $(DCC) $&.dpr
+  cd ..
+
+MonthCalendarDemo.exe: MonthCalendar\MonthCalendarDemo.dpr
+  cd MonthCalendar
+  $(DCC) $&.dpr
+  cd ..
+
+JvObjPickerDemo.exe: ObjectPickerDemo\JvObjPickerDemo.dpr
+  cd ObjectPickerDemo
+  $(DCC) $&.dpr
+  cd ..
+
+OLBarDemo.exe: OLBar\OLBarDemo.dpr
+  cd OLBar
+  $(DCC) $&.dpr
+  cd ..
+
+ProfilerDemo.exe: Profiler32\ProfilerDemo.dpr
+  cd Profiler32
+  $(DCC) $&.dpr
+  cd ..
+
+RAControls.exe: RALib\RaControls\RAControls.dpr
+  cd RALib\RaControls
+  $(DCCH) $&.dpr
+  cd ..\..
+
+DBMove.exe: RALib\RaDBMove\DBMove.dpr
+  cd RALib\RaDBMove
+  $(DCCH) $&.dpr
+  cd ..\..
+
+LineNumbers.exe: RALib\RaEditor\LineNumbers.dpr
+  cd RALib\RaEditor
+  $(DCCH) $&.dpr
+  cd ..\..
+
+RAEditorTest.exe: RALib\RaEditor\RAEditorTest.dpr
+  cd RALib\RaEditor
+  $(DCCH) $&.dpr
+  cd ..\..
+
+RAHLEdPropDlgTest.exe: RALib\RaEditor\RAHLEdPropDlgTest.dpr
+  cd RALib\RaEditor
+  $(DCCH) $&.dpr
+  cd ..\..
+
+ColorHintsTest.exe: RALib\RaHtHints\ColorHintsTest.dpr
+  cd RALib\RaHtHints
+  $(DCCH) $&.dpr
+  cd ..\..
+
+JvInterpreterTest.exe: RALib\RaInterpreter\JvInterpreterTest.dpr
+  cd RALib\RaInterpreter
+  $(DCCH) $&.dpr
+  cd ..\..
+
+JvInterpreterEndUser.exe: RALib\RaInterpreterEndUser\JvInterpreterEndUser.dpr
+  cd RALib\RaInterpreterEndUser
+  $(DCCH) $&.dpr
+  cd ..\..
+
+MDIapp.exe: RALib\RaInterpreterMDI\MDIapp.dpr
+  cd RALib\RaInterpreterMDI
+  $(DCCH) $&.dpr
+  cd ..\..
+
+RANotepad.exe: RALib\RaInterpreterNotepad\RANotepad.dpr
+  cd RALib\RaInterpreterNotepad
+  $(DCCH) $&.dpr
+  cd ..\..
+
+RegEditDemo.exe: RegTV\RegEditDemo.dpr
+  cd RegTV
+  $(DCC) $&.dpr
+  cd ..
+
+RunDLL32Demo.exe: RunDll32\RunDLL32Demo.dpr
+  cd RunDll32
+  $(DCC) $&.dpr
+  cd ..
+
+DBEXPL32.exe: RxDBExplorer\DBEXPL32.DPR
+  cd RxDBExplorer
+  $(DCC) $&.dpr
+  cd ..
+
+Rxdemo.exe: RxDemo\Rxdemo.dpr
+  cd RxDemo
+  $(DCC) $&.dpr
+  cd ..
+
+RxGIFAnm.exe: RxGIFAnimator\RxGIFAnm.dpr
+  cd RxGIFAnimator
+  $(DCC) $&.dpr
+  cd ..
+
+ScrollWinDemo.exe: ScrollWin\ScrollWinDemo.dpr
+  cd ScrollWin
+  $(DCC) $&.dpr
+  cd ..
+
+TimeLineDemo.exe: Timeline\TimeLineDemo.dpr
+  cd Timeline
+  $(DCC) $&.dpr
+  cd ..
+
+TipsDemo.exe: TipOfDay\TipsDemo.dpr
+  cd TipOfDay
+  $(DCC) $&.dpr
+  cd ..
+
+SimpleTLTest1.exe: TMTimeLine\SimpleTLTest1.dpr
+  cd TMTimeLine
+  $(DCC) $&.dpr
+  cd ..
+
+TransparentButtonDemo.exe: TransBtn\TransparentButtonDemo.dpr
+  cd TransBtn
+  $(DCC) $&.dpr
+  cd ..

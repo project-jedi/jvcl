@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 146
-  Top = 107
+  Left = 351
+  Top = 137
   BorderStyle = bsSingle
   Caption = 'JVCL Library controls demo'
   ClientHeight = 420
@@ -187,7 +187,7 @@ object MainForm: TMainForm
         ParentColor = True
         TabOrder = 0
         object RAScrollMaxBand1: TJvScrollMaxBand
-          Cursor = 1
+          Cursor = 77
           Caption = 'Person'
           ExpandedHeight = 121
           ButtonFont.Charset = DEFAULT_CHARSET
@@ -243,7 +243,7 @@ object MainForm: TMainForm
           end
         end
         object RAScrollMaxBand2: TJvScrollMaxBand
-          Cursor = 1
+          Cursor = 77
           Expanded = False
           Caption = 'Contact information'
           ExpandedHeight = 113
@@ -302,7 +302,7 @@ object MainForm: TMainForm
           end
         end
         object RAScrollMaxBand3: TJvScrollMaxBand
-          Cursor = 1
+          Cursor = 77
           Expanded = False
           Caption = 'Net (confidential)'
           ExpandedHeight = 84
@@ -360,7 +360,7 @@ object MainForm: TMainForm
         ParentColor = True
         TabOrder = 1
         object RAScrollMaxBand4: TJvScrollMaxBand
-          Cursor = 1
+          Cursor = 77
           Caption = 'Person'
           ExpandedHeight = 113
           ButtonVisible = False
@@ -420,7 +420,7 @@ object MainForm: TMainForm
           end
         end
         object RAScrollMaxBand5: TJvScrollMaxBand
-          Cursor = 1
+          Cursor = 77
           Caption = 'Contact information'
           ExpandedHeight = 113
           ButtonVisible = False
@@ -480,7 +480,7 @@ object MainForm: TMainForm
           end
         end
         object RAScrollMaxBand6: TJvScrollMaxBand
-          Cursor = 1
+          Cursor = 77
           Caption = 'Net (confidential)'
           ExpandedHeight = 84
           ButtonVisible = False

@@ -7,7 +7,7 @@ uses
   Forms, Dialogs, JvPlacemnt, StdCtrls, JvxCtrls, TabNotBk, JvxSlider, ExtCtrls,
   JvSwitch, Mask, JvToolEdit, Spin, JvCurrEdit, FileCtrl, JvSplit, Grids,
   Outline, DirOutln, JvDice, JvxClock, JvxAnimate, JvSpin, JvCombos,
-  ComCtrls, JvComponent, JvColorCombo, JvCombobox;
+  ComCtrls, JvComponent, JvColorCombo, JvCombobox, JvEdit;
 
 type
   TControlsForm = class(TForm)
@@ -119,7 +119,7 @@ type
     SwOn: TImage;
     Shape1: TShape;
     GroupBox16: TGroupBox;
-    rxSpinEdit1: TJvxSpinEdit ;
+    rxSpinEdit1: TJvSpinEdit;
     Label19: TLabel;
     Label20: TLabel;
     Label21: TLabel;

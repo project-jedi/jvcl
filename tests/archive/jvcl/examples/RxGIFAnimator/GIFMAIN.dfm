@@ -1,15 +1,18 @@
 object AnimatorForm: TAnimatorForm
-  Left = 207
-  Top = 110
-  BorderIcons = [biSystemMenu, biMinimize]
+  Left = 282
+  Top = 113
   AutoScroll = False
+  BorderIcons = [biSystemMenu, biMinimize]
   ClientHeight = 421
   ClientWidth = 366
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   KeyPreview = True
+  OldCreateOrder = True
   OnActivate = FormActivate
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
@@ -111,7 +114,7 @@ object AnimatorForm: TAnimatorForm
     AutoSize = False
     Transparent = True
   end
-  object JvSpeedbar: TJvSpeedBar 
+  object JvSpeedbar: TJvSpeedBar
     Left = 0
     Top = 0
     Width = 366
@@ -129,19 +132,19 @@ object AnimatorForm: TAnimatorForm
     TabOrder = 4
     OnDblClick = SpeedBarDblClick
     InternalVer = 1
-    object SpeedbarSection1: TjvSpeedbarSection
+    object SpeedbarSection1: TJvSpeedbarSection
       Caption = 'File'
     end
-    object SpeedbarSection2: TjvSpeedbarSection
+    object SpeedbarSection2: TJvSpeedbarSection
       Caption = 'Edit'
     end
-    object SpeedbarSection3: TjvSpeedbarSection
+    object SpeedbarSection3: TJvSpeedbarSection
       Caption = 'Image'
     end
-    object SpeedbarSection4: TjvSpeedbarSection
+    object SpeedbarSection4: TJvSpeedbarSection
       Caption = 'Help'
     end
-    object NewBtn: TjvSpeedItem
+    object NewBtn: TJvSpeedItem
       Caption = 'New'
       Hint = 'New|'
       ImageIndex = 8
@@ -152,7 +155,7 @@ object AnimatorForm: TAnimatorForm
       OnClick = NewBtnClick
       SectionName = 'File'
     end
-    object OpenBtn: TjvSpeedItem
+    object OpenBtn: TJvSpeedItem
       Caption = 'Open'
       Hint = 'Open|'
       ImageIndex = 9
@@ -163,7 +166,7 @@ object AnimatorForm: TAnimatorForm
       OnClick = OpenBtnClick
       SectionName = 'File'
     end
-    object SaveBtn: TjvSpeedItem
+    object SaveBtn: TJvSpeedItem
       Caption = 'Save'
       Enabled = False
       Hint = 'Save|'
@@ -175,7 +178,7 @@ object AnimatorForm: TAnimatorForm
       OnClick = SaveBtnClick
       SectionName = 'File'
     end
-    object SaveAsBtn: TjvSpeedItem
+    object SaveAsBtn: TJvSpeedItem
       Caption = 'SaveAs'
       Enabled = False
       Hint = 'SaveAs|'
@@ -187,7 +190,7 @@ object AnimatorForm: TAnimatorForm
       OnClick = SaveAsBtnClick
       SectionName = 'File'
     end
-    object InsertBtn: TjvSpeedItem
+    object InsertBtn: TJvSpeedItem
       Caption = 'Insert'
       Hint = 'Insert|'
       ImageIndex = 5
@@ -198,7 +201,7 @@ object AnimatorForm: TAnimatorForm
       OnClick = InsertBtnClick
       SectionName = 'File'
     end
-    object CutBtn: TjvSpeedItem
+    object CutBtn: TJvSpeedItem
       Caption = 'Cut'
       Enabled = False
       Hint = 'Cut|'
@@ -210,7 +213,7 @@ object AnimatorForm: TAnimatorForm
       OnClick = CutBtnClick
       SectionName = 'Edit'
     end
-    object CopyBtn: TjvSpeedItem
+    object CopyBtn: TJvSpeedItem
       Caption = 'Copy'
       Enabled = False
       Hint = 'Copy|'
@@ -222,7 +225,7 @@ object AnimatorForm: TAnimatorForm
       OnClick = CopyBtnClick
       SectionName = 'Edit'
     end
-    object PasteBtn: TjvSpeedItem
+    object PasteBtn: TJvSpeedItem
       Caption = 'Paste'
       Enabled = False
       Hint = 'Paste|'
@@ -234,7 +237,7 @@ object AnimatorForm: TAnimatorForm
       OnClick = PasteBtnClick
       SectionName = 'Edit'
     end
-    object DeleteBtn: TjvSpeedItem
+    object DeleteBtn: TJvSpeedItem
       Caption = 'Delete'
       Enabled = False
       Hint = 'Delete|'
@@ -246,7 +249,7 @@ object AnimatorForm: TAnimatorForm
       OnClick = DeleteBtnClick
       SectionName = 'Edit'
     end
-    object UpBtn: TjvSpeedItem
+    object UpBtn: TJvSpeedItem
       Caption = 'Move Up'
       Enabled = False
       Hint = 'Move Up|'
@@ -258,7 +261,7 @@ object AnimatorForm: TAnimatorForm
       OnClick = UpBtnClick
       SectionName = 'Image'
     end
-    object DownBtn: TjvSpeedItem
+    object DownBtn: TJvSpeedItem
       Caption = 'Move Down'
       Enabled = False
       Hint = 'Move Down|'
@@ -270,7 +273,7 @@ object AnimatorForm: TAnimatorForm
       OnClick = DownBtnClick
       SectionName = 'Image'
     end
-    object GrayscaleBtn: TjvSpeedItem
+    object GrayscaleBtn: TJvSpeedItem
       Caption = 'Grayscale'
       Hint = 'Grayscale|'
       ImageIndex = 0
@@ -280,7 +283,7 @@ object AnimatorForm: TAnimatorForm
       OnClick = GrayscaleBtnClick
       SectionName = 'Image'
     end
-    object PreviewBtn: TjvSpeedItem
+    object PreviewBtn: TJvSpeedItem
       Caption = 'Preview'
       Enabled = False
       Hint = 'Preview|'
@@ -292,7 +295,7 @@ object AnimatorForm: TAnimatorForm
       OnClick = PreviewBtnClick
       SectionName = 'Image'
     end
-    object AboutBtn: TjvSpeedItem
+    object AboutBtn: TJvSpeedItem
       Caption = 'About'
       Hint = 'About|'
       ImageIndex = 1
@@ -320,7 +323,7 @@ object AnimatorForm: TAnimatorForm
         Caption = 'Color Depth Method: '
         FocusControl = ColorDepthCombo
       end
-      object ThumbnailsLabel: TJvxLabel 
+      object ThumbnailsLabel: TJvxLabel
         Left = 30
         Top = 27
         Width = 125
@@ -331,7 +334,7 @@ object AnimatorForm: TAnimatorForm
         ShowFocus = True
         OnMouseDown = CheckLabelMouseDown
       end
-      object AlwaysOnTopLabel: TJvxLabel 
+      object AlwaysOnTopLabel: TJvxLabel
         Left = 30
         Top = 99
         Width = 100
@@ -349,20 +352,21 @@ object AnimatorForm: TAnimatorForm
         Height = 21
         Style = csDropDownList
         ItemHeight = 13
+        TabOrder = 1
+        OnChange = ColorDepthComboChange
         Items.Strings = (
           'Frequency of use'
           'Quantizing'
           'Truncate 7x8x4'
           'Truncate 6x6x6'
           'Tripel ')
-        TabOrder = 1
-        OnChange = ColorDepthComboChange
       end
       object ThumbnailsBox: TCheckBox
         Left = 13
         Top = 31
         Width = 17
         Height = 17
+        Checked = True
         State = cbChecked
         TabOrder = 0
         OnClick = ThumbnailsBoxClick
@@ -373,6 +377,7 @@ object AnimatorForm: TAnimatorForm
         Width = 148
         Height = 17
         Caption = 'Flat Toolbar Buttons '
+        Checked = True
         State = cbChecked
         TabOrder = 2
         OnClick = FlatBtnsClick
@@ -488,11 +493,11 @@ object AnimatorForm: TAnimatorForm
         AutoSize = False
         Caption = '87a'
       end
-      object LoopLbl: TJvxLabel 
+      object LoopLbl: TJvxLabel
         Left = 27
         Top = 167
-        Width = 74
-        Height = 13
+        Width = 75
+        Height = 14
         Caption = '&Repeat Count: '
         Enabled = False
         FocusControl = RepeatCnt
@@ -507,16 +512,16 @@ object AnimatorForm: TAnimatorForm
         TabOrder = 1
         OnChange = CommentChange
       end
-      object BackColor: TJvComboEdit 
+      object BackColor: TJvComboEdit
         Left = 106
         Top = 110
         Width = 69
         Height = 21
+        ButtonFlat = False
         Color = clBlack
         DirectInput = False
         GlyphKind = gkEllipsis
         ButtonWidth = 17
-        MaxLength = 0
         NumGlyphs = 1
         TabOrder = 0
         OnButtonClick = BackColorButtonClick
@@ -650,7 +655,7 @@ object AnimatorForm: TAnimatorForm
         Caption = 'Undraw Method:  '
         FocusControl = DisposalCombo
       end
-      object TransColorLabel: TJvxLabel 
+      object TransColorLabel: TJvxLabel
         Left = 6
         Top = 216
         Width = 96
@@ -745,24 +750,24 @@ object AnimatorForm: TAnimatorForm
         Height = 21
         Style = csDropDownList
         ItemHeight = 13
+        TabOrder = 6
+        OnChange = DisposalComboChange
         Items.Strings = (
           'Undefined'
           'Leave'
           'Restore Background'
           'Restore Previous')
-        TabOrder = 6
-        OnChange = DisposalComboChange
       end
-      object TransColor: TJvComboEdit 
+      object TransColor: TJvComboEdit
         Left = 124
         Top = 212
         Width = 52
         Height = 21
+        ButtonFlat = False
         Color = clBlack
         DirectInput = False
         GlyphKind = gkEllipsis
         ButtonWidth = 17
-        MaxLength = 0
         NumGlyphs = 1
         TabOrder = 8
         OnButtonClick = TransColorButtonClick
@@ -796,6 +801,7 @@ object AnimatorForm: TAnimatorForm
     Kind = sbVertical
     LargeChange = 4
     Max = 1
+    PageSize = 0
     TabOrder = 5
     OnChange = ImageScrollChange
   end
@@ -877,13 +883,14 @@ object AnimatorForm: TAnimatorForm
       OnPaint = PaintBoxPaint
     end
   end
-  object Storage: TJvFormStorage 
+  object Storage: TJvFormStorage
     PreventResize = True
     UseRegistry = True
     StoredProps.Strings = (
       'ThumbnailsBox.Checked'
       'FlatBtns.Checked'
       'AlwaysOnTop.Checked')
+    StoredValues = <>
     Left = 8
     Top = 32
   end

@@ -12,7 +12,7 @@ interface
 
 uses WinTypes, WinProcs, Classes, Graphics, Forms, Controls, Buttons,
   StdCtrls, Mask, JvToolEdit, JvLookup, DB, JvDBLists, ExtCtrls, JvPlacemnt,
-  JvPicclip;
+  JvPicclip, DBTables;
 
 type
   TOpenDatabaseDlg = class(TForm)

@@ -55,9 +55,9 @@ object JvFilesFrm: TJvFilesFrm
   object Label1: TLabel
     Left = 368
     Top = 304
-    Width = 16
+    Width = 321
     Height = 13
-    Caption = 'D:\'
+    Caption = 'C:\...\Borland\Components\JEDI\JVCL\examples\JVCLMegaDemo'
   end
   object Label2: TLabel
     Left = 368
@@ -88,6 +88,7 @@ object JvFilesFrm: TJvFilesFrm
       'D:\Test_Files')
     Style = lbOwnerDrawFixed
     TabOrder = 0
+    Directory = 'C:\Program\Borland\Components\JEDI\JVCL\examples\JVCLMegaDemo'
     DirLabel = Label1
     FileList = JvFileListBox1
     DriveCombo = JvDriveCombo1
@@ -110,13 +111,21 @@ object JvFilesFrm: TJvFilesFrm
     Height = 177
     ItemHeight = 37
     Items.Strings = (
-      '3½-Diskette (A:)'
-      'DRIVE_C (C:)'
-      'DRIVE_D (D:)'
-      'CD (E:)'
-      'Pluto1 auf "pluto" (P:)'
-      'ResourceCenter auf "pluto\pluto1\Mapped Directories" (R:)'
-      'public auf "192.168.180.3" (S:)')
+      '3,5-tumsdiskett (A:)'
+      'SYS (C:)'
+      'CD-skiva (D:)'
+      'CD-skiva (E:)'
+      'timemetrics på eqplan (G:)'
+      'log på kgb1__www\c$\Mercur (J:)'
+      'BackupLog på Hobbe\c$\Script (K:)'
+      'log$ på eqplan (L:)'
+      'data på Eqplan (M:)'
+      'eqdata på Eqplan (N:)'
+      'ProAct på Eqplan (P:)'
+      'Vss på Eqplan (V:)'
+      'id106 på Kgb1__www\e-kgb\webhotel (W:)'
+      'transfer på kalle (X:)'
+      'peter3 på Kgb1__www\e-kgb\webhotel (Z:)')
     Style = lbOwnerDrawFixed
     TabOrder = 2
     DriveTypes = [dtFixed, dtRemote, dtCDROM]

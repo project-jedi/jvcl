@@ -1,6 +1,6 @@
 object FrmMain: TFrmMain
-  Left = 238
-  Top = 208
+  Left = 333
+  Top = 127
   Width = 838
   Height = 568
   Caption = 'Event Viewer'

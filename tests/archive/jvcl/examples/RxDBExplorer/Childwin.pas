@@ -34,7 +34,7 @@ uses WinTypes, WinProcs, Messages, Classes, Graphics, Forms, Controls, DB,
   JvQuery, StdCtrls, Buttons, JvPlacemnt, JvDBIndex, JvDBSecur, Menus, Dialogs,
   JvShell, JvDBPrgrss, JvPicclip, ComCtrls, JvxAnimate, JvxCtrls
   {$IFDEF USE_QR2}, QuickRpt, QRPrntr, QRExtra, QRPrev, Printers,
-  QRCtrls {$ENDIF USE_QR2};
+  QRCtrls, JvComponent {$ENDIF USE_QR2};
 
 type
   TTransOperation = (teStart, teCommit, teRollback);

@@ -8,7 +8,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvRegAuto, ComCtrls, JvEditor, JvHLEditor, Menus,
   ShellApi, JvInterpreter, {$IFDEF COMPILER5_UP} ImgList, {$ENDIF} JvHLEdPropDlg
-  {$IFDEF COMPILER6_UP}, Variants {$ENDIF}
+  {$IFDEF COMPILER6_UP}, Variants, JvComponent {$ENDIF}
   ;
 
 const

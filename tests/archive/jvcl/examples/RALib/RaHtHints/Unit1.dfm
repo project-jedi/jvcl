@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 200
-  Top = 108
+  Left = 380
+  Top = 135
   Width = 360
   Height = 226
   Caption = 'HtHints test'

@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 196
-  Top = 108
+  Left = 430
+  Top = 182
   AutoScroll = False
   BorderIcons = [biSystemMenu, biMinimize, biMaximize, biHelp]
   Caption = 'TransparentButton Example Program'

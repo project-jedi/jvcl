@@ -1,6 +1,6 @@
-object LineNumbersMain: TJvLineNumbersMain 
-  Left = 156
-  Top = 127
+object JvLineNumbersMain: TJvLineNumbersMain
+  Left = 428
+  Top = 150
   Width = 558
   Height = 375
   Caption = 'LineNumbersMain'
@@ -56,8 +56,8 @@ object LineNumbersMain: TJvLineNumbersMain
     object GutterFont: TLabel
       Left = 8
       Top = 16
-      Width = 60
-      Height = 13
+      Width = 51
+      Height = 14
       Caption = 'GutterFont'
       Font.Charset = RUSSIAN_CHARSET
       Font.Color = clWhite

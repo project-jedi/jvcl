@@ -39,7 +39,7 @@ uses
   StdCtrls, ExtCtrls, JvRegAuto, ComCtrls,
   JvInterpreter, JvInterpreterFm, JvEditor, JvHLParser, JvHLEditor,
   Db, DBTables, Grids, DBGrids, Quickrpt, QRCtrls
- {$IFDEF COMPILER6_UP}, Variants {$ENDIF};
+ {$IFDEF COMPILER6_UP}, Variants, JvComponent {$ENDIF};
 {$ELSE}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, JvRegAuto, ComCtrls,

@@ -15,7 +15,7 @@ object frAnimatedFormIcon: TfrAnimatedFormIcon
   TextHeight = 13
   object JvFormAnimatedIcon1: TJvFormAnimatedIcon
     Icons = ImageList1
-    Active = True
+    Active = False
     Delay = 10
     Left = 32
     Top = 24

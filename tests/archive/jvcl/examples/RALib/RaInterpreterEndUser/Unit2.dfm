@@ -1,8 +1,8 @@
 object Form2: TForm2
-  Left = 169
-  Top = 90
-  Width = 529
-  Height = 454
+  Left = 352
+  Top = 106
+  Width = 585
+  Height = 420
   ActiveControl = Panel1
   Caption = 'JvI2 plug-in reports end user demo'
   Color = clBtnFace
@@ -18,7 +18,7 @@ object Form2: TForm2
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 521
+    Width = 577
     Height = 41
     Align = alTop
     TabOrder = 0
@@ -51,8 +51,8 @@ object Form2: TForm2
   object Panel2: TPanel
     Left = 0
     Top = 41
-    Width = 320
-    Height = 386
+    Width = 376
+    Height = 352
     Align = alClient
     BevelInner = bvLowered
     BorderWidth = 4
@@ -61,8 +61,8 @@ object Form2: TForm2
     object DBGrid1: TDBGrid
       Left = 6
       Top = 6
-      Width = 308
-      Height = 374
+      Width = 364
+      Height = 340
       Align = alClient
       BorderStyle = bsNone
       DataSource = DataModule1.DataSource1
@@ -75,10 +75,10 @@ object Form2: TForm2
     end
   end
   object Panel3: TPanel
-    Left = 320
+    Left = 376
     Top = 41
     Width = 201
-    Height = 386
+    Height = 352
     Align = alRight
     BorderWidth = 3
     Caption = 'Panel3'
@@ -87,7 +87,7 @@ object Form2: TForm2
       Left = 4
       Top = 4
       Width = 193
-      Height = 378
+      Height = 344
       Align = alClient
       Lines.Strings = (
         'This is normal Delphi'

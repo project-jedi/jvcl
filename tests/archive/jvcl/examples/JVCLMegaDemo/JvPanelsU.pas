@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvTransBtn, StdCtrls, JvOneSizeFitsAllButton, ExtCtrls, JvSizeablePanel,
   JvItemsPanel, JvOLBar, JvClock, JvRollOut, JvComponent, JvCaptionPanel,
-  JvLookOut, ImgList, JvAnalogClock;
+  JvLookOut, ImgList, JvAnalogClock, JvPanel;
 
 type
   TJvPanelsFrm = class(TFrame)

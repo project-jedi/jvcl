@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 179
-  Top = 96
+  Left = 387
+  Top = 124
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'TJvDBMove Demo'
@@ -63,7 +63,7 @@ object Form1: TForm1
         Caption = 
           'This is Source Database. It contains two tables and one referenc' +
           'e between them.'
-        Color = 12639424
+        Color = clBtnFace
         ParentColor = False
         WordWrap = True
       end
@@ -217,7 +217,7 @@ object Form1: TForm1
           'ated unique.'#13#10'Field CustNo (now called MyCustNo) in ORDERS.DB (n' +
           'ow called MYORDERS) also changed, so it can correctly refer to n' +
           'ew CUSTOMER.DB.'
-        Color = 12639424
+        Color = clBtnFace
         ParentColor = False
         WordWrap = True
       end

@@ -17,8 +17,8 @@ object JvGraphicalFrm: TJvGraphicalFrm
     SimplePanel = False
   end
   object JvCaptionPanel1: TJvCaptionPanel
-    Left = 48
-    Top = 64
+    Left = 24
+    Top = 32
     Width = 441
     Height = 313
     Buttons = [capClose, capHelp]
@@ -74,6 +74,7 @@ object JvGraphicalFrm: TJvGraphicalFrm
     object mc: TJvMonthCalendar2
       Left = 72
       Top = 56
+      Width = 191
       Height = 153
       ParentColor = False
       TabStop = True

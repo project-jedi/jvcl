@@ -1,6 +1,6 @@
 object Test: TTest
-  Left = 113
-  Top = 69
+  Left = 320
+  Top = 121
   Width = 576
   Height = 447
   HelpContext = 999

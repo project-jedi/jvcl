@@ -75,7 +75,7 @@ object Form1: TForm1
     Items = <
       item
         Left = 53
-        Top = 167
+        Top = 123
         Caption = ' Pin it up!'
         Color = 4210688
         Date = 35431
@@ -87,7 +87,7 @@ object Form1: TForm1
       end
       item
         Left = 393
-        Top = 167
+        Top = 123
         Caption = ' Something arrived'
         Color = clBtnFace
         Date = 35637
@@ -99,7 +99,7 @@ object Form1: TForm1
       end
       item
         Left = 203
-        Top = 167
+        Top = 123
         Caption = ' Something departed'
         Color = 16512
         Date = 35521
@@ -111,7 +111,7 @@ object Form1: TForm1
       end
       item
         Left = 153
-        Top = 203
+        Top = 135
         Caption = ' Something saved'
         Color = cl3DDkShadow
         Date = 35490
@@ -123,7 +123,7 @@ object Form1: TForm1
       end
       item
         Left = 115
-        Top = 167
+        Top = 123
         Caption = ' News started'
         Color = 8388672
         Date = 35469
@@ -135,7 +135,7 @@ object Form1: TForm1
       end
       item
         Left = 415
-        Top = 203
+        Top = 135
         Caption = ' Flushed it'
         Color = clTeal
         Date = 35651
@@ -147,7 +147,7 @@ object Form1: TForm1
       end
       item
         Left = 233
-        Top = 203
+        Top = 135
         Caption = ' Simons birthday'
         Color = 8404992
         Date = 35539
@@ -159,7 +159,7 @@ object Form1: TForm1
       end
       item
         Left = 361
-        Top = 167
+        Top = 123
         Caption = ' Elias birthday'
         Color = clMaroon
         Date = 35617
@@ -171,7 +171,7 @@ object Form1: TForm1
       end
       item
         Left = 206
-        Top = 167
+        Top = 123
         Caption = ' Majas birthday'
         Color = 8388863
         Date = 35523
@@ -183,7 +183,7 @@ object Form1: TForm1
       end
       item
         Left = 576
-        Top = 167
+        Top = 123
         Caption = ' Folder'
         Color = 8404992
         Date = 35749
@@ -194,7 +194,7 @@ object Form1: TForm1
       end
       item
         Left = 664
-        Top = 167
+        Top = 123
         Caption = ' Item 6'
         Color = clBlue
         Date = 35803
@@ -223,7 +223,7 @@ object Form1: TForm1
       end
       item
         Left = 656
-        Top = 203
+        Top = 135
         Caption = ' Item 9'
         Color = 4194368
         Date = 35798
@@ -233,7 +233,7 @@ object Form1: TForm1
       end
       item
         Left = 656
-        Top = 167
+        Top = 123
         Caption = ' Item 10'
         Color = clTeal
         Date = 35798
@@ -640,9 +640,7 @@ object Form1: TForm1
         Height = 21
         Style = csDropDownList
         ItemHeight = 13
-        ItemIndex = 0
         TabOrder = 8
-        Text = 'No dragging'
         OnChange = cbDraggingChange
         Items.Strings = (
           'No dragging'

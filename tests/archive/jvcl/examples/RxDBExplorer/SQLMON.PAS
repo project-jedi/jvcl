@@ -13,7 +13,7 @@ interface
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, JvSplit, JvxCtrls, JvPlacemnt, DB,
-  JvDBPrgrss, ComCtrls, Grids, Jvgrids, Menus;
+  JvDBPrgrss, ComCtrls, Grids, Jvgrids, Menus, JvComponent;
 
 type
   TTraceSQL = class(TForm)

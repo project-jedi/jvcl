@@ -12,7 +12,7 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, ExtCtrls, StdCtrls, Buttons, JvxCtrls;
+  Forms, Dialogs, ExtCtrls, StdCtrls, Buttons, JvxCtrls, JvComponent;
 
 type
   TAboutDlg = class(TForm)

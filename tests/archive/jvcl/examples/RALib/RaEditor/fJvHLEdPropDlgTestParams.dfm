@@ -1,4 +1,4 @@
-object MyParams: TMyParams 
+object MyParams: TMyParams
   Left = 179
   Top = 110
   Width = 396

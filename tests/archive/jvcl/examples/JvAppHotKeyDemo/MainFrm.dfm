@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 240
-  Top = 156
+  Left = 360
+  Top = 165
   Width = 277
   Height = 422
   Caption = 'JvAppHotKey demo'

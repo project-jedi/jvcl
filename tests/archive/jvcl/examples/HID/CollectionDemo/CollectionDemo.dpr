@@ -2,8 +2,7 @@ program CollectionDemo;
 
 uses
   Forms,
-  Unit1 in 'Unit1.pas' {Form1},
-  Hid in '..\..\Hid.pas';
+  Unit1 in 'Unit1.pas' {Form1};
 
 {$R *.RES}
 

@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, SysUtils, Classes, Controls, Forms, ComCtrls,
-  JvHidControllerClass;
+  JvHidControllerClass, JvComponent;
 
 type
   TForm1 = class(TForm)

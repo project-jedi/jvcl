@@ -14,7 +14,7 @@ interface
 uses Windows, SysUtils, Classes, Graphics, Forms, Controls, Menus,
   StdCtrls, Dialogs, Buttons, Messages, ExtCtrls, JvDBPrgrss, JvPlacemnt,
   DB, DBTables, DBCtrls, JvSpeedbar, JvDBCtrl, JvDBSecur, JvShell, JvAppEvent,
-  JvMRUList, ComCtrls, JvxCtrls;
+  JvMRUList, ComCtrls, JvxCtrls, JvComponent;
 
 type
   TDBExplorerMainForm = class(TForm)

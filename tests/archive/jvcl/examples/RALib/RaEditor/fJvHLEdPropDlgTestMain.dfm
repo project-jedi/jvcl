@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 194
-  Top = 144
+  Left = 357
+  Top = 162
   Width = 410
   Height = 295
   Caption = 'Form1'
@@ -131,7 +131,7 @@ object Form1: TForm1
     Left = 80
     Top = 152
   end
-  object RAHLEdPropDlg1: TJvHLEdPropDlg
+  object JvHLEdPropDlg1: TJvHLEdPropDlg
     JvHLEditor = RAHLEditor1
     RegAuto = RegAuto1
     ColorSamples.Strings = (
@@ -257,8 +257,8 @@ object Form1: TForm1
       'alink="#FFFF00">'
       ''
       
-        '<p align="left">Download last JVCLmp;A Library version now - <fon' +
-        't face="Arial"'
+        '<p align="left">Download last JVCLmp;A Library version now - <fo' +
+        'nt face="Arial"'
       
         'color="#00FFFF"><a href="http://www.torry.ru/vcl/packs/ralib.zip' +
         '"><small>ralib110.zip</small></a>'
@@ -294,9 +294,23 @@ object Form1: TForm1
       ' timer=timer.drv'
       ''
       ' plain text'
+      '[Coco/R]'
+      'TOKENS'
+      '  NUMBER = digit { digit } .'
+      '  EOL = eol .'
+      ''
+      'PRODUCTIONS'
+      ''
+      'ExprPostfix   ='
+      '                       (. Output := '#39#39'; .)'
+      '      Expression<Output>  EOL'
+      '                       (. ShowOutput(Output); .)'
+      '    .'
       '[]')
     Pages = [epEditor, epColors]
-    Left = 160
-    Top = 152
+    OnDialogPopup = RAHLEdPropDlg1DialogPopup
+    OnDialogClosed = RAHLEdPropDlg1DialogClosed
+    Left = 312
+    Top = 104
   end
 end

@@ -1,6 +1,6 @@
 object frmEditor: TfrmEditor
-  Left = 228
-  Top = 94
+  Left = 321
+  Top = 100
   Width = 549
   Height = 428
   Caption = 'TJvEditor and TJvHLEditor components demo'

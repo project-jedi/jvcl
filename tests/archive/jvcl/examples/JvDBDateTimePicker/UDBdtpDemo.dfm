@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 250
-  Top = 183
+  Left = 438
+  Top = 176
   Width = 534
   Height = 375
   Caption = 'Jedi Date Time Picker Demo www.delphi-jedi.org'
@@ -11,6 +11,7 @@ object Form1: TForm1
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object DBGrid1: TDBGrid
@@ -40,13 +41,15 @@ object Form1: TForm1
     Width = 186
     Height = 21
     CalAlignment = dtaLeft
-    Date = 35231.6837020255
-    Time = 35231.6837020255
+    Date = 35231.5696097685
+    Time = 35231.5696097685
     DateFormat = dfShort
     DateMode = dmComboBox
     Kind = dtkDate
     ParseInput = False
     TabOrder = 2
+    DropDownDate = 37579
+    NullText = '(none)'
     DataField = 'Event_Date'
     DataSource = DataSource1
   end
@@ -56,23 +59,24 @@ object Form1: TForm1
     Width = 186
     Height = 21
     CalAlignment = dtaLeft
-    Date = 2.68370202550068
-    Time = 2.68370202550068
+    Date = 2.56960976852133
+    Time = 2.56960976852133
     DateFormat = dfShort
     DateMode = dmComboBox
     Kind = dtkTime
     ParseInput = False
     TabOrder = 3
+    DropDownDate = 37579
+    NullText = '(none)'
     DataField = 'Event_Time'
     DataSource = DataSource1
   end
   object DataSource1: TDataSource
     DataSet = Table1
-    Left = 378
-    Top = 34
+    Left = 426
+    Top = 18
   end
   object Table1: TTable
-    Active = True
     DatabaseName = 'DBDEMOS'
     TableName = 'events.db'
     Left = 458

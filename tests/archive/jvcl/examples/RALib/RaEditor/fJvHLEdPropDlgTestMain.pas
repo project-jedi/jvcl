@@ -5,14 +5,14 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvHLEdPropDlg, StdCtrls, Buttons, JvButtons, JvEditor, JvHLEditor,
-  fJvHLEdPropDlgTestParams, JvRegAuto;
+  fJvHLEdPropDlgTestParams, JvRegAuto, JvComponent;
 
 type
   TForm1 = class(TForm)
     RAHLEditor1: TJvHLEditor;
     RAhtButton1: TJvHTButton;
     RegAuto1: TJvRegAuto;
-    RAHLEdPropDlg1: TJvHLEdPropDlg;
+    JvHLEdPropDlg1: TJvHLEdPropDlg;
     procedure RAhtButton1Click(Sender: TObject);
     procedure RAHLEdPropDlg1DialogPopup(Sender: TObject; Form: TForm);
     procedure RAHLEdPropDlg1DialogClosed(Sender: TObject; Form: TForm;
@@ -36,7 +36,7 @@ implementation
 
 procedure TForm1.RAhtButton1Click(Sender: TObject);
 begin
-  RAHLEdPropDlg1.Execute;
+  JvHLEdPropDlg1.Execute;
 end;
 
 procedure TForm1.RAHLEdPropDlg1DialogPopup(Sender: TObject; Form: TForm);
@@ -63,10 +63,10 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  if RAHLEdPropDlg1.RegAuto <> nil then
+  if JvHLEdPropDlg1.RegAuto <> nil then
   begin
-    RAHLEdPropDlg1.Restore;
-    RAHLEdPropDlg1.LoadCurrentHighlighterColors;
+    JvHLEdPropDlg1.Restore;
+    JvHLEdPropDlg1.LoadCurrentHighlighterColors;
   end;
 
   MyParamsForm := TMyParams .Create(Self);
@@ -80,8 +80,8 @@ end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
 begin
-  if RAHLEdPropDlg1.RegAuto <> nil then
-    RAHLEdPropDlg1.Save;
+  if JvHLEdPropDlg1.RegAuto <> nil then
+    JvHLEdPropDlg1.Save;
 end;
 
 procedure TForm1.ApplyParams(Form: TMyParams );

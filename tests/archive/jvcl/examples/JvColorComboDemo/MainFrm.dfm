@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 193
-  Top = 133
+  Left = 350
+  Top = 136
   Width = 417
   Height = 454
   Caption = 'JvColorCombo Demo'

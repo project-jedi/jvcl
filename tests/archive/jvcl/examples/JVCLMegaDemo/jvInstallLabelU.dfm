@@ -1,8 +1,8 @@
 object JvInstallLabelFrm: TJvInstallLabelFrm
   Left = 0
   Top = 0
-  Width = 540
-  Height = 402
+  Width = 315
+  Height = 250
   TabOrder = 0
   OnEnter = FrameEnter
   object Image1: TImage

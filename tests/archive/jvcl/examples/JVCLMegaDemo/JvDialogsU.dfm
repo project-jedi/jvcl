@@ -39,7 +39,7 @@ object JvDialogs: TJvDialogs
     Height = 25
     Caption = 'Serial Number'
     TabOrder = 3
-    OnClick = Button4Click
+    Visible = False
   end
   object Button5: TButton
     Left = 136
@@ -192,8 +192,7 @@ object JvDialogs: TJvDialogs
     Left = 72
     Top = 208
   end
-  object JvSerialDlg1: TJvSerialDlg
-    Name = 'jvSerial'
+  object jvSerial: TJvSerialDlg
     FirstLabel = '&Name:'
     SecondLabel = '&Serial:'
     Title = 'Enter Serial'

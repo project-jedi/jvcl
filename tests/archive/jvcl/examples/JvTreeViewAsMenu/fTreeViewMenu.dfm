@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 223
-  Top = 146
+  Left = 337
+  Top = 152
   Width = 650
   Height = 292
   Caption = 'Form1'
@@ -37,6 +37,7 @@ object Form1: TForm1
     Height = 255
     ActivePage = TabSheet1
     TabOrder = 1
+    DrawTabShadow = False
     object TabSheet1: TTabSheet
       Caption = 'First'
       TabVisible = False

@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 223
-  Top = 158
+  Left = 345
+  Top = 154
   Width = 744
   Height = 638
   Caption = 'Dialogs Demo'
@@ -413,7 +413,6 @@ object Form1: TForm1
     Top = 102
   end
   object JvCalculator1: TJvCalculator
-    Title = 'Calculator'
     Left = 462
     Top = 298
   end

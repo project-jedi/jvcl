@@ -9,7 +9,7 @@ uses
   Menus, ExtCtrls, JvComponentPanel, StdCtrls, ComCtrls,
   JvRegAuto, JvButtons, Buttons, JvScrollMax, Mask, DBCtrls,
   JvDlg, JvHtControls, JvaScrollText
-  {$IFDEF COMPILER4_UP}, ImgList{$ENDIF COMPILER4_UP};
+  {$IFDEF COMPILER4_UP}, ImgList, JvComponent{$ENDIF COMPILER4_UP};
 
 type
   TMainForm  = class(TForm)

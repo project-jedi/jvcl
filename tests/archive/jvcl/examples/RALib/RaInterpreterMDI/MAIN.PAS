@@ -3,7 +3,7 @@ unit Main;
 interface
 
 uses Sysutils, Forms, Controls, Menus, Classes, ComCtrls,
-     JvInterpreter, JvInterpreterFm, JvInterpreter_all;
+     JvInterpreter, JvInterpreterFm, JvInterpreter_all, JvComponent;
 
 type
   TMainForm   = class(TForm)

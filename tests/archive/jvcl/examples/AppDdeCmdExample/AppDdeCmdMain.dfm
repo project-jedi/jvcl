@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 196
-  Top = 113
+  Left = 419
+  Top = 117
   Width = 536
   Height = 393
   Caption = 'TJvAppDdeCmd Example'

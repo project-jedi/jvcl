@@ -5,7 +5,7 @@ interface
 uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls,
   StdCtrls, Forms, DBCtrls, DB, DBGrids, Grids, ExtCtrls, JvRegAuto,
-  Buttons;
+  Buttons, JvComponent;
 
 type
   TForm2 = class(TForm)

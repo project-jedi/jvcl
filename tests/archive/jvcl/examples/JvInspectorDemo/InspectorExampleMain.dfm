@@ -1,5 +1,5 @@
 object frmInspector: TfrmInspector
-  Left = 197
+  Left = 304
   Top = 113
   Width = 254
   Height = 708

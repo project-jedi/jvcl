@@ -63,6 +63,7 @@ object JvControls: TJvControls
     Gradientstyle = grHorizontal
     LabelAlignment = taLeftJustify
     Align = alTop
+    DoubleBuffered = False
   end
   object SpinEdit1: TSpinEdit
     Left = 472
@@ -135,8 +136,8 @@ object JvControls: TJvControls
     Images = ImageList1
     Items = <
       item
-        Left = 180
-        Top = 85
+        Left = 182
+        Top = 105
         Caption = 'Birthday from Mr.X!!!'
         Color = clMenuText
         Date = 37865
@@ -146,28 +147,31 @@ object JvControls: TJvControls
         Selected = True
       end
       item
-        Left = 5
-        Top = 97
+        Left = 7
+        Top = 117
         Caption = 'Birthday of Mrs. Y'
         Color = clBlack
         Date = 37421
+        ImageIndex = 1
         Level = 1
         TextColor = clWhite
       end
       item
-        Left = 10
-        Top = 109
+        Left = 12
+        Top = 129
         Caption = 'is over'
         Color = clRed
         Date = 37434
+        ImageIndex = 2
         Level = 2
       end
       item
-        Left = 34
-        Top = 121
+        Left = 36
+        Top = 141
         Caption = 'I guess'
         Color = clYellow
         Date = 37495
+        ImageIndex = 3
         Level = 3
       end>
     HorzSupports = True

@@ -21,7 +21,7 @@ type
     JvFilenameEdit1: TJvFilenameEdit;
     JvDirectoryEdit1: TJvDirectoryEdit;
     JvDateEdit1: TJvDateEdit;
-    JvxSpinEdit1: TJvxSpinEdit;
+    JvSpinEdit1: TJvSpinEdit;
     Label7: TLabel;
     Label8: TLabel;
     Label9: TLabel;

@@ -60,7 +60,6 @@ type
     JvPasswordForm1: TJvPasswordForm;
     JvExchListboxes1: TJvExchListboxes;
     JvLoginDlg1: TJvLoginDlg;
-    JvSerialDlg1: TJvSerialDlg;
     JvImageDlg1: TJvImageDlg;
     JvCalculator1: TJvCalculator;
     JvProgressDlg1: TJvProgressDlg;
@@ -75,7 +74,6 @@ type
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button5Click(Sender: TObject);
-    procedure Button4Click(Sender: TObject);
     procedure Button6Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
     procedure Button8Click(Sender: TObject);
@@ -123,15 +121,9 @@ begin
  nag.free;
 end;
 
-procedure TJvDialogs.Button4Click(Sender: TObject);
-begin
-  JvSerialDlg1.Execute;
-end;
-
 procedure TJvDialogs.Button6Click(Sender: TObject);
 var
   TOD : TJvTipsofday;
-
 begin
   TOD := TJvTipsOfDay.Create(NIL);
   TOD.Hints.Append('Hintline 1');

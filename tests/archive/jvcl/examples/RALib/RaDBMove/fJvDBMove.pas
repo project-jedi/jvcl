@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Grids, DBGrids, Db, DBTables, StdCtrls, ComCtrls, JvDBMove, 
-  Buttons, FileCtrl, JvDlg, ExtCtrls, JvSQLS;
+  Buttons, FileCtrl, JvDlg, ExtCtrls, JvSQLS, JvComponent;
 
 type
   TForm1 = class(TForm)

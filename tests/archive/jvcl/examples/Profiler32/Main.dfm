@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 201
-  Top = 135
+  Left = 343
+  Top = 157
   Width = 506
   Height = 307
   Caption = 'Profiler 32 test program'
