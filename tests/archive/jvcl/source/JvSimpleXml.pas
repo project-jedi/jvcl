@@ -594,16 +594,28 @@ begin
           case J of
             -1:
               begin
-                St := LowerCase(St);
-                if St = 'lt' then
+                st := LowerCase(St);
+                if st = 'lt' then
                 begin
                   Value[K] := '<';
                   Inc(K);
                 end
                 else
-                if St = 'gt' then
+                if st = 'gt' then
                 begin
                   Value[K] := '>';
+                  Inc(K);
+                end
+                else
+                if st = 'amp' then
+                begin
+                  Value[K] := '&';
+                  Inc(K);
+                end
+                else
+                if st = 'quot' then
+                begin
+                  Value[K] := '"';
                   Inc(K);
                 end
                 else
