@@ -1,1 +1,2 @@
-JVPLUGINWIZ ICON "JvResPLUGINWIZ.ico"
+; X prefix for safety against MAINICON problems
+XJVPLUGINWIZ ICON "JvResPLUGINWIZ.ico"

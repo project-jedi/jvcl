@@ -257,7 +257,7 @@ begin
   FDefaultImage := TImageList.CreateSize(16, 16);
   {$IFDEF VCL}
   ImageList_AddIcon(FDefaultImage.Handle,
-    LoadImage(HInstance, PChar('JVERRORINDICATORICON'), IMAGE_ICON, 16, 16, 0));
+    LoadImage(HInstance, PChar('XJVERRORINDICATORICON'), IMAGE_ICON, 16, 16, 0));
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Bmp := TBitmap.Create;
