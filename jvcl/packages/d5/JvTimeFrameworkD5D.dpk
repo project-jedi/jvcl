@@ -34,6 +34,8 @@ package JvTimeFrameworkD5D;
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
+{$I JVCL.INC}
+
 requires
   JvTimeFrameworkD5R,
   vcl50,

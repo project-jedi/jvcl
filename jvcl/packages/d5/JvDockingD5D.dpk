@@ -34,8 +34,14 @@ package JvDockingD5D;
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
+{$I JVCL.INC}
+
 requires
-  JvDockingD5R
+  JvCoreD5D,
+  JvCoreD5R,
+  JvDockingD5R,
+  vcl50,
+  vclx50
   ;
 
 contains
