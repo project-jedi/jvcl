@@ -13,21 +13,9 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) ..\..\run\JvParserForm.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="JvMMC6R.lib JvDlgsC6R.lib JvCustomC6R.lib JvCmpC6R.lib JvCtrlsC6R.lib 
-      bcb2kaxserver.lib indy.lib dbxcds.lib dclocx.lib soaprtl.lib bcbie.lib 
-      nmfast.lib dbexpress.lib inetdbxpress.lib inetdbbde.lib bcbsmp.lib 
-      dsnapcon.lib dsnapcrba.lib visualdbclx.lib teeqr.lib dss.lib tee.lib 
-      teedb.lib teeui.lib qrpt.lib bdecds.lib cds.lib ibxpress.lib vcldbx.lib 
-      bdertl.lib adortl.lib vcldb.lib rtl.lib"/>
-    <SPARELIBS value="rtl.lib vcldb.lib adortl.lib bdertl.lib vcldbx.lib ibxpress.lib cds.lib 
-      bdecds.lib qrpt.lib teeui.lib teedb.lib tee.lib dss.lib teeqr.lib 
-      visualdbclx.lib dsnapcrba.lib dsnapcon.lib bcbsmp.lib inetdbbde.lib 
-      inetdbxpress.lib dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib dclocx.lib 
-      dbxcds.lib indy.lib bcb2kaxserver.lib CJCL60.lib JvCoreC6R.lib 
-      JvSystemC6R.lib JvStdCtrlsC6R.lib JvCtrlsC6R.lib JvCmpC6R.lib 
-      JvCustomC6R.lib JvDlgsC6R.lib JvMMC6R.lib"/>
-    <PACKAGES value="JvNetC6R.bpi JvStdCtrlsC6R.bpi JvSystemC6R.bpi DesignIde.bpi vcl.bpi 
-      CJCL60.bpi JvCoreC6R.bpi"/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value="rtl.lib"/>
+    <PACKAGES value="DesignIde.bpi vcl.bpi CJCL60.bpi JvNetC6R.bpi rtl.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\design;..\..\run"/>
     <PATHRC value=".;"/>
@@ -39,7 +27,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvNetC6D.cpp"/>
     <INCLUDEPATH value="..\..\run;..\..\design;..\..\common;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="C:\Prog\delphi6\Lib\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;..\..\design;..\..\run;..\..\dcu;..\..\resources;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <LIBPATH value="..\..\design;..\..\run;..\..\dcu;..\..\resources;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -64,17 +52,15 @@
   <FILELIST>
       <FILE FILENAME="JvNetC6D.res" FORMNAME="" UNITNAME="JvNetC6D.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvNetC6D.cpp" FORMNAME="" UNITNAME="JvNetC6D" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvNetC6R.bpi" FORMNAME="" UNITNAME="JvNetC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvNetReg.pas" FORMNAME="" UNITNAME="JvNetReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvHtmlParserEditor.pas" FORMNAME="" UNITNAME="JvHtmlParserEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvMailEditor.pas" FORMNAME="" UNITNAME="JvMailEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvParserForm.pas" FORMNAME="FormParsers" UNITNAME="JvParserForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvStdCtrlsC6R.bpi" FORMNAME="" UNITNAME="JvStdCtrlsC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvSystemC6R.bpi" FORMNAME="" UNITNAME="JvSystemC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="DesignIde.bpi" FORMNAME="" UNITNAME="DesignIde" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="C:\Prog\delphi6\Lib\JCL\dcu\CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="c:\prog\cbuilder6\Projects\Lib\JvCoreC6R.bpi" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JvNetC6R.bpi" FORMNAME="" UNITNAME="JvNetC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
