@@ -5,11 +5,11 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, JvXPCore, JvXPBar, JvXPContainer, ImgList, ActnList, ExtCtrls,
-  StdCtrls, ComCtrls;
+  StdCtrls, ComCtrls, JvExControls, JvComponent;
 
 resourcestring
   SClickEvent =
-    'You have clicked the action "%s"...';
+    '  You clicked on the action "%s"...';
 
 type
   TProcControl = procedure (Control:TControl) of object;
@@ -50,6 +50,7 @@ type
     dxWinXPBar2: TJvXPBar;
     dxWinXPBar1: TJvXPBar;
     tvSelfView: TTreeView;
+    StatusBar1: TStatusBar;
     procedure acConnectRemoteServerExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnCollapseAllClick(Sender: TObject);
@@ -86,8 +87,7 @@ end;
 procedure TfrmMain.acConnectRemoteServerExecute(Sender: TObject);
 begin
   with TAction(Sender) do
-    MessageBox(Application.Handle, PChar(Format(SClickEvent, [Name])),
-      'Click', MB_ICONINFORMATION);
+    StatusBar1.Panels[0].Text :=  Format(SClickEvent, [Name]);
 end;
 
 procedure TfrmMain.btnCollapseAllClick(Sender: TObject);
