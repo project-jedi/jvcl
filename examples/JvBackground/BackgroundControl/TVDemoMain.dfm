@@ -1,9 +1,9 @@
-object Form1: TForm1
-  Left = 197
-  Top = 103
+object JvBackgroundDemoFrm: TJvBackgroundDemoFrm
+  Left = 285
+  Top = 105
   Width = 435
   Height = 346
-  Caption = 'Form1'
+  Caption = 'JvBackgroundDemoFrm'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -119,8 +119,6 @@ object Form1: TForm1
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
-    MinFontSize = 0
-    MaxFontSize = 0
     Left = 368
     Top = 96
   end
