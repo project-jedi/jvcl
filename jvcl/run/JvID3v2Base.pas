@@ -1198,9 +1198,10 @@ implementation
 
 uses
   Graphics, Windows,
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   Forms,
-  {$ENDIF COMPILER6_UP}
+  JvJclUtils, // SameFileName() for Delphi 5
+  {$ENDIF COMPILER5}
   JclBase, JclFileUtils, JclLogic, JclDateTime,
   JvConsts, JvResources;
 

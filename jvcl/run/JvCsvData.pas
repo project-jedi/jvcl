@@ -709,7 +709,7 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  SysUtils, Controls, Forms, 
+  SysUtils, Controls, Forms,
   {$IFDEF COMPILER5}
   JvJVCLUtils,
   {$ENDIF COMPILER5}
@@ -3598,7 +3598,7 @@ begin
     Path := ExtractFilePath(FileName);
     if Path <> '' then
       if not DirectoryExists(Path) then
-        SysUtils.ForceDirectories(Path);
+        ForceDirectories(Path);
   end;
 end;
 
@@ -4161,16 +4161,7 @@ begin
   end;
   BackupFolder := BackupFolder + 'Backup'+ PathDelim;
   if not DirectoryExists(BackupFolder) then
-    // WP notes: According to VCL, FileCtrl.ForceDirectories is
-    // deprecated, thus I qualified ForceDirectories here!
-    // The trouble with CreateDirectory is that if it has to create
-    // more than one level of directory, it fails!
-    //{$IFDEF MSWINDOWS}
-    //CreateDirectory(PChar(BackupFolder), nil); /// XXX not equivalent to ForceDirectories!
-    //{$ENDIF MSWINDOWS}
-    //{$IFDEF LINUX}
-    SysUtils.ForceDirectories(BackupFolder);
-    //{$ENDIF LINUX}
+    ForceDirectories(BackupFolder);
   Found := False;
   for I := 0 to MaxFiles - 1 do
   begin
