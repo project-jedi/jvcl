@@ -7,7 +7,9 @@
   <C6Libs/>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
+    <Package Name="vclx50" Targets="C5" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
@@ -15,7 +17,7 @@
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvZlibMultiple.pas" Targets="d5,d5s,d6,d6p,d7,d7p,d7clx,k3,k3p" Formname="" Condition=""/>
+    <File Name="..\..\run\JvZlibMultiple.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCabFile.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvCaesarCipher.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvGenetic.pas" Targets="all" Formname="" Condition=""/>
