@@ -922,12 +922,14 @@ begin
       Canvas.CopyRect(R, Bmp.Canvas, R);
       TSpeedButtonAccess(FBtnLeftScroll).Paint;
       TSpeedButtonAccess(FBtnRightScroll).Paint;
-      Bmp.Width := FBarWidth;
+      if FBarWidth > 0 then
+        Bmp.Width := FBarWidth;
     end;
 
-    for I := 0 to Tabs.Count - 1 do
-      if Tabs[I].Visible then
-        PaintTab(Bmp.Canvas, Tabs[I]);
+    if FBarWidth > 0 then
+      for I := 0 to Tabs.Count - 1 do
+        if Tabs[I].Visible then
+          PaintTab(Bmp.Canvas, Tabs[I]);
     Canvas.Draw(0, 0, Bmp);
   finally
     Bmp.Free;
