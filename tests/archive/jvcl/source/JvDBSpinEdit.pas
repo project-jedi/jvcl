@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, StdCtrls,
-  JvSpin,Graphics,Forms,Dialogs,Menus,ExtCtrls,DBTables, DB,DBCtrls;
+  JvSpin,Graphics,Forms,Dialogs,Menus,ExtCtrls, DB,DBCtrls;
 
 type
   TJvDBSpinEdit = class(TJvSpinEdit)

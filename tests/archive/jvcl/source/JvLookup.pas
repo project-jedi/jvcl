@@ -38,8 +38,7 @@ uses SysUtils, Windows, DBCtrls,
   Variants, VDBConsts,
 {$ENDIF}
   Messages, Classes, Controls, Forms, Graphics, Menus, DB, Mask,
-{$IFNDEF COMPILER3_UP}DBTables, {$ENDIF}Buttons, StdCtrls, JvDBUtils,
-  JvToolEdit;
+  Buttons, StdCtrls, JvDBUtils, JvToolEdit;
 
 const
   DefFieldsDelim = ',';
@@ -1910,7 +1909,7 @@ begin
           Break;
       end;
     end
-  else {if FListStyle = lsDelimited then}  if not IsEmpty then
+  else {if FListStyle = lsDelimited then} if not IsEmpty then
     S := DoFormatLine;
   if (FListStyle = lsDelimited) then
   begin
@@ -2507,7 +2506,7 @@ var
   I, Y: Integer;
   S: string;
 begin
-  if not FListVisible and {FListActive}  CanModify then
+  if not FListVisible and {FListActive} CanModify then
   begin
     if Assigned(FOnDropDown) then
       FOnDropDown(Self);
@@ -2831,7 +2830,7 @@ begin
       Exit;
     if FListVisible then
       CloseUp(False)
-    else if {FListActive}  CanModify then
+    else if {FListActive} CanModify then
     begin
       MouseCapture := True;
       FTracking := True;

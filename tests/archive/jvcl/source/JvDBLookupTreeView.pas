@@ -48,7 +48,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, Dialogs, Forms, Graphics,
-  CommCtrl, ComCtrls, ExtCtrls, Db, DBTables, dbctrls, JvDBTreeView
+  CommCtrl, ComCtrls, ExtCtrls, Db, dbctrls, JvDBTreeView
   {$IFDEF COMPILER6_UP}, Variants, VDBConsts {$ENDIF}
   ;
 

@@ -32,8 +32,8 @@ unit JvDBUtils;
 
 interface
 
-uses{$IFDEF WIN32}Windows, Registry, {$ELSE}WinTypes, WinProcs, {$ENDIF}
-  Classes, SysUtils, DB, {$IFNDEF COMPILER3_UP}DBTables, {$ENDIF}IniFiles;
+uses
+  Windows, Registry, Classes, SysUtils, DB, IniFiles;
 
 type
 
@@ -137,21 +137,9 @@ type
 {$ENDIF}
 
 const
-{$IFNDEF COMPILER4_UP}
-{$IFDEF WIN32}
-  ftBlobTypes = [ftBlob..ftTypedBinary];
-{$ELSE}
-  ftBlobTypes = [ftBlob..ftGraphic];
-{$ENDIF}
-{$ELSE}
   ftBlobTypes = [Low(TBlobType)..High(TBlobType)];
-{$ENDIF COMPILER3_UP}
 {$IFDEF COMPILER35_UP}{$NODEFINE ftBlobTypes}{$ENDIF}
 
-{$IFNDEF COMPILER4_UP}
-  ftNonTextTypes = [ftBytes, ftVarBytes, ftBlob, ftMemo, ftGraphic
-{$IFDEF WIN32}, ftFmtMemo, ftParadoxOle, ftDBaseOle, ftTypedBinary
-{$IFDEF COMPILER3_UP}, ftCursor{$ENDIF}{$ENDIF}];
 {$IFDEF VER110} { C++ Builder 3 or higher }
 {$NODEFINE ftNonTextTypes}
   (*$HPPEMIT 'namespace JvDBUtils'*)
@@ -164,33 +152,20 @@ const
 type
   Largeint = Longint;
 {$IFDEF VER110}{$NODEFINE Largeint}{$ENDIF}
-{$ENDIF COMPILER4_UP}
 
-{$IFDEF COMPILER3_UP}
 procedure _DBError(const Msg: string);
-{$ELSE}
-procedure _DBError(Ident: Word);
-{$ENDIF}
 
 implementation
 
-uses Forms, Controls, Dialogs, Consts, DBConsts, JvxConst, JvVCLUtils, JvFileUtil,
-  JvAppUtils, JvStrUtils, JvMaxMin, {$IFNDEF COMPILER3_UP}JvBdeUtils, {$ENDIF}
-{$IFNDEF WIN32}JvStr16, {$ENDIF}JvDateUtil{$IFDEF COMPILER6_UP},Variants{$ENDIF};
+uses
+  Forms, Controls, Dialogs, Consts, DBConsts, JvxConst, JvVCLUtils, JvFileUtil,
+  JvAppUtils, JvStrUtils, JvMaxMin, JvDateUtil{$IFDEF COMPILER6_UP}, Variants{$ENDIF};
 
 { Utility routines }
-
-{$IFDEF COMPILER3_UP}
 
 procedure _DBError(const Msg: string);
 begin
   DatabaseError(Msg);
-{$ELSE}
-
-procedure _DBError(Ident: Word);
-begin
-  DBError(Ident);
-{$ENDIF}
 end;
 
 function ConfirmDelete: Boolean;
@@ -219,8 +194,6 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER3_UP}
-
 function SetToBookmark(ADataSet: TDataSet; ABookmark: TBookmark): Boolean;
 begin
   Result := False;
@@ -233,7 +206,6 @@ begin
     except
     end;
 end;
-{$ENDIF}
 
 { Refresh Query procedure }
 
@@ -252,12 +224,7 @@ begin
       try
         Close;
         Open;
-{$IFDEF COMPILER3_UP}
         SetToBookmark(Query, BookMk);
-{$ELSE}
-        if Query is TDBDataSet then
-          SetToBookmark(Query, BookMk);
-{$ENDIF}
       finally
         if BookMk <> nil then
           FreeBookmark(BookMk);
@@ -301,16 +268,10 @@ end;
 
 function TJvLocateObject.FilterApplicable: Boolean;
 begin
-{$IFDEF COMPILER3_UP}
   Result := FLookupField.FieldKind in [fkData, fkInternalCalc];
-{$ELSE}
-  Result := ({$IFDEF WIN32}FLookupField.FieldKind = fkData{$ELSE}
-    not FLookupField.Calculated{$ENDIF}) and IsFilterApplicable(DataSet);
-{$ENDIF}
 end;
 
 function TJvLocateObject.LocateFilter: Boolean;
-{$IFDEF WIN32}
 var
   SaveCursor: TCursor;
   Options: TLocateOptions;
@@ -332,10 +293,6 @@ begin
   finally
     Screen.Cursor := SaveCursor;
   end;
-{$ELSE}
-begin
-  Result := False;
-{$ENDIF}
 end;
 
 procedure TJvLocateObject.CheckFieldType(Field: TField);
@@ -433,8 +390,6 @@ end;
 
 { DataSet locate routines }
 
-{$IFDEF WIN32}
-
 function DataSetLocateThrough(DataSet: TDataSet; const KeyFields: string;
   const KeyValues: Variant; Options: TLocateOptions): Boolean;
 var
@@ -521,7 +476,6 @@ begin
     Fields.Free;
   end;
 end;
-{$ENDIF}
 
 { DataSetSortedSearch. Navigate on sorted DataSet routine. }
 
@@ -606,12 +560,7 @@ begin
     end;
   end
   else
-{$IFDEF COMPILER3_UP}
     DatabaseErrorFmt(SFieldTypeMismatch, [Field.DisplayName]);
-{$ELSE}
-    DBErrorFmt(SFieldTypeMismatch,
-      [Field.DisplayName{$IFNDEF WIN32}^{$ENDIF}]);
-{$ENDIF}
 end;
 
 { Save and restore DataSet Fields layout }
@@ -703,8 +652,6 @@ begin
   end;
 end;
 
-{$IFDEF WIN32}
-
 procedure SaveFieldsReg(DataSet: TDataSet; IniFile: TRegIniFile);
 begin
   InternalSaveFields(DataSet, IniFile, DataSetSectionName(DataSet));
@@ -716,7 +663,6 @@ begin
   InternalRestoreFields(DataSet, IniFile, DataSetSectionName(DataSet),
     RestoreVisible);
 end;
-{$ENDIF WIN32}
 
 procedure SaveFields(DataSet: TDataSet; IniFile: TIniFile);
 begin
@@ -896,15 +842,7 @@ begin
     if not ReadOnly and not Calculated and IsNull then
     begin
       FocusControl;
-{$IFDEF WIN32}
-{$IFNDEF COMPILER3_UP}
-      DBErrorFmt(SFieldRequired, [DisplayName]);
-{$ELSE}
       DatabaseErrorFmt(SFieldRequired, [DisplayName]);
-{$ENDIF}
-{$ELSE}
-      DBErrorFmt(SFieldRequired, [DisplayName^]);
-{$ENDIF WIN32}
     end;
 end;
 
@@ -930,15 +868,7 @@ begin
       F := Dest.FindField(Source.Fields[I].FieldName);
       if F <> nil then
       begin
-{$IFDEF WIN32}
         F.Value := Source.Fields[I].Value;
-{$ELSE}
-        if (F.DataType = Source.Fields[I].DataType) and
-          (F.DataSize = Source.Fields[I].DataSize) then
-          F.Assign(Source.Fields[I])
-        else
-          F.AsString := Source.Fields[I].AsString;
-{$ENDIF}
       end;
     end;
   end
@@ -950,14 +880,7 @@ begin
       FSrc := Source.FindField(Source.FieldDefs[I].Name);
       if (F <> nil) and (FSrc <> nil) then
       begin
-{$IFDEF WIN32}
         F.Value := FSrc.Value;
-{$ELSE}
-        if F.DataType = FSrc.DataType then
-          F.Assign(FSrc)
-        else
-          F.AsString := FSrc.AsString;
-{$ENDIF}
       end;
     end;
   end;

@@ -33,8 +33,7 @@ interface
 
 uses
   Windows, Messages, ComCtrls, CommCtrl, RichEdit, SysUtils, Classes,
-  Graphics, Controls, Menus, StdCtrls, DB, {$IFNDEF COMPILER3_UP}DBTables, {$ENDIF}
-  JvRichEd, DBCtrls;
+  Graphics, Controls, Menus, StdCtrls, DB, JvRichEd, DBCtrls;
 
 type
   TJvDBRichEdit = class(TJvCustomRichEdit)

@@ -47,9 +47,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, Dialogs, Graphics,
-  CommCtrl, ComCtrls, ExtCtrls, Db, dbctrls
-  {$IFDEF COMPILER6_UP}, Variants {$ENDIF}
-  ;
+  CommCtrl, ComCtrls, ExtCtrls, Db, dbctrls {$IFDEF COMPILER6_UP}, Variants {$ENDIF};
 
 type
   TJvDBTreeNode = class;
