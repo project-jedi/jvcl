@@ -30,12 +30,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Forms, Controls, ExtCtrls, Graphics, Messages, Menus,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QForms, QControls, QExtCtrls, QGraphics, QMenus,
-  {$ENDIF VisualCLX}
   JvComponent, JvExControls;
 
 type
@@ -283,12 +278,7 @@ type
 implementation
 
 uses
-  {$IFDEF VCL}
   Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
   Math,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvTypes, JvThemes;
 
