@@ -68,11 +68,15 @@ type
     function DoDrawImage(Index: integer; APicture: TPicture; R: TRect): boolean; virtual;
     function DoDrawText(Index: integer; const AText: string; R: TRect): boolean; virtual;
     procedure CMMouseLeave(var Msg: TMessage); override;
+    procedure WMSize(var Message: TWMSize); message WM_SIZE;
+
   public
     constructor Create(AOwner: TComponent); override;
     function AddText(const S: string): integer;
+    procedure InsertText(Index: integer; const S: string);
     // helper functions: makes sure the internal TPicture object is created and freed as necessary
     function AddImage(P: TPicture): integer;
+    procedure InsertImage(Index: integer; P: TPicture);
     procedure Delete(Index: integer);
   published
     property ButtonWidth: integer read FButtonWidth write SetButtonWidth default 26;
@@ -153,7 +157,8 @@ implementation
 
 function TJvComboListBox.AddImage(P: TPicture): integer;
 begin
-  Result := Items.AddObject('', P);
+  Result := Items.Count;
+  InsertImage(Result, P);
 end;
 
 function TJvComboListBox.AddText(const S: string): integer;
@@ -284,22 +289,13 @@ begin
               B.Free;
             end;
           end;
-        dsStretch:
-          begin
-            TmpRect := DestRect(P);
-            OffsetRect(TmpRect, Rect.Left, Rect.Top);
-            Canvas.StretchDraw(TmpRect, P.Graphic);
-          end;
-        dsProportional:
+        dsStretch, dsProportional:
           begin
             TmpRect := DestRect(P);
             OffsetRect(TmpRect, Rect.Left, Rect.Top);
             Canvas.StretchDraw(TmpRect, P.Graphic);
           end;
       end;
-      Canvas.Brush.Color := clBtnShadow;
-      Canvas.Pen.Color := clBtnShadow;
-      Canvas.FrameRect(Rect);
     end;
   end
   else
@@ -309,8 +305,11 @@ begin
     InflateRect(TmpRect, -4, -4);
     if DoDrawText(Index, Items[Index], TmpRect) then
       DrawText(Canvas.Handle, PChar(Items[Index]), Length(Items[Index]),
-        TmpRect, DT_WORDBREAK or DT_LEFT or DT_CENTER or DT_EDITCONTROL or DT_NOPREFIX or DT_END_ELLIPSIS);
+        TmpRect, DT_WORDBREAK or DT_LEFT or DT_TOP or DT_EDITCONTROL or DT_NOPREFIX or DT_END_ELLIPSIS);
   end;
+  Canvas.Brush.Color := clBtnShadow;
+  Canvas.Pen.Color := clBtnShadow;
+  Canvas.FrameRect(Rect);
 
   // draw the combo button
   if State * [odSelected, odFocused] <> [] then
@@ -371,6 +370,20 @@ begin
     OffsetRect(Result, (W2 - W) div 2, 0);
   if H2 > H then
     OffsetRect(Result, 0, (H2 - H) div 2);
+end;
+
+procedure TJvComboListBox.InsertImage(Index: integer; P: TPicture);
+var
+  P2: TPicture;
+begin
+  P2 := TPicture.Create;
+  P2.Assign(P);
+  Items.InsertObject(Index, '', P2);
+end;
+
+procedure TJvComboListBox.InsertText(Index: integer; const S: string);
+begin
+  Items.Insert(Index, S);
 end;
 
 procedure TJvComboListBox.InvalidateItem(Index: integer);
@@ -471,6 +484,12 @@ begin
     FDrawStyle := Value;
     Invalidate;
   end;
+end;
+
+procedure TJvComboListBox.WMSize(var Message: TWMSize);
+begin
+  inherited;
+  Invalidate;
 end;
 
 end.
