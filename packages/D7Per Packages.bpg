@@ -9,7 +9,7 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = JvCoreD7R.bpl JvCoreD7D.bpl JvSystemD7R.bpl JvSystemD7D.bpl \
+PROJECTS = Jv3rdD7R.bpl JvCoreD7R.bpl JvCoreD7D.bpl JvSystemD7R.bpl JvSystemD7D.bpl \
   JvStdCtrlsD7R.bpl JvStdCtrlsD7D.bpl JvCtrlsD7R.bpl JvCtrlsD7D.bpl JvCmpD7R.bpl \
   JvCmpD7D.bpl JvCustomD7R.bpl JvCustomD7D.bpl JvDlgsD7R.bpl JvDlgsD7D.bpl \
   JvCryptD7R.bpl JvCryptD7D.bpl JvMMD7R.bpl JvMMD7D.bpl JvNetD7R.bpl JvNetD7D.bpl \
@@ -28,6 +28,8 @@ PROJECTS = JvCoreD7R.bpl JvCoreD7D.bpl JvSystemD7R.bpl JvSystemD7D.bpl \
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
+Jv3rdD7R.bpl: d7\Jv3rdD7R.dpk
+  $(DCC)
 
 JvCoreD7D.bpl: d7\JvCoreD7D.dpk
   $(DCC)
