@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2003-11-11
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -36,9 +36,12 @@ uses
 type
   TJvItemsSearchs = class(TObject)
   public
-    function SearchExactString(Items: TStrings; Value: string; CaseSensitive: Boolean = True): Integer;
-    function SearchPrefix(Items: TStrings; Value: string; CaseSensitive: Boolean = True): Integer;
-    function SearchSubString(Items: TStrings; Value: string; CaseSensitive: Boolean = True): Integer;
+    function SearchExactString(Items: TStrings; Value: string; CaseSensitive: Boolean = True;
+      StartIndex: Integer = -1): Integer;
+    function SearchPrefix(Items: TStrings; Value: string; CaseSensitive: Boolean = True;
+      StartIndex: Integer = -1): Integer;
+    function SearchSubString(Items: TStrings; Value: string; CaseSensitive: Boolean = True;
+      StartIndex: Integer = -1): Integer;
     function DeleteExactString(Items: TStrings; Value: string; All: Boolean;
       CaseSensitive: Boolean = True): Integer;
   end;
@@ -64,82 +67,136 @@ begin
 end;
 
 function TJvItemsSearchs.SearchExactString(Items: TStrings; Value: string;
-  CaseSensitive: Boolean): Integer;
+  CaseSensitive: Boolean; StartIndex: Integer): Integer;
 var
   I: Integer;
+  HasLooped: Boolean;
 begin
   Result := -1;
+  I := StartIndex + 1;
+  HasLooped := False;
   if CaseSensitive then
   begin
-    for I := 0 to Items.Count - 1 do
+    while not HasLooped or (I <= StartIndex) do
+    begin
       if AnsiCompareStr(Value, Items[I]) = 0 then
       begin
         Result := I;
         Exit;
       end;
+      Inc(I);
+      if I >= Items.Count then
+      begin
+        I := 0;
+        HasLooped := True;
+      end;
+    end;
   end
   else
   begin
-    for I := 0 to Items.Count - 1 do
-      if AnsiCompareText(Value, Items[I]) = 1 then
+    while not HasLooped or (I <= StartIndex) do
+    begin
+      if AnsiCompareText(Value, Items[I]) = 0 then
       begin
         Result := I;
         Exit;
       end;
+      Inc(I);
+      if I >= Items.Count then
+      begin
+        I := 0;
+        HasLooped := True;
+      end;
+    end;
   end;
 end;
 
 function TJvItemsSearchs.SearchPrefix(Items: TStrings; Value: string;
-  CaseSensitive: Boolean): Integer;
+  CaseSensitive: Boolean; StartIndex: Integer): Integer;
 var
   I: Integer;
+  HasLooped: Boolean;
 begin
   Result := -1;
+  I := StartIndex + 1;
+  HasLooped := False;
   if CaseSensitive then
   begin
-    for I := 0 to Items.Count - 1 do
+    while not HasLooped or (I <= StartIndex) do
+    begin
       if Pos(Value, Items[I]) = 1 then
       begin
         Result := I;
         Exit;
       end;
+      Inc(I);
+      if I >= Items.Count then
+      begin
+        I := 0;
+        HasLooped := True;
+      end;
+    end;
   end
   else
   begin
     Value := AnsiUpperCase(Value);
-    for I := 0 to Items.Count - 1 do
+    while not HasLooped or (I <= StartIndex) do
+    begin
       if Pos(Value, AnsiUpperCase(Items[I])) = 1 then
       begin
         Result := I;
         Exit;
       end;
+      Inc(I);
+      if I >= Items.Count then
+      begin
+        I := 0;
+        HasLooped := True;
+      end;
+    end;
   end;
 end;
 
 function TJvItemsSearchs.SearchSubString(Items: TStrings; Value: string;
-  CaseSensitive: Boolean): Integer;
+  CaseSensitive: Boolean; StartIndex: Integer): Integer;
 var
   I: Integer;
 begin
   Result := 0;
   if CaseSensitive then
   begin
-    for I := 0 to Items.Count - 1 do
+    while not HasLooped or (I <= StartIndex) do
+    begin
       if Pos(Value, Items[I]) <> 0 then
       begin
         Result := I;
         Exit;
       end;
+      Inc(I);
+      if I >= Items.Count then
+      begin
+        I := 0;
+        HasLooped := True;
+      end;
+    end;
   end
   else
   begin
     Value := AnsiUpperCase(Value);
-    for I := 0 to Items.Count - 1 do
+    while not HasLooped or (I <= StartIndex) do
+    begin
       if Pos(Value, AnsiUpperCase(Items[I])) <> 0 then
       begin
         Result := I;
         Exit;
       end;
+      Inc(I);
+      if I >= Items.Count then
+      begin
+        I := 0;
+        HasLooped := True;
+      end;
+    end;
   end;
 end;
 
