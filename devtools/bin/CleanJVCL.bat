@@ -24,7 +24,7 @@ echo.
 cd ..
 cd ..
 rem Delete garbage:
-del /s /q *.dcu *.ddp *.dsk *.exe .#* >NUL
+del /s /q *.dcu *.ddp *.dsk *.exe .#* .cvsignore >NUL
 rem Go back were we started:
 cd devtools\bin
 
