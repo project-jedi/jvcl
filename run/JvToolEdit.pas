@@ -2960,6 +2960,7 @@ begin
 
   if FPopup <> nil then
     TJvPopupWindow(FPopup).OnCloseUp := nil;
+  FPopup.Parent := nil;
   FPopup.Free;
   FPopup := nil;
   FCalendarHints.OnChange := nil;
