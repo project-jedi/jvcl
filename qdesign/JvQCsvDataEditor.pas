@@ -82,7 +82,7 @@ begin
   Result := inherited GetAttributes + [paDialog];
 end;
 
-function DoCsvDefDialog(OldValue: string): string;
+function DoCsvDefDialog(OldValue: string; ASeparator: Char): string;
 var
   Dialog: TJvCsvDefStrDialog;
   DlgResult: Integer;
@@ -94,10 +94,11 @@ begin
   Dialog := TJvCsvDefStrDialog.Create(nil); // no owner!
 //  DlgResult := idCancel;
   try
-    Dialog.SetCsvStr(OldValue);
+    Dialog.Separator := ASeparator;
+    Dialog.CsvStr := OldValue;
     DlgResult := Dialog.ShowModal;
     if DlgResult = idOk then
-      Result := Dialog.GetCsvStr
+      Result := Dialog.CsvStr
     else
       Result := OldValue;
   finally
@@ -117,8 +118,8 @@ begin
 
   S1 := GetValue;
   if S1 = '' then
-    S1 := Component.GetCsvHeader; // TODO! read first line of CSV file!
-  S2 := DoCsvDefDialog(S1);
+    S1 := Component.GetCsvHeader;
+  S2 := DoCsvDefDialog(S1, TJvCsvDataSet(Component).Separator);
 
   //if S1 <> S2 then begin // on change of csv value.
   SetValue(S2);
@@ -180,7 +181,7 @@ begin
   begin
     Title := RsJvCsvDataSetSelectCSVFileToOpen;
     FileName := GetValue;
-    Filter := RsCsvFilter;
+    Filter := RsCsvFilter + '|' +  RsAllFilesFilter;
     Options := Options + [ofPathMustExist];
     try
       if Execute then

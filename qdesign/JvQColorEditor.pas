@@ -13,9 +13,11 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvColorEditor.PAS, released on 2004-07-04.
+The Original Code is: JvColors.PAS, released on 2002-07-04.
 
-The Initial Developer of the Original Code is: André Snepvangers
+The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
+Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -279,7 +281,7 @@ var
           for Suffix := 'A' to 'P' do
           begin
             KeyName := 'Color' + Suffix;
-            KeyValue := StringReplace(Strings[I], Keyname + '=', '', []);
+            KeyValue := StringReplace(Strings[I], KeyName + '=', '', []);
             WriteString(KeyName, KeyValue);
             Inc(I);
           end;
