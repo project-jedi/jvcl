@@ -460,6 +460,43 @@ type
   PCaptionChar = PWideChar;
 {$ENDIF VisualCLX}
 
+type
+  // equivalent of TPoint, but that can be a published property for BCB
+  TJvPoint = class (TPersistent)
+  private
+    FY: Longint;
+    FX: Longint;
+  published
+    property X: Longint read FX write FX;
+    property Y: Longint read FY write FY;
+  end;
+
+  // equivalent of TRect, but that can be a published property for BCB
+  TJvRect = class (TPersistent)
+  private
+    FTopLeft: TJvPoint;
+    FBottomRight: TJvPoint;
+    function GetBottom: Integer;
+    function GetLeft: Integer;
+    function GetRight: Integer;
+    function GetTop: Integer;
+    procedure SetBottom(const Value: Integer);
+    procedure SetLeft(const Value: Integer);
+    procedure SetRight(const Value: Integer);
+    procedure SetTop(const Value: Integer);
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    property TopLeft    : TJvPoint read FTopLeft     write FTopLeft;
+    property BottomRight: TJvPoint read FBottomRight write FBottomRight;
+  published
+    property Left  : Integer read GetLeft   write SetLeft;
+    property Top   : Integer read GetTop    write SetTop;
+    property Right : Integer read GetRight  write SetRight;
+    property Bottom: Integer read GetBottom write SetBottom;
+  end;
+
 implementation
 
 {$IFDEF COMPILER6_UP}
@@ -471,6 +508,62 @@ begin
   Name := 'SubComponent';
 end;
 {$ENDIF COMPILER6_UP}
+
+{ TJvRect }
+
+constructor TJvRect.Create;
+begin
+  inherited;
+  FTopLeft     := TJvPoint.Create;
+  FBottomRight := TJvPoint.Create;
+end;
+
+destructor TJvRect.Destroy;
+begin
+  FTopLeft.Free;
+  FBottomRight.Free;
+  inherited;
+end;
+
+function TJvRect.GetBottom: Integer;
+begin
+  Result := FBottomRight.Y;
+end;
+
+function TJvRect.GetLeft: Integer;
+begin
+  Result := FTopLeft.X;
+end;
+
+function TJvRect.GetRight: Integer;
+begin
+  Result := FBottomRight.X;
+end;
+
+function TJvRect.GetTop: Integer;
+begin
+  Result := FTopLeft.Y;
+end;
+
+procedure TJvRect.SetBottom(const Value: Integer);
+begin
+  FBottomRight.Y := Value;
+end;
+
+procedure TJvRect.SetLeft(const Value: Integer);
+begin
+  FTopLeft.X := Value;
+end;
+
+procedure TJvRect.SetRight(const Value: Integer);
+begin
+  FBottomRight.X := Value;
+end;
+
+procedure TJvRect.SetTop(const Value: Integer);
+begin
+  FTopLeft.Y := Value;
+end;
 
 end.
 
