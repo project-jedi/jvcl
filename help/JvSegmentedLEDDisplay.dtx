@@ -34,13 +34,13 @@ Description
   for two additional values which should be accesible from the Object Inspector this method is
   needed to perform the translation from the string literal into the actual value.
 
-  If the string literal does not represent one of the two additional values, the StringToColor
+  If the string literal does not represent one of the two additional values, the IdentToColor
   function is called.
 Parameters
   Ident - String literal representing a color
   Int   - Ordinal value of the color represented by the Ident value.
 See Also
-  UnlitColorToIdent, StringToColor, TUnlitColor
+  UnlitColorToIdent, IdentToColor, TUnlitColor
 ----------------------------------------------------------------------------------------------------
 @@RegisterSegmentedLEDDigitClass
 <TITLE RegisterSegmentedLEDDigitClass procedure>
@@ -331,6 +331,63 @@ Description
 See Also
   Height, VertAdjust
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomSegmentedLEDDigit.GetHitInfo
+Summary
+  Retrieve information about a specified point in the digit.
+Description
+  GetHitInfo retrieves information about a specified point in the digit. Besides reporting the
+  area type, it will also report which segment is involved if applicable.
+
+  GetHitInfo will determine if the position lies within the digit in which case it will iterate
+  over the segments until it finds a hit or no more segments are present.
+
+  There are two overloaded versions of GetHitInfo: one that will only return the area type and one
+  that will additionally return the segment involved.
+Parameters
+  X            - X-coordinate of the point to retrieve information from.
+  Y            - Y-coordinate of the point to retrieve information from.
+  SegmentIndex - Receives the segment index involved (if applicable; i.e. when the result
+                  indicates a segment is at the specified position).
+See Also
+  TJvCustomSegmentedLEDDisplay.GetHitInfo
+----------------------------------------------------------------------------------------------------
+@@TJvCustomSegmentedLEDDigit.GetSegmentName
+Summary
+  Retrieves the name of a segment.
+Description
+  GetSegmentName retrieves the name of the specified segment.
+
+  Each segment (individually controllable shapes) has a name assigned to it. For the main segments
+  the names are usually A through Z (depending on the number of segments). Additional markers are
+  named differently.
+
+  This method will return the proper name for any segment.
+Parameters
+  Index - 0-based index of segment to retrieve the name for.
+See Also
+  GetSegmentIndex, SegmentCount
+----------------------------------------------------------------------------------------------------
+@@TJvCustomSegmentedLEDDigit.GetSegmentIndex
+Summary
+  Retrieves the index of a named segment.
+Description
+  GetSegmentIndex retrieves the index of the segment indicated by the Name property. The resulting
+  value is a 0-based index or -1 if the specified name is not the name of a segment.
+
+  If certain segments are not used (due to property settings) they are still searchable with this
+  method.
+Parameters
+  Name  - Name of the segment to retrieve the index of.
+See Also
+  GetSegmentName, SegmentCount
+----------------------------------------------------------------------------------------------------
+@@TJvCustomSegmentedLEDDigit.GetSegmentStates
+Summary
+  Retrieves a bit mask representing the states of the segments.
+Description
+  GetSegmentStates retrieves a bit mask representing the states of all segments. Bits set to '1'
+  represent lit segments. The segment's index is also the bit position (i.e. segment 0 = bit 0).
+----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.Height
 Summary
   Determines the height of the digit.
@@ -359,6 +416,19 @@ Description
 See Also
   BaseTop, Display
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomSegmentedLEDDigit.PtInSegment
+Summary
+  Determines if a coordinate belongs to a segment.
+Description
+  PtInSegment determines if the specified coordinate belongs to the specified segment. If it does
+  the function will return True, otherwise False will be returned.
+
+  Although the index parameter may refer to any segment the digit may support, segments that are not
+  rendered are not considered and the function will return False for these segments.
+Parameters
+  SegmentIndex  - 0-based index of the segment to check.
+  Pt            - Coordinate to check.
+----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.RecalcNeeded
 Summary
   Flags if a recalculation of the segments is required.
@@ -380,6 +450,16 @@ Description
   * <LINK TJvCustomSegmentedLEDDisplay.Slant, Display.Slant> is changed
 
   Based on the digit class in use other conditions may apply as well.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomSegmentedLEDDigit.SegmentCount
+Summary
+  Indicates the number of available segments.
+Description
+  SegmentCount indicates the number of segments the digit supports. It ignores any settings that
+  would hide segments and will thus always return the same value, regardless of any property
+  settings.
+See Also
+  GetSegmentIndex, GetSegmentName
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.Text
 Summary
@@ -586,6 +666,29 @@ Description
 See Also
   SegmentSpacing, SegmentThickness
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomSegmentedLEDDisplay.GetHitInfo
+Summary
+  Retrieve information about a specified point in the control.
+Description
+  GetHitInfo retrieves information about a specified point in the control. Besides reporting the
+  area type, it will also report which digit and/or segment is involved if applicable.
+
+  GetHitInfo will determine if the position lies within the control in which case it will iterate
+  over the digits (calling their <LINK TJvCustomSegmentedLEDDigit.GetHitInfo, GetHitInfo> methods)
+  until it finds a hit or no more digits are present.
+
+  There are two overloaded versions of GetHitInfo: one that will only return the area type and one
+  that will additionally return the digit and/or segment involved.
+Parameters
+  X            - X-coordinate of the point to retrieve information from.
+  Y            - Y-coordinate of the point to retrieve information from.
+  Digit        - Receives a reference to the digit involved (if applicable; i.e. when the result
+                  indicates a digit and/or segment is at the specified position).
+  SegmentIndex - Receives the segment index involved (if applicable; i.e. when the result
+                  indicates a segment is at the specified position).
+See Also
+  TJvCustomSegmentedLEDDigit.GetHitInfo
+----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDisplay.SegmentLitColor
 Summary
   Specifies the color to use for lit segments.
@@ -777,6 +880,22 @@ Description
   The TSlantAngle type is used to represent the slant angle of a digit. It's limited to 0 (up right)
   to 44 degrees
 ----------------------------------------------------------------------------------------------------
+@@TSLDHitInfo
+<TITLE TSLDHitInfo type>
+Summary
+  Type used to determine the area type of a coordinate.
+Description
+  The TSLDHitInfo type is used to specify the area type of a coordinate in a call to
+  TJvCustomSegmentedLEDDisplay.GetHitInfo or TJvCustomSegmentedLEDDigit.GetHitInfo.
+@@TSLDHitInfo.shiNowhere
+  Specified coordinate does not belong to the control or digit.
+@@TSLDHitInfo.shiDigit
+  Specified coordinate belongs to a/the digit.
+@@TSLDHitInfo.shiDigitSegment
+  Specified coordinate belongs to a segment of a/the digit.
+@@TSLDHitInfo.shiClientArea
+  Specified coordinate belongs to the client area of the control.
+----------------------------------------------------------------------------------------------------
 @@TUnlitColor
 <TITLE TUnlitColor type>
 Summary
@@ -803,13 +922,13 @@ Description
   allows for two additional values which should be accesible from the Object Inspector this method
   is needed to perform the translation from the actual value into the string literal.
 
-  If the value does not correspond to one of the two additional values, the ColorToString
+  If the value does not correspond to one of the two additional values, the ColorToIdent
   function is called.
 Parameters
   Int   - Ordinal value of a TUnlitColor value.
   Ident - String literal representing the color specified by Int
 See Also
-  IdentToUnlitColor, ColorToString, TUnlitColor
+  IdentToUnlitColor, ColorToIdent, TUnlitColor
 ----------------------------------------------------------------------------------------------------
 @@UnregisterModuleSegmentedLEDDigitClasses
 <TITLE UnregisterModuleSegmentedLEDDigitClasses procedure>
