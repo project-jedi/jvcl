@@ -45,10 +45,12 @@ type
   PMemBlobArray = ^TMemBlobArray;
   TJvMemoryRecord = class;
   TLoadMode = (lmCopy, lmAppend);
+  TSaveLoadState = (slsNone,slsLoading,slsSaving);
   TCompareRecords = function(Item1, Item2: TJvMemoryRecord): Integer of object;
 
   TJvMemoryData = class(TDataSet)
   private
+    FSaveLoadState:TSaveLoadState;
     FRecordPos: Integer;
     FRecordSize: Integer;
     FBookmarkOfs: Integer;
@@ -152,6 +154,7 @@ type
     function LoadFromDataSet(Source: TDataSet; RecordCount: Integer;
       Mode: TLoadMode): Integer;
     function SaveToDataSet(Dest: TDataSet; RecordCount: Integer): Integer;
+    property SaveLoadState:TSaveLoadState read FSaveLoadState;
   published
     property Capacity: Integer read GetCapacity write SetCapacity default 0;
     property Active;
@@ -1397,6 +1400,7 @@ begin
   Result := 0;
   if Source = Self then
     Exit;
+  FSaveLoadState := slsLoading;
   SourceActive := Source.Active;
   Source.DisableControls;
   SB := Source.GetBookmark;
@@ -1478,6 +1482,7 @@ begin
     if not SourceActive then
       Source.Close;
     Source.EnableControls;
+    FSaveLoadState := slsNone;
   end;
 end;
 
@@ -1493,6 +1498,7 @@ begin
   UpdateCursorPos;
   DisableControls;
   Dest.DisableControls;
+  FSaveLoadState := slsSaving;
   try
     SB := GetBookmark;
     DB := Dest.GetBookMark;
@@ -1537,6 +1543,7 @@ begin
   finally
     EnableControls;
     Dest.EnableControls;
+    FSaveLoadState := slsNone;
   end;
 end;
 
