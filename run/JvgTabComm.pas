@@ -23,61 +23,64 @@ Last Modified:  2003-01-15
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  ...common for JvgTab and JvgPage classes declaration
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
 
-//...common for JvgTab and JvgPage classes declaration
-
 unit JvgTabComm;
 
 interface
-uses Windows, Graphics, Controls, Classes, ExtCtrls, JvgTypes, ComCtrls, JvgCommClasses;
+
+uses
+  Windows, Graphics, Controls, Classes, ExtCtrls, ComCtrls,
+  JvgTypes, JvgCommClasses;
 
 const
   TCS_SCROLLOPPOSITE = $0001; //вкладка с несколькими страницами; multipage tab [translated]
-{$EXTERNALSYM TCS_SCROLLOPPOSITE}
+  {$EXTERNALSYM TCS_SCROLLOPPOSITE}
   TCS_BOTTOM = $0002;
-{$EXTERNALSYM TCS_BOTTOM}
+  {$EXTERNALSYM TCS_BOTTOM}
   TCS_RIGHT = $0002; //используется с TCS_VERTICAL; used with TCS_VERTICAL [translated]
-{$EXTERNALSYM TCS_RIGHT}
+  {$EXTERNALSYM TCS_RIGHT}
   TCS_HOTTRACK = $0040;
-{$EXTERNALSYM TCS_HOTTRACK}
+  {$EXTERNALSYM TCS_HOTTRACK}
   TCS_VERTICAL = $0080; //только для режима с несколькими строками; Only for multi-line mode [translated]
-{$EXTERNALSYM TCS_VERTICAL}
+  {$EXTERNALSYM TCS_VERTICAL}
 
 type
-  TglOnGetGradientColors = procedure(Sender: TObject; Index: integer; var Gradient: TJvgGradient) of object;
+  TglOnGetGradientColors = procedure(Sender: TObject; Index: Integer; var Gradient: TJvgGradient) of object;
   TJvgTabStyle = class;
   TJvgTabsWallpaper = class;
 
   TDRAWTABSTRUCT = record
     lpDrawItemStr: PDrawItemStruct;
     ClientR: TRect;
-    TabsCount: integer;
+    TabsCount: Integer;
     Caption: string;
     Wallpaper: TJvgTabsWallpaper;
     Glyph: TBitmap;
     GlyphOption: TglWallpaperOption;
     BoxStyle: TJvgTabStyle;
     Font_: TFont;
-    fButton: boolean;
+    fButton: Boolean;
     Position: TglSide;
     Options: TglTabOptions;
     FontDirection: TglLabelDir;
     BackgrColor_: TColor;
-    FlatButtons: boolean;
+    FlatButtons: Boolean;
     Gradient: TJvgGradient;
   end;
 
-  //______________________________________{ . TJvgTabStyle . }
   TJvgTabStyle = class(TPersistent)
   private
     FBorders: TglSides;
     FBevelInner: TPanelBevel;
     FBevelOuter: TPanelBevel;
-    FBold: boolean;
+    FBold: Boolean;
     FBackgrColor: TColor;
     FFont: TFont;
     FTextStyle: TglTextStyle;
@@ -88,31 +91,35 @@ type
     FGradient: TJvgGradient;
     FParent: TWinControl;
     FOnChanged: TNotifyEvent;
+    FOnFontChanged: TNotifyEvent;
     procedure SetBorders(Value: TglSides);
     procedure SetBevelInner(Value: TPanelBevel);
     procedure SetBevelOuter(Value: TPanelBevel);
-    procedure SetBold(Value: boolean);
+    procedure SetBold(Value: Boolean);
     procedure SetBackgrColor(Value: TColor);
-    //  procedure SetFillBackgr( Value:boolean );
+    //  procedure SetFillBackgr( Value:Boolean );
     procedure SetFont(Value: TFont);
     procedure SetTextStyle(Value: TglTextStyle);
     procedure SetCaptionHAlign(Value: TglHorAlign);
     procedure SetCaptionVAlign(Value: TglVertAlign);
     procedure SetGlyphHAlign(Value: TglHorAlign);
     procedure SetGlyphVAlign(Value: TglVertAlign);
-    procedure SetOnChanged(Value: TNotifyEvent);
+    procedure SetChanged(Value: TNotifyEvent);
+  protected
+    procedure Changed;
+    procedure FontChanged;
   public
-    OnFontChanged: TNotifyEvent;
-    property OnChanged: TNotifyEvent read FOnChanged write SetOnChanged;
     constructor Create(AOwner: TWinControl);
     destructor Destroy; override;
+    property OnChanged: TNotifyEvent read FOnChanged write SetChanged;
+    property OnFontChanged: TNotifyEvent read FOnFontChanged write FOnFontChanged;
   published
     property Borders: TglSides read FBorders write SetBorders;
     property BevelInner: TPanelBevel read FBevelInner write SetBevelInner;
     property BevelOuter: TPanelBevel read FBevelOuter write SetBevelOuter;
-    property Bold: boolean read FBold write SetBold;
+    property Bold: Boolean read FBold write SetBold;
     property BackgrColor: TColor read FBackgrColor write SetBackgrColor; // default clBtnFace;
-    //  property FillBackgr  :boolean read FFillBackgr write SetFillBackgr default clBtnFace;
+    //  property FillBackgr  :Boolean read FFillBackgr write SetFillBackgr default clBtnFace;
     property Font: TFont read FFont write SetFont;
     property TextStyle: TglTextStyle read FTextStyle write SetTextStyle default fstNone;
     property CaptionHAlign: TglHorAlign read FCaptionHAlign write SetCaptionHAlign default fhaLeft;
@@ -121,42 +128,40 @@ type
     property GlyphVAlign: TglVertAlign read FGlyphVAlign write SetGlyphVAlign default fvaCenter;
     property Gradient: TJvgGradient read FGradient write FGradient;
   end;
-  //______________________________________{ . TJvgTabsWallpaper . }
+
   TJvgTabsWallpaper = class(TPersistent)
   private
     FBitmap: TBitmap;
     FImage: TImage;
-    FFillCaptionBakgr: boolean;
-    FFillCaptions: boolean;
-    FFillClient: boolean;
-    FTile: boolean;
-    FIncludeBevels: boolean;
-    function GetBitmap: TBitmap;
+    FFillCaptionBakgr: Boolean;
+    FFillCaptions: Boolean;
+    FFillClient: Boolean;
+    FTile: Boolean;
+    FIncludeBevels: Boolean;
+    FOnChanged: TNotifyEvent;
+    FBmp: TBitmap;
     procedure SetBitmap(Value: TBitmap);
     procedure SetImage(Value: TImage);
-    procedure SetFillCaptionBakgr(Value: boolean);
-    procedure SetFillCaptions(Value: boolean);
-    procedure SetFillClient(Value: boolean);
-    procedure SetTile(Value: boolean);
-    procedure SetIncludeBevels(Value: boolean);
+    procedure SetFillCaptionBakgr(Value: Boolean);
+    procedure SetFillCaptions(Value: Boolean);
+    procedure SetFillClient(Value: Boolean);
+    procedure SetTile(Value: Boolean);
+    procedure SetIncludeBevels(Value: Boolean);
+  protected
+    procedure Changed;
   public
-    Bmp: TBitmap;
-    OnChanged: TNotifyEvent;
     constructor Create;
     destructor Destroy; override;
+    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
+    property Bmp: TBitmap read FBmp write FBmp;
   published
-    property Bitmap: TBitmap read GetBitmap write SetBitmap;
+    property Bitmap: TBitmap read FBitmap write SetBitmap;
     property Image: TImage read FImage write SetImage;
-    property FillCaptions: boolean
-      read FFillCaptions write SetFillCaptions default true;
-    property FillCaptionBakgr: boolean
-      read FFillCaptionBakgr write SetFillCaptionBakgr default false;
-    property FillClient: boolean
-      read FFillClient write SetFillClient default false;
-    property Tile: boolean read FTile write SetTile
-      default true;
-    property IncludeBevels: boolean
-      read FIncludeBevels write SetIncludeBevels default true;
+    property FillCaptions: Boolean read FFillCaptions write SetFillCaptions default True;
+    property FillCaptionBakgr: Boolean read FFillCaptionBakgr write SetFillCaptionBakgr default False;
+    property FillClient: Boolean read FFillClient write SetFillClient default False;
+    property Tile: Boolean read FTile write SetTile default True;
+    property IncludeBevels: Boolean read FIncludeBevels write SetIncludeBevels default True;
   end;
 
 implementation
@@ -167,17 +172,19 @@ type
     property Font;
   end;
 
+//=== TJvgTabStyle ===========================================================
+
 constructor TJvgTabStyle.Create(AOwner: TWinControl);
 begin
   inherited Create;
   FGradient := TJvgGradient.Create;
   //...set defaults
-//  FBevelInner   := bvRaised;
-//  FBevelOuter   := bvLowered;
+  // FBevelInner := bvRaised;
+  // FBevelOuter := bvLowered;
   FBorders := [fsdLeft, fsdTop, fsdRight, fsdBottom];
-  FBold := false;
+  FBold := False;
   FBackgrColor := clBtnFace;
-  //  FFillBackgr   := false;
+  // FFillBackgr := False;
   FParent := TWinControl(AOwner);
   FFont := TFont.Create;
   Font.Assign(TJvgShowFont(FParent).Font);
@@ -192,40 +199,61 @@ destructor TJvgTabStyle.Destroy;
 begin
   FFont.Free;
   FGradient.Free;
-  inherited;
+  inherited Destroy;
+end;
+
+procedure TJvgTabStyle.Changed;
+begin
+  if Assigned(FOnChanged) then
+    FOnChanged(Self);
 end;
 
 procedure TJvgTabStyle.SetBorders(Value: TglSides);
 begin
-  FBorders := Value;
-  if Assigned(OnChanged) then OnChanged(self);
+  if FBorders <> Value then
+  begin
+    FBorders := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgTabStyle.SetBevelInner(Value: TPanelBevel);
 begin
-  FBevelInner := Value;
-  if Assigned(OnChanged) then OnChanged(self);
+  if FBevelInner <> Value then
+  begin
+    FBevelInner := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgTabStyle.SetBevelOuter(Value: TPanelBevel);
 begin
-  FBevelOuter := Value;
-  if Assigned(OnChanged) then OnChanged(self);
+  if FBevelOuter <> Value then
+  begin
+    FBevelOuter := Value;
+    Changed;
+  end;
 end;
 
-procedure TJvgTabStyle.SetBold(Value: boolean);
+procedure TJvgTabStyle.SetBold(Value: Boolean);
 begin
-  FBold := Value;
-  if Assigned(OnChanged) then OnChanged(self);
+  if FBold <> Value then
+  begin
+    FBold := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgTabStyle.SetBackgrColor(Value: TColor);
 begin
-  FBackgrColor := Value;
-  if Assigned(OnChanged) then OnChanged(self);
+  if FBackgrColor <> Value then
+  begin
+    FBackgrColor := Value;
+    Changed;
+  end;
 end;
 
-{procedure TJvgTabStyle.SetFillBackgr( Value:boolean );
+{procedure TJvgTabStyle.SetFillBackgr( Value:Boolean );
 begin if FFillBackgr=Value then exit;
   FFillBackgr:=Value; if Assigned(OnChanged) then OnChanged(self);
 end;
@@ -233,59 +261,83 @@ end;
 
 procedure TJvgTabStyle.SetFont(Value: TFont);
 begin
-  if Assigned(Value) then FFont.Assign(Value);
+  if Assigned(Value) then
+    FFont.Assign(Value);
   if TTabControl(FParent).Font.Size < Value.Size then
     TTabControl(FParent).Font.Assign(Value);
-  if Assigned(OnFontChanged) then OnFontChanged(self);
+  FontChanged;
+end;
+
+procedure TJvgTabStyle.FontChanged;
+begin
+  if Assigned(FOnFontChanged) then
+    FOnFontChanged(Self);
 end;
 
 procedure TJvgTabStyle.SetTextStyle(Value: TglTextStyle);
 begin
-  FTextStyle := Value;
-  if Assigned(OnChanged) then OnChanged(self);
+  if FTextStyle <> Value then
+  begin
+    FTextStyle := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgTabStyle.SetCaptionHAlign(Value: TglHorAlign);
 begin
-  FCaptionHAlign := Value;
-  if Assigned(OnChanged) then OnChanged(self);
+  if FCaptionHAlign <> Value then
+  begin
+    FCaptionHAlign := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgTabStyle.SetCaptionVAlign(Value: TglVertAlign);
 begin
-  FCaptionVAlign := Value;
-  if Assigned(OnChanged) then OnChanged(self);
+  if FCaptionVAlign <> Value then
+  begin
+    FCaptionVAlign := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgTabStyle.SetGlyphHAlign(Value: TglHorAlign);
 begin
-  FGlyphHAlign := Value;
-  if Assigned(OnChanged) then OnChanged(self);
+  if FGlyphHAlign <> Value then
+  begin
+    FGlyphHAlign := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgTabStyle.SetGlyphVAlign(Value: TglVertAlign);
 begin
-  FGlyphVAlign := Value;
-  if Assigned(OnChanged) then OnChanged(self);
+  if FGlyphVAlign <> Value then
+  begin
+    FGlyphVAlign := Value;
+    Changed;
+  end;
 end;
 
-procedure TJvgTabStyle.SetOnChanged(Value: TNotifyEvent);
+procedure TJvgTabStyle.SetChanged(Value: TNotifyEvent);
 begin
   FOnChanged := Value;
-  FGradient.OnChanged := FOnChanged;
+  FGradient.OnChanged := Value;
 end;
-//______________________________________{ . TJvgTabsWallpaper methods . }
+
+
+//=== TJvgTabsWallpaper ======================================================
 
 constructor TJvgTabsWallpaper.Create;
 begin
   inherited Create;
   FBitmap := TBitmap.Create;
   //...set defaults
-  FFillCaptionBakgr := false;
-  FFillCaptions := true;
-  FFillClient := false;
-  FIncludeBevels := true;
-  FTile := true;
+  FFillCaptionBakgr := False;
+  FFillCaptions := True;
+  FFillClient := False;
+  FIncludeBevels := True;
+  FTile := True;
 end;
 
 destructor TJvgTabsWallpaper.Destroy;
@@ -294,10 +346,10 @@ begin
   inherited Destroy;
 end;
 
-function TJvgTabsWallpaper.GetBitmap: TBitmap;
+procedure TJvgTabsWallpaper.Changed;
 begin
-  if not Assigned(FBitmap) then FBitmap := TBitmap.Create;
-  Result := FBitmap;
+  if Assigned(FOnChanged) then
+    FOnChanged(Self);
 end;
 
 procedure TJvgTabsWallpaper.SetBitmap(Value: TBitmap);
@@ -306,59 +358,70 @@ begin
   FBitmap := TBitmap.Create;
   FBitmap.Assign(Value);
   if Assigned(Value) then
-    Bmp := FBitmap
-  else if Assigned(FImage) and Assigned(FImage.Picture) and Assigned(FImage.Picture.Bitmap) then
-    Bmp := FImage.Picture.Bitmap
+    FBmp := FBitmap
   else
-    Bmp := nil;
-  if Assigned(OnChanged) then OnChanged(self);
+  if Assigned(FImage) and Assigned(FImage.Picture) and Assigned(FImage.Picture.Bitmap) then
+    FBmp := FImage.Picture.Bitmap
+  else
+    FBmp := nil;
 end;
 
 procedure TJvgTabsWallpaper.SetImage(Value: TImage);
 begin
   FImage := Value;
   if Assigned(FImage) and Assigned(FImage.Picture) and Assigned(FImage.Picture.Bitmap) then
-    Bmp := FImage.Picture.Bitmap
-  else if Assigned(FBitmap) then
-    Bmp := FBitmap
+    FBmp := FImage.Picture.Bitmap
   else
-    Bmp := nil;
-  if Assigned(OnChanged) then OnChanged(self);
+  if Assigned(FBitmap) then
+    FBmp := FBitmap
+  else
+    FBmp := nil;
+  Changed;
 end;
 
-procedure TJvgTabsWallpaper.SetFillCaptionBakgr(Value: boolean);
+procedure TJvgTabsWallpaper.SetFillCaptionBakgr(Value: Boolean);
 begin
-  if FFillCaptionBakgr = Value then exit;
-  FFillCaptionBakgr := Value;
-  if Assigned(OnChanged) then OnChanged(self);
+  if FFillCaptionBakgr <> Value then
+  begin
+    FFillCaptionBakgr := Value;
+    Changed;
+  end;
 end;
 
-procedure TJvgTabsWallpaper.SetFillCaptions(Value: boolean);
+procedure TJvgTabsWallpaper.SetFillCaptions(Value: Boolean);
 begin
-  if FFillCaptions = Value then exit;
-  FFillCaptions := Value;
-  if Assigned(OnChanged) then OnChanged(self);
+  if FFillCaptions <> Value then
+  begin
+    FFillCaptions := Value;
+    Changed;
+  end;
 end;
 
-procedure TJvgTabsWallpaper.SetFillClient(Value: boolean);
+procedure TJvgTabsWallpaper.SetFillClient(Value: Boolean);
 begin
-  if FFillClient = Value then exit;
-  FFillClient := Value;
-  if Assigned(OnChanged) then OnChanged(self);
+  if FFillClient <> Value then
+  begin
+    FFillClient := Value;
+    Changed;
+  end;
 end;
 
-procedure TJvgTabsWallpaper.SetTile(Value: boolean);
+procedure TJvgTabsWallpaper.SetTile(Value: Boolean);
 begin
-  if FTile = Value then exit;
-  FTile := Value;
-  if Assigned(OnChanged) then OnChanged(self);
+  if FTile <> Value then
+  begin
+    FTile := Value;
+    Changed;
+  end;
 end;
 
-procedure TJvgTabsWallpaper.SetIncludeBevels(Value: boolean);
+procedure TJvgTabsWallpaper.SetIncludeBevels(Value: Boolean);
 begin
-  if FIncludeBevels = Value then exit;
-  FIncludeBevels := Value;
-  if Assigned(OnChanged) then OnChanged(self);
+  if FIncludeBevels <> Value then
+  begin
+    FIncludeBevels := Value;
+    Changed;
+  end;
 end;
 
 end.

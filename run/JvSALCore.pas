@@ -46,9 +46,9 @@ uses
 type
   TJvSALCore = class(TComponent)
   private
-    sal: TJvSAL;
+    FSal: TJvSAL;
   public
-    procedure AddProcedures(aSal: TJvSAL);
+    procedure AddProcedures(ASal: TJvSAL);
     // SAL language
     procedure xIf;
     procedure xpIf;
@@ -91,18 +91,18 @@ type
     procedure xSub;
     procedure xMul;
     procedure xDiv;
-    procedure xvAdd; // directly add to variable
+    procedure xvAdd; // directly add to Variable
     procedure xvSub;
     procedure xvMul;
     procedure xvDiv;
-    procedure xdec;
-    procedure xinc;
-    procedure xdeczero;
-    procedure xCR;
-    procedure xdup;
-    procedure xdrop;
-    procedure xswap;
-    procedure xcap;
+    procedure xDec;
+    procedure xInc;
+    procedure xDecZero;
+    procedure xCr;
+    procedure xDup;
+    procedure xDrop;
+    procedure xSwap;
+    procedure xCap;
   end;
 
 implementation
@@ -116,179 +116,176 @@ uses
   {$ENDIF}
   JvConsts, JvResources;
 
-procedure TJvSALCore.AddProcedures(aSal: TJvSAL);
+procedure TJvSALCore.AddProcedures(ASal: TJvSAL);
 begin
-  sal := aSal;
- // begin - do not localize
-  sal.AddProcedure('if', xif, xpif);
-  sal.AddProcedure('ifnot', xifnot, xpifnot);
-  sal.AddProcedure('else', xelse, xpelse);
-  sal.AddProcedure('endif', xendif, xpendif);
-  sal.AddProcedure('repeat', xrepeat, xprepeat);
-  sal.AddProcedure('until', xuntil, xpuntil);
-  sal.AddProcedure('select', xselect, nil);
-  sal.AddProcedure('endselect', xendselect, nil);
-  sal.AddProcedure('case', xcase, xpcase);
-  sal.AddProcedure('endcase', xendcase, xpendcase);
-  sal.AddProcedure('exit', xexit, nil);
-  sal.AddProcedure('get', xget, nil);
-  sal.AddProcedure('set', xset, nil);
-  sal.AddProcedure('ask', xask, nil);
-  sal.AddProcedure('say', xsay, nil);
-  sal.AddProcedure('true', xtrue, nil);
-  sal.AddProcedure('false', xfalse, nil);
-  sal.AddProcedure('and', xand, nil);
-  sal.AddProcedure('or', x_or, nil);
-  sal.AddProcedure('xor', xxor, nil);
-  sal.AddProcedure('not', xnot, nil);
-  sal.AddProcedure('=', xeq, nil);
-  sal.AddProcedure('<>', xne, nil);
-  sal.AddProcedure('>=', xge, nil);
-  sal.AddProcedure('<=', xle, nil);
-  sal.AddProcedure('>', xgt, nil);
-  sal.AddProcedure('<', xlt, nil);
-  sal.AddProcedure('neg', xneg, nil);
-  sal.AddProcedure('abs', xabs, nil);
-  sal.AddProcedure('+', xadd, nil);
-  sal.AddProcedure('-', xsub, nil);
-  sal.AddProcedure('*', xmul, nil);
-  sal.AddProcedure('/', xdiv, nil);
-  sal.AddProcedure('+=', xvadd, nil);
-  sal.AddProcedure('-=', xvsub, nil);
-  sal.AddProcedure('*=', xvmul, nil);
-  sal.AddProcedure('/=', xvdiv, nil);
-  sal.AddProcedure('dec', xdec, nil);
-  sal.AddProcedure('inc', xinc, nil);
-  sal.AddProcedure('dec?', xdeczero, nil);
-  sal.AddProcedure('cr', xcr, nil);
-  sal.AddProcedure('dup', xdup, nil);
-  sal.AddProcedure('drop', xdrop, nil);
-  sal.AddProcedure('swap', xswap, nil);
-  sal.AddProcedure('cap', xcap, nil);
- // end - do not localize
+  FSal := ASal;
+  with FSal do
+  begin
+    // do not localize
+    AddProcedure('if', xIf, xpIf);
+    AddProcedure('ifnot', xIfNot, xpIfNot);
+    AddProcedure('else', xElse, xpElse);
+    AddProcedure('endif', xEndIf, xpEndIf);
+    AddProcedure('repeat', xRepeat, xpRepeat);
+    AddProcedure('until', xUntil, xpUntil);
+    AddProcedure('select', xSelect, nil);
+    AddProcedure('endselect', xEndSelect, nil);
+    AddProcedure('case', xCase, xpCase);
+    AddProcedure('endcase', xEndCase, xpEndCase);
+    AddProcedure('exit', xExit, nil);
+    AddProcedure('get', xGet, nil);
+    AddProcedure('set', xSet, nil);
+    AddProcedure('ask', xAsk, nil);
+    AddProcedure('say', xSay, nil);
+    AddProcedure('true', xTrue, nil);
+    AddProcedure('false', xFalse, nil);
+    AddProcedure('and', xAnd, nil);
+    AddProcedure('or', x_Or, nil);
+    AddProcedure('xor', xXor, nil);
+    AddProcedure('not', xNot, nil);
+    AddProcedure('=', xEq, nil);
+    AddProcedure('<>', xNe, nil);
+    AddProcedure('>=', xGe, nil);
+    AddProcedure('<=', xLe, nil);
+    AddProcedure('>', xGt, nil);
+    AddProcedure('<', xLt, nil);
+    AddProcedure('neg', xNeg, nil);
+    AddProcedure('abs', xAbs, nil);
+    AddProcedure('+', xAdd, nil);
+    AddProcedure('-', xSub, nil);
+    AddProcedure('*', xMul, nil);
+    AddProcedure('/', xDiv, nil);
+    AddProcedure('+=', xvAdd, nil);
+    AddProcedure('-=', xvSub, nil);
+    AddProcedure('*=', xvMul, nil);
+    AddProcedure('/=', xvDiv, nil);
+    AddProcedure('dec', xDec, nil);
+    AddProcedure('inc', xInc, nil);
+    AddProcedure('dec?', xDecZero, nil);
+    AddProcedure('cr', xCr, nil);
+    AddProcedure('dup', xDup, nil);
+    AddProcedure('drop', xDrop, nil);
+    AddProcedure('swap', xSwap, nil);
+    AddProcedure('cap', xCap, nil);
+  end;
 end;
 
 procedure TJvSALCore.X_Or;
 begin
-  sal.boolpush(sal.boolpop or sal.boolpop);
+  FSal.BoolPush(FSal.BoolPop or FSal.BoolPop);
 end;
 
 procedure TJvSALCore.xAbs;
 begin
-  sal.push(abs(sal.pop));
+  FSal.Push(Abs(FSal.Pop));
 end;
 
 procedure TJvSALCore.xAdd;
 var
-  v1, v2: variant;
+  V1, V2: Variant;
 begin
-  v2 := sal.pop;
-  v1 := sal.pop;
-  sal.push(v1 + v2);
+  V2 := FSal.Pop;
+  V1 := FSal.Pop;
+  FSal.Push(V1 + V2);
 end;
 
 procedure TJvSALCore.xAnd;
 begin
-  sal.boolpush(sal.boolpop and sal.boolpop);
+  FSal.BoolPush(FSal.BoolPop and FSal.BoolPop);
 end;
 
 procedure TJvSALCore.xAsk;
 var
-  s: string;
-  v: variant;
+  S: string;
+  V: Variant;
 begin
-  s := sal.pop;
-  v := inputbox(sal.Caption, s, '');
-  if v = '' then exit;
-  sal.push(v);
+  S := FSal.Pop;
+  V := InputBox(FSal.Caption, S, '');
+  if V <> '' then
+    FSal.Push(V);
 end;
 
-procedure TJvSALCore.xcap;
+procedure TJvSALCore.xCap;
 begin
-  sal.Caption := sal.pop;
+  FSal.Caption := FSal.Pop;
 end;
 
 procedure TJvSALCore.xCase;
 var
-  v1: variant;
+  V1: Variant;
 begin
-  v1 := sal.pop;
-  if v1 = sal.theSelect then
+  V1 := FSal.Pop;
+  if V1 = FSal.TheSelect then
   begin
   end
   else
-  begin
-    sal.pc := TJvAtom(sal.atoms.objects[sal.pcproc]).value + 1;
-  end;
+    FSal.PC := TJvAtom(FSal.Atoms.Objects[FSal.PcProc]).Value + 1;
 end;
 
-procedure TJvSALCore.xCR;
+procedure TJvSALCore.xCr;
 begin
-  sal.push(cr);
+  FSal.Push(Cr);
 end;
 
-procedure TJvSALCore.xdec;
+procedure TJvSALCore.xDec;
 begin
-  if VarIsEmpty(sal.variable.value) then
-    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [sal.variablename]);
-  sal.variable.Value := sal.variable.value - 1;
+  if VarIsEmpty(FSal.Variable.Value) then
+    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [FSal.VariableName]);
+  FSal.Variable.Value := FSal.Variable.Value - 1;
 end;
 
-procedure TJvSALCore.xdeczero; // dec?  decrements a variable and test for zero
+procedure TJvSALCore.xDecZero; // dec?  decrements a Variable and test for zero
 begin
-  if VarIsEmpty(sal.variable.value) then
-    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [sal.variablename]);
-  sal.variable.Value := sal.variable.value - 1;
-  if sal.variable.value = 0 then
-    sal.boolpush(true)
-  else
-    sal.boolpush(false);
+  if VarIsEmpty(FSal.Variable.Value) then
+    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [FSal.VariableName]);
+  FSal.Variable.Value := FSal.Variable.Value - 1;
+  FSal.BoolPush(FSal.Variable.Value = 0);
 end;
 
 procedure TJvSALCore.xDiv;
 var
-  v1, v2: double;
+  V1, V2: Double;
 begin
-  v2 := sal.pop;
-  if v2 = 0 then
+  V2 := FSal.Pop;
+  if V2 = 0.0 then
     raise EJVCLException.Create(RsEDivisionByZeroError);
-  v1 := sal.pop;
-  sal.push(v1 / v2);
+  V1 := FSal.Pop;
+  FSal.Push(V1 / V2);
 end;
 
-procedure TJvSALCore.xdrop;
+procedure TJvSALCore.xDrop;
 begin
-  sal.pop;
+  FSal.Pop;
 end;
 
-procedure TJvSALCore.xdup;
+procedure TJvSALCore.xDup;
 var
-  v1: variant;
+  V1: Variant;
 begin
-  v1 := sal.pop;
-  sal.push(v1);
-  sal.push(v1);
+  V1 := FSal.Pop;
+  FSal.Push(V1);
+  FSal.Push(V1);
 end;
 
 procedure TJvSALCore.xElse;
 begin
-  sal.pc := TJvAtom(sal.atoms.objects[sal.pcproc]).value + 1;
+  FSal.PC := TJvAtom(FSal.Atoms.Objects[FSal.PcProc]).Value + 1;
 end;
 
 procedure TJvSALCore.xEndCase;
 // Removed Hint
 //var
-//  c:integer;
+//  c:Integer;
 begin
-  //  c:=sal.atoms.count;
-  while sal.pc < sal.atoms.count do
+  //  c:=FSal.Atoms.Count;
+  while FSal.PC < FSal.Atoms.Count do
   begin
-    if sal.atoms[sal.pc] = 'endselect' then // do not localize
+    if FSal.Atoms[FSal.PC] = 'endselect' then // do not localize
     begin
-      sal.pc := sal.pc + 1;
-      exit;
+      FSal.PC := FSal.PC + 1;
+      Exit;
     end;
-    sal.pc := sal.pc + 1;
+    FSal.PC := FSal.PC + 1;
   end;
   raise EJVCLException.Create(RsEMissingendselect);
 end;
@@ -305,89 +302,85 @@ end;
 
 procedure TJvSALCore.xEq;
 begin
-  sal.boolpush(sal.pop = sal.pop);
+  FSal.BoolPush(FSal.Pop = FSal.Pop);
 end;
 
 procedure TJvSALCore.xExit;
 begin
-  sal.pc := sal.atoms.Count;
+  FSal.PC := FSal.Atoms.Count;
 end;
 
 procedure TJvSALCore.xFalse;
 begin
-  sal.boolpush(false);
+  FSal.BoolPush(False);
 end;
 
 procedure TJvSALCore.xGe;
 begin
-  sal.boolpush(sal.pop >= sal.pop);
+  FSal.BoolPush(FSal.Pop >= FSal.Pop);
 end;
 
 procedure TJvSALCore.xGet;
 begin
-  sal.push(sal.variable.Value);
+  FSal.Push(FSal.Variable.Value);
 end;
 
 procedure TJvSALCore.xGt;
 begin
-  sal.boolpush(sal.pop > sal.pop);
+  FSal.BoolPush(FSal.Pop > FSal.Pop);
 end;
 
 procedure TJvSALCore.xIf;
 begin
-  if not sal.boolpop then
-  begin
-    sal.pc := TJvAtom(sal.atoms.objects[sal.pcproc]).value + 1;
-  end
+  if not FSal.BoolPop then
+    FSal.PC := TJvAtom(FSal.Atoms.Objects[FSal.PcProc]).Value + 1;
 end;
 
 procedure TJvSALCore.xIfNot;
 begin
-  if sal.boolpop then
-  begin
-    sal.pc := TJvAtom(sal.atoms.objects[sal.pcproc]).value + 1;
-  end
+  if FSal.BoolPop then
+    FSal.PC := TJvAtom(FSal.Atoms.Objects[FSal.PcProc]).Value + 1;
 end;
 
-procedure TJvSALCore.xinc;
+procedure TJvSALCore.xInc;
 begin
-  if VarIsEmpty(sal.variable.value) then
-    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [sal.variablename]);
-  sal.variable.Value := sal.variable.value + 1;
+  if VarIsEmpty(FSal.Variable.Value) then
+    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [FSal.VariableName]);
+  FSal.Variable.Value := FSal.Variable.Value + 1;
 end;
 
 procedure TJvSALCore.xLe;
 begin
-  sal.boolpush(sal.pop <= sal.pop);
+  FSal.BoolPush(FSal.Pop <= FSal.Pop);
 end;
 
 procedure TJvSALCore.xLt;
 begin
-  sal.boolpush(sal.pop < sal.pop);
+  FSal.BoolPush(FSal.Pop < FSal.Pop);
 end;
 
 procedure TJvSALCore.xMul;
 var
-  v1, v2: double;
+  V1, V2: Double;
 begin
-  v2 := sal.pop;
-  v1 := sal.pop;
-  sal.push(v1 * v2);
+  V2 := FSal.Pop;
+  V1 := FSal.Pop;
+  FSal.Push(V1 * V2);
 end;
 
 procedure TJvSALCore.xNe;
 begin
-  sal.boolpush(sal.pop <> sal.pop);
+  FSal.BoolPush(FSal.Pop <> FSal.Pop);
 end;
 
 procedure TJvSALCore.xNeg;
 begin
-  sal.push(0 - sal.pop);
+  FSal.Push(0 - FSal.Pop);
 end;
 
 procedure TJvSALCore.xNot;
 begin
-  sal.boolpush(not sal.boolpop);
+  FSal.BoolPush(not FSal.BoolPop);
 end;
 
 procedure TJvSALCore.xRepeat;
@@ -397,130 +390,130 @@ end;
 
 procedure TJvSALCore.xSay;
 begin
-  showmessage(sal.pop);
+  ShowMessage(FSal.Pop);
 end;
 
 procedure TJvSALCore.xSelect;
 begin
-  sal.theSelect := sal.pop;
+  FSal.TheSelect := FSal.Pop;
 end;
 
 procedure TJvSALCore.xSet;
 begin
-  sal.Variable.Value := sal.pop;
+  FSal.Variable.Value := FSal.Pop;
 end;
 
 procedure TJvSALCore.xSub;
 var
-  v1, v2: double;
+  V1, V2: Double;
 begin
-  v2 := sal.pop;
-  v1 := sal.pop;
-  sal.push(v1 - v2);
+  V2 := FSal.Pop;
+  V1 := FSal.Pop;
+  FSal.Push(V1 - V2);
 end;
 
-procedure TJvSALCore.xswap;
+procedure TJvSALCore.xSwap;
 var
-  v1, v2: variant;
+  V1, V2: Variant;
 begin
-  v2 := sal.pop;
-  v1 := sal.pop;
-  sal.push(v2);
-  sal.push(v1);
+  V2 := FSal.Pop;
+  V1 := FSal.Pop;
+  FSal.Push(V2);
+  FSal.Push(V1);
 end;
 
 procedure TJvSALCore.xTrue;
 begin
-  sal.boolpush(true);
+  FSal.BoolPush(True);
 end;
 
 procedure TJvSALCore.xUntil;
 begin
-  if not sal.boolpop then
-    sal.pc := TJvAtom(sal.atoms.objects[sal.pcproc]).value;
+  if not FSal.BoolPop then
+    FSal.PC := TJvAtom(FSal.Atoms.Objects[FSal.PcProc]).Value;
 end;
 
 procedure TJvSALCore.xvAdd; // +=
 begin
-  if VarIsEmpty(sal.variable.value) then
-    sal.variable.Value := sal.pop
+  if VarIsEmpty(FSal.Variable.Value) then
+    FSal.Variable.Value := FSal.Pop
   else
-    sal.variable.Value := sal.variable.value + sal.pop;
+    FSal.Variable.Value := FSal.Variable.Value + FSal.Pop;
 end;
 
 procedure TJvSALCore.xvDiv; // /=
 var
-  v1: variant;
+  V1: Variant;
 begin
-  if VarIsEmpty(sal.variable.value) then
-    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [sal.variablename]);
-  v1 := sal.pop;
-  if v1 = 0 then
+  if VarIsEmpty(FSal.Variable.Value) then
+    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [FSal.VariableName]);
+  V1 := FSal.Pop;
+  if V1 = 0 then
     raise EJVCLException.Create(RsEDivisionByZeroError);
-  sal.variable.Value := sal.variable.value / v1;
+  FSal.Variable.Value := FSal.Variable.Value / V1;
 end;
 
 procedure TJvSALCore.xvMul; // *=
 begin
-  if VarIsEmpty(sal.variable.value) then
-    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [sal.variablename]);
-  sal.variable.Value := sal.variable.value * sal.pop;
+  if VarIsEmpty(FSal.Variable.Value) then
+    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [FSal.VariableName]);
+  FSal.Variable.Value := FSal.Variable.Value * FSal.Pop;
 end;
 
 procedure TJvSALCore.xvSub; // -=
 begin
-  if VarIsEmpty(sal.variable.value) then
-    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [sal.variablename]);
-  sal.variable.Value := sal.variable.value - sal.pop;
+  if VarIsEmpty(FSal.Variable.Value) then
+    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [FSal.VariableName]);
+  FSal.Variable.Value := FSal.Variable.Value - FSal.Pop;
 end;
 
 procedure TJvSALCore.xXOr;
 begin
-  sal.boolpush(sal.boolpop xor sal.boolpop);
+  FSal.BoolPush(FSal.BoolPop xor FSal.BoolPop);
 end;
 
 procedure TJvSALCore.xpIf;
 begin
-  sal.rPush(sal.apo(sal.token, xif))
+  FSal.rPush(FSal.APO(FSal.Token, xIf))
 end;
 
 procedure TJvSALCore.xpEndCase;
 begin
-  TJvAtom(sal.atoms.objects[sal.rpop]).value := sal.apo(sal.token, xendcase);
+  TJvAtom(FSal.Atoms.Objects[FSal.rPop]).Value := FSal.APO(FSal.Token, xEndCase);
 end;
 
 procedure TJvSALCore.xpIfNot;
 begin
-  sal.rpush(sal.apo(sal.token, xifnot));
+  FSal.rPush(FSal.APO(FSal.Token, xIfNot));
 end;
 
 procedure TJvSALCore.xpEndIf;
 begin
-  TJvAtom(sal.atoms.objects[sal.rpop]).value := sal.apo(sal.token, xendif);
+  TJvAtom(FSal.Atoms.Objects[FSal.rPop]).Value := FSal.APO(FSal.Token, xEndIf);
 end;
 
 procedure TJvSALCore.xpElse;
 var
-  i: integer;
+  I: Integer;
 begin
-  i := sal.apo(sal.token, xelse);
-  TJvAtom(sal.atoms.objects[sal.rpop]).value := i;
-  sal.rpush(i);
+  I := FSal.APO(FSal.Token, xElse);
+  TJvAtom(FSal.Atoms.Objects[FSal.rPop]).Value := I;
+  FSal.rPush(I);
 end;
 
 procedure TJvSALCore.xpCase;
 begin
-  sal.rpush(sal.apo(sal.token, xcase));
+  FSal.rPush(FSal.APO(FSal.Token, xCase));
 end;
 
 procedure TJvSALCore.xpRepeat;
 begin
-  sal.rpush(sal.apo(sal.token, xrepeat))
+  FSal.rPush(FSal.APO(FSal.Token, xRepeat))
 end;
 
 procedure TJvSALCore.xpUntil;
 begin
-  TJvAtom(sal.atoms.objects[sal.apo(sal.token, xuntil)]).value := sal.rpop;
+  TJvAtom(FSal.Atoms.Objects[FSal.APO(FSal.Token, xUntil)]).Value := FSal.rPop;
 end;
 
 end.

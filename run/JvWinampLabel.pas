@@ -60,6 +60,8 @@ type
     FScale: Real;
     // (p3) renamed
     FText: string;
+    FCharHeight: Integer;
+    FCharWidth: Integer;
     function GetCol(Ch: Char): Word;
     function GetScrollBy: Integer;
     procedure SetActive(Value: Boolean);
@@ -73,12 +75,12 @@ type
     procedure DoOnTimer(Sender: TObject);
     function GetRow(Ch: Char): Word;
     procedure SetText(Value: string);
-    procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
+    procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
   protected
-    // (rom) made protected
-    CharWidth: Integer;
-    CharHeight: Integer;
     procedure Paint; override;
+    // (rom) made protected property
+    property CharHeight: Integer read FCharHeight;
+    property CharWidth: Integer read FCharWidth;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -164,8 +166,8 @@ begin
   inherited Create(AOwner);
   AutoSize := False;
   FScrollInterval := 100;
-  CharWidth := 5;
-  CharHeight := 6;
+  FCharWidth := 5;
+  FCharHeight := 6;
   FPicture := TPicture.Create;
   FPicture.Bitmap.LoadFromResourceName(HInstance, RsWinampRC);
   FBitmap := TBitmap.Create;
@@ -320,7 +322,7 @@ begin
   if Pos(Ch, Row2) <> 0 then
     Result := CharHeight
   else
-    if Pos(Ch, Row3) <> 0 then
+  if Pos(Ch, Row3) <> 0 then
     Result := 2 * CharHeight;
 end;
 
@@ -408,7 +410,7 @@ begin
       begin
         Rec := ClientRect;
         Rec.Bottom := Rec.Bottom + CharHeight;
-        Rec.Left := rec.Left + (CharWidth * Length(Text));
+        Rec.Left := Rec.Left + (CharWidth * Length(Text));
         Canvas.FillRect(Rec);
         BitBlt(Canvas.Handle, 0, 0, Width, CharHeight, FBitmap.Canvas.Handle, 0, 0, srcCopy);
       end;
@@ -447,7 +449,7 @@ begin
   end;
 end;
 
-procedure TJvWinampLabel.CMColorChanged(var Message: TMessage);
+procedure TJvWinampLabel.CMColorChanged(var Msg: TMessage);
 begin
   FText := '';
   inherited;

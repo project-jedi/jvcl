@@ -51,6 +51,9 @@ object ProfReport: TProfReport
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
+    DesignSize = (
+      445
+      33)
     object SaveBtn: TButton
       Left = 8
       Top = 5
@@ -70,6 +73,9 @@ object ProfReport: TProfReport
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 1
+      DesignSize = (
+        175
+        33)
       object OKBtn: TButton
         Left = 60
         Top = 6
