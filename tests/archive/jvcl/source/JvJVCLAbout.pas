@@ -60,9 +60,6 @@ type
     lblJvHotLink2: TJvHotLink;
     lblBugs: TLabel;
     lblBugsURL: TJvHotLink;
-    btnHelp: TSpeedButton;
-    btnOptions: TSpeedButton;
-    OpenDialog1: TOpenDialog;
     Bevel3: TBevel;
     lblWindowsVersion: TLabel;
     Label4: TLabel;
@@ -71,8 +68,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure Panel1MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure btnHelpClick(Sender: TObject);
-    procedure btnOptionsClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
     FHelpFile: string;
@@ -116,7 +111,7 @@ begin
   lblMemory.Caption := Format('%u KB', [GetTotalPhysicalMemory div 1024]);
   lblCopyRight.Caption := 'Copyright © Project JEDI, 1999 - ' + FormatDateTime('yyyy', Now);
 //  LoadOptions;
-  btnHelp.Enabled := FHelpFile <> '';
+
 end;
 
 procedure TJvJVCLAboutForm.Panel1MouseDown(Sender: TObject;
@@ -124,23 +119,6 @@ procedure TJvJVCLAboutForm.Panel1MouseDown(Sender: TObject;
 begin
   ReleaseCapture;
   Perform(WM_SYSCOMMAND, SC_MOVE + 2, 0);
-end;
-
-procedure TJvJVCLAboutForm.btnHelpClick(Sender: TObject);
-begin
-  Exec(FHelpFile, '', FHelpDirectory);
-  Close;
-end;
-
-procedure TJvJVCLAboutForm.btnOptionsClick(Sender: TObject);
-begin
-  if OpenDialog1.Execute then
-  begin
-    FHelpFile := ExtractFileName(OpenDialog1.FileName);
-    FHelpDirectory := ExtractFileDir(OpenDialog1.FileName);
-//    SaveOptions;
-    btnHelp.Enabled := FHelpFile <> '';
-  end;
 end;
 
 procedure TJvJVCLAboutForm.LoadOptions;
@@ -151,9 +129,6 @@ begin
   try
     l := ReadInteger('Options', 'Bounds.Left', -1);
     t := ReadInteger('Options', 'Bounds.Top', -1);
-
-    FHelpFile := ReadString('Options', 'Help.File', '');
-    FHelpDirectory := ReadString('Options', 'Help.Directory', '');
   finally
     Free;
   end;
@@ -176,9 +151,6 @@ begin
       WriteInteger('Options', 'Bounds.Left', Left);
       WriteInteger('Options', 'Bounds.Top', Top);
     end;
-
-    WriteString('Options', 'Help.File', FHelpFile);
-    WriteString('Options', 'Help.Directory', FHelpDirectory);
   finally
     Free;
   end;
