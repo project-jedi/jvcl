@@ -368,8 +368,9 @@ PopupMenu. BCB is case sensitive so you must respect casing in your pas
 files, at least in the interface section.<br>
 &nbsp;</p>
 <h5>E2040 Declaration terminated incorrectly</h5>
-<p>This generally happens on a constant declaration and is because the
-pas files declares a value for a constant that already exists in the
+<p>This generally happens on a constant declaration and is because one
+or more pas files declare a value for a constant that already exists in
+the
 header files bundled with BCB. You must tell the hpp generator not to
 include this constant by adding a $EXTERNALSYM compilation directive in
 the pas file, just after your pascal constant. For instance, you must
@@ -379,6 +380,19 @@ this for S_OK</p>
 {$EXTERNALSYM S_OK}<br>
 &nbsp;<br>
 </p>
+<h5>E2316 'TPoint' is not a member of 'Windows'<br>
+</h5>
+<p>This is because you placed Windows after Types in the uses for your
+unit. If you don't have Types in the uses for your unit, either add it
+(simplest), or find all instances of TPoint and replace them by
+Types.TPoint. This has no impact on your code as the Windows.pas unit
+defines its TPoint type to be Types.TPoint. However, it does not end up
+in the Windows.hpp file for C++ Builder because of a NODEFINE directive.<br>
+Note that the Types unit is not available in version 5 of the VCL,
+which means that this problem does not affect Delphi 5 or C++ Builder 5.<br>
+</p>
+&nbsp;
+<br>
 <h5>Cannot initialize constant</h5>
 <p>(or something similar, usually provokes 3 errors on the same line,
 the second being the interesting one). This is because the parameter
