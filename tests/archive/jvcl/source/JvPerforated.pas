@@ -49,6 +49,7 @@ type
     FTransparent: Boolean;
     procedure SetTransparent(Value: Boolean);
     procedure WMMove(var Msg: TWMMove); message WM_MOVE;
+    function FormPosSizeChange(var Msg: TMessage): Boolean;
   protected
   public
     procedure Resize; override;
@@ -59,6 +60,9 @@ type
   end;
 
 implementation
+
+uses
+  JvWndProcHook;
 
 {*******************************************************}
 
@@ -77,6 +81,7 @@ begin
   BorderWidth := 0;
   BevelInner := bvNone;
   BevelOuter := bvNone;
+  RegisterWndProcHook(FForm, FormPosSizeChange, hoAfterMsg);
 end;
 
 {*******************************************************}
@@ -102,6 +107,14 @@ procedure TJvPerforated.WMMove(var Msg: TWMMove);
 begin
   inherited;
   SetTransparent(FTransparent);
+end;
+
+{*******************************************************}
+
+function TJvPerforated.FormPosSizeChange(var Msg: TMessage): Boolean;
+begin
+  if (Msg.Msg = WM_MOVE) or (Msg.Msg = WM_SIZE) then
+    SetTransparent(FTransparent);
 end;
 
 {*******************************************************}
