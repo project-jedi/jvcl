@@ -2971,14 +2971,13 @@ begin
   end;
 end;
 
-{$IFDEF UNITVERSIONING}
-
-
 procedure TJvLookOutPage.CMTextChanged(var Msg: TMessage);
 begin
   inherited;
   Invalidate;
 end;
+
+{$IFDEF UNITVERSIONING}
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
