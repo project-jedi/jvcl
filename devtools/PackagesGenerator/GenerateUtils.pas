@@ -571,7 +571,7 @@ end;
 
 function FilesEqual(const FileName1, FileName2: string): Boolean;
 const
-  MaxBufSize = 65356;
+  MaxBufSize = 65535;
 var
   Stream1, Stream2: TFileStream;
   Buffer1, Buffer2: array[0..MaxBufSize - 1] of Byte;
