@@ -1,0 +1,92 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = TransparentButtonDemo2.exe ArrowButtonDemo.exe JvQCheckBoxDemo.exe \
+  ColorButtonDemo.exe JvQDataEmbeddedProj.exe JvQEdits.exe \
+  JvQErrorIndicatorDemo.exe prjControls.exe InspectorSimpleExample.exe \
+  JvQLEDDemo.exe JvQLogFileDemo.exe JvQMarkupLabelDemo.exe JvQNavPaneDemo.exe \
+  OfficeColorButtonDemo.exe OLBarDemo.exe JvQProgressDialogDemo.exe \
+  JvQStarfieldDemo.exe TipsDemo.exe SimpleTLTest1.exe JvQValidatorsDemo.exe \
+  WinXPBarDemo.exe SimpleDemo.exe TransparentButtonDemo.exe
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+TransparentButtonDemo2.exe: JvTransparentButton2\TransparentButtonDemo2.dpr
+  $(DCC)
+
+ArrowButtonDemo.exe: JvArrowButton\ArrowButtonDemo.dpr
+  $(DCC)
+
+JvQCheckBoxDemo.exe: JvCheckBoxRadioButton\JvQCheckBoxDemo.dpr
+  $(DCC)
+
+ColorButtonDemo.exe: JvColorButton\ColorButtonDemo.dpr
+  $(DCC)
+
+JvQDataEmbeddedProj.exe: JvDataEmbedded\JvQDataEmbeddedProj.dpr
+  $(DCC)
+
+JvQEdits.exe: JvEdits\JvQEdits.dpr
+  $(DCC)
+
+JvQErrorIndicatorDemo.exe: JvErrorIndicator\JvQErrorIndicatorDemo.dpr
+  $(DCC)
+
+prjControls.exe: JvFooterAndGroupHeader\prjControls.dpr
+  $(DCC)
+
+InspectorSimpleExample.exe: JvInspector\InspectorSimpleExample.dpr
+  $(DCC)
+
+JvQLEDDemo.exe: JvLED\JvQLEDDemo.dpr
+  $(DCC)
+
+JvQLogFileDemo.exe: JvLogFile\JvQLogFileDemo.dpr
+  $(DCC)
+
+JvQMarkupLabelDemo.exe: JvMarkupLabel\JvQMarkupLabelDemo.dpr
+  $(DCC)
+
+JvQNavPaneDemo.exe: JvNavigationPane\JvQNavPaneDemo.dpr
+  $(DCC)
+
+OfficeColorButtonDemo.exe: JvOfficeColorButton\OfficeColorButtonDemo.dpr
+  $(DCC)
+
+OLBarDemo.exe: JvOutlookBar\OLBarDemo.dpr
+  $(DCC)
+
+JvQProgressDialogDemo.exe: JvProgressDialog\JvQProgressDialogDemo.dpr
+  $(DCC)
+
+JvQStarfieldDemo.exe: JvStarfield\JvQStarfieldDemo.dpr
+  $(DCC)
+
+TipsDemo.exe: JvTipOfDay\TipsDemo.dpr
+  $(DCC)
+
+SimpleTLTest1.exe: JvTMTimeLine\SimpleTLTest1.dpr
+  $(DCC)
+
+JvQValidatorsDemo.exe: JvValidators\JvQValidatorsDemo.dpr
+  $(DCC)
+
+WinXPBarDemo.exe: JvXPControls\JvXPBar\WinXPBarDemo.dpr
+  $(DCC)
+
+SimpleDemo.exe: JvXPControls\Simple\SimpleDemo.dpr
+  $(DCC)
+
+TransparentButtonDemo.exe: JvTransparentButton\TransparentButtonDemo.dpr
+  $(DCC)
+
+
