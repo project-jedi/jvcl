@@ -6,8 +6,8 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-D" Targets="all" Condition=""/>
-    <Package Name="JvDB-R" Targets="all" Condition=""/>
+    <Package Name="JvCore-D" Targets="allbutclx" Condition=""/>
+    <Package Name="JvDB-R" Targets="allbutclx" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="C5,C6,C6p" Condition=""/>
     <Package Name="JvSystem-R" Targets="C5,C6,C6p" Condition=""/>
     <Package Name="JvCore-R" Targets="C5,C6,C6p" Condition=""/>
@@ -28,12 +28,12 @@
     <Package Name="dclstd" Targets="D6,D6p,D7,D7p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvSelectDataSetForm.pas" Targets="all" Formname="JvSelectDataSetForm" Condition=""/>
-    <File Name="..\..\design\JvCsvDataEditor.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvCsvDataForm.pas" Targets="all" Formname="JvCsvDefStrDialog" Condition=""/>
-    <File Name="..\..\design\JvDBMemDatasetEditor.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDBReg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDBEditors.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDBGridExportEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvSelectDataSetForm.pas" Targets="allbutclx" Formname="JvSelectDataSetForm" Condition=""/>
+    <File Name="..\..\design\JvCsvDataEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCsvDataForm.pas" Targets="allbutclx" Formname="JvCsvDefStrDialog" Condition=""/>
+    <File Name="..\..\design\JvDBMemDatasetEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBReg.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBGridExportEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>

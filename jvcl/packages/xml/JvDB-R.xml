@@ -6,10 +6,10 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-R" Targets="all" Condition=""/>
-    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="allbutclx" Condition=""/>
     <Package Name="JvSystem-R" Targets="C5,C6,C6p,D7,D7p" Condition=""/>
-    <Package Name="JvCtrls-R" Targets="all" Condition=""/>
+    <Package Name="JvCtrls-R" Targets="allbutclx" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="vcldb50" Targets="C5,D5,D5s" Condition=""/>
@@ -26,32 +26,32 @@
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvMemoryDataset.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvCsvData.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvCsvParse.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBCombobox.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBControls.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBDatePickerEdit.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBDateTimePicker.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBLookup.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBLookupComboEdit.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBLookupTreeView.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBProgressBar.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBQueryParamsForm.pas" Targets="all" Formname="JvQueryParamsDialog" Condition=""/>
-    <File Name="..\..\run\JvDBRadioPanel.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBRemoteLogin.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBRichEdit.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBSpinEdit.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBTreeView.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBUtils.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBGrid.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBGridExport.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBGridSelectColumnForm.pas" Targets="all" Formname="frmSelectColumn" Condition=""/>
-    <File Name="..\..\run\JvExDBGrids.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBHTLabel.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBSearchEdit.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBSearchComboBox.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvAppDBStorage.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBFindEdit.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMemoryDataset.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCsvData.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCsvParse.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBCombobox.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBControls.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBDatePickerEdit.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBDateTimePicker.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBLookup.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBLookupComboEdit.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBLookupTreeView.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBProgressBar.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBQueryParamsForm.pas" Targets="allbutclx" Formname="JvQueryParamsDialog" Condition=""/>
+    <File Name="..\..\run\JvDBRadioPanel.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBRemoteLogin.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBRichEdit.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBSpinEdit.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBTreeView.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBUtils.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBGrid.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBGridExport.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBGridSelectColumnForm.pas" Targets="allbutclx" Formname="frmSelectColumn" Condition=""/>
+    <File Name="..\..\run\JvExDBGrids.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBHTLabel.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBSearchEdit.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBSearchComboBox.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppDBStorage.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBFindEdit.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>

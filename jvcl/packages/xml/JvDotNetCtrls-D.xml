@@ -6,17 +6,17 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-D" Targets="all" Condition="USEJVCL"/>
+    <Package Name="JvCore-D" Targets="allbutclx" Condition="USEJVCL"/>
     <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="vclx50" Targets="C5,D5,D5s" Condition=""/>
-    <Package Name="JvDotNetCtrls-R" Targets="all" Condition=""/>
+    <Package Name="JvDotNetCtrls-R" Targets="allbutclx" Condition=""/>
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvDotNetCtrlsReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDotNetCtrlsReg.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>

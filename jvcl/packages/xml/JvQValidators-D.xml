@@ -2,16 +2,16 @@
 <Package Name="JvQValidators" Design="-1">
   <Description>JVCLX Validators and Error Provider Components</Description>
   <Requires>
-    <Package Name="JvQValidators-R" Targets="D7,K3" Condition=""/>
-    <Package Name="JvQCore-D" Targets="D7,K3" Condition=""/>
-    <Package Name="JvQCore-R" Targets="D7,K3" Condition=""/>
-    <Package Name="visualclx" Targets="D7,K3" Condition=""/>
-    <Package Name="vclx" Targets="D7,K3" Condition=""/>
-    <Package Name="rtl" Targets="D7,K3" Condition=""/>
-    <Package Name="designide" Targets="D7,K3" Condition=""/>
+    <Package Name="JvQValidators-R" Targets="allclx" Condition=""/>
+    <Package Name="JvQCore-D" Targets="allclx" Condition=""/>
+    <Package Name="JvQCore-R" Targets="allclx" Condition=""/>
+    <Package Name="visualclx" Targets="allclx" Condition=""/>
+    <Package Name="vclx" Targets="allclx" Condition=""/>
+    <Package Name="rtl" Targets="allclx" Condition=""/>
+    <Package Name="designide" Targets="allclx" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\qdesign\JvQValidatorsReg.pas" Targets="D7,K3" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQValidatorsEditorForm.pas" Targets="D7,K3" Formname="frmValidatorsEditor" Condition=""/>
+    <File Name="..\..\qdesign\JvQValidatorsReg.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQValidatorsEditorForm.pas" Targets="allclx" Formname="frmValidatorsEditor" Condition=""/>
   </Contains>
 </Package>

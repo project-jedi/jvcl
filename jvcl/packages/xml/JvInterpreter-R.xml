@@ -6,9 +6,9 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-R" Targets="all" Condition=""/>
-    <Package Name="JvCustom-R" Targets="all" Condition=""/>
-    <Package Name="JvCtrls-R" Targets="all" Condition=""/>
+    <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCustom-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCtrls-R" Targets="allbutclx" Condition=""/>
     <Package Name="JvSystem-R" Targets="C5,C6,C6p" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="C5,C6,C6p" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5" Condition=""/>
@@ -30,34 +30,34 @@
     <Package Name="vcljpg" Targets="D7,D7p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvInterpreterParser.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_all.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_Classes.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_ComCtrls.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_Contnrs.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_Controls.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_Db.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_DbCtrls.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_DbGrids.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_DBTables.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_Dialogs.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_ExtCtrls.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_Forms.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_Graphics.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_Grids.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_httpapp.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_JvEditor.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_JvInterpreter.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_JvUtils.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_Menus.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_Quickrpt.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_StdCtrls.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_System.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_SysUtils.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_Types.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_Windows.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreterConst.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreterFm.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreterParser.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_all.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Classes.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_ComCtrls.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Contnrs.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Controls.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Db.pas" Targets="allbutperso" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_DbCtrls.pas" Targets="allbutperso" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_DbGrids.pas" Targets="allbutperso" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_DBTables.pas" Targets="allbutperso" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Dialogs.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_ExtCtrls.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Forms.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Graphics.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Grids.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_httpapp.pas" Targets="allbutperso" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_JvEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_JvInterpreter.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_JvUtils.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Menus.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Quickrpt.pas" Targets="allbutperso" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_StdCtrls.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_System.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_SysUtils.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Types.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Windows.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreterConst.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreterFm.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>
