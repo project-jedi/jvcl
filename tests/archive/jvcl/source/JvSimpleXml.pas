@@ -353,6 +353,8 @@ function XmlCreate: Variant; overload;
 function VarXml: TVarType;
 
 {$ENDIF}
+function SimpleXmlEncode(const Value: string): string;
+procedure SimpleXmlDecode(var Value: string; TrimMultiple: Boolean = True);
                  
 resourcestring
   RS_INVALID_SimpleXml = 'Invalid XML file';
