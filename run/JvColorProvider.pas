@@ -77,6 +77,14 @@ type
     property Mappings[Index: Integer]: TJvColorProviderNameMapping read Get_Mapping;
   end;
 
+  IJvColorMappingProvider = interface
+    ['{B6BA8036-8ECF-463B-BAD3-6855D4845F3F}']
+    function Get_ClientProvider: IJvColorProvider;
+    procedure Set_ClientProvider(Value: IJvColorProvider);
+
+    property ClientProvider: IJvColorProvider read Get_ClientProvider write Set_ClientProvider;
+  end;
+
   IJvColorItem = interface
     ['{ED95EC41-EEE2-4E14-ABF6-5B7B5EA47FFF}']
     function Get_Color: TColor;
@@ -340,7 +348,9 @@ type
   end;
 
   { Provider containing the available name mappings of a color provider. }
-  TJvColorProviderMappingProvider = class(TJvCustomDataProvider)
+  TJvColorMappingProvider = class(TJvCustomDataProvider, IJvColorMappingProvider)
+    function IJvColorMappingProvider.Get_ClientProvider = GetColorProviderIntf;
+    procedure IJvColorMappingProvider.Set_ClientProvider = SetColorProviderIntf;
   private
     function GetColorProviderIntf: IJvColorProvider;
     procedure SetColorProviderIntf(Value: IJvColorProvider);
@@ -348,6 +358,7 @@ type
     procedure SetProviderComp(Value: TComponent);
   protected
     class function ItemsClass: TJvDataItemsClass; override;
+    function ConsumerClasses: TClassArray; override;
   published
     {$IFDEF COMPILER6_UP}
     property Provider: IJvColorProvider read GetColorProviderIntf write SetColorProviderIntf;
@@ -356,6 +367,12 @@ type
     {$ENDIF COMPILER6_UP}
   end;
 
+  TJvColorProviderServerNotify = class(TJvDataConsumerServerNotify)
+  protected
+    procedure ItemSelected(Value: IJvDataItem); override;
+    function IsValidClient(Client: IJvDataConsumerClientNotify): Boolean; override;
+  end;
+  
 const
   ColorProvider_NotAColor = TColor($EFFFFFFF);
 
@@ -955,19 +972,19 @@ begin
   inherited Destroy;
 end;
 
-//===TJvColorProviderMappingProvider================================================================
+//===TJvColorMappingProvider========================================================================
 
-function TJvColorProviderMappingProvider.GetColorProviderIntf: IJvColorProvider;
+function TJvColorMappingProvider.GetColorProviderIntf: IJvColorProvider;
 begin
   Result := TJvColorMapItems(DataItemsImpl).ClientProvider as IJvColorProvider;
 end;
 
-procedure TJvColorProviderMappingProvider.SetColorProviderIntf(Value: IJvColorProvider);
+procedure TJvColorMappingProvider.SetColorProviderIntf(Value: IJvColorProvider);
 begin
   TJvColorMapItems(DataItemsImpl).ClientProvider := (Value as IJvDataProvider);
 end;
 
-function TJvColorProviderMappingProvider.GetProviderComp: TComponent;
+function TJvColorMappingProvider.GetProviderComp: TComponent;
 var
   ICR: IInterfaceComponentReference;
 begin
@@ -977,7 +994,7 @@ begin
     Result := nil;
 end;
 
-procedure TJvColorProviderMappingProvider.SetProviderComp(Value: TComponent);
+procedure TJvColorMappingProvider.SetProviderComp(Value: TComponent);
 var
   PI: IJvColorProvider;
   ICR: IInterfaceComponentReference;
@@ -993,9 +1010,47 @@ begin
     raise EJVCLException.Create('Component does not support IJvColorProvider.');
 end;
 
-class function TJvColorProviderMappingProvider.ItemsClass: TJvDataItemsClass;
+class function TJvColorMappingProvider.ItemsClass: TJvDataItemsClass;
 begin
   Result := TJvColorMapItems;
+end;
+
+function TJvColorMappingProvider.ConsumerClasses: TClassArray;
+begin
+  Result := inherited ConsumerClasses;
+  AddToArray(Result, TJvColorProviderServerNotify);
+end;
+
+//===TJvColorProviderServerNotify===================================================================
+
+procedure TJvColorProviderServerNotify.ItemSelected(Value: IJvDataItem);
+var
+  MapItem: IJvColorMapItem;
+  Mapping: TJvColorProviderNameMapping;
+  I: Integer;
+  ConSet: IJvColorProviderSettings;
+begin
+  inherited ItemSelected(Value);
+  if Supports(Value, IJvColorMapItem, MapItem) then
+  begin
+    Mapping := MapItem.NameMapping;
+    for I := 0 to Clients.Count - 1 do
+      if Supports(Clients[I], IJvColorProviderSettings, ConSet) then
+        ConSet.NameMapping := Mapping;
+  end;
+end;
+
+function TJvColorProviderServerNotify.IsValidClient(Client: IJvDataConsumerClientNotify): Boolean;
+var
+  ClientProv: IJvDataProvider;
+  ConsumerProv: IJvDataConsumerProvider;
+begin
+  { Only allow client consumers who's Provider points to the ColorProvider of the mapping
+    provider this consumer is linked to. }
+  ClientProv := (ConsumerImpl.ProviderIntf as IJvColorMappingProvider).ClientProvider as
+    IJvDataProvider;
+  Result := Supports(Client, IJvDataConsumerProvider, ConsumerProv) and
+    (ConsumerProv.GetProvider = ClientProv);
 end;
 
 //===TJvColorItems==================================================================================
@@ -2609,5 +2664,5 @@ begin
 end;
 
 initialization
-  RegisterClasses([TJvColorProviderSettings]);
+  RegisterClasses([TJvColorProviderSettings, TJvColorProviderServerNotify]);
 end.

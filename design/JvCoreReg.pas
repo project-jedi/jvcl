@@ -22,13 +22,14 @@ uses
 
 procedure Register;
 const
- BaseClass:TClass = TComponent;
+  BaseClass: TClass = TComponent;
 
 begin
-  RegisterComponents(SPaletteNonVisual,[
+  RegisterComponents(SPaletteNonVisual, [
     TJvJVCLAboutComponent,
     TJvContextProvider,
     TJvColorProvider,
+    TJvColorMappingProvider,
     TJvAppRegistryStore,
     TJvAppINIFileStore
     ]);
@@ -68,6 +69,8 @@ begin
   RegisterPropertyEditor(TypeInfo(TShortCut), TJvComponent, '', TJvShortCutProperty);
   RegisterPropertyEditor(TypeInfo(TDayOfWeekName), nil, '', TJvWeekDayProperty);
   RegisterPropertyEditor(TypeInfo(TJvColorProviderMapping), TPersistent, '', TJvColorProviderMappingProperty);
+
+  RegisterComponentEditor(TJvColorProvider, TJvColorProviderEditor);
 
   RegisterActions('JVCL', [TJvSendMail, TJvWebAction], TJvStandardActions);
   RegisterZoom;

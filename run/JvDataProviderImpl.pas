@@ -49,6 +49,10 @@ type
   TJvBaseDataContext = class;
   TJvDataConsumer = class;
   TJvDataConsumerAggregatedObject = class;
+  TJvDataConsumerServerNotify = class;
+  TJvDataConsumerClientNotifyList = class;
+  TJvDataConsumerClientNotifyItem = class;
+
 
   // Class references
   TAggregatedPersistentExClass = class of TAggregatedPersistentEx;
@@ -719,7 +723,7 @@ type
   end;
 
   TJvDataConsumer = class(TExtensibleInterfacedPersistent, IJvDataConsumer, IJvDataProviderNotify,
-    IJvDataConsumerProvider)
+    IJvDataConsumerProvider, IJvDataConsumerClientNotify)
   private
     FOwner: TComponent;
     FAttrList: array of Integer;
@@ -732,6 +736,7 @@ type
     FFixupContext: TJvDataContextID;
     FOnProviderChanging: TProviderNotifyEvent;
     FOnProviderChanged: TProviderNotifyEvent;
+    FServerList: TInterfaceList;
     procedure SetProvider(Value: IJvDataProvider);
     {$IFNDEF COMPILER6_UP}
     function GetProviderComp: TComponent;
@@ -759,6 +764,8 @@ type
     procedure FixupContext;
     procedure ViewChanged(AExtension: TJvDataConsumerAggregatedObject);
     procedure NotifyItemSelected(Value: IJvDataItem);
+    procedure NotifyServerItemChanged(Server: IJvDataConsumerServerNotify; Value: IJvDataItem);
+    procedure NotifyServerProviderChanged;
     function ExtensionCount: Integer;
     function Extension(Index: Integer): TJvDataConsumerAggregatedObject;
     function IsContextStored: Boolean;
@@ -767,6 +774,8 @@ type
     { Property access }
     function GetContext: TJvDataContextID;
     procedure SetContext(Value: TJvDataContextID);
+    function GetServerCount: Integer;
+    function GetServers(I: Integer): IJvDataConsumerServerNotify;
     { IJvDataProviderNotify methods }
     procedure DataProviderChanging(const ADataProvider: IJvDataProvider; AReason: TDataProviderChangeReason; Source: IUnknown);
     procedure DataProviderChanged(const ADataProvider: IJvDataProvider; AReason: TDataProviderChangeReason; Source: IUnknown);
@@ -776,9 +785,17 @@ type
     function AttributeApplies(Attr: Integer): Boolean;
     { IJvDataConsumerProvider methods }
     function IJvDataConsumerProvider.GetProvider = ProviderIntf;
+    { IJvDataConsumerClientNotify methods }
+    procedure IJvDataConsumerClientNotify.ItemSelected = ServerItemChanged;
+    procedure ServerItemChanged(Server: IJvDataConsumerServerNotify; Value: IJvDataItem); virtual;
+    procedure LinkAdded(Server: IJvDataConsumerServerNotify);
+    procedure LinkRemoved(Server: IJvDataConsumerServerNotify); 
     { States }
     property NeedExtensionFixups: Boolean read GetNeedExtensionFixups;
     property NeedContextFixup: Boolean read GetNeedContextFixup;
+    { Other }
+    property ServerCount: Integer read GetServerCount;
+    property Servers[I: Integer]: IJvDataConsumerServerNotify read GetServers;
   public
     constructor Create(AOwner: TComponent; Attributes: array of Integer);
     destructor Destroy; override;
@@ -839,6 +856,8 @@ type
     procedure ViewChanged(AExtension: TJvDataConsumerAggregatedObject); virtual;
     { Called when an item has been selected by the consumer. }
     procedure ItemSelected(Value: IJvDataItem); virtual;
+    { Called when a linked server consumer has selected a new item. }
+    procedure ServerItemChanged(Server: IJvDataConsumerServerNotify; Value: IJvDataItem); virtual;
     { Signal to the consumer service that settings need to be applies but the provider/context was
       not yet available. This may occur during streaming in from the DFM. As soon as the provider is
       known, the context is also set and Fixup is called for all sub services. }
@@ -1037,13 +1056,69 @@ type
     property LevelIndent;
   end;
 
-  TJvDataConsumerNotifyOthers = class(TJvDataConsumerAggregatedObject)
+  TJvDataConsumerServerNotify = class(TJvDataConsumerAggregatedObject, IJvDataConsumerServerNotify)
   private
-    FClients: TList; // List of IJvDataConsumerClientNotify interfaces
+    FClients: TJvDataConsumerClientNotifyList;
   protected
+    procedure SetClients(Value: TJvDataConsumerClientNotifyList);
+    procedure ItemSelected(Value: IJvDataItem); override;
+    function GetOwner: TPersistent; override;
+    procedure NotifyItemSelected(Value: IJvDataItem);
+    { IJvDataConsumerServerNotify }
+    procedure AddClient(Client: IJvDataConsumerClientNotify);
+    procedure RemoveClient(Client: IJvDataConsumerClientNotify);
+    procedure NotifyProviderChanged(Client: IJvDataConsumerClientNotify); virtual;
+    function IsValidClient(Client: IJvDataConsumerClientNotify): Boolean; virtual;
   public
+    constructor Create(AOwner: TExtensibleInterfacedPersistent); override;
+    destructor Destroy; override;
+  published
+    property Clients: TJvDataConsumerClientNotifyList read FClients write SetClients;
   end;
-  
+
+  TJvDataConsumerClientNotifyList = class(TOwnedCollection)
+  private
+    FServer: TJvDataConsumerServerNotify;
+  protected
+    function GetServer: TJvDataConsumerServerNotify;
+    function GetNotifyItems(I: Integer): TJvDataConsumerClientNotifyItem;
+    function GetConsumer(I: Integer): IJvDataConsumer;
+    procedure SetItemName(Item: TCollectionItem); override;
+  public
+    constructor Create(AServer: TJvDataConsumerServerNotify);
+
+    procedure Add(AComponent: TComponent); overload;
+    procedure Add(AConsumer: IJvDataConsumer); overload;
+    procedure Delete(Index: Integer); overload;
+    procedure Delete(AComponent: TComponent); overload;
+    procedure Delete(AConsumer: IJvDataConsumer); overload;
+    function IndexOf(AComponent: TComponent): Integer; overload;
+    function IndexOf(AConsumer: IJvDataConsumer): Integer; overload;
+
+    property Server: TJvDataConsumerServerNotify read GetServer;
+    property NotifyItems[I: Integer]: TJvDataConsumerClientNotifyItem read GetNotifyItems;
+    property Clients[I: Integer]: IJvDataConsumer read GetConsumer; default;
+  end;
+
+  TJvDataConsumerClientNotifyItem = class(TCollectionItem)
+  private
+    FNotifier: IJvDataConsumerClientNotify;
+  protected
+    function GetList: TJvDataConsumerClientNotifyList;
+    function GetConsumer: IJvDataConsumer;
+    function GetComponent: TComponent;
+    procedure SetComponent(Value: TComponent);
+    procedure SetNotifier(Value: IJvDataConsumerClientNotify);
+    function GetDisplayName: string; override;
+  public
+    destructor Destroy; override;
+
+    property List: TJvDataConsumerClientNotifyList read GetList;
+    property Notifier: IJvDataConsumerClientNotify read FNotifier write SetNotifier;
+  published
+    property Component: TComponent read GetComponent write SetComponent;
+  end;
+
 // Helper routines
 { Locate nearest IJvDataItems* implementation for a specific item. }
 function DP_FindItemsIntf(AItem: IJvDataItem; IID: TGUID; out Obj): Boolean;
@@ -3511,6 +3586,7 @@ begin
         SetContextIntf(nil);
     end;
     ProviderChanged;
+    NotifyServerProviderChanged;
     if NeedExtensionFixups then
       FixupExtensions;
     ViewChanged(nil);
@@ -3781,6 +3857,23 @@ begin
     Extension(I).ItemSelected(Value);
 end;
 
+procedure TJvDataConsumer.NotifyServerItemChanged(Server: IJvDataConsumerServerNotify;
+  Value: IJvDataItem);
+var
+  I: Integer;
+begin
+  for I := 0 to ExtensionCount - 1 do
+    Extension(I).ServerItemChanged(Server, Value);
+end;
+
+procedure TJvDataConsumer.NotifyServerProviderChanged;
+var
+  I: Integer;
+begin
+  for I := 0 to ServerCount - 1 do
+    Servers[I].NotifyProviderChanged(Self);
+end;
+
 function TJvDataConsumer.ExtensionCount: Integer;
 begin
   Result := FAdditionalIntfImpl.Count;
@@ -3854,6 +3947,16 @@ begin
   end;
 end;
 
+function TJvDataConsumer.GetServerCount: Integer;
+begin
+  Result := FServerList.Count;
+end;
+
+function TJvDataConsumer.GetServers(I: Integer): IJvDataConsumerServerNotify;
+begin
+  Result := IJvDataConsumerServerNotify(FServerList[I]);
+end;
+
 procedure TJvDataConsumer.DataProviderChanging(const ADataProvider: IJvDataProvider;
   AReason: TDataProviderChangeReason; Source: IUnknown);
 begin
@@ -3892,20 +3995,42 @@ begin
   Result := I >= 0;
 end;
 
+procedure TJvDataConsumer.ServerItemChanged(Server: IJvDataConsumerServerNotify; Value: IJvDataItem);
+begin
+  NotifyServerItemChanged(Server, Value);
+end;
+
+procedure TJvDataConsumer.LinkAdded(Server: IJvDataConsumerServerNotify);
+begin
+  FServerList.Add(Server);
+end;
+
+procedure TJvDataConsumer.LinkRemoved(Server: IJvDataConsumerServerNotify);
+begin
+  FServerList.Remove(Server);
+end;
+
 constructor TJvDataConsumer.Create(AOwner: TComponent; Attributes: array of Integer);
 var
   I: Integer;
 begin
   inherited Create;
   FOwner := AOwner;
+  FServerList := TInterfaceList.Create;
   for I := Low(Attributes) to High(Attributes) do
     DoAddAttribute(Attributes[I]);
 end;
 
 destructor TJvDataConsumer.Destroy;
 begin
+  // detach event handlers to avoid AVs when destroying
   FOnChanged := nil;
+  FOnProviderChanging := nil;
+  FOnProviderChanged := nil;
+  FAfterCreateSubSvc := nil;
+  FBeforeCreateSubSvc := nil;
   Provider := nil;
+  FreeAndNil(FServerList);
   inherited Destroy;
 end;
 
@@ -4002,6 +4127,11 @@ begin
 end;
 
 procedure TJvDataConsumerAggregatedObject.ItemSelected(Value: IJvDataItem);
+begin
+end;
+
+procedure TJvDataConsumerAggregatedObject.ServerItemChanged(Server: IJvDataConsumerServerNotify;
+  Value: IJvDataItem);
 begin
 end;
 
@@ -4808,6 +4938,283 @@ begin
   Result := Length(FViewItems);
 end;
 
+//===TJvDataConsumerServerNotify====================================================================
+
+procedure TJvDataConsumerServerNotify.SetClients(Value: TJvDataConsumerClientNotifyList);
+begin
+  if Value <> nil then
+    FClients.Assign(Value)
+  else
+    FClients.Clear;
+end;
+
+procedure TJvDataConsumerServerNotify.ItemSelected(Value: IJvDataItem);
+begin
+  { Default behavior: notify clients about the newly selected item. Override the method to take
+    other action (either in addition to or instead of the default behavior). }
+  NotifyItemSelected(Value);
+end;
+
+function TJvDataConsumerServerNotify.GetOwner: TPersistent;
+begin
+  // To make the collection editor actually show up.
+  Result := ConsumerImpl.VCLComponent;
+end;
+
+procedure TJvDataConsumerServerNotify.NotifyItemSelected(Value: IJvDataItem);
+var
+  I: Integer;
+begin
+  for I := 0 to Clients.Count - 1 do
+    if Clients.NotifyItems[I].Notifier <> nil then
+      Clients.NotifyItems[I].Notifier.ItemSelected(Self, Value);
+end;
+
+function TJvDataConsumerServerNotify.IsValidClient(Client: IJvDataConsumerClientNotify): Boolean;
+begin
+  // Override this method to determine if the specified client can be linked to this server.
+  Result := False;
+end;
+
+procedure TJvDataConsumerServerNotify.AddClient(Client: IJvDataConsumerClientNotify);
+begin
+  if IsValidClient(Client) then
+    FClients.Add(Client as IJvDataConsumer);
+end;
+
+procedure TJvDataConsumerServerNotify.RemoveClient(Client: IJvDataConsumerClientNotify);
+begin
+  FClients.Delete(Client as IJvDataConsumer);
+end;
+
+procedure TJvDataConsumerServerNotify.NotifyProviderChanged(Client: IJvDataConsumerClientNotify);
+begin
+  if not IsValidClient(Client) then
+    RemoveClient(Client);
+end;
+
+constructor TJvDataConsumerServerNotify.Create(AOwner: TExtensibleInterfacedPersistent);
+begin
+  inherited Create(AOwner);
+  FClients := TJvDataConsumerClientNotifyList.Create(Self);
+end;
+
+destructor TJvDataConsumerServerNotify.Destroy;
+begin
+  FreeAndNil(FClients);
+  inherited Destroy;
+end;
+
+//===TJvDataConsumerClientNotifyList================================================================
+
+function TJvDataConsumerClientNotifyList.GetServer: TJvDataConsumerServerNotify;
+begin
+  Result := FServer;
+end;
+
+function TJvDataConsumerClientNotifyList.GetNotifyItems(
+  I: Integer): TJvDataConsumerClientNotifyItem;
+begin
+  Result := TJvDataConsumerClientNotifyItem(Items[I]);
+end;
+
+function TJvDataConsumerClientNotifyList.GetConsumer(I: Integer): IJvDataConsumer;
+var
+  Item: TJvDataConsumerClientNotifyItem;
+begin
+  Item := GetNotifyItems(I);
+  Supports(Item.Notifier, IJvDataConsumer, Result);
+end;
+
+procedure TJvDataConsumerClientNotifyList.SetItemName(Item: TCollectionItem);
+begin
+  Server.StreamedInWithoutProvider := Server.ConsumerImpl.ProviderIntf = nil;
+end;
+
+constructor TJvDataConsumerClientNotifyList.Create(AServer: TJvDataConsumerServerNotify);
+begin
+  inherited Create(AServer.ConsumerImpl.VCLComponent, TJvDataConsumerClientNotifyItem);
+  FServer := AServer;
+end;
+
+procedure TJvDataConsumerClientNotifyList.Add(AComponent: TComponent);
+var
+  PI: PPropInfo;
+  Obj: TObject;
+  Consumer: IJvDataConsumer;
+begin
+  if AComponent <> nil then
+  begin
+    PI := GetPropInfo(AComponent, 'Provider');
+    if PI <> nil then
+    begin
+      Obj := GetObjectProp(AComponent, 'Provider');
+      if (Obj <> nil) and Supports(Obj, IJvDataConsumer, Consumer) then
+        Add(Consumer)
+      else
+        raise EJVCLDataConsumer.CreateFmt('Provider property of ''%s'' does not point to a IJvDataConsumer.', [AComponent.Name]);
+    end
+    else
+      raise EJVCLDataConsumer.CreateFmt('Component ''%s'' is not a data consumer.', [AComponent.Name]);
+  end
+  else
+    raise EJVCLDataConsumer.Create('Cannot add a nil pointer.');
+end;
+
+procedure TJvDataConsumerClientNotifyList.Add(AConsumer: IJvDataConsumer);
+var
+  Notifier: IJvDataConsumerClientNotify;
+begin
+  if AConsumer <> nil then
+  begin
+    if IndexOf(AConsumer) = -1 then
+    begin
+      if Supports(AConsumer, IJvDataConsumerClientNotify, Notifier) then
+        TJvDataConsumerClientNotifyItem.Create(Self).Notifier := Notifier
+      else
+        raise EJVCLDataConsumer.Create('Consumer does not support the ''IJvDataConsumerClientNotify'' interface.');
+    end;
+  end
+  else
+    raise EJVCLDataConsumer.Create('Cannot add a nil pointer.');
+end;
+
+procedure TJvDataConsumerClientNotifyList.Delete(Index: Integer);
+begin
+  inherited Delete(Index);
+end;
+
+procedure TJvDataConsumerClientNotifyList.Delete(AComponent: TComponent);
+var
+  Idx: Integer;
+begin
+  Idx := IndexOf(AComponent);
+  if Idx > -1 then
+    Delete(Idx);
+end;
+
+procedure TJvDataConsumerClientNotifyList.Delete(AConsumer: IJvDataConsumer);
+var
+  Idx: Integer;
+begin
+  Idx := IndexOf(AConsumer);
+  if Idx > -1 then
+    Delete(Idx);
+end;
+
+function TJvDataConsumerClientNotifyList.IndexOf(AComponent: TComponent): Integer;
+begin
+  Result := Count - 1;
+  while (Result >= 0) and (NotifyItems[Result].Component <> AComponent) do
+    Dec(Result);
+end;
+
+function TJvDataConsumerClientNotifyList.IndexOf(AConsumer: IJvDataConsumer): Integer;
+begin
+  Result := Count - 1;
+  while (Result >= 0) and (Clients[Result] <> AConsumer) do
+    Dec(Result);
+end;
+
+//===TJvDataConsumerClientNotifyItem================================================================
+
+function TJvDataConsumerClientNotifyItem.GetList: TJvDataConsumerClientNotifyList;
+begin
+  Result := TJvDataConsumerClientNotifyList(Collection);
+end;
+
+function TJvDataConsumerClientNotifyItem.GetConsumer: IJvDataConsumer;
+begin
+  Supports(FNotifier, IJvDataConsumer, Result);
+end;
+
+function TJvDataConsumerClientNotifyItem.GetComponent: TComponent;
+var
+  Con: IJvDataConsumer;
+begin
+  Con := GetConsumer;
+  if Con <> nil then
+    Result := Con.VCLComponent
+  else
+    Result := nil;
+end;
+
+procedure TJvDataConsumerClientNotifyItem.SetComponent(Value: TComponent);
+var
+  PI: PPropInfo;
+  Obj: TObject;
+  Consumer: IJvDataConsumer;
+  TmpNotifier: IJvDataConsumerClientNotify;
+begin
+  if Value <> Component then
+  begin
+    if Value <> nil then
+    begin
+      PI := GetPropInfo(Value, 'Provider');
+      if PI <> nil then
+      begin
+        Obj := GetObjectProp(Value, 'Provider');
+        if (Obj <> nil) and Supports(Obj, IJvDataConsumer, Consumer) then
+        begin
+          if Supports(Consumer, IJvDataConsumerClientNotify, TmpNotifier) then
+          begin
+            if Notifier <> nil then
+              Notifier.LinkRemoved(List.Server);
+            FNotifier := TmpNotifier;
+            Notifier.LinkAdded(List.Server);
+          end
+          else
+            raise EJVCLDataConsumer.Create('Consumer does not support the ''IJvDataConsumerClientNotify'' interface.');
+        end
+        else
+          raise EJVCLDataConsumer.CreateFmt('Provider property of ''%s'' does not point to a IJvDataConsumer.', [Value.Name]);
+      end
+      else
+        raise EJVCLDataConsumer.CreateFmt('Component ''%s'' is not a data consumer.', [Value.Name]);
+    end
+    else
+      raise EJVCLDataConsumer.Create('Cannot add a nil pointer.');
+  end;
+end;
+
+procedure TJvDataConsumerClientNotifyItem.SetNotifier(Value: IJvDataConsumerClientNotify);
+var
+  Consumer: IJvDataConsumer;
+begin
+  if Value <> Notifier then
+  begin
+    if Value <> nil then
+    begin
+      if Supports(Value, IJvDataConsumer, Consumer) then
+      begin
+        if Notifier <> nil then
+          Notifier.LinkRemoved(List.Server);
+        FNotifier := Value;
+        Notifier.LinkAdded(List.Server);
+      end
+      else
+        raise EJVCLDataConsumer.Create('Notifier does not support the ''IJvDataConsumer'' interface.');
+    end
+    else
+      raise EJVCLDataConsumer.Create('Cannot add a nil pointer.');
+  end;
+end;
+
+function TJvDataConsumerClientNotifyItem.GetDisplayName: string;
+begin
+  if (Component = nil) or (Component.Name = '') then
+    Result := inherited GetDisplayName
+  else
+    Result := Component.Name;
+end;
+
+destructor TJvDataConsumerClientNotifyItem.Destroy;
+begin
+  if Notifier <> nil then
+    Notifier.LinkRemoved(List.Server);
+  inherited Destroy;
+end;
+
 initialization
   RegisterClasses([
     // Items related
@@ -4816,7 +5223,7 @@ initialization
     // Item related
     TJvBaseDataItem, TJvDataItemTextImpl, TJvDataItemImageImpl,
     // Consumer related
-    TJvDataConsumer, TJvDataConsumerItemSelect,
+    TJvDataConsumer, TJvDataConsumerItemSelect, 
     // Context list related
     TJvDataContexts,
     // Context related

@@ -125,6 +125,15 @@ type
     procedure SetValue(const Value: string); override;
   end;
 
+  TJvConsumerNotifyComponentProperty = class(TComponentProperty)
+  protected
+    EnumProc: TGetStrProc;
+    function IsValidComp(AComponent: TComponent): Boolean;
+    procedure CheckAndAddComp(const S: string);
+  public
+    procedure GetValues(Proc: TGetStrProc); override;
+  end;
+
   TOpenSvc = class(TJvDataConsumer);
   TOpenConsumerAggregate = class(TJvDataConsumerAggregatedObject);
 
@@ -425,6 +434,49 @@ begin
   end;
 end;
 
+//===TJvConsumerNotifyComponentProperty=============================================================
+
+function TJvConsumerNotifyComponentProperty.IsValidComp(AComponent: TComponent): Boolean;
+var
+  PI: PPropInfo;
+  Obj: TObject;
+  Consumer: IJvDataConsumer;
+  TmpNotifier: IJvDataConsumerClientNotify;
+  Srv: IJvDataConsumerServerNotify;
+begin
+  Result := (AComponent is GetTypeData(GetPropType)^.ClassType);
+  if Result then
+  begin
+    PI := TypInfo.GetPropInfo(AComponent, 'Provider');
+    if PI <> nil then
+    begin
+      Obj := TypInfo.GetObjectProp(AComponent, 'Provider');
+      Result := Supports(Obj, IJvDataConsumer, Consumer) and
+        Supports(Consumer, IJvDataConsumerClientNotify, TmpNotifier) and
+        Supports(TJvDataConsumerClientNotifyItem(GetComponent(0)).List.Server.Controller,
+          IJvDataConsumerServerNotify, Srv) and Srv.IsValidClient(TmpNotifier);
+    end
+    else
+      Result := False;
+  end;
+end;
+
+procedure TJvConsumerNotifyComponentProperty.CheckAndAddComp(const S: string);
+begin
+  if (@EnumProc <> nil) and (S <> '') and IsValidComp(Designer.GetComponent(S)) then
+    EnumProc(S);
+end;
+
+procedure TJvConsumerNotifyComponentProperty.GetValues(Proc: TGetStrProc);
+begin
+  EnumProc := Proc;
+  try
+    Designer.GetComponentNames(GetTypeData(TComponent.ClassInfo), CheckAndAddComp);
+  finally
+    EnumProc := nil;
+  end;
+end;
+
 //===TJvProviderEditor==============================================================================
 
 function TJvProviderEditor.Provider: IJvDataProvider;
@@ -489,6 +541,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TJvDataItemID), TPersistent, '', TJvDataProviderItemIDProperty);
   RegisterPropertyEditor(TypeInfo(TJvDataContextID), TPersistent, '', TJvDataConsumerContextProperty);
   RegisterPropertyEditor(TypeInfo(TJvDataProviderTree), TComponent, '', TJvDataProviderTreeProperty);
+  RegisterPropertyEditor(TypeInfo(TComponent), TJvDataConsumerClientNotifyItem, '', TJvConsumerNotifyComponentProperty);
   RegisterComponentEditor(TJvCustomDataProvider, TJvProviderEditor);
 end;
 
