@@ -32,9 +32,9 @@ interface
 
 uses
   JclMapi,
-  {$IFDEF WINDOWS}
+  {$IFDEF MSWINDOWS}
   Windows, ShellAPI, ActnList,
-  {$ENDIF WINDOWS}
+  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   QWindows, QActnList,
   {$ENDIF LINUX}
