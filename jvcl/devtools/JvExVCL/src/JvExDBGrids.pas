@@ -45,6 +45,7 @@ uses
 
 type
   WINCONTROL_DECL_DEFAULT(CustomDBGrid)
+
   WINCONTROL_DECL_DEFAULT(DBGrid)
 
 {$IFDEF UNITVERSIONING}
@@ -60,11 +61,11 @@ const
 implementation
 
 WINCONTROL_IMPL_DEFAULT(CustomDBGrid)
+
 WINCONTROL_IMPL_DEFAULT(DBGrid)
 
-
-initialization
 {$IFDEF UNITVERSIONING}
+initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization

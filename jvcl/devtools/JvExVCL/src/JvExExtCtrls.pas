@@ -45,9 +45,13 @@ uses
 
 type
   CONTROL_DECL_DEFAULT(Shape)
+
   CONTROL_DECL_DEFAULT(PaintBox)
+
   CONTROL_DECL_DEFAULT(Image)
+
   CONTROL_DECL_DEFAULT(Bevel)
+
   WINCONTROL_DECL_DEFAULT(CustomPanel)
 
   TJvExPubCustomPanel = class(TJvExCustomPanel)
@@ -63,18 +67,31 @@ type
   end;
 
   WINCONTROL_DECL_DEFAULT(CustomControlBar)
+
   WINCONTROL_DECL_DEFAULT(ControlBar)
+
   WINCONTROL_DECL_DEFAULT(Panel)
+
   WINCONTROL_DECL_DEFAULT(RadioGroup)
+
   WINCONTROL_DECL_DEFAULT(Page)
+
   WINCONTROL_DECL_DEFAULT(Notebook)
+
   WINCONTROL_DECL_DEFAULT(Header)
+
   {$IFDEF COMPILER6_UP}
+
   CONTROL_DECL_DEFAULT(BoundLabel)
+
   WINCONTROL_DECL_DEFAULT(CustomLabeledEdit)
+
   WINCONTROL_DECL_DEFAULT(LabeledEdit)
+
   WINCONTROL_DECL_DEFAULT(CustomColorBox)
+
   WINCONTROL_DECL_DEFAULT(ColorBox)
+
   {$ENDIF COMPILER6_UP}
 
 // SplitterMouseDownFix fixes a bug in the VCL that causes the splitter to no
@@ -95,24 +112,43 @@ const
 implementation
 
 CONTROL_IMPL_DEFAULT(Shape)
+
 CONTROL_IMPL_DEFAULT(PaintBox)
+
 CONTROL_IMPL_DEFAULT(Image)
+
 CONTROL_IMPL_DEFAULT(Bevel)
+
 WINCONTROL_IMPL_DEFAULT(CustomPanel)
+
 WINCONTROL_IMPL_DEFAULT(CustomRadioGroup)
+
 WINCONTROL_IMPL_DEFAULT(CustomControlBar)
+
 WINCONTROL_IMPL_DEFAULT(ControlBar)
+
 WINCONTROL_IMPL_DEFAULT(Panel)
+
 WINCONTROL_IMPL_DEFAULT(RadioGroup)
+
 WINCONTROL_IMPL_DEFAULT(Page)
+
 WINCONTROL_IMPL_DEFAULT(Notebook)
+
 WINCONTROL_IMPL_DEFAULT(Header)
+
 {$IFDEF COMPILER6_UP}
+
 CONTROL_IMPL_DEFAULT(BoundLabel)
+
 WINCONTROL_IMPL_DEFAULT(CustomLabeledEdit)
+
 WINCONTROL_IMPL_DEFAULT(LabeledEdit)
+
 WINCONTROL_IMPL_DEFAULT(CustomColorBox)
+
 WINCONTROL_IMPL_DEFAULT(ColorBox)
+
 {$ENDIF COMPILER6_UP}
 
 CONTROL_IMPL_DEFAULT(Splitter)
@@ -211,9 +247,8 @@ begin
   end;
 end;
 
-
-initialization
 {$IFDEF UNITVERSIONING}
+initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization

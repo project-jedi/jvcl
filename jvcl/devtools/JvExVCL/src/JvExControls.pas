@@ -43,10 +43,9 @@ uses
   JvTypes, JvThemes, JVCLVer;
 
 type
-  TDlgCode = (
-    dcWantAllKeys, dcWantArrows, dcWantChars, dcButton, dcHasSetSel, dcWantTab,
-    dcNative // if dcNative is in the set the native allowed keys are used and GetDlgCode is ignored
-  );
+  TDlgCode =
+   (dcWantAllKeys, dcWantArrows, dcWantChars, dcButton, dcHasSetSel, dcWantTab,
+    dcNative); // if dcNative is in the set the native allowed keys are used and GetDlgCode is ignored
   TDlgCodes = set of TDlgCode;
 
 const
@@ -66,7 +65,7 @@ type
   end;
 
   { Add IJvDenySubClassing to the base class list if the control should not
-    be themed by the ThemeManager (www.delphi-gems.de).
+    be themed by the ThemeManager (http://www.soft-gems.net Mike Lischke).
     This only works with JvExVCL derived classes. }
   IJvDenySubClassing = interface
     ['{76942BC0-2A6E-4DC4-BFC9-8E110DB7F601}']
@@ -85,13 +84,15 @@ procedure TOpenControl_SetAutoSize(AControl: TControl; Value: Boolean);
 function Perform(AControl: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
 {$ENDIF VisualCLX}
 
-{******************************************************************************}
-
 type
   CONTROL_DECL_DEFAULT(Control)
+
   WINCONTROL_DECL_DEFAULT(WinControl)
+
   WINCONTROL_DECL_DEFAULT(CustomControl)
+
   CONTROL_DECL_DEFAULT(GraphicControl)
+
   WINCONTROL_DECL_DEFAULT(HintWindow)
 
   TJvExPubGraphicControl = class(TJvExGraphicControl)
@@ -143,17 +144,17 @@ end;
 function DlgcToDlgCodes(Value: Longint): TDlgCodes;
 begin
   Result := [];
-  if Value and DLGC_WANTARROWS <> 0 then
+  if (Value and DLGC_WANTARROWS) <> 0 then
     Include(Result, dcWantArrows);
-  if Value and DLGC_WANTTAB <> 0 then
+  if (Value and DLGC_WANTTAB) <> 0 then
     Include(Result, dcWantTab);
-  if Value and DLGC_WANTALLKEYS <> 0 then
+  if (Value and DLGC_WANTALLKEYS) <> 0 then
     Include(Result, dcWantAllKeys);
-  if Value and DLGC_WANTCHARS <> 0 then
+  if (Value and DLGC_WANTCHARS) <> 0 then
     Include(Result, dcWantChars);
-  if Value and DLGC_BUTTON <> 0 then
+  if (Value and DLGC_BUTTON) <> 0 then
     Include(Result, dcButton);
-  if Value and DLGC_HASSETSEL <> 0 then
+  if (Value and DLGC_HASSETSEL) <> 0 then
     Include(Result, dcHasSetSel);
 end;
 
@@ -221,8 +222,6 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-// *****************************************************************************
-
 {$IFDEF COMPILER5}
 
 { Delphi 5's SetAutoSize is private and not virtual. This code installs a
@@ -233,18 +232,18 @@ type
 
 function ReadProtectedMemory(Address: Pointer; var Buffer; Count: Cardinal): Boolean;
 var
-  n: Cardinal;
+  N: Cardinal;
 begin
-  Result := ReadProcessMemory(GetCurrentProcess, Address, @Buffer, Count, n);
-  Result := Result and (n = Count);
+  Result := ReadProcessMemory(GetCurrentProcess, Address, @Buffer, Count, N);
+  Result := Result and (N = Count);
 end;
 
 function WriteProtectedMemory(Address: Pointer; const Buffer; Count: Cardinal): Boolean;
 var
-  n: Cardinal;
+  N: Cardinal;
 begin
-  Result := WriteProcessMemory(GetCurrentProcess, Address, @Buffer, Count, n);
-  Result := Result and (n = Count);
+  Result := WriteProcessMemory(GetCurrentProcess, Address, @Buffer, Count, N);
+  Result := Result and (N = Count);
 end;
 
 type
@@ -273,13 +272,11 @@ var
   Data: Byte;
 begin
   Result := ProcAddress;
- // the relocation table meight be protected
+  // the relocation table might be protected
   if ReadProtectedMemory(ProcAddress, Data, SizeOf(Data)) then
-  begin
-    if Data = $FF then // ProcAddress is in a dll or package
+    if Data = $FF then // ProcAddress is in a DLL or package
       if ReadProtectedMemory(ProcAddress, Relocation, SizeOf(Relocation)) then
         Result := Relocation.Address^;
-  end;
 end;
 
 function InstallProcHook(ProcAddress, HookProc, OrgCallProc: Pointer): Boolean;
@@ -293,7 +290,8 @@ begin
   begin
     if OrgCallProc <> nil then
     begin
-      if ReadProtectedMemory(ProcAddress, OrgCallCode, SizeOf(OrgCallCode) - (1 + SizeOf(Integer))) then
+      if ReadProtectedMemory(ProcAddress, OrgCallCode,
+        SizeOf(OrgCallCode) - (1 + SizeOf(Integer))) then
       begin
         OrgCallCode.Jmp := $E9;
         OrgCallCode.Offset := (Integer(ProcAddress) + 1 + SizeOf(Code)) -
@@ -332,9 +330,7 @@ var
 begin
   Result := False;
   if Assigned(OrgCallProc) then
-  begin
     if OrgCallProc <> nil then
-    begin
       if ReadProtectedMemory(OrgCallProc, OrgCallCode, SizeOf(OrgCallCode)) then
       begin
         ProcAddress := OrgCallCode.Address;
@@ -342,8 +338,6 @@ begin
         Result := WriteProtectedMemory(ProcAddress, OrgCallCode, 1 + SizeOf(TJumpCode));
         FlushInstructionCache(GetCurrentProcess, ProcAddress, SizeOf(OrgCallCode));
       end;
-    end;
-  end;
 end;
 
 var
@@ -362,14 +356,12 @@ procedure TOpenControl_SetAutoSize(AControl: TControl; Value: Boolean);
 begin
   // same as OrgSetAutoSize(AControl, Value); but secure
   with TControlAccessProtected(AControl) do
-  begin
     if AutoSize <> Value then
     begin
       PBoolean(Cardinal(AControl) + AutoSizeOffset)^ := Value;
       if Value then
         AdjustSize;
     end;
-  end;
 end;
 
 procedure SetAutoSizeHook(AControl: TControl; Value: Boolean);
@@ -387,6 +379,7 @@ begin
 end;
 
 {$OPTIMIZATION ON} // be sure to have optimization activated
+
 function GetCode(AControl: TControlAccessProtected): Boolean; register;
 begin
   { generated code:
@@ -440,21 +433,28 @@ begin
     (PSetCode^.Sign2 = SetCodeSign2) then
   begin
     AutoSizeOffset := PGetCode^.Offset;
-    TControl_SetAutoSize := GetRelocAddress(
-      Pointer(Integer(@SetCode) + SizeOf(TSetCodeRec) + PSetCode^.Offset));
+    TControl_SetAutoSize :=
+      GetRelocAddress(Pointer(Integer(@SetCode) + SizeOf(TSetCodeRec) + PSetCode^.Offset));
   end;
 end;
 
+{$IFNDEF OPTIMIZATION_ON}
+{$OPTIMIZATION OFF} // switch optimization back off if needed
+{$ENDIF !OPTIMIZATION_ON}
+
 {$ENDIF COMPILER5}
 
-// *****************************************************************************
+//============================================================================
 
 CONTROL_IMPL_DEFAULT(Control)
-WINCONTROL_IMPL_DEFAULT(WinControl)
-CONTROL_IMPL_DEFAULT(GraphicControl)
-WINCONTROL_IMPL_DEFAULT(CustomControl)
-WINCONTROL_IMPL_DEFAULT(HintWindow)
 
+WINCONTROL_IMPL_DEFAULT(WinControl)
+
+CONTROL_IMPL_DEFAULT(GraphicControl)
+
+WINCONTROL_IMPL_DEFAULT(CustomControl)
+
+WINCONTROL_IMPL_DEFAULT(HintWindow)
 
 initialization
   {$IFDEF UNITVERSIONING}

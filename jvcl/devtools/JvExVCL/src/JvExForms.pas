@@ -45,9 +45,13 @@ uses
 
 type
   WINCONTROL_DECL_DEFAULT(ScrollingWinControl)
+
   WINCONTROL_DECL_DEFAULT(ScrollBox)
+
   WINCONTROL_DECL_DEFAULT(CustomFrame)
+
   WINCONTROL_DECL_DEFAULT(Frame)
+
   WINCONTROL_DECL_DEFAULT(ToolWindow)
 
   TJvExCustomForm = class(TCustomForm, IJvExControl)
@@ -88,10 +92,15 @@ const
   UIS_INITIALIZE = 3;
 
 WINCONTROL_IMPL_DEFAULT(ScrollingWinControl)
+
 WINCONTROL_IMPL_DEFAULT(ScrollBox)
+
 WINCONTROL_IMPL_DEFAULT(CustomFrame)
+
 WINCONTROL_IMPL_DEFAULT(Frame)
+
 WINCONTROL_IMPL_DEFAULT(ToolWindow)
+
 WINCONTROL_IMPL_DEFAULT(CustomForm)
 
 constructor TJvExCustomForm.CreateNew(AOwner: TComponent; Dummy: Integer);
@@ -144,9 +153,8 @@ begin
   inherited;
 end;
 
-
-initialization
 {$IFDEF UNITVERSIONING}
+initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization

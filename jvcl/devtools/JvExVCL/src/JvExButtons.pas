@@ -45,6 +45,7 @@ uses
 
 type
   CONTROL_DECL_DEFAULT(SpeedButton)
+
   WINCONTROL_DECL_DEFAULT(BitBtn)
 
 {$IFDEF UNITVERSIONING}
@@ -60,10 +61,11 @@ const
 implementation
 
 CONTROL_IMPL_DEFAULT(SpeedButton)
+
 WINCONTROL_IMPL_DEFAULT(BitBtn)
 
-initialization
 {$IFDEF UNITVERSIONING}
+initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization

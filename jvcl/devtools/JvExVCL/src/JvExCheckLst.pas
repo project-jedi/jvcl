@@ -60,8 +60,8 @@ implementation
 
 WINCONTROL_IMPL_DEFAULT(CheckListBox)
 
-initialization
 {$IFDEF UNITVERSIONING}
+initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization
