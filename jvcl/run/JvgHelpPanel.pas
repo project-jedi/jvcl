@@ -32,44 +32,43 @@ unit JvgHelpPanel;
 interface
 
 uses
-  Windows, Messages, SysUtils, JvComponent, Classes, Graphics, Controls,
-  Forms, Dialogs, ExtCtrls, comctrls;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  Forms, ExtCtrls, ComCtrls,
+  JvComponent;
 
 type
   TJvgHelpPanel = class(TJvCustomPanel)
   private
-    Rich: TRichEdit;
-    FStrings: TStrings;
-    ButtonRect: TRect;
-    FHighlightButton: boolean;
-    FExpanded: boolean;
-    FExpandedHeight: integer;
-    fInitializing: boolean;
+    FRich: TRichEdit;
+    FStrings: TStringList;
+    FButtonRect: TRect;
+    FHighlightButton: Boolean;
+    FExpanded: Boolean;
+    FExpandedHeight: Integer;
+    FInitializing: Boolean;
+    function GetStrings: TStrings;
     procedure SetStrings(const Value: TStrings);
-    procedure SetHighlightButton(const Value: boolean);
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure SetExpanded(const Value: boolean);
-    procedure SetExpandedHeight(const Value: integer);
-
+    procedure SetHighlightButton(const Value: Boolean);
+    procedure SetExpanded(const Value: Boolean);
+    procedure SetExpandedHeight(const Value: Integer);
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
   protected
     procedure Paint; override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y:
-      Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Loaded; override;
     procedure InitRichText;
-    property HighlightButton: boolean read FHighlightButton write
-      SetHighlightButton;
+    property HighlightButton: Boolean read FHighlightButton write SetHighlightButton;
   published
     property Align;
     property Alignment;
     property Anchors;
     property AutoSize;
-    property BevelInner stored true;
-    property BevelOuter stored true;
+    property BevelInner stored True;
+    property BevelOuter stored True;
     property BevelWidth;
     property BiDiMode;
     property BorderWidth;
@@ -118,117 +117,103 @@ type
     property OnStartDock;
     property OnUnDock;
     property OnStartDrag;
-
-    property Expanded: boolean read FExpanded write SetExpanded default false;
-    property Strings: TStrings read FStrings write SetStrings;
-    property ExpandedHeight: integer read FExpandedHeight write
-      SetExpandedHeight;
+    property Expanded: Boolean read FExpanded write SetExpanded default False;
+    property Strings: TStrings read GetStrings write SetStrings;
+    property ExpandedHeight: Integer read FExpandedHeight write SetExpandedHeight;
   end;
-
-
-resourcestring
-  shelp = ' help ';
-  sOpenContextMenuToLoadRTFTextControl = 'Open context menu to load RTF text. Control shows text at runtime only.';
 
 implementation
 
 uses
   JvConsts;
 
-{ TJvgHelpPanel }
-
-procedure TJvgHelpPanel.CMMouseLeave(var Message: TMessage);
-begin
-  HighlightButton := false;
-end;
+resourcestring
+  SHelp = ' help ';
+  SOpenContextMenuToLoadRTFTextControl = 'Open context menu to load RTF text. Control shows text at runtime only.';
 
 constructor TJvgHelpPanel.Create(AOwner: TComponent);
 begin
-  inherited;
-  fInitializing := true;
+  inherited Create(AOwner);
+  FInitializing := True;
 
   BevelInner := bvNone;
   BevelOuter := bvNone;
 
   FStrings := TStringList.Create;
   Height := 70;
-  Caption := shelp;
+  Caption := SHelp;
 
   //if csDesigning in ComponentState then Align := alBottom;
-  Expanded := false;
-  fInitializing := false;
+  Expanded := False;
+  FInitializing := False;
 
-  if csDesigning in ComponentState then
-    exit;
-  Rich := TRichEdit.Create(self);
-  Rich.Parent := self;
-  Rich.ReadOnly := true;
-
+  if not (csDesigning in ComponentState) then
+  begin
+    FRich := TRichEdit.Create(Self);
+    FRich.Parent := Self;
+    FRich.ReadOnly := True;
+  end;
 end;
 
 destructor TJvgHelpPanel.Destroy;
 begin
   FStrings.Free;
-  if Assigned(Rich) then
-    Rich.Free;
-  inherited;
+  FRich.Free;
+  inherited Destroy;
+end;
+
+procedure TJvgHelpPanel.CMMouseLeave(var Msg: TMessage);
+begin
+  HighlightButton := False;
 end;
 
 procedure TJvgHelpPanel.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   InitRichText;
 end;
 
 procedure TJvgHelpPanel.InitRichText;
-var
-  ms: TMemoryStream;
 begin
-  if not Assigned(Rich) then
-    exit;
-  Rich.BorderStyle := bsNone;
-  Rich.SetBounds(12, 16, Width - 24, ExpandedHeight - 22);
-  ms := TMemoryStream.Create;
-  try
-    FStrings.SaveToStream(ms);
-    ms.Position := 0;
-    Rich.Lines.LoadFromStream(ms);
-  finally
-    ms.Free;
+  if Assigned(FRich) then
+  begin
+    FRich.BorderStyle := bsNone;
+    FRich.SetBounds(12, 16, Width - 24, ExpandedHeight - 22);
+    FRich.Lines.Assign(FStrings);
   end;
 end;
 
-procedure TJvgHelpPanel.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TJvgHelpPanel.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 begin
-  inherited;
-  if PtInRect(ButtonRect, Point(X, Y)) then
+  inherited MouseDown(Button, Shift, X, Y);
+  if PtInRect(FButtonRect, Point(X, Y)) then
   begin
     Expanded := not Expanded;
-    if Assigned(onClick) then
-      onClick(self);
+    if Assigned(OnClick) then
+      OnClick(Self);
   end;
 end;
 
 procedure TJvgHelpPanel.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
-  inherited;
-  if PtInRect(ButtonRect, Point(X, Y)) then
+  inherited MouseMove(Shift, X, Y);
+  if PtInRect(FButtonRect, Point(X, Y)) then
   begin
     if not HighlightButton then
       HighlightButton := not HighlightButton;
   end
-  else if HighlightButton then
+  else
+  if HighlightButton then
     HighlightButton := not HighlightButton;
 end;
 
 procedure TJvgHelpPanel.Paint;
 var
-  WARNING: string;
+  Warning: string;
   R: TRect;
 begin
-  WARNING :=
-    sOpenContextMenuToLoadRTFTextControl;
+  Warning := SOpenContextMenuToLoadRTFTextControl;
   //inherited;
 
   Canvas.Brush.Style := bsSolid;
@@ -244,8 +229,9 @@ begin
   if Expanded then
     Canvas.Rectangle(5, 15, Width - 5, Height - 5);
 
-  ButtonRect := Bounds(Width - 80, 0, 80, 20);
+  FButtonRect := Bounds(Width - 80, 0, 80, 20);
 
+  // (rom) the whole rest of the function seems clumsy
   Canvas.Font.Style := [fsBold];
   if FHighlightButton then
   begin
@@ -258,7 +244,7 @@ begin
     SetTextColor(Canvas.Handle, clBlack);
   end;
   SetBkMode(Canvas.Handle, OPAQUE);
-  DrawText(Canvas.Handle, PChar(Caption), length(Caption), ButtonRect,
+  DrawText(Canvas.Handle, PChar(Caption), Length(Caption), FButtonRect,
     DT_SINGLELINE or DT_RIGHT);
 
   if csDesigning in ComponentState then
@@ -266,12 +252,12 @@ begin
     R := ClientRect;
     inc(R.Top, 20);
     SetBkMode(Canvas.Handle, TRANSPARENT);
-    DrawText(Canvas.Handle, PChar(WARNING), length(WARNING), R, DT_SINGLELINE or
+    DrawText(Canvas.Handle, PChar(Warning), Length(Warning), R, DT_SINGLELINE or
       DT_CENTER or DT_VCENTER);
   end;
 end;
 
-procedure TJvgHelpPanel.SetExpanded(const Value: boolean);
+procedure TJvgHelpPanel.SetExpanded(const Value: Boolean);
 begin
   FExpanded := Value;
   if FExpanded then
@@ -282,21 +268,21 @@ begin
     Height := 16;
   end;
 
-  if not fInitializing then
+  if not FInitializing then
     if Parent is TForm then
-      with (Parent as TForm) do
+      with Parent as TForm do
         if FExpanded then
           Height := Height + ExpandedHeight - 16
         else
           Height := Height - ExpandedHeight + 16;
 end;
 
-procedure TJvgHelpPanel.SetExpandedHeight(const Value: integer);
+procedure TJvgHelpPanel.SetExpandedHeight(const Value: Integer);
 begin
   FExpandedHeight := Value;
 end;
 
-procedure TJvgHelpPanel.SetHighlightButton(const Value: boolean);
+procedure TJvgHelpPanel.SetHighlightButton(const Value: Boolean);
 begin
   FHighlightButton := Value;
   if FHighlightButton then
@@ -304,6 +290,11 @@ begin
   else
     Cursor := crDefault;
   Repaint;
+end;
+
+function TJvgHelpPanel.GetStrings: TStrings;
+begin
+  Result := FStrings;
 end;
 
 procedure TJvgHelpPanel.SetStrings(const Value: TStrings);
