@@ -420,7 +420,8 @@ end;
 procedure TJvDBRichEdit.DoExit;
 begin
   try
-    FDataLink.UpdateRecord;
+   if Modified then
+     FDataLink.UpdateRecord;
   except
     if CanFocus then
       SetFocus;
