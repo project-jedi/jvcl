@@ -431,7 +431,8 @@ end;
 procedure TPictureEditDialog.FormStorageSavePlacement(Sender: TObject);
 begin
   FormStorage.WriteInteger(cBackColorIdent, IconColor);
-  FormStorage.WriteString(cFileDir, FileDialog.InitialDir);
+  if FileDialog.InitialDir <> '' then
+    FormStorage.WriteString(cFileDir, FileDialog.InitialDir);
 end;
 
 procedure TPictureEditDialog.PathsClick(Sender: TObject);
