@@ -39,7 +39,7 @@ uses
   Forms, Controls, Classes, DB,
   JvPanel,
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-  cxGridCustomTableView, 
+  cxGridCustomTableView,
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   {$IFDEF USE_3RDPARTY_SMEXPORT}
   SMEWIZ, ExportDS, SMEEngine,
@@ -47,7 +47,6 @@ uses
   {$IFDEF USE_3RDPARTY_SMIMPORT}
   SMIWiz, SMIBase,
   {$ENDIF USE_3RDPARTY_SMIMPORT}
-
   JvDynControlEngineDB, JvDynControlEngineDBTools;
 
 type
@@ -61,10 +60,10 @@ type
     FCloseButtonCaption: string;
     FBorderStyle: TFormBorderStyle;
     FPosition: TPosition;
-    FTop:    integer;
-    FLeft:   integer;
-    FWidth:  integer;
-    FHeight: integer;
+    FTop: Integer;
+    FLeft: Integer;
+    FWidth: Integer;
+    FHeight: Integer;
     FArrangeConstraints: TSizeConstraints;
     FArrangeSettings: TJvArrangeSettings;
     FFieldCreateOptions: TJvCreateDBFieldsOnControlOptions;
@@ -77,20 +76,20 @@ type
     destructor Destroy; override;
     procedure SetOptionsToDialog(ADialog: TJvDynControlDataSourceEditDialog);
   published
-    property DialogCaption: string Read FDialogCaption Write FDialogCaption;
-    property PostButtonCaption: string Read FPostButtonCaption Write FPostButtonCaption;
-    property CancelButtonCaption: string Read FCancelButtonCaption Write FCancelButtonCaption;
-    property CloseButtonCaption: string Read FCloseButtonCaption Write FCloseButtonCaption;
-    property BorderStyle: TFormBorderStyle Read FBorderStyle Write FBorderStyle default bsDialog;
-    property Position: TPosition Read FPosition Write FPosition default poScreenCenter;
-    property Top: integer Read FTop Write FTop default 0;
-    property Left: integer Read FLeft Write FLeft default 0;
-    property Width: integer Read FWidth Write FWidth default 640;
-    property Height: integer Read FHeight Write FHeight default 480;
-    property ArrangeConstraints: TSizeConstraints Read FArrangeConstraints Write SetArrangeConstraints;
-    property ArrangeSettings: TJvArrangeSettings Read FArrangeSettings Write SetArrangeSettings;
-    property FieldCreateOptions: TJvCreateDBFieldsOnControlOptions Read FFieldCreateOptions
-      Write SetFieldCreateOptions;
+    property DialogCaption: string read FDialogCaption write FDialogCaption;
+    property PostButtonCaption: string read FPostButtonCaption write FPostButtonCaption;
+    property CancelButtonCaption: string read FCancelButtonCaption write FCancelButtonCaption;
+    property CloseButtonCaption: string read FCloseButtonCaption write FCloseButtonCaption;
+    property BorderStyle: TFormBorderStyle read FBorderStyle write FBorderStyle default bsDialog;
+    property Position: TPosition read FPosition write FPosition default poScreenCenter;
+    property Top: Integer read FTop write FTop default 0;
+    property Left: Integer read FLeft write FLeft default 0;
+    property Width: Integer read FWidth write FWidth default 640;
+    property Height: Integer read FHeight write FHeight default 480;
+    property ArrangeConstraints: TSizeConstraints read FArrangeConstraints write SetArrangeConstraints;
+    property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
+    property FieldCreateOptions: TJvCreateDBFieldsOnControlOptions read FFieldCreateOptions
+      write SetFieldCreateOptions;
   end;
 
   TJvDatabaseActionList = class(TActionList)
@@ -101,7 +100,7 @@ type
   public
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   published
-    property DataComponent: TComponent Read FDataComponent Write SetDataComponent;
+    property DataComponent: TComponent read FDataComponent write SetDataComponent;
   end;
 
   TJvDatabaseActionBaseEngine = class(TObject)
@@ -109,22 +108,22 @@ type
     function GetDataSource(ADataComponent: TComponent): TDataSource; virtual;
     function GetDataSet(ADataComponent: TComponent): TDataSet; virtual;
   public
-    function Supports(ADataComponent: TComponent): boolean; virtual;
-    function IsActive(ADataComponent: TComponent): boolean; virtual;
-    function HasData(ADataComponent: TComponent): boolean; virtual;
-    function FieldCount(ADataComponent: TComponent): integer; virtual;
-    function RecordCount(ADataComponent: TComponent): integer; virtual;
-    function RecNo(ADataComponent: TComponent): integer; virtual;
-    function CanModify(ADataComponent: TComponent): boolean; virtual;
-    function EOF(ADataComponent: TComponent): boolean; virtual;
-    function Bof(ADataComponent: TComponent): boolean; virtual;
+    function Supports(ADataComponent: TComponent): Boolean; virtual;
+    function IsActive(ADataComponent: TComponent): Boolean; virtual;
+    function HasData(ADataComponent: TComponent): Boolean; virtual;
+    function FieldCount(ADataComponent: TComponent): Integer; virtual;
+    function RecordCount(ADataComponent: TComponent): Integer; virtual;
+    function RecNo(ADataComponent: TComponent): Integer; virtual;
+    function CanModify(ADataComponent: TComponent): Boolean; virtual;
+    function Eof(ADataComponent: TComponent): Boolean; virtual;
+    function Bof(ADataComponent: TComponent): Boolean; virtual;
     procedure DisableControls(ADataComponent: TComponent); virtual;
     procedure EnableControls(ADataComponent: TComponent); virtual;
-    function ControlsDisabled(ADataComponent: TComponent): boolean; virtual;
-    function EditModeActive(ADataComponent: TComponent): boolean; virtual;
+    function ControlsDisabled(ADataComponent: TComponent): Boolean; virtual;
+    function EditModeActive(ADataComponent: TComponent): Boolean; virtual;
     procedure First(ADataComponent: TComponent); virtual;
     procedure Last(ADataComponent: TComponent); virtual;
-    procedure MoveBy(ADataComponent: TComponent; Distance: integer); virtual;
+    procedure MoveBy(ADataComponent: TComponent; Distance: Integer); virtual;
     procedure ShowSingleRecordWindow(AOptions: TJvShowSingleRecordWindowOptions;
       ADataComponent: TComponent); virtual;
   end;
@@ -139,7 +138,7 @@ type
     procedure OnCreateDataControls(ADynControlEngineDB: TJvDynControlEngineDB;
       AParentControl: TWinControl; AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions);
   public
-    function Supports(ADataComponent: TComponent): boolean; override;
+    function Supports(ADataComponent: TComponent): Boolean; override;
     procedure ShowSingleRecordWindow(AOptions: TJvShowSingleRecordWindowOptions;
       ADataComponent: TComponent); override;
   end;
@@ -150,13 +149,12 @@ type
     function GetGridView(ADataComponent: TComponent): TcxCustomGridTableView;
     function GetDataSource(ADataComponent: TComponent): TDataSource; override;
   public
-    function RecNo(ADataComponent: TComponent): integer; override;
+    function RecNo(ADataComponent: TComponent): Integer; override;
     procedure First(ADataComponent: TComponent); override;
     procedure Last(ADataComponent: TComponent); override;
-    procedure MoveBy(ADataComponent: TComponent; Distance: integer); override;
-    function Supports(ADataComponent: TComponent): boolean; override;
+    procedure MoveBy(ADataComponent: TComponent; Distance: Integer); override;
+    function Supports(ADataComponent: TComponent): Boolean; override;
   end;
-
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
 
   TJvDatabaseExecuteEvent = procedure(Sender: TObject; DataEngine: TJvDatabaseActionBaseEngine;
@@ -165,56 +163,56 @@ type
 
   TJvDatabaseBaseAction = class(TAction)
   private
-    FOnExecute:     TJvDatabaseExecuteEvent;
+    FOnExecute: TJvDatabaseExecuteEvent;
     FOnExecuteDataSource: TJvDatabaseExecuteDataSourceEvent;
-    FDataEngine:    TJvDatabaseActionBaseEngine;
+    FDataEngine: TJvDatabaseActionBaseEngine;
     FDataComponent: TComponent;
   protected
     procedure SetDataComponent(Value: TComponent);
-    procedure SetEnabled(Value: boolean);
+    procedure SetEnabled(Value: Boolean);
     function GetDataSet: TDataSet;
     function GetDataSource: TDataSource;
-    function EngineIsActive: boolean;
-    function EngineHasData: boolean;
-    function EngineFieldCount: integer;
-    function EngineRecordCount: integer;
-    function EngineRecNo: integer;
-    function EngineCanModify: boolean;
-    function EngineEof: boolean;
-    function EngineBof: boolean;
-    function EngineControlsDisabled: boolean;
-    function EngineEditModeActive: boolean;
-    property DataEngine: TJvDatabaseActionBaseEngine Read FDataEngine;
+    function EngineIsActive: Boolean;
+    function EngineHasData: Boolean;
+    function EngineFieldCount: Integer;
+    function EngineRecordCount: Integer;
+    function EngineRecNo: Integer;
+    function EngineCanModify: Boolean;
+    function EngineEof: Boolean;
+    function EngineBof: Boolean;
+    function EngineControlsDisabled: Boolean;
+    function EngineEditModeActive: Boolean;
+    property DataEngine: TJvDatabaseActionBaseEngine read FDataEngine;
   public
     constructor Create(AOwner: TComponent); override;
     procedure UpdateTarget(Target: TObject); override;
-    function HandlesTarget(Target: TObject): boolean; override;
+    function HandlesTarget(Target: TObject): Boolean; override;
     procedure ExecuteTarget(Target: TObject); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    property DataSource: TDataSource Read GetDataSource;
-    property DataSet: TDataSet Read GetDataSet;
+    property DataSource: TDataSource read GetDataSource;
+    property DataSet: TDataSet read GetDataSet;
   published
-    property OnExecute: TJvDatabaseExecuteEvent Read FOnExecute Write FOnExecute;
+    property OnExecute: TJvDatabaseExecuteEvent read FOnExecute write FOnExecute;
     property OnExecuteDataSource: TJvDatabaseExecuteDataSourceEvent
-      Read FOnExecuteDataSource Write FOnExecuteDataSource;
-    property DataComponent: TComponent Read FDataComponent Write SetDataComponent;
+      read FOnExecuteDataSource write FOnExecuteDataSource;
+    property DataComponent: TComponent read FDataComponent write SetDataComponent;
   end;
 
   TJvDatabaseSimpleAction = class(TJvDatabaseBaseAction)
   private
-    FIsActive:  boolean;
-    FHasData:   boolean;
-    FCanModify: boolean;
-    FEditModeActive: boolean;
+    FIsActive: Boolean;
+    FHasData: Boolean;
+    FCanModify: Boolean;
+    FEditModeActive: Boolean;
   protected
   public
     constructor Create(AOwner: TComponent); override;
     procedure UpdateTarget(Target: TObject); override;
   published
-    property IsActive: boolean Read FIsActive Write FIsActive default True;
-    property HasData: boolean Read FHasData Write FHasData default True;
-    property CanModify: boolean Read FCanModify Write FCanModify default False;
-    property EditModeActive: boolean Read FEditModeActive Write FEditModeActive default False;
+    property IsActive: Boolean read FIsActive write FIsActive default True;
+    property HasData: Boolean read FHasData write FHasData default True;
+    property CanModify: Boolean read FCanModify write FCanModify default False;
+    property EditModeActive: Boolean read FEditModeActive write FEditModeActive default False;
   end;
 
   TJvDatabaseBaseActiveAction = class(TJvDatabaseBaseAction)
@@ -256,38 +254,38 @@ type
 
   TJvDatabasePriorBlockAction = class(TJvDatabaseBaseNavigateAction)
   public
-    FBlockSize: integer;
+    FBlockSize: Integer;
   public
     constructor Create(AOwner: TComponent); override;
     procedure UpdateTarget(Target: TObject); override;
     procedure ExecuteTarget(Target: TObject); override;
   published
-    property BlockSize: integer Read FBlockSize Write FBlockSize default 50;
+    property BlockSize: Integer read FBlockSize write FBlockSize default 50;
   end;
 
   TJvDatabaseNextBlockAction = class(TJvDatabaseBaseNavigateAction)
   private
-    FBlockSize: integer;
+    FBlockSize: Integer;
   public
     constructor Create(AOwner: TComponent); override;
     procedure UpdateTarget(Target: TObject); override;
     procedure ExecuteTarget(Target: TObject); override;
   published
-    property BlockSize: integer Read FBlockSize Write FBlockSize default 50;
+    property BlockSize: Integer read FBlockSize write FBlockSize default 50;
   end;
 
   TJvDatabaseRefreshAction = class(TJvDatabaseBaseActiveAction)
   private
-    FRefreshLastPosition: boolean;
-    FRefreshAsOpenClose:  boolean;
+    FRefreshLastPosition: Boolean;
+    FRefreshAsOpenClose: Boolean;
   protected
     procedure Refresh;
   public
     constructor Create(AOwner: TComponent); override;
     procedure ExecuteTarget(Target: TObject); override;
   published
-    property RefreshLastPosition: boolean Read FRefreshLastPosition Write FRefreshLastPosition default True;
-    property RefreshAsOpenClose: boolean Read FRefreshAsOpenClose Write FRefreshAsOpenClose default False;
+    property RefreshLastPosition: Boolean read FRefreshLastPosition write FRefreshLastPosition default True;
+    property RefreshAsOpenClose: Boolean read FRefreshAsOpenClose write FRefreshAsOpenClose default False;
   end;
 
   TJvDatabasePositionAction = class(TJvDatabaseBaseNavigateAction)
@@ -303,23 +301,23 @@ type
     procedure ExecuteTarget(Target: TObject); override;
   end;
 
-  TJvDatabaseOnCopyRecord = procedure(Field: TField; OldValue: variant) of object;
-  TJvDatabaseBeforeCopyRecord = procedure(DataSet: TDataSet; var RefreshAllowed: boolean) of object;
+  TJvDatabaseOnCopyRecord = procedure(Field: TField; OldValue: Variant) of object;
+  TJvDatabaseBeforeCopyRecord = procedure(DataSet: TDataSet; var RefreshAllowed: Boolean) of object;
   TJvDatabaseAfterCopyRecord = procedure(DataSet: TDataSet) of object;
 
   TJvDatabaseCopyAction = class(TJvDatabaseBaseEditAction)
   private
     FBeforeCopyRecord: TJvDatabaseBeforeCopyRecord;
-    FAfterCopyRecord:  TJvDatabaseAfterCopyRecord;
-    FOnCopyRecord:     TJvDatabaseOnCopyRecord;
+    FAfterCopyRecord: TJvDatabaseAfterCopyRecord;
+    FOnCopyRecord: TJvDatabaseOnCopyRecord;
   public
     procedure CopyRecord;
     procedure UpdateTarget(Target: TObject); override;
     procedure ExecuteTarget(Target: TObject); override;
   published
-    property BeforeCopyRecord: TJvDatabaseBeforeCopyRecord Read FBeforeCopyRecord Write FBeforeCopyRecord;
-    property AfterCopyRecord: TJvDatabaseAfterCopyRecord Read FAfterCopyRecord Write FAfterCopyRecord;
-    property OnCopyRecord: TJvDatabaseOnCopyRecord Read FOnCopyRecord Write FOnCopyRecord;
+    property BeforeCopyRecord: TJvDatabaseBeforeCopyRecord read FBeforeCopyRecord write FBeforeCopyRecord;
+    property AfterCopyRecord: TJvDatabaseAfterCopyRecord read FAfterCopyRecord write FAfterCopyRecord;
+    property OnCopyRecord: TJvDatabaseOnCopyRecord read FOnCopyRecord write FOnCopyRecord;
   end;
 
   TJvDatabaseEditAction = class(TJvDatabaseBaseEditAction)
@@ -354,9 +352,8 @@ type
     destructor Destroy; override;
     procedure ExecuteTarget(Target: TObject); override;
   published
-    property Options: TJvShowSingleRecordWindowOptions Read FOptions Write FOptions;
+    property Options: TJvShowSingleRecordWindowOptions read FOptions write FOptions;
   end;
-
 
   TJvDatabaseOpenAction = class(TJvDatabaseBaseActiveAction)
   public
@@ -371,15 +368,15 @@ type
   end;
 
   {$IFDEF USE_3RDPARTY_SMEXPORT}
+
   TJvDatabaseSMExportOptions = class(TPersistent)
   private
     FHelpContext: THelpContext;
     FFormats: TExportFormatTypes;
-    FTitle:   TCaption;
+    FTitle: TCaption;
     FDefaultOptionsDirectory: string;
-    fKeyGenerator: string;
+    FKeyGenerator: string;
     FOptions: TSMOptions;
-  protected
   public
     constructor Create;
     destructor Destroy; override;
@@ -387,12 +384,12 @@ type
       AFont: TFont; var Alignment: TAlignment; var Background: TColor; var CellType: TCellType);
     procedure SMEWizardDlgOnBeforeExecute(Sender: TObject);
   published
-    property HelpContext: THelpContext Read fHelpContext Write fHelpContext;
-    property Formats: TExportFormatTypes Read FFormats Write FFormats;
-    property Title: TCaption Read fTitle Write fTitle;
-    property DefaultOptionsDirectory: string Read fDefaultOptionsDirectory Write fDefaultOptionsDirectory;
-    property KeyGenerator: string Read fKeyGenerator Write fKeyGenerator;
-    property Options: TSMOptions Read FOptions Write FOptions;
+    property HelpContext: THelpContext read FHelpContext write FHelpContext;
+    property Formats: TExportFormatTypes read FFormats write FFormats;
+    property Title: TCaption read FTitle write FTitle;
+    property DefaultOptionsDirectory: string read FDefaultOptionsDirectory write FDefaultOptionsDirectory;
+    property KeyGenerator: string read FKeyGenerator write FKeyGenerator;
+    property Options: TSMOptions read FOptions write FOptions;
   end;
 
   TJvDatabaseSMExportAction = class(TJvDatabaseBaseActiveAction)
@@ -405,32 +402,30 @@ type
     destructor Destroy; override;
     procedure ExecuteTarget(Target: TObject); override;
   published
-    property Options: TJvDatabaseSMExportOptions Read FOptions Write FOptions;
+    property Options: TJvDatabaseSMExportOptions read FOptions write FOptions;
   end;
-
 
   {$ENDIF USE_3RDPARTY_SMEXPORT}
 
   {$IFDEF USE_3RDPARTY_SMIMPORT}
+
   TJvDatabaseSMImportOptions = class(TPersistent)
   private
     FHelpContext: THelpContext;
     FFormats: TImportFormatTypes;
-    FTitle:   TCaption;
+    FTitle: TCaption;
     FDefaultOptionsDirectory: string;
     FOptions: TSMIOptions;
     FWizardStyle: TSMIWizardStyle;
-  protected
   public
     constructor Create;
-    destructor Destroy; override;
   published
-    property HelpContext: THelpContext Read fHelpContext Write fHelpContext;
-    property Formats: TImportFormatTypes Read FFormats Write FFormats;
-    property Title: TCaption Read fTitle Write fTitle;
-    property DefaultOptionsDirectory: string Read fDefaultOptionsDirectory Write fDefaultOptionsDirectory;
-    property Options: TSMIOptions Read FOptions Write FOptions;
-    property WizardStyle: TSMIWizardStyle Read FWizardStyle Write FWizardStyle;
+    property HelpContext: THelpContext read FHelpContext write FHelpContext;
+    property Formats: TImportFormatTypes read FFormats write FFormats;
+    property Title: TCaption read FTitle write FTitle;
+    property DefaultOptionsDirectory: string read FDefaultOptionsDirectory write FDefaultOptionsDirectory;
+    property Options: TSMIOptions read FOptions write FOptions;
+    property WizardStyle: TSMIWizardStyle read FWizardStyle write FWizardStyle;
   end;
 
   TJvDatabaseSMImportAction = class(TJvDatabaseBaseActiveAction)
@@ -443,7 +438,7 @@ type
     destructor Destroy; override;
     procedure ExecuteTarget(Target: TObject); override;
   published
-    property Options: TJvDatabaseSMImportOptions Read FOptions Write FOptions;
+    property Options: TJvDatabaseSMImportOptions read FOptions write FOptions;
   end;
 
   {$ENDIF USE_3RDPARTY_SMIMPORT}
@@ -453,7 +448,7 @@ type
     destructor Destroy; override;
     procedure RegisterEngine(AEngineClass: TJvDatabaseActionBaseEngineClass);
     function GetEngine(AComponent: TComponent): TJvDatabaseActionBaseEngine;
-    function Supports(AComponent: TComponent): boolean;
+    function Supports(AComponent: TComponent): Boolean;
   end;
 
 procedure RegisterActionEngine(AEngineClass: TJvDatabaseActionBaseEngineClass);
@@ -466,17 +461,20 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  SysUtils, DBGrids, Grids,
+  {$IFDEF HAS_UNIT_STRUTILS}
+  StrUtils,
+  {$ENDIF HAS_UNIT_STRUTILS}
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   cxGrid, cxGridDBDataDefinitions,
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-  SysUtils, DBGrids, Grids,
   {$IFDEF USE_3RDPARTY_SMEXPORT}
-  sme2sql, Inifiles,
+  sme2sql, IniFiles,
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   SMEEngCx,
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   {$ENDIF USE_3RDPARTY_SMEXPORT}
-  JvResources, JvParameterList, JvParameterListParameter, StrUtils;
+  JvResources, JvParameterList, JvParameterListParameter;
 
 var
   IntRegisteredActionEngineList: TJvDatabaseActionEngineList;
@@ -485,7 +483,7 @@ var
 
 procedure TJvDatabaseActionList.SetDataComponent(Value: TComponent);
 var
-  I: integer;
+  I: Integer;
 begin
   FDataComponent := Value;
   if FDataComponent <> nil then
@@ -513,19 +511,19 @@ begin
   FCancelButtonCaption := RsSRWCancelButtonCaption;
   FCloseButtonCaption := RsSRWCloseButtonCaption;
   FBorderStyle := bsDialog;
-  FTop      := 0;
-  FLeft     := 0;
-  FWidth    := 640;
-  FHeight   := 480;
+  FTop := 0;
+  FLeft := 0;
+  FWidth := 640;
+  FHeight := 480;
   FPosition := poScreenCenter;
   FArrangeSettings := TJvArrangeSettings.Create(nil);
   with FArrangeSettings do
   begin
-    AutoSize     := asBoth;
+    AutoSize := asBoth;
     DistanceHorizontal := 3;
     DistanceVertical := 3;
-    BorderLeft   := 3;
-    BorderTop    := 3;
+    BorderLeft := 3;
+    BorderTop := 3;
     WrapControls := True;
   end;
   FArrangeConstraints := TSizeConstraints.Create(nil);
@@ -567,9 +565,9 @@ begin
     ADialog.CloseButtonCaption := CloseButtonCaption;
     ADialog.Position := Position;
     ADialog.BorderStyle := BorderStyle;
-    ADialog.Top    := Top;
-    ADialog.Left   := Left;
-    ADialog.Width  := Width;
+    ADialog.Top := Top;
+    ADialog.Left := Left;
+    ADialog.Width := Width;
     ADialog.Height := Height;
     ADialog.ArrangeConstraints := ArrangeConstraints;
     ADialog.ArrangeSettings := ArrangeSettings;
@@ -595,12 +593,12 @@ begin
     Result := nil;
 end;
 
-function TJvDatabaseActionBaseEngine.Supports(ADataComponent: TComponent): boolean;
+function TJvDatabaseActionBaseEngine.Supports(ADataComponent: TComponent): Boolean;
 begin
   Result := Assigned(ADataComponent) and (ADataComponent is TDataSource);
 end;
 
-function TJvDatabaseActionBaseEngine.IsActive(ADataComponent: TComponent): boolean;
+function TJvDatabaseActionBaseEngine.IsActive(ADataComponent: TComponent): Boolean;
 var
   DataSet: TDataSet;
 begin
@@ -611,7 +609,7 @@ begin
     Result := False;
 end;
 
-function TJvDatabaseActionBaseEngine.HasData(ADataComponent: TComponent): boolean;
+function TJvDatabaseActionBaseEngine.HasData(ADataComponent: TComponent): Boolean;
 var
   DataSet: TDataSet;
 begin
@@ -622,7 +620,7 @@ begin
     Result := False;
 end;
 
-function TJvDatabaseActionBaseEngine.FieldCount(ADataComponent: TComponent): integer;
+function TJvDatabaseActionBaseEngine.FieldCount(ADataComponent: TComponent): Integer;
 var
   DataSet: TDataSet;
 begin
@@ -633,7 +631,7 @@ begin
     Result := -1;
 end;
 
-function TJvDatabaseActionBaseEngine.RecordCount(ADataComponent: TComponent): integer;
+function TJvDatabaseActionBaseEngine.RecordCount(ADataComponent: TComponent): Integer;
 var
   DataSet: TDataSet;
 begin
@@ -644,7 +642,7 @@ begin
     Result := -1;
 end;
 
-function TJvDatabaseActionBaseEngine.RecNo(ADataComponent: TComponent): integer;
+function TJvDatabaseActionBaseEngine.RecNo(ADataComponent: TComponent): Integer;
 var
   DataSet: TDataSet;
 begin
@@ -655,7 +653,7 @@ begin
     Result := -1;
 end;
 
-function TJvDatabaseActionBaseEngine.CanModify(ADataComponent: TComponent): boolean;
+function TJvDatabaseActionBaseEngine.CanModify(ADataComponent: TComponent): Boolean;
 var
   DataSet: TDataSet;
 begin
@@ -666,18 +664,18 @@ begin
     Result := False;
 end;
 
-function TJvDatabaseActionBaseEngine.EOF(ADataComponent: TComponent): boolean;
+function TJvDatabaseActionBaseEngine.Eof(ADataComponent: TComponent): Boolean;
 var
   DataSet: TDataSet;
 begin
   DataSet := GetDataSet(ADataComponent);
   if Assigned(DataSet) then
-    Result := DataSet.EOF
+    Result := DataSet.Eof
   else
     Result := False;
 end;
 
-function TJvDatabaseActionBaseEngine.Bof(ADataComponent: TComponent): boolean;
+function TJvDatabaseActionBaseEngine.Bof(ADataComponent: TComponent): Boolean;
 var
   DataSet: TDataSet;
 begin
@@ -706,7 +704,7 @@ begin
     DataSet.EnableControls;
 end;
 
-function TJvDatabaseActionBaseEngine.ControlsDisabled(ADataComponent: TComponent): boolean;
+function TJvDatabaseActionBaseEngine.ControlsDisabled(ADataComponent: TComponent): Boolean;
 var
   DataSet: TDataSet;
 begin
@@ -717,7 +715,7 @@ begin
     Result := False;
 end;
 
-function TJvDatabaseActionBaseEngine.EditModeActive(ADataComponent: TComponent): boolean;
+function TJvDatabaseActionBaseEngine.EditModeActive(ADataComponent: TComponent): Boolean;
 var
   DataSet: TDataSet;
 begin
@@ -746,7 +744,7 @@ begin
     DataSet.Last;
 end;
 
-procedure TJvDatabaseActionBaseEngine.MoveBy(ADataComponent: TComponent; Distance: integer);
+procedure TJvDatabaseActionBaseEngine.MoveBy(ADataComponent: TComponent; Distance: Integer);
 var
   DataSet: TDataSet;
 begin
@@ -790,9 +788,9 @@ type
 procedure TJvDatabaseActionDBGridEngine.OnCreateDataControls(ADynControlEngineDB: TJvDynControlEngineDB;
   AParentControl: TWinControl; AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions);
 var
-  I:      integer;
-  ds:     TDataSource;
-  Field:  TField;
+  I: Integer;
+  ds: TDataSource;
+  Field: TField;
   LabelControl: TControl;
   Control: TWinControl;
   Column: TColumn;
@@ -806,7 +804,7 @@ begin
         Column := TAccessCustomDBGrid(FCurrentDataComponent).Columns[I];
         if Column.Visible or ShowInvisibleFields then
         begin
-          Field   := Column.Field;
+          Field := Column.Field;
           Control := ADynControlEngineDB.CreateDBFieldControl(Field, AParentControl, AParentControl, '', ds);
           if FieldDefaultWidth > 0 then
             Control.Width := FieldDefaultWidth
@@ -817,7 +815,8 @@ begin
                 TAccessCustomControl(AParentControl).Canvas.TextWidth(' ') * Field.Size;
             if (FieldMaxWidth > 0) and (Control.Width > FieldMaxWidth) then
               Control.Width := FieldMaxWidth
-            else if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
+            else
+            if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
               Control.Width := FieldMinWidth;
           end;
           LabelControl := ADynControlEngineDB.DynControlEngine.CreateLabelControlPanel(AParentControl, AParentControl,
@@ -830,7 +829,7 @@ begin
   end;
 end;
 
-function TJvDatabaseActionDBGridEngine.Supports(ADataComponent: TComponent): boolean;
+function TJvDatabaseActionDBGridEngine.Supports(ADataComponent: TComponent): Boolean;
 begin
   Result := Assigned(ADataComponent) and (ADataComponent is TCustomDBGrid);
 end;
@@ -863,11 +862,12 @@ function TJvDatabaseActionDevExpCxGridEngine.GetGridView(ADataComponent: TCompon
 begin
   if Assigned(ADataComponent) then
     if ADataComponent is TcxGrid then
-      if (TcxGrid(ADataComponent).FocusedView is TcxCustomGridTableView) then
+      if TcxGrid(ADataComponent).FocusedView is TcxCustomGridTableView then
         Result := TcxCustomGridTableView(TcxGrid(ADataComponent).FocusedView)
       else
         Result := nil
-    else if ADataComponent is TcxCustomGridTableView then
+    else
+    if ADataComponent is TcxCustomGridTableView then
       Result := TcxCustomGridTableView(ADataComponent)
     else
       Result := nil
@@ -885,9 +885,10 @@ begin
           TcxGrid(ADataComponent).FocusedView).DataController).DataSource
       else
         Result := nil
-    else if ADataComponent is TcxCustomGridTableView then
+    else
+    if ADataComponent is TcxCustomGridTableView then
       if TcxCustomGridTableView(ADataComponent).DataController is TcxGridDBDataController then
-        Result := TcxGridDBDataController(TcxCustomGridTableView(ADataComponent).DataController).Datasource
+        Result := TcxGridDBDataController(TcxCustomGridTableView(ADataComponent).DataController).DataSource
       else
         Result := nil
     else
@@ -896,16 +897,16 @@ begin
     Result := nil;
 end;
 
-function TJvDatabaseActionDevExpCxGridEngine.Supports(ADataComponent: TComponent): boolean;
+function TJvDatabaseActionDevExpCxGridEngine.Supports(ADataComponent: TComponent): Boolean;
 begin
   Result := Assigned(GetGridView(ADataComponent));
 end;
 
-function TJvDatabaseActionDevExpCxGridEngine.RecNo(ADataComponent: TComponent): integer;
+function TJvDatabaseActionDevExpCxGridEngine.RecNo(ADataComponent: TComponent): Integer;
 //var
 //  View: TcxCustomGridTableView;
 begin
-  Result := Inherited RecNo(ADatacomponent);
+  Result := inherited RecNo(ADatacomponent);
 //  View:= GetGridView(ADataComponent);
 //  if Assigned (View) then
 //    Result := View.DataController.RowIndex+1;
@@ -915,27 +916,27 @@ procedure TJvDatabaseActionDevExpCxGridEngine.First(ADataComponent: TComponent);
 var
   View: TcxCustomGridTableView;
 begin
-  View:= GetGridView(ADataComponent);
-  if Assigned (View) then
-    View.Datacontroller.GotoFirst;
+  View := GetGridView(ADataComponent);
+  if Assigned(View) then
+    View.DataController.GotoFirst;
 end;
 
 procedure TJvDatabaseActionDevExpCxGridEngine.Last(ADataComponent: TComponent);
 var
   View: TcxCustomGridTableView;
 begin
-  View:= GetGridView(ADataComponent);
-  if Assigned (View) then
-    View.Datacontroller.GotoLast;
+  View := GetGridView(ADataComponent);
+  if Assigned(View) then
+    View.DataController.GotoLast;
 end;
 
-procedure TJvDatabaseActionDevExpCxGridEngine.MoveBy(ADataComponent: TComponent; Distance: integer);
+procedure TJvDatabaseActionDevExpCxGridEngine.MoveBy(ADataComponent: TComponent; Distance: Integer);
 var
   View: TcxCustomGridTableView;
 begin
-  View:= GetGridView(ADataComponent);
-  if Assigned (View) then
-    View.Datacontroller.MoveBy (Distance)
+  View := GetGridView(ADataComponent);
+  if Assigned(View) then
+    View.DataController.MoveBy(Distance)
 end;
 
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
@@ -976,13 +977,13 @@ begin
     FDataEngine := nil;
 end;
 
-procedure TJvDatabaseBaseAction.SetEnabled(Value: boolean);
+procedure TJvDatabaseBaseAction.SetEnabled(Value: Boolean);
 begin
   if Enabled <> Value then
     Enabled := Value;
 end;
 
-function TJvDatabaseBaseAction.EngineIsActive: boolean;
+function TJvDatabaseBaseAction.EngineIsActive: Boolean;
 begin
   if Assigned(DataEngine) then
     Result := DataEngine.IsActive(DataComponent)
@@ -990,7 +991,7 @@ begin
     Result := False;
 end;
 
-function TJvDatabaseBaseAction.EngineHasData: boolean;
+function TJvDatabaseBaseAction.EngineHasData: Boolean;
 begin
   if Assigned(DataEngine) then
     Result := DataEngine.HasData(DataComponent)
@@ -998,7 +999,7 @@ begin
     Result := False;
 end;
 
-function TJvDatabaseBaseAction.EngineFieldCount: integer;
+function TJvDatabaseBaseAction.EngineFieldCount: Integer;
 begin
   if Assigned(DataEngine) then
     Result := DataEngine.FieldCount(DataComponent)
@@ -1006,7 +1007,7 @@ begin
     Result := -1;
 end;
 
-function TJvDatabaseBaseAction.EngineRecordCount: integer;
+function TJvDatabaseBaseAction.EngineRecordCount: Integer;
 begin
   if Assigned(DataEngine) then
     Result := DataEngine.RecordCount(DataComponent)
@@ -1014,7 +1015,7 @@ begin
     Result := -1;
 end;
 
-function TJvDatabaseBaseAction.EngineRecNo: integer;
+function TJvDatabaseBaseAction.EngineRecNo: Integer;
 begin
   if Assigned(DataEngine) then
     Result := DataEngine.RecNo(DataComponent)
@@ -1022,7 +1023,7 @@ begin
     Result := -1;
 end;
 
-function TJvDatabaseBaseAction.EngineCanModify: boolean;
+function TJvDatabaseBaseAction.EngineCanModify: Boolean;
 begin
   if Assigned(DataEngine) then
     Result := DataEngine.CanModify(DataComponent)
@@ -1030,15 +1031,15 @@ begin
     Result := False;
 end;
 
-function TJvDatabaseBaseAction.EngineEof: boolean;
+function TJvDatabaseBaseAction.EngineEof: Boolean;
 begin
   if Assigned(DataEngine) then
-    Result := DataEngine.EOF(DataComponent)
+    Result := DataEngine.Eof(DataComponent)
   else
     Result := False;
 end;
 
-function TJvDatabaseBaseAction.EngineBof: boolean;
+function TJvDatabaseBaseAction.EngineBof: Boolean;
 begin
   if Assigned(DataEngine) then
     Result := DataEngine.Bof(DataComponent)
@@ -1046,7 +1047,7 @@ begin
     Result := False;
 end;
 
-function TJvDatabaseBaseAction.EngineControlsDisabled: boolean;
+function TJvDatabaseBaseAction.EngineControlsDisabled: Boolean;
 begin
   if Assigned(DataEngine) then
     Result := DataEngine.ControlsDisabled(DataComponent)
@@ -1054,7 +1055,7 @@ begin
     Result := False;
 end;
 
-function TJvDatabaseBaseAction.EngineEditModeActive: boolean;
+function TJvDatabaseBaseAction.EngineEditModeActive: Boolean;
 begin
   if Assigned(DataEngine) then
     Result := DataEngine.EditModeActive(DataComponent)
@@ -1062,7 +1063,7 @@ begin
     Result := False;
 end;
 
-function TJvDatabaseBaseAction.HandlesTarget(Target: TObject): boolean;
+function TJvDatabaseBaseAction.HandlesTarget(Target: TObject): Boolean;
 begin
   //  Result := inherited HandlesTarget(Target);
   Result := Assigned(DataEngine);
@@ -1080,7 +1081,8 @@ procedure TJvDatabaseBaseAction.ExecuteTarget(Target: TObject);
 begin
   if Assigned(FOnExecute) then
     FOnExecute(Self, DataEngine, DataComponent)
-  else if Assigned(FOnExecuteDataSource) then
+  else
+  if Assigned(FOnExecuteDataSource) then
     FOnExecuteDataSource(Self, DataSource)
   else
     inherited ExecuteTarget(Target);
@@ -1096,15 +1098,15 @@ end;
 constructor TJvDatabaseSimpleAction.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FIsActive  := True;
-  FHasData   := True;
+  FIsActive := True;
+  FHasData := True;
   FCanModify := False;
   FEditModeActive := False;
 end;
 
 procedure TJvDatabaseSimpleAction.UpdateTarget(Target: TObject);
 var
-  Res: boolean;
+  Res: Boolean;
 begin
   if Assigned(DataSet) and not EngineControlsDisabled then
   begin
@@ -1206,7 +1208,7 @@ begin
       MoveBy(DataComponent, -BlockSize);
     finally
       EnableControls(DataComponent);
-    end;
+  end;
 end;
 
 //=== { TJvDatabaseNextBlockAction } =========================================
@@ -1239,7 +1241,7 @@ constructor TJvDatabaseRefreshAction.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FRefreshLastPosition := True;
-  FRefreshAsOpenClose  := False;
+  FRefreshAsOpenClose := False;
 end;
 
 procedure TJvDatabaseRefreshAction.ExecuteTarget(Target: TObject);
@@ -1270,10 +1272,10 @@ begin
         if Active then
           if Assigned(MyBookmark) then
             if BookmarkValid(MyBookmark) then
-              try
-                GotoBookmark(MyBookmark);
-              except
-              end;
+            try
+              GotoBookmark(MyBookmark);
+            except
+            end;
     finally
       if RefreshLastPosition then
         FreeBookmark(MyBookmark);
@@ -1291,7 +1293,8 @@ begin
   try
     if not EngineIsActive then
       Caption := Format(cFormat, [0, 0])
-    else if EngineRecordCount = 0 then
+    else
+    if EngineRecordCount = 0 then
       Caption := Format(cFormat, [0, 0])
     else
       Caption := Format(cFormat, [EngineRecNo, EngineRecordCount]);
@@ -1313,8 +1316,8 @@ const
 var
   ParameterList: TJvParameterList;
   Parameter: TJvBaseParameter;
-  S:    string;
-  Kind: integer;
+  S: string;
+  Kind: Integer;
 begin
   if not Assigned(DataSet) then
     Exit;
@@ -1324,32 +1327,32 @@ begin
     with TJvEditParameter(Parameter) do
     begin
       SearchName := cCurrentPosition;
-      ReadOnly   := True;
-      Caption    := RsDBPosCurrentPosition;
-      AsString   := IntToStr(EngineRecNo + 1) + ' / ' + IntToStr(EngineRecordCount);
-      Width      := 150;
+      ReadOnly := True;
+      Caption := RsDBPosCurrentPosition;
+      AsString := IntToStr(EngineRecNo + 1) + ' / ' + IntToStr(EngineRecordCount);
+      Width := 150;
       LabelWidth := 80;
-      Enabled    := False;
+      Enabled := False;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := TJvBaseParameter(TJvEditParameter.Create(ParameterList));
     with TJvEditParameter(Parameter) do
     begin
-      Caption    := RsDBPosNewPosition;
+      Caption := RsDBPosNewPosition;
       SearchName := cNewPosition;
       // EditMask := '999999999;0;_';
-      Width      := 150;
+      Width := 150;
       LabelWidth := 80;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := TJvBaseParameter(TJvRadioGroupParameter.Create(ParameterList));
     with TJvRadioGroupParameter(Parameter) do
     begin
-      Caption    := RsDBPosMovementType;
+      Caption := RsDBPosMovementType;
       SearchName := cKind;
-      Width      := 305;
-      Height     := 54;
-      Columns    := 2;
+      Width := 305;
+      Height := 54;
+      Columns := 2;
       ItemList.Add(RsDBPosAbsolute);
       ItemList.Add(RsDBPosForward);
       ItemList.Add(RsDBPosBackward);
@@ -1370,19 +1373,19 @@ begin
       try
         case Kind of
           0:
-          begin
-            DataSet.First;
-            DataSet.MoveBy(StrToInt(S) - 1);
-          end;
+            begin
+              DataSet.First;
+              DataSet.MoveBy(StrToInt(S) - 1);
+            end;
           1:
             DataSet.MoveBy(StrToInt(S));
           2:
             DataSet.MoveBy(StrToInt(S) * -1);
           3:
-          begin
-            DataSet.First;
-            DataSet.MoveBy(Round((EngineRecordCount / 100) * StrToInt(S)) - 1);
-          end;
+            begin
+              DataSet.First;
+              DataSet.MoveBy(Round((EngineRecordCount / 100.0) * StrToInt(S)) - 1);
+            end;
         end;
       finally
         DataSet.EnableControls;
@@ -1421,10 +1424,10 @@ end;
 
 procedure TJvDatabaseCopyAction.CopyRecord;
 var
-  Values: array of variant;
-  I:      integer;
-  Value:  variant;
-  Allowed: boolean;
+  Values: array of Variant;
+  I: Integer;
+  Value: Variant;
+  Allowed: Boolean;
 begin
   with DataSet do
   begin
@@ -1555,94 +1558,101 @@ begin
 end;
 
 {$IFDEF USE_3RDPARTY_SMEXPORT}
-//=== { TJvDatabaseSMExportOptions } =============================================
+
+//=== { TJvDatabaseSMExportOptions } =========================================
+
 constructor TJvDatabaseSMExportOptions.Create;
 var
-  format: TTableTypeExport;
+  Fmt: TTableTypeExport;
   Option: TSMOption;
 begin
   inherited Create;
   FFormats := [];
-  for Format := low(Format) to High(Format) do
-    FFormats := FFormats + [Format];
+  for Format := Low(Fmt) to High(Fmt) do
+    FFormats := FFormats + [Fmt];
   FOptions := [];
-  for Option := low(Option) to High(Option) do
+  for Option := Low(Option) to High(Option) do
     FOptions := FOptions + [Option];
-  //  FDataFormats:= TSMEDataFormats.Create;
+  //  FDataFormats := TSMEDataFormats.Create;
 end;
-
 
 destructor TJvDatabaseSMExportOptions.Destroy;
 begin
-  //  FreeAndNil(fDataFormats);
+  //  FreeAndNil(FDataFormats);
   inherited Destroy;
 end;
 
 procedure TJvDatabaseSMExportOptions.SMEWizardDlgGetCellParams(Sender: TObject; Field: TField;
   var Text: string; AFont: TFont; var Alignment: TAlignment; var Background: TColor; var CellType: TCellType);
 var
-  dt: TDateTime;
+  DT: TDateTime;
 begin
-  if (Sender is TSMExportToSQL) then
+  if Sender is TSMExportToSQL then
     if Assigned(Field) then
+    begin
       if Field.IsNull or (Field.AsString = '') then
       begin
-        Text     := 'NULL';
+        Text := 'NULL';
         CellType := ctBlank;
       end
-      else if (Field.DataType in [ftFloat, ftBCD, ftCurrency]) then
+      else
+      if Field.DataType in [ftFloat, ftBCD, ftCurrency] then
+        Text := AnsiReplaceStr(Text, ',', '.')
+      else
+      if Field.DataType in [ftDate, ftDateTime] then
       begin
-        Text := AnsiReplaceStr(Text, ',', '.');
-      end
-      else if (Field.DataType in [ftDate, ftDateTime]) then
-      begin
-        dt := Field.AsDateTime;
-        if dt <= 0 then
+        DT := Field.AsDateTime;
+        if DT <= 0 then
           Text := 'NULL'
-        else if dt = trunc(dt) then
-          Text := 'TO_DATE(''' + FormatDateTime('dd.mm.yyyy', dt) +
+        else
+        if DT = Trunc(DT) then
+          Text := 'TO_DATE(''' + FormatDateTime('dd.mm.yyyy', DT) +
             ''', ''DD.MM.YYYY'')'
         else
-          Text := 'TO_DATE(''' + FormatDateTime('dd.mm.yyyy hh:nn:ss', dt) +
+          Text := 'TO_DATE(''' + FormatDateTime('dd.mm.yyyy hh:nn:ss', DT) +
             ''', ''DD.MM.YYYY HH24:MI:SS'')';
         CellType := ctBlank;
       end
-      else if (Field.DataType in [ftString, ftWideString]) then
-        Text := '''' + AnsiReplaceStr(Text, '''', '''''') + ''''
       else
-    else if Text = '' then
+      if Field.DataType in [ftString, ftWideString] then
+        Text := '''' + AnsiReplaceStr(Text, '''', '''''') + '''';
+    end
+    else
+    if Text = '' then
     begin
-      Text     := 'NULL';
+      Text := 'NULL';
       CellType := ctBlank;
     end
-    else if (CellType in [ctDouble, ctCurrency]) then
+    else
+    if CellType in [ctDouble, ctCurrency] then
+      Text := AnsiReplaceStr(Text, ',', '.')
+    else
+    if CellType in [ctDateTime, ctDate, ctTime] then
     begin
-      Text := AnsiReplaceStr(Text, ',', '.');
-    end
-    else if (CellType in [ctDateTime, ctDate, ctTime]) then
-    begin
-      dt := StrToDate(Text);
-      if dt <= 0 then
+      DT := StrToDate(Text);
+      if DT <= 0 then
         Text := 'NULL'
-      else if dt = trunc(dt) then
-        Text := 'TO_DATE(''' + FormatDateTime('dd.mm.yyyy', dt) +
+      else
+      if DT = Trunc(DT) then
+        Text := 'TO_DATE(''' + FormatDateTime('dd.mm.yyyy', DT) +
           ''', ''DD.MM.YYYY'')'
       else
-        Text := 'TO_DATE(''' + FormatDateTime('dd.mm.yyyy hh:nn:ss', dt) +
+        Text := 'TO_DATE(''' + FormatDateTime('dd.mm.yyyy hh:nn:ss', DT) +
           ''', ''DD.MM.YYYY HH24:MI:SS'')';
       CellType := ctBlank;
     end
-    else if CellType in [ctString] then
+    else
+    if CellType in [ctString] then
       Text := '''' + AnsiReplaceStr(Text, '''', '''''') + ''''
 end;
 
 procedure TJvDatabaseSMExportOptions.SMEWizardDlgOnBeforeExecute(Sender: TObject);
 begin
-  if (Sender is TSMExportToSQL) then
+  if Sender is TSMExportToSQL then
     TSMExportToSQL(Sender).SQLQuote := #0;
 end;
 
-//=== { TJvDatabaseSMExportAction } ================================
+//=== { TJvDatabaseSMExportAction } ==========================================
 
 constructor TJvDatabaseSMExportAction.Create(AOwner: TComponent);
 begin
@@ -1663,53 +1673,55 @@ end;
 
 procedure TJvDatabaseSMExportAction.ExportData;
 var
-  SMEWizardDlg: tSMEWizardDlg;
+  SMEWizardDlg: TSMEWizardDlg;
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-  SMEEngineCx:  TSMEcxCustomGridTableViewDataEngine;
+  SMEEngineCx: TSMEcxCustomGridTableViewDataEngine;
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
 begin
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-  SMEEngineCx  := nil;
+  SMEEngineCx := nil;
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-  SMEWizardDlg := tSMEWizardDlg.Create(self);
+  SMEWizardDlg := TSMEWizardDlg.Create(Self);
   try
     SMEWizardDlg.ColumnSource := csDataSet;
     SMEWizardDlg.OnGetCellParams := Options.SMEWizardDlgGetCellParams;
     SMEWizardDlg.OnBeforeExecute := Options.SMEWizardDlgOnBeforeExecute;
-    SMEWizardDlg.Dataset := Datasource.Dataset;
-    SMEWizardDlg.Title   := Options.Title;
+    SMEWizardDlg.DataSet := DataSource.DataSet;
+    SMEWizardDlg.Title := Options.Title;
     SMEWizardDlg.KeyGenerator := Options.Title;
     SMEWizardDlg.WizardStyle := smewiz.wsWindows2000;
     SMEWizardDlg.SpecificationDir := Options.DefaultOptionsDirectory + '\';
-    if (DataComponent is tCustomDBGrid) then
+    if DataComponent is TCustomDBGrid then
     begin
-      SMEWizardDlg.DBGrid := tCustomControl(DataComponent);
+      SMEWizardDlg.DBGrid := TCustomControl(DataComponent);
       SMEWizardDlg.ColumnSource := csDBGrid;
     end
     {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-    else if (DataComponent is tcxGrid) and (tCxGrid(DataComponent).FocusedView is tcxCustomGridTableView) then
+    else
+    if (DataComponent is TcxGrid) and (TcxGrid(DataComponent).FocusedView is TcxCustomGridTableView) then
     begin
-      SMEEnginecx := TSMEcxCustomGridTableViewDataEngine.Create(self);
-      SMEEngineCx.cxCustomGridTableView := tcxCustomGridTableView(tcxgrid(DataComponent).FocusedView);
+      SMEEnginecx := TSMEcxCustomGridTableViewDataEngine.Create(Self);
+      SMEEngineCx.cxCustomGridTableView := TcxCustomGridTableView(TcxGrid(DataComponent).FocusedView);
       SMEWizardDlg.DataEngine := SMEEngineCx;
       SMEWizardDlg.ColumnSource := csDataEngine;
     end
-    else if (DataComponent is tcxCustomGridTableView) then
+    else
+    if DataComponent is TcxCustomGridTableView then
     begin
-      SMEEnginecx := TSMEcxCustomGridTableViewDataEngine.Create(self);
-      SMEEngineCx.cxCustomGridTableView := tcxCustomGridTableView(DataComponent);
+      SMEEnginecx := TSMEcxCustomGridTableViewDataEngine.Create(Self);
+      SMEEngineCx.cxCustomGridTableView := TcxCustomGridTableView(DataComponent);
       SMEWizardDlg.DataEngine := SMEEngineCx;
       SMEWizardDlg.ColumnSource := csDataEngine;
     end
     {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
     else
     begin
-      SMEWizardDlg.DataSet := Dataset;
+      SMEWizardDlg.DataSet := DataSet;
       SMEWizardDlg.ColumnSource := csDataSet;
     end;
 
-    SMEWizardDlg.Formats     := Options.Formats;
-    SMEWizardDlg.Options     := Options.Options;
+    SMEWizardDlg.Formats := Options.Formats;
+    SMEWizardDlg.Options := Options.Options;
     SMEWizardDlg.HelpContext := Options.HelpContext;
     if FileExists(Options.DefaultOptionsDirectory + '\Last Export.SME') then
       SMEWizardDlg.LoadSpecification(Options.DefaultOptionsDirectory + '\Last Export.SME');
@@ -1717,38 +1729,33 @@ begin
     SMEWizardDlg.SaveSpecification('Last Export', Options.DefaultOptionsDirectory + '\Last Export.SME', False);
   finally
     {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-    if Assigned(SMEEngineCx) then
-      FreeAndNil(SMEEngineCx);
+    FreeAndNil(SMEEngineCx);
     {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
     FreeAndNil(SMEWizardDlg);
   end;
-end;   {*** procedure TxDBNavigator.SMExportData; ***}
+end;
 
 {$ENDIF USE_3RDPARTY_SMEXPORT}
 
 {$IFDEF USE_3RDPARTY_SMIMPORT}
-//=== { TJvDatabaseSMImportOptions } =============================================
+
+//=== { TJvDatabaseSMImportOptions } =========================================
 
 constructor TJvDatabaseSMImportOptions.Create;
 var
-  format: TTableTypeImport;
+  Fmt: TTableTypeImport;
   Option: TSMIOption;
 begin
   inherited Create;
   FFormats := [];
-  for Format := low(Format) to High(Format) do
-    FFormats := FFormats + [Format];
+  for Format := Low(Fmt) to High(Fmt) do
+    FFormats := FFormats + [Fmt];
   FOptions := [];
-  for Option := low(Option) to High(Option) do
+  for Option := Low(Option) to High(Option) do
     FOptions := FOptions + [Option];
 end;
 
-destructor TJvDatabaseSMImportOptions.Destroy;
-begin
-  inherited Destroy;
-end;
-
-//=== { TJvDatabaseSMImportAction } ================================
+//=== { TJvDatabaseSMImportAction } ==========================================
 
 constructor TJvDatabaseSMImportAction.Create(AOwner: TComponent);
 begin
@@ -1769,14 +1776,14 @@ end;
 
 procedure TJvDatabaseSMImportAction.ImportData;
 var
-  SMIWizardDlg: tSMIWizardDlg;
+  SMIWizardDlg: TSMIWizardDlg;
 begin
-  SMIWizardDlg := tSMIWizardDlg.Create(self);
+  SMIWizardDlg := TSMIWizardDlg.Create(Self);
   try
     //    SMIWizardDlg.OnGetSpecifications := Options.SMIWizardDlgGetSpecifications;
     SMIWizardDlg.SpecificationDir := Options.DefaultOptionsDirectory + '\';
-    SMIWizardDlg.Dataset := Datasource.Dataset;
-    SMIWizardDlg.Title   := Options.Title;
+    SMIWizardDlg.DataSet := DataSource.DataSet;
+    SMIWizardDlg.Title := Options.Title;
     SMIWizardDlg.Formats := Options.Formats;
     SMIWizardDlg.HelpContext := Options.HelpContext;
     SMIWizardDlg.WizardStyle := Options.WizardStyle;
@@ -1788,7 +1795,7 @@ begin
   finally
     FreeAndNil(SMIWizardDlg);
   end;
-end;   {*** procedure TxDBNavigator.SMImportData; ***}
+end;
 
 {$ENDIF USE_3RDPARTY_SMIMPORT}
 
@@ -1796,7 +1803,7 @@ end;   {*** procedure TxDBNavigator.SMImportData; ***}
 
 destructor TJvDatabaseActionEngineList.Destroy;
 var
-  I: integer;
+  I: Integer;
 begin
   for I := Count - 1 downto 0 do
   begin
@@ -1814,7 +1821,7 @@ end;
 
 function TJvDatabaseActionEngineList.GetEngine(AComponent: TComponent): TJvDatabaseActionBaseEngine;
 var
-  Ind: integer;
+  Ind: Integer;
 begin
   Result := nil;
   for Ind := 0 to Count - 1 do
@@ -1825,7 +1832,7 @@ begin
     end;
 end;
 
-function TJvDatabaseActionEngineList.Supports(AComponent: TComponent): boolean;
+function TJvDatabaseActionEngineList.Supports(AComponent: TComponent): Boolean;
 begin
   Result := Assigned(GetEngine(AComponent));
 end;
@@ -1865,16 +1872,15 @@ const
 {$ENDIF UNITVERSIONING}
 
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
   CreateActionEngineList;
   RegisterActionEngine(TJvDatabaseActionBaseEngine);
   RegisterActionEngine(TJvDatabaseActionDBGridEngine);
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   RegisterActionEngine(TJvDatabaseActionDevExpCxGridEngine);
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-
-  {$IFDEF UNITVERSIONING}
-  RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING}
 
 finalization
   DestroyActionEngineList;
