@@ -40,6 +40,7 @@ unit JvToolEdit;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -47,15 +48,14 @@ uses
   Messages, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus, Buttons,
   FileCtrl, Mask, ImgList, ActnList, ExtDlgs,
   {$ENDIF VCL}
+  {$IFDEF COMPILER6_UP}
+  RTLConsts, Variants,
+  {$ENDIF COMPILER6_UP}
   {$IFDEF VisualCLX}
   Qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus, QButtons,
   QMask, QImgList, QActnList, QExtDlgs, QComboEdits, QWindows, Types,
   JvExComboEdits,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
-  {$IFDEF COMPILER6_UP}
-  RTLConsts, Variants,
-  {$ENDIF COMPILER6_UP}
   JvComponent, JvSpeedButton, JvJCLUtils, JvTypes, JvExControls, JvExMask,
   JvFinalize;
 
@@ -918,12 +918,12 @@ implementation
 
 uses
   ShellAPI, Math,
-  {$IFDEF VCL}
-  Consts, JvBrowseFolder, ActiveX,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QConsts,
   {$ENDIF VisualCLX}
+  {$IFDEF VCL}
+  Consts, JvBrowseFolder, ActiveX,
+  {$ENDIF VCL}
   JvThemes, JvResources, JvJVCLUtils, JvPickDate,
   JvConsts;
 
@@ -1951,7 +1951,6 @@ begin
     if PopupVisible then
     begin
       //Polaris      PopupCloseUp(FPopup, Key = Char(VK_RETURN));
-//      PopupCloseUp(FPopup, Key <> Char(VK_ESCAPE));
       PopupCloseUp(FPopup, Key <> #27);
       Key := #0;
     end
@@ -1964,7 +1963,6 @@ begin
       {$IFDEF VisualCLX}
       TCustomFormHack(GetParentForm(Self)).NeedKey(Integer(Key), [], WideChar(Key));
       {$ENDIF VisualCLX}
-//      if Key = Char(VK_RETURN) then
       if Key = #13 then
       begin
         inherited KeyPress(Key);
@@ -2988,7 +2986,7 @@ end;
 function TJvCustomDateEdit.FourDigitYear: Boolean;
 begin
   Result := (FYearDigits = dyFour) or ((FYearDigits = dyDefault) and
-    JvJCLUtils.FourDigitYear);
+   {$IFDEF VCL}JvJCLUtils.{$ELSE}JvQJCLUtils.{$ENDIF}FourDigitYear);
 end;
 
 function TJvCustomDateEdit.GetCalendarStyle: TCalendarStyle;
