@@ -16,19 +16,15 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-10-11
+Last Modified: 2003-10-31
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+{$I jvcl.inc}
 unit JvUnicodeCanvas;
-{$IFDEF LINUX}
- {$I jvcl.inc}
-{$ELSE}
- {$I JVCL.INC}
-{$ENDIF}
 interface
 
 uses
@@ -39,7 +35,7 @@ uses
 {$IFDEF COMPLIB_CLX}
   Qt, Types, QGraphics,
 {$ENDIF}
-  Classes;
+  Classes, JvClxUtils;
 
 type
   TExtTextOutOptionsType = (etoClipped, etoOpaque);
@@ -172,28 +168,7 @@ begin
 end;
  {$ENDIF COMPILER_6UP}
 
-function TUnicodeCanvas.ExtTextOut(X, Y: Integer; Options: TExtTextOutOptions; Rect: PRect;
-  const Text: String; lpDx: Pointer): Boolean;
-begin
-  Changing;
-  Result := Windows.ExtTextOut(Handle,
-    X, Y, ExtTextOutOptionsToInt(Options),
-    Rect, PChar(Text), Length(Text), lpDx);
-  Changed;
-end;
-
-function TUnicodeCanvas.ExtTextOutW(X, Y: Integer; Options: TExtTextOutOptions;
-  Rect: PRect; const Text: WideString; lpDx: Pointer): Boolean;
-begin
-  Changing;
-  Result := Windows.ExtTextOutW(Handle,
-    X, Y, ExtTextOutOptionsToInt(Options),
-    Rect, PWideChar(Text), Length(Text), lpDx);
-  Changed;
-end;
-
 {$ENDIF COMPLIB_VCL}
-
 
 {$IFDEF COMPLIB_CLX}
 
@@ -245,119 +220,18 @@ begin
   TextRect(Rect, X, Y, Text, TextFlags);
 end;
 
+{$ENDIF COMPLIB_CLX}
+
 function TUnicodeCanvas.ExtTextOut(X, Y: Integer; Options: TExtTextOutOptions; Rect: PRect;
   const Text: String; lpDx: Pointer): Boolean;
 begin
-  Result := ExtTextOutW(X, Y, Options, Rect, WideString(Text), lpDx);
+  Result := ClxExtTextOut(Self, X, Y, ExtTextOutOptionsToInt(Options), Rect, Text, lpDx);
 end;
 
 function TUnicodeCanvas.ExtTextOutW(X, Y: Integer; Options: TExtTextOutOptions;
   Rect: PRect; const Text: WideString; lpDx: Pointer): Boolean;
-{ missing feature: horizontal text alignment }
-var
-  RecallBrush: TBrush;
-  RecallPenPos: TPoint;
-  Ch: WideChar;
-  Index, Width: Integer;
-  Dx: PInteger;
-  R, CellRect: TRect;
-  TextLen: Integer;
 begin
-  Result := False;
-  if (Text = '') then
-    Exit;
-  if (etoClipped in Options) and (Rect = nil) then
-    Exclude(Options, etoClipped);
-
-  RecallPenPos := PenPos;
-  Result := True;
-  Changing;
-  RecallBrush := nil;
-  try
-    if etoOpaque in Options then
-    begin
-      if Brush.Style <> bsSolid then
-      begin
-        RecallBrush := TBrush.Create;
-        RecallBrush.Assign(Brush);
-        Brush.Style := bsSolid;
-      end;
-      if Rect <> nil then
-        FillRect(Rect^);
-    end
-    else
-      if (Brush.Style = bsSolid) then
-      begin
-        RecallBrush := TBrush.Create;
-        RecallBrush.Assign(Brush);
-        Brush.Style := bsClear;
-      end;
-
-    if lpDx = nil then
-    begin
-      if (etoClipped in Options) then
-        TextRectW(Rect^, X, Y, Text)
-      else
-        TextOutW(X, Y, Text);
-    end
-    else
-    begin
-     // put each char in it's cell
-      TextLen := Length(Text);
-      if (etoOpaque in Options) and (Rect = nil) then
-      begin
-        Dx := lpDx;
-        Width := 0;
-        for Index := 1 to TextLen do
-        begin
-          Inc(Width, Dx^);
-          Inc(Dx);
-        end;
-        R.Left := X;
-        R.Right := X + Width;
-        R.Top := Y;
-        R.Bottom := Y + TextHeightW(Text);
-        FillRect(R);
-      end;
-
-      Dx := lpDx;
-      for Index := 1 to TextLen do
-      begin
-        if (Rect <> nil) and (X >= Rect^.Right) then
-          Break;
-
-        Ch := Text[Index];
-        if etoClipped in Options then
-        begin
-          CellRect.Left := X;
-          CellRect.Right := X + Dx^;
-          CellRect.Top := Rect^.Top;
-          CellRect.Bottom := Rect^.Bottom;
-          if CellRect.Right > Rect^.Right then
-            CellRect.Right := Rect^.Right;
-          TextRectW(R, X, Y, Ch);
-        end
-        else
-          TextOutW(X, Y, Ch);
-
-        if Index = TextLen then
-          Break;
-
-        Inc(X, Dx^);
-        Inc(Dx);
-      end;
-    end;
-  finally
-    if Assigned(RecallBrush) then
-    begin
-      Brush.Assign(RecallBrush);
-      RecallBrush.Free;
-    end;
-  end;
-  Changed;
-  PenPos := RecallPenPos;
+  Result := ClxExtTextOutW(Self, X, Y, ExtTextOutOptionsToInt(Options), Rect, Text, lpDx);
 end;
-
-{$ENDIF COMPLIB_CLX}
 
 end.
