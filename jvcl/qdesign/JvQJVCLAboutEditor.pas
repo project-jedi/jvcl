@@ -20,7 +20,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-01-07
+Last Modified: 2004-03-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -65,10 +65,7 @@ end;
 
 function TJVCLAboutDialogProperty.GetValue: string;
 begin
-  
-  
-  Result := Format(RsVersions, [JVCLX_VERSIONSTRING]);
-  
+  Result := Format(RsVersions, [JVCL_VERSIONSTRING]);
 end;
 
 end.

@@ -61,15 +61,12 @@ implementation
 
 uses
   {$IFDEF MSWINDOWS}
-   Windows,
+  Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   QWindows,
   {$ENDIF LINUX}
-  
-  
   QImgList,
-  
   SysUtils, TypInfo,
   JvQDsgnConsts;
 

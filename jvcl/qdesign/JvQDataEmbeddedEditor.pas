@@ -35,11 +35,7 @@ unit JvQDataEmbeddedEditor;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QDialogs,
-  
+  SysUtils, Classes, Dialogs,
   
   DesignEditors, DesignIntf,
   

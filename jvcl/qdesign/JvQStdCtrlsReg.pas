@@ -79,6 +79,7 @@ begin
     TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel
     {TJvTransparentPanel}]);
   RegisterComponents(RsPaletteLabel, [TJvLabel]);
+  RegisterComponents(RsPaletteScrollerTracker, [TJvScrollBar]);
 
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomNumEdit, cText, nil);

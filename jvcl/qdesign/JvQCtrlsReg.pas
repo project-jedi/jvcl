@@ -61,7 +61,7 @@ uses
   JvQHtControls,
   JvQItemsPanel,
   JvQRollOut,
-  JvQScrollText, JvQSpacer,
+  JvQScrollText, JvQSpacer, JvQSplitter,
   JvQSwitch,
   JvQColorForm, JvQDsgnIntf,
   JvQImageDrawThread, JvQWinampLabel, JvQComponentPanel,
@@ -89,7 +89,7 @@ begin
   RegisterComponents(RsPaletteListComboTree, [TJvHTListBox, TJvHTComboBox]);
   RegisterComponents(RsPaletteScrollerTracker, [TJvaScrollText,
     TJvContentScroller, TJvScrollText]);
-//  RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter]);
+  RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter]);
   RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice]);
   RegisterComponents(RsPaletteNonVisual, [TJvHint {, TJvRegAuto}]);
 

@@ -105,10 +105,7 @@ begin
     with MenuItem do
     begin
       Caption := RsZoomEditWindow;
-      
-      
       ShortCut := QMenus.ShortCut(Ord('Z'), [ssAlt]);
-      
       Name := cJvZoomEditor;
       OnClick := Zoom.Zoom;
     end;
@@ -121,10 +118,7 @@ begin
     MenuItem := TMenuItem.Create(F);
     with MenuItem do
     begin
-      
-      
       ShortCut := QMenus.ShortCut(Ord('1'), [ssAlt]);
-      
       Name := cJvZoomEditor2;
       OnClick := Zoom.Zoom;
       Visible := False;

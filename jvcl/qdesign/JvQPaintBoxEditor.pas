@@ -38,9 +38,7 @@ uses
   
   
   QForms, QGraphics, QImgList, QDialogs, QControls, Types,
-  {$IFDEF LINUX}
-  ClxEditors,
-  {$ENDIF LINUX}
+  {ClxEditors,}
   
   
   

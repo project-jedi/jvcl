@@ -70,27 +70,22 @@ end;
 
 
 procedure TJvUrlGrabberDefaultPropertiesListEditor.GetProperties(Proc: TGetPropProc);
-
 var
   UrlListGrabber: TJvUrlListGrabber;
   I: Integer;
-  
   Components: IDesignerSelections;
-  
 begin
   inherited GetProperties(Proc);
 
   UrlListGrabber := TJvUrlListGrabber(GetComponent(0));
   for I := 0 to UrlListGrabber.DefaultGrabbersProperties.Count - 1 do
   begin
-    
     Components := CreateSelectionList;
-    
-
     Components.Add(UrlListGrabber.DefaultGrabbersProperties.Items[I].EditorTrick);
     GetComponentProperties(Components, tkAny, Designer, Proc);
   end;
 end;
+
 
 //=== TJvUrlGrabberDefaultPropertiesEditor ===================================
 
@@ -98,12 +93,9 @@ function TJvUrlGrabberDefaultPropertiesEditor.GetName: string;
 var
   EditorTrick: TJvUrlGrabberDefPropEdTrick;
 begin
-  // get classname of real default properties
+  // get Supported URL name from the real default properties
   EditorTrick := TJvUrlGrabberDefPropEdTrick(GetComponent(0));
-  Result := EditorTrick.DefaultProperties.ClassName;
-
-  // remove TJv and everything from Url
-  Result := Copy(Result, 4, Pos('Url', Result)-4);
+  Result := EditorTrick.DefaultProperties.SupportedURLName;
 end;
 
 end.

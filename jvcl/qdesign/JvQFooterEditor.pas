@@ -39,12 +39,12 @@ uses
   SysUtils, Classes,
   
   
-  QForms, QGraphics, QImgList, QDialogs, QControls,
+  QForms, QGraphics, QImgList, QDialogs, QControls, {ClxEditors,}
   
   
-  DesignIntf, DesignMenus, DesignEditors
+  DesignIntf, DesignEditors, DesignMenus;
   
-  ;
+  
 
 type
   TJvFooterEditor = class(TComponentEditor)
