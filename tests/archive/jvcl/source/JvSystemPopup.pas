@@ -82,7 +82,9 @@ type
 
   TMenuItemPrivateAccess = class(TComponent)
   private
-//    FCaption: string;
+    // FCaption *must* be included here: it's a hack to get the same offset for FHandle as in 
+    // TMenuItem
+    FCaption: string;
     FHandle: HMENU;
   end;
 
