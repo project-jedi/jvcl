@@ -32,15 +32,14 @@ object JvChartDemoForm: TJvChartDemoForm
     Options.YOrigin = 0
     Options.YStartOffset = 21
     Options.PrimaryYAxis.YMax = 20.000000000000000000
-    Options.PrimaryYAxis.YGap = 1.000000000000000000
     Options.PrimaryYAxis.YValueCount = 20
     Options.PrimaryYAxis.YLegendDecimalPlaces = 1
     Options.PrimaryYAxis.YLegends.Strings = (
       '0')
-    Options.SecondaryYAxis.YMax = 20.000000000000000000
-    Options.SecondaryYAxis.YGap = 1.000000000000000000
+    Options.SecondaryYAxis.YMax = 140.000000000000000000
     Options.SecondaryYAxis.YValueCount = 20
     Options.SecondaryYAxis.YLegendDecimalPlaces = 0
+    Options.SecondaryYAxis.DefaultYLegends = 60
     Options.Legend = clChartLegendBelow
     Options.LegendRowCount = 1
     Options.PenLineWidth = 2
@@ -418,7 +417,7 @@ object JvChartDemoForm: TJvChartDemoForm
         OnClick = DateTimeAxisModeClick
       end
       object MenuSecondaryAxisMode: TMenuItem
-        Caption = '&Secondary (Right-Side) Y Axis '
+        Caption = '&Plot Markers+Values using Alternate Scale (0-120%)'
         OnClick = MenuSecondaryAxisModeClick
       end
       object N4: TMenuItem
