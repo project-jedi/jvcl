@@ -593,7 +593,7 @@ type
     procedure SetGutterColor(AColor: TColor);
     function GetLines: Tstrings;
     procedure SetBorderStyle(Value: TBorderStyle);
-    procedure SetLines(ALines: Tstrings);
+    procedure SetLines(ALines: TStrings);
     function GetSelStart: Integer;
     procedure SetSelStart(ASelStart: Integer);
     procedure SetSelLength(ASelLength: Integer);
@@ -785,7 +785,7 @@ type
   public { published in descendants }
     property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
-    property Lines: Tstrings read GetLines write SetLines;
+    property Lines: TStrings read GetLines write SetLines;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
     property Cursor default crIBeam;
     property Color default clWindow;
@@ -917,8 +917,8 @@ type
   private
     FJvEditor: TJvCustomEditor;
     FPopupList: TListBox;
-    FIdentifiers: Tstrings;
-    FTemplates: Tstrings;
+    FIdentifiers: TStrings;
+    FTemplates: TStrings;
     FItems: TStringList;
     FItemIndex: Integer;
     FMode: TCompletionList;
@@ -939,13 +939,14 @@ type
     procedure FindSelItem(var Eq: Boolean);
     procedure ReplaceWord(const NewString: string);
 
-    procedure Setstrings(Index: Integer; AValue: Tstrings);
+    function GetStrings(Index: Integer): TStrings;
+    procedure SetStrings(Index: Integer; AValue: TStrings);
     function GetItemIndex: Integer;
     procedure SetItemIndex(AValue: Integer);
     function GetInterval: Cardinal;
     procedure SetInterval(AValue: Cardinal);
     procedure MakeItems;
-    function GetItems: Tstrings;
+    function GetItems: TStrings;
   public
     constructor Create(AJvEditor: TJvCustomEditor);
     destructor Destroy; override;
@@ -963,8 +964,8 @@ type
     property DropDownWidth: Integer read FDropDownWidth write FDropDownWidth
       default 300;
     property Enabled: Boolean read FEnabled write FEnabled default False;
-    property Identifiers: Tstrings index 0 read FIdentifiers write SeTstrings;
-    property Templates: Tstrings index 1 read FTemplates write SeTstrings;
+    property Identifiers: TStrings index 0 read GetStrings write SetStrings;
+    property Templates: TStrings index 1 read GetStrings write SetStrings;
     property ItemHeight: Integer read FItemHeight write FItemHeight;
     property Interval: Cardinal read GetInterval write SetInterval;
     property ListBoxStyle: TListBoxStyle read FListBoxStyle write FListBoxStyle;
@@ -4769,12 +4770,12 @@ begin
   end;
 end;
 
-function TJvCustomEditor.GetLines: Tstrings;
+function TJvCustomEditor.GetLines: TStrings;
 begin
   Result := FLines;
 end;
 
-procedure TJvCustomEditor.SetLines(ALines: Tstrings);
+procedure TJvCustomEditor.SetLines(ALines: TStrings);
 begin
   if ALines <> nil then
     FLines.Assign(ALines);
@@ -6465,11 +6466,13 @@ begin
   FTimer.Free;
 end;
 
-function TJvCompletion.GetItems: Tstrings;
+function TJvCompletion.GetItems: TStrings;
 begin
   case FMode of
-    cmIdentifiers: Result := FIdentifiers;
-    cmTemplates: Result := FTemplates;
+    cmIdentifiers:
+      Result := FIdentifiers;
+    cmTemplates:
+      Result := FTemplates;
   else
     Result := nil;
   end;
@@ -6751,7 +6754,7 @@ procedure TJvCompletion.FindSelItem(var Eq: Boolean);
 var
   S: string;
 
-  function FindFirst(Ss: Tstrings; S: string): Integer;
+  function FindFirst(Ss: TStrings; S: string): Integer;
   var
     i: Integer;
   begin
@@ -6815,7 +6818,19 @@ begin
   DropDown(FDefMode, False);
 end;
 
-procedure TJvCompletion.Setstrings(Index: Integer; AValue: Tstrings);
+function TJvCompletion.GetStrings(Index: Integer): TStrings;
+begin
+  case Index of
+    0:
+      Result := FIdentifiers;
+    1:
+      Result := FTemplates;
+  else
+    Result := nil;
+  end;
+end;
+
+procedure TJvCompletion.SetStrings(Index: Integer; AValue: TStrings);
 begin
   case Index of
     0:

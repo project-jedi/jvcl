@@ -781,9 +781,11 @@ type
   { main JvInterpreter component }
   TJvInterpreterProgram = class(TJvInterpreterUnit)
   private
-    FPas: TStrings;
+    FPas: TStringList;
     FOnStatement: TNotifyEvent;
+    function GetPas: TStrings;
     procedure SetPas(Value: TStrings);
+    procedure PasChanged(Sender: TObject);
   protected
     procedure DoOnStatement; override;
   public
@@ -791,7 +793,7 @@ type
     destructor Destroy; override;
     procedure Run; override;
   published
-    property Pas: TStrings read FPas write SetPas;
+    property Pas: TStrings read GetPas write SetPas;
     property OnGetValue;
     property OnSetValue;
     property OnGetUnitSource;
@@ -7495,25 +7497,10 @@ begin
   end;
 end;
 
-function TJvInterpreterUnit.FunctionExists(const UnitName: string; const FunctionName: string)
-  : Boolean;
+function TJvInterpreterUnit.FunctionExists(const UnitName: string;
+  const FunctionName: string): Boolean;
 begin
   Result := FAdapter.FindFunDesc(UnitName, FunctionName) <> nil;
-end;
-
-//=== TJvInterpreterProgramStrings ===========================================
-
-type
-  TJvInterpreterProgramStrings = class(TStringList)
-  private
-    FJvInterpreterProgram: TJvInterpreterProgram;
-  protected
-    procedure Changed; override;
-  end;
-
-procedure TJvInterpreterProgramStrings.Changed;
-begin
-  FJvInterpreterProgram.Source := Text;
 end;
 
 //=== TJvInterpreterProgram ==================================================
@@ -7521,14 +7508,24 @@ end;
 constructor TJvInterpreterProgram.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FPas := TJvInterpreterProgramStrings.Create;
-  (FPas as TJvInterpreterProgramStrings).FJvInterpreterProgram := Self;
+  FPas := TStringList.Create;
+  FPas.OnChange := PasChanged;
 end;
 
 destructor TJvInterpreterProgram.Destroy;
 begin
   FPas.Free;
   inherited Destroy;
+end;
+
+procedure TJvInterpreterProgram.PasChanged(Sender: TObject);
+begin
+  Source := Pas.Text;
+end;
+
+function TJvInterpreterProgram.GetPas: TStrings;
+begin
+  Result := FPas;
 end;
 
 procedure TJvInterpreterProgram.SetPas(Value: TStrings);

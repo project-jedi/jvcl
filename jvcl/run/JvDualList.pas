@@ -44,10 +44,12 @@ type
     FCancelBtnCaption: TCaption;
     FHelpBtnCaption: TCaption;
     FHelpContext: THelpContext;
-    FList1: TStrings;
-    FList2: TStrings;
+    FList1: TStringList;
+    FList2: TStringList;
     FShowHelp: Boolean;
     function GetTitle: string;
+    function GetList1: TStrings;
+    function GetList2: TStrings;
     procedure SetTitle(const ATitle: string);
     procedure SetList1(Value: TStrings);
     procedure SetList2(Value: TStrings);
@@ -74,8 +76,8 @@ type
     property HelpBtnCaption: TCaption read FHelpBtnCaption write FHelpBtnCaption
       stored IsHelpBtnCustom;
     property HelpContext: THelpContext read FHelpContext write FHelpContext;
-    property List1: TStrings read FList1 write SetList1;
-    property List2: TStrings read FList2 write SetList2;
+    property List1: TStrings read GetList1 write SetList1;
+    property List2: TStrings read GetList2 write SetList2;
     property ShowHelp: Boolean read FShowHelp write FShowHelp default True;
   end;
 
@@ -114,6 +116,16 @@ end;
 procedure TJvDualListDialog.SetTitle(const ATitle: string);
 begin
   FTitle := ATitle;
+end;
+
+function TJvDualListDialog.GetList1: TStrings;
+begin
+  Result := FList1;
+end;
+
+function TJvDualListDialog.GetList2: TStrings;
+begin
+  Result := FList2;
 end;
 
 procedure TJvDualListDialog.SetList1(Value: TStrings);

@@ -756,7 +756,7 @@ type
     FStyle: TDBLabelStyle;
     FEditColor: TColor;
     FCalcCount: Boolean;
-    FCaptions: TStrings;
+    FCaptions: TStringList;
     FGlyph: TBitmap;
     FCell: TBitmap;
     FGlyphAlign: TGlyphAlign;
@@ -778,6 +778,7 @@ type
     procedure SetShowOptions(Value: TDBLabelOptions);
     procedure SetGlyphAlign(Value: TGlyphAlign);
     procedure SetCaptions(Value: TStrings);
+    function GetCaptions: TStrings;
     procedure SetCalcCount(Value: Boolean);
   protected
     procedure Loaded; override;
@@ -799,7 +800,7 @@ type
     property DatasetName: string read GetDataSetName write SetDataSetName;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property EditColor: TColor read FEditColor write SetEditColor default clRed;
-    property Captions: TStrings read FCaptions write SetCaptions;
+    property Captions: TStrings read GetCaptions write SetCaptions;
     property Style: TDBLabelStyle read FStyle write SetStyle default lsState;
     property CalcRecCount: Boolean read FCalcCount write SetCalcCount default False;
     property ShowOptions: TDBLabelOptions read FShowOptions write SetShowOptions
@@ -3921,7 +3922,7 @@ begin
   GlyphAlign := glGlyphLeft;
   FEditColor := clRed;
   FCaptions := TStringList.Create;
-  TStringList(FCaptions).OnChange := CaptionsChanged;
+  FCaptions.OnChange := CaptionsChanged;
   FGlyph := TBitmap.Create;
   FGlyph.Handle := LoadBitmap(HInstance, 'DS_STATES');
   Caption := '';
@@ -3929,16 +3930,12 @@ end;
 
 destructor TJvDBStatusLabel.Destroy;
 begin
-  FDataLink.Free;
-  FDataLink := nil;
+  FreeAndNil(FDataLink);
   //DisposeStr(FDataSetName);
-  TStringList(FCaptions).OnChange := nil;
-  FCaptions.Free;
-  FCaptions := nil;
-  FCell.Free;
-  FCell := nil;
-  FGlyph.Free;
-  FGlyph := nil;
+  FCaptions.OnChange := nil;
+  FreeAndNil(FCaptions);
+  FreeAndNil(FCell);
+  FreeAndNil(FGlyph);
   inherited Destroy;
 end;
 
@@ -4022,6 +4019,11 @@ begin
     Invalidate;
 end;
 
+function TJvDBStatusLabel.GetCaptions: TStrings;
+begin
+  Result := FCaptions;
+end;
+
 procedure TJvDBStatusLabel.SetCaptions(Value: TStrings);
 begin
   FCaptions.Assign(Value);
@@ -4050,9 +4052,8 @@ var
   Kind: TDBStatusKind;
 begin
   Kind := GetStatusKind(State);
-  if (FCaptions <> nil) and (Ord(Kind) < FCaptions.Count) and
-    (FCaptions[Ord(Kind)] <> '') then
-    Result := FCaptions[Ord(Kind)]
+  if (Ord(Kind) < Captions.Count) and (Captions[Ord(Kind)] <> '') then
+    Result := Captions[Ord(Kind)]
   else
     Result := StrIds[Kind];
 end;
@@ -4084,12 +4085,12 @@ end;
 
 procedure TJvDBStatusLabel.CaptionsChanged(Sender: TObject);
 begin
-  TStringList(FCaptions).OnChange := nil;
+  FCaptions.OnChange := nil;
   try
     while (Pred(FCaptions.Count) > Ord(High(TDBStatusKind))) do
       FCaptions.Delete(FCaptions.Count - 1);
   finally
-    TStringList(FCaptions).OnChange := CaptionsChanged;
+    FCaptions.OnChange := CaptionsChanged;
   end;
   if not (csDesigning in ComponentState) then
     Invalidate;

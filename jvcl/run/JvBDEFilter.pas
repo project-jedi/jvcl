@@ -60,7 +60,7 @@ type
     FPriority: Word;
     FOptions: TDBFilterOptions;
     FLogicCond: TFilterLogicCond;
-    FFilter: TStrings;
+    FFilter: TStringList;
     FExprHandle: hDBIFilter;
     FFuncHandle: hDBIFilter;
     FDataHandle: hDBICur;
@@ -78,6 +78,7 @@ type
     function GetDataSource: TDataSource;
     function BuildTree: Boolean;
     procedure DestroyTree;
+    function GetFilter: TStrings;
     procedure SetFilter(Value: TStrings);
     procedure SetOptions(Value: TDBFilterOptions);
     procedure SetOnFiltering(const Value: TFilterEvent);
@@ -121,7 +122,7 @@ type
   published
     property Active: Boolean read FActive write SetActive default False;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
-    property Filter: TStrings read FFilter write SetFilter;
+    property Filter: TStrings read GetFilter write SetFilter;
     property LogicCond: TFilterLogicCond read FLogicCond write SetLogicCond default flAnd;
     property Options: TDBFilterOptions read FOptions write SetOptions default [];
     property Priority: Word read FPriority write SetPriority default 0;
@@ -337,14 +338,14 @@ begin
   inherited Create(AOwner);
   FDataLink := TJvFilterDataLink.Create(Self);
   FFilter := TStringList.Create;
-  TStringList(FFilter).OnChange := FilterChanged;
+  FFilter.OnChange := FilterChanged;
   FLogicCond := flAnd;
   FIgnoreDataEvents := False;
 end;
 
 destructor TJvDBFilter.Destroy;
 begin
-  TStringList(FFilter).OnChange := nil;
+  FFilter.OnChange := nil;
   Deactivate;
   DropFilters;
   FFilter.Free;
@@ -579,6 +580,11 @@ begin
     FDataLink.DataSet.First;
 end;
 
+function TJvDBFilter.GetFilter: TStrings;
+begin
+  Result := FFilter;
+end;
+
 procedure TJvDBFilter.SetFilter(Value: TStrings);
 begin
   FFilter.Assign(Value);
@@ -663,13 +669,13 @@ begin
   Result := True;
   if not FDataLink.Active then
     _DBError(SDataSetClosed);
-  TStringList(FFilter).OnChange := nil;
+  FFilter.OnChange := nil;
   try
     for I := FFilter.Count - 1 downto 0 do
       if FFilter[I] = '' then
         FFilter.Delete(I);
   finally
-    TStringList(FFilter).OnChange := FilterChanged;
+    FFilter.OnChange := FilterChanged;
   end;
   Expr := GetFilterText;
   if (FFilter.Count <> 0) and (Expr <> '') then

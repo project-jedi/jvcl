@@ -43,7 +43,7 @@ type
   private
     FImageList: TCustomImageList;
     FImageChangeLink: TChangeLink;
-    FLines: TStrings;
+    FLines: TStringList;
     FStyles: TList;
     FTextOffset: Integer;
     FImageOffset: Integer;
@@ -53,6 +53,7 @@ type
     procedure SetStyles(Index: Integer; Value: TFontStyles);
     function GetStyles(Index: Integer): TFontStyles;
     procedure SetImageList(Value: TCustomImageList);
+    function GetLines: TStrings;
     procedure SetLines(Value: TStrings);
     procedure SetImageOffset(Value: Integer);
     procedure SetTextOffset(Value: Integer);
@@ -76,7 +77,7 @@ type
     property Color default clBtnFace;
     property DefaultImage: Integer read FDefaultImage write SetIndex default -1;
     property Images: TCustomImageList read FImageList write SetImageList;
-    property Lines: TStrings read FLines write SetLines;
+    property Lines: TStrings read GetLines write SetLines;
     property LineSpacing: Integer read FLineSpacing write SetLineSpacing default 10;
     property ShowHint;
     property ParentShowHint;
@@ -136,20 +137,20 @@ begin
   inherited Destroy;
 end;
 
-{ make sure FLines.Count = FStyles.Count }
+{ make sure Lines.Count = Styles.Count }
 
 procedure TJvInstallLabel.UpdateStyles;
 var
   aStyle: PStyles;
 begin
-  while FStyles.Count > FLines.Count do
+  while FStyles.Count > Lines.Count do
   begin
     if FStyles.Last <> nil then
       Dispose(PStyles(FStyles.Last));
     FStyles.Delete(FStyles.Count - 1);
   end;
 
-  while FStyles.Count < FLines.Count do
+  while FStyles.Count < Lines.Count do
   begin
     New(aStyle);
     aStyle^.Style := Font.Style; { default }
@@ -192,6 +193,11 @@ begin
   FImageList := Value;
   if Images <> nil then
     Images.RegisterChanges(FImageChangeLink);
+end;
+
+function TJvInstallLabel.GetLines: TStrings;
+begin
+  Result := FLines;
 end;
 
 procedure TJvInstallLabel.SetLines(Value: TStrings);
@@ -246,6 +252,9 @@ var
   aRect: TRect;
   aHandle: THandle;
 begin
+  if csDestroying in ComponentState then
+    Exit;
+
   DrawThemedBackground(Self, Canvas, ClientRect, Self.Color);
 
   if csDesigning in ComponentState then
@@ -256,22 +265,19 @@ begin
       Rectangle(0, 0, Width, Height);
     end;
 
-  if (FLines = nil) or (FStyles = nil) then
-    Exit;
-
   UpdateStyles;
   Canvas.Font := Font;
   aHandle := Canvas.Handle;
   SetBkMode(aHandle, Windows.Transparent);
 
   H := CanvasMaxTextHeight(Canvas);
-  for I := 0 to FLines.Count - 1 do
+  for I := 0 to Lines.Count - 1 do
   begin
     Canvas.Font.Style := PStyles(FStyles[I])^.Style;
-    W := Canvas.TextWidth(FLines[I]);
+    W := Canvas.TextWidth(Lines[I]);
     Tmp := I * (H + FLineSpacing) + FLineSpacing;
     aRect := Rect(FTextOffset, Tmp, FTextOffset + W, Tmp + H);
-    DrawText(aHandle, PChar(FLines[I]), -1, aRect, DT_CENTER or DT_VCENTER or
+    DrawText(aHandle, PChar(Lines[I]), -1, aRect, DT_CENTER or DT_VCENTER or
       DT_SINGLELINE or DT_NOPREFIX or DT_NOCLIP);
     if Assigned(FImageList) then
     begin
@@ -329,7 +335,7 @@ end;
 
 function TJvInstallLabel.CheckBounds(Index: Integer): Boolean;
 begin
-  Result := (Index > -1) and (Index < FLines.Count);
+  Result := (Index > -1) and (Index < Lines.Count);
   if not Result then
     raise EJVCLException.CreateFmt(RsEListOutOfBounds, [Index]);
 end;

@@ -53,12 +53,13 @@ type
     FSaveQueryChanged: TNotifyEvent;
     FMacroChar: Char;
     FMacros: TParams;
-    FSQLPattern: TStrings;
+    FSQL: TStringList;
     FStreamPatternChanged: Boolean;
     FPatternChanged: Boolean;
     FOpenStatus: TQueryOpenStatus;
     function GetMacros: TParams;
     procedure SetMacros(Value: TParams);
+    function GetSQL: TStrings;
     procedure SetSQL(Value: TStrings);
     procedure PatternChanged(Sender: TObject);
     procedure QueryChanged(Sender: TObject);
@@ -99,7 +100,7 @@ type
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property MacroChar: Char read FMacroChar write SetMacroChar default DefaultMacroChar;
-    property SQL: TStrings read FSQLPattern write SetSQL;
+    property SQL: TStrings read GetSQL write SetSQL;
     {$IFDEF DEBUG}
     property RealSQL: TStrings read GetRealSQL write SetRealSQL stored False;
     {$ENDIF DEBUG}
@@ -132,7 +133,7 @@ type
 
   TJvSQLScript = class(TJvComponent)
   private
-    FSQL: TStrings;
+    FSQL: TStringList;
     FParams: TParams;
     FQuery: TJvQuery;
     FTransaction: Boolean;
@@ -153,7 +154,8 @@ type
     procedure SetDatabaseName(const Value: string);
     procedure CreateParams(List: TParams; const Value: PChar);
     procedure QueryChanged(Sender: TObject);
-    procedure SetQuery(Value: TStrings);
+    function GetSQL: TStrings;
+    procedure SetSQL(Value: TStrings);
     procedure SetParamsList(Value: TParams);
     function GetParamsCount: Cardinal;
   protected
@@ -176,7 +178,7 @@ type
     property SemicolonTerm: Boolean read FSemicolonTerm write FSemicolonTerm default True;
     property SessionName: string read GetSessionName write SetSessionName;
     property Term: Char read FTerm write FTerm default DefaultTermChar;
-    property SQL: TStrings read FSQL write SetQuery;
+    property SQL: TStrings read GetSQL write SetSQL;
     property Params: TParams read FParams write SetParamsList stored False;
     property Transaction: Boolean read FTransaction write FTransaction;
     property BeforeExec: TNotifyEvent read FBeforeExec write FBeforeExec;
@@ -304,8 +306,8 @@ begin
   FSaveQueryChanged := TStringList(inherited SQL).OnChange;
   TStringList(inherited SQL).OnChange := QueryChanged;
   FMacroChar := DefaultMacroChar;
-  FSQLPattern := TStringList.Create;
-  TStringList(SQL).OnChange := PatternChanged;
+  FSQL := TStringList.Create;
+  FSQL.OnChange := PatternChanged;
   FMacros := TParams.Create(Self);
 end;
 
@@ -314,7 +316,7 @@ begin
   Destroying;
   Disconnect;
   FMacros.Free;
-  FSQLPattern.Free;
+  FSQL.Free;
   inherited Destroy;
 end;
 
@@ -479,12 +481,17 @@ begin
   FMacros.AssignValues(Value);
 end;
 
+function TJvQuery.GetSQL: TStrings;
+begin
+  Result := FSQL;
+end;
+
 procedure TJvQuery.SetSQL(Value: TStrings);
 begin
   inherited Disconnect;
-  TStringList(FSQLPattern).OnChange := nil;
-  FSQLPattern.Assign(Value);
-  TStringList(FSQLPattern).OnChange := PatternChanged;
+  FSQL.OnChange := nil;
+  FSQL.Assign(Value);
+  FSQL.OnChange := PatternChanged;
   PatternChanged(nil);
 end;
 
@@ -543,7 +550,7 @@ begin
   begin
     List := TParams.Create(Self);
     try
-      CreateMacros(List, PChar(FSQLPattern.Text));
+      CreateMacros(List, PChar(FSQL.Text));
       List.AssignValues(FMacros);
       FMacros.Clear;
       FMacros.Assign(List);
@@ -554,7 +561,7 @@ begin
   else
   begin
     FMacros.Clear;
-    CreateMacros(FMacros, PChar(FSQLPattern.Text));
+    CreateMacros(FMacros, PChar(FSQL.Text));
   end;
 end;
 
@@ -601,8 +608,8 @@ var
   end;
 
 begin
-  for I := 0 to FSQLPattern.Count - 1 do
-    Query.Add(ReplaceString(FSQLPattern[I]));
+  for I := 0 to SQL.Count - 1 do
+    Query.Add(ReplaceString(SQL[I]));
 end;
 
 function TJvQuery.GetMacroCount: Word;
@@ -747,7 +754,7 @@ constructor TJvSQLScript.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FSQL := TStringList.Create;
-  TStringList(SQL).OnChange := QueryChanged;
+  FSQL.OnChange := QueryChanged;
   FParams := TParams.Create(Self);
   FQuery := TJvQuery.Create(Self);
   FSemicolonTerm := True;
@@ -938,7 +945,7 @@ end;
 
 procedure TJvSQLScript.ExecStatement(StatementNo: Integer);
 begin
-  if FSQL.Count = 0 then
+  if SQL.Count = 0 then
     _DBError(SEmptySQLStatement);
   FQuery.SetDBFlag(dbfExecScript, True);
   try
@@ -964,11 +971,16 @@ begin
   CreateQueryParams(List, Value, False, ':', []);
 end;
 
-procedure TJvSQLScript.SetQuery(Value: TStrings);
+function TJvSQLScript.GetSQL: TStrings;
 begin
-  TStringList(SQL).OnChange := nil;
+  Result := FSQL;
+end;
+
+procedure TJvSQLScript.SetSQL(Value: TStrings);
+begin
+  FSQL.OnChange := nil;
   FSQL.Assign(Value);
-  TStringList(SQL).OnChange := QueryChanged;
+  FSQL.OnChange := QueryChanged;
   QueryChanged(nil);
 end;
 

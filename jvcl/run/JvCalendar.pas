@@ -78,8 +78,9 @@ type
     FWeekNumbers: Boolean;
     FFirstDoW: TJvMonthCalWeekDay;
     FColors: TJvMonthCalColors;
-    FBoldDays: TStrings;
+    FBoldDays: TStringList;
     procedure SetColors(const AValue: TJvMonthCalColors);
+    function GetBoldDays: TStrings;
     procedure SetBoldDays(const AValue: TStrings);
     procedure SetCalendar(const AValue: TJvCustomMonthCalendar);
     function GetCalendar: TJvCustomMonthCalendar;
@@ -94,7 +95,7 @@ type
   published
     property Colors: TJvMonthCalColors read FColors write SetColors;
     property CircleToday: Boolean read FCircleToday write SetCircleToday default True;
-    property BoldDays: TStrings read FBoldDays write SetBoldDays;
+    property BoldDays: TStrings read GetBoldDays write SetBoldDays;
     property FirstDayOfWeek: TJvMonthCalWeekDay read FFirstDoW write SetFirstDoW default mcLocale;
     property ShowToday: Boolean read FShowToday write SetShowToday default True;
     property WeekNumbers: Boolean read FWeekNumbers write SetWeekNumbers default False;
@@ -1307,6 +1308,11 @@ end;
 function TJvMonthCalAppearance.GetCalendar: TJvCustomMonthCalendar;
 begin
   Result := FColors.Calendar;
+end;
+
+function TJvMonthCalAppearance.GetBoldDays: TStrings;
+begin
+  Result := FBoldDays;
 end;
 
 procedure TJvMonthCalAppearance.SetBoldDays(const AValue: TStrings);

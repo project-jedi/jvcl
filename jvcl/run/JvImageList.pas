@@ -23,21 +23,23 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
+
 {$I jvcl.inc}
 
 unit JvImageList;
+
 interface
+
 uses
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   Windows,
-{$ENDIF}
-{$IFDEF VCL}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF VCL}
   Graphics, Controls, ImgList, CommCtrl,
-{$ENDIF}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QGraphics, QControls, QImgList,
-{$ENDIF}
+  {$ENDIF VisualCLX}
   SysUtils, Classes; 
 
 type
@@ -53,21 +55,20 @@ type
     FTransparentColor: TColor;
     FPicture: TPicture;
     FFileName: TFileName;
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     FPixelFormat: TPixelFormat;
-  {$ENDIF}
-    FResourceIds: TStrings;
+    {$ENDIF VCL}
+    FResourceIds: TStringList;
     FMode: TJvImageListMode;
-
     procedure SetFileName(const Value: TFileName);
     procedure SetPicture(Value: TPicture);
     procedure SetTransparentMode(Value: TJvImageListTransparentMode);
     procedure SetTransparentColor(Value: TColor);
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     procedure SetPixelFormat(const Value: TPixelFormat);
     procedure SetInternalHandle(Value: THandle);
-  {$ENDIF}
-
+    {$ENDIF VCL}
+    function GetResourceIds: TStrings;
     procedure SetResourceIds(Value: TStrings);
     procedure SetMode(const Value: TJvImageListMode);
 
@@ -76,47 +77,43 @@ type
     procedure DoLoadFromFile;
   protected
     procedure DefineProperties(Filer: TFiler); override;
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     procedure Initialize; override;
-  {$ENDIF}
-  {$IFDEF VisualCLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     procedure Initialize(const AWidth, AHeight: Integer); override;
-  {$ENDIF}
+    {$ENDIF VisualCLX}
     procedure Change; override;
     procedure DataChanged(Sender: TObject); virtual;
     procedure UpdateImageList;
-
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     procedure HandleNeeded; virtual;
     procedure CreateImageList; virtual;
     property FHandle: THandle write SetInternalHandle;
-  {$ENDIF}  
+    {$ENDIF VCL}
   public
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure BeginUpdate;
     procedure EndUpdate;
-
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     procedure DrawIndirect(ImageListDrawParams: TImageListDrawParams);
       // DrawIndirect fills the .cbSize and .himl field.
     function Merge(Index1: Integer; ImageList: TImageList; Index2: Integer;
       dx, dy: Integer): TImageList;
       // Merge creates a new TJvImageList and returns it.
-  {$ENDIF}
-
+    {$ENDIF VCL}
     procedure SaveToFile(const Filename: string);
     procedure SaveToStream(Stream: TStream); virtual;
     procedure LoadFromFile(const Filename: string);
     procedure LoadFromStream(Stream: TStream); virtual;
   published
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     property PixelFormat: TPixelFormat read FPixelFormat write SetPixelFormat default pfDevice;
       // PixelFormat is the color resolution of the image list. pf1bit and
       // pfCustom are not supported.
       // WARNING: pf32bit works only under Windows XP.
-  {$ENDIF}
-
+    {$ENDIF VCL}
     property TransparentMode: TJvImageListTransparentMode read FTransparentMode write SetTransparentMode default tmColor;
       // TransparentMode is used for adding the bitmaps from Picture or
       // ResourceIds.
@@ -138,12 +135,10 @@ type
       // Picture.Graphic is updated at design time by the graphic file specified
       // by FileName. The Picture property is only loaded into the image list if
       // the Mode is imPicture.
-
-    property ResourceIds: TStrings read FResourceIds write SetResourceIds;
+    property ResourceIds: TStrings read GetResourceIds write SetResourceIds;
       // ResourceIds contains the resource ids of the bitmaps to load. Allowed
       // are RCDATA (a bitmap file) and BITMAP. ResourceIds property is only
       // loaded into the image list if Mode is imResourceIds.
-
     property Mode: TJvImageListMode read FMode write SetMode default imPicture;
       // Mode specifies which property the component should use.
       //   imClassic: be a normal TImageList
@@ -151,11 +146,10 @@ type
       //   imResourceIds: load the images by ResourceIds
   end;
 
-
 {$IFDEF VCL}
 function CreateImageListHandle(Width, Height: Integer; PixelFormat: TPixelFormat;
   Masked: Boolean; AllocBy: Integer): THandle;
-{$ENDIF}  
+{$ENDIF VCL}
 
 function LoadImageListFromBitmap(ImgList: TCustomImageList; const Bitmap: TBitmap;
   MaskColor: TColor = clFuchsia; AutoMaskColor: Boolean = False): Integer; overload;
@@ -176,10 +170,11 @@ uses
 {$IFDEF LINUX}
 const
   RT_RCDATA = PChar(1);
-{$ENDIF}
+{$ENDIF LINUX}
 
 
 {$IFDEF VCL}
+
 {------------------------------------------------------------------------------}
 { Here we inject a jump to our HandleNeededHook into the static
   TCustomImageList.HandleNeeded method. }
@@ -187,8 +182,8 @@ const
 type
   TOpenCustomImageList = class(TCustomImageList);
 
- // we need direct access to the FHandle field because the Handle property
- // calls the Changed method that calls HandleNeeded that calls SetHandle, ...
+  // we need direct access to the FHandle field because the Handle property
+  // calls the Changed method that calls HandleNeeded that calls SetHandle, ...
   TImageListPrivate = class(TComponent)
   protected
     FHeight: Integer;
@@ -276,27 +271,32 @@ begin
     PixelFormat := ScreenPixelFormat;
 
   case PixelFormat of
-    pf4bit: Flags := ILC_COLOR4;
-    pf8bit: Flags := ILC_COLOR8;
-    pf15bit,
-    pf16bit: Flags := ILC_COLOR16;
-    pf24bit: Flags := ILC_COLOR24;
-    pf32bit: Flags := ILC_COLOR32;
+    pf4bit:
+      Flags := ILC_COLOR4;
+    pf8bit:
+      Flags := ILC_COLOR8;
+    pf15bit, pf16bit:
+      Flags := ILC_COLOR16;
+    pf24bit:
+      Flags := ILC_COLOR24;
+    pf32bit:
+      Flags := ILC_COLOR32;
   else
     Flags := ILC_COLORDDB;
   end;
   if Masked then
     Flags := Flags or ILC_MASK;
 
-  Result := ImageList_Create(Width, Height, Flags, AllocBy,
-    AllocBy);
+  Result := ImageList_Create(Width, Height, Flags, AllocBy, AllocBy);
 end;
+
 {$ENDIF VCL}
+
+{ Loads the bitmaps for the ImageList from the bitmap Bitmap.
+  The return value is the number of added bitmaps. }
 
 function LoadImageListFromBitmap(ImgList: TCustomImageList; const Bitmap: TBitmap;
   MaskColor: TColor = clFuchsia; AutoMaskColor: Boolean = False): Integer; overload;
-{ Loads the bitmaps for the ImageList from the bitmap Bitmap.
-  The return value is the number of added bitmaps. }
 var
   Bmp: TBitmap;
   Width, Height: Integer;
@@ -442,7 +442,7 @@ begin
   FPicture.OnChange := DataChanged;
 
   FResourceIds := TStringList.Create;
-  TStringList(FResourceIds).OnChange := DataChanged;
+  FResourceIds.OnChange := DataChanged;
 end;
 
 destructor TJvImageList.Destroy;
@@ -614,28 +614,28 @@ begin
   BeginUpdate;
   try
     Clear;
-    if FResourceIds.Count = 0 then
+    if ResourceIds.Count = 0 then
       Exit;
 
     Bmp := TBitmap.Create;
     try
-      for i := 0 to FResourceIds.Count - 1 do
+      for i := 0 to ResourceIds.Count - 1 do
       begin
-        if Trim(FResourceIds[i]) <> '' then
+        if Trim(ResourceIds[i]) <> '' then
         try
          // load resource
           ResStream := nil;
           try
             try
-              ResStream := TResourceStream.Create(HInstance, FResourceIds[i], RT_BITMAP);
+              ResStream := TResourceStream.Create(HInstance, ResourceIds[i], RT_BITMAP);
             except
               ResStream := nil;
             end;
             if ResStream <> nil then
-              Bmp.LoadFromResourceName(HInstance, FResourceIds[i])
+              Bmp.LoadFromResourceName(HInstance, ResourceIds[i])
             else
             begin
-              ResStream := TResourceStream.Create(HInstance, FResourceIds[i], RT_RCDATA);
+              ResStream := TResourceStream.Create(HInstance, ResourceIds[i], RT_RCDATA);
               Bmp.LoadFromStream(ResStream);
             end;
           finally
@@ -716,6 +716,11 @@ begin
   end;
 end;
 {$ENDIF VCL}
+
+function TJvImageList.GetResourceIds: TStrings;
+begin
+  Result := FResourceIds;
+end;
 
 procedure TJvImageList.SetResourceIds(Value: TStrings);
 begin
