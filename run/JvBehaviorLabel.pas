@@ -102,6 +102,12 @@ type
     property Active: Boolean read FActive write SetActive default False;
   end;
 
+  // TJvLabelNone implements no special behavior
+  TJvLabelNone = class(TJvLabelBehavior)
+  published
+    property Active;
+  end;
+
   // TJvLabelBlink implements a blinking behavior
   TJvLabelBlink = class(TJvLabelBehavior)
   private
@@ -174,7 +180,7 @@ type
   published
     property Active;
     // Set Padding to True to simulate the Caption being scrolled "around the Edge" of the
-    // label. This propert yis implemented such that the text is right-padded with spaces
+    // label. This property is implemented such that the text is right-padded with spaces
     property Padding: Boolean read FPad write FPad default False;
     // Interval specifies the number of milliseconds that elapses between each scroll
     // A lower Interval increases the speed of the scroll
@@ -305,8 +311,8 @@ type
     FOnParentColorChanged: TNotifyEvent;
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
-    FLocalText: TCaption;
     FUseLocalText: Boolean;
+    FLocalText: TCaption;
     function GetOptions: TJvLabelBehavior;
     function BehaviorStored: Boolean;
     procedure UpdateDesigner;
@@ -402,6 +408,9 @@ implementation
 
 uses
   JvTypes, JvResources;
+
+const
+  cNoneCaption = '(none)';
 
 var
   AllBehaviorOptions: TStringList = nil;
@@ -517,8 +526,7 @@ end;
 constructor TJvCustomBehaviorLabel.Create(AComponent: TComponent);
 begin
   inherited Create(AComponent);
-  FBehavior := RsNoneCaption;
-  FUseLocalText := False;
+  FBehavior := cNoneCaption;
 end;
 
 destructor TJvCustomBehaviorLabel.Destroy;
@@ -548,27 +556,20 @@ end;
 
 {$IFDEF VCL}
 function TJvCustomBehaviorLabel.GetLabelText: string;
-begin
-  if FUseLocalText then
-    Result := FLocalText
-  else
-    Result := inherited GetLabelText;
-end;
 {$ENDIF VCL}
-
 {$IFDEF VisualCLX}
 function TJvCustomBehaviorLabel.GetLabelText: WideString;
+{$ENDIF VisualCLX}
 begin
   if FUseLocalText then
     Result := FLocalText
   else
     Result := inherited GetLabelText;
 end;
-{$ENDIF VisualCLX}
 
 function TJvCustomBehaviorLabel.BehaviorStored: Boolean;
 begin
-  Result := FBehavior <> RsNoneCaption;
+  Result := FBehavior <> cNoneCaption;
 end;
 
 function TJvCustomBehaviorLabel.GetOptions: TJvLabelBehavior;
@@ -642,9 +643,10 @@ end;
 constructor TJvLabelBlink.Create(ALabel: TJvCustomBehaviorLabel);
 begin
   inherited Create(ALabel);
+  ALabel.FUseLocalText := False;
+  ALabel.FLocalText := '';
   FDelay := 100;
   FInterval := 400;
-  OwnerLabel.FLocalText := '';
 end;
 
 procedure TJvLabelBlink.DoTimerEvent(Sender: TObject);
@@ -1282,6 +1284,7 @@ begin
 end;
 
 initialization
+  RegisterLabelBehaviorOptions(cNoneCaption, TJvLabelNone);
   RegisterLabelBehaviorOptions('Blinking', TJvLabelBlink);
   RegisterLabelBehaviorOptions('Bouncing', TJvLabelBounce);
   RegisterLabelBehaviorOptions('Scrolling', TJvLabelScroll);
