@@ -308,8 +308,8 @@ begin
   SetFilters;
   if not DirectoryExists(ADirectory) then
     Exit;
-  if ADirectory[Length(ADirectory)] <> '\' then
-    ADirectory := ADirectory + '\';
+  if ADirectory[Length(ADirectory)] <> PathDelim then
+    ADirectory := ADirectory + PathDelim;
   for NumExtensions := 0 to FGraphicExtensions.Count - 1 do
   begin
     if (FindFirstGraphic(FGraphicExtensions[NumExtensions]) = 0) and
@@ -484,7 +484,7 @@ var
   Dir: string;
 begin
   Dir := ExtractFileDir(AFile);
-  if Dir[Length(Dir)] = '\' then
+  if Dir[Length(Dir)] = PathDelim then
     Dir := Copy(Dir, 0, Length(Dir) - 1);
   Directory := Dir;
   for I := 0 to FThumbList.Count - 1 do
