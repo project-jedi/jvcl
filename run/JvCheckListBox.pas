@@ -37,17 +37,15 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, CheckLst, Controls, Forms,
-  JvItemsSearchs, JVCLVer;
+  JvItemsSearchs, JVCLVer, JvExCheckLst;
 
 type
-  TJvCheckListBox = class(TCheckListBox)
+  TJvCheckListBox = class(TJvExCheckListBox)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FHotTrack: Boolean;
-    FOnMouseEnter: TNotifyEvent;
     FColor: TColor;
     FSaved: TColor;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOnSelectCancel: TNotifyEvent;
     FOver: Boolean;
@@ -61,12 +59,13 @@ type
     procedure SetHotTrack(const Value: Boolean);
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;    procedure LBNSelCancel(var Msg: TMessage); message LBN_SELCANCEL;
+    procedure LBNSelCancel(var Msg: TMessage); message LBN_SELCANCEL;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WndProc(var Msg: TMessage); override;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure ParentColorChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -94,8 +93,8 @@ type
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property HorScrollbar: Boolean read FScroll write SetHScroll default True;
     property HintColor: TColor read FColor write FColor default clInfoBk;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnSelectCancel: TNotifyEvent read FOnSelectCancel write FOnSelectCancel;
     property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
@@ -199,28 +198,26 @@ begin
     SendMessage(Handle, LB_SETHORIZONTALEXTENT, FMaxWidth, 0);
 end;
 
-procedure TJvCheckListBox.CMParentColorChanged(var Msg: TMessage);
+procedure TJvCheckListBox.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
 
-procedure TJvCheckListBox.CMMouseEnter(var Msg: TMessage);
+procedure TJvCheckListBox.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
-    // for D7...
-    if csDesigning in ComponentState then
-      Exit;
     Application.HintColor := FColor;
     if HotTrack then
       Ctl3D := True;
     FOver := True;
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited MouseEnter(Control);
 end;
 
 procedure TJvCheckListBox.WMHScroll(var Msg: TWMHScroll);
@@ -251,8 +248,10 @@ begin
     FOnVScroll(Self);
 end;
 
-procedure TJvCheckListBox.CMMouseLeave(var Msg: TMessage);
+procedure TJvCheckListBox.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
@@ -260,8 +259,7 @@ begin
       Ctl3D := False;
     FOver := False;
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited MouseLeave(Control);
 end;
 
 function TJvCheckListBox.SearchExactString(Value: string;

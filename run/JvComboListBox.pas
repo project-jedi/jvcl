@@ -70,7 +70,7 @@ type
     procedure DrawComboArrow(Canvas: TCanvas; R: TRect; Highlight, Pushed: boolean);
     procedure DrawItem(Index: integer; Rect: TRect;
       State: TOwnerDrawState); override;
-    procedure CMMouseLeave(var Msg: TMessage); override;
+    procedure MouseLeave(Control: TControl); override;
     procedure WMSize(var Message: TWMSize); message WM_SIZE;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X: integer; Y: integer); override;
@@ -177,9 +177,11 @@ begin
   Result := Items.Add(S);
 end;
 
-procedure TJvComboListBox.CMMouseLeave(var Msg: TMessage);
+procedure TJvComboListBox.MouseLeave(Control: TControl);
 begin
-  inherited;
+  if csDesigning in ComponentState then
+    Exit;
+  inherited MouseLeave(Control);
   if FMouseOver then
   begin
     InvalidateItem(ItemIndex);

@@ -55,7 +55,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, StdCtrls, Controls, Forms,
-  JvItemsSearchs, JVCLVer, JvDataProvider, JvDataProviderIntf;
+  JvItemsSearchs, JVCLVer, JvDataProvider, JvDataProviderIntf,
+  JvExStdCtrls;
 
 type
   TJvListboxFillMode = (bfmTile, bfmStretch);
@@ -103,7 +104,6 @@ type
     FUseInternal: Boolean;
     FUpdating: Boolean;
     FDestroyCnt: Integer;
-  protected
   public
     function Get(Index: Integer): string; override;
     function GetCount: Integer; override;
@@ -133,7 +133,7 @@ type
   end;
   TJvListBoxStringsClass = class of TJvListBoxStrings;
 
-  TJvCustomListBox = class(TCustomListBox)
+  TJvCustomListBox = class(TJvExCustomListBox)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FAlignment: TAlignment;
@@ -146,8 +146,6 @@ type
     FScrollBars: TScrollStyle;
     FSorted: Boolean;
     FOnGetText: TJvListBoxDataEvent;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOnSelectCancel: TNotifyEvent;
     FOnDeleteString: TJvListboxChange;
@@ -224,9 +222,9 @@ type
     procedure DoStartDrag(var DragObject: TDragObject); override;
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure ParentColorChanged; override;
     procedure SelectCancel(var Msg: TMessage); message LBN_SELCANCEL;
     procedure Changed; virtual;
     procedure DrawItem(Index: Integer; Rect: TRect;
@@ -248,8 +246,6 @@ type
       default taLeftJustify;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnSelectCancel: TNotifyEvent read FOnSelectCancel write FOnSelectCancel;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -734,25 +730,25 @@ begin
   RemeasureAll;
 end;
 
-procedure TJvCustomListBox.CMMouseEnter(var Msg: TMessage);
+procedure TJvCustomListBox.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
-    // for D7...
-    if csDesigning in ComponentState then
-      Exit;
     Application.HintColor := FHintColor;
     if FHotTrack then
       Ctl3D := True;
     FOver := True;
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited MouseEnter(Control);
 end;
 
-procedure TJvCustomListBox.CMMouseLeave(var Msg: TMessage);
+procedure TJvCustomListBox.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
@@ -760,13 +756,12 @@ begin
       Ctl3D := False;
     FOver := False;
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited MouseLeave(Control);
 end;
 
-procedure TJvCustomListBox.CMParentColorChanged(var Msg: TMessage);
+procedure TJvCustomListBox.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;

@@ -221,8 +221,8 @@ type
     FHintSource: TJvHintSource;
     procedure SetClientBorderWidth(const Value: TBorderWidth);
     procedure TCMAdjustRect(var Msg: TMessage); message TCM_ADJUSTRECT;
-    procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure CMDialogKey(var Msg: TWMKey); message CM_DIALOGKEY;
@@ -271,8 +271,8 @@ type
     FOnChanged: TNotifyEvent;
     FAboutJVCL: TJVCLAboutInfo;
     FShowRange: Boolean;
-    procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure SetToolTips(const Value: Boolean);
     procedure SetToolTipSide(const Value: TJvTrackToolTipSide);
@@ -359,8 +359,8 @@ type
     procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
-    procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure SetCheckBoxes(const Value: Boolean);
     function GetItemHeight: integer;
@@ -920,7 +920,7 @@ begin
   HideAllTabs := FHideAllTabs;
 end;
 
-procedure TJvPageControl.MouseEnter(var Msg: TMessage);
+procedure TJvPageControl.CMMouseEnter(var Msg: TMessage);
 begin
   FSaved := Application.HintColor;
   // for D7...
@@ -931,7 +931,7 @@ begin
     FOnMouseEnter(Self);
 end;
 
-procedure TJvPageControl.MouseLeave(var Msg: TMessage);
+procedure TJvPageControl.CMMouseLeave(var Msg: TMessage);
 begin
   Application.HintColor := FSaved;
   if Assigned(FOnMouseLeave) then
@@ -1073,7 +1073,7 @@ begin
     SendMessage(Handle, TBM_SETTIPSIDE, ToolTipSides[FToolTipSide], 0);
 end;
 
-procedure TJvTrackBar.MouseEnter(var Msg: TMessage);
+procedure TJvTrackBar.CMMouseEnter(var Msg: TMessage);
 begin
   FSaved := Application.HintColor;
   // for D7...
@@ -1084,7 +1084,7 @@ begin
     FOnMouseEnter(Self);
 end;
 
-procedure TJvTrackBar.MouseLeave(var Msg: TMessage);
+procedure TJvTrackBar.CMMouseLeave(var Msg: TMessage);
 begin
   Application.HintColor := FSaved;
   if Assigned(FOnMouseLeave) then
@@ -1496,7 +1496,7 @@ begin
     inherited KeyPress(Key);
 end;
 
-procedure TJvTreeView.MouseEnter(var Msg: TMessage);
+procedure TJvTreeView.CMMouseEnter(var Msg: TMessage);
 begin
   FOver := True;
   FSaved := Application.HintColor;
@@ -1508,7 +1508,7 @@ begin
     FOnMouseEnter(Self);
 end;
 
-procedure TJvTreeView.MouseLeave(var Msg: TMessage);
+procedure TJvTreeView.CMMouseLeave(var Msg: TMessage);
 begin
   Application.HintColor := FSaved;
   FOver := False;

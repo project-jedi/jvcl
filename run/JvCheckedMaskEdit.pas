@@ -36,8 +36,8 @@ unit JvCheckedMaskEdit;
 interface
 
 uses
-  Classes, Messages, Controls, Graphics, StdCtrls, Mask,
-  JvMaskEdit;
+  Windows, Messages, Forms, SysUtils, Classes, Controls, Graphics, StdCtrls,
+  Mask, JvMaskEdit;
 
 type
   TJvCustomCheckedMaskEdit = class(TJvCustomMaskEdit)
@@ -144,7 +144,6 @@ type
 implementation
 
 uses
-  Windows, Forms, SysUtils,
   JvTypes, JvResources;
 
 constructor TJvCustomCheckedMaskEdit.Create(AOwner: TComponent);
