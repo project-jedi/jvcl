@@ -43,6 +43,7 @@ type
     FServer: string;
     FSource: string;
     FActive: boolean;
+    FLastError:Cardinal;
 
     FOnChange: TNotifyEvent;
     FNotifyThread: TNotifyChangeEventLog;
@@ -275,27 +276,28 @@ end;
 
 function TJvNTEventLog.Eof: Boolean;
 begin
-  Result := (EventRecord.RecordNumber = GetEventCount);
+  Result := (EventRecord.FCurrentRecord = nil) or (EventRecord.RecordNumber = GetEventCount)
+    or (FLastError = ERROR_HANDLE_EOF);
 end;
 
 procedure TJvNTEventLog.Next;
 var
   bytesRead, bytesNeeded, flags: DWORD;
   dummy: char;
-
 begin
   flags := EVENTLOG_SEQUENTIAL_READ;
   flags := flags or EVENTLOG_FORWARDS_READ;
 
   ReadEventLog(FLogHandle, flags, 0, @dummy, 0, bytesRead, bytesNeeded);
-  if GetLastError = ERROR_INSUFFICIENT_BUFFER then
+  FLastError := GetLastError;
+  if FLastError = ERROR_INSUFFICIENT_BUFFER then
   begin
     ReallocMem(FEventRecord.FCurrentRecord, bytesNeeded);
 
     if not ReadEventLog(FLogHandle, flags, 0, FEventRecord.FCurrentRecord, bytesNeeded, bytesRead, bytesNeeded) then
       RaiseLastOSError;
   end
-  else
+  else if FLastError <> ERROR_HANDLE_EOF then
     RaiseLastOSError;
 end;
 
@@ -305,7 +307,6 @@ var
   bytesRead, bytesNeeded: Cardinal;
   dummy: char;
   recNo: Integer;
-
 begin
   GetOldestEventLogRecord(FLogHandle, offset);
   recNo := n + offset;
@@ -314,13 +315,14 @@ begin
   flags := flags or EVENTLOG_FORWARDS_READ;
 
   ReadEventLog(FLogHandle, flags, recNo, @dummy, 0, bytesRead, bytesNeeded);
-  if GetLastError = ERROR_INSUFFICIENT_BUFFER then
+  FLastError := GetLastError;
+  if FLastError = ERROR_INSUFFICIENT_BUFFER then
   begin
     ReallocMem(FEventRecord.FCurrentRecord, bytesNeeded);
     if not ReadEventLog(FLogHandle, flags, recNo, FEventRecord.FCurrentRecord, bytesNeeded, bytesRead, bytesNeeded) then
       RaiseLastOSError;
   end
-  else
+  else if FLastError <> ERROR_HANDLE_EOF then
     RaiseLastOSError;
 end;
 

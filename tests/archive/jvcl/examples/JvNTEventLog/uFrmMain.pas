@@ -3,8 +3,8 @@ unit uFrmMain;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, ComCtrls, JvNTEventLog;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ExtCtrls, ComCtrls, JvNTEventLog, JvComponent;
 
 type
   TFrmMain = class(TForm)
@@ -40,10 +40,10 @@ procedure TFrmMain.ListBox1Click(Sender: TObject);
 begin
   if ListBox1.ItemIndex > -1 then
   begin
+    JvNTEventLog1.Active := false;
     JvNTEventLog1.Log := ListBox1.Items[ListBox1.ItemIndex];
     JvNTEventLog1.Source := ListBox1.Items[ListBox1.ItemIndex];
     JvNTEventLog1.Active := True;
-
     ReadEvents;
   end;
 end;
@@ -51,9 +51,9 @@ end;
 procedure TFrmMain.ReadEvents;
 var
   item: TListItem;
-
 begin
   ListView1.Items.BeginUpdate;
+  Screen.Cursor := crHourGlass;
   try
     ListView1.Items.Clear;
 
@@ -70,11 +70,11 @@ begin
       item.SubItems.Add(IntToStr(JvNTEventLog1.EventRecord.ID and $0FFFFFFF));
       item.SubItems.Add(JvNTEventLog1.EventRecord.Username);
       item.SubItems.Add(JvNTEventLog1.EventRecord.Computer);
-
       JvNTEventLog1.Next;
     end;
   finally
     ListView1.Items.EndUpdate;
+    Screen.Cursor := crDefault;
   end;
 end;
 
