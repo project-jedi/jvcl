@@ -52,12 +52,14 @@ type
     FPDir  : string;
     FEnv   : string;
     FVer   : string;
+    FDefines: TStringList;
     function GetDir: string;
     function GetEnv: string;
     function GetPDir: string;
     function GetVer: string;
   public
     constructor Create(Node : TJvSimpleXmlElem); overload;
+    destructor Destroy; override;
 
     property Name  : string read FName;
     property Dir   : string read GetDir;
@@ -65,6 +67,7 @@ type
     property PDir  : string read GetPDir;
     property Env   : string read GetEnv;
     property Ver   : string read GetVer;
+    property Defines: TStringList read FDefines;
   end;
 
   TTargetList = class (TObjectList)
@@ -106,10 +109,27 @@ type
     property ItemsByName[name : string] : TAlias read GetItemsByName; default;
   end;
 
-  TDefinesList = class (TStringList)
+  TDefine = class (TObject)
+  private
+    FName: string;
+    FIfDefs: TStringList;
+  public
+    constructor Create(Name : string; IfDefs : TStringList);
+    destructor Destroy; override;
+
+    property Name : string read FName write FName;
+    property IfDefs : TStringList read FIfDefs;
+  end;
+
+  TDefinesList = class (TObjectList)
+  private
+    function GetItems(index: integer): TDefine;
+    procedure SetItems(index: integer; const Value: TDefine);
   public
     constructor Create(incfile : TStringList); overload;
-    function IsDefined(const Condition: string): Boolean;
+    function IsDefined(const Condition, Target : string): Boolean;
+
+    property Items[index : integer] : TDefine read GetItems write SetItems; default;
   end;
 
 var
@@ -465,7 +485,7 @@ begin
     // is emptied, thus enforcing the absence of the condition
     else if (SameText(TargetList[GetNonPersoTarget(target)].Env, 'C')) then
     begin
-      if DefinesList.IsDefined(Condition) then
+      if DefinesList.IsDefined(Condition, target) then
         Result := line
       else
         Result := '';
@@ -504,7 +524,7 @@ begin
       if ParensPos <> 0 then
       begin
         Condition := Copy(CurPFlag, ParensPos+1, Length(CurPFlag) - ParensPos -1);
-        if not DefinesList.IsDefined(Condition)  then
+        if not DefinesList.IsDefined(Condition, target)  then
           PFlagsList[I] := ''
         else
           PFlagsList[I] := Copy(CurPFlag, 1, ParensPos-1);
@@ -920,7 +940,7 @@ begin
 
           // if this included file is not in the associated 'perso'
           // target or only in the 'perso' target then return the
-          // 'perso' target name. 'perso' either means PName
+          // 'perso' target name. 
           if IsNotInPerso(fileNode, target) or
              IsOnlyInPerso(fileNode, target) then
             Result := GetPersoTarget(target);
@@ -1031,11 +1051,11 @@ begin
     end;
 
     // Save the file, if it contains something, and it
-    // doesn't exist or it's older than the most recent file
+    // has changed when compared with the existing one
     if containsSomething and
        (HasFileChanged(OutFileName, templateName, outFile, TimeStampLine)) then
     begin
-      SendMsg(#9#9'Writing ' + ExtractFileName(OutFileName) + ' for ' + target);
+      SendMsg(SysUtils.Format(#9#9'Writing %s for %s', [ExtractFileName(OutFileName), target]));
 
       // if outfile contains line, save it.
       // else, it's because the template file was a binary file, so simply
@@ -1063,11 +1083,33 @@ begin
 end;
 
 function IsBinaryFile(const Filename: string): Boolean;
+const
+  BufferSize = 50;
+  BinaryPercent = 10;
 var
-  Ext: string;
+  F : TFileStream;
+  Buffer : array[0..BufferSize] of Char;
+  I : Integer;
+  BinaryCount : Integer;
 begin
-  Ext := AnsiLowerCase(ExtractFileExt(Filename));
-  Result := Ext = '.res';
+  Result := False;
+  // Read the first characters of the file and if enough of them
+  // are not text characters, then consider the file to be binary
+  if FileExists(FileName) then
+  begin
+    F := TFileStream.Create(FileName, fmOpenRead);
+    try
+      F.Read(Buffer, BufferSize+1);
+      BinaryCount := 0;
+      for I := 0 to BufferSize do
+        if not (Buffer[I] in [#9, #13, #10, #32..#127]) then
+          Inc(BinaryCount);
+
+      Result := BinaryCount > BufferSize * BinaryPercent div 100;
+    finally
+      F.Free;
+    end;
+  end;
 end;
 
 function Generate(packages : TStrings;
@@ -1137,20 +1179,20 @@ begin
     Prefix := GPrefix;
   if format = '' then
     Format := GFormat;
+
   // for all targets
-//  EnsureTargets(targets);
   i := 0;
   while i < targets.Count do
   begin
     target := targets[i];
-    SendMsg('Generating packages for ' + target);
+    SendMsg(SysUtils.Format('Generating packages for %s', [target]));
     // find all template files for that target
     if FindFirst(path+TargetToDir(target)+PathSeparator+'template.*', 0, rec) = 0 then
     begin
       repeat
         template := TStringList.Create;
         try
-          SendMsg(#9'Loaded '+rec.Name);
+          SendMsg(SysUtils.Format(#9'Loaded %s', [rec.Name]));
           // apply the template for all packages
           for j := 0 to packages.Count-1 do
           begin
@@ -1189,7 +1231,7 @@ begin
               begin
                 if FileExists(path+TargetToDir(persoTarget)+PathSeparator+rec.Name) then
                 begin
-                  SendMsg(#9+persoTarget+ ' template will be used for ' + packages[j]);
+                  SendMsg(SysUtils.Format(#9'%s template will be used for %s', [persoTarget, packages[j]]));
                   templateName := path+TargetToDir(persoTarget)+PathSeparator+rec.Name;
                   if IsBinaryFile(templateName) then
                     template.Clear
@@ -1221,7 +1263,7 @@ begin
       until FindNext(rec) <> 0;
     end
     else
-      SendMsg(#9'No template found for '+target);
+      SendMsg(SysUtils.Format(#9'No template found for %s' , [target]));
     FindClose(rec);
     Inc(i);
   end;
@@ -1279,6 +1321,19 @@ begin
     FEnv := StrUpper(Node.Properties.ItemNamed['env'].Value)[1];
   if Assigned(Node.Properties.ItemNamed['ver']) then
     FVer := StrLower(Node.Properties.ItemNamed['ver'].Value)[1];
+
+  FDefines := TStringList.Create;  
+  if Assigned(Node.Properties.ItemNamed['defines']) then
+    StrToStrings(Node.Properties.ItemNamed['defines'].Value,
+                 ',',
+                 FDefines,
+                 False);
+end;
+
+destructor TTarget.Destroy;
+begin
+  FDefines.Free;
+  inherited;
 end;
 
 function TTarget.GetDir: string;
@@ -1416,31 +1471,105 @@ begin
   inherited Items[index] := Value;
 end;
 
-{ TDefinesList }
+{ TDefine }
 
-constructor TDefinesList.Create(incfile: TStringList);
-var
-  i: Integer;
-  curLine: string;
-  Line: string;
+constructor TDefine.Create(Name : string; IfDefs : TStringList);
 begin
   inherited Create;
 
-  if Assigned(incfile) then
-    for i := 0 to incfile.Count - 1 do
-    begin
-      curLine := incfile[i];
-      if Copy(curLine, 1, 8) = '{$DEFINE' then
-      begin
-        Line := Copy(curLine, 10, Length(curLine) - 10);
-        Add(Line);
-      end;
-    end;
+  FName := Name;
+  FIfDefs := TStringList.Create;
+  FIfDefs.Assign(IfDefs);
 end;
 
-function TDefinesList.IsDefined(const Condition : string): Boolean;
+destructor TDefine.Destroy;
 begin
-  Result := (IndexOf(Condition) >= 0);
+  FIfDefs.Free;
+  
+  inherited;
+end;
+
+{ TDefinesList }
+
+constructor TDefinesList.Create(incfile: TStringList);
+const
+  IfDefMarker  : string = '{$IFDEF';
+  IfNDefMarker : string = '{$IFNDEF';
+  EndIfMarker  : string = '{$ENDIF';
+  ElseMarker   : string = '{$ELSE';
+  DefineMarker : string = '{$DEFINE';
+var
+  i: Integer;
+  curLine: string;
+  IfDefs : TStringList;
+begin
+  inherited Create(True);
+
+  IfDefs := TStringList.Create;
+  try
+    if Assigned(incfile) then
+      for i := 0 to incfile.Count - 1 do
+      begin
+        curLine := Trim(incfile[i]);
+
+        if StrHasPrefix(curLine, [IfDefMarker]) then
+          IfDefs.AddObject(Copy(curLine, Length(IfDefMarker)+2, Length(curLine)-Length(IfDefMarker)-2), TObject(True))
+        else if StrHasPrefix(curLine, [IfNDefMarker]) then
+          IfDefs.AddObject(Copy(curLine, Length(IfNDefMarker)+2, Length(curLine)-Length(IfNDefMarker)-2), TObject(False))
+        else if StrHasPrefix(curLine, [ElseMarker]) then
+          IfDefs.Objects[IfDefs.Count-1] := TObject(not Boolean(IfDefs.Objects[IfDefs.Count-1]))
+        else if StrHasPrefix(curLine, [EndIfMarker]) then
+          IfDefs.Delete(IfDefs.Count-1)
+        else if StrHasPrefix(curLine, [DefineMarker]) then
+          Add(TDefine.Create(Copy(curLine, Length(DefineMarker)+2, Length(curLine)-Length(DefineMarker)-2), IfDefs));
+      end;
+  finally
+    IfDefs.Free;
+  end;
+end;
+
+function TDefinesList.GetItems(index: integer): TDefine;
+begin
+  Result := TDefine(inherited Items[index]);
+end;
+
+function TDefinesList.IsDefined(const Condition, Target : string): Boolean;
+var
+  I : Integer;
+  Define : TDefine;
+begin
+  Result := False;
+  Define := nil;
+  I := 0;
+  while not Result and (I < Count) do
+  begin
+    Define := Items[I];
+    Result := SameText(Define.Name, Condition);
+    Inc(I);
+  end;
+  If I = Count then
+    Define := nil;
+
+  // If the condition is not defined by its name, maybe it
+  // is as a consequence of the target we use
+  if not Result then
+    Result := TargetList[GetNonPersoTarget(Target)].Defines.IndexOf(Condition) > -1;
+
+  // If the condition is defined, then all the IfDefs in which
+  // it is enclosed must also be defined
+  if Result and Assigned(Define) then
+    for I := 0 to Define.IfDefs.Count - 1 do
+    begin
+      if Boolean(Define.IfDefs.Objects[I]) then
+        Result := Result and IsDefined(Define.IfDefs[I], Target)
+      else
+        Result := Result and not IsDefined(Define.IfDefs[I], Target);
+    end
+end;
+
+procedure TDefinesList.SetItems(index: integer; const Value: TDefine);
+begin
+  inherited Items[index] := Value;
 end;
 
 initialization
