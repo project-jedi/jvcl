@@ -1453,7 +1453,8 @@ begin
   ACount := MaximizedCount;
   if NewSize < ButtonHeight div 2 then
     MaximizedCount := ACount - 1
-  else if NewSize > ButtonHeight + ButtonHeight div 2 then
+  else
+  if NewSize > ButtonHeight + ButtonHeight div 2 then
     MaximizedCount := ACount + 1;
   NewSize := 0;
   Accept := False;
@@ -1989,7 +1990,8 @@ begin
   if Operation = opRemove then
     if AComponent = Images then
       Images := nil
-    else if AComponent = StyleManager then
+    else
+    if AComponent = StyleManager then
       StyleManager := nil;
 end;
 
@@ -2011,7 +2013,8 @@ begin
       else
         GradientFillRect(Canvas, Rect, Colors.ButtonHotColorFrom, Colors.ButtonHotColorTo, fdTopToBottom, 32)
     end
-    else if Down then
+    else
+    if Down then
       GradientFillRect(Canvas, Rect, Colors.ButtonSelectedColorFrom, Colors.ButtonSelectedColorTo, fdTopToBottom, 32);
     case ButtonType of
       nibDropDown:
@@ -2307,9 +2310,11 @@ begin
     else
       GradientFillRect(Canvas, R, Colors.ButtonHotColorFrom, Colors.ButtonHotColorTo, fdTopToBottom, 32);
   end
-  else if Down then
+  else
+  if Down then
     GradientFillRect(Canvas, R, Colors.ButtonSelectedColorFrom, Colors.ButtonSelectedColorTo, fdTopToBottom, 32)
-  else if bsMouseDown in MouseStates then
+  else
+  if bsMouseDown in MouseStates then
     GradientFillRect(Canvas, R, Colors.ButtonSelectedColorTo, Colors.ButtonSelectedColorFrom, fdTopToBottom, 32)
   else
     GradientFillRect(Canvas, ClientRect, Colors.ButtonColorFrom, Colors.ButtonColorTo, fdTopToBottom, 32);
@@ -2888,7 +2893,8 @@ begin
   begin
     if AComponent = IconPanel then
       IconPanel := nil
-    else if AComponent = StyleManager then
+    else
+    if AComponent = StyleManager then
       StyleManager := nil;
   end;
 end;
@@ -3135,7 +3141,8 @@ begin
   inherited;
   if FBackground.HasImage then
     FBackground.DrawImage(Canvas, ClientRect)
-  else if (Parent is TJvCustomNavigationPane) and TJvCustomNavigationPane(Parent).Background.HasImage then
+  else
+  if (Parent is TJvCustomNavigationPane) and TJvCustomNavigationPane(Parent).Background.HasImage then
     TJvCustomNavigationPane(Parent).Background.DrawImage(Canvas, ClientRect);
 end;
 
@@ -3449,7 +3456,8 @@ begin
   if Operation = opRemove then
     if AComponent = Images then
       Images := nil
-    else if AComponent = StyleManager then
+    else
+    if AComponent = StyleManager then
       StyleManager := nil;
 end;
 
@@ -3869,15 +3877,20 @@ begin
     else
       Exit;
   end
-  else if Source is TJvIconPanel then
+  else
+  if Source is TJvIconPanel then
     SourceColors := TJvIconPanel(Source).Colors
-  else if Source is TJvNavIconButton then
+  else
+  if Source is TJvNavIconButton then
     SourceColors := TJvNavIconButton(Source).Colors
-  else if Source is TJvNavPanelButton then
+  else
+  if Source is TJvNavPanelButton then
     SourceColors := TJvNavPanelButton(Source).Colors
-  else if Source is TJvNavPanelPage then
+  else
+  if Source is TJvNavPanelPage then
     SourceColors := TJvNavPanelPage(Source).Colors
-  else if Source is TJvCustomNavigationPane then
+  else
+  if Source is TJvCustomNavigationPane then
     SourceColors := TJvCustomNavigationPane(Source).Colors
   else
   begin
@@ -3906,15 +3919,20 @@ begin
     else
       Exit;
   end
-  else if Dest is TJvIconPanel then
+  else
+  if Dest is TJvIconPanel then
     DestColors := TJvIconPanel(Dest).Colors
-  else if Dest is TJvNavIconButton then
+  else
+  if Dest is TJvNavIconButton then
     DestColors := TJvNavIconButton(Dest).Colors
-  else if Dest is TJvNavPanelButton then
+  else
+  if Dest is TJvNavPanelButton then
     DestColors := TJvNavPanelButton(Dest).Colors
-  else if Dest is TJvNavPanelPage then
+  else
+  if Dest is TJvNavPanelPage then
     DestColors := TJvNavPanelPage(Dest).Colors
-  else if Dest is TJvCustomNavigationPane then
+  else
+  if Dest is TJvCustomNavigationPane then
     DestColors := TJvCustomNavigationPane(Dest).Colors
   else
   begin
@@ -4298,9 +4316,11 @@ begin
   begin
     if AComponent = Images then
       Images := nil
-    else if AComponent = StyleManager then
+    else
+    if AComponent = StyleManager then
       StyleManager := nil
-    else if AComponent = DropDownMenu then
+    else
+    if AComponent = DropDownMenu then
       DropDownMenu := nil;
   end;
 end;
@@ -4781,6 +4801,21 @@ end;
 
 //=== TJvNavPanelToolButton ==================================================
 
+constructor TJvNavPanelToolButton.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FChangeLink := TChangeLink.Create;
+  FChangeLink.OnChange := DoImagesChange;
+  DrawPartialMenuFrame := False;
+  TransparentDown := False;
+end;
+
+destructor TJvNavPanelToolButton.Destroy;
+begin
+  FChangeLink.Free;
+  inherited Destroy;
+end;
+
 procedure TJvNavPanelToolButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 begin
   if Sender is TCustomAction then
@@ -4797,21 +4832,6 @@ begin
       if not CheckDefaults or not Assigned(Self.OnClick) then
         Self.OnClick := OnExecute;
     end;
-end;
-
-constructor TJvNavPanelToolButton.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FChangeLink := TChangeLink.Create;
-  FChangeLink.OnChange := DoImagesChange;
-  DrawPartialMenuFrame := False;
-  TransparentDown := False;
-end;
-
-destructor TJvNavPanelToolButton.Destroy;
-begin
-  FChangeLink.Free;
-  inherited Destroy;
 end;
 
 procedure TJvNavPanelToolButton.DoImagesChange(Sender: TObject);
@@ -4963,10 +4983,23 @@ end;
 
 //=== TJvNavPaneBackgroundImage ==============================================
 
+constructor TJvNavPaneBackgroundImage.Create;
+begin
+  inherited Create;
+  FPicture := TPicture.Create;
+  FPicture.OnChange := PictureChanged;
+end;
+
+destructor TJvNavPaneBackgroundImage.Destroy;
+begin
+  FPicture.Free;
+  inherited Destroy;
+end;
+
 function TJvNavPaneBackgroundImage.CalcRect(ADestRect: TRect): TRect;
 var
   w, h, cw, ch: Integer;
-  xyaspect: Double;
+  XYAspect: Double;
 begin
   w := Picture.Width;
   h := Picture.Height;
@@ -4976,25 +5009,25 @@ begin
   begin
     if Proportional and (w > 0) and (h > 0) then
     begin
-      xyaspect := w / h;
+      XYAspect := w / h;
       if w > h then
       begin
         w := cw;
-        h := Trunc(cw / xyaspect);
+        h := Trunc(cw / XYAspect);
         if h > ch then // woops, too big
         begin
           h := ch;
-          w := Trunc(ch * xyaspect);
+          w := Trunc(ch * XYAspect);
         end;
       end
       else
       begin
         h := ch;
-        w := Trunc(ch * xyaspect);
+        w := Trunc(ch * XYAspect);
         if w > cw then // woops, too big
         begin
           w := cw;
-          h := Trunc(cw / xyaspect);
+          h := Trunc(cw / XYAspect);
         end;
       end;
     end
@@ -5020,21 +5053,9 @@ end;
 procedure TJvNavPaneBackgroundImage.Change;
 begin
   FDrawing := True;
-  if Assigned(FOnChange) then FOnChange(Self);
+  if Assigned(FOnChange) then
+    FOnChange(Self);
   FDrawing := False;
-end;
-
-constructor TJvNavPaneBackgroundImage.Create;
-begin
-  inherited Create;
-  FPicture := TPicture.Create;
-  FPicture.OnChange := PictureChanged;
-end;
-
-destructor TJvNavPaneBackgroundImage.Destroy;
-begin
-  FPicture.Free;
-  inherited Destroy;
 end;
 
 procedure TJvNavPaneBackgroundImage.DrawImage(Canvas: TCanvas; ARect: TRect);
@@ -5060,7 +5081,8 @@ procedure TJvNavPaneBackgroundImage.DrawImage(Canvas: TCanvas; ARect: TRect);
   end;
 
 begin
-  if (Picture.Graphic = nil) or (Picture.Width = 0) or (Picture.Height = 0) then Exit;
+  if (Picture.Graphic = nil) or (Picture.Width = 0) or (Picture.Height = 0) then
+    Exit;
   if Tile then
     TileImage
   else
@@ -5082,7 +5104,8 @@ begin
   if G <> nil then
     if not ({$IFDEF VCL} (G is TMetaFile) or {$ENDIF} (G is TIcon)) then
       G.Transparent := FTransparent;
-  if not FDrawing then Change;
+  if not FDrawing then
+    Change;
 end;
 
 procedure TJvNavPaneBackgroundImage.SetCenter(const Value: Boolean);

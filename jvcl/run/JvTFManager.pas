@@ -106,7 +106,7 @@ type
   private
     FOnChange: TNotifyEvent;
   protected
-    FList: TStringlist;
+    FList: TStringList;
     function GetDate(Index: Integer): TDate;
     procedure Change; virtual;
   public
@@ -122,7 +122,7 @@ type
   end;
 
   TJvTFNavEvent = procedure(Sender: TObject; aControl: TJvTFControl;
-    SchedNames: TStringlist; Dates: TJvTFDateList) of object;
+    SchedNames: TStringList; Dates: TJvTFDateList) of object;
   TJvTFControlEvent = procedure(Sender: TObject; aControl: TJvTFControl) of object;
   TJvTFSchedEvent = procedure(Sender: TObject; Schedule: TJvTFSched) of object;
   TJvTFApptEvent = procedure(Sender: TObject; Appt: TJvTFAppt) of object;
@@ -135,7 +135,7 @@ type
 
   TJvTFCustomImageMap = class(TPersistent)
   private
-    FMap: TStringlist;
+    FMap: TStringList;
     function GetImage(MapIndex: Integer): Integer;
     procedure SetImage(MapIndex: Integer; Value: Integer);
     function GetImageName(MapIndex: Integer): string;
@@ -240,8 +240,8 @@ type
     FID: string;
     FModified: Boolean;
     FScheduleManager: TJvTFScheduleManager;
-    FConnections: TStringlist;
-    FSchedules: TStringlist;
+    FConnections: TStringList;
+    FSchedules: TStringList;
     FDeleting: Boolean;
     // implicit post fix
     FUpdating: Boolean;
@@ -319,9 +319,9 @@ type
 
   TJvTFSched = class(TObject)
   private
-    FAppts: TStringlist;
-    FConControls: TStringlist;
-    FConComponents: TStringlist;
+    FAppts: TStringList;
+    FConControls: TStringList;
+    FConComponents: TStringList;
     FDestroying: Boolean;
     FData: Integer;
     FPersistent: Boolean;
@@ -441,10 +441,10 @@ type
   TJvTFScheduleManager = class(TComponent)
   private
     FAlwaysPost: Boolean;
-    FAppts: TStringlist;
-    FSchedules: TStringlist;
-    FConControls: TStringlist;
-    FConComponents: TStringlist;
+    FAppts: TStringList;
+    FSchedules: TStringList;
+    FConControls: TStringList;
+    FConComponents: TStringList;
     FOnNeedAppts: TJvTFSchedEvent;
     FOnRefreshAppt: TJvTFApptEvent;
     FOnRefreshSched: TJvTFSchedEvent;
@@ -491,7 +491,7 @@ type
     FFlushing: Boolean;
     FDestroying: Boolean;
 
-    FSchedBatch: TStringlist;
+    FSchedBatch: TStringList;
 
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
@@ -747,7 +747,7 @@ type
     {$ENDIF USEJVCL}
   private
     FScheduleManager: TJvTFScheduleManager;
-    FSchedules: TStringlist;
+    FSchedules: TStringList;
     procedure SetManager(Value: TJvTFScheduleManager);
     function GetSchedule(Index: Integer): TJvTFSched;
   protected
@@ -790,7 +790,7 @@ type
     {$ENDIF USEJVCL}
   private
     FScheduleManager: TJvTFScheduleManager;
-    FSchedules: TStringlist;
+    FSchedules: TStringList;
     //    FNavigator : TJvTFNavigator;
     //    FOnNavigate : TJvTFNavEvent;
     procedure SetManager(Value: TJvTFScheduleManager);
@@ -819,7 +819,7 @@ type
     procedure DoEndDrag(Target: TObject; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-    procedure Navigate(aControl: TJvTFControl; SchedNames: TStringlist;
+    procedure Navigate(aControl: TJvTFControl; SchedNames: TStringList;
       Dates: TJvTFDateList); virtual;
     //    property Navigator : TJvTFNavigator read FNavigator write SetNavigator;
     //    property OnNavigate : TJvTFNavEvent read FOnNavigate write FOnNavigate;
@@ -877,8 +877,8 @@ type
 
   TJvTFPrinter = class(TJvTFComponent)
   private
-    FPages: TStringlist;
-    FBodies: TStringlist;
+    FPages: TStringList;
+    FBodies: TStringList;
     FMarginOffsets: TJvTFMargins; // always in pixels
     FMeasure: TJvTFPrinterMeasure;
     FOnDrawBody: TJvTFPrinterDrawEvent;
@@ -1167,7 +1167,7 @@ begin
 
   inherited Create;
   FAppt := anAppt;
-  FMap := TStringlist.Create;
+  FMap := TStringList.Create;
 end;
 
 destructor TJvTFCustomImageMap.Destroy;
@@ -1396,8 +1396,8 @@ begin
 
   inherited Create;
 
-  FSchedules := TStringlist.Create;
-  FConnections := TStringlist.Create;
+  FSchedules := TStringList.Create;
+  FConnections := TStringList.Create;
 
   FStartDate := Date;
   FStartTime := Time;
@@ -1556,7 +1556,7 @@ var
   Schedule: TJvTFSched;
   I: Integer;
   ADate: TDate;
-  Temp: TStringlist;
+  Temp: TStringList;
 begin
   // Schedules --> Connections
   for I := 0 to ScheduleCount - 1 do
@@ -1573,7 +1573,7 @@ begin
   end;
 
   // Connections --> Schedules
-  Temp := TStringlist.Create;
+  Temp := TStringList.Create;
   try
     Temp.Assign(FConnections);
     for I := 0 to Temp.Count - 1 do
@@ -1936,10 +1936,10 @@ begin
   FSchedName := AName;
   FSchedDate := ADate;
 
-  FAppts := TStringlist.Create;
-  FConControls := TStringlist.Create;
+  FAppts := TStringList.Create;
+  FConControls := TStringList.Create;
   FConControls.OnChange := ConnectionsOnChange;
-  FConComponents := TStringlist.Create;
+  FConComponents := TStringList.Create;
   FConComponents.OnChange := ConnectionsOnChange;
 
   if Assigned(Serv) then
@@ -1981,7 +1981,7 @@ begin
   FConControls.Free;
   FConComponents.Free;
 
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvTFSched.GetAppt(Index: Integer): TJvTFAppt;
@@ -1992,11 +1992,12 @@ end;
 procedure TJvTFSched.Notify(Sender: TObject; Code: TJvTFServNotifyCode);
 var
   I: Integer;
-  ConList: TStringlist;
+  ConList: TStringList;
 begin
   if Sender is TJvTFControl then
     ConList := FConControls
-  else if Sender is TJvTFComponent then
+  else
+  if Sender is TJvTFComponent then
     ConList := FConComponents
   else
     ConList := nil;
@@ -2011,10 +2012,8 @@ begin
         if I > -1 then
           ConList.Delete(I);
       end;
-
     sncConnectAppt:
       ConnectAppt(TJvTFAppt(Sender));
-
     sncDisconnectAppt:
       DisconnectAppt(TJvTFAppt(Sender));
   end;
@@ -2083,9 +2082,7 @@ procedure TJvTFSched.CheckConnections;
 var
   I: Integer;
   Appt: TJvTFAppt;
-  DateHit,
-    NameMatch,
-    NotConnected: Boolean;
+  DateHit, NameMatch, NotConnected: Boolean;
 begin
   // Check each appt in the ScheduleManager to see if that appt should be connected
   //  to this schedule.  If so, then connect it.
@@ -2104,21 +2101,11 @@ end;
 function TJvTFSched.GetFreeUsedTime(FreeTime: Boolean): TDynTimeRangeArray;
 var
   // 60 mins X 24 hrs = 1440 ==> minutes in a day
-  DayArray: array[0..1439] of Boolean; // I'm a poet and don't know it.
-  I,
-    J,
-    MinStart,
-    MinEnd: Integer;
+  DayArray: array [0..1439] of Boolean; // I'm a poet and don't know it.
+  I, J, MinStart, MinEnd: Integer;
   anAppt: TJvTFAppt;
-  StartTime,
-    EndTime: TTime;
-  Switch,
-    MinIsFree,
-    InRange: Boolean;
-
-  ////////////////////////////////
-  // SUBORDINATE ROUTINES
-  ////////////////////////////////
+  StartTime, EndTime: TTime;
+  Switch, MinIsFree, InRange: Boolean;
 
   function TimeToMinNum(ATime: TTime): Integer;
   var
@@ -2151,9 +2138,6 @@ var
     InRange := False;
   end;
 
-  ////////////////////
-  // MAIN ROUTINE
-  ////////////////////
 begin
   // Initialize resultant array
   SetLength(Result, 1);
@@ -2198,7 +2182,8 @@ begin
           StartRange
         else
           EndRange
-      else if FreeTime then
+      else
+      if FreeTime then
         EndRange
       else
         StartRange
@@ -2434,9 +2419,11 @@ begin
       Result := anAppt;
       Break; // APPOINTMENT STARTS AT 0:00 (12:00am) SO LEAVE LOOP
     end
-    else if not Assigned(Result) then
+    else
+    if not Assigned(Result) then
       Result := anAppt
-    else if Frac(anAppt.StartTime) < Frac(Result.StartTime) then
+    else
+    if Frac(anAppt.StartTime) < Frac(Result.StartTime) then
       Result := anAppt;
     Inc(I);
   end;
@@ -2457,9 +2444,11 @@ begin
       Result := anAppt;
       Break; // APPOINTMENT ENDS AT 23:59 (11:59pm) SO LEAVE LOOP
     end
-    else if not Assigned(Result) then
+    else
+    if not Assigned(Result) then
       Result := anAppt
-    else if Frac(anAppt.EndTime) > Frac(Result.EndTime) then
+    else
+    if Frac(anAppt.EndTime) > Frac(Result.EndTime) then
       Result := anAppt;
     Inc(I);
   end;
@@ -2595,15 +2584,15 @@ begin
 
   FSchedLoadMode := slmOnDemand;
 
-  FAppts := TStringlist.Create;
-  FSchedules := TStringlist.Create;
+  FAppts := TStringList.Create;
+  FSchedules := TStringList.Create;
 
-  FSchedBatch := TStringlist.Create;
+  FSchedBatch := TStringList.Create;
   FSchedBatch.Sorted := True;
   FSchedBatch.Duplicates := dupIgnore;
 
-  FConControls := TStringlist.Create;
-  FConComponents := TStringlist.Create;
+  FConControls := TStringList.Create;
+  FConComponents := TStringList.Create;
 
   FStateImageMap := TJvTFStateImageMap.Create(Self);
   FImageChangeLink := TChangeLink.Create;
@@ -2709,7 +2698,8 @@ begin
       StateImages := nil;
       RefreshConnections(nil);
     end
-    else if AComponent = CustomImages then
+    else
+    if AComponent = CustomImages then
     begin
       CustomImages := nil;
       RefreshConnections(nil);
@@ -3251,7 +3241,7 @@ end;
 procedure TJvTFScheduleManager.RefreshAppts;
 var
   I: Integer;
-  ApptIDList: TStringlist;
+  ApptIDList: TStringList;
   Appt: TJvTFAppt;
 begin
   // In a multi-user environment, appt objects may be deleted as a result
@@ -3259,7 +3249,7 @@ begin
   // To account for this we need to build a list of appt ID's instead of
   // working directly from the ScheduleManager's appointment list.
 
-  ApptIDList := TStringlist.Create;
+  ApptIDList := TStringList.Create;
   try
     for I := 0 to ApptCount - 1 do
     begin
@@ -3299,17 +3289,20 @@ begin
     for I := 0 to ConComponentCount - 1 do
       RequestRefresh(ConComponents[I], nil);
   end
-  else if Trigger is TJvTFComponent then
+  else
+  if Trigger is TJvTFComponent then
   begin
     // refresh all schedules for given component
     RequestRefresh(TJvTFComponent(Trigger), nil);
   end
-  else if Trigger is TJvTFControl then
+  else
+  if Trigger is TJvTFControl then
   begin
     // refresh all schedules for given control
     RequestRefresh(TJvTFControl(Trigger), nil);
   end
-  else if Trigger is TJvTFSched then
+  else
+  if Trigger is TJvTFSched then
   begin
     // refresh all appt controls connected to schedule
     Sched := TJvTFSched(Trigger);
@@ -3319,7 +3312,8 @@ begin
     for I := 0 to Sched.ConComponentCount - 1 do
       RequestRefresh(Sched.ConComponents[I], Sched);
   end
-  else if Trigger is TJvTFAppt then
+  else
+  if Trigger is TJvTFAppt then
   begin
     // refresh all appt controls for all schedules connected to this appt
     Appt := TJvTFAppt(Trigger);
@@ -3334,7 +3328,7 @@ procedure TJvTFScheduleManager.Flush(All: Boolean); //param All defaults to Fals
 var
   I: Integer;
   Sched: TJvTFSched;
-  MRUList: TStringlist;
+  MRUList: TStringList;
   CacheTimeUp: Boolean;
 begin
   if FFlushing or FDestroying then
@@ -3358,7 +3352,8 @@ begin
       end;
       FlushAppts;
     end
-    else if Cache.CacheType = ctTimed then
+    else
+    if Cache.CacheType = ctTimed then
     begin
       I := 0;
       while I < ScheduleCount do
@@ -3382,9 +3377,10 @@ begin
       end;
       FlushAppts;
     end
-    else if Cache.CacheType = ctBuffer then
+    else
+    if Cache.CacheType = ctBuffer then
     begin
-      MRUList := TStringlist.Create;
+      MRUList := TStringList.Create;
       try
         MRUList.Sorted := True;
         MRUList.Duplicates := dupAccept;
@@ -3611,7 +3607,8 @@ begin
     if not Appt.Refreshed then
       Appt.ClearSchedules;
   end
-  else if Scope is TJvTFSched then
+  else
+  if Scope is TJvTFSched then
   begin
     Sched := TJvTFSched(Scope);
     I := 0;
@@ -3624,7 +3621,8 @@ begin
         Inc(I);
     end;
   end
-  else if Scope is TJvTFScheduleManager then
+  else
+  if Scope is TJvTFScheduleManager then
     for I := 0 to ApptCount - 1 do
       ReconcileRefresh(Appts[I])
   else
@@ -3734,7 +3732,8 @@ begin
   begin
     if HintType = shtAppt then
       Ref := FOldAppt
-    else if HintType = shtObj then
+    else
+    if HintType = shtObj then
       Ref := FOldObj
     else
       Ref := nil;
@@ -3938,7 +3937,7 @@ constructor TJvTFControl.Create(AOwner: TComponent);
 begin
   inherited;
 
-  FSchedules := TStringlist.Create;
+  FSchedules := TStringList.Create;
   FTimeFormat := 't'; // global short time format
   FDateFormat := 'ddddd'; // global short date format
 end;
@@ -4163,7 +4162,7 @@ end;
 //end;
 
 procedure TJvTFControl.Navigate(aControl: TJvTFControl;
-  SchedNames: TStringlist; Dates: TJvTFDateList);
+  SchedNames: TStringList; Dates: TJvTFDateList);
 begin
   //  If Assigned(FOnNavigate) Then
   //    FOnNavigate(Self, aControl, SchedNames, Dates);
@@ -4181,7 +4180,7 @@ constructor TJvTFComponent.Create(AOwner: TComponent);
 begin
   inherited;
 
-  FSchedules := TStringlist.Create;
+  FSchedules := TStringList.Create;
   FTimeFormat := 't'; // global short time format
   FDateFormat := 'ddddd'; // global short date format
 end;
@@ -4378,15 +4377,20 @@ begin
   {$ENDIF VisualCLX}
   if (FromMeasure = pmPixels) and (ToMeasure = pmInches) then
     Result := round(Value / PPI * 100)
-  else if (FromMeasure = pmPixels) and (ToMeasure = pmMM) then
+  else
+  if (FromMeasure = pmPixels) and (ToMeasure = pmMM) then
     Result := round(Value / PPI * 100 * MMFactor)
-  else if (FromMeasure = pmInches) and (ToMeasure = pmPixels) then
+  else
+  if (FromMeasure = pmInches) and (ToMeasure = pmPixels) then
     Result := round(Value / 100 * PPI)
-  else if (FromMeasure = pmInches) and (ToMeasure = pmMM) then
+  else
+  if (FromMeasure = pmInches) and (ToMeasure = pmMM) then
     Result := round(Value * MMFactor)
-  else if (FromMeasure = pmMM) and (ToMeasure = pmPixels) then
+  else
+  if (FromMeasure = pmMM) and (ToMeasure = pmPixels) then
     Result := round(Value / MMFactor / 100 * PPI)
-  else if (FromMeasure = pmMM) and (ToMeasure = pmInches) then
+  else
+  if (FromMeasure = pmMM) and (ToMeasure = pmInches) then
     Result := round(Value / MMFactor)
   else
     Result := Value;
@@ -4397,8 +4401,8 @@ begin
   inherited Create(AOwner);
   CreateLayout;
   FMeasure := pmInches;
-  FPages := TStringlist.Create;
-  FBodies := TStringlist.Create;
+  FPages := TStringList.Create;
+  FBodies := TStringList.Create;
   InitializeMargins;
 end;
 
@@ -5319,7 +5323,7 @@ end;
 constructor TJvTFDateList.Create;
 begin
   inherited Create;
-  FList := TStringlist.Create;
+  FList := TStringList.Create;
   FList.Sorted := True;
   FList.Duplicates := dupIgnore;
 end;
