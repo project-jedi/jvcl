@@ -17,6 +17,9 @@ object JvSearchFileMainForm: TJvSearchFileMainForm
   Position = poScreenCenter
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
+  DesignSize = (
+    362
+    318)
   PixelsPerInch = 96
   TextHeight = 13
   object GroupBox1: TGroupBox
@@ -26,6 +29,9 @@ object JvSearchFileMainForm: TJvSearchFileMainForm
     Height = 139
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 0
+    DesignSize = (
+      353
+      139)
     object Label1: TLabel
       Left = 10
       Top = 16
@@ -125,6 +131,9 @@ object JvSearchFileMainForm: TJvSearchFileMainForm
     Height = 105
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 5
+    DesignSize = (
+      353
+      105)
     object reFoundFiles: TRichEdit
       Left = 6
       Top = 12
@@ -192,7 +201,7 @@ object JvSearchFileMainForm: TJvSearchFileMainForm
     Top = 72
   end
   object JvFormStorage1: TJvFormStorage
-    IniSection = 'Settings'
+    AppStorage = JvAppINIFileStore1
     StoredProps.Strings = (
       'edFileMask.Text'
       'chkRecursive.Checked'
@@ -206,5 +215,10 @@ object JvSearchFileMainForm: TJvSearchFileMainForm
     StoredValues = <>
     Left = 186
     Top = 72
+  end
+  object JvAppINIFileStore1: TJvAppINIFileStore
+    Buffered = False
+    Left = 90
+    Top = 84
   end
 end

@@ -9,12 +9,11 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = EditorDemo.exe MessengerDemo.exe \
-  Philosophers.exe Balls.exe JvAppInstDemo.exe JvDbMaskEditDemo.exe \
-  JvComboListBoxDemo.exe JvChartDemo.exe JvErrorIndicatorDemo.exe \
-  JvSpellCheckerDemo.exe JvUrlListGrabberDemo.exe RAControls.exe \
-  DBMove.exe DBTree.exe LineNumbers.exe RAEditorTest.exe RAHLEdPropDlgTest.exe \
-  ColorHintsTest.exe SampleProject1.exe JvInterpreterTest.exe DynamicLoad.exe \
+PROJECTS = EditorDemo.exe MessengerDemo.exe Philosophers.exe Balls.exe \
+  JvAppInstDemo.exe JvDbMaskEditDemo.exe JvComboListBoxDemo.exe JvChartDemo.exe \
+  JvErrorIndicatorDemo.exe JvSpellCheckerDemo.exe JvUrlListGrabberDemo.exe \
+  RAControls.exe DBMove.exe DBTree.exe LineNumbers.exe RAEditorTest.exe \
+  RAHLEdPropDlgTest.exe ColorHintsTest.exe JvInterpreterTest.exe DynamicLoad.exe \
   JvInterpreterEndUser.exe MDIapp.exe RANotepad.exe JvZoomProj.exe \
   JvZLibMultipleDemo.exe WndProcHookDemo.exe JvWindowsTitleProj.exe \
   JvWinDialogsDemo.exe JvFormatEditDemo.exe JvTreeViewAsMenu.exe \
@@ -24,11 +23,11 @@ PROJECTS = EditorDemo.exe MessengerDemo.exe \
   SpecialProgressTestPrj.exe JvSimpleXMLDemo.exe ShFileOpDemo.exe \
   JvShellHookDemo.exe JvSearchFileProj.exe ScrollWinDemo.exe \
   JvScreenCaptureProj.exe Rxdemo.exe RunDLL32Demo.exe RegEditDemo.exe \
-  JvProgressDialogDemo.exe ProfilerDemo.exe PlugInDemo.exe SamplePluginOne.dll \
-  MDIPlugin.dll MDISample.exe ChangePropertiesPlugin.dll PropertiesPlugInDemo.exe \
+  JvProgressDialogDemo.exe PlugInDemo.exe SamplePluginOne.dll MDIPlugin.dll \
+  MDISample.exe ChangePropertiesPlugin.dll PropertiesPlugInDemo.exe \
   ExceptionPlugin.dll ExceptionPlugInDemo.exe DataPlugin.dll DataPlugInDemo.exe \
   JvPlgMainApp.exe JvPlayListProj.exe JvPanelDemo.exe OLBarDemo.exe \
-  JvObjPickerDemo.exe EventViewer.exe JvMruList.exe MonthCalendarDemo.exe \
+  JvObjPickerDemo.exe EventViewer.exe JvMruListDemo.exe MonthCalendarDemo.exe \
   MailExample.exe JvLogFileDemo.exe ListCombDemo.exe JvLinkLabelDemo.exe \
   Install2LabelDemo.exe InspectorDBExample.exe InspectorSimpleExample.exe \
   InspExample.exe ImageWindowDemo.exe JvID3v2Demo.exe JvID3v1Demo.exe \
@@ -91,9 +90,6 @@ RAHLEdPropDlgTest.exe: RaLib\RaEditor\RAHLEdPropDlgTest.dpr
   $(DCC)
 
 ColorHintsTest.exe: RaLib\RaHtHints\ColorHintsTest.dpr
-  $(DCC)
-
-SampleProject1.exe: RaLib\RaInterpreter\samples\project1\SampleProject1.dpr
   $(DCC)
 
 JvInterpreterTest.exe: RaLib\RaInterpreter\JvInterpreterTest.dpr
@@ -195,9 +191,6 @@ RegEditDemo.exe: JvRegistryTreeView\RegEditDemo.dpr
 JvProgressDialogDemo.exe: JvProgressDialog\JvProgressDialogDemo.dpr
   $(DCC)
 
-ProfilerDemo.exe: JvProfiler32\ProfilerDemo.dpr
-  $(DCC)
-
 PlugInDemo.exe: JvPlugin\1SimplePlugin\PlugInDemo.dpr
   $(DCC)
 
@@ -246,7 +239,7 @@ JvObjPickerDemo.exe: JvObjectPicker\JvObjPickerDemo.dpr
 EventViewer.exe: JvNTEventLog\EventViewer.dpr
   $(DCC)
 
-JvMruList.exe: JvMRUList\JvMruList.dpr
+JvMruListDemo.exe: JvMRUList\JvMruListDemo.dpr
   $(DCC)
 
 MonthCalendarDemo.exe: JvMonthCalendar\MonthCalendarDemo.dpr

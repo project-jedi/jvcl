@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvMru, Spin, JvComponent;
+  StdCtrls, JvMruList, Spin, JvComponent;
 
 type
   TJvMruListMainForm = class(TForm)

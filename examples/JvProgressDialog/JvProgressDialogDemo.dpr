@@ -2,9 +2,7 @@ program JvProgressDialogDemo;
 
 uses
   Forms,
-  JvProgressFrm in '..\..\source\JvProgressFrm.pas' {frmProgress},
-  JvProgressDialogMain in 'JvProgressDialogMain.pas' {frmProgressDialogDemo},
-  JvProgressDialog in '..\..\source\JvProgressDialog.pas';
+  JvProgressDialogMain in 'JvProgressDialogMain.pas' {frmProgressDialogDemo};
 
 {$R *.res}
 

@@ -87,7 +87,7 @@ var
 implementation
 uses
   TypInfo,
-  JvFunctions; // for D5
+  JvJVCLUtils; // for D5
   
 {$R *.DFM}
 
@@ -102,7 +102,7 @@ begin
 end;
 
 begin
-  IsValid := MessageBox(Handle, PChar(Format('Accept this key: %s?', [KeyOrAscii(Key)])), PChar('Validate'), MB_YESNO) = IDYES;
+  IsValid := Windows.MessageBox(Handle, PChar(Format('Accept this key: %s?', [KeyOrAscii(Key)])), PChar('Validate'), MB_YESNO) = IDYES;
 end;
 
 procedure TfrmValidateEditDemo.FormCreate(Sender: TObject);

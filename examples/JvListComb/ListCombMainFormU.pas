@@ -4,8 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Menus, ImgList, JvListComb, ExtCtrls, JvColorBox, JvColorBtn,
-  JvColorCombo, JvComponent, JvCtrls, JvCombobox;
+  StdCtrls, Menus, ImgList, JvListComb, ExtCtrls, JvColorBox, 
+  JvColorCombo, JvComponent, JvCtrls, JvCombobox, JvColorButton;
 
 type
   TListCombMainForm = class(TForm)
@@ -60,10 +60,10 @@ begin
         S.LoadFromFile(Filename);
         JvComboBox1.Items.Assign(S);
         JvListBox1.Items.Assign(S);
-        if JvComboBox1.ImageList <> nil then
+        if JvComboBox1.Images <> nil then
           for i := 0 to JvComboBox1.Items.Count - 1 do
           begin
-            JvComboBox1.Items[i].ImageIndex := i mod JvComboBox1.ImageList.Count;
+            JvComboBox1.Items[i].ImageIndex := i mod JvComboBox1.Images.Count;
             JvListBox1.Items[i].ImageIndex := JvComboBox1.Items[i].ImageIndex;
           end;
         JvComboBox1.ItemIndex := 0;
@@ -89,13 +89,13 @@ procedure TListCombMainForm.CheckBox1Click(Sender: TObject);
 begin
   if CheckBox1.Checked then
   begin
-    JvComboBox1.ImageList := ImageList1;
-    JvListBox1.ImageList := ImageList1;
+    JvComboBox1.Images := ImageList1;
+    JvListBox1.Images := ImageList1;
   end
   else
   begin
-    JvComboBox1.ImageList := nil;
-    JvListBox1.ImageList := nil;
+    JvComboBox1.Images := nil;
+    JvListBox1.Images := nil;
   end;
 end;
 

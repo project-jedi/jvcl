@@ -6,7 +6,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, {$IFDEF DELPHI6_UP}Variants, {$ENDIF}Classes, Graphics, Controls, Forms,
-  Dialogs, JvOLBar, ComCtrls, StdCtrls, Menus, ExtCtrls, ImgList,
+  Dialogs, JvOutlookBar, ComCtrls, StdCtrls, Menus, ExtCtrls, ImgList,
   JvComponent;
 
 type

@@ -8,7 +8,7 @@ uses
   Windows, Messages, SysUtils,
   {$IFDEF COMPILER6_UP} Variants, {$ENDIF COMPILER6_UP}
   Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvComponent, JvBaseDlg, JvSHFileOp, ExtCtrls;
+  Dialogs, StdCtrls, JvComponent, JvBaseDlg, ExtCtrls, JvSHFileOperation;
 
 type
   TJvShFileOperationMainForm = class(TForm)

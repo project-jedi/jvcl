@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, JvListbox, JvComponent, JvCtrls, JvSearchFiles, Mask, JvToolEdit,
-  ComCtrls, JvEdit, JvPlacemnt, Menus;
+  ComCtrls, JvEdit, Menus, JvFormPlacement, JvAppStore, JvAppIniStore;
 
 type
   TJvSearchFileMainForm = class(TForm)
@@ -27,6 +27,7 @@ type
     cbContainText: TComboBox;
     rbInclude: TRadioButton;
     rbExclude: TRadioButton;
+    JvAppINIFileStore1: TJvAppINIFileStore;
     procedure btnSearchClick(Sender: TObject);
     procedure JvSearchFile1FindFile(Sender: TObject; const AName: string);
     procedure btnCancelClick(Sender: TObject);
@@ -49,7 +50,7 @@ var
 implementation
 
 uses
-  JvFunctions;
+  JvJVCLUtils;
 
 {$R *.DFM}
 
@@ -124,7 +125,7 @@ end;
 
 procedure TJvSearchFileMainForm.FormCreate(Sender: TObject);
 begin
-  JvFormStorage1.IniFileName := ChangeFileExt(Application.ExeName,'.ini');
+  JvAppINIFileStore1.FileName := ChangeFileExt(Application.ExeName,'.ini');
 end;
 
 procedure TJvSearchFileMainForm.JvSearchFile1BeginScanDir(Sender: TObject;

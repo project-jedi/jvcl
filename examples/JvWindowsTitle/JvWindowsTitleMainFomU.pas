@@ -17,7 +17,7 @@ var
 
 implementation
 uses
-  JvFunctions;
+  JvJVCLUtils;
 
 {$R *.DFM}
 

@@ -17,16 +17,17 @@ object ListCombMainForm: TListCombMainForm
   TextHeight = 13
   object Splitter1: TSplitter
     Left = 283
-    Top = 71
+    Top = 72
     Width = 5
-    Height = 385
+    Height = 384
+    Cursor = crHSplit
     Align = alRight
   end
   object Panel2: TPanel
     Left = 0
-    Top = 71
+    Top = 72
     Width = 283
-    Height = 385
+    Height = 384
     Align = alClient
     BevelOuter = bvNone
     BorderWidth = 2
@@ -36,7 +37,7 @@ object ListCombMainForm: TListCombMainForm
       Left = 2
       Top = 2
       Width = 279
-      Height = 381
+      Height = 380
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -45,7 +46,7 @@ object ListCombMainForm: TListCombMainForm
       Font.Style = []
       Items = <>
       ButtonStyle = fsLight
-      ImageList = ImageList1
+      Images = ImageList1
       ItemHeight = 20
       ParentFont = False
       TabOrder = 0
@@ -53,12 +54,15 @@ object ListCombMainForm: TListCombMainForm
   end
   object Panel3: TPanel
     Left = 288
-    Top = 71
+    Top = 72
     Width = 276
-    Height = 385
+    Height = 384
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 1
+    DesignSize = (
+      276
+      384)
     object Label1: TLabel
       Left = 66
       Top = 84
@@ -118,7 +122,7 @@ object ListCombMainForm: TListCombMainForm
       Top = 48
       Width = 145
       Height = 22
-      FontName = 'Arial'
+      FontName = '@Arial Unicode MS'
       ItemIndex = 0
       Sorted = True
       TabOrder = 3
@@ -146,7 +150,7 @@ object ListCombMainForm: TListCombMainForm
     Left = 0
     Top = 49
     Width = 564
-    Height = 22
+    Height = 26
     Align = alTop
     Ctl3D = True
     DropDownCount = 10
@@ -160,7 +164,7 @@ object ListCombMainForm: TListCombMainForm
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
-    ImageList = ImageList1
+    Images = ImageList1
     ParentCtl3D = False
     ParentFont = False
     TabOrder = 2
