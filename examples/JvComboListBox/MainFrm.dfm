@@ -16,7 +16,7 @@ object Form1: TForm1
   TextHeight = 13
   object Label1: TLabel
     Left = 16
-    Top = 16
+    Top = 14
     Width = 386
     Height = 13
     Caption = 
@@ -28,7 +28,23 @@ object Form1: TForm1
     Top = 32
     Width = 60
     Height = 13
-    Caption = 'Item Height:'
+    Caption = 'Item &Height:'
+    FocusControl = edItemHeight
+  end
+  object Label3: TLabel
+    Left = 304
+    Top = 216
+    Width = 56
+    Height = 13
+    Caption = '&Draw Type:'
+  end
+  object Label4: TLabel
+    Left = 304
+    Top = 80
+    Width = 67
+    Height = 13
+    Caption = 'Button &Width:'
+    FocusControl = edButtonWidth
   end
   object Memo1: TMemo
     Left = 16
@@ -535,7 +551,7 @@ object Form1: TForm1
     TabOrder = 0
     WordWrap = False
   end
-  object Panel1: TPanel
+  object pnlImage: TPanel
     Left = 17
     Top = 211
     Width = 281
@@ -543,7 +559,7 @@ object Form1: TForm1
     BevelOuter = bvNone
     BorderStyle = bsSingle
     Caption = ' '
-    TabOrder = 1
+    TabOrder = 7
     object Image1: TImage
       Left = 0
       Top = 0
@@ -1939,60 +1955,60 @@ object Form1: TForm1
         FFFF}
     end
   end
-  object Button1: TButton
+  object btnLoadImage: TButton
     Left = 304
     Top = 352
     Width = 75
     Height = 25
-    Caption = 'Load...'
-    TabOrder = 2
-    OnClick = Button1Click
+    Caption = 'L&oad...'
+    TabOrder = 9
+    OnClick = btnLoadImageClick
   end
-  object Button2: TButton
+  object btnCopyImage: TButton
     Left = 304
     Top = 392
     Width = 75
     Height = 25
-    Caption = 'Copy'
-    TabOrder = 3
-    OnClick = Button2Click
+    Caption = 'Co&py'
+    TabOrder = 10
+    OnClick = btnCopyImageClick
   end
-  object Button3: TButton
+  object btnCopyText: TButton
     Left = 304
     Top = 168
     Width = 75
     Height = 25
-    Caption = 'Copy'
-    TabOrder = 4
-    OnClick = Button3Click
+    Caption = '&Copy'
+    TabOrder = 6
+    OnClick = btnCopyTextClick
   end
-  object Edit1: TEdit
+  object edItemHeight: TEdit
     Left = 304
     Top = 48
     Width = 65
     Height = 21
-    TabOrder = 5
+    TabOrder = 1
     Text = '48'
   end
-  object UpDown1: TUpDown
+  object udItemHeight: TUpDown
     Left = 369
     Top = 48
     Width = 15
     Height = 21
-    Associate = Edit1
+    Associate = edItemHeight
     Min = 12
     Max = 32767
     Position = 48
-    TabOrder = 6
+    TabOrder = 2
     Wrap = False
-    OnClick = UpDown1Click
+    OnClick = udItemHeightClick
   end
   object JvClipboardViewer1: TJvClipboardViewer
     Left = 304
     Top = 208
     Width = 0
     Height = 10
-    TabOrder = 7
+    TabOrder = 11
     OnImage = JvClipboardViewer1Image
     OnText = JvClipboardViewer1Text
   end
@@ -2012,7 +2028,38 @@ object Form1: TForm1
       'Stretch'
       'Proportional')
   end
+  object edButtonWidth: TEdit
+    Left = 304
+    Top = 96
+    Width = 65
+    Height = 21
+    TabOrder = 3
+    Text = '26'
+  end
+  object udButtonWidth: TUpDown
+    Left = 369
+    Top = 96
+    Width = 15
+    Height = 21
+    Associate = edButtonWidth
+    Min = 0
+    Max = 32767
+    Position = 26
+    TabOrder = 4
+    Wrap = False
+    OnClick = udButtonWidthClick
+  end
+  object btnLoadText: TButton
+    Left = 304
+    Top = 136
+    Width = 75
+    Height = 25
+    Caption = '&Load...'
+    TabOrder = 5
+    OnClick = btnLoadTextClick
+  end
   object OpenPictureDialog1: TOpenPictureDialog
+    InitialDir = '.'
     Left = 64
     Top = 48
   end
@@ -2052,5 +2099,13 @@ object Form1: TForm1
       RadioItem = True
       OnClick = Proportional1Click
     end
+  end
+  object OpenDialog1: TOpenDialog
+    Filter = 
+      'Text files (*.txt; *.doc;*.diz;*.inc)|*.txt; *.doc;*.diz;*.inc|A' +
+      'll files (*.*)|*.*'
+    InitialDir = '.'
+    Left = 96
+    Top = 48
   end
 end
