@@ -521,6 +521,9 @@ implementation
 
 uses
   Math, // VCL math: function isNan, constant NaN.
+  {$IFDEF COMPILER5}
+  JclMath, // function isNan for Delphi 5
+  {$ENDIF COMPILER5}
   JvJVCLUtils, 
   JvConsts, 
   JvResources; 
