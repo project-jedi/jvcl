@@ -19,7 +19,7 @@ Contributor(s):
   Polaris Software
   Andreas Hausladen
 
-Last Modified: 2004-02-01
+Last Modified: 2004-02-09
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -413,8 +413,10 @@ destructor TJvCustomNumEdit.Destroy;
 begin
   FCanvas.Free;
   if FPopup <> nil then
+  begin
     TJvPopupWindow(FPopup).OnCloseUp := nil;
-  FPopup.Parent := nil;
+    FPopup.Parent := nil;
+  end;
   FreeAndNil(FPopup);
   inherited Destroy;
 end;

@@ -15,7 +15,7 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2004-02-01
+Last Modified: 2004-02-09
 
 Contributers:
   Rob den Braasem [rbraasem@xs4all.nl]
@@ -2959,8 +2959,10 @@ begin
   {$ENDIF VCL}
 
   if FPopup <> nil then
+  begin
     TJvPopupWindow(FPopup).OnCloseUp := nil;
-  FPopup.Parent := nil;
+    FPopup.Parent := nil;
+  end;
   FPopup.Free;
   FPopup := nil;
   FCalendarHints.OnChange := nil;
