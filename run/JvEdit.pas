@@ -313,6 +313,7 @@ begin
     Text := St;
     SelStart := Min(SelStart, Length(Text));
   end;
+  UpdateAutoHint;
 end;
 
 {$IFDEF VCL}
