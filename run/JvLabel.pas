@@ -165,7 +165,7 @@ type
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property Images:TCustomImageList read FImages write SetImages;
-    property ImageIndex:TImageIndex read FImageIndex write SetImageIndex;
+    property ImageIndex:TImageIndex read FImageIndex write SetImageIndex default -1;
     // specifies the offset between the right edge of the image and the left edge of the text (in pixels)
     property Spacing:Integer read FSpacing write SetSpacing default 4;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;
@@ -299,6 +299,7 @@ end;
 constructor TJvCustomLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FImageIndex := -1;
   FConsumerSvc := TJvDataConsumer.Create(Self, [DPA_RendersSingleItem]);
   FConsumerSvc.OnChanged := ConsumerServiceChanged;
   FChangeLink := TChangeLink.Create;
@@ -364,6 +365,11 @@ var
   PosShadow: TShadowPosition;
   SizeShadow: Byte;
   ColorShadow: TColor;
+  function IsValidImage:boolean;
+  begin
+    Result := (Images <> nil) and (ImageIndex >= 0);
+      // and (ImageIndex < Images.Count);
+  end;
 begin
   Text := GetLabelCaption;
   if (Flags and DT_CALCRECT <> 0) and ((Text = '') or FShowAccelChar and
@@ -387,12 +393,8 @@ begin
     Canvas.Font.Color := clGrayText;
     ColorShadow := clBtnHighlight;
   end;
-  if Images <> nil then
-  begin
+  if IsValidImage then
     Inc(Rect.Left, GetImageWidth + Spacing);
-    if Flags and DT_CALCRECT = 0 then
-      Images.Draw(Canvas, 0,0,ImageIndex);
-  end;
   {$IFDEF VisualCLX}
   Canvas.Start;
   try
@@ -404,6 +406,9 @@ begin
     Canvas.Stop;
   end;
   {$ENDIF VisualCLX}
+  // (p3) draw image here since it can potentionally change background and font color
+  if IsValidImage and (Flags and DT_CALCRECT = 0) then
+    Images.Draw(Canvas, 0,0, ImageIndex, Enabled);
 end;
 
 procedure TJvCustomLabel.DoDrawText(var Rect: TRect; Flags: Word);
@@ -634,6 +639,7 @@ procedure TJvCustomLabel.Loaded;
 begin
   inherited Loaded;
   Provider.Loaded;
+  AdjustBounds;
 end;
 
 procedure TJvCustomLabel.AdjustBounds;
@@ -643,7 +649,7 @@ var
   Rect: TRect;
   AAlignment: TAlignment;
 begin
-  if AutoSize then
+  if not (csReading in ComponentState) and AutoSize then
   begin
     Rect := ClientRect;
     Inc(Rect.Left, FLeftMargin);
@@ -997,7 +1003,8 @@ end;
 
 procedure TJvCustomLabel.NonProviderChange;
 begin
-  if Provider <> nil then
+{ TODO 3 -oJVCL -cPROVIDER : Causes AV at designtime when trying to change Images property }
+  if ProviderActive then
     Provider.Provider := nil;
 end;
 

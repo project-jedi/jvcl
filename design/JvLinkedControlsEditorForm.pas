@@ -8,15 +8,15 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvProgressEditor.PAS, released on 2002-05-26.
+The Original Code is: JvLinkedControlsEditorForm.PAS, released on 2004-01-25.
 
-The Initial Developer of the Original Code is John Doe.
-Portions created by John Doe are Copyright (C) 2003 John Doe.
+The Initial Developer of the Original Code is Peter Thörnqvist.
+Portions created by Peter Thörnqvist are Copyright (C) 2004 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-11-09
+Last Modified: 2004-01-25
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
