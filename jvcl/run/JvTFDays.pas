@@ -854,7 +854,7 @@ type
 
       FOptions : TJvTFDaysOptions;
       FEditor : TJvTFInPlaceApptEditor;
-      FutfHintProps : TJvTFHintProps;
+      FHintProps : TJvTFHintProps;
 
 {$IFDEF TIMEBLOCKS}
     // ok
@@ -917,8 +917,8 @@ type
       procedure SeTJvTFVisibleScrollBars(Value : TJvTFVisibleScrollBars);
       procedure AlignScrollBars;
       function CheckSBVis : Boolean;
-      procedure SetOnShowutfHint(Value : TJvTFShowHintEvent);
-      function GetOnShowutfHint : TJvTFShowHintEvent;
+      procedure SetOnShowHint(Value : TJvTFShowHintEvent);
+      function GetOnShowHint : TJvTFShowHintEvent;
 {$IFDEF TIMEBLOCKS}
     // ok
       procedure UpdateWeekendFillPic;
@@ -984,7 +984,7 @@ type
 {$ENDIF}
    protected
       FState : TJvTFDaysState;
-      FutfHint : TJvTFHint;
+      FHint : TJvTFHint;
       FNeedCheckSBParams : Boolean;
       PaintBuffer : TBitmap;
 {$IFDEF TIMEBLOCKS}
@@ -1379,7 +1379,7 @@ type
       property RowHdrType : TJvTFRowHdrType read FRowHdrType write SeTJvTFRowHdrType
          default rhFancy;
       property Thresholds : TJvTFDaysThresholds read FThresholds write FThresholds;
-      property utfHintProps : TJvTFHintProps read FutfHintProps
+      property HintProps : TJvTFHintProps read FHintProps
          write SeTJvTFHintProps;
       property GroupHdrAttr : TJvTFDaysHdrAttr read FGroupHdrAttr
          write SetGroupHdrAttr;
@@ -1453,8 +1453,8 @@ type
       property OnBeginEdit : TJvTFBeginEditEvent read FOnBeginEdit write FOnBeginEdit;
 
     // Help and Hint events
-      property OnShowutfHint : TJvTFShowHintEvent read GetOnShowutfHint
-         write SetOnShowutfHint;
+      property OnShowHint : TJvTFShowHintEvent read GetOnShowHint
+         write SetOnShowHint;
 
     // Misc events
       property OnSelectingAppt : TJvTFVarApptEvent read FOnSelectingAppt
@@ -3001,10 +3001,10 @@ end;
 procedure TJvTFDaysCol.Connect;
 var
    ApptGrid : TJvTFDays;
-   utfPrinter : TJvTFDaysPrinter;
+   FPrinter : TJvTFDaysPrinter;
 begin
    ApptGrid := ColCollection.ApptGrid;
-   utfPrinter := ColCollection.Printer;
+   FPrinter := ColCollection.Printer;
 
    if Assigned(ApptGrid) then
    begin
@@ -3019,14 +3019,14 @@ begin
          UpdateTitles;
       end;
    end
-   else if Assigned(utfPrinter) then
+   else if Assigned(FPrinter) then
    begin
-      if not Connected and not (csDesigning in utfPrinter.ComponentState) and
+      if not Connected and not (csDesigning in FPrinter.ComponentState) and
          not FNullSchedDate and (SchedName <> '') and
-         Assigned(utfPrinter.ScheduleManager) and
-         not (csLoading in utfPrinter.ComponentState) then
+         Assigned(FPrinter.ScheduleManager) and
+         not (csLoading in FPrinter.ComponentState) then
       begin
-         FSchedule := utfPrinter.RetrieveSchedule(SchedName, SchedDate);
+         FSchedule := FPrinter.RetrieveSchedule(SchedName, SchedDate);
          FMap.Refresh;
           //UpdateTitle;
          UpdateTitles;
@@ -3037,7 +3037,7 @@ end;
 procedure TJvTFDaysCol.Disconnect;
 var
    ApptGrid : TJvTFDays;
-   utfPrinter : TJvTFDaysPrinter;
+   FPrinter : TJvTFDaysPrinter;
    SchedName : string;
    SchedDate : TDate;
 begin
@@ -3046,7 +3046,7 @@ begin
       FDisconnecting := True;
 
       ApptGrid := ColCollection.ApptGrid;
-      utfPrinter := ColCollection.Printer;
+      FPrinter := ColCollection.Printer;
 
       if Assigned(ApptGrid) then
       begin
@@ -3060,15 +3060,15 @@ begin
             ApptGrid.Invalidate;
          end;
       end
-      else if Assigned(utfPrinter) then
+      else if Assigned(FPrinter) then
       begin
-         if Connected and Assigned(utfPrinter.ScheduleManager) then
+         if Connected and Assigned(FPrinter.ScheduleManager) then
          begin
             SchedName := Schedule.SchedName;
             SchedDate := Schedule.SchedDate;
             FSchedule := nil;
             FMap.Clear;
-            utfPrinter.ReleaseSchedule(SchedName, SchedDate);
+            FPrinter.ReleaseSchedule(SchedName, SchedDate);
          end;
       end;
    finally
@@ -3098,10 +3098,10 @@ procedure TJvTFDaysCol.CalcStartEndRows(Appt : TJvTFAppt; var StartRow,
    EndRow : Integer);
 var
    ApptGrid : TJvTFDays;
-   utfPrinter : TJvTFDaysPrinter;
+   FPrinter : TJvTFDaysPrinter;
 begin
    ApptGrid := ColCollection.ApptGrid;
-   utfPrinter := ColCollection.Printer;
+   FPrinter := ColCollection.Printer;
 
    if Assigned(ApptGrid) then
    begin
@@ -3115,17 +3115,17 @@ begin
       else
          EndRow := ApptGrid.RowCount - 1;
    end
-   else if Assigned(utfPrinter) then
+   else if Assigned(FPrinter) then
    begin
       if Trunc(Appt.StartDate) = Trunc(SchedDate) then
-         StartRow := utfPrinter.TimeToRow(Appt.StartTime)
+         StartRow := FPrinter.TimeToRow(Appt.StartTime)
       else
          StartRow := 0;
 
       if Trunc(Appt.EndDate) = Trunc(SchedDate) then
-         EndRow := utfPrinter.TimeToRow(utfPrinter.AdjustEndTime(Appt.EndTime))
+         EndRow := FPrinter.TimeToRow(FPrinter.AdjustEndTime(Appt.EndTime))
       else
-         EndRow := utfPrinter.RowCount - 1;
+         EndRow := FPrinter.RowCount - 1;
    end;
 end;
 {
@@ -3133,10 +3133,10 @@ procedure TJvTFDaysCol.UpdateTitle;
 Var
   NewTitle : String;
   ApptGrid : TJvTFDays;
-  utfPrinter : TJvTFDaysPrinter;
+  FPrinter : TJvTFDaysPrinter;
 begin
   ApptGrid := ColCollection.ApptGrid;
-  utfPrinter := ColCollection.Printer;
+  FPrinter := ColCollection.Printer;
 
   If Assigned(ApptGrid) Then
     Begin
@@ -3153,12 +3153,12 @@ begin
         ApptGrid.OnUpdateColTitle(ApptGrid, Self, NewTitle);
       Title := NewTitle;
     End
-  Else If Assigned(utfPrinter) Then
+  Else If Assigned(FPrinter) Then
     Begin
       NewTitle := SchedName + ' - ' +
-        FormatDateTime(utfPrinter.DateFormat, SchedDate);
-      If Assigned(utfPrinter.OnUpdateColTitle) Then
-        utfPrinter.OnUpdateColTitle(utfPrinter, Self, NewTitle);
+        FormatDateTime(FPrinter.DateFormat, SchedDate);
+      If Assigned(FPrinter.OnUpdateColTitle) Then
+        FPrinter.OnUpdateColTitle(FPrinter, Self, NewTitle);
       Title := NewTitle;
     End;
 end;
@@ -3268,28 +3268,28 @@ var
       NameStr,
       DateStr : string;
    ApptGrid : TJvTFDays;
-   utfPrinter : TJvTFDaysPrinter;
+   FPrinter : TJvTFDaysPrinter;
    FromGrid : Boolean;
    Grouping : TJvTFDaysGrouping;
 begin
    ApptGrid := ColCollection.ApptGrid;
-   utfPrinter := ColCollection.Printer;
+   FPrinter := ColCollection.Printer;
 
-   if not Assigned(ApptGrid) and not Assigned(utfPrinter) then
+   if not Assigned(ApptGrid) and not Assigned(FPrinter) then
       Exit;
 
    FromGrid := Assigned(ApptGrid);
    if FromGrid then
       Grouping := ApptGrid.Grouping
    else
-      Grouping := utfPrinter.Grouping;
+      Grouping := FPrinter.Grouping;
 
    if FNullSchedDate then
       DateStr := ''
    else if FromGrid then
       DateStr := FormatDateTime(ApptGrid.DateFormat, SchedDate)
    else
-      DateStr := FormatDateTime(utfPrinter.DateFormat, SchedDate);
+      DateStr := FormatDateTime(FPrinter.DateFormat, SchedDate);
 
    if Assigned(Schedule) and (Schedule.SchedDisplayName <> '') then
       NameStr := Schedule.SchedDisplayName
@@ -3324,8 +3324,8 @@ begin
       if Assigned(ApptGrid.OnUpdateColTitles) then
          ApptGrid.OnUpdateColTitles(ApptGrid, Self, NewGroupTitle, NewTitle)
    end
-   else if Assigned(utfPrinter.OnUpdateColTitles) then
-      utfPrinter.OnUpdateColTitles(utfPrinter, Self, NewGroupTitle, NewTitle);
+   else if Assigned(FPrinter.OnUpdateColTitles) then
+      FPrinter.OnUpdateColTitles(FPrinter, Self, NewGroupTitle, NewTitle);
 
    GroupTitle := NewGroupTitle;
    Title := NewTitle;
@@ -4338,10 +4338,10 @@ begin
 
    FGrabHandles := TJvTFDaysGrabHandles.Create(Self);
 
-   FutfHintProps := TJvTFHintProps.Create(Self);
-  //FutfHint := TJvTFHint.Create(Self);
-   FutfHint := GeTJvTFHintClass.Create(Self);
-   FutfHint.RefProps := FutfHintProps;
+   FHintProps := TJvTFHintProps.Create(Self);
+  //FHint := TJvTFHint.Create(Self);
+   FHint := GeTJvTFHintClass.Create(Self);
+   FHint.RefProps := FHintProps;
    PaintBuffer := TBitmap.Create;
 end;
 
@@ -4373,8 +4373,8 @@ begin
    FThresholds.Free;
    FApptAttr.Free;
    FSelApptAttr.Free;
-   FutfHint.Free;
-   FutfHintProps.Free;
+   FHint.Free;
+   FHintProps.Free;
    FTemplate.Free;
    FGrabHandles.Free;
    PaintBuffer.Free;
@@ -4557,14 +4557,14 @@ begin
    CheckSBParams;
 end;
 
-procedure TJvTFDays.SetOnShowutfHint(Value : TJvTFShowHintEvent);
+procedure TJvTFDays.SetOnShowHint(Value : TJvTFShowHintEvent);
 begin
-   FutfHint.OnShowHint := Value;
+   FHint.OnShowHint := Value;
 end;
 
-function TJvTFDays.GetOnShowutfHint : TJvTFShowHintEvent;
+function TJvTFDays.GetOnShowHint : TJvTFShowHintEvent;
 begin
-   Result := FutfHint.OnShowHint;
+   Result := FHint.OnShowHint;
 end;
 
 procedure TJvTFDays.SetGranularity(Value : Integer);
@@ -7245,7 +7245,7 @@ begin
    if not Enabled then
       Exit;
 
-   FutfHint.ReleaseHandle;
+   FHint.ReleaseHandle;
 
    inherited;
 
@@ -7398,14 +7398,14 @@ begin
                   SelEndTime := RowToTime(SelEnd.Y) +
                      EncodeTime(0, Granularity - 1, 0, 0);
 
-                  FutfHint.StartEndHint(SelStartDate, SelEndDate, SelStartTime,
+                  FHint.StartEndHint(SelStartDate, SelEndDate, SelStartTime,
                      SelEndTime, HintTopLeft.X,
                      HintTopLeft.Y, True);
 
                end
             end
             else
-               FutfHint.ReleaseHandle;
+               FHint.ReleaseHandle;
 
             UpdateAutoScroll;
          end;
@@ -7442,7 +7442,7 @@ begin
 
    case State of
       agsSizeCol..agsSizeAppt : EndDragging(GridCoord, nil);
-      agsNormal : FutfHint.ReleaseHandle;
+      agsNormal : FHint.ReleaseHandle;
    end;
 end;
 
@@ -7556,7 +7556,7 @@ var
    NewStartDT,
       NewEndDT : TDateTime;
 begin
-   FutfHint.ReleaseHandle;
+   FHint.ReleaseHandle;
   // APPOINTMENT CAN ONLY BE DROPPED IN THE DATA AREA !!!
    Appt := DragInfo.Appt;
 
@@ -7720,9 +7720,9 @@ begin
 
                   CalcSizeEndTime(anAppt, EndDT);
 
-                  if Clear and FutfHint.HandleAllocated then
+                  if Clear and FHint.HandleAllocated then
                   begin
-                     FutfHint.ReleaseHandle;
+                     FHint.ReleaseHandle;
                   // Control must be updated here.  If not, drag lines will
                   //  not be drawn properly.
                      Update;
@@ -7758,7 +7758,7 @@ begin
                   end;
 
                   if not Clear and (agoShowApptHints in Options) then
-                     FutfHint.StartEndHint(anAppt.StartDate, Trunc(EndDT),
+                     FHint.StartEndHint(anAppt.StartDate, Trunc(EndDT),
                         anAppt.StartTime, Frac(EndDT),
                         DragRect.Left + 2,
                         DragRect.Bottom + 2,
@@ -7774,9 +7774,9 @@ begin
                   CalcMoveStartEnd(anAppt, Coord, ssShift in FDragInfo.Shift,
                      ssAlt in FDragInfo.Shift, StartDT, EndDT);
 
-                  if Clear and FutfHint.HandleAllocated then
+                  if Clear and FHint.HandleAllocated then
                   begin
-                     FutfHint.ReleaseHandle;
+                     FHint.ReleaseHandle;
                      Update;
                   end;
 
@@ -7806,7 +7806,7 @@ begin
                      end;
                   end;
                   if not Clear and (agoShowApptHints in Options) then
-                     FutfHint.StartEndHint(Trunc(StartDT), Trunc(EndDT),
+                     FHint.StartEndHint(Trunc(StartDT), Trunc(EndDT),
                         Frac(StartDT), Frac(EndDT),
                         DragRect.Right + 2, DragRect.Top + 2,
                         True);
@@ -7977,7 +7977,7 @@ begin
             end;
          agsSizeAppt :
             begin
-               FutfHint.ReleaseHandle;
+               FHint.ReleaseHandle;
                Appt := FBeginDraggingCoord.Appt;
                CalcSizeEndTime(Appt, NewEndDT);
 
@@ -8462,7 +8462,7 @@ end;
 
 procedure TJvTFDays.CMMouseLeave(var Message : TMessage);
 begin
-   FutfHint.ReleaseHandle;
+   FHint.ReleaseHandle;
    inherited;
 end;
 
@@ -10782,7 +10782,7 @@ end;
 
 procedure TJvTFDays.SeTJvTFHintProps(Value : TJvTFHintProps);
 begin
-   FutfHintProps.Assign(Value);
+   FHintProps.Assign(Value);
 end;
 
 procedure TJvTFDays.DrawDither(aCanvas : TCanvas; aRect : TRect; Color1,
@@ -11952,7 +11952,7 @@ begin
    begin
       ApptRect := GetApptRect(GridCoord.Col, GridCoord.Appt);
       Windows.IntersectRect(VisApptRect, ApptRect, GetDataAreaRect);
-      FutfHint.ApptHint(GridCoord.Appt, VisApptRect.Left + 2,
+      FHint.ApptHint(GridCoord.Appt, VisApptRect.Left + 2,
          VisApptRect.Bottom + 2, True, True,
          agoFormattedDesc in Options);
    end;
@@ -11974,7 +11974,7 @@ begin
       HintText := '';
 
    ColHdrRect := CellRect(GridCoord.Col, GridCoord.Row);
-   FutfHint.CellHint(GridCoord.Row, GridCoord.Col, HintText, ColHdrRect);
+   FHint.CellHint(GridCoord.Row, GridCoord.Col, HintText, ColHdrRect);
 end;
 
 procedure TJvTFDays.GetApptDrawInfo(DrawInfo : TJvTFDaysApptDrawInfo;

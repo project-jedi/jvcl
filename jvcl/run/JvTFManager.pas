@@ -515,8 +515,8 @@ type
 
     procedure ConnectControl(ApptCtrl: TJvTFControl);
     procedure DisconnectControl(ApptCtrl: TJvTFControl);
-    procedure ConnectComponent(utfComp: TJvTFComponent);
-    procedure DisconnectComponent(utfComp: TJvTFComponent);
+    procedure ConnectComponent(Comp: TJvTFComponent);
+    procedure DisconnectComponent(Comp: TJvTFComponent);
 
     procedure Notify(Sender: TObject; Code: TJvTFServNotifyCode); virtual;
     procedure NotifyAppt(Appt: TJvTFAppt; Sender: TObject;
@@ -525,7 +525,7 @@ type
       Code: TJvTFServNotifyCode);
     procedure NotifyApptCtrl(ApptCtrl: TJvTFControl; Sender: TObject;
       Code: TJvTFServNotifyCode);
-    procedure NotifyutfComp(utfComp: TJvTFComponent; Sender: TObject;
+    procedure NotifyComp(Comp: TJvTFComponent; Sender: TObject;
       Code: TJvTFServNotifyCode);
 
     procedure RetrieveSchedule(SchedName: string; SchedDate: TDate;
@@ -550,12 +550,12 @@ type
 {$IFDEF COMPILER3}
     procedure RequestRefresh(ApptCtrl: TJvTFControl;
       Schedule: TJvTFSched); dynamic;
-    procedure ComponentRequestRefresh(utfComp: TJvTFComponent;
+    procedure ComponentRequestRefresh(Comp: TJvTFComponent;
       Schedule: TJvTFSched); dynamic;
 {$ELSE}
     procedure RequestRefresh(ApptCtrl: TJvTFControl;
       Schedule: TJvTFSched); overload; dynamic;
-    procedure RequestRefresh(utfComp: TJvTFComponent;
+    procedure RequestRefresh(Comp: TJvTFComponent;
       Schedule: TJvTFSched); overload; dynamic;
 {$ENDIF}
 
@@ -598,7 +598,7 @@ type
 {$IFDEF COMPILER3}
     function RequestSchedule(ApptCtrl: TJvTFControl; SchedName: string;
       SchedDate: TDate): TJvTFSched;
-    function ComponentRequestSchedule(utfComp: TJvTFComponent;
+    function ComponentRequestSchedule(Comp: TJvTFComponent;
       SchedName: string; SchedDate: TDate): TJvTFSched;
 {$ELSE}
     function RequestSchedule(ApptCtrl: TJvTFControl; SchedName: string;
@@ -606,21 +606,21 @@ type
     function RequestSchedule(ApptCtrl: TJvTFControl; SchedName: string;
       SchedDate: TDate; var LoadedNow: boolean): TJvTFSched; overload;
 
-    function RequestSchedule(utfComp: TJvTFComponent; SchedName: string;
+    function RequestSchedule(Comp: TJvTFComponent; SchedName: string;
       SchedDate: TDate): TJvTFSched; overload;
-    function RequestSchedule(utfComp: TJvTFComponent; SchedName: string;
+    function RequestSchedule(Comp: TJvTFComponent; SchedName: string;
       SchedDate: TDate; var LoadedNow: boolean): TJvTFSched; overload;
 {$ENDIF}
 
 {$IFDEF COMPILER3}
     procedure ReleaseSchedule(ApptCtrl: TJvTFControl; SchedName: string;
       SchedDate: TDate);
-    procedure ComponentReleaseSchedule(utfComp: TJvTFComponent;
+    procedure ComponentReleaseSchedule(Comp: TJvTFComponent;
       SchedName: string; SchedDate: TDate);
 {$ELSE}
     procedure ReleaseSchedule(ApptCtrl: TJvTFControl; SchedName: string;
       SchedDate: TDate); overload;
-    procedure ReleaseSchedule(utfComp: TJvTFComponent; SchedName: string;
+    procedure ReleaseSchedule(Comp: TJvTFComponent; SchedName: string;
       SchedDate: TDate); overload;
 {$ENDIF}
 
@@ -706,7 +706,7 @@ type
     procedure SetHintHidePause(Value: integer);
     procedure SetHintPause(Value: integer);
   protected
-    FutfControl: TJvTFControl;
+    FControl: TJvTFControl;
     procedure Change; virtual;
   public
     constructor Create(AOwner: TJvTFControl);
@@ -906,17 +906,17 @@ type
     FFooterHeight: integer;
     FHeaderHeight: integer;
     FMargins: TJvTFMargins;
-    FutfPrinter: TJvTFPrinter;
+    FPrinter: TJvTFPrinter;
     procedure SetFooterHeight(Value: integer);
     procedure SetHeaderHeight(Value: integer);
     function GetMargin(Index: integer): integer;
     procedure SetMargin(Index: integer; Value: integer);
   protected
     procedure Change; virtual;
-    property utfPrinter: TJvTFPrinter read FutfPrinter;
+    property Printer: TJvTFPrinter read FPrinter;
     procedure SetPropertyCheck;
   public
-    constructor Create(autfPrinter: TJvTFPrinter); virtual;
+    constructor Create(aPrinter: TJvTFPrinter); virtual;
     procedure Assign(Source: TPersistent); override;
   published
     property FooterHeight: integer read FFooterHeight write SetFooterHeight;
@@ -2281,8 +2281,8 @@ begin
   // of calling dbRefreshAppt.  (Component user may call Appt.Free.)
   // To account for this we need to build a list of appt ID's instead of
   // working directly from the ScheduleManager's appointment list.
-  // We also need to build a list of connections (utfComponents and
-  // utfControls) that need to be refreshed.
+  // We also need to build a list of connections (Components and
+  // TJvTFControls) that need to be refreshed.
 
   ApptIDList := TStringList.Create;
   RefList := TStringList.Create;
@@ -2842,29 +2842,29 @@ begin
   end;
 end;
 
-procedure TJvTFScheduleManager.ConnectComponent(utfComp: TJvTFComponent);
+procedure TJvTFScheduleManager.ConnectComponent(Comp: TJvTFComponent);
 var
   I: integer;
 begin
-  if not Assigned(utfComp) then
+  if not Assigned(Comp) then
     Exit;
 
-  I := FConComponents.IndexOfObject(utfComp);
+  I := FConComponents.IndexOfObject(Comp);
   if I = -1 then
-    FConComponents.AddObject('', utfComp);
+    FConComponents.AddObject('', Comp);
 end;
 
-procedure TJvTFScheduleManager.DisconnectComponent(utfComp: TJvTFComponent);
+procedure TJvTFScheduleManager.DisconnectComponent(Comp: TJvTFComponent);
 var
   I: integer;
 begin
-  if not Assigned(utfComp) then
+  if not Assigned(Comp) then
     Exit;
 
-  I := FConComponents.IndexOfObject(utfComp);
+  I := FConComponents.IndexOfObject(Comp);
   if I > -1 then
   begin
-    utfComp.ReleaseSchedules;
+    Comp.ReleaseSchedules;
     FConComponents.Delete(I);
   end;
 end;
@@ -2904,11 +2904,11 @@ begin
     ApptCtrl.Notify(Sender, Code);
 end;
 
-procedure TJvTFScheduleManager.NotifyutfComp(utfComp: TJvTFComponent;
+procedure TJvTFScheduleManager.NotifyComp(Comp: TJvTFComponent;
   Sender: TObject; Code: TJvTFServNotifyCode);
 begin
-  if Assigned(utfComp) then
-    utfComp.Notify(Sender, Code);
+  if Assigned(Comp) then
+    Comp.Notify(Sender, Code);
 end;
 
 procedure TJvTFScheduleManager.RetrieveSchedule(SchedName: string; SchedDate: TDate;
@@ -2963,7 +2963,7 @@ begin
     NotifyApptCtrl(ConControls[I], Appt, sncDestroyAppt);
 
   for I := 0 to ConComponentCount - 1 do
-    NotifyutfComp(ConComponents[I], Appt, sncDestroyAppt);
+    NotifyComp(ConComponents[I], Appt, sncDestroyAppt);
 
   while Appt.ConnectionCount > 0 do
     Appt.Notify(Appt.Connections[0], sncDisconnectAppt);
@@ -2979,7 +2979,7 @@ begin
     NotifyApptCtrl(ConControls[I], Sched, sncDestroySchedule);
 
   for I := 0 to ConComponentCount - 1 do
-    NotifyutfComp(ConComponents[I], Sched, sncDestroySchedule);
+    NotifyComp(ConComponents[I], Sched, sncDestroySchedule);
 
   FSchedules.Delete(FSchedules.IndexOfObject(Sched));
   Flush(false);
@@ -3013,10 +3013,10 @@ end;
 
 {$IFDEF COMPILER3}
 
-procedure TJvTFScheduleManager.ComponentRequestRefresh(utfComp: TJvTFComponent;
+procedure TJvTFScheduleManager.ComponentRequestRefresh(Comp: TJvTFComponent;
   Schedule: TJvTFSched);
 begin
-  NotifyutfComp(utfComp, Self, sncRefresh);
+  NotifyComp(Comp, Self, sncRefresh);
 end;
 {$ENDIF}
 
@@ -3035,10 +3035,10 @@ end;
 
 {$IFNDEF COMPILER3}
 
-procedure TJvTFScheduleManager.RequestRefresh(utfComp: TJvTFComponent;
+procedure TJvTFScheduleManager.RequestRefresh(Comp: TJvTFComponent;
   Schedule: TJvTFSched);
 begin
-  NotifyutfComp(utfComp, Self, sncRefresh);
+  NotifyComp(Comp, Self, sncRefresh);
 end;
 {$ENDIF}
 
@@ -3146,17 +3146,17 @@ end;
 
 {$IFDEF COMPILER3}
 
-function TJvTFScheduleManager.ComponentRequestSchedule(utfComp: TJvTFComponent;
+function TJvTFScheduleManager.ComponentRequestSchedule(Comp: TJvTFComponent;
   SchedName: string; SchedDate: TDate): TJvTFSched;
 var
   ApptsNeeded: boolean;
 begin
   RetrieveSchedule(SchedName, SchedDate, Result, ApptsNeeded);
 
-  if Assigned(utfComp) then
+  if Assigned(Comp) then
   begin
-    Result.Notify(utfComp, sncRequestSchedule);
-    utfComp.Notify(Result, sncRequestSchedule);
+    Result.Notify(Comp, sncRequestSchedule);
+    Comp.Notify(Result, sncRequestSchedule);
   end;
 
   if ApptsNeeded then
@@ -3206,17 +3206,17 @@ end;
 
 {$IFNDEF COMPILER3}
 
-function TJvTFScheduleManager.RequestSchedule(utfComp: TJvTFComponent;
+function TJvTFScheduleManager.RequestSchedule(Comp: TJvTFComponent;
   SchedName: string; SchedDate: TDate): TJvTFSched;
 var
   ApptsNeeded: boolean;
 begin
   RetrieveSchedule(SchedName, SchedDate, Result, ApptsNeeded);
 
-  if Assigned(utfComp) then
+  if Assigned(Comp) then
   begin
-    Result.Notify(utfComp, sncRequestSchedule);
-    utfComp.Notify(Result, sncRequestSchedule);
+    Result.Notify(Comp, sncRequestSchedule);
+    Comp.Notify(Result, sncRequestSchedule);
   end;
 
   if ApptsNeeded then
@@ -3226,15 +3226,15 @@ end;
 
 {$IFNDEF COMPILER3}
 
-function TJvTFScheduleManager.RequestSchedule(utfComp: TJvTFComponent;
+function TJvTFScheduleManager.RequestSchedule(Comp: TJvTFComponent;
   SchedName: string; SchedDate: TDate; var LoadedNow: boolean): TJvTFSched;
 begin
   RetrieveSchedule(SchedName, SchedDate, Result, LoadedNow);
 
-  if Assigned(utfComp) then
+  if Assigned(Comp) then
   begin
-    Result.Notify(utfComp, sncRequestSchedule);
-    utfComp.Notify(Result, sncRequestSchedule);
+    Result.Notify(Comp, sncRequestSchedule);
+    Comp.Notify(Result, sncRequestSchedule);
   end;
 
   if LoadedNow then
@@ -3244,7 +3244,7 @@ end;
 
 {$IFDEF COMPILER3}
 
-procedure TJvTFScheduleManager.ComponentReleaseSchedule(utfComp: TJvTFComponent;
+procedure TJvTFScheduleManager.ComponentReleaseSchedule(Comp: TJvTFComponent;
   SchedName: string; SchedDate: TDate);
 var
   SchedID: string;
@@ -3258,10 +3258,10 @@ begin
   begin
     Schedule := TJvTFSched(FSchedules.Objects[I]);
 
-    if Assigned(utfComp) then
+    if Assigned(Comp) then
     begin
-      Schedule.Notify(utfComp, sncReleaseSchedule);
-      utfComp.Notify(Schedule, sncReleaseSchedule);
+      Schedule.Notify(Comp, sncReleaseSchedule);
+      Comp.Notify(Schedule, sncReleaseSchedule);
     end;
 
     if Cache.CacheType = ctBuffer then
@@ -3297,7 +3297,7 @@ end;
 
 {$IFNDEF COMPILER3}
 
-procedure TJvTFScheduleManager.ReleaseSchedule(utfComp: TJvTFComponent;
+procedure TJvTFScheduleManager.ReleaseSchedule(Comp: TJvTFComponent;
   SchedName: string; SchedDate: TDate);
 var
   SchedID: string;
@@ -3311,10 +3311,10 @@ begin
   begin
     Schedule := TJvTFSched(FSchedules.Objects[I]);
 
-    if Assigned(utfComp) then
+    if Assigned(Comp) then
     begin
-      Schedule.Notify(utfComp, sncReleaseSchedule);
-      utfComp.Notify(Schedule, sncReleaseSchedule);
+      Schedule.Notify(Comp, sncReleaseSchedule);
+      Comp.Notify(Schedule, sncReleaseSchedule);
     end;
 
     if Cache.CacheType = ctBuffer then
@@ -5101,35 +5101,35 @@ var
   WorkVal: integer;
   SourceLayout: TJvTFPrinterPageLayout;
 begin
-  if (Source is TJvTFPrinterPageLayout) and Assigned(utfPrinter) and
-    Assigned(TJvTFPrinterPageLayout(Source).utfPrinter) then
+  if (Source is TJvTFPrinterPageLayout) and Assigned(Printer) and
+    Assigned(TJvTFPrinterPageLayout(Source).Printer) then
   begin
     SourceLayout := TJvTFPrinterPageLayout(Source);
-    SourceMeas := SourceLayout.utfPrinter.Measure;
-    DestMeas := utfPrinter.Measure;
+    SourceMeas := SourceLayout.Printer.Measure;
+    DestMeas := Printer.Measure;
 
     WorkVal := SourceLayout.MarginLeft;
-    WorkVal := utfPrinter.ConvertMeasure(WorkVal, SourceMeas, DestMeas, true);
+    WorkVal := Printer.ConvertMeasure(WorkVal, SourceMeas, DestMeas, true);
     SetMargin(1, WorkVal);
 
     WorkVal := SourceLayout.MarginTop;
-    WorkVal := utfPrinter.ConvertMeasure(WorkVal, SourceMeas, DestMeas, false);
+    WorkVal := Printer.ConvertMeasure(WorkVal, SourceMeas, DestMeas, false);
     SetMargin(2, WorkVal);
 
     WorkVal := SourceLayout.MarginRight;
-    WorkVal := utfPrinter.ConvertMeasure(WorkVal, SourceMeas, DestMeas, true);
+    WorkVal := Printer.ConvertMeasure(WorkVal, SourceMeas, DestMeas, true);
     SetMargin(3, WorkVal);
 
     WorkVal := SourceLayout.MarginBottom;
-    WorkVal := utfPrinter.ConvertMeasure(WorkVal, SourceMeas, DestMeas, false);
+    WorkVal := Printer.ConvertMeasure(WorkVal, SourceMeas, DestMeas, false);
     SetMargin(4, WorkVal);
 
     WorkVal := SourceLayout.HeaderHeight;
-    WorkVal := utfPrinter.ConvertMeasure(WorkVal, SourceMeas, DestMeas, false);
+    WorkVal := Printer.ConvertMeasure(WorkVal, SourceMeas, DestMeas, false);
     SetHeaderHeight(WorkVal);
 
     WorkVal := SourceLayout.FooterHeight;
-    WorkVal := utfPrinter.ConvertMeasure(WorkVal, SourceMeas, DestMeas, false);
+    WorkVal := Printer.ConvertMeasure(WorkVal, SourceMeas, DestMeas, false);
     SetFooterHeight(WorkVal);
   end
   else
@@ -5141,14 +5141,14 @@ begin
   // do nothing, leave to descendants
 end;
 
-constructor TJvTFPrinterPageLayout.Create(autfPrinter: TJvTFPrinter);
+constructor TJvTFPrinterPageLayout.Create(aPrinter: TJvTFPrinter);
 begin
   inherited Create;
-  if not Assigned(autfPrinter) then
+  if not Assigned(aPrinter) then
     raise EJvTFPrinterError.Create('Could not create TJvTFPrinterPageLayout ' +
-      'because autfPrinter must be assigned');
+      'because aPrinter must be assigned');
 
-  FutfPrinter := autfPrinter;
+  FPrinter := aPrinter;
 end;
 
 function TJvTFPrinterPageLayout.GetMargin(Index: integer): integer;
@@ -5175,7 +5175,7 @@ begin
   begin
     Check := FFooterHeight;
     FFooterHeight := Value;
-    if utfPrinter.BodyHeight < 1 then
+    if Printer.BodyHeight < 1 then
     begin
       FFooterHeight := Check;
       raise EJvTFPrinterError.Create('Invalid Footer Height (' +
@@ -5198,7 +5198,7 @@ begin
   begin
     Check := FHeaderHeight;
     FHeaderHeight := Value;
-    if utfPrinter.BodyHeight < 1 then
+    if Printer.BodyHeight < 1 then
     begin
       FHeaderHeight := Check;
       raise EJvTFPrinterError.Create('Invalid Header Height (' +
@@ -5225,18 +5225,18 @@ begin
   begin
     Horz := (Index = 1) or (Index = 3);
     case Index of
-      1: Unprintable := utfPrinter.GetUnprintable.Left;
-      2: Unprintable := utfPrinter.GetUnprintable.Top;
-      3: Unprintable := utfPrinter.GetUnprintable.Right;
+      1: Unprintable := Printer.GetUnprintable.Left;
+      2: Unprintable := Printer.GetUnprintable.Top;
+      3: Unprintable := Printer.GetUnprintable.Right;
     else
-      Unprintable := utfPrinter.GetUnprintable.Bottom;
+      Unprintable := Printer.GetUnprintable.Bottom;
     end;
 
-    UserMarginPels := utfPrinter.ConvertMeasure(Value, utfPrinter.Measure,
+    UserMarginPels := Printer.ConvertMeasure(Value, Printer.Measure,
       pmPixels, Horz);
-    utfPrinter.SetMarginOffset(Index, UserMarginPels - Unprintable);
+    Printer.SetMarginOffset(Index, UserMarginPels - Unprintable);
 
-    if utfPrinter.GetMarginOffset(Index) >= 0 then
+    if Printer.GetMarginOffset(Index) >= 0 then
     begin
       Err := false;
       NewMargin := Value;
@@ -5244,9 +5244,9 @@ begin
     else
     begin
       Err := true;
-      utfPrinter.SetMarginOffset(Index, 0);
-      NewMargin := utfPrinter.ConvertMeasure(Unprintable, pmPixels,
-        utfPrinter.Measure, Horz);
+      Printer.SetMarginOffset(Index, 0);
+      NewMargin := Printer.ConvertMeasure(Unprintable, pmPixels,
+        Printer.Measure, Horz);
     end;
 
     if not Err then
@@ -5267,10 +5267,10 @@ begin
         MarginBottom := NewMargin;
       end;
 
-    if Err and Assigned(utfPrinter) then
+    if Err and Assigned(Printer) then
     begin
-      utfPrinter.UpdateDesigner;
-      utfPrinter.MarginError;
+      Printer.UpdateDesigner;
+      Printer.MarginError;
     end;
 
     Change;
@@ -5279,7 +5279,7 @@ end;
 
 procedure TJvTFPrinterPageLayout.SetPropertyCheck;
 begin
-  utfPrinter.SetPropertyCheck;
+  Printer.SetPropertyCheck;
 end;
 
 { TJvTFUniversalPrinter }
@@ -5327,7 +5327,7 @@ end;
 constructor TJvTFHintProps.Create(AOwner: TJvTFControl);
 begin
   inherited Create;
-  FutfControl := AOwner;
+  FControl := AOwner;
 
   FHintColor := clDefault;
   FHintHidePause := -1;
