@@ -7,7 +7,7 @@ uses
   JvBackgroundTreeview, ComCtrls, Menus, JvBackgrounds, StdCtrls, ExtCtrls;
 
 type
-  TForm1 = class(TForm)
+  TJvBackgroundDemoFrm = class(TForm)
     MainMenu1: TMainMenu;
     AppearanceMenu: TMenuItem;
     FontItem: TMenuItem;
@@ -36,7 +36,7 @@ type
   end;
 
 var
-  Form1: TForm1;
+  JvBackgroundDemoFrm: TJvBackgroundDemoFrm;
 
 implementation
 
@@ -44,7 +44,7 @@ implementation
 
 uses TypInfo;
 
-procedure TForm1.InitTV;
+procedure TJvBackgroundDemoFrm.InitTV;
 
   function ClassIndex(AClass: TClass): Integer;
   begin
@@ -93,20 +93,20 @@ begin
   end;
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TJvBackgroundDemoFrm.FormCreate(Sender: TObject);
 begin
   CreateTV;
   InitTV;
 end;
 
-procedure TForm1.FontItemClick(Sender: TObject);
+procedure TJvBackgroundDemoFrm.FontItemClick(Sender: TObject);
 begin
   FontDialog.Font := TV.Font;
   if FontDialog.Execute then
     TV.Font := FontDialog.Font;
 end;
 
-procedure TForm1.ChangeTVButtonKind(Sender: TObject);
+procedure TJvBackgroundDemoFrm.ChangeTVButtonKind(Sender: TObject);
 begin
   TV.ButtonKind := TJvBackgroundTVButtonKind(TComponent(Sender).Tag);
   (Sender as TMenuItem).Checked := True;
@@ -132,7 +132,7 @@ begin
   end;
 end;
 
-procedure TForm1.TVChange(Sender: TObject; Node: TTreeNode);
+procedure TJvBackgroundDemoFrm.TVChange(Sender: TObject; Node: TTreeNode);
 const
   AllKinds: TTypeKinds = [Low(TTypeKind)..High(TTypeKind)];
 var
@@ -175,12 +175,12 @@ begin
   end;
 end;
 
-procedure TForm1.FormShow(Sender: TObject);
+procedure TJvBackgroundDemoFrm.FormShow(Sender: TObject);
 begin
   with PropListView.Columns[0] do Width := 120;
 end;
 
-procedure TForm1.CreateTV;
+procedure TJvBackgroundDemoFrm.CreateTV;
 begin
   TV := TJvBackgroundTreeView.Create(Self);
   with TV do
