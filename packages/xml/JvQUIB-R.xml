@@ -9,7 +9,8 @@
     <Package Name="JvQCore-R" Targets="allclx" Condition=""/>
     <Package Name="rtl" Targets="allclx" Condition=""/>
     <Package Name="visualclx" Targets="allclx" Condition=""/>
-    <Package Name="dbrtl" Targets="d7clx,k3" Condition=""/>
+    <Package Name="dbrtl" Targets="d7clx" Condition=""/>
+    <Package Name="dataclx" Targets="k3" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\qrun\JvQUIBMetaData.pas" Targets="allclx" Formname="" Condition=""/>
