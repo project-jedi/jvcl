@@ -4887,8 +4887,6 @@ const
   Mask = $00FF;
 var
   InnerRect, R: TRect;
-  Pts: array of TPoint;
-  i: Integer;
   Brush: QBrushH;
   Pen: QPenH;
   Font: QFontH;
