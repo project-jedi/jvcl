@@ -120,6 +120,8 @@ type
     property OnChange: TJvDirChange read FOnChange write FOnChange;
   end;
 
+function BrowseForFolder(const ATitle:string; AllowCreate:boolean;var ADirectory:string):boolean;
+
 implementation
 
 uses
@@ -133,6 +135,25 @@ const
   BIF_EDITBOX            = $0010;
   BIF_VALIDATE           = $0020;
   BIF_NEWDIALOGSTYLE     = $0040;
+
+function BrowseForFolder(const ATitle:string; AllowCreate:boolean;var ADirectory:string):boolean;
+begin
+  with TJvBrowseFolder.Create(nil) do
+  try
+    Position := fpScreenCenter;
+    Directory := ADirectory;
+    Title := ATitle;
+    if AllowCreate then
+      Options := Options + [odNewDialogStyle]
+    else
+      Options := Options - [odNewDialogStyle];
+    Result := Execute;
+    if Result then
+      ADirectory := Directory;
+  finally
+    Free;
+  end;
+end;
 
 {**************************************************}
 
