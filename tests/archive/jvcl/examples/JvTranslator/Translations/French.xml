@@ -1,5 +1,5 @@
 <Translation>
- <Form1>
+ <JvTranslatorMainForm>
    <Label1 Caption="Un peu de texte"/>
    <CheckBox1 Caption="Encore du texte" Width="150" Left="200"/>
    <Button3 Caption="Cliquez ici" Width="200"/>
@@ -15,5 +15,5 @@
    <Variables>
     <Item Name="SomeText" Value="Woooaw, c'était bon :p"/>
    </Variables>
- </Form1>  
+ </JvTranslatorMainForm>  
 </Translation>
