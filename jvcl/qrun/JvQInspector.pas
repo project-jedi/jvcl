@@ -167,9 +167,9 @@ unit JvQInspector;
 interface
 
 uses
-  SysUtils, Classes, Contnrs, TypInfo, IniFiles,  
+  SysUtils, Classes, Contnrs, TypInfo, IniFiles,
   Qt, QTypes, Types, QGraphics, QControls, QStdCtrls, QExtCtrls,
-  QWindows, QMessages, JvExExtCtrls, 
+  QWindows, QMessages, JvQExExtCtrls, 
   JvQComponent, JvQTypes, JvQExControls, JvQFinalize;
 
 const
@@ -364,7 +364,7 @@ type
     // ClientWidth and ClientHeight replaces the inherited properties by
     // methods that adjusts the client width and height by AdjustClientRect
     function ClientWidth: Integer;
-    function ClientHeight: Integer; 
+    function ClientHeight: Integer;
   protected
     function CalcImageHeight: Integer; virtual;
     function CalcItemIndex(X, Y: Integer; var Rect: TRect): Integer; virtual;
@@ -1984,7 +1984,7 @@ uses
   RTLConsts,   
   QDialogs, QForms, QButtons, QConsts, 
   JclRTTI, JclLogic, JclStrings,
-  JvJCLUtils, JvJVCLUtils, JvThemes, JvResources;
+  JvQJCLUtils, JvQJVCLUtils, JvQThemes, JvQResources;
 
 const
   sUnitName = 'JvInspector';

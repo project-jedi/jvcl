@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,12 +36,9 @@ unit JvQXPButtons;
 interface
 
 uses
-  Classes, TypInfo,
-  
-  
+  Classes, TypInfo,  
   Types, QGraphics, QControls, QForms, QActnList, QImgList, QMenus,
-  QWindows, JvQExControls,
-  
+  QWindows, JvQExControls, 
   JvQXPCore, JvQXPCoreUtils;
 
 type
@@ -72,13 +70,10 @@ type
     FShowFocusRect: Boolean;
     FSmoothEdges: Boolean;
     FSpacing: Byte;
-    FWordWrap: Boolean;
-    
+    FWordWrap: Boolean; 
     procedure ImageListChange(Sender: TObject);
-  protected
-    
-    function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
-    
+  protected 
+    function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override; 
     function GetActionLinkClass: TControlActionLinkClass; override;
     function IsSpecialDrawState(IgnoreDefault: Boolean = False): Boolean;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
@@ -149,8 +144,7 @@ type
     property Align;
     property Anchors;
     //property AutoSize;
-    property Constraints;
-    
+    property Constraints; 
     property DragMode;
     //property Enabled;
     property Font;
@@ -244,8 +238,7 @@ type
     property Align;
     property Anchors;
     //property AutoSize;
-    property Constraints;
-    
+    property Constraints; 
     property DragMode;
     property DropDownMenu;
     property Images;
@@ -398,11 +391,8 @@ procedure TJvXPCustomButton.SetDefault(Value: Boolean);
 begin
   if Value <> FDefault then
   begin
-    FDefault := Value;
-    
-    
-    QWindows.Perform(GetParentForm(Self), CM_FOCUSCHANGED, 0, Longint(GetParentForm(Self).ActiveControl));
-    
+    FDefault := Value;  
+    //QWindows.Perform(GetParentForm(Self), CM_FOCUSCHANGED, 0, Longint(GetParentForm(Self).ActiveControl)); 
   end;
 end;
 
@@ -592,11 +582,8 @@ begin
         if dsHighlight in DrawState then
           Bitmap.Assign(FHlGradient)
         else
-          Bitmap.Assign(FFcGradient);
-        
-        
-        BitBlt(Canvas, 1, 1, Width, Height, Bitmap.Canvas, 0, 0, SRCCOPY);
-        
+          Bitmap.Assign(FFcGradient);  
+        BitBlt(Canvas, 1, 1, Width, Height, Bitmap.Canvas, 0, 0, SRCCOPY); 
       finally
         Bitmap.Free;
       end;
@@ -605,31 +592,22 @@ begin
     // draw background gradient...
     if not ((dsHighlight in DrawState) and (dsClicked in DrawState)) then
     begin
-      Offset := 2 * Integer(IsSpecialDrawState);
-      
-      
+      Offset := 2 * Integer(IsSpecialDrawState);  
       BitBlt(Canvas, 1 + Offset, 1 + Offset, Width - 3 * Offset, Height - 3 * Offset,
-        FBgGradient.Canvas, 0, 0, SRCCOPY);
-      
+        FBgGradient.Canvas, 0, 0, SRCCOPY); 
     end
     // ...or click gradient.
     else
-    begin
-      
-      
-      BitBlt(Canvas, 1, 1, Width, Height, FCkGradient.Canvas, 0, 0, SRCCOPY);
-      
+    begin  
+      BitBlt(Canvas, 1, 1, Width, Height, FCkGradient.Canvas, 0, 0, SRCCOPY); 
     end;
     // draw border lines.
     if Enabled then
       Pen.Color := dxColor_Btn_Enb_Border_WXP
     else
       Pen.Color := dxColor_Btn_Dis_Border_WXP;
-    Brush.Style := bsClear;
-    
-    
-    RoundRect(0, 0, Width, Height, 10, 10);
-    
+    Brush.Style := bsClear;  
+    RoundRect(0, 0, Width, Height, 10, 10); 
     // draw border edges.
     if FSmoothEdges then
     begin
@@ -806,11 +784,8 @@ begin
       Images.Draw(Canvas,
         (Width - Images.Width) div 2 + Integer(Shifted),
         (Height - Images.Height) div 2 + Integer(Shifted),
-        ImageIndex,
-        
-        
-        itImage,
-        
+        ImageIndex,  
+        itImage, 
         Enabled);
     end
     else
@@ -854,18 +829,14 @@ end;
 procedure TJvXPCustomToolButton.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
-  P: TPoint;
-  
+  P: TPoint; 
 begin
   inherited;
   if Assigned(DropDownMenu) then
   begin
     P := ClientToScreen(Point(0, Height));
-    DropDownMenu.Popup(P.X, P.Y);
-    
-    
-    // TODO
-    
+    DropDownMenu.Popup(P.X, P.Y);  
+    // TODO 
 
   end;
 end;

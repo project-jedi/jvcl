@@ -3,32 +3,10 @@ object fmeJvSegmentedLEDDisplayMapper: TfmeJvSegmentedLEDDisplayMapper
   Top = 0
   Width = 105
   Height = 135
-  VertScrollBar.Range = 130
-  HorzScrollBar.Range = 100
   Color = clBlack
   ParentColor = False
   PopupMenu = pmDigit
   TabOrder = 0
-  object sldEdit: TJvSegmentedLEDDisplay
-    Left = 5
-    Top = 5
-    Width = 95
-    Height = 125
-    AutoSize = False
-    DigitClassName = 'TJv7SegmentedLEDDigit'
-    DigitHeight = 90
-    Digits = <>
-    DigitWidth = 60
-    DotSize = 12
-    PopupMenu = pmDigit
-    SegmentLitColor = clRed
-    SegmentSpacing = 4
-    SegmentThickness = 8
-    SegmentUnlitColor = clMaroon
-    Slant = 10
-    OnClick = sldEditClick
-    OnMouseDown = sldEditMouseDown
-  end
   object pmDigit: TPopupMenu
     Left = 5
     Top = 55

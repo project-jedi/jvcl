@@ -46,8 +46,7 @@ interface
 
 uses
   SysUtils, Classes,
-  QWindows, QMessages, QGraphics, QForms, QExtCtrls, QControls, QButtons,
-  Types, 
+  QWindows, QMessages, Types, QGraphics, QForms, QExtCtrls, QControls, QButtons,
   JvQButtons, JvQComponent;
 
 const
@@ -861,8 +860,7 @@ begin
       else
         R.Top := 1;
       R.Right := Width - R.Left;
-      R.Bottom := Height - 1;
-      QWindows.DrawEdge(Canvas.Handle, R, EDGE_ETCHED, Ex[FExpanded]);
+      R.Bottom := Height - 1;  QWindows.DrawEdge(Canvas.Handle, R, EDGE_ETCHED, Ex[FExpanded]);
       if ButtonVisible then
       begin
         Canvas.Brush.Color := Color;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -40,10 +41,7 @@ interface
 
 uses
   SysUtils, Classes,
-  
-  
-  Types, QGraphics, QControls, QImgList, QComCtrls, QWindows,
-  
+  QWindows, QMessages, Types, QGraphics, QControls, QImgList, QComCtrls,
   JvQComponent, JvQThemes, JvQPageList, JvQExComCtrls;
 
 type
@@ -92,8 +90,7 @@ type
     FItems:TJvPageIndexNodes;
     FPageList: IPageList;
     FPageDefault: Integer;
-    FLinks: TJvPageLinks;
-    
+    FLinks: TJvPageLinks; 
     procedure SetPageDefault(const Value: Integer);
     procedure SetLinks(const Value: TJvPageLinks);
     procedure SetPageList(const Value: IPageList);
@@ -109,14 +106,11 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property PageDefault: Integer read FPageDefault write SetPageDefault;
-    property PageLinks: TJvPageLinks read FLinks write SetLinks;
-    
-    property PageList: IPageList read FPageList write SetPageList;
-    
+    property PageLinks: TJvPageLinks read FLinks write SetLinks; 
+    property PageList: IPageList read FPageList write SetPageList; 
   protected
     property AutoExpand default True;
-    property ShowButtons default False;
-//    property ShowLines default False;
+    property ShowButtons default False; 
     property ReadOnly default True;
     property Items:TJvPageIndexNodes read GetItems write SetItems;
   end;
@@ -204,8 +198,7 @@ type
   TJvPageListTreeView = class(TJvCustomPageListTreeView)
   published
     property AutoExpand;
-    property ShowButtons;
-//    property ShowLines;
+    property ShowButtons; 
     property ReadOnly;
     property PageDefault;
     property PageLinks;
@@ -216,57 +209,46 @@ type
     property OnParentColorChange;
 
     property Align;
-    property Anchors;
-//    property BevelEdges;
-//    property BevelInner;
-//    property BevelOuter;
-//    property BevelKind default bkNone;
-//    property BevelWidth;
-    
+    property Anchors; 
     property BorderStyle;
-//    property BorderWidth;
-//    property ChangeDelay;
+    property BorderWidth;
+    property ChangeDelay;
     property Color;
     property Constraints;
     property DragMode;
     property Enabled;
     property Font;
-//    property HideSelection;
-//    property HotTrack;
+    property HideSelection;
+    property HotTrack;
     property Images;
-    property Indent;
-
+    property Indent; 
     property MultiSelect;
-//    property MultiSelectStyle;
-
+    property MultiSelectStyle; 
     property ParentColor default False;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-//    property RightClickSelect;
+    property RightClickSelect;
     property RowSelect;
     property ShowHint;
-//    property ShowRoot;
+    property ShowRoot;
     property SortType;
-//    property StateImages;
+    property StateImages;
     property TabOrder;
     property TabStop default True;
-//    property ToolTips;
+    property ToolTips;
     property Visible;
-//    property OnAdvancedCustomDraw;
-//    property OnAdvancedCustomDrawItem;
+    property OnAdvancedCustomDraw;
+    property OnAdvancedCustomDrawItem;
     property OnChange;
     property OnChanging;
     property OnClick;
     property OnCollapsed;
     property OnCollapsing;
-//    property OnCompare;
     property OnContextPopup;
-
-//    property OnAddition;
-//    property OnCreateNodeClass;
-
-//    property OnCustomDraw;
+    property OnAddition;
+    property OnCreateNodeClass;
+    property OnCustomDraw;
     property OnCustomDrawItem;
     property OnDblClick;
     property OnDeletion;
@@ -295,7 +277,6 @@ type
   published
     property AutoExpand default True;
     property ShowButtons default False;
-//    property ShowLines default False;
     property ReadOnly default True;
     property PageDefault;
     property PageNodeImages;
@@ -308,22 +289,16 @@ type
 
     property Align;
     property Anchors;
-//    property BevelEdges;
-//    property BevelInner;
-//    property BevelOuter;
-//    property BevelKind default bkNone;
-//    property BevelWidth;
-
     property BorderStyle;
 //    property BorderWidth;
-//    property ChangeDelay;
+    property ChangeDelay;
     property Color;
     property Constraints;
     property DragMode;
     property Enabled;
     property Font;
-//    property HideSelection;
-//    property HotTrack;
+    property HideSelection;
+    property HotTrack;
     property Images;
     property Indent;
     // don't use!
@@ -333,15 +308,15 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-//    property RightClickSelect;
+    property RightClickSelect;
     property RowSelect;
     property ShowHint;
-//    property ShowRoot;
+    property ShowRoot;
     property SortType;
-//    property StateImages;
+    property StateImages;
     property TabOrder;
     property TabStop default True;
-//    property ToolTips;
+    property ToolTips;
     property Visible;
 //    property OnAdvancedCustomDraw;
 //    property OnAdvancedCustomDrawItem;
@@ -350,13 +325,11 @@ type
     property OnClick;
     property OnCollapsed;
     property OnCollapsing;
-//    property OnCompare;
+    property OnCompare;
     property OnContextPopup;
-
-//    property OnAddition;
-//    property OnCreateNodeClass;
-
-//    property OnCustomDraw;
+    property OnAddition;
+    property OnCreateNodeClass; 
+    property OnCustomDraw;
     property OnCustomDrawItem;
     property OnDblClick;
     property OnDeletion;
@@ -384,11 +357,8 @@ type
 
 implementation
 
-
-
-uses
+uses 
   QForms;
-
 
 type
   THackTab = class(TCustomTabControl);
@@ -482,14 +452,13 @@ end;
 
 destructor TJvCustomPageListTreeView.Destroy;
 begin
-  FLinks.Free;
-  
+  FLinks.Free; 
   inherited Destroy;
 end;
 
 function TJvCustomPageListTreeView.CanChange(Node: TTreeNode): Boolean;
 begin
-  Result := true; //inherited CanChange(Node);
+  Result := inherited CanChange(Node);
   if Result and Assigned(Node) and Assigned(FPageList) then
     Result := FPageList.CanChange(TJvPageIndexNode(Node).PageIndex);
 end;
@@ -530,11 +499,9 @@ procedure TJvCustomPageListTreeView.Notification(AComponent: TComponent;
 begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) then
-  begin
-    
+  begin 
     if AComponent.IsImplementorOf(PageList) then
-      PageList := nil;
-    
+      PageList := nil; 
   end;
 end;
 
@@ -563,14 +530,10 @@ end;
 procedure TJvCustomPageListTreeView.SetPageList(const Value: IPageList);
 begin
   if FPageList <> Value then
-  begin
-    
-    ReferenceInterface(FPageList, opRemove);
-    
-    FPageList := Value;
-    
-    ReferenceInterface(FPageList, opInsert);
-    
+  begin 
+    ReferenceInterface(FPageList, opRemove); 
+    FPageList := Value; 
+    ReferenceInterface(FPageList, opInsert); 
   end;
 end;
 
@@ -688,8 +651,7 @@ begin
   FNodeImages := TJvSettingsTreeImages.Create;
   FNodeImages.TreeView := Self;
   AutoExpand := True;
-  ShowButtons := False;
-//  ShowLines := False;
+  ShowButtons := False; 
   ReadOnly := True;
   // we need to assign to these since the TTreeView checks if they are assigned
   // and won't call GetImageIndex without them
@@ -773,8 +735,8 @@ begin
       ResetPreviousNode(N);
       N.ImageIndex := FNodeImages.SelectedIndex;
       N.SelectedIndex := FNodeImages.SelectedIndex;
-      R := N.DisplayRect;
-      QWindows.InvalidateRect(Handle, @R, True);
+      R := N.DisplayRect(False);
+      InvalidateRect(Handle, @R, True);
       SetPreviousNode(N);
     end;
   end;
@@ -828,8 +790,8 @@ begin
   begin
     FLastSelected.ImageIndex := FNodeImages.ImageIndex;
     FLastSelected.SelectedIndex := FNodeImages.ImageIndex;
-    R := FLastSelected.DisplayRect;
-    QWindows.InvalidateRect(Handle, @R, True);
+    R := FLastSelected.DisplayRect(False);
+    InvalidateRect(Handle, @R, True);
   end;
 end;
 

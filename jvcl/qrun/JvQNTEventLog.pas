@@ -36,7 +36,10 @@ unit JvQNTEventLog;
 interface
 
 uses
-  Windows, Classes, SysUtils,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  Classes, SysUtils,
   JvQComponent;
 
 type

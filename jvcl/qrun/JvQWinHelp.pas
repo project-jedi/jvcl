@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,11 +36,12 @@ unit JvQWinHelp;
 interface
 
 uses
-  SysUtils, Classes, Windows,
-  
-  
-  Qt, QControls, QForms, QMenus,
-  
+  SysUtils, Classes,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  QControls, QForms, QMenus, 
+  Qt, 
   JvQTypes, JvQComponent;
 
 type
@@ -104,26 +106,16 @@ end;
 function TJvWinHelp.GetOwnerHandle: THandle;
 begin
   Result := 0;
-  if (FOwner is TWinControl) and not (csDestroying in TWinControl(FOwner).ComponentState) then
-    
-    
-    Result := QWidget_winId(TWidgetControl(FOwner).Handle)
-    
+  if (FOwner is TWinControl) and not (csDestroying in TWinControl(FOwner).ComponentState) then  
+    Result := QWidget_winId(TWidgetControl(FOwner).Handle) 
   else
   if Application <> nil then
   begin
-    if (Screen <> nil) and (Screen.ActiveForm <> nil) then
-      
-      
-      Result := QWidget_winId(Screen.ActiveForm.Handle)
-      
+    if (Screen <> nil) and (Screen.ActiveForm <> nil) then  
+      Result := QWidget_winId(Screen.ActiveForm.Handle) 
     else
-    if Application.MainForm <> nil then
-      
-      
-      Result := QWidget_winId(Application.MainForm.Handle)
-      
-    
+    if Application.MainForm <> nil then  
+      Result := QWidget_winId(Application.MainForm.Handle)  
   end;
 end;
 

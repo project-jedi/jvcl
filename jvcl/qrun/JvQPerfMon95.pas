@@ -37,8 +37,8 @@ unit JvQPerfMon95;
 interface
 
 uses
-  Windows, SysUtils, Registry, Classes, Contnrs,  
-  QForms, 
+  SysUtils, Registry, Classes, Contnrs,  
+  Windows, QForms, 
   JclBase, JvQComponent;
 
 type

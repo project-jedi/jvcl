@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -38,11 +39,8 @@ unit JvQSegmentedLEDDisplay;
 interface
 
 uses
-  Classes, Types,
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
-  QGraphics, QWindows,
+  Classes,
+  Types, QGraphics, QWindows,
   JclBase,
   JvQComponent, JvQTypes;
 
@@ -97,7 +95,6 @@ type
     FSegmentUnlitColor: TUnlitColor;
     FSlant: TSlantAngle;
     FText: string;
-    FAutosize: boolean;
   protected
     procedure DefineProperties(Filer: TFiler); override;
     procedure Loaded; override;
@@ -129,7 +126,7 @@ type
     procedure UpdateText;
     procedure UpdateBounds;
 
-    property AutoSize: boolean read FAutoSize write FAutosize default True;
+    property AutoSize default True;
     property CharacterMapper: TJvSegmentedLEDCharacterMapper read FCharacterMapper;
     property DigitClass: TJvSegmentedLEDDigitClass read FDigitClass write SetDigitClass;
     // Solely needed for design time support of DigitClass
@@ -386,7 +383,7 @@ implementation
 
 uses
   QControls, SysUtils,
-  JclQGraphUtils,
+  JclGraphUtils,
   JvQThemes, JvQConsts, JvQResources;
 
 {$IFDEF MSWINDOWS}
@@ -413,7 +410,7 @@ begin
   with DigitClassList.LockList do
   try
     if IndexOf(DigitClass) > -1 then
-      raise EJVCLSegmentedLEDException.Create(RsEDuplicateDigitClass);
+      raise EJVCLSegmentedLEDException.CreateRes(@RsEDuplicateDigitClass);
     Add(DigitClass);
     Classes.RegisterClass(DigitClass);
   finally
@@ -443,7 +440,6 @@ begin
 end;
 
 procedure UnregisterModuleSegmentedLEDDigitClasses(Module: HMODULE);
-{$IFDEF MSWINDOWS}
 var
   I: Integer;
   M: TMemoryBasicInformation;
@@ -460,12 +456,7 @@ begin
     DigitClassList.UnlockList;
   end;
 end;
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-begin
 
-end;
-{$ENDIF LINUX}
 //=== Helper routine: AngleAdjustPoint =======================================
 
 function AngleAdjustPoint(X, Y, Angle: Integer): TPoint;
@@ -689,7 +680,7 @@ begin
       if AClass.InheritsFrom(TJvCustomSegmentedLEDDigit) then
         DigitClass := TJvSegmentedLEDDigitClass(FindClass(Value))
       else
-        raise EJVCLSegmentedLEDException.Create(RsEInvalidClass);
+        raise EJVCLSegmentedLEDException.CreateRes(@RsEInvalidClass);
     end
     else
       DigitClass := nil;
@@ -1174,7 +1165,7 @@ begin
         begin
           Rgn := CreatePolygonRgn(SegPts[0], Length(SegPts), WINDING);
           try
-            if Rgn <> nil then
+            if Rgn <> 0 then
               Result := PtInRegion(Rgn, Pt.X, Pt.Y)
             else
               Result := False;
@@ -1188,7 +1179,7 @@ begin
         begin
           Rgn := CreateEllipticRgn(SegPts[0].X, SegPts[0].Y, SegPts[1].X, SegPts[1].Y);
           try
-            if Rgn <> nil then
+            if Rgn <> 0 then
               Result := PtInRegion(Rgn, Pt.X, Pt.Y)
             else
               Result := False;
@@ -1727,7 +1718,7 @@ begin
     if StrLIComp(Hdr.ID, PChar(Display.DigitClass.MapperFileID), Length(Display.DigitClass.MapperFileID)) = 0 then
       PrimReadMapping(Hdr, Stream)
     else
-      raise EJVCLSegmentedLEDException.Create(RsEInvalidMappingFile);
+      raise EJVCLSegmentedLEDException.CreateRes(@RsEInvalidMappingFile);
   except
     Stream.Position := OrgPos;
     raise;
@@ -1924,18 +1915,14 @@ begin
     Result := Format('%s%.8x', [HexDisplayPrefix, Color]);
 end;
 
-initialization
-  
-  GroupDescendentsWith(TJvCustomSegmentedLEDDigit, TControl);
-  
+initialization 
+  GroupDescendentsWith(TJvCustomSegmentedLEDDigit, TControl); 
   AddModuleUnloadProc(ModuleUnload);
   RegisterSegmentedLEDDigitClasses([TJv7SegmentedLEDDigit]);
   RegisterIntegerConsts(TypeInfo(TUnlitColor), IdentToUnlitColor, UnlitColorToIdent);
 
-finalization
-  
-  UnregisterIntegerConsts(TypeInfo(TUnlitColor), IdentToUnlitColor, UnlitColorToIdent);
-  
+finalization 
+  UnregisterIntegerConsts(TypeInfo(TUnlitColor), IdentToUnlitColor, UnlitColorToIdent); 
   UnregisterModuleSegmentedLEDDigitClasses(HInstance);
   FreeAndNil(GDigitClassList);
   RemoveModuleUnloadProc(ModuleUnload);

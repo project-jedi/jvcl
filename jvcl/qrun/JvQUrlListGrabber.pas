@@ -37,7 +37,7 @@ interface
 {$HPPEMIT '#pragma link "wininet.lib"'}
 
 uses
-  Windows, Classes, SysUtils, Contnrs,
+  QWindows, Classes, SysUtils, Contnrs,
   JvQComponent, JvQTypes;
 
 type

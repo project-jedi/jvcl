@@ -36,7 +36,10 @@ unit JvQJoystick;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, MMSystem,  
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF MSWINDOWS}
+  SysUtils, Classes, MMSystem,  
   QForms, 
   JvQTypes, JvQComponent;
 

@@ -613,7 +613,7 @@ begin
         Canvas.FillRect(ARect);
       if not ShowZoomPanel and (AState * [gdSelected, gdFocused] <> []) then
         Canvas.Font.Color := clHighlightText;
-      SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
+      SetBkMode(Canvas.Handle, QWindows.TRANSPARENT);
       WideDrawText(Canvas, AChar, ARect,
         DT_SINGLELINE or DT_CENTER or DT_VCENTER or DT_NOPREFIX);
     end
@@ -1065,7 +1065,7 @@ begin
   Canvas.Rectangle(R);
 
   //  R := Rect(0,0,Width,Height);
-  SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
+  SetBkMode(Canvas.Handle, QWindows.TRANSPARENT);
   AChar := Character;
   if TJvCustomCharMap(Parent).IsValidChar(AChar) then
     WideDrawText(Canvas, AChar, R,

@@ -47,11 +47,13 @@ interface
 
 uses
   SysUtils, Classes,
+  {$IFDEF MSWINDOWS}
   Windows,
-  QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus, QButtons,
+  {$ENDIF MSWINDOWS} 
+  Types, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus, QButtons,
   QFileCtrls, QMask, QImgList, QActnList, QExtDlgs, 
   RTLConsts, Variants,  
-  Qt, QComboEdits, QWindows, Types, JvQExComboEdits, 
+  Qt, QComboEdits, QWindows, JvQExComboEdits, 
   JvQSpeedButton, JvQTypes, JvQExMask, JvQExForms;
 
 const
@@ -67,7 +69,7 @@ type
   TJvPopupWindow = class(TJvExCustomForm)
   private
     FEditor: TWinControl;
-    FCloseUp: TCloseUpEvent;
+    FCloseUp: TCloseUpEvent; 
   protected  
     procedure SetParent(const Value: TWidgetControl); override;
     function WidgetFlags: Integer; override; 
@@ -87,7 +89,7 @@ type
 
   TJvEditButton = class(TJvImageSpeedButton)
   private
-    FNoAction: Boolean;
+    FNoAction: Boolean; 
     function GetGlyph: TBitmap;
     function GetNumGlyphs: TJvNumGlyphs;
     function GetUseGlyph: Boolean;
@@ -207,7 +209,7 @@ type
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     procedure AdjustHeight;
     procedure ButtonClick; dynamic;
-    procedure Change; override;
+    procedure Change; override;  
     procedure CreateWidget; override; 
     procedure DefineProperties(Filer: TFiler); override;
     procedure DoChange; virtual; //virtual Polaris
@@ -785,11 +787,10 @@ function IsInWordArray(Value: Word; const A: array of Word): Boolean;
 implementation
 
 uses
+  Math, QConsts,
   {$IFDEF MSWINDOWS}
   ShellAPI,
-  {$ENDIF MSWINDOWS}
-  Math,
-  QConsts,  
+  {$ENDIF WINDOWS}
   JvQFinalize, JvQThemes, JvQResources, JvQConsts, JvQJCLUtils, JvQExControls,
   JvQPickDate, JvQJVCLUtils;
 

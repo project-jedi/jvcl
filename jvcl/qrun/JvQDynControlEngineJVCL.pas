@@ -33,8 +33,8 @@ unit JvQDynControlEngineJVCL;
 interface
 
 uses
-  Classes, Controls, StdCtrls, ExtCtrls, ComCtrls, Mask, Forms, Graphics,
-  Buttons, Dialogs, FileCtrl,
+  QClasses, QControls, QStdCtrls, QExtCtrls, QComCtrls, QMask, QForms, QGraphics,
+  QButtons, QDialogs, QFileCtrlS,
   JvQMaskEdit, JvQDateTimePicker, JvQBitBtn, JvQCheckBox, JvQBaseEdits,
   JvQLabel, JvQListBox, JvQMemo, JvQPanel, JvQRadioGroup, JvQToolEdit,
   JvQScrollBox, JvQStaticText, JvQComboBox, JvQImage, JvQSpin,
@@ -273,7 +273,7 @@ type
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
   end;
-
+  {$IFDEF VCL}
   TJvDynControlJVCLMemo = class(TJvMemo, IUnknown, IJvDynControl,
     IJvDynControlData, IJvDynControlItems, IJvDynControlMemo, IJvDynControlReadOnly)
   public
@@ -299,7 +299,7 @@ type
     procedure ControlSetWordWrap(Value: Boolean);
     procedure ControlSetScrollBars(Value: TScrollStyle);
   end;
-
+  {$ENDIF VCL}
   TJvDynControlJVCLRadioGroup = class(TJvRadioGroup, IUnknown, IJvDynControl,
     IJvDynControlData, IJvDynControlItems, IJvDynControlRadioGroup, IJvDynControlReadOnly)
   public
@@ -323,6 +323,7 @@ type
     procedure ControlSetColumns(Value: Integer);
   end;
 
+  {$IFDEF VCL}
   TJvDynControlJVCLListBox = class(TJvListBox, IUnknown, IJvDynControl,
     IJvDynControlData, IJvDynControlItems, IJvDynControlDblClick)
   public
@@ -367,6 +368,8 @@ type
 
     procedure ControlSetNewEntriesAllowed(Value: Boolean);
   end;
+  {$ENDIF VCL}
+
 
   TJvDynControlJVCLPanel = class(TJvPanel, IUnknown, IJvDynControl,
     IJvDynControlPanel)
@@ -1790,25 +1793,27 @@ end;
 
 initialization
   IntDynControlEngineJVCL := TJvDynControlEngine.Create;
-  IntDynControlEngineJVCL.RegisterControl(jctLabel, TJvDynControlJVCLLabel);
+
   IntDynControlEngineJVCL.RegisterControl(jctStaticText, TJvDynControlJVCLStaticText);
+  IntDynControlEngineJVCL.RegisterControl(jctComboBox, TJvDynControlJVCLComboBox);
+  IntDynControlEngineJVCL.RegisterControl(jctListBox, TJvDynControlJVCLListBox);
+  IntDynControlEngineJVCL.RegisterControl(jctDateTimeEdit, TJvDynControlJVCLDateTimeEdit);
+  IntDynControlEngineJVCL.RegisterControl(jctTimeEdit, TJvDynControlJVCLTimeEdit);
+  IntDynControlEngineJVCL.RegisterControl(jctDateEdit, TJvDynControlJVCLDateEdit);
+  IntDynControlEngineJVCL.RegisterControl(jctSpinEdit, TJvDynControlJVCLSpinEdit);
+  IntDynControlEngineJVCL.RegisterControl(jctMemo, TJvDynControlJVCLMemo);
+
+  IntDynControlEngineJVCL.RegisterControl(jctLabel, TJvDynControlJVCLLabel);
   IntDynControlEngineJVCL.RegisterControl(jctButton, TJvDynControlJVCLButton);
   IntDynControlEngineJVCL.RegisterControl(jctScrollBox, TJvDynControlJVCLScrollBox);
   IntDynControlEngineJVCL.RegisterControl(jctPanel, TJvDynControlJVCLPanel);
   IntDynControlEngineJVCL.RegisterControl(jctImage, TJvDynControlVCLImage);
   IntDynControlEngineJVCL.RegisterControl(jctCheckBox, TJvDynControlJVCLCheckBox);
-  IntDynControlEngineJVCL.RegisterControl(jctComboBox, TJvDynControlJVCLComboBox);
-  IntDynControlEngineJVCL.RegisterControl(jctListBox, TJvDynControlJVCLListBox);
   IntDynControlEngineJVCL.RegisterControl(jctRadioGroup, TJvDynControlJVCLRadioGroup);
-  IntDynControlEngineJVCL.RegisterControl(jctDateTimeEdit, TJvDynControlJVCLDateTimeEdit);
-  IntDynControlEngineJVCL.RegisterControl(jctTimeEdit, TJvDynControlJVCLTimeEdit);
-  IntDynControlEngineJVCL.RegisterControl(jctDateEdit, TJvDynControlJVCLDateEdit);
   IntDynControlEngineJVCL.RegisterControl(jctEdit, TJvDynControlJVCLMaskEdit);
   IntDynControlEngineJVCL.RegisterControl(jctCalculateEdit, TJvDynControlJVCLCalcEdit);
-  IntDynControlEngineJVCL.RegisterControl(jctSpinEdit, TJvDynControlJVCLSpinEdit);
   IntDynControlEngineJVCL.RegisterControl(jctDirectoryEdit, TJvDynControlJVCLDirectoryEdit);
   IntDynControlEngineJVCL.RegisterControl(jctFileNameEdit, TJvDynControlJVCLFileNameEdit);
-  IntDynControlEngineJVCL.RegisterControl(jctMemo, TJvDynControlJVCLMemo);
   IntDynControlEngineJVCL.RegisterControl(jctButtonEdit, TJvDynControlJVCLButtonEdit);
   SetDefaultDynControlEngine(IntDynControlEngineJVCL);
 

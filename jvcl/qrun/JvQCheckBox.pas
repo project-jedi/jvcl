@@ -39,9 +39,9 @@ unit JvQCheckBox;
 interface
 
 uses
-  SysUtils, Classes,  
-  Types, QWindows, Qt, QGraphics, QControls, QForms, QStdCtrls, 
-  JvQTypes, JvQExStdCtrls, JvQLinkedControls;
+  SysUtils, Classes,
+  QWindows, QMessages, Types, QGraphics, QControls, QForms, QStdCtrls,
+  JvQJCLUtils, JvQTypes, JvQExStdCtrls, JvQLinkedControls;
 
 type
   TJvCheckBox = class(TJvExCheckBox)
@@ -237,9 +237,9 @@ begin
   R := Rect(0, 0, ClientWidth, ClientHeight);
   // This is slower than GetTextExtentPoint but it does consider hotkeys
   if Caption <> '' then
-  begin  
+  begin
     DrawText(FCanvas, Caption, -1, R,
-      Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT); 
+      Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
     AWidth := (R.Right - R.Left) + ASize.cx + 8;
     AHeight := R.Bottom - R.Top;
   end
@@ -352,10 +352,8 @@ begin
     for I := 0 to LinkedControls.Count - 1 do
       with LinkedControls[I] do
         if Control <> nil then
-          Control.Enabled :=
-            ((Options = [loLinkChecked, loLinkEnabled]) and Self.Checked and Self.Enabled) or
-            ((Options = [loLinkChecked]) and Self.Checked) or
-            ((Options = [loLinkEnabled]) and Self.Enabled);
+          Control.Enabled := CheckLinkControlEnabled(Self.Enabled, Self.Checked, Options);
+
 end;
 
 procedure TJvCheckBox.LinkedControlsChange(Sender: TObject);

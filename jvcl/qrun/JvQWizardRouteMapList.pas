@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -38,17 +39,16 @@ unit JvQWizardRouteMapList;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QForms, Types, QWindows, QImgList, QMessages,
-  
-  
+  SysUtils, Classes,  
+  QGraphics, QControls, QForms, Types, QWindows, QImgList, 
+  {$IFDEF USEJVCL}
   JvQTypes, JvQConsts, JvQJVCLUtils,
-  
+  {$ENDIF USEJVCL}
   JvQWizard;
 
+{$IFNDEF USEJVCL}
 
+{$ENDIF !USEJVCL}
 
 type
   TJvWizardDrawRouteMapListItem = procedure(Sender: TObject; ACanvas: TCanvas;
@@ -77,10 +77,10 @@ type
     FHotTrackBorder: Integer;
     FBorderColor: TColor;
     FTextOnly: Boolean;
-    
+    {$IFDEF USEJVCL}
     FHotTrackFontOptions: TJvTrackFontOptions;
     FActiveFontOptions: TJvTrackFontOptions;
-    
+    {$ENDIF USEJVCL}
     procedure SetItemHeight(const Value: Integer);
     procedure SetHorzOffset(const Value: Integer);
     procedure SetVertOffset(const Value: Integer);
@@ -97,17 +97,16 @@ type
     procedure SetCurvature(const Value: Integer);
     procedure SetTextOnly(const Value: Boolean);
     procedure SetBorderColor(Value: TColor);
-    
+    {$IFDEF USEJVCL}
     procedure SetActiveFontOptions(const Value: TJvTrackFontOptions);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
-    
+    {$ENDIF USEJVCL}
   protected
     procedure DrawPageItem(ACanvas: TCanvas; ARect: TRect; MousePos: TPoint; PageIndex: Integer); virtual;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     function PageAtPos(Pt: TPoint): TJvWizardCustomPage; override;
     procedure Paint; override;
-    procedure Loaded; override;
-    
+    procedure Loaded; override; 
     procedure CursorChanged; override; 
     procedure FontChanged; override; 
   public
@@ -115,10 +114,10 @@ type
     destructor Destroy; override;
   published
     property ActiveFont: TFont read FActiveFont write SetActiveFont;
-    
+    {$IFDEF USEJVCL}
     property ActiveFontOptions: TJvTrackFontOptions read FActiveFontOptions write SetActiveFontOptions default
       DefaultTrackFontOptions;
-    
+    {$ENDIF USEJVCL}
     property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
     property Clickable: Boolean read FClickable write FClickable default True;
     property Color default $00C08000;
@@ -130,10 +129,10 @@ type
     property HotTrack: Boolean read FHotTrack write FHotTrack default True;
 
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
-    
+    {$IFDEF USEJVCL}
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
-    
+    {$ENDIF USEJVCL}
     property TextOnly: Boolean read FTextOnly write SetTextOnly default False;
     property IncludeDisabled: Boolean read FIncludeDisabled write SetIncludeDisabled default False;
     property BorderColor: TColor read FBorderColor write SetBorderColor default clNavy;
@@ -159,10 +158,10 @@ begin
   FHotTrackFont.Color := clNavy;
   FHotTrackFont.Style := [fsUnderline];
   FHotTrackFont.OnChange := DoFontChange;
-  
+  {$IFDEF USEJVCL}
   FActiveFontOptions := DefaultTrackFontOptions;
   FHotTrackFontOptions := DefaultTrackFontOptions;
-  
+  {$ENDIF USEJVCL}
   Color := $00C08000;
   FHotTrackCursor := crHandPoint;
   FVertOffset := 8;
@@ -326,15 +325,13 @@ begin
           case Alignment of
             taLeftJustify:
               begin
-                Wizard.HeaderImages.Draw(ACanvas, ARect.Left + 4, ARect.Top + ATop, Pages[PageIndex].Header.ImageIndex,
-                 itImage,  Pages[PageIndex].Enabled);
+                Wizard.HeaderImages.Draw(ACanvas, ARect.Left + 4, ARect.Top + ATop, Pages[PageIndex].Header.ImageIndex,  itImage,  Pages[PageIndex].Enabled);
                 Inc(ARect.Left, Wizard.HeaderImages.Width + 4);
               end;
             taRightJustify:
               begin
                 Wizard.HeaderImages.Draw(ACanvas, ARect.Right - Wizard.HeaderImages.Width - 4, ARect.Top + ATop,
-                  Pages[PageIndex].Header.ImageIndex,
-                   itImage,  Pages[PageIndex].Enabled);
+                  Pages[PageIndex].Header.ImageIndex,  itImage,  Pages[PageIndex].Enabled);
                 Dec(ARect.Right, Wizard.HeaderImages.Width + 4);
               end;
             taCenter:
@@ -342,19 +339,16 @@ begin
                 ALeft := ((ARect.Right - ARect.Left) - Wizard.HeaderImages.Width) div 2;
                 Inc(ARect.Top, 4);
                 Wizard.HeaderImages.Draw(ACanvas, ARect.Left + ALeft, ARect.Top + 8,
-                  Pages[PageIndex].Header.ImageIndex, itImage, Pages[PageIndex].Enabled);
+                  Pages[PageIndex].Header.ImageIndex,  itImage,  Pages[PageIndex].Enabled);
                 Inc(ARect.Top, Wizard.HeaderImages.Height);
   //              if ItemText = itSubtitle then
   //                Inc(ARect.Top, 16);
               end;
           end;
           if not Pages[PageIndex].Enabled then
-          begin
-            
-            
+          begin  
             QWindows.SetBkColor(ACanvas.Handle, BkColor);
-            QWindows.SetTextColor(ACanvas.Handle, ColorToRGB(clGrayText));
-            
+            QWindows.SetTextColor(ACanvas.Handle, ColorToRGB(clGrayText)); 
           end;
         end;
       end
@@ -376,8 +370,7 @@ begin
       end;
       if (ItemText <> itNone) and ((ARect.Bottom - ARect.Top) > abs(ACanvas.Font.Height)) then
         DrawText(ACanvas.Handle, PChar(S), Length(S), ARect,
-          cAlignment[Alignment] or cWordWrap[ItemText = itSubtitle] or DT_VCENTER or DT_EDITCONTROL or
-          DT_END_ELLIPSIS);
+          cAlignment[Alignment] or cWordWrap[ItemText = itSubtitle] or DT_VCENTER or DT_EDITCONTROL or DT_END_ELLIPSIS);
       if not TextOnly and HotTrack and (HotTrackBorder > 0) and PtInRect(AOrigRect, MousePos) then
       begin
         ACanvas.Brush.Style := bsClear;
@@ -448,6 +441,8 @@ begin
   Invalidate;
 end;
 
+
+
 procedure TJvWizardRouteMapList.SetAlignment(const Value: TAlignment);
 begin
   if FAlignment <> Value then
@@ -511,7 +506,7 @@ begin
   end;
 end;
 
-
+{$IFDEF USEJVCL}
 
 procedure TJvWizardRouteMapList.SetActiveFontOptions(const Value: TJvTrackFontOptions);
 begin
@@ -531,7 +526,7 @@ begin
   end;
 end;
 
-
+{$ENDIF USEJVCL}
 
 procedure TJvWizardRouteMapList.SetBorderColor(Value: TColor);
 begin
@@ -552,23 +547,19 @@ begin
 end;
 
 procedure TJvWizardRouteMapList.CursorChanged;
-begin
-  
-  inherited CursorChanged;
-  
+begin 
+  inherited CursorChanged; 
   if (Cursor <> FHotTrackCursor) and (Cursor <> FOldCursor) then
     FOldCursor := Cursor;
 end;
 
 procedure TJvWizardRouteMapList.FontChanged;
-begin
-  
-  inherited FontChanged;
-  
-  
+begin 
+  inherited FontChanged; 
+  {$IFDEF USEJVCL}
   UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
   UpdateTrackFont(ActiveFont, Font, FActiveFontOptions);
-  
+  {$ENDIF USEJVCL}
 end;
 
 end.

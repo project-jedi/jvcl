@@ -35,8 +35,8 @@ unit JvQPatchForm;
 interface
 
 uses
-  SysUtils, Classes,  
-  QControls, QForms, QStdCtrls, QMask, 
+  SysUtils, Classes,
+  QControls, QForms, QStdCtrls, QMask,
   JvQToolEdit, JvQComponent, JvQExMask;
 
 type
@@ -66,14 +66,11 @@ type
 
 implementation
 
-uses  
-  QDialogs,  
+uses
+  QDialogs,
   JvQConsts, JvQResources;
 
-
-
 {$R *.xfm}
-
 
 procedure TPatchFrm.LoadFromStr(Value: TStringList);
 begin

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -36,20 +37,34 @@ unit JvQYearGrid;
 interface
 
 uses
-  
-  
-  QGraphics, QControls, QForms, QDialogs, QGrids, QMenus, QClipbrd, Types,
-  QWindows,
-  
-  
+  {$IFDEF MSWINDOWS}
+  ShellAPI,
+  {$ENDIF MSWINDOWS}
+  QWindows, QMessages, Types, QGraphics, QControls, QForms,
+  QDialogs, QGrids, QMenus, QClipbrd,
+  {$IFDEF USEJVCL}
   JvQTypes,
-  
+  {$ENDIF USEJVCL}
   SysUtils, QStdCtrls, Classes;
 
-{$HPPEMIT '#define TDate Controls::TDate'}
+
+
 
 type
-  
+{$IFNDEF USEJVCL}
+
+  THintString = string;
+{$HPPEMIT '#ifndef TDate'}
+
+
+{$HPPEMIT '#define TDate TDateTime'}
+{$HPPEMIT '#define TTime TDateTime'}
+
+{$HPPEMIT '#endif'}
+
+{$ENDIF USEJVCL}
+
+
 
   TYearData = record
     DisplayText : string;
@@ -69,9 +84,13 @@ type
   TOnYearChanged = procedure(Sender: TObject; AYear: Integer) of object;
   TOnSelectDate = procedure(Sender: TObject; ADate: TDate; InfoText: string; InfoColor: TColor) of object;
   TOnInfoChanging = procedure(Sender: TObject; var InfoText: string; var CanChange: Boolean) of object;
-  
-  TJvYearGrid = class(TCustomGrid)
-  
+
+
+  {$IFDEF USECUSTOMGRID}
+  TJvYearGrid = class(TCustomDrawGrid)
+  {$ELSE}
+  TJvYearGrid = class(TDrawGrid)
+  {$ENDIF USECUSTOMGRID}
   private
     FGridPop: TPopupMenu;
     FCurrentYear: Word;
@@ -85,10 +104,10 @@ type
     FOnInfoChanging: TOnInfoChanging;
     FBookMarkColor: TColor;
     FAutoSize: Boolean;
-    
+
     DaysInMonth: array [1..12] of Integer;
     StartDays: array [1..12] of Integer;
-    
+
     FYearData: array [0..37, 0..12] of TYearData;
     FYearFile: string;
 
@@ -96,7 +115,9 @@ type
 
     FSavedScrollBars: TScrollStyle;
 
-    
+    {$IFNDEF USECUSTOMGRID}
+    procedure MouseToCell(X, Y: Integer; var ACol, ARow: Longint);
+    {$ENDIF USECUSTOMGRID}
 
     procedure DoShowHint(var HintStr: THintString; var CanShow: Boolean;
       var HintInfo: THintInfo);
@@ -141,20 +162,22 @@ type
     FWeekendDays: TJvWeekDaySet;
     FAutoSizeOptions: TJvAutoSizeOptions;
 
-    FOnDrawCell: TDrawCellEvent;
-    FOnSelectCell: TSelectCellEvent;
+    {$IFDEF USEJVCL}
     FCellMargins: TJvRect;
-
-
+    {$ENDIF USEJVCL}
+    {$IFNDEF USECUSTOMGRID}
+    FOnSelectCell: TSelectCellEvent;
+    FOnDrawCell: TDrawCellEvent;
+    {$ENDIF USECUSTOMGRID}
     FDaysAlignment: TAlignment;
     FDayNamesAlignment: TAlignment;
     FMonthNamesAlignment: TAlignment;
     FYearAlignment: TAlignment;
     FYear: Integer;
 
-
+    {$IFDEF USEJVCL}
     procedure CellMarginsChange(Sender: TObject);
-
+    {$ENDIF USEJVCL}
 
     procedure SetFirstDayOfWeek(const Value: TJvWeekDay);
     function GetDefaultColWidth: Integer;
@@ -165,9 +188,9 @@ type
     procedure SetFirstRowHeight(const Value: Integer);
     procedure SetWeekendDays(const Value: TJvWeekDaySet);
     procedure SetAutoSizeOptions(const Value: TJvAutoSizeOptions);
-
+    {$IFDEF USEJVCL}
     procedure SetCellMargins(const Value: TJvRect);
-
+    {$ENDIF USEJVCL}
     procedure SetDayNamesAlignment(const Value: TAlignment);
     procedure SetDaysAlignment(const Value: TAlignment);
     procedure SetMonthNamesAlignment(const Value: TAlignment);
@@ -180,7 +203,7 @@ type
     procedure DrawCell(ACol, ARow: Integer; Rect: TRect; State: TGridDrawState); override;
     function SelectCell(ACol, ARow: Integer): Boolean; override;
     procedure DblClick; override;
-    procedure SetAutoSize(Value: Boolean); // override;
+    procedure SetAutoSize(Value: Boolean); {$IFDEF USECUSTOMGRID}override;{$ENDIF USECUSTOMGRID}
     procedure UpdateAllSizes;
     procedure AdjustBounds;
     procedure Loaded; override;
@@ -239,9 +262,9 @@ type
     property FirstColWidth : Integer read GetFirstColWidth  write SetFirstColWidth;
     property FirstRowHeight: Integer read GetFirstRowHeight write SetFirstRowHeight;
 
-
+    {$IFDEF USEJVCL}
     property CellMargins: TJvRect read FCellMargins write SetCellMargins;
-
+    {$ENDIF USEJVCL}
 
     property WeekendDays : TJvWeekDaySet read FWeekendDays write SetWeekendDays;
 
@@ -250,10 +273,13 @@ type
     property DaysAlignment      : TAlignment read FDaysAlignment       write SetDaysAlignment       default taLeftJustify;
     property YearAlignment      : TAlignment read FYearAlignment       write SetYearAlignment       default taLeftJustify;
 
-    /////////////////
+    {$IFDEF USECUSTOMGRID}
+    property OnSelectCell;
+    property OnDrawCell;
+    {$ELSE}
     property OnSelectCell: TSelectCellEvent read FOnSelectCell write FOnSelectCell;
-    property OnDrawCell: TDrawCellEvent read FOnDrawCell write FOnDrawCell;
-    
+    property OnDrawCell  : TDrawCellEvent   read FOnDrawCell   write FOnDrawCell;
+    {$ENDIF USECUSTOMGRID}
 
     property OnYearChanged : TOnYearChanged   read FOnYearChanged  write SetYearChanged;
     property OnSelectDate  : TOnSelectDate    read FOnSelectDate   write SetSelectDate;
@@ -272,13 +298,41 @@ type
 implementation
 
 uses
-
+  {$IFDEF USEJVCL}
   JvQConsts,
   JvQResources,
-
+  {$ENDIF USEJVCL}
   JvQYearGridEditForm;
 
+{$IFNDEF USEJVCL}
+resourcestring
+  RsYearGrid = 'YearGrid';
+  RsEnterYear = 'Enter year (1999-2050):';
+  RsInvalidYear = 'invalid year';
+  RsYear = '&Year...';
+  RsEdit = '&Edit';
+  RsColor = '&Color...';
+  RsNoColor = '&No Color';
+  RsSaveAllInfo = '&Save All Info';
+  RsSaveFoundInfo = 'Save Found Info';
+  RsBorderColor = '&Border Color...';
+  RsBookMarkColor = 'Book&Mark Color...';
+  RsFindItem = '&Find...';
+  RsClearFind = 'Clear Find';
+  RsYearGridFind = 'YearGrid Find';
+  RsEnterSeachText = 'Enter seach text:';
+  RsFounds = 'Found %s';
+  RsToday = 'Today ';
+  RsCutItem = 'Cu&t';
+  RsCopyItem = '&Copy';
+  RsPasteItem = '&Paste';
+  RsDeleteItem = '&Delete';
+{$ENDIF USEJVCL}
 
+{$IFNDEF USEJVCL}
+const
+  Cr = #13;
+{$ENDIF USEJVCL}
 
 const
   TodayFontColor = clWhite;
@@ -290,14 +344,14 @@ var
 begin
   inherited Create(AOwner);
 
-  
+  {$IFDEF USEJVCL}
   FCellMargins := TJvRect.Create;
   FCellMargins.Top    := 1;
   FCellMargins.Left   := 1;
   FCellMargins.Bottom := 1;
   FCellMargins.Right  := 1;
   FCellMargins.OnChange := CellMarginsChange; // Must be set last
-  
+  {$ENDIF USEJVCL}
 
   FOrientation := yoHorizontal;
 
@@ -326,9 +380,9 @@ begin
   Height := 213;
 
   // THIS IS WRONG, VERY WRONG! (obones)
-//  Application.ShowHint := True;
-//  Application.OnShowHint := DoShowHint;
-//  Application.HintHidePause := 5000;
+  Application.ShowHint := True;
+  Application.OnShowHint := DoShowHint;
+  Application.HintHidePause := 5000;
 
   DecodeDate(Now, FCurrentYear, FCurrentMonth, FCurrentDay);
   HTMLFontName := 'Arial';
@@ -346,9 +400,9 @@ destructor TJvYearGrid.Destroy;
 begin
 //  SaveYear;
   FGridPop.Free;
-  
+  {$IFDEF USEJVCL}
   FCellMargins.Free;
-  
+  {$ENDIF USEJVCL}
   inherited destroy;
 end;
 
@@ -373,7 +427,7 @@ begin
   begin
     X := HintInfo.CursorPos.X;
     Y := HintInfo.CursorPos.Y;
-    TDrawGrid(self).MouseToCell(X, Y, ACol, ARow);
+    MouseToCell(X, Y, ACol, ARow);
     if (ACol < 0) or (ARow < 0) then
       Exit;
     DS := FYearData[ACol, ARow].DisplayText;
@@ -738,11 +792,8 @@ procedure TJvYearGrid.Paste1Click(Sender: TObject);
 var
   S: string;
 begin
-  if GetCellData(S) then
-    
-    
-    if Clipboard.AsText <> '' then
-    
+  if GetCellData(S) then  
+    if Clipboard.AsText <> '' then 
       SetCellData(Clipboard.AsText);
 end;
 
@@ -889,8 +940,7 @@ var
 begin
   if (Col < 1) or (Row < 1) or (FYearData[Col, Row].DisplayText = '') then
     Exit;
-  CD := TColorDialog.Create(Application);
-  
+  CD := TColorDialog.Create(Application); 
   if CD.Execute then
   begin
     FYearData[Col, Row].CustomColor := CD.Color;
@@ -926,13 +976,10 @@ var
 begin
   Command := AFile;
   Params := '';
-  WorkDir := '';
-  
-  
+  WorkDir := '';  
   // (rom) i doubt that ShellExecute is a Linux function
   ShellExecute(HWND_DESKTOP, 'open', PChar(Command),
-    PChar(Params), PChar(WorkDir), SW_SHOWNORMAL);
-  
+    PChar(Params), PChar(WorkDir), SW_SHOWNORMAL); 
 end;
 
 procedure TJvYearGrid.SetHTMLFontName(const Value: string);
@@ -1031,8 +1078,7 @@ procedure TJvYearGrid.BorderColor1Click(Sender: TObject);
 var
   CD: TColorDialog;
 begin
-  CD := TColorDialog.Create(Application);
-  
+  CD := TColorDialog.Create(Application); 
   if CD.Execute then
     BorderColor := CD.Color;
   CD.Free;
@@ -1042,8 +1088,7 @@ procedure TJvYearGrid.BookMarkColor1Click(Sender: TObject);
 var
   CD: TColorDialog;
 begin
-  CD := TColorDialog.Create(Application);
-  
+  CD := TColorDialog.Create(Application); 
   if CD.Execute then
     BookMarkColor := CD.Color;
   CD.Free;
@@ -1278,12 +1323,12 @@ begin
   begin
     if aoFirstRow in AutoSizeOptions then
     begin
-      RowHeights[0] := GetHighestTextInRow(0) + CellMargins.Top + CellMargins.Bottom;
+      RowHeights[0] := GetHighestTextInRow(0) {$IFDEF USEJVCL}+ CellMargins.Top + CellMargins.Bottom{$ENDIF USEJVCL};
     end;
     
     if aoFirstColumn in AutoSizeOptions then
     begin
-      ColWidths[0] := GetLargestTextInColumn(0) + CellMargins.Left + CellMargins.Right; 
+      ColWidths[0] := GetLargestTextInColumn(0) {$IFDEF USEJVCL}+ CellMargins.Left + CellMargins.Right{$ENDIF USEJVCL}; 
     end;
 
     if aoRows in AutoSizeOptions then
@@ -1299,7 +1344,7 @@ begin
       end;
         
       for I := 1 to RowCount-1 do
-        RowHeights[I] := MaxValue + CellMargins.Top + CellMargins.Bottom;
+        RowHeights[I] := MaxValue {$IFDEF USEJVCL}+ CellMargins.Top + CellMargins.Bottom{$ENDIF USEJVCL};
     end;
 
     if aoColumns in AutoSizeOptions then
@@ -1315,18 +1360,18 @@ begin
       end;
 
       for I := 1 to ColCount-1 do
-        ColWidths[I] := MaxValue + CellMargins.Left + CellMargins.Top;
+        ColWidths[I] := MaxValue {$IFDEF USEJVCL}+ CellMargins.Left + CellMargins.Top{$ENDIF USEJVCL};
     end;
   end;
 end;
 
-
+{$IFDEF USEJVCL}
 procedure TJvYearGrid.SetCellMargins(const Value: TJvRect);
 begin
   FCellMargins.Assign(Value);
   AdjustBounds;
 end;
-
+{$ENDIF USEJVCL}
 
 procedure TJvYearGrid.AdjustBounds;
 var
@@ -1362,12 +1407,12 @@ begin
     AdjustBounds;
 end;
 
-
+{$IFDEF USEJVCL}
 procedure TJvYearGrid.CellMarginsChange(Sender: TObject);
 begin
   AdjustBounds;
 end;
-
+{$ENDIF USEJVCL}
 
 procedure TJvYearGrid.SetDayNamesAlignment(const Value: TAlignment);
 begin
@@ -1420,7 +1465,16 @@ begin
   Result := Year = FCurrentYear;
 end;
 
-
+{$IFNDEF USECUSTOMGRID}
+procedure TJvYearGrid.MouseToCell(X, Y: Integer; var ACol, ARow: Integer);
+var
+  Coord: TGridCoord;
+begin
+  Coord := MouseCoord(X, Y);
+  ACol := Coord.X;
+  ARow := Coord.Y;
+end;
+{$ENDIF USECUSTOMGRID}
 
 procedure TJvYearGrid.ReadGridYear(Reader: TReader);
 begin
@@ -1496,9 +1550,9 @@ var
   function GetTextLeft(Alignment: TAlignment): Integer;
   begin
     case Alignment of
-      taRightJustify: Result := Rect.Right - SWidth - CellMargins.Right;
-      taCenter      : Result := Rect.Left + (Rect.Right-Rect.Left - SWidth- CellMargins.Left - CellMargins.Right + 2) div 2;
-      else            Result := Rect.Left+ CellMargins.Left;
+      taRightJustify: Result := Rect.Right - SWidth {$IFDEF USEJVCL}- CellMargins.Right{$ENDIF USEJVCL};
+      taCenter      : Result := Rect.Left + (Rect.Right-Rect.Left - SWidth{$IFDEF USEJVCL}- CellMargins.Left - CellMargins.Right{$ENDIF USEJVCL} + 2) div 2;
+      else            Result := Rect.Left{$IFDEF USEJVCL}+ CellMargins.Left{$ENDIF USEJVCL};
     end;
   end;
 begin
