@@ -63,7 +63,7 @@ procedure TJvAngleLabel.DrawText(Flags: Word);
 var
   Text: array [0..4096] of Char;
   LogFont, NewLogFont: TLogFont;
-  NewFont, OldFont: HFont;
+  NewFont: HFont;
   MRect: TRect;
   TextX, TextY: Integer;
   Phi: Real;
@@ -81,8 +81,12 @@ begin
   MRect := ClientRect;
   NewLogFont.lfEscapement := Angle10;
   NewFont := CreateFontIndirect(NewLogFont);
+{
+  (p3) unnecessary
   OldFont := SelectObject(Canvas.Font.Handle, NewFont);
   DeleteObject(OldFont);
+  ...this does the same thing:
+}
   Canvas.Font.Handle := NewFont;
   Phi := Angle10 * Pi / 1800;
   if not AutoSize then
