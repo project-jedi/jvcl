@@ -236,6 +236,7 @@ type
     procedure CMCaptionEditing(var Msg: TMessage); message CM_CAPTION_EDITING;
     procedure CMCaptionEditAccept(var Msg: TMessage); message CM_CAPTION_EDIT_ACCEPT;
     procedure CMCaptionEditCancel(var Msg: TMessage); message CM_CAPTION_EDIT_CANCEL;
+    procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
     procedure DoButtonEdit(NewText: string; B: TJvOutlookBarButton);
     procedure DoPageEdit(NewText: string; P: TJvOutlookBarPage);
     function GetActivePage: TJvOutlookBarPage;
@@ -1326,7 +1327,7 @@ begin
     SetBkMode(Canvas.Handle, TRANSPARENT);
     // TODO: add Pages[I].ImageIndex and Pages[I].Alignment to the equation
     DrawText(Canvas.Handle, PChar(Pages[I].Caption), -1, R,
-      DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX);
+      DT_CENTER or DT_VCENTER or DT_SINGLELINE);
     OffsetRect(R, 0, PageButtonHeight + 1);
     if I >= ActivePageIndex then
     begin
@@ -1388,7 +1389,7 @@ begin
             R3 := GetButtonTextRect(ActivePageIndex, I);
 //          Canvas.Rectangle(R3);  // DEBUG
             DrawText(Canvas.Handle, PChar(Pages[Index].Buttons[I].Caption), -1, R3,
-              DT_EXPANDTABS or DT_SINGLELINE or DT_CENTER or DT_VCENTER or DT_NOPREFIX);
+              DT_EXPANDTABS or DT_SINGLELINE or DT_CENTER or DT_VCENTER);
           end;
         olbsSmall:
           begin
@@ -2245,6 +2246,31 @@ begin
       Pages[I].ParentFont := False;
       Pages[I].ParentFont := True; // reset flag
     end;
+end;
+
+procedure TJvCustomOutlookBar.CMDialogChar(var Message: TCMDialogChar);
+var I, J:integer;
+begin
+  if CanFocus then
+  for I := 0 to FPages.Count - 1 do
+  begin
+    if IsAccel(Message.CharCode, Pages[I].Caption) then
+    begin
+      Message.Result := 1;
+      ActivePageIndex := I;
+      Exit;
+    end;
+    for J := 0 to Pages[I].Buttons.Count - 1 do
+    if IsAccel(Message.CharCode, Pages[I].Buttons[J].Caption) then
+    begin
+      Message.Result := 1;
+      ActivePageIndex := I;
+      DoButtonClick(J);
+      Exit;
+    end;
+  end;
+
+  inherited;
 end;
 
 end.
