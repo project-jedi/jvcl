@@ -37,11 +37,11 @@ uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, Buttons, StdCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms,
   QDialogs, QExtCtrls, QButtons, QStdCtrls, Types, 
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvTypes, JvComponent;
 
 type
@@ -103,10 +103,10 @@ uses
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 procedure TJvCsvDefStrDialog.UpdateCsvStr;
 var

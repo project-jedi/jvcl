@@ -69,10 +69,10 @@ uses
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 class function TFrmSelectDateTimeDlg.SelectDateTime(var ADate: TDateTime;
   AType: TDateSelectType): Boolean;

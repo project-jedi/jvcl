@@ -38,10 +38,10 @@ uses
   Classes,
   {$IFDEF VCL}
   Graphics,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, Types,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignIntf,
   {$ELSE}
@@ -54,11 +54,11 @@ uses
   JvGradientCaptionForm, JvFormWallpaperEditor;
 
 {$IFDEF MSWINDOWS}
-{$R ..\resources\JvAppFrmReg.dcr}
-{$ENDIF}
+{$R ..\Resources\JvAppFrmReg.dcr}
+{$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../resources/JvAppFrmReg.dcr}
-{$ENDIF}
+{$R ../Resources/JvAppFrmReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 begin

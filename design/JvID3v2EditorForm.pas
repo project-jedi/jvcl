@@ -36,10 +36,10 @@ uses
   Classes,
   {$IFDEF VCL}
   Windows, Messages, Forms, StdCtrls, ExtCtrls, Menus, Controls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QForms, QStdCtrls, QExtCtrls, QMenus, QControls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, DesignMenus, DesignWindows,
   {$ELSE}
@@ -146,18 +146,19 @@ implementation
 uses
   {$IFDEF VCL}
   Dialogs,
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QDialogs,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   Math, SysUtils,
   JvID3v2DefineForm, JvTypes, JvDsgnConsts;
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 type
   TJvID3ControllerAccess = class(TJvID3Controller);

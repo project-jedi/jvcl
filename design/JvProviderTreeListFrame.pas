@@ -35,10 +35,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs, ComCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs, QComCtrls, Types,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvDataProvider, JvDataProviderIntf;
 
 type
@@ -114,15 +114,15 @@ implementation
 uses
   {$IFDEF VCL}
   CommCtrl,
-  {$ENDIF}
+  {$ENDIF VCL}
   JvDsgnConsts, JvConsts;
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 function GetItemIndexAt(LV: TListView; X, Y: Integer): Integer;
 var

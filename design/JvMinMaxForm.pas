@@ -34,11 +34,11 @@ uses
   {$IFDEF VCL}
   Windows,  Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, Buttons, Mask, Consts,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs, Types,
   QStdCtrls, QExtCtrls, QButtons, QMask, QConsts,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, VCLEditors, DesignEditors,
   {$ELSE}
@@ -103,12 +103,10 @@ implementation
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
-
-{$D-}
+{$ENDIF VisualCLX}
 
 procedure MakeIntEdit(Edit: TCustomEdit);
 begin

@@ -33,17 +33,18 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Controls, Forms, StdCtrls, Buttons, ExtCtrls, Consts,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls, QForms, QStdCtrls, QButtons, QExtCtrls, QConsts, Types,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors,
   {$IFDEF VCL}
   VCLEditors,
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   CLXEditors,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
@@ -125,10 +126,10 @@ uses
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 //=== TJvFormStorageEditor ===================================================
 

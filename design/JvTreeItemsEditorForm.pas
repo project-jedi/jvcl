@@ -39,11 +39,11 @@ uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, ActnList, ComCtrls, Menus, StdActns,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls,
   QActnList, QComCtrls, QMenus, QStdActns, QWindows, Types, QTypes,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf;
   {$ELSE}
@@ -139,6 +139,7 @@ type
   public
     class function Edit(TreeView: TCustomTreeView): Boolean;
   end;
+
   {$IFDEF VCL}
   TGroupBox = class(StdCtrls.TGroupBox)
   private
@@ -149,7 +150,8 @@ type
   published
     property PropagateEnabled: Boolean read FPropagateEnabled write FPropagateEnabled default True;
   end;
-  {$ENDIF}
+  {$ENDIF VCL}
+
   {$IFDEF VisualCLX}
   TGroupBox = class(QStdCtrls.TGroupBox)
   private
@@ -161,7 +163,7 @@ type
   published
     property PropagateEnabled: Boolean read FPropagateEnabled write FPropagateEnabled default True;
   end;
-  {$ENDIF}
+  {$ENDIF VisualCLX}
 
 
 procedure ShowTreeNodeEditor(TreeView:TCustomTreeView);
@@ -171,18 +173,18 @@ implementation
 uses
   {$IFDEF VCL}
   ImgList,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QImgList,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvPageListTreeView, JvPageLinkEditorForm, JvDsgnConsts;
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 type
   THackTreeView = class(TCustomTreeView);

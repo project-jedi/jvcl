@@ -60,11 +60,11 @@ uses
   JvWizard, JvWizardRouteMapNodes, JvWizardRouteMapSteps, JvWizardEditorForm;
 
 {$IFDEF MSWINDOWS}
-{$R ..\resources\JvWizardReg.dcr}
-{$ENDIF}
+{$R ..\Resources\JvWizardReg.dcr}
+{$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 {$R ../Resources/JvWizardReg.dcr}
-{$ENDIF}
+{$ENDIF LINUX}
 
 {$IFNDEF USEJVCL}
 resourcestring
