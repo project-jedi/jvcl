@@ -120,7 +120,7 @@ type
     property Params;
   published
     property Transaction;
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
     property UniDirectionnal;
 {$ENDIF}
     property OnClose;
@@ -138,7 +138,7 @@ type
   end;
 
 implementation
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
 uses FMTBCD;
 {$ENDIF}
 
@@ -382,7 +382,7 @@ end;
 
 procedure TJvUIBCustomDataSet.SetUniDirectional(const Value: boolean);
 begin
-{$IFDEF DELPHI6_UP}
+{$IFDEF COMPILER6_UP}
   inherited SetUniDirectional(Value);
 {$ENDIF}
   FStatement.CachedFetch := not Value;
@@ -436,7 +436,7 @@ begin
                   if Size = 9 then
                     Precision := 10 else
                     Precision := 9;
-                  {$IFDEF DELPHI6_UP}
+                  {$IFDEF COMPILER6_UP}
                   if size > 4 then
                     DataType := ftFMTBcd else
                   {$ENDIF}
@@ -450,7 +450,7 @@ begin
                   if Size = 18 then
                     Precision := 19 else
                     Precision := 18;
-                  {$IFDEF DELPHI6_UP}
+                  {$IFDEF COMPILER6_UP}
                   if size > 4 then
                     DataType := ftFMTBcd else
                   {$ENDIF}
@@ -519,18 +519,16 @@ begin
             case FStatement.Fields.SQLType[FieldNo] of
               SQL_SHORT:
                 begin
-                {$IFDEF DELPHI6_UP}
-                  TBCD(Buffer^) := strToBcd(IntToStr(PSmallint(sqldata)^));
-                  BcdDivide(TBCD(Buffer^), inttostr(scaledivisor[sqlscale]), TBCD(Buffer^));
+                {$IFDEF COMPILER6_UP}
+                  TBCD(Buffer^) := strToBcd(FloatToStr(PSmallint(sqldata)^ / scaledivisor[sqlscale]));
                 {$ELSE}
                   CurrToBcd(PSmallint(sqldata)^/scaledivisor[sqlscale], TBCD(Buffer^));
                 {$ENDIF}
                 end;
               SQL_LONG:
                 begin
-                {$IFDEF DELPHI6_UP}
-                  TBCD(Buffer^) := strToBcd(IntToStr(PInteger(sqldata)^));
-                  BcdDivide(TBCD(Buffer^), inttostr(scaledivisor[sqlscale]), TBCD(Buffer^));
+                {$IFDEF COMPILER6_UP}
+                  TBCD(Buffer^) := strToBcd(FloatToStr(PInteger(sqldata)^ / scaledivisor[sqlscale]));
                 {$ELSE}
                   CurrToBcd(PInteger(sqldata)^/scaledivisor[sqlscale], TBCD(Buffer^));
                 {$ENDIF}
@@ -538,9 +536,8 @@ begin
               SQL_INT64,
               SQL_QUAD:
                 begin
-                {$IFDEF DELPHI6_UP}
-                  TBCD(Buffer^) := strToBcd(IntToStr(PInt64(sqldata)^));
-                  BcdDivide(TBCD(Buffer^), inttostr(scaledivisor[sqlscale]), TBCD(Buffer^));
+                {$IFDEF COMPILER6_UP}
+                  TBCD(Buffer^) := strToBcd(FloatToStr(PInt64(sqldata)^ / scaledivisor[sqlscale]));
                 {$ELSE}
                   CurrToBcd(PInt64(sqldata)^/scaledivisor[sqlscale], TBCD(Buffer^));
                 {$ENDIF}
@@ -649,5 +646,6 @@ begin
   if not Value then
     FStatement.Close(FOnClose);
 end;
+
 
 end.
