@@ -27,7 +27,7 @@ interface
 
 uses
   SysUtils, Classes,
-  QDialogs, QPrinters, QConst;
+  QDialogs, QPrinters, QConsts;
 
 type
   TOpenPictureDialog = class(TOpenDialog)
@@ -101,7 +101,7 @@ const
   DefaultFilter =
     'Supported (*.bmp *.png *.xpm *.ico)|*.bmp;*.png;*.xpm;*.ico' + '|' +
     'Bitmaps (*.bmp *.png *.xpm)|*.bmp;*.png;*.xpm' + '|' +
-    'Icons (*.ico)|*.ico'  + '|' + SDefaultFilter;
+    'Icons (*.ico)|*.ico';
   DefaultExt = '*.bmp';
 
 //=== TOpenPictureDialog =====================================================
@@ -111,7 +111,7 @@ begin
   inherited Create(AOwner);
   Options := Options + [ofPreview];
   DefaultExt := DefaultExt;
-  Filter := DefaultFilter;
+  Filter := DefaultFilter  + '|' + SDefaultFilter;
 end;
 
 //=== TSavePictureDialog =====================================================
