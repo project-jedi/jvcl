@@ -1,3 +1,4 @@
+{ what the heck is $EXTERNALSYM??? }
 {******************************************************************************
 
  Object Picker API interface Unit for Object Pascal
@@ -625,7 +626,7 @@ aDsSelection
 
 const
   ANYSIZE_ARRAY = 1;
-  {$EXTERNAL_SYM ANYSIZE_ARRAY}
+  {$EXTERNALSYM ANYSIZE_ARRAY}
 
 type
   PDS_SELECTION = ^DS_SELECTION;
