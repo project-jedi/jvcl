@@ -34,6 +34,9 @@ contains
   JvUIBConst in '../../run/JvUIBConst.pas',
   JvUIBError in '../../run/JvUIBError.pas',
   JvUIBLib in '../../run/JvUIBLib.pas',
-  JvUIB in '../../run/JvUIB.pas';;
+  JvUIB in '../../run/JvUIB.pas',
+  JvUIBSQLParser in '../../run/JvUIBSQLParser.pas',
+  JvUIBDataSet in '../../run/JvUIBDataSet.pas',
+  JvUIBMetaData in '../../run/JvUIBMetaData.pas';
 
 end.
