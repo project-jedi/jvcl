@@ -184,9 +184,12 @@ destructor TJvWndProcHook.Destroy;
 var
   I: Integer;
 begin
-  for I := 0 to FHookInfos.Count - 1 do
-    TJvHookInfos(FHookInfos[I]).Free;
-  FHookInfos.Free;
+  if FHookInfos <> nil then
+  begin
+    for I := 0 to FHookInfos.Count - 1 do
+      TJvHookInfos(FHookInfos[I]).Free;
+    FHookInfos.Free;
+  end;
   inherited;
 end;
 
