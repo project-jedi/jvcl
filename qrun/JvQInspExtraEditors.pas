@@ -21,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
-Last Modified: 2000-02-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -128,8 +127,8 @@ type
     function NameForColor(const Color: TColor): string;
     procedure PaintValue(const Color: TColor; const ColorName: string; const ACanvas: TCanvas;
       const ARect: TRect);
-    procedure DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
-      State: TOwnerDrawState; var Handled: Boolean); override;
+    procedure DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
+      State: TOwnerDrawState); override;
     procedure DoMeasureListItem(Control: TWinControl; Index: Integer; var Height: Integer); override;
     procedure DoMeasureListItemWidth(Control: TWinControl; Index: Integer; var Width: Integer); override;
     function GetDisplayValue: string; override;
@@ -154,8 +153,8 @@ type
   protected
     procedure PaintValue(const ImgNum: Integer; const ImgName: string; const ACanvas: TCanvas;
       const ARect: TRect);
-    procedure DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
-      State: TOwnerDrawState; var Handled: Boolean); override;
+    procedure DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
+      State: TOwnerDrawState); override;
     procedure DoMeasureListItem(Control: TWinControl; Index: Integer; var Height: Integer); override;
     procedure DoMeasureListItemWidth(Control: TWinControl; Index: Integer; var Width: Integer); override;
     function GetDisplayValue: string; override;
@@ -465,12 +464,12 @@ begin
         Brush.Color := bc;
       end;
     end;
-    TextOut(ARect.Left + (ARect.Bottom - ARect.Top) + 1, BoxRect.Top, ColorName);
+    TextRect(Rects[iprValue], ARect.Left + (ARect.Bottom - ARect.Top) + 1, BoxRect.Top, ColorName);
   end;
 end;
 
-procedure TJvInspectorColorItem.DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
-  State: TOwnerDrawState; var Handled: Boolean);
+procedure TJvInspectorColorItem.DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
+  State: TOwnerDrawState);
 begin
   with TListBox(Control) do
   begin
@@ -481,7 +480,6 @@ begin
     Rect.Bottom := Rect.Bottom - 1;
     PaintValue(TColor(Items.Objects[Index]), Items[Index], Canvas, Rect);
   end;
-  Handled := true;
 end;
 
 procedure TJvInspectorColorItem.DoMeasureListItem(Control: TWinControl; Index: Integer;
@@ -849,8 +847,8 @@ begin
   end;
 end;
 
-procedure TJvInspectorTImageIndexItem.DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
-  State: TOwnerDrawState; var Handled: Boolean);
+procedure TJvInspectorTImageIndexItem.DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
+  State: TOwnerDrawState);
 begin
   with TListBox(Control) do
   begin
@@ -861,7 +859,6 @@ begin
     Rect.Bottom := Rect.Bottom - 1;
     PaintValue(Integer(Items.Objects[Index]), Items[Index], Canvas, Rect);
   end;
-  Handled := true;
 end;
 
 procedure TJvInspectorTImageIndexItem.DoMeasureListItem(Control: TWinControl; Index: Integer;

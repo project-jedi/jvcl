@@ -297,6 +297,7 @@ var
   VisibleCount: Integer;
   I: Integer;
 begin
+  if FButtonPointer = nil then exit; // asn: for visualclx
   Height := FButtonHeight;
   FButtonPointer.Height := FButtonHeight;
   FButtonPointer.Width := FButtonWidth;

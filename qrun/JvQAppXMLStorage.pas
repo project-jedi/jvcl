@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -21,17 +21,16 @@ All Rights Reserved.
 Contributor(s):
   Marcel Bestebroer
 
-Last Modified: 2004-01-18
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
-unit JvQAppXmlStorage;
+unit JvQAppXMLStorage;
 
 interface
 
@@ -55,7 +54,6 @@ type
   TJvCustomAppXMLStorage = class(TJvCustomAppMemoryFileStorage)
   protected
     FXml: TJvSimpleXml;
-    FCurrentNode: TJvSimpleXmlElem;
     function GetAsString: string; override;
     procedure SetAsString(const Value: string); override;
 
@@ -63,13 +61,11 @@ type
     procedure SetRootNodeName(const Value: string);
     // Returns the last node in path, if it exists.
     // Returns nil in all other cases
-    // If StartNode is nil, then FCurrentNode is used as a
+    // If StartNode is nil, then FXML.Root is used as a
     // starting point for Path
     function GetNodeFromPath(Path: string; StartNode: TJvSimpleXmlElem = nil): TJvSimpleXmlElem;
-    // Reads the \ separated Key string and sets FCurrentNode to
-    // the last one, having created all the required XML nodes
-    // including the last one
-    procedure CreateAndSetNode(Key: string);
+    // Reads the \ separated Key string and returns the last created node
+    function CreateAndSetNode(Key: string):TJvSimpleXmlElem;
     procedure EnumFolders(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); override;
     procedure EnumValues(const Path: string; const Strings: TStrings;
@@ -102,14 +98,6 @@ type
   // and publishes a few properties for them to be
   // used by the user in the IDE
   TJvAppXMLFileStorage = class (TJvCustomAppXMLStorage)
-  protected
-    procedure DeleteValueInt(const Path: string); override;
-    procedure DeleteSubTreeInt(const Path: string); override;
-    procedure DoWriteBoolean(const Path: string; Value: Boolean); override;
-    procedure DoWriteInteger(const Path: string; Value: Integer); override;
-    procedure DoWriteFloat(const Path: string; Value: Extended); override;
-    procedure DoWriteString(const Path: string; Value: string); override;
-    procedure DoWriteBinary(const Path: string; const Buf; BufSize: Integer); override;
   public
     property Xml;
 
@@ -119,6 +107,7 @@ type
     property AsString;
   published
     property AutoFlush;
+    property AutoReload;
     property FileName;
     property Location;
     property RootNodeName;
@@ -182,7 +171,6 @@ begin
   inherited Create(AOwner);
   FXml := TJvSimpleXml.Create(nil);
   RootNodeName := 'Configuration';
-  FCurrentNode := FXml.Root;
 end;
 
 destructor TJvCustomAppXMLStorage.Destroy;
@@ -217,6 +205,7 @@ var
   Key: string;
   Node: TJvSimpleXmlElem;
 begin
+  if AutoReload and not IsUpdating then Reload;
   SplitKeyPath(Path, Section, Key);
   Result := False;
   Node := GetNodeFromPath(Section);
@@ -232,10 +221,12 @@ var
 begin
   if ValueStored(Path) then
   begin
+    if AutoReload and not IsUpdating then Reload;
     SplitKeyPath(Path, Section, Key);
     Node := GetNodeFromPath(Section);
     if Assigned(Node) then
       Node.Items.Delete(Key);
+    if AutoFlush and not IsUpdating then Flush;
   end;
 end;
 
@@ -246,6 +237,7 @@ var
   Parent: TJvSimpleXmlElem;
   Name: string;
 begin
+  if AutoReload and not IsUpdating then Reload;
   TopNode := GetAbsPath(Path);
   if TopNode = '' then
     TopNode := Path;
@@ -256,6 +248,7 @@ begin
     Parent := Node.Parent;
     if Assigned(Parent) then
       Parent.Items.Delete(Name);
+    if AutoFlush and not IsUpdating then Flush;
   end;
 end;
 
@@ -265,6 +258,7 @@ var
   ValueName: string;
   Node: TJvSimpleXmlElem;
 begin
+  if AutoReload and not IsUpdating then Reload;
   SplitKeyPath(Path, ParentPath, ValueName);
 
   Node := GetNodeFromPath(ParentPath);
@@ -291,12 +285,15 @@ procedure TJvCustomAppXMLStorage.DoWriteInteger(const Path: string; Value: Integ
 var
   ParentPath: string;
   ValueName: string;
+  ANode:TJvSimpleXmlElem;
 begin
+  if AutoReload and not IsUpdating then Reload;
   SplitKeyPath(Path, ParentPath, ValueName);
-  CreateAndSetNode(ParentPath);
+  ANode := CreateAndSetNode(ParentPath);
   FXml.Options := [sxoAutoCreate, sxoAutoIndent];
-  FCurrentNode.Items.ItemNamed[ValueName].IntValue := Value;
+  ANode.Items.ItemNamed[ValueName].IntValue := Value;
   FXml.Options := [sxoAutoIndent];
+  if AutoFlush and not IsUpdating then Flush;
 end;
 
 function TJvCustomAppXMLStorage.DoReadFloat(const Path: string; Default: Extended): Extended;
@@ -306,6 +303,7 @@ var
   StrValue: string;
   Node: TJvSimpleXmlElem;
 begin
+  if AutoReload and not IsUpdating then Reload;
   SplitKeyPath(Path, ParentPath, ValueName);
 
   Node := GetNodeFromPath(ParentPath);
@@ -333,12 +331,15 @@ procedure TJvCustomAppXMLStorage.DoWriteFloat(const Path: string; Value: Extende
 var
   ParentPath: string;
   ValueName: string;
+  ANode:TJvSimpleXmlElem;
 begin
+  if AutoReload and not IsUpdating then Reload;
   SplitKeyPath(Path, ParentPath, ValueName);
-  CreateAndSetNode(ParentPath);
+  ANode := CreateAndSetNode(ParentPath);
   FXml.Options := [sxoAutoCreate, sxoAutoIndent];
-  FCurrentNode.Items.ItemNamed[ValueName].Value := FloatToStr(Value);
+  ANode.Items.ItemNamed[ValueName].Value := FloatToStr(Value);
   FXml.Options := [sxoAutoIndent];
+  if AutoFlush and not IsUpdating then Flush;
 end;
 
 function TJvCustomAppXMLStorage.DoReadString(const Path: string; Default: string): string;
@@ -347,6 +348,7 @@ var
   ValueName: string;
   Node: TJvSimpleXmlElem;
 begin
+  if AutoReload and not IsUpdating then Reload;
   SplitKeyPath(Path, ParentPath, ValueName);
 
   Node := GetNodeFromPath(ParentPath);
@@ -373,25 +375,31 @@ procedure TJvCustomAppXMLStorage.DoWriteString(const Path: string; Value: string
 var
   ParentPath: string;
   ValueName: string;
+  ANode:TJvSimpleXmlElem;
 begin
+  if AutoReload and not IsUpdating then Reload;
   SplitKeyPath(Path, ParentPath, ValueName);
-  CreateAndSetNode(ParentPath);
+  ANode := CreateAndSetNode(ParentPath);
   FXml.Options := [sxoAutoCreate, sxoAutoIndent];
-  FCurrentNode.Items.ItemNamed[ValueName].Value := Value;
+  ANode.Items.ItemNamed[ValueName].Value := Value;
   FXml.Options := [sxoAutoIndent];
+  if AutoFlush and not IsUpdating then Flush;
 end;
 
 function TJvCustomAppXMLStorage.DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer;
 var
   Value: string;
 begin
+  if AutoReload and not IsUpdating then Reload;
   Value := DoReadString(Path, '');
   Result := BinStrToBuf(Value, Buf, BufSize);
 end;
 
 procedure TJvCustomAppXMLStorage.DoWriteBinary(const Path: string; const Buf; BufSize: Integer);
 begin
+  if AutoReload and not IsUpdating then Reload;
   DoWriteString(Path, BufToBinStr(Buf, BufSize));
+  if AutoFlush and not IsUpdating then Flush;
 end;
 
 procedure TJvCustomAppXMLStorage.EnumFolders(const Path: string;
@@ -401,11 +409,12 @@ var
   I: Integer;
   Node: TJvSimpleXmlElem;
 begin
+  if AutoReload and not IsUpdating then Reload;
   RefPath := GetAbsPath(Path);
   if RefPath = '' then
     RefPath := cEmptyPath;
 
-  Node := GetNodeFromPath(RefPath, FXml.Root);
+  Node := GetNodeFromPath(RefPath);
 
   if Node <> nil then
   begin
@@ -431,12 +440,13 @@ var
   Node: TJvSimpleXmlElem;
   Name: string;
 begin
+  if AutoReload and not IsUpdating then Reload;
   PathIsList := ReportListAsValue and ListStored(Path);
   RefPath := GetAbsPath(Path);
   if RefPath = '' then
     RefPath := cEmptyPath;
 
-  Node := GetNodeFromPath(RefPath, FXml.Root);
+  Node := GetNodeFromPath(RefPath);
 
   if Node <> nil then
   begin
@@ -467,6 +477,7 @@ var
   Node: TJvSimpleXmlElem;
   Name: string;
 begin
+  if AutoReload and not IsUpdating then Reload;
   RefPath := GetAbsPath(Path);
   if RefPath = '' then
     RefPath := cEmptyPath;
@@ -496,10 +507,10 @@ begin
   Result := FXml.Root.Name;
 end;
 
-procedure TJvCustomAppXMLStorage.CreateAndSetNode(Key: string);
+function TJvCustomAppXMLStorage.CreateAndSetNode(Key: string):TJvSimpleXmlElem;
 begin
   FXml.Options := [sxoAutoCreate, sxoAutoIndent];
-  FCurrentNode := GetNodeFromPath(Key, FXml.Root);
+  Result := GetNodeFromPath(Key);
   FXml.Options := [sxoAutoIndent];
 end;
 
@@ -509,11 +520,12 @@ var
   I: Integer;
   Node: TJvSimpleXmlElem;
 begin
+  if AutoReload and not IsUpdating then Reload;
   NodeList := TStringList.Create;
   if StartNode <> nil then
     Node := StartNode
   else
-    Node := FCurrentNode;
+    Node := FXML.Root;
 
   try
     try
@@ -545,7 +557,7 @@ var
 begin
   Result := False;
   SplitKeyPath(Path, SubKey, ValueName);
-  Node := GetNodeFromPath(SubKey, FCurrentNode);
+  Node := GetNodeFromPath(SubKey);
   if Assigned(Node) then
     Result := Assigned(Node.Items.ItemNamed[ValueName]);
 end;
@@ -557,6 +569,7 @@ var
   ValueName: string;
   Node: TJvSimpleXmlElem;
 begin
+  if AutoReload and not IsUpdating then Reload;
   SplitKeyPath(Path, ParentPath, ValueName);
 
   Node := GetNodeFromPath(ParentPath);
@@ -584,12 +597,15 @@ procedure TJvCustomAppXMLStorage.DoWriteBoolean(const Path: string;
 var
   ParentPath: string;
   ValueName: string;
+  ANode:TJvSimpleXmlElem;
 begin
+  if AutoReload and not IsUpdating then Reload;
   SplitKeyPath(Path, ParentPath, ValueName);
-  CreateAndSetNode(ParentPath);
+  ANode := CreateAndSetNode(ParentPath);
   FXml.Options := [sxoAutoCreate, sxoAutoIndent];
-  FCurrentNode.Items.ItemNamed[ValueName].BoolValue := Value;
+  ANode.Items.ItemNamed[ValueName].BoolValue := Value;
   FXml.Options := [sxoAutoIndent];
+  if AutoFlush and not IsUpdating then Flush;
 end;
 
 function TJvCustomAppXMLStorage.GetAsString: string;
@@ -604,53 +620,6 @@ end;
 
 { TJvAppXMLFileStorage }
 
-procedure TJvAppXMLFileStorage.DeleteSubTreeInt(const Path: string);
-begin
-  inherited;
-  if AutoFlush then Flush;
-end;
-
-procedure TJvAppXMLFileStorage.DeleteValueInt(const Path: string);
-begin
-  inherited;
-  if AutoFlush then Flush;
-end;
-
-procedure TJvAppXMLFileStorage.DoWriteBinary(const Path: string; const Buf;
-  BufSize: Integer);
-begin
-  inherited;
-  if AutoFlush then Flush;
-end;
-
-procedure TJvAppXMLFileStorage.DoWriteBoolean(const Path: string;
-  Value: Boolean);
-begin
-  inherited;
-  if AutoFlush then Flush;
-end;
-
-procedure TJvAppXMLFileStorage.DoWriteFloat(const Path: string;
-  Value: Extended);
-begin
-  inherited;
-  if AutoFlush then Flush;
-end;
-
-procedure TJvAppXMLFileStorage.DoWriteInteger(const Path: string;
-  Value: Integer);
-begin
-  inherited;
-  if AutoFlush then Flush;
-end;
-
-procedure TJvAppXMLFileStorage.DoWriteString(const Path: string;
-  Value: string);
-begin
-  inherited;
-  if AutoFlush then Flush;
-end;
-
 procedure TJvAppXMLFileStorage.Flush;
 begin
   if FullFileName <> '' then
@@ -659,7 +628,7 @@ end;
 
 procedure TJvAppXMLFileStorage.Reload;
 begin
-  if FileExists(FullFileName) then
+  if FileExists(FullFileName) and not IsUpdating then
     FXml.LoadFromFile(FullFileName);
 end;
 

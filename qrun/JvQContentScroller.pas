@@ -70,14 +70,16 @@ type
     procedure SetActive(Value: Boolean);
     procedure SetJvScrollAmount(Value: TJvScrollAmount);
     procedure SetScrollIntervall(Value: TJvScrollAmount);
-    procedure SetMediaFile(Value: TFileName);
     procedure DoTimer(Sender: TObject);
     procedure CreateTimer;
     procedure FreeTimer;
-    procedure SetLoopMedia(Value: Boolean);
     procedure SetScrollLength(Value: TJvScrollAmount);
     procedure SetScrollDirection(Value: TJvContentScrollDirection);
+    {$IFDEF MSWINDOWS}
     procedure SetLoopCount(Value: Integer);
+    procedure SetLoopMedia(Value: Boolean);
+    procedure SetMediaFile(Value: TFileName);
+    {$ENDIF MSWINDOWS}
     // procedure SetScrollStart(const Value: Integer);
   protected
     procedure Paint; override;
@@ -310,16 +312,6 @@ begin
   FScrollIntervall := Value;
 end;
 
-procedure TJvContentScroller.SetMediaFile(Value: TFileName);
-begin
-  FMediaFile := Value;
-end;
-
-procedure TJvContentScroller.SetLoopMedia(Value: Boolean);
-begin
-  FLoopMedia := Value;
-end;
-
 procedure TJvContentScroller.SetScrollLength(Value: TJvScrollAmount);
 begin
   FScrollLength := Value;
@@ -331,6 +323,17 @@ begin
     FScrollDirection := Value;
 end;
 
+{$IFDEF MSWINDOWS}
+procedure TJvContentScroller.SetMediaFile(Value: TFileName);
+begin
+  FMediaFile := Value;
+end;
+
+procedure TJvContentScroller.SetLoopMedia(Value: Boolean);
+begin
+  FLoopMedia := Value;
+end;
+
 procedure TJvContentScroller.SetLoopCount(Value: Integer);
 begin
   if FLoopCount <> Value then
@@ -340,7 +343,7 @@ begin
       FScrollLength := FScrollLength - (FScrollLength mod FScrollAmount) + FScrollAmount;
   end;
 end;
-
+{$ENDIF MSWINDOWS}
 
 
 {

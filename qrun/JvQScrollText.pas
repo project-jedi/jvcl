@@ -469,10 +469,11 @@ end;
 
 procedure TJvScrollText.DoBoundsChanged;
 begin
+  inherited DoBoundsChanged;
+  if FText = nil then exit;
   FText.Width := Width;
   if FText.Height < Height then
     FText.Height := Height;
-  inherited DoBoundsChanged;
 end;
 
 function TJvScrollText.GetAlignment: TAlignment;

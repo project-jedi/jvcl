@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,8 +20,6 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
-Last Modified: 2004-01-06
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -31,6 +29,7 @@ Modifications:
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -93,12 +92,10 @@ implementation
 uses
   JvQResources;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvGammaPanel.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+
+
 {$R ../Resources/JvGammaPanel.res}
-{$ENDIF LINUX}
+
 
 constructor TJvGammaPanel.Create(AOwner: TComponent);
 begin
@@ -340,6 +337,9 @@ procedure TJvGammaPanel.ColorSeek(Sender: TObject; Shift: TShiftState; X, Y: Int
 var
   Col: TColor;
 begin
+  if not PtInRect(Bounds(0, 0, FGamma.Picture.width, FGamma.Picture.Height), Point(X,Y))
+  then
+    exit; // asn for LINUX/X11     
   Col := FGamma.Picture.Bitmap.Canvas.Pixels[X, Y];
   LastCol := Col;
   FRLabel.Caption := Format(RsRedFormat, [GetRValue(Col)]);

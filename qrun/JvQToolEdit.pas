@@ -1835,7 +1835,7 @@ var
     Result := TBitmap.Create;
     with Result do
     try
-      Monochrome := True;
+      //Monochrome := True;
       Width := Max(1, FButton.Width - 6);
       Height := 4;
       W := 2;

@@ -2089,7 +2089,7 @@ begin
           try
             with Mask do
             begin
-              Monochrome := True;
+              //Monochrome := True;
               Height := iHeight;
               Width := iWidth;
             end;

@@ -147,8 +147,12 @@ begin
   BmpImage.Height := Height - TopOffset;
   R := Rect(0, 0, BmpImage.Width, BmpImage.Height);
   GradientFillRect(BmpImage.Canvas, R, ColorFrom, ColorTo, fdLeftToRight, 255);
+  BmpImage.Canvas.Start;
   if BorderStyle = bsSingle then
     DrawEdge(BmpImage.Canvas.Handle, R, EDGE_SUNKEN, BF_TOP or BF_RIGHT or BF_BOTTOM or BF_LEFT);
+  BmpImage.Canvas.Stop;
+
+  BmpImage.SaveToFile('Updategradient.bmp');
 end;
 
 constructor TJvColorTrackBar.Create(AOwner: TComponent);
@@ -209,7 +213,7 @@ begin
     UpdateGradient;
   Canvas.Pen.Color := Color;
   Canvas.Brush.Color := Color;
-  BitBlt(Canvas.Handle, WidthOffset div 2, TopOffset, Width, Height, BmpImage.Canvas.Handle, 0, 0, SrcCopy);
+  BitBlt(Canvas.Handle, WidthOffset div 2 , TopOffset , BmpImage.Width, BmpImage.Height, BmpImage.Canvas.Handle, 0, 0, SrcCopy);
   R := Rect(0, 0, Width, TopOffset);
   Canvas.FillRect(R);
   X := PosToX(Position);

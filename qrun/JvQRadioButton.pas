@@ -78,10 +78,10 @@ type
     procedure FontChanged; override;
     procedure EnabledChanged;override;
     procedure SetAutoSize(Value: Boolean); //override;
-    
-    
+
+
     procedure RecreateWnd;
-    procedure Toggle; override;
+    procedure StateChanged(State: TToggleState); override;
     
     procedure CalcAutoSize; virtual;
     procedure Loaded; override;
@@ -342,11 +342,10 @@ begin
 end;
 
 
-procedure TJvRadioButton.Toggle;
-
+procedure TJvRadioButton.StateChanged(State: TToggleState);
 
 begin
-  inherited;
+  inherited StateChanged(State);
   CheckLinkedControls;
 end;
 

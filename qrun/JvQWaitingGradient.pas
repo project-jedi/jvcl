@@ -253,18 +253,19 @@ procedure TJvWaitingGradient.Paint;
 begin
   if not Assigned(FBitmap) then
     Exit;
-  Canvas.Brush.Style := bsSolid;
-  Canvas.Brush.Color := Color;
-  Canvas.FillRect(Rect(0, 0, FLeftOffset, Height));
-  Canvas.FillRect(Rect(FLeftOffset + FBitmap.Width, 0, Width, Height));
+  FBitmap.Canvas.Brush.Style := bsSolid;
+  FBitmap.Canvas.Brush.Color := Color;
+  FBitmap.Canvas.FillRect(Rect(0, 0, FLeftOffset, Height));
+  FBitmap.Canvas.FillRect(Rect(FLeftOffset + FBitmap.Width, 0, Width, Height));
   Canvas.CopyRect(FDestRect, FBitmap.Canvas, FSourceRect);
 end;
 
 procedure TJvWaitingGradient.Resize;
 begin
   inherited Resize;
-  FSourceRect := Rect(0, 0, FGradientWidth, Height);
-  FDestRect := Rect(0, 0, FGradientWidth, Height);
+  FSourceRect := Bounds(0, 0, FGradientWidth, Height);
+  FDestRect := Bounds(0, 0, FGradientWidth, Height);
+  OffsetRect(FDestRect, Left, Top );
   UpdateBitmap;
 end;
 
