@@ -31,7 +31,7 @@ interface
 uses
   Windows, Classes, JvPageListTreeView, JvDsgnEditors,
   {$IFDEF COMPILER6_UP}DesignEditors, DesignIntf, DesignMenus, VCLEditors,
-  {$ELSE}DsgnIntf, Menus, {$ENDIF} ImgList,
+  {$ELSE}DsgnIntf, Menus, {$ENDIF}ImgList,
   Graphics;
 
 type
@@ -60,9 +60,9 @@ type
     procedure ExecuteVerb(Index: Integer); override;
     procedure Edit; override;
     {$IFDEF COMPILER6_UP}
-    procedure PrepareItem(Index: Integer; const AItem: IMenuItem);override;
+    procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override;
     {$ELSE}
-    procedure PrepareItem(Index: Integer; const AItem: TMenuItem);override;
+    procedure PrepareItem(Index: Integer; const AItem: TMenuItem); override;
     {$ENDIF}
   end;
 
@@ -77,8 +77,8 @@ type
   // implementor at design-time
   TJvInterfaceProperty = class(TComponentProperty)
   protected
-    function GetInterface:TGUID;virtual;
-    function GetInterfaceName:string;virtual;
+    function GetInterface: TGUID; virtual;
+    function GetInterfaceName: string; virtual;
   public
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
@@ -86,8 +86,8 @@ type
 
   TJvPageListProperty = class(TJvInterfaceProperty)
   protected
-    function GetInterface:TGUID;override;
-    function GetInterfaceName:string;override;
+    function GetInterface: TGUID; override;
+    function GetInterfaceName: string; override;
   end;
   {$ENDIF}
 
@@ -98,51 +98,60 @@ implementation
 uses
   Forms, ComCtrls, Controls, SysUtils,
   JvPageLinkEditor, JvTreeItemsEditor, TypInfo;
+
 resourcestring
   SFmtInterfaceNotSupported = '%s does not support the required interface (%s)';
-  
+  SNextPage = 'Ne&xt Page';
+  SPrevPage = '&Previous Page';
+  SNewPage = '&New Page';
+  SDelPage = '&Delete Page';
+
 type
   THackTreeView = class(TJvCustomPageListTreeView);
 
 procedure Register;
 begin
-  RegisterPropertyEditor(typeinfo(TTreeNodes),TCustomTreeView,'Items',TJvTreeItemsProperty);
-  RegisterPropertyEditor(typeinfo(TJvShowDesignCaption),nil,'',TJvShowDesignCaptionProperty);
-  RegisterComponents('JVCL', [TJvSettingsTreeView, TJvPageListTreeView, TJvPageList]);
+  RegisterPropertyEditor(typeinfo(TTreeNodes), TCustomTreeView, 'Items', TJvTreeItemsProperty);
+  RegisterPropertyEditor(typeinfo(TJvShowDesignCaption), nil, '', TJvShowDesignCaptionProperty);
+  RegisterComponents('Jv Lists, Combos and Trees', [TJvSettingsTreeView, TJvPageListTreeView, TJvPageList]);
   RegisterClasses([TJvSettingsTreeView, TJvPageListTreeView, TJvPageList, TJvStandardPage]);
   RegisterComponentEditor(TJvCustomPageList, TJvCustomPageEditor);
   RegisterComponentEditor(TJvCustomPage, TJvCustomPageEditor);
   {$IFNDEF COMPILER6_UP}
-  RegisterPropertyEditor(typeinfo(TComponent), TJvCustomPageListTreeView, 'PageList',TJvPageListProperty);
+  RegisterPropertyEditor(typeinfo(TComponent), TJvCustomPageListTreeView, 'PageList', TJvPageListProperty);
   {$ENDIF}
   RegisterComponentEditor(TCustomTreeView, TJvTreeViewComponentEditor);
+  RegisterComponentEditor(TJvCustomPageListTreeView, TJvPageTreeViewComponentEditor);
   // register for the standard TTreeView as well
 //  RegisterComponentEditor(TTreeView, TJvTreeViewComponentEditor);
   RegisterPropertyEditor(typeinfo(TJvPageLinks),
     TJvCustomPageListTreeView, '', TJvPageLinksProperty);
   RegisterPropertyEditor(typeinfo(TJvCustomPage),
     TJvCustomPageList, 'ActivePage', TJvActivePageProperty);
-  RegisterPropertyEditor(typeinfo(TImageIndex),TJvSettingsTreeImages,'',TJvSettingsTreeImagesProperty);
-//  RegisterPropertyEditor(typeinfo(integer),TJvSettingsTreeImages,'CollapsedIndex',TJvSettingsTreeImagesProperty);
-//  RegisterPropertyEditor(typeinfo(integer),TJvSettingsTreeImages,'ExpandedIndex',TJvSettingsTreeImagesProperty);
-//  RegisterPropertyEditor(typeinfo(integer),TJvSettingsTreeImages,'ImageIndex',TJvSettingsTreeImagesProperty);
-//  RegisterPropertyEditor(typeinfo(integer),TJvSettingsTreeImages,'SelectedIndex',TJvSettingsTreeImagesProperty);
+  RegisterPropertyEditor(typeinfo(TImageIndex), TJvSettingsTreeImages, '', TJvSettingsTreeImagesProperty);
+  //  RegisterPropertyEditor(typeinfo(integer),TJvSettingsTreeImages,'CollapsedIndex',TJvSettingsTreeImagesProperty);
+  //  RegisterPropertyEditor(typeinfo(integer),TJvSettingsTreeImages,'ExpandedIndex',TJvSettingsTreeImagesProperty);
+  //  RegisterPropertyEditor(typeinfo(integer),TJvSettingsTreeImages,'ImageIndex',TJvSettingsTreeImagesProperty);
+  //  RegisterPropertyEditor(typeinfo(integer),TJvSettingsTreeImages,'SelectedIndex',TJvSettingsTreeImagesProperty);
 end;
-
 
 { TJvCustomPageEditor }
 
 procedure TJvCustomPageEditor.Edit;
 begin
-  // do nothing
+  // move to next page
+  if GetPageControl.PageCount >= 1 then
+    ExecuteVerb(0)
+  else
+    ExecuteVerb(2); // create new
 end;
 
 procedure TJvCustomPageEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
-    0: InsertPage;
-    1: NextPage;
-    2: PrevPage;
+    0: NextPage;
+    1: PrevPage;
+    2: InsertPage;
     3: RemovePage;
   end;
 end;
@@ -158,21 +167,21 @@ end;
 function TJvCustomPageEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := '&New Page';
-    1: Result := 'Ne&xt Page';
-    2: Result := '&Previous Page';
-    3: Result := '&Delete Page';
-    4: Result := '&Move from PageControl...';
+    0: Result := SNextPage;
+    1: Result := SPrevPage;
+    2: Result := SNewPage;
+    3: Result := SDelPage;
   end;
 end;
 
 function TJvCustomPageEditor.GetVerbCount: Integer;
 begin
-  Result := 4;                          // new, next, previous, delete,
+  Result := 4; // new, next, previous, delete,
 end;
 
 procedure TJvCustomPageEditor.InsertPage;
-var P: TJvCustomPage;
+var
+  P: TJvCustomPage;
   C: TJvCustomPageList;
 begin
   C := GetPageControl;
@@ -194,14 +203,22 @@ begin
 end;
 
 {$IFDEF COMPILER6_UP}
+
 procedure TJvCustomPageEditor.PrepareItem(Index: Integer; const AItem: IMenuItem);
 {$ELSE}
+
 procedure TJvCustomPageEditor.PrepareItem(Index: Integer; const AItem: TMenuItem);
 {$ENDIF}
 begin
   inherited;
-  if (Index = 3) and (GetPageControl.ActivePage = nil) then
-    AItem.Enabled := false;
+  case Index of
+    0:
+      AItem.Default := GetPageControl.PageCount > 1;
+    2:
+      AItem.Default := GetPageControl.PageCount = 0;
+    3:
+      AItem.Enabled := GetPageControl.ActivePage <> nil;
+  end;
 end;
 
 procedure TJvCustomPageEditor.PrevPage;
@@ -210,7 +227,9 @@ begin
 end;
 
 procedure TJvCustomPageEditor.RemovePage;
-var P: TJvCustomPageList;P2:TJvCustomPage;
+var
+  P: TJvCustomPageList;
+  P2: TJvCustomPage;
 begin
   P := GetPageControl;
   if (P <> nil) and (P.ActivePage <> nil) then
@@ -247,15 +266,16 @@ end;
 { TJvSettingsTreeImagesProperty }
 
 function TJvSettingsTreeImagesProperty.ImageList: TCustomImageList;
-var T:TJvCustomPageListTreeView;
+var
+  T: TJvCustomPageListTreeView;
 begin
   if (GetComponent(0) is TJvSettingsTreeImages) and (TJvSettingsTreeImages(GetComponent(0)).TreeView <> nil) then
   begin
     T := TJvSettingsTreeImages(GetComponent(0)).TreeView;
-    Result :=  THackTreeView(T).Images;
+    Result := THackTreeView(T).Images;
   end
   else
-   Result := nil;
+    Result := nil;
 end;
 
 { TJvShowDesignCaptionProperty }
@@ -274,31 +294,35 @@ begin
   Result := IUnknown;
 end;
 
-function TJvInterfaceProperty.GetInterfaceName:string;
+function TJvInterfaceProperty.GetInterfaceName: string;
 begin
   Result := 'IUnknown';
 end;
 
 procedure TJvInterfaceProperty.GetValues(Proc: TGetStrProc);
-var i:integer;obj:IUnknown;
+var
+  i: integer;
+  obj: IUnknown;
 begin
   for i := 0 to Designer.Form.ComponentCount - 1 do
-    if Supports(Designer.Form.Components[i],GetInterface,obj) and
+    if Supports(Designer.Form.Components[i], GetInterface, obj) and
       (Designer.Form.Components[i] <> GetComponent(0)) then
-        Proc(Designer.Form.Components[i].Name);
+      Proc(Designer.Form.Components[i].Name);
 end;
 
 procedure TJvInterfaceProperty.SetValue(const Value: string);
-var i:integer;obj:IUnknown;
+var
+  i: integer;
+  obj: IUnknown;
 begin
   if Value = '' then
     inherited // setting to nil
   else
   begin
     for i := 0 to Designer.Form.ComponentCount - 1 do
-      if SameText(Designer.Form.Components[i].Name,Value) then
-        if not Supports(Designer.Form.Components[i],GetInterface,obj) then
-          raise Exception.CreateFmt(SFmtInterfaceNotSupported,[Value,GetInterfaceName]);
+      if SameText(Designer.Form.Components[i].Name, Value) then
+        if not Supports(Designer.Form.Components[i], GetInterface, obj) then
+          raise Exception.CreateFmt(SFmtInterfaceNotSupported, [Value, GetInterfaceName]);
     inherited;
   end;
 end;
@@ -310,7 +334,7 @@ begin
   Result := IPageList;
 end;
 
-function TJvPageListProperty.GetInterfaceName:string;
+function TJvPageListProperty.GetInterfaceName: string;
 begin
   Result := 'IPageList';
 end;

@@ -53,6 +53,12 @@ type
     procedure Edit; override;
   end;
 
+  TJvPageTreeViewComponentEditor = class(TJvTreeViewComponentEditor)
+    function GetVerb(Index: Integer): string; override;
+    function GetVerbCount: Integer; override;
+    procedure ExecuteVerb(Index: Integer); override;
+  end;
+
   TfrmTreeViewItems = class(TForm)
     Panel1: TPanel;
     btnCancel: TButton;
@@ -135,12 +141,20 @@ type
     property PropagateEnabled: boolean read FPropagateEnabled write FPropagateEnabled default true;
   end;
 
+procedure ShowTreeNodeEditor(TreeView:TCustomTreeView);
+
 implementation
 uses
-  ImgList;
+  JvPageListTreeView, JvPageLinkEditor, ImgList;
 {$R *.dfm}
+
 type
   THackTreeView = class(TCustomTreeView);
+
+procedure ShowTreeNodeEditor(TreeView:TCustomTreeView);
+begin
+  TfrmTreeViewItems.Edit(TreeView);
+end;
 
 function Max(Val1, Val2: integer): integer;
 begin
@@ -404,7 +418,7 @@ end;
 procedure TJvTreeViewComponentEditor.ExecuteVerb(Index: Integer);
 begin
   if (Index = 0) then
-    TfrmTreeViewItems.Edit(TCustomTreeView(Component))
+    ShowTreeNodeEditor(TCustomTreeView(Component))
   else
     inherited;
 end;
@@ -510,6 +524,29 @@ procedure TfrmTreeViewItems.acSaveToFileExecute(Sender: TObject);
 begin
   if SaveDialog1.Execute then
     tvItems.SaveToFile(SaveDialog1.Filename);
+end;
+
+{ TJvPageTreeViewComponentEditor }
+
+procedure TJvPageTreeViewComponentEditor.ExecuteVerb(Index: Integer);
+begin
+  if Index = 1 then
+    ShowPageLinkEditor(TJvCustomPageListTreeView(Component))
+  else
+    inherited ExecuteVerb(Index);
+end;
+
+function TJvPageTreeViewComponentEditor.GetVerb(Index: Integer): string;
+begin
+  if Index = 1 then
+    Result := 'Links Editor...'
+  else
+    Result := inherited GetVerb(Index);
+end;
+
+function TJvPageTreeViewComponentEditor.GetVerbCount: Integer;
+begin
+  Result := 2;
 end;
 
 end.

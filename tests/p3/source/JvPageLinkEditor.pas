@@ -80,6 +80,8 @@ type
     class function Edit(TreeView: TCustomTreeView; const PageList: IPageList): boolean;
   end;
 
+procedure ShowPageLinkEditor(TreeView:TJvCustomPageListTreeView);
+
 implementation
 
 type
@@ -87,13 +89,17 @@ type
 
   { TJvPageLinksProperty }
 
-procedure TJvPageLinksProperty.Edit;
-var C: TJvCustomPageListTreeView;
+procedure ShowPageLinkEditor(TreeView:TJvCustomPageListTreeView);
 begin
-  C := (GetComponent(0) as TJvCustomPageListTreeView);
-  if TfrmJvTreeViewLinksEditor.Edit(C, {$IFDEF COMPILER6_UP}C.PageList{$ELSE}C.PageListIntf{$ENDIF})
-    and (THackTreeView(C).Items.Count > 0) then
-    THackTreeView(C).Items.GetFirstNode.Expand(false);
+  if TfrmJvTreeViewLinksEditor.Edit(TreeView,
+     {$IFDEF COMPILER6_UP}TreeView.PageList{$ELSE}TreeView.PageListIntf{$ENDIF})
+      and (THackTreeView(TreeView).Items.Count > 0) then
+         THackTreeView(TreeView).Items.GetFirstNode.Expand(false);
+end;
+
+procedure TJvPageLinksProperty.Edit;
+begin
+  ShowPageLinkEditor(GetComponent(0) as TJvCustomPageListTreeView);
 end;
 
 function TJvPageLinksProperty.GetAttributes: TPropertyAttributes;
