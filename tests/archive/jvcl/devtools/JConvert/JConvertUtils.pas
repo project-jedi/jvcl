@@ -155,6 +155,7 @@ begin
         F.RootDirectory := ExpandUNCFileName(F.RootDirectory);
       F.DirParams.FileMask := '*.*';
       F.FileParams.FileMask := ExtractFilename(FileSpecs[i]);
+      F.FileParams.SearchTypes := [stFileMask];
       if F.FileParams.FileMask = '' then
         F.FileParams.FileMask := '*.dfm';
       F.Search;
