@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {******************************************************************************}
@@ -46,7 +46,7 @@ implementation
 {$IFNDEF UIBNOCOMPONENT}
 
 uses
-  Classes,
+  Classes, Controls,
   {$IFDEF USEJVCL}
   JvQDsgnConsts,
   {$ENDIF USEJVCL}
@@ -69,6 +69,11 @@ resourcestring
 
 procedure Register;
 begin
+  
+  GroupDescendentsWith(TJvUIBDataSet, TControl);
+  GroupDescendentsWith(TJvUIBCustomDataSet, TControl);
+  
+
   RegisterComponents(RsPaletteUIB, [TJvUIBDatabase, TJvUIBTransaction, TJvUIBQuery,
     {$IFNDEF DelphiPersonalEdition} TJvUIBDataSet, {$ENDIF}
     TJvUIBScript, TJvUIBBackup, TJvUIBRestore]);

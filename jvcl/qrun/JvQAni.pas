@@ -27,13 +27,12 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
-Last Modified: 2003-10-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -43,13 +42,13 @@ interface
 
 uses
   SysUtils, Classes,
-
+  
   RTLConsts,
-
-
-
-  QGraphics, QExtCtrls, QDialogs, Types, QTypes, QWindows,
-
+  
+  
+  
+  QGraphics, QControls, QExtCtrls, QDialogs, Types, QTypes, QWindows,
+  
   JvQTypes;
 
 type
@@ -112,15 +111,15 @@ type
     constructor Create; override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
     procedure LoadFromFile(const FileName: string); override;
     procedure SaveToFile(const FileName: string); override;
-
+    
+    
     procedure LoadFromMimeSource(MimeSource: TMimeSource);override;
     procedure SaveToMimeSource(MimeSource: TClxMimeSource);override;
-
+    
     procedure AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
       DecreaseColors, Vertical: Boolean);
     procedure AssignIconsToBitmap(Bitmap: TBitmap; BackColor: TColor;
@@ -136,7 +135,6 @@ type
     property Index: Integer read FIndex write SetIndex;
     property OriginalColors: Word read FOriginalColors;
     property Title: string read GetTitle;
-
   end;
 
 function LoadJvAniDialog: TJvAni;
@@ -144,10 +142,10 @@ function LoadJvAniDialog: TJvAni;
 implementation
 
 uses
-
-
+  
+  
   QConsts,
-
+  
   Math,
   JvQJVCLUtils, JvQJCLUtils, JvQIconList, JvQConsts, JvQResources;
 
@@ -1055,6 +1053,7 @@ begin
   end;
 end;
 
+
 procedure TJvAni.LoadFromMimeSource(MimeSource: TMimeSource);
 begin
   raise EInvalidGraphicOperation.Create(RsENotSupported);
@@ -1065,8 +1064,9 @@ begin
   raise EInvalidGraphicOperation.Create(RsENotSupported);
 end;
 
+
 initialization
-  Classes.RegisterClass(TJvAni);
+  
   TPicture.RegisterFileFormat(RsAniExtension, RsAniFilterName, TJvAni);
 
 finalization

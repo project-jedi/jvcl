@@ -249,7 +249,7 @@ type
   // of its descendants. This family of classes is used by
   // TJvUrlListGrabber to allow downloading a list of URLs but can
   // also be used on their own to grad one URL of a given type.
-  TJvCustomUrlGrabber = class(TComponent)
+  TJvCustomUrlGrabber = class(TJvComponent)
   protected
     // the thread that will grab for us
     FUrlGrabberThread: TJvCustomUrlGrabberThread;

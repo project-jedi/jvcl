@@ -34,10 +34,6 @@ interface
 
 uses
   SysUtils, Classes, IniFiles,
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
-
   
   
   QMenus, QButtons, QControls, QWindows, QGraphics, Types,
@@ -52,10 +48,6 @@ uses
 const
   DefButtonWidth = 24;
   DefButtonHeight = 23;
-  
-  
-  NullHandle = nil;
-  
 
 type
   TJvSpeedItem = class;
@@ -1482,6 +1474,10 @@ begin
   FImageChangeLink.OnChange := ImageListChange;
   if not Registered then
   begin
+    
+    GroupDescendentsWith(TJvSpeedItem, TControl);
+    GroupDescendentsWith(TJvSpeedBarSection, TControl);
+    
     RegisterClasses([TJvSpeedItem, TJvSpeedBarSection, TJvSpeedBarButton]);
     Registered := True;
   end;
@@ -1602,7 +1598,6 @@ var
   I, Idx: Integer;
   Sect: TJvSpeedBarSection;
 begin
-  if csCreating in ControlState then exit;
   for I := 0 to FSections.Count - 1 do
     if FSections[I] <> nil then
     begin
@@ -1651,6 +1646,30 @@ begin
 end;
 
 procedure TJvSpeedBar.SetFontDefault;
+{$IFDEF MSWINDOWS}
+var
+  NCMetrics: TNonClientMetrics;
+begin
+  ParentFont := False;
+  with Font do
+  begin
+    NCMetrics.cbSize := SizeOf(TNonClientMetrics);
+    if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NCMetrics, 0) then
+    begin
+      Handle := CreateFontIndirect(NCMetrics.lfMenuFont);
+      Charset := DEFAULT_CHARSET;
+    end
+    else
+    begin
+      Name := 'MS Sans Serif';
+      Size := 8;
+      Style := [];
+      Color := clBtnText;
+    end;
+  end;
+end;
+{$ENDIF MSWINDOWS }
+{$IFDEF LINUX}
 begin
   ParentFont := False;
   with Font do
@@ -1661,6 +1680,7 @@ begin
     Color := clBtnText;
   end;
 end;
+{$ENDIF LINUX}
 
 procedure TJvSpeedBar.VisibleChanged;
 begin

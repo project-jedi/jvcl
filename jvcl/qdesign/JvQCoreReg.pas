@@ -43,22 +43,20 @@ uses
   
   QControls, QStdCtrls, QExtCtrls, QGraphics, QActnList, QImgList, QDialogs,
   QTypes,
-
-
+  
+  
   DesignEditors, DesignIntf,
-
+  
   JvQTypes, JvQDsgnConsts, JvQJCLUtils, JVQCLVer, JvQComponent,
   JvQActions, JvQActnResForm, JvQJVCLAboutForm, JvQDsgnEditors, JvQIDEZoom,
-  JvQJVCLAboutEditor, JvQBaseDlg, JvQBaseDlgEditor, JvQPaintBoxEditor,
-  JvQAppIniStorage,
+  JvQJVCLAboutEditor, JvQBaseDlg, JvQBaseDlgEditor, JvQColorEditor, JvQPaintBoxEditor,
+  JvQAppIniStorage, JvQBackgrounds,
   {$IFDEF MSWINDOWS}
-  JvQAppRegistryStorage,
-  {$ENDIF MSWINDOWS}
-  JvQContextProvider,
+  JvQAppRegistryStorage, JvQContextProvider,
   JvQColorProviderEditors, JvQDataProviderEditors, JvQDataProvider,
-  JvQDataProviderIntf,
-
-  JvQColorProvider, 
+  JvQDataProviderIntf, JvQBackgroundEditors,
+  {$ENDIF MSWINDOWS}
+  
   JvQAppStorage, JvQAppStorageSelectList;
 
 {$IFDEF MSWINDOWS}
@@ -72,10 +70,14 @@ procedure Register;
 const
   BaseClass: TClass = TComponent;
 begin
+  
+  GroupDescendentsWith(TJvComponent, TControl);
+  
+
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent]);
-  RegisterComponents(RsPaletteNonVisual, [TJvContextProvider,
-    TJvColorProvider, TJvColorMappingProvider]);
   {$IFDEF MSWINDOWS}
+  RegisterComponents(RsPaletteNonVisual, [TJvContextProvider,
+    TJvColorProvider, TJvColorMappingProvider, TJvBackground]);
   RegisterComponents(RsPalettePersistence, [TJvAppRegistryStorage]);
   {$ENDIF MSWINDOWS}
   RegisterComponents(RsPalettePersistence, [TJvAppStorage,
@@ -88,14 +90,14 @@ begin
   // all other compilers, it doesn't need anything as it is declared as
   // a SubComponent. However, we want to hide the Name and Tag property
   // in this case, thus the registration of 'nil' property editors
-
+  
   RegisterPropertyEditor(TypeInfo(TComponentName), TJvPersistent, 'Name', nil);
   RegisterPropertyEditor(TypeInfo(Longint), TJvPersistent, 'Tag', nil);
-
+  
 
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
-
+  
 
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'InitialDir', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirectoryProperty);
@@ -119,7 +121,7 @@ begin
   RegisterComponentEditor(TPaintBox, TJvPaintBoxEditor);
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
 
-
+  
 
   {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
@@ -136,10 +138,10 @@ begin
   RegisterComponentEditor(TJvCustomDataProvider, TJvProviderEditor);
   RegisterComponentEditor(TJvColorProvider, TJvColorProviderEditor);
 
-//  RegisterPropertyEditor(TypeInfo(TJvBackgroundClients), TJvBackground,
-//    'Clients', TJvClientsProperty);
+  RegisterPropertyEditor(TypeInfo(TJvBackgroundClients), TJvBackground,
+    'Clients', TJvClientsProperty);
 
-  RegisterActions(RsJVCLActionsCategory, [TJvWebAction], TJvStandardActions);
+  RegisterActions(RsJVCLActionsCategory, [{$IFDEF MSWINDOWS} TJvSendMailAction, {$ENDIF} TJvWebAction], TJvStandardActions);
   RegisterZoom;
 end;
 
