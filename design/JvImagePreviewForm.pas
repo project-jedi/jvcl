@@ -26,7 +26,7 @@ Known Issues:
 {$I JVCL.INC}
 {$I WINDOWSONLY.INC}
 
-unit JvImagPrvw;
+unit JvImagePreviewForm;
 
 interface
 

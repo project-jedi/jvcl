@@ -28,7 +28,7 @@ Known Issues:
 
 { Property editor for the TJvTipOfDay component }
 
-unit JvTipOfDayProp;
+unit JvTipOfDayEditor;
 
 interface
 

@@ -26,7 +26,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvStrLEdit;
+unit JvStringsForm;
 
 { TStrings property editor originally from the Rx library: duplicated for internal use) }
 

@@ -26,7 +26,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvID3v2Define;
+unit JvID3v2DefineForm;
 
 interface
 

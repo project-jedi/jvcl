@@ -25,7 +25,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvCheckItm;
+unit JvCheckedItemsForm;
 
 interface
 

@@ -25,13 +25,13 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvDirFrm;
+unit JvDirectoryListForm;
 
 interface
 
 uses
   Windows, SysUtils, Classes, Controls, Forms, StdCtrls,
-  JvxCtrls, JvPlacemnt, JvComponent, JvListBox, JvCtrls;
+  JvxCtrls, JvFormPlacement, JvComponent, JvListBox, JvCtrls;
 
 type
   TJvDirectoryListDialog = class(TJvForm)

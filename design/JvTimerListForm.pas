@@ -25,7 +25,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvTimLstEd;
+unit JvTimerListForm;
 
 interface
 

@@ -26,7 +26,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvOutEdit;
+unit JvLookoutEditor;
 
 {Component Editors and Registration procedure for TJvLookOut components}
 

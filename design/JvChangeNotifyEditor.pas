@@ -26,7 +26,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvChNtfyProperty;
+unit JvChangeNotifyEditor;
 
 { Property editor for the TJvChangeNotify component }
 
