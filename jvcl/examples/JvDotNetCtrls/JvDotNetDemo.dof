@@ -1,0 +1,4 @@
+[Directories]
+OutputDir=..\..\bin
+UnitOutputDir=..\..\dcu
+SearchPath=..\..\run;..\..\common
