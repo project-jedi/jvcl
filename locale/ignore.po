@@ -6,6 +6,9 @@ msgstr ""
 msgid " "
 msgstr ""
 
+msgid "..."
+msgstr ""
+
 msgid ">"
 msgstr ""
 
@@ -91,6 +94,15 @@ msgid "ColorComboBox1"
 msgstr ""
 
 msgid "Edit1"
+msgstr ""
+
+msgid "Action1"
+msgstr ""
+
+msgid "cur"
+msgstr ""
+
+msgid "Show_On_Startup"
 msgstr ""
 
 msgid "JvID3DefineDlg"
@@ -199,6 +211,15 @@ msgid "Coco/R"
 msgstr ""
 
 msgid "FB"
+msgstr ""
+
+msgid "PHP"
+msgstr ""
+
+msgid "C#"
+msgstr ""
+
+msgid "NQC"
 msgstr ""
 
 msgid "MS Shell Dlg 2"
@@ -363,18 +384,17 @@ msgstr ""
 msgid "PerfStats\\StatData"
 msgstr ""
 
-msgid "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell "
-"Folders\\"
+msgid "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders\\"
 msgstr ""
 
-msgid "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell "
-"Folders\\"
+msgid "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\\"
 msgstr ""
 
 msgid "DSA_State"
 msgstr ""
 
-msgid "%s%s:\n"
+msgid ""
+"%s%s:\n"
 "%s%s"
 msgstr ""
 
@@ -708,8 +728,66 @@ msgstr ""
 msgid "2.0.1"
 msgstr ""
 
-#    --- This is because of UIB resources. Must discuss the issue with UIB's author.
+msgid "PanelGraphics"
+msgstr ""
 
+msgid "LabelComAxis0"
+msgstr ""
+
+msgid "LabelComAxis1"
+msgstr ""
+
+msgid "LabelComAxis2"
+msgstr ""
+
+msgid "CheckBoxCom0"
+msgstr ""
+
+msgid "CheckBoxCom1"
+msgstr ""
+
+msgid "CheckBoxCom2"
+msgstr ""
+
+msgid "LabelAxis0"
+msgstr "Label"
+
+msgid "LabelAxis1"
+msgstr "Label"
+
+msgid "LabelAxis2"
+msgstr "Label"
+
+msgid "CheckBoxRed0"
+msgstr ""
+
+#. JvFullColorCircleFrm..PanelAxisSettings..CheckBoxRed1..Caption
+#: JvFullColorCircleForm.dfm:418
+msgid "CheckBoxRed1"
+msgstr ""
+
+msgid "CheckBoxRed2"
+msgstr ""
+
+msgid "CheckBoxGreen0"
+msgstr ""
+
+msgid "CheckBoxGreen1"
+msgstr ""
+
+msgid "CheckBoxGreen2"
+msgstr ""
+
+msgid "CheckBoxBlue0"
+msgstr ""
+
+msgid "CheckBoxBlue1"
+msgstr ""
+
+msgid "CheckBoxBlue2"
+msgstr ""
+
+#    --- This is because of UIB resources. Must discuss the issue with UIB's author.
 msgid "Vrai"
 msgstr ""
 
@@ -767,9 +845,7 @@ msgstr ""
 msgid "Kann Bibliothek %s nicht laden."
 msgstr ""
 
-msgid ""
-"Datenbank-Handle bereits zugewiesen. Bitte erst Verbindung zur Datenbank "
-"trennen."
+msgid "Datenbank-Handle bereits zugewiesen. Bitte erst Verbindung zur Datenbank trennen."
 msgstr ""
 
 msgid "Transaktion nicht zugewiesen."
@@ -885,6 +961,4 @@ msgstr ""
 
 msgid "Error de tipo de dato."
 msgstr ""
-
-#   --- End of UIB resources. Must discuss the issue with UIB's author.
 
