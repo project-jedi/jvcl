@@ -16,8 +16,6 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove@slcdug.org].
 
-Last Modified: 2004-03-01
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -26,6 +24,8 @@ Known Issues:
   When Position 100 you can not click on the far Right of the button to move.
 
 -----------------------------------------------------------------------------}
+// $Id$
+
 {$I jvcl.inc}
 
 unit JvTracker;

@@ -15,13 +15,12 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2004-03-07
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -2546,15 +2545,15 @@ begin
     if Not (IsRectEmpty(ARect) and
            (GetMapMode(Canvas.Handle) = MM_TEXT) ) then
     begin
-      if Colors < 2 then
+      StartColor := ColorToRGB(StartColor);
+      EndColor := ColorToRGB(EndColor);
+      if (Colors < 2) or (StartColor = EndColor) then
       begin
         Brush := CreateSolidBrush(ColorToRGB(StartColor));
         FillRect(Canvas.Handle, ARect, Brush);
         DeleteObject(Brush);
         Exit;
       end;
-      StartColor := ColorToRGB(StartColor);
-      EndColor := ColorToRGB(EndColor);
       case Direction of
         fdTopToBottom, fdLeftToRight:
         begin

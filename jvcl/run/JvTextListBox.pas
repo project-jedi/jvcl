@@ -17,9 +17,7 @@ All Rights Reserved.
 
 Contributor(s):
   Polaris Software
-  Peter Thornqvist [peter3@peter3.com]
-
-Last Modified: 2003-10-19
+  Peter Thornqvist [peter3 at sourceforge dot net]
 
 Changes:
 2003-10-19:
@@ -30,6 +28,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

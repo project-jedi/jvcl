@@ -16,9 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
-Peter Thornqvist [peter3@peter3.com]
-
-Last Modified: 2003-10-19
+Peter Thornqvist [peter3 at sourceforge dot net]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -43,6 +41,7 @@ Changes:
 Known Issues:
 * Images are only displayed in TJvCustomLabel if Angle = 0.
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

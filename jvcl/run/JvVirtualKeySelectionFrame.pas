@@ -14,20 +14,19 @@ The Initial Developer of the Original Code is Olivier Sannier <obones@meloo.com>
 Portions created by Olivier Sannier are Copyright (C) 2003 Olivier Sannier.
 All Rights Reserved.
 
-Contributor(s): none to date
+Contributor(s):
 
-
-Last Modified: 2003-08-17;
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Description: This unit defines a frame that you can use to select a key code.
              The primary use for that frame is un conjunction with a TJvAVICapture
-             component   
+             component
 
 Known Issues: none known
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 unit JvVirtualKeySelectionFrame;

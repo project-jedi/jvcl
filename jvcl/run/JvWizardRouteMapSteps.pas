@@ -15,8 +15,6 @@ Portions created by Max Evans are Copyright (C) 2002 Max Evans
 
 Contributor(s):
 
-Last Modified: 2002-02-12
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -27,6 +25,7 @@ History:
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

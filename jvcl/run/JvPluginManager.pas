@@ -19,7 +19,6 @@ Ralf Steinhaeusser [ralfiii@gmx.net].
 Gustavo Bianconi
 Steefan Lesage - converted to use new OTA
 
-Last Modified: 2003-07-14
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -68,6 +67,7 @@ Versionhistory:
  V 01 : renamed objects, files, ressources
         fixed several Memory-leaks, fixed unload-bug, minimized uses-list
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

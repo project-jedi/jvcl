@@ -17,13 +17,13 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-09-17
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -34,7 +34,8 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls,
-  JvBaseDlg, JvSegmentedLEDDisplay, JvSegmentedLEDDisplayMapperFrame;
+  JvBaseDlg, JvSegmentedLEDDisplay, JvSegmentedLEDDisplayMapperFrame,
+  ActnList, Menus, JvExControls, JvComponent;
 
 type
   TfrmSLDMappingEditorDialog = class(TForm)

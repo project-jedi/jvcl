@@ -16,7 +16,7 @@ All Rights Reserved.
 
 This unit is a merging of the original TJvEdit, TJvExEdit, TJvCaretEdit,TJvAlignedEdit,
 TJvSingleLineMemo.
-Merging done 2002-06-05 by Peter Thornqvist [peter3@peter3.com]
+Merging done 2002-06-05 by Peter Thornqvist [peter3 at sourceforge dot net]
 
   MERGE NOTES:
     * TJvCustomEdit has been removed from JvComponent and put here instead.
@@ -31,13 +31,13 @@ Contributor(s):
     To disable GroupIndex, set it to -1)
   André Snepvangers [asn@xs4all.nl] ( clx compatible version )
 
-Last Modified: 2004-01-29
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
+
 {$I jvcl.inc}
 
 unit JvEdit;

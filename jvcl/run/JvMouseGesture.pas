@@ -16,8 +16,6 @@ All Rights Reserved.
 
 Portions of code based on an idea of Mozilla browser mouse gesture addon
 
-Last Modified: 2003-07-10
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 

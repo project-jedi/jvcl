@@ -15,8 +15,6 @@ All Rights Reserved.
 
 Contributor(s): Peter Thörnqvist
 
-Last Modified: 2004-01-17
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL
 home page, located at http://jvcl.sourceforge.net
 
@@ -28,6 +26,7 @@ negative number format, negative currency format and positive currency format.
 This could be rectified by a custom-written formatting routine.
 
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

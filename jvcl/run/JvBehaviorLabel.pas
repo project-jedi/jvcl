@@ -10,15 +10,13 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvBehaviorLabel.PAS, released on 2003-03-24.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.com]
+The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at sourceforge dot net]
 Portions created by Peter Thörnqvist are Copyright (C) 2003 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
 Sébastien Buysse [sbuysse@buypin.com] - original author of the merged components
 Michael Beck [mbeck@bigfoot.com].
-
-Last Modified: 2003-10-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -36,6 +34,7 @@ Known Issues:
   you collapse / expand the Options property in the OI manually. No known solution yet. SOLVED
 
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

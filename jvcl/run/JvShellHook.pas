@@ -10,12 +10,10 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvShellHook.pas, released on 2002-10-27.
 
-The Initial Developer of the Original Code is Peter Thornqvist <peter3@peter3.com>.
+The Initial Developer of the Original Code is Peter Thornqvist <peter3 at sourceforge dot net>.
 All Rights Reserved.
 
 Contributor(s):
-
-Last Modified: 2002-11-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -28,6 +26,7 @@ Description:
   NOTE: this might not work on all OS'es and versions!
 
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 {$I windowsonly.inc}

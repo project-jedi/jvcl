@@ -23,8 +23,9 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 * This form is used by the TJvDeskTop component
 
-$Id$
 -----------------------------------------------------------------------------}
+// $Id$
+
 unit JvDesktopAlertForm;
 
 interface
@@ -650,7 +651,7 @@ type
 const
   {$EXTERNALSYM WS_EX_LAYERED}
   WS_EX_LAYERED = $00080000;
-{$EXTERNALSYM LWA_ALPHA}
+  {$EXTERNALSYM LWA_ALPHA}
   LWA_ALPHA = $00000002;
 
 procedure TJvFormDesktopAlert.DoAlphaBlend(Value:Byte);

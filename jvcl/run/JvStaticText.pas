@@ -16,9 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
-Peter Thörnqvist <peter3@peter3.com>
-
-Last Modified: 2000-10-22
+Peter Thörnqvist <peter3 at sourceforge dot net>
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -32,6 +30,7 @@ Changes 2002-10-22:
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 {$I windowsonly.inc} // (ahuser) uses CreateSubClass('STATIC')

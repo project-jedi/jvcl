@@ -13,15 +13,14 @@ The Original Code is: JvThemes.PAS, released on 2003-09-25
 The Initial Developers of the Original Code are: Andreas Hausladen <Andreas.Hausladen@gmx.de>
 All Rights Reserved.
 
-Last Modified: 2002-10-09
-
-Contributers:
+Contributors:
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 {$IFDEF JVCLThemesEnabled}

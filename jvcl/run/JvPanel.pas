@@ -17,16 +17,15 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 pongtawat
-Peter Thornqvist [peter3@peter3.com]
+Peter Thornqvist [peter3 at sourceforge dot net]
 Jens Fudickar [jens.fudickar@oratool.de]
-
-Last Modified: 2003-11-03
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

@@ -16,9 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
-p3 [peter3@peter3.com] - changed property writers to dummy methods - call SetXX methods directly to change values
-
-Last Modified: 2003-03-20
+p3 [peter3 at sourceforge dot net] - changed property writers to dummy methods - call SetXX methods directly to change values
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -46,6 +44,7 @@ Known Issues:
     Changed UserName to RegisteredOwner
     Changed Company to RegisteredOrganization
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 {$I windowsonly.inc}

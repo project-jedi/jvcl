@@ -18,14 +18,13 @@ All Rights Reserved.
 Contributors:
 Michael Fritz (MenuLocation)
 
-Last Modified: 2004-03-12
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 * Using a divider as RecentMenu when MenuLocation = mruChild doesn't work
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

@@ -16,8 +16,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-01-25
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -26,6 +24,7 @@ description : JvEditor with built-in highlighting for:
               pascal, cbuilder, sql, python, jscript,
               vbscript, perl, ini, html, not quite c
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

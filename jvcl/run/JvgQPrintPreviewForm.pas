@@ -36,7 +36,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, QuickRpt, QRCtrls, QRPrntr, ComCtrls, ToolWin,
   ImgList, ShellApi, StdCtrls,
-  JvgQRLabel, JvgBevel, JvgLabel, JvComponent;
+  JvgQRLabel, JvgBevel, JvgLabel, JvComponent, JvExControls;
 
 type
   TJvgfPrintPreview = class(TJvForm)

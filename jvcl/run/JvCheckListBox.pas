@@ -15,19 +15,18 @@ Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
 This is a merging of the code in the original JvCheckListBox.pas and JvFixedCheckListBox.pas
-Merging done 2002-06-05 by Peter Thornqvist [peter3@peter3.com]
+Merging done 2002-06-05 by Peter Thornqvist [peter3 at sourceforge dot net]
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 Peter Below <100113.1101@compuserve.com>
-
-Last Modified: 2002-06-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
