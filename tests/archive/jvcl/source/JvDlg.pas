@@ -195,7 +195,7 @@ end;
 
 procedure TJvProgressForm.FormOnShow(Sender: TObject);
 begin
-  PostMessage(FForm.Handle, WM_USER + 1, 0, 0);
+  PostMessage(FForm.Handle, WM_USER + 1, integer(self), 0);
 end;
 
 procedure TJvProgressForm.FormOnCancel(Sender: TObject);
@@ -208,7 +208,8 @@ begin
   Application.ProcessMessages;
   try
     try
-      (Owner as TJvProgressForm).FOnShow(Self);
+      (TJvProgressForm(Msg.WParam)).FOnShow(Self);
+//      (Owner as TJvProgressForm).FOnShow(Self);
     except
       on E: Exception do
       begin
