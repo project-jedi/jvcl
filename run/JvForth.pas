@@ -336,36 +336,6 @@ type
     property onInclude: TonInclude read FonInclude write SetonInclude;
   end;
 
-  { Loadstring returns a string loaded from a file}
-function LoadString(aFile: string): string;
-
-{ Savestring saves a stirng variable aText to a file }
-procedure SaveString(aFile, aText: string);
-
-{ PosStr searches the first occurrence of a substring FindString in a string
-  given by SourceString with case sensitivity (upper and lower case characters
-  are differed). This function returns the index value of the first character
-  of a specified substring from which it occurs in a given string starting with
-  StartPos character index. If a specified substring is not found Q_PosStr
-  returns zero. The author of algorithm is Peter Morris (UK) (FastStrings unit
-  from www.torry.ru). }
-
-function PosStr(const FindString, SourceString: string;
-  StartPos: Integer = 1): Integer;
-
-{ PosText searches the first occurrence of a substring FindString in a string
-  given by SourceString without case sensitivity (upper and lower case
-  characters are not differed). This function returns the index value of the
-  first character of a specified substring from which it occurs in a given
-  string starting with StartPos character index. If a specified substring is
-  not found Q_PosStr returns zero.  The author of algorithm is Peter Morris (UK) (FastStrings unit
-  from www.torry.ru). }
-
-function PosText(const FindString, SourceString: string;
-  StartPos: Integer = 1): Integer;
-
-function LastPosChar(const FindChar: char; SourceString: string): integer;
-
 // runs an external file or progam
 procedure Launch(Afile: string);
 
@@ -420,45 +390,8 @@ uses Variants;
 {$ENDIF}
 
 const
-
   cr = chr(13) + chr(10);
   tab = chr(9);
-
-  ToUpperChars: array[0..255] of Char =
-  (#$00, #$01, #$02, #$03, #$04, #$05, #$06, #$07, #$08, #$09, #$0A, #$0B, #$0C, #$0D, #$0E, #$0F,
-    #$10, #$11, #$12, #$13, #$14, #$15, #$16, #$17, #$18, #$19, #$1A, #$1B, #$1C, #$1D, #$1E, #$1F,
-    #$20, #$21, #$22, #$23, #$24, #$25, #$26, #$27, #$28, #$29, #$2A, #$2B, #$2C, #$2D, #$2E, #$2F,
-    #$30, #$31, #$32, #$33, #$34, #$35, #$36, #$37, #$38, #$39, #$3A, #$3B, #$3C, #$3D, #$3E, #$3F,
-    #$40, #$41, #$42, #$43, #$44, #$45, #$46, #$47, #$48, #$49, #$4A, #$4B, #$4C, #$4D, #$4E, #$4F,
-    #$50, #$51, #$52, #$53, #$54, #$55, #$56, #$57, #$58, #$59, #$5A, #$5B, #$5C, #$5D, #$5E, #$5F,
-    #$60, #$41, #$42, #$43, #$44, #$45, #$46, #$47, #$48, #$49, #$4A, #$4B, #$4C, #$4D, #$4E, #$4F,
-    #$50, #$51, #$52, #$53, #$54, #$55, #$56, #$57, #$58, #$59, #$5A, #$7B, #$7C, #$7D, #$7E, #$7F,
-    #$80, #$81, #$82, #$81, #$84, #$85, #$86, #$87, #$88, #$89, #$8A, #$8B, #$8C, #$8D, #$8E, #$8F,
-    #$80, #$91, #$92, #$93, #$94, #$95, #$96, #$97, #$98, #$99, #$8A, #$9B, #$8C, #$8D, #$8E, #$8F,
-    #$A0, #$A1, #$A1, #$A3, #$A4, #$A5, #$A6, #$A7, #$A8, #$A9, #$AA, #$AB, #$AC, #$AD, #$AE, #$AF,
-    #$B0, #$B1, #$B2, #$B2, #$A5, #$B5, #$B6, #$B7, #$A8, #$B9, #$AA, #$BB, #$A3, #$BD, #$BD, #$AF,
-    #$C0, #$C1, #$C2, #$C3, #$C4, #$C5, #$C6, #$C7, #$C8, #$C9, #$CA, #$CB, #$CC, #$CD, #$CE, #$CF,
-    #$D0, #$D1, #$D2, #$D3, #$D4, #$D5, #$D6, #$D7, #$D8, #$D9, #$DA, #$DB, #$DC, #$DD, #$DE, #$DF,
-    #$C0, #$C1, #$C2, #$C3, #$C4, #$C5, #$C6, #$C7, #$C8, #$C9, #$CA, #$CB, #$CC, #$CD, #$CE, #$CF,
-    #$D0, #$D1, #$D2, #$D3, #$D4, #$D5, #$D6, #$D7, #$D8, #$D9, #$DA, #$DB, #$DC, #$DD, #$DE, #$DF);
-
-  ToLowerChars: array[0..255] of Char =
-  (#$00, #$01, #$02, #$03, #$04, #$05, #$06, #$07, #$08, #$09, #$0A, #$0B, #$0C, #$0D, #$0E, #$0F,
-    #$10, #$11, #$12, #$13, #$14, #$15, #$16, #$17, #$18, #$19, #$1A, #$1B, #$1C, #$1D, #$1E, #$1F,
-    #$20, #$21, #$22, #$23, #$24, #$25, #$26, #$27, #$28, #$29, #$2A, #$2B, #$2C, #$2D, #$2E, #$2F,
-    #$30, #$31, #$32, #$33, #$34, #$35, #$36, #$37, #$38, #$39, #$3A, #$3B, #$3C, #$3D, #$3E, #$3F,
-    #$40, #$61, #$62, #$63, #$64, #$65, #$66, #$67, #$68, #$69, #$6A, #$6B, #$6C, #$6D, #$6E, #$6F,
-    #$70, #$71, #$72, #$73, #$74, #$75, #$76, #$77, #$78, #$79, #$7A, #$5B, #$5C, #$5D, #$5E, #$5F,
-    #$60, #$61, #$62, #$63, #$64, #$65, #$66, #$67, #$68, #$69, #$6A, #$6B, #$6C, #$6D, #$6E, #$6F,
-    #$70, #$71, #$72, #$73, #$74, #$75, #$76, #$77, #$78, #$79, #$7A, #$7B, #$7C, #$7D, #$7E, #$7F,
-    #$90, #$83, #$82, #$83, #$84, #$85, #$86, #$87, #$88, #$89, #$9A, #$8B, #$9C, #$9D, #$9E, #$9F,
-    #$90, #$91, #$92, #$93, #$94, #$95, #$96, #$97, #$98, #$99, #$9A, #$9B, #$9C, #$9D, #$9E, #$9F,
-    #$A0, #$A2, #$A2, #$BC, #$A4, #$B4, #$A6, #$A7, #$B8, #$A9, #$BA, #$AB, #$AC, #$AD, #$AE, #$BF,
-    #$B0, #$B1, #$B3, #$B3, #$B4, #$B5, #$B6, #$B7, #$B8, #$B9, #$BA, #$BB, #$BC, #$BE, #$BE, #$BF,
-    #$E0, #$E1, #$E2, #$E3, #$E4, #$E5, #$E6, #$E7, #$E8, #$E9, #$EA, #$EB, #$EC, #$ED, #$EE, #$EF,
-    #$F0, #$F1, #$F2, #$F3, #$F4, #$F5, #$F6, #$F7, #$F8, #$F9, #$FA, #$FB, #$FC, #$FD, #$FE, #$FF,
-    #$E0, #$E1, #$E2, #$E3, #$E4, #$E5, #$E6, #$E7, #$E8, #$E9, #$EA, #$EB, #$EC, #$ED, #$EE, #$EF,
-    #$F0, #$F1, #$F2, #$F3, #$F4, #$F5, #$F6, #$F7, #$F8, #$F9, #$FA, #$FB, #$FC, #$FD, #$FE, #$FF);
 
   { some utility functions }
 
@@ -471,151 +404,6 @@ begin
   workdir := #0;
   shellexecute(application.handle, 'open', @command[1],
     @params[1], @workdir[1], SW_SHOWNORMAL);
-end;
-
-function LastPosChar(const FindChar: char; SourceString: string): integer;
-var
-  i: integer;
-begin
-  result := 0;
-  i := length(sourcestring);
-  if i = 0 then exit;
-  while (i > 0) and (sourceString[i] <> Findchar) do
-    dec(i);
-  result := i;
-end;
-
-function LoadString(aFile: string): string;
-var
-  s: string;
-begin
-  with TFileStream.Create(aFile, fmOpenRead) do
-  try
-    SetLength(s, Size);
-    ReadBuffer(s[1], Size);
-  finally free;
-  end;
-  result := s;
-end;
-
-procedure SaveString(aFile, aText: string);
-begin
-  with TFileStream.Create(aFile, fmCreate) do
-  try
-    writeBuffer(aText[1], length(aText));
-  finally free;
-  end;
-end;
-
-function PosStr(const FindString, SourceString: string; StartPos: Integer): Integer;
-asm
-        PUSH    ESI
-        PUSH    EDI
-        PUSH    EBX
-        PUSH    EDX
-        TEST    EAX,EAX
-        JE      @@qt
-        TEST    EDX,EDX
-        JE      @@qt0
-        MOV     ESI,EAX
-        MOV     EDI,EDX
-        MOV     EAX,[EAX-4]
-        MOV     EDX,[EDX-4]
-        DEC     EAX
-        SUB     EDX,EAX
-        DEC     ECX
-        SUB     EDX,ECX
-        JNG     @@qt0
-        MOV     EBX,EAX
-        XCHG    EAX,EDX
-        NOP
-        ADD     EDI,ECX
-        MOV     ECX,EAX
-        MOV     AL,BYTE PTR [ESI]
-@@lp1:  CMP     AL,BYTE PTR [EDI]
-        JE      @@uu
-@@fr:   INC     EDI
-        DEC     ECX
-        JNZ     @@lp1
-@@qt0:  XOR     EAX,EAX
-        JMP     @@qt
-@@ms:   MOV     AL,BYTE PTR [ESI]
-        MOV     EBX,EDX
-        JMP     @@fr
-@@uu:   TEST    EDX,EDX
-        JE      @@fd
-@@lp2:  MOV     AL,BYTE PTR [ESI+EBX]
-        XOR     AL,BYTE PTR [EDI+EBX]
-        JNE     @@ms
-        DEC     EBX
-        JNE     @@lp2
-@@fd:   LEA     EAX,[EDI+1]
-        SUB     EAX,[ESP]
-@@qt:   POP     ECX
-        POP     EBX
-        POP     EDI
-        POP     ESI
-end;
-
-function PosText(const FindString, SourceString: string; StartPos: Integer): Integer;
-asm
-        PUSH    ESI
-        PUSH    EDI
-        PUSH    EBX
-        NOP
-        TEST    EAX,EAX
-        JE      @@qt
-        TEST    EDX,EDX
-        JE      @@qt0
-        MOV     ESI,EAX
-        MOV     EDI,EDX
-        PUSH    EDX
-        MOV     EAX,[EAX-4]
-        MOV     EDX,[EDX-4]
-        DEC     EAX
-        SUB     EDX,EAX
-        DEC     ECX
-        PUSH    EAX
-        SUB     EDX,ECX
-        JNG     @@qtx
-        ADD     EDI,ECX
-        MOV     ECX,EDX
-        MOV     EDX,EAX
-        MOVZX   EBX,BYTE PTR [ESI]
-        MOV     AL,BYTE PTR [EBX+ToUpperChars]
-@@lp1:  MOVZX   EBX,BYTE PTR [EDI]
-        CMP     AL,BYTE PTR [EBX+ToUpperChars]
-        JE      @@uu
-@@fr:   INC     EDI
-        DEC     ECX
-        JNE     @@lp1
-@@qtx:  ADD     ESP,$08
-@@qt0:  XOR     EAX,EAX
-        JMP     @@qt
-@@ms:   MOVZX   EBX,BYTE PTR [ESI]
-        MOV     AL,BYTE PTR [EBX+ToUpperChars]
-        MOV     EDX,[ESP]
-        JMP     @@fr
-        NOP
-@@uu:   TEST    EDX,EDX
-        JE      @@fd
-@@lp2:  MOV     BL,BYTE PTR [ESI+EDX]
-        MOV     AH,BYTE PTR [EDI+EDX]
-        CMP     BL,AH
-        JE      @@eq
-        MOV     AL,BYTE PTR [EBX+ToUpperChars]
-        MOVZX   EBX,AH
-        XOR     AL,BYTE PTR [EBX+ToUpperChars]
-        JNE     @@ms
-@@eq:   DEC     EDX
-        JNZ     @@lp2
-@@fd:   LEA     EAX,[EDI+1]
-        POP     ECX
-        SUB     EAX,[ESP]
-        POP     ECX
-@@qt:   POP     EBX
-        POP     EDI
-        POP     ESI
 end;
 
 procedure GlobalSetValue(var aText: string; aName, aValue: string);
@@ -898,50 +686,6 @@ begin
     end;
   finally
     list.free;
-  end;
-end;
-
-// parse number returns the last position, starting from 1
-
-function parseNumber(s: string): integer;
-var
-  i, e, e2, c: integer;
-begin
-  result := 0;
-  i := 0;
-  c := length(s);
-  if c = 0 then exit;
-  while (i + 1 <= c) and (s[i + 1] in ['0'..'9', ',', '.']) do
-    inc(i);
-  if (i + 1 <= c) and (s[i + 1] in ['e', 'E']) then
-  begin
-    e := i;
-    inc(i);
-    if (i + 1 <= c) and (s[i + 1] in ['+', '-']) then inc(i);
-    e2 := i;
-    while (i + 1 <= c) and (s[i + 1] in ['0'..'9']) do
-      inc(i);
-    if i = e2 then i := e;
-  end;
-  result := i;
-end;
-
-// parse a SQL style data string from positions 1,
-// starts and ends with #
-
-function parseDate(s: string): integer;
-var
-  p: integer;
-begin
-  result := 0;
-  if length(s) < 2 then exit;
-  p := posstr('#', s, 2);
-  if p = 0 then exit;
-  try
-    strtodate(copy(s, 2, p - 2));
-    result := p;
-  except
-    result := 0;
   end;
 end;
 

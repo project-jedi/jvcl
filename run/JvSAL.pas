@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvSALHashList;
+  JvSALHashList, JvStrings;
 
 const
 
@@ -182,28 +182,6 @@ uses
 
 const
   tab = chr(9);
-
-procedure SaveString(aFile, aText: string);
-begin
-  with TFileStream.Create(aFile, fmCreate) do
-  try
-    writeBuffer(aText[1], length(aText));
-  finally free;
-  end;
-end;
-
-function LoadString(aFile: string): string;
-var
-  s: string;
-begin
-  with TFileStream.Create(aFile, fmOpenRead) do
-  try
-    SetLength(s, Size);
-    ReadBuffer(s[1], Size);
-  finally free;
-  end;
-  result := s;
-end;
 
 { TJvAtom }
 

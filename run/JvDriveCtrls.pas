@@ -1251,21 +1251,6 @@ begin
     FOnChange(Self);
 end;
 
-function ExtractLastFolder(const S: string): string;
-var
-  P: PChar;
-begin
-  Result := S;
-  if Length(S) <= 3 then
-    Exit;
-  P := PChar(S);
-  Inc(P, Length(S) - 1);
-  while P^ <> '\' do
-    Dec(P);
-  Inc(P);
-  Result := P;
-end;
-
 procedure TJvDirectoryListBox.CNDrawItem(var Msg: TWMDrawItem);
 var
   State: TOwnerDrawState;

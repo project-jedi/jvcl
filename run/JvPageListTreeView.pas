@@ -673,6 +673,7 @@ uses
 type
   THackTab = class(TCustomTabControl);
 
+(* make Delphi 5 compiler happy // andreas
 procedure ResetAllNonParentNodes(Items: TTreeNodes; ImageIndex, SelectedIndex: integer);
 var N: TTreeNode;
 begin
@@ -716,6 +717,7 @@ begin
     N := N.getNextSibling;
   end;
 end;
+*)
 
 procedure ResetSiblingFolders(Node: TTreeNode; ImageIndex, SelectedIndex: integer; Recurse: boolean = false);
 var N: TTreeNode;

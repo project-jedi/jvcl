@@ -96,7 +96,7 @@ implementation
 
 resourcestring
   RC_ShellFolders = 'Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders\';
-  RC_allFolders = 'Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders\';
+//  RC_allFolders = 'Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders\';
 
 var
   DirectoryList: array [0..14] of PChar =

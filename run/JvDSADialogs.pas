@@ -913,11 +913,11 @@ type
     function Add(const ID: Integer; const Name, Description: string; const Storage: TDSAStorage;
       const CheckTextKind: TDSACheckTextKind = ctkShow): TAddResult; overload;
     procedure Clear;
-    procedure Delete(const Item: TDSARegItem); overload;
+//    procedure Delete(const Item: TDSARegItem); overload;
     procedure Delete(const ID: Integer); overload;
-    procedure Delete(const Name: string); overload;
+//    procedure Delete(const Name: string); overload;
     function Locate(const ID: Integer): TDSARegItem; overload;
-    function Locate(const Name: string): TDSARegItem; overload;
+//    function Locate(const Name: string): TDSARegItem; overload;
   end;
 
 const
@@ -1022,6 +1022,7 @@ begin
   SetLength(FList, 0);
 end;
 
+(* make Delphi 5 compiler happy // andreas
 procedure TDSARegister.Delete(const Item: TDSARegItem);
 var
   Idx: Integer;
@@ -1030,6 +1031,7 @@ begin
   if (Idx > -1) and AnsiSameText(FList[Idx].Name, Item.Name) then
     Remove(Idx);
 end;
+*)
 
 procedure TDSARegister.Delete(const ID: Integer);
 var
@@ -1040,6 +1042,7 @@ begin
     Remove(Idx);
 end;
 
+(* make Delphi 5 compiler happy // andreas
 procedure TDSARegister.Delete(const Name: string);
 var
   Idx: Integer;
@@ -1048,6 +1051,7 @@ begin
   if Idx > -1 then
     Remove(Idx);
 end;
+*)
 
 function TDSARegister.Locate(const ID: Integer): TDSARegItem;
 var
@@ -1060,6 +1064,7 @@ begin
     Result := EmptyItem;
 end;
 
+(* make Delphi 5 compiler happy // andreas
 function TDSARegister.Locate(const Name: string): TDSARegItem;
 var
   Idx: Integer;
@@ -1070,6 +1075,7 @@ begin
   else
     Result := EmptyItem;
 end;
+*)
 
 //=== TDSAStorage ============================================================
 

@@ -318,7 +318,6 @@ var
   freepoly: array[0..100] of tpoint;
   freepolycount: integer;
   bezierfix1, bezierfix2: boolean;
-  TraceB: byte;
 
 function TrimInt(i, Min, Max: Integer): Integer;
 begin

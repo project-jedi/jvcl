@@ -880,6 +880,7 @@ begin
     Result := Result + #9 + ShortCutToText(MenuItem.ShortCut);
 end;
 
+(* make Delphi 5 compiler happy // andreas
 function AddContextMenuItem(const MenuItem: TMenuItem; const AMenu: HMENU;
   const idCmdFirst: UINT; ARightToLeft: Boolean; out idCMD : uInt): Boolean;
 const
@@ -939,6 +940,7 @@ begin
   //zTraceLog('    Handle=' + Format('0x%x', [MenuItemInfo.hSubMenu]));
   {$ENDIF}
 end;
+*)
 
 function TzContextMenuBandObject.QueryContextMenu(AMenu: HMENU; IndexMenu,
   idCmdFirst, idCmdLast, uFlags: UINT): HRESULT;

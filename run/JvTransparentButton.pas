@@ -316,25 +316,6 @@ begin
   DisabledBitmap(Bmp);
 end;
 
-function CreateBrushPattern: TBitmap;
-var
-  X, Y: Integer;
-begin
-  Result := TBitmap.Create;
-  Result.Width := 8; { must have this size }
-  Result.Height := 8;
-  with Result.Canvas do
-  begin
-    Brush.Style := bsSolid;
-    Brush.Color := clBtnFace;
-    FillRect(Rect(0, 0, Result.Width, Result.Height));
-    for Y := 0 to 7 do
-      for X := 0 to 7 do
-        if (Y mod 2) = (X mod 2) then { toggles between even/odd pixles }
-          Pixels[X, Y] := clWhite; { on even/odd rows }
-  end;
-end;
-
 constructor TJvTransparentButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -789,59 +770,6 @@ begin
       Col := (GetRValue(Col) * R + GetGValue(Col) * G + GetBValue(Col) * B) div (R + G + B);
       Bmp.Canvas.Pixels[I, J] := RGB(Col, Col, Col);
     end;
-end;
-
-{* create a disabled bitmap from a regular one, works best when bitmap has been
-reduced to a few colors. Used by BWBitmap }
-
-procedure ReducedColorDisabledBitmap(Bmp: TBitmap);
-const
-  ROP_DSPDxax = $00E20746;
-var
-  MonoBmp, TmpImage: TBitmap;
-  W, H: Integer;
-begin
-  if Bmp.Empty then
-    Exit;
-  MonoBmp := TBitmap.Create;
-  TmpImage := TBitmap.Create;
-  W := Bmp.Width;
-  H := Bmp.Height;
-
-  with TmpImage do
-  begin
-    Width := W;
-    Height := H;
-    Canvas.Brush.Color := clBtnFace;
-  end;
-
-  try
-    with MonoBmp do
-    begin
-      Assign(Bmp);
-      Canvas.Font.Color := clWhite;
-      Canvas.Brush.Color := clBlack;
-      Monochrome := True;
-    end;
-
-    with TmpImage.Canvas do
-    begin
-      Brush.Color := clBtnFace;
-      FillRect(Rect(0, 0, W, H));
-      Brush.Color := clBtnHighlight;
-      SetTextColor(Handle, clBlack);
-      SetBkColor(Handle, clWhite);
-      BitBlt(Handle, 1, 1, W + 1, H + 1, MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-      Brush.Color := clBtnShadow;
-      SetTextColor(Handle, clBlack);
-      SetBkColor(Handle, clWhite);
-      BitBlt(Handle, 0, 0, W, H, MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-    end;
-    Bmp.Assign(TmpImage);
-  finally
-    MonoBmp.Free;
-    TmpImage.Free;
-  end;
 end;
 
 

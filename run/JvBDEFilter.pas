@@ -158,10 +158,12 @@ begin
   raise EFilterError.Create(Ident);
 end;
 
+(* make Delphi 5 compiler happy // andreas
 procedure FilterErrorFmt(const Ident: string; const Args: array of const);
 begin
   raise EFilterError.CreateFmt(Ident, Args);
 end;
+*)
 
 const
   SExprNothing = '""'; { nothing token name }

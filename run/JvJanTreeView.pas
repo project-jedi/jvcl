@@ -593,7 +593,7 @@ end;
 
 const
   Letters: set of Char = ['A'..'Z', 'a'..'z'];
-  Numbers: set of Char = ['0'..'9'];
+//  Numbers: set of Char = ['0'..'9'];
 
 constructor TJvMathParser.Create(AOwner: TComponent);
 begin
