@@ -22,7 +22,6 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 unit JvParameterListParameter;
 
