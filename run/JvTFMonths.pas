@@ -32,10 +32,15 @@ unit JvTFMonths;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
+  {$ELSE}
+  QGraphics, QControls, QForms, QDialogs, Types,
+  {$ENDIF}
   {$IFDEF USEJVCL}
   JvTypes,
-  {$ENDIF USEJVCL}
+  {$ENDIF};
   JvTFGlance, JvTFUtils, JvTFManager;
 
 {$HPPEMIT '#define TDate Controls::TDate'}

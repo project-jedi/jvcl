@@ -36,13 +36,13 @@ unit JvComponentPanel;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFDEF VCL}
   Messages, Graphics, Controls, ExtCtrls, Buttons,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Types, QTypes, QGraphics, QControls, QExtCtrls, QButtons,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
   JvButtons, JvComponent, JvTypes;
 
 type
@@ -100,32 +100,32 @@ type
     property ButtonCount: Integer read GetButtonCount write SetButtonCount default 0;
     property Anchors;
     property AutoSize;
-    property BiDiMode;
     property Constraints;
     {$IFDEF VCL}
+    property BiDiMode;
     property UseDockManager default True;
     property DockSite;
-    {$ENDIF VCL}
-    property DragKind;
     property ParentBiDiMode;
-    property OnCanResize;
-    property OnConstrainedResize;
+    property DragKind;
     property OnDockDrop;
     property OnDockOver;
     property OnEndDock;
     property OnGetSiteInfo;
     property OnStartDock;
     property OnUnDock;
+    {$ENDIF VCL}
+    property OnCanResize;
+    property OnConstrainedResize;
   end;
 
 implementation
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvComponentPanel.res}
-{$ENDIF MSWINDOWS}
+{$ENDIF}
 {$IFDEF LINUX}
 {$R ../Resources/JvComponentPanel.res}
-{$ENDIF LINUX}
+{$ENDIF}
 
 constructor TJvComponentPanel.Create(AOwner: TComponent);
 begin

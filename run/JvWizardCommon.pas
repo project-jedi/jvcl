@@ -49,7 +49,7 @@ uses
   Windows, Controls, Graphics,
   {$ENDIF}
   {$IFDEF VisualCLX}
-  QWindows, QControls, QGraphics,
+  QControls, QGraphics, QWindows, Types,
   {$ENDIF}
   {$IFDEF COMPILER6_UP}
   Types,

@@ -29,8 +29,15 @@ Known Issues:
 unit JvImageSquare;
 
 interface
+
 uses
-  Windows, Messages, SysUtils, Graphics, Classes, Controls, ImgList, Forms,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, ImgList, Forms,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QImgList, QForms, QWindows, Types,
+  {$ENDIF}
   JvComponent;
 
 type
@@ -76,7 +83,9 @@ type
     property Text;
     property Visible;
     property Enabled;
+    {$IFDEF VCL}
     property DragCursor;
+    {$ENDIF}
     property DragMode;
     property PopupMenu;
     property ParentShowHint;
@@ -95,8 +104,13 @@ type
   end;
 
 implementation
+
 uses
+  {$IFDEF VCL}
   ExtCtrls, CommCtrl,
+  {$ELSE}
+  QExtCtrls,
+  {$ENDIF}
   JvThemes, JvResources;
 
 
@@ -189,8 +203,12 @@ begin
     { draw in middle }
     dX := (Width - FImageList.Width) div 2;
     dY := (Height - FImageList.Height) div 2;
+    {$IFDEF VCL}
     ImageList_DrawEx(Fimagelist.Handle, FIndex, Canvas.Handle, dx, dy, 0, 0, CLR_NONE, CLR_NONE, ILD_TRANSPARENT);
-    //    FImageList.Draw(Canvas,dX,dY,FIndex);
+    {$ENDIF}
+    {$IFDEF VisualCLX}
+    FImageList.Draw(Canvas,dX,dY,FIndex);
+    {$ENDIF}
   end;
 end;
 

@@ -35,7 +35,7 @@ uses
   {$IFDEF VCL}
   Graphics, Controls, Forms, Buttons, StdCtrls, Mask,
   {$ELSE}
-  QGraphics, QControls, QForms, QButtons, QStdCtrls, QMask, JvQToolEdit,
+  QGraphics, QControls, QForms, QButtons, QStdCtrls, QMask, Types,
   {$ENDIF}
   JvToolEdit, JvComponent, JvSearchFiles, JvButton;
 

@@ -30,8 +30,13 @@ unit JvHints;
 interface
 
 uses
-  Windows, Messages,
-  Graphics, Classes, Controls, Forms;
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, Types, QWindows,
+  {$ENDIF}
+  Classes ;
 
 type
   THintStyle = (hsRectangle, hsRoundRect, hsEllipse);
@@ -47,8 +52,10 @@ type
     FTextRect: TRect;
     FTileSize: TPoint;
     FRoundFactor: Integer;
+    {$IFDEF VCL}
     procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
     procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
+    {$ENDIF}
     function CreateRegion(Shade: Boolean): HRGN;
     procedure FillRegion(Rgn: HRGN; Shade: Boolean);
   protected
@@ -119,6 +126,7 @@ begin
     Result := nil;
 end;
 
+{$IFDEF VCL}
 procedure StandardHintFont(AFont: TFont);
 var
   NonClientMetrics: TNonClientMetrics;
@@ -133,8 +141,16 @@ begin
   end;
   AFont.Color := clInfoText;
 end;
+{$ENDIF}
 
-//=== TJvHintWindow ==========================================================
+{$IFDEF VisualCLX}
+procedure StandardHintFont(AFont: TFont);
+begin
+  AFont.Name := 'Helvetica';
+  AFont.Height := 13;
+  AFont.Color := clInfoText;
+end;
+{$ENDIF}
 
 constructor TJvHintWindow.Create(AOwner: TComponent);
 begin
@@ -151,6 +167,7 @@ begin
   inherited Destroy;
 end;
 
+{$IFDEF VCL}
 procedure TJvHintWindow.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -165,6 +182,7 @@ procedure TJvHintWindow.WMEraseBkgnd(var Msg: TMessage);
 begin
   Msg.Result := 1;
 end;
+{$ENDIF}
 
 function TJvHintWindow.CreateRegion(Shade: Boolean): HRGN;
 var
