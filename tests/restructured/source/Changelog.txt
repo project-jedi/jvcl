@@ -1,7 +1,8 @@
+2002-08-28
+- Added new options to JvSHFileOp
 2002-08-26
 - Added JvBands donated by Chiang Seng Chang //MBeck
 - removed DesignSize from few forms (doesn't exist in D5) //MBeck
-
 2002-08-25
 - JvInspector: Added RelativeDivider property
 - JvInspector: Changed compound item to a protected base class

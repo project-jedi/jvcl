@@ -29,9 +29,8 @@ Known Issues:
 {A wrapper component for the SHFileOperation function }
 
 unit JvSHFileOp;
-{  Bugs:
+{  Notes:
     fofConfirmMouse does nothing
-    fofWantMappingHandle does nothing
 }
 
 interface
