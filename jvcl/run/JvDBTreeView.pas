@@ -46,11 +46,18 @@ unit JvDBTreeView;
 interface
 
 uses
+  SysUtils, Classes, DB,
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  Windows, Messages, SysUtils, Classes, Controls, Dialogs, Graphics,
-  CommCtrl, ComCtrls, ExtCtrls, DB, JvComponent;
+  {$IFDEF VCL}
+  Windows, Messages, Controls, Dialogs, Graphics,
+  CommCtrl, ComCtrls, ExtCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QDialogs, QGraphics, QComCtrls, QExtCtrls, QWindows,
+  {$ENDIF VisualCLX}
+  JvComponent;
 
 type
   TJvDBTreeNode = class;
@@ -299,6 +306,7 @@ begin
 end;
 
 procedure MirrorControl(Control: TWinControl; RightToLeft: Boolean);
+{$IFDEF VCL}
 var
   OldLong: Longword;
 begin
@@ -312,6 +320,12 @@ begin
     SetWindowLong(Control.Handle, GWL_EXSTYLE, OldLong and not $00400000);
   Control.Repaint;
 end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+begin
+  Control.Repaint; // asn: remove?
+end;
+{$ENDIF VisualCLX}
 
 //=== TJvDBTreeViewDataLink ==================================================
 
@@ -1303,8 +1317,10 @@ end;
 
 procedure TJvCustomDBTreeView.SetMirror(Value: Boolean);
 begin
+  {$IFDEF VCL}
   if Value and SysLocale.MiddleEast and not (csDesigning in ComponentState) then
     MirrorControl(Self, Value);
+  {$ENDIF VCL}
   FMirror := Value;
 end;
 

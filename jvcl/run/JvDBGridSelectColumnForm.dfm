@@ -26,37 +26,4 @@ object frmSelectColumn: TfrmSelectColumn
   OnKeyPress = FormKeyPress
   PixelsPerInch = 96
   TextHeight = 13
-  object Panel1: TPanel
-    Left = 0
-    Top = 118
-    Width = 185
-    Height = 41
-    Align = alBottom
-    BevelOuter = bvNone
-    TabOrder = 0
-    DesignSize = (
-      185
-      41)
-    object ButtonOK: TButton
-      Left = 56
-      Top = 8
-      Width = 75
-      Height = 25
-      Anchors = []
-      Caption = '&OK'
-      Default = True
-      ModalResult = 1
-      TabOrder = 0
-    end
-  end
-  object clbList: TCheckListBox
-    Left = 0
-    Top = 0
-    Width = 185
-    Height = 118
-    OnClickCheck = clbListClickCheck
-    Align = alClient
-    ItemHeight = 13
-    TabOrder = 1
-  end
 end

@@ -35,8 +35,15 @@ unit JvDBSearchEdit;
 interface
 
 uses
-  SysUtils, Windows, Messages, Classes, Graphics, Controls,
-  Forms, Menus, Dialogs, StdCtrls, DB, DBCtrls,
+  SysUtils, Classes, DB,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls,
+  Forms, Menus, Dialogs, StdCtrls, DBCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QMenus, QDialogs, QStdCtrls,
+  QDBCtrls,
+  {$ENDIF VisualCLX}
 {$IFDEF COMPILER6_UP}
   Variants,
 {$ENDIF COMPILER6_UP}
@@ -95,18 +102,20 @@ type
     property BorderStyle;
     property CharCase;
     property Color;
+    {$IFDEF VCL}
     property Ctl3D;
     property DragCursor;
+    property ImeMode;
+    property ImeName;
+    property OEMConvert;
+    property ParentCtl3D;
+    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property Font;
     property HideSelection;
-    property ImeMode;
-    property ImeName;
     property MaxLength;
-    property OEMConvert;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

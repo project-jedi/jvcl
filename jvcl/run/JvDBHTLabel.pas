@@ -35,7 +35,14 @@ unit JvDBHTLabel;
 interface
 
 uses
-  SysUtils, Classes, DB, DBCtrls, JvHTControls;
+  SysUtils, Classes, DB,
+  {$IFDEF VCL}
+  DBCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QDBCtrls,
+  {$ENDIF VisualCLX}
+  JvHTControls;
 
 type
   TJvDBHTLabel = class(TJvCustomHTLabel)

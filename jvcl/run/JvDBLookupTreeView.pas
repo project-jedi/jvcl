@@ -48,11 +48,17 @@ unit JvDBLookupTreeView;
 interface
 
 uses
+  SysUtils, Classes, Db,
   {$IFDEF COMPILER6_UP}
   Variants, VDBConsts,
   {$ENDIF COMPILER6_UP}
-  Windows, Messages, SysUtils, Classes, Controls, Forms, Graphics,
-  CommCtrl, ComCtrls, Db,
+  {$IFDEF VCL}
+  Windows, Messages, Controls, Forms, Graphics,
+  CommCtrl, ComCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QForms, QGraphics, QComCtrls,
+  {$ENDIF VisualCLX}
   JvDBTreeView, JvToolEdit, JvComponent, JvExControls;
 
 {********************** Borland **********************}
