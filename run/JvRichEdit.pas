@@ -21,8 +21,9 @@ Contributor(s):
   Sébastien Buysse [sbuysse@buypin.com] (original code in JvRichEdit.pas)
   Michael Beck [mbeck@bigfoot.com] (contributor to JvRichEdit.pas)
   Roman Kovbasiouk [roko@users.sourceforge.net] (merging JvRichEdit.pas)
+  Remko Bonte [remkobonte@myrealbox.com] (insert image procedures)
 
-Last Modified: 2003-03-10
+Last Modified: 2003-07-24
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -415,6 +416,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear; override;
+
+    procedure InsertBitmap(ABitmap: TBitmap; const Sizeable: Boolean);
     procedure SetSelection(StartPos, EndPos: Longint; ScrollCaret: Boolean);
     function GetSelection: TCharRange;
     function GetTextRange(StartPos, EndPos: Longint): string;
@@ -544,6 +547,35 @@ type
 
 var
   RichEditVersion: TRichEditVersion;
+
+  { Two procedures to construct RTF from a bitmap. You can use this to
+    insert bitmaps in the rich edit control, for example:
+
+      Stream := TMemoryStream.Create;
+      try
+        BitmapToRTF(SomeBitmap, Stream);
+        Stream.Position := 0;
+
+        JvRichEdit1.StreamFormat := sfRichText;
+        JvRichEdit1.StreamMode := [smSelection, smPlainRtf];
+        JvRichEdit1.Lines.LoadFromStream(Stream);
+      finally
+        Stream.Free;
+      end;
+
+    But:
+
+    * if you stream out the RTF content of the rich edit control, the bitmaps
+      are *not* included. Use TJvRichEdit.InsertBitmap if you want the bitmaps
+      to be included in the RTF.
+    * TJvRichEdit.AllowObjects must be set to True.
+    * BitmapToRTF is the fastest, TJvRichEdit.InsertBitmap the slowest.
+  }
+
+{ uses the \dibitmap identifier }
+procedure BitmapToRTF(ABitmap: TBitmap; AStream: TStream);
+{ uses the \wmetafile identifier }
+function BitmapToRTF2(ABitmap: TBitmap; AStream: TStream): Boolean;
 
 implementation
 
@@ -4878,6 +4910,358 @@ procedure TJvCustomRichEdit.CloseFindDialog(Dialog: TFindDialog);
 begin
   if Assigned(FOnCloseFindDialog) then
     FOnCloseFindDialog(Self, Dialog);
+end;
+
+type
+  //=== TImageDataObject ======================================================
+
+  TImageDataObject = class(TInterfacedObject, IDataObject)
+  private
+    FBitmap: TBitmap;
+    function GetExtent(dwDrawAspect: Longint; out Size: TPoint): HResult; stdcall;
+  public
+    constructor Create(ABitmap: TBitmap); virtual;
+    { IDataObject }
+    function GetData(const formatetcIn: TFormatEtc;
+      out medium: TStgMedium): HResult; stdcall;
+    function GetDataHere(const formatetc: TFormatEtc;
+      out medium: TStgMedium): HResult; stdcall;
+    function QueryGetData(const formatetc: TFormatEtc): HResult; stdcall;
+    function GetCanonicalFormatEtc(const formatetc: TFormatEtc;
+      out formatetcOut: TFormatEtc): HResult; stdcall;
+    function SetData(const formatetc: TFormatEtc; var medium: TStgMedium;
+      fRelease: BOOL): HResult; stdcall;
+    function EnumFormatEtc(dwDirection: Longint; out enumFormatEtc:
+      IEnumFormatEtc): HResult; stdcall;
+    function DAdvise(const formatetc: TFormatEtc; advf: Longint;
+      const advSink: IAdviseSink; out dwConnection: Longint): HResult; stdcall;
+    function DUnadvise(dwConnection: Longint): HResult; stdcall;
+    function EnumDAdvise(out enumAdvise: IEnumStatData): HResult; stdcall;
+  end;
+
+constructor TImageDataObject.Create(ABitmap: TBitmap);
+begin
+  inherited Create;
+
+  FBitmap := ABitmap;
+end;
+
+function TImageDataObject.DAdvise(const formatetc: TFormatEtc;
+  advf: Integer; const advSink: IAdviseSink;
+  out dwConnection: Integer): HResult;
+begin
+  Result := OLE_E_ADVISENOTSUPPORTED;
+end;
+
+function TImageDataObject.DUnadvise(dwConnection: Integer): HResult;
+begin
+  Result := OLE_E_ADVISENOTSUPPORTED;
+end;
+
+function TImageDataObject.EnumDAdvise(
+  out enumAdvise: IEnumStatData): HResult;
+begin
+  Result := OLE_E_ADVISENOTSUPPORTED;
+end;
+
+function TImageDataObject.EnumFormatEtc(dwDirection: Integer;
+  out enumFormatEtc: IEnumFormatEtc): HResult;
+begin
+  enumFormatEtc := nil;
+  Result := E_NOTIMPL;
+end;
+
+function TImageDataObject.GetCanonicalFormatEtc(
+  const formatetc: TFormatEtc; out formatetcOut: TFormatEtc): HResult;
+begin
+  formatetcOut.ptd := nil;
+  Result := E_NOTIMPL;
+end;
+
+function TImageDataObject.GetData(const formatetcIn: TFormatEtc;
+  out medium: TStgMedium): HResult;
+var
+  sizeMetric: TPoint;
+  DC: HDC;
+  hMF: HMETAFILE;
+  hMem: THandle;
+  pMFP: PMetafilePict;
+begin
+  { Basically the code from AxCtrls.pas TActiveXControl.GetData }
+
+  // Handle only MetaFile
+  if (formatetcin.tymed and TYMED_MFPICT) = 0 then
+  begin
+    Result := DV_E_FORMATETC;
+    Exit;
+  end;
+  // Retrieve Extent
+  GetExtent(DVASPECT_CONTENT, sizeMetric);
+  // Create Metafile DC and set it up
+  DC := CreateMetafile(nil);
+  SetWindowOrgEx(DC, 0, 0, nil);
+  SetWindowExtEx(DC, sizemetric.X, sizemetric.Y, nil);
+
+  StretchBlt(DC, 0, 0, sizeMetric.X, sizeMetric.Y,
+    FBitmap.Canvas.Handle, 0, 0, FBitmap.Width, FBitmap.Height, SRCCOPY);
+  hMF := CloseMetaFile(DC);
+  if hMF = 0 then
+  begin
+    Result := E_UNEXPECTED;
+    Exit;
+  end;
+
+  // Get memory handle
+  hMEM := GlobalAlloc(GMEM_SHARE or GMEM_MOVEABLE, SizeOf(METAFILEPICT));
+  if hMEM = 0 then
+  begin
+    DeleteMetafile(hMF);
+    Result := STG_E_MEDIUMFULL;
+    Exit;
+  end;
+  pMFP := PMetaFilePict(GlobalLock(hMEM));
+  pMFP^.hMF := hMF;
+  pMFP^.mm := MM_ANISOTROPIC;
+  pMFP^.xExt := sizeMetric.X;
+  pMFP^.yExt := sizeMetric.Y;
+  GlobalUnlock(hMEM);
+
+  medium.tymed := TYMED_MFPICT;
+  medium.hGlobal := hMEM;
+  medium.unkForRelease := nil;
+
+  Result := S_OK;
+end;
+
+function TImageDataObject.GetDataHere(const formatetc: TFormatEtc;
+  out medium: TStgMedium): HResult;
+begin
+  Result := E_NOTIMPL;
+end;
+
+function TImageDataObject.GetExtent(dwDrawAspect: Integer;
+  out Size: TPoint): HResult;
+const
+  CHundredthMMPerInch = 2540;
+begin
+  if dwDrawAspect <> DVASPECT_CONTENT then
+  begin
+    Result := DV_E_DVASPECT;
+    Exit;
+  end;
+  Size.X := MulDiv(FBitmap.Width, CHundredthMMPerInch, Screen.PixelsPerInch);
+  Size.Y := MulDiv(FBitmap.Height, CHundredthMMPerInch, Screen.PixelsPerInch);
+  Result := S_OK;
+end;
+
+function TImageDataObject.QueryGetData(
+  const formatetc: TFormatEtc): HResult;
+begin
+  Result := E_NOTIMPL;
+end;
+
+function TImageDataObject.SetData(const formatetc: TFormatEtc;
+  var medium: TStgMedium; fRelease: BOOL): HResult;
+begin
+  Result := E_NOTIMPL;
+end;
+
+procedure TJvCustomRichEdit.InsertBitmap(ABitmap: TBitmap; const Sizeable: Boolean);
+var
+  OleClientSite: IOleClientSite;
+  Storage: IStorage;
+  OleObject: IOleObject;
+  ReObject: TReObject;
+  DataObject: IDataObject;
+  Selection: TCharRange;
+  FormatEtc: TFormatEtc;
+begin
+  if HandleAllocated and Assigned(FRichEditOle) then
+  begin
+    DataObject := TImageDataObject.Create(ABitmap);
+
+    FillChar(ReObject, SizeOf(TReObject), 0);
+    IRichEditOle(FRichEditOle).GetClientSite(OleClientSite);
+    Storage := nil;
+    OleObject := nil;
+    try
+      CreateStorage(Storage);
+
+      FormatEtc.cfFormat := CF_METAFILEPICT;
+      FormatEtc.ptd := nil;
+      FormatEtc.dwAspect := DVASPECT_CONTENT;
+      FormatEtc.lindex := -1;
+      FormatEtc.tymed := TYMED_MFPICT;
+
+      OleCheck(OleCreateStaticFromData(DataObject, IOleObject, OLERENDER_FORMAT,
+        @FormatEtc, OleClientSite, Storage, OleObject));
+      OleSetContainedObject(OleObject, True);
+      try
+        FillChar(ReObject, SizeOf(TReObject), #0);
+        with ReObject do
+        begin
+          cbStruct := SizeOf(TReObject);
+          cp := REO_CP_SELECTION;
+          poleobj := OleObject;
+          OleObject.GetUserClassID(clsid);
+          pstg := Storage;
+          polesite := OleClientSite;
+          dvAspect := DVASPECT_CONTENT;
+          if Sizeable then
+            dwFlags := REO_RESIZABLE;
+          //OleCheck(OleSetDrawAspect(OleObject,
+          //  Data.dwFlags and PSF_CHECKDISPLAYASICON <> 0,
+          //  Data.hMetaPict, dvAspect));
+        end;
+        SendMessage(Handle, EM_EXGETSEL, 0, Longint(@Selection));
+        Selection.cpMax := Selection.cpMin + 1;
+        OleCheck(IRichEditOle(FRichEditOle).InsertObject(ReObject));
+        SendMessage(Handle, EM_EXSETSEL, 0, Longint(@Selection));
+        IRichEditOle(FRichEditOle).SetDvaspect(
+          Longint(REO_IOB_SELECTION), ReObject.dvAspect);
+      finally
+        ReleaseObject(OleObject);
+      end;
+    finally
+      ReleaseObject(OleClientSite);
+      ReleaseObject(Storage);
+    end;
+  end;
+end;
+
+const
+  CHex: array[0..$F] of Char =
+    ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+     'A', 'B', 'C', 'D', 'E', 'F');
+
+procedure BitmapToRTF(ABitmap: TBitmap; AStream: TStream);
+const
+  CPrefix = '{\rtf1 {\pict\picw%d\pich%d\dibitmap0 ';
+  CPostfix = ' }}';
+var
+  Header, Bits: PChar;
+  HeaderSize, BitsSize: DWORD;
+  P, Q: PChar;
+  S: string;
+begin
+  GetDIBSizes(ABitmap.Handle, HeaderSize, BitsSize);
+  GetMem(Header, 2 * (HeaderSize + BitsSize));
+  try
+    Bits := Header + HeaderSize;
+    GetDIB(ABitmap.Handle, ABitmap.Palette, Header^, Bits^);
+
+    { Example :
+
+      HeaderSize = 2, BitsSize = 2
+
+      Header = $AB, $00, $DE, $F8, ?? , ?? , ?? , ??
+      ->
+      Header = 'A', 'B', '0', '0', 'D', 'E', 'F', '8'
+    }
+    Q := Header + HeaderSize + BitsSize - 1;
+    //P := Header + 2 * (HeaderSize + BitsSize) - 1;
+    P := Q + HeaderSize + BitsSize;
+    while Q >= Header do
+    begin
+      P^ := CHex[Byte(Q^) mod 16];
+      Dec(P);
+      P^ := CHex[Byte(Q^) div 16];
+      Dec(P);
+      Dec(Q);
+    end;
+    S := Format(CPrefix, [ABitmap.Width, ABitmap.Height]);
+    AStream.Write(PChar(S)^, Length(S));
+    AStream.Write(Header^, (HeaderSize + BitsSize) * 2);
+    AStream.Write(CPostfix, Length(CPostfix));
+  finally
+    FreeMem(Header);
+  end;
+end;
+
+function BitmapToRTF2(ABitmap: TBitmap; AStream: TStream): Boolean;
+
+  {
+
+    \wmetafileN	 - Source of the picture is a Windows metafile. The N argument
+                   identifies the metafile type (the default type is 1).
+    \picwN       - xExt field if the picture is a Windows metafile; picture
+                   width in pixels if the picture is a bitmap or from QuickDraw.
+                   The N argument is a long integer.
+    \pichN	     - yExt field if the picture is a Windows metafile; picture
+                   height in pixels if the picture is a bitmap or from QuickDraw.
+                   The N argument is a long integer.
+    \picwgoalN   - Desired width of the picture in twips. The N argument is a
+                   long integer.
+    \pichgoalN   - Desired height of the picture in twips. The N argument is a
+                   long integer.
+  }
+
+const
+  CPrefix = '{\rtf1 {\pict\wmetafile8\picw%d\pich%d\picwgoal%d\pichgoal%d ';
+  CPostfix = ' }}';
+  CHundredthMMPerInch = 2540;
+var
+  P, Q: PChar;
+  S: string;
+  DC: HDC;
+  MetafileHandle: HMETAFILE;
+  Size: TPoint;
+  BitsLength: UINT;
+  Bits: PChar;
+begin
+  Result := False;
+
+  // Retrieve Extent
+  Size.X := MulDiv(ABitmap.Width, CHundredthMMPerInch, Screen.PixelsPerInch);
+  Size.Y := MulDiv(ABitmap.Height, CHundredthMMPerInch, Screen.PixelsPerInch);
+
+  // Create Metafile DC and set it up
+  DC := CreateMetafile(nil);
+
+  SetWindowOrgEx(DC, 0, 0, nil);
+  SetWindowExtEx(DC, Size.X, Size.Y, nil);
+
+  StretchBlt(DC, 0, 0, Size.X, Size.Y,
+    ABitmap.Canvas.Handle, 0, 0, ABitmap.Width, ABitmap.Height, SRCCOPY);
+
+  MetafileHandle := CloseMetaFile(DC);
+
+  if MetafileHandle = 0 then
+    Exit;
+
+  try
+    BitsLength := GetMetaFileBitsEx(MetafileHandle, 0, nil);
+    GetMem(Bits, BitsLength * 2);
+    try
+      if GetMetaFileBitsEx(MetafileHandle, BitsLength, Bits) < BitsLength then
+        Exit;
+
+      Q := Bits + BitsLength - 1;
+      //P := Bits + 2 * BitsLength - 1;
+      P := Q + BitsLength;
+      while Q >= Bits do
+      begin
+        P^ := CHex[Byte(Q^) mod 16];
+        Dec(P);
+        P^ := CHex[Byte(Q^) div 16];
+        Dec(P);
+        Dec(Q);
+      end;
+
+      S := Format(CPrefix, [Size.X, Size.Y,
+        MulDiv(ABitmap.Width, 1440, Screen.PixelsPerInch),
+        MulDiv(ABitmap.Height, 1440, Screen.PixelsPerInch)]);
+      AStream.Write(PChar(S)^, Length(S));
+      AStream.Write(Bits^, BitsLength * 2);
+      AStream.Write(CPostfix, Length(CPostfix));
+
+      Result := True;
+    finally
+      FreeMem(Bits, BitsLength * 2);
+    end;
+  finally
+    DeleteMetafile(MetafileHandle);
+  end;
 end;
 
 { Conversion formats }
