@@ -51,10 +51,7 @@
       ..\source\JvScheduleEditor.dfm ..\source\JvID3v2Editor.dfm 
       ..\source\JvID3v2Define.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="cxGridUtilsVCLC6.lib cxExportVCLC6.lib cxGridVCLC6.lib cxDataC6.lib 
-      cxEditorsVCLC6.lib dxThemeC6.lib cxLibraryVCLC6.lib dxsbC6.lib 
-      dxBarExtDBItemsC6.lib dxBarExtItemsC6.lib dxBarDBNavC6.lib dxBarC6.lib 
-      dxComnC6.lib bcb2kaxserver.lib indy.lib dbxcds.lib dclocx.lib soaprtl.lib 
+    <LIBRARIES value="bcb2kaxserver.lib indy.lib dbxcds.lib dclocx.lib soaprtl.lib 
       nmfast.lib dbexpress.lib inetdbxpress.lib inetdbbde.lib dsnapcon.lib 
       dsnapcrba.lib visualdbclx.lib teeqr.lib dss.lib tee.lib teedb.lib 
       teeui.lib bdecds.lib cds.lib ibxpress.lib vcldbx.lib adortl.lib wininet.lib"/>
@@ -62,10 +59,7 @@
       ibxpress.lib cds.lib bdecds.lib qrpt.lib teeui.lib teedb.lib tee.lib 
       dss.lib teeqr.lib visualdbclx.lib dsnapcrba.lib dsnapcon.lib bcbsmp.lib 
       inetdbbde.lib inetdbxpress.lib dbexpress.lib nmfast.lib bcbie.lib 
-      soaprtl.lib dclocx.lib dbxcds.lib indy.lib bcb2kaxserver.lib dxComnC6.lib 
-      dxBarC6.lib dxBarDBNavC6.lib dxBarExtItemsC6.lib dxBarExtDBItemsC6.lib 
-      dxsbC6.lib cxLibraryVCLC6.lib dxThemeC6.lib cxEditorsVCLC6.lib 
-      cxDataC6.lib cxGridVCLC6.lib cxExportVCLC6.lib cxGridUtilsVCLC6.lib 
+      soaprtl.lib dclocx.lib dbxcds.lib indy.lib bcb2kaxserver.lib 
       JVCL200_R60C.lib CJCL60.lib"/>
     <PACKAGES value="rtl.bpi designide.bpi vcl.bpi vclx.bpi dbrtl.bpi dcldb.bpi designdgm.bpi 
       dclstd.bpi vcldb.bpi bdertl.bpi vcljpg.bpi bcbsmp.bpi JVCL200_R60C.bpi 
@@ -105,7 +99,7 @@
   <FILELIST>
       <FILE FILENAME="jvcl200_D60C.res" FORMNAME="" UNITNAME="jvcl200_D60C.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JVCL200_D60C.cpp" FORMNAME="" UNITNAME="jvcl200_D60C" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="$(BCB)\Projects\source\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Lib\Release\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvaDBReg.pas" FORMNAME="" UNITNAME="JvaDBReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvaCtlReg.pas" FORMNAME="" UNITNAME="JvaCtlReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvIDEZoom.pas" FORMNAME="" UNITNAME="JvIDEZoom" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -161,17 +155,17 @@
       <FILE FILENAME="..\source\JvSchedEvntReg.pas" FORMNAME="" UNITNAME="JvSchedEvntReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvTransLEDReg.pas" FORMNAME="" UNITNAME="JvTransLedReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvJVCLAboutProperty.pas" FORMNAME="" UNITNAME="JvJVCLAboutProperty" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="$(BCB)\Projects\source\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="$(BCB)\Projects\source\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="$(BCB)\Projects\source\vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="$(BCB)\Projects\source\dbrtl.bpi" FORMNAME="" UNITNAME="dbrtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="$(BCB)\Projects\source\dcldb.bpi" FORMNAME="" UNITNAME="dcldb" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="$(BCB)\Projects\source\designdgm.bpi" FORMNAME="" UNITNAME="designdgm" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="$(BCB)\Projects\source\dclstd.bpi" FORMNAME="" UNITNAME="dclstd" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="$(BCB)\Projects\source\vcldb.bpi" FORMNAME="" UNITNAME="vcldb" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="$(BCB)\Projects\source\bdertl.bpi" FORMNAME="" UNITNAME="bdertl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="$(BCB)\Projects\source\vcljpg.bpi" FORMNAME="" UNITNAME="vcljpg" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="$(BCB)\Projects\source\bcbsmp.bpi" FORMNAME="" UNITNAME="bcbsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Lib\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Lib\Release\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Lib\Release\vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Lib\Release\dbrtl.bpi" FORMNAME="" UNITNAME="dbrtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Lib\dcldb.bpi" FORMNAME="" UNITNAME="dcldb" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Lib\designdgm.bpi" FORMNAME="" UNITNAME="designdgm" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Lib\dclstd.bpi" FORMNAME="" UNITNAME="dclstd" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Lib\Release\vcldb.bpi" FORMNAME="" UNITNAME="vcldb" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Lib\Release\bdertl.bpi" FORMNAME="" UNITNAME="bdertl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Lib\Release\vcljpg.bpi" FORMNAME="" UNITNAME="vcljpg" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Lib\bcbsmp.bpi" FORMNAME="" UNITNAME="bcbsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvxDConst.pas" FORMNAME="" UNITNAME="JvxDConst" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvBehaviorLabelProperty.pas" FORMNAME="" UNITNAME="JvBehaviorLabelProperty" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvScheduleEditor.pas" FORMNAME="FrmScheduleEditor" UNITNAME="JvScheduleEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -189,12 +183,12 @@
       <FILE FILENAME="..\source\JvProgressEditor.pas" FORMNAME="" UNITNAME="JvProgressEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JVDBEditors.pas" FORMNAME="" UNITNAME="JVDBEditors" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="$(BCB)\Projects\Lib\JVCL200_R60C.bpi" FORMNAME="" UNITNAME="JVCL200_R60C" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\bcbie.bpi" FORMNAME="" UNITNAME="bcbie" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Lib\bcbie.bpi" FORMNAME="" UNITNAME="bcbie" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvID3v2Editor.pas" FORMNAME="JvID3FramesEditor" UNITNAME="JvID3v2Editor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvID3v2Define.pas" FORMNAME="JvID3DefineDlg" UNITNAME="JvID3v2Define" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\inet.bpi" FORMNAME="" UNITNAME="inet" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\qrpt.bpi" FORMNAME="" UNITNAME="qrpt" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Lib\Release\inet.bpi" FORMNAME="" UNITNAME="inet" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Lib\Release\qrpt.bpi" FORMNAME="" UNITNAME="qrpt" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Projects\Lib\CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
