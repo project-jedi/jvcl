@@ -139,8 +139,12 @@ var
   FocusControl: TWinControl;
 begin
   Result := nil;
-  if Page.FindComponent('piPageClient') <> nil then // do not localize
+  if (Page.FindComponent('piPageClient') <> nil) and not Supports(Inst, ISummaryPage) then // do not localize
     Exit;
+
+  if Supports(Inst, ISummaryPage) then
+    Page.FindComponent('piPageClient').Free;
+
   if Page.Header.Visible then
     Y := Page.Header.Height
   else

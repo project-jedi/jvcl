@@ -142,7 +142,10 @@ resourcestring
   RsJVCLPackages = 'JVCL 3 packages';
   RsJVCLFiles = 'JVCL 3 files';
 
-  RsMissingJCLForDelphi = 'JCL is not installed for %s. Please install the JCL before installing the JVCL.'#10#10'DJCL%d0.bpl not found in %s'; 
+  RsMissingJCLForDelphi =
+    'JCL is not installed for %s. Please install the JCL before installing the JVCL.'#10 +
+    #10 +
+    'DJCL%d0.bpl not found in %s';
 
 const
   // sJVCLMacroXxx are displayed in the Summary page. They are not used by code.
