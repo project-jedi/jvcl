@@ -167,7 +167,6 @@ contains
   JvScrollBox in '..\source\JvScrollBox.pas',
   JvScrollingLabel in '..\source\JvScrollingLabel.pas',
   JvScrollText in '..\source\JvScrollText.pas',
-  JvSearchFile in '..\source\JvSearchFile.pas',
   JvSelectDirectory in '..\source\JvSelectDirectory.pas',
   JvSerialDlg in '..\source\JvSerialDlg.pas',
   JvSerialMaker in '..\source\JvSerialMaker.pas',
