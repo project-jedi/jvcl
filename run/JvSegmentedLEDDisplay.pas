@@ -1168,7 +1168,7 @@ begin
         begin
           Rgn := CreatePolygonRgn(SegPts[0], Length(SegPts), WINDING);
           try
-            if Rgn <> NULL then
+            if Rgn <> 0 then
               Result := PtInRegion(Rgn, Pt.x, Pt.y)
             else
               Result := False;
@@ -1182,7 +1182,7 @@ begin
         begin
           Rgn := CreateEllipticRgn(SegPts[0].x, SegPts[0].y, SegPts[1].x, SegPts[1].y);
           try
-            if Rgn <> NULL then
+            if Rgn <> 0 then
               Result := PtInRegion(Rgn, Pt.x, Pt.y)
             else
               Result := False;
@@ -1556,7 +1556,7 @@ begin
     HandleDecimalSeparator(Text, Segments);
 end;
 
-procedure TJvBaseSegmentedLEDCharacterMapper.MapSegNamesToSegments(var Text: Pchar;
+procedure TJvBaseSegmentedLEDCharacterMapper.MapSegNamesToSegments(var Text:Pchar;
   var Segments: Int64);
 var
   SortedSegNames: TStrings;
@@ -1567,10 +1567,10 @@ begin
     for I := 0 to CurDigit.SegmentCount - 1 do
       SortedSegNames.Add(CurDigit.GetSegmentName(I));
     TStringList(SortedSegNames).Sort;
-
     while not (Text[0] in [#0, ']', ';']) do
     begin
-      for I := SortedSegNames.Count - 1 downto 0 do
+      I := SortedSegNames.Count - 1;
+      while I >= 0 do
       begin
         if AnsiStrLIComp(Text, PChar(SortedSegNames[I]), Length(SortedSegNames[I])) = 0 then
         begin
@@ -1579,9 +1579,12 @@ begin
           Inc(Text, Length(SortedSegNames[I]));
           Break; // End the for loop
         end;
-        if Text[0] = ',' then
-          Inc(Text);
+        Dec(I);
       end;
+      if I < 0 then
+        Inc(Text);
+      if Text[0] = ',' then
+        Inc(Text);
     end;
    finally
      FreeAndNil(SortedSegNames);
