@@ -30,12 +30,9 @@ unit JvButton;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
   SysUtils, Classes,
   {$IFDEF VCL}
-  Graphics, Controls, Forms, StdCtrls, Menus, Buttons,
+  Windows, Messages, Graphics, Controls, Forms, StdCtrls, Menus, Buttons,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Qt, QGraphics, QControls, QForms, QStdCtrls, QMenus, QButtons, Types,
