@@ -47,9 +47,9 @@ type
     handled by the combo box as usual. }
   TJvComboBoxStrings = class({$IFDEF COMPILER6_UP} TCustomComboBoxStrings {$ELSE} TStrings {$ENDIF})
   private
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     FComboBox: TJvCustomComboBox;
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF COMPILER5}
     FInternalList: TStringList;
     FUseInternal: Boolean;
     FUpdating: Boolean;
@@ -87,13 +87,14 @@ type
 
   TJvCustomComboBox = class(TJvExCustomComboBox)
   private
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     FAutoComplete: Boolean;
     FLastTime: Cardinal;      // SPM - Ported backward from Delphi 7
     FFilter: string;          // SPM - ditto
     FIsDropping: Boolean;
+    FOnSelect: TNotifyEvent;
     FOnCloseUp: TNotifyEvent;
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF COMPILER5}
     FKey: Word;
     FSearching: Boolean;
     FMaxPixel: TJvMaxPixel;
@@ -117,9 +118,9 @@ type
     function GetItemsClass: TCustomComboBoxStringsClass; override;
     {$ENDIF COMPILER6_UP}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     procedure KeyPress(var Key: Char); override;  // SPM - Ported backward from D7
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF COMPILER5}
     procedure SetItemHeight(Value: Integer); {$IFDEF COMPILER6_UP} override; {$ENDIF}
     function GetMeasureStyle: TJvComboBoxMeasureStyle;
     procedure SetMeasureStyle(Value: TJvComboBoxMeasureStyle);
@@ -127,10 +128,11 @@ type
     procedure PerformMeasureItem(Index: Integer; var Height: Integer); virtual;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure MeasureItem(Index: Integer; var Height: Integer); override;
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     function SelectItem(const AnItem: string): Boolean;  // SPM - Ported from D7
     procedure CloseUp; dynamic;
-    {$ENDIF COMPILER6_UP}
+    procedure Select; dynamic;
+    {$ENDIF COMPILER5}
     procedure SetConsumerService(Value: TJvDataConsumer);
     procedure ConsumerServiceChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
     procedure ConsumerSubServiceCreated(Sender: TJvDataConsumer; SubSvc: TJvDataConsumerAggregatedObject);
@@ -140,17 +142,18 @@ type
     function HandleFindString(StartIndex: Integer; Value: string; ExactMatch: Boolean): Integer;
     procedure Loaded; override;
     property Provider: TJvDataConsumer read FConsumerSvc write SetConsumerService;
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     property IsDropping: Boolean read FIsDropping write FIsDropping;
     property ItemHeight write SetItemHeight;
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF COMPILER5}
     property IsFixedHeight: Boolean read FIsFixedHeight;
     property MeasureStyle: TJvComboBoxMeasureStyle read GetMeasureStyle write SetMeasureStyle
       default cmsStandard;
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
+    property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
     property OnCloseUp: TNotifyEvent read FOnCloseUp write FOnCloseUp;
     property AutoComplete: Boolean read FAutoComplete write FAutoComplete default True;
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF COMPILER5}
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly default False; // ain
   public
@@ -227,9 +230,7 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMeasureItem;
-    {$IFDEF COMPILER6_UP}
     property OnSelect;
-    {$ENDIF COMPILER6_UP}
     property OnStartDock;
     property OnStartDrag;
     property Items; { Must be published after OnMeasureItem }
@@ -290,14 +291,14 @@ begin
   begin
     if UseInternal then
     begin
-      {$IFNDEF COMPILER6_UP}
+      {$IFDEF COMPILER5}
       if not ComboBox.IsDropping then
-      {$ENDIF COMPILER6_UP}
+      {$ENDIF COMPILER5}
         Result := InternalList.Count
-      {$IFNDEF COMPILER6_UP}
+      {$IFDEF COMPILER5}
       else
         Result := SendMessage(ComboBox.Handle, CB_GETCOUNT, 0, 0)
-      {$ENDIF COMPILER6_UP}
+      {$ENDIF COMPILER5}
     end
     else
       Result := SendMessage(ComboBox.Handle, CB_GETCOUNT, 0, 0);
@@ -512,10 +513,10 @@ begin
   PStringsAddr^ := TJvComboBoxStrings.Create; // create our own implementation and put it in place.
   TJvComboBoxStrings(Items).ComboBox := Self; // link it to the combo box.
   {.$ENDIF COMPILER7_UP}
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   FAutoComplete := True;
   FLastTime := 0;           // SPM - Ported backward from Delphi 7
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER5}
   FSearching := False;
   FMaxPixel := TJvMaxPixel.Create(Self);
   FMaxPixel.OnChanged := MaxPixelChanged;
@@ -727,7 +728,7 @@ begin
     PerformMeasureItem(Index, Height);
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 
 // SPM - Ported backward from Delphi 7 and modified:
 procedure TJvCustomComboBox.KeyPress(var Key: Char);
@@ -854,8 +855,16 @@ begin
   if ValueChange then
   begin
     Click;
-    Change;
+    Select;
   end;
+end;
+
+procedure TJvCustomComboBox.Select;
+begin
+  if Assigned(FOnSelect) then
+    FOnSelect(Self)
+  else
+    Change;
 end;
 
 procedure TJvCustomComboBox.CloseUp;
@@ -864,7 +873,7 @@ begin
     FOnCloseUp(Self);
 end;
 
-{$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 function TJvCustomComboBox.GetItemCount: Integer;
 var
@@ -1087,11 +1096,11 @@ var
   Item: IJvDataItem;
   ItemText: IJvDataItemText;
 begin
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   if Msg.NotifyCode = CBN_DROPDOWN then
     FIsDropping := True;
   try
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER5}
     if (Msg.NotifyCode = CBN_SELCHANGE) and IsProviderSelected then
     begin
       Provider.Enter;
@@ -1110,11 +1119,7 @@ begin
           Text := '';
         end;
         Click;
-        {$IFNDEF COMPILER6_UP}
-        Change;
-        {$ELSE}
         Select;
-        {$ENDIF COMPILER6_UP}
         Provider.ItemSelected(Item);
       finally
         Provider.Leave;
@@ -1122,12 +1127,12 @@ begin
     end
     else
       inherited;
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   finally
     if Msg.NotifyCode = CBN_DROPDOWN then
       FIsDropping := False;
   end;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER5}
 end;
 
 procedure TJvCustomComboBox.CNMeasureItem(var Msg: TWMMeasureItem);
