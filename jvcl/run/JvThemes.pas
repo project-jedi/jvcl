@@ -930,12 +930,13 @@ begin
 end;
 
 {$IFDEF JVCLThemesEnabled}
+{$IFNDEF COMPILER7_UP}
 procedure TThemeServicesEx.ApplyThemeChange;
 begin
   ThemeServices.UpdateThemes;
   ThemeServices.DoOnThemeChange;
 end;
-
+{$ENDIF}
 
 function ThemeServices: TThemeServicesEx;
 begin
