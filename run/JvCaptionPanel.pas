@@ -111,6 +111,9 @@ type
     {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
     FAnchorPos: TPoint;
     {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
+    {$IFDEF VCL}
+    FResizable: Boolean;
+    {$ENDIF VCL}
     procedure SetIcon(Value: TIcon);
     procedure SetCaptionFont(Value: TFont);
     procedure SetCaptionColor(Value: TColor);
@@ -122,6 +125,7 @@ type
     procedure DrawButtons;
     {$IFDEF VCL}
     procedure WMNCLButtonUp(var Msg: TWMNCLButtonUp); message WM_NCLBUTTONUP;
+    procedure SetResizable(const Value: Boolean);
     {$ENDIF VCL}
     procedure SetOutlookLook(const Value: Boolean);
     procedure DoCaptionFontChange(Sender: TObject);
@@ -169,6 +173,9 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
+    {$IFDEF VCL}
+    property Resizable:Boolean read FResizable write SetResizable default True;
+    {$ENDIF VCL}
     property ShowHint;
     property TabOrder;
     property TabStop;
@@ -432,6 +439,9 @@ begin
   FCaptionOffsetSmall := 2;
   FCaptionOffsetLarge := 3;
   FOutlookLook := False;
+  {$IFDEF VCL}
+  FResizable := True;
+  {$ENDIF VCL}
 end;
 
 destructor TJvCaptionPanel.Destroy;
@@ -525,7 +535,14 @@ begin
   if BorderStyle = bsSingle then
     with Params do
     begin
-      Style := Style or WS_THICKFRAME;
+      {$IFDEF VCL}
+      if Resizable then
+        Style := Style or WS_THICKFRAME
+      else
+        Style := Style or WS_DLGFRAME;
+      {$ELSE}
+      Style := Style or WS_THICKFRAME
+      {$ENDIF VCL}
       ExStyle := ExStyle and not WS_EX_CLIENTEDGE;
     end;
 end;
@@ -921,6 +938,15 @@ begin
   if FDragging then
     MouseUp(mbLeft, [], Msg.XCursor, Msg.YCursor);
 end;
+
+procedure TJvCaptionPanel.SetResizable(const Value: Boolean);
+begin
+  if FResizable <> Value then
+  begin
+    FResizable := Value;
+    RecreateWnd;
+  end;
+end;
 {$ENDIF VCL}
 
 procedure TJvCaptionPanel.SetOutlookLook(const Value: Boolean);
@@ -943,6 +969,7 @@ procedure TJvCaptionPanel.DoCaptionFontChange(Sender: TObject);
 begin
   Invalidate;
 end;
+
 
 {$IFDEF UNITVERSIONING}
 const
