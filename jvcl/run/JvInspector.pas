@@ -2665,6 +2665,9 @@ begin
     the case after the first Paint event. }
   {$ENDIF VisualCLX}
 
+  FExpandButton := TBitmap.Create;
+  FCollapseButton := TBitmap.Create;
+
   FBandStartsNoSB := TList.Create;
   FBandStartsSB := TList.Create;
   FSortNotificationList := TList.Create;
@@ -3700,16 +3703,12 @@ end;
 
 procedure TJvCustomInspector.SetCollapseButton(const Value: TBitmap);
 begin
-  if Value = nil then
-    FreeAndNil(FCollapseButton)
-  else
-  if not Assigned(FCollapseButton) then
+  if Value <> FCollapseButton then
   begin
-    FCollapseButton := TBitmap.Create;
     FCollapseButton.Assign(Value);
+    if HandleAllocated then
+      UpdateScrollBars;
   end;
-  if HandleAllocated then
-    UpdateScrollBars;
 end;
 
 procedure TJvCustomInspector.SetDivider(Value: Integer);
@@ -3763,20 +3762,14 @@ begin
   //  end;
 end;
 
-// (rom) possible bug: it is impossible to reassign the ExpandButton
-
 procedure TJvCustomInspector.SetExpandButton(const Value: TBitmap);
 begin
-  if Value = nil then
-    FreeAndNil(FExpandButton)
-  else
-  if not Assigned(FExpandButton) then
+  if Value <> FExpandButton then
   begin
-    FExpandButton := TBitmap.Create;
     FExpandButton.Assign(Value);
+    if HandleAllocated then
+      UpdateScrollBars;
   end;
-  if HandleAllocated then
-    UpdateScrollBars;
 end;
 
 procedure TJvCustomInspector.SetItemHeight(Value: Integer);
@@ -4235,6 +4228,8 @@ begin
   FBandStartsNoSB.Free;
   FSortNotificationList.Free;
   FVisibleList.Free;
+  FExpandButton.Free;
+  FCollapseButton.Free;
 end;
 
 function TJvCustomInspector.BeginUpdate: Integer;
@@ -4417,7 +4412,7 @@ end;
 
 function TJvInspectorPainter.GetCollapseImage: TBitmap;
 begin
-  if Assigned(Inspector.CollapseButton) then
+  if not Inspector.CollapseButton.Empty then
     Result := Inspector.CollapseButton
   else
     Result := FInternalCollapseButton;
@@ -4430,7 +4425,7 @@ end;
 
 function TJvInspectorPainter.GetExpandImage: TBitmap;
 begin
-  if Assigned(Inspector.ExpandButton) then
+  if not Inspector.ExpandButton.Empty then
     Result := Inspector.ExpandButton
   else
     Result := FInternalExpandButton;
