@@ -68,7 +68,6 @@ implementation
 function DoClipBoardCommands(Msg: Integer; ClipBoardCommands: TJvClipBoardCommands): Boolean;
 begin
   case Msg of
-    WM_CLEAR         : Result := caClear in ClipBoardCommands;
     WM_COPY          : Result := caCopy in ClipBoardCommands;
     WM_CUT           : Result := caCut in ClipBoardCommands;
     WM_PASTE         : Result := caPaste in ClipBoardCommands;
