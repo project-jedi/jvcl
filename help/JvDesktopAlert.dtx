@@ -452,19 +452,31 @@ Description
 See Also
   TJvDesktopAlertLocation, TJvDesktopAlert
 @@TJvDesktopAlertPosition.dapTopLeft
-  The window is displayed in the upper left corner. If multiple alert windows are displayed, they are stacked
-  such that the oldest window is always at the top.
+  The window is displayed in the upper left corner of the screen. If multiple alert windows are displayed, 
+  they are stacked such that the oldest window is always at the top.
 @@TJvDesktopAlertPosition.dapTopRight
-  The window is displayed in the upper right corner. If multiple alert windows are displayed, they are stacked
-  such that the oldest window is always at the top.
+  The window is displayed in the upper right corner of the screen. If multiple alert windows are displayed, 
+  they are stacked such that the oldest window is always at the top.
 @@TJvDesktopAlertPosition.dapBottomLeft
-  The window is displayed in the bottom left corner. If multiple alert windows are displayed, they are stacked
-  such that oldest window is always at the bottom.
+  The window is displayed in the bottom left corner of the screen. If multiple alert windows are displayed, 
+  they are stacked such that oldest window is always at the bottom.
 @@TJvDesktopAlertPosition.dapBottomRight
-  The window is displayed in the bottom right corner. If multiple alert windows are displayed, they are stacked
-  such that the oldest window is always at the bottom.
+  The window is displayed in the bottom right corner of the screen. If multiple alert windows are displayed, 
+  they are stacked such that the oldest window is always at the bottom.
 @@TJvDesktopAlertPosition.dapCustom
-  The location of the window is determined by the Left and Top properties of the <LINK TJvDesktopAlert.Location,TJvDesktopAlert.Location> property
+  The location of the window is determined by the Left and Top properties of the 
+  <LINK TJvDesktopAlert.Location,TJvDesktopAlert.Location> property. This mode is not stacked.
+@@TJvDesktopAlertPosition.dapDesktopCenter
+  The window is centered on the desktop. No adjustment is done for multiple monitors. This mode is not stacked.
+@@TJvDesktopAlertPosition.dapMainFormCenter
+  The window is centered on the application's mainform. If the application doesn't have a main form, 
+  this mode works the same as dapDesktopCenter. This mode is not stacked.
+@@TJvDesktopAlertPosition.dapOwnerFormCenter
+  The window is centered on the owner form if Owner is as TCustomForm. If Owner is not a TCustomForm, 
+  this mode works the same as dapDesktopCenter. This mode is not stacked.
+@@TJvDesktopAlertPosition.dapActiveFormCenter
+  The window is centered on the application's active form. If the application doesn't have an active form, 
+  this mode works the same as dapDesktopCenter. This mode is not stacked.
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertStack
 Summary
@@ -472,7 +484,7 @@ Summary
 Description
   Use TJvDesktopAlertStack to control the behavior of multiple TJvDesktopAlert components. To use, drop a
   TJvDesktopAlertStack on the form and assign it to the AlertStack property of each of the TJvDesktopAlert
-  components you want to be managed by this TJvDesktopAlertStack.
+  components you want to be managed by the TJvDesktopAlertStack instance.
 
   When a TJvDesktopAlert is managed by an explicitly assiged TJvDesktopAlertStack component, the Position property
   of TJvDesktopAlertStack is used for all the TJvDesktopAlert components.
@@ -510,9 +522,10 @@ See Also
 Summary
   Specifies where the desktop alert windows should be placed when they are displayed.
 Description
-  Use Position to specify where the tJvDesktop windows are displayed.
+  Use Position to specify where the desktop alert windows managed by this component are displayed.
 Note
-  If you set Position to dapCustom, the component will not stack the desktop windows for you.
+  If Position is any of dapCustom, dapDesktopCenter, dapMainFormCenter,dapOwnerFormCenter or dapActiveFormCenter,
+  they will not be stacked by the component.
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertStack.Remove
 Summary
