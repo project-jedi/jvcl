@@ -69,10 +69,8 @@ AdvancePro.exe \
 DockOptionDemo.exe \
 HowToUse.exe \
 MSDN2002Pro.exe \
-VCDemoPro_D5.exe \
-VCDemoPro_D6.exe \
-VIDDemoPro_D5.exe \
-VIDDemoPro_D6.exe \
+VCDemoPro.exe \
+VIDDemoPro.exe \
 JvDomainUpDownDemo.exe \
 JvDotNetDemo.exe \
 DSAExamples.exe \
@@ -160,7 +158,6 @@ JvTranslatorProj.exe \
 TransparentButtonDemo.exe \
 JvTrayIconDemo.exe \
 JvTreeViewAsMenu.exe \
-#UIB:
 #api1.exe \
 #api2.exe \
 #api3.exe \
@@ -172,22 +169,21 @@ JvTreeViewAsMenu.exe \
 #api10.exe \
 #StartBackup.exe \
 #StartRestore.exe \
-#UIB.dll \
 #Client.exe \
 #Server.exe \
-#Backup.exe \
-#BlobStream.exe \
-#BlobSample.exe \
-#cursor.exe \
-#DataPump.exe \
-#MetaData.exe \
-#Query.exe \
-#QuickScript.exe \
-#Restore.exe \
-#Script.exe \
-#StoredProc.exe \
-#QueryStream.exe \
-#Query.exe \
+UIB.dll \
+Backup.exe \
+Restore.exe \
+BlobStream.exe \
+BlobSample.exe \
+cursor.exe \
+DataPump.exe \
+MetaData.exe \
+Query.exe \
+QuickScript.exe \
+Script.exe \
+StoredProc.exe \
+QueryStream.exe \
 JvUninstallCtrlsDemo.exe \
 JvUrlListGrabberDemo.exe \
 JvFormatEditDemo.exe \
@@ -432,22 +428,12 @@ MSDN2002Pro.exe: "JvDocking\MSDN2002\Source\MSDN2002Pro.dpr"
   $(DCCHH) $&.dpr
   @cd ..\..\..
 
-VCDemoPro_D5.exe: "JvDocking\VCDemo\Source\VCDemoPro_D5.dpr"
+VCDemoPro.exe: "JvDocking\VCDemo\Source\VCDemoPro.dpr"
   @cd JvDocking\VCDemo\Source
   $(DCCHH) $&.dpr
   @cd ..\..\..
 
-VCDemoPro_D6.exe: "JvDocking\VCDemo\Source\VCDemoPro_D6.dpr"
-  @cd JvDocking\VCDemo\Source
-  $(DCCHH) $&.dpr
-  @cd ..\..\..
-
-VIDDemoPro_D5.exe: "JvDocking\VIDDemo\Source\VIDDemoPro_D5.dpr"
-  @cd JvDocking\VIDDemo\Source
-  $(DCCHH) $&.dpr
-  @cd ..\..\..
-
-VIDDemoPro_D6.exe: "JvDocking\VIDDemo\Source\VIDDemoPro_D6.dpr"
+VIDDemoPro.exe: "JvDocking\VIDDemo\Source\VIDDemoPro.dpr"
   @cd JvDocking\VIDDemo\Source
   $(DCCHH) $&.dpr
   @cd ..\..\..

@@ -115,7 +115,7 @@ type
     {$IFDEF USEJVCL}
     FJvAppRegistryStorage: TJvAppRegistryStorage;
     FJvAppIniFileStorage: TJvAppIniFileStorage;
-    FJvAppXmlStorage: TJvAppXmlStorage;
+    FJvAppXmlStorage: TJvAppXmlFileStorage;
     {$ENDIF}
     FForm1Count,
     FForm2Count,
@@ -200,7 +200,7 @@ begin
   FJvAppRegistryStorage.Path := '\Software\JVCL\Examples\JvDocking\AdvancePro';
   FJvAppIniFileStorage:= TJvAppIniFileStorage.Create(self);
   FJvAppIniFileStorage.FileName := ExtractFilePath(Application.ExeName) + 'DockInfo.ini';
-  FJvAppXmlStorage:= TJvAppXmlStorage.Create(self);
+  FJvAppXmlStorage:= TJvAppXmlFileStorage.Create(self);
   FJvAppXMLStorage.FileName := ExtractFilePath(Application.ExeName) + 'DockInfo.xml';
   {$ENDIF}
 end;

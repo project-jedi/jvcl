@@ -1,4 +1,4 @@
-program VIDDemoPro_D5;
+program VIDDemoPro;
 
 uses
   Forms,

@@ -5,4 +5,4 @@ UnsafeCast=0
 [Directories]
 OutputDir=..\bin
 UnitOutputDir=..\bin
-SearchPath=..\..\run;..\..\common
+SearchPath=..\..\..\..\run;..\..\..\..\common
