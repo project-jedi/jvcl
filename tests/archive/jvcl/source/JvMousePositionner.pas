@@ -41,6 +41,8 @@ type
   private
     FControl: TControl;
   protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
   public
   published
     property Control: TControl read FControl write FControl;
@@ -98,6 +100,14 @@ begin
     end;
     Dec(Steps);
   end;
+end;
+
+procedure TJvMousePositionner.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited;
+  if (Operation = opRemove) and (AComponent = Control) then
+    Control := nil;
 end;
 
 initialization
