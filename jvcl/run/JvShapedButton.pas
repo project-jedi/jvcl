@@ -35,9 +35,9 @@ uses
   JvThemes, JvExControls, JvExStdCtrls;
 
 type
-  TJvButtonShapes = (jvSLeftArrow, jvRightArrow, jvSRound, jvSHex, jvSOctagon, jvSPar,
-    jvSDiamond, jvSTriangleUp, jvSTriangleDown, jvSTriangleLeft,
-    jvSTriangleRight, jvSPentagon, JvSRevPentagon, jvSRing);
+  TJvButtonShapes = (jvSLeftArrow, jvSRightArrow, jvSRound, jvSHex, jvSOctagon,
+    jvSPar, jvSDiamond, jvSTriangleUp, jvSTriangleDown, jvSTriangleLeft,
+    jvSTriangleRight, jvSPentagon, jvSRevPentagon, jvSRing);
 
   TJvShapedButton = class(TJvExButton, IJvDenySubClassing)
   private
@@ -173,7 +173,7 @@ begin
     case FButtonShape of
       jvSLeftArrow:
         SetRegionLeftArrow(ALeft, ATop, AWidth, AHeight);
-      jvRightArrow:
+      jvSRightArrow:
         SetRegionRightArrow(ALeft, ATop, AWidth, AHeight);
       jvSRound:
         SetRegionRound(ALeft, ATop, AWidth, AHeight);
@@ -195,7 +195,7 @@ begin
         SetRegionTriangleRight(ALeft, ATop, AWidth, AHeight);
       jvSPentagon:
         SetRegionPentagon(ALeft, ATop, AWidth, AHeight);
-      JvSRevPentagon:
+      jvSRevPentagon:
         SetRegionRevPentagon(ALeft, ATop, AWidth, AHeight);
       jvSRing:
         SetRegionRing(ALeft, ATop, AWidth, AHeight);
@@ -214,7 +214,7 @@ begin
   case FButtonShape of
     jvSLeftArrow:
       CNDrawItemLeftArrow(Msg);
-    jvRightArrow:
+    jvSRightArrow:
       CNDrawItemRightArrow(Msg);
     jvSRound:
       CNDrawItemRound(Msg);
@@ -236,7 +236,7 @@ begin
       CNDrawItemTriangleRight(Msg);
     jvSPentagon:
       CNDrawItemPentagon(Msg);
-    JvSRevPentagon:
+    jvSRevPentagon:
       CNDrawItemRevPentagon(Msg);
     jvSRing:
       CNDrawItemRing(Msg);
