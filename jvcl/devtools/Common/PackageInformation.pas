@@ -208,6 +208,8 @@ type
     function GetPackages(Index: Integer): TBpgPackageTarget;
     function GetBpgName: string;
     function Add(const TargetName, SourceName: string): TBpgPackageTarget;
+    procedure LoadBDSGroupFile;
+    procedure LoadBPGFile;
   protected
     function GetIsVCLX: Boolean; virtual;
     function GetPackageTargetClass: TBpgPackageTargetClass; virtual;
@@ -435,6 +437,30 @@ begin
   end;
 end;
 
+function LoadUtf8File(const Filename: string): string;
+var
+  Content: UTF8String;
+  Stream: TFileStream;
+begin
+  Stream := TFileStream.Create(Filename, fmOpenRead or fmShareDenyWrite);
+  try
+    SetLength(Content, Stream.Size);
+    Stream.Read(Content[1], Stream.Size);
+  finally
+    Stream.Free;
+  end;
+  Delete(Content, 1, 3); // This a little bit dirty but unless we mix UTF8,
+                         // UTF16 and ANSI files there is no problem.
+  {$IFDEF COMPILER6_UP}
+  Result := Utf8ToAnsi(Content);
+  {$ELSE}
+    { Delphi 5 (should) never reachs this because the Installer uses the newest
+      installed Delphi version and only reads the project groups of installed
+      Delphi/BCB/BDN versions. }
+  Result := Content;
+  {$ENDIF COMPILIER6_UP}
+end;
+
 { TPackageXmlInfoItem }
 
 constructor TPackageXmlInfoItem.Create(const AName, ATargets, ACondition: string);
@@ -612,7 +638,6 @@ begin
   end;
 end;
 
-
 { TPackageGroup }
 
 constructor TPackageGroup.Create(const AFilename, APackagesXmlDir, ATargetSymbol: string);
@@ -725,6 +750,73 @@ end;
 
 procedure TPackageGroup.LoadFile;
 var
+  i: Integer;
+begin
+  if CompareText(ExtractFileExt(FileName), '.bdsgroup') = 0 then
+    LoadBDSGroupFile
+  else
+    LoadBPGFile;
+
+ // we use dependencies so the order is irrelevant and we can alpha sort. [Comment from Installer]
+  FPackages.Sort(SortProc_PackageTarget);
+
+ // update dependencies after all package targets are created
+  for i := 0 to Count - 1 do
+    Packages[i].GetDependencies;
+end;
+
+procedure TPackageGroup.LoadBDSGroupFile;
+var
+  xml: TJvSimpleXML;
+  Options, Projects: TJvSimpleXMLElem;
+  i, OptIndex, PrjIndex: Integer;
+  Personality: string;
+  TgName: string;
+begin
+  xml := TJvSimpleXML.Create(nil);
+  try
+    xml.LoadFromString(LoadUtf8File(Filename));
+
+    for i := 0 to xml.Root.Items.Count - 1 do
+    begin
+      if (CompareText(xml.Root.Items[i].Name, 'PersonalityInfo') = 0) and // <PersonalityInfo>
+         (xml.Root.Items[i].Items.Count > 0) then
+      begin
+        // find correct Personality
+        Options := xml.Root.Items[i].Items[0];
+        if CompareText(Options.Name, 'Option') = 0 then
+        begin
+          for OptIndex := 0 to Options.Items.Count - 1 do
+            if CompareText(Options.Items[OptIndex].Properties.Value('Name'), 'Personality') = 0 then
+            begin
+              Personality := Options.Items[OptIndex].Value;
+              Break;
+            end;
+        end;
+      end
+      else
+      if (CompareText(xml.Root.Items[i].Name, Personality) = 0) and
+         (xml.Root.Items[i].Items.Count > 0) and
+         (CompareText(xml.Root.Items[i].Items[0].Name, 'Projects') = 0) then
+      begin
+         // Read project list
+         Projects := xml.Root.Items[i].Items[0];
+         for PrjIndex := 0 to Projects.Items.Count - 1 do
+         begin
+           TgName := Projects.Items[PrjIndex].Properties.Value('Name');
+           if CompareText(TgName, 'Targets') <> 0 then
+             // change .bdsproj to .dpk and add the target
+             Add(TgName, ChangeFileExt(Projects.Items[PrjIndex].Value, '.dpk'));
+         end;
+      end;
+    end;
+  finally
+    xml.Free;
+  end;
+end;
+
+procedure TPackageGroup.LoadBPGFile;
+var
   Lines: TStrings;
   i, ps: Integer;
   S: string;
@@ -732,10 +824,10 @@ var
 begin
   Lines := TStringList.Create;
   try
-    Lines.LoadFromFile(FileName);
+    Lines.LoadFromFile(Filename);
     i := 0;
 
-   // find "default:" target
+    // find "default:" target
     while i < Lines.Count do
     begin
       if StartsWith(Lines[I], 'default:', True) then // do not localize
@@ -744,11 +836,11 @@ begin
     end;
     Inc(i, 2);
 
-   // now read the available targets
+    // now read the available targets
     while i < Lines.Count do
     begin
       S := Lines[i];
-     // find targets
+      // find targets
       if S <> '' then
       begin
         if S[1] > #32 then
@@ -757,7 +849,7 @@ begin
           if ps > 0 then
           begin
             TgName := TrimRight(Copy(S, 1, ps - 1));
-           // does the .xml file exists for this target? <-> is it a vaild target?
+            // does the .xml file exists for this target? <-> is it a vaild target?
             Add(TgName, Trim(Copy(S, ps + 1, MaxInt)));
           end;
         end;
@@ -767,13 +859,6 @@ begin
   finally
     Lines.Free;
   end;
-
- // we use dependencies so the order is irrelevant and we can alpha sort. [Comment from Installer]
-  FPackages.Sort(SortProc_PackageTarget);
-
- // update dependencies after all package targets are created
-  for i := 0 to Count - 1 do
-    Packages[i].GetDependencies;
 end;
 
 { TBpgPackageTarget }
@@ -802,7 +887,7 @@ end;
 
 function TBpgPackageTarget.FindRuntimePackage: TBpgPackageTarget;
 begin
-  Result := Owner.FindPackagebyXmlName(Copy(Info.Name, 1, Length(Info.Name) - 1) + 'R'); // do not localize
+  Result := Owner.FindPackageByXmlName(Copy(Info.Name, 1, Length(Info.Name) - 1) + 'R'); // do not localize
 end;
 
 function TBpgPackageTarget.GetContainCount: Integer;
