@@ -57,21 +57,21 @@ type
 implementation
 
 uses
-  JvDsgnConsts;
+  Controls, Dialogs, JvDsgnConsts;
 
 function TJvHtmlParserEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect, paDialog, paSortList];
+  Result := [paMultiSelect, paDialog, paReadOnly];
 end;
 
 function TJvHtmlParserEditor.GetValue: string;
 begin
-  Result := GetStrValue;
+  Result := RsJvEditorString; // GetStrValue;
 end;
 
 procedure TJvHtmlParserEditor.SetValue(const Value: string);
 begin
-  SetStrValue(Value);
+  SetStrValue(RsJvEditorString);
 end;
 
 procedure TJvHtmlParserEditor.GetValues(Proc: TGetStrProc);
@@ -81,18 +81,17 @@ end;
 
 procedure TJvHtmlParserEditor.Edit;
 var
-  Dlg: TFormParsers;
-  Res: TStringList;
+  Dlg: TJvHTMLParserForm;
+  Res: TStrings;
 begin
-  Res := TStringList(GetOrdValue);
-  Dlg := TFormParsers.Create(Application);
-  Dlg.LoadFromStr(Res);
+  Res := TStrings(GetOrdValue);
+  Dlg := TJvHTMLParserForm.Create(Application);
   try
-    Dlg.ShowModal;
-    if Dlg.Tag = 0 then
+    Dlg.LoadFromStr(Res);
+    if (Dlg.ShowModal = mrOK) or (Dlg.Tag = 0) then
     begin
-      Res.Assign(Dlg.SetFromStr);
-      SetOrdValue(Integer(Res));
+      Dlg.SaveToStr(Res);
+//      SetOrdValue(Integer(Res));
     end;
   finally
     Dlg.Free;

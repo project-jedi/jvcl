@@ -1,4 +1,5 @@
-object FormParsers: TFormParsers
+object JvHTMLParserForm: TJvHTMLParserForm
+  Tag = 1
   Left = 437
   Top = 279
   BorderIcons = [biSystemMenu]
@@ -43,7 +44,8 @@ object FormParsers: TFormParsers
     Top = 10
     Width = 407
     Height = 107
-    Caption = 'Properties'
+    Caption = ' Properties '
+    Enabled = False
     ParentShowHint = False
     ShowHint = True
     TabOrder = 5
@@ -83,7 +85,7 @@ object FormParsers: TFormParsers
       Height = 13
       Caption = 'Take text'
     end
-    object Edit1: TEdit
+    object edKeyword: TEdit
       Left = 66
       Top = 22
       Width = 115
@@ -92,27 +94,27 @@ object FormParsers: TFormParsers
         'Put here the keyword'#13#10'you want the component to send'#13#10'when he ha' +
         's found this item'
       TabOrder = 0
-      OnChange = Edit1Change
+      OnChange = edKeywordChange
     end
-    object Edit2: TEdit
+    object edStartTag: TEdit
       Left = 66
       Top = 47
       Width = 115
       Height = 21
       Hint = 'Put here the string that'#13#10'is just before the part'#13#10'you want'
       TabOrder = 1
-      OnChange = Edit2Change
+      OnChange = edStartTagChange
     end
-    object Edit3: TEdit
+    object edEndTag: TEdit
       Left = 256
       Top = 22
       Width = 115
       Height = 21
       Hint = 'Put here the tag you want to find '#13#10'to end the tag'
       TabOrder = 2
-      OnChange = Edit3Change
+      OnChange = edEndTagChange
     end
-    object ComboBox1: TComboBox
+    object cbTakeText: TComboBox
       Left = 66
       Top = 74
       Width = 305
@@ -121,14 +123,14 @@ object FormParsers: TFormParsers
       ItemHeight = 13
       TabOrder = 4
       Text = 'Between limits'
-      OnChange = ComboBox1Change
+      OnChange = cbTakeTextChange
       Items.Strings = (
         'Between limits'
         'All before start tag'
         'All after start tag'
         'The whole line if respecting the condition')
     end
-    object Edit4: TEdit
+    object edMustBe: TEdit
       Left = 256
       Top = 46
       Width = 115
@@ -139,10 +141,10 @@ object FormParsers: TFormParsers
         ' position'#13#10'2 if you want it in the second position'#13#10'....'
       TabOrder = 3
       Text = '-1'
-      OnChange = Edit4Change
+      OnChange = edMustBeChange
     end
   end
-  object AddBtn: TButton
+  object btnAdd: TButton
     Left = 339
     Top = 120
     Width = 75
@@ -152,7 +154,7 @@ object FormParsers: TFormParsers
     TabOrder = 3
     OnClick = Button1Click
   end
-  object RemoveBtn: TButton
+  object btnRemove: TButton
     Left = 339
     Top = 152
     Width = 75
@@ -170,6 +172,7 @@ object FormParsers: TFormParsers
     Hint = 'Apply changes'
     Caption = '&OK'
     Default = True
+    ModalResult = 1
     TabOrder = 0
     OnClick = OkBtnClick
   end
@@ -181,6 +184,7 @@ object FormParsers: TFormParsers
     Hint = 'Cancel Changes'
     Cancel = True
     Caption = '&Cancel'
+    ModalResult = 2
     TabOrder = 1
     OnClick = CancelBtnClick
   end

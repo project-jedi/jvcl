@@ -1,6 +1,6 @@
 object JvgReportEditorForm: TJvgReportEditorForm
-  Left = 180
-  Top = 125
+  Left = 8
+  Top = 8
   Width = 634
   Height = 480
   Caption = 'Globus  Report Editor'
@@ -184,7 +184,6 @@ object JvgReportEditorForm: TJvgReportEditorForm
     Font.Style = []
     ParentFont = False
     TabHeight = 22
-    TabIndex = 0
     TabOrder = 0
     TabStop = False
     TabWidth = 18
@@ -870,14 +869,13 @@ object JvgReportEditorForm: TJvgReportEditorForm
               Position = 2
               ShowHint = True
               TabOrder = 0
-              Wrap = False
             end
             object FontComboBox1: TComboBox
               Left = 0
               Top = 0
               Width = 115
               Height = 21
-              ItemHeight = 13
+              ItemHeight = 0
               TabOrder = 1
               Text = 'FontComboBox1'
               OnChange = FontComboBox1Change
@@ -887,7 +885,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
               Top = 24
               Width = 72
               Height = 21
-              ItemHeight = 13
+              ItemHeight = 0
               TabOrder = 2
               Text = 'ColorComboBox1'
               OnChange = ColorComboBox1Change
@@ -1102,11 +1100,8 @@ object JvgReportEditorForm: TJvgReportEditorForm
             Width = 15
             Height = 21
             Associate = edWidth
-            Min = 0
             Max = 0
-            Position = 0
             TabOrder = 0
-            Wrap = False
           end
           object se_Top: TUpDown
             Tag = 1
@@ -1115,11 +1110,8 @@ object JvgReportEditorForm: TJvgReportEditorForm
             Width = 15
             Height = 21
             Associate = edTop
-            Min = 0
             Max = 0
-            Position = 0
             TabOrder = 1
-            Wrap = False
           end
           object se_Left: TUpDown
             Left = 71
@@ -1127,11 +1119,8 @@ object JvgReportEditorForm: TJvgReportEditorForm
             Width = 15
             Height = 21
             Associate = edLeft
-            Min = 0
             Max = 0
-            Position = 0
             TabOrder = 2
-            Wrap = False
             OnClick = se_LeftClick
           end
           object se_Height: TUpDown
@@ -1141,11 +1130,8 @@ object JvgReportEditorForm: TJvgReportEditorForm
             Width = 15
             Height = 21
             Associate = edHeight
-            Min = 0
             Max = 0
-            Position = 0
             TabOrder = 3
-            Wrap = False
           end
           object edLeft: TEdit
             Left = 32
@@ -1190,7 +1176,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
           Font.Style = []
-          ItemHeight = 13
+          ItemHeight = 0
           ParentFont = False
           TabOrder = 1
           OnChange = cb_ComponentsChange
@@ -1270,7 +1256,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
       object glLabel1: TLabel
         Left = 0
         Top = 0
-        Width = 618
+        Width = 57
         Height = 12
         Align = alTop
         Caption = '   Parameters'
@@ -1435,7 +1421,6 @@ object JvgReportEditorForm: TJvgReportEditorForm
     end
   end
   object ColorDialog1: TColorDialog
-    Ctl3D = True
     Left = 82
     Top = 106
   end
