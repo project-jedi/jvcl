@@ -39,7 +39,7 @@ uses
   
   QGraphics, QControls, QDialogs, Types,
   
-  ZLib, JvQComponent, JvQJCLUtils;
+  ZLib, JvQComponent;
 
 type
   TFileEvent = procedure(Sender: TObject; const FileName: string) of object;
@@ -54,6 +54,7 @@ type
     FOnDecompressedFile: TFileEvent;
   protected
     procedure AddFile(FileName, Directory, FilePath: string; DestStream: TStream);
+    procedure DoProgress(Position, Total: Integer); virtual;
   public
     // compresses a list of files (can contain wildcards)
     // NOTE: caller must free returned stream!
@@ -68,10 +69,12 @@ type
     // and saves the compressed result to FileName
     procedure CompressDirectory(Directory: string; Recursive: Boolean; FileName: string); overload;
     // decompresses FileName into Directory. If Overwrite is true, overwrites any existing files with
-    // the same name as those in the compressed archive
-    procedure DecompressFile(FileName, Directory: string; Overwrite: Boolean);
+    // the same name as those in the compressed archive.
+    // If RelativePaths is true, the paths in the compressed file are stripped from their drive letter
+    procedure DecompressFile(FileName, Directory: string; Overwrite: Boolean; const RelativePaths: Boolean = True);
     // decompresses Stream into Directory optionally overwriting any existing files
-    procedure DecompressStream(Stream: TStream; Directory: string; Overwrite: Boolean);
+    // If RelativePaths is true, any paths in the stream are stripped from their drive letter
+    procedure DecompressStream(Stream: TStream; Directory: string; Overwrite: Boolean; const RelativePaths: Boolean = True);
   published
     property OnDecompressingFile: TFileEvent read FOnDecompressingFile write FOnDecompressingFile;
     property OnDecompressedFile: TFileEvent read FOnDecompressedFile write FOnDecompressedFile;
@@ -82,7 +85,9 @@ type
 
 implementation
 
-
+uses
+  
+  JvQJCLUtils;
 
 {*******************************************************}
 {  Format of the File:                                  }
@@ -114,8 +119,7 @@ function TJvZlibMultiple.CompressDirectory(Directory: string; Recursive: Boolean
         begin
           if (SearchRec.Attr and faDirectory) = 0 then
             AddFile(SearchRec.Name, SDirectory, Directory + SDirectory + SearchRec.Name, Result)
-          else
-          if Recursive then
+          else if Recursive then
             SearchDirectory(SDirectory + SearchRec.Name + PathDelim);
         end;
         Res := FindNext(SearchRec);
@@ -129,8 +133,7 @@ begin
   { (RB) Letting this function create a stream is not a good idea;
          see other CompressDirectory function that causes a memory leak }
   Result := TMemoryStream.Create;
-  if (Length(Directory) > 0) and (Directory[Length(Directory)] <> PathDelim) then
-    Directory := Directory + PathDelim;
+  Directory := IncludeTrailingPathDelimiter(Directory);
   SearchDirectory('');
   Result.Position := 0;
 end;
@@ -141,14 +144,14 @@ var
   Stream: TStream;
   FileStream: TFileStream;
   ZStream: TCompressionStream;
-  Buffer: array [0..1023] of Byte;
+  Buffer: array[0..1023] of Byte;
   Count: Integer;
 
   procedure WriteFileRecord(Directory, FileName: string; FileSize: Integer;
     CompressedSize: Integer);
   var
     B: Byte;
-    Tab: array [1..256] of Char;
+    Tab: array[1..256] of Char;
   begin
     { (RB) Can be improved }
     for B := 1 to Length(Directory) do
@@ -181,8 +184,7 @@ begin
       repeat
         Count := FileStream.Read(Buffer, SizeOf(Buffer));
         ZStream.Write(Buffer, Count);
-        if Assigned(FOnProgress) then
-          FOnProgress(Self, FileStream.Position, FileStream.Size);
+        DoProgress(FileStream.Position, FileStream.Size);
       until Count = 0;
     finally
       ZStream.Free;
@@ -202,26 +204,16 @@ end;
 procedure TJvZlibMultiple.CompressDirectory(Directory: string;
   Recursive: Boolean; FileName: string);
 var
-  MemStream: TMemoryStream;
   TmpStream: TStream;
 begin
   // don't create file until we save it so we don't accidentally
   // try to compress ourselves!
-  if FileExists(FileName) then
-    DeleteFile(FileName); // make sure we don't compress a previous archive into ourselves
-  MemStream := TMemoryStream.Create;
+  DeleteFile(FileName); // make sure we don't compress a previous archive into ourselves
+  TmpStream := CompressDirectory(Directory, Recursive);
   try
-    { (RB) This causes a memory leak }
-    // (p3) should be fixed now...
-    TmpStream := CompressDirectory(Directory, Recursive);
-    try
-      MemStream.CopyFrom(TmpStream, 0);
-      MemStream.SaveToFile(FileName);
-    finally
-      TmpStream.Free;
-    end;
+    TMemoryStream(TmpStream).SaveToFile(FileName);
   finally
-    MemStream.Free;
+    TmpStream.Free;
   end;
 end;
 
@@ -261,59 +253,53 @@ end;
 
 procedure TJvZlibMultiple.CompressFiles(Files: TStrings; FileName: string);
 var
-  MemStream: TMemoryStream;
   TmpStream: TStream;
 begin
-  MemStream := TMemoryStream.Create;
+  TmpStream := CompressFiles(Files);
   try
-    { (RB) This causes a memory leak }
-    // (p3) should be fixed now...
-    TmpStream := CompressFiles(Files);
-    try
-      MemStream.CopyFrom(TmpStream, 0);
-      MemStream.SaveToFile(FileName);
-    finally
-      TmpStream.Free;
-    end;
+    TMemoryStream(TmpStream).SaveToFile(FileName);
   finally
-    MemStream.Free;
+    TmpStream.Free;
   end;
 end;
 
 procedure TJvZlibMultiple.DecompressStream(Stream: TStream;
-  Directory: string; Overwrite: Boolean);
+  Directory: string; Overwrite: Boolean; const RelativePaths: Boolean);
 var
   FileStream: TFileStream;
   ZStream: TDecompressionStream;
   CStream: TMemoryStream;
-  B: Byte;
-  Tab: array [1..256] of Char;
+  B, LastPos: Byte;
   S: string;
   Count, FileSize, I: Integer;
-  Buffer: array [0..1023] of Byte;
+  Buffer: array[0..1023] of Byte;
 begin
-  if (Length(Directory) > 0) and (Directory[Length(Directory)] <> PathDelim) then
-    Directory := Directory + PathDelim;
+  if (Length(Directory) > 0) then
+    Directory := IncludeTrailingPathDelimiter(Directory);
 
   while Stream.Position < Stream.Size do
   begin
     //Read and force the directory
     Stream.Read(B, SizeOf(B));
-    { (RB) Can be improved }
-    Stream.Read(Tab, B);
-    S := '';
-    for I := 1 to B do
-      S := S + Tab[I];
+    SetLength(S, B);
+    if B > 0 then
+      Stream.Read(S[1], B);
     ForceDirectories(Directory + S);
-    if (Length(S) > 0) and (S[Length(S)] <> PathDelim) then
-      S := S + PathDelim;
+    if (Length(S) > 0) then
+      S := IncludeTrailingPathDelimiter(S);
+
+    //This make files decompress either on Directory or Directory+SavedRelativePath
+    if not RelativePaths then
+      S := '';
 
     //Read filename
     Stream.Read(B, SizeOf(B));
-    { (RB) Can be improved }
-    Stream.Read(Tab, B);
-    for I := 1 to B do
-      S := S + Tab[I];
+    if B > 0 then
+    begin
+      LastPos := Length(S);
+      SetLength(S, LastPos + B);
+      Stream.Read(S[LastPos + 1], B);
+    end;
 
     Stream.Read(FileSize, SizeOf(FileSize));
     Stream.Read(I, SizeOf(I));
@@ -326,10 +312,10 @@ begin
       S := Directory + S;
       if Overwrite or not FileExists(S) then
       begin
+        //This fails if Directory isn't empty
         FileStream := TFileStream.Create(S, fmCreate or fmShareExclusive);
         ZStream := TDecompressionStream.Create(CStream);
         try
-
           if Assigned(FOnDecompressingFile) then
             FOnDecompressingFile(Self, S);
 
@@ -337,8 +323,7 @@ begin
           repeat
             Count := ZStream.Read(Buffer, SizeOf(Buffer));
             FileStream.Write(Buffer, Count);
-            if Assigned(FOnProgress) then
-              FOnProgress(Self, FileStream.Size, FileSize);
+            DoProgress(FileStream.Size, FileSize);
           until Count = 0;
 
           if Assigned(FOnDecompressedFile) then
@@ -355,17 +340,23 @@ begin
 end;
 
 procedure TJvZlibMultiple.DecompressFile(FileName, Directory: string;
-  Overwrite: Boolean);
+  Overwrite: Boolean; const RelativePaths: Boolean);
 var
   Stream: TFileStream;
 begin
   Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
   try
     Stream.Position := 0;
-    DecompressStream(Stream, Directory, Overwrite);
+    DecompressStream(Stream, Directory, Overwrite, RelativePaths);
   finally
     Stream.Free;
   end;
+end;
+
+procedure TJvZlibMultiple.DoProgress(Position, Total: Integer);
+begin
+  if Assigned(FOnProgress) then
+    FOnProgress(Self, Position, Total);
 end;
 
 end.

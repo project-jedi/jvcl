@@ -732,7 +732,8 @@ begin
   begin
     
     Canvas.Start;
-    
+    RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]);
+
     DrawFrameControl(Canvas.Handle, PaintRect, DFC_SCROLL, DrawFlags);
 
     

@@ -34,8 +34,10 @@ interface
 
 uses
   SysUtils, Classes, IniFiles,
-  
-  
+
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
   QMenus, QButtons, QControls, QWindows, QGraphics, Types,
   QForms, QImgList, QActnList, QExtCtrls, QGrids, QTypes,
   
@@ -1646,7 +1648,6 @@ begin
 end;
 
 procedure TJvSpeedBar.SetFontDefault;
-{$IFDEF LINUX}
 begin
   ParentFont := False;
   with Font do
@@ -1657,30 +1658,6 @@ begin
     Color := clBtnText;
   end;
 end;
-{$ENDIF LINUX}
-{$IFDEF MSWINDOWS}
-var
-  NCMetrics: TNonClientMetrics;
-begin
-  ParentFont := False;
-  with Font do
-  begin
-    NCMetrics.cbSize := SizeOf(TNonClientMetrics);
-    if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NCMetrics, 0) then
-    begin
-      Handle := CreateFontIndirect(NCMetrics.lfMenuFont);
-      Charset := DEFAULT_CHARSET;
-    end
-    else
-    begin
-      Name := 'MS Sans Serif';
-      Size := 8;
-      Style := [];
-      Color := clBtnText;
-    end;
-  end;
-end;
-{$ENDIF MSWINDOWS }
 
 procedure TJvSpeedBar.VisibleChanged;
 begin
