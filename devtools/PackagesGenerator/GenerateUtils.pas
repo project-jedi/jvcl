@@ -682,53 +682,49 @@ end;
 
 function IsNotInPerso(Node : TJvSimpleXmlElem; const target : string) : Boolean;
 var
-  S, persoTarget : string;
-//  targets : TStringList;
+  persoTarget : string;
+  targets : TStringList;
 begin
   persoTarget := GetPersoTarget(target);
   if persoTarget = '' then
     Result := False
   else
   begin
-{    targets := TStringList.Create;
+    targets := TStringList.Create;
     try
       StrToStrings(Node.Properties.ItemNamed['Targets'].Value,
                    ',',
                    targets);
+      ExpandTargets(targets);
       Result := (targets.IndexOf(persoTarget) = -1) and
                 (targets.IndexOf(target) > -1);
     finally
       targets.Free;
-    end;}
-    S := ',' + AnsiLowerCase(target) + ',';
-    Result := (Pos(',' + LowerCase(persoTarget) + ',', S) <> 0) and
-              (Pos(',' + LowerCase(target) + ',', S) <> 0);
+    end;
   end;
 end;
 
 function IsOnlyInPerso(Node : TJvSimpleXmlElem; const target : string) : Boolean;
 var
-  S, persoTarget : string;
-//  targets : TStringList;
+  persoTarget : string;
+  targets : TStringList;
 begin
   persoTarget := GetPersoTarget(target);
   if persoTarget = '' then
     Result := False
   else
   begin
-{    targets := TStringList.Create;
+    targets := TStringList.Create;
     try
       StrToStrings(Node.Properties.ItemNamed['Targets'].Value,
                    ',',
                    targets);
+      ExpandTargets(targets);
       Result := (targets.IndexOf(persoTarget) > -1) and
                 (targets.IndexOf(target) = -1);
     finally
       targets.Free;
-    end;}
-    S := ',' + AnsiLowerCase(target) + ',';
-    Result := (Pos(',' + LowerCase(persoTarget) + ',', S) <> 0) and
-              (Pos(',' + LowerCase(target) + ',', S) <> 0);
+    end;
   end;
 end;
 
@@ -879,10 +875,6 @@ begin
     formType := Copy(formNameAndType, ps+2, MaxInt);
   end;
 
-{  StrReplaceLines(Lines, '%FILENAME%', incFileName);
-  StrReplaceLines(Lines, '%UNITNAME%', unitname);
-  StrReplaceLines(Lines, '%Unitname%', punitname);}
-
   if (formType = '') or (formName = '') then
   begin
     S := Lines.Text;
@@ -905,21 +897,10 @@ begin
       Delete(S, openPos, closePos + 1 - openPos);
       Lines.Text := S;
     end;
-{    StrReplaceLines(Lines, '%FORMNAME%', '');
-    StrReplaceLines(Lines, '%FORMTYPE%', '');
-    StrReplaceLines(Lines, '%FORMNAMEANDTYPE%', '');
-    StrReplaceLines(Lines, '%FORMPATHNAME%', '');}
     formName := '';
     formType := '';
     formNameAndType := '';
     formpathname := '';
-  end
-  else
-  begin
-{    StrReplaceLines(Lines, '%FORMNAME%', formName);
-    StrReplaceLines(Lines, '%FORMTYPE%', formType);
-    StrReplaceLines(Lines, '%FORMNAMEANDTYPE%', formNameAndType);
-    StrReplaceLines(Lines, '%FORMPATHNAME%', formpathname);}
   end;
 
   MacroReplaceLines(Lines, '%',
@@ -1248,7 +1229,14 @@ begin
               ApplyFormName(fileNode, tmpLines, target);
               containsSomething := True;
               EnsureCondition(tmpLines, fileNode, target);
-              outFile.AddStrings(tmpLines)
+              outFile.AddStrings(tmpLines);
+
+              // if this included file is not in the associated 'perso'
+              // target or only in the 'perso' target then return the
+              // 'perso' target name.
+              if IsNotInPerso(fileNode, target) or
+                 IsOnlyInPerso(fileNode, target) then
+                Result := GetPersoTarget(target);
             end;
           end;
 
@@ -1285,14 +1273,15 @@ begin
                 EnsureCondition(tmpLines, fileNode, target);
                 outFile.AddStrings(tmpLines);
               end;
+
+              // if this included file is not in the associated 'perso'
+              // target or only in the 'perso' target then return the
+              // 'perso' target name.
+              if IsNotInPerso(fileNode, target) or
+                 IsOnlyInPerso(fileNode, target) then
+                Result := GetPersoTarget(target);
             end;
 
-            // if this included file is not in the associated 'perso'
-            // target or only in the 'perso' target then return the
-            // 'perso' target name. 
-            if IsNotInPerso(fileNode, target) or
-               IsOnlyInPerso(fileNode, target) then
-              Result := GetPersoTarget(target);
           end;
         end
         else if curLine = '<%%% START LIBS %%%>' then
@@ -1315,10 +1304,6 @@ begin
             for j := 0 to bcbLibsList.Count - 1 do
             begin
               tmpLines.Assign(repeatLines);
-              {
-              StrReplaceLines(tmpLines, '%FILENAME%', bcblibsList[j]);
-              StrReplaceLines(tmpLines, '%UNITNAME%', GetUnitName(bcblibsList[j]));
-              }
               MacroReplaceLines(tmpLines, '%',
                 ['FILENAME%', bcblibsList[j],
                  'UNITNAME%', GetUnitName(bcblibsList[j])]);
@@ -1331,35 +1316,6 @@ begin
       begin
         if Pos('%', curLine) > 0 then
         begin
-          {
-          StrReplace(curLine, '%NAME%',
-                     PathExtractFileNameNoExt(OutFileName),
-                     [rfReplaceAll]);
-          StrReplace(curLine, '%XMLNAME%',
-                     ExtractFileName(xmlName),
-                     [rfReplaceAll]);
-          StrReplace(curLine, '%DESCRIPTION%',
-                     rootNode.Items.ItemNamed['Description'].Value,
-                     [rfReplaceAll]);
-          StrReplace(curLine, '%C5PFLAGS%',
-                     EnsurePFlagsCondition(
-                       rootNode.Items.ItemNamed['C5PFlags'].Value, target
-                       ),
-                     [rfReplaceAll]);
-          StrReplace(curLine, '%C6PFLAGS%',
-                     EnsurePFlagsCondition(
-                       rootNode.Items.ItemNamed['C6PFlags'].Value, target
-                       ),
-                     [rfReplaceAll]);
-          StrReplace(curLine, '%TYPE%',
-                     Iff(rootNode.Properties.ItemNamed['Design'].BoolValue,
-                        'DESIGN', 'RUN'),
-                     [rfReplaceAll]);
-          StrReplace(curLine, '%DATETIME%',
-                      FormatDateTime('dd-mm-yyyy  hh:nn:ss', NowUTC) + ' UTC',
-                      [rfReplaceAll]);
-          StrReplace(curLine, '%type%', OneLetterType, [rfReplaceAll]);
-          }
           tmpStr := curLine;
           if MacroReplace(curLine, '%',
             ['NAME%', PathExtractFileNameNoExt(OutFileName),
@@ -1608,11 +1564,12 @@ begin
             else
               template.LoadFromFile(templateName);
 
-            // if the generation requested a perso target to be done
-            // then generate it now. If we find a template file
-            // named the same as the current one in the perso
-            // directory then use it instead
-            templateNamePers := '';
+            // Try to find a template file named the same as the
+            // current one in the perso directory so it can
+            // be used instead
+            templateNamePers := templateName;
+            templatePers.Assign(template);
+            persoTarget := GetPersoTarget(target);
             if (persoTarget <> '') and
                DirectoryExists(path+TargetToDir(persoTarget)) then
             begin
@@ -1622,8 +1579,12 @@ begin
                 if IsBinaryFile(templateNamePers) then
                   templatePers.Clear
                 else
-                  templatePers.LoadFromFile(templateName);
-              end;
+                  templatePers.LoadFromFile(templateNamePers);
+              end
+              else
+              begin
+                templateNamePers := templateName;
+              end
             end;
 
             // apply the template for all packages
@@ -1644,19 +1605,17 @@ begin
                                    xmlName);
 
               // if the generation requested a perso target to be done
-              // then generate it now. If we find a template file
-              // named the same as the current one in the perso
-              // directory then use it instead
-              if templateNamePers <> '' then
+              // then generate it now, using the perso template
+              if persoTarget <> '' then
               begin
                 ApplyTemplateAndSave(
                    path,
                    persoTarget,
                    packages[j],
                    ExtractFileExt(rec.Name),
-                   template,
+                   templatePers,
                    xml,
-                   templateName,
+                   templateNamePers,
                    xmlName);
               end;
             end;
