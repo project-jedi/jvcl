@@ -35,11 +35,12 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
-  JVCLVer, JvThemes;
+  JVCLVer, JvThemes; 
 
 type
   TJvPanel = class(TPanel)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
@@ -98,6 +99,8 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
 {$IFDEF JVCLThemesEnabledD56}
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground default True;
 {$ENDIF}
@@ -125,12 +128,14 @@ begin
   inherited CreateParams(Params);
   if Transparent then
   begin
-    Params.ExStyle := Params.ExStyle or WS_EX_TRANSPARENT;
+    if not (csDesigning in ComponentState) then
+      Params.ExStyle := Params.ExStyle or WS_EX_TRANSPARENT;
     ControlStyle := ControlStyle - [csOpaque];
   end
   else
   begin
-    Params.ExStyle := Params.ExStyle and not WS_EX_TRANSPARENT;
+    if not (csDesigning in ComponentState) then
+      Params.ExStyle := Params.ExStyle and not WS_EX_TRANSPARENT;
     ControlStyle := ControlStyle + [csOpaque];
   end;
 end;
