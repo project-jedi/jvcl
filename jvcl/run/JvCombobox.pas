@@ -137,7 +137,6 @@ type
     procedure DeselectProvider;
     procedure UpdateItemCount;
     function HandleFindString(StartIndex: Integer; Value: string; ExactMatch: Boolean): Integer;
-    function GetItemText(Index: Integer): string;
     property Provider: TJvDataConsumer read FConsumerSvc write SetConsumerService;
     {$IFNDEF COMPILER6_UP}
     property IsDropping: Boolean read FIsDropping write FIsDropping;
@@ -148,6 +147,7 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DestroyWnd; override;
     procedure WndProc(var Msg: TMessage); override; // ain
+    function GetItemText(Index: Integer): string;
     function SearchExactString(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchPrefix(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchSubString(Value: string; CaseSensitive: Boolean = True): Integer;
@@ -626,7 +626,7 @@ begin
           Item := VL.Item(Index);
           if Item <> nil then
           begin
-            Inc(Rect.Left, VL.ItemLevel(Index) * 16);
+            Inc(Rect.Left, VL.ItemLevel(Index) * VL.LevelIndent);
             Canvas.Font := Font;
             if odSelected in State then
             begin
@@ -666,7 +666,42 @@ begin
 end;
 
 procedure TJvCustomComboBox.MeasureItem(Index: Integer; var Height: Integer);
+var
+  tmpSize: TSize;
+  VL: IJvDataConsumerViewList;
+  Item: IJvDataItem;
+  ItemsRenderer: IJvDataItemsRenderer;
+  ItemRenderer: IJvDataItemRenderer;
 begin
+  if Assigned(OnMeasureItem) then
+    OnMeasureItem(Self, Index, Height)
+  else
+  begin
+    tmpSize.cy := Height;
+    if IsProviderSelected then
+    try
+      Provider.Enter;
+      if (Index = -1) and Supports(Provider.ProviderIntf, IJvDataItemsRenderer, ItemsRenderer) then
+        tmpSize := ItemsRenderer.AvgItemSize(Canvas)
+      else
+      if Index <> -1 then
+      begin
+        if Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+        begin
+          Item := VL.Item(Index);
+          if Supports(Item, IJvDataItemRenderer, ItemRenderer) then
+            tmpSize := ItemRenderer.Measure(Canvas)
+          else
+          if DP_FindItemsRenderer(Item, ItemsRenderer) then
+            tmPSize := ItemsRenderer.MeasureItem(Canvas, Item);
+        end;
+      end;
+      if tmpSize.cy > Height then
+        Height := tmpSize.cy;
+    finally
+      Provider.Leave;
+    end;
+  end;
 end;
 
 {$IFNDEF COMPILER6_UP}

@@ -298,16 +298,18 @@ type
     procedure Set_AutoExpandLevel(Value: Integer);
     function Get_ExpandOnNewItem: Boolean;
     procedure Set_ExpandOnNewItem(Value: Boolean);
-    procedure RebuildView; 
+    function Get_LevelIndent: Integer;
+    procedure Set_LevelIndent(Value: Integer);
+    procedure RebuildView;
     procedure ExpandTreeTo(Item: IJvDataItem);
     { Toggles an item's expanded state. If an item becomes expanded, the item's sub item as present
       in the IJvDataItems instance will be added; if an item becomes collapsed the sub items are
       removed from the view. }
-    procedure ToggleItem(Index: Integer); 
+    procedure ToggleItem(Index: Integer);
     { Locate an item in the view list, returning it's absolute index. }
     function IndexOfItem(Item: IJvDataItem): Integer;
     { Locate an item ID in the view list, returning it's absolute index. }
-    function IndexOfID(ID: TJvDataItemID): Integer; 
+    function IndexOfID(ID: TJvDataItemID): Integer;
     { Locate an item in the view list, returning it's index in the parent item. }
     function ChildIndexOfItem(Item: IJvDataItem): Integer;
     { Locate an item ID in the view list, returning it's index in the parent item. }
@@ -341,8 +343,13 @@ type
     function ItemGroupInfo(Index: Integer): TDynIntegerArray;
     { Retrieve the number of viewable items. }
     function Count: Integer;
+    { Level of auto expanding. -1 is infinite, 0 is none. }
     property AutoExpandLevel: Integer read Get_AutoExpandLevel write Set_AutoExpandLevel;
+    { Expand automatically if an item is added to the provider and it would not be visible by
+      default (i.e. one of the parents are still in collapsed state). }
     property ExpandOnNewItem: Boolean read Get_ExpandOnNewItem write Set_ExpandOnNewItem;
+    { Indentation in pixels for each level. Used by the rendering engine. }
+    property LevelIndent: Integer read Get_LevelIndent write Set_LevelIndent;
   end;
 
   { Provider context list interface. Note that there is always an implicit (nameless) context

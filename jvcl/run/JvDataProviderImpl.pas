@@ -902,6 +902,7 @@ type
     FAutoExpandLevel: Integer;
     FExpandOnNewItem: Boolean;
     FNotifier: TJvProviderNotification;
+    FLevelIndent: Integer;
   protected
     function KeepOnProviderChange: Boolean; override;
     procedure ProviderChanging; override;
@@ -917,6 +918,8 @@ type
     procedure Set_AutoExpandLevel(Value: Integer);
     function Get_ExpandOnNewItem: Boolean;
     procedure Set_ExpandOnNewItem(Value: Boolean);
+    function Get_LevelIndent: Integer;
+    procedure Set_LevelIndent(Value: Integer);
     { Add an item as the sub item of the item specified. The parent item will be marked as being
       expanded. }
     procedure AddItem(Index: Integer; Item: IJvDataItem; ExpandToLevel: Integer = 0); virtual; abstract;
@@ -984,6 +987,7 @@ type
 
     property AutoExpandLevel: Integer read FAutoExpandLevel write FAutoExpandLevel;
     property ExpandOnNewItem: Boolean read FExpandOnNewItem write FExpandOnNewItem;
+    property LevelIndent: Integer read Get_LevelIndent write Set_LevelIndent default 16;
   end;
 
   { View list; uses the least possible amount of memory but may be slow to find sibling/child
@@ -1024,6 +1028,8 @@ type
     function SubItemIndex(Parent: IJvDataItem; Index: Integer): Integer; override;
     function SubItemIndex(Parent, Index: Integer): Integer; override;
     function Count: Integer; override;
+  published
+    property LevelIndent;
   end;
 
 // Rename and move to JvFunctions? Converts a buffer into a string of hex digits.
@@ -4153,6 +4159,20 @@ begin
   FExpandOnNewItem := Value;
 end;
 
+function TJvCustomDataConsumerViewList.Get_LevelIndent: Integer;
+begin
+  Result := FLevelIndent;
+end;
+
+procedure TJvCustomDataConsumerViewList.Set_LevelIndent(Value: Integer);
+begin
+  if Value <> LevelIndent then
+  begin
+    FLevelIndent := Value;
+    Changed;
+  end;
+end;
+
 procedure TJvCustomDataConsumerViewList.ClearView;
 begin
   // override if the implementation can be optimized
@@ -4180,6 +4200,7 @@ begin
   FNotifier.OnChanging := DataProviderChanging;
   FNotifier.OnChanged := DataProviderChanged;
   FNotifier.Provider := ConsumerImpl.ProviderIntf;
+  FLevelIndent := 16;
   if ConsumerImpl.ProviderIntf <> nil then
     RebuildView;
 end;
