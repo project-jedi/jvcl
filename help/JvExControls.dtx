@@ -77,8 +77,8 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@DefaultDoPaintBackground
-<TITLE DefaultDoPaintBackground function>
+@@DefaultPaintBackground
+<TITLE DefaultPaintBackground function>
 Summary
   Write here a summary (1 line)
 Description
@@ -120,20 +120,20 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@IJvControlEvents.DoFocusChanged
+@@IJvControlEvents.EnabledChanged
+Summary
+  Responds to changes in the Enabled property.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@IJvControlEvents.FocusChanged
 Summary
   Responds to changes in focus.
 Description
   Write here a description
 Parameters
   Control - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@IJvControlEvents.EnabledChanged
-Summary
-  Responds to changes in the Enabled property.
-Description
-  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@IJvControlEvents.FontChanged
@@ -307,6 +307,13 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
+@@IJvWinControlEvents.BoundsChanged
+Summary
+  Responds to changes in the control's size.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
 @@IJvWinControlEvents.ControlsListChanged
 Summary
   Write here a summary (1 line)
@@ -340,14 +347,25 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.DoBoundsChanged
+@@IJvWinControlEvents.DoKillFocus
 Summary
-  Responds to changes in the control's size.
+  Responds when the control loses the keyboard focus.
 Description
   Write here a description
+Parameters
+  FocusedWnd - Description for this parameter
 
 ----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.DoGetDlgCode
+@@IJvWinControlEvents.DoSetFocus
+Summary
+  Responds when the control receives the keyboard focus.
+Description
+  Write here a description
+Parameters
+  FocusedWnd - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@IJvWinControlEvents.GetDlgCode
 Summary
   Write here a summary (1 line)
 Description
@@ -359,16 +377,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.DoKillFocus
-Summary
-  Responds when the control loses the keyboard focus.
-Description
-  Write here a description
-Parameters
-  FocusedWnd - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.DoPaintBackground
+@@IJvWinControlEvents.PaintBackground
 Summary
   Write here a summary (1 line)
 Description
@@ -381,15 +390,6 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.DoSetFocus
-Summary
-  Responds when the control receives the keyboard focus.
-Description
-  Write here a description
-Parameters
-  FocusedWnd - Description for this parameter
 
 ----------------------------------------------------------------------------------------------------
 @@IJvWinControlEvents.ShowHintChanged

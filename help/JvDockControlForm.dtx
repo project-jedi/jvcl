@@ -78,6 +78,19 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
+@@DockStateStr
+<TITLE DockStateStr function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  dockState - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@DoFloat
 <TITLE DoFloat procedure>
 Summary
@@ -153,7 +166,8 @@ Summary
 Description
   Call FindDockServer to search for a TJvDockServer control owned by Client.
 Parameters
-  Client - Description for this parameter
+  Client - The control that owns a TJvDockServer component. Generally, this parameter is an object of
+            TForm.
 See Also
   FindDockClient
 
@@ -187,14 +201,13 @@ See Also
 @@GetFormVisible
 <TITLE GetFormVisible function>
 Summary
-  Write here a summary (1 line)
+  Returns whether a form is hidden or visible.
 Description
-  Write here a description
+  Call the GetFormVisible function to determine whether DockWindow parameter is visible. If visible,
+  the function returns True, otherwise False.
 Parameters
-  DockWindow - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DockWindow - Determines whether the object is visible or not. Generally, this parameter is a object
+                of TForm.
 
 ----------------------------------------------------------------------------------------------------
 @@HideDockForm
@@ -202,12 +215,10 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Call the HideDockForm procedure to hide a form that DockWindow identifies. If visible, the effect is
+  as the same as TJvDockClient.HideDockForm procedure.
 Parameters
-  DockWindow - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DockWindow - Indicate the display of this object. Generally, this parameter is a object of TForm.
 
 ----------------------------------------------------------------------------------------------------
 @@IsDockable
@@ -276,6 +287,50 @@ Description
 Parameters
   Host    - Description for this parameter
   Visible - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@ManualConjoinDock
+<TITLE ManualConjoinDock function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DockSite - Description for this parameter
+  Form1    - Description for this parameter
+  Form2    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@ManualTabDock
+<TITLE ManualTabDock function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DockSite - Description for this parameter
+  Form1    - Description for this parameter
+  Form2    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@ManualTabDockAddPage
+<TITLE ManualTabDockAddPage procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  tabHost - Description for this parameter
+  aForm   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -432,12 +487,11 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Call the ShowDockForm procedure to show a Form that the DockWindow parameter identifies. If
+  invisible, the effect is the same as calling the TJvDockClient.ShowDockForm procedure.
 Parameters
-  DockWindow - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DockWindow - this is a TwinControl parameter, indicate the display of this object. Generally, this
+                parameter is a object of TForm.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockableForm
@@ -498,6 +552,16 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
+@@TJvDockAdvPanel.ADVTree
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvDockAdvStyle
 Summary
   Write here a summary (1 line)
@@ -524,6 +588,13 @@ Summary
   Specifies whether bottom docking is allowed.
 Description
   Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBaseControl.CustomDock
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -544,9 +615,6 @@ Summary
   Specifies whether dockable forms can be docked onto each other.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBaseControl.EnableDock
@@ -554,9 +622,6 @@ Summary
   Specifies whether client forms can be docked on the dock site.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBaseControl.LeftDock
@@ -564,9 +629,6 @@ Summary
   Specifies whether left docking is allowed.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBaseControl.ParentForm
@@ -574,9 +636,6 @@ Summary
   Gives access to the form that is managed by the docking component.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBaseControl.RightDock
@@ -584,9 +643,6 @@ Summary
   Specifies whether right docking is allowed.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBaseControl.TopDock
@@ -594,9 +650,6 @@ Summary
   Specifies whether top docking is allowed.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicConjoinServerOption
@@ -608,12 +661,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicConjoinServerOption.GrabbersSize
 Summary
-  Write here a summary (1 line)
+  Size of grabber.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicConjoinServerOption.SetDockGrabbersSize_WithoutChangeSystemInfo
@@ -642,12 +692,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicConjoinServerOption.SplitterWidth
 Summary
-  Write here a summary (1 line)
+  Width of splitter.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicConjoinServerOptionClass
@@ -671,9 +718,6 @@ Summary
   Gives access to the dock style object that owns this option object.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle
@@ -772,9 +816,6 @@ Summary
   Specifies the class for the conjoinment panels.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.ConjoinPanelTreeClass
@@ -782,9 +823,6 @@ Summary
   Specifies the class for the conjoinment panel trees.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.ConjoinPanelZoneClass
@@ -792,9 +830,6 @@ Summary
   Specifies the class for the conjoinment panel zones.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.ConjoinServerOption
@@ -802,9 +837,6 @@ Summary
   Object that provides the properties describing a conjoinment docking site.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.ConjoinServerOptionClass
@@ -812,9 +844,6 @@ Summary
   Specifies the class for the conjoinment panel zones.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.Count
@@ -854,9 +883,6 @@ Summary
   Specifies the class for the conjoinment panel zones.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.DockPanelTreeClass
@@ -864,9 +890,6 @@ Summary
   Specifies the class for the conjoinment panel zones.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.DockPanelZoneClass
@@ -874,9 +897,6 @@ Summary
   Specifies the class for the conjoinment panel zones.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.DockSplitterClass
@@ -884,9 +904,6 @@ Summary
   Specifies the class for the conjoinment panel zones.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.GetDockFormVisible
@@ -934,9 +951,6 @@ Summary
   Gives access to the parent form of the docking style object.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.ResetCursor
@@ -1000,19 +1014,13 @@ Summary
   Specifies the class for the conjoinment panel zones.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.TabServerOption
 Summary
-  Object that provides the properties describing a conjoinment docking site.
+  Object that provides the properties describing a tabbed docking site.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.TabServerOptionClass
@@ -1020,9 +1028,6 @@ Summary
   Specifies the class for the conjoinment panel zones.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicTabServerOption
@@ -1045,12 +1050,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicTabServerOption.TabPosition
 Summary
-  Write here a summary (1 line)
+  Specifies the position of the tab.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicTabServerOptionClass
@@ -1062,6 +1064,11 @@ Description
   class reference for TJvDockBasicTabServerOption or for one of its descendants.
 
 ----------------------------------------------------------------------------------------------------
+@@TJvDockCheckDockableEvent
+<TITLE TJvDockCheckDockableEvent type>
+<COMBINE TJvDockClient.OnCheckIsDockable>
+
+----------------------------------------------------------------------------------------------------
 @@TJvDockClient
 <TITLEIMG TJvDockClient>
 JVCLInfo
@@ -1070,7 +1077,11 @@ JVCLInfo
 Summary
   Manages a dockable child form.
 Description
-  Write here a description
+  Drop a TJvDockClient component on a form to make it dockable: The form can be docked at run-time onto
+  another form that contains a TJvDockServer component.
+
+  A form can not contain both a TJvDockServer and a TJvDockClient component, because a form can not
+  play two roles at the same time.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.CanFloat
@@ -1154,12 +1165,12 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.DirectDrag
 Summary
-  Write here a summary (1 line)
+  Specifies whether docking should begin immediately
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DirectDrag specifies whether the dock operation performs at once when user drag the dockable form. If
+  DirectDrag property is False, application won't deal with dock operation directly. The dock operation
+  won't perform until mouse has determinately moved a certain distance (default value is 5
+  pixel).(Otherwise if DirectDrag property is True, application will perform dock operation directly.)
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.DockLevel
@@ -1174,12 +1185,12 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.DockState
 Summary
-  Write here a summary (1 line)
+  Specifies the state of the client dock form.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DockState property determines which state 'Dock Client Form' is currently, it can be floating state,
+  docking state, or other state.
+
+  DS_Unknow: Unknown state DS_Docking: Docking state DS_Floating: Floating state
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.DoFormShowHint
@@ -1191,9 +1202,6 @@ Parameters
   HTFlag  - Description for this parameter
   HintStr - Description for this parameter
   CanShow - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.DoNCButtonDblClk
@@ -1205,9 +1213,6 @@ Parameters
   Msg          - Description for this parameter
   Button       - Description for this parameter
   MouseStation - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.DoNCButtonDown
@@ -1219,9 +1224,6 @@ Parameters
   Msg          - Description for this parameter
   Button       - Description for this parameter
   MouseStation - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.DoNCButtonUp
@@ -1233,9 +1235,6 @@ Parameters
   Msg          - Description for this parameter
   Button       - Description for this parameter
   MouseStation - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.DoNCMouseMove
@@ -1246,9 +1245,6 @@ Description
 Parameters
   Msg          - Description for this parameter
   MouseStation - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.DoPaintDockGrabber
@@ -1260,9 +1256,6 @@ Parameters
   Canvas  - Description for this parameter
   Control - Description for this parameter
   ARect   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.DoPaintDockSplitter
@@ -1274,9 +1267,6 @@ Parameters
   Canvas  - Description for this parameter
   Control - Description for this parameter
   ARect   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.EnableCloseButton
@@ -1284,6 +1274,18 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockClient.FindTabHostForm
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1406,10 +1408,11 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  HideParentForm method's function is as the same as the function of the global method of HideDockForm.
+  They all hide dock client (In fact, HideParentForm use the method of Hide DockForm too).Their
+  difference is that HideDockForm has a parameter to sure one dock client, but HideParentForm doesn's
+  have such parameter, the reason is that HideParentForm is a function of TJvDockClient, it only hide
+  ParentForm of TJvDockClient.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.LastDockSite
@@ -1426,10 +1429,12 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  LRDockWidth property specifies the width of 'Dock Client Form' when it is horizontally docked.
+
+  This property will take effects only when Client Form docks to left or right of the Server Form.
+  (Read LRDockWidth to get the width of the 'Dock Client Form' from the last time it was horizontal
+  docked. Set LRDockWidth to indicate the width that 'Dock Client Form' dock to 'Dock Server Form'
+  horizontally next time.)
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.MakeHideEvent
@@ -1462,38 +1467,64 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockClient.OnFormHide
+@@TJvDockClient.OnCheckIsDockable
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  DockClient - Description for this parameter
+  DockForm   - Description for this parameter
+  DockServer - Description for this parameter
+  DockPanel  - Description for this parameter
+  CanDock    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockClient.OnFormHide
+Summary
+  Occurs when the client form is hidden.
+Description
+  OnFormHide event is a TNotifyEvent event. It occurs when Client Form change from visible to
+  invisible.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.OnFormShow
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnFormShow event is a TNotifyEvent event. It occurs when Client Form change from invisible to
+  visible.
+
+  This event is just as the same as the event of TForm.OnShow. user can use both
+  TlbDockClient.OnFormShow event and TForm.OnShow event.
+
+  When Client Form is shown, some property of toolbar and menu may be changed. In view of that, this
+  event has its own special function.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.OnFormShowHint
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  OnFormShowHint event is a TFormHintEvent event. It occurs when application need to show hint
+  information.
+Note
+  In this event, ShowHint property affects HintStr parameter and CanShow parameter. If ShowHint
+  property is False, application will not show hint information even if HintStr isn't empty and CanShow
+  parameter is True.
+
+  OnFormShowHint event can supports foreign language application, user can change HintStr parameter in
+  a foreign language.
 Parameters
-  HTFlag  - Description for this parameter
-  HintStr - Description for this parameter
-  CanShow - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  HTFlag  - Determines position of mouse. See HitTest list for more information.
+  HintStr - If this parameter is changed by user, the information will be returned to application.
+             Then application will show HintStr as the hint information.
+  CanShow - If this parameter is changed, this information will be returned to application. CanShow
+             parameter determines whether the hint information will be shown. When it is True, the hint
+             information will be shown, and otherwise it won't.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.OnNCButtonDblClk
@@ -1502,9 +1533,6 @@ Summary
   a window.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.OnNCButtonDown
@@ -1513,9 +1541,6 @@ Summary
   window.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.OnNCButtonUp
@@ -1524,9 +1549,6 @@ Summary
   a window.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.OnNCMouseMove
@@ -1540,29 +1562,22 @@ Parameters
   Y            - Description for this parameter
   HitTest      - Description for this parameter
   MouseStation - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.OnPaintDockGrabber
 Summary
-  Write here a summary (1 line)
+  Occurs when the grabber is repainted.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Generally, component will redraw the area automatically. But sometimes user need to change it
+  occasionally, then user may add codes here for customize redraw.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.OnPaintDockSplitter
 Summary
-  Write here a summary (1 line)
+  Occurs when the splitter is repainted.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Generally, component will repainted the area automatically, but sometimes user need to change it
+  occasionally, then user may add codes here for customize repaint.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.ParentVisible
@@ -1577,42 +1592,46 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.RestoreChild
 Summary
-  Write here a summary (1 line)
+  Restore the previous dock state.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RestoreChild procedure is used to restore the previous dock state. If the current 'Dock Client Form'
+  is float state and the previous dock state is docked, after invoking RestoreChild procedure, 'Dock
+  Client Form' will restore as previous state which is dock state. And vice versa;
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.ShowHint
 Summary
-  Write here a summary (1 line)
+  Determines whether the form displays a Help Hint when the mouse pointer rests momentarily on the
+  control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ShowHint property is a boolean variable and it is similar with TControl.ShowHint property. It is to
+  determine whether the hint information is needed to display or not. Generally, the hint information
+  will be shown when mouse moves to Grabber. The default hint information is Title Caption of Client
+  Form. User can change the hint information after changing the correlation code in OnFormShowHint
+  event.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.ShowParentForm
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ShowParentForm method's function is as the same as the function of the global method of ShowDockForm.
+  They all show dock client (In fact, ShowParentForm uses the method of ShowDockForm too).Their
+  difference is that ShowDockForm has a parameter to sure one dock client, but ShowParentForm doesn't
+  have such parameter. The reason is that ShowDockForm is a function of TJvDockClient and it only show
+  ParentForm of TJvDockForm.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.TBDockHeight
 Summary
-  Write here a summary (1 line)
+  Height of the Dock Client Form when it is docked vertically.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TBDockHeight property specifies the height of 'Dock Client Form' when it is docked vertically.
+
+  This property will take effect only when Client Form docks to top or bottom of the Server Form..
+  (Read TBDockHeight to get the width of the 'Dock Client Form' from the last time it was docked
+  vertical. Set TBDockHeight to indicate the width the 'Dock Client Form' dock to 'Dock Server Form'
+  vertically next time.)
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.UnDockLeft
@@ -1657,9 +1676,6 @@ Summary
   Gives access to the panel of the conjoinment docking site form.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockConjoinPanel
@@ -1681,9 +1697,6 @@ Summary
   Gives access to the parent form of the conjoinment panel.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockConjoinPanelClass
@@ -1693,6 +1706,11 @@ Summary
 Description
   TJvDockConjoinPanelClass is the metaclass for TJvDockConjoinPanel. Its value is the class reference
   for TJvDockConjoinPanel or for one of its descendants.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockCustomPanelEvent
+<TITLE TJvDockCustomPanelEvent type>
+<COMBINE TJvDockServer.OnCustomPanel>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockFinishSetDockPanelSizeEvent
@@ -1797,9 +1815,9 @@ Summary
 Description
   This type is used by (for reference): Nothing in this unit.
 Parameters
-  Canvas  - Description for this parameter
-  Control - Description for this parameter
-  ARect   - Description for this parameter
+  Canvas  - User can use resource in Canvas parameter to draw image.
+  Control - The 'Dock Client Form'.
+  ARect   - Determines area of redraw.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockPaintDockGrabberEvent
@@ -1827,11 +1845,33 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
+@@TJvDockPanel.CustomFlag
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvDockPanel.DockServer
 Summary
   Gives access to the dock site manager.
 Description
   Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockPanel.GetDockedControls
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  WinControls - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockPanel.PanelIndex
@@ -1901,6 +1941,10 @@ Description
   Description for dpBottom
 
 ----------------------------------------------------------------------------------------------------
+@@TJvDockPosition.dpCustom
+  Description for dpCustom
+
+----------------------------------------------------------------------------------------------------
 @@TJvDockServer
 <TITLEIMG TJvDockServer>
 JVCLInfo
@@ -1909,7 +1953,12 @@ JVCLInfo
 Summary
   Manages a dock site form.
 Description
-  Write here a description
+  When a TJvDockServer component is put on a form, this form will be a dock site: Forms that have a
+  TJvDockClient component on it can be docked onto this dock server form at run-time.
+
+  Generally, the TJvDockServer component is put on the main form but it also can be put on other forms.
+  However, one form can not contain both a TJvDockServer and a TJvDockClient component, because a form
+  can not play two roles at the same time.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.AutoFocusDockedForm
@@ -1932,6 +1981,16 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.BottomSplitterStyle
 <COMBINE TJvDockServer.SplitterStyle>
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockServer.CustomDockPanel
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.DockPanel
@@ -1993,29 +2052,38 @@ See Also
 <COMBINE TJvDockServer.SplitterStyle>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockServer.OnFinishSetDockPanelSize
+@@TJvDockServer.OnCustomPanel
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  DockPanel - Description for this parameter
+  Sender  - Description for this parameter
+  aParent - Description for this parameter
+  Align   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockServer.OnFinishSetDockPanelSize
+Summary
+  Write here a summary (1 line)
+Description
+  Invoked when the reset of width or height of DockPanel.
+Parameters
+  DockPanel - current DockPanel that has completed operation.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.OnGetClientAlignSize
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Occurs when the calculation of the size of 'Dock Server Form is performed. User can change the Value
+  parameter.
 Parameters
-  Align - Description for this parameter
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Align - The order of control Alignment which need to be scan
+  Value - user can change it.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.RightDockPanel
@@ -2099,9 +2167,6 @@ Summary
   Specifies the splitter control’s index in the internal list of the dock server.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockSplitterClass
@@ -2192,9 +2257,6 @@ Summary
   Specifies the height or width of the splitter
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockSplitterStyle.Splitter
@@ -2248,9 +2310,6 @@ Summary
   Gives access to the page control maintained by the form.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockTabPageControl
@@ -2284,9 +2343,6 @@ Summary
   Gives access to the parent form of the dock page control.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockTabPageControl.SaveToStream

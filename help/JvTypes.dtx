@@ -544,12 +544,25 @@ See Also
 @@TJvDiskStyle
 <TITLE TJvDiskStyle type>
 Summary
-  Write here a summary (1 line)
+  Specifies the behavior of the dialog box.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This can be a combination of the following flags:
+
+  <TABLE>
+    Value             Meaning
+    ----------------  ------------------------------------------------------------------------
+    idfCheckFirst     Check for the file/disk before displaying the prompt dialog box, and,
+                        if present, return DPROMPT_SUCCESS immediately.
+    idfNoBeep         Prevent the dialog box from beeping to get the user's attention when it
+                        first appears.
+    idfNoBrowse       Do not display the browse option.
+    idfNoCompressed   Do not check for compressed versions of the source file.
+    idfNoDetails      Do not display detail information.
+    idfNoForeground   Prevent the dialog box from becoming the foreground window.
+    idfNoSkip         Do not display the skip option.
+    idfOemDisk        Prompt for a disk supplied by a hardware manufacturer.
+    idfWarnIfSkip     Warn the user that skipping a file may affect the installation.
+  </TABLE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDiskStyle.idfCheckFirst

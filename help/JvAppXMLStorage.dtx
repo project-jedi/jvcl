@@ -54,63 +54,40 @@ Description
   actual file, represented in memory through the use of a TJvSimpleXML object.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAppXMLFileStorage.AutoFlush
-Summary
-  If set to True, the Flush method will be called whenever a modification has been made to the in
-  memory file. If set to False, the disk file will only be updated when you call Flush or when the
-  component is destroyed.
-Description
-  Write here a description
-See Also
-  TJvAppXMLFileStorage.AutoReload, TJvAppXMLFileStorage.Flush
-
-----------------------------------------------------------------------------------------------------
-@@TJvAppXMLFileStorage.AutoReload
-Summary
-  If set to True, the Reload method will be called whenever an information is about to be read from the
-  in memory file. If set to False, the disk file will only be read when you call Reload or when the
-  FileName property is set.
-Description
-  Write here a description
-See Also
-  FileName
-
-----------------------------------------------------------------------------------------------------
-@@TJvAppXMLFileStorage.Flush
-Summary
-  Flushes the content of the in memory file into the file indicated by FileName
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-See Also
-  FileName
-
-----------------------------------------------------------------------------------------------------
-@@TJvAppXMLFileStorage.Reload
-Summary
-  Reloads the xml in memory file from the file indicated by FileName
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-See Also
-  FileName
-
-----------------------------------------------------------------------------------------------------
 @@TJvAppXMLStorageOptions
 Summary
-  Write here a summary (1 line)
+  This is the specialized options class for the XML based storages
 Description
   Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvAppXMLStorageOptions.AutoEncodeEntity
+Summary
+  Indicates whether or not to automatically encode the entity names
+Description
+  If set to true, adds sxoAutoEncodeEntity to the options of the internal TJvSimpleXML object
+
+----------------------------------------------------------------------------------------------------
+@@TJvAppXMLStorageOptions.AutoEncodeValue
+Summary
+  Indicates whether or not to automatically encode the values
+Description
+  If set to true, adds sxoAutoEncodeValue to the options of the internal TJvSimpleXML object
+
+----------------------------------------------------------------------------------------------------
+@@TJvAppXMLStorageOptions.AutoIndent
+Summary
+  Indicates whether or not to automatically indent the XML file
+Description
+  If set to true, adds sxoAutoIndent to the options of the internal TJvSimpleXML object
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppXMLStorageOptions.WhiteSpaceReplacement
 Summary
-  Write here a summary (1 line)
+  Indicates the string to use as a replacement for whitespaces in node names
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The XML format does not allow whitespaces in node names. Should there be some in the names, then this
+  value will be used to replace them. If it is empty, then an exception is triggered.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppXMLStorage
@@ -174,6 +151,20 @@ Description
   Write here a description
 See Also
   TJvCustomAppXMLStorage.RootNodeName
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppXMLStorage.OnDecodeValue
+Summary
+  Surfaces the OnDecodeValue event from the internal XML object
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppXMLStorage.OnEncodeValue
+Summary
+  Surfaces the OnEncodeValue event from the internal XML object
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppXMLStorage.RootNodeName
