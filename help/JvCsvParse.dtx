@@ -6,7 +6,7 @@ Summary
   The Unit JvCsvParse is a library of Pascal PChar buffer, and Pascal String handling functions.
   They are used by TJvCsvDataSet. 
   They are also generally useful to any component which needs to parse semantic information in a file, and are useful for parsing CSV, XML, or any 
-other structured textual file format which you may encounter.
+  other structured textual file format which you may encounter.
 
  See also TJvCsvDataSet.
 
@@ -51,12 +51,17 @@ Parameters
 @@GetIntValueFromResultString
 <TITLE GetIntValueFromResultString function>
 Summary
-  TStringList helper function.  Finds and returns variable name/value pairs in a TStringList.
+  Finds and returns variable name/value pairs in a TStringList.
 Description
-Retrieve an integer value from a result string, Formats that are valid include:
- VariableName : Value  - usual format for status results
- VariableName = Value  - usual format in ini files
- Label Name = Value    - labels names can contain spaces.
+  TStringList helper function.  Finds and returns variable name/value pairs in a TStringList.
+  Retrieve an integer value from a result string, Formats that are valid include:
+  <TABLE>
+  Value                      Meaning
+  ---------------            ------------------
+  VariableName : Value       usual format for status results
+  VariableName = Value       usual format in ini files
+  Label Name = Value         labels names can contain spaces.
+  </TABLE>
 Parameters
   VarName       - The variable name you want to read.
   ResultStrings - The TStringList to search for that variable name.
@@ -81,7 +86,7 @@ Summary
 Description
   Pass in a source string ie ('abc:def') and the separator (':'), returns the portion of the string after the separator.
 Parameters
-  source    - Description for this parameter
+  Source    - Description for this parameter
   seperator - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
@@ -113,10 +118,16 @@ See Also
 <TITLE GetValueFromResultString function>
 Summary
   TStringList helper function.  Finds and returns variable name/value pairs in a TStringList.
-Retrieve an integer value from a result string, Formats that are valid include:
- VariableName : Value  - usual format for status results
- VariableName = Value  - usual format in ini files
- Label Name = Value    - labels names can contain spaces.
+Description
+  TStringList helper function.  Finds and returns variable name/value pairs in a TStringList.
+  Retrieve an integer value from a result string, Formats that are valid include:
+  <TABLE>
+  Value                      Meaning
+  ---------------            ------------------
+  VariableName : Value       usual format for status results
+  VariableName = Value       usual format in ini files
+  Label Name = Value         labels names can contain spaces.
+  </TABLE>
 Parameters
   VarName       - The variable name you want to read.
   ResultStrings - The TStringList to search for that variable name.
@@ -169,7 +180,7 @@ Parameters
 Summary
   Return True if valid script keyword
 Description
- Checks against valid keywords
+  Checks against valid keywords
 Parameters
   s1 - Description for this parameter
 ----------------------------------------------------------------------------------------------------
@@ -293,7 +304,7 @@ See Also
 @@ValidIntLiteral
 <TITLE ValidIntLiteral function>
 Summary
-    Check if the string presented is a valid integer literal string. (ie '123' is valid but not '123.45')
+  Check if the string presented is a valid integer literal string. (ie '123' is valid but not '123.45')
 Description
   Check if the provided string is an integer literal.
 Parameters
