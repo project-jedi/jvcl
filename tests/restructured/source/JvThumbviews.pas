@@ -30,7 +30,7 @@ unit JvThumbViews;
 
 interface
 uses
-  Windows, Classes, Controls, Forms, dialogs, ExtCtrls, JvThumbNails, Filectrl,
+  Windows, Classes, Controls, Forms, dialogs, ExtCtrls, JvThumbnails, Filectrl,
   stdctrls, sysutils, messages, graphics, JvBaseThumbnail;
 
 
@@ -59,7 +59,7 @@ type
     { Private declarations }
     Maxsize: TPoint;
     Thumbsize: TPoint;
-    Dum: string;
+//    Dum: string;
     Percent: tPercent;
     VDirectory: string;
     PScrollMode: TScrollMode;
@@ -81,7 +81,7 @@ type
     V_Sorted: boolean;
     V_Filling: boolean;
     V_Filter: string;
-    V_BufferFile: string;
+//    V_BufferFile: string;
     VThumbColor: TColor;
     VAsButtons: Boolean;
     VTitlePos: TTitlePos;
@@ -352,14 +352,14 @@ var
   FN: string;
   Res: string;
 begin
-  tst := completepath(extractFiledir(Aname));
-  if tst = Aname then
+  tst := completepath(extractFiledir(AName));
+  if tst = AName then
   begin // no filename included only a directory;
     // the user wants us to create a seperate file for each
     // directory it opens in a pre-specified path
     FN := ReplaceChar(VDirectory, '\', '_', 0, False); //create the filename from the path
     FN := ReplaceChar(FN, ':', '_', 0, False); //create the filename from the path
-    res := Aname + fn;
+    res := AName + fn;
   end
   else
   begin // the user has specified either a full path and a name or just a name
@@ -367,11 +367,11 @@ begin
       // the user has specified only a name to use
       // in each directory that is opened by the component there will be created
       // a file with name <ANAME> where the thumbs are been saved;
-      Res := CompletePath(VDirectory) + Aname
+      Res := CompletePath(VDirectory) + AName
     else
       // the user has specified a full path and a file name weach is the same
       // for all the directories he/she opens.
-      res := aname;
+      res := AName;
   end;
   result := res;
 end;
@@ -447,7 +447,7 @@ var
   Counter1: longint;
   Break: boolean;
   ReadFileList: TStringList;
-  Pic: TPicture;
+//  Pic: TPicture;
 begin
   Tselected := -1;
   //  If Not v_Painted then begin
@@ -1130,36 +1130,36 @@ begin
 end;
 
 function TJVTHumbview.CreateFilter: string;
-var
-  Res: string;
-  Pos: Longint;
+//var
+//  Res: string;
+//  Pos: Longint;
 begin
   Result := GraphicFilter(TGraphic);
 end;
 
 procedure TJVTHumbview.SetFilters;
 var
-  CP1, CP2: Integer; // CurrentPosition;
-  Md: Byte; // Mode
+  CP1{, CP2}: Integer; // CurrentPosition;
+//  Md: Byte; // Mode
   Res: string;
-  Sub: string;
+//  Sub: string;
   Final: string;
 begin
   if not Assigned(Grf_Extensions) then Grf_Extensions := TStringList.Create;
-  CP1 := 0;
-  CP2 := 0;
+//  CP1 := 0;
+//  CP2 := 0;
   Res := V_Filter;
   Final := '';
   repeat
     CP1 := Pos('|', Res);
-    if Cp1 > 0 then
+    if CP1 > 0 then
     begin
-      system.Delete(Res, 1, Cp1);
-      Cp1 := Pos('|', Res);
-      if Cp1 > 0 then
+      system.Delete(Res, 1, CP1);
+      CP1 := Pos('|', Res);
+      if CP1 > 0 then
       begin
         Final := Final + ';' + copy(res, 1, CP1 - 1);
-        system.delete(res, 1, cp1);
+        system.delete(res, 1, CP1);
       end
       else
         Final := Final + ';' + Res;
@@ -1173,7 +1173,7 @@ begin
   CP1 := 0;
   repeat
     if Grf_Extensions[CP1] = '' then Grf_Extensions.Delete(cp1) else inc(CP1);
-  until Cp1 = Grf_Extensions.Count;
+  until CP1 = Grf_Extensions.Count;
 end;
 
 function TjvTHumblist.GetThumb(Apos: longint): TJVThumbNail;

@@ -125,7 +125,7 @@ type
     procedure PSetV_TitlePanelFont(const Value: TFont);
     procedure GetFileInfo(Aname: string);
     procedure SetShowShadow(Show: Boolean);
-    procedure SetShadowColor(aColor: TColor);
+//    procedure SetShadowColor(aColor: TColor);
   protected
     procedure THSizechanged(var Message: tmessage); message TH_ImagesizeChanged;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -208,8 +208,7 @@ begin
         img2 := Tjpegimage.create;
         img2.LoadFromStream(Astream);
         photo.picture.assign(img2);
-        img2.free;
-        img2 := nil;
+        FreeAndNil(img2);
       end;
   end;
 
@@ -266,7 +265,7 @@ begin
   if Stage = psEnding then
   begin
     V_ImageReady := True;
-    RedrawNow := true;
+//    RedrawNow := true;
     exit;
   end;
   V_ImageReady := False;
@@ -291,11 +290,11 @@ begin
   VShowShadow := Show;
 end;
 
-procedure TJVThumbNail.SetShadowColor(aColor: TColor);
+{procedure TJVThumbNail.SetShadowColor(aColor: TColor);
 begin
   VShadowObj.Brush.Color := aColor;
   VShadowColor := aColor;
-end;
+end;}
 
 procedure TJVThumbNail.mousemove(Shift: TShiftState; X, Y: Integer);
 begin
@@ -402,9 +401,9 @@ end;
 procedure TJVThumbNail.SetFile(const Afile: string);
 var
   Fname: string;
-  Pos: Longint;
-  tmp: TJvThumbImage;
-  D1, D2: TdateTime;
+//  Pos: Longint;
+//  tmp: TJvThumbImage;
+//  D1, D2: TdateTime;
 begin
   if afile <> '' then
   begin

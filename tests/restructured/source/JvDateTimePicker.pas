@@ -20,9 +20,7 @@ Michael Beck [mbeck@bigfoot.com]
 Peter Thörnqvist [peter3@peter3.com]:
 * Added NullDate, NullText and DropDownDate properties
 
-
 Last Modified: 2002-06-11
-
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

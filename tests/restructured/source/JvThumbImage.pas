@@ -49,7 +49,7 @@ unit JvThumbImage;
 interface
 uses
   Classes, Controls, ExtCtrls, sysutils, messages, Graphics, windows, forms,
-  jpeg, Dialogs, JvBasethb;
+  jpeg, Dialogs, JvBaseThumbnail;
 
 type
   Tangle = (AT0, AT90, AT180, AT270);
@@ -79,8 +79,9 @@ type
     VFileName: string;
     VClass: TGraphicClass;
     procedure Rotate90;
-    procedure Rotate270;
     procedure Rotate180;
+    procedure Rotate270;
+
 
     procedure SetAngle(AnAngle: Tangle);
     function GetModify: boolean;
@@ -121,7 +122,7 @@ type
 
 
 implementation
-uses jvTHumbnail;
+uses jvThumbnails;
 //***********************THumbimage procedure and functions;****************
 type
   TRgbTripleArray = array[0..maxlistsize] of TrgbTriple;
@@ -154,7 +155,7 @@ end;
 
 function TJvThumbImage.GetFilter: string;
 var
-  a: string;
+  //  a: string;
   P: Longint;
 begin
   Result := Graphics.GraphicFilter(TGraphic);
@@ -206,7 +207,7 @@ begin
         end;
       GR_WMF,
         GR_EMF:
-          begin
+        begin
           WMF := graphics.TMetafile.create;
           WMF.LoadFromStream(Astream);
           picture.Assign(WMF);
@@ -253,7 +254,7 @@ begin
       end;
     GR_WMF,
       GR_EMF:
-        begin
+      begin
         WMF := graphics.TMetafile.create;
         WMF.Assign(Picture.Graphic);
         WMF.SaveToStream(AStream);
@@ -545,16 +546,16 @@ end;
 procedure TJvThumbImage.Mirror(MirrorType: TMirror);
 var
   membmp: graphics.Tbitmap;
-  rotatebmp: graphics.Tbitmap;
+  //  rotatebmp: graphics.Tbitmap;
   Dest: TRect;
   Crsr: TCursor;
 begin
+  Crsr := screen.cursor;
   if assigned(picture.graphic) then
     if canmodify then
     begin
       if not assigned(OnRotate) then
       begin
-        Crsr := screen.cursor;
         screen.cursor := crhourglass;
       end;
       MemBmp := Graphics.TBitmap.Create;
@@ -594,9 +595,9 @@ begin
         end;
         {    stretchblt(Rotatebmp.Canvas.Handle,Dest.Left,Dest.Top,Dest.Right,Dest.Bottom,
              MemBmp.Canvas.Handle,0,0,MemBmp.Width,membmp.Height,SRCCOPY);{}
-        {procedure Drehen180Grad(Bitmap:Graphics.TBitmap);Forward;
-        procedure Drehen90Grad(Bitmap:Graphics.TBitmap);Forward;
-        procedure Drehen270Grad(Bitmap:Graphics.TBitmap);Forward;{}
+        {procedure Rotate180Grad(Bitmap:Graphics.TBitmap);Forward;
+        procedure Rotate90Grad(Bitmap:Graphics.TBitmap);Forward;
+        procedure Rotate270Grad(Bitmap:Graphics.TBitmap);Forward;{}
         stretchblt(MemBmp.Canvas.Handle, Dest.Left, Dest.Top, Dest.Right, Dest.Bottom,
           MemBmp.Canvas.Handle, 0, 0, MemBmp.Width, membmp.Height, SRCCOPY);
         Picture.Graphic.Assign(MemBmp);
@@ -605,7 +606,7 @@ begin
       finally
         FreeAndNil(MemBmp);
       end;
-      if not assigned(OnRotate) then screen.cursor := crsr;
+      if not assigned(OnRotate) then screen.cursor := Crsr;
     end;
 end;
 
@@ -753,17 +754,17 @@ var
   membmp: graphics.Tbitmap;
   PByte1: PRGBTripleArray;
   PByte2: PRGBTripleArray;
-  Stp: Byte;
+  //  Stp: Byte;
   rotatebmp: graphics.Tbitmap;
   i, j: longint;
   Crsr: TCursor;
 begin
+        Crsr := screen.cursor;
   if assigned(picture.graphic) then
     if canmodify then
     begin
       if not assigned(OnRotate) then
       begin
-        Crsr := screen.cursor;
         screen.cursor := crhourglass;
       end;
       membmp := Graphics.tbitmap.create;
@@ -795,7 +796,7 @@ begin
         FreeAndNil(Rotatebmp);
         FreeAndNil(MemBmp);
       end;
-      if not assigned(OnRotate) then screen.cursor := crsr;
+      if not assigned(OnRotate) then screen.cursor := Crsr;
     end;
 end;
 
@@ -808,6 +809,13 @@ begin
   {
   Procedure to rotate the image at 180d cw or ccw is the same
   }
+
+  { TODO : Removed the 180 degree rotation and replaced by the mirror(mtBoth) call.
+ this let the GDI engine to make the rotation and it is faster than any
+ rotation I have tested until now I have tested this routine with
+ and image of 2300x3500x24bit with out any problems on Win2K.
+ I must test it on Win98 before release. }
+
   if assigned(picture.graphic) then
     if canmodify then
     begin
@@ -849,18 +857,18 @@ var
   membmp: graphics.Tbitmap;
   PByte1: PRGBtripleArray;
   PByte2: PRGBtripleArray;
-  Stp: Byte;
+  //  Stp: Byte;
   rotatebmp: graphics.Tbitmap;
-  i, j, C: longint;
+  i, j {, C}: longint;
   Crsr: TCursor;
 begin
   //Procedure to rotate an image at 90D clockwise or 270D ccw
+     Crsr := screen.cursor;
   if assigned(picture.graphic) then
     if canmodify then
     begin
       if not assigned(OnRotate) then
       begin
-        Crsr := screen.cursor;
         screen.cursor := crhourglass;
       end;
       membmp := Graphics.tbitmap.create;
@@ -881,7 +889,7 @@ begin
       else Exit;
       end;{}
       MemBmp.PixelFormat := PF24bit;
-      Stp := 3;
+      //      Stp := 3;
       RotateBmp := Graphics.Tbitmap.create;
       RotateBmp.FreeImage;
       RotateBmp.PixelFormat := MemBmp.PixelFormat;

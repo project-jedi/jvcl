@@ -29,7 +29,6 @@ Known Issues:
 unit JVCLReg;
 
 
-
 interface
 
 procedure Register;
@@ -71,7 +70,7 @@ uses
   //Multimedia
   JvSoundControl, JvDeviceChanged, JvImageTransform, JvImageRotate,
   JvWavePlayer, JvStarfield, JvJoystick, JvSpecialImage,
-  JvThumbImage, JvThumbNails, JvThumbViews, JvMovableBevel,
+  JvThumbImage, JvThumbnails, JvThumbViews, JvMovableBevel,
 
   //Labels
   JvHotLink, JvBlinkingLabel, JvScrollingLabel, JvReversedLabel,
@@ -156,6 +155,7 @@ uses
 
   Dialogs, ExptIntf, ToolIntf, ExtDlgs, StdCtrls, Buttons,
 {$IFDEF COMPILER5}DsgnIntf, {$ENDIF}{$IFDEF COMPILER6_UP}DesignEditors, DesignIntf, {$ENDIF}
+FiltEdit,
   JvTypes, JvArrowBtn, JvBmpAnim, JvCaptionButton,
   JvColorCombo, JvDriveCtrls, JvFindReplace, JvInstallLabel, JvRollOut, JvScrollPanel,
   JvTransBtn2, JvTimeLine, JvTimeLineEdit, JvShFileOp, JvAppHotKey,
@@ -503,10 +503,10 @@ begin
 
     TJvWinampLabel,
       TJvBreatheSkin,
-      TJvWinampApi
+      TJvWinampApi,
 
     TjvThumbImage,
-      TjvThumbnail,
+      TjvThumbNail,
       TjvThumbView,
       TJvMovableBevel
       ]);
