@@ -1112,17 +1112,26 @@ end;
 { procedure DecodeDate(Date: TDateTime; var Year, Month, Day: Word); }
 
 procedure JvInterpreter_DecodeDate(var Value: Variant; Args: TJvInterpreterArgs);
+var
+  Year, Month, Day: Word;
 begin
-  DecodeDate(Args.Values[0], Word(TVarData(Args.Values[1]).vSmallint), Word(TVarData(Args.Values[2]).vSmallint),
-    Word(TVarData(Args.Values[3]).vSmallint));
+  DecodeDate(Args.Values[0], Year, Month, Day);
+  Args.Values[1] := Year;
+  Args.Values[2] := Month;
+  Args.Values[3] := Day;
 end;
 
 { procedure DecodeTime(Time: TDateTime; var Hour, Min, Sec, MSec: Word); }
 
 procedure JvInterpreter_DecodeTime(var Value: Variant; Args: TJvInterpreterArgs);
+var
+  Hour, Min, Sec, MSec: Word;
 begin
-  DecodeTime(Args.Values[0], Word(TVarData(Args.Values[1]).vSmallint), Word(TVarData(Args.Values[2]).vSmallint),
-    Word(TVarData(Args.Values[3]).vSmallint), Word(TVarData(Args.Values[4]).vSmallint));
+  DecodeTime(Args.Values[0], Hour, Min, Sec, MSec);
+  Args.Values[1] := Hour;
+  Args.Values[2] := Min;
+  Args.Values[3] := Sec;
+  Args.Values[4] := MSec;
 end;
 
 (* need record
