@@ -495,6 +495,7 @@ procedure TJvCustomMaskEdit.WMKillFocus(var Msg: TMessage);
 begin
   FLeaving := True;
   try
+    FCaret.DestroyCaret;
     inherited;
     DoKillFocus(FindControl(Msg.WParam));
   finally

@@ -77,6 +77,7 @@ type
     procedure SetCaret(const Value: TJvCaret);
     procedure CaretChanged(Sender: TObject); dynamic;
     procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
+    procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure WMEraseBkGnd(var Msg: TWMEraseBkGnd); message WM_ERASEBKGND;
     procedure SetDisabledColor(const Value: TColor); virtual;
@@ -514,6 +515,12 @@ procedure TJvCustomEdit.WMSetFocus(var Msg: TMessage);
 begin
   inherited;
   FCaret.CreateCaret;
+end;
+
+procedure TJvCustomEdit.WMKillFocus(var Msg: TMessage);
+begin
+  FCaret.DestroyCaret;
+  inherited;
 end;
 
 procedure TJvCustomEdit.CMEnabledchanged(var Message: TMessage);

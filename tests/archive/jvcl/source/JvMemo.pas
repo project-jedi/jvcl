@@ -27,7 +27,6 @@ Contributor(s):
     * The HotTrack property only works if BorderStyle := bsSingle
     * To simulate the behaviour of JvDisplayMemo, set HideCaret to True,
       Readonly to True, Color to $C0FFFF and Cursor to crArrow
-    * The combination of HideCaret and a custom Caret hasn't been tested
     * The MaxLines property has changed: it stills displays only the selected number of lines,
       but now saves the original content in an internal stringlist that can be restored by
       setting MaxLines to 0.
@@ -131,7 +130,7 @@ type
   published
     property AboutJVCL;
     property AutoSize;
-//    property Caret;
+    property Caret;
     property ClipboardCommands;
     property MaxLines;
     property HideCaret;
@@ -467,6 +466,7 @@ procedure TJvCustomMemo.WMKillFocus(var Msg: TWMKillFocus);
 begin
   if FHideCaret then
     ShowCaret(Handle);
+  FCaret.DestroyCaret;
   inherited;
 end;
 
