@@ -44,8 +44,10 @@ uses JvInterpreter,
   JvInterpreter_Windows,
   JvInterpreter_StdCtrls, JvInterpreter_ComCtrls, JvInterpreter_ExtCtrls, JvInterpreter_Forms,
   JvInterpreter_Menus, JvInterpreter_Grids,
+{$IFNDEF D6PersonalEdition}
   JvInterpreter_Db, JvInterpreter_DBTables, JvInterpreter_DbCtrls, JvInterpreter_DbGrids,
   JvInterpreter_Quickrpt,
+{$ENDIF}
   JvInterpreter_JvEditor,
   JvInterpreterFm
 {$ENDIF COMPLIB_VCL}
@@ -74,12 +76,14 @@ initialization
   JvInterpreter_Menus.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_Grids.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 
+{$IFNDEF D6PersonalEdition}
   JvInterpreter_Db.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_DBTables.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_DbCtrls.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_DbGrids.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 
   JvInterpreter_Quickrpt.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
+{$ENDIF}
 
   JvInterpreter_JvEditor.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 
