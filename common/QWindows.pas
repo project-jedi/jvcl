@@ -377,7 +377,7 @@ type
     tmCharSet: Byte;
   end;
   TTextMetric = tagTEXTMETRICA;
-
+  TEXTMETRIC = TTextMetric;
   { Logical Pen }
   PLogPen = ^TLogPen;
   tagLOGPEN = packed record
@@ -5065,6 +5065,7 @@ begin
     try
       ColorDark := clGray;
       ColorLight := clWhite;
+
       if Flags and BF_FLAT <> 0 then
         ColorLight := clSilver;
       if Flags and BF_MONO <> 0 then
@@ -5090,7 +5091,8 @@ begin
       if Flags and BF_MIDDLE <> 0 then
       begin
        // fill interior rect
-        Brush := CreateSolidBrush(ColorLight);
+//        Brush := CreateSolidBrush(ColorLight);
+        Brush := CreateSolidBrush(clButton);
         try
           FillRect(Handle, ClientRect, Brush);
         finally
@@ -5842,7 +5844,7 @@ begin
     pwd :=  getpwuid(getuid); // static no need to free
     if pwd <> nil then
     begin
-      S := pwd.pw_gecos; //  user's real name
+      S := pwd.pw_gecos; //  user's real name? or pwd.pw_name
       Size := Length(S) + 1;
       Result := S <> '';
       if Result then
