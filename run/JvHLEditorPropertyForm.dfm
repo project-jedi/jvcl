@@ -1,6 +1,6 @@
 object JvHLEditorParamsForm: TJvHLEditorParamsForm
-  Left = 655
-  Top = 118
+  Left = 333
+  Top = 152
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Editor Properties'
@@ -23,6 +23,7 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
     Width = 419
     Height = 321
     ActivePage = tsColors
+    TabIndex = 1
     TabOrder = 0
     object tsEditor: TTabSheet
       Caption = 'Editor'
@@ -183,11 +184,11 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
         Caption = '&Color:'
       end
       object Label6: TLabel
-        Left = 104
+        Left = 96
         Top = 224
-        Width = 208
+        Width = 236
         Height = 13
-        Caption = 'RAHLEditor1 will be created here in run-time'
+        Caption = 'JvHLEditorPreview will be created here in run-time'
         Visible = False
       end
       object cbColorSettings: TComboBox
@@ -217,6 +218,7 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
         Top = 48
         Width = 153
         Height = 121
+        Style = lbOwnerDrawFixed
         ExtendedSelect = False
         ItemHeight = 13
         Items.Strings = (
@@ -234,7 +236,6 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
           'Plain text'
           'Marked block'
           'Right margin')
-        Style = lbOwnerDrawFixed
         TabOrder = 1
         OnClick = lbElementsClick
         OnDrawItem = lbElementsDrawItem
@@ -632,12 +633,5 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
     Default = True
     ModalResult = 1
     TabOrder = 1
-  end
-  object raColorSamples: TJvFormStorage
-    Active = False
-    Options = []
-    StoredValues = <>
-    Left = 36
-    Top = 220
   end
 end
