@@ -48,7 +48,7 @@ uses
   {$ENDIF USEJVCL}
   {$IFNDEF DelphiPersonalEdition}
   JvUIBDataSet,
-  {$ENDIF DelphiPersonalEdition}
+  {$ENDIF !DelphiPersonalEdition}
   JvUIB;
 
 {$IFDEF MSWINDOWS}
@@ -66,8 +66,8 @@ resourcestring
 procedure Register;
 begin
   {$IFDEF COMPILER7_UP}
-  GroupDescendentsWith(TJvUIBDataSet, TControl);
   {$IFNDEF DelphiPersonalEdition}
+  GroupDescendentsWith(TJvUIBDataSet, TControl);
   GroupDescendentsWith(TJvUIBCustomDataSet, TControl);
   {$ENDIF !DelphiPersonalEdition}
   {$ENDIF COMPILER7_UP}
