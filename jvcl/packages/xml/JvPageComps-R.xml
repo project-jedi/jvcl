@@ -23,5 +23,6 @@
   </Requires>
   <Contains>
     <File Name="..\..\run\JvPageListTreeView.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPageList.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -10,13 +10,11 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvPageLinkEditorForm.PAS, released on 2003-01-01.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.com] .
+The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at sourceforge dot net] .
 Portions created by Peter Thörnqvist are Copyright (C) 2003 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
-
-Last Modified: 2003-01-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -26,6 +24,8 @@ Changes:
 2002-10-22:
   changed the way a parent/child PageIndex is assigned so that it matches the
   actual component using this editor
+  
+$Id$
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
@@ -49,7 +49,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvPageListTreeView, JvComponent;
+  JvPageList, JvPageListTreeView, JvComponent;
 
 type
   { a property editor for the PageLinks property of TJvCustomPageListTreeView}
