@@ -2686,6 +2686,7 @@ procedure TJvCustomComboEdit.PopupDropDown(DisableEdit: Boolean);
 var
   P: TPoint;
   Y: Integer;
+  SR: TJvSizeRect;
   {$IFDEF VCL}
   Monitor: TMonitor;
   {$ENDIF VCL}
@@ -2699,47 +2700,36 @@ begin
     P := Parent.ClientToScreen(Point(Left, Top));
     {$IFDEF VCL}
     Monitor := FindMonitor(MonitorFromWindow(Handle, MONITOR_DEFAULTTONEAREST));
-    Y := Monitor.Top + P.Y + Height;
-    if Y + FPopup.Height > Monitor.Top + Monitor.Height then
-      Y := Monitor.Top + P.Y - FPopup.Height;
-    case FPopupAlign of
-      epaRight:
-        begin
-          Dec(P.X, FPopup.Width - Width);
-          if P.X < Monitor.Left then
-            Inc(P.X, FPopup.Width - Width);
-        end;
-      epaLeft:
-        if P.X + FPopup.Width > Monitor.Left + Monitor.Width then
-          Dec(P.X, FPopup.Width - Width);
-    end;
-    if P.X < Monitor.Left then
-      P.X := Monitor.Left
-    else
-    if P.X + FPopup.Width > Monitor.Left + Monitor.Width then
-      P.X := Monitor.Left + Monitor.Width - FPopup.Width;
+    SR.Top := Monitor.Top;
+    SR.Left := Monitor.Left;
+    SR.Width := Monitor.Width;
+    SR.Height := Monitor.Height;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
+    SR.Top := Screen.Top;
+    SR.Left := Screen.Left;
+    SR.Width := Screen.Width;
+    SR.Height := Screen.Height;
+    {$ENDIF VisualCLX}
     Y := P.Y + Height;
-    if Y + FPopup.Height > Screen.Height then
+    if Y + FPopup.Height > SR.Top + SR.Height then
       Y := P.Y - FPopup.Height;
     case FPopupAlign of
       epaRight:
         begin
           Dec(P.X, FPopup.Width - Width);
-          if P.X < 0 then
+          if P.X < SR.Left then
             Inc(P.X, FPopup.Width - Width);
         end;
       epaLeft:
-        if P.X + FPopup.Width > Screen.Width then
+        if P.X + FPopup.Width > SR.Left + SR.Width then
           Dec(P.X, FPopup.Width - Width);
     end;
-    if P.X < 0 then
-      P.X := 0
+    if P.X < SR.Left then
+      P.X := SR.Left
     else
-    if P.X + FPopup.Width > Screen.Width then
-      P.X := Screen.Width - FPopup.Width;
-    {$ENDIF VisualCLX}
+    if P.X + FPopup.Width > SR.Left + SR.Width then
+      P.X := SR.Left + SR.Width - FPopup.Width;
     if Text <> '' then
       SetPopupValue(Text)
     else
@@ -5021,22 +5011,12 @@ end;
 {$ENDIF VisualCLX}
 
 procedure TJvPopupWindow.Show(Origin: TPoint);
-{$IFDEF VCL}
-var
-  Monitor: TMonitor;
-{$ENDIF VCL}
 begin
-  {$IFDEF VCL}
-  Monitor := FindMonitor(MonitorFromPoint(Origin, MONITOR_DEFAULTTONEAREST));
-  Inc(Origin.X, Monitor.Left);
-  Inc(Origin.Y, Monitor.Top);
   SetBounds(Origin.X, Origin.Y, Width, Height);
+  {$IFDEF VCL}
   SetWindowPos(Handle, HWND_TOP, Origin.X, Origin.Y, 0, 0,
     SWP_NOACTIVATE or SWP_SHOWWINDOW or SWP_NOSIZE);
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  SetBounds(Origin.X, Origin.Y, Width, Height);
-  {$ENDIF VisualCLX}
   Visible := True;
 end;
 
