@@ -640,11 +640,14 @@ type
     property Align;
     property Anchors;
     property Constraints;
+    property OnDblClick; { TNotifyEvent from TControl }
     {$IFDEF VCL}
     property AutoSize;
     property DragCursor;
     property DragKind;
     {$ENDIF VCL}
+
+
     property DragMode;
     property Enabled;
     property ParentShowHint;
@@ -2600,7 +2603,7 @@ begin
     for I := 1 to ((Options.XValueCount div Options.XAxisValuesPerDivision))-1 do begin
         XLegendHoriz := Round(Options.XStartOffset + Options.XPixelGap * I * Options.XAxisValuesPerDivision);
 
-        timestamp := FData.Timestamp[ I * Options.XAxisValuesPerDivision ];
+        timestamp := FData.Timestamp[ (I * Options.XAxisValuesPerDivision)-1 ];
 
         if Length(Options.FXAxisDateTimeFormat)=0 then // not specified, means use Locale defaults
            timestampStr := TimeToStr( timestamp )
