@@ -178,6 +178,18 @@ implementation
 uses
   JvResources;
 
+function PExtractFileName(const AFileName: string): PChar;
+// Same as ExtractFileName, except it returns a pointer to a position in AFileName.
+var
+  I: Integer;
+begin
+  I := LastDelimiter(PathDelim + DriveDelim, AFileName);
+  if I > 0 then
+    Result := @AFileName[I + 1]
+  else
+    Result := PChar(AFileName);
+end;
+
 //=== TJvMailRecipient =======================================================
 
 function TJvMailRecipient.GetAddressAndName: string;
@@ -377,7 +389,7 @@ procedure TJvMail.CreateMapiMessage;
 {$TYPEDADDRESS ON}
         FillChar(FAttachArray[I], SizeOf(TMapiFileDesc), #0);
         FAttachArray[I].nPosition := $FFFFFFFF;
-        FAttachArray[I].lpszFileName := PChar(Attachment[I]);
+        FAttachArray[I].lpszFileName := PExtractFileName(Attachment[I]);
         FAttachArray[I].lpszPathName := PChar(Attachment[I]);
       end;
     end
@@ -598,7 +610,7 @@ begin
     if loDownloadMail in FLogonOptions then
       Inc(Result, MAPI_FORCE_DOWNLOAD);
   end;
-end;  
+end;
 
 procedure TJvMail.ReadMail;
 var
@@ -780,4 +792,3 @@ begin
 end;
 
 end.
-
