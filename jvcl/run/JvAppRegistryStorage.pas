@@ -362,7 +362,7 @@ var
 begin
   SplitKeyPath(Path, SubKey, ValueName);
   CreateKey(SubKey);
-  RegWriteBinary(FRegHKEY, SubKey, ValueName, Value, SizeOf(Value));
+  RegWriteBinary(FRegHKEY, SubKey, ValueName, @Value, SizeOf(Value));
 end;
 
 function TJvAppRegistryStorage.DoReadString(const Path: string; Default: string): string;
@@ -410,7 +410,7 @@ begin
   TmpBuf := Byte(Buf);
   SplitKeyPath(Path, SubKey, ValueName);
   CreateKey(SubKey);
-  RegWriteBinary(FRegHKEY, SubKey, ValueName, TmpBuf, BufSize);
+  RegWriteBinary(FRegHKEY, SubKey, ValueName, @TmpBuf, BufSize);
 end;
 
 end.
