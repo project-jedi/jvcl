@@ -109,8 +109,7 @@ type
     FArrangeWidth: Integer;
     FArrangeHeight: Integer;
     FOnResizeParent: TJvPanelResizeParentEvent;
-    FMoveable: boolean;
-
+    
     function GetHeight: Integer;
     procedure SetHeight(Value: Integer);
     function GetWidth: Integer;
@@ -141,10 +140,6 @@ type
     procedure Loaded; override;
     procedure Resize; override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
-    
-  protected
-    // publish this after JVCL3
-    property Moveable:boolean read FMoveable write FMoveable default false;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -161,6 +156,7 @@ type
 
     
   published
+    
     property Sizeable: Boolean read FSizeable write SetSizeable default False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property HotColor: TColor read FHotColor write SetHotColor default clBtnFace;
@@ -863,7 +859,6 @@ begin
   if (Value <> nil) and (Value <> FArrangeSettings) then
     FArrangeSettings.Assign(Value);
 end;
-
 
 
 end.

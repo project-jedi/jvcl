@@ -153,7 +153,10 @@ type
 implementation
 
 uses
+  
+  
   QConsts,
+  
   JvQJCLUtils, JvQTypes;
 
 const

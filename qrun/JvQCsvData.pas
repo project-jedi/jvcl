@@ -434,6 +434,8 @@ type
     function _Dequote(strValue: string): string; virtual; // removes quotes
 
     property Separator: char read FSeparator write SetSeparator default ',';
+
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -615,6 +617,7 @@ type
     property OnDeleteError;
     property OnEditError;
     property OnCalcFields;
+    property AutoCalcFields; // TDataSet property!
     //property MasterFields;
     //property MasterSource;
     property Changed;
@@ -1043,6 +1046,7 @@ end;
 
 { TJvCustomCsvDataSet }
 
+
 constructor TJvCustomCsvDataSet.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1105,6 +1109,8 @@ begin
   inherited Destroy;
 end;
 
+
+
 function TJvCustomCsvDataSet.AllocRecordBuffer: PChar;
 var
   RowPtr: PCsvRow;
@@ -1122,6 +1128,7 @@ begin
      // a dynamically resized buffer used for calculated field
      // storage:
   FillChar(Buffer[SizeOf(TJvCsvRow)], CalcFieldsSize, 0);
+
 end;
 
 { calc fields support and buffer support }
@@ -1835,12 +1842,26 @@ begin
       {$ENDIF DEBUGINFO_ON}
       Exit;
     end;
+    //AutoCalcFields?
+    {$IFDEF DEBUGINFO_ON}
+    OutputDebugString(PChar('GetFieldData '+Field.FieldName+' Buffer='+IntToHex(Integer(Buffer),8)) );    
+    {$ENDIF}
+
     Inc(pSource, SizeOf(TJvCsvRow) + Field.Offset);
-    if (pSource[0] = #0) or (Buffer = nil) then
-      Exit
+    if (Buffer = nil) then begin // NULL CHECK MEANS THAT SOMEONE IS ASKING IF THIS FIELD HAS A VALUE. RETURN TRUE.
+        result := (Field.DataSize>0); // Yes, we could read this field if you asked us to!
+        exit;
+    end;
+
+    if (Field.DataSize<=0) then
+      PChar(Buffer)[0] := Chr(0)
     else // Get the field data from the buffer:
       CopyMemory(Buffer, @pSource[1], Field.DataSize);
-    Result := True;
+
+
+    if (Buffer<>nil ) and (Field.DataSize>0) then
+       Result := True;
+
     Exit;
   end;
 
@@ -1857,7 +1878,7 @@ begin
     Exit;
   end;
   PhysicalLocation := CsvColumnData^.FPhysical;
-  // ----- BUG FIX FEB 2004 WP (Location #2 of 2)  
+  // ----- BUG FIX FEB 2004 WP (Location #2 of 2)
   if (PhysicalLocation<0) and FPendingCsvHeaderParse then begin
         FPendingCsvHeaderParse := false; // Just In Time!
         ProcessCsvHeaderRow;
@@ -3270,6 +3291,7 @@ begin
   if not Active then
     JvCsvDatabaseError(FTableName, RsEDataSetNotOpen);
   ProcessCsvDataRow(RowAsString, FData.Count);
+  FFileDirty := true; // added row, make sure it gets saved!
   Last;
 end;
 

@@ -108,6 +108,8 @@ type
   TJvAppStoragePropTranslateEvent = procedure(Sender: TJvCustomAppStorage; Instance: TPersistent;
     var Name: string; const Reading: Boolean) of object;
   TJvAppStorageCryptEvent = procedure(var Value: string) of object;
+  TJvAppStorageGetFileNameEvent = procedure(Sender: TJvCustomAppStorage;
+    var FileName: TFileName) of object;
 
   TJvAppStorageOptionsClass = class of TJvCustomAppStorageOptions;
 
@@ -425,7 +427,6 @@ type
       write FOnEncryptPropertyValue;
     property OnDecryptPropertyValue: TJvAppStorageCryptEvent read FOnDecryptPropertyValue
       write FOnDecryptPropertyValue;
-
   end;
 
   { Generic store that can only be used to combine various other storages (only storages in the
@@ -598,17 +599,24 @@ type
   protected
     FFileName: TFileName;
     FLocation: TFileLocation;
+    FOnGetFileName: TJvAppStorageGetFileNameEvent;
+
     function GetAsString: string; virtual; abstract;
     procedure SetAsString(const Value: string); virtual; abstract;
 
     procedure SetFileName(const Value: TFileName);
     procedure SetLocation(const Value: TFileLocation);
 
-    function GetFullFileName : TFileName;
+    function DoGetFileName: TFileName; virtual;
+    function GetFullFileName: TFileName;
 
     property AsString: string read GetAsString write SetAsString;
     property FileName: TFileName read FFileName write SetFileName;
     property Location: TFileLocation read FLocation write SetLocation default flExeFile;
+
+    property OnGetFileName: TJvAppStorageGetFileNameEvent
+      read FOnGetFileName write FOnGetFileName;
+      // OnGetFileName triggered on Location = flCustom
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -2247,6 +2255,13 @@ begin
   inherited Destroy;
 end;
 
+function TJvCustomAppMemoryFileStorage.DoGetFileName: TFileName;
+begin
+  Result := FileName;
+  if Assigned(FOnGetFileName) then
+    FOnGetFileName(Self, Result);
+end;
+
 function TJvCustomAppMemoryFileStorage.GetFullFileName: TFileName;
 var
   NameOnly: string;
@@ -2263,7 +2278,7 @@ begin
       RelPathName := FileName;
     case Location of
       flCustom:
-        Result := FileName;
+        Result := DoGetFilename;
       flWindows:
         Result := PathAddSeparator(GetWindowsFolder) + NameOnly;
       flExeFile:

@@ -854,8 +854,8 @@ end;
 procedure TJvCustomNumEdit.EnabledChanged;
 begin
   inherited EnabledChanged;
-  if NewStyleControls and not FFocused then
-    Invalidate;
+//  if NewStyleControls and not FFocused then
+//    Invalidate;
 end;
 
 

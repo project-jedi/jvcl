@@ -70,7 +70,7 @@ type
     property Kind: TJvDivideKind read FKind write SetKind default dkDivider;
   end;
 
-  TJvScrollButton = class(TJvCustomControl)  // TCustomControl
+  TJvScrollButton = class(TJvCustomControl)
   private
     FOver: Boolean;
     FDown: Boolean;
@@ -127,7 +127,7 @@ type
   protected
     procedure Visiblechanged; override;
     procedure EnabledChanged; override;
-    procedure SetParent(const AParent: TWinControl); override;
+    procedure SetParent(AParent: TWinControl); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property Align default alTop;
     property Height default 35;
@@ -169,6 +169,8 @@ type
     property Hint;
     property ParentShowHint;
     property PopupMenu;
+    property ImeMode;
+    property ImeName;
     property Color;
     property ParentColor;
     property OnEnter;
@@ -657,7 +659,7 @@ begin
   FDownRight.Kind := sbRight;
 end;
 
-procedure TJvCustomScrollPanel.SetParent(const AParent: TWinControl);
+procedure TJvCustomScrollPanel.SetParent(AParent: TWinControl);
 begin
   inherited SetParent(AParent);
   if FUpLeft = nil then
