@@ -97,8 +97,6 @@ begin
   inherited Create(AIniDirectory);
   //ReduceConditions := False;
   KeepLines := False;
-  ConditionVCL := 'VCL';
-  ConditionCLX := 'VisualCLX';
 end;
 
 procedure TJVCLConverter.InitUnitReplaceList;

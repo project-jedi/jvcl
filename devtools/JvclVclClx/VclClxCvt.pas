@@ -72,8 +72,7 @@ type
     FUnitReplaceList: TUnitReplaceList;
     FIgnoreUnits: TStringList;
     FRemoveConditions: TStringList;
-    FConditionVCL: string;
-    FConditionCLX: string;
+    FConvertProtected: TStringList; // list of Conditions where no unit names should be translated
 
     FFilename: string; // currently parsed file
 
@@ -131,6 +130,7 @@ type
     function IsUnitIgnored(const AName: string): Boolean; virtual;
     function IsUsesUnit(const AName: string): Boolean;
     procedure ReplaceUnitName(Token: PTokenInfo);
+    function IsProtectedByConditions: Boolean; virtual;
   public
     constructor Create(const AIniDirectory: string);
     destructor Destroy; override;
@@ -157,9 +157,9 @@ type
       { All condition names that are in the RemoveConditions list will be swept
         out of the source code if ReduceConditions is True.
         A leading '!' char means the "NOT"-part should be removed. }
+    property ConvertProtected: TStringList read FConvertProtected;
+      { A list of Conditions where the unit names shouldn't be translated. }
 
-    property ConditionVCL: string read FConditionVCL write FConditionVCL {default 'VCL'};
-    property ConditionCLX: string read FConditionCLX write FConditionCLX {default 'VisualCLX'};
     property UnixLineBreak: Boolean read FUnixLineBreak write FUnixLineBreak default False;
       { If UnixLineBreak is True the written files have #10 as line break else
         it uses #13#10. }
@@ -182,8 +182,6 @@ begin
   inherited Create;
   FStatistics := TConverterStatistics.Create;
   FIniDirectory := ExcludeTrailingPathDelimiter(AIniDirectory);
-  FConditionVCL := 'VCL';
-  FConditionCLX := 'VisualCLX';
 
   FKeepLines := True;
   FReduceConditions := True;
@@ -206,6 +204,7 @@ begin
   FRemoveConditions.Duplicates := dupIgnore;
 
   FUnitReplaceList := TUnitReplaceList.Create;
+  FConvertProtected := TStringList.Create;
   InitUnitReplaceList;
 end;
 
@@ -216,6 +215,7 @@ begin
   FIgnoreUnits.Free;
   FRemoveConditions.Free;
   FUnitReplaceList.Free;
+  FConvertProtected.Free;
   FStatistics.Free;
   inherited Destroy;
 end;
@@ -237,14 +237,31 @@ procedure TVCLConverter.InitUnitReplaceList;
 var
   Lines: TStrings;
   i: Integer;
+  Filename: string;
 begin
-  FUnitReplaceList.AddFromIni(IniDirectory + PathDelim + 'convertvcl.ini');
+  Filename := IniDirectory + PathDelim + 'convertvcl.ini';
+  if FileExists(Filename) then
+    FUnitReplaceList.AddFromIni(Filename);
+    
   Lines := TStringList.Create;
   try
-    Lines.LoadFromFile(IniDirectory + PathDelim + 'ignorevcl.ini');
-    for i := 0 to Lines.Count - 1 do
-      if not IsEmptyStr(Lines[i]) then
-        FIgnoreUnits.Add(Lines[i]);
+    Filename := IniDirectory + PathDelim + 'convertprotected.ini';
+    if FileExists(Filename) then
+    begin
+      Lines.LoadFromFile(Filename);
+      for i := 0 to Lines.Count - 1 do
+        if not IsEmptyStr(Lines[i]) then
+          FConvertProtected.Add(Lines[i]);
+    end;
+
+    Filename := IniDirectory + PathDelim + 'ignorevcl.ini';
+    if FileExists(Filename) then
+    begin
+      Lines.LoadFromFile(IniDirectory + PathDelim + 'ignorevcl.ini');
+      for i := 0 to Lines.Count - 1 do
+        if not IsEmptyStr(Lines[i]) then
+          FIgnoreUnits.Add(Lines[i]);
+    end;
   finally
     Lines.Free;
   end;
@@ -410,8 +427,7 @@ begin
           begin
             if (Token.Value = '.') and IsUsesUnit(LastIdent) and (LastSymbol <> '.') then
             begin
-              if (FConditionStack.IsIn(ConditionVCL) = 0) and
-                 (FConditionStack.IsIn(ConditionCLX) = 0) then // no condition block protects it
+              if not IsProtectedByConditions then // no condition block protects it
               begin
                 // "UnitName.xxx" but not ".Unitname.xxx"
                 ReplaceUnitName(@LastIdentToken);
@@ -552,8 +568,7 @@ begin
       begin
         if SameText(S, '$R *.DFM') then
         begin
-          if (FConditionStack.IsIn(ConditionVCL) <> 0) and
-             (FConditionStack.IsIn(ConditionCLX) <> 0) then
+          if IsProtectedByConditions then
             Exit; // forced by condition block
         end;
 
@@ -726,8 +741,7 @@ begin
           end;
 
           FUsesUnits.Add(Token.Value);
-          if (FConditionStack.IsIn(ConditionVCL) = 0) and
-             (FConditionStack.IsIn(ConditionCLX) = 0) then
+          if not IsProtectedByConditions then
           begin
             // replace unit names, because we are outside a VCL/VisualCLX condition
             if not IsUnitIgnored(Token.Value) then
@@ -821,8 +835,7 @@ begin
                 if (Token.Value = '.') then
                 begin
                   if IsUsesUnit(LastIdent) and
-                     (FConditionStack.IsIn(ConditionVCL) = 0) and
-                     (FConditionStack.IsIn(ConditionCLX) = 0) then // no condition block protects it
+                     not IsProtectedByConditions then // no condition block protects it
                   begin
                     // "UnitName.xxx" but not ".Unitname.xxx"
                     ReplaceUnitName(@LastIdentToken);
@@ -857,8 +870,7 @@ begin
           if (Token.Value = '.') and (LastSymbol = ':') then // variable declaration
           begin
             if IsUsesUnit(LastIdent) and
-               (FConditionStack.IsIn(ConditionVCL) = 0) and
-               (FConditionStack.IsIn(ConditionCLX) = 0) then // no condition block protects it
+               not IsProtectedByConditions then // no condition block protects it
             begin
               // "UnitName.xxx" but not ".Unitname.xxx"
               ReplaceUnitName(@LastIdentToken);
@@ -1091,6 +1103,17 @@ begin
      AnsiStartsText('PageSize = 0', Line) or
      AnsiStartsText('RightClickSelect = True', Line) then
     Line := '';
+end;
+
+function TVCLConverter.IsProtectedByConditions: Boolean;
+var
+  i: Integer;
+begin
+  Result := True;
+  for i := 0 to ConvertProtected.Count - 1 do
+    if FConditionStack.IsIn(ConvertProtected[i]) <> 0 then
+      Exit;
+  Result := False;
 end;
 
 end.
