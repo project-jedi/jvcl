@@ -1,11 +1,11 @@
-##Package: ??
-##Status: Needs review
+##Package: AppFrm
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvAnimTitle.pas
 Summary
   Contains the TJvAnimTitle component.
 <INCLUDE JVCL.UnitText.dtx>
-Author:
+Author
   Sébastien Buysse
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimTitle
@@ -26,13 +26,14 @@ Description
   * Drop TJvAnimTitle on a form
   * Set the Title to the title to display (by default set to the forms
     Caption. Changes to the forms Caption are not mirrored in this property).
-  * Set the delay between two animation steps.
+  * Set the <LINK TJvAnimTitle.Delay,delay> between two animation steps.
   * Optionally set Blink to the number of blinks after the title is fully displayed or leave it at
     0 if you don't want the caption to blink.
+  * Activate the component by setting property Enabled to true.
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimTitle.Blink
 Summary
-  Number of tiems the title is blinked.
+  Number of times the title is blinked.
 Description
   Blink indicates the number of times the caption is blinked. Each time the caption is completely
   visible, it will blink the number of times indicated by this property. If you don't want the
@@ -42,7 +43,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimTitle.Delay
 Summary
-  The delay in milliseconds betweern two steps of animation.
+  The delay in milliseconds between two steps of animation.
 Description
   Delay indicates the time in milliseconds to wait between two steps of animation. This value
   determines the speed at which the caption is to appear/disappear, as well as the rate of blinking.
@@ -51,7 +52,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimTitle.Enabled
 Summary
-  Indicates wether the component is active.
+  Indicates whether the component is active.
 Description
   Enabled indicates if the component is active. When set to True, the animation is executed,
   otherwise the form caption will not change.

@@ -1,5 +1,5 @@
-##Package: ??
-##Status: Needs review
+##Package: Crypt
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvCaesarCipher.pas
 Summary
@@ -40,17 +40,10 @@ Description
   * Assign a \string to the property Decoded and get the ciphered \string by reading
     the property Encoded, or assign a ciphered \string to the property Encoded and
     get the deciphered \string by reading the property Decoded.
-  * Use the methods Decode and Encode to (de)cipher TString objects.
-  * Use the methods DecodeStream and EncodeStream to (de)cipher TStream objects.
-----------------------------------------------------------------------------------------------------
-@@TJvCaesarCipher.Decoded
-Summary
-  A property that specifies a deciphered \string.
-Description
-  Assign a \string you want to cipher to this property and read the ciphered \string from
-  the property Encoded.
-See Also
-  Encoded
+  * Use the methods <LINK TJvCaesarCipher.Decode,Decode> and <LINK TJvCaesarCipher.Encode,Encode>
+    to (de)cipher TString objects.
+  * Use the methods <LINK TJvCaesarCipher.DecodeStream,DecodeStream> and 
+    <LINK TJvCaesarCipher.EncodeStream,EncodeStream> to (de)cipher TStream objects.
 ----------------------------------------------------------------------------------------------------
 @@TJvCaesarCipher.Decode
 Summary
@@ -61,7 +54,16 @@ Description
 Parameters
   It - a TStrings object from which all strings will be ciphered.
 See Also
-  Encode
+  <LINK Encode>
+----------------------------------------------------------------------------------------------------
+@@TJvCaesarCipher.Decoded
+Summary
+  A property that specifies a deciphered \string.
+Description
+  Assign a \string you want to cipher to this property and read the ciphered \string from
+  the property Encoded.
+See Also
+  Encoded
 ----------------------------------------------------------------------------------------------------
 @@TJvCaesarCipher.DecodeStream
 Summary
@@ -72,16 +74,7 @@ Description
 Parameters
   Value - a TStream object which will be ciphered.
 See Also
-  EncodeStream
-----------------------------------------------------------------------------------------------------
-@@TJvCaesarCipher.Encoded
-Summary
-  A property that specifies a ciphered \string.
-Description
-  Assign a ciphered \string to this property and read the decipherd \string from
-  the property Decoded.
-See also
-  Decoded
+  <LINK EncodeStream>
 ----------------------------------------------------------------------------------------------------
 @@TJvCaesarCipher.Encode
 Summary
@@ -92,7 +85,16 @@ Description
 Parameters
   It - a TStrings object from which all strings will be deciphered.
 See also
-  Decode
+  <LINK Decode>
+----------------------------------------------------------------------------------------------------
+@@TJvCaesarCipher.Encoded
+Summary
+  A property that specifies a ciphered \string.
+Description
+  Assign a ciphered \string to this property and read the decipherd \string from
+  the property Decoded.
+See also
+  Decoded
 ----------------------------------------------------------------------------------------------------
 @@TJvCaesarCipher.EncodeStream
 Summary
@@ -103,7 +105,7 @@ Description
 Parameters
   Value - a TStream object which will be deciphered.
 See also
-  DecodeStream
+  <LINK DecodeStream>
 ----------------------------------------------------------------------------------------------------
 @@TJvCaesarCipher.N
 Summary

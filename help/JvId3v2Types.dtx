@@ -1,6 +1,7 @@
+##Package: MM
+##Status: Locked (Remko Bonte)
 ----------------------------------------------------------------------------------------------------
-@@JvID3v2Types.pas
-<GROUP JVCL.FileRef>
+@@JvId3v2Types.pas
 Summary
   Contains the TJvID3v2Types component.
 <INCLUDE JVCL.UnitText.dtx>
@@ -16,12 +17,10 @@ Description
   representation of that frame identifier.
 
   For example: ID3_FrameIDToString(fiComment, 4) returns 'COMM'.
+
+  \Returns the alphanumerical representation of that frame identifier.
 Parameters
   ID   - \Description for this parameter
-  Size - Specifies the wanted length of the returned string. Set parameter Size to 3 if you want a v2.2
-         string, set parameter size to 4 if you want a v2.3 or v2.4 string.
-Return Value
-  \Returns the alphanumerical representation of that frame identifier.
 See Also
   <LINK ID3_StringToFrameID>
 ----------------------------------------------------------------------------------------------------
@@ -50,8 +49,6 @@ Description
 Parameters
   AGenre           - \Description for this parameter
   InclWinampGenres - Specifies whether to include the genres introduced by Winamp.
-Return Value
-  Describe here what the function returns
 See Also
   <LINK ID3_Genres>, <LINK ID3_IDToGenre>, <LINK ID3_LongGenreToID>
 ----------------------------------------------------------------------------------------------------
@@ -64,8 +61,6 @@ Description
 Parameters
   ID               - \Description for this parameter
   InclWinampGenres - Specifies whether to include the genres introduced by Winamp.
-Return Value
-  Describe here what the function returns
 See Also
   <LINK ID3_Genres>, <LINK ID3_GenreToID>, <LINK ID3_LongGenreToID>
 ----------------------------------------------------------------------------------------------------
@@ -78,8 +73,6 @@ Description
 Parameters
   ALongGenre       - \Description for this parameter
   InclWinampGenres - Specifies whether to include the genres introduced by Winamp.
-Return Value
-  Describe here what the function returns
 See Also
   <LINK ID3_Genres>, <LINK ID3_GenreToID>, <LINK ID3_IDToGenre>
 ----------------------------------------------------------------------------------------------------
@@ -91,8 +84,6 @@ Description
   Write here a description
 Parameters
   S - \Description for this parameter
-Return Value
-  Describe here what the function returns
 See Also
   <LINK ID3_FrameIDToString>
 ----------------------------------------------------------------------------------------------------
@@ -107,11 +98,11 @@ Description
 
   The ISO-639-2 standard provides codes for the representation of names of languages, the codes in the
   ISO-639-2 standard consist of alpha characters and have length 3.
+
+  \Returns the language name identified by the Code parameter.
 Parameters
   Code - Specifies an ISO\-639\-2 Alpha\-3 code that should be converted. Code must have length 3,
        - otherwise the function returns an empty string.
-Return Value
-  \Returns the language name identified by the Code parameter.
 See Also
   <LINK ISO_639_2IsCode>, <LINK ISO_639_2Names>, <LINK ISO_639_2NameToCode>
 ----------------------------------------------------------------------------------------------------
@@ -127,10 +118,10 @@ Description
 
   The ISO-639-2 standard provides codes for the representation of names of languages, the codes in the
   ISO-639-2 standard consist of alpha characters and have length 3.
+
+  \Returns True if parameter Code represents an ISO-639-2 language, otherwise returns False.
 Parameters
   Code - Specifies a string that should be checked.
-Return Value
-  \Returns True if parameter Code represents an ISO-639-2 language, otherwise returns False.
 See Also
   <LINK ISO_639_2CodeToName>, <LINK ISO_639_2Names>, <LINK ISO_639_2NameToCode>
 ----------------------------------------------------------------------------------------------------
@@ -161,8 +152,6 @@ Description
   ISO-639-2 standard consist of alpha characters and have length 3.
 Parameters
   Name - Specifies an ISO\-639\-2 language that should be converted.
-Return Value
-  Describe here what the function returns
 See Also
   <LINK ISO_639_2CodeToName>, <LINK ISO_639_2IsCode>, <LINK ISO_639_2Names>
 ----------------------------------------------------------------------------------------------------

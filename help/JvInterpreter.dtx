@@ -141,6 +141,34 @@ Summary
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
+@@IJvInterpreterDataType
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@IJvInterpreterDataType.GetTyp
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@IJvInterpreterDataType.Init
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  V - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@JvInterpreterArrayElementDelete
 <TITLE JvInterpreterArrayElementDelete procedure>
 Summary
@@ -361,6 +389,10 @@ See Also
 @@PNameArray
 <TITLE PNameArray type>
 <COMBINE TNameArray>
+----------------------------------------------------------------------------------------------------
+@@POpenArray
+<TITLE POpenArray type>
+<COMBINE TOpenArray>
 ----------------------------------------------------------------------------------------------------
 @@PTypeArray
 <TITLE PTypeArray type>
@@ -1139,6 +1171,79 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapterCopyRecord
+<TITLE TJvInterpreterAdapterCopyRecord type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  This type is used by (for reference):
+    Nothing in this unit.
+Parameters
+  Dest   - Description for this parameter
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapterDisposeRecord
+<TITLE TJvInterpreterAdapterDisposeRecord type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  This type is used by (for reference):
+    Nothing in this unit.
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapterGetValue
+<TITLE TJvInterpreterAdapterGetValue type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  This type is used by (for reference):
+    Nothing in this unit.
+Parameters
+  Value - Description for this parameter
+  Args  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapterNewRecord
+<TITLE TJvInterpreterAdapterNewRecord type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  This type is used by (for reference):
+    Nothing in this unit.
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterAdapterSetValue
+<TITLE TJvInterpreterAdapterSetValue type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  This type is used by (for reference):
+    Nothing in this unit.
+Parameters
+  Value - Description for this parameter
+  Args  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvInterpreterAddVarFunc
 <TITLE TJvInterpreterAddVarFunc type>
 Summary
@@ -1263,6 +1368,12 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender     - Description for this parameter
+  Identifier - Description for this parameter
+  Value      - Description for this parameter
+  Args       - Description for this parameter
+  Done       - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1272,6 +1383,12 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Sender     - Description for this parameter
+  Identifier - Description for this parameter
+  Value      - Description for this parameter
+  Args       - Description for this parameter
+  Done       - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1506,6 +1623,14 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TJvInterpreterGetUnitSource
+<TITLE TJvInterpreterGetUnitSource type>
+<COMBINE TJvInterpreterUnit.OnGetUnitSource>
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterGetValue
+<TITLE TJvInterpreterGetValue type>
+<COMBINE TJvInterpreterExpression.OnGetValue>
+----------------------------------------------------------------------------------------------------
 @@TJvInterpreterIdentifier
 Summary
   Write here a summary (1 line)
@@ -1623,6 +1748,25 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+---------------------------------------------------------------------------------------------------
+@@TJvInterpreterRecField
+<TITLE TJvInterpreterRecField type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TJvInterpreterRecField.Identifier
+  Description for Identifier
+@@TJvInterpreterRecField.Offset
+  Description for Offset
+@@TJvInterpreterRecField.Typ
+  Description for Typ
+@@TJvInterpreterRecField.DataType
+  Description for DataType
+----------------------------------------------------------------------------------------------------
+@@TJvInterpreterSetValue
+<TITLE TJvInterpreterSetValue type>
+<COMBINE TJvInterpreterExpression.OnSetValue>
 ----------------------------------------------------------------------------------------------------
 @@TJvInterpreterUnit
 Summary
@@ -1705,6 +1849,10 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  UnitName - Description for this parameter
+  Source   - Description for this parameter
+  Done     - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1891,6 +2039,16 @@ Description
   You don't have to document already described items such as sets,
   pointers to records etc.
 (Value = array [ 0..c JvInterpreterMaxArgs ] of string ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@TOpenArray
+<TITLE TOpenArray type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  You don't have to document already described items such as sets,
+  pointers to records etc.
+(Value = array [ 0..c JvInterpreterMaxArgs ] of TVarRec ; - for reference)
 ---------------------------------------------------------------------------------------------------
 @@TParserState
 <TITLE TParserState type>
