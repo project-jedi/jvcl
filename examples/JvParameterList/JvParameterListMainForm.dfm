@@ -1,4 +1,4 @@
-object Form1: TForm1
+object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
   Left = 500
   Top = 271
   Width = 689

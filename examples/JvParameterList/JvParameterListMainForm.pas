@@ -49,7 +49,7 @@ uses
   JvExExtCtrls, JvAppXMLStorage, JvCipher;
 
 type
-  TForm1 = class (TForm)
+  TJvParameterListDemoMainFrm = class (TForm)
     GroupBox1: TGroupBox;
     AutoWidthCheckBox: TCheckBox;
     AutoHeightCheckBox: TCheckBox;
@@ -177,7 +177,7 @@ type
   end;
 
 var
-  Form1: TForm1;
+  JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm;
 
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -203,29 +203,29 @@ uses JvDynControlEngineVCL,
   {$ENDIF}
   , JvDynControlEngineIntf, JclStrings;
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.Button1Click(Sender: TObject);
 begin
   ShowTest1(nil);
 end;
 
-procedure TForm1.Button2Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.Button2Click(Sender: TObject);
 begin
   ShowTest1(DynControlEngineVCL);
 end;
 
-procedure TForm1.Button3Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.Button3Click(Sender: TObject);
 begin
   ShowTest1(DynControlEngineJVCL);
 end;
 
-procedure TForm1.Button4Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.Button4Click(Sender: TObject);
 begin
   {$IFDEF INCLUDE_DEVEXP_CX}
   ShowTest1(DynControlEngineDevExpCx);
   {$ENDIF}
 end;
 
-procedure TForm1.ShowTest1(const aDynControlEngine: tJvDynControlEngine);
+procedure TJvParameterListDemoMainFrm.ShowTest1(const aDynControlEngine: tJvDynControlEngine);
 var
   ParameterList: TJvParameterList;
   Parameter:     TJvBaseParameter;
@@ -462,7 +462,7 @@ begin
   end;
 end;
 
-procedure TForm1.ShowTest2(const aDynControlEngine: tJvDynControlEngine);
+procedure TJvParameterListDemoMainFrm.ShowTest2(const aDynControlEngine: tJvDynControlEngine);
 var
   ParameterList: TJvParameterList;
   Parameter:     TJvBaseParameter;
@@ -564,7 +564,7 @@ begin
   end;
 end;
 
-procedure TForm1.ShowTest3ButttonClick(const ParameterList: TJvParameterList; const Parameter: TJvBaseParameter);
+procedure TJvParameterListDemoMainFrm.ShowTest3ButttonClick(const ParameterList: TJvParameterList; const Parameter: TJvBaseParameter);
 begin
   if Assigned(Parameter) then
     if Parameter.SearchName = 'ButtonA' then
@@ -582,7 +582,7 @@ begin
   ;
 end;
 
-procedure TForm1.ShowTest3(const aDynControlEngine: tJvDynControlEngine);
+procedure TJvParameterListDemoMainFrm.ShowTest3(const aDynControlEngine: tJvDynControlEngine);
 var
   ParameterList: TJvParameterList;
   Parameter:     TJvBaseParameter;
@@ -682,7 +682,7 @@ begin
 end;
 
 
-procedure TForm1.ShowTestCrypt(const aDynControlEngine: tJvDynControlEngine);
+procedure TJvParameterListDemoMainFrm.ShowTestCrypt(const aDynControlEngine: tJvDynControlEngine);
 var
   ParameterList: TJvParameterList;
   Parameter:     TJvBaseParameter;
@@ -741,7 +741,7 @@ end;
 
 
 
-procedure TForm1.FormShow(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.FormShow(Sender: TObject);
 begin
   {$IFNDEF INCLUDE_DEVEXP_CX}
   Button4.Enabled := false;
@@ -758,7 +758,7 @@ begin
   AssignWidthHeightCheckBoxClick(nil);
 end;
 
-procedure TForm1.BitBtn1Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.BitBtn1Click(Sender: TObject);
 var
   FormStorageSelectList: tJvFormStorageSelectList;
 begin
@@ -774,7 +774,7 @@ begin
   end;
 end;
 
-procedure TForm1.BitBtn2Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.BitBtn2Click(Sender: TObject);
 var
   FormStorageSelectList: tJvFormStorageSelectList;
 begin
@@ -790,7 +790,7 @@ begin
 end;
 
 
-procedure TForm1.DevExpCxLookAndFeelRadioGroupClick(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.DevExpCxLookAndFeelRadioGroupClick(Sender: TObject);
 begin
   {$IFDEF INCLUDE_DEVEXP_CX}
   with DynControlEngineDevExpCx do
@@ -813,7 +813,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TForm1.VCLRadioButtonClick(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.VCLRadioButtonClick(Sender: TObject);
 begin
   {$IFDEF INCLUDE_DEVEXP_CX}
   if CxRadioButton.Checked then
@@ -827,7 +827,7 @@ begin
     SetDefaultDynControlEngine(DynControlEngineVCL);
 end;
 
-procedure TForm1.Button5Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.Button5Click(Sender: TObject);
 begin
   MessageDlg(
     'Simple warning box, standard title, VCL buttons and image.',
@@ -836,7 +836,7 @@ begin
     0);
 end;
 
-procedure TForm1.Button6Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.Button6Click(Sender: TObject);
 begin
   MessageDlg(
     'Simple confirmation box, standard title, VCL buttons and image.',
@@ -845,7 +845,7 @@ begin
     0);
 end;
 
-procedure TForm1.Button7Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.Button7Click(Sender: TObject);
 var
   Pic:    TPicture;
   BtnCap: TDynStringArray;
@@ -868,38 +868,38 @@ begin
   end;
 end;
 
-procedure TForm1.Button8Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.Button8Click(Sender: TObject);
 begin
   ShowMessage('Test ShowMessage with custom checkmark text.');
 end;
 
-procedure TForm1.Button11Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.Button11Click(Sender: TObject);
 begin
   ShowTest1(DynControlEngineVCLRed);
 end;
 
-procedure TForm1.Button12Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.Button12Click(Sender: TObject);
 begin
   ShowTest2(nil);
 end;
 
-procedure TForm1.JvPanelAllControlsResize(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.JvPanelAllControlsResize(Sender: TObject);
 begin
  //  JvGroupBoxAllControls.Width := JvPanelAllControls.Width+2;
  //  JvGroupBoxAllControls.Height := JvPanelAllControls.Height+20;
 end;
 
-procedure TForm1.Button13Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.Button13Click(Sender: TObject);
 begin
   ShowTest3(nil);
 end;
 
-function TForm1.DefaultStorage : TJvCustomAppStorage;
+function TJvParameterListDemoMainFrm.DefaultStorage : TJvCustomAppStorage;
 begin
   Result := JvAppRegistryStorage;
 end;
 
-procedure TForm1.JvAppRegistryStorageDecryptPropertyValue(
+procedure TJvParameterListDemoMainFrm.JvAppRegistryStorageDecryptPropertyValue(
   var Value: String);
 begin
 //  Cipher.Encoded := Value;
@@ -907,7 +907,7 @@ begin
 //  Value := Copy(Value, 3, Length(Value)-4);
 end;
 
-procedure TForm1.JvAppRegistryStorageEncryptPropertyValue(
+procedure TJvParameterListDemoMainFrm.JvAppRegistryStorageEncryptPropertyValue(
   var Value: String);
 begin
 //  Cipher.Decoded := Value;
@@ -915,12 +915,12 @@ begin
 //  Value := '##'+Value+'##';
 end;
 
-procedure TForm1.Button14Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.Button14Click(Sender: TObject);
 begin
   ShowTestCrypt(nil);
 end;
 
-procedure TForm1.Button15Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.Button15Click(Sender: TObject);
 VAR
   ParameterList     : TJvParameterList;
   Gparameter,
@@ -1076,13 +1076,13 @@ BEGIN
   END;
 end;
 
-procedure TForm1.AssignWidthHeightCheckBoxClick(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.AssignWidthHeightCheckBoxClick(Sender: TObject);
 begin
   WidthEdit.Enabled := AssignWidthHeightCheckBox.Checked;
   HeightEdit.Enabled := AssignWidthHeightCheckBox.Checked;
 end;
 
-procedure TForm1.Button16Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.Button16Click(Sender: TObject);
 VAR
   ParameterList     : TJvParameterList;
   BaseParameter     : TJvBaseParameter;
@@ -1113,7 +1113,7 @@ begin
   end;
 end;
 
-procedure TForm1.ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine);
+procedure TJvParameterListDemoMainFrm.ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine);
 var
   DynEngine : TJvDynControlEngine;
   MainPanel,
@@ -1254,13 +1254,13 @@ begin
   end;
 end;
 
-procedure TForm1.CloseButtonOnClick(Sender : TObject);
+procedure TJvParameterListDemoMainFrm.CloseButtonOnClick(Sender : TObject);
 begin
   if Assigned(UnitVersionForm) then
     UnitVersionForm.ModalResult := mrOk;
 end;
 
-procedure TForm1.TreeViewOnChange(Sender: TObject; Node: TTreeNode);
+procedure TJvParameterListDemoMainFrm.TreeViewOnChange(Sender: TObject; Node: TTreeNode);
 var
   IJvData : IJvDynControlData;
 begin
@@ -1314,12 +1314,12 @@ begin
   end;
 end;
 
-procedure TForm1.Button17Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.Button17Click(Sender: TObject);
 begin
   ShowUnitVersioning(nil);
 end; 
 
-procedure TForm1.Button18Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.Button18Click(Sender: TObject);
 VAR
   ParameterList         : TJvParameterList;
   Parameter         : TJvBaseParameter;

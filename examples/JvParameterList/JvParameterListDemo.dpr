@@ -2,12 +2,12 @@ program JvParameterListDemo;
 
 uses
   Forms,
-  JvParameterListMainForm in 'JvParameterListMainForm.pas' {Form1};
+  JvParameterListMainForm in 'JvParameterListMainForm.pas' {JvParameterListDemoMainFrm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvParameterListDemoMainFrm, JvParameterListDemoMainFrm);
   Application.Run;
 end.
