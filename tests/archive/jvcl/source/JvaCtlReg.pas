@@ -36,14 +36,14 @@ procedure Register;
 
 implementation
 
-uses
+uses            
   {$IFDEF COMPLIB_VCL}
   Windows,
   {$ENDIF COMPLIB_VCL}
   Classes, JvCtlConst, JvRegAuto, JvaDsgn, JvDsgnIntf,
   {$IFDEF COMPLIB_VCL}
   SysUtils, Controls,
-  JvHooks, JvRegAutoEditor, JvHtControls, JvDlg,
+  JvWndProcHook, JvRegAutoEditor, JvHtControls, JvDlg,
   JvButtons, JvComponentPanel, JvScrollMax,
   JvEditor, JvHLEditor, JvHLEdPropDlg, JvaScrollText, JvHTHintEditor,
   {$ENDIF COMPLIB_VCL}

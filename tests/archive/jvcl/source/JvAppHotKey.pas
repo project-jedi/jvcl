@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -36,51 +36,50 @@ unit JvAppHotKey;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,Menus,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Menus,
   JvComponent;
 
 type
   TJvApplicationHotKey = class(TJvComponent)
   private
     { Private declarations }
-    FActive:boolean;
-    FShortCut:TShortCut;
-    FMods:word;
-    FVirtKey:word;
-    FOnHotKey:TNotifyEvent;
-    FHandle    : THandle;
-    FID        : integer;
-    FDefProc   : Pointer;
-    FWndProc   : Pointer;
+    FActive: boolean;
+    FShortCut: TShortCut;
+    FMods: word;
+    FVirtKey: word;
+    FOnHotKey: TNotifyEvent;
+    FHandle: THandle;
+    FID: integer;
     procedure GetKeys;
-    procedure SetActive(Value:boolean);
-    procedure SetShortCut(Value:TShortCut);
-    procedure WndProc(var Msg:TMessage);
+    procedure SetActive(Value: boolean);
+    procedure SetShortCut(Value: TShortCut);
+    function WndProc(var Msg: TMessage): boolean;
     procedure GetWndProc;
     procedure ResetWndProc;
   protected
     { Protected declarations }
-    procedure DoHotKey;virtual;
+    procedure DoHotKey; virtual;
   public
     { Public declarations }
-    constructor Create(AOwner:TComponent);override;
-    destructor Destroy;override;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   published
     { Published declarations }
-    property Active:boolean read FActive write SetActive default false;
-    property HotKey:TShortCut read FShortCut write SetShortCut;
-    property OnHotKey:TNotifyEvent read FOnHotKey write FOnHotKey;
+    property Active: boolean read FActive write SetActive default false;
+    property HotKey: TShortCut read FShortCut write SetShortCut;
+    property OnHotKey: TNotifyEvent read FOnHotKey write FOnHotKey;
   end;
 
-
-
 implementation
+uses
+  JvWndProcHook;
+
 { $R HotKey.dcr }
 
 procedure TJvApplicationHotKey.GetKeys;
-var aShift:TShiftState;
+var aShift: TShiftState;
 begin
-  ShortCutToKey(FShortCut,FVirtKey,aShift);
+  ShortCutToKey(FShortCut, FVirtKey, aShift);
   if ssCtrl in aShift then
     FMods := FMods or MOD_CONTROL;
   if ssShift in aShift then
@@ -89,8 +88,8 @@ begin
     FMods := FMods or MOD_ALT;
 end;
 
-procedure TJvApplicationHotKey.SetShortCut(Value:TShortCut);
-var b:Boolean;
+procedure TJvApplicationHotKey.SetShortCut(Value: TShortCut);
+var b: Boolean;
 begin
   if FShortCut <> Value then
   begin
@@ -101,7 +100,7 @@ begin
   end;
 end;
 
-constructor TJvApplicationHotKey.Create(AOwner:TComponent);
+constructor TJvApplicationHotKey.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 end;
@@ -112,22 +111,23 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvApplicationHotKey.SetActive(Value:boolean);
+procedure TJvApplicationHotKey.SetActive(Value: boolean);
 begin
   if FActive <> Value then
   begin
     FActive := Value;
-    if csDesigning in ComponentState then Exit;
+    if csDesigning in ComponentState then
+      Exit;
     if FActive then
     begin
       GetWndProc;
       FID := GlobalAddAtom(PChar(Application.Exename));
       GetKeys;
-      RegisterHotKey(FHandle,FID,FMods,FVirtKey);
+      RegisterHotKey(FHandle, FID, FMods, FVirtKey);
     end
     else
     begin
-      UnRegisterHotKey(FHandle,FID);
+      UnRegisterHotKey(FHandle, FID);
       ResetWndProc;
     end;
   end;
@@ -135,7 +135,8 @@ end;
 
 procedure TJvApplicationHotKey.DoHotKey;
 begin
-  if Assigned(FOnHotKey) then FOnHotKey(self);
+  if Assigned(FOnHotKey) then
+    FOnHotKey(self);
 end;
 
 procedure TJvApplicationHotKey.GetWndProc;
@@ -143,9 +144,7 @@ begin
   if (Owner is TWinControl) and (FHandle = 0) then
   begin
     FHandle := TWinControl(Owner).Handle;
-    FWndProc := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}MakeObjectInstance(WndProc);
-    FDefProc := Pointer(GetWindowLong(FHandle,GWL_WNDPROC ));
-    SetWindowLong(FHandle,GWL_WNDPROC,longint(FWndProc));
+    RegisterWndProcHook(TWinControl(Owner), WndProc, hoAfterMsg);
   end
   else
     SetActive(false);
@@ -155,22 +154,18 @@ procedure TJvApplicationHotKey.ResetWndProc;
 begin
   if FHandle <> 0 then
   begin
-    SetWindowLong(FHandle,GWL_WNDPROC,longint(FDefProc));
-    {$IFDEF COMPILER6_UP}Classes.{$ENDIF}FreeObjectInstance(FWndProc);
+    UnregisterWndProcHook(TWinControl(Owner), WndProc, hoAfterMsg);
+    GlobalDeleteAtom(FID);
     FHandle := 0;
-    GlobalDeleteAtom (FID);
   end
 end;
 
-procedure TJvApplicationHotKey.WndProc(var Msg:TMessage);
+function TJvApplicationHotKey.WndProc(var Msg: TMessage): boolean;
 begin
-  with Msg do
-  begin
-    if Msg = WM_HOTKEY then
-      DoHotKey
-    else
-      Result := CallWindowProc( FDefProc, FHandle, Msg, WParam, LParam);
-    end;
+  if Msg.Msg = WM_HOTKEY then
+    DoHotKey;
+  Result := false;
 end;
 
 end.
+

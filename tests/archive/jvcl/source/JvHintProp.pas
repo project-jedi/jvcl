@@ -12,7 +12,7 @@ The Original Code is: JvHintProp.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -29,12 +29,11 @@ unit JvHintProp;
 
 interface
 
-uses {$IFDEF COMPILER6_UP}DesignIntf, VCLEditors{$ELSE}DsgnIntf{$ENDIF};
-
+uses{$IFDEF COMPILER6_UP}DesignIntf, VCLEditors{$ELSE}DsgnIntf{$ENDIF};
 
 type
 
-{ THintProperty }
+  { THintProperty }
 
   THintProperty = class(TCaptionProperty)
   public
@@ -48,10 +47,10 @@ type
 implementation
 
 {$IFDEF WIN32}
- {$D-}
+{$D-}
 {$ENDIF}
 
-uses SysUtils, Classes, {$IFDEF COMPILER3_UP} JvStrLEdit, {$ELSE} StrEdit, {$ENDIF}
+uses SysUtils, Classes, {$IFDEF COMPILER3_UP}JvStrLEdit, {$ELSE}StrEdit, {$ENDIF}
   TypInfo, Forms, Controls, JvStrUtils;
 
 function THintProperty.GetAttributes: TPropertyAttributes;
@@ -60,11 +59,13 @@ begin
 end;
 
 {$IFDEF WIN32}
+
 function THintProperty.GetEditLimit: Integer;
 begin
   if GetPropType^.Kind = tkString then
     Result := GetTypeData(GetPropType)^.MaxLength
-  else Result := 1024;
+  else
+    Result := 1024;
 end;
 {$ENDIF}
 
@@ -79,17 +80,21 @@ begin
     Comp := GetComponent(0);
     if Comp is TComponent then
       Caption := TComponent(Comp).Name + '.' + GetName
-    else Caption := GetName;
+    else
+      Caption := GetName;
     Temp := GetStrValue;
-    Cnt := WordCount(Temp, [#13, #10]);
-    for I := 1 to Cnt do
-      Memo.Lines.Add(ExtractWord(I, Temp, [#13, #10]));
+//    Cnt := WordCount(Temp, [#13, #10]);
+//    for I := 1 to Cnt do
+//      Memo.Lines.Add(ExtractWord(I, Temp, [#13, #10]));
+    Memo.Lines.Text := Temp;
     Memo.MaxLength := GetEditLimit;
     UpdateStatus(nil);
-    if ShowModal = mrOk then begin
-      Temp := Memo.Text;
-      while (Length(Temp) > 0) and (Temp[Length(Temp)] < ' ') do
-        System.Delete(Temp, Length(Temp), 1);
+    if ShowModal = mrOk then
+    begin
+      Temp := Memo.Lines.Text;
+      // (p3) this removes CRLF's and I don't like that
+  //      while (Length(Temp) > 0) and (Temp[Length(Temp)] < ' ') do
+  //        System.Delete(Temp, Length(Temp), 1);
       SetStrValue(Temp);
     end;
   finally
@@ -98,3 +103,4 @@ begin
 end;
 
 end.
+

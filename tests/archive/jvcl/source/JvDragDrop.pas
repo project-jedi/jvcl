@@ -42,11 +42,9 @@ type
     FHandle: THandle;
     FFiles: TStringList;
     FOnDrop: TDropEvent;
-    FDefProc: Pointer;
-    FWndProcInstance: Pointer;
     procedure DropFiles(Handle: HDrop);
     procedure SetAccept(Value: Boolean);
-    procedure WndProc(var Msg: TMessage);
+    function WndProc(var Msg: TMessage):boolean;
   protected
   public
     constructor Create(AOwner: TComponent); override;
@@ -58,6 +56,8 @@ type
   end;
 
 implementation
+uses
+  JvWndProcHook;
 
 {*****************************************************}
 
@@ -68,17 +68,16 @@ begin
   inherited;
   FAccept := True;
   FFiles := TStringList.Create;
-  FHandle := 0;
-  if Owner is TWinControl then
+  if not (csDesigning in ComponentState) then
   begin
-    WinCtl := TWinControl(Owner);
-    FHandle := WinCtl.Handle;
-    FWndProcInstance := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}MakeObjectInstance(WndProc);
-    FDefProc := Pointer(GetWindowLong(FHandle, GWL_WNDPROC));
-    SetWindowLong(FHandle, GWL_WNDPROC, Longint(FWndProcInstance));
-  end
-  else
-    FAccept := False;
+    if (Owner is TWinControl) then
+    begin
+      FHandle := TWinControl(Owner).Handle;
+      RegisterWndProcHook(TWinControl(Owner),WndProc,hoBeforeMsg);
+    end
+    else
+      FAccept := False;
+  end;
   SetAccept(FAccept);
 end;
 
@@ -87,11 +86,8 @@ end;
 destructor TJvDragDrop.Destroy;
 begin
   FFiles.Free;
-  if FHandle <> 0 then
-  begin
-    SetWindowLong(FHandle, GWL_WNDPROC, Longint(FDefProc));
-    {$IFDEF COMPILER6_UP}Classes.{$ENDIF}FreeObjectInstance(FWndProcInstance);
-  end;
+  if (Owner is TWinControl) and not (csDesigning in ComponentState) then
+    UnregisterWndProcHook(TWinControl(Owner),WndProc,hoBeforeMsg);
   inherited;
 end;
 
@@ -100,17 +96,17 @@ end;
 procedure TJvDragDrop.SetAccept(Value: Boolean);
 begin
   FAccept := Value;
-  DragAcceptFiles(FHandle, Value);
+  if not (csDesigning in ComponentState) then
+    DragAcceptFiles(FHandle, FAccept);
 end;
 
 {*****************************************************}
 
-procedure TJvDragDrop.WndProc(var Msg: TMessage);
+function TJvDragDrop.WndProc(var Msg: TMessage):boolean;
 begin
-  if Msg.Msg = WM_DROPFILES then
+  Result := Msg.Msg = WM_DROPFILES;
+  if Result then
     DropFiles(HDrop(Msg.wParam))
-  else
-    Msg.Result := CallWindowProc(FDefProc, FHandle, Msg.Msg, Msg.WParam, Msg.LParam);
 end;
 
 {*****************************************************}

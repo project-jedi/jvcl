@@ -35,7 +35,7 @@ uses
 RTLConsts, Variants,
 {$ENDIF}
 Windows, Registry, Controls, Messages, Classes, Forms, IniFiles,
-Dialogs, JvVCLUtils, JvHook{, JvComponent};
+Dialogs, JvVCLUtils, JvWndProcHook{, JvComponent};
 
 type
   TPlacementOption = (fpState, fpPosition, fpActiveControl);
@@ -412,12 +412,12 @@ procedure TJvFormPlacement.SetHook;
 begin
   if not (csDesigning in ComponentState) and (Owner <> nil) and
     (Owner is TCustomForm) then
-    FWinHook.WinControl := Form;
+    FWinHook.Control := Form;
 end;
 
 procedure TJvFormPlacement.ReleaseHook;
 begin
-  FWinHook.WinControl := nil;
+  FWinHook.Control := nil;
 end;
 
 procedure TJvFormPlacement.CheckToggleHook;

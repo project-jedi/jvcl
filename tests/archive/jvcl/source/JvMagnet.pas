@@ -43,7 +43,6 @@ type
   TJvFormMagnet = class(TJvComponent)
   private
     FForm: TForm;
-    FOldWndProc: Pointer;
     FActive: Boolean;
     FScreen: Boolean;
     FGlue: Boolean;
@@ -53,7 +52,7 @@ type
     FLastLeftDock: TDateTime;
     FLastTopDock: TDateTime;
     FLastBottomDock: TDateTime;
-    procedure NewWndProc(var Msg: TMessage);
+    function NewWndProc(var Msg: TMessage):boolean;
     procedure MagnetScreen(OldRect: TRect; var FormRect: TRect; ScreenRect: TRect);
     procedure GlueForms(var FormRect: TRect);
     procedure MagnetToMain(OldRect: TRect; var FormRect: TRect; MainRect: TRect);
@@ -70,12 +69,12 @@ type
   end;
 
 implementation
+uses
+  JvWndProcHook;
 
 {****************************************************}
 
 constructor TJvFormMagnet.Create(AOwner: TComponent);
-var
-  ptr: Pointer;
 begin
   inherited;
   FActive := False;
@@ -90,21 +89,16 @@ begin
   FLastBottomDock := 0.0;
 
   FForm := TForm(GetParentForm(TControl(AOwner)));
-  if not (csDesigning in ComponentState) then
-  begin
-    FOldWndProc := Pointer(GetWindowLong(FForm.Handle, GWL_WNDPROC));
-    ptr := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}MakeObjectInstance(NewWndProc);
-    SetWindowLong(FForm.Handle, GWL_WNDPROC, Longint(ptr));
-  end;
+  if not (csDesigning in ComponentState) and (FForm <> nil) then
+    RegisterWndProcHook(FForm,NewWndProc,hoBeforeMsg);
 end;
 
 {****************************************************}
 
 destructor TJvFormMagnet.Destroy;
 begin
-  if not (csDesigning in ComponentState) then
-    if not (csDestroying in FForm.ComponentState) then
-      SetWindowLong(FForm.Handle, GWL_WNDPROC, LongInt(FOldWndProc));
+  if not (csDesigning in ComponentState) and (FForm <> nil) then
+    UnregisterWndProcHook(FForm,NewWndProc,hoBeforeMsg);
   inherited;
 end;
 
@@ -560,10 +554,11 @@ end;
 
 {****************************************************}
 
-procedure TJvFormMagnet.NewWndProc(var Msg: TMessage);
+function TJvFormMagnet.NewWndProc(var Msg: TMessage):boolean;
 var
   r,r3: TRect;
 begin
+  Result := false;
   with Msg do
   begin
     if FActive then
@@ -581,7 +576,6 @@ begin
           end;
       end;
     end;
-    Result := CallWindowProc(FOldWndProc, FForm.Handle, Msg, WParam, LParam);
   end;
 end;
 

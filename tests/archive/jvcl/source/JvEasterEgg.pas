@@ -43,9 +43,8 @@ type
     FShiftState: TShiftState;
     FEggs: string;
     FForm: TCustomForm;
-    FOldWndProc: Pointer;
     FCurstring: string;
-    procedure NewWndProc(var Msg: TMessage);
+    function NewWndProc(var Msg: TMessage):boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -57,43 +56,41 @@ type
   end;
 
 implementation
-
+uses
+  JvWndProcHook;
 {**************************************************}
 
 constructor TJvEasterEgg.Create(AOwner: TComponent);
-var
-  ptr: Pointer;
 begin
   inherited;
-  FOldWndProc := nil;
   FForm := GetParentForm(TControl(AOwner));
   FActive := True;
   FShiftState := [ssAlt];
 
-  FOldWndProc := Pointer(GetWindowLong(FForm.Handle, GWL_WNDPROC));
-  ptr := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}MakeObjectInstance(NewWndProc);
-  SetWindowLong(FForm.Handle, GWL_WNDPROC, Longint(ptr));
+  if (FForm <> nil) and not (csDesigning in ComponentState) then
+    RegisterWndProcHook(FForm,NewWndProc,hoAfterMsg);
 end;
 
 {**************************************************}
 
 destructor TJvEasterEgg.Destroy;
 begin
-  if not (csDestroying in FForm.ComponentState) then
-    SetWindowLong(FForm.Handle, GWL_WNDPROC, LongInt(FOldWndProc));
+  if (FForm <> nil) and not (csDesigning in ComponentState) then
+    UnregisterWndProcHook(FForm,NewWndProc,hoAfterMsg);
   inherited;
 end;
 
 {**************************************************}
 
-procedure TJvEasterEgg.NewWndProc(var Msg: TMessage);
+function TJvEasterEgg.NewWndProc(var Msg: TMessage):boolean;
 var
   shift: TShiftState;
 begin
+  Result := false;
   with Msg do
   begin
     // (rom) simplified
-    Result := CallWindowProc(FOldWndProc, FForm.Handle, Msg, WParam, LParam);
+//    Result := CallWindowProc(FOldWndProc, FForm.Handle, Msg, WParam, LParam);
     if FActive and (FEggs <> '') then
       case Msg of
         WM_KEYUP, WM_SYSKEYUP:

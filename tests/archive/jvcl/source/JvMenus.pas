@@ -32,7 +32,7 @@ interface
 
 uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF} SysUtils,
   Classes, Controls, Messages, Graphics, {$IFDEF COMPILER4_UP} ImgList, {$ENDIF}
-  Menus, JvHook;
+  Menus, JvWndProcHook;
 
 type
   TJvMenuStyle = (msStandard, msOwnerDraw {$IFDEF WIN32}, msBtnLowered,
@@ -1081,8 +1081,8 @@ begin
     FImages.RegisterChanges(FImageChangeLink);
     FImages.FreeNotification(Self);
   end;
-  if IsOwnerDrawMenu then FHook.WinControl := FindForm
-  else FHook.WinControl := nil;
+  if IsOwnerDrawMenu then FHook.Control := FindForm
+  else FHook.Control := nil;
   if IsOwnerDrawMenu <> OldOwnerDraw then RefreshMenu(not OldOwnerDraw);
 end;
 {$ENDIF}
@@ -1091,8 +1091,8 @@ procedure TJvMainMenu.SetStyle(Value: TJvMenuStyle);
 begin
   if FStyle <> Value then begin
     FStyle := Value;
-    if IsOwnerDrawMenu then FHook.WinControl := FindForm
-    else FHook.WinControl := nil;
+    if IsOwnerDrawMenu then FHook.Control := FindForm
+    else FHook.Control := nil;
     RefreshMenu(IsOwnerDrawMenu);
   end;
 end;
@@ -1112,13 +1112,13 @@ end;
 procedure TJvMainMenu.RefreshMenu(AOwnerDraw: Boolean);
 {$IFDEF COMPILER4_UP}
 begin
-  Self.OwnerDraw := AOwnerDraw and (FHook.WinControl <> nil) and
+  Self.OwnerDraw := AOwnerDraw and (FHook.Control <> nil) and
     not (csDesigning in ComponentState);
 {$ELSE}
 var
   I: Integer;
 begin
-  if AOwnerDraw and (FHook.WinControl = nil) then Exit;
+  if AOwnerDraw and (FHook.Control = nil) then Exit;
   if not (csDesigning in ComponentState) then
     for I := 0 to Items.Count - 1 do
       RefreshMenuItem(Items[I], AOwnerDraw);

@@ -34,7 +34,7 @@ interface
 {$IFDEF WIN32}
 
 uses Windows, Messages, Classes, Graphics, Controls, Forms, Dialogs, Menus,
-  JvHook, JvVCLUtils{, JvComponent};
+  JvWndProcHook, JvVCLUtils{, JvComponent};
 
 type
   THideDirection = (hdLeftToRight, hdRightToLeft);
@@ -573,12 +573,12 @@ procedure TJvxGradientCaption.SetHook;
 begin
   if not (csDesigning in ComponentState) and (Owner <> nil) and
     (Owner is TCustomForm) then
-    FWinHook.WinControl := Form;
+    FWinHook.Control := Form;
 end;
 
 procedure TJvxGradientCaption.ReleaseHook;
 begin
-  FWinHook.WinControl := nil;
+  FWinHook.Control := nil;
 end;
 
 procedure TJvxGradientCaption.CheckToggleHook;

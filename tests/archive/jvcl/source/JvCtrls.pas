@@ -497,6 +497,7 @@ var
   Flags: DWORD;
 begin
   R := ClientRect;
+
   with DrawItemStruct do
   begin
     IsEnabled := itemState and ODS_DISABLED = 0;
