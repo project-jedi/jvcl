@@ -6,10 +6,11 @@
 : some special parameters
 :
 : ---------------------------------------------------------------------
-SET %DELDIR%=%1
-if %DELDIR%!==! SET DELDIR=C:\Program Files\Delphi5
+SET DELDIR=%1
+if "%DELDIR%!"=="!" SET DELDIR=C:\Program Files\Delphi5
 
-MakeDelphi "D5 Packages" d5 %DELDIR%
+call MakeDelphi d5
+SET DELDIR=
 
 goto end
 
