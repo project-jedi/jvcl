@@ -2,16 +2,13 @@ object FormMain: TFormMain
   Left = 191
   Top = 115
   ActiveControl = ListViewTargets
-  BorderStyle = bsDialog
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
   Caption = 'JVCL 3 - Package Installer'
   ClientHeight = 536
   ClientWidth = 723
   Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
-  Font.Style = []
+  ParentFont = True
   OldCreateOrder = True
   Position = poScreenCenter
   OnCreate = FormCreate
@@ -28,7 +25,7 @@ object FormMain: TFormMain
     OnClick = LblVersionsClick
   end
   object LblPackages: TLabel
-    Left = 208
+    Left = 224
     Top = 8
     Width = 109
     Height = 13
@@ -430,9 +427,9 @@ object FormMain: TFormMain
     end
   end
   object ListViewPackages: TListView
-    Left = 208
+    Left = 224
     Top = 24
-    Width = 508
+    Width = 492
     Height = 467
     Checkboxes = True
     Columns = <
@@ -460,7 +457,7 @@ object FormMain: TFormMain
   object ListViewTargets: TListView
     Left = 8
     Top = 24
-    Width = 193
+    Width = 209
     Height = 121
     Checkboxes = True
     Columns = <
@@ -489,12 +486,12 @@ object FormMain: TFormMain
   object GroupBoxOptions: TGroupBox
     Left = 8
     Top = 296
-    Width = 193
+    Width = 209
     Height = 161
     Caption = ' JVCL.INC - Options (global) '
     TabOrder = 2
     object BtnAdvancedOptions: TBitBtn
-      Left = 88
+      Left = 104
       Top = 128
       Width = 99
       Height = 25
@@ -602,7 +599,7 @@ object FormMain: TFormMain
   object Panel1: TPanel
     Left = 8
     Top = 144
-    Width = 198
+    Width = 214
     Height = 145
     BevelOuter = bvNone
     TabOrder = 5
@@ -610,7 +607,7 @@ object FormMain: TFormMain
       Left = 0
       Top = 0
       Width = 5
-      Height = 113
+      Height = 117
       Shape = bsRightLine
     end
     object Bevel2: TBevel
@@ -648,23 +645,9 @@ object FormMain: TFormMain
       Height = 9
       Shape = bsTopLine
     end
-    object Bevel7: TBevel
-      Left = 4
-      Top = 112
-      Width = 17
-      Height = 9
-      Shape = bsTopLine
-    end
-    object LblHppFilesDir: TLabel
-      Left = 8
-      Top = 106
-      Width = 46
-      Height = 13
-      Caption = 'HPP files:'
-    end
     object LblBCBInstallation: TLabel
-      Left = 56
-      Top = 124
+      Left = 72
+      Top = 128
       Width = 102
       Height = 13
       Cursor = crHandPoint
@@ -676,6 +659,13 @@ object FormMain: TFormMain
       Font.Style = [fsUnderline]
       ParentFont = False
       OnClick = LblBCBInstallationClick
+    end
+    object Bevel7: TBevel
+      Left = 4
+      Top = 116
+      Width = 17
+      Height = 9
+      Shape = bsTopLine
     end
     object CheckBoxClearJVCLPalette: TCheckBox
       Left = 8
@@ -752,9 +742,9 @@ object FormMain: TFormMain
       OnClick = CheckBoxClearJVCLPaletteClick
     end
     object EditHppFilesDir: TEdit
-      Left = 56
-      Top = 103
-      Width = 121
+      Left = 72
+      Top = 106
+      Width = 113
       Height = 21
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
@@ -767,13 +757,27 @@ object FormMain: TFormMain
       TabOrder = 5
     end
     object BtnHppFilesBrowse: TButton
-      Left = 176
-      Top = 103
+      Left = 184
+      Top = 105
       Width = 22
       Height = 22
       Caption = '...'
       TabOrder = 6
       OnClick = BtnHppFilesBrowseClick
+    end
+    object CheckBoxHppFilesDir: TCheckBox
+      Left = 8
+      Top = 108
+      Width = 63
+      Height = 17
+      Hint = 
+        'Activate this if you want the .hpp files to be moved'#13#10'to the sel' +
+        'ected directory.'
+      Caption = 'Hpp files:'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 7
+      OnClick = CheckBoxClearJVCLPaletteClick
     end
   end
   object ImageListPackages: TImageList

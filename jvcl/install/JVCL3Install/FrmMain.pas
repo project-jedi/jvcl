@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-12-05
+Last Modified: 2003-12-07
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -84,10 +84,10 @@ type
     CheckBoxInstallJcl: TCheckBox;
     CheckBoxCompileOnly: TCheckBox;
     EditHppFilesDir: TEdit;
-    Bevel7: TBevel;
-    LblHppFilesDir: TLabel;
     BtnHppFilesBrowse: TButton;
     LblBCBInstallation: TLabel;
+    CheckBoxHppFilesDir: TCheckBox;
+    Bevel7: TBevel;
     procedure BtnQuitClick(Sender: TObject);
     procedure BtnAdvancedOptionsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -142,6 +142,18 @@ uses
   MainConfig, JVCLConfiguration, FrmMake, JvBrowseFolder;
 
 {$R *.dfm}
+
+function OpenAtAnchor(const FileName, Anchor: string): Boolean;
+var
+  Cmd: string;
+begin
+  SetLength(Cmd, MAX_PATH);
+  Result := FindExecutable(PChar(FileName), nil, PChar(Cmd)) > 32;
+  SetLength(Cmd, StrLen(PChar(Cmd)));
+  if Result then
+    Result := ShellExecute(0, 'open', PChar(Cmd), PChar(FileName + '#' + Anchor), nil,
+      SW_SHOWNORMAL) > 32;
+end;
 
 function NoYesDlg(const Text: string): TModalResult;
 var Dlg: TForm;
@@ -348,7 +360,7 @@ procedure TFormMain.TransferTargetOptions(ToTarget: Boolean);
     CheckBoxDeveloperInstall.Enabled := e;
     CheckBoxInstallJcl.Enabled := e;
     CheckBoxCompileOnly.Enabled := e;
-    LblHppFilesDir.Enabled := e;
+    CheckBoxHppFilesDir.Enabled := e;
     EditHppFilesDir.Enabled := e;
     BtnHppFilesBrowse.Enabled := e;
   end;
@@ -371,6 +383,7 @@ begin
         SelTarget.InstallJcl := CheckBoxInstallJcl.Checked;
         SelTarget.CompileOnly := CheckBoxCompileOnly.Checked;
         SelTarget.HppFilesDir := SelTarget.ExpandDirMacros(EditHppFilesDir.Text);
+        SelTarget.MoveHppFiles := CheckBoxHppFilesDir.Checked;
       end;
     end
 
@@ -391,10 +404,13 @@ begin
         else
           CheckBoxInstallJcl.Font.Style := [fsBold];
         CheckBoxCompileOnly.Checked := SelTarget.CompileOnly;
+
         if SelTarget.IsBCB then
           EditHppFilesDir.Text := SelTarget.InsertDirMacros(SelTarget.HppFilesDir)
         else
           EditHppFilesDir.Text := '';
+        CheckBoxHppFilesDir.Checked := SelTarget.IsBCB and SelTarget.MoveHppFiles;
+        CheckBoxHppFilesDir.Enabled := SelTarget.IsBCB;
         BtnHppFilesBrowse.Enabled := SelTarget.IsBCB;
         LblBCBInstallation.Visible := SelTarget.IsBCB;
       end
@@ -406,6 +422,7 @@ begin
         CheckBoxInstallJcl.Checked := False;
         CheckBoxInstallJcl.Font.Style := [];
         CheckBoxCompileOnly.Checked := False;
+        CheckBoxHppFilesDir.Checked := False;
         EditHppFilesDir.Text := '';
       end;
       UpdatePackageList;
@@ -495,8 +512,8 @@ begin
             if MessageDlg('Please read the readme.htm for details about theming with Delphi/BCB 5 and 6.'#10 +
               'Do you want to open readme.htm ?',
               mtWarning, [mbYes, mbNo], 0) = mrYes then
-              if ShellExecute(Handle, 'open', PChar('"' + JVCLDir + '\readme.htm"'), nil, nil, SW_SHOWNORMAL) < 32 then
-                MessageDlg('Error opening readme.htm', mtError, [mbOk], 0);
+              if not OpenAtAnchor(JVCLDir + '\readme.htm', 'Theming') then
+                MessageDlg('Cannot open readme.htm', mtError, [mbOk], 0);
           end
           else
             MessageDlg('Please read the readme.htm for details about theming with Delphi/BCB 5 and 6.',
@@ -738,10 +755,25 @@ begin
     SelTarget.HppFilesDir := Dir;
 end;
 
+function FileNameToURL(const S: string): string;
+var i: Integer;
+begin
+  Result := S;
+  for i := 1 to Length(Result) do
+    case Result[i] of
+      '\': Result[i] := '/';
+      ':': Result[i] := '|';
+    end;
+  Result := 'file:///' + Result;
+end;
+
 procedure TFormMain.LblBCBInstallationClick(Sender: TObject);
 begin
-  if ShellExecute(Handle, 'open', PChar('"' + JVCLDir + '\install.htm"'), nil, nil, SW_SHOWNORMAL) < 32 then
-    MessageDlg('Error opening install.htm', mtError, [mbOk], 0);
+  if not OpenAtAnchor(JVCLDir + '\install.htm', 'AddJVCLPathToBCB') then
+    MessageDlg('Cannot open install.htm', mtError, [mbOk], 0);
 end;
+
+initialization
+  Screen.IconFont.Name := 'Tahoma';
 
 end.
