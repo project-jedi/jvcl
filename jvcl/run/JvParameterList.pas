@@ -1536,7 +1536,7 @@ begin
   ArrangePanel.Name := 'MainArrangePanel';
   with ArrangePanel do
   begin
-    Transparent := True;
+    Transparent := False;
     Align := alTop;
     BorderStyle := bsNone;
     BevelInner := bvNone;
