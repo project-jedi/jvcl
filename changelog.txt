@@ -1,7 +1,9 @@
 Changelog for JVCL 3.0
 ======================
+2004-11-18:
+- JvRas32: A new RasAvailable property has been added and it no longer raises an exception when RAS is not available // peter3
 2004-11-17:
-  Changed JclZlibMultiple.pas to use the new JclCompression.pas // (rom)
+- Changed JclZlibMultiple.pas to use the new JclCompression.pas // (rom)
 2004-11-07:
 - Added the Config Manager API conversion and updated the Setup API conversion.
   Components updated to use the Ansi version of the Setup API functions. // (rom)
