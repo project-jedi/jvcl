@@ -51,7 +51,8 @@ uses
   JvTransparentButton, JvSpeedbarSetupForm, JvColorForm, JvDsgnIntf,
   JvImageDrawThread, JvWinampLabel, JvPlaylist, JvComponentPanel, JvButtons,
   JvCaptionPanel, JvScrollMax, JvUninstallControls, JvMovableBevel,
-  JvComboListBox, JvCharMap, JvScrollMaxEditor, JvBehaviorLabelEditor,
+  JvComboListBox, JvCharMap, JvOfficeColorButton, JvOfficeColorPanel, JvNetscapeSplitter,
+  JvScrollMaxEditor, JvBehaviorLabelEditor,
   JvGroupHeaderEditor, JvFooterEditor, JvSpeedbarForm, JvDsgnEditors,
   JvTransparentButtonEditors, JvRollOutEditor;
 
@@ -61,6 +62,7 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteButton, [TJvTransparentButton,
     TJvTransparentButton2, TJvArrowButton, TJvCaptionButton, TJvColorButton,
+    TJvOfficeColorButton, TJvOfficeColorPanel,
     TJvHTButton, TJvSpacer, TJvSwitch]);
   RegisterComponents(RsPaletteBarPanel, [TJvSpeedBar, TJvCaptionPanel,
     TJvItemsPanel, TJvMovableBevel, TJvRollOut, TJvFooter, TJvGroupHeader,
@@ -74,7 +76,7 @@ begin
   RegisterComponents(RsPaletteScrollerTracker, [TJvScrollMax, TJvaScrollText,
     TJvContentScroller, TJvPageScroller, TJvScrollingWindow, TJvScrollText]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter, TJvxSplitter,
-    TJvSyncSplitter]);
+    TJvSyncSplitter, TJvNetscapeSplitter]);
   RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice, TJvCharMap]);
   RegisterComponents(RsPaletteNonVisual, [TJvHint {, TJvRegAuto}]);
 

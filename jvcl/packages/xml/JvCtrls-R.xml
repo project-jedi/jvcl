@@ -65,5 +65,8 @@
     <File Name="..\..\run\JvButtons.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCaptionButton.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCaptionPanel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvOfficeColorButton.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvOfficeColorPanel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvNetscapeSplitter.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
