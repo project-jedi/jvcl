@@ -147,8 +147,13 @@ type
     property Anchors;
     property Color default clWindow;
     property Constraints;
+    {$IFDEF VCL}
     property DragKind;
     property DragCursor;
+    property OnEndDock;
+    property OnStartDock;
+    property OnCanResize;
+    {$ENDIF VCL}
     property DragMode;
     property Hint;
     property ParentColor default False;
@@ -156,14 +161,12 @@ type
     property ParentShowHint;
     property ShowHint;
 
-    property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
     property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
@@ -173,7 +176,6 @@ type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     {$ENDIF COMPILEr6_UP}
-    property OnStartDock;
     property OnStartDrag;
   end;
 
@@ -283,12 +285,7 @@ begin
   R := ClientRect;
   ACanvas.Brush.Color := Color;
   ACanvas.FillRect(R);
-  {$IFDEF VCL}
-  DrawEdge(ACanvas.Handle, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  DrawEdge(ACanvas, R, esNone, esLowered, ebRect);
-  {$ENDIF VisualCLX}
+  Windows.DrawEdge(ACanvas.Handle, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT);
   if BarSize = 0 then
     Exit;
   ACanvas.Brush.Color := BarColor;
@@ -477,7 +474,7 @@ begin
   R := ClientRect;
   ACanvas.Brush.Color := Color;
   ACanvas.FillRect(R);
-  DrawEdge(ACanvas.Handle, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT);
+  Windows.DrawEdge(ACanvas.Handle, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT);
   InflateRect(R, -1, -1);
   if Orientation = pbHorizontal then
   begin
