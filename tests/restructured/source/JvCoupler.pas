@@ -25,8 +25,8 @@ Known Issues:
 * rewrite to use collection so more labels / controls can be coupled?
 * add option to select side?
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvCoupler;
 

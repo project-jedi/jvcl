@@ -1,5 +1,5 @@
 unit JvAppletProperty;
-{$I JEDI.INC}
+{$I JVCL.INC}
 
 interface
 uses

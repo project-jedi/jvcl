@@ -28,7 +28,7 @@ Known Issues:
 
 unit JvCtrls;
 
-{$I JEDI.INC}
+{$I JVCL.INC}
 {$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$ENDIF}

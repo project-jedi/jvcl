@@ -30,7 +30,7 @@ unit JvDdeCmd;
 
 interface
 
-{$I JEDI.INC}
+{$I JVCL.INC}
 
 uses
   DdeMan, Windows, Messages, SysUtils, Classes, JclBase, Forms, JvComponent;

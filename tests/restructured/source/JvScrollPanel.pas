@@ -23,8 +23,8 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 { A scrolling TToolWindow like the ones in IE 4.0 with popup scrollbuttons
    either on top/bottom or left/right edge. }

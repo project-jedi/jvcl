@@ -35,7 +35,7 @@ uses
   Messages, IniFiles, JVCLVer, JvTypes;
 
 {$A+,B-,C+,E-,F-,G+,H+,I+,J+,K-,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Z1}
-{$I JEDI.INC}
+{$I JVCL.INC}
 
 resourcestring
   sJvInspItemHasParent = 'Item already assigned to another parent.';

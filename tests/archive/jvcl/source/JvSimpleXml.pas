@@ -25,8 +25,8 @@ Known Issues: This component has been simplified to be one of the fastest parser
  ever written, so, there is some compatibility issues with special encoding stuff's
  and it doesn't support comments.
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvSimpleXml;
 

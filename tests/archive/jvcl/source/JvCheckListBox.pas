@@ -28,14 +28,14 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvCheckListBox;
 
 interface
 
-{$OBJEXPORTALL On}
+
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, checklst, Controls, Forms,

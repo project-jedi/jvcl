@@ -31,7 +31,7 @@ unit JvCtrlUtils;
 
 interface
 
-{$I JEDI.INC}
+{$I JVCL.INC}
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,

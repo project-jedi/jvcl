@@ -55,12 +55,12 @@ Changes are:
 10) added UseUnicode property - if List is of string type then it will use WideString methods
 11) added WantUnicode property - it will set UseUnicode respecting to used platform
 *)
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
-{$I JEDI.INC}
+
+{$I JVCL.INC}
 
 unit JvMru;
 
-{$OBJEXPORTALL On}
+
 
 interface
 

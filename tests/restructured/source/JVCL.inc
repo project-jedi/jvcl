@@ -8,30 +8,22 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JVCL.INC.inc, released on 2002-07-04.
+The Original Code is: JVCL.INC, released on 2002-07-04.
 
-Last Modified: 2002-07-04
+Last Modified: 2002-07-20
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
- {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
+{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
 {$I JEDI.INC}
 
-
-{.$DEFINE DCS}
-{ Client/Server or Enterprise version. Deactivate this define if you
-  have Delphi Desktop, Standard or Professional Edition }
-
-{.$DEFINE RX_MIDAS}
-{ RX MIDAS components } 
-
-{.$DEFINE RX_ADO}
-{ RX ADO components } 
-
+{$IFDEF BCB}
+  {$ObjExportAll ON}
+{$ENDIF}
 
 {$DEFINE USE_Jv_GIF}
 { This define enables GIF image support. Deactivate this define
