@@ -397,10 +397,13 @@ begin
   Result := Pointer(Ptr);
 end;
 
+{$IFDEF MSWINDOWS}
 initialization
 
 finalization
+// asn: causes exceptions on linux 
   FinalizeUnits;
+{$ENDIF MSWINDOWS}
 
 end.
 
