@@ -159,7 +159,7 @@ function GetGraphicClass(Stream: TStream): TGraphicClass;
 implementation
 
 uses
-  DBConsts, jpeg, SysUtils, Contnrs, Forms,
+  DBConsts, jpeg, SysUtils,
   JvConsts, JvResources, JvFinalize;
 
 const
@@ -305,6 +305,7 @@ var
   S: TGraphicSignature;
 begin
   Result := nil;
+  GraphicSignaturesNeeded;
   if Assigned(GraphicSignatures) then
   begin
     for I := 0 to GraphicSignatures.Count - 1 do
