@@ -50,7 +50,7 @@ unit JvTimerList;
 interface
 
 uses
-  Windows, Messages, Classes;
+  Windows, Messages, SysUtils, Classes;
 
 const
   DefaultInterval = 1000;
@@ -169,7 +169,10 @@ type
 implementation
 
 uses
-  Consts, Forms, SysUtils, Math,
+  {$IFDEF VCL}
+  Forms, // for Application.HandleException
+  {$ENDIF VCL}
+  Consts, Math,
   JvJVCLUtils, JvResources, JvTypes;
 
 const
@@ -334,7 +337,12 @@ begin
         else
           UpdateTimer;
       except
+        {$IFDEF VCL}
         Application.HandleException(Self);
+        {$ENDIF VCL}
+        {$IFDEF VisualCLX}
+        ApplicationHandleException(Self);
+        {$ENDIF VisualCLX}
       end
       else
         Result := DefWindowProc(FWndHandle, Msg, WParam, LParam);
