@@ -91,10 +91,11 @@ Summary
   This painter is the ancestor of all menu item painters.
 Description
   Starting with JVCL3, the concept of menu item painters has been introduced.
-  Each JvMainMenu or JvPopupMenu is assigned an item painter according to the Style property.
+  Each JvMainMenu or JvPopupMenu is assigned an internal item painter according to the Style 
+  property. It can also use a separate painter by setting the ItemPainter property and setting
+  Style to msItemPainter.
   When a menu item is about to be painted, the painter is called and does the painting job.
-  Do not instantiate a TJvCustomMenuItemPainter but use one of its descendents, unless you are 
-  using the msOwnerDraw style and want to base your drawings on one the available painters.
+  Do not instantiate a TJvCustomMenuItemPainter but use one of its descendents.
 ##  you shouldn't have to instantiate one of the
 ##  descendants of TJvCustomMenuItemPainter.
 ----------------------------------------------------------------------------------------------------
@@ -467,10 +468,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.ItemPainter
 Summary
-  The item painter associated with the current style
+  The item painter associated with the menu
 Description
-  This property appears to let you specify default values for the current painter. Some
-  descendents may add more properties to the default ones to provide a better rendering.
+  This property indicates which painter component to use to paint the menu. This value will
+  only be taken into account if Style is msItemPainter and should never be nil in that case.
 
 See Also
   Style, TJvCustomMenuItemPainter
@@ -572,6 +573,8 @@ Description
   msOffice - The item is drawn as in MsOffice 97, with raising frames around the images
   msXP - The item is drawn as in Windows XP, white background, shadow below selected images,
   flat menu borders
+  msItemPainter - The ItemPainter property indicates the painter to use. ItemPainter should
+  never be nil when this style is used.
 
 See Also
   ItemPainter, TJvMenuStyle
@@ -683,6 +686,8 @@ Description
 @@TJvMenuStyle.msXP
   The item is drawn as in Windows XP, white background, shadow below selected images, flat menu
 borders
+@@TJvMenuStyle.msItemPainter
+  The item is drawn using the painter indicated in the ItemPainter property
 ----------------------------------------------------------------------------------------------------
 @@TJvOfficeMenuItemPainter
 Summary
