@@ -25,6 +25,7 @@ SRCH = ..\$(SRC);..\$(COM);..\$(JCL);..\$(ARCH);..\$(DCU)
 #---------------------------------------------------------------------------------------------------
 MAKE = "$(ROOT)\bin\make.exe" -$(MAKEFLAGS) -f$**
 DCC  = "$(ROOT)\bin\dcc32.exe" -e"$(BIN)" -i"$(SRCP)" -n"$(DCU)" -r"$(SRCP)" -u"$(SRCP)" -u"$(ROOT)\Lib\Obj" -q -w -h -m
+DCCx = "$(ROOT)\bin\dcc32.exe" -Q -M
 DCCH = "$(ROOT)\bin\dcc32.exe" -e"..\$(BIN)" -i"$(SRCH)" -n"..\$(DCU)" -r"$(SRCH)" -u"$(SRCH)" -q -w -h -m
 BRCC = "$(ROOT)\bin\brcc32.exe" $**
 #---------------------------------------------------------------------------------------------------
@@ -81,7 +82,16 @@ Bpg2Make.exe: bin\Bpg2Make.exe
 
 bin\Bpg2Make.exe: Bpg2Make\Bpg2Make.dpr Bpg2Make\Bpg2MakeUtils.pas
   cd Bpg2Make
-  $(DCC) Bpg2Make.dpr
+  @type &&|
+-e"$(BIN)"
+-i"$(SRCP)"
+-n"$(DCU)"
+-r"$(SRCP)"
+-u"$(SRCP)"
+-u"$(ROOT)\Lib\Obj"
+| >Bpg2Make.cfg
+  $(DCCx) Bpg2Make.dpr
+  -@del Bpg2Make.cfg >NUL
   cd ..
 
 jtouch.exe: JTouch\jtouch.dpr
@@ -91,7 +101,7 @@ jtouch.exe: JTouch\jtouch.dpr
 
 crlf.exe: JvAdjustLineBreaks\crlf.dpr
   cd JvAdjustLineBreaks
-  $(DCC) $&.dpr
+  $(DCCx) $&.dpr
   cd ..
 
 stripCmtPO.exe: stripCmtPO\stripCmtPO.dpr
@@ -108,12 +118,21 @@ dc.exe: DFMCleaner\dc.dpr
   cd DFMCleaner
   $(DCC) $&.dpr
   cd ..
-  
+
 pg.exe: bin\pg.exe
 
 bin\pg.exe: PackagesGenerator\pg.dpr PackagesGenerator\CmdLineUtils.pas PackagesGenerator\FileUtils.pas PackagesGenerator\GenerateUtils.pas
   @cd PackagesGenerator
-  $(DCC) pg.dpr
+  @type &&|
+-e"$(BIN)"
+-i"$(SRCP)"
+-n"$(DCU)"
+-r"$(SRCP)"
+-u"$(SRCP)"
+-u"$(ROOT)\Lib\Obj"
+| >pg.cfg
+  $(DCCx) pg.dpr
+  -@del pg.cfg >NUL
   @cd ..
 
 pgEdit.exe: PackagesGenerator\pgEdit.dpr
