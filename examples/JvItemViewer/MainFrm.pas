@@ -87,7 +87,9 @@ type
     procedure DoITV2DragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
     procedure DoITV2DragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure DoITV2MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure DoITV2GetCaption(Sender: TObject; ImageINdex: Integer; var ACaption: string);
+    procedure DoITV2GetCaption(Sender: TObject; ImageIndex: Integer; var ACaption: WideString);
+    procedure DoITV3ItemHint(Sender: TObject; Index: Integer;
+    var HintInfo: THintInfo; var Handled: Boolean);
     procedure DoITVClick(Sender: TObject);
     procedure DoITVDblClick(Sender: TObject);
     procedure DITVLoadBegin(Sender: TObject);
@@ -425,7 +427,7 @@ begin
 end;
 
 procedure TfrmMain.DoITV2GetCaption(Sender: TObject; ImageIndex: Integer;
-  var ACaption: string);
+  var ACaption: WideString);
 begin
   if ITV2.Options.ShowCaptions then
   begin

@@ -21,11 +21,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ActnList, Menus, ImgList, JvDockControlForm, JvDockVIDStyle,
-  JvDockVSNetStyle, StdCtrls, ComCtrls, ToolWin, ExtCtrls, shdocvw
-  
+  ActnList, Menus, ImgList, JvDockControlForm, JvDockVIDStyle, JvDockGlobals,
+  JvDockVSNetStyle, StdCtrls, ComCtrls, ToolWin, ExtCtrls, OleCtrls, shdocvw
+
   {$IFDEF USEJVCL}
-  , JvComponent, JvAppStorage, JvAppIniStorage
+  , JvComponent, JvAppStorage, JvAppIniStorage, JvMenus
   {$ENDIF};
 
 type
@@ -76,11 +76,9 @@ type
 
   TMSDN2002 = class(TForm)
     ActionList1: TActionList;
-    File_File_Action: TAction;
-    MainMenu1: TMainMenu;
+    MainMenu1: TJvMainMenu;
     File_Print_Action: TAction;
     File_Exit_Action: TAction;
-    Edit_Edit_Action: TAction;
     Edit_Undo_Action: TAction;
     Edit_Redo_Action: TAction;
     Edit_Cut_Action: TAction;
@@ -89,9 +87,6 @@ type
     Edit_Delete_Action: TAction;
     Edit_Select_All_Action: TAction;
     Edit_Find_in_this_Topic_Action: TAction;
-    View_Web_Browser_Action: TAction;
-    View_Navigation_Action: TAction;
-    View_Toolbars_Action: TAction;
     View_Full_Screen_Action: TAction;
     View_Text_Size_Action: TAction;
     View_View_Source_Action: TAction;
@@ -108,10 +103,6 @@ type
     View_Text_Size_Medium_Action: TAction;
     View_Text_Size_Smaller_Action: TAction;
     View_Text_Size_Smallest_Action: TAction;
-    Tools_Tools_Action: TAction;
-    Tools_Customize_Action: TAction;
-    Tools_Options_Action: TAction;
-    Window_Window_Action: TAction;
     Window_New_Window_Action: TAction;
     Window_Dockable_Action: TAction;
     Window_Split_Action: TAction;
@@ -120,19 +111,16 @@ type
     Window_Auto_Hide_Action: TAction;
     Window_Close_All_Document_Action: TAction;
     Window_Windows_Action: TAction;
-    Help_Help_Action: TAction;
     Help_Contents_Action: TAction;
     Help_Index_Action: TAction;
     Help_Search_Action: TAction;
     Help_Favorites_Action: TAction;
     Help_Index_results_Action: TAction;
     Help_Search_results_Action: TAction;
-    Help_Edit_Filters_Action: TAction;
     Help_Previous_topic_Action: TAction;
     Help_Next_topic_Action: TAction;
     Help_Sync_Contents_Action: TAction;
     Help_Technical_Support_Action: TAction;
-    Help_Help_on_Help_Action: TAction;
     Help_About_Action: TAction;
     ImageList1: TImageList;
     File1: TMenuItem;
@@ -150,7 +138,6 @@ type
     N3: TMenuItem;
     FindinthisTopic1: TMenuItem;
     ViewSource1: TMenuItem;
-    View_View_Action: TAction;
     WebBrowser1: TMenuItem;
     ShowWebBrowser1: TMenuItem;
     WebNavigateBack1: TMenuItem;
@@ -218,18 +205,18 @@ type
     lbDockServer1: TJvDockServer;
     ControlBar1: TControlBar;
     ToolBar1: TToolBar;
-    ToolButton1: TToolButton;
-    ToolButton2: TToolButton;
-    ToolButton3: TToolButton;
-    ToolButton4: TToolButton;
-    ToolButton5: TToolButton;
+    tbBack: TToolButton;
+    tbFwd: TToolButton;
+    tbStop: TToolButton;
+    tbRefresh: TToolButton;
+    tbHome: TToolButton;
     View_Web_Browser_Stop_Browser_Action: TAction;
     View_Web_Browser_Refresh_Browser_Action: TAction;
     Help_Add_to_Favorites_Action: TAction;
     ToolButton6: TToolButton;
-    ToolButton7: TToolButton;
-    ToolButton8: TToolButton;
-    ToolButton9: TToolButton;
+    tbExplorer: TToolButton;
+    tbFavorites: TToolButton;
+    tbAddFavorite: TToolButton;
     ToolButton10: TToolButton;
     URLComboBox: TComboBox;
     ToolButton11: TToolButton;
@@ -245,13 +232,14 @@ type
     ToolButton21: TToolButton;
     ToolButton22: TToolButton;
     StatusBar1: TStatusBar;
-    PopupMenu1: TPopupMenu;
+    PopupMenu1: TJvPopupMenu;
     Dockable_Item: TMenuItem;
     Hide_Item: TMenuItem;
     Float_Item: TMenuItem;
     AutoHide_Item: TMenuItem;
     JvDockVSNetStyle1: TJvDockVSNetStyle;
-    procedure File_Print_ActionExecute(Sender: TObject);
+    Tools_Customize: TAction;
+    Tools_Options: TAction;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure Help_Contents_ActionExecute(Sender: TObject);
@@ -260,7 +248,6 @@ type
     procedure Help_Favorites_ActionExecute(Sender: TObject);
     procedure Help_Index_results_ActionExecute(Sender: TObject);
     procedure Help_Search_results_ActionExecute(Sender: TObject);
-    procedure File_File_ActionExecute(Sender: TObject);
     procedure File_Exit_ActionExecute(Sender: TObject);
     procedure Hide_ItemClick(Sender: TObject);
     procedure Float_ItemClick(Sender: TObject);
@@ -269,6 +256,7 @@ type
     procedure AutoHide_ItemClick(Sender: TObject);
   private
     { Private declarations }
+    InternalWebBrowser: TWebBrowser;
     {$IFDEF USEJVCL}
     JvAppStorage:TJvAppIniFileStorage;
     {$ENDIF}
@@ -280,6 +268,10 @@ type
     procedure LoadToolFormLayout;    // load previous layout
     procedure SaveToolFormLayout;    // save current layout
     procedure CreateVSNETPageControl;
+    procedure SafeExecWB(ACommand:TOleEnum);
+    function BrowserSupports(ACommand:TOleEnum):boolean;
+    procedure DoCommandStateChange(Sender: TObject; Command: Integer;
+      Enable: WordBool);
   public
     { Public declarations }
   end;
@@ -290,9 +282,10 @@ var
 implementation
 
 uses
-  XPMenu, ContentsFormUnit, FavoritesFormUnit, IndexFormUnit,
-  IndexResultFormUnit, SearchFormUnit, SearchResultFormUnit,
-  JvDockGlobals;
+  ShellAPI, ActiveX, 
+  ContentsFormUnit, FavoritesFormUnit, IndexFormUnit,
+  IndexResultFormUnit, SearchFormUnit, SearchResultFormUnit;
+  
 const
   cStorageFilename = 'DockLayout.ini';
 type
@@ -334,7 +327,6 @@ end;
 
 procedure TMSDN2002.LoadDockInfo;
 begin
-  CreateXPMenu;
   CreateToolForm;
   if not FileExists(ExtractFilePath(Application.ExeName) + cStorageFilename) then
     DefaultDockLayout
@@ -389,12 +381,6 @@ begin
   {$ENDIF}
 end;
 
-procedure TMSDN2002.File_Print_ActionExecute(Sender: TObject);
-begin
-  { Show some info about action }
-  ShowMessage(Format('You clicked ''%s''', [TAction(Sender).Caption]));
-end;
-
 procedure TMSDN2002.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
@@ -445,10 +431,10 @@ begin
 end;
 
 procedure TMSDN2002.CreateVSNETPageControl;
-var Page: TJvDockVSNETTabPageControl;
+var
+  Page: TJvDockVSNETTabPageControl;
   Sheet: TJvDockVSNETTabSheet;
-  WebBrowser: TWebBrowser;
-  URL: OleVariant;
+
   PageFont: TFont;
 begin
   Page := TJvDockVSNETTabPageControl.Create(Self);
@@ -469,16 +455,19 @@ begin
   PageFont.Style := [fsBold];
   Page.ActiveFont := PageFont;
 
-  WebBrowser := TWebBrowser.Create(Sheet);
-  TWinControl(WebBrowser).Parent := Sheet;
-  WebBrowser.Align := alClient;
-  URL := ExtractFilePath(Application.EXEName) + 'msdnstart\msdnstart.htm';
-  WebBrowser.Navigate2(URL);
+  InternalWebBrowser := TWebBrowser.Create(Sheet);
+  InternalWebBrowser.OnCommandStateChange := DoCommandStateChange;
+  TWinControl(InternalWebBrowser).Parent := Sheet;
+  InternalWebBrowser.Align := alClient;
+  View_Web_Browser_Home_Action.Execute;
 end;
 
-procedure TMSDN2002.File_File_ActionExecute(Sender: TObject);
+procedure TMSDN2002.DoCommandStateChange(Sender: TObject; Command: Integer; Enable: WordBool);
 begin
-  // do nothing
+  if Command = CSC_NAVIGATEBACK then
+    View_Web_Browser_Web_Navigate_Back_Action.Enabled := Enable
+  else if Command = CSC_NAVIGATEBACK then
+      View_Web_Browser_Web_Navigate_Forward_Action.Enabled := Enable;
 end;
 
 procedure TMSDN2002.File_Exit_ActionExecute(Sender: TObject);
