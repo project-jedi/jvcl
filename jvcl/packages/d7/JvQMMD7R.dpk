@@ -29,7 +29,10 @@ package JvQMMD7R;
 requires
   JvQCoreD7R,
   JvQCtrlsD7R,
-  JvQSystemD7R;
+  JvQSystemD7R,
+  rtl,
+  visualclx,
+  DJcl;
 
 contains
   JvQBmpAnimator in '..\..\qrun\JvQBmpAnimator.pas',
