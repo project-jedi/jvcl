@@ -902,9 +902,10 @@ procedure TJvCustomComboBox.ConsumerSubServiceCreated(Sender: TJvDataConsumer;
 var
   VL: IJvDataConsumerViewList;
 begin
-  if Supports(SubSvc, IJvDataConsumerViewList, VL) then
+  if SubSvc.GetInterface(IJvDataConsumerViewList, VL) then
   begin
     VL.ExpandOnNewItem := True;
+    VL.AutoExpandLevel := -1;
     VL.RebuildView;
   end;
 end;
