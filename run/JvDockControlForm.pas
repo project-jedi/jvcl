@@ -3802,41 +3802,37 @@ end;
 
 procedure TJvDockTabPageControl.LoadFromStream(Stream: TStream);
 var
-  I, Count, NameLen, SheetVisible, ActiveSheetIndex: Integer;
+  I, ACount, NameLen, SheetVisible, ActiveSheetIndex: Integer;
   ControlName: string;
   AControl: TControl;
 begin
-  // (rom) try finally of no use
-  try
-    Stream.Read(I, SizeOf(I));
+  Stream.Read(I, SizeOf(I));
 
-    Stream.Read(Count, SizeOf(Count));
-    for I := 0 to Count - 1 do
+  Stream.Read(ACount, SizeOf(ACount));
+  for I := 0 to ACount - 1 do
+  begin
+    ControlName := '';
+
+    Stream.Read(NameLen, SizeOf(NameLen));
+    if NameLen > 0 then
     begin
-      ControlName := '';
-
-      Stream.Read(NameLen, SizeOf(NameLen));
-      if NameLen > 0 then
-      begin
-        SetLength(ControlName, NameLen);
-        Stream.Read(Pointer(ControlName)^, NameLen);
-      end;
-      if ControlName <> '' then
-      begin
-        ReloadDockedControl(ControlName, AControl);
-        if AControl <> nil then
-          AControl.ManualDock(Self, nil, alClient);
-      end;
-
-      Stream.Read(SheetVisible, SizeOf(SheetVisible));
-      DockClients[I].Visible := Boolean(SheetVisible);
+      SetLength(ControlName, NameLen);
+      Stream.Read(Pointer(ControlName)^, NameLen);
+    end;
+    if ControlName <> '' then
+    begin
+      ReloadDockedControl(ControlName, AControl);
+      if AControl <> nil then
+        AControl.ManualDock(Self, nil, alClient);
     end;
 
-    Stream.Read(ActiveSheetIndex, SizeOf(ActiveSheetIndex));
-    ActivePageIndex := ActiveSheetIndex;
-    Change;
-  finally
+    Stream.Read(SheetVisible, SizeOf(SheetVisible));
+    DockClients[I].Visible := Boolean(SheetVisible);
   end;
+
+  Stream.Read(ActiveSheetIndex, SizeOf(ActiveSheetIndex));
+  ActivePageIndex := ActiveSheetIndex;
+  Change;
 end;
 
 procedure TJvDockTabPageControl.SaveToStream(Stream: TStream);
