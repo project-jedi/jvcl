@@ -97,6 +97,7 @@ type
     procedure SetImageIndex(Value: Integer); override;
     procedure SetVisible(Value: Boolean); override;
     procedure SetOnExecute(Value: TNotifyEvent); override;
+    function DoShowHint(var HintStr: string): Boolean; virtual;
     property Client: TJvXPBarItem read FClient write FClient;
   end;
 
@@ -270,7 +271,7 @@ type
     FGrouped: boolean;
     FHeaderHeight: integer;
     function IsFontStored: Boolean;
-    procedure FontChanged(Sender: TObject);
+    procedure FontChange(Sender: TObject);
     procedure SetCollapsed(Value: Boolean);
     procedure SetFont(Value: TFont);
     procedure SetHeaderFont(Value: TFont);
@@ -291,7 +292,7 @@ type
     function GetRollHeight: integer;
     function GetRollWidth: integer;
   protected
-
+    
     function GetHitTestRect(const HitTest: TJvXPBarHitTest): TRect;
     function GetItemRect(Index: Integer): TRect; virtual;
     procedure ItemVisibilityChanged(Item: TJvXPBarItem); dynamic;
@@ -334,6 +335,11 @@ type
     property OnDrawItem: TJvXPBarOnDrawItemEvent read FOnDrawItem write FOnDrawItem;
     property OnItemClick: TJvXPBarOnItemClickEvent read FOnItemClick write FOnItemClick;
     procedure AdjustClientRect(var Rect: TRect); override;
+    // show hints for individual item sin the list
+    function HintShow(var HintInfo: THintInfo): Boolean; {$IFDEF USEJVCL}override;{$ELSE}dynamic;{$ENDIF}
+    {$IFNDEF USEJVCL}
+    procedure CMHintShow(var Message: TCMHintShow); message CM_HINTSHOW;
+    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -427,14 +433,15 @@ type
 
 implementation
 
-{$IFDEF JVCLThemesEnabled}
 uses
+{$IFDEF JVCLThemesEnabled}
   UxTheme,
 {$IFNDEF COMPILER7_UP}
   TmSchema,
 {$ENDIF COMPILER7_UP}
-  JvThemes;
+  JvThemes,
 {$ENDIF JVCLThemesEnabled}
+  Menus;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvXPBar.res}
@@ -1083,7 +1090,7 @@ begin
   FFont := TFont.Create;
   FFont.Color := $00E75100;
   FFont.Size := 10;
-  FFont.OnChange := FontChanged;
+  FFont.OnChange := FontChange;
   FGradient := TBitmap.Create;
   FHeaderHeight := 28;
   FGradientWidth := 0;
@@ -1091,7 +1098,7 @@ begin
   FHeaderFont.Color := $00E75100;
   FHeaderFont.Size := 10;
   FHeaderFont.Style := [fsBold];
-  FHeaderFont.OnChange := FontChanged;
+  FHeaderFont.OnChange := FontChange;
 
   FHitTest := htNone;
 
@@ -1144,7 +1151,7 @@ begin
   Result := not ParentFont and not DesktopFont;
 end;
 
-procedure TJvXPCustomWinXPBar.FontChanged(Sender: TObject);
+procedure TJvXPCustomWinXPBar.FontChange(Sender: TObject);
 begin
   if (not FFontChanging) and not (csLoading in ComponentState) then
     ParentFont := False;
@@ -1647,7 +1654,6 @@ begin
 end;
 
 procedure TJvXPCustomWinXPBar.WMAfterXPBarCollapse(var Msg: TMessage);
-var i:integer;
 begin
   if Assigned(FAfterCollapsedChange) then
     FAfterCollapsedChange(Self, Msg.WParam <> 0);
@@ -1728,6 +1734,49 @@ begin
     ResizeToMaxHeight;
     //    InternalRedraw;
   end;
+end;
+
+function TJvXPCustomWinXPBar.HintShow(var HintInfo: THintInfo): Boolean;
+begin
+  // draw the item hint (if available)
+  if FHoverIndex > -1 then
+  begin
+    HintInfo.CursorRect := GetItemRect(FHoverIndex);
+    with VisibleItems[FHoverIndex] do
+    begin
+       if Action is TCustomAction then
+         HintInfo.HintStr := TCustomAction(Action).Hint
+       else
+         HintInfo.HintStr := VisibleItems[FHoverIndex].Hint;
+    end;
+  end else if (VisibleItems.Count > 0) and not Collapsed then
+    HintInfo.CursorRect := GetHitTestRect(htHeader);
+
+  if HintInfo.HintStr = '' then
+    HintInfo.HintStr := Hint;
+  Result := false;  // use default hint window
+end;
+
+{$IFNDEF USEJVCL}
+procedure TJvXPCustomWinXPBar.CMHintShow(var Message: TCMHintShow);
+begin
+  Message.Result := Ord(HintShow(@Message.HintInfo));
+end;
+{$ENDIF}
+
+function TJvXPBarItemActionLink.DoShowHint(var HintStr: string): Boolean;
+begin
+  Result := True;
+  if Action is TCustomAction then
+  begin
+    Result := TCustomAction(Action).DoHint(HintStr);
+    if Result and Application.HintShortCuts and (TCustomAction(Action).ShortCut <> scNone) then
+    begin
+      if HintStr <> '' then
+        HintStr := Format('%s (%s)', [HintStr, ShortCutToText(TCustomAction(Action).ShortCut)]);
+    end;
+  end;
+
 end;
 
 end.
