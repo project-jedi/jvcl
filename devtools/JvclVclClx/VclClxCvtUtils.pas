@@ -177,7 +177,13 @@ begin
   try
     List.LoadFromFile(Filename);
     for i := 0 to List.Count - 1 do
-      Add(List.Names[i], List.ValueFromIndex[i]);
+      if Trim(List[i]) <> '' then
+      try
+        Add(List.Names[i], List.ValueFromIndex[i]);
+      except
+        raise Exception.CreateFmt('Duplicate items found in %s: %s',
+                [ExtractFileName(Filename), List[i]]);
+      end;
   finally
     List.Free;
   end;

@@ -80,7 +80,7 @@ var
   JVCLConverter: TJVCLConverter;
   Sr: TSearchRec;
   dof, kof: TStrings;
-  dir:string;
+  dir: string;
 
 begin
   ListBox1.Items.Clear;
@@ -88,16 +88,17 @@ begin
   kof := TStringList.Create;
   Converter := TConverter.Create(EditJVCLDir.Text);
   try
+    BtnExecute.Enabled := False;
     if RBtnSingleFile.Checked or RBtnDir.Checked then
     begin
       JVCLConverter := TJVCLConverter.Create(ExtractFilePath(ParamStr(0)) + 'VclClxData',
         Converter.Model);
       try
-          Dir := ExtractFileDir(ParamStr(0)) + PathDelim + 'VclClxData'+ PathDelim;
-          if FileExists(Dir + 'qexamples.dof') then
-            dof.loadfromfile(Dir + 'qexamples.dof');
-          if FileExists(Dir + 'qexamples.kof') then
-            kof.loadfromfile(Dir + 'qexamples.kof');
+        Dir := ExtractFileDir(ParamStr(0)) + PathDelim + 'VclClxData'+ PathDelim;
+        if FileExists(Dir + 'qexamples.dof') then
+          dof.loadfromfile(Dir + 'qexamples.dof');
+        if FileExists(Dir + 'qexamples.kof') then
+          kof.loadfromfile(Dir + 'qexamples.kof');
 //        JVCLConverter.OnProgress := DoProgress;
         JVCLConverter.OutDirectory := EditOutDir.Text;
         JVCLConverter.ReduceConditions := CheckBoxReduceConditions.Checked;
@@ -105,7 +106,7 @@ begin
         JVCLConverter.UnixLineBreak := CheckBoxUnixLineBreaks.Checked;
         JVCLConverter.ForceOverwrite := CheckBoxForceOverwrite.Checked;
         ForceDirectories(EditOutDir.Text);
-        if RBtnDir.Checked  then
+        if RBtnDir.Checked then
         begin
           if FindFirst(EditDirectory.Text + PathDelim + '*.*', faAnyFile and not faDirectory, Sr) = 0 then
           begin
@@ -159,10 +160,11 @@ begin
       Converter.CreateClxFiles;
     end;
   finally
+    BtnExecute.Enabled := True;
     Converter.Free;
+    dof.Free;
+    kof.Free;
   end;
-  dof.Free;
-  kof.Free;
 end;
 
 procedure TFormMain.DoProgress(Sender: TObject; const Text: string; Position,
@@ -201,7 +203,8 @@ begin
 end;
 
 function TFormMain.GetQName(const Filename: string): string;
-var Fn: string;
+var
+  Fn: string;
 begin
   Result := ExtractFilePath(Filename);
   Fn := ExtractFileName(Filename);
