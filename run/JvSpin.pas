@@ -148,7 +148,7 @@ type
   TJvCustomSpinEdit = class(TJvExCustomComboMaskEdit)
   {$ENDIF VisualCLX}
   private
-    FShowButton : Boolean;
+    FShowButton: Boolean;
     FCheckMaxValue: Boolean;
     FCheckMinValue: Boolean;
     FCheckOptions: TJvCheckOptions;
@@ -254,8 +254,7 @@ type
 
     property AsInteger: Longint read GetAsInteger write SetAsInteger default 0;
     property Text;
-    property Alignment: TAlignment read FAlignment write SetAlignment
-      default taLeftJustify;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property ArrowKeys: Boolean read FArrowKeys write SetArrowKeys default True;
     property ButtonKind: TSpinButtonKind read FButtonKind write SetButtonKind default bkDiagonal;
     property Decimal: Byte read FDecimal write SetDecimal default 2;
@@ -270,10 +269,9 @@ type
       default {$IFDEF BCB} vtInt {$ELSE} vtInteger {$ENDIF};
     property Value: Extended read GetValue write SetValue stored IsValueStored;
     property Thousands: Boolean read FThousands write SetThousands default False;
+    property ShowButton: Boolean read FShowButton write SetShowButton default True;
     property OnBottomClick: TNotifyEvent read FOnBottomClick write FOnBottomClick;
     property OnTopClick: TNotifyEvent read FOnTopClick write FOnTopClick;
-
-    property ShowButton : Boolean read FShowButton write SetShowButton default True;
   end;
 
   TJvSpinEdit = class(TJvCustomSpinEdit)
@@ -302,6 +300,7 @@ type
     property Increment;
     property MaxValue;
     property MinValue;
+    property ShowButton;
     property ValueType;
     property Value;
     property OnBottomClick;
@@ -364,8 +363,6 @@ type
     {$ENDIF COMPILER6_UP}
     {$ENDIF VCL}
     property ClipboardCommands;
-
-    property ShowButton;
   end;
 
 implementation
@@ -990,7 +987,6 @@ end;
 
 function TJvCustomSpinEdit.GetButtonWidth: Integer;
 begin
-
   if ShowButton then
   begin
     if FUpDown <> nil then
@@ -1002,9 +998,7 @@ begin
       Result := DefBtnWidth;
   end
   else
-  begin
     Result := 0;
-  end;
 end;
 
 function TJvCustomSpinEdit.GetMinHeight: Integer;
@@ -1164,57 +1158,55 @@ begin
   FUpDown.Free;
   FUpDown := nil;
   if ShowButton then
-  begin
-  if GetButtonKind = bkStandard then
-  begin
-    FUpDown := TJvUpDown.Create(Self);
-    with TJvUpDown(FUpDown) do
+    if GetButtonKind = bkStandard then
     begin
-      Visible := True;
-      //Polaris
-      SetBounds(0, 1, DefBtnWidth, Self.Height);
-      if BiDiMode = bdRightToLeft then
-        Align := alLeft
-      else
-        Align := alRight;
+      FUpDown := TJvUpDown.Create(Self);
+      with TJvUpDown(FUpDown) do
+      begin
+        Visible := True;
+        //Polaris
+        SetBounds(0, 1, DefBtnWidth, Self.Height);
+        if BiDiMode = bdRightToLeft then
+          Align := alLeft
+        else
+          Align := alRight;
+        {$IFDEF VCL}
+        Parent := Self;
+        {$ENDIF VCL}
+        {$IFDEF VisualCLX}
+        Parent := Self.ClientArea;
+        {$ENDIF VisualCLX}
+        OnClick := UpDownClick;
+      end;
+    end
+    else
+    begin
+      FBtnWindow := TWinControl.Create(Self);
+      FBtnWindow.Visible := True;
       {$IFDEF VCL}
-      Parent := Self;
+      FBtnWindow.Parent := Self;
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      Parent := Self.ClientArea;
+      FBtnWindow.Parent := Self.ClientArea;
       {$ENDIF VisualCLX}
-      OnClick := UpDownClick;
+      if FButtonKind <> bkClassic then
+        FBtnWindow.SetBounds(0, 0, DefBtnWidth, Height)
+      else
+        FBtnWindow.SetBounds(0, 0, Height, Height);
+      {$IFDEF VisualCLX}
+      FBtnWindow.Align := alRight;
+      {$ENDIF VisualCLX}
+      FButton := TJvSpinButton.Create(Self);
+      FButton.Visible := True;
+      if FButtonKind = bkClassic then
+        FButton.FButtonStyle := sbsClassic;
+      FButton.Parent := FBtnWindow;
+      FButton.FocusControl := Self;
+      FButton.OnTopClick := UpClick;
+      FButton.OnBottomClick := DownClick;
+      //Polaris
+      FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
     end;
-  end
-  else
-  begin
-    FBtnWindow := TWinControl.Create(Self);
-    FBtnWindow.Visible := True;
-    {$IFDEF VCL}
-    FBtnWindow.Parent := Self;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    FBtnWindow.Parent := Self.ClientArea;
-    {$ENDIF VisualCLX}
-    if FButtonKind <> bkClassic then
-      FBtnWindow.SetBounds(0, 0, DefBtnWidth, Height)
-    else
-      FBtnWindow.SetBounds(0, 0, Height, Height);
-    {$IFDEF VisualCLX}
-    FBtnWindow.Align := alRight;
-    {$ENDIF VisualCLX}
-    FButton := TJvSpinButton.Create(Self);
-    FButton.Visible := True;
-    if FButtonKind = bkClassic then
-      FButton.FButtonStyle := sbsClassic;
-    FButton.Parent := FBtnWindow;
-    FButton.FocusControl := Self;
-    FButton.OnTopClick := UpClick;
-    FButton.OnBottomClick := DownClick;
-    //Polaris
-    FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
-  end;
-  end;
 end;
 
 procedure TJvCustomSpinEdit.ResizeButton;
@@ -1327,7 +1319,7 @@ begin
   SetValue(Value);
 end;
 
-procedure TJvCustomSpinEdit.SetShowButton(Value : Boolean);
+procedure TJvCustomSpinEdit.SetShowButton(Value: Boolean);
 begin
   if FShowButton <> Value then
   begin

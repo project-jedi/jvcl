@@ -153,7 +153,7 @@ end;
 procedure TfrmJvSLDMappingEditor.StoreSettings;
 begin
   inherited StoreSettings;
-    with TRegistry.Create do
+  with TRegistry.Create do
     try
       LazyWrite := False;
       if OpenKey(GetRegKey, True) then
