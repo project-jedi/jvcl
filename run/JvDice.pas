@@ -36,12 +36,12 @@ uses
   SysUtils,
   Windows,
   Classes, Graphics, Messages, Controls, Forms, Menus,
-  JvTimer;
+  JvTimer, JvComponent, JvThemes;
 
 type
   TJvDiceValue = 1..6;
 
-  TJvDice = class(TCustomControl)
+  TJvDice = class(TJvCustomControl)
   private
     FActive: Boolean;
     FAutoSize: Boolean;
@@ -57,7 +57,8 @@ type
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
+    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
     procedure CreateBitmap;
     procedure SetInterval(Value: Cardinal);
     procedure SetRotate(Value: Boolean);
@@ -79,6 +80,9 @@ type
     destructor Destroy; override;
     procedure RandomValue;
   published
+  {$IFDEF JVCLThemesEnabled}
+    property ParentBackground default True;
+  {$ENDIF}  
     property Align;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property AutoStopInterval: Cardinal read FAutoStopInterval write FAutoStopInterval default 0;
@@ -126,7 +130,7 @@ type
 implementation
 
 uses
-  JvThemes, ImgList;
+  ImgList;
 
 {$R ..\resources\JvDice.res}
 
@@ -204,9 +208,14 @@ begin
   inherited;
 end;
 
-procedure TJvDice.WMSize(var Msg: TWMSize);
+procedure TJvDice.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
-  inherited;
+  Msg.Result := 1; // Paint clears the background
+end;
+
+procedure TJvDice.CMDenySubClassing(var Msg: TMessage); 
+begin
+  Msg.Result := 0;
 end;
 
 procedure TJvDice.CreateBitmap;
@@ -267,7 +276,6 @@ var
       ImgList.AddMasked(FBitmap, FBitmap.TransparentColor);
       TmpImage.Width := IWidth;
       TmpImage.Height := IHeight;
-      TmpImage.Canvas.Brush.Color := Self.Brush.Color;
       TmpImage.Canvas.CopyRect(ClientRect, Canvas, ClientRect);
       ImgList.Draw(TmpImage.Canvas, 0, 0, 0);
       InflateRect(ARect, -1, -1);
@@ -279,6 +287,8 @@ var
   end;
 
 begin
+  Canvas.Brush.Color := Parent.Brush.Color;
+  DrawThemedBackground(Self, Canvas, ClientRect);
   ARect := ClientRect;
   if FBitmap <> nil then
     DrawBitmap;
