@@ -1,1 +1,1 @@
-brc32 JvUIBReg.rc -r -foJvUIB.dcr
+brc32 JvUIBReg.rc -r -fo..\resources\JvUIBReg.dcr
