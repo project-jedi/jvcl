@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2002-07-04
+Last Modified: 2004-01-06
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -34,7 +34,13 @@ unit JvHint;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms, ExtCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Controls, Forms, ExtCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QWindows, QControls, QForms, QExtCtrls,
+  {$ENDIF}
   JvHtControls;
 
 type

@@ -31,7 +31,13 @@ unit JvImageRotate;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls, ExtCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Graphics, Controls, ExtCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QWindows, QGraphics, QControls, QExtCtrls,
+  {$ENDIF}
   JvImageDrawThread, JVCLVer;
 
 type

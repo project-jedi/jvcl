@@ -31,7 +31,16 @@ unit JvGroupBox;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
+  SysUtils, Classes,
+  {$IFDEF WINDOWS}
+  Windows,
+  {$ENDIF}
+  {$IFDEF VCL}
+  Messages, Graphics, Controls, Forms, StdCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QWindows, QGraphics, QControls, QForms, QStdCtrls,
+  {$ENDIF}
   JVCLVer, JvThemes, JvExStdCtrls;
 
 type
@@ -45,8 +54,9 @@ type
     FOver: Boolean;
     FPropagateEnable: Boolean;
     procedure SetPropagateEnable(const Value: Boolean);
-
+    {$IFDEF VCL}
     procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
+    {$ENDIF}
   {$IFDEF JVCLThemesEnabledD56}
     function GetParentBackground: Boolean;
   protected
@@ -234,10 +244,12 @@ begin
     FOnParentColorChange(Self);
 end;
 
+{$IFDEF VCL}
 procedure TJvGroupBox.CMDenySubClassing(var Msg: TMessage);
 begin
   Msg.Result := 1;
 end;
+{$ENDIF}
 
 procedure TJvGroupBox.DoHotKey;
 begin

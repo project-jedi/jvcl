@@ -33,7 +33,13 @@ unit JvItemsPanel;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, ExtCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QExtCtrls,
+  {$ENDIF}
   JvComponent, JvThemes;
 
 type
@@ -55,7 +61,9 @@ type
     FHotTrackColor: TColor;
     FOnItemClick: TJvPanelItemClickEvent;
     FOrientation: TJvPanelOrientation;
+    {$IFDEF VCL}
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    {$ENDIF}
     function GetCaption: TCaption;
     procedure SetItems(const Value: TStrings);
     procedure SetItemHeight(const Value: Integer);
@@ -67,6 +75,9 @@ type
   protected
     {$IFDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); override;
+    {$ENDIF}
+    {$IFDEF VisualCLX}
+    procedure AdjustSize; override;
     {$ENDIF}
     procedure Grow;
     procedure PaintDown;
@@ -106,20 +117,22 @@ type
     property Align;
     property Alignment;
     property Anchors;
+    {$IFDEF VCL}
     property BiDiMode;
-    property BorderWidth;
-    property Color;
-    property Constraints;
     property UseDockManager default True;
     property DockSite;
     property DragCursor;
     property DragKind;
+    property ParentBiDiMode;
+    {$ENDIF}
+    property BorderWidth;
+    property Color;
+    property Constraints;
     property DragMode;
     property Enabled;
     //    property FullRepaint;
     property Font;
     //    property Locked;
-    property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -132,23 +145,25 @@ type
     property OnClick;
     property OnConstrainedResize;
     property OnContextPopup;
+    {$IFDEF VCL}
     property OnDockDrop;
     property OnDockOver;
+    property OnEndDock;
+    property OnGetSiteInfo;
+    property OnStartDock;
+    property OnUnDock;
+    {$ENDIF}
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-    property OnGetSiteInfo;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
-    property OnStartDock;
     property OnStartDrag;
-    property OnUnDock;
 {$IFDEF JVCLThemesEnabled}
     property ParentBackground;
 {$ENDIF}
@@ -298,7 +313,11 @@ begin
   Grow;
 end;
 
+{$IFDEF VCL}
 procedure TJvItemsPanel.WMSize(var Msg: TWMSize);
+{$ELSE}
+procedure TJvItemsPanel.AdjustSize;
+{$ENDIF}
 begin
   inherited;
   Grow;
@@ -427,10 +446,12 @@ begin
   PaintUp;
 end;
 
+{$IFDEF VCL}
 procedure TJvItemsPanel.CMDenySubClassing(var Msg: TMessage);
 begin
   Msg.Result := 1;
 end;
+{$ENDIF}
 
 procedure TJvItemsPanel.SetHotTrack(const Value: Boolean);
 begin

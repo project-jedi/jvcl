@@ -110,7 +110,12 @@ interface
 //{$ENDIF}
 
 uses
-  SysUtils, Classes, Graphics;
+  {$IFDEF VCL}
+  Graphics,
+  {$ELSE}
+  QGraphics, QWindows,
+  {$ENDIF}
+  SysUtils, Classes;
 
 type
   // Type of a filter for use with Stretch()

@@ -25,18 +25,30 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
+
 
 unit JvForth;
 
 interface
 
 uses
-  Windows, ShellAPI, Messages, SysUtils, Classes, Forms, Dialogs,
+  SysUtils, Classes,
+  {$IFDEF WINDOWS}
+  Windows, ShellAPI,
+  {$ENDIF}
+  {$IFDEF LINUX}
+  QWindows,
+  {$ENDIF}
+  {$IFDEF VCL}
+  Messages, Forms, Dialogs, FileCtrl,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QForms, QDialogs, QFileCtrls,
+  {$ENDIF}
   {$IFDEF DELPHI6_UP}
   Variants,
   {$ENDIF DELPHI6_UP}
-  FileCtrl,
+
   JvXMLTree, JvStrings;
 
 const

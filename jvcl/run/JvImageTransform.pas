@@ -31,7 +31,13 @@ unit JvImageTransform;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls, ExtCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Graphics, Controls, ExtCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QWindows, QGraphics, QControls, QExtCtrls,
+  {$ENDIF}
   JvComponent;
 
 type
@@ -59,7 +65,9 @@ type
     procedure SetType(Value: TJvTransformationKind);
   protected
     procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    {$IFDEF VCL}
     function GetPalette: HPALETTE; override;
+    {$ENDIF}
     procedure Paint; override;
     procedure TimerTick(Sender: TObject);
   public
@@ -67,7 +75,9 @@ type
     destructor Destroy; override;
   published
     property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
+    {$IFDEF VCL}
     property DragCursor;
+    {$ENDIF}
     property DragMode;
     property Enabled;
     property ImageShown: Byte read FImageShown write SetImageShown default 1;
@@ -120,6 +130,7 @@ begin
   inherited Destroy;
 end;
 
+{$IFDEF VCL}
 function TJvImageTransform.GetPalette: HPALETTE;
 begin
   if FPicture1.Graphic is TBitmap then
@@ -127,6 +138,7 @@ begin
   else
     Result := 0;
 end;
+{$ENDIF}
 
 procedure TJvImageTransform.SetAutoSize(Value: Boolean);
 begin
