@@ -48,6 +48,7 @@ NoQuotes.exe \
 SetPoHeader.exe \
 pg.exe \
 pgEdit.exe \
+JvclVclClx.exe \
 LastModifyRepl.exe \
 ErrLook.exe \
 MakePNG.exe \
@@ -163,6 +164,21 @@ pgEdit.exe: PackagesGenerator\pgEdit.dpr \
   @cd PackagesGenerator
   $(DCCx) pgEdit.dpr
   -@IF EXIST pgEdit.cfg  del pgEdit.cfg >NUL
+  @cd ..
+
+JvclVclClx.exe: JvclVclClx\JvclVclClx.dpr \
+		JvclVclClx\Main.dfm \
+		JvclVclClx\Main.pas \
+		JvclVclClx\Utils.pas \
+		JvclVclClx\VclClxCvt.pas \
+		JvclVclClx\VclClxCvtUtils.pas \
+		common\PackageInformation.pas \
+		common\PackageModels.pas \
+		common\dpp_PascalParser.pas
+  @$(MAKE) -DCFG=JvclVclClx\JvclVclClx.cfg configfile
+  @cd JvclVclClx
+  $(DCCx) JvclVclClx.dpr
+  -@IF EXIST JvclVclClx.cfg  del JvclVclClx.cfg >NUL
   @cd ..
 
 NoQuotes.exe: NoQuotes\NoQuotes.dpr
