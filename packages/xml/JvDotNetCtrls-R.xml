@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvDotNetCtrls" Design="0">
   <Description>JVCL DotNet Controls Runtime Package</Description>
-  <C5PFlags>-LUvcl50 -LUCJcl50</C5PFlags>
-  <C6PFlags>-LUCJcl</C6PFlags>
+  <C5PFlags>-LUvcl50 -LUCJcl50(USEJVCL)</C5PFlags>
+  <C6PFlags>-LUCJcl(USEJVCL) -LUCJclVcl(USEJVCL)</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <Requires>
     <Package Name="JvCore-R" Targets="allbutclx" Condition="USEJVCL"/>
     <Package Name="JvStdCtrls-R" Targets="allbutclx" Condition="USEJVCL"/>
     <Package Name="JvDB-R" Targets="allbutperso" Condition="USEJVCL"/>
+    <Package Name="CJCL50" Targets="C5" Condition="USEJVCL"/>
+    <Package Name="CJCL" Targets="C6,C6p" Condition="USEJVCL"/>
+    <Package Name="CJCLVCL" Targets="C6,C6p" Condition="USEJVCL"/>
     <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
