@@ -11,9 +11,6 @@ object frmPluginForm: TfrmPluginForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  DesignSize = (
-    264
-    196)
   PixelsPerInch = 96
   TextHeight = 13
   object Memo1: TMemo

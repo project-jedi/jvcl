@@ -41,9 +41,6 @@ object JvFormPropsDlg: TJvFormPropsDlg
   Position = poScreenCenter
   Scaled = False
   OnDestroy = FormDestroy
-  DesignSize = (
-    434
-    476)
   PixelsPerInch = 96
   TextHeight = 13
   object Bevel1: TBevel
