@@ -48,7 +48,8 @@ type
     function GetDataSource: TDataSource; virtual;
     function GetField: TField; virtual;
     function GetFieldName: string; virtual;
-    procedure InitDB(const ADataSource: TDataSource; const AFieldName: string; var ATypeInfo: PTypeInfo); virtual;
+    procedure InitDB(const ADataSource: TDataSource; const AFieldName: string); virtual;
+    function IsEqualReference(const Ref: TJvCustomInspectorData): Boolean; override;
     procedure SetAsFloat(const Value: Extended); override;
     procedure SetAsInt64(const Value: Int64); override;
     procedure SetAsMethod(const Value: TMethod); override;
@@ -60,11 +61,9 @@ type
 
     property DataLink: TFieldDataLink read FDataLink;
   public
-    constructor Create(const AParent: TJvCustomInspectorItem; const ADataSource: TDataSource;
-      const AFieldName: string); overload; virtual;
-    class procedure Create(const AParent: TJvCustomInspectorItem; const ADataSource: TDataSource); overload; virtual;
-    class procedure Create(const AParent: TJvCustomInspectorItem; const ADataSource: TDataSource;
-      const AFieldNames: array of string); overload; virtual;
+    class function New(const AParent: TJvCustomInspectorItem; const ADataSource: TDataSource; const AFieldName: string): TJvCustomInspectorItem; overload;
+    class function New(const AParent: TJvCustomInspectorItem; const ADataSource: TDataSource): TJvInspectorItemInstances; overload;
+    class function New(const AParent: TJvCustomInspectorItem; const ADataSource: TDataSource; const AFieldNames: array of string): TJvInspectorItemInstances; overload;
     destructor Destroy; override;
     class function FieldTypeMapping: TJvInspectorRegister;
     procedure GetAsSet(var Buf); override;
@@ -138,23 +137,27 @@ end;
 
 procedure TJvInspectorDBData.ActiveChange(Sender: TObject);
 begin
-  if Item.Editing then
-    Item.DoneEdit(True);
-  Item.Inspector.Invalidate;
-  if (DataSource <> nil) and (DataSource.DataSet <> nil) and DataSource.DataSet.Active and
+  DoneEdits(True);
+{  if Item.Editing then
+    Item.DoneEdit(True);}
+  Invalidate;
+  if (DataSource <> nil) and (DataSource.DataSet <> nil) and DataSource.DataSet.Active then
+    InitEdits;
+{  if (DataSource <> nil) and (DataSource.DataSet <> nil) and DataSource.DataSet.Active and
       (Item.Inspector.FocusedItem <> nil) then
-    Item.Inspector.FocusedItem.InitEdit;
+    Item.Inspector.FocusedItem.InitEdit;}
 end;
 
 procedure TJvInspectorDBData.DataChange(Sender: TObject);
 begin
   if (DataLink <> nil) and (DataLink.Field <> nil) then
   begin
-    if Item.Editing then
+    RefreshEdits;
+{    if Item.Editing then
     begin
       Item.DoneEdit(True);
       Item.InitEdit;
-    end;
+    end;}
     Invalidate;
   end;
 end;
@@ -235,9 +238,10 @@ begin
     Result := '';
 end;
 
-procedure TJvInspectorDBData.InitDB(const ADataSource: TDataSource; const AFieldName: string; var ATypeInfo: PTypeInfo);
+procedure TJvInspectorDBData.InitDB(const ADataSource: TDataSource; const AFieldName: string);
 var
   MapItem: TJvCustomInspectorRegItem;
+  ATypeInfo: PTypeInfo;
 begin
   if DataLink = nil then
     FDataLink := TFieldDataLink.Create;
@@ -251,6 +255,21 @@ begin
     ATypeInfo := TJvInspectorTFieldTypeRegItem(MapItem).TypeInfo
   else
     ATypeInfo := nil;
+  if Field <> nil then
+  begin
+    Name := Field.DisplayName;
+    TypeInfo := ATypeInfo;
+  end
+  else
+  begin
+    Name := AFieldName;
+    TypeInfo := nil;
+  end;
+end;
+
+function TJvInspectorDBData.IsEqualReference(const Ref: TJvCustomInspectorData): Boolean;
+begin
+  Result := (Ref is TJvInspectorDBData) and (TJvInspectorDBData(Ref).Field = Field);
 end;
 
 procedure TJvInspectorDBData.SetAsFloat(const Value: Extended);
@@ -402,40 +421,6 @@ begin
   end;
 end;
 
-constructor TJvInspectorDBData.Create(const AParent: TJvCustomInspectorItem;
-  const ADataSource: TDataSource; const AFieldName: string);
-var
-  TmpTypeInfo: PTypeInfo;
-begin
-  inherited Create;
-  InitDB(ADataSource, AFieldName, TmpTypeInfo);
-  if Field <> nil then
-    Init(Field.DisplayName, TmpTypeInfo)
-  else
-    Init(AFieldName, nil);
-  CreateChild(AParent);
-end;
-
-class procedure TJvInspectorDBData.Create(const AParent: TJvCustomInspectorItem;
-  const ADataSource: TDataSource);
-var
-  DS: TDataSet;
-  I: Integer;
-begin
-  DS := ADataSource.DataSet;
-  for I := 0 to DS.FieldCount - 1 do
-    Create(AParent, ADataSource, DS.Fields[I].FieldName);
-end;
-
-class procedure TJvInspectorDBData.Create(const AParent: TJvCustomInspectorItem;
-  const ADataSource: TDataSource; const AFieldNames: array of string);
-var
-  I: Integer;
-begin
-  for I :=  Low(AFieldNames) to High(AFieldNames) do
-    Create(AParent, ADataSource, AFieldNames[I]);
-end;
-
 destructor TJvInspectorDBData.Destroy;
 begin
   inherited Destroy;
@@ -492,6 +477,62 @@ begin
   if FDBReg = nil then
     FDBReg := TJvInspectorRegister.Create(TJvInspectorDBData);
   Result := FDBReg;
+end;
+
+class function TJvInspectorDBData.New(const AParent: TJvCustomInspectorItem; const ADataSource: TDataSource; const AFieldName: string): TJvCustomInspectorItem;
+var
+  Data: TJvInspectorDBData;
+begin
+  Data := CreatePrim('', nil);
+  Data.InitDB(ADataSource, AFieldName);
+  Data := TJvInspectorDBData(RegisterInstance(Data));
+  if Data <> nil then
+    Result := Data.NewItem(AParent)
+  else
+    Result := nil;
+end;
+
+class function TJvInspectorDBData.New(const AParent: TJvCustomInspectorItem;
+  const ADataSource: TDataSource): TJvInspectorItemInstances;
+var
+  DS: TDataSet;
+  IArr: Integer;
+  I: Integer;
+  TmpItem: TJvCustomInspectorItem;
+begin
+  SetLength(Result, DS.FieldCount);
+  DS := ADataSource.DataSet;
+  IArr := 0;
+  for I := 0 to DS.FieldCount - 1 do
+  begin
+    TmpItem := New(AParent, ADataSource, DS.Fields[I].FieldName);
+    if TmpItem <> nil then
+    begin
+      Result[IArr] := TmpItem;
+      Inc(IArr);
+    end;
+  end;
+  SetLength(Result, IArr);
+end;
+
+class function TJvInspectorDBData.New(const AParent: TJvCustomInspectorItem;
+  const ADataSource: TDataSource; const AFieldNames: array of string): TJvInspectorItemInstances;
+var
+  IArr: Integer;
+  I: Integer;
+  TmpItem: TJvCustomInspectorItem;
+begin
+  SetLength(Result, Length(AFieldNames));
+  IArr := 0;
+  for I :=  Low(AFieldNames) to High(AFieldNames) do
+  begin
+    TmpItem := New(AParent, ADataSource, AFieldNames[I]);
+    if TmpItem <> nil then
+    begin
+      Result[IArr] := TmpItem;
+      Inc(IArr);
+    end;
+  end;
 end;
 
 procedure TJvInspectorDBData.SetAsSet(const Buf);

@@ -44,6 +44,7 @@ type
     function GetAsOrdinal: Int64; override;
     function GetAsString: string; override;
     function GetJvxNode: TJvxNode; virtual;
+    function IsEqualReference(const Ref: TJvCustomInspectorData): Boolean; override;
     procedure NodeNotifyEvent(Sender: TJvxNode; Operation: TJvxNodeOperation); virtual;
     procedure SetAsFloat(const Value: Extended); override;
     procedure SetAsInt64(const Value: Int64); override;
@@ -52,12 +53,11 @@ type
     procedure SetAsString(const Value: string); override;
     procedure SetJvxNode(Value: TJvxNode); virtual;
   public
-    constructor Create(const AName: string;
-      const AParent: TJvCustomInspectorItem; const AJvxNode: TJvxNode); overload;
     procedure GetAsSet(var Buf); override;
     function HasValue: Boolean; override;
     function IsAssigned: Boolean; override;
     function IsInitialized: Boolean; override;
+    class function New(const AParent: TJvCustomInspectorItem; const AName: string; const AJvxNode: TJvxNode): TJvCustomInspectorItem;
     procedure SetAsSet(const Buf); override;
 
     property JvxNode: TJvxNode read GetJvxNode write SetJvxNode;
@@ -66,8 +66,7 @@ type
 implementation
 
 uses
-  Consts, SysUtils, TypInfo,
-  JvInspRes;
+  Consts, SysUtils, TypInfo;
 
 { TJvInspectorxNodeData }
 
@@ -119,6 +118,11 @@ end;
 function TJvInspectorxNodeData.GetJvxNode: TJvxNode;
 begin
   Result := FJvxNode;
+end;
+
+function TJvInspectorxNodeData.IsEqualReference(const Ref: TJvCustomInspectorData): Boolean;
+begin
+  Result := (Ref is TJvInspectorxNodeData) and (TJvInspectorxNodeData(Ref).JvxNode = JvxNode);
 end;
 
 procedure TJvInspectorxNodeData.NodeNotifyEvent(Sender: TJvxNode;
@@ -240,19 +244,6 @@ begin
   end;
 end;
 
-constructor TJvInspectorxNodeData.Create(const AName: string;
-  const AParent: TJvCustomInspectorItem; const AJvxNode: TJvxNode);
-begin
-  inherited Create;
-  if JvxNode = nil then
-    raise EJvInspectorData.Create('No node specified');
-  Init(AName, JvxNode.TypeInfo);
-  JvxNode := AJvxNode;
-  if JvxNode.NodeName <> '' then
-    Name := JvxNode.NodeName;
-  CreateChild(AParent);
-end;
-
 procedure TJvInspectorxNodeData.GetAsSet(var Buf);
 var
   CompType: PTypeInfo;
@@ -287,6 +278,24 @@ end;
 function TJvInspectorxNodeData.IsInitialized: Boolean;
 begin
   Result := (JvxNode <> nil);
+end;
+
+class function TJvInspectorxNodeData.New(const AParent: TJvCustomInspectorItem; const AName: string;
+  const AJvxNode: TJvxNode): TJvCustomInspectorItem;
+var
+  Data: TJvInspectorxNodeData;
+begin
+  Assert(AJvxNode <> nil, 'No node specified');
+  if AJvxNode.NodeName <> '' then
+    Data := TJvInspectorxNodeData.CreatePrim(AJvxNode.NodeName, AJvxNode.TypeInfo))
+  else
+    Data := TJvInspectorxNodeData.CreatePrim(AName, AJvxNode.TypeInfo));
+  Data.JvxNode := AJvxNode;
+  Data := TJvInspectorxNodeData(RegisterInstance(Data));
+  if Data <> nil then
+    Result := Data.NewItem(AParent)
+  else
+    Result := nil;
 end;
 
 procedure TJvInspectorxNodeData.SetAsSet(const Buf);

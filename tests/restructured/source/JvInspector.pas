@@ -32,7 +32,7 @@ interface
 
 uses
   SysUtils, Windows, Classes, Contnrs, TypInfo, Controls, StdCtrls, Graphics,
-  Messages, IniFiles, JVCLVer, JvTypes;
+  Messages, IniFiles, JvComponent, JvTypes;
 
 {$A+,B-,C+,E-,F-,G+,H+,I+,J+,K-,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Z1}
 {$I JVCL.INC}
@@ -57,8 +57,6 @@ resourcestring
   sJvInspPaintNotActive = 'Painter is not the active painter of the specified inspector.';
 
 const
-  TJVINSPECTOR_VERSION = 0113;       // Version 1.13 (beta)
-
   { Inspector Row Size constants }
   irsNoReSize =     $00000000;
   irsNameHeight =   $10000000;
@@ -73,7 +71,7 @@ type
   TJvInspectorItemSizing = class;
   TJvCustomInspectorItem = class;
   TJvInspectorCompoundColumn = class;
-  TJvInspectorCompoundItem = class;
+  TJvInspectorCustomCompoundItem = class;
   TJvInspectorCustomCategoryItem = class;
   TJvCustomInspectorData = class;
   TJvInspectorRegister = class;
@@ -93,6 +91,8 @@ type
   TInspectorComponentFlag = (icfShowOwnerNames, icfNoShowFirstOwnerName, icfSortComponents,
     icfSortOwners, icfKeepFirstOwnerAsFirst);
   TInspectorComponentFlags = set of TInspectorComponentFlag;
+  TInspectorCompoundItemFlag = (icifSingleName, icifSingleNameUseFirstCol);
+  TInspectorCompoundItemFlags = set of TInspectorCompoundItemFlag;
 
   TInspectorPaintRect = (iprItem, iprButtonArea, iprBtnSrcRect, iprBtnDstRect,
     iprNameArea, iprName, iprValueArea, iprValue, iprEditValue, iprEditButton,
@@ -105,6 +105,9 @@ type
   TJvInspectorItemClass = class of TJvCustomInspectorItem;
   TJvInspectorDataClass = class of TJvCustomInspectorData;
   TJvInspectorPainterClass = class of TJvInspectorPainter;
+
+  TJvInspectorItemInstances = array of TJvCustomInspectorItem;
+  TJvInspectorDataInstances = array of TJvCustomInspectorData;
 
   { Events }
   TInspectorItemEvent = procedure(Sender: TObject; const Item: TJvCustomInspectorItem) of object;
@@ -132,7 +135,7 @@ type
   //----------------------------------------------------------------------------
   // Inspector
   //----------------------------------------------------------------------------
-  TJvCustomInspector = class(TCustomControl)
+  TJvCustomInspector = class(TJvCustomControl)
   private
     FAfterDataCreate: TInspectorDataEvent;
     FAfterItemCreate: TInspectorItemEvent;
@@ -166,7 +169,6 @@ type
     FUseBands: Boolean;
     FVisible: TStrings;
     FWantTabs: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
   protected
     function CalcImageHeight: Integer; virtual;
     function CalcItemIndex(X, Y: Integer; var Rect: TRect): Integer; virtual;
@@ -177,7 +179,6 @@ type
       var ItemClass: TJvInspectorItemClass); virtual;
     function DoBeforeItemSelect(const NewItem: TJvCustomInspectorItem): Boolean; virtual;
     procedure DoItemSelected; virtual;
-//    function GetAboutMe: string; virtual;
     function GetAfterDataCreate: TInspectorDataEvent; virtual;
     function GetAfterItemCreate: TInspectorItemEvent; virtual;
     function GetBandFor(const ItemIdx: Integer): Integer; virtual;
@@ -222,7 +223,6 @@ type
     procedure RemoveNotifySort(const Item: TJvCustomInspectorItem); virtual;
     procedure Resize; override;
     function ScrollfactorV: Extended; virtual;
-//    procedure SetAboutMe(const Value: string); virtual;
     procedure SetAfterDataCreate(const Value: TInspectorDataEvent); virtual;
     procedure SetAfterItemCreate(const Value: TInspectorItemEvent); virtual;
     procedure SetBandWidth(Value: Integer); virtual;
@@ -242,7 +242,6 @@ type
     procedure SetUseBands(Value: Boolean); virtual;
     procedure SetWantTabs(Value: Boolean); virtual;
     procedure UpdateScrollBars; virtual;
-    class function Version: Word; virtual;
     function ViewHeight: Integer;
     function ViewRect: TRect; virtual;
     function ViewWidth: Integer;
@@ -297,10 +296,6 @@ type
     function Focused: Boolean; override;
     function FocusedItem: TJvCustomInspectorItem; virtual;
     function VisibleIndex(const AItem: TJvCustomInspectorItem): Integer; virtual;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    
-//    property AboutMe: string read GetAboutMe write SetAboutMe stored False;
   end;
 
   TJvInspector = class(TJvCustomInspector)
@@ -340,7 +335,7 @@ type
   //----------------------------------------------------------------------------
   // Inspector painter classes
   //----------------------------------------------------------------------------
-  TJvInspectorPainter = class(TComponent)
+  TJvInspectorPainter = class(TJvComponent)
   private
     FBackgroundColor: TColor;
     FButtonImage: TBitmap;
@@ -359,7 +354,6 @@ type
     FSelectedColor: TColor;
     FSelectedTextColor: TColor;
     FValueColor: TColor;
-    FAboutJVCL: TJVCLAboutInfo;
   protected
     procedure ApplyNameFont; virtual;
     procedure ApplyValueFont; virtual;
@@ -418,11 +412,10 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure SetInspector(const AInspector: TJvCustomInspector); virtual;
-    
+
     property SelectedColor: TColor read GetSelectedColor write SetSelectedColor;
     property SelectedTextColor: TColor read GetSelectedTextColor write SetSelectedTextColor;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property BackgroundColor: TColor read GetBackgroundColor write SetBackgroundColor;
     property CategoryColor: TColor read GetCategoryColor write SetCategoryColor;
     property CategoryTextColor: TColor read GetCategoryTextColor write SetCategoryTextColor;
@@ -512,6 +505,7 @@ type
   private
     FData: TJvCustomInspectorData;
     FDisplayIndex: Integer;
+    FDisplayName: string;
     FDroppedDown: Boolean;
     FEditCtrl: TCustomEdit;
     FEditWndPrc: TWndMethod;
@@ -610,6 +604,7 @@ type
     procedure SetAutoUpdate(const Value: Boolean); virtual;
     procedure SetDisplayIndex(const Value: Integer); virtual;
     procedure SetDisplayIndexValue(const Value: Integer); virtual;
+    procedure SetDisplayName(Value: string); virtual;
     procedure SetDisplayValue(const Value: string); virtual;
     procedure SetEditCtrl(const Value: TCustomEdit); virtual;
     procedure SetEditing(const Value: Boolean); virtual;
@@ -650,8 +645,7 @@ type
   public
     constructor Create(const AParent: TJvCustomInspectorItem; const AData: TJvCustomInspectorData); virtual;
     destructor Destroy; override;
-    function Add(const Item: TJvCustomInspectorItem): Integer; overload; virtual;
-    function Add(const Data: TJvCustomInspectorData): Integer; overload; virtual;
+    function Add(const Item: TJvCustomInspectorItem): Integer; 
     procedure AfterConstruction; override;
     procedure Clear;
     procedure Delete(const Index: Integer); overload; virtual;
@@ -666,8 +660,7 @@ type
     function IndexOf(const Data: TJvCustomInspectorData): Integer; overload; virtual;
     procedure InitEdit; dynamic;
     procedure DoneEdit(const CancelEdits: Boolean = False); dynamic;
-    procedure Insert(const Index: Integer; const Item: TJvCustomInspectorItem); overload; virtual;
-    procedure Insert(const Index: Integer; const Data: TJvCustomInspectorData); overload; virtual;
+    procedure Insert(const Index: Integer; const Item: TJvCustomInspectorItem); 
     procedure ScrollInView;
     procedure Sort;
 
@@ -675,7 +668,7 @@ type
     property Count: Integer read GetCount;
     property Data: TJvCustomInspectorData read GetData;
     property DisplayIndex: Integer read GetDisplayIndex write SetDisplayIndex;
-    property DisplayName: string read GetDisplayName;
+    property DisplayName: string read GetDisplayName write SetDisplayName;
     property DisplayValue: string read GetDisplayValue write SetDisplayValue;
     property Editing: Boolean read GetEditing;
     property Expanded: Boolean read GetExpanded write SetExpanded;
@@ -700,20 +693,16 @@ type
 
   TJvInspectorCustomCategoryItem = class(TJvCustomInspectorItem)
   private
-    FName: string;
   protected
-    function GetDisplayName: string; override;
-    procedure SetDisplayName(const Value: string); virtual;
     procedure SetFlags(const Value: TInspectorItemFlags); override;
   public
   published
-    property DisplayName write SetDisplayName;
   end;
 
   TJvInspectorCompoundColumn = class(TPersistent)
   private
     FItem: TJvCustomInspectorItem;
-    FParent: TJvInspectorCompoundItem;
+    FParent: TJvInspectorCustomCompoundItem;
     FWidth: Integer;
     FWidthSet: Integer;
   protected
@@ -725,9 +714,9 @@ type
     procedure SetWidthExternal(Value: Integer);
     procedure SetWidthSet(Value: Integer);
 
-    property Parent: TJvInspectorCompoundItem read FParent;
+    property Parent: TJvInspectorCustomCompoundItem read FParent;
   public
-    constructor Create(const AParent: TJvInspectorCompoundItem; const AItem: TJvCustomInspectorItem);
+    constructor Create(const AParent: TJvInspectorCustomCompoundItem; const AItem: TJvCustomInspectorItem);
     destructor Destroy; override;
 
     property Item: TJvCustomInspectorItem read GetItem write SetItem;
@@ -736,54 +725,89 @@ type
   published
   end;
 
-  TJvInspectorCompoundItem = class(TJvCustomInspectorItem)
+  TJvInspectorCustomCompoundItem = class(TJvCustomInspectorItem)
   private
+    FCompoundItemFlags: TInspectorCompoundItemFlags;
     FColumns: TObjectList;
     FSelectedColumnIdx: Integer;
   protected
+    function AddColumnPrim(const Item: TJvCustomInspectorItem): Integer; overload; virtual;
+    function AddColumnPrim(const ItemIndex: Integer): Integer; overload; virtual;
+    procedure DeleteColumnPrim(const Column: TJvInspectorCompoundColumn); overload; virtual;
+    procedure DeleteColumnPrim(const Index: Integer); overload; virtual;
+    procedure DeleteColumnPrim(const Item: TJvCustomInspectorItem); overload; virtual;
     procedure DivideRect(const RectKind: TInspectorPaintRect; const Value: TRect); virtual;
+    procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState); override;
     function GetColumnCount: Integer; virtual;
     function GetColumns(I: Integer): TJvInspectorCompoundColumn; virtual;
     function GetDisplayName: string; override;
     function GetEditing: Boolean; override;
     function GetSelectedColumn: TJvInspectorCompoundColumn; virtual;
     function GetSelectedColumnIndex: Integer; virtual;
+    function GetSingleName: Boolean;
+    function GetSingleNameUseFirstCol: Boolean;
+    function IndexOfColumnPrim(const Col: TJvInspectorCompoundColumn): Integer; overload; virtual;
+    function IndexOfColumnPrim(const Item: TJvCustomInspectorItem): Integer; overload; virtual;
+    procedure InsertColumnPrim(const Index: Integer; const Item: TJvCustomInspectorItem); overload; virtual;
+    procedure InsertColumnPrim(const Index, ItemIndex: Integer); overload; virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure RecalcColumnWidths(const SetColumn: TJvInspectorCompoundColumn = nil); virtual;
+    procedure SetCompoundItemFlags(Value: TInspectorCompoundItemFlags);
+    procedure SetDisplayName(Value: string); override;
     procedure SetEditing(const Value: Boolean); override;
     procedure SetFlags(const Value: TInspectorItemFlags); override;
     procedure SetFocus; override;
     procedure SetRects(const RectKind: TInspectorPaintRect; Value: TRect); override;
     procedure SetSelectedColumn(Value: TJvInspectorCompoundColumn); virtual;
     procedure SetSelectedColumnIndex(Value: Integer); virtual;
+    procedure SetSingleName(Value: Boolean);
+    procedure SetSingleNameUseFirstCol(Value: Boolean);
+
+    property ColumnCount: Integer read GetColumnCount;
+    property Columns[I: Integer]: TJvInspectorCompoundColumn read GetColumns;
+    property CompoundItemFlags: TInspectorCompoundItemFlags read FCompoundItemFlags write SetCompoundItemFlags;
+    property SelectedColumn: TJvInspectorCompoundColumn read GetSelectedColumn write SetSelectedColumn;
+    property SelectedColumnIndex: Integer read GetSelectedColumnIndex write SetSelectedColumnIndex;
+    property SingleName: Boolean read GetSingleName write SetSingleName;
+    property SingleNameUseFirstCol: Boolean read GetSingleNameUseFirstCol write SetSingleNameUseFirstCol;
   public
-    constructor Create(const AParent: TJvCustomInspectorItem;
-      const AData: TJvCustomInspectorData); override;
+    constructor Create(const AParent: TJvCustomInspectorItem; const AData: TJvCustomInspectorData); override;
     destructor Destroy; override;
-    function AddColumn(const Item: TJvCustomInspectorItem): Integer; overload; virtual;
-    function AddColumn(const ItemIndex: Integer): Integer; overload; virtual;
-    procedure DeleteColumn(const Column: TJvInspectorCompoundColumn); overload; virtual;
-    procedure DeleteColumn(const Index: Integer); overload; virtual;
-    procedure DeleteColumn(const Item: TJvCustomInspectorItem); overload; virtual;
+
     procedure DoneEdit(const CancelEdits: Boolean = False); override;
     procedure DrawEditor(const ACanvas: TCanvas); override;
     procedure DrawName(const ACanvas: TCanvas); override;
     procedure DrawValue(const ACanvas: TCanvas); override;
     function EditFocused: Boolean; override;
-    function IndexOfColumn(const Col: TJvInspectorCompoundColumn): Integer; overload; virtual;
-    function IndexOfColumn(const Item: TJvCustomInspectorItem): Integer; overload; virtual;
     procedure InitEdit; override;
-    procedure InsertColumn(const Index: Integer; const Item: TJvCustomInspectorItem); overload; virtual;
-    procedure InsertColumn(const Index, ItemIndex: Integer); overload; virtual;
-
-    property ColumnCount: Integer read GetColumnCount;
-    property Columns[I: Integer]: TJvInspectorCompoundColumn read GetColumns;
-    property SelectedColumn: TJvInspectorCompoundColumn read GetSelectedColumn write SetSelectedColumn;
-    property SelectedColumnIndex: Integer read GetSelectedColumnIndex write SetSelectedColumnIndex;
   published
   end;
 
+  TJvInspectorCompoundItem = class(TJvInspectorCustomCompoundItem)
+  private
+  protected
+  public
+    function AddColumn(const Item: TJvCustomInspectorItem): Integer; overload;
+    function AddColumn(const ItemIndex: Integer): Integer; overload;
+    procedure DeleteColumn(const Column: TJvInspectorCompoundColumn); overload;
+    procedure DeleteColumn(const Index: Integer); overload;
+    procedure DeleteColumn(const Item: TJvCustomInspectorItem); overload;
+    function IndexOfColumn(const Col: TJvInspectorCompoundColumn): Integer; overload;
+    function IndexOfColumn(const Item: TJvCustomInspectorItem): Integer; overload;
+    procedure InsertColumn(const Index: Integer; const Item: TJvCustomInspectorItem); overload;
+    procedure InsertColumn(const Index, ItemIndex: Integer); overload;
+
+    property ColumnCount;
+    property Columns;
+    property CompoundItemFlags;
+    property SelectedColumn;
+    property SelectedColumnIndex;
+    property SingleName;
+    property SingleNameUseFirstCol;
+  published
+  end;
+  
   TJvInspectorIntegerItem = class(TJvCustomInspectorItem)
   protected
     function GetDisplayValue: string; override;
@@ -966,50 +990,108 @@ type
       write SetShowAsCheckBox;
   end;
 
+  TJvInspectorDateItem = class(TJvInspectorFloatItem)
+  private
+    FFormat: string;
+  protected
+    function GetDisplayValue: string; override;
+    procedure SetDisplayValue(const Value: string); override;
+    procedure SetFormat(Value: string);
+  public
+    constructor Create(const AParent: TJvCustomInspectorItem;
+      const AData: TJvCustomInspectorData); override;
+  published
+    property Format: string read FFormat write SetFormat;
+  end;
+
+  TJvInspectorTimeItem = class(TJvInspectorFloatItem)
+  private
+    FFormat: string;
+    FShowAMPM: Boolean;
+    FShowSeconds: Boolean;
+  protected
+    function GetDisplayValue: string; override;
+    procedure SetDisplayValue(const Value: string); override;
+    procedure SetFormat;
+    procedure SetShowAMPM(Value: Boolean);
+    procedure SetShowSeconds(Value: Boolean);
+
+    property Format: string read FFormat;
+  public
+    constructor Create(const AParent: TJvCustomInspectorItem;
+      const AData: TJvCustomInspectorData); override;
+  published
+    property ShowAMPM: Boolean read FShowAMPM write SetShowAMPM;
+    property ShowSeconds: Boolean read FShowSeconds write SetShowSeconds;
+  end;
+
+  TJvInspectorDateTimeItem = class(TJvInspectorCustomCompoundItem)
+  private
+    FDate: TJvInspectorDateItem;
+    FTime: TJvInspectorTimeItem;
+  protected
+    function GetDateFormat: string;
+    function GetTimeShowAMPM: Boolean;
+    function GetTimeShowSeconds: Boolean;
+    procedure SetDateFormat(Value: string);
+    procedure SetTimeShowAMPM(Value: Boolean);
+    procedure SetTimeShowSeconds(Value: Boolean);
+  public
+    constructor Create(const AParent: TJvCustomInspectorItem;
+      const AData: TJvCustomInspectorData); override;
+  published
+    property DateFormat: string read GetDateFormat write SetDateFormat;
+    property TimeShowAMPM: Boolean read GetTimeShowAMPM write SetTimeShowAMPM;
+    property TimeShowSeconds: Boolean read GetTimeShowSeconds write SetTimeShowSeconds;
+  end;
+
   //----------------------------------------------------------------------------
   // Inspector data classes
   //----------------------------------------------------------------------------
   TJvCustomInspectorData = class(TPersistent)
   private
     FTypeInfo: PTypeInfo;
-    FItem: TJvCustomInspectorItem;
+    FItems: TJvInspectorItemInstances;
     FName: string;
-    FInspector: TJvCustomInspector;
+    FRegistered: Boolean;
   protected
-    procedure DoAfterDataCreate; virtual;
-    procedure DoBeforeItemCreate(var ItemClass: TJvInspectorItemClass); virtual;
+    constructor CreatePrim(const AName: string; const ATypeInfo: PTypeInfo);
     procedure CheckReadAccess; virtual;
     procedure CheckWriteAccess; virtual;
-    procedure CreateChild(const AParent: TJvCustomInspectorItem); virtual;
+    procedure DoneEdits(const CancelEdits: Boolean = False);
     function GetAsFloat: Extended; virtual; abstract;
     function GetAsInt64: Int64; virtual; abstract;
     function GetAsMethod: TMethod; virtual; abstract;
     function GetAsOrdinal: Int64; virtual; abstract;
     function GetAsString: string; virtual; abstract;
-    function GetItem: TJvCustomInspectorItem; virtual;
+    function GetItemCount: Integer;
+    function GetItems(I: Integer): TJvCustomInspectorItem;
     function GetName: string; virtual;
     function GetTypeInfo: PTypeInfo; virtual;
-    procedure Init(const AName: string; const ATypeInfo: PTypeInfo); virtual;
+    procedure InitEdits;
     procedure Invalidate; virtual;
+    function IsEqualReference(const Ref: TJvCustomInspectorData): Boolean; virtual;
+    procedure NotifyRemoveData(const Instance: TJvCustomInspectorData); virtual;
+    procedure RefreshEdits;
+    class function RegisterInstance(const Instance: TJvCustomInspectorData): TJvCustomInspectorData;
+    procedure RemoveItem(const Item: TJvCustomInspectorItem);
     procedure SetAsFloat(const Value: Extended); virtual; abstract;
     procedure SetAsInt64(const Value: Int64); virtual; abstract;
     procedure SetAsMethod(const Value: TMethod); virtual; abstract;
     procedure SetAsOrdinal(const Value: Int64); virtual; abstract;
     procedure SetAsString(const Value: string); virtual; abstract;
-    procedure SetInspector(const Value: TJvCustomInspector); virtual;
-    procedure SetItem(const Value: TJvCustomInspectorItem); virtual;
     procedure SetName(const Value: string); virtual;
     procedure SetTypeInfo(const Value: PTypeInfo); virtual;
-
-    property Inspector: TJvCustomInspector read FInspector;
   public
-    constructor Create(const AName: string; const ATypeInfo: PTypeInfo;
-      const AParent: TJvCustomInspectorItem); overload; virtual;
+    constructor Create;
+    procedure BeforeDestruction; override;
     procedure GetAsSet(var Buf); virtual; abstract;
     function HasValue: Boolean; virtual; abstract;
     function IsAssigned: Boolean; virtual; abstract;
     function IsInitialized: Boolean; virtual; abstract;
     class function ItemRegister: TJvInspectorRegister; virtual;
+    class function New: TJvCustomInspectorData;
+    function NewItem(const AParent: TJvCustomInspectorItem): TJvCustomInspectorItem; virtual;
     procedure SetAsSet(const Buf); virtual; abstract;
 
     property AsFloat: Extended read GetAsFloat write SetAsFloat;
@@ -1017,7 +1099,8 @@ type
     property AsMethod: TMethod read GetAsMethod;
     property AsOrdinal: Int64 read GetAsOrdinal write SetAsOrdinal;
     property AsString: string read GetAsString write SetAsString;
-    property Item: TJvCustomInspectorItem read GetItem;
+    property ItemCount: Integer read GetItemCount;
+    property Items[I: Integer]: TJvCustomInspectorItem read GetItems;
     property Name: string read GetName write SetName;
     property TypeInfo: PTypeInfo read GetTypeInfo write SetTypeInfo;
   end;
@@ -1025,27 +1108,30 @@ type
   TJvInspectorSetMemberData = class(TJvCustomInspectorData)
   private
     FBitOffset: Integer;
+    FDataParent: TJvCustomInspectorData;
   protected
     function GetAsFloat: Extended; override;
     function GetAsInt64: Int64; override;
     function GetAsMethod: TMethod; override;
     function GetAsOrdinal: Int64; override;
     function GetAsString: string; override;
+    function IsEqualReference(const Ref: TJvCustomInspectorData): Boolean; override;
+    procedure NotifyRemoveData(const Instance: TJvCustomInspectorData); override;
     procedure SetAsFloat(const Value: Extended); override;
     procedure SetAsInt64(const Value: Int64); override;
     procedure SetAsMethod(const Value: TMethod); override;
     procedure SetAsOrdinal(const Value: Int64); override;
     procedure SetAsString(const Value: string); override;
   public
-    constructor Create(const Ordinal: Integer;
-      const AParent: TJvCustomInspectorItem); overload; virtual;
     procedure GetAsSet(var Buf); override;
     function HasValue: Boolean; override;
     function IsAssigned: Boolean; override;
     function IsInitialized: Boolean; override;
+    class function New(const AParent: TJvCustomInspectorItem; const Ordinal: Integer; const ADataParent: TJvCustomInspectorData): TJvCustomInspectorItem;
     procedure SetAsSet(const Buf); override;
 
     property BitOffset: Integer read FBitOffset;
+    property DataParent: TJvCustomInspectorData read FDataParent;
   end;
 
   TJvInspectorVarData = class(TJvCustomInspectorData)
@@ -1058,6 +1144,7 @@ type
     function GetAsMethod: TMethod; override;
     function GetAsOrdinal: Int64; override;
     function GetAsString: string; override;
+    function IsEqualReference(const Ref: TJvCustomInspectorData): Boolean; override;
     procedure SetAddress(const Value: Pointer); virtual;
     procedure SetAsFloat(const Value: Extended); override;
     procedure SetAsInt64(const Value: Int64); override;
@@ -1065,16 +1152,13 @@ type
     procedure SetAsOrdinal(const Value: Int64); override;
     procedure SetAsString(const Value: string); override;
   public
-    constructor Create(const AName: string; const ATypeInfo: PTypeInfo;
-      const AParent: TJvCustomInspectorItem; const AAddress: Pointer); overload;
-      virtual;
-    constructor Create(const AName: string; const ATypeInfo: PTypeInfo;
-      const AParent: TJvCustomInspectorItem; const AVar); overload; virtual;
     procedure GetAsSet(var Buf); override;
     function HasValue: Boolean; override;
     function IsAssigned: Boolean; override;
     function IsInitialized: Boolean; override;
     class function ItemRegister: TJvInspectorRegister; override;
+    class function New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo; const AAddress: Pointer): TJvCustomInspectorItem; overload;
+    class function New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo; const AVar): TJvCustomInspectorItem; overload;
     procedure SetAsSet(const Buf); override;
 
     property Address: Pointer read GetAddress write SetAddress;
@@ -1092,6 +1176,8 @@ type
     function GetAsString: string; override;
     function GetInstance: TObject; virtual;
     function GetProp: PPropInfo; virtual;
+    function IsEqualReference(const Ref: TJvCustomInspectorData): Boolean; override;
+    procedure NotifyRemoveData(const Instance: TJvCustomInspectorData); override;
     procedure SetAsFloat(const Value: Extended); override;
     procedure SetAsInt64(const Value: Int64); override;
     procedure SetAsMethod(const Value: TMethod); override;
@@ -1100,25 +1186,20 @@ type
     procedure SetInstance(const Value: TObject); virtual;
     procedure SetProp(const Value: PPropInfo); virtual;
   public
-    constructor Create(const AParent: TJvCustomInspectorItem;
-      const AInstance: TObject; const PropInfo: PPropInfo);
-      overload; virtual;
-    class procedure Create(const AParent: TJvCustomInspectorItem;
-      const AInstance: TObject; const TypeKinds: TTypeKinds = tkProperties);
-      overload; virtual;
-    class procedure Create(const AParent: TJvCustomInspectorItem;
-      const AInstance: TObject; const NameList: array of string;
-      const ExcludeList: Boolean = False;
-      const TypeKinds: TTypeKinds = tkProperties); overload; virtual;
-    class procedure Create(const AParent: TJvCustomInspectorItem;
-      const AInstance: TObject; const PropInfos: PPropList;
-      const PropCount: Integer);
-      overload; virtual;
     procedure GetAsSet(var Buf); override;
     function HasValue: Boolean; override;
     function IsAssigned: Boolean; override;
     function IsInitialized: Boolean; override;
     class function ItemRegister: TJvInspectorRegister; override;
+    class function New(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
+      const PropInfo: PPropInfo): TJvCustomInspectorItem; overload;
+    class function New(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
+      const TypeKinds: TTypeKinds = tkProperties): TJvInspectorItemInstances; overload;
+    class function New(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
+      const NameList: array of string; const ExcludeList: Boolean = False;
+      const TypeKinds: TTypeKinds = tkProperties): TJvInspectorItemInstances; overload;
+    class function New(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
+      const PropInfos: PPropList; const PropCount: Integer): TJvInspectorItemInstances; overload;
     procedure SetAsSet(const Buf); override;
 
     property Instance: TObject read GetInstance write SetInstance;
@@ -1157,6 +1238,7 @@ type
     function GetAsMethod: TMethod; override;
     function GetAsOrdinal: Int64; override;
     function GetAsString: string; override;
+    function IsEqualReference(const Ref: TJvCustomInspectorData): Boolean; override;
     procedure SetAsFloat(const Value: Extended); override;
     procedure SetAsInt64(const Value: Int64); override;
     procedure SetAsMethod(const Value: TMethod); override;
@@ -1175,12 +1257,11 @@ type
     procedure SetOnSetAsString(Value: TJvInspAsString);
     procedure SetOnSetAsSet(Value: TJvInspAsSet);
   public
-    constructor Create(const AParent: TJvCustomInspectorItem; const AName: string;
-      const ATypeInfo: PTypeInfo); overload; virtual;
     procedure GetAsSet(var Buf); override;
     function HasValue: Boolean; override;
     function IsAssigned: Boolean; override;
     function IsInitialized: Boolean; override;
+    class function New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo): TJvCustomInspectorItem; 
     procedure SetAsSet(const Buf); override;
 
     property OnGetAsFloat: TJvInspAsFloat read FOnGetAsFloat write SetOnGetAsFloat;
@@ -1202,6 +1283,7 @@ type
     FKey: string;
     FSection: string;
   protected
+    constructor CreatePrim(const AName, ASection, AKey: string; const ATypeInfo: PTypeInfo);
     function ExistingValue: Boolean; virtual; abstract;
     function GetAsFloat: Extended; override;
     function GetAsInt64: Int64; override;
@@ -1209,6 +1291,7 @@ type
     function GetAsOrdinal: Int64; override;
     function GetAsString: string; override;
     function ReadValue: string; virtual; abstract;
+    function IsEqualReference(const Ref: TJvCustomInspectorData): Boolean; override;
     procedure SetAsFloat(const Value: Extended); override;
     procedure SetAsInt64(const Value: Int64); override;
     procedure SetAsMethod(const Value: TMethod); override;
@@ -1218,8 +1301,6 @@ type
     procedure SetSection(Value: string);
     procedure WriteValue(Value: string); virtual; abstract;
   public
-    constructor Create(AParent: TJvCustomInspectorItem; const AName, ASection, AKey: string;
-      const ATypeInfo: PTypeInfo); overload; virtual;
     procedure GetAsSet(var Buf); override;
     function HasValue: Boolean; override;
     function IsAssigned: Boolean; override;
@@ -1235,16 +1316,13 @@ type
     FINIFile: TCustomIniFile;
   protected
     function ExistingValue: Boolean; override;
+    function IsEqualReference(const Ref: TJvCustomInspectorData): Boolean; override;
     function ReadValue: string; override;
     procedure WriteValue(Value: string); override;
   public
-    constructor Create(AParent: TJvCustomInspectorItem; const AName, ASection, AKey: string;
-      const ATypeInfo: PTypeInfo; const AINIFile: TCustomIniFile); overload; virtual;
-    class procedure Create(AParent: TJvCustomInspectorItem; const ASection: string;
-      const AINIFile: TCustomIniFile; const OnAddKey: TJvInspConfKeyEvent); overload; virtual;
-    class procedure Create(AParent: TJvCustomInspectorItem;
-      const AINIFile: TCustomIniFile; const OnAddSection: TJvInspConfSectionEvent;
-      const OnAddKey: TJvInspConfKeyEvent); overload; virtual;
+    class function New(const AParent: TJvCustomInspectorItem; const AName, ASection, AKey: string; const ATypeInfo: PTypeInfo; const AINIFile: TCustomIniFile): TJvCustomInspectorItem; overload;
+    class function New(const AParent: TJvCustomInspectorItem; const ASection: string; const AINIFile: TCustomIniFile; const OnAddKey: TJvInspConfKeyEvent): TJvInspectorItemInstances; overload;
+    class function New(const AParent: TJvCustomInspectorItem; const AINIFile: TCustomIniFile; const OnAddSection: TJvInspConfSectionEvent; const OnAddKey: TJvInspConfKeyEvent): TJvInspectorItemInstances; overload;
 
     property INIFile: TCustomIniFile read FINIFile;
   end;
@@ -1343,13 +1421,11 @@ type
     FTypeInfo: PTypeInfo;
   protected
   public
-    constructor Create(const AItemClass: TJvInspectorItemClass;
-      const AObjectClass: TClass; const AName: string;
-      const ATypeInfo: PTypeInfo);
+    constructor Create(const AItemClass: TJvInspectorItemClass; const AObjectClass: TClass;
+      const AName: string; const ATypeInfo: PTypeInfo);
     function Compare(const ADataObj: TJvCustomInspectorData;
       const Item: TJvCustomInspectorRegItem): Integer; override;
-    function MatchValue(const ADataObj: TJvCustomInspectorData): Integer;
-      override;
+    function MatchValue(const ADataObj: TJvCustomInspectorData): Integer; override;
     function MatchPercent(const ADataObj: TJvCustomInspectorData): Integer; override;
 
     property Name: string read FName;
@@ -1360,7 +1436,7 @@ type
 implementation
 
 uses
-  Consts, Dialogs, ExtCtrls, Forms,
+  Consts, Dialogs, ExtCtrls, Forms, {$IFDEF COMPILER6_UP}RTLConsts,{$ENDIF}
   JclRTTI, JclLogic;
 
 type
@@ -1589,6 +1665,129 @@ begin
     SetDefaultProp(Instance, PropNames[I]);
 end;
 
+{ TJvInspDataReg }
+
+type
+  TJvInspDataReg = class(TPersistent)
+  private
+    FInstanceList: TJvInspectorDataInstances;
+    FClearing: Boolean;
+  protected
+    function GetCount: Integer;
+    function GetItems(I: Integer): TJvCustomInspectorData;
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    // Adds a new data instance. If an instance pointing to the same data exists the given instance is destroyed and the registered instance returned
+    function Add(Instance: TJvCustomInspectorData): TJvCustomInspectorData;
+    // Deletes a data instance and all items referencing it. All other data instances are notified.
+    procedure Delete(Instance: TJvCustomInspectorData);
+    // Deletes all data instances and items referencing them. No notification is issued to the data instances as they will be removed also.
+    procedure Clear;
+    // Locates a data instance that references the same data as the given instance. The index is returned or -1 if no instance was found.
+    function Locate(Instance: TJvCustomInspectorData): Integer;
+    // Removes a data instance from the list. All other data instances are notified.
+    procedure Remove(Instance: TJvCustomInspectorData);
+
+    property Count: Integer read GetCount;
+    property Items[I: Integer]: TJvCustomInspectorData read GetItems;
+  end;
+
+function TJvInspDataReg.GetCount: Integer;
+begin
+  Result := Length(FInstanceList);
+end;
+
+function TJvInspDataReg.GetItems(I: Integer): TJvCustomInspectorData;
+begin
+  if (I < Low(FInstanceList)) or (I > High(FInstanceList)) then
+    TList.Error(@SListIndexError, I);
+  Result := FInstanceList[I];
+end;
+
+constructor TJvInspDataReg.Create;
+begin
+  inherited Create;
+  SetLength(FInstanceList, 0);
+end;
+
+destructor TJvInspDataReg.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJvInspDataReg.Add(Instance: TJvCustomInspectorData): TJvCustomInspectorData;
+var
+  I: Integer;
+begin
+  I := Locate(Instance);
+  if I = -1 then
+  begin
+    SetLength(FInstanceList, Count + 1);
+    FInstanceList[High(FInstanceList)] := Instance;
+    Result := Instance;
+    Result.FRegistered := True;
+  end
+  else
+  begin
+    if Items[I] <> Instance then
+      Instance.Free;
+    Result := Items[I];
+  end;
+end;
+
+procedure TJvInspDataReg.Delete(Instance: TJvCustomInspectorData);
+begin
+  Instance.Free;
+end;
+
+procedure TJvInspDataReg.Clear;
+var
+  I: Integer;
+begin
+  FClearing := True;
+  try
+    for I := High(FInstanceList) downto Low(FInstanceList) do
+      Items[I].Free;
+  finally
+    FClearing := False;
+  end;
+end;
+
+function TJvInspDataReg.Locate(Instance: TJvCustomInspectorData): Integer;
+begin
+  Result := High(FInstanceList);
+  while Result > -1 do
+  begin
+    if (Instance = Items[Result]) or Instance.IsEqualReference(Items[Result]) then
+      Break;
+    Dec(Result);
+  end;
+end;
+
+procedure TJvInspDataReg.Remove(Instance: TJvCustomInspectorData);
+var
+  I: Integer;
+begin
+  I := Locate(Instance);
+  if I > -1 then
+  begin
+    if Items[I] <> Instance then
+      raise EJvInspectorData.Create('Internal error: two data instances pointing to the same data are registered.');
+    if I < High(FInstanceList) then
+      Move(FInstanceList[I + 1], FInstanceList[I], (Length(FInstanceList) - I) * SizeOf(TJvCustomInspectorData));
+    SetLength(FInstanceList, High(FInstanceList));
+    if not FClearing then
+      for I := Low(FInstanceList) to High(FInstanceList) do
+        Items[I].NotifyRemoveData(Instance);
+  end;
+end;
+
+var
+  DataRegister: TJvInspDataReg;
+  
 { TJvCustomInspector }
 
 function TJvCustomInspector.CalcImageHeight: Integer;
@@ -1703,13 +1902,6 @@ begin
   if Assigned(FOnItemSelected) then
     FOnItemSelected(Self);
 end;
-
-{
-function TJvCustomInspector.GetAboutMe: string;
-begin
-  Result := Format('%s %d.%.2d', [ClassName, Version div 100, Version mod 100]);
-end;
-}
 
 function TJvCustomInspector.GetAfterDataCreate: TInspectorDataEvent;
 begin
@@ -1972,8 +2164,8 @@ begin
       VK_TAB:
         if WantTabs then
         begin
-          if Item is TJvInspectorCompoundItem then
-          with Item as TJvInspectorCompoundItem do
+          if Item is TJvInspectorCustomCompoundItem then
+          with Item as TJvInspectorCustomCompoundItem do
           begin
             if SelectedColumnIndex < Pred(ColumnCount) then
               SelectedColumnIndex := SelectedColumnIndex + 1
@@ -1984,8 +2176,8 @@ begin
             SelectedIndex := SelectedIndex + 1;
           if Item <> Selected then
           begin
-            if Selected is TJvInspectorCompoundItem then
-              TJvInspectorCompoundItem(Selected).SelectedColumnIndex := 0;
+            if Selected is TJvInspectorCustomCompoundItem then
+              TJvInspectorCustomCompoundItem(Selected).SelectedColumnIndex := 0;
           end;
         end;
       VK_ADD:
@@ -2007,8 +2199,8 @@ begin
       VK_TAB:
         if WantTabs then
         begin
-          if Item is TJvInspectorCompoundItem then
-          with Item as TJvInspectorCompoundItem do
+          if Item is TJvInspectorCustomCompoundItem then
+          with Item as TJvInspectorCustomCompoundItem do
           begin
             if SelectedColumnIndex > 0 then
               SelectedColumnIndex := SelectedColumnIndex - 1
@@ -2019,8 +2211,8 @@ begin
             SelectedIndex := SelectedIndex - 1;
           if Item <> Selected then
           begin
-            if Selected is TJvInspectorCompoundItem then
-              TJvInspectorCompoundItem(Selected).SelectedColumnIndex := TJvInspectorCompoundItem(Selected).ColumnCount - 1;
+            if Selected is TJvInspectorCustomCompoundItem then
+              TJvInspectorCustomCompoundItem(Selected).SelectedColumnIndex := TJvInspectorCustomCompoundItem(Selected).ColumnCount - 1;
           end;
         end;
       else
@@ -2323,12 +2515,6 @@ begin
 		Result := 1;
 end;
 
-{
-procedure TJvCustomInspector.SetAboutMe(const Value: string);
-begin
-end;
-}
-
 procedure TJvCustomInspector.SetAfterDataCreate(
   const Value: TInspectorDataEvent);
 begin
@@ -2609,11 +2795,6 @@ begin
   Invalidate;
 end;
 
-class function TJvCustomInspector.Version: Word;
-begin
-  Result := TJVINSPECTOR_VERSION;
-end;
-
 function TJvCustomInspector.ViewHeight: Integer;
 begin
   Result := HeightOf(ViewRect);
@@ -2785,9 +2966,9 @@ end;
 function TJvCustomInspector.FocusedItem: TJvCustomInspectorItem;
 begin
   Result := Selected;
-  if (Result <> nil) and (Result is TJvInspectorCompoundItem) then
+  if (Result <> nil) and (Result is TJvInspectorCustomCompoundItem) then
   begin
-    with (Result as TJvInspectorCompoundItem) do
+    with (Result as TJvInspectorCustomCompoundItem) do
       if SelectedColumn <> nil then
         Result := SelectedColumn.Item;
   end;
@@ -3516,7 +3697,7 @@ end;
 procedure TJvInspectorDotNETPainter.ApplyNameFont;
 begin
   inherited ApplyNameFont;
-  if (Item = Inspector.Selected) and not (Item is TJvInspectorCompoundItem) then
+  if (Item = Inspector.Selected) and not (Item is TJvInspectorCustomCompoundItem) then
   begin
     Canvas.Brush.Color := SelectedColor;
     Canvas.Font.Color := SelectedTextColor;
@@ -3571,7 +3752,7 @@ begin
 
   if (Item is TJvInspectorCustomCategoryItem) and (Item.Level = 0) then
     Canvas.Brush.Color := CategoryColor;
-  if (Item = Inspector.Selected) and (not (Item is TJvInspectorCompoundItem) or (TJvInspectorCompoundItem(Item).SelectedColumnIndex = 0)) and ((Item.Level > 0) or
+  if (Item = Inspector.Selected) and (not (Item is TJvInspectorCustomCompoundItem) or (TJvInspectorCustomCompoundItem(Item).SelectedColumnIndex = 0)) and ((Item.Level > 0) or
       not (Item is TJvInspectorCustomCategoryItem)) then
     Canvas.Brush.Color := SelectedColor;
   Canvas.FillRect(PreNameRect);
@@ -3942,7 +4123,7 @@ var
 begin
   if not DroppedDown then
   begin
-    ListBox.Width := WidthOf(Rects[iprValueArea]);
+    ListBox.Width := WidthOf(Rects[iprValue]);
     TListBox(ListBox).Font := TOpenEdit(EditCtrl).Font;
     if TListBox(ListBox).IntegralHeight then
     begin
@@ -3960,6 +4141,8 @@ begin
     TListBox(ListBox).Height := ListCount * TListBox(ListBox).ItemHeight + 4;
     ListBox.ItemIndex := ListBox.Items.IndexOf(EditCtrl.Text);
     J := ListBox.ClientWidth;
+    if ListBox.Items.Count > ListCount then
+      Dec(J, GetSystemMetrics(SM_CXVSCROLL));
     for I := 0 to ListBox.Items.Count - 1 do
     begin
       Y := ListBox.Canvas.TextWidth(ListBox.Items[I]);
@@ -4148,12 +4331,9 @@ end;
 
 function TJvCustomInspectorItem.GetDisplayName: string;
 begin
-  if Data <> nil then
-    Result := Data.Name
-  else
-    Result := '';
+  Result := FDisplayName;
   if (Parent <> nil) and (iifQualifiedNames in Parent.Flags) then
-    Result := Parent.DisplayName + Result;
+    Result := Parent.DisplayName + '.' + Result;
 end;
 
 function TJvCustomInspectorItem.GetDisplayParent: TJvCustomInspectorItem;
@@ -4238,7 +4418,7 @@ end;
 
 function TJvCustomInspectorItem.GetIsCompoundColumn: Boolean;
 begin
-  Result := (Parent <> nil) and (Parent is TJvInspectorCompoundItem) and (Parent.IndexOf(Self) < 0);
+  Result := (Parent <> nil) and (Parent is TJvInspectorCustomCompoundItem) and (Parent.IndexOf(Self) < 0);
 end;
 
 function TJvCustomInspectorItem.GetItems(
@@ -4498,6 +4678,21 @@ end;
 procedure TJvCustomInspectorItem.SetDisplayIndexValue(const Value: Integer);
 begin
   FDisplayIndex := Value;
+end;
+
+procedure TJvCustomInspectorItem.SetDisplayName(Value: string);
+var
+  S: string;
+begin
+  if (Parent <> nil) and (iifQualifiedNames in Parent.Flags) then
+    S := Parent.DisplayName + '.';
+  if S <> Copy(Value, 1, Length(S)) then
+    System.Delete(Value, 1, Length(S));
+  if Value <> FDisplayName then
+  begin
+    FDisplayName := Value;
+    InvalidateItem;
+  end;
 end;
 
 procedure TJvCustomInspectorItem.SetDisplayValue(const Value: string);
@@ -4790,6 +4985,8 @@ begin
   FRowSizing := TJvInspectorItemSizing.Create(Self);
   FSortKind := iskName;
   FDisplayIndex := -1;
+  if AData <> nil then
+    FDisplayName := AData.Name;
   if AParent <> nil then
   begin
     FInspector := AParent.Inspector;
@@ -4803,7 +5000,8 @@ begin
   if Inspector <> nil then
     Inspector.RemoveNotifySort(Self);
   FItems.Free;
-  FData.Free;
+  if Data <> nil then
+    FData.RemoveItem(Self);
   inherited Destroy;
 end;
 
@@ -4811,11 +5009,6 @@ function TJvCustomInspectorItem.Add(const Item: TJvCustomInspectorItem): Integer
 begin
   Result := Count;
   Insert(Result, Item);
-end;
-
-function TJvCustomInspectorItem.Add(const Data: TJvCustomInspectorData): Integer;
-begin
-  Result := Add(Data.Item);
 end;
 
 procedure TJvCustomInspectorItem.AfterConstruction;
@@ -5026,7 +5219,6 @@ begin
       TMemo(EditCtrl).WordWrap := True;
       TMemo(EditCtrl).WantReturns := False;
       TMemo(EditCtrl).ScrollBars := ssVertical;
-//      TMemo(EditCtrl).WantTabs := not Inspector.WantTabs;
     end
     else
       SetEditCtrl(TEdit.Create(Inspector));
@@ -5110,11 +5302,6 @@ begin
     InvalidateSort;
 end;
 
-procedure TJvCustomInspectorItem.Insert(const Index: Integer; const Data: TJvCustomInspectorData);
-begin
-  Insert(Index, Data.Item);
-end;
-
 procedure TJvCustomInspectorItem.ScrollInView;
 var
   ViewIdx: Integer;
@@ -5192,20 +5379,6 @@ end;
 
 { TJvInspectorCustomCategoryItem }
 
-function TJvInspectorCustomCategoryItem.GetDisplayName: string;
-begin
-  Result := FName;
-end;
-
-procedure TJvInspectorCustomCategoryItem.SetDisplayName(const Value: string);
-begin
-  if Value <> DisplayName then
-  begin
-    FName := Value;
-    InvalidateList;
-  end;
-end;
-
 procedure TJvInspectorCustomCategoryItem.SetFlags(
   const Value: TInspectorItemFlags);
 var
@@ -5262,7 +5435,7 @@ begin
   if Value <> WidthSet then
   begin
     SetWidthSet(Value);
-    TJvInspectorCompoundItem(Item.Parent).RecalcColumnWidths(Self);
+    TJvInspectorCustomCompoundItem(Item.Parent).RecalcColumnWidths(Self);
   end;
 end;
 
@@ -5275,7 +5448,7 @@ begin
   end;
 end;
 
-constructor TJvInspectorCompoundColumn.Create(const AParent: TJvInspectorCompoundItem;
+constructor TJvInspectorCompoundColumn.Create(const AParent: TJvInspectorCustomCompoundItem;
   const AItem: TJvCustomInspectorItem);
 begin
   inherited Create;
@@ -5289,9 +5462,48 @@ begin
   inherited Destroy;
 end;
 
-{ TJvInspectorCompoundItem }
+{ TJvInspectorCustomCompoundItem }
 
-procedure TJvInspectorCompoundItem.DivideRect(const RectKind: TInspectorPaintRect; const Value: TRect);
+function TJvInspectorCustomCompoundItem.AddColumnPrim(const Item: TJvCustomInspectorItem): Integer;
+begin
+  Result := ColumnCount;
+  InsertColumnPrim(Result, Item);
+end;
+
+function TJvInspectorCustomCompoundItem.AddColumnPrim(const ItemIndex: Integer): Integer;
+begin
+  Result := ColumnCount;
+  InsertColumnPrim(Result, Items[ItemIndex]);
+end;
+
+procedure TJvInspectorCustomCompoundItem.DeleteColumnPrim(const Column: TJvInspectorCompoundColumn);
+var
+  Idx: Integer;
+begin
+  Idx := IndexOfColumnPrim(Column);
+  if Idx > -1 then
+    DeleteColumnPrim(Idx)
+  else
+    raise EJvInspectorItem.Create(sJvInspItemColNotFound);
+end;
+
+procedure TJvInspectorCustomCompoundItem.DeleteColumnPrim(const Index: Integer);
+begin
+  FColumns.Delete(Index);
+end;
+
+procedure TJvInspectorCustomCompoundItem.DeleteColumnPrim(const Item: TJvCustomInspectorItem);
+var
+  Idx: Integer;
+begin
+  Idx := IndexOfColumnPrim(Item);
+  if Idx > -1 then
+    DeleteColumnPrim(Idx)
+  else
+    raise EJvInspectorItem.Create(sJvInspItemItemIsNotCol);
+end;
+
+procedure TJvInspectorCustomCompoundItem.DivideRect(const RectKind: TInspectorPaintRect; const Value: TRect);
 var
   VisibleColCount: Integer;
   I: Integer;
@@ -5341,7 +5553,15 @@ begin
   end;
 end;
 
-function TJvInspectorCompoundItem.GetColumnCount: Integer;
+procedure TJvInspectorCustomCompoundItem.EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if (SelectedColumn <> nil) and SelectedColumn.Item.Editing then
+    SelectedColumn.Item.EditKeyDown(Sender, Key, Shift)
+  else
+    inherited EditKeyDown(Sender, Key, Shift);
+end;
+
+function TJvInspectorCustomCompoundItem.GetColumnCount: Integer;
 begin
   if FColumns <> nil then
     Result := FColumns.Count
@@ -5349,27 +5569,35 @@ begin
     Result := 0;
 end;
 
-function TJvInspectorCompoundItem.GetColumns(I: Integer): TJvInspectorCompoundColumn;
+function TJvInspectorCustomCompoundItem.GetColumns(I: Integer): TJvInspectorCompoundColumn;
 begin
   Result := TJvInspectorCompoundColumn(FColumns[I]);
 end;
 
-function TJvInspectorCompoundItem.GetDisplayName: string;
+function TJvInspectorCustomCompoundItem.GetDisplayName: string;
 begin
-  if ColumnCount > 0 then
-    Result := Columns[0].Item.DisplayName
-  else
-    Result := '';
-  if (Parent <> nil) and (iifQualifiedNames in Parent.Flags) then
-    Result := Parent.DisplayName + Result;
+  if SingleName then
+  begin
+    if SingleNameUseFirstCol then
+    begin
+      if ColumnCount > 0 then
+        Result := Columns[0].Item.DisplayName
+      else
+        Result := '';
+      if (Parent <> nil) and (iifQualifiedNames in Parent.Flags) then
+        Result := Parent.DisplayName + '.' + Result;
+    end
+    else
+      Result := inherited GetDisplayName;
+  end;
 end;
 
-function TJvInspectorCompoundItem.GetEditing: Boolean;
+function TJvInspectorCustomCompoundItem.GetEditing: Boolean;
 begin
   Result := (SelectedColumn <> nil) and SelectedColumn.Item.Editing;
 end;
 
-function TJvInspectorCompoundItem.GetSelectedColumn: TJvInspectorCompoundColumn;
+function TJvInspectorCustomCompoundItem.GetSelectedColumn: TJvInspectorCompoundColumn;
 begin
   if SelectedColumnIndex > -1 then
     Result := Columns[SelectedColumnIndex]
@@ -5377,12 +5605,55 @@ begin
     Result := nil;
 end;
 
-function TJvInspectorCompoundItem.GetSelectedColumnIndex: Integer;
+function TJvInspectorCustomCompoundItem.GetSelectedColumnIndex: Integer;
 begin
   Result := FSelectedColumnIdx;
 end;
 
-procedure TJvInspectorCompoundItem.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+function TJvInspectorCustomCompoundItem.GetSingleName: Boolean;
+begin
+  Result := icifSingleName in CompoundItemFlags;
+end;
+
+function TJvInspectorCustomCompoundItem.GetSingleNameUseFirstCol: Boolean;
+begin
+  Result := icifSingleNameUseFirstCol in CompoundItemFlags;
+end;
+
+function TJvInspectorCustomCompoundItem.IndexOfColumnPrim(const Col: TJvInspectorCompoundColumn): Integer;
+begin
+  Result := ColumnCount -1;
+  while (Result >= 0) and (Columns[Result] <> Col) do
+    Dec(Result);
+end;
+
+function TJvInspectorCustomCompoundItem.IndexOfColumnPrim(const Item: TJvCustomInspectorItem): Integer;
+begin
+  Result := ColumnCount -1;
+  while (Result >= 0) and (Columns[Result].Item <> Item) do
+    Dec(Result);
+end;
+
+procedure TJvInspectorCustomCompoundItem.InsertColumnPrim(const Index: Integer; const Item: TJvCustomInspectorItem);
+var
+  Col: TJvInspectorCompoundColumn;
+begin
+  Col := TJvInspectorCompoundColumn.Create(Self, Item);
+  try
+    FColumns.Insert(Index, Col);
+    RecalcColumnWidths(Col);
+  except
+    Col.Free;
+    raise;
+  end;
+end;
+
+procedure TJvInspectorCustomCompoundItem.InsertColumnPrim(const Index, ItemIndex: Integer);
+begin
+  InsertColumnPrim(Index, Items[ItemIndex]);
+end;
+
+procedure TJvInspectorCustomCompoundItem.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   I: Integer;
 begin
@@ -5398,7 +5669,7 @@ begin
   end;
 end;
 
-procedure TJvInspectorCompoundItem.RecalcColumnWidths(const SetColumn: TJvInspectorCompoundColumn = nil);
+procedure TJvInspectorCustomCompoundItem.RecalcColumnWidths(const SetColumn: TJvInspectorCompoundColumn = nil);
 var
   Idx: Integer;
   PercentLeft: Integer;
@@ -5414,7 +5685,7 @@ var
 begin
   if SetColumn <> nil then
   begin
-    Idx := IndexOfColumn(SetColumn);
+    Idx := IndexOfColumnPrim(SetColumn);
     PercentLeft := 100 - SetColumn.WidthSet;
     if SetColumn.WidthSet > 0 then
       SetColumn.SetWidth(SetColumn.WidthSet)
@@ -5461,13 +5732,47 @@ begin
   end;
 end;
 
-procedure TJvInspectorCompoundItem.SetEditing(const Value: Boolean);
+procedure TJvInspectorCustomCompoundItem.SetCompoundItemFlags(Value: TInspectorCompoundItemFlags);
+begin
+  // Check the difference: if icifSingleName is removed, remove icifSingleNameUseFirstCol as well
+  if ((CompoundItemFlags - Value) * [icifSingleName]) <> [] then
+    Exclude(Value, icifSingleNameUseFirstCol)
+  else if Value = [icifSingleNameUseFirstCol] then
+    Include(Value, icifSingleName);
+  if Value <> CompoundItemFlags then
+  begin
+    FCompoundItemFlags := Value;
+    InvalidateItem;
+  end;
+end;
+
+procedure TJvInspectorCustomCompoundItem.SetDisplayName(Value: string);
+var
+  S: string;
+begin
+  if SingleName then
+  begin
+    if SingleNameUseFirstCol then
+    begin
+      if (Parent <> nil) and (iifQualifiedNames in Parent.Flags) then
+        S := Parent.DisplayName + '.';
+      if S <> Copy(Value, 1, Length(S)) then
+        System.Delete(Value, 1, Length(S));
+      if (ColumnCount > 0) and (Columns[0].Item.DisplayName <> Value) then
+        Columns[0].Item.DisplayName := Value;
+    end
+    else
+      inherited SetDisplayName(Value);
+  end;
+end;
+
+procedure TJvInspectorCustomCompoundItem.SetEditing(const Value: Boolean);
 begin
   if SelectedColumn <> nil then
     SelectedColumn.Item.SetEditing(Value);
 end;
 
-procedure TJvInspectorCompoundItem.SetFlags(const Value: TInspectorItemFlags);
+procedure TJvInspectorCustomCompoundItem.SetFlags(const Value: TInspectorItemFlags);
 var
   NewFlags: TInspectorItemFlags;
 begin
@@ -5478,13 +5783,13 @@ begin
   inherited SetFlags(NewFlags);
 end;
 
-procedure TJvInspectorCompoundItem.SetFocus;
+procedure TJvInspectorCustomCompoundItem.SetFocus;
 begin
   if SelectedColumn <> nil then
     SelectedColumn.Item.SetFocus;
 end;
 
-procedure TJvInspectorCompoundItem.SetRects(const RectKind: TInspectorPaintRect; Value: TRect);
+procedure TJvInspectorCustomCompoundItem.SetRects(const RectKind: TInspectorPaintRect; Value: TRect);
 begin
   inherited SetRects(RectKind, Value);
   case RectKind of
@@ -5494,12 +5799,12 @@ begin
   end;
 end;
 
-procedure TJvInspectorCompoundItem.SetSelectedColumn(Value: TJvInspectorCompoundColumn);
+procedure TJvInspectorCustomCompoundItem.SetSelectedColumn(Value: TJvInspectorCompoundColumn);
 begin
-  SelectedColumnIndex := IndexOfColumn(Value);
+  SelectedColumnIndex := IndexOfColumnPrim(Value);
 end;
 
-procedure TJvInspectorCompoundItem.SetSelectedColumnIndex(Value: Integer);
+procedure TJvInspectorCustomCompoundItem.SetSelectedColumnIndex(Value: Integer);
 begin
   if Value <> SelectedColumnIndex then
   begin
@@ -5510,69 +5815,52 @@ begin
   end;
 end;
 
-constructor TJvInspectorCompoundItem.Create(const AParent: TJvCustomInspectorItem;
+procedure TJvInspectorCustomCompoundItem.SetSingleName(Value: Boolean);
+begin
+  if Value <> SingleName then
+  begin
+    if Value then
+      CompoundItemFlags := CompoundItemFlags + [icifSingleName]
+    else
+      CompoundItemFlags := CompoundItemFlags - [icifSingleName];
+  end;
+end;
+
+procedure TJvInspectorCustomCompoundItem.SetSingleNameUseFirstCol(Value: Boolean);
+begin
+  if Value <> SingleNameUseFirstCol then
+  begin
+    if Value then
+      CompoundItemFlags := CompoundItemFlags + [icifSingleNameUseFirstCol]
+    else
+      CompoundItemFlags := CompoundItemFlags - [icifSingleNameUseFirstCol];
+  end;
+end;
+
+constructor TJvInspectorCustomCompoundItem.Create(const AParent: TJvCustomInspectorItem;
   const AData: TJvCustomInspectorData);
 begin
   inherited Create(AParent, AData);
   FColumns := TObjectList.Create;
 end;
 
-destructor TJvInspectorCompoundItem.Destroy;
+destructor TJvInspectorCustomCompoundItem.Destroy;
 begin
   FreeAndNil(FColumns);
   inherited Destroy;
 end;
 
-function TJvInspectorCompoundItem.AddColumn(const Item: TJvCustomInspectorItem): Integer;
-begin
-  Result := ColumnCount;
-  InsertColumn(Result, Item);
-end;
-
-function TJvInspectorCompoundItem.AddColumn(const ItemIndex: Integer): Integer;
-begin
-  Result := ColumnCount;
-  InsertColumn(Result, Items[ItemIndex]);
-end;
-
-procedure TJvInspectorCompoundItem.DeleteColumn(const Column: TJvInspectorCompoundColumn);
-var
-  Idx: Integer;
-begin
-  Idx := IndexOfColumn(Column);
-  if Idx > -1 then
-    DeleteColumn(Idx)
-  else
-    raise EJvInspectorItem.Create(sJvInspItemColNotFound);
-end;
-
-procedure TJvInspectorCompoundItem.DeleteColumn(const Index: Integer);
-begin
-  FColumns.Delete(Index);
-end;
-
-procedure TJvInspectorCompoundItem.DeleteColumn(const Item: TJvCustomInspectorItem);
-var
-  Idx: Integer;
-begin
-  Idx := IndexOfColumn(Item);
-  if Idx > -1 then
-    DeleteColumn(Idx)
-  else
-    raise EJvInspectorItem.Create(sJvInspItemItemIsNotCol);
-end;
-
-procedure TJvInspectorCompoundItem.DoneEdit(const CancelEdits: Boolean = False);
+procedure TJvInspectorCustomCompoundItem.DoneEdit(const CancelEdits: Boolean = False);
 begin
   if SelectedColumn <> nil then
     SelectedColumn.Item.DoneEdit(CancelEdits);
 end;
  
-procedure TJvInspectorCompoundItem.DrawEditor(const ACanvas: TCanvas);
+procedure TJvInspectorCustomCompoundItem.DrawEditor(const ACanvas: TCanvas);
 begin
 end;
 
-procedure TJvInspectorCompoundItem.DrawName(const ACanvas: TCanvas);
+procedure TJvInspectorCustomCompoundItem.DrawName(const ACanvas: TCanvas);
 var
   RTop: Integer;
   RBottom: Integer;
@@ -5580,40 +5868,45 @@ var
   I: Integer;
   Col: TJvInspectorCompoundColumn;
 begin
-  with Rects[iprNameArea] do
+  if SingleName then
+    inherited DrawName(ACanvas)
+  else
   begin
-    RTop := Top;
-    RBottom := Bottom;
-  end;
-  LastI := ColumnCount - 1;
-  while (LastI > 0) and (Columns[LastI].Width < 1) do
-    Dec(LastI);
-  for I := 0 to LastI do
-  begin
-    Col := Columns[I];
-    if Col.Width >= 0 then
+    with Rects[iprNameArea] do
     begin
-      if (Inspector.Selected = Self) and (I = SelectedColumnIndex) then
+      RTop := Top;
+      RBottom := Bottom;
+    end;
+    LastI := ColumnCount - 1;
+    while (LastI > 0) and (Columns[LastI].Width < 1) do
+      Dec(LastI);
+    for I := 0 to LastI do
+    begin
+      Col := Columns[I];
+      if Col.Width >= 0 then
       begin
-        ACanvas.Brush.Color := Inspector.Painter.SelectedColor;
-        ACanvas.Font.Color := Inspector.Painter.SelectedTextColor;
-        with Col.Item.Rects[iprName] do
-          ACanvas.FillRect(Rect(Left, RTop, Right, RBottom));
-      end
-      else
-      begin
-        ACanvas.Brush.Color := Inspector.Painter.BackgroundColor;
-        ACanvas.Font.Color := Inspector.Painter.NameColor;
+        if (Inspector.Selected = Self) and (I = SelectedColumnIndex) then
+        begin
+          ACanvas.Brush.Color := Inspector.Painter.SelectedColor;
+          ACanvas.Font.Color := Inspector.Painter.SelectedTextColor;
+          with Col.Item.Rects[iprName] do
+            ACanvas.FillRect(Rect(Left, RTop, Right, RBottom));
+        end
+        else
+        begin
+          ACanvas.Brush.Color := Inspector.Painter.BackgroundColor;
+          ACanvas.Font.Color := Inspector.Painter.NameColor;
+        end;
+        Col.Item.DrawName(ACanvas);
+        if I <> LastI then
+          with Col.Item.Rects[iprName] do
+            Inspector.Painter.PaintDivider(Right - 1, Top + 1, Bottom - 2);
       end;
-      Col.Item.DrawName(ACanvas);
-      if I <> LastI then
-        with Col.Item.Rects[iprName] do
-          Inspector.Painter.PaintDivider(Right - 1, Top + 1, Bottom - 2);
     end;
   end;
 end;
 
-procedure TJvInspectorCompoundItem.DrawValue(const ACanvas: TCanvas);
+procedure TJvInspectorCustomCompoundItem.DrawValue(const ACanvas: TCanvas);
 var
   LastI: Integer;
   I: Integer;
@@ -5635,49 +5928,63 @@ begin
   end;
 end;
 
-function TJvInspectorCompoundItem.EditFocused: Boolean;
+function TJvInspectorCustomCompoundItem.EditFocused: Boolean;
 begin
   Result := (SelectedColumn <> nil) and (SelectedColumn.Item.EditCtrl <> nil) and
     SelectedColumn.Item.EditCtrl.Focused;
 end;
 
-function TJvInspectorCompoundItem.IndexOfColumn(const Col: TJvInspectorCompoundColumn): Integer;
-begin
-  Result := ColumnCount -1;
-  while (Result >= 0) and (Columns[Result] <> Col) do
-    Dec(Result);
-end;
-
-function TJvInspectorCompoundItem.IndexOfColumn(const Item: TJvCustomInspectorItem): Integer;
-begin
-  Result := ColumnCount -1;
-  while (Result >= 0) and (Columns[Result].Item <> Item) do
-    Dec(Result);
-end;
-
-procedure TJvInspectorCompoundItem.InitEdit;
+procedure TJvInspectorCustomCompoundItem.InitEdit;
 begin
   if SelectedColumn <> nil then
     SelectedColumn.Item.InitEdit;
 end;
 
-procedure TJvInspectorCompoundItem.InsertColumn(const Index: Integer; const Item: TJvCustomInspectorItem);
-var
-  Col: TJvInspectorCompoundColumn;
+{ TJvInspectorCompoundItem }
+
+function TJvInspectorCompoundItem.AddColumn(const Item: TJvCustomInspectorItem): Integer;
 begin
-  Col := TJvInspectorCompoundColumn.Create(Self, Item);
-  try
-    FColumns.Insert(Index, Col);
-    RecalcColumnWidths(Col);
-  except
-    Col.Free;
-    raise;
-  end;
+  Result := AddColumnPrim(Item);
+end;
+
+function TJvInspectorCompoundItem.AddColumn(const ItemIndex: Integer): Integer;
+begin
+  Result := AddColumnPrim(ItemIndex);
+end;
+
+procedure TJvInspectorCompoundItem.DeleteColumn(const Column: TJvInspectorCompoundColumn);
+begin
+  DeleteColumnPrim(Column);
+end;
+
+procedure TJvInspectorCompoundItem.DeleteColumn(const Index: Integer);
+begin
+  DeleteColumnPrim(Index);
+end;
+
+procedure TJvInspectorCompoundItem.DeleteColumn(const Item: TJvCustomInspectorItem);
+begin
+  DeleteColumnPrim(Item);
+end;
+
+function TJvInspectorCompoundItem.IndexOfColumn(const Col: TJvInspectorCompoundColumn): Integer;
+begin
+  Result := IndexOfColumnPrim(Col);
+end;
+
+function TJvInspectorCompoundItem.IndexOfColumn(const Item: TJvCustomInspectorItem): Integer;
+begin
+  Result := IndexOfColumnPrim(Item);
+end;
+
+procedure TJvInspectorCompoundItem.InsertColumn(const Index: Integer; const Item: TJvCustomInspectorItem);
+begin
+  InsertColumnPrim(Index, Item);
 end;
 
 procedure TJvInspectorCompoundItem.InsertColumn(const Index, ItemIndex: Integer);
 begin
-  InsertColumn(Index, Items[ItemIndex]);
+  InsertColumnPrim(Index, ItemIndex);
 end;
 
 { TJvInspectorIntegerItem }
@@ -5767,7 +6074,7 @@ var
   Buf: array [0..31] of Byte;
 begin
   CheckReadAccess;
-  Item.Parent.Data.GetAsSet(Buf);
+  DataParent.GetAsSet(Buf);
   Result := Ord(TestBitBuffer(Buf, BitOffset));
 end;
 
@@ -5775,6 +6082,18 @@ function TJvInspectorSetMemberData.GetAsString: string;
 begin
   CheckReadAccess;
   raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['String']);
+end;
+
+function TJvInspectorSetMemberData.IsEqualReference(const Ref: TJvCustomInspectorData): Boolean;
+begin
+  Result := (Ref is TJvInspectorSetMemberData) and (TJvInspectorSetMemberData(Ref).DataParent = DataParent) and (TJvInspectorSetMemberData(Ref).BitOffset = BitOffset)
+end;
+
+procedure TJvInspectorSetMemberData.NotifyRemoveData(const Instance: TJvCustomInspectorData);
+begin
+  // if the instance to be removed is the data parent of this instance, free this instance as well.
+  if Instance = DataParent then
+    Free;
 end;
 
 procedure TJvInspectorSetMemberData.SetAsFloat(const Value: Extended);
@@ -5800,36 +6119,18 @@ var
   Buf: array [0..31] of Byte;
 begin
   CheckWriteAccess;
-  Item.Parent.Data.GetAsSet(Buf);
+  DataParent.GetAsSet(Buf);
   if Value <> 0 then
     SetBitBuffer(Buf, BitOffset)
   else
     ClearBitBuffer(Buf, BitOffset);
-  Item.Parent.Data.SetAsSet(Buf);
+  DataParent.SetAsSet(Buf);
 end;
 
 procedure TJvInspectorSetMemberData.SetAsString(const Value: string);
 begin
   CheckWriteAccess;
   raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['String']);
-end;
-
-constructor TJvInspectorSetMemberData.Create(const Ordinal: Integer;
-  const AParent: TJvCustomInspectorItem);
-var
-  BaseInfo: IJclOrdinalRangeTypeInfo;
-  ByteOffset: Integer;
-begin
-  inherited Create;
-  BaseInfo := ((JclTypeInfo(AParent.Data.TypeInfo) as IJclSetTypeInfo).
-    BaseType as IJclOrdinalRangeTypeInfo);
-  ByteOffset := (Ordinal div 8) - (BaseInfo.MinValue div 8);
-  FBitOffset := Ordinal mod 8 + 8 * ByteOffset;
-  if BaseInfo.TypeKind = tkEnumeration then
-    Init(GetEnumName(BaseInfo.TypeInfo, Ordinal), System.TypeInfo(Boolean))
-  else
-    Init(IntToStr(Ordinal), System.TypeInfo(Boolean));
-  CreateChild(AParent);
 end;
 
 procedure TJvInspectorSetMemberData.GetAsSet(var Buf);
@@ -5851,6 +6152,29 @@ end;
 function TJvInspectorSetMemberData.IsInitialized: Boolean;
 begin
   Result := True;
+end;
+
+class function TJvInspectorSetMemberData.New(const AParent: TJvCustomInspectorItem;
+  const Ordinal: Integer; const ADataParent: TJvCustomInspectorData): TJvCustomInspectorItem;
+var
+  BaseInfo: IJclOrdinalRangeTypeInfo;
+  Data: TJvInspectorSetMemberData;
+begin
+  Assert(ADataParent <> nil);
+  Assert(AParent <> nil);
+  BaseInfo := ((JclTypeInfo(ADataParent.TypeInfo) as IJclSetTypeInfo).
+    BaseType as IJclOrdinalRangeTypeInfo);
+  if BaseInfo.TypeKind = tkEnumeration then
+    Data := CreatePrim(GetEnumName(BaseInfo.TypeInfo, Ordinal), System.TypeInfo(Boolean))
+  else
+    Data := CreatePrim(IntToStr(Ordinal), System.TypeInfo(Boolean));
+  Data.FBitOffset := Ordinal mod 8 + 8 * ((Ordinal div 8) - (BaseInfo.MinValue div 8));
+  Data.FDataParent := ADataParent;
+  Data := TJvInspectorSetMemberData(DataRegister.Add(Data));
+  if Data <> nil then
+    Result := Data.NewItem(AParent)
+  else
+    Result := nil;
 end;
 
 procedure TJvInspectorSetMemberData.SetAsSet(const Buf);
@@ -5878,7 +6202,7 @@ begin
     JclTypeInfo(Data.TypeInfo).QueryInterface(IJclSetTypeInfo, SetInfo);
     SetInfo.BaseType.QueryInterface(IJclOrdinalRangeTypeInfo, BaseInfo);
     for OrdVal := Integer(BaseInfo.MinValue) to Integer(BaseInfo.MaxValue) do
-      TJvInspectorSetMemberData.Create(OrdVal, Self);
+      TJvInspectorSetMemberData.New(Self, OrdVal, Data);
   finally
     Inspector.EndUpdate;
   end;
@@ -6050,7 +6374,7 @@ begin
     Inspector.BeginUpdate;
     try
       DeleteMembers;
-      TJvInspectorPropData.Create(Self, TObject(Data.AsOrdinal));
+      TJvInspectorPropData.New(Self, TObject(Data.AsOrdinal));
       FLastMemberInstance := TObject(Data.AsOrdinal);
     finally
       Inspector.EndUpdate;
@@ -6205,6 +6529,11 @@ begin
   begin
     ItemClassFlags := [icfCreateMemberItems];
     Flags := Flags + [iifValueList];
+  end
+  else if GetTypeData(Data.TypeInfo).ClassType.InheritsFrom(TPersistent) then
+  begin
+    ItemClassFlags := [icfCreateMemberItems];
+    ItemClassFlags := [icfShowClassName];
   end
   else
     ItemClassFlags := [icfShowClassName];
@@ -6648,19 +6977,218 @@ begin
     inherited InitEdit;
 end;
 
-{ TJvCustomInspectorData }
+{ TJvInspectorDateItem }
 
-procedure TJvCustomInspectorData.DoAfterDataCreate;
+function TJvInspectorDateItem.GetDisplayValue: string;
 begin
-  if Inspector <> nil then
-    Inspector.DoAfterDataCreate(Self);
+  Result := FormatDateTime(Format, Data.AsFloat);
 end;
 
-procedure TJvCustomInspectorData.DoBeforeItemCreate(
-  var ItemClass: TJvInspectorItemClass);
+procedure TJvInspectorDateItem.SetDisplayValue(const Value: string);
 begin
-  if Inspector <> nil then
-    Inspector.DoBeforeItemCreate(Self, ItemClass);
+  Data.AsFloat := Trunc(StrToDate(Value)) + Frac(Data.AsFloat);
+end;
+
+procedure TJvInspectorDateItem.SetFormat(Value: string);
+var
+  I: Integer;
+  MCount: Integer;
+  DCount: Integer;
+  YCount: Integer;
+  SepCount: Integer;
+  WasEditing: Boolean;
+begin
+  // Only allow d, dd, m, mm, yy, yyyy and the date separator characters to ease parsing
+  I := 1;
+  MCount := 0;
+  DCount := 0;
+  YCount := 0;
+  SepCount := 0;
+  while (I < Length(Value)) do
+  begin
+    case Value[I] of
+      'd':
+        begin
+          if (DCount = 0) and (I > 1) and (Value[I - 1] <>  DateSeparator) then
+            raise EJvInspectorData.Create('A specifier should be placed before and after a separator.');
+          if (DCount = 1) and (Value[I - 1] <> 'd') then
+            raise EJvInspectorData.Create('''d'' or ''dd'' should appear only once.');
+          if (DCount = 2) then
+            raise EJvInspectorData.Create('Only ''d'' or ''dd'' are allowed.');
+          Inc(DCount);
+        end;
+      'm':
+        begin
+          if (MCount = 0) and (I > 1) and (Value[I - 1] <>  DateSeparator) then
+            raise EJvInspectorData.Create('A specifier should be placed before and after a separator.');
+          if (MCount = 1) and (Value[I - 1] <> 'm') then
+            raise EJvInspectorData.Create('''m'' or ''mm'' should appear only once.');
+          if (MCount = 2) then
+            raise EJvInspectorData.Create('Only ''m'' or ''mm'' are allowed.');
+          Inc(MCount);
+        end;
+      'y':
+        begin
+          if (MCount = 0) and (I > 1) and (Value[I - 1] <>  DateSeparator) then
+            raise EJvInspectorData.Create('A specifier should be placed before and after a separator.');
+          if (YCount > 1) and (YCount < 4) and (Value[I - 1] <> 'y') then
+            raise EJvInspectorData.Create('''yy'' or ''yyyy'' should appear only once.');
+          if (YCount = 4) then
+            raise EJvInspectorData.Create('Only ''yy'' or ''yyyy'' are allowed.');
+          Inc(YCount);
+        end;
+      else
+        if Value[I] = DateSeparator then
+        begin
+          if ((SepCount = 0) and (I = 1)) or
+              ((SepCount = 1) and ((Value[I - 1]) = DateSeparator) or (I = Length(Value))) then
+            raise EJvInspectorData.Create('A specifier should be placed before and after a separator.');
+          if SepCount = 2 then
+            raise EJvInspectorData.Create('Only two separators are allowed.');
+          Inc(SepCount);
+        end
+        else
+          raise EJvInspectorData.CreateFmt('Only ''d'', ''m'', ''y'' and ''%s'' are allowed', [DateSeparator]);
+    end;
+    Inc(I);
+  end;
+  if DCount = 0 then
+    raise EJvInspectorData.Create('''d'' or ''dd'' are required.');
+  if MCount = 0 then
+    raise EJvInspectorData.Create('''m'' or ''mm'' are required.');
+  if YCount = 0 then
+    raise EJvInspectorData.Create('''yy'' or ''yyyy'' are required.');
+  if (YCount = 1) or (YCount = 3) then
+    raise EJvInspectorData.Create('Only ''yy'' or ''yyyy'' are allowed.');
+  if Value <> FFormat then
+  begin
+    WasEditing := Editing;
+    if Editing then
+      DoneEdit;
+    FFormat := Value;
+    if WasEditing then
+      InitEdit;
+  end;
+end;
+
+constructor TJvInspectorDateItem.Create(const AParent: TJvCustomInspectorItem;
+  const AData: TJvCustomInspectorData);
+begin
+  inherited Create(AParent, AData);
+  FFormat := ShortDateFormat;
+end;
+
+{ TJvInspectorTimeItem }
+
+function TJvInspectorTimeItem.GetDisplayValue: string;
+begin
+  Result := FormatDateTime(Format, Data.AsFloat);
+end;
+
+procedure TJvInspectorTimeItem.SetDisplayValue(const Value: string);
+begin
+  Data.AsFloat := Frac(StrToTime(Value)) + Trunc(Data.AsFloat);
+end;
+
+procedure TJvInspectorTimeItem.SetFormat;
+begin
+  FFormat := 'hh:nn';
+  if ShowSeconds then
+    FFormat := FFormat + ':ss';
+  if ShowAMPM then
+    FFormat := FFormat + ' ampm';
+end;
+
+procedure TJvInspectorTimeItem.SetShowAMPM(Value: Boolean);
+var
+  WasEditing: Boolean;
+begin
+  if Value <> ShowAMPM then
+  begin
+    WasEditing := Editing;
+    DoneEdit;
+    FShowAMPM := Value;
+    SetFormat;
+    if WasEditing then
+      InitEdit;
+  end;
+end;
+
+procedure TJvInspectorTimeItem.SetShowSeconds(Value: Boolean);
+var
+  WasEditing: Boolean;
+begin
+  if Value <> ShowSeconds then
+  begin
+    WasEditing := Editing;
+    DoneEdit;
+    FShowSeconds := Value;
+    SetFormat;
+    if WasEditing then
+      InitEdit;
+  end;
+end;
+
+constructor TJvInspectorTimeItem.Create(const AParent: TJvCustomInspectorItem;
+  const AData: TJvCustomInspectorData);
+begin
+  inherited Create(AParent, AData);
+  FShowSeconds := True;
+  FShowAMPM := False;
+  SetFormat;
+end;
+
+{ TJvInspectorDateTimeItem }
+
+function TJvInspectorDateTimeItem.GetDateFormat: string;
+begin
+  Result := FDate.Format;
+end;
+
+function TJvInspectorDateTimeItem.GetTimeShowAMPM: Boolean;
+begin
+  Result := FTime.ShowAMPM;
+end;
+
+function TJvInspectorDateTimeItem.GetTimeShowSeconds: Boolean;
+begin
+  Result := FTime.ShowSeconds;
+end;
+
+procedure TJvInspectorDateTimeItem.SetDateFormat(Value: string);
+begin
+  FDate.Format := Value;
+end;
+
+procedure TJvInspectorDateTimeItem.SetTimeShowAMPM(Value: Boolean);
+begin
+  FTime.ShowAMPM := Value;
+end;
+
+procedure TJvInspectorDateTimeItem.SetTimeShowSeconds(Value: Boolean);
+begin
+  FTime.ShowSeconds := Value;
+end;
+
+constructor TJvInspectorDateTimeItem.Create(const AParent: TJvCustomInspectorItem;
+  const AData: TJvCustomInspectorData);
+begin
+  inherited Create(AParent, AData);
+  SingleNameUseFirstCol := True;
+  FDate := TJvInspectorDateItem.Create(Self, AData);
+  FTime := TJvInspectorTimeItem.Create(Self, AData);
+  AddColumnPrim(FDate);
+  AddColumnPrim(FTime);
+end;
+
+{ TJvCustomInspectorData }
+
+constructor TJvCustomInspectorData.CreatePrim(const AName: string;
+  const ATypeInfo: PTypeInfo);
+begin
+  inherited Create;
+  Name := AName;
+  TypeInfo := ATypeInfo;
 end;
 
 procedure TJvCustomInspectorData.CheckReadAccess;
@@ -6681,34 +7209,25 @@ begin
     raise EJvInspectorData.Create(sJvInspDataNoValue);
 end;
 
-procedure TJvCustomInspectorData.CreateChild(
-  const AParent: TJvCustomInspectorItem);
+procedure TJvCustomInspectorData.DoneEdits(const CancelEdits: Boolean = False);
 var
-  ItemClass: TJvInspectorItemClass;
-  RegItem: TJvCustomInspectorRegItem;
+  I: Integer;
 begin
-  if AParent <> nil then
-    SetInspector(AParent.Inspector); 
-  DoAfterDataCreate;
-  FItem := AParent;
-  RegItem := ItemRegister.FindMatch(Self);
-  FItem := nil;
-  if RegItem <> nil then
-  begin
-    ItemClass := RegItem.ItemClass;
-    DoBeforeItemCreate(ItemClass);
-    if ItemClass <> nil then
-    begin
-      SetItem(ItemClass.Create(AParent, Self));
-      if Item <> nil then
-        RegItem.ApplyDefaults(Item);
-    end;
-  end;
+  for I := Low(FItems) to High(FItems) do
+    if Items[I].Editing then
+      Items[I].DoneEdit(CancelEdits);
 end;
 
-function TJvCustomInspectorData.GetItem: TJvCustomInspectorItem;
+function TJvCustomInspectorData.GetItemCount: Integer;
 begin
-  Result := FItem;
+  Result := Length(FItems);
+end;
+
+function TJvCustomInspectorData.GetItems(I: Integer): TJvCustomInspectorItem;
+begin
+  if (I < Low(FItems)) or (I > High(FItems)) then
+    TList.Error(@SListIndexError, I);
+  Result := FItems[I];
 end;
 
 function TJvCustomInspectorData.GetName: string;
@@ -6721,25 +7240,65 @@ begin
   Result := FTypeInfo;
 end;
 
-procedure TJvCustomInspectorData.Init(const AName: string;
-  const ATypeInfo: PTypeInfo);
+procedure TJvCustomInspectorData.InitEdits;
+var
+  I: Integer;
 begin
-  Name := AName;
-  TypeInfo := ATypeInfo;
+  for I := Low(FItems) to High(FItems) do
+    if Items[I].Inspector.FocusedItem = Items[I] then
+      Items[I].InitEdit;
 end;
 
 procedure TJvCustomInspectorData.Invalidate;
+var
+  I: Integer;
 begin
-  if Item <> nil then
-    Item.InvalidateItem;
+  for I := High(FItems) downto Low(FItems) do
+    FItems[I].InvalidateItem;
 end;
 
-procedure TJvCustomInspectorData.SetItem(const Value: TJvCustomInspectorItem);
+function TJvCustomInspectorData.IsEqualReference(const Ref: TJvCustomInspectorData): Boolean;
 begin
-  if Item = nil then
+  Result := False;
+end;
+
+procedure TJvCustomInspectorData.NotifyRemoveData(const Instance: TJvCustomInspectorData);
+begin
+end;
+
+procedure TJvCustomInspectorData.RefreshEdits;
+var
+  I: Integer;
+begin
+  for I := High(FItems) downto Low(FItems) do
+    if Items[I].Editing then
+    begin
+      Items[I].DoneEdit(True);
+      Items[I].InitEdit;
+    end;
+end;
+
+class function TJvCustomInspectorData.RegisterInstance(const Instance: TJvCustomInspectorData): TJvCustomInspectorData;
+begin
+  Result := DataRegister.Add(Instance);
+end;
+
+procedure TJvCustomInspectorData.RemoveItem(const Item: TJvCustomInspectorItem);
+var
+  I: Integer;
+begin
+  I := High(FItems);
+  while (I >= 0) do
   begin
-    FItem := Value;
-    FInspector := Item.Inspector;
+    if Items[I] = Item then
+      Break;
+    Dec(I);
+  end;
+  if I >= 0 then
+  begin
+    if I <> High(FItems) then
+      Move(FItems[I + 1], FITems[I], (Length(FItems) - I) * SizeOf(TJvCustomInspectorItem));
+    SetLength(FItems, High(FItems));
   end;
 end;
 
@@ -6748,13 +7307,8 @@ begin
   if Value <> Name then
   begin
     FName := Value;
+    Invalidate;
   end;
-end;
-
-procedure TJvCustomInspectorData.SetInspector(const Value: TJvCustomInspector);
-begin
-  if (Inspector = nil) or ((Item <> nil) and (Inspector <> Item.Inspector)) then
-    FInspector := Value;
 end;
 
 procedure TJvCustomInspectorData.SetTypeInfo(const Value: PTypeInfo);
@@ -6762,15 +7316,23 @@ begin
   if Value <> TypeInfo then
   begin
     FTypeInfo := Value;
+    Invalidate;
   end;
 end;
 
-constructor TJvCustomInspectorData.Create(const AName: string;
-  const ATypeInfo: PTypeInfo; const AParent: TJvCustomInspectorItem);
+constructor TJvCustomInspectorData.Create;
 begin
-  inherited Create;
-  Init(AName, ATypeInfo);
-  CreateChild(AParent);
+  raise EJvInspectorData.Create(ClassName + ' cannot be created separately.');
+end;
+
+procedure TJvCustomInspectorData.BeforeDestruction;
+var
+  I: Integer;
+begin
+  for I := High(FItems) downto Low(FItems) do
+    Items[I].Free;
+  if FRegistered then
+    DataRegister.Remove(Self);
 end;
 
 class function TJvCustomInspectorData.ItemRegister: TJvInspectorRegister;
@@ -6778,6 +7340,36 @@ begin
   if FGenItemReg = nil then
     FGenItemReg := TJvInspectorRegister.Create(TJvCustomInspectorData);
   Result := FGenItemReg;
+end;
+
+class function TJvCustomInspectorData.New: TJvCustomInspectorData;
+begin
+  raise EJvInspectorData.Create(ClassName + ' does not allow a new instance to be created.');
+end;
+
+function TJvCustomInspectorData.NewItem(
+  const AParent: TJvCustomInspectorItem): TJvCustomInspectorItem;
+var
+  ItemClass: TJvInspectorItemClass;
+  RegItem: TJvCustomInspectorRegItem;
+begin
+  Result := nil;
+  RegItem := ItemRegister.FindMatch(Self);
+  if RegItem <> nil then
+  begin
+    ItemClass := RegItem.ItemClass;
+    AParent.Inspector.DoBeforeItemCreate(Self, ItemClass);
+    if ItemClass <> nil then
+    begin
+      Result := ItemClass.Create(AParent, Self);
+      if Result <> nil then
+      begin
+        RegItem.ApplyDefaults(Result);
+        SetLength(FItems, Length(FItems) + 1);
+        FItems[High(FItems)] := Result;
+      end;
+    end;
+  end;
 end;
 
 { TJvInspectorVarData }
@@ -6858,10 +7450,18 @@ begin
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['String']);
 end;
 
+function TJvInspectorVarData.IsEqualReference(const Ref: TJvCustomInspectorData): Boolean;
+begin
+  Result := (Ref is TJvInspectorVarData) and (TJvInspectorVarData(Ref).Address = Address);
+end;
+ 
 procedure TJvInspectorVarData.SetAddress(const Value: Pointer);
 begin
   if Value <> Address then
+  begin
     FAddress := Value;
+    Invalidate;
+  end;
 end;
 
 procedure TJvInspectorVarData.SetAsFloat(const Value: Extended);
@@ -6877,6 +7477,7 @@ begin
     end
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Float']);
+  Invalidate;
 end;
 
 procedure TJvInspectorVarData.SetAsInt64(const Value: Int64);
@@ -6889,6 +7490,7 @@ begin
       raise ERangeError.CreateFmt(SOutOfRange, [GetTypeData(TypeInfo).MinValue,
         GetTypeData(TypeInfo).MaxValue]);
     PInt64(Address)^ := Value;
+    Invalidate;
   end
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Int64']);
@@ -6901,6 +7503,7 @@ begin
     PMethod(Address)^ := Value
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['TMethod']);
+  Invalidate;
 end;
 
 procedure TJvInspectorVarData.SetAsOrdinal(const Value: Int64);
@@ -6966,6 +7569,7 @@ begin
     PLongword(Address)^ := Value
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Ordinal']);
+  Invalidate;
 end;
 
 procedure TJvInspectorVarData.SetAsString(const Value: string);
@@ -6981,25 +7585,10 @@ begin
                   else
                     raise EJvInspectorData.Create(sJVInspDataStrTooLong);
     end;
+    Invalidate;
   end
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['String']);
-end;
-
-constructor TJvInspectorVarData.Create(const AName: string;
-  const ATypeInfo: PTypeInfo; const AParent: TJvCustomInspectorItem;
-  const AAddress: Pointer);
-begin
-  inherited Create;
-  Init(AName, ATypeInfo);
-  Address := AAddress;
-  CreateChild(AParent);
-end;
-
-constructor TJvInspectorVarData.Create(const AName: string;
-  const ATypeInfo: PTypeInfo; const AParent: TJvCustomInspectorItem; const AVar);
-begin
-  Create(AName, ATypeInfo, AParent, Addr(AVar));
 end;
 
 procedure TJvInspectorVarData.GetAsSet(var Buf);
@@ -7044,6 +7633,24 @@ begin
   Result := FVarItemReg;
 end;
 
+class function TJvInspectorVarData.New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo; const AAddress: Pointer): TJvCustomInspectorItem;
+var
+  Data: TJvInspectorVarData;
+begin
+  Data := CreatePrim(AName, ATypeInfo);
+  Data.FAddress := AAddress;
+  Data := TJvInspectorVarData(DataRegister.Add(Data));
+  if Data <> nil then
+    Result := Data.NewItem(AParent)
+  else
+    Result := nil;
+end;
+
+class function TJvInspectorVarData.New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo; const AVar): TJvCustomInspectorItem;
+begin
+  Result := New(AParent, AName, ATypeInfo, Addr(AVar));
+end;
+
 procedure TJvInspectorVarData.SetAsSet(const Buf);
 var
   CompType: PTypeInfo;
@@ -7059,6 +7666,7 @@ begin
     EnumMax := GetTypeData(CompType).MaxValue;
     ResBytes := (EnumMax div 8) - (EnumMin div 8) + 1;
     Move(Buf, PChar(Address)[0], ResBytes);
+    Invalidate;
   end
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Set']);
@@ -7127,6 +7735,19 @@ begin
   Result := FProp;
 end;
 
+function TJvInspectorPropData.IsEqualReference(const Ref: TJvCustomInspectorData): Boolean;
+begin
+  Result := (Ref is TJvInspectorPropData) and (TJvInspectorPropData(Ref).Instance = Instance) and
+    (TJvInspectorPropData(Ref).Prop = Prop);
+end;
+
+procedure TJvInspectorPropData.NotifyRemoveData(const Instance: TJvCustomInspectorData);
+begin
+  if (Instance <> Self) and (Instance.TypeInfo.Kind = tkClass) and
+      (TObject(Instance.AsOrdinal) = Self.Instance) then
+    Free;
+end;
+
 procedure TJvInspectorPropData.SetAsFloat(const Value: Extended);
 begin
   CheckWriteAccess;
@@ -7134,6 +7755,7 @@ begin
     SetFloatProp(Instance, Prop, Value)
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Float']);
+  Invalidate;
 end;
 
 procedure TJvInspectorPropData.SetAsInt64(const Value: Int64);
@@ -7143,6 +7765,7 @@ begin
     SetInt64Prop(Instance, Prop, Value)
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Int64']);
+  Invalidate;
 end;
 
 procedure TJvInspectorPropData.SetAsMethod(const Value: TMethod);
@@ -7152,6 +7775,7 @@ begin
     SetMethodProp(Instance, Prop, Value)
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Method']);
+  Invalidate;
 end;
 
 procedure TJvInspectorPropData.SetAsOrdinal(const Value: Int64);
@@ -7167,6 +7791,7 @@ begin
   end
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Ordinal']);
+  Invalidate;
 end;
 
 procedure TJvInspectorPropData.SetAsString(const Value: string);
@@ -7176,6 +7801,7 @@ begin
     SetStrProp(Instance, Prop, Value)
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['String']);
+  Invalidate;
 end;
 
 procedure TJvInspectorPropData.SetInstance(const Value: TObject);
@@ -7193,73 +7819,8 @@ begin
   begin
     FProp := Value;
     TypeInfo := Value.PropType^;
+    Invalidate;
   end;
-end;
-
-constructor TJvInspectorPropData.Create(const AParent: TJvCustomInspectorItem;
-  const AInstance: TObject; const PropInfo: PPropInfo);
-begin
-  Assert(PropInfo <> nil,'PropInfo nil in TJvInspectorPropData.Create');
-  inherited Create;
-  Init(PropInfo.Name, PropInfo.PropType^);
-  Instance := AInstance;
-  Prop := PropInfo;
-  CreateChild(AParent);
-end;
-
-class procedure TJvInspectorPropData.Create(const AParent: TJvCustomInspectorItem;
-  const AInstance: TObject; const TypeKinds: TTypeKinds = tkProperties);
-var
-  PropCount: Integer;
-  PropList: PPropList;
-begin
-  PropCount := GetPropList(AInstance.ClassInfo, tkAny, nil);
-  GetMem(PropList, PropCount * SizeOf(PPropInfo));
-  try
-    GetPropList(AInstance.ClassInfo, tkAny, PropList);
-    Create(AParent, AInstance, PropList, PropCount);
-  finally
-    FreeMem(PropList);
-  end;
-end;
-
-class procedure TJvInspectorPropData.Create(const AParent: TJvCustomInspectorItem;
-  const AInstance: TObject; const NameList: array of string;
-  const ExcludeList: Boolean = False;
-  const TypeKinds: TTypeKinds = tkProperties);
-var
-  PropCount: Integer;
-  PropList: PPropList;
-  I: Integer;
-  PropInfo: PPropInfo;
-  NameIdx: Integer;
-begin
-  PropCount := GetPropList(AInstance.ClassInfo, tkAny, nil);
-  GetMem(PropList, PropCount * SizeOf(PPropInfo));
-  try
-    GetPropList(AInstance.ClassInfo, tkAny, PropList);
-    for I := 0 to Pred(PropCount) do
-    begin
-      PropInfo := PropList[I];
-      NameIdx := High(NameList);
-      while (NameIdx >= 0) and not SameText(NameList[NameIdx], PropInfo.Name) do
-        Dec(NameIdx);
-      if (NameIdx < 0) or not ExcludeList then
-        Create(AParent, AInstance, PropInfo);
-    end;
-  finally
-    FreeMem(PropList);
-  end;
-end;
-
-class procedure TJvInspectorPropData.Create(const AParent: TJvCustomInspectorItem;
-  const AInstance: TObject; const PropInfos: PPropList;
-  const PropCount: Integer);
-var
-  I: Integer;
-begin
-  for I := 0 to Pred(PropCount) do
-    Create(AParent, AInstance, PropInfos[I]);
 end;
 
 procedure TJvInspectorPropData.GetAsSet(var Buf);
@@ -7289,13 +7850,90 @@ begin
   Result := FPropItemReg;
 end;
 
+class function TJvInspectorPropData.New(const AParent: TJvCustomInspectorItem;
+  const AInstance: TObject; const PropInfo: PPropInfo): TJvCustomInspectorItem;
+var
+  Data: TJvInspectorPropData;
+begin
+  Assert(PropInfo <> nil, 'PropInfo nil in TJvInspectorPropData.New');
+  Data := CreatePrim(PropInfo.Name, PropInfo.PropType^);
+  Data.Instance := AInstance;
+  Data.Prop := PropInfo;
+  Data := TJvInspectorPropData(DataRegister.Add(Data));
+  if Data <> nil then
+    Result := Data.NewItem(AParent)
+  else
+    Result := nil;
+end;
+
+class function TJvInspectorPropData.New(const AParent: TJvCustomInspectorItem;
+  const AInstance: TObject; const TypeKinds: TTypeKinds = tkProperties): TJvInspectorItemInstances;
+var
+  PropCount: Integer;
+  PropList: PPropList;
+begin
+  SetLength(Result, 0);
+  PropCount := GetPropList(AInstance.ClassInfo, tkAny, nil);
+  GetMem(PropList, PropCount * SizeOf(PPropInfo));
+  try
+    GetPropList(AInstance.ClassInfo, tkAny, PropList);
+    Result := New(AParent, AInstance, PropList, PropCount);
+  finally
+    FreeMem(PropList);
+  end;
+end;
+
+class function TJvInspectorPropData.New(const AParent: TJvCustomInspectorItem;
+  const AInstance: TObject; const NameList: array of string;
+  const ExcludeList: Boolean = False;
+  const TypeKinds: TTypeKinds = tkProperties): TJvInspectorItemInstances;
+var
+  PropCount: Integer;
+  PropList: PPropList;
+  I: Integer;
+  PropInfo: PPropInfo;
+  NameIdx: Integer;
+begin
+  SetLength(Result, 0);
+  PropCount := GetPropList(AInstance.ClassInfo, tkAny, nil);
+  GetMem(PropList, PropCount * SizeOf(PPropInfo));
+  try
+    GetPropList(AInstance.ClassInfo, tkAny, PropList);
+    for I := 0 to Pred(PropCount) do
+    begin
+      PropInfo := PropList[I];
+      NameIdx := High(NameList);
+      while (NameIdx >= 0) and not SameText(NameList[NameIdx], PropInfo.Name) do
+        Dec(NameIdx);
+      if (NameIdx < 0) or not ExcludeList then
+      begin
+        SetLength(Result, Length(Result) + 1);
+        Result[High(Result)] := New(AParent, AInstance, PropInfo);
+      end;
+    end;
+  finally
+    FreeMem(PropList);
+  end;
+end;
+
+class function TJvInspectorPropData.New(const AParent: TJvCustomInspectorItem;
+  const AInstance: TObject; const PropInfos: PPropList;
+  const PropCount: Integer): TJvInspectorItemInstances;
+var
+  I: Integer;
+begin
+  SetLength(Result, PropCount);
+  for I := 0 to Pred(PropCount) do
+    Result[I] := New(AParent, AInstance, PropInfos[I]);
+end;
+
 procedure TJvInspectorPropData.SetAsSet(const Buf);
 begin
   AsOrdinal := Integer(Buf);
 end;
 
 { TJvInspectorEventData }
- 
+
 function TJvInspectorEventData.DoGetAsFloat: Extended;
 begin
   if @FOnGetAsFloat <> nil then
@@ -7452,6 +8090,12 @@ begin
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['string']);
 end;
 
+function TJvInspectorEventData.IsEqualReference(const Ref: TJvCustomInspectorData): Boolean;
+begin
+  Result := (Ref is TJvInspectorEventData) and (TJvInspectorEventData(Ref).Name = Name) and
+    (TJvInspectorEventData(Ref).TypeInfo = TypeInfo);
+end;
+
 procedure TJvInspectorEventData.SetAsFloat(const Value: Extended);
 begin
   CheckWriteAccess;
@@ -7459,6 +8103,7 @@ begin
     DoSetAsFloat(Value)
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Float']);
+  Invalidate;
 end;
 
 procedure TJvInspectorEventData.SetAsInt64(const Value: Int64);
@@ -7474,6 +8119,7 @@ begin
   end
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Int64']);
+  Invalidate;
 end;
 
 procedure TJvInspectorEventData.SetAsMethod(const Value: TMethod);
@@ -7483,6 +8129,7 @@ begin
     DoSetAsMethod(Value)
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['TMethod']);
+  Invalidate;
 end;
 
 procedure TJvInspectorEventData.SetAsOrdinal(const Value: Int64);
@@ -7524,6 +8171,7 @@ begin
     DoSetAsOrdinal(Longword(Value))
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['ordinal']);
+  Invalidate;
 end;
 
 procedure TJvInspectorEventData.SetAsString(const Value: string);
@@ -7542,6 +8190,7 @@ begin
   end
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['string']);
+  Invalidate;
 end;
 
 procedure TJvInspectorEventData.SetOnGetAsFloat(Value: TJvInspAsFloat);
@@ -7652,13 +8301,6 @@ begin
   end;
 end;
 
-constructor TJvInspectorEventData.Create(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo);
-begin
-  inherited Create;
-  Init(AName, ATypeInfo);
-  CreateChild(AParent);
-end;
-
 procedure TJvInspectorEventData.GetAsSet(var Buf);
 var
   CompType: PTypeInfo;
@@ -7696,6 +8338,18 @@ begin
     (@OnGetAsSet <> nil));
 end;
 
+class function TJvInspectorEventData.New(const AParent: TJvCustomInspectorItem; const AName: string;
+  const ATypeInfo: PTypeInfo): TJvCustomInspectorItem;
+var
+  Data: TJvInspectorEventData;
+begin
+  Data := TJvInspectorEventData(DataRegister.Add(CreatePrim(AName, ATypeInfo)));
+  if Data <> nil then
+    Result := Data.NewItem(AParent)
+  else
+    Result := nil;
+end;
+
 procedure TJvInspectorEventData.SetAsSet(const Buf);
 var
   CompType: PTypeInfo;
@@ -7714,9 +8368,18 @@ begin
   end
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['set']);
+  Invalidate;
 end;
 
 { TJvInspectorCustomConfData }
+
+constructor TJvInspectorCustomConfData.CreatePrim(const AName, ASection, AKey: string;
+  const ATypeInfo: PTypeInfo);
+begin
+  inherited CreatePrim(AName, ATypeInfo);
+  FKey := AKey;
+  FSection := ASection;
+end;
 
 function TJvInspectorCustomConfData.GetAsFloat: Extended;
 begin
@@ -7789,6 +8452,13 @@ begin
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['string']);
 end;
 
+function TJvInspectorCustomConfData.IsEqualReference(const Ref: TJvCustomInspectorData): Boolean;
+begin
+  Result := (Ref is TJvInspectorCustomConfData) and
+    AnsiSameText(TJvInspectorCustomConfData(Ref).Section, Section) and
+    AnsiSameText(TJvInspectorCustomConfData(Ref).Key, Key);
+end;
+
 procedure TJvInspectorCustomConfData.SetAsFloat(const Value: Extended);
 begin
   CheckWriteAccess;
@@ -7796,6 +8466,7 @@ begin
     WriteValue(FloatToStr(Value))
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Float']);
+  Invalidate;
 end;
 
 procedure TJvInspectorCustomConfData.SetAsInt64(const Value: Int64);
@@ -7805,6 +8476,7 @@ begin
     WriteValue(IntToStr(Value))
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Int64']);
+  Invalidate;
 end;
 
 procedure TJvInspectorCustomConfData.SetAsMethod(const Value: TMethod);
@@ -7834,6 +8506,7 @@ begin
     else
       raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['ordinal']);
   end;
+  Invalidate;
 end;
 
 procedure TJvInspectorCustomConfData.SetAsString(const Value: string);
@@ -7853,6 +8526,7 @@ begin
     else
       raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['string']);
   end;
+  Invalidate;
 end;
 
 procedure TJvInspectorCustomConfData.SetKey(Value: string);
@@ -7871,15 +8545,6 @@ begin
     FSection := Value;
     Invalidate;
   end;
-end;
-
-constructor TJvInspectorCustomConfData.Create(AParent: TJvCustomInspectorItem; const AName, ASection,
-  AKey: string; const ATypeInfo: PTypeInfo);
-begin
-  inherited Create;
-  Init(AName, ATypeInfo);
-  FKey := AKey;
-  FSection := ASection;
 end;
 
 procedure TJvInspectorCustomConfData.GetAsSet(var Buf);
@@ -7913,6 +8578,7 @@ begin
     WriteValue(JclSetToStr(TypeInfo, Buf, True, False))
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['set']);
+  Invalidate;
 end;
 
 { TJvInspectorINIFileData }
@@ -7920,6 +8586,12 @@ end;
 function TJvInspectorINIFileData.ExistingValue: Boolean;
 begin
   Result := IsInitialized and INIFile.SectionExists(Section) and INIFile.ValueExists(Section, Key);
+end;
+
+function TJvInspectorINIFileData.IsEqualReference(const Ref: TJvCustomInspectorData): Boolean;
+begin
+  Result := (Ref is TJvInspectorINIFileData) and
+    (TJvInspectorINIFileData(Ref).INIFile = INIFile) and inherited IsEqualReference(Ref);
 end;
 
 function TJvInspectorINIFileData.ReadValue: string;
@@ -7932,22 +8604,31 @@ begin
   INIFile.WriteString(Section, Key, Value);
 end;
 
-constructor TJvInspectorINIFileData.Create(AParent: TJvCustomInspectorItem; const AName, ASection,
-  AKey: string; const ATypeInfo: PTypeInfo; const AINIFile: TCustomIniFile);
+class function TJvInspectorINIFileData.New(const AParent: TJvCustomInspectorItem; const AName,
+  ASection, AKey: string; const ATypeInfo: PTypeInfo;
+  const AINIFile: TCustomIniFile): TJvCustomInspectorItem;
+var
+  Data: TJvInspectorINIFileData;
 begin
   Assert(AINIFile <> nil);
-  inherited Create(AParent, AName, ASection, AKey, ATypeInfo);
-  FINIFile := AINIFile;
-  CreateChild(AParent);
+  Data := CreatePrim(AName, ASection, AKey, ATypeInfo);
+  Data.FINIFile := AINIFile;
+  Data := TJvInspectorINIFileData(DataRegister.Add(Data));
+  if Data <> nil then
+    Result := Data.NewItem(AParent)
+  else
+    Result := nil;
 end;
 
-class procedure TJvInspectorINIFileData.Create(AParent: TJvCustomInspectorItem;
-  const ASection: string; const AINIFile: TCustomIniFile; const OnAddKey: TJvInspConfKeyEvent);
+class function TJvInspectorINIFileData.New(const AParent: TJvCustomInspectorItem;
+  const ASection: string; const AINIFile: TCustomIniFile;
+  const OnAddKey: TJvInspConfKeyEvent): TJvInspectorItemInstances;
 var
   SL: TStrings;
   I: Integer;
   KeyName: string;
   KeyTypeInfo: PTypeInfo;
+  TmpItem: TJvCustomInspectorItem;
 
   function AllowAddKey: Boolean;
   begin
@@ -7960,23 +8641,33 @@ var
 
 begin
   Assert(AINIFile <> nil);
+  SetLength(Result, 0);
   SL := TStringList.Create;
   try
     AINIFile.ReadSection(ASection, SL);
     for I := 0 to SL.Count - 1 do
     begin
       if AllowAddKey then
-        TJvInspectorINIFileData.Create(AParent, KeyName, ASection, SL[I], KeyTypeInfo, AINIFile);
+      begin
+        TmpItem := TJvInspectorINIFileData.New(AParent, KeyName, ASection, SL[I], KeyTypeInfo,
+          AINIFile);
+        if TmpItem <> nil then
+        begin
+          SetLength(Result, Length(Result) + 1);
+          Result[High(Result)] := TmpItem;
+        end;
+      end;
     end;
   finally
     SL.Free;
   end;
 end;
 
-class procedure TJvInspectorINIFileData.Create(AParent: TJvCustomInspectorItem;
+class function TJvInspectorINIFileData.New(const AParent: TJvCustomInspectorItem;
   const AINIFile: TCustomIniFile; const OnAddSection: TJvInspConfSectionEvent;
-  const OnAddKey: TJvInspConfKeyEvent);
+  const OnAddKey: TJvInspConfKeyEvent): TJvInspectorItemInstances;
 var
+  TmpLst: TJvInspectorItemInstances;
   SL: TStrings;
   I: Integer;
   CatName: string;
@@ -7991,6 +8682,7 @@ var
   end;
 
 begin
+  SetLength(TmpLst, 0);
   Assert(AINIFile <> nil);
   SL := TStringList.Create;
   try
@@ -8001,7 +8693,9 @@ begin
       begin
         CatItem := TJvInspectorCustomCategoryItem.Create(AParent, nil);
         CatItem.DisplayName := CatName;
-        TJvInspectorINIFileData.Create(CatItem, SL[I], AINIFile, OnAddKey);
+        TmpLst := TJvInspectorINIFileData.New(CatItem, SL[I], AINIFile, OnAddKey);
+        SetLength(Result, Length(Result) + Length(TmpLst));
+        Move(TmpLst[0], Result[Length(Result) - Length(TmpLst)], Length(TmpLst));
         if CatItem.Count = 0 then
           CatItem.Parent.Delete(CatItem);
       end;
@@ -8341,10 +9035,7 @@ begin
   if GoOn and (ObjectClass <> nil) then
   begin
     { Class type based on the parent object }
-    if (ADataObj.Item <> nil) and (ADataObj.Item.Data <> nil) then
-      ObjParentClass := GetTypeData(ADataObj.Item.Data.TypeInfo).ClassType
-    else
-      ObjParentClass := nil;
+    ObjParentClass := TJvInspectorPropData(ADataObj).Instance.ClassType;
     if ObjParentClass = ObjectClass then
       Result := Result or 32
     else if (ObjParentClass <> nil) and ObjParentClass.InheritsFrom(ObjectClass) then
@@ -8420,6 +9111,9 @@ begin
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorBooleanItem, TypeInfo(LONGBOOL)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorStringItem, TypeInfo(TStrings)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorComponentItem, TypeInfo(TComponent)));
+    Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorDateItem, TypeInfo(TDate)));
+    Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorTimeItem, TypeInfo(TTime)));
+    Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorDateTimeItem, TypeInfo(TDateTime)));
   end;
   with TJvInspectorPropData.ItemRegister do
     Add(TJvInspectorPropRegItem.Create(TJvInspectorFontNameItem, TFont, 'Name', nil));
@@ -8452,8 +9146,11 @@ initialization
   CanvasStack := TCanvasStack.Create(512);
   RegisterTypeKinds;
   RegisterConsts;
+  DataRegister := TJvInspDataReg.Create;
 
 finalization
+  DataRegister.Free; // Can't use FreeAndNil as it will set DataRegister to nil before it's destroyed.
+  DataRegister := nil;
   TJvCustomInspectorData.ItemRegister.Free;
   TJvInspectorPropData.ItemRegister.Free;
   TJvInspectorVarData.ItemRegister.Free;
