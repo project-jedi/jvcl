@@ -1,6 +1,6 @@
 package JvUIBD7R;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -22,20 +22,27 @@ package JvUIBD7R;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
+{$DESCRIPTION 'UIB - Unified Interbase Components'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
 
 requires
+  JvCoreD7R,
   rtl,
-  JvCoreD7R;
+  vcl,
+  vclx,
+  DJCL70,
+  vcljpg
+  ;
 
 contains
-  JvUIBase in '..\..\run\JvUIBase.pas',
-  JvUIBError in '..\..\run\JvUIBError.pas',
-  JvUIBLib in '..\..\run\JvUIBLib.pas',
-  JvUIB in '..\..\run\JvUIB.pas',
-  JvUIBConst in '..\..\run\JvUIBConst.pas',
-  JvUIBSQLParser in '..\..\run\JvUIBSQLParser.pas',
-  JvUIBMetaData in '..\..\run\JvUIBMetaData.pas';
+  JvUIBMetaData in '..\..\run\JvUIBMetaData.pas' ,
+  JvUIBSQLParser in '..\..\run\JvUIBSQLParser.pas' ,
+  JvUIB in '..\..\run\JvUIB.pas' ,
+  JvUIBase in '..\..\run\JvUIBase.pas' ,
+  JvUIBConst in '..\..\run\JvUIBConst.pas' ,
+  JvUIBError in '..\..\run\JvUIBError.pas' ,
+  JvUIBLib in '..\..\run\JvUIBLib.pas' 
+  ;
 
 end.

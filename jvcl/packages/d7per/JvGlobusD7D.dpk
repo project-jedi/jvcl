@@ -1,6 +1,6 @@
 package JvGlobusD7D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -27,31 +27,33 @@ package JvGlobusD7D;
 {$IMPLICITBUILD OFF}
 
 requires
-  vcl,
-  Vclx,
-  VclSmp,
-  vcljpg,
-  designide,
-  rtl,
   JvGlobusD7R,
-  JvCoreD6D;
+  JvCoreD7D,
+  rtl,
+  designide,
+  vcl,
+  vclx,
+  vclsmp,
+  vcljpg
+  ;
 
 contains
-  JvGlobusReg in '..\..\design\JvGlobusReg.pas',
-  JvCompEditorTemplateForm in '..\..\design\JvCompEditorTemplateForm.pas' {JvgCompEditorTemplate},
-  JvgLabelEditorForm in '..\..\design\JvgLabelEditorForm.pas' {JvgLabelEditorFormDlg},
-  JvgReportEditorForm in '..\..\design\JvgReportEditorForm.pas' {JvgReportParamsForm},
-  JvgReportParamsForm in '..\..\design\JvgReportParamsForm.pas' {JvgReportParamsForm},
-  JvgReportParamEditorForm in '..\..\design\JvgReportParamEditorForm.pas' {ReportParamEditor},
-  JvgShadowEditor in '..\..\design\JvgShadowEditor.pas',
+  JvgCompDescription in '..\..\design\JvgCompDescription.pas' ,
   JvgComponentListEditorForm in '..\..\design\JvgComponentListEditorForm.pas' {JvgCompListEditor},
-  JvgPropertyCenter in '..\..\design\JvgPropertyCenter.pas',
-  JvgHelpPanelEditor in '..\..\design\JvgHelpPanelEditor.pas',
-  JvgRTFPreviewForm in '..\..\design\JvgRTFPreviewForm.pas' {fRTFPreview},
-  JvgLogicsEditorForm in '..\..\design\JvgLogicsEditorForm.pas' {JvgLogicsEditor},
+  JvgHelpPanelEditor in '..\..\design\JvgHelpPanelEditor.pas' ,
+  JvgLabelEditorForm in '..\..\design\JvgLabelEditorForm.pas' {JvgLabelEditorDlg},
+  JvGlobusReg in '..\..\design\JvGlobusReg.pas' ,
   JvgLogicItemEditorForm in '..\..\design\JvgLogicItemEditorForm.pas' {JvgLogicItemEditor},
+  JvgLogicsEditorForm in '..\..\design\JvgLogicsEditorForm.pas' {JvgLogicsEditor},
   JvgMultiResourceEditorForm in '..\..\design\JvgMultiResourceEditorForm.pas' {JvgMultipleResourceEdit},
-  JvgMultiResources in '..\..\design\JvgMultiResources.pas',
-  JvgCompDescription in '..\..\design\JvgCompDescription.pas';
+  JvgMultiResources in '..\..\design\JvgMultiResources.pas' ,
+  JvgPropertyCenter in '..\..\design\JvgPropertyCenter.pas' ,
+  JvgReportEditorForm in '..\..\design\JvgReportEditorForm.pas' {JvgReportEditorForm},
+  JvgReportParamEditorForm in '..\..\design\JvgReportParamEditorForm.pas' {ReportParamEditor},
+  JvgReportParamsForm in '..\..\design\JvgReportParamsForm.pas' {JvgReportParamsForm},
+  JvgRTFPreviewForm in '..\..\design\JvgRTFPreviewForm.pas' {fRTFPreview},
+  JvgShadowEditor in '..\..\design\JvgShadowEditor.pas' ,
+  JvCompEditorTemplateForm in '..\..\design\JvCompEditorTemplateForm.pas' {JvgCompEditorTemplate}
+  ;
 
 end.
