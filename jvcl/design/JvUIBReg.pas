@@ -43,13 +43,20 @@ implementation
 
 uses
   Classes,
+  {$IFDEF USEJVCL}
   JvDsgnConsts,
+  {$ENDIF USEJVCL}
   {$IFNDEF DelphiPersonalEdition}
   JvUIBDataSet,
   {$ENDIF DelphiPersonalEdition}
   JvUIB;
 
 {$R ..\Resources\JvUIBReg.dcr}
+
+{$IFNDEF USEJVCL}
+resourcestring
+  RsPaletteUIB = 'Jv UIB';
+{$ENDIF USEJVCL}
 
 procedure Register;
 begin

@@ -75,12 +75,12 @@ resourcestring
   RsPaletteHMIControls = 'Jv HMI Controls';
   RsPaletteBDE = 'Jv BDE Components';
   RsPalettePrintPreview = 'Jv Print Preview';
-  RsPaletteUIB = 'Jv UIB';
   RsPaletteInterpreter = 'Jv Interpreter';
   RsPaletteGlobusComponents1 = 'JVCL Globus Components 1';
   RsPaletteGlobusComponents2 = 'JVCL Globus Components 2';
   RsPaletteValidators = 'Jv Validators';
   {$IFDEF USEJVCL}
+  RsPaletteUIB = 'Jv UIB';
   RsPaletteMTThreads = 'Jv Threading';
   RsPaletteTimeFramework = 'Jv TimeFrameWork';
   RsPaletteWizard = 'Jv Wizard';
