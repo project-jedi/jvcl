@@ -698,7 +698,7 @@ begin
     if not (odComboBoxEdit in State) or IndentSelected then // (p3) don't draw indentation for edit item unless explicitly told to do so
       R.Left := R.Left + Items[Index].Indent;
 
-    if Assigned(Items[Index].Glyph) then
+    if not Items[Index].Glyph.Empty then
     begin
       Offset := ((R.Bottom - R.Top) - GetImageWidth(Index)) div 2;
 
@@ -879,7 +879,7 @@ end;
 
 function TJvImageComboBox.GetImageWidth(Index: Integer): Integer;
 begin
-  if (Index > -1) and Assigned(Items[Index].Glyph) then
+  if (Index > -1) and not Items[Index].Glyph.Empty then
     Result := Items[Index].Glyph.Width
   else if Assigned(FImageList) then
     Result := FImageList.Width
@@ -889,7 +889,7 @@ end;
 
 function TJvImageComboBox.GetImageHeight(Index: Integer): Integer;
 begin
-  if (Index > -1) and Assigned(Items[Index].Glyph) then
+  if (Index > -1) and not Items[Index].Glyph.Empty then
     Result := Items[Index].Glyph.Height
   else if Assigned(FImageList) then
     Result := FImageList.Height
@@ -1084,7 +1084,7 @@ begin
     FillRect(R);
     Brush.Color := TmpCol;
 
-    if Assigned(Items[Index].Glyph) then
+    if not Items[Index].Glyph.Empty then
     begin
       Tmp := ((R.Right - R.Left) - GetImageWidth(Index)) div 2;
 
@@ -1154,7 +1154,7 @@ begin
     FillRect(R);
     Brush.Color := TmpCol;
 
-    if Assigned(Items[Index].Glyph) then
+    if not Items[Index].Glyph.Empty then
     begin
       Offset := ((R.Bottom - R.Top) - GetImageHeight(Index)) div 2;
 
@@ -1230,7 +1230,7 @@ begin
     FillRect(R);
     Brush.Color := TmpCol;
 
-    if Assigned(Items[Index].Glyph) then
+    if not Items[Index].Glyph.Empty then
     begin
       Offset := ((R.Bottom - R.Top) - GetImageWidth(Index)) div 2;
 
@@ -1352,7 +1352,7 @@ end;
 
 function TJvImageListBox.GetImageWidth(Index: Integer): Integer;
 begin
-  if (Index > -1) and Assigned(Items[Index].Glyph) then
+  if (Index > -1) and not Items[Index].Glyph.Empty then
     Result := Items[Index].Glyph.Width
   else if Assigned(FImageList) then
     Result := FImageList.Width
@@ -1362,7 +1362,7 @@ end;
 
 function TJvImageListBox.GetImageHeight(Index: Integer): Integer;
 begin
-  if (Index > -1) and Assigned(Items[Index].Glyph) then
+  if (Index > -1) and not Items[Index].Glyph.Empty then
     Result := Items[Index].Glyph.Height
   else if Assigned(FImageList) then
     Result := FImageList.Height
