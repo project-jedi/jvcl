@@ -153,8 +153,6 @@ EMPTYLINE
     procedure CursorChanged; dynamic;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    procedure GotFocus; dynamic;
-    procedure LostFocus; dynamic;
     function DoEraseBackground(ACanvas: TCanvas; LParam: Integer): Boolean; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -283,6 +281,7 @@ EMPTYLINE
     { Control Messages }
       CM_COLORCHANGED       : ColorChanged;
       CM_ENABLEDCHANGED     : EnabledChanged;
+      CM_FOCUSCHANGED       : FocusChanged;
       CM_FONTCHANGED        : FontChanged;
       CM_TEXTCHANGED        : TextChanged ;
       CM_MOUSEENTER         : MouseEnter(Self);
@@ -460,8 +459,6 @@ JV_IMPL_CONTROL_COMMON(ClassName)
 
 (*$DEFINE JV_IMPL_WINCONTROL_MESSAGES
       { WinControl Messages }
-      CM_GOTFOCUS           : GotFocus;
-      CM_LOSTFOCUS          : LostFocus;
       WM_SETFOCUS           : DoSetFocus(FocusedWnd);
       WM_KILLFOCUS          : if not (csFocusing in ControlState) then
                                 DoKillFocus(FocusedWnd);
@@ -504,16 +501,6 @@ end;
 *)
 
 (*$DEFINE JV_IMPL_WINCONTROL_COMMON(ClassName)
-procedure TJvEx##ClassName.GotFocus;
-begin
-  { notification }
-end;
-
-procedure TJvEx##ClassName.LostFocus;
-begin
-  { notification }
-end;
-
 procedure TJvEx##ClassName.DoSetFocus(PreviousWnd: HWND);
 begin
   Perform(CM_GOTFOCUS, 0, 0);

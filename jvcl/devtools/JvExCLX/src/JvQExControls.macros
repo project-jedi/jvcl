@@ -135,8 +135,8 @@ EMPTYLINE
     procedure CursorChanged; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    procedure GotFocus; dynamic;
-    procedure LostFocus; dynamic;
+    procedure DoEnter; override;
+    procedure DoExit; override;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
@@ -514,8 +514,6 @@ EMPTYLINE
 
 (*$DEFINE JV_IMPL_WINCONTROL_MESSAGES
       { WinControl Messages }
-      CM_GOTFOCUS         : GotFocus;
-      CM_LOSTFOCUS        : LostFocus;
       WM_GETDLGCODE       : Result := InputKeysToDlgCodes(InputKeys);
       WM_KILLFOCUS        : DoKillFocus(FocusedWnd);
       WM_SETFOCUS         : DoSetFocus(FocusedWnd);
@@ -576,17 +574,18 @@ end;
 procedure TJvEx##ClassName.DoKillFocus(NextWnd: QWidgetH);
 begin
   { notification }
-  Perform(CM_LOSTFOCUS, 0 ,0);
 end;
 
-procedure TJvEx##ClassName.GotFocus;
+procedure TJvEx##ClassName.DoEnter;
 begin
-  { notification }
+  Perform(CM_ENTER, 0 ,0);
+  inherited;
 end;
 
 procedure TJvEx##ClassName.LostFocus;
 begin
-  { notification }
+  Perform(CM_LEAVE, 0 ,0);
+  inherited;
 end;
 
 procedure TJvEx##ClassName.SetFocus;
