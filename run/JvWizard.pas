@@ -821,6 +821,7 @@ type
     FHeaderImages: TCustomImageList;
     FImageChangeLink: TChangeLink;
     FAutoHideButtonBar: Boolean;
+    FDefaultButtons: Boolean;
     {$IFNDEF USEJVCL}
     FAboutInfo: TJvWizardAboutInfoForm; // Add by Steve Forbes
     {$ENDIF !USEJVCL}
@@ -850,6 +851,7 @@ type
       CheckDisable: Boolean = True): TJvWizardCustomPage;
     procedure SetAutoHideButtonBar(const Value: Boolean);
     function GetWizardPages(Index: Integer): TJvWizardCustomPage;
+    procedure SetDefaultButtons(const Value: Boolean);
   protected
     procedure Loaded; override;
     procedure AdjustClientRect(var Rect: TRect); override;
@@ -896,6 +898,7 @@ type
     property ButtonFinish: TJvWizardNavigateButton read FNavigateButtons[bkFinish] write FNavigateButtons[bkFinish];
     property ButtonCancel: TJvWizardNavigateButton read FNavigateButtons[bkCancel] write FNavigateButtons[bkCancel];
     property ButtonHelp: TJvWizardNavigateButton read FNavigateButtons[bkHelp] write FNavigateButtons[bkHelp];
+    property DefaultButtons: Boolean read FDefaultButtons write SetDefaultButtons default True;
     property ShowDivider: Boolean read FShowDivider write SetShowDivider default True;
     property ShowRouteMap: Boolean read GetShowRouteMap write SetShowRouteMap;
     property HeaderImages: TCustomImageList read FHeaderImages write SetHeaderImages;
@@ -2657,6 +2660,7 @@ begin
   FImageChangeLink.OnChange := ImageListChange;
   FAutoHideButtonBar := True;
   CreateNavigateButtons;
+  FDefaultButtons := True;
   {$IFDEF VisualCLX}
   InputKeys := [ikAll];
   {$ENDIF VisualCLX}
@@ -3147,10 +3151,10 @@ begin
   { YW - Set Default Button, Next Button has the higher priority than
      the Finish Button. }
   if (bkNext in AVisibleButtonSet) and (bkNext in AEnabledButtonSet) then
-    FNavigateButtons[bkNext].Control.Default := True
+    FNavigateButtons[bkNext].Control.Default := DefaultButtons
   else
   if (bkFinish in AVisibleButtonSet) and (bkFinish in AEnabledButtonSet) then
-    FNavigateButtons[bkFinish].Control.Default := True;
+    FNavigateButtons[bkFinish].Control.Default := DefaultButtons;
 end;
 
 procedure TJvWizard.RepositionButtons;
@@ -3306,6 +3310,15 @@ procedure TJvWizard.DoActivePageChanging(var ToPage: TJvWizardCustomPage);
 begin
   if Assigned(FOnActivePageChanging) then
     FOnActivePageChanging(Self, ToPage);
+end;
+
+procedure TJvWizard.SetDefaultButtons(const Value: Boolean);
+begin
+  if Value <> FDefaultButtons then
+  begin
+    FDefaultButtons := Value;
+    UpdateButtonsStatus;
+  end;
 end;
 
 {$IFDEF USEJVCL}
