@@ -84,9 +84,13 @@ type
 
 implementation
 
+uses
+  JvThemes;
+
 constructor TJvClock.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  IncludeThemeStyle(Self, [csParentBackground]);
   FColor := clInfoBk;
   FOver := False;
   FClock := csTime;
