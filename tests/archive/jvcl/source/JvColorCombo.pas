@@ -15,8 +15,9 @@ Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
+Brian Cook (borland.public.vcl.components.writing)
 
-Last Modified: 2002-05-26
+Last Modified: 2002-10-21
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -74,11 +75,13 @@ type
   protected
     procedure DrawItem(Index: Integer; R: TRect; State: TOwnerDrawState); override;
     procedure Click; override;
+
     function GetColorName(AColor: TColor; const Default: string): string;
     function DoNewColor(Color: TColor; var DisplayName: string): boolean; virtual;
     procedure DoGetDisplayName(Index: integer; AColor: TColor; var DisplayName: string); virtual;
     function DoInsertColor(AIndex: integer; AColor: TColor; var DisplayName: string): boolean; virtual;
     procedure DoBeforeCustom;
+    procedure Change; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -358,7 +361,10 @@ begin
   FOptions := [coText];
   FHiLiteColor := clHighLight;
   FHiLiteText := clHighLightText;
-  InitColorNames;
+  // make sure that if this is the first time the component is dropped on the form,
+  // the default Name/Value map is created (thanks to Brian Cook on the borland NG's):
+  if (Owner <> nil) and ([csDesigning,csLoading] * Owner.ComponentState = [csDesigning]) then
+    InitColorNames;
 end;
 
 procedure TJvColorComboBox.GetColors;
@@ -401,13 +407,13 @@ begin
     if (coCustomColors in FOptions) and (Items.Count > 0) then
       Items.Delete(Items.Count - 1);
     FOptions := Value;
-    if coText in FOptions then
+{    if coText in FOptions then
     begin
       Exclude(FOptions,coHex);
       Exclude(FOptions,coRGB);
     end
     else if coHex in Value then
-      Exclude(FOptions,coRGB);
+      Exclude(FOptions,coRGB); }
     if (coCustomColors in FOptions) then
       AddColor($000001, FOther);
     Invalidate;
@@ -586,7 +592,7 @@ procedure TJvColorComboBox.Click;
 var S: string;
 begin
   if (ItemIndex = Items.Count - 1) and (coCustomColors in FOptions) then
-    with TColorDialog.Create(nil) do
+    with TColorDialog.Create(self) do
     try
       Color := ColorValue;
       Options := Options + [cdFullOpen, cdPreventFullOpen];
@@ -780,6 +786,12 @@ begin
     Items[AIndex] := DisplayName;
     Items.Objects[AIndex] := TObject(AColor);
   end;
+end;
+
+procedure TJvColorComboBox.Change;
+begin
+  if HandleAllocated then
+    inherited;
 end;
 
 { TJvFontComboBox }
