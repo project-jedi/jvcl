@@ -214,7 +214,8 @@ type
   end;
 
   TJvDynControlCxDBCheckBox = class(TcxDBCheckBox, IUnknown,
-    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlDatabase)
+    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlDatabase,
+    IJvDynControlDBCheckbox )
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -234,6 +235,10 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+
+    //IJvDynControlDBCheckbox
+    procedure ControlSetValueChecked(Value: Variant);
+    procedure ControlSetValueUnChecked(Value: Variant);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -555,7 +560,6 @@ procedure SetDefaultDynControlEngineDBDevExp;
 
 implementation
 
-{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
 uses
   {$IFDEF UNITVERSIONING}
@@ -565,11 +569,15 @@ uses
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils,
+  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
   cxTextEdit, cxMaskEdit, cxRadioGroup, cxDropDownEdit, cxDBRichEdit,
   cxEdit, cxTimeEdit, cxDBLookupComboBox, cxMemo, cxCheckbox,
   cxGridTableView,cxGridCustomView,
   cxGrid, cxGridCustomTableView, cxGridDBDataDefinitions,
+  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
   JvDynControlEngineTools, JvConsts, JvJCLUtils;
+
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
 var
   IntDynControlEngineCxDB: TJvDynControlEngineDB = nil;
@@ -1209,6 +1217,16 @@ end;
 function TJvDynControlCxDBCheckBox.ControlGetDataField: string;
 begin
   Result := Databinding.DataField;
+end;
+
+procedure TJvDynControlCxDBCheckBox.ControlSetValueChecked(Value: Variant);
+begin
+  Properties.ValueChecked := Value;
+end;
+
+procedure TJvDynControlCxDBCheckBox.ControlSetValueUnChecked(Value: Variant);
+begin
+  Properties.ValueUnChecked := Value;
 end;
 
 procedure TJvDynControlCxDBCheckBox.ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -2353,9 +2371,17 @@ begin
             ControlSetWordwrap(TcxMemoProperties(TcxGridColumn(aGridItem).Properties).WordWrap);
           end;
       end
-      else 
+      else
       if aGridItem.PropertiesClass = TcxCheckBoxProperties then
-        Control := TWinControl(CreateDBControl(jctDBCheckBox, AControl, AControl, '', aDataSource, GridDataBinding.Field.FieldName))
+      begin
+        Control := TWinControl(CreateDBControl(jctDBCheckBox, AControl, AControl, '', aDataSource, GridDataBinding.Field.FieldName));
+        if Supports(Control, IJvDynControlDBCheckBox) and Assigned(TcxGridColumn(aGridItem).Properties) then
+        with Control as IJvDynControlDBCheckBox do
+        begin
+          ControlSetValueChecked(TcxCheckBoxProperties(TcxGridColumn(aGridItem).Properties).ValueChecked);
+          ControlSetValueUnChecked(TcxCheckBoxProperties(TcxGridColumn(aGridItem).Properties).ValueUnChecked);
+        end;
+      end
       else
         Control := CreateDBFieldControl(GridDataBinding.Field, AControl, AControl, '', ADataSource);
       if FieldDefaultWidth > 0 then
@@ -2370,10 +2396,10 @@ begin
         if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
           Control.Width := FieldMinWidth
       end;
-      if Supports(Control, IJvDynControlReadOnly) and 
-        Assigned(TcxGridColumn(aGridItem).Properties) then
-        with Control as IJvDynControlReadOnly do
-          ControlSetReadOnly(TcxGridColumn(AGridItem).Properties.ReadOnly);
+      if Assigned(TcxGridColumn(aGridItem).Properties) then
+        if Supports(Control, IJvDynControlReadOnly) then
+          with Control as IJvDynControlReadOnly do
+            ControlSetReadOnly(TcxGridColumn(AGridItem).Properties.ReadOnly);
 
       if Control is TcxCustomEdit then
       begin

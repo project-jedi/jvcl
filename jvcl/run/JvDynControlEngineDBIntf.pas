@@ -43,6 +43,12 @@ type
     property ControlDataField: string read ControlGetDataField write ControlSetDataField;
   end;
 
+  IJvDynControlDBCheckbox = interface
+    ['{5C3BAC5F-1340-43BF-8D59-A9A56A73A3C4}']
+    procedure ControlSetValueChecked(Value: Variant);
+    procedure ControlSetValueUnChecked(Value: Variant);
+  end;
+
 
 implementation
 
