@@ -36,10 +36,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, ExtCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QExtCtrls,
-  {$ENDIF}
+  Types, QWindows, QTypes, QGraphics, QControls, QExtCtrls,
+  {$ENDIF VisualCLX}
   JvComponent, JvThemes;
 
 type
@@ -52,7 +52,7 @@ type
     FItemHeight: Integer;
     {$IFDEF COMPILER6_UP}
     FAutoSize: Boolean;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     FAutoGrow: Boolean;
     FDown: Boolean;
     FClickable: Boolean;
@@ -63,7 +63,7 @@ type
     FOrientation: TJvPanelOrientation;
     {$IFDEF VCL}
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
-    {$ENDIF}
+    {$ENDIF VCL}
     function GetCaption: TCaption;
     procedure SetItems(const Value: TStrings);
     procedure SetItemHeight(const Value: Integer);
@@ -73,12 +73,10 @@ type
     procedure SetClickable(const Value: Boolean);
     procedure SetOrientation(const Value: TJvPanelOrientation);
   protected
-    {$IFDEF COMPILER6_UP}
-    procedure SetAutoSize(Value: Boolean); override;
-    {$ENDIF}
+    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL}{$IFDEF COMPILER6_UP} override;{$ENDIF}{$ENDIF}
     {$IFDEF VisualCLX}
     procedure AdjustSize; override;
-    {$ENDIF}
+    {$ENDIF VisualCLX}
     procedure Grow;
     procedure PaintDown;
     procedure PaintUp;
@@ -103,7 +101,7 @@ type
     property AutoGrow: Boolean read FAutoGrow write SetAutoGrow;
     {$IFDEF COMPILER6_UP}
     property AutoSize: Boolean read FAutoSize write SetAutoSize;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property Items: TStrings read FItems write SetItems;
     property ItemHeight: Integer read FItemHeight write SetItemHeight default 16;
     property HotTrack: Boolean read FHotTrack write SetHotTrack;
@@ -124,7 +122,7 @@ type
     property DragCursor;
     property DragKind;
     property ParentBiDiMode;
-    {$ENDIF}
+    {$ENDIF VCL}
     property BorderWidth;
     property Color;
     property Constraints;
@@ -141,18 +139,18 @@ type
     property TabOrder;
     property TabStop;
     property Visible;
-    property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
     property OnContextPopup;
     {$IFDEF VCL}
+    property OnCanResize;
     property OnDockDrop;
     property OnDockOver;
     property OnEndDock;
     property OnGetSiteInfo;
     property OnStartDock;
     property OnUnDock;
-    {$ENDIF}
+    {$ENDIF VCL}
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -164,9 +162,9 @@ type
     property OnMouseUp;
     property OnResize;
     property OnStartDrag;
-{$IFDEF JVCLThemesEnabled}
+    {$IFDEF JVCLThemesEnabled}
     property ParentBackground;
-{$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
   end;
 
 implementation
@@ -262,7 +260,7 @@ begin
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
     SetBkMode(Canvas.Handle, TRANSPARENT);
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
   DrawText(Canvas.Handle, PChar(FItems[Index]), -1, R, Flags);
 end;
 
@@ -280,7 +278,6 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER6_UP}
 procedure TJvItemsPanel.SetAutoSize(Value: Boolean);
 begin
   if FAutoSize <> Value then
@@ -296,7 +293,6 @@ begin
     Grow;
   end;
 end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvItemsPanel.SetItemHeight(const Value: Integer);
 begin
