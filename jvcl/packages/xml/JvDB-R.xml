@@ -61,5 +61,9 @@
     <File Name="..\..\run\JvAppDBStorage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBFindEdit.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBImage.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDynControlEngineDB.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDynControlEngineDBIntf.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDynControlEngineVCLDB.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDynControlEngineJVCLDB.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
