@@ -26,25 +26,24 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvDataProviderConsts;
+unit JvDataProviderDsgnConsts;
 
 interface
 
-const
-  { Consumer attributes }
-  DPA_RenderDisabledAsGrayed = 1;
-  DPA_RendersSingleItem = 2;
-  DPA_ConsumerDisplaysList = 3;
-
 resourcestring
-  SExtensibleIntObjDuplicateClass = 'Implementation of that class already exists.';
-  SExtensibleIntObjCollectionExpected = 'Expected collection.';
-  SExtensibleIntObjClassNameExpected = 'Missing ClassName property';
-  SExtensibleIntObjInvalidClass = 'Invalid class type.';
-
-  SDataItemRenderHasNoText = '(item doesn''t support the IJvDataItemText interface)';
-
-  SDataProviderNeedsItemsImpl = 'Can''t create a data provider without an IJvDataItems implementation.';
+  SDataProviderEditorCaption = 'Editing %s%s...';
+  SDataItemRootID = 'ROOT';
+  SDataItemRootCaption = 'Root';
+  SDataItemNoTextIntf = 'Item has no text support.';
+  SDataItemIDNotFound = 'Item ID "%s" not found!';
+  SDataItemNotFound = 'Item not found.';
+  SDataProviderAddFailed = 'Failed to add a new item.';
+  SDataProviderAddErrorReason = 'unable to add new item; %s.';
+  SDataProviderDeleteErrorReason = 'Unable to delete item; %s.';
+  
+  SDataProviderNoManOrDsgn = 'neither IJvDataItemsManagement nor IJvDataItemsDesigner are supported';
+  SDataProviderNoSubItems = 'item doesn''t support IJvDataItems';
+  SDataProviderNoMan = 'IJvDataItemsManagement is not supported';
 
 implementation
 

@@ -163,9 +163,9 @@ end;
 
 procedure TJvStringsDataProvider.SetStrings(Value: TStrings);
 begin
-  Changing(pcrUpdate, GetItems);
+  Changing(pcrUpdateItems, GetItems);
   (DataItemsImpl as TJvStringsDataItems).FItems.Assign(Value);
-  Changed(pcrUpdate, GetItems);
+  Changed(pcrUpdateItems, GetItems);
 end;
 
 type
@@ -196,7 +196,8 @@ begin
   TJvCustomDataItemsRenderer.Create(Self);
   TJvTreeDataItemsManagement.Create(Self);
   TJvTreeDataItemsDesigner.Create(Self);
-  TJvCustomDataItemsImages.Create(Self);
+  if GetParent = nil then
+    TJvCustomDataItemsImages.Create(Self);
 end;
 
 procedure TJvTreeDataItems.BeforeDestruction;

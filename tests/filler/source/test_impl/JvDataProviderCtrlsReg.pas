@@ -38,7 +38,7 @@ implementation
 
 uses
   Classes,
-  JvDataProviderControls, JvDataProviderPropEdits;
+  JvDataProviderControls, JvDataProviderEditors;
 
 procedure Register;
 begin

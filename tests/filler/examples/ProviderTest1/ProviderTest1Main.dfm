@@ -1,6 +1,6 @@
 object frmTestProviders: TfrmTestProviders
-  Left = 429
-  Top = 112
+  Left = 298
+  Top = 147
   Width = 642
   Height = 497
   Caption = 'frmTestProviders'
@@ -26,15 +26,19 @@ object frmTestProviders: TfrmTestProviders
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = []
-    Provider = JvTreeDataProvider1
-    Item = '5AF3487DC16A6445B900888EC38D13'
+    Provider.Provider = JvTreeDataProvider1
+    Provider.Implementers = <
+      item
+        ClassName = 'TJvDataConsumerItemSelect'
+        Item = '5AF3487DC16A6445B900888EC38D13'
+      end>
   end
   object JvProvidedListBox1: TJvProvidedListBox
     Left = 35
     Top = 20
     Width = 121
     Height = 97
-    Provider = JvFontDataProvider1
+    Provider.Provider = JvFontDataProvider1
     ItemHeight = 16
     TabOrder = 0
   end
@@ -42,8 +46,12 @@ object frmTestProviders: TfrmTestProviders
     Left = 180
     Top = 20
     Width = 176
-    Height = 117
-    Provider = JvTreeDataProvider1
+    Height = 120
+    Provider.Provider = JvTreeDataProvider1
+    Provider.Implementers = <
+      item
+        ClassName = 'TJvDataConsumerItemSelect'
+      end>
     ItemHeight = 24
     Style = lbOwnerDrawVariable
     TabOrder = 1
@@ -66,7 +74,7 @@ object frmTestProviders: TfrmTestProviders
           end
           item
             ClassName = 'TJvCustomDataItemsImages'
-            ImageList = ilTest
+            Images = ilTest
           end>
         Items = <
           item
@@ -86,10 +94,6 @@ object frmTestProviders: TfrmTestProviders
                   end
                   item
                     ClassName = 'TJvTreeDataItemsDesigner'
-                  end
-                  item
-                    ClassName = 'TJvCustomDataItemsImages'
-                    ImageList = ilTest
                   end>
                 Items = <
                   item
@@ -128,10 +132,6 @@ object frmTestProviders: TfrmTestProviders
                           end
                           item
                             ClassName = 'TJvTreeDataItemsDesigner'
-                          end
-                          item
-                            ClassName = 'TJvCustomDataItemsImages'
-                            ImageList = ilTest
                           end>
                         Items = <
                           item
@@ -166,7 +166,7 @@ object frmTestProviders: TfrmTestProviders
   object ilTest: TImageList
     Height = 24
     Width = 24
-    Left = 535
+    Left = 545
     Top = 105
     Bitmap = {
       494C010105000900040018001800FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600

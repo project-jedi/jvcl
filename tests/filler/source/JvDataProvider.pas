@@ -35,13 +35,21 @@ uses
   Windows, ImgList, Classes, Graphics;
 
 type
-  TDataProviderChangeReason = (pcrAdd, pcrDelete, pcrUpdate, pcrDestroy);
+  TDataProviderChangeReason = (pcrAdd, pcrDelete, pcrUpdateItem, pcrUpdateItems, pcrDestroy);
+  TDataItemState = (disFalse, disTrue, disIndeterminate, disNotUsed);
+  TProviderDrawState = (pdsSelected, pdsGrayed, pdsDisabled, pdsChecked, pdsFocused, pdsDefault,
+    pdsHot);
+  TProviderDrawStates = set of TProviderDrawState;
+  TClassArray = array of TClass;
 
-  // forward
+  // forwards
   IJvDataProvider = interface;
   IJvDataItems = interface;
   IJvDataItem = interface;
+  IJvDataConsumer = interface;
   IJvDataProviderNotify = interface;
+  IJvDataContexts = interface;
+  IJvDataContext = interface;
 
   { base interface for components that supports storing lists of data (0..M items) }
   IJvDataProvider = interface
@@ -56,6 +64,24 @@ type
     procedure Changing(ChangeReason: TDataProviderChangeReason; Source: IUnknown = nil);
     { Notify clients a changes has just occured. }
     procedure Changed(ChangeReason: TDataProviderChangeReason; Source: IUnknown = nil);
+    { Return an array of consumer setting classes to add to the consumer. Returned array may depend
+      on the currently selected consumer/context pair. }
+    function ConsumerClasses: TClassArray;
+    { Selects a new consumer. The current consumer is pushed onto a stack. Use ReleaseConsumer to
+      return to it. When the provider is created no consumer is selected. }
+    procedure SelectConsumer(Consumer: IJvDataConsumer);
+    { Currently selected consumer. }
+    function SelectedConsumer: IJvDataConsumer;
+    { Deselect the current consumer and revert back to the consumer that was selected before it. }
+    procedure ReleaseConsumer;
+    { Selects a new context. The current context is pushed onto a stack. Use ReleaseContext to
+      return to it. When the provider is create it's implicit context is preselected. If you select
+      a nil context the data provider implicit context is selected. }
+    procedure SelectContext(Context: IJvDataContext);
+    { Currently selected context. }
+    function SelectedContext: IJvDataContext;
+    { Deselect the current context and revert back to the context that was selected before it. }
+    procedure ReleaseContext;
   end;
 
   { Implemented by clients (i.e list/comboboxes, labels, buttons, edits, listviews, treeviews, menus etc)
@@ -102,13 +128,21 @@ type
   { May be supported by IJvDataItems implementers. }
   IJvDataItemsImages = interface
   ['{735755A6-AD11-460C-B985-46464D73EDBC}']
-    { Retrieve the image list to use. }
-    function GetImageList: TCustomImageList;
-    { Specify the image list to use. }
-    procedure SetImageList(const Value: TCustomImageList);
-    
+    function GetDisabledImages: TCustomImageList;
+    procedure SetDisabledImages(const Value: TCustomImageList);
+    function GetHotImages: TCustomImageList;
+    procedure SetHotImages(const Value: TCustomImageList);
+    function GetImages: TCustomImageList;
+    procedure SetImages(const Value: TCustomImageList);
+
+    { Get or set the image list to use when an item is disabled. If left unassigned, the standard
+      image list is used (set by Images). }
+    property DisabledImages: TCustomImageList read GetDisabledImages write SetDisabledImages;
+    { Get or set the image list to use when an item is 'hot'. If left unassigned, the standard image
+      list is used (set by Images). }
+    property HotImages: TCustomImageList read GetHotImages write SetHotImages;
     { Get or set the image list to use. }
-    property ImageList: TCustomImageList read GetImageList write SetImageList;
+    property Images: TCustomImageList read GetImages write SetImages;
   end;
 
   { Rendering interface. Provides support for both rendering and measuring of items.
@@ -116,11 +150,11 @@ type
   IJvDataItemsRenderer = interface
     ['{4EA490F4-7CCF-44A1-AA26-5320CDE9FAFC}']
     { Draw an item in the IJvDataItems list, using an index to specify which item. }
-    procedure DrawItemByIndex(ACanvas: TCanvas; var ARect: TRect; Index: Integer; State: TOwnerDrawState);
+    procedure DrawItemByIndex(ACanvas: TCanvas; var ARect: TRect; Index: Integer; State: TProviderDrawStates);
     { Measure an item in the IJvDataItems list, using an index to specify which item. }
     function MeasureItemByIndex(ACanvas: TCanvas; Index: Integer): TSize;
     { Draw the specified item. If the item is not part of the IJvDataItems list or nil is specified, an exception will be raised. }
-    procedure DrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IJvDataItem; State: TOwnerDrawState);
+    procedure DrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IJvDataItem; State: TProviderDrawStates);
     { Measure the specified item. If the item is not part of the IJvDataItems list or nil is specified, an exception will be raised. }
     function MeasureItem(ACanvas: TCanvas; Item: IJvDataItem): TSize;
     { Retrieve the average size of the items in the list. This depends on the implementation on how
@@ -172,12 +206,12 @@ type
 
   IJvDataIDSearch = interface
     ['{0F5BDC79-893B-45C9-94E9-C2B2FD4ABFE7}']
-    function FindByID(ID: string; const Recursive: Boolean = False): IJvDataItem;
+    function Find(ID: string; const Recursive: Boolean = False): IJvDataItem;
   end;
 
   IJvDataTextSearch = interface
   ['{E3BC388D-50F6-402D-9E30-36D5F7F40616}']
-    function FindByText(Text: string; const Recursive: Boolean = False): IJvDataItem;
+    function Find(Text: string; const Recursive: Boolean = False): IJvDataItem;
   end;
 
   { base item interface: holds reference to the IJvDataItems owner as well as provide a reference to
@@ -202,7 +236,7 @@ type
   IJvDataItemRenderer = interface
     ['{9E877A0D-01C2-4204-AA74-84D6516BBEB9}']
     { Render the item to the specified canvas in the specified rectangle. }
-    procedure Draw(ACanvas: TCanvas; var ARect: TRect; State: TOwnerDrawState);
+    procedure Draw(ACanvas: TCanvas; var ARect: TRect; State: TProviderDrawStates);
     { Measure the item. }
     function Measure(ACanvas: TCanvas): TSize;
   end;
@@ -247,6 +281,21 @@ type
     function Execute(Sender: TObject): Boolean;
   end;
 
+  { Implemented by servers that support one or more states for an item. }
+  IJvDataItemStates = interface
+  ['{5BD81E0B-DAD2-4560-943A-205E0FF2A97F}']
+    function Get_Enabled: TDataItemState;
+    procedure Set_Enabled(Value: TDataItemState);
+    function Get_Checked: TDataItemState;
+    procedure Set_Checked(Value: TDataItemState);
+    function Get_Visible: TDataItemState;
+    procedure Set_Visible(Value: TDataItemState);
+
+    property Enabled: TDataItemState read Get_Enabled write Set_Enabled;
+    property Checked: TDataItemState read Get_Checked write Set_Checked;
+    property Visible: TDataItemState read Get_Visible write Set_Visible;
+  end;
+
   { Support interface for provider editor. Must be implemented by IJvDataItem implementers who
     allow their item to be edited in the provider editor. }
   IJvDataItemDesigner = interface
@@ -268,409 +317,69 @@ type
   end;
   {$ENDIF}
 
-(*  { base class for options that are dynamically added to the client by the server implementation,
-    see JvFillBasicImpl for details }
-  TJvFillerOptions = class(TPersistent)
-  private
-    FOnChanged: TNotifyEvent;
-  protected
-    procedure Changed;
-  public
-    constructor Create(AOnChanged: TNotifyEvent); virtual;
-  end;
-*)
-  { An instance of this class is created when an item is selected in the ProviderEditor. The class
-    provides a reference to the item selected. Based on the interfaces supported by the item,
-    published properties are "injected" into this class. }
-  TJvDataProviderItem = class(TPersistent)
-  private
-    FItem: IJvDataItem;
-  protected
-    function Item: IJvDataItem;
-    function GetOwner: TPersistent; override;
-  public
-    constructor Create(AnItem: IJvDataItem);
-    function GetNamePath: string; override;
+  { Interface used to link back to the data consumer (the component/control). It's primary use is
+    to retrieve a reference to VCLComponent (if any) and check if certain attributes apply for a
+    consumer. Other interfaces maybe supported, depending on the control. Not all providers may be
+    interested in all the interfaces or even who the consumer is. }
+  IJvDataConsumer = interface
+    ['{B2F18D03-F615-4AA2-A51A-74D330C05C0E}']
+    function VCLComponent: TComponent;
+    { Checks if a certain attribute applies (attributes are declared in JvDataProviderConsts). If
+      the specified attribute applies for the consumer True should be returned False otherwise. }
+    function AttributeApplies(Attr: Integer): Boolean;
   end;
 
-  TJvDataProviderItemClass = class of TJvDataProviderItem;
+  { Consumer support interface to retrieve the state of an item as specified by the consumer.
+    disNotUsed means the state is not supported by the consumer and should be taken from the
+    item instead. }
+  IJvDataConsumerItemState = interface
+    ['{09EBDED8-502E-4C2E-9842-312850FF3358}']
+    function Enabled(Item: IJvDataItem): TDataItemState;
+    function Checked(Item: IJvDataItem): TDataItemState;
+    function Visible(Item: IJvDataItem): TDataItemState;
+  end;
 
-procedure RegisterDataItemIntfProp(const IID: TGUID; const PropClass: TJvDataProviderItemClass);
+  { Consumer support interface to get or set the (root) item to render. Consumers that only support
+    showing a single item use this interface to specify which item is to be displayed, while
+    consumers that can render trees use it to specify the root item to show. }
+  IJvDataConsumerItemSelect = interface
+    ['{F11554AE-263D-4C04-BCDB-79F04DE89609}']
+    function GetItem: IJvDataItem;
+    procedure SetItem(Value: IJvDataItem);
+  end;
+
+  { Provider context management interface. Note that there is always an implicit (nameless) context
+    at the provider, even if there is no IJvDataContexts interface available. }
+  IJvDataContexts = interface
+    ['{BA5DC787-29C6-40FA-9542-F0A1E92A2B30}']
+    { Reference to the provider. }
+    function Provider: IJvDataProvider;
+    { Number of contexts. }
+    function GetCount: Integer;
+    { Array of available contexts. }
+    function GetContext(Index: Integer): IJvDataContext;
+    { Retrieve a context by name. Returns nil if the context does not exist. }
+    function GetContextByName(Name: string): IJvDataContext;
+    { Add a context. }
+    function Add(Context: IJvDataContext): IJvDataContext;
+    { Create a new context and add it to the list. }
+    function New: IJvDataContext;
+    { Delete the specified context. }
+    procedure Delete(Context: IJvDataContext);
+    { Clear the list of contexts. }
+    procedure Clear;
+  end;
+
+  IJvDataContext = interface
+    ['{F226D92A-3493-4EF8-9CE6-037357EB0CEA}']
+    { Reference to the context manager (this will be nil for the implicit context of the provider). }
+    function Contexts: IJvDataContexts;
+    { Unique name of the context (used at design time and by the streaming system). }
+    function Name: string;
+  end;
 
 implementation
 
-uses
-  SysUtils, TypInfo;
-
-type
-  PPropData = ^TPropData;
-
-  TIntfItem = record
-    GUID: TGUID;
-    PropClass: TJvDataProviderItemClass;
-  end;
-  TIntfItems = array of TIntfItem;
-
-var
-  GIntfPropReg: TIntfItems;
-
-function LocateReg(IID: TGUID): Integer;
-begin
-  Result := High(GIntfPropReg);
-  while (Result >= 0) and not CompareMem(@GIntfPropReg[Result].GUID, @IID, SizeOf(TGUID)) do
-    Dec(Result);
-end;
-
-procedure RegisterDataItemIntfProp(const IID: TGUID; const PropClass: TJvDataProviderItemClass);
-var
-  IIDIdx: Integer;
-begin
-  IIDIdx := LocateReg(IID);
-  if IIDIdx < 0 then
-  begin
-    IIDIdx := Length(GIntfPropReg);
-    SetLength(GIntfPropReg, IIDIdx + 1);
-    GIntfPropReg[IIDIdx].GUID := IID;
-  end;
-  GIntfPropReg[IIDIdx].PropClass := PropClass;
-end;
-
-function StringBaseLen(NumItems: Integer; StartString: PChar): Integer;
-begin
-  Result := 0;
-  while (NumItems > 0) do
-  begin
-    Inc(Result, 1 + PByte(StartString)^);
-    Inc(StartString, 1 + PByte(StartString)^);
-    Dec(NumItems);
-  end;
-end;
-
-function PropListSize(ListPos: PChar): Integer;
-var
-  Cnt: Integer;
-  BaseInfoSize: Integer;
-begin
-  Result := SizeOf(Word);
-  Cnt := PWord(ListPos)^;
-  Inc(ListPos, Result);
-  BaseInfoSize := SizeOf(TPropInfo) - SizeOf(ShortString) + 1;
-  while Cnt > 0 do
-  begin
-    Inc(Result, BaseInfoSize + Length(PPropInfo(ListPos)^.Name));
-    Inc(ListPos, BaseInfoSize + Length(PPropInfo(ListPos)^.Name));
-    Dec(Cnt);
-  end;
-end;
-
-function TypeInfoSize(TypeInfo: PTypeInfo): Integer;
-var
-  TypeData: PTypeData;
-begin
-  Result := 2 + Length(TypeInfo.Name);
-  TypeData := GetTypeData(TypeInfo);
-  case TypeInfo.Kind of
-    tkInteger, tkChar, tkEnumeration, tkSet, tkWChar:
-      begin
-        Inc(Result, SizeOf(TOrdType));
-        case TypeInfo.Kind of
-          tkInteger, tkChar, tkEnumeration, tkWChar:
-            begin
-              Inc(Result, 8);
-              if TypeInfo.Kind = tkEnumeration then
-                Inc(Result, 4 + StringBaseLen(TypeData.MaxValue - TypeData.MinValue + 1, @TypeData.NameList));
-            end;
-          tkSet:
-            Inc(Result, 4);
-        end;
-      end;
-    tkFloat:
-      Inc(Result, SizeOf(TFloatType));
-    tkString:
-      Inc(Result);
-    tkClass:
-      begin
-        Inc(Result, SizeOf(TClass) + SizeOf(PPTypeInfo) + SizeOf(SmallInt) + StringBaseLen(1, @TypeData.UnitName));
-        Inc(Result, PropListSize(Pointer(Integer(@TypeData.UnitName) + StringBaseLen(1, @TypeData.UnitName))));
-      end;
-  end;
-end;
-
-function CloneTypeInfo(OrgTypeInfo: PTypeInfo; AdditionalSpace: Longint = 0): PTypeInfo;
-var
-  P: PChar;
-begin
-  P := AllocMem(SizeOf(Pointer) + TypeInfoSize(OrgTypeInfo) + AdditionalSpace);
-  PInteger(P)^ := Integer(OrgTypeInfo);
-  Inc(P, 4);
-  Result := PTypeInfo(P);
-  Move(OrgTypeInfo^ , Result^, TypeInfoSize(OrgTypeInfo));
-end;
-
-procedure CreateTypeInfo(const AClass: TClass);
-var
-  P: PChar;
-  PNewInfo: Pointer;
-  OldProtect: Cardinal;
-begin
-  P := Pointer(AClass);
-  Dec(P, 60);                         // Now pointing to TypeInfo of the VMT table.
-  { Below the typeinfo is cloned, while an additional 2048 bytes are reserved at the end. This 2048
-    bytes will be used to "inject" additional properties. Since each property takes 27 + the length
-    of the property name bytes, assuming an average of 40 bytes/property will allow approximately 50
-    properties to be appended to the existing property list. }
-  PNewInfo := CloneTypeInfo(Pointer(PInteger(P)^), 2048);
-  if VirtualProtect(P, 4, PAGE_WRITECOPY, OldProtect) then
-  try
-    PInteger(P)^ := Integer(PNewInfo);
-  finally
-    VirtualProtect(P, 4, OldProtect, OldProtect);
-  end;
-end;
-
-procedure ClearTypeInfo(const AClass: TClass);
-var
-  P: PChar;
-  PNewType: PChar;
-  OldProtect: Cardinal;
-begin
-  P := Pointer(AClass);
-  Dec(P, 60);                         // Now pointing to TypeInfo of the VMT table.
-  PNewType := Pointer(PInteger(P)^);  // The new type currently in use.
-  Dec(PNewType, 4);                   // Points to the original PTypeInfo value.
-  if VirtualProtect(P, 4, PAGE_WRITECOPY, OldProtect) then
-  try
-    PInteger(P)^ := Integer(PInteger(PNewType)^);
-  finally
-    VirtualProtect(P, 4, OldProtect, OldProtect);
-  end;
-end;
-
-function GetPropData(TypeData: PTypeData): PPropData;
-begin
-  Result := PPropData(Integer(@TypeData.UnitName) + StringBaseLen(1, @TypeData.UnitName));
-end;
-
-procedure ClearPropList(const AClass: TClass);
-var
-  RTTI: PTypeInfo;
-  TypeData: PTypeData;
-  PropList: PPropData;
-begin
-  RTTI := PTypeInfo(AClass.ClassInfo);
-  TypeData := GetTypeData(RTTI);
-  TypeData.PropCount := 0;
-  PropList := GetPropData(TypeData);
-  PropList.PropCount := 0;
-end;
-
-procedure CopyPropInfo(var Source, Dest: PPropInfo; var PropNum: Smallint);
-var
-  BaseInfoSize: Integer;
-  NameLen: Integer;
-begin
-  BaseInfoSize := SizeOf(TPropInfo) - SizeOf(ShortString) + 1;
-  NameLen := Length(Source.Name);
-  Move(Source^, Dest^, BaseInfoSize + NameLen);
-  Dest.NameIndex := PropNum;
-  Inc(PChar(Source), BaseInfoSize + NameLen);
-  Inc(PChar(Dest), BaseInfoSize + NameLen);
-  Inc(PropNum);
-end;
-
-procedure AppendPropList(const AClass: TClass; PropList: PPropInfo; Count: Integer);
-var
-  RTTI: PTypeInfo;
-  TypeData: PTypeData;
-  ClassPropList: PPropInfo;
-  ExistingCount: Integer;
-  BaseInfoSize: Integer;
-  PropNum: Smallint;
-begin
-  RTTI := PTypeInfo(AClass.ClassInfo);
-  TypeData := GetTypeData(RTTI);
-  TypeData.PropCount := TypeData.PropCount + Count;
-  ClassPropList := PPropInfo(GetPropData(TypeData));
-  ExistingCount := PPropData(ClassPropList).PropCount;
-  PropNum := ExistingCount;
-  PPropData(ClassPropList).PropCount := ExistingCount + Count;
-  Inc(PChar(ClassPropList), 2);
-  BaseInfoSize := SizeOf(TPropInfo) - SizeOf(ShortString) + 1;
-  while ExistingCount > 0 do
-  begin
-    Inc(PChar(ClassPropList), BaseInfoSize + Length(ClassPropList.Name));
-    Dec(ExistingCount);
-  end;
-  while Count > 0 do
-  begin
-    CopyPropInfo(PropList, ClassPropList, PropNum);
-    Dec(Count);
-  end;
-end;
-
-(*
-{ TJvFillerOptions }
-
-procedure TJvFillerOptions.Changed;
-begin
-  if @FOnChanged <> nil then
-    FOnChanged(Self);
-end;
-
-constructor TJvFillerOptions.Create(AOnChanged: TNotifyEvent);
-begin
-  inherited Create;
-  FOnChanged := AOnChanged;
-end;
-*)
-
-{ TJvDataProviderItem }
-
-function TJvDataProviderItem.Item: IJvDataItem;
-begin
-  Result := FItem;
-end;
-
-function TJvDataProviderItem.GetOwner: TPersistent;
-begin
-  if Item <> nil then
-    Result := (Item.Items.Provider as IInterfaceComponentReference).GetComponent
-  else
-    Result := inherited GetOwner;
-end;
-
-constructor TJvDataProviderItem.Create(AnItem: IJvDataItem);
-var
-  I: Integer;
-  IUnk: IUnknown;
-  PrpData: PPropData;
-begin
-  inherited Create;
-  FItem := AnItem;
-  ClearPropList(ClassType);
-  for I := High(GIntfPropReg) downto 0 do
-  begin
-    if Supports(AnItem, GIntfPropReg[I].GUID, IUnk) then
-    begin
-      PrpData := GetPropData(GetTypeData(GIntfPropReg[I].PropClass.ClassInfo));
-      AppendPropList(ClassType, PPropInfo(Cardinal(PrpData) + 2), PrpData.PropCount);
-    end;
-  end;
-end;
-
-function TJvDataProviderItem.GetNamePath: string;
-var
-  Comp: TPersistent;
-begin
-  Comp := GetOwner;
-  if (Comp <> nil) and (Comp is TComponent) then
-    Result := (Comp as TComponent).Name
-  else
-    Result := '<unknown>';
-  if Item <> nil then
-    Result := Result + ': Item[' + Item.GetID + ']'
-  else
-    Result := Result + ': <no item>';
-end;
-
-(* Move to implementers? *)
-
-type
-  TJvDataItemTextPropView = class(TJvDataProviderItem)
-  protected
-    function GetCaption: string;
-    procedure SetCaption(Value: string);
-  published
-    property Caption: string read GetCaption write SetCaption;
-  end;
-
-function TJvDataItemTextPropView.GetCaption: string;
-begin
-  Result := (Item as IJvDataItemText).Caption;
-end;
-
-procedure TJvDataItemTextPropView.SetCaption(Value: string);
-begin
-  (Item as IJvDataItemText).Caption := Value;
-end;
-
-type
-  TJvDataItemImagePropView = class(TJvDataProviderItem)
-  protected
-    function GetAlignment: TAlignment;
-    procedure SetAlignment(Value: TAlignment);
-    function GetImageIndex: Integer;
-    procedure SetImageIndex(Value: Integer);
-    function GetSelectedIndex: Integer;
-    procedure SetSelectedIndex(Value: Integer);
-  published
-    property Alignment: TAlignment read GetAlignment write SetAlignment;
-    property ImageIndex: Integer read GetImageIndex write SetImageIndex;
-    property SelectedIndex: Integer read GetSelectedIndex write SetSelectedIndex;
-  end;
-
-function TJvDataItemImagePropView.GetAlignment: TAlignment;
-begin
-  Result := (Item as IJvDataItemImage).Alignment;
-end;
-
-procedure TJvDataItemImagePropView.SetAlignment(Value: TAlignment);
-begin
-  (Item as IJvDataItemImage).Alignment := Value;
-end;
-
-function TJvDataItemImagePropView.GetImageIndex: Integer;
-begin
-  Result := (Item as IJvDataItemImage).ImageIndex
-end;
-
-procedure TJvDataItemImagePropView.SetImageIndex(Value: Integer);
-begin
-  (Item as IJvDataItemImage).ImageIndex := Value;
-end;
-
-function TJvDataItemImagePropView.GetSelectedIndex: Integer;
-begin
-  Result := (Item as IJvDataItemImage).SelectedIndex;
-end;
-
-procedure TJvDataItemImagePropView.SetSelectedIndex(Value: Integer);
-begin
-  (Item as IJvDataItemImage).SelectedIndex := Value;
-end;
-
-type
-  TJvDataItemsImagesPropView = class(TJvDataProviderItem)
-  protected
-    function GetImageList: TCustomImageList;
-    procedure SetImageList(Value: TCustomImageList);
-  published
-    property ImageList: TCustomImageList read GetImageList write SetImageList;
-  end;
-
-function TJvDataItemsImagesPropView.GetImageList: TCustomImageList;
-begin
-  Result := (Item as IJvDataItemsImages).ImageList;
-end;
-
-procedure TJvDataItemsImagesPropView.SetImageList(Value: TCustomImageList);
-begin
-  (Item as IJvDataItemsImages).ImageList := Value;
-end;
-
-procedure RegProviderItemInterfaces;
-begin
-  RegisterDataItemIntfProp(IJvDataItemText, TJvDataItemTextPropView);
-  RegisterDataItemIntfProp(IJvDataItemImage, TJvDataItemImagePropView);
-  RegisterDataItemIntfProp(IJvDataItemsImages, TJvDataItemsImagesPropView);
-end;
-
-initialization
-  CreateTypeInfo(TJvDataProviderItem);
-  RegProviderItemInterfaces;
-
-finalization
-  ClearTypeInfo(TJvDataProviderItem);
 end.
 
 
