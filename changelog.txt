@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2004-05-21
+- TJvZlibMultiple is now available for C++ Builder 5 and 6
 2004-05-19
 - Moved JvComputerInfo.pas, JvDeviceChanged.pas, JvDirectories.pas, JvKeyboardStates.pas, 
   JvSystemColors.pas to archive. They are replaced by JvComputerInfoEx.pas // ahuser

@@ -26,13 +26,13 @@ of&nbsp;components that has been added&nbsp;in this&nbsp;release of
 JVCL.</li>
   <li><a href="help/BCB%20Compatibility%20Guide.html">BCB Compatibility
 Guide</a>. Describes how to install JVCL in C++Builder.</li>
-  <li><a href="help/JvExVCL.html">JvExVCL description</a>. Describes how 
-to use the JvExVCL (layer for VCL and VisuaLCLX) in your own code.</li>
+  <li><a href="help/JvExVCL.html">JvExVCL description</a>. Describes
+how to use the JvExVCL (layer for VCL and VisuaLCLX) in your own code.</li>
   <li><a href="help/Build%20Status.html">Build status</a>. Contains
 info on the current build status of the JVCL for supported Delphi and
 BCB versions.</li>
-  <li><a href="help/localization.html">Localization</a>. Contains infomrmation
-    on how to enable localization support in JVCL.</li>
+  <li><a href="help/localization.html">Localization</a>. Contains
+infomrmation on how to enable localization support in JVCL.</li>
 </ul>
 <h3>&nbsp;</h3>
 <h2>Changes in this version</h2>
@@ -60,7 +60,8 @@ translations, INC files and the like</p>
 tools</p>
 <p>&nbsp; <b>\Dict</b> - dictionary files for TJvSpellChecker</p>
 <p>&nbsp; <b>\examples</b> - all available demos</p>
-<p>&nbsp; <b>\help</b> - contains the help file(s) and additional documentation</p>
+<p>&nbsp; <b>\help</b> - contains the help file(s) and additional
+documentation</p>
 <p>&nbsp; <b>\images</b> - original images and rc files for the
 palette icons</p>
 <p>&nbsp; <b>\Includes</b> - C/C++ include files for UIB</p>
@@ -114,7 +115,8 @@ http://www.delphi-gems.com/ThemeManager.php</a>.</li>
   <li>Open ThemeManager?.dpk (where "?" is the Delphi version) and
 change the compile options to "Explicit rebuild".</li>
   <li>(Re)build and install the ThemeManager package.</li>
-  <li>For manual installation: Open jvcl.inc with a text editor and remove the dot in {.$DEFINE
+  <li>For manual installation: Open jvcl.inc with a text editor and
+remove the dot in {.$DEFINE
 JVCLThemesEnabled}. </li>
   <li>(Re)build the jvcl packages.</li>
 </ul>
@@ -129,14 +131,18 @@ All strings that get displayed to the user are stored in resource
 strings. If you want the JVCL to display those strings in other
 languages, you should use DxGettext as this is the only localization
 method supported by the JVCL group. You must turn on the use of
-DxGettext in jvcl.inc and recompile the JVCL packages for the support to
+DxGettext in jvcl.inc and recompile the JVCL packages for the support
+to
 be complete. Please refer to the <a href="help/localization.html">localization</a>
 documentation for more details on this topic.<br>
 <br>
 <h4>CLX support</h4>
-<p>CLX support is being worked on but is not yet fully available. To learn more
-about CLX support in JVCL and keep updated on the current status, you are
-recommended to subscribe to our newsgroups. See contact information at the end
+<p>CLX support is being worked on but is not yet fully available. To
+learn more
+about CLX support in JVCL and keep updated on the current status, you
+are
+recommended to subscribe to our newsgroups. See contact information at
+the end
 of this document for information on how to access the newsgroups.</p>
 <p>&nbsp;</p>
 <h4>Available distributions</h4>
@@ -151,9 +157,11 @@ demo folders </li>
 repository as well as the latest release of JCL</li>
 </ul>
 <p dir="ltr">&nbsp;</p>
-<p dir="ltr">Each of the &quot;stand-alone&quot; packages are also available as
-separate distributions (see USEJVCL below for a list of stand-alone packages).
-In case we get enough requests, we might also provide each package as a separate
+<p dir="ltr">Each of the "stand-alone" packages are also available as
+separate distributions (see USEJVCL below for a list of stand-alone
+packages).
+In case we get enough requests, we might also provide each package as a
+separate
 distribution.</p>
 <p dir="ltr">&nbsp;</p>
 <h4>New package layout</h4>
@@ -172,16 +180,16 @@ following packages are currently available:</p>
       <th>Package</th>
       <th>Description</th>
       <th>Contains</th>
-      <th>Required JVCL packages (packages in parenthesisses are required by the
-        design-time package)</th>
+      <th>Required JVCL packages (packages in parenthesisses are
+required by the design-time package)</th>
     </tr>
     <tr>
       <td>JvCore</td>
       <td>Contains the core units used by a large part of the JVCL</td>
       <td>
       <p>Core support units</p>
-      <p>TJvJVCLAboutComponent<br>
-TJvContextProvider</p>
+      <p>TJvJVCLAboutComponent</p>
+      <p>TJvContextProvider</p>
       <p>TJvColorProvider</p>
       <p>TJvAppIniStore</p>
       <p>TJvAppRegistryStore</p>
@@ -443,7 +451,7 @@ TJvContextProvider</p>
       <td>Encryption and Compression components</td>
       <td>
       <p>TJvCabFile</p>
-      <p>TJvZLibMultiple <sup>1.</sup> <sup>2.</sup></p>
+      <p>TJvZLibMultiple</p>
       <p>TJvGenetic</p>
       <p>TJvCaesarCipher</p>
       <p>TJvXorCipher</p>
@@ -545,8 +553,8 @@ TJvContextProvider</p>
       <p>TJvDBComboEdit</p>
       <p>TJvDBDateEdit</p>
       <p>TJvDBCalcEdit</p>
-      <p>TJvDBStatusLabel<br>
-      TJvHTDBLabel</p>
+      <p>TJvDBStatusLabel</p>
+      <p> TJvHTDBLabel</p>
       </td>
       <td>JvCore, JvStdCtrls,</td>
     </tr>
@@ -867,9 +875,11 @@ display correct look)<br>
 3. Limited functionality in Delphi 5<br>
 4. If USEJVCL is defined (it is by default). If you change the
 definition of USEJVCL, you MUST regenerate the packages using the
-PackageGenerator available in $(JVCL)\devtools<br>
+PackageGenerator available in $(JVCL)\devtools. The installer will do
+that for you.<br>
 5. Not available in Standard and Personal versions.<br>
 <br>
+</p>
 <h4>New components added</h4>
 <p>&nbsp;</p>
 <p>The following new components and libraries has been added since JVCL
@@ -897,6 +907,8 @@ PackageGenerator available in $(JVCL)\devtools<br>
   <li>DockPresident components</li>
   <li>Delphi eXperience Controls II</li>
   <li>Delphi eXperience DotNet Controls II</li>
+  <li>UltimVCL<br>
+  </li>
 </ul>
 <p>&nbsp;</p>
 <h4>Components deprecated, renamed, removed or changed </h4>
