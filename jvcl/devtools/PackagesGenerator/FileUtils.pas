@@ -1,12 +1,16 @@
-{$I jvcl.inc}
 unit FileUtils;
 
+{$I jvcl.inc}
+
 interface
+
 uses
   Windows;
+
 {$IFNDEF COMPILER6_UP}
-{$DEFINE MSWINDOWS}
+ {$DEFINE MSWINDOWS}
 {$ENDIF COMPILER6_UP}
+
 // returns the relative path between Origin and Destination
 // This is the string you would have to type after the 'cd'
 // command is you were located in Origin and willing to change
