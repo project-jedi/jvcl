@@ -437,7 +437,7 @@ begin
       P := InternalGetProcAddress(Module, PChar(AProcName));
       Result := Assigned(P);
     end;
-    InternalFreeLibrary(FModule);
+    InternalFreeLibrary(Module);
   end;
 end;
 
