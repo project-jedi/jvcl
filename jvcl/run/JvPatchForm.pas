@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2004-01-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -24,15 +24,20 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvPatchForm;
 
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, StdCtrls, Mask,
-  JvToolEdit, JvComponent;
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Controls, Forms, StdCtrls, Mask,
+  {$ELSE}
+  QControls, QForms, QStdCtrls, QMask,
+  {$ENDIF}
+  JvToolEdit, JvComponent, JvQToolEdit;
 
 type
   TFoPatch = class(TJvForm)
@@ -60,7 +65,11 @@ implementation
 uses
   JvConsts, JvResources;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ELSE}
+{$R *.xfm}
+{$ENDIF}
 
 procedure TFoPatch.LoadFromStr(Value: TStringList);
 begin

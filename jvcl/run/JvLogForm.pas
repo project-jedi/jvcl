@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2004-01-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -24,15 +24,20 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvLogForm;
 
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, Dialogs,
-  ComCtrls, ActnList, ImgList, ToolWin;
+  {$IFDEF VCL}
+  Controls, Forms, Dialogs, ComCtrls, ActnList, ImgList, ToolWin,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QControls, QForms, QDialogs, QComCtrls, QActnList, QImgList{, ToolWin},
+  {$ENDIF}
+  SysUtils, Classes;
 
 type
   TFoLog = class(TForm)
@@ -53,10 +58,18 @@ type
 
 implementation
 
+{$IFDEF VCL}
 uses
   Printers;
 
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+uses
+  QPrinters;
+
+{$R *.xfm}
+{$ENDIF}
 
 procedure TFoLog.SaveExecute(Sender: TObject);
 var

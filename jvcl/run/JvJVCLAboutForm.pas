@@ -43,7 +43,7 @@ uses
   QControls, QForms, QStdCtrls, QExtCtrls, QDialogs, QButtons,
   {$ENDIF VisualCLX}
   JclSysInfo, JVCLVer,
-  JvBaseDlg, JvComponent;
+  JvBaseDlg, JvComponent, QGraphics;
 
 type
   TJvJVCLAboutForm = class(TJvForm)
@@ -106,7 +106,14 @@ implementation
 uses
   JvJVCLUtils, JvJCLUtils;
 
+
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
+
 
 const
   cOptions = 'Options';
@@ -114,7 +121,12 @@ const
   cBoundsTop = 'Bounds.Top';
   cHelpFile = 'Help.File';
   cHelpDirectory = 'Help.Directory';
+  {$IFDEF MSWINDOWS}
   cJVCLIni = '\JVCL.ini';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  cJVCLIni = '~/JVCL.ini';
+  {$ENDIF}
 
 procedure TJvJVCLAboutForm.FormShow(Sender: TObject);
 {$IFDEF MSWINDOWS}
@@ -136,6 +148,7 @@ begin
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   lblWindowsVersion.Caption := GetOSVersionString;
+  Label4.Caption := 'Memory Available to Linux:';
   {$ENDIF LINUX}
   lblMemory.Caption := Format('%u KB', [GetTotalPhysicalMemory div 1024]);
   lblCopyRight.Caption := 'Copyright © Project JEDI, 1999 - ' + FormatDateTime('yyyy', Now);

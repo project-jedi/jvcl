@@ -15,7 +15,7 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
+Last Modified: 2004-01-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -23,15 +23,20 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvLoginForm;
 
 interface
 
 uses
-  Windows,
-  SysUtils, Messages, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
+  {$ENDIF}
   JvComponent, JvBaseDlg, JvAppStorage;
 
 type
@@ -62,7 +67,9 @@ type
     FOnUnlock: TCheckUnlockEvent;
     FOnUnlockApp: TUnlockAppEvent;
     FOnIconDblClick: TNotifyEvent;
+    {$IFDEF VCL}
     FPasswordChar: char;
+    {$ENDIF}
     function GetLoggedUser: string;
     function UnlockHook(var Msg: TMessage): Boolean;
     procedure SeTJvAppStorage(Value : TJvCustomAppStorage);
@@ -82,7 +89,9 @@ type
     property AttemptNumber: Integer read FAttemptNumber write FAttemptNumber default 3;
     property MaxPasswordLen: Integer read FMaxPasswordLen write FMaxPasswordLen default 0;
     property UpdateCaption: TUpdateCaption read FUpdateCaption write FUpdateCaption default ucNoChange;
+    {$IFDEF VCL}
     property PasswordChar:char read FPasswordChar write FPasswordChar default '*';
+    {$ENDIF}
     property AfterLogin: TNotifyEvent read FAfterLogin write FAfterLogin;
     property BeforeLogin: TNotifyEvent read FBeforeLogin write FBeforeLogin;
     property OnUnlock: TCheckUnlockEvent read FOnUnlock write FOnUnlock; { obsolete }
@@ -161,10 +170,19 @@ function CreateLoginDialog(UnlockMode, ASelectDatabase: Boolean;
 implementation
 
 uses
-  Consts, IniFiles,
+  {$IFDEF VCL}
+  Consts,
+  {$ELSE}
+  QConsts,
+  {$ENDIF}
+  IniFiles,
   JvJCLUtils, JvJVCLUtils, JvResources, JvConsts;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ELSE}
+{$R *.xfm}
+{$ENDIF}
 
 function CreateLoginDialog(UnlockMode, ASelectDatabase: Boolean;
   FormShowEvent, OkClickEvent: TNotifyEvent): TJvLoginForm;
@@ -351,7 +369,9 @@ begin
       end;
     end;
     PasswordEdit.MaxLength := FMaxPasswordLen;
+    {$IFDEF VCL}
     PasswordEdit.PasswordChar := PassWordChar;
+    {$ENDIF}
     AttemptNumber := Self.AttemptNumber;
   end;
 end;
@@ -515,8 +535,10 @@ end;
 procedure TJvLoginForm.FormCreate(Sender: TObject);
 begin
   Icon := Application.Icon;
+  {$IFDEF VCL}
   if Icon.Empty then
     Icon.Handle := LoadIcon(0, IDI_APPLICATION);
+  {$ENDIF}
   AppIcon.Picture.Assign(Icon);
   AppTitleLabel.Caption := Format(RsAppTitleLabel, [Application.Title]);
   PasswordLabel.Caption := RsPasswordLabel;
