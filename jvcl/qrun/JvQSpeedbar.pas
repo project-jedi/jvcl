@@ -34,6 +34,9 @@ interface
 
 uses
   SysUtils, Classes, IniFiles,
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF MSWINDOWS}
   
   
   QMenus, QButtons, QControls, QWindows, QGraphics, Types,
@@ -73,10 +76,7 @@ type
     FOrientation: TBarOrientation;
     FAlign: TAlign;
     FButtonSize: TPoint;
-    
-    
-    FButtonStyle: JvQThemes.TButtonStyle;
-    
+    FButtonStyle: TButtonStyle;
     FGridSize: TPoint;
     FOffset: TPoint;
     FEditWin: HWnd;
@@ -194,7 +194,7 @@ type
     function NewItem(AOwner: TComponent; Section: Integer;
       const AName: string): TJvSpeedItem;
     function AcceptDropItem(Item: TJvSpeedItem; X, Y: Integer): Boolean;
-    procedure SetEditing(Win: HWnd);
+    procedure SetEditing(Win: HWND);
     function GetEditing: Boolean;
     function SearchItem(const ItemName: string): TJvSpeedItem;
     function FindItem(Item: TJvSpeedItem; var Section, Index: Integer): Boolean;
@@ -651,7 +651,7 @@ begin
   begin
     I := FParent.SearchSection(NewCaption);
     if (I <> Index) and (I >= 0) then
-      raise EJvSpeedbarError.Create(SDuplicateString);
+      raise EJvSpeedbarError.CreateRes(@SDuplicateString);
   end;
 end;
 
@@ -1646,6 +1646,23 @@ begin
 end;
 
 procedure TJvSpeedBar.SetFontDefault;
+{$IFDEF MSWINDOWS}
+
+begin
+  ParentFont := False;
+  with Font do
+  begin
+    
+    begin
+      Name := 'MS Sans Serif';
+      Size := 8;
+      Style := [];
+      Color := clBtnText;
+    end;
+  end;
+end;
+{$ENDIF MSWINDOWS }
+{$IFDEF LINUX}
 begin
   ParentFont := False;
   with Font do
@@ -1656,6 +1673,7 @@ begin
     Color := clBtnText;
   end;
 end;
+{$ENDIF LINUX}
 
 procedure TJvSpeedBar.VisibleChanged;
 begin
@@ -1970,7 +1988,7 @@ begin
   Result := (FEditWin <> NullHandle);
 end;
 
-procedure TJvSpeedBar.SetEditing(Win: HWnd);
+procedure TJvSpeedBar.SetEditing(Win: HWND);
 begin
   FEditWin := Win;
   ForEachItem(SetItemEditing, 0);
@@ -2083,7 +2101,7 @@ begin
   if GetOrientation <> Value then
   begin
     if FPosition = bpAuto then
-      raise EJvSpeedbarError.Create(RsEAutoSpeedbarMode);
+      raise EJvSpeedbarError.CreateRes(@RsEAutoSpeedbarMode);
     ApplyOrientation(Value);
   end;
 end;
@@ -2121,7 +2139,7 @@ begin
     X := Width;
     Y := Height;
     if (FPosition = bpAuto) and (Value in [alClient, alNone]) then
-      raise EJvSpeedbarError.Create(RsEAutoSpeedbarMode);
+      raise EJvSpeedbarError.CreateRes(@RsEAutoSpeedbarMode);
     inherited Align := Value;
     if csLoading in ComponentState then
     begin
@@ -2136,7 +2154,7 @@ begin
           ApplyOrientation(boHorizontal);
       else
         if not (csLoading in ComponentState) then
-          raise EJvSpeedbarError.Create(RsEAutoSpeedbarMode);
+          raise EJvSpeedbarError.CreateRes(@RsEAutoSpeedbarMode);
       end;
     FAlign := inherited Align;
   end;

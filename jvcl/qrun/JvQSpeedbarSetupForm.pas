@@ -19,13 +19,12 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -40,7 +39,7 @@ uses
   Types, QGraphics, QControls, QForms, QStdCtrls,
   QGrids, QExtCtrls, QWindows,
   
-  JvQConsts, JvQSpeedbar, JvQSpeedButton, JvQComponent;
+  JvQConsts, JvQSpeedBar, JvQSpeedButton, JvQComponent;
 
 type
   TJvSpeedbarSetupWindow = class(TJvForm)
@@ -102,7 +101,7 @@ uses
   
   QConsts,
   
-  JvQJVCLUtils, JvQResources;
+  JvQJVCLUtils, JvQTypes, JvQResources;
 
 
 
@@ -224,7 +223,7 @@ begin
   if FSpeedbar <> Value then
   begin
     if FSpeedbar <> nil then
-      FSpeedbar.SetEditing(nil);
+      FSpeedbar.SetEditing(NullHandle);
     FSpeedbar := Value;
     if FSpeedbar <> nil then
     begin
@@ -271,7 +270,7 @@ begin
   FButton.Free;
   FButton := nil;
   if FSpeedbar <> nil then
-    FSpeedbar.SetEditing(nil);
+    FSpeedbar.SetEditing(NullHandle);
   FSpeedbar := nil;
 end;
 
@@ -290,8 +289,11 @@ begin
     if Row < FSpeedbar.SectionCount then
       DrawCellText(Sender as TDrawGrid, Col, Row,
         FSpeedbar.Sections[Row].Caption, Rect, taLeftJustify, vaCenterJustify,
-        false);
-//        TDrawGrid(Sender).IsRightToLeft);
+          
+          
+          False
+          
+        );
 end;
 
 procedure TJvSpeedbarSetupWindow.ButtonsListMouseDown(Sender: TObject;
@@ -404,8 +406,11 @@ begin
   I := CurrentSection;
   if (I >= 0) and (Row < FSpeedbar.ItemsCount(I)) then
     DrawCellButton(Sender as TDrawGrid, Rect, ItemByRow(Row), FImage,
-     false);
-     //TDrawGrid(Sender).IsRightToLeft);
+      
+      
+      False
+      
+    );
 end;
 
 procedure TJvSpeedbarSetupWindow.CloseBtnClick(Sender: TObject);
@@ -415,7 +420,10 @@ end;
 
 procedure TJvSpeedbarSetupWindow.HelpBtnClick(Sender: TObject);
 begin
-  Application.ContextHelp(HelpContext);
+  
+  
+  Application.HelpSystem.ShowContextHelp(HelpContext, Application.HelpFile);
+  
 end;
 
 procedure TJvSpeedbarSetupWindow.FormShow(Sender: TObject);

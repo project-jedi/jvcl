@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -22,13 +22,12 @@ Contributor(s):
 Michael Beck [mbeck att bigfoot dott com].
 Extracted from JvImageThread and saved to a new unit by Peter Thörnqvist
 
-Last Modified: 2002-06-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -37,6 +36,10 @@ unit JvQImageDrawThread;
 interface
 
 uses
+  
+  
+  SysUtils,
+  
   Classes;
 
 type
@@ -57,12 +60,6 @@ type
 
 implementation
 
-uses
-  
-  
-  SysUtils;
-  
-
 procedure TJvImageDrawThread.Draw;
 begin
   if not Terminated and Assigned(FOnDraw) then
@@ -71,7 +68,6 @@ end;
 
 procedure TJvImageDrawThread.Execute;
 begin
-  // (rom) secure thread against exceptions
   try
     while not Terminated do
     begin
@@ -79,6 +75,7 @@ begin
       Synchronize(Draw);
     end;
   except
+    // ignore exception
   end;
 end;
 

@@ -28,13 +28,14 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvQScreenSaver;
 
 interface
 
 uses
-  SysUtils, Classes,
+  Windows, SysUtils, Classes,
   JvQTypes, JvQComponent;
 
 type
@@ -54,8 +55,6 @@ type
   end;
 
 implementation
-
-// (rom) moved from Create to Loaded. None of the events can be assigned otherwise.
 
 procedure TJvScreenSaver.Loaded;
 var
