@@ -187,7 +187,7 @@ JvDockingD5R.bpl: d5\JvDockingD5R.dpk
 JvDockingD5D.bpl: d5\JvDockingD5D.dpk
   $(DCC)
 
-JvDotNetCtrlsD5R.bpl: d5\JvDotNetCtrlsD5R.dpk
+JvDotNetCtrlsD5R.bpl: d5std\JvDotNetCtrlsD5R.dpk
   $(DCC)
 
 JvDotNetCtrlsD5D.bpl: d5\JvDotNetCtrlsD5D.dpk
