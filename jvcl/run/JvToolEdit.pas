@@ -338,11 +338,11 @@ type
     {$IFDEF VCL}
     {$IFDEF COMPILER7_UP}
     property AutoCompleteItems: TStrings read FAutoCompleteItems write SetAutoCompleteItems;
-    property AutoCompleteOptions: TJvAutoCompleteOptions read FAutoCompleteOptions write SetAutoCompleteOptions;
+    property AutoCompleteOptions: TJvAutoCompleteOptions read FAutoCompleteOptions write SetAutoCompleteOptions default [];
     {$ENDIF COMPILER7_UP}
     {$ENDIF VCL}
     property Button: TJvEditButton read FButton;
-    property ButtonFlat: Boolean read GetButtonFlat write SetButtonFlat;
+    property ButtonFlat: Boolean read GetButtonFlat write SetButtonFlat default False;
     property ButtonHint: string read GetButtonHint write SetButtonHint;
     property ButtonWidth: Integer read GetButtonWidth write SetButtonWidth stored BtnWidthStored;
     property ClickKey: TShortCut read FClickKey write FClickKey default scAltDown;
@@ -707,6 +707,7 @@ type
     property DialogText: string read FDialogText write FDialogText;
     {$IFDEF VCL}
     {$IFDEF COMPILER7_UP}
+    property AutoCompleteOptions;
     property AutoCompleteFileOptions default [acfFileSystem, acfFileSysDirs];
     {$ENDIF COMPILER7_UP}
     property Flat;
@@ -1108,10 +1109,6 @@ const
   //#if (_WIN32_IE >= 0x0600)
   CLSID_ACLCustomMRU: TGUID = (D1:$6935db93; D2:$21e8; D3:$4ccc; D4:($be, $b9, $9f, $e3, $c7, $7a, $29, $7a));
   //#endif
-
-  IID_IAutoComplete: TGUID = (D1:$00BB2762; D2:$6A77; D3:$11D0; D4:($A5, $35, $00, $C0, $4F, $D7, $D0, $62));
-  IID_IAutoComplete2: TGUID = (D1:$EAC04BC0; D2:$3791; D3:$11D2; D4:($BB, $95, $00, $60, $97, $7B, $46, $4C));
-  IID_IUnknown: TGUID = (D1:$00000000; D2:$0000; D3:$0000; D4:($C0, $00, $00, $00, $00, $00, $00, $46));
 
 type
   IACList = interface(IUnknown)
@@ -1711,8 +1708,12 @@ end;
 function TAutoCompleteSource.Clone(out enm: IEnumString): HRESULT;
 begin
   { Save state }
-  enm := TAutoCompleteSource.Create(FComboEdit, FCurrentIndex);
-  Result := S_OK;
+  try
+    enm := TAutoCompleteSource.Create(FComboEdit, FCurrentIndex);
+    Result := S_OK;
+  except
+    Result:= E_UNEXPECTED;
+  end;
 end;
 
 function TAutoCompleteSource.Next(celt: Integer; out elt;
@@ -2093,7 +2094,7 @@ begin
   begin
     { Create the autocomplete object. }
     if Succeeded(CoCreateInstance(CLSID_AutoComplete, nil, CLSCTX_INPROC_SERVER,
-      IID_IAutoComplete, FAutoCompleteIntf)) then
+      IAutoComplete, FAutoCompleteIntf)) then
     begin
       { Initialize the autocomplete object. }
       FAutoCompleteIntf.Init(Self.Handle, GetAutoCompleteSource, nil, nil);
@@ -3106,7 +3107,7 @@ var
 begin
   if HandleAllocated and not (csDesigning in ComponentState) then
   begin
-    if Supports(FAutoCompleteIntf, IID_IAutoComplete2, AutoComplete2) then
+    if Supports(FAutoCompleteIntf, IAutoComplete2, AutoComplete2) then
     begin
       { Set the options of the autocomplete object. }
       Flags := 0;
@@ -4408,7 +4409,7 @@ end;
 {$IFDEF COMPILER7_UP}
 function TJvFileDirEdit.GetAutoCompleteSource: IUnknown;
 begin
-  if Failed(CoCreateInstance(CLSID_ACLMulti, nil, CLSCTX_INPROC_SERVER, IID_IUnknown, FAutoCompleteSourceIntf)) then
+  if Failed(CoCreateInstance(CLSID_ACLMulti, nil, CLSCTX_INPROC_SERVER, IUnknown, FAutoCompleteSourceIntf)) then
     FAutoCompleteSourceIntf := nil;
   Result := FAutoCompleteSourceIntf;
 end;
@@ -4449,12 +4450,12 @@ var
   List2: IACList2;
   Options: DWORD;
 begin
-  if Supports(FAutoCompleteSourceIntf, IID_IObjMgr, ObjMgr) then
+  if Supports(FAutoCompleteSourceIntf, IObjMgr, ObjMgr) then
   begin
     if acfURLMRU in AutoCompleteFileOptions then
     begin
       if not Assigned(FMRUList) and
-        Succeeded(CoCreateInstance(CLSID_ACLMRU, nil, CLSCTX_INPROC_SERVER, IID_IUnknown, FMRUList)) then
+        Succeeded(CoCreateInstance(CLSID_ACLMRU, nil, CLSCTX_INPROC_SERVER, IUnknown, FMRUList)) then
       begin
         ObjMgr.Append(FMRUList);
       end
@@ -4469,7 +4470,7 @@ begin
     if acfURLHistory in AutoCompleteFileOptions then
     begin
       if not Assigned(FHistoryList) and
-        Succeeded(CoCreateInstance(CLSID_ACLHistory, nil, CLSCTX_INPROC_SERVER, IID_IUnknown, FHistoryList)) then
+        Succeeded(CoCreateInstance(CLSID_ACLHistory, nil, CLSCTX_INPROC_SERVER, IUnknown, FHistoryList)) then
       begin
         ObjMgr.Append(FHistoryList);
       end;
@@ -4484,7 +4485,7 @@ begin
     if [acfFileSystem, acfFileSysDirs] * AutoCompleteFileOptions <> [] then
     begin
       if not Assigned(FFileSystemList) and
-        Succeeded(CoCreateInstance(CLSID_ACListISF, nil, CLSCTX_INPROC_SERVER, IID_IUnknown, FFileSystemList)) then
+        Succeeded(CoCreateInstance(CLSID_ACListISF, nil, CLSCTX_INPROC_SERVER, IUnknown, FFileSystemList)) then
       begin
         ObjMgr.Append(FFileSystemList);
       end;
@@ -4493,7 +4494,7 @@ begin
       if acfFileSysDirs in AutoCompleteFileOptions then
         Options := Options or ACLO_FILESYSDIRS;
 
-      if Supports(FFileSystemList, IID_IACList2, List2) then
+      if Supports(FFileSystemList, IACList2, List2) then
         List2.SetOptions(Options);
     end
     else
