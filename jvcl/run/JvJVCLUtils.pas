@@ -714,9 +714,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvConsts.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvConsts.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   sUnitName = 'JvJVCLUtils';
@@ -1207,7 +1207,7 @@ begin
     Result := GetLastError;
 end;
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 begin
   if WorkingDirectory = '' then
     Result := Libc.system(PChar(Format('cd "%s" ; %s',
@@ -1216,7 +1216,7 @@ begin
     Result := Libc.system(PChar(Format('cd "%s" ; %s',
       [WorkingDirectory, CommandLine])));
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 {$IFDEF VCL}
 
@@ -3344,12 +3344,12 @@ end;
 
 {$ENDIF MSWINDOWS}
 
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 function IsForegroundTask: Boolean;
 begin
   Result := Application.Active;
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 {$IFDEF VCL}
 
@@ -3972,10 +3972,10 @@ begin
   if Assigned(OnGetDefaultIniName) then
     Result := OnGetDefaultIniName
   else
-    {$IFDEF LINUX}
+    {$IFDEF UNIX}
     Result := GetEnvironmentVariable('HOME') + PathDelim +
       '.' + ExtractFileName(Application.ExeName);
-    {$ENDIF LINUX}
+    {$ENDIF UNIX}
     {$IFDEF MSWINDOWS}
     Result := ExtractFileName(ChangeFileExt(Application.ExeName, '.ini'));
     {$ENDIF MSWINDOWS}

@@ -328,9 +328,9 @@ implementation
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvSimImages.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvSimImages.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 // general bin procedure
 

@@ -157,9 +157,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvPickDate.Res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvPickDate.Res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   SBtnGlyphs: array [0..3] of PChar =
@@ -184,10 +184,10 @@ begin
       Name := 'MS Sans Serif';
       Size := 8;
       {$ENDIF MSWINDOWS}
-      {$IFDEF LINUX}
+      {$IFDEF UNIX}
       Name := 'Verdana'; // asn: or Helvetica ?
       Height := 11;
-      {$ENDIF LINUX}
+      {$ENDIF UNIX}
       Style := [];
     end;
 end;
@@ -939,12 +939,12 @@ begin
   FFourDigitYear := IsFourDigitYear;
   Height := Max(PopupCalendarSize.Y, 120);
   Width := Max(PopupCalendarSize.X, 180);
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   Constraints.MaxWidth := Width;
   Constraints.MaxHeight := Height;
   Constraints.MinWidth := Constraints.MaxWidth;
   Constraints.MinHeight := Constraints.MaxHeight;
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 
   Color := clBtnFace;
   FontSetDefault(Font);

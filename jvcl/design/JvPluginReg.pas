@@ -47,9 +47,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvPluginReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvPluginReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure Register;
 begin

@@ -1820,9 +1820,9 @@ resourcestring
   {$IFDEF MSWINDOWS}
   RsDefaultFilter = 'All files (*.*)|*.*';
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   RsDefaultFilter = 'All files (*)|*';
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 
   { Polaris patch }
   RsEDateMinLimit = 'Enter a date before "%s"';

@@ -53,9 +53,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvAppFrmReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvAppFrmReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure Register;
 begin

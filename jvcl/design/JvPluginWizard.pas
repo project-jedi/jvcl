@@ -155,9 +155,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvPluginWiz.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvPluginWiz.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   CrLf = sLineBreak;

@@ -919,9 +919,9 @@ begin
   {$IFDEF MSWINDOWS}
   if SelectDirectory('', '', Dir) then
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   if SelectDirectory('', '/', Dir, False) then
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   {$ENDIF VisualCLX}
     ControlSetValue(Dir);
   if FEditControl.CanFocus then

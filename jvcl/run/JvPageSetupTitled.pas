@@ -59,9 +59,9 @@ implementation
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvPageSetupTitled.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvPageSetupTitled.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 uses
   Windows, Forms, SysUtils, CommDlg;

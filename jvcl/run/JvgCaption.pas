@@ -141,9 +141,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvgCaption.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvgCaption.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 {$ENDIF GL_CAPT_BUTTONS}
 
 {$IFNDEF USEJVCL}

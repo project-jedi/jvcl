@@ -190,9 +190,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvgLabelEditorForm.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvgLabelEditorForm.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 {$IFNDEF USEJVCL}
 resourcestring

@@ -499,9 +499,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvTimeLine.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvTimeLine.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   FDayLineLength = 4;

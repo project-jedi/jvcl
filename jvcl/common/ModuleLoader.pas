@@ -46,7 +46,8 @@ type
 
 {$ENDIF MSWINDOWS}
 
-{$IFDEF LINUX}
+{$IFDEF UNIX}
+
 uses
   Types, Libc;
 
@@ -54,7 +55,7 @@ type
   // Handle to a loaded .so
   TModuleHandle = Pointer;
 
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   // Value designating an unassigned TModuleHandle or a failed loading
@@ -119,6 +120,7 @@ type
 implementation
 
 {$IFDEF MSWINDOWS}
+
 // load the DLL file FileName
 // the rules for FileName are those of LoadLibrary
 // Returns: True = success, False = failure to load
@@ -221,7 +223,8 @@ end;
 
 {$ENDIF MSWINDOWS}
 
-{$IFDEF LINUX}
+{$IFDEF UNIX}
+
 const
   TYPE_E_ELEMENTNOTFOUND = $8002802B;
 
@@ -325,7 +328,7 @@ begin
     Move(Buffer, Sym^, Size);
 end;
 
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 //=== { TModuleLoader } ======================================================
 
@@ -401,9 +404,9 @@ const
     {$IFDEF MSWINDOWS}
     (DONT_RESOLVE_DLL_REFERENCES, LOAD_LIBRARY_AS_DATAFILE, LOAD_WITH_ALTERED_SEARCH_PATH);
     {$ENDIF MSWINDOWS}
-    {$IFDEF LINUX}
+    {$IFDEF UNIX}
     (RTLD_LAZY, RTLD_LAZY, RTLD_LAZY); // there is not really a equivalent under Linux
-    {$ENDIF LINUX}
+    {$ENDIF UNIX}
 var
   Flags: DWORD;
   I: TModuleLoadMethod;

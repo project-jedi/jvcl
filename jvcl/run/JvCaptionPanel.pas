@@ -397,10 +397,10 @@ begin
 //  FCaptionFont.Name := 'MS Shell Dlg 2';
   FCaptionFont.Size := 10;
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   FCaptionFont.Name := 'Helvetica';
   FCaptionFont.Height := 13;
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   FCaptionFont.Style := [fsBold];
   FCaptionFont.Color := clWhite;
   FCaptionFont.OnChange := DoCaptionFontChange;

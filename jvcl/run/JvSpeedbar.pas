@@ -1706,7 +1706,7 @@ begin
   end;
 end;
 {$ENDIF MSWINDOWS }
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 begin
   ParentFont := False;
   with Font do
@@ -1717,7 +1717,7 @@ begin
     Color := clBtnText;
   end;
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure TJvSpeedBar.VisibleChanged;
 begin

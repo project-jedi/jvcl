@@ -314,9 +314,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvBaseEdits.Res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvBaseEdits.Res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   sCalcBmp = 'JV_CEDITBMP'; { Numeric editor button glyph }

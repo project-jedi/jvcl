@@ -434,9 +434,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvOutlookBar.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvOutlookBar.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   cButtonLeftOffset = 4;

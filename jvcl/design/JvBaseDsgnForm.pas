@@ -86,9 +86,9 @@ uses
   {$IFDEF MSWINDOWS}
   Registry,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   JvQRegistryIniFile,
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   JvBaseDsgnFrame, JvConsts, JvDsgnConsts;
 
 {$R *.dfm}
@@ -158,9 +158,9 @@ procedure TJvBaseDesign.StoreSettings;
 var
   I: Integer;
 begin
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   with TJvRegistryIniFile.Create do
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   {$IFDEF MSWINDOWS}
   with TRegistry.Create do
   {$ENDIF MSWINDOWS}
@@ -187,9 +187,9 @@ procedure TJvBaseDesign.RestoreSettings;
 var
   I: Integer;
 begin
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   with TJvRegistryIniFile.Create do
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   {$IFDEF MSWINDOWS}
   with TRegistry.Create do
   {$ENDIF MSWINDOWS}

@@ -309,9 +309,9 @@ implementation
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvxCheckListBox.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvxCheckListBox.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 uses
   SysUtils, Consts, Math,

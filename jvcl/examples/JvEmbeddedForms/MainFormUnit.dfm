@@ -142,9 +142,6 @@ object MainForm: TMainForm
     object TabSheet4: TTabSheet
       Caption = 'How it works'
       ImageIndex = 3
-      DesignSize = (
-        491
-        399)
       object Memo1: TMemo
         Left = 8
         Top = 8

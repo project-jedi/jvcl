@@ -1931,7 +1931,7 @@ var
   Dir: WideString;
 begin
   Dir := FDSOBase;
-  if SelectDirectory('Select Directory', PathDelim, Dir {$IFDEF LINUX}, True {$ENDIF}) then
+  if SelectDirectory('Select Directory', PathDelim, Dir {$IFDEF UNIX}, True {$ENDIF}) then
     FDSOBase := Dir;
 end;
 {$ENDIF VisualCLX}

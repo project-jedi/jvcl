@@ -441,9 +441,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDBGrid.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvDBGrid.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   sUnitName = 'JvDBGrid';

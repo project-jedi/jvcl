@@ -54,9 +54,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDBReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvDBReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure Register;
 const

@@ -186,11 +186,11 @@ begin
       [AnsiLowerCase(ExtractFileName(FileListBox.FileName)),
        Image.Picture.Width, Image.Picture.Height]);
     {$ENDIF MSWINDOWS}
-    {$IFDEF LINUX}
+    {$IFDEF UNIX}
     ImageName.Caption := Format('%s (%d x %d)',
       [ExtractFileName(FileListBox.FileName),
        Image.Picture.Width, Image.Picture.Height]);
-    {$ENDIF LINUX}
+    {$ENDIF UNIX}
   except
     Image.Picture.Assign(nil);
     ImageName.Caption := '';
@@ -199,9 +199,9 @@ begin
   {$IFDEF MSWINDOWS}
   FileExt := AnsiLowerCase(FileName);
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   FileExt := FileName;
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   if FileExt <> '' then
     Caption := FFormCaption + ' - ' + MinimizeName(FileExt, PathLabel.Canvas,
       PathLabel.Width)

@@ -37,9 +37,9 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   QWindows,
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   JvMTConsts;
 
 type
@@ -324,9 +324,9 @@ begin
   {$IFDEF MSWINDOWS}
   Windows.ResetEvent(FHandle);
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   QWindows.ResetEvent(FHandle);
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 end;
 
 procedure TMTSimpleEvent.SetEvent;
@@ -334,9 +334,9 @@ begin
   {$IFDEF MSWINDOWS}
   Windows.SetEvent(FHandle);
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   QWindows.SetEvent(FHandle);
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 end;
 
 end.

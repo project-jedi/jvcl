@@ -32,9 +32,9 @@ interface
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDockingReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvDockingReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure Register;
 

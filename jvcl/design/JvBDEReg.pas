@@ -48,9 +48,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvBDEReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvBDEReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure Register;
 const

@@ -147,9 +147,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvSwitch.Res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvSwitch.Res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   ResName: array [Boolean] of PChar = ('JV_SWITCH_OFF', 'JV_SWITCH_ON');

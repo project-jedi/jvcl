@@ -123,9 +123,9 @@ implementation
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvSlider.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvSlider.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 constructor TJvSlider.Create(AOwner: TComponent);
 begin

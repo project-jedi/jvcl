@@ -66,15 +66,13 @@ type
 
 implementation
 
-{$IFDEF MSWINDOWS}
 uses
+  {$IFDEF MSWINDOWS}
   Registry;
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-uses
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
   JvQRegistryIniFile;
-{$ENDIF LINUX}
-
+  {$ENDIF UNIX}
 
 {$R *.dfm}
 
@@ -96,9 +94,9 @@ end;
 procedure TfmeJvBaseToolbarDesign.StoreSettings;
 begin
   if RegKey <> '' then
-    {$IFDEF LINUX}
+    {$IFDEF UNIX}
     with TJvRegistryIniFile.Create do
-    {$ENDIF LINUX}
+    {$ENDIF UNIX}
     {$IFDEF MSWINDOWS}
     with TRegistry.Create do
     {$ENDIF MSWINDOWS}
@@ -119,9 +117,9 @@ end;
 procedure TfmeJvBaseToolbarDesign.RestoreSettings;
 begin
   if RegKey <> '' then
-    {$IFDEF LINUX}
+    {$IFDEF UNIX}
     with TJvRegistryIniFile.Create do
-    {$ENDIF LINUX}
+    {$ENDIF UNIX}
     {$IFDEF MSWINDOWS}
     with TRegistry.Create do
     {$ENDIF MSWINDOWS}

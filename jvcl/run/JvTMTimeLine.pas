@@ -327,9 +327,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvTMTimeLine.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvTMTimeLine.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 {$IFDEF VisualCLX}
 resourcestring
@@ -426,10 +426,10 @@ begin
   FMonthFont.Name := 'Times New Roman';
   FMonthFont.Size := 18;
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   FMonthFont.Name := 'Helvetica';
   FMonthFont.Height  := 24;
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 
   FObjectsFontStyle := [fsUnderline];
   FButtonWidth := 12;
@@ -448,10 +448,10 @@ begin
   Font.Size := 7;
   Font.Name := 'Times New Roman';
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   Font.Name := 'Helvetica';
   Font.Height := 11;
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 
   FLeftBtn := TSpeedButton.Create(Self);
   with FLeftBtn do

@@ -60,9 +60,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvWizardReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvWizardReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 {$IFNDEF USEJVCL}
 resourcestring

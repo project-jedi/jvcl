@@ -34,9 +34,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   QWindows,
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   Graphics, Controls, Forms,
   {$IFDEF VisualCLX}
   Qt,

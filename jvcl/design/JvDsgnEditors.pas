@@ -255,9 +255,9 @@ uses
   {$IFDEF VCL}
   Dlgs, JvDateTimeForm,
   {$ENDIF VCL}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   JvQRegistryIniFile,
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   JvTypes, JvStringsForm, JvDsgnConsts, JvConsts;
 
 function ValueName(E: Extended): string;

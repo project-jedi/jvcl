@@ -285,9 +285,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvxSlider.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvxSlider.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 //=== { TJvCustomSlider } ====================================================
 

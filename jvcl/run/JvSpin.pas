@@ -384,9 +384,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvSpin.Res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvSpin.Res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   sSpinUpBtn = 'JVSPINUP';

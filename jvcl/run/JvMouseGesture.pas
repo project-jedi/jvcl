@@ -25,7 +25,7 @@ Description:
   and can be used to enhance special components like a grid. In
   this case the programmer is responsible to fill matching
   OnMouseDown, OnMouseUp and OnMouseMove events of component.
-  This works fine with MSWINDOWS and LINUX. The second component
+  This works fine with MSWINDOWS and UNIX. The second component
   installs a hook for a specific application and fires an event
   after detecting a mouse gesture (Windows only in this version
   \:-( ).

@@ -794,27 +794,27 @@ begin
   {$IFDEF MSWINDOWS}
   Value := InputBox(Args.Values[0], Args.Values[1], Args.Values[2]);
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   Value := InputBox(VarToStr(Args.Values[0]), VarToStr(Args.Values[1]), VarToStr(Args.Values[2]));
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 end;
 
 { function InputQuery(const ACaption, APrompt: string; var Value: string): Boolean; }
 
 procedure JvInterpreter_InputQuery(var Value: Variant; Args: TJvInterpreterArgs);
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 var
   S: WideString;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 begin
   {$IFDEF MSWINDOWS}
   Value := InputQuery(Args.Values[0], Args.Values[1], string(TVarData(Args.Values[2]).vString));
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   S := Args.Values[2];
   Value := InputQuery(VarToStr(Args.Values[0]), VarToStr(Args.Values[1]), S);
   Args.Values[2] := S;
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 end;
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);

@@ -121,9 +121,9 @@ const
   {$IFDEF MSWINDOWS}
   cJVCLIni = '\JVCL.ini';
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   cJVCLIni = '/.JVCL';
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 
 procedure TJvJVCLAboutForm.FormShow(Sender: TObject);
 {$IFDEF MSWINDOWS}
@@ -143,10 +143,10 @@ begin
     lblWindowsVersion.Caption := Format('%s (Build %u: %s)',
       [GetWindowsVersionString, VersionInfo.dwBuildNumber, GetWindowsServicePackVersionString]);
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   lblWindowsVersion.Caption := GetOSVersionString;
-  Label4.Caption := 'Memory Available to Linux:';
-  {$ENDIF LINUX}
+  Label4.Caption := 'Memory Available to OS:';
+  {$ENDIF UNIX}
   lblMemory.Caption := Format('%u KB', [GetTotalPhysicalMemory div 1024]);
   lblCopyRight.Caption := 'Copyright © Project JEDI, 1999 - ' + FormatDateTime('yyyy', Now);
 //  LoadOptions;
@@ -186,9 +186,9 @@ begin
   {$IFDEF MSWINDOWS}
   with TIniFile.Create(ExtractFileDir(Application.ExeName) + cJVCLIni) do
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   with TIniFile.Create(GetEnvironmentVariable('HOME') + cJVCLIni) do
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   try
     L := ReadInteger(cOptions, cBoundsLeft, -1);
     T := ReadInteger(cOptions, cBoundsTop, -1);
@@ -213,9 +213,9 @@ begin
   {$IFDEF MSWINDOWS}
   with TIniFile.Create(ExtractFileDir(Application.ExeName) + cJVCLIni) do
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   with TIniFile.Create(GetEnvironmentVariable('HOME') + cJVCLIni) do
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   try
     if WindowState = wsNormal then
     begin

@@ -122,9 +122,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvComponentPanel.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvComponentPanel.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 constructor TJvComponentPanel.Create(AOwner: TComponent);
 begin

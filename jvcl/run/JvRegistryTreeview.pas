@@ -149,9 +149,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvRegistryTreeView.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvRegistryTreeView.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   imMyPC = 0;

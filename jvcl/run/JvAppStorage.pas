@@ -84,9 +84,9 @@ interface
 
 uses
   SysUtils, Classes, TypInfo,
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   JvQJCLUtils,
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   JvComponent, JvTypes;
 
 const
@@ -2746,12 +2746,12 @@ begin
       flUserFolder:
         Result := PathAddSeparator(GetAppdataFolder) + RelPathName;
       {$ENDIF MSWINDOWS}
-      {$IFDEF LINUX}
+      {$IFDEF UNIX}
       flTemp:
         Result := PathAddSeparator(GetTempDir) + NameOnly;
       flUserFolder:
         Result := PathAddSeparator(GetEnvironmentVariable('HOME')) + RelPathName;
-      {$ENDIF LINUX}
+      {$ENDIF UNIX}
     end;
   end;
 end;

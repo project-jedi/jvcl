@@ -172,9 +172,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvTipOfDay.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvTipOfDay.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 {$IFDEF VisualCLX}
 const
