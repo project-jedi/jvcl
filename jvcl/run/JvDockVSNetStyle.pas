@@ -885,8 +885,10 @@ begin
   VSPanes[Index].Free;
   FVSPaneList.Delete(Index);
   { Remove the form icon }
-  FImageList.Delete(Index);
-  if ActiveDockControlRemoved then UpdateActiveDockControl(Index);
+  if Index < FImageList.Count then
+    FImageList.Delete(Index);
+  if ActiveDockControlRemoved then
+    UpdateActiveDockControl(Index);
 end;
 
 function TJvDockVSBlock.GetTotalWidth: Integer;
@@ -2667,9 +2669,14 @@ procedure TJvDockVSNETTree.DrawAutoHideButton(Zone: TJvDockZone; Left, Top: Inte
 var
   AZone: TJvDockVSNETZone;
   ColorArr: array [1..2] of TColor;
+  ADockClient: TJvDockClient;
 begin
   if Zone <> nil then
   begin
+    ADockClient := FindDockClient(Zone.ChildControl);
+    if (ADockClient <> nil) and not ADockClient.EnableCloseButton then
+      Left := Left + ButtonWidth; // move the auto hide button to the Close Button's location
+
     AZone := TJvDockVSNETZone(Zone);
     if AZone.AutoHideBtnState <> bsNormal then
     begin
@@ -2810,36 +2817,60 @@ procedure TJvDockVSNETTree.DrawDockGrabber(Control: TControl; const ARect: TRect
 begin
   inherited DrawDockGrabber(Control, ARect);
   if DockSite.Align <> alClient then
+  begin
     DrawAutoHideButton(FindControlZone(Control),
       ARect.Right - RightOffset - 2 * ButtonWidth - ButtonSplitter,
-      ARect.Top + TopOffset);
+      ARect.Top + TopOffset)
+  end;
 end;
 
 procedure TJvDockVSNETTree.GetCaptionRect(var Rect: TRect);
+var
+  ADockClient: TJvDockClient;
 begin
   if DockSite.Align = alClient then
     inherited GetCaptionRect(Rect)
   else
   begin
     Inc(Rect.Left, 2 + CaptionLeftOffset);
+    ADockClient := FindDockClient(DockSite);
     Inc(Rect.Top, 1);
-    Dec(Rect.Right, 2 * ButtonWidth + ButtonSplitter + CaptionRightOffset - 1);
+    if (ADockClient = nil) or ADockClient.EnableCloseButton then
+      Dec(Rect.Right, 2 * ButtonWidth + ButtonSplitter + CaptionRightOffset - 1)
+    else
+      Dec(Rect.Right, 1 * ButtonWidth + ButtonSplitter + CaptionRightOffset - 1);
     Dec(Rect.Bottom, 2);
   end;
 end;
 
 function TJvDockVSNETTree.GetTopGrabbersHTFlag(const MousePos: TPoint;
   out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone;
+var
+  ADockClient: TJvDockClient;
+  ButtonNum: Integer;
 begin
   Result := inherited GetTopGrabbersHTFlag(MousePos, HTFlag, Zone);
+  if Zone <> nil then
+  begin
+    ADockClient := FindDockClient(Zone.ChildControl);
+    if (ADockClient <> nil) and not ADockClient.EnableCloseButton then
+    begin
+      if HTFlag = HTCLOSE then
+        HTFLAG := HTAUTOHIDE;
+      Exit;
+    end;
+  end;
+
   if (Zone <> nil) and (DockSite.Align <> alClient) and (HTFlag <> HTCLOSE) then
+  begin
     with Zone.ChildControl do
       if PtInRect(Rect(
         Left + Width - 2 * ButtonWidth - RightOffset - ButtonSplitter,
         Top - GrabberSize + TopOffset,
-        Left + Width - ButtonWidth - RightOffset - ButtonSplitter,
+        Left + Width - 1 * ButtonWidth - RightOffset - ButtonSplitter,
         Top - GrabberSize + TopOffset + ButtonHeight), MousePos) then
         HTFlag := HTAUTOHIDE;
+  end;
 end;
 
 procedure TJvDockVSNETTree.IgnoreZoneInfor(Stream: TMemoryStream);
