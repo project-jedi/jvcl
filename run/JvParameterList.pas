@@ -269,6 +269,7 @@ type
     function AddObject(const S: string; AObject: TObject): Integer;
     procedure OnOkButtonClick(Sender: TObject);
     procedure OnCancelButtonClick(Sender: TObject);
+    procedure ShowParameterDialogThread;
   protected
     OkButton: TButton;
     ArrangePanel: TJvPanel;
@@ -328,7 +329,12 @@ type
     function ParameterByIndex(AIndex: Integer): TJvBaseParameter;
     {executes a dialog to enter all Parameter-Data,
      returns True when ok-button pressed}
-    function ShowParameterDialog: Boolean;
+    function ShowParameterDialog: Boolean; overload;
+    {executes a dialog to enter all Parameter-Data,
+     returns True when ok-button pressed
+     This function can be called inside a running thread. It will synchromized
+     with the main thread using SynchronizeThread.Synchronize}
+    function ShowParameterDialog(SynchronizeThread: tThread) : Boolean; overload;
     { Creates the ParameterDialog }
     procedure CreateParameterDialog;
     { Checks the Disable/Enable-Reason of all Parameters }
@@ -1350,6 +1356,33 @@ begin
   try
     SetDataToWinControls;
     ParameterDialog.ShowModal;
+    Result := ParameterDialog.ModalResult = mrOk;
+    if Result then
+      GetDataFromWinControls;
+  finally
+    FreeAndNil(FParameterDialog);
+  end;
+end;
+
+procedure TJvParameterList.ShowParameterDialogThread;
+begin
+  ParameterDialog.ShowModal;
+end;
+
+type
+  TAccessThread = class(tThread);
+
+function TJvParameterList.ShowParameterDialog(SynchronizeThread: tThread) : Boolean;
+begin
+  if Count = 0 then
+    EJVCLException.CreateRes(@RsENoParametersDefined);
+  CreateParameterDialog;
+  try
+    SetDataToWinControls;
+    if Assigned(SynchronizeThread) then
+      TAccessThread(SynchronizeThread).Synchronize (ShowParameterDialogThread)
+    else
+      ParameterDialog.ShowModal;
     Result := ParameterDialog.ModalResult = mrOk;
     if Result then
       GetDataFromWinControls;
