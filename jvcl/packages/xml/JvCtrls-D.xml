@@ -25,7 +25,7 @@
   </Requires>
   <Contains>
     <File Name="..\..\design\JvHTHintForm.pas" Targets="all" Formname="JvHintEditor" Condition=""/>
-    <File Name="..\..\design\JvScrollMaxEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvScrollMaxEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvSpeedbarForm.pas" Targets="all" Formname="JvSpeedbarEditor" Condition=""/>
     <File Name="..\..\design\JvBehaviorLabelEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvCtrlsReg.pas" Targets="all" Formname="" Condition=""/>

@@ -60,7 +60,7 @@
     <File Name="..\..\run\JvTransparentButton.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvUninstallControls.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvWinampLabel.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvZoom.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvZoom.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvArrowButton.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvaScrollText.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvBehaviorLabel.pas" Targets="all" Formname="" Condition=""/>
