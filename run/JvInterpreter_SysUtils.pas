@@ -2050,26 +2050,26 @@ begin
     {$ENDIF MSWINDOWS}
     
     { File open modes }
-    AddConst(cSysUtils, 'fmOpenRead', Integer(fmOpenRead));
-    AddConst(cSysUtils, 'fmOpenWrite', Integer(fmOpenWrite));
-    AddConst(cSysUtils, 'fmOpenReadWrite', Integer(fmOpenReadWrite));
+    AddConst(cSysUtils, 'fmOpenRead', Ord(fmOpenRead));
+    AddConst(cSysUtils, 'fmOpenWrite', Ord(fmOpenWrite));
+    AddConst(cSysUtils, 'fmOpenReadWrite', Ord(fmOpenReadWrite));
     {$IFDEF MSWINDOWS}
-    AddConst(cSysUtils, 'fmShareCompat', Integer(fmShareCompat));
+    AddConst(cSysUtils, 'fmShareCompat', Ord(fmShareCompat));
     {$ENDIF MSWINDOWS}
-    AddConst(cSysUtils, 'fmShareExclusive', Integer(fmShareExclusive));
-    AddConst(cSysUtils, 'fmShareDenyWrite', Integer(fmShareDenyWrite));
+    AddConst(cSysUtils, 'fmShareExclusive', Ord(fmShareExclusive));
+    AddConst(cSysUtils, 'fmShareDenyWrite', Ord(fmShareDenyWrite));
     {$IFDEF MSWINDOWS}
-    AddConst(cSysUtils, 'fmShareDenyRead', Integer(fmShareDenyRead));
+    AddConst(cSysUtils, 'fmShareDenyRead', Ord(fmShareDenyRead));
     {$ENDIF MSWINDOWS}
-    AddConst(cSysUtils, 'fmShareDenyNone', Integer(fmShareDenyNone));
+    AddConst(cSysUtils, 'fmShareDenyNone', Ord(fmShareDenyNone));
    { File attribute constants }
-    AddConst(cSysUtils, 'faReadOnly', Integer(faReadOnly));
-    AddConst(cSysUtils, 'faHidden', Integer(faHidden));
-    AddConst(cSysUtils, 'faSysFile', Integer(faSysFile));
-    AddConst(cSysUtils, 'faVolumeID', Integer(faVolumeID));
-    AddConst(cSysUtils, 'faDirectory', Integer(faDirectory));
-    AddConst(cSysUtils, 'faArchive', Integer(faArchive));
-    AddConst(cSysUtils, 'faAnyFile', Integer(faAnyFile));
+    AddConst(cSysUtils, 'faReadOnly', Ord(faReadOnly));
+    AddConst(cSysUtils, 'faHidden', Ord(faHidden));
+    AddConst(cSysUtils, 'faSysFile', Ord(faSysFile));
+    AddConst(cSysUtils, 'faVolumeID', Ord(faVolumeID));
+    AddConst(cSysUtils, 'faDirectory', Ord(faDirectory));
+    AddConst(cSysUtils, 'faArchive', Ord(faArchive));
+    AddConst(cSysUtils, 'faAnyFile', Ord(faAnyFile));
 
     AddRec(cSysUtils, 'TSearchRec', sizeof(TSearchRec), [
       RFD('Time', 0, varInteger),

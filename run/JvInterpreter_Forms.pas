@@ -1259,8 +1259,8 @@ begin
   with JvInterpreterAdapter do
   begin
     { TScrollBarKind }
-    AddConst(cForms, 'sbHorizontal', Integer(sbHorizontal));
-    AddConst(cForms, 'sbVertical', Integer(sbVertical));
+    AddConst(cForms, 'sbHorizontal', Ord(sbHorizontal));
+    AddConst(cForms, 'sbVertical', Ord(sbVertical));
     { TControlScrollBar }
     AddClass(cForms, TControlScrollBar, 'TControlScrollBar');
     AddGet(TControlScrollBar, 'Assign', TControlScrollBar_Assign, 1, [varEmpty], varEmpty);
@@ -1290,21 +1290,21 @@ begin
     AddSet(TScrollingWinControl, 'VertScrollBar', TScrollingWinControl_Write_VertScrollBar, 0, [0]);
     {$IFDEF VCL}
     { TFormBorderStyle }
-    AddConst(cForms, 'bsNone', Integer(bsNone));
-    AddConst(cForms, 'bsSingle', Integer(bsSingle));
-    AddConst(cForms, 'bsSizeable', Integer(bsSizeable));
-    AddConst(cForms, 'bsDialog', Integer(bsDialog));
-    AddConst(cForms, 'bsToolWindow', Integer(bsToolWindow));
-    AddConst(cForms, 'bsSizeToolWin', Integer(bsSizeToolWin));
+    AddConst(cForms, 'bsNone', Ord(bsNone));
+    AddConst(cForms, 'bsSingle', Ord(bsSingle));
+    AddConst(cForms, 'bsSizeable', Ord(bsSizeable));
+    AddConst(cForms, 'bsDialog', Ord(bsDialog));
+    AddConst(cForms, 'bsToolWindow', Ord(bsToolWindow));
+    AddConst(cForms, 'bsSizeToolWin', Ord(bsSizeToolWin));
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     { TFormBorderStyle }
-    AddConst(cForms, 'fbsNone', Integer(fbsNone));
-    AddConst(cForms, 'fbsSingle', Integer(fbsSingle));
-    AddConst(cForms, 'fbsSizeable', Integer(fbsSizeable));
-    AddConst(cForms, 'fbsDialog', Integer(fbsDialog));
-    AddConst(cForms, 'fbsToolWindow', Integer(fbsToolWindow));
-    AddConst(cForms, 'fbsSizeToolWin', Integer(fbsSizeToolWin));
+    AddConst(cForms, 'fbsNone', Ord(fbsNone));
+    AddConst(cForms, 'fbsSingle', Ord(fbsSingle));
+    AddConst(cForms, 'fbsSizeable', Ord(fbsSizeable));
+    AddConst(cForms, 'fbsDialog', Ord(fbsDialog));
+    AddConst(cForms, 'fbsToolWindow', Ord(fbsToolWindow));
+    AddConst(cForms, 'fbsSizeToolWin', Ord(fbsSizeToolWin));
     {$ENDIF VisualCLX}
     { TScrollBox }
     AddClass(cForms, TScrollBox, 'TScrollBox');
@@ -1312,56 +1312,56 @@ begin
     AddGet(TScrollBox, 'BorderStyle', TScrollBox_Read_BorderStyle, 0, [0], varEmpty);
     AddSet(TScrollBox, 'BorderStyle', TScrollBox_Write_BorderStyle, 0, [0]);
     { TWindowState }
-    AddConst(cForms, 'wsNormal', Integer(wsNormal));
-    AddConst(cForms, 'wsMinimized', Integer(wsMinimized));
-    AddConst(cForms, 'wsMaximized', Integer(wsMaximized));
+    AddConst(cForms, 'wsNormal', Ord(wsNormal));
+    AddConst(cForms, 'wsMinimized', Ord(wsMinimized));
+    AddConst(cForms, 'wsMaximized', Ord(wsMaximized));
     { TFormStyle }
-    AddConst(cForms, 'fsNormal', Integer(fsNormal));
-    AddConst(cForms, 'fsMDIChild', Integer(fsMDIChild));
-    AddConst(cForms, 'fsMDIForm', Integer(fsMDIForm));
-    AddConst(cForms, 'fsStayOnTop', Integer(fsStayOnTop));
+    AddConst(cForms, 'fsNormal', Ord(fsNormal));
+    AddConst(cForms, 'fsMDIChild', Ord(fsMDIChild));
+    AddConst(cForms, 'fsMDIForm', Ord(fsMDIForm));
+    AddConst(cForms, 'fsStayOnTop', Ord(fsStayOnTop));
     { TBorderIcon }
-    AddConst(cForms, 'biSystemMenu', Integer(biSystemMenu));
-    AddConst(cForms, 'biMinimize', Integer(biMinimize));
-    AddConst(cForms, 'biMaximize', Integer(biMaximize));
-    AddConst(cForms, 'biHelp', Integer(biHelp));
+    AddConst(cForms, 'biSystemMenu', Ord(biSystemMenu));
+    AddConst(cForms, 'biMinimize', Ord(biMinimize));
+    AddConst(cForms, 'biMaximize', Ord(biMaximize));
+    AddConst(cForms, 'biHelp', Ord(biHelp));
     { TPosition }
-    AddConst(cForms, 'poDesigned', Integer(poDesigned));
-    AddConst(cForms, 'poDefault', Integer(poDefault));
-    AddConst(cForms, 'poDefaultPosOnly', Integer(poDefaultPosOnly));
-    AddConst(cForms, 'poDefaultSizeOnly', Integer(poDefaultSizeOnly));
-    AddConst(cForms, 'poScreenCenter', Integer(poScreenCenter));
+    AddConst(cForms, 'poDesigned', Ord(poDesigned));
+    AddConst(cForms, 'poDefault', Ord(poDefault));
+    AddConst(cForms, 'poDefaultPosOnly', Ord(poDefaultPosOnly));
+    AddConst(cForms, 'poDefaultSizeOnly', Ord(poDefaultSizeOnly));
+    AddConst(cForms, 'poScreenCenter', Ord(poScreenCenter));
     {$IFDEF VCL}
     { TPrintScale }
-    AddConst(cForms, 'poNone', Integer(poNone));
-    AddConst(cForms, 'poProportional', Integer(poProportional));
-    AddConst(cForms, 'poPrintToFit', Integer(poPrintToFit));
+    AddConst(cForms, 'poNone', Ord(poNone));
+    AddConst(cForms, 'poProportional', Ord(poProportional));
+    AddConst(cForms, 'poPrintToFit', Ord(poPrintToFit));
     {$ENDIF VCL}
     { TShowAction }
-    AddConst(cForms, 'saIgnore', Integer(saIgnore));
-    AddConst(cForms, 'saRestore', Integer(saRestore));
-    AddConst(cForms, 'saMinimize', Integer(saMinimize));
-    AddConst(cForms, 'saMaximize', Integer(saMaximize));
+    AddConst(cForms, 'saIgnore', Ord(saIgnore));
+    AddConst(cForms, 'saRestore', Ord(saRestore));
+    AddConst(cForms, 'saMinimize', Ord(saMinimize));
+    AddConst(cForms, 'saMaximize', Ord(saMaximize));
     {$IFDEF VCL}
     { TTileMode }
-    AddConst(cForms, 'tbHorizontal', Integer(tbHorizontal));
-    AddConst(cForms, 'tbVertical', Integer(tbVertical));
+    AddConst(cForms, 'tbHorizontal', Ord(tbHorizontal));
+    AddConst(cForms, 'tbVertical', Ord(tbVertical));
     {$ENDIF VCL}
     { TCloseAction }
-    AddConst(cForms, 'caNone', Integer(caNone));
-    AddConst(cForms, 'caHide', Integer(caHide));
-    AddConst(cForms, 'caFree', Integer(caFree));
-    AddConst(cForms, 'caMinimize', Integer(caMinimize));
+    AddConst(cForms, 'caNone', Ord(caNone));
+    AddConst(cForms, 'caHide', Ord(caHide));
+    AddConst(cForms, 'caFree', Ord(caFree));
+    AddConst(cForms, 'caMinimize', Ord(caMinimize));
     { TFormState }
-    AddConst(cForms, 'fsCreating', Integer(fsCreating));
-    AddConst(cForms, 'fsVisible', Integer(fsVisible));
-    AddConst(cForms, 'fsShowing', Integer(fsShowing));
-    AddConst(cForms, 'fsModal', Integer(fsModal));
+    AddConst(cForms, 'fsCreating', Ord(fsCreating));
+    AddConst(cForms, 'fsVisible', Ord(fsVisible));
+    AddConst(cForms, 'fsShowing', Ord(fsShowing));
+    AddConst(cForms, 'fsModal', Ord(fsModal));
     {$IFDEF VCL}
-    AddConst(cForms, 'fsCreatedMDIChild', Integer(fsCreatedMDIChild));
+    AddConst(cForms, 'fsCreatedMDIChild', Ord(fsCreatedMDIChild));
     {$ENDIF VCL}
     {$IFDEF COMPILER5_UP}
-    AddConst(cForms, 'fsActivated', Integer(fsActivated));
+    AddConst(cForms, 'fsActivated', Ord(fsActivated));
     {$ENDIF COMPILER5_UP}
     { TCustomForm }
     AddClass(cForms, TCustomForm, 'TCustomForm');
@@ -1457,8 +1457,8 @@ begin
     AddGet(TScreen, 'PixelsPerInch', TScreen_Read_PixelsPerInch, 0, [0], varEmpty);
     AddGet(TScreen, 'Width', TScreen_Read_Width, 0, [0], varEmpty);
     { TTimerMode }
-    AddConst(cForms, 'tmShow', Integer(tmShow));
-    AddConst(cForms, 'tmHide', Integer(tmHide));
+    AddConst(cForms, 'tmShow', Ord(tmShow));
+    AddConst(cForms, 'tmHide', Ord(tmHide));
     { TApplication }
     AddClass(cForms, TApplication, 'TApplication');
     AddGet(TApplication, 'Create', TApplication_Create, 1, [varEmpty], varEmpty);

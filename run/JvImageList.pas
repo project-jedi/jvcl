@@ -164,14 +164,14 @@ function LoadImageListFromBitmap(ImgList: TCustomImageList; const Bitmap: TBitma
 
 implementation
 
-{$IFDEF VCL}
 uses
-  Consts, ActiveX;
-{$ENDIF}
-{$IFDEF VisualCLX}
-uses
-  QConsts;
-{$ENDIF}
+  {$IFDEF VCL}
+  Consts, ActiveX,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QConsts,
+  {$ENDIF VisualCLX}
+  JvJVCLUtils;
 
 {$IFDEF LINUX}
 const
@@ -267,35 +267,13 @@ end;
 
 {------------------------------------------------------------------------------}
 
-
-function GetScreenPixelFormat: TPixelFormat;
-var
-  dc: HDC;
-  BitsPerPixel: Integer;
-begin
-  dc := CreateIC('DISPLAY', nil, nil, nil);
-  BitsPerPixel := GetDeviceCaps(dc, BITSPIXEL);
-  DeleteDC(dc);
-  case BitsPerPixel of
-    1: Result := pf1bit;
-    4: Result := pf4bit;
-    8: Result := pf8bit;
-    15: Result := pf15bit;
-    16: Result := pf16bit;
-    24: Result := pf24bit;
-    32: Result := pf32bit;
-  else
-    Result := pfDevice;
-  end;
-end;
-
 function CreateImageListHandle(Width, Height: Integer; PixelFormat: TPixelFormat;
   Masked: Boolean; AllocBy: Integer): THandle;
 var
   Flags: Cardinal;
 begin
   if PixelFormat = pfDevice then
-    PixelFormat := GetScreenPixelFormat;
+    PixelFormat := ScreenPixelFormat;
 
   case PixelFormat of
     pf4bit: Flags := ILC_COLOR4;

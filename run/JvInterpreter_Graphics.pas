@@ -1469,50 +1469,50 @@ begin
   with JvInterpreterAdapter do
   begin
     { TFontStyle }
-    AddConst(cGraphics, 'fsBold', Integer(fsBold));
-    AddConst(cGraphics, 'fsItalic', Integer(fsItalic));
-    AddConst(cGraphics, 'fsUnderline', Integer(fsUnderline));
-    AddConst(cGraphics, 'fsStrikeOut', Integer(fsStrikeOut));
+    AddConst(cGraphics, 'fsBold', Ord(fsBold));
+    AddConst(cGraphics, 'fsItalic', Ord(fsItalic));
+    AddConst(cGraphics, 'fsUnderline', Ord(fsUnderline));
+    AddConst(cGraphics, 'fsStrikeOut', Ord(fsStrikeOut));
     { TFontPitch }
-    AddConst(cGraphics, 'fpDefault', Integer(fpDefault));
-    AddConst(cGraphics, 'fpVariable', Integer(fpVariable));
-    AddConst(cGraphics, 'fpFixed', Integer(fpFixed));
+    AddConst(cGraphics, 'fpDefault', Ord(fpDefault));
+    AddConst(cGraphics, 'fpVariable', Ord(fpVariable));
+    AddConst(cGraphics, 'fpFixed', Ord(fpFixed));
     { TPenStyle }
-    AddConst(cGraphics, 'psSolid', Integer(psSolid));
-    AddConst(cGraphics, 'psDash', Integer(psDash));
-    AddConst(cGraphics, 'psDot', Integer(psDot));
-    AddConst(cGraphics, 'psDashDot', Integer(psDashDot));
-    AddConst(cGraphics, 'psDashDotDot', Integer(psDashDotDot));
-    AddConst(cGraphics, 'psClear', Integer(psClear));
+    AddConst(cGraphics, 'psSolid', Ord(psSolid));
+    AddConst(cGraphics, 'psDash', Ord(psDash));
+    AddConst(cGraphics, 'psDot', Ord(psDot));
+    AddConst(cGraphics, 'psDashDot', Ord(psDashDot));
+    AddConst(cGraphics, 'psDashDotDot', Ord(psDashDotDot));
+    AddConst(cGraphics, 'psClear', Ord(psClear));
     {$IFDEF VCL}
-    AddConst(cGraphics, 'psInsideFrame', Integer(psInsideFrame));
+    AddConst(cGraphics, 'psInsideFrame', Ord(psInsideFrame));
     {$ENDIF VCL}
     { TPenMode }
-    AddConst(cGraphics, 'pmBlack', Integer(pmBlack));
-    AddConst(cGraphics, 'pmWhite', Integer(pmWhite));
-    AddConst(cGraphics, 'pmNop', Integer(pmNop));
-    AddConst(cGraphics, 'pmNot', Integer(pmNot));
-    AddConst(cGraphics, 'pmCopy', Integer(pmCopy));
-    AddConst(cGraphics, 'pmNotCopy', Integer(pmNotCopy));
-    AddConst(cGraphics, 'pmMergePenNot', Integer(pmMergePenNot));
-    AddConst(cGraphics, 'pmMaskPenNot', Integer(pmMaskPenNot));
-    AddConst(cGraphics, 'pmMergeNotPen', Integer(pmMergeNotPen));
-    AddConst(cGraphics, 'pmMaskNotPen', Integer(pmMaskNotPen));
-    AddConst(cGraphics, 'pmMerge', Integer(pmMerge));
-    AddConst(cGraphics, 'pmNotMerge', Integer(pmNotMerge));
-    AddConst(cGraphics, 'pmMask', Integer(pmMask));
-    AddConst(cGraphics, 'pmNotMask', Integer(pmNotMask));
-    AddConst(cGraphics, 'pmXor', Integer(pmXor));
-    AddConst(cGraphics, 'pmNotXor', Integer(pmNotXor));
+    AddConst(cGraphics, 'pmBlack', Ord(pmBlack));
+    AddConst(cGraphics, 'pmWhite', Ord(pmWhite));
+    AddConst(cGraphics, 'pmNop', Ord(pmNop));
+    AddConst(cGraphics, 'pmNot', Ord(pmNot));
+    AddConst(cGraphics, 'pmCopy', Ord(pmCopy));
+    AddConst(cGraphics, 'pmNotCopy', Ord(pmNotCopy));
+    AddConst(cGraphics, 'pmMergePenNot', Ord(pmMergePenNot));
+    AddConst(cGraphics, 'pmMaskPenNot', Ord(pmMaskPenNot));
+    AddConst(cGraphics, 'pmMergeNotPen', Ord(pmMergeNotPen));
+    AddConst(cGraphics, 'pmMaskNotPen', Ord(pmMaskNotPen));
+    AddConst(cGraphics, 'pmMerge', Ord(pmMerge));
+    AddConst(cGraphics, 'pmNotMerge', Ord(pmNotMerge));
+    AddConst(cGraphics, 'pmMask', Ord(pmMask));
+    AddConst(cGraphics, 'pmNotMask', Ord(pmNotMask));
+    AddConst(cGraphics, 'pmXor', Ord(pmXor));
+    AddConst(cGraphics, 'pmNotXor', Ord(pmNotXor));
     { TBrushStyle }
-    AddConst(cGraphics, 'bsSolid', Integer(bsSolid));
-    AddConst(cGraphics, 'bsClear', Integer(bsClear));
-    AddConst(cGraphics, 'bsHorizontal', Integer(bsHorizontal));
-    AddConst(cGraphics, 'bsVertical', Integer(bsVertical));
-    AddConst(cGraphics, 'bsFDiagonal', Integer(bsFDiagonal));
-    AddConst(cGraphics, 'bsBDiagonal', Integer(bsBDiagonal));
-    AddConst(cGraphics, 'bsCross', Integer(bsCross));
-    AddConst(cGraphics, 'bsDiagCross', Integer(bsDiagCross));
+    AddConst(cGraphics, 'bsSolid', Ord(bsSolid));
+    AddConst(cGraphics, 'bsClear', Ord(bsClear));
+    AddConst(cGraphics, 'bsHorizontal', Ord(bsHorizontal));
+    AddConst(cGraphics, 'bsVertical', Ord(bsVertical));
+    AddConst(cGraphics, 'bsFDiagonal', Ord(bsFDiagonal));
+    AddConst(cGraphics, 'bsBDiagonal', Ord(bsBDiagonal));
+    AddConst(cGraphics, 'bsCross', Ord(bsCross));
+    AddConst(cGraphics, 'bsDiagCross', Ord(bsDiagCross));
     { TFont }
     AddClass(cGraphics, TFont, 'TFont');
     AddGet(TFont, 'Create', TFont_Create, 0, [0], varEmpty);
@@ -1565,17 +1565,17 @@ begin
     AddSet(TBrush, 'Style', TBrush_Write_Style, 0, [0]);
     {$IFDEF VCL}
     { TFillStyle }
-    AddConst(cGraphics, 'fsSurface', Integer(fsSurface));
-    AddConst(cGraphics, 'fsBorder', Integer(fsBorder));
+    AddConst(cGraphics, 'fsSurface', Ord(fsSurface));
+    AddConst(cGraphics, 'fsBorder', Ord(fsBorder));
     { TFillMode }
-    AddConst(cGraphics, 'fmAlternate', Integer(fmAlternate));
-    AddConst(cGraphics, 'fmWinding', Integer(fmWinding));
+    AddConst(cGraphics, 'fmAlternate', Ord(fmAlternate));
+    AddConst(cGraphics, 'fmWinding', Ord(fmWinding));
     {$ENDIF VCL}
     { TCanvasStates }
-    AddConst(cGraphics, 'csHandleValid', Integer(csHandleValid));
-    AddConst(cGraphics, 'csFontValid', Integer(csFontValid));
-    AddConst(cGraphics, 'csPenValid', Integer(csPenValid));
-    AddConst(cGraphics, 'csBrushValid', Integer(csBrushValid));
+    AddConst(cGraphics, 'csHandleValid', Ord(csHandleValid));
+    AddConst(cGraphics, 'csFontValid', Ord(csFontValid));
+    AddConst(cGraphics, 'csPenValid', Ord(csPenValid));
+    AddConst(cGraphics, 'csBrushValid', Ord(csBrushValid));
     { TCanvas }
     AddClass(cGraphics, TCanvas, 'TCanvas');
     AddGet(TCanvas, 'Create', TCanvas_Create, 0, [0], varEmpty);
@@ -1636,9 +1636,9 @@ begin
     AddSet(TCanvas, 'Pen', TCanvas_Write_Pen, 0, [0]);
     
     { TProgressStage }
-    AddConst(cGraphics, 'psStarting', Integer(psStarting));
-    AddConst(cGraphics, 'psRunning', Integer(psRunning));
-    AddConst(cGraphics, 'psEnding', Integer(psEnding));
+    AddConst(cGraphics, 'psStarting', Ord(psStarting));
+    AddConst(cGraphics, 'psRunning', Ord(psRunning));
+    AddConst(cGraphics, 'psEnding', Ord(psEnding));
     
     { TGraphic }
     AddClass(cGraphics, TGraphic, 'TGraphic');
@@ -1732,21 +1732,21 @@ begin
     {$ENDIF VCL}
     { TBitmapHandleType }
     
-    AddConst(cGraphics, 'bmDIB', Integer(bmDIB));
-    AddConst(cGraphics, 'bmDDB', Integer(bmDDB));
+    AddConst(cGraphics, 'bmDIB', Ord(bmDIB));
+    AddConst(cGraphics, 'bmDDB', Ord(bmDDB));
     { TPixelFormat }
-    AddConst(cGraphics, 'pfDevice', Integer(pfDevice));
-    AddConst(cGraphics, 'pf1bit', Integer(pf1bit));
-    AddConst(cGraphics, 'pf4bit', Integer(pf4bit));
-    AddConst(cGraphics, 'pf8bit', Integer(pf8bit));
-    AddConst(cGraphics, 'pf15bit', Integer(pf15bit));
-    AddConst(cGraphics, 'pf16bit', Integer(pf16bit));
-    AddConst(cGraphics, 'pf24bit', Integer(pf24bit));
-    AddConst(cGraphics, 'pf32bit', Integer(pf32bit));
-    AddConst(cGraphics, 'pfCustom', Integer(pfCustom));
+    AddConst(cGraphics, 'pfDevice', Ord(pfDevice));
+    AddConst(cGraphics, 'pf1bit', Ord(pf1bit));
+    AddConst(cGraphics, 'pf4bit', Ord(pf4bit));
+    AddConst(cGraphics, 'pf8bit', Ord(pf8bit));
+    AddConst(cGraphics, 'pf15bit', Ord(pf15bit));
+    AddConst(cGraphics, 'pf16bit', Ord(pf16bit));
+    AddConst(cGraphics, 'pf24bit', Ord(pf24bit));
+    AddConst(cGraphics, 'pf32bit', Ord(pf32bit));
+    AddConst(cGraphics, 'pfCustom', Ord(pfCustom));
     { TTransparentMode }
-    AddConst(cGraphics, 'tmAuto', Integer(tmAuto));
-    AddConst(cGraphics, 'tmFixed', Integer(tmFixed));
+    AddConst(cGraphics, 'tmAuto', Ord(tmAuto));
+    AddConst(cGraphics, 'tmFixed', Ord(tmFixed));
     
     { TBitmap }
     
