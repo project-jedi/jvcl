@@ -460,8 +460,17 @@ type
     function GetAutoincrement(fieldName:String):Integer;
 
 
+    // NEW: COPY FROM ANOTHER TDATASET (TTable, TADOTable, TQuery, or whatever)
+    function CopyFromDataset( dataset:TDataset ):Integer;
+
+
+
     // SELECT * FROM TABLE WHERE <fieldname> LIKE <pattern>:
     procedure SetFilter(FieldName, pattern: string); // Make Rows Visible Only if they match filterString
+
+    // SELECT * FROM TABLE WHERE <fieldname> IS <NULL|NOT NULL>:
+    procedure SetFilterOnNull(FieldName:String; NullFlag:Boolean);
+
 
     procedure ClearFilter; // Clear all previous SetFilters, shows All Rows. Refresh screen.
 
@@ -1063,6 +1072,40 @@ begin
     First;
 end;
 
+
+procedure TJvCustomCsvDataSet.SetFilterOnNull(FieldName:String; NullFlag:Boolean);
+var
+  valueLen, t: Integer;
+  pRow: PCsvRow;
+  fieldRec: PCsvColumn;
+  FieldIndex: Integer;
+  fieldValue: string;
+begin
+  fieldRec := FCsvColumns.FindByName(FieldName);
+
+  if not Assigned(fieldRec) then
+    Exit;
+  FieldIndex := fieldRec^.FPhysical;
+
+  // Now filter out if IsNull matches NullFlag
+  for t := 0 to FData.Count - 1 do
+  begin
+    pRow := PCsvRow(FData[t]);
+    if not pRow^.filtered then
+    begin
+      fieldValue := FData.GetARowItem(t, FieldIndex);
+      if (Length(fieldValue) > 0)=NullFlag then begin
+          pRow^.filtered := True;
+      end;
+    end
+  end;
+  FIsFiltered := True;
+  if Active then
+  begin
+    First;
+  end;
+end;
+
 procedure TJvCustomCsvDataSet.SetFilter(FieldName, pattern: string);
   // Make Rows Visible Only if they match filterString
 var
@@ -1112,22 +1155,6 @@ begin
   FIsFiltered := True;
   if Active then
   begin
-    //try
-    //    GotoBookmark(m);
-    //except
-    //    on E: EDatabaseError do
-    //    begin
-    //        First;
-    //        Exit;
-    //    end;
-    //end;
-    //if (Self.RecNo>=0) then
-    //begin
-    //  pRow := PCsvRow( FData[Self.RecNo] );
-    //  if (pRow^.filtered) then
-    //        First;
-    //end
-    //else
     First;
   end;
 end;
@@ -4055,12 +4082,15 @@ begin
   len := Length(AsciiDateStr);
 
  // validate ranges:
+  for t := 1 to 6 do
+  begin
+    Values[t] := 0;
+  end;
 
  // T loops through each value we are looking for (1..6):
   Index := 1; // what character in AsciiDateStr are we looking at?
   for t := 1 to 6 do
   begin
-    Values[t] := 0;
     if (t >= 3) and (Index >= len) then
       Break; // as long as we at least got the date, we can continue.
     for u := 1 to AsciiTime_ExpectLengths[t] do
@@ -4293,6 +4323,54 @@ begin
 
   Resync([]); // Update data aware controls.
 end;
+
+// get contents of one dataset into this dataset. copies only fields that
+// match. Raises an exception if an error occurs. returns # of rows copied.
+function TJvCustomCsvDataSet.CopyFromDataset( dataset:TDataset ):Integer;
+var
+  t,MatchFieldCount:Integer;
+  FieldName:String;
+  MatchSourceField:Array of TField;
+  MatchDestField:Array of TField;
+begin
+  result := -1;
+  SetLength(MatchSourceField, FieldCount);
+  SetLength(MatchDestField, FieldCount);
+  MatchFieldCount := 0;
+  for t := 0 to dataset.FieldCount-1 do begin
+      MatchSourceField[MatchFieldCount] := dataset.Fields.FieldByNumber(t+1);
+      Assert(Assigned(MatchSourceField[MatchFieldCount]));
+      FieldName :=  MatchSourceField[MatchFieldCount].FieldName;
+      try
+          MatchDestField[MatchFieldCount] := FieldByName(FieldName);
+          Assert(Assigned(MatchDestField[MatchFieldCount]));
+          Inc(MatchFieldCount);
+      except
+          on E:EDatabaseError do begin
+              // ignore it.
+          end;
+      end;
+  end;
+  OutputDebugString(PChar( 'MatchFieldCount='+IntToStr(MatchFieldCount) ) );
+  if (MatchFieldCount = 0) then begin
+       JvCsvDatabaseError(FTableName, RsETimeTConvError);
+  end;
+  result := 0;
+  dataset.First;
+  if (not Active) and (not LoadsFromFile) then
+      Active := true;
+
+  while not dataset.Eof do begin
+      Append;
+      for t:= 0 to MatchFieldCount-1 do begin
+          MatchDestField[t].Value := MatchSourceField[t].Value;
+      end;
+      Post;
+      dataset.Next;
+      Inc(result);      
+  end;
+end;
+
 
 end.
 
