@@ -922,8 +922,8 @@ object ClientAssistant: TClientAssistant
   end
   object SearchQueryDS: TDataSource
     DataSet = SearchQuery
-    Left = 208
-    Top = 304
+    Left = 248
+    Top = 296
   end
   object FormStorage: TJvFormStorage
     StoredProps.Strings = (

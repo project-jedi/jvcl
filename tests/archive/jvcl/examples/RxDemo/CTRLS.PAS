@@ -7,7 +7,7 @@ uses
   Forms, Dialogs, JvPlacemnt, StdCtrls, JvxCtrls, TabNotBk, JvxSlider, ExtCtrls,
   JvSwitch, Mask, JvToolEdit, Spin, JvCurrEdit, FileCtrl, JvSplit, Grids,
   Outline, DirOutln, JvDice, JvxClock, JvxAnimate, JvSpin, JvCombos,
-  ComCtrls;
+  ComCtrls, JvComponent, JvColorCombo, JvCombobox;
 
 type
   TControlsForm = class(TForm)
@@ -16,8 +16,7 @@ type
     GroupBox2: TGroupBox;
     GroupBox3: TGroupBox;
     GroupBox4: TGroupBox;
-    ColorComboBox1: TJvxColorComboBox ;
-    FontComboBox1: TJvxFontComboBox ;
+    FontComboBox1: TJvFontComboBox;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
@@ -63,7 +62,6 @@ type
     Label23: TLabel;
     Label24: TLabel;
     Label25: TLabel;
-    ColorComboBox2: TJvxColorComboBox ;
     ComboBox6: TComboBox;
     SpinEdit2: TSpinEdit;
     Button1: TButton;
@@ -137,6 +135,8 @@ type
     OpenDialog: TOpenDialog;
     RxCalcEdit1: TJvCalcEdit ;
     CheckBox7: TCheckBox;
+    ColorComboBox1: TJvColorComboBox;
+    ColorComboBox2: TJvColorComboBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure ColorComboBox1Change(Sender: TObject);
@@ -230,12 +230,17 @@ end;
 
 procedure TControlsForm.CheckBox1Click(Sender: TObject);
 begin
-  FontComboBox1.TrueTypeOnly := CheckBox1.Checked;
+  if CheckBox1.Checked then
+    FontComboBox1.Options := FontComboBox1.Options + [foTrueTypeOnly]
+  else
+    FontComboBox1.Options := FontComboBox1.Options - [foTrueTypeOnly]
 end;
 
 procedure TControlsForm.ComboBox1Change(Sender: TObject);
 begin
-  FontComboBox1.Device := TFontDevice(ComboBox1.ItemIndex);
+  FontComboBox1.Device := TFontDialogDevice(ComboBox1.ItemIndex);
+  if FontComboBox1.ItemIndex < 0 then
+    FontComboBox1.ItemIndex := 0;
 end;
 
 procedure TControlsForm.ComboBox2Change(Sender: TObject);
@@ -523,7 +528,10 @@ end;
 
 procedure TControlsForm.CheckBox4Click(Sender: TObject);
 begin
-  ColorComboBox1.DisplayNames := CheckBox4.Checked;
+  if CheckBox4.Checked then
+    ColorComboBox1.Options := ColorComboBox1.Options + [coText]
+  else
+    ColorComboBox1.Options := ColorComboBox1.Options - [coText];
 end;
 
 procedure TControlsForm.Button6Click(Sender: TObject);

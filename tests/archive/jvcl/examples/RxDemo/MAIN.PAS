@@ -7,7 +7,8 @@ interface
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, Gauges, ExtCtrls, Menus, JvDBPrgrss, JvPlacemnt, JvSpeedbar,
-  JvAppEvent, JvSplit, JvxAnimate, JvShell, JvMenus, JvPicclip;
+  JvAppEvent, JvSplit, JvxAnimate, JvShell, JvMenus, JvPicclip,
+  JvComponent, JvTrayIcon;
 
 type
   TMainForm = class(TForm)
@@ -52,7 +53,7 @@ type
     SpeedbarSection2: TjvSpeedbarSection;
     SpeedbarSection3: TjvSpeedbarSection;
     SpeedbarSection4: TjvSpeedbarSection;
-    TrayIcon: TJvxTrayIcon ;
+    TrayIcon: TJvTrayIcon;
     PopupMenu: TJvPopupMenu ;
     RXDemo1: TMenuItem;
     About1: TMenuItem;
