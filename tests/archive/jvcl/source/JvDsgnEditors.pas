@@ -36,14 +36,14 @@ interface
 uses
   Windows, Forms, Classes, SysUtils,
   Controls, Graphics, ExtCtrls, Tabs, Dialogs, 
-  DsnConst, ExtDlgs, Menus, FiltEdit, StdCtrls,
+  ExtDlgs, Menus, StdCtrls, DsnConst, 
   {$IFDEF COMPILER6_UP}
-  RTLConsts, DesignIntf, DesignEditors, DesignMenus, VCLEditors
+  DsnConst, FiltEdit, RTLConsts, DesignIntf, DesignEditors, DesignMenus, VCLEditors
   {$ELSE}
   LibIntf, DsgnIntf
   {$ENDIF}
   {$IFNDEF DelphiPersonalEdition}
-  , ImgEdit,ImgList
+  , ImgEdit, ImgList
   {$ENDIF}
   ;
 

@@ -80,6 +80,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure Invalidate; override;
+    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
+      AHeight: Integer); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Sizeable: boolean read FSizeable write SetSizeable default false;
@@ -344,11 +346,10 @@ end;
 
 procedure TJvPanel.Invalidate;
 begin
-  if Transparent and Visible and Assigned(Parent) and Parent.HandleAllocated and HandleAllocated then
+{  if Transparent and Visible and Assigned(Parent) and Parent.HandleAllocated and HandleAllocated then
     RedrawWindow(Parent.Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INTERNALPAINT or RDW_INVALIDATE
-      or RDW_ERASENOW or RDW_UPDATENOW or RDW_ALLCHILDREN)
-  else
-    inherited Invalidate;
+      or RDW_ERASENOW or RDW_UPDATENOW or RDW_ALLCHILDREN); }
+  inherited;
 end;
 
 procedure TJvPanel.SetHotColor(const Value: TColor);
@@ -425,6 +426,11 @@ begin
     inherited MouseUp(Button, Shift, X, Y);
 end;
 
+procedure TJvPanel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
+begin
+  inherited;
+  if Transparent then Invalidate;
+end;
 
 end.
 
