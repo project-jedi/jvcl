@@ -144,7 +144,6 @@ resourcestring
   RsCompilingPackages = 'Compiling packages...';
   RsFinished = 'Finished.';
   RsCompilingJCL = 'Compiling JCL dcp files...';
-  RsGeneratePackages = '[Generating: Packages]';
 
   RsAbortedByUser = 'Aborted by User';
   RsErrorLoadingPackageGeneratorConfigFile = 'Error loading devtools\bin\pgEdit.xml';
@@ -156,6 +155,9 @@ resourcestring
   RsErrorCompilingPackages = 'An error occured while compiling the packages.'; // this must not be the doubt of the installer
 
   RsCommandNotFound = 'Command could not be executed.'#10#10#10'Cmdline: %s'#10#0'Start directory: %s';
+
+const
+  RsGeneratePackages = '[Generating: Packages]'; // do not localize
 
 const
   CommonDependencyFiles: array[0..3] of string = (

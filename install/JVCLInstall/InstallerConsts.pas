@@ -180,8 +180,9 @@ resourcestring
   RsNoPackageInstaller = 'Application error. No PackageInstaller created.';
   RsCancelInstallation = 'Do you really want to cancel the installation?';
 
-  RsJediHomepage = 'http://projectjedi.sourceforge.net';
-  RsJVCLHomepage = 'http://jvcl.sourceforge.net';
+const
+  RsJediHomepage = 'http://projectjedi.sourceforge.net'; // do not localize
+  RsJVCLHomepage = 'http://jvcl.sourceforge.net'; // do not localize
 
 
 implementation
