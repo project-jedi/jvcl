@@ -48,7 +48,11 @@ unit JvInspector;
 interface
 
 uses
-  SysUtils, Classes, Contnrs, Types, TypInfo,
+  SysUtils, Classes, Contnrs,
+{$IFDEF COMPILER6_UP}
+  Types,
+{$ENDIF COMPILER6_UP}
+  TypInfo,
 {$IFDEF MSWINDOWS}
   Windows, Messages,
 {$ENDIF}
