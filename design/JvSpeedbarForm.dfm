@@ -1,6 +1,6 @@
 object JvSpeedbarEditor: TJvSpeedbarEditor
-  Left = 222
-  Top = 126
+  Left = 676
+  Top = 122
   ActiveControl = SectionList
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
@@ -244,9 +244,14 @@ object JvSpeedbarEditor: TJvSpeedbarEditor
     end
   end
   object FormPlacement1: TJvFormStorage
-    RegistryRoot = hkClassesRoot
+    AppStorage = AppStorage
     StoredValues = <>
-    Left = 64
-    Top = 88
+    Left = 44
+    Top = 103
+  end
+  object AppStorage: TJvAppRegistryStore
+    RegRoot = hkCurrentUser
+    Left = 44
+    Top = 53
   end
 end

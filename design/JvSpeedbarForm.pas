@@ -38,7 +38,8 @@ uses
   {$ENDIF}
   SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, Grids, Menus,
-  JvxCtrls, JvSpeedBar, JvFormPlacement, JvConsts, JvJVCLUtils, JvComponent;
+  JvxCtrls, JvSpeedBar, JvFormPlacement, JvConsts, JvJVCLUtils, JvComponent,
+  JvAppStore, JvAppRegistryStore;
 
 type
   TSelectData = record
@@ -68,6 +69,7 @@ type
     PasteMenu: TMenuItem;
     CutMenu: TMenuItem;
     FormPlacement1: TJvFormStorage;
+    AppStorage: TJvAppRegistryStore;
     procedure DelSectionClick(Sender: TObject);
     procedure AddButtonClick(Sender: TObject);
     procedure RemoveButtonClick(Sender: TObject);
@@ -1071,11 +1073,7 @@ begin
   FDrag := False;
   if NewStyleControls then
     Font.Style := [];
-  with FormPlacement1 do
-  begin
-    UseRegistry := True;
-    IniFileName := SDelphiKey;
-  end;
+  AppStorage.Root := SDelphiKey;
 end;
 
 procedure TJvSpeedbarEditor.FormDestroy(Sender: TObject);
