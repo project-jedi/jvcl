@@ -34,6 +34,8 @@ var
 
 implementation
 
+uses DeepEmbeddedFormUnit, EmbeddedFormUnit;
+
 {$R *.DFM}
 
 procedure TMainForm.FormShow(Sender: TObject);
