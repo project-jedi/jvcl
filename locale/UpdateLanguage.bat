@@ -15,7 +15,7 @@ if not exist %LANGUAGE%\LC_MESSAGES\jvcl.po goto jvclponotfound
 
 : now that we are sure that all required files exist, process jvcl.po
 echo Updating %LANGUAGE%...
-msgmerge --force-po -s -o %LANGUAGE%\LC_MESSAGES\jvcl.po %LANGUAGE%\LC_MESSAGES\jvcl.po jvcl.po
+msgmerge --force-po -F -o %LANGUAGE%\LC_MESSAGES\jvcl.po %LANGUAGE%\LC_MESSAGES\jvcl.po jvcl.po
 
 : set the headers to match JVCL ones
 ..\devtools\bin\SetPoHeader -t "JVCL localization template" -c "The Jedi Visual Component Library group" -p JVCL -v 3 -a "JVCL Group" -e "jvcl@sourceforge.net" %LANGUAGE%\LC_MESSAGES\jvcl.po 
