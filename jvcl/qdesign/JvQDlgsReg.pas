@@ -48,10 +48,10 @@ uses
   DesignEditors, DesignIntf,
   
   JvQDsgnConsts,
-  JvQBaseDlg,
+  JvQBaseDlg, JvQCommonExecDlg,
   JvQActnResForm, JvQProgressComponent,
   JvQImageDlg, JvQDualList,
-  JvQProgressDialog;
+  JvQProgressDialog, JvQBaseDlgEditor;
 
 {$IFDEF MSWINDOWS}
 {$R ..\resources\JvDlgsReg.dcr}
@@ -65,6 +65,15 @@ begin
   RegisterComponents(RsPaletteDialog, [
     TJvDualListDialog, TJvImageDialog,
     TJvProgressDialog, TJvProgressComponent]);
+  {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
+  RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
+  {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
+  RegisterComponentEditor(TJvCommonDialog, TJvBaseDlgEditor);
+//  RegisterComponentEditor(TJvOpenDialog, TJvBaseDlgEditor);
+//  RegisterComponentEditor(TJvSaveDialog, TJvBaseDlgEditor);
+  RegisterComponentEditor(TJvCommonDialogP, TJvBaseDlgEditor);
+  RegisterComponentEditor(TJvCommonDialogF, TJvBaseDlgEditor);
+
 
 end;
 
