@@ -1140,7 +1140,7 @@ var
   Index: Integer;
 begin
   if Assigned(JvDynControlData) then
-    Index := JvDynControlData.ControlValue
+    Index := ItemList.IndexOf(JvDynControlData.ControlValue)
   else
     Index := -1;
   if VariantAsItemIndex then
@@ -1149,7 +1149,7 @@ begin
   if (Index >= 0) and (Index < ItemList.Count) then
     Result := ItemList[Index]
   else
-    Result := '';
+    Result := JvDynControlData.ControlValue;
 end;
 
 procedure TJvListParameter.SetWinControlData(Value: Variant);
