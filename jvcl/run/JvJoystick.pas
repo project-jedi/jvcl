@@ -145,8 +145,8 @@ type
     procedure RaiseErrorCapture(Value: MMRESULT);
     procedure RaiseErrorRelease(Value: MMRESULT);
   public
-    procedure WndProc(var Msg: TMessage);
     constructor Create(AOwner: TComponent); override;
+    procedure WndProc(var Msg: TMessage);
     destructor Destroy; override;
   published
     property Joy1Threshold: MMRESULT read GetThreshold1 write SetThreshold1;
@@ -173,6 +173,8 @@ implementation
 
 uses
   JvJVCLUtils, JvResources;
+
+//=== TJvJoystick ============================================================
 
 constructor TJvJoystick.Create(AOwner: TComponent);
 begin
@@ -360,6 +362,8 @@ begin
     Msg.Result := DefWindowProc(FHandle, Msg.Msg, Msg.wParam, Msg.lParam);
   end;
 end;
+
+//=== TJoystick ==============================================================
 
 constructor TJoystick.CreateJoy(AOwner: TComponent; Joy: Integer);
 begin

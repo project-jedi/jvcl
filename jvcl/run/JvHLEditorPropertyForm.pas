@@ -92,33 +92,33 @@ type
     procedure FormCreate(Sender: TObject);
     procedure NotImplemented(Sender: TObject);
     procedure lbElementsClick(Sender: TObject);
-    procedure lbElementsDrawItem(Control: TWinControl; Index: integer;
+    procedure lbElementsDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
     procedure ColorChange(Sender: TObject);
     procedure cbColorSettingsChange(Sender: TObject);
     procedure DefClick(Sender: TObject);
     procedure CellMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: integer);
+      Shift: TShiftState; X, Y: Integer);
   private
     JvHLEditorPreview: TJvHLEditor;
     FHighlighter: TJvHighlighter;
     SC: TJvSymbolColor;
-    InChanging: boolean;
+    InChanging: Boolean;
     Params: TJvHLEdPropDlg;
     FColorSamples: TStringList;
     procedure LoadLocale;
-    function ColorToIndex(const AColor: TColor): integer;
-    function GetColorIndex(const ColorName: string): integer;
-    function GetForegroundIndex: integer;
-    function GetBackgroundIndex: integer;
-    procedure SetColorIndex(const Index: integer;
+    function ColorToIndex(const AColor: TColor): Integer;
+    function GetColorIndex(const ColorName: string): Integer;
+    function GetForegroundIndex: Integer;
+    function GetBackgroundIndex: Integer;
+    procedure SetColorIndex(const Index: Integer;
       const ColorName, OtherColorName: string);
-    procedure SetForegroundIndex(const Index: integer);
-    procedure SetBackgroundIndex(const Index: integer);
+    procedure SetForegroundIndex(const Index: Integer);
+    procedure SetBackgroundIndex(const Index: Integer);
     function GetColorColor(const ColorName: string): TColor;
     function GetForegroundColor: TColor;
     function GetBackgroundColor: TColor;
-    function GetCell(const Index: integer): TPanel;
+    function GetCell(const Index: Integer): TPanel;
     function GetColorSamples: TStrings;
     procedure SetColorSamples(Value: TStrings);
   public
@@ -133,14 +133,14 @@ type
   TJvHLEdReadFrom = (rfStorage, rfHLEditor);
   TJvHLEdPages = set of (epEditor, epColors);
   TOnDialogPopup = procedure(Sender: TObject; Form: TForm) of object;
-  TOnDialogClosed = procedure(Sender: TObject; Form: TForm; Apply: boolean) of object;
+  TOnDialogClosed = procedure(Sender: TObject; Form: TForm; Apply: Boolean) of object;
 
   TJvHLEdPropDlg = class(TComponent)
   private
     FJvHLEditor: TJvCustomEditorBase;
     FStorage: TJvFormStorage;
     FColorSamples: TStringList;
-    FHighlighterCombo: boolean;
+    FHighlighterCombo: Boolean;
     FActivePage: TJvHLEdActivePage;
     FReadFrom: TJvHLEdReadFrom;
     FPages: TJvHLEdPages;
@@ -149,7 +149,7 @@ type
     FOnDialogClosed: TOnDialogClosed;
     function GetColorSamples: TStrings;
     procedure SetColorSamples(Value: TStrings);
-    function IsPagesStored: boolean;
+    function IsPagesStored: Boolean;
     procedure SetJvHLEditor(const Value: TJvCustomEditorBase);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -167,7 +167,7 @@ type
     property JvHLEditor: TJvCustomEditorBase read FJvHLEditor write SetJvHLEditor;
     property Storage: TJvFormStorage read FStorage write FStorage;
     property ColorSamples: TStrings read GetColorSamples write SetColorSamples;
-    property HighlighterCombo: boolean read FHighlighterCombo write FHighlighterCombo default true;
+    property HighlighterCombo: Boolean read FHighlighterCombo write FHighlighterCombo default True;
     property ActivePage: TJvHLEdActivePage read FActivePage write FActivePage default 0;
     property ReadFrom: TJvHLEdReadFrom read FReadFrom write FReadFrom default rfStorage;
     property Pages: TJvHLEdPages read FPages write FPages stored IsPagesStored;
@@ -177,12 +177,12 @@ type
   end;
 
 const
-  Highlighters: array[TJvHighlighter] of string =
-  ('None', 'Pascal', 'CBuilder', 'Sql', 'Python', 'Java', 'VB', 'Html',
+  Highlighters: array [TJvHighlighter] of PChar =
+   ('None', 'Pascal', 'CBuilder', 'Sql', 'Python', 'Java', 'VB', 'Html',
     'Perl', 'Ini', 'CocoR', 'PHP', 'NQC', 'C#', 'User Defined');
 
-  HighlighterNames: array[TJvHighlighter] of string =
-  ('Default', 'Pascal', 'CBuilder', 'Sql', 'Python', 'Java', 'VB', 'Html',
+  HighlighterNames: array [TJvHighlighter] of PChar =
+   ('Default', 'Pascal', 'CBuilder', 'Sql', 'Python', 'Java', 'VB', 'Html',
     'Perl', 'Ini', 'Coco/R', 'PHP', 'NQC', 'C#', 'Custom');
 
 implementation
@@ -195,7 +195,7 @@ uses
 
 function GetHardCodedExamples: string; forward;
 
-function Pixels(Control: TControl; APixels: integer): integer;
+function Pixels(Control: TControl; APixels: Integer): Integer;
 var
   Form: TForm;
 begin
@@ -225,7 +225,7 @@ constructor TJvSampleViewer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   TmpEd := TJvHLEditor.Create(Self);
-  TmpEd.Visible := false;
+  TmpEd.Visible := False;
   TmpEd.Parent := Self;
 end;
 
@@ -242,14 +242,15 @@ end;
 
 procedure TJvSampleViewer.WMLButtonDown(var Msg: TWMLButtonDown);
 var
-  XX, YY: integer;
-  F: integer;
+  XX, YY: Integer;
+  F: Integer;
   Str: string;
 begin
   { also prevent user interact }
   { detect symbol type }
   Mouse2Caret(Msg.XPos, Msg.YPos, XX, YY);
-  if Cardinal(YY) > Cardinal(TmpEd.Lines.Count) then Exit;
+  if Cardinal(YY) > Cardinal(TmpEd.Lines.Count) then
+    Exit;
   if (XX = RightMargin) or (XX - 1 = RightMargin) then
     F := 13
   else
@@ -286,7 +287,7 @@ end;
 constructor TJvHLEdPropDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FHighlighterCombo := true;
+  FHighlighterCombo := True;
   FColorSamples := TStringList.Create;
   FColorSamples.Text := GetHardCodedExamples;
   FPages := [epColors];
@@ -500,7 +501,7 @@ begin
       F := Storage.ReadInteger(AddSlash2(StorageSection) + 'Params' + 'ActivePage', F);
     F := Max(Min(F, Pages.PageCount - 1), 0);
     if not Pages.Pages[F].TabVisible then
-      Pages.ActivePage := Pages.FindNextPage(Pages.Pages[F], true, true)
+      Pages.ActivePage := Pages.FindNextPage(Pages.Pages[F], True, True)
     else
       Pages.ActivePage := Pages.Pages[F];
 
@@ -548,9 +549,39 @@ begin
   FColorSamples.Assign(Value);
 end;
 
-function TJvHLEdPropDlg.IsPagesStored: boolean;
+function TJvHLEdPropDlg.IsPagesStored: Boolean;
 begin
   Result := FPages <> [epColors];
+end;
+
+procedure TJvHLEdPropDlg.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation = opRemove then
+  begin
+    if AComponent = JvHLEditor then
+      FJvHLEditor := nil // do not call SetJvHLEditor
+    else
+    if AComponent = Storage then
+      FStorage := nil;
+  end;
+end;
+
+procedure TJvHLEdPropDlg.SetJvHLEditor(const Value: TJvCustomEditorBase);
+var
+  HLed: IJvHLEditor;
+begin
+  if Value <> FJvHLEditor then
+  begin
+    if Value <> nil then
+    begin
+      if Value.GetInterface(IJvHLEditor, HLed) then
+        FJvHLEditor := Value;
+    end
+    else
+      FJvHLEditor := nil;
+  end;
 end;
 
 //=== TJvHLEditorParamsForm ==================================================
@@ -584,7 +615,7 @@ end;
 
 procedure TJvHLEditorParamsForm.ParamsToControls;
 var
-  I: integer;
+  I: Integer;
   HLed: IJvHLEditor;
 begin
   Params.FJvHLEditor.GetInterface(IJvHLEditor, HLed);
@@ -638,7 +669,7 @@ begin
   JvHLEditorPreview := TJvSampleViewer.Create(Self);
   JvHLEditorPreview.Parent := tsColors;
   JvHLEditorPreview.SetBounds(8, 176, 396, 110);
-  JvHLEditorPreview.TabStop := false;
+  JvHLEditorPreview.TabStop := False;
   cbKeyboardLayout.ItemIndex := 0;
   cbColorSettings.ItemIndex := 0;
   lbElements.ItemIndex := 0;
@@ -655,16 +686,16 @@ end;
 
 { Color grid }
 
-function TJvHLEditorParamsForm.GetCell(const Index: integer): TPanel;
+function TJvHLEditorParamsForm.GetCell(const Index: Integer): TPanel;
 begin
   Result := FindComponent('Cell' + IntToStr(Index)) as TPanel;
   if Result = nil then
     raise EJVCLException.Create(RsEHLEdPropDlg_GridCellNotFound);
 end;
 
-function TJvHLEditorParamsForm.ColorToIndex(const AColor: TColor): integer;
+function TJvHLEditorParamsForm.ColorToIndex(const AColor: TColor): Integer;
 var
-  I: integer;
+  I: Integer;
 begin
   Result := -1;
   for I := 0 to 15 do
@@ -675,9 +706,9 @@ begin
     end;
 end;
 
-function TJvHLEditorParamsForm.GetColorIndex(const ColorName: string): integer;
+function TJvHLEditorParamsForm.GetColorIndex(const ColorName: string): Integer;
 var
-  I: integer;
+  I: Integer;
 begin
   Result := -1;
   for I := 0 to 15 do
@@ -688,19 +719,19 @@ begin
     end;
 end;
 
-function TJvHLEditorParamsForm.GetForegroundIndex: integer;
+function TJvHLEditorParamsForm.GetForegroundIndex: Integer;
 begin
   Result := GetColorIndex('FC');
 end;
 
-function TJvHLEditorParamsForm.GetBackgroundIndex: integer;
+function TJvHLEditorParamsForm.GetBackgroundIndex: Integer;
 begin
   Result := GetColorIndex('BC');
 end;
 
 function TJvHLEditorParamsForm.GetColorColor(const ColorName: string): TColor;
 var
-  Index: integer;
+  Index: Integer;
 begin
   Index := GetColorIndex(ColorName);
   if Index > -1 then
@@ -719,10 +750,10 @@ begin
   Result := GetColorColor('BC');
 end;
 
-procedure TJvHLEditorParamsForm.SetColorIndex(const Index: integer;
+procedure TJvHLEditorParamsForm.SetColorIndex(const Index: Integer;
   const ColorName, OtherColorName: string);
 var
-  I: integer;
+  I: Integer;
 begin
   for I := 0 to 15 do
     if (GetCell(I).Caption = 'FB') or (GetCell(I).Caption = ColorName) then
@@ -736,22 +767,23 @@ begin
       GetCell(Index).Caption := OtherColorName;
 end;
 
-procedure TJvHLEditorParamsForm.SetForegroundIndex(const Index: integer);
+procedure TJvHLEditorParamsForm.SetForegroundIndex(const Index: Integer);
 begin
   SetColorIndex(Index, 'BC', 'FC');
 end;
 
-procedure TJvHLEditorParamsForm.SetBackgroundIndex(const Index: integer);
+procedure TJvHLEditorParamsForm.SetBackgroundIndex(const Index: Integer);
 begin
   SetColorIndex(Index, 'FC', 'BC');
 end;
 
 procedure TJvHLEditorParamsForm.CellMouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if Button = mbLeft then
     SetForegroundIndex((Sender as TPanel).Tag)
-  else if Button = mbRight then
+  else
+  if Button = mbRight then
     SetBackgroundIndex((Sender as TPanel).Tag);
   ColorChange(Sender);
 end;
@@ -763,7 +795,7 @@ var
   FC, BC: TColor;
   ST: TFontStyles;
 begin
-  InChanging := true;
+  InChanging := True;
   try
     SC := nil;
     ST := [];
@@ -830,7 +862,7 @@ begin
     cbItalic.Checked := fsItalic in ST;
     cbUnderline.Checked := fsUnderline in ST;
   finally
-    InChanging := false;
+    InChanging := False;
   end;
 end;
 
@@ -841,13 +873,13 @@ var
 begin
   if InChanging then
     Exit;
-  InChanging := true;
+  InChanging := True;
   try
     ST := [];
     if GetForegroundIndex <> -1 then
-      cbDefForeground.Checked := false;
+      cbDefForeground.Checked := False;
     if GetBackgroundIndex <> -1 then
-      cbDefBackground.Checked := false;
+      cbDefBackground.Checked := False;
     if cbDefForeground.Checked then
     begin
       if lbElements.ItemIndex = 12 then
@@ -880,18 +912,21 @@ begin
       SC.ForeColor := FC;
       SC.BackColor := BC;
     end
-    else if lbElements.ItemIndex = 12 then { marked block }
+    else
+    if lbElements.ItemIndex = 12 then { marked block }
     begin
       JvHLEditorPreview.SelForeColor := FC;
       JvHLEditorPreview.SelBackColor := BC;
     end
-    else if lbElements.ItemIndex = 0 then { whitespace }
+    else
+    if lbElements.ItemIndex = 0 then { whitespace }
       JvHLEditorPreview.Color := BC
-    else if lbElements.ItemIndex = 13 then { right margin }
+    else
+    if lbElements.ItemIndex = 13 then { right margin }
       JvHLEditorPreview.RightMarginColor := FC;
     JvHLEditorPreview.Invalidate;
   finally
-    InChanging := false;
+    InChanging := False;
   end;
 end;
 
@@ -907,7 +942,7 @@ begin
 end;
 
 procedure TJvHLEditorParamsForm.lbElementsDrawItem(Control: TWinControl;
-  Index: integer; Rect: TRect; State: TOwnerDrawState);
+  Index: Integer; Rect: TRect; State: TOwnerDrawState);
 begin
   with (Control as TListBox).Canvas do { draw on control canvas, not on the form }
   begin
@@ -920,19 +955,20 @@ procedure ReadColorSampleSection(Ini: TStrings; const Section: string; Lines: TS
 var
   I: Integer;
   S: string;
-  InSection: boolean;
+  InSection: Boolean;
 begin
   Lines.Clear;
-  InSection := false;
+  InSection := False;
   for I := 0 to Ini.Count - 1 do
   begin
     S := Ini[I];
     if (S <> '') and (S[1] = '[') and (S[Length(S)] = ']') then
     begin
       if CompareText(Copy(S, 2, Length(S) - 2), Section) = 0 then
-        InSection := true
-      else if InSection then
-        break;
+        InSection := True
+      else
+      if InSection then
+        Break;
       Continue;
     end;
     if InSection then
@@ -1005,8 +1041,8 @@ begin
     '{$DEFINE DELPHI}'#10 +
     'procedure TMain.JvHLEditorPreviewChangeStatus(Sender: TObject);'#10 +
     'const'#10 +
-    '  Modi: array[boolean] of string[10] = ('#39#39', '#39'Modified'#39');'#10 +
-    '  Modes: array[boolean] of string[10] = ('#39'Overwrite'#39', '#39'Insert'#39');'#10 +
+    '  Modi: array [Boolean] of string[10] = ('#39#39', '#39'Modified'#39');'#10 +
+    '  Modes: array [Boolean] of string[10] = ('#39'Overwrite'#39', '#39'Insert'#39');'#10 +
     'begin'#10 +
     '  with StatusBar, JvHLEditorPreview do'#10 +
     '  begin'#10 +
@@ -1014,7 +1050,8 @@ begin
     '    Panels[1].Text := Modi[Modified];'#10 +
     '    if ReadOnly then'#10 +
     '      Panels[2].Text := '#39'ReadOnly'#39 +
-    '    else if Recording then'#10 +
+    '    else'#10 +
+    '    if Recording then'#10 +
     '      Panels[2].Text := '#39'Recording'#39 +
     '    else'#10 +
     '      Panels[2].Text := Modes[InsertMode];'#10 +
@@ -1186,8 +1223,8 @@ end;
       '{ Syntax highlighting }'
       'procedure TMain.JvHLEditorPreviewChangeStatus(Sender: TObject);'
       'const'
-      '  Modi: array[boolean] of string[10] = ('#39#39', '#39'Modified'#39');'
-      '  Modes: array[boolean] of string[10] = ('#39'Overwrite'#39', '#39'Insert'#39');'
+      '  Modi: array [Boolean] of string[10] = ('#39#39', '#39'Modified'#39');'
+      '  Modes: array [Boolean] of string[10] = ('#39'Overwrite'#39', '#39'Insert'#39');'
       'begin'
       '  with StatusBar, JvHLEditorPreview do'
       '  begin'
@@ -1195,7 +1232,8 @@ end;
       '    Panels[1].Text := Modi[Modified];'
       '    if ReadOnly then'
       '      Panels[2].Text := '#39'ReadOnly'#39
-      '    else if Recording then'
+      '    else'
+      '    if Recording then'
       '      Panels[2].Text := '#39'Recording'#39
       '    else'
       '      Panels[2].Text := Modes[InsertMode];'
@@ -1362,35 +1400,6 @@ end;
       '    .'
       '[]')
 *)
-
-procedure TJvHLEdPropDlg.Notification(AComponent: TComponent;
-  Operation: TOperation);
-begin
-  inherited;
-  if Operation = opRemove then
-  begin
-    if AComponent = JvHLEditor then
-      FJvHLEditor := nil // do not call SetJvHLEditor
-    else if AComponent = Storage then
-      FStorage := nil;
-  end;
-end;
-
-procedure TJvHLEdPropDlg.SetJvHLEditor(const Value: TJvCustomEditorBase);
-var
-  HLed: IJvHLEditor;
-begin
-  if Value <> FJvHLEditor then
-  begin
-    if Value <> nil then
-    begin
-      if Value.GetInterface(IJvHLEditor, HLed) then
-        FJvHLEditor := Value;
-    end
-    else
-      FJvHLEditor := nil;
-  end;
-end;
 
 end.
 

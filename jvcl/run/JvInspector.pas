@@ -965,7 +965,6 @@ type
     property Tracking: Boolean read FTracking write FTracking;
   public
     constructor Create(const AParent: TJvCustomInspectorItem; const AData: TJvCustomInspectorData); virtual;
-    destructor Destroy; override;
     function Add(const Item: TJvCustomInspectorItem): Integer;
     procedure BeforeDestruction; override;
     procedure Clear;
@@ -1045,7 +1044,6 @@ type
     property Parent: TJvInspectorCustomCompoundItem read FParent;
   public
     constructor Create(const AParent: TJvInspectorCustomCompoundItem; const AItem: TJvCustomInspectorItem);
-    destructor Destroy; override;
     procedure BeforeDestruction; override;
     property Item: TJvCustomInspectorItem read GetItem write SetItem;
     property Width: Integer read GetWidth write SetWidthExternal;
@@ -1106,7 +1104,6 @@ type
     property SingleNameUseFirstCol: Boolean read GetSingleNameUseFirstCol write SetSingleNameUseFirstCol;
   public
     constructor Create(const AParent: TJvCustomInspectorItem; const AData: TJvCustomInspectorData); override;
-    destructor Destroy; override;
     procedure BeforeDestruction; override;
     procedure DoneEdit(const CancelEdits: Boolean = False); override;
     procedure DrawEditor(const ACanvas: TCanvas); override;
@@ -1269,7 +1266,6 @@ type
   public
     constructor Create(const AParent: TJvCustomInspectorItem;
       const AData: TJvCustomInspectorData); override;
-    destructor Destroy; override;
     procedure BeforeDestruction; override;
     procedure AddOwner(const AOwner: TComponent);
     procedure DeleteOwner(const AOwner: TComponent); overload;
@@ -2249,6 +2245,13 @@ type
 var
   GlobalCanvasStack: TCanvasStack = nil;
 
+constructor TCanvasStack.Create(const ACapacity: Integer);
+begin
+  inherited Create(True);
+  FTop := -1;
+  Capacity := ACapacity;
+end;
+
 procedure TCanvasStack.SetCapacity(const Value: Integer);
 var
   I: Integer;
@@ -2269,13 +2272,6 @@ begin
         Add(TCanvasState.Create(nil));
     end;
   end;
-end;
-
-constructor TCanvasStack.Create(const ACapacity: Integer);
-begin
-  inherited Create(True);
-  FTop := -1;
-  Capacity := ACapacity;
 end;
 
 function TCanvasStack.Push(const Canvas: TCanvas): Integer;
@@ -2615,6 +2611,60 @@ begin
     AddFinalizeObjectNil(sUnitName, TObject(GlobalDataRegister));
   end;
   Result := GlobalDataRegister;
+end;
+
+constructor TJvCustomInspector.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  {$IFDEF VisualCLX}
+  ControlStyle := ControlStyle - [csAcceptsControls, csNoFocus];
+  FHorzScrollBar := TScrollBar.Create(Self);
+  FVertScrollBar := TScrollBar.Create(Self);
+
+  FHorzScrollBar.Parent := Self;
+  FHorzScrollBar.Visible := False;
+  FHorzScrollBar.Kind := sbHorizontal;
+  FHorzScrollBar.Align := alBottom;
+  FHorzScrollBar.OnScroll := Scrolled;
+
+  FVertScrollBar.Parent := Self;
+  FVertScrollBar.Visible := False;
+  FVertScrollBar.Kind := sbVertical;
+  FVertScrollBar.Align := alRight;
+  FVertScrollBar.OnScroll := Scrolled;
+
+  { HorzScrollBar and VertScrollBar are a little bit tricky. As JvCustomPainter
+    overrides AdjustClientRect the Align property will force the scroll bars to
+    fit into the adjusted client rect. To prevent this the AdjustClientRect only
+    adjusts the client rect if ScrollBar.Align <> alBottom/alRight. This is
+    the case after the first Paint event. }
+  {$ENDIF VisualCLX}
+
+  FBandStartsNoSB := TList.Create;
+  FBandStartsSB := TList.Create;
+  FSortNotificationList := TList.Create;
+  FItemHeight := 16;
+  {$IFDEF VCL}
+  DoubleBuffered := True;
+  {$ENDIF VCL}
+  FVisibleList := TStringList.Create;
+  FRoot := TJvCustomInspectorItem.Create(nil, nil);
+  Root.SetInspector(Self);
+  Root.Flags := [iifHidden, iifExpanded, iifReadonly, iifVisible];
+  FSelectedIndex := -1;
+  {$IFDEF VCL}
+  BevelKind := bkTile;
+  {$ENDIF VCL}
+  BevelInner := bvNone;
+  BevelOuter := bvLowered;
+  TabStop := True;
+  Width := 300;
+  Height := 100;
+  Divider := 75;
+  BandWidth := 150;
+
+  if not (csDesigning in ComponentState) then
+    GlobalInspReg.RegInspector(Self);
 end;
 
 {$IFDEF VisualCLX}
@@ -4139,60 +4189,6 @@ begin
     Result := -1;
 end;
 
-constructor TJvCustomInspector.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  {$IFDEF VisualCLX}
-  ControlStyle := ControlStyle - [csAcceptsControls, csNoFocus];
-  FHorzScrollBar := TScrollBar.Create(Self);
-  FVertScrollBar := TScrollBar.Create(Self);
-
-  FHorzScrollBar.Parent := Self;
-  FHorzScrollBar.Visible := False;
-  FHorzScrollBar.Kind := sbHorizontal;
-  FHorzScrollBar.Align := alBottom;
-  FHorzScrollBar.OnScroll := Scrolled;
-
-  FVertScrollBar.Parent := Self;
-  FVertScrollBar.Visible := False;
-  FVertScrollBar.Kind := sbVertical;
-  FVertScrollBar.Align := alRight;
-  FVertScrollBar.OnScroll := Scrolled;
-
-  { HorzScrollBar and VertScrollBar are a little bit tricky. As JvCustomPainter
-    overrides AdjustClientRect the Align property will force the scroll bars to
-    fit into the adjusted client rect. To prevent this the AdjustClientRect only
-    adjusts the client rect if ScrollBar.Align <> alBottom/alRight. This is
-    the case after the first Paint event. }
-  {$ENDIF VisualCLX}
-
-  FBandStartsNoSB := TList.Create;
-  FBandStartsSB := TList.Create;
-  FSortNotificationList := TList.Create;
-  FItemHeight := 16;
-  {$IFDEF VCL}
-  DoubleBuffered := True;
-  {$ENDIF VCL}
-  FVisibleList := TStringList.Create;
-  FRoot := TJvCustomInspectorItem.Create(nil, nil);
-  Root.SetInspector(Self);
-  Root.Flags := [iifHidden, iifExpanded, iifReadonly, iifVisible];
-  FSelectedIndex := -1;
-  {$IFDEF VCL}
-  BevelKind := bkTile;
-  {$ENDIF VCL}
-  BevelInner := bvNone;
-  BevelOuter := bvLowered;
-  TabStop := True;
-  Width := 300;
-  Height := 100;
-  Divider := 75;
-  BandWidth := 150;
-
-  if not (csDesigning in ComponentState) then
-    GlobalInspReg.RegInspector(Self);
-end;
-
 procedure TJvCustomInspector.BeforeDestruction;
 begin
   inherited BeforeDestruction;
@@ -5210,6 +5206,12 @@ end;
 
 //=== TJvInspectorItemSizing =================================================
 
+constructor TJvInspectorItemSizing.Create(const AItem: TJvCustomInspectorItem);
+begin
+  inherited Create;
+  Item := AItem;
+end;
+
 function TJvInspectorItemSizing.GetMinHeight: TItemRowSizing;
 begin
   Result := FMinHeight;
@@ -5270,12 +5272,6 @@ begin
     else
       Item.Height := CurHeight;
   end;
-end;
-
-constructor TJvInspectorItemSizing.Create(const AItem: TJvCustomInspectorItem);
-begin
-  inherited Create;
-  Item := AItem;
 end;
 
 procedure TJvInspectorItemSizing.Assign(Source: TPersistent);
@@ -5350,11 +5346,6 @@ begin
   end;
   FData := AData;
   FDropDownCount := 8;
-end;
-
-destructor TJvCustomInspectorItem.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TJvCustomInspectorItem.AlphaSort;
@@ -7234,11 +7225,6 @@ begin
   Item := AItem;
 end;
 
-destructor TJvInspectorCompoundColumn.Destroy;
-begin
-  inherited Destroy;
-end;
-
 function TJvInspectorCompoundColumn.GetItem: TJvCustomInspectorItem;
 begin
   Result := FItem;
@@ -7308,11 +7294,6 @@ constructor TJvInspectorCustomCompoundItem.Create(const AParent: TJvCustomInspec
 begin
   inherited Create(AParent, AData);
   FColumns := TObjectList.Create;
-end;
-
-destructor TJvInspectorCustomCompoundItem.Destroy;
-begin
-  inherited Destroy;
 end;
 
 function TJvInspectorCustomCompoundItem.AddColumnPrim(const Item: TJvCustomInspectorItem): Integer;
@@ -8513,11 +8494,6 @@ constructor TJvInspectorComponentItem.Create(const AParent: TJvCustomInspectorIt
 begin
   inherited Create(AParent, AData);
   FOwners := TList.Create;
-end;
-
-destructor TJvInspectorComponentItem.Destroy;
-begin
-  inherited Destroy;
 end;
 
 function TJvInspectorComponentItem.GetItemComponentFlags: TInspectorComponentFlags;
@@ -10033,6 +10009,11 @@ end;
 
 //=== TJvCustomInspectorData =================================================
 
+constructor TJvCustomInspectorData.Create;
+begin
+  raise EJvInspectorData.CreateFmt(RsENotSeparately, [ClassName]);
+end;
+
 constructor TJvCustomInspectorData.CreatePrim(AName: string;
   ATypeInfo: PTypeInfo);
 begin
@@ -10206,11 +10187,6 @@ end;
 function TJvCustomInspectorData.SupportsMethodPointers: Boolean;
 begin
   Result := False;
-end;
-
-constructor TJvCustomInspectorData.Create;
-begin
-  raise EJvInspectorData.CreateFmt(RsENotSeparately, [ClassName]);
 end;
 
 procedure TJvCustomInspectorData.BeforeDestruction;
@@ -11875,6 +11851,12 @@ end;
 
 //=== TJvCustomInspectorRegItem ==============================================
 
+constructor TJvCustomInspectorRegItem.Create(const AItemClass: TJvInspectorItemClass);
+begin
+  inherited Create;
+  FItemClass := AItemClass;
+end;
+
 function TJvCustomInspectorRegItem.CompareTo(const ADataObj: TJvCustomInspectorData;
   const Item: TJvCustomInspectorRegItem): Integer;
 begin
@@ -11892,12 +11874,6 @@ end;
 procedure TJvCustomInspectorRegItem.SetItemClass(const Value: TJvInspectorItemClass);
 begin
   FItemClass := Value;
-end;
-
-constructor TJvCustomInspectorRegItem.Create(const AItemClass: TJvInspectorItemClass);
-begin
-  inherited Create;
-  FItemClass := AItemClass;
 end;
 
 procedure TJvCustomInspectorRegItem.ApplyDefaults(const Item: TJvCustomInspectorItem);
@@ -12174,11 +12150,10 @@ end;
 function TJvInspectorTypeInfoMapperRegItem.Compare(const ADataObj: TJvCustomInspectorData;
   const Item: TJvCustomInspectorRegItem): Integer;
 begin
-    Result := inherited CompareTo(ADataObj, Item);
+  Result := inherited CompareTo(ADataObj, Item);
 end;
 
-function TJvInspectorTypeInfoMapperRegItem.MatchValue(
-  const ADataObj: TJvCustomInspectorData): Integer;
+function TJvInspectorTypeInfoMapperRegItem.MatchValue(const ADataObj: TJvCustomInspectorData): Integer;
 var
   RetVal: Integer;
 begin
@@ -12198,7 +12173,7 @@ begin
       No match:         return 0 }
   Result := 0;
   RetVal := Result;
-  if (ObjectClass <> nil) then
+  if ObjectClass <> nil then
   begin
     if TJvInspectorPropData(ADataObj).Instance.ClassType = ObjectClass then
       Inc(RetVal, 32)

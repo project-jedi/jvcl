@@ -151,7 +151,7 @@ end;
 
 procedure TJvInstallLabel.UpdateStyles;
 var
-  aStyle: PStyles;
+  Style: PStyles;
 begin
   while FStyles.Count > Lines.Count do
   begin
@@ -162,10 +162,10 @@ begin
 
   while FStyles.Count < Lines.Count do
   begin
-    New(aStyle);
-    aStyle^.Style := Font.Style; { default }
-    aStyle^.Index := FDefaultImage;
-    FStyles.Add(aStyle);
+    New(Style);
+    Style^.Style := Font.Style; { default }
+    Style^.Index := FDefaultImage;
+    FStyles.Add(Style);
   end;
 end;
 

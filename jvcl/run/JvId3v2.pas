@@ -700,14 +700,12 @@ end;
 constructor TJvID3Text.Create(AController: TJvID3Controller);
 begin
   inherited Create(AController);
-
   FDummyList := TStringList.Create;
 end;
 
 destructor TJvID3Text.Destroy;
 begin
   FDummyList.Free;
-
   inherited Destroy;
 end;
 
@@ -946,14 +944,6 @@ end;
 
 //=== TJvID3v2 ===============================================================
 
-procedure TJvID3v2.ActiveChanged(Sender: TObject; Activated: Boolean);
-begin
-  if Activated then
-    FImages.Pictures.RetrievePictures
-  else
-    FImages.Pictures.RemovePictures;
-end;
-
 constructor TJvID3v2.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -988,6 +978,14 @@ begin
   FOwner.Free;
   FPopularimeter.Free;
   inherited Destroy;
+end;
+
+procedure TJvID3v2.ActiveChanged(Sender: TObject; Activated: Boolean);
+begin
+  if Activated then
+    FImages.Pictures.RetrievePictures
+  else
+    FImages.Pictures.RemovePictures;
 end;
 
 function TJvID3v2.GetPlayCounter: Cardinal;

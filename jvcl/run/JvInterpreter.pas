@@ -583,7 +583,6 @@ type
     FIDSetList: TJvInterpreterIdentifierList; // write default indexed properties
     FIntfGetList: TJvInterpreterIdentifierList;  // interface methods
     FDirectGetList: TJvInterpreterIdentifierList; // direct get list
-    FDisableExternalFunctions: Boolean;      
     FClassList: TJvInterpreterIdentifierList; // delphi classes
     FConstList: TJvInterpreterIdentifierList; // delphi consts
     FFunctionList: TJvInterpreterIdentifierList; // functions, procedures
@@ -598,6 +597,7 @@ type
     FEventList: TJvInterpreterIdentifierList;
     FSrcVarList: TJvInterpreterVarList; // variables, constants in JvInterpreter-source
     FSrcClassList: TJvInterpreterIdentifierList; // JvInterpreter-source classes
+    FDisableExternalFunctions: Boolean;      
     FSorted: Boolean;
     procedure CheckArgs(var Args: TJvInterpreterArgs; ParamCount: Integer;
       var ParamTypes: TTypeArray);
@@ -814,7 +814,7 @@ type
     FOnGetValue: TJvInterpreterGetValue;
     FOnSetValue: TJvInterpreterSetValue;
     FLastError: EJvInterpreterError;
-    FDisableExternalFunctions : Boolean; 
+    FDisableExternalFunctions: Boolean;
     function GetSource: string;
     procedure SetSource(Value: string);
     procedure SetCurPos(Value: Integer);
@@ -2903,8 +2903,7 @@ begin
   FIGetList.Duplicates := dupAccept;
   FISetList.Duplicates := dupAccept;
 
-  FDisableExternalFunctions :=False;      
-
+  FDisableExternalFunctions := False;
 end;
 
 destructor TJvInterpreterAdapter.Destroy;
@@ -3994,7 +3993,7 @@ var
     I: Integer;
     JvInterpreterExtFun: TJvInterpreterExtFunction;
   begin
-    if FDisableExternalFunctions then
+    if DisableExternalFunctions then
     begin
       Result := False;
       Exit;
@@ -4793,13 +4792,12 @@ begin
   FPStream := TStringStream.Create('');
   FArgs := TJvInterpreterArgs.Create;
   FAdapter := CreateAdapter;
-  FAdapter.DisableExternalFunctions := FDisableExternalFunctions; 
+  FDisableExternalFunctions := False;
+  FAdapter.DisableExternalFunctions := False;
   FSharedAdapter := GlobalJvInterpreterAdapter;
   FLastError := EJvInterpreterError.Create(-1, -1, '', '');
   FAllowAssignment := True;
-  FCompiled :=False;
-  FDisableExternalFunctions :=False;      
-
+  FCompiled := False;
 end;
 
 destructor TJvInterpreterExpression.Destroy;
@@ -7748,7 +7746,7 @@ var
   OldArgs: TJvInterpreterArgs;
   OldInstance: TObject;
 begin
-  if not FCompiled then
+  if not Compiled then
     Compile;
   OldInstance := FCurInstance;
   try
@@ -8010,8 +8008,6 @@ begin
 end;
 
 procedure TJvInterpreterRecordDataType.Init(var V: Variant);
-//var
-//  I: Integer;
 begin
   FRecordDesc.NewRecord(V);
 end;

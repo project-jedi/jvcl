@@ -66,20 +66,18 @@ type
     case Byte of
       0: (Value: Extended);
       2: (FuncName: string[MaxFuncNameLen]);
-  end; { TokenRec }
+  end;
 
 type
   TJvMathParser = class(TComponent)
   private
-    { Private declarations }
     FInput: string;
     FOnGetVar: TGetVarEvent;
     FOnParseError: TParseErrorEvent;
   protected
-    { Protected declarations }
     CurrToken: TokenRec;
     MathError: Boolean;
-    Stack: array[1..ParserStackSize] of TokenRec;
+    Stack: array [1..ParserStackSize] of TokenRec;
     StackTop: 0..ParserStackSize;
     TokenError: ErrorRange;
     TokenLen: Word;
@@ -93,14 +91,12 @@ type
     procedure Reduce(Reduction: Word);
     procedure Shift(State: Word);
   public
-    { Public declarations }
     Position: Word;
     ParseError: Boolean;
     ParseValue: Extended;
     constructor Create(AOwner: TComponent); override;
     procedure Parse;
   published
-    { Published declarations }
     property OnGetVar: TGetVarEvent read FOnGetVar write FOnGetVar;
     property OnParseError: TParseErrorEvent read FOnParseError
       write FOnParseError;
@@ -154,13 +150,12 @@ type
 
   TJvJanTreeView = class(TTreeView)
   private
-    { Private declarations }
     FParser: TJvMathParser;
-    FParseError: boolean;
+    FParseError: Boolean;
     FKeyMappings: TTreeKeyMappings;
-    FKeymappingsEnabled: boolean;
+    FKeymappingsEnabled: Boolean;
     FVarList: TStringList;
-    FColorFormulas: boolean;
+    FColorFormulas: Boolean;
     FFormuleColor: TColor;
     FDefaultExt: string;
     FFileName: TFileName;
@@ -173,20 +168,18 @@ type
     procedure ParserGetVar(Sender: TObject; VarName: string; var Value: Extended; var Found: Boolean);
     procedure ParserParseError(Sender: TObject; ParseError: Integer);
     procedure doCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
-    procedure SetColorFormulas(const Value: boolean);
+    procedure SetColorFormulas(const Value: Boolean);
     procedure SetFormuleColor(const Value: TColor);
     procedure SetDefaultExt(const Value: string);
     procedure SetFileName(const Value: TFileName);
   protected
-    { Protected declarations }
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure DblClick; override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
   public
-    { Public declarations }
-    constructor Create(AOwner: Tcomponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DuplicateNode;
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
@@ -203,8 +196,8 @@ type
     procedure Recalculate;
   published
     property KeyMappings: TTreeKeyMappings read FKeyMappings write SetKeyMappings;
-    property KeymappingsEnabled: boolean read FKeyMappingsEnabled write SetKeyMappingsEnabled;
-    property ColorFormulas: boolean read FColorFormulas write SetColorFormulas;
+    property KeymappingsEnabled: Boolean read FKeyMappingsEnabled write SetKeyMappingsEnabled;
+    property ColorFormulas: Boolean read FColorFormulas write SetColorFormulas;
     property FormuleColor: TColor read FFormuleColor write SetFormuleColor;
     property FileName: TFileName read FFilename write SetFileName;
     property DefaultExt: string read FDefaultExt write SetDefaultExt;
@@ -215,20 +208,30 @@ implementation
 uses
   JvConsts, JvResources, JvTypes;
 
-constructor TJvJanTreeView.Create(AOwner: Tcomponent);
+//=== TJvJanTreeView =========================================================
+
+constructor TJvJanTreeView.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   DragMode := dmAutomatic;
   FDefaultExt := 'txt';
   FKeyMappings := TTreeKeyMappings.create;
   SetupKeyMappings;
-  FColorFormulas := true;
-  FKeyMappingsEnabled := true;
+  FColorFormulas := True;
+  FKeyMappingsEnabled := True;
   FParser := TJvMathParser.create(Self);
   FParser.ongetVar := ParserGetVar;
   FParser.onparseError := ParserParseError;
   FVarList := TStringList.Create;
   onCustomDrawItem := doCustomDrawItem;
+end;
+
+destructor TJvJanTreeView.Destroy;
+begin
+  FParser.Free;
+  FKeyMappings.free;
+  FVarList.Free;
+  inherited Destroy;
 end;
 
 procedure TJvJanTreeView.SetUpKeyMappings;
@@ -269,7 +272,7 @@ begin
   if selected <> nil then
   begin
     n := selected;
-    n := items.AddChild(n, 'new node');
+    n := Items.AddChild(n, 'new node');
     selected := n;
   end;
 end;
@@ -278,9 +281,9 @@ procedure TJvJanTreeView.DoAddNode;
 var
   n: ttreenode;
 begin
-  items.BeginUpdate;
+  Items.BeginUpdate;
   n := Items.Add(selected, 'new node');
-  items.EndUpdate;
+  Items.EndUpdate;
   selected := n;
 end;
 
@@ -310,9 +313,9 @@ begin
   if Selected <> nil then
   begin
     n := selected;
-    items.BeginUpdate;
-    n := items.Insert(n, 'new node');
-    items.EndUpdate;
+    Items.BeginUpdate;
+    n := Items.Insert(n, 'new node');
+    Items.EndUpdate;
     Selected := n;
   end;
 end;
@@ -322,14 +325,15 @@ var
   MyHitTest: THitTests;
   n: ttreenode;
 begin
-  inherited;
+  inherited DragDrop(Source, X, Y);
   MyHitTest := Self.GetHitTestInfoAt(X, Y);
   if htOnLabel in MyHitTest then
   begin
     n := Self.GetNodeAt(x, y);
     if source = Self then
     begin
-      if Selected = nil then exit;
+      if Selected = nil then
+        exit;
       selected.MoveTo(n, nainsert);
     end;
   end;
@@ -340,9 +344,9 @@ end;
 procedure TJvJanTreeView.DragOver(Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
-  inherited;
-  Accept := (source = Self);
-  if assigned(ondragover) then
+  inherited DragOver(Source, X, Y, State, Accept);
+  Accept := (Source = Self);
+  if Assigned(ondragover) then
     ondragover(Self, source, x, y, state, accept);
 end;
 
@@ -353,7 +357,7 @@ begin
   if selected <> nil then
   begin
     mynode := selected;
-    mynewnode := items.add(mynode, mynode.text);
+    mynewnode := Items.add(mynode, mynode.text);
     nodeduplicate(Self, mynode, mynewnode);
   end;
 end;
@@ -363,74 +367,74 @@ var
   Mkey: word;
   MShift: TshiftState;
 
-  function MLoadTree: boolean;
+  function MLoadTree: Boolean;
   begin
     ShortCutToKey(KeyMappings.LoadTree, Mkey, MShift);
     result := ((Mkey = key) and (MShift = Shift));
   end;
 
-  function MSaveTree: boolean;
+  function MSaveTree: Boolean;
   begin
     ShortCutToKey(KeyMappings.SaveTree, Mkey, MShift);
     result := ((Mkey = key) and (MShift = Shift));
   end;
 
-  function MSaveTreeAs: boolean;
+  function MSaveTreeAs: Boolean;
   begin
     ShortCutToKey(KeyMappings.SaveTreeAs, Mkey, MShift);
     result := ((Mkey = key) and (MShift = Shift));
   end;
 
-  function MCloseTree: boolean;
+  function MCloseTree: Boolean;
   begin
     ShortCutToKey(KeyMappings.CloseTree, Mkey, MShift);
     result := ((Mkey = key) and (MShift = Shift));
   end;
 
-  function MAddNode: boolean;
+  function MAddNode: Boolean;
   begin
     ShortCutToKey(KeyMappings.AddNode, Mkey, MShift);
     result := ((Mkey = key) and (MShift = Shift));
   end;
 
-  function MDeleteNode: boolean;
+  function MDeleteNode: Boolean;
   begin
     ShortCutToKey(KeyMappings.DeleteNode, Mkey, MShift);
     result := ((Mkey = key) and (MShift = Shift));
   end;
 
-  function MInsertNode: boolean;
+  function MInsertNode: Boolean;
   begin
     ShortCutToKey(KeyMappings.InsertNode, Mkey, MShift);
     result := ((Mkey = key) and (MShift = Shift));
   end;
 
-  function MAddChildNode: boolean;
+  function MAddChildNode: Boolean;
   begin
     ShortCutToKey(KeyMappings.AddChildNode, Mkey, MShift);
     result := ((Mkey = key) and (MShift = Shift));
   end;
 
-  function MDuplicateNode: boolean;
+  function MDuplicateNode: Boolean;
   begin
     ShortCutToKey(KeyMappings.DuplicateNode, Mkey, MShift);
     result := ((Mkey = key) and (MShift = Shift));
   end;
 
-  function MEditNode: boolean;
+  function MEditNode: Boolean;
   begin
     ShortCutToKey(KeyMappings.EditNode, Mkey, MShift);
     result := ((Mkey = key) and (MShift = Shift));
   end;
 
-  function MFindNode: boolean;
+  function MFindNode: Boolean;
   begin
     ShortCutToKey(KeyMappings.FindNode, Mkey, MShift);
     result := ((Mkey = key) and (MShift = Shift));
   end;
 
 begin
-  inherited;
+  inherited KeyUp(Key, Shift);
   if KeyMappingsEnabled then
   begin
     if MAddNode then
@@ -510,27 +514,19 @@ begin
   if fromnode.count > 0 then
     for i := 1 to fromnode.count do
     begin
-      mytree.items.addchild(tonode, fromnode.item[i - 1].text);
+      mytree.Items.addchild(tonode, fromnode.item[i - 1].text);
       if fromnode.item[i - 1].count > 0 then
         nodeduplicate(mytree, fromnode.item[i - 1], tonode.item[i - 1]);
     end;
-end;
-
-destructor TJvJanTreeView.Destroy;
-begin
-  FParser.Free;
-  FKeyMappings.free;
-  FVarList.Free;
-  inherited;
 end;
 
 procedure TJvJanTreeView.ParserGetVar(Sender: TObject; VarName: string;
   var Value: Extended; var Found: Boolean);
 var
   n: TTreenode;
-  index: integer;
+  index: Integer;
 begin
-  found := false;
+  found := False;
   index := FVarList.IndexOf(VarName);
   if index <> -1 then
   begin
@@ -538,48 +534,51 @@ begin
     if n.count > 0 then
     try
       Value := strtofloat(n.item[0].text);
-      found := true;
+      found := True;
     except
       //
     end;
   end
   else
-  if lowercase(VarName) = 'pi' then
+  if LowerCase(VarName) = 'pi' then
   begin
-    value := pi;
-    found := true;
+    value := Pi;
+    found := True;
   end;
 end;
 
 procedure TJvJanTreeView.ParserParseError(Sender: TObject;
   ParseError: Integer);
 begin
-  FParseError := true;
+  FParseError := True;
 end;
 
 procedure TJvJanTreeView.Recalculate;
 var
   n, nv: TTreeNode;
   s: string;
-  i, p: integer;
+  i, p: Integer;
 begin
-  if Items.Count = 0 then exit;
+  if Items.Count = 0 then
+    exit;
   ParseVariables;
-  for i := 0 to items.count - 1 do
+  for i := 0 to Items.count - 1 do
   begin
-    n := items[i];
+    n := Items[i];
     s := n.Text;
     p := pos('=', s);
-    if p = 0 then continue;
+    if p = 0 then
+      continue;
     s := copy(s, p + 1, length(s));
-    if s = '' then continue;
+    if s = '' then
+      continue;
     FParser.ParseString := s;
-    FparseError := false;
+    FparseError := False;
     Fparser.Parse;
     if not FParseError then
     begin
       if n.count = 0 then
-        items.AddChild(n, 'new');
+        Items.AddChild(n, 'new');
       nv := n.Item[0];
       nv.Text := floattostr(Fparser.ParseValue);
     end
@@ -590,6 +589,204 @@ begin
     end;
   end;
 end;
+
+procedure TJvJanTreeView.ParseVariables;
+var
+  i, p: Integer;
+  n: TTreeNode;
+  s: string;
+begin
+  FVarList.Clear;
+  if Items.Count = 0 then
+    exit;
+  for i := 0 to Items.count - 1 do
+  begin
+    n := Items[i];
+    s := n.Text;
+    p := pos('=', s);
+    if p = 0 then
+      continue;
+    s := copy(s, 1, p - 1);
+    if s <> '' then
+      FVarList.AddObject(s, TObject(n));
+  end;
+end;
+
+procedure TJvJanTreeView.doCustomDrawItem(Sender: TCustomTreeView;
+  Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
+var
+  s: string;
+  dr: trect;
+begin
+  s := node.text;
+  if (cdsSelected in state) or (cdsFocused in state) then
+  begin
+    defaultdraw := True;
+    exit;
+  end;
+  if (copy(s, 1, 7) = 'http://') or (copy(s, 1, 7) = 'mailto:') then
+    with Canvas do
+    begin
+      dr := node.displayrect(True);
+      font := Self.Font;
+      font.Style := font.style + [fsunderline];
+      font.Color := clblue;
+      textrect(dr, dr.left, dr.Top, s);
+      defaultdraw := False;
+    end
+  else
+  if FColorFormulas and (pos('=', s) > 0) then
+    with Canvas do
+    begin
+      dr := node.displayrect(True);
+      font := Self.Font;
+      font.color := FFormuleColor;
+      textrect(dr, dr.left, dr.top, s);
+      defaultdraw := False;
+    end
+  else
+    defaultdraw := True;
+end;
+
+procedure TJvJanTreeView.SetColorFormulas(const Value: Boolean);
+begin
+  FColorFormulas := Value;
+end;
+
+procedure TJvJanTreeView.SetFormuleColor(const Value: TColor);
+begin
+  FFormuleColor := Value;
+end;
+
+procedure TTreeKeyMappings.SetLoadTree(const Value: TShortCut);
+begin
+  FLoadTree := Value;
+end;
+
+procedure TTreeKeyMappings.SetSaveTree(const Value: TShortCut);
+begin
+  FSaveTree := Value;
+end;
+
+procedure TJvJanTreeView.DoLoadTree;
+var
+  dlg: TOpenDialog;
+  s: string;
+begin
+  dlg := TOpendialog.Create(Self);
+  try
+    dlg.DefaultExt := FDefaultExt;
+    s := FDefaultExt;
+    if s = '' then
+      s := '*';
+    dlg.filter := RsTreeViewFiles + '|*.' + s;
+    if dlg.Execute then
+    begin
+      LoadFromFile(dlg.filename);
+      FFileName := dlg.FileName;
+      Recalculate;
+    end;
+  finally
+    dlg.free;
+  end;
+end;
+
+procedure TJvJanTreeView.DoSaveTreeAs;
+var
+  dlg: TSaveDialog;
+  s: string;
+begin
+  dlg := TSavedialog.Create(Self);
+  try
+    dlg.DefaultExt := FDefaultExt;
+    s := FDefaultExt;
+    if s = '' then
+      s := '*';
+    dlg.filter := RsTreeViewFiles + '|*.' + s;
+    if dlg.Execute then
+    begin
+      SaveToFile(dlg.filename);
+      FFileName := dlg.FileName;
+    end;
+  finally
+    dlg.free;
+  end;
+end;
+
+procedure TJvJanTreeView.SetDefaultExt(const Value: string);
+begin
+  FDefaultExt := Value;
+end;
+
+procedure TJvJanTreeView.SetFilename(const Value: TFileName);
+begin
+  FFilename := Value;
+end;
+
+procedure TJvJanTreeView.DoCloseTree;
+begin
+  if MessageDlg(RsSaveCurrentTree, mtconfirmation, [mbyes, mbno], 0) = mryes then
+  begin
+    if FFilename <> '' then
+      SaveToFile(FFilename)
+    else
+      DoSaveTreeAs;
+  end;
+  Items.BeginUpdate;
+  Items.Clear;
+  Items.EndUpdate;
+  FFileName := '';
+end;
+
+procedure TTreeKeyMappings.SetCloseTree(const Value: TShortCut);
+begin
+  FCloseTree := Value;
+end;
+
+procedure TTreeKeyMappings.SetSaveTreeAs(const Value: TShortCut);
+begin
+  FSaveTreeAs := Value;
+end;
+
+procedure TJvJanTreeView.DoSaveTree;
+begin
+  if FFileName <> '' then
+    SaveToFile(FFileName)
+  else
+    DoSaveTreeAs;
+end;
+
+procedure TTreeKeyMappings.SetFindNode(const Value: TshortCut);
+begin
+  FFindNode := Value;
+end;
+
+procedure TJvJanTreeView.DoFindNode;
+var
+  n: TTreeNode;
+  i, fr: Integer;
+  s: string;
+begin
+  n := selected;
+  if n = nil then
+    exit;
+  s := inputbox(RsSearch, RsSearchFor, FSearchText);
+  if s = '' then
+    exit;
+  FSearchText := s;
+  s := Lowercase(s);
+  fr := n.AbsoluteIndex;
+  if fr < Items.count - 1 then
+    for i := fr + 1 to Items.Count - 1 do
+      if Pos(s, LowerCase(Items[i].text)) > 0 then
+      begin
+        selected := Items[i];
+        exit;
+      end;
+  showmessage(Format(RsNoMoresFound, [s]));
+end;
+
+//=== TJvMathParser ==========================================================
 
 constructor TJvMathParser.Create(AOwner: TComponent);
 begin
@@ -627,11 +824,16 @@ begin
   if (Production <= 8) or (Production = 100) then
   begin
     case State of
-      0, 9, 12, 13, 20: GotoState := 3;
-      14: GotoState := 23;
-      15: GotoState := 24;
-      16: GotoState := 25;
-      40: GotoState := 80;
+      0, 9, 12, 13, 20:
+        GotoState := 3;
+      14:
+        GotoState := 23;
+      15:
+        GotoState := 24;
+      16:
+        GotoState := 25;
+      40:
+        GotoState := 80;
     end; { case }
   end
   else
@@ -693,7 +895,8 @@ begin
     VarName := VarName + FInput[Position];
     Inc(Position);
   end; { while }
-  if Assigned(FOnGetVar) then FOnGetVar(Self, VarName, Value, VarFound);
+  if Assigned(FOnGetVar) then
+    FOnGetVar(Self, VarName, Value, VarFound);
   IsVar := VarFound;
 end; { IsVar }
 
@@ -1037,7 +1240,8 @@ begin
   begin
     if TokenError = ErrBadRange then
       Dec(Position, TokenLen);
-    if Assigned(FOnParseError) then FOnParseError(Self, TokenError);
+    if Assigned(FOnParseError) then
+      FOnParseError(Self, TokenError);
   end; { if }
   if MathError or (TokenError <> 0) then
   begin
@@ -1217,6 +1421,8 @@ begin
   TokenType := NextToken;
 end; { Shift }
 
+//=== TTreeKeyMappings =======================================================
+
 procedure TTreeKeyMappings.SetAddNode(const Value: TShortCut);
 begin
   FAddNode := Value;
@@ -1253,196 +1459,6 @@ begin
     recalculate;
   if assigned(onkeyPress) then
     onkeyPress(Self, key);
-end;
-
-procedure TJvJanTreeView.ParseVariables;
-var
-  i, p: integer;
-  n: TTreeNode;
-  s: string;
-begin
-  FVarList.Clear;
-  if items.Count = 0 then exit;
-  for i := 0 to items.count - 1 do
-  begin
-    n := items[i];
-    s := n.Text;
-    p := pos('=', s);
-    if p = 0 then continue;
-    s := copy(s, 1, p - 1);
-    if s <> '' then
-      FVarList.AddObject(s, TObject(n));
-  end;
-end;
-
-procedure TJvJanTreeView.doCustomDrawItem(Sender: TCustomTreeView;
-  Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
-var
-  s: string;
-  dr: trect;
-begin
-  s := node.text;
-  if (cdsSelected in state) or (cdsFocused in state) then
-  begin
-    defaultdraw := true;
-    exit;
-  end;
-  if (copy(s, 1, 7) = 'http://') or (copy(s, 1, 7) = 'mailto:') then
-    with Canvas do
-    begin
-      dr := node.displayrect(true);
-      font := Self.Font;
-      font.Style := font.style + [fsunderline];
-      font.Color := clblue;
-      textrect(dr, dr.left, dr.Top, s);
-      defaultdraw := false;
-    end
-  else
-  if FColorFormulas and (pos('=', s) > 0) then
-    with Canvas do
-    begin
-      dr := node.displayrect(true);
-      font := Self.Font;
-      font.color := FFormuleColor;
-      textrect(dr, dr.left, dr.top, s);
-      defaultdraw := false;
-    end
-  else
-    defaultdraw := true;
-end;
-
-procedure TJvJanTreeView.SetColorFormulas(const Value: boolean);
-begin
-  FColorFormulas := Value;
-end;
-
-procedure TJvJanTreeView.SetFormuleColor(const Value: TColor);
-begin
-  FFormuleColor := Value;
-end;
-
-procedure TTreeKeyMappings.SetLoadTree(const Value: TShortCut);
-begin
-  FLoadTree := Value;
-end;
-
-procedure TTreeKeyMappings.SetSaveTree(const Value: TShortCut);
-begin
-  FSaveTree := Value;
-end;
-
-procedure TJvJanTreeView.DoLoadTree;
-var
-  dlg: TOpenDialog;
-  s: string;
-begin
-  dlg := TOpendialog.Create(Self);
-  try
-    dlg.DefaultExt := FDefaultExt;
-    s := FDefaultExt;
-    if s = '' then s := '*';
-    dlg.filter := RsTreeViewFiles + '|*.' + s;
-    if dlg.Execute then
-    begin
-      LoadFromFile(dlg.filename);
-      FFileName := dlg.FileName;
-      Recalculate;
-    end;
-  finally
-    dlg.free;
-  end;
-end;
-
-procedure TJvJanTreeView.DoSaveTreeAs;
-var
-  dlg: TSaveDialog;
-  s: string;
-begin
-  dlg := TSavedialog.Create(Self);
-  try
-    dlg.DefaultExt := FDefaultExt;
-    s := FDefaultExt;
-    if s = '' then s := '*';
-    dlg.filter := RsTreeViewFiles + '|*.' + s;
-    if dlg.Execute then
-    begin
-      SaveToFile(dlg.filename);
-      FFileName := dlg.FileName;
-    end;
-  finally
-    dlg.free;
-  end;
-end;
-
-procedure TJvJanTreeView.SetDefaultExt(const Value: string);
-begin
-  FDefaultExt := Value;
-end;
-
-procedure TJvJanTreeView.SetFilename(const Value: TFileName);
-begin
-  FFilename := Value;
-end;
-
-procedure TJvJanTreeView.DoCloseTree;
-begin
-  if MessageDlg(RsSaveCurrentTree, mtconfirmation, [mbyes, mbno], 0) = mryes then
-  begin
-    if FFilename <> '' then
-      SaveToFile(FFilename)
-    else
-      DoSaveTreeAs;
-  end;
-  items.BeginUpdate;
-  items.Clear;
-  items.EndUpdate;
-  FFileName := '';
-end;
-
-procedure TTreeKeyMappings.SetCloseTree(const Value: TShortCut);
-begin
-  FCloseTree := Value;
-end;
-
-procedure TTreeKeyMappings.SetSaveTreeAs(const Value: TShortCut);
-begin
-  FSaveTreeAs := Value;
-end;
-
-procedure TJvJanTreeView.DoSaveTree;
-begin
-  if FFileName <> '' then
-    SaveToFile(FFileName)
-  else
-    DoSaveTreeAs;
-end;
-
-procedure TTreeKeyMappings.SetFindNode(const Value: TshortCut);
-begin
-  FFindNode := Value;
-end;
-
-procedure TJvJanTreeView.DoFindNode;
-var
-  n: TTreeNode;
-  i, fr: integer;
-  s: string;
-begin
-  n := selected;
-  if n = nil then exit;
-  s := inputbox(RsSearch, RsSearchFor, FSearchText);
-  if s = '' then exit;
-  FSearchText := s;
-  s := Lowercase(s);
-  fr := n.AbsoluteIndex;
-  if fr < items.count - 1 then
-    for i := fr + 1 to items.Count - 1 do
-      if Pos(s, lowercase(items[i].text)) > 0 then
-      begin
-        selected := items[i];
-        exit;
-      end;
-  showmessage(Format(RsNoMoresFound, [s]));
 end;
 
 end.
