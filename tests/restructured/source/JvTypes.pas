@@ -34,21 +34,35 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics;
+  
+const
+  MaxPixelCount = 32768;
+  SHFMT_ID_DEFAULT = $FFFF;
+  SHFMT_OPT_QUICKFORMAT = $0000;
+  SHFMT_OPT_FULL = $0001;
+  SHFMT_OPT_SYSONLY = $0002;
+  SHFMT_ERROR = -1;
+  SHFMT_CANCEL = -2;
+  SHFMT_NOFORMAT = -3;
+  TVIS_CHECKED = $2000;
+  CPL_DBLCLK = 5;
+  { (rom) unused and silly
+  Oper = 120 * Pi / 180;
+  }
 
 type
+  // base JVCL Exception class to derive from
+  EJVCLException = class(Exception);
   TOnUrlClick = procedure(Sender: TObject; Url: string) of object;
   TOnLinkClick = procedure(Sender: TObject; Link: string) of object;
-
-type
+  // the signature of procedures in CPL's that implements Control Panel functionality
   TCplApplet = function(hwndCPl: THandle; uMsg: DWORD; lParam1, lParam2: LongInt): LongInt; stdcall;
+  // the signature of procedures in DLL's that can be called using rundll32.exe
+  TRunDLL32Proc = procedure(Handle: HWnd; hInstance: THandle; CmdLine: PChar; CmdShow: integer); stdcall;
   TOnChangeKey = procedure(Sender: TObject; Rootkey: HKEY; Path: string) of object;
-
-type
   TLabelDirection = (sdLeftToRight, sdRightToLeft);
   TAngle = 0..360;
   TDirection = (drFromLeft, drFromRight, drFromTop, drFromBottom);
-
-type
   TJvOutputMode = (omFile, omStream);
   TOnDoneFile = procedure(Sender: TObject; FileName: string; FileSize: Integer; Url: string) of object;
   TOnDoneStream = procedure(Sender: TObject; Stream: TStream; StreamSize: Integer; Url: string) of object;
@@ -56,10 +70,7 @@ type
     var Continue: Boolean) of object;
   TOnFtpProgress = procedure(Sender: TObject; Position: Integer; Url: string) of object;
 
-const
-  MaxPixelCount = 32768;
 
-type
   PRGBArray = ^TRGBArray;
   TRGBArray = array[0..MaxPixelCount - 1] of TRGBTriple;
   TBalance = 0..100;
@@ -80,7 +91,6 @@ type
   end;
   }
 
-type
   TOnError = procedure(Sender: TObject; ErrorMsg: string) of object;
   TWallpaperStyle = (wpTile, wpCenter, wpStretch);
   TTransformationKind = (ttWipeLeft, ttWipeRight, ttWipeUp, ttWipeDown,
@@ -105,7 +115,6 @@ type
   TJoyErrorMsg = procedure(Sender: TObject; code: Integer; Msg: string) of object;
   TBright = 0..200;
 
-type
   TPopupPosition = (ppNone, ppForm, ppApplication);
   TJvDirMask = (dmFileNameChange, dmDirnameChange, dmAttributesChange, dmSizeChange, dmLastWriteChange,
     dmSecurityChange);
@@ -113,16 +122,13 @@ type
   EJvDirectoryError = class(Exception);
   TListEvent = procedure(Sender: TObject; Title: string; Handle: THandle) of object;
 
-type
   TOnPrnProgress = procedure(Sender: TObject; Current, Total: Integer) of object;
   TOnNextPage = procedure(Sender: TObject; PageNumber: Integer) of object;
   TBitmapStyle = (bsNormal, bsCentered, bsStretched);
 
-type
   TOnOpened = procedure(Sender: TObject; Value: string) of object;
   TOnOpenCanceled = procedure(Sender: TObject) of object;
 
-type
   TOnKeyFound = procedure(Sender: TObject; Key, Results, OriginalLine: string) of object;
   TParserInfos = TStringList;
   TParserInf = class
@@ -137,7 +143,6 @@ type
     cr = #13#10;
   }
 
-type
   TGradStyle = (grFilled, grEllipse, grHorizontal, grVertical, grPyramid, grMount);
   TOnDelete = procedure(Sender: TObject; Path: string) of object;
   TOnParent = procedure(Sender: TObject; ParentWindow: THandle) of object;
@@ -148,16 +153,6 @@ type
   TJvRunOptions = set of TJvRunOption;
   TJvFileKind = (ftFile, ftPrinter);
 
-const
-  SHFMT_ID_DEFAULT = $FFFF;
-  SHFMT_OPT_QUICKFORMAT = $0000;
-  SHFMT_OPT_FULL = $0001;
-  SHFMT_OPT_SYSONLY = $0002;
-  SHFMT_ERROR = -1;
-  SHFMT_CANCEL = -2;
-  SHFMT_NOFORMAT = -3;
-
-type
   TSHFormatDrive = function(Handle: HWND; Drive, ID, Options: Word): LongInt; stdcall;
   TFormatOption = (shQuickFormat, shFull, shSystemFilesOnly);
   TButtonStyle = (bsAbortRetryIgnore, bsOk, bsOkCancel, bsRetryCancel, bsYesNo, bsYesNoCancel);
@@ -177,16 +172,7 @@ type
   TDeleteStyles = set of TDeleteStyle;
   TOnOk = procedure(Sender: TObject; Password: string; var Accept: Boolean) of object;
 
-const
-  TVIS_CHECKED = $2000;
 
-const
-  CPL_DBLCLK = 5;
-  { (rom) unused and silly
-  Oper = 120 * Pi / 180;
-  }
-
-type
   TCoordChanged = procedure(Sender: TObject; Coord: string) of object;
   TNotifyEventParams = procedure(Sender: TObject; params: Pointer) of object;
   TFileInformation = record
@@ -209,7 +195,6 @@ type
     DateTime: TDateTime;
   end;
 
-type
   TOnChangeColor = procedure(Sender: TObject; Foreground, Background: TColor) of object;
 
 implementation
