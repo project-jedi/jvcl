@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvAnimatedEditor.PAS, released on 2002-05-26.
+The Original Code is: JvDlgsReg.PAS, released on 2002-05-26.
 
 The Initial Developer of the Original Code is John Doe.
 Portions created by John Doe are Copyright (C) 2003 John Doe.
@@ -44,9 +44,9 @@ uses
   JvConsts, JvDsgnConsts,
   JvBaseDlg, JvFindReplace, JvDSADialogs, JvTipOfDay, JvWinDialogs,
   JvAddPrinter, JvCommonDialogD, JvCommonExecDlg,
-  {$IFNDEF BCB5}  // removed because BCB5 cannot compile/link JvDialogActns
+  {$IFNDEF CBUILDER5}  // removed because CBUILDER5 cannot compile/link JvDialogActns
   JvDialogActns,
-  {$ENDIF BCB5}
+  {$ENDIF CBUILDER5}
   JvActnResForm, JvDialogs, JvProgressComponent, JvPageSetupTitled, JvPageSetup,
   JvConnectNetwork, JvSelectDirectory, JvCopyError, JvDeleteError,
   JvRenameError, JvDiskPrompt, JvFindFiles, JvImageDlg, JvLoginForm, JvDualList,
@@ -83,14 +83,14 @@ begin
   RegisterComponentEditor(TJvCommonDialogF, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogD, TJvCommonDialogDEditor);
   RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);
-  {$IFNDEF BCB5}  // removed because BCB5 cannot compile/link JvDialogActns
+  {$IFNDEF CBUILDER5}  // removed because CBUILDER5 cannot compile/link JvDialogActns
   RegisterActions(SJVCLActionsCategory, [TJvBrowseForFolderAction,
     TJvSelectDirectoryAction, TJvConnectNetworkAction, TJvFloppyFormatAction,
     TJvOrganizeFavoritesAction, TJvControlPanelAction, TJvOpenFileAction,
     TJvSaveFileAction, TJvPageSetupAction, TJvPageSetupTitledAction],
     // TJvStandardActions is a datamodule with default settings for our actions
     TJvStandardActions);
-  {$ENDIF BCB5}
+  {$ENDIF CBUILDER5}
 end;
 
 end.

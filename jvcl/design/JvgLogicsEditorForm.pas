@@ -177,13 +177,16 @@ uses
 
 {$R *.DFM}
 
+var
+  JvgLogicItemEditor: TJvgLogicItemEditor;
+
 //=== TJvgLogicsEditor =======================================================
 
 function TJvgLogicsEditor.Execute(ALogicProducer: TJvgLogicProducer): Boolean;
 var
   I: Integer;
 begin
-  fLogicItemEditor := TJvgLogicItemEditor.Create(nil);
+  JvgLogicItemEditor := TJvgLogicItemEditor.Create(nil);
 
   mDictionary.Lines.Assign(ALogicProducer.Dictionary);
   try
@@ -205,7 +208,7 @@ begin
 
     Result := ShowModal = mrOk;
   finally
-    fLogicItemEditor.Free;
+    JvgLogicItemEditor.Free;
   end;
   //  pLog.Dock(pLeft, Rect(1, 1, 10, 10));
   //  pLog.Dock(pLeft, Rect(1, 1, 10, 10));
@@ -414,7 +417,7 @@ begin
       Exit;
     end;
 
-  fLogicItemEditor.Execute(Logics, TJvgGroupBoxPlus(Sender).LogicElement);
+  JvgLogicItemEditor.Execute(Logics, TJvgGroupBoxPlus(Sender).LogicElement);
   PostMessage(TWinControl(Sender).Handle, WM_LBUTTONUP, 1, 1);
 end;
 
@@ -440,8 +443,8 @@ begin
   eStepName.Text := FActiveBox.LogicElement.Caption;
 end;
 
-procedure TJvgLogicsEditor.OnTraceMessage(Sender: TJvgLogics; AStepResult:
-  Boolean; const StepResult, ParsedResult, Msg: string);
+procedure TJvgLogicsEditor.OnTraceMessage(Sender: TJvgLogics;
+  AStepResult: Boolean; const StepResult, ParsedResult, Msg: string);
 begin
   mLog.Lines.Add(Msg);
   if reReslt.Text = '' then
@@ -483,8 +486,8 @@ begin
   S := LogicElement.Expression + ' ' + LogicRuleLabels[LogicElement.Rule] +
     ' ' + LogicElement.Value;
   R := Bounds(3, 20, Width - 6, Height - 22);
-  DrawText(Canvas.Handle, PChar(S), Length(S), R, DT_WORDBREAK or
-    DT_END_ELLIPSIS or DT_MODIFYSTRING);
+  DrawText(Canvas.Handle, PChar(S), Length(S), R,
+    DT_WORDBREAK or DT_END_ELLIPSIS or DT_MODIFYSTRING);
 end;
 
 procedure TJvgLogicsEditor.SBEraseBkgndEvent(Sender: TObject; DC: HDC);
@@ -636,10 +639,8 @@ begin
   if FActiveBox <> nil then
   begin
     if FActiveBox.LogicElement <> cbNext.Items.Objects[cbNext.ItemIndex] then
-    begin
       FActiveBox.LogicElement.NextElement :=
         TJvgLogicElement(cbNext.Items.Objects[cbNext.ItemIndex]);
-    end;
     UpdateView;
   end;
 end;
@@ -812,6 +813,7 @@ procedure TJvgLogicsEditor.pLeftDockDrop(Sender: TObject; Source:
   TDragDockObject; X, Y: Integer);
 begin
   (Sender as TWinControl).Height := 100;
+  // (rom) needs reevaluation. Move it out of the screen needs bigger values.
   SBar.Top := 1500;
 end;
 

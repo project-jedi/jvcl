@@ -33,8 +33,7 @@ unit JvHTHintForm;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms,
-  StdCtrls,
+  Windows, SysUtils, Classes, Controls, Forms, StdCtrls,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
   {$ELSE}

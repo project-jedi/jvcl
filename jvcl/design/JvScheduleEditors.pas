@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvSchedEvntReg.PAS, released on 2002-07-04.
+The Original Code is: JvScheduleEditors.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are:
 

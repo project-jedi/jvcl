@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvAnimatedEditor.PAS, released on 2002-05-26.
+The Original Code is: JvGroupHeaderEditor.PAS, released on 2002-05-26.
 
 The Initial Developer of the Original Code is John Doe.
 Portions created by John Doe are Copyright (C) 2003 John Doe.
@@ -32,13 +32,12 @@ unit JvGroupHeaderEditor;
 interface
 
 uses
-  Windows, Forms, Graphics, ImgList,
+  Windows, Forms, Graphics, ImgList, SysUtils, Classes, Dialogs, Controls,
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, DesignMenus, VCLEditors,
+  DesignIntf, DesignEditors, DesignMenus, VCLEditors;
   {$ELSE}
-  DsgnIntf,
+  DsgnIntf;
   {$ENDIF}
-  SysUtils, Classes, Dialogs, Controls;
 
 type
   TJvGroupHeaderEditor = class(TComponentEditor)

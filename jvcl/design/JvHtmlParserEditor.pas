@@ -36,7 +36,7 @@ uses
   DesignEditors, DesignIntf,
   {$ELSE}
   DsgnIntf,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvParserForm;
 
 type

@@ -41,8 +41,8 @@ type
   public
   end;
 
-var
-  JvgRTFPreview: TJvgRTFPreview;
+//var
+//  JvgRTFPreview: TJvgRTFPreview;
 
 implementation
 

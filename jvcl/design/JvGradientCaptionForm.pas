@@ -30,13 +30,12 @@ unit JvGradientCaptionForm;
 interface
 
 uses
-  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Mask,
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Mask,
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
   {$ELSE}
   LibIntf, DsgnIntf,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvFormPlacement, JvGradientCaption, JvListBox, JvCtrls,
   JvComponent, JvToolEdit, JvAppStore, JvAppRegistryStore;
 
@@ -113,7 +112,8 @@ uses
 
 {$R *.DFM}
 
-function EditGradientCaption(Component: TJvGradientCaption; ADesigner: IDesigner): Boolean;
+function EditGradientCaption(Component: TJvGradientCaption;
+  ADesigner: IDesigner): Boolean;
 begin
   with TGradCaptionsEditor.Create(Application) do
     try
@@ -191,7 +191,6 @@ begin
   FComponent := Component;
   FDesigner := Designer;
   if Component <> nil then
-  begin
     with GradientCaption do
     begin
       Active := False;
@@ -210,7 +209,6 @@ begin
         FormCaption := Format('%s.%s', [Component.ClassName, srGradientCaptions]);
       Active := True;
     end;
-  end;
   UpdateCaptionList(-1);
   UpdateControls;
 end;

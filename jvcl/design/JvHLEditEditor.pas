@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvAnimatedEditor.PAS, released on 2002-05-26.
+The Original Code is: JVHLEditEditor.PAS, released on 2002-05-26.
 
 The Initial Developer of the Original Code is John Doe.
 Portions created by John Doe are Copyright (C) 2003 John Doe.
@@ -40,7 +40,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvEditor, JvHLEditor, JvHLEditorPropertyForm, JvFormPlacement, JvConsts;
+  JvEditor, JvHLEditor, JvHLEditorPropertyForm, JvFormPlacement;
 
 type
   TJvHLEdPropDlgEditor = class(TComponentEditor)
@@ -61,7 +61,7 @@ type
 implementation
 
 uses
-  JvAppINIStore, JvDsgnConsts;
+  JvAppINIStore, JvConsts, JvDsgnConsts;
 
 //=== TJvHLEdPropDlgEditor ===================================================
 

@@ -74,6 +74,7 @@ var
 function LocateReg(IID: TGUID): Integer;
 begin
   Result := High(GIntfPropReg);
+  // (rom) maybe use IsEqualGUID() from SysUtils
   while (Result >= 0) and not CompareMem(@GIntfPropReg[Result].GUID, @IID, SizeOf(TGUID)) do
     Dec(Result);
 end;
@@ -164,20 +165,24 @@ begin
   Move(OrgTypeInfo^ , Result^, TypeInfoSize(OrgTypeInfo));
 end;
 
+function TypeInfoFromClass(const AClass: TClass): PChar;
+begin
+  Result := Pointer(AClass);
+  Dec(Result, 60); // Now pointing to TypeInfo of the VMT table.
+end;
+
 procedure CreateTypeInfo(const AClass: TClass);
 var
   P: PChar;
   PNewInfo: Pointer;
   OldProtect: Cardinal;
 begin
-  // (rom) please encapsulate these manipulations in functions
-  // (rom) i think the JCL already contains some of them
-  P := Pointer(AClass);
-  Dec(P, 60);                         // Now pointing to TypeInfo of the VMT table.
+  P := TypeInfoFromClass(AClass);
   { Below the typeinfo is cloned, while an additional 2048 bytes are reserved at the end. This 2048
     bytes will be used to "inject" additional properties. Since each property takes 27 + the length
     of the property name bytes, assuming an average of 40 bytes/property will allow approximately 50
     properties to be appended to the existing property list. }
+  // (rom) is there some security so we do not blow up everything by exceeding the 2048 bytes?
   PNewInfo := CloneTypeInfo(Pointer(PInteger(P)^), 2048);
   if VirtualProtect(P, 4, PAGE_WRITECOPY, OldProtect) then
   try
@@ -193,8 +198,7 @@ var
   PNewType: PChar;
   OldProtect: Cardinal;
 begin
-  P := Pointer(AClass);
-  Dec(P, 60);                         // Now pointing to TypeInfo of the VMT table.
+  P := TypeInfoFromClass(AClass);
   PNewType := Pointer(PInteger(P)^);  // The new type currently in use.
   Dec(PNewType, 4);                   // Points to the original PTypeInfo value.
   if VirtualProtect(P, 4, PAGE_WRITECOPY, OldProtect) then

@@ -12,7 +12,7 @@ The Original Code is: JvDirFrm.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -63,14 +63,15 @@ uses
 {$R *.DFM}
 
 function EditFolderList(Folders: TStrings): Boolean;
-var i:integer;
+var
+  i: Integer;
 begin
   with TJvDirectoryListDialog.Create(Application) do
   try
     if Assigned(Folders) then
       for i := 0 to Folders.Count - 1 do
         DirectoryList.Items.Add.Caption := Folders[i];
-    Result := ShowModal = mrOk;
+    Result := ShowModal = mrOK;
     if Result and Assigned(Folders) then
     begin
       Folders.Clear;
@@ -81,6 +82,8 @@ begin
     Free;
   end;
 end;
+
+//=== TJvDirectoryListDialog =================================================
 
 procedure TJvDirectoryListDialog.CheckButtons;
 begin
@@ -97,13 +100,13 @@ begin
   S := '';
   if BrowseDirectory(S, '', 0) then
   begin
-    if DirectoryList.FindCaption(0,S,false,true,true) = nil then 
-    with DirectoryList.Items.Add do
-    begin
-      Caption := S;
-      Selected := true;
-      Focused := true;
-    end;
+    if DirectoryList.FindCaption(0, S, False, True, True) = nil then
+      with DirectoryList.Items.Add do
+      begin
+        Caption := S;
+        Selected := True;
+        Focused := True;
+      end;
     CheckButtons;
   end;
 end;
@@ -113,7 +116,8 @@ var
   I: Integer;
   S: string;
 begin
-  if DirectoryList.Selected = nil then Exit;
+  if DirectoryList.Selected = nil then
+    Exit;
   I := DirectoryList.Selected.Index;
   S := DirectoryList.Items[I].Caption;
   if BrowseDirectory(S, '', 0) then
@@ -124,7 +128,8 @@ procedure TJvDirectoryListDialog.RemoveBtnClick(Sender: TObject);
 var
   I: Integer;
 begin
-  if DirectoryList.Selected = nil then Exit;
+  if DirectoryList.Selected = nil then
+    Exit;
   I := DirectoryList.Selected.Index;
   DirectoryList.Items.Delete(I);
   CheckButtons;
@@ -140,7 +145,7 @@ begin
   CheckButtons;
 end;
 
-procedure TJvDirectoryListDialog.DirectoryListDragDrop(Sender,Source: TObject;
+procedure TJvDirectoryListDialog.DirectoryListDragDrop(Sender, Source: TObject;
   X, Y: Integer);
 begin
 //  BoxMoveFocusedItem(DirectoryList, DirectoryList.ItemAtPos(Point(X, Y), True));
@@ -155,3 +160,4 @@ begin
 end;
 
 end.
+

@@ -41,10 +41,10 @@ uses
   {$ENDIF COMPLIB_CLX}
   SysUtils, Classes,
   {$IFDEF COMPILER6_UP}
-  DesignIntf
+  DesignIntf,
   {$ELSE}
-  DsgnIntf
-  {$ENDIF COMPILER6_UP},
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
   JvDsgnIntf;
 
 implementation
@@ -63,85 +63,82 @@ end;
 type
   TMyComponent = class(TComponent);
 
-procedure GetDesigner(Self: TPersistent; out Result: IDesignerNotify);
+procedure GetDesigner(ASelf: TPersistent; out Result: IDesignerNotify);
 var
   Temp: TPersistent;
 begin
   Result := nil;
-  if Self = nil then
+  if ASelf = nil then
     Exit;
-  Temp := TMyComponent(Self).GetOwner;
+  Temp := TMyComponent(ASelf).GetOwner;
   if Temp = nil then
   begin
-    if (Self is TComponent) and (csDesigning in TComponent(Self).ComponentState) then
-      TMyComponent(Self).QueryInterface(IDesignerNotify, Result);
+    if (ASelf is TComponent) and (csDesigning in TComponent(ASelf).ComponentState) then
+      TMyComponent(ASelf).QueryInterface(IDesignerNotify, Result);
   end
   else
   begin
-    if (Self is TComponent) and not (csDesigning in TComponent(Self).ComponentState) then
+    if (ASelf is TComponent) and not (csDesigning in TComponent(ASelf).ComponentState) then
       Exit;
     GetDesigner(Temp, Result);
   end;
 end;
 
-procedure DesignerNotify(Self, Item: TComponent; Operation: TOperation);
+procedure DesignerNotify(ASelf, Item: TComponent; Operation: TOperation);
 var
   Designer: IDesignerNotify;
 begin
-  if csDesigning in Self.ComponentState then
+  if csDesigning in ASelf.ComponentState then
   begin
-    GetDesigner(Self, Designer);
+    GetDesigner(ASelf, Designer);
     if Designer <> nil then
       Designer.Notification(Item, Operation);
   end;
 end;
 
-procedure DesignerModified(Self: TComponent);
+procedure DesignerModified(ASelf: TComponent);
 var
   Designer: IDesignerNotify;
 begin
-  if csDesigning in Self.ComponentState then
+  if csDesigning in ASelf.ComponentState then
   begin
-    GetDesigner(Self, Designer);
+    GetDesigner(ASelf, Designer);
     if Designer <> nil then
       Designer.Modified;
   end;
 end;
 
 {$IFDEF COMPILER6_UP}
-
-procedure DesignerSelectComponent(Self: TComponent);
+procedure DesignerSelectComponent(ASelf: TComponent);
 var
   Designer: IDesignerNotify;
   Designer1: IDesigner;
 begin
-  if csDesigning in Self.ComponentState then
+  if csDesigning in ASelf.ComponentState then
   begin
-    GetDesigner(Self, Designer);
+    GetDesigner(ASelf, Designer);
     if (Designer <> nil) then
     begin
       Designer.QueryInterface(IDesigner, Designer1);
       if Designer1 <> nil then
-        Designer1.SelectComponent(Self);
+        Designer1.SelectComponent(ASelf);
     end;
   end;
 end;
-
 {$ELSE}
-
-procedure DesignerSelectComponent(Self: TComponent);
+procedure DesignerSelectComponent(ASelf: TComponent);
 var
   Designer: IDesignerNotify;
   Designer1: IFormDesigner;
 begin
-  if csDesigning in Self.ComponentState then
+  if csDesigning in ASelf.ComponentState then
   begin
-    GetDesigner(Self, Designer);
+    GetDesigner(ASelf, Designer);
     if (Designer <> nil) then
     begin
       Designer.QueryInterface(IFormDesigner, Designer1);
       if Designer1 <> nil then
-        Designer1.SelectComponent(Self);
+        Designer1.SelectComponent(ASelf);
     end;
   end;
 end;

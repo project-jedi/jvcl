@@ -36,7 +36,7 @@ uses
   DesignEditors, DesignIntf,
   {$ELSE}
   DsgnIntf,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvDataEmbedded;
 
 type
@@ -49,7 +49,6 @@ type
     procedure Edit; override;
   end;
 
-
 implementation
 
 uses
@@ -58,22 +57,26 @@ uses
 procedure TJvDataEmbeddedEditor.Edit;
 var
   Stream: TFileStream;
-  FStream: TMemoryStream;
+  MemStream: TMemoryStream;
 begin
-  FStream := TMemoryStream(GetOrdValue);
+  MemStream := TMemoryStream(GetOrdValue);
   with TOpenDialog.Create(nil) do
-  begin
-    Filter := SAllFilesFilter;
-    if Execute then
-    begin
-      Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
-      FStream.Clear;
-      FStream.CopyFrom(Stream, 0);
-      SetOrdValue(Integer(FStream));
-      Stream.Free;
+    try
+      Filter := SAllFilesFilter;
+      if Execute then
+      begin
+        Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
+        try
+          MemStream.Clear;
+          MemStream.CopyFrom(Stream, 0);
+          SetOrdValue(Integer(MemStream));
+        finally
+          Stream.Free;
+        end;
+      end;
+    finally
+      Free;
     end;
-    Free;
-  end;
 end;
 
 function TJvDataEmbeddedEditor.GetAttributes: TPropertyAttributes;

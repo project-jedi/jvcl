@@ -108,9 +108,6 @@ type
     function Execute(ALogics: TJvgLogics; ALogicElement: TJvgLogicElement): Boolean;
   end;
 
-var
-  fLogicItemEditor: TJvgLogicItemEditor;
-
 implementation
 
 uses
