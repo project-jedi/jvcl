@@ -2046,7 +2046,7 @@ var
 
   procedure CharsToFind;
   begin
-    if Pos(UpperCase(FWord), UpperCase(InplaceEditor.EditText)) <> 1 then
+    if Pos(AnsiUpperCase(FWord), AnsiUpperCase(InplaceEditor.EditText)) <> 1 then
       FWord := '';
     if Key = Backspace then
       if (FWord = '') or (Length(FWord) = 1) then
@@ -2077,17 +2077,22 @@ begin
         CharsToFind;
         LookupDataSet.DisableControls;
         try
-          if LookupDataSet.Locate(LookupResultField, lWord, [loCaseInsensitive, loPartialKey]) then
-          begin
-            DataSet.Edit;
-            lMasterField := DataSet.FieldByName(KeyFields);
-            if lMasterField.CanModify then
+          try
+            if LookupDataSet.Locate(LookupResultField, lWord, [loCaseInsensitive, loPartialKey]) then
             begin
-              lMasterField.Value := LookupDataSet.FieldValues[LookupKeyFields];
-              FWord := lWord;
-              InplaceEditor.SelStart := Length(FWord);
-              InplaceEditor.SelLength := Length(InplaceEditor.EditText) - Length(FWord);
+              DataSet.Edit;
+              lMasterField := DataSet.FieldByName(KeyFields);
+              if lMasterField.CanModify then
+              begin
+                lMasterField.Value := LookupDataSet.FieldValues[LookupKeyFields];
+                FWord := lWord;
+                InplaceEditor.SelStart := Length(FWord);
+                InplaceEditor.SelLength := Length(InplaceEditor.EditText) - Length(FWord);
+              end;
             end;
+          except
+           { If you attempt to search for a string larger than what the field
+             can hold, and exception will be raised. Just trap it. }
           end;
         finally
           LookupDataSet.EnableControls;
@@ -2107,10 +2112,10 @@ begin
           with Columns[SelectedIndex].PickList do
             for I := 0 to Count - 1 do
             begin
-              deb := Length(lWord);
-              if UpperCase(lWord) = UpperCase(Copy(Strings[I], 1, deb)) then
+              if StringStartsWith(Strings[I], lWord) then
               begin
                 DataSet.Edit;
+                deb := Length(lWord);
 
                 InplaceEditor.EditText := Strings[I];
                 Columns[SelectedIndex].Field.Text := Strings[I];

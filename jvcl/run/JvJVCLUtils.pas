@@ -671,10 +671,6 @@ function JvMakeObjectInstance(Method: TWndMethod): Pointer;
 procedure JvFreeObjectInstance(ObjectInstance: Pointer);
 {$ENDIF  MSWINDOWS}
 
-{$IFNDEF COMPILER6_UP}
-function TryStrToDateTime(const S: string; out Value: TDateTime): Boolean;
-{$ENDIF !COMPILER6_UP}
-
 function GetAppHandle: HWND;
 // DrawArrow draws a standard arrow in any of four directions and with the specifed color.
 // Rect is the area to draw the arrow in and also defines the size of the arrow
@@ -6600,18 +6596,6 @@ begin
 end;
 
 {$ENDIF MSWINDOWS}
-
-{$IFNDEF COMPILER6_UP}
-function TryStrToDateTime(const S: string; out Value: TDateTime): Boolean;
-begin
-  try
-    Value := StrToDateTime(S);
-    Result := True;
-  except
-    Result := False;
-  end;
-end;
-{$ENDIF !COMPILER6_UP}
 
 procedure InitScreenCursors;
 begin
