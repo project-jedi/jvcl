@@ -36,7 +36,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  FileCtrl, StdCtrls, ShellApi, ImgList,
+  FileCtrl, StdCtrls, ShellAPI, ImgList,
   JvComboBox, JvListBox, JVCLVer, JvSearchFiles;
 
 type
@@ -54,7 +54,7 @@ type
   TJvDriveCombo = class(TJvCustomComboBox)
   private
     FDrives: TStrings;
-    FImages: TImagelist;
+    FImages: TImageList;
     FImageWidth: Integer;
     FImageSize: TJvImageSize;
     FItemIndex: Integer;
@@ -137,7 +137,7 @@ type
   TJvDriveList = class(TJvCustomListBox)
   private
     FDrives: TStrings;
-    FImages: TImagelist;
+    FImages: TImageList;
     FImageWidth: Integer;
     FImageSize: TJvImageSize;
     FItemIndex: Integer;
@@ -238,7 +238,7 @@ type
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Directory stored False;
-    property Filename stored False;
+    property FileName stored False;
     // set this property to True to force the display of filename extensions for all files even if
     // the user has activated the Explorer option "Don't show extensions for known file types"
     property ForceFileExtensions: Boolean read FForceFileExtensions write SetForceFileExtensions;
@@ -266,6 +266,9 @@ type
     FCaseSensitive: Boolean;
     FAutoExpand: Boolean;
     FAboutJVCL: TJVCLAboutInfo;
+    { (rb) Probably better to switch the values in FDisplayNames and the values
+           in Items, see comment at TJvCustomListBox.LBAddString }
+    FDisplayNames: TStringList;
     function GetDrive: Char;
     procedure SetFileListBox(Value: TJvFileListBox);
     procedure SetDirLabel(Value: TLabel);
@@ -288,7 +291,7 @@ type
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     function ReadDirectoryNames(const ParentDirectory: string;
-      DirectoryList: TStringList): Integer;
+      DirectoryList: TStrings): Integer;
     procedure BuildList; virtual;
     procedure KeyPress(var Key: Char); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -324,6 +327,9 @@ type
     property Font;
     property IntegralHeight;
     property ItemHeight;
+    { No need to store the items, image indexes aren't stored thus need to call
+      BuildList anyway }
+    property Items stored False;
     property ParentColor;
     property ParentCtl3D;
     property ParentFont;
@@ -384,8 +390,8 @@ end;
 
 function IsValidDriveType(DriveTypes: TJvDriveTypes; DriveType: UINT): Boolean;
 const
-  cDriveMasks: array[TJvDriveType] of UINT =
-  (DRIVE_UNKNOWN, DRIVE_REMOVABLE, DRIVE_FIXED, DRIVE_REMOTE, DRIVE_CDROM, DRIVE_RAMDISK);
+  cDriveMasks: array [TJvDriveType] of UINT =
+    (DRIVE_UNKNOWN, DRIVE_REMOVABLE, DRIVE_FIXED, DRIVE_REMOTE, DRIVE_CDROM, DRIVE_RAMDISK);
 var
   I: TJvDriveType;
 begin
@@ -409,9 +415,9 @@ begin
   FDriveTypes := dtStandard;
 
   if FImageSize = isSmall then
-    FImages := TImagelist.CreateSize(FSmall, FSmall)
+    FImages := TImageList.CreateSize(FSmall, FSmall)
   else
-    FImages := TImagelist.CreateSize(FLarge, FLarge);
+    FImages := TImageList.CreateSize(FLarge, FLarge);
 
   FImages.DrawingStyle := dsTransparent;
   FImageWidth := FImages.Width;
@@ -449,7 +455,7 @@ begin
   else
     Options := Options or SHGFI_LARGEICON;
 
-  FImages.Handle := SHGetFileInfo('', 0, Info, SizeOf(TShFileInfo), Options);
+  FImages.Handle := SHGetFileInfo('', 0, Info, SizeOf(TSHFileInfo), Options);
   FImages.ShareImages := True;
   Drv := Drive;
   LastErrorMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
@@ -463,7 +469,7 @@ begin
       Inc(P, 4);
       if IsValidDriveType(DriveTypes, GetDriveType(PChar(S))) then
       begin
-        SHGetFileInfo(PChar(S), 0, Info, SizeOf(TShFileInfo), SHGFI_DISPLAYNAME or Options);
+        SHGetFileInfo(PChar(S), 0, Info, SizeOf(TSHFileInfo), SHGFI_DISPLAYNAME or Options);
         Items.AddObject(Trim(Info.szDisplayName), TObject(Info.iIcon));
         FDrives.Add(S[1]);
       end;
@@ -618,9 +624,9 @@ begin
       FImages.Free;
 
     if Value = isSmall then
-      FImages := TImagelist.CreateSize(FSmall, FSmall)
+      FImages := TImageList.CreateSize(FSmall, FSmall)
     else
-      FImages := TImagelist.CreateSize(FLarge, FLarge);
+      FImages := TImageList.CreateSize(FLarge, FLarge);
 
     FImages.DrawingStyle := dsTransparent;
     FImages.ShareImages := True;
@@ -678,9 +684,9 @@ begin
   FImageAlign := iaCentered;
 
   if FImageSize = isSmall then
-    FImages := TImagelist.CreateSize(FSmall, FSmall)
+    FImages := TImageList.CreateSize(FSmall, FSmall)
   else
-    FImages := TImagelist.CreateSize(FLarge, FLarge);
+    FImages := TImageList.CreateSize(FLarge, FLarge);
 
   FImages.DrawingStyle := dsTransparent;
   FImageWidth := FImages.Width;
@@ -724,7 +730,7 @@ begin
   else
     Options := Options or SHGFI_LARGEICON;
 
-  FImages.Handle := SHGetFileInfo('', 0, Info, SizeOf(TShFileInfo), Options);
+  FImages.Handle := SHGetFileInfo('', 0, Info, SizeOf(TSHFileInfo), Options);
   FImages.ShareImages := True;
   FillChar(Tmp[0], SizeOf(Tmp), #0);
   Drv := Drive;
@@ -738,7 +744,7 @@ begin
       Inc(P, 4);
       if IsValidDriveType(DriveTypes, GetDriveType(PChar(S))) then
       begin
-        SHGetFileInfo(PChar(S), 0, Info, SizeOf(TShFileInfo), SHGFI_DISPLAYNAME or Options);
+        SHGetFileInfo(PChar(S), 0, Info, SizeOf(TSHFileInfo), SHGFI_DISPLAYNAME or Options);
         Items.AddObject(Trim(Info.szDisplayName), TObject(Info.iIcon));
         FDrives.Add(S[1]);
       end;
@@ -810,7 +816,7 @@ begin
   with Canvas do
   begin
     tmpCol := Canvas.Brush.Color;
-    Canvas.Brush.Color := self.COlor;
+    Canvas.Brush.Color := Self.Color;
     FillRect(Rect);
     Canvas.Brush.Color := tmpCol;
     if FImageAlign = iaCentered then
@@ -932,9 +938,9 @@ begin
       FImages.Free;
 
     if Value = isSmall then
-      FImages := TImagelist.CreateSize(FSmall, FSmall)
+      FImages := TImageList.CreateSize(FSmall, FSmall)
     else
-      FImages := TImagelist.CreateSize(FLarge, FLarge);
+      FImages := TImageList.CreateSize(FLarge, FLarge);
 
     FImages.DrawingStyle := dsTransparent;
     FImages.ShareImages := True;
@@ -1024,8 +1030,9 @@ begin
   Style := lbOwnerDrawFixed;
   Sorted := False;
   FAutoExpand := True;
-  FImages := TImagelist.Create(self);
+  FImages := TImageList.Create(Self);
   FImages.ShareImages := True;
+  FDisplayNames := TStringList.Create;
   ReadBitmaps;
   GetDir(0, FDirectory);
   ResetItemHeight;
@@ -1033,6 +1040,7 @@ end;
 
 destructor TJvDirectoryListBox.Destroy;
 begin
+  FDisplayNames.Free;
   inherited Destroy;
 end;
 
@@ -1106,7 +1114,7 @@ begin
 end;
 
 function TJvDirectoryListBox.ReadDirectoryNames(const ParentDirectory: string;
-  DirectoryList: TStringList): Integer;
+  DirectoryList: TStrings): Integer;
 var
   Status: Integer;
   SearchRec: TSearchRec;
@@ -1132,6 +1140,10 @@ begin
 end;
 
 procedure TJvDirectoryListBox.BuildList;
+const
+  CFlagsDir = SHGFI_ICON or SHGFI_SMALLICON or SHGFI_SELECTED or SHGFI_OPENICON
+    or SHGFI_DISPLAYNAME;
+  CFlagsSubDirs = SHGFI_ICON or SHGFI_SMALLICON or SHGFI_DISPLAYNAME;
 var
   TempPath: string;
   DirName: string;
@@ -1140,13 +1152,16 @@ var
   Siblings: TStringList;
   NewSelect: Integer;
   tmpFolder: string;
-  psfi: TShFileInfo;
+  psfi: TSHFileInfo;
 begin
   Items.BeginUpdate;
   try
     Items.Clear;
+    FDisplayNames.Clear;
+
     TempPath := Directory;
     tmpFolder := '';
+
     if Length(TempPath) > 0 then
     begin
       if AnsiLastChar(TempPath)^ <> '\' then
@@ -1157,16 +1172,16 @@ begin
           DirName := Copy(TempPath, 1, BackSlashPos - 1);
           tmpFolder := ConcatPaths(tmpFolder, DirName);
           Delete(TempPath, 1, BackSlashPos);
-          ShGetFileInfo(PChar(tmpFolder), 0, psfi, SizeOf(TSHFileInfo), SHGFI_ICON or SHGFI_SMALLICON or
-            SHGFI_OPENICON);
+          SHGetFileInfo(PChar(tmpFolder), 0, psfi, SizeOf(TSHFileInfo), CFlagsDir);
           Items.AddObject(tmpFolder, TObject(psfi.iIcon));
+          FDisplayNames.Add(psfi.szDisplayName);
           BackSlashPos := AnsiPos('\', TempPath);
         end;
       end;
       // add the selected dir:
-      ShGetFileInfo(PChar(Directory), 0, psfi, SizeOf(TSHFileInfo), SHGFI_ICON or SHGFI_SMALLICON or SHGFI_SELECTED or
-        SHGFI_OPENICON);
+      SHGetFileInfo(PChar(Directory), 0, psfi, SizeOf(TSHFileInfo), CFlagsDir);
       Items.AddObject(Directory, TObject(psfi.iIcon));
+      FDisplayNames.Add(psfi.szDisplayName);
     end;
     NewSelect := Items.Count - 1;
 
@@ -1177,8 +1192,9 @@ begin
       ReadDirectoryNames(Directory, Siblings);
       for I := 0 to Siblings.Count - 1 do
       begin
-        ShGetFileInfo(PChar(Siblings[I]), 0, psfi, SizeOf(TSHFileInfo), SHGFI_ICON or SHGFI_SMALLICON);
+        SHGetFileInfo(PChar(Siblings[I]), 0, psfi, SizeOf(TSHFileInfo), CFlagsSubDirs);
         Items.AddObject(Siblings[I], TObject(psfi.iIcon));
+        FDisplayNames.Add(psfi.szDisplayName);
       end;
     finally
       Siblings.Free;
@@ -1192,9 +1208,9 @@ end;
 
 procedure TJvDirectoryListBox.ReadBitmaps;
 var
-  psfi: TShFileInfo;
+  psfi: TSHFileInfo;
 begin
-  FImages.Handle := ShGetFileInfo('', 0, psfi, SizeOf(TSHFileInfo), SHGFI_SYSICONINDEX or SHGFI_SMALLICON);
+  FImages.Handle := SHGetFileInfo('', 0, psfi, SizeOf(TSHFileInfo), SHGFI_SYSICONINDEX or SHGFI_SMALLICON);
   FImages.ShareImages := True;
   FImages.DrawingStyle := dsTransparent;
 end;
@@ -1227,7 +1243,7 @@ begin
   Inc(P, Length(S) - 1);
   while P^ <> '\' do
     Dec(P);
-  Inc(p);
+  Inc(P);
   Result := P;
 end;
 
@@ -1244,13 +1260,16 @@ begin
     if (Integer(itemID) >= 0) and (odSelected in State) then
     begin
       Canvas.Brush.Color := clHighlight;
-      Canvas.Font.Color := clHighlightText
+      Canvas.Font.Color := clHighlightText;
     end;
     if Integer(itemID) >= 0 then
       DrawItem(itemID, rcItem, State)
     else
+    begin
       Canvas.FillRect(rcItem);
-    //    if odFocused in State then DrawFocusRect(hDC, rcItem);
+      //if odFocused in State then
+      //  DrawFocusRect(hDC, rcItem);
+    end;
     Canvas.Handle := 0;
   end;
 end;
@@ -1258,31 +1277,32 @@ end;
 procedure TJvDirectoryListBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
 var
-  bmpWidth: Integer;
-  dirOffset: Integer;
+  BmpWidth: Integer;
+  DirOffset: Integer;
   S: string;
-  psfi: TSHFileInfo;
-  tmpR: TRect;
+  RectText: TRect;
 begin
   with Canvas do
   begin
-    tmpR := Rect;
-    bmpWidth := FImages.Width;
-    if Index = 0 then
-      dirOffset := Rect.Left + 2
-    else
-      dirOffset := Rect.Left + (DirLevel(Items[Index]) + 1) * 4 + 2;
-    FImages.Draw(Canvas, dirOffset, (Rect.Top + Rect.Bottom - FImages.Height) div 2,
-      Integer(Items.Objects[Index]));
-    ShGetFileInfo(PChar(Items[Index]), 0, psfi, SizeOf(TSHFileInfo), SHGFI_DISPLAYNAME);
-    S := psfi.szDisplayName; // (Items[Index]);
+    FillRect(Rect);
 
-    tmpR.Left := tmpR.Left + dirOffset + FImages.Width + 2;
-    tmpR.Right := tmpR.Left + TextWidth(S) + 4;
-    FillRect(tmpR);
-    TextOut(Rect.Left + bmpWidth + dirOffset + 4, Rect.Top + 2, S);
+    BmpWidth := FImages.Width;
+    if Index = 0 then
+      DirOffset := Rect.Left + 2
+    else
+      DirOffset := Rect.Left + (DirLevel(Items[Index]) + 1) * 4 + 2;
+    FImages.Draw(Canvas, DirOffset, (Rect.Top + Rect.Bottom - FImages.Height) div 2,
+      Integer(Items.Objects[Index]));
+
+    S := FDisplayNames[Index];
+
+    RectText := Rect;
+    RectText.Left := RectText.Left + DirOffset + FImages.Width + 2;
+    RectText.Right := RectText.Left + TextWidth(S) + 4;
+
+    TextOut(Rect.Left + BmpWidth + DirOffset + 4, Rect.Top + 2, S);
     if odFocused in State then
-      DrawFocusRect(tmpR);
+      DrawFocusRect(RectText);
   end;
 end;
 
@@ -1332,7 +1352,10 @@ procedure TJvDirectoryListBox.SetDirectory(const NewDirectory: string);
 var
   NewDrive: string;
 begin
-  if (Length(NewDirectory) = 0) or (AnsiCompareText(NewDirectory, Directory) = 0) then
+  { When reading from the stream, always set the directory; if we don't do this
+    the image indexes aren't initialized }
+  if (Length(NewDirectory) = 0) or
+    ((AnsiCompareText(NewDirectory, Directory) = 0) and not (csReading in ComponentState)) then
     Exit;
   NewDrive := ExtractFileDrive(NewDirectory);
   if Length(NewDrive) <> 2 then // we only support single Char drives (no UNC's)
@@ -1400,7 +1423,7 @@ begin
   FDriveCombo := Value;
   if FDriveCombo <> nil then
   begin
-    FDriveCombo.FDirList := self;
+    FDriveCombo.FDirList := Self;
     FDriveCombo.Drive := Drive;
     FDriveCombo.FreeNotification(Self);
   end;
@@ -1428,7 +1451,7 @@ begin
   FImages := TImageList.CreateSize(16, 16);
   FImages.ShareImages := True;
   FImages.Handle := SHGetFileInfo('', 0, shi, SizeOf(shi), SHGFI_SYSICONINDEX or SHGFI_SMALLICON);
-  FImages.Drawingstyle := dsTransparent;
+  FImages.DrawingStyle := dsTransparent;
 
   FSearchFiles := TJvSearchFiles.Create(Self);
   FSearchFiles.Options := [soAllowDuplicates,
@@ -1569,7 +1592,7 @@ end;
 procedure TJvFileListBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
 var
-  offset: Integer;
+  Offset: Integer;
   tmpR: TRect;
   ImageIndex: Integer;
   OverlayIndex: Integer;
@@ -1577,7 +1600,7 @@ begin
   with Canvas do
   begin
     //    FillRect(Rect);
-    offset := 2;
+    Offset := 2;
     tmpR := Rect;
     if ShowGlyphs then
     begin
@@ -1594,10 +1617,10 @@ begin
 
     // Use Trim because directories have a space as prefix, so that
     // the directory names appear above the files.
-    tmpR.Left := tmpR.Left + offset - 2;
+    tmpR.Left := tmpR.Left + Offset - 2;
     tmpR.Right := tmpR.Left + TextWidth(Trim(Items[Index])) + 4;
     FillRect(tmpR);
-    TextOut(Rect.Left + offset, Rect.Top, Trim(Items[Index]));
+    TextOut(Rect.Left + Offset, Rect.Top, Trim(Items[Index]));
 
     if odFocused in State then
       DrawFocusRect(tmpR);
