@@ -29,6 +29,51 @@ uses
   {$ENDIF};
 
 type
+  { Helper class; set property Form, and then use the properties or methods
+    of the adapter class to manipulate the form }
+  TDockFormAdapter = class
+  private
+    FForm: TCustomForm;
+    FDockClient: TJvDockClient;
+    function GetCanAutoHide: Boolean;
+    function GetDockClient: TJvDockClient;
+    function GetIsAutoHidden: Boolean;
+    function GetIsDockable: Boolean;
+    function GetIsFloating: Boolean;
+    function GetIsTabbedDocument: Boolean;
+    procedure SetForm(AForm: TCustomForm);
+    procedure SetIsAutoHidden(const Value: Boolean);
+    procedure SetIsDockable(const Value: Boolean);
+    procedure SetIsFloating(const Value: Boolean);
+    procedure SetIsTabbedDocument(const Value: Boolean);
+  public
+    constructor Create(AForm: TCustomForm);
+
+    procedure Float;
+    procedure Hide;
+    procedure Show;
+    procedure AutoHide;
+    procedure UnAutoHide;
+
+    property Form: TCustomForm read FForm write SetForm;
+    property DockClient: TJvDockClient read GetDockClient;
+
+    { In Visual Studio there are 5 states a window can be in
+
+      * Floating
+      * Dockable
+      * Tabbed Document (in the mdi space) // not implemented
+      * AutoHide
+      * Hide
+    }
+
+    property CanAutoHide: Boolean read GetCanAutoHide;
+    property IsAutoHidden: Boolean read GetIsAutoHidden write SetIsAutoHidden;
+    property IsTabbedDocument: Boolean read GetIsTabbedDocument write SetIsTabbedDocument;
+    property IsDockable: Boolean read GetIsDockable write SetIsDockable;
+    property IsFloating: Boolean read GetIsFloating write SetIsFloating;
+  end;
+
   TMSDN2002 = class(TForm)
     ActionList1: TActionList;
     File_File_Action: TAction;
@@ -221,11 +266,13 @@ type
     procedure Float_ItemClick(Sender: TObject);
     procedure PopupMenu1Popup(Sender: TObject);
     procedure Dockable_ItemClick(Sender: TObject);
+    procedure AutoHide_ItemClick(Sender: TObject);
   private
     { Private declarations }
     {$IFDEF USEJVCL}
     JvAppStorage:TJvAppIniFileStorage;
     {$ENDIF}
+    FAdapter: TDockFormAdapter;
     procedure CreateXPMenu;          //
     procedure CreateToolForm;        // create everything
     procedure DefaultDockLayout;
@@ -259,6 +306,16 @@ begin
     Active := True;
 end;
 
+procedure TMSDN2002.AutoHide_ItemClick(Sender: TObject);
+begin
+  if PopupMenu1.PopupComponent is TForm then
+    with FAdapter do
+    begin
+      Form := TForm(PopupMenu1.PopupComponent);
+      IsAutoHidden := not IsAutoHidden;
+    end;
+end;
+
 procedure TMSDN2002.CreateToolForm;
 begin
   ContentsForm := TContentsForm.Create(Application);
@@ -287,8 +344,12 @@ end;
 
 procedure TMSDN2002.DefaultDockLayout;
 
+  { Dock AForm on APanel, and set it to 'auto hide' }
   procedure VSNetDockForm(AForm: TForm; APanel: TJvDockVSNETPanel);
   begin
+    //  AForm.Width := 180;
+    AForm.Top := 10000;
+    //  AForm.Visible := true;
     AForm.ManualDock(APanel,nil,APanel.Align);
     APanel.ShowDockPanel(True, AForm);
     APanel.DoHideControl(AForm);
@@ -298,34 +359,11 @@ begin
   lbDockServer1.LeftDockPanel.Width := 180;
   lbDockServer1.BottomDockPanel.Height := 100;
 
-//  ContentsForm.Width := 180;
-  ContentsForm.Top := 10000;
-//  ContentsForm.Visible := true;
   VSNetDockForm(ContentsForm, lbDockServer1.RightDockPanel as TJvDockVSNETPanel);
-
-//  FavoritesForm.Width := 180;
-  FavoritesForm.Top := 10000;
-//  FavoritesForm.Visible := true;
   VSNetDockForm(FavoritesForm, lbDockServer1.RightDockPanel as TJvDockVSNETPanel);
-
-//  IndexForm.Width := 180;
-  IndexForm.Top := 10000;
-//  IndexForm.Visible := true;
   VSNetDockForm(IndexForm, lbDockServer1.LeftDockPanel as TJvDockVSNETPanel);
-
-//  IndexResultForm.Width := 180;
-  IndexResultForm.Top := 10000;
-//  IndexResultForm.Visible := true;
   VSNetDockForm(IndexResultForm, lbDockServer1.LeftDockPanel as TJvDockVSNETPanel);
-
-//  SearchForm.Height := 100;
-  SearchForm.Top := 10000;
-//  SearchForm.Visible := true;
   VSNetDockForm(SearchForm, lbDockServer1.BottomDockPanel as TJvDockVSNETPanel);
-
-//  SearchResultForm.Height := 100;
-  SearchResultForm.Top := 10000;
-//  SearchResultForm.Visible := true;
   VSNetDockForm(SearchResultForm, lbDockServer1.BottomDockPanel as TJvDockVSNETPanel);
 end;
 
@@ -361,10 +399,12 @@ procedure TMSDN2002.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
   SaveToolFormLayout;
+  FAdapter.Free;
 end;
 
 procedure TMSDN2002.FormCreate(Sender: TObject);
 begin
+  FAdapter := TDockFormAdapter.Create(nil);
   {$IFDEF USEJVCL}
   JvAppStorage := TJvAppIniFileStorage.Create(self);
   {$ENDIF}
@@ -447,57 +487,187 @@ begin
 end;
 
 procedure TMSDN2002.PopupMenu1Popup(Sender: TObject);
-var DockClient: TJvDockClient;
 begin
   if PopupMenu1.PopupComponent is TForm then
-  begin
-    DockClient := FindDockClient(TForm(PopupMenu1.PopupComponent));
-    if DockClient <> nil then
+    with FAdapter do
     begin
-      Dockable_Item.Checked := DockClient.EnableDock;
-      if DockClient.DockState = JvDockState_Floating then
-      begin
-        Float_Item.Caption := 'Docking';
-        AutoHide_Item.Visible := False;
-      end else
-      begin
-        Float_Item.Caption := 'Floating';
-      end;
+      Form := TForm(PopupMenu1.PopupComponent);
+      AutoHide_Item.Checked := IsAutoHidden;
+      AutoHide_Item.Visible := CanAutoHide;
+      Dockable_Item.Checked := IsDockable;
+      Dockable_Item.Enabled := not IsAutoHidden;
+      Float_Item.Checked := IsFloating;
+      Float_Item.Enabled := not IsAutoHidden;
+      Hide_Item.Enabled := not IsAutoHidden;
+    end;
+end;
+
+procedure TMSDN2002.Dockable_ItemClick(Sender: TObject);
+begin
+  if PopupMenu1.PopupComponent is TForm then
+    with FAdapter do
+    begin
+      Form := TForm(PopupMenu1.PopupComponent);
+      IsDockable := not IsDockable;
+    end;
+end;
+
+procedure TMSDN2002.Hide_ItemClick(Sender: TObject);
+begin
+  if PopupMenu1.PopupComponent is TForm then
+    with FAdapter do
+    begin
+      Form := TForm(PopupMenu1.PopupComponent);
+      Hide;
+    end;
+end;
+
+procedure TMSDN2002.Float_ItemClick(Sender: TObject);
+begin
+  if PopupMenu1.PopupComponent is TForm then
+    with FAdapter do
+    begin
+      Form := TForm(PopupMenu1.PopupComponent);
+      IsFloating := not IsFloating;
+    end;
+end;
+
+//=== { TDockFormAdapter } ===================================================
+
+constructor TDockFormAdapter.Create(AForm: TCustomForm);
+begin
+  inherited Create;
+  Form := AForm;
+end;
+
+procedure TDockFormAdapter.AutoHide;
+begin
+  if Form.HostDockSite is TJvDockVSNETPanel then
+    TJvDockVSNETPanel(Form.HostDockSite).DoHideControl(Form);
+end;
+
+procedure TDockFormAdapter.Float;
+begin
+  SetIsFloating(True);
+end;
+
+function TDockFormAdapter.GetCanAutoHide: Boolean;
+begin
+  Result := IsAutoHidden or (DockClient.DockState <> JvDockState_Floating);
+end;
+
+function TDockFormAdapter.GetDockClient: TJvDockClient;
+begin
+  if FDockClient = nil then
+    FDockClient := FindDockClient(Form);
+  Result := FDockClient;
+end;
+
+function TDockFormAdapter.GetIsAutoHidden: Boolean;
+var
+  HostDockSite: TWinControl;
+begin
+  HostDockSite := Form.HostDockSite;
+  while (HostDockSite <> nil) and
+    (HostDockSite.Parent <> nil) and
+    (HostDockSite.Parent.HostDockSite <> nil) do
+    HostDockSite := HostDockSite.Parent.HostDockSite;
+  Result := HostDockSite is TJvDockVSPopupPanel;
+end;
+
+function TDockFormAdapter.GetIsDockable: Boolean;
+begin
+  Result := not IsAutoHidden and not IsTabbedDocument and DockClient.EnableDock;
+end;
+
+function TDockFormAdapter.GetIsFloating: Boolean;
+begin
+  Result := not IsAutoHidden and not IsTabbedDocument and not DockClient.EnableDock;
+end;
+
+procedure TDockFormAdapter.Hide;
+begin
+  HideDockForm(Form);
+  // or call DockClient.HideParentForm;
+end;
+
+procedure TDockFormAdapter.SetForm(AForm: TCustomForm);
+begin
+  if AForm <> FForm then
+  begin
+    FDockClient := nil;
+    FForm := AForm;
+  end;
+end;
+
+procedure TDockFormAdapter.SetIsAutoHidden(const Value: Boolean);
+begin
+  if Value then
+    AutoHide
+  else
+    UnAutoHide;
+end;
+
+procedure TDockFormAdapter.SetIsDockable(const Value: Boolean);
+begin
+  if not IsAutoHidden then
+  begin
+    if Value then
+    begin
+      if IsTabbedDocument then
+        IsTabbedDocument := False;
+
+      DockClient.EnableDock := True;
+    end
+    else
+    begin
+      if not IsFloating then
+        IsTabbedDocument := True;
     end;
   end;
 end;
 
-procedure TMSDN2002.Dockable_ItemClick(Sender: TObject);
-var DockClient: TJvDockClient;
+procedure TDockFormAdapter.SetIsFloating(const Value: Boolean);
 begin
-  if PopupMenu1.PopupComponent is TForm then
+  if not IsAutoHidden then
   begin
-    DockClient := FindDockClient(TForm(PopupMenu1.PopupComponent));
-    DockClient.EnableDock := not DockClient.EnableDock;
-    DockClient.RestoreChild;
-  end;
-end;
+    if Value then
+    begin
+      if IsTabbedDocument then
+        IsTabbedDocument := False;
 
-procedure TMSDN2002.Hide_ItemClick(Sender: TObject);
-var DockClient: TJvDockClient;
-begin
-  if PopupMenu1.PopupComponent is TForm then
-  begin
-    DockClient := FindDockClient(TForm(PopupMenu1.PopupComponent));
-    if DockClient <> nil then
-      DockClient.HideParentForm;
-  end;
-end;
-
-procedure TMSDN2002.Float_ItemClick(Sender: TObject);
-var DockClient: TJvDockClient;
-begin
-  if PopupMenu1.PopupComponent is TForm then
-  begin
-    DockClient := FindDockClient(TForm(PopupMenu1.PopupComponent));
-    if DockClient <> nil then
       DockClient.RestoreChild;
+      DockClient.EnableDock := False;
+    end
+    else
+    begin
+      if not IsDockable then
+        IsTabbedDocument := True;
+    end;
   end;
+end;
+
+procedure TDockFormAdapter.Show;
+begin
+  ShowDockForm(Form);
+  // or call DockClient.ShowParentForm;
+end;
+
+procedure TDockFormAdapter.UnAutoHide;
+begin
+  UnAutoHideDockForm(Form);
+end;
+
+function TDockFormAdapter.GetIsTabbedDocument: Boolean;
+begin
+  { Not implemented }
+  Result := False;
+end;
+
+procedure TDockFormAdapter.SetIsTabbedDocument(const Value: Boolean);
+begin
+  { Not implemented }
 end;
 
 end.
+
