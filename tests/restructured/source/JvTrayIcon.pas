@@ -58,9 +58,13 @@ type
     dwInfoFlags: DWORD;
   end;
 
+  TAnimateEvent = procedure (Sender: TObject; const ImageIndex: Integer) of object; 
   TRegisterServiceProcess = function(dwProcessID, dwType: Integer): Integer; stdcall;
 
-  TAnimateEvent = procedure (Sender: TObject; const ImageIndex: Integer) of object; 
+  TTrayVisibility = (tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide, tvVisibleDesign,
+    tvRestoreClick, tvRestoreDbClick);
+  TTrayVisibilities = set of TTrayVisibility;
+
   TJvTrayIcon = class(TJvComponent)
   private
     FActive: Boolean;
@@ -91,6 +95,7 @@ type
     FTimeDelay: Integer;
     FOldTray: HWND;
     FOnAnimate: TAnimateEvent;
+    FVisibility: TTrayVisibilities;
     procedure OnAnimateTimer(Sender: TObject);
     procedure IconChanged(Sender: TObject);
     procedure SetActive(Value: Boolean);
@@ -102,34 +107,39 @@ type
     procedure SetImgList(const Value: TImageList);
     procedure SetTask(const Value: Boolean);
     procedure SetNumber(const Value: Integer);
+    procedure SetVisibility(const Value: TTrayVisibilities);
   protected
+    procedure WndProc(var Mesg: TMessage);
     procedure DoMouseMove(Shift: TShiftState;X, Y: Integer);
     procedure DoMouseDown(Button: TMouseButton;Shift: TShiftState;X, Y: Integer);
     procedure DoMouseUp(Button: TMouseButton;Shift: TShiftState;X, Y: Integer);
     procedure DoDoubleClick(Button: TMouseButton;Shift: TShiftState;X, Y: Integer);
+    function ApplicationHook(var Message: TMessage): Boolean;
+
+    property ApplicationVisible: Boolean read FVisible write SetVisible default True;
+    property VisibleInTaskList: Boolean read FTask write SetTask default True;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
     procedure DoCheckCrash;
-    procedure WndProc(var Mesg: TMessage);
-  published
     procedure HideApplication;
     procedure ShowApplication;
     procedure BalloonHint(Title,Value: string;BalloonType:
       TBalloonType = btNone;Delay: Integer = 5000);
     function AcceptBalloons: Boolean;
-
+  published
     property Active: Boolean read FActive write SetActive default False;
-    property Icon: TIcon read FIcon write SetIcon;
-    property Hint: string read FHint write SetHint;
-    property PopupMenu: TPopupMenu read FPopupMenu write FPopupMenu;
-    property ApplicationVisible: Boolean read FVisible write SetVisible default True;
     property Animated: Boolean read FAnimated write SetAnimated default False;
+    property Icon: TIcon read FIcon write SetIcon;
     property IconIndex: Integer read FNumber write SetNumber;
     property Icons: TImageList read FImgList write SetImgList;
-    property Delay: Cardinal read FDelay write SetDelay default 100;
+    property Hint: string read FHint write SetHint;
     property DropDownMenu: TPopupMenu read FDropDown write FDropDown;
-    property VisibleInTaskList: Boolean read FTask write SetTask default True;
+    property PopupMenu: TPopupMenu read FPopupMenu write FPopupMenu;
+    property Delay: Cardinal read FDelay write SetDelay default 100;
+    property Visibility: TTrayVisibilities read FVisibility write SetVisibility
+      default [tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide];
 
     property OnAnimate: TAnimateEvent read FOnAnimate write FOnAnimate;
     property OnClick: TMouseEvent read FOnClick write FOnClick;
@@ -224,8 +234,6 @@ constructor TJvTrayIcon.Create(AOwner: TComponent);
 begin
   inherited;
   FIcon := TIcon.Create;
-  if not (csDesigning in ComponentState) then
-    FIcon.Assign(Application.Icon);
   FIcon.OnChange := IconChanged;
   FVisible := True;
   {$IFDEF Delphi6_UP}
@@ -234,13 +242,10 @@ begin
   FHandle := AllocateHWnd(WndProc);
   {$ENDIF}
 
+  FVisibility := [tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide];
   FAnimated := False;
   FDelay := 100;
   FNumber := 0;
-  FTimer := TTimer.Create(Self);
-  FTImer.Interval := FDelay;
-  FTimer.Enabled := FAnimated;
-  FTimer.OnTimer := OnAnimateTimer;
   FActive := False;
   FTask := True;
 
@@ -276,7 +281,8 @@ destructor TJvTrayIcon.Destroy;
 begin
   if not (csDestroying in Application.ComponentState) then
     SetTask(False);
-  FTimer.Free;
+  if FTimer<>nil then
+    FTimer.Free;
   SetActive(False);
   FIcon.Free;
  {$IFDEF Delphi6_UP}
@@ -388,12 +394,15 @@ end;
 procedure TJvTrayIcon.SetHint(Value: string);
 begin
   DoCheckCrash;
-  FHint := Value;
-  with FIc do
-    StrPLCopy(szTip, GetShortHint(FHint), SizeOf(szTip) - 1);
-  Fic.uFlags := NIF_MESSAGE or NIF_ICON or NIF_TIP; 
-  if FActive then
-    Shell_NotifyIcon(NIM_MODIFY, @fic);
+  if FHint<>Value then
+  begin
+    FHint := Value;
+    with FIc do
+      StrPLCopy(szTip, GetShortHint(FHint), SizeOf(szTip) - 1);
+    Fic.uFlags := NIF_MESSAGE or NIF_ICON or NIF_TIP;
+    if FActive then
+      Shell_NotifyIcon(NIM_MODIFY, @fic);
+  end;
 end;
 
 {**************************************************}
@@ -414,40 +423,37 @@ procedure TJvTrayIcon.SetActive(Value: Boolean);
 //http://msdn.microsoft.com/library/default.asp?url=/library/en-us/shellcc/platform/Shell/Structures/NOTIFYICONDATA.asp
 begin
   FActive := Value;
-  if not (csDesigning in ComponentState) then
+  if (Value) and ((not (csDesigning in ComponentState)) or (tvVisibleDesign in Visibility)) then
   begin
-    if Value then
+    if (FIcon = nil) or (FIcon.Empty) then
+      FIcon.Assign(Application.Icon);
+    with FIc do
     begin
-      if FIcon = nil then
-        FIcon.Assign(Application.Icon);
-      with FIc do
-      begin
-        if AcceptBalloons then
-        begin
-          cbsize := SizeOf(Fic);
-          fic.uTimeOut := NOTIFYICON_VERSION;
-        end
-        else
-          cbsize := SizeOf(TNotifyIconData);
-        wnd := Fhandle;
-        uId := 1;
-        uCallBackMessage := WM_CALLBACKMESSAGE;
-        if FIcon<>nil then
-          hIcon := FIcon.Handle
-        else
-          FIcon := Application.Icon;
-        StrPLCopy(szTip, GetShortHint(FHint), SizeOf(szTip) - 1);
-        uFlags := NIF_MESSAGE or NIF_ICON or NIF_INFO or NIF_TIP;
-      end;
-      Shell_NotifyIcon(NIM_ADD,@Fic);
       if AcceptBalloons then
-        Shell_NotifyIcon(NIM_SETVERSION,@Fic);
+      begin
+        cbsize := SizeOf(Fic);
+        fic.uTimeOut := NOTIFYICON_VERSION;
+      end
+      else
+        cbsize := SizeOf(TNotifyIconData);
+      wnd := Fhandle;
+      uId := 1;
+      uCallBackMessage := WM_CALLBACKMESSAGE;
+      if FIcon<>nil then
+        hIcon := FIcon.Handle
+      else
+        FIcon := Application.Icon;
+      StrPLCopy(szTip, GetShortHint(FHint), SizeOf(szTip) - 1);
+      uFlags := NIF_MESSAGE or NIF_ICON or NIF_INFO or NIF_TIP;
+    end;
+    Shell_NotifyIcon(NIM_ADD,@Fic);
+    if AcceptBalloons then
+      Shell_NotifyIcon(NIM_SETVERSION,@Fic);
 
-      FOldTray := FindWindow('Shell_TrayWnd',nil);
-    end
-    else
-      Shell_NotifyIcon(NIM_DELETE, @FIc);
-  end;
+    FOldTray := FindWindow('Shell_TrayWnd',nil);
+  end
+  else
+    Shell_NotifyIcon(NIM_DELETE, @FIc);
 end;
 
 {**************************************************}
@@ -482,7 +488,7 @@ end;
 
 procedure TJvTrayIcon.OnAnimateTimer(Sender: TObject);
 begin
-  if (FActive) then
+  if (FActive) and (FImgList<>nil) then
   begin
     if IconIndex<0 then
       IconIndex := 0
@@ -498,8 +504,24 @@ end;
 procedure TJvTrayIcon.SetAnimated(const Value: Boolean);
 begin
   FAnimated := Value;
-  if not (csDesigning in ComponentState) then
-    FTimer.Enabled := FAnimated;
+  if (not (csDesigning in ComponentState)) or (tvVisibleDesign in Visibility) then
+  begin
+    if Value then
+    begin
+      if FTimer=nil then
+      begin
+        FTimer := TTimer.Create(Self);
+        FTimer.Interval := FDelay;
+        FTimer.OnTimer := OnAnimateTimer;
+      end;
+      FTimer.Enabled := true;
+    end
+    else if FTimer<>nil then
+    begin
+      FTimer.Free;
+      FTimer := nil;
+    end;
+  end;
 end;
 
 {**************************************************}
@@ -507,7 +529,8 @@ end;
 procedure TJvTrayIcon.SetDelay(const Value: Cardinal);
 begin
   FDelay := Value;
-  FTimer.Interval := FDelay;
+  if FTimer<>nil then
+    FTimer.Interval := FDelay;
 end;
 
 {**************************************************}
@@ -516,7 +539,6 @@ procedure TJvTrayIcon.SetImgList(const Value: TImageList);
 begin
   FImgList := Value;
 end;
-
 
 {**************************************************}
 
@@ -599,7 +621,10 @@ begin
     SetForegroundWindow(FHandle);
     FPopupMenu.Popup(X, Y);
     PostMessage(FHandle, WM_NULL, 0, 0);
-  end;
+  end
+  else if (Button = mbLeft) and (tvRestoreClick in Visibility) then
+    Visibility := Visibility + [tvVisibleTaskBar];
+
   if Assigned(FOnMouseUp) then
     FOnMouseUp(Self, Button, Shift, X, Y);
   if Assigned(FOnClick) then
@@ -615,14 +640,17 @@ var
 begin
   if Assigned(FOnDblClick) then
     FOnDblClick(Self, Button, Shift, X, Y)
-  else if (Button = mbLeft) and (FPopupMenu <> nil) then
+  else if (Button = mbLeft) then
   begin
-    for i := 0 to FPopupMenu.Items.Count - 1 do
-      if FPopupMenu.Items[i].Default then
-      begin
-        FPopupMenu.Items[i].Click;
-        Break;
-      end;
+    if (FPopupMenu <> nil) then
+      for i := 0 to FPopupMenu.Items.Count - 1 do
+        if FPopupMenu.Items[i].Default then
+        begin
+          FPopupMenu.Items[i].Click;
+          Break;
+        end;
+    if tvRestoreDbClick in Visibility then
+      Visibility := Visibility + [tvVisibleTaskBar];
   end;
 end;
 
@@ -647,5 +675,37 @@ begin
   else
     FNumber := -1;
 end;
+
+{**************************************************}
+
+procedure TJvTrayIcon.SetVisibility(const Value: TTrayVisibilities);
+begin
+  FVisibility := Value;
+  VisibleInTaskList := tvVisibleTaskList in Value;
+  ApplicationVisible := tvVisibleTaskBar in Value;
+  SetActive(FActive);
+  SetAnimated(FAnimated);
+  if not (csDesigning in ComponentState) then
+    if tvAutoHide in Visibility then
+      Application.HookMainWindow(ApplicationHook)
+    else
+      Application.UnHookMainWindow(ApplicationHook);
+
+end;
+
+{**************************************************}
+
+function TJvTrayIcon.ApplicationHook(var Message: TMessage): Boolean;
+begin
+  if (Message.Msg = WM_SYSCOMMAND) and (Message.WParam = SC_MINIMIZE) and
+    (tvAutoHide in Visibility) then
+  begin
+    HideApplication;
+    Result := True;
+  end
+  else
+    Result := False;
+end;
+
 
 end.

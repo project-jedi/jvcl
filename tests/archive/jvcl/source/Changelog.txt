@@ -1,3 +1,8 @@
+2002-07-14
+- TJvTrayIcon: Restructured all visibility options 
+- TJvTrayIcon: Added autohide capability and design mode
+- TJvTrayIcon: Removed timer when not animated
+
 2002-07-13
 - Fixed CRLF corruption - couldn't open files in D5 (is this due to D6 or CVS?)
 - Added new component, JvAnalogClock, from Frenk Vrtariè
