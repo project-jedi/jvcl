@@ -27,7 +27,6 @@ USEUNIT("..\Source\JvOLBarEditor.pas");
 USEFORMNS("..\Source\JvOBEdFrm.pas", Jvobedfrm, frmOLBarEditFrm);
 USEUNIT("..\Source\JvChNtfyProperty.pas");
 USEUNIT("..\Source\JvLCProperty.pas");
-USEUNIT("..\Source\JvTipProperty.pas");
 USEUNIT("..\source\JvAppletProperty.pas");
 USEUNIT("..\source\JvLConst.pas");
 USEUNIT("..\source\JvHintProp.pas");
