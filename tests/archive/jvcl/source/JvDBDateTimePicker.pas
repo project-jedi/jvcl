@@ -36,6 +36,7 @@ Known Issues:
 // Extending and add capability to integrate with database
 // www.geocities.com/ekosbg
 /////////////////////////////////////////////////////////////////////////
+{$I JVCL.INC}
 unit JvDBDateTimePicker;
 
 interface
