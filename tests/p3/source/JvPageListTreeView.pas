@@ -298,7 +298,7 @@ type
     procedure SetItems(const Value: TJvPageIndexNodes);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function CreateNode: TTreeNode; override; 
+    function CreateNode: TTreeNode; override;
     function CreateNodes: TTreeNodes; {$IFDEF COMPILER6_UP} override; {$ENDIF}
 
     function CanChange(Node: TTreeNode): Boolean; override;
@@ -787,15 +787,16 @@ end;
 destructor TJvCustomPageListTreeView.Destroy;
 begin
   FLinks.Free;
-  {$IFNDEF COMPILER6_UP}
-  FItems.Free;
+  {$IFNDEF COMPILER_UP}
+  // TreeNodes are destroyed by TCustomTreeview in D6 and above!!!
+  FreeAndNil(FItems);
   {$ENDIF}
   inherited;
 end;
 
 function TJvCustomPageListTreeView.CreateNodes: TTreeNodes;
 begin
-  if FItems = nil then
+  if (FItems = nil) and not (csDestroying in ComponentState) then
     FItems := TJvPageIndexNodes.Create(self);
   Result := FItems;
 end;
