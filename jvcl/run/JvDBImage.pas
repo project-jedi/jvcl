@@ -386,7 +386,7 @@ end;
 procedure TJvDBImage.PictureChanged(Sender: TObject);
 begin
   if AutoSize and (Picture.Width > 0) and (Picture.Height > 0) then
-  	SetBounds(Left, Top, Picture.Width, Picture.Height);
+    SetBounds(Left, Top, Picture.Width, Picture.Height);
   FOldPictureChange(Sender);
   FPictureLoaded := Picture.Graphic <> nil;
 end;

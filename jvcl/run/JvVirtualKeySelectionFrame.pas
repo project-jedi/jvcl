@@ -29,6 +29,7 @@ Known Issues: none known
 // $Id$
 
 {$I jvcl.inc}
+
 unit JvVirtualKeySelectionFrame;
 
 interface
@@ -48,8 +49,6 @@ type
     chkCtrl: TCheckBox;
     lblModifiers: TLabel;
   protected
-    FShiftState : TShiftState;
-
     function GetKeyCode: Word;
     function GetShiftState: TShiftState;
     function GetCombinedKeyCode: Word;
@@ -196,9 +195,9 @@ begin
   begin
     // add the easy ones
     for I := Ord('0') to Ord('9') do
-      AddObject('VK_'+Chr(I), TObject(I));
+      AddObject('VK_' + Chr(I), TObject(I));
     for I := Ord('A') to Ord('Z') do
-      AddObject('VK_'+Chr(I), TObject(I));
+      AddObject('VK_' + Chr(I), TObject(I));
 
     // then add the others...
     for I := Low(VirtualKeys) to High(VirtualKeys) do
@@ -221,27 +220,23 @@ begin
   begin
     // Signal an error, but not sure how...
     Application.MessageBox(PChar(RsNoValidKeyCode), PChar(RsInvalidKeyCode), MB_ICONERROR);
-
     // in any case, return 0
     Result := 0;
   end
   else
-  begin
     Result := Word(cmbVirtualKey.Items.Objects[cmbVirtualKey.ItemIndex]);
-  end;
 end;
 
 function TJvVirtualKeySelectionFrame.GetShiftState: TShiftState;
 begin
   Result := [];
-    if chkShift.Checked then
-      Result := Result + [ssShift];
-    if chkCtrl.Checked then
-      Result := Result + [ssCtrl];
+  if chkShift.Checked then
+    Result := Result + [ssShift];
+  if chkCtrl.Checked then
+    Result := Result + [ssCtrl];
 end;
 
-procedure TJvVirtualKeySelectionFrame.SetCombinedKeyCode(
-  const Value: Word);
+procedure TJvVirtualKeySelectionFrame.SetCombinedKeyCode(const Value: Word);
 begin
   chkShift.Checked := (Value and $4000) <> 0;
   chkCtrl.Checked := (Value and $8000) <> 0;

@@ -40,7 +40,7 @@ uses
   {$IFDEF VisualCLX}
   QWindows, QControls, QForms, QExtCtrls, QGraphics, QTypes, Types, Qt,
   {$ENDIF VisualCLX}
-  JvHtControls, JvTypes;
+  JvHTControls, JvTypes;
 
 type
   TJvHintWindow = class(THintWindow)
