@@ -2513,12 +2513,12 @@ begin
   Result := (S = '1') or Cmp(S, 'True') or Cmp(S, 'yes');
 end;
 
+{ (rom) disabled because the functions drag in JvClxUtils.pas
 procedure WordBreak(Canvas: TCanvas; const S: string; Ss: TStrings);
 begin
   Ss.Text := S;
 end;
 
-{ (rom) disabled because the functions drag in JvClxUtils.pas
 procedure RATextOut(Canvas: TCanvas; const R, RClip: TRect; const S: string);
 begin
   RATextOutEx(Canvas, R, RClip, S, False);
