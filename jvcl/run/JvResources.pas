@@ -1196,6 +1196,7 @@ resourcestring
   RsEInterpreter309 = 'Statement';
 
   RsEInterpreter401 = 'Implementation of unit not found';
+  RsEInterpreter402 = 'Array and Record types are not allowed as procedure/function parameter';
 
   RsEXOrX = ''' or ''';
 

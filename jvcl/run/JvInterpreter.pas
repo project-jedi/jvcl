@@ -185,7 +185,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  JvInterpreterParser, JvComponent, JvFinalize;
+  JvInterpreterParser, JvComponent;
 
 const
   // (rom) renamed to longer names
@@ -1252,10 +1252,10 @@ uses
   {$ENDIF UNITVERSIONING}
   TypInfo,
   {$IFDEF JvInterpreter_OLEAUTO}
-  OleConst,
-  ActiveX, ComObj,
+  OleConst, ActiveX, ComObj,
   {$ENDIF JvInterpreter_OLEAUTO}
-  JvConsts, JvInterpreterConst, JvJVCLUtils, JvJCLUtils, JvResources, JvTypes;
+  JvConsts, JvInterpreterConst, JvJVCLUtils, JvJCLUtils, JvResources, JvTypes,
+  JvFinalize;
 
 const
   sUnitName = 'JvInterpreter';
@@ -5930,7 +5930,17 @@ var
     FFunctionContext := FC;
   end;
 
+  procedure CheckNotSupportedFunctionParameters;
+  var
+    I: Integer;
+  begin
+    for I := 0 to FCurrArgs.Count - 1 do
+      if TVarData(FCurrArgs.Values[I]).VType in [varArray, varRecord] then
+        NotImplemented(RsEInterpreter402);
+  end;
+
 begin
+  CheckNotSupportedFunctionParameters;
   { allocate stack }
   EnterFunction;
   try
