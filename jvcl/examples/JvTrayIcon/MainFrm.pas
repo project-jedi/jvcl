@@ -62,6 +62,7 @@ type
     btnBalloon: TButton;
     Label4: TLabel;
     cbBalloonType: TComboBox;
+    chkAutoHideIcon: TCheckBox;
     procedure btnUpdateClick(Sender: TObject);
     procedure mnuShowHideClick(Sender: TObject);
     procedure chkRestoreClickClick(Sender: TObject);
@@ -105,6 +106,8 @@ begin
       Include(Options,tvVisibleTaskList);
     if chkAutohide.Checked then
       Include(Options,tvAutoHide);
+    if chkAutoHideIcon.Checked then
+      Include(Options,tvAutoHideIcon);
     if chkRestoreClick.Checked and chkRestoreClick.Enabled then
       Include(Options,tvRestoreClick);
     if chkRestoreDblClick.Checked and chkRestoreDblClick.Enabled then
