@@ -36,7 +36,7 @@ interface
 
 uses
   SysUtils, Classes, DB, DBCtrls, TypInfo,
-  JvQInspector;
+  JvQInspector, JvQFinalize;
 
 type
   TJvInspectorDBData = class(TJvCustomInspectorData)
@@ -110,6 +110,9 @@ implementation
 uses
   Consts,
   JvQResources;
+
+const
+  sUnitName = 'JvInspDB';
 
 var
   GlobalDBReg: TJvInspectorRegister = nil;
@@ -445,10 +448,17 @@ begin
   end;
 end;
 
+procedure RegisterDBTypes; forward;
+
 class function TJvInspectorDBData.FieldTypeMapping: TJvInspectorRegister;
 begin
   if GlobalMapReg = nil then
+  begin
+    RegisterDBTypes; // register
+
     GlobalMapReg := TJvInspectorRegister.Create(TJvCustomInspectorData);
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalMapReg));
+  end;
   Result := GlobalMapReg;
 end;
 
@@ -492,7 +502,10 @@ end;
 class function TJvInspectorDBData.ItemRegister: TJvInspectorRegister;
 begin
   if GlobalDBReg = nil then
+  begin
     GlobalDBReg := TJvInspectorRegister.Create(TJvInspectorDBData);
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalDBReg));
+  end;
   Result := GlobalDBReg;
 end;
 
@@ -683,12 +696,9 @@ begin
 end;
 
 initialization
-  RegisterDBTypes;
 
 finalization
-  // (rom) added cleanup
-  FreeAndNil(GlobalDBReg);
-  FreeAndNil(GlobalMapReg);
+  FinalizeUnit(sUnitName);
 
 end.
 

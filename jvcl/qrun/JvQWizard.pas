@@ -2497,6 +2497,7 @@ begin
   FButtonBarHeight := ciButtonBarHeight;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
+  FAutoHideButtonBar := true;
   CreateNavigateButtons;
   
   InputKeys := [ikAll];

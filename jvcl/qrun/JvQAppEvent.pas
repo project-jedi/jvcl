@@ -16,7 +16,7 @@ The Original Code is: JvAppEvent.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2003-10-24
@@ -42,7 +42,7 @@ uses
   Qt, QTypes, Types, QGraphics, QControls, QForms, QActnList,
   
   SysUtils, Classes,
-  JvQTypes, JvQComponent;
+  JvQTypes, JvQComponent, JvQFinalize;
 
 const
   DefHintColor = clInfoBk;
@@ -158,6 +158,9 @@ type
   end;
 
 implementation
+
+const
+  sUnitName = 'JvAppEvent';
 
 type
   TJvAppEventList = class(TObject)
@@ -584,7 +587,11 @@ constructor TJvAppEvents.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   if AppList = nil then
+  begin
     AppList := TJvAppEventList.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(AppList));
+  end;
+
   FChained := True;
   FHintColor := DefHintColor;
   FHintPause := DefHintPause;
@@ -803,6 +810,7 @@ end;
 initialization
 
 finalization
-  FreeAndNil(AppList);
+  FinalizeUnit(sUnitName);
 
 end.
+

@@ -51,7 +51,7 @@ uses
   
   IniFiles,
   JclBase, JclSysUtils, JclStrings, JvQJCLUtils,
-  JvQAppStorage, JvQTypes;
+  JvQAppStorage, JvQTypes, JvQFinalize;
 
 
 
@@ -159,7 +159,7 @@ type
   TFillDirection = (fdTopToBottom, fdBottomToTop, fdLeftToRight, fdRightToLeft);
 
 procedure GradientFillRect(Canvas: TCanvas; ARect: TRect; StartColor,
-  EndColor: TColor; Direction: TFillDirection; Colors: byte);
+  EndColor: TColor; Direction: TFillDirection; Colors: Byte);
 
 procedure StartWait;
 procedure StopWait;
@@ -367,13 +367,13 @@ type
     FStartColor: TColor;
     FEndColor: TColor;
     FDirection: TFillDirection;
-    FStepCount: byte;
+    FStepCount: Byte;
     FVisible: Boolean;
     FOnChange: TNotifyEvent;
     procedure SetStartColor(Value: TColor);
     procedure SetEndColor(Value: TColor);
     procedure SetDirection(Value: TFillDirection);
-    procedure SetStepCount(Value: byte);
+    procedure SetStepCount(Value: Byte);
     procedure SetVisible(Value: Boolean);
   protected
     procedure Changed; dynamic;
@@ -387,7 +387,7 @@ type
     property EndColor: TColor read FEndColor write SetEndColor default clGray;
     property StartColor: TColor read FStartColor write SetStartColor default
       clSilver;
-    property StepCount: byte read FStepCount write SetStepCount default 64;
+    property StepCount: Byte read FStepCount write SetStepCount default 64;
     property Visible: Boolean read FVisible write SetVisible default False;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
@@ -492,6 +492,9 @@ uses
   Math,
   JclSysInfo, JvQConsts, JvQProgressUtils, JvQResources;
 
+const
+  sUnitName = 'JvJVCLUtils';
+
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvConsts.res}
 {$ENDIF MSWINDOWS}
@@ -535,7 +538,7 @@ end;
 destructor TWaitCursor.Destroy;
 begin
   Screen.Cursor := FCUrsor;
-  inherited;
+  inherited Destroy;
 end;
 
 
@@ -1746,9 +1749,9 @@ end;
 { component source code written by Curtis White, cwhite@teleport.com.      }
 
 procedure GradientFillRect(Canvas: TCanvas; ARect: TRect; StartColor,
-  EndColor: TColor; Direction: TFillDirection; Colors: byte);
+  EndColor: TColor; Direction: TFillDirection; Colors: Byte);
 var
-  StartRGB: array[0..2] of byte; { Start RGB values }
+  StartRGB: array[0..2] of Byte; { Start RGB values }
   RGBDelta: array[0..2] of Integer;
   { Difference between start and end RGB values }
   ColorBand: TRect; { Color band rectangular coordinates }
@@ -2054,18 +2057,18 @@ begin
   if Screen <> nil then
   begin
     // dynamically assign the first available cursor id to our cursor defines
-    crMultiDragLink := GetNextFreeCursorIndex(crJVCLFirst, false);
+    crMultiDragLink := GetNextFreeCursorIndex(crJVCLFirst, False);
     Screen.Cursors[crMultiDragLink] := Screen.Cursors[crMultiDrag];
-    crDragAlt := GetNextFreeCursorIndex(crJVCLFirst, false);
+    crDragAlt := GetNextFreeCursorIndex(crJVCLFirst, False);
     Screen.Cursors[crDragAlt] := Screen.Cursors[crDrag];
-    crMultiDragAlt := GetNextFreeCursorIndex(crJVCLFirst, false);
+    crMultiDragAlt := GetNextFreeCursorIndex(crJVCLFirst, False);
     Screen.Cursors[crMultiDragAlt] := Screen.Cursors[crMultiDrag];
-    crMultiDragLinkAlt := GetNextFreeCursorIndex(crJVCLFirst, false);
+    crMultiDragLinkAlt := GetNextFreeCursorIndex(crJVCLFirst, False);
     Screen.Cursors[crMultiDragLinkAlt] := Screen.Cursors[crMultiDrag];
     { begin RxLib }
-    crHand := GetNextFreeCursorIndex(crJVCLFirst, false);
+    crHand := GetNextFreeCursorIndex(crJVCLFirst, False);
     Screen.Cursors[crHand] := LoadCursor(hInstance, 'JV_HANDCUR');
-    crDragHand := GetNextFreeCursorIndex(crJVCLFirst, false);
+    crDragHand := GetNextFreeCursorIndex(crJVCLFirst, False);
     Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JV_DRAGCUR');
     { end RxLib }
   end;
@@ -2080,14 +2083,10 @@ var
 procedure UsesBitmap;
 begin
   if DrawBitmap = nil then
+  begin
     DrawBitmap := TBitmap.Create;
-end;
-
-procedure ReleaseBitmap;
-begin
-  if DrawBitmap <> nil then
-    DrawBitmap.Free;
-  DrawBitmap := nil;
+    AddFinalizeObjectNil(SUnitName, TObject(DrawBitmap));
+  end;
 end;
 
 procedure WriteText(ACanvas: TCanvas; ARect: TRect; DX, DY: Integer;
@@ -3201,8 +3200,8 @@ const
 type
   PQColor = ^TQColor;
   TQColor = record
-    RGB: array[0..2] of byte;
-    NewColorIndex: byte;
+    RGB: array[0..2] of Byte;
+    NewColorIndex: Byte;
     Count: Longint;
     PNext: PQColor;
   end;
@@ -3215,14 +3214,14 @@ type
 
   PNewColor = ^TNewColor;
   TNewColor = record
-    RGBMin, RGBWidth: array[0..2] of byte;
+    RGBMin, RGBWidth: array[0..2] of Byte;
     NumEntries: Longint;
     Count: Longint;
     QuantizedColors: PQColor;
   end;
 
   PNewColorArray = ^TNewColorArray;
-  TNewColorArray = array[byte] of TNewColor;
+  TNewColorArray = array[Byte] of TNewColor;
 
 procedure PInsert(ColorList: PQColorList; Number: Integer;
   SortRGBAxis: Integer);
@@ -3554,26 +3553,27 @@ type
   { For 6Rx6Gx6B, 7Rx8Gx4B palettes etc. }
 
 const
-  Scale04: array[0..3] of byte = (0, 85, 170, 255);
-  Scale06: array[0..5] of byte = (0, 51, 102, 153, 204, 255);
-  Scale07: array[0..6] of byte = (0, 43, 85, 128, 170, 213, 255);
-  Scale08: array[0..7] of byte = (0, 36, 73, 109, 146, 182, 219, 255);
+  Scale04: array[0..3] of Byte = (0, 85, 170, 255);
+  Scale06: array[0..5] of Byte = (0, 51, 102, 153, 204, 255);
+  Scale07: array[0..6] of Byte = (0, 43, 85, 128, 170, 213, 255);
+  Scale08: array[0..7] of Byte = (0, 36, 73, 109, 146, 182, 219, 255);
 
   { For 6Rx6Gx6B, 7Rx8Gx4B palettes etc. }
 
 var
-  TruncIndex04: array[byte] of byte;
-  TruncIndex06: array[byte] of byte;
-  TruncIndex07: array[byte] of byte;
-  TruncIndex08: array[byte] of byte;
+  TruncTablesInitialized: Boolean = False;
+  TruncIndex04: array[Byte] of Byte;
+  TruncIndex06: array[Byte] of Byte;
+  TruncIndex07: array[Byte] of Byte;
+  TruncIndex08: array[Byte] of Byte;
 
   { These functions initialises this module }
 
 procedure InitTruncTables;
 
-  function NearestIndex(Value: byte; const Bytes: array of byte): byte;
+  function NearestIndex(Value: Byte; const Bytes: array of Byte): Byte;
   var
-    b, i: byte;
+    b, i: Byte;
     Diff, DiffMin: Word;
   begin
     Result := 0;
@@ -3594,17 +3594,22 @@ procedure InitTruncTables;
 var
   i: Integer;
 begin
-  // (rom) secured because it is called in initialization section
-  try
-    { For 7 Red X 8 Green X 4 Blue palettes etc. }
-    for i := 0 to 255 do
-    begin
-      TruncIndex04[i] := NearestIndex(byte(i), Scale04);
-      TruncIndex06[i] := NearestIndex(byte(i), Scale06);
-      TruncIndex07[i] := NearestIndex(byte(i), Scale07);
-      TruncIndex08[i] := NearestIndex(byte(i), Scale08);
+  if not TruncTablesInitialized then
+  begin
+    TruncTablesInitialized := True;
+    // (rom) secured because it is called in initialization section
+    // (ahuser) moved from initialization section to "on demand" initialization
+    try
+      { For 7 Red X 8 Green X 4 Blue palettes etc. }
+      for i := 0 to 255 do
+      begin
+        TruncIndex04[i] := NearestIndex(Byte(i), Scale04);
+        TruncIndex06[i] := NearestIndex(Byte(i), Scale06);
+        TruncIndex07[i] := NearestIndex(Byte(i), Scale07);
+        TruncIndex08[i] := NearestIndex(Byte(i), Scale08);
+      end;
+    except
     end;
-  except
   end;
 end;
 
@@ -3628,7 +3633,7 @@ end;
 
 procedure TruncPal6R6G6B(var Colors: TRGBPalette);
 var
-  i, r, g, b: byte;
+  i, r, g, b: Byte;
 begin
   FillChar(Colors, SizeOf(TRGBPalette), $80);
   i := 0;
@@ -3649,15 +3654,16 @@ end;
 procedure TruncLine6R6G6B(Src, Dest: Pointer; CX: Integer);
 var
   X: Integer;
-  r, g, b: byte;
+  r, g, b: Byte;
 begin
+  InitTruncTables;
   for X := 0 to CX - 1 do
   begin
-    b := TruncIndex06[byte(Src^)];
+    b := TruncIndex06[Byte(Src^)];
     Src := HugeOffset(Src, 1);
-    g := TruncIndex06[byte(Src^)];
+    g := TruncIndex06[Byte(Src^)];
     Src := HugeOffset(Src, 1);
-    r := TruncIndex06[byte(Src^)];
+    r := TruncIndex06[Byte(Src^)];
     Src := HugeOffset(Src, 1);
     PByte(Dest)^ := 6 * (6 * r + g) + b;
     Dest := HugeOffset(Dest, 1);
@@ -3680,7 +3686,7 @@ end;
 
 procedure TruncPal7R8G4B(var Colors: TRGBPalette);
 var
-  i, r, g, b: byte;
+  i, r, g, b: Byte;
 begin
   FillChar(Colors, SizeOf(TRGBPalette), $80);
   i := 0;
@@ -3701,15 +3707,16 @@ end;
 procedure TruncLine7R8G4B(Src, Dest: Pointer; CX: Integer);
 var
   X: Integer;
-  r, g, b: byte;
+  r, g, b: Byte;
 begin
+  InitTruncTables;
   for X := 0 to CX - 1 do
   begin
-    b := TruncIndex04[byte(Src^)];
+    b := TruncIndex04[Byte(Src^)];
     Src := HugeOffset(Src, 1);
-    g := TruncIndex08[byte(Src^)];
+    g := TruncIndex08[Byte(Src^)];
     Src := HugeOffset(Src, 1);
-    r := TruncIndex07[byte(Src^)];
+    r := TruncIndex07[Byte(Src^)];
     Src := HugeOffset(Src, 1);
     PByte(Dest)^ := 4 * (8 * r + g) + b;
     Dest := HugeOffset(Dest, 1);
@@ -3728,7 +3735,7 @@ end;
 
 procedure GrayPal(var Colors: TRGBPalette);
 var
-  i: byte;
+  i: Byte;
 begin
   FillChar(Colors, SizeOf(TRGBPalette), 0);
   for i := 0 to 255 do
@@ -3740,7 +3747,7 @@ var
   SrcScanline, DstScanline: Longint;
   Y, X: Integer;
   Src, Dest: PByte;
-  r, g, b: byte;
+  r, g, b: Byte;
 begin
   SrcScanline := (Header.biWidth * 3 + 3) and not 3;
   DstScanline := (Header.biWidth + 3) and not 3;
@@ -3756,7 +3763,7 @@ begin
       Src := HugeOffset(Src, 1);
       r := Src^;
       Src := HugeOffset(Src, 1);
-      Dest^ := byte(Longint(Word(r) * 77 + Word(g) * 150 + Word(b) * 29) shr 8);
+      Dest^ := Byte(Longint(Word(r) * 77 + Word(g) * 150 + Word(b) * 29) shr 8);
       Dest := HugeOffset(Dest, 1);
     end;
     Data24 := HugeOffset(Data24, SrcScanline);
@@ -3768,7 +3775,7 @@ end;
 
 procedure TripelPal(var Colors: TRGBPalette);
 var
-  i: byte;
+  i: Byte;
 begin
   FillChar(Colors, SizeOf(TRGBPalette), 0);
   for i := 0 to $40 do
@@ -3784,7 +3791,7 @@ var
   SrcScanline, DstScanline: Longint;
   Y, X: Integer;
   Src, Dest: PByte;
-  r, g, b: byte;
+  r, g, b: Byte;
 begin
   SrcScanline := (Header.biWidth * 3 + 3) and not 3;
   DstScanline := (Header.biWidth + 3) and not 3;
@@ -3801,9 +3808,9 @@ begin
       r := Src^;
       Src := HugeOffset(Src, 1);
       case ((X + Y) mod 3) of
-        0: Dest^ := byte(r shr 2);
-        1: Dest^ := byte($40 + (g shr 2));
-        2: Dest^ := byte($80 + (b shr 2));
+        0: Dest^ := Byte(r shr 2);
+        1: Dest^ := Byte($40 + (g shr 2));
+        2: Dest^ := Byte($80 + (b shr 2));
       end;
       Dest := HugeOffset(Dest, 1);
     end;
@@ -3818,7 +3825,7 @@ const
   MAX_N_COLS = 2049;
   MAX_N_HASH = 5191;
 
-function Hash(r, g, b: byte): Word;
+function Hash(r, g, b: Byte): Word;
 begin
   Result := Word(Longint(Longint(r + g) * Longint(g + b) *
     Longint(b + r)) mod MAX_N_HASH);
@@ -3827,24 +3834,24 @@ end;
 type
   PFreqRecord = ^TFreqRecord;
   TFreqRecord = record
-    b: byte;
-    g: byte;
-    r: byte;
+    b: Byte;
+    g: Byte;
+    r: Byte;
     Frequency: Longint;
-    Nearest: byte;
+    Nearest: Byte;
   end;
 
   PHist = ^THist;
   THist = record
     ColCount: Longint;
-    Rm: byte;
-    Gm: byte;
-    BM: byte;
+    Rm: Byte;
+    Gm: Byte;
+    BM: Byte;
     Freqs: array[0..MAX_N_COLS - 1] of TFreqRecord;
     HashTable: array[0..MAX_N_HASH - 1] of Word;
   end;
 
-function CreateHistogram(r, g, b: byte): PHist;
+function CreateHistogram(r, g, b: Byte): PHist;
 { create empty histogram }
 begin
   GetMem(Result, SizeOf(THist));
@@ -3858,7 +3865,7 @@ begin
   FillChar(Result^.HashTable, MAX_N_HASH * SizeOf(Word), 255);
 end;
 
-procedure ClearHistogram(var Hist: PHist; r, g, b: byte);
+procedure ClearHistogram(var Hist: PHist; r, g, b: Byte);
 begin
   with Hist^ do
   begin
@@ -3882,7 +3889,7 @@ function AddToHistogram(var Hist: THist; const Header: TBitmapInfoHeader;
 var
   Step24: Integer;
   HashColor, Index: Word;
-  Rm, Gm, BM, r, g, b: byte;
+  Rm, Gm, BM, r, g, b: Byte;
   X, Y, ColCount: Longint;
 begin
   Step24 := ((Header.biWidth * 3 + 3) and not 3) - Header.biWidth * 3;
@@ -3894,11 +3901,11 @@ begin
   begin
     for X := 0 to Header.biWidth - 1 do
     begin
-      b := byte(Data24^) and BM;
+      b := Byte(Data24^) and BM;
       Data24 := HugeOffset(Data24, 1);
-      g := byte(Data24^) and Gm;
+      g := Byte(Data24^) and Gm;
       Data24 := HugeOffset(Data24, 1);
-      r := byte(Data24^) and Rm;
+      r := Byte(Data24^) and Rm;
       Data24 := HugeOffset(Data24, 1);
       HashColor := Hash(r, g, b);
       repeat
@@ -3962,7 +3969,7 @@ begin
         MaxJ := j;
         MaxFreq := Hist.Freqs[j].Frequency;
       end;
-    Hist.Freqs[MaxJ].Nearest := byte(i);
+    Hist.Freqs[MaxJ].Nearest := Byte(i);
     Hist.Freqs[MaxJ].Frequency := 0; { Prevent later use of Freqs[MaxJ] }
     Colors[i].rgbBlue := Hist.Freqs[MaxJ].b;
     Colors[i].rgbGreen := Hist.Freqs[MaxJ].g;
@@ -3998,7 +4005,7 @@ begin
           MinJ := j;
         end;
       end;
-      Hist.Freqs[i].Nearest := byte(MinJ);
+      Hist.Freqs[i].Nearest := Byte(MinJ);
     end;
   end;
 end;
@@ -4010,7 +4017,7 @@ var
   Step24: Integer;
   Step8: Integer;
   HashColor, Index: Longint;
-  Rm, Gm, BM, r, g, b: byte;
+  Rm, Gm, BM, r, g, b: Byte;
   X, Y: Longint;
 begin
   Step24 := ((Header.biWidth * 3 + 3) and not 3) - Header.biWidth * 3;
@@ -4022,11 +4029,11 @@ begin
   begin
     for X := 0 to Header.biWidth - 1 do
     begin
-      b := byte(Data24^) and BM;
+      b := Byte(Data24^) and BM;
       Data24 := HugeOffset(Data24, 1);
-      g := byte(Data24^) and Gm;
+      g := Byte(Data24^) and Gm;
       Data24 := HugeOffset(Data24, 1);
-      r := byte(Data24^) and Rm;
+      r := Byte(Data24^) and Rm;
       Data24 := HugeOffset(Data24, 1);
       HashColor := Hash(r, g, b);
       repeat
@@ -4047,7 +4054,7 @@ begin
 end;
 
 procedure Histogram(const Header: TBitmapInfoHeader; var Colors: TRGBPalette;
-  Data24, Data8: Pointer; ColorsWanted: Integer; Rm, Gm, BM: byte);
+  Data24, Data8: Pointer; ColorsWanted: Integer; Rm, Gm, BM: Byte);
 { map single bitmap to frequency optimised palette }
 var
   Hist: PHist;
@@ -4298,7 +4305,7 @@ begin
   end;
 end;
 
-procedure TJvGradientOptions.SetStepCount(Value: byte);
+procedure TJvGradientOptions.SetStepCount(Value: Byte);
 begin
   if Value <> FStepCount then
   begin
@@ -4766,15 +4773,10 @@ begin
 end;
 
 initialization
-  { begin JvGraph }
-  InitTruncTables;
-  { end JvGraph }
   InitScreenCursors;
 
 finalization
-  { begin JvVCLUtils }
-  ReleaseBitmap;
-  { end from JvVCLUtils }
+  FinalizeUnit(sUnitName);
 
 end.
 

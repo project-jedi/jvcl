@@ -42,7 +42,8 @@ uses
   
   QControls, QForms, QGraphics, QButtons, Types, QWindows,
   
-  SysUtils, Classes;
+  SysUtils, Classes,
+  JvQFinalize;
 
 const
  // Add a message handler to a component that is themed by the ThemeManager but
@@ -116,6 +117,8 @@ function IsMouseOver(Control: TControl): Boolean;
 
 
 implementation
+
+
 
 procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
   const R: TRect; NeedsParentBackground: Boolean = True);

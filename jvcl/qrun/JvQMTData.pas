@@ -35,15 +35,13 @@ unit JvQMTData;
 interface
 
 uses
-  SysUtils, Classes, Contnrs,
+  SysUtils, Classes, Contnrs, SyncObjs,
   {$IFDEF MSWINDOWS}
   {$IFDEF DEBUGINFO_ON}
   Windows,   // for OutputDebugString
   {$ENDIF DEBUGINFO_ON}
   {$ENDIF MSWINDOWS}
-  JvQMTSync, JvQMTConsts, JvQMTThreading,
-  // (rom) any need to have this last?
-  SyncObjs;
+  JvQMTSync, JvQMTConsts, JvQMTThreading, JvQFinalize;
 
 type
   TMTBoundedQueue = class(TObjectQueue)
@@ -115,13 +113,26 @@ uses
   JvQResources;
 {$ENDIF USEJVCL}
 
+const
+  sUnitName = 'JvMTData';
+
 {$IFNDEF USEJVCL}
 resourcestring
   RsEMethodOnlyForMainThread = '%s method can only be used by the main VCL thread';
 {$ENDIF USEJVCL}
 
 var
-  DataThreadsMan: TMTManager = nil;
+  GlobalDataThreadsMan: TMTManager = nil;
+
+function DataThreadsMan: TMTManager;
+begin
+  if not Assigned(GlobalDataThreadsMan) then
+  begin
+    GlobalDataThreadsMan := TMTManager.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalDataThreadsMan));
+  end;
+  Result := GlobalDataThreadsMan;
+end;
 
 const
   cRead = 'Read';
@@ -351,7 +362,6 @@ begin
 end;
 
 initialization
-  DataThreadsMan := TMTManager.Create;
 
 finalization
   {$IFDEF MSWINDOWS}
@@ -362,6 +372,7 @@ finalization
       'Memory leak detected: free MTData objects before application shutdown'); // do not localize
   {$ENDIF DEBUGINFO_ON}
   {$ENDIF MSWINDOWS}
-  FreeAndNil(DataThreadsMan);
+
+  FinalizeUnit(sUnitName);
 
 end.

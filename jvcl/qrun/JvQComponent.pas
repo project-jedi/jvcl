@@ -99,6 +99,7 @@ end;
 
 
 {$IFDEF USE_DXGETTEXT}
+
 initialization
   AddDomainForResourceString('jvcl');
 

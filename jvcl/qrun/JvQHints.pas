@@ -263,8 +263,8 @@ var
   const
     Flag: array [TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
   begin
-    DrawText(FImage.Canvas.Handle, PChar(Caption), -1, R,
-      DT_NOPREFIX or DT_WORDBREAK or Flag[HintAlignment] or DrawTextBiDiModeFlagsReadingOnly);
+    DrawTextW(FImage.Canvas.Handle, PWideChar(Caption), -1, R,
+      DT_NOPREFIX or DT_WORDBREAK or Flag[HintAlignment]);
   end;
 
 begin
@@ -402,7 +402,7 @@ var
   X, Y, Factor: Double;
 begin
   Result := Rect(0, 0, MaxWidth, 0);
-  DrawText(Canvas.Handle, PChar(AHint), -1, Result,
+  DrawTextW(Canvas.Handle, PWideChar(AHint), -1, Result,
     DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment] or DrawTextBiDiModeFlagsReadingOnly);
   Inc(Result.Right, 8);
   Inc(Result.Bottom, 4);

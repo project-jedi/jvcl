@@ -57,7 +57,8 @@ uses
 
   RTLConsts, Variants,
   
-  JvQComponent, JvQSpeedButton, JvQJCLUtils, JvQTypes, JvQExControls, JvQExMask;
+  JvQComponent, JvQSpeedButton, JvQJCLUtils, JvQTypes, JvQExControls, JvQExMask,
+  JvQFinalize;
 
 const
   scAltDown = scAlt + VK_DOWN;
@@ -97,9 +98,9 @@ type
   TJvEditButton = class(TJvImageSpeedButton)
   private
     FNoAction: Boolean;
-    
+
   protected
-    
+
     FStandard: Boolean; // Polaris
     FDrawGlyph: Boolean;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -108,6 +109,7 @@ type
       AState: TJvButtonState; DrawMark: Boolean); override;
     procedure Paint; override;
   public
+    NewStyleControls: boolean;
     constructor Create(AOwner: TComponent); override;
     procedure Click; override;
   end;
@@ -270,6 +272,7 @@ type
     property PopupVisible: Boolean read GetPopupVisible;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
   public
+    NewStyleControls: boolean;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DoClick;
@@ -810,6 +813,9 @@ uses
   
   JvQConsts;
 
+const
+  sUnitName = 'JvToolEdit';
+
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvToolEdit.res}
 {$ENDIF MSWINDOWS}
@@ -910,13 +916,6 @@ begin
     Result := DefaultValue
   else
     Result := DateValue;
-end;
-
-procedure DestroyLocals;
-begin
-  
-  GDefaultComboEditImagesList.Free;
-  GDefaultComboEditImagesList := nil;
 end;
 
 //=== Global procedures ======================================================
@@ -1248,7 +1247,7 @@ begin
   GetTextMetrics(DC, Metrics);
   SelectObject(DC, SaveFont);
   ReleaseDC(0, DC);
-  if false then //NewStyleControls then
+  if NewStyleControls then
   begin
     
     
@@ -1330,7 +1329,10 @@ end;
 class function TJvCustomComboEdit.DefaultImages: TCustomImageList;
 begin
   if GDefaultComboEditImagesList = nil then
+  begin
     GDefaultComboEditImagesList := TImageList.CreateSize(14, 12);
+    AddFinalizeObjectNil(sUnitName, TObject(GDefaultComboEditImagesList));
+  end;
   Result := GDefaultComboEditImagesList;
 end;
 
@@ -1887,7 +1889,7 @@ begin
 
   
 
-  if false then //NewStyleControls and (BorderStyle = bsSingle) then
+  if NewStyleControls and (BorderStyle = bsSingle) then
   begin
     
     
@@ -2018,7 +2020,7 @@ procedure TJvCustomComboEdit.UpdateBtnBounds;
 var
   BtnRect: TRect;
 begin
-  if false then //NewStyleControls then
+  if NewStyleControls then
     
     begin
       if BorderStyle = bsSingle then
@@ -2968,7 +2970,7 @@ begin
     if FState <> rbsDown then
       with Canvas do
       begin
-        if false then//NewStyleControls then
+        if NewStyleControls then
           Pen.Color := clBtnFace
         else
           Pen.Color := clBtnShadow;
@@ -3407,6 +3409,6 @@ end;
 initialization
 
 finalization
-  DestroyLocals;
+  FinalizeUnit(sUnitName);
 
 end.

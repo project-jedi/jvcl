@@ -71,12 +71,11 @@ unit JvQButtons;
 interface
 
 uses
-  
-  
-  Types, QGraphics, QControls, QForms, QExtCtrls, QStdCtrls, QMenus, QButtons,
-  QImgList, QWindows, QTypes,
-
   SysUtils, Classes,
+  
+
+  Types, QGraphics, QControls, QForms, QButtons, QImgList, QWindows,
+
   JvQComponent, JvQExButtons;
 
 type

@@ -42,7 +42,7 @@ uses
   {$IFDEF LINUX}
   Libc,
   {$ENDIF LINUX}
-  JvQMTConsts, JvQMTSync;
+  JvQMTConsts, JvQMTSync, JvQFinalize;
 
 type
   TMTManager = class;
@@ -166,6 +166,9 @@ end;
 
 {$IFDEF COMPILER5}
 
+const
+  sUnitName = 'JvMTThreading';
+
 type
   PSyncRequest = ^TSyncRequest;
   TSyncRequest = record
@@ -177,7 +180,8 @@ type
 var
   SyncRequestAvailable: Boolean;
   ThreadSyncLock: TRTLCriticalSection;
-  SyncRequestList: TList;
+  SyncRequestList: TList = nil;
+  FirstSyncRequestList: Boolean = True;
 
 function CheckSynchronize: Boolean;
 var
@@ -213,6 +217,17 @@ begin
   end;
 end;
 
+procedure FinalizeSyncRequestList;
+begin
+  // if the list is not empty there are still waiting threads
+  if SyncRequestList <> nil then
+  begin
+    CheckSynchronize;
+    SyncRequestList.Free;
+    SyncRequestList := nil;
+  end;
+end;
+
 procedure TIntThread.Synchronize(Method: TThreadMethod);
 var
   SyncRequest: TSyncRequest;
@@ -226,7 +241,11 @@ begin
       EnterCriticalSection(ThreadSyncLock);
       try
         if SyncRequestList = nil then
+        begin
           SyncRequestList := TList.Create;
+          if FirstSyncRequestList then
+            AddFinalizeProc(sUnitName, FinalizeSyncRequestList);
+        end;
 
         SyncRequest.ExceptionObject := nil;
         SyncRequest.Method := Method;
@@ -734,17 +753,10 @@ end;
 
 initialization
   InitializeCriticalSection(ThreadSyncLock);
-  SyncRequestList := nil;
 
 finalization
+  FinalizeUnit(sUnitName);
   DeleteCriticalSection(ThreadSyncLock);
-  // if the list is not empty there are still waiting threads
-  if SyncRequestList <> nil then
-  begin
-    CheckSynchronize;
-    SyncRequestList.Free;
-    SyncRequestList := nil;
-  end;
 
 {$ENDIF COMPILER5}
 

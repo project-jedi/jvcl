@@ -44,8 +44,7 @@ uses
   SysUtils, Classes,
   
   
-  QGraphics, QControls, QMenus, QForms, QStdCtrls, QMask, QButtons, QImgList,
-  QWindows, QTypes,
+  QTypes, QGraphics, QControls, QImgList, QWindows, Types,
   
   JvQToolEdit;
 
@@ -854,8 +853,8 @@ end;
 procedure TJvCustomNumEdit.EnabledChanged;
 begin
   inherited EnabledChanged;
-//  if NewStyleControls and not FFocused then
-//    Invalidate;
+  if NewStyleControls and not FFocused then
+    Invalidate;
 end;
 
 
