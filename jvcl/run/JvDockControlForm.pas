@@ -509,6 +509,7 @@ type
 
   TJvDockCustomPanelEvent = procedure(Sender:TJvDockServer; var aParent:TWinControl; var Align:TAlign ) of object; {NEW!}
   TJvDockCheckDockableEvent = procedure ( DockClient:TJvDockClient; DockForm:TForm; DockServer:TJvDockServer; DockPanel:TJvDockPanel; var CanDock:Boolean ) of object; {NEW!}
+  TJvDockTabHostFormCreatedEvent = procedure ( DockClient:TJvDockClient; TabHost: TJvDockTabHostForm ) of object;
 
 
 
@@ -667,6 +668,7 @@ type
     FOnFormShow: TNotifyEvent;
     FOnFormHide: TNotifyEvent;
     FOnCheckIsDockable :TJvDockCheckDockableEvent;  {NEW!}
+    FOnTabHostFormCreated : TJvDockTabHostFormCreatedEvent;{NEW!}
     FCurrentDockSite: TWinControl;
     FLastDockSite: TWinControl;
     FUnDockLeft: Integer;
@@ -789,6 +791,8 @@ type
     property OnFormHide: TNotifyEvent read FOnFormHide write FOnFormHide;
 
     property OnCheckIsDockable :TJvDockCheckDockableEvent read FOnCheckIsDockable write FOnCheckIsDockable;  {NEW!}
+    property OnTabHostFormCreated : TJvDockTabHostFormCreatedEvent read FOnTabHostFormCreated write FOnTabHostFormCreated; {NEW!}
+
 
     property OnNCButtonDown: TJvDockNCButtonDownEvent read FOnNCButtonDown write FOnNCButtonDown;
     property OnNCButtonUp: TJvDockNCButtonUpEvent read FOnNCButtonUp write FOnNCButtonUp;
@@ -3628,6 +3632,10 @@ begin
   Control2.TBDockHeight := OldDockHeight;
 
   SetDockSite(Result, False);
+  //TJvDockTabHostFormCreatedEvent:
+  if Assigned(FOnTabHostFormCreated) then begin
+      FOnTabHostFormCreated( Self,   {TabHost:TJvDockTabHostForm}Result);
+  end;
 end;
 
 procedure TJvDockClient.Deactivate;
