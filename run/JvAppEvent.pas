@@ -27,6 +27,7 @@ Known Issues:
 
 unit JvAppEvent;
 
+// (rom) this definitely needs an explanation
 {$C PRELOAD}
 
 interface
@@ -34,10 +35,10 @@ interface
 uses
   {$IFDEF COMPLIB_VCL}
   Windows, Messages, Graphics, Controls, Forms, ActnList,
-  {$ENDIF}
+  {$ENDIF COMPLIB_VCL}
   {$IFDEF COMPLIB_CLX}
   Qt, QTypes, Types, QGraphics, QControls, QForms, QActnList,
-  {$ENDIF}
+  {$ENDIF COMPLIB_CLX}
   SysUtils, Classes,
   JvTypes, JvComponent;
 
@@ -50,7 +51,6 @@ const
 type
   TJvAppEvents = class(TJvComponent)
   private
-    { Private declarations }
     FChained: Boolean;
     FHintColor: TColor;
     FHintPause: Integer;
@@ -177,12 +177,12 @@ type
     {$IFDEF COMPLIB_VCL}
     property OnMessage: TMessageEvent read FOnMessage write FOnMessage;
     property OnSettingsChanged: TNotifyEvent read FOnSettingsChanged write FOnSettingsChanged;
-    {$ENDIF}
+    {$ENDIF COMPLIB_VCL}
     property OnActiveControlChange: TNotifyEvent read FOnActiveControlChange write FOnActiveControlChange;
     property OnActiveFormChange: TNotifyEvent read FOnActiveFormChange write FOnActiveFormChange;
     {$IFDEF COMPLIB_CLX}
     property OnEvent: TEventEvent read FOnEvent write FOnEvent;
-    {$ENDIF}
+    {$ENDIF COMPLIB_CLX}
   end;
 
 implementation
@@ -200,10 +200,10 @@ type
     FOnHint: TNotifyEvent;
     {$IFDEF COMPLIB_VCL}
     FOnMessage: TMessageEvent;
-    {$ENDIF}
+    {$ENDIF COMPLIB_VCL}
     {$IFDEF COMPLIB_CLX}
     FOnEvent: TEventEvent;
-    {$ENDIF}
+    {$ENDIF COMPLIB_CLX}
     FOnMinimize: TNotifyEvent;
     FOnRestore: TNotifyEvent;
     FOnShowHint: TShowHintEvent;
@@ -273,13 +273,13 @@ begin
     Application.OnException := nil;
     {$IFDEF COMPLIB_CLX}
     Application.OnEvent := nil;
-    {$ENDIF}
+    {$ENDIF COMPLIB_CLX}
     Application.OnIdle := nil;
     Application.OnHelp := nil;
     Application.OnHint := nil;
     {$IFDEF COMPLIB_VCL}
     Application.OnMessage := nil;
-    {$ENDIF}
+    {$ENDIF COMPLIB_VCL}
     Application.OnMinimize := nil;
     Application.OnRestore := nil;
     Application.OnShowHint := nil;
@@ -309,10 +309,10 @@ begin
       FOnHint := Application.OnHint;
       {$IFDEF COMPLIB_VCL}
       FOnMessage := Application.OnMessage;
-      {$ENDIF}
+      {$ENDIF COMPLIB_VCL}
       {$IFDEF COMPLIB_CLX}
       FOnEvent := Application.OnEvent;
-      {$ENDIF}
+      {$ENDIF COMPLIB_CLX}
       FOnMinimize := Application.OnMinimize;
       FOnRestore := Application.OnRestore;
       FOnShowHint := Application.OnShowHint;
@@ -330,10 +330,10 @@ begin
       Application.OnHint := DoHint;
       {$IFDEF COMPLIB_VCL}
       Application.OnMessage := DoMessage;
-      {$ENDIF}
+      {$ENDIF COMPLIB_VCL}
       {$IFDEF COMPLIB_CLX}
       Application.OnEvent := DoEvent;
-      {$ENDIF}
+      {$ENDIF COMPLIB_CLX}
       Application.OnMinimize := DoMinimize;
       Application.OnRestore := DoRestore;
       Application.OnShowHint := DoShowHint;
@@ -448,7 +448,7 @@ begin
   if Assigned(FOnHelp) then
     Result := FOnHelp(Command, Data, CallHelp);
 end;
-{$ENDIF}
+{$ENDIF COMPLIB_VCL}
 {$IFDEF COMPLIB_CLX}
 function DoHelp(HelpType: THelpType; HelpContext: THelpContext;
   const HelpKeyword: String; const HelpFile: String;
@@ -468,7 +468,7 @@ begin
   if Assigned(FOnHelp) then
     Result := FOnHelp(HelpType, HelpContext, HelpKeyword, HelpFie, Handled);
 end;
-{$ENDIF}
+{$ENDIF COMPLIB_CLX}
 
 procedure TJvAppEventList.DoHint(Sender: TObject);
 var
@@ -500,7 +500,7 @@ begin
   if Assigned(FOnMessage) then
     FOnMessage(Msg, Handled);
 end;
-{$ENDIF}
+{$ENDIF COMPLIB_VCL}
 {$IFDEF COMPLIB_CLX}
 procedure TJvAppEventList.DoEvent(Sender: QObjectH; Event: QEventH;
   var Handled: Boolean);
@@ -517,7 +517,7 @@ begin
   if Assigned(FOnEvent) then
     FOnEvent(Sender, Event, Handled);
 end;
-{$ENDIF}
+{$ENDIF COMPLIB_CLX}
 
 procedure TJvAppEventList.DoMinimize(Sender: TObject);
 var
@@ -552,11 +552,11 @@ end;
 {$IFDEF COMPLIB_VCL}
 procedure TJvAppEventList.DoShowHint(var HintStr: string; var CanShow: Boolean;
   var HintInfo: THintInfo);
-{$ENDIF}
+{$ENDIF COMPLIB_VCL}
 {$IFDEF COMPLIB_CLX}
 procedure TJvAppEventList.DoShowHint(var HintStr: widestring; var CanShow: Boolean;
   var HintInfo: THintInfo);
-{$ENDIF}
+{$ENDIF COMPLIB_CLX}
 var
   I: Integer;
 begin
@@ -649,7 +649,7 @@ begin
   if Assigned(FOnShortCut) then
     FOnShortCut(Msg, Handled);
 end;
-{$ENDIF}
+{$ENDIF COMPLIB_VCL}
 {$IFDEF COMPLIB_CLX}
 procedure TJvAppEventList.DoShortCut(Key: Integer; Shift: TShiftState; var Handled: Boolean);
 var
@@ -665,7 +665,7 @@ begin
   if Assigned(FOnShortCut) then
     FOnShortCut(Key, Shift, Handled);
 end;
-{$ENDIF}
+{$ENDIF COMPLIB_CLX}
 
 //=== TJvAppEvents ===========================================================
 
@@ -694,7 +694,7 @@ begin
   FBiDiMode := bdLeftToRight;
   if not (csDesigning in ComponentState) then
     Application.HookMainWindow(MessageHook);
-  {$ENDIF}
+  {$ENDIF COMPLIB_VCL}
   AppList.AddEvents(Self);
 end;
 
@@ -703,7 +703,7 @@ begin
   {$IFDEF COMPLIB_VCL}
   if not (csDesigning in ComponentState) then
     Application.UnhookMainWindow(MessageHook);
-  {$ENDIF}
+  {$ENDIF COMPLIB_VCL}
   if (Self <> nil) and (AppList <> nil) then
     AppList.RemoveEvents(Self);
   FCanvas.Free;
@@ -724,6 +724,7 @@ begin
 end;
 
 {$IFDEF COMPLIB_VCL}
+
 procedure TJvAppEvents.PaintIcon;
 var
   PS: TPaintStruct;
@@ -775,6 +776,7 @@ begin
       end;
   end;
 end;
+
 {$ENDIF COMPLIB_VCL}
 
 function TJvAppEvents.GetHintColor: TColor;
@@ -824,21 +826,21 @@ end;
 
 function TJvAppEvents.GetUpdateFormatSettings: Boolean;
 begin
-{$IFDEF COMPLIB_VCL}
+  {$IFDEF COMPLIB_VCL}
   if not (csDesigning in ComponentState) then
     Result := Application.UpdateFormatSettings
   else
-{$ENDIF}
+  {$ENDIF COMPLIB_VCL}
     Result := FUpdateFormatSettings;
 end;
 
 procedure TJvAppEvents.SetUpdateFormatSettings(Value: Boolean);
 begin
   FUpdateFormatSettings := Value;
-{$IFDEF COMPLIB_VCL}
+  {$IFDEF COMPLIB_VCL}
   if not (csDesigning in ComponentState) then
     Application.UpdateFormatSettings := Value;
-{$ENDIF}    
+  {$ENDIF COMPLIB_VCL}
 end;
 
 function TJvAppEvents.GetHintShortPause: Integer;
@@ -887,6 +889,7 @@ begin
 end;
 
 {$IFDEF COMPLIB_VCL}
+
 function TJvAppEvents.GetUpdateMetricSettings: Boolean;
 begin
   if csDesigning in ComponentState then
@@ -901,6 +904,7 @@ begin
   if not (csDesigning in ComponentState) then
     Application.UpdateMetricSettings := Value;
 end;
+
 {$ENDIF COMPLIB_VCL}
 
 function TJvAppEvents.GetHintShortCuts: Boolean;
@@ -949,6 +953,7 @@ begin
 end;
 
 {$IFDEF COMPLIB_VCL}
+
 function TJvAppEvents.GetBiDiMode: TBiDiMode;
 begin
   if csDesigning in ComponentState then
@@ -993,6 +998,7 @@ begin
   if not (csDesigning in ComponentState) then
     Application.NonBiDiKeyboard := Value;
 end;
+
 {$ENDIF COMPLIB_VCL}
 
 procedure TJvAppEvents.UpdateAppProps;
@@ -1014,7 +1020,7 @@ begin
       BiDiMode := FBiDiMode;
       BiDiKeyboard := FBiDiKeyboard;
       NonBiDiKeyboard := FNonBiDiKeyboard;
-      {$ENDIF}
+      {$ENDIF COMPLIB_VCL}
       with Mouse do
       begin
         DragImmediate := FMouseDragImmediate;
@@ -1024,18 +1030,9 @@ begin
   end;
 end;
 
-procedure DestroyLocals; 
-begin
-  if AppList <> nil then
-  begin
-    AppList.Free;
-    AppList := nil;
-  end;
-end;
-
 initialization
 
 finalization
-  DestroyLocals;
+  FreeAndNil(AppList);
 
 end.

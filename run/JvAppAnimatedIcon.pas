@@ -31,12 +31,12 @@ unit JvAppAnimatedIcon;
 interface
 
 uses
-{$IFDEF COMPLIB_VCL}
+  {$IFDEF COMPLIB_VCL}
   Windows, Messages, Graphics, Controls, Forms, ExtCtrls,
-{$ENDIF}
-{$IFDEF COMPLIB_CLX}
+  {$ENDIF COMPLIB_VCL}
+  {$IFDEF COMPLIB_CLX}
   Types, QGraphics, QControls, QForms, QExtCtrls, QImgList,
-{$ENDIF}
+  {$ENDIF COMPLIB_CLX}
   SysUtils, Classes,
   JvComponent;
 
@@ -45,7 +45,7 @@ type
   private
     FActive: Boolean;
     FDelay: Cardinal;
-    FImgList: TImageList;
+    FIcons: TImageList;
     FTimer: TTimer;
     FNumber: Integer;
     procedure SetActive(const Value: Boolean);
@@ -56,9 +56,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Icons: TImageList read FImgList write SetIcons;
-    property Active: Boolean read FActive write SetActive;
+    property Active: Boolean read FActive write SetActive default False;
     property Delay: Cardinal read FDelay write SetDelay default 100;
+    property Icons: TImageList read FIcons write SetIcons;
   end;
 
 implementation
@@ -66,8 +66,9 @@ implementation
 constructor TJvAppAnimatedIcon.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FNumber := 0;
+  FActive := False;
   FDelay := 100;
+  FNumber := 0;
   FTimer := TTimer.Create(Self);
   FTimer.OnTimer := Animate;
   FTimer.Interval := FDelay;
@@ -82,24 +83,25 @@ end;
 
 procedure TJvAppAnimatedIcon.Animate(Sender: TObject);
 {$IFDEF COMPLIB_CLX}
-var TmpBmp: TBitmap;
-{$ENDIF}
+var
+  TmpBmp: TBitmap;
+{$ENDIF COMPLIB_CLX}
 begin
-  if (FImgList <> nil) and (FImgList.Count <> 0) then
+  if (FIcons <> nil) and (FIcons.Count <> 0) then
   begin
-    FNumber := (FNumber + 1) mod FImgList.Count;
-  {$IFDEF COMPLIB_VCL}
-    FImgList.GetIcon(FNumber, Application.Icon);
-  {$ENDIF}
-  {$IFDEF COMPLIB_CLX}
+    FNumber := (FNumber + 1) mod FIcons.Count;
+    {$IFDEF COMPLIB_VCL}
+    FIcons.GetIcon(FNumber, Application.Icon);
+    {$ENDIF COMPLIB_VCL}
+    {$IFDEF COMPLIB_CLX}
     TmpBmp := TBitmap.Create;
     try
-      FImgList.GetBitmap(FNumber, TmpBmp);
+      FIcons.GetBitmap(FNumber, TmpBmp);
       Application.Icon.Assign(TmpBmp);
     finally
       TmpBmp.Free;
     end;
-  {$ENDIF}
+    {$ENDIF COMPLIB_CLX}
   end;
 end;
 
@@ -117,7 +119,7 @@ end;
 
 procedure TJvAppAnimatedIcon.SetIcons(const Value: TImageList);
 begin
-  FImgList := Value;
+  FIcons := Value;
 end;
 
 end.
