@@ -96,6 +96,5 @@
     <File Name="..\..\qrun\JvQGauges.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQColorCombo.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQComboBox.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvXPProgressBar.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -49,7 +49,7 @@ uses
   Contnrs, DsgnIntf,
   {$ENDIF COMPILER6_UP}
   {$IFDEF USEJVCL}
-  JvDsgnConsts,
+  JvDsgnConsts, JvXPProgressBar,
   {$ENDIF USEJVCL}
   JvXPCore, JvXPPropertyEditors, JvXPBar, JvXPContainer,
   JvXPButtons, JvXPCheckCtrls;
@@ -63,6 +63,9 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteXPControls, [TJvXPStyleManager, TJvXPBar, TJvXPContainer,
     TJvXPButton, TJvXPToolButton, TJvXPCheckBox]);
+  {$IFDEF USEJVCL}
+  RegisterComponents(RsPaletteXPControls, [TJvXPProgressBar]);
+  {$ENDIF USEJVCL}
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvXPBarItem, 'ImageIndex',
     TJvXPItemImageIndexPropertyEditor);
   RegisterComponentEditor(TJvXPBar, TJvXPBarItemEditor);

@@ -8,6 +8,7 @@
   <C6Libs/>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition="USEJVCL"/>
+    <Package Name="JvStdCtrl-R" Targets="all" Condition="USEJVCL"/>
     <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
@@ -20,5 +21,6 @@
     <File Name="..\..\run\JvXPCoreUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvXPButtons.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvXPCheckCtrls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvXPProgressBar.pas" Targets="all" Formname="" Condition="USEJVCL"/>
   </Contains>
 </Package>
