@@ -140,7 +140,7 @@ type
   protected
     function GetSupportedURLName: string; override;
   public
-    constructor Create(AOwner: TJvUrlListGrabber); override;
+    constructor Create(AOwner: TJvUrlGrabberDefaultPropertiesList); override;
   published
     property PreserveAttributes:boolean read FPreserveAttributes write FPreserveAttributes default True;
   end;
@@ -613,7 +613,7 @@ end;
 
 { TJvLocalFileUrlGrabberProperties }
 
-constructor TJvLocalFileUrlGrabberProperties.Create(AOwner: TJvUrlListGrabber);
+constructor TJvLocalFileUrlGrabberProperties.Create(AOwner: TJvUrlGrabberDefaultPropertiesList);
 begin
   inherited Create(AOwner);
   FPreserveAttributes := True;

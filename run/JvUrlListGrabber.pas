@@ -149,7 +149,7 @@ type
   private
     FDefaultProperties: TJvUrlGrabberDefaultProperties;
   public
-    constructor Create(GrabberDefaults: TJvUrlGrabberDefaultProperties);
+    constructor Create(GrabberDefaults: TJvUrlGrabberDefaultProperties); reintroduce; virtual;
   published
     property DefaultProperties: TJvUrlGrabberDefaultProperties read FDefaultProperties;
   end;
@@ -179,7 +179,7 @@ type
     property UserName: string read FUserName write FUserName;
     property Password: string read FPassword write FPassword;
   public
-    constructor Create(AOwner: TJvUrlListGrabber); virtual;
+    constructor Create(AOwner: TJvUrlGrabberDefaultPropertiesList); reintroduce; virtual;
     destructor Destroy; override;
 
     property EditorTrick: TJvUrlGrabberDefPropEdTrick read FEditorTrick;
@@ -202,7 +202,7 @@ type
     function GetItems(Index: Integer): TJvUrlGrabberDefaultProperties;
     procedure SetItems(Index: Integer; const Value: TJvUrlGrabberDefaultProperties);
   public
-    constructor Create(AOwner: TJvUrlListGrabber); virtual;
+    constructor Create(AOwner: TJvUrlListGrabber); reintroduce; virtual;
     destructor Destroy; override;
     procedure Clear;
     procedure Add(Item: TJvUrlGrabberDefaultProperties);
@@ -640,13 +640,8 @@ var
   I: Integer;
 begin
   DefaultPropertiesList.Clear;
-  {$IFDEF COMPILER6_UP}
   for I := 0 to Count - 1 do
-    DefaultPropertiesList.Add(Items[I].GetDefaultPropertiesClass.Create(TJvUrlListGrabber(DefaultPropertiesList.Owner)));
-  {$ELSE}
-  for I := 0 to Count - 1 do
-    DefaultPropertiesList.Add(Items[I].GetDefaultPropertiesClass.Create(nil));
-  {$ENDIF COMPILER6_UP}
+    DefaultPropertiesList.Add(Items[I].GetDefaultPropertiesClass.Create(DefaultPropertiesList));
 end;
 
 procedure TJvUrlGrabberClassList.SetItem(Index: Integer;
@@ -705,6 +700,7 @@ constructor TJvUrlGrabberDefaultPropertiesList.Create(AOwner: TJvUrlListGrabber)
 begin
   {$IFDEF COMPILER6_UP}
   inherited Create(AOwner);
+  Name := 'DefaultProperties';
   {$ELSE}
   inherited Create;
   {$ENDIF COMPILER6_UP}
@@ -770,10 +766,11 @@ end;
 
 //=== TJvUrlGrabberDefaultProperties =========================================
 
-constructor TJvUrlGrabberDefaultProperties.Create(AOwner: TJvUrlListGrabber);
+constructor TJvUrlGrabberDefaultProperties.Create(AOwner: TJvUrlGrabberDefaultPropertiesList);
 begin
   {$IFDEF COMPILER6_UP}
   inherited Create(AOwner);
+  Name := GetSupportedUrlName;
   {$ELSE}
   inherited Create;
   {$ENDIF}
