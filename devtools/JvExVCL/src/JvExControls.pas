@@ -242,6 +242,7 @@ var
   CallInherited: Boolean;
   Canvas: TCanvas;
   DlgCodes: TDlgCodes;
+  IdSaveDC: Integer;
 begin
   CallInherited := True;
   PMsg := @Msg;
@@ -371,6 +372,7 @@ begin
             end;
         WM_ERASEBKGND:
           begin
+            IdSaveDC := SaveDC(HDC(PMsg^.WParam)); // protect DC against Stock-Objects from Canvas
             Canvas := TCanvas.Create;
             try
               Canvas.Handle := HDC(PMsg^.WParam);
@@ -378,6 +380,7 @@ begin
             finally
               Canvas.Handle := 0;
               Canvas.Free;
+              RestoreDC(HDC(PMsg^.WParam), IdSaveDC);
             end;
           end;
         else
