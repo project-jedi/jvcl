@@ -38,6 +38,7 @@ uses
 type
 {$IFNDEF COMPILER6_UP}
   THashedStringlist = class(TStringlist);
+  THandle = LongWord;
 {$ENDIF}
   TJvSimpleXmlElem = class;
   TJvSimpleXmlElems = class;
