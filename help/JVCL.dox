@@ -706,10 +706,9 @@ BlankLinesBeforeSection=1
 AlwaysInsertSectionDelimiter=0
 
 [Image Paths]
-Count=3
+Count=2
 Path0=images
-Path1=..\..\jvcl\images
-Path2=..\..\jvcl\images\PNG
+Path1=images\comp
 
 [Flags]
 Use=1
