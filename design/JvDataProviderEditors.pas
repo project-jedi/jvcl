@@ -386,8 +386,8 @@ end;
 procedure Register;
 begin
   RegisterPropertyEditor(TypeInfo(TJvDataConsumer), TComponent, 'Provider', TJvDataConsumerProperty);
-  RegisterPropertyEditor(TypeInfo(TJvDataProviderTree), TComponent, '', TJvDataProviderTreeProperty);
   RegisterPropertyEditor(TypeInfo(TJvDataItemID), TPersistent, '', TJvDataProviderItemIDProperty);
+  RegisterPropertyEditor(TypeInfo(TJvDataProviderTree), TComponent, '', TJvDataProviderTreeProperty);
 end;
 
 end.
