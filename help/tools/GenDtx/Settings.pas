@@ -1,5 +1,5 @@
 unit Settings;
-
+{$I JVCL.INC}
 interface
 
 uses
@@ -337,6 +337,22 @@ var
   I: Integer;
   Index: Integer;
   AncestorName: string;
+  function ValueFromIndex(Strings:TStrings;Index:integer):string;
+  {$IFNDEF COMPILER7_UP}
+  var i:integer;
+  begin
+    Result := Strings[Index];
+    i := Pos('=',Result);
+    if i > 0 then
+      Result := Copy(Result,i+1,MaxInt)
+    else
+      Result := '';
+  end;
+  {$ELSE}
+  begin
+    Result := Strings.ValueFromIndex[Index];
+  end;
+  {$ENDIF}
 begin
   { AIn1 =   TObject=
              TComponent=TObject
@@ -363,9 +379,11 @@ begin
   begin
     Index := Integer(AOut.Objects[I]);
     if Index < 0 then
-      AncestorName := AIn2.ValueFromIndex[-Index - 1]
+      AncestorName := ValueFromIndex(AIn2, -Index-1)
+//      AncestorName := AIn2.ValueFromIndex[-Index - 1]
     else
-      AncestorName := AIn1.ValueFromIndex[Index];
+      AncestorName := ValueFromIndex(AIn2, Index);
+//      AncestorName := AIn1.ValueFromIndex[Index];
     Index := AOut.IndexOf(AncestorName);
     AOut.Objects[I] := TObject(Index);
   end;
