@@ -319,6 +319,7 @@ constructor TJvAppXmlStore.Create(AOwner: TComponent);
 begin
   inherited;
   FXml := TJvSimpleXml.Create(nil);
+  RootNodeName := 'Configuration';
 end;
 
 destructor TJvAppXmlStore.Destroy;
