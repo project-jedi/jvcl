@@ -789,6 +789,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF COMPILER5}
+  Windows,
+  {$ENDIF COMPILER5}
   JclFileUtils, JclStrings, JclSysInfo, JclRTTI, JclMime,
   JvPropertyStore, JvConsts, JvResources;
 
@@ -803,8 +806,7 @@ const
   // (rom) or \* as comments say?
   cSubStorePath = '\*';
 
-{$IFNDEF COMPILER6_UP}
-
+{$IFDEF COMPILER5}
 function Supports(Instance: TObject; const Intf: TGUID): Boolean;
 begin
   Result := Instance.GetInterfaceEntry(Intf) <> nil;
@@ -815,7 +817,14 @@ begin
   Result := AClass.GetInterfaceEntry(Intf) <> nil;
 end;
 
-{$ENDIF !COMPILER6_UP}
+function FileIsReadOnly(const FileName: string): Boolean;
+var
+  Attr: Cardinal;
+begin
+  Attr := GetFileAttributes(PChar(FileName));
+  Result := (Attr <> $FFFFFFFF) and (Attr and FILE_ATTRIBUTE_READONLY <> 0);
+end;
+{$ENDIF COMPILER5}
 
 procedure UpdateGlobalPath(GlobalPaths, NewPaths: TStrings);
 var
@@ -2780,7 +2789,7 @@ end;
 
 procedure TJvCustomAppMemoryFileStorage.Reload;
 begin
-  FPhysicalReadOnly := FileExists (FullFileName) and FileIsReadOnly(FullFileName);
+  FPhysicalReadOnly := FileExists(FullFileName) and FileIsReadOnly(FullFileName);
   inherited Reload;
 end;
 
@@ -2838,7 +2847,7 @@ begin
   if FFileName <> PathAddExtension(Value, DefaultExtension) then
   begin
     FFileName := PathAddExtension(Value, DefaultExtension);
-    FPhysicalReadOnly := FileExists (FullFileName) and FileIsReadOnly(FullFileName);
+    FPhysicalReadOnly := FileExists(FullFileName) and FileIsReadOnly(FullFileName);
     if FLoadedFinished and not IsUpdating then
       Reload;
   end;
@@ -2849,7 +2858,7 @@ begin
   if FLocation <> Value then
   begin
     FLocation := Value;
-    FPhysicalReadOnly := FileExists (FullFileName) and FileIsReadOnly(FullFileName);
+    FPhysicalReadOnly := FileExists(FullFileName) and FileIsReadOnly(FullFileName);
     if FLoadedFinished and not IsUpdating then
       Reload;
   end;
