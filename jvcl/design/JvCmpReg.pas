@@ -8,7 +8,12 @@ procedure Register;
 
 implementation
 uses
-  Classes, Controls, DesignIntf,
+  Classes, Controls,
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
   JvAlarms, JvConverter, JvDataEmbedded, JvCreateProcess,
   JvEnterTab, JvMergeManager, JvPageManager, JvPatchFile,
   JvStringHolder, JvTimeLimit, JvWinHelp, JvTranslator, JvPrint, JvEasterEgg,

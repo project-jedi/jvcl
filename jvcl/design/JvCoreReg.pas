@@ -9,7 +9,11 @@ procedure Register;
 implementation
 uses
   Classes, Controls, StdCtrls, ExtCtrls, Graphics, ActnList, ImgList, Dialogs,
-  DesignIntf,
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
   JvJCLUtils, JVCLVer, JvComponent, JvActions, JvActnRes, JvJVCLAbout, JvDsgnEditors, JvIDEZoom,
   JvJVCLAboutEditor, JvBaseDlgEditor, JvColorEditor, JvPaintBoxEditor;
 

@@ -8,7 +8,13 @@ procedure Register;
 
 implementation
 uses
-  Classes, Controls, DesignIntf, DesignEditors, FiltEdit,  
+  Classes, Controls,
+  {$IFDEF COMPILER6_UP}
+  FiltEdit,DesignEditors, DesignIntf,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
+
   JvSpin, JvEdit, JvRichEdit, JvProgressBar, JvDateTimePicker, JvDatePickerEdit, JvCheckedMaskEdit,
   JvMaskEdit, JvCalendar, JvBaseEdits, JvCalc, JvToolEdit, JvxCtrls,
   JvxSlider, JvBevel, JvCheckBox, JvCheckListBox, JvCombobox, JvCheckTreeView,

@@ -9,7 +9,13 @@ procedure Register;
 implementation
 {.$DEFINE JV_MIDAS}
 uses
-  Classes, DesignIntf, DesignEditors, JvMemoryDataset,
+  Classes,
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
+  JvMemoryDataset,
   JvDBDatePickerEdit, JvDBDateTimePicker, JvDBLookupTreeView, JvDBProgressBar, JvDBRichEdit,
   JvDBSpinEdit, JvDBTreeView, JvDBLookup, JvCsvData, JvDBCombobox, JvDBControls,
   JvDBEditors, JvDBMemDatasetEditor

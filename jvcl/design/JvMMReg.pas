@@ -9,7 +9,12 @@ procedure Register;
 implementation
 {.$DEFINE USE_JV_GIF}
 uses
-  Classes, DesignIntf,
+  Classes,
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
   JvAni, JvAnimate, JvBmpAnimator, JvPicClip, JvIconList, 
   JvVisualId3v1, JvVisualId3v2, JvEasterEgg, JvGradient, JvGradientCaption, JvId3v1, JvId3v2,
   JvImageRotate, JvImageTransform, JvImageWindow, JvPcx,

@@ -9,7 +9,13 @@ procedure Register;
 
 implementation
 uses
-  SysUtils, Classes, DesignIntf, JvBDEEditors, 
+  SysUtils, Classes,
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
+  JvBDEEditors,
   JvBdeUtils, JvBDEFilter, JvBDEIndex, JvBDELists, JvBDEMove,
   JvBDEProgress, JvBDEQBE, JvBDESecurity, JvBDEMemTable,
   JvBDEQuery, JvBDESQLScript,

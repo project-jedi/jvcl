@@ -8,7 +8,12 @@ procedure Register;
 
 implementation
 uses
-  Classes, DesignIntf, 
+  Classes,
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
   JvInterpreterParser, JvInterpreter, JvInterpreter_all, JvInterpreter_Classes, JvInterpreter_ComCtrls, JvInterpreter_Contnrs,
   JvInterpreter_Controls, JvInterpreter_Db, JvInterpreter_DbCtrls, JvInterpreter_DbGrids, JvInterpreter_DBTables,
   JvInterpreter_Dialogs, JvInterpreter_ExtCtrls, JvInterpreter_Forms, JvInterpreter_Graphics, JvInterpreter_Grids,

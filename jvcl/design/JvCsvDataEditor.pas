@@ -45,8 +45,11 @@ uses Windows,
   Forms,
   Dialogs,
   Graphics,
-  DesignIntf,
-  DesignEditors,
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
   JvCsvData;
 
 

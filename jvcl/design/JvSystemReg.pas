@@ -8,8 +8,12 @@ procedure Register;
 
 implementation
 uses
-  Classes, Controls, DesignIntf, DesignEditors,
-
+  Classes, Controls,
+  {$IFDEF COMPILER6_UP}
+  FiltEdit, DesignEditors, DesignIntf,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
   JvClipboardMonitor,  JvClipboardViewer,  JvCommStatus,  JvComputerInfo,  JvCpuUsage,
   JvDdeCmd,  JvDeviceChanged,  JvDirectories, JvDragDrop,  JvHidControllerClass,  JvJoystick,  JvKeyboardStates,
   {JvMemoryInfos,  }JvMRUList,  JvMRUManager, JvNTEventLog,  JvRas32,

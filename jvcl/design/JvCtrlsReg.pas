@@ -8,7 +8,12 @@ procedure Register;
 
 implementation
 uses
-  Classes, Controls, DesignIntf, DesignEditors, 
+  Classes, Controls,
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
   JvZoom, JvAnalogClock, JvBehaviorLabel, JvArrowButton, JvaScrollText, JvCaptionButton,
   JvClock, JvContentScroller, JvColorBox, JvColorButton, JvDice,
   JvDriveCtrls, JvFooter, JvGroupHeader, JvHint, JvHtControls, JvInstallLabel, JvItemsPanel,
