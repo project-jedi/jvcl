@@ -84,7 +84,8 @@ const
      '<b>Basic text formatting</b><br>' +
      '<b>&lt;b&gt;</b> - <b>Bold text</b><br>' +
      '<b>&lt;i&gt;</b> - <i>Italic text</i><br>' +
-     '<b>&lt;u&gt;</b> - <u>Underlined text</u>' +
+     '<b>&lt;u&gt;</b> - <u>Underlined text</u><br>' +
+     '<b>&lt;color=[TCOLOR]&gt;</b> - <color=clBlue>Font Color</color>' +
      '<p>' +
      '<b>Line and paragraph breaks</b><br>' +
      '<b>&lt;br&gt;</b> - Line break (no end tag)<br>' +
@@ -163,7 +164,7 @@ const
     '<b>Lorem ipsum dolor <i>sit</i> amet,</b> consectetuer adipiscing elit, ' +
     'sed diam nonummy nibh euismod <link>t<b>i<i>n</i>c</b>i<i>d</i>u<b>n</b>' +
     't <b>ut</b> laoreet</link> dolore magna aliquam erat volutpat. Ut wisi ' +
-    'enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit ' +
+    'enim ad minim veniam,quis nostrud exerci tation ullamcorper suscipit ' +
     'lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum ' +
     '<b>iriure</b> dolor in hendrerit in vulputate velit esse molestie ' +
     'consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et ' +
@@ -171,9 +172,9 @@ const
     'luptatum</u> zzril delenit augue duis dolore te feugait nulla facilisi. ' +
     'Lorem ipsum dolor</i> sit</link> amet, consectetuer adipiscing elit, ' +
     'sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam ' +
-    'erat volutpat. Ut wisi enim ad <i>minim veniam, quis nostrud exerci ' +
+    'erat volutpat. <color=clTeal>Ut wisi enim ad <i>minim veniam, quis nostrud exerci ' +
     'tation ullamcorper suscipit lobortis nisl </i>ut aliquip ex ea commodo ' +
-    'consequat.' +
+    'consequat.</color>' +
     '<p>' +
     'Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse ' +
     'molestie consequat, vel <i>illum</i> dolore eu feugiat nulla facilisis ' +
@@ -181,7 +182,7 @@ const
     'luptatum zzril delenit <b>augue duis</b> dolore te feugait nulla ' +
     'facilisi. Nam liber tempor cum soluta nobis eleifend option congue ' +
     'nihil imperdiet doming <link>id quod mazim</link> placerat facer possim ' +
-    'assum.' +
+    'assum.'{ +
     '<p>' +
     'Lorem ipsum <i>dolor sit</i> amet, consectetuer adipiscing elit, sed diam ' +
     'nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat ' +
@@ -233,7 +234,7 @@ const
     'molestie consequat, <link>vel illum</link> dolore eu feugiat nulla ' +
     'facilisis at vero eros et accumsan et <i>iusto odio dignissim</i> qui ' +
     'blandit praesent luptatum zzril delenit augue <b>duis dolore</b> te ' +
-    'feugait nulla facilisi.';
+    'feugait nulla facilisi.'};
 
 implementation
 

@@ -207,8 +207,8 @@ end;
 
 //=== TDefaultParser =========================================================
 
-procedure TDefaultParser.AddSourceTreeToDynamicNode(
-  const Node: TDynamicNode; const Source: string);
+procedure TDefaultParser.AddSourceTreeToDynamicNode( const Node: TDynamicNode;
+                                                     const Source: string);
 var
   Parser: TDefaultParser;
   Tree: TNodeTree;
@@ -225,7 +225,7 @@ begin
 
     Tree.Root.OwnsChildren := False;
     for I := 0 to Tree.Root.Children.Count - 1 do
-      Node.AddChild(Tree.Root.Children[I]);
+      Node.AddChild(Tree.Root.Children[I],Tree.Root);
   finally
     Tree.Free;
   end;
@@ -234,22 +234,49 @@ end;
 function TDefaultParser.GetNodeFromTag(const Tag: string): TNode;
 type
   TTag =
-    (ttBold, ttItalic, ttUnderline, ttLink, ttLineBreak, ttParagraphBreak, ttDynamic);
+    (ttBold, ttItalic, ttUnderline, ttColor, ttLink, ttLineBreak, ttParagraphBreak, ttDynamic);
 var
   CurrentTag: TTag;
   UnknownTag: Boolean;
 
+// Bianconi
+  function GetColorFromTag : TColor;
+  var
+    sVar : String;
+  begin
+    Result := clNone;
+    sVar := Copy(Tag,Pos('=',Tag) + 1,Length(Tag));
+    try
+      Result := StringToColor(sVar);
+    except  // Only to avoid raise an exception on invalid color
+    end;
+  end;
+// End of Bianconi
+
   function GetTagFromString: TTag;
   const
     TagStrings: array [TTag] of PChar =
-      ('B', 'I', 'U', 'LINK', 'BR', 'P', 'DYNAMIC');
+                                        ( 'B',
+                                          'I',
+                                          'U',
+                                          'COLOR=',            // Bianconi
+                                          'LINK',
+                                          'BR',
+                                          'P',
+                                          'DYNAMIC');
     DontCare = 0;
   begin
     UnknownTag := False;
+// Bianconi
     for Result := Low(TTag) to High(TTag) do
-      if AnsiUppercase(Tag) = TagStrings[Result] then
+    begin
+      if (AnsiUpperCase(Tag) = TagStrings[Result]) OR
+         (Copy(AnsiUpperCase(Tag),1,Length(TagStrings[Result])) = 'COLOR=') then
+      begin
         Exit;
-
+      end;
+    end;
+//End of Bianconi
     Result := TTag(DontCare); // To get rid of a compiler warning
     UnknownTag := True;
   end;
@@ -271,6 +298,12 @@ begin
         Result := TStyleNode.Create(fsItalic);
       ttUnderline:
         Result := TStyleNode.Create(fsUnderline);
+// Bianconi
+      ttColor :
+        begin
+          Result := TColorNode.Create(GetColorFromTag);
+        end; // ttColor
+// End of Bianconi
       ttLink:
         Result := TLinkNode.Create;
       ttLineBreak:
@@ -356,7 +389,14 @@ begin
       raise EParserError.Create('TDefaultParser.ParseNode: Unsupported state');
     end;
 
-    Node.AddChild(NewNode);
+    if( Node.GetNodeType = ntRootNode ) then
+    begin
+      Node.AddChild(NewNode, TRootNode(Node));
+    end
+    else
+    begin
+      Node.AddChild(NewNode, Node.Root);
+    end;
 
     if IsNodeContainer(NewNode, Element) then
       ParseNode(NewNode as TParentNode);

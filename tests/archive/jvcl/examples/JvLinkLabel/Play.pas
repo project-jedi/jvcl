@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, ComCtrls, StdCtrls, JvLinkLabel;
+  ExtCtrls, ComCtrls, StdCtrls, JvLinkLabel, JvValidateEdit, JvEdit;
 
 type
   TfrmPlay = class(TForm)
@@ -45,10 +45,28 @@ type
     btnRefresh: TButton;
     TreeView: TTreeView;
     Edit: TEdit;
+    rgTextLayout: TRadioGroup;
+    gbMargin: TGroupBox;
+    edMarginW: TJvValidateEdit;
+    edMarginH: TJvValidateEdit;
+    updnW: TUpDown;
+    updbH: TUpDown;
+    Label1: TLabel;
+    Label2: TLabel;
+    gbMousePos: TGroupBox;
+    Label4: TLabel;
+    LnkLblMousePos: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure btnRefreshClick(Sender: TObject);
     procedure Panel2Resize(Sender: TObject);
     procedure EditChange(Sender: TObject);
+    procedure rgTextLayoutClick(Sender: TObject);
+    procedure edMarginWChange(Sender: TObject);
+    procedure edMarginHChange(Sender: TObject);
+    procedure LinkLabelLinkClick(Sender: TObject; LinkNumber: Integer;
+      LinkText: String);
+    procedure LinkLabelMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
   end;
 
 implementation
@@ -63,6 +81,12 @@ begin
   DoubleBuffered := True;
   LinkLabel.Caption := Lorem;
   Edit.Text := Lorem;
+  LnkLblMousePos.Caption := '? x ?';
+
+  rgTextLayout.ItemIndex := Ord(LinkLabel.Layout);
+  edMarginW.Value := LinkLabel.MarginWidth;
+  edMarginH.Value := LinkLabel.MarginHeight;
+
   btnRefreshClick(Self);
 end;
 
@@ -73,6 +97,7 @@ begin
   try
     TDebugLinkLabelTools.NodeTreeToTreeNodes(LinkLabel, TreeView.Items);
     TreeView.FullExpand;
+    TreeView.Selected := TreeView.Items.GetFirstNode;
   finally
     TreeView.Items.EndUpdate;
   end;
@@ -86,6 +111,34 @@ end;
 procedure TfrmPlay.EditChange(Sender: TObject);
 begin
   LinkLabel.Caption := (Sender as TEdit).Text;
+end;
+
+procedure TfrmPlay.rgTextLayoutClick(Sender: TObject);
+begin
+  LinkLabel.Layout := TTextLayout(rgTextLayout.ItemIndex);
+end;
+
+procedure TfrmPlay.edMarginWChange(Sender: TObject);
+begin
+ LinkLabel.MarginWidth := edMarginW.Value;
+end;
+
+procedure TfrmPlay.edMarginHChange(Sender: TObject);
+begin
+  LinkLabel.MarginHeight := edMarginH.Value;
+end;
+
+procedure TfrmPlay.LinkLabelLinkClick(Sender: TObject; LinkNumber: Integer;
+  LinkText: String);
+begin
+  Application.MessageBox( PChar(LinkText + ' clicked !'),
+                          PChar('Link Clicked'),
+                          MB_APPLMODAL + MB_ICONINFORMATION + MB_OK);
+end;
+
+procedure TfrmPlay.LinkLabelMouseMove(Sender: TObject; Shift: TShiftState;X, Y: Integer);
+begin
+  LnkLblMousePos.Caption := Format('( %d x %d )',[X,Y]);
 end;
 
 end.

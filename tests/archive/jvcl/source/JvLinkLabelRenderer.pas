@@ -99,8 +99,8 @@ type
 
 implementation
 
-procedure TDefaultRenderer.DoRenderNode(const Node: TAreaNode;
-  Styles: TFontStyles; Color: TColor);
+procedure TDefaultRenderer.DoRenderNode( const Node: TAreaNode; Styles: TFontStyles;
+                                         Color: TColor);
 var
   I: Integer;
   ChildNode: TNode;
@@ -131,6 +131,10 @@ begin
         end;
       ntStyleNode:
         NewStyles := Styles + [(ChildNode as TStyleNode).Style];
+// Bianconi
+      ntColorNode :
+        NewColor := (ChildNode as TColorNode).Color;
+// End of Bianconi
       ntLinkNode:
         begin
           NewStyles := Styles + FLinkStyle;
@@ -158,11 +162,13 @@ begin
   Result := FLinkStyle;
 end;
 
-procedure TDefaultRenderer.RenderNode(const Canvas: TCanvas; Rect: TRect;
-  const Node: TAreaNode);
+procedure TDefaultRenderer.RenderNode(const Canvas: TCanvas; Rect: TRect; const Node: TAreaNode);
 begin
-  FTextHandler := TTextHandler.Create(Rect, Node.StartingPoint.X,
-    Node.StartingPoint.Y, Canvas);
+  FTextHandler := TTextHandler.Create( Rect,
+                                       Node.StartingPoint.X,
+                                       Node.StartingPoint.Y,
+                                       Canvas);
+  // End of Bianconi #2
   try
     DoRenderNode(Node, Node.Styles, Node.Color);
     FTextHandler.EmptyBuffer;

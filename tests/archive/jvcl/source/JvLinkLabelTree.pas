@@ -49,6 +49,7 @@ type
     |  TParentNode
     |  |  TAreaNode
     |  |  |  TStyleNode
+    |  |  |  TColorNode
     |  |  |  TLinkNode
     |  |  |  TDynamicNode
     |  |  |  TRootNode
@@ -58,17 +59,33 @@ type
   }
 
   TNodeClass = class of TNode;
-  TNodeType = (ntNode, ntParentNode, ntAreaNode, ntStyleNode, ntLinkNode,
-    ntDynamicNode, ntRootNode, ntStringNode, ntActionNode,
-    ntUnknownNode);
+  TNodeType = ( ntNode,
+                ntParentNode,
+                ntAreaNode,
+                ntStyleNode,
+                ntColorNode,      // Bianconi
+                ntLinkNode,
+                ntDynamicNode,
+                ntRootNode,
+                ntStringNode,
+                ntActionNode,
+                ntUnknownNode);
   TParentNode = class;
+  TRootNode = class;
 
   TNode = class(TObject)
   private
     FParent: TParentNode;
+    FRootNode : TRootNode;
+
   public
+    // Bianconi #2
+    constructor Create;
+    destructor Destroy;override;
+    // End of Bianconi #2
     function GetNodeType: TNodeType;
     property Parent: TParentNode read FParent write FParent;
+    property Root : TRootNode read FRootNode write FRootNode;
   end;
 
   INodeEnumerator = interface
@@ -85,7 +102,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure AddChild(const Node: TNode);
+    procedure AddChild(const ANode: TNode; const ARoot : TRootNode);
     procedure DestroyChildren;
     function IndexOfChild(const Node: TNode): Integer;
     function GetTopLevelNodeEnumerator(const NodeClass: TNodeClass): INodeEnumerator;
@@ -124,6 +141,17 @@ type
     constructor Create(const Style: TFontStyle);
     property Style: TFontStyle read FStyle write FStyle;
   end;
+
+// Bianconi
+  TColorNode = class(TAreaNode)
+  private
+    FColor: TColor;
+  public
+    constructor Create(const AColor: TColor);
+    property Color: TColor read FColor write FColor;
+  end;
+// End of Bianconi
+
 
   TLinkState = (lsNormal, lsClicked, lsHot);
   TLinkNode = class(TAreaNode)
@@ -361,10 +389,11 @@ begin
   inherited Destroy;
 end;
 
-procedure TParentNode.AddChild(const Node: TNode);
+procedure TParentNode.AddChild(const ANode: TNode; const ARoot : TRootNode);
 begin
-  FChildren.Add(Node);
-  Node.Parent := Self;
+  FChildren.Add(ANode);
+  ANode.Parent := Self;
+  ANode.Root   := ARoot;
 end;
 
 procedure TParentNode.DestroyChildren;
@@ -555,6 +584,23 @@ begin
   FStyle := Style;
 end;
 
+// Bianconi
+//=== TColorNode =============================================================
+
+constructor TColorNode.Create(const AColor : TColor);
+begin
+  inherited Create;
+  if( AColor <> clNone ) then
+  begin
+    FColor := AColor;
+  end
+  else
+  begin
+    FColor := inherited GetColor;
+  end;
+end;
+// End of Bianconi
+
 //=== TUnknownNode ===========================================================
 
 constructor TUnknownNode.Create(const Tag: string);
@@ -687,13 +733,38 @@ end;
 
 //=== TNode ==================================================================
 
+// Bianconi #2
+constructor TNode.Create;
+begin
+  inherited Create;
+  FParent := nil;
+  FRootNode := nil;
+end;
+
+destructor TNode.Destroy;
+begin
+  FParent := nil;
+  FRootNode := nil;
+  inherited Destroy;
+end;
+// End of Bianconi #2
+
 function TNode.GetNodeType: TNodeType;
 var
   NodeClass: TClass;
 const
   NodeClasses: array [TNodeType] of TClass =
-    (TNode, TParentNode, TAreaNode, TStyleNode, TLinkNode, TDynamicNode,
-     TRootNode, TStringNode, TActionNode, TUnknownNode);
+    ( TNode,
+      TParentNode,
+      TAreaNode,
+      TStyleNode,
+      TColorNode,     // Bianconi
+      TLinkNode,
+      TDynamicNode,
+      TRootNode,
+      TStringNode,
+      TActionNode,
+      TUnknownNode);
 begin
   { We get the dynamic type using TObject.ClassType, which returns a pointer to
     the class' virtual memory table, instead of testing using the "is" reserved

@@ -1,6 +1,6 @@
 object JvLinkLabelMainForm: TJvLinkLabelMainForm
-  Left = 269
-  Top = 170
+  Left = 71
+  Top = 67
   HorzScrollBar.Visible = False
   VertScrollBar.Visible = False
   BorderStyle = bsNone
@@ -959,13 +959,14 @@ object JvLinkLabelMainForm: TJvLinkLabelMainForm
     ParentFont = False
   end
   object LinkLabel: TJvLinkLabel
-    Left = 152
+    Left = 156
     Top = 137
     Width = 369
     Height = 288
     Text.Strings = (
       '')
     Transparent = False
+    Layout = tlTop
     LinkColor = clNavy
     LinkColorClicked = clRed
     LinkColorHot = clBlue
@@ -985,7 +986,7 @@ object JvLinkLabelMainForm: TJvLinkLabelMainForm
   object lblClose: TLabel
     Left = 502
     Top = 8
-    Width = 17
+    Width = 18
     Height = 16
     Cursor = crHandPoint
     Anchors = [akTop, akRight]

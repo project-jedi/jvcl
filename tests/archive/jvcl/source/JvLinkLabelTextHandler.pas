@@ -337,7 +337,9 @@ var
   TempFontStyle: TFontStyles;
 const
   // (rom) i have seen other letter combinations elsewhere
-  MaximumHeightString = 'fg';
+  // Bianconi #2
+  // MaximumHeightString = 'fg';
+  MaximumHeightString = 'Yy';
 begin
   inherited Create;
   FRect := Rect;
@@ -385,6 +387,36 @@ procedure TTextHandler.DoParagraphBreak;
 begin
   FList.AddParagraphBreak;
   EmptyBuffer;
+end;
+
+function TTextHandler.GetCanvas: TCanvas;
+begin
+  Result := FCanvas;
+end;
+
+function TTextHandler.GetLineHeight: Integer;
+begin
+  Result := FLineHeight;
+end;
+
+function TTextHandler.GetPosX: Integer;
+begin
+  Result := FPosX;
+end;
+
+function TTextHandler.GetPosY: Integer;
+begin
+  Result := FPosY;
+end;
+
+function TTextHandler.GetTextHeight: Integer;
+begin
+  Result := FPosY + FLineHeight;
+end;
+
+function TTextHandler.IsPosCurrent: Boolean;
+begin
+  Result := FList.Count = 0;
 end;
 
 procedure TTextHandler.EmptyBuffer;
@@ -498,15 +530,19 @@ var
 
   function GetCurrentRect: TRect;
   begin
-    Result := Rect(FPosX, FPosY, FPosX + FCanvas.TextWidth(Buffer),
-      FPosY + FLineHeight);
+    Result := Rect( FPosX,
+                    FPosY,
+                    FPosX + FCanvas.TextWidth(Buffer),
+                    FPosY + FLineHeight);
   end;
 
 begin
   for I := 0 to FList.Count - 1 do
     if FList[I] is TActionElement then
     begin
-      FPosX := FRect.Left;
+      // Bianconi #2
+      FPosX := 0;
+      // End of Bianconi #2
       case TActionElement(FList[I]).ActionType of
         atLineBreak:
           Inc(FPosY, FLineHeight);
@@ -557,17 +593,25 @@ begin
 
           Inc(Width, NextWordWidth);
 
-          if (FPosX + GetWidthWithoutLastSpace >= FRect.Right) and
-            not (NextWord = Space) and // Never wrap because of lone space elements
-          not IsFirstWordOfSource and // Don't wrap if we have yet to output anything
-          not IsInWord then // We can't wrap if we're in the middle of rendering a word
+          // Bianconi #2
+          // Original Code -> ... FPosX + GetWidthWithoutLastSpace ...
+          if( ( (FPosX + Element.Node.Root.StartingPoint.X + GetWidthWithoutLastSpace) >= FRect.Right) and
+              not (NextWord = Space) and   // Never wrap because of lone space elements
+              not IsFirstWordOfSource and  // Don't wrap if we have yet to output anything
+              not IsInWord ) then          // We can't wrap if we're in the middle of rendering a word
           begin // Word wrap
             { Output contents of buffer, empty it and start on a new line, thus
               resetting FPosX and incrementing FPosY. }
-            TextOut(FPosX, FPosY, TrimRight(Buffer));
+
+            TextOut( FPosX + Element.Node.Root.StartingPoint.X,
+                     FPosY + Element.Node.Root.StartingPoint.Y,
+                     TrimRight(Buffer));
             Element.Node.AddRect(GetCurrentRect);
             Buffer := '';
-            FPosX := FRect.Left;
+            // Bianconi #2
+            // FPosX := FRect.Left;
+            FPosX := 0;
+            // End of Bianconi #2
             Width := NextWordWidth;
             Inc(FPosY, FLineHeight);
           end
@@ -577,9 +621,11 @@ begin
             Inc(Width, TextWidth(NextWord));
 
           Buffer := Buffer + NextWord;
-        end;
+        end;  // while Enum.HasNext
 
-        TextOut(FPosX, FPosY, Buffer);
+        TextOut( FPosX + Element.Node.Root.StartingPoint.X,
+                 FPosY + Element.Node.Root.StartingPoint.Y,
+                 Buffer);
         Element.Node.AddRect(GetCurrentRect);
         Inc(FPosX, TextWidth(Buffer));
       end
@@ -588,36 +634,6 @@ begin
         'Unsupported TParentTextElement descendant encountered');
 
   FList.Clear;
-end;
-
-function TTextHandler.GetCanvas: TCanvas;
-begin
-  Result := FCanvas;
-end;
-
-function TTextHandler.GetLineHeight: Integer;
-begin
-  Result := FLineHeight;
-end;
-
-function TTextHandler.GetPosX: Integer;
-begin
-  Result := FPosX;
-end;
-
-function TTextHandler.GetPosY: Integer;
-begin
-  Result := FPosY;
-end;
-
-function TTextHandler.GetTextHeight: Integer;
-begin
-  Result := FPosY + FLineHeight;
-end;
-
-function TTextHandler.IsPosCurrent: Boolean;
-begin
-  Result := FList.Count = 0;
 end;
 
 procedure TTextHandler.TextOut(Node: TStringNode; Style: TFontStyles;
