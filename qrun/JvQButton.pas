@@ -34,9 +34,12 @@ unit JvQButton;
 interface
 
 uses
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF MSWINDOWS}
   SysUtils, Classes,
   
-  
+
   Qt, QGraphics, QControls, QForms, QStdCtrls, QMenus, QButtons, Types,
   QWindows,
   
@@ -66,13 +69,15 @@ type
 
     procedure CMButtonPressed(var Msg: TJvCMButtonPressed); message CM_JVBUTTONPRESSED;
     procedure CMForceSize(var Msg: TCMForceSize); message CM_FORCESIZE;
-    
+
     procedure SetForceSameSize(const Value: Boolean);
     procedure SetAllowAllUp(const Value: Boolean);
     procedure SetGroupIndex(const Value: Integer);
     procedure SetHotFont(const Value: TFont);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
+    procedure ButtonPressed(Sender: TJvCustomGraphicButton; AGroupIndex: integer);
+    procedure ForceSize(Sender: TControl; AWidth, AHeight: integer);
     function DoDropDownMenu(Button: TMouseButton; Shift: TShiftState; X, Y: Integer): Boolean; virtual;
     procedure UpdateExclusive;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -93,7 +98,6 @@ type
     procedure RepaintBackground; virtual;
     procedure TextChanged; override;
 
-
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default False;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
 
@@ -108,7 +112,7 @@ type
     property Down: Boolean read FDown write SetDown default False;
     property DropDownMenu: TPopupMenu read FDropDownMenu write FDropDownMenu;
     procedure Click; override;
-    property OnDropDownMenu:TContextPopupEvent read FOnDropDownMenu write FOnDropDownMenu;
+    property OnDropDownMenu: TContextPopupEvent read FOnDropDownMenu write FOnDropDownMenu;
   public
 
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
@@ -132,6 +136,7 @@ type
     procedure CMForceSize(var Msg: TCMForceSize); message CM_FORCESIZE;
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
+    procedure ForceSize(Sender: TControl; AWidth, AHeight: integer);
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure FontChanged; override;
@@ -147,7 +152,7 @@ type
       DefaultTrackFontOptions;
     property HintColor;
     property OnParentColorChange;
-    property OnDropDownMenu:TContextPopupEvent read FOnDropDownMenu write FOnDropDownMenu;
+    property OnDropDownMenu: TContextPopupEvent read FOnDropDownMenu write FOnDropDownMenu;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -213,7 +218,7 @@ end;
 constructor TJvCustomGraphicButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := ControlStyle - [csOpaque, csDoubleClicks];
+  ControlStyle := ControlStyle - [csOpaque, csDoubleClicks, csCaptureMouse];
   FStates := [];
   SetBounds(0, 0, 40, 40);
   FBuffer := TBitmap.Create;
@@ -318,10 +323,8 @@ begin
   if InsideBtn(X, Y) then
   begin
     FStates := [bsMouseDown, bsMouseInside];
-
     RepaintBackground;
   end;
-  SetCaptureControl(Self);
   Tmp := ClientToScreen(Point(0, Height));
   DoDropDownMenu(Button, Shift, Tmp.X, Tmp.Y);
 end;
@@ -330,8 +333,6 @@ procedure TJvCustomGraphicButton.MouseMove(Shift: TShiftState; X,
   Y: Integer);
 begin
   inherited MouseMove(Shift, X, Y);
-  if MouseCapture then
-  begin
     if not InsideBtn(X, Y) then
     begin
       Exclude(FStates, bsMouseInside);
@@ -342,14 +343,11 @@ begin
       Include(FStates, bsMouseInside);
       RepaintBackground;
     end;
-  end;
 end;
 
 procedure TJvCustomGraphicButton.MouseUp(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  if GetCaptureControl = Self then
-    ReleaseCapture;
   if not Enabled then
     Exit;
   inherited MouseUp(Button, Shift, X, Y);
@@ -359,8 +357,7 @@ end;
 
 function TJvCustomGraphicButton.DoDropDownMenu(Button: TMouseButton; Shift: TShiftState; X, Y: Integer): Boolean;
 var
-
-  Handled:boolean;
+  Handled: boolean;
 begin
   Result := (Button = mbLeft) and (DropDownMenu <> nil);
   if Result then
@@ -372,16 +369,15 @@ begin
       paCenter:
         Inc(X, Width div 2);
     end;
+    Handled := False;
     if Assigned(FOnDropDownMenu) then
-      FOnDropDownMenu(Self, Point(X,Y), Handled)
-    else
-      Handled := False;
+      FOnDropDownMenu(Self, Point(X, Y), Handled);
 
     if not Handled then
       DropDownMenu.Popup(X, Y)
     else
       Exit;
-    
+
     
     repeat
       Application.ProcessMessages; // (ahuser) does this really do the job?
@@ -422,15 +418,6 @@ begin
     if FDown and not AllowAllUp then
       Exit;
     FDown := Value;
-    // don't set bsMouseDown when Down is true: it is not the same
-//    if FDown then
-//    begin
-//      Include(FStates, bsMouseDown);
-
-      {     Click; }{ uncomment and see what happens... }
-//    end
-//    else
-//      Exclude(FStates, bsMouseDown);
     UpdateExclusive;
     Invalidate;
   end;
@@ -450,6 +437,7 @@ procedure TJvCustomGraphicButton.SetBounds(ALeft, ATop, AWidth, AHeight: Integer
 var
   Form: TCustomForm;
   Msg: TCMForceSize;
+  I: Integer;
 begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if ForceSameSize then
@@ -463,6 +451,9 @@ begin
       Msg.NewSize.X := AWidth;
       Msg.NewSize.Y := AHeight;
       Form.Broadcast(Msg);
+      for i := 0 to Form.ControlCount - 1 do
+        if Form.Controls[i] is TJvCustomGraphicButton then
+          TJvCustomGraphicButton(Form.Controls[i]).ForceSize(Self, AWidth, AHeight);
     end;
   end;
 end;
@@ -470,9 +461,7 @@ end;
 procedure TJvCustomGraphicButton.CMForceSize(var Msg: TCMForceSize);
 begin
   with Msg do
-    if Sender <> Self then
-      with NewSize do
-        inherited SetBounds(Left, Top, X, Y);
+    ForceSize(Sender, NewSize.x, NewSize.y);
 end;
 
 function TJvCustomGraphicButton.GetPattern: TBitmap;
@@ -501,6 +490,7 @@ end;
 procedure TJvCustomGraphicButton.UpdateExclusive;
 var
   Msg: TJvCMButtonPressed;
+  I:Integer;
 begin
   if (GroupIndex <> 0) and (Parent <> nil) then
   begin
@@ -509,27 +499,15 @@ begin
     Msg.Control := Self;
     Msg.Result := 0;
     Parent.Broadcast(Msg);
+    for I := 0 to Parent.ControlCount - 1 do
+      if Parent.Controls[I] is TJvCustomGraphicButton then
+        TJvCustomGraphicButton(Parent.Controls[I]).ButtonPressed(Self, GroupIndex);
   end;
 end;
 
 procedure TJvCustomGraphicButton.CMButtonPressed(var Msg: TJvCMButtonPressed);
-var
-  Sender: TJvCustomGraphicButton;
 begin
-  if Msg.Index = GroupIndex then
-  begin
-    Sender := TJvCustomGraphicButton(Msg.Control);
-    if Sender <> Self then
-    begin
-      if Sender.Down and Down then
-      begin
-        FDown := False;
-//        Exclude(FStates, bsMouseDown);
-        RepaintBackground;
-      end;
-      FAllowAllUp := Sender.AllowAllUp;
-    end;
-  end;
+  ButtonPressed(TJvCustomGraphicButton(Msg.Control),Msg.Index);
 end;
 
 procedure TJvCustomGraphicButton.SetHotFont(const Value: TFont);
@@ -552,6 +530,47 @@ procedure TJvCustomGraphicButton.FontChanged;
 begin
   inherited FontChanged;
   UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
+end;
+
+procedure TJvCustomGraphicButton.TextChanged;
+begin
+  inherited;
+  RepaintBackground;
+end;
+
+procedure TJvCustomGraphicButton.Click;
+begin
+  inherited;
+  if GroupIndex <> 0 then
+  begin
+    if AllowAllUp then
+      Down := not Down
+    else
+      Down := True;
+  end;
+end;
+
+procedure TJvCustomGraphicButton.ButtonPressed(Sender: TJvCustomGraphicButton; AGroupIndex: integer);
+begin
+  if AGroupIndex = GroupIndex then
+  begin
+    if Sender <> Self then
+    begin
+      if Sender.Down and Down then
+      begin
+        FDown := False;
+        Exclude(FStates, bsMouseDown);
+        RepaintBackground;
+      end;
+      FAllowAllUp := Sender.AllowAllUp;
+    end;
+  end;
+end;
+
+procedure TJvCustomGraphicButton.ForceSize(Sender: TControl; AWidth, AHeight: integer);
+begin
+  if Sender <> Self then
+    inherited SetBounds(Left, Top, AWidth, AHeight);
 end;
 
 // == TJvCustomButton ==========================================================
@@ -577,8 +596,8 @@ end;
 
 procedure TJvCustomButton.Click;
 var
-  Handled:Boolean;
-  MousePos:TPoint;
+  Handled: Boolean;
+  MousePos: TPoint;
 begin
   inherited Click;
   MousePos := Point(GetClientOrigin.X, GetClientOrigin.Y + Height);
@@ -592,10 +611,7 @@ begin
     if not Handled then
     begin
       FDropDownMenu.Popup(MousePos.X, MousePos.Y);
-      
-      
       MouseLeave(Self);
-      
     end;
   end;
 end;
@@ -676,6 +692,7 @@ procedure TJvCustomButton.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 var
   Form: TCustomForm;
   Msg: TCMForceSize;
+  I: Integer;
 begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if ForceSameSize then
@@ -688,6 +705,9 @@ begin
       Msg.NewSize.X := AWidth;
       Msg.NewSize.Y := AHeight;
       Form.Broadcast(Msg);
+      for I := 0 to Form.ControlCount - 1 do
+        if Form.Controls[I] is TJvCustomButton then
+          TJvCustomButton(Form.Controls[I]).ForceSize(Self, AWidth, AHeight);
     end;
   end;
 end;
@@ -695,9 +715,7 @@ end;
 procedure TJvCustomButton.CMForceSize(var Msg: TCMForceSize);
 begin
   with Msg do
-    if Sender <> Self then
-      with NewSize do
-        inherited SetBounds(Left, Top, X, Y);
+    ForceSize(Sender, NewSize.x, NewSize.y);
 end;
 
 procedure TJvCustomButton.Notification(AComponent: TComponent;
@@ -709,14 +727,21 @@ begin
 end;
 
 procedure TJvCustomGraphicButton.RepaintBackground;
-var R:TRect;
+var
+  R: TRect;
 begin
   if (Parent <> nil) and Parent.HandleAllocated then
   begin
     R := BoundsRect;
-    InvalidateRect(Parent.Handle,@R, True);
+    InvalidateRect(Parent.Handle, @R, True);
   end;
   Repaint;
+end;
+
+procedure TJvCustomButton.ForceSize(Sender: TControl; AWidth, AHeight: integer);
+begin
+  if Sender <> Self then
+    inherited SetBounds(Left, Top, AWidth, AHeight);
 end;
 
 // == TJvDropDownButton ===================================================
@@ -760,7 +785,8 @@ begin
   begin
     
     Canvas.Start;
-    
+    RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]);
+
     DrawFrameControl(Canvas.Handle, PaintRect, DFC_SCROLL, DrawFlags);
 
     
@@ -770,23 +796,6 @@ begin
 end;
 
 
-procedure TJvCustomGraphicButton.TextChanged;
-begin
-  inherited;
-  RepaintBackground;
-end;
-
-procedure TJvCustomGraphicButton.Click;
-begin
-  inherited;
-  if GroupIndex <> 0 then
-  begin
-    if AllowAllUp then
-      Down := not Down
-    else
-      Down := True;
-  end;
-end;
 
 initialization
 
