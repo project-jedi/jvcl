@@ -711,6 +711,16 @@ Return value
 See Also
   <LINK TJvCustomRichEdit.CanFindNext,CanFindNext>, <LINK TJvCustomRichEdit.FindDialog,FindDialog>, FindNext
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomRichEdit.ForceUndo
+Summary
+  Specifies whether undo should be active for all types of text changes in the control.
+Description
+  Use ForceUndo to specify whether undo should be activated even for replacements in selection. When 
+  ForceUndo is false, changing the text of the control by assigning to the SelText property or by using 
+  the built-in text replace functions cannot be undone. Set ForceUndo to true to make undo available in these circumstances.
+See Also
+  SelText, ReplaceDialog
+----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.GetCharPos
 Summary
   Retrieves the client area coordinates of a specified character in the rich edit control.
