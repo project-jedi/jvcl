@@ -245,8 +245,8 @@ type
     property RedColor: TJvFullColor read FRedColor write SetRedColor default fclRGBRed;
     property GreenColor: TJvFullColor read FGreenColor write SetGreenColor default fclRGBLime;
     property BlueColor: TJvFullColor read FBlueColor write SetBlueColor default fclRGBBlue;
-    // (rom) set default value
-    property Styles: TJvFullColorCircleStyles read FStyles write SetStyles;
+    property Styles: TJvFullColorCircleStyles read FStyles write SetStyles
+      default [csShowLines, csShowRed, csShowGreen, csShowBlue];
     property CrossSize: Integer read FCrossSize write SetCrossSize default 5;
     property CrossCenter: Integer read FCrossCenter write SetCrossCenter default 1;
     property CrossStyle: TPen read FCrossStyle write SetCrossStyle;
@@ -403,7 +403,6 @@ type
     procedure MakeList; virtual;
   published
     property AllowVariable: Boolean read FAllowVariable write SetAllowVariable default True;
-    // (rom) set default value
     property ColorSpaceID: TJvFullColorSpaceID read GetColorSpaceID write SetColorSpaceID default csRGB;
     property ItemFormat: TJvFullColorSpaceFormat read FItemFormat write SetItemFormat default cfBoth;
     property OnFormatItem: TJvFullColorSpaceFormatEvent read FOnFormatItem write FOnFormatItem;
@@ -2401,9 +2400,7 @@ begin
           PosZ := IndexZ - MinZ;
 
         TempColor := SetAxisValue(TempColor, AxisZ, IndexZ);
-        // (outchy) don't remove, Bitmap colors are stocked as (MSB) 00RRGGBB (LSB)
-        // Delphi TColor is (MSB) 00BBGGRR (LSB)
-        Pen.Color := RGBToBGR(ConvertToColor(TempColor));
+        Pen.Color := ConvertToColor(TempColor);
 
         case Orientation of
           trHorizontal:
@@ -2433,14 +2430,15 @@ begin
   with ColorSpace do
   begin
     PosZ := GetAxisValue(FullColor, AxisZ);
-    // (rom) This shift is simply not in effect. Seems to be a bug of GetAxisValue.
-    // PosZ := PosZ - AxisMin[AxisZ] + ArrowWidth;
     if ColorOrientation = coInverse then
+    begin
       if Orientation = trHorizontal then
-        PosZ := FBuffer.Width - PosZ - 1
+        PosZ := FBuffer.Width - PosZ - 1 + AxisMin[AxisZ]
       else
       if Orientation = trVertical then
-        PosZ := FBuffer.Height - PosZ - 1;
+        PosZ := FBuffer.Height - PosZ - 1 + AxisMin[AxisZ];
+    end
+    else PosZ := PosZ - AxisMin[AxisZ];
     Inc(PosZ, ArrowWidth);
   end;
 
@@ -2630,8 +2628,8 @@ begin
     if ColorOrientation = coInverse then
       Pos := MaxZ - Pos
     else
-      Pos := Pos - MinZ;
-    Pos := Pos + MinZ;
+      Pos := Pos + MinZ;
+//    Pos := Pos + MinZ;
 
     FullColor := SetAxisValue(FullColor, AxisZ, Byte(Pos));
   end;
@@ -2696,33 +2694,30 @@ end;
 procedure TJvFullColorTrackBar.SetFullColor(const Value: TJvFullColor);
 var
   AxisZ: TJvAxisIndex;
-  OldValueX, OldValueY: Byte;
+  OldValueX, OldValueY, OldValueZ, NewValueZ: Byte;
 begin
   if Value <> FullColor then
   begin
-    OldValueX := ValueX;
-    OldValueY := ValueY;
-    if ValueXAuto then
-      UpdateDefaultValueX;
-    if ValueYAuto then
-      UpdateDefaultValueY;
-    if FullColorDrawing and ((OldValueX <> ValueX) or (OldValueY <> ValueY)) then
+    AxisZ := GetIndexAxisZ(AxisConfig);
+    OldValueZ := GetAxisValue(FullColor,AxisZ);
+    NewValueZ := GetAxisValue(Value,AxisZ);
+    if NewValueZ <> OldValueZ then
+      InvalidateCursor;
+    if FullColorDrawing then
     begin
-      WantDrawBuffer := True;
+      OldValueX := ValueX;
+      OldValueY := ValueY;
       inherited SetFullColor(Value);
+      if ValueXAuto then
+        UpdateDefaultValueX;
+      if ValueYAuto then
+        UpdateDefaultValueY;
+      if (ValueX<>OldValueX) or (ValueY<>OldValueY) then
+        WantDrawBuffer := True;
     end
-    else
-    begin
-      AxisZ := GetIndexAxisZ(AxisConfig);
-      if GetAxisValue(Value, AxisZ) <> GetAxisValue(FullColor, AxisZ) then
-      begin
-        InvalidateCursor;
-        inherited SetFullColor(Value);
-        InvalidateCursor;
-      end
-      else
-        inherited SetFullColor(Value);
-    end;
+    else inherited SetFullColor(Value);
+    if NewValueZ <> OldValueZ then
+      InvalidateCursor;
   end;
 end;
 
