@@ -405,7 +405,7 @@ resourcestring
 
 implementation
 
-{$IFDEF WINDOWS}
+{$IFDEF MSWINDOWS}
 {$R ..\resources\JvConsts.res}
 {$ENDIF}
 {$IFDEF LINUX}
