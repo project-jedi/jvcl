@@ -384,9 +384,8 @@ uses
   JvTypes;
 
 resourcestring
-  RS_INVALID_SimpleXml = 'Invalid XML file';
 {$IFNDEF COMPILER6_UP}
-  SInvalidBoolean = '''%s'' is not a valid Boolean value';
+//  SInvalidBoolean = '''%s'' is not a valid Boolean value'; make Delphi 5 compiler happy // andreas
 {$ENDIF COMPILER6_UP}
   sInvalidXMLElementUnexpectedCharacte = 'Invalid XML Element: Unexpected character in properties declaration ("%s" found).';
   sInvalidXMLElementUnexpectedCharacte_ = 'Invalid XML Element: Unexpected character in property declaration. Expecting " or '' but "%s"  found.';
