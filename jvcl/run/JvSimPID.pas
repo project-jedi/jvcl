@@ -77,7 +77,10 @@ type
     procedure SetActive(const Value: Boolean);
     procedure SetSymFunc(const Value: TJvSymFunc);
   protected
+
     procedure Paint; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Execute;
@@ -301,7 +304,12 @@ end;
 
 procedure TJvSimPID.SetSource(const Value: TJvSimPID);
 begin
-  FSource := Value;
+  if FSource <> Value then
+  begin
+    FSource := Value;
+    if FSource <> nil then
+      FSource.FreeNotification(self);
+  end;
 end;
 
 procedure TJvSimPID.Execute;
@@ -324,6 +332,14 @@ end;
 procedure TJvSimPID.SetSymFunc(const Value: TJvSymFunc);
 begin
   FSymFunc := Value;
+end;
+
+procedure TJvSimPID.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (AComponent = Source) and (Operation = opRemove) then
+    Source := nil;
 end;
 
 end.
