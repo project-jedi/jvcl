@@ -34,12 +34,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, ToolWin, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QToolWin, QExtCtrls, Types, QWindows,
-  {$ENDIF VisualCLX}
   JvComponent, JvExForms;
 
 type
@@ -275,11 +270,17 @@ begin
       if FVertical then
       begin
         R := Rect(Width div 2 - 1, 1, Width, Height - 1);
+        {$IFDEF VisualCLX}
+        QWindows.
+        {$ENDIF VisualCLX}
         DrawEdge(Handle, R, EDGE_ETCHED, BF_LEFT);
       end
       else
       begin
         R := Rect(1, Height div 2 - 1, Width, Height - 1);
+        {$IFDEF VisualCLX}
+        QWindows.
+        {$ENDIF VisualCLX}
         DrawEdge(Handle, R, EDGE_ETCHED, BF_TOP);
       end;
     end;
@@ -668,7 +669,7 @@ begin
   FDownRight.Kind := sbRight;
 end;
 
-procedure TJvCustomScrollPanel.SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl);
+procedure TJvCustomScrollPanel.SetParent({$IFDEF VisualCLX}const {$ENDIF}AParent: TWinControl);
 begin
   inherited SetParent(AParent);
   if FUpLeft = nil then
