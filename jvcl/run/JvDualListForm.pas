@@ -29,14 +29,14 @@ unit JvDualListForm;
 interface
 
 uses
-  SysUtils, Classes,
+  Windows,
+  {$IFDEF VisualCLX}
+  Types,
+  {$ENDIF VisualCLX}
+  Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   {$IFDEF VCL}
-  Windows, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   JvListBox, JvCtrls,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QWindows,
-  {$ENDIF VisualCLX}
   JvComponent, JvExStdCtrls;
 
 type
@@ -88,13 +88,8 @@ end;
 implementation
 
 uses
-  {$IFDEF VCL}
-  Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
-  JvJVCLUtils, JvBoxProcs;
+  Consts,  
+  JvBoxProcs;
 
 {$IFDEF VCL}
 {$R *.dfm}

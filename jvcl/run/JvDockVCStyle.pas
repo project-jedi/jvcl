@@ -30,7 +30,7 @@ unit JvDockVCStyle;
 interface
 
 uses
-  Windows, Classes, Controls, Messages, Graphics, ExtCtrls,
+  Windows, Messages, Classes, Graphics, Controls,
   JvDockControlForm, JvDockSupportControl, JvDockTree;
 
 type
@@ -198,7 +198,7 @@ type
 implementation
 
 uses
-  Consts, Forms, SysUtils, Math,
+  Consts, SysUtils, ExtCtrls,
   JvDockSupportProc, JvDockGlobals;
 
 const

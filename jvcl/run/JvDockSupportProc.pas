@@ -30,7 +30,7 @@ unit JvDockSupportProc;
 interface
 
 uses
-  Classes, Windows, SysUtils, Graphics, Forms, Controls, Messages;
+  Windows, Messages, Classes, Graphics, Controls, Forms;
 
 type
   TJvDockListScanKind = (lskForward, lskBackward);
@@ -87,7 +87,7 @@ function JvDockGetControlSize(AControl: TControl): Integer;
 implementation
 
 uses
-  Math,
+  SysUtils, Math,
   JvDockControlForm, JvDockGlobals;
 
 var

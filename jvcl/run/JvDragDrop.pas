@@ -32,8 +32,7 @@ unit JvDragDrop;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Forms,
-  ShellAPI, ActiveX, ShlObj,
+  Windows, Messages, ShellAPI, ActiveX, Classes, Controls,
   JvComponent;
 
 type
@@ -139,7 +138,11 @@ function Malloc: IMalloc;
 implementation
 
 uses
-  JvWndProcHook, JvJCLUtils;
+  ShlObj, SysUtils, Forms,
+  {$IFDEF COMPILER5}
+  JvJCLUtils,
+  {$ENDIF COMPILER5}
+  JvWndProcHook;
 
 var
   GlobalCF_FILEDESCRIPTOR: DWORD = $FFFFFFF;

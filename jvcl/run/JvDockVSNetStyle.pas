@@ -31,8 +31,7 @@ unit JvDockVSNetStyle;
 interface
 
 uses
-  Windows, Messages, Classes, Controls, Graphics, ComCtrls, ExtCtrls,
-  ImgList, Forms, Dialogs,
+  Windows, Messages, Classes, Graphics, Controls, Forms, ExtCtrls,
   JvDockControlForm, JvDockSupportControl, JvDockTree, JvDockVIDStyle;
 
 type

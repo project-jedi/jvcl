@@ -36,13 +36,14 @@ unit JvDropDownForm;
 interface
 
 uses
-  Classes,
+  Windows,
   {$IFDEF VCL}
-  Windows, Messages, Controls, StdCtrls, Forms,
+  Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QControls, QStdCtrls, QForms, Types, QWindows,
+  Qt, Types,
   {$ENDIF VisualCLX}
+  Classes, Controls, StdCtrls, Forms,
   JvTypes, JvExForms;
 
 type
@@ -86,14 +87,6 @@ uses
   SysUtils,
   JvConsts, JvResources;
 
-const
-  {$IFDEF VCL}
-  NilHandle = 0;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  NilHandle = nil;
-  {$ENDIF VisualCLX}
-
 function IsChildWindow(const AChild, AParent: HWND): Boolean;
 var
   LParent: HWND;
@@ -105,9 +98,9 @@ begin
     Result := False // (ahuser) a parent is no child of itself
   else
   begin
-    while (LParent <> AParent) and (LParent <> NilHandle) do
+    while (LParent <> AParent) and (LParent <> NullHandle) do
       LParent := GetParent(LParent);
-    Result := (LParent = AParent) and (LParent <> NilHandle);
+    Result := (LParent = AParent) and (LParent <> NullHandle);
   end;
 end;
 

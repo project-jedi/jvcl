@@ -34,16 +34,14 @@ unit JvDialButton;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Messages, Graphics, Controls, Forms, ExtCtrls, ComCtrls,
+  Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QExtCtrls, QComCtrls, Types, QWindows,
+  Types,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
+  Classes, Graphics, Controls, Forms, ExtCtrls, ComCtrls,
   JvComponent;
 
 type

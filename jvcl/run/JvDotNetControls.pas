@@ -32,16 +32,14 @@ unit JvDotNetControls;
 interface
 
 uses
-  Forms, Classes, Windows, Messages, Graphics, Controls,
-  StdCtrls, ComCtrls, Mask,
+  Windows, Messages, Classes, Controls,
   {$IFDEF USEJVCL}
-  CheckLst,
-  JvRichEdit, JvListView, JvCheckListBox, JvEdit, JvHotKey,
-  JvListBox, JvMaskEdit, JvMemo, JvComCtrls, JvScrollBox, JvToolEdit,
-  JVCLVer;
+  JvRichEdit, JvListView, JvCheckListBox, JvEdit, JvHotKey, JvListBox,
+  JvMaskEdit, JvMemo, JvComCtrls, JvScrollBox, JvToolEdit, JVCLVer,
   {$ELSE}
-  CheckLst;
+  Forms, CheckLst, ComCtrls, Mask,
   {$ENDIF USEJVCL}
+  StdCtrls;
 
 type
   {$IFDEF USEJVCL}

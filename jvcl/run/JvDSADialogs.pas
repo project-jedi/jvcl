@@ -31,16 +31,15 @@ unit JvDSADialogs;
 interface
 
 uses
-  SysUtils, Classes, Contnrs,
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  Controls, StdCtrls, Dialogs, ExtCtrls, Forms, Graphics,
   {$IFDEF VisualCLX}
   QWindows, QClipbrd,
   {$ENDIF VisualCLX}
-  JclBase,
-  JvConsts, JvComponent, JvTypes, JvDynControlEngine, JvFinalize;
+  SysUtils, Classes, Contnrs, Graphics, Controls, Forms, StdCtrls, Dialogs,
+  ExtCtrls,
+  JvComponent, JvDynControlEngine, JvTypes;
 
 type
   TDlgCenterKind = (dckScreen, dckMainForm, dckActiveForm);
@@ -420,18 +419,12 @@ type
 implementation
 
 uses
-  Math, TypInfo,
-  {$IFDEF VCL}
-  Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
+  Consts, Math, TypInfo,
   {$IFDEF MSWINDOWS}
   JclRegistry,
   {$ENDIF MSWINDOWS}
-  JclSysUtils,
-  JvResources, JvDynControlEngineIntf;
+  JclBase, JclSysUtils,
+  JvDynControlEngineIntf, JvConsts, JvResources, JvFinalize;
 
 const
   sUnitName = 'JvDSADialogs';
@@ -816,7 +809,7 @@ begin
       ButtonGroupWidth := 0;
       if ButtonCount <> 0 then
         ButtonGroupWidth := ButtonWidth * ButtonCount + ButtonSpacing * (ButtonCount - 1);
-      ClientWidth := MAx(TimeoutTextWidth, Max(17 + ChkTextWidth, Max(IconTextWidth, ButtonGroupWidth))) + HorzMargin *
+      ClientWidth := Max(TimeoutTextWidth, Max(17 + ChkTextWidth, Max(IconTextWidth, ButtonGroupWidth))) + HorzMargin *
         2;
       ClientHeight := IconTextHeight + ButtonHeight + VertSpacing * 2 + VertMargin;
       if CheckCaption <> '' then

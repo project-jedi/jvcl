@@ -31,7 +31,7 @@ unit JvDockInfo;
 interface
 
 uses
-  Windows, Controls, IniFiles, Registry, Classes, SysUtils, Forms, Messages,
+  Windows, IniFiles, Registry, Classes, Controls, Forms,
   {$IFDEF USEJVCL}
   JvAppStorage,
   {$ENDIF USEJVCL}
@@ -150,6 +150,7 @@ type
 implementation
 
 uses
+  SysUtils, 
   JvDockGlobals, JvDockVSNetStyle;
 
 function FindDockForm(FormName: string): TCustomForm;

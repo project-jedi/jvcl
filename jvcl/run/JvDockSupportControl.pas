@@ -30,8 +30,8 @@ unit JvDockSupportControl;
 interface
 
 uses
-  Messages, Windows, SysUtils, CommCtrl, Controls, Forms, Classes, ComCtrls,
-  Graphics, ImgList, ExtCtrls,
+  Messages, Windows, CommCtrl, Graphics, Controls, Forms, Classes, ExtCtrls,
+  ComCtrls, ImgList,
   {$IFDEF USEJVCL}
   JvComponent, JvAppStorage,
   {$ENDIF USEJVCL}
@@ -541,7 +541,7 @@ type
 implementation
 
 uses
-  Consts, ComStrs,
+  ComStrs, Consts, SysUtils, 
   JvDockGlobals, JvDockControlForm, JvDockSupportProc;
 
 type

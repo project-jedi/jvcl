@@ -39,10 +39,11 @@ implementation
 interface
 
 uses
-  Windows, Messages, Classes, Controls {D5}, DBCtrls,
+  Windows, Messages, Classes, Controls, DBCtrls,
   {$IFDEF USEJVCL}
-  JvDBFindEdit, JVCLVer;
+  JvDBFindEdit, JVCLVer,
   {$ENDIF USEJVCL}
+  JvDotNetUtils;
 
 type
   TJvDotNetDBEdit = class(TDBEdit)
@@ -143,9 +144,6 @@ type
   {$ENDIF USEJVCL}
 
 implementation
-
-uses
-  JvDotNetUtils;
 
 //=== { TJvDotNetDBEdit } ====================================================
 

@@ -30,7 +30,7 @@ unit JvDockHashTable;
 interface
 
 uses
-  Classes, Controls;
+  Classes;
 
 const
   DefaultHashSize = 20;
@@ -62,18 +62,18 @@ type
     function HashProc(Name: string): Integer; virtual;
     procedure DeleteListIndex(Index: Integer);        
     function CreateKeyNode(KeyName: string; KeyData: Pointer;
-      ListIndex: Integer): TJvDockClientHashNode;     
-    function CompareKey(Key1, Key2: string): Integer; 
+      ListIndex: Integer): TJvDockClientHashNode;
+    function CompareKey(Key1, Key2: string): Integer;
   public
     constructor Create(Size: Integer = DefaultHashSize; RiseExcept: Boolean = True); virtual;
     destructor Destroy; override;
     procedure CreateDictionary(Size: Integer); virtual;
-    function IsIn(Name: string): Boolean; virtual;     
+    function IsIn(Name: string): Boolean; virtual;
     function FindNode(Name: string): TJvDockClientHashNode; virtual;
-    function Find(Name: string): Pointer; virtual;     
+    function Find(Name: string): Pointer; virtual;
     function Insert(Name: string; Data: Pointer): Integer; virtual;
-    procedure Remove(Name: string); virtual;           
-    procedure MakeEmpty;                               
+    procedure Remove(Name: string); virtual;
+    procedure MakeEmpty;
     property CurrentSize: Integer read FCurrentSize;
     property TableSize: Integer read FTableSize write SetTableSize;
   end;

@@ -30,8 +30,7 @@ unit JvDockVIDStyle;
 interface
 
 uses
-  Windows, Messages, Classes, Controls, Math, Graphics,
-  ComCtrls, ExtCtrls, ImgList,
+  Windows, Messages, Classes, Graphics, Controls, ComCtrls, ImgList,
   JvDockControlForm, JvDockSupportControl, JvDockTree;
 
 type
@@ -548,7 +547,7 @@ procedure PaintGradientBackground(Canvas: TCanvas; ARect: TRect; StartColor, End
 implementation
 
 uses
-  Forms, SysUtils,
+  SysUtils, Math, Forms, 
   JvDockSupportProc, JvDockGlobals;
 
 type

@@ -31,8 +31,7 @@ unit JvDockVIDVCStyle;
 interface
 
 uses
-  Windows, Messages, Classes, Controls, Math, Graphics,
-  ComCtrls, ExtCtrls, ImgList,
+  Windows, Messages, Classes, Controls, Graphics, ComCtrls, ImgList,
   JvDockControlForm, JvDockSupportControl, JvDockTree;
 
 const
@@ -576,7 +575,7 @@ procedure PaintGradientBackground(Canvas: TCanvas; ARect: TRect; StartColor, End
 implementation
 
 uses
-  Consts, Forms, SysUtils,
+  Consts, SysUtils, Math, Forms, ExtCtrls, 
   JvDockSupportProc, JvDockGlobals;
 
 type

@@ -68,7 +68,7 @@ type
 implementation
 
 uses
-  Forms, SysUtils, Math,
+  SysUtils, Forms,
   JvDockSupportProc, JvDockGlobals;
 
 constructor TJvDockDelphiStyle.Create(AOwner: TComponent);
