@@ -1,5 +1,5 @@
 [Project File Info]
-Version=200
+Version=201
 
 [General]
 Title=Documentation Project 3
@@ -10,9 +10,9 @@ Type=2
 
 [Source Files]
 Count=3
-File0=..\JvAlarms.pas
-File1=..\JvAngleLabel.pas
-File2=..\JvAnimate.pas
+File0=..\..\jvcl\source\JvAlarms.pas
+File1=..\..\jvcl\source\JvAngleLabel.pas
+File2=..\..\jvcl\source\JvAnimate.pas
 
 [Source Include Directories]
 Count=0
@@ -551,7 +551,7 @@ AlwaysInsertSectionDelimiter=0
 
 [Image Paths]
 Count=1
-Path0=E:\PROGRAM FILES\DOC-O-MATIC 2\graphics
+Path0=..\..\..\..\..\PROGRAM FILES\DOC-O-MATIC 2\graphics
 
 [Flags]
 Use=1
