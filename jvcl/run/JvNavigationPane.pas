@@ -75,13 +75,12 @@ type
     {$IFDEF VisualCLX}
     function WidgetFlags: Integer; override;
     {$ENDIF VisualCLX}
-    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
-    property WordWrap: boolean read FWordWrap write SetWordWrap default False;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     property Align;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Anchors;
     property Caption;
     property Constraints;
@@ -100,6 +99,7 @@ type
     property PopupMenu;
     property ShowHint;
     property Visible;
+    property WordWrap: boolean read FWordWrap write SetWordWrap default False;
 
     property ColorFrom: TColor read FColorFrom write SetColorFrom default $D68652;
     property ColorTo: TColor read FColorTo write SetColorTo default $944110;
@@ -2777,9 +2777,13 @@ begin
 end;
 
 procedure TJvNavPanelHeader.Paint;
+const
+  cAlignment:array[TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  cWordWrap:array[boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
+
 var
-  R: TRect;
-  X, Y: Integer;
+  R, TempRect: TRect;
+  X, Y, H: Integer;
   function IsValidImage: boolean;
   begin
     Result := (Images <> nil) and (ImageIndex >= 0) and (ImageIndex < Images.Count);
@@ -2787,24 +2791,56 @@ var
 begin
   R := ClientRect;
   GradientFillRect(Canvas, R, ColorFrom, ColorTo, fdTopToBottom, 32);
+  H := Canvas.TextHeight(Caption);
   if Caption <> '' then
   begin
     Canvas.Font := Font;
     InflateRect(R, -4, 0);
     SetBkMode(Canvas.Handle, TRANSPARENT);
+    TempRect := R;
+    {$IFDEF VCL}
+    H := DrawText(Canvas.Handle, PChar(Caption), Length(Caption), TempRect,
+      DT_CALCRECT or cAlignment[Alignment] or cWordWrap[WordWrap] or DT_VCENTER or DT_NOPREFIX or DT_END_ELLIPSIS);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    DrawText(Canvas, Caption, Length(Caption), TempRect,
+      DT_CALCRECT or cAlignment[Alignment] or cWordWrap[WordWrap] or DT_VCENTER or DT_NOPREFIX or DT_END_ELLIPSIS);
+    {$ENDIF VisualCLX}
+    if WordWrap then
+      OffsetRect(R, 0, (Height - H) div 2);
+    if IsValidImage and (Alignment = taCenter) then
+      OffsetRect(R, 0, -Images.Height div 2);
     {$IFDEF VCL}
     DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R,
-      DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX or DT_END_ELLIPSIS);
+      cAlignment[Alignment] or cWordWrap[WordWrap] or DT_VCENTER or DT_NOPREFIX or DT_END_ELLIPSIS);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     DrawText(Canvas, Caption, Length(Caption), R,
-      DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX or DT_END_ELLIPSIS);
+      cAlignment[Alignment] or cWordWrap[WordWrap] or DT_VCENTER or DT_NOPREFIX or DT_END_ELLIPSIS);
     {$ENDIF VisualCLX}
   end;
   if IsValidImage then
   begin
     Y := (Height - Images.Height) div 2;
-    X := R.Right - Images.Width;
+    case Alignment of
+      taLeftJustify:
+        X := R.Right - Images.Width;
+      taRightJustify:
+        X := R.Left + 4;
+      else  // taCenter
+      begin
+        if Caption <> '' then
+        begin
+          if WordWrap then
+            Y := R.Top + H + 4
+          else
+            Y := (Height + Canvas.TextHeight('Wq')) div 2 + 4;
+        end;
+        X := (Width - Images.Width) div 2;
+      end;
+    end;
+    if Y > Height - Images.Height - 4 then
+      Y := Height - Images.Height - 4;
     TCustomImageListEx(Images).Draw(Canvas, X, Y, ImageIndex,
       {$IFDEF VisualCLX}itImage, {$ENDIF}True);
   end;
