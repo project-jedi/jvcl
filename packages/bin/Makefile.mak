@@ -195,7 +195,6 @@ Clean:
 	@cd $(JVCLROOT)\packages
 	-del /q "$(PKGDIR) Packages.mak" 2>NUL
 	-del /q "$(PKGDIR)\*.cfg" "$(PKGDIR)\*.mak" 2>NUL
-	-del /q tmp.bat 2>NUL
 	-@IF NOT "$(PKGDIR_MASTEREDITION)!" == "!" del /f /q "$(PKGDIR_MASTEREDITION)\*.mak" 2>NUL
 	@cd bin
 
