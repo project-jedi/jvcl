@@ -54,6 +54,7 @@ contains
   JvStdToolbarDsgnFrame in '..\..\design\JvStdToolbarDsgnFrame.pas' {fmeJvStdToolbarDesign: TFrame},
   JvBaseDsgnToolbarFrame in '..\..\design\JvBaseDsgnToolbarFrame.pas' {fmeJvBaseToolbarDesign: TFrame},
   JvDataContextManagerForm in '..\..\design\JvDataContextManagerForm.pas' {frmJvDataContextManager},
-  JvDataConsumerContextSelectForm in '..\..\design\JvDataConsumerContextSelectForm.pas' {frmDataConsumerContextSelect: TFrame};
+  JvDataConsumerContextSelectForm in '..\..\design\JvDataConsumerContextSelectForm.pas' {frmDataConsumerContextSelect: TFrame},
+  JvColorProviderEditors in '..\..\design\JvColorProviderEditors.pas';
 
 end.

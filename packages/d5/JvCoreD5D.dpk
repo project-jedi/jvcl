@@ -53,6 +53,7 @@ contains
   JvStdToolbarDsgnFrame in '..\..\design\JvStdToolbarDsgnFrame.pas' {fmeJvStdToolbarDesign: TFrame},
   JvProviderToolbarFrame in '..\..\design\JvProviderToolbarFrame.pas' {fmeJvProviderToolbar: TFrame},
   JvDataConsumerItemSelectForm in '..\..\design\JvDataConsumerItemSelectForm.pas' {frmJvDataConsumerItemSelect},
-  JvDataConsumerContextSelectForm in '..\..\design\JvDataConsumerContextSelectForm.pas' {frmDataConsumerContextSelect: TFrame};
+  JvDataConsumerContextSelectForm in '..\..\design\JvDataConsumerContextSelectForm.pas' {frmDataConsumerContextSelect: TFrame},
+  JvColorProviderEditors in '..\..\design\JvColorProviderEditors.pas';
 
 end.
