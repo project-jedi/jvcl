@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Needs review
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvToolBar.pas
 Summary
@@ -50,12 +50,13 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvToolBar.Menu
 Summary
-  Write here a summary (1 line)
+  Indicates the menu that the toolbar must reproduce
 Description
-  Write here a description
+  This property is an overlaod of the inherited property from TToolBar. However, it accepts
+  a TJvMainMenu and takes advantage of the menu modification notification to automatically
+  update itself when the menu is changed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TToolbar, TJvMainMenu
 ----------------------------------------------------------------------------------------------------
 @@TJvToolBar.OnCtl3DChanged
 Summary
