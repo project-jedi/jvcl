@@ -1,3 +1,26 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvImagesViewer.PAS, released on 2003-12-01.
+
+The Initial Developer of the Original Code is: Peter Thörnqvist
+All Rights Reserved.
+
+Last Modified: 2003-12-27
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
 unit JvImagesViewer;
 
 {$I JVCL.INC}
@@ -495,6 +518,7 @@ begin
       ExpandFileMask(Filemask, FileMasks);
       if tmpDir <> '' then
         tmpDir := IncludeTrailingPathDelimiter(tmpDir);
+      DoLoadBegin;
       Files := TStringlist.Create;
       try
         Files.Sorted := true;
@@ -508,13 +532,11 @@ begin
             until FindNext(F) <> 0;
             Count := Files.Count;
             j := 0;
-            DoLoadBegin;
             while j < Files.Count do
             begin
               Items[j].Filename := Files[j];
               Inc(j);
             end;
-            DoLoadEnd;
           finally
             FindClose(F);
           end;
@@ -522,6 +544,7 @@ begin
       finally
         Files.Free;
       end;
+      DoLoadEnd;
     finally
       FileMasks.Free;
     end;
