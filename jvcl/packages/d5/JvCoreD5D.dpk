@@ -51,6 +51,7 @@ contains
   JvBaseDsgnToolbarFrame in '..\..\design\JvBaseDsgnToolbarFrame.pas' {fmeJvBaseToolbarDesign: TFrame},
   JvProviderTreeListFrame in '..\..\design\JvProviderTreeListFrame.pas' {fmeJvProviderTreeList: TFrame},
   JvStdToolbarDsgnFrame in '..\..\design\JvStdToolbarDsgnFrame.pas' {fmeJvStdToolbarDesign: TFrame},
-  JvProviderToolbarFrame in '..\..\design\JvProviderToolbarFrame.pas' {fmeJvProviderToolbar: TFrame};
+  JvProviderToolbarFrame in '..\..\design\JvProviderToolbarFrame.pas' {fmeJvProviderToolbar: TFrame},
+  JvDataConsumerItemSelectForm in '..\..\design\JvDataConsumerItemSelectForm.pas' {frmJvDataConsumerItemSelect};
 
 end.

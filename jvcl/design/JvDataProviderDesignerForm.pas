@@ -392,7 +392,11 @@ begin
     else // should never occur
       raise EJVCLException.CreateFmt(SDataProviderAddErrorReason, [SDataProviderNoManOrDsgn]);
     if Item <> nil then
-      fmeTreeList.SelectItemID(Item.GetID)
+    begin
+      fmeTreeList.SelectItemID(Item.GetID);
+      if Designer <> nil then
+        Designer.Modified;
+    end
     else
       raise EJVCLException.Create(SDataProviderAddFailed);
   end
@@ -420,11 +424,11 @@ begin
     begin
       ResetSelection;
       Mangr.Remove(Item);
-      Pointer(Item) := nil;
+      if Designer <> nil then
+        Designer.Modified;
     end
     else
       raise EJVCLException.CreateFmt(SDataProviderDeleteErrorReason, [SDataProviderNoMan]);
-//    UpdateSelectedItem;
   end;
 end;
 
@@ -445,24 +449,16 @@ begin
     else
       raise EJVCLException.Create(SDataItemNotFound);
     if Supports(Items, IJvDataItemsManagement, Mangr) then
-      Mangr.Clear
+    begin
+      Mangr.Clear;
+      if Designer <> nil then
+        Designer.Modified;
+    end
     else
       raise EJVCLException.CreateFmt(SDataProviderDeleteErrorReason, [SDataProviderNoMan]);
   end;
 end;
-(*
-procedure TfrmDataProviderDesigner.tbrToolbarResize(Sender: TObject);
-begin
-  inherited;
-  pnlContexts.Width := tbrToolbar.ClientWidth - pnlContexts.Left;
-end;
 
-procedure TfrmDataProviderDesigner.pnlContextsResize(Sender: TObject);
-begin
-  inherited;
-  cbContexts.Top := (pnlContexts.ClientHeight - cbContexts.Height) div 2;
-end;
-*)
 procedure TfrmDataProviderDesigner.cbContextsChange(Sender: TObject);
 var
   CtxIdx: Integer;

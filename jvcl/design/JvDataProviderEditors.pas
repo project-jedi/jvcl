@@ -18,7 +18,7 @@ All Rights Reserved.
 Contributor(s):
   Peter Thörnqvist
 
-Last Modified: 2003-06-20
+Last Modified: 2003-07-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -32,14 +32,25 @@ unit JvDataProviderEditors;
 
 interface
 
+uses
+  {$IFNDEF COMPILER6_UP}DsgnIntf,{$ELSE}DesignIntf, DesignEditors,{$ENDIF}
+  JvDataProvider, JvDataProviderImpl;
+  
+type
+  TJvDataConsumerExtPropertyEditor = class(TPropertyEditor)
+  protected
+    function GetConsumerExt: TJvDataConsumerAggregatedObject;
+    function GetConsumer: IJvDataConsumer;
+    function GetConsumerImpl: TJvDataConsumer;
+  end;
+
 procedure Register;
 
 implementation
 
 uses
-  Classes, {$IFNDEF COMPILER6_UP}Consts, DsgnIntf, {$ELSE}RTLConsts, DesignIntf, DesignEditors, {$ENDIF}
-  SysUtils, TypInfo,
-  JvDataProvider, JvDataProviderImpl, JvDataProviderDesignerForm;
+  Classes, {$IFNDEF COMPILER6_UP}Consts,{$ELSE}RTLConsts,{$ENDIF} SysUtils, TypInfo,
+  JvDataConsumerItemSelectForm, JvDataProviderDesignerForm;
 
 type
 {$IFDEF COMPILER6_UP}
@@ -75,15 +86,34 @@ type
     procedure SetValue(const Value: string); override;
   end;
 
-  TJvDataProviderItemIDProperty = class(TEnumProperty)
+  TJvDataProviderItemIDProperty = class(TJvDataConsumerExtPropertyEditor)
   public
+    procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
-    procedure GetValues(Proc: TGetStrProc); override;
+//    procedure GetValues(Proc: TGetStrProc); override;
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
   end;
 
   TOpenSvc = class(TJvDataConsumer);
+  TOpenConsumerAggregate = class(TJvDataConsumerAggregatedObject);
+
+//===TJvDataConsumerExtPropertyEditor===============================================================
+
+function TJvDataConsumerExtPropertyEditor.GetConsumerExt: TJvDataConsumerAggregatedObject;
+begin
+  Result := TJvDataConsumerAggregatedObject(GetComponent(0));
+end;
+
+function TJvDataConsumerExtPropertyEditor.GetConsumer: IJvDataConsumer;
+begin
+  Result := GetConsumerImpl;
+end;
+
+function TJvDataConsumerExtPropertyEditor.GetConsumerImpl: TJvDataConsumer;
+begin
+  Result := TOpenConsumerAggregate(GetConsumerExt).ConsumerImpl;
+end;
 
 //===TJvDataConsumerProperty========================================================================
 
@@ -259,7 +289,7 @@ begin
   end;
 end;
 
-{ TJvDataProviderTreeProperty }
+//===TJvDataProviderTreeProperty====================================================================
 
 procedure TJvDataProviderTreeProperty.Edit;
 begin
@@ -280,18 +310,20 @@ procedure TJvDataProviderTreeProperty.SetValue(const Value: string);
 begin
 end;
 
-{ TJvDataProviderItemIDProperty }
+//===TJvDataProviderItemIDProperty==================================================================
+
+procedure TJvDataProviderItemIDProperty.Edit;
+begin
+  DataConsumerSelectItem(GetConsumerImpl, Designer);
+end;
 
 function TJvDataProviderItemIDProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result := inherited GetAttributes - [paMultiSelect, paSortList];
+//  Result := [paValueList, paRevertable];
+  Result := [paDialog, paReadOnly];
 end;
 
-type
-  TOpenConsumerAggregate = class(TJvDataConsumerAggregatedObject)
-  end;
-
-procedure TJvDataProviderItemIDProperty.GetValues(Proc: TGetStrProc);
+(*procedure TJvDataProviderItemIDProperty.GetValues(Proc: TGetStrProc);
 type
   TStackItem = record
     Items: IJvDataItems;
@@ -299,16 +331,14 @@ type
   end;
 var
   ItemsStack: array of TStackItem;
-  SvcExt: TOpenConsumerAggregate;
   Provider: IJvDataProvider;
   CurItems: IJvDataItems;
   CurIdx: Integer;
   TempItems: IJvDataItems;
 begin
   SetLength(ItemsStack, 0);
-  SvcExt := TOpenConsumerAggregate(GetComponent(0));
-  Provider := SvcExt.ConsumerImpl.ProviderIntf;
-  SvcExt.ConsumerImpl.Enter;
+  Provider := GetConsumerImpl.ProviderIntf;
+  GetConsumerImpl.Enter;
   try
     if Supports(Provider, IJvDataItems, CurItems) then
     begin
@@ -347,25 +377,42 @@ begin
       end;
     end;
   finally
-    SvcExt.ConsumerImpl.Leave;
+    GetConsumerImpl.Leave;
+  end;
+end;
+*)
+
+function TJvDataProviderItemIDProperty.GetValue: string;
+var
+  Item: IJvDataItem;
+  Text: IJvDataItemText;
+begin
+//  Result := GetStrValue;
+  GetConsumerImpl.Enter;
+  try
+    Item := TJvDataConsumerItemSelect(GetConsumerExt).GetItemIntf;
+    if Item <> nil then
+    begin
+      if Supports(Item, IJvDataItemText, Text) then
+        Result := Text.Caption
+      else
+        Result := '[ID:' + Item.GetID + ']';
+    end
+    else
+      Result := '(none)';
+  finally
+    GetConsumerImpl.Leave;
   end;
 end;
 
-function TJvDataProviderItemIDProperty.GetValue: string;
-begin
-  Result := GetStrValue;
-end;
-
 procedure TJvDataProviderItemIDProperty.SetValue(const Value: string);
-var
-  SvcExt: TJvDataConsumerItemSelect;
+(*var
   Provider: IJvDataProvider;
-  Item: IJvDataItem;
+  Item: IJvDataItem;*)
 begin
-  SvcExt := TJvDataConsumerItemSelect(GetComponent(0));
-  TOpenConsumerAggregate(SvcExt).ConsumerImpl.Enter;
+(*  GetConsumerImpl.Enter;
   try
-    Provider := TOpenConsumerAggregate(SvcExt).ConsumerImpl.ProviderIntf;
+    Provider := GetConsumerImpl.ProviderIntf;
     if Value = '' then
       SetStrValue('')
     else if (Provider <> nil) then
@@ -379,8 +426,8 @@ begin
     else
       raise EPropertyError.CreateRes(@SInvalidPropertyValue);
   finally
-    TOpenConsumerAggregate(SvcExt).ConsumerImpl.Leave;
-  end;
+    GetConsumerImpl.Leave;
+  end;*)
 end;
 
 procedure Register;

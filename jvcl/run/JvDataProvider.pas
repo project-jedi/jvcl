@@ -185,7 +185,7 @@ type
     { Delete the item at the given index. }
     procedure Delete(Index: Integer);
     { Remove the specified item from the list. }
-    procedure Remove(Item: IJvDataItem);
+    procedure Remove(var Item: IJvDataItem);
   end;
 
   { Support interface for provider editor. May be implemented by IJvDataItemsManagement implementers
@@ -237,6 +237,10 @@ type
     { Called when the specified context is about to be destroyed. If the item supports sub items,
       these should also be notified (by calling the IJvDataItems.ContextDestroying method). }
     procedure ContextDestroying(Context: IJvDataContext);
+    { Determines if the item is a parent for the specified item. DirectParent controls whether or
+      not the entire hierarchie is checked. Setting it to True means the the specified item should
+      be a direct child, otherwise it may be at deeper levels. }
+    function IsParentOf(AnItem: IJvDataItem; DirectParent: Boolean = False): Boolean;
 
     { Reference to the IJvDataItems owner. }
     property Items: IJvDataItems read GetItems;
