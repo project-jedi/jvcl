@@ -133,6 +133,76 @@ begin
     GCallBack(Msg);
 end;
 
+function VerifyModelNode(Node : TJvSimpleXmlElem; var ErrMsg : string) : Boolean;
+begin
+  // a valid model node must exist
+  if not Assigned(Node) then
+  begin
+    Result := False;
+    ErrMsg := 'No ''model'' node found in the ''models'' node.';
+    Exit;
+  end;
+
+  // it must have a Name property
+  if not Assigned(Node.Properties.ItemNamed['name']) then
+  begin
+    Result := False;
+    ErrMsg := 'A ''model'' node must have a ''name'' property.';
+    Exit;
+  end;
+
+  // it must have a prefix property
+  if not Assigned(Node.Properties.ItemNamed['prefix']) then
+  begin
+    Result := False;
+    ErrMsg := 'A ''model'' node must have a ''prefix'' property.';
+    Exit;
+  end;
+
+  // it must have a format property
+  if not Assigned(Node.Properties.ItemNamed['format']) then
+  begin
+    Result := False;
+    ErrMsg := 'A ''model'' node must have a ''format'' property.';
+    Exit;
+  end;
+
+  // it must have a packages property
+  if not Assigned(Node.Properties.ItemNamed['packages']) then
+  begin
+    Result := False;
+    ErrMsg := 'A ''model'' node must have a ''packages'' property.';
+    Exit;
+  end;
+
+  // it must have a incfile property
+  if not Assigned(Node.Properties.ItemNamed['incfile']) then
+  begin
+    Result := False;
+    ErrMsg := 'A ''model'' node must have a ''incfile'' property.';
+    Exit;
+  end;
+
+  // it must contain Targets
+  if not Assigned(Node.Items.ItemNamed['targets']) then
+  begin
+    Result := False;
+    ErrMsg := 'A ''model'' node must contain a ''targets'' node.';
+    Exit;
+  end;
+
+  // it must contain Aliases
+  if not Assigned(Node.Items.ItemNamed['aliases']) then
+  begin
+    Result := False;
+    ErrMsg := 'A ''model'' node must contain a ''aliases'' node.';
+    Exit;
+  end;
+
+  // if all went ok, then the node is deemed to be valid
+  Result := True;
+end;
+
 function LoadConfig(XmlFileName : string; ModelName : string; var ErrMsg : string) : Boolean;
 var
   xml : TJvSimpleXml;
@@ -141,18 +211,49 @@ var
   all : string;
   target : TTarget;
 begin
+  Result := true;
   FreeAndNil(TargetList);
   FreeAndNil(AliasList);
-  // read the xml config file
-  xml := TJvSimpleXml.Create(nil);
-  Result := true;
+
+  // Ensure the xml file exists
+  if not FileExists(XmlFileName) then
+  begin
+    ErrMsg := Format('%1 does not exist.', [XmlFileName]);
+    Result := False;
+    Exit;
+  end;
+
   try
+    // read the xml config file
+    xml := TJvSimpleXml.Create(nil);
     try
       xml.LoadFromFile(XmlFileName);
+
+      // The xml file must contain the models node
+      if not Assigned(xml.Root.Items.itemNamed['models']) then
+      begin
+        Result := False;
+        ErrMsg := 'The root node of the xml file must contain '+
+                  'a node called ''models''.'; 
+        Exit;
+      end;
+
       Node := xml.root.Items.itemNamed['models'].items[0];
+      if not VerifyModelNode(Node, ErrMsg) then
+      begin
+        Result := False;
+        Exit;
+      end;
+      
       for i := 0 to xml.root.Items.itemNamed['models'].items.count - 1 do
         if xml.root.Items.itemNamed['models'].items[i].Properties.ItemNamed['Name'].value = ModelName then
           Node := xml.root.Items.itemNamed['models'].items[i];
+
+      if not VerifyModelNode(Node, ErrMsg) then
+      begin
+        Result := False;
+        Exit;
+      end;
 
       TargetList := TTargetList.Create(Node.Items.ItemNamed['targets']);
       AliasList  := TAliasList.Create(Node.Items.ItemNamed['aliases']);

@@ -53,7 +53,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure LoadModels(XmlFileName : string);
+    procedure LoadModels(XmlFileName : string; ConfigLoadedOk : Boolean);
 
     property EditIndex : integer read FEditIndex write FEditIndex;
   end;
@@ -67,13 +67,16 @@ implementation
 
 { TfrmModels }
 
-procedure TfrmModels.LoadModels(XmlFileName : string);
+procedure TfrmModels.LoadModels(XmlFileName : string; ConfigLoadedOk : Boolean);
 begin
-  self.filename := XmlFileName;
-  // read XML file
-  xml.LoadFromFile(XmlFileName);
+  if ConfigLoadedOk then
+  begin
+    self.filename := XmlFileName;
+    // read XML file
+    xml.LoadFromFile(XmlFileName);
 
-  RefreshModelList;
+    RefreshModelList;
+  end;
 
   btnDelete.Enabled := cmbModels.Items.Count > 1;
 end;
