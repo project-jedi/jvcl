@@ -297,7 +297,7 @@ type
 
 
   public
-    constructor Create(Owner: TComponent); //WP-New!
+    constructor Create(Owner: TComponent); override;//WP-New!
     //property ActiveList: TWinControl read FActiveList write FActiveList;//WP-New!
 
 

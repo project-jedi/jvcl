@@ -84,7 +84,7 @@ type
     procedure AddFile(FileName, Directory, FilePath: string; DestStream: TStream);
     procedure DoProgress(Position, Total: Integer); virtual;
   public
-    constructor Create(aOwner:TComponent);
+    constructor Create(aOwner:TComponent); override;
 
     // compresses a list of files (can contain wildcards)
     // NOTE: caller must free returned stream!
