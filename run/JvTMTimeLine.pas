@@ -319,7 +319,7 @@ type
 implementation
 
 uses
-  Consts;
+  Consts, JvThemes;
 
 {$R ..\resources\JvTMTimeLine.res}
 
@@ -395,6 +395,7 @@ begin
   inherited Create(AOwner);
   DoubleBuffered := True;
   ControlStyle := ControlStyle - [csSetCaption, csAcceptsControls];
+  IncludeThemeStyle(Self, [csNeedsBorderPaint]);
 
   FSelection := TJvTLSelFrame.Create;
   FSelection.Pen.Width := 2;

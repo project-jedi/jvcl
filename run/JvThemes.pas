@@ -34,9 +34,14 @@ uses
 {$ENDIF}
 {$IFDEF JVCLThemesEnabled}
   SysUtils, Classes,
- {$IFDEF COMPILER7_UP}Themes,{$ELSE}ThemeSrv, ThemeMgr,{$ENDIF}
+ {$IFDEF COMPILER7_UP}Themes,{$ELSE}ThemeSrv,{$ENDIF}
 {$ENDIF}
-{$IFDEF COMPLIB_VCL}Controls,{$ENDIF}{$IFDEF COMPLIB_CLX}QControls,{$ENDIF}
+{$IFDEF COMPLIB_VCL}
+  Controls, StdCtrls,
+{$ENDIF}
+{$IFDEF COMPLIB_CLX}
+  QControls,
+{$ENDIF}
   Contnrs;
 
 
@@ -727,6 +732,12 @@ function GetThemeStyle(Control: TControl): TThemeStyle;
 implementation
 
 {$IFDEF JVCLThemesEnabled}
+procedure TThemeServicesEx.ApplyThemeChange;
+begin
+  ThemeServices.UpdateThemes;
+  ThemeServices.DoOnThemeChange;
+end;
+
 
 function ThemeServices: TThemeServicesEx;
 begin
@@ -774,12 +785,6 @@ end;
 
 {$ELSE} // COMPILER7_UP
 
-procedure TThemeServicesEx.ApplyThemeChange;
-begin
-  ThemeServices.UpdateThemes;
-  ThemeServices.DoOnThemeChange;
-end;
-
 { Delphi 5 and 6 need WindowProc hooks }
 
 type
@@ -794,6 +799,7 @@ type
     procedure ThemedPaint(var Msg: TWMPaint; var Handled: Boolean);
     procedure ThemedNCPaint(var Msg: TWMNCPaint; var Handled: Boolean);
     procedure ThemedEraseBkGnd(var Msg: TWMEraseBkGnd; var Handled: Boolean);
+    procedure ThemedCtlColorStatic(var Msg: TWMCtlColorStatic; var Handled: Boolean);
   public
     constructor Create(AControl: TControl);
     procedure DeleteHook;
@@ -927,6 +933,10 @@ procedure TThemeHook.WndProc(var Msg: TMessage);
 var
   Handled: Boolean;
 begin
+ // Should not happen but it can if the WindowProc is hooked by another component
+  if (ThemeHooks = nil) or (ThemeHooks.IndexOf(Self) = -1) then Exit;
+
+
   Handled := False;
   case Msg.Msg of
     CM_RECREATEWND:
@@ -940,6 +950,11 @@ begin
     WM_ERASEBKGND:
       if ThemeServices.ThemesEnabled then
         ThemedEraseBkGnd(TWMEraseBkGnd(Msg), Handled);
+
+    CN_CTLCOLORSTATIC,
+    CN_CTLCOLORBTN:
+      if ThemeServices.ThemesEnabled then
+        ThemedCtlColorStatic(TWMCtlColorStatic(Msg), Handled);
   end;
 
   if not Handled then
@@ -994,6 +1009,18 @@ begin
         ThemeServices.DrawParentBackground(TWinControl(Control).Handle, Msg.DC, nil, False);
       Msg.Result := 1;
       Handled := True;
+    end;
+  end;
+end;
+
+procedure TThemeHook.ThemedCtlColorStatic(var Msg: TWMCtlColorStatic; var Handled: Boolean);
+begin
+  if csParentBackground in ThemeStyle then
+  begin
+    if (Control is TButtonControl) then
+    begin
+      ThemedEraseBkGnd(TWMEraseBkGnd(Msg), Handled);
+      Msg.Result := GetStockObject(NULL_BRUSH);
     end;
   end;
 end;
@@ -1056,7 +1083,7 @@ begin
     else
       Result := [];
   finally
-    ThemeHooks.Leave;  
+    ThemeHooks.Leave;
   end;
 end;
 
@@ -1065,7 +1092,7 @@ initialization
   ThemeHookComponent := TThemeHookComponent.Create(nil);
 
 finalization
-  ThemeHooks.Free;
+  FreeAndNil(ThemeHooks);
   ThemeHookComponent.Free;
 
 {$ENDIF} // COMPILER7_UP
