@@ -33,7 +33,7 @@ procedure Register;
 
 implementation
 uses
-  Classes, JvErrProvider, JvValidators, JvValidatorsEditorForm, JvDsgnEditors,
+  Classes, JvErrorIndicator, JvValidators, JvValidatorsEditorForm, JvDsgnEditors,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf
   {$ELSE}
@@ -44,7 +44,7 @@ uses
 procedure Register;
 begin
   RegisterComponents('Jv Validators',
-    [TJvValidators, TJvValidationSummary,TJvErrorProvider]);
+    [TJvValidators, TJvValidationSummary,TJvErrorIndicator]);
   RegisterNoIcon([
     TJvRequiredFieldValidator,
       TJvCompareValidator,
@@ -53,12 +53,12 @@ begin
       TJvCustomValidator]);
 
   RegisterComponentEditor(TJvValidators, TJvValidatorComponent);
-  RegisterPropertyEditor(typeinfo(integer),TJvErrorProvider,'ImageIndex',TJvDefaultImageIndexProperty);
+  RegisterPropertyEditor(typeinfo(integer),TJvErrorIndicator,'ImageIndex',TJvDefaultImageIndexProperty);
 //  RegisterPropertyEditor(typeinfo(string),TJvCustomFormatEdit,'Characters',TJvCharStringProperty);
   RegisterPropertyEditor(typeinfo(string), TJvBaseValidator, 'PropertyToValidate', TJvPropertyValidateProperty);
   {$IFNDEF COMPILER6_UP}
   RegisterPropertyEditor(typeinfo(TComponent),TComponent,'ValidationSummary',TJvValidationSummaryProperty);
-  RegisterPropertyEditor(typeinfo(TComponent),TComponent,'ErrorProvider',TJvErrorProviderProperty);
+  RegisterPropertyEditor(typeinfo(TComponent),TComponent,'ErrorIndicator',TJvErrorIndicatorProperty);
   {$ENDIF}
 end;
 

@@ -5,7 +5,7 @@
     <VERSION value="BCB.06.00"/>
     <PROJECT value="JvValidatorsC6R.bpl"/>
     <OBJFILES value="..\..\dcu\JvValidatorsC6R.obj ..\..\dcu\JvValidators.obj 
-      ..\..\dcu\JvErrProvider.obj"/>
+      ..\..\dcu\JvErrorIndicator.obj"/>
     <RESFILES value="JvValidatorsC6R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -38,7 +38,7 @@
     <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Validators and Error Provider Components&quot; -aa -Tpp
+    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Validators and Error Indicator Components&quot; -aa -Tpp
       -Gpr -x -Gn -Gl -Gi -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
@@ -53,7 +53,7 @@
       <FILE FILENAME="JvValidatorsC6R.cpp" FORMNAME="" UNITNAME="JvValidatorsC6R" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvValidators.pas" FORMNAME="" UNITNAME="JvValidators" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvErrProvider.pas" FORMNAME="" UNITNAME="JvErrProvider" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvErrorIndicator.pas" FORMNAME="" UNITNAME="JvErrorIndicator" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>

@@ -128,7 +128,7 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
   end;
 
-  TJvErrorProviderProperty = class(TComponentProperty)
+  TJvErrorIndicatorProperty = class(TComponentProperty)
     procedure GetValues(Proc: TGetStrProc); override;
   end;
   {$ENDIF}
@@ -137,7 +137,7 @@ type
 
 implementation
 uses
-  JvErrProvider, TypInfo;
+  JvErrorIndicator, TypInfo;
 
 {$R *.dfm}
 
@@ -583,13 +583,13 @@ begin
       Proc(Designer.Form.Components[i].Name);
 end;
 
-{ TJvErrorProviderProperty }
+{ TJvErrorIndicatorProperty }
 
-procedure TJvErrorProviderProperty.GetValues(Proc: TGetStrProc);
-var i:integer;obj:IJvErrorProvider;
+procedure TJvErrorIndicatorProperty.GetValues(Proc: TGetStrProc);
+var i:integer;obj:IJvErrorIndicator;
 begin
   for i := 0 to Designer.Form.ComponentCount - 1 do
-    if Supports(Designer.Form.Components[i],IJvErrorProvider,obj) and
+    if Supports(Designer.Form.Components[i],IJvErrorIndicator,obj) and
       (Designer.Form.Components[i] <> GetComponent(0)) then
       Proc(Designer.Form.Components[i].Name);
 end;

@@ -29,7 +29,7 @@ unit JvValidators;
 
 interface
 uses
-  Windows, SysUtils, Classes, Controls, JvComponent, JvErrProvider;
+  Windows, SysUtils, Classes, Controls, JvComponent, JvErrorIndicator;
 
 type
   EValidatorError = class(Exception);
@@ -162,15 +162,15 @@ type
     FOnValidateFailed: TJvValidateFailEvent;
     FItems: TList;
     FValidationSummary: IJvValidationSummary;
-    FErrorProvider: IJvErrorProvider;
+    FErrorIndicator: IJvErrorIndicator;
 {$IFNDEF COMPILER6_UP}
     FValidationSummaryComponent: TComponent;
-    FErrorProviderComponent:TComponent;
+    FErrorIndicatorComponent:TComponent;
     procedure SetValidationSummaryComponent(Value: TComponent);
-    procedure SetErrorProviderComponent(Value: TComponent);
+    procedure SetErrorIndicatorComponent(Value: TComponent);
 {$ENDIF}
     procedure SetValidationSummary(const Value: IJvValidationSummary);
-    procedure SetErrorProvider(const Value: IJvErrorProvider);
+    procedure SetErrorIndicator(const Value: IJvErrorIndicator);
     function GetCount: integer;
     function GetItem(Index: integer): TJvBaseValidator;
   protected
@@ -189,10 +189,10 @@ type
   published
 {$IFDEF COMPILER6_UP}
     property ValidationSummary: IJvValidationSummary read FValidationSummary write SetValidationSummary;
-    property ErrorProvider:IJvErrorProvider read FErrorProvider write SetErrorProvider;
+    property ErrorIndicator:IJvErrorIndicator read FErrorIndicator write SetErrorIndicator;
 {$ELSE}
     property ValidationSummary: TComponent read FValidationSummaryComponent write SetValidationSummaryComponent;
-    property ErrorProvider:TComponent read FErrorProviderComponent write SetErrorProviderComponent;
+    property ErrorIndicator:TComponent read FErrorIndicatorComponent write SetErrorIndicatorComponent;
 {$ENDIF}
     property OnValidateFailed: TJvValidateFailEvent read FOnValidateFailed write FOnValidateFailed;
   end;
@@ -587,8 +587,8 @@ begin
         begin
           if ValidationSummary <> nil then
             FValidationSummary.AddError(Items[i].ErrorMessage);
-          if ErrorProvider <> nil then
-            FErrorProvider.SetError(Items[i].ControlToValidate,Items[i].ErrorMessage);
+          if ErrorIndicator <> nil then
+            FErrorIndicator.SetError(Items[i].ControlToValidate,Items[i].ErrorMessage);
         end;
         Result := false;
         if not DoValidateFailed(Items[i]) then
@@ -610,13 +610,13 @@ begin
 {$IFDEF COMPILER6_UP}
     if (Assigned(ValidationSummary)) and (AComponent.IsImplementorOf(ValidationSummary)) then
       ValidationSummary := nil;
-    if (Assigned(ErrorProvider)) and (AComponent.IsImplementorOf(ErrorProvider)) then
-      ErrorProvider := nil;
+    if (Assigned(ErrorIndicator)) and (AComponent.IsImplementorOf(ErrorIndicator)) then
+      ErrorIndicator := nil;
 {$ELSE}
     if (ValidationSummary = AComponent) then
       ValidationSummary := nil;
-    if ErrorProvider = AComponent then
-      ErrorProvider := nil;
+    if ErrorIndicator = AComponent then
+      ErrorIndicator := nil;
 {$ENDIF}
   end;
 end;
@@ -665,26 +665,26 @@ begin
   end;
 end;
 
-procedure TJvValidators.SetErrorProviderComponent(Value: TComponent);
-var obj: IJvErrorProvider;
+procedure TJvValidators.SetErrorIndicatorComponent(Value: TComponent);
+var obj: IJvErrorIndicator;
 begin
-  if Value <> FErrorProviderComponent then
+  if Value <> FErrorIndicatorComponent then
   begin
-    if FErrorProviderComponent <> nil then
-      FErrorProviderComponent.RemoveFreeNotification(self);
+    if FErrorIndicatorComponent <> nil then
+      FErrorIndicatorComponent.RemoveFreeNotification(self);
     if Value = nil then
     begin
-      FErrorProviderComponent := nil;
-      SetErrorProvider(nil);
+      FErrorIndicatorComponent := nil;
+      SetErrorIndicator(nil);
       Exit;
     end;
-    if not Supports(Value, IJvErrorProvider, obj) then
-      raise EValidatorError.CreateFmt(SInterfaceNotSupported, [Value.Name, 'IJvErrorProvider']);
+    if not Supports(Value, IJvErrorIndicator, obj) then
+      raise EValidatorError.CreateFmt(SInterfaceNotSupported, [Value.Name, 'IJvErrorIndicator']);
     if Value = self then
       raise EValidatorError.Create(SCircularReference);
-    SetErrorProvider(obj);
-    FErrorProviderComponent := Value;
-    FErrorProviderComponent.FreeNotification(self);
+    SetErrorIndicator(obj);
+    FErrorIndicatorComponent := Value;
+    FErrorIndicatorComponent.FreeNotification(self);
   end;
 end;
 
@@ -723,14 +723,14 @@ begin
   FItems.Exchange(Index1, Index2);
 end;
 
-procedure TJvValidators.SetErrorProvider(const Value: IJvErrorProvider);
+procedure TJvValidators.SetErrorIndicator(const Value: IJvErrorIndicator);
 begin
 {$IFDEF COMPILER6_UP}
-  ReferenceInterface(FErrorProvider, opRemove);
-  FErrorProvider := Value;
-  ReferenceInterface(FErrorProvider, opInsert);
+  ReferenceInterface(FErrorIndicator, opRemove);
+  FErrorIndicator := Value;
+  ReferenceInterface(FErrorIndicator, opInsert);
 {$ELSE}
-  FErrorProvider := Value;
+  FErrorIndicator := Value;
 {$ENDIF}
 end;
 
