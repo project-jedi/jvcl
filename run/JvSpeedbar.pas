@@ -37,7 +37,7 @@ uses
   SysUtils, Classes, Messages, Menus, Buttons, Controls, Graphics, Forms,
   ImgList, ActnList,
   ExtCtrls, Grids, IniFiles,
-  JvAppStore, JvTypes, JvxCtrls, JvFormPlacement, JvComponent, JvThemes;
+  JvSpeedButton, JvAppStore, JvTypes, JvFormPlacement, JvComponent, JvThemes;
 
 const
   DefButtonWidth = 24;

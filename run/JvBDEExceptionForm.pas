@@ -35,7 +35,7 @@ interface
 uses
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, DBTables,
-  JvxCtrls, JvLabel, JvComponent;
+  JvLabel, JvComponent;
 
 type
   TDBErrorEvent = procedure(Error: TDBError; var Msg: string) of object;

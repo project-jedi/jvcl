@@ -1098,7 +1098,7 @@ begin
   end;
 end;
 
-//TODO: Copied from JvxCtrls.pas to avoid dependancy. Must move to another unit.
+//TODO: Copied from JvLabel.pas to avoid dependancy. Must move to another unit.
 
 type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);

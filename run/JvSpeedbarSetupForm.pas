@@ -33,7 +33,7 @@ uses
   Windows,
   SysUtils, Messages, Classes, Graphics, Controls, Forms, StdCtrls, Grids,
   ExtCtrls,
-  JvTypes, JvxCtrls, JvSpeedBar, JvComponent;
+  JvTypes, JvSpeedBar, JvSpeedButton, JvComponent;
 
 type
   TJvSpeedbarSetupWindow = class(TJvForm)

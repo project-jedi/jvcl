@@ -30,7 +30,7 @@ unit JvBoxProcs;
 interface
 
 uses
-  Classes, Controls, StdCtrls, JvxCtrls;
+  Classes, Controls, StdCtrls;
 
 procedure BoxMoveSelectedItems(SrcList, DstList: TWinControl);
 procedure BoxMoveAllItems(SrcList, DstList: TWinControl);
@@ -48,7 +48,7 @@ implementation
 
 uses
   Windows,
-  Graphics;
+  Graphics, JvxCheckListBox;
 
 function BoxItems(List: TWinControl): TStrings;
 begin

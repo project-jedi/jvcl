@@ -38,7 +38,7 @@ uses
   {$ENDIF}
   Windows, SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Menus, ExtCtrls, Buttons, Clipbrd,
-  JvxCtrls, JvBaseDlg;
+  JvSpeedButton, JvBaseDlg;
 
 const
   DefCalcPrecision = 15;
