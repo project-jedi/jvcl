@@ -6021,6 +6021,7 @@ var
   I: Integer;
   S: string;
 begin
+  // (p3) has this even been tested? Returns the exact same thing as Canvas.TextHeight(' ')
   SetLength(S, 255);
   for I := 1 to 255 do
     S[I] := Chr(I);
