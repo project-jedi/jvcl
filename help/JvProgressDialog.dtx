@@ -43,6 +43,20 @@ Description
  
   <AUTOLINK OFF>
   <CODE>
+    // set up the dialog:
+    JvProgressDialog1.Min := 0;
+    JvProgressDialog1.Max := Count - 1;
+    JvProgressDialog1.Position := 0;
+    JvProgressDialog1.Text := 'Processing items, please wait...';
+    JvProgressDialog1.Show;
+    for i := 0 to Count - 1 do
+    begin
+      DoProcess(Items[i]);
+      if i mod 10 = 0 then // only update display every 10'th item
+        JvProgressDialog1.Position := i;
+    end;
+    JvProgressDialog1.Hide;
+  </CODE>
   <AUTOLINK ON>
 Note
   During execution of the dialog, the component properties reflects the <i>current</i> values in the

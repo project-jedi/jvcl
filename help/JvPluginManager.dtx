@@ -84,7 +84,8 @@ See Also
 @@TJvPluginManager
 JVCLInfo
   GROUP=JVCL.FormsAndApp.Application.Plugins
-  FLAG=Component <TITLEIMG TJvPluginManager>
+  FLAG=Component
+<TITLEIMG TJvPluginManager>
 Summary
   Plugin manager.
 Description
@@ -355,8 +356,8 @@ Description
   SendMessage will broadcast the specified message to all loaded plugins. It does so by calling <LINK
   TJvPlugin.SendPluginMessage, SendPluginMessage> for each plugin in the Plugins array.
 
-  If you want to send a message to a specific plugin, you can use <B>\Plugins[</B>\<<I>index</I>
-  ><B>].SendPluginMessage(\</B><<I>message ID</I>\><B>, </B>\<<I>message text</I>\><B>);</B>
+  If you want to send a message to a specific plugin, you can use
+  <B>\Plugins[</B>\<<I>index</I>\><B>].SendPluginMessage(\</B><<I>message ID</I>\><B>, </B>\<<I>message text</I>\><B>);</B>
 
   As a host developer you are responsible of defining and documenting the messages your application
   may send. You should make this public so plugin developers can use this information.

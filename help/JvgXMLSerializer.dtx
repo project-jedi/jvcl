@@ -25,7 +25,7 @@ Summary
   This exception class doesn't seem to be used
 
 ----------------------------------------------------------------------------------------------------
-@@EJvgXMLUncknownPropertyException
+@@EJvgXMLUnknownPropertyException
 Summary
   Exception triggered when an unknown property is found in the XML data
 See Also
@@ -73,7 +73,12 @@ Parameters
 Summary
   The XML header to output if no handler is given for OnGetXMLHeader
 Description
-  A typical value would be: <?xml version="1" standalone="yes"?>
+  A typical value would be:
+  <AUTOLINK OFF>
+  <CODE>
+  <?xml version="1" standalone="yes"?>
+  </CODE>
+  <AUTOLINK ON>
 See Also
   TJvgXMLSerializer.OnGetXMLHeader
 
@@ -129,7 +134,13 @@ Summary
   Event triggered when about to write the XML header
 Description
   The header is the a string that will be written as the first thing in the output file.
-  Usually, you would give something like this: <?xml version="1" standalone="yes"?>
+  Usually, you would give something like this:
+
+  <AUTOLINK OFF>
+  <CODE>
+  <?xml version="1" standalone="yes"?>
+  </CODE>
+  <AUTOLINK ON>
 
   If you don't provide an event handler or give an empty string, the default header will be used
 Parameters
@@ -160,7 +171,15 @@ See Also
 @@TJvgXMLSerializer.StrongConformity
 Summary
   Requires XML to have all the corresponding tags for all class types
-
+----------------------------------------------------------------------------------------------------
+@@TJvgXMLSerializer.tickCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.tickCounter
 Summary

@@ -150,13 +150,13 @@ Description
   An example is if you would write something like:
   <AUTOLINK OFF>
   <CODE>
-    MyEndRow := TimeToRow(anAppt.EndTime); 
+    MyEndRow := TimeToRow(AAppt.EndTime);
   </CODE>
 
-  This may return an incorrect result as shown above; however, if you write: 
+  This may return an incorrect result as shown above; however, if you write:
   <CODE>
 
-    MyEndRow := TimeToRow(AdjustEndTime(anAppt.EndTime)); 
+    MyEndRow := TimeToRow(AdjustEndTime(AAppt.EndTime));
   </CODE>
   <AUTOLINK ON>
   you can be assured that MyEndRow will accurately reflect what the grid is displaying.
@@ -164,7 +164,7 @@ Description
   In fact, if you do need to find the start and/or end rows for an appointment you should use the
   CalcStartEndRows method as that method applies AdjustEndTime.
 Parameters
-  aTime - The time to adjust
+  ATime - The time to adjust
 Return value
   The adjusted time.
 See Also
@@ -203,11 +203,11 @@ Description
 Summary
   Scrolls an appointment into view.
 Description
-  Calling this method ensures that the appointment specified by anAppt is at least partially visible.
-  Since an appointment may be found in more then one column you must also specify the column (aCol).
+  Calling this method ensures that the appointment specified by AAppt is at least partially visible.
+  Since an appointment may be found in more then one column you must also specify the column (ACol).
 Parameters
-  anAppt - The appointment to make visible.
-  aCol   - The column of the appointment.
+  AAppt - The appointment to make visible.
+  ACol   - The column of the appointment.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.AutoSizeCols
@@ -292,7 +292,7 @@ Description
   Since this method applies the AdjustEndTime method, you should always use this method if you need
   to find the start and/or end rows for an appointment. See AdjustEndTime for more information.
 Parameters
-  anAppt    - Description for this parameter
+  AAppt    - Description for this parameter
   SchedDate - Description for this parameter
   StartRow  - Description for this parameter
   EndRow    - Description for this parameter
@@ -313,9 +313,9 @@ Summary
 Description
   Use this method to determine if a given cell is selected.
 Parameters
-  aCell - The cell to check for selection.
+  ACell - The cell to check for selection.
 Return value
-  True if aCell is selected, false otherwise.
+  True if ACell is selected, false otherwise.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.CellRect
@@ -363,7 +363,7 @@ Description
   Use the ColInView method to scroll a column into view. The column is not guaranteed to be fully
   visible.
 Parameters
-  aCol - The column to make visible.
+  ACol - The column to make visible.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.ColIsSelected
@@ -372,9 +372,9 @@ Summary
 Description
   Use this method to determine if a given column is selected.
 Parameters
-  aCol - Index of the column to investigate.
+  ACol - Index of the column to investigate.
 Return value
-  True if aCol is selected, false otherwise.
+  True if ACol is selected, false otherwise.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.Cols
@@ -659,7 +659,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTFDays.GeTJvTFHintClass
+@@TJvTFDays.GetTFHintClass
 Summary
   Write here a summary (1 line)
 Description
@@ -774,7 +774,7 @@ Summary
 Description
   Write here a description
 Parameters
-  aCol - Description for this parameter
+  ACol - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -1027,8 +1027,8 @@ Description
   Write here a description
 Parameters
   Sender    - Description for this parameter
-  aCanvas   - Description for this parameter
-  aRect     - Description for this parameter
+  ACanvas   - Description for this parameter
+  ARect     - Description for this parameter
   Appt      - Description for this parameter
   TopHandle - Description for this parameter
 See Also
@@ -1371,7 +1371,7 @@ Summary
 Description
   Write here a description
 Parameters
-  aPoint - Description for this parameter
+  APoint - Description for this parameter
   Col    - Description for this parameter
   Appt   - Description for this parameter
 Return value
@@ -1387,7 +1387,7 @@ Summary
 Description
   Write here a description
 Parameters
-  aPoint - Description for this parameter
+  APoint - Description for this parameter
   Col    - Description for this parameter
   Appt   - Description for this parameter
 Return value
@@ -1514,7 +1514,7 @@ Summary
 Description
   Write here a description
 Parameters
-  aRow - Description for this parameter
+  ARow - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1526,7 +1526,7 @@ Summary
 Description
   Write here a description
 Parameters
-  aRow - Description for this parameter
+  ARow - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -1650,8 +1650,8 @@ Summary
 Description
   Write here a description
 Parameters
-  anAppt - Description for this parameter
-  aCol   - Description for this parameter
+  AAppt - Description for this parameter
+  ACol   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1775,7 +1775,15 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@TJvTFDays.ShowFocus
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.State
 Summary
@@ -1813,7 +1821,7 @@ Summary
 Description
   Write here a description
 Parameters
-  aTime - Description for this parameter
+  ATime - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -1827,7 +1835,7 @@ Summary
 Description
   Write here a description
 Parameters
-  aTime - Description for this parameter
+  ATime - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -2453,7 +2461,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDaysCols.Assign
 Summary
@@ -2467,7 +2474,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDaysCols.CreateForPrinter
 Summary
@@ -2475,11 +2481,10 @@ Summary
 Description
   Write here a description
 Parameters
-  aPrinter - Description for this parameter
+  APrinter - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDaysCols.EnsureMaxColWidth
 Summary
@@ -2489,7 +2494,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDaysCols.EnsureMinColWidth
 Summary
@@ -2499,7 +2503,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDaysCols.Items
 Summary
@@ -2511,7 +2514,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDaysCols.MoveCol
 Summary
@@ -2524,7 +2526,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDaysCols.Printer
 Summary
@@ -2534,7 +2535,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDaysCols.ResizeCols
 Summary
@@ -2544,7 +2544,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDaysCols.SizingCols
 Summary
@@ -2554,7 +2553,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDaysCols.UpdateTitles
 Summary
@@ -2564,7 +2562,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDaysCols.Updating
 Summary
@@ -2574,7 +2571,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDaysCoord
 <TITLE TJvTFDaysCoord type>
@@ -2585,43 +2581,24 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
 @@TJvTFDaysCoord.Col
-Description for Col
-
-----------------------------------------------------------------------------------------------------
+  Description for Col
 @@TJvTFDaysCoord.Row
-Description for Row
-
-----------------------------------------------------------------------------------------------------
+  Description for Row
 @@TJvTFDaysCoord.CellX
-Description for CellX
-
-----------------------------------------------------------------------------------------------------
+  Description for CellX
 @@TJvTFDaysCoord.CellY
-Description for CellY
-
-----------------------------------------------------------------------------------------------------
+  Description for CellY
 @@TJvTFDaysCoord.AbsX
-Description for AbsX
-
-----------------------------------------------------------------------------------------------------
+  Description for AbsX
 @@TJvTFDaysCoord.AbsY
-Description for AbsY
-
-----------------------------------------------------------------------------------------------------
+  Description for AbsY
 @@TJvTFDaysCoord.Schedule
-Description for Schedule
-
-----------------------------------------------------------------------------------------------------
+  Description for Schedule
 @@TJvTFDaysCoord.Appt
-Description for Appt
-
-----------------------------------------------------------------------------------------------------
+  Description for Appt
 @@TJvTFDaysCoord.DragAccept
-Description for DragAccept
-
+  Description for DragAccept
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDaysCorner
 <TITLE TJvTFDaysCorner type>
@@ -2632,30 +2609,20 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
 @@TJvTFDaysCorner.agcTopLeft
-Description for agcTopLeft
-
-----------------------------------------------------------------------------------------------------
+  Description for agcTopLeft
 @@TJvTFDaysCorner.agcTopRight
-Description for agcTopRight
-
-----------------------------------------------------------------------------------------------------
+  Description for agcTopRight
 @@TJvTFDaysCorner.agcBottomLeft
-Description for agcBottomLeft
-
-----------------------------------------------------------------------------------------------------
+  Description for agcBottomLeft
 @@TJvTFDaysCorner.agcBottomRight
-Description for agcBottomRight
-
+  Description for agcBottomRight
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDaysFancyRowHdrAttr
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDaysFancyRowHdrAttr.Assign
 Summary
@@ -2668,7 +2635,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDaysFancyRowHdrAttr.Color
 Summary
@@ -2678,7 +2644,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDaysFancyRowHdrAttr.Hr2400
 Summary
@@ -2688,7 +2653,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDaysFancyRowHdrAttr.MajorFont
 Summary
@@ -2698,9 +2662,17 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDaysFancyRowHdrAttr.MinorFont
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTFDaysFancyRowHdrAttr.OnlyShow00Minutes
 Summary
   Write here a summary (1 line)
 Description
@@ -3119,7 +3091,7 @@ Summary
 Description
   Write here a description
 Parameters
-  aTime - Description for this parameter
+  ATime - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -3197,7 +3169,7 @@ Summary
 Description
   Write here a description
 Parameters
-  anAppt    - Description for this parameter
+  AAppt    - Description for this parameter
   SchedDate - Description for this parameter
   StartRow  - Description for this parameter
   EndRow    - Description for this parameter
@@ -3819,7 +3791,7 @@ Summary
 Description
   Write here a description
 Parameters
-  aTime - Description for this parameter
+  ATime - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -4286,7 +4258,7 @@ Description
     TJvTFDaysPrinter.OnDrawApptBar
 Parameters
   Sender        - Description for this parameter
-  aCanvas       - Description for this parameter
+  ACanvas       - Description for this parameter
   Appt          - Description for this parameter
   Col           - Description for this parameter
   BarRect       - Description for this parameter
@@ -4306,8 +4278,8 @@ Description
     TJvTFDaysPrinter.OnDrawAppt
 Parameters
   Sender   - Description for this parameter
-  aCanvas  - Description for this parameter
-  aRect    - Description for this parameter
+  ACanvas  - Description for this parameter
+  ARect    - Description for this parameter
   Appt     - Description for this parameter
   Selected - Description for this parameter
 See Also
@@ -4325,8 +4297,8 @@ Description
     TJvTFDaysPrinter.OnDrawCorner
 Parameters
   Sender  - Description for this parameter
-  aCanvas - Description for this parameter
-  aRect   - Description for this parameter
+  ACanvas - Description for this parameter
+  ARect   - Description for this parameter
   Corner  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
@@ -4343,8 +4315,8 @@ Description
     TJvTFDaysPrinter.OnDrawDataCell
 Parameters
   Sender  - Description for this parameter
-  aCanvas - Description for this parameter
-  aRect   - Description for this parameter
+  ACanvas - Description for this parameter
+  ARect   - Description for this parameter
   Col     - Description for this parameter
   Row     - Description for this parameter
 See Also
@@ -4375,8 +4347,8 @@ Description
     TJvTFDaysPrinter.OnDrawRowHdr
 Parameters
   Sender   - Description for this parameter
-  aCanvas  - Description for this parameter
-  aRect    - Description for this parameter
+  ACanvas  - Description for this parameter
+  ARect    - Description for this parameter
   Index    - Description for this parameter
   Selected - Description for this parameter
 See Also
@@ -4449,7 +4421,15 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@TJvTFInPlaceApptEditor.QuickCreate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFListMoveEvent
 <TITLE TJvTFListMoveEvent type>

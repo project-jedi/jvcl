@@ -282,6 +282,15 @@ See Also
   TJvFormPlacement.EraseSections
 
 ----------------------------------------------------------------------------------------------------
+@@TJvFormPlacement.VersionCheck
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.WriteBoolean
 Summary
   Write here a summary (1 line)
@@ -345,7 +354,22 @@ Parameters
 See Also
   TJvFormPlacement.AppStorage, TJvFormPlacement.AppStoragePath, TJvFormPlacement.ReadString,
   TJvFormPlacement.WriteInteger
-
+----------------------------------------------------------------------------------------------------
+@@TJvFormPlacementVersionCheck
+<TITLE TJvFormPlacementVersionCheck type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TJvFormPlacementVersionCheck.fpvcNocheck
+  Description for fpvcNocheck
+@@TJvFormPlacementVersionCheck.fpvcCheckGreaterEqual
+  Description for fpvcCheckGreaterEqual
+@@TJvFormPlacementVersionCheck.fpvcCheckEqual
+  Description for fpvcCheckEqual
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage
 <TITLEIMG TJvFormStorage>
@@ -420,20 +444,20 @@ Description
   Use StoredProps to directly determine the components and their properties that are managed by the
   storage component. The format of the list is:
 
- 
+
   <AUTOLINK OFF>
   <CODE>
-  component.property 
+  component.property
   </CODE>
   <AUTOLINK ON>
 
   Thus for example:
 
- 
+
   <AUTOLINK OFF>
   <CODE>
   CheckBox1.Checked
-  Button1.Caption 
+  Button1.Caption
   </CODE>
   <AUTOLINK ON>
 
@@ -441,7 +465,16 @@ Description
   of the StoredProps property.
 See Also
   TJvFormStorage.StoredValue
-
+----------------------------------------------------------------------------------------------------
+@@TJvFormStorage.StoredPropsPath
+Summary
+  The path to add before the name of any item of StoredProps
+Description
+  If there are items of StoredProps and StoredValues that have the same name, the generated file will
+  be invalid and will not be readable. To avoid this, set this property and/or StoredValuesPath to a
+  non empty value.
+See Also
+  TJvFormStorage.StoredProps, TJvFormStorage.StoredValues, TJvFormStorage.StoredValuesPath
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage.StoredValue
 Summary
@@ -470,7 +503,7 @@ Description
   JvFormStorage1.StoredValues[0].Value := 'Germany';
   JvFormStorage1.StoredValues[1].Value := 'Berlin';
   JvFormStorage1.StoredValues[2].Value := 10331000;
-  JvFormStorage1.StoredValues.SaveValues; 
+  JvFormStorage1.StoredValues.SaveValues;
   </CODE>
   <AUTOLINK ON>
 Note
@@ -479,42 +512,52 @@ Note
   value’s name.
 See Also
   TJvFormStorage.StoredValue, TJvStoredValues, TJvStoredValues.Items
-
+----------------------------------------------------------------------------------------------------
+@@TJvFormStorage.StoredValuesPath
+Summary
+  The path to add before the name of any item of StoredValues
+Description
+  If there are items of StoredProps and StoredValues that have the same name, the generated file will
+  be invalid and will not be readable. To avoid this, set this property and/or StoredPropsPath to a
+  non empty value.
+See Also
+  TJvFormStorage.StoredProps, TJvFormStorage.StoredValues, TJvFormStorage.StoredPropsPath
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage_StoredProps_Editor
-<TITLE StoredProps editor> <HASTOCENTRY OFF> <Description>
-Use the StoredProps editor to define which properties to store and retrieve by the TJvFormStorage component.
+<TITLE StoredProps editor>
+<HASTOCENTRY OFF>
+  <b>Description</b>
+  Use the StoredProps editor to define which properties to store and retrieve by the TJvFormStorage component.
 
-To open the StoredProps editor:
+  To open the StoredProps editor:
 
-1. Place a TJvFormStorage component on the form.
-2. Do one of the following:
+  1. Place a TJvFormStorage component on the form.
+  2. Do one of the following:
+    * Double-click that component, or
+    * With the component selected, double-click the StoredProps property in the Object Inspector
+      to invoke the StoredProps editor.
 
-  * Double-click that component, or
-  * With the component selected, double-click the StoredProps property in the Object Inspector
-    to invoke the StoredProps editor.
+  <b>Form Properties</b>
 
-<b>Form Properties</b>
+  \Check the "Active Control" control to let the storage component store on closing of the form and retrieve and restore on showing of the form, the control that has focus on the form.
 
-\Check the "Active Control" control to let the storage component store on closing of the form and retrieve and restore on showing of the form, the control that has focus on the form.
+  \Check "Form Position" to indicate that the component should store and retrieve the placement of the form: the form's normal, minimized and maximized size and position and its minimum and maximum tracking size.
 
-\Check "Form Position" to indicate that the component should store and retrieve the placement of the form: the form's normal, minimized and maximized size and position and its minimum and maximum tracking size.
+  \Check the "Window State" control to indicate that the way how the form
+  appears on the screen - minimized, maximized, or in a normal state - should be stored and retrieved by the component.
 
-\Check the "Window State" control to indicate that the way how the form
-appears on the screen - minimized, maximized, or in a normal state - should be stored and retrieved by the component.
+  <b>Stored Properties</b>
 
-<b>Stored Properties</b>
+  To add a property of a component to the storage component:
 
-To add a property of a component to the storage component:
+  1. Select the component where from a property to add in the Components list.
+  2. Select the property of the component to add in the Properties list.
+  3. Choose Add.
 
-1. Select the component where from a property to add in the Components list.
-2. Select the property of the component to add in the Properties list.
-3. Choose Add.
-
-The selected component and its property are displayed in the Stored Properties list box. For example,
+  The selected component and its property are displayed in the Stored Properties list box. For example,
   <AUTOLINK OFF>
   <CODE>
-CheckBox1.Checked 
+  CheckBox1.Checked
   </CODE>
   <AUTOLINK ON>
 See Also
@@ -729,7 +772,15 @@ Description
 See Also
   TJvFormStorage.StoredValues, TJvStoredValues.IndexOf, TJvStoredValues.StoredValue,
   TJvStoredValues.Values
-
+----------------------------------------------------------------------------------------------------
+@@TJvStoredValues.Path
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues.RestoreValues
 Summary
@@ -922,26 +973,3 @@ Note
   MinTrackWidth does <i>not</i> override the system-defined default value, if you set it to 0.
 See Also
   TJvWinMinMaxInfo.MaxTrackHeight, TJvWinMinMaxInfo.MaxTrackWidth, TJvWinMinMaxInfo.MinTrackHeight
-
-----------------------------------------------------------------------------------------------------
-@@TJvFormStorage.StoredPropsPath
-Summary
-  The path to add before the name of any item of StoredProps
-Description
-  If there are items of StoredProps and StoredValues that have the same name, the generated file will
-  be invalid and will not be readable. To avoid this, set this property and/or StoredValuesPath to a
-  non empty value.
-See Also
-  TJvFormStorage.StoredProps, TJvFormStorage.StoredValues, TJvFormStorage.StoredValuesPath
-
-----------------------------------------------------------------------------------------------------
-@@TJvFormStorage.StoredValuesPath
-Summary
-  The path to add before the name of any item of StoredValues
-Description
-  If there are items of StoredProps and StoredValues that have the same name, the generated file will
-  be invalid and will not be readable. To avoid this, set this property and/or StoredPropsPath to a
-  non empty value.
-See Also
-  TJvFormStorage.StoredProps, TJvFormStorage.StoredValues, TJvFormStorage.StoredPropsPath
-

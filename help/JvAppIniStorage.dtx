@@ -107,6 +107,13 @@ Description
   doing so.
 
 ----------------------------------------------------------------------------------------------------
+@@TJvAppIniFileStorage.OnGetFileName
+Summary
+  Occurs when Location is set to flCustom.
+Description
+  Write an OnGetFilenName event handler to change the fully qualified file name that is used to store
+  the ini file.
+----------------------------------------------------------------------------------------------------
 @@TJvAppIniFileStorage.Reload
 Summary
   Reloads the INI in memory file from the file indicated by FileName
@@ -149,15 +156,6 @@ Description
   a TMemIniFile instance.
 See Also
   Buffered
-
-----------------------------------------------------------------------------------------------------
-@@TJvAppIniFileStorage.OnGetFileName
-Summary
-  Occurs when Location is set to flCustom.
-Description
-  Write an OnGetFilenName event handler to change the fully qualified file name that is used to store
-  the ini file.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppIniStorage.ReadValue
 Summary

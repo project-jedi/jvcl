@@ -81,12 +81,6 @@ See Also
   TJvCustomUrlGrabber.OutputMode
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomUrlGrabber.Id
-Summary
-  An Integer value to be freely used by the user of that class, usually to identify the grabber in a
-  list
-
-----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.GetDefaultPropertiesClass
 Summary
   This function returns the class of a property holder to be displayed in the object inspector.
@@ -125,81 +119,57 @@ Return value
   A string indicating the type of URL supported by the class
 See Also
   TJvCustomUrlGrabber.GetSupportedProtocolMarker
-
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomUrlGrabber.ParseUrl
+@@TJvCustomUrlGrabber.Id
 Summary
-  Splits the given URL into its various parts, if indicated
-Description
-  A URL respects this format:
-
-    protocol [username[:password]@] host [:port] [/filename]
-
-  When a non compulsory part is missing the exit value of the associated parameter will be an empty
-  string or 0
-Parameters
-  Url - The Url to parse
-  Protocol - The protocol marker to find in the Url
-  Host - Upon exit, contains the host part of the Url
-  FileName - Upon exit, contains the \filename part of the Url (including the leading slash)
-  UserName - Upon exit, contains the \username part of the Url
-  PassWord - Upon exit, contains the \password part of the Url
-  Port - Upon exit, contains the \port part of the Url
-
+  An Integer value to be freely used by the user of that class, usually to identify the grabber in a
+  list
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.OnClosingConnection
 Summary
   This event is triggered when the connection is about to be closed
 See Also
   TJvCustomUrlGrabber.OnConnectionClosed
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.OnConnectedToServer
 Summary
   This event is triggered when the connection to the server has been established
 See Also
   TJvCustomUrlGrabber.OnConnectingToServer
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.OnConnectingToServer
 Summary
   This event is triggered when about to connect to the server
 See Also
   TJvCustomUrlGrabber.OnConnectedToServer
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.OnConnectionClosed
 Summary
   This event is triggered when the connection has been closed
 See Also
   TJvCustomUrlGrabber.OnClosingConnection
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.OnDoneFile
 Summary
   This event is triggered when the write operation in the file is finished
 See Also
   TJvCustomUrlGrabber.OnDoneStream, TJvCustomUrlGrabber.OutputMode
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.OnDoneStream
 Summary
   This event is triggered when the write operation in the stream is finished
 See Also
   TJvCustomUrlGrabber.OnDoneFile, TJvCustomUrlGrabber.OutputMode
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.OnError
 Summary
   This event is triggered when an error has occured
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.OnNameResolved
 Summary
   This event is triggered when the name used in the Url has been resolved
 See Also
   TJvCustomUrlGrabber.OnResolvingName
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.OnProgress
 Summary
@@ -211,35 +181,30 @@ Parameters
              the size of the object
   Url       - The URL of the object being grabbed
   Continue  - If you set this value to False, the grabbing will be canceled
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.OnReceivingResponse
 Summary
   Event triggered when a response is being received
 See Also
   TJvCustomUrlGrabber.OnResponseReceived
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.OnRedirect
 Summary
   Event triggered when the server indicated to go to another URL to get the content
 Description
   This event is usually only triggered by HTTP protocols
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.OnRequestComplete
 Summary
   Event triggered when a request is complete
 See Also
   TJvCustomUrlGrabber.OnRequestSent, TJvCustomUrlGrabber.OnSendingRequest
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.OnRequestSent
 Summary
   Event triggered when a request has been sent
 See Also
   TJvCustomUrlGrabber.OnSendingRequest
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.OnResolvingName
 Summary
@@ -248,33 +213,51 @@ Description
   If the URL doesn't indicate an IP, the name needs to be resolved before being used
 See Also
   TJvCustomUrlGrabber.OnNameResolved
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.OnResponseReceived
 Summary
   Event triggered when a response has been received
 See Also
   TJvCustomUrlGrabber.OnReceivingResponse
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.OnSendingRequest
 Summary
   Event triggered when a request is being sent
 See Also
   TJvCustomUrlGrabber.OnRequestSent
-
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomUrlGrabber.OnStateChange
+@@TJvCustomUrlGrabber.OnStatusChange
 Summary
   Event triggered when the status of the grabber has changed
 See Also
   TJvCustomUrlGrabber.Status
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.OutputMode
 Summary
   The output mode to use for the grabbing operation
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUrlGrabber.ParseUrl
+Summary
+  Splits the given URL into its various parts, if indicated
+Description
+  A URL respects this format:
 
+  <AUTOLINK OFF>
+  <CODE>
+    protocol [username[:password]@] host [:port] [/filename]
+  </CODE>
+  <AUTOLINK ON>
+
+  When a non compulsory part is missing the exit value of the associated parameter will be an empty
+  string or 0
+Parameters
+  URL - The Url to parse
+  Protocol - The protocol marker to find in the Url
+  Host - Upon exit, contains the host part of the Url
+  FileName - Upon exit, contains the \filename part of the Url (including the leading slash)
+  UserName - Upon exit, contains the \username part of the Url
+  Password - Upon exit, contains the \password part of the Url
+  Port - Upon exit, contains the \port part of the Url
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.Password
 Summary
@@ -320,7 +303,15 @@ Summary
   Stops the grabbing operation
 See Also
   TJvCustomUrlGrabber.Start
-
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUrlGrabber.Stream
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.Url
 Summary
@@ -330,7 +321,15 @@ Description
   compulsory parts are indicated, they will be the new value of their respective properties.
 See Also
   UserName, TJvCustomUrlGrabber.Password, TJvCustomUrlGrabber.Port
-
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUrlGrabber.UrlGrabberThread
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.UserName
 Summary
@@ -375,7 +374,15 @@ Summary
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabberDefaultProperties.Password
 <COMBINE TJvCustomUrlGrabber.Password>
-
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUrlGrabberDefaultProperties.Port
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabberDefaultProperties.SupportedURLName
 Summary
@@ -407,7 +414,15 @@ Description
   are TJvCustomUrlGrabber descendants.
   Basically, a thread is created to handle the connection and grabbing of the file thus allowing the
   main application to continue to run. All events will be triggered in a call to Synchronize.
-
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUrlGrabberThread.Continue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabberThread.DoProgress
 Summary
@@ -423,29 +438,34 @@ See Also
   TJvCustomUrlGrabber.DoStatus
 
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomUrlGrabberThread.ErrorText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUrlGrabberThread.FGrabber
+Summary
+  This value holds a reference to the grabber to which the thread belongs
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUrlGrabberThread.Status
+Summary
+  The Status value, used internally by the thread to signal different states to its grabber
+----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabberThread.UpdateGrabberProgress
 Summary
   Calls FGrabber.DoProgress
 See Also
   TJvCustomUrlGrabberThread.FGrabber
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabberThread.UpdateGrabberStatus
 Summary
   Calls FGrabber.DoStatus
 See Also
   TJvCustomUrlGrabberThread.FGrabber
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomUrlGrabberThread.Status
-Summary
-  The Status value, used internally by the thread to signal different states to its grabber
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomUrlGrabberThread.FGrabber
-Summary
-  This value holds a reference to the grabber to which the thread belongs
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabberThreadClass
 <TITLE TJvUrlGrabberThreadClass type>
@@ -454,7 +474,18 @@ Summary
 Description
   TJvCustomUrlGrabberThreadClass is the metaclass for TJvCustomUrlGrabberThread. Its value is the
   class reference for TJvCustomUrlGrabberThread or for one of its descendants.
-
+----------------------------------------------------------------------------------------------------
+@@TJvGrabberDoneFileEvent
+<TITLE TJvGrabberDoneFileEvent type>
+<COMBINE TJvUrlListGrabber.OnDoneFile>
+----------------------------------------------------------------------------------------------------
+@@TJvGrabberDoneStreamEvent
+<TITLE TJvGrabberDoneStreamEvent type>
+<COMBINE TJvUrlListGrabber.OnDoneStream>
+----------------------------------------------------------------------------------------------------
+@@TJvGrabberErrorEvent
+<TITLE TJvGrabberErrorEvent type>
+<COMBINE TJvUrlListGrabber.OnError>
 ----------------------------------------------------------------------------------------------------
 @@TJvGrabberNotifyEvent
 <TITLE TJvGrabberNotifyEvent type>
@@ -477,7 +508,10 @@ Description
 Parameters
   Sender  - The TJvUrlListGrabber object containing the grabber
   Grabber - The grabber at the source of the event
-
+----------------------------------------------------------------------------------------------------
+@@TJvGrabberProgressEvent
+<TITLE TJvGrabberProgressEvent type>
+<COMBINE TJvUrlListGrabber.OnProgress>
 ----------------------------------------------------------------------------------------------------
 @@TJvGrabberStatus
 <TITLE TJvGrabberStatus type>
@@ -821,7 +855,15 @@ Summary
   Event triggered when a response is being received by a grabber
 See Also
   OnResponceReceived
-
+----------------------------------------------------------------------------------------------------
+@@TJvUrlListGrabber.OnRedirect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvUrlListGrabber.OnRequestComplete
 Summary
@@ -856,7 +898,15 @@ Summary
   Event triggered when a grabber is about to send a request
 See Also
   TJvUrlListGrabber.OnRequestSent
-
+----------------------------------------------------------------------------------------------------
+@@TJvUrlListGrabber.OnStatusChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvUrlListGrabber.StartAll
 Summary

@@ -17,21 +17,18 @@ Summary
 
 ----------------------------------------------------------------------------------------------------
 @@DEV_BROADCAST_HDR.dbch_size
-Summary
   See <EXTLINK
   http://msdn.microsoft.com/library/en-us/devio/base/dev_broadcast_hdr_str.asp>MSDN</EXTLINK> for
   more info.
 
 ----------------------------------------------------------------------------------------------------
 @@DEV_BROADCAST_HDR.dbch_devicetype
-Summary
   See <EXTLINK
   "http://msdn.microsoft.com/library/en-us/devio/base/dev_broadcast_hdr_str.asp">MSDN</EXTLINK> for
   more info.
 
 ----------------------------------------------------------------------------------------------------
 @@DEV_BROADCAST_HDR.dbch_reserved
-Summary
   See <EXTLINK
   http://msdn.microsoft.com/library/en-us/devio/base/dev_broadcast_hdr_str.asp>MSDN</EXTLINK> for
   more info.
@@ -75,7 +72,12 @@ Description
   See <EXTLINK
   http://msdn.microsoft.com/library/en-us/devio/base/dev_broadcast_volume_str.asp>MSDN</EXTLINK> for
   more info.
-
+----------------------------------------------------------------------------------------------------
+@@EJVCLComputerInfoEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 ----------------------------------------------------------------------------------------------------
 @@PDevBroadcastHdr
 <TITLE PDevBroadcastHdr type>
@@ -350,23 +352,23 @@ Description
 
   To find out if a subclass is read-only, use code like:
 
-  
+
   <CODE>
 
    if JvComputerInfoEx1.Misc is TJvReadOnlyInfo then
     ...
-  
+
   </CODE>
 
 
   To find out if a subclass is writeable, use code like:
 
-  
+
   <CODE>
 
    if JvComputerInfoEx1.Folders is TJvWriteableInfo then
     ...
-  
+
   </CODE>
 
 
@@ -404,7 +406,15 @@ Summary
 Description
   Use the subproperties of CPU to access various information related to the CPU such as its model,
   family and speed. This is a read-only class.
-
+----------------------------------------------------------------------------------------------------
+@@TJvComputerInfoEx.FileInfo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx.Folders
 Summary
@@ -1091,7 +1101,165 @@ Parameters
   Drive  - The drive that was added or removed.
 See Also
   OnDeviceAdded, OnDeviceRemoved
-
+----------------------------------------------------------------------------------------------------
+@@TJvExeType
+<TITLE TJvExeType type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TJvExeType.etNone
+  Description for etNone
+@@TJvExeType.etMSDos
+  Description for etMSDos
+@@TJvExeType.etWin16
+  Description for etWin16
+@@TJvExeType.etWin32
+  Description for etWin32
+@@TJvExeType.etConsole
+  Description for etConsole
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.Attributes
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.AttrString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.DisplayName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.ExeType
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.FileName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.GetFileInfo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  FileName   - Description for this parameter
+  Attributes - Description for this parameter
+  Info       - Description for this parameter
+  Flags      - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.Icon
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.IconHandle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.IconIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.IconLocation
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.LargeImages
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.Modifiers
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.SmallImages
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.TypeString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvFilterKeyFlags
 <TITLE TJvFilterKeyFlags type>
@@ -1365,14 +1533,47 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@TJvIconModifier
+<TITLE TJvIconModifier type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TJvIconModifier.imNormal
+  Description for imNormal
+@@TJvIconModifier.imOverlay
+  Description for imOverlay
+@@TJvIconModifier.imSelected
+  Description for imSelected
+@@TJvIconModifier.imOpen
+  Description for imOpen
+@@TJvIconModifier.imShellSize
+  Description for imShellSize
+@@TJvIconModifier.imSmall
+  Description for imSmall
+----------------------------------------------------------------------------------------------------
+@@TJvIconModifiers
+<TITLE TJvIconModifiers type>
+<COMBINE TJvIconModifier>
 ----------------------------------------------------------------------------------------------------
 @@TJvIdentification
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-
+----------------------------------------------------------------------------------------------------
+@@TJvIdentification.Comment
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvIdentification.DomainName
 Summary
@@ -2417,7 +2618,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.ShowSounds
 Summary
@@ -2427,7 +2627,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.SlowMachine
 Summary
@@ -2437,7 +2636,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.SmallCaptionButtonHeight
 Summary
@@ -2447,7 +2645,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.SmallCaptionButtonWidth
 Summary
@@ -2457,7 +2654,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.SmallIconHeight
 Summary
@@ -2467,7 +2663,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvMetricsInfo.SmallIconWidth
 Summary
@@ -2938,7 +3133,15 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
-
+----------------------------------------------------------------------------------------------------
+@@TJvOSVersionInfo.OSVersion
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvOSVersionInfo.ProductID
 Summary
@@ -3468,7 +3671,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundSentryGrafEffect
 <TITLE TJvSoundSentryGrafEffect type>
@@ -3479,15 +3681,10 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
 @@TJvSoundSentryGrafEffect.ssgfNone
-Description for ssgfNone
-
-----------------------------------------------------------------------------------------------------
+  Description for ssgfNone
 @@TJvSoundSentryGrafEffect.ssgfDisplay
-Description for ssgfDisplay
-
+  Description for ssgfDisplay
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundSentryTextEffect
 <TITLE TJvSoundSentryTextEffect type>
@@ -3498,23 +3695,14 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
 @@TJvSoundSentryTextEffect.sstfNone
-Description for sstfNone
-
-----------------------------------------------------------------------------------------------------
+  Description for sstfNone
 @@TJvSoundSentryTextEffect.sstfChars
-Description for sstfChars
-
-----------------------------------------------------------------------------------------------------
+  Description for sstfChars
 @@TJvSoundSentryTextEffect.sstfBorder
-Description for sstfBorder
-
-----------------------------------------------------------------------------------------------------
+  Description for sstfBorder
 @@TJvSoundSentryTextEffect.sstfDisplay
-Description for sstfDisplay
-
+  Description for sstfDisplay
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundSentryWindowsEffect
 <TITLE TJvSoundSentryWindowsEffect type>
@@ -3525,32 +3713,20 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
 @@TJvSoundSentryWindowsEffect.sswfNone
-Description for sswfNone
-
-----------------------------------------------------------------------------------------------------
+  Description for sswfNone
 @@TJvSoundSentryWindowsEffect.sswfTitle
-Description for sswfTitle
-
-----------------------------------------------------------------------------------------------------
+  Description for sswfTitle
 @@TJvSoundSentryWindowsEffect.sswfWindow
-Description for sswfWindow
-
-----------------------------------------------------------------------------------------------------
+  Description for sswfWindow
 @@TJvSoundSentryWindowsEffect.sswfDisplay
-Description for sswfDisplay
-
-----------------------------------------------------------------------------------------------------
+  Description for sswfDisplay
 @@TJvSoundSentryWindowsEffect.sswfCustom
-Description for sswfCustom
-
+  Description for sswfCustom
 ----------------------------------------------------------------------------------------------------
 @@TJvSpoolerChangeEvent
 <TITLE TJvSpoolerChangeEvent type>
 <COMBINE TJvComputerInfoEx.OnSpoolerStatusChange>
-
 ----------------------------------------------------------------------------------------------------
 @@TJvStickyKeysFlags
 <TITLE TJvStickyKeysFlags type>
@@ -3565,7 +3741,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo
 Summary
@@ -3576,7 +3751,6 @@ Description
   platforms.
 
   TJvSystemColorsInfo is a read-write class and all properties are writeable.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.Color3DDarkShadow
 Summary
@@ -3586,7 +3760,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.Color3DFace
 Summary
@@ -3596,7 +3769,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.Color3DHighlight
 Summary
@@ -3606,7 +3778,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.Color3DLight
 Summary
@@ -3616,7 +3787,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.Color3DShadow
 Summary
@@ -3626,7 +3796,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorActiveBorder
 Summary
@@ -3636,7 +3805,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorActiveCaption
 Summary
@@ -3646,7 +3814,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorAppWorkspace
 Summary
@@ -3656,7 +3823,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorBackground
 Summary
@@ -3666,7 +3832,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorBtnFace
 Summary
@@ -3676,7 +3841,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorBtnText
 Summary
@@ -3686,7 +3850,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorCaptionText
 Summary
@@ -3696,7 +3859,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorGradientActiveCaption
 Summary
@@ -3706,7 +3868,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorGradientInactiveCaption
 Summary
@@ -3716,7 +3877,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorGrayText
 Summary
@@ -3726,7 +3886,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorHighlight
 Summary
@@ -3736,7 +3895,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorHighlightText
 Summary
@@ -3746,7 +3904,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorHotLight
 Summary
@@ -3756,7 +3913,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorInactiveBorder
 Summary
@@ -4181,7 +4337,15 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@TJvSystemFolders.TrailingPathDelimiter
+Summary
+  Determines how a system folder path string is terminated.
+Description
+  Use TrailingPathDelimiter to specify how a system folder path string is terminated. If
+  TrailingPathDelimiter is True, a path delimiter (\'\\\' on Windows) is added to the end of the path
+  unless already present. If TrailingPathDelimiter is False, a path delimiter is removed from the end
+  of the path if present.
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Windows
 Summary
@@ -4818,7 +4982,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ScreenSaverRunning
 Summary
@@ -4828,7 +4991,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ScreenSaveTimeOut
 Summary
@@ -4838,7 +5000,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.SelectionFade
 Summary
@@ -4848,7 +5009,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.SerialKeys
 Summary
@@ -4858,7 +5018,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ShowIMEUI
 Summary
@@ -4868,7 +5027,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ShowSounds
 Summary
@@ -4878,7 +5036,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.SnapToDefaultButton
 Summary
@@ -4888,7 +5045,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.SoundSentry
 Summary
@@ -4898,7 +5054,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.StickyKeys
 Summary
@@ -4908,7 +5063,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ToggleKeys
 Summary
@@ -4918,7 +5072,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ToolTipAnimation
 Summary
@@ -4928,7 +5081,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.ToolTipFade
 Summary
@@ -4938,7 +5090,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.UIEffects
 Summary
@@ -4948,7 +5099,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.WheelScrollLines
 Summary
@@ -4958,7 +5108,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.WindowsExtensions
 Summary
@@ -4968,7 +5117,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemParametersInfo.WorkArea
 Summary
@@ -4978,7 +5126,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvToggleKeysFlags
 <TITLE TJvToggleKeysFlags type>
@@ -4992,7 +5139,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvWallpaperStyle
 <TITLE TJvWallpaperStyle type>
@@ -5003,19 +5149,12 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
 @@TJvWallpaperStyle.wsCenter
-Description for wsCenter
-
-----------------------------------------------------------------------------------------------------
+  Description for wsCenter
 @@TJvWallpaperStyle.wsUnused
-Description for wsUnused
-
-----------------------------------------------------------------------------------------------------
+  Description for wsUnused
 @@TJvWallpaperStyle.wsStretch
-Description for wsStretch
-
+  Description for wsStretch
 ----------------------------------------------------------------------------------------------------
 @@TJvWindowsArrange
 <TITLE TJvWindowsArrange type>
@@ -5029,14 +5168,12 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvWriteableInfo
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-
 ----------------------------------------------------------------------------------------------------
 @@TJvWriteableInfo.ReadOnly
 Summary
@@ -5050,44 +5187,16 @@ Description
   TJvWriteableInfo will also have their ReadOnly property changed to match.
 See Also
   TJvComputerInfoEx, TJvReadOnlyInfo, TJvWriteableInfo
-
 ----------------------------------------------------------------------------------------------------
 @@TWMDeviceChange
 <TITLE TWMDeviceChange type>
 Summary
   Message cracker record for WM_DEVICECHANGE
-
-----------------------------------------------------------------------------------------------------
 @@TWMDeviceChange.Msg
-Description for Msg
-
-----------------------------------------------------------------------------------------------------
+  Description for Msg
 @@TWMDeviceChange.Event
-Description for Event
-
-----------------------------------------------------------------------------------------------------
+  Description for Event
 @@TWMDeviceChange.dwData
-Description for dwData
-
-----------------------------------------------------------------------------------------------------
+  Description for dwData
 @@TWMDeviceChange.Result
-Description for Result
-
-----------------------------------------------------------------------------------------------------
-@@TJvAccessTimeOutFlags.atfOnOffFeedback
-If this flag is set, the operating system plays a descending siren sound when the time-out period elapses and the accessibility features are turned off.
-
-----------------------------------------------------------------------------------------------------
-@@TJvAccessTimeOutFlags.atfTimeOutOn
-If this flag is set, a time-out period has been set for accessibility features. If this flag is not set, the features will not time out even though a time-out period is specified.
-
-----------------------------------------------------------------------------------------------------
-@@TJvSystemFolders.TrailingPathDelimiter
-Summary
-  Determines how a system folder path string is terminated.
-Description
-  Use TrailingPathDelimiter to specify how a system folder path string is terminated. If
-  TrailingPathDelimiter is True, a path delimiter (\'\\\' on Windows) is added to the end of the path
-  unless already present. If TrailingPathDelimiter is False, a path delimiter is removed from the end
-  of the path if present.
-
+  Description for Result

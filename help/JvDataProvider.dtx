@@ -1,18 +1,17 @@
 ##Package: Core
 ##Status: Locked by marcelb
+##Skip: TAggregatedPersistent.GetInterface
 ##Skip: TAggregatedPersistent.QueryInterface
 ##Skip: TAggregatedPersistent._AddRef
 ##Skip: TAggregatedPersistent._Release
-##Skip: TAggregatedPersistent.GetInterface
 ##Skip: TAggregatedPersistentEx.AfterConstruction
 ##Skip: TAggregatedPersistentEx.BeforeDestruction
 ##Skip: TExtensibleInterfacedPersistent.AfterConstruction
-##Skip: TExtensibleInterfacedPersistent.BeforeConstruction
 ##Skip: TExtensibleInterfacedPersistent.GetInterface
+##Skip: TExtensibleInterfacedPersistent.NewInstance
 ##Skip: TExtensibleInterfacedPersistent.QueryInterface
 ##Skip: TExtensibleInterfacedPersistent._AddRef
 ##Skip: TExtensibleInterfacedPersistent._Release
-##SKip: TExtensibleInterfacedPersistent.NewInstance
 ##Skip: TJvBaseDataItem.AfterConstruction
 ##Skip: TJvBaseDataItem._AddRef
 ##Skip: TJvBaseDataItem._Release
@@ -61,7 +60,7 @@ Description
   This function is implemented as:
   <AUTOLINK OFF>
   <CODE>
-  Result := DP_FindItemsIntf(AItem, IJvDataItemsImages, Images); 
+  Result := DP_FindItemsIntf(AItem, IJvDataItemsImages, Images);
   </CODE>
   <AUTOLINK ON>
 Parameters
@@ -103,7 +102,7 @@ Description
   This function is implemented as:
   <AUTOLINK OFF>
   <CODE>
-  Result := DP_FindItemsIntf(AItem, IJvDataItemsRenderer, Images); 
+  Result := DP_FindItemsIntf(AItem, IJvDataItemsRenderer, Images);
   </CODE>
   <AUTOLINK ON>
 Parameters
@@ -189,7 +188,7 @@ Description
   between selection and release with a try/finally to make sure the release of the consumer/context
   takes place:
 
- 
+
   <AUTOLINK OFF>
   <CODE>
   DP_SelectConsumerContext(<I>Provider</I>, <I>Consumer</I>, <I>Context</I>);
@@ -2407,7 +2406,6 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDataConsumerViewList.ItemIsExpanded
 Summary
@@ -2421,7 +2419,6 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDataConsumerViewList.ItemLevel
 Summary
@@ -2435,7 +2432,6 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDataConsumerViewList.ItemParent
 Summary
@@ -2449,7 +2445,6 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDataConsumerViewList.ItemParentIndex
 Summary
@@ -2463,7 +2458,6 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDataConsumerViewList.ItemSibling
 Summary
@@ -2477,7 +2471,6 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDataConsumerViewList.ItemSiblingIndex
 Summary
@@ -2491,7 +2484,6 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDataConsumerViewList.KeepOnProviderChange
 Summary
@@ -2505,7 +2497,6 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDataConsumerViewList.LevelIndent
 Summary
@@ -2515,7 +2506,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDataConsumerViewList.ProviderChanged
 Summary
@@ -2527,7 +2517,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDataConsumerViewList.ProviderChanging
 Summary
@@ -2539,7 +2528,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDataConsumerViewList.RebuildView
 Summary
@@ -2549,7 +2537,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDataConsumerViewList.Set_AutoExpandLevel
 Summary
@@ -2561,7 +2548,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDataConsumerViewList.Set_ExpandOnNewItem
 Summary
@@ -2573,7 +2559,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDataConsumerViewList.Set_LevelIndent
 Summary
@@ -2585,7 +2570,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDataConsumerViewList.SubItem@IJvDataItem@Integer
 Summary
@@ -2603,7 +2587,6 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDataConsumerViewList.SubItem@Integer@Integer
 Summary
@@ -2621,7 +2604,6 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDataConsumerViewList.SubItemIndex@IJvDataItem@Integer
 Summary

@@ -28,6 +28,18 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
+@@TCharList
+<TITLE TCharList type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets,
+  pointers to records etc.
+(Value = set of Char; - for reference)
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TCheckTitleBtnEvent
 <TITLE TCheckTitleBtnEvent type>
 <COMBINE TJvDBGrid.OnCheckButton>
@@ -162,7 +174,15 @@ Summary
 Description
   Use BeepOnError to specify whether errors in input triggers a speaker beep. The standard DBGrid
   always beeps on errors. Set BeepOnError to false to suppress this behavior.
-
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.CharList
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated) Remove the 'See Also' section if there are no
+  references
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.ClearSelection
 Summary
@@ -173,7 +193,15 @@ Description
   If ClearSelection is false, multi selected rows remains selected when the user navigates the grid.
 See Also
   MultiSelect
-
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.CloseControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.EditControls
 Summary
@@ -219,7 +247,20 @@ Description
   property of all the used fields.
 See Also
   TJvDBGrid.Load, TJvDBGrid.LoadFromAppStore, TJvDBGrid.Save, TJvDBGrid.SaveToAppStore
-
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.InitializeColumnsWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  MinWidth          - Description for this parameter
+  MaxWidth          - Description for this parameter
+  DisplayWholeTitle - Description for this parameter
+  FixedWidths       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.Load
 Summary
@@ -286,9 +327,7 @@ Parameters
   Sender                - The grid that triggered the event.
   ACanvas               - The canvas to draw on.
   ARect                 - The rect area to draw in.
-  Field                 - The field of the cell.
-  ##  AFont                 - The cell's font.
-  ##  Background            - The cell's background color.
+  AColumn               - Description for this parameter
   ASortMarker           - The sort marker to display.
   IsDown                - Indicates whether the button is down or not.
   Offset                - The default offset of the text
@@ -425,7 +464,17 @@ Description
   Use PostOnEnter to specify whether pressing the Enter key automatically posts data to the
   underlying dataset.
   If PostOnEnter is false, the user must move to another cell before the modified data is committed.
-
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.RegisterLayoutChangeLink
+Summary
+  Registers the given TJvLayouChangeLink object with the Grid
+Description
+  The OnChange event of the given object will be called whenever a layout change occurs on the grid.
+  This way more than one object you can get notified that the grid layout has changed
+Parameters
+  Link - The object to register
+See Also
+  TJvLayoutChangeLink
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.RowResize
 Summary
@@ -608,7 +657,15 @@ Description
   grid.
 See Also
   PopupMenu
-
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.TitleRowHeight
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.ToggleRowSelection
 Summary
@@ -618,7 +675,18 @@ Description
   false, this method does nothing.
 See Also
   MultiSelect
-
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.UnregisterLayoutChangeLink
+Summary
+  Unregisters the given TJvLayoutChangeLink object with the grid
+Description
+  The given link object will be removed from the list of registered link objects, its OnChange object
+  will no more be called when the grid layout changes.
+  If it was not present in the list, nothing happens.
+Parameters
+  Link - The link object to unregister
+See Also
+  TJvLayoutChangeLink
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.UnselectAll
 Summary
@@ -665,7 +733,15 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@TJvDBGridControl.FitCell
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated) Remove the 'See Also' section if there are no
+  references
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGridControls
 Summary
@@ -698,7 +774,19 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@TJvDBGridControls.ControlByName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  CtrlName - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGridControls.Items
 Summary
@@ -710,7 +798,70 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@TJvDBGridControlSize
+<TITLE TJvDBGridControlSize type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TJvDBGridControlSize.fcCellSize
+  Description for fcCellSize
+@@TJvDBGridControlSize.fcDesignSize
+  Description for fcDesignSize
+@@TJvDBGridControlSize.fcBiggest
+  Description for fcBiggest
+----------------------------------------------------------------------------------------------------
+@@TJvDBGridLayoutChangeEvent
+<TITLE TJvDBGridLayoutChangeEvent type>
+<COMBINE TJvDBGridLayoutChangeLink.OnChange>
+----------------------------------------------------------------------------------------------------
+@@TJvDBGridLayoutChangeKind
+<TITLE TJvDBGridLayoutChangeKind type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TJvDBGridLayoutChangeKind.lcSizeChanged
+  Description for lcSizeChanged
+@@TJvDBGridLayoutChangeKind.lcTopLeftChanged
+  Description for lcTopLeftChanged
+----------------------------------------------------------------------------------------------------
+@@TJvDBGridLayoutChangeLink
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDBGridLayoutChangeLink.DoChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Grid - Description for this parameter
+  Kind - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDBGridLayoutChangeLink.OnChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Grid - Description for this parameter
+  Kind - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDialogColumnStrings
 Summary
@@ -731,7 +882,15 @@ Summary
 @@TJvSelectDialogColumnStrings.OK
 Summary
   The caption to use on the OK button on the select columns dialog.
-
+----------------------------------------------------------------------------------------------------
+@@TJvSelectDialogColumnStrings.RealNamesOption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTitleHintEvent
 <TITLE TJvTitleHintEvent type>
@@ -787,59 +946,3 @@ Parameters
   Field  - The field the column displays.
 See Also
   TJvDBGrid.OnTitleBtnClick, TJvDBGrid.OnTitleBtnDblClick
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBGridControl.FitCell
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated) Remove the 'See Also' section if there are no
-  references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBGrid.CharList
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated) Remove the 'See Also' section if there are no
-  references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBGrid.RegisterLayoutChangeLink
-Summary
-  Registers the given TJvLayouChangeLink object with the Grid
-Description
-  The OnChange event of the given object will be called whenever a layout change occurs on the grid.
-  This way more than one object you can get notified that the grid layout has changed
-Parameters
-  Link - The object to register
-See Also
-  TJvLayoutChangeLink
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBGrid.UnregisterLayoutChangeLink
-Summary
-  Unregisters the given TJvLayoutChangeLink object with the grid
-Description
-  The given link object will be removed from the list of registered link objects, its OnChange object
-  will no more be called when the grid layout changes.
-  If it was not present in the list, nothing happens.
-Parameters
-  Link - The link object to unregister
-See Also
-  TJvLayoutChangeLink
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBGridControls.ControlByName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated) Remove the 'See Also' section if there are no
-  references
-

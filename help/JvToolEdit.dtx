@@ -1,6 +1,8 @@
 ##Package: StdCtrls
 ##Status: Incomplete
 ##Skip: EComboEditError
+##Skip: IAutoComplete
+##Skip: IAutoComplete2
 ##Skip: IsInWordArray
 ##Skip: LoadDefaultBitmap
 ##Skip: TCloseUpEvent
@@ -214,6 +216,56 @@ A dropdown button.
 Ellipsis.
 
 ----------------------------------------------------------------------------------------------------
+@@TJvAutoCompleteFileOption
+<TITLE TJvAutoCompleteFileOption type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TJvAutoCompleteFileOption.acfFileSystem
+  Description for acfFileSystem
+@@TJvAutoCompleteFileOption.acfFileSysDirs
+  Description for acfFileSysDirs
+@@TJvAutoCompleteFileOption.acfURLHistory
+  Description for acfURLHistory
+@@TJvAutoCompleteFileOption.acfURLMRU
+  Description for acfURLMRU
+----------------------------------------------------------------------------------------------------
+@@TJvAutoCompleteFileOptions
+<TITLE TJvAutoCompleteFileOptions type>
+<COMBINE TJvAutoCompleteFileOption>
+----------------------------------------------------------------------------------------------------
+@@TJvAutoCompleteOption
+<TITLE TJvAutoCompleteOption type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TJvAutoCompleteOption.acoAutoSuggest
+  Description for acoAutoSuggest
+@@TJvAutoCompleteOption.acoAutoAppend
+  Description for acoAutoAppend
+@@TJvAutoCompleteOption.acoSearch
+  Description for acoSearch
+@@TJvAutoCompleteOption.acoFilterPrefixes
+  Description for acoFilterPrefixes
+@@TJvAutoCompleteOption.acoUseTab
+  Description for acoUseTab
+@@TJvAutoCompleteOption.acoUpDownKeyDropsList
+  Description for acoUpDownKeyDropsList
+@@TJvAutoCompleteOption.acoRTLReading
+  Description for acoRTLReading
+----------------------------------------------------------------------------------------------------
+@@TJvAutoCompleteOptions
+<TITLE TJvAutoCompleteOptions type>
+<COMBINE TJvAutoCompleteOption>
+----------------------------------------------------------------------------------------------------
 @@TJvComboEdit
 <TITLEIMG TJvComboEdit>
 JVCLInfo
@@ -291,7 +343,24 @@ Description
   read-only or the controls ReadOnly property is set to true, then no popup is shown.
 See Also
   TJvCustomComboEdit.AlwaysEnableButton
-
+----------------------------------------------------------------------------------------------------
+@@TJvCustomComboEdit.AutoCompleteItems
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomComboEdit.AutoCompleteOptions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.Button
 Summary
@@ -346,10 +415,10 @@ Description
   TextToShortCut function from Menus.pas. For example, the following line creates a shortcut,
   Ctrl+C and assigns it to a combo edit control named JvComboEdit1.
 
- 
+
   <AUTOLINK OFF>
   <CODE>
-  JvComboEdit1.ClickKey := ShortCut(Word('C'), [ssCtrl]); 
+  JvComboEdit1.ClickKey := ShortCut(Word('C'), [ssCtrl]);
   </CODE>
   <AUTOLINK ON>
 
@@ -559,7 +628,15 @@ Description
   Clipboard.
 See Also
   <LINK TJvCustomComboEdit.AlwaysEnable,AlwaysEnable>
-
+----------------------------------------------------------------------------------------------------
+@@TJvCustomComboEdit.SettingCursor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.ShowButton
 Summary
@@ -953,7 +1030,15 @@ Description
   files.
 See Also
   TJvDirectoryEdit.MultipleDirs, TJvFileDirEdit.OnDropFiles
-
+----------------------------------------------------------------------------------------------------
+@@TJvFileDirEdit.AutoCompleteFileOptions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvFileDirEdit.LongName
 Summary
@@ -1085,10 +1170,10 @@ Description
 
   The example below assigns the list of files in DialogFiles to the Items property of a TListBox
   component.
- 
+
   <AUTOLINK OFF>
   <CODE>
-  ListBox1.Items.Assign(JvFilenameEdit1.DialogFiles); 
+  ListBox1.Items.Assign(JvFilenameEdit1.DialogFiles);
   </CODE>
   <AUTOLINK ON>
 See Also

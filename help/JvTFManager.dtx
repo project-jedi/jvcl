@@ -590,7 +590,7 @@ Description
   <AUTOLINK OFF>
   <CODE>
   while ScheduleCount > 0 do
-   ReleaseSchedule(Schedules[0].SchedName, Schedules[0].SchedDate); 
+   ReleaseSchedule(Schedules[0].SchedName, Schedules[0].SchedDate);
   </CODE>
   <AUTOLINK ON>
 See Also
@@ -733,7 +733,7 @@ Description
   <AUTOLINK OFF>
   <CODE>
   while ScheduleCount > 0 do
-   ReleaseSchedule(Schedules[0].SchedName, Schedules[0].SchedDate); 
+   ReleaseSchedule(Schedules[0].SchedName, Schedules[0].SchedDate);
   </CODE>
   <AUTOLINK ON>
 See Also
@@ -1742,7 +1742,7 @@ Description
   <CODE>
         c:\simpl\schedule_1.emf
         c:\simpl\schedule_2.emf
-        c:\simpl\schedule_3.emf 
+        c:\simpl\schedule_3.emf
   </CODE>
   <AUTOLINK ON>
 
@@ -2039,7 +2039,7 @@ Description
   schedule has been cached, i.e the following code:
   <AUTOLINK OFF>
   <CODE>
-    Interval := GetTickCount - CachedTime; 
+    Interval := GetTickCount - CachedTime;
   </CODE>
   <AUTOLINK ON>
   would set Interval to the number of milliseconds since the schedule was put in the cache.
@@ -2451,7 +2451,6 @@ Note
 See Also
   TJvTFScheduleManager.ConComponentCount, TJvTFScheduleManager.ConComponents,
   TJvTFScheduleManager.ConControls
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.ConControls
 Summary
@@ -2465,7 +2464,6 @@ Note
 See Also
   TJvTFScheduleManager.ConComponentCount, TJvTFScheduleManager.ConComponents,
   TJvTFScheduleManager.ConControlCount
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.CustomImages
 Summary
@@ -2473,7 +2471,6 @@ Summary
 Description
   Use this property to specify a TImageList that contains the images you want to embed into specific
   appointments.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.dbDeleteAppt
 Summary
@@ -2487,7 +2484,6 @@ Parameters
   Appt - The appointment to delete.
 See Also
   TJvTFScheduleManager.OnDeleteAppt
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.dbNewAppt
 Summary
@@ -2504,7 +2500,6 @@ Return value
   The new appointment object.
 See Also
   TJvTFScheduleManager.GenerateApptID
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.dbPostAppt
 Summary
@@ -2518,7 +2513,6 @@ Parameters
   Appt - The appointment to save.
 See Also
   TJvTFScheduleManager.AlwaysPost, TJvTFScheduleManager.OnPostAppt
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.dbRefreshAll
 Summary
@@ -2535,7 +2529,6 @@ Note
   the schedule and appointment data.
 See Also
   TJvTFScheduleManager.OnRefreshAll, TJvTFScheduleManager.RefreshConnections
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.dbRefreshAppt
 Summary
@@ -2553,7 +2546,6 @@ Parameters
   Appt - The appointment to refresh.
 See Also
   TJvTFScheduleManager.OnRefreshAppt, TJvTFScheduleManager.RefreshConnections
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.dbRefreshOrphans
 Summary
@@ -2563,7 +2555,6 @@ Description
   the dbRefreshAppt method for each appointment that is not connected to at least one schedule object.
 See Also
   TJvTFScheduleManager.dbRefreshAppt
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.dbRefreshSched
 Summary
@@ -2582,7 +2573,6 @@ Parameters
   Sched - The schedule to update.
 See Also
   TJvTFScheduleManager.OnRefreshSched, TJvTFScheduleManager.RefreshConnections
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.FindAppt
 Summary
@@ -2596,7 +2586,6 @@ Return value
   The found appointment or nil if not found.
 See Also
   TJvTFScheduleManager.Appts
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.FindSchedule
 Summary
@@ -2611,7 +2600,6 @@ Return value
   The found schedule or nil if not found.
 See Also
   TJvTFScheduleManager.Schedules
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.Flush
 Summary
@@ -2624,7 +2612,6 @@ Parameters
   All - Indicitates whether to flush all cached objects.
 See Also
   TJvTFScheduleManager.Cache
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.Flushing
 Summary
@@ -2634,7 +2621,6 @@ Description
   from memory.
 See Also
   TJvTFScheduleManager.Flush
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.GenerateApptID
 Summary
@@ -2651,7 +2637,7 @@ Description
          Result := FloatToStr(Now);
          For I := 1 to 5 do
          Result := Result + Chr(Random(25) + 65);
-        end; 
+        end;
   </CODE>
   <AUTOLINK ON>
   You may override this method in a descendant class if you need to change this algorithm, otherwise
@@ -2661,7 +2647,6 @@ Return value
   A unique appointment ID.
 See Also
   TJvTFScheduleManager.dbNewAppt, TJvTFScheduleManager.RequestAppt
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.GetApptClass
 Summary
@@ -2669,7 +2654,6 @@ Summary
 Description
   Returns a specific TJvTFAppt class. You can override this method if you would like JTF to use a
   custom subclass of TJvTFAppt.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.GetApptDisplayText
 Summary
@@ -2678,7 +2662,6 @@ Description
   This method is for internal use.
 See Also
   TJvTFScheduleManager.OnGetApptDisplayText
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.GetSchedClass
 Summary
@@ -2686,7 +2669,6 @@ Summary
 Description
   Returns a specific TJvTFSched class. You can override this method if you would like JTF to use a
   custom subclass of TJvTFSched.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.GetScheduleID
 Summary
@@ -2694,10 +2676,9 @@ Summary
 Description
   Call GetScheduleID to construct an ID from the \SchedName and \SchedDate parameters. Currently,
   this method is implemented as:
-  AUTOLINK OFF> 
+  <AUTOLINK OFF>
   <CODE>
-
-    Result := \SchedName + IntToStr(trunc(\SchedDate)); 
+    Result := \SchedName + IntToStr(trunc(\SchedDate));
   </CODE>
   <AUTOLINK ON>
 Parameters
@@ -2705,7 +2686,6 @@ Parameters
   \SchedDate - Date of the schedule.
 Return value
   A string ID built from the input.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.LoadingAppts
 Summary
@@ -2952,7 +2932,7 @@ Description
   <AUTOLINK OFF>
   <CODE>
    for I := 0 to ApptCount - 1 do
-     dbPostAppt(Appts[I]); 
+     dbPostAppt(Appts[I]);
   </CODE>
   <AUTOLINK ON>
 See Also

@@ -1,8 +1,9 @@
-##Package: Custom
+##Package: Inspector
 ##Status: Locked
 ##Skip: TItemRowSizing
 ##Skip: TJvInspectorDataInstances
 ##Skip: TJvInspectorItemInstances
+##Skip: TJvTypeInfoHelper
 ----------------------------------------------------------------------------------------------------
 @@JvInspector.pas
 Summary
@@ -47,7 +48,18 @@ Summary
 Description
   Exception class for exception occuring in the TJvInspectorRegister class or in the
   TJvCustomInspectorRegItem class or one of its descendants.
-
+----------------------------------------------------------------------------------------------------
+@@RegisterTypeInfoHelper
+<TITLE RegisterTypeInfoHelper procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AClass - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TInspectorClassFlag
 <TITLE TInspectorClassFlag type>
@@ -63,7 +75,8 @@ Create member items for the class instance.
 ----------------------------------------------------------------------------------------------------
 @@TInspectorClassFlag.icfShowClassName
 Show the class name, instead of the default component name.
-
+@@TInspectorClassFlag.icfRenderAsCategory
+  Description for icfRenderAsCategory
 ----------------------------------------------------------------------------------------------------
 @@TInspectorClassFlags
 <TITLE TInspectorClassFlags type>
@@ -226,7 +239,8 @@ The item uses an edit button to perform additional editing functionality.
 ----------------------------------------------------------------------------------------------------
 @@TInspectorItemFlag.iifEditFixed
 When specified locks the edit control. This flag is useful when you need an edit button to do the editing but the value should not be directly editable.
-
+@@TInspectorItemFlag.iifOwnerDrawListMaxHeight
+  Description for iifOwnerDrawListMaxHeight
 ----------------------------------------------------------------------------------------------------
 @@TInspectorItemFlags
 <TITLE TInspectorItemFlags type>
@@ -398,7 +412,10 @@ Indicates whether the first instance in the list should stay the first after sor
 @@TInspectorTMethodFlags
 <TITLE TInspectorTMethodFlags type>
 <COMBINE TInspectorTMethodFlag>
-
+----------------------------------------------------------------------------------------------------
+@@TInspectorValueErrorEvent
+<TITLE TInspectorValueErrorEvent type>
+<COMBINE TJvCustomInspector.OnItemValueError>
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector
 Summary
@@ -451,7 +468,24 @@ Description
 Parameters
   Item -     The item that has just been created.
   Sender -   Inspector that fired the event
-
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.AutoComplete
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.AutoDropDown
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.BandSizing
 Summary
@@ -568,7 +602,7 @@ Description
   the item itself, CalcItemRect can be replaced with:
   <AUTOLINK OFF>
   <CODE>
-    ItemRect := Item.Rects[iprItem]; 
+    ItemRect := Item.Rects[iprItem];
   </CODE>
   <AUTOLINK ON>
 Parameters
@@ -579,12 +613,12 @@ Parameters
 Summary
   Clears the inspector.
 Description
-  Clear will remove all items from the inspector. Clear is implemented as: 
+  Clear will remove all items from the inspector. Clear is implemented as:
   <CODE>
 
   BeginUpdate;
   Root.Clear;
-  EndUpdate; 
+  EndUpdate;
   </CODE>
 
 See Also
@@ -635,7 +669,15 @@ Description
 See Also
   TJvCustomInspector.BandWidth, TJvCustomInspector.Divider, TJvCustomInspector.RelativeDivider,
   TJvCustomInspector.UseBands
-
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.DividerDragBandX
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.DoAfterDataCreate
 Summary
@@ -928,17 +970,6 @@ Parameters
 See Also
   TJvCustomInspector.BeginUpdate, TJvCustomInspector.EndUpdate, TJvCustomInspector.RemoveNotifySort,
   TJvCustomInspector.SortNotificationList, TJvCustomInspectorItem.Sort
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomInspector.OnContextPopup
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.OnDataValueChanged
 Summary
@@ -951,7 +982,71 @@ Parameters
   \Data  - Reference to the data instance who's value has changed.
 See Also
   TJvCustomInspector.OnItemValueChanged
-
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.OnEditorContextPopup
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.OnEditorKeyDown
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.OnEditorKeyPress
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.OnEditorKeyUp
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.OnEditorMouseDown
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+  Item   - Description for this parameter
+  Button - Description for this parameter
+  Shift  - Description for this parameter
+  X      - Description for this parameter
+  Y      - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.OnItemEdit
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender     - Description for this parameter
+  Item       - Description for this parameter
+  DisplayStr - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.OnItemSelected
 Summary
@@ -972,7 +1067,19 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.OnItemValueError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender       - Description for this parameter
+  Item         - Description for this parameter
+  ExceptObject - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.Paint
 Summary
@@ -1120,7 +1227,7 @@ See Also
   TJvCustomInspector.RefreshValues
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomInspector.ScrollfactorV
+@@TJvCustomInspector.ScrollFactorV
 Summary
   Determines the multiply/devision factor for vertical scrollbar settings.
 Description
@@ -1144,7 +1251,7 @@ Description
   if SelectedIndex > -1 then
     Selected := VisibleItems[SelectedIndex]
   else
-    Selected := nil; 
+    Selected := nil;
   </CODE>
   <AUTOLINK ON>
   When you set Selected to a new item, and that item is not visible, Selected
@@ -1913,8 +2020,8 @@ Description
   an item directly. Usually you create a data instance which in turn will create
   an instance of a proper descendant.
 Parameters
-  AParent - Parent item to which the new item is to be added. This can never be           <B>nil</B>
-  AData   - The data instance to assign to this item. For category items, this           should be
+  AParent - Parent item to which the new item is to be added. This can never be <B>nil</B>
+  AData   - The data instance to assign to this item. For category items, this should be
   <B>nil</B>.
 
 ----------------------------------------------------------------------------------------------------
@@ -2005,7 +2112,7 @@ Description
 Summary
   Triggers the AfterItemCreate event.
 Description
-  DoAfterItemCreate will call the <LINKTJvCustomInspectorItem.DoAfterItemCreate,
+  DoAfterItemCreate will call the <LINK TJvCustomInspectorItem.DoAfterItemCreate,
   Inspector.DoAfterItemCreate> method if an inspector is assigned.
 See Also
   TJvCustomInspector.DoAfterItemCreate
@@ -2169,7 +2276,15 @@ See Also
   TInspectorItemFlag.iifValueList, TJvCustomInspectorItem.CloseUp,
   TJvCustomInspectorItem.DoMeasureListItem, TJvCustomInspectorItem.DoMeasureListItemWidth,
   TJvCustomInspectorItem.DroppedDown
-
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorItem.DropDownCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.DroppedDown
 Summary
@@ -2212,7 +2327,15 @@ Description
   value is not being edited.
 
   EditCtrl is initialized by InitEdit and finalized by DoneEdit.
-
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorItem.EditCtrlDestroying
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.EditFocused
 Summary
@@ -2408,7 +2531,6 @@ Parameters
 See Also
   TInspectorItemFlag.iifValueList, TJvCustomInspectorItem.DoGetValueList,
   TJvCustomInspectorItem.OnGetValueList
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.HasViewableItems
 Summary
@@ -2420,7 +2542,6 @@ Description
   * There are sub items with Visible property set to True.
   * Either the item is not hidden (Hidden set to False), or if it's hidden,
     it must be expanded and have viewable items.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.Height
 Summary
@@ -2431,7 +2552,6 @@ Description
   various other properties, the value will be adjusted if it's not exactly the value it should be.
 See Also
   TJvCustomInspectorItem.HeightFactor, TJvCustomInspectorItem.RowSizing
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.HeightFactor
 Summary
@@ -2442,7 +2562,6 @@ Description
   RowSizing.SizingFactor</B>.
 See Also
   TJvCustomInspectorItem.Height, TJvCustomInspectorItem.RowSizing
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.Hidden
 Summary
@@ -2456,7 +2575,6 @@ Description
   Read Hidden to determine if the item is hidden or set Hidden to a new state.
   Notes:
   Hidden maps onto the iifHidden flag in the Flags property.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.IndexOf@TJvCustomInspectorData
 Summary
@@ -2468,18 +2586,15 @@ Description
 Parameters
   Item    - \Item to locate.
   Data    - \Data instance to locate.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.IndexOf@TJvCustomInspectorItem
 <COMBINE TJvCustomInspectorItem.IndexOf@TJvCustomInspectorData>
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.InitEdit
 Summary
   Sets the item in edit mode.
 Description
   InitEdit sets the item in edit mode, provided the item can be edited (CanEdit returns True).
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.Insert
 Summary
@@ -2494,7 +2609,6 @@ Parameters
   Item  - Item to insert.
   ##  Data  - \Data instance to insert. It is assumed the data instance already has an
   ##          item assigned to it.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.Inspector
 Summary
@@ -2503,7 +2617,6 @@ Description
   Inspector holds a reference to the inspector the item is assigned to. The
   property is properly initialized when the item is created and added to an
   existing item.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.InvalidateItem
 Summary
@@ -2513,7 +2626,6 @@ Description
 
   In its current implementation this means the <LINK TJvCustomInspector.InvalidateItem,
   Inspector.InvalidateItem> method will be called.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.InvalidateList
 Summary
@@ -2524,7 +2636,6 @@ Description
 
   In its current implementation this means the <LINK TJvCustomInspector.InvalidateList,
   Inspector.InvalidateList> method will be called.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.InvalidateMetaData
 Summary
@@ -2537,7 +2648,6 @@ Description
   a data change and meta data change, the current implementation will call
   InvalidateItem. However, this might change in the future and descendants can override this method
   to take appropiate action when meta data has changed.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.InvalidateSort
 Summary
@@ -2547,7 +2657,6 @@ Description
   inspector's LockCount is 0, the Sort method will be called, followed by an
   InvalidateList. If the inspector's LockCount > 0, its NotifySort will
   be called.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.IsCategory
 Summary
@@ -2561,7 +2670,6 @@ Description
   descendants that override this method: TJvInspectorCustomCategoryItem and TJvInspectorSetItem.
 See Also
   TJvInspectorCustomCategoryItem, TJvInspectorSetItem
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.IsCompoundColumn
 Summary
@@ -2624,24 +2732,6 @@ Description
   The base implementation closes the list, canceling the user selection.
 Parameters
   Sender - Reference to the list control.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomInspectorItem.ListMouseUp
-Summary
-  OnMouseUp handler for the list control.
-Description
-  ListMouseUp is the OnMouseUp handler for the list box control.
-
-  The base implementation closes the list, applying the selected value if an
-  item is available at the mouse position. Descendants can override this method to provide additional
-  functionality.
-Parameters
-  Sender - Reference to the list control.
-  Button - The mouse button that is held down.
-  Shift - Indicates the shift state at the time the mouse was moved.
-  X - X-position of the mouse in the client area of the sender.
-  Y - Y-position of the mouse in the client area of the sender.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.MouseDown
 Summary
@@ -2780,7 +2870,7 @@ Summary
 Description
   QualifiedNames indicates if the child items' names will include the item's
   name. This flag is usually used on hidden items. The child items will then be
-  named as <B><Hidden name>.<child name></B> where <B>hidden name</B> is the
+  named as <B>\<Hidden name\>.\<child name\></B> where <B>hidden name</B> is the
   name of the hidden item and <B>child name</B> is the name of the child item.
 
   Read QualifiedNames to determine if the child items'names will be qualified or set QualifiedNames
@@ -3242,7 +3332,7 @@ Description
   BYTEBOOL, WORDBOOL and LONGBOOL).
 
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorBooleanItem.ShowAsCheckbox
+@@TJvInspectorBooleanItem.ShowAsCheckBox
 Summary
   Indicates whether the item is shown and edited using a check box.
 Description
@@ -3261,7 +3351,15 @@ Description
   Borland and .NET paint styles. It implements many of the methods to setup
   the various item rectangles, fonts and colors in such a way that is common for
   the Borland and .NET styles.
-
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorBorlandNETBasePainter.RealButtonAreaWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorBorlandPainter
 <TITLEIMG TJvInspectorBorlandPainter>
@@ -3371,7 +3469,15 @@ Description
   ItemClassFlags to determine the current flags or set it to a new value.
 See Also
   TJvInspectorClassItem.CreateMembers, TJvInspectorClassItem.ShowClassName
-
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorClassItem.RenderAsCategory
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorClassItem.ShowClassName
 Summary
@@ -3767,7 +3873,15 @@ Description
   If the item represents a category the method will return True, otherwise False is returned.
 
   \TJvInspectorCustomCategoryItem implements this method to always return True.
-
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCustomCategoryItem.Name
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorCustomCompoundItem
 Summary
@@ -4167,157 +4281,6 @@ Description
   TJvInspectorTimeItem.
 See Also
   TJvInspectorTimeItem.ShowSeconds
-
-----------------------------------------------------------------------------------------------------
-@@TJvInspectorDBData
-Summary
-  database data layer.
-Description
-  TJvInspectorDBData is the inspector data layer that obtains its data from a
-  TDataSource/TField. The class implements all access properties, but the type info will be used to
-  check the legality of the access (ie. a float can't be
-  accessed as Int64). <B>Note:</B> you can change the type info pointer of the data layer instance.
-  This can be useful to provide alternative enumeration
-  constants (including names with spaces) by using the JclRTTI unit and its
-  JclGenerateEnumType function.
-
-  The data layer provides its own item registration database as well as a
-  FieldType to RTTI mapping database. The FieldType mapping database is
-  pre-filled with items to convert TFieldType values to a proper RTTI pointer.
-  These items do not provide an inspector item class, which is left to the
-  item registration database.
-
-----------------------------------------------------------------------------------------------------
-@@TJvInspectorDBData.ActiveChange
-Summary
-  Handler for the DataLink.OnActiveChange event.
-Description
-  ActiveChange is the handler for the DataLink.OnActiveChange event. The handler will cancel the
-  edits on the item if it's in edit mode or set the item in edit mode if it's the focused item.
-See Also
-  TJvInspectorDBData.DataChange, TJvInspectorDBData.DataLink, TJvInspectorDBData.EditingChange
-
-----------------------------------------------------------------------------------------------------
-@@TJvInspectorDBData.DataChange
-Summary
-  Handler for the DataLink.OnDataChange event.
-Description
-  DataChange is the handler for the DataLink.OnActiveChange event. The handler will cancel the edits
-  on the item and reinitializes the item into edit mode
-  if it's in edit mode.
-See Also
-  TJvInspectorDBData.ActiveChange, TJvInspectorDBData.DataLink, TJvInspectorDBData.EditingChange
-
-----------------------------------------------------------------------------------------------------
-@@TJvInspectorDBData.DataLink
-Summary
-  Reference to the TFieldDataLink instance for this data instance.
-Description
-  DataLink is a reference to the data link created for this data instance. The
-  data link is created by the InitDB method.
-See Also
-  TJvInspectorDBData.DataSource, TJvInspectorDBData.FieldName, TJvInspectorDBData.InitDB
-
-----------------------------------------------------------------------------------------------------
-@@TJvInspectorDBData.DataSource
-Summary
-  Reference to the TDataSource that provides the data.
-Description
-  DataSource is a reference to a TDataSource that will provide the data for the item. Read DataSource
-  to find out the currently used TDataSource or set it to a new TDataSource.
-
-  When setting the DataSource property when a field had already been selected, the field will be
-  searched in the new data source, based on the field's name.
-  If the field does not exist, the Field and FieldName property will be set to <B>nil</B> and an
-  empty string respectively.
-See Also
-  TJvInspectorDBData.Field, TJvInspectorDBData.FieldName
-
-----------------------------------------------------------------------------------------------------
-@@TJvInspectorDBData.EditingChange
-Summary
-  Handler for the DataLink.OnEditingChange event.
-Description
-  EditingChange is the handler for the DataLink.OnEditingChange event. The
-  handler will invalidate the item.
-See Also
-  TJvInspectorDBData.ActiveChange, TJvInspectorDBData.DataChange, TJvInspectorDBData.DataLink
-
-----------------------------------------------------------------------------------------------------
-@@TJvInspectorDBData.Field
-Summary
-  Reference to the TField that provides the data.
-Description
-  Field is a reference to a TField instance that will provide the data for the item. Read Field to
-  find out which field is currently providing the data or
-  set it to a new TField instance.
-
-----------------------------------------------------------------------------------------------------
-@@TJvInspectorDBData.FieldName
-Summary
-  Name of the field that provides the data.
-Description
-  FieldName holds the name of the field that will provide the data for the item.
-  Read FieldName to find out the name of the field that provides the data or set it to another field
-  name.
-
-----------------------------------------------------------------------------------------------------
-@@TJvInspectorDBData.FieldTypeMapping
-Summary
-  FieldType to RTTI mapping database.
-Description
-  FieldTypeMapping is a registration database to maps a field's DataType value to a proper RTTI
-  pointer. The list is prefilled to map the basic TFieldType
-  values to a RTTI pointer. In addition, new items can be added to override the default mapping, or
-  provide additional mapping values.
-Note
-  Although FieldTypeMapping holds an instance of TJvInspectorRegister, it is not possible to check a
-  parents database, since that mechanisme will always use a data layers ItemRegister function. If you
-  do declare a descendant data layer with its own mapping, you should create a TJvInspectorRegister
-  instance for
-  the TJvCustomInspectorData data layer. Inside the FieldTypeMapping method you can then call the
-  ancestor's FieldTypeMapping if the derived database results in a mismatch.
-
-----------------------------------------------------------------------------------------------------
-@@TJvInspectorDBData.InitDB
-Summary
-  Initializes the data-aware part of the data layer.
-Description
-  InitDB initializes the data-aware part of the data layer. InitDB takes the
-  following actions:
-
-  * If a data link has not yet been created, InitDB wil create one.
-  * The DataSource and FieldName properties will be initialized.
-  * The FieldTypeMapping database will be searched for an RTTI pointer. The
-    pointer will be returned in the ATypeInfo parameter.
-Parameters
-  ADataSource - DataSource to use for the layer.
-  AFieldName - Name of field to link to.
-  ATypeInfo - Variable to receive the RTTI pointer in. If no RTTI pointer was
-                found in the mapping database, the variable will be set to
-                <B>nil</B>.
-
-----------------------------------------------------------------------------------------------------
-@@TJvInspectorDBData.New
-Summary
-  Instantiate a data instance and attaches an item to it.
-Description
-  New instantiates a new data instance with the given parameters. If the data referred to by the
-  given parameters already exists, the item will be attached to that data instance, instead of
-  creating a new data instance.
-
-  New data instances are generated with DisplayName initialized to the DisplayName of the given field
-  and TypeInfo initialized to the type info found in the FieldType mapping database. If no mapping is
-  found there, no item will be created for it.
-
-  Depending on the overloaded method called, multiple items could be created. All of them are
-  returned in the resulting dynamic array.
-Parameters
-  AParent -       The parent to which this data should be added.
-  ADataSource -   The data source that is to provide the data.
-  AFieldName -    Name of the field to create an instance for.
-  AFieldNames -   List of fields to create instances for.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorDotNETPainter
 <TITLEIMG TJvInspectorDotNETPainter>
@@ -4557,8 +4520,8 @@ Summary
   Event called when data needs to be read as an integer value.
 Description
   Write an OnGetAsOrdinal event handler to read data as an integer or ordinal
-  value. This includes enumerations - use Ord(<enum value>) - and class
-  instances - use Longword(<instance>) or Integer(<instance>).
+  value. This includes enumerations - use Ord(\<enum value\>) - and class
+  instances - use Longword(\<instance\>) or Integer(\<instance\>).
 Parameters
   Sender - Reference to the data layer instance that generated the event.
   Value - Set this parameter to the value the instance represents.
@@ -4572,7 +4535,7 @@ Description
 Parameters
   Sender - Reference to the data layer instance that generated the event.
   Value - Set this parameter to the value the instance represents.
-  BufSize - Initially set to the maximum number of bytes expected. You may set           this
+  BufSize - Initially set to the maximum number of bytes expected. You may set this
   parameter to the number of bytes actually copied.
 
 ----------------------------------------------------------------------------------------------------
@@ -4706,7 +4669,15 @@ Description
 
   TJvInspectorPropData registers this item for the Name property of the TFont
   class.
-
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorFontNameItem.UseFont
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorINIFileData
 Summary
@@ -4808,7 +4779,6 @@ Description
   When the sizing steps (specified by the SizingFactor property) equals 0 (or irsNoReSize), an item
   cannot be resized and will always have a height of the inspector's ItemHeight (Note: when
   SizingFactor equals irsNoReSize, MinHeight will be set to irsItemHeight).
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorItemSizing.MinHeight
 Summary
@@ -4827,7 +4797,6 @@ Description
   irsNoReSize       Resizing will be turned of. Setting MinHeight to this value will set
                       SizingFactor to irsNoReSize while MinHeight will be set to irsItemHeight.
   </TABLE>
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorItemSizing.Sizable
 Summary
@@ -4836,7 +4805,6 @@ Description
   Sizable is a flag that indicates if the item can be resized by the user by dragging the bottom of
   the item. If Sizable if False, the item can not be resized by the user (it can be resized through
   code), otherwise the user can drag the item to resize it.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorItemSizing.SizingFactor
 Summary
@@ -4856,7 +4824,6 @@ Description
   irsNoReSize       Resizing will be turned of. Setting SizingFactor to this value will set
                       MinHeight to irsItemHeight.
   </TABLE>
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter
 Summary
@@ -4867,7 +4834,6 @@ Description
   specific style. Each style should be in its own descendant.
 
   The base package provides two paint styles: Borland and Visual Studio/.NET.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.ApplyNameFont
 Summary
@@ -4878,7 +4844,6 @@ Description
   NameColor as the font color.
 See Also
   TJvInspectorPainter.ApplyValueFont, TJvInspectorPainter.Canvas, TJvInspectorPainter.NameColor
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.ApplyValueFont
 Summary
@@ -4890,7 +4855,6 @@ Description
   ValueColor as the font color.
 See Also
   TJvInspectorPainter.ApplyNameFont, TJvInspectorPainter.Canvas, TJvInspectorPainter.ValueColor
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.BackgroundColor
 Summary
@@ -4899,7 +4863,6 @@ Description
   BackgroundColor indicates the color used to render the background of the
   inspector. Read Background to find out which color is used as the background color or set it to
   another value to change it.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.ButtonImage
 Summary
@@ -4910,7 +4873,6 @@ Description
   rendered, this property is set to <B>nil</B>.
 See Also
   TJvInspectorPainter.GetCollapseImage, TJvInspectorPainter.GetExpandImage
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.CalcButtonBasedRects
 Summary
@@ -4924,7 +4886,6 @@ Description
 See Also
   TJvInspectorPainter.CalcEditBasedRects, TJvInspectorPainter.CalcNameBasedRects,
   TJvInspectorPainter.CalcValueBasedRects, TJvInspectorPainter.SetupRects
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.CalcEditBasedRects
 Summary
@@ -4938,7 +4899,6 @@ Description
 See Also
   TJvInspectorPainter.CalcButtonBasedRects, TJvInspectorPainter.CalcNameBasedRects,
   TJvInspectorPainter.CalcValueBasedRects, TJvInspectorPainter.SetupRects
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.CalcNameBasedRects
 Summary
@@ -4951,7 +4911,6 @@ Description
 See Also
   TJvInspectorPainter.CalcButtonBasedRects, TJvInspectorPainter.CalcEditBasedRects,
   TJvInspectorPainter.CalcValueBasedRects, TJvInspectorPainter.SetupRects
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.CalcValueBasedRects
 Summary
@@ -4964,7 +4923,6 @@ Description
 See Also
   TJvInspectorPainter.CalcButtonBasedRects, TJvInspectorPainter.CalcEditBasedRects,
   TJvInspectorPainter.CalcNameBasedRects, TJvInspectorPainter.SetupRects
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.Canvas
 Summary
@@ -4974,7 +4932,6 @@ Description
   by a call to Setup.
 See Also
   TJvInspectorPainter.Setup
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.CategoryColor
 Summary
@@ -4985,7 +4942,6 @@ Description
   category item or set it to another value to change it.
 See Also
   TJvInspectorCustomCategoryItem, TJvInspectorPainter.CategoryTextColor
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.CategoryTextColor
 Summary
@@ -4996,7 +4952,6 @@ Description
   set it to another value to change it.
 See Also
   TJvInspectorCustomCategoryItem, TJvInspectorPainter.CategoryColor
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.Create
 Summary
@@ -5008,14 +4963,12 @@ Description
 
   The inspector assigned to this painter will not use it until the Painter
   property of the inspector is set to this instance.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.Destroy
 Summary
   Disposes of the painter.
 Description
   Destroy will dispose of the painter object, freeing the internal bitmaps.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.DividerColor
 Summary
@@ -5026,7 +4979,6 @@ Description
   to change it.
 See Also
   TJvCustomInspector.Divider
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.DividerWidth
 Summary
@@ -5038,7 +4990,6 @@ Description
   return another value.
 See Also
   TJvInspectorPainter.PaintDivider
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.DoPaint
 Summary
@@ -5053,7 +5004,15 @@ Description
 
   The base implementation does nothing. Descendants should override this method to do the actual
   painting.
-
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorPainter.DrawNameEndEllipsis
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.GetCollapseImage
 Summary
@@ -5066,7 +5025,6 @@ Description
 See Also
   TJvCustomInspector.CollapseButton, TJvInspectorPainter.ButtonImage,
   TJvInspectorPainter.GetExpandImage
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.GetExpandImage
 Summary
@@ -5079,7 +5037,6 @@ Description
 See Also
   TJvCustomInspector.ExpandButton, TJvInspectorPainter.ButtonImage,
   TJvInspectorPainter.GetCollapseImage
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.GetNameHeight
 Summary
@@ -5092,7 +5049,6 @@ Parameters
   AItem - Description for this parameter
 See Also
   TJvInspectorPainter.ApplyNameFont, TJvInspectorPainter.GetValueHeight
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.GetValueHeight
 Summary
@@ -5105,7 +5061,6 @@ Parameters
   AItem - Description for this parameter
 See Also
   TJvInspectorPainter.ApplyValueFont, TJvInspectorPainter.GetNameHeight
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.HideEditor
 Summary
@@ -5116,7 +5071,24 @@ Summary
   empty rectangle.
 See Also
   TJvCustomInspector.Selected
-
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorPainter.HideSelectColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorPainter.HideSelectTextColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.InitializeColors
 Summary
@@ -5137,7 +5109,6 @@ Description
   * SelectedTextColor
 
   Descendants can override this method to preset additional properties.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.Initializing
 Summary
@@ -5150,7 +5121,6 @@ Description
   Initializing is used in setter methods for the color properties to avoid calls to the <LINK
   TJvCustomInspector.InvalidateItem, Inspector.InvalidateItem>
   method during initialization.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.Inspector
 Summary
@@ -5159,7 +5129,6 @@ Description
   Inspector holds a reference to the inspector that currently uses this painter.
 See Also
   TJvInspectorPainter.SetInspector
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.InternalCollapseButton
 Summary
@@ -5169,7 +5138,6 @@ Description
   need to change the standard collapse button image.
 See Also
   TJvInspectorPainter.GetCollapseImage, TJvInspectorPainter.InternalExpandButton
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.InternalExpandButton
 Summary
@@ -5179,7 +5147,6 @@ Description
   this bitmap if you need to change the standard expand button image.
 See Also
   TJvInspectorPainter.GetExpandImage, TJvInspectorPainter.InternalCollapseButton
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.Item
 Summary
@@ -5188,7 +5155,6 @@ Description
   Item holds a reference to the item currently being painted.
 See Also
   PaintItem
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.ItemIndex
 Summary
@@ -5199,7 +5165,6 @@ Description
   was supplied to the PaintItem method.
 See Also
   PaintItem
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.Loading
 Summary
@@ -5210,7 +5175,6 @@ Description
 
   Loading is used in the set methods of the color properties to avoid calls to
   Inspector.Invalidate.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.NameColor
 Summary
@@ -5224,7 +5188,6 @@ Description
 See Also
   TJvInspectorPainter.CategoryTextColor, TJvInspectorPainter.SelectedTextColor,
   TJvInspectorPainter.ValueColor
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.Paint
 Summary
@@ -5238,7 +5201,6 @@ Description
   Paint assumes the background color has been set prior to calling Paint.
 See Also
   PaintItem
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.PaintDivider
 Summary
@@ -5254,7 +5216,6 @@ Parameters
   X - X-position of the bar.
   YTop - Top of the divider bar.
   YBottom - Bottom of the divider bar.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.PaintItem@TJvCustomInspectorItem
 Summary
@@ -5434,7 +5395,20 @@ Description
   JclRTTI unit and its JclGenerateEnumType function.
 
   The data layer provides its own item registration database.
-
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorPropData.AddTypeMapping
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Target       - Description for this parameter
+  Source       - Description for this parameter
+  ObjectClass  - Description for this parameter
+  PropertyName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPropData.Instance
 Summary
@@ -5523,7 +5497,17 @@ Description
   PPropInfo.
 See Also
   TJvInspectorPropData.Instance
-
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorPropData.TypeInfoMapRegister
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPropRegItem
 Summary
@@ -5536,7 +5520,7 @@ Description
   <table>
     Situation                     Value
     ---------                     -----
-    <B>ClassType known<B>
+    <B>ClassType known</B>
     class type equal              add 32
     class type inherits           add 16
     class does not match          return 0
@@ -5922,79 +5906,6 @@ Description
   TJvInspectorTCaptionRegItem is the registration item that specifically matches
   TCaption types. For these types, ApplyDefaults will set the item's
   iifMultiline flag.
-
-----------------------------------------------------------------------------------------------------
-@@TJvInspectorTFieldTypeRegItem
-Summary
-  Registration item for mapping TFieldTypes to RTTI.
-Description
-  TJvInspectorTFieldTypeRegItem is a registration item that bases its matching value on the
-  TFieldType it represents.
-
-  The match value is determined by adding one or more values as follows:
-  <table>
-    Situation                     Value
-    ---------                     -----
-    <B>\FieldType specified</B>
-    no match:                     return 0
-    match:                        add 16
-    <B>\FieldName specified</B>
-    no match:                     return 0
-    matches by mask:              add 4
-    exact match:                  add 8
-    <B>\FieldTable specified</B>
-    no match:                     return 0
-    matches by mask:              add 1
-    exact match:                  add 2
-  </table>
-  The percentage will be either 0 or 100, indicating whether or not to continue
-  the search.
-
-----------------------------------------------------------------------------------------------------
-@@TJvInspectorTFieldTypeRegItem.Create
-Summary
-  Instantiates a registration item
-Description
-  Create instantiates a registration item and assigns it the inspector item it should use if this
-  item matches a data instance.
-Parameters
-  AFieldName - Name of the field to match.
-  AFieldTable - Name of the table to match.
-  AFieldType - The TFieldType to match.
-  ATypeInfo - The type info of the property.
-
-----------------------------------------------------------------------------------------------------
-@@TJvInspectorTFieldTypeRegItem.FieldName
-Summary
-  Name of the field.
-Description
-  FieldName is the name of the field to match. If FieldName is an empty string, it is not used for
-  matching purposes.
-
-----------------------------------------------------------------------------------------------------
-@@TJvInspectorTFieldTypeRegItem.FieldTable
-Summary
-  Name of the table.
-Description
-  FieldTable is the name of the table to match. If FieldTable is an empt
-  string, it is not used for matching purposes.
-
-----------------------------------------------------------------------------------------------------
-@@TJvInspectorTFieldTypeRegItem.FieldType
-Summary
-  Type of the field.
-Description
-  FieldType is the type of the field to match. If FieldType is set to ftUnknown, it is not used for
-  matching purposes.
-
-----------------------------------------------------------------------------------------------------
-@@TJvInspectorTFieldTypeRegItem.TypeInfo
-Summary
-  The type info to use.
-Description
-  TypeInfo holds the type info that should be used when the item matches the
-  field.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTimeItem
 Summary
@@ -6466,7 +6377,48 @@ Description
   list editor (in addition, the iifEditButton flag will be removed).
 
   TJvInspectorCustomData registers this item for TStrings class types.
-
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTypeInfoMapperRegItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTypeInfoMapperRegItem.NewTypeInfo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTypeInfoMapperRegItem.ObjectClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTypeInfoMapperRegItem.PropertyName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTypeInfoMapperRegItem.PropertyType
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTypeInfoRegItem
 Summary
@@ -6593,7 +6545,18 @@ Parameters
 @@TJvInspSupportsMethodPointers
 <TITLE TJvInspSupportsMethodPointers type>
 <COMBINE TJvInspectorEventData.OnSupportsMethodPointers>
-
+----------------------------------------------------------------------------------------------------
+@@TJvTypeInfoHelperClass
+<TITLE TJvTypeInfoHelperClass type>
+Summary
+  Defines the metaclass for TJvTypeInfoHelper.
+Description
+  TJvTypeInfoHelperClass is the metaclass for TJvTypeInfoHelper. Its value is the class reference for
+  TJvTypeInfoHelper or for one of its descendants.
+----------------------------------------------------------------------------------------------------
+@@TOnJvInspectorItemEdit
+<TITLE TOnJvInspectorItemEdit type>
+<COMBINE TJvCustomInspector.OnItemEdit>
 ----------------------------------------------------------------------------------------------------
 @@TOnJvInspectorMouseDown
 <TITLE TOnJvInspectorMouseDown type>
@@ -6614,4 +6577,15 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
+----------------------------------------------------------------------------------------------------
+@@TypeInfoFromName
+<TITLE TypeInfoFromName function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  TypeName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references

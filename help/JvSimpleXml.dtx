@@ -14,13 +14,7 @@
 ##Skip: TJvSimpleXMLElemSheet.SaveToStream
 ##Skip: TJvSimpleXMLElemText.LoadFromStream
 ##Skip: TJvSimpleXMLElemText.SaveToStream
-##Skip: TXMLVariant.CastTo
-##Skip: TXMLVariant.Clear
-##Skip: TXMLVariant.Copy
-##Skip: TXMLVariant.DoFunction
-##Skip: TXMLVariant.GetProperty
-##Skip: TXMLVariant.IsClear
-##Skip: TXMLVariant.SetProperty
+##Skip: TXMLVariant
 ----------------------------------------------------------------------------------------------------
 @@JvSimpleXml.pas
 Summary
@@ -30,6 +24,36 @@ Author
   Sébastien Buysse
 
 
+----------------------------------------------------------------------------------------------------
+@@EJvSimpleXMLError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@EntityDecode
+<TITLE EntityDecode function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  S - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@EntityEncode
+<TITLE EntityEncode function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  S - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@PJvHashElem
 <TITLE PJvHashElem type>
@@ -61,7 +85,7 @@ See Also
   SimpleXmlEncode
 
 ----------------------------------------------------------------------------------------------------
-@@SimpleXmlEncode
+@@SimpleXMLEncode
 <TITLE SimpleXmlEncode function>
 Summary
   Encodes the special characters to their XML representation
@@ -139,8 +163,8 @@ See Also
   TJvSimpleXML.OnLoadProgress, TJvSimpleXML.OnSaveProgress
 
 ----------------------------------------------------------------------------------------------------
-@@TJvOnSimpleXmlParsed
-<TITLE TJvOnSimpleXmlParsed type>
+@@TJvOnSimpleXMLParsed
+<TITLE TJvOnSimpleXMLParsed type>
 <COMBINE TJvSimpleXML.OnTagParsed>
 
 ----------------------------------------------------------------------------------------------------
@@ -232,22 +256,18 @@ Summary
   Load the xml data from a string
 Parameters
   Value - The string to load the value from
-
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXML.OnEncodeValue
+@@TJvSimpleXML.OnDecodeStream
 Summary
-  Occurs when a value is to be encoded.
+  Occurs when the XML data is read from string, stream or file.
 Description
-  Write a handler for this event to do special processing to the XML data of tag and attribute values.
-  The normal processing of JvSimpleXML (if sxoAutoEncodeValue is set in Options) is to encode all tag
-  and attribute value susing the SimpleXMLEnocde function but you can handle all encoding/decoding
-  yourself using any of the events OnEncodeValue, OnDecodeValue, OnEncodeStream and OnDecodeStream.
+  Write a handler for this event to do special processing of the XML stream before reading it into
+  the component. For example, use this event to convert an encoded XML file to an internal format.
 
-  Note that if you assign a handler to this event, the default decoding is not performed, regardless
-  of the value of sxoAutoEncodeValue.
+  Note that if you assign a handler to this event, you should set sxoAutoEncodeValue to false in
+  Options to prevent the default encoding of tag and attribute values.
 See Also
-  TJvSimpleXML.OnDecodeValue, TJvSimpleXML.OnEncodeStream, TJvSimpleXML.OnDecodeStream
-
+  TJvSimpleXML.OnEncodeStream
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.OnDecodeValue
 Summary
@@ -262,7 +282,6 @@ Description
   of the value of sxoAutoEncodeValue.
 See Also
   TJvSimpleXML.OnEncodeValue, TJvSimpleXML.OnEncodeStream, TJvSimpleXML.OnDecodeStream
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.OnEncodeStream
 Summary
@@ -275,20 +294,20 @@ Description
   Options to prevent the default encoding of tag and attribute values.
 See Also
   TJvSimpleXML.OnDecodeStream
-
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXML.OnDecodeStream
+@@TJvSimpleXML.OnEncodeValue
 Summary
-  Occurs when the XML data is read from string, stream or file.
+  Occurs when a value is to be encoded.
 Description
-  Write a handler for this event to do special processing of the XML stream before reading it into
-  the component. For example, use this event to convert an encoded XML file to an internal format.
+  Write a handler for this event to do special processing to the XML data of tag and attribute values.
+  The normal processing of JvSimpleXML (if sxoAutoEncodeValue is set in Options) is to encode all tag
+  and attribute value susing the SimpleXMLEnocde function but you can handle all encoding/decoding
+  yourself using any of the events OnEncodeValue, OnDecodeValue, OnEncodeStream and OnDecodeStream.
 
-  Note that if you assign a handler to this event, you should set sxoAutoEncodeValue to false in
-  Options to prevent the default encoding of tag and attribute values.
+  Note that if you assign a handler to this event, the default decoding is not performed, regardless
+  of the value of sxoAutoEncodeValue.
 See Also
-  TJvSimpleXML.OnEncodeStream
-
+  TJvSimpleXML.OnDecodeValue, TJvSimpleXML.OnEncodeStream, TJvSimpleXML.OnDecodeStream
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.OnLoadProgress
 Summary
@@ -329,8 +348,13 @@ Description
 Summary
   The prolog in the xml file
 Description
-  Usually indicates the DTD to be used with the XML file. For instance: <?xml version="1.0"?>
+  Usually indicates the DTD to be used with the XML file. For instance:
+  <AUTOLINK OFF>
+  <CODE>
+  <?xml version="1.0"?>
   <!DOCTYPE greeting SYSTEM "hello.dtd">
+  </CODE>
+  <AUTOLINK ON>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.Root
@@ -407,12 +431,28 @@ Description
 @@TJvSimpleXMLElem.Clear
 Summary
   Deletes all childs and properties from the element
-
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXMLElem.Container
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.Data
 Summary
   Pointer to the internal data of the element
-
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXMLElem.FloatValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.GetBinaryValue
 Summary
@@ -519,7 +559,7 @@ See Also
   TJvSimpleXMLElem.SaveToStream
 
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXMLElem.SimpleXml
+@@TJvSimpleXMLElem.SimpleXML
 Summary
   The TJvSimpleXml component containing this element
 Description
@@ -538,43 +578,45 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXmlElemCData
+@@TJvSimpleXMLElemCData
 Summary
   A CDATA XML element
 Description
-  Example: <![CDATA[value]]>
+  Example:
 
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXmlElemCData.LoadFromStream
+  <AUTOLINK OFF>
+  <CODE>
+  <![CDATA[value]]>
+  </CODE>
+  <AUTOLINK ON>
 
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXmlElemCData.SaveToStream
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemClassic
 Summary
   A classic XML element
 Description
-  Example: <element property="propvalue">value</element>
+  Example:
+  <AUTOLINK OFF>
+  <CODE>
+  <element property="propvalue">value</element>
+  </CODE>
+  <AUTOLINK ON>
 
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXMLElemClassic.LoadFromStream
-
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXMLElemClassic.SaveToStream
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemComment
 Summary
   A comment XML element
 Description
-  Example: <!-- This is a comment -->
+  Example:
 
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXMLElemComment.LoadFromStream
+  <AUTOLINK OFF>
+  <CODE>
+  <!-- This is a comment -->
+  </CODE>
+  <AUTOLINK ON>
 
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXMLElemComment.SaveToStream
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemCompare
@@ -589,24 +631,31 @@ Parameters
   Index2 - Index of the second element to compare
 
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXmlElemDocType
+@@TJvSimpleXMLElemDocType
 Summary
   A DOCTYPE XML element
 Description
-  Example: <!DOCTYPE Value>
+  Example:
 
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXmlElemDocType.LoadFromStream
+  <AUTOLINK OFF>
+  <CODE>
+  <!DOCTYPE Value>
+  </CODE>
+  <AUTOLINK ON>
 
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXmlElemDocType.SaveToStream
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemHeader
 Summary
   A header XML element
 Description
-  Example: <?xml version="Version" standalone="yes" encoding="Encoding"?>
+  Example:
+  <AUTOLINK OFF>
+  <CODE>
+  <?xml version="Version" standalone="yes" encoding="Encoding"?>
+  </CODE>
+  <AUTOLINK ON>
+
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemHeader.Encoding
@@ -616,13 +665,7 @@ Description
   Note: The element will not encode the values.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXMLElemHeader.LoadFromStream
-
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXMLElemHeader.SaveToStream
-
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXMLElemHeader.Standalone
+@@TJvSimpleXMLElemHeader.StandAlone
 Summary
   True if the XML document is to be standalone
 
@@ -650,7 +693,7 @@ Return value
   The newly added element
 
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXMLElems.Add@string@boolean
+@@TJvSimpleXMLElems.Add@string@Boolean
 Summary
   Adds a new element with the given name and value in the collection
 Parameters
@@ -792,7 +835,7 @@ Parameters
   AFunction - The function to be used to sort the elements in the list
 
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXMLElems.Delete@integer
+@@TJvSimpleXMLElems.Delete@Integer
 Summary
   Deletes the indicated element from the list
 Parameters
@@ -851,7 +894,18 @@ Return value
   Returns the portion of the stream that was read
 See Also
   TJvSimpleXMLElems.SaveToStream
-
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXMLElems.Notify
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value     - Description for this parameter
+  Operation - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.Parent
 Summary
@@ -890,13 +944,12 @@ See Also
 Summary
   A stylesheet XML element
 Description
-  Example: <?xml-stylesheet href="styles.css" type="text/css"?>
-
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXMLElemSheet.LoadFromStream
-
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXMLElemSheet.SaveToStream
+  Example:
+  <AUTOLINK OFF>
+  <CODE>
+  <?xml-stylesheet href="styles.css" type="text/css"?>
+  </CODE>
+  <AUTOLINK ON>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemsProlog
@@ -935,7 +988,7 @@ Summary
   Load the list of elements from the given stream
 Parameters
   Stream  - The stream to load the list from
-  AParent - The TJvSimpleXML parent component, if any
+  Parent - The TJvSimpleXML parent component, if any
 Return value
   Returns the portion of the stream that was read
 See Also
@@ -974,16 +1027,36 @@ Description
   This is some text
 
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXMLElemText.LoadFromStream
-
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXMLElemText.SaveToStream
-
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXMLInvalid
+@@TJvSimpleXMLEncodeEvent
+<TITLE TJvSimpleXMLEncodeEvent type>
 Summary
-  The exception triggered when an invalid xml element is encountered
-
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference):
+    TJvSimpleXML.OnDecodeValue
+    TJvSimpleXML.OnEncodeValue
+Parameters
+  Sender - Description for this parameter
+  Value  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXMLEncodeStreamEvent
+<TITLE TJvSimpleXMLEncodeStreamEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference):
+    TJvSimpleXML.OnDecodeStream
+    TJvSimpleXML.OnEncodeStream
+Parameters
+  Sender    - Description for this parameter
+  InStream  - Description for this parameter
+  OutStream - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLOptions
 <TITLE TJvSimpleXMLOptions type>
@@ -1016,7 +1089,26 @@ See Also
 @@TJvSimpleXMLProp.Data
 Summary
   The internal Data of the property
-
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXMLProp.FloatValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXMLProp.GetSimpleXML
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProp.IntValue
 Summary
@@ -1063,7 +1155,7 @@ Summary
   A list of properties
 
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXMLProps.Add@string@boolean
+@@TJvSimpleXMLProps.Add@string@Boolean
 Summary
   Adds a new property with the given name and value in the collection
 Parameters
@@ -1115,7 +1207,7 @@ Summary
   Returns the number of elements in the list
 
 ----------------------------------------------------------------------------------------------------
-@@TJvSimpleXMLProps.Delete@integer
+@@TJvSimpleXMLProps.Delete@Integer
 Summary
   Deletes the indicated property from the list
 Parameters
@@ -1194,93 +1286,67 @@ See Also
   TJvSimpleXMLProp.Value
 
 ----------------------------------------------------------------------------------------------------
-@@TXmlVarData
-<TITLE TXmlVarData type>
+@@TXMLVarData
+<TITLE TXMLVarData type>
 Summary
   A record to hold Variant data information
 
 ----------------------------------------------------------------------------------------------------
-@@TXmlVarData.vType
+@@TXMLVarData.vType
 Type of variant
 
 ----------------------------------------------------------------------------------------------------
-@@TXmlVarData.Reserved1
+@@TXMLVarData.Reserved1
 Reserved1
 
 ----------------------------------------------------------------------------------------------------
-@@TXmlVarData.Reserved2
+@@TXMLVarData.Reserved2
 Reserved2
 
 ----------------------------------------------------------------------------------------------------
-@@TXmlVarData.Reserved3
+@@TXMLVarData.Reserved3
 Reserved3
 
 ----------------------------------------------------------------------------------------------------
-@@TXmlVarData.Xml
+@@TXMLVarData.XML
 An TJvSimpleXMLElem object
 
 ----------------------------------------------------------------------------------------------------
-@@TXmlVarData.Reserved4
+@@TXMLVarData.Reserved4
 Reserved4
 
 ----------------------------------------------------------------------------------------------------
-@@TXmlVariant
-Summary
-  An XML Variant
-
-----------------------------------------------------------------------------------------------------
-@@TXmlVariant.CastTo
-
-----------------------------------------------------------------------------------------------------
-@@TXmlVariant.Clear
-
-----------------------------------------------------------------------------------------------------
-@@TXmlVariant.Copy
-
-----------------------------------------------------------------------------------------------------
-@@TXmlVariant.DoFunction
-
-----------------------------------------------------------------------------------------------------
-@@TXmlVariant.GetProperty
-
-----------------------------------------------------------------------------------------------------
-@@TXmlVariant.IsClear
-
-----------------------------------------------------------------------------------------------------
-@@TXmlVariant.SetProperty
-
-----------------------------------------------------------------------------------------------------
-@@VarXml
-<TITLE VarXml function>
+@@VarXML
+<TITLE VarXML function>
 Summary
   Returns the type of variant used for XML variants
 
 ----------------------------------------------------------------------------------------------------
-@@XmlCreate
-<TITLE XmlCreate function>
+@@XMLCreate
+<TITLE XMLCreate function>
 Summary
   Creates a TJvSimpleXmlElemClassic and returns it as a variant
 See Also
   XmlCreateInto
 
 ----------------------------------------------------------------------------------------------------
-@@XmlCreate@TJvSimpleXMLElem
-<TITLE XmlCreate function>
+@@XMLCreate@TJvSimpleXMLElem
+<TITLE XMLCreate function>
 Summary
-  Teturns a variant containing the given XML element
+  Returns a variant containing the given XML element
 Parameters
-  AXml - The XML element to put in the variant
+  AXML - The XML element to put in the variant
 See Also
   XmlCreateInto
 
 ----------------------------------------------------------------------------------------------------
-@@XmlCreateInto
-<TITLE XmlCreateInto procedure>
+@@XMLCreateInto
+<TITLE XMLCreateInto procedure>
 Summary
   Puts the given XML element in the given variant
 Parameters
   ADest - The destination variant
-  AXml  - The XML element to put in the variant
+  AXML  - The XML element to put in the variant
 See Also
   XmlCreate
 
@@ -1303,23 +1369,3 @@ Parameters
   S - The string to encode
 See Also
   SimpleXmlEncode
-
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXMLEncodeEvent
-<TITLE @@TJvSimpleXMLEncodeEvent type>
-Summary
-  Event type used by OnEncode and OnDecode events of TJvSimpleXML.
-Parameters
-  Sender - the component that triggered the event.
-  Value  - the value to encode.
-
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXMLEncodeStreamEvent
-<TITLE @@TJvSimpleXMLEncodeEvent type>
-Summary
-  Event type used by OnEncodeStream and OnDecodeStream of TJvSimpleXML.
-Parameters
-  Sender    - the component that triggered the event.
-  InStream  - the stream to encode/decode.
-  OutStream - the result of encoding/decoding InStream.
-
