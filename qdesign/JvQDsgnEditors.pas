@@ -164,7 +164,15 @@ type
   end;
                   
 type
-  
+  TJvImageListEditor = class(TComponentEditor)
+  private
+    procedure SaveAsBitmap(ImageList: TImageList);
+  public
+    procedure ExecuteVerb(Index: Integer); override;
+    function GetVerb(Index: Integer): string; override;
+    function GetVerbCount: Integer; override;
+  end;
+
 
   TJvWeekDayProperty = class(TEnumProperty)
     function GetAttributes: TPropertyAttributes; override;
@@ -723,6 +731,84 @@ begin
     SetFloatValue(L)
   else
     SetFloatValue(StrToFloat(Value));
+end;
+
+procedure TJvImageListEditor.SaveAsBitmap(ImageList: TImageList);
+var
+  Bitmap: TBitmap;
+  SaveDlg: TOpenDialog;
+  I: Integer;
+begin
+  if ImageList.Count > 0 then
+  begin
+    SaveDlg := TSavePictureDialog.Create(Application);
+    with SaveDlg do
+    try
+      Options := [ofHideReadOnly, ofOverwritePrompt];
+      DefaultExt := GraphicExtension(TBitmap);
+      Filter := GraphicFilter(TBitmap);
+      if Execute then
+      begin
+        Bitmap := TBitmap.Create;
+        try
+          with Bitmap do
+          begin
+            Width := ImageList.Width * ImageList.Count;
+            Height := ImageList.Height;
+            if ImageList.BkColor <> clNone then
+              Canvas.Brush.Color := ImageList.BkColor
+            else
+              Canvas.Brush.Color := clWindow;
+            Canvas.FillRect(Bounds(0, 0, Width, Height));
+            for I := 0 to ImageList.Count - 1 do
+              ImageList.Draw(Canvas, ImageList.Width * I, 0, I);
+            HandleType := bmDIB;
+            if PixelFormat in [pf15bit, pf16bit] then
+            try
+              PixelFormat := pf24bit;
+            except
+            end;
+          end;
+          Bitmap.SaveToFile(FileName);
+        finally
+          Bitmap.Free;
+        end;
+      end;
+    finally
+      Free;
+    end;
+  end
+  else
+    Beep;
+end;
+
+procedure TJvImageListEditor.ExecuteVerb(Index: Integer);
+begin
+  if Designer <> nil then
+    case Index of
+      0:
+        if EditImageList(Component as TImageList) then
+          Designer.Modified;
+      1:
+        SaveAsBitmap(TImageList(Component));
+    end;
+end;
+
+function TJvImageListEditor.GetVerb(Index: Integer): string;
+begin
+  case Index of
+    0:
+      Result := SImageListEditor;
+    1:
+      Result := RsSaveImageList;
+  else
+    Result := '';
+  end;
+end;
+
+function TJvImageListEditor.GetVerbCount: Integer;
+begin
+  Result := 2;
 end;
 
 

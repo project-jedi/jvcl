@@ -51,7 +51,7 @@ uses
   JvQGroupBox, JvQHeaderControl,
   JvQImage, JvQLabel, JvQRadioButton, JvQRadioGroup,
   JvQScrollBar, JvQShape, JvQControlBar,
-  JvQTabControl, JvQBitBtn, JvQPickDate,
+  JvQTabControl, JvQBitBtn, JvQPickDate, JvQStringGrid,
   JvQPanel, JvQImageList, JvQProgressEditor, JvQDsgnEditors;
 
 {$IFDEF MSWINDOWS}
@@ -80,7 +80,7 @@ begin
     TJvTransparentPanel]);
   RegisterComponents(RsPaletteLabel, [TJvLabel]);
   RegisterComponents(RsPaletteScrollerTracker, [TJvScrollBar]);
-
+  RegisterComponents(RsPaletteListComboTree, [TJvStringGrid]);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomNumEdit, cText, nil);
 //  RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'Filter', TFilterProperty);

@@ -42,7 +42,7 @@ uses
   
   
   
-  DesignIntf, DesignEditors, DesignMenus;
+  DesignIntf, DesignEditors{, DesignMenus};
   
 
 type
