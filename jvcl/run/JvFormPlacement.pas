@@ -55,7 +55,7 @@ type
     FOwner: TJvFormPlacement;
     FMinMaxInfo: TMinMaxInfo;
     function GetMinMaxInfo(Index: Integer): Integer;
-    procedure SetMinMaxInfo(Index: Integer; Value: Integer);
+    procedure SetMinMaxInfo(Index: Integer; AValue: Integer);
   public
     function DefaultMinMaxInfo: Boolean;
     procedure Assign(Source: TPersistent); override;
@@ -98,7 +98,7 @@ type
     {$ENDIF VisualCLX}
     FOnSavePlacement: TNotifyEvent;
     FOnRestorePlacement: TNotifyEvent;
-    procedure SetAppStoragePath(const Value: string);
+    procedure SetAppStoragePath(const AValue: string);
     procedure SetEvents;
     procedure RestoreEvents;
     {$IFDEF VCL}
@@ -109,8 +109,8 @@ type
     {$ENDIF VCL}
     function CheckMinMaxInfo: Boolean;
     procedure MinMaxInfoModified;
-    procedure SetWinMinMaxInfo(Value: TJvWinMinMaxInfo);
-    procedure SetPreventResize(Value: Boolean);
+    procedure SetWinMinMaxInfo(AValue: TJvWinMinMaxInfo);
+    procedure SetPreventResize(AValue: Boolean);
     procedure UpdatePreventResize;
     procedure UpdatePlacement;
     procedure AddLink(ALink: TJvIniLink);
@@ -140,15 +140,15 @@ type
     procedure SaveFormPlacement;
     procedure RestoreFormPlacement;
     function ReadString(const Ident: string; const Default: string = ''): string;
-    procedure WriteString(const Ident: string; const Value: string);
+    procedure WriteString(const Ident: string; const AValue: string);
     function ReadBoolean(const Ident: string; Default: Boolean): Boolean;
-    procedure WriteBoolean(const Ident: string; Value: Boolean);
+    procedure WriteBoolean(const Ident: string; AValue: Boolean);
     function ReadFloat(const Ident: string; Default: Double = 0): Double;
-    procedure WriteFloat(const Ident: string; Value: Double);
+    procedure WriteFloat(const Ident: string; AValue: Double);
     function ReadInteger(const Ident: string; Default: Longint = 0): Longint;
-    procedure WriteInteger(const Ident: string; Value: Longint);
+    procedure WriteInteger(const Ident: string; AValue: Longint);
     function ReadDateTime(const Ident: string; Default: TDateTime = 0): TDateTime;
-    procedure WriteDateTime(const Ident: string; Value: TDateTime);
+    procedure WriteDateTime(const Ident: string; AValue: TDateTime);
     procedure EraseSections;
   published
     property Active: Boolean read FActive write FActive default True;
@@ -171,16 +171,15 @@ type
     FStoredProps: TStringList;
     FStoredValues: TJvStoredValues;
     FStoredPropsPath: string;
-
     function GetStoredProps: TStrings;
-    procedure SetStoredProps(Value: TStrings);
-    procedure SetStoredValues(Value: TJvStoredValues);
+    procedure SetStoredProps(AValue: TStrings);
+    procedure SetStoredValues(AValue: TJvStoredValues);
     function GetStoredValue(const Name: string): Variant;
-    procedure SetStoredValue(const Name: string; Value: Variant);
+    procedure SetStoredValue(const Name: string; AValue: Variant);
     function GetDefaultStoredValue(const Name: string; DefValue: Variant): Variant;
-    procedure SetDefaultStoredValue(const Name: string; DefValue: Variant; const Value: Variant);
+    procedure SetDefaultStoredValue(const Name: string; DefValue: Variant; const AValue: Variant);
     function GetStoredValuesPath: string;
-    procedure SetStoredValuesPath(const Value: string);
+    procedure SetStoredValuesPath(const AValue: string);
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -207,7 +206,7 @@ type
     FStorage: TJvFormPlacement;
     FOnSave: TNotifyEvent;
     FOnLoad: TNotifyEvent;
-    procedure SetStorage(Value: TJvFormPlacement);
+    procedure SetStorage(AValue: TJvFormPlacement);
   protected
     procedure SaveToIni; virtual;
     procedure LoadFromIni; virtual;
@@ -218,7 +217,7 @@ type
     property OnLoad: TNotifyEvent read FOnLoad write FOnLoad;
   end;
 
-  TJvStoredValueEvent = procedure(Sender: TJvStoredValue; var Value: Variant) of object;
+  TJvStoredValueEvent = procedure(Sender: TJvStoredValue; var AValue: Variant) of object;
 
   TJvStoredValue = class(TCollectionItem)
   private
@@ -231,7 +230,7 @@ type
     function GetStoredValues: TJvStoredValues;
   protected
     function GetDisplayName: string; override;
-    procedure SetDisplayName(const Value: string); override;
+    procedure SetDisplayName(const AValue: string); override;
   public
     constructor Create(Collection: TCollection); override;
     procedure Assign(Source: TPersistent); override;
@@ -251,11 +250,10 @@ type
   private
     FStorage: TJvFormPlacement;
     FPath: string;
-    
     function GetValue(const Name: string): TJvStoredValue;
     procedure SetValue(const Name: string; StoredValue: TJvStoredValue);
     function GetStoredValue(const Name: string): Variant;
-    procedure SetStoredValue(const Name: string; Value: Variant);
+    procedure SetStoredValue(const Name: string; AValue: Variant);
     function GetItem(Index: Integer): TJvStoredValue;
     procedure SetItem(Index: Integer; StoredValue: TJvStoredValue);
   public
@@ -381,12 +379,12 @@ begin
     Result := nil;
 end;
 
-procedure TJvFormPlacement.SetAppStoragePath(const Value: string);
+procedure TJvFormPlacement.SetAppStoragePath(const AValue: string);
 begin
-  if (Value <> '') and (AnsiLastChar(Value) <> '\') then
-    FAppStoragePath := Value + '\'
+  if (AValue <> '') and (AnsiLastChar(AValue) <> '\') then
+    FAppStoragePath := AValue + '\'
   else
-    FAppStoragePath := Value;
+    FAppStoragePath := AValue;
   if not (csDesigning in ComponentState) then
   begin
     if (StrFind(cFormNameMask, FAppStoragePath) <> 0) and
@@ -470,9 +468,9 @@ begin
   {$ENDIF VCL}
 end;
 
-procedure TJvFormPlacement.SetWinMinMaxInfo(Value: TJvWinMinMaxInfo);
+procedure TJvFormPlacement.SetWinMinMaxInfo(AValue: TJvWinMinMaxInfo);
 begin
-  FWinMinMaxInfo.Assign(Value);
+  FWinMinMaxInfo.Assign(AValue);
 end;
 
 {$IFDEF VCL}
@@ -678,11 +676,11 @@ begin
   end;
 end;
 
-procedure TJvFormPlacement.SetPreventResize(Value: Boolean);
+procedure TJvFormPlacement.SetPreventResize(AValue: Boolean);
 begin
-  if (Form <> nil) and (FPreventResize <> Value) then
+  if (Form <> nil) and (FPreventResize <> AValue) then
   begin
-    FPreventResize := Value;
+    FPreventResize := AValue;
     UpdatePlacement;
     UpdatePreventResize;
   end;
@@ -738,11 +736,11 @@ begin
     Result := Default;
 end;
 
-procedure TJvFormPlacement.WriteString(const Ident, Value: string);
+procedure TJvFormPlacement.WriteString(const Ident, AValue: string);
 begin
   if Assigned(AppStorage) and (Ident <> '') then
     with AppStorage do
-      WriteString(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Value);
+      WriteString(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), AValue);
 end;
 
 function TJvFormPlacement.ReadBoolean(const Ident: string; Default: Boolean): Boolean;
@@ -754,11 +752,11 @@ begin
     Result := Default;
 end;
 
-procedure TJvFormPlacement.WriteBoolean(const Ident: string; Value: Boolean);
+procedure TJvFormPlacement.WriteBoolean(const Ident: string; AValue: Boolean);
 begin
   if Assigned(AppStorage) and (Ident <> '') then
     with AppStorage do
-      WriteBoolean(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Value);
+      WriteBoolean(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), AValue);
 end;
 
 function TJvFormPlacement.ReadFloat(const Ident: string; Default: Double = 0): Double;
@@ -770,11 +768,11 @@ begin
     Result := Default;
 end;
 
-procedure TJvFormPlacement.WriteFloat(const Ident: string; Value: Double);
+procedure TJvFormPlacement.WriteFloat(const Ident: string; AValue: Double);
 begin
   if Assigned(AppStorage) and (Ident <> '') then
     with AppStorage do
-      WriteFloat(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Value);
+      WriteFloat(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), AValue);
 end;
 
 function TJvFormPlacement.ReadInteger(const Ident: string; Default: Longint = 0): Longint;
@@ -786,11 +784,11 @@ begin
     Result := Default;
 end;
 
-procedure TJvFormPlacement.WriteInteger(const Ident: string; Value: Longint);
+procedure TJvFormPlacement.WriteInteger(const Ident: string; AValue: Longint);
 begin
   if Assigned(AppStorage) and (Ident <> '') then
     with AppStorage do
-      WriteInteger(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Value);
+      WriteInteger(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), AValue);
 end;
 
 function TJvFormPlacement.ReadDateTime(const Ident: string; Default: TDateTime = 0): TDateTime;
@@ -802,11 +800,11 @@ begin
     Result := Default;
 end;
 
-procedure TJvFormPlacement.WriteDateTime(const Ident: string; Value: TDateTime);
+procedure TJvFormPlacement.WriteDateTime(const Ident: string; AValue: TDateTime);
 begin
   if Assigned(AppStorage) and (Ident <> '') then
     with AppStorage do
-      WriteDateTime(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Value);
+      WriteDateTime(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), AValue);
 end;
 
 procedure TJvFormPlacement.EraseSections;
@@ -920,29 +918,29 @@ begin
   end;
 end;
 
-procedure TJvWinMinMaxInfo.SetMinMaxInfo(Index: Integer; Value: Integer);
+procedure TJvWinMinMaxInfo.SetMinMaxInfo(Index: Integer; AValue: Integer);
 begin
-  if GetMinMaxInfo(Index) <> Value then
+  if GetMinMaxInfo(Index) <> AValue then
   begin
     with FMinMaxInfo do
     begin
       case Index of
         0:
-          ptMaxPosition.X := Value;
+          ptMaxPosition.X := AValue;
         1:
-          ptMaxPosition.Y := Value;
+          ptMaxPosition.Y := AValue;
         2:
-          ptMaxSize.Y := Value;
+          ptMaxSize.Y := AValue;
         3:
-          ptMaxSize.X := Value;
+          ptMaxSize.X := AValue;
         4:
-          ptMaxTrackSize.Y := Value;
+          ptMaxTrackSize.Y := AValue;
         5:
-          ptMaxTrackSize.X := Value;
+          ptMaxTrackSize.X := AValue;
         6:
-          ptMinTrackSize.Y := Value;
+          ptMinTrackSize.Y := AValue;
         7:
-          ptMinTrackSize.X := Value;
+          ptMinTrackSize.X := AValue;
       end;
     end;
     if FOwner <> nil then
@@ -998,15 +996,15 @@ begin
   Result := FStoredProps;
 end;
 
-procedure TJvFormStorage.SetStoredProps(Value: TStrings);
+procedure TJvFormStorage.SetStoredProps(AValue: TStrings);
 begin
-  FStoredProps.Assign(Value);
+  FStoredProps.Assign(AValue);
   SetNotification;
 end;
 
-procedure TJvFormStorage.SetStoredValues(Value: TJvStoredValues);
+procedure TJvFormStorage.SetStoredValues(AValue: TJvStoredValues);
 begin
-  FStoredValues.Assign(Value);
+  FStoredValues.Assign(AValue);
 end;
 
 function TJvFormStorage.GetStoredValue(const Name: string): Variant;
@@ -1014,9 +1012,9 @@ begin
   Result := StoredValues.StoredValue[Name];
 end;
 
-procedure TJvFormStorage.SetStoredValue(const Name: string; Value: Variant);
+procedure TJvFormStorage.SetStoredValue(const Name: string; AValue: Variant);
 begin
-  StoredValues.StoredValue[Name] := Value;
+  StoredValues.StoredValue[Name] := AValue;
 end;
 
 procedure TJvFormStorage.Loaded;
@@ -1108,14 +1106,14 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvIniLink.SetStorage(Value: TJvFormPlacement);
+procedure TJvIniLink.SetStorage(AValue: TJvFormPlacement);
 begin
-  if FStorage <> Value then
+  if FStorage <> AValue then
   begin
     if FStorage <> nil then
       FStorage.RemoveLink(Self);
-    if Value <> nil then
-      Value.AddLink(Self);
+    if AValue <> nil then
+      AValue.AddLink(Self);
   end;
 end;
 
@@ -1143,10 +1141,10 @@ procedure TJvStoredValue.Assign(Source: TPersistent);
 begin
   if Source is TJvStoredValue then
   begin
-    if VarIsEmpty(TJvStoredValue(Source).FValue) then
+    if VarIsEmpty(TJvStoredValue(Source).Value) then
       Clear
     else
-      Value := TJvStoredValue(Source).FValue;
+      Value := TJvStoredValue(Source).Value;
     Name := TJvStoredValue(Source).Name;
     KeyString := TJvStoredValue(Source).KeyString;
   end
@@ -1162,13 +1160,13 @@ begin
     Result := FName;
 end;
 
-procedure TJvStoredValue.SetDisplayName(const Value: string);
+procedure TJvStoredValue.SetDisplayName(const AValue: string);
 begin
-  if (Value <> '') and (AnsiCompareText(Value, FName) <> 0) and
-    (Collection is TJvStoredValues) and (TJvStoredValues(Collection).IndexOf(Value) >= 0) then
+  if (AValue <> '') and (AnsiCompareText(AValue, FName) <> 0) and
+    (Collection is TJvStoredValues) and (TJvStoredValues(Collection).IndexOf(AValue) >= 0) then
     raise EJVCLException.CreateRes(@SDuplicateString);
-  FName := Value;
-  inherited SetDisplayName(Value);
+  FName := AValue;
+  inherited SetDisplayName(AValue);
 end;
 
 function TJvStoredValue.GetStoredValues: TJvStoredValues;
@@ -1206,16 +1204,16 @@ begin
     StoredValues.Storage.WriteString(PathName, SaveStrValue);
   end
   else
-    if VarIsInt (SaveValue) then
+    if VarIsInt(SaveValue) then
       StoredValues.Storage.WriteInteger(PathName, SaveValue)
     else
-    if VarType (SaveValue) in [varSingle, varDouble, varCurrency] then
+    if VarType(SaveValue) in [varSingle, varDouble, varCurrency] then
       StoredValues.Storage.WriteFloat(PathName, SaveValue)
     else
-    if VarType (SaveValue) in [varDate] then
+    if VarType(SaveValue) in [varDate] then
       StoredValues.Storage.WriteDateTime(PathName, SaveValue)
     else
-    if VarType (SaveValue) in [varBoolean] then
+    if VarType(SaveValue) in [varBoolean] then
       StoredValues.Storage.WriteBoolean(PathName, SaveValue)
     else
       StoredValues.Storage.WriteString(PathName, SaveValue);
@@ -1291,7 +1289,7 @@ begin
     Result := StoredValue.Value;
 end;
 
-procedure TJvStoredValues.SetStoredValue(const Name: string; Value: Variant);
+procedure TJvStoredValues.SetStoredValue(const Name: string; AValue: Variant);
 var
   StoredValue: TJvStoredValue;
 begin
@@ -1300,10 +1298,10 @@ begin
   begin
     StoredValue := TJvStoredValue(Add);
     StoredValue.Name := Name;
-    StoredValue.Value := Value;
+    StoredValue.Value := AValue;
   end
   else
-    StoredValue.Value := Value;
+    StoredValue.Value := AValue;
 end;
 
 function TJvStoredValues.GetValue(const Name: string): TJvStoredValue;
@@ -1350,12 +1348,12 @@ begin
 end;
 
 procedure TJvFormStorage.SetDefaultStoredValue(const Name: string;
-  DefValue: Variant; const Value: Variant);
+  DefValue: Variant; const AValue: Variant);
 begin
-  if Value = Null then
+  if AValue = Null then
     StoredValue[Name] := DefValue
   else
-    StoredValue[Name] := Value;
+    StoredValue[Name] := AValue;
 end;
 
 function TJvFormStorage.GetStoredValuesPath: string;
@@ -1363,9 +1361,9 @@ begin
   Result := FStoredValues.Path;
 end;
 
-procedure TJvFormStorage.SetStoredValuesPath(const Value: string);
+procedure TJvFormStorage.SetStoredValuesPath(const AValue: string);
 begin
-  FStoredValues.Path := Value;
+  FStoredValues.Path := AValue;
 end;
 
 {$IFDEF UNITVERSIONING}
