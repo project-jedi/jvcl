@@ -39,6 +39,7 @@ requires
 contains
   JvSystemReg in '..\..\design\JvSystemReg.pas',
   JvChangeNotifyEditor in '..\..\design\JvChangeNotifyEditor.pas',
+  JvTimerListEditor in '..\..\design\JvTimerListEditor.pas',
   JvPerfStatEditor in '..\..\design\JvPerfStatEditor.pas',
   JvFormPropertiesForm in '..\..\design\JvFormPropertiesForm.pas' {JvFormPropsDlg},
   JvMinMaxForm in '..\..\design\JvMinMaxForm.pas' {MinMaxInfoEditDialog};
