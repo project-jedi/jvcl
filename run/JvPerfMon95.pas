@@ -32,12 +32,13 @@ unit JvPerfMon95;
 interface
 
 uses
-  Windows, Classes, SysUtils,
-  Contnrs,
-  {$IFDEF COMPILER6_UP}
-  RTLConsts,
-  {$ENDIF COMPILER6_UP}
-  Registry, Forms,
+  Windows, SysUtils, Registry, Classes, Contnrs,
+  {$IFDEF VCL}
+  Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QForms,
+  {$ENDIF VisualCLX}
   JclBase, JvComponent;
 
 type
@@ -149,7 +150,12 @@ function JvGetPerfStatItems(List: TStrings): Boolean;
 implementation
 
 uses
+  {$IFDEF VCL}
   Consts,
+  {$ENDIF VCL}
+  {$IFDEF COMPILER6_UP}
+  RTLConsts,
+  {$ENDIF COMPILER6_UP}
   JclSysInfo,
   JvJCLUtils, JvJVCLUtils, JvResources;
 
@@ -222,7 +228,12 @@ begin
   if WrongOSWarningShown or (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
     Exit;
   with Application do
+    {$IFDEF VCL}
     MessageBox(PChar(RsWrongOS), PChar(Title), MB_ICONWARNING);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    MessageBox(RsWrongOS, Title, [smbOK], smsWarning);
+    {$ENDIF VisualCLX}
   WrongOSWarningShown := True;
 end;
 

@@ -21,7 +21,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-//$Id$
+// $Id$
 
 {$I jvcl.inc}
 
@@ -34,11 +34,16 @@ uses
   RTLConsts, Variants,
   {$ENDIF COMPILER6_UP}
   SysUtils, Classes,
-  Windows, Messages, Controls, Forms,
-  JvAppStorage, JvComponent, JvWndProcHook, JvJVCLUtils, JvTypes;
+  {$IFDEF VCL}
+  Windows, Messages,
+  Controls, Forms, JvWndProcHook,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QForms, Types, QWindows,
+  {$ENDIF VisualCLX}
+  JvAppStorage, JvComponent, JvJVCLUtils, JvTypes;
 
 type
-
   TJvIniLink = class;
 
   TJvFormPlacement = class;
@@ -77,18 +82,26 @@ type
     FPreventResize: Boolean;
     FWinMinMaxInfo: TJvWinMinMaxInfo;
     FDefMaximize: Boolean;
+    {$IFDEF VCL}
     FWinHook: TJvWindowHook;
+    {$ENDIF VCL}
     FSaveFormShow: TNotifyEvent;
     FSaveFormDestroy: TNotifyEvent;
     FSaveFormCloseQuery: TCloseQueryEvent;
+    {$IFDEF VisualCLX}
+    FSaveFormConstrainedResize: TConstrainedResizeEvent;
+    {$ENDIF VisualCLX}
     FOnSavePlacement: TNotifyEvent;
     FOnRestorePlacement: TNotifyEvent;
     procedure SetAppStoragePath(Value: string);
     procedure SetEvents;
     procedure RestoreEvents;
+    {$IFDEF VCL}
     procedure SetHook;
     procedure ReleaseHook;
     procedure CheckToggleHook;
+    procedure WndMessage(Sender: TObject; var Msg: TMessage; var Handled: Boolean);
+    {$ENDIF VCL}
     function CheckMinMaxInfo: Boolean;
     procedure MinMaxInfoModified;
     procedure SetWinMinMaxInfo(Value: TJvWinMinMaxInfo);
@@ -98,10 +111,13 @@ type
     procedure AddLink(ALink: TJvIniLink);
     procedure NotifyLinks(Operation: TPlacementOperation);
     procedure RemoveLink(ALink: TJvIniLink);
-    procedure WndMessage(Sender: TObject; var Msg: TMessage; var Handled: Boolean);
     procedure FormShow(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormDestroy(Sender: TObject);
+    {$IFDEF VisualCLX}
+    procedure FormConstrainedResize(Sender: TObject; var MinWidth, MinHeight,
+      MaxWidth, MaxHeight: Integer);
+    {$ENDIF VisualCLX}
     function GetForm: TForm;
   protected
     procedure Loaded; override;
@@ -110,8 +126,7 @@ type
     procedure SavePlacement; virtual;
     procedure RestorePlacement; virtual;
     property Form: TForm read GetForm;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -123,7 +138,6 @@ type
     function ReadInteger(const Ident: string; Default: Longint): Longint;
     procedure WriteInteger(const Ident: string; Value: Longint);
     procedure EraseSections;
-
   published
     property Active: Boolean read FActive write FActive default True;
     property AppStorage: TJvCustomAppStorage read FAppStorage write FAppStorage;
@@ -259,8 +273,10 @@ begin
     FOptions := [fpState, fpSize, fpLocation]
   else
     FOptions := [];
+  {$IFDEF VCL}
   FWinHook := TJvWindowHook.Create(Self);
   FWinHook.AfterMessage := WndMessage;
+  {$ENDIF VCL}
   FWinMinMaxInfo := TJvWinMinMaxInfo.Create;
   FWinMinMaxInfo.FOwner := Self;
   FLinks := TList.Create;
@@ -273,7 +289,9 @@ begin
   FLinks.Free;
   if not (csDesigning in ComponentState) then
   begin
+    {$IFDEF VCL}
     ReleaseHook;
+    {$ENDIF VCL}
     RestoreEvents;
   end;
   FWinMinMaxInfo.Free;
@@ -290,7 +308,9 @@ begin
   begin
     if Loading then
       SetEvents;
+    {$IFDEF VCL}
     CheckToggleHook;
+    {$ENDIF VCL}
   end;
 end;
 
@@ -348,6 +368,10 @@ begin
       OnCloseQuery := FormCloseQuery;
       FSaveFormDestroy := OnDestroy;
       OnDestroy := FormDestroy;
+      {$IFDEF VisualCLX}
+      FSaveFormConstrainedResize := OnConstrainedResize;
+      OnConstrainedResize := FormConstrainedResize;
+      {$ENDIF VisualCLX}
       FDefMaximize := (biMaximize in BorderIcons);
     end;
     if FPreventResize then
@@ -363,9 +387,13 @@ begin
       OnShow := FSaveFormShow;
       OnCloseQuery := FSaveFormCloseQuery;
       OnDestroy := FSaveFormDestroy;
+      {$IFDEF VisualCLX}
+      OnConstrainedResize := FSaveFormConstrainedResize;
+      {$ENDIF VisualCLX}
     end;
 end;
 
+{$IFDEF VCL}
 procedure TJvFormPlacement.SetHook;
 begin
   if not (csDesigning in ComponentState) and (Owner <> nil) and
@@ -385,6 +413,7 @@ begin
   else
     ReleaseHook;
 end;
+{$ENDIF VCL}
 
 function TJvFormPlacement.CheckMinMaxInfo: Boolean;
 begin
@@ -394,8 +423,10 @@ end;
 procedure TJvFormPlacement.MinMaxInfoModified;
 begin
   UpdatePlacement;
+  {$IFDEF VCL}
   if not (csLoading in ComponentState) then
     CheckToggleHook;
+  {$ENDIF VCL}
 end;
 
 procedure TJvFormPlacement.SetWinMinMaxInfo(Value: TJvWinMinMaxInfo);
@@ -403,6 +434,7 @@ begin
   FWinMinMaxInfo.Assign(Value);
 end;
 
+{$IFDEF VCL}
 procedure TJvFormPlacement.WndMessage(Sender: TObject; var Msg: TMessage;
   var Handled: Boolean);
 begin
@@ -472,6 +504,7 @@ begin
     Msg.Result := 1;
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvFormPlacement.FormShow(Sender: TObject);
 begin
@@ -489,7 +522,7 @@ procedure TJvFormPlacement.FormCloseQuery(Sender: TObject; var CanClose: Boolean
 begin
   if Assigned(FSaveFormCloseQuery) then
     FSaveFormCloseQuery(Sender, CanClose);
-  if CanClose and IsActive and (Owner is TCustomForm) and (Form.Handle <> 0) then
+  if CanClose and IsActive and (Owner is TCustomForm) and (Form.Handle <> NullHandle) then
   try
     SaveFormPlacement;
   except
@@ -513,9 +546,48 @@ begin
     FSaveFormDestroy(Sender);
 end;
 
+{$IFDEF VisualCLX}
+procedure TJvFormPlacement.FormConstrainedResize(Sender: TObject; var MinWidth, MinHeight,
+  MaxWidth, MaxHeight: Integer);
+begin
+  if FPreventResize and (Owner is TCustomForm) then
+  begin
+    if FWinMinMaxInfo.MinTrackWidth <> 0 then
+      MinWidth := FWinMinMaxInfo.MinTrackWidth;
+    if FWinMinMaxInfo.MinTrackHeight <> 0 then
+      MinHeight := FWinMinMaxInfo.MinTrackHeight;
+    {
+    if FWinMinMaxInfo.MaxTrackWidth <> 0 then
+      ptMaxTrackSize.X := FWinMinMaxInfo.MaxTrackWidth;
+    if FWinMinMaxInfo.MaxTrackHeight <> 0 then
+      ptMaxTrackSize.Y := FWinMinMaxInfo.MaxTrackHeight;
+    }
+
+    if FWinMinMaxInfo.MaxSizeWidth <> 0 then
+      MaxWidth := FWinMinMaxInfo.MaxSizeWidth;
+    if FWinMinMaxInfo.MaxSizeHeight <> 0 then
+      MaxHeight := FWinMinMaxInfo.MaxSizeHeight;
+
+    if FWinMinMaxInfo.MaxPosLeft <> 0 then
+      if TCustomForm(Owner).Left > FWinMinMaxInfo.MaxPosLeft then
+        TCustomForm(Owner).Left := FWinMinMaxInfo.MaxPosLeft;
+    if FWinMinMaxInfo.MaxPosTop <> 0 then
+      if TCustomForm(Owner).Top > FWinMinMaxInfo.MaxPosTop then
+        TCustomForm(Owner).Top := FWinMinMaxInfo.MaxPosTop;
+  end;
+  if Assigned(FSaveFormConstrainedResize) then
+    FSaveFormConstrainedResize(Sender, MinWidth, MinHeight, MaxWidth, MaxHeight);
+end;
+{$ENDIF VisualCLX}
+
 procedure TJvFormPlacement.UpdatePlacement;
 const
-  Metrics: array [bsSingle..bsSizeToolWin] of Word =
+  {$IFDEF VCL}
+  Metrics: array[bsSingle..bsSizeToolWin] of Word =
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Metrics: array[fbsSingle..fbsSizeToolWin] of TSysMetrics =
+  {$ENDIF VisualCLX}
     (SM_CXBORDER, SM_CXFRAME, SM_CXDLGFRAME, SM_CXBORDER, SM_CXFRAME);
 var
   Placement: TWindowPlacement;
@@ -528,10 +600,15 @@ begin
       GetWindowPlacement(Form.Handle, @Placement);
       if not IsWindowVisible(Form.Handle) then
         Placement.ShowCmd := SW_HIDE;
+      {$IFDEF VCL}
       if Form.BorderStyle <> bsNone then
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      if Form.BorderStyle <> fbsNone then
+      {$ENDIF VisualCLX}
       begin
         Placement.ptMaxPosition.X := -GetSystemMetrics(Metrics[Form.BorderStyle]);
-        Placement.ptMaxPosition.Y := -GetSystemMetrics(Metrics[Form.BorderStyle] + 1);
+        Placement.ptMaxPosition.Y := -GetSystemMetrics(Succ(Metrics[Form.BorderStyle]));
       end
       else
         Placement.ptMaxPosition := Point(0, 0);
@@ -551,15 +628,22 @@ begin
     Active := False;
     try
       if (not FPreventResize) and FDefMaximize and
+        {$IFDEF VCL}
         (Form.BorderStyle <> bsDialog) then
+        {$ENDIF VCL}
+        {$IFDEF VisualCLX}
+        (Form.BorderStyle <> fbsDialog) then
+        {$ENDIF VisualCLX}
         Form.BorderIcons := Form.BorderIcons + [biMaximize]
       else
         Form.BorderIcons := Form.BorderIcons - [biMaximize];
     finally
       Active := IsActive;
     end;
+    {$IFDEF VCL}
     if not (csLoading in ComponentState) then
       CheckToggleHook;
+    {$ENDIF VCL}
   end;
 end;
 
