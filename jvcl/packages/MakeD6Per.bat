@@ -7,7 +7,8 @@ SET MAKE=C:\Program Files\Delphi6\bin\make.exe
 
 
 SET PACKAGE=D6Per Packages
-SET DIR=d6per
+SET DIR=d6
+SET DIR2=d6per
 
 REM ------- Generic --------
 
@@ -26,6 +27,7 @@ REM call makedofs.bat
 echo.
 echo Createing .cfg files
 MakeCFG "..\..\packages\%DIR%\*.dpk" %DIR%packscfg.tmpl
+MakeCFG "..\..\packages\%DIR2%\*.dpk" %DIR%packscfg.tmpl
 
 
 echo.
@@ -39,3 +41,4 @@ echo.
 echo Cleaning
 del "%PACKAGE%.mak"
 del %DIR%\*.cfg
+del %DIR2%\*.cfg
