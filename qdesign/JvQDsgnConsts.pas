@@ -76,6 +76,7 @@ resourcestring
   RsPaletteImageAnimator = 'Jv Images, Animators';
   RsPaletteVisual = 'Jv Visual';
   RsPaletteNonVisual = 'Jv Non-Visual';
+  RsPaletteThreading = 'Jv Threading';
   RsPalettePersistence = 'Jv Persistence';
   RsPaletteAppForm = 'Jv Application, Forms';
   RsPaletteInterNetWork = 'Jv Internet, Network';
