@@ -1083,7 +1083,8 @@ uses
   ShellAPI, ActiveX,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  JvBrowseFolder, MultiMon,
+  MultiMon,
+  JvBrowseFolder,
   {$ENDIF VCL}
   JvPickDate, JvJCLUtils, JvJVCLUtils,
   JvThemes, JvResources, JvConsts;
@@ -1233,6 +1234,7 @@ var
 //=== Local procedures =======================================================
 
 {$IFDEF VCL}
+
 function FindMonitor(Handle: HMONITOR): TMonitor;
 var
   I: Integer;
@@ -1242,7 +1244,7 @@ begin
     if Screen.Monitors[I].Handle = Handle then
     begin
       Result := Screen.Monitors[I];
-      break;
+      Break;
     end;
 end;
 
@@ -1252,6 +1254,7 @@ begin
     GDateHook := TDateHook.Create;
   Result := GDateHook;
 end;
+
 {$ENDIF VCL}
 
 function ClipFilename(const FileName: string): string;
@@ -2740,7 +2743,7 @@ begin
     if Text <> '' then
       SetPopupValue(Text)
     else
-      SetPopupValue(NULL);
+      SetPopupValue(Null);
     if CanFocus then
       SetFocus;
     ShowPopup(Point(P.X, Y));
@@ -5023,7 +5026,7 @@ var
 {$ENDIF VCL}
 begin
   {$IFDEF VCL}
-  Monitor := FindMonitor(MonitorFromPoint(Origin,MONITOR_DEFAULTTONEAREST));
+  Monitor := FindMonitor(MonitorFromPoint(Origin, MONITOR_DEFAULTTONEAREST));
   Inc(Origin.X, Monitor.Left);
   Inc(Origin.Y, Monitor.Top);
   SetBounds(Origin.X, Origin.Y, Width, Height);
