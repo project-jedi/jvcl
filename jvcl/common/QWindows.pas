@@ -124,6 +124,8 @@ const
   VK_LMENU    = Key_Alt;
   VK_RMENU    = Key_Alt;
 
+
+
   { Qt alignment flags, (as used by Canvas.TextRect) }
   AlignLeft     = $1;
   AlignRight    = $2;
@@ -170,6 +172,25 @@ const
 
   INFINITE = Longword($FFFFFFFF); // Infinite timeout
 
+  WM_HSCROLL = 101;
+  WM_VSCROLL = 102;
+  CM_DEACTIVATE = 100;
+
+  // WM_xSCROLL ScrollCodes
+  SB_BOTTOM = 1;
+  SB_ENDSCROLL = 2;
+  SB_LINEDOWN = 3;
+  SB_LINEUP = 4;
+  SB_PAGEDOWN = 5;
+  SB_PAGEUP = 6;
+  SB_THUMBPOSITION = 7;
+  SB_THUMBTRACK = 8;
+  SB_TOP = 9;
+
+  SB_HORZ = 1;
+  SB_VERT = 2;
+  SB_BOTH = SB_HORZ or SB_VERT;
+
 type
   HWND = QWidgetH;
   HCURSOR = QCursorH;
@@ -200,6 +221,20 @@ type
     LParam: Longint;
     Result: Integer;
   end;
+
+  TWMScroll = packed record
+    Msg: Integer;
+    Pos: Integer;
+    ScrollCode: Integer;
+  end;
+
+  TCMActivate = packed record
+    Msg: Integer;
+    WParam: Integer;
+    LParam: Longint;
+    Result: Integer;
+  end;
+
 
 {
   2 dummies for ... VCL
@@ -439,6 +474,10 @@ function StretchBlt(DestDC: QPainterH; dx, dy, dw, dh: Integer;
   SrcDC: QPainterH; sx, sy, sw, sh: Integer; WinRop: Cardinal): LongBool; overload;
 function StretchBlt(DestDC: QPainterH; dx, dy, dw, dh: Integer;
   SrcDC: QPainterH; sx, sy, sw, sh: Integer; Rop: RasterOp): LongBool; overload;
+
+function ScrollDC(Handle: QPainterH; dx, dy: Integer; var Scroll, Clip: TRect;
+                  Rgn: QRegionH; Update: PRect): LongBool;
+
 
 { StretchBlt() Modes }
 type
@@ -2555,6 +2594,39 @@ begin
     SetPainterInfo(DC).StetchBltMode := StretchMode;
   except
     Result := STRETCH_DELETESCANS;
+  end;
+end;
+
+function ScrollDC(Handle: QPainterH; dx, dy: Integer; var Scroll, Clip: TRect;
+                  Rgn: QRegionH; Update: PRect): LongBool;
+var
+  R1, R2: TRect;
+  rg1, rg2: QRegionH;
+begin
+  // assume device units = pixels
+  IntersectRect(R2, Scroll, Clip); // clipped source rectangle
+  OffsetRect(R2, dx, dy);
+  IntersectRect(R2, R2, Clip);  // R2: clipped destination rectangle
+  if not isRectEmpty(R2) then
+  begin
+    R1 := R2;
+    OffsetRect(R1, -dx, -dy); // R1: adjusted source rectangle
+    Result := BitBlt(Handle, R2.Left, R2.Top, R2.Right-R2.Left, R2.Bottom-R2.Top,
+           Handle, R1.Left, R1.Top, SRCCOPY);
+  end
+  else
+    Result := false;    // asn: or true ?
+  if (Rgn <> nil) or  (Update <> nil) then
+  begin
+    rg1 := CreateRectRgnIndirect(Scroll);
+    rg2 := CreateRectRgnIndirect(R2);
+    CombineRgn(rg2, rg1, rg2, RGN_DIFF);
+    if Rgn <> nil then
+      CombineRgn(Rgn, Rg2, Rg2, RGN_OR);
+    if Update <> nil then
+      QRegion_boundingRect(rg2, Update);
+    QRegion_destroy(rg2);
+    QRegion_destroy(rg1);
   end;
 end;
 
@@ -5755,16 +5827,26 @@ begin
   end;
 end;
 
+
+function getpwuid(uid: __uid_t)
+
+
 function GetUserName(Buffer: PChar; var Size: Cardinal): LongBool;
 var
   S: string;
+  pwdRec: PPasswordRecord;
 begin
+  Result := false;
   try
-    S := GetEnvironmentVariable('USER');
-    Size := Length(S) + 1;
-    Result := S <> '';
-    if Result then
-      StrLCopy(Buffer, PChar(S), Size - 1);
+    pwd :=  getpwuid(getuid);
+    if pwd <> nil then
+    begin
+      S := pwd.pw_gecos; //  user's real name
+      Size := Length(S) + 1;
+      Result := S <> '';
+      if Result then
+        StrLCopy(Buffer, PChar(S), Size - 1);
+    end;
   except
     Result := False;
   end;
