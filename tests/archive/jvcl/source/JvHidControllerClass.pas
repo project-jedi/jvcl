@@ -1,4 +1,4 @@
-{******************************************************************************
+{
 
  Project JEDI VCL
  HID component for complete HID access
@@ -17,9 +17,9 @@
  (robert_marquardt@gmx.de)
 
  Portions created by Robert Marquardt are
- Copyright (c) 1999-2002 Robert Marquardt.
+ Copyright (c) 1999-2003 Robert Marquardt.
 
- Last modified: March 11, 2002
+ Last modified: December 7, 2002
 
 ******************************************************************************}
 
@@ -28,12 +28,14 @@ unit JvHidControllerClass;
 interface
 
 uses
-  Windows, Messages, Classes, Forms, SysUtils, Dialogs,
-  DBT, SetupApi, Hid, JvComponent;
+  Windows, Messages, Classes, Forms, SysUtils,
+  DBT, SetupApi, Hid, ModuleLoader;
+
+{.DEFINE STANDALONE}
 
 const
   // a version string for the component
-  cHidControllerClassVersion = '1.0.2';
+  cHidControllerClassVersion = '1.0.5';
 
   // strings from the registry for CheckOutByClass
   cHidKeyboardClass = 'Keyboard';
@@ -51,42 +53,76 @@ type
   TJvHidUnplugEvent     = procedure(const HidDev: TJvHidDevice) of object;
 
   // open overlapped read or write file handle
-  TJvOpenExMode = (omRead, omWrite);
+  TJvHidOpenExMode = (omhRead, omhWrite);
 
   // the physical descriptor
   TJvPhysicalDescriptor = array of WORD;
 
-  // all HID relevant driver entries in the registry
-  TJvPnPInfo = record
-    DeviceID:        DWORD;
-    DevicePath:      string;
+  // all USB relevant driver entries in the registry
+  TJvHidPnPInfo = class(TObject)
+    FDeviceID: DWORD;
+    FDevicePath: string;
+    FCapabilities: DWORD;
+    FClassDescr: string;
+    FClassGUID: string;
+    FCompatibleIDs: TStringList;
+    FConfigFlags: DWORD;
+    FDeviceDescr: string;
+    FDriver: string;
+    FFriendlyName: string;
+    FHardwareID: TStringList;
+    FLowerFilters: TStringList;
+    FMfg: string;
+    FUpperFilters: TStringList;
+    FAddress: string;
+    FBusNumber: DWORD;
+    FBusType: string;
+    FCharacteristics: string;
+    FDevType: string;
+    FEnumeratorName: string;
+    FExclusive: DWORD;
+    FLegacyBusType: string;
+    FLocationInfo: string;
+    FPhysDevObjName: string;
+    FSecurity: string;
+    FService: string;
+    FUINumber: DWORD;
+    FUINumberFormat: string;
+    function GetRegistryPropertyString(PnPHandle: HDEVINFO; const DevData: TSPDevInfoData; Prop: DWORD): string;
+    function GetRegistryPropertyStringList(PnPHandle: HDEVINFO; const DevData: TSPDevInfoData; Prop: DWORD): TStringList;
+    function GetRegistryPropertyDWord(PnPHandle: HDEVINFO; const DevData: TSPDevInfoData; Prop: DWORD): DWORD;
+  public
+    property DeviceID:        DWORD       read FDeviceID;
+    property DevicePath:      string      read FDevicePath;
     // registry values
-    Capabilities:    DWORD;
-    ClassDescr:      string;
-    ClassGUID:       string;
-    CompatibleIDs:   string;
-    ConfigFlags:     DWORD;
-    DeviceDescr:     string;
-    Driver:          string;
-    FriendlyName:    string;
-    HardwareID:      string;
-    LowerFilters:    string;
-    Mfg:             string;
-    UpperFilters:    string;
-    Address:         string;
-    BusNumber:       DWORD;
-    BusType:         string;
-    Characteristics: string;
-    DevType:         string;
-    EnumeratorName:  string;
-    Exclusive:       DWORD;
-    LegacyBusType:   string;
-    LocationInfo:    string;
-    PhysDevObjName:  string;
-    Security:        string;
-    Service:         string;
-    UINumber:        DWORD;
-    UINumberFormat:  string;
+    property Capabilities:    DWORD       read FCapabilities;
+    property ClassDescr:      string      read FClassDescr;
+    property ClassGUID:       string      read FClassGUID;
+    property CompatibleIDs:   TStringList read FCompatibleIDs;
+    property ConfigFlags:     DWORD       read FConfigFlags;
+    property DeviceDescr:     string      read FDeviceDescr;
+    property Driver:          string      read FDriver;
+    property FriendlyName:    string      read FFriendlyName;
+    property HardwareID:      TStringList read FHardwareID;
+    property LowerFilters:    TStringList read FLowerFilters;
+    property Mfg:             string      read FMfg;
+    property UpperFilters:    TStringList read FUpperFilters;
+    property Address:         string      read FAddress;
+    property BusNumber:       DWORD       read FBusNumber;
+    property BusType:         string      read FBusType;
+    property Characteristics: string      read FCharacteristics;
+    property DevType:         string      read FDevType;
+    property EnumeratorName:  string      read FEnumeratorName;
+    property Exclusive:       DWORD       read FExclusive;
+    property LegacyBusType:   string      read FLegacyBusType;
+    property LocationInfo:    string      read FLocationInfo;
+    property PhysDevObjName:  string      read FPhysDevObjName;
+    property Security:        string      read FSecurity;
+    property Service:         string      read FService;
+    property UINumber:        DWORD       read FUINumber;
+    property UINumberFormat:  string      read FUINumberFormat;
+    constructor Create(APnPHandle: HDEVINFO; ADevData: TSPDevInfoData; ADevicePath: PChar);
+    destructor Destroy; override;
   end;
 
   // the representation of a HID device
@@ -105,14 +141,13 @@ type
     FOvlWrite:             TOverlapped;
     // internal properties part
     FAttributes:           THIDDAttributes;
-    FCaps:                 THIDPCaps;
-    FPnPInfo:              TJvPnPInfo;
+    FPnPInfo:              TJvHidPnPInfo;
     FVendorName:           WideString;
     FProductName:          WideString;
     FPhysicalDescriptor:   TJvPhysicalDescriptor;
+    FPreparsedData:        PHIDPPreparsedData;
     FSerialNumber:         WideString;
     FLanguageStrings:      TStringList;
-    FPreparsedData:        PHIDPPreparsedData;
     FNumInputBuffers:      Integer;
     FNumOverlappedBuffers: Integer;
     FLinkCollection:       array of THIDPLinkCollectionNode;
@@ -124,6 +159,7 @@ type
     FLinkCollectionParam:  WORD;
     FUsageParam:           TUsage;
     FUnplug:               TJvHidUnplugEvent;
+    FHasReadWriteAccess:   Boolean;
 
     // tells if access to device is allowed
     function  IsAccessible: Boolean;
@@ -133,7 +169,14 @@ type
     function  GetDeviceStringAnsi    (Idx: Byte): string;
     function  GetDeviceStringUnicode (Idx: Byte): WideString;
     function  GetLinkCollectionNode  (Idx: WORD): THIDPLinkCollectionNode;
-    function  GetConfiguration: THIDDConfiguration;
+    function  GetConfiguration:      THIDDConfiguration;
+    function  GetPreparsedData:      PHIDPPreparsedData;
+    function  GetCaps:               THIDPCaps;
+    function  GetVendorName:         WideString;
+    function  GetProductName:        WideString;
+    function  GetSerialNumber:       WideString;
+    function  GetPhysicalDescriptor: TJvPhysicalDescriptor;
+    function  GetLanguageStrings:    TStringList;
     procedure SetConfiguration       (const Config: THIDDConfiguration);
     procedure SetNumInputBuffers     (const Num: Integer);
     procedure SetNumOverlappedBuffers(const Num: Integer);
@@ -141,7 +184,7 @@ type
     procedure SetUsagePageParam      (const UsagePage: TUsage);
 
     // Constructor is hidden! Only a TJvHidDeviceController can create a TJvHidDevice object.
-    constructor CtlCreate(const PnPInfo: TJvPnPInfo;
+    constructor CtlCreate(const APnPInfo: TJvHidPnPInfo;
                           const Controller: TJvHidDeviceController);
 
   protected
@@ -154,20 +197,44 @@ type
     constructor Create;
     destructor Destroy; override;
 
-    // management properties
-    property Attributes:    THIDDAttributes    read FAttributes;
-    property Caps:          THIDPCaps          read FCaps;
-    property Configuration: THIDDConfiguration read GetConfiguration write SetConfiguration;
-    property PreparsedData: PHIDPPreparsedData read FPreparsedData;
+    // read only properties
+    property Attributes:           THIDDAttributes       read FAttributes;
+    property Caps:                 THIDPCaps             read GetCaps;
+    property HasReadWriteAccess:   Boolean               read FHasReadWriteAccess;
+    property HidFileHandle:        THandle               read FHidFileHandle;
+    property HidOverlappedRead:    THandle               read FHidOverlappedRead;
+    property HidOverlappedWrite:   THandle               read FHidOverlappedWrite;
+    property IsCheckedOut:         Boolean               read FIsCheckedOut;
+    property IsPluggedIn:          Boolean               read FIsPluggedIn;
+    property LanguageStrings:      TStringList           read GetLanguageStrings;
+    property MaxButtonListLength:  ULONG                 read FMaxButtonListLength;
+    property MaxDataListLength:    ULONG                 read FMaxDataListLength;
+    property MaxUsageListLength:   ULONG                 read FMaxUsageListLength;
+    property PhysicalDescriptor:   TJvPhysicalDescriptor read GetPhysicalDescriptor;
+    property PnPInfo:              TJvHidPnPInfo         read FPnPInfo;
+    property PreparsedData:        PHIDPPreparsedData    read GetPreparsedData;
+    property ProductName:          WideString            read GetProductName;
+    property SerialNumber:         WideString            read GetSerialNumber;
+    property VendorName:           WideString            read GetVendorName;
+    // read write properties
+    property Configuration:        THIDDConfiguration read GetConfiguration      write SetConfiguration;
+    property LinkCollectionParam:  WORD               read FLinkCollectionParam  write FLinkCollectionParam;
+    property NumInputBuffers:      Integer            read FNumInputBuffers      write SetNumInputBuffers;
+    property NumOverlappedBuffers: Integer            read FNumOverlappedBuffers write SetNumOverlappedBuffers;
+    property ReportTypeParam:      THIDPReportType    read FReportTypeParam      write SetReportTypeParam;
+    property UsagePageParam:       TUsage             read FUsagePageParam       write SetUsagePageParam;
+    property UsageParam:           TUsage             read FUsageParam           write FUsageParam;
     // indexed properties
     property DeviceStrings       [Idx: Byte]: string                  read GetDeviceStringAnsi;
     property DeviceStringsUnicode[Idx: Byte]: WideString              read GetDeviceStringUnicode;
     property LinkCollectionNodes [Idx: WORD]: THIDPLinkCollectionNode read GetLinkCollectionNode;
+    // the only event property
+    property OnUnplug:             TJvHidUnplugEvent read FUnplug write SetUnplug;
 
     // methods
-    function  CancelIO             (const Mode: TJvOpenExMode): Boolean;
+    function  CancelIO             (const Mode: TJvHidOpenExMode): Boolean;
     procedure CloseFile;
-    procedure CloseFileEx          (const Mode: TJvOpenExMode);
+    procedure CloseFileEx          (const Mode: TJvHidOpenExMode);
     function  DeviceIoControl      (IoControlCode: DWORD; InBuffer: Pointer; InSize: DWORD;
                                     OutBuffer: Pointer; OutSize: DWORD;
                                     var BytesReturned: DWORD):                      Boolean;
@@ -194,7 +261,7 @@ type
                                     var Report; ReportLength: ULONG):               NTSTATUS;
     function  GetValueCaps         (ValueCaps:  PHIDPValueCaps;  var Count: WORD):  NTSTATUS;
     function  OpenFile:                                                             Boolean;
-    function  OpenFileEx           (Mode: TJvOpenExMode):                           Boolean;
+    function  OpenFileEx           (Mode: TJvHidOpenExMode):                        Boolean;
     function  SetButtons           (UsageList: PUsage; var UsageLength: ULONG;
                                     var Report; ReportLength: ULONG):               NTSTATUS;
     function  SetData              (DataList: PHIDPData; var DataLength: ULONG;
@@ -218,37 +285,11 @@ type
     function  WriteFile            (var Report; ToWrite: DWORD; var BytesWritten: DWORD): Boolean;
     function  WriteFileEx          (var Report; ToWrite: DWORD;
                                     CallBack: TPROverlappedCompletionRoutine):            Boolean;
-
-    // management properties
-    property HidFileHandle:        THandle               read FHidFileHandle;
-    property HidOverlappedRead:    THandle               read FHidOverlappedRead;
-    property HidOverlappedWrite:   THandle               read FHidOverlappedWrite;
-    property IsCheckedOut:         Boolean               read FIsCheckedOut;
-    property IsPluggedIn:          Boolean               read FIsPluggedIn;
-    property LanguageStrings:      TStringList           read FLanguageStrings;
-    property MaxButtonListLength:  ULONG                 read FMaxButtonListLength;
-    property MaxDataListLength:    ULONG                 read FMaxDataListLength;
-    property MaxUsageListLength:   ULONG                 read FMaxUsageListLength;
-    property PhysicalDescriptor:   TJvPhysicalDescriptor read FPhysicalDescriptor;
-    property PnPInfo:              TJvPnPInfo            read FPnPInfo;
-    property ProductName:          WideString            read FProductName;
-    property SerialNumber:         WideString            read FSerialNumber;
-    property VendorName:           WideString            read FVendorName;
-
-  published
-    property LinkCollectionParam:  WORD              read FLinkCollectionParam  write FLinkCollectionParam;
-    property NumInputBuffers:      Integer           read FNumInputBuffers      write SetNumInputBuffers;
-    property NumOverlappedBuffers: Integer           read FNumOverlappedBuffers write SetNumOverlappedBuffers;
-    property ReportTypeParam:      THIDPReportType   read FReportTypeParam      write SetReportTypeParam;
-    property UsagePageParam:       TUsage            read FUsagePageParam       write SetUsagePageParam;
-    property UsageParam:           TUsage            read FUsageParam           write FUsageParam;
-    // the only event property
-    property OnUnplug:             TJvHidUnplugEvent read FUnplug               write SetUnplug;
   end;
 
   // controller class to manage all HID devices
 
-  TJvHidDeviceController = class(TJvComponent)
+  TJvHidDeviceController = class(TComponent)
   private
     // internal properties part
     FHidGuid:              TGUID;
@@ -291,6 +332,7 @@ type
     function  CheckOutByIndex      (var HidDev: TJvHidDevice; const Idx:         Integer):    Boolean;
     function  CheckOutByProductName(var HidDev: TJvHidDevice; const ProductName: WideString): Boolean;
     function  CheckOutByVendorName (var HidDev: TJvHidDevice; const VendorName:  WideString): Boolean;
+    // methods to count HID device objects
     function  CountByClass         (const ClassName:   string):     Integer;
     function  CountByID            (const Vid, Pid:    Integer):    Integer;
     function  CountByProductName   (const ProductName: WideString): Integer;
@@ -319,16 +361,31 @@ function HidCheck(const RetVal: NTSTATUS): NTSTATUS; overload;
 function HidCheck(const RetVal: LongBool): LongBool; overload;
 function HidError(const RetVal: NTSTATUS): NTSTATUS;
 
+{$IFDEF STANDALONE}
+
+// to register the component in the palette
+procedure Register;
+
+{$ENDIF}
 
 implementation
+
+{$IFDEF STANDALONE}
+
+type
+  EControllerError = class(Exception);
+  EHidClientError  = class(Exception);
+
+{$ELSE}
+
 uses
   JvTypes;
-
-{.$R HidControllerClass.dcr}
 
 type
   EControllerError = class(EJVCLException);
   EHidClientError  = class(EJVCLException);
+
+{$ENDIF STANDALONE}
 
 var
   // counter to prevent a second TJvHidDeviceController instance
@@ -343,11 +400,57 @@ function WriteFileEx(hFile: THandle; var Buffer; nNumberOfBytesToWrite: DWORD;
   var Overlapped: TOverlapped; lpCompletionRoutine: TPROverlappedCompletionRoutine): BOOL; stdcall;
  external 'kernel32.dll' name 'WriteFileEx';
 
-//== TJvHidDevice ==============================================================
+//== TJvHidPnPInfo =============================================================
+
+constructor TJvHidPnPInfo.Create(APnPHandle: HDEVINFO; ADevData: TSPDevInfoData; ADevicePath: PChar);
+begin
+  FDeviceID   := ADevData.DevInst;
+  FDevicePath := ADevicePath;
+
+  FCapabilities    := GetRegistryPropertyDWord     (APnPHandle, ADevData, SPDRP_CAPABILITIES);
+  FClassDescr      := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_CLASS);
+  FClassGUID       := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_CLASSGUID);
+  FCompatibleIDs   := GetRegistryPropertyStringList(APnPHandle, ADevData, SPDRP_COMPATIBLEIDS);
+  FConfigFlags     := GetRegistryPropertyDWord     (APnPHandle, ADevData, SPDRP_CONFIGFLAGS);
+  FDeviceDescr     := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_DEVICEDESC);
+  FDriver          := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_DRIVER);
+  FFriendlyName    := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_FRIENDLYNAME);
+  FHardwareID      := GetRegistryPropertyStringList(APnPHandle, ADevData, SPDRP_HARDWAREID);
+  FLowerFilters    := GetRegistryPropertyStringList(APnPHandle, ADevData, SPDRP_LOWERFILTERS);
+  FMfg             := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_MFG);
+  FUpperFilters    := GetRegistryPropertyStringList(APnPHandle, ADevData, SPDRP_UPPERFILTERS);
+
+  FAddress         := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_ADDRESS);
+  FBusNumber       := GetRegistryPropertyDWord     (APnPHandle, ADevData, SPDRP_BUSNUMBER);
+  FBusType         := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_BUSTYPEGUID);
+  FCharacteristics := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_CHARACTERISTICS);
+  FDevType         := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_DEVTYPE);
+  FEnumeratorName  := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_ENUMERATOR_NAME);
+  FExclusive       := GetRegistryPropertyDWord     (APnPHandle, ADevData, SPDRP_EXCLUSIVE);
+  FLegacyBusType   := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_LEGACYBUSTYPE);
+  FLocationInfo    := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_LOCATION_INFORMATION);
+  FPhysDevObjName  := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_PHYSICAL_DEVICE_OBJECT_NAME);
+  FSecurity        := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_SECURITY);
+  FService         := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_SERVICE);
+  FUINumber        := GetRegistryPropertyDWord     (APnPHandle, ADevData, SPDRP_UI_NUMBER);
+  FUINumberFormat  := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_UI_NUMBER_DESC_FORMAT);
+end;
+
+//------------------------------------------------------------------------------
+
+destructor TJvHidPnPInfo.Destroy;
+begin
+  FCompatibleIDs.Free;
+  FHardwareID.Free;
+  FLowerFilters.Free;
+  FUpperFilters.Free;
+end;
+
+//------------------------------------------------------------------------------
 
 // internal helpers to read values from a devices registry area
 
-function GetRegistryPropertyString(PnPHandle: HDEVINFO; const DevData: TSPDevInfoData; Prop: DWORD): string;
+function TJvHidPnPInfo.GetRegistryPropertyString(PnPHandle: HDEVINFO; const DevData: TSPDevInfoData; Prop: DWORD): string;
 var
   BytesReturned: DWORD;
   RegDataType:   DWORD;
@@ -363,7 +466,30 @@ end;
 
 //------------------------------------------------------------------------------
 
-function GetRegistryPropertyDWord(PnPHandle: HDEVINFO; const DevData: TSPDevInfoData; Prop: DWORD): DWORD;
+function TJvHidPnPInfo.GetRegistryPropertyStringList(PnPHandle: HDEVINFO; const DevData: TSPDevInfoData; Prop: DWORD): TStringList;
+var
+  BytesReturned: DWORD;
+  RegDataType: DWORD;
+  Buffer: array[0..16383] of Char;
+  P: PChar;
+begin
+  BytesReturned := 0;
+  RegDataType   := 0;
+  Buffer[0]     := #0;
+  SetupDiGetDeviceRegistryProperty(PnPHandle, DevData, Prop,
+    RegDataType, @Buffer[0], SizeOf(Buffer), BytesReturned);
+  Result := TStringList.Create;
+  P := @Buffer[0];
+  while P[0] <> #0 do
+  begin
+    Result.Add(P);
+    P := P + StrLen(P) + 1;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJvHidPnPInfo.GetRegistryPropertyDWord(PnPHandle: HDEVINFO; const DevData: TSPDevInfoData; Prop: DWORD): DWORD;
 var
   BytesReturned: DWORD;
   RegDataType:   DWORD;
@@ -375,7 +501,7 @@ begin
     RegDataType, @Result, SizeOf(Result), BytesReturned);
 end;
 
-//-- TJvHidDevice: basics and internals ----------------------------------------
+//== TJvHidDevice ==============================================================
 
 // dummy constructor to catch invalid Creates
 
@@ -387,25 +513,20 @@ begin
   raise EControllerError.Create('Direct creation of a TJvHidDevice object is not allowed');
 end;
 
+//------------------------------------------------------------------------------
+
 // create and fill in a HidDevice object
 // the constructor is only accessible from TJvHidController
 // PnPInfo contains all info the JvHidDeviceController collected
 // Controller is the devices controller object to be referenced
 // internally
 
-constructor TJvHidDevice.CtlCreate(const PnPInfo: TJvPnPInfo; const Controller: TJvHidDeviceController);
-var
-  I:      Integer;
-  Len:    Integer;
-  Siz:    ULONG;
-  Buffer: array [0..253] of WideChar;
-  IDs:    array [0..253] of WORD;
-  Name:   array [0..255] of Char;
+constructor TJvHidDevice.CtlCreate(const APnPInfo: TJvHidPnPInfo; const Controller: TJvHidDeviceController);
 begin
   inherited Create;
 
   // initialize private data
-  FPnPInfo              := PnPInfo;
+  FPnPInfo              := APnPInfo;
   FMyController         := Controller;
   FIsPluggedIn          := True;
   FIsCheckedOut         := False;
@@ -414,11 +535,10 @@ begin
   FHidOverlappedWrite   := INVALID_HANDLE_VALUE;
   FVendorName           := '';
   FProductName          := '';
+  FPreparsedData        := nil;
   SetLength(FPhysicalDescriptor, 0);
   FSerialNumber         := '';
   FLanguageStrings      := TStringList.Create;
-  FPreparsedData        := nil;
-  FillChar(FCaps, SizeOf(FCaps), #0);
   FNumInputBuffers      := 0;
   FNumOverlappedBuffers := 0;
   SetLength(FLinkCollection, 0);
@@ -431,67 +551,21 @@ begin
   FUsageParam           := 0;
   FUnplug               := Controller.FDevUnplugEvent;
 
-  FHidFileHandle := CreateFile(PChar(FPnPInfo.DevicePath), GENERIC_READ or GENERIC_WRITE,
+  FHidFileHandle := CreateFile(PChar(PnPInfo.DevicePath), GENERIC_READ or GENERIC_WRITE,
     FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING, 0, 0);
+  FHasReadWriteAccess := HidFileHandle <> INVALID_HANDLE_VALUE;
   // Win2000 hack
-  if HidFileHandle = INVALID_HANDLE_VALUE then
-    FHidFileHandle := CreateFile(PChar(FPnPInfo.DevicePath), 0,
+  if not HasReadWriteAccess then
+    FHidFileHandle := CreateFile(PChar(PnPInfo.DevicePath), 0,
       FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING, 0, 0);
   if HidFileHandle <> INVALID_HANDLE_VALUE then
   begin
-    // get all device data through HID functions
-    // this eliminates the need to redeclare them as methods
     FAttributes.Size := SizeOf(THIDDAttributes);
-    HidD_GetPreparsedData(HidFileHandle, FPreparsedData);
-    HidD_GetAttributes   (HidFileHandle, FAttributes);
-    HidP_GetCaps(FPreparsedData, FCaps);
-    // calculate length of StringDescriptor 0
-    FillChar(IDs, SizeOf(IDs), $FF);
-    Len := 0;
-    if HidD_GetIndexedString(HidFileHandle, 0, PWideChar(@IDs), SizeOf(IDs)) then
-      for I := High(IDs) downto 0 do
-        if IDs[I] <> $FFFF then
-        begin
-          Len := I+1;
-          Break;
-        end;
-    // transform id into localized language name
-    for I := 0 to Len - 1 do
-    begin
-      Name[0] := #0;
-      if GetLocaleInfo(WORD(IDs[I]), LOCALE_SLANGUAGE, Name, SizeOf(Name)) <> 0 then
-        FLanguageStrings.Add(Name)
-      else
-        FLanguageStrings.Add(Format('unknown Locale ID $%.4x',[WORD(IDs[I])]));
-    end;
-    if HidD_GetManufacturerString(HidFileHandle, Buffer, SizeOf(Buffer)) then
-      FVendorName := Buffer;
-    if HidD_GetProductString(HidFileHandle, Buffer, SizeOf(Buffer)) then
-      FProductName := Buffer;
-    I := 0;
-    SetLength(FPhysicalDescriptor, 2048);
-    while not HidD_GetPhysicalDescriptor(HidFileHandle, FPhysicalDescriptor[0], I*SizeOf(WORD)) do
-    begin
-      Inc(I);
-      if (I > 2048) or (GetLastError <> ERROR_INSUFFICIENT_BUFFER) then
-      begin
-        I := 0;
-        Break;
-      end;
-    end;
-    SetLength(FPhysicalDescriptor, I);
-    // compensate for buggy function
-    if HidD_GetSerialNumberString(HidFileHandle, Buffer, SizeOf(Buffer)) then
-      for I := 0 to Len - 1 do
-        if IDs[I] <> WORD(Buffer[I]) then
-        begin
-          FSerialNumber := Buffer;
-          Break;
-        end;
-    Siz := FCaps.NumberLinkCollectionNodes;
-    SetLength(FLinkCollection, Siz);
-    HidP_GetLinkCollectionNodes(@FLinkCollection[0], Siz, FPreparsedData);
-  end;
+    if not HidD_GetAttributes(HidFileHandle, FAttributes) then
+      raise EControllerError.Create('device cannot be identified');
+  end
+  else
+    raise EControllerError.Create('device cannot be opened');
   // the file is closed to stop using up resources
   CloseFile;
 end;
@@ -510,8 +584,8 @@ begin
   OnUnplug := nil;
   // free the data which needs special handling
   CloseFile;
-  CloseFileEx(omRead);
-  CloseFileEx(omWrite);
+  CloseFileEx(omhRead);
+  CloseFileEx(omhWrite);
   if FPreparsedData <> nil then
     HidD_FreePreparsedData(FPreparsedData);
   FLanguageStrings.Free;
@@ -528,6 +602,7 @@ begin
           if IsPluggedIn then
           begin
             FList.Items[I] := TJvHidDevice.CtlCreate(FPnPInfo, FMyController);
+            FPnPInfo := nil;
             if IsCheckedOut then
             begin
               Dec(FNumCheckedOutDevices);
@@ -543,6 +618,7 @@ begin
         end;
     end;
 
+  PnPInfo.Free;
   inherited Destroy;
 end;
 
@@ -565,11 +641,12 @@ begin
   if IsAccessible then
     if HidFileHandle = INVALID_HANDLE_VALUE then // if not already opened
     begin
-      FHidFileHandle := CreateFile(PChar(FPnPInfo.DevicePath), GENERIC_READ or GENERIC_WRITE,
+      FHidFileHandle := CreateFile(PChar(PnPInfo.DevicePath), GENERIC_READ or GENERIC_WRITE,
         FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING, 0, 0);
+      FHasReadWriteAccess := HidFileHandle <> INVALID_HANDLE_VALUE;
       // Win2000 hack
-      if HidFileHandle = INVALID_HANDLE_VALUE then
-        FHidFileHandle := CreateFile(PChar(FPnPInfo.DevicePath), 0,
+      if not HasReadWriteAccess then
+        FHidFileHandle := CreateFile(PChar(PnPInfo.DevicePath), 0,
           FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING, 0, 0);
       if HidFileHandle <> INVALID_HANDLE_VALUE then
       begin
@@ -585,16 +662,16 @@ end;
 
 // open second device "file" for ReadFileEx and WriteFileEx
 
-function TJvHidDevice.OpenFileEx(Mode: TJvOpenExMode): Boolean;
+function TJvHidDevice.OpenFileEx(Mode: TJvHidOpenExMode): Boolean;
 begin
   Result := False;
   // check if open allowed (propagates this state)
   if IsAccessible then
-    if Mode = omRead then
+    if Mode = omhRead then
     begin
       if HidOverlappedRead = INVALID_HANDLE_VALUE then // if not already opened
       begin
-        FHidOverlappedRead := CreateFile(PChar(FPnPInfo.DevicePath), GENERIC_READ,
+        FHidOverlappedRead := CreateFile(PChar(PnPInfo.DevicePath), GENERIC_READ,
           FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, 0);
         if FHidOverlappedRead <> INVALID_HANDLE_VALUE then
         begin
@@ -608,7 +685,7 @@ begin
     else
     begin
       if HidOverlappedWrite = INVALID_HANDLE_VALUE then // if not already opened
-        FHidOverlappedWrite := CreateFile(PChar(FPnPInfo.DevicePath), GENERIC_WRITE,
+        FHidOverlappedWrite := CreateFile(PChar(PnPInfo.DevicePath), GENERIC_WRITE,
           FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, 0);
       Result := FHidOverlappedWrite <> INVALID_HANDLE_VALUE;
     end;
@@ -621,8 +698,8 @@ end;
 procedure TJvHidDevice.DoUnplug;
 begin
   CloseFile;
-  CloseFileEx(omRead);
-  CloseFileEx(omWrite);
+  CloseFileEx(omhRead);
+  CloseFileEx(omhWrite);
   FIsPluggedIn := False;
   // event even for checked in devices
   if Assigned(FUnplug) then
@@ -666,7 +743,15 @@ end;
 //------------------------------------------------------------------------------
 
 function TJvHidDevice.GetLinkCollectionNode(Idx: WORD): THIDPLinkCollectionNode;
+var
+  Siz: ULONG;
 begin
+  if Length(FLinkCollection) = 0 then
+  begin
+    Siz := Caps.NumberLinkCollectionNodes;
+    SetLength(FLinkCollection, Siz);
+    HidP_GetLinkCollectionNodes(@FLinkCollection[0], Siz, PreparsedData);
+  end;
   FillChar(Result, SizeOf(THIDPLinkCollectionNode), #0);
   if (Idx > 0) and (Idx <= Length(FLinkCollection)) then
     Result := FLinkCollection[Idx-1];
@@ -689,7 +774,7 @@ end;
 
 procedure TJvHidDevice.SetNumOverlappedBuffers(const Num: Integer);
 begin
-  if (Num <> FNumInputBuffers) and OpenFileEx(omRead) then
+  if (Num <> FNumInputBuffers) and OpenFileEx(omhRead) then
   begin
     HidD_SetNumInputBuffers(HidOverlappedRead, Num);
     HidD_GetNumInputBuffers(HidOverlappedRead, FNumOverlappedBuffers);
@@ -739,6 +824,167 @@ end;
 
 //------------------------------------------------------------------------------
 
+function TJvHidDevice.GetPreparsedData: PHIDPPreparsedData;
+begin
+  if FPreparsedData = nil then
+    if OpenFile then
+    begin
+      HidD_GetPreparsedData(HidFileHandle, FPreparsedData);
+      CloseFile;
+    end;
+  Result := FPreparsedData;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJvHidDevice.GetCaps: THIDPCaps;
+begin
+  FillChar(Result, SizeOf(THIDPCaps), #0);
+  HidP_GetCaps(PreparsedData, Result);
+end;
+
+//------------------------------------------------------------------------------
+
+function TJvHidDevice.GetVendorName: WideString;
+var
+  Buffer: array [0..253] of WideChar;
+begin
+  if FVendorName = '' then
+    if OpenFile then
+    begin
+      FillChar(Buffer, SizeOf(Buffer), #0);
+      if HidD_GetManufacturerString(HidFileHandle, Buffer, SizeOf(Buffer)) then
+        FVendorName := Buffer;
+      CloseFile;
+    end;
+  Result := FVendorName;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJvHidDevice.GetProductName: WideString;
+var
+  Buffer: array [0..253] of WideChar;
+begin
+  if FVendorName = '' then
+    if OpenFile then
+    begin
+      FillChar(Buffer, SizeOf(Buffer), #0);
+      if HidD_GetProductString(HidFileHandle, Buffer, SizeOf(Buffer)) then
+        FProductName := Buffer;
+      CloseFile;
+    end;
+  Result := FProductName;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJvHidDevice.GetSerialNumber: WideString;
+var
+  I: Integer;
+  Len: Integer;
+  IDs:    array [0..253] of WORD;
+  Buffer: array [0..253] of WideChar;
+begin
+  if FSerialNumber = '' then
+    if OpenFile then
+    begin
+      FillChar(Buffer, SizeOf(Buffer), #0);
+      if HidD_GetSerialNumberString(HidFileHandle, Buffer, SizeOf(Buffer)) then
+      begin
+        // calculate length of StringDescriptor 0
+        FillChar(IDs, SizeOf(IDs), $FF);
+        Len := 0;
+        HidD_GetIndexedString(HidFileHandle, 0, PWideChar(@IDs), SizeOf(IDs));
+        for I := High(IDs) downto 0 do
+          if IDs[I] <> $FFFF then
+          begin
+            if IDs[I] = 0 then
+              Len := I
+            else
+              Len := I+1;
+            Break;
+          end;
+        // compensate for buggy function
+        for I := 0 to Len - 1 do
+          if IDs[I] <> WORD(Buffer[I]) then
+          begin
+            FSerialNumber := Buffer;
+            Break;
+          end;
+      end;
+      CloseFile;
+    end;
+  Result := FSerialNumber;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJvHidDevice.GetPhysicalDescriptor: TJvPhysicalDescriptor;
+var
+  I: Integer;
+begin
+  if Length(FPhysicalDescriptor) = 0 then
+    if OpenFile then
+    begin
+      I := 0;
+      SetLength(FPhysicalDescriptor, 2048);
+      while not HidD_GetPhysicalDescriptor(HidFileHandle, FPhysicalDescriptor[0], I*SizeOf(WORD)) do
+      begin
+        Inc(I);
+        if (I > 2048) or (GetLastError <> ERROR_INSUFFICIENT_BUFFER) then
+        begin
+          I := 0;
+          Break;
+        end;
+      end;
+      SetLength(FPhysicalDescriptor, I);
+      CloseFile;
+    end;
+  Result := FPhysicalDescriptor;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJvHidDevice.GetLanguageStrings: TStringList;
+var
+  I:    Integer;
+  Len:  Integer;
+  IDs:  array [0..253] of WORD;
+  Name: array [0..255] of Char;
+begin
+  if FLanguageStrings.Count = 0 then
+    if OpenFile then
+    begin
+      // calculate length of StringDescriptor 0
+      FillChar(IDs, SizeOf(IDs), $FF);
+      Len := 0;
+      if HidD_GetIndexedString(HidFileHandle, 0, PWideChar(@IDs), SizeOf(IDs)) then
+        for I := High(IDs) downto 0 do
+          if IDs[I] <> $FFFF then
+          begin
+            if IDs[I] = 0 then
+              Len := I
+            else
+              Len := I+1;
+            Break;
+          end;
+      // transform id into localized language name
+      for I := 0 to Len - 1 do
+      begin
+        Name[0] := #0;
+        if GetLocaleInfo(WORD(IDs[I]), LOCALE_SLANGUAGE, Name, SizeOf(Name)) <> 0 then
+          FLanguageStrings.Add(Name)
+        else
+          FLanguageStrings.Add(Format('unknown Locale ID $%.4x',[WORD(IDs[I])]));
+      end;
+      CloseFile;
+    end;
+  Result := FLanguageStrings;
+end;
+
+//------------------------------------------------------------------------------
+
 procedure TJvHidDevice.SetConfiguration(const Config: THIDDConfiguration);
 begin
   if OpenFile then
@@ -757,14 +1003,35 @@ end;
 
 // cancel asynchronous operations on either HidOverlappedRead or HidOverlappedWrite
 
-function TJvHidDevice.CancelIO(const Mode: TJvOpenExMode): Boolean;
+function TJvHidDevice.CancelIO(const Mode: TJvHidOpenExMode): Boolean;
+
+  function CallCancelIO(Handle: THandle): Boolean;
+  type
+    TCancelIOFunc = function(hFile: THandle): BOOL; stdcall;
+  var
+    hKernel: TModuleHandle;
+    CancelIOFunc: TCancelIOFunc;
+  begin
+    hKernel := INVALID_HANDLE_VALUE;
+    Result := LoadModule(hKernel, 'Kernel32.dll');
+    if Result then
+    begin
+      @CancelIOFunc := GetModuleSymbol(hKernel, 'CancelIO');
+      if Assigned(CancelIOFunc) then
+        Result := CancelIOFunc(Handle)
+      else
+        Result := False;
+      UnloadModule(hKernel);
+    end;
+  end;
+
 begin
   Result := False;
-  if (Mode = omRead) and (HidOverlappedRead <> INVALID_HANDLE_VALUE) then
-    Result := Windows.CancelIO(HidOverlappedRead)
+  if (Mode = omhRead) and (HidOverlappedRead <> INVALID_HANDLE_VALUE) then
+    Result := CallCancelIO(HidOverlappedRead)
   else
-  if (Mode = omWrite) and (HidOverlappedWrite <> INVALID_HANDLE_VALUE) then
-    Result := Windows.CancelIO(HidOverlappedWrite);
+  if (Mode = omhWrite) and (HidOverlappedWrite <> INVALID_HANDLE_VALUE) then
+    Result := CallCancelIO(HidOverlappedWrite);
 end;
 
 //------------------------------------------------------------------------------
@@ -785,9 +1052,9 @@ end;
 
 // same for the other device "file"
 
-procedure TJvHidDevice.CloseFileEx(const Mode: TJvOpenExMode);
+procedure TJvHidDevice.CloseFileEx(const Mode: TJvHidOpenExMode);
 begin
-  if Mode = omRead then
+  if Mode = omhRead then
   begin
     if HidOverlappedRead <> INVALID_HANDLE_VALUE then
       CloseHandle(HidOverlappedRead);
@@ -1055,7 +1322,7 @@ end;
 function TJvHidDevice.ReadFileEx(var Report; ToRead: DWORD; CallBack: TPROverlappedCompletionRoutine): Boolean;
 begin
   Result := False;
-  if OpenFileEx(omRead) then
+  if OpenFileEx(omhRead) then
   begin
     FillChar(FOvlRead, SizeOf(TOverlapped), #0);
     FOvlRead.hEvent := DWORD(Self);
@@ -1068,7 +1335,7 @@ end;
 function TJvHidDevice.WriteFileEx(var Report; ToWrite: DWORD; CallBack: TPROverlappedCompletionRoutine): Boolean;
 begin
   Result := False;
-  if OpenFileEx(omWrite) then
+  if OpenFileEx(omhWrite) then
   begin
     FillChar(FOvlWrite, SizeOf(TOverlapped), #0);
     FOvlWrite.hEvent := DWORD(Self);
@@ -1082,15 +1349,15 @@ end;
 
 procedure TJvHidDeviceController.FillInList(var List: TList);
 var
-  PnPHandle:               HDEVINFO;
-  DevData:                 TSPDevInfoData;
-  DeviceInterfaceData:     TSPDeviceInterfaceData;
+  PnPHandle: HDEVINFO;
+  DevData: TSPDevInfoData;
+  DeviceInterfaceData: TSPDeviceInterfaceData;
   FunctionClassDeviceData: PSPDeviceInterfaceDetailData;
-  Success:                 LongBool;
-  Devn:                    Integer;
-  BytesReturned:           DWORD;
-  HidDev:                  TJvHidDevice;
-  PnPInfo:                 TJvPnPInfo;
+  Success: LongBool;
+  Devn: Integer;
+  BytesReturned: DWORD;
+  HidDev: TJvHidDevice;
+  PnPInfo: TJvHidPnPInfo;
 begin
   // create list
   List := TList.Create;
@@ -1119,42 +1386,14 @@ begin
         if SetupDiGetDeviceInterfaceDetail(PnPHandle, @DeviceInterfaceData, FunctionClassDeviceData, BytesReturned, BytesReturned, @DevData) then
         begin
           // fill in PnPInfo of device
-          with PnPInfo do
-          begin
-            DeviceID        := DevData.DevInst;
-            DevicePath      := PChar(@FunctionClassDeviceData.DevicePath);
-
-            Capabilities    := GetRegistryPropertyDWord (PnPHandle, DevData, SPDRP_CAPABILITIES);
-            ClassDescr      := GetRegistryPropertyString(PnPHandle, DevData, SPDRP_CLASS);
-            ClassGUID       := GetRegistryPropertyString(PnPHandle, DevData, SPDRP_CLASSGUID);
-            CompatibleIDs   := GetRegistryPropertyString(PnPHandle, DevData, SPDRP_COMPATIBLEIDS);
-            ConfigFlags     := GetRegistryPropertyDWord (PnPHandle, DevData, SPDRP_CONFIGFLAGS);
-            DeviceDescr     := GetRegistryPropertyString(PnPHandle, DevData, SPDRP_DEVICEDESC);
-            Driver          := GetRegistryPropertyString(PnPHandle, DevData, SPDRP_DRIVER);
-            FriendlyName    := GetRegistryPropertyString(PnPHandle, DevData, SPDRP_FRIENDLYNAME);
-            HardwareID      := GetRegistryPropertyString(PnPHandle, DevData, SPDRP_HARDWAREID);
-            LowerFilters    := GetRegistryPropertyString(PnPHandle, DevData, SPDRP_LOWERFILTERS);
-            Mfg             := GetRegistryPropertyString(PnPHandle, DevData, SPDRP_MFG);
-            UpperFilters    := GetRegistryPropertyString(PnPHandle, DevData, SPDRP_UPPERFILTERS);
-
-            Address         := GetRegistryPropertyString(PnPHandle, DevData, SPDRP_ADDRESS);
-            BusNumber       := GetRegistryPropertyDWord (PnPHandle, DevData, SPDRP_BUSNUMBER);
-            BusType         := GetRegistryPropertyString(PnPHandle, DevData, SPDRP_BUSTYPEGUID);
-            Characteristics := GetRegistryPropertyString(PnPHandle, DevData, SPDRP_CHARACTERISTICS);
-            DevType         := GetRegistryPropertyString(PnPHandle, DevData, SPDRP_DEVTYPE);
-            EnumeratorName  := GetRegistryPropertyString(PnPHandle, DevData, SPDRP_ENUMERATOR_NAME);
-            Exclusive       := GetRegistryPropertyDWord (PnPHandle, DevData, SPDRP_EXCLUSIVE);
-            LegacyBusType   := GetRegistryPropertyString(PnPHandle, DevData, SPDRP_LEGACYBUSTYPE);
-            LocationInfo    := GetRegistryPropertyString(PnPHandle, DevData, SPDRP_LOCATION_INFORMATION);
-            PhysDevObjName  := GetRegistryPropertyString(PnPHandle, DevData, SPDRP_PHYSICAL_DEVICE_OBJECT_NAME);
-            Security        := GetRegistryPropertyString(PnPHandle, DevData, SPDRP_SECURITY);
-            Service         := GetRegistryPropertyString(PnPHandle, DevData, SPDRP_SERVICE);
-            UINumber        := GetRegistryPropertyDWord (PnPHandle, DevData, SPDRP_UI_NUMBER);
-            UINumberFormat  := GetRegistryPropertyString(PnPHandle, DevData, SPDRP_UI_NUMBER_DESC_FORMAT);
-          end;
+          PnPInfo := TJvHidPnPInfo.Create(PnPHandle, DevData, PChar(@FunctionClassDeviceData.DevicePath));
           // create HID device object and add it to the device list
-          HidDev := TJvHidDevice.CtlCreate(PnPInfo, Self);
-          List.Add(HidDev);
+          try
+            HidDev := TJvHidDevice.CtlCreate(PnPInfo, Self);
+            List.Add(HidDev);
+          except
+            // ignore device if unreadable
+          end;
           Inc(Devn);
         end;
         FreeMem(FunctionClassDeviceData);
@@ -1181,30 +1420,23 @@ begin
   FNumCheckedInDevices  := 0;
   FNumCheckedOutDevices := 0;
   FNumUnpluggedDevices  := 0;
+  if LoadSetupApi then
+    LoadHid;
+  if IsHidLoaded then
+    HidD_GetHidGuid(FHidGuid)
+  else
+    FHidGuid := cHidGuid;
+
   // this is just to remind you that one controller is sufficient
   Inc(GlobalInstanceCount);
-  if (csDesigning in ComponentState) and (GlobalInstanceCount > 1) then
-    ShowMessage('One instance per application is sufficient. Note that at this time we can make no' +
-      'distinction between multiple applications in a project group, as the counter is managed in ' +
-      'the JVCL runtime package, which is always a single instance.');
-//    raise EControllerError.Create('Only one TJvHidDeviceController allowed per program');
+  if GlobalInstanceCount > 1 then
+    raise EControllerError.Create('Only one TJvHidDeviceController allowed per program');
 
-  // while in design mode we do not want a "live" connection, especially when used in application groups
-  if not (csDesigning in ComponentState) then
-  begin
-    if LoadSetupApi then
-      LoadHid;
-    if IsHidLoaded then
-      HidD_GetHidGuid(FHidGuid)
-    else
-      FHidGuid := cHidGuid;
-
-    FillInList(FList);
-    FNumCheckedInDevices := FList.Count;
-    if IsHidLoaded then
-      // only hook messages if there is a HID DLL
-      Application.HookMainWindow(EventPipe);
-  end;
+  FillInList(FList);
+  FNumCheckedInDevices := FList.Count;
+  if IsHidLoaded then
+    // only hook messages if there is a HID DLL
+    Application.HookMainWindow(EventPipe);
 end;
 
 //------------------------------------------------------------------------------
@@ -1223,7 +1455,7 @@ end;
 
 destructor TJvHidDeviceController.Destroy;
 var
-  I:      Integer;
+  I: Integer;
   HidDev: TJvHidDevice;
 begin
   Dec(GlobalInstanceCount);
@@ -1232,33 +1464,27 @@ begin
   FDevUnplugEvent    := nil;
   OnEnumerate        := nil;
   // unhook event pipe
-  if not (csDesigning in ComponentState) then
-  begin
-    if IsHidLoaded then
-      Application.UnhookMainWindow(EventPipe);
+  if IsHidLoaded then
+    Application.UnhookMainWindow(EventPipe);
 
-    if Assigned(FList) then
-      for I := 0 to FList.Count - 1 do
-      begin
-        HidDev := FList.Items[I];
-        with HidDev do
-        begin
-          // set to uncontrolled
-          FMyController := nil;
-          if IsCheckedOut then
-            DoUnplug // pull the plug for checked out TJvHidDevices
-          else
-            Free;    // kill TJvHidDevices which are not checked out
-        end;
-      end;
-    FList.Free;
-
-    if GlobalInstanceCount = 0 then
+  if Assigned(FList) then
+    for I := 0 to FList.Count - 1 do
     begin
-      UnloadHid;
-      UnloadSetupApi;
+      HidDev := FList.Items[I];
+      with HidDev do
+      begin
+        // set to uncontrolled
+        FMyController := nil;
+        if IsCheckedOut then
+          DoUnplug // pull the plug for checked out TJvHidDevices
+        else
+          Free;    // kill TJvHidDevices which are not checked out
+      end;
     end;
-  end;
+  FList.Free;
+
+  UnloadHid;
+  UnloadSetupApi;
 
   inherited Destroy;
 end;
@@ -1380,8 +1606,7 @@ begin
   if @FDeviceChangeEvent <> @Notifier then
   begin
     FDeviceChangeEvent := Notifier;
-    if not (csDesigning in ComponentState) then
-      DeviceChange;
+    DeviceChange;
     FDeviceChangeFired := True;
   end;
 end;
@@ -1401,8 +1626,8 @@ begin
     if not HidDev.IsCheckedOut then
     begin
       HidDev.CloseFile;
-      HidDev.CloseFileEx(omRead);
-      HidDev.CloseFileEx(omWrite);
+      HidDev.CloseFileEx(omhRead);
+      HidDev.CloseFileEx(omhWrite);
     end;
   end;
 end;
@@ -1591,8 +1816,8 @@ begin
   if HidDev <> nil then
   begin
     HidDev.CloseFile;
-    HidDev.CloseFileEx(omRead);
-    HidDev.CloseFileEx(omWrite);
+    HidDev.CloseFileEx(omhRead);
+    HidDev.CloseFileEx(omhWrite);
 
     if HidDev.IsPluggedIn then
     begin
@@ -1714,5 +1939,20 @@ begin
   end;
   Result := RetVal;
 end;
+
+//------------------------------------------------------------------------------
+
+{$IFDEF STANDALONE}
+
+// We place the component on the new 'Project JEDI' palette.
+// This is to encourage you to become a member.
+// Have a look at http://delphi-jedi.org for further details.
+
+procedure Register;
+begin
+  RegisterComponents('Project JEDI', [TJvHidDeviceController]);
+end;
+
+{$ENDIF STANDALONE}
 
 end.
