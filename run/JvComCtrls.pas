@@ -308,7 +308,7 @@ type
     property DisabledGradientDirection: TFillDirection read FDisabledGradientDirection write SetDisabledGradientDirection default fdTopToBottom;
     property GlyphLayout: TButtonLayout read FGlyphLayout write SetGlyphLayout default blGlyphLeft;
     property Divider: boolean read FDivider write SetDivider default False;
-    property ShowFocus:boolean read FShowFocus write SetShowFocus default False;
+    property ShowFocus: boolean read FShowFocus write SetShowFocus default False;
   end;
 
   TJvTabControl = class(TJvExTabControl)
@@ -456,6 +456,9 @@ type
     FPageControl: TPageControl;
     FOnPage: TPageChangedEvent;
     FOnComparePage: TJvTreeViewComparePageEvent;
+    FMenu: TMenu;
+    FOldMenuChange: TMenuChangeEvent;
+    FMenuDblClick: boolean;
     procedure InternalCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
     function GetSelectedCount: Integer;
@@ -479,12 +482,15 @@ type
     procedure SetMaxScrollTime(const Value: Integer);
     function GetUseUnicode: Boolean;
     procedure SetUseUnicode(const Value: Boolean);
+    procedure SetMenu(const Value: TMenu);
+    procedure DoMenuChange(Sender: TObject; Source: TMenuItem; Rebuild: Boolean);
   protected
+    procedure RebuildFromMenu; virtual;
+    function IsMenuItemClick(Node:TTreeNode):boolean;
     function DoComparePage(Page: TTabSheet; Node: TTreeNode): Boolean; virtual;
     function CreateNode: TTreeNode; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WMNotify(var Msg: TWMNotify); message CN_NOTIFY;
-
     procedure Change(Node: TTreeNode); override;
     procedure Delete(Node: TTreeNode); override;
     procedure DoEditCancelled; dynamic;
@@ -500,6 +506,9 @@ type
     procedure KeyPress(var Key: Char); override;
     procedure ResetPostOperationFlags;
     property ScrollDirection: Integer read FScrollDirection write SetScrollDirection;
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
+    procedure DblClick; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -526,6 +535,8 @@ type
   published
     property LineColor: TColor read GetLineColor write SetLineColor default clDefault;
     property ItemHeight: Integer read GetItemHeight write SetItemHeight default 16;
+    property Menu: TMenu read FMenu write SetMenu;
+    property MenuDblClick: boolean read FMenuDblClick write FMenuDblClick default False;
 
     property HintColor;
 
@@ -1144,13 +1155,13 @@ procedure TJvTabDefaultPainter.DrawTab(AControl: TCustomTabControl; Canvas: TCan
 var
   TextRect, ImageRect: TRect;
   SaveState: integer;
-  procedure DrawDivider(X,Y, X1, Y1: integer);
+  procedure DrawDivider(X, Y, X1, Y1: integer);
   begin
     Canvas.Pen.Color := clBtnShadow;
     Canvas.MoveTo(X, Y);
     Canvas.LineTo(X1, Y1);
     Canvas.Pen.Color := clHighlightText;
-    Canvas.MoveTo(X + 1,Y + 1);
+    Canvas.MoveTo(X + 1, Y + 1);
     Canvas.LineTo(X1 + 1, Y1 + 1);
   end;
 begin
@@ -1201,7 +1212,7 @@ begin
             DrawDivider(Rect.Left + 4 + Ord(Active), Rect.Top + RectHeight(Rect) div 2, Rect.Right - 4 - Ord(Active), Rect.Top + RectHeight(Rect) div 2);
         end;
     end;
-    InflateRect(ImageRect,-(RectWidth(ImageRect) - Images.Width) div 2,-(RectHeight(ImageRect) - Images.Height) div 2);
+    InflateRect(ImageRect, -(RectWidth(ImageRect) - Images.Width) div 2, -(RectHeight(ImageRect) - Images.Height) div 2);
     SaveState := SaveDC(Canvas.Handle);
     try
       Images.Draw(Canvas, ImageRect.Left, ImageRect.Top, ImageIndex, Enabled);
@@ -1876,6 +1887,8 @@ begin
     SelectItem(Node);
   end;
   inherited Change(Node);
+  if not MenuDblClick and IsMenuItemClick(Node) then
+    TMenuItem(Node.Data).OnClick(TMenuItem(Node.Data));
 end;
 
 procedure TJvTreeView.ClearSelection;
@@ -2089,6 +2102,8 @@ begin
     end;
   end;
   inherited KeyDown(Key, Shift);
+  if ((Key = VK_SPACE) or (Key = VK_RETURN)) and MenuDblClick and IsMenuItemClick(Selected) then
+      TMenuItem(Selected.Data).OnClick(TMenuItem(Selected.Data));
 end;
 
 procedure TJvTreeView.KeyPress(var Key: Char);
@@ -2374,6 +2389,94 @@ begin
   // (see MSDN: CCM_SETUNICODEFORMAT explanation for details)
   if HandleAllocated and (Win32Platform <> VER_PLATFORM_WIN32_NT) then
     SendMessage(Handle, TVM_SETUNICODEFORMAT, Integer(Value), 0);
+end;
+
+type
+  TMenuAccess = class(TMenu);
+
+procedure TJvTreeView.SetMenu(const Value: TMenu);
+begin
+  if FMenu <> Value then
+  begin
+    if (FMenu <> nil) and not (csDesigning in ComponentState) then
+      TMenuAccess(FMenu).OnChange := FOldMenuChange;
+    FMenu := Value;
+    if FMenu <> nil then
+    begin
+      FMenu.FreeNotification(Self);
+      if not (csDesigning in ComponentState) then
+      begin
+        FOldMenuChange := TMenuAccess(Fmenu).OnChange;
+        TMenuAccess(FMenu).OnChange := DoMenuChange;
+      end;
+    end;
+    RebuildFromMenu;
+  end;
+end;
+
+procedure TJvTreeView.DoMenuChange(Sender: TObject; Source: TMenuItem;
+  Rebuild: Boolean);
+begin
+  if Assigned(FOldMenuChange) then
+    FoldMenuChange(Sender, Source, Rebuild);
+  RebuildFromMenu;
+end;
+
+procedure TJvTreeView.RebuildFromMenu;
+var
+  i: integer;
+  function StripHotKey(const S: string): string;
+  begin
+    // poor mans stripper ;)
+    Result := StringReplace(StringReplace(StringReplace(S, '&&', #1, [rfReplaceAll]), '&', '', [rfReplaceAll]), #1, '&', [rfReplaceAll]);
+  end;
+  procedure MakeSubMenu(AParent: TTreeNode; AMenuItem: TMenuItem);
+  var
+    i: integer;
+    ANode: TTreeNode;
+  begin
+    if (AMenuItem.Caption <> '-') and (AMenuItem.Caption <> '') then
+    begin
+      ANode := Items.AddChildObject(AParent, StripHotKey(AMenuItem.Caption), TObject(AMenuItem));
+      ANode.ImageIndex := AMenuItem.ImageIndex;
+      ANode.SelectedIndex := AMenuItem.ImageIndex;
+      for i := 0 to AMenuItem.Count - 1 do
+        MakeSubMenu(ANode, AMenuItem.Items[i]);
+    end;
+  end;
+begin
+  Items.BeginUpdate;
+  try
+    Items.Clear;
+    if Menu <> nil then
+    begin
+      for i := 0 to Menu.Items.Count - 1 do
+        MakeSubMenu(nil, Menu.Items[i]);
+    end;
+  finally
+    Items.EndUpdate;
+  end;
+end;
+
+procedure TJvTreeView.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FMenu) then
+    Menu := nil;
+end;
+
+procedure TJvTreeView.DblClick;
+begin
+  inherited;
+  if MenuDblClick and IsMenuItemClick(Selected) then
+    TMenuItem(Selected.Data).OnClick(TMenuItem(Selected.Data));
+end;
+
+function TJvTreeView.IsMenuItemClick(Node: TTreeNode): boolean;
+begin
+ Result := Assigned(Menu) and Assigned(Node) and Assigned(Node.Data)
+    and (TObject(Node.Data) is TMenuItem) and Assigned(TMenuItem(Node.Data).OnClick);
 end;
 
 // === TJvIPAddressValues ====================================================
