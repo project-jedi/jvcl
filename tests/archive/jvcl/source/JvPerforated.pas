@@ -89,7 +89,10 @@ end;
 destructor TJvPerforated.Destroy;
 begin
   if not (csDestroying in FForm.ComponentState) then
+  begin
     SetTransparent(False);
+    UnRegisterWndProcHook(FForm, FormPosSizeChange, hoAfterMsg);
+  end;
   inherited;
 end;
 
