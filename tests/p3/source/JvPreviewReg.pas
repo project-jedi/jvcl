@@ -1,8 +1,13 @@
+{$I JVCL.INC}
 unit JvPreviewReg;
 
 interface
 uses
-  DesignEditors, DesignIntf;
+  {$IFDEF COMPILER6_UP}
+  DesignIntf, DesignEditors
+  {$ELSE}
+  DsgnIntf
+  {$ENDIF};
 
 type
   TJvPreviewerEditor = class(TComponentEditor)
@@ -17,17 +22,18 @@ procedure Register;
 implementation
 uses
   Classes, JvPrvwDoc, JvPrvwRender;
+{$R ..\resources\JvPreviewReg.dcr}
 
 procedure Register;
 begin
-  RegisterComponents('Jv Preview', [TJvPreviewControl,
-    TJvRichEditPreviewer, TJvStringsPreviewer,
-      TJvGraphicPreviewer, TJvControlPreviewer, TJvPreviewPrinter]);
+  RegisterComponents('Jv Print Preview', [TJvPreviewControl,
+    TJvPreviewRenderRichEdit, TJvPreviewRenderStrings,
+      TJvPreviewRenderGraphics, TJvPreviewRenderControl, TJvPreviewPrinter]);
 //  RegisterComponentEditor(TJvCustomPreviewer, TJvPreviewerEditor);
 end;
 
 type
-  TJvHackCustomPreviewer = class(TJvCustomPreviewer);
+  TJvHackCustomPreviewer = class(TJvCustomPreviewRenderer);
 
   { TJvPreviewerEditor }
 
@@ -36,7 +42,7 @@ var pv: TJvCustomPreviewControl;
 begin
   case Index of
     0:
-      TJvCustomPreviewer(Component).CreatePreview(false);
+      TJvHackCustomPreviewer(Component).CreatePreview(false);
     1:
       begin
         pv := TJvHackCustomPreviewer(Component).PrintPreview;
