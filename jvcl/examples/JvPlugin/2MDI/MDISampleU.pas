@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, Menus, ComCtrls, Buttons, JvPluginMan, JvComponent;
+  ExtCtrls, Menus, ComCtrls, Buttons, JvPluginManager, JvComponent;
 
 type
   TForm1 = class(TForm)
