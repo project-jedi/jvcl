@@ -27,6 +27,7 @@ object frmInspector: TfrmInspector
     BandWidth = 150
     BevelInner = bvNone
     BevelKind = bkTile
+    RelativeDivider = False
     Divider = 75
     ItemHeight = 16
     Painter = JvInspectorBorlandPainter1

@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvInspector, IniFiles, TypInfo, JvComponent;
+  JvInspector, IniFiles, TypInfo, JvComponent, StdCtrls;
 
 type
   TfrmInspector = class(TForm)
@@ -77,8 +77,8 @@ begin
   InspCat := TJvInspectorCustomCategoryItem.Create(JvInspector1.Root, nil);
   InspCat.DisplayName := 'JvInspector Settings';
   for I := Low(PropArray) to High(PropArray) do
-    TJvInspectorPropData.New(InspCat, JvInspector1, GetPropInfo(JvInspector1, PropArray[I, 0])).Data.Name := PropArray[I, 1];
-  TJvInspectorVarData.New(InspCat, 'AboutJVCL', TypeInfo(string), VerInfoStr).Data.Name := 'About JVCL';
+    TJvInspectorPropData.New(InspCat, JvInspector1, GetPropInfo(JvInspector1, PropArray[I, 0])).DisplayName := PropArray[I, 1];
+  TJvInspectorVarData.New(InspCat, 'AboutJVCL', TypeInfo(string), VerInfoStr).DisplayName := 'About JVCL';
   InspCat.Expanded := True;
 end;
 
@@ -100,7 +100,8 @@ procedure TfrmInspector.AddFormAndControls;
 var
   InspCat: TJvInspectorCustomCategoryItem;
 begin
-  Application.CreateForm(TfrmTest, frmTest);
+  if frmTest = nil then
+    Application.CreateForm(TfrmTest, frmTest);
   InspCat := TJvInspectorCustomCategoryItem.Create(JvInspector1.Root, nil);
   InspCat.DisplayName := 'Form and controls (published property data).';
   InspCat.SortKind := iskNone;
@@ -172,9 +173,6 @@ begin
     ChangeChkState(Item[I]);
 end;
 
-type
-  THackInsp = class(TJvCustomInspector);
-
 procedure TfrmInspector.FormCreate(Sender: TObject);
 begin
   BoolsAsChecks := True;
@@ -199,6 +197,8 @@ begin
     begin
       AddOwner(Self);
     end;
+  if Item is TJvInspectorFontItem then
+    TJvInspectorFontItem(Item).CreateMemberItems := False;
 end;
 
 procedure TfrmInspector.GetBoolsAsChecks(Sender: TJvInspectorEventData; var Value: Int64);
