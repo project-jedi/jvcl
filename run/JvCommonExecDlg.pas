@@ -30,13 +30,7 @@ unit JvCommonExecDlg;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QWindows,
-  {$ENDIF VisualCLX}
-  Classes,
+  Windows, Classes,
   JvBaseDlg;
 
 type

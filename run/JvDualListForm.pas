@@ -29,11 +29,7 @@ unit JvDualListForm;
 interface
 
 uses
-  Windows,
-  {$IFDEF VisualCLX}
-  Types,
-  {$ENDIF VisualCLX}
-  Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
+  Windows, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   {$IFDEF VCL}
   JvListBox, JvCtrls,
   {$ENDIF VCL}

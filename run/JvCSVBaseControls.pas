@@ -30,13 +30,7 @@ unit JvCSVBaseControls;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types,
-  {$ENDIF VisualCLX}
-  Classes, Controls, StdCtrls, Buttons,
+  Windows, Classes, Controls, StdCtrls, Buttons,
   JvComponent;
 
 type

@@ -34,14 +34,7 @@ unit JvDesktopAlertForm;
 interface
 
 uses
-  Windows,
-  {$IFDEF VCL}
-  Messages,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types,
-  {$ENDIF VisualCLX}
-  Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
+  Windows, Messages, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   ImgList, ActnList,
   JvButton, JvLabel, JvComponent;
 

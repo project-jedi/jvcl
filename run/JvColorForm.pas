@@ -33,12 +33,10 @@ unit JvColorForm;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows, Messages,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, Qt, QWindows,
+  Qt,
   {$ENDIF VisualCLX}
+  Windows, Messages,
   Classes, Graphics, Controls, Forms, Buttons, Dialogs,
   JvConsts, // missing color constants for D5
   JvColorBox;

@@ -31,13 +31,7 @@ unit JvDataProviderIntf;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types,
-  {$ENDIF VisualCLX}
-  Classes, Graphics, ImgList,
+  Windows, Classes, Graphics, ImgList,
   JclBase, JvTypes;
 
 type
