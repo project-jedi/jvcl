@@ -44,11 +44,11 @@ uses
   JvDsgnConsts,
   JvClipboardMonitor, JvClipboardViewer, JvCommStatus, {JvComputerInfo,}
   JvDdeCmd, JvDeviceChanged, JvDirectories, JvDragDrop, JvHidControllerClass,
-  JvJoystick, JvKeyboardStates, JvMRUList, JvMRUManager, JvNTEventLog, JvRas32,
+  JvSystemColors, JvJoystick, JvKeyboardStates, JvMRUList, JvMRUManager, JvNTEventLog, JvRas32,
   JvAppInst, JvScreenSaver, JvShellHook, JvSHFileOperation, JvSoundControl,
-  JvSystemColors, JvThread, JvThreadTimer, JvTimerList, JvChangeNotify,
+  JvThread, JvThreadTimer, JvTimerList, JvChangeNotify,
   JvSimpleXml, JvXMLDatabase, JvWndProcHook, JvFormPlacement, JvTimer,
-  JvSearchFiles, JvPerfMon95, JvChangeNotifyEditor, JvMinMaxForm,
+  JvSearchFiles, JvPerfMon95, JvChangeNotifyEditor, JvMinMaxForm, JvComputerInfoEx, 
   JvFormPropertiesForm, JvPerfStatEditor, JvTimerListEditor, JvDsgnEditors,
   JvAppXMLStorage, JvFormPlacementSelectList;
 
@@ -64,12 +64,12 @@ begin
   RegisterComponents(RsPaletteSystem, [TJvClipboardMonitor, TJvClipboardViewer,
     {TJvComputerInfo, // - do not register this component as default}
     TJvSHFileOperation, TJvChangeNotify, TJvDropTarget, TJvDragDrop, TJvAppInstances,
-      TJvHidDeviceController, TJvNTEventLog, TJvScreenSaver, TJvDeviceChanged,
-      TJvJoystick, TJvSoundControl, TJvKeyboardStates, TJvDirectories,
-      TJvSystemColors, TJvAppDdeCmd, TJvPerfStat95]);
+      TJvHidDeviceController, TJvNTEventLog, TJvScreenSaver,
+      TJvJoystick, TJvSoundControl, {TJvDeviceChanged, TJvSystemColors, TJvKeyboardStates, TJvDirectories, these are not needed - included in JvComputerInfoEx instead}
+      TJvAppDdeCmd, TJvPerfStat95, TJvComputerInfoEx]);
   RegisterComponents(RsPaletteInternetWork, [TJvSimpleXML, TJvXMLDatabase,
     TJvRas32, TJvCommStatus]);
-  RegisterComponents(RsPaletteNonVisual, [TJvSearchFiles, TJvMRUList, TJvMRUManager, 
+  RegisterComponents(RsPaletteNonVisual, [TJvSearchFiles, TJvMRUList, TJvMRUManager,
       TJvShellHook, TJvWindowHook, TJvTimer, TJvThread, TJvThreadTimer, TJvTimerList]);
   RegisterComponents(RsPalettePersistence, [TJvFormStorage, TJvFormStorageSelectList,
       TJvAppXMLFileStorage]);

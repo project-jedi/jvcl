@@ -62,5 +62,6 @@
     <File Name="..\..\common\DBT.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\common\SetupApi.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppXmlStorage.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvComputerInfoEx.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
