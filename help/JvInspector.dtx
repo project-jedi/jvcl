@@ -884,6 +884,25 @@ Description
 @@TInspectorSetFlags
 <COMBINE TInspectorSetFlag>
 ----------------------------------------------------------------------------------------------------
+@@TInspectorTMethodFlag
+Summary
+  Flags used for the TMethod (event) type inspector items.
+Description
+  TInspectorTMethodFlag are the available flags for TMethod (event handlers) type inspector item.
+@@TInspectorTMethodFlag.imfShowInstanceNames
+  Indicates if instance names should be displayed.
+@@TInspectorTMethodFlag.imfNoShowFirstInstanceName
+  Indicates wether the name of the first instance in the list should be suppressed.
+@@TInspectorTMethodFlag.imfSortMethods
+  Indicates wether event handlerss are sorted alphabetically within their owner.
+@@TInspectorTMethodFlag.imfSortInstances
+  Indicates wether instances are sorted alphabetically.
+@@TInspectorTMethodFlag.imfKeepFirstInstanceAsFirst
+  Indicates wether the first instance in the list should stay the first after sorting.
+----------------------------------------------------------------------------------------------------
+@@TInspectorTMethodFlags
+<COMBINE TInspectorTMethodFlag>
+----------------------------------------------------------------------------------------------------
 @@TJvInspectorItemSizing
 Summary
   Contains item row sizing settings.
@@ -3540,6 +3559,337 @@ Description
   Set ShowSeconds to True to allow the editor to display the seconds.
   
   Set ShowSeconds to False to hide the seconds from the editor.
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem
+----------------------------------------------------------------------------------------------------
+Summary
+  Event (TMethod) item.
+Description
+  TJvInspectorTMethodItem is an inspector item that allows editing of event types. The item provides
+  methods to specify the list of allowed event handlers and instances. You are not limited to
+  published methods, you can provide any accessable method, even protected methods if you use the
+  class cracking technique.
+
+  In addition the item provides properties that control the way the events are displayed. You can
+  specify to show no instance names, all instance names or all but the first instance names. You can
+  also specify the order of the event handlers.
+
+  * To specify that instance names are to be shown, set the ShowInstanceNames property to True.
+  * To specify that the first instance name should <B>not</B> be shown, set NoShowFirstInstanceName
+    to True in addition to setting ShowInstanceNames to True.
+  * To specify that the event list should be sorted by instance, set SortInstances to True.
+  * To specify that the events of the first instance should show first regardless of any sorting,
+    set KeepFirstInstanceAsFirst to True.
+  * To specify that the event list should be sorted by method name, set SortMethods to True.
+  * Use AddInstance to add to a handler instance (such as forms and data modules).
+  * Use AddMethod to add a handler to an instance.
+  * Optionally in addition to or instead of the above AddInstance/AddMethod, assign an
+    <LINK TJvCustomInspectorItem.OnGetValueList, OnGetValueList> event handler to provide
+    additionally selectable handlers.
+
+  TJvCustomInspectorData registers this item for the TMethod (event) type.
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.AddInstance
+Summary
+  Adds an event instance to the instance list.
+Description
+  AddInstance adds an event instance to the list of instances, providing it with a name. Before you
+  can add any method you should add and name the instance to which the method belongs. After you
+  have added the instance you can add methods to the instance using anyone of the AddMethod methods.
+Parameters
+  Instance -      TObject instance to add.
+  InstanceName -  Name of the instance. AddInstance will not check if the specified object is a
+                  TComponent (or descendant) to retrieve the name. You should do so yourself in the
+                  call to this method.
+See Also
+  AddMethod, DeleteInstance, ClearInstances, IndexOfInstance, InstanceCount, Instances,
+  InstanceNames
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.AddMethod
+Summary
+  Adds an event handler to the list of event handlers.
+Description
+  AddMethod adds an event handler to the list of event handlers, providing it with a name. Before
+  you can add any method you should first add the instance to which the method belongs, using
+  AddInstance.
+  
+  There are two overloaded versions of this method. One provides you with a way to add a method
+  pointer directly (a TMethod) while the other provides you with a way to specify the instance and
+  the address of the handler. Both allow to set the name of the handler.
+Parameters
+  Method -      Method pointer to add. The method pointer provides a Data address (the instance) and
+                a Code address (the address of the handler).
+  MethodName -  Name of the method. AddMethod will not try to obtain the method name by calling
+                MethodName on the instance using the provided handler address. You may do that
+                yourself in the call to this method.
+  Instance -    Instance to which the handler should be added.
+  MethodAddr -  Address of the handler to add.
+See Also
+  AddInstance, DeleteMethod, ClearMethods, IndexOfMethod, MethodCount, Methods, MethodNames
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.DeleteInstance
+Summary
+  Removes an event instance from the instance list.
+Description
+  DeleteInstance removes an event instance from the list of instances. Deleting an instance will
+  result in deleting all handlers added to this instance.
+  
+  There are three overloaded versions of this method. You can delete an instance based on it's
+  position in the list, by providing a TObject instance or by specifying it's name.
+Parameters
+  Index -         0-based index in the list of added instances of the instance to delete.
+  Instance -      TObject instance to delete. If the specified instance does not exist, an exception
+                  will be raised.
+  InstanceName -  Name (case insensitive) of the instance to delete. If the specified instance does
+                  not exist, an exception will be raised.
+See Also
+  DeleteMethod, AddInstance, ClearInstances, IndexOfInstance, InstanceCount, Instances,
+  InstanceNames
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.DeleteMethod
+Summary
+  Removes an event handler from the list of event handlers.
+Description
+  DeleteMethod removes an event handler from the list of event handlers.
+  
+  There are seven overloaded versions of this method that allow various combinations of specifying
+  the instance and/or handler to delete.
+Parameters
+  Method -        Method pointer to delete. The method pointer provides a Data address (the
+                  instance) and a Code address (the address of the handler).
+  InstanceIndex - 0-based index in the list of added instances of the instance of the handler to
+                  delete.
+  Instance -      TObject instance of the handler to delete. If the specified instance does not
+                  exist, an exception is raised.
+  InstanceName -  Name (case insensitive) of the instance of the handler to delete. If the specified
+                  instance does not exist, an exception is raised.
+  Index -         0-based index of the handler to delete.
+  MethodName -    Name (case insensitive) of the handler to delete. If the specified handler does
+                  not exist within the specified instance, an exception is raised.
+See Also
+  DeleteInstance, AddMethod, ClearMethods, IndexOfMethod, MethodCount, Methods, MethodNames
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.ClearInstances
+Summary
+  Removes all event instance from the list of instances.
+Description
+  ClearInstances removes all event instances from the list of instances. Deleting the instances will
+  result in deleting all handlers.
+See Also
+  ClearMethods, AddInstance, DeleteInstance, IndexOfInstance, InstanceCount, Instances,
+  InstanceNames
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.ClearMethods
+Summary
+  Removes all event handlers from the list of event handlers.
+Description
+  ClearMethods removes all event handlers from the list of event handlers.
+  
+  There are three overloaded versions of this method. You can specify an index of an instance, the
+  instance itself or the name of the instance for which you want to remove all handlers.
+Parameters
+  InstanceIndex - 0-based index in the list of added instances of the instance for which all
+                  handlers are to be removed.
+  Instance -      TObject instance for which to delete all handlers. If the specified instance does
+                  not exist, an exception is raised.
+  InstanceName -  Name (case insensitive) of the instance for which to delete all handlers. If the
+                  specified instance does not exist, an exception is raised.
+See Also
+  ClearInstances, AddMethod, DeleteMethod, IndexOfMethod, MethodCount, Methods, MethodNames
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.IndexOfInstance
+Summary
+  Determines the index of an instance in the list instances.
+Description
+  IndexOfInstance determines the 0-based index of an instance in the list instances. If the
+  specified instance does not exists, -1 will be returned.
+  
+  There are two overloaded versions of this method. One to specify a TObject instance and the other
+  to specify the instance name.
+Parameters
+  Instance -      TObject instance to locate.
+  InstanceName -  Case insensitive name of the instance to locate.
+See Also
+  IndexOfMethod, AddInstance, DeleteInstance, ClearInstances, InstanceCount, Instances,
+  InstanceNames
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.IndexOfMethod
+Summary
+  Determines the index of an event handler in the list of event handlers.
+Description
+  IndexOfMethod determines the 0-based index of an event handler in the list of event handlers. If
+  the specified handler does not exist, -1 will be returned.
+  
+  There are four overloaded versions of this method that allow various combinations of how you can
+  specify which instance to search in and which handler to locate.
+Parameters
+  Method -        Method pointer to locate. The method pointer provides a Data address (the
+                  instance) and a Code address (the address of the handler).
+  InstanceIndex - 0-based index in the list of added instances of the instance to search.
+  Instance -      TObject instance to search. If the specified instance does not exist, -1 will be
+                  returned.
+  InstanceName -  Name (case insensitive) of the instance to search. If the specified instance does
+                  not exist, -1 will be returned.
+  MethodName -    Name (case insensitive) of the handler to locate.
+See Also
+  IndexOfInstance, AddMethod, DeleteMethod, ClearMethods, MethodCount, Methods, MethodNames
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.InstanceCount
+Summary
+  Determines the number of instances added.
+Description
+  InstanceCount determines the number of instances added.
+See Also
+  Instances, InstanceNames, AddInstance, DeleteInstance, ClearInstances
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.Instances
+Summary
+  Array of added instances.
+Description
+  Instances is 0-based array of instances added. You can specify an index in the range from 0 upto
+  InstanceCount-1 to retrieve a reference to an added instance.
+  
+  The array will remain in the order in which items are added, regardless of the state of
+  SortInstances and related properties.
+Parameters
+  I - 0-based index in the list added instances.
+See Also
+  InstanceCount, InstanceNames, AddInstance, DeleteInstance, ClearInstances, SortInstances.
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.InstanceNames
+Summary
+  Array of names of added instances.
+Description
+  InstanceNames is 0-based array of names of added instances. You can specify an index in the range
+  from 0 upto InstanceCount-1 to retrieve the name of an added instance.
+  
+  The array will remain in the order in which items are added, regardless of the state of
+  SortInstances and related properties.
+Parameters
+  I - 0-based index in the list added instances.
+See Also
+  InstanceCount, Instances, AddInstance, DeleteInstance, ClearInstances, SortInstances.
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.ItemTMethodFlags
+Summary
+  TMethod item flags.
+Description
+  ItemTMethodFlags are the flags specific to the TMethod (event handler) inspector item.
+  
+  Read ItemTMethodFlags to determine the current flags or set it to a new value.
+See Also
+  KeepFirstInstanceAsFirst, NoShowFirstInstanceName, ShowInstanceNames, SortMethods, SortInstances
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.KeepFirstInstanceAsFirst
+Summary
+  Indicates wether the handlers of the first instance should appear before other instance handlers.
+Description
+  KeepFirstInstanceAsFirst indicates wether the handlerss of the first instance should appear before
+  the handlers of the other instances, regardless of any sorting option.
+  
+  KeepFirstInstanceAsFirst maps to the imfKeepFirstInstanceAsFirst flag in the ItemTMethodFlags
+  property.
+See Also
+  ItemTMethodFlags, Instances, SortInstances, SortMethods
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.MethodCount
+Summary
+  Determines the number of event handlers added to an instance.
+Description
+  MethodCount determines the number of Methods added.
+Parameters
+  Instance -  TObject instance for which to retrieve a method name.
+See Also
+  Instances, Methods, MethodNames, AddMethod, DeleteMethod, ClearMethods
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.Methods
+Summary
+  Array of added event handlers.
+Description
+  Methods is 0-based array of added event handlers. You can specify a TObject instance and an index
+  in the range from 0 upto MethodCount[<I>\<TObject instance></I>]-1 to retrieve the TMethod pointer
+  of an added event handler.
+  
+  The array will remain in the order in which items are added, regardless of the state of
+  SortMethods and related properties.
+Parameters
+  Instance -  TObject instance for which to retrieve a method name.
+  I     -     0-based index of the handler for which to retrieve the name.
+See Also
+  Instances, MethodCount, MethodNames, AddMethod, DeleteMethod, ClearMethods, SortMethods.
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.MethodNames
+Summary
+  Array of names of added event handlers.
+Description
+  MethodNames is 0-based array of names of added event handlers. You can specify a TObject instance
+  and an index in the range from 0 upto MethodCount[<I>\<TObject instance></I>]-1 to retrieve the
+  name of an added event handler.
+  
+  The array will remain in the order in which items are added, regardless of the state of
+  SortMethods and related properties.
+Parameters
+  Instance -  TObject instance for which to retrieve a method name.
+  I     -     0-based index of the handler for which to retrieve the name.
+See Also
+  Instances, MethodCount, Methods, AddMethod, DeleteMethod, ClearMethods, SortMethods.
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.NoShowFirstInstanceName
+Summary
+  Indicates wether the first instance's name is to be shown in the drop down list.
+Description
+  NoShowFirstInstanceName indicates whether the first instance's name is to be prefixed in the drop
+  down list of assignable handlers.
+
+  When set to True, the name of the first instance is not shown, regardless of the state of the
+  ShowInstanceNames property. When set to False, the name of the first instance will be shown if
+  ShowInstanceNames is also set to True.
+
+  NoShowFirstInstanceName maps to the imfNoShowFirstInstanceName flag in the ItemTMethodFlags
+  property.
+See Also
+  ItemTMethodFlags, ShowInstanceNames
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorComponentItem.ShowInstanceNames
+Summary
+  Indicates wether the instance names are to be shown in the drop down list.
+Description
+  ShowInstanceNames indicates whether the instance names are to be prefixed in the drop down list of
+  assignable handlers.
+
+  When set to True, the name of the instance are shown. If NoShowFirstInstanceName is also set to
+  True, the name of the first instance will not be shown.
+
+  ShowInstanceNames maps to the imfShowInstanceNames flag in the ItemTMethodFlags property.
+See Also
+  ItemTMethodFlags, NoShowFirstInstanceName
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorComponentItem.SortMethods
+Summary
+  Indicates wether event handlers are sorted alphabetically.
+Description
+  SortMethods indicates wether or not the event handlers of each instance are sorted alphabetically.
+
+  Sorting instances can be controlled separately through the SortInstances property.
+
+  SortMethods maps to the imfSortMethods flag in the ItemTMethodFlags property.
+See Also
+  ItemTMethodFlags, Instances, SortInstances
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.SortInstances
+Summary
+  Indicates wether instances are grouped alphabetically.
+Description
+  SortInstances indicates wether or not the instance list is sorted alphabetically before adding
+  handlers.
+
+  Sorting handlers can be controlled separately through the SortMethods property. In addition, if
+  KeepFirstInstnaceAsFirst is set to True, the first instance of the list (Instances[0]) will always
+  be the first in the list.
+
+  SortInstances maps to the imfSortInstances flag in the ItemTMethodFlags property.
+See Also
+  ItemTMethodFlags, KeepFirstInstanceAsFirst, Instances, SortMethods
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTStringsItem
 ----------------------------------------------------------------------------------------------------
