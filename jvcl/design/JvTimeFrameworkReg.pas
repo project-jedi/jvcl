@@ -24,15 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvTimeFrameworkReg;
 
-// WARNING!!
-// THIS FILE CANNOT BE INCLUDED IN A RUNTIME PACKAGE.  IF YOU INCLUDE
-// THIS FILE IN A RUNTIME PACKAGE THE CODE FROM DsgnIntf WILL BE COMPILED
-// INTO THE PACKAGE.  DsgnIntf IS *NOT* DESIGNATED AS REDISTRIBUTABLE BY
-// BORLAND.
+{$I jvcl.inc}
 
 interface
 

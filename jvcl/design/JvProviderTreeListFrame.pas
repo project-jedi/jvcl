@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvProviderTreeListFrame;
+
+{$I jvcl.inc}
 
 interface
 
@@ -168,12 +168,12 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-{$IFNDEF COMPILER6_UP} // (rom) see SysUtils  - (ahuser) Delphi 5 needs this function 
+{$IFDEF COMPILER5}
 function IsEqualGUID(const IID1, IID2: TGUID): Boolean;
 begin
   Result := CompareMem(@IID1, @IID2, SizeOf(IID1));
 end;
-{$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 //=== { TMasterConsumer } ====================================================
 

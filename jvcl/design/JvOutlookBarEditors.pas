@@ -23,11 +23,12 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvOutlookBarEditors;
 
+{$I jvcl.inc}
+
 interface
+
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
@@ -275,7 +276,7 @@ begin
 end;
 
 
-{ TJvOutlookBarPageImageIndexProperty }
+//=== { TJvOutlookBarPageImageIndexProperty } ================================
 
 function TJvOutlookBarPageImageIndexProperty.ImageList: TCustomImageList;
 begin

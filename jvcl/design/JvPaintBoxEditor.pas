@@ -23,11 +23,12 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvPaintBoxEditor;
 
+{$I jvcl.inc}
+
 interface
+
 uses
   SysUtils, Classes,
   {$IFDEF VCL}

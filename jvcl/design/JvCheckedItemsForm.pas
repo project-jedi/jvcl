@@ -22,9 +22,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvCheckedItemsForm;
+
+{$I jvcl.inc}
 
 interface
 

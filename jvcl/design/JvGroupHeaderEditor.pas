@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvGroupHeaderEditor;
+
+{$I jvcl.inc}
 
 interface
 

@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvMailEditor;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvMailEditor;
 
 interface
 
@@ -50,7 +50,6 @@ type
     function GetVerbCount: Integer; override;
   end;
 
-
 implementation
 
 uses
@@ -59,11 +58,11 @@ uses
 procedure TJvMailEditor.Address;
 begin
   with Component as TJvMail do
-  try
-    Address(Owner.Name + '.' + Name);
-  finally
-    FreeSimpleMapi;
-  end;
+    try
+      Address(Owner.Name + '.' + Name);
+    finally
+      FreeSimpleMapi;
+    end;
 end;
 
 procedure TJvMailEditor.ExecuteVerb(Index: Integer);
@@ -94,11 +93,11 @@ end;
 procedure TJvMailEditor.SendMail;
 begin
   with Component as TJvMail do
-  try
-    SendMail;
-  finally
-    FreeSimpleMapi;
-  end;
+    try
+      SendMail;
+    finally
+      FreeSimpleMapi;
+    end;
 end;
 
 end.

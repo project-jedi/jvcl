@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvDockPropertyEditors;
+
+{$I jvcl.inc}
 
 interface
 
@@ -78,7 +78,7 @@ resourcestring
   RsDockNextPage = 'Ne&xt Page';
   RsDockPreviousPage = '&Previous Page';
   RsDockDeletePage = '&Delete Page';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 {$IFNDEF USEJVCL}
 
@@ -149,7 +149,7 @@ begin
   Result := 1;
 end;
 
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 //=== { TJvDockVIDTabPageControlEditor } =====================================
 

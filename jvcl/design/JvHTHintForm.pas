@@ -25,9 +25,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvHTHintForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -112,7 +112,8 @@ end;
 procedure TJvHintEditor.HintMemoKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_ESCAPE then
+  //if Key = VK_ESCAPE then
+  if Ord(Key) = 27 then   //asn: With VisualCLX VK_ESCAPE <> 27
     BtnCancel.Click;
 end;
 

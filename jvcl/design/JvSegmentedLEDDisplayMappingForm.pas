@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvSegmentedLEDDisplayMappingForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -153,18 +153,18 @@ end;
 procedure TfrmJvSLDMappingEditor.StoreSettings;
 begin
   inherited StoreSettings;
-  with TRegistry.Create do
-  try
-    LazyWrite := False;
-    if OpenKey(GetRegKey, True) then
+    with TRegistry.Create do
     try
-      WriteString(cLastOpenFolder, fmeMapper.LastOpenFolder);
-      WriteString(cLastSaveFolder, fmeMapper.LastSaveFolder);
+      LazyWrite := False;
+      if OpenKey(GetRegKey, True) then
+        try
+          WriteString(cLastOpenFolder, fmeMapper.LastOpenFolder);
+          WriteString(cLastSaveFolder, fmeMapper.LastSaveFolder);
+        finally
+          CloseKey;
+        end;
     finally
-      CloseKey;
-    end;
-  finally
-    Free;
+      Free;
   end;
 end;
 
@@ -172,19 +172,19 @@ procedure TfrmJvSLDMappingEditor.RestoreSettings;
 begin
   inherited RestoreSettings;
   with TRegistry.Create do
-  try
-    if OpenKey(GetRegKey, False) then
     try
-      if ValueExists(cLastOpenFolder) then
-        fmeMapper.LastOpenFolder := ReadString(cLastOpenFolder);
-      if ValueExists(cLastSaveFolder) then
-        fmeMapper.LastSaveFolder := ReadString(cLastSaveFolder);
+      if OpenKey(GetRegKey, False) then
+        try
+          if ValueExists(cLastOpenFolder) then
+            fmeMapper.LastOpenFolder := ReadString(cLastOpenFolder);
+          if ValueExists(cLastSaveFolder) then
+            fmeMapper.LastSaveFolder := ReadString(cLastSaveFolder);
+        finally
+          CloseKey;
+        end;
     finally
-      CloseKey;
+      Free;
     end;
-  finally
-    Free;
-  end;
 end;
 
 procedure TfrmJvSLDMappingEditor.UpdateDigitClass(Sender: TObject);

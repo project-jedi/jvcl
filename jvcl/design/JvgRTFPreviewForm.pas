@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgRTFPreviewForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -36,7 +36,6 @@ uses
 type
   TJvgRTFPreview = class(TForm)
     Rich: TRichEdit;
-  private
   public
   end;
 

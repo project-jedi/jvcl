@@ -19,15 +19,16 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  Property editors for TDate, TTime and TDateTime data types
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
-{ Property editors for TDate, TTime and TDateTime data types }
-
 unit JvDateTimeForm;
+
+{$I jvcl.inc}
 
 interface
 

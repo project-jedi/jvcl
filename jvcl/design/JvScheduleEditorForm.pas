@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvScheduleEditorForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -474,9 +474,7 @@ begin
                   edMonthlyDay.Text := IntToStr(Day);
                   edMonthlyEveryMonth.Text := IntToStr(Interval);
                 end;
-              sikDay, sikWeekDay, sikWeekendDay, sikMonday, sikTuesday,
-              sikWednesday, sikThursday, sikFriday, sikSaturday,
-              sikSunday:
+              sikDay, sikWeekDay, sikWeekendDay, sikMonday..sikSunday:
                 begin
                   rbMonthlyEveryIndex.Checked := True;
                   if (IndexValue > 0) and (IndexValue < 5) then
@@ -510,9 +508,7 @@ begin
                   cbYearlyDateMonth.ItemIndex := Month - 1;
                   edYearlyDateInterval.Text := IntToStr(Interval);
                 end;
-              sikDay, sikWeekDay, sikWeekendDay, sikMonday, sikTuesday,
-                sikWednesday, sikThursday, sikFriday, sikSaturday,
-                sikSunday:
+              sikDay, sikWeekDay, sikWeekendDay, sikMonday..sikSunday:
                 begin
                   rbYearlyIndex.Checked := True;
                   if (IndexValue > 0) and (IndexValue < 5) then

@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvAVICaptureEditors;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvAVICaptureEditors;
 
 interface
 
@@ -45,8 +45,7 @@ type
     FDrivers: TStringList;
     procedure EnumDrivers;
   public
-    constructor Create(const ADesigner: IJvFormDesigner; APropCount: Integer);
-      override;
+    constructor Create(const ADesigner: IJvFormDesigner; APropCount: Integer); override;
     destructor Destroy; override;
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;

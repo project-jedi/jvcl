@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvDsgnConsts;
+
+{$I jvcl.inc}
 
 interface
 
@@ -540,6 +540,7 @@ resourcestring
 //=== JvPageListTreeViewReg.pas ==============================================
 resourcestring
   RsEFmtInterfaceNotSupported = '%s does not support the required interface (%s)';
+  RsPageListEditorEllipsis = 'Page List Editor...';
   RsNextPageAmp = 'Ne&xt Page';
   RsPrevPage = '&Previous Page';
   RsNewPage = '&New Page';

@@ -19,14 +19,14 @@ object JvgCompEditorTemplate: TJvgCompEditorTemplate
     Left = 0
     Top = 0
     Width = 504
-    Height = 358
+    Height = 355
     Align = alClient
     TabOrder = 0
     object pgMain: TPageControl
       Left = 1
       Top = 1
       Width = 502
-      Height = 356
+      Height = 353
       ActivePage = tabMain
       Align = alClient
       TabIndex = 0
@@ -39,7 +39,7 @@ object JvgCompEditorTemplate: TJvgCompEditorTemplate
   end
   object pnBottom: TPanel
     Left = 0
-    Top = 358
+    Top = 355
     Width = 504
     Height = 53
     Align = alBottom

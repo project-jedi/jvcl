@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgMultiResources;
+
+{$I jvcl.inc}
 
 interface
 
@@ -214,7 +214,7 @@ begin
     Exit;
   end;
   I := 1;
-  BaseName := Copy(Component.ClassName, 2, length(Component.ClassName));
+  BaseName := Copy(Component.ClassName, 2, Length(Component.ClassName));
   while Owner.FindComponent(BaseName + IntToStr(I)) <> nil do
     inc(I);
   Result := BaseName + IntToStr(I);

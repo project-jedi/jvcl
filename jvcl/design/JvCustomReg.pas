@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvCustomReg;
+
+{$I jvcl.inc}
 
 interface
 
@@ -91,7 +91,6 @@ begin
   RegisterComponents(RsPaletteNonVisual, [TJvTrayIcon, TJvBalloonHint]);
   {$ENDIF VCL}
 
-
   RegisterPropertyEditor(TypeInfo(Integer), TJvCustomOutlookBar,
     cActivePageIndex, TJvOutlookBarActivePageEditor);
   RegisterPropertyEditor(TypeInfo(TJvOutlookBarPages), TJvCustomOutlookBar,
@@ -115,8 +114,6 @@ begin
   RegisterPropertyEditor(TypeInfo(string), TJvThumbView,
     cFilter, TFilterProperty);
   RegisterComponentEditor(TJvHLEdPropDlg, TJvHLEdPropDlgEditor);
-  {$ENDIF VCL}
-  {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(IJclSchedule), TJvEventCollectionItem,
     cSchedule, TJvSchedulePropertyEditor); // depends on TDateTimePicker
   RegisterComponentEditor(TJvCustomScheduledEvents, TJvSchedEventComponentEditor);

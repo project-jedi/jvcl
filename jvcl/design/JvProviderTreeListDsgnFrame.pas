@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvProviderTreeListDsgnFrame;
+
+{$I jvcl.inc}
 
 interface
 

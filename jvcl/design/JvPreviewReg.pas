@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvPreviewReg;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvPreviewReg;
 
 interface
 

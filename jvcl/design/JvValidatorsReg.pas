@@ -23,18 +23,11 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvValidatorsReg;
 
-interface
+{$I jvcl.inc}
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvValidatorsReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-{$R ../Resources/JvValidatorsReg.dcr}
-{$ENDIF LINUX}
+interface
 
 procedure Register;
 
@@ -49,6 +42,13 @@ uses
   {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
   JvErrorIndicator, JvValidators, JvValidatorsEditorForm, JvDsgnEditors;
+
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvValidatorsReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvValidatorsReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 begin
@@ -65,12 +65,12 @@ begin
     'PropertyToValidate', TJvPropertyValidateProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvBaseValidator,
     'PropertyToCompare', TJvPropertyToCompareProperty);
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   RegisterPropertyEditor(TypeInfo(TComponent), TComponent,
     'ValidationSummary', TJvValidationSummaryProperty);
   RegisterPropertyEditor(TypeInfo(TComponent), TComponent,
     'ErrorIndicator', TJvErrorIndicatorProperty);
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER5}
 end;
 
 end.

@@ -23,6 +23,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
+
 {*****************************************************************************
   Purpose:      a wizard about form to display copyright,
                 author, version information.
@@ -36,9 +37,9 @@ Known Issues:
 
 unit JvWizardAboutInfoForm;
 
-interface
-
 {$I jvcl.inc}
+
+interface
 
 uses
   {$IFDEF VCL}

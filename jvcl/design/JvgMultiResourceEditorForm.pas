@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgMultiResourceEditorForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -43,6 +43,7 @@ uses
 
 type
   TJvgResourcesProperty = class(TPropertyEditor)
+  public
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
     procedure Edit; override;

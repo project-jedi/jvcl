@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvColorProviderAddDialogForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -111,6 +111,8 @@ begin
     end;
 end;
 
+//=== { TBtnColorItem } ======================================================
+
 type
   TBtnColorItem = class(TJvBaseDataItem, IJvColorItem)
   private
@@ -122,7 +124,11 @@ type
     constructor Create(AOwner: IJvDataItems; AColor: TColor);
   end;
 
-//=== { TBtnColorItem } ======================================================
+constructor TBtnColorItem.Create(AOwner: IJvDataItems; AColor: TColor);
+begin
+  inherited Create(AOwner);
+  FColor := AColor;
+end;
 
 function TBtnColorItem.Get_Color: TColor;
 begin
@@ -132,12 +138,6 @@ end;
 procedure TBtnColorItem.InitID;
 begin
   SetID(cColorItemIDPrefix + IntToHex(FColor, 8))
-end;
-
-constructor TBtnColorItem.Create(AOwner: IJvDataItems; AColor: TColor);
-begin
-  inherited Create(AOwner);
-  FColor := AColor;
 end;
 
 //=== { TfrmAddColor } =======================================================

@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvPerfStatEditor;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvPerfStatEditor;
 
 interface
 

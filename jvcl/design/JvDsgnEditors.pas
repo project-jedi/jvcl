@@ -25,12 +25,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-{$I crossplatform.inc}
-
 unit JvDsgnEditors;
 
-{ Various property editors }
+{$I jvcl.inc}
+{$I crossplatform.inc}
 
 interface
 
@@ -1060,7 +1058,7 @@ end;
 
 //=== { TJvPersistentProperty } ==============================================
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 
 function TJvPersistentProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -1089,7 +1087,7 @@ begin
     GetComponentProperties(JvPersistents, tkAny, Designer, Proc);
 end;
 
-{$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 end.
 

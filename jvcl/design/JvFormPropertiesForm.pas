@@ -23,9 +23,9 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I jvcl.inc}
-
 unit JvFormPropertiesForm;
+
+{$I jvcl.inc}
 
 interface
 

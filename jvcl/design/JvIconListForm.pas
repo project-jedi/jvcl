@@ -22,9 +22,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvIconListForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -147,6 +147,9 @@ const
   sImage = 'Image%d';
 
 {$IFDEF VisualCLX}
+
+const
+  cDelphiBitmapClipboardType = 'image/delphi.bitmap';
 
 type
   TOpenIcon = class(TIcon);
@@ -281,7 +284,7 @@ begin
   Paste.Enabled := Clipboard.HasFormat(CF_ICON);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Paste.Enabled := Clipboard.Provides('image/delphi.bitmap')
+  Paste.Enabled := Clipboard.Provides(cDelphiBitmapClipboardType);
   {$ENDIF VisualCLX}
 end;
 
@@ -428,7 +431,7 @@ begin
   if Clipboard.HasFormat(CF_ICON) then
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  if Clipboard.Provides('image/delphi.bitmap') then
+  if Clipboard.Provides(cDelphiBitmapClipboardType) then
   {$ENDIF VisualCLX}
   begin
     Ico := CreateIconFromClipboard;

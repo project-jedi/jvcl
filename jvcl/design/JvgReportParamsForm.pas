@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgReportParamsForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -54,7 +54,6 @@ type
     Panel2: TPanel;
     BitBtn2: TBitBtn;
     BitBtn1: TBitBtn;
-  private
   public
   end;
 
@@ -85,6 +84,5 @@ function TJvgRepParamsEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;
-
 
 end.

@@ -21,16 +21,17 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
-{$I jvcl.inc}
-{$I vclonly.inc}
 
 unit JvDialogActnResForm;
+
+{$I jvcl.inc}
+{$I vclonly.inc}
 
 interface
 
 uses
-  SysUtils, Classes, JvDialogActns, StdActns,
-  JvActions, ActnList, ImgList, Controls, Forms;
+  SysUtils, Classes, StdActns, ActnList, ImgList, Controls, Forms,
+  JvDialogActns, JvActions;
 
 type
   TJvDialogActions = class(TDataModule)
@@ -46,10 +47,7 @@ type
     JvSaveFileAction1: TJvSaveFileAction;
     JvPageSetupAction1: TJvPageSetupAction;
     JvPageSetupTitledAction1: TJvPageSetupTitledAction;
-  private
-    { Private declarations }
   public
-    { Public declarations }
   end;
 
 implementation

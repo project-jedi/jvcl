@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvDataConsumerItemSelectForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -95,7 +95,7 @@ function IsConsumerItemSelectForm(Form: TJvBaseDesign; const Args: array of cons
 begin
   Result := Form is TfrmJvDataConsumerItemSelect;
   if Result then
-    with (Form as TfrmJvDataConsumerItemSelect) do
+    with Form as TfrmJvDataConsumerItemSelect do
       Result := (Consumer = Args[0].VObject) and (Pointer(Designer) = Args[1].VInterface);
 end;
 

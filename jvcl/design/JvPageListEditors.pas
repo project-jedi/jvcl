@@ -20,14 +20,15 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
 unit JvPageListEditors;
 
+{$I jvcl.inc}
+
 interface
+
 uses
   Classes, SysUtils,
   {$IFDEF VCL}
@@ -78,7 +79,7 @@ type
     function ImageList: TCustomImageList; override;
   end;
 
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
 
   // since D5 doesn't support interface style published properties,
   // this editor is supplied to make it easier to select a specific interface
@@ -104,11 +105,14 @@ type
     function GetInterfaceGUID: TGUID; override;
     function GetInterfaceName: string; override;
   end;
-  {$ENDIF !COMPILER6_UP}
+
+  {$ENDIF COMPILER5}
 
 implementation
+
 uses
-  TypInfo, JvDsgnConsts, JvPageListTreeView, JvPageListEditorForm;
+  TypInfo,
+  JvDsgnConsts, JvPageListTreeView, JvPageListEditorForm;
 
 type
   THackTreeView = class(TJvCustomPageListTreeView);
@@ -120,6 +124,8 @@ const
   cNextPage = 3;
   cPrevPage = 4;
   cDelPage = 5;
+
+  cElementCount = 6;
 
 procedure TJvCustomPageEditor.Edit;
 begin
@@ -154,7 +160,7 @@ function TJvCustomPageEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     cShowEditor:
-      Result := 'Page List Editor...';
+      Result := RsPageListEditorEllipsis;
     cDash:
       Result := '-';
     cNewPage:
@@ -170,7 +176,7 @@ end;
 
 function TJvCustomPageEditor.GetVerbCount: Integer;
 begin
-  Result := 6; // list, div, new, next, previous, delete,
+  Result := cElementCount; // list, div, new, next, previous, delete
 end;
 
 procedure TJvCustomPageEditor.InsertPage;

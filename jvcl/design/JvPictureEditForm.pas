@@ -22,9 +22,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvPictureEditForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -153,11 +153,11 @@ begin
     begin
       NewGraphic := CreateIconFromClipboard;
       if NewGraphic <> nil then
-      try
-        Pict.Assign(NewGraphic);
-      finally
-        NewGraphic.Free;
-      end;
+        try
+          Pict.Assign(NewGraphic);
+        finally
+          NewGraphic.Free;
+        end;
     end
     { check other specific graphic types here }
     else
@@ -266,9 +266,7 @@ end;
 procedure TPictureEditDialog.LoadClick(Sender: TObject);
 begin
   if FileDialog.Execute then
-  begin
     Self.LoadFile(FileDialog.FileName);
-  end;
 end;
 
 procedure TPictureEditDialog.SaveClick(Sender: TObject);
@@ -401,10 +399,8 @@ var
   I: Integer;
 begin
   for I := 0 to PathsMenu.Items.Count - 1 do
-  begin
-    PathsMenu.Items[I].Checked := CompareText(PathsMenu.Items[I].Caption,
-      FileDialog.InitialDir) = 0;
-  end;
+    PathsMenu.Items[I].Checked :=
+      CompareText(PathsMenu.Items[I].Caption, FileDialog.InitialDir) = 0;
 end;
 
 procedure TPictureEditDialog.ClearClick(Sender: TObject);

@@ -23,15 +23,15 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvDlgsReg;
 
-interface
+{$I jvcl.inc}
 
 {$IFDEF MSWINDOWS}
 {$DEFINE USEWINDOWS}
 {$ENDIF MSWINDOWS}
+
+interface
 
 procedure Register;
 
@@ -94,23 +94,20 @@ begin
     TJvColorDialog, TJvAppletDialog]);
   {$ENDIF VCL}
   {$IFDEF USEWINDOWS}
-  RegisterComponents(RsPaletteDialog, [
-    TJvConnectNetwork, TJvDisconnectNetwork, TJvAddPrinterDialog,
-    TJvFindFilesDialog, TJvFormatDriveDialog, TJvOrganizeFavoritesDialog,
-    TJvComputerNameDialog, TJvChangeIconDialog, TJvShellAboutDialog,
-    TJvRunDialog, TJvObjectPropertiesDialog, TJvNewLinkDialog,
-    TJvAddHardwareDialog, TJvOpenWithDialog, TJvDiskFullDialog,
+  RegisterComponents(RsPaletteDialog, [TJvConnectNetwork, TJvDisconnectNetwork,
+    TJvAddPrinterDialog, TJvFindFilesDialog, TJvFormatDriveDialog,
+    TJvOrganizeFavoritesDialog, TJvComputerNameDialog, TJvChangeIconDialog,
+    TJvShellAboutDialog, TJvRunDialog, TJvObjectPropertiesDialog,
+    TJvNewLinkDialog, TJvAddHardwareDialog, TJvOpenWithDialog, TJvDiskFullDialog,
     TJvExitWindowsDialog, TJvOutOfMemoryDialog, TJvObjectPickerDialog,
     TJvImageDialog]);
   {$ENDIF USEWINDOWS}
-  RegisterComponents(RsPaletteDialog, [
-    TJvLoginDialog, TJvProgressDialog, TJvProgressComponent]);
+  RegisterComponents(RsPaletteDialog, [TJvLoginDialog, TJvProgressDialog, TJvProgressComponent]);
   {$IFDEF USEWINDOWS}
-  RegisterComponents(RsPaletteDialog, [
-    TJvDiskPrompt, TJvCopyError, TJvDeleteError, TJvRenameError]);
+  RegisterComponents(RsPaletteDialog, [TJvDiskPrompt, TJvCopyError,
+    TJvDeleteError, TJvRenameError]);
   {$ENDIF USEWINDOWS}
-  RegisterComponents(RsPaletteDialog, [
-    TJvDesktopAlert, TJvDesktopAlertStack]);
+  RegisterComponents(RsPaletteDialog, [TJvDesktopAlert, TJvDesktopAlertStack]);
   {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(string), TJvAppletDialog, cAppletName, TJvAppletNameProperty);
   RegisterPropertyEditor(TypeInfo(Integer), TJvAppletDialog, cAppletIndex, TJvAppletIndexProperty);
