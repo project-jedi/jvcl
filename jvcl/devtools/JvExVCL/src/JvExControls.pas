@@ -246,7 +246,6 @@ var
 begin
   CallInherited := True;
   PMsg := @Msg;
-
   if PMsg^.Msg = CM_DENYSUBCLASSING then
   begin
     PMsg^.Result := Ord(Instance.GetInterface(IJvDenySubClassing, Temp));
@@ -259,40 +258,44 @@ begin
   if Instance.GetInterface(IJvControlEvents, IntfControl) then
   begin
     CallInherited := False;
-    with IntfControl do
-      case PMsg^.Msg of
-        CM_VISIBLECHANGED:
-          VisibleChanged;
-        CM_ENABLEDCHANGED:
-          EnabledChanged;
-        CM_FONTCHANGED:
-          FontChanged;
-        CM_COLORCHANGED:
-          ColorChanged;
-        CM_PARENTFONTCHANGED:
-          ParentFontChanged;
-        CM_PARENTCOLORCHANGED:
-          ParentColorChanged;
-        CM_PARENTSHOWHINTCHANGED:
-          ParentShowHintChanged;
-        CM_TEXTCHANGED:
-          TextChanged;
-        CM_HINTSHOW:
-          PMsg^.Result := Integer(HintShow(TCMHintShow(PMsg^).HintInfo^));
-        CM_HITTEST:
-          with TCMHitTest(PMsg^) do
-            Result := Integer(HitTest(XPos, YPos));
-        CM_MOUSEENTER:
-            MouseEnter(TControl(PMsg^.LParam));
-        CM_MOUSELEAVE:
-            MouseLeave(TControl(PMsg^.LParam));
-        CM_DIALOGCHAR:
-          with TCMDialogChar(PMsg^) do
-            Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
-        // CM_FOCUSCHANGED: handled by a message handler in the JvExVCL classes
-      else
-        CallInherited := True;
-      end;
+    try
+      with IntfControl do
+        case PMsg^.Msg of
+          CM_VISIBLECHANGED:
+            VisibleChanged;
+          CM_ENABLEDCHANGED:
+            EnabledChanged;
+          CM_FONTCHANGED:
+            FontChanged;
+          CM_COLORCHANGED:
+            ColorChanged;
+          CM_PARENTFONTCHANGED:
+            ParentFontChanged;
+          CM_PARENTCOLORCHANGED:
+            ParentColorChanged;
+          CM_PARENTSHOWHINTCHANGED:
+            ParentShowHintChanged;
+          CM_TEXTCHANGED:
+            TextChanged;
+          CM_HINTSHOW:
+            PMsg^.Result := Integer(HintShow(TCMHintShow(PMsg^).HintInfo^));
+          CM_HITTEST:
+            with TCMHitTest(PMsg^) do
+              Result := Integer(HitTest(XPos, YPos));
+          CM_MOUSEENTER:
+              MouseEnter(TControl(PMsg^.LParam));
+          CM_MOUSELEAVE:
+              MouseLeave(TControl(PMsg^.LParam));
+          CM_DIALOGCHAR:
+            with TCMDialogChar(PMsg^) do
+              Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
+          // CM_FOCUSCHANGED: handled by a message handler in the JvExVCL classes
+        else
+          CallInherited := True;
+        end;
+    finally
+      IntfControl := nil;
+    end;
   end;
 
   if CallInherited then
@@ -300,92 +303,96 @@ begin
     if Instance.GetInterface(IJvWinControlEvents, IntfWinControl) then
     begin
       CallInherited := False;
-      with IntfWinControl do
-        case PMsg^.Msg of
-          CM_CURSORCHANGED:
-            CursorChanged;
-          CM_SHOWINGCHANGED:
-            ShowingChanged;
-          CM_SHOWHINTCHANGED:
-            ShowHintChanged;
-          CM_CONTROLLISTCHANGE:
-            if PMsg^.LParam <> 0 then
-              ControlsListChanging(TControl(PMsg^.WParam), True)
-            else
-              ControlsListChanged(TControl(PMsg^.WParam), False);
-          CM_CONTROLCHANGE:
-            if PMsg^.LParam = 0 then
-              ControlsListChanging(TControl(PMsg^.WParam), False)
-            else
-              ControlsListChanged(TControl(PMsg^.WParam), True);
+      try
+        with IntfWinControl do
+          case PMsg^.Msg of
+            CM_CURSORCHANGED:
+              CursorChanged;
+            CM_SHOWINGCHANGED:
+              ShowingChanged;
+            CM_SHOWHINTCHANGED:
+              ShowHintChanged;
+            CM_CONTROLLISTCHANGE:
+              if PMsg^.LParam <> 0 then
+                ControlsListChanging(TControl(PMsg^.WParam), True)
+              else
+                ControlsListChanged(TControl(PMsg^.WParam), False);
+            CM_CONTROLCHANGE:
+              if PMsg^.LParam = 0 then
+                ControlsListChanging(TControl(PMsg^.WParam), False)
+              else
+                ControlsListChanged(TControl(PMsg^.WParam), True);
 
-          WM_GETDLGCODE:
-            begin
-              PMsg^.Result := InheritMsg(Instance, PMsg^.Msg, PMsg^.WParam, PMsg^.LParam);
-
-              DlgCodes := [dcNative];
-              if PMsg^.Result and DLGC_WANTARROWS <> 0 then
-                Include(DlgCodes, dcWantArrows);
-              if PMsg^.Result and DLGC_WANTTAB <> 0 then
-                Include(DlgCodes, dcWantTab);
-              if PMsg^.Result and DLGC_WANTALLKEYS <> 0 then
-                Include(DlgCodes, dcWantAllKeys);
-              if PMsg^.Result and DLGC_WANTCHARS <> 0 then
-                Include(DlgCodes, dcWantChars);
-              if PMsg^.Result and DLGC_BUTTON <> 0 then
-                Include(DlgCodes, dcButton);
-
-              DoGetDlgCode(DlgCodes);
-
-              if not (dcNative in DlgCodes) then
+            WM_GETDLGCODE:
               begin
-                PMsg^.Result := 0;
-                if dcWantAllKeys in DlgCodes then
-                  PMsg^.Result := PMsg^.Result or DLGC_WANTALLKEYS;
-                if dcWantArrows in DlgCodes then
-                  PMsg^.Result := PMsg^.Result or DLGC_WANTARROWS;
-                if dcWantTab in DlgCodes then
-                  PMsg^.Result := PMsg^.Result or DLGC_WANTTAB;
-                if dcWantChars in DlgCodes then
-                  PMsg^.Result := PMsg^.Result or DLGC_WANTCHARS;
-                if dcButton in DlgCodes then
-                  PMsg^.Result := PMsg^.Result or DLGC_BUTTON;
+                PMsg^.Result := InheritMsg(Instance, PMsg^.Msg, PMsg^.WParam, PMsg^.LParam);
+
+                DlgCodes := [dcNative];
+                if PMsg^.Result and DLGC_WANTARROWS <> 0 then
+                  Include(DlgCodes, dcWantArrows);
+                if PMsg^.Result and DLGC_WANTTAB <> 0 then
+                  Include(DlgCodes, dcWantTab);
+                if PMsg^.Result and DLGC_WANTALLKEYS <> 0 then
+                  Include(DlgCodes, dcWantAllKeys);
+                if PMsg^.Result and DLGC_WANTCHARS <> 0 then
+                  Include(DlgCodes, dcWantChars);
+                if PMsg^.Result and DLGC_BUTTON <> 0 then
+                  Include(DlgCodes, dcButton);
+
+                DoGetDlgCode(DlgCodes);
+
+                if not (dcNative in DlgCodes) then
+                begin
+                  PMsg^.Result := 0;
+                  if dcWantAllKeys in DlgCodes then
+                    PMsg^.Result := PMsg^.Result or DLGC_WANTALLKEYS;
+                  if dcWantArrows in DlgCodes then
+                    PMsg^.Result := PMsg^.Result or DLGC_WANTARROWS;
+                  if dcWantTab in DlgCodes then
+                    PMsg^.Result := PMsg^.Result or DLGC_WANTTAB;
+                  if dcWantChars in DlgCodes then
+                    PMsg^.Result := PMsg^.Result or DLGC_WANTCHARS;
+                  if dcButton in DlgCodes then
+                    PMsg^.Result := PMsg^.Result or DLGC_BUTTON;
+                end;
+              end;
+            WM_SETFOCUS:
+              begin
+                with PMsg^ do
+                  Result := InheritMsg(Instance, Msg, WParam, LParam);
+                DoSetFocus(HWND(PMsg^.WParam));
+              end;
+            WM_KILLFOCUS:
+              begin
+                with PMsg^ do
+                  Result := InheritMsg(Instance, Msg, WParam, LParam);
+                DoKillFocus(HWND(PMsg^.WParam));
+              end;
+            WM_SIZE:
+              begin
+                DoBoundsChanged;
+                with PMsg^ do
+                  Result := InheritMsg(Instance, Msg, WParam, LParam);
+              end;
+          WM_ERASEBKGND:
+            begin
+              IdSaveDC := SaveDC(HDC(PMsg^.WParam)); // protect DC against Stock-Objects from Canvas
+              Canvas := TCanvas.Create;
+              try
+                Canvas.Handle := HDC(PMsg^.WParam);
+                PMsg^.Result := Ord(DoPaintBackground(Canvas, PMsg^.LParam));
+              finally
+                Canvas.Handle := 0;
+                Canvas.Free;
+                RestoreDC(HDC(PMsg^.WParam), IdSaveDC);
               end;
             end;
-          WM_SETFOCUS:
-            begin
-              with PMsg^ do
-                Result := InheritMsg(Instance, Msg, WParam, LParam);
-              DoSetFocus(HWND(PMsg^.WParam));
-            end;
-          WM_KILLFOCUS:
-            begin
-              with PMsg^ do
-                Result := InheritMsg(Instance, Msg, WParam, LParam);
-              DoKillFocus(HWND(PMsg^.WParam));
-            end;
-          WM_SIZE:
-            begin
-              DoBoundsChanged;
-              with PMsg^ do
-                Result := InheritMsg(Instance, Msg, WParam, LParam);
-            end;
-        WM_ERASEBKGND:
-          begin
-            IdSaveDC := SaveDC(HDC(PMsg^.WParam)); // protect DC against Stock-Objects from Canvas
-            Canvas := TCanvas.Create;
-            try
-              Canvas.Handle := HDC(PMsg^.WParam);
-              PMsg^.Result := Ord(DoPaintBackground(Canvas, PMsg^.LParam));
-            finally
-              Canvas.Handle := 0;
-              Canvas.Free;
-              RestoreDC(HDC(PMsg^.WParam), IdSaveDC);
-            end;
+          else
+            CallInherited := True;
           end;
-        else
-          CallInherited := True;
-        end;
+      finally
+        IntfWinControl := nil;
+      end;
     end;
   end;
 
@@ -394,21 +401,25 @@ begin
     if Instance.GetInterface(IJvEditControlEvents, IntfEditControl) then
     begin
       CallInherited := False;
-      with IntfEditControl do
-        case PMsg^.Msg of
-          WM_PASTE:
-            DoClipboardPaste;
-          WM_COPY:
-            DoClipboardCopy;
-          WM_CUT:
-            DoClipboardCut;
-          WM_UNDO:
-            DoUndo;
-          WM_CLEAR:
-            DoClearText;
-        else
-          CallInherited := True;
-        end;
+      try
+        with IntfEditControl do
+          case PMsg^.Msg of
+            WM_PASTE:
+              DoClipboardPaste;
+            WM_COPY:
+              DoClipboardCopy;
+            WM_CUT:
+              DoClipboardCut;
+            WM_UNDO:
+              DoUndo;
+            WM_CLEAR:
+              DoClearText;
+          else
+            CallInherited := True;
+          end;
+      finally
+        IntfEditControl := nil;
+      end;
     end;
   end;
 
