@@ -2684,7 +2684,7 @@ begin
   if Assigned(FOnComparePage) then
     FOnComparePage(Self, Page, Node, Result)
   else
-    Result := AnsiCompareText(Page.Caption, Node.Text) = 0;
+    Result := AnsiSameText(Page.Caption, Node.Text);
 end;
 
 procedure TJvTreeView.WMTimer(var Msg: TWMTimer);

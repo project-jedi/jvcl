@@ -480,7 +480,7 @@ begin
   begin
     List := TList(FWordTable[Hash]);
     for I := 0 to List.Count - 1 do
-      if AnsiCompareText(PChar(List[I]), FWord) = 0 then
+      if AnsiSameText(PChar(List[I]), FWord) then
       begin
         Result := True;
         Exit;

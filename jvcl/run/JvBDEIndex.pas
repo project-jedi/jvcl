@@ -386,9 +386,9 @@ procedure TJvDBIndexCombo.UpdateList;
     begin
       if (Items.Objects[I] <> nil) and
         (((IdxFields <> '') and
-        (AnsiCompareText(TIndexDef(Items.Objects[I]).Fields, IdxFields) = 0)) or
+        (CompareText(TIndexDef(Items.Objects[I]).Fields, IdxFields) = 0)) or
         ((Table.IndexName <> '') and
-        (AnsiCompareText(TIndexDef(Items.Objects[I]).Name, Table.IndexName) = 0))) then
+        (CompareText(TIndexDef(Items.Objects[I]).Name, Table.IndexName) = 0))) then
       begin
         Result := I;
         Exit;

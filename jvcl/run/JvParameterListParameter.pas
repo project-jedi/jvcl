@@ -1331,8 +1331,6 @@ begin
 end;
 
 procedure TJvComboBoxParameter.SetWinControlData(Value: Variant);
-var
-  Index: Integer;
 begin
   if Assigned(JvDynControlData) then
     if VariantAsItemIndex then

@@ -764,7 +764,7 @@ begin
         with IndexDefs[I] do
           if not (ixExpression in Options) and
             ((ixCaseInsensitive in Options) or CaseSensitive) then
-            if AnsiCompareText(Fields, Self.LookupField.FieldName) = 0 then
+            if SameText(Fields, Self.LookupField.FieldName) then
             begin
               Result := True;
               Exit;
@@ -1291,7 +1291,7 @@ begin
     if DestTable.TableType <> ttDefault then
       TableType := DestTable.TableType
     else
-      if (AnsiCompareText(ExtractFileExt(DestTable.TableName), TextExt) = 0) then
+    if AnsiSameText(ExtractFileExt(DestTable.TableName), TextExt) then
       TableType := ttASCII;
   end;
   BatchMove := TBatchMove.Create(Application);
@@ -1305,7 +1305,7 @@ begin
       BatchMove.Mappings.Clear;
       if (DestTable.TableType = ttASCII) then
       begin
-        if AnsiCompareText(ExtractFileExt(DestTable.TableName), SchemaExt) = 0 then
+        if AnsiSameText(ExtractFileExt(DestTable.TableName), SchemaExt) then
           DestTable.TableName := ChangeFileExt(DestTable.TableName, TextExt);
         with Source do
           for I := 0 to FieldCount - 1 do
@@ -1319,7 +1319,7 @@ begin
       else
         BatchMove.RecordCount := MaxRecordCount;
       BatchMove.Execute;
-      if (DestTable.TableType = ttASCII) then
+      if DestTable.TableType = ttASCII then
       begin
         { ASCII table always created in "fixed" format with "ascii"
           character set }

@@ -1373,7 +1373,7 @@ begin
   { When reading from the stream, always set the directory; if we don't do this
     the image indexes aren't initialized }
   if (Length(NewDirectory) = 0) or
-    ((AnsiCompareText(NewDirectory, Directory) = 0) and not (csReading in ComponentState)) then
+    (SameFileName(NewDirectory, Directory) and not (csReading in ComponentState)) then
     Exit;
   NewDrive := ExtractFileDrive(NewDirectory);
   if Length(NewDrive) <> 2 then // we only support single Char drives (no UNC's)

@@ -1112,7 +1112,7 @@ begin
   Result := '';
   for I := Low(SpecialFolders) to High(SpecialFolders) do
   begin
-    if AnsiCompareText(FolderName, SpecialFolders[I].Name) = 0 then
+    if SameFileName(FolderName, SpecialFolders[I].Name) then
     begin
       Folder := SpecialFolders[I].ID;
       Found := True;

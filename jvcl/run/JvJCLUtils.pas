@@ -1681,12 +1681,12 @@ begin
   begin
     {$IFDEF MSWINDOWS}
     {$WARNINGS OFF} // WARN SYMBOL_PLATFORM OFF is not Delphi 5 compatible
-    if (AnsiCompareText(SearchRec.FindData.cFileName, FileName) = 0) or
-      (AnsiCompareText(SearchRec.FindData.cAlternateFileName, FileName) = 0) then
+    if SameFileName(SearchRec.FindData.cFileName, FileName) or
+      SameFileName(SearchRec.FindData.cAlternateFileName, FileName) then
     {$WARNINGS ON}
     {$ENDIF MSWINDOWS}
     {$IFDEF LINUX}
-    if AnsiCompareStr(SearchRec.Name, FileName) = 0 then
+    if AnsiSameStr(SearchRec.Name, FileName) then
     {$ENDIF LINUX}
     begin
       Result := True;
@@ -4708,8 +4708,8 @@ begin
           Inc(Pos);
         ScanBlanks(S, Pos);
       until (Pos > Length(S)) or
-        (AnsiCompareText(TimeAMString, Copy(S, Pos, Length(TimeAMString))) = 0) or
-        (AnsiCompareText(TimePMString, Copy(S, Pos, Length(TimePMString))) = 0);
+        AnsiSameText(TimeAMString, Copy(S, Pos, Length(TimeAMString))) or
+        AnsiSameText(TimePMString, Copy(S, Pos, Length(TimePMString)));
   end;
   Result := IsValidDate(Y, M, D) and (Pos > Length(S));
 end;
@@ -4720,8 +4720,8 @@ begin
     for Result := 1 to 12 do
     begin
       if (Length(LongMonthNames[Result]) > 0) and
-        (AnsiCompareText(Copy(S, 1, MaxLen),
-        Copy(LongMonthNames[Result], 1, MaxLen)) = 0) then
+        AnsiSameText(Copy(S, 1, MaxLen),
+        Copy(LongMonthNames[Result], 1, MaxLen)) then
         Exit;
     end;
   Result := 0;
@@ -5871,7 +5871,7 @@ begin
     S := ParamStr(I);
     if (ASwitchChars = []) or ((S[1] in ASwitchChars) and (Length(S) > 1)) then
     begin
-      if AnsiCompareText(Copy(S, 2, MaxInt), Switch) = 0 then
+      if AnsiSameText(Copy(S, 2, MaxInt), Switch) then
       begin
         Inc(I);
         if I <= ParamCount then
@@ -6096,7 +6096,7 @@ begin
       FileName := ExpandFileName(FileName);
     if (Length(FileName) > 4) and (FileName[2] = ':') and
       (Length(TempDir) > 4) and
-      (AnsiCompareText(TempDir, FileName) <> 0) then
+      (AnsiCompareFileName(TempDir, FileName) <> 0) then
     begin
       STempDir := ExtractFilePath(FileName);
       Move(STempDir[1], TempDir, Length(STempDir) + 1);

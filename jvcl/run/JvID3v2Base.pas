@@ -2458,13 +2458,13 @@ end;
 function ExtToMIMEType(const Ext: string): string;
 begin
   { Not a very reliable method }
-  if AnsiSameText(Ext, '.jpeg') or AnsiSameText(Ext, '.jpg') then
+  if SameFileName(Ext, '.jpeg') or AnsiSameText(Ext, '.jpg') then
     Result := 'image/jpeg'
   else
-  if AnsiSameText(Ext, '.tiff') or AnsiSameText(Ext, '.tif') then
+  if SameFileName(Ext, '.tiff') or AnsiSameText(Ext, '.tif') then
     Result := 'image/tif'
   else
-  if AnsiSameText(Ext, '.bmp') then
+  if SameFileName(Ext, '.bmp') then
     Result := 'image/bitmap'
   else
   if Ext = '' then
@@ -6262,7 +6262,7 @@ begin
   for I := 0 to FList.Count - 1 do
   begin
     Result := FList.Items[I];
-    if AnsiSameText(Result.FrameName, FrameName) then
+    if SameText(Result.FrameName, FrameName) then
       Exit;
   end;
   Result := nil;

@@ -688,7 +688,7 @@ var
     if (Result <> '') and (Result[1] in ['''','"']) then
       Result := Copy(Result, 2, Length(Result) - 2);
 
-    if AnsiCompareText(Result, 'now') = 0 then
+    if SameText(Result, 'now') then
       Result := DateTimeToStr(Now);
   end;
 
@@ -1308,7 +1308,7 @@ var
 
   function ParseValue(const AValue: string): string;
   begin
-    if AnsiCompareText(AValue, 'now()') = 0 then
+    if SameText(AValue, 'now()') then
       Result := DateTimeToStr(Now)
     else
       Result := AValue;

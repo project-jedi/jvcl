@@ -564,7 +564,7 @@ begin
     ftVariant:
       Result := 0;
     ftGuid:
-      Result := AnsiCompareText(PChar(Data1), PChar(Data2));
+      Result := CompareText(PChar(Data1), PChar(Data2));
   end;
 end;
 

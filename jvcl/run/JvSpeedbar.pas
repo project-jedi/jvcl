@@ -2554,10 +2554,10 @@ begin
         if Sect[Idx] <> nil then
         begin
           Item := TJvSpeedItem(Sect[Idx]);
-          if AnsiCompareText(Item.Name, ItemName) = 0 then
+          if AnsiSameText(Item.Name, ItemName) then
           begin
             Result := Item;
-            Exit;
+            Break;
           end;
         end;
     end;

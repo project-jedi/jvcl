@@ -43,9 +43,9 @@ type
   private
     FErrPos: Integer;
   public
-    // The dummy parameter is only there fore BCB compatibility so that
+    // The dummy parameter is only there for BCB compatibility so that
     // when the hpp file gets generated, this constructor generates
-    // a C++ constructor that doesn't already exists
+    // a C++ constructor that doesn't already exist
     constructor Create(const AMessage: string; AErrPos: Integer; DummyForBCB: Integer = 0); overload;
     property ErrPos: Integer read FErrPos;
   end;
@@ -406,12 +406,12 @@ var
   Temp: string;
 begin
   Temp := Field.AsString;
-  if not FLookupExact then
+  if not LookupExact then
     SetLength(Temp, Min(Length(FLookupValue), Length(Temp)));
-  if FCaseSensitive then
-    Result := AnsiCompareStr(Temp, FLookupValue) = 0
+  if CaseSensitive then
+    Result := AnsiSameStr(Temp, LookupValue)
   else
-    Result := AnsiCompareText(Temp, FLookupValue) = 0;
+    Result := AnsiSameText(Temp, LookupValue);
 end;
 
 function CreateLocate(DataSet: TDataSet): TJvLocateObject;
@@ -447,9 +447,9 @@ var
         if loPartialKey in Options then
           Delete(S, Length(Value) + 1, MaxInt);
         if loCaseInsensitive in Options then
-          Result := AnsiCompareText(S, Value) = 0
+          Result := AnsiSameText(S, Value)
         else
-          Result := AnsiCompareStr(S, Value) = 0;
+          Result := AnsiSameStr(S, Value);
       end;
     end
     else

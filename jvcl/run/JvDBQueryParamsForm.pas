@@ -245,7 +245,7 @@ begin
     with InitList.ParamByName(ParamList.Items[ParamList.ItemIndex]) do
     begin
       if (DataType in [ftDate, ftTime, ftDateTime]) and
-        (AnsiCompareText(ParamValue.Text, 'Now') = 0) then
+        SameText(ParamValue.Text, 'Now') then
       begin
         case DataType of
           ftDate:
