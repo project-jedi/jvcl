@@ -19,7 +19,8 @@ PROJECTS = JvCoreC6R.bpl JvCoreC6D.bpl JvSystemC6R.bpl JvSystemC6D.bpl \
   JvGlobusC6R.bpl JvGlobusC6D.bpl JvPrintPreviewC6R.bpl JvPrintPreviewC6D.bpl \
   JvPageCompsC6R.bpl JvPageCompsC6D.bpl JvValidatorsC6R.bpl JvValidatorsC6D.bpl \
   JvUIBC6R.bpl JvUIBC6D.bpl JvWizardC6R.bpl JvWizardC6D.bpl \
-  JvTimeFrameworkC6R.bpl JvTimeFrameworkC6D.bpl JvHMIC6R.bpl JvHMIC6D.bpl
+  JvTimeFrameworkC6R.bpl JvTimeFrameworkC6D.bpl JvHMIC6R.bpl JvHMIC6D.bpl \
+  JvManagedThreadsC6R.bpl JvManagedThreadsC6D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -205,6 +206,14 @@ JvHMIC6R.bpl: bcb6\JvHMIC6R.bpk
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
 JvHMIC6D.bpl: bcb6\JvHMIC6D.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvManagedThreadsC6R.bpl: bcb6\JvManagedThreadsC6R.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvManagedThreadsC6D.bpl: bcb6\JvManagedThreadsC6D.bpk
   $(ROOT)\bin\bpr2mak $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
