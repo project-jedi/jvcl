@@ -62,11 +62,13 @@ end;
 
 procedure AddPackageNames(List: TStringList);
 var
-  I, J, N: Integer;
+  I, J, K, N: Integer;
   ModSvc: IOTAModuleServices;
   Module: IOTAModule;
-  FileSys: IOTAFileSystem;
-  UnitName, Line: string;
+  ModuleInfo: IOTAModuleInfo;
+  Proj: IOTAProject;
+  UnitName: string;
+  Flag: Boolean;
 begin
   ModSvc := (BorlandIDEServices as IOTAModuleServices);
   for I := 0 to List.Count - 1 do
@@ -76,16 +78,26 @@ begin
     while N > 0 do
     begin
       UnitName := Copy(UnitName, N + 1, Length(UnitName));
-      Line := Copy(List[I], 1, N - 1);
       N := Pos(';', UnitName);
     end;
     UnitName := Copy(UnitName, 2, Length(UnitName) - 2);
-    for J := 0 to ModSvc.ModuleCount - 1 do
+    Flag := False;
+    for J := 1 to ModSvc.ModuleCount - 1 do
     begin
       Module := ModSvc.Modules[J];
-      FileSys := ModSvc.FindFileSystem(Module.FileSystem);
-      if Assigned(FileSys) and FileSys.FileExists(UnitName) then
-        List[I] := Line + ';"' + Module.FileName + '.' + UnitName + '"';
+      Proj := Module as IOTAProject;
+      for K := 0 to Proj.GetModuleCount - 1 do
+      begin
+        ModuleInfo := Proj.GetModule(K);
+        if UnitName = ExtractFileName(ModuleInfo.FileName) then
+        begin
+          List[I] := List[I] + ';"' + ChangeFileExt(ExtractFileName(Module.FileName), '') + '"';
+          Flag := True;
+          Break;
+        end;
+      end;
+      if Flag then
+        Break;
     end;
   end;
 end;
@@ -114,7 +126,7 @@ begin
   OldToolIndex := GetOrdProp(Palette, PropInfo);
 
   N := 1;
-  VisibleComponentList.Add('"ID";"Palette";"Component";"FileName"');
+  VisibleComponentList.Add('"ID";"Palette";"Component";"FileName";"JVCLPackage"');
   for I := 0 to PaletteTab.Tabs.Count - 1 do
   begin
     PaletteTab.TabIndex := I;
@@ -372,18 +384,16 @@ finalization
   AddIDs(PackageWizardList);
   AddIDs(RegisterClassList);
 
-  {
   AddPackageNames(CustomModuleList);
   AddPackageNames(NoIconList);
   AddPackageNames(ActionsList);
   AddPackageNames(VisibleComponentList);
-  }
 
   PropertyEditorList.Insert(0, '"ID";"PropertyType_Name";"ComponentClass_ClassName";"PropertyName";"EditorClass_ClassName"');
   ComponentEditorList.Insert(0, '"ID";"ComponentClass_ClassName";"ComponentEditor_ClassName"');
-  CustomModuleList.Insert(0, '"ID";"Group";"ComponentBaseClass_ClassName";"CustomModuleClass_ClassName";"FileName"');
-  NoIconList.Insert(0, '"ID";"ClassName";"FileName"');
-  ActionsList.Insert(0, '"ID";"CategoryName";"ClassName";"Resource_ClassName";"FileName"');
+  CustomModuleList.Insert(0, '"ID";"Group";"ComponentBaseClass_ClassName";"CustomModuleClass_ClassName";"FileName";"JVCLPackage"');
+  NoIconList.Insert(0, '"ID";"ClassName";"FileName";"JVCLPackage"');
+  ActionsList.Insert(0, '"ID";"CategoryName";"ClassName";"Resource_ClassName";"FileName";"JVCLPackage"');
   PackageWizardList.Insert(0, '"ID";"WizardName";"WizardIDString"');
   RegisterClassList.Insert(0, '"ID";"ClassName"');
   SaveFile('JVCL Visible Components.csv', VisibleComponentList);
