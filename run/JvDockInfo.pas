@@ -110,7 +110,7 @@ type
     FAppStorage: TJvCustomAppStorage;
     FAppStoragePath: string;
     {$ENDIF USEJVCL}
-    FDockInfoIni: TIniFile;
+    FDockInfoIni: TCustomIniFile;
     FDockInfoReg: TRegistry;
     FRegName: string;
     FJvDockInfoStyle: TJvDockInfoStyle;
@@ -140,7 +140,7 @@ type
     procedure ReadInfoFromReg(RegName: string);
     procedure WriteInfoToIni;
     procedure WriteInfoToReg(RegName: string);
-    property DockInfoIni: TIniFile read FDockInfoIni write FDockInfoIni;
+    property DockInfoIni: TCustomIniFile read FDockInfoIni write FDockInfoIni;
     property DockInfoReg: TRegistry read FDockInfoReg write FDockInfoReg;
   end;
 
@@ -532,6 +532,7 @@ var
 
 begin
   FormList := TStringList.Create;
+  FJvDockInfoStyle := isJVCLReadInfo;
   try
     if FAppStorage.ValueStored(FAppStorage.ConcatPaths([AppStoragePath, 'Forms', 'FormNames'])) then
     begin
@@ -545,14 +546,13 @@ begin
         cp := cp1 + 1;
         cp1 := StrPos(cp, ';');
       end;
-      FJvDockInfoStyle := isJVCLReadInfo;
       for I := FormList.Count - 1 downto 0 do
         if FAppStorage.ReadString(FAppStorage.ConcatPaths([AppStoragePath, 'Forms', FormList[I], 'ParentName'])) = '' then
           CreateZoneAndAddInfo(I);
-      FJvDockInfoStyle := isNone;
     end;
   finally
     FormList.Free;
+    FJvDockInfoStyle := isNone;
   end;
 end;
 
@@ -657,8 +657,6 @@ begin
   try
     DockInfoIni.ReadSections(Sections);
     CreateTempDockInfoZoneArray;
-    FJvDockInfoStyle := isReadFileInfo;
-
     for I := Sections.Count - 1 downto 0 do
       if TempDockInfoZoneArray[I].ParentName = '' then
         CreateZoneAndAddInfo(I);
@@ -786,7 +784,11 @@ begin
   // (rom) this is disputable
   Application.ProcessMessages;
 
+  {$IFDEF USEJVCL}
+  FJvDockInfoStyle := isJVCLReadInfo;
+  {$ELSE}
   FJvDockInfoStyle := isReadFileInfo;
+  {$ENDIF}
   MiddleScanTree(TopTreeZone);
   FJvDockInfoStyle := isNone;
 end;
@@ -871,6 +873,7 @@ procedure TJvDockInfoTree.ScanTreeZone(TreeZone: TJvDockBaseZone);
 var
   I: Integer;
 begin
+  FJvDockInfoStyle := isReadFileInfo;
   if (FJvDockInfoStyle = isReadFileInfo) or (FJvDockInfoStyle = isReadRegInfo) then
   begin
     for I := 0 to TreeZone.GetChildCount - 1 do
@@ -1084,8 +1087,11 @@ begin
   finally
     Sections.Free;
   end;
-
+  {$IFDEF USEJVCL}
+  FJvDockInfoStyle := isJVCLWriteInfo;
+  {$ELSE}
   FJvDockInfoStyle := isWriteFileInfo;
+  {$ENDIF}
   MiddleScanTree(TopTreeZone);
   FJvDockInfoStyle := isNone;
 end;
