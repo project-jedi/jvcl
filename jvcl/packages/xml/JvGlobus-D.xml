@@ -23,9 +23,9 @@
     <Package Name="qrpt50" Targets="D5" Condition=""/>
     <Package Name="vclie50" Targets="D5" Condition=""/>
     <Package Name="vcldb" Targets="D6,D7, D9" Condition=""/>
-    <Package Name="qrpt" Targets="D6,D7" Condition="!QREPORT4 and JVCL_UseQuickReport"/>
-    <Package Name="qr4rund6" Targets="D6" Condition="QREPORT4 and JVCL_UseQuickReport"/>
-    <Package Name="qr4rund7" Targets="D7" Condition="QREPORT4 and JVCL_UseQuickReport"/>
+    <Package Name="qrpt" Targets="D6,D7" Condition="!QREPORT4 & JVCL_UseQuickReport"/>
+    <Package Name="qr4rund6" Targets="D6" Condition="QREPORT4 & JVCL_UseQuickReport"/>
+    <Package Name="qr4rund7" Targets="D7" Condition="QREPORT4 & JVCL_UseQuickReport"/>
     <Package Name="vcljpg" Targets="D6,D6p,D7,D7p, D9" Condition=""/>
     <Package Name="vclie" Targets="D6,D7" Condition=""/>
   </Requires>
