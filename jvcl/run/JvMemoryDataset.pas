@@ -68,7 +68,7 @@ type
     FAutoIncField: TField;
     FSrcAutoIncField: TField;
     //-------------- Added by CFZ 2004/03/03 -----------------
-    FDataset: TDataset;
+    FDataSet: TDataSet;
     FLoadStructure: Boolean;
     FLoadRecords: Boolean;
     FKeyFieldNames: string;
@@ -99,14 +99,14 @@ type
     procedure SetCapacity(Value: Integer);
     procedure ClearRecords;
     procedure InitBufferPointers(GetProps: Boolean);
-    procedure FixReadOnlyFields(MakeReadOnly: boolean);
+    procedure FixReadOnlyFields(MakeReadOnly: Boolean);
     //----------------- Added by CFZ 2004/03/03 ------------------
-    procedure SetDataset(ADataset: TDataset);
+    procedure SetDataSet(ADataSet: TDataSet);
     procedure SetLoadStructure(Value: Boolean);
     procedure SetLoadRecords(Value: Boolean);
     procedure SetApplyMode(Value: TApplyMode);
     procedure SetExactApply(Value: Boolean);
-    procedure CheckStructure(UseAutoIncAsInteger: boolean = false);
+    procedure CheckStructure(UseAutoIncAsInteger: Boolean = False);
     procedure AddStatusField;
     procedure HideStatusField;
     function GetKeyValues: Variant;
@@ -176,10 +176,10 @@ type
     procedure SortOnFields(const FieldNames: string;
       CaseInsensitive: Boolean = True; Descending: Boolean = False);
     procedure EmptyTable;
-    procedure CopyStructure(Source: TDataSet; UseAutoIncAsInteger: boolean = false);
+    procedure CopyStructure(Source: TDataSet; UseAutoIncAsInteger: Boolean = False);
     function LoadFromDataSet(Source: TDataSet; RecordCount: Integer;
-      Mode: TLoadMode; DisableAllControls: boolean = true): Integer;
-    function SaveToDataSet(Dest: TDataSet; RecordCount: Integer; DisableAllControls: boolean = true): Integer;
+      Mode: TLoadMode; DisableAllControls: Boolean = True): Integer;
+    function SaveToDataSet(Dest: TDataSet; RecordCount: Integer; DisableAllControls: Boolean = True): Integer;
     //-------------------- Added by CFZ 2004/03/03 ----------------------
     procedure Open; reintroduce;
     function FindDeleted(KeyValues: Variant): Integer;
@@ -203,7 +203,7 @@ type
     property FieldDefs;
     property ObjectView default False;
     //------------------- Added by CFZ 2004/03/03 ----------------------
-    property Dataset: TDataset read FDataset write SetDataset;
+    property DataSet: TDataSet read FDataSet write SetDataSet;
     property KeyFieldNames: string read FKeyFieldNames write FKeyFieldNames;
     property LoadStructure: Boolean read FLoadStructure write SetLoadStructure default False;
     property LoadRecords: Boolean read FLoadRecords write SetLoadRecords default False;
@@ -1187,13 +1187,13 @@ begin
   //---------------------- Added by CFZ 2004/03/03 ----------------------
   Status := rsOriginal;
   PFValues := nil;
-  if (FApplyMode <> amNone) then
+  if FApplyMode <> amNone then
   begin
     try
       Status := TRecordStatus(FieldByName(FStatusName).AsInteger);
-      if (Status <> rsInserted) then
+      if Status <> rsInserted then
       begin
-        if (FApplyMode = amAppend) then
+        if FApplyMode = amAppend then
         begin
           Cancel;
           Exit;
@@ -1206,7 +1206,8 @@ begin
       end;
     except
       SysUtils.Abort;
-      if not (PFValues = nil) then Dispose(PFValues);
+      if not (PFValues = nil) then
+        Dispose(PFValues);
       Exit;
     end;
   end;
@@ -1226,13 +1227,13 @@ begin
     FLastID := Low(Integer);
 
   //---------------------- Added by CFZ 2004/03/03 ----------------------
-  if (FApplyMode <> amNone) then
+  if FApplyMode <> amNone then
   begin
-    if (Status = rsInserted) then
+    if Status = rsInserted then
       Dec(FRowsChanged)
     else
       FDeletedValues.Add(PFValues);
-    if (Status = rsOriginal) then
+    if Status = rsOriginal then
       Inc(FRowsChanged);
   end;
   //----------------------------------------------------------------------
@@ -1253,13 +1254,13 @@ begin
   begin
     try
       Status := TRecordStatus(FieldByName(FStatusName).AsInteger);
-      if (State = dsInsert) then
+      if State = dsInsert then
       begin
         if IsDeleted(Index) then
         begin
           FDeletedValues.Delete(Index);
           NewChange := False;
-          if (FApplyMode = amAppend) then
+          if FApplyMode = amAppend then
             FieldByName(FStatusName).AsInteger := Integer(rsInserted)
           else
             FieldByName(FStatusName).AsInteger := Integer(rsUpdated);
@@ -1270,7 +1271,7 @@ begin
           FieldByName(FStatusName).AsInteger := Integer(rsInserted);
         end;
       end;
-      if (State = dsEdit) then
+      if State = dsEdit then
       begin
         if (Status = rsOriginal) and (FApplyMode = amAppend) then
         begin
@@ -1317,10 +1318,10 @@ procedure TJvMemoryData.Open;
 begin
   FInOpen := True;
   try
-    if (FDataset <> nil) then
+    if FDataSet <> nil then
     begin
       if FLoadStructure then
-        CopyStructure(FDataset, FAutoIncAsInteger)
+        CopyStructure(FDataSet, FAutoIncAsInteger)
       else
       begin
         AddStatusField;
@@ -1335,16 +1336,16 @@ begin
     Exit;
   end;
 
-  if Assigned(FDataset) and (FApplyMode <> amNone) then
+  if Assigned(FDataSet) and (FApplyMode <> amNone) then
   begin
-    if not FDataset.Active then
-      FDataset.Open;
+    if not FDataSet.Active then
+      FDataSet.Open;
     if FLoadRecords then
     begin
       FRowsOriginals := CopyFromDataset;
-      if (FKeyFieldNames <> '') then
+      if FKeyFieldNames <> '' then
         SortOnFields(KeyFieldNames);
-      if (FApplyMode = amAppend) then
+      if FApplyMode = amAppend then
         Last
       else
         First;
@@ -1455,7 +1456,7 @@ begin
 end;
 //------------------------------ Added by CFZ 2004/03/03 ---------------------------------
 
-procedure TJvMemoryData.CopyStructure(Source: TDataSet; UseAutoIncAsInteger: boolean);
+procedure TJvMemoryData.CopyStructure(Source: TDataSet; UseAutoIncAsInteger: Boolean);
 var
   I: Integer;
 begin
@@ -1467,38 +1468,38 @@ begin
 
   Source.FieldDefs.Update;
   FieldDefs := Source.FieldDefs;
-  if (FApplyMode <> amNone) then
+  if FApplyMode <> amNone then
     AddStatusField;
   CheckStructure(UseAutoIncAsInteger);
-  if (FApplyMode <> amNone) then
+  if FApplyMode <> amNone then
     HideStatusField;
 end;
 
-procedure TJvMemoryData.FixReadOnlyFields(MakeReadOnly: boolean);
+procedure TJvMemoryData.FixReadOnlyFields(MakeReadOnly: Boolean);
 var
-  i: integer;
+  I: Integer;
 begin
   if MakeReadOnly then
-    for i := 0 to FieldCount - 1 do
-      Fields[i].ReadOnly := (Fields[i].Tag = 1)
+    for I := 0 to FieldCount - 1 do
+      Fields[I].ReadOnly := (Fields[I].Tag = 1)
   else
-    for i := 0 to FieldCount - 1 do
+    for I := 0 to FieldCount - 1 do
     begin
-      Fields[i].Tag := Ord(Fields[i].ReadOnly);
-      Fields[i].ReadOnly := false;
-      if Fields[i].DataType = ftAutoInc then
-        FAutoIncField := Fields[i];
+      Fields[I].Tag := Ord(Fields[I].ReadOnly);
+      Fields[I].ReadOnly := False;
+      if Fields[I].DataType = ftAutoInc then
+        FAutoIncField := Fields[I];
     end;
 end;
 
-procedure TJvMemoryData.SetDataset(ADataset: TDataset);
+procedure TJvMemoryData.SetDataSet(ADataSet: TDataSet);
 begin
-  FDataset := ADataset;
+  FDataSet := ADataSet;
 end;
 
 procedure TJvMemoryData.SetLoadStructure(Value: Boolean);
 begin
-  if (csDesigning in ComponentState) and (FDataset = nil) then
+  if (csDesigning in ComponentState) and (FDataSet = nil) then
     FLoadStructure := False
   else
     FLoadStructure := Value;
@@ -1506,7 +1507,7 @@ end;
 
 procedure TJvMemoryData.SetLoadRecords(Value: Boolean);
 begin
-  if (csDesigning in ComponentState) and (FDataset = nil) then
+  if (csDesigning in ComponentState) and (FDataSet = nil) then
     FLoadRecords := False
   else
     FLoadRecords := Value;
@@ -1514,7 +1515,7 @@ end;
 
 procedure TJvMemoryData.SetApplyMode(Value: TApplyMode);
 begin
-  if (csDesigning in ComponentState) and (FDataset = nil) then
+  if (csDesigning in ComponentState) and (FDataSet = nil) then
     FApplyMode := amNone
   else
     FApplyMode := Value;
@@ -1522,7 +1523,7 @@ end;
 
 procedure TJvMemoryData.SetExactApply(Value: Boolean);
 begin
-  if (csDesigning in ComponentState) and (FDataset = nil) then
+  if (csDesigning in ComponentState) and (FDataSet = nil) then
     FExactApply := False
   else
     FExactApply := Value;
@@ -1530,7 +1531,7 @@ end;
 
 procedure TJvMemoryData.AddStatusField;
 begin
-  FieldDefs.Add(FStatusName, ftSmallInt);
+  FieldDefs.Add(FStatusName, ftSmallint);
 end;
 
 procedure TJvMemoryData.HideStatusField;
@@ -1540,10 +1541,10 @@ begin
 end;
 
 function TJvMemoryData.LoadFromDataSet(Source: TDataSet; RecordCount: Integer;
-  Mode: TLoadMode; DisableAllControls: boolean = true): Integer;
+  Mode: TLoadMode; DisableAllControls: Boolean = True): Integer;
 var
   SourceActive: Boolean;
-  MovedCount, i: Integer;
+  MovedCount, I: Integer;
   SB, DB: TBookmark;
 begin
   Result := 0;
@@ -1557,7 +1558,7 @@ begin
   try
     if DisableAllControls then
       Self.DisableControls;
-    DB := GetBookMark;
+    DB := GetBookmark;
     try
       Filtered := False;
       with Source do
@@ -1584,14 +1585,14 @@ begin
       end;
       FAutoIncField := nil;
       // FixReadOnlyFields also sets FAutoIncField if there is any
-      FixReadOnlyFields(false);
+      FixReadOnlyFields(False);
       // find first source autoinc field
       FSrcAutoIncField := nil;
       if Mode = lmCopy then
-        for i := 0 to Source.FieldCount - 1 do
-          if Source.Fields[i].DataType = ftAutoInc then
+        for I := 0 to Source.FieldCount - 1 do
+          if Source.Fields[I].DataType = ftAutoInc then
           begin
-            FSrcAutoIncField := Source.Fields[i];
+            FSrcAutoIncField := Source.Fields[I];
             Break;
           end;
       try
@@ -1609,16 +1610,16 @@ begin
           Source.Next;
         end;
       finally
-        FixReadOnlyFields(true);
+        FixReadOnlyFields(True);
         FAutoIncField := nil;
         FSrcAutoIncField := nil;
         First;
       end;
       // move back to where we started from
-      if (DB <> nil) and BookMarkValid(DB) then
+      if (DB <> nil) and BookmarkValid(DB) then
       begin
-        GotoBookMark(DB);
-        FreeBookMark(DB);
+        GotoBookmark(DB);
+        FreeBookmark(DB);
       end;
     finally
       if DisableAllControls then
@@ -1639,7 +1640,7 @@ begin
   end;
 end;
 
-procedure TJvMemoryData.CheckStructure(UseAutoIncAsInteger: boolean);
+procedure TJvMemoryData.CheckStructure(UseAutoIncAsInteger: Boolean);
 var
   I: Integer;
 
@@ -1665,7 +1666,7 @@ begin
       FieldDefs.Items[I].CreateField(Self);
 end;
 
-function TJvMemoryData.SaveToDataSet(Dest: TDataSet; RecordCount: Integer; DisableAllControls: boolean = true): Integer;
+function TJvMemoryData.SaveToDataSet(Dest: TDataSet; RecordCount: Integer; DisableAllControls: Boolean = True): Integer;
 var
   MovedCount: Integer;
   SB, DB: TBookmark;
@@ -1683,7 +1684,7 @@ begin
   FSaveLoadState := slsSaving;
   try
     SB := GetBookmark;
-    DB := Dest.GetBookMark;
+    DB := Dest.GetBookmark;
     try
       if not Dest.Active then
         Dest.Open
@@ -1714,7 +1715,7 @@ begin
       if (SB <> nil) and BookmarkValid(SB) then
       begin
         GotoBookmark(SB);
-        FreeBookMark(SB);
+        FreeBookmark(SB);
       end;
       if (DB <> nil) and Dest.BookmarkValid(DB) then
       begin
@@ -1936,35 +1937,39 @@ var
   FOriginal, FClient: TField;
 begin
   Result := 0;
-  if (FDataset = nil) then Exit;
-  if (FApplyMode <> amNone) then
+  if FDataSet = nil then
+    Exit;
+  if FApplyMode <> amNone then
     Len := FieldDefs.Count - 2
   else
     Len := FieldDefs.Count - 1;
-  if (Len < 1) then Exit;
-  bOpen := FDataset.Active;
+  if Len < 1 then
+    Exit;
+  bOpen := FDataSet.Active;
   try
-    if not bOpen then FDataset.Open;
+    if not bOpen then
+      FDataSet.Open;
   except
     Exit;
   end;
-  if FDataset.IsEmpty then
+  if FDataSet.IsEmpty then
   begin
-    if not bOpen then FDataset.Close;
+    if not bOpen then
+      FDataSet.Close;
     Exit;
   end;
 
-  FDataset.DisableControls;
+  FDataSet.DisableControls;
   DisableControls;
   try
-    FDataset.First;
-    while not FDataset.Eof do
+    FDataSet.First;
+    while not FDataSet.Eof do
     begin
       Append;
       for I := 0 to Len do
       begin
         FClient := Fields[I];
-        FOriginal := FDataset.FindField(FClient.FieldName);
+        FOriginal := FDataSet.FindField(FClient.FieldName);
         if (FClient <> nil) and (FOriginal <> nil) then
         begin
           if FOriginal.IsNull then
@@ -1976,23 +1981,26 @@ begin
       FieldByName(FStatusName).AsInteger := Integer(rsOriginal);
       Post;
       Inc(Result);
-      FDataset.Next;
+      FDataSet.Next;
     end;
   finally
     EnableControls;
-    FDataset.EnableControls;
-    if not bOpen then FDataset.Close;
+    FDataSet.EnableControls;
+    if not bOpen then
+      FDataSet.Close;
   end;
 end;
 
 procedure TJvMemoryData.DoBeforeApply;
 begin
-  if Assigned(FBeforeApply) then FBeforeApply(Self);
+  if Assigned(FBeforeApply) then
+    FBeforeApply(Self);
 end;
 
 procedure TJvMemoryData.DoAfterApply;
 begin
-  if Assigned(FAfterApply) then FAfterApply(Self);
+  if Assigned(FAfterApply) then
+    FAfterApply(Self);
 end;
 
 procedure TJvMemoryData.ClearChanges;
@@ -2006,9 +2014,9 @@ begin
   begin
     FInRefresh := True;
     FRowsOriginals := CopyFromDataset;
-    if (FKeyFieldNames <> '') then
+    if FKeyFieldNames <> '' then
       SortOnFields(FKeyFieldNames);
-    if (FApplyMode = amAppend) then
+    if FApplyMode = amAppend then
       Last
     else
       First;
@@ -2019,9 +2027,12 @@ end;
 procedure TJvMemoryData.CancelChanges;
 begin
   CheckBrowseMode;
-  if FRowsChanged < 1 then Exit;
-  if (FApplyMode = amNone) or (FDataset = nil) then Exit;
-  if (FApplyMode <> amNone) and (FKeyFieldNames = '') then Exit;
+  if FRowsChanged < 1 then
+    Exit;
+  if (FApplyMode = amNone) or (FDataSet = nil) then
+    Exit;
+  if (FApplyMode <> amNone) and (FKeyFieldNames = '') then
+    Exit;
   ClearChanges;
 end;
 
@@ -2042,13 +2053,13 @@ var
       for J := 0 to Len do
       begin
         FClient := Fields[J];
-        FOriginal := FDataset.FindField(FClient.FieldName);
+        FOriginal := FDataSet.FindField(FClient.FieldName);
         if (FOriginal <> nil) and (FClient <> nil) then
         begin
           if FClient.IsNull then
             FOriginal.Clear
           else
-            FDataset.FieldByName(FOriginal.FieldName).Value := FClient.Value;
+            FDataSet.FieldByName(FOriginal.FieldName).Value := FClient.Value;
         end;
       end;
       Result := True;
@@ -2060,9 +2071,9 @@ var
   function InsertRec: Boolean;
   begin
     try
-      FDataset.Append;
+      FDataSet.Append;
       WriteFields;
-      FDataset.Post;
+      FDataSet.Post;
       Result := True;
     except
       Result := False;
@@ -2072,9 +2083,9 @@ var
   function UpdateRec: Boolean;
   begin
     try
-      FDataset.Edit;
+      FDataSet.Edit;
       WriteFields;
-      FDataset.Post;
+      FDataSet.Post;
       Result := True;
     except
       Result := False;
@@ -2084,7 +2095,7 @@ var
   function DeleteRec: Boolean;
   begin
     try
-      FDataset.Delete;
+      FDataSet.Delete;
       Result := True;
     except
       Result := False;
@@ -2096,17 +2107,17 @@ var
     I: Integer;
   begin
     Result := 0;
-    FDataset.DisableControls;
+    FDataSet.DisableControls;
     DisableControls;
     Row := RecNo;
     try
       First;
-      while not EOF do
+      while not Eof do
       begin
         Status := TRecordStatus(FieldByName(FStatusName).AsInteger);
         xKey := GetKeyValues;
-        bFound := FDataset.Locate(FKeyFieldNames, xKey, []);
-        if (Status = rsInserted) then
+        bFound := FDataSet.Locate(FKeyFieldNames, xKey, []);
+        if Status = rsInserted then
         begin
           if bFound then
           begin
@@ -2130,13 +2141,13 @@ var
               else
               begin
                 SysUtils.Abort;
-                if (FDataset.State in dsEditModes) then
-                  FDataset.Cancel;
+                if FDataSet.State in dsEditModes then
+                  FDataSet.Cancel;
               end;
             end;
           end;
         end;
-        if (Status = rsUpdated) then
+        if Status = rsUpdated then
         begin
           if not bFound then
           begin
@@ -2160,21 +2171,21 @@ var
               else
               begin
                 SysUtils.Abort;
-                if (FDataset.State in dsEditModes) then
-                  FDataset.Cancel;
+                if FDataSet.State in dsEditModes then
+                  FDataSet.Cancel;
               end;
             end;
           end;
         end;
         Next;
       end;
-      if (FApplyMode = amMerge) then
+      if FApplyMode = amMerge then
       begin
         for I := 0 to FDeletedValues.Count - 1 do
         begin
           PxKey := FDeletedValues[I];
           xKey := PxKey^;
-          bFound := FDataset.Locate(FKeyFieldNames, xKey, []);
+          bFound := FDataSet.Locate(FKeyFieldNames, xKey, []);
           if bFound then
           begin
             if DeleteRec then
@@ -2195,7 +2206,7 @@ var
     finally
       RecNo := Row;
       EnableControls;
-      FDataset.EnableControls;
+      FDataSet.EnableControls;
     end;
   end;
 
@@ -2203,16 +2214,22 @@ begin
   CheckBrowseMode;
   Result := False;
 
-  if FRowsChanged < 1 then Exit;
-  if IsEmpty and (FDeletedValues.Count < 1) then Exit;
-  if (FApplyMode = amNone) or (FDataset = nil) then Exit;
-  if (FApplyMode <> amNone) and (FKeyFieldNames = '') then Exit;
+  if FRowsChanged < 1 then
+    Exit;
+  if IsEmpty and (FDeletedValues.Count < 1) then
+    Exit;
+  if (FApplyMode = amNone) or (FDataSet = nil) then
+    Exit;
+  if (FApplyMode <> amNone) and (FKeyFieldNames = '') then
+    Exit;
   Len := FieldDefs.Count - 2;
-  if (Len < 1) then Exit;
+  if Len < 1 then
+    Exit;
 
-  bOpen := FDataset.Active;
+  bOpen := FDataSet.Active;
   try
-    if not bOpen then FDataset.Open;
+    if not bOpen then
+      FDataSet.Open;
   except
     Exit;
   end;
@@ -2225,7 +2242,8 @@ begin
     ClearChanges;
   DoAfterApply;
 
-  if not bOpen then FDataset.Close;
+  if not bOpen then
+    FDataSet.Close;
 end;
 
 function TJvMemoryData.FindDeleted(KeyValues: Variant): Integer;
@@ -2235,7 +2253,8 @@ var
   xKey, ValRow, ValDel: Variant;
 begin
   Result := -1;
-  if VarIsNull(KeyValues) then Exit;
+  if VarIsNull(KeyValues) then
+    Exit;
   PxKey := nil;
   Len := VarArrayHighBound(KeyValues, 1);
   try
@@ -2249,9 +2268,9 @@ begin
         ValRow := KeyValues[J];
         ValDel := xKey[J];
         {$IFDEF COMPILER6_UP}
-        if (VarCompareValue(ValRow, ValDel) = vrEqual) then
+        if VarCompareValue(ValRow, ValDel) = vrEqual then
         {$ELSE}
-        if (ValRow = ValDel) then
+        if ValRow = ValDel then
         {$ENDIF COMPILER6_UP}
         begin
           Inc(Equals);
@@ -2266,7 +2285,8 @@ begin
       end;
     end;
   finally
-    if not (PxKey = nil) then Dispose(PxKey);
+    if not (PxKey = nil) then
+      Dispose(PxKey);
   end;
 end;
 
@@ -2398,11 +2418,11 @@ end;
 function TJvMemBlobStream.Seek(Offset: Longint; Origin: Word): Longint;
 begin
   case Origin of
-    0:
+    soFromBeginning:
       FPosition := Offset;
-    1:
+    soFromCurrent:
       Inc(FPosition, Offset);
-    2:
+    soFromEnd:
       FPosition := GetBlobSize + Offset;
   end;
   Result := FPosition;

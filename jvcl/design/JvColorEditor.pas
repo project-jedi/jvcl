@@ -29,15 +29,13 @@ unit JvColorEditor;
 interface
 
 uses
-  SysUtils, Classes,
-  Windows, Graphics,
+  SysUtils, Classes, Windows, Graphics,
   {$IFDEF COMPILER6_UP}
-  RTLConsts, DesignIntf, DesignEditors,
-  VCLEditors,
+  RTLConsts, DesignIntf, DesignEditors, VCLEditors,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-{$IFDEF VisualCLX}
+  {$IFDEF VisualCLX}
   QDialogs,
   {$IFDEF MSWINDOWS}
   Registry,
@@ -45,7 +43,7 @@ uses
   {$IFDEF LINUX}
   JvQRegistryIniFile,
   {$ENDIF LINUX}
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
   JvConsts, JvJVCLUtils;
 
 {$IFDEF VisualCLX}
@@ -224,7 +222,7 @@ end;
 // implemented stored in the Registry under windows and in
 // Linux in an IniFile.
 //
-function TJvColorProperty.GetRegKey: String;
+function TJvColorProperty.GetRegKey: string;
 begin
   Result := SDelphiKey + PathDelim + SCustomColors;
 end;
@@ -281,7 +279,7 @@ var
             KeyName := 'Color' + Suffix;
             KeyValue := StringReplace(Strings[I], Keyname + '=', '', []);
             WriteString(KeyName, KeyValue);
-            inc(I);
+            Inc(I);
           end;
       finally
         CloseKey;
@@ -305,7 +303,6 @@ begin
     ColorDialog.Free;
   end;
 {$ENDIF VisualCLX}
-
 
 end.
 

@@ -108,13 +108,12 @@ function SelectImage(var AFileName: string; const Extensions, Filter: string): B
 var
   ErrMode: Cardinal;
   Filters: TStrings;
-
 begin
   with TImageForm.Create(Application) do
   try
     FileListBox.Mask := Extensions;
     FilterCombo.Filter := Filter;
-    Filters := TStringlist.Create;
+    Filters := TStringList.Create;
     try
       ExtractStrings(['|'], [], PChar(Filter), Filters);
       if Filters.IndexOf(AllFilePattern) < 0 then
@@ -193,12 +192,12 @@ begin
     end;
     {$IFDEF MSWINDOWS}
     ImageName.Caption := Format('%s (%d x %d)',
-      [AnsiLowerCase(ExtractFilename(FileListBox.FileName)),
+      [AnsiLowerCase(ExtractFileName(FileListBox.FileName)),
        Image.Picture.Width, Image.Picture.Height]);
     {$ENDIF MSWINDOWS}
     {$IFDEF LINUX}
     ImageName.Caption := Format('%s (%d x %d)',
-      [ExtractFilename(FileListBox.FileName),
+      [ExtractFileName(FileListBox.FileName),
        Image.Picture.Width, Image.Picture.Height]);
     {$ENDIF LINUX}
   except

@@ -125,16 +125,15 @@ type
     procedure acNodeMoveDownExecute(Sender: TObject);
     procedure acNodeMoveRightExecute(Sender: TObject);
     procedure acNodeMoveLeftExecute(Sender: TObject);
-    procedure tvItemsStartDrag(Sender: TObject;
-      var DragObject: TDragObject);
+    procedure tvItemsStartDrag(Sender: TObject; var DragObject: TDragObject);
     procedure tvItemsDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
     procedure tvItemsDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure acLoadFromFileExecute(Sender: TObject);
     procedure acSaveToFileExecute(Sender: TObject);
   private
-    FDragNode:TTreeNode;
-    FTreeView:TCustomTreeView;
+    FDragNode: TTreeNode;
+    FTreeView: TCustomTreeView;
   public
     class function Edit(TreeView: TCustomTreeView): Boolean;
   end;
@@ -163,7 +162,6 @@ type
     property PropagateEnabled: Boolean read FPropagateEnabled write FPropagateEnabled default True;
   end;
   {$ENDIF VisualCLX}
-
 
 procedure ShowTreeNodeEditor(TreeView:TCustomTreeView);
 
@@ -215,12 +213,12 @@ begin
   if tvItems.Selected <> nil then
   begin
     tvItems.Selected.Text := edNodeText.Text;
-    tvItems.Selected.ImageIndex := StrToIntDef(cbImage.Text,
-      tvItems.Selected.ImageIndex);
-    tvItems.Selected.SelectedIndex := StrToIntDef(cbSelected.Text,
-      tvItems.Selected.SelectedIndex);
-    tvItems.Selected.StateIndex := StrToIntDef(cbState.Text,
-      tvItems.Selected.StateIndex);
+    tvItems.Selected.ImageIndex :=
+      StrToIntDef(cbImage.Text, tvItems.Selected.ImageIndex);
+    tvItems.Selected.SelectedIndex :=
+      StrToIntDef(cbSelected.Text, tvItems.Selected.SelectedIndex);
+    tvItems.Selected.StateIndex :=
+      StrToIntDef(cbState.Text, tvItems.Selected.StateIndex);
   end;
 end;
 
@@ -289,13 +287,13 @@ end;
 
 procedure TfrmTreeViewItems.acFileOpenAccept(Sender: TObject);
 begin
-//  tvItems.LoadFromFile(acFileOpen.Dialog.Filename);
+//  tvItems.LoadFromFile(acFileOpen.Dialog.FileName);
   tvItems.FullExpand;
 end;
 
 procedure TfrmTreeViewItems.acFileSaveAsAccept(Sender: TObject);
 begin
-//  tvItems.SaveToFile(acFileSaveAs.Dialog.Filename);
+//  tvItems.SaveToFile(acFileSaveAs.Dialog.FileName);
 end;
 
 procedure TfrmTreeViewItems.acDeleteExecute(Sender: TObject);
@@ -340,54 +338,54 @@ class function TfrmTreeViewItems.Edit(TreeView: TCustomTreeView): Boolean;
 const
   cNegItem = '-1';
 var
-  f: TfrmTreeViewItems;
-  il: TCustomImageList;
+  F: TfrmTreeViewItems;
+  IL: TCustomImageList;
   I: Integer;
 begin
   // keep in mind that Self is class here not object
-  f := Self.Create(Application);
+  F := Self.Create(Application);
   try
-    f.FTreeView := TreeView;
-    f.tvItems.Items.Assign(THackTreeView(TreeView).Items);
-    il := THackTreeView(TreeView).Images;
-    if il <> nil then
+    F.FTreeView := TreeView;
+    F.tvItems.Items.Assign(THackTreeView(TreeView).Items);
+    IL := THackTreeView(TreeView).Images;
+    if IL <> nil then
     begin
-      f.cbImage.Style := csOwnerDrawFixed;
-      f.cbSelected.Style := csOwnerDrawFixed;
-      f.cbImage.ItemHeight := il.Height;
-      f.cbSelected.ItemHeight := il.Height;
+      F.cbImage.Style := csOwnerDrawFixed;
+      F.cbSelected.Style := csOwnerDrawFixed;
+      F.cbImage.ItemHeight := IL.Height;
+      F.cbSelected.ItemHeight := IL.Height;
 
-      f.cbImage.Items.Add(cNegItem);
-      f.cbSelected.Items.Add(cNegItem);
-      for I := 0 to il.Count - 1 do
+      F.cbImage.Items.Add(cNegItem);
+      F.cbSelected.Items.Add(cNegItem);
+      for I := 0 to IL.Count - 1 do
       begin
-        f.cbImage.Items.Add(IntToStr(I));
-        f.cbSelected.Items.Add(IntToStr(I));
+        F.cbImage.Items.Add(IntToStr(I));
+        F.cbSelected.Items.Add(IntToStr(I));
       end;
-      f.cbImage.Tag := Integer(il);
-      f.cbSelected.Tag := Integer(il);
+      F.cbImage.Tag := Integer(IL);
+      F.cbSelected.Tag := Integer(IL);
     end;
-    il := THackTreeView(TreeView).StateImages;
-    if il <> nil then
+    IL := THackTreeView(TreeView).StateImages;
+    if IL <> nil then
     begin
-      f.cbState.Style := csOwnerDrawFixed;
-      f.cbState.ItemHeight := il.Height;
-      f.cbState.Items.Add(cNegItem);
-      for I := 0 to il.Count - 1 do
-        f.cbState.Items.Add(IntToStr(I));
-      f.cbState.Tag := Integer(il);
+      F.cbState.Style := csOwnerDrawFixed;
+      F.cbState.ItemHeight := IL.Height;
+      F.cbState.Items.Add(cNegItem);
+      for I := 0 to IL.Count - 1 do
+        F.cbState.Items.Add(IntToStr(I));
+      F.cbState.Tag := Integer(IL);
     end;
-    f.cbSelected.ItemIndex := 0;
-    f.cbSelected.ItemIndex := 0;
-    f.cbState.ItemIndex := 0;
-    f.tvItems.FullExpand;
-    if f.tvItems.Items.Count > 0 then
-      f.tvItems.Items.GetFirstNode.MakeVisible;
-    Result := f.ShowModal = mrOk;
+    F.cbSelected.ItemIndex := 0;
+    F.cbSelected.ItemIndex := 0;
+    F.cbState.ItemIndex := 0;
+    F.tvItems.FullExpand;
+    if F.tvItems.Items.Count > 0 then
+      F.tvItems.Items.GetFirstNode.MakeVisible;
+    Result := F.ShowModal = mrOk;
     if Result then
-      THackTreeView(TreeView).Items.Assign(f.tvItems.Items);
+      THackTreeView(TreeView).Items.Assign(F.tvItems.Items);
   finally
-    f.Free;
+    F.Free;
   end;
 end;
 
@@ -395,18 +393,18 @@ procedure TfrmTreeViewItems.cbImageIndexDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
   DrawOffset, DrawIndex: Integer;
-  il: TImageList;
+  IL: TImageList;
   CB: TComboBox;
 begin
   CB := TComboBox(Control);
-  il := TImageList(CB.Tag);
+  IL := TImageList(CB.Tag);
   DrawIndex := Index - 1;
   DrawOffset := 2;
   CB.Canvas.FillRect(Rect);
-  if il <> nil then
+  if IL <> nil then
   begin
-    il.Draw(CB.Canvas, Rect.Left + 2, Rect.Top, DrawIndex);
-    DrawOffset := il.Width + 2;
+    IL.Draw(CB.Canvas, Rect.Left + 2, Rect.Top, DrawIndex);
+    DrawOffset := IL.Width + 2;
   end;
   Rect.Left := Rect.Left + DrawOffset;
   DrawText(CB.Canvas.Handle, PChar(Format('%d', [DrawIndex])), -1, Rect,
@@ -417,21 +415,21 @@ procedure TfrmTreeViewItems.cbStateDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
   DrawOffset, DrawIndex: Integer;
-  il: TImageList;
+  IL: TImageList;
   CB: TComboBox;
 begin
   CB := TComboBox(Control);
-  il := TImageList(CB.Tag);
+  IL := TImageList(CB.Tag);
   DrawIndex := Index - 1;
   DrawOffset := 2;
   CB.Canvas.FillRect(Rect);
   // state images are *one*-based, so we don't draw the 0'th image
   // to remind the user about this fact...
-  if il <> nil then
+  if IL <> nil then
   begin
     if DrawIndex > 0 then
-      il.Draw(CB.Canvas, Rect.Left + 2, Rect.Top, DrawIndex);
-    DrawOffset := il.Width + 2;
+      IL.Draw(CB.Canvas, Rect.Left + 2, Rect.Top, DrawIndex);
+    DrawOffset := IL.Width + 2;
   end;
   Rect.Left := Rect.Left + DrawOffset;
   DrawText(CB.Canvas.Handle, PChar(Format('%d', [DrawIndex])), -1, Rect,

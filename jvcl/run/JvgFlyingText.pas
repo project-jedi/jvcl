@@ -32,15 +32,18 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, JvgTypes, JvgUtils, JvComponent, JvgCommClasses;
+  Dialogs, ExtCtrls,
+  JvgTypes, JvgUtils, JvComponent, JvgCommClasses;
 
 type
   TMyRect = record
-    Left, Top, Width, Height: Integer;
+    Left: Integer;
+    Top: Integer;
+    Width: Integer;
+    Height: Integer;
   end;
 
-  TTextLineChangingEvent = procedure(Sender: TObject; LineNum: Integer) of
-    object;
+  TTextLineChangingEvent = procedure(Sender: TObject; LineNum: Integer) of object;
 
   TJvgFlyingText = class(TJvCustomPanel)
   private
@@ -50,11 +53,11 @@ type
     FBackgrColor: TColor;
     FGradient: TJvgGradient;
     FThreeDGradient: TJvg3DGradient;
-    FInteriorOffset: word;
+    FInteriorOffset: Word;
     FScalePercent: TSpPercent;
-    FStepScaleFactor: single;
+    FStepScaleFactor: Single;
     FResultFont: TFont;
-    FTimerInterval: word;
+    FTimerInterval: Word;
     FActive: Boolean;
     FClearOldText: Boolean;
     FClearOldTextWhileDrawing: Boolean;
@@ -67,31 +70,34 @@ type
 
     FOnTextLineChanging: TTextLineChangingEvent;
 
-    FR, OldFR: TMyRect;
-    FP, OldFP: TPoint;
-    FBackgrBitmap,
-      FTxtBitmap,
-      FResBitmap,
-      FScaledTxtBitmap,
-      FPartTxtBitmap: TBitmap;
-    fNeedRebuildBitmaps: Boolean;
+    FR: TMyRect;
+    OldFR: TMyRect;
+    FP: TPoint;
+    OldFP: TPoint;
+    FBackgrBitmap: TBitmap;
+    FTxtBitmap: TBitmap;
+    FResBitmap: TBitmap;
+    FScaledTxtBitmap: TBitmap;
+    FPartTxtBitmap: TBitmap;
+    FNeedRebuildBitmaps: Boolean;
     FTimer: TTimer;
-    FScaledWidth,
-      FScaledHeight,
-      FOldScaledWidth,
-      FOldScaledHeight: single;
+    FScaledWidth: Single;
+    FScaledHeight: Single;
+    FOldScaledWidth: Single;
+    FOldScaledHeight: Single;
     FVisible: Boolean;
     FStepShift: TJvgPointClass;
 
-    Shift, OldShift: TPoint;
-    uCurTextLine: Word;
-    fNeedRepaintBackground: Boolean;
-    fNeedRemakeBackground: Boolean;
-    fLoaded: Boolean;
+    FShift: TPoint;
+    FOldShift: TPoint;
+    FCurTextLine: Word;
+    FNeedRepaintBackground: Boolean;
+    FNeedRemakeBackground: Boolean;
+    FLoaded: Boolean;
     procedure CalcTxtBitmapWidth;
     procedure BuildBitmaps;
     procedure BuildTxtBitmap;
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure OnParamsChanged(Sender: TObject);
     procedure Repaint_;
 
@@ -100,27 +106,24 @@ type
     procedure SetVertAlign(Value: TglVertAlign);
     procedure SetTransparent(Value: Boolean);
     procedure SetBackgrColor(Value: TColor);
-    procedure SetInteriorOffset(Value: word);
+    procedure SetInteriorOffset(Value: Word);
     procedure SetScalePercent(Value: TSpPercent);
     procedure SetStepScaleFactor(Value: Single);
     procedure SetResultFont(Value: TFont);
-    procedure SetTimerInterval(Value: word);
+    procedure SetTimerInterval(Value: Word);
     procedure SetActive(Value: Boolean);
     procedure SetText(Value: TStrings);
     procedure SetFastDraw(Value: Boolean);
     procedure SetDirection(Value: TglScalingDir);
     procedure SetShowTextWhilePassive(Value: Boolean);
     procedure SetVisible(Value: Boolean);
-
   protected
     property Color; //...hide
     procedure Paint; override;
-
   public
     property Canvas;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     procedure OnTimerProc(Sender: TObject);
     procedure RepaintBackground; //...for users
     procedure RemakeBackground; //...for users
@@ -133,11 +136,11 @@ type
     property BackgrColor: TColor read FBackgrColor write SetBackgrColor default clBlack;
     property Gradient: TJvgGradient read FGradient write FGradient;
     property Gradient3D: TJvg3DGradient read FThreeDGradient write FThreeDGradient;
-    property InteriorOffset: word read FInteriorOffset write SetInteriorOffset default 0;
+    property InteriorOffset: Word read FInteriorOffset write SetInteriorOffset default 0;
     property ScalePercent: TSpPercent read FScalePercent write SetScalePercent default 5;
-    property StepScaleFactor: single read FStepScaleFactor write SetStepScaleFactor;
+    property StepScaleFactor: Single read FStepScaleFactor write SetStepScaleFactor;
     property ResultFont: TFont read FResultFont write SetResultFont;
-    property TimerInterval: word read FTimerInterval write SetTimerInterval default 10;
+    property TimerInterval: Word read FTimerInterval write SetTimerInterval default 10;
     property Active: Boolean read FActive write SetActive default False;
     property ClearOldText: Boolean read FClearOldText write FClearOldText default True;
     property ClearOldTextWhileDrawing: Boolean
@@ -169,11 +172,11 @@ begin
   Width := 105;
   Height := 105;
 
-  FTxtBitmap := TBitmap.create;
-  FBackgrBitmap := TBitmap.create;
-  FResBitmap := TBitmap.create;
-  FScaledTxtBitmap := TBitmap.create;
-  FPartTxtBitmap := TBitmap.create;
+  FTxtBitmap := TBitmap.Create;
+  FBackgrBitmap := TBitmap.Create;
+  FResBitmap := TBitmap.Create;
+  FScaledTxtBitmap := TBitmap.Create;
+  FPartTxtBitmap := TBitmap.Create;
   FResultFont := TFont.Create;
   FTimer := TTimer.Create(Self);
   FGradient := TJvgGradient.Create;
@@ -181,7 +184,7 @@ begin
   FText := TStringList.Create;
   FView3D := TJvg2DAlign.Create;
   FStepShift := TJvgPointClass.Create;
-  uCurTextLine := 0;
+  FCurTextLine := 0;
 
   FThreeDGradient.FromColor := clBlack;
   FThreeDGradient.ToColor := clGray;
@@ -209,7 +212,7 @@ begin
   FResultFont.Color := clWhite;
   FResultFont.Name := 'Times';
   FResultFont.Style := [fsBold];
-  FResultFont.size := 90;
+  FResultFont.Size := 90;
   FResultFont.Color := clWhite;
 
   FTimerInterval := 10;
@@ -221,9 +224,9 @@ begin
   FDirection := fsdRaising;
   FShowTextWhilePassive := True;
   FVisible := True;
-  FStepShift.x := 0;
-  FStepShift.y := 0;
-  Shift := Point(0, 0);
+  FStepShift.X := 0;
+  FStepShift.Y := 0;
+  FShift := Point(0, 0);
   FText.Add('Hello');
   FText.Add('World');
 
@@ -234,9 +237,9 @@ begin
   FPartTxtBitmap.Canvas.Brush.Color := clBlack;
   FPartTxtBitmap.Canvas.Brush.Style := bsSolid;
 
-  fNeedRebuildBitmaps := True;
-  fNeedRemakeBackground := False;
-  fLoaded := False;
+  FNeedRebuildBitmaps := True;
+  FNeedRemakeBackground := False;
+  FLoaded := False;
 end;
 
 destructor TJvgFlyingText.Destroy;
@@ -257,7 +260,7 @@ end;
 
 procedure TJvgFlyingText.Paint;
 var
-  r: TRect;
+  R: TRect;
 
   procedure CalcPos(var FR: TMyRect; var FP: TPoint;
     FScaledWidth, FScaledHeight: Integer; Shift: TPoint);
@@ -266,97 +269,97 @@ var
       fhaLeft:
         begin
           FR.Left := 0;
-          FP.x := 0;
+          FP.X := 0;
         end;
       fhaCenter:
         begin
-          FR.Left := max(0, (Width - FScaledWidth) div 2);
-          FP.x := max(0, -(Width - FScaledWidth) div 2);
+          FR.Left := Max(0, (Width - FScaledWidth) div 2);
+          FP.X := Max(0, -(Width - FScaledWidth) div 2);
         end;
       fhaRight:
         begin
-          FR.Left := max(0, Width - FScaledWidth);
-          FP.x := max(0, FScaledWidth - Width);
+          FR.Left := Max(0, Width - FScaledWidth);
+          FP.X := Max(0, FScaledWidth - Width);
         end;
     end;
     case FVertAlign of
       fvaTop:
         begin
           FR.Top := 0;
-          FP.y := 0;
+          FP.Y := 0;
         end;
       fvaCenter:
         begin
-          FR.Top := max(0, (Height - FScaledHeight) div 2);
-          FP.y := max(0, -(Height - FScaledHeight) div 2);
+          FR.Top := Max(0, (Height - FScaledHeight) div 2);
+          FP.Y := Max(0, -(Height - FScaledHeight) div 2);
         end;
       fvaBottom:
         begin
-          FR.Top := max(0, Height - FScaledHeight);
-          FP.y := max(0, FScaledHeight - Height);
+          FR.Top := Max(0, Height - FScaledHeight);
+          FP.Y := Max(0, FScaledHeight - Height);
         end;
     end;
-    FR.Left := FR.Left + Shift.x;
-    FR.Top := FR.Top + Shift.y;
-    FR.Width := min(Width, FScaledWidth);
-    FR.Height := min(Height, FScaledHeight);
+    FR.Left := FR.Left + Shift.X;
+    FR.Top := FR.Top + Shift.Y;
+    FR.Width := Min(Width, FScaledWidth);
+    FR.Height := Min(Height, FScaledHeight);
   end;
-  //~~~~~~~~~~~~~~~~~END LOCAL PROC
+
 begin
-  //fNeedRebuildBitmaps := (OldLeft<>Left)or(OldTop<>Top);
+  //FNeedRebuildBitmaps := (OldLeft<>Left)or(OldTop<>Top);
   //OldLeft := Left; OldTop := Top;
-  if fNeedRebuildBitmaps then
+  if FNeedRebuildBitmaps then
   begin
-    fLoaded := True;
-    fNeedRemakeBackground := True;
+    FLoaded := True;
+    FNeedRemakeBackground := True;
     BuildBitmaps;
-    fNeedRebuildBitmaps := False;
+    FNeedRebuildBitmaps := False;
     Visible := FVisible;
   end;
 
   StretchBlt(FScaledTxtBitmap.Canvas.Handle, 0, 0,
-    trunc(FScaledWidth), trunc(FScaledHeight),
-    FTxtBitmap.canvas.Handle, 0, 0,
+    Trunc(FScaledWidth), Trunc(FScaledHeight),
+    FTxtBitmap.Canvas.Handle, 0, 0,
     FTxtBitmap.Width, FTxtBitmap.Height, SRCCOPY);
 
-  CalcPos(FR, FP, trunc(FScaledWidth), trunc(FScaledHeight), Shift);
-  CalcPos(OldFR, OldFP, trunc(FOldScaledWidth),
-    trunc(FOldScaledHeight), OldShift);
+  CalcPos(FR, FP, Trunc(FScaledWidth), Trunc(FScaledHeight), FShift);
+  CalcPos(OldFR, OldFP, Trunc(FOldScaledWidth),
+    Trunc(FOldScaledHeight), FOldShift);
 
   if FFastDraw then
   begin
-    if fNeedRepaintBackground then
+    if FNeedRepaintBackground then
     begin
       if FClearOldText or not FActive then
         BitBlt(Canvas.Handle, 0, 0, Width, Height,
-          FBackgrBitmap.canvas.Handle, 0, 0, SRCCOPY);
+          FBackgrBitmap.Canvas.Handle, 0, 0, SRCCOPY);
     end;
-    fNeedRepaintBackground := True;
+    FNeedRepaintBackground := True;
 
     FPartTxtBitmap.Width := FR.Width;
     FPartTxtBitmap.Height := FR.Height;
-    OldFR.Width := OldFR.Width + abs(Shift.x - OldShift.x);
-    OldFR.Height := OldFR.Height + abs(Shift.y - OldShift.y);
+    OldFR.Width := OldFR.Width + Abs(FShift.X - FOldShift.X);
+    OldFR.Height := OldFR.Height + Abs(FShift.Y - FOldShift.Y);
     FResBitmap.Width := OldFR.Width;
     FResBitmap.Height := OldFR.Height;
 
     if FDirection = fsdRecessing then
     begin
-      r := rect(0, 0, FPartTxtBitmap.Width, FPartTxtBitmap.Height);
-      FillRect(FPartTxtBitmap.Canvas.Handle, r,
+      R := Rect(0, 0, FPartTxtBitmap.Width, FPartTxtBitmap.Height);
+      FillRect(FPartTxtBitmap.Canvas.Handle, R,
         FPartTxtBitmap.Canvas.Brush.Handle);
     end;
 
     BitBlt(FPartTxtBitmap.Canvas.Handle, 0, 0,
       FR.Width, FR.Height,
-      FScaledTxtBitmap.canvas.Handle, FP.x, FP.y, SRCCOPY);
+      FScaledTxtBitmap.Canvas.Handle, FP.X, FP.Y, SRCCOPY);
     {PartBackgr}
     if FClearOldTextWhileDrawing then
       BitBlt(FResBitmap.Canvas.Handle, 0, 0, OldFR.Width, OldFR.Height,
-        FBackgrBitmap.canvas.Handle, OldFR.Left, OldFR.Top, SRCCOPY)
+        FBackgrBitmap.Canvas.Handle, OldFR.Left, OldFR.Top, SRCCOPY)
     else
       BitBlt(FResBitmap.Canvas.Handle, 0, 0, OldFR.Width, OldFR.Height,
-        canvas.Handle, OldFR.Left, OldFR.Top, SRCCOPY);
+        Canvas.Handle, OldFR.Left, OldFR.Top, SRCCOPY);
 
     if FShowTextWhilePassive or FActive then
       CreateBitmapExt(FResBitmap.Canvas.Handle, FPartTxtBitmap,
@@ -366,7 +369,7 @@ begin
 
     BitBlt(Canvas.Handle, OldFR.Left, OldFR.Top,
       FResBitmap.Width, FResBitmap.Height,
-      FResBitmap.canvas.Handle, 0, 0, SRCCOPY);
+      FResBitmap.Canvas.Handle, 0, 0, SRCCOPY);
   end
   else {SLOW DRAWING}
   begin
@@ -376,28 +379,28 @@ begin
     FResBitmap.Height := Height;
 
     BitBlt(FResBitmap.Canvas.Handle, 0, 0, Width, Height,
-      FBackgrBitmap.canvas.Handle, 0, 0, SRCCOPY);
+      FBackgrBitmap.Canvas.Handle, 0, 0, SRCCOPY);
     if FDirection = fsdRecessing then
     begin
-      r := rect(0, 0, FPartTxtBitmap.Width, FPartTxtBitmap.Height);
-      FillRect(FPartTxtBitmap.Canvas.Handle, r,
+      R := Rect(0, 0, FPartTxtBitmap.Width, FPartTxtBitmap.Height);
+      FillRect(FPartTxtBitmap.Canvas.Handle, R,
         FPartTxtBitmap.Canvas.Brush.Handle);
     end;
     if FShowTextWhilePassive or FActive then
     begin
       BitBlt(FPartTxtBitmap.Canvas.Handle,
         FR.Left, FR.Top, FR.Width, FR.Height,
-        FScaledTxtBitmap.canvas.Handle, FP.x, FP.y, SRCCOPY);
+        FScaledTxtBitmap.Canvas.Handle, FP.X, FP.Y, SRCCOPY);
 
       CreateBitmapExt(FResBitmap.Canvas.Handle, FPartTxtBitmap, ClientRect,
         0, 0, fwoNone, fdsDefault, FTransparent, 0, clBlack);
     end;
     BitBlt(Canvas.Handle, 0, 0, FResBitmap.Width, FResBitmap.Height,
-      FResBitmap.canvas.Handle, 0, 0, SRCCOPY);
+      FResBitmap.Canvas.Handle, 0, 0, SRCCOPY);
   end;
-  OldShift := Shift;
-  Shift.x := Shift.x + FStepShift.x;
-  Shift.y := Shift.y + FStepShift.y;
+  FOldShift := FShift;
+  FShift.X := FShift.X + FStepShift.X;
+  FShift.Y := FShift.Y + FStepShift.Y;
 
   if csDesigning in ComponentState then
     with Canvas do
@@ -405,7 +408,7 @@ begin
       Pen.Color := clBlack;
       Pen.Style := psDash;
       Brush.Style := bsClear;
-      Rectangle(0, 0, width, height);
+      Rectangle(0, 0, Width, Height);
     end;
 
 end;
@@ -439,36 +442,36 @@ begin
     or (FScaledHeight > FTxtBitmap.Height) then
   begin
     if Assigned(FOnTextLineChanging) then
-      FOnTextLineChanging(Self, uCurTextLine);
-    if uCurTextLine < Text.Count - 1 then
-      inc(uCurTextLine)
+      FOnTextLineChanging(Self, FCurTextLine);
+    if FCurTextLine < Text.Count - 1 then
+      Inc(FCurTextLine)
     else
     begin
-      uCurTextLine := 0;
+      FCurTextLine := 0;
       if not FCycled then
       begin
         Active := False;
         BuildBitmaps;
-        exit;
+        Exit;
       end;
     end;
     BuildTxtBitmap;
   end
   else
-    fNeedRepaintBackground := False;
+    FNeedRepaintBackground := False;
 
   Repaint;
 end;
 
 procedure TJvgFlyingText.RepaintBackground; //...for users
 begin
-  fNeedRepaintBackground := True;
+  FNeedRepaintBackground := True;
   Repaint;
 end;
 
 procedure TJvgFlyingText.RemakeBackground; //...for users
 begin
-  fNeedRemakeBackground := True;
+  FNeedRemakeBackground := True;
   Repaint;
 end;
 
@@ -476,24 +479,24 @@ procedure TJvgFlyingText.CalcTxtBitmapWidth;
 var
   Size: TSize;
 begin
-  //if Text.Count <= uCurTextLine then exit;
+  //if Text.Count <= FCurTextLine then Exit;
   with FTxtBitmap do
   begin
-    GetTextExtentPoint32(Canvas.handle, PChar(Text[uCurTextLine]),
-      Length(Text[uCurTextLine]), Size);
+    GetTextExtentPoint32(Canvas.Handle, PChar(Text[FCurTextLine]),
+      Length(Text[FCurTextLine]), Size);
     Width := Size.cx + FThreeDGradient.Depth;
     Height := Size.cy + FThreeDGradient.Depth;
-    Shift := Point(0, 0);
-    OldShift := Shift;
+    FShift := Point(0, 0);
+    FOldShift := FShift;
   end;
 end;
 
 procedure TJvgFlyingText.BuildTxtBitmap;
 var
   R: TRect;
-  i, x, y: Integer;
+  I, X, Y: Integer;
 begin
-  //if (not Assigned(Text))or(FText.Count=0) then exit;
+  //if (not Assigned(Text))or(FText.Count=0) then Exit;
   FTxtBitmap.Canvas.Font.Assign(FResultFont);
   if Text.Count <> 0 then
     CalcTxtBitmapWidth
@@ -502,48 +505,52 @@ begin
     FTxtBitmap.Width := 0;
     FTxtBitmap.Height := 0;
   end;
-  R := rect(0, 0, FTxtBitmap.width, FTxtBitmap.height);
+  R := Rect(0, 0, FTxtBitmap.Width, FTxtBitmap.Height);
 
   FTxtBitmap.Canvas.Brush.Color := clBlack;
   FTxtBitmap.Canvas.Brush.Style := bsSolid;
-  FTxtBitmap.Canvas.Fillrect(R);
+  FTxtBitmap.Canvas.FillRect(R);
 
   case FView3D.Horizontal of
-    fhaLeft: x := 0;
-    fhaCenter: x := FThreeDGradient.Depth div 2;
+    fhaLeft:
+      X := 0;
+    fhaCenter:
+      X := FThreeDGradient.Depth div 2;
   else {fhaRight}
-    x := FThreeDGradient.Depth;
+    X := FThreeDGradient.Depth;
   end;
   case FView3D.Vertical of
-    fvaTop: y := 0;
-    fvaCenter: y := FThreeDGradient.Depth div 2;
+    fvaTop:
+      Y := 0;
+    fvaCenter:
+      Y := FThreeDGradient.Depth div 2;
   else {fvaBottom}
-    y := FThreeDGradient.Depth;
+    Y := FThreeDGradient.Depth;
   end;
 
   SetBkMode(FTxtBitmap.Canvas.Handle, Integer(TRANSPARENT));
-  for i := 0 to FThreeDGradient.Depth - 1 do
+  for I := 0 to FThreeDGradient.Depth - 1 do
   begin
     if FThreeDGradient.GType = fgtFlat then
-      FThreeDGradient.TextOut(FTxtBitmap.Canvas.Handle, Text[uCurTextLine],
-        r, x, y)
+      FThreeDGradient.TextOut(FTxtBitmap.Canvas.Handle, Text[FCurTextLine],
+        R, X, Y)
     else
     begin {fgt3D}
       FTxtBitmap.Canvas.Font.Color
         := FThreeDGradient.GetColorFromGradientLine(FThreeDGradient.Depth,
-        i);
-      FTxtBitmap.Canvas.TextOut(x, y, Text[uCurTextLine]);
+        I);
+      FTxtBitmap.Canvas.TextOut(X, Y, Text[FCurTextLine]);
     end;
-    if x < (FThreeDGradient.Depth div 2) then
-      inc(x)
+    if X < (FThreeDGradient.Depth div 2) then
+      Inc(X)
     else
-      dec(x);
-    if y < (FThreeDGradient.Depth div 2) then
-      inc(y)
+      Dec(X);
+    if Y < (FThreeDGradient.Depth div 2) then
+      Inc(Y)
     else
-      dec(y);
+      Dec(Y);
   end;
-  FGradient.TextOut(FTxtBitmap.Canvas.Handle, Text[uCurTextLine], r, x, y);
+  FGradient.TextOut(FTxtBitmap.Canvas.Handle, Text[FCurTextLine], R, X, Y);
 
   {.calc scaling.}
   if FDirection = fsdRaising then
@@ -562,34 +569,34 @@ begin
 
   if FClearOldText then
   begin
-    R := rect(0, 0, FPartTxtBitmap.width, FPartTxtBitmap.height);
-    FPartTxtBitmap.Canvas.Fillrect(R);
+    R := Rect(0, 0, FPartTxtBitmap.Width, FPartTxtBitmap.Height);
+    FPartTxtBitmap.Canvas.FillRect(R);
   end;
 
-  R := rect(0, 0, FTxtBitmap.width, FTxtBitmap.height);
+  R := Rect(0, 0, FTxtBitmap.Width, FTxtBitmap.Height);
   FScaledTxtBitmap.Width := FTxtBitmap.Width;
   FScaledTxtBitmap.Height := FTxtBitmap.Height;
-  FScaledTxtBitmap.Canvas.Fillrect(R);
+  FScaledTxtBitmap.Canvas.FillRect(R);
 
-  fNeedRepaintBackground := True;
+  FNeedRepaintBackground := True;
 end;
 
 procedure TJvgFlyingText.BuildBitmaps;
 var
   R: TRect;
-  fOldTimer: Boolean;
+  FOldTimer: Boolean;
 begin
-  if not fLoaded then
+  if not FLoaded then
   begin
     //    FPartTxtBitmap.Width:=Width; FPartTxtBitmap.Height:=Height;
     FResBitmap.Width := Width;
     FResBitmap.Height := Height;
-    exit;
+    Exit;
   end;
 
-  fOldTimer := FTimer.Enabled;
+  FOldTimer := FTimer.Enabled;
   FTimer.Enabled := False;
-  if fNeedRemakeBackground then
+  if FNeedRemakeBackground then
   begin
     // PrepareBackground
 //    BringParentWindowToTop(Self);
@@ -610,22 +617,22 @@ begin
     // PrepareBackground
   //    if (FResBitmap.Width or FResBitmap.Height)<>0 then
   //      BitBlt( FBackgrBitmap.Canvas.Handle, 0, 0,
-  //        Width, Height, canvas.Handle, 0, 0, SRCCOPY);
+  //        Width, Height, Canvas.Handle, 0, 0, SRCCOPY);
   end;
 
   //  if FTransparent then ShowWindow(Handle,SW_SHOW);
 
   BuildTxtBitmap;
 
-  R := rect(0, 0, FResBitmap.width, FResBitmap.height);
-  FResBitmap.Canvas.Fillrect(R);
-  FTimer.Enabled := fOldTimer;
-  fNeedRemakeBackground := False;
+  R := Rect(0, 0, FResBitmap.Width, FResBitmap.Height);
+  FResBitmap.Canvas.FillRect(R);
+  FTimer.Enabled := FOldTimer;
+  FNeedRemakeBackground := False;
 end;
 
-procedure TJvgFlyingText.WMSize(var Message: TWMSize);
+procedure TJvgFlyingText.WMSize(var Msg: TWMSize);
 begin
-  fNeedRemakeBackground := True;
+  FNeedRemakeBackground := True;
   BuildBitmaps;
   Repaint_;
 end;
@@ -662,7 +669,7 @@ end;
 procedure TJvgFlyingText.SetTransparent(Value: Boolean);
 begin
   FTransparent := Value;
-  fNeedRemakeBackground := True;
+  FNeedRemakeBackground := True;
   BuildBitmaps;
   Repaint_;
 end;
@@ -674,7 +681,7 @@ begin
   Repaint_;
 end;
 
-procedure TJvgFlyingText.SetInteriorOffset(Value: word);
+procedure TJvgFlyingText.SetInteriorOffset(Value: Word);
 begin
   FInteriorOffset := Value;
 end;
@@ -704,7 +711,7 @@ begin
   BuildBitmaps;
 end;
 
-procedure TJvgFlyingText.SetTimerInterval(Value: word);
+procedure TJvgFlyingText.SetTimerInterval(Value: Word);
 begin
   FTimerInterval := Value;
   FTimer.Interval := FTimerInterval;
@@ -725,16 +732,16 @@ end;
 procedure TJvgFlyingText.SetText(Value: TStrings);
 var
   OldActive: Boolean;
-  i: Integer;
+  I: Integer;
 begin
   OldActive := FActive;
   Active := False;
   if Assigned(Value) then
     FText.Assign(Value);
-  uCurTextLine := 0;
+  FCurTextLine := 0;
   if FText.Count <> 0 then
-    for i := 0 to FText.Count - 1 do
-      FText[i] := Trim(FText[i]);
+    for I := 0 to FText.Count - 1 do
+      FText[I] := Trim(FText[I]);
   BuildBitmaps;
   Repaint_;
   Active := OldActive;
@@ -743,7 +750,7 @@ end;
 procedure TJvgFlyingText.SetFastDraw(Value: Boolean);
 begin
   if FFastDraw = Value then
-    exit;
+    Exit;
   FFastDraw := Value;
   BuildBitmaps;
   Repaint_;
@@ -752,7 +759,7 @@ end;
 procedure TJvgFlyingText.SetDirection(Value: TglScalingDir);
 begin
   if FDirection = Value then
-    exit;
+    Exit;
   FDirection := Value;
   if csDesigning in ComponentState then
   begin
@@ -764,7 +771,7 @@ end;
 procedure TJvgFlyingText.SetShowTextWhilePassive(Value: Boolean);
 begin
   if FShowTextWhilePassive = Value then
-    exit;
+    Exit;
   FShowTextWhilePassive := Value;
   BuildBitmaps;
   Repaint_;
@@ -773,7 +780,7 @@ end;
 procedure TJvgFlyingText.SetVisible(Value: Boolean);
 begin
   if FVisible = Value then
-    exit;
+    Exit;
   FVisible := Value;
   inherited Visible := FVisible;
   if FVisible then
