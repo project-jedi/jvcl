@@ -89,6 +89,8 @@ type
     EditSelectAllItem: TMenuItem;
     FileSaveSelItem: TMenuItem;
     App: TJvAppEvents;
+    FormatTabsItem: TMenuItem;
+    JustifyBtn: TJvSpeedItem;
     procedure SelectionChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ShowHint(Sender: TObject);
@@ -159,9 +161,10 @@ type
     procedure FileSaveSelected(Sender: TObject);
     procedure ColorMenuMeasureItem(Sender: TMenu; Item: TMenuItem;
       var Width, Height: Integer);
+    procedure FormatParaTabs(Sender: TObject);
   private
-    FXpColorItemPainter : TJvXpMenuItemPainter;
-    FXpBackColorItemPainter : TJvXpMenuItemPainter;
+    FXpColorItemPainter: TJvXPMenuItemPainter;
+    FXpBackColorItemPainter: TJvXPMenuItemPainter;
 
     FFileName: string;
     FUpdating: Boolean;
@@ -202,7 +205,7 @@ implementation
 uses
   Graphics, SysUtils, Math, ShellAPI, ClipBrd, ExtDlgs, Jpeg,
   JvGIF, JvWinDialogs, JvJVCLUtils,
-  ParagraphFormatFormU;
+  ParagraphFormatFormU, TabsFormU;
 
 {$R *.DFM}
 
@@ -234,6 +237,8 @@ begin
       Delete(Result, 1, 2);
   end;
 end;
+
+//=== TEditorMainForm ========================================================
 
 procedure TEditorMainForm.AlignButtonClick(Sender: TObject);
 begin
@@ -328,15 +333,6 @@ begin
   end;
 end;
 
-procedure TEditorMainForm.ColorMenuMeasureItem(Sender: TMenu;
-  Item: TMenuItem; var Width, Height: Integer);
-begin
-  if Sender = ColorMenu then
-    FXpColorItemPainter.Measure(Item, Width, Height)
-  else
-    FXpBackColorItemPainter.Measure(Item, Width, Height);
-end;
-
 procedure TEditorMainForm.ColorMenuDrawItem(Sender: TMenu; Item: TMenuItem;
   Rect: TRect; State: TMenuOwnerDrawState);
 begin
@@ -359,6 +355,15 @@ begin
     Brush.Color := Item.Tag;
     FillRect(Rect);
   end;
+end;
+
+procedure TEditorMainForm.ColorMenuMeasureItem(Sender: TMenu;
+  Item: TMenuItem; var Width, Height: Integer);
+begin
+  if Sender = ColorMenu then
+    FXpColorItemPainter.Measure(Item, Width, Height)
+  else
+    FXpBackColorItemPainter.Measure(Item, Width, Height);
 end;
 
 procedure TEditorMainForm.ColorMenuPopup(Sender: TObject);
@@ -530,6 +535,7 @@ begin
   CheckFileSave;
   if OpenDialog.Execute then
   begin
+    Editor.Refresh;
     PerformFileOpen(OpenDialog.FileName);
     Editor.ReadOnly := ofReadOnly in OpenDialog.Options;
   end;
@@ -625,6 +631,12 @@ begin
   FocusEditor;
 end;
 
+procedure TEditorMainForm.FormatParaTabs(Sender: TObject);
+begin
+  FormatTabs(Editor.Paragraph);
+  FocusEditor;
+end;
+
 procedure TEditorMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   try
@@ -641,8 +653,8 @@ var
 const
   SPictureFilter = '%s|%s|%s|%s';
 begin
-  FXpColorItemPainter := TJvXpMenuItemPainter.Create(ColorMenu);
-  FXpBackColorItemPainter := TJvXpMenuItemPainter.Create(BackgroundMenu);
+  FXpColorItemPainter := TJvXPMenuItemPainter.Create(ColorMenu);
+  FXpBackColorItemPainter := TJvXPMenuItemPainter.Create(BackgroundMenu);
 
   Editor.RegisterMSTextConverters;
   OpenDialog.InitialDir := ExtractFilePath(ParamStr(0));
@@ -695,6 +707,7 @@ begin
   BackgroundBtn.Enabled := RichEditVersion >= 2;
   DisabledItem.Enabled := RichEditVersion >= 2;
   HiddenItem.Enabled := RichEditVersion >= 2;
+  JustifyBtn.Enabled := RichEditVersion >= 3;
 end;
 
 procedure TEditorMainForm.FormDestroy(Sender: TObject);
@@ -988,6 +1001,7 @@ begin
       0: LeftBtn.Down := True;
       1: RightBtn.Down := True;
       2: CenterBtn.Down := True;
+      3: JustifyBtn.Down := True;
     end;
     UpdateCursorPos;
   finally
@@ -1112,3 +1126,4 @@ begin
 end;
 
 end.
+

@@ -6,7 +6,8 @@ uses
   Forms,
   JvExceptionForm,
   EditorMainFormU in 'EditorMainFormU.pas' {EditorMainForm},
-  ParagraphFormatFormU in 'ParagraphFormatFormU.pas' {ParagraphFormatForm};
+  ParagraphFormatFormU in 'ParagraphFormatFormU.pas' {ParagraphFormatForm},
+  TabsFormU in 'TabsFormU.pas' {TabsForm};
 
 begin
   Application.Initialize;
