@@ -36,7 +36,7 @@ interface
 
 uses
   QWindows, 
-  DesignIntf, DesignEditors, DesignMenus, ClxEditors, 
+  DesignIntf, DesignEditors, DesignMenus, CLXEditors, 
   Classes;
 
 type

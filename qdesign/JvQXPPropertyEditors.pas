@@ -37,8 +37,9 @@ interface
 
 uses
   Classes, SysUtils, 
-  DesignIntf, DesignEditors,    
-  QForms, QImgList, QActnList, QGraphics, Types, 
+  DesignIntf, DesignEditors,  
+  JvQDsgnEditors,  
+  QWindows, QForms, QImgList, QActnList, Types, QGraphics,
   TypInfo;
 
 type 
@@ -76,18 +77,11 @@ type
 
 implementation
 
-uses
-  {$IFDEF USEJVCL}
-  JvQDsgnConsts,
-  {$ENDIF USEJVCL}
+uses 
+  JvQDsgnConsts, 
   JvQXPBar;
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsItemEditorEllipsis = 'Item Editor...';
-  RsDefaultColorItem = 'Restore Default Colors';
-  RsDefaultFontsItem = 'Restore Default Fonts';
-{$ENDIF USEJVCL}
+
 
 type
   TCustomWinXPBar = class(TJvXPCustomWinXPBar)
@@ -195,15 +189,15 @@ begin
         Font.Color := cFontColor;
         HeaderFont.Color := cFontColor;
         HotTrackColor := cHotTrackColor;
-        if csDesigning in ComponentState then
-          TCustomForm(Owner).Designer.Modified;
+        if csDesigning in ComponentState then  
+          TCustomForm(Owner).DesignerHook.Modified; 
       end;
     2: // 'Restore Default Fonts'
       with TCustomWinXPBar(Component) do
       begin
         ParentFont := True;
-        if csDesigning in ComponentState then
-          TCustomForm(Owner).Designer.Modified;
+        if csDesigning in ComponentState then  
+          TCustomForm(Owner).DesignerHook.Modified; 
       end;
   end;
 end;

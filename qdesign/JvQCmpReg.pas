@@ -43,9 +43,9 @@ uses
   QControls,  
   DesignEditors, DesignIntf, 
   JvQDsgnConsts,
-  {$IFDEF MSWINDOWS}
+  {$IFDEF USEWINDOWS}
   JvQCreateProcess, JvQWinHelp,
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
   JvQAlarms, JvQConverter, JvQDataEmbedded, JvQEnterTab, JvQMergeManager,
   JvQPageManager, JvQPatchFile, JvQStringHolder, JvQTimeLimit,
   JvQTranslator, JvQPrint, JvQEasterEgg, JvQMouseGesture, JvQLogFile,
@@ -69,17 +69,17 @@ begin
     TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile, TJvProfiler,
     TJvStrHolder, TJvTimeLimit, TJvTranslator, TJvTranslatorStrings,
     TJvPrint, TJvEasterEgg, TJvMouseGesture, TJvMouseGestureHook, TJvLogFile]);
-  {$IFDEF MSWINDOWS}
+  {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteNonVisual, [TJvCreateProcess, TJvWinHelp]);
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
 
 
-  {$IFDEF MSWINDOS}
+  {$IFDEF USEWINDOWS}
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess,
     '', TJvExeNameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess,
     'CurrentDirectory', TJvDirectoryProperty);
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
 //  RegisterPropertyEditor(TypeInfo(TStream), TJvDataEmbedded,
 //    'Data', TJvDataEmbeddedEditor);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvPatchFile,

@@ -47,10 +47,8 @@ implementation
 {$IFNDEF UIBNOCOMPONENT}
 
 uses
-  Classes, QControls,
-  {$IFDEF USEJVCL}
-  JvQDsgnConsts,
-  {$ENDIF USEJVCL}
+  Classes, QControls, 
+  JvQDsgnConsts, 
   {$IFNDEF DelphiPersonalEdition}
   JvQUIBDataSet,
   {$ENDIF DelphiPersonalEdition}
@@ -63,10 +61,7 @@ uses
 {$R ../Resources/JvUIBReg.dcr}
 {$ENDIF LINUX}
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsPaletteUIB = 'Jv UIB';
-{$ENDIF USEJVCL}
+
 
 procedure Register;
 begin 

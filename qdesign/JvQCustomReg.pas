@@ -47,12 +47,12 @@ uses
   DesignEditors, DesignIntf,
   
 
-  
+
   ToolsAPI,
   JvQDsgnConsts,
   JclSchedule,
-  
-  JvQGammaPanel, JvQLinkLabel, JvQLookOut, JvQOutlookBar, JvQScheduledEvents,
+
+  JvQGammaPanel, JvQLinkLabel, JvQLookOut, JvQOutlookBar, {JvQScheduledEvents,}
   JvQTimeLine, JvQTMTimeLine, JvQValidateEdit, JvQChart,
   JvQTimeLineEditor, JvQOutlookBarEditors, JvQLookoutEditor;
 
@@ -77,8 +77,8 @@ begin
     TJvLookout, {TJvLookOutPage, } TJvExpress]);
   RegisterComponents(RsPaletteLabel, [TJvLinkLabel]);
   RegisterComponents(RsPaletteVisual, [TJvTimeLine, TJvTMTimeLine, TJvChart]);
-  RegisterComponents(RsPaletteNonVisual, [TJvScheduledEvents]);
-  
+//  RegisterComponents(RsPaletteNonVisual, [TJvScheduledEvents]);
+
 
 
   RegisterPropertyEditor(TypeInfo(Integer), TJvCustomOutlookBar,
@@ -96,8 +96,8 @@ begin
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvExpressButton,
     cImageIndex, TJvLookOutImageIndexProperty);
 
-  
-  
+
+
 
   RegisterComponentEditor(TJvCustomOutlookBar, TJvOutlookBarComponentEditor);
   RegisterComponentEditor(TJvCustomTimeLine, TJvTimeLineEditor);

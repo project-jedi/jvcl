@@ -36,7 +36,8 @@ interface
 
 uses
   Classes, Types, QGraphics, QMenus, QWindows, 
-  DesignEditors, DesignIntf, DesignMenus, ClxEditors,  
+  DesignEditors, DesignIntf, DesignMenus, CLXEditors,   
+  JvQDsgnEditors, 
   JvQSegmentedLEDDisplay;
 
 type

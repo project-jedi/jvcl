@@ -39,15 +39,15 @@ procedure Register;
 implementation
 
 uses
-  Classes,  
-  QControls, QImgList, QActnList,  
+  Classes,
+  QControls, QImgList, QActnList, 
   DesignEditors, DesignIntf, 
   JvQDsgnConsts, 
-  {$IFDEF MSWINDOWS}
-  JvQUninstallControls,
-  {$ENDIF MSWINDOWS}
-  JvQDsgnIntf,
-  QTypes,
+  {$IFDEF USEWINDOWS}
+  JvQUninstallControls, JvQCharMap,
+  {$ENDIF USEWINDOWS}
+  JvQDsgnIntf, 
+  QTypes, 
   JvQZoom, JvQBehaviorLabel, JvQArrowButton, JvQaScrollText, JvQClock,
   JvQContentScroller, JvQColorBox, JvQColorButton, JvQDice, JvQFooter,
   JvQGroupHeader, JvQHint, JvQHtControls, JvQInstallLabel, JvQItemsPanel,
@@ -55,7 +55,7 @@ uses
   JvQSpeedbarSetupForm, JvQSwitch, JvQSplit, JvQSplitter, JvQSyncSplitter,
   JvQTransparentButton, JvQColorForm, JvQImageDrawThread, JvQWinampLabel,
   JvQComponentPanel, JvQButtons, JvQCaptionPanel, JvQScrollMax, JvQMovableBevel,
-  JvQComboListBox, JvQCharMap, JvQOfficeColorButton, JvQOfficeColorPanel,
+  JvQComboListBox, JvQOfficeColorButton, JvQOfficeColorPanel,
   JvQNetscapeSplitter,
   JvQDsgnEditors, JvQScrollMaxEditor, JvQBehaviorLabelEditor, JvQGroupHeaderEditor,
   JvQFooterEditor, JvQSpeedbarForm, JvQTransparentButtonEditors, JvQRollOutEditor;
@@ -68,11 +68,11 @@ uses
 {$ENDIF LINUX}
 
 procedure Register;
-begin
-  GroupDescendentsWith(TJvHint, TControl);
+begin 
+  GroupDescendentsWith(TJvHint, TControl); 
 
   RegisterComponents(RsPaletteButton, [TJvTransparentButton,
-    TJvTransparentButton2, TJvArrowButton,
+    TJvTransparentButton2, TJvArrowButton, 
     TJvColorButton,  TJvOfficeColorButton, TJvOfficeColorPanel,
     TJvHTButton, TJvSpacer, TJvSwitch]);
   RegisterComponents(RsPaletteBarPanel, [TJvSpeedBar, TJvCaptionPanel,
@@ -80,13 +80,13 @@ begin
     TJvComponentPanel]);
   RegisterComponents(RsPaletteLabel, [TJvBehaviorLabel, TJvInstallLabel,
     TJvHTLabel, TJvWinampLabel]);
-
-  {$IFDEF MSWINDOWS}
+ 
+  {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteListComboTree, [TJvUninstallComboBox, TJvUninstallListBox]);
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS} 
 
   RegisterComponents(RsPaletteScrollerTracker, [TJvScrollMax, TJvaScrollText,
-    TJvContentScroller,
+    TJvContentScroller, 
     TJvScrollingWindow, TJvScrollText]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter, TJvxSplitter,
     TJvSyncSplitter, TJvNetscapeSplitter]);
@@ -109,7 +109,7 @@ begin
   RegisterComponentEditor(TJvScrollMax, TJvScrollMaxEditor);
   RegisterComponentEditor(TJvRollOut, TJvRollOutDefaultEditor);
   RegisterComponentEditor(TJvGroupHeader, TJvGroupHeaderEditor);
-  RegisterComponentEditor(TJvFooter, TJvFooterEditor);
+  RegisterComponentEditor(TJvFooter, TJvFooterEditor); 
   RegisterComponentEditor(TJvSpeedBar, TJvSpeedbarCompEditor);
 
   RegisterNoIcon([TJvSpeedItem, TJvSpeedbarSection]);

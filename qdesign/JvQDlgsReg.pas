@@ -42,11 +42,11 @@ uses
   Classes, QDialogs, QActnList, 
   DesignEditors, DesignIntf, 
   JvQDsgnConsts, 
-  {$IFDEF MSWINDOWS}
+  {$IFDEF USEWINDOWS}
   JvQWinDialogs, JvQAddPrinter, JvQCommonDialogD, JvQConnectNetwork, JvQCopyError,
   JvQDeleteError, JvQRenameError, JvQDiskPrompt, JvQFindFiles,
   JvQObjectPickerDialog, JvQCommonDialogDEditor,
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
   JvQBaseDlg, JvQFindReplace, JvQDSADialogs, JvQTipOfDay, JvQCommonExecDlg,
   JvQDesktopAlert, JvQProgressComponent, JvQSelectDirectory, JvQImageDlg,
   JvQLoginForm, JvQDualList, JvQProgressDialog, JvQBaseDlgEditor,
@@ -66,7 +66,7 @@ const
 begin 
   RegisterComponents(RsPaletteDialog, [TJvSelectDirectory,  TJvTipOfDay,
     TJvFindReplace, TJvDSADialog]); 
-  {$IFDEF MSWINDOWS}
+  {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteDialog, [TJvConnectNetwork,
     TJvDisconnectNetwork, TJvAddPrinterDialog, TJvFindFilesDialog,
     TJvFormatDriveDialog, TJvOrganizeFavoritesDialog,
@@ -77,7 +77,7 @@ begin
     TJvObjectPickerDialog, TJvDualListDialog, TJvImageDialog, TJvLoginDialog,
     TJvProgressDialog, TJvProgressComponent, TJvDiskPrompt, TJvCopyError,
     TJvDeleteError, TJvRenameError, TJvDesktopAlert, TJvDesktopAlertStack]);
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
  
 
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
@@ -86,9 +86,9 @@ begin
   RegisterComponentEditor(TJvCommonDialog, TJvBaseDlgEditor); 
   RegisterComponentEditor(TJvCommonDialogP, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogF, TJvBaseDlgEditor);
-  {$IFDEF MSWINDOWS}
+  {$IFDEF USEWINDOWS}
   RegisterComponentEditor(TJvCommonDialogD, TJvCommonDialogDEditor);
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
   RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);   // removed because BCB5 cannot compile/link JvDialogActns  
 end;
 

@@ -48,9 +48,9 @@ uses
   JvQDataProvider, JvQDataProviderIntf, JvQColorProvider, JvQContextProvider,
   JvQDsgnEditors, JvQJVCLAboutEditor, JvQBaseDlgEditor, JvQColorEditor,
   JvQPaintBoxEditor, JvQColorProviderEditors, JvQDataProviderEditors, 
-  {$IFDEF MSWINDOWS}
+  {$IFDEF USEWINDOWS}
   JvQAppRegistryStorage,
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
   JvQAppIniStorage, JvQAppStorage, JvQAppStorageSelectList;
 
 {$IFDEF MSWINDOWS}
@@ -71,9 +71,9 @@ begin
 
   RegisterComponents(RsPalettePersistence, [TJvAppStorage,
     TJvAppIniFileStorage, TJvAppStorageSelectList]);
-  {$IFDEF MSWINDOWS}
+  {$IFDEF USEWINDOWS}
   RegisterComponents(RsPalettePersistence, [TJvAppRegistryStorage]);
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
   
   RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCLX', TJVCLAboutDialogProperty); 
 
@@ -86,6 +86,7 @@ begin
 
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
  
+  RegisterPropertyEditor(TypeInfo(TColor), TPersistent, '', TJvColorProperty);
 
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'InitialDir', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirectoryProperty);

@@ -34,10 +34,10 @@ unit JvQPictureEditors;
 interface
 
 uses
-  Windows, Messages, Classes, Graphics, Forms, Controls, Dialogs, Menus,
-  
-  RTLConsts, DesignIntf, DesignEditors, VCLEditors,
-  
+  QWindows, QMessages, Classes, Types, QGraphics, QForms, QControls, QDialogs, QMenus,
+
+  RTLConsts, DesignIntf, DesignEditors, CLXEditors,
+
   JvQPictureEditForm;
 
 type

@@ -141,26 +141,17 @@ type
 
 implementation
 
-{$IFDEF USEJVCL}
+
 uses
   JvQDsgnConsts;
-{$ENDIF USEJVCL}
+
 
 
 
 {$R *.xfm}
 
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsPageListEllipsis = 'Page List...';
-  RsNewWelcomePage = 'New Welcome Page';
-  RsNewInteriorPage = 'New Interior Page';
-  RsDeletePage = 'Delete Page';
-  RsNextPage = 'Next Page';
-  RsPreviousPage = 'Previous Page';
-  RsNone = '(none)';
-{$ENDIF USEJVCL}
+
 
 procedure ShowWizardPageListEditor(Designer: IDesigner; AWizard: TJvWizard);
 var
