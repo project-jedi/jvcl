@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2003-09-29
+- updated the BCB compatibility guide // olivier
 2003-09-28:
 - Added ButtonDown status properties to JvOutlookBar // andreas
 - Theme support for most components // andreas
