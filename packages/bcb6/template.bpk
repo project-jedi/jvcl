@@ -1,0 +1,206 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<!--
+-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: %NAME%.bpk, released on 2003-11-08.
+
+The Initial Developer of the Original Code is Olivier Sannier [obones@meloo.com]
+Portions created by Olivier Sannier are Copyright (C) 2003 Olivier Sannier.
+All Rights Reserved.
+
+Contributor(s): -
+
+Last Modified: 2003-11-08
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------
+-->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="%NAME%.bpl"/>
+    <OBJFILES value="
+      ..\..\dcu\%NAME%.obj
+<%%% START FILES %%%>
+      ..\..\dcu\%UNITNAME%.obj
+<%%% END FILES %%%>
+    "/>
+    <RESFILES value="%NAME%.res"/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES)
+<%%% START FORMS %%%>
+    %FORMPATHNAME%.dfm
+<%%% END FORMS %%%>
+    "/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
+    <PACKAGES value="
+<%%% START REQUIRES %%%>
+       %NAME%.bpi 
+<%%% END REQUIRES %%%>       
+    "/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;..\..\common;..\..\run;..\..\design"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
+    <MAINSOURCE value="%NAME%.cpp"/>
+    <INCLUDEPATH value="..\..\design;..\..\run;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\run;..\..\design;..\..\common;..\..\resources;..\..\dcu;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug;&quot;$(PATH)&quot;"/>
+    <WARNINGS value="-w-par"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I..\..\design -I..\..\run -I..\..\common -I..\..\..\JCL\source
+      -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
+    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c
+      -tWM"/>
+    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M 
+                   -U&quot;$(PATH)&quot; %C6PFLAGS%
+                  "/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zd"/>
+    <LFLAGS value="-I..\..\dcu -D&quot;%DESCRIPTION%&quot; -aa -Tpp
+      -Gpr -x -Gn -Gl -Gi -v"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="%NAME%.res" FORMNAME="" UNITNAME="%NAME%.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="%NAME%.cpp" FORMNAME="" UNITNAME="%NAME%" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+<%%% START REQUIRES %%%>
+      <FILE FILENAME="%NAME%.bpi" FORMNAME="" UNITNAME="%NAME%" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+<%%% END REQUIRES %%%>
+<%%% START FILES %%%>
+      <FILE FILENAME="%FILENAME%" FORMNAME="%FORMNAME%" UNITNAME="%UNITNAME%" CONTAINERID="PascalCompiler" DESIGNCLASS="%FORMTYPE%" LOCALCOMMAND=""/>
+<%%% END FILES %%%>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1033
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[HistoryLists\hlIncludePath]
+Count=4
+Item0=..\..\design;..\..\run;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl
+Item1=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl
+Item2=..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\include;$(BCB)\include\vcl
+Item3=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl;..\..\..\JCL\source
+
+[HistoryLists\hlLibraryPath]
+Count=8
+Item0=..\..\design;..\..\run;..\..\common;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug
+Item1=..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug
+Item2=C:\Prog\delphi6\Lib\JCL\dcu;..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug
+Item3=C:\Prog\delphi6\Lib\JCL\dcu;c:\prog\cbuilder6\lib\debug;$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common
+Item4=$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common
+Item5=$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common;..\..\..\JCL\dcu;..\..\..\JCL\source
+Item6=..\..\design;..\..\run;..\..\common;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\JCL\dcu;..\..\..\JCL\source
+Item7=..\..\design;..\..\run;..\..\common;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[HistoryLists\hlIntOutputDir]
+Count=1
+Item0=..\..\dcu
+
+[HistoryLists\hlFinalOutputDir]
+Count=1
+Item0=$(BCB)\Projects\bpl
+
+[HistoryLists\hIBPIOutputDir]
+Count=1
+Item0=$(BCB)\Projects\lib
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteLauncher=
+RemoteCWD=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[CORBA]
+AddServerUnit=1
+AddClientUnit=1
+PrecompiledHeaders=1
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+
+[Linker]
+LibPrefix=
+LibSuffix=
+LibVersion=
+  </IDEOPTIONS>
+</PROJECT>
