@@ -124,6 +124,8 @@ type
     procedure SetFlatBorder(const Value: Boolean);
     procedure SetFlatBorderColor(const Value: TColor);
     procedure DrawCaption;
+    procedure DrawCaptionTo(ACanvas: TCanvas
+  {$IFDEF VisualCLX}; DrawingMask: Boolean = false{$ENDIF});
     procedure DrawBorders;
     procedure SetMultiLine(const Value: Boolean);
     procedure SetHotColor(const Value: TColor);
@@ -492,6 +494,7 @@ begin
   ACanvas.Pen.Width := I;
   R := ClientRect;
   ACanvas.Rectangle(R);
+  DrawCaptionTo(ACanvas, true);
   if Sizeable then
   begin
     X := ClientWidth - FGripBmp.Width - I;
@@ -624,6 +627,12 @@ begin
 end;
 
 procedure TJvPanel.DrawCaption;
+begin
+  DrawCaptionTo(self.Canvas);
+end;
+
+procedure TJvPanel.DrawCaptionTo(ACanvas: TCanvas
+  {$IFDEF VisualCLX}; DrawingMask: Boolean = false{$ENDIF});
 const
   Alignments: array [TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
   WordWrap: array [Boolean] of Longint = (DT_SINGLELINE, DT_WORDBREAK);
@@ -632,7 +641,7 @@ var
   BevelSize: Integer;
   Flags: Longint;
 begin
-  with Self.Canvas do
+  with ACanvas do
   begin
     if Caption <> '' then
     begin
@@ -650,10 +659,10 @@ begin
       Flags := DrawTextBiDiModeFlags(Flags);
       //calculate required rectangle size
       {$IFDEF VCL}
-      DrawText(Canvas.Handle, PChar(Caption), -1, ATextRect, Flags or DT_CALCRECT);
+      DrawText(ACanvas.Handle, PChar(Caption), -1, ATextRect, Flags or DT_CALCRECT);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      DrawText(Canvas, Caption, -1, ATextRect, Flags or DT_CALCRECT);
+      DrawText(ACanvas, Caption, -1, ATextRect, Flags or DT_CALCRECT);
       {$ENDIF VisualCLX}
       // adjust the rectangle placement
       OffsetRect(ATextRect, 0, -ATextRect.Top + (Height - (ATextRect.Bottom - ATextRect.Top)) div 2);
@@ -664,16 +673,21 @@ begin
         taCenter:
           OffsetRect(ATextRect, -ATextRect.Left + (Width - (ATextRect.Right - ATextRect.Left)) div 2, 0);
       end;
-      if not Enabled then
-        Font.Color := clGrayText;
+      {$IFDEF VisualCLX}
+      if DrawingMask then
+        Font.Color := clDontMask
+      else
+      {$ENDIF VisualCLX}
+        if not Enabled then
+          Font.Color := clGrayText;
       //draw text
       if Transparent and not IsThemed then
-        SetBkMode(Canvas.Handle, BkModeTransparent);
+        SetBkMode(ACanvas.Handle, BkModeTransparent);
       {$IFDEF VCL}
-      DrawText(Canvas.Handle, PChar(Caption), -1, ATextRect, Flags);
+      DrawText(ACanvas.Handle, PChar(Caption), -1, ATextRect, Flags);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      DrawText(Canvas, Caption, -1, ATextRect, Flags);
+      DrawText(ACanvas, Caption, -1, ATextRect, Flags);
       {$ENDIF VisualCLX}
     end;
   end;
