@@ -37,9 +37,33 @@ uses
   {$IFDEF UNIX}
   QWindows,
   {$ENDIF UNIX}
+  Dialogs,
   JvTypes, JvComponent, JvThreadDialog;
 
 type
+  TJvBaseThread = class(TThread)
+  private
+    FExecuteEvent: TJvNotifyParamsEvent;
+    FParams: Pointer;
+    FSender: TObject;
+    FException: Exception;
+    FExceptionAddr: Pointer;
+    fSynchMsg : String;
+    fSynchAType: TMsgDlgType;
+    fSynchAButtons: TMsgDlgButtons;
+    fSynchHelpCtx: Longint;
+    fSynchMessageDlgResult : Word;
+    fIsRunning : Boolean;
+    procedure ExceptionHandler;
+  protected
+    procedure InternalMessageDlg;
+  public
+    constructor Create(Sender: TObject; Event: TJvNotifyParamsEvent;
+      Params: Pointer); virtual;
+    function SynchMessageDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
+    procedure Execute; override;
+  end;
+
   TJvThread = class(TJvComponent)
   private
     FThreadCount: Integer;
@@ -56,15 +80,20 @@ type
     procedure DoCreate;
     procedure DoTerminate(Sender: TObject);
     function GetCount: Integer;
-    function GetThreads(Index: Integer): TThread;
+    function GetThreads(Index: Integer): TJvBaseThread;
     function GetTerminated: Boolean;
     procedure CreateThreadDialogForm;
+    function GetLastThread : TJvBaseThread;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+
+//    procedure Synchronize (Method: TThreadMethod);
+
     property Count: Integer read GetCount;
-    property Threads[Index: Integer]: TThread read GetThreads;
+    property Threads[Index: Integer]: TJvBaseThread read GetThreads;
+    property LastThread: TJvBaseThread read GetLastThread;
   published
     function Execute(P: Pointer): THandle;
     function OneThreadIsRunning: Boolean;
@@ -124,48 +153,6 @@ begin
   end;
 end;
 
-//=== { TJvHideThread } ======================================================
-
-type
-  TJvHideThread = class(TThread)
-  private
-    FExecuteEvent: TJvNotifyParamsEvent;
-    FParams: Pointer;
-    FSender: TObject;
-    FException: Exception;
-    FExceptionAddr: Pointer;
-    procedure ExceptionHandler;
-  public
-    constructor Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params: Pointer); virtual;
-    procedure Execute; override;
-  end;
-
-constructor TJvHideThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params: Pointer);
-begin
-  inherited Create(True);
-  FSender := Sender;
-  FExecuteEvent := Event;
-  FParams := Params;
-end;
-
-procedure TJvHideThread.ExceptionHandler;
-begin
-  ShowException(FException, FExceptionAddr);
-end;
-
-procedure TJvHideThread.Execute;
-begin
-  try
-    FExecuteEvent(FSender, FParams);
-  except
-    on E: Exception do
-    begin
-      FException := E;
-      FExceptionAddr := ExceptAddr;
-      Self.Synchronize(ExceptionHandler);
-    end;
-  end;
-end;
 
 //=== { TJvThread } ==========================================================
 
@@ -208,7 +195,7 @@ end;
 
 function TJvThread.Execute(P: Pointer): THandle;
 var
-  HideThread: TJvHideThread;
+  BaseThread: TJvBaseThread;
 begin
   Result := 0;
   if Exclusive and OneThreadIsRunning then
@@ -217,22 +204,22 @@ begin
   if Assigned(FOnExecute) then
   begin
     Inc(FThreadCount);
-    HideThread := TJvHideThread.Create(Self, FOnExecute, P);
+    BaseThread := TJvBaseThread.Create(Self, FOnExecute, P);
     try
-      HideThread.FreeOnTerminate := FFreeOnTerminate;
-      HideThread.OnTerminate := DoTerminate;
-      FThreads.Add(HideThread);
+      BaseThread.FreeOnTerminate := FFreeOnTerminate;
+      BaseThread.OnTerminate := DoTerminate;
+      FThreads.Add(BaseThread);
       DoCreate;
     except
-      HideThread.Free;
+      BaseThread.Free;
       raise;
     end;
     if FRunOnCreate then
     begin
-      HideThread.Resume;
+      BaseThread.Resume;
       CreateThreadDialogForm;
     end;
-    Result := HideThread.ThreadID;
+    Result := BaseThread.ThreadID;
   end;
 end;
 
@@ -320,9 +307,9 @@ begin
   try
     for I := 0 to List.Count - 1 do
     begin
-      TJvHideThread(List[I]).Terminate;
-      if TJvHideThread(List[I]).Suspended then
-        TJvHideThread(List[I]).Resume;
+      TJvBaseThread(List[I]).Terminate;
+      if TJvBaseThread(List[I]).Suspended then
+        TJvBaseThread(List[I]).Resume;
     end;
   finally
     FThreads.UnlockList;
@@ -341,13 +328,13 @@ begin
   end;
 end;
 
-function TJvThread.GetThreads(Index: Integer): TThread;
+function TJvThread.GetThreads(Index: Integer): TJvBaseThread;
 var
   List: TList;
 begin
   List := FThreads.LockList;
   try
-    Result := TJvHideThread(List[Index]);
+    Result := TJvBaseThread(List[Index]);
   finally
     FThreads.UnlockList;
   end;
@@ -363,7 +350,7 @@ begin
   try
     for I := 0 to List.Count - 1 do
     begin
-      Result := Result and TJvHideThread(List[I]).Terminated;
+      Result := Result and TJvBaseThread(List[I]).Terminated;
       if not Result then
         Break;
     end;
@@ -374,8 +361,61 @@ end;
 
 procedure TJvThread.CreateThreadDialogForm;
 begin
-  if Assigned(ThreadDialog) and not Assigned(FThreadDialogForm) then
-    FThreadDialogForm := ThreadDialog.CreateThreadDialogForm(Self);
+  if Assigned(ThreadDialog) and Not Assigned(fThreadDialogForm) then
+    fThreadDialogForm := ThreadDialog.CreateThreadDialogForm (self);
+end;
+
+function TJvThread.GetLastThread : TJvBaseThread;
+begin
+  if (Count > 0) then
+    Result := Threads[Count-1]
+  else
+    Result := nil;
+end;
+//=== { TJvBaseThread } ======================================================
+
+constructor TJvBaseThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent;
+  Params: Pointer);
+begin
+  inherited Create(True);
+  FSender := Sender;
+  FExecuteEvent := Event;
+  FParams := Params;
+end;
+
+procedure TJvBaseThread.InternalMessageDlg;
+begin
+  fSynchMessageDlgResult := MessageDlg (fSynchMsg, fSynchAType, fSynchAButtons, fSynchHelpCtx);
+end;
+
+function TJvBaseThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
+begin
+  fSynchMsg := Msg;
+  fSynchAType:= AType;
+  fSynchAButtons:= AButtons;
+  fSynchHelpCtx:= HelpCtx;
+  Synchronize (InternalMessageDlg);
+  Result := fSynchMessageDlgResult;
+end;
+
+
+procedure TJvBaseThread.ExceptionHandler;
+begin
+  ShowException(FException, FExceptionAddr);
+end;
+
+procedure TJvBaseThread.Execute;
+begin
+  try
+    FExecuteEvent(FSender, FParams);
+  except
+    on E: Exception do
+    begin
+      FException := E;
+      FExceptionAddr := ExceptAddr;
+      Self.Synchronize(ExceptionHandler);
+    end;
+  end;
 end;
 
 {$IFDEF UNITVERSIONING}

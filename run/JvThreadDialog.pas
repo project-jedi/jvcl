@@ -29,9 +29,9 @@ unit JvThreadDialog;
 interface
 
 uses
-  SysUtils, Classes, Forms, ExtCtrls, Buttons, StdCtrls, ComCtrls,
+  SysUtils, Classes, Forms, ExtCtrls, Buttons, StdCtrls, 
   {$IFDEF MSWINDOWS}
-  Windows, Controls,
+  Windows, Controls, ComCtrls,
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   QWindows, QControls,
@@ -52,17 +52,26 @@ type
     FCaption: string;
     FCancelButtonCaption: string;
     FOwner: TJvCustomThreadDialog;
+  protected
+    procedure SetEnableCancelButton (Value : Boolean);
+    procedure SetShowDialog (Value : Boolean);
+    procedure SetShowModal (Value : Boolean);
+    procedure SetShowCancelButton (Value : Boolean);
+    procedure SetShowElapsedTime (Value : Boolean);
+    procedure SetInfoText (Value : String);
+    procedure SetCaption (Value : String);
+    procedure SetCancelButtonCaption (Value : String);
   public
     constructor Create(AOwner: TJvCustomThreadDialog); virtual;
   published
-    property EnableCancelButton: Boolean read FEnableCancelButton write FEnableCancelButton default True;
-    property ShowDialog: Boolean read FShowDialog write FShowDialog default False;
-    property ShowModal: Boolean read FShowModal write FShowModal default True;
-    property ShowCancelButton: Boolean read FShowCancelButton write FShowCancelButton default True;
-    property ShowElapsedTime: Boolean read FShowElapsedTime write FShowElapsedTime default True;
-    property InfoText: string read FInfoText write FInfoText;
-    property Caption: string read FCaption write FCaption;
-    property CancelButtonCaption: string read FCancelButtonCaption write FCancelButtonCaption;
+    property EnableCancelButton: Boolean read FEnableCancelButton write SetEnableCancelButton default True;
+    property ShowDialog: Boolean read FShowDialog write SetShowDialog default False;
+    property ShowModal: Boolean read FShowModal write SetShowModal default True;
+    property ShowCancelButton: Boolean read FShowCancelButton write SetShowCancelButton default True;
+    property ShowElapsedTime: Boolean read FShowElapsedTime write SetShowElapsedTime default True;
+    property InfoText: string read FInfoText write SetInfoText;
+    property Caption: string read FCaption write SetCaption;
+    property CancelButtonCaption: string read FCancelButtonCaption write SetCancelButtonCaption;
   end;
 
   TJvCustomThreadDialogForm = class(TForm)
@@ -108,6 +117,7 @@ type
     procedure MainTimerTimer(Sender: TObject);
     procedure SetFormData;
     procedure SetFormHeightWidth;
+    procedure TransferThreadDialogOptions; override;
     function CreateDialogOptions: TJvThreadBaseDialogOptions; override;
   public
     function CreateThreadDialogForm(ConnectedThread: TComponent): TJvCustomThreadDialogForm; override;
@@ -143,6 +153,7 @@ type
     procedure MainTimerTimer(Sender: TObject);
     procedure SetFormData;
     procedure SetFormHeightWidth;
+    procedure TransferThreadDialogOptions; override;
     function GetDialogOptions: TJvThreadAnimateDialogOptions;
     function CreateDialogOptions: TJvThreadBaseDialogOptions; override;
   public
@@ -173,13 +184,65 @@ end;
 constructor TJvThreadBaseDialogOptions.Create(AOwner: TJvCustomThreadDialog);
 begin
   inherited Create;
-  FOwner := AOwner;
-  FEnableCancelButton := True;
-  FShowDialog := False;
-  FShowModal := True;
-  FShowCancelButton := True;
-  FShowElapsedTime := True;
+  FOwner := aOwner;
+  FEnableCancelButton := true;
+  FShowDialog := false;
+  FShowModal := true;
+  FShowCancelButton := true;
+  FShowElapsedTime := true;
   FCancelButtonCaption := RsButtonCancelCaption;
+end;
+
+procedure tJvThreadBaseDialogOptions.SetEnableCancelButton (Value : Boolean);
+begin
+  FEnableCancelButton := Value;
+  if Assigned(FOwner) then
+    FOwner.TransferThreadDialogOptions;
+end;
+
+procedure tJvThreadBaseDialogOptions.SetShowDialog (Value : Boolean);
+begin
+  FShowDialog := Value;
+end;
+
+procedure tJvThreadBaseDialogOptions.SetShowModal (Value : Boolean);
+begin
+  FShowModal := Value;
+end;
+
+procedure tJvThreadBaseDialogOptions.SetShowCancelButton (Value : Boolean);
+begin
+  FShowCancelButton := Value;
+  if Assigned(FOwner) then
+    FOwner.TransferThreadDialogOptions;
+end;
+
+procedure tJvThreadBaseDialogOptions.SetShowElapsedTime (Value : Boolean);
+begin
+  FShowElapsedTime := Value;
+  if Assigned(FOwner) then
+    FOwner.TransferThreadDialogOptions;
+end;
+
+procedure tJvThreadBaseDialogOptions.SetInfoText (Value : String);
+begin
+  FInfoText := Value;
+  if Assigned(FOwner) then
+    FOwner.TransferThreadDialogOptions;
+end;
+
+procedure tJvThreadBaseDialogOptions.SetCaption (Value : String);
+begin
+  FCaption := Value;
+  if Assigned(FOwner) then
+    FOwner.TransferThreadDialogOptions;
+end;
+
+procedure tJvThreadBaseDialogOptions.SetCancelButtonCaption (Value : String);
+begin
+  FCancelButtonCaption  := Value;
+  if Assigned(FOwner) then
+    FOwner.TransferThreadDialogOptions;
 end;
 
 //=== { TJvCustomThreadDialog } ==============================================
@@ -193,8 +256,7 @@ end;
 
 procedure TJvCustomThreadDialogForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-  //CanClose := FTerminated or (not CurrentThread.IsRunning);
-  CanClose := JvThreadComp(FConnectedThread).Terminated;
+  CanClose := JvThreadComp(fConnectedThread).Terminated;
 end;
 
 //=== { TJvCustomThreadDialog } ==============================================
@@ -368,8 +430,13 @@ begin
           FInfoText.Caption := DialogOptions.FInfoText + ' \ ';
       end;
       FTimeText.Caption := FormatDateTime('hh:nn:ss', Now - FStartTime);
-      SetFormData;
+//      SetFormData;
     end;
+end;
+
+procedure TJvThreadSimpleDialog.TransferThreadDialogOptions;
+begin
+  SetFormData;
 end;
 
 procedure TJvThreadSimpleDialog.SetFormHeightWidth;
@@ -572,6 +639,11 @@ begin
       FThreadStatusDialog.Close
     else
       FTimeText.Caption := FormatDateTime('hh:nn:ss',Now-FStartTime);
+end;
+
+procedure TJvThreadAnimateDialog.TransferThreadDialogOptions;
+begin
+  SetFormData;
 end;
 
 procedure TJvThreadAnimateDialog.SetFormHeightWidth;
