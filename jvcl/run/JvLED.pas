@@ -36,11 +36,12 @@ interface
 
 uses
   {$IFDEF VCL}
-  Windows, Messages, Controls, Classes, Graphics,
+  Windows, Messages, Controls, Graphics,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, QControls, Classes, QGraphics, Types,
+  QWindows, QControls, QGraphics, Types,
   {$ENDIF VisualCLX}
+  Classes,
   JvComponent;
 
 type
