@@ -33,12 +33,12 @@ interface
 
 uses
   Windows, ShellAPI, SysUtils, Classes, Contnrs, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, Menus;
+  Dialogs, StdCtrls, ExtCtrls, Menus, FrmCompile;
 
 type
   TMsgType = (msgFatal, msgError, msgWarning, msgHint, msgText);
 
-  TFormCompileMessages = class(TForm)
+  TFormCompileMessages = class(TForm, ICompileMessages)
     ListBox: TListBox;
     PanelTop: TPanel;
     LabelHelp: TLabel;
@@ -56,6 +56,7 @@ type
     { Private-Deklarationen }
     FList: TObjectList;
     procedure ExtractText(Typ: TMsgType; const Text: string);
+    function GetCount: Integer;
   public
     { Public-Deklarationen }
     procedure Clear;
@@ -67,6 +68,8 @@ type
 
     procedure AddMsg(Typ: TMsgType; const Filename: string; Line: Integer; const Msg: string);
     procedure AddText(const Msg: string);
+
+    property Count: Integer read GetCount;
   end;
 
 var
@@ -310,6 +313,11 @@ procedure TFormCompileMessages.ListBoxMouseDown(Sender: TObject;
 begin
   if Button = mbRight then
     ListBox.ItemIndex := ListBox.ItemAtPos(Point(X, Y), True);
+end;
+
+function TFormCompileMessages.GetCount: Integer;
+begin
+  Result := ListBox.Items.Count;
 end;
 
 end.

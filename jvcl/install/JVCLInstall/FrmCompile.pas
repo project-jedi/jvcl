@@ -35,6 +35,22 @@ uses
   Windows, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls;
 
 type
+  TCompileLineType = (clText, clFileProgress, clHint, clWarning, clError, clFatal);
+
+  ICompileMessages = interface
+    ['{C932390B-8DB6-4CAE-89D0-7BAB8A2E640B}']
+    procedure Clear;
+
+    procedure AddHint(const Text: string);
+    procedure AddWarning(const Text: string);
+    procedure AddError(const Text: string);
+    procedure AddFatal(const Text: string);
+    procedure AddText(const Msg: string);
+
+      { Text is the line that the compiler outputs. The ICompileMessages
+        implementor must parse the line itself. }
+  end;
+
   TFormCompile = class(TForm)
     PanelClient: TPanel;
     BtnOk: TButton;
@@ -69,12 +85,17 @@ type
     FCurrentLine: Cardinal;
     FTotalLines: Cardinal;
     FCurFilename: string;
+    FCompileMessages: ICompileMessages;
+    FAutoClearCompileMessages: Boolean;
     procedure SetCurrentLine(Line: Cardinal);
+    function IsCompileFileLine(const Line: string): Boolean;
   public
     procedure Init(const ProjectName: string; Clear: Boolean = True);
     procedure Compiling(const Filename: string);
     procedure Linking(const Filename: string);
     procedure Done(const ErrorReason: string = '');
+
+    function HandleLine(const Line: string): TCompileLineType;
 
     procedure IncHint;
     procedure IncWarning;
@@ -84,6 +105,9 @@ type
     property Warnings: Cardinal read FWarnings;
     property Errors: Cardinal read FErrors;
     property CurrentLine: Cardinal read FCurrentLine write SetCurrentLine;
+
+    property AutoClearCompileMessages: Boolean read FAutoClearCompileMessages write FAutoClearCompileMessages default False;
+    property CompileMessages: ICompileMessages read FCompileMessages write FCompileMessages;
   end;
 
 var
@@ -114,6 +138,95 @@ begin
   Close;
 end;
 
+function TFormCompile.HandleLine(const Line: string): TCompileLineType;
+
+  function HasText(Text: string; const Values: array of string): Boolean;
+  var
+    i: Integer;
+  begin
+    Result := True;
+    Text := AnsiLowerCase(Text);
+    for i := 0 to High(Values) do
+      if Pos(Values[i], Text) > 0 then
+        Exit;
+    Result := False;
+  end;
+
+begin
+  Result := clText;
+  if Line = '' then
+    Exit;
+
+  if IsCompileFileLine(Line) then
+    Result := clFileProgress
+  else
+  if HasText(Line, ['hint: ', 'hinweis: ', 'suggestion: ']) then // do not localize
+  begin
+    Result := clHint;
+    IncHint;
+    if Assigned(FCompileMessages) then
+      FCompileMessages.AddHint(Line);
+  end
+  else if HasText(Line, ['warning: ', 'warnung: ', 'avertissement: ']) then // do not localize
+  begin
+    Result := clWarning;
+    IncWarning;
+    if Assigned(FCompileMessages) then
+      FCompileMessages.AddWarning(Line);
+  end
+  else if HasText(Line, ['error: ', 'fehler: ', 'erreur: ']) then // do not localize
+  begin
+    Result := clError;
+    IncError;
+    if Assigned(FCompileMessages) then
+      FCompileMessages.AddError(Line);
+  end
+  else if HasText(Line, ['fatal: ']) then // do not localize
+  begin
+    Result := clFatal;
+    IncError;
+    if Assigned(FCompileMessages) then
+      FCompileMessages.AddFatal(Line);
+  end;
+end;
+
+function TFormCompile.IsCompileFileLine(const Line: string): Boolean;
+
+  function PosLast(Ch: Char; const S: string): Integer;
+  begin
+    for Result := Length(S) downto 1 do
+      if S[Result] = Ch then
+        Exit;
+    Result := 0;
+  end;
+
+var
+  ps, psEnd, LineNum, Err: Integer;
+  Filename: string;
+begin
+  Result := False;
+  ps := PosLast('(', Line);
+  if (ps > 0) and (Pos(': ', Line) = 0) and (Pos('.', Line) > 0) then
+  begin
+    psEnd := PosLast(')', Line);
+    if psEnd < ps then
+      Exit;
+
+    Filename := Copy(Line, 1, ps - 1);
+    if (Filename <> '') and (Filename[Length(Filename)] > #32) then
+    begin
+      Val(Copy(Line, ps + 1, psEnd - ps - 1), LineNum, Err);
+      if Err = 0 then
+      begin
+        Compiling(Filename);
+        CurrentLine := LineNum;
+        Result := True;
+      end;
+    end;
+  end;
+end;
+
+
 procedure TFormCompile.Init(const ProjectName: string; Clear: Boolean);
 begin
   Tag := 0;
@@ -124,6 +237,8 @@ begin
 
   if Clear then
   begin
+    if Assigned(FCompileMessages) and AutoClearCompileMessages then
+      FCompileMessages.Clear;
     FHints := 0;
     FErrors := 0;
     FWarnings := 0;
@@ -141,7 +256,6 @@ begin
   LblStatus.Caption := '';
 
   BtnOk.Enabled := False;
-
   Show;
 end;
 
