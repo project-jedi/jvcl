@@ -30,13 +30,14 @@ unit JvEasterEgg;
 interface
 
 uses
-  SysUtils, Classes,
+  Windows,
   {$IFDEF VCL}
-  Windows, Messages, Controls, Forms,
+  Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QControls, QForms, Types, QWindows,
+  Qt, Types,
   {$ENDIF VisualCLX}
+  SysUtils, Classes, Controls, Forms,
   JvComponent;
 
 type

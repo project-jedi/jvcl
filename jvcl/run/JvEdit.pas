@@ -45,15 +45,15 @@ unit JvEdit;
 interface
 
 uses
-  SysUtils, Classes,
+  Windows,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, StdCtrls, Forms, Menus,
+  Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QTypes, QGraphics, QControls, QStdCtrls, QDialogs, QForms, QMenus, Types,
-  QWindows,
+  Qt, QTypes, Types, QWindows, QDialogs,
   {$ENDIF VisualCLX}
-  JvCaret, JvMaxPixel, JvTypes, JvToolEdit, JvExStdCtrls;
+  Classes, Graphics, Controls, Menus,
+  JvCaret, JvMaxPixel, JvTypes, JvExStdCtrls;
 
 {$IFDEF VisualCLX}
 const
@@ -264,10 +264,11 @@ type
 implementation
 
 uses
+  SysUtils, Math,
   {$IFDEF VCL}
   JvFixedEditPopup,
   {$ENDIF VCL}
-  Math;
+  JvToolEdit;
 
 constructor TJvCustomEdit.Create(AOwner: TComponent);
 begin

@@ -30,8 +30,7 @@ unit JvEmbeddedForms;
 interface
 
 uses
-  Windows, Forms, Messages, Classes,
-  SysUtils, ExtCtrls, Graphics, Controls,
+  Windows, Forms, Classes,
   JvComponent;
 
 type
@@ -136,6 +135,9 @@ type
   end;
 
 implementation
+
+uses
+  SysUtils, Graphics, Controls;
 
 resourcestring
   RsEFormLinkSingleInstanceOnly = 'You only need one form link per form.';

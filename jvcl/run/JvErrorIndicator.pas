@@ -40,13 +40,13 @@ unit JvErrorIndicator;
 interface
 
 uses
-  SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Messages, ImgList, Controls, Graphics,
+  Windows,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QImgList, QControls, QGraphics, Types,
+  Types,
   {$ENDIF VisualCLX}
+  Classes, Graphics, Controls, ImgList,
   JvComponent;
 
 type
@@ -209,6 +209,7 @@ uses
   {$IFDEF VCL}
   CommCtrl,
   {$ENDIF VCL}
+  SysUtils, 
   JvTypes, JvResources;
 
 {$IFDEF MSWINDOWS}

@@ -30,18 +30,16 @@ unit JvExceptionForm;
 interface
 
 uses
-  SysUtils, Classes,
-
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Messages, ComObj, Graphics, Controls, Forms, Dialogs, StdCtrls,
-  ExtCtrls,
+  Messages, ComObj,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, Types, QWindows,
+  Types, QWindows,
   {$ENDIF VisualCLX}
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
   JvLabel, JvComponent, JvExControls;
 
 type
@@ -94,7 +92,10 @@ implementation
 
 uses
   Consts,
-  JvJVCLUtils, JvJCLUtils, JvConsts, JvResources, JvTypes;
+  {$IFDEF COMPILER5}
+  JvTypes,
+  {$ENDIF COMPILER5}
+  JvJCLUtils, JvConsts, JvResources;
 
 {$IFDEF VCL}
 {$R *.dfm}
