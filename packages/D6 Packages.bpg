@@ -12,8 +12,8 @@ BRCC = $(ROOT)\bin\brcc32.exe $**
 PROJECTS = Jv3rdD6R.bpl                           \
   JvCoreD6R.bpl JvCoreD6D.bpl                     \
   JvSystemD6R.bpl JvSystemD6D.bpl                 \
-  JvCtrlsD6R.bpl JvCtrlsD6D.bpl                   \
   JvStdCtrlsD6R.bpl JvStdCtrlsD6D.bpl             \
+  JvCtrlsD6R.bpl JvCtrlsD6D.bpl                   \
   JvCmpD6R.bpl JvCmpD6D.bpl                       \
   JvCustomD6R.bpl JvCustomD6D.bpl                 \
   JvDlgsD6R.bpl JvDlgsD6D.bpl                     \
@@ -66,6 +66,9 @@ JvCmpD6R.bpl: d6\JvCmpD6R.dpk
 JvCryptD6R.bpl: d6\JvCryptD6R.dpk
   $(DCC)
 
+JvStdCtrlsD6R.bpl: d6\JvStdCtrlsD6R.dpk
+  $(DCC)
+
 JvCtrlsD6R.bpl: d6\JvCtrlsD6R.dpk
   $(DCC)
 
@@ -85,9 +88,6 @@ JvMMD6R.bpl: d6\JvMMD6R.dpk
   $(DCC)
 
 JvNetD6R.bpl: d6\JvNetD6R.dpk
-  $(DCC)
-
-JvStdCtrlsD6R.bpl: d6\JvStdCtrlsD6R.dpk
   $(DCC)
 
 JvSystemD6R.bpl: d6\JvSystemD6R.dpk
