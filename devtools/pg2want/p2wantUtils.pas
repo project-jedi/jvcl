@@ -22,16 +22,13 @@ begin
   writeln('p2want: converts package generator xml files to want xml files');
   writeln('USAGE: pg2want src dest [fixed] [dir] [pathprefix]');
   writeln('where');
-  writeln('src  - the pg xml files ot read from. Accepts wildcards.');
+  writeln('src  - the pg xml file(s) to read from. Accepts wildcards.');
   writeln('dest - the file to write to. Defaults to want.xml in the current directory.');
-  writeln('fixed - if specified, it is an xml fragment file with include/exclude items');
-  writeln('that should be added to each fileset.');
-  writeln('dir - the root directory of the paths in the pg xml file(s).');
-  writeln('that should be added to each fileset.');
-  writeln('pathprefix - a path to prefix to each item. If empty, uses path from pg xml.');
-
-  writeln('');
   writeln('If dest exists, it will be overwritten.');
+  writeln('fixed - an xml fragment file with include/exclude items that should be added to each fileset.');
+  writeln('dir - the root directory of the paths in the pg xml file(s). Defaults to the same path as src.');
+  writeln('pathprefix - a path to prefix to each item. If empty, uses path from pg xml.');
+  writeln('');
 end;
 
 function ParseItem(const ANode: TJvSimpleXMLElem; const Dest: TStrings): integer;
@@ -47,11 +44,11 @@ var
     S:TStringlist;
     tmp:string;
   begin
-//    if not FileExists(ExpandUNCFilename(AFile)) then
-//    begin
+    if not FileExists(ExpandUNCFilename(AFile)) then
+    begin
 //      writeln(Afile, ' not found!');
-//      Exit;
-//    end;
+      Exit;
+    end;
     writeln('Parsing ', AFile,'...');
     S := TStringlist.Create;
     try
@@ -171,10 +168,10 @@ begin
       FindClose(F);
     end;
     AFiles.Sort;
-    Dst.Add('<target name="separate" description="Build separate zip files">');
+//    Dst.Add('<target name="separate" description="Build separate zip files">');
     for i := 0 to AFiles.Count - 1 do
       Inc(Result, ParseFile(AFiles[i], XML, Dst, AFixed));
-    Dst.Add('</target>');
+//    Dst.Add('</target>');
     if (Dst.Count > 2) and (Result > 0) then
       Dst.SaveToFile(Dest);
   finally
