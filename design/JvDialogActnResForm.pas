@@ -29,7 +29,7 @@ interface
 
 uses
   SysUtils, Classes, JvDialogActns, StdActns,
-  JvActions, ActnList, ImgList, Controls;
+  JvActions, ActnList, ImgList, Controls, Forms;
 
 type
   TJvDialogActions = class(TDataModule)
