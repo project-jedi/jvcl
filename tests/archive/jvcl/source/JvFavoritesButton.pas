@@ -98,6 +98,7 @@ begin
   FImages.Width := 16;
   FImages.Height := 16;
   FImages.DrawingStyle := dsTransparent;
+  FImages.Masked := true;
   FPopup.Images := FImages;
   AddIconFrom(FDirs.WindowsDirectory);
 end;
@@ -227,18 +228,20 @@ var
   FileInfo: SHFILEINFO;
   bmp, bmp2: TBitmap;
 begin
-  bmp := TBitmap.Create;
+{  bmp := TBitmap.Create;
   bmp.Width := 32;
-  bmp.Height := 32;
+  bmp.Height := 32;}
   SHGetFileInfo(PChar(Path), 0, FileInfo, SizeOf(FileInfo), SHGFI_ICON);
-  DrawIcon(bmp.Canvas.Handle, 0, 0, FileInfo.hIcon);
+{  DrawIcon(bmp.Canvas.Handle, 0, 0, FileInfo.hIcon);
   bmp2 := TBitmap.Create;
   bmp2.Width := 16;
   bmp2.Height := 16;
-  bmp2.Canvas.StretchDraw(Rect(0, 0, 16, 16), bmp);
-  FImages.Add(bmp2, nil);
-  bmp2.Free;
+  bmp2.Canvas.StretchDraw(Rect(0, 0, 16, 16), bmp);}
+  bmp := IconToBitmap2(FileInfo.hIcon,16,clWhite);
+  FImages.AddMasked(bmp, bmp.TransparentColor);
   bmp.Free;
+{  bmp2.Free;
+  bmp.Free; }
 end;
 
 end.

@@ -140,6 +140,7 @@ var
   SearchRec: TSearchRec;
   it: TMenuItem;
   w: word;
+  bmp:TBitmap;
 begin
   DeleteItem(Item, True);
   if (Directory <> '') and (Directory[Length(Directory)] <> '\') then
@@ -161,8 +162,10 @@ begin
         it.OnClick := UrlClick;
         it.Hint := Directory + SearchRec.Name;
         w := 0;
-        it.Bitmap.Assign(IconToBitmap(ExtractAssociatedIcon(Application.Handle, PChar(it.Hint), w)));
-        it.Bitmap.TransparentMode := tmAuto;
+        bmp := IconToBitmap2(ExtractAssociatedIcon(Application.Handle, PChar(it.Hint), w),16,clWhite);
+        it.Bitmap.Assign(bmp);
+        bmp.Free;
+//        it.Bitmap.TransparentMode := tmAuto;
         Item.Add(it);
       end;
     res := FindNext(SearchRec);

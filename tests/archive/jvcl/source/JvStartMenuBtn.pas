@@ -157,18 +157,20 @@ var
   FileInfo: SHFILEINFO;
   bmp, bmp2: TBitmap;
 begin
-  bmp := TBitmap.Create;
+{  bmp := TBitmap.Create;
   bmp.Width := 32;
   bmp.Height := 32;
-  SHGetFileInfo(PChar(Path), 0, FileInfo, SizeOf(FileInfo), SHGFI_ICON);
-  DrawIcon(bmp.Canvas.Handle, 0, 0, FileInfo.hIcon);
+  }
+  SHGetFileInfo(PChar(Path), 0, FileInfo, SizeOf(FileInfo), SHGFI_SMALLICON or SHGFI_ICON);
+{  DrawIcon(bmp.Canvas.Handle, 0, 0, FileInfo.hIcon);
   bmp2 := TBitmap.Create;
   bmp2.Width := 16;
   bmp2.Height := 16;
-  bmp2.Canvas.StretchDraw(Rect(0, 0, 16, 16), bmp);
-  FImages.Add(bmp2, nil);
+  bmp2.Canvas.StretchDraw(Rect(0, 0, 16, 16), bmp);}
+  bmp2 := IconToBitmap2(FileInfo.hIcon,16);
+  FImages.AddMasked(bmp2,bmp2.TransparentColor);
   bmp2.Free;
-  bmp.Free;
+//  bmp.Free;
 end;
 
 {*******************************************************}
@@ -193,6 +195,7 @@ var
   SearchRec: TSearchRec;
   it, it2: TMenuItem;
   first: Boolean;
+  bmp:TBitmap;
   w: Word;
 begin
   DeleteItem(Item, True);
@@ -231,8 +234,11 @@ begin
         it.OnClick := UrlClick;
         it.Hint := Directory + SearchRec.Name;
         w := 0;
-        it.Bitmap.Assign(IconToBitmap(ExtractAssociatedIcon(Application.Handle, PChar(it.Hint), w)));
-        it.Bitmap.TransparentMode := tmAuto;
+        bmp := IconToBitmap2(ExtractAssociatedIcon(Application.Handle, PChar(it.Hint), w),16,clWhite);
+//        bmp.TransparentColor := clWhite;
+        it.Bitmap.Assign(bmp);
+        bmp.Free;
+//        it.Bitmap.TransparentMode := tmAuto;
         Item.Add(it);
       end;
     end;
