@@ -42,7 +42,7 @@ uses
   ZLib, JvComponent;
 
 type
-  TFileEvent = procedure(Sender: TObject; FileName: string) of object;
+  TFileEvent = procedure(Sender: TObject; const FileName: string) of object;
   TProgressEvent = procedure(Sender: TObject; Position, Total: Integer) of object;
 
   TJvZlibMultiple = class(TJvComponent)
@@ -53,16 +53,24 @@ type
     FOnCompressFile: TFileEvent;
     FOnCompressedFile: TFileEvent;
   protected
-    procedure AddFile(FileName, Directory, FilePath: string;
-      DestStream: TStream);
+    procedure AddFile(FileName, Directory, FilePath: string; DestStream: TStream);
   public
+    // compresses a list of files (can contain wildcards)
+    // NOTE: caller must free returned stream!
     function CompressFiles(Files: TStringList): TStream; overload;
+    // compresses a list of files (can contain wildcards)
+    // and saves the compressed result to Filename
     procedure CompressFiles(Files: TStringList; FileName: string); overload;
+    // compresses a Directory (recursing if Recursive is true)
+    // NOTE: caller must free returned stream!
     function CompressDirectory(Directory: string; Recursive: Boolean): TStream; overload;
-    procedure CompressDirectory(Directory: string; Recursive: Boolean;
-      FileName: string); overload;
-
+    // compresses a Directory (recursing if Recursive is true)
+    // and saves the compressed result to Filename
+    procedure CompressDirectory(Directory: string; Recursive: Boolean; FileName: string); overload;
+    // decompresses Filename into Directory. If Overwrite is true, overwrites any existing files with
+    // the same name as those in the compressed archive
     procedure DecompressFile(FileName, Directory: string; Overwrite: Boolean);
+    // decompresses Stream into Directory optionally overwriting any existing files
     procedure DecompressStream(Stream: TStream; Directory: string;
       Overwrite: Boolean);
   published
@@ -136,7 +144,7 @@ var
   Stream: TStream;
   FStream: TFileStream;
   ZStream: TCompressionStream;
-  buf: array[0..1024] of Byte;
+  buf: array[0..1023] of Byte;
   count: Integer;
 
   procedure WriteFileRecord(Directory, FileName: string; FileSize: Integer;
@@ -172,11 +180,11 @@ begin
         FOnCompressFile(Self, FilePath);
 
       repeat
-        count := FStream.Read(buf, SizeOf(buf));
+        count := FStream.Read(buf, sizeof(buf));
         ZStream.Write(buf, count);
         if Assigned(FOnProgress) then
           FOnProgress(Self, FStream.Position, FStream.Size);
-      until count = 0;
+      until Count = 0;
     finally
       ZStream.Free;
     end;
@@ -197,13 +205,18 @@ end;
 procedure TJvZlibMultiple.CompressDirectory(Directory: string;
   Recursive: Boolean; FileName: string);
 var
-  Stream: TFileStream;
+  MemStream:TMemoryStream;
 begin
-  Stream := TFileStream.Create(FileName, fmCreate);
+  // don't create file until we save it so we don't accidentally
+  // try to compress ourselves!
+  if FileExists(Filename) then
+    DeleteFile(Filename); // make sure we don't compress a previous archive into ourselves
+  MemStream := TMemoryStream.Create;
   try
-    Stream.CopyFrom(CompressDirectory(Directory, Recursive), 0);
+    MemStream.CopyFrom(CompressDirectory(Directory, Recursive), 0);
+    MemStream.SaveToFile(Filename);
   finally
-    Stream.Free;
+    MemStream.Free;
   end;
 end;
 
@@ -245,13 +258,14 @@ end;
 procedure TJvZlibMultiple.CompressFiles(Files: TStringList;
   FileName: string);
 var
-  Stream: TFileStream;
+  MemStream: TMemoryStream;
 begin
-  Stream := TFileStream.Create(FileName, fmCreate);
+  MemStream := TMemoryStream.Create;
   try
-    Stream.CopyFrom(CompressFiles(Files), 0);
+    MemStream.CopyFrom(CompressFiles(Files), 0);
+    MemStream.SaveToFile(Filename);
   finally
-    Stream.Free;
+    MemStream.Free;
   end;
 end;
 
@@ -264,10 +278,10 @@ var
   ZStream: TDecompressionStream;
   CStream: TMemoryStream;
   b: Byte;
-  tab: array[1..256] of Char;
+  tab: array [1..256] of Char;
   st: string;
   count, fsize, i: Integer;
-  buf: array[0..1024] of Byte;
+  buf: array [0..1023] of Byte;
 begin
   if (Length(Directory) > 0) and (Directory[Length(Directory)] <> '\') then
     Directory := Directory + '\';
@@ -309,7 +323,7 @@ begin
             FOnDecompressFile(Self, st);
 
           repeat
-            count := ZStream.Read(buf, 1024);
+            count := ZStream.Read(buf, sizeof(buf));
             FStream.Write(buf, count);
             if Assigned(FOnProgress) then
               FOnProgress(Self, FStream.Size, fsize);
