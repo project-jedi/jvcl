@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, Graphics, Controls, Messages, Forms, StdCtrls,
-  JvAppStorage, JvBaseDlg, JvButtonPersistent, JvSpeedButton, JvTypes;
+  JvAppStorage, JvBaseDlg, JvButtonPersistent, JvSpeedButton, JvTypes, JvConsts;
   
 type
   TJvCanShowEvent = procedure(Sender: TObject; var CanShow: Boolean) of object;
@@ -416,12 +416,7 @@ procedure TJvTipOfDay.InitStandard(AForm: TForm);
 begin
   with AForm do
   begin
-    {$IFDEF VCL}
-    BorderStyle := bsDialog;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     BorderStyle := fbsDialog;
-    {$ENDIF VisualCLX}
     { Title }
     Caption := Self.Title;
     ClientHeight := 267;
@@ -528,13 +523,7 @@ procedure TJvTipOfDay.InitVC(AForm: TForm);
 begin
   with AForm do
   begin
-    {$IFDEF VCL}
-    BorderStyle := bsDialog;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     BorderStyle := fbsDialog;
-    {$ENDIF VisualCLX}
-
     { Title }
     Caption := Self.Title;
     ClientHeight := 258;

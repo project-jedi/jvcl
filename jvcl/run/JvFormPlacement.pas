@@ -40,7 +40,7 @@ uses
   {$IFDEF VCL}
   JvWndProcHook,
   {$ENDIF VCL}
-  JvAppStorage, JvComponent, JvJVCLUtils, JvTypes;
+  JvAppStorage, JvComponent, JvJVCLUtils, JvTypes, JvConsts;
 
 type
   TJvIniLink = class;
@@ -608,12 +608,7 @@ begin
       GetWindowPlacement(Form.Handle, @Placement);
       if not IsWindowVisible(Form.Handle) then
         Placement.ShowCmd := SW_HIDE;
-      {$IFDEF VCL}
-      if Form.BorderStyle <> bsNone then
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
       if Form.BorderStyle <> fbsNone then
-      {$ENDIF VisualCLX}
       begin
         Placement.ptMaxPosition.X := -GetSystemMetrics(Metrics[Form.BorderStyle]);
         Placement.ptMaxPosition.Y := -GetSystemMetrics(Succ(Metrics[Form.BorderStyle]));
@@ -636,12 +631,7 @@ begin
     Active := False;
     try
       if (not FPreventResize) and FDefMaximize and
-        {$IFDEF VCL}
-        (Form.BorderStyle <> bsDialog) then
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
         (Form.BorderStyle <> fbsDialog) then
-        {$ENDIF VisualCLX}
         Form.BorderIcons := Form.BorderIcons + [biMaximize]
       else
         Form.BorderIcons := Form.BorderIcons - [biMaximize];

@@ -59,7 +59,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JvResources, JvExForms;
+  JvConsts, JvResources, JvExForms;
 
 constructor TJvImageDialog.Create(AOwner: TComponent);
 begin
@@ -83,12 +83,7 @@ begin
   begin
     Form := TJvForm.CreateNew(Self);
     try
-      {$IFDEF VCL}
-      Form.BorderStyle := bsDialog;
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
       Form.BorderStyle := fbsDialog;
-      {$ENDIF VisualCLX}
       Form.BorderIcons := [biSystemMenu];
       Form.Position := poScreenCenter;
       Image1 := TImage.Create(Form);

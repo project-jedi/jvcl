@@ -35,7 +35,7 @@ interface
 uses
   SysUtils, Classes,
   Windows, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ComCtrls, ActnList,
-  JvComponent;
+  JvComponent, JvConsts;
 
 type
   TJvPrivateProgressUpdate = procedure(Sender: TObject;

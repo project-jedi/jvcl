@@ -224,11 +224,8 @@ begin
     BorderIcons := [];
     {$IFDEF VCL}
     DefaultMonitor := dmActiveForm;
-    BorderStyle := bsDialog;
     {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     BorderStyle := fbsDialog;
-    {$ENDIF VisualCLX}
     FormStyle := fsNormal;
     Position := poScreenCenter;
     OnDestroy := SelectFormDestroying;

@@ -36,7 +36,7 @@ interface
 uses
   Windows, Messages, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   ImgList, ActnList,
-  JvButton, JvLabel, JvComponent;
+  JvButton, JvLabel, JvComponent, JvConsts;
 
 const
   cDefaultAlertFormWidth = 329;
@@ -219,12 +219,7 @@ begin
   MouseTimer.OnTimer := DoMouseTimer;
   MouseTimer.Enabled := True;
 
-  {$IFDEF VCL}
-  BorderStyle := bsNone;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
   BorderStyle := fbsNone;
-  {$ENDIF VisualCLX}
   BorderIcons := [];
   FormStyle := fsStayOnTop;
   Scaled := False;

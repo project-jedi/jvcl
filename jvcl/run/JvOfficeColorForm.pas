@@ -39,7 +39,7 @@ uses
   {$IFDEF VisualCLX}
   Qt,
   {$ENDIF VisualCLX}
-  JvComponent, JvLabel, JvOfficeColorPanel;
+  JvConsts, JvComponent, JvLabel, JvOfficeColorPanel;
 
 {------------------------------------------------------------------------------}
 const
@@ -157,18 +157,12 @@ begin
   FShowDragBar := True;
 //  Scaled := False;
   AutoScroll := False;
+  BorderIcons := [];
+  BorderStyle := fbsDialog;
   {$IFDEF VCL}
-  BorderStyle := bsDialog;
   BorderWidth := 2;
   AutoSize := True;
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  BorderIcons := [];
-  BorderStyle := fbsDialog;
-  {$IFDEF MSWINDOWS}
-//  Font.Name := 'MS Shell Dlg 2';
-  {$ENDIF MSWINDOWS}
-  {$ENDIF VisualCLX}
   FormStyle := fsStayOnTop;
   Caption := RsColorWindow;
 
@@ -334,20 +328,6 @@ begin
   if ShowDragBar then
   begin
     FToolWindowStyle := Value;
-    {$IFDEF VCL}
-    if Value then
-    begin
-      BorderIcons := [biSystemMenu];
-      BorderStyle := bsToolWindow;
-      FDragBar.Visible := False;
-    end
-    else
-    begin
-      BorderStyle := bsDialog;
-      FDragBar.Visible := True;
-    end;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     if Value then
     begin
       BorderIcons := [biSystemMenu];
@@ -360,7 +340,6 @@ begin
       BorderStyle := fbsDialog;
       FDragBar.Visible := True;
     end;
-    {$ENDIF VisualCLX}
     if not DropDownMoving then
       AdjustColorForm;
     if Assigned(FOnWindowStyleChanged) then
@@ -370,12 +349,7 @@ begin
   begin
     FToolWindowStyle := False;
     BorderIcons := [];
-    {$IFDEF VCL}
-    BorderStyle := bsDialog;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     BorderStyle := fbsDialog;
-    {$ENDIF VisualCLX}
     FDragBar.Visible := False;
   end;
 end;

@@ -133,7 +133,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Graphics, Controls,
-  JvResources;
+  JvResources, JvConsts;
 
 //=== { TJvEmbeddedFormLink } ================================================
 
@@ -186,7 +186,7 @@ begin
   begin
     Parent := Self;
     Align := alClient;
-    BorderStyle := bsNone;
+    BorderStyle := fbsNone;
     Show;
   end;
 end;
@@ -289,7 +289,7 @@ begin
     with FLinkedForm do
     begin
       Hide;
-      BorderStyle := bsNone;
+      BorderStyle := fbsNone;
       Parent := Self;
       Align := alClient;
       Show;
