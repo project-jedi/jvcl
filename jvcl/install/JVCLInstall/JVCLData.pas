@@ -590,7 +590,7 @@ procedure TTargetConfig.Init;
     for i := 0 to List.Count - 1 do
     begin
       S := Target.ExpandDirMacros(List[i]);
-      if EndsWith(S, '\jcl\source\common', True) then
+      if EndsWith(S, '\source\common', True) then
       begin
         if FileExists(S + '\JclBase.pas') then
         begin
@@ -600,7 +600,7 @@ procedure TTargetConfig.Init;
         end;
       end
       else
-      if EndsWith(S, '\jcl\lib\', True) then
+      if EndsWith(S, '\lib\', True) then
       begin
         if FileExists(ExtractFileDir(S) + '\source\common\JclBase.pas') then
         begin
