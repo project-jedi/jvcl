@@ -306,9 +306,7 @@ type
     property Canvas: TCanvas read GetCanvas;
     {$ENDIF VCL}
   published
-    {$IFDEF COMPILER6_UP}
     property Anchors;
-    {$ENDIF COMPILER6_UP}
     property Align;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property BorderStyle;
