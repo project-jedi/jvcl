@@ -1,7 +1,7 @@
 To:
 borland.public.delphi.third-party
 borland.public.cppbuilder.thirdpartytools
-jedi.jvcl
+jedi.vcl
 jedi.general
 Delphi Magazine (info@TheDelphiMagazine.com)
 Delphi Informant (editorial@DelphiZine.com)
@@ -11,22 +11,22 @@ eLists Delphi (delphi@elists.org)
 www.devarchive.com (needs username/password)
 
 Subject: 
-ANN: JVCL 3 BETA Released!
+ANN: JVCL 3 BETA 2 Released!
 Body:
-The JVCL Team is proud to announce that a beta release of JVCL 3 is available for download. 
+The JVCL Team is proud to announce that a second beta release of JVCL 3 is available for download. 
 
-JVCL is a library of approximately 500 visual and non-visual components for Delphi 5, 6, 7; C++Builder 5, 6 and (soon) Kylix 3. JVCL is distributed subject to the Mozilla Public License Version 1.1 (http://www.mozilla.org/MPL/MPL-1.1.html) and is completely free for all developers (open source, shareware or commercial) and includes the full source to all components.
+JVCL is a library of approximately 500 visual and non-visual components for Delphi 5, 6, 7; C++Builder 5, 6 and Kylix 3. JVCL is distributed subject to the Mozilla Public License Version 1.1 (http://www.mozilla.org/MPL/MPL-1.1.html) and is completely free for all developers (open source, shareware or commercial) and includes the full source to all components.
 
 This release contains changes, additions and bugfixes too numerous to list here, but here are some of the highlights:
 
 - Support for Delphi 5,6 and 7
 - Support for C++ Builder 5 and 6
-- Partial support for Kylix 3
+- Support for Kylix 3
 - The monolithic package structure of JVCL 2.10 has been broken into smaller packages. 
 - Files have been renamed and arranged using a more logical naming scheme and folder structure, making it easier to find what you are looking for.
 - Numerous components have been merged. This means there are almost no duplicates in JVCL anymore.
 - The full install contains a tool to convert large parts of your source from JVCL 2.10 to JVCL 3.00, simplifying migration.
-- Several new components and libraries have been added, among them UIB, Globus, KWizard, DockPresident, Managed Threads, UIL Time Framework, dxPack II, Jans Components, Print Preview, a LED control, a checkbox/radiobutton treeview and an XML database.
+- Several new components and libraries have been added, among them UIB, Globus, KWizard, DockPresident, Managed Threads, UIL Time Framework, dxPack II, Jans Components, Print Preview, Ultim DB Components, a LED control, a checkbox/radiobutton treeview and an XML database.
 - A new package generator that creates packages for all supported platforms from XML files.
 - A new installer that knows about and automatically detects package dependecies, installing what you need in each supported version.
 - Improved support for Windows XP theming.
@@ -45,7 +45,7 @@ This release is available in four different flavors:
 Later on we will also provide separate downloads for those packages that can be installed in a "stand-alone" mode (JvUIB, JvWizard, JvGlobus, JvManagedThreads, JvDocking, JvXPCtrls and JvDotNetCtrls)
 To download JVCL 3, go to http://sourceforge.net/projects/jvcl and click the "Files" link at the top or go directly at this address: http://sourceforge.net/project/showfiles.php?group_id=45786
 
-The current version is JVCL 3.00 BETA 1.
+The current version is JVCL 3.00 BETA 2.
 
 
 The JVCL Team
