@@ -144,7 +144,7 @@ uses
 
   // Peter Below Goodies
   JvBMPListBox, JvButtonDrawGrid,
-  JvCoupler, JvHighlighter, JvMLButton, JvMousePanel, JvMultilineListbox, JvMultiselectChecklistbox, JvObserverLabel,
+  JvCoupler, JvHighlighter, JvMLButton, JvMousePanel, JvMultilineListbox, JvObserverLabel,
   JvObservibleCheckBox, JvOneSizeFitsAllButton, JvGroupBox,
   JvReorderListBox, JvPopupMemo,
   JvSizeablePanel, JvSpacer, JvSyncSplitter, JvTransparentPanel,

@@ -124,8 +124,7 @@ type
 implementation
 
 uses
-  SysUtils,
-  JvPlugCommon;
+  SysUtils;
 
 //=== TJvPlugin ==============================================================
 

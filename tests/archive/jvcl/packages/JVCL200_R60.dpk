@@ -240,7 +240,6 @@ contains
   JvHighlighter in '..\source\JvHighlighter.pas',
   JvMLButton in '..\source\JvMLButton.pas',
   JvMultilineListbox in '..\source\JvMultilineListbox.pas',
-  JvMultiselectChecklistbox in '..\source\JvMultiselectChecklistbox.pas',
   JvOneSizeFitsAllButton in '..\source\JvOneSizeFitsAllButton.pas',
   JvGroupBox in '..\source\JvGroupBox.pas',
   JvReorderListBox in '..\source\JvReorderListBox.pas',
@@ -315,7 +314,6 @@ contains
   JvTranslator in '..\source\JvTranslator.pas',
   JvSimpleXml in '..\source\JvSimpleXml.pas',
   JvHotkeyEx in '..\source\JvHotkeyEx.pas',
-  JvObjSel in '..\source\JvObjSel.pas',
   JvObjPickerComp in '..\source\JvObjPickerComp.pas',
   JvImageDrawThread in '..\source\JvImageDrawThread.pas',
   JvInspector in '..\source\JvInspector.pas',
@@ -467,7 +465,6 @@ contains
   JvFooter in '..\source\JvFooter.pas',
   JvPlugin in '..\source\JvPlugin.pas',
   JvPluginMan in '..\source\JvPluginMan.pas',
-  JvPlugCommon in '..\source\JvPlugCommon.pas',
   JvDatePickerEdit in '..\source\JvDatePickerEdit.pas',
   JvCheckedMaskEdit in '..\source\JvCheckedMaskEdit.pas',
   JvDropDownForm in '..\source\JvDropDownForm.pas',
@@ -480,6 +477,7 @@ contains
   JvJVCLAbout in '..\source\JvJVCLAbout.pas' {JvJVCLAboutForm},
   JvCaret in '..\source\JvCaret.pas',
   Winamp in '..\common\Winamp.pas',
-  Ras32 in '..\common\Ras32.pas';
+  Ras32 in '..\common\Ras32.pas',
+  ObjSel in '..\common\ObjSel.pas';
 
 end.

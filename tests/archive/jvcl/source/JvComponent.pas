@@ -32,7 +32,7 @@ unit JvComponent;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, StdCtrls, Controls, ExtCtrls, Forms,
+  Windows, SysUtils, Classes, Graphics, StdCtrls, Controls, ExtCtrls, Forms, CheckLst,
   JVCLVer;
 
 type
@@ -86,6 +86,14 @@ type
     FAboutJVCL: TJVCLAboutInfo;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  end;
+
+  TJvMultiselectCheckListBox = class(TCheckListBox)
+  private
+    FAboutJVCL: TJVCLAboutInfo;
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL;
+    property MultiSelect;
   end;
 
 implementation

@@ -25,8 +25,6 @@ Known Issues:
 
  PluginManager loads Plugins
 
- detailed Versionhistory see JvPlugCommon .pas
-
  changed 26.7.2001, by Ralf Steinhaeusser, Changes marked with !
 
  Events :
@@ -36,6 +34,36 @@ Known Issues:
      Plugin.Initialize
    FOnNewCommand (times Nr. of commands)
  FOnAfterLoad
+
+Versionhistory:
+
+ BaseVersion 5 :
+ V 11 : When loading packages -> except instead of finally -> //!11
+        New event : OnErrorLoading
+ V 10 : Now handles custom Plugins (only their destructors are called when unloading)
+ V 09 : Pluginmanager : Extension automatically follows plugintype
+        First version to share with "rest of the world"
+ V 08 : Problems with $ImplicitBuild
+ V 07 : fixed file-creation bug: linebreaks were done with #10#13 instead of
+              the other way round, what caused the IDE-navigation do show
+              erroneous behaviour
+ V 06 : fixed Memory leak when loading of not supported DLL's is skipped
+        inserted credits to About-box
+ V 05 : started adding Package-functionality
+        PluginManager : Loined 2 TLists to one,
+        Record with info on Plugins introduced
+        fixed buggy Instance-count check
+        Added PluginKind-Property
+        changed : PluginName also contains path
+ V 04 : cleaned Plugin-Manager :
+        Removed OnBefore- and OnAfterLoading (REALLY unnecessary - OnBeforeLoad,
+                and OnAfterLoad are still here !)
+        Removed Trigger-routines. Were only called once -> moved into code
+ V 03 : removed unecessary Set/Get-routines for most properties
+ V 02 : new about-dialog, removed unnecessary CDK-auto-generated comments
+        stupid fPluginHandles from TStringList -> TList
+ V 01 : renamed objects, files, ressources
+        fixed several Memory-leaks, fixed unload-bug, minimized uses-list
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -48,23 +76,22 @@ uses
   Windows, SysUtils, Classes, Graphics,
   JvComponent, JvPlugin; // reduced to the min
 
+const
+  C_VersionString = '5.10';
+
 type
   TNewCommandEvent = procedure(Sender: TObject; ACaption, AHint, AData: string;
     ABitmap: TBitmap; AEvent: TNotifyEvent) of object;
 
-type
   EJvPluginError = class(Exception);
   EJvLoadPluginError = class(EJvPluginError);
 
-type
   TJvBeforeLoadEvent = procedure(Sender: TObject; FileName: string; var AllowLoad: Boolean) of object;
   //  TJvAfterLoadEvent = procedure(Sender: TObject; Filename: string) of object;
   TJvNotifyStrEvent = procedure(Sender: TObject; S: string) of object;
 
-type
   TPluginKind = (plgDLL, plgPackage, plgCustom);
 
-type
   TPluginInfo = class(TObject)
   public
     PluginKind: TPluginKind;
@@ -72,7 +99,6 @@ type
     Plugin: TJvPlugin;
   end;
 
-type
   TJvPluginManager = class(TJvComponent)
   private
     FExtension: string;
@@ -116,9 +142,10 @@ implementation
 
 uses
   Forms,
-  JvPlugCommon, JvFunctions; // for IncludeTrailingPathDelimiter (only <D6)
+  JvFunctions; // for IncludeTrailingPathDelimiter (only <D6)
 
 const
+  C_REGISTER_PLUGIN = 'RegisterPlugin';
   C_Extensions: array [plgDLL..plgPackage] of PChar = ('dll', 'bpl');
 
 constructor TJvPluginManager.Create(AOwner: TComponent);
