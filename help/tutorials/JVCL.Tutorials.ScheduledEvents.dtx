@@ -12,6 +12,7 @@
     Tutorial                                                        Description
     --------                                                        -----------
     <LINK JVCL.Tutorials.ScheduledEvents.001, ScheduledEvents 001>  Basic scheduled events tutorial. The tutorial will create a simple application that generates two recurring events, adding the information to a RichEdit control.
+    <LINK JVCL.Tutorials.ScheduledEvents.002, ScheduledEvents 002>  This tutorial will show how you can add and manage scheduled from code.
   </TABLE>
 ----------------------------------------------------------------------------------------------------
 @@JVCL.Tutorials.ScheduledEvents.001
@@ -132,3 +133,95 @@
   added to the rich edit and every 15 seconds the text <B>[Event1 has fired!]</B> will be added.
   While the application run you are free to resize the form or even type in some text. The messages
   will be added at the appropiate times.
+----------------------------------------------------------------------------------------------------
+@@JVCL.Tutorials.ScheduledEvents.002
+<GROUP $JVCL.Tutorials.ScheduledEvents>
+<TITLE Tutorials: ScheduledEvents 002: Adding and managing schedules from code>
+  This tutorial will show how you can add and manage schedules from code. For this tutorial we are
+  going to extend the application created by the
+  <LINK JVCL.Tutorials.ScheduledEvents.001, basic tutorial>.
+
+  Select the main form and create an OnShow event for it. In this event we will add a new schedule
+  in code. The schedule will be a recurring schedule on a weekly basis, ocurring every monday,
+  wednesday and friday, every 15 minutes between 9:00 am and 5:00 pm.
+
+  First we declare a local variable to hold the new scheduled event (the full implementation is
+  repeated at the end of the tutorial):
+<CODE>
+<B>procedure</B> TfrmTestSched.FormShow(Sender: \TObject);
+<B>var</B>
+  SE: \TJvEventCollectionItem;
+<B>begin</B>
+<B>end</B>;
+</CODE>
+  Adding new events is done by calling Add on the Events property of the component:
+<CODE>
+  SE := seTester.Events.Add;
+</CODE>
+  The SE variable will now hold the new scheduled event. It will be in the uninitialized state
+  until the Start method is called. We will first setup the schedule.
+
+  The first thing to do is specify the schedule type:
+<CODE>
+  SE.Schedule.RecurringType := srkWeekly;
+</CODE>
+  We've now set the schedule to a weekly recurring job. \Now we will specify the days on which the
+  event should be triggered:
+<CODE>
+  (SE.Schedule <B>as</B> \IJclWeeklySchedule).DaysOfWeek := [swdMonday, swdWednesday, swdFriday];
+</CODE>
+  The schedule will now fire every monday, wednesday and friday but only at midnight. To correct
+  this, we change the properties of the daily frequency:
+<CODE>
+  <B>with</B> (SE.Schedule <B>as</B> \IJclScheduleDayFrequency) <B>do</B>
+  <B>begin</B>
+    Start := 9 * 60 * 60 * 1000; // 9:00 am expressed in milliseconds
+    End := 17 * 60 * 60 * 1000; // 5:00 pm expressed in milliseconds
+    Interval := 15 * 60 * 1000; // 15 minutes expressed in milliseconds
+  <B>end</B>;
+</CODE>
+  The schedule is now completed. Next we assign a event handler to the OnExecute event. First we
+  copy the handler of one of the scheduled events from the base tutorial and rename it to
+  <B>seTesterEvents2Execute</B> (don't forget to copy both the declaration as well as the
+  implementation. The implementations should be changed to:
+<CODE>
+<B>procedure</B> TfrmTestSched.seTesterEvents2Execute(
+  Sender: \TJvEventCollectionItem; const IsSnoozeEvent: \Boolean);
+<B>var</B>
+  OldCol: \TColor;
+<B>begin</B>
+  OldCol := reLog.SelAttributes.Color;
+  reLog.SelAttributes.Color := clNavy;
+  reLog.Lines.Add('[Event3 has fired!]');
+  reLog.SelAttributes.Color := OldCol;
+<B>end</B>;
+</CODE>
+  This will add the text <B>[Event3 has fired!]</B> in navy blue. \Now assign the handler to event
+  in the OnShow event of the form and activate the scheduled event:
+<CODE>
+  SE.OnExecute := seTesterEvents2Execute;
+  SE.Start;
+</CODE>
+  The complete OnShow event implementation is thus as follows:
+<CODE>
+<B>procedure</B> TfrmTestSched.FormShow(Sender: \TObject);
+<B>var</B>
+  SE: \TJvEventCollectionItem;
+<B>begin</B>
+  SE := seTester.Events.Add;
+  (SE.Schedule <B>as</B> \IJclWeeklySchedule).DaysOfWeek := [swdMonday, swdWednesday, swdFriday];
+  <B>with</B> (SE.Schedule <B>as</B> \IJclScheduleDayFrequency) <B>do</B>
+  <B>begin</B>
+    Start := 9 * 60 * 60 * 1000; // 9:00 am expressed in milliseconds
+    End := 17 * 60 * 60 * 1000; // 5:00 pm expressed in milliseconds
+    Interval := 15 * 60 * 1000; // 15 minutes expressed in milliseconds
+  <B>end</B>;
+  SE.OnExecute := seTesterEvents2Execute;
+  SE.Start;
+<B>end</B>;
+</CODE>
+  If you compile and run this application, the usual messages about the two schedules created in
+  the base tutorial should appear at their normal intervals. In addition, if this application is run
+  on monday, wednesday or friday between 9:00 am and 5:00 pm, an additional message will appear
+  every 15 minutes. On all other days or times outside of the schedule, this message will not
+  appear.
