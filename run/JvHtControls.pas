@@ -510,7 +510,7 @@ var
   begin
     case Alignment of
       taRightJustify:
-        Result := Rect.Right - ItemHTWidth(Canvas, Rect, State, str);
+        Result := (Rect.Right - Rect.Left) - ItemHTWidth(Canvas, Rect, State, str);
       taCenter:
         Result := (Rect.Right - Rect.Left - ItemHTWidth(Canvas, Rect, State, str)) div 2;
     else
