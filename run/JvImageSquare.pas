@@ -115,7 +115,7 @@ uses
   {$ENDIF VisualCLX}
   JvThemes, JvResources;
 
-//=== TJvImageSquare =========================================================
+//=== { TJvImageSquare } =====================================================
 
 constructor TJvImageSquare.Create(AOwner: TComponent);
 begin

@@ -112,7 +112,7 @@ begin
   Result := (PTagInfo(Item1).BeginPos - PTagInfo(Item2).BeginPos);
 end;
 
-//=== TJvHTMLParser ==========================================================
+//=== { TJvHTMLParser } ======================================================
 
 constructor TJvHTMLParser.Create(AOwner: TComponent);
 begin
@@ -400,7 +400,7 @@ begin
   FTagList := Value;
 end;
 
-//=== TTagInfoList ===========================================================
+//=== { TTagInfoList } =======================================================
 
 procedure TTagInfoList.AddValue(const Value: TTagInfo);
 var

@@ -1823,7 +1823,7 @@ begin
   end;
 end;
 
-//=== TJvDockPanel ===========================================================
+//=== { TJvDockPanel } =======================================================
 
 constructor TJvDockPanel.Create(AOwner: TComponent);
 begin
@@ -2088,7 +2088,7 @@ begin
   end;
 end;
 
-//=== TJvDockAdvPanel ========================================================
+//=== { TJvDockAdvPanel } ====================================================
 
 procedure TJvDockAdvPanel.CMUnDockClient(var Msg: TCMUnDockClient);
 var
@@ -2150,7 +2150,7 @@ begin
   Result := inherited DoUnDock(NewTarget, Client);
 end;
 
-//=== TJvDockSplitterStyle ===================================================
+//=== { TJvDockSplitterStyle } ===============================================
 
 constructor TJvDockSplitterStyle.Create(ASplitter: TJvDockSplitter; ACursor: TCursor);
 begin
@@ -2266,7 +2266,7 @@ begin
   AssignToSplitter(FSplitter);
 end;
 
-//=== TJvDockBaseControl =====================================================
+//=== { TJvDockBaseControl } =================================================
 
 constructor TJvDockBaseControl.Create(AOwner: TComponent);
 begin
@@ -2503,7 +2503,7 @@ begin
     Result := True;
 end;
 
-//=== TJvDockServer ==========================================================
+//=== { TJvDockServer } ======================================================
 
 constructor TJvDockServer.Create(AOwner: TComponent);
 begin
@@ -2823,7 +2823,7 @@ begin
   end;
 end;
 
-//=== TJvDockClient ==========================================================
+//=== { TJvDockClient } ======================================================
 
 constructor TJvDockClient.Create(AOwner: TComponent);
 begin
@@ -3481,7 +3481,7 @@ begin
   FEnableCloseButton := Value;
 end;
 
-//=== TJvDockableForm ========================================================
+//=== { TJvDockableForm } ====================================================
 
 constructor TJvDockableForm.Create(AOwner: TComponent);
 begin
@@ -3562,7 +3562,7 @@ begin
   FUnDockControl := Value;
 end;
 
-//=== TJvDockConjoinHostForm =================================================
+//=== { TJvDockConjoinHostForm } =============================================
 
 constructor TJvDockConjoinHostForm.Create(AOwner: TComponent);
 begin
@@ -3575,7 +3575,7 @@ begin
   inherited DoClose(Action);
 end;
 
-//=== TJvDockTabHostForm =====================================================
+//=== { TJvDockTabHostForm } =================================================
 
 constructor TJvDockTabHostForm.Create(AOwner: TComponent);
 begin
@@ -3591,7 +3591,7 @@ begin
     Result := nil;
 end;
 
-//=== TJvDockConjoinPanel ====================================================
+//=== { TJvDockConjoinPanel } ================================================
 
 constructor TJvDockConjoinPanel.Create(AOwner: TComponent);
 begin
@@ -3730,7 +3730,7 @@ begin
     JvDockManager.ResetBounds(True);
 end;
 
-//=== TJvDockTabPageControl ==================================================
+//=== { TJvDockTabPageControl } ==============================================
 
 constructor TJvDockTabPageControl.Create(AOwner: TComponent);
 begin
@@ -3966,7 +3966,7 @@ begin
   DropAlign := ComputeDockingRect(Source.Control, ARect, MousePos);
 end;
 
-//=== TJvDockBasicStyle ======================================================
+//=== { TJvDockBasicStyle } ==================================================
 
 constructor TJvDockBasicStyle.Create(AOwner: TComponent);
 begin
@@ -4522,7 +4522,7 @@ begin
   end;
 end;
 
-//=== TJvDockAdvStyle ========================================================
+//=== { TJvDockAdvStyle } ====================================================
 
 function TJvDockAdvStyle.DockClientWindowProc(DockClient: TJvDockClient;
   var Msg: TMessage): Boolean;
@@ -4533,7 +4533,7 @@ begin
   Result := inherited DockClientWindowProc(DockClient, Msg);
 end;
 
-//=== TJvDockSplitter ========================================================
+//=== { TJvDockSplitter } ====================================================
 
 constructor TJvDockSplitter.Create(AOwner: TComponent);
 begin
@@ -4565,7 +4565,7 @@ begin
   end;
 end;
 
-//=== TJvDockBasicServerOption ===============================================
+//=== { TJvDockBasicServerOption } ===========================================
 
 constructor TJvDockBasicServerOption.Create(ADockStyle: TJvDockBasicStyle);
 begin
@@ -4592,7 +4592,7 @@ procedure TJvDockBasicServerOption.ResetDockServerOption(ADockServer: TJvDockSer
 begin
 end;
 
-//=== TJvDockBasicTabServerOption ============================================
+//=== { TJvDockBasicTabServerOption } ========================================
 
 constructor TJvDockBasicTabServerOption.Create(ADockStyle: TJvDockBasicStyle);
 begin
@@ -4670,7 +4670,7 @@ begin
   end;
 end;
 
-//=== TJvDockBasicConjoinServerOption ========================================
+//=== { TJvDockBasicConjoinServerOption } ====================================
 
 constructor TJvDockBasicConjoinServerOption.Create(ADockStyle: TJvDockBasicStyle);
 begin
@@ -4787,7 +4787,7 @@ begin
   FSplitterWidth := Value;
 end;
 
-//=== TJvDockAdvTabPageControl ===============================================
+//=== { TJvDockAdvTabPageControl } ===========================================
 
 destructor TJvDockAdvTabPageControl.Destroy;
 var

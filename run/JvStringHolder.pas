@@ -268,7 +268,7 @@ begin
   until CurChar = #0;
 end;
 
-//=== TJvMacro ===============================================================
+//=== { TJvMacro } ===========================================================
 
 constructor TJvMacro.Create(Collection: TCollection);
 begin
@@ -354,7 +354,7 @@ begin
     (Name = Value.Name);
 end;
 
-//=== TJvMacros ==============================================================
+//=== { TJvMacros } ==========================================================
 
 constructor TJvMacros.Create(AOwner: TPersistent);
 begin
@@ -518,7 +518,7 @@ begin
     List.Add(MacroByName(ExtractName(MacroNames, Pos)));
 end;
 
-//=== TJvStrHolder ===========================================================
+//=== { TJvStrHolder } =======================================================
 
 constructor TJvStrHolder.Create(AOwner: TComponent);
 begin

@@ -183,7 +183,7 @@ begin
   end;
 end;
 
-//=== TJvOpenDialog ==========================================================
+//=== { TJvOpenDialog } ======================================================
 
 constructor TJvOpenDialog.Create(AOwner: TComponent);
 begin
@@ -584,7 +584,7 @@ begin
   inherited;
 end;
 
-//=== TJvSaveDialog ==========================================================
+//=== { TJvSaveDialog } ======================================================
 
 function TJvSaveDialog.TaskModalDialog(DialogFunc: Pointer; var DialogData): Bool;
 begin
@@ -592,7 +592,7 @@ begin
   Result := inherited TaskModalDialog(DialogFunc, DialogData);
 end;
 
-//=== TJvColorDialog =========================================================
+//=== { TJvColorDialog } =====================================================
 
 var
   GlobalColorDialog: TJvColorDialog = nil;

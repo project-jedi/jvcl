@@ -106,14 +106,14 @@ uses
   {$ENDIF LINUX}
   JvConsts, JvResources;
 
-//=== TStaticObject ==========================================================
+//=== { TStaticObject } ======================================================
 
 constructor TStaticObject.Create;
 begin
   raise EGenericToolsError.CreateRes(@RsECannotBeInstantiated);
 end;
 
-//=== TStringTools ===========================================================
+//=== { TStringTools } =======================================================
 
 class function TStringTools.BeginsWith(const S, SubS: string): Boolean;
 begin
@@ -165,7 +165,7 @@ begin
   end;
 end;
 
-//=== TGraphicTools ==========================================================
+//=== { TGraphicTools } ======================================================
 
 class function TGraphicTools.IsPointInRect(const Rect: TRect;
   const Point: TPoint): Boolean;
@@ -175,7 +175,7 @@ begin
     (Point.Y >= Rect.Top) and (Point.Y <= Rect.Bottom);
 end;
 
-//=== TConversionTools =======================================================
+//=== { TConversionTools } ===================================================
 
 class function TConversionTools.BoolToStr(const B: Boolean): string;
 begin
@@ -193,14 +193,14 @@ begin
     Result := 'No';
 end;
 
-//=== TWebTools ==============================================================
+//=== { TWebTools } ==========================================================
 
 class function TWebTools.OpenWebPage(const URI: string): Boolean;
 begin
   Result := ShellExecute(0, 'open', PChar(URI), nil, nil, SW_SHOWNORMAL) > 32;
 end;
 
-//=== TOwnerPointerList ======================================================
+//=== { TOwnerPointerList } ==================================================
 
 constructor TOwnerPointerList.Create;
 begin

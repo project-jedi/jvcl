@@ -291,7 +291,7 @@ uses
   QForms;
 {$ENDIF VisualCLX}
 
-//=== TJvCustomPage ==========================================================
+//=== { TJvCustomPage } ======================================================
 
 constructor TJvCustomPage.Create(AOwner: TComponent);
 begin
@@ -522,7 +522,7 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-//=== TJvCustomPageList ======================================================
+//=== { TJvCustomPageList } ==================================================
 
 constructor TJvCustomPageList.Create(AOwner: TComponent);
 begin

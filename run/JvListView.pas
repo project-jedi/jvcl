@@ -146,7 +146,7 @@ uses
   Math,
   JvConsts, JvResources;
 
-//=== TJvListItem ============================================================
+//=== { TJvListItem } ========================================================
 
 const
   // (rom) increased from 100
@@ -164,7 +164,7 @@ begin
   FPopupMenu := Value;
 end;
 
-//=== TJvListView ============================================================
+//=== { TJvListView } ========================================================
 
 const
   cLISTVIEW01 = 'LISTVIEW01';

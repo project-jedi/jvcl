@@ -579,7 +579,7 @@ const
   end;
   }
 
-//=== TJvLookOutEdit =========================================================
+//=== { TJvLookOutEdit } =====================================================
 
 type
   TJvLookOutEdit = class(TEdit)
@@ -593,7 +593,7 @@ begin
   // (ahuser) What is with OnExit() ?
 end;
 
-//=== TJvLookOutButtonActionLink =============================================
+//=== { TJvLookOutButtonActionLink } =========================================
 
 type
   TJvLookOutButtonActionLink = class(TControlActionLink)
@@ -622,7 +622,7 @@ begin
     FClient.Down := Value;
 end;
 
-//=== TJvUpArrowBtn ==========================================================
+//=== { TJvUpArrowBtn } ======================================================
 
 constructor TJvUpArrowBtn.Create(AOwner: TComponent);
 var
@@ -774,7 +774,7 @@ begin
   end;
 end;
 
-//=== TJvDwnArrowBtn =========================================================
+//=== { TJvDwnArrowBtn } =====================================================
 
 constructor TJvDwnArrowBtn.Create(AOwner: TComponent);
 var
@@ -883,7 +883,7 @@ begin
   end;
 end;
 
-//=== TJvCustomLookOutButton =================================================
+//=== { TJvCustomLookOutButton } =============================================
 
 constructor TJvCustomLookOutButton.Create(AOwner: TComponent);
 begin
@@ -1608,7 +1608,7 @@ begin
   end;
 end;
 
-//=== TJvExpressButton =======================================================
+//=== { TJvExpressButton } ===================================================
 
 constructor TJvExpressButton.Create(AOwner: TComponent);
 begin
@@ -1620,7 +1620,7 @@ begin
   Font.Color := clWhite;
 end;
 
-//=== TJvLookOutPage =========================================================
+//=== { TJvLookOutPage } =====================================================
 
 constructor TJvLookOutPage.Create(AOwner: TComponent);
 begin
@@ -2466,7 +2466,7 @@ begin
   end;
 end;
 
-//=== TJvLookOut =============================================================
+//=== { TJvLookOut } =========================================================
 
 constructor TJvLookOut.Create(AOwner: TComponent);
 begin
@@ -2769,7 +2769,7 @@ begin
     UpdateControls;
 end;
 
-//=== TJvExpress =============================================================
+//=== { TJvExpress } =========================================================
 
 constructor TJvExpress.Create(AOwner: TComponent);
 begin

@@ -137,7 +137,7 @@ const
   cMaskLEDName = 'JVTR_MASK_LED';
   cGreenLEDName = 'JVTR_GREEN_LED';
 
-//=== TJvCustomLED ===========================================================
+//=== { TJvCustomLED } =======================================================
 
 constructor TJvCustomLED.Create(AOwner: TComponent);
 begin

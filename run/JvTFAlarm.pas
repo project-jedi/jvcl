@@ -114,7 +114,7 @@ implementation
 uses
   JvTFUtils;
 
-//=== TJvTFAlarm =============================================================
+//=== { TJvTFAlarm } =========================================================
 
 constructor TJvTFAlarm.Create(AOwner: TComponent);
 begin
@@ -279,7 +279,7 @@ begin
   AlarmCheck;
 end;
 
-//=== TJvTFAlarmInfo =========================================================
+//=== { TJvTFAlarmInfo } =====================================================
 
 constructor TJvTFAlarmInfo.Create(AAppt: TJvTFAppt);
 begin
@@ -287,7 +287,7 @@ begin
   FAppt := AAppt;
 end;
 
-//=== TJvTFAlarmList =========================================================
+//=== { TJvTFAlarmList } =====================================================
 
 procedure TJvTFAlarmList.AddAppt(AAppt: TJvTFAppt);
 var

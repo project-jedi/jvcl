@@ -1240,7 +1240,7 @@ begin
   {$ENDIF VisualCLX}
 end;
 
-//=== TCustomImageListEx =====================================================
+//=== { TCustomImageListEx } =================================================
 
 {$IFDEF COMPILER5}
 procedure TCustomImageListEx.Draw(Canvas: TCanvas; X, Y, Index: Integer;
@@ -1258,7 +1258,7 @@ end;
 {$ENDIF COMPILER5}
 
 
-//=== TJvIconPanel ===========================================================
+//=== { TJvIconPanel } =======================================================
 
 constructor TJvIconPanel.Create(AOwner: TComponent);
 begin
@@ -1437,7 +1437,7 @@ begin
   InternalStylemanagerChanged(Self, StyleManager);
 end;
 
-//=== TJvCustomNavigationPane ================================================
+//=== { TJvCustomNavigationPane } ============================================
 
 constructor TJvCustomNavigationPane.Create(AOwner: TComponent);
 begin
@@ -2141,7 +2141,7 @@ begin
     FSplitter.OnMouseUp := Value;
 end;
 
-//=== TJvNavIconButton ======================================================
+//=== { TJvNavIconButton } ==================================================
 
 constructor TJvNavIconButton.Create(AOwner: TComponent);
 begin
@@ -2399,7 +2399,7 @@ begin
   Result := (StyleManager = nil) or (StyleManager.Theme = nptCustom);
 end;
 
-//=== TJvNavPanelButton ======================================================
+//=== { TJvNavPanelButton } ==================================================
 
 constructor TJvNavPanelButton.Create(AOwner: TComponent);
 begin
@@ -2668,7 +2668,7 @@ begin
   Result := (StyleManager = nil) or (StyleManager.Theme = nptCustom);
 end;
 
-//=== TJvNavPanelColors ======================================================
+//=== { TJvNavPanelColors } ==================================================
 
 constructor TJvNavPanelColors.Create;
 begin
@@ -2894,7 +2894,7 @@ begin
   end;
 end;
 
-//=== TJvNavPanelFonts =======================================================
+//=== { TJvNavPanelFonts } ===================================================
 
 constructor TJvNavPanelFonts.Create;
 begin
@@ -2990,7 +2990,7 @@ begin
   end;
 end;
 
-//=== TJvNavPanelPage ========================================================
+//=== { TJvNavPanelPage } ====================================================
 
 constructor TJvNavPanelPage.Create(AOwner: TComponent);
 begin
@@ -3385,7 +3385,7 @@ begin
     end;
 end;
 
-//=== TJvOutlookSplitter =====================================================
+//=== { TJvOutlookSplitter } =================================================
 
 constructor TJvOutlookSplitter.Create(AOwner: TComponent);
 begin
@@ -3607,7 +3607,7 @@ end;
 
 {$ENDIF VCL}
 
-//=== TJvNavPanelHeader ======================================================
+//=== { TJvNavPanelHeader } ==================================================
 
 constructor TJvNavPanelHeader.Create(AOwner: TComponent);
 begin
@@ -3870,7 +3870,7 @@ end;
 {$ENDIF VisualCLX}
 
 
-//=== TJvNavPanelDivider =====================================================
+//=== { TJvNavPanelDivider } =================================================
 
 constructor TJvNavPanelDivider.Create(AOwner: TComponent);
 begin
@@ -4037,7 +4037,7 @@ begin
   end;
 end;
 
-//=== TJvNavPaneStyleManager =================================================
+//=== { TJvNavPaneStyleManager } =============================================
 
 constructor TJvNavPaneStyleManager.Create(AOwner: TComponent);
 begin
@@ -4331,7 +4331,7 @@ begin
   Result := Theme = nptCustom;
 end;
 
-//=== TJvNavStyleLink ========================================================
+//=== { TJvNavStyleLink } ====================================================
 
 destructor TJvNavStyleLink.Destroy;
 begin
@@ -4346,7 +4346,7 @@ begin
     FOnChange(Sender);
 end;
 
-//=== TJvCustomNavPaneToolPanel ====================================================
+//=== { TJvCustomNavPaneToolPanel } ================================================
 
 constructor TJvCustomNavPaneToolPanel.Create(AOwner: TComponent);
 begin
@@ -4911,7 +4911,7 @@ begin
   Result := (StyleManager = nil) or (StyleManager.Theme = nptCustom);
 end;
 
-//=== TJvNavPaneToolButton ===================================================
+//=== { TJvNavPaneToolButton } ===============================================
 
 constructor TJvNavPaneToolButton.Create(Collection: TCollection);
 begin
@@ -4967,7 +4967,7 @@ begin
   FRealButton.ImageIndex := Value;
 end;
 
-//=== TJvNavPaneToolButtons ==================================================
+//=== { TJvNavPaneToolButtons } ==============================================
 
 constructor TJvNavPaneToolButtons.Create(AOwner: TJvCustomNavPaneToolPanel);
 begin
@@ -4998,7 +4998,7 @@ begin
     FPanel.ButtonsChanged;
 end;
 
-//=== TJvNavPanelToolButton ==================================================
+//=== { TJvNavPanelToolButton } ==============================================
 
 constructor TJvNavPanelToolButton.Create(AOwner: TComponent);
 begin
@@ -5180,7 +5180,7 @@ begin
   end;
 end;
 
-//=== TJvNavPaneBackgroundImage ==============================================
+//=== { TJvNavPaneBackgroundImage } ==========================================
 
 constructor TJvNavPaneBackgroundImage.Create;
 begin

@@ -1496,7 +1496,7 @@ begin
   end;
 end;
 
-//=== TJvDP_ProviderBaseRender ===============================================
+//=== { TJvDP_ProviderBaseRender } ===========================================
 
 constructor TJvDP_ProviderBaseRender.Create(AItem: IJvDataItem; ACanvas: TCanvas; AState: TProviderDrawStates);
 begin
@@ -1529,7 +1529,7 @@ begin
   end;
 end;
 
-//=== TJvDP_ProviderTextOnlyRender ===========================================
+//=== { TJvDP_ProviderTextOnlyRender } =======================================
 
 procedure TJvDP_ProviderTextOnlyRender.Prepare(ForMeasure: Boolean);
 var
@@ -1552,7 +1552,7 @@ begin
   Result := Canvas.TextExtent(FText);
 end;
 
-//=== TJvDP_ProviderImgAndTextRender =========================================
+//=== { TJvDP_ProviderImgAndTextRender } =====================================
 
 procedure TJvDP_ProviderImgAndTextRender.Prepare(ForMeasure: Boolean);
 var
@@ -1735,7 +1735,7 @@ begin
     PropPathField^ := NewPath;
 end;
 
-//=== TJvDataItemAggregatedObject ============================================
+//=== { TJvDataItemAggregatedObject } ========================================
 
 function TJvDataItemAggregatedObject.QueryInterface(const IID: TGUID; out Obj): HRESULT;
 const
@@ -1766,7 +1766,7 @@ begin
   Result := Owner as TJvBaseDataItem;
 end;
 
-//=== TJvCustomDataItemsTextRenderer =========================================
+//=== { TJvCustomDataItemsTextRenderer } =====================================
 
 procedure TJvCustomDataItemsTextRenderer.DoDrawItem(ACanvas: TCanvas; var ARect: TRect;
   Item: IJvDataItem; State: TProviderDrawStates);
@@ -1784,7 +1784,7 @@ begin
   Result := ACanvas.TextExtent('WyWyWyWyWyWyWyWyWyWy');
 end;
 
-//=== TJvCustomDataItemsRenderer =============================================
+//=== { TJvCustomDataItemsRenderer } =========================================
 
 procedure TJvCustomDataItemsRenderer.DoDrawItem(ACanvas: TCanvas; var ARect: TRect;
   Item: IJvDataItem; State: TProviderDrawStates);
@@ -1802,7 +1802,7 @@ begin
   Result := ACanvas.TextExtent('WyWyWyWyWyWyWyWyWyWy');
 end;
 
-//=== TJvDataItemTextImpl ====================================================
+//=== { TJvDataItemTextImpl } ================================================
 
 function TJvDataItemTextImpl.GetCaption: string;
 begin
@@ -1824,7 +1824,7 @@ begin
   end;
 end;
 
-//=== TJvDataItemContextTextImpl =============================================
+//=== { TJvDataItemContextTextImpl } =========================================
 
 constructor TJvDataItemContextTextImpl.Create(AOwner: TExtensibleInterfacedPersistent);
 begin
@@ -1905,7 +1905,7 @@ begin
   Result := FContextStrings.IndexOfObject(TObject(CurCtx)) = -1;
 end;
 
-//=== TJvDataItemImageImpl ===================================================
+//=== { TJvDataItemImageImpl } ===============================================
 
 function TJvDataItemImageImpl.GetAlignment: TAlignment;
 begin
@@ -1952,7 +1952,7 @@ begin
   end;
 end;
 
-//=== TExtensibleInterfacedPersistent ========================================
+//=== { TExtensibleInterfacedPersistent } ====================================
 
 constructor TExtensibleInterfacedPersistent.Create;
 begin
@@ -2168,7 +2168,7 @@ begin
   TExtensibleInterfacedPersistent(Result).FRefCount := 1;
 end;
 
-//=== TAggregatedPersistent ==================================================
+//=== { TAggregatedPersistent } ==============================================
 
 constructor TAggregatedPersistent.Create(Controller: IUnknown);
 begin
@@ -2201,7 +2201,7 @@ begin
   Result := inherited GetInterface(IID, Obj);
 end;
 
-//=== TAggregatedPersistentEx ================================================
+//=== { TAggregatedPersistentEx } ============================================
 
 constructor TAggregatedPersistentEx.Create(AOwner: TExtensibleInterfacedPersistent);
 begin
@@ -2225,7 +2225,7 @@ begin
     FOwner.FAdditionalIntfImpl.Delete(I);
 end;
 
-//=== TJvProviderNotification ================================================
+//=== { TJvProviderNotification } ============================================
 
 destructor TJvProviderNotification.Destroy;
 begin
@@ -2289,7 +2289,7 @@ begin
   Result := nil;
 end;
 
-//=== TJvBaseDataItems =======================================================
+//=== { TJvBaseDataItems } ===================================================
 
 constructor TJvBaseDataItems.Create;
 begin
@@ -2564,7 +2564,7 @@ begin
     FreeAndNil(FSubAggregate);
 end;
 
-//=== TJvBaseDataItemSubItems ================================================
+//=== { TJvBaseDataItemSubItems } ============================================
 
 constructor TJvBaseDataItemSubItems.Create(AOwner: TExtensibleInterfacedPersistent;
   AItems: TJvBaseDataItems);
@@ -2585,7 +2585,7 @@ begin
   Result := inherited GetInterface(IID, Obj) or Succeeded(FItems.QueryInterface(IID, Obj));
 end;
 
-//=== TJvCustomDataItemTextRenderer ==========================================
+//=== { TJvCustomDataItemTextRenderer } ======================================
 
 procedure TJvCustomDataItemTextRenderer.Draw(ACanvas: TCanvas; var ARect: TRect; State: TProviderDrawStates);
 begin
@@ -2597,7 +2597,7 @@ begin
   Result := TJvDP_ProviderTextOnlyRender.Measure(Item, ACanvas, []);
 end;
 
-//=== TJvCustomDataItemRenderer ==============================================
+//=== { TJvCustomDataItemRenderer } ==========================================
 
 procedure TJvCustomDataItemRenderer.Draw(ACanvas: TCanvas; var ARect: TRect; State: TProviderDrawStates);
 begin
@@ -2609,7 +2609,7 @@ begin
   Result := TJvDP_ProviderImgAndTextRender.Measure(Item, ACanvas, []);
 end;
 
-//=== TJvCustomDataItemStates ================================================
+//=== { TJvCustomDataItemStates } ============================================
 
 procedure TJvCustomDataItemStates.InitStatesUsage(UseEnabled, UseChecked, UseVisible: Boolean);
 begin
@@ -2678,7 +2678,7 @@ begin
   end;
 end;
 
-//=== TJvDataItemsAggregatedObject ===========================================
+//=== { TJvDataItemsAggregatedObject } =======================================
 
 procedure TJvDataItemsAggregatedObject.ContextDestroying(Context: IJvDataContext);
 begin
@@ -2694,7 +2694,7 @@ begin
   Result := Owner as TJvBaseDataItems;
 end;
 
-//=== TJvBaseDataItemsRenderer ===============================================
+//=== { TJvBaseDataItemsRenderer } ===========================================
 
 procedure TJvBaseDataItemsRenderer.DrawItemByIndex(ACanvas: TCanvas; var ARect: TRect;
   Index: Integer; State: TProviderDrawStates);
@@ -2737,7 +2737,7 @@ begin
     Result := DoMeasureItem(ACanvas, Item);
 end;
 
-//=== TJvDataItemsList =======================================================
+//=== { TJvDataItemsList } ===================================================
 
 constructor TJvDataItemsList.Create;
 begin
@@ -2771,7 +2771,7 @@ begin
   Result := (List[I] as TJvBaseDataItem) as IJvDataItem;
 end;
 
-//=== TJvBaseDataItemsListManagement =========================================
+//=== { TJvBaseDataItemsListManagement } =====================================
 
 function TJvBaseDataItemsListManagement.Add(Item: IJvDataItem): IJvDataItem;
 begin
@@ -2832,7 +2832,7 @@ begin
     raise EJVCLDataItems.CreateRes(@RsEItemCanNotBeDeleted);
 end;
 
-//=== TJvCustomDataItemsImages ===============================================
+//=== { TJvCustomDataItemsImages } ===========================================
 
 function TJvCustomDataItemsImages.GetDisabledImages: TCustomImageList;
 begin
@@ -2879,7 +2879,7 @@ begin
   end;
 end;
 
-//=== TJvBaseDataItem ========================================================
+//=== { TJvBaseDataItem } ====================================================
 
 constructor TJvBaseDataItem.Create(AOwner: IJvDataItems);
 begin
@@ -3098,7 +3098,7 @@ begin
   end;
 end;
 
-//=== TJvCustomDataProvider ==================================================
+//=== { TJvCustomDataProvider } ==============================================
 
 constructor TJvCustomDataProvider.Create(AOwner: TComponent);
 begin
@@ -3491,7 +3491,7 @@ begin
   );
 end;
 
-//=== TJvBaseDataContexts ====================================================
+//=== { TJvBaseDataContexts } ================================================
 
 constructor TJvBaseDataContexts.Create(AProvider: IJvDataProvider; AAncestor: IJvDataContext;
   ManagerClass: TJvDataContextsManagerClass);
@@ -3556,7 +3556,7 @@ begin
     Dec(Result);
 end;
 
-//=== TJvBaseDataContextsManager =============================================
+//=== { TJvBaseDataContextsManager } =========================================
 
 function TJvBaseDataContextsManager.Contexts: IJvDataContexts;
 begin
@@ -3584,7 +3584,7 @@ begin
   ContextsImpl.DoClearContexts;
 end;
 
-//=== TJvBaseDataContext =====================================================
+//=== { TJvBaseDataContext } =================================================
 
 constructor TJvBaseDataContext.Create(AContexts: TJvBaseDataContexts; AName: string);
 begin
@@ -3637,14 +3637,14 @@ begin
   Result := not IsDeletable;
 end;
 
-//=== TJvBaseFixedDataContext ================================================
+//=== { TJvBaseFixedDataContext } ============================================
 
 function TJvBaseFixedDataContext.IsDeletable: Boolean;
 begin
   Result := False;
 end;
 
-//=== TJvDataContexts ========================================================
+//=== { TJvDataContexts } ====================================================
 
 constructor TJvDataContexts.Create(AProvider: IJvDataProvider; AAncestor: IJvDataContext;
   ManagerClass: TJvDataContextsManagerClass);
@@ -3719,7 +3719,7 @@ begin
   Result := IJvDataContext(FContexts[Index]);
 end;
 
-//=== TJvDataContext =========================================================
+//=== { TJvDataContext } =====================================================
 
 procedure TJvDataContext.DoSetName(Value: string);
 begin
@@ -3731,14 +3731,14 @@ begin
   Result := FName;
 end;
 
-//=== TJvFixedDataContext ====================================================
+//=== { TJvFixedDataContext } ================================================
 
 function TJvFixedDataContext.IsDeletable: Boolean;
 begin
   Result := False;
 end;
 
-//=== TJvDataConsumer ========================================================
+//=== { TJvDataConsumer } ====================================================
 
 constructor TJvDataConsumer.Create(AOwner: TComponent; Attributes: array of Integer);
 var
@@ -4311,7 +4311,7 @@ begin
   Result := NeedExtensionFixups or NeedContextFixup;
 end;
 
-//=== TJvDataConsumerAggregatedObject ========================================
+//=== { TJvDataConsumerAggregatedObject } ====================================
 
 procedure TJvDataConsumerAggregatedObject.DataProviderChanging(ADataProvider: IJvDataProvider;
   AReason: TDataProviderChangeReason; Source: IUnknown);
@@ -4408,7 +4408,7 @@ begin
     ConsumerImpl.ProviderIntf.QueryInterface(IJvDataItems, Result);
 end;
 
-//=== TJvDataConsumerContext =================================================
+//=== { TJvDataConsumerContext } =============================================
 
 function TJvDataConsumerContext.GetContextID: TJvDataContextID;
 begin
@@ -4430,7 +4430,7 @@ begin
   ConsumerImpl.SetContextIntf(Value);
 end;
 
-//=== TJvDataConsumerItemSelect ==============================================
+//=== { TJvDataConsumerItemSelect } ==========================================
 
 procedure TJvDataConsumerItemSelect.Fixup;
 begin
@@ -4524,7 +4524,7 @@ begin
   end;
 end;
 
-//=== TJvCustomDataConsumerViewList ==========================================
+//=== { TJvCustomDataConsumerViewList } ======================================
 
 constructor TJvCustomDataConsumerViewList.Create(AOwner: TExtensibleInterfacedPersistent);
 begin
@@ -4775,7 +4775,7 @@ begin
   end;
 end;
 
-//=== TJvDataConsumerViewList ================================================
+//=== { TJvDataConsumerViewList } ============================================
 
 procedure TJvDataConsumerViewList.AddItem(Index: Integer; Item: IJvDataItem; ExpandToLevel: Integer);
 var
@@ -5176,7 +5176,7 @@ begin
   Result := Length(FViewItems);
 end;
 
-//=== TJvDataConsumerServerNotify ============================================
+//=== { TJvDataConsumerServerNotify } ========================================
 
 constructor TJvDataConsumerServerNotify.Create(AOwner: TExtensibleInterfacedPersistent);
 begin
@@ -5243,7 +5243,7 @@ begin
     RemoveClient(Client);
 end;
 
-//=== TJvDataConsumerClientNotifyList ========================================
+//=== { TJvDataConsumerClientNotifyList } ====================================
 
 constructor TJvDataConsumerClientNotifyList.Create(AServer: TJvDataConsumerServerNotify);
 begin
@@ -5354,7 +5354,7 @@ begin
     Dec(Result);
 end;
 
-//=== TJvDataConsumerClientNotifyItem ========================================
+//=== { TJvDataConsumerClientNotifyItem } ====================================
 
 function TJvDataConsumerClientNotifyItem.GetList: TJvDataConsumerClientNotifyList;
 begin
@@ -5453,7 +5453,7 @@ begin
   inherited Destroy;
 end;
 
-//=== TJvConsumerStrings =====================================================
+//=== { TJvConsumerStrings } =================================================
 
 constructor TJvConsumerStrings.Create(AConsumer: TJvDataConsumer);
 begin

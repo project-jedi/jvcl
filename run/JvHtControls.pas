@@ -838,7 +838,7 @@ end;
 
 // Kaczkowski - end
 
-//=== TJvCustomHTListBox =====================================================
+//=== { TJvCustomHTListBox } =================================================
 
 constructor TJvCustomHTListBox.Create(AOwner: TComponent);
 begin
@@ -970,7 +970,7 @@ begin
   end;
 end;
 
-//=== TJvCustomHTComboBox ====================================================
+//=== { TJvCustomHTComboBox } ================================================
 
 constructor TJvCustomHTComboBox.Create(AOwner: TComponent);
 begin
@@ -1071,7 +1071,7 @@ begin
   end;
 end;
 
-//=== TJvCustomHTLabel =======================================================
+//=== { TJvCustomHTLabel } ===================================================
 
 {$IFDEF VisualCLX}
 

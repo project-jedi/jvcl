@@ -81,7 +81,7 @@ uses
   Dialogs,
   JvConsts, JvResources;
 
-//=== TJvStickSizer ==========================================================
+//=== { TJvStickSizer } ======================================================
 
 const
   cPosList: array [1..8] of Integer =
@@ -181,7 +181,7 @@ begin
   FControl.BoundsRect := R;
 end;
 
-//=== TJvSticker =============================================================
+//=== { TJvSticker } =========================================================
 
 constructor TJvSticker.Create(AOwner: TComponent);
 begin

@@ -2732,7 +2732,7 @@ begin
   end;
 end;
 
-//=== TJvID3AudioEncryptionFrame =============================================
+//=== { TJvID3AudioEncryptionFrame } =========================================
 
 procedure TJvID3AudioEncryptionFrame.Assign(Source: TPersistent);
 begin
@@ -2915,7 +2915,7 @@ begin
   end;
 end;
 
-//=== TJvID3Base =============================================================
+//=== { TJvID3Base } =========================================================
 
 constructor TJvID3Base.Create(AController: TJvID3Controller);
 begin
@@ -2948,7 +2948,7 @@ begin
     Result := FController.FStream;
 end;
 
-//=== TJvID3BinaryFrame ======================================================
+//=== { TJvID3BinaryFrame } ==================================================
 
 procedure TJvID3BinaryFrame.AfterConstruction;
 begin
@@ -3131,7 +3131,7 @@ begin
   WriteData;
 end;
 
-//=== TJvID3ContentFrame =====================================================
+//=== { TJvID3ContentFrame } =================================================
 
 procedure TJvID3ContentFrame.Assign(Source: TPersistent);
 begin
@@ -3324,7 +3324,7 @@ begin
   end;
 end;
 
-//=== TJvID3Controller =======================================================
+//=== { TJvID3Controller } ===================================================
 
 constructor TJvID3Controller.Create(AOwner: TComponent);
 begin
@@ -4357,7 +4357,7 @@ begin
   FStream.CopyFrom(FTempStream, LTempStreamSize);
 end;
 
-//=== TJvID3ControllerDesigner ===============================================
+//=== { TJvID3ControllerDesigner } ===========================================
 
 constructor TJvID3ControllerDesigner.Create(Controller: TJvID3Controller);
 begin
@@ -4386,7 +4386,7 @@ procedure TJvID3ControllerDesigner.ID3Event(Event: TJvID3Event; Info: Integer);
 begin
 end;
 
-//=== TJvID3CustomTextFrame ==================================================
+//=== { TJvID3CustomTextFrame } ==============================================
 
 procedure TJvID3CustomTextFrame.Assign(Source: TPersistent);
 var
@@ -4509,7 +4509,7 @@ begin
   end;
 end;
 
-//=== TJvID3DoubleListFrame ==================================================
+//=== { TJvID3DoubleListFrame } ==============================================
 
 procedure TJvID3DoubleListFrame.AfterConstruction;
 begin
@@ -4850,7 +4850,7 @@ begin
   end;
 end;
 
-//=== TJvID3ExtendedHeader ===================================================
+//=== { TJvID3ExtendedHeader } ===============================================
 
 procedure TJvID3ExtendedHeader.Assign(Source: TPersistent);
 begin
@@ -5160,7 +5160,7 @@ begin
   end;
 end;
 
-//=== TJvID3FileInfo =========================================================
+//=== { TJvID3FileInfo } =====================================================
 
 procedure TJvID3FileInfo.Calc;
 const
@@ -5465,7 +5465,7 @@ begin
   FVersion := Low(TJvMPEGVersion);
 end;
 
-//=== TJvID3Frame ============================================================
+//=== { TJvID3Frame } ========================================================
 
 constructor TJvID3Frame.Create(AOwner: TComponent; const AFrameID: TJvID3FrameID;
   const AFrameIDStr: string);
@@ -6103,7 +6103,7 @@ begin
     Write(PChar(LFrameIDStr)^, FrameIDLength);
 end;
 
-//=== TJvID3Frames ===========================================================
+//=== { TJvID3Frames } =======================================================
 
 procedure TJvID3Frames.Add(Frame: TJvID3Frame);
 begin
@@ -6407,7 +6407,7 @@ begin
     Frames[I].Write;
 end;
 
-//=== TJvID3GeneralObjFrame ==================================================
+//=== { TJvID3GeneralObjFrame } ==============================================
 
 procedure TJvID3GeneralObjFrame.Assign(Source: TPersistent);
 begin
@@ -6666,7 +6666,7 @@ begin
   end;
 end;
 
-//=== TJvID3Header ===========================================================
+//=== { TJvID3Header } =======================================================
 
 procedure TJvID3Header.Assign(Source: TPersistent);
 begin
@@ -6831,7 +6831,7 @@ begin
   end;
 end;
 
-//=== TJvID3NumberFrame ======================================================
+//=== { TJvID3NumberFrame } ==================================================
 
 procedure TJvID3NumberFrame.ChangeToVersion(const ANewVersion: TJvID3Version);
 var
@@ -6988,7 +6988,7 @@ begin
   end;
 end;
 
-//=== TJvID3OwnershipFrame ===================================================
+//=== { TJvID3OwnershipFrame } ===============================================
 
 procedure TJvID3OwnershipFrame.Assign(Source: TPersistent);
 begin
@@ -7151,7 +7151,7 @@ begin
   end;
 end;
 
-//=== TJvID3PictureFrame =====================================================
+//=== { TJvID3PictureFrame } =================================================
 
 procedure TJvID3PictureFrame.Assign(Source: TPersistent);
 var
@@ -7431,7 +7431,7 @@ begin
   end;
 end;
 
-//=== TJvID3PlayCounterFrame =================================================
+//=== { TJvID3PlayCounterFrame } =============================================
 
 procedure TJvID3PlayCounterFrame.Assign(Source: TPersistent);
 begin
@@ -7519,7 +7519,7 @@ begin
   Stream.WriteNumber(FCounter);
 end;
 
-//=== TJvID3PopularimeterFrame ===============================================
+//=== { TJvID3PopularimeterFrame } ===========================================
 
 procedure TJvID3PopularimeterFrame.Assign(Source: TPersistent);
 begin
@@ -7695,7 +7695,7 @@ begin
   end;
 end;
 
-//=== TJvID3SimpleListFrame ==================================================
+//=== { TJvID3SimpleListFrame } ==============================================
 
 procedure TJvID3SimpleListFrame.AfterConstruction;
 begin
@@ -7945,7 +7945,7 @@ begin
   FListW.Assign(Value);
 end;
 
-//=== TJvID3SkipFrame ========================================================
+//=== { TJvID3SkipFrame } ====================================================
 
 procedure TJvID3SkipFrame.ChangeToVersion(const ANewVersion: TJvID3Version);
 var
@@ -7973,7 +7973,7 @@ begin
   end;
 end;
 
-//=== TJvID3Stream ===========================================================
+//=== { TJvID3Stream } =======================================================
 
 procedure TJvID3Stream.BeginReadFrame(const AFrameSize: Integer);
 begin
@@ -8649,7 +8649,7 @@ begin
   Result := WriteStringW(SW1) + WriteTerminatorW + WriteStringW(SW2);
 end;
 
-//=== TJvID3StringList =======================================================
+//=== { TJvID3StringList } ===================================================
 
 function TJvID3StringList.GetSeparatedText(const Separator: string): string;
 var
@@ -8696,7 +8696,7 @@ begin
   end;
 end;
 
-//=== TJvID3TermsOfUseFrame ==================================================
+//=== { TJvID3TermsOfUseFrame } ==============================================
 
 procedure TJvID3TermsOfUseFrame.Assign(Source: TPersistent);
 begin
@@ -8847,7 +8847,7 @@ begin
   end;
 end;
 
-//=== TJvID3TextFrame ========================================================
+//=== { TJvID3TextFrame } ====================================================
 
 procedure TJvID3TextFrame.ChangeToVersion(const ANewVersion: TJvID3Version);
 var
@@ -8980,7 +8980,7 @@ begin
   end;
 end;
 
-//=== TJvID3TimestampFrame ===================================================
+//=== { TJvID3TimestampFrame } ===============================================
 
 procedure TJvID3TimestampFrame.ChangeToVersion(const ANewVersion: TJvID3Version);
 var
@@ -9162,7 +9162,7 @@ begin
   end;
 end;
 
-//=== TJvID3URLFrame =========================================================
+//=== { TJvID3URLFrame } =====================================================
 
 procedure TJvID3URLFrame.Assign(Source: TPersistent);
 begin
@@ -9284,7 +9284,7 @@ begin
     WriteStringA(URL);
 end;
 
-//=== TJvID3URLUserFrame =====================================================
+//=== { TJvID3URLUserFrame } =================================================
 
 procedure TJvID3URLUserFrame.Assign(Source: TPersistent);
 begin
@@ -9425,7 +9425,7 @@ begin
   end;
 end;
 
-//=== TJvID3UserFrame ========================================================
+//=== { TJvID3UserFrame } ====================================================
 
 procedure TJvID3UserFrame.Assign(Source: TPersistent);
 begin

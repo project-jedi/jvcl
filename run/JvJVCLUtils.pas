@@ -3110,7 +3110,7 @@ begin
   TCustomControlAccessProtected(Control).Canvas.Draw(Rect.Left, Rect.Top, Bmp);
 end;
 
-{ TJvDesktopCanvas }
+//=== { TJvDesktopCanvas } ===================================================
 
 destructor TJvDesktopCanvas.Destroy;
 begin
@@ -5927,7 +5927,7 @@ begin
   end;
 end;
 
-//=== TJvGradientOptions ============================================================
+//=== { TJvGradientOptions } =================================================
 
 constructor TJvGradientOptions.Create;
 begin
@@ -6806,7 +6806,7 @@ begin
   end;
 end;
 
-//=== TJvPoint ===============================================================
+//=== { TJvPoint } ===========================================================
 
 procedure TJvPoint.Assign(Source: TPersistent);
 begin
@@ -6838,7 +6838,7 @@ begin
   DoChange;
 end;
 
-//=== TJvRect ================================================================
+//=== { TJvRect } ============================================================
 
 constructor TJvRect.Create;
 begin

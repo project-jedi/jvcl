@@ -162,7 +162,7 @@ type
     DataOffset: DWORD; // Offset from beginning of record
   end;
 
-//=== TJvNTEventLog ==========================================================
+//=== { TJvNTEventLog } ======================================================
 
 constructor TJvNTEventLog.Create(AOwner: TComponent);
 begin
@@ -349,7 +349,7 @@ begin
   end;
 end;
 
-//=== TNotifyChangeEventLog ==================================================
+//=== { TNotifyChangeEventLog } ==============================================
 
 constructor TNotifyChangeEventLog.Create(AOwner: TComponent);
 begin
@@ -394,7 +394,7 @@ begin
   end;
 end;
 
-//=== TJvNTEventLogRecord ====================================================
+//=== { TJvNTEventLogRecord } ================================================
 
 constructor TJvNTEventLogRecord.Create(AOwner: TComponent);
 begin

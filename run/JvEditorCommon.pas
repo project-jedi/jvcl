@@ -1238,7 +1238,7 @@ begin
   Result := GetKeyState(VK) and $8000 = $8000;
 end;
 
-//=== TJvUndoBuffer ==========================================================
+//=== { TJvUndoBuffer } ======================================================
 
 procedure RedoNotImplemented;
 begin
@@ -1406,7 +1406,7 @@ begin
   ClearRedo;
 end;
 
-//=== TJvUndo ================================================================
+//=== { TJvUndo } ============================================================
 
 constructor TJvUndo.Create(AJvEditor: TJvCustomEditorBase);
 begin
@@ -1454,7 +1454,7 @@ begin
     Result := nil;
 end;
 
-//=== TJvCaretUndo ===========================================================
+//=== { TJvCaretUndo } =======================================================
 
 constructor TJvCaretUndo.Create(AJvEditor: TJvCustomEditorBase;
   ACaretX, ACaretY: Integer);
@@ -1477,7 +1477,7 @@ begin
   end;
 end;
 
-//=== TJvSelectUndo ==========================================================
+//=== { TJvSelectUndo } ======================================================
 
 constructor TJvSelectUndo.Create(AJvEditor: TJvCustomEditorBase;
   ACaretX, ACaretY: Integer);
@@ -1518,14 +1518,14 @@ begin
     FJvEditor.SetCaretInternal(LastSel.FCaretX, LastSel.FCaretY);
 end;
 
-//=== TJvBeginCompoundUndo ===================================================
+//=== { TJvBeginCompoundUndo } ===============================================
 
 procedure TJvBeginCompoundUndo.Undo;
 begin
   { nothing }
 end;
 
-//=== TJvControlScrollBar95 ==================================================
+//=== { TJvControlScrollBar95 } ==============================================
 
 const
   SBKIND: array [TScrollBarKind] of Integer = (SB_HORZ, SB_VERT);
@@ -1641,7 +1641,7 @@ begin
     FOnScroll(Self, ScrollCode, ScrollPos);
 end;
 
-//=== TJvEditKey =============================================================
+//=== { TJvEditKey } =========================================================
 
 constructor TJvEditKey.Create(const ACommand: TEditCommand; const AKey1: Word;
   const AShift1: TShiftState);
@@ -1663,7 +1663,7 @@ begin
   Command := ACommand;
 end;
 
-//=== TJvKeyboard ============================================================
+//=== { TJvKeyboard } ========================================================
 
 constructor TJvKeyboard.Create;
 begin
@@ -1920,7 +1920,7 @@ begin
   Add(ecPlayMacro, Ord('P'), [ssCtrl, ssShift]);
 end;
 
-//=== TJvEditorClient ========================================================
+//=== { TJvEditorClient } ====================================================
 
 function TJvEditorClient.GetCanvas: TJvUnicodeCanvas;
 begin
@@ -1962,7 +1962,7 @@ begin
   Result := Bounds(0, 0, Width, Height);
 end;
 
-//=== TJvGutter ==============================================================
+//=== { TJvGutter } ==========================================================
 
 procedure TJvGutter.Invalidate;
 {var
@@ -1998,7 +1998,7 @@ begin
 end;
 
 
-//=== TJvLineInformation =====================================================
+//=== { TJvLineInformation } =================================================
 
 constructor TJvLineInformation.Create(AEditor: TJvCustomEditorBase; ALine: Integer);
 begin
@@ -2055,7 +2055,7 @@ begin
   end;
 end;
 
-//=== TJvLineInformationList =================================================
+//=== { TJvLineInformationList } =============================================
 
 constructor TJvLineInformationList.Create(AEditor: TJvCustomEditorBase);
 begin
@@ -2218,7 +2218,7 @@ begin
   end;
 end;
 
-//=== TJvCustomEditorBase ====================================================
+//=== { TJvCustomEditorBase } ================================================
 
 var
   BlockTypeFormat: Integer = 0;
@@ -4839,7 +4839,7 @@ begin
 end;
 
 
-//=== TJvEditorCompletionList ================================================
+//=== { TJvEditorCompletionList } ============================================
 
 constructor TJvEditorCompletionList.Create(AOwner: TComponent);
 begin
@@ -4986,7 +4986,7 @@ begin
   end;
 end;
 
-//=== TJvEditorCompletion ====================================================
+//=== { TJvEditorCompletion } ================================================
 
 constructor TJvCompletionBase.Create(AJvEditor: TJvCustomEditorBase);
 begin
@@ -5221,7 +5221,7 @@ begin
 end;
 
 
-//=== TJvSymbolColor =========================================================
+//=== { TJvSymbolColor } =====================================================
 
 constructor TJvSymbolColor.Create;
 begin
@@ -5250,7 +5250,7 @@ begin
     inherited Assign(Source);
 end;
 
-//=== TJvColors ==============================================================
+//=== { TJvColors } ==========================================================
 
 constructor TJvColors.Create;
 begin

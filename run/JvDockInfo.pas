@@ -200,7 +200,7 @@ begin
     Result := FindDockPanel(ControlName);
 end;
 
-//=== TJvDockInfoZone ========================================================
+//=== { TJvDockInfoZone } ====================================================
 
 function TJvDockInfoZone.GetChildControlCount: Integer;
 var
@@ -364,7 +364,7 @@ begin
   DockControl.RightDock := RightDocked;
 end;
 
-//=== TJvDockInfoTree ========================================================
+//=== { TJvDockInfoTree } ====================================================
 
 constructor TJvDockInfoTree.Create(TreeZone: TJvDockTreeZoneClass);
 begin

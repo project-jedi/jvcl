@@ -326,8 +326,7 @@ begin
   FManager.WaitThreads;
 end;
 
-
-{ TJvMTManagedComponent }
+//=== { TJvMTManagedComponent } ==============================================
 
 procedure TJvMTManagedComponent.Notification(AComponent: TComponent; Operation:
   TOperation);
@@ -349,7 +348,7 @@ begin
     FManager.FreeNotification(Self);
 end;
 
-//=== TJvMTThread ============================================================
+//=== { TJvMTThread } ========================================================
 
 destructor TJvMTThread.Destroy;
 begin
@@ -529,7 +528,7 @@ begin
     Run;
 end;
 
-//=== TJvMTSectionBase =======================================================
+//=== { TJvMTSectionBase } ===================================================
 
 destructor TJvMTSectionBase.Destroy;
 begin
@@ -568,7 +567,7 @@ begin
   FSync.Release;
 end;
 
-//=== TJvMTSection ===========================================================
+//=== { TJvMTSection } =======================================================
 
 constructor TJvMTSection.Create(AOwner: TComponent);
 begin
@@ -599,7 +598,7 @@ begin
   FInitEntered := Value;
 end;
 
-//=== TJvMTCountingSection ===================================================
+//=== { TJvMTCountingSection } ===============================================
 
 constructor TJvMTCountingSection.Create(AOwner: TComponent);
 begin
@@ -632,7 +631,7 @@ begin
   SetInitAndMax(FInitCount, Value);
 end;
 
-//=== TJvMTAsyncBufferBase ===================================================
+//=== { TJvMTAsyncBufferBase } ===============================================
 
 constructor TJvMTAsyncBufferBase.Create(AOwner: TComponent);
 begin
@@ -686,7 +685,7 @@ begin
   FBuffer.Write(AObject);
 end;
 
-//=== TJvMTThreadToVCL =======================================================
+//=== { TJvMTThreadToVCL } ===================================================
 
 procedure TJvMTThreadToVCL.CreateBuffer;
 begin
@@ -701,7 +700,7 @@ begin
     FOnCanRead(Self);
 end;
 
-//=== TJvMTVCLToThread =======================================================
+//=== { TJvMTVCLToThread } ===================================================
 
 procedure TJvMTVCLToThread.CreateBuffer;
 begin
@@ -725,7 +724,7 @@ begin
     FOnCanWrite(Self);
 end;
 
-//=== TJvMTThreadToThread ====================================================
+//=== { TJvMTThreadToThread } ================================================
 
 constructor TJvMTThreadToThread.Create(AOwner: TComponent);
 begin
@@ -779,7 +778,7 @@ begin
   FQueue.Push(AObject);
 end;
 
-//=== TJvMTMonitorSection ====================================================
+//=== { TJvMTMonitorSection } ================================================
 
 constructor TJvMTMonitorSection.Create(AOwner: TComponent);
 begin

@@ -109,7 +109,7 @@ uses
   Math,
   JvResources, JvTypes;
 
-//=== TJvStatusBar ===========================================================
+//=== { TJvStatusBar } =======================================================
 
 constructor TJvStatusBar.Create(AOwner: TComponent);
 begin
@@ -263,7 +263,7 @@ end;
 
 {$ENDIF COMPILER6_UP}
 
-//=== TJvStatusPanel =========================================================
+//=== { TJvStatusPanel } =====================================================
 
 {$IFDEF COMPILER6_UP}
 

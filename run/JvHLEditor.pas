@@ -258,7 +258,7 @@ begin
   end;
 end;
 
-//=== TJvHLEditor ============================================================
+//=== { TJvHLEditor } ========================================================
 
 constructor TJvHLEditor.Create(AOwner: TComponent);
 begin

@@ -98,7 +98,7 @@ implementation
 uses
   JvResources;
 
-//=== TElementEnumerator =====================================================
+//=== { TElementEnumerator } =================================================
 
 type
   TElementEnumerator = class(TInterfacedObject, IElementEnumerator)
@@ -216,7 +216,7 @@ begin
   Result := GetNextElement(True);
 end;
 
-//=== TDefaultParser =========================================================
+//=== { TDefaultParser } =====================================================
 
 procedure TDefaultParser.AddSourceTreeToDynamicNode(const Node: TDynamicNode;
   const Source: string);

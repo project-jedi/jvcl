@@ -134,7 +134,7 @@ uses
   SysUtils, Controls, Forms, Printers,
   JvJCLUtils, JvResources;
 
-//=== TJvMarginSize ==========================================================
+//=== { TJvMarginSize } ======================================================
 
 procedure TJvMarginSize.AssignError;
 begin
@@ -351,7 +351,7 @@ begin
     Result := 0;
 end;
 
-//=== TJvPageSetupDialog =====================================================
+//=== { TJvPageSetupDialog } =================================================
 
 constructor TJvPageSetupDialog.Create(AOwner: TComponent);
 begin

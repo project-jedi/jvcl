@@ -213,7 +213,7 @@ const
 type
   TWinControlAccessProtected = class(TWinControl);
 
-//=== TJvDockVCStyle =========================================================
+//=== { TJvDockVCStyle } =====================================================
 
 constructor TJvDockVCStyle.Create(AOwner: TComponent);
 begin
@@ -290,7 +290,7 @@ begin
   end;
 end;
 
-//=== TJvDockVCPanel =========================================================
+//=== { TJvDockVCPanel } =====================================================
 
 procedure TJvDockVCPanel.CustomDockDrop(Source: TJvDockDragDockObject; X, Y: Integer);
 begin
@@ -560,7 +560,7 @@ procedure TJvDockVCPanel.CustomGetDockEdge(Source: TJvDockDragDockObject;
 begin
 end;
 
-//=== TJvDockVCTree ==========================================================
+//=== { TJvDockVCTree } ======================================================
 
 constructor TJvDockVCTree.Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass);
 begin
@@ -1360,7 +1360,7 @@ begin
   end;
 end;
 
-//=== TJvDockVCZone ==========================================================
+//=== { TJvDockVCZone } ======================================================
 
 constructor TJvDockVCZone.Create(Tree: TJvDockTree);
 begin
@@ -1870,7 +1870,7 @@ begin
   inherited SetZoneSize(Size, Show);
 end;
 
-//=== TJvDockVCDragDockObject ================================================
+//=== { TJvDockVCDragDockObject } ============================================
 
 constructor TJvDockVCDragDockObject.Create(AControl: TControl);
 begin
@@ -1958,7 +1958,7 @@ begin
   FPreviousState := Value;
 end;
 
-//=== TJvDockVCSplitter ======================================================
+//=== { TJvDockVCSplitter } ==================================================
 
 constructor TJvDockVCSplitter.Create(AOwner: TComponent);
 begin
@@ -2037,7 +2037,7 @@ begin
   DrawFrameControl(Canvas.Handle, Rect, DFC_BUTTON, DFCS_BUTTONPUSH or DFCS_ADJUSTRECT);
 end;
 
-//=== TJvDockVCConjoinServerOption ===========================================
+//=== { TJvDockVCConjoinServerOption } =======================================
 
 constructor TJvDockVCConjoinServerOption.Create(ADockStyle: TJvDockBasicStyle);
 begin

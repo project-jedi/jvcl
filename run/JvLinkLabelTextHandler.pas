@@ -187,7 +187,7 @@ implementation
 uses
   JvResources;
 
-//=== TWordEnumerator ========================================================
+//=== { TWordEnumerator } ====================================================
 
 const
   Space = ' ';
@@ -289,7 +289,7 @@ begin
   FCount := 0;
 end;
 
-//=== TTextElementList =======================================================
+//=== { TTextElementList } ===================================================
 
 constructor TTextElementList.Create;
 begin
@@ -339,7 +339,7 @@ begin
   Result := FList.Count;
 end;
 
-//=== TTextHandler ===========================================================
+//=== { TTextHandler } =======================================================
 
 constructor TTextHandler.Create(const Rect: TRect; InitialX, InitialY: Integer;
   const Canvas: TCanvas);
@@ -678,7 +678,7 @@ begin
     EmptyBuffer;
 end;
 
-//=== TNodeObserverList ======================================================
+//=== { TNodeObserverList } ==================================================
 
 procedure TNodeObserverList.AddObserver(Observer: IStartingPosObserver;
   ParentNode: TAreaNode; FirstStringNode: TStringNode);
@@ -729,7 +729,7 @@ begin
   Dispose(Item);
 end;
 
-//=== TNodeObserverList ======================================================
+//=== { TNodeObserverList } ==================================================
 
 constructor TStringElement.Create(const Node: TStringNode;
   Style: TFontStyles; Color: TColor);
@@ -750,7 +750,7 @@ begin
   Result := TStringTools.EndsWith(FNode.Text);
 end;
 
-//=== TActionElement =========================================================
+//=== { TActionElement } =====================================================
 
 constructor TActionElement.Create(ActionType: TActionType);
 begin

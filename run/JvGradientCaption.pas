@@ -220,7 +220,7 @@ begin
   end;
 end;
 
-//=== TJvCaptionList =========================================================
+//=== { TJvCaptionList } =====================================================
 
 constructor TJvCaptionList.Create(AParent: TJvGradientCaption);
 begin
@@ -268,7 +268,7 @@ begin
       FParent.Update;
 end;
 
-//=== TJvCaption =============================================================
+//=== { TJvCaption } =========================================================
 
 constructor TJvCaption.Create(Collection: TCollection);
 var
@@ -415,7 +415,7 @@ begin
   end;
 end;
 
-//=== TJvGradientCaption ====================================================
+//=== { TJvGradientCaption } ================================================
 
 function SysGradient: Boolean;
 var

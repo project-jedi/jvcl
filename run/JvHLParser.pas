@@ -170,7 +170,7 @@ begin
   FPosition := APosition;
 end;
 
-//=== TJvIParser =============================================================
+//=== { TJvIParser } =========================================================
 
 constructor TJvIParser.Create;
 begin
@@ -534,7 +534,7 @@ begin
     FHistoryPtr := FHistorySize + FHistoryPtr;
 end;
 
-//=== TJvIParserW (Unicode) ====================================================
+//=== { TJvIParserW (Unicode) } ================================================
 
 constructor TJvIParserW.Create;
 begin

@@ -171,7 +171,7 @@ begin
   Result := GlobalMalloc;
 end;
 
-//=== TJvDragDrop ============================================================
+//=== { TJvDragDrop } ========================================================
 
 constructor TJvDragDrop.Create(AOwner: TComponent);
 begin
@@ -337,7 +337,7 @@ begin
 end;
 
 
-//=== TJvDropTarget ==========================================================
+//=== { TJvDropTarget } ======================================================
 
 procedure InitFormatEtc;
 begin

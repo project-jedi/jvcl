@@ -233,7 +233,7 @@ uses
 const
   sUnitName = 'JvScheduledEvents';
 
-//=== TScheduleThread ========================================================
+//=== { TScheduleThread } ====================================================
 
 type
   TScheduleThread = class(TThread)
@@ -398,7 +398,7 @@ begin
   Result := GScheduleThread;
 end;
 
-//=== THackWriter ============================================================
+//=== { THackWriter } ========================================================
 
 type
   TReaderAccessProtected = class(TReader);
@@ -424,7 +424,7 @@ begin
   WriteStr('');
 end;
 
-//=== TJvCustomScheduledEvents ===============================================
+//=== { TJvCustomScheduledEvents } ===========================================
 
 constructor TJvCustomScheduledEvents.Create(AOwner: TComponent);
 begin
@@ -656,7 +656,7 @@ begin
     end
 end;
 
-//=== TJvEventCollection =====================================================
+//=== { TJvEventCollection } =================================================
 
 function TJvEventCollection.GetItem(Index: Integer): TJvEventCollectionItem;
 begin
@@ -683,7 +683,7 @@ begin
   Result := TJvEventCollectionItem(inherited Insert(Index));
 end;
 
-//=== TJvEventCollectionItem =================================================
+//=== { TJvEventCollectionItem } =============================================
 
 constructor TJvEventCollectionItem.Create(Collection: TCollection);
 var

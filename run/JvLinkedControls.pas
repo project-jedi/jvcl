@@ -114,7 +114,7 @@ begin
   //            ((loLinkEnabled in Options) and (not Enabled and (loInvertEnabled in Options)) or (Enabled and not (loInvertEnabled in Options)));
 end;
 
-//=== TJvLinkedControl =======================================================
+//=== { TJvLinkedControl } ===================================================
 
 constructor TJvLinkedControl.Create(Collection: TCollection);
 begin
@@ -193,7 +193,7 @@ begin
   end;
 end;
 
-//=== TJvLinkedControls ======================================================
+//=== { TJvLinkedControls } ==================================================
 
 constructor TJvLinkedControls.Create(AControl: TControl);
 begin

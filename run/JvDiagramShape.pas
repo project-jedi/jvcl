@@ -411,7 +411,7 @@ begin
       Result := A[I];
 end;
 
-//=== TJvCustomDiagramShape ==================================================
+//=== { TJvCustomDiagramShape } ==============================================
 
 constructor TJvCustomDiagramShape.Create(AOwner: TComponent);
 var
@@ -725,7 +725,7 @@ begin
         TJvCustomDiagramShape(ParentControl.Controls[I]).Selected := False;
 end;
 
-//=== TJvMoveableShape =======================================================
+//=== { TJvMoveableShape } ===================================================
 
 constructor TJvMoveableShape.Create(AOwner: TComponent);
 begin
@@ -859,7 +859,7 @@ begin
   end;
 end;
 
-//=== TJvSizeableShape =======================================================
+//=== { TJvSizeableShape } ===================================================
 
 constructor TJvSizeableShape.Create(AOwner: TComponent);
 begin
@@ -1108,7 +1108,7 @@ begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
-//=== TJvTextShape ===========================================================
+//=== { TJvTextShape } =======================================================
 
 constructor TJvTextShape.Create(AOwner: TComponent);
 begin
@@ -1234,7 +1234,7 @@ begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
-//=== TJvBitmapShape =========================================================
+//=== { TJvBitmapShape } =====================================================
 
 constructor TJvBitmapShape.Create(AOwner: TComponent);
 begin
@@ -1314,7 +1314,7 @@ begin
       FImages := nil;
 end;
 
-//=== TJvStandardShape =======================================================
+//=== { TJvStandardShape } ===================================================
 
 constructor TJvStandardShape.Create(AOwner: TComponent);
 begin
@@ -1369,7 +1369,7 @@ begin
   end;
 end;
 
-//=== TJvConnection ==========================================================
+//=== { TJvConnection } ======================================================
 
 constructor TJvConnection.Create;
 begin
@@ -1522,7 +1522,7 @@ begin
   end;
 end;
 
-//=== TJvConnector ===========================================================
+//=== { TJvConnector } =======================================================
 
 constructor TJvConnector.Create(AOwner: TComponent);
 begin
@@ -1746,7 +1746,7 @@ begin
     Min([A.Y, B.Y]) + Abs(A.Y - B.Y) div 2);
 end;
 
-//=== TJvSingleHeadArrow =====================================================
+//=== { TJvSingleHeadArrow } =================================================
 
 constructor TJvSingleHeadArrow.Create(AOwner: TComponent);
 begin
@@ -1823,7 +1823,7 @@ begin
   end;
 end;
 
-//=== TJvSingleHeadOpenDashArrow =============================================
+//=== { TJvSingleHeadOpenDashArrow } =========================================
 
 constructor TJvSingleHeadOpenDashArrow.Create(AOwner: TComponent);
 begin
@@ -1911,7 +1911,7 @@ begin
   end;
 end;
 
-//=== TJvBluntSingleHeadOpenDashArrow ========================================
+//=== { TJvBluntSingleHeadOpenDashArrow } ====================================
 
 constructor TJvBluntSingleHeadOpenDashArrow.Create(AOwner: TComponent);
 begin
@@ -1937,7 +1937,7 @@ begin
   end;
 end;
 
-//=== TJvBluntSingleHeadArrow ================================================
+//=== { TJvBluntSingleHeadArrow } ============================================
 
 constructor TJvBluntSingleHeadArrow.Create(AOwner: TComponent);
 begin
@@ -1963,7 +1963,7 @@ begin
   end;
 end;
 
-//=== TJvSubCaseArrow ========================================================
+//=== { TJvSubCaseArrow } ====================================================
 
 constructor TJvSubCaseArrow.Create(AOwner: TComponent);
 begin
@@ -2060,7 +2060,7 @@ begin
   end;
 end;
 
-//=== TJvDoubleHeadArrow =====================================================
+//=== { TJvDoubleHeadArrow } =================================================
 
 constructor TJvDoubleHeadArrow.Create(AOwner: TComponent);
 begin

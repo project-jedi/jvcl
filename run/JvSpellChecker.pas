@@ -257,7 +257,7 @@ begin
   end;
 end;
 
-//=== TJvDefaultSpellChecker =================================================
+//=== { TJvDefaultSpellChecker } =============================================
 
 constructor TJvDefaultSpellChecker.Create;
 begin
@@ -556,7 +556,7 @@ begin
   Result := FCurrentWord;
 end;
 
-//=== TJvSpellChecker ========================================================
+//=== { TJvSpellChecker } ====================================================
 
 function TJvSpellChecker.GetCanIgnore: TJvSpellCheckIgnoreEvent;
 begin

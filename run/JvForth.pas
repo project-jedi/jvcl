@@ -664,7 +664,7 @@ begin
   end;
 end;
 
-//=== TJvForthScript =========================================================
+//=== { TJvForthScript } =====================================================
 
 constructor TJvForthScript.Create(AOwner: TComponent);
 begin
@@ -2472,7 +2472,7 @@ begin
   vpush(now);
 end;
 
-{ TAtom }
+//=== { TAtom } ==============================================================
 
 procedure TAtom.SetIsOperand(const Value: Boolean);
 begin
@@ -2499,7 +2499,7 @@ begin
   FValue := Value;
 end;
 
-{ TAtomList }
+//=== { TAtomList } ==========================================================
 
 procedure TAtomList.ClearObjects;
 var
@@ -2519,14 +2519,14 @@ begin
   inherited;
 end;
 
-{ TVariantObject }
+//=== { TVariantObject } =====================================================
 
 procedure TVariantObject.SetValue(const Value: Variant);
 begin
   FValue := Value;
 end;
 
-{ TVariantList }
+//=== { TVariantList } =======================================================
 
 procedure TVariantList.ClearObjects;
 var
@@ -2590,7 +2590,7 @@ begin
   end;
 end;
 
-{ TJvJanDSOList }
+//=== { TJvJanDSOList } ======================================================
 
 procedure TJvJanDSOList.ClearTables;
 var
@@ -2625,7 +2625,7 @@ begin
     Result := TJvJanDSO(Objects[Index]);
 end;
 
-{ TJvJanDSO }
+//=== { TJvJanDSO } ==========================================================
 
 function TJvJanDSO.GetValue(AKey: Variant; AField: string): string;
 var
@@ -2712,7 +2712,7 @@ begin
   end
 end;
 
-{ TJvJanXMLList }
+//=== { TJvJanXMLList } ======================================================
 
 procedure TJvJanXMLList.ClearXMLS;
 var

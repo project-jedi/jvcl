@@ -167,7 +167,7 @@ uses
 const
   sUnitName = 'JvDBImage';
 
-//=== TGraphicSignature ======================================================
+//=== { TGraphicSignature } ==================================================
 
 // Code to manage graphic's signatures.
 type
@@ -321,7 +321,7 @@ begin
   end;
 end;
 
-//=== TJvDBImage =============================================================
+//=== { TJvDBImage } =========================================================
 
 constructor TJvDBImage.Create(AOwner: TComponent);
 begin

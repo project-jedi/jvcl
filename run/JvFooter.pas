@@ -144,7 +144,7 @@ implementation
 uses
   JvConsts, JvResources;
 
-//=== TJvFooterBtn ===========================================================
+//=== { TJvFooterBtn } =======================================================
 
 const
   DefFootWidth = 350;
@@ -247,7 +247,7 @@ begin
   inherited SetParent(AParent);
 end;
 
-//=== TJvFooter ==============================================================
+//=== { TJvFooter } ==========================================================
 
 constructor TJvFooter.Create(AOwner: TComponent);
 begin

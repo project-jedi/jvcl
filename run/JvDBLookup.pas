@@ -668,7 +668,7 @@ begin
   end;
 end;
 
-//=== TJvDataSourceLink ======================================================
+//=== { TJvDataSourceLink } ==================================================
 
 procedure TJvDataSourceLink.ActiveChanged;
 begin
@@ -698,7 +698,7 @@ begin
   end;
 end;
 
-//=== TLookupSourceLink ======================================================
+//=== { TLookupSourceLink } ==================================================
 
 procedure TLookupSourceLink.ActiveChanged;
 begin
@@ -718,7 +718,7 @@ begin
     FDataControl.ListLinkDataChanged;
 end;
 
-//=== TJvLookupControl =======================================================
+//=== { TJvLookupControl } ===================================================
 
 // (rom) changed to var
 var
@@ -1550,7 +1550,7 @@ begin
     end;
 end;
 
-//=== TJvDBLookupList ========================================================
+//=== { TJvDBLookupList } ====================================================
 
 constructor TJvDBLookupList.Create(AOwner: TComponent);
 begin
@@ -2256,7 +2256,7 @@ begin
     end;
 end;
 
-//=== TJvPopupDataList =======================================================
+//=== { TJvPopupDataList } ===================================================
 
 constructor TJvPopupDataList.Create(AOwner: TComponent);
 begin
@@ -2301,7 +2301,7 @@ begin
     TJvDBLookupCombo(FCombo).InvalidateText;
 end;
 
-//=== TJvDBLookupCombo =======================================================
+//=== { TJvDBLookupCombo } ===================================================
 
 constructor TJvDBLookupCombo.Create(AOwner: TComponent);
 begin
@@ -3268,7 +3268,7 @@ begin
   FDataList.BiDiMode := BiDiMode;
 end;
 
-//=== TJvPopupDataWindow =====================================================
+//=== { TJvPopupDataWindow } =================================================
 
 constructor TJvPopupDataWindow.Create(AOwner: TComponent);
 begin
@@ -3370,7 +3370,7 @@ begin
   Visible := True;
 end;
 
-//=== TJvDBLookupEdit ==========================================================
+//=== { TJvDBLookupEdit } ======================================================
 
 constructor TJvDBLookupEdit.Create(AOwner: TComponent);
 begin

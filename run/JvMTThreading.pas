@@ -240,7 +240,7 @@ begin
     Result := DefWindowProc(wnd, Msg, wParam, lParam);
 end;
 
-//=== TIntThread =============================================================
+//=== { TIntThread } =========================================================
 
 procedure TIntThread.Synchronize(Method: TThreadMethod);
 var
@@ -298,7 +298,7 @@ end;
 
 {$ENDIF COMPILER5}
 
-//=== TMTInternalThread ======================================================
+//=== { TMTInternalThread } ==================================================
 
 procedure TMTInternalThread.Execute;
 begin
@@ -326,7 +326,7 @@ begin
   {$ENDIF COMPILER7_UP}
 end;
 
-//=== TMTThread ==============================================================
+//=== { TMTThread } ==========================================================
 
 constructor TMTThread.Create(Manager: TMTManager; Ticket: Integer);
 begin
@@ -574,7 +574,7 @@ begin
   end;
 end;
 
-//=== TMTManager =============================================================
+//=== { TMTManager } =========================================================
 
 constructor TMTManager.Create;
 begin

@@ -469,7 +469,7 @@ begin
     Result := '';
 end;
 
-//=== TDSAMessageForm ========================================================
+//=== { TDSAMessageForm } ====================================================
 
 constructor TDSAMessageForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 {$IFDEF VCL}
@@ -904,7 +904,7 @@ begin
   end;
 end;
 
-//=== TDSARegister ===========================================================
+//=== { TDSARegister } =======================================================
 
 type
   TAddResult = (arAdded, arExists, arDuplicateID, arDuplicateName);
@@ -1103,7 +1103,7 @@ begin
 end;
 *)
 
-//=== TDSAStorage ============================================================
+//=== { TDSAStorage } ========================================================
 
 constructor TDSAStorage.Create;
 begin
@@ -1222,7 +1222,7 @@ begin
   end;
 end;
 
-//=== TDSARegStorage =========================================================
+//=== { TDSARegStorage } =====================================================
 
 {$IFDEF MSWINDOWS}
 
@@ -1344,7 +1344,7 @@ end;
 
 {$ENDIF MSWINDOWS}
 
-//=== TDSAValues =============================================================
+//=== { TDSAValues } =========================================================
 
 const
   DSABool = 1;
@@ -1368,7 +1368,7 @@ begin
   Sorted := True;
 end;
 
-//=== TDSAQueueStorage =======================================================
+//=== { TDSAQueueStorage } ===================================================
 
 constructor TDSAQueueStorage.Create;
 begin
@@ -2163,7 +2163,7 @@ begin
   end;
 end;
 
-//=== TPatchedForm ===========================================================
+//=== { TPatchedForm } =======================================================
 
 type
   TShowModalMethod = function: Integer of object; // So we can call the original ShowModal method.
@@ -2227,7 +2227,7 @@ begin
     JvDSADialog.ApplySavedState;
 end;
 
-//=== TJvDSADialog ===========================================================
+//=== { TJvDSADialog } =======================================================
 
 constructor TJvDSADialog.Create(AOwner: TComponent);
 var

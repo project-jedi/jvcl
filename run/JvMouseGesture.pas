@@ -473,7 +473,7 @@ var
   JvMouseButtonUp: ButtonState = ButtonState_RightButton;
   {$ENDIF VisualCLX}
 
-//=== TJvMouseGesture ========================================================
+//=== { TJvMouseGesture } ====================================================
 
 constructor TJvMouseGesture.Create(AOwner: TComponent);
 begin
@@ -802,7 +802,7 @@ begin
   end;
 end;
 
-//=== TJvMouseGestureHook ====================================================
+//=== { TJvMouseGestureHook } ================================================
 
 constructor TJvMouseGestureHook.Create(AOwner: TComponent);
 begin

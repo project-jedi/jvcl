@@ -112,7 +112,7 @@ type
 
 implementation
 
-//=== TJvMergeManager ========================================================
+//=== { TJvMergeManager } ====================================================
 
 constructor TJvMergeManager.Create(AOwner: TComponent);
 begin
@@ -331,7 +331,7 @@ begin
   end;
 end;
 
-//=== TJvFormHistory =========================================================
+//=== { TJvFormHistory } =====================================================
 
 constructor TJvFormHistory.Create;
 begin

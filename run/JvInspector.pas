@@ -2220,7 +2220,7 @@ var
 procedure RegisterDataTypeKinds; forward;
 procedure RegisterPropDataTypeKinds; forward;
 
-//=== TCanvasStack ===========================================================
+//=== { TCanvasStack } =======================================================
 
 type
   TCanvasStack = class(TObjectList)
@@ -2307,7 +2307,7 @@ begin
   TCanvasState(Items[Index]).ApplyTo(Canvas);
 end;*)
 
-//=== TCanvasState ===========================================================
+//=== { TCanvasState } =======================================================
 
 constructor TCanvasState.Create(const Canvas: TCanvas);
 begin
@@ -2384,7 +2384,7 @@ begin
     SetDefaultProp(Instance, PropNames[I]);
 end;
 
-//=== TInspReg ===============================================================
+//=== { TInspReg } ===========================================================
 
 type
   TInspReg = class(TObject)
@@ -2476,7 +2476,7 @@ begin
   end;
 end;
 
-//=== TJvInspDataReg =========================================================
+//=== { TJvInspDataReg } =====================================================
 
 type
   TJvInspDataReg = class(TPersistent)
@@ -2606,7 +2606,7 @@ begin
   end;
 end;
 
-//=== TJvCustomInspector =====================================================
+//=== { TJvCustomInspector } =================================================
 
 var
   GlobalDataRegister: TJvInspDataReg = nil;
@@ -4284,7 +4284,7 @@ begin
   Invalidate;
 end;
 
-//=== TJvInspectorPainter ====================================================
+//=== { TJvInspectorPainter } ================================================
 
 constructor TJvInspectorPainter.Create(AOwner: TComponent);
 begin
@@ -4771,7 +4771,7 @@ begin
   end;
 end;
 
-//=== TJvInspectorBorlandNETBasePainter ======================================
+//=== { TJvInspectorBorlandNETBasePainter } ==================================
 
 procedure TJvInspectorBorlandNETBasePainter.ApplyNameFont;
 begin
@@ -4948,7 +4948,7 @@ begin
   CalcValueBasedRects;
 end;
 
-//=== TJvInspectorBorlandPainter =============================================
+//=== { TJvInspectorBorlandPainter } =========================================
 
 function TJvInspectorBorlandPainter.DividerWidth: Integer;
 begin
@@ -5053,7 +5053,7 @@ begin
   Canvas.Brush.Color := clBtnFace;
 end;
 
-//=== TJvInspectorDotNETPainter ==============================================
+//=== { TJvInspectorDotNETPainter } ==========================================
 
 procedure TJvInspectorDotNETPainter.ApplyNameFont;
 begin
@@ -5224,7 +5224,7 @@ begin
   end;
 end;
 
-//=== TJvInspectorItemSizing =================================================
+//=== { TJvInspectorItemSizing } =============================================
 
 constructor TJvInspectorItemSizing.Create(const AItem: TJvCustomInspectorItem);
 begin
@@ -5345,7 +5345,7 @@ begin
   end;
 end;
 
-//=== TJvInspectorMemo =======================================================
+//=== { TJvInspectorMemo } ===================================================
 
 type
   TJvInspectorMemo = class(TMemo)
@@ -5389,7 +5389,7 @@ end;
 
 {$ENDIF VisualCLX}
 
-//=== TJvInspectorEdit =======================================================
+//=== { TJvInspectorEdit } ===================================================
 
 type
   TJvInspectorEdit = class(TEdit)
@@ -5433,7 +5433,7 @@ end;
 
 {$ENDIF VisualCLX}
 
-//=== TJvCustomInspectorItem =================================================
+//=== { TJvCustomInspectorItem } =============================================
 
 constructor TJvCustomInspectorItem.Create(const AParent: TJvCustomInspectorItem;
   const AData: TJvCustomInspectorData);
@@ -7110,7 +7110,7 @@ begin
 end; }
 {.$ENDIF VCL}
 
-//=== TJvInspectorListBox ====================================================
+//=== { TJvInspectorListBox } ================================================
 
 type
   TJvInspectorListBox = class(TJvPopupListBox)
@@ -7416,7 +7416,7 @@ begin
   end;
 end;
 
-//=== TJvInspectorCustomCategoryItem =========================================
+//=== { TJvInspectorCustomCategoryItem } =====================================
 
 function TJvInspectorCustomCategoryItem.GetName: string;
 begin
@@ -7439,7 +7439,7 @@ begin
   inherited SetFlags(NewFlags);
 end;
 
-//=== TJvInspectorCompoundColumn =============================================
+//=== { TJvInspectorCompoundColumn } =========================================
 
 constructor TJvInspectorCompoundColumn.Create(const AParent: TJvInspectorCustomCompoundItem;
   const AItem: TJvCustomInspectorItem);
@@ -7511,7 +7511,7 @@ begin
   inherited BeforeDestruction;
 end;
 
-//=== TJvInspectorCustomCompoundItem =========================================
+//=== { TJvInspectorCustomCompoundItem } =====================================
 
 constructor TJvInspectorCustomCompoundItem.Create(const AParent: TJvCustomInspectorItem;
   const AData: TJvCustomInspectorData);
@@ -8035,7 +8035,7 @@ begin
     SelectedColumn.Item.InitEdit;
 end;
 
-//=== TJvInspectorCompoundItem ===============================================
+//=== { TJvInspectorCompoundItem } ===========================================
 
 function TJvInspectorCompoundItem.AddColumn(const Item: TJvCustomInspectorItem): Integer;
 begin
@@ -8082,7 +8082,7 @@ begin
   InsertColumnPrim(Index, ItemIndex);
 end;
 
-//=== TJvInspectorIntegerItem ================================================
+//=== { TJvInspectorIntegerItem } ============================================
 
 function TJvInspectorIntegerItem.GetDisplayValue: string;
 begin
@@ -8100,7 +8100,7 @@ begin
     Data.AsOrdinal := TmpOrd;
 end;
 
-//=== TJvInspectorEnumItem ===================================================
+//=== { TJvInspectorEnumItem } ===============================================
 
 function TJvInspectorEnumItem.GetDisplayValue: string;
 var
@@ -8150,7 +8150,7 @@ begin
   inherited SetFlags(TmpFlags);
 end;
 
-//=== TJvInspectorFloatItem ==================================================
+//=== { TJvInspectorFloatItem } ==============================================
 
 constructor TJvInspectorFloatItem.Create(const AParent: TJvCustomInspectorItem;
   const AData: TJvCustomInspectorData);
@@ -8187,7 +8187,7 @@ begin
   Data.AsFloat := StrToFloat(Value);
 end;
 
-//=== TJvInspectorSetMemberData ==============================================
+//=== { TJvInspectorSetMemberData } ==========================================
 
 function TJvInspectorSetMemberData.GetAsFloat: Extended;
 begin
@@ -8324,7 +8324,7 @@ begin
   raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorSet]);
 end;
 
-//=== TJvInspectorSetItem ====================================================
+//=== { TJvInspectorSetItem } ================================================
 
 constructor TJvInspectorSetItem.Create(const AParent: TJvCustomInspectorItem;
   const AData: TJvCustomInspectorData);
@@ -8477,7 +8477,7 @@ begin
   end;
 end;
 
-//=== TJvInspectorCharItem ===================================================
+//=== { TJvInspectorCharItem } ===============================================
 
 function TJvInspectorCharItem.GetDisplayValue: string;
 var
@@ -8504,7 +8504,7 @@ begin
   Data.AsOrdinal := I;
 end;
 
-//=== TJvInspectorInt64Item ==================================================
+//=== { TJvInspectorInt64Item } ==============================================
 
 function TJvInspectorInt64Item.GetDisplayValue: string;
 begin
@@ -8516,7 +8516,7 @@ begin
   Data.AsInt64 := StrToInt64(Value);
 end;
 
-//=== TJvInspectorStringItem =================================================
+//=== { TJvInspectorStringItem } =============================================
 
 function TJvInspectorStringItem.GetDisplayValue: string;
 begin
@@ -8528,7 +8528,7 @@ begin
   Data.AsString := Value;
 end;
 
-//=== TJvInspectorClassItem ==================================================
+//=== { TJvInspectorClassItem } ==============================================
 
 constructor TJvInspectorClassItem.Create(const AParent: TJvCustomInspectorItem;
   const AData: TJvCustomInspectorData);
@@ -8725,7 +8725,7 @@ begin
   end;
 end;
 
-//=== TJvInspectorComponentItem ==============================================
+//=== { TJvInspectorComponentItem } ==========================================
 
 constructor TJvInspectorComponentItem.Create(const AParent: TJvCustomInspectorItem;
   const AData: TJvCustomInspectorData);
@@ -8930,7 +8930,7 @@ begin
   FOwners.Delete(Index);
 end;
 
-//=== TJvInspectorFontItem ===================================================
+//=== { TJvInspectorFontItem } ===============================================
 
 procedure TJvInspectorFontItem.Edit;
 begin
@@ -8959,7 +8959,7 @@ begin
   inherited SetFlags(NewValue);
 end;
 
-//=== TJvInspectorFontNameItem ===============================================
+//=== { TJvInspectorFontNameItem } ===========================================
 
 function TJvInspectorFontNameItem.GetUseFont: Boolean;
 begin
@@ -9038,7 +9038,7 @@ begin
   inherited SetFlags(NewValue);
 end;
 
-//=== TJvInspectorBooleanItem ================================================
+//=== { TJvInspectorBooleanItem } ============================================
 
 function TJvInspectorBooleanItem.GetShowAsCheckbox: Boolean;
 begin
@@ -9213,7 +9213,7 @@ begin
     inherited InitEdit;
 end;
 
-//=== TJvInspectorDateItem ===================================================
+//=== { TJvInspectorDateItem } ===============================================
 
 constructor TJvInspectorDateItem.Create(const AParent: TJvCustomInspectorItem;
   const AData: TJvCustomInspectorData);
@@ -9317,7 +9317,7 @@ begin
   end;
 end;
 
-//=== TJvInspectorTimeItem ===================================================
+//=== { TJvInspectorTimeItem } ===============================================
 
 constructor TJvInspectorTimeItem.Create(const AParent: TJvCustomInspectorItem;
   const AData: TJvCustomInspectorData);
@@ -9380,7 +9380,7 @@ begin
   end;
 end;
 
-//=== TJvInspectorDateTimeItem ===============================================
+//=== { TJvInspectorDateTimeItem } ===========================================
 
 constructor TJvInspectorDateTimeItem.Create(const AParent: TJvCustomInspectorItem;
   const AData: TJvCustomInspectorData);
@@ -9423,7 +9423,7 @@ begin
   FTime.ShowSeconds := Value;
 end;
 
-//=== TSLEditorForm ==========================================================
+//=== { TSLEditorForm } ======================================================
 
 type
   TSLEditorForm = class(TCustomForm)
@@ -9505,7 +9505,7 @@ begin
     OnContentsChanged(Sender);
 end;
 
-//=== TJvInspectorTStringsItem ===============================================
+//=== { TJvInspectorTStringsItem } ===========================================
 
 constructor TJvInspectorTStringsItem.Create(const AParent: TJvCustomInspectorItem;
   const AData: TJvCustomInspectorData);
@@ -9598,7 +9598,7 @@ begin
   end;
 end;
 
-//=== TInstanceItem ==========================================================
+//=== { TInstanceItem } ======================================================
 
 type
   TInstanceItem = class(TObject)
@@ -9695,7 +9695,7 @@ begin
   Result := Methods.IndexOfObject(TObject(MethodAddr));
 end;
 
-//=== TJvInspectorTMethodItem ================================================
+//=== { TJvInspectorTMethodItem } ============================================
 
 function TJvInspectorTMethodItem.GetInstanceCount: Integer;
 begin
@@ -10245,7 +10245,7 @@ begin
     Result := IndexOfMethod(Result, MethodName);
 end;
 
-//=== TJvCustomInspectorData =================================================
+//=== { TJvCustomInspectorData } =============================================
 
 constructor TJvCustomInspectorData.Create;
 begin
@@ -10483,7 +10483,7 @@ begin
   end;
 end;
 
-//=== TJvInspectorVarData ====================================================
+//=== { TJvInspectorVarData } ================================================
 
 function TJvInspectorVarData.GetAddress: Pointer;
 begin
@@ -10830,7 +10830,7 @@ begin
     raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorSet]);
 end;
 
-//=== TJvInspectorPropData ===================================================
+//=== { TJvInspectorPropData } ===============================================
 
 function TJvInspectorPropData.GetAsFloat: Extended;
 begin
@@ -11152,7 +11152,7 @@ begin
   AsOrdinal := Integer(Buf);
 end;
 
-//=== TJvInspectorEventData ==================================================
+//=== { TJvInspectorEventData } ==============================================
 
 function TJvInspectorEventData.DoGetAsFloat: Extended;
 begin
@@ -11630,7 +11630,7 @@ begin
   Invalidate;
 end;
 
-//=== TJvInspectorCustomConfData =============================================
+//=== { TJvInspectorCustomConfData } =========================================
 
 constructor TJvInspectorCustomConfData.CreatePrim(AName, ASection, AKey: string;
   ATypeInfo: PTypeInfo);
@@ -11855,7 +11855,7 @@ begin
   Invalidate;
 end;
 
-//=== TJvInspectorINIFileData ================================================
+//=== { TJvInspectorINIFileData } ============================================
 
 function TJvInspectorINIFileData.ExistingValue: Boolean;
 begin
@@ -11991,7 +11991,7 @@ begin
   end;
 end;
 
-//=== TJvInspectorRegister ===================================================
+//=== { TJvInspectorRegister } ===============================================
 
 constructor TJvInspectorRegister.Create(const ADataClass: TJvInspectorDataClass);
 begin
@@ -12095,7 +12095,7 @@ begin
     Dec(Result);
 end;
 
-//=== TJvCustomInspectorRegItem ==============================================
+//=== { TJvCustomInspectorRegItem } ==========================================
 
 constructor TJvCustomInspectorRegItem.Create(const AItemClass: TJvInspectorItemClass);
 begin
@@ -12146,7 +12146,7 @@ begin
   Result := MatchValue(ADataObj) <> 0;
 end;
 
-//=== TJvInspectorTypeInfoRegItem ============================================
+//=== { TJvInspectorTypeInfoRegItem } ========================================
 
 constructor TJvInspectorTypeInfoRegItem.Create(const AItemClass: TJvInspectorItemClass;
    ATypeInfo: PTypeInfo);
@@ -12184,7 +12184,7 @@ begin
   Result := MatchValue(ADataObj);
 end;
 
-//=== TJvInspectorTCaptionRegItem ============================================
+//=== { TJvInspectorTCaptionRegItem } ========================================
 
 procedure TJvInspectorTCaptionRegItem.ApplyDefaults(const Item: TJvCustomInspectorItem);
 begin
@@ -12199,7 +12199,7 @@ begin
     end;
 end;
 
-//=== TJvInspectorTypeKindRegItem ============================================
+//=== { TJvInspectorTypeKindRegItem } ========================================
 
 constructor TJvInspectorTypeKindRegItem.Create(const AItemClass: TJvInspectorItemClass;
   const ATypeKind: TTypeKind);
@@ -12256,7 +12256,7 @@ begin
   Result := MatchValue(ADataObj) div 2;
 end;
 
-//=== TJvInspectorPropRegItem ================================================
+//=== { TJvInspectorPropRegItem } ============================================
 
 constructor TJvInspectorPropRegItem.Create(const AItemClass: TJvInspectorItemClass;
   const AObjectClass: TClass; const AName: string;  ATypeInfo: PTypeInfo);
@@ -12381,7 +12381,7 @@ begin
   end;
 end;
 
-//=== TJvInspectorTypeInfoMapperRegItem ======================================
+//=== { TJvInspectorTypeInfoMapperRegItem } ==================================
 
 constructor TJvInspectorTypeInfoMapperRegItem.Create(AObjectClass: TClass; APropertyName: string;
   APropertyType: PTypeInfo; ANewTypeInfo: PTypeInfo);

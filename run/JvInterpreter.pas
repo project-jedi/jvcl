@@ -1354,7 +1354,7 @@ begin
   Result := GlobalVariantArrayInstance;
 end;
 
-//=== TJvSimpleVariantType ===================================================
+//=== { TJvSimpleVariantType } ===============================================
 
 procedure TJvSimpleVariantType.Clear(var V: TVarData);
 begin
@@ -2495,7 +2495,7 @@ begin
 end;
 { ######################## extended variants ######################## }
 
-//=== TJvInterpreterVar ======================================================
+//=== { TJvInterpreterVar } ==================================================
 
 destructor TJvInterpreterVar.Destroy;
 begin
@@ -2503,7 +2503,7 @@ begin
   inherited Destroy;
 end;
 
-//=== TJvInterpreterVarList ==================================================
+//=== { TJvInterpreterVarList } ==============================================
 
 destructor TJvInterpreterVarList.Destroy;
 begin
@@ -2627,7 +2627,7 @@ begin
       JvInterpreterVarAssignment(V.Value, Value);
 end;
 
-//=== TJvInterpreterFunctionDesc ==================================================
+//=== { TJvInterpreterFunctionDesc } ==============================================
 
 function TJvInterpreterFunctionDesc.GetParamType(Index: Integer): Word;
 begin
@@ -2686,7 +2686,7 @@ begin
   Result := FParamNames[Index];
 end;
 
-//=== TJvInterpreterRecHolder ================================================
+//=== { TJvInterpreterRecHolder } ============================================
 
 constructor TJvInterpreterRecHolder.Create(const ARecordType: string; ARec: Pointer);
 begin
@@ -2726,7 +2726,7 @@ begin
   {$ENDIF JvInterpreter_DEBUG}
 end;
 
-//=== TJvInterpreterSrcFunction ===================================================
+//=== { TJvInterpreterSrcFunction } ===============================================
 
 constructor TJvInterpreterSrcFunction.Create;
 begin
@@ -2740,7 +2740,7 @@ begin
   inherited Destroy;
 end;
 
-//=== TJvInterpreterExtFunction ===================================================
+//=== { TJvInterpreterExtFunction } ===============================================
 
 function TJvInterpreterExtFunction.CallDll(Args: TJvInterpreterArgs): Variant;
 begin
@@ -2752,7 +2752,7 @@ begin
       FunctionDesc.ResTyp)
 end;
 
-//=== TJvInterpreterEvent ====================================================
+//=== { TJvInterpreterEvent } ================================================
 
 constructor TJvInterpreterEvent.Create(AOwner: TJvInterpreterExpression;
   AInstance: TObject; const AUnitName, AFunctionName, APropName: string);
@@ -2803,7 +2803,7 @@ begin
   Result := FOwner.CallFunctionEx(FInstance, FUnitName, FFunctionName, Args, NV);
 end;
 
-//=== TJvInterpreterIdentifierList ============================================
+//=== { TJvInterpreterIdentifierList } ========================================
 
 function TJvInterpreterIdentifierList.Find(const Identifier: string;
   var Index: Integer): Boolean;
@@ -2865,7 +2865,7 @@ begin
   Result := nil;
 end;
 
-//=== TJvInterpreterAdapter ==================================================
+//=== { TJvInterpreterAdapter } ==============================================
 
 constructor TJvInterpreterAdapter.Create(AOwner: TJvInterpreterExpression);
 begin
@@ -4737,7 +4737,7 @@ begin
   FSorted := True;
 end;
 
-//=== TJvInterpreterArgs =====================================================
+//=== { TJvInterpreterArgs } =================================================
 
 destructor TJvInterpreterArgs.Destroy;
 begin
@@ -4781,7 +4781,7 @@ begin
   Dec(Count);
 end;
 
-//=== TJvInterpreterExpression ===============================================
+//=== { TJvInterpreterExpression } ===========================================
 
 constructor TJvInterpreterExpression.Create(AOwner: TComponent);
 begin
@@ -5752,7 +5752,7 @@ begin
   FAdapter.DisableExternalFunctions := Value;
 end;
 
-//=== TJvInterpreterFunction =================================================
+//=== { TJvInterpreterFunction } =============================================
 
 constructor TJvInterpreterFunction.Create(AOwner: TComponent);
 begin
@@ -7158,7 +7158,7 @@ begin
     ErrorExpected(LoadStr2(irIdentifier));
 end;
 
-//=== TJvInterpreterUnit =====================================================
+//=== { TJvInterpreterUnit } =================================================
 
 constructor TJvInterpreterUnit.Create(AOwner: TComponent);
 begin
@@ -7793,7 +7793,7 @@ begin
   Result := FAdapter.FindFunDesc(UnitName, FunctionName) <> nil;
 end;
 
-//=== TJvInterpreterProgramStrings ===========================================
+//=== { TJvInterpreterProgramStrings } =======================================
 
 type
   TJvInterpreterProgramStrings = class(TStringList)
@@ -7808,7 +7808,7 @@ begin
   FJvInterpreterProgram.Source := Text;
 end;
 
-//=== TJvInterpreterProgram ==================================================
+//=== { TJvInterpreterProgram } ==============================================
 
 constructor TJvInterpreterProgram.Create(AOwner: TComponent);
 begin
@@ -7925,7 +7925,7 @@ begin
 end;
 
 
-//=== TJvInterpreterMethodList ===============================================
+//=== { TJvInterpreterMethodList } ===========================================
 
 procedure TJvInterpreterMethodList.Sort(Compare: TListSortCompare);
 
@@ -7951,7 +7951,7 @@ begin
   inherited Sort(@SortIdentifier);
 end;
 
-//=== TJvInterpreterRecord ===================================================
+//=== { TJvInterpreterRecord } ===============================================
 
 procedure TJvInterpreterRecord.AddField(const UnitName, Identifier, Typ: string;
   VTyp: Word; const Value: Variant; DataType: IJvInterpreterDataType);
@@ -7997,7 +7997,7 @@ begin
   RecHolder.JvInterpreterRecord := Self;
 end;
 
-//=== TJvInterpreterRecordDataType ===========================================
+//=== { TJvInterpreterRecordDataType } =======================================
 
 constructor TJvInterpreterRecordDataType.Create(ARecordDesc: TJvInterpreterRecord);
 begin
@@ -8015,7 +8015,7 @@ begin
   FRecordDesc.NewRecord(V);
 end;
 
-//=== TJvInterpreterArrayDataType ============================================
+//=== { TJvInterpreterArrayDataType } ========================================
 
 constructor TJvInterpreterArrayDataType.Create(AArrayBegin, AArrayEnd: TJvInterpreterArrayValues;
   ADimension: Integer; AArrayType: Integer; ADT: IJvInterpreterDataType);
@@ -8040,7 +8040,7 @@ begin
   TVarData(V).VType := varArray;
 end;
 
-//=== TJvInterpreterSimpleDataType ===========================================
+//=== { TJvInterpreterSimpleDataType } =======================================
 
 constructor TJvInterpreterSimpleDataType.Create(ATyp: TVarType);
 begin
@@ -8061,7 +8061,7 @@ begin
     V := Var2Type(V, FTyp);
 end;
 
-//=== TJvInterpreterSrcUnit ==================================================
+//=== { TJvInterpreterSrcUnit } ==============================================
 
 function TJvInterpreterSrcUnit.UsesList: TNameArray;
 begin

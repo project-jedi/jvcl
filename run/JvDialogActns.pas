@@ -313,7 +313,7 @@ type
 
 implementation
 
-//=== TJvCommonDialogAction ==================================================
+//=== { TJvCommonDialogAction } ==============================================
 
 constructor TJvCommonDialogAction.Create(AOwner: TComponent);
 var
@@ -364,7 +364,7 @@ begin
   Result := True;
 end;
 
-//=== TJvCommonDialogPAction =================================================
+//=== { TJvCommonDialogPAction } =============================================
 
 constructor TJvCommonDialogPAction.Create(AOwner: TComponent);
 var
@@ -406,7 +406,7 @@ begin
   Result := True;
 end;
 
-//=== TJvCommonDialogFAction =================================================
+//=== { TJvCommonDialogFAction } =============================================
 
 constructor TJvCommonDialogFAction.Create(AOwner: TComponent);
 var
@@ -448,7 +448,7 @@ begin
   Result := True;
 end;
 
-//=== TJvBrowseForFolderAction ===============================================
+//=== { TJvBrowseForFolderAction } ===========================================
 
 function TJvBrowseForFolderAction.GetDialog: TJvBrowseForFolderDialog;
 begin
@@ -460,7 +460,7 @@ begin
   Result := TJvBrowseForFolderDialog;
 end;
 
-//=== TJvSelectDirectoryAction ===============================================
+//=== { TJvSelectDirectoryAction } ===========================================
 
 function TJvSelectDirectoryAction.GetDialog: TJvSelectDirectory;
 begin
@@ -472,7 +472,7 @@ begin
   Result := TJvSelectDirectory;
 end;
 
-//=== TJvConnectNetworkAction ================================================
+//=== { TJvConnectNetworkAction } ============================================
 
 function TJvConnectNetworkAction.GetDialog: TJvNetworkConnect;
 begin
@@ -484,7 +484,7 @@ begin
   Result := TJvNetworkConnect;
 end;
 
-//=== TJvFloppyFormatAction ==================================================
+//=== { TJvFloppyFormatAction } ==============================================
 
 function TJvFloppyFormatAction.GetDialog: TJvFormatDriveDialog;
 begin
@@ -496,7 +496,7 @@ begin
   Result := TJvFormatDriveDialog;
 end;
 
-//=== TJvOrganizeFavoritesAction =============================================
+//=== { TJvOrganizeFavoritesAction } =========================================
 
 function TJvOrganizeFavoritesAction.GetDialog: TJvOrganizeFavoritesDialog;
 begin
@@ -508,7 +508,7 @@ begin
   Result := TJvOrganizeFavoritesDialog;
 end;
 
-//=== TJvControlPanelAction ==================================================
+//=== { TJvControlPanelAction } ==============================================
 
 function TJvControlPanelAction.GetDialog: TJvAppletDialog;
 begin
@@ -520,7 +520,7 @@ begin
   Result := TJvAppletDialog;
 end;
 
-//=== TJvOpenFileAction ======================================================
+//=== { TJvOpenFileAction } ==================================================
 
 function TJvOpenFileAction.GetDialog: TJvOpenDialog;
 begin
@@ -532,7 +532,7 @@ begin
   Result := TJvOpenDialog;
 end;
 
-//=== TJvSaveFileAction ======================================================
+//=== { TJvSaveFileAction } ==================================================
 
 function TJvSaveFileAction.GetDialog: TJvSaveDialog;
 begin
@@ -544,7 +544,7 @@ begin
   Result := TJvSaveDialog;
 end;
 
-//=== TJvPageSetupAction =====================================================
+//=== { TJvPageSetupAction } =================================================
 
 function TJvPageSetupAction.GetDialog: TJvPageSetupDialog;
 begin
@@ -556,7 +556,7 @@ begin
   Result := TJvPageSetupDialog;
 end;
 
-//=== TJvPageSetupTitledAction ===============================================
+//=== { TJvPageSetupTitledAction } ===========================================
 
 function TJvPageSetupTitledAction.GetDialog: TJvPageSetupTitledDialog;
 begin
@@ -568,7 +568,7 @@ begin
   Result := TJvPageSetupTitledDialog;
 end;
 
-//=== TCommonDialogAction ====================================================
+//=== { TCommonDialogAction } ================================================
 
 {$IFNDEF COMPILER6_UP}
 

@@ -538,7 +538,7 @@ begin
     Result := 0;
 end;
 
-//=== TJvInterpreterParser ===================================================
+//=== { TJvInterpreterParser } ===============================================
 
 procedure TJvInterpreterParser.SetSource(const Value: string);
 begin

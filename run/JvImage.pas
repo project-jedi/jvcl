@@ -105,7 +105,7 @@ type
 
 implementation
 
-//=== TJvImage ===============================================================
+//=== { TJvImage } ===========================================================
 
 constructor TJvImage.Create(AOwner: TComponent);
 begin
@@ -305,7 +305,7 @@ begin
     Assigned(Pictures.PicDown.Graphic);
 end;
 
-//=== TJvPictures ============================================================
+//=== { TJvPictures } ========================================================
 
 constructor TJvPictures.Create;
 begin

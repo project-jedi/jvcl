@@ -477,7 +477,7 @@ begin
     Result := AMax;
 end;
 
-{ TJvPreviewPageOptions }
+//=== { TJvPreviewPageOptions } ==============================================
 
 procedure TJvPreviewPageOptions.Change;
 begin
@@ -619,7 +619,7 @@ begin
     Change;
 end;
 
-{ TJvPageShadow }
+//=== { TJvPageShadow } ======================================================
 
 procedure TJvPageShadow.Change;
 begin
@@ -652,7 +652,7 @@ begin
   end;
 end;
 
-{ TJvDeviceInfo }
+//=== { TJvDeviceInfo } ======================================================
 
 procedure TJvDeviceInfo.Change;
 begin
@@ -857,7 +857,7 @@ begin
   Result := YPxToInch(Pixels) / 25.4;
 end;
 
-{ TJvCustomPreviewControl }
+//=== { TJvCustomPreviewControl } ============================================
 
 function TJvCustomPreviewControl.Add: TMetaFile;
 begin
@@ -1811,7 +1811,7 @@ begin
 
 end;
 
-{ TDeactiveHintThread }
+//=== { TDeactiveHintThread } ================================================
 
 constructor TDeactiveHintThread.Create(Delay: Integer; HintWindow: THintWindow);
 begin

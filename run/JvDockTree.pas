@@ -498,7 +498,7 @@ uses
 type
   TWinControlAccessProtected = class(TWinControl);
 
-//=== TJvDockZone ============================================================
+//=== { TJvDockZone } ========================================================
 
 constructor TJvDockZone.Create(Tree: TJvDockTree);
 begin
@@ -1170,7 +1170,7 @@ begin
     Client.Visible := FControlVisibled;
 end;
 
-//=== TJvDockTree ============================================================
+//=== { TJvDockTree } ========================================================
 
 constructor TJvDockTree.Create(DockSite: TWinControl;
   ADockZoneClass: TJvDockZoneClass);
@@ -3538,7 +3538,7 @@ begin
       AZone.ChildControl.Visible := False;
 end;
 
-//=== TJvDockAdvZone =========================================================
+//=== { TJvDockAdvZone } =====================================================
 
 constructor TJvDockAdvZone.Create(Tree: TJvDockTree);
 begin
@@ -3570,7 +3570,7 @@ begin
   InsertOrRemove(DockSize, False, Hide);
 end;
 
-//=== TJvDockAdvTree =========================================================
+//=== { TJvDockAdvTree } =====================================================
 
 constructor TJvDockAdvTree.Create(DockSite: TWinControl;
   ADockZoneClass: TJvDockZoneClass);

@@ -237,7 +237,7 @@ begin
   WrongOSWarningShown := True;
 end;
 
-//=== TJvPerfStatActiveItem ==================================================
+//=== { TJvPerfStatActiveItem } ==============================================
 
 constructor TJvPerfStatActiveItem.Create(AOwner: TJvPerfStat95;
   const AKey: string; ACategoryIndex: Integer);
@@ -347,7 +347,7 @@ begin
   FStarted := False;
 end;
 
-//=== TJvPerfStatItem ========================================================
+//=== { TJvPerfStatItem } ====================================================
 
 function TJvPerfStatItem.GetActiveItem: TJvPerfStatActiveItem;
 begin
@@ -378,7 +378,7 @@ begin
   end;
 end;
 
-//=== TJvPerfStatItems =======================================================
+//=== { TJvPerfStatItems } ===================================================
 
 constructor TJvPerfStatItems.Create(AOwner: TJvPerfStat95);
 begin
@@ -426,7 +426,7 @@ begin
     BindItem(Item);
 end;
 
-//=== TJvPerfStat95 ==========================================================
+//=== { TJvPerfStat95 } ======================================================
 
 constructor TJvPerfStat95.Create(AOwner: TComponent);
 begin

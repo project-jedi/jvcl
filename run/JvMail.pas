@@ -193,7 +193,7 @@ begin
     Result := PChar(AFileName);
 end;
 
-//=== TJvMailRecipient =======================================================
+//=== { TJvMailRecipient } ===================================================
 
 function TJvMailRecipient.GetAddressAndName: string;
 var
@@ -219,7 +219,7 @@ begin
   Result := FAddress <> '';
 end;
 
-//=== TJvMailRecipients ======================================================
+//=== { TJvMailRecipients } ==================================================
 
 function TJvMailRecipients.Add: TJvMailRecipient;
 begin
@@ -299,7 +299,7 @@ begin
   inherited SetItem(Index, Value);
 end;
 
-//=== TJvMail ================================================================
+//=== { TJvMail } ============================================================
 
 constructor TJvMail.Create(AOwner: TComponent);
 begin

@@ -204,7 +204,7 @@ implementation
 uses
   JvConsts, JvResources, JvTypes;
 
-//=== TJvJanTreeView =========================================================
+//=== { TJvJanTreeView } =====================================================
 
 constructor TJvJanTreeView.Create(AOwner: TComponent);
 begin
@@ -781,7 +781,7 @@ begin
   ShowMessage(Format(RsNoMoresFound, [S]));
 end;
 
-//=== TJvMathParser ==========================================================
+//=== { TJvMathParser } ======================================================
 
 constructor TJvMathParser.Create(AOwner: TComponent);
 begin
@@ -1426,7 +1426,7 @@ begin
   TokenType := NextToken;
 end;
 
-//=== TTreeKeyMappings =======================================================
+//=== { TTreeKeyMappings } ===================================================
 
 procedure TTreeKeyMappings.SetAddNode(const Value: TShortCut);
 begin

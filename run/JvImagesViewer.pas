@@ -207,7 +207,7 @@ implementation
 uses
   JvJCLUtils;
   
-//=== TJvImageViewerOptions ==================================================
+//=== { TJvImageViewerOptions } ==============================================
 
 constructor TJvImageViewerOptions.Create(AOwner: TJvCustomItemViewer);
 begin
@@ -256,7 +256,7 @@ begin
   end;
 end;
 
-//=== TJvImageItem ===========================================================
+//=== { TJvImageItem } =======================================================
 
 destructor TJvImageItem.Destroy;
 begin
@@ -345,7 +345,7 @@ begin
     Picture := nil;
 end;
 
-//=== TJvImagesViewer ========================================================
+//=== { TJvImagesViewer } ====================================================
 
 constructor TJvImagesViewer.Create(AOwner: TComponent);
 begin

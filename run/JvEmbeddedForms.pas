@@ -94,7 +94,7 @@ resourcestring
   RsEFormLinkSingleInstanceOnly = 'You only need one form link per form.';
   RsELinkCircularRef = 'Circular references not allowed.';
 
-//=== TJvEmbeddedFormLink  =====================================================
+//=== { TJvEmbeddedFormLink  } =================================================
 
 constructor TJvEmbeddedFormLink.Create(AOwner: TComponent);
 var
@@ -107,7 +107,7 @@ begin
   inherited Create(AOwner);
 end;
 
-//=== TJvEmbeddedFormPanel  ====================================================
+//=== { TJvEmbeddedFormPanel  } ================================================
 
 procedure TJvEmbeddedFormPanel.Paint;
 begin
@@ -238,7 +238,7 @@ begin
   end;
 end;
 
-//=== TJvEmbeddedInstanceFormPanel  ============================================
+//=== { TJvEmbeddedInstanceFormPanel  } ========================================
 
 procedure TJvEmbeddedInstanceFormPanel.CreateFormInstance;
 begin

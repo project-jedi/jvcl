@@ -122,7 +122,7 @@ implementation
 uses
   JvJCLUtils;
 
-//=== TJvBaseProgressBar =====================================================
+//=== { TJvBaseProgressBar } =================================================
 
 constructor TJvBaseProgressBar.Create(AOwner: TComponent);
 begin
@@ -337,7 +337,7 @@ begin
   end;
 end;
 
-//=== TJvProgressBar =========================================================
+//=== { TJvProgressBar } =====================================================
 
 constructor TJvProgressBar.Create(AOwner: TComponent);
 begin

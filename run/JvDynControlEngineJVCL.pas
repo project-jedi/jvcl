@@ -501,7 +501,7 @@ uses
 var
   IntDynControlEngineJVCL: TJvDynControlEngine = nil;
 
-//=== TJvDynControlJVCLMaskEdit ==============================================
+//=== { TJvDynControlJVCLMaskEdit } ==========================================
 
 procedure TJvDynControlJVCLMaskEdit.ControlSetDefaultProperties;
 begin
@@ -561,7 +561,7 @@ begin
   EditMask := Value;
 end;
 
-//=== TJvDynControlJVCLButtonEdit ================================================
+//=== { TJvDynControlJVCLButtonEdit } ============================================
 
 constructor TJvDynControlJVCLButtonEdit.Create(AOwner: TComponent);
 begin
@@ -670,7 +670,7 @@ begin
 end;
 
 
-//=== TJvDynControlJVCLCalcEdit ==============================================
+//=== { TJvDynControlJVCLCalcEdit } ==========================================
 
 procedure TJvDynControlJVCLCalcEdit.ControlSetDefaultProperties;
 begin
@@ -720,7 +720,7 @@ begin
   Result := Text;
 end;
 
-//=== TJvDynControlJVCLSpinEdit ==============================================
+//=== { TJvDynControlJVCLSpinEdit } ==========================================
 
 procedure TJvDynControlJVCLSpinEdit.ControlSetDefaultProperties;
 begin
@@ -801,7 +801,7 @@ begin
     ValueType := vtFloat;
 end;
 
-//=== TJvDynControlJVCLFileNameEdit ==========================================
+//=== { TJvDynControlJVCLFileNameEdit } ======================================
 
 procedure TJvDynControlJVCLFileNameEdit.ControlSetDefaultProperties;
 begin
@@ -894,7 +894,7 @@ begin
   end;
 end;
 
-//=== TJvDynControlJVCLDirectoryEdit =========================================
+//=== { TJvDynControlJVCLDirectoryEdit } =====================================
 
 procedure TJvDynControlJVCLDirectoryEdit.ControlSetDefaultProperties;
 begin
@@ -960,7 +960,7 @@ begin
   DialogOptions := Value;
 end;
 
-//=== TJvDynControlJVCLDateTimeEdit ==========================================
+//=== { TJvDynControlJVCLDateTimeEdit } ======================================
 
 constructor TJvDynControlJVCLDateTimeEdit.Create(AOwner: TComponent);
 begin
@@ -1074,7 +1074,7 @@ begin
 end;
 
 
-//=== TJvDynControlJVCLDateEdit ==============================================
+//=== { TJvDynControlJVCLDateEdit } ==========================================
 
 procedure TJvDynControlJVCLDateEdit.ControlSetDefaultProperties;
 begin
@@ -1140,7 +1140,7 @@ begin
   {$ENDIF COMPILER6_UP}
 end;
 
-//=== TJvDynControlJVCLTimeEdit ==============================================
+//=== { TJvDynControlJVCLTimeEdit } ==========================================
 
 procedure TJvDynControlJVCLTimeEdit.ControlSetDefaultProperties;
 begin
@@ -1194,7 +1194,7 @@ begin
   {$ENDIF COMPILER6_UP}
 end;
 
-//=== TJvDynControlJVCLCheckBox ==============================================
+//=== { TJvDynControlJVCLCheckBox } ==========================================
 
 procedure TJvDynControlJVCLCheckBox.ControlSetDefaultProperties;
 begin
@@ -1248,7 +1248,7 @@ begin
   Result := Checked;
 end;
 
-//=== TJvDynControlJVCLMemo ==================================================
+//=== { TJvDynControlJVCLMemo } ==============================================
 
 procedure TJvDynControlJVCLMemo.ControlSetDefaultProperties;
 begin
@@ -1332,7 +1332,7 @@ begin
   ScrollBars := Value;
 end;
 
-//=== TJvDynControlJVCLRadioGroup ============================================
+//=== { TJvDynControlJVCLRadioGroup } ========================================
 
 procedure TJvDynControlJVCLRadioGroup.ControlSetDefaultProperties;
 begin
@@ -1404,7 +1404,7 @@ begin
   Columns := Value;
 end;
 
-//=== TJvDynControlJVCLListBox ===============================================
+//=== { TJvDynControlJVCLListBox } ===========================================
 
 procedure TJvDynControlJVCLListBox.ControlSetDefaultProperties;
 begin
@@ -1472,7 +1472,7 @@ begin
   OnDblClick := Value;
 end;
 
-//=== TJvDynControlJVCLCheckListBox ================================================
+//=== { TJvDynControlJVCLCheckListBox } ============================================
 
 procedure TJvDynControlJVCLCheckListBox.ControlSetDefaultProperties;
 begin
@@ -1598,7 +1598,7 @@ begin
   Result := State[Index];
 end;
 
-//=== TJvDynControlJVCLComboBox ==============================================
+//=== { TJvDynControlJVCLComboBox } ==========================================
 
 procedure TJvDynControlJVCLComboBox.ControlSetDefaultProperties;
 begin
@@ -1674,7 +1674,7 @@ begin
     Style := csDropDownList;
 end;
 
-//=== TJvDynControlJVCLPanel =================================================
+//=== { TJvDynControlJVCLPanel } =============================================
 
 procedure TJvDynControlJVCLPanel.ControlSetDefaultProperties;
 begin
@@ -1717,7 +1717,7 @@ begin
   BevelWidth := ABevelWidth;
 end;
 
-//=== TJvDynControlJVCLImage =================================================
+//=== { TJvDynControlJVCLImage } =============================================
 
 procedure TJvDynControlJVCLImage.ControlSetDefaultProperties;
 begin
@@ -1795,7 +1795,7 @@ begin
   Result := Picture;
 end;
 
-//=== TJvDynControlJVCLScrollBox =============================================
+//=== { TJvDynControlJVCLScrollBox } =========================================
 
 procedure TJvDynControlJVCLScrollBox.ControlSetDefaultProperties;
 begin
@@ -1825,7 +1825,7 @@ procedure TJvDynControlJVCLScrollBox.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
-//=== TJvDynControlJVCLLabel =================================================
+//=== { TJvDynControlJVCLLabel } =============================================
 
 procedure TJvDynControlJVCLLabel.ControlSetDefaultProperties;
 begin
@@ -1862,7 +1862,7 @@ begin
   WordWrap := Value;
 end;
 
-//=== TJvDynControlJVCLStaticText ============================================
+//=== { TJvDynControlJVCLStaticText } ========================================
 
 procedure TJvDynControlJVCLStaticText.ControlSetDefaultProperties;
 begin
@@ -1889,7 +1889,7 @@ procedure TJvDynControlJVCLStaticText.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
-//=== TJvDynControlJVCLButton ================================================
+//=== { TJvDynControlJVCLButton } ============================================
 
 procedure TJvDynControlJVCLButton.ControlSetDefaultProperties;
 begin

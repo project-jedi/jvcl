@@ -161,7 +161,7 @@ type
 
 implementation
 
-//=== TJvSearchComboBoxLink ==================================================
+//=== { TJvSearchComboBoxLink } ==============================================
 
 constructor TJvSearchComboBoxLink.Create(AJvDBSearchComboBox: TJvDBCustomSearchComboBox);
 begin
@@ -239,7 +239,7 @@ begin
     FWasEdited := True;
 end;
 
-//=== TJvDBCustomSearchComboBox ==============================================
+//=== { TJvDBCustomSearchComboBox } ==========================================
 
 constructor TJvDBCustomSearchComboBox.Create(AOwner: TComponent);
 begin
