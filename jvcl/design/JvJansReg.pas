@@ -19,6 +19,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
+  JvDsgnConsts,
   {$IFDEF VCL}
   JvJanTreeView, JvShapedButton, JvSticker,
   {$ENDIF VCL}
@@ -57,20 +58,20 @@ begin
   {$ENDIF COMPILER7_UP}
 
   //TODO: Register a TShortCut Property Editor on TTreeKeyMappings class in TJvJanTreeView
-  RegisterComponents('Jv Jans', [TJvMarkupLabel, TJvMarkupViewer, TJvSAL,
+  RegisterComponents(RsPaletteJans, [TJvMarkupLabel, TJvMarkupViewer, TJvSAL,
     {$IFDEF VCL} TJvSticker, {$ENDIF}
     TJvSALCore, TJvSALMath, TJvYearGrid, TJvAirBrush, TJvTracker,
     TJvGridFilter, TJvGridPrinter,
     {$IFDEF VCL} TJvJanTreeview, {$ENDIF}
     TJvPaintFX, TJvDrawImage,
     TJvArrayButton, TJvForthScript, TJvTurtle, TJvBitmapButton, TJvSpeller
-    {$IFDEF VCL}, TJvShapedButton{$ENDIF}]);
+    {$IFDEF VCL}, TJvShapedButton {$ENDIF}]);
   // Simulator Components
-  RegisterComponents('Jv Jans SIM', [TJvSimScope, TJvSimIndicator, TJvSimPID,
+  RegisterComponents(RsPaletteJansSim, [TJvSimScope, TJvSimIndicator, TJvSimPID,
     TJvSimPIDLinker, TJvSimConnector, TJvLogic, TJvSimButton, TJvSimLight,
     TJvSimLogicBox, TJvSimReverse]);
   // CSV Components
-  RegisterComponents('Jv Jans CSV', [TJvCSVBase, TJvCSVEdit, TJvCSVComboBox,
+  RegisterComponents(RsPaletteJansCsv, [TJvCSVBase, TJvCSVEdit, TJvCSVComboBox,
     TJvCSVCheckBox, TJvCSVNavigator]);
   RegisterPropertyEditor(TypeInfo(string), TJvCSVBase, cCSVFieldName, TCSVFileNameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCSVEdit, cCSVField, TCSVFieldProperty);

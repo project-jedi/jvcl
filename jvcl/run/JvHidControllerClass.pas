@@ -40,7 +40,7 @@ uses
 
 const
   // a version string for the component
-  cHidControllerClassVersion = '1.0.22';
+  cHidControllerClassVersion = '1.0.23';
 
   // strings from the registry for CheckOutByClass
   cHidKeyboardClass = 'Keyboard';
@@ -72,6 +72,7 @@ type
 
   // all USB relevant driver entries in the registry
   TJvHidPnPInfo = class(TObject)
+  private
     FDeviceID: DWORD;
     FDevicePath: string;
     FCapabilities: DWORD;
@@ -103,6 +104,10 @@ type
     function GetRegistryPropertyString(PnPHandle: HDEVINFO; const DevData: TSPDevInfoData; Prop: DWORD): string;
     function GetRegistryPropertyStringList(PnPHandle: HDEVINFO; const DevData: TSPDevInfoData; Prop: DWORD): TStringList;
     function GetRegistryPropertyDWord(PnPHandle: HDEVINFO; const DevData: TSPDevInfoData; Prop: DWORD): DWORD;
+    function GetCompatibleIDs: TStrings;
+    function GetHardwareID: TStrings;
+    function GetLowerFilters: TStrings;
+    function GetUpperFilters: TStrings;
   public
     property DeviceID:        DWORD       read FDeviceID;
     property DevicePath:      string      read FDevicePath;
@@ -110,15 +115,15 @@ type
     property Capabilities:    DWORD       read FCapabilities;
     property ClassDescr:      string      read FClassDescr;
     property ClassGUID:       string      read FClassGUID;
-    property CompatibleIDs:   TStringList read FCompatibleIDs;
+    property CompatibleIDs:   TStrings    read GetCompatibleIDs;
     property ConfigFlags:     DWORD       read FConfigFlags;
     property DeviceDescr:     string      read FDeviceDescr;
     property Driver:          string      read FDriver;
     property FriendlyName:    string      read FFriendlyName;
-    property HardwareID:      TStringList read FHardwareID;
-    property LowerFilters:    TStringList read FLowerFilters;
+    property HardwareID:      TStrings    read GetHardwareID;
+    property LowerFilters:    TStrings    read GetLowerFilters;
     property Mfg:             string      read FMfg;
-    property UpperFilters:    TStringList read FUpperFilters;
+    property UpperFilters:    TStrings    read GetUpperFilters;
     property Address:         string      read FAddress;
     property BusNumber:       DWORD       read FBusNumber;
     property BusType:         string      read FBusType;
@@ -209,7 +214,7 @@ type
     function  GetProductName:           WideString;
     function  GetSerialNumber:          WideString;
     function  GetPhysicalDescriptor:    TJvPhysicalDescriptor;
-    function  GetLanguageStrings:       TStringList;
+    function  GetLanguageStrings:       TStrings;
     function  GetOverlappedReadResult:  DWORD;
     function  GetOverlappedWriteResult: DWORD;
     procedure SetConfiguration       (const Config: THIDDConfiguration);
@@ -246,7 +251,7 @@ type
     property HidOverlappedWriteResult: DWORD                 read GetOverlappedWriteResult;
     property IsCheckedOut:             Boolean               read FIsCheckedOut;
     property IsPluggedIn:              Boolean               read FIsPluggedIn;
-    property LanguageStrings:          TStringList           read GetLanguageStrings;
+    property LanguageStrings:          TStrings              read GetLanguageStrings;
     property MaxButtonListLength:      ULONG                 read FMaxButtonListLength;
     property MaxDataListLength:        ULONG                 read FMaxDataListLength;
     property MaxUsageListLength:       ULONG                 read FMaxUsageListLength;
@@ -623,6 +628,34 @@ begin
   FHardwareID.Free;
   FLowerFilters.Free;
   FUpperFilters.Free;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJvHidPnPInfo.GetCompatibleIDs: TStrings;
+begin
+  Result := FCompatibleIDs;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJvHidPnPInfo.GetHardwareID: TStrings;
+begin
+  Result := FHardwareID;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJvHidPnPInfo.GetLowerFilters: TStrings;
+begin
+  Result := FLowerFilters;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJvHidPnPInfo.GetUpperFilters: TStrings;
+begin
+  Result := FUpperFilters;
 end;
 
 //------------------------------------------------------------------------------
@@ -1141,7 +1174,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TJvHidDevice.GetLanguageStrings: TStringList;
+function TJvHidDevice.GetLanguageStrings: TStrings;
 var
   I:    Integer;
   Len:  Integer;

@@ -85,6 +85,11 @@ resourcestring
   RsPaletteGlobusComponents2 = 'JVCL Globus 2';
   RsPaletteValidators = 'Jv Validators';
   RsPaletteEDI = 'Jv EDI';
+  RsPaletteJans = 'Jv Jans';
+  RsPaletteJansSim = 'Jv Jans SIM';
+  RsPaletteJansCsv = 'Jv Jans CSV';
+  RsPalettePlugin = 'Jv Plugin';
+  RsPaletteNavPane = 'Jv NavPane';
   {$IFDEF USEJVCL}
   RsPaletteUIB = 'Jv UIB';
   RsPaletteMTThreads = 'Jv Threading';
@@ -95,7 +100,6 @@ resourcestring
   RsPaletteDotNet = 'Jv DotNet';
   RsPaletteDotNetDB = 'Jv DotNet DB';
   {$ENDIF USEJVCL}
-  RsPalettePlugin = 'Jv Plugin';
 
 //=== JvAnimatedEditor.pas ===================================================
 resourcestring
