@@ -31,8 +31,15 @@ unit JvYearGrid;
 interface
 
 uses
-  Windows, ShellAPI, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, Grids, Menus, Clipbrd;
+  {$IFDEF VCL}
+  Windows, ShellAPI, Messages, Graphics, Controls, Forms,
+  Dialogs, Grids, Menus, Clipbrd,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs, QGrids, QMenus, QClipbrd, Types,
+  QWindows,
+  {$ENDIF}
+  SysUtils, Classes;
 
 {$HPPEMIT '#define TDate Controls::TDate'}
 
@@ -570,7 +577,12 @@ var
   S: string;
 begin
   if GetCellData(S) then
+    {$IFDEF VCL}
     if Clipboard.HasFormat(CF_TEXT) then
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    if Clipboard.AsText <> '' then
+    {$ENDIF VisualCLX }
       SetCellData(Clipboard.AsText);
 end;
 
@@ -760,13 +772,8 @@ begin
     PChar(Params), PChar(WorkDir), SW_SHOWNORMAL);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  {$IFDEF MSWINDOWS}
   ShellExecute(HWND_DESKTOP, 'open', PChar(Command),
     PChar(Params), PChar(WorkDir), SW_SHOWNORMAL);
-  {$ENDIF MSWINDOWS}
-  {$ENDIF VisualCLX}
-  {$IFDEF LINUX}
-  libc.system(PChar(AFile + ' &'));
   {$ENDIF LINUX}
 end;
 
