@@ -350,6 +350,11 @@ type
     function FocusedItem: TJvCustomInspectorItem; virtual;
     function VisibleIndex(const AItem: TJvCustomInspectorItem): Integer; virtual;
     procedure RefreshValues;
+
+    (* some easier to use methods added by WAP *)
+    procedure AddComponent(const aComponent: TComponent; DisplayName:String; expanded:Boolean);
+    procedure Clear;
+
   published
       { Standard TCustomControl events - these are really events fired by
         the TEdit control used when editing in a cell! -WAP}
@@ -1312,7 +1317,9 @@ type
     function IsInitialized: Boolean; override;
     class function ItemRegister: TJvInspectorRegister; override;
     class function New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo; const AAddress: Pointer): TJvCustomInspectorItem; reintroduce; overload;
+// REMOVED BECAUSE OF A BCB INCOMPATIBILITY:
 //    class function New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo; const AVar): TJvCustomInspectorItem; overload;
+
     procedure SetAsSet(const Buf); override;
     property Address: Pointer read GetAddress write SetAddress;
   end;
@@ -9204,11 +9211,15 @@ begin
     Result := nil;
 end;
 
-(*class function TJvInspectorVarData.New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo; const AVar): TJvCustomInspectorItem;
+
+(* **REMOVED BECAUSE IT CREATES AN OVERLOADED SITUATION THAT IS INCOMPATIBLE WITH BCB.
+   **USE @Var instead when invoking the other method, if you get compilation errors.
+  class function TJvInspectorVarData.New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo; const AVar): TJvCustomInspectorItem;
 begin
   Result := New(AParent, AName, ATypeInfo, Addr(AVar));
 end;
 *)
+
 
 procedure TJvInspectorVarData.SetAsSet(const Buf);
 var
@@ -10811,6 +10822,26 @@ begin
   Root.Clear;
   TJvInspectorPropData.New(Root, Value);
   FInspectObject := Value;
+end;
+
+(* some ease of use improvements:WAP *)
+procedure TJvCustomInspector.AddComponent(const aComponent: TComponent; DisplayName:String; expanded:Boolean);
+var
+  InspCat: TJvInspectorCustomCategoryItem;
+begin
+  BeginUpdate;
+  InspCat := TJvInspectorCustomCategoryItem.Create( Self.Root, nil);
+  InspCat.DisplayName := DisplayName;
+  TJvInspectorPropData.New(InspCat, aComponent);
+  InspCat.Expanded := expanded;
+  EndUpdate;
+end;
+
+procedure TJvCustomInspector.Clear;
+begin
+  BeginUpdate;
+   Root.Clear;
+  EndUpdate;
 end;
 
 initialization
