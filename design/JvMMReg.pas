@@ -116,8 +116,6 @@ begin
   RegisterPropertyEditor(TypeInfo(TJvFullColor), nil, '', TJvFullColorProperty);
   RegisterPropertyEditor(TypeInfo(TJvFullColorList), nil, '', TJvFullColorListEditor);
   {$IFDEF COMPILER6_UP}
-  RegisterSelectionEditor(TJvFullColorDialog, TJvFullColorDialogSelection);
-  RegisterSelectionEditor(TJvFullColorCircleDialog, TJvFullColorCircleDialogSelection);
   RegisterSelectionEditor(TJvFullColorPanel, TJvFullColorSelection);
   RegisterSelectionEditor(TJvFullColorTrackBar, TJvFullColorSelection);
   RegisterSelectionEditor(TJvFullColorCircle, TJvFullColorSelection);
