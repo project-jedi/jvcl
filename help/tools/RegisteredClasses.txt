@@ -2,7 +2,6 @@ TJvAddHardwareDialog
 TJvAddPrinterDialog
 TJvAirBrush
 TJvAlarms
-TJvAnalogClock
 TJvAnimate
 TJvAnimatedImage
 TJvAppAnimatedIcon
@@ -14,6 +13,7 @@ TJvAppletDialog
 TJvApplicationHotKey
 TJvAppRegistryStore
 TJvAppStore
+TJvAppXmlStore
 TJvArrayButton
 TJvArrowButton
 TJvaScrollText
@@ -116,6 +116,7 @@ TJvDrawGrid
 TJvDrawImage
 TJvDriveCombo
 TJvDriveList
+TJvDropTarget
 TJvDSADialog
 TJvDualListDialog
 TJvEasterEgg
@@ -203,7 +204,7 @@ TJvgScrollBox
 TJvgShade
 TJvgShadow
 TJvgSingleInstance
-TJvgSmallFontsDefence
+TJvgSmallFontsDefense
 TJvgSpeedButton
 TJvgSplitter
 TJvgStaticText
@@ -239,7 +240,6 @@ TJvImageListBox
 TJvImageRotate
 TJvImageSquare
 TJvImageTransform
-TJvImageWindow
 TJvImgBtn
 TJvInspector
 TJvInspectorBorlandPainter
@@ -448,7 +448,6 @@ TJvWizard
 TJvWizardRouteMapNodes
 TJvWizardRouteMapSteps
 TJvxCheckListBox
-TJvxClock
 TJvXMLDatabase
 TJvXORCipher
 TJvxSlider
