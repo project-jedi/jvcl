@@ -174,7 +174,7 @@ begin
   end;
 end;
 
-//=== TJvTreeViewCheckBoxOptions =============================================
+//=== { TJvTreeViewCheckBoxOptions } =========================================
 
 constructor TJvTreeViewCheckBoxOptions.Create;
 var
@@ -250,7 +250,7 @@ begin
   end;
 end;
 
-//=== TJvCheckTreeView =======================================================
+//=== { TJvCheckTreeView } ===================================================
 
 constructor TJvCheckTreeView.Create(AOwner: TComponent);
 begin

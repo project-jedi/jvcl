@@ -79,7 +79,7 @@ uses
   SysUtils, TypInfo,
   JvDataProviderIntf, JvColorProviderDesignerForm, JvDsgnConsts;
 
-//=== TJvColorProviderMappingProperty ========================================
+//=== { TJvColorProviderMappingProperty } ====================================
 
 function TJvColorProviderMappingProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -126,7 +126,7 @@ begin
   end;
 end;
 
-//=== TJvColorProviderAddColorStyleEditor ====================================
+//=== { TJvColorProviderAddColorStyleEditor } ================================
 
 function TJvColorProviderAddColorStyleEditor.GetAttributes: TPropertyAttributes;
 begin
@@ -168,7 +168,7 @@ begin
     Proc(ColorProviderColorAdderRegister.Names(I));
 end;
 
-//=== TJvColorProviderEditor =================================================
+//=== { TJvColorProviderEditor } =============================================
 
 procedure TJvColorProviderEditor.Edit;
 begin

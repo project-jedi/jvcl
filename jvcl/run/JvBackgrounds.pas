@@ -470,7 +470,7 @@ begin
       Result := TForm(Control).FormStyle = fsMDIForm;
 end;
 
-//=== TJvBackgroundImage =====================================================
+//=== { TJvBackgroundImage } =================================================
 
 constructor TJvBackgroundImage.Create;
 begin
@@ -1273,7 +1273,7 @@ begin
   end;
 end;
 
-//=== TJvControlBackground ===================================================
+//=== { TJvControlBackground } ===============================================
 
 constructor TJvControlBackground.Create(AClient: TWinControl);
 begin
@@ -1309,7 +1309,7 @@ begin
     end;
 end;
 
-//=== TJvBackgroundClientLink ================================================
+//=== { TJvBackgroundClientLink } ============================================
 
 constructor TJvBackgroundClientLink.Create(ABackground: TJvBackground;
   AClient: TWinControl);
@@ -1570,7 +1570,7 @@ begin
   PostMessage(FBackground.FHandle, CM_RELEASECLIENTLINK, 0, Longint(Self));
 end;
 
-//=== TJvBackgroundClients ===================================================
+//=== { TJvBackgroundClients } ===============================================
 
 constructor TJvBackgroundClients.Create(ABackground: TJvBackground);
 begin
@@ -1745,7 +1745,7 @@ begin
     Links[I].ClientInvalidate;
 end;
 
-//=== TJvBackground ==========================================================
+//=== { TJvBackground } ======================================================
 
 var
   Registered: Boolean = False;

@@ -63,7 +63,7 @@ uses
   JvConsts, JvDsgnConsts;
 
 
-//=== TJvSchedulePropertyEditor ==============================================
+//=== { TJvSchedulePropertyEditor } ==========================================
 
 procedure TJvSchedulePropertyEditor.Edit;
 begin
@@ -87,7 +87,7 @@ begin
   Result := '(IJclSchedule)';
 end;
 
-//=== TJvSchedEventComponentEditor ===========================================
+//=== { TJvSchedEventComponentEditor } =======================================
 
 procedure TJvSchedEventComponentEditor.ExecuteVerb(Index: Integer);
 begin

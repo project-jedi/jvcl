@@ -672,7 +672,7 @@ uses
 {$ENDIF LINUX}
 
 //=== NEW IN JVCL 3.0 ==
-//=== TJvDBMaskEdit ==========================================================
+//=== { TJvDBMaskEdit } ======================================================
 
 constructor TJvDBMaskEdit.Create(AOwner: TComponent);
 begin
@@ -1111,7 +1111,7 @@ begin
     FDataLink.UpdateAction(Action);
 end;
 
-//=== TJvDBComboEdit =========================================================
+//=== { TJvDBComboEdit } =====================================================
 
 procedure ResetMaxLength(DBEdit: TJvDBComboEdit);
 var
@@ -1395,7 +1395,7 @@ begin
     FDataLink.UpdateAction(Action);
 end;
 
-//=== TJvDBDateEdit ==========================================================
+//=== { TJvDBDateEdit } ======================================================
 
 constructor TJvDBDateEdit.Create(AOwner: TComponent);
 begin
@@ -1724,7 +1724,7 @@ end;
 
 //Polaris
 
-//=== TJvDBCalcEdit ==========================================================
+//=== { TJvDBCalcEdit } ======================================================
 
 constructor TJvDBCalcEdit.Create(AOwner: TComponent);
 begin
@@ -2143,7 +2143,7 @@ begin
     FDataLink.UpdateAction(Action);
 end;
 
-//=== TJvStatusDataLink ======================================================
+//=== { TJvStatusDataLink } ==================================================
 
 type
   TJvStatusDataLink = class(TDataLink)
@@ -2201,7 +2201,7 @@ begin
     DataSetChanged; { ??? }
 end;
 
-//=== TJvDBStatusLabel =======================================================
+//=== { TJvDBStatusLabel } ===================================================
 
 const
   GlyphSpacing = 2;

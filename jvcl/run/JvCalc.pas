@@ -205,7 +205,7 @@ begin
   end;
 end;
 
-//=== TJvCalcButton ==========================================================
+//=== { TJvCalcButton } ======================================================
 
 type
   TJvCalcButton = class(TJvSpeedButton)
@@ -353,7 +353,7 @@ begin
   end;
 end;
 
-//=== TJvCalculatorPanel =====================================================
+//=== { TJvCalculatorPanel } =================================================
 
 type
   TJvCalculatorPanel = class(TJvExPanel)
@@ -887,7 +887,7 @@ begin
   end;
 end;
 
-//=== TJvLocCalculator =======================================================
+//=== { TJvLocCalculator } ===================================================
 
 type
   TJvLocCalculator = class(TJvCalculatorPanel)
@@ -928,7 +928,7 @@ begin
 end;
 {$ENDIF VCL}
 
-//=== TJvPopupCalculator =====================================================
+//=== { TJvPopupCalculator } =================================================
 
 type
   TJvPopupCalculator = class(TJvPopupWindow)
@@ -1073,7 +1073,7 @@ begin
   InvalidateEditor;
 end;
 
-//=== TJvCalculator ==========================================================
+//=== { TJvCalculator } ======================================================
 
 constructor TJvCalculator.Create(AOwner: TComponent);
 begin
@@ -1172,7 +1172,7 @@ begin
   end;
 end;
 
-//=== TJvCalculatorForm ======================================================
+//=== { TJvCalculatorForm } ==================================================
 
 constructor TJvCalculatorForm.Create(AOwner: TComponent);
 var

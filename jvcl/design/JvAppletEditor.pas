@@ -82,7 +82,7 @@ begin
   GetControlPanelApplets(S, '*.cpl', FApplets, nil);
 end;
 
-//=== TJvAppletNameProperty ==================================================
+//=== { TJvAppletNameProperty } ==============================================
 
 function TJvAppletNameProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -116,7 +116,7 @@ begin
     inherited SetValue(Value);
 end;
 
-//=== TJvAppletIndexProperty ==================================================
+//=== { TJvAppletIndexProperty } ==============================================
 
 function TJvAppletIndexProperty.GetAttributes: TPropertyAttributes;
 begin

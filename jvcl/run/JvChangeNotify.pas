@@ -169,7 +169,7 @@ begin
         Result := Result + ',' + ActionStrings[I];
 end;
 
-//=== TJvChangeItem ==========================================================
+//=== { TJvChangeItem } ======================================================
 
 constructor TJvChangeItem.Create(Collection: TCollection);
 begin
@@ -230,7 +230,7 @@ begin
     FOnChange(Self);
 end;
 
-//=== TJvChangeItems =========================================================
+//=== { TJvChangeItems } =====================================================
 
 constructor TJvChangeItems.Create(AOwner: TJvChangeNotify);
 begin
@@ -275,7 +275,7 @@ begin
     inherited Assign(Source);
 end;
 
-//=== TJvChangeNotify ========================================================
+//=== { TJvChangeNotify } ====================================================
 
 constructor TJvChangeNotify.Create(AOwner: TComponent);
 begin
@@ -428,7 +428,7 @@ begin
 end;
 
 
-//=== TJvChangeThread ========================================================
+//=== { TJvChangeThread } ====================================================
 
 constructor TJvChangeThread.Create(NotifyArray: TJvNotifyArray; Count, Interval: Integer);
 var

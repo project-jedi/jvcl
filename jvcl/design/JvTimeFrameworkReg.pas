@@ -90,7 +90,7 @@ resourcestring
   RsCustomDraw = 'Custom Draw';
 {$ENDIF USEJVCL}
 
-//=== TJvTFGridLayoutCategory ================================================
+//=== { TJvTFGridLayoutCategory } ============================================
 
 {$IFDEF COMPILER5}
 class function TJvTFGridLayoutCategory.Name: string;
@@ -99,7 +99,7 @@ begin
 end;
 {$ENDIF COMPILER5}
 
-//=== TJvTFCustomDrawCategory ================================================
+//=== { TJvTFCustomDrawCategory } ============================================
 
 {$IFDEF COMPILER5}
 class function TJvTFCustomDrawCategory.Name: string;
@@ -108,7 +108,7 @@ begin
 end;
 {$ENDIF COMPILER5}
 
-//=== TJvTFGlanceCellsProperty ===============================================
+//=== { TJvTFGlanceCellsProperty } ===========================================
 
 function TJvTFGlanceCellsProperty.GetColOptions: TColOptions;
 begin

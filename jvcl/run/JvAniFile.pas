@@ -209,7 +209,7 @@ type
     DIBOffset: Longint;
   end;
 
-//=== TJvIconFrame ===========================================================
+//=== { TJvIconFrame } =======================================================
 
 destructor TJvIconFrame.Destroy;
 begin
@@ -232,7 +232,7 @@ begin
     inherited Assign(Source);
 end;
 
-//=== TJvAnimatedCursorImage =================================================
+//=== { TJvAnimatedCursorImage } =============================================
 
 constructor TJvAnimatedCursorImage.Create;
 begin

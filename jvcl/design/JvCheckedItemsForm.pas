@@ -115,7 +115,7 @@ const
   cDefaultFontName = 'Helvetica';
   {$ENDIF LINUX}
 
-//=== TJvCheckItemsProperty ==================================================
+//=== { TJvCheckItemsProperty } ==============================================
 
 function TJvCheckItemsProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -147,7 +147,7 @@ begin
   end;
 end;
 
-//=== TJvCheckItemEditor =====================================================
+//=== { TJvCheckItemEditor } =================================================
 
 constructor TJvCheckItemEditor.Create(AOwner: TComponent);
 begin

@@ -94,7 +94,7 @@ implementation
 {$R *.xfm}
 {$ENDIF VisualCLX}
 
-//=== TJvWizardAboutDialogProperty ===========================================
+//=== { TJvWizardAboutDialogProperty } =======================================
 
 procedure TJvWizardAboutDialogProperty.Edit;
 begin
@@ -116,7 +116,7 @@ begin
   Result := JvWizard_VERSIONSTRING;
 end;
 
-//=== TJvWizardAboutDialog ===================================================
+//=== { TJvWizardAboutDialog } ===============================================
 
 procedure TJvWizardAboutDialog.btnOKClick(Sender: TObject);
 begin

@@ -251,7 +251,7 @@ type
     destructor Destroy; override;
   end;
 
-//=== TJvAppEventList ========================================================
+//=== { TJvAppEventList } ====================================================
 
 constructor TJvAppEventList.Create;
 begin
@@ -663,7 +663,7 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-//=== TJvAppEvents ===========================================================
+//=== { TJvAppEvents } =======================================================
 
 // (rom) changed to var
 var

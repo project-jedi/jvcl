@@ -175,7 +175,7 @@ begin
 end;
 {$ENDIF COMPILER6_UP}
 
-//=== TMasterConsumer ========================================================
+//=== { TMasterConsumer } ====================================================
 
 constructor TMasterConsumer.Create(AOwner: TComponent);
 begin
@@ -278,7 +278,7 @@ begin
     Result := Slave.GetInterface(IID, Obj);
 end;
 
-//=== TfmeJvProviderTreeList =================================================
+//=== { TfmeJvProviderTreeList } =============================================
 
 constructor TfmeJvProviderTreeList.Create(AOwner: TComponent);
 begin

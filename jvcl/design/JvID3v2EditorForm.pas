@@ -361,7 +361,7 @@ begin
   end;
 end;
 
-//=== TJvID3FrameEditor ======================================================
+//=== { TJvID3FrameEditor } ==================================================
 
 procedure TJvID3FramesEditor.Activated;
 begin
@@ -769,7 +769,7 @@ begin
   end;
 end;
 
-//=== TJvID3ControllerEditor =================================================
+//=== { TJvID3ControllerEditor } =============================================
 
 procedure TJvID3ControllerEditor.Commit;
 begin
@@ -841,7 +841,7 @@ begin
   end;
 end;
 
-//=== TFSDesigner ============================================================
+//=== { TFSDesigner } ========================================================
 
 destructor TFSDesigner.Destroy;
 var
@@ -989,7 +989,7 @@ begin
   UpdateSelection;
 end;
 
-//=== TJvID3FileInfoEditor ===================================================
+//=== { TJvID3FileInfoEditor } ===============================================
 
 procedure TJvID3FileInfoEditor.Edit;
 var

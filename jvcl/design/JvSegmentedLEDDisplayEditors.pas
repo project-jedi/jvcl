@@ -97,7 +97,7 @@ const
   cDefaultBackground = 'clDefaultBackground';
   cDefaultLitColor = 'clDefaultLitColor';
 
-//=== TJvTClassProperty ======================================================
+//=== { TJvTClassProperty } ==================================================
 
 function TJvTClassProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -111,7 +111,7 @@ begin
     SetLength(Result, Length(Result) - 4);
 end;
 
-//=== TJvSegmentedLEDDigitClassProperty ======================================
+//=== { TJvSegmentedLEDDigitClassProperty } ==================================
 
 procedure TJvSegmentedLEDDigitClassProperty.GetValues(Proc: TGetStrProc);
 var
@@ -126,7 +126,7 @@ begin
   end;
 end;
 
-//=== TJvSegmentedLEDDisplayEditor ===========================================
+//=== { TJvSegmentedLEDDisplayEditor } =======================================
 
 type
   TOpenDisplay = class(TJvCustomSegmentedLEDDisplay);
@@ -196,7 +196,7 @@ begin
     AItem.Enabled := False;
 end;
 
-//=== TUnlitColorProperty ====================================================
+//=== { TUnlitColorProperty } ================================================
 
 function TUnlitColorProperty.GetValue: string;
 begin

@@ -94,7 +94,7 @@ type
 
 implementation
 
-//=== TJvgComponentDescription ===============================================
+//=== { TJvgComponentDescription } ===========================================
 
 constructor TJvgComponentDescription.Create(AOwner, Component: TComponent);
 begin
@@ -146,7 +146,7 @@ begin
   end;
 end;
 
-//=== TJvgPropInfos ==========================================================
+//=== { TJvgPropInfos } ======================================================
 
 procedure TJvgPropInfos.AddPropInfo(PropInfo: PPropInfo; Component: TComponent);
 var

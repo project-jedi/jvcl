@@ -458,7 +458,7 @@ begin
   AllBehaviorOptions.AddObject(Name, TObject(BehaviorOptionsClass));
 end;
 
-//=== TJvLabelBehavior =======================================================
+//=== { TJvLabelBehavior } ===================================================
 
 constructor TJvLabelBehavior.Create(ALabel: TJvCustomBehaviorLabel);
 begin
@@ -518,7 +518,7 @@ begin
   Active := False;
 end;
 
-//=== TJvCustomBehaviorLabel =================================================
+//=== { TJvCustomBehaviorLabel } =============================================
 
 constructor TJvCustomBehaviorLabel.Create(AComponent: TComponent);
 begin
@@ -653,7 +653,7 @@ begin
   end;
 end;
 
-//=== TJvLabelBlink ==========================================================
+//=== { TJvLabelBlink } ======================================================
 
 constructor TJvLabelBlink.Create(ALabel: TJvCustomBehaviorLabel);
 begin
@@ -720,7 +720,7 @@ begin
   inherited Stop;
 end;
 
-//=== TJvLabelBounce =========================================================
+//=== { TJvLabelBounce } =====================================================
 
 constructor TJvLabelBounce.Create(ALabel: TJvCustomBehaviorLabel);
 begin
@@ -837,7 +837,7 @@ begin
   inherited Stop;
 end;
 
-//=== TJvLabelScroll =========================================================
+//=== { TJvLabelScroll } =====================================================
 
 constructor TJvLabelScroll.Create(ALabel: TJvCustomBehaviorLabel);
 begin
@@ -922,7 +922,7 @@ begin
   inherited Stop;
 end;
 
-//=== TJvLabelAppear =========================================================
+//=== { TJvLabelAppear } =====================================================
 
 constructor TJvLabelAppear.Create(ALabel: TJvCustomBehaviorLabel);
 begin
@@ -1070,7 +1070,7 @@ begin
   inherited Stop;
 end;
 
-//=== TJvLabelTyping =========================================================
+//=== { TJvLabelTyping } =====================================================
 
 constructor TJvLabelTyping.Create(ALabel: TJvCustomBehaviorLabel);
 begin
@@ -1152,7 +1152,7 @@ begin
   inherited Stop;
 end;
 
-//=== TJvLabelSpecial ========================================================
+//=== { TJvLabelSpecial } ====================================================
 
 constructor TJvLabelSpecial.Create(ALabel: TJvCustomBehaviorLabel);
 begin
@@ -1215,7 +1215,7 @@ begin
   inherited Stop;
 end;
 
-//=== TJvLabelCodeBreaker ====================================================
+//=== { TJvLabelCodeBreaker } ================================================
 
 constructor TJvLabelCodeBreaker.Create(ALabel: TJvCustomBehaviorLabel);
 begin

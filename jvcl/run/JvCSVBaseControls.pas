@@ -173,7 +173,7 @@ uses
 {$R ../Resources/JvCSVBase.res}
 {$ENDIF LINUX}
 
-//=== TJvCSVBase =============================================================
+//=== { TJvCSVBase } =========================================================
 
 constructor TJvCSVBase.Create(AOwner: TComponent);
 begin
@@ -612,7 +612,7 @@ begin
   end;
 end;
 
-//=== TJvCSVEdit =============================================================
+//=== { TJvCSVEdit } =========================================================
 
 procedure TJvCSVEdit.Notification(AComponent: TComponent;
   Operation: TOperation);
@@ -640,7 +640,7 @@ begin
   end;
 end;
 
-//=== TJvCSVNavigator ========================================================
+//=== { TJvCSVNavigator } ====================================================
 
 constructor TJvCSVNavigator.Create(AOwner: TComponent);
 begin
@@ -850,7 +850,7 @@ begin
   FCSVDataBase := Value;
 end;
 
-//=== TJvCSVComboBox =========================================================
+//=== { TJvCSVComboBox } =====================================================
 
 procedure TJvCSVComboBox.Notification(AComponent: TComponent;
   Operation: TOperation);
@@ -878,7 +878,7 @@ begin
   end;
 end;
 
-//=== TJvCSVCheckBox =========================================================
+//=== { TJvCSVCheckBox } =====================================================
 
 procedure TJvCSVCheckBox.Notification(AComponent: TComponent;
   Operation: TOperation);

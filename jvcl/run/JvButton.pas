@@ -212,7 +212,7 @@ begin
   Result := GlobalPattern;
 end;
 
-//=== TJvCustomGraphicButton =================================================
+//=== { TJvCustomGraphicButton } =============================================
 
 constructor TJvCustomGraphicButton.Create(AOwner: TComponent);
 begin
@@ -605,7 +605,7 @@ begin
     inherited SetBounds(Left, Top, AWidth, AHeight);
 end;
 
-//=== TJvCustomButton ========================================================
+//=== { TJvCustomButton } ====================================================
 
 constructor TJvCustomButton.Create(AOwner: TComponent);
 begin
@@ -791,7 +791,7 @@ begin
     inherited SetBounds(Left, Top, AWidth, AHeight);
 end;
 
-//=== TJvDropDownButton ======================================================
+//=== { TJvDropDownButton } ==================================================
 
 constructor TJvDropDownButton.Create(AOwner: TComponent);
 begin

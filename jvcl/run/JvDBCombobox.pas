@@ -179,7 +179,7 @@ uses
   SysUtils,
   JvConsts, JvDBUtils;
 
-//=== TJvCustomDBComboBox ====================================================
+//=== { TJvCustomDBComboBox } ================================================
 
 constructor TJvCustomDBComboBox.Create(AOwner: TComponent);
 begin
@@ -530,7 +530,7 @@ begin
     FDataLink.UpdateAction(Action);
 end;
 
-//=== TJvDBComboBox ==========================================================
+//=== { TJvDBComboBox } ======================================================
 
 constructor TJvDBComboBox.Create(AOwner: TComponent);
 begin

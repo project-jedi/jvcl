@@ -716,7 +716,7 @@ begin
   Result := LRESULT(Ord(res));
 end;
 
-//=== TJvVideoFormat =========================================================
+//=== { TJvVideoFormat } =====================================================
 
 constructor TJvVideoFormat.Create;
 begin
@@ -760,7 +760,7 @@ begin
   end;
 end;
 
-//=== TJvAudioFormat =========================================================
+//=== { TJvAudioFormat } =====================================================
 
 constructor TJvAudioFormat.Create;
 begin
@@ -843,7 +843,7 @@ begin
   end;
 end;
 
-//=== TJvCaptureSettings =====================================================
+//=== { TJvCaptureSettings } =================================================
 
 constructor TJvCaptureSettings.Create;
 begin
@@ -975,7 +975,7 @@ begin
     FFrameDelay := Value;
 end;
 
-//=== TJvPalette =============================================================
+//=== { TJvPalette } =========================================================
 
 constructor TJvPalette.Create;
 begin
@@ -1008,7 +1008,7 @@ begin
   Result := (FHWnd <> 0) and capPaletteManual(FHWnd, Flag, nbColors);
 end;
 
-//=== TJvAVICapture ==========================================================
+//=== { TJvAVICapture } ======================================================
 
 constructor TJvAVICapture.Create(AOwner: TComponent);
 begin

@@ -228,7 +228,7 @@ begin
   end;
 end;
 
-//=== TJvPaletteGrid =========================================================
+//=== { TJvPaletteGrid } =====================================================
 
 const
   NumPaletteEntries = 256;
@@ -424,7 +424,7 @@ begin
   UpdateSize;
 end;
 
-//=== TJvCustomClipboardViewer ===============================================
+//=== { TJvCustomClipboardViewer } ===========================================
 
 constructor TJvCustomClipboardViewer.Create(AOwner: TComponent);
 begin

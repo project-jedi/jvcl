@@ -465,7 +465,7 @@ begin
   SafeCloseHandle(LHandles.Write);
 end;
 
-//=== TJvProcessEntry ========================================================
+//=== { TJvProcessEntry } ====================================================
 
 constructor TJvProcessEntry.Create(AProcessID: DWORD;
   const AFileName: TFileName; const AProcessName: string);
@@ -555,7 +555,7 @@ begin
   Result := InternalTerminateProcess(FProcessID);
 end;
 
-//=== TJvCPSStartupInfo ======================================================
+//=== { TJvCPSStartupInfo } ==================================================
 
 constructor TJvCPSStartupInfo.Create;
 begin
@@ -625,7 +625,7 @@ begin
   end;
 end;
 
-//=== TJvWaitForProcessThread ================================================
+//=== { TJvWaitForProcessThread } ============================================
 
 constructor TJvWaitForProcessThread.Create(ProcessHandle: DWORD);
 begin
@@ -665,7 +665,7 @@ begin
   SetEvent(FCloseEvent);
 end;
 
-//=== TJvReadThread ==========================================================
+//=== { TJvReadThread } ======================================================
 
 constructor TJvReadThread.Create(AReadHandle, ADestHandle: THandle);
 begin
@@ -809,7 +809,7 @@ begin
     FTerminateAfterLoopEntered := True;
 end;
 
-//=== TJvConsoleThread =======================================================
+//=== { TJvConsoleThread } ===================================================
 
 constructor TJvConsoleThread.Create(ProcessHandle: DWORD;
   AWriteHandle: THandle);
@@ -970,7 +970,7 @@ begin
   end;
 end;
 
-//=== TJvCreateProcess =======================================================
+//=== { TJvCreateProcess } ===================================================
 
 constructor TJvCreateProcess.Create(AOwner: TComponent);
 begin

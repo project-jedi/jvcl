@@ -604,7 +604,7 @@ const
   DEFAULT_VALUE_COUNT = 100;
     // By Default TJvChartData holds 100 values per pen. Grows autofragellisticexpialidociously. :-)
 
-//=== TJvChartData ===========================================================
+//=== { TJvChartData } =======================================================
 
 constructor TJvChartData.Create;
 var
@@ -744,7 +744,7 @@ begin
 end;
 
 
-//=== TJvChartYAxisOptions ===================================================
+//=== { TJvChartYAxisOptions } ===============================================
 
 constructor TJvChartYAxisOptions.Create(Owner: TJvChartOptions);
 begin
@@ -882,7 +882,7 @@ begin
   FOwner.NotifyOptionsChange;
 end;
 
-//=== TJvChartOptions ========================================================
+//=== { TJvChartOptions } ====================================================
 
 constructor TJvChartOptions.Create(Owner: TJvChart);
 begin
@@ -1205,7 +1205,7 @@ begin
   FXStartOffset := Offset;
 end;
 
-//=== TJvChart ===============================================================
+//=== { TJvChart } ===========================================================
 
 { GRAPH }
 {**************************************************************************}

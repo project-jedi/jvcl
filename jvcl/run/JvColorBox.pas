@@ -186,7 +186,7 @@ begin
   Canvas.LineTo(X2, Y2);
 end;
 
-//=== TJvColorSquare =========================================================
+//=== { TJvColorSquare } =====================================================
 
 constructor TJvColorSquare.Create(AOwner: TComponent);
 begin
@@ -262,7 +262,7 @@ begin
     FColorClick(Self, Button, Shift, Color);
 end;
 
-//=== TJvColorBox ============================================================
+//=== { TJvColorBox } ========================================================
 
 constructor TJvColorBox.Create(AOwner: TComponent);
 var
@@ -348,7 +348,7 @@ begin
   DrawColorBoxes;
 end;
 
-//=== TJvCustomDropButton ====================================================
+//=== { TJvCustomDropButton } ================================================
 
 constructor TJvCustomDropButton.Create(AOWner: TComponent);
 begin

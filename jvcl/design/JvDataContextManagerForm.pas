@@ -111,7 +111,7 @@ begin
   {$ENDIF BCB5}
 end;
 
-//=== TJvContextRootItem =====================================================
+//=== { TJvContextRootItem } =================================================
 
 type
   TJvContextRootItem = class(TJvBaseDataItem)
@@ -133,7 +133,7 @@ begin
     Result := TExtensibleInterfacedPersistent(GetItems.GetImplementer).GetInterface(IID, Obj);
 end;
 
-//=== TfrmJvDataContextManager ===============================================
+//=== { TfrmJvDataContextManager } ===========================================
 
 function TfrmJvDataContextManager.GetProvider: IJvDataProvider;
 var

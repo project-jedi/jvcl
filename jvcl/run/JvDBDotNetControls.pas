@@ -151,7 +151,7 @@ implementation
 uses
   JvDotNetUtils;
 
-//=== TJvDotNetDBEdit ========================================================
+//=== { TJvDotNetDBEdit } ====================================================
 
 constructor TJvDotNetDBEdit.Create(AOwner: TComponent);
 begin
@@ -172,7 +172,7 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-//=== TJvDotNetDBListBox =====================================================
+//=== { TJvDotNetDBListBox } =================================================
 
 constructor TJvDotNetDBListBox.Create(AOwner: TComponent);
 begin
@@ -193,7 +193,7 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-//=== TJvDotNetDBLookupListBox ===============================================
+//=== { TJvDotNetDBLookupListBox } ===========================================
 
 constructor TJvDotNetDBLookupListBox.Create(AOwner: TComponent);
 begin
@@ -214,7 +214,7 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-//=== TJvDotNetDBMemo ========================================================
+//=== { TJvDotNetDBMemo } ====================================================
 
 constructor TJvDotNetDBMemo.Create(AOwner: TComponent);
 begin
@@ -235,7 +235,7 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-//=== TJvDotNetDBRichEdit ====================================================
+//=== { TJvDotNetDBRichEdit } ================================================
 
 constructor TJvDotNetDBRichEdit.Create(AOwner: TComponent);
 begin
@@ -256,7 +256,7 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-//=== TJvDotNetDBFindEdit ====================================================
+//=== { TJvDotNetDBFindEdit } ================================================
 
 {$IFDEF USEJVCL}
 

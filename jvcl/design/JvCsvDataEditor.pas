@@ -73,7 +73,7 @@ uses
 
 { CsvDataDefStrDsgn= String Editor at design time for CSVDefs }
 
-//=== TJvCsvDefStrProperty ===================================================
+//=== { TJvCsvDefStrProperty } ===============================================
 
 function TJvCsvDefStrProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -170,7 +170,7 @@ begin
 end;
 }
 
-//=== TJvFilenameProperty ====================================================
+//=== { TJvFilenameProperty } ================================================
 
 procedure TJvFilenameProperty.Edit;
 begin

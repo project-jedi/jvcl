@@ -210,7 +210,7 @@ begin
   Check(DbiGetRecordCount(DataSet.Handle, Result));
 end;
 
-//=== TJvSessionLink =========================================================
+//=== { TJvSessionLink } =====================================================
 
 type
   TJvSessionLink = class(TDatabase)
@@ -241,7 +241,7 @@ begin
 end;
 
 
-//=== TJvCustomBDEItems ======================================================
+//=== { TJvCustomBDEItems } ==================================================
 
 procedure TJvCustomBDEItems.SetItemType(Value: TJvBDEItemType);
 begin
@@ -327,7 +327,7 @@ begin
   end;
 end;
 
-//=== TJvDBListDataSet =======================================================
+//=== { TJvDBListDataSet } ===================================================
 
 function TJvDBListDataSet.Locate(const KeyFields: string;
   const KeyValues: Variant; Options: TLocateOptions): Boolean;
@@ -346,7 +346,7 @@ begin
   Result := dsGetRecordCount(Self);
 end;
 
-//=== TJvCustomDatabaseItems =================================================
+//=== { TJvCustomDatabaseItems } =============================================
 
 procedure TJvCustomDatabaseItems.SetItemType(Value: TDBItemType);
 begin
@@ -563,7 +563,7 @@ begin
   end;
 end;
 
-//=== TJvDatabaseDesc ========================================================
+//=== { TJvDatabaseDesc } ====================================================
 
 constructor TJvDatabaseDesc.Create(const DatabaseName: string);
 var
@@ -593,7 +593,7 @@ end;
 
 {$IFNDEF BCB}
 
-//=== TJvLangDrivList ========================================================
+//=== { TJvLangDrivList } ====================================================
 
 constructor TJvLangDrivList.Create(AOwner: TComponent);
 begin
@@ -601,7 +601,7 @@ begin
   FItemType := bdLangDrivers;
 end;
 
-//=== TJvTableList ===========================================================
+//=== { TJvTableList } =======================================================
 
 function TJvTableList.GetTableName: string;
 begin
@@ -614,7 +614,7 @@ begin
   FItemType := dtStoredProcs;
 end;
 
-//=== TJvIndexList ===========================================================
+//=== { TJvIndexList } =======================================================
 
 constructor TJvIndexList.Create(AOwner: TComponent);
 begin

@@ -161,7 +161,7 @@ begin
   end;
 end;
 
-//=== TJvCustomAppIniStorage =================================================
+//=== { TJvCustomAppIniStorage } =============================================
 
 constructor TJvCustomAppIniStorage.Create(AOwner: TComponent);
 begin
@@ -553,7 +553,7 @@ begin
   end;
 end;
 
-//=== TJvAppIniFileStorage ===================================================
+//=== { TJvAppIniFileStorage } ===============================================
 
 procedure TJvAppIniFileStorage.Flush;
 begin

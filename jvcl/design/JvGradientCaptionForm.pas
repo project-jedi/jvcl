@@ -123,7 +123,7 @@ begin
     end;
 end;
 
-//=== TGradientCaptionEditor =================================================
+//=== { TGradientCaptionEditor } =============================================
 
 procedure TGradientCaptionEditor.Edit;
 begin
@@ -149,7 +149,7 @@ begin
   Result := 1;
 end;
 
-//=== TGradCaptionsEditor ====================================================
+//=== { TGradCaptionsEditor } ================================================
 
 procedure TGradCaptionsEditor.UpdateCaptionList(Index: Integer);
 var

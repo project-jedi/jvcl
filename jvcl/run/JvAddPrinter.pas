@@ -134,7 +134,7 @@ begin
     end;
 end;
 
-//=== TJvAddPrinterDialog ====================================================
+//=== { TJvAddPrinterDialog } ================================================
 
 function TJvAddPrinterDialog.Execute: Boolean;
 var

@@ -66,7 +66,7 @@ uses
   {$ENDIF VisualCLX}
   JvTypes, JvFooter, JvDsgnConsts;
 
-//=== TJvFooterEditor ========================================================
+//=== { TJvFooterEditor } ====================================================
 
 function TJvFooterEditor.GetVerbCount: Integer;
 begin

@@ -752,7 +752,7 @@ begin
     Dec(Result);
 end;
 
-//=== TWStrings ==============================================================
+//=== { TWStrings } ==========================================================
 
 constructor TWStrings.Create;
 begin
@@ -1435,7 +1435,7 @@ begin
   Writer.WriteListEnd;
 end;
 
-//=== TWStringList ===========================================================
+//=== { TWStringList } =======================================================
 
 constructor TWStringList.Create;
 begin

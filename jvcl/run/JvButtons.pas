@@ -304,7 +304,7 @@ type
     function Empty: Boolean;
   end;
 
-//=== TJvGlyphList ===========================================================
+//=== { TJvGlyphList } =======================================================
 
 constructor TJvGlyphList.CreateSize(AWidth, AHeight: Integer);
 begin
@@ -345,7 +345,7 @@ begin
   end;
 end;
 
-//=== TJvGlyphCache ==========================================================
+//=== { TJvGlyphCache } ======================================================
 
 constructor TJvGlyphCache.Create;
 begin
@@ -390,7 +390,7 @@ begin
   Result := FGlyphLists.Count = 0;
 end;
 
-//=== TJvButtonGlyph =========================================================
+//=== { TJvButtonGlyph } =====================================================
 
 var
   GlyphCache: TJvGlyphCache = nil;
@@ -961,7 +961,7 @@ begin
     ItemHtHeight(Canvas, Caption));     // Kaczkowski
 end;
 
-//=== TJvaCaptionButton ======================================================
+//=== { TJvaCaptionButton } ==================================================
 
 {$IFDEF VCL}
 
@@ -1520,7 +1520,7 @@ end;
 
 {$ENDIF VCL}
 
-//=== TJvaColorButton ========================================================
+//=== { TJvaColorButton } ====================================================
 
 constructor TJvaColorButton.Create(AOwner: TComponent);
 begin
@@ -1708,7 +1708,7 @@ begin
     end;
 end;
 
-//=== TJvNoFrameButton =======================================================
+//=== { TJvNoFrameButton } ===================================================
 
 constructor TJvNoFrameButton.Create(AOwner: TComponent);
 begin
@@ -1805,7 +1805,7 @@ begin
   end;
 end;
 
-//=== TJvHTButton ============================================================
+//=== { TJvHTButton } ========================================================
 
 constructor TJvHTButton.Create(AOwner: TComponent);
 begin

@@ -61,7 +61,7 @@ uses
   DsnDBCst, DSDesign, DBReg, Dialogs,
   JvJVCLUtils, JvMemoryDataSet, JvSelectDataSetForm, JvConsts, JvDsgnConsts;
 
-//=== TJvAbstractMemDataSetEditor ============================================
+//=== { TJvAbstractMemDataSetEditor } ========================================
 
 procedure TJvAbstractMemDataSetEditor.BorrowStructure;
 const
@@ -165,7 +165,7 @@ begin
   Result := 2;
 end;
 
-//=== TJvMemDataSetEditor ====================================================
+//=== { TJvMemDataSetEditor } ================================================
 
 function TJvMemDataSetEditor.CopyStructure(Source,
   Dest: TDataSet): Boolean;

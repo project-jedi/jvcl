@@ -193,7 +193,7 @@ begin
   TfrmTreeViewItems.Edit(TreeView);
 end;
 
-//=== TGroupBox ==============================================================
+//=== { TGroupBox } ==========================================================
 
 constructor TGroupBox.Create(AOwner: TComponent);
 begin
@@ -208,7 +208,7 @@ begin
     Broadcast(Msg);
 end;
 
-//=== TfrmTreeViewItems ======================================================
+//=== { TfrmTreeViewItems } ==================================================
 
 procedure TfrmTreeViewItems.edNodeTextChange(Sender: TObject);
 begin
@@ -438,7 +438,7 @@ begin
     DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
 end;
 
-//=== TJvTreeItemsProperty ===================================================
+//=== { TJvTreeItemsProperty } ===============================================
 
 procedure TJvTreeItemsProperty.Edit;
 begin
@@ -450,7 +450,7 @@ begin
   Result := [paDialog];
 end;
 
-//=== TJvTreeViewComponentEditor =============================================
+//=== { TJvTreeViewComponentEditor } =========================================
 
 procedure TJvTreeViewComponentEditor.Edit;
 begin
@@ -478,7 +478,7 @@ begin
   Result := 1;
 end;
 
-//=== TfrmTreeViewItems ======================================================
+//=== { TfrmTreeViewItems } ==================================================
 
 procedure TfrmTreeViewItems.acNodeMoveUpExecute(Sender: TObject);
 begin
@@ -575,7 +575,7 @@ begin
     tvItems.SaveToFile(SaveDialog1.Filename);
 end;
 
-//=== TJvPageTreeViewComponentEditor =========================================
+//=== { TJvPageTreeViewComponentEditor } =====================================
 
 procedure TJvPageTreeViewComponentEditor.ExecuteVerb(Index: Integer);
 begin

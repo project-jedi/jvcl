@@ -251,7 +251,7 @@ uses
   JclRegistry,
   JvConsts, JvResources;
 
-//=== TJvCustomDBGridExport ==================================================
+//=== { TJvCustomDBGridExport } ==============================================
 
 constructor TJvCustomDBGridExport.Create(AOwner: TComponent);
 begin
@@ -337,7 +337,7 @@ begin
     Grid := nil;
 end;
 
-//=== TJvDBGridWordExport ====================================================
+//=== { TJvDBGridWordExport } ================================================
 
 constructor TJvDBGridWordExport.Create(AOwner: TComponent);
 begin
@@ -497,7 +497,7 @@ begin
   end;
 end;
 
-//=== TJvDBGridExcelExport ===================================================
+//=== { TJvDBGridExcelExport } ===============================================
 
 constructor TJvDBGridExcelExport.Create(AOwner: TComponent);
 begin
@@ -670,7 +670,7 @@ begin
   end;
 end;
 
-//=== TJvDBGridHTMLExport ====================================================
+//=== { TJvDBGridHTMLExport } ================================================
 
 constructor TJvDBGridHTMLExport.Create(AOwner: TComponent);
 begin
@@ -913,7 +913,7 @@ begin
   FDocument.SaveToFile(FileName);
 end;
 
-//=== TJvDBGridCSVExport =====================================================
+//=== { TJvDBGridCSVExport } =================================================
 
 constructor TJvDBGridCSVExport.Create(AOwner: TComponent);
 begin
@@ -1037,7 +1037,7 @@ begin
   // do nothing
 end;
 
-//=== TJvDBGridXMLExport =====================================================
+//=== { TJvDBGridXMLExport } =================================================
 
 constructor TJvDBGridXMLExport.Create(AOwner: TComponent);
 begin

@@ -184,7 +184,7 @@ implementation
 uses
   JvTypes, JvResources, JvThemes;
 
-//=== TJvCustomCheckedMaskEdit ===============================================
+//=== { TJvCustomCheckedMaskEdit } ===========================================
 
 {Begin/EndInternalChange and InternalChanging implement a simple locking
  mechanism to prevent change processing and display updates during internal

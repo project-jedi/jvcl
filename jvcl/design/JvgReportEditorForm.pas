@@ -294,7 +294,7 @@ begin
   end;
 end;
 
-//=== TJvgComponentListProperty ==============================================
+//=== { TJvgComponentListProperty } ==========================================
 
 function TJvgRepProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -311,7 +311,7 @@ begin
   ShowReportEditor(TJvgReport(GetComponent(0)), True);
 end;
 
-//=== TJvgReportCompEditor ===================================================
+//=== { TJvgReportCompEditor } ===============================================
 
 procedure TJvgReportCompEditor.ExecuteVerb(Index: Integer);
 begin
@@ -338,7 +338,7 @@ begin
   Result := 2;
 end;
 
-//=== TJvgReportEditor =======================================================
+//=== { TJvgReportEditor } ===================================================
 
 procedure TJvgReportEditor.Notification(AComponent: TComponent;
   Operation: TOperation);

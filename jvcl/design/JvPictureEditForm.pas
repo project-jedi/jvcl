@@ -189,7 +189,7 @@ begin
   Result := (Pict.Graphic <> nil) and not Pict.Graphic.Empty;
 end;
 
-//=== TPictureEditDialog =====================================================
+//=== { TPictureEditDialog } =================================================
 
 procedure TPictureEditDialog.SetGraphicClass(Value: TGraphicClass);
 begin

@@ -87,7 +87,7 @@ type
 
 implementation
 
-//=== TJvCustomCipher ==============================================================
+//=== { TJvCustomCipher } ==========================================================
 
 procedure TJvCustomCipher.DecodeList(const Key: string; List: TStrings);
 var
@@ -236,7 +236,7 @@ begin
   FIsStored := True;
 end;
 
-//=== TJvCaesarCipher ========================================================
+//=== { TJvCaesarCipher } ====================================================
 
 procedure TJvCaesarCipher.Decode(const Key: string; Buf: PChar; Size: Cardinal);
 var
@@ -268,7 +268,7 @@ begin
   end;
 end;
 
-//=== TJvXORCipher ===========================================================
+//=== { TJvXORCipher } =======================================================
 
 procedure TJvXORCipher.Decode(const Key: string; Buf: PChar; Size: Cardinal);
 var
@@ -291,7 +291,7 @@ begin
   Decode(Key, Buf, Size);
 end;
 
-//=== TJvVigenereCipher ======================================================
+//=== { TJvVigenereCipher } ==================================================
 
 function TJvVigenereCipher.Trans(Ch: Char; K: Byte): Char;
 begin

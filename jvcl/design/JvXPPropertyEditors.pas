@@ -109,7 +109,7 @@ type
     property HotTrackColor;
   end;
 
-//=== TJvXPCustomImageIndexPropertyEditor ====================================
+//=== { TJvXPCustomImageIndexPropertyEditor } ================================
 
 function TJvXPCustomImageIndexPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
@@ -171,7 +171,7 @@ begin
     Inc(AWidth, ImgList.Width);
 end;
 
-//=== TJvXPItemImageIndexPropertyEditor ======================================
+//=== { TJvXPItemImageIndexPropertyEditor } ==================================
 
 function TJvXPItemImageIndexPropertyEditor.GetImageListAt(Index: Integer):
   TCustomImageList;
@@ -184,7 +184,7 @@ begin
     Result := TJvXPBarItem(Item).Images;
 end;
 
-//=== TJvXPBarItemEditor =====================================================
+//=== { TJvXPBarItemEditor } =================================================
 
 procedure TJvXPBarItemEditor.Edit;
 var

@@ -402,7 +402,7 @@ begin
     SetLength(Result, Length(Result) - 1);
 end;
 
-//=== TJvMonthCalColors ======================================================
+//=== { TJvMonthCalColors } ==================================================
 
 constructor TJvMonthCalColors.Create(AOwner: TJvCustomMonthCalendar);
 begin
@@ -494,7 +494,7 @@ begin
   SetColor(5, FTrailingTextColor);
 end;
 
-//=== TMonthCalStrings =======================================================
+//=== { TMonthCalStrings } ===================================================
 
 type
   TMonthCalStrings = class(TStringList)
@@ -647,7 +647,7 @@ begin
   Result := Values[S];
 end;
 
-//=== TJvCustomMonthCalendar =================================================
+//=== { TJvCustomMonthCalendar } =============================================
 
 constructor TJvCustomMonthCalendar.Create(AOwner: TComponent);
 begin
@@ -1288,7 +1288,7 @@ begin
     OnKillFocus(Self, ANextControl);
 end;
 
-//=== TJvMonthCalAppearance ==================================================
+//=== { TJvMonthCalAppearance } ==============================================
 
 constructor TJvMonthCalAppearance.Create;
 begin

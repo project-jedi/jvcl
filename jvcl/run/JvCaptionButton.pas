@@ -739,7 +739,7 @@ end;
 
 {$IFDEF JVCLThemesEnabled}
 
-//=== TAlphaBitmap ===========================================================
+//=== { TAlphaBitmap } =======================================================
 
 destructor TAlphaBitmap.Destroy;
 begin
@@ -882,7 +882,7 @@ begin
   end;
 end;
 
-//=== TBitmapAdapter =========================================================
+//=== { TBitmapAdapter } =====================================================
 
 constructor TBitmapAdapter.Create;
 begin
@@ -1062,7 +1062,7 @@ begin
   end;
 end;
 
-//=== TGlobalXPData ==========================================================
+//=== { TGlobalXPData } ======================================================
 
 constructor TGlobalXPData.Create;
 begin
@@ -1166,7 +1166,7 @@ end;
 
 {$ENDIF JVCLThemesEnabled}
 
-//=== TJvCaptionButton =======================================================
+//=== { TJvCaptionButton } ===================================================
 
 constructor TJvCaptionButton.Create(AOwner: TComponent);
 begin
@@ -2675,7 +2675,7 @@ begin
   end;
 end;
 
-//=== TJvCaptionButtonActionLink =============================================
+//=== { TJvCaptionButtonActionLink } =========================================
 
 procedure TJvCaptionButtonActionLink.AssignClient(AClient: TObject);
 begin

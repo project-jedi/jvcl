@@ -93,7 +93,7 @@ begin
   end;
 end;
 
-//=== TJvDirectoryListDialog =================================================
+//=== { TJvDirectoryListDialog } =============================================
 
 procedure TJvDirectoryListDialog.CheckButtons;
 begin

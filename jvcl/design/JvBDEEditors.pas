@@ -55,7 +55,7 @@ implementation
 uses
   DB, DBTables;
   
-//=== TJvDatabaseNameProperty ================================================
+//=== { TJvDatabaseNameProperty } ============================================
 
 procedure TJvDatabaseNameProperty.GetValueList(List: TStrings);
 begin
@@ -66,14 +66,14 @@ begin
     Session.GetDatabaseNames(List);
 end;
 
-//=== TJvSessionNameProperty =================================================
+//=== { TJvSessionNameProperty } =============================================
 
 procedure TJvSessionNameProperty.GetValueList(List: TStrings);
 begin
   Sessions.GetSessionNames(List);
 end;
 
-//=== TJvTableNameProperty ===================================================
+//=== { TJvTableNameProperty } ===============================================
 
 procedure TJvTableNameProperty.GetValueList(List: TStrings);
 begin

@@ -404,7 +404,7 @@ begin
 end;
 {$ENDIF COMPILER6_UP}
 
-//=== TJvBalloonWindow =======================================================
+//=== { TJvBalloonWindow } ===================================================
 
 procedure TJvBalloonWindow.ActivateHint(Rect: TRect; const AHint: string);
 begin
@@ -901,7 +901,7 @@ begin
   Msg.Result := 1;
 end;
 
-//=== TJvBalloonHint =========================================================
+//=== { TJvBalloonHint } =====================================================
 
 procedure TJvBalloonHint.ActivateHint(ACtrl: TControl; const AHint: string;
   const AImageIndex: TImageIndex; const AHeader: string;
@@ -1333,7 +1333,7 @@ begin
       Result := DefWindowProc(Handle, Msg, WParam, LParam);
 end;
 
-//=== TGlobalCtrl ============================================================
+//=== { TGlobalCtrl } ========================================================
 
 constructor TGlobalCtrl.Create(AOwner: TComponent);
 begin
@@ -1631,7 +1631,7 @@ begin
   end;
 end;
 
-//=== TJvBalloonWindowEx =====================================================
+//=== { TJvBalloonWindowEx } =================================================
 
 function TJvBalloonWindowEx.CalcHeaderRect(MaxWidth: Integer): TRect;
 begin
