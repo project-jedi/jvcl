@@ -793,7 +793,8 @@ end;
 procedure TJvCustomAppStore.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (AComponent is TJvCustomAppStore) and (Operation = opRemove) then
+  if (AComponent is TJvCustomAppStore) and (Operation = opRemove) and
+    Assigned(SubStores) then
     SubStores.Delete(AComponent as TJvCustomAppStore);
 end;
 
