@@ -24,7 +24,6 @@ object frmMain: TfrmMain
     Height = 295
     ActivePage = tbsFiles
     Align = alClient
-    TabIndex = 0
     TabOrder = 0
     object tbsFiles: TTabSheet
       BorderWidth = 2
