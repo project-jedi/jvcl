@@ -4,6 +4,9 @@ When: 2002-06-01 to 2002-07-01
 
 CHANGES:
 =======
+2002-11-16:
+Merged TJvSpinEdit and TJvxSpinEdit: JvSpinEdit.pas moved to \archive (sbuysee)
+
 Merging of TJvEdit:
 ------------------
 Merged TJvEdit, TJvExEdit, TJvExEdit, TJvCaretEdit and TJvAlignedEdit into new TJvEdit
