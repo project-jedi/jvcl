@@ -314,19 +314,23 @@ type
   TJvTabControl = class(TJvExTabControl)
   private
     FTabPainter: TJvTabControlPainter;
+    FRightClickSelect: boolean;
 {$IFDEF VCL}
     procedure CMDialogKey(var Msg: TWMKey); message CM_DIALOGKEY;
+    procedure WMRButtonDown(var Message: TWMRButtonDown); message WM_RBUTTONDOWN;
 {$ENDIF VCL}
     procedure SetTabPainter(const Value: TJvTabControlPainter); // not WantKeys
   protected
 {$IFDEF VisualCLX}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
 {$ENDIF VisualCLX}
     procedure DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
   published
+    property RightClickSelect:boolean read FRightClickSelect write FRightClickSelect default False;
     property TabPainter: TJvTabControlPainter read FTabPainter write SetTabPainter;
     property HintColor;
     property OnMouseEnter;
@@ -343,9 +347,9 @@ type
     FHintSource: TJvHintSource;
     FReduceMemoryUse: Boolean;
     FTabPainter: TJvTabControlPainter;
+    FRightClickSelect: boolean;
     procedure SetClientBorderWidth(const Value: TBorderWidth);
     procedure TCMAdjustRect(var Msg: TMessage); message TCM_ADJUSTRECT;
-    procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure SetHideAllTabs(const Value: Boolean);
     function FormKeyPreview: Boolean;
     procedure SetReduceMemoryUse(const Value: Boolean);
@@ -360,6 +364,14 @@ type
     procedure DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean); override;
     function CanChange: Boolean; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    {$IFDEF VisualCLX}
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X: Integer; Y: Integer); override;
+    {$ENDIF VisualCLX}
+    {$IFDEF VCL}
+    procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
+    procedure WMRButtonDown(var Message: TWMRButtonDown); message WM_RBUTTONDOWN;
+    {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
     procedure UpdateTabImages;
@@ -369,6 +381,7 @@ type
     property HandleGlobalTab: Boolean read FHandleGlobalTab write FHandleGlobalTab default False;
     property ClientBorderWidth: TBorderWidth read FClientBorderWidth write SetClientBorderWidth default JvDefPageControlBorder;
     property ParentColor;
+    property RightClickSelect:boolean read FRightClickSelect write FRightClickSelect default False;
     property ReduceMemoryUse: Boolean read FReduceMemoryUse write SetReduceMemoryUse default False;
     property HideAllTabs: Boolean read FHideAllTabs write SetHideAllTabs default False;
     property HintColor;
@@ -1389,6 +1402,30 @@ begin
   else
     inherited;
 end;
+
+procedure TJvTabControl.WMRButtonDown(var Message: TWMRButtonDown);
+var
+  I:Integer;
+  R:TRect;
+  P:TPoint;
+begin
+  if RightClickSelect then
+  begin
+    with Message do
+    P := SmallPointToPoint(SmallPoint(XPos,YPos));
+    for I := 0 to Tabs.Count -1 do
+    begin
+      R := TabRect(I);
+      if PtInRect(R, P) then
+      begin
+        TabIndex := I;
+        Break;
+      end;
+    end;
+  end;
+  inherited;
+end;
+
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
@@ -1410,6 +1447,30 @@ begin
   else
     inherited KeyDown(Key, Shift);
 end;
+
+procedure TJvTabControl.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+var
+  I:Integer;
+  R:TRect;
+  P:TPoint;
+begin
+  if RightClickSelect and (Button = mbRight) then
+  begin
+    P := Point(X,Y);
+    for I := 0 to Tabs.Count -1 do
+    begin
+      R := TabRect(I);
+      if PtInRect(R, P) then
+      begin
+        TabIndex := I;
+        Break;
+      end;
+    end;
+  end;
+  inherited;
+end;
+
 {$ENDIF VisualCLX}
 
 procedure TJvTabControl.DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean);
@@ -1428,6 +1489,7 @@ begin
     TabPainter := nil;
 
 end;
+
 
 procedure TJvTabControl.SetTabPainter(const Value: TJvTabControlPainter);
 begin
@@ -1567,6 +1629,7 @@ begin
   inherited UpdateTabImages;
 end;
 
+{$IFDEF VCL}
 procedure TJvPageControl.WMLButtonDown(var Msg: TWMLButtonDown);
 var
   hi: TTCHitTestInfo;
@@ -1597,6 +1660,31 @@ begin
     end;
   inherited;
 end;
+
+procedure TJvPageControl.WMRButtonDown(var Message: TWMRButtonDown);
+var
+  I:Integer;
+  R:TRect;
+  P:TPoint;
+begin
+  if RightClickSelect then
+  begin
+    with Message do
+      P := SmallPointToPoint(SmallPoint(XPos,YPos));
+    for I := 0 to PageCount -1 do
+    begin
+      R := TabRect(I);
+      if PtInRect(R, P) then
+      begin
+        ActivePageIndex := I;
+        Break;
+      end;
+    end;
+  end;
+  inherited;
+end;
+
+{$ENDIF VCL}
 
 function TJvPageControl.HintShow(var HintInfo: THintInfo): Boolean;
 var
@@ -1674,6 +1762,31 @@ begin
   if (Operation = opRemove) and (AComponent = TabPainter) then
     TabPainter := nil;
 end;
+
+{$IFDEF VisualCLX}
+procedure TJvPageControl.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  I:Integer;
+  R:TRect;
+  P:TPoint;
+begin
+  if RightClickSelect and (Button = mbRight) then
+  begin
+    P := Point(X,Y);
+    for I := 0 to PageCount -1 do
+    begin
+      R := TabRect(I);
+      if PtInRect(R, P) then
+      begin
+        ActivePageIndex := I;
+        Break;
+      end;
+    end;
+  end;
+  inherited;
+end;
+{$ENDIF VisualCLX}
 
 //=== TJvTrackBar ============================================================
 
@@ -2619,6 +2732,7 @@ begin
     Change;
   end;
 end;
+
 
 
 end.
