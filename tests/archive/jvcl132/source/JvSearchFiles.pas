@@ -136,7 +136,7 @@ begin
     if Mask[i] = '.' then
       HasStar := false;
     //    if Mask[i] in [',',';'] then Exit;
-    AppendStr(Result, Mask[i]);
+    Result := Result + Mask[i];
   end;
 end;
 
