@@ -287,9 +287,9 @@ end;
 procedure TJvCustomImageButton.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  inherited;
+  inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = Images) then
-    Images:= nil;
+    Images := nil;
 end;
 
 {$IFDEF VCL}

@@ -1549,7 +1549,7 @@ var
   I: Integer;
   AParent: TWidgetControl;
 begin
-  AParent:= ParentA;
+  AParent := ParentA;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvWizardRouteMapControl.SetParent(AParent: TWinControl);

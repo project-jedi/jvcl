@@ -654,7 +654,7 @@ begin
         First;
         while not Eof do
         begin
-          fbnString:=FieldByName(FDetailField).AsString; // avoid overhead
+          fbnString := FieldByName(FDetailField).AsString; // avoid overhead
           if FUseFilter or
             (((ParentValue = Null) and
             ((fbnString = '') or
@@ -1307,6 +1307,7 @@ procedure TJvCustomDBTreeView.KeyDown(var Key: Word; Shift: TShiftState);
     if MessageDlg(Format(M, [Selected.Text]), mtConfirmation, [mbYes, mbNo], 0) = mrYes then
       DeleteNode(Selected);
   end;
+
 begin
   inherited KeyDown(Key, Shift);
   if not ValidDataSet or (FDataLink.ReadOnly) or ReadOnly then

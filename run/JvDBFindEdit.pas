@@ -266,10 +266,9 @@ end;
 
 procedure TJvDBFindEdit.ResetFilter;
 begin
-  Text:='';
-// FSearchText:='';
+  Text :='';
+  // FSearchText := '';
   FDataLink.DataSet.Filtered := False;
-
 end;
 
 procedure TJvDBFindEdit.FTimerTimer(Sender: TObject);

@@ -592,13 +592,13 @@ end;
 
 constructor TJvHLEditorParamsForm.Create(AOwner: TComponent);
 var
-  hl: TJvHighlighter;
+  HL: TJvHighlighter;
 begin
   inherited Create(AOwner);
   FColorSamples := TStringList.Create;
   cbColorSettings.Clear;
-  for hl:=Low(TJvHighlighter) to Pred(High(TJvHighlighter)) do
-    cbColorSettings.Items.AddObject(HighlighterNames[hl], nil);
+  for HL := Low(TJvHighlighter) to Pred(High(TJvHighlighter)) do
+    cbColorSettings.Items.AddObject(HighlighterNames[HL], nil);
 end;
 
 destructor TJvHLEditorParamsForm.Destroy;

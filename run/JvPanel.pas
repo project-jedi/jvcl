@@ -285,8 +285,8 @@ begin
   FMaxWidth := 0;
   FBorderLeft := 0;
   FBorderTop := 0;
-  FDistanceVertical:= 0;
-  FDistanceHorizontal:= 0;
+  FDistanceVertical := 0;
+  FDistanceHorizontal := 0;
   WrapControls := True;
   ShowNotVisibleAtDesignTime := True;
   FAutoSize := asNone;

@@ -64,7 +64,7 @@ type
     FTopDocked: Boolean;
     FRightDocked: Boolean;
     FBottomDocked: Boolean;
-    FCustomDocked : Boolean; {NEW! Contains custom dock panel! } 
+    FCustomDocked: Boolean; {NEW! Contains custom dock panel! }
     FDockFormStyle: TJvDockFormStyle;
     FDockClientData: string;
     FDockControl: TWinControl;
@@ -74,7 +74,6 @@ type
     procedure SetDockInfoFromNodeToControl(Control: TControl); virtual;
     procedure SetDockInfoFromDockControlToNode(DockControl: TJvDockBaseControl); virtual;
     procedure SetDockInfoFromNodeToDockControl(DockControl: TJvDockBaseControl); virtual;
-
     property DockFormName: string read FDockFormName write FDockFormName;
     property ParentName: string read FParentName write FParentName;
     property DockRect: TRect read FDockRect write FDockRect;
@@ -96,8 +95,7 @@ type
     property TopDocked: Boolean read FTopDocked write FTopDocked;
     property RightDocked: Boolean read FRightDocked write FRightDocked;
     property BottomDocked: Boolean read FBottomDocked write FBottomDocked;
-    property CustomDocked : Boolean read FCustomDocked  write FCustomDocked; {NEW! Contains custom dock panel! }
-
+    property CustomDocked: Boolean read FCustomDocked  write FCustomDocked; {NEW! Contains custom dock panel! }
     property DockFormStyle: TJvDockFormStyle read FDockFormStyle write FDockFormStyle;
     property DockClientData: string read FDockClientData write FDockClientData;
     property DockControl: TWinControl read FDockControl write FDockControl;
@@ -108,16 +106,16 @@ type
   // implement persistence (loading and saving of docking layouts).
   //
   TJvDockInfoStyle =
-    (   isNone,  {  No mode set }
-{$IFDEF USEJVCL}
-        isJVCLReadInfo,  { Mode for this scan is JVCL App Storage Load }
-        isJVCLWriteInfo, { Mode for this scan is JVCL App Storage Save }
-{$endif}
-        isReadFileInfo,  { Mode for this scan is Text File Read.  Backwards compatible.  }
-        isWriteFileInfo, { Mode for this scan is Text File Write. Backwards compatible.  }
+    (isNone,  {  No mode set }
+     {$IFDEF USEJVCL}
+     isJVCLReadInfo,  { Mode for this scan is JVCL App Storage Load }
+     isJVCLWriteInfo, { Mode for this scan is JVCL App Storage Save }
+     {$ENDIF USEJVCL}
+     isReadFileInfo,  { Mode for this scan is Text File Read.  Backwards compatible.  }
+     isWriteFileInfo, { Mode for this scan is Text File Write. Backwards compatible.  }
 
-        isReadRegInfo,   { Mode for this scan is registry Read }
-        isWriteRegInfo); { Mode for this scan is registry Write }
+     isReadRegInfo,   { Mode for this scan is registry Read }
+     isWriteRegInfo); { Mode for this scan is registry Write }
 
   { JvDockInfoTree contains information about the docking tree.  It is created
     as part of the persistence framework for the JvDocking components. In order
@@ -133,7 +131,7 @@ type
     FDockInfoIni: TCustomIniFile;
     FDockInfoReg: TRegistry;
     FRegName: string;
-    FJvDockInfoStyle: TJvDockInfoStyle; {Which action to do when doing a ScanTreeZone() recursive operation over the document tree.}
+    FJvDockInfoStyle: TJvDockInfoStyle; { Which action to do when doing a ScanTreeZone() recursive operation over the document tree. }
     FDataStream: TMemoryStream;
     function FindDockForm(const FormName: string): TCustomForm;
     function CreateHostControl(ATreeZone: TJvDockInfoZone): TWinControl;
@@ -394,7 +392,7 @@ end;
 procedure TJvDockInfoTree.CreateZoneAndAddInfoFromAppStorage;
 var
   FormList: TStringList;
-  cp, cp1: PChar;
+  CP, CP1: PChar;
   S, APath: string;
   I: Integer;
 
@@ -436,7 +434,7 @@ var
           TopDocked := ReadBoolean('TopDocked');
           RightDocked := ReadBoolean('RightDocked');
           BottomDocked := ReadBoolean('BottomDocked');
-          CustomDocked := ReadBoolean('CustomDocked');{NEW}
+          CustomDocked := ReadBoolean('CustomDocked'); {NEW}
           DockClientData := ReadString('DockClientData');
         finally
           FAppStorage.Path := OldPath;
@@ -467,14 +465,14 @@ begin
         as is the case with TJvAppXMLFileStorage. Not using UniqueString would
         change the value in the storage too. }
       UniqueString(S);
-      cp := PChar(S);
-      cp1 := StrPos(cp, ';');
-      while cp1 <> nil do
+      CP := PChar(S);
+      CP1 := StrPos(CP, ';');
+      while CP1 <> nil do
       begin
-        cp1^ := #0;
-        FormList.Add(string(cp));
-        cp := cp1 + 1;
-        cp1 := StrPos(cp, ';');
+        CP1^ := #0;
+        FormList.Add(CP);
+        CP := CP1 + 1;
+        CP1 := StrPos(CP, ';');
       end;
       for I := FormList.Count - 1 downto 0 do
         if FAppStorage.ReadString(FAppStorage.ConcatPaths([AppStoragePath, 'Forms', FormList[I], 'ParentName'])) = '' then
@@ -574,7 +572,7 @@ var
       TreeZone.TopDocked := TopDocked;
       TreeZone.RightDocked := RightDocked;
       TreeZone.BottomDocked := BottomDocked;
-      TreeZone.CustomDocked := CustomDocked;{NEW!}
+      TreeZone.CustomDocked := CustomDocked; {NEW!}
       TreeZone.DockClientData := DockClientData;
     end;
 
@@ -605,7 +603,7 @@ end;
 procedure TJvDockInfoTree.CreateZoneAndAddInfoFromReg;
 var
   FormList: TStringList;
-  cp, cp1: PChar;
+  CP, CP1: PChar;
   I: Integer;
   S: string;
 
@@ -666,14 +664,14 @@ begin
     if DockInfoReg.OpenKey(FRegName, False) then
     begin
       S := DockInfoReg.ReadString('FormNames');
-      cp := PChar(S);
-      cp1 := StrPos(cp, '\');
-      while cp1 <> nil do
+      CP := PChar(S);
+      CP1 := StrPos(CP, '\');
+      while CP1 <> nil do
       begin
-        cp1^ := #0;
-        FormList.Add(string(cp));
-        cp := cp1 + 1;
-        cp1 := StrPos(cp, '\');
+        CP1^ := #0;
+        FormList.Add(CP);
+        CP := CP1 + 1;
+        CP1 := StrPos(CP, '\');
       end;
       FJvDockInfoStyle := isReadFileInfo;
       for I := FormList.Count - 1 downto 0 do
@@ -810,7 +808,7 @@ begin
           WriteBoolean('TopDocked', TopDocked);
           WriteBoolean('RightDocked', RightDocked);
           WriteBoolean('BottomDocked', BottomDocked);
-          WriteBoolean('CustomDocked',CustomDocked);{NEW!}
+          WriteBoolean('CustomDocked',CustomDocked); {NEW!}
           WriteString('DockClientData', DockClientData);
         finally
           FAppStorage.Path := OldPath;
@@ -1112,10 +1110,12 @@ begin
   else
     VSPaneWidth := 0;
 end;
+
 { When restoring a Control (form) properties when loading layout, this sets one form's properties.}
+
 procedure TJvDockInfoZone.SetDockInfoFromNodeToControl(Control: TControl);
 var
-  lbDockServer: TJvDockServer;
+  DS: TJvDockServer;
 
   procedure SetPopupPanelSize(PopupPanel: TJvDockVSPopupPanel);
   begin
@@ -1150,13 +1150,13 @@ begin
         else
           SetDockSiteSize(Control as TJvDockPanel);
       end;
-      lbDockServer := FindDockServer(Control);
-      if lbDockServer <> nil then
+      DS := FindDockServer(Control);
+      if DS <> nil then
       begin
-        lbDockServer.GetClientAlignControl(alTop);
-        lbDockServer.GetClientAlignControl(alBottom);
-        lbDockServer.GetClientAlignControl(alLeft);
-        lbDockServer.GetClientAlignControl(alRight);
+        DS.GetClientAlignControl(alTop);
+        DS.GetClientAlignControl(alBottom);
+        DS.GetClientAlignControl(alLeft);
+        DS.GetClientAlignControl(alRight);
       end;
     finally
       TWinControl(Control).EnableAlign;
@@ -1168,7 +1168,9 @@ begin
   Control.UnDockHeight := UnDockHeight;
   Control.UnDockWidth := UnDockWidth;
 end;
+
 { Restores settings in the TjvDockClient inside the form, when loading docking layout. }
+
 procedure TJvDockInfoZone.SetDockInfoFromNodeToDockControl(DockControl: TJvDockBaseControl);
 
   function GetLastDockSite(const AName: string): TWinControl;
@@ -1201,7 +1203,7 @@ begin
   DockControl.LeftDock := LeftDocked;
   DockControl.TopDock := TopDocked;
   DockControl.BottomDock := BottomDocked;
-  DockControl.CustomDock := CustomDocked;{NEW!}
+  DockControl.CustomDock := CustomDocked; {NEW!}
   DockControl.RightDock := RightDocked;
 end;
 

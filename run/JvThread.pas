@@ -81,7 +81,7 @@ type
     function GetThreads(Index: Integer): TJvBaseThread;
     function GetTerminated: Boolean;
     procedure CreateThreadDialogForm;
-    function GetLastThread : TJvBaseThread;
+    function GetLastThread: TJvBaseThread;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -152,7 +152,6 @@ begin
   end;
 end;
 
-
 //=== { TJvThread } ==========================================================
 
 constructor TJvThread.Create(AOwner: TComponent);
@@ -189,7 +188,7 @@ begin
       FThreadDialog := nil
     else
     if AComponent = FThreadDialogForm then
-      FThreadDialogForm:= nil
+      FThreadDialogForm := nil
 end;
 
 function TJvThread.Execute(P: Pointer): THandle;
@@ -396,16 +395,16 @@ end;
 
 procedure TJvBaseThread.InternalMessageDlg;
 begin
-  FSynchMessageDlgResult := MessageDlg (FSynchMsg, FSynchAType, FSynchAButtons, FSynchHelpCtx);
+  FSynchMessageDlgResult := MessageDlg(FSynchMsg, FSynchAType, FSynchAButtons, FSynchHelpCtx);
 end;
 
 function TJvBaseThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
 begin
   FSynchMsg := Msg;
-  FSynchAType:= AType;
-  FSynchAButtons:= AButtons;
-  FSynchHelpCtx:= HelpCtx;
-  Synchronize (InternalMessageDlg);
+  FSynchAType := AType;
+  FSynchAButtons := AButtons;
+  FSynchHelpCtx := HelpCtx;
+  Synchronize(InternalMessageDlg);
   Result := FSynchMessageDlgResult;
 end;
 
@@ -446,7 +445,6 @@ initialization
 
 finalization
   CloseHandle(SyncMtx);
-
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

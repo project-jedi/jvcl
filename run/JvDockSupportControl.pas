@@ -40,7 +40,7 @@ uses
 type
   TJvDockDragDockObject = class(TObject)
   private
-//    FDockClient:TObject;{NEW: Opaque reference to TJvDockClient}
+    // FDockClient:TObject;{NEW: Opaque reference to TJvDockClient}
     FMouseDeltaX: Double;
     FMouseDeltaY: Double;
     FControl: TControl;
@@ -106,8 +106,7 @@ type
     property TargetControl: TWinControl read GetTargetControl write SetTargetControl;
 
     {DockClient: Opaque reference to TJvDockClient. Nil if none.}    
-//    property DockClient:TObject read FDockClient write FDockClient;
-
+    // property DockClient:TObject read FDockClient write FDockClient;
   end;
 
   {$IFDEF USEJVCL}
@@ -246,8 +245,7 @@ type
     property Style: TTabStyle read FStyle write SetStyle default tsTabs;
     property TabHeight: Smallint read FTabSize.Y write SetTabHeight default 0;
     property TabIndex: Integer read GetTabIndex write SetTabIndex default -1;
-    property TabPosition: TTabPosition read FTabPosition write SetTabPosition
-      default tpTop;
+    property TabPosition: TTabPosition read FTabPosition write SetTabPosition default tpTop;
     property Tabs: TStrings read GetTabs write SetTabs;
     property TabWidth: Smallint read FTabSize.X write SetTabWidth default 0;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -819,8 +817,8 @@ end;
 
 function TJvDockCustomPanel.CreateDockManager: IDockManager;
 var
- aDockStyle:TJvDockBasicStyle;
-// aDockClient:TJvDockClient;
+  DS: TJvDockBasicStyle;
+  // DC: TJvDockClient;
 begin
   // Wow, TJvDockCustomPanel.CreateDockManager is actually checking that
   // it is a particular Subclass of itself in this case. I guess that this method
@@ -832,55 +830,46 @@ begin
     (TJvDockConjoinPanel(Self).DockClient.DockStyle.ConjoinPanelTreeClass <> nil) and
     (TJvDockConjoinPanel(Self).DockClient.DockStyle.ConjoinPanelTreeClass <> TJvDockTreeClass(ClassType)) then
   begin
-    if (DockManager = nil) and DockSite and UseDockManager then begin
-        { Given a custom panel, to create the dock manager (which is an
-          interface, IDockManager, but is of a delphi Class that descends
-          from TJvDockTree), we have to do a dynamic constructor. The
-          class of object created here is stored in
-             TJvDockConjoinPanel(Self).DockClient.DockStyle.ConjoinPanelTreeClass
-          and we pass in the owner,
+    if (DockManager = nil) and DockSite and UseDockManager then
+    begin
+      { Given a custom panel, to create the dock manager (which is an
+        interface, IDockManager, but is of a delphi Class that descends
+        from TJvDockTree), we have to do a dynamic constructor. The
+        class of object created here is stored in
+           TJvDockConjoinPanel(Self).DockClient.DockStyle.ConjoinPanelTreeClass
+        and we pass in the owner,
       }
-      aDockStyle := TJvDockConjoinPanel(Self).DockClient.DockStyle;
-      Result := aDockStyle.ConjoinPanelTreeClass.Create(
-                              {ADockSite}      Self,
-                              {ADockZoneClass} aDockStyle.ConjoinPanelZoneClass,
-                                               aDockStyle
-                          ) as IJvDockManager; // cast VCL object to Interface IDockManager
-    end else
+      DS := TJvDockConjoinPanel(Self).DockClient.DockStyle;
+      Result := DS.ConjoinPanelTreeClass.Create(Self, DS.ConjoinPanelZoneClass,
+        DS) as IJvDockManager; // cast VCL object to Interface IDockManager
+    end
+    else
       Result := DockManager;
   end
   else
   if (Self is TJvDockPanel) and
-    (TJvDockPanel(Self).DockServer <> nil) then begin
-    aDockStyle := TJvDockPanel(Self).DockServer.DockStyle;
-    if ((aDockStyle<> nil) and
-        (aDockStyle.DockPanelTreeClass <> nil) and
-        (aDockStyle.DockPanelTreeClass <> TJvDockTreeClass(ClassType)) ) then
+    (TJvDockPanel(Self).DockServer <> nil) then
   begin
-    if (DockManager = nil) and DockSite and UseDockManager then begin
+    DS := TJvDockPanel(Self).DockServer.DockStyle;
+    if ((DS <> nil) and (DS.DockPanelTreeClass <> nil) and
+      (DS.DockPanelTreeClass <> TJvDockTreeClass(ClassType))) then
+    begin
+      if (DockManager = nil) and DockSite and UseDockManager then
         /// This is a fallback, kind of ugly!  This is used for the JVVSNET
         // and other special panel types only.
-
-          Result := aDockStyle.DockPanelTreeClass.Create(
-                    {DockSite} Self,
-                    {DockZoneClass} aDockStyle.DockPanelZoneClass,
-                    {DockStyle}  aDockStyle ) as IJvDockManager;
-
-
-    end else begin
+        Result := DS.DockPanelTreeClass.Create(Self, DS.DockPanelZoneClass, DS) as IJvDockManager
+      else
+        Result := DockManager;
+    end
+    else
       Result := DockManager;
-    end;
-  end else begin
-    Result := DockManager;
-  end;
   end
   else
   begin
-
-    if (DockManager = nil) and DockSite and UseDockManager then begin
-      //aDockStyle := ????
-      Result := DefaultDockTreeClass.Create( Self, DefaultDockZoneClass, nil{aDockStyle} ) as IJvDockManager
-    end else
+    if (DockManager = nil) and DockSite and UseDockManager then
+      //DS := ????
+      Result := DefaultDockTreeClass.Create( Self, DefaultDockZoneClass, nil {DS}) as IJvDockManager
+    else
       Result := DockManager;
   end;
   DoubleBuffered := DoubleBuffered or (Result <> nil);
@@ -1695,7 +1684,7 @@ begin
   if FTabSize.X <> Value then
   begin
     if Value < 0 then
-      raise EInvalidOperation.CreateResFmt(@SPropertyOutOfRange, [Self.Classname]);
+      raise EInvalidOperation.CreateResFmt(@SPropertyOutOfRange, [Self.ClassName]);
     OldValue := FTabSize.X;
     FTabSize.X := Value;
     if (OldValue = 0) or (Value = 0) then
@@ -1994,69 +1983,86 @@ end;
 procedure TJvDockDragDockObject.MouseMsg(var Msg: TMessage);
 var
   P: TPoint;
-  procedure DoDragDone( dropFlag:Boolean ); {NEW! Warren added.}
+
+  procedure DoDragDone(DropFlag: Boolean); {NEW! Warren added.}
   var
-      aDockServer : TJvDockServer;
-      aDockClient : TJvDockClient;
-      aDockPanel  : TJvDockPanel;
-      aDockForm   : TForm;
+    DS: TJvDockServer;
+    DC: TJvDockClient;
+    DP: TJvDockPanel;
+    DF: TForm;
   begin
-      if not Assigned(JvGlobalDockManager) then exit;
+    if not Assigned(JvGlobalDockManager) then
+      Exit;
 
-      if (dropFlag)   and Assigned(FControl) then begin // only do this if dropFlag is true and there is a control (usually a form) we are dragging
-              if not Assigned(TargetControl) then begin
+    if DropFlag and Assigned(FControl) then
+    begin
+      // only do this if DropFlag is true and there is a control (usually a form) we are dragging
+      if not Assigned(TargetControl) then
+      begin
+        {$IFDEF JVDOCK_DEBUG}
+        OutputDebugString('TJvDockDragDockObject.MouseMsg.DoDragDone: User drag finished, TargetControl=nil, user made form floating.');
+        {$ENDIF JVDOCK_DEBUG}
 
-                  OutputDebugString('TJvDockDragDockObject.MouseMsg.DoDragDone: User drag finished, TargetControl=nil, user made form floating.');
+        {In this case, we're dragging something off and making it floating. }
+          {if Assigned(FControl) then
+            DC := FindDockClient(FControl)
+          else
+             DC := nil;
 
-                {In this case, we're dragging something off and making it floating. }
-                  {if Assigned(FControl) then
-                    aDockClient := FindDockClient(FControl)
-                  else
-                     aDockClient := nil;
-
-                  aDockPanel := nil;
-                  aDockServer := nil;
-                  aDockForm := nil;
-                  if Assigned(aDockClient) then begin
-                    if Assigned(aDockClient.OnCheckIsDockable) then begin
-                        aDockClient.OnCheckIsDockable( aDockClient, aDockForm, aDockServer, aDockPanel, dropFlag );
-                    end;
-                  end;}
-
-              end else if TargetControl is TJvDockPanel then begin
-                { In this case, we're about to dock to a TJvDockPanel }
-                  {aDockPanel := TargetControl as TJvDockPanel;
-                  aDockServer := aDockPanel.DockServer;
-                  aDockClient := FindDockClient(FControl);
-                  if FControl is TForm then
-                    aDockForm := FControl as TForm
-                  else
-                    aDockForm := nil;
-                  if Assigned(aDockClient.OnCheckIsDockable) then begin
-                      aDockClient.OnCheckIsDockable( aDockClient, aDockForm, aDockServer, aDockPanel, dropFlag );
-                  end;}
-              end else  if TargetControl is TForm then begin
-                { This appears to have something to do with conjoined and tabbed host forms }
-                  aDockClient := FindDockClient(TargetControl);
-                  aDockPanel := nil;
-                  aDockServer := nil;
-                  if FControl is TForm then 
-                      aDockForm := FControl as TForm
-                  else
-                      aDockForm := nil;
-                  if Assigned(aDockClient.OnCheckIsDockable) then begin
-                      aDockClient.OnCheckIsDockable( aDockClient, aDockForm, aDockServer, aDockPanel, dropFlag );
-                  end;
-              end else begin
-                  // Debug message!
-                  OutputDebugString('TJvDockDragDockObject.MouseMsg.DoDragDone: TargetControl is not an expected type!');
-              end;
+          DP := nil;
+          DS := nil;
+          DF := nil;
+          if Assigned(DC) then begin
+            if Assigned(DC.OnCheckIsDockable) then begin
+                DC.OnCheckIsDockable( DC, DF, DS, DP, DropFlag );
+            end;
+          end;}
+      end
+      else
+      if TargetControl is TJvDockPanel then
+      begin
+        { In this case, we're about to dock to a TJvDockPanel }
+          {DP := TargetControl as TJvDockPanel;
+          DS := DP.DockServer;
+          DC := FindDockClient(FControl);
+          if FControl is TForm then
+            DF := FControl as TForm
+          else
+            DF := nil;
+          if Assigned(DC.OnCheckIsDockable) then begin
+              DC.OnCheckIsDockable( DC, DF, DS, DP, DropFlag );
+          end;}
+      end
+      else
+      if TargetControl is TForm then
+      begin
+        { This appears to have something to do with conjoined and tabbed host forms }
+        DC := FindDockClient(TargetControl);
+        DP := nil;
+        DS := nil;
+        if FControl is TForm then
+          DF := FControl as TForm
+        else
+          DF := nil;
+        if Assigned(DC.OnCheckIsDockable) then
+          DC.OnCheckIsDockable(DC, DF, DS, DP, DropFlag);
+      end
+      else
+      begin
+        {$IFDEF JVDOCK_DEBUG}
+        // Debug message!
+        OutputDebugString('TJvDockDragDockObject.MouseMsg.DoDragDone: TargetControl is not an expected type!');
+        {$ENDIF JVDOCK_DEBUG}
       end;
-      Assert(Assigned(JvGlobalDockManager));
-      Assert(Assigned(JvGlobalDockClient));
-      JvGlobalDockManager.DragDone(dropFlag);
-      OutputDebugString('DoDragDone completed.');
+    end;
+    Assert(Assigned(JvGlobalDockManager));
+    Assert(Assigned(JvGlobalDockClient));
+    JvGlobalDockManager.DragDone(DropFlag);
+    {$IFDEF JVDOCK_DEBUG}
+    OutputDebugString('DoDragDone completed.');
+    {$ENDIF JVDOCK_DEBUG}
   end;
+
 begin
   try
     case Msg.Msg of
@@ -2067,17 +2073,17 @@ begin
           JvGlobalDockManager.DragTo(P);
         end;
       WM_CAPTURECHANGED:
-        DoDragDone(False);//JvGlobalDockManager.DragDone(False);
+        DoDragDone(False); //JvGlobalDockManager.DragDone(False);
       WM_LBUTTONUP, WM_RBUTTONUP:
         if not JvGlobalDockClient.CanFloat then
         begin
           if (TargetControl = nil) and (JvGlobalDockClient.ParentForm.HostDockSite = nil) then
-            DoDragDone(True)//JvGlobalDockManager.DragDone(True)
+            DoDragDone(True) //JvGlobalDockManager.DragDone(True)
           else
-            DoDragDone(TargetControl <> nil);//JvGlobalDockManager.DragDone(TargetControl <> nil);
+            DoDragDone(TargetControl <> nil); //JvGlobalDockManager.DragDone(TargetControl <> nil);
         end
         else
-          DoDragDone(True);//JvGlobalDockManager.DragDone(True);
+          DoDragDone(True); //JvGlobalDockManager.DragDone(True);
       CN_KEYUP:
         if Msg.WParam = VK_CONTROL then
         begin
@@ -2094,13 +2100,13 @@ begin
           VK_ESCAPE:
             begin
               Msg.Result := 1;
-              DoDragDone(False);//JvGlobalDockManager.DragDone(False);
+              DoDragDone(False); //JvGlobalDockManager.DragDone(False);
             end;
         end;
     end;
   except
     if JvGlobalDockManager.FDragControl <> nil then
-        DoDragDone(False);//JvGlobalDockManager.DragDone(False);
+        DoDragDone(False); //JvGlobalDockManager.DragDone(False);
     raise;
   end;
 end;
@@ -2414,7 +2420,7 @@ begin
 
       {Check before we undock, then check if the drop is going to be accepted }
       
-      Accepted := {local function:}CheckUndock and {DragDone parameter:}Drop;
+      Accepted := {local function:} CheckUndock and {DragDone parameter:} Drop;
 
       if FActiveDrag = dopDock then
       begin
@@ -2435,7 +2441,8 @@ begin
           Windows.SetCursor(FDragSaveCursor);
       end;
       FDragControl := nil;
-      if DragSave.DragTarget <> nil then begin
+      if DragSave.DragTarget <> nil then
+      begin
         if not Accepted then
         begin
           DragSave.DragPos := Point(0, 0);
@@ -2816,7 +2823,8 @@ end;
 
 {$IFDEF USEJVCL}
 
-procedure TJvDockManager.LoadDockTreeFromAppStorage(AppStorage: TJvCustomAppStorage; const AppStoragePath: string = '');
+procedure TJvDockManager.LoadDockTreeFromAppStorage(AppStorage: TJvCustomAppStorage;
+  const AppStoragePath: string = '');
 begin
   BeginLoad;
   try
@@ -2892,7 +2900,8 @@ end;
 
 {$IFDEF USEJVCL}
 
-procedure TJvDockManager.SaveDockTreeToAppStorage(AppStorage: TJvCustomAppStorage; const AppStoragePath: string = '');
+procedure TJvDockManager.SaveDockTreeToAppStorage(AppStorage: TJvCustomAppStorage;
+  const AppStoragePath: string = '');
 begin
   BeginSave;
   try

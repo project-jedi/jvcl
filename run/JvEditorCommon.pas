@@ -3708,12 +3708,12 @@ begin
       IsSelected := False;
       Selecting := True;
       if SelBlockFormat = bfLine then
-        AdjustSelLineMode({Restore:=}False);
+        AdjustSelLineMode(False); // Restore :=
     end
     else
     begin
       if SelBlockFormat = bfLine then
-        AdjustSelLineMode({Restore:=}True);
+        AdjustSelLineMode(True); // Restore :=
 
       FUpdateSelBegY := SelBegY;
       FUpdateSelEndY := SelEndY;
@@ -5060,10 +5060,10 @@ begin
             if ACommand <> ecLineBlock then
             begin
               if FSelection.SelBlockFormat = bfLine then
-                AdjustSelLineMode({Restore:=}True);
+                AdjustSelLineMode(True); // Restore :=
             end
             else
-              AdjustSelLineMode({Restore:=}False);
+              AdjustSelLineMode(False); // Restore :=
           end;
 
           FSelection.SelBlockFormat := TJvSelBlockFormat(ACommand - ecInclusiveBlock);

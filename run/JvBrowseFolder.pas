@@ -1124,7 +1124,7 @@ begin
         if not PidlFree(FPidl) then
         begin
           Assert(False);    // FPidl comes from shell, so PidlFree should never fail
-          FPidl:= nil;      // in case building without assertions, need to ensure FPidl is nil
+          FPidl := nil;     // in case building without assertions, need to ensure FPidl is nil
         end;
         FPidl := SHBrowseForFolder(BrowseInfo);
       finally

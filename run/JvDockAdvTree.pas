@@ -1,17 +1,48 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvDockAdvTree.pas, released on 2005-02-14.
+
+The Initial Developer of the Original Code is luxiaoban.
+Portions created by luxiaoban are Copyright (C) 2002,2003 luxiaoban.
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: 2005-02-08
+
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+
+Description:
+  Code split out from JvDockTree.pas because of compiler issues - WPostma.
+
+Known Issues:
+-----------------------------------------------------------------------------}
+// $Id$
+
 unit JvDockAdvTree;
 
-{Code split out from JvDockTree.pas because of compiler issues - WPostma. }
+{$I jvcl.inc}
 
 interface
 
-uses  Windows, Messages, Classes, Graphics, Controls, Forms,
+uses
+  Windows, Messages, Classes, Graphics, Controls, Forms,
   JvDockSupportClass, JvDockTree;
 
 type
-
   TJvDockAdvTree = class(TJvDockTree)
   private
-
     FButtonHeight: Integer;
     FButtonWidth: Integer;
     FLeftOffset: Integer;
@@ -54,7 +85,8 @@ type
     procedure ShiftZone(Zone: TJvDockZone); override;
     procedure RemoveZone(Zone: TJvDockZone; Hide: Boolean); override;
   public
-    constructor Create(DockSite: TWinControl; ADockZoneClass: TJvDockZoneClass; ADockStyle:TComponent{TJvDockBasicStyle}); override;
+    constructor Create(DockSite: TWinControl; ADockZoneClass: TJvDockZoneClass;
+      ADockStyle: TComponent {TJvDockBasicStyle}); override;
     property BottomOffset: Integer read FBottomOffset write SetBottomOffset;
     property ButtonHeight: Integer read FButtonHeight write SetButtonHeight;
     property ButtonSplitter: Integer read FButtonSplitter write SetButtonSplitter;
@@ -69,18 +101,17 @@ type
     property DropDockSize: Integer read FDropDockSize write SetDropDockSize;
   end;
 
-
 implementation
 
-uses JvDockControlForm;
+uses
+  JvDockControlForm;
 
 //=== { TJvDockAdvTree } =====================================================
 
 constructor TJvDockAdvTree.Create(DockSite: TWinControl;
-  ADockZoneClass: TJvDockZoneClass;ADockStyle:TComponent{TJvDockBasicStyle});
+  ADockZoneClass: TJvDockZoneClass; ADockStyle: TComponent {TJvDockBasicStyle});
 begin
   inherited Create(DockSite, ADockZoneClass, ADockStyle);
-
   FButtonHeight := 12;
   FButtonWidth := 12;
   FLeftOffset := 0;
@@ -88,9 +119,10 @@ begin
   FTopOffset := 0;
   FBottomOffset := 0;
   FButtonSplitter := 2;
-   if DockSite is TJvDockAdvPanel then begin {NEW!}
-      Assert(not Assigned(TJvDockADVPanel(DockSite).ADVTree));
-      TJvDockAdvPanel(DockSite).ADVTree := Self;
+  if DockSite is TJvDockAdvPanel then
+  begin {NEW!}
+    Assert(not Assigned(TJvDockADVPanel(DockSite).ADVTree));
+    TJvDockAdvPanel(DockSite).ADVTree := Self;
   end;
 end;
 
@@ -314,6 +346,22 @@ begin
   FDropDockSize := Value;
 end;
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
 
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.

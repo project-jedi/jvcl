@@ -139,7 +139,7 @@ begin
   with ColorSpaceManager do
   begin
     CS := TJvDEFColorSpace(ColorSpace[csDEF]);
-    for Index:=0 to CS.ColorCount-1 do
+    for Index := 0 to CS.ColorCount - 1 do
       JvFullColorGroup.Items.Add(CS.ConvertFromColor(CS.ColorValue[Index]));
     LabelDrawOld.Color := ConvertToColor(FullColor);
     JvColorSpaceCombo.ColorSpaceID := GetColorSpaceID(FullColor);
@@ -241,7 +241,7 @@ begin
   with (Sender as TJvFullColorGroup), ColorSpaceManager do
     if (SelectedIndex>-1) then
   begin
-    JvColorSpaceCombo.ColorSpaceID:=GetColorSpaceID(Selected);
+    JvColorSpaceCombo.ColorSpaceID := GetColorSpaceID(Selected);
     FullColor := Selected;
   end;
   FUpdating := False;
@@ -327,7 +327,7 @@ begin
   JvColorSpaceCombo.ColorSpaceID := LColorID;
 
   NewIndex := -1;
-  DefColorSpace:=ColorSpaceManager.ColorSpace[csDEF];
+  DefColorSpace := ColorSpaceManager.ColorSpace[csDEF];
   with ColorBox, Items, ColorSpaceManager do
   begin
     for J := 0 to Items.Count - 1 do

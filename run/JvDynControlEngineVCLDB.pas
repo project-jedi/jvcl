@@ -663,7 +663,7 @@ end;
 
 procedure TJvDynControlVCLDBButtonEdit.ControlSetOnButtonClick(Value: TNotifyEvent);
 begin
-  FButton.OnClick:= Value;
+  FButton.OnClick := Value;
 end;
 
 procedure TJvDynControlVCLDBButtonEdit.ControlSetButtonCaption(const Value: string);

@@ -1774,7 +1774,7 @@ begin
     enm := TAutoCompleteSource.Create(FComboEdit, FCurrentIndex);
     Result := S_OK;
   except
-    Result:= E_UNEXPECTED;
+    Result := E_UNEXPECTED;
   end;
 end;
 

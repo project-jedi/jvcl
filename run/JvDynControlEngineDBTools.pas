@@ -229,7 +229,7 @@ var
   LeftPos: Integer;
   DynCtrlButton: IJvDynControlButton;
 begin
-  DynControlEngine:= DynControlEngineDB.DynControlEngine;
+  DynControlEngine := DynControlEngineDB.DynControlEngine;
   Form := DynControlEngine.CreateForm(DialogCaption, '');
   TForm(Form).Position := Position;
   TForm(Form).BorderStyle := BorderStyle;

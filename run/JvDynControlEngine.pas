@@ -541,8 +541,8 @@ end;
 constructor TJvDynControlEngine.Create;
 begin
   inherited Create;
-  FDistanceBetweenLabelAndControlHorz:= 4;
-  FDistanceBetweenLabelAndControlVert:= 1;
+  FDistanceBetweenLabelAndControlHorz := 4;
+  FDistanceBetweenLabelAndControlVert := 1;
 end;
 
 function TJvDynControlEngine.CreateLabelControl(AOwner: TComponent;

@@ -395,12 +395,12 @@ initialization
   {$ENDIF USEJVCL}
 
 finalization
+  FreeAndNil(JvDockTitleFont);
   {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
   {$ENDIF USEJVCL}
-  FreeAndNil(JvDockTitleFont);
 
 end.
 

@@ -134,7 +134,6 @@ resourcestring
     the class TJvDockDragDockObject, it is assumed that JvGlobalDockManager
     will always be assigned to a valid dock manager. If it is not assigned,
     access violations would occur.
-
     }
 
 var

@@ -43,55 +43,55 @@ type
 
   TJvThreadBaseDialogOptions = class(TPersistent)
   private
-    FEnableCancelButton: boolean;
-    FShowDialog: boolean;
-    FShowModal:  boolean;
-    FShowCancelButton: boolean;
-    FShowElapsedTime: boolean;
-    FInfoText:   string;
-    FCaption:    string;
+    FEnableCancelButton: Boolean;
+    FShowDialog: Boolean;
+    FShowModal: Boolean;
+    FShowCancelButton: Boolean;
+    FShowElapsedTime: Boolean;
+    FInfoText: string;
+    FCaption: string;
     FCancelButtonCaption: string;
-    FOwner:      TJvCustomThreadDialog;
+    FOwner: TJvCustomThreadDialog;
   protected
-    procedure SetEnableCancelButton(Value: boolean);
-    procedure SetShowDialog(Value: boolean);
-    procedure SetShowModal(Value: boolean);
-    procedure SetShowCancelButton(Value: boolean);
-    procedure SetShowElapsedTime(Value: boolean);
+    procedure SetEnableCancelButton(Value: Boolean);
+    procedure SetShowDialog(Value: Boolean);
+    procedure SetShowModal(Value: Boolean);
+    procedure SetShowCancelButton(Value: Boolean);
+    procedure SetShowElapsedTime(Value: Boolean);
     procedure SetInfoText(Value: string);
     procedure SetCaption(Value: string);
     procedure SetCancelButtonCaption(Value: string);
   public
     constructor Create(AOwner: TJvCustomThreadDialog); virtual;
   published
-    property EnableCancelButton: boolean Read FEnableCancelButton Write SetEnableCancelButton default True;
-    property ShowDialog: boolean Read FShowDialog Write SetShowDialog default False;
-    property ShowModal: boolean Read FShowModal Write SetShowModal default True;
-    property ShowCancelButton: boolean Read FShowCancelButton Write SetShowCancelButton default True;
-    property ShowElapsedTime: boolean Read FShowElapsedTime Write SetShowElapsedTime default True;
-    property InfoText: string Read FInfoText Write SetInfoText;
-    property Caption: string Read FCaption Write SetCaption;
-    property CancelButtonCaption: string Read FCancelButtonCaption Write SetCancelButtonCaption;
+    property EnableCancelButton: Boolean read FEnableCancelButton write SetEnableCancelButton default True;
+    property ShowDialog: Boolean read FShowDialog write SetShowDialog default False;
+    property ShowModal: Boolean read FShowModal write SetShowModal default True;
+    property ShowCancelButton: Boolean read FShowCancelButton write SetShowCancelButton default True;
+    property ShowElapsedTime: Boolean read FShowElapsedTime write SetShowElapsedTime default True;
+    property InfoText: string read FInfoText write SetInfoText;
+    property Caption: string read FCaption write SetCaption;
+    property CancelButtonCaption: string read FCancelButtonCaption write SetCancelButtonCaption;
   end;
 
   TJvCustomThreadDialogForm = class(TForm)
   private
     FConnectedThread: TComponent;
   protected
-    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure SetConnectedThread(Value: TComponent);
   public
-    property ConnectedThread: TComponent Read FConnectedThread Write SetConnectedThread;
+    property ConnectedThread: TComponent read FConnectedThread write SetConnectedThread;
   end;
 
   TJvCustomThreadDialog = class(TJvComponent)
   private
-    FDialogOptions:      TJvThreadBaseDialogOptions;
+    FDialogOptions: TJvThreadBaseDialogOptions;
     FThreadStatusDialog: TJvCustomThreadDialogForm;
   protected
     function CreateDialogOptions: TJvThreadBaseDialogOptions; virtual; abstract;
     procedure TransferThreadDialogOptions; virtual;
-    property ThreadStatusDialog: TJvCustomThreadDialogForm Read FThreadStatusDialog Write FThreadStatusDialog;
+    property ThreadStatusDialog: TJvCustomThreadDialogForm read FThreadStatusDialog write FThreadStatusDialog;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -99,7 +99,7 @@ type
     procedure CloseThreadDialogForm;
     function CreateThreadDialogForm(ConnectedThread: TComponent): TJvCustomThreadDialogForm; virtual; abstract;
   published
-    property DialogOptions: TJvThreadBaseDialogOptions Read FDialogOptions Write FDialogOptions;
+    property DialogOptions: TJvThreadBaseDialogOptions read FDialogOptions write FDialogOptions;
   end;
 
   TJvThreadSimpleDialog = class(TJvCustomThreadDialog)
@@ -107,12 +107,12 @@ type
     FCancelButtonPanel: TPanel;
     FCancelBtn: TButton;
     FInfoTextPanel: TPanel;
-    FInfoText:  TStaticText;
+    FInfoText: TStaticText;
     FTimeTextPanel: TPanel;
-    FTimeText:  TStaticText;
+    FTimeText: TStaticText;
     FMainTimer: TTimer;
-    FCounter:   integer;
-    FStartTime: tDateTime;
+    FCounter: Integer;
+    FStartTime: TDateTime;
   protected
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -129,25 +129,25 @@ type
   TJvThreadAnimateDialogOptions = class(TJvThreadBaseDialogOptions)
   private
     FCommonAVI: TCommonAVI;
-    FFileName:  string;
+    FFileName: string;
   published
-    property CommonAVI: TCommonAVI Read FCommonAVI Write FCommonAVI;
-    property FileName: string Read FFileName Write FFileName;
+    property CommonAVI: TCommonAVI read FCommonAVI write FCommonAVI;
+    property FileName: string read FFileName write FFileName;
   end;
 
   TJvThreadAnimateDialog = class(TJvCustomThreadDialog)
   private
     FCancelButtonPanel: TPanel;
-    FCancelBtn:    TButton;
+    FCancelBtn: TButton;
     FAnimatePanel: TPanel;
-    FAnimate:      TAnimate;
+    FAnimate: TAnimate;
     FInfoTextPanel: TPanel;
-    FInfoText:     TStaticText;
+    FInfoText: TStaticText;
     FTimeTextPanel: TPanel;
-    FTimeText:     TStaticText;
-    FMainTimer:    TTimer;
-    FCounter:      integer;
-    FStartTime:    tDateTime;
+    FTimeText: TStaticText;
+    FMainTimer: TTimer;
+    FCounter: Integer;
+    FStartTime: TDateTime;
   protected
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -164,14 +164,14 @@ type
     //property DialogOptions: TJvThreadAnimateDialogOptions read GetDialogOptions;
   end;
 
-
 implementation
 
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JvThread, JvResources, Dialogs;
+  Dialogs,
+  JvThread, JvResources;
 
 function JvThreadComp(AComp: TComponent): TJvThread;
 begin
@@ -186,40 +186,40 @@ end;
 constructor TJvThreadBaseDialogOptions.Create(AOwner: TJvCustomThreadDialog);
 begin
   inherited Create;
-  FOwner      := AOwner;
+  FOwner := AOwner;
   FEnableCancelButton := True;
   FShowDialog := False;
-  FShowModal  := True;
+  FShowModal := True;
   FShowCancelButton := True;
   FShowElapsedTime := True;
   FCancelButtonCaption := RsButtonCancelCaption;
 end;
 
-procedure TJvThreadBaseDialogOptions.SetEnableCancelButton(Value: boolean);
+procedure TJvThreadBaseDialogOptions.SetEnableCancelButton(Value: Boolean);
 begin
   FEnableCancelButton := Value;
   if Assigned(FOwner) then
     FOwner.TransferThreadDialogOptions;
 end;
 
-procedure TJvThreadBaseDialogOptions.SetShowDialog(Value: boolean);
+procedure TJvThreadBaseDialogOptions.SetShowDialog(Value: Boolean);
 begin
   FShowDialog := Value;
 end;
 
-procedure TJvThreadBaseDialogOptions.SetShowModal(Value: boolean);
+procedure TJvThreadBaseDialogOptions.SetShowModal(Value: Boolean);
 begin
   FShowModal := Value;
 end;
 
-procedure TJvThreadBaseDialogOptions.SetShowCancelButton(Value: boolean);
+procedure TJvThreadBaseDialogOptions.SetShowCancelButton(Value: Boolean);
 begin
   FShowCancelButton := Value;
   if Assigned(FOwner) then
     FOwner.TransferThreadDialogOptions;
 end;
 
-procedure TJvThreadBaseDialogOptions.SetShowElapsedTime(Value: boolean);
+procedure TJvThreadBaseDialogOptions.SetShowElapsedTime(Value: Boolean);
 begin
   FShowElapsedTime := Value;
   if Assigned(FOwner) then
@@ -256,7 +256,7 @@ begin
   FConnectedThread := Value;
 end;
 
-procedure TJvCustomThreadDialogForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
+procedure TJvCustomThreadDialogForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   CanClose := JvThreadComp(FConnectedThread).Terminated;
 end;
@@ -310,13 +310,13 @@ begin
   begin
     ThreadStatusDialog := TJvCustomThreadDialogForm.CreateNew(Self);
     ThreadStatusDialog.ConnectedThread := ConnectedThread;
-    Result     := ThreadStatusDialog;
+    Result := ThreadStatusDialog;
     FCancelButtonPanel := TPanel.Create(ThreadStatusDialog);
     FCancelBtn := TBitBtn.Create(ThreadStatusDialog);
     FInfoTextPanel := TPanel.Create(ThreadStatusDialog);
-    FInfoText  := TStaticText.Create(ThreadStatusDialog);
+    FInfoText := TStaticText.Create(ThreadStatusDialog);
     FTimeTextPanel := TPanel.Create(ThreadStatusDialog);
-    FTimeText  := TStaticText.Create(ThreadStatusDialog);
+    FTimeText := TStaticText.Create(ThreadStatusDialog);
     FMainTimer := TTimer.Create(ThreadStatusDialog);
     with ThreadStatusDialog do
     begin
@@ -335,20 +335,20 @@ begin
     end;
     with FInfoTextPanel do
     begin
-      Top     := 0;
+      Top := 0;
       Caption := '';
-      Parent  := FThreadStatusDialog;
-      Align   := alTop;
+      Parent := FThreadStatusDialog;
+      Align := alTop;
       BevelOuter := bvNone;
       BorderWidth := 3;
     end;
     with FInfoText do
     begin
-      Parent     := FInfoTextPanel;
-      Height     := 22;
+      Parent := FInfoTextPanel;
+      Height := 22;
       FInfoTextPanel.Height := FInfoText.Height + 6;
-      Align      := alClient;
-      AutoSize   := False;
+      Align := alClient;
+      AutoSize := False;
       {$IFDEF COMPILER6_UP}
       BevelInner := bvNone;
       BevelOuter := bvNone;
@@ -357,21 +357,21 @@ begin
     end;
     with FTimeTextPanel do
     begin
-      Top    := FInfoTextPanel.Top + FInfoTextPanel.Height + 1;
+      Top := FInfoTextPanel.Top + FInfoTextPanel.Height + 1;
       Parent := ThreadStatusDialog;
-      Align  := alTop;
+      Align := alTop;
       BevelOuter := bvNone;
       BorderWidth := 3;
     end;
     with FTimeText do
     begin
-      Height     := 22;
+      Height := 22;
       FTimeTextPanel.Height := FTimeText.Height + 6;
-      Caption    := '';
-      Parent     := FTimeTextPanel;
-      Align      := alClient;
-      Alignment  := taCenter;
-      AutoSize   := False;
+      Caption := '';
+      Parent := FTimeTextPanel;
+      Align := alClient;
+      Alignment := taCenter;
+      AutoSize := False;
       {$IFDEF COMPILER6_UP}
       BevelInner := bvLowered;
       {$ENDIF COMPILER6_UP}
@@ -380,26 +380,26 @@ begin
     end;
     with FCancelButtonPanel do
     begin
-      Top     := FTimeTextPanel.Top + FTimeTextPanel.Height + 1;
+      Top := FTimeTextPanel.Top + FTimeTextPanel.Height + 1;
       Caption := '';
-      Parent  := ThreadStatusDialog;
-      Align   := alTop;
+      Parent := ThreadStatusDialog;
+      Align := alTop;
       BevelOuter := bvNone;
     end;
     with FCancelBtn do
     begin
-      Parent  := FCancelButtonPanel;
+      Parent := FCancelButtonPanel;
       Anchors := [akTop];
       Caption := DialogOptions.CancelButtonCaption;
       OnClick := CancelBtnClick;
-      Top     := 0;
+      Top := 0;
       FCancelButtonPanel.Height := FCancelBtn.Height + 3;
     end;
     SetFormData;
     with FMainTimer do
     begin
       Interval := 500;
-      OnTimer  := MainTimerTimer;
+      OnTimer := MainTimerTimer;
     end;
     if Assigned(ThreadStatusDialog) then
       if DialogOptions.ShowModal then
@@ -412,7 +412,7 @@ end;
 procedure TJvThreadSimpleDialog.FormShow(Sender: TObject);
 begin
   FStartTime := Now;
-  FCounter   := 0;
+  FCounter := 0;
   MainTimerTimer(nil);
   SetFormData;
 end;
@@ -433,8 +433,7 @@ end;
 procedure TJvThreadSimpleDialog.MainTimerTimer(Sender: TObject);
 begin
   if not (csDestroying in ComponentState) and Assigned(ThreadStatusDialog) then
-    if Assigned(ThreadStatusDialog.ConnectedThread) and
-      Assigned(DialogOptions) then
+    if Assigned(ThreadStatusDialog.ConnectedThread) and Assigned(DialogOptions) then
       if JvThreadComp(ThreadStatusDialog.ConnectedThread).Terminated then
         ThreadStatusDialog.Close
       else
@@ -464,7 +463,7 @@ end;
 
 procedure TJvThreadSimpleDialog.SetFormHeightWidth;
 var
-  H, W: integer;
+  H, W: Integer;
 begin
   if Assigned(ThreadStatusDialog) then
   begin
@@ -514,15 +513,15 @@ begin
   begin
     ThreadStatusDialog := TJvCustomThreadDialogForm.CreateNew(Self);
     ThreadStatusDialog.ConnectedThread := ConnectedThread;
-    Result     := ThreadStatusDialog;
+    Result := ThreadStatusDialog;
     FCancelButtonPanel := TPanel.Create(ThreadStatusDialog);
     FCancelBtn := TBitBtn.Create(ThreadStatusDialog);
     FAnimatePanel := TPanel.Create(ThreadStatusDialog);
-    FAnimate   := TAnimate.Create(ThreadStatusDialog);
+    FAnimate := TAnimate.Create(ThreadStatusDialog);
     FInfoTextPanel := TPanel.Create(ThreadStatusDialog);
-    FInfoText  := TStaticText.Create(ThreadStatusDialog);
+    FInfoText := TStaticText.Create(ThreadStatusDialog);
     FTimeTextPanel := TPanel.Create(ThreadStatusDialog);
-    FTimeText  := TStaticText.Create(ThreadStatusDialog);
+    FTimeText := TStaticText.Create(ThreadStatusDialog);
     FMainTimer := TTimer.Create(ThreadStatusDialog);
     with ThreadStatusDialog do
     begin
@@ -541,19 +540,19 @@ begin
     end;
     with FInfoTextPanel do
     begin
-      Top    := 0;
+      Top := 0;
       Parent := ThreadStatusDialog;
-      Align  := alTop;
+      Align := alTop;
       BevelOuter := bvNone;
       BorderWidth := 3;
     end;
     with FInfoText do
     begin
-      Height     := 22;
-      Parent     := FInfoTextPanel;
+      Height := 22;
+      Parent := FInfoTextPanel;
       FInfoTextPanel.Height := FInfoText.Height + 6;
-      Align      := alClient;
-      AutoSize   := False;
+      Align := alClient;
+      AutoSize := False;
       {$IFDEF COMPILER6_UP}
       BevelInner := bvNone;
       BevelOuter := bvNone;
@@ -563,17 +562,17 @@ begin
     with FAnimatePanel do
     begin
       Caption := '';
-      Top     := FInfoTextPanel.Height + 1;
-      Parent  := ThreadStatusDialog;
-      Align   := alTop;
+      Top := FInfoTextPanel.Height + 1;
+      Parent := ThreadStatusDialog;
+      Align := alTop;
       BevelOuter := bvNone;
       BorderWidth := 3;
     end;
     with FAnimate do
     begin
-      Parent   := FAnimatePanel;
-      Top      := 0;
-      Left     := 0;
+      Parent := FAnimatePanel;
+      Top := 0;
+      Left := 0;
       AutoSize := True;
       CommonAVI := TJvThreadAnimateDialogOptions(DialogOptions).CommonAVI;
       FileName := TJvThreadAnimateDialogOptions(DialogOptions).FileName;
@@ -581,21 +580,21 @@ begin
     end;
     with FTimeTextPanel do
     begin
-      Top     := FAnimatePanel.Top + FAnimatePanel.Height + 1;
+      Top := FAnimatePanel.Top + FAnimatePanel.Height + 1;
       Caption := '';
-      Parent  := ThreadStatusDialog;
-      Align   := alTop;
+      Parent := ThreadStatusDialog;
+      Align := alTop;
       BevelOuter := bvNone;
       BorderWidth := 3;
     end;
     with FTimeText do
     begin
-      Height     := 22;
+      Height := 22;
       FTimeTextPanel.Height := FTimeText.Height + 6;
-      Parent     := FTimeTextPanel;
-      Align      := alClient;
-      Alignment  := taCenter;
-      AutoSize   := False;
+      Parent := FTimeTextPanel;
+      Align := alClient;
+      Alignment := taCenter;
+      AutoSize := False;
       {$IFDEF COMPILER6_UP}
       BevelInner := bvLowered;
       {$ENDIF COMPILER6_UP}
@@ -604,16 +603,16 @@ begin
     end;
     with FCancelButtonPanel do
     begin
-      Top     := FTimeTextPanel.Top + FTimeText.Height + 1;
+      Top := FTimeTextPanel.Top + FTimeText.Height + 1;
       Caption := '';
-      Parent  := ThreadStatusDialog;
-      Align   := alTop;
+      Parent := ThreadStatusDialog;
+      Align := alTop;
       BevelOuter := bvNone;
     end;
     with FCancelBtn do
     begin
-      Top     := 0;
-      Parent  := FCancelButtonPanel;
+      Top := 0;
+      Parent := FCancelButtonPanel;
       Anchors := [akTop];
       Caption := DialogOptions.CancelButtonCaption;
       OnClick := CancelBtnClick;
@@ -623,7 +622,7 @@ begin
     with FMainTimer do
     begin
       Interval := 500;
-      OnTimer  := MainTimerTimer;
+      OnTimer := MainTimerTimer;
     end;
     if DialogOptions.ShowModal then
       ThreadStatusDialog.ShowModal
@@ -635,7 +634,7 @@ end;
 procedure TJvThreadAnimateDialog.FormShow(Sender: TObject);
 begin
   FStartTime := Now;
-  FCounter   := 0;
+  FCounter := 0;
   SetFormData;
   FAnimate.Active := True;
   MainTimerTimer(nil);
@@ -676,7 +675,7 @@ end;
 
 procedure TJvThreadAnimateDialog.SetFormHeightWidth;
 var
-  H, W: integer;
+  H, W: Integer;
 begin
   H := 6;
   if Assigned(ThreadStatusDialog) then
@@ -696,7 +695,7 @@ begin
       H := H + FAnimate.Height;
     end;
     FCancelBtn.Left := (W - FCancelBtn.Width) div 2;
-    FAnimate.Left   := (W - FAnimate.Width) div 2;
+    FAnimate.Left := (W - FAnimate.Width) div 2;
     if FTimeTextPanel.Visible then
       H := H + FTimeTextPanel.Height;
     if FCancelButtonPanel.Visible then
@@ -712,12 +711,12 @@ procedure TJvThreadAnimateDialog.SetFormData;
 begin
   if Assigned(ThreadStatusDialog) and Assigned(DialogOptions) then
   begin
-    FInfoText.Caption      := DialogOptions.FInfoText;
+    FInfoText.Caption := DialogOptions.FInfoText;
     ThreadStatusDialog.Caption := DialogOptions.Caption;
     FInfoTextPanel.Visible := DialogOptions.InfoText <> '';
-    FAnimatePanel.Visible  := FileExists(FAnimate.FileName) or (FAnimate.CommonAVI <> aviNone);
+    FAnimatePanel.Visible := FileExists(FAnimate.FileName) or (FAnimate.CommonAVI <> aviNone);
     FTimeTextPanel.Visible := DialogOptions.ShowElapsedTime;
-    FCancelBtn.Enabled     := DialogOptions.EnableCancelButton;
+    FCancelBtn.Enabled := DialogOptions.EnableCancelButton;
     FCancelButtonPanel.Visible := DialogOptions.ShowCancelButton;
     SetFormHeightWidth;
   end;

@@ -40,8 +40,8 @@ type
      This should probably be called TJvDockTreeItem since this is
      the base Item type for items managed by the tree
      TJvDockBaseTree.
-
   }
+
   TJvDockBaseZone = class(TObject)
   private
     FBaseTree: TJvDockBaseTree;
@@ -86,17 +86,13 @@ type
     procedure MiddleScanTree(TreeZone: TJvDockBaseZone); virtual;
     procedure ScanTreeZone(TreeZone: TJvDockBaseZone); virtual;
   public
-
-{$ifdef JVDOCK_DEBUG}
-    // This helps us to understand the content of the tree by allowing
-    // us to build a dump:
-    procedure DebugDump(var index:Integer; indent,entity:String; TreeZone: TJvDockBaseZone; Strs:TStrings); //virtual;
-
-
-{$endif}
-
     constructor Create(TreeZone: TJvDockTreeZoneClass); virtual;
     destructor Destroy; override;
+    {$IFDEF JVDOCK_DEBUG}
+    // This helps us to understand the content of the tree by allowing
+    // us to build a dump:
+    procedure DebugDump(var Index: Integer; Indent, Entity: string; TreeZone: TJvDockBaseZone; Strs: TStrings); //virtual;
+    {$ENDIF JVDOCK_DEBUG}
     function AddChildZone(TreeZone, NewZone: TJvDockBaseZone): TJvDockBaseZone; virtual;
     function AddNextSibling(TreeZone, NewZone: TJvDockBaseZone): TJvDockBaseZone; virtual;
     function AddPrevSibling(TreeZone, NewZone: TJvDockBaseZone): TJvDockBaseZone; virtual;
@@ -191,23 +187,18 @@ type
     procedure DoFormOnContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean); virtual;
     procedure DoFormOnDblClick(Sender: TObject); virtual;
-    procedure DoFormOnDragDrop(Sender, Source: TObject;
-      X, Y: Integer); virtual;
+    procedure DoFormOnDragDrop(Sender, Source: TObject; X, Y: Integer); virtual;
     procedure DoFormOnDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean); virtual;
-    procedure DoFormOnEndDock(Sender, Target: TObject;
-      X, Y: Integer); virtual;
-    procedure DoFormOnEndDrag(Sender, Target: TObject;
-      X, Y: Integer); virtual;
+    procedure DoFormOnEndDock(Sender, Target: TObject; X, Y: Integer); virtual;
+    procedure DoFormOnEndDrag(Sender, Target: TObject; X, Y: Integer); virtual;
     procedure DoFormOnMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer); virtual;
-    procedure DoFormOnMouseMove(Sender: TObject; Shift: TShiftState;
-      X, Y: Integer); virtual;
+    procedure DoFormOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); virtual;
     procedure DoFormOnMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer); virtual;
     procedure DoFormOnResize(Sender: TObject); virtual;
-    procedure DoFormOnStartDock(Sender: TObject;
-      var DragObject: TDragDockObject); virtual;
+    procedure DoFormOnStartDock(Sender: TObject; var DragObject: TDragDockObject); virtual;
     procedure WindowProc(var Msg: TMessage); virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -236,11 +227,6 @@ begin
   FParentZone := nil;
 end;
 
-function TJvDockBaseZone.CreateChildZone: TJvDockBaseZone;
-begin
-  Result := nil;
-end;
-
 destructor TJvDockBaseZone.Destroy;
 begin
   FBaseTree := nil;
@@ -248,7 +234,12 @@ begin
   FNextSibling := nil;
   FPrevSibling := nil;
   FParentZone := nil;
-  inherited;
+  inherited Destroy;
+end;
+
+function TJvDockBaseZone.CreateChildZone: TJvDockBaseZone;
+begin
+  Result := nil;
 end;
 
 function TJvDockBaseZone.GetChildCount: Integer;
@@ -320,39 +311,6 @@ end;
 
 //=== { TJvDockBaseTree } ====================================================
 
-{$ifdef JVDOCK_DEBUG}
-// This helps us to understand the content of the tree by allowing
-// us to build an XML dump of the tree.
-procedure TJvDockBaseTree.DebugDump(var index:Integer; indent,entity:String; TreeZone: TJvDockBaseZone; Strs:TStrings); //virtual;
-var
-  zone:TJvDockBaseZone;
-  wasIndex:Integer;
-  procedure write(s:String);
-  begin
-    Strs.Add(s);
-  end;
-begin
- zone := TreeZone;
- while Assigned(zone) do begin
-   wasIndex := index;
-   Inc(index);
-
-   write( indent+'<'+entity+IntToStr(wasIndex)+'>' );
-
-   write( indent+'   <class>'+ zone.ClassName +'</class>' );
-
-   DebugDump(index, indent+'       ', 'child.'+entity, zone.ChildZone, Strs );
-
-   write( indent+'</'+entity+IntToStr(wasIndex)+'>' );
-
-   write ( '');
-
-
-   zone := zone.NextSibling;
- end;
-end;
-{$endif}
-
 constructor TJvDockBaseTree.Create(TreeZone: TJvDockTreeZoneClass);
 begin
   inherited Create;
@@ -370,6 +328,35 @@ begin
   FScanAction := snNone;
   inherited Destroy;
 end;
+
+{$IFDEF JVDOCK_DEBUG}
+// This helps us to understand the content of the tree by allowing
+// us to build an XML dump of the tree.
+procedure TJvDockBaseTree.DebugDump(var Index: Integer; Indent, Entity: string; TreeZone: TJvDockBaseZone; Strs: TStrings);
+var
+  Zone: TJvDockBaseZone;
+  WasIndex: Integer;
+
+  procedure Write(S: string);
+  begin
+    Strs.Add(S);
+  end;
+
+begin
+ Zone := TreeZone;
+ while Assigned(Zone) do
+ begin
+   WasIndex := Index;
+   Inc(Index);
+   Write(Indent + '<' + Entity + IntToStr(WasIndex) + '>');
+   Write(Indent + '   <class>' + Zone.ClassName + '</class>');
+   DebugDump(Index, Indent + '       ', 'child.' + entity, Zone.ChildZone, Strs);
+   Write(Indent + '</' + entity + IntToStr(WasIndex) + '>');
+   Write('');
+   Zone := Zone.NextSibling;
+ end;
+end;
+{$ENDIF JVDOCK_DEBUG}
 
 function TJvDockBaseTree.AddChildZone(TreeZone, NewZone: TJvDockBaseZone): TJvDockBaseZone;
 begin
@@ -708,8 +695,8 @@ begin
     FOldOnCloseQuery(Sender, CanClose);
 end;
 
-procedure TJvDockBaseGetFormEventComponent.DoFormOnConstrainedResize(
-  Sender: TObject; var MinWidth, MinHeight, MaxWidth, MaxHeight: Integer);
+procedure TJvDockBaseGetFormEventComponent.DoFormOnConstrainedResize(Sender: TObject;
+  var MinWidth, MinHeight, MaxWidth, MaxHeight: Integer);
 begin
   if Assigned(FOldOnConstrainedResize) then
     FOldOnConstrainedResize(Sender, MinWidth, MinHeight, MaxWidth, MaxHeight);
@@ -754,36 +741,34 @@ begin
 end;
 
 procedure TJvDockBaseGetFormEventComponent.DoFormOnDockOver(Sender: TObject;
-  Source: TDragDockObject; X, Y: Integer; State: TDragState;
-  var Accept: Boolean);
+  Source: TDragDockObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
   if Assigned(FOldOnDockOver) then
     FOldOnDockOver(Sender, Source,  X, Y, State, Accept);
 end;
 
-procedure TJvDockBaseGetFormEventComponent.DoFormOnDragDrop(Sender,
-  Source: TObject; X, Y: Integer);
+procedure TJvDockBaseGetFormEventComponent.DoFormOnDragDrop(Sender, Source: TObject; X, Y: Integer);
 begin
   if Assigned(FOldOnDragDrop) then
     FOldOnDragDrop(Sender, Source, X, Y);
 end;
 
-procedure TJvDockBaseGetFormEventComponent.DoFormOnDragOver(Sender,
-  Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
+procedure TJvDockBaseGetFormEventComponent.DoFormOnDragOver(Sender, Source: TObject;
+  X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
   if Assigned(FOldOnDragOver) then
     FOldOnDragOver(Sender, Source, X, Y, State, Accept);
 end;
 
-procedure TJvDockBaseGetFormEventComponent.DoFormOnEndDock(Sender,
-  Target: TObject; X, Y: Integer);
+procedure TJvDockBaseGetFormEventComponent.DoFormOnEndDock(Sender, Target: TObject;
+  X, Y: Integer);
 begin
   if Assigned(FOldOnEndDock) then
     FOldOnEndDock(Sender, Target, X, Y);
 end;
 
-procedure TJvDockBaseGetFormEventComponent.DoFormOnEndDrag(Sender,
-  Target: TObject; X, Y: Integer);
+procedure TJvDockBaseGetFormEventComponent.DoFormOnEndDrag(Sender, Target: TObject;
+  X, Y: Integer);
 begin
   if Assigned(FOldOnEndDrag) then
     FOldOnEndDrag(Sender, Target, X, Y);
@@ -796,8 +781,7 @@ begin
 end;
 
 procedure TJvDockBaseGetFormEventComponent.DoFormOnGetSiteInfo(Sender: TObject;
-  DockClient: TControl; var InfluenceRect: TRect; MousePos: TPoint;
-  var CanDock: Boolean);
+  DockClient: TControl; var InfluenceRect: TRect; MousePos: TPoint; var CanDock: Boolean);
 begin
   if Assigned(FOldOnGetSiteInfo) then
     FOldOnGetSiteInfo(Sender, DockClient, InfluenceRect, MousePos, CanDock);
@@ -867,9 +851,8 @@ begin
     FOldOnMouseWheel(Sender, Shift, WheelDelta, MousePos, Handled);
 end;
 
-procedure TJvDockBaseGetFormEventComponent.DoFormOnMouseWheelDown(
-  Sender: TObject; Shift: TShiftState; MousePos: TPoint;
-  var Handled: Boolean);
+procedure TJvDockBaseGetFormEventComponent.DoFormOnMouseWheelDown(Sender: TObject;
+  Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
 begin
   if Assigned(FOldOnMouseWheelDown) then
     FOldOnMouseWheelDown(Sender, Shift, MousePos, Handled);

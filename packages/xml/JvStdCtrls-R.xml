@@ -54,7 +54,6 @@
     <File Name="..\..\run\JvTextListBox.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvToolBar.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvToolEdit.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTransparentPanel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvUpDown.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvxCheckListBox.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvxSlider.pas" Targets="allbutclx" Formname="" Condition=""/>

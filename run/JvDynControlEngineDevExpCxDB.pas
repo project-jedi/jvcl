@@ -2449,18 +2449,18 @@ var
 begin
   Result := False;
   if not Assigned(AOptions) then
-    CreateOptions:= TJvCreateDBFieldsOnControlOptions.Create
+    CreateOptions := TJvCreateDBFieldsOnControlOptions.Create
   else
     CreateOptions := AOptions;
   try
-    if tcxCustomGridView(aGridView).DataController is TcxGridDBDataController then
-      GridDataController := TcxGridDBDataController(aGridView.DataController)
+    if tcxCustomGridView(AGridView).DataController is TcxGridDBDataController then
+      GridDataController := TcxGridDBDataController(AGridView.DataController)
     else
       Exit;
     for I := 0 to AGridView.GroupedItemCount - 1 do
-      TransferGridItemToControl (aGridView.GroupedItems[I], GridDataController.DataSource, AControl, CreateOptions);
+      TransferGridItemToControl (AGridView.GroupedItems[I], GridDataController.DataSource, AControl, CreateOptions);
     for I := 0 to AGridView.VisibleItemCount - 1 do
-      TransferGridItemToControl (aGridView.VisibleItems[I], GridDataController.DataSource, AControl, CreateOptions);
+      TransferGridItemToControl (AGridView.VisibleItems[I], GridDataController.DataSource, AControl, CreateOptions);
   finally
     if not Assigned(AOptions) then
       CreateOptions.Free;
