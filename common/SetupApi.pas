@@ -5007,10 +5007,10 @@ type
 
   TSetupDiOpenDeviceInfoA = function(DeviceInfoSet: HDEVINFO;
     const DeviceInstanceId: PAnsiChar; hwndParent: HWND; OpenFlags: DWORD;
-    DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+    var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
   TSetupDiOpenDeviceInfoW = function(DeviceInfoSet: HDEVINFO;
     const DeviceInstanceId: PWideChar; hwndParent: HWND; OpenFlags: DWORD;
-    DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+    var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
   TSetupDiOpenDeviceInfo = TSetupDiOpenDeviceInfoA;
 
   TSetupDiGetDeviceInstanceIdA = function(DeviceInfoSet: HDEVINFO;
