@@ -85,6 +85,7 @@ type
     procedure InvokeMethod;
   end;
 
+// (rom) better local?
 var
   JvUIBServer: TJvUIBServer;
 
@@ -99,7 +100,7 @@ constructor TJvUIBServer.Create;
 begin
   inherited Create;
   FLock := TMultiReadExclusiveWriteSynchronizer.Create;
-  FTCPServer := TidTCPServer.Create(nil);
+  FTCPServer := TIdTCPServer.Create(nil);
   FTCPServer.ThreadClass := TJvUIBPeerThread;
 end;
 
@@ -313,16 +314,15 @@ begin
         scInvokeMethod:
           InvokeMethod;
       else
-        // TODO Deconnecter
+        // TODO Disconnect
       end;
     end;
   except
-    on E: EIdSocketError do begin
+    on E: EIdSocketError do
       case E.LastError of
         Id_WSAECONNABORTED, Id_WSAECONNRESET:
           Connection.Disconnect;
       end;
-    end;
   end;
   if not Connection.Connected then
     Stop;
@@ -332,6 +332,7 @@ initialization
   JvUIBServer := TJvUIBServer.Create;
 
 finalization
+  // (rom) better FreeAndNil
   JvUIBServer.Free;
 
 end.

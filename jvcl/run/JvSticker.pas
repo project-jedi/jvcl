@@ -23,40 +23,30 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvSticker;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, stdctrls, Forms, Dialogs;
-
-const
-  sc_DragMove: Longint = $F012;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls,
+  Forms;
 
 type
-
   TJvStickSizer = class(TCustomControl)
   private
     FControl: TControl;
-    FRectList: array[1..8] of TRect;
-    FPosList: array[1..8] of Integer;
-  protected
-
+    FRectList: array [1..8] of TRect;
+    procedure WMNCHitTest(var Msg: TWMNCHitTest);  message WM_NCHITTEST;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
+    procedure WMMove(var Msg: TWMMove); message WM_MOVE;
   public
-    constructor CreateEx(AOwner: TComponent;
-      AControl: TControl);
-    procedure CreateParams(var Params: TCreateParams);
-      override;
+    constructor CreateEx(AOwner: TComponent; AControl: TControl);
+    procedure CreateParams(var Params: TCreateParams);  override;
     procedure CreateHandle; override;
-    procedure WmNcHitTest(var Msg: TWmNcHitTest);
-      message wm_NcHitTest;
-    procedure WmSize(var Msg: TWmSize);
-      message wm_Size;
-    procedure WmLButtonDown(var Msg: TWmLButtonDown);
-      message wm_LButtonDown;
-    procedure WmMove(var Msg: TWmMove);
-      message wm_Move;
     procedure Paint; override;
     procedure SizerControlExit(Sender: TObject);
   end;
@@ -65,36 +55,44 @@ type
   private
     FStickColor: TColor;
     procedure SetStickColor(const Value: TColor);
-    function captionDialog(s: string): string;
-    { Private declarations }
+    function CaptionDialog(S: string): string;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
   protected
-    { Protected declarations }
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MouseLeave;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MouseEnter;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
   public
-    { Public declarations }
-    constructor create(AOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
   published
-    { Published declarations }
-    property StickColor: TColor read FStickColor write SetStickColor;
+    property StickColor: TColor read FStickColor write SetStickColor default clYellow;
     property Align;
     property Caption;
     property Font;
+    property Height default 65;
     property PopupMenu;
+    property Width default 65;
   end;
 
 implementation
 
-{ TJvStickSizer }
+uses
+  Dialogs;
 
-// TJvStickSizer methods
+const
+  SC_DRAGMOVE = $F012;
 
-constructor TJvStickSizer.CreateEx(
-  AOwner: TComponent; AControl: TControl);
+//=== TJvStickSizer ==========================================================
+
+const
+  cPosList: array [1..8] of Integer =
+    (HTTOPLEFT, HTTOP, HTTOPRIGHT, HTRIGHT, HTBOTTOMRIGHT, HTBOTTOM, HTBOTTOMLEFT, HTLEFT);
+
+resourcestring
+  SEditSticker = 'Edit sticker';
+
+constructor TJvStickSizer.CreateEx(AOwner: TComponent; AControl: TControl);
 var
   R: TRect;
 begin
@@ -108,15 +106,7 @@ begin
   BoundsRect := R;
   // set the parent
   Parent := FControl.Parent;
-  // create the list of positions
-  FPosList[1] := htTopLeft;
-  FPosList[2] := htTop;
-  FPosList[3] := htTopRight;
-  FPosList[4] := htRight;
-  FPosList[5] := htBottomRight;
-  FPosList[6] := htBottom;
-  FPosList[7] := htBottomLeft;
-  FPosList[8] := htLeft;
+  // Create the list of positions
 end;
 
 procedure TJvStickSizer.CreateHandle;
@@ -128,8 +118,7 @@ end;
 procedure TJvStickSizer.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
-  Params.ExStyle := Params.ExStyle +
-    ws_ex_Transparent;
+  Params.ExStyle := Params.ExStyle or WS_EX_TRANSPARENT;
 end;
 
 procedure TJvStickSizer.Paint;
@@ -142,7 +131,7 @@ begin
       FRectList[I].Right, FRectList[I].Bottom);
 end;
 
-procedure TJvStickSizer.WmNcHitTest(var Msg: TWmNcHitTest);
+procedure TJvStickSizer.WMNCHitTest(var Msg: TWMNCHitTest);
 var
   Pt: TPoint;
   I: Integer;
@@ -150,15 +139,15 @@ begin
   Pt := Point(Msg.XPos, Msg.YPos);
   Pt := ScreenToClient(Pt);
   Msg.Result := 0;
-  for I := 1 to 8 do
+  for I := Low(FRectList) to High(FRectList) do
     if PtInRect(FRectList[I], Pt) then
-      Msg.Result := FPosList[I];
+      Msg.Result := cPosList[I];
   // if the return value was not set
   if Msg.Result = 0 then
     inherited;
 end;
 
-procedure TJvStickSizer.WmSize(var Msg: TWmSize);
+procedure TJvStickSizer.WMSize(var Msg: TWMSize);
 var
   R: TRect;
 begin
@@ -167,18 +156,13 @@ begin
   FControl.BoundsRect := R;
   // setup data structures
   FRectList[1] := Rect(0, 0, 5, 5);
-  FRectList[2] := Rect(Width div 2 - 3, 0,
-    Width div 2 + 2, 5);
+  FRectList[2] := Rect(Width div 2 - 3, 0, Width div 2 + 2, 5);
   FRectList[3] := Rect(Width - 5, 0, Width, 5);
-  FRectList[4] := Rect(Width - 5, Height div 2 - 3,
-    Width, Height div 2 + 2);
-  FRectList[5] := Rect(Width - 5, Height - 5,
-    Width, Height);
-  FRectList[6] := Rect(Width div 2 - 3, Height - 5,
-    Width div 2 + 2, Height);
+  FRectList[4] := Rect(Width - 5, Height div 2 - 3, Width, Height div 2 + 2);
+  FRectList[5] := Rect(Width - 5, Height - 5, Width, Height);
+  FRectList[6] := Rect(Width div 2 - 3, Height - 5, Width div 2 + 2, Height);
   FRectList[7] := Rect(0, Height - 5, 5, Height);
-  FRectList[8] := Rect(0, Height div 2 - 3,
-    5, Height div 2 + 2);
+  FRectList[8] := Rect(0, Height div 2 - 3, 5, Height div 2 + 2);
 end;
 
 procedure TJvStickSizer.SizerControlExit(Sender: TObject);
@@ -186,12 +170,12 @@ begin
   Free;
 end;
 
-procedure TJvStickSizer.WmLButtonDown(var Msg: TWmLButtonDown);
+procedure TJvStickSizer.WMLButtonDown(var Msg: TWMLButtonDown);
 begin
-  Perform(wm_SysCommand, sc_DragMove, 0);
+  Perform(WM_SYSCOMMAND, SC_DRAGMOVE, 0);
 end;
 
-procedure TJvStickSizer.WmMove(var Msg: TWmMove);
+procedure TJvStickSizer.WMMove(var Msg: TWMMove);
 var
   R: TRect;
 begin
@@ -201,145 +185,149 @@ begin
   FControl.BoundsRect := R;
 end;
 
-{ TJvSticker }
+//=== TJvSticker =============================================================
 
-procedure TJvSticker.CMFontChanged(var Message: TMessage);
+constructor TJvSticker.Create(AOwner: TComponent);
 begin
-  invalidate;
+  inherited Create(AOwner);
+  Width := 65;
+  Height := 65;
+  FStickColor := clYellow;
+end;
+
+procedure TJvSticker.CMFontChanged(var Msg: TMessage);
+begin
+  Invalidate;
 end;
 
 procedure TJvSticker.CMMouseEnter(var Msg: TMessage);
 begin
-  // cursor:=crhandpoint;
+  // Cursor := crHandPoint;
 end;
 
 procedure TJvSticker.CMMouseLeave(var Msg: TMessage);
 begin
-  cursor := crdefault;
+  Cursor := crDefault;
 end;
 
-procedure TJvSticker.CMTextChanged(var Message: TMessage);
+procedure TJvSticker.CMTextChanged(var Msg: TMessage);
 begin
-  invalidate;
+  Invalidate;
 end;
 
-constructor TJvSticker.create(AOwner: TComponent);
-begin
-  inherited;
-  width := 65;
-  height := 65;
-  FStickColor := clyellow;
-end;
-
-function TJvSticker.captionDialog(s: string): string;
+function TJvSticker.CaptionDialog(S: string): string;
 var
-  frm: TForm;
-  mem: Tmemo;
+  Form: TForm;
+  Memo: TMemo;
 begin
-  frm := TForm.Create(self);
-  frm.width := 350;
-  frm.height := 200;
-  frm.BorderStyle := bsdialog;
-  frm.caption := 'Edit sticker';
-  mem := Tmemo.create(frm);
-  with mem do
-  begin
-    align := alclient;
-    font.size := 10;
-    scrollbars := ssvertical;
-    text := s;
-    parent := frm;
+  Result := '';
+  Form := TForm.Create(Self);
+  try
+    Form.Width := 350;
+    Form.Height := 200;
+    Form.BorderStyle := bsDialog;
+    Form.Caption := SEditSticker;
+    Memo := TMemo.Create(Form);
+    with Memo do
+    begin
+      Align := alClient;
+      Font.Size := 10;
+      ScrollBars := ssVertical;
+      Text := S;
+      Parent := Form;
+    end;
+    Form.Position := poDesktopCenter;
+    Form.ShowModal;
+    Result := Memo.Text;
+  finally
+    Form.Free;
   end;
-  frm.position := podesktopcenter;
-  frm.ShowModal;
-  result := mem.text;
-  frm.free;
 end;
 
 procedure TJvSticker.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
-  h3: integer;
+  H3: Integer;
 begin
   inherited;
-  h3 := height div 3;
-  if (button = mbleft) and (ptinrect(rect(0, 0, 20, h3), point(x, y))) then
-  begin
-    with TJvStickSizer.CreateEx(self.Parent, TControl(self)) do
-      parent := self.parent;
-  end
-  else if (button = mbleft) and (ptinrect(rect(0, h3, 20, 2 * h3), point(x, y))) then
-  begin
-    caption := captiondialog(caption);
-  end
-  else if (button = mbleft) and (ptinrect(rect(0, 2 * h3, 20, clientheight), point(x, y))) then
-  begin
-    with TColordialog.Create(self) do
+  H3 := Height div 3;
+  if (Button = mbLeft) and (PtInRect(Rect(0, 0, 20, H3), Point(X, Y))) then
+    with TJvStickSizer.CreateEx(Self.Parent, TControl(Self)) do
+      Parent := Self.Parent
+  else
+  if (Button = mbLeft) and (PtInRect(Rect(0, H3, 20, 2 * H3), Point(X, Y))) then
+    Caption := CaptionDialog(Caption)
+  else
+  if (Button = mbLeft) and (PtInRect(Rect(0, 2 * H3, 20, ClientHeight), Point(X, Y))) then
+    with TColorDialog.Create(Self) do
     begin
-      color := FstickColor;
-      if execute then StickColor := color;
-      free;
-    end;
-  end
-  else if assigned(onMouseDown) then
-    onMouseDown(self, button, shift, x, y);
+      Color := FStickColor;
+      if Execute then
+        StickColor := Color;
+      Free;
+    end
+  else
+    inherited MouseDown(Button, Shift, X, Y);
 end;
 
 procedure TJvSticker.Paint;
 var
   R: TRect;
-  s: string;
-  h3: integer;
-  i: integer;
+  S: string;
+  H3: Integer;
+  I: Integer;
 begin
   inherited;
-  h3 := height div 3;
-  canvas.brush.color := StickColor;
-  canvas.fillrect(Rect(15, 0, width, height));
+  H3 := Height div 3;
+  Canvas.Brush.Color := StickColor;
+  Canvas.FillRect(Rect(15, 0, Width, Height));
   // draw grips
-  canvas.brush.color := clSilver;
-  canvas.fillrect(Rect(0, 0, 15, height));
+  Canvas.Brush.Color := clSilver;
+  Canvas.FillRect(Rect(0, 0, 15, Height));
   // size grip
-  for i := 1 to 4 do
+  for I := 1 to 4 do
   begin
-    canvas.pen.color := clwhite;
-    canvas.MoveTo(i * 3, 3);
-    canvas.lineto(i * 3, h3 - 2);
-    canvas.pen.color := clbtnshadow;
-    canvas.MoveTo(i * 3 + 1, 3);
-    canvas.lineto(i * 3 + 1, h3 - 2);
+    Canvas.Pen.Color := clWhite;
+    Canvas.MoveTo(I * 3, 3);
+    Canvas.LineTo(I * 3, H3 - 2);
+    Canvas.Pen.Color := clBtnShadow;
+    Canvas.MoveTo(I * 3 + 1, 3);
+    Canvas.LineTo(I * 3 + 1, H3 - 2);
   end;
   // edit grip
-  for i := 1 to 4 do
+  for I := 1 to 4 do
   begin
-    canvas.pen.color := clwhite;
-    canvas.MoveTo(i * 3, h3 + 2);
-    canvas.lineto(i * 3, 2 * h3 - 2);
-    canvas.pen.color := clnavy;
-    canvas.MoveTo(i * 3 + 1, h3 + 2);
-    canvas.lineto(i * 3 + 1, 2 * h3 - 2);
+    Canvas.Pen.Color := clWhite;
+    Canvas.MoveTo(I * 3, H3 + 2);
+    Canvas.LineTo(I * 3, 2 * H3 - 2);
+    Canvas.Pen.Color := clNavy;
+    Canvas.MoveTo(I * 3 + 1, H3 + 2);
+    Canvas.LineTo(I * 3 + 1, 2 * H3 - 2);
   end;
-  // color grip
-  for i := 1 to 4 do
+  // Color grip
+  for I := 1 to 4 do
   begin
-    canvas.pen.color := clwhite;
-    canvas.MoveTo(i * 3, 2 * h3 + 2);
-    canvas.lineto(i * 3, height - 3);
-    canvas.pen.color := clmaroon;
-    canvas.MoveTo(i * 3 + 1, 2 * h3 + 2);
-    canvas.lineto(i * 3 + 1, height - 3);
+    Canvas.Pen.Color := clWhite;
+    Canvas.MoveTo(I * 3, 2 * H3 + 2);
+    Canvas.LineTo(I * 3, Height - 3);
+    Canvas.Pen.Color := clMaroon;
+    Canvas.MoveTo(I * 3 + 1, 2 * H3 + 2);
+    Canvas.LineTo(I * 3 + 1, Height - 3);
   end;
-  R := Rect(15, 0, width, height);
-  s := caption;
-  canvas.brush.style := bsclear;
-  canvas.Font.assign(Font);
-  DrawText(canvas.handle, pchar(s), -1, R, DT_WORDBREAK);
+  R := Rect(15, 0, Width, Height);
+  S := Caption;
+  Canvas.Brush.Style := bsClear;
+  Canvas.Font.Assign(Font);
+  DrawText(Canvas.Handle, PChar(S), -1, R, DT_WORDBREAK);
 end;
 
 procedure TJvSticker.SetStickColor(const Value: TColor);
 begin
-  FStickColor := Value;
-  invalidate;
+  if FStickColor <> Value then
+  begin
+    FStickColor := Value;
+    Invalidate;
+  end;
 end;
 
 end.

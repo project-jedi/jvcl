@@ -340,8 +340,8 @@ type
   TJvWizardAboutInfoForm = (JvWizardAbout); // Added by <Steve Forbes>
   TJvWizardAlign = alTop..alRight;
   TJvWizardLeftRight = alLeft..alRight;
-  TJvWizardButtonKind = (bkStart, bkLast, bkBack, bkNext, bkFinish, bkCancel,
-    bkHelp);
+  TJvWizardButtonKind =
+    (bkStart, bkLast, bkBack, bkNext, bkFinish, bkCancel, bkHelp);
   TJvWizardButtonSet = set of TJvWizardButtonKind;
 
 const
@@ -913,18 +913,17 @@ resourcestring
   rsInvalidWizardPage = 'The pages belong to another wizard.';
 
 implementation
+
 uses
   Consts;
-const
 
+const
   ciButtonWidth = 75;
   ciButtonHeight = 25;
   ciButtonBarHeight = 42;
   ciButtonPlacement = (ciButtonBarHeight - ciButtonHeight) div 2;
 
 type
-  EJvWizard = class(Exception);
-
   { YW - First Button }
   TJvWizardStartButton = class(TJvWizardButtonControl)
   public
@@ -1507,7 +1506,7 @@ begin
   begin
     if not ((AParent is TJvWizard) or (AParent is TJvWizardCustomPage)) then
     begin
-      raise EJvWizard.Create(rsInvalidParentControl);
+      raise EJvWizardError.Create(rsInvalidParentControl);
     end;
     if AParent is TJvWizardCustomPage then
     begin
@@ -3199,7 +3198,7 @@ function TJvWizard.IsForward(const FromPage, ToPage: TJvWizardCustomPage): Boole
 begin
   if Assigned(FromPage) and Assigned(ToPage) and
     (FromPage.Wizard <> ToPage.Wizard) then
-    raise EJvWizard.Create(rsInvalidWizardPage);
+    raise EJvWizardError.Create(rsInvalidWizardPage);
   Result := not Assigned(FromPage) or (Assigned(ToPage) and
     (FromPage.PageIndex < ToPage.PageIndex));
 end;

@@ -85,12 +85,9 @@ type
     property Parser: TJvParserInfoList read FParser write SetParser;
   end;
 
-{Comparison function. Used internally  for  observance of the sequences tags}
-// (rom) keep it local?
-function CompareTags(Item1, Item2: Pointer): Integer;
-
 implementation
 
+{Comparison function. Used internally for observance of the sequences tags}
 function CompareTags(Item1, Item2: Pointer): Integer;
 begin
   Result := (PTagInfo(Item1).BeginPos - PTagInfo(Item2).BeginPos);
@@ -114,6 +111,12 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvHTMLParser.Loaded;
+begin
+  inherited Loaded;
+  SetParser(FParser);
+end;
+
 procedure TJvHTMLParser.SetFile(Value: TFileName);
 begin
   if FFile <> Value then
@@ -127,28 +130,28 @@ end;
 procedure TJvHTMLParser.SetParser(Value: TJvParserInfoList);
 var
   I: Integer;
-  ob: TJvParserInfo;
-  cap: string;
+  Obj: TJvParserInfo;
+  Cap: string;
 begin
   FParser := Value;
   FKeys.Clear;
   I := 0;
   while I < FParser.Count do
   begin
-    ob := TJvParserInfo.Create;
+    Obj := TJvParserInfo.Create;
     try
-      cap := FParser[I];
+      Cap := FParser[I];
       Inc(I);
-      ob.StartTag := FParser[I];
+      Obj.StartTag := FParser[I];
       Inc(I);
-      ob.EndTag := FParser[I];
+      Obj.EndTag := FParser[I];
       Inc(I);
-      ob.MustBe := StrToInt(FParser[I]);
+      Obj.MustBe := StrToInt(FParser[I]);
       Inc(I);
-      ob.TakeText := StrToInt(FParser[I]);
+      Obj.TakeText := StrToInt(FParser[I]);
       Inc(I);
     finally
-      FKeys.AddObject(cap, TObject(ob));
+      FKeys.AddObject(Cap, Obj);
     end;
   end;
 end;
@@ -175,7 +178,7 @@ end;
 
 procedure TJvHTMLParser.AnalyseString(Str: string);
 var
-  st2: string;
+  St2: string;
   I, J, K, Index: Integer;
   TagInfo: TTagInfo;
 begin
@@ -194,7 +197,7 @@ begin
         begin
           K := StrSearch(TJvParserInfo(FKeys.Objects[I]).EndTag, Str, J);
           TagInfo.BeginPos := J;
-          TagInfo.EndPos := K + length(TJvParserInfo(FKeys.Objects[I]).EndTag);
+          TagInfo.EndPos := K + Length(TJvParserInfo(FKeys.Objects[I]).EndTag);
           TagInfo.Key := I;
           case TJvParserInfo(FKeys.Objects[I]).TakeText of
             0: //Between limits
@@ -217,6 +220,7 @@ begin
             3: //The whole line if containing start tag
               begin
                 TagInfo.BeginContext := J;
+                // (rom) #1310 or #13#10?
                 TagInfo.EndContext := StrSearch('#1310', Str, J);
               end;
           end;
@@ -231,11 +235,11 @@ begin
   begin
     for Index := 0 to (Count - 1) do
     begin
-      st2 := Copy(Str, PTagInfo(Items[Index]).BeginContext,
+      St2 := Copy(Str, PTagInfo(Items[Index]).BeginContext,
         PTagInfo(Items[Index]).EndContext -
         PTagInfo(Items[Index]).BeginContext);
       if Assigned(FOnKeyFound) then
-        FOnKeyFound(Self, FKeys[PTagInfo(Items[Index]).Key], st2, Str);
+        FOnKeyFound(Self, FKeys[PTagInfo(Items[Index]).Key], St2, Str);
     end;
   end;
 end;
@@ -243,13 +247,13 @@ end;
 procedure TJvHTMLParser.AddCondition(Keyword, StartTag, EndTag: string;
   TextSelection: Integer = 0);
 var
-  ob: TJvParserInfo;
+  Obj: TJvParserInfo;
 begin
-  ob := TJvParserInfo.Create;
-  ob.StartTag := StartTag;
-  ob.EndTag := EndTag;
-  ob.TakeText := TextSelection;
-  FKeys.AddObject(Keyword, TObject(ob));
+  Obj := TJvParserInfo.Create;
+  Obj.StartTag := StartTag;
+  Obj.EndTag := EndTag;
+  Obj.TakeText := TextSelection;
+  FKeys.AddObject(Keyword, TObject(Obj));
 end;
 
 procedure TJvHTMLParser.RemoveCondition(Index: Integer);
@@ -285,12 +289,6 @@ end;
 procedure TJvHTMLParser.SetTagList(const Value: TTagInfoList);
 begin
   FTagList := Value;
-end;
-
-procedure TJvHTMLParser.Loaded;
-begin
-  inherited Loaded;
-  SetParser(FParser);
 end;
 
 //=== TTagInfoList ===========================================================

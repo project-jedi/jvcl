@@ -118,8 +118,9 @@ destructor TJvgWizardHeader.Destroy;
 begin
   FCaptions.Free;
   FComments.Free;
-  FCommentFont.Free;
   FGradient.Free;
+  FCommentFont.Free;
+  FSymbolFont.Free;
   inherited Destroy;
 end;
 

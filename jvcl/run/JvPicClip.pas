@@ -33,17 +33,18 @@ uses
   Windows, Classes, Controls, 
   {$IFDEF COMPILER6_UP}
   RTLConsts,
-  {$ENDIF}
-  Graphics {, JvComponent};
+  {$ENDIF COMPILER6_UP}
+  Graphics,
+  JvComponent;
 
 type
-  TCellRange = 1..MaxInt;
+  TJvCellRange = 1..MaxInt;
 
-  TJvPicClip = class(TComponent)
+  TJvPicClip = class(TJvComponent)
   private
     FPicture: TPicture;
-    FRows: TCellRange;
-    FCols: TCellRange;
+    FRows: TJvCellRange;
+    FCols: TJvCellRange;
     FBitmap: TBitmap;
     FMasked: Boolean;
     FMaskColor: TColor;
@@ -78,10 +79,10 @@ type
     property IsEmpty: Boolean read GetIsEmpty;
     property Count: Integer read GetCount;
   published
-    property Cols: TCellRange read FCols write FCols default 1;
+    property Cols: TJvCellRange read FCols write FCols default 1;
     property Height: Integer read GetHeight write SetHeight stored False;
     property Masked: Boolean read FMasked write FMasked default True;
-    property Rows: TCellRange read FRows write FRows default 1;
+    property Rows: TJvCellRange read FRows write FRows default 1;
     property Picture: TPicture read FPicture write SetPicture;
     property MaskColor: TColor read FMaskColor write SetMaskColor stored IsMaskStored;
     property Width: Integer read GetWidth write SetWidth stored False;
@@ -136,14 +137,14 @@ begin
 end;
 
 type
-  TJvHack = class(TImageList);
+  THackImageList = class(TImageList);
 
 procedure TJvPicClip.AssignTo(Dest: TPersistent);
 var
   I: Integer;
   SaveChange: TNotifyEvent;
 begin
-  if (Dest is TPicture) then
+  if Dest is TPicture then
     Dest.Assign(FPicture)
   else
   if (Dest is TGraphic) and (FPicture.Graphic <> nil) and
@@ -169,7 +170,7 @@ begin
       finally
         OnChange := SaveChange;
       end;
-      TJvHack(Dest).Change;
+      THackImageList(Dest).Change;
     end;
   end
   else

@@ -120,9 +120,10 @@ end;
 
 function TJvImageTransform.GetPalette: HPALETTE;
 begin
-  Result := 0;
   if FPicture1.Graphic is TBitmap then
-    Result := TBitmap(FPicture1.Graphic).Palette;
+    Result := TBitmap(FPicture1.Graphic).Palette
+  else
+    Result := 0;
 end;
 
 procedure TJvImageTransform.SetAutoSize(Value: Boolean);
