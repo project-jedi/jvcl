@@ -1061,7 +1061,7 @@ procedure TJvCustomWideEditor.SelectWordOnCaret;
 var
   iBeg, iEnd: Integer;
 begin
-  if (CaretY > 0) and (CaretY < LineCount) and (TrimW(FLines[CaretY]) <> '') then
+  if (CaretY >= 0) and (CaretY < LineCount) and (TrimW(FLines[CaretY]) <> '') then
   begin
     iEnd := Length(TrimRightW(FLines[CaretY]));
     if FCaretX < iEnd then
