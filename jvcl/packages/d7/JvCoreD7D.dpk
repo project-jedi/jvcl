@@ -29,7 +29,11 @@ package JvCoreD7D;
 requires
   JvCoreD7R,
   designide,
-  dclstd;
+  dclstd,
+  vcl,
+  rtl,
+  vclactnband,
+  vclx;
 
 contains
   JvJVCLAboutEditor in '..\..\design\JvJVCLAboutEditor.pas',
@@ -41,6 +45,10 @@ contains
   JvIDEZoom in '..\..\design\JvIDEZoom.pas',
   JvPaintBoxEditor in '..\..\design\JvPaintBoxEditor.pas',
   JvBaseDlgEditor in '..\..\design\JvBaseDlgEditor.pas',
-  JvDesignerUtils in '..\..\design\JvDesignerUtils.pas';
+  JvDesignerUtils in '..\..\design\JvDesignerUtils.pas',
+  JvDsgnConsts in '..\..\design\JvDsgnConsts.pas',
+  JvDataProviderDesignerForm in '..\..\design\JvDataProviderDesignerForm.pas' {frmDataProviderDesigner},
+  JvDataProviderEditors in '..\..\design\JvDataProviderEditors.pas',
+  JvDataProviderItemDesign in '..\..\design\JvDataProviderItemDesign.pas';
 
 end.
