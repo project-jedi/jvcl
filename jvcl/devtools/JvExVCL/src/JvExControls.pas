@@ -163,6 +163,7 @@ type
   JV_CUSTOMCONTROL_EVENTS(HintWindow)
 
 {$IFDEF VCL}
+
 function ShiftStateToKeyData(Shift: TShiftState): Longint;
 
 function InheritMsg(Instance: TControl; Msg: Integer; WParam, LParam: Integer): Integer; overload;
@@ -175,9 +176,10 @@ procedure Control_ControlsListChanging(Instance: TControl; Control: TControl;
 procedure Control_ControlsListChanged(Instance: TControl; Control: TControl;
   Inserting: Boolean);
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
+
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
@@ -299,6 +301,7 @@ var
 begin
   CallInherited := True;
   PMsg := @Msg;
+
   if PMsg^.Msg = CM_DENYSUBCLASSING then
   begin
     PMsg^.Result := Ord(Instance.GetInterface(IJvDenySubClassing, Temp));
@@ -643,6 +646,7 @@ begin
 end;
 
 {$IFDEF COMPILER6}
+
 // redirect Kylix 3 / Delphi 7 function names to Delphi 6 available function
 {$IF not declared(PatchedVCLX)}
 type
@@ -667,6 +671,7 @@ begin
     QKeyEvent_destroy(Event);
   end;
 end;
+
 {$ENDIF COMPILER6}
 
 {$ENDIF VisualCLX}
@@ -722,7 +727,7 @@ begin
 end;
 
 procedure TCustomEdit_Paste(Instance: TWinControl);
-{$IFDEF VisualCLX}
+  {$IFDEF VisualCLX}
   procedure LineEditPaste;
   var
     WValue: WideString;
@@ -737,7 +742,7 @@ procedure TCustomEdit_Paste(Instance: TWinControl);
     QClxLineEdit_insert(QClxLineEditH(Instance.Handle), PWideString(@WValue));
     QClxLineEdit_resetSelection(QClxLineEditH(Instance.Handle));
   end;
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
 begin
   {$IFDEF VCL}
   InheritMsg(Instance, WM_PASTE, 0, 0);
@@ -909,7 +914,7 @@ begin
   end;
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 var
   AutoSizeOffset: Cardinal;
   TControl_SetAutoSize: Pointer;
@@ -1009,7 +1014,7 @@ initialization
 finalization
   UninstallProcHook(@OrgSetAutoSize);
 
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 {$IFDEF VisualCLX}
 
