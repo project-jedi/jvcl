@@ -33,10 +33,10 @@ interface
 uses
   SysUtils, Classes, Consts,
   {$IFDEF VCL}
-  Windows, Graphics, Forms, ExtCtrls,
+  Windows, Graphics, Forms, ExtCtrls, Dialogs,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QForms, QExtCtrls, Types,
+  QGraphics, QForms, QExtCtrls, QDialogs, Types,
   {$ENDIF QForms}
   JvTypes, JvAniFile;
 
@@ -64,6 +64,8 @@ type
     procedure Animate(Sender: TObject);
     procedure SetTransparent(Value: Boolean); override;
     function GetTransparent: Boolean; override;
+    function GetDefaultRate: Longint;
+    procedure AssignTo(Dest: TPersistent); override;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -84,7 +86,10 @@ type
     property FramesCount: Cardinal read GetFramesCount default 0;
     property Index: Integer read FIndex write SetIndex default -1;
     property Animated: Boolean read GetAnimated write SetAnimated default False;
+    property DefaultRate: Longint read GetDefaultRate;
   end;
+
+function LoadJvAnimatedCursorImageDialog: TJvAni;
 
 implementation
 
@@ -136,6 +141,11 @@ begin
   end
   else
     inherited Assign(Source);
+end;
+
+procedure TJvAni.AssignTo(Dest: TPersistent);
+begin
+  FIconData.AssignTo(Dest);
 end;
 
 function TJvAni.GetEmpty: Boolean;
@@ -236,6 +246,11 @@ begin
   Result := FTimer.Enabled;
 end;
 
+function TJvAni.GetDefaultRate: Longint;
+begin
+  Result := FIconData.DefaultRate;
+end;
+
 procedure TJvAni.SetAnimated(const Value: Boolean);
 begin
   if Value <> FTimer.Enabled then
@@ -271,6 +286,37 @@ end;
 function TJvAni.GetTransparent: Boolean;
 begin
   Result := True;
+end;
+
+//=== TJvAnimatedCursorImage helper ==========================================
+
+// (rom) created because JvAnimatedEditor.pas and JvIconListForm.pas contained the same code
+
+function LoadJvAnimatedCursorImageDialog: TJvAni;
+var
+  CurDir: string;
+begin
+  Result := nil;
+  CurDir := GetCurrentDir;
+  with TOpenDialog.Create(Application) do
+    try
+      Options := [{$IFDEF VCL} ofHideReadOnly, {$ENDIF} ofFileMustExist];
+      DefaultExt := RsAniExtension;
+      Filter := RsAniCurFilter;
+      if Execute then
+      begin
+        Result := TJvAni.Create;
+        try
+          Result.LoadFromFile(FileName);
+        except
+          FreeAndNil(Result);
+          raise;
+        end;
+      end;
+    finally
+      Free;
+      SetCurrentDir(CurDir);
+    end;
 end;
 
 initialization

@@ -127,7 +127,7 @@ uses
   QClipbrd, QConsts,
   {$ENDIF VCL}
   Math,
-  JvJVCLUtils, JvJCLUtils, JvDsgnConsts, JvAniFile;
+  JvJVCLUtils, JvJCLUtils, JvDsgnConsts, JvAni;
 
 {$IFDEF VCL}
 {$R *.dfm}
@@ -211,7 +211,7 @@ end;
 
 procedure TIconListDialog.LoadAniFile;
 var
-  AniCursor: TJvAnimatedCursorImage;
+  AniCursor: TJvAni;
 begin
   AniCursor := LoadJvAnimatedCursorImageDialog;
   try

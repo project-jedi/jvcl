@@ -62,7 +62,7 @@ implementation
 
 uses
   TypInfo,
-  JvDsgnConsts, JvAniFile;
+  JvDsgnConsts, JvAni;
 
 const
   cGlyphName = 'GLYPH';
@@ -118,18 +118,19 @@ end;
 
 procedure TJvAnimatedEditor.LoadAniFile(Image: TJvAnimatedImage);
 var
-  AniCursor: TJvAnimatedCursorImage;
+  AniCursor: TJvAni;
 begin
   AniCursor := LoadJvAnimatedCursorImageDialog;
-  try
-    AniCursor.AssignToBitmap(Image.Glyph, clFuchsia, True,
-      Image.Orientation = goVertical);
-    Image.Interval := AniCursor.DefaultRate;
-    Image.TransparentColor := clFuchsia;
-    Designer.Modified;
-  finally
-    AniCursor.Free;
-  end;
+  if AniCursor <> nil then
+    try
+      AniCursor.AssignToBitmap(Image.Glyph, clFuchsia, True,
+        Image.Orientation = goVertical);
+      Image.Interval := AniCursor.DefaultRate;
+      Image.TransparentColor := clFuchsia;
+      Designer.Modified;
+    finally
+      AniCursor.Free;
+    end;
 end;
 
 procedure TJvAnimatedEditor.ExecuteVerb(Index: Integer);
