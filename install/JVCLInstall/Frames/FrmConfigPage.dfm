@@ -29,7 +29,7 @@ object FrameConfigPage: TFrameConfigPage
     Left = 272
     Top = 8
     Width = 241
-    Height = 161
+    Height = 185
     Caption = ' Global options for all IDEs '
     TabOrder = 1
     object LblDxgettextHomepage: TLabel
@@ -137,7 +137,7 @@ object FrameConfigPage: TFrameConfigPage
     end
     object BtnEditJvclInc: TButton
       Left = 152
-      Top = 130
+      Top = 154
       Width = 81
       Height = 25
       Hint = 'Edit all compile time conditions that are in the jvcl.inc file.'
@@ -146,6 +146,21 @@ object FrameConfigPage: TFrameConfigPage
       ShowHint = True
       TabOrder = 5
       OnClick = BtnEditJvclIncClick
+    end
+    object CheckBoxUnitVersioning: TCheckBox
+      Left = 8
+      Top = 136
+      Width = 225
+      Height = 17
+      Hint = 
+        'Enable this option if you want that every JVCL unit should suppo' +
+        'rt'#13#10'UnitVersioning.'#13#10'UnitVersioning allows you the obtain the re' +
+        'vision, date and filename'#13#10'of each unit at runtime.'
+      Caption = 'Unit Versioning'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 6
+      OnClick = CheckBoxXPThemingClick
     end
   end
   object GroupBoxInstallOptions: TGroupBox
@@ -160,7 +175,8 @@ object FrameConfigPage: TFrameConfigPage
       Top = 20
       Width = 54
       Height = 13
-      Caption = 'Options for:'
+      Caption = '&Options for:'
+      FocusControl = ComboBoxTargetIDE
     end
     object CheckBoxDeveloperInstall: TCheckBox
       Left = 16
@@ -229,7 +245,7 @@ object FrameConfigPage: TFrameConfigPage
         'Check this option if you do not want to register'#13#10'the designtime' +
         ' package into the IDE.'
       AllowGrayed = True
-      Caption = 'No IDE registration'
+      Caption = 'No &IDE registration'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
@@ -335,7 +351,7 @@ object FrameConfigPage: TFrameConfigPage
   end
   object CheckBoxCompileJclDcp: TCheckBox
     Left = 272
-    Top = 208
+    Top = 224
     Width = 241
     Height = 17
     Hint = 
@@ -350,7 +366,7 @@ object FrameConfigPage: TFrameConfigPage
   end
   object CheckBoxVerbose: TCheckBox
     Left = 272
-    Top = 184
+    Top = 200
     Width = 241
     Height = 17
     Hint = 
