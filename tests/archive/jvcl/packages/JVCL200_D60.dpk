@@ -1,3 +1,25 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JVCL200_D60.dpk, released on 2002-07-13.
+
+Last Modified: 2002-07-13
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
+{$I JEDI.INC}
+
 package JVCL200_D60;
 
 {$R *.res}
@@ -27,6 +49,10 @@ package JVCL200_D60;
 {$IMPLICITBUILD ON}
 
 requires
+  dcldb,
+  dclsmp,
+  dclstd,
+  designide,
   vcl,
   dbrtl,
   vcldb,
@@ -63,6 +89,34 @@ contains
   JvChNtfyProperty in '..\Source\JvChNtfyProperty.pas',
   JvLCProperty in '..\Source\JvLCProperty.pas',
   JvTipProperty in '..\Source\JvTipProperty.pas',
-  JvAppletProperty in '..\source\JvAppletProperty.pas';
+  JvAppletProperty in '..\source\JvAppletProperty.pas',
+  // Rx Controls
+  JvLConst in '..\source\JvLConst.pas',
+  JvHintProp in '..\source\JvHintProp.pas',
+  JvCheckItm in '..\source\JvCheckItm.pas',
+  JvxStrLEdit in '..\source\JvxStrLEdit.pas',
+  JvColors in '..\source\JvColors.pas',
+  JvDsgn in '..\source\JvDsgn.pas',
+  JvPresrDsn in '..\source\JvPresrDsn.pas',
+  JvMinMaxEd in '..\source\JvMinMaxEd.pas',
+  JvSbEdit in '..\source\JvSbEdit.pas',
+  JvPgMngrEd in '..\source\JvPgMngrEd.pas',
+  JvTimLstEd in '..\source\JvTimLstEd.pas',
+  JvIcoLEdit in '..\source\JvIcoLEdit.pas',
+//  JvResExp in '..\source\JvResExp.pas',
+  JvPictEdit in '..\source\JvPictEdit.pas',
+  JvDirFrm in '..\source\JvDirFrm.pas',
+  JvGradEdit in '..\source\JvGradEdit.pas',
+  JvCtlReg in '..\source\JvCtlReg.pas',
+  JvTooReg in '..\source\JvTooReg.pas',
+  // Rx DB Controls
+  JvSelDSFrm in '..\source\JvSelDSFrm.pas',
+  JvDBReg in '..\source\JvDBReg.pas',
+  // Rx BDE Controls
+  JvQBndDlg in '..\source\JvQBndDlg.pas',
+  JvBDEReg in '..\source\JvBDEReg.pas';
+
+
+
 
 end.
