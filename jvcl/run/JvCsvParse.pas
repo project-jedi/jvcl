@@ -94,7 +94,7 @@ implementation
 
 uses
   SysUtils,
-  JvResources;
+  JvTypes, JvResources;
 
 var
   TokenCount : integer;
@@ -198,9 +198,9 @@ var
 begin
  l := strlen(s1);
  if (l < 2) OR (l > 9) then
-     raise Exception.create(sInvalidHexLiteral);
+     raise EJVCLException.Create(RsEInvalidHexLiteral);
  if (s1[0] <> '$') then
-     raise Exception.create(sInvalidHexLiteral);
+     raise EJVCLException.Create(RsEInvalidHexLiteral);
  val := 0;
  for x := 1 to l-2 do begin
    val := val * 16; { shift right four bits at a time }
@@ -211,7 +211,7 @@ begin
    else if (s1[x] >= 'A') AND (s1[x] <= 'F') then
        digit := ( ord(s1[x])-ord('A') ) + 10
    else
-      raise Exception.create(sInvalidHexLiteral);
+      raise EJVCLException.Create(RsEInvalidHexLiteral);
    val := val + digit;
  end;
  result :=  val;

@@ -285,7 +285,7 @@ end;
 procedure TJvCustomCheckedMaskEdit.BeginInternalChange;
 begin
   if FInternalChange then
-    raise EJVCLException.Create(SBeginUnsupportedNestedCall);
+    raise EJVCLException.Create(RsEBeginUnsupportedNestedCall);
   FInternalChange := True;
 end;
 
@@ -293,7 +293,7 @@ procedure TJvCustomCheckedMaskEdit.EndInternalChange;
 begin
   { TODO : if this assertion ever fails, it's time to switch to a counted locking scheme }
   if not FInternalChange then
-    raise EJVCLException.Create(SEndUnsupportedNestedCall);
+    raise EJVCLException.Create(RsEEndUnsupportedNestedCall);
   FInternalChange := False;
 end;
 

@@ -139,8 +139,8 @@ uses
 function ActionsToString(Actions: TJvChangeActions): string;
 const
   ActionStrings: array [TJvChangeAction] of string =
-    (sFileNameChange, sDirectoryNameChange, sAttributesChange,
-     sSizeChange, sWriteChange, sSecurityChange);
+    (RsFileNameChange, RsDirectoryNameChange, RsAttributesChange,
+     RsSizeChange, RsWriteChange, RsSecurityChange);
 var
   I: TJvChangeAction;
 begin
@@ -197,7 +197,7 @@ end;
 procedure TJvChangeItem.SetDir(const Value: string);
 begin
   if (Length(Value) = 0) or not DirectoryExists(Value) then
-    raise EJVCLException.CreateFmt(sFmtInvalidPath, [Value]);
+    raise EJVCLException.CreateFmt(RsEFmtInvalidPath, [Value]);
   FDir := Value;
 end;
 
@@ -228,7 +228,7 @@ begin
   if Count < MAXIMUM_WAIT_OBJECTS then
     Result := TJvChangeItem(inherited Add)
   else
-    raise EJVCLException.CreateFmt(sFmtMaxCountExceeded, [MAXIMUM_WAIT_OBJECTS]);
+    raise EJVCLException.CreateFmt(RsEFmtMaxCountExceeded, [MAXIMUM_WAIT_OBJECTS]);
 end;
 
 function TJvChangeItems.GetItem(Index: Integer): TJvChangeItem;
@@ -279,7 +279,7 @@ end;
 procedure TJvChangeNotify.CheckActive(const Name: string);
 begin
   if Active then
-    raise EJVCLException.CreateFmt(SFmtCannotChangeName,[Name]);
+    raise EJVCLException.CreateFmt(RsEFmtCannotChangeName, [Name]);
 end;
 
 procedure TJvChangeNotify.SetCollection(const Value: TJvChangeItems);
@@ -348,7 +348,7 @@ begin
           Flags := Flags or (cActions[cA]);
       S := FCollection[I].Directory;
       if (Length(S) = 0) or not DirectoryExists(S) then
-        raise EJVCLException.CreateFmt(SFmtInvalidPathAtIndex, [S, I]);
+        raise EJVCLException.CreateFmt(RsEFmtInvalidPathAtIndex, [S, I]);
       FNotifyArray[I] := FindFirstChangeNotification(PChar(S),
         BOOL(FCollection[I].IncludeSubTrees), Flags);
       if FNotifyArray[I] = INVALID_HANDLE_VALUE then

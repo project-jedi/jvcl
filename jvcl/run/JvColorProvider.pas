@@ -1233,10 +1233,10 @@ begin
     if (Value = nil) or Supports(Value, IInterfaceComponentReference, ICR) then
       SetColorProviderIntf(PI)
     else
-      raise EJVCLException.Create(SNoICR);
+      raise EJVCLException.Create(RsENoICR);
   end
   else
-    raise EJVCLException.Create(SNoColProv);
+    raise EJVCLException.Create(RsENoColProv);
 end;
 
 {$ENDIF COMPILER6_UP}
@@ -1319,7 +1319,7 @@ begin
     Result := FList.AddObject(Name, TObject(@Callback))
   else
   if @Callbacks(Result) <> @Callback then
-    raise EJVCLException.CreateFmt(SAlreadyRegistered, [Name]);
+    raise EJVCLException.CreateFmt(RsEAlreadyRegistered, [Name]);
 end;
 
 procedure TJvColorProviderColorAdderRegister.Delete(Callback: TJvColorProviderColorAdder);
@@ -2371,12 +2371,12 @@ end;
 
 procedure TJvColorProvider.GenDelphiConstantMapping;
 begin
-  Mappings.Add(TJvColorProviderNameMapping.Create(Mappings, SDelphiConstantNames));
+  Mappings.Add(TJvColorProviderNameMapping.Create(Mappings, RsDelphiConstantNames));
 end;
 
 procedure TJvColorProvider.GenEnglishMapping;
 begin
-  Mappings.Add(TJvColorProviderNameMapping.Create(Mappings, SEnglishNames));
+  Mappings.Add(TJvColorProviderNameMapping.Create(Mappings, RsEnglishNames));
 end;
 
 procedure TJvColorProvider.InitColorList(var List: TDynIntegerArray;
@@ -2441,7 +2441,7 @@ end;
 procedure TJvColorProvider.ReadMappings(Reader: TReader);
 begin
   if Reader.ReadValue <> vaCollection then
-    raise EReadError.Create(SMappingCollectionExpected);
+    raise EReadError.Create(RsEMappingCollectionExpected);
   Mappings.Clear;
   while not Reader.EndOfList do
     ReadMapping(Reader);
@@ -2467,20 +2467,20 @@ var
 begin
   Reader.ReadListBegin;
   if not AnsiSameStr(Reader.ReadStr, 'Name') then
-    raise EReadError.Create(SExpectedMappingName);
+    raise EReadError.Create(RsEExpectedMappingName);
   Index := AddMapping(Reader.ReadString);
   if not AnsiSameStr(Reader.ReadStr, 'Names') then
-    raise EReadError.Create(SExpectedNameMappings);
+    raise EReadError.Create(RsEExpectedNameMappings);
   Reader.ReadListBegin;
   while not Reader.EndOfList do
   begin
     S := Reader.ReadString;
     IEqualPos := Pos('=', S);
     if IEqualPos < 1 then
-      raise EReadError.Create(SInvalidNameMappingSpecification);
+      raise EReadError.Create(RsEInvalidNameMappingSpecification);
     I := IndexOfColor(StrToInt(Trim(Copy(S, 1, IEqualPos - 1))));
     if I < 0 then
-      raise EReadError.CreateFmt(SUnknownColor, [Trim(Copy(S, 1, IEqualPos - 1))]);
+      raise EReadError.CreateFmt(RsEUnknownColor, [Trim(Copy(S, 1, IEqualPos - 1))]);
     FColorList[I].Names[Index] := Trim(Copy(S, IEqualPos + 1, Length(S) - IEqualPos));
   end;
   Reader.ReadListEnd;
@@ -2930,7 +2930,7 @@ begin
       if Supports(CurrentItem, IJvDataItemText, ItemText) then
         Result := ItemText.Caption
       else
-        Result := SDataItemRenderHasNoText;
+        Result := RsDataItemRenderHasNoText;
     end
     else
       Result := '';
@@ -3331,7 +3331,7 @@ begin
     Set_NameMappingIndex(Idx);
   end
   else
-    raise EJVCLDataConsumer.Create(SSpecifiedMappingError);
+    raise EJVCLDataConsumer.Create(RsESpecifiedMappingError);
 end;
 
 procedure TJvColorProviderSettings.Set_NameMappingIndex(Value: Integer);
@@ -3412,11 +3412,11 @@ constructor TJvColorProviderSettings.Create(AOwner: TExtensibleInterfacedPersist
 begin
   inherited Create(AOwner);
   FColorBoxSettings := TJvColorProviderColorBoxSettings.Create(Self);
-  FCustomColorSettings := TJvColorProviderCustomColorGroupSettings.Create(Self, SCustomColors);
+  FCustomColorSettings := TJvColorProviderCustomColorGroupSettings.Create(Self, RsCustomColors);
   FGroupingSettings := TJvColorProviderGroupingSettings.Create(Self);
   FTextSettings := TJvColorProviderTextSettings.Create(Self);
-  FStandardColorSettings := TJvColorProviderColorGroupSettings.Create(Self, SStandardColors);
-  FSystemColorSettings := TJvColorProviderColorGroupSettings.Create(Self, SSystemColors);
+  FStandardColorSettings := TJvColorProviderColorGroupSettings.Create(Self, RsStandardColors);
+  FSystemColorSettings := TJvColorProviderColorGroupSettings.Create(Self, RsSystemColors);
   FMapping := -1;
   Changed(ccrViewChanged);
 end;
@@ -3514,7 +3514,7 @@ begin
     Color := Reader.ReadInteger;
     ColIdx := CPImpl.IndexOfColor(Color);
     if ColIdx < 0 then
-      raise EReadError.CreateFmt(SInvalidColor, [Color]);
+      raise EReadError.CreateFmt(RsEInvalidColor, [Color]);
     if CPImpl.IndexOfColIdx(List, ColIdx) < 0 then
     begin
       SetLength(List, Length(List) + 1);
@@ -3778,13 +3778,13 @@ begin
         Delete(MapIdx);
       end
       else
-        raise EJVCLDataItems.Create(SItemNotForList);
+        raise EJVCLDataItems.Create(RsEItemNotForList);
     end
     else
-      raise EJVCLDataItems.Create(SItemNotForList);
+      raise EJVCLDataItems.Create(RsEItemNotForList);
   end
   else
-    raise EJVCLDataItems.Create(SItemNotForList);
+    raise EJVCLDataItems.Create(RsEItemNotForList);
 end;
 
 //=== TJvColorConsumer ========================================================

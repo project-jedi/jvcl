@@ -406,7 +406,7 @@ procedure GetRegisteredLabelBehaviorOptions(Strings: TStrings);
 implementation
 
 uses
-  JvResources;
+  JvTypes, JvResources;
 
 var
   FBehaviorOptions: TStringList = nil;
@@ -462,7 +462,7 @@ end;
 constructor TJvLabelBehavior.Create(ALabel: TJvCustomBehaviorLabel);
 begin
   if ALabel = nil then
-    raise Exception.Create(sNeedBehaviorLabel);
+    raise EJVCLException.CreateFmt(RsENeedBehaviorLabel, [ClassName]);
   inherited Create;
   FLabel := ALabel;
   FActive := False;
@@ -538,14 +538,14 @@ end;
 
 constructor TJvCustomBehaviorLabel.Create(AComponent: TComponent);
 begin
-  inherited;
-  FBehavior := sNone;
+  inherited Create(AComponent);
+  FBehavior := RsNoneCaption;
 end;
 
 destructor TJvCustomBehaviorLabel.Destroy;
 begin
   FreeAndNil(FOptions);
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvCustomBehaviorLabel.DoStart;
@@ -813,7 +813,7 @@ begin
   if (csLoading in OwnerLabel.ComponentState) then Exit;
   FParent := OwnerLabel.Parent;
   if FParent = nil then
-    raise Exception.CreateFmt(sNoOwnerLabelParent, ['TJvLabelBounce']);
+    raise EJVCLException.CreateFmt(RsENoOwnerLabelParent, [ClassName]);
   inherited;
   FOriginalRect := OwnerLabel.BoundsRect;
   Randomize;
@@ -1048,7 +1048,7 @@ begin
   if (csLoading in OwnerLabel.ComponentState) then Exit;
   FParent := OwnerLabel.Parent;
   if FParent = nil then
-    raise Exception.CreateFmt(sNoOwnerLabelParent, ['TJvLabelAppear']);
+    raise EJVCLException.CreateFmt(RsENoOwnerLabelParent, [ClassName]);
   inherited;
   if FTimer = nil then
   begin

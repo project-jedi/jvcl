@@ -145,7 +145,7 @@ begin
   FFileName := '';
   FDll := LoadLibrary('SETUPAPI.DLL');
   if FDll = 0 then
-    raise EJVCLException.Create(RC_ErrorSetupDll);
+    raise EJVCLException.Create(RsEErrorSetupDll);
 end;
 
 destructor TJvCABFile.Destroy;

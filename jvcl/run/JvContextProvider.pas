@@ -429,7 +429,7 @@ begin
     end;
   end
   else
-    raise EJVCLException.Create(SNoContextAssigned);
+    raise EJVCLException.Create(RsENoContextAssigned);
 end;
 
 function TContextItem.Editable: Boolean;
@@ -490,7 +490,7 @@ begin
     if Supports(Item, IJvDataContextItem, CtxItem) then
       Result := Item
     else
-      raise EJVCLException.Create(SNoContextItem);
+      raise EJVCLException.Create(RsENoContextItem);
   end;
 end;
 
@@ -576,10 +576,10 @@ begin
     if (Value = nil) or Supports(Value, IInterfaceComponentReference, ICR) then
       ProviderIntf := PI
     else
-      raise EJVCLException.Create(SNotSupportedIInterfaceComponentReference);
+      raise EJVCLException.Create(RsENotSupportedIInterfaceComponentReference);
   end
   else
-    raise EJVCLException.Create(SNotSupportedIJvDataProvider);
+    raise EJVCLException.Create(RsENotSupportedIJvDataProvider);
 end;
 
 class function TJvContextProvider.ItemsClass: TJvDataItemsClass;

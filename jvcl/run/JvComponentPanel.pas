@@ -111,7 +111,7 @@ type
 implementation
 
 uses
-  JvResources;
+  JvTypes, JvResources;
 
 {$R ..\resources\JvComponentPanel.res}
 
@@ -220,7 +220,7 @@ var
   TmpButton: TSpeedButton;
 begin
   if (AButtonCount < 0) or (AButtonCount > 100) then
-    raise Exception.Create(SInvalidButtonCount);
+    raise EJVCLException.Create(RsEInvalidButtonCount);
   BeginUpdate;
   try
     SetMainButton;

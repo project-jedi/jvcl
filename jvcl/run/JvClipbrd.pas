@@ -325,7 +325,7 @@ begin
     // and we finally open the clipboard with our window handle
     // to ensure that we can process delayed rendering messages
     if not OpenClipboard(FClipboardWindow) then
-      raise Exception.CreateRes(@SCannotOpenClipboard);
+      raise EJVCLException.Create(SCannotOpenClipboard);
   end;
 end;
 
@@ -363,16 +363,12 @@ begin
 
   // if user gave us an event
   if Assigned(EOnRenderFormat) then
-  begin
     // then ask user to render the format
-    EOnRenderFormat(Self, Format, buffer, size, mustFree);
-  end
+    EOnRenderFormat(Self, Format, buffer, size, mustFree)
   else
-  begin
     // else, trigger an exception, how could we guess the
     // size and data to put in the buffer ?
-    raise Exception.CreateRes(@SNoRenderFormatEventGiven);
-  end;
+    raise EJVCLException.Create(RsENoRenderFormatEventGiven);
 
   // now render the way windows wants it
 

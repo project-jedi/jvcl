@@ -423,9 +423,9 @@ end;
 procedure TJvChartData.Grow(Pen, Values: Integer);
 begin
   if (Pen < 0) or (Values < 0) then
-    raise ERangeError.Create(sDataIndexCannotBeNegative);
+    raise ERangeError.Create(RsEDataIndexCannotBeNegative);
   if (Pen > CHART_SANITY_LIMIT) or (Values > CHART_SANITY_LIMIT) then
-    raise ERangeError.Create(sDataIndexTooLargeProbablyAnInternal);
+    raise ERangeError.Create(RsEDataIndexTooLargeProbablyAnInternal);
 
   if Values >= FDataAlloc then
   begin
@@ -570,7 +570,7 @@ end;
 function TJvChartOptions.GetAverageValue(Index: Integer): Double;
 begin
   if Index < 0 then
-    raise ERangeError.Create(sGetAverageValueIndexNegative);
+    raise ERangeError.Create(RsEGetAverageValueIndexNegative);
   if Index >= Length(FAverageValue) then
     Result := 0.0
   else
@@ -580,7 +580,7 @@ end;
 procedure TJvChartOptions.SetAverageValue(Index: Integer; AValue: Double);
 begin
   if Index < 0 then
-    raise ERangeError.Create(sSetAverageValueIndexNegative);
+    raise ERangeError.Create(RsESetAverageValueIndexNegative);
   if Index >= Length(FAverageValue) then
     SetLength(FAverageValue, Index + 1);
   FAverageValue[Index] := AValue;
@@ -589,7 +589,7 @@ end;
 procedure TJvChartOptions.SetPenCount(Count: Integer);
 begin
   if (Count < 0) or (Count >= MAX_PEN) then
-    raise ERangeError.Create(sJvChartOptionsPenCountPenCountOutOf);
+    raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
   FPenCount := Count;
 end;
 
@@ -681,7 +681,7 @@ end;
 procedure TJvChartOptions.SetXStartOffset(Offset: Integer);
 begin
   if (Offset < 10) or (Offset > (FOwner.Width div 2)) then
-    raise ERangeError.Create(sJvChartOptionsXStartOffsetValueOutO);
+    raise ERangeError.Create(RsEChartOptionsXStartOffsetValueOutO);
   FXStartOffset := Offset;
 end;
 
@@ -1128,7 +1128,7 @@ begin
 
   if Options.XValueCount = 0 then
   begin
-    MyRightTextOut(Round(xOrigin), Round(yOrigin), sNoData);
+    MyRightTextOut(Round(xOrigin), Round(yOrigin), RsNoData);
     Invalidate;
     Exit;
   end;
@@ -1669,7 +1669,7 @@ begin
   if FPicture.Graphic is TBitmap then
     Result := TBitmap(FPicture.Graphic).Canvas
   else
-    raise EInvalidOperation.Create(sUnableToGetCanvas);
+    raise EInvalidOperation.Create(RsEUnableToGetCanvas);
 end;
 
 {**************************************************************************}
@@ -1720,7 +1720,7 @@ var
   strString: string;
 begin
   strString := Options.Title;
-  if InputQuery(sGraphHeader, Format(sCurrentHeaders, [Options.Title]), strString) then
+  if InputQuery(RsGraphHeader, Format(RsCurrentHeaders, [Options.Title]), strString) then
     Options.Title := strString;
   PlotGraph;
 
@@ -1734,7 +1734,7 @@ var
   strString: string;
 begin
   strString := Options.XAxisHeader;
-  if InputQuery(sGraphHeader, Format(sXAxisHeaders, [Options.XAxisHeader]), strString) then
+  if InputQuery(RsGraphHeader, Format(RsXAxisHeaders, [Options.XAxisHeader]), strString) then
     Options.XAxisHeader := strString;
   PlotGraph;
 
@@ -1746,7 +1746,7 @@ var
   strString: string;
 begin
   strString := Options.XAxisHeader;
-  if InputQuery(sGraphScale, Format(sYAxisScales, [FloatToStr(Options.YMax)]), strString) then
+  if InputQuery(RsGraphScale, Format(RsYAxisScales, [FloatToStr(Options.YMax)]), strString) then
     Options.YMax := StrToFloatDef(strString, Options.YMax)
   else
     exit;
@@ -1960,7 +1960,7 @@ begin
   strs := TStringList.Create;
   try
 
-    strMessage1 := sNoValuesHere;
+    strMessage1 := RsNoValuesHere;
     nWidth := ChartCanvas.TextWidth(strMessage1) + 20;
 
     if nMousePen = 0 then

@@ -734,7 +734,7 @@ begin
     Succeeded(IDesktopFolder.GetDisplayNameOf(IDList, SHGDN_NORMAL or SHGDN_FORPARSING, StrRet)) then
 
     { Result may be a GUID; Don't know whether these GUIDs are portable. Microsoft
-      does recommand to return strings 'that are as close to the display names
+      does recommend to return strings 'that are as close to the display names
       as possible'. But in this case display names aren't usable }
     Result := StrRetToString(IDList, StrRet)
   else
@@ -1055,7 +1055,7 @@ var
 begin
   ShellVersion := GetShellVersion;
   if ShellVersion < $00040000 then
-    raise EJVCLException.Create(SShellNotCompatible);
+    raise EJVCLException.Create(RsEShellNotCompatible);
 
   FDialogWindow := 0;
   FOwnerWindow := GetOwnerWindow;

@@ -1444,7 +1444,7 @@ var
 begin
   HasNoText := not Supports(Item, IJvDataItemText, TextIntf);
   if HasNoText then
-    FText := SDataItemRenderHasNoText
+    FText := RsDataItemRenderHasNoText
   else
     FText := TextIntf.Caption;
 end;
@@ -1606,7 +1606,7 @@ var
 begin
   RAPI := GetPropInfo(TOpenWriter, 'RootAncestor');
   if RAPI = nil then // Should never happen
-    raise Exception.Create(sInternalError);
+    raise EJVCLException.Create(RsEInternalError);
   Result := Pointer(Cardinal(RAPI.GetProc) and $00FFFFFF + Cardinal(Self) + 4);
 end;
 
@@ -1860,7 +1860,7 @@ end;
 procedure TExtensibleInterfacedPersistent.AddIntfImpl(const Obj: TAggregatedPersistentEx);
 begin
   if IndexOfImplClass(TAggregatedPersistentExClass(Obj.ClassType)) >= 0 then
-    raise EJVCLException.Create(SExtensibleIntObjDuplicateClass);
+    raise EJVCLException.Create(RsEExtensibleIntObjDuplicateClass);
   FAdditionalIntfImpl.Add(Obj);
 end;
 
@@ -1937,7 +1937,7 @@ begin
   SuspendRefCount;
   try
     if Reader.ReadValue <> vaCollection then
-      raise EReadError.Create(SExtensibleIntObjCollectionExpected);
+      raise EReadError.Create(RsEExtensibleIntObjCollectionExpected);
     while not Reader.EndOfList do
       ReadImplementer(Reader);
     Reader.ReadListEnd;
@@ -1974,11 +1974,11 @@ begin
   Reader.ReadListBegin;
   ClassName := Reader.ReadStr;
   if not AnsiSameText(ClassName, cClassName) then
-    raise EReadError.Create(SExtensibleIntObjClassNameExpected);
+    raise EReadError.Create(RsEExtensibleIntObjClassNameExpected);
   ClassName := Reader.ReadString;
   ClassType := FindClass(ClassName);
   if not ClassType.InheritsFrom(TAggregatedPersistentEx) then
-    raise EReadError.Create(SExtensibleIntObjInvalidClass);
+    raise EReadError.Create(RsEExtensibleIntObjInvalidClass);
   I := IndexOfImplClass(TAggregatedPersistentExClass(ClassType));
   if I >= 0 then
     Impl := TAggregatedPersistentEx(FAdditionalIntfImpl[I])
@@ -2205,10 +2205,10 @@ begin
         GetProvider.Changed(pcrUpdateItems, Self);
       end
       else
-        raise EJVCLDataItems.Create(sItemsMayNotBeMovedInTheMainTree);
+        raise EJVCLDataItems.Create(RsEItemsMayNotBeMovedInTheMainTree);
     end
     else
-      raise EJVCLDataItems.Create(sInvalidIndex);
+      raise EJVCLDataItems.Create(RsEInvalidIndex);
   end;
 end;
 
@@ -2250,7 +2250,7 @@ end;
 procedure TJvBaseDataItems.ReadItems(Reader: TReader);
 begin
   if Reader.ReadValue <> vaCollection then
-    raise EReadError.Create(SExtensibleIntObjCollectionExpected);
+    raise EReadError.Create(RsEExtensibleIntObjCollectionExpected);
   while not Reader.EndOfList do
     ReadItem(Reader);
   Reader.ReadListEnd;
@@ -2287,11 +2287,11 @@ begin
   Reader.ReadListBegin;
   PropName := Reader.ReadStr;
   if not AnsiSameText(PropName, cClassName) then
-    raise EReadError.Create(SExtensibleIntObjClassNameExpected);
+    raise EReadError.Create(RsEExtensibleIntObjClassNameExpected);
   ClassName := Reader.ReadString;
   PerstClass := FindClass(ClassName);
   if not PerstClass.InheritsFrom(TJvBaseDataItem) then
-    raise EReadError.Create(SExtensibleIntObjInvalidClass);
+    raise EReadError.Create(RsEExtensibleIntObjInvalidClass);
   ItemClass := TJvBaseDataItemClass(PerstClass);
   ItemInstance := ItemClass.Create(Self);
   try
@@ -2678,7 +2678,7 @@ begin
     Items.Provider.Changed(pcrDelete, nil);
   end
   else if Items.GetItem(Index) <> nil then
-    raise EJVCLDataItems.Create(sItemCanNotBeDeleted);
+    raise EJVCLDataItems.Create(RsEItemCanNotBeDeleted);
 end;
 
 procedure TJvBaseDataItemsListManagement.Remove(var Item: IJvDataItem);
@@ -2708,7 +2708,7 @@ begin
     end;
   end
   else if Item <> nil then
-    raise EJVCLDataItems.Create(sItemCanNotBeDeleted);
+    raise EJVCLDataItems.Create(RsEItemCanNotBeDeleted);
 end;
 
 { TJvCustomDataItemsImages }
@@ -2824,15 +2824,15 @@ begin
   SuspendRefCount;
   try
     if Reader.ReadValue <> vaCollection then
-      raise EReadError.Create(SExtensibleIntObjCollectionExpected);
+      raise EReadError.Create(RsEExtensibleIntObjCollectionExpected);
     Reader.ReadListBegin;
     PropName := Reader.ReadStr;
     if not AnsiSameText(PropName, cClassName) then
-      raise EReadError.Create(SExtensibleIntObjClassNameExpected);
+      raise EReadError.Create(RsEExtensibleIntObjClassNameExpected);
     ClassName := Reader.ReadString;
     AClass := FindClass(ClassName);
     if not AClass.InheritsFrom(TJvBaseDataItems) then
-      raise EReadError.Create(SExtensibleIntObjInvalidClass);
+      raise EReadError.Create(RsEExtensibleIntObjInvalidClass);
     I := IndexOfImplClass(TJvBaseDataItemSubItems);
     if I > -1 then
     begin
@@ -3041,7 +3041,7 @@ end;
 procedure TJvCustomDataProvider.ReadRoot(Reader: TReader);
 begin
   if Reader.ReadValue <> vaCollection then
-    raise EReadError.Create(SExtensibleIntObjCollectionExpected);
+    raise EReadError.Create(RsEExtensibleIntObjCollectionExpected);
   Reader.ReadListBegin;
   // We don't really have a root item; just stream in the DataItemsImpl instance.
   while not Reader.EndOfList do
@@ -3065,7 +3065,7 @@ var
   I: Integer;
 begin
   if Reader.ReadValue <> vaCollection then
-    raise EReadError.Create(SExtensibleIntObjCollectionExpected);
+    raise EReadError.Create(RsEExtensibleIntObjCollectionExpected);
   for I := DataContextsImpl.GetCount - 1 downto 0 do
     if DataContextsImpl.GetContext(I).IsDeletable then
       DataContextsImpl.DoDeleteContext(I);
@@ -3106,15 +3106,15 @@ begin
   begin
     ClassName := Reader.ReadStr;
     if not AnsiSameText(ClassName, cClassName) then
-      raise EReadError.Create(SExtensibleIntObjClassNameExpected);
+      raise EReadError.Create(RsEExtensibleIntObjClassNameExpected);
     ClassName := Reader.ReadString;
     ClassType := FindClass(ClassName);
     if not ClassType.InheritsFrom(TJvBaseDataContext) then
-      raise EReadError.Create(SExtensibleIntObjInvalidClass);
+      raise EReadError.Create(RsEExtensibleIntObjInvalidClass);
   end;
   CtxName := Reader.ReadStr;
   if not AnsiSameText(CtxName, cName) then
-    raise EReadError.Create(sContextNameExpected);
+    raise EReadError.Create(RsEContextNameExpected);
   CtxName := Reader.ReadString;
   if Index >= DataContextsImpl.GetCount then
   begin
@@ -3261,7 +3261,7 @@ begin
   if (FConsumerStack <> nil) and (FConsumerStack.Count > 0) then
     FConsumerStack.Delete(0)
   else if FConsumerStack <> nil then
-    raise EJVCLDataProvider.Create(sConsumerStackIsEmpty);
+    raise EJVCLDataProvider.Create(RsEConsumerStackIsEmpty);
 end;
 
 procedure TJvCustomDataProvider.SelectContext(Context: IJvDataContext);
@@ -3283,7 +3283,7 @@ begin
   if (FContextStack <> nil) and (FContextStack.Count > 0) then
     FContextStack.Delete(0)
   else if FContextStack <> nil then
-    raise EJVCLDataProvider.Create(sContextStackIsEmpty);
+    raise EJVCLDataProvider.Create(RsEContextStackIsEmpty);
 end;
 
 procedure TJvCustomDataProvider.ContextAdded(Context: IJvDataContext);
@@ -3341,7 +3341,7 @@ begin
   if ItemsClass <> nil then
     FDataItems := ItemsClass.Create(Self)
   else
-    raise EJVCLDataProvider.Create(SDataProviderNeedsItemsImpl);
+    raise EJVCLDataProvider.Create(RsEDataProviderNeedsItemsImpl);
 end;
 
 destructor TJvCustomDataProvider.Destroy;
@@ -3470,7 +3470,7 @@ begin
     if (ExistingContext = nil) or (ExistingContext = (Self as IJvDataContext)) then
       DoSetName(Value)
     else
-      raise EJVCLDataContexts.Create(sAContextWithThatNameAlreadyExists);
+      raise EJVCLDataContexts.Create(RsEAContextWithThatNameAlreadyExists);
   end;
 end;
 
@@ -3508,7 +3508,7 @@ begin
     SetName(AName);
   end
   else
-    raise EJVCLDataContexts.Create(sCannotCreateAContextWithoutAContext);
+    raise EJVCLDataContexts.Create(RsECannotCreateAContextWithoutAContext);
 end;
 
 //===TJvBaseFixedDataContext========================================================================
@@ -3534,7 +3534,7 @@ begin
   else
   begin
     if Tmp <> Context then
-      raise EJVCLDataContexts.Create(sAContextWithThatNameAlreadyExists);
+      raise EJVCLDataContexts.Create(RsEAContextWithThatNameAlreadyExists);
   end;
 end;
 
@@ -3674,10 +3674,10 @@ begin
       if Value.GetInterface(IJvDataProvider, ProviderRef) then
         SetProviderIntf(ProviderRef)
       else
-        raise EJVCLDataConsumer.Create(sComponentDoesNotSupportTheIJvDataPr);
+        raise EJVCLDataConsumer.Create(RsEComponentDoesNotSupportTheIJvDataPr);
     end
     else
-      raise EJVCLDataConsumer.Create(sComponentDoesNotSupportTheIInterfac);
+      raise EJVCLDataConsumer.Create(RsEComponentDoesNotSupportTheIInterfac);
   end;
 end;
 {$ENDIF COMPILER6_UP}
@@ -3986,7 +3986,7 @@ begin
       if (VCLComponent <> nil) and (csLoading in VCLComponent.ComponentState) then
         FFixupContext := Value
       else
-        raise EJVCLDataConsumer.Create(sYouMustSpecifyAProviderBeforeSettin);
+        raise EJVCLDataConsumer.Create(RsEYouMustSpecifyAProviderBeforeSettin);
     end
     else
     begin
@@ -3998,10 +3998,10 @@ begin
           if ContextIntf <> nil then
             SetContextIntf(ContextIntf)
           else
-            raise EJVCLDataConsumer.CreateFmt(sProviderHasNoContextNameds, [Value]);
+            raise EJVCLDataConsumer.CreateFmt(RsEProviderHasNoContextNameds, [Value]);
         end
         else
-          raise EJVCLDataConsumer.Create(sProviderDoesNotSupportContexts);
+          raise EJVCLDataConsumer.Create(RsEProviderDoesNotSupportContexts);
       end
       else
         SetContextIntf(nil);
@@ -4124,7 +4124,7 @@ begin
   if Value <> ContextIntf then
   begin
     if (Value <> nil) and (Value.Contexts.Provider <> ProviderIntf) then
-      raise EJVCLDataConsumer.Create(sTheSpecifiedContextIsNotPartOfTheSa);
+      raise EJVCLDataConsumer.Create(RsETheSpecifiedContextIsNotPartOfTheSa);
     ContextChanging;
     FContext := Value;
     ContextChanged;
@@ -4319,7 +4319,7 @@ begin
           Exit;
         end
         else
-          raise EJVCLDataConsumer.Create(sYouMustSpecifyAProviderBeforeSettin_);
+          raise EJVCLDataConsumer.Create(RsEYouMustSpecifyAProviderBeforeSettin_);
       end
       else
       begin
@@ -4329,7 +4329,7 @@ begin
           if TmpItem <> nil then
             SetItemIntf(TmpItem)
           else
-            raise EJVCLDataConsumer.Create(sItemNotFoundInTheSelectedContext);
+            raise EJVCLDataConsumer.Create(RsEItemNotFoundInTheSelectedContext);
         finally
           ConsumerImpl.Leave;
         end;
@@ -4589,7 +4589,7 @@ begin
       if ParIdx >= 0 then
       begin
         if ItemIsExpanded(ParIdx) then // we have a big problem <g>
-          raise EJVCLDataConsumer.Create(sViewListOutOfSync);
+          raise EJVCLDataConsumer.Create(RsEViewListOutOfSync);
         ToggleItem(ParIdx);
       end;
     end;
@@ -5114,13 +5114,13 @@ begin
       if (Obj <> nil) and Supports(Obj, IJvDataConsumer, Consumer) then
         Add(Consumer)
       else
-        raise EJVCLDataConsumer.CreateFmt(sProviderIsNoIJvDataConsumer, [AComponent.Name]);
+        raise EJVCLDataConsumer.CreateFmt(RsEProviderIsNoIJvDataConsumer, [AComponent.Name]);
     end
     else
-      raise EJVCLDataConsumer.CreateFmt(SComponentIsNotDataConsumer, [AComponent.Name]);
+      raise EJVCLDataConsumer.CreateFmt(RsEComponentIsNotDataConsumer, [AComponent.Name]);
   end
   else
-    raise EJVCLDataConsumer.Create(sCannotAddNil);
+    raise EJVCLDataConsumer.Create(RsECannotAddNil);
 end;
 
 procedure TJvDataConsumerClientNotifyList.Add(AConsumer: IJvDataConsumer);
@@ -5134,11 +5134,11 @@ begin
       if Supports(AConsumer, IJvDataConsumerClientNotify, Notifier) then
         TJvDataConsumerClientNotifyItem.Create(Self).Notifier := Notifier
       else
-        raise EJVCLDataConsumer.Create(sConsumerNoSupportIJvDataConsumerClientNotify);
+        raise EJVCLDataConsumer.Create(RsEConsumerNoSupportIJvDataConsumerClientNotify);
     end;
   end
   else
-    raise EJVCLDataConsumer.Create(sCannotAddNil);
+    raise EJVCLDataConsumer.Create(RsECannotAddNil);
 end;
 
 procedure TJvDataConsumerClientNotifyList.Delete(Index: Integer);
@@ -5226,16 +5226,16 @@ begin
             Notifier.LinkAdded(List.Server);
           end
           else
-            raise EJVCLDataConsumer.Create(sConsumerNoSupportIJvDataConsumerClientNotify);
+            raise EJVCLDataConsumer.Create(RsEConsumerNoSupportIJvDataConsumerClientNotify);
         end
         else
-          raise EJVCLDataConsumer.CreateFmt(sProviderIsNoIJvDataConsumer, [Value.Name]);
+          raise EJVCLDataConsumer.CreateFmt(RsEProviderIsNoIJvDataConsumer, [Value.Name]);
       end
       else
-        raise EJVCLDataConsumer.CreateFmt(SComponentIsNotDataConsumer, [Value.Name]);
+        raise EJVCLDataConsumer.CreateFmt(RsEComponentIsNotDataConsumer, [Value.Name]);
     end
     else
-      raise EJVCLDataConsumer.Create(sCannotAddNil);
+      raise EJVCLDataConsumer.Create(RsECannotAddNil);
   end;
 end;
 
@@ -5255,10 +5255,10 @@ begin
         Notifier.LinkAdded(List.Server);
       end
       else
-        raise EJVCLDataConsumer.Create(sNotifierNoSupprtIJvDataConsumer);
+        raise EJVCLDataConsumer.Create(RsENotifierNoSupprtIJvDataConsumer);
     end
     else
-      raise EJVCLDataConsumer.Create(sCannotAddNil);
+      raise EJVCLDataConsumer.Create(RsECannotAddNil);
   end;
 end;
 
