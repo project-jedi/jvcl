@@ -40,9 +40,9 @@ uses
 
 {$IFNDEF DELPHI6_UP}
 type
-  EOSError = class (EWin32Error);
+  EOSError = class(EWin32Error);
 {$ENDIF}
-//Transform an icon to a bitmap
+  //Transform an icon to a bitmap
 function IconToBitmap(ico: HIcon): TBitmap;
 {$EXTERNALSYM IconToBitmap}
 // Transform an icon to a bitmap using an image list
@@ -234,44 +234,72 @@ function ChangeHasFocus(const peOld, peNew: TItemStates): boolean;
 
 function GetListItemColumn(const pcItem: TListItem; piIndex: integer): string;
 
+{ returns the sum of pc.Left, pc.Width and piSpace}
 function ToRightOf(const pc: TControl; piSpace: integer = 0): integer;
+{ sets the top of pc to be in the middle of pcParent }
 procedure CenterHeight(const pc, pcParent: TControl);
-
+{ returns the fractional value of pcValue}
 function TimeOnly(pcValue: TDateTime): TTime;
+{ returns the integral value of pcValue }
 function DateOnly(pcValue: TDateTime): TDate;
 
 type
   TdtKind = (dtkDateOnly, dtkTimeOnly, dtkDateTime);
-  { TDateTime value used to signify Null value}
+
 const
+  { TDateTime value used to signify Null value}
   NullEquivalentDate: TDateTime = 0.0;
 
 function DateIsNull(const pdtValue: TDateTime; const pdtKind: TdtKind): Boolean;
-// replacement for Win32Check
+// Replacement for Win32Check to avoid platform specific warnings in D6
 function OSCheck(RetVal: boolean): boolean;
 
+{ Shortens a fully qualified path name so that it can be drawn with a specified length limit.
+  Same as FileCtrl.MinimizeName in functionality (but not implementation). Included here to
+  not be forced to use FileCtrl unnecessarily }
 function MinimizeName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
-// RunDLL32 runs a function in a DLL using the utility rundll32.exe (on NT) or rundll.exe (on Win95/98)
-// ModuleName is the name of the DLL to load, FuncName is the function to call and CmdLine is
-// the command-line parameters (if any) to send to the function. Set WaitForCompletion to false to
-// return immediately after the call.
-// Return value:
-// if WaitForCompletion is true, returns true if the wait didn't return WAIT_FAILED
-// if WaitForCompletion is false, returns true if the process could be created
-// To get information on why RunDLL32 might have failed, call GetLastError
-// To get more info on what can actually be called using rundll32.exe, take a look at
-// http://www.dx21.com/SCRIPTING/RUNDLL32/REFGUIDE.ASP?NTI=4&SI=6
-function RunDLL32(const ModuleName,FuncName,CmdLine:string;WaitForCompletion:boolean):boolean;
+
+{ RunDLL32 runs a function in a DLL using the utility rundll32.exe (on NT) or rundll.exe (on Win95/98)
+ ModuleName is the name of the DLL to load, FuncName is the function to call and CmdLine is
+ the command-line parameters (if any) to send to the function. Set WaitForCompletion to false to
+ return immediately after the call.
+ CmdShow should be one of the SW_SHOWXXXX constants and defaults SW_SHOWDEFAULT
+ Return value:
+ if WaitForCompletion is true, returns true if the wait didn't return WAIT_FAILED
+ if WaitForCompletion is false, returns true if the process could be created
+ To get information on why RunDLL32 might have failed, call GetLastError
+ To get more info on what can actually be called using rundll32.exe, take a look at
+ http://www.dx21.com/SCRIPTING/RUNDLL32/REFGUIDE.ASP?NTI=4&SI=6
+}
+function RunDLL32(const ModuleName, FuncName, CmdLine: string; WaitForCompletion: boolean; CmdShow: integer = SW_SHOWDEFAULT): boolean;
+{ RunDll32Internal does the same as RunDLL32 but does not use the RunDLL32.exe application to do it.
+ Rather it loads the DLL, gets a pointer to the function in FuncName and calls it with the given parameters.
+ Because of this behaviour, RunDll32Internal works slightly different from RunDLL32:
+ * It doesn't return any value indicating success/failure
+ * There is no WaitForCompletion parameter (but see comment below on how to circumvent this)
+ * You must pass in a valid windows handle in Wnd. Note that if you pass 0, the call might fail, with no indication of why.
+ * To simulate WaitForCompletion = false, pass the return value of GetDesktopWindow as the Wnd parameter,
+ * To simulate WaitForCompletion = true, pass the handle of the calling window (f ex the form you are calling the procedure from)
+ * If you try to call a function in a DLL that doesn't use the TRunDLL32Proc signature (declared in JvTypes), your program
+   might crash. Using the RunDLL32 function protects you from any problems with calling the wrong functions
+   (a dialog is displayed if do something wrong)
+ * RunDll32Internal is slightly faster but RunDLL32 is safer
+}
+procedure RunDll32Internal(Wnd: HWnd; const DLLName, FuncName, CmdLine: string; CmdShow: integer = SW_SHOWDEFAULT);
+{ GetDLLVersion loads DLLName, gets a pointer to the DLLVersion function and calls it, returning the major and minor version values
+from the function. Returns false if the DLL couldn't be loaded or if GetDLLVersion couldn't be found. }
+function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: integer): boolean;
 
 {$IFNDEF DELPHI6_UP}
+{ D5 compatibility functions }
 procedure RaiseLastOSError;
-function IncludeTrailingPathDelimiter(const APath:string):string;
+function IncludeTrailingPathDelimiter(const APath: string): string;
 {$ENDIF}
 
 implementation
 uses
   Forms, Registry, ExtCtrls,
-  {$IFDEF DELPHI6_UP}Types, {$ENDIF}MMSystem,
+{$IFDEF DELPHI6_UP}Types, {$ENDIF}MMSystem,
   ShlObj, CommCtrl, Cpl,
   { jvcl} JvDirectories,
   { jcl } JCLStrings;
@@ -294,11 +322,13 @@ var
   ShellVersion: Integer;
 
 {$IFNDEF DELPHI6_UP}
+
 procedure RaiseLastOSError;
 begin
   RaiseLastWin32Error;
 end;
-function IncludeTrailingPathDelimiter(const APath:string):string;
+
+function IncludeTrailingPathDelimiter(const APath: string): string;
 begin
   if (Length(APath) > 0) and (APath[Length(APath)] <> '\') then
     Result := APath + '\'
@@ -306,8 +336,8 @@ begin
     Result := APath;
 end;
 {$ENDIF}
-  
-  {*****************************************************}
+
+{*****************************************************}
 
 function IconToBitmap(ico: HIcon): TBitmap;
 var
@@ -760,9 +790,9 @@ end;
 
 procedure LaunchCpl(FileName: string);
 begin
- // rundll32.exe shell32,Control_RunDLL ';
-  RunDLL32('shell32.dll','Control_RunDLL',Filename,true);
-//  WinExec(PChar(RC_RunCpl + FileName), SW_SHOWNORMAL);
+  // rundll32.exe shell32,Control_RunDLL ';
+  RunDLL32('shell32.dll', 'Control_RunDLL', Filename, true);
+  //  WinExec(PChar(RC_RunCpl + FileName), SW_SHOWNORMAL);
 end;
 
 resourcestring
@@ -1665,24 +1695,45 @@ begin
     Result := Filename;
 end;
 
-function RunDLL32(const ModuleName,FuncName,CmdLine:string;WaitForCompletion:boolean):boolean;
-const
-  // run different exe's depending on OS:
-  cRunDllName:array [boolean] of shortstring = ('rundll.exe','rundll32.exe');
+function RunDLL32(const ModuleName, FuncName, CmdLine: string; WaitForCompletion: boolean; CmdShow: integer = SW_SHOWDEFAULT): boolean;
 var
-  SI:TStartUpInfo;PI:TProcessInformation;S:string;
+  SI: TStartUpInfo;
+  PI: TProcessInformation;
+  S: string;
 begin
+  SI.cb := sizeof(SI);
   GetStartupInfo(SI);
-  S := Format('%s %s,%s %s',
-    // this check should probably be expanded because only Win95 uses rundll AFAIC, so turn it of for the time being
-    [cRunDllName[true{Win32PlatForm = VER_PLATFORM_WIN32_NT}],ModuleName,FuncName,CmdLine]);
-  Result := CreateProcess(nil,PChar(S),nil,nil,false,0,nil,nil,SI,PI);
+  SI.wShowWindow := CmdShow;
+  S := Format('rundll32.exe %s,%s %s', [ModuleName, FuncName, CmdLine]);
+  Result := CreateProcess(nil, PChar(S), nil, nil, false, 0, nil, nil, SI, PI);
   try
     if WaitForCompletion then
-      Result := WaitForSingleObject(PI.hProcess,INFINITE) <> WAIT_FAILED;
+      Result := WaitForSingleObject(PI.hProcess, INFINITE) <> WAIT_FAILED;
   finally
     CloseHandle(PI.hThread);
     CloseHandle(PI.hProcess);
+  end;
+end;
+
+procedure RunDll32Internal(Wnd: HWnd; const DLLName, FuncName, CmdLine: string; CmdShow: integer = SW_SHOWDEFAULT);
+var
+  H: THandle;
+  ErrMode: Cardinal;
+  P: TRunDLL32Proc;
+begin
+  ErrMode := SetErrorMode(SEM_FAILCRITICALERRORS or SEM_NOOPENFILEERRORBOX);
+  H := LoadLibrary(PChar(DLLName));
+  try
+    if H <> INVALID_HANDLE_VALUE then
+    begin
+      P := GetProcAddress(H, PChar(FuncName));
+      if Assigned(P) then
+        P(Wnd, H, PChar(CmdLine), CmdShow);
+    end;
+  finally
+    SetErrorMode(ErrMode);
+    if H <> INVALID_HANDLE_VALUE then
+      FreeLibrary(H);
   end;
 end;
 
@@ -1786,6 +1837,55 @@ begin
     Result := StrDeleteChars(Result, liPos, Length(psSub));
     liPos := StrIPos(psSub, Result);
   end;
+end;
+
+type
+  // (p3) from ShLwAPI
+  TDLLVersionInfo = packed record
+    cbSize: DWord;
+    dwMajorVersion: DWord;
+    dwMinorVersion: DWord;
+    dwBuildNumber: DWord;
+    dwPlatformID: DWord;
+  end;
+
+function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: integer): boolean;
+var hDLL, hr: THandle;
+  pDllGetVersion: function(var dvi: TDLLVersionInfo): integer; stdcall;
+  dvi: TDLLVersionInfo;
+begin
+  hDLL := LoadLibrary(PChar(DLLName));
+  if (hDLL < 32) then
+    hDLL := 0;
+  if (hDLL <> 0) then
+  begin
+    Result := true;
+    (*  You must get this function explicitly
+        because earlier versions of the DLL's
+        don't implement this function.
+        That makes the lack of implementation
+        of the function a version marker in itself.   *)
+    @pDllGetVersion := GetProcAddress(hDLL, PChar('DllGetVersion'));
+    if Assigned(pDllGetVersion) then
+    begin
+      ZeroMemory(@dvi, sizeof(dvi));
+      dvi.cbSize := sizeof(dvi);
+      hr := pDllGetVersion(dvi);
+      if (hr = 0) then
+      begin
+        pdwMajor := dvi.dwMajorVersion;
+        pdwMinor := dvi.dwMinorVersion;
+      end;
+    end
+    else (*   If GetProcAddress failed, the DLL is a version previous to the one  shipped with IE 3.x. *)
+    begin
+      pdwMajor := 4;
+      pdwMinor := 0;
+    end;
+    FreeLibrary(hDLL);
+    Exit;
+  end;
+  Result := false;
 end;
 
 end.
