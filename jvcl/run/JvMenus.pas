@@ -1402,7 +1402,12 @@ begin
   FImageMargin.Free;
   FImageSize.Free;
   FStyleItemPainter.Free;
-  PopupList.Remove(Self);
+
+  // This test is only False if finalization is called before destroy.
+  // An example of this happening is when using TJvAppInstances
+  if Assigned(PopupList) then
+    PopupList.Remove(Self);
+
   inherited Destroy;
 end;
 
