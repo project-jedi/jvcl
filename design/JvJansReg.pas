@@ -9,15 +9,24 @@ interface
 uses
   Classes, Controls,
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, VCLEditors,
+  DesignIntf, DesignEditors,
+  {$IFDEF VCL}
+  VCLEditors,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  CLXEditors,
+  {$ENDIF VisualCLX}
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvMarkupLabel, JvMarkupViewer, JvSAL, JvSticker, JvSALCore, JvSALMath,
+  {$IFDEF VCL}
+  JvJanTreeView, JvShapedButton, JvSticker,
+  {$ENDIF VCL}
+  JvMarkupLabel, JvMarkupViewer, JvSAL, JvSALCore, JvSALMath,
   JvYearGrid, JvTracker, JvAirBrush, JvGridFilter, JvGridPrinter,
-  JvJanTreeView, JvArrayButton, JvForth, JvTurtle, JvPaintFX, JvDrawImage,
+  JvArrayButton, JvForth, JvTurtle, JvPaintFX, JvDrawImage,
   JvBitmapButton, JvSimScope, JvSimIndicator, JvSimPID, JvSIMPIDLinker,
-  JvSimLogic, JvSpellerForm, JvShapedButton, JvCSVBaseControls, JvCSVBaseEditor;
+  JvSimLogic, JvSpellerForm, JvCSVBaseControls, JvCSVBaseEditor;
 
 procedure Register;
 
@@ -48,9 +57,13 @@ begin
 
   //TODO: Register a TShortCut Property Editor on TTreeKeyMappings class in TJvJanTreeView
   RegisterComponents('Jv Jans', [TJvMarkupLabel, TJvMarkupViewer, TJvSAL,
-    TJvSticker, TJvSALCore, TJvSALMath, TJvYearGrid, TJvAirBrush, TJvTracker,
-    TJvGridFilter, TJvGridPrinter, TJvJanTreeview, TJvPaintFX, TJvDrawImage,
-    TJvArrayButton, TJvForthScript, TJvTurtle, TJvBitmapButton, TJvSpeller, TJvShapedButton]);
+    {$IFDEF VCL} TJvSticker, {$ENDIF}
+    TJvSALCore, TJvSALMath, TJvYearGrid, TJvAirBrush, TJvTracker,
+    TJvGridFilter, TJvGridPrinter,
+    {$IFDEF VCL} TJvJanTreeview, {$ENDIF}
+    TJvPaintFX, TJvDrawImage,
+    TJvArrayButton, TJvForthScript, TJvTurtle, TJvBitmapButton, TJvSpeller
+    {$IFDEF VCL}, TJvShapedButton{$ENDIF}]);
   // Simulator Components
   RegisterComponents('Jv Jans SIM', [TJvSimScope, TJvSimIndicator, TJvSimPID,
     TJvSimPIDLinker, TJvSimConnector, TJvLogic, TJvSimButton, TJvSimLight,
