@@ -67,6 +67,17 @@ type
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean);
   end;
 
+const
+  CM_DENYSUBCLASSING = CM_BASE + 2000; // from JvThemes.pas
+
+type
+  { Add IJvDenySubClassing to the base class list if the control should not
+    be themed by the ThemeManager (www.delphi-gems.de).
+    This only works with JvExVCL derived classes. }
+  IJvDenySubClassing = interface
+    ['{76942BC0-2A6E-4DC4-BFC9-8E110DB7F601}']
+  end;
+
 type
   JV_CONTROL_EVENTS(Control)
   JV_WINCONTROL_EVENTS(WinControl)
@@ -79,12 +90,12 @@ type
 
 function ShiftStateToKeyData(Shift: TShiftState): Longint;
 
-function InheritMsg(ASelf: TControl; Msg: Integer; WParam, LParam: Integer): Integer; overload;
-function InheritMsg(ASelf: TControl; Msg: Integer): Integer; overload;
-procedure DispatchMsg(ASelf: TControl; var Msg);
+function InheritMsg(Instance: TControl; Msg: Integer; WParam, LParam: Integer): Integer; overload;
+function InheritMsg(Instance: TControl; Msg: Integer): Integer; overload;
+procedure DispatchMsg(Instance: TControl; var Msg);
 
 {$IFNDEF COMPILER6_UP}
-procedure TOpenControl_SetAutoSize(ASelf: TControl; Value: Boolean);
+procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
 {$ENDIF !COMPILER6_UP}
 {$ENDIF VCL}
 
@@ -104,7 +115,7 @@ end;
 type
   TDisptachMethod = procedure(Self: TObject; var Msg: TMessage);
 
-function InheritMsg(ASelf: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
+function InheritMsg(Instance: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
 var
   Proc: TDisptachMethod;
   Mesg: TMessage;
@@ -114,17 +125,18 @@ begin
   Mesg.LParam := LParam;
   Mesg.Result := 0;
   Proc := @TObject.Dispatch;
-  Proc(ASelf, Mesg);
+  Proc(Instance, Mesg);
   Result := Mesg.Result;
 end;
 
-function InheritMsg(ASelf: TControl; Msg: Integer): Integer;
+function InheritMsg(Instance: TControl; Msg: Integer): Integer;
 begin
-  Result := InheritMsg(ASelf, Msg, 0, 0);
+  Result := InheritMsg(Instance, Msg, 0, 0);
 end;
 
-procedure DispatchMsg(ASelf: TControl; var Msg);
+procedure DispatchMsg(Instance: TControl; var Msg);
 var
+  Temp: IJvDenySubClassing;
   IntfControl: IJvControlEvents;
   IntfWinControl: IJvWinControlEvents;
   PMsg: PMessage;
@@ -132,9 +144,17 @@ var
 begin
   CallInherited := True;
   PMsg := @Msg;
-  { GetInterface is no problem because ASelf is a TComponent derived class that
+
+  if PMsg^.Msg = CM_DENYSUBCLASSING then
+  begin
+    PMsg^.Result := Ord(Instance.GetInterface(IJvDenySubClassing, Temp));
+    Temp := nil; // does not destroy the control because it is derived from TComponent
+   // Let the control handle CM_DENYSUBCLASSING the old way, too. 
+  end;
+
+  { GetInterface is no problem because Instance is a TComponent derived class that
     is not released by an interface "Release". }
-  if ASelf.GetInterface(IJvControlEvents, IntfControl) then
+  if Instance.GetInterface(IJvControlEvents, IntfControl) then
   begin
     CallInherited := False;
     with IntfControl do
@@ -174,7 +194,7 @@ begin
 
   if CallInherited then
   begin
-    if ASelf.GetInterface(IJvWinControlEvents, IntfWinControl) then
+    if Instance.GetInterface(IJvWinControlEvents, IntfWinControl) then
     begin
       CallInherited := False;
       with IntfWinControl do
@@ -202,7 +222,7 @@ begin
   end;
 
   if CallInherited then
-    PMsg^.Result := InheritMsg(ASelf, PMsg^.Msg, PMsg^.WParam, PMsg^.LParam);
+    PMsg^.Result := InheritMsg(Instance, PMsg^.Msg, PMsg^.WParam, PMsg^.LParam);
 end;
 
 {$ENDIF VCL}
@@ -226,27 +246,27 @@ type
   PBoolean = ^Boolean;
   PPointer = ^Pointer;
 
-procedure TOpenControl_SetAutoSize(ASelf: TControl; Value: Boolean);
+procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
 begin
-  with TOpenControl(ASelf) do
+  with TOpenControl(Instance) do
   begin
     if AutoSize <> Value then
     begin
-      PBoolean(Cardinal(ASelf) + AutoSizeOffset)^ := Value;
+      PBoolean(Cardinal(Instance) + AutoSizeOffset)^ := Value;
       if Value then
         AdjustSize;
     end;
   end;
 end;
 
-procedure SetAutoSizeHook(ASelf: TControl; Value: Boolean);
+procedure SetAutoSizeHook(Instance: TControl; Value: Boolean);
 var
   IntfControl: IJvControlEvents;
 begin
-  if ASelf.GetInterface(IJvControlEvents, IntfControl) then
+  if Instance.GetInterface(IJvControlEvents, IntfControl) then
     IntfControl.SetAutoSize(Value)
   else
-    TOpenControl_SetAutoSize(ASelf, Value);
+    TOpenControl_SetAutoSize(Instance, Value);
 end;
 
 type
@@ -314,7 +334,6 @@ Leave:
 end;
 {$O+}
 
-
 procedure InstallSetAutoSizeHook;
 var
   Code: TJumpCode;
@@ -368,4 +387,5 @@ finalization
   UninstallSetAutoSizeHook;
 
 {$ENDIF !COMPILER6_UP}
+
 end.

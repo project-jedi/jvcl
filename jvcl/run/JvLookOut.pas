@@ -35,7 +35,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, ExtCtrls, Buttons, Menus, ImgList,
-  JvTypes, JvConsts, JvComponent, JvThemes, JvExButtons;
+  JvTypes, JvConsts, JvComponent, JvThemes, JvExControls, JvExButtons;
 
 const
   CM_IMAGESIZECHANGED = CM_BASE + 100;
@@ -44,7 +44,7 @@ const
 type
   TJvButtonBorder = (bbDark, bbLight, bbMono);
 
-  TJvUpArrowBtn = class(TJvExSpeedButton)
+  TJvUpArrowBtn = class(TJvExSpeedButton, IJvDenySubClassing)
   private
     FTimer: TTimer;
     FAutoRepeat: Boolean;
@@ -53,7 +53,6 @@ type
     FOver: Boolean;
     procedure SetFlat(Value: Boolean);
     procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
-    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   protected
     procedure OnTime(Sender: TObject); virtual;
     procedure Paint; override;
@@ -101,7 +100,7 @@ type
     FFillColor: TColor;
     FHighlightFont: TFont;
     FButtonBorder: TJvButtonBorder;
-    FPopUpMenu: TPopUpMenu;
+    FPopUpMenu: TPopupMenu;
     FCaption: TCaption;
     FGroupIndex: Integer;
     FSmallImages: TImageList;
@@ -163,7 +162,7 @@ type
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
     property ImageSize: TJvImageSize read FImageSize write SetImageSize default isLarge;
     property ParentImageSize: Boolean read FParentImageSize write SetPImSize default True;
-    property PopUpMenu: TPopUpMenu read FPopUpMenu write FPopUpMenu;
+    property PopupMenu: TPopupMenu read FPopUpMenu write FPopUpMenu;
     property LargeImages: TImageList read FLargeImages write SetLargeImages;
     property Spacing: Integer read FSpacing write SetSpacing default 4; { border offset from bitmap }
     property SmallImages: TImageList read FSmallImages write SetSmallImages;
@@ -217,7 +216,7 @@ type
     property ImageIndex;
     property ImageSize;
     property ParentImageSize;
-    property PopUpMenu;
+    property PopupMenu;
     property LargeImages;
     property Spacing;
     property SmallImages;
@@ -240,7 +239,7 @@ type
     property ImageIndex;
     property ImageSize;
     property ParentImageSize;
-    property PopUpMenu;
+    property PopupMenu;
     property LargeImages;
     property Spacing;
     property SmallImages;
@@ -260,7 +259,7 @@ type
     FShowPressed: Boolean;
     FMargin: Integer;
     FTopControl: Integer;
-    FPopUpMenu: TPopUpMenu;
+    FPopUpMenu: TPopupMenu;
     FOnClick: TNotifyEvent;
     FDownArrow: TJvDwnArrowBtn;
     FScrolling: Integer;
@@ -347,7 +346,7 @@ type
     property Font;
     property ParentFont;
     property ParentShowHint;
-    property PopUpMenu: TPopUpMenu read FPopUpMenu write FPopUpMenu;
+    property PopupMenu: TPopupMenu read FPopUpMenu write FPopUpMenu;
     property Left;
     property Top;
     property Width;
@@ -430,7 +429,7 @@ type
     property OnStartDrag;
   end;
 
-  TJvExpress = class(TJvLookOutPage)
+  TJvExpress = class(TJvLookOutPage, IJvDenySubClassing)
   private
     FBorderStyle: TBorderStyle;
     FButtonHeight: Integer;
@@ -443,7 +442,6 @@ type
     procedure CreateWnd; override;
     procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
-    procedure CMDenySubClassing(var Msg: TCMDenySubClassing); message CM_DENYSUBCLASSING;
   public
     constructor Create(AOwner: TComponent); override;
     function AddButton: TJvExpressButton;
@@ -616,12 +614,7 @@ begin
     Invalidate;
 end;
 
-procedure TJvUpArrowBtn.CMDenySubClassing(var Msg: TMessage);
-begin
-  Msg.Result := 1;
-end;
-
-procedure TJvUpArrowBtn.CmDesignHitTest(var Msg: TCMDesignHitTest);
+procedure TJvUpArrowBtn.CMDesignHitTest(var Msg: TCMDesignHitTest);
 begin
   Msg.Result := 1;
 end;
@@ -2789,11 +2782,6 @@ begin
   with Msg.CalcSize_Params^ do
     InflateRect(rgrc[0], -2, -2);
   inherited;
-end;
-
-procedure TJvExpress.CMDenySubClassing(var Msg: TCMDenySubClassing);
-begin
-  Msg.Result := 1;
 end;
 
 procedure TJvExpress.CreateWnd;

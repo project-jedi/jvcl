@@ -36,7 +36,7 @@ uses
   RTLConsts,
   {$ENDIF}
   JvSpeedButton, JvAppStorage, JvConsts, JvTypes, JvFormPlacement,
-  JvComponent, JvThemes;
+  JvComponent, JvThemes, JvExControls;
 
 const
   DefButtonWidth = 24;
@@ -59,7 +59,7 @@ type
   TApplyAlignEvent = procedure(Sender: TObject; Align: TAlign;
     var Apply: Boolean) of object;
 
-  TJvSpeedBar = class(TJvCustomPanel)
+  TJvSpeedBar = class(TJvCustomPanel, IJvDenySubClassing)
   private
     FSections: TList;
     FPosition: TBarPosition;
@@ -146,7 +146,6 @@ type
     procedure SetStorage(Value: TJvFormPlacement);
     procedure IniSave(Sender: TObject);
     procedure IniLoad(Sender: TObject);
-    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   protected
     procedure VisibleChanged; override;
     procedure EnabledChanged; override;
@@ -1678,11 +1677,6 @@ begin
   inherited EnabledChanged;
   if not ((csLoading in ComponentState) or (csDesigning in ComponentState)) then
     ForEachItem(SetItemEnabled, 0);
-end;
-
-procedure TJvSpeedBar.CMDenySubClassing(var Msg: TMessage);
-begin
-  Msg.Result := 1;
 end;
 
 procedure TJvSpeedBar.WallpaperChanged(Sender: TObject);

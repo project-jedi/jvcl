@@ -35,7 +35,7 @@ interface
 
 uses
   Windows, SysUtils, Messages, Classes, Forms,
-  JVComponent;
+  JvComponent;
 
 type
   TJvgProcess = class(TJvComponent)

@@ -41,7 +41,7 @@ uses
   {$IFDEF COMPILER7_UP}
   SysConst,
   {$ENDIF COMPILER7_UP}
-  JvTimer, JvComponent, JvThemes;
+  JvTimer, JvComponent, JvThemes, JvExControls;
 
 type
   TShowClock = (scDigital, scAnalog);
@@ -55,7 +55,7 @@ type
 
   TJvGetTimeEvent = procedure(Sender: TObject; var ATime: TDateTime) of object;
 
-  TJvClock = class(TJvCustomPanel)
+  TJvClock = class(TJvCustomPanel, IJvDenySubClassing)
   private
     FTimer: TJvTimer;
     FAutoSize: Boolean;
@@ -97,7 +97,6 @@ type
     function FormatSettingsChange(var Msg: TMessage): Boolean;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure WMTimeChange(var Msg: TMessage); message WM_TIMECHANGE;
-    procedure CMDenySubClassing(var Msg: TCMDenySubClassing); message CM_DENYSUBCLASSING;
   protected
     procedure TextChanged; override;
     procedure FontChanged; override;
@@ -424,11 +423,6 @@ begin
   inherited;
   Invalidate;
   CheckAlarm;
-end;
-
-procedure TJvClock.CMDenySubClassing(var Msg: TCMDenySubClassing);
-begin
-  Msg.Result := 1;
 end;
 
 function TJvClock.FormatSettingsChange(var Msg: TMessage): Boolean;
