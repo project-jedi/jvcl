@@ -45,6 +45,11 @@ unit JvDockControlForm;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   Windows, Messages, Classes, Graphics, Controls, Forms, Menus,
   ExtCtrls, ComCtrls,
   {$IFDEF USEJVCL}
@@ -925,14 +930,21 @@ function ManualConjoinDock(DockSite: TWinControl; Form1, Form2: TForm): TJvDockC
 
 function DockStateStr(DockState: Integer): string; {return string for a dock state}
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+    );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
+
 implementation
 
 uses
-  {$IFDEF USEJVCL}
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   SysUtils,
   {$IFDEF USEJVCL}
   JvAppRegistryStorage, JvAppIniStorage, JvTypes,
@@ -949,9 +961,12 @@ type
   TControlAccessProtected = class(TControl);
   TWinControlAccessProtected = class(TWinControl);
 
-//const
-//  cDefaultFormName = '_JVFORM_';   This just obscures things unecessarily. -WP
-//  cDefaultNameSuffix = '_JVDOCK_';
+  
+{$IFNDEF USEJVCL}
+const
+  cDefaultFormName = '_JVFORM_';
+  cDefaultNameSuffix = '_JVDOCK_';
+{$ENDIF !USEJVCL}
 
 var
   DockPageControlPopupMenu: TPopupMenu = nil;
@@ -5436,18 +5451,6 @@ begin
   ConjoinHost.ManualDock(DockSite);
   Result := ConjoinHost;
 end;
-
-{$IFDEF USEJVCL}
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-    );
-  {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
 
 initialization
   {$IFDEF USEJVCL}

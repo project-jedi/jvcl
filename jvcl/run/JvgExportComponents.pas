@@ -32,6 +32,11 @@ unit JvgExportComponents;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   Windows, Messages, SysUtils, Classes, Graphics,
   {$IFDEF USEJVCL}
   Controls, Forms, Dialogs, DB,
@@ -227,14 +232,21 @@ type
   end;
   {$ENDIF USEJVCL}
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
+
 implementation
 
 uses
-  {$IFDEF USEJVCL}
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   ComObj, FileCtrl,
   {$IFDEF USEJVCL}
   JvResources,
@@ -830,14 +842,6 @@ end;
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -31,19 +31,29 @@ unit JvgDrawTab;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   Windows, CommCtrl, Graphics, Classes, ExtCtrls,
   JvgTypes, JvgUtils, JvgTabComm;
 
 procedure DrawOwnTab(DrawTabStr: TDRAWTABSTRUCT);
 
-implementation
-
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
 {$ENDIF UNITVERSIONING}
 {$ENDIF USEJVCL}
+
+implementation
 
 procedure DrawOwnTab(DrawTabStr: TDRAWTABSTRUCT);
 const
@@ -413,14 +423,6 @@ end;
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

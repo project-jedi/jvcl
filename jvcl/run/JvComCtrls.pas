@@ -40,6 +40,9 @@ unit JvComCtrls;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, Contnrs, Graphics, Controls, Forms,
   Classes, // (ahuser) "Classes" after "Forms" (D5 warning)
   Menus, ComCtrls, ImgList, Buttons,
@@ -648,12 +651,19 @@ type
 
   {$ENDIF VisualCLX}
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils,
   JclStrings,
   JvConsts, JvJCLUtils;
@@ -3131,14 +3141,6 @@ end;
 {$ENDIF VisualCLX}
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

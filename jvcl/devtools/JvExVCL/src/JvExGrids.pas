@@ -33,6 +33,9 @@ WARNINGHEADER
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, Graphics, Controls, Forms, Grids,
   {$IFDEF COMPILER6_UP}
   Types,
@@ -76,12 +79,17 @@ type
   {$ENDIF !HAS_GRID_EDITSTYLE}
   JV_CUSTOMCONTROL_EVENTS_END(StringGrid)
 
-implementation
-
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
 {$ENDIF UNITVERSIONING}
+
+implementation
 
 JV_WINCONTROL_EVENTS_IMPL(InplaceEdit)
 JV_WINCONTROL_EVENTS_IMPL(CustomGrid)
@@ -109,14 +117,6 @@ end;
 JV_CUSTOMCONTROL_EVENTS_IMPL_END(StringGrid)
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -33,6 +33,9 @@ WARNINGHEADER
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, Graphics, Controls, Forms, DBGrids,
   {$IFDEF COMPILER6_UP}
   Types,
@@ -46,16 +49,6 @@ type
   JV_WINCONTROL_EVENTS(CustomDBGrid)
   JV_WINCONTROL_EVENTS(DBGrid)
 
-implementation
-
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
-
-JV_WINCONTROL_EVENTS_IMPL(CustomDBGrid)
-JV_WINCONTROL_EVENTS_IMPL(DBGrid)
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -64,7 +57,14 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+{$ENDIF UNITVERSIONING}
 
+implementation
+
+JV_WINCONTROL_EVENTS_IMPL(CustomDBGrid)
+JV_WINCONTROL_EVENTS_IMPL(DBGrid)
+
+{$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -29,6 +29,9 @@ unit JvThreadDialog;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Forms, ExtCtrls, Buttons, StdCtrls,
   {$IFDEF MSWINDOWS}
   Windows, Controls, ComCtrls,
@@ -164,12 +167,19 @@ type
     //property DialogOptions: TJvThreadAnimateDialogOptions read GetDialogOptions;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Dialogs,
   JvThread, JvResources;
 
@@ -723,14 +733,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-    );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

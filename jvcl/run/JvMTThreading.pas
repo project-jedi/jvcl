@@ -30,6 +30,11 @@ unit JvMTThreading;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   SysUtils, Classes, SyncObjs, Contnrs,
   {$IFDEF MSWINDOWS}
   Windows, Messages,
@@ -145,13 +150,22 @@ type
 
 function CurrentMTThread: TMTThread;
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
+
 implementation
 
 {$IFDEF USEJVCL}
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvResources;
 {$ENDIF USEJVCL}
 
@@ -811,25 +825,12 @@ end;
 
 {$ENDIF COMPILER5}
 
-{$IFDEF USEJVCL}
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
-
 initialization
   {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
   {$ENDIF USEJVCL}
-
   {$IFDEF COMPILER5}
   InitializeCriticalSection(ThreadSyncLock);
   CreateSyncWindow;
@@ -840,8 +841,8 @@ finalization
   FinalizeSyncRequestList;
   DeleteCriticalSection(ThreadSyncLock);
   DestroyWindow(SyncWindow);
+  SyncWindow := 0;
   {$ENDIF COMPILER5}
-
   {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);

@@ -27,6 +27,11 @@ unit JvMTConsts;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   SysUtils, Classes;
 
 type
@@ -51,13 +56,8 @@ type
 const
   MTDefaultBufferSize = 32;
 
-implementation
-
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$RCSfile$';
@@ -65,7 +65,13 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
+implementation
+
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

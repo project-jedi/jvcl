@@ -30,6 +30,9 @@ unit JvTransparentPanel;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning;
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls,
   {$IFDEF VisualCLX}
   Qt,
@@ -50,12 +53,17 @@ type
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   end;
 
-implementation
-
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
 {$ENDIF UNITVERSIONING}
+
+implementation
 
 constructor TJvTransparentPanel.Create(AOwner: TComponent);
 begin
@@ -142,14 +150,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

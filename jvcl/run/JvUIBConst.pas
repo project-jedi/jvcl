@@ -29,6 +29,13 @@ unit JvUIBConst;
 
 interface
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
+
 {$IFNDEF DELPHI6_UP}
 {$IFNDEF BCB}
 const
@@ -339,13 +346,8 @@ resourcestring
   EJvUIB_DataType      = 'Error de tipo de dato.';
   {$ENDIF UIBLANG_ES}
 
-implementation
-
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$RCSfile$';
@@ -353,7 +355,13 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
+implementation
+
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

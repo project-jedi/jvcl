@@ -35,6 +35,9 @@ interface
 
 uses
   {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls,
   JvComponent;
   {$ELSE}
@@ -76,14 +79,19 @@ type
     property OnTimer: TNotifyEvent read FOnTimer write FOnTimer;
   end;
 
-implementation
-
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
 {$ENDIF UNITVERSIONING}
 {$ENDIF USEJVCL}
+
+implementation
 
 constructor TJvgJumpingComponent.Create(AOwner: TComponent);
 begin
@@ -206,14 +214,6 @@ end;
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

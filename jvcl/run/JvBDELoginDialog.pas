@@ -32,6 +32,9 @@ unit JvBDELoginDialog;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Classes, DBTables,
   JvLoginForm, JvAppStorage;
 
@@ -111,12 +114,19 @@ function UnlockDialog(const UserName: string; OnUnlock: TCheckUnlockEvent;
 function UnlockDialogEx(const UserName: string; OnUnlock: TCheckUnlockEvent;
   IconDblClick: TNotifyEvent; MaxPwdLen, AttemptNumber: Integer): Boolean;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils, Graphics, Controls, Forms, DB, BDE,
   JvBDELists, 
   JvConsts, JvResources;
@@ -508,14 +518,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

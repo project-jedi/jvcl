@@ -30,6 +30,11 @@ unit JvMTData;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   SysUtils, Classes, Contnrs, SyncObjs,
   {$IFDEF MSWINDOWS}
   {$IFDEF DEBUGINFO_ON}
@@ -102,13 +107,22 @@ type
     property OnCanWrite: TNotifyEvent read FOnCanWrite write FOnCanWrite;
   end;
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
+
 implementation
 
 {$IFDEF USEJVCL}
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvResources;
 {$ENDIF USEJVCL}
 
@@ -355,18 +369,6 @@ begin
   FVCLReady.Signal;
 end;
 
-{$IFDEF USEJVCL}
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
-
 initialization
   {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
@@ -384,7 +386,6 @@ finalization
       'Memory leak detected: free MTData objects before application shutdown'); // do not localize
   {$ENDIF DEBUGINFO_ON}
   {$ENDIF MSWINDOWS}
-
   {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);

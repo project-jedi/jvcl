@@ -31,6 +31,9 @@ unit JvColorProvider;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Classes, Contnrs, Graphics, Dialogs,
   JclBase,
   JvDataProvider, JvDataProviderIntf, JvTypes;
@@ -499,12 +502,19 @@ const
 
 function ColorProviderColorAdderRegister: TJvColorProviderColorAdderRegister;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils,
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
@@ -3797,21 +3807,10 @@ begin
   Result := False;
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   RegisterClasses([TJvColorProviderSettings, TJvColorProviderServerNotify, TJvColorContext]);
   MasterColorConsumer := TJvColorConsumer.Create;
 

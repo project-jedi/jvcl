@@ -32,6 +32,9 @@ unit JvID3v2Types;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes;
 
 type
@@ -251,12 +254,19 @@ function ISO_639_2CodeToName(const Code: string): string;
 function ISO_639_2NameToCode(const Name: string): string;
 procedure ISO_639_2Names(Strings: TStrings);
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Math, SysUtils,
   JvConsts, JvResources, JvTypes;
 
@@ -1584,16 +1594,6 @@ begin
   if Result >= 0 then
     Result := Integer(FLists[ltISO_639_2Name].Objects[Result]);
 end;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
 
 initialization
   {$IFDEF UNITVERSIONING}

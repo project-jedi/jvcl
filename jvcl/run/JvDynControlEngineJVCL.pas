@@ -29,6 +29,9 @@ unit JvDynControlEngineJVCL;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   ActnList, Graphics,
   {$ENDIF MSWINDOWS}
@@ -596,12 +599,19 @@ type
 
 function DynControlEngineJVCL: TJvDynControlEngine;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils,
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
@@ -2403,28 +2413,17 @@ begin
   RegisterControlType(jctButtonEdit, TJvDynControlJVCLButtonEdit);
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   IntDynControlEngineJVCL := TJvDynControlEngineJVCL.Create;
   SetDefaultDynControlEngine(IntDynControlEngineJVCL);
 
 finalization
+  FreeAndNil(IntDynControlEngineJVCL);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FreeAndNil(IntDynControlEngineJVCL);
 
 end.

@@ -34,6 +34,9 @@ interface
 
 uses
   {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Windows, Messages, Controls, Forms,
   JvComponent;
   {$ELSE}
@@ -63,14 +66,19 @@ type
     property Parent: TWinControl read GetParent write SetParent;
   end;
 
-implementation
-
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
 {$ENDIF UNITVERSIONING}
 {$ENDIF USEJVCL}
+
+implementation
 
 procedure TJvCustomControlComponent.SetParentComponent(Value: TComponent);
 begin
@@ -140,14 +148,6 @@ end;
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

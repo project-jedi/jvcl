@@ -32,6 +32,9 @@ unit JvDragDrop;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, ShellAPI, ActiveX, Classes, Controls,
   JvComponent;
 
@@ -135,12 +138,19 @@ function CF_FILEDESCRIPTOR: DWORD;
 function CF_FILECONTENTS: DWORD;
 function Malloc: IMalloc;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   ShlObj, SysUtils, Forms,
   {$IFDEF COMPILER5}
   JvJCLUtils,
@@ -762,16 +772,6 @@ begin
       Result := False;
     end;
 end;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
 
 initialization
   {$IFDEF UNITVERSIONING}

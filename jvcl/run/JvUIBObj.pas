@@ -32,6 +32,11 @@ unit JvUIBObj;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   IdTCPClient, IdTCPServer, IdTCPConnection, IdException, SysUtils,
   JvUIBConst, JvUIBLib, Classes;
 
@@ -161,14 +166,21 @@ type
 
   TJvUIBStubClass = class of TJvUIBStub;
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
+
 implementation
 
 uses
-  {$IFDEF USEJVCL}
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   {$IFDEF DELPHI6_UP}
   VarUtils, Variants,
   {$ENDIF DELPHI6_UP}
@@ -849,14 +861,6 @@ end;
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

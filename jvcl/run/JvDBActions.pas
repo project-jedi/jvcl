@@ -30,6 +30,9 @@ unit JvDBActions;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows, ActnList, ImgList, Graphics,
   {$ENDIF MSWINDOWS}
@@ -467,12 +470,19 @@ procedure RegisterActionEngine(AEngineClass: TJvDatabaseActionBaseEngineClass);
 
 function RegisteredDatabaseActionEngineList: TJvDatabaseActionEngineList;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils, DBGrids, Grids,
   {$IFDEF HAS_UNIT_STRUTILS}
   StrUtils,
@@ -1980,26 +1990,21 @@ begin
   IntRegisteredActionEngineList := nil;
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-    );
-{$ENDIF UNITVERSIONING}
-
-initialization
-  {$IFDEF UNITVERSIONING}
-  RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING}
+procedure ActionInit;
+begin
   CreateActionEngineList;
   RegisterActionEngine(TJvDatabaseActionBaseEngine);
   RegisterActionEngine(TJvDatabaseActionDBGridEngine);
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   RegisterActionEngine(TJvDatabaseActionDevExpCxGridEngine);
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
+end;
+
+initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+  ActionInit;
 
 finalization
   DestroyActionEngineList;

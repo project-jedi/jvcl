@@ -31,6 +31,11 @@ unit JvgTypes;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   {$IFDEF VCL}
   Graphics;
   {$ENDIF VCL}
@@ -180,15 +185,6 @@ var //...global variables
   //  fgcSUPRESSGRADIENTFILLING = $10000000;
   //  fgcUSEFR3DCOLORSDATACOMPONENT = $20000000;
 
-implementation
-
-{$IFDEF USEJVCL}
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
-
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
@@ -198,7 +194,13 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
+implementation
+
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

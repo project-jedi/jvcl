@@ -30,6 +30,11 @@ unit JvDockVIDStyle;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   Windows, Messages, Classes, Graphics, Controls, ComCtrls, ImgList,
   JvDockControlForm, JvDockSupportControl, JvDockTree, JvDockAdvTree;
 
@@ -242,7 +247,7 @@ type
     procedure SplitterMouseUp; override;
     function GetTopGrabbersHTFlag(const MousePos: TPoint;
       out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone; override;
-    function GetJvDockGrabbersPosition: TJvDockGrabbersPosition; override;
+    function GetDockGrabbersPosition: TJvDockGrabbersPosition; override;
     procedure GetSiteInfo(Client: TControl;
       var InfluenceRect: TRect; MousePos: TPoint; var CanDock: Boolean); override;
     procedure InsertControl(Control: TControl; InsertAt: TAlign;
@@ -573,14 +578,21 @@ type
 
 procedure PaintGradientBackground(Canvas: TCanvas; ARect: TRect; StartColor, EndColor: TColor; Vertical: Boolean = False);
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
+
 implementation
 
 uses
-  {$IFDEF USEJVCL}
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   {$IFDEF JVCLThemesEnabled}
   JvThemes,
   {$ENDIF JVCLThemesEnabled}
@@ -1259,7 +1271,7 @@ begin
     FParent := nil;
 end;
 
-function TJvDockVIDTree.GetJvDockGrabbersPosition: TJvDockGrabbersPosition;
+function TJvDockVIDTree.GetDockGrabbersPosition: TJvDockGrabbersPosition;
 begin
   Result := gpTop;
 end;
@@ -4676,14 +4688,6 @@ end;
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

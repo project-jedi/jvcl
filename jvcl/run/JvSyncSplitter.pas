@@ -30,6 +30,9 @@ unit JvSyncSplitter;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Messages, Controls, ExtCtrls,
   JvSplitter;
 
@@ -61,12 +64,19 @@ type
     property ResizeStyle: TResizeStyle read GetResizeStyle write SetResizeStyle;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvTypes, JvResources;
 
 function TJvSyncSplitter.GetResizeStyle: TResizeStyle;
@@ -204,14 +214,6 @@ end;
 {$ENDIF VisualCLX}
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

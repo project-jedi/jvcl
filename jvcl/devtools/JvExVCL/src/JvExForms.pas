@@ -33,6 +33,9 @@ WARNINGHEADER
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, Graphics, Controls, Forms, ToolWin,
   {$IFDEF COMPILER6_UP}
   Types,
@@ -51,12 +54,17 @@ type
   JV_CUSTOMFORM_EVENTS(Form) // do not implement Painting() but CreateNew
   JV_WINCONTROL_EVENTS(ToolWindow)
 
-implementation
-
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
 {$ENDIF UNITVERSIONING}
+
+implementation
 
 const
   UISF_HIDEFOCUS = 1;
@@ -74,14 +82,6 @@ JV_CUSTOMFORM_EVENTS_IMPL(Form)
 JV_WINCONTROL_EVENTS_IMPL(ToolWindow)
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

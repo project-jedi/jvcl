@@ -33,6 +33,9 @@ WARNINGHEADER
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, Graphics, Controls, Forms, Buttons, StdCtrls,
   {$IFDEF COMPILER6_UP}
   Types,
@@ -46,16 +49,6 @@ type
   JV_CONTROL_EVENTS(SpeedButton)
   JV_WINCONTROL_EVENTS(BitBtn)
 
-implementation
-
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
-
-JV_CONTROL_EVENTS_IMPL(SpeedButton)
-JV_WINCONTROL_EVENTS_IMPL(BitBtn)
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -64,7 +57,14 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+{$ENDIF UNITVERSIONING}
 
+implementation
+
+JV_CONTROL_EVENTS_IMPL(SpeedButton)
+JV_WINCONTROL_EVENTS_IMPL(BitBtn)
+
+{$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

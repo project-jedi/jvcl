@@ -32,6 +32,11 @@ unit JvUIBSrv;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   Classes, IdTCPServer, SysUtils,
   JvUIBObj, JvUIBConst;
 
@@ -88,14 +93,21 @@ type
 var
   JvUIBServer: TJvUIBServer = nil;
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
+
 implementation
 
 uses
-  {$IFDEF USEJVCL}
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   IdThread, IdException, IdStackConsts, IdTCPConnection;
 
 //=== { TJvUIBServer } =======================================================
@@ -332,18 +344,6 @@ begin
   if not Connection.Connected then
     Stop;
 end;
-
-{$IFDEF USEJVCL}
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 initialization
   {$IFDEF USEJVCL}

@@ -34,6 +34,9 @@ unit JvID3v2Base;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes, SysUtils,
   JclUnicode,
   JvComponent, JvID3v2Types, JvID3v1;
@@ -1201,12 +1204,19 @@ function MIMETypeToExt(const MIMEType: string): string;
 function GenreToNiceGenre(const AGenre: string): string;
 function NiceGenreToGenre(const ANiceGenre: string): string;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Graphics,
   {$IFDEF MSWINDOWS}
   Windows,
@@ -9663,14 +9673,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -28,6 +28,9 @@ unit JvDynControlEngineDBTools;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Controls, DB, Classes,
   {$IFDEF MSWINDOWS}
   ActnList, Forms, Graphics,
@@ -119,19 +122,26 @@ function ShowDataSourceEditDialog(ADataComponent: TComponent;
   AArrangeSettings: TJvArrangeSettings = nil;
   ADynControlEngineDB: TJvDynControlEngineDB = nil): TModalResult;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  JvDBActions, StdCtrls, SysUtils,
-  JvDynControlEngineIntf, JvResources;
+  StdCtrls, SysUtils,
+  JvDBActions, JvDynControlEngineIntf, JvResources;
 
 procedure TJvDynControlDataSourceEditDialog.SetDataComponent(Value: TComponent);
 begin
   FDataComponent := Value;
-  FDataSource := DynControlengineDB.GeTDataSourceFromDataComponent(Value);
+  FDataSource := DynControlengineDB.GetDataSourceFromDataComponent(Value);
 end;
 
 function TJvDynControlDataSourceEditDialog.GetDynControlEngineDB: TJvDynControlEngineDB;
@@ -453,14 +463,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-    );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

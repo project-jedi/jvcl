@@ -32,6 +32,9 @@ unit JvFullColorSpaces;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Classes, SysUtils, Graphics,
   JvTypes;
 
@@ -262,7 +265,7 @@ type
   TJvDEFColorSpace = class(TJvColorSpace)
   private
     FDelphiColors: TStringList;
-    procedure GetColorValuesCallBack(const S: String);
+    procedure GetColorValuesCallBack(const S: string);
   protected
     function GetName: string; override;
     function GetShortName: string; override;
@@ -319,12 +322,19 @@ function RGBToBGR(Value: Cardinal): Cardinal;
 procedure SplitColorParts(AColor: TJvFullColor; var Part1, Part2, Part3: Integer);
 function JoinColorParts(const Part1, Part2, Part3: Integer): TJvFullColor;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   {$IFDEF COMPILER6_UP}
   Controls, StdCtrls, ExtCtrls,
   {$ENDIF COMPILER6_UP}
@@ -1426,7 +1436,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvDEFColorSpace.GetColorValuesCallBack(const S: String);
+procedure TJvDEFColorSpace.GetColorValuesCallBack(const S: string);
 var
   AColor: TColor;
 begin
@@ -1651,16 +1661,6 @@ begin
   while FColorSpaceList.Remove(AColorSpace) >= 0 do
     ;
 end;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-    );
-{$ENDIF UNITVERSIONING}
 
 initialization
   {$IFDEF UNITVERSIONING}

@@ -32,6 +32,9 @@ unit JvBdeUtils;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Bde, Classes, DB, DBTables,
   JvDBUtils;
 
@@ -218,12 +221,19 @@ procedure GetXYByPos(const S: string; const Pos: Integer; var X, Y: Integer);
 
 { end JvDBUtil }
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils, Registry, Forms, Controls, Dialogs, Consts, Math,
   IniFiles, DBConsts, BDEConst, DBCommon,
   {$IFDEF HAS_UNIT_VARIANTS}
@@ -2220,30 +2230,19 @@ begin
 end;
 {####################### from JvStrUtil unit #######################}
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   JvDBUtils.CreateLocateObject := CreateDbLocate;
 
 finalization
-  {$IFDEF UNITVERSIONING}
-  UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
   ReleaseSaveIndices;
   // (rom) i tried deleting the elements created by CreateDbLocate
   // (rom) but that causes crashes
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 end.
 

@@ -32,6 +32,11 @@ unit JvDockTree;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   Windows, Messages, Classes, Graphics, Controls, Forms,
   JvDockSupportClass;
 
@@ -364,7 +369,7 @@ type
     function GetFrameRect(Control: TControl): TRect; virtual;
     function GetFrameRectEx(Control: TControl): TRect; virtual;
     function GetSplitterRect(Zone: TJvDockZone): TRect; virtual;
-    function GetJvDockGrabbersPosition: TJvDockGrabbersPosition; virtual;
+    function GetDockGrabbersPosition: TJvDockGrabbersPosition; virtual;
     procedure GetControlBounds(Control: TControl; out CtlBounds: TRect); virtual;
     function GetSplitterLimit(AZone: TJvDockZone; IsCurrent, IsMin: Boolean): Integer; virtual;
     procedure DoGetNextLimit(Zone, AZone: TJvDockZone; var LimitResult: Integer); virtual;
@@ -432,7 +437,7 @@ type
     property GrabberBgColor: TColor read FGrabberBgColor write FGrabberBgColor; // if FGrabberStandardDraw is False, this indicates background color of Grabber. Set to clNone to skip painting the background.
     property GrabberBottomEdgeColor: TColor read FGrabberBottomEdgeColor write FGrabberBottomEdgeColor; // if anything other than clNone, draw a line at bottom edge.
 
-    property GrabbersPosition: TJvDockGrabbersPosition read GetJvDockGrabbersPosition;
+    property GrabbersPosition: TJvDockGrabbersPosition read GetDockGrabbersPosition;
     property MinSize: Integer read GetMinSize write SetMinSize;
     property DockRect: TRect read GetDockRect write SetDockRect;
     property PreviousRect: TRect read FPreviousRect write FPreviousRect;
@@ -504,14 +509,21 @@ type
 const
   TreeStreamEndFlag: Integer = -1;
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
+
 implementation
 
 uses
-  {$IFDEF USEJVCL}
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   {$IFDEF JVCLThemesEnabled}
   JvThemes,
   {$ENDIF JVCLThemesEnabled}
@@ -2709,7 +2721,7 @@ begin
   end;
 end;
 
-function TJvDockTree.GetJvDockGrabbersPosition: TJvDockGrabbersPosition;
+function TJvDockTree.GetDockGrabbersPosition: TJvDockGrabbersPosition;
 begin
   if DockSite.Align in [alTop, alBottom] then
     Result := gpLeft
@@ -4103,14 +4115,6 @@ end;
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -27,6 +27,9 @@ unit JvDiagramShape;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, 
   {$IFDEF VisualCLX}
   QTypes, 
@@ -342,12 +345,19 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils, 
   JvTypes, JvConsts;
 
@@ -722,6 +732,17 @@ begin
     for I := 0 to ParentControl.ControlCount - 1 do
       if ParentControl.Controls[I] is TJvCustomDiagramShape then
         TJvCustomDiagramShape(ParentControl.Controls[I]).Selected := False;
+end;
+
+class procedure TJvCustomDiagramShape.SetMultiSelected(ParentControl: TWinControl;
+  Value: Boolean);
+var
+  I: Integer;
+begin
+  if Assigned(ParentControl) then
+    for I := 0 to ParentControl.ControlCount - 1 do
+      if ParentControl.Controls[I] is TJvCustomDiagramShape then
+        TJvCustomDiagramShape(ParentControl.Controls[I]).MultiSelect := Value;
 end;
 
 //=== { TJvMoveableShape } ===================================================
@@ -2080,7 +2101,7 @@ begin
   end;
 end;
 
-// ------------------ Initialisation and cleanup routines --------------------
+//=== Initialisation and cleanup routines ====================================
 
 procedure RegisterStorageClasses;
 begin
@@ -2094,34 +2115,11 @@ begin
       TJvBluntSingleHeadOpenDashArrow, TJvSubCaseArrow]);
 end;
 
-class procedure TJvCustomDiagramShape.SetMultiSelected(ParentControl: TWinControl;
-  Value: Boolean);
-var
-  I: Integer;
-begin
-  if Assigned(ParentControl) then
-    for I := 0 to ParentControl.ControlCount - 1 do
-      if ParentControl.Controls[I] is TJvCustomDiagramShape then
-        TJvCustomDiagramShape(ParentControl.Controls[I]).MultiSelect := Value;
-end;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   RegisterStorageClasses;
-
 
 {$IFDEF UNITVERSIONING}
 finalization

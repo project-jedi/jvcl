@@ -33,6 +33,9 @@ unit JvAppIniStorage;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Classes, IniFiles,
   JvAppStorage, JvPropertyStore;
 
@@ -130,12 +133,19 @@ procedure StorePropertyStoreToIniFile(APropertyStore: TJvCustomPropertyStore;
 procedure LoadPropertyStoreFromIniFile(APropertyStore: TJvCustomPropertyStore;
   const AFileName: string; const AAppStoragePath: string = '');
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils,
   JvJCLUtils, // BinStrToBuf & BufToBinStr
   JvTypes, JvConsts, JvResources; // JvConsts or PathDelim under D5 and BCB5
@@ -639,10 +649,9 @@ end;
 
 procedure TJvAppIniFileStorage.Flush;
 var
-  Path: String;
+  Path: string;
 begin
-  if (FullFileName <> '') and not ReadOnly
-    and not (csDesigning in ComponentState) then
+  if (FullFileName <> '') and not ReadOnly and not (csDesigning in ComponentState) then
   begin
     Path := ExtractFilePath(IniFile.FileName);
     if Path <> '' then
@@ -654,8 +663,7 @@ end;
 
 procedure TJvAppIniFileStorage.Reload;
 begin
-  if not IsUpdating 
-    and not (csDesigning in ComponentState) then
+  if not IsUpdating and not (csDesigning in ComponentState) then
   begin
     if FileExists(FullFileName) then
       IniFile.Rename(FullFileName, True)
@@ -723,14 +731,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -33,6 +33,9 @@ WARNINGHEADER
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF VCL}
   Windows, Messages,
   {$ENDIF VCL}
@@ -313,12 +316,17 @@ type
 
   {$ENDIF VisualCLX}
 
-implementation
-
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
 {$ENDIF UNITVERSIONING}
+
+implementation
 
 JV_WINCONTROL_EVENTS_IMPL(CustomGroupBox)
 {$DEFINE HASAUTOSIZE}
@@ -360,14 +368,6 @@ JV_WINCONTROL_EVENTS_IMPL(StaticText)
 {$ENDIF VCL}
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

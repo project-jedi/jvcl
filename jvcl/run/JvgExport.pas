@@ -33,6 +33,11 @@ unit JvgExport;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   Windows, Messages, Graphics, ExtCtrls, SysUtils, Classes, Controls, Forms,
   DB,
   {$IFDEF JVCL_USEQuickReport}
@@ -48,13 +53,22 @@ procedure ExportToExcel(QuickRep: TCustomQuickRep);
 {$ENDIF JVCL_UseQuickReport}
 procedure ExportDataSetToExcel(DataSet: TDataSet; OnExportProgress: TOnExportProgress);
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
+
 implementation
 
 uses
   {$IFDEF USEJVCL}
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   {$ENDIF USEJVCL}
   ComObj,
   JvgUtils;
@@ -223,14 +237,6 @@ end;
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

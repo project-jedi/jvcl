@@ -29,6 +29,9 @@ unit JvDynControlEngineJVCLDB;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes, ExtCtrls, ExtDlgs, Graphics, Buttons, Controls, Dialogs, FileCtrl,
   Forms, DBCtrls, DB, StdCtrls, ComCtrls,
   JvDBGrid, JvPanel, JvDBControls, JvDBDateTimePicker, JvDBCombobox, JvDBImage,
@@ -503,12 +506,19 @@ type
 
 function DynControlEngineJVCLDB: TJvDynControlEngineDB;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
@@ -2065,21 +2075,10 @@ begin
   RegisterControlType(jctDBNavigator, TJvDynControlJVCLDBNavigator);
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   IntDynControlEngineJVCLDB := TJvDynControlEngineJVCLDB.Create;
   SetDefaultDynControlEngineDB(IntDynControlEngineJVCLDB);
 

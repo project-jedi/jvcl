@@ -33,6 +33,9 @@ WARNINGHEADER
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, Graphics, Controls, Forms, CheckLst,
   {$IFDEF COMPILER6_UP}
   Types,
@@ -45,15 +48,6 @@ uses
 type
   JV_WINCONTROL_EVENTS(CheckListBox)
 
-implementation
-
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
-
-JV_WINCONTROL_EVENTS_IMPL(CheckListBox)
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -62,7 +56,13 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+{$ENDIF UNITVERSIONING}
 
+implementation
+
+JV_WINCONTROL_EVENTS_IMPL(CheckListBox)
+
+{$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -51,6 +51,9 @@ unit JvTimerList;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes;
 
 const
@@ -119,7 +122,7 @@ type
     procedure SetEnabled(Value: Boolean);
     procedure SetInterval(Value: Longint);
   protected
-    function GetDisplayName: String; override;
+    function GetDisplayName: string; override;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -167,12 +170,19 @@ type
     property OnTimers: TAllTimersEvent read FOnTimers write FOnTimers;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Consts,
   Forms, // for Application.HandleException
   Math,
@@ -681,7 +691,7 @@ begin
       Items[I].FLastExecute := StartTicks;
 end;
 
-function TJvTimerEvent.GetDisplayName: String;
+function TJvTimerEvent.GetDisplayName: string;
 begin
   Result := Name;
   if Result = '' then
@@ -718,14 +728,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

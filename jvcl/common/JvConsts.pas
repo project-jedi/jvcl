@@ -29,6 +29,9 @@ unit JvConsts;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Forms, Controls, Graphics, Windows;
 
 {$IFDEF VisualCLX}
@@ -275,13 +278,6 @@ const
   HDC_DESKTOP = HDC(0);
 {$ENDIF VCL}
 
-implementation
-
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -290,7 +286,11 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\common'
   );
+{$ENDIF UNITVERSIONING}
 
+implementation
+
+{$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -44,6 +44,9 @@ unit JvxCheckListBox;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Controls, Graphics, StdCtrls, Forms,
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
@@ -310,6 +313,16 @@ const
 
 function CheckBitmap: TBitmap;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 {$IFDEF MSWINDOWS}
@@ -320,9 +333,6 @@ implementation
 {$ENDIF UNIX}
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils, Consts, Math,
   JvConsts, JvJVCLUtils, JvThemes;
 
@@ -2001,16 +2011,6 @@ begin
   inherited SetItemData(Index, 0);
   inherited DeleteString(Index);
 end;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
 
 initialization
   {$IFDEF UNITVERSIONING}

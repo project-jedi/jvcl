@@ -32,6 +32,9 @@ unit JvThemes;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages,
@@ -809,12 +812,18 @@ function GetParentBackground(Control: TWinControl): Boolean;
 procedure SetParentBackground(Control: TWinControl; Value: Boolean);
 {$ENDIF VCL}
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
 
 procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
   const R: TRect; NeedsParentBackground: Boolean = True);
@@ -1882,21 +1891,10 @@ end;
 
 {$ENDIF JVCLThemesEnabled}
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   {$IFDEF JVCLThemesEnabled}
   InitializeWMPrintClientFix;
   {$ENDIF JVCLThemesEnabled}
@@ -1909,7 +1907,6 @@ finalization
   UninstallWinControlHook;
   {$ENDIF !COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
-
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

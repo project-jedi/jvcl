@@ -57,6 +57,11 @@ unit JvTFDays;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
@@ -372,7 +377,7 @@ type
   end;
 
  //TJvTFUpdateTitleEvent = Procedure(Sender: TObject; Col: TJvTFDaysCol;
-   //var NewTitle: String) of object;
+   //var NewTitle: string) of object;
   TJvTFUpdateTitlesEvent = procedure(Sender: TObject; Col: TJvTFDaysCol;
     var NewGroupTitle, NewTitle: string) of object;
 
@@ -643,7 +648,7 @@ type
     procedure SetColor(Value: TColor);
     procedure SetVisible(Value: Boolean);
     procedure SetWidth(Value: Integer);
-    procedure SeTJvTFTimeStampStyle(Value: TJvTFTimeStampStyle);
+    procedure SetTFTimeStampStyle(Value: TJvTFTimeStampStyle);
     procedure SetTimeStampColor(Value: TColor);
   protected
     FApptGrid: TJvTFDays;
@@ -656,7 +661,7 @@ type
     property Width: Integer read FWidth write SetWidth default 5;
     property Visible: Boolean read FVisible write SetVisible default True;
     property TimeStampStyle: TJvTFTimeStampStyle read FTimeStampStyle
-      write SeTJvTFTimeStampStyle default tssBlock;
+      write SetTFTimeStampStyle default tssBlock;
     property TimeStampColor: TColor read FTimeStampColor
       write SetTimeStampColor default clBlue;
   end;
@@ -888,7 +893,7 @@ type
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     {$ENDIF VCL}
     procedure SetBorderStyle(Value: TBorderStyle);
-    procedure SeTJvTFVisibleScrollBars(Value: TJvTFVisibleScrollBars);
+    procedure SetTFVisibleScrollBars(Value: TJvTFVisibleScrollBars);
     procedure AlignScrollBars;
     function CheckSBVis: Boolean;
     procedure SetOnShowHint(Value: TJvTFShowHintEvent);
@@ -906,7 +911,7 @@ type
     procedure SetMinRowHeight(Value: Integer);
     procedure SetMinColWidth(Value: Integer);
     procedure SetAutoSizeCols(Value: Boolean);
-    procedure SeTJvTFColTitleStyle(Value: TJvTFColTitleStyle);
+    procedure SetTFColTitleStyle(Value: TJvTFColTitleStyle);
 
     procedure SetCols(Value: TJvTFDaysCols);
 
@@ -936,8 +941,8 @@ type
     procedure SetSelApptAttr(Value: TJvTFDaysApptAttr);
     procedure SetFancyRowHdrAttr(Value: TJvTFDaysFancyRowHdrAttr);
     procedure SetSelFancyRowHdrAttr(Value: TJvTFDaysFancyRowHdrAttr);
-    procedure SeTJvTFRowHdrType(Value: TJvTFRowHdrType);
-    procedure SeTJvTFSelCellAttr(Value: TJvTFSelCellAttr);
+    procedure SetTFRowHdrType(Value: TJvTFRowHdrType);
+    procedure SetTFSelCellAttr(Value: TJvTFSelCellAttr);
     procedure SetApptBar(Value: TJvTFDaysApptBar);
     procedure SetApptBuffer(Value: Integer);
     procedure SetGridLineColor(Value: TColor);
@@ -946,7 +951,7 @@ type
     procedure SetSelGroupHdrAttr(Value: TJvTFDaysHdrAttr);
 
     procedure SetOptions(Value: TJvTFDaysOptions);
-    procedure SeTJvTFHintProps(Value: TJvTFHintProps);
+    procedure SetTFHintProps(Value: TJvTFHintProps);
     procedure DrawDither(ACanvas: TCanvas; ARect: TRect; Color1, Color2: TColor);
 
     {$IFDEF Jv_TIMEBLOCKS}
@@ -1058,10 +1063,10 @@ type
    // ok
     procedure FillBlockHdrDeadSpace(ACanvas: TCanvas);
    // REMOVE, replaced by CalcTextPos in JvTFUtils
-   //procedure CalcTextPos(var ARect: TRect; aAngle: Integer; aTxt: String);
+   //procedure CalcTextPos(var ARect: TRect; aAngle: Integer; aTxt: string);
    // REMOVE, replaced by DrawAngleText in JvTFUtils
    //procedure DrawAngleText(ACanvas: TCanvas; ARect: TRect; aAngle: Integer;
-    //aTxt: String);
+    //aTxt: string);
     {$ENDIF Jv_TIMEBLOCKS}
 
    // message handlers
@@ -1088,7 +1093,7 @@ type
     procedure ScrollBarScroll(Sender: TObject; ScrollCode: TScrollCode;
       var ScrollPos: Integer);
     property VisibleScrollBars: TJvTFVisibleScrollBars read FVisibleScrollBars
-      write SeTJvTFVisibleScrollBars;
+      write SetTFVisibleScrollBars;
 
    // mouse routines
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -1321,22 +1326,22 @@ type
       write SetFancyRowHdrAttr;
     property SelFancyRowHdrAttr: TJvTFDaysFancyRowHdrAttr
       read FSelFancyRowHdrAttr write SetSelFancyRowHdrAttr;
-    property SelCellAttr: TJvTFSelCellAttr read FSelCellAttr write SeTJvTFSelCellAttr;
+    property SelCellAttr: TJvTFSelCellAttr read FSelCellAttr write SetTFSelCellAttr;
 
     property ApptBar: TJvTFDaysApptBar read FApptBar write SetApptBar;
     property ApptBuffer: Integer read FApptBuffer write SetApptBuffer default 5;
     property ColTitleStyle: TJvTFColTitleStyle read FColTitleStyle
-      write SeTJvTFColTitleStyle default ctsSingleEllipsis;
+      write SetTFColTitleStyle default ctsSingleEllipsis;
     property GrabHandles: TJvTFDaysGrabHandles read FGrabHandles
       write SetGrabHandles;
     property GridLineColor: TColor read FGridLineColor write SetGridLineColor
       default clGray;
     property PrimeTime: TJvTFDaysPrimeTime read FPrimeTime write FPrimeTime;
-    property RowHdrType: TJvTFRowHdrType read FRowHdrType write SeTJvTFRowHdrType
+    property RowHdrType: TJvTFRowHdrType read FRowHdrType write SetTFRowHdrType
       default rhFancy;
     property Thresholds: TJvTFDaysThresholds read FThresholds write FThresholds;
     property HintProps: TJvTFHintProps read FHintProps
-      write SeTJvTFHintProps;
+      write SetTFHintProps;
     property GroupHdrAttr: TJvTFDaysHdrAttr read FGroupHdrAttr
       write SetGroupHdrAttr;
     property SelGroupHdrAttr: TJvTFDaysHdrAttr read FSelGroupHdrAttr
@@ -1564,7 +1569,7 @@ type
     procedure SetColHdrHeight(Value: Integer);
     procedure SetColor(Value: TColor);
     procedure SetCols(Value: TJvTFDaysCols);
-    procedure SeTJvTFColTitleStyle(Value: TJvTFColTitleStyle);
+    procedure SetTFColTitleStyle(Value: TJvTFColTitleStyle);
     procedure SetFancyRowHdrAttr(Value: TJvTFDaysFancyRowHdrAttr);
     procedure SetGranularity(Value: Integer);
     procedure SetGridLineColor(Value: TColor);
@@ -1575,7 +1580,7 @@ type
     procedure SetMinColWidth(Value: Integer);
     procedure SetMinRowHeight(Value: Integer);
     procedure SetPrimeTime(Value: TJvTFDaysPrimeTime);
-    procedure SeTJvTFRowHdrType(Value: TJvTFRowHdrType);
+    procedure SetTFRowHdrType(Value: TJvTFRowHdrType);
     procedure SetRowHdrWidth(Value: Integer);
     procedure SetRowHeight(Value: Integer);
     procedure SetShowPics(Value: Boolean);
@@ -1693,7 +1698,7 @@ type
     property Color: TColor read FColor write SetColor;
     property Cols: TJvTFDaysCols read FCols write SetCols;
     property ColTitleStyle: TJvTFColTitleStyle read FColTitleStyle
-      write SeTJvTFColTitleStyle;
+      write SetTFColTitleStyle;
     property DateFormat; // inherited
     property FancyRowHdrAttr: TJvTFDaysFancyRowHdrAttr read FFancyRowHdrAttr
       write SetFancyRowHdrAttr;
@@ -1709,7 +1714,7 @@ type
     property MinColWidth: Integer read FMinColWidth write SetMinColWidth;
     property MinRowHeight: Integer read FMinRowHeight write SetMinRowHeight;
     property PrimeTime: TJvTFDaysPrimeTime read FPrimeTime write SetPrimeTime;
-    property RowHdrType: TJvTFRowHdrType read FRowHdrType write SeTJvTFRowHdrType;
+    property RowHdrType: TJvTFRowHdrType read FRowHdrType write SetTFRowHdrType;
     property RowHdrWidth: Integer read FRowHdrWidth write SetRowHdrWidth;
     property RowHeight: Integer read FRowHeight write SetRowHeight;
     property ShowPics: Boolean read FShowPics write SetShowPics;
@@ -1745,15 +1750,21 @@ type
     property GridEndTime: TTime read FGridEndTime write SetGridEndTime;
   end;
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 implementation
 
 uses
-  {$IFDEF USEJVCL}
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Consts, Printers,
   {$IFDEF USEJVCL}
   JvConsts, JvResources,
@@ -3071,7 +3082,7 @@ end;
 {
 procedure TJvTFDaysCol.UpdateTitle;
 Var
-  NewTitle: String;
+  NewTitle: string;
   ApptGrid: TJvTFDays;
   FPrinter: TJvTFDaysPrinter;
 begin
@@ -3875,7 +3886,7 @@ begin
   end;
 end;
 
-procedure TJvTFDaysApptBar.SeTJvTFTimeStampStyle(Value: TJvTFTimeStampStyle);
+procedure TJvTFDaysApptBar.SetTFTimeStampStyle(Value: TJvTFTimeStampStyle);
 begin
   if FTimeStampStyle <> Value then
   begin
@@ -4320,7 +4331,7 @@ begin
   end;
 end;
 
-procedure TJvTFDays.SeTJvTFVisibleScrollBars(Value: TJvTFVisibleScrollBars);
+procedure TJvTFDays.SetTFVisibleScrollBars(Value: TJvTFVisibleScrollBars);
 begin
   if Value <> FVisibleScrollBars then
   begin
@@ -4633,7 +4644,7 @@ begin
   end;
 end;
 
-procedure TJvTFDays.SeTJvTFColTitleStyle(Value: TJvTFColTitleStyle);
+procedure TJvTFDays.SetTFColTitleStyle(Value: TJvTFColTitleStyle);
 begin
   if Value <> FColTitleStyle then
   begin
@@ -4805,7 +4816,7 @@ begin
   Invalidate;
 end;
 
-procedure TJvTFDays.SeTJvTFRowHdrType(Value: TJvTFRowHdrType);
+procedure TJvTFDays.SetTFRowHdrType(Value: TJvTFRowHdrType);
 begin
   if Value <> FRowHdrType then
   begin
@@ -4814,7 +4825,7 @@ begin
   end;
 end;
 
-procedure TJvTFDays.SeTJvTFSelCellAttr(Value: TJvTFSelCellAttr);
+procedure TJvTFDays.SetTFSelCellAttr(Value: TJvTFSelCellAttr);
 begin
   FSelCellAttr.Assign(Value);
   Invalidate;
@@ -6245,7 +6256,7 @@ var
   ARect,
   TxtRect,
   CalcRect: TRect;
-  Txt: String;
+  Txt: string;
   PTxt: PChar;
   UseAttr: TJvTFDaysHdrAttr;
   Flags: UINT;
@@ -10543,7 +10554,7 @@ begin
 end;
 }
 
-procedure TJvTFDays.SeTJvTFHintProps(Value: TJvTFHintProps);
+procedure TJvTFDays.SetTFHintProps(Value: TJvTFHintProps);
 begin
   FHintProps.Assign(Value);
 end;
@@ -11116,7 +11127,7 @@ end;
 //////////////////////////////////////////////////////////////////
 {
 procedure TJvTFDays.CalcTextPos(var ARect: TRect; aAngle: Integer;
-  aTxt: String);
+  aTxt: string);
 //==========================================================================
 // Calculate text pos. depend. on: Font, Escapement, Alignment and length
 //--------------------------------------------------------------------------
@@ -11180,7 +11191,7 @@ end;
 
 {
 procedure TJvTFDays.DrawAngleText(ACanvas: TCanvas; ARect: TRect;
-  aAngle: Integer; aTxt: String);
+  aAngle: Integer; aTxt: string);
 var
   LogFont: TLogFont;
   TxtRect: TRect;
@@ -12873,7 +12884,7 @@ var
   ARect,
   TxtRect,
   CalcRect: TRect;
-  Txt: String;
+  Txt: string;
   PTxt: PChar;
   Flags: UINT;
   TxtHt,
@@ -13693,7 +13704,7 @@ begin
   FCols.Assign(Value);
 end;
 
-procedure TJvTFDaysPrinter.SeTJvTFColTitleStyle(Value: TJvTFColTitleStyle);
+procedure TJvTFDaysPrinter.SetTFColTitleStyle(Value: TJvTFColTitleStyle);
 begin
   SetPropertyCheck;
   FColTitleStyle := Value;
@@ -13866,7 +13877,7 @@ begin
   FGridEndTime := aJvTFDays.GridEndTime;
 end;
 
-procedure TJvTFDaysPrinter.SeTJvTFRowHdrType(Value: TJvTFRowHdrType);
+procedure TJvTFDaysPrinter.SetTFRowHdrType(Value: TJvTFRowHdrType);
 begin
   SetPropertyCheck;
   FRowHdrType := Value;
@@ -14660,14 +14671,6 @@ end;
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

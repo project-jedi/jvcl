@@ -34,6 +34,9 @@ unit JvSegmentedLEDDisplay;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -394,12 +397,19 @@ procedure UnregisterSegmentedLEDDigitClass(DigitClass: TJvSegmentedLEDDigitClass
 procedure UnregisterSegmentedLEDDigitClasses(DigitClasses: array of TJvSegmentedLEDDigitClass);
 procedure UnregisterModuleSegmentedLEDDigitClasses(Module: HMODULE);
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Controls, SysUtils,
   JclGraphUtils,
   JvThemes, JvConsts, JvResources;
@@ -1955,21 +1965,10 @@ begin
     Result := Format('%s%.8x', [HexDisplayPrefix, Color]);
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   {$IFDEF VisualCLX}
   GroupDescendentsWith(TJvCustomSegmentedLEDDigit, TControl);
   {$ENDIF VisualCLX}
@@ -1978,15 +1977,15 @@ initialization
   RegisterIntegerConsts(TypeInfo(TUnlitColor), IdentToUnlitColor, UnlitColorToIdent);
 
 finalization
-  {$IFDEF UNITVERSIONING}
-  UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
   {$IFDEF COMPILER6_UP}
   UnregisterIntegerConsts(TypeInfo(TUnlitColor), IdentToUnlitColor, UnlitColorToIdent);
   {$ENDIF COMPILER6_UP}
   UnregisterModuleSegmentedLEDDigitClasses(HInstance);
   FreeAndNil(GDigitClassList);
   RemoveModuleUnloadProc(ModuleUnload);
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 end.
 

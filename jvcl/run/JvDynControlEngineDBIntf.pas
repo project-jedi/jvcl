@@ -29,10 +29,12 @@ unit JvDynControlEngineDBIntf;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes, DB;
 
 type
-
   IJvDynControlDatabase = interface
     ['{E9F43566-9D52-4DB3-8D58-ABC3366FA1BA}']
     procedure ControlSetDatasource(Value: TDatasource);
@@ -49,14 +51,6 @@ type
     procedure ControlSetValueUnChecked(Value: Variant);
   end;
 
-
-implementation
-
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -65,7 +59,12 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+{$ENDIF UNITVERSIONING}
 
+implementation
+
+
+{$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

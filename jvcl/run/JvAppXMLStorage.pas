@@ -31,6 +31,9 @@ unit JvAppXMLStorage;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -152,12 +155,19 @@ procedure StorePropertyStoreToXmlFile(APropertyStore: TJvCustomPropertyStore;
 procedure LoadPropertyStoreFromXmlFile(APropertyStore: TJvCustomPropertyStore;
   const AFileName: string; const AAppStoragePath: string = '');
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils, TypInfo,
   JclStrings,
   JvJCLUtils, JvTypes, JvConsts, JvResources;
@@ -775,10 +785,9 @@ end;
 
 procedure TJvAppXMLFileStorage.Flush;
 var
-  Path: String;
+  Path: string;
 begin
-  if (FullFileName <> '') and not ReadOnly 
-    and not (csDesigning in ComponentState) then
+  if (FullFileName <> '') and not ReadOnly and not (csDesigning in ComponentState) then
   begin
     Path := ExtractFilePath(FullFileName);
     if Path <> '' then
@@ -789,8 +798,7 @@ end;
 
 procedure TJvAppXMLFileStorage.Reload;
 begin
-  if not IsUpdating
-    and not (csDesigning in ComponentState) then
+  if not IsUpdating and not (csDesigning in ComponentState) then
   begin
     if FileExists(FullFileName) then
       Xml.LoadFromFile(FullFileName)
@@ -858,14 +866,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

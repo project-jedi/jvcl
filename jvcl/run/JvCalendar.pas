@@ -35,6 +35,9 @@ unit JvCalendar;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, CommCtrl, Classes, Graphics, Controls, Forms,
   JvComponent, JvTypes, JvExControls;
 
@@ -281,12 +284,19 @@ function StringToDayStates(const S: string): TMonthDayState;
 function DayStatesToString(Days: TMonthDayState): string;
 // function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: Integer): Boolean;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils, ComCtrls,
   JvResources;
 
@@ -1384,14 +1394,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

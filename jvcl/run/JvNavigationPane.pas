@@ -30,6 +30,9 @@ unit JvNavigationPane;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Messages, Controls, Graphics, Menus, ExtCtrls, ImgList,
   {$IFDEF VisualCLX}
@@ -1204,12 +1207,19 @@ type
   TCustomImageListEx = TCustomImageList;
   {$ENDIF COMPILER5}
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Math,
   {$IFDEF COMPILER5}
   CommCtrl,
@@ -5447,14 +5457,6 @@ end;
   RegisterClasses([TJvNavPanelPage]);} // ahuser: moved to TJvCustomNavigationPane.Create
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -32,6 +32,11 @@ unit JvgUtils;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   Windows, Messages, Graphics, ExtCtrls,
   SysUtils, Classes, Controls, Forms, MMSystem,
   JvgTypes, JvgCommClasses, Jvg3DColors;
@@ -149,13 +154,22 @@ function PtInRectExclusive(R: TRect; Pt: TPoint): Boolean;
 function CanvasMaxTextHeight(Canvas: TCanvas): Integer;
 {$ENDIF !USEJVCL}
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
+
 implementation
 
 uses
   {$IFDEF USEJVCL}
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   ShlObj, Math,
   JvResources, JvConsts;
   {$ELSE}
@@ -2167,14 +2181,6 @@ end;
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

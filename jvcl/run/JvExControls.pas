@@ -37,6 +37,9 @@ unit JvExControls;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -721,11 +724,6 @@ procedure TCustomEdit_Paste(Instance: TWinControl);
 procedure TCustomEdit_Cut(Instance: TWinControl);
 
 implementation
-
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
 
 function ShiftStateToKeyData(Shift: TShiftState): Longint;
 const

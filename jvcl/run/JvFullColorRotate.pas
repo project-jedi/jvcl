@@ -30,6 +30,9 @@ unit JvFullColorRotate;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Classes, Graphics,
   JvFullColorSpaces;
 
@@ -88,12 +91,18 @@ function RotateColor(AColor: TJvFullColor;
 procedure RotateBitmap(SourceBitmap, DestBitmap: TBitmap;
   AColorDelta: TJvColorDelta);
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
 
 // (rom) reworked for loops
 function RotateColor(AColor: TJvFullColor; AColorDelta: TJvColorDelta): TJvFullColor;
@@ -389,14 +398,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-    );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
