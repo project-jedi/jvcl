@@ -113,7 +113,7 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     { Added By Steve Childs, 18/4/00 }
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure Resize; override;
+    procedure DoBoundsChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
@@ -496,9 +496,9 @@ begin
     OnChangedValue(self, NewValue);
 end;
 
-procedure TJvTracker.Resize;
+procedure TJvTracker.DoBoundsChanged;
 begin
-  inherited Resize;
+  inherited DoBoundsChanged;
   SetTumbMinMax;
   SetTrackRect;
   UpdatePosition;

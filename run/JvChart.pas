@@ -312,6 +312,7 @@ type
     function DestRect: TRect; // from TImage
     procedure Paint; override; // from TImage
     procedure Resize; override; // from TControl
+    procedure Loaded; override;
     { draw dummy data for design mode}
     procedure DesignMode;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -824,6 +825,12 @@ begin
 
 (*  if Center then
  OffsetRect(Result, (cw - w) div 2, (ch - h) div 2); *)
+end;
+
+procedure TJvChart.Loaded;
+begin
+  inherited Loaded;
+  ResizeChartCanvas;
 end;
 
 procedure TJvChart.Resize;

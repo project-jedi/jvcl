@@ -91,7 +91,7 @@ type
   protected
     procedure FontChanged; override;
     procedure ColorChanged; override;
-    procedure Resize; override;
+    procedure DoBoundsChanged; override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     procedure Paint; override;
     procedure PaintClient(Canvas: TCanvas; Rect: TRect); virtual;
@@ -242,9 +242,9 @@ begin
     UpdateMemoryImage;
 end;
 
-procedure TJvSecretPanel.Resize;
+procedure TJvSecretPanel.DoBoundsChanged;
 begin
-  inherited Resize;
+  inherited DoBoundsChanged;
   if Active then
   begin
     UpdateMemoryImage;

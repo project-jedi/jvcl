@@ -56,7 +56,7 @@ uses
   Messages, Graphics, Controls, StdCtrls, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, Types, QGraphics, QControls, QStdCtrls, QExtCtrls, QWindows,
+  Qt, Types, QGraphics, QControls, QStdCtrls, QExtCtrls, QWindows, JvExExtCtrls,
   {$ENDIF VisualCLX}
   JvClxUtils, JvComponent, JvTypes, JvExControls;
 
@@ -184,8 +184,8 @@ type
   {$IFDEF VCL}
   TJvCustomInspector = class(TJvCustomControl)
   {$ELSE}
-  TJvCustomInspector = class(TCustomPanel)
-  {$ENDIF VCL} 
+  TJvCustomInspector = class(TJvExCustomPanel)
+  {$ENDIF VCL}
   private
     FAfterDataCreate: TInspectorDataEvent;
     FAfterItemCreate: TInspectorItemEvent;
@@ -300,7 +300,7 @@ type
     procedure RebuildVisible; virtual;
     procedure RemoveNotifySort(const Item: TJvCustomInspectorItem); virtual;
     procedure RemoveVisible(const Item: TJvCustomInspectorItem); virtual;
-    procedure Resize; override;
+    procedure DoBoundsChanged; override;
     function ScrollfactorV: Extended; virtual;
     procedure SetAfterDataCreate(const Value: TInspectorDataEvent); virtual;
     procedure SetAfterItemCreate(const Value: TInspectorItemEvent); virtual;
@@ -2927,9 +2927,9 @@ begin
   end;
 end;
 
-procedure TJvCustomInspector.Resize;
+procedure TJvCustomInspector.DoBoundsChanged;
 begin
-  inherited Resize;
+  inherited DoBoundsChanged;
   if csCreating in ControlState then
     Exit;
   if not BandSizing then

@@ -103,7 +103,7 @@
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoSizeChanged(var Info: TSizeChangedInfo); virtual;
+    procedure DoBoundsChanged; dynamic;
 *)
 
 // ********************************************************
@@ -467,19 +467,18 @@ begin
 end;
 
 procedure TJvEx##ClassName.BoundsChanged;
-var
-  Info: TSizeChangedInfo;
 begin
-  Info.Reason := rrRestored;
-  Info.NewWidth := Width;
-  Info.NewHeight := Height;
-  DoSizeChanged(Info);
   inherited BoundsChanged;
+  DoBoundsChanged;
 end;
 *) // MACRO END WINCONTROL_VISUALCLX
 
 
 (*$DEFINE JV_WINCONTROL_EVENTS_IMPL_COMMON(ClassName)
+procedure TJvEx##ClassName.DoBoundsChanged;
+begin
+end;
+
 procedure TJvEx##ClassName.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
@@ -490,14 +489,6 @@ end;
 
 procedure TJvEx##ClassName.DoKillFocus(FocusedWnd: HWND);
 begin
-end;
-
-procedure TJvEx##ClassName.DoSizeChanged(var Info: TSizeChangedInfo);
-begin
-  {$IFDEF VCL}
-  InheritMsg(Self, WM_SIZE, Integer(Info.Reason),
-    MakeLParam(Word(Info.NewWidth), Word(Info.NewHeight)));
-  {$ENDIF VCL}
 end;
 *) // MACRO END WINCONTROL_COMMON
 

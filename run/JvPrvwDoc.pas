@@ -270,7 +270,7 @@ type
     procedure SetHideScrollBars(const Value: Boolean);
     function IsPageMode: Boolean;
   protected
-    procedure Resize; override;
+    procedure DoBoundsChanged; override;
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
@@ -1217,8 +1217,7 @@ begin
   FDeviceInfo.Assign(Value);
 end;
 
-procedure TJvCustomPreviewControl.SetOptions(
-  const Value: TJvPreviewPageOptions);
+procedure TJvCustomPreviewControl.SetOptions(const Value: TJvPreviewPageOptions);
 begin
   FOptions.Assign(Value);
 end;
@@ -1229,11 +1228,11 @@ begin
   Result := True;
 end;
 
-procedure TJvCustomPreviewControl.Resize;
+procedure TJvCustomPreviewControl.DoBoundsChanged;
 var
   tmpRow: Integer;
 begin
-  inherited Resize;
+  inherited DoBoundsChanged;
   tmpRow := TopRow; // workaround...
   Change;
   if IsPageMode then

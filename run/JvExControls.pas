@@ -64,14 +64,6 @@ type
   );
   TDlgCodes = set of TDlgCode;
 
-  TResizeReason = (rrRestored, rrMinimized, rrMaximized, rrMaxShow, rrMaxHide);
-
-  TSizeChangedInfo = record
-    Reason: TResizeReason;
-    NewWidth: Integer;
-    NewHeight: Integer;
-  end;
-
 {$IFDEF VisualCLX}
   HWND = QWindows.HWND;
 {$ENDIF VisualCLX}
@@ -105,6 +97,7 @@ type
 
   IJvWinControlEvents = interface
     ['{B5F7FB62-78F0-481D-AFF4-7A24ED6776A0}']
+    procedure DoBoundsChanged;
     procedure CursorChanged;
     procedure ShowingChanged;
     procedure ShowHintChanged;
@@ -113,7 +106,6 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); // WM_GETDLGCODE
     procedure DoSetFocus(FocusedWnd: HWND);  // WM_SETFOCUS
     procedure DoKillFocus(FocusedWnd: HWND); // WM_KILLFOCUS
-    procedure DoSizeChanged(var Info: TSizeChangedInfo); // WM_SIZE
   end;
 
   IJvCustomControlEvents = interface
@@ -297,7 +289,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoSizeChanged(var Info: TSizeChangedInfo); virtual;
+    procedure DoBoundsChanged; dynamic;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -469,7 +461,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoSizeChanged(var Info: TSizeChangedInfo); virtual;
+    procedure DoBoundsChanged; dynamic;
   
   end;
   TJvExPubCustomControl = class(TJvExCustomControl)
@@ -560,7 +552,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoSizeChanged(var Info: TSizeChangedInfo); virtual;
+    procedure DoBoundsChanged; dynamic;
   
   end;
   TJvExPubHintWindow = class(TJvExHintWindow)
@@ -657,7 +649,6 @@ var
   CallInherited: Boolean;
   Canvas: TCanvas;
   DlgCodes: TDlgCodes;
-  Info: TSizeChangedInfo;
 begin
   CallInherited := True;
   PMsg := @Msg;
@@ -794,12 +785,10 @@ begin
             end;
 
           WM_SIZE:
-            with PMsg^ do
             begin
-              Info.Reason := TResizeReason(WParam);
-              Info.NewWidth := Word(LParam);
-              Info.NewHeight := Word(LParam shr 16);
-              DoSizeChanged(Info);
+              DoBoundsChanged;
+              with PMsg^ do
+                Result := InheritMsg(Instance, Msg, WParam, LParam);
             end;
         else
           CallInherited := True;
@@ -1386,14 +1375,9 @@ begin
 end;
 
 procedure TJvExWinControl.BoundsChanged;
-var
-  Info: TSizeChangedInfo;
 begin
-  Info.Reason := rrRestored;
-  Info.NewWidth := Width;
-  Info.NewHeight := Height;
-  DoSizeChanged(Info);
   inherited BoundsChanged;
+  DoBoundsChanged;
 end;
 {$ENDIF VisualCLX}
 procedure TJvExWinControl.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -1414,6 +1398,10 @@ begin
   Result := False; // Qt allways paints the background
   {$ENDIF VCL}
 end;
+procedure TJvExWinControl.DoBoundsChanged;
+begin
+end;
+
 procedure TJvExWinControl.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
@@ -1424,14 +1412,6 @@ end;
 
 procedure TJvExWinControl.DoKillFocus(FocusedWnd: HWND);
 begin
-end;
-
-procedure TJvExWinControl.DoSizeChanged(var Info: TSizeChangedInfo);
-begin
-  {$IFDEF VCL}
-  InheritMsg(Self, WM_SIZE, Integer(Info.Reason),
-    MakeLParam(Word(Info.NewWidth), Word(Info.NewHeight)));
-  {$ENDIF VCL}
 end;
 
 {$IFDEF VCL}
@@ -1772,14 +1752,9 @@ begin
 end;
 
 procedure TJvExCustomControl.BoundsChanged;
-var
-  Info: TSizeChangedInfo;
 begin
-  Info.Reason := rrRestored;
-  Info.NewWidth := Width;
-  Info.NewHeight := Height;
-  DoSizeChanged(Info);
   inherited BoundsChanged;
+  DoBoundsChanged;
 end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomControl.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -1800,6 +1775,10 @@ begin
   Result := False; // Qt allways paints the background
   {$ENDIF VCL}
 end;
+procedure TJvExCustomControl.DoBoundsChanged;
+begin
+end;
+
 procedure TJvExCustomControl.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
@@ -1810,14 +1789,6 @@ end;
 
 procedure TJvExCustomControl.DoKillFocus(FocusedWnd: HWND);
 begin
-end;
-
-procedure TJvExCustomControl.DoSizeChanged(var Info: TSizeChangedInfo);
-begin
-  {$IFDEF VCL}
-  InheritMsg(Self, WM_SIZE, Integer(Info.Reason),
-    MakeLParam(Word(Info.NewWidth), Word(Info.NewHeight)));
-  {$ENDIF VCL}
 end;
 
 constructor TJvExCustomControl.Create(AOwner: TComponent);
@@ -1985,14 +1956,9 @@ begin
 end;
 
 procedure TJvExHintWindow.BoundsChanged;
-var
-  Info: TSizeChangedInfo;
 begin
-  Info.Reason := rrRestored;
-  Info.NewWidth := Width;
-  Info.NewHeight := Height;
-  DoSizeChanged(Info);
   inherited BoundsChanged;
+  DoBoundsChanged;
 end;
 {$ENDIF VisualCLX}
 procedure TJvExHintWindow.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -2013,6 +1979,10 @@ begin
   Result := False; // Qt allways paints the background
   {$ENDIF VCL}
 end;
+procedure TJvExHintWindow.DoBoundsChanged;
+begin
+end;
+
 procedure TJvExHintWindow.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
@@ -2023,14 +1993,6 @@ end;
 
 procedure TJvExHintWindow.DoKillFocus(FocusedWnd: HWND);
 begin
-end;
-
-procedure TJvExHintWindow.DoSizeChanged(var Info: TSizeChangedInfo);
-begin
-  {$IFDEF VCL}
-  InheritMsg(Self, WM_SIZE, Integer(Info.Reason),
-    MakeLParam(Word(Info.NewWidth), Word(Info.NewHeight)));
-  {$ENDIF VCL}
 end;
 
 constructor TJvExHintWindow.Create(AOwner: TComponent);
@@ -2272,7 +2234,7 @@ finalization
 
 {$IFDEF VisualCLX}
 
-// Handles DoSetFocus and DoKillFocus, DoSizeChanged, DoMoved
+// Handles DoSetFocus and DoKillFocus
 
 function AppEventFilter(App: TApplication; Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var

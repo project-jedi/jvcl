@@ -114,7 +114,7 @@ type
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     procedure WMTimer(var Msg: TMessage); message WM_TIMER;
   protected
-    procedure Resize; override;
+    procedure DoBoundsChanged; override;
     procedure DoFocusChanged(Control: TWinControl); override;
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure EnabledChanged; override;
@@ -1094,9 +1094,9 @@ begin
   Code := [dcWantArrows];
 end;
 
-procedure TJvCustomSlider.Resize;
+procedure TJvCustomSlider.DoBoundsChanged;
 begin
-  inherited Resize;
+  inherited DoBoundsChanged;
   if not (csReading in ComponentState) then
     Sized;
 end;

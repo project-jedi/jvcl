@@ -383,7 +383,7 @@ type
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
   protected
     procedure DoKillFocus(FocusedWnd: HWND); override;
-    procedure Resize; override;
+    procedure DoBoundsChanged; override;
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure EnabledChanged; override;
     procedure FontChanged; override;
@@ -3237,9 +3237,9 @@ begin
       inherited;
 end;
 
-procedure TJvDBLookupCombo.Resize;
+procedure TJvDBLookupCombo.DoBoundsChanged;
 begin
-  inherited Resize;
+  inherited DoBoundsChanged;
   if not (csReading in ComponentState) and (Height < GetMinHeight) then
     Height := GetMinHeight
   else

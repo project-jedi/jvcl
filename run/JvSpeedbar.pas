@@ -462,7 +462,7 @@ type
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Paint; override;
-    procedure Resize; override;
+    procedure DoBoundsChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -3074,10 +3074,10 @@ begin
   FImage.Alignment := Value;
 end;
 
-procedure TJvBtnControl.Resize;
+procedure TJvBtnControl.DoBoundsChanged;
 begin
   FImage.ButtonSize := Point(ClientWidth, ClientHeight);
-  inherited Resize;
+  inherited DoBoundsChanged;
 end;
 
 procedure TJvBtnControl.Paint;

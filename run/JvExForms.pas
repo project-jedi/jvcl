@@ -124,7 +124,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoSizeChanged(var Info: TSizeChangedInfo); virtual;
+    procedure DoBoundsChanged; dynamic;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -221,7 +221,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoSizeChanged(var Info: TSizeChangedInfo); virtual;
+    procedure DoBoundsChanged; dynamic;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -318,7 +318,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoSizeChanged(var Info: TSizeChangedInfo); virtual;
+    procedure DoBoundsChanged; dynamic;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -415,7 +415,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoSizeChanged(var Info: TSizeChangedInfo); virtual;
+    procedure DoBoundsChanged; dynamic;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -512,7 +512,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoSizeChanged(var Info: TSizeChangedInfo); virtual;
+    procedure DoBoundsChanged; dynamic;
   
   end;
   TJvExPubCustomForm = class(TJvExCustomForm)
@@ -603,7 +603,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoSizeChanged(var Info: TSizeChangedInfo); virtual;
+    procedure DoBoundsChanged; dynamic;
   
   end;
   TJvExPubForm = class(TJvExForm)
@@ -694,7 +694,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoSizeChanged(var Info: TSizeChangedInfo); virtual;
+    procedure DoBoundsChanged; dynamic;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -873,14 +873,9 @@ begin
 end;
 
 procedure TJvExScrollingWinControl.BoundsChanged;
-var
-  Info: TSizeChangedInfo;
 begin
-  Info.Reason := rrRestored;
-  Info.NewWidth := Width;
-  Info.NewHeight := Height;
-  DoSizeChanged(Info);
   inherited BoundsChanged;
+  DoBoundsChanged;
 end;
 {$ENDIF VisualCLX}
 procedure TJvExScrollingWinControl.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -901,6 +896,10 @@ begin
   Result := False; // Qt allways paints the background
   {$ENDIF VCL}
 end;
+procedure TJvExScrollingWinControl.DoBoundsChanged;
+begin
+end;
+
 procedure TJvExScrollingWinControl.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
@@ -911,14 +910,6 @@ end;
 
 procedure TJvExScrollingWinControl.DoKillFocus(FocusedWnd: HWND);
 begin
-end;
-
-procedure TJvExScrollingWinControl.DoSizeChanged(var Info: TSizeChangedInfo);
-begin
-  {$IFDEF VCL}
-  InheritMsg(Self, WM_SIZE, Integer(Info.Reason),
-    MakeLParam(Word(Info.NewWidth), Word(Info.NewHeight)));
-  {$ENDIF VCL}
 end;
 
 {$IFDEF VCL}
@@ -1109,14 +1100,9 @@ begin
 end;
 
 procedure TJvExScrollBox.BoundsChanged;
-var
-  Info: TSizeChangedInfo;
 begin
-  Info.Reason := rrRestored;
-  Info.NewWidth := Width;
-  Info.NewHeight := Height;
-  DoSizeChanged(Info);
   inherited BoundsChanged;
+  DoBoundsChanged;
 end;
 {$ENDIF VisualCLX}
 procedure TJvExScrollBox.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -1137,6 +1123,10 @@ begin
   Result := False; // Qt allways paints the background
   {$ENDIF VCL}
 end;
+procedure TJvExScrollBox.DoBoundsChanged;
+begin
+end;
+
 procedure TJvExScrollBox.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
@@ -1147,14 +1137,6 @@ end;
 
 procedure TJvExScrollBox.DoKillFocus(FocusedWnd: HWND);
 begin
-end;
-
-procedure TJvExScrollBox.DoSizeChanged(var Info: TSizeChangedInfo);
-begin
-  {$IFDEF VCL}
-  InheritMsg(Self, WM_SIZE, Integer(Info.Reason),
-    MakeLParam(Word(Info.NewWidth), Word(Info.NewHeight)));
-  {$ENDIF VCL}
 end;
 
 {$IFDEF VCL}
@@ -1345,14 +1327,9 @@ begin
 end;
 
 procedure TJvExCustomFrame.BoundsChanged;
-var
-  Info: TSizeChangedInfo;
 begin
-  Info.Reason := rrRestored;
-  Info.NewWidth := Width;
-  Info.NewHeight := Height;
-  DoSizeChanged(Info);
   inherited BoundsChanged;
+  DoBoundsChanged;
 end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomFrame.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -1373,6 +1350,10 @@ begin
   Result := False; // Qt allways paints the background
   {$ENDIF VCL}
 end;
+procedure TJvExCustomFrame.DoBoundsChanged;
+begin
+end;
+
 procedure TJvExCustomFrame.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
@@ -1383,14 +1364,6 @@ end;
 
 procedure TJvExCustomFrame.DoKillFocus(FocusedWnd: HWND);
 begin
-end;
-
-procedure TJvExCustomFrame.DoSizeChanged(var Info: TSizeChangedInfo);
-begin
-  {$IFDEF VCL}
-  InheritMsg(Self, WM_SIZE, Integer(Info.Reason),
-    MakeLParam(Word(Info.NewWidth), Word(Info.NewHeight)));
-  {$ENDIF VCL}
 end;
 
 {$IFDEF VCL}
@@ -1581,14 +1554,9 @@ begin
 end;
 
 procedure TJvExFrame.BoundsChanged;
-var
-  Info: TSizeChangedInfo;
 begin
-  Info.Reason := rrRestored;
-  Info.NewWidth := Width;
-  Info.NewHeight := Height;
-  DoSizeChanged(Info);
   inherited BoundsChanged;
+  DoBoundsChanged;
 end;
 {$ENDIF VisualCLX}
 procedure TJvExFrame.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -1609,6 +1577,10 @@ begin
   Result := False; // Qt allways paints the background
   {$ENDIF VCL}
 end;
+procedure TJvExFrame.DoBoundsChanged;
+begin
+end;
+
 procedure TJvExFrame.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
@@ -1619,14 +1591,6 @@ end;
 
 procedure TJvExFrame.DoKillFocus(FocusedWnd: HWND);
 begin
-end;
-
-procedure TJvExFrame.DoSizeChanged(var Info: TSizeChangedInfo);
-begin
-  {$IFDEF VCL}
-  InheritMsg(Self, WM_SIZE, Integer(Info.Reason),
-    MakeLParam(Word(Info.NewWidth), Word(Info.NewHeight)));
-  {$ENDIF VCL}
 end;
 
 {$IFDEF VCL}
@@ -1817,14 +1781,9 @@ begin
 end;
 
 procedure TJvExCustomForm.BoundsChanged;
-var
-  Info: TSizeChangedInfo;
 begin
-  Info.Reason := rrRestored;
-  Info.NewWidth := Width;
-  Info.NewHeight := Height;
-  DoSizeChanged(Info);
   inherited BoundsChanged;
+  DoBoundsChanged;
 end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomForm.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -1845,6 +1804,10 @@ begin
   Result := False; // Qt allways paints the background
   {$ENDIF VCL}
 end;
+procedure TJvExCustomForm.DoBoundsChanged;
+begin
+end;
+
 procedure TJvExCustomForm.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
@@ -1855,14 +1818,6 @@ end;
 
 procedure TJvExCustomForm.DoKillFocus(FocusedWnd: HWND);
 begin
-end;
-
-procedure TJvExCustomForm.DoSizeChanged(var Info: TSizeChangedInfo);
-begin
-  {$IFDEF VCL}
-  InheritMsg(Self, WM_SIZE, Integer(Info.Reason),
-    MakeLParam(Word(Info.NewWidth), Word(Info.NewHeight)));
-  {$ENDIF VCL}
 end;
 
 constructor TJvExCustomForm.Create(AOwner: TComponent);
@@ -2030,14 +1985,9 @@ begin
 end;
 
 procedure TJvExForm.BoundsChanged;
-var
-  Info: TSizeChangedInfo;
 begin
-  Info.Reason := rrRestored;
-  Info.NewWidth := Width;
-  Info.NewHeight := Height;
-  DoSizeChanged(Info);
   inherited BoundsChanged;
+  DoBoundsChanged;
 end;
 {$ENDIF VisualCLX}
 procedure TJvExForm.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -2058,6 +2008,10 @@ begin
   Result := False; // Qt allways paints the background
   {$ENDIF VCL}
 end;
+procedure TJvExForm.DoBoundsChanged;
+begin
+end;
+
 procedure TJvExForm.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
@@ -2068,14 +2022,6 @@ end;
 
 procedure TJvExForm.DoKillFocus(FocusedWnd: HWND);
 begin
-end;
-
-procedure TJvExForm.DoSizeChanged(var Info: TSizeChangedInfo);
-begin
-  {$IFDEF VCL}
-  InheritMsg(Self, WM_SIZE, Integer(Info.Reason),
-    MakeLParam(Word(Info.NewWidth), Word(Info.NewHeight)));
-  {$ENDIF VCL}
 end;
 
 constructor TJvExForm.Create(AOwner: TComponent);
@@ -2243,14 +2189,9 @@ begin
 end;
 
 procedure TJvExToolWindow.BoundsChanged;
-var
-  Info: TSizeChangedInfo;
 begin
-  Info.Reason := rrRestored;
-  Info.NewWidth := Width;
-  Info.NewHeight := Height;
-  DoSizeChanged(Info);
   inherited BoundsChanged;
+  DoBoundsChanged;
 end;
 {$ENDIF VisualCLX}
 procedure TJvExToolWindow.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -2271,6 +2212,10 @@ begin
   Result := False; // Qt allways paints the background
   {$ENDIF VCL}
 end;
+procedure TJvExToolWindow.DoBoundsChanged;
+begin
+end;
+
 procedure TJvExToolWindow.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
@@ -2281,14 +2226,6 @@ end;
 
 procedure TJvExToolWindow.DoKillFocus(FocusedWnd: HWND);
 begin
-end;
-
-procedure TJvExToolWindow.DoSizeChanged(var Info: TSizeChangedInfo);
-begin
-  {$IFDEF VCL}
-  InheritMsg(Self, WM_SIZE, Integer(Info.Reason),
-    MakeLParam(Word(Info.NewWidth), Word(Info.NewHeight)));
-  {$ENDIF VCL}
 end;
 
 {$IFDEF VCL}

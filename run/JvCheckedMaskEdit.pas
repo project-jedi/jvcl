@@ -66,6 +66,7 @@ type
 
     procedure Change; override;
     procedure Resize; override;
+    procedure Loaded; override;
 
     procedure BeginInternalChange;
     procedure EndInternalChange;
@@ -261,6 +262,12 @@ begin
    check for InternalChanging.}
   if not InternalChanging then
     inherited Change;
+end;
+
+procedure TJvCustomCheckedMaskEdit.Loaded;
+begin
+  inherited Loaded;
+  UpdateControls;
 end;
 
 procedure TJvCustomCheckedMaskEdit.Resize;

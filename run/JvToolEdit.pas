@@ -231,7 +231,7 @@ type
     procedure DoClearText; override;
     procedure DoClipboardCut; override;
     procedure DoClipboardPaste; override;
-    procedure Resize; override;
+    procedure DoBoundsChanged; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure EnabledChanged; override;
@@ -1955,7 +1955,7 @@ begin
   inherited Loaded;
   if FStreamedButtonWidth >= 0 then
     SetButtonWidth(FStreamedButtonWidth);
-  Resize; 
+  DoBoundsChanged;
 end;
 
 procedure TJvCustomComboEdit.LocalKeyDown(Sender: TObject; var Key: Word;
@@ -2659,11 +2659,11 @@ begin
   SetShowCaret;
 end;
 
-procedure TJvCustomComboEdit.Resize;
+procedure TJvCustomComboEdit.DoBoundsChanged;
 var
   MinHeight: Integer;
 begin
-  inherited Resize;
+  inherited DoBoundsChanged;
   if not (csLoading in ComponentState) then
   begin
     MinHeight := GetMinHeight;
