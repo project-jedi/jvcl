@@ -50,9 +50,9 @@ uses
   JVCLVer;
 
 type
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   TInterfacedPersistent = class(TPersistent);
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
   TJvPersistentEmbedded = class(TInterfacedPersistent)
   private
     FFiler: TFiler;

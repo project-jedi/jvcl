@@ -512,7 +512,7 @@ type
 
   // Generic data provider implementation
   TJvCustomDataProvider = class(TJvComponent, IUnknown,
-    {$IFNDEF COMPILER6_UP} IInterfaceComponentReference, {$ENDIF} IJvDataProvider)
+    {$IFDEF COMPILER5} IInterfaceComponentReference, {$ENDIF} IJvDataProvider)
   private
     FDataItems: IJvDataItems;
     FDataContextsImpl: TJvBaseDataContexts;
@@ -543,10 +543,10 @@ type
     procedure RemoveFromArray(var ClassArray: TClassArray; AClass: TClass);
     function IsTreeProvider: Boolean; dynamic;
     function GetDataItemsImpl: TJvBaseDataItems;
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     { IInterfaceComponentReference }
     function GetComponent: TComponent;
-    {$ENDIF !COMPILER6_UP}
+    {$ENDIF COMPILER5}
     { IDataProvider }
     function GetItems: IJvDataItems; virtual;
     procedure RegisterChangeNotify(ANotify: IJvDataProviderNotify); dynamic;
@@ -753,10 +753,10 @@ type
     FOnProviderChanged: TProviderNotifyEvent;
     FServerList: TInterfaceList;
     procedure SetProvider(Value: IJvDataProvider);
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     function GetProviderComp: TComponent;
     procedure SetProviderComp(Value: TComponent);
-    {$ENDIF !COMPILER6_UP}
+    {$ENDIF COMPILER5}
   protected
     function _AddRef: Integer; override; stdcall;
     function _Release: Integer; override; stdcall;
@@ -3338,12 +3338,12 @@ begin
     Result := nil;
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 function TJvCustomDataProvider.GetComponent: TComponent;
 begin
   Result := Self;
 end;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 function TJvCustomDataProvider.GetItems: IJvDataItems;
 begin
@@ -3781,7 +3781,7 @@ begin
   end;
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 
 function TJvDataConsumer.GetProviderComp: TComponent;
 var
@@ -3819,7 +3819,7 @@ begin
   end;
 end;
 
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 function TJvDataConsumer._AddRef: Integer;
 begin

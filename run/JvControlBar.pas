@@ -168,9 +168,9 @@ procedure TJvControlBar.PopupMenuClick(Sender: TObject);
 begin
   with Sender as TMenuItem do
   begin
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     Checked := not Checked;
-    {$ENDIF !COMPILER6_UP}
+    {$ENDIF COMPILER5}
     if (Tag >= 0) and (Tag < FList.Count) then
       TControl(FList[Tag]).Visible := Checked;
   end;

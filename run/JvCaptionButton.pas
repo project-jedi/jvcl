@@ -62,9 +62,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, Forms,
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_TYPES}
   Types,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_TYPES}
   ActnList, ImgList,
   JvComponent;
 

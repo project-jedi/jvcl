@@ -344,9 +344,9 @@ type
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
       MousePos: TPoint): Boolean; override;
     procedure EditButtonClick; override;
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     procedure FocusCell(ACol, ARow: Longint; MoveAnchor: Boolean);
-    {$ENDIF !COMPILER6_UP}
+    {$ENDIF COMPILER5}
     procedure CellClick(Column: TColumn); override;
     procedure DefineProperties(Filer: TFiler); override;
     procedure DoMinColWidth; virtual;
@@ -488,11 +488,11 @@ uses
   {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, Math, TypInfo, Forms, StdCtrls, Dialogs, DBConsts,
   {$IFDEF COMPILER6_UP}
-  StrUtils, JvDBLookup, 
+  StrUtils,
+  JvDBLookup,
   {$ENDIF COMPILER6_UP}
   JvConsts, JvResources, JvDBUtils, JvJCLUtils, JvJVCLUtils,
-  JvAppStoragePropertyEngineDB,
-  JvDBGridSelectColumnForm;
+  JvAppStoragePropertyEngineDB, JvDBGridSelectColumnForm;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDBGrid.res}
@@ -2912,14 +2912,14 @@ begin
   end;
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 procedure TJvDBGrid.FocusCell(ACol, ARow: Longint; MoveAnchor: Boolean);
 begin
   MoveColRow(ACol, ARow, MoveAnchor, True);
   InvalidateEditor;
   Click;
 end;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 procedure TJvDBGrid.ChangeBoolean(const FieldValueChange: Shortint);
 begin

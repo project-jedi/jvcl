@@ -189,9 +189,9 @@ procedure RotateBitmap(SourceBitmap, DestBitmap: TBitmap; AColorDelta: TJvColorD
 type
   TFullColorValue = array [TJvAxisIndex] of SmallInt;
   PFullColorValue = ^TFullColorValue;
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   PCardinal = ^Cardinal;
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
 var
   OriginalPixelFormat: TPixelFormat;
   Colors: array [TJvAxisIndex,Byte] of TFullColorValue;

@@ -740,9 +740,9 @@ uses
   Consts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
   Math, TypInfo, Forms,
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   JclMath, // For EnsureRange
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
   JvResources, JvConsts;
 
 type

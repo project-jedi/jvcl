@@ -249,9 +249,9 @@ const
 implementation
 
 uses
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_STRUTILS}
   StrUtils,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_STRUTILS}
   JvConsts, JvJCLUtils;
 
 //=== { TJvControlAutoComplete } =============================================
