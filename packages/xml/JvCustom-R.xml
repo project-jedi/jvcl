@@ -3,6 +3,8 @@
   <Description>JVCL Custom Controls Runtime Package</Description>
   <C5PFlags>-LUvcl50</C5PFlags>
   <C6PFlags/>
+  <C5Libs/>
+  <C6Libs/>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvCtrls-R" Targets="C5,C6,C6p,D5,D5s,D6,D6p" Condition=""/>
@@ -54,5 +56,6 @@
     <File Name="..\..\run\JvValidateEdit.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvBalloonHint.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvBaseThumbnail.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTimeLine.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

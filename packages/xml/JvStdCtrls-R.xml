@@ -3,6 +3,8 @@
   <Description>JVCL Standard Controls Runtime Package</Description>
   <C5PFlags/>
   <C6PFlags/>
+  <C5Libs/>
+  <C6Libs/>
   <Requires>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
@@ -89,5 +91,6 @@
     <File Name="..\..\run\JvHints.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvHotKey.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvImage.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvRadioGroup.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

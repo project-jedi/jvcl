@@ -3,6 +3,8 @@
   <Description>JVCL Jans Components</Description>
   <C5PFlags>-LUvcl50 -LUdclstd50</C5PFlags>
   <C6PFlags>-LUdclstd</C6PFlags>
+  <C5Libs/>
+  <C6Libs/>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
@@ -58,5 +60,6 @@
     <File Name="..\..\run\JvGridPreviewForm.pas" Targets="all" Formname="jvGridPreviewF" Condition=""/>
     <File Name="..\..\run\JvGridPrinter.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvJanTreeView.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSimIndicator.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
