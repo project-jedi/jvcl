@@ -36,7 +36,7 @@
     <File Name="..\..\run\JvDataProviderIntf.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDynControlEngine.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDynControlEngineIntf.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDynControlEngineVCL.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDynControlEngineVCL.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDsgnIntf.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvJCLUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvJVCLAboutForm.pas" Targets="allbutclx" Formname="JvJVCLAboutForm" Condition=""/>
