@@ -768,13 +768,17 @@ const
   BF_FLAT = $4000;    { For flat rather than 3D borders }
   BF_MONO = $8000;    { For monochrome borders }
 
+{ limited implementation of }
 function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
-{ limited implementation of }
 function DrawText(Handle: QPainterH; Text: PAnsiChar; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
 function DrawTextW(Handle: QPainterH; Text: PWideChar; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
+function DrawTextEx(Handle: QPainterH; var Text: WideString; Len: Integer;
+  var R: TRect; WinFlags: Integer; DTParams: Pointer): Integer; overload;
+function DrawTextEx(Handle: QPainterH; Text: PChar; Len: Integer;
+  var R: TRect; WinFlags: Integer; DTParams: Pointer): Integer; overload;
 
 const
   { DrawText format (windows) flags }
@@ -4144,6 +4148,18 @@ begin
     Move(WText[1], Text^, Length(WText) * SizeOf(WideChar));
     //WStrCopy(Text, PChar(AText));
   end;
+end;
+
+function DrawTextEx(Handle: QPainterH; var Text: WideString; Len: Integer;
+  var R: TRect; WinFlags: Integer; DTParams: Pointer): Integer; overload;
+begin
+  Result := DrawText(Handle, Text, Len, R, WinFlags);
+end;
+
+function DrawTextEx(Handle: QPainterH; Text: PChar; Len: Integer;
+  var R: TRect; WinFlags: Integer; DTParams: Pointer): Integer; overload;
+begin
+  Result := DrawText(Handle, Text, Len, R, WinFlags);
 end;
 
 function ExtTextOut(Handle: QPainterH; X, Y: Integer; WinFlags: Cardinal;
