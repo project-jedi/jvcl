@@ -50,6 +50,7 @@ uses
   JvQBehaviorLabelEditor, JvQHTHintForm, JvQFooterEditor, JvQGroupHeaderEditor,
 
   JvQDsgnConsts,
+  JvQOfficeColorButton, JvQOfficeColorPanel,
   JvQZoom, JvQBehaviorLabel, JvQArrowButton,
   JvQaScrollText,
 
@@ -78,7 +79,7 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteButton, [TJvArrowButton, TJvColorButton,
     TJvHTButton, TJvSpacer, TJvSwitch, TJvColorBox, TJvColorSquare,
-    TJvDropButton]);
+    TJvDropButton, TJvOfficeColorButton, TJvOfficeColorPanel]);
   RegisterComponents(RsPaletteBarPanel, [TJvCaptionPanel,
     TJvItemsPanel, TJvMovableBevel, TJvRollOut, TJvFooter, TJvGroupHeader,
     TJvComponentPanel]);
