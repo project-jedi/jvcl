@@ -80,12 +80,6 @@ See Also
 
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFtpUrlGrabber.Size
-Summary
-  The size of the object that is grabbed
-
-
-----------------------------------------------------------------------------------------------------
 @@TJvFtpUrlGrabberDefaultProperties
 Summary
   A class that holds default properties for TJvFtpUrlGrabber
@@ -143,12 +137,28 @@ Return value
 
 
 ----------------------------------------------------------------------------------------------------
+@@TJvHttpUrlGrabber.Referer
+Summary
+  The URL to indicate as the referer to grab the current URL.
+Description
+  In the HTTP protocol, most navigators indicate the page the user was before moving to another page.
+  This is known as the Referer. Some web sites check that the Referer is set to a correct value and
+  if it is not a value they expect, they refuse to serve the page.
+  By using this property, you can emulate the correct behavior and get the page.
+
+
+----------------------------------------------------------------------------------------------------
 @@TJvHttpUrlGrabberDefaultProperties
 Summary
   A class that holds default properties for TJvHttpUrlGrabber
 Description
   This class is used by TJvUrlGrabber to display the default properties of the TJvHttpUrlGrabber
   objects it may create
+
+
+----------------------------------------------------------------------------------------------------
+@@TJvHttpUrlGrabberDefaultProperties.Referer
+<COMBINE TJvHttpUrlGrabber.Referer>
 
 
 ----------------------------------------------------------------------------------------------------

@@ -59,7 +59,6 @@ type
   protected
     FPassiveFTP: Boolean;
     FMode: TJvFtpDownloadMode;
-    FSize: Int64;
     function GetGrabberThreadClass: TJvCustomUrlGrabberThreadClass; override;
   public
     constructor Create(AOwner: TComponent); overload; override;
@@ -67,7 +66,6 @@ type
     class function CanGrab(const Url: string): Boolean; override;
     class function GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass; override;
     class function GetSupportedURLName: string; override;
-    property Size: Int64 read FSize;
   published
     property Passive: Boolean read FPassiveFTP write FPassiveFTP default True;
     property Mode: TJvFtpDownloadMode read FMode write FMode default hmBinary;
@@ -108,6 +106,8 @@ type
 
   // A grabber for HTTP URLs
   TJvHttpUrlGrabber = class(TJvCustomUrlGrabber)
+  private
+    FReferer: string;
   protected
     function GetGrabberThreadClass: TJvCustomUrlGrabberThreadClass; override;
   public
@@ -116,6 +116,8 @@ type
     class function GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass; override;
     class function GetSupportedURLName: string; override;
   published
+    property Referer: string read FReferer write FReferer;
+
     property UserName;
     property Password;
     property FileName;
@@ -142,9 +144,13 @@ type
   end;
 
   TJvHttpUrlGrabberDefaultProperties = class(TJvCustomUrlGrabberDefaultProperties)
+  private
+    FReferer: string;
   protected
     function GetSupportedURLName: string; override;
   published
+    property Referer: string read FReferer write FReferer;
+
     property Agent;
     property UserName;
     property Password;
@@ -152,7 +158,6 @@ type
 
   TJvHttpUrlGrabberThread = class(TJvCustomUrlGrabberThread)
   protected
-    FReferer: string;
     FContinue: Boolean;
     function GetGrabber: TJvHttpUrlGrabber;
     procedure Execute; override;
@@ -361,13 +366,12 @@ var
   hSession, hHostConnection, hDownload: HINTERNET;
   HostName, FileName: string;
   UserName, Password: PChar;
-  BytesRead, TotalBytes: DWORD;
+  LocalBytesRead, TotalBytes: DWORD;
   Buf: array[0..1023] of Byte;
   dwFileSizeHigh: DWORD;
   Buffer: Pointer;
   dwBufLen, dwIndex: DWORD;
 begin
-  // (rom) secure thread against exceptions
   Grabber.FStream := nil;
   hSession := nil;
   hHostConnection := nil;
@@ -431,20 +435,20 @@ begin
       Grabber.FStream := TMemoryStream.Create;
 
       TotalBytes := 0;
-      BytesRead := 1;
-      while (BytesRead <> 0) and not Terminated do // acp
+      LocalBytesRead := 1;
+      while (LocalBytesRead <> 0) and not Terminated and FContinue do // acp
       begin
-        if not InternetReadFile(hDownload, @Buf, SizeOf(Buf), BytesRead) then
-          BytesRead := 0
+        if not InternetReadFile(hDownload, @Buf, SizeOf(Buf), LocalBytesRead) then
+          LocalBytesRead := 0
         else
         begin
-          Inc(TotalBytes, BytesRead);
+          Inc(TotalBytes, LocalBytesRead);
           Grabber.FBytesRead := TotalBytes;
-          Grabber.FStream.Write(Buf, BytesRead);
-          Synchronize(Progress);
+          Grabber.FStream.Write(Buf, LocalBytesRead);
+          DoProgress;
         end;
       end;
-      if not Terminated then // acp
+      if not Terminated and FContinue then // acp
         Synchronize(Ended);
     except
     end;
@@ -497,7 +501,6 @@ var
   Buf: array[0..1024] of Byte;
 
 begin
-  // (rom) secure thread against exceptions
   Buffer := nil;
 
   Grabber.FStream := nil;
@@ -545,7 +548,7 @@ begin
       InternetSetStatusCallback(hHostConnection, PFNInternetStatusCallback(@DownloadCallBack));
       //Request the file
       // (rom) any difference here?
-      hDownload := HttpOpenRequest(hHostConnection, 'GET', PChar(FileName), 'HTTP/1.0', PChar(FReferer),
+      hDownload := HttpOpenRequest(hHostConnection, 'GET', PChar(FileName), 'HTTP/1.0', PChar(Grabber.Referer),
         nil, INTERNET_FLAG_RELOAD, 0);
       //      FCriticalSection.Leave;
 
@@ -567,15 +570,15 @@ begin
       GetMem(Buffer, dwBufLen);
       HasSize := HttpQueryInfo(hDownload, HTTP_QUERY_CONTENT_LENGTH, Buffer, dwBufLen, dwIndex);
       if HasSize then
-        Grabber.FTotalBytes := StrToInt(StrPas(Buffer))
+        Grabber.FSize := StrToInt(StrPas(Buffer))
       else
-        Grabber.FTotalBytes := 0;
+        Grabber.FSize := 0;
 
       dwTotalBytes := 0;
       if HasSize then
       begin
         dwBytesRead := 1;
-        while (dwBytesRead > 0) and not Terminated do
+        while (dwBytesRead > 0) and not Terminated and FContinue do
         begin
           if not InternetReadFile(hDownload, @Buf, SizeOf(Buf), dwBytesRead) then
             dwBytesRead := 0
@@ -584,7 +587,7 @@ begin
             Inc(dwTotalBytes, dwBytesRead);
             Grabber.FBytesRead := dwTotalBytes;
             Grabber.FStream.Write(Buf, dwBytesRead);
-            Synchronize(Progress);
+            DoProgress;
           end;
         end;
         if FContinue and not Terminated then
@@ -701,13 +704,13 @@ begin
     Grabber.FStream := TMemoryStream.Create;
     AFileStream := TFileStream.Create(Filename, fmOpenRead or fmShareDenyNone);
     try
-      Grabber.FTotalBytes := AFileStream.Size;
+      Grabber.FSize := AFileStream.Size;
       Grabber.FBytesRead := 0;
       FStatus    := 0;
-      Synchronize(Progress);
+      DoProgress;
       TotalBytes := 0;
       BytesRead := 1;
-      while (BytesRead <> 0) and not Terminated do
+      while (BytesRead <> 0) and not Terminated and FContinue do
       begin
         BytesRead := AFileStream.Read(Buf, sizeof(Buf));
         Inc(TotalBytes, BytesRead);
@@ -715,9 +718,9 @@ begin
         FStatus    := Grabber.FBytesRead;
         if BytesRead > 0 then
           Grabber.FStream.Write(Buf, BytesRead);
-        Synchronize(Progress);
+        DoProgress;
       end;
-      if not Terminated then // acp
+      if not Terminated and FContinue then // acp
         Synchronize(Ended);
       if Grabber.FPreserveAttributes and FileExists(Grabber.Filename) then
         SetFileAttributes(PChar(Grabber.Filename), Attrs);
