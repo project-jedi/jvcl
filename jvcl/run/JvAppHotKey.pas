@@ -29,10 +29,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvAppHotKey;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvAppHotKey;
 
 interface
 

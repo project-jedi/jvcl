@@ -25,10 +25,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvAppRegistryStorage;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvAppRegistryStorage;
 
 interface
 

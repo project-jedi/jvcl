@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvBandForms;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvBandForms;
 
 interface
 

@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvBackgrounds;
+
 {$I jedi.inc}
 {$I windowsonly.inc}
-
-unit JvBackgrounds;
 
 interface
 

@@ -36,9 +36,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvBehaviorLabel;
+
+{$I jvcl.inc}
 
 interface
 

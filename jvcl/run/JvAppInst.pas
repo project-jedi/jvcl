@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvAppInst;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvAppInst;
 
 interface
 

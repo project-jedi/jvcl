@@ -24,13 +24,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
-{$IFDEF COMPILER6_UP}
-{$WARN SYMBOL_PLATFORM OFF} // TSearchRec.FindData
-{$ENDIF COMPILER6_UP}
-
 unit JvBaseThumbnail;
+
+{$I jvcl.inc}
+{$I crossplatform.inc}
 
 interface
 

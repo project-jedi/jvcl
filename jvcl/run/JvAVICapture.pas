@@ -33,10 +33,10 @@ Known Issues: none known
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvAVICapture;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvAVICapture;
 
 interface
 

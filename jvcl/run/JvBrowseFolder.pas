@@ -26,10 +26,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvBrowseFolder;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvBrowseFolder;
 
 interface
 
