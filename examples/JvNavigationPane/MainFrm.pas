@@ -5,7 +5,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, CheckLst, JvComponent, JvNavigationPane, ImgList, Menus;
+  Dialogs, StdCtrls, JvOutlookBar, ComCtrls, CheckLst, JvComponent, JvNavigationPane, ImgList, Menus,
+  JvPageList, JvExControls;
 
 type
   TForm1 = class(TForm)
@@ -51,7 +52,15 @@ var
   GH:TJvNavPanelHeader;
   N:TTreeNode;
   R:TRect;
+  function StripAccel(const S:string):string;
+  begin
+    // quick and dirty ;-)
+    Result := StringReplace(S, '&&', #1, [rfReplaceAll]);
+    Result := StringReplace(Result, '&', '', [rfReplaceAll]);
+    Result := StringReplace(Result, #1, '&', [rfReplaceAll]);
+  end;
 begin
+
   JvNavPaneStyleManager1.Theme := nptCustom;
   // this is how to create a NavPane at run-time
   // also shows how to create and insert pages as well as controls on pages
@@ -68,7 +77,7 @@ begin
   NP.StyleManager := JvNavPaneStyleManager1;
 
   Page := TJvNavPanelPage.Create(Self);
-  Page.Caption := 'Mail';
+  Page.Caption := '&Mail';
   Page.ImageIndex := 0;
   Page.PageList := NP;
   GH := TJvNavPanelHeader.Create(Self);
@@ -76,7 +85,7 @@ begin
   GH.Align := alTop;
   GH.Images := SmallImages;
   GH.ImageIndex := -1;
-  GH.Caption := Page.Caption;
+  GH.Caption := StripAccel(Page.Caption);
   GH.StyleManager := JvNavPaneStyleManager1;
   // use a button here instad of the icon:
   with TJvNavIconButton.Create(Self) do
@@ -150,13 +159,13 @@ begin
   end;
 
   Page := TJvNavPanelPage.Create(Self);
-  Page.Caption := 'Calendar';
+  Page.Caption := '&Calendar';
   Page.ImageIndex := 1;
   Page.PageList := NP;
   GH := TJvNavPanelHeader.Create(Self);
   GH.Parent := Page;
   GH.Align := alTop;
-  GH.Caption := Page.Caption;
+  GH.Caption := StripAccel(Page.Caption);
   GH.Images := SmallImages;
   GH.ImageIndex := Page.ImageIndex;
   GH.StyleManager := JvNavPaneStyleManager1;
@@ -235,13 +244,13 @@ begin
   end;
 
   Page := TJvNavPanelPage.Create(Self);
-  Page.Caption := 'Contacts';
+  Page.Caption := 'C&ontacts';
   Page.ImageIndex := 2;
   Page.PageList := NP;
   GH := TJvNavPanelHeader.Create(Self);
   GH.Parent := Page;
   GH.Align := alTop;
-  GH.Caption := Page.Caption;
+  GH.Caption := StripAccel(Page.Caption);
   GH.Images := SmallImages;
   GH.ImageIndex := Page.ImageIndex;
   GH.StyleManager := JvNavPaneStyleManager1;
@@ -278,38 +287,38 @@ begin
 
 
   Page := TJvNavPanelPage.Create(Self);
-  Page.Caption := 'Tasks';
+  Page.Caption := '&Tasks';
   Page.ImageIndex := 3;
   Page.PageList := NP;
   GH := TJvNavPanelHeader.Create(Self);
   GH.Parent := Page;
   GH.Align := alTop;
-  GH.Caption := Page.Caption;
+  GH.Caption := StripAccel(Page.Caption);
   GH.Images := SmallImages;
   GH.ImageIndex := Page.ImageIndex;
   GH.StyleManager := JvNavPaneStyleManager1;
 
   Page := TJvNavPanelPage.Create(Self);
-  Page.Caption := 'Notes';
+  Page.Caption := '&Notes';
   Page.ImageIndex := 4;
   Page.PageList := NP;
   GH := TJvNavPanelHeader.Create(Self);
   GH.Parent := Page;
   GH.Align := alTop;
-  GH.Caption := Page.Caption;
+  GH.Caption := StripAccel(Page.Caption);
   GH.Images := SmallImages;
   GH.ImageIndex := Page.ImageIndex;
   GH.StyleManager := JvNavPaneStyleManager1;
 
 
   Page := TJvNavPanelPage.Create(Self);
-  Page.Caption := 'Folder List';
+  Page.Caption := '&Folder List';
   Page.ImageIndex := 5;
   Page.PageList := NP;
   GH := TJvNavPanelHeader.Create(Self);
   GH.Parent := Page;
   GH.Align := alTop;
-  GH.Caption := Page.Caption;
+  GH.Caption := StripAccel(Page.Caption);
   GH.Images := SmallImages;
   GH.ImageIndex := Page.ImageIndex;
   GH.StyleManager := JvNavPaneStyleManager1;
