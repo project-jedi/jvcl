@@ -488,7 +488,7 @@ begin
         SendMessage(FActiveList.Handle, WM_LBUTTONDOWN, 0, Integer(MousePos));
         {$ENDIF VCL}
         {$IFDEF VisualCLX}
-        TOpenWidgetControl(FActiveList).Mousdown( mbLeft, Shift, MousePos.X , MousePos.Y);
+        TOpenWidgetControl(FActiveList).MouseDown(mbLeft, Shift, MousePos.X , MousePos.Y);
         {$ENDIF VisualCLX}
         Exit;
       end;
