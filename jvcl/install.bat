@@ -1,7 +1,7 @@
 @echo off
 
 cd install\JVCL3Install
-dcc32 -$O+ -Q JVCL3Install.dpr -E..\packages
+dcc32 -$O+ -Q JVCL3Install.dpr -E..\..\packages
 cd ..\..
 
 if NOT EXIST packages\JVCL3Install.exe goto error
