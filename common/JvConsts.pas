@@ -32,10 +32,10 @@ interface
 uses
   SysUtils,
   {$IFDEF VCL}
-  Controls;
+  Controls, Graphics, Windows;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls;
+  QControls, QGraphics;
   {$ENDIF VisualCLX}
 
 const
