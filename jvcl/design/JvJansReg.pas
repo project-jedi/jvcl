@@ -10,12 +10,7 @@ uses
   Classes, Controls,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
-  {$IFDEF VCL}
   VCLEditors,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  CLXEditors,
-  {$ENDIF VisualCLX}
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
@@ -27,7 +22,7 @@ uses
   JvYearGrid, JvTracker, JvAirBrush, JvGridFilter, JvGridPrinter,
   JvArrayButton, JvForth, JvTurtle, JvPaintFX, JvDrawImage,
   JvBitmapButton, JvSimScope, JvSimIndicator, JvSimPID, JvSIMPIDLinker,
-  JvSimLogic, JvSpellerForm, JvCSVBaseControls, JvCSVBaseEditor;
+  JvSimLogic, JvSpellerForm, JvCSVBaseControls, JvCsvBaseEditor;
 
 procedure Register;
 

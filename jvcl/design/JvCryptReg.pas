@@ -29,6 +29,10 @@ unit JvCryptReg;
 
 interface
 
+{$IFDEF MSWINDOWS}
+{$DEFINE USEWINDOWS}
+{$ENDIF MSWINDOWS}
+
 procedure Register;
 
 implementation
@@ -36,9 +40,9 @@ implementation
 uses
   Classes,
   JvZlibMultiple,
-  {$IFDEF MSWINDOWS}
+  {$IFDEF USEWINDOWS}
   JvCabFile,
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
   JvDsgnConsts,
   JvCipher, JvGenetic, JvSerialMaker;
 
@@ -53,9 +57,9 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteEncryptCompress, [TJvVigenereCipher,
     TJvXORCipher, TJvCaesarCipher, TJvGenetic,
-    {$IFDEF MSWINDOWS}
+    {$IFDEF USEWINDOWS}
     TJvCABFile,
-    {$ENDIF MSWINDOWS}
+    {$ENDIF USEWINDOWS}
     TJvZlibMultiple,
     TJvSerialMaker]);
 end;

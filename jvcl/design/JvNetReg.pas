@@ -29,6 +29,11 @@ unit JvNetReg;
 
 interface
 
+{$IFDEF MSWINDOWS}
+{$DEFINE USEWINDOWS}
+{$ENDIF MSWINDOWS}
+
+
 procedure Register;
 
 implementation
@@ -40,14 +45,13 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF MSWINDOWS}
-  JvMail, JvMailEditor,
-  JvUrlListGrabber, JvUrlGrabbers, JvUrlListGrabberEditors,
-  {$ENDIF MSWINDOWS}
-  JvHtmlParser, JvHtmlParserEditor,
   {$IFDEF VCL}
-  JvRichEditToHTML,
+  JvRichEditToHTML, JvMail, JvMailEditor,
   {$ENDIF VCL}
+  {$IFDEF USEWINDOWS}
+  JvUrlListGrabber, JvUrlGrabbers, JvUrlListGrabberEditors,
+  {$ENDIF USEWINDOWS}
+  JvHtmlParser, JvHtmlParserEditor,
   JvTypes, JvDsgnConsts,
   JvStringListToHtml, JvFormToHtml, JvRgbToHtml, JvStrToHtml;
 
@@ -61,19 +65,22 @@ uses
 procedure Register;
 begin
   RegisterComponents(RsPaletteInterNetWork, [
-    {$IFDEF MSWINDOWS}
+    {$IFDEF USEWINDOWS}
     TJvFTPURLGrabber, TJvHTTPURLGrabber,
-    TJvLocalFileURLGrabber, TJvMail,
-    {$ENDIF MSWINDOWS}
+    TJvLocalFileURLGrabber,
+    {$ENDIF USEWINDOWS}
+    {$IFDEF VCL}
+    TJvMail,
+    {$ENDIF VCL}
     TJvHTMLParser,
     {$IFDEF VCL}
     TJvRichEditToHTML,
     {$ENDIF VCL}
-    {$IFDEF MSWINDOWS}
+    {$IFDEF USEWINDOWS}
     TJvUrlListGrabber,
-    {$ENDIF MSWINDOWS}
+    {$ENDIF USEWINDOWS}
     TJvStrToHTML, TJvStringListToHTML, TJvFormToHTML, TJvRGBToHTML]);
-  {$IFDEF MSWINDOWS}
+  {$IFDEF USEWINDOWS}
   RegisterPropertyEditor(TypeInfo(TJvParserInfoList),
     TJvHTMLParser, 'Parser', TJvHTMLParserEditor);
   RegisterPropertyEditor(TypeInfo(TJvUrlGrabberIndex),
@@ -85,7 +92,7 @@ begin
   {$IFDEF VCL}
   RegisterComponentEditor(TJvMail, TJvMailEditor);
   {$ENDIF VCL}
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
 end;
 
 end.

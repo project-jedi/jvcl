@@ -34,23 +34,21 @@ procedure Register;
 implementation
 
 uses
-  Classes,
-  {$IFDEF VCL}
-  Graphics,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, Types,
-  {$ENDIF VisualCLX}
+  Classes, Graphics,
   {$IFDEF COMPILER6_UP}
   DesignIntf,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
+  {$IFDEF VCL}
+  JvFormMagnet, JvFormTransparent, JvAppHotKey, JvGradientCaptionForm,
+  JvGradientCaption,
+  {$ENDIF VCL}
   JvDsgnConsts,
-  JvAppAnimatedIcon, JvAppEvent, JvAppHotKey, JvFormTransparent,
+  JvAppAnimatedIcon, JvAppEvent,
   JvFormAnimatedIcon, JvFormAnimation, JvFormWallpaper,
-  JvFormMagnet, JvAnimTitle, JvFormAutoSize, JvGradientCaption,
-  JvGradientCaptionForm, JvFormWallpaperEditor;
+  JvAnimTitle, JvFormAutoSize,
+  JvFormWallpaperEditor;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvAppFrmReg.dcr}
@@ -62,8 +60,19 @@ uses
 procedure Register;
 begin
   RegisterComponents(RsPaletteAppForm,
-    [TJvAppEvents, TJvAppAnimatedIcon, TJvFormAnimatedIcon, TJvApplicationHotKey, TJvTransparentForm,
-     TJvFormAnimation, TJvFormWallpaper, TJvFormMagnet, TJvFormAutoSize, TJvGradientCaption]);
+    [TJvAppEvents, TJvAppAnimatedIcon, TJvFormAnimatedIcon,
+      {$IFDEF VCL}
+      TJvApplicationHotKey, TJvTransparentForm,
+      {$ENDIF VCL}
+      TJvFormAnimation, TJvFormWallpaper,
+      {$IFDEF VCL}
+      TJvFormMagnet,
+      {$ENDIF VCL}
+      TJvFormAutoSize
+      {$IFDEF VCL}
+      , TJvGradientCaption
+      {$ENDIF VCL}
+      ]);
 
   RegisterComponentEditor(TJvGradientCaption, TGradientCaptionEditor);
 //  RegisterPropertyEditor(TypeInfo(TPicture), TJvFormWallpaper, 'Image', TJvFormWallpaperEditor);
