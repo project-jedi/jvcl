@@ -81,7 +81,7 @@ begin
   InspCat.DisplayName := 'JvInspector Settings';
   for I := Low(PropArray) to High(PropArray) do
     TJvInspectorPropData.New(InspCat, JvInspector1, GetPropInfo(JvInspector1, PropArray[I, 0])).DisplayName := PropArray[I, 1];
-  TJvInspectorVarData.New(InspCat, 'AboutJVCL', TypeInfo(string), VerInfoStr).DisplayName := 'About JVCL';
+  TJvInspectorVarData.New(InspCat, 'AboutJVCL', TypeInfo(string), @VerInfoStr).DisplayName := 'About JVCL';
   InspCat.Expanded := True;
 end;
 
@@ -122,9 +122,9 @@ begin
   InspCat := TJvInspectorCustomCategoryItem.Create(JvInspector1.Root, nil);
   InspCat.DisplayName := 'Compound items test (variable or heap data).';
   CompItem := TJvInspectorCompoundItem.Create(InspCat, nil);
-  CompItem.AddColumn(TJvInspectorVarData.New(CompItem, 'First', TypeInfo(string), FirstName));
-  CompItem.AddColumn(TJvInspectorVarData.New(CompItem, 'Initial', TypeInfo(string), Initial));
-  CompItem.AddColumn(TJvInspectorVarData.New(CompItem, 'Last', TypeInfo(string), LastName));
+  CompItem.AddColumn(TJvInspectorVarData.New(CompItem, 'First', TypeInfo(string), @FirstName));
+  CompItem.AddColumn(TJvInspectorVarData.New(CompItem, 'Initial', TypeInfo(string), @Initial));
+  CompItem.AddColumn(TJvInspectorVarData.New(CompItem, 'Last', TypeInfo(string), @LastName));
   CompItem.Columns[0].Width := 25;
   CompItem.Columns[1].Width := 15;
 end;
@@ -169,20 +169,20 @@ var
 begin
   InspCat := TJvInspectorCustomCategoryItem.Create(JvInspector1.Root, nil);
   InspCat.DisplayName := 'Various tests.';
-  TJvInspectorVarData.New(InspCat, 'Date/time', TypeInfo(TDateTime), ADate);
+  TJvInspectorVarData.New(InspCat, 'Date/time', TypeInfo(TDateTime), @ADate);
   { Duplicate the columns of the compound items test. This will return the same data instance as
     used by the columns; a new item will be added to it. We change the name of this item, but the
     name of the data instance and the columns remain what they were. If we would change the Name
     of the data instance, this will result in all items that have the same name as the data instance
     to be renamed as well. }
-  TJvInspectorVarData.New(InspCat, 'First', TypeInfo(string), FirstName).DisplayName := 'Copy of first name';
-  TJvInspectorVarData.New(InspCat, 'Initial', TypeInfo(string), Initial).DisplayName := 'Copy of initial';
-  TJvInspectorVarData.New(InspCat, 'Last', TypeInfo(string), LastName).DisplayName := 'Copy of last name';
+  TJvInspectorVarData.New(InspCat, 'First', TypeInfo(string), @FirstName).DisplayName := 'Copy of first name';
+  TJvInspectorVarData.New(InspCat, 'Initial', TypeInfo(string), @Initial).DisplayName := 'Copy of initial';
+  TJvInspectorVarData.New(InspCat, 'Last', TypeInfo(string), @LastName).DisplayName := 'Copy of last name';
 
   { Add an ImageIndex test item }
-  NewItem := TJvInspectorVarData.New(InspCat, 'ImageIndex', TypeInfo(TImageIndex), ImgIdx);
+  NewItem := TJvInspectorVarData.New(InspCat, 'ImageIndex', TypeInfo(TImageIndex), @ImgIdx);
   if NewItem is TJvInspectorTImageIndexItem then
-    (NewItem as TJvInspectorTImageIndexItem).ImageList := TestImageList;
+    (NewItem as TJvInspectorTImageIndexItem).Images := TestImageList;
 //  NewItem.RowSizing.MinHeight := 24;
 
   InspCat.Expanded := True;
