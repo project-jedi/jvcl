@@ -166,9 +166,9 @@ type
 
 function ShiftStateToKeyData(Shift: TShiftState): Longint;
 
-function InheritMsg(Instance: TControl; Msg: Integer; WParam, LParam: Integer): Integer; overload;
+function InheritMsgEx(Instance: TControl; Msg: Integer; WParam, LParam: Integer): Integer; overload;
 function InheritMsg(Instance: TControl; Msg: Integer): Integer; overload;
-procedure InheritMsg(Instance: TControl; var Msg: TMessage); overload;
+procedure InheritMessage(Instance: TControl; var Msg: TMessage); overload;
 procedure DispatchMsg(Instance: TControl; var Msg);
 
 procedure Control_ControlsListChanging(Instance: TControl; Control: TControl;
@@ -179,6 +179,11 @@ procedure Control_ControlsListChanged(Instance: TControl; Control: TControl;
 {$IFDEF COMPILER5}
 procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
 {$ENDIF COMPILER5}
+
+// jump targets:
+
+function JvExDoPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
+
 
 {$ENDIF VCL}
 
@@ -259,7 +264,7 @@ begin
 end;
 
 
-function InheritMsg(Instance: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
+function InheritMsgEx(Instance: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
 var
   Mesg: TMessage;
 begin
@@ -267,16 +272,16 @@ begin
   Mesg.WParam := WParam;
   Mesg.LParam := LParam;
   Mesg.Result := 0;
-  InheritMsg(Instance, Mesg);
+  InheritMessage(Instance, Mesg);
   Result := Mesg.Result;
 end;
 
 function InheritMsg(Instance: TControl; Msg: Integer): Integer;
 begin
-  Result := InheritMsg(Instance, Msg, 0, 0);
+  Result := InheritMsgEx(Instance, Msg, 0, 0);
 end;
 
-procedure InheritMsg(Instance: TControl; var Msg: TMessage);
+procedure InheritMessage(Instance: TControl; var Msg: TMessage);
 type
   TDispatchMethod = procedure(Self: TObject; var Msg: TMessage);
 var
@@ -378,12 +383,11 @@ begin
                 ControlsListChanging(TControl(PMsg^.WParam), False)
               else
                 ControlsListChanged(TControl(PMsg^.WParam), True);
-
             WM_GETDLGCODE:
               begin
                 Helper := TFreeNotificationHelper.Create(Instance, @IntfWinControl);
                 try
-                  InheritMsg(Instance, PMsg^);
+                  InheritMessage(Instance, PMsg^);
 
                   DlgCodes := [dcNative];
                   if PMsg^.Result and DLGC_WANTARROWS <> 0 then
@@ -424,7 +428,7 @@ begin
               begin
                 Helper := TFreeNotificationHelper.Create(Instance, @IntfWinControl);
                 try
-                  InheritMsg(Instance, PMsg^);
+                  InheritMessage(Instance, PMsg^);
                   if Helper.IsValid then
                     DoSetFocus(HWND(PMsg^.WParam));
                 finally
@@ -435,7 +439,7 @@ begin
               begin
                 Helper := TFreeNotificationHelper.Create(Instance, @IntfWinControl);
                 try
-                  InheritMsg(Instance, PMsg^);
+                  InheritMessage(Instance, PMsg^);
                   if Helper.IsValid then
                     DoKillFocus(HWND(PMsg^.WParam));
                 finally
@@ -446,7 +450,7 @@ begin
               begin
                 DoBoundsChanged;
                 IntfWinControl := nil;
-                InheritMsg(Instance, PMsg^);
+                InheritMessage(Instance, PMsg^);
               end;
           WM_ERASEBKGND:
             begin
@@ -498,7 +502,7 @@ begin
   end;
 
   if CallInherited then
-    InheritMsg(Instance, PMsg^);
+    InheritMessage(Instance, PMsg^);
 end;
 
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in an other order than
@@ -507,21 +511,32 @@ procedure Control_ControlsListChanging(Instance: TControl; Control: TControl;
   Inserting: Boolean);
 begin
   if Inserting then
-    InheritMsg(Instance, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    InheritMsgEx(Instance, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
   else
-    InheritMsg(Instance, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+    InheritMsgEx(Instance, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
 
 procedure Control_ControlsListChanged(Instance: TControl; Control: TControl;
   Inserting: Boolean);
 begin
   if not Inserting then
-    InheritMsg(Instance, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    InheritMsgEx(Instance, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
   else
-    InheritMsg(Instance, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+    InheritMsgEx(Instance, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
 
 {$ENDIF VCL}
+
+function JvExDoPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  {$IFDEF VCL}
+  Result := InheritMsgEx(Instance, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Result := False; // Qt allways paints the background
+  {$ENDIF VisualCLX}
+end;
+
 
 {$IFDEF VisualCLX}
 
@@ -679,7 +694,7 @@ end;
 procedure TCustomEdit_Undo(Instance: TWinControl);
 begin
   {$IFDEF VCL}
-  InheritMsg(Instance, WM_UNDO, 0, 0);
+  InheritMsg(Instance, WM_UNDO);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   if Instance is TCustomMemo then
@@ -693,7 +708,7 @@ end;
 procedure TCustomEdit_Copy(Instance: TWinControl);
 begin
   {$IFDEF VCL}
-  InheritMsg(Instance, WM_COPY, 0, 0);
+  InheritMsg(Instance, WM_COPY);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   if Instance is TCustomMemo then
@@ -707,7 +722,7 @@ end;
 procedure TCustomEdit_Cut(Instance: TWinControl);
 begin
   {$IFDEF VCL}
-  InheritMsg(Instance, WM_CUT, 0, 0);
+  InheritMsg(Instance, WM_CUT);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   if Instance is TCustomMemo then
@@ -745,7 +760,7 @@ procedure TCustomEdit_Paste(Instance: TWinControl);
   {$ENDIF VisualCLX}
 begin
   {$IFDEF VCL}
-  InheritMsg(Instance, WM_PASTE, 0, 0);
+  InheritMsg(Instance, WM_PASTE);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   if Instance is TCustomMemo then
