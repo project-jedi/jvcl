@@ -131,8 +131,6 @@ object FormMain: TFormMain
     Width = 185
     Height = 17
     Caption = '&Keep removed lines'
-    Checked = True
-    State = cbChecked
     TabOrder = 7
   end
   object CheckBoxUnixLineBreaks: TCheckBox
