@@ -17,8 +17,9 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 Feng Mingyu(Winston Feng), [winstonf@tom.com]
+Hans-Eric Grönlund
 
-Last Modified: 2003-09-28
+Last Modified: 2004-02-24
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -77,6 +78,7 @@ type
   TJvTrayIcon = class(TJvComponent)
   private
     FTaskbarRestartMsg: Cardinal;
+    FCurrentIcon: TIcon;
   protected
     FActive: Boolean;
     FIcon: TIcon;
@@ -95,7 +97,7 @@ type
     FDelay: Cardinal;
     FImgList: TImageList;
     FTimer: TTimer;
-    FNumber: Integer;
+    FIconIndex: Integer;
     FDropDown: TPopupMenu;
     FTask: Boolean;
     FRegisterServiceProcess: TRegisterServiceProcess;
@@ -124,7 +126,7 @@ type
     procedure SetDelay(const Value: Cardinal);
     procedure SetImgList(const Value: TImageList);
     procedure SetTask(const Value: Boolean);
-    procedure SetNumber(const Value: Integer);
+    procedure SetIconIndex(const Value: Integer);
     procedure SetVisibility(const Value: TTrayVisibilities);
     procedure Hook;
     procedure UnHook;
@@ -135,6 +137,10 @@ type
     procedure DoDoubleClick(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     function ApplicationHook(var Msg: TMessage): Boolean;
     function NotifyIcon(dwMessage: DWORD): boolean;
+    procedure SetCurrentIcon(Value: TIcon); //HEG: New
+    procedure IconPropertyChanged; //HEG: New
+    procedure ActivePropertyChanged; //HEG: New
+    procedure Loaded; override; //HEG: New
 
     property ApplicationVisible: Boolean read FApplicationVisible write SetApplicationVisible default True;
     property VisibleInTaskList: Boolean read FTask write SetTask default True;
@@ -142,6 +148,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property CurrentIcon: TIcon read FCurrentIcon write SetCurrentIcon;
     procedure DoCheckCrash;
     procedure HideApplication;
     procedure ShowApplication;
@@ -149,12 +156,12 @@ type
       TBalloonType = btNone; Delay: Integer = 5000; CancelPrevious: boolean = false);
     function AcceptBalloons: Boolean;
   published
-    { (rb) Active should be set in Loaded; Icon isn't set when Active is now
+    { HEG: Done: (rb) Active should be set in Loaded; Icon isn't set when Active is now
       set to True etc. }
     property Active: Boolean read FActive write SetActive default False;
     property Animated: Boolean read FAnimated write SetAnimated default False;
     property Icon: TIcon read FIcon write SetIcon;
-    property IconIndex: Integer read FNumber write SetNumber;
+    property IconIndex: Integer read FIconIndex write SetIconIndex;
     property Icons: TImageList read FImgList write SetImgList;
     property Hint: string read FHint write SetHint;
     property DropDownMenu: TPopupMenu read FDropDown write FDropDown;
@@ -174,10 +181,12 @@ type
     property OnBalloonClick: TNotifyEvent read FOnBalloonClick write FOnBalloonClick;
   end;
 
+
 implementation
 
 uses
   JvJCLUtils, JvJVCLUtils;
+
 
 const
   WM_CALLBACKMESSAGE = WM_USER + 1;
@@ -224,6 +233,7 @@ begin
   inherited Create(AOwner);
   FIcon := TIcon.Create;
   FIcon.OnChange := IconChanged;
+  FCurrentIcon := TIcon.Create;
   FApplicationVisible := True;
   FSnap := False;
   FHandle := AllocateHWndEx(WndProc);
@@ -231,7 +241,7 @@ begin
   FVisibility := [tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide];
   FAnimated := False;
   FDelay := 100;
-  FNumber := 0;
+  FIconIndex := 0;
   FActive := False;
   FTask := True;
 
@@ -262,6 +272,7 @@ begin
   FBalloonCloser.Enabled := false;
   FBalloonCloser.Free;
   FIcon.Free;
+  FCurrentIcon.Free;
   DeallocateHWndEx(FHandle);
 
   if not (csDesigning in ComponentState) then
@@ -393,11 +404,7 @@ end;
 
 procedure TJvTrayIcon.IconChanged(Sender: TObject);
 begin
-  //DoCheckCrash;
-  with FIconData do
-    hIcon := FIcon.Handle;
-  if FActive then
-    NotifyIcon(NIM_MODIFY);
+  IconPropertyChanged;
 end;
 
 procedure TJvTrayIcon.SetHint(Value: string);
@@ -410,61 +417,53 @@ begin
     FHint := Value;
 end;
 
-procedure TJvTrayIcon.SetIcon(Icon: TIcon);
+//HEG: New
+procedure TJvTrayIcon.SetCurrentIcon(Value: TIcon);
 begin
-  //DoCheckCrash;
-  FIcon.Assign(Icon);
-  with FIconData do
-    hIcon := FIcon.Handle;
-  if FActive then
+  FCurrentIcon.Assign(Value);
+  FIconData.hIcon := FCurrentIcon.Handle;
+  if FActive and not (csLoading in ComponentState) then
     NotifyIcon(NIM_MODIFY);
 end;
 
-procedure TJvTrayIcon.SetActive(Value: Boolean);
-//http://msdn.microsoft.com/library/default.asp?url=/library/en-us/shellcc/platform/Shell/Structures/NOTIFYICONDATA.asp
+//HEG: New
+procedure TJvTrayIcon.IconPropertyChanged;
+var
+  Ico: TIcon;
 begin
-  if Value then
-    Hook
-  else
-    UnHook;
-
-  if Value and ((not (csDesigning in ComponentState)) or (tvVisibleDesign in Visibility)) then
+  if not (csLoading in ComponentState) then
   begin
-    FOldTray := FindWindow('Shell_TrayWnd', nil);
-
-    if (FIcon = nil) or FIcon.Empty then
-    { (rb) This triggers the IconChanged event, note that Active is loaded
-    before Icon from the stream, thus FIcon is always empty at this
-    point when loaded from the dfm stream }
-      FIcon.Assign(Application.Icon);
-    with FIconData do
+    if (FImglist <> nil) and (FIconIndex >= 0) and (FIconIndex < FImgList.Count) then
     begin
-      if AcceptBalloons then
-      begin
-        cbSize := SizeOf(FIconData);
-        FIconData.uTimeOut := NOTIFYICON_VERSION;
-      end
-      else
-        cbSize := SizeOf(TNotifyIconData);
-      Wnd := FHandle;
-      uId := 1;
-      uCallBackMessage := WM_CALLBACKMESSAGE;
-      if FIcon <> nil then
-        hIcon := FIcon.Handle
-      else
-        FIcon := Application.Icon;
-      StrPLCopy(szTip, GetShortHint(FHint), SizeOf(szTip) - 1);
-      uFlags := NIF_MESSAGE or NIF_ICON or NIF_INFO or NIF_TIP;
-    end;
-    if not ((tvAutoHideIcon in Visibility) and (Application.MainForm <> nil) and Application.MainForm.Visible) then
-      NotifyIcon(NIM_ADD);
-    if AcceptBalloons then
-      NotifyIcon(NIM_SETVERSION);
-  end
-  else
-    NotifyIcon(NIM_DELETE);
+      Ico := TIcon.Create;
+      try
+        FIconData.uFlags := NIF_MESSAGE or NIF_ICON or NIF_TIP;
+        FImgList.GetIcon(FIconIndex, Ico);
+        SetCurrentIcon(Ico);
+      finally
+        Ico.Free;
+      end;
+    end
+    else if Assigned(Icon) and (not Icon.Empty) then
+      SetCurrentIcon(Icon)
+    else
+      SetCurrentIcon(Application.Icon);
+  end;
+end;
 
-  FActive := Value;
+procedure TJvTrayIcon.SetIcon(Icon: TIcon);
+begin
+  FIcon.Assign(Icon);
+  IconPropertyChanged;
+end;
+
+procedure TJvTrayIcon.SetActive(Value: Boolean);
+begin
+  if FActive <> Value then
+  begin
+    FActive := Value;
+    ActivePropertyChanged;
+  end;
 end;
 
 procedure TJvTrayIcon.SetApplicationVisible(Value: Boolean);
@@ -551,7 +550,11 @@ end;
 
 procedure TJvTrayIcon.SetImgList(const Value: TImageList);
 begin
-  FImgList := Value;
+  if FImgList <> Value then
+  begin
+    FImgList := Value;
+    IconPropertyChanged; //HEG: New
+  end;
 end;
 
 function TJvTrayIcon.GetSystemMinimumBalloonDelay: integer;
@@ -730,24 +733,13 @@ begin
   end;
 end;
 
-procedure TJvTrayIcon.SetNumber(const Value: Integer);
-var
-  Ico: TIcon;
+procedure TJvTrayIcon.SetIconIndex(const Value: Integer);
 begin
-  FNumber := Value;
-  if (FImglist <> nil) and (FNumber >= 0) and (FNumber < FImgList.Count) then
+  if FIconIndex <> Value then
   begin
-    Ico := TIcon.Create;
-    try
-      FIconData.uFlags := NIF_MESSAGE or NIF_ICON or NIF_TIP;
-      FImgList.GetIcon(FNumber, Ico);
-      SetIcon(Ico);
-    finally
-      Ico.Free;
-    end;
-  end
-  else
-    FNumber := -1;
+    FIconIndex := Value;
+    IconPropertyChanged;
+  end;
 end;
 
 procedure TJvTrayIcon.SetVisibility(const Value: TTrayVisibilities);
@@ -799,6 +791,62 @@ begin
       Result := Shell_NotifyIcon(NIM_ADD,@FIconData);
   end;
   }
+end;
+
+procedure TJvTrayIcon.Loaded;
+begin
+  inherited;
+  IconPropertyChanged;
+  ActivePropertyChanged;
+end;
+
+procedure TJvTrayIcon.ActivePropertyChanged;
+//http://msdn.microsoft.com/library/default.asp?url=/library/en-us/shellcc/platform/Shell/Structures/NOTIFYICONDATA.asp
+begin
+  if not (csLoading in ComponentState) then
+  begin
+    if Active then
+      Hook
+    else
+      UnHook;
+
+    if Active and ((not (csDesigning in ComponentState)) or (tvVisibleDesign in Visibility)) then
+    begin
+      FOldTray := FindWindow('Shell_TrayWnd', nil);
+
+      {HEG: Removed obsolete code
+      if (FIcon = nil) or FIcon.Empty then
+      // (rb) This triggers the IconChanged event, note that Active is loaded
+      //before Icon from the stream, thus FIcon is always empty at this
+      //point when loaded from the dfm stream }
+      //  FIcon.Assign(Application.Icon);}
+      with FIconData do
+      begin
+        if AcceptBalloons then
+        begin
+          cbSize := SizeOf(FIconData);
+          FIconData.uTimeOut := NOTIFYICON_VERSION;
+        end
+        else
+          cbSize := SizeOf(TNotifyIconData);
+        Wnd := FHandle;
+        uId := 1;
+        uCallBackMessage := WM_CALLBACKMESSAGE;
+        if CurrentIcon <> nil then
+          hIcon := CurrentIcon.Handle
+        else
+          CurrentIcon := Application.Icon;
+        StrPLCopy(szTip, GetShortHint(FHint), SizeOf(szTip) - 1);
+        uFlags := NIF_MESSAGE or NIF_ICON or NIF_INFO or NIF_TIP;
+      end;
+      if not ((tvAutoHideIcon in Visibility) and (Application.MainForm <> nil) and Application.MainForm.Visible) then
+        NotifyIcon(NIM_ADD);
+      if AcceptBalloons then
+        NotifyIcon(NIM_SETVERSION);
+    end
+    else
+      NotifyIcon(NIM_DELETE);
+  end;
 end;
 
 end.
