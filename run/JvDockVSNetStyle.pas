@@ -2046,9 +2046,13 @@ end;
 
 destructor TJvDockVSNetStyle.Destroy;
 begin
+  { Note that RemoveDockBaseControl can be called in the inherited Destroy call.
+    So we set FTimer to nil, and destroy FDockServerList after the inherited call.
+  }
   FTimer.Free;
-  FDockServerList.Free;
+  FTimer := nil;
   inherited Destroy;
+  FDockServerList.Free;
 end;
 
 procedure TJvDockVSNetStyle.AddDockBaseControl(ADockBaseControl: TJvDockBaseControl);
