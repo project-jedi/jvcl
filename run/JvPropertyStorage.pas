@@ -131,6 +131,7 @@ implementation
 uses
   JvJCLUtils;
 
+{
 const
   sCount = 'Count';
   sItem = 'Item%d';
@@ -143,6 +144,7 @@ function GetPropType(PropInfo: PPropInfo): PTypeInfo;
 begin
   Result := PropInfo^.PropType^;
 end;
+}
 
 //=== { TJvPropInfoList } ====================================================
 
