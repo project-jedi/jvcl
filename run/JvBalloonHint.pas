@@ -793,9 +793,9 @@ begin
   with TGlobalCtrl.Instance.MainCtrl do
   begin
     FShowIcon := (ahShowIconInHint in ApplicationHintOptions) and
-      (DefaultIcon <> ikNone) and
-      ((DefaultIcon <> ikCustom) or (DefaultImageIndex > -1));
-    FShowHeader := (ahShowHeaderInHint in ApplicationHintOptions) and (DefaultHeader > '');
+      (DefaultIcon <> ikNone) or
+      ((DefaultIcon = ikCustom) and (DefaultImageIndex > -1));
+    FShowHeader := (ahShowHeaderInHint in ApplicationHintOptions) and (DefaultHeader <> '');
     FHeader := DefaultHeader;
     FCurrentPosition := DefaultBalloonPosition;
   end;
