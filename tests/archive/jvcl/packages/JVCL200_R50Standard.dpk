@@ -313,7 +313,7 @@ contains
   JvStrUtils in '..\source\JvStrUtils.pas',
   JvFileUtil in '..\source\JvFileUtil.pas',
   JvTimer in '..\source\JvTimer.pas',
-  Jv4 in '..\source\JvHook.pas',
+  JvHook in '..\source\JvHook.pas',
   JvPlacemnt in '..\source\JvPlacemnt.pas',
   JvProps in '..\source\JvProps.pas',
   JvPrgrss in '..\source\JvPrgrss.pas',
