@@ -1813,7 +1813,7 @@ end;
 
 function TJvCustomComboEdit.GetDirectInput: Boolean;
 begin
-  Result := FDirectInput and not ReadOnly;
+  Result := FDirectInput;
 end;
 
 function TJvCustomComboEdit.GetGlyph: TBitmap;
