@@ -409,7 +409,7 @@ begin
     with TCheckBox(FCheckBox) do
     begin
       Parent := AForm;
-      SetBounds(20, 236, 127, 17);
+      SetBounds(20, 236, 144, 17);
       Caption := Self.CheckBoxText;
       Checked := toShowOnStartUp in Options;
     end;
@@ -512,7 +512,7 @@ begin
     with TCheckBox(FCheckBox) do
     begin
       Parent := AForm;
-      SetBounds(8, 225, 145, 17);
+      SetBounds(8, 225, 200, 17);
       Caption := Self.CheckBoxText;
       Checked := toShowOnStartUp in Options;
     end;
