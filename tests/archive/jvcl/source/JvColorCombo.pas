@@ -400,9 +400,16 @@ begin
     if (coCustomColors in FOptions) and (Items.Count > 0) then
       Items.Delete(Items.Count - 1);
     FOptions := Value;
+    if coText in FOptions then
+    begin
+      Exclude(FOptions,coHex);
+      Exclude(FOptions,coRGB);
+    end
+    else if coHex in Value then
+      Exclude(FOptions,coRGB);
     if (coCustomColors in FOptions) then
       AddColor($000001, FOther);
-    //    GetColors;
+    Invalidate;
   end;
 end;
 
@@ -947,19 +954,19 @@ begin
 end;
 
 procedure TJvFontComboBox.Reset;
-var i: integer;
+var S:string;
 begin
   if HandleAllocated then
   begin
-    i := ItemIndex;
+    S := FontName;
     GetFonts;
-    ItemIndex := i;
+    FontName := S;
   end;
 end;
 
 function TJvFontComboBox.GetFontName: string;
 begin
-  Result := Text;
+  Result := inherited Text;
 end;
 
 procedure TJvFontComboBox.SetFontName(const Value: string);
