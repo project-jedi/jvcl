@@ -29,7 +29,7 @@
  THE SOFTWARE.
 --------------------------------------------------------------------------------
 
-Last Modified: 2004-01-14
+Last Modified: 2004-02-11
 
 Known Issues:
   - Covers only a small part of the Windows APIs
@@ -743,7 +743,7 @@ function DrawFrameControl(Handle: QPainterH; const Rect: TRect; uType,
   uState: Longword): LongBool;
   { missing DrawFrameControl flags:
       DFC_SCROLL: DFCS_SCROLLCOMBOBOX, DFCS_SCROLLSIZEGRIP, DFCS_SCROLLSIZEGRIPRIGHT
-      DFC_BUTTON: all except DFCS_PUSHBUTTON
+      DFC_BUTTON: all except DFCS_PUSHBUTTON, DFCS_BUTTONRADIO, DFCS_BUTTONCHECK
       DFC_POPUPMENU: all }
 function DrawEdge(Handle: QPainterH; var Rect: TRect; Edge: Cardinal;
   Flags: Cardinal): LongBool;
@@ -4626,165 +4626,167 @@ begin
     Result := Application.Palette.ColorGroup(cgInActive);
 end;
 
+
 function DrawFrameControl(Handle: QPainterH; const Rect: TRect; uType, uState: Longword): LongBool;
 const
   Mask = $00FF;
 var
-  Canvas: TCanvas;
   InnerRect, R: TRect;
   Pts: array of TPoint;
   i: Integer;
+  b : QBrushH;
+  p: QPenH;
+  f: QFontH;
+  oColor, oPColor: TColor;
+  size: TSize;
 begin
   Result := False;
   if (Handle = nil) or (not QPainter_isActive(Handle)) then
     Exit;
-  try
-    Canvas := TCanvas.Create;
-    try
-      QPainter_save(Handle);
-      Canvas.Handle := Handle;
-      Canvas.Start(False);
-      case uType of
-        DFC_CAPTION:
-          begin
-            if uState and Mask <> 0 then
-            begin
-             // draw button
-              Result := DrawFrameControl(Handle, Rect, DFC_BUTTON, DFCS_BUTTONPUSH or (uState and not Mask));
-              if Result then
+  QPainter_save(Handle);
+  if uState and DFCS_TRANSPARENT <> 0
+  then
+    b := nil
+  else
+  begin
+    b := QPainter_brush(Handle);
+    if uState and DFCS_INACTIVE <> 0 then
+      oColor := SetDCBrushColor(Handle, clDisabledButton)
+    else if uState and DFCS_HOT <> 0 then
+      oColor := SetDCBrushColor(Handle, clActiveButton)
+    else
+      oColor := SetDCBrushColor(Handle, clNormalButton);
+  end;
+  R := Rect;
+  case uType of
+    DFC_CAPTION:
+      begin
+        // draw button
+        Result := DrawFrameControl(Handle, Rect, DFC_BUTTON, DFCS_BUTTONPUSH or (uState and not Mask));
+        if Result then
+        begin
+          R := Rect;
+          Dec(R.Right);
+          Dec(R.Bottom);
+          // draw image
+          p := CreatePen(PS_SOLID, 1 , clBlack);
+          QPainter_setPen(Handle, p);
+          QPen_destroy(p);
+          case uState and $7 of
+            DFCS_CAPTIONCLOSE:
               begin
-                R := Rect;
+                InflateRect(R , -4, -3);
                 Dec(R.Right);
                 Dec(R.Bottom);
-
-                Canvas.Pen.Style := psSolid;
-                Canvas.Pen.Color := clBlack;
-                Canvas.Pen.Width := 1;
-                Canvas.Brush.Style := bsClear;
-                // draw image
-                case uState and Mask of
-                  DFCS_CAPTIONCLOSE:
-                    begin
-                      Canvas.Pen.Width := 2;
-                      Dec(R.Right);
-                      Dec(R.Bottom);
-                      Canvas.MoveTo(R.Left + 4, R.Top + 4);
-                      Canvas.LineTo(R.Right - 4, R.Bottom - 4);
-                      Canvas.MoveTo(R.Left + 4, R.Bottom - 4);
-                      Canvas.LineTo(R.Right - 4, R.Top + 4);
-                    end;
-                  DFCS_CAPTIONMIN:
-                    begin
-                      Canvas.MoveTo(R.Left + 4, R.Bottom - 4);
-                      Canvas.LineTo(R.Right - 4 - 5, R.Bottom - 4);
-                      Canvas.MoveTo(R.Left + 4, R.Bottom - 5);
-                      Canvas.LineTo(R.Right - 4 - 5, R.Bottom - 5);
-                    end;
-                  DFCS_CAPTIONMAX:
-                    begin
-                      Canvas.Rectangle(R.Left + 4, R.Top + 4, R.Right - 4, R.Bottom - 4);
-                      Canvas.MoveTo(R.Left + 5, R.Top + 5);
-                      Canvas.LineTo(R.Right - 5, R.Top + 5);
-                    end;
-                  DFCS_CAPTIONRESTORE:
-                    begin
-                      QPainter_save(Handle);
-                      ExcludeClipRect(Handle, R.Left + 4, R.Top + 8, R.Right - 8, R.Bottom - 4);
-
-                      Canvas.Rectangle(R.Left + 8, R.Top + 4, R.Right - 4, R.Bottom - 8);
-                      Canvas.MoveTo(R.Left + 9, R.Top + 5);
-                      Canvas.LineTo(R.Right - 5, R.Top + 5);
-
-                      QPainter_restore(Handle);
-
-                      Canvas.Rectangle(R.Left + 4, R.Top + 8, R.Right - 8, R.Bottom - 4);
-                      Canvas.MoveTo(R.Left + 5, R.Top + 9);
-                      Canvas.LineTo(R.Right - 9, R.Top + 9);
-                    end;
-                  DFCS_CAPTIONHELP:
-                    begin
-                      Canvas.Font.Style := [fsBold];
-                      QPainter_setFont(Handle, Canvas.Font.Handle);
-                      DrawText(Handle, '?', 1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
-                    end;
-                end;
+                QPainter_moveTo(Handle, R.Left , R.Top);
+                QPainter_lineTo(Handle, R.Right, R.Bottom);
+                QPainter_moveTo(Handle, R.Left , R.Bottom);
+                QPainter_lineTo(Handle, R.Right, R.Top);
+                OffsetRect(R, 1, 0);
+                QPainter_moveTo(Handle, R.Left , R.Top);
+                QPainter_lineTo(Handle, R.Right, R.Bottom);
+                QPainter_moveTo(Handle, R.Left , R.Bottom);
+                QPainter_lineTo(Handle, R.Right, R.Top);
               end;
+            DFCS_CAPTIONMIN:
+              begin
+                inc(R.Left, 4);
+                dec(R.Right, 6);
+                dec(R.Bottom, 3);
+                QPainter_moveTo(Handle, R.Left , R.Bottom - 1);
+                QPainter_lineTo(Handle, R.Right, R.Bottom - 1);
+                QPainter_moveTo(Handle, R.Left , R.Bottom );
+                QPainter_lineTo(Handle, R.Right, R.Bottom );
+              end;
+            DFCS_CAPTIONMAX:
+              begin
+                InflateRect(R, -3, -2);
+                QPainter_drawRect(Handle, @R);
+                QPainter_moveTo(Handle, R.Left , R.Top + 1);
+                QPainter_lineTo(Handle, R.Right-1 , R.Top + 1);
+              end;
+            DFCS_CAPTIONRESTORE:
+              begin
+                SetRect(R,R.Left + 5, R.Top + 5, R.Right - 2, R.Bottom - 2);
+                QPainter_drawRect(Handle, @R);
+                QPainter_moveTo(Handle, R.Left, R.Top - 1);
+                QPainter_lineTo(Handle, R.Right-1, R.Top - 1);
+                OffsetRect(R, -3, -3);
+                QPainter_drawRect(Handle, @R);
+                QPainter_moveTo(Handle, R.Left, R.Top - 1);
+                QPainter_lineTo(Handle, R.Right-1, R.Top - 1);
+                //QPainter_save(Handle);
+                //ExcludeClipRect(Handle, R );
+                //QPainter_restore(Handle);
+              end;
+            DFCS_CAPTIONHELP:
+              begin
+                f := QFont_create( Application.Font.Handle );
+                QFont_setBold(f, true);
+                QPainter_setFont(Handle, f);
+                QFont_destroy(f);
+                DrawText(Handle, '?', 1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+              end;
+          end; // case of
+        end;
+      end; // DFC_CAPTION
+    DFC_MENU:
+      begin
+        case uState and Mask of
+          DFCS_MENUARROW:
+            begin
+              QStyle_drawArrow(Application.Style.Handle, Handle,
+                                ArrowType_LeftArrow,
+                                   uState and DFCS_PUSHED <> 0,
+                                   R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+                                   GetColorGroup(uState),
+                                   uState and DFCS_INACTIVE = 0,
+                                   b);
+              Result := true;
             end;
-          end;
-
-        DFC_MENU:
-          begin
-            Canvas.Brush.Color := clWhite;
-            Canvas.Pen.Style := psSolid;
-            Canvas.Brush.Style := bsSolid;
-            Canvas.Pen.Color := clBlack;
-            case uState and Mask of
-              DFCS_MENUARROW, DFCS_MENUARROWRIGHT:
-                begin
-                  Canvas.FillRect(Rect); // white background
-                  R := Types.Rect(0, 0, 5, 10);
-                  OffsetRect(R,
-                    ((Rect.Right - Rect.Left) - R.Right) div 2,
-                    ((Rect.Bottom - Rect.Top) - R.Bottom) div 2);
-
-                  SetLength(Pts, 3);
-                  if (uState and Mask) = DFCS_MENUARROW then
-                  begin
-                    Pts[0] := Point(R.Left + 0, R.Top + 0);
-                    Pts[1] := Point(R.Left + 0, R.Top + 10);
-                    Pts[2] := Point(R.Left + 5, R.Top + 5);
-                  end
-                  else
-                  begin
-                    Pts[0] := Point(R.Left + 5, R.Top + 0);
-                    Pts[1] := Point(R.Left + 5, R.Top + 10);
-                    Pts[2] := Point(R.Left + 0, R.Top + 5);
-                  end;
-                  Canvas.Brush.Color := clBlack;
-                  Canvas.Polygon(Pts);
-
-                  Result := True;
-                end;
-              DFCS_MENUCHECK:
-                begin
-                  Canvas.FillRect(Rect); // white background
-                  R := Types.Rect(0, 0, 12, 12);
-                  OffsetRect(R,
-                    ((Rect.Right - Rect.Left) - R.Right) div 2,
-                    ((Rect.Bottom - Rect.Top) - R.Bottom) div 2);
-
-                  Canvas.Brush.Color := clBlack;
-                  SetLength(Pts, 3);
-                  for i := 0 to 3 do
-                  begin
-                    Pts[0] := Point(R.Left + 0, R.Top + 8 - i);
-                    Pts[1] := Point(R.Left + 4, R.Top + 12 - i);
-                    Pts[2] := Point(R.Left + 12, R.Top + 4 - i);
-                    Canvas.Polyline(Pts);
-                  end;
-
-                  Result := True;
-                end;
-              DFCS_MENUBULLET:
-                begin
-                  Canvas.FillRect(Rect); // white background
-                  R := Types.Rect(0, 0, 7, 7);
-                  OffsetRect(R,
-                    ((Rect.Right - Rect.Left) - R.Right) div 2,
-                    ((Rect.Bottom - Rect.Top) - R.Bottom) div 2);
-                  Canvas.Brush.Color := clBlack;
-                  Canvas.Ellipse(R);
-
-                  Result := True;
-                end;
+          DFCS_MENUARROWRIGHT:
+            begin
+              QStyle_drawArrow(Application.Style.Handle, Handle,
+                                   ArrowType_RightArrow,
+                                   uState and DFCS_PUSHED <> 0,
+                                   R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+                                   GetColorGroup(uState),
+                                   uState and DFCS_INACTIVE = 0,
+                                   b);
+              Result := true;
             end;
-          end;
-
-        DFC_SCROLL:
-          begin
-            case uState and Mask of
-              DFCS_SCROLLCOMBOBOX:
-                begin
+          DFCS_MENUCHECK:
+            begin
+              QStyle_drawCheckMark(Application.Style.Handle, Handle,
+                                   R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+                                   GetColorGroup(uState),
+                                   uState and DFCS_CHECKED <> 0,
+                                   uState and DFCS_INACTIVE <> 0,
+                                   );
+               Result := true;
+            end;
+          DFCS_MENUBULLET:
+            begin
+              FillRect(Handle, R, b);
+              R := Types.Rect(0, 0, 7, 7);
+              OffsetRect(R,
+                   ((Rect.Right - Rect.Left) - R.Right) div 2,
+                   ((Rect.Bottom - Rect.Top) - R.Bottom) div 2);
+              SetDCBrushColor(Handle, clBlack);
+              oPColor := SetDCPenColor(Handle, clBlack);
+              QPainter_drawEllipse(Handle, @R);
+              SetDCPenColor(Handle, oPColor);
+              Result := True;
+            end;
+        end;
+      end; // DFC_MENU
+    DFC_SCROLL:
+      begin
+        DrawFrameControl(Handle, Rect, DFC_BUTTON, DFCS_BUTTONPUSH or (uState and not Mask));
+        InflateRect(R, -2,-2);
+        case uState and Mask of
+          DFCS_SCROLLCOMBOBOX:
+            begin
                   {if uState and DFCS_INACTIVE <> 0 then
                     ComboBox := tcDropDownButtonDisabled
                   else
@@ -4799,173 +4801,143 @@ begin
                   Details := ThemeServices.GetElementDetails(ComboBox);
                   ThemeServices.DrawElement(DC, Details, R);}
                   Result := True;
-                end;
-              DFCS_SCROLLUP:
-                begin
-                  if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0 then
-                    QStyle_drawArrow(Application.Style.Handle, Handle,
-                                   ArrowType_UpArrow,
-                                   uState and DFCS_PUSHED <> 0,
-                                   R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
-                                   GetColorGroup(uState),
-                                   uState and DFCS_INACTIVE <> 0,
-                                   QPainter_brush(handle))
-                  else
-                    QStyle_drawArrow(Application.Style.Handle, Handle,
-                                   ArrowType_UpArrow,
-                                   uState and DFCS_PUSHED <> 0,
-                                   R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
-                                   GetColorGroup(uState),
-                                   uState and DFCS_INACTIVE <> 0,
-                                   nil);
-
-                  Result := True;
-                end;
-              DFCS_SCROLLDOWN:
-                begin
-                  if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0 then
-                    QStyle_drawArrow(Application.Style.Handle, Handle,
-                                   ArrowType_DownArrow,
-                                   uState and DFCS_PUSHED <> 0,
-                                   R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
-                                   GetColorGroup(uState),
-                                   uState and DFCS_INACTIVE <> 0,
-                                   QPainter_brush(handle))
-                  else
-                    QStyle_drawArrow(Application.Style.Handle, Handle,
-                                     ArrowType_DownArrow,
-                                     uState and DFCS_PUSHED <> 0,
-                                     R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
-                                     GetColorGroup(uState),
-                                     uState and DFCS_INACTIVE <> 0,
-                                     nil);
-                  Result := True;
-                end;
-              DFCS_SCROLLLEFT:
-                begin
-                  if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0 then
-                    QStyle_drawArrow(Application.Style.Handle, Handle,
-                                   ArrowType_LeftArrow,
-                                   uState and DFCS_PUSHED <> 0,
-                                   R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
-                                   GetColorGroup(uState),
-                                   uState and DFCS_INACTIVE <> 0,
-                                   QPainter_brush(handle))
-                  else
-                    QStyle_drawArrow(Application.Style.Handle, Handle,
-                                   ArrowType_LeftArrow,
-                                   uState and DFCS_PUSHED <> 0,
-                                   R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
-                                   GetColorGroup(uState),
-                                   uState and DFCS_INACTIVE <> 0,
-                                   nil);
-                  Result := True;
-                end;
-              DFCS_SCROLLRIGHT:
-                begin
-                  if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0 then
-                    QStyle_drawArrow(Application.Style.Handle, Handle,
-                                   ArrowType_RightArrow,
-                                   uState and DFCS_PUSHED <> 0,
-                                   R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
-                                   GetColorGroup(uState),
-                                   uState and DFCS_INACTIVE <> 0,
-                                   QPainter_brush(handle))
-                  else
-                    QStyle_drawArrow(Application.Style.Handle, Handle,
-                                   ArrowType_RightArrow,
-                                   uState and DFCS_PUSHED <> 0,
-                                   R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
-                                   GetColorGroup(uState),
-                                   uState and DFCS_INACTIVE <> 0,
-                                   nil);
-                  Result := True;
-                end;
-              else
-                raise Exception.Create('not implemented');
+             end;
+          DFCS_SCROLLUP:
+            begin
+              QStyle_drawArrow(Application.Style.Handle, Handle,
+                               ArrowType_UpArrow,
+                               uState and DFCS_PUSHED <> 0,
+                               R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+                               GetColorGroup(uState),
+                               uState and DFCS_INACTIVE = 0,
+                               b);
+              Result := True;
             end;
-          end; // DFC_SCROLL
-
-        DFC_BUTTON:
-          case uState and Mask of
-            DFCS_BUTTONPUSH:
-              begin
-                InnerRect := Rect;
-                InflateRect(InnerRect, -2, -2);
-                if uState and (DFCS_TRANSPARENT) <> 0 then
-                  ExcludeClipRect(Handle, InnerRect);
-
-                if uState and DFCS_INACTIVE <> 0 then
-                  R := DrawButtonFace(Canvas, Rect, 1, False, False, uState and DFCS_FLAT <> 0)
-                else
-                if uState and DFCS_PUSHED <> 0 then
-                  R := DrawButtonFace(Canvas, Rect, 1, True, False, uState and DFCS_FLAT <> 0)
-                else
-                if uState and DFCS_HOT <> 0 then
-                  R := DrawButtonFace(Canvas, Rect, 1, False, False, uState and DFCS_FLAT <> 0, clSilver)
-                else
-                if uState and DFCS_MONO <> 0 then
-                begin
-                  Canvas.Pen.Style := psSolid;
-                  Canvas.Pen.Color := clBlack;
-                  Canvas.Pen.Width := 1;
-                  if uState and (DFCS_TRANSPARENT) <> 0 then
-                    Canvas.Brush.Style := bsClear
-                  else
-                    Canvas.Brush.Color := clButton;
-                  Canvas.Rectangle(Rect);
-                  R := Rect;
-                  InflateRect(R, -1, -1);
-                end
-                else
-                  R := DrawButtonFace(Canvas, Rect, 1, False, False, uState and DFCS_FLAT <> 0);
-
-                if uState and DFCS_ADJUSTRECT <> 0 then
-                  PRect(@Rect)^ := R;
-                Result := True;
-              end;
-          else
-            // not implemented
-            raise Exception.Create('not implemented');
-          end;
-
-        DFC_POPUPMENU:
+          DFCS_SCROLLDOWN:
+            begin
+              QStyle_drawArrow(Application.Style.Handle, Handle,
+                               ArrowType_DownArrow,
+                               uState and DFCS_PUSHED <> 0,
+                               R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+                               GetColorGroup(uState),
+                               uState and DFCS_INACTIVE = 0,
+                               b);
+              Result := True;
+            end;
+          DFCS_SCROLLLEFT:
+            begin
+              QStyle_drawArrow(Application.Style.Handle, Handle,
+                               ArrowType_LeftArrow,
+                               uState and DFCS_PUSHED <> 0,
+                               R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+                               GetColorGroup(uState),
+                               uState and DFCS_INACTIVE = 0,
+                               b);
+              Result := True;
+            end;
+          DFCS_SCROLLRIGHT:
+            begin
+              QStyle_drawArrow(Application.Style.Handle, Handle,
+                               ArrowType_RightArrow,
+                               uState and DFCS_PUSHED <> 0,
+                               R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+                               GetColorGroup(uState),
+                               uState and DFCS_INACTIVE = 0,
+                               b);
+               Result := True;
+            end;
+        else
+          raise Exception.Create('not implemented');
+        end;
+      end; // DFC_SCROLL
+    DFC_BUTTON:
+      case uState and Mask of
+        DFCS_BUTTONRADIO:
           begin
-            // not implemented
-            raise Exception.Create('not implemented');
+            FillRect(Handle, R, b);
+            QStyle_exclusiveIndicatorSize(Application.Style.Handle, @Size);
+            OffsetRect(R, (R.Right - R.Left - size.cx) div 2,
+                          (R.Bottom - R.Top - size.cy) div 2);
+            QStyle_drawExclusiveIndicator(Application.Style.Handle, Handle,
+                   R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+                   GetColorGroup(uState),
+                   uState and DFCS_CHECKED	<> 0,
+                   uState and DFCS_INACTIVE <> 0,
+                   true);
+            Result := true;
           end;
+        DFCS_BUTTONCHECK:
+          begin
+            if uState and DFCS_INACTIVE = 0
+            then
+              QStyle_drawIndicator(Application.Style.Handle, Handle,
+                 R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+                 Application.Palette.ColorGroup(cgActive), //GetColorGroup(cgInActive),
+                 0, false, true)
+            else
+              QStyle_drawIndicator(Application.Style.Handle, Handle,
+                 R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+                 Application.Palette.ColorGroup(cgActive), //GetColorGroup(cgInActive),
+                 0, true, true);
+            InflateRect(R, -2, -2);
+            if uState and DFCS_CHECKED	<> 0
+            then
+              DrawFrameControl(Handle, R, DFC_MENU, DFCS_MENUCHECK or (uState and not Mask));
+            Result := true;
+          end;
+        DFCS_BUTTONPUSH:
+          begin
+            R := Rect;
+            InnerRect := Rect;
+            InflateRect(InnerRect, -2, -2);
+            if uState and DFCS_FLAT <> 0 then
+            begin
+              if uState and (DFCS_PUSHED or DFCS_HOT) <> 0 then
+              begin
+                QStyle_drawPanel(Application.Style.Handle, Handle,
+                R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+                GetColorGroup(uState),
+                uState and DFCS_PUSHED <> 0 ,
+                1,
+                b);
+                InflateRect(R, -1, -1);
+              end;
+              Result := true;
+            end
+            else if uState and DFCS_MONO = 0 then
+            begin
+              QStyle_drawButton(Application.Style.Handle, Handle,
+              R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+              GetColorGroup(uState),
+              uState and DFCS_PUSHED <> 0 ,
+              b);
+              InflateRect(R, -2, -2);
+              Result := true;
+            end
+            else
+            begin
+              oPColor := SetDCPenColor(Handle, clBlack);
+              QPainter_drawRect(Handle, @R);
+              SetDCPenColor(Handle, oPColor);
+              InflateRect(R, -1, -1);
+              Result := true;
+            end;
+          end;
+      else
+          // not implemented
+        raise Exception.Create('not implemented');
       end;
-    finally
-      QPainter_restore(Handle);
-      Canvas.Free;
-    end;
-  except
-    Result := False;
+    DFC_POPUPMENU:
+      begin
+        // not implemented
+        raise Exception.Create('not implemented');
+      end;
   end;
-(* DFC_SCROLL = 3;
-  DFC_BUTTON = 4;
-  DFC_POPUPMENU = 5;
-
-  DFCS_SCROLLCOMBOBOX = 5;
-  DFCS_SCROLLSIZEGRIP = 8;
-  DFCS_SCROLLSIZEGRIPRIGHT = $10;
-
-  DFCS_BUTTONCHECK = 0;
-  DFCS_BUTTONRADIOIMAGE = 1;
-  DFCS_BUTTONRADIOMASK = 2;
-  DFCS_BUTTONRADIO = 4;
-  DFCS_BUTTON3STATE = 8;
-
-  // ****
-  DFCS_INACTIVE = $100;
-  DFCS_PUSHED = $200;
-  DFCS_CHECKED = $400;
-  DFCS_TRANSPARENT = $800;
-  DFCS_HOT = $1000;
-  DFCS_ADJUSTRECT = $2000;
-  DFCS_FLAT = $4000;
-  DFCS_MONO = $8000;
-*)
+  if b <> nil then
+    SetDCBrushColor(Handle, oColor);
+  if uState and DFCS_ADJUSTRECT <> 0 then
+    PRect(@Rect)^ := R;
+  QPainter_restore(Handle);
 end;
 
 function DrawEdge(Handle: QPainterH; var Rect: TRect; Edge: Cardinal;
@@ -5063,8 +5035,9 @@ begin
     ClientRect := Rect;
     QPainter_save(Handle);
     try
-      ColorDark := clGray;
-      ColorLight := clWhite;
+      ColorDark := clDark;
+//      ColorLight := clWhite;
+      ColorLight := clActiveLight;
 
       if Flags and BF_FLAT <> 0 then
         ColorLight := clSilver;
@@ -5091,7 +5064,6 @@ begin
       if Flags and BF_MIDDLE <> 0 then
       begin
        // fill interior rect
-//        Brush := CreateSolidBrush(ColorLight);
         Brush := CreateSolidBrush(clButton);
         try
           FillRect(Handle, ClientRect, Brush);
