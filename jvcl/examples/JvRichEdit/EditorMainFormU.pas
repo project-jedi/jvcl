@@ -157,7 +157,12 @@ type
     procedure EditorTextNotFound(Sender: TObject; const FindText: string);
     procedure EditSelectAll(Sender: TObject);
     procedure FileSaveSelected(Sender: TObject);
+    procedure ColorMenuMeasureItem(Sender: TMenu; Item: TMenuItem;
+      var Width, Height: Integer);
   private
+    FXpColorItemPainter : TJvXpMenuItemPainter;
+    FXpBackColorItemPainter : TJvXpMenuItemPainter;
+
     FFileName: string;
     FUpdating: Boolean;
     FDragOfs: Integer;
@@ -323,13 +328,29 @@ begin
   end;
 end;
 
+procedure TEditorMainForm.ColorMenuMeasureItem(Sender: TMenu;
+  Item: TMenuItem; var Width, Height: Integer);
+begin
+  if Sender = ColorMenu then
+    FXpColorItemPainter.Measure(Item, Width, Height)
+  else
+    FXpBackColorItemPainter.Measure(Item, Width, Height);
+end;
+
 procedure TEditorMainForm.ColorMenuDrawItem(Sender: TMenu; Item: TMenuItem;
   Rect: TRect; State: TMenuOwnerDrawState);
 begin
-  TJvPopupMenu(Sender).DefaultDrawItem(Item, Rect, State);
-  Inc(Rect.Left, LoWord(GetMenuCheckMarkDimensions) + 6);
-  Rect.Right := Rect.Left + 20;
-  InflateRect(Rect, 0, -3);
+  // make xp painter paint the item
+  if Sender = ColorMenu then
+    FXpColorItemPainter.Paint(Item, Rect, State)
+  else
+    FXpBackColorItemPainter.Paint(Item, Rect, State);
+
+  // add our colored square
+  Rect.Left := Rect.Left + 2;
+  Rect.Right := Rect.Left + 18;
+  Rect.Top := Rect.Top + 4;
+  Rect.Bottom := Rect.Top + 18;
   with TJvPopupMenu(Sender).Canvas do
   begin
     Brush.Color := clMenuText;
@@ -620,6 +641,9 @@ var
 const
   SPictureFilter = '%s|%s|%s|%s';
 begin
+  FXpColorItemPainter := TJvXpMenuItemPainter.Create(ColorMenu);
+  FXpBackColorItemPainter := TJvXpMenuItemPainter.Create(BackgroundMenu);
+
   OpenDialog.InitialDir := ExtractFilePath(ParamStr(0));
   SaveDialog.InitialDir := OpenDialog.InitialDir;
   SetFileName('Untitled');
@@ -672,6 +696,8 @@ end;
 
 procedure TEditorMainForm.FormDestroy(Sender: TObject);
 begin
+  FXpColorItemPainter.Free;
+  FXpBackColorItemPainter.Free;
   { remove ourselves from the viewer chain }
   FClipboardMonitor.Free;
 end;
