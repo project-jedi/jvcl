@@ -41,15 +41,26 @@ uses
   JvAppStorage, JvPropertyStore, JvSimpleXml;
 
 type
+  TJvCustomAppXMLStorage = class;
   TJvAppXMLStorageOptions = class(TJvAppStorageOptions)
   private
     FWhiteSpaceReplacement: string;
+    FStorage: TJvCustomAppXMLStorage;
+    function GetAutoEncodeEntity: Boolean;
+    function GetAutoEncodeValue: Boolean;
+    procedure SetAutoEncodeEntity(const Value: Boolean);
+    procedure SetAutoEncodeValue(const Value: Boolean);
+    function GetAutoIndent: Boolean;
+    procedure SetAutoIndent(const Value: Boolean);
   protected
     procedure SetWhiteSpaceReplacement(const Value: string);
   public
     constructor Create; override;
   published
     property WhiteSpaceReplacement: string read FWhiteSpaceReplacement write SetWhiteSpaceReplacement;
+    property AutoEncodeValue: Boolean read GetAutoEncodeValue write SetAutoEncodeValue;
+    property AutoEncodeEntity: Boolean read GetAutoEncodeEntity write SetAutoEncodeEntity;
+    property AutoIndent: Boolean read GetAutoIndent write SetAutoIndent;
   end;
 
   // This is the base class for an in memory XML file storage
@@ -60,7 +71,7 @@ type
   // a class (nothing much is involved, use the AsString property).
   TJvCustomAppXMLStorage = class(TJvCustomAppMemoryFileStorage)
   protected
-    FXml: TJvSimpleXml;
+    FXml: TJvSimpleXML;
 
     class function GetStorageOptionsClass: TJvAppStorageOptionsClass; override;
 
@@ -71,6 +82,11 @@ type
 
     function DefaultExtension: string; override;
 
+    function GetOnDecodeValue: TJvSimpleXMLEncodeEvent;
+    function GetOnEncodeValue: TJvSimpleXMLEncodeEvent;
+    procedure SetOnDecodeValue(const Value: TJvSimpleXMLEncodeEvent);
+    procedure SetOnEncodeValue(const Value: TJvSimpleXMLEncodeEvent);
+    
     function GetRootNodeName: string;
     procedure SetRootNodeName(const Value: string);
     // Returns the last node in path, if it exists.
@@ -101,8 +117,10 @@ type
     function DoReadBinary(const Path: string; Buf: Pointer; BufSize: Integer): Integer; override;
     procedure DoWriteBinary(const Path: string; Buf: Pointer; BufSize: Integer); override;
 
-    property Xml: TJvSimpleXml read FXml;
+    property Xml: TJvSimpleXML read FXml;
     property RootNodeName: string read GetRootNodeName write SetRootNodeName;
+    property OnEncodeValue: TJvSimpleXMLEncodeEvent read GetOnEncodeValue write SetOnEncodeValue;
+    property OnDecodeValue: TJvSimpleXMLEncodeEvent read GetOnDecodeValue write SetOnDecodeValue;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -125,6 +143,8 @@ type
     property RootNodeName;
     property SubStorages;
     property OnGetFileName;
+    property OnEncodeValue;
+    property OnDecodeValue;
   end;
 
 procedure StorePropertyStoreToXmlFile(APropertyStore: TJvCustomPropertyStore;
@@ -155,6 +175,46 @@ begin
   FWhiteSpaceReplacement := '';  // to keep the original behaviour
 end;
 
+function TJvAppXMLStorageOptions.GetAutoEncodeEntity: Boolean;
+begin
+  Result := sxoAutoEncodeEntity in FStorage.Xml.Options;
+end;
+
+function TJvAppXMLStorageOptions.GetAutoEncodeValue: Boolean;
+begin
+  Result := sxoAutoEncodeValue in FStorage.Xml.Options;
+end;
+
+function TJvAppXMLStorageOptions.GetAutoIndent: Boolean;
+begin
+  Result := sxoAutoIndent in FStorage.Xml.Options;
+end;
+
+procedure TJvAppXMLStorageOptions.SetAutoEncodeEntity(
+  const Value: Boolean);
+begin
+  if Value then
+    FStorage.Xml.Options := FStorage.Xml.Options + [sxoAutoEncodeEntity]
+  else
+    FStorage.Xml.Options := FStorage.Xml.Options - [sxoAutoEncodeEntity];
+end;
+
+procedure TJvAppXMLStorageOptions.SetAutoEncodeValue(const Value: Boolean);
+begin
+  if Value then
+    FStorage.Xml.Options := FStorage.Xml.Options + [sxoAutoEncodeValue]
+  else
+    FStorage.Xml.Options := FStorage.Xml.Options - [sxoAutoEncodeValue];
+end;
+
+procedure TJvAppXMLStorageOptions.SetAutoIndent(const Value: Boolean);
+begin
+  if Value then
+    FStorage.Xml.Options := FStorage.Xml.Options + [sxoAutoIndent]
+  else
+    FStorage.Xml.Options := FStorage.Xml.Options - [sxoAutoIndent];
+end;
+
 procedure TJvAppXMLStorageOptions.SetWhiteSpaceReplacement(const Value: string);
 begin
   if Value <> FWhiteSpaceReplacement then
@@ -169,7 +229,9 @@ end;
 constructor TJvCustomAppXMLStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  (StorageOptions as TJvAppXMLStorageOptions).FStorage := Self;
   FXml := TJvSimpleXml.Create(nil);
+  FXml.Options := [sxoAutoIndent];
   // (rom) should probably be a resourcestring
   RootNodeName := 'Configuration';
 end;
@@ -352,9 +414,9 @@ begin
     Reload;
   SplitKeyPath(Path, ParentPath, ValueName);
   ANode := CreateAndSetNode(ParentPath);
-  Xml.Options := [sxoAutoCreate, sxoAutoIndent];
+  Xml.Options := Xml.Options + [sxoAutoCreate];
   ANode.Items.ItemNamed[ValueName].IntValue := Value;
-  Xml.Options := [sxoAutoIndent];
+  Xml.Options := Xml.Options - [sxoAutoCreate];
   if AutoFlush and not IsUpdating then
     Flush;
 end;
@@ -404,10 +466,10 @@ begin
     Reload;
   SplitKeyPath(Path, ParentPath, ValueName);
   ANode := CreateAndSetNode(ParentPath);
-  Xml.Options := [sxoAutoCreate, sxoAutoIndent];
+  Xml.Options := Xml.Options + [sxoAutoCreate];
 //  ANode.Items.ItemNamed[ValueName].Value := FloatToStr(Value);
   ANode.Items.ItemNamed[ValueName].Value := BufToBinStr(@Value, SizeOf(Value));
-  Xml.Options := [sxoAutoIndent];
+  Xml.Options := Xml.Options - [sxoAutoCreate];
   if AutoFlush and not IsUpdating then
     Flush;
 end;
@@ -450,9 +512,9 @@ begin
     Reload;
   SplitKeyPath(Path, ParentPath, ValueName);
   ANode := CreateAndSetNode(ParentPath);
-  Xml.Options := [sxoAutoCreate, sxoAutoIndent];
+  Xml.Options := Xml.Options + [sxoAutoCreate];
   ANode.Items.ItemNamed[ValueName].Value := Value;
-  Xml.Options := [sxoAutoIndent];
+  Xml.Options := Xml.Options - [sxoAutoCreate];
   if AutoFlush and not IsUpdating then
     Flush;
 end;
@@ -585,9 +647,9 @@ end;
 
 function TJvCustomAppXMLStorage.CreateAndSetNode(Key: string): TJvSimpleXmlElem;
 begin
-  Xml.Options := [sxoAutoCreate, sxoAutoIndent];
+  Xml.Options := Xml.Options + [sxoAutoCreate];
   Result := GetNodeFromPath(Key);
-  Xml.Options := [sxoAutoIndent];
+  Xml.Options := Xml.Options - [sxoAutoCreate];
 end;
 
 function TJvCustomAppXMLStorage.GetNodeFromPath(Path: string; StartNode: TJvSimpleXmlElem = nil): TJvSimpleXmlElem;
@@ -687,9 +749,9 @@ begin
     Reload;
   SplitKeyPath(Path, ParentPath, ValueName);
   ANode := CreateAndSetNode(ParentPath);
-  Xml.Options := [sxoAutoCreate, sxoAutoIndent];
+  Xml.Options := Xml.Options + [sxoAutoCreate];
   ANode.Items.ItemNamed[ValueName].BoolValue := Value;
-  Xml.Options := [sxoAutoIndent];
+  Xml.Options := Xml.Options - [sxoAutoCreate];
   if AutoFlush and not IsUpdating then
     Flush;
 end;
@@ -707,6 +769,28 @@ end;
 function TJvCustomAppXMLStorage.DefaultExtension: string;
 begin
   Result := 'xml';
+end;
+
+function TJvCustomAppXMLStorage.GetOnDecodeValue: TJvSimpleXMLEncodeEvent;
+begin
+  Result := FXml.OnDecodeValue;
+end;
+
+function TJvCustomAppXMLStorage.GetOnEncodeValue: TJvSimpleXMLEncodeEvent;
+begin
+  Result := FXml.OnEncodeValue;
+end;
+
+procedure TJvCustomAppXMLStorage.SetOnDecodeValue(
+  const Value: TJvSimpleXMLEncodeEvent);
+begin
+  FXml.OnDecodeValue := Value;
+end;
+
+procedure TJvCustomAppXMLStorage.SetOnEncodeValue(
+  const Value: TJvSimpleXMLEncodeEvent);
+begin
+  FXml.OnEncodeValue := Value;
 end;
 
 //=== { TJvAppXMLFileStorage } ===============================================
