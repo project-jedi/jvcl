@@ -13,10 +13,84 @@ Author
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
   You don't have to document already described items such as sets,
   pointers to records etc.
-(Value = EJVCLException ; - for reference)
+(Value = EJVCLException; - for reference)
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@LVTILEINFO
+<TITLE LVTILEINFO type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets,
+  pointers to records etc.
+(Value = tagLVTILEINFO; - for reference)
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@LVTILEVIEWINFO
+<TITLE LVTILEVIEWINFO type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets,
+  pointers to records etc.
+(Value = tagLVTILEVIEWINFO; - for reference)
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@PLVTILEINFO
+<TITLE PLVTILEINFO type>
+<COMBINE tagLVTILEINFO>
+----------------------------------------------------------------------------------------------------
+@@PLVTILEVIEWINFO
+<TITLE PLVTILEVIEWINFO type>
+<COMBINE LVTILEVIEWINFO>
+---------------------------------------------------------------------------------------------------
+@@tagLVTILEINFO
+<TITLE tagLVTILEINFO type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@tagLVTILEINFO.cbSize
+  Description for cbSize
+@@tagLVTILEINFO.iItem
+  Description for iItem
+@@tagLVTILEINFO.cColumns
+  Description for cColumns
+@@tagLVTILEINFO.puColumns
+  Description for puColumns
+---------------------------------------------------------------------------------------------------
+@@tagLVTILEVIEWINFO
+<TITLE tagLVTILEVIEWINFO type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@tagLVTILEVIEWINFO.cbSize
+  Description for cbSize
+@@tagLVTILEVIEWINFO.dwMask
+  Description for dwMask
+@@tagLVTILEVIEWINFO.dwFlags
+  Description for dwFlags
+@@tagLVTILEVIEWINFO.sizeTile
+  Description for sizeTile
+@@tagLVTILEVIEWINFO.cLines
+  Description for cLines
+@@tagLVTILEVIEWINFO.rcLabelMargin
+  Description for rcLabelMargin
 ----------------------------------------------------------------------------------------------------
 @@TJvListItem
 Summary
@@ -66,6 +140,15 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TJvListView.ColumnsOrder
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvListView.GetColumnsOrder
 Summary
   Write here a summary (1 line)
@@ -83,7 +166,7 @@ Summary
 Description
   Write here a description
 Parameters
-  Node - Description for this parameter
+  Item - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -105,6 +188,17 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvListView.ItemPopup
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Item - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -148,9 +242,6 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Sender - Description for this parameter
-  Column - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -279,13 +370,22 @@ Summary
 Description
   Write here a description
 Parameters
-  Node  - Description for this parameter
+  Item  - Description for this parameter
   Value - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.SortOnClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvListView.Tile
 Summary
   Write here a summary (1 line)
 Description
@@ -303,46 +403,26 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvSortMethod
-<TITLE TJvSortMethod type>
+@@TLVTileInfo
+<TITLE TLVTileInfo type>
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-@@TJvSortMethod.smAutomatic
-  Description for smAutomatic
-@@TJvSortMethod.smAlphabetic
-  Description for smAlphabetic
-@@TJvSortMethod.smNonCaseSensitive
-  Description for smNonCaseSensitive
-@@TJvSortMethod.smNumeric
-  Description for smNumeric
-@@TJvSortMethod.smDate
-  Description for smDate
-@@TJvSortMethod.smTime
-  Description for smTime
-@@TJvSortMethod.smDateTime
-  Description for smDateTime
-@@TJvSortMethod.smCurrency
-  Description for smCurrency
+  You don't have to document already described items such as sets,
+  pointers to records etc.
+(Value = tagLVTILEINFO; - for reference)
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TOnSortMethod
-<TITLE TOnSortMethod type>
-<COMBINE TJvListView.OnAutoSort>
-----------------------------------------------------------------------------------------------------
-@@TProgress
-<TITLE TProgress type>
+@@TLVTileViewInfo
+<TITLE TLVTileViewInfo type>
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-  This type is used by (for reference):
-    TJvListView.OnLoadProgress
-    TJvListView.OnSaveProgress
-Parameters
-  Sender      - Description for this parameter
-  Progression - Description for this parameter
-  Total       - Description for this parameter
+  You don't have to document already described items such as sets,
+  pointers to records etc.
+(Value = LVTILEVIEWINFO; - for reference)
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references

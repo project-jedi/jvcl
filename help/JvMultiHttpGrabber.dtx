@@ -10,15 +10,15 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@TDateEvent
 <TITLE TDateEvent type>
-<COMBINE TJvMultiHttpGrabber.OnDateRetrieved>
+<COMBINE TJvMultiHTTPGrabber.OnDateRetrieved>
 ----------------------------------------------------------------------------------------------------
 @@TJvDoneFileEvent
 <TITLE TJvDoneFileEvent type>
-<COMBINE TJvMultiHttpGrabber.OnDoneFile>
+<COMBINE TJvMultiHTTPGrabber.OnDoneFile>
 ----------------------------------------------------------------------------------------------------
 @@TJvDoneStreamEvent
 <TITLE TJvDoneStreamEvent type>
-<COMBINE TJvMultiHttpGrabber.OnDoneStream>
+<COMBINE TJvMultiHTTPGrabber.OnDoneStream>
 ----------------------------------------------------------------------------------------------------
 @@TJvMultiDateHttpThread
 Summary
@@ -26,8 +26,8 @@ Summary
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber
-<TITLEIMG TJvMultiHttpGrabber>
+@@TJvMultiHTTPGrabber
+<TITLEIMG TJvMultiHTTPGrabber>
 JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
@@ -36,7 +36,7 @@ Summary
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.Agent
+@@TJvMultiHTTPGrabber.Agent
 Summary
   Write here a summary (1 line)
 Description
@@ -45,36 +45,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.Download
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  UserData - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.DownloadCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.FileName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.GetFileAge
+@@TJvMultiHTTPGrabber.Download
 Summary
   Write here a summary (1 line)
 Description
@@ -85,7 +56,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.OnClosedConnection
+@@TJvMultiHTTPGrabber.DownloadCount
 Summary
   Write here a summary (1 line)
 Description
@@ -94,7 +65,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.OnClosingConnection
+@@TJvMultiHTTPGrabber.FileName
 Summary
   Write here a summary (1 line)
 Description
@@ -103,7 +74,18 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.OnConnectedToServer
+@@TJvMultiHTTPGrabber.GetFileAge
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  UserData - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvMultiHTTPGrabber.OnClosedConnection
 Summary
   Write here a summary (1 line)
 Description
@@ -112,7 +94,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.OnConnectingToServer
+@@TJvMultiHTTPGrabber.OnClosingConnection
 Summary
   Write here a summary (1 line)
 Description
@@ -121,7 +103,25 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.OnDateRetrieved
+@@TJvMultiHTTPGrabber.OnConnectedToServer
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvMultiHTTPGrabber.OnConnectingToServer
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvMultiHTTPGrabber.OnDateRetrieved
 Summary
   Write here a summary (1 line)
 Description
@@ -135,7 +135,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.OnDoneFile
+@@TJvMultiHTTPGrabber.OnDoneFile
 Summary
   Write here a summary (1 line)
 Description
@@ -150,7 +150,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.OnDoneStream
+@@TJvMultiHTTPGrabber.OnDoneStream
 Summary
   Write here a summary (1 line)
 Description
@@ -165,7 +165,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.OnError
+@@TJvMultiHTTPGrabber.OnError
 Summary
   Write here a summary (1 line)
 Description
@@ -179,23 +179,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.OnProgress
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender    - Description for this parameter
-  UserData  - Description for this parameter
-  Position  - Description for this parameter
-  TotalSize - Description for this parameter
-  Url       - Description for this parameter
-  Continue  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.OnReceivedResponse
+@@TJvMultiHTTPGrabber.OnProgress
 Summary
   Write here a summary (1 line)
 Description
@@ -204,7 +188,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.OnReceivingResponse
+@@TJvMultiHTTPGrabber.OnReceivedResponse
 Summary
   Write here a summary (1 line)
 Description
@@ -213,7 +197,16 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.OnRedirect
+@@TJvMultiHTTPGrabber.OnReceivingResponse
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvMultiHTTPGrabber.OnRedirect
 Summary
   Write here a summary (1 line)
 Description
@@ -227,7 +220,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.OnRequestComplete
+@@TJvMultiHTTPGrabber.OnRequestComplete
 Summary
   Write here a summary (1 line)
 Description
@@ -236,7 +229,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.OnRequestSent
+@@TJvMultiHTTPGrabber.OnRequestSent
 Summary
   Write here a summary (1 line)
 Description
@@ -245,7 +238,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.OnResolvedName
+@@TJvMultiHTTPGrabber.OnResolvedName
 Summary
   Write here a summary (1 line)
 Description
@@ -259,7 +252,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.OnResolvingName
+@@TJvMultiHTTPGrabber.OnResolvingName
 Summary
   Write here a summary (1 line)
 Description
@@ -268,7 +261,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.OnSendingRequest
+@@TJvMultiHTTPGrabber.OnSendingRequest
 Summary
   Write here a summary (1 line)
 Description
@@ -277,7 +270,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.OutputMode
+@@TJvMultiHTTPGrabber.OutputMode
 Summary
   Write here a summary (1 line)
 Description
@@ -286,7 +279,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.Password
+@@TJvMultiHTTPGrabber.Password
 Summary
   Write here a summary (1 line)
 Description
@@ -295,7 +288,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.Referer
+@@TJvMultiHTTPGrabber.Referer
 Summary
   Write here a summary (1 line)
 Description
@@ -304,7 +297,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.Url
+@@TJvMultiHTTPGrabber.Url
 Summary
   Write here a summary (1 line)
 Description
@@ -313,7 +306,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.UserName
+@@TJvMultiHTTPGrabber.UserName
 Summary
   Write here a summary (1 line)
 Description
@@ -322,7 +315,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvMultiHttpGrabber.Working
+@@TJvMultiHTTPGrabber.Working
 Summary
   Write here a summary (1 line)
 Description
@@ -337,25 +330,20 @@ Summary
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvProgressEvent
-<TITLE TJvProgressEvent type>
-<COMBINE TJvMultiHttpGrabber.OnProgress>
-----------------------------------------------------------------------------------------------------
 @@TUrlEvent
 <TITLE TUrlEvent type>
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
   This type is used by (for reference):
-    TJvMultiHttpGrabber.OnClosedConnection
-    TJvMultiHttpGrabber.OnClosingConnection
-    TJvMultiHttpGrabber.OnConnectedToServer
-    TJvMultiHttpGrabber.OnConnectingToServer
-    TJvMultiHttpGrabber.OnReceivingResponse
-    TJvMultiHttpGrabber.OnRequestComplete
-    TJvMultiHttpGrabber.OnResolvingName
-    TJvMultiHttpGrabber.OnSendingRequest
+    TJvMultiHTTPGrabber.OnClosedConnection
+    TJvMultiHTTPGrabber.OnClosingConnection
+    TJvMultiHTTPGrabber.OnConnectedToServer
+    TJvMultiHTTPGrabber.OnConnectingToServer
+    TJvMultiHTTPGrabber.OnReceivingResponse
+    TJvMultiHTTPGrabber.OnRequestComplete
+    TJvMultiHTTPGrabber.OnResolvingName
+    TJvMultiHTTPGrabber.OnSendingRequest
 Parameters
   Sender   - Description for this parameter
   UserData - Description for this parameter
@@ -366,25 +354,24 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TUrlEventError
 <TITLE TUrlEventError type>
-<COMBINE TJvMultiHttpGrabber.OnError>
+<COMBINE TJvMultiHTTPGrabber.OnError>
 ----------------------------------------------------------------------------------------------------
 @@TUrlRedirect
 <TITLE TUrlRedirect type>
-<COMBINE TJvMultiHttpGrabber.OnRedirect>
+<COMBINE TJvMultiHTTPGrabber.OnRedirect>
 ----------------------------------------------------------------------------------------------------
 @@TUrlResolved
 <TITLE TUrlResolved type>
-<COMBINE TJvMultiHttpGrabber.OnResolvedName>
+<COMBINE TJvMultiHTTPGrabber.OnResolvedName>
 ----------------------------------------------------------------------------------------------------
 @@TUrlSent
 <TITLE TUrlSent type>
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
   This type is used by (for reference):
-    TJvMultiHttpGrabber.OnReceivedResponse
-    TJvMultiHttpGrabber.OnRequestSent
+    TJvMultiHTTPGrabber.OnReceivedResponse
+    TJvMultiHTTPGrabber.OnRequestSent
 Parameters
   Sender   - Description for this parameter
   UserData - Description for this parameter
