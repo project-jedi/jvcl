@@ -95,7 +95,7 @@ type
 implementation
 
 uses
-  JvTypes, JvPaintFX, JvResources;
+  JvPaintFX, JvConsts, JvResources;
 
 {$R *.dfm}
 

@@ -33,6 +33,9 @@ unit JvResources;
 
 interface
 
+uses
+  JvConsts;
+
 //=== used in several files ==================================================
 resourcestring
   RsButtonOKCaption = '&OK';

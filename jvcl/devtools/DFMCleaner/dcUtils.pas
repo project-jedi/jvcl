@@ -1,4 +1,5 @@
 {$I JVCL.INC}
+
 unit dcUtils;
 
 interface
@@ -6,19 +7,15 @@ interface
 procedure Run;
 
 implementation
+
 uses
   SysUtils, Classes, JTools, TypInfo
   {$IFNDEF DELPHI6_UP}
-  , Consts
+  Consts,
   {$ELSE}
-  , RTLConsts
+  RTLConsts,
   {$ENDIF}
-  ;
-
-{$IFNDEF DELPHI6_UP}
-const
-  sLineBreak = #13#10;
-{$ENDIF}
+  JvConsts; // (rom) for sLineBreak  no dependencies to packages
 
 { format of skiplist file:
 <classname>.<property>

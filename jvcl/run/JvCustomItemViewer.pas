@@ -16,7 +16,9 @@ interface
 uses
   Windows, SysUtils, Forms, Messages, Classes, Controls,
   Graphics, StdCtrls, ComCtrls, ImgList,
-{$IFNDEF COMPILER6_UP}JvTypes, {$ENDIF} // for clSkyBlue
+  {$IFNDEF COMPILER6_UP}
+  JvConsts,  // for clSkyBlue
+  {$ENDIF}
   ExtCtrls;
 
 const

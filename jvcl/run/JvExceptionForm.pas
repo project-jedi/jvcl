@@ -83,7 +83,7 @@ implementation
 
 uses
   Windows, ComObj, Consts,
-  JvTypes, JvJVCLUtils, JvJCLUtils, JvResources;
+  JvConsts, JvJVCLUtils, JvJCLUtils, JvResources;
 
 {$R *.dfm}
 

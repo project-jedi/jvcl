@@ -168,7 +168,7 @@ type
 implementation
 
 uses
-  JvResources;
+  JvConsts, JvResources;
 
 //=== TJvListItem ============================================================
 

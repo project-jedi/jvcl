@@ -101,7 +101,7 @@ type
 implementation
 
 uses
-  TypInfo, JvTypes;
+  TypInfo, JvConsts;
 
 function InternalGetWideStrProp(Instance: TObject; const PropName: string): WideString; overload;
 begin

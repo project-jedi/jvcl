@@ -165,7 +165,7 @@ type
 implementation
 
 uses
-  JvTypes, JvResources;
+  JvConsts, JvResources, JvTypes;
 
 procedure TJvAtom.SetActor(const Value: TJvSALProc);
 begin

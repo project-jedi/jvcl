@@ -178,7 +178,8 @@ function GradientFormCaption(AForm: TCustomForm; AStartColor: TColor): TJvGradie
 implementation
 
 uses
-  SysUtils;
+  SysUtils,
+  JvConsts;
 
 function GradientFormCaption(AForm: TCustomForm; AStartColor: TColor): TJvGradientCaption;
 begin
@@ -410,10 +411,6 @@ begin
 end;
 
 //=== TJvGradientCaption ====================================================
-
-const
-  clGradientActiveCaption = TColor(COLOR_GRADIENTACTIVECAPTION or $80000000);
-  clGradientInactiveCaption = TColor(COLOR_GRADIENTINACTIVECAPTION or $80000000);
 
 function SysGradient: Boolean;
 var

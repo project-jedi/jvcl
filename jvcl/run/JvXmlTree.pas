@@ -31,7 +31,9 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF DELPHI6_UP}Variants,{$ENDIF}
+  {$IFDEF DELPHI6_UP}
+  Variants,
+  {$ENDIF DELPHI6_UP}
   JvStrings;
 
 type
@@ -161,11 +163,7 @@ type
     procedure SetLines(const Value: TStringList);
     function getText: string;
     procedure setText(const Value: string);
-    { Private declarations }
-  protected
-    { Protected declarations }
   public
-    { Public declarations }
     constructor Create(aName: string; aValue: Variant; aParent: TJvXMLNode);
     destructor Destroy; override;
     procedure ParseXML;
@@ -177,8 +175,6 @@ type
     property Lines: TStringList read FLines write SetLines;
     property NodeCount: integer read FNodeCount;
     property Text: string read getText write setText;
-  published
-    { Published declarations }
   end;
 
 procedure PreProcessXML(aList: TStringList);
@@ -189,9 +185,9 @@ uses
   {$IFDEF BCB}
   {$IFNDEF BCB5}
   Variants,
-  {$ENDIF}
-  {$ENDIF}
-  JvTypes;
+  {$ENDIF BCB5}
+  {$ENDIF BCB}
+  JvConsts;
 
 procedure PreProcessXML(aList: TStringList);
 var

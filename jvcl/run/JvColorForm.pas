@@ -77,7 +77,7 @@ type
 implementation
 
 uses
-  JvColorButton, JvTypes;
+  JvColorButton, JvConsts;
 
 {.$R *.dfm}
 

@@ -151,7 +151,7 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JclFileUtils,
-  JvPlugin, JvPluginParamsForm, JvDsgnConsts;
+  JvPlugin, JvPluginParamsForm, JvConsts, JvDsgnConsts;
 
 {$R ..\resources\JvPluginWiz.res}
 

@@ -72,7 +72,7 @@ type
 implementation
 
 uses
-  JvLogForm, JvTypes;
+  JvLogForm, JvConsts;
 
 constructor TJvLogFile.Create(AOwner: TComponent);
 begin

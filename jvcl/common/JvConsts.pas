@@ -138,6 +138,59 @@ const
   { TBitmap.GetTransparentColor from GRAPHICS.PAS use this value }
   PaletteMask = $02000000;
 
+  // (rom) unused
+  {$IFDEF COMPILER7_UP}
+  DEFAULT_SYSCOLOR_MASK = $000000FF;
+  {$ELSE}
+  DEFAULT_SYSCOLOR_MASK = $80000000;
+  {$ENDIF COMPILER7_UP}
+
+  {$IFNDEF COMPILER6_UP}
+  { Standard Windows colors that are not defined in Delphi 5}
+  COLOR_MENUHILIGHT = 29;
+  {$EXTERNALSYM COLOR_MENUHILIGHT}
+  COLOR_MENUBAR = 30;
+  {$EXTERNALSYM COLOR_MENUBAR}
+
+  clMoneyGreen = TColor($C0DCC0);
+  clSkyBlue = TColor($F0CAA6);
+  clCream = TColor($F0FBFF);
+  clMedGray = TColor($A4A0A0);
+  clGradientActiveCaption = TColor(COLOR_GRADIENTACTIVECAPTION or $80000000);
+  clGradientInactiveCaption = TColor(COLOR_GRADIENTINACTIVECAPTION or $80000000);
+  clHotLight = TColor(COLOR_HOTLIGHT or $80000000);
+  clMenuHighlight = TColor(COLOR_MENUHILIGHT or $80000000);
+  clMenuBar = TColor(COLOR_MENUBAR or $80000000);
+  {$ENDIF COMPILER6_UP}
+
+  {$IFNDEF COMPILER6_UP}
+  {$IFDEF MSWINDOWS}
+  sLineBreak = #13#10;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  sLineBreak = #10;
+  {$ENDIF LINUX}
+  {$ENDIF COMPILER6_UP}
+  sLineBreakLen = Length(sLineBreak);
+
+  CrLf = #13#10;
+  Cr = #13;
+  Lf = #10;
+  Tab = #9;
+  {$IFDEF MSWINDOWS}
+  RegPathDelim = '\';
+  PathDelim = '\';
+  DriveDelim = ':';
+  PathSep = ';';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  PathDelim = '/';
+  {$ENDIF LINUX}
+
+ {const Separators is used in GetWordOnPos, JvUtils.ReplaceStrings and SubWord}
+  Separators: TSysCharSet = [#00, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',
+    ':', '+', '%', '*', '(', ')', ';', '=', '{', '}', '[', ']', '{', '}', '<', '>'];
+
 implementation
 
 end.
