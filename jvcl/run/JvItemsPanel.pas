@@ -249,6 +249,10 @@ begin
   Canvas.Font := Font;
   if FHotTrack and HighLight then
     Canvas.Font.Color := FHotTrackColor;
+  {$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled then
+    SetBkMode(Canvas.Handle, TRANSPARENT);
+  {$ENDIF}
   DrawText(Canvas.Handle, PChar(FItems[Index]), -1, R, Flags);
 end;
 

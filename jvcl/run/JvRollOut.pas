@@ -52,7 +52,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, ImgList, Controls, ExtCtrls,
-  JvComponent;
+  JvComponent, JvThemes;
 
 const
   CM_EXPANDED = WM_USER + 155;
@@ -237,6 +237,10 @@ type
     property OnStartDrag;
     property OnExpand;
     property OnCollapse;
+
+  {$IFDEF JVCLThemesEnabled}
+    property ParentBackground;
+  {$ENDIF}
   end;
 
 implementation
@@ -458,8 +462,9 @@ end;
 constructor TJvCustomRollOut.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  IncludeThemeStyle(Self, [csNeedsBorderPaint, csParentBackground]);
   FImageOptions := TJvRollOutImageOptions.Create;
-  FImageOptions.FOwner := self;
+  FImageOptions.FOwner := Self;
   FImageOptions.OnChange := DoImageOptionsChange;
 
   FColors := TJvRollOutColors.Create;
@@ -843,7 +848,7 @@ var
 begin
   R := ClientRect;
   Canvas.Brush.Color := Colors.Color;
-  Canvas.FillRect(R);
+  DrawThemedBackground(Self, Canvas, R);
   Frame3D(Canvas, R, Colors.FrameTop, Colors.FrameBottom, BevelWidth);
   DrawButtonFrame;
 end;
