@@ -45,16 +45,16 @@ object fglXMLSerializerDemo: TfglXMLSerializerDemo
   object Memo1: TMemo
     Left = 8
     Top = 8
-    Width = 185
+    Width = 209
     Height = 89
     BorderStyle = bsNone
     Color = clBtnFace
     Lines.Strings = (
       'this example demonstrates saving'
       'a class in XML and load of data from '
-      ' XML.'
-      ' Before saving the class will be '
-      ' initialized with test data ')
+      'XML.'
+      'Before saving the class will be '
+      'initialized with test data ')
     ReadOnly = True
     TabOrder = 2
   end
@@ -83,7 +83,7 @@ object fglXMLSerializerDemo: TfglXMLSerializerDemo
     ReplaceReservedSymbols = True
     IgnoreUnknownTags = False
     OnGetXMLHeader = glXMLSerializerGetXMLHeader
-    Left = 216
+    Left = 240
     Top = 8
   end
 end

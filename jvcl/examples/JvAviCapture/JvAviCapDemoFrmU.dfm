@@ -1,4 +1,4 @@
-object frmMain: TfrmMain
+object JvAviCapDemoFrm: TJvAviCapDemoFrm
   Left = 215
   Top = 106
   Width = 673
@@ -49,19 +49,12 @@ object frmMain: TfrmMain
     Top = 96
     Width = 20
     Height = 20
-    DriverIndex = -1
-    FileSizeAlloc = 0
-    MCIDevice = 'Not connected'
-    NoFile = False
-    Overlaying = False
+    FileName = 'C:\CAPTURE.AVI'
     PreviewFrameDelay = 40
-    PreviewFPS = 25
-    Previewing = False
+    PreviewFPS = 25.000000000000000000
     ScrollPos.Left = 0
     ScrollPos.Top = 0
     UsedEvents = [ueCapControl, ueError, ueFrame, ueStatus, ueVideoStream, ueWaveStream, ueYield]
-    VideoLeft = 0
-    VideoTop = 0
     AutoSize = True
   end
   object btnStopPreview: TButton

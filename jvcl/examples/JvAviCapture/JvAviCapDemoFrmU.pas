@@ -22,7 +22,7 @@
 
 ******************************************************************}
 
-unit MainForm;
+unit JvAviCapDemoFrmU;
 
 interface
 
@@ -31,7 +31,7 @@ uses
   Dialogs, StdCtrls, JvAVICapture;
 
 type
-  TfrmMain = class(TForm)
+  TJvAviCapDemoFrm = class(TForm)
     btnConnect: TButton;
     btnStartPreview: TButton;
     AviCap: TJvAviCapture;
@@ -54,13 +54,13 @@ type
   end;
 
 var
-  frmMain: TfrmMain;
+  JvAviCapDemoFrm: TJvAviCapDemoFrm;
 
 implementation
 
 {$R *.dfm}
 
-procedure TfrmMain.btnConnectClick(Sender: TObject);
+procedure TJvAviCapDemoFrm.btnConnectClick(Sender: TObject);
 begin
   try
     AviCap.DriverIndex := 0;
@@ -70,17 +70,17 @@ begin
   end;
 end;
 
-procedure TfrmMain.btnStartPreviewClick(Sender: TObject);
+procedure TJvAviCapDemoFrm.btnStartPreviewClick(Sender: TObject);
 begin
   AviCap.Previewing := true;
 end;
 
-procedure TfrmMain.btnStopPreviewClick(Sender: TObject);
+procedure TJvAviCapDemoFrm.btnStopPreviewClick(Sender: TObject);
 begin
   AviCap.StopPreview;
 end;
 
-procedure TfrmMain.btnCaptureClick(Sender: TObject);
+procedure TJvAviCapDemoFrm.btnCaptureClick(Sender: TObject);
 begin
   AviCap.CaptureSettings.ConfirmCapture := true;
   AviCap.CaptureSettings.LimitEnabled := true;
@@ -88,7 +88,7 @@ begin
   AviCap.StartCapture;
 end;
 
-procedure TfrmMain.btnSourceClick(Sender: TObject);
+procedure TJvAviCapDemoFrm.btnSourceClick(Sender: TObject);
 begin
   if not AviCap.ShowDialog(vdSource) then
     Application.MessageBox('Your driver doesn''t provide this dialog '+
@@ -97,7 +97,7 @@ begin
       MB_ICONINFORMATION);
 end;
 
-procedure TfrmMain.btnFormatClick(Sender: TObject);
+procedure TJvAviCapDemoFrm.btnFormatClick(Sender: TObject);
 begin
   if not AviCap.ShowDialog(vdFormat) then
     Application.MessageBox('Your driver doesn''t provide this dialog '+
@@ -106,7 +106,7 @@ begin
       MB_ICONINFORMATION);
 end;
 
-procedure TfrmMain.btnDisplayClick(Sender: TObject);
+procedure TJvAviCapDemoFrm.btnDisplayClick(Sender: TObject);
 begin
   if not AviCap.ShowDialog(vdDisplay) then
     Application.MessageBox('Your driver doesn''t provide this dialog '+
@@ -115,7 +115,7 @@ begin
       MB_ICONINFORMATION);
 end;
 
-procedure TfrmMain.btnCompressionClick(Sender: TObject);
+procedure TJvAviCapDemoFrm.btnCompressionClick(Sender: TObject);
 begin
   if not AviCap.ShowDialog(vdCompression) then
     Application.MessageBox('Your driver doesn''t provide this dialog '+

@@ -1,4 +1,4 @@
-object Form1: TForm1
+object JvBehaviorLblMainFrm: TJvBehaviorLblMainFrm
   Left = 327
   Top = 118
   BorderStyle = bsDialog
