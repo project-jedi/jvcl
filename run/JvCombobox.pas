@@ -85,8 +85,8 @@ type
   TJvCustomComboBox = class(TCustomComboBox)
   private
     FKey: Word;
-    FAutoComplete: Boolean;
     {$IFNDEF COMPILER6_UP}
+    FAutoComplete: Boolean;
     FLastTime: Cardinal;      // SPM - Ported backward from Delphi 7
     FFilter: string;          // SPM - ditto
     FIsDropping: Boolean;
@@ -115,7 +115,6 @@ type
     procedure CNMeasureItem(var Message: TWMMeasureItem); message CN_MEASUREITEM;
     procedure WMInitDialog(var Message: TWMInitDialog); message WM_INITDialog;
   protected
-    procedure Change; override;
     procedure CreateWnd; override; // ain
     {$IFDEF COMPILER6_UP}
     function GetItemsClass: TCustomComboBoxStringsClass; override;
@@ -158,7 +157,9 @@ type
     property IsFixedHeight: Boolean read FIsFixedHeight;
     property MeasureStyle: TJvComboBoxMeasureStyle read GetMeasureStyle write SetMeasureStyle
       default cmsStandard;
+    {$IFNDEF COMPILER6_UP}
     property AutoComplete: Boolean read FAutoComplete write FAutoComplete default True;
+    {$ENDIF}
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly default False; // ain
@@ -528,8 +529,8 @@ begin
   TJvComboBoxStrings(Items).ComboBox := Self; // link it to the combo box.
   {.$ENDIF COMPILER7_UP}
   FHintColor := clInfoBk;
-  FAutoComplete := True;
   {$IFNDEF COMPILER6_UP}
+  FAutoComplete := True;
   FLastTime := 0;           // SPM - Ported backward from Delphi 7
   {$ENDIF}
   FSearching := False;
@@ -547,42 +548,6 @@ begin
   FItemSearchs.Free;
   FreeAndNil(FConsumerSvc);
   inherited Destroy;
-end;
-
-procedure TJvCustomComboBox.Change;
-var
-  Res: Integer;
-  St: string;
-  Start, Finish: Integer;
-begin
-  inherited;
-  if not FSearching and FAutoComplete then
-  begin
-    St := Text;
-    FMaxPixel.Test(St, Font);
-    if Text <> St then
-    begin
-      Text := St;
-      Exit;
-    end;
-    if (FKey <> VK_BACK) and (FKey <> VK_DELETE) and (FKey <> VK_RETURN) then
-    begin
-      FSearching := True;
-      St := Text;
-      Res := SendMessage(Handle, CB_FINDSTRING, -1, Longint(PChar(St)));
-      if Res <> CB_ERR then
-      try
-        ItemIndex := Res;
-        Start := Length(St);
-        Finish := Length(GetItemText(Res)) - Start;
-        Text := GetItemText(Res);
-        SelStart := Start;
-        SelLength := Finish;
-      except
-      end;
-      FSearching := False;
-    end;
-  end;
 end;
 
 function TJvCustomComboBox.SearchExactString(Value: string;
@@ -1367,6 +1332,7 @@ begin
   if not ReadOnly then
     inherited;
 end;
+
 
 end.
 
