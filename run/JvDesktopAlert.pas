@@ -260,7 +260,10 @@ type
 implementation
 
 uses
-  JvJVCLUtils;
+  JvJVCLUtils, JvFinalize;
+
+const
+  sUnitName = 'JvDesktopAlert';
 
 var
   FGlobalStacker: TJvDesktopAlertStack = nil;
@@ -268,7 +271,10 @@ var
 function GlobalStacker: TJvDesktopAlertStack;
 begin
   if FGlobalStacker = nil then
+  begin
     FGlobalStacker := TJvDesktopAlertStack.Create(nil);
+    AddFinalizeObjectNil(sUnitName, TObject(FGlobalStacker));
+  end;
   Result := FGlobalStacker;
 end;
 
@@ -1086,7 +1092,7 @@ end;
 initialization
 
 finalization
-  FGlobalStacker.Free;
+  FinalizeUnit(sUnitName);
 
 end.
 

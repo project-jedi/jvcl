@@ -145,14 +145,14 @@ type
     property OnGetGraphicClass: TJvGetGraphicClassEvent read FOnGetGraphicClass write FOnGetGraphicClass;
   end;
 
-procedure RegisterGraphicSignature(ASignature: string; AOffset: Integer;
+procedure RegisterGraphicSignature(const ASignature: string; AOffset: Integer;
   AGraphicClass: TGraphicClass); overload;
-procedure RegisterGraphicSignature(ASignature: array of Byte;
+procedure RegisterGraphicSignature(const ASignature: array of Byte;
   AOffset: Integer; AGraphicClass: TGraphicClass); overload;
 
 procedure UnregisterGraphicSignature(AGraphicClass: TGraphicClass); overload;
-procedure UnregisterGraphicSignature(ASignature: string; AOffset: Integer); overload;
-procedure UnregisterGraphicSignature(ASignature: array of Byte;
+procedure UnregisterGraphicSignature(const ASignature: string; AOffset: Integer); overload;
+procedure UnregisterGraphicSignature(const ASignature: array of Byte;
   AOffset: Integer); overload;
 
 function GetGraphicClass(Stream: TStream): TGraphicClass;
@@ -160,9 +160,12 @@ function GetGraphicClass(Stream: TStream): TGraphicClass;
 implementation
 
 uses
-  Contnrs, // (p3) NB! This might not be available in all SKU's
+  Contnrs,
   DBConsts, jpeg, SysUtils,
-  JvConsts, JvResources;
+  JvConsts, JvResources, JvFinalize;
+
+const
+  sUnitName = 'JvDBImage';
 
 //=== TGraphicSignature ======================================================
 
@@ -173,12 +176,12 @@ type
     Signature: string;
     Offset: Integer;
     GraphicClass: TGraphicClass;
-    constructor Create(ASignature: string; AOffset: Integer;
+    constructor Create(const ASignature: string; AOffset: Integer;
       AGraphicClass: TGraphicClass);
     function IsThisSignature(Stream: TStream): Boolean;
   end;
 
-constructor TGraphicSignature.Create(ASignature: string; AOffset: Integer;
+constructor TGraphicSignature.Create(const ASignature: string; AOffset: Integer;
   AGraphicClass: TGraphicClass);
 begin
   inherited Create;
@@ -208,11 +211,36 @@ end;
 var
   GraphicSignatures: TObjectList = nil;
 
-procedure RegisterGraphicSignature(ASignature: string; AOffset: Integer;
+procedure GraphicSignaturesNeeded;
+begin
+  if not Assigned(GraphicSignatures) then
+  begin
+    GraphicSignatures := TObjectList.Create;
+
+    RegisterGraphicSignature('BM', 0, TBitmap);
+    RegisterGraphicSignature([0, 0, 1, 0], 0, TIcon);
+    RegisterGraphicSignature([$D7, $CD], 0, TMetafile); // WMF
+    RegisterGraphicSignature([0, 1], 0, TMetafile); // EMF
+    RegisterGraphicSignature('JFIF', 6, TJPEGImage);
+    // NB! Registering these will add a requirement on having the JvMM package installed
+    // Let users register these manually
+    // RegisterGraphicSignature([$0A], 0, TJvPcx);
+    // RegisterGraphicSignature('ACON', 8, TJvAni);
+    // JvCursorImage cannot be registered because it doesn't support
+    // LoadFromStream/SaveToStream but here's the signature for future reference:
+    // RegisterGraphicSignature([0, 0, 2, 0], 0, TJvCursorImage);
+    {$IFDEF USE_JV_GIF}
+    // RegisterGraphicSignature('GIF', 0, TJvGIFImage);
+    {$ENDIF USE_JV_GIF}
+  end;
+end;
+
+procedure RegisterGraphicSignature(const ASignature: string; AOffset: Integer;
   AGraphicClass: TGraphicClass);
 var
   GraphicSignature: TGraphicSignature;
 begin
+  GraphicSignaturesNeeded;
   // Avoid bad signatures
   if (ASignature = '') or (AOffset < 0) or (AGraphicClass = nil) then
     raise Exception.CreateRes(@RsEBadGraphicSignature);
@@ -225,7 +253,7 @@ begin
   end;
 end;
 
-procedure RegisterGraphicSignature(ASignature: array of Byte;
+procedure RegisterGraphicSignature(const ASignature: array of Byte;
   AOffset: Integer; AGraphicClass: TGraphicClass);
 var
   Signature: string;
@@ -241,28 +269,28 @@ procedure UnregisterGraphicSignature(AGraphicClass: TGraphicClass); overload;
 var
   I: Integer;
 begin
-  I := 0;
-  while I < GraphicSignatures.Count do
-    if TGraphicSignature(GraphicSignatures[I]).GraphicClass = AGraphicClass then
-      GraphicSignatures.Delete(I)
-    else
-      Inc(I);
+  if Assigned(GraphicSignatures) then
+  begin
+    for I := GraphicSignatures.Count - 1 downto 0 do
+      if TGraphicSignature(GraphicSignatures[I]).GraphicClass = AGraphicClass then
+        GraphicSignatures.Delete(I);
+  end;
 end;
 
-procedure UnregisterGraphicSignature(ASignature: string; AOffset: Integer);
+procedure UnregisterGraphicSignature(const ASignature: string; AOffset: Integer);
 var
   I: Integer;
 begin
-  I := 0;
-  while I < GraphicSignatures.Count do
-    with TGraphicSignature(GraphicSignatures[I]) do
-      if (Signature = ASignature) and (Offset = AOffset) then
-        GraphicSignatures.Delete(I)
-      else
-        Inc(I);
+  if Assigned(GraphicSignatures) then
+  begin
+    for I := GraphicSignatures.Count - 1 downto 0 do
+      with TGraphicSignature(GraphicSignatures[I]) do
+        if (Signature = ASignature) and (Offset = AOffset) then
+          GraphicSignatures.Delete(I);
+  end;
 end;
 
-procedure UnregisterGraphicSignature(ASignature: array of Byte; AOffset: Integer);
+procedure UnregisterGraphicSignature(const ASignature: array of Byte; AOffset: Integer);
 var
   Signature: string;
   I: Integer;
@@ -279,13 +307,17 @@ var
   S: TGraphicSignature;
 begin
   Result := nil;
-  I := 0;
-  while (Result = nil) and (I < GraphicSignatures.Count) do
+  if Assigned(GraphicSignatures) then
   begin
-    S := TGraphicSignature(GraphicSignatures[I]);
-    if S.IsThisSignature(Stream) then
-      Result := S.GraphicClass;
-    Inc(I);
+    for I := 0 to GraphicSignatures.Count - 1 do
+    begin
+      S := TGraphicSignature(GraphicSignatures[I]);
+      if S.IsThisSignature(Stream) then
+      begin
+        Result := S.GraphicClass;
+        Exit;
+      end;
+    end;
   end;
 end;
 
@@ -664,25 +696,10 @@ begin
 end;
 
 initialization
-  GraphicSignatures := TObjectList.Create(True);
-  RegisterGraphicSignature('BM', 0, TBitmap);
-  RegisterGraphicSignature([0, 0, 1, 0], 0, TIcon);
-  RegisterGraphicSignature([$D7, $CD], 0, TMetafile); // WMF
-  RegisterGraphicSignature([0, 1], 0, TMetafile); // EMF
-  RegisterGraphicSignature('JFIF', 6, TJPEGImage);
-  // NB! Registering these will add a requirement on having the JvMM package installed
-  // Let users register these manually
-  // RegisterGraphicSignature([$0A], 0, TJvPcx);
-  // RegisterGraphicSignature('ACON', 8, TJvAni);
-  // JvCursorImage cannot be registered because it doesn't support
-  // LoadFromStream/SaveToStream but here's the signature for future reference:
-  // RegisterGraphicSignature([0, 0, 2, 0], 0, TJvCursorImage);
-  {$IFDEF USE_JV_GIF}
-  // RegisterGraphicSignature('GIF', 0, TJvGIFImage);
-  {$ENDIF USE_JV_GIF}
-
+  { registration happens in GraphicSignatures Needed() }
+  
 finalization
-  FreeAndNil(GraphicSignatures);
+  FinalizeUnit(sUnitName);
 
 end.
 
