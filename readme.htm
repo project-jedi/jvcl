@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Release Notes for JEDI VCL</title>
-  <link rel="STYLESHEET" type="text/css" href="help/styles/default.css">
+  <link href="help/styles/default.css" type="text/css" rel="STYLESHEET">
 </head>
 <body>
 <h1>Release Notes for JEDI VCL</h1>
@@ -12,18 +12,23 @@
 <h2>Other release notes included in this distribution</h2>
 <p>&nbsp;</p>
 <ul>
-  <li><a href="help/install.htm">Install</a>. Contains information on how to install JVCL. </li>
+  <li><a href="help/install.htm">Install</a>. Contains information on
+how to install JVCL. </li>
   <li>
-    <p align="left"><a href="help/license.htm">License</a>. Contains information on the JVCL usage and distribution
-license. </li>
-  <li><a href="help/migrating.htm">Migrating</a>. Contains information on how to migrate your
+    <p align="left"><a href="help/license.htm">License</a>. Contains
+information on the JVCL usage and distribution
+license. </p>
+  </li>
+  <li><a href="help/migrating.htm">Migrating</a>. Contains information
+on how to migrate your
 applications from previous versions of JVCL and/or previous versions
 of&nbsp;components that has been added&nbsp;in this&nbsp;release of
 JVCL.</li>
-  <li><a href="help/BCB%20Compatibility%20Guide.html">BCB Compatibility Guide</a>.
-    Describes how to install JVCL in C++Builder.</li>
-  <li><a href="help/Build%20Status.html">Build status</a>. Contains info on the
-    current build status of the JVCL for supported Delphi and BCB versions.</li>
+  <li><a href="help/BCB%20Compatibility%20Guide.html">BCB Compatibility
+Guide</a>. Describes how to install JVCL in C++Builder.</li>
+  <li><a href="help/Build%20Status.html">Build status</a>. Contains
+info on the current build status of the JVCL for supported Delphi and
+BCB versions.</li>
 </ul>
 <h3>&nbsp;</h3>
 <h2>Changes in this version</h2>
@@ -57,13 +62,21 @@ palette icons</p>
 <p>&nbsp; <b>\Includes</b> - C/C++ include files for UIB</p>
 <p>&nbsp; <b>\install</b> - source scripts and utilities for the
 installer</p>
-<p>&nbsp; <b>\lib\c5</b> - dcu output for BCB5 packages</p>
-<p>&nbsp; <b>\lib\c6</b> - dcu output for BCB6 packages</p>
+<p>&nbsp; <b>\lib\c5\obj</b> - dcu and obj output for BCB5 packages</p>
+<p>&nbsp; <b>\lib\c6\obj</b> - dcu and obj output for BCB6 packages</p>
 <p>&nbsp; <b>\lib\d5</b> - dcu output for D5 packages</p>
 <p>&nbsp; <b>\lib\d6</b> - dcu output for D6 packages</p>
 <p>&nbsp; <b>\lib\d7</b> - dcu output for D7 packages</p>
-<p>&nbsp; <b>\lib\k3</b> - dcu output for Kylix3 packages</p>
+<p>&nbsp; <b>\lib\k3</b> - dcu output for Kylix3 packages<br>
+</p>
+<p>&nbsp; <b>\locale</b> - contains the DxGettext template and some
+ready to use translations<br>
+</p>
 <p>&nbsp; <b>\packages</b> </p>
+<p>&nbsp;&nbsp;&nbsp; <b>\c5</b> - packages for C++Builder 5</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\c6</b> - packages for C++Builder 6</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\c6per</b> - modified packages for
+C++Builder 6 Personal Edition</p>
 <p>&nbsp;&nbsp;&nbsp; <b>\d5</b> - packages for Delphi 5</p>
 <p>&nbsp;&nbsp;&nbsp; <b>\d5std</b> - modified packages for Delphi 5
 Standard</p>
@@ -72,12 +85,8 @@ Standard</p>
 Personal Edition</p>
 <p>&nbsp;&nbsp;&nbsp; <b>\d7</b> - packages for Delphi </p>
 <p>&nbsp;&nbsp;&nbsp; <b>\d7per</b> - modified packages for Delphi 7
-Personal Edition</p>
-<p>&nbsp;&nbsp;&nbsp; <b>\bcb5</b> - packages for C++Builder 5</p>
-<p>&nbsp;&nbsp;&nbsp; <b>\bcb6</b> - packages for C++Builder 6</p>
-<p>&nbsp;&nbsp;&nbsp; <b>\bcb6per</b> - modified packages for
-C++Builder 6 Personal Edition</p>
-<p>&nbsp;&nbsp;&nbsp; <b>\k2</b> - packages for Kylix 2</p>
+Personal Edition<br>
+</p>
 <p>&nbsp;&nbsp;&nbsp; <b>\k3</b> - packages for&nbsp;Kylix 3</p>
 <p>&nbsp;&nbsp;&nbsp; <b>\xml</b> - Source xml files for the packages.
 All the packages are generated from these files.<br>
@@ -112,8 +121,18 @@ and add ThemeManager?.dcp to the requires node. (Re)build the package.</li>
 <p>&nbsp;</p>
 <p>Theming should now be activated for those JVCL controls that
 supports it. Note that you still need to be running on Windows XP with
-a manifest file for your project to see any theming.</p>
-<p>&nbsp;</p>
+a manifest file for your project to see any theming.<br>
+<br>
+</p>
+<h4>Localization</h4>
+All strings that get displayed to the user are stored in resource
+strings. If you want the JVCL to display those strings in other
+languages, you should use DxGettext as this is the only localization
+method supported by the JVCL group. You must turn on the use of
+DxGettext in jvcl.inc and compile the JVCL with it for the support to
+be complete. Please refer to the <a href="localization.html">Localization</a>
+page for more details on this topic.<br>
+<br>
 <h4>Available distributions</h4>
 <p>The JVCL is&nbsp;available in three different distributions. These
 are:</p>
@@ -136,13 +155,13 @@ package also has a matching design-time package with the registration
 code and any design-time editors required by the run-time package. The
 following packages are currently available:</p>
 <p>
-<table border="0" width="100%" cellpadding="2" cellspacing="2">
+<table cellspacing="2" cellpadding="2" width="100%" border="0">
   <tbody>
     <tr>
       <th>Package</th>
       <th>Description</th>
       <th>Contains</th>
-      <th>Required JVCL packages (required by&nbsp; design-time package)</th>
+      <th>Required JVCL packages (required by design-time package)</th>
     </tr>
     <tr>
       <td>JvCore</td>
@@ -774,7 +793,9 @@ JvMM)</td>
     </tr>
     <tr>
       <td>JvDotNetCtrls</td>
-      <td>DotNet style components</td>
+      <td>DotNet style components (Do not require the .Net framework to
+be installed)<br>
+      </td>
       <td> TJvDotNetCheckListBox
       <p>TJvDotNetEdit</p>
       <p>TJvDotNetHotKey</p>
@@ -813,7 +834,9 @@ JvMM)</td>
     </tr>
     <tr>
       <td>JvXPCtrls</td>
-      <td>XP/Office XP style controls</td>
+      <td>XP/Office XP style controls (Do not require to run on XP to
+display correct look)<br>
+      </td>
       <td> TJvXPStyleManager
       <p>TJvXPBar</p>
       <p>TJvXPContainer</p>
@@ -834,6 +857,7 @@ definition of USEJVCL, you MUST regenerate the packages using the
 PackageGenerator available in $(JVCL)\devtools<br>
 5. Not available in Standard and Personal versions.<br>
 <br>
+</p>
 <h4>New components added</h4>
 <p>&nbsp;</p>
 <p>The following new components and libraries has been added since JVCL
@@ -1296,11 +1320,11 @@ JvComputerInfo.pas.</p>
 naming&nbsp;standard in JVCL&nbsp;affects both classes, types and unit
 names. The following section explains the new naming convention
 enforced in JVCL:</p>
-<blockquote style="margin-right: 0px;" dir="ltr">
+<blockquote dir="ltr" style="margin-right: 0px;">
   <p>&nbsp;</p>
 </blockquote>
 <p><strong>General</strong></p>
-<blockquote style="margin-right: 0px;" dir="ltr">
+<blockquote dir="ltr" style="margin-right: 0px;">
   <ul>
     <li>All files have a "Jv" prefix (capital "J", lower case "v") and
 we use "Camel Casing" for the file name
@@ -1320,7 +1344,7 @@ whereas a unit containing a TJvEditor control would be named
   <p>&nbsp;</p>
 </blockquote>
 <p><strong>Using the word "Form" in filenames</strong></p>
-<blockquote style="margin-right: 0px;" dir="ltr">
+<blockquote dir="ltr" style="margin-right: 0px;">
   <p>All forms (units with DFM's) are suffixed with the word "Form"
 regardless of whether they contain a dialog or a form (i.e
 JvDualListForm.pas). The word "Form" can also be used as a prefix if
@@ -1329,7 +1353,7 @@ itself (i.e JvFormMagnet.pas) </p>
   <p>&nbsp;</p>
 </blockquote>
 <p><strong>Using the word "Dialog" in filenames</strong></p>
-<blockquote style="margin-right: 0px;" dir="ltr">
+<blockquote dir="ltr" style="margin-right: 0px;">
   <p>The word "Dialog" in a unit name signifies that the unit contains
 a component that has no UI at designtime but shows a form or dialog at
 run time (i.e JvObjectPickerDialog.pas). At the moment, "Dlg" and
@@ -1337,14 +1361,14 @@ run time (i.e JvObjectPickerDialog.pas). At the moment, "Dlg" and
   <p>&nbsp;</p>
 </blockquote>
 <p><strong>Using the words "Const" and "Consts" in filenames</strong></p>
-<blockquote style="margin-right: 0px;" dir="ltr">
+<blockquote dir="ltr" style="margin-right: 0px;">
   <p>The words "Const" and "Consts" are only used in units that
 contains just type, resourcestring and const declarations and no code
 (i.e JvConsts.pas). </p>
   <p><strong></strong>&nbsp;</p>
 </blockquote>
 <p><strong>Using the words "Util" and "Utils" in filenames</strong></p>
-<blockquote style="margin-right: 0px;" dir="ltr">
+<blockquote dir="ltr" style="margin-right: 0px;">
   <p>The word "Util" and "Utils" are only used in units that contains
 support routines and classes of more general use (i.e JvJVCLUtils.pas).
 Classes in util type units should never be installable. </p>
@@ -1386,7 +1410,7 @@ coupling and simplifies maintenance and future restructuring. </p>
   <p><strong></strong>&nbsp;</p>
 </blockquote>
 <p><strong>Registration units</strong></p>
-<blockquote style="margin-right: 0px;" dir="ltr">
+<blockquote dir="ltr" style="margin-right: 0px;">
   <p>Each design package have it's own registration unit with a
 Register procedure. The unit is named with the same base name as the
 package but with a "Reg" suffix (i.e the reg file for the "JvCore"
@@ -1402,7 +1426,7 @@ JvCoreReg.pas is in \resources\JvCoreReg.dcr). </p>
   <p>&nbsp;</p>
 </blockquote>
 <p><strong>Palette images color coding</strong></p>
-<blockquote style="margin-right: 0px;" dir="ltr">
+<blockquote dir="ltr" style="margin-right: 0px;">
   <p>All component icons have a common background and an upper case
 yellow "J" in a rectangle in the bottom right corner of the image. The
 background color of the&nbsp;rectangle identifies the type of component
@@ -1466,7 +1490,8 @@ update the CVS repository if the fix is satisfactory. If you report and
 fix a lot of bugs, you might even get developer access to CVS so you
 can update the JVCL files directly.</p>
 <h3>&nbsp;</h3>
-<h2>Getting in touch with JVCL developers and other users</h2>
+<h2><a name="contact"></a>Getting in touch with JVCL developers and
+other users</h2>
 <p>&nbsp;</p>
 <p>You can get in touch with the JVCL team and/or other JVCL users in
 one of the following manners:</p>
@@ -1477,7 +1502,8 @@ one of the following manners:</p>
     <p dir="ltr">Newsgroups. You can access the JVCL newsgroups at <a
  href="news://forums.talkto.net/jedi.vcl">
 news://forums.talkto.net/jedi.vcl</a> (preferred). Thanks to Marco
-Cantú (author of the "Mastering Delphi" books), you can also access the
+Cant&uacute; (author of the "Mastering Delphi" books), you can also
+access the
 newsgroups from the Web at <a
  href="http://delphi.newswhat.com/geoxml/forumlistgroups?area=JEDI">
 http://delphi.newswhat.com/geoxml/forumlistgroups?area=JEDI</a>. </p>
