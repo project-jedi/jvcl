@@ -933,9 +933,6 @@ type
     procedure UpdateItemFlags(Index: Integer; Value, Mask: Integer); virtual; abstract;
     procedure ClearView; virtual;
     procedure RebuildView; virtual;
-
-    property AutoExpandLevel: Integer read FAutoExpandLevel write FAutoExpandLevel;
-    property ExpandOnNewItem: Boolean read FExpandOnNewItem write FExpandOnNewItem;
   public
     constructor Create(AOwner: TExtensibleInterfacedPersistent); override;
     destructor Destroy; override;
@@ -984,6 +981,9 @@ type
     function ItemGroupInfo(Index: Integer): TDynIntegerArray; virtual;
     { Retrieve the number of viewable items. }
     function Count: Integer; virtual; abstract;
+
+    property AutoExpandLevel: Integer read FAutoExpandLevel write FAutoExpandLevel;
+    property ExpandOnNewItem: Boolean read FExpandOnNewItem write FExpandOnNewItem;
   end;
 
   { View list; uses the least possible amount of memory but may be slow to find sibling/child
@@ -2608,16 +2608,19 @@ begin
 end;
 
 function TJvBaseDataItem._Release: Integer;
+var
+  NeedsRelease: Boolean;
 begin
   GetItems.GetProvider.SelectContext(nil);
   try
-    if GetItems.IsDynamic then
-      Result := inherited _Release
-    else
-      Result := -1;
+    NeedsRelease := GetItems.IsDynamic;
   finally
     GetItems.GetProvider.ReleaseContext;
   end;
+  if NeedsRelease then
+    Result := inherited _Release
+  else
+    Result := -1;
 end;
 
 procedure TJvBaseDataItem.DefineProperties(Filer: TFiler);
@@ -3665,7 +3668,7 @@ var
   CtxList: IJvDataContexts;
 begin
   Result := (ProviderIntf <> nil) and Supports(ProviderIntf, IJvDataContexts, CtxList) and
-    (ContextIntf <> CtxList.GetContext(0));
+    (CtxList.GetCount > 0) and (ContextIntf <> CtxList.GetContext(0));
 end;
 
 function TJvDataConsumer.GetContext: TJvDataContextID;
