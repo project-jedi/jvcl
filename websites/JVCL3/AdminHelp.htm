@@ -1,121 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-<link rel="STYLESHEET" href="styles/default.css" type="text/css">
-<title>Administrator Help</title>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=windows-1252">
+  <link rel="STYLESHEET" href="styles/default.css" type="text/css">
+  <title>Administrator Help</title>
 </head>
 <body>
 <h2>Administrator Help</h2>
 <hr>
-<p dir="ltr">This document tries to provide the information necessary for an individual to run the JVCL project. The purpose of this 
-document is to ease the way for new admins and to remind current admins about the tasks might they have to perform to make things in JVCL 
-run smoothly and also to remind them on how these tasks are most easily performed.  </p>
+<p dir="ltr">This document tries to provide the information necessary
+for an individual to run the JVCL project. The purpose of this document
+is to ease the way for new admins and to remind current admins about
+the tasks might they have to perform to make things in JVCL run
+smoothly and also to remind them on how these tasks are most easily
+performed. </p>
 <p dir="ltr">&nbsp;</p>
-<p dir="ltr">Additionally, this document lists common practices used 
+<p dir="ltr">Additionally, this document lists common practices used
 today within the JVCL to complete these tasks.</p>
 <p>&nbsp;</p>
-<p>All passwords and sensitive URLs  are passed from one admin to the next via private, 
-secured channels.</p>
+<p>All passwords and sensitive URLs are passed from one admin to the
+next via private, secured channels.</p>
 <p>&nbsp;</p>
 <h4>What do admins do?</h4>
 <p>Here's some of the more common tasks an admin might perform:</p>
 <ul>
-  <li>Keeps the big picture in mind and makes sure the general direction of the project is sound.</li>
+  <li>Keeps the big picture in mind and makes sure the general
+direction of the project is sound.</li>
   <li>Adds and removes developers from the project.</li>
-  <li>Has the final say on what to add and what to remove from the sources.</li>
+  <li>Has the final say on what to add and what to remove from the
+sources.</li>
   <li>Handles official communications with other parties.</li>
   <li>Makes sure the web site is maintained and up to date.</li>
   <li>Makes sure that new releases are available.</li>
   <li>Jumps in and solves problems noone else is interested in.</li>
-  <li>If a member of JEDI Steering, tries to promote and speak for the project.</li>
-  <li>Communicates with the team members in private if needed (or wanted), trying to keep the team happy and content.</li>
-  <li>Tries to help solve issues between developers within the team as well as issues with people outside the team.</li>
+  <li>If a member of JEDI Steering, tries to promote and speak for the
+project.</li>
+  <li>Communicates with the team members in private if needed (or
+wanted), trying to keep the team happy and content.</li>
+  <li>Tries to help solve issues between developers within the team as
+well as issues with people outside the team.</li>
   <li dir="ltr">
-  <p dir="ltr">Promotes the project whenever and however he can.</li>
+    <p dir="ltr">Promotes the project whenever and however he can.
+    </p>
+  </li>
 </ul>
 <p dir="ltr">&nbsp;</p>
 <h4 dir="ltr">The web site</h4>
-<p dir="ltr">The web site is currently hosted on a Borland server. The server location and username/password needed to upload files are only 
-available to admins. The website files are available in CVS (currently in dev/website/JVCL3) and should match the content on the home page.</p>
+<p dir="ltr">The web site is currently hosted on a Borland server. The
+server location and username/password needed to upload files are only
+available to admins. The website files are available in CVS (currently
+in dev/website/JVCL3) and should match the content on the home page.</p>
 <h4 dir="ltr">&nbsp;</h4>
 <h4 dir="ltr">The project space</h4>
-<p dir="ltr">Sourceforge provides us with space on their servers as well. The project can be accessed using SSH Secure Shell (<a href="http://www.ssh.com">http://www.ssh.com</a>) 
-using the following settings:</p>
+<p dir="ltr">Sourceforge provides us with space on their servers as
+well. The project can be accessed using SSH Secure Shell (<a
+ href="http://www.ssh.com">http://www.ssh.com</a>) using the following
+settings:</p>
 <p dir="ltr">&nbsp;</p>
 <table border="0" cellpadding="2" cellspacing="2">
-  <tr>
-    <th>Hostname</th>
-    <td>jvcl.sourceforge.net </td>
-  </tr>
-  <tr><th>Port</th>
-    <td>22</td>
-  </tr>
-  <tr><th>Username</th>
-    <td>&lt;your sourceforge username&gt;</td>
-  </tr>
+  <tbody>
+    <tr>
+      <th>Hostname</th>
+      <td>jvcl.sourceforge.net </td>
+    </tr>
+    <tr>
+      <th>Port</th>
+      <td>22</td>
+    </tr>
+    <tr>
+      <th>Username</th>
+      <td>&lt;your sourceforge username&gt;</td>
+    </tr>
+  </tbody>
 </table>
 <p dir="ltr">&nbsp; </p>
-<p dir="ltr">The project web space currently contains the script to create the daily zips, a redirect to the new site URL, a copy of the 
-active CVS (used by the daily zip script), a redirection to the current location of Mantis and some help related zip files. </p>
+<p dir="ltr">The project web space currently contains the script to
+create the daily zips, a redirect to the new site URL, a copy of the
+active CVS (used by the daily zip script), a redirection to the current
+location of Mantis and some help related zip files. </p>
 <h4 dir="ltr">&nbsp;</h4>
 <h4 dir="ltr">The daily files</h4>
-<p dir="ltr">The daily zip files at <a href="http://jvcl.sf.net/daily">http://jvcl.sf.net/daily</a> are generated by a shell script in the 
-sourceforge project web space (see above). The current script is located in /home/groups/j/jv/jvcl/bin and is named postnew.sh. The zip 
-files are created automatically by a crontab job running once a day. When an admin takes over the script maintenance, he also needs to 
-install it in his own crontab to make sure it runs. For more info on crontab and how to use it, see the man page in Linux.</p>
+<p dir="ltr">The daily zip files at <a href="http://jvcl.sf.net/daily">http://jvcl.sf.net/daily</a>
+are generated by a shell script in the sourceforge project web space
+(see above). The current script is located in
+/home/groups/j/jv/jvcl/bin and is named postnew.sh. The zip files are
+created automatically by a crontab job running once a day. When an
+admin takes over the script maintenance, he also needs to install it in
+his own crontab to make sure it runs. For more info on crontab and how
+to use it, see the man page in Linux.</p>
 <h4 dir="ltr">&nbsp;</h4>
 <h4 dir="ltr">Managing developers</h4>
-<p dir="ltr">Admins handles adding and removing developers as well as handling their permissions to various parts of the project. An admin 
-should make sure that the people having developer status also are reasonably active within the project. If it is discovered or suspected 
-that a developer is doing something dangerous or detrimental to the JVCL project (like removing files or making strange changes), he should 
-be removed <i>immediately</i>. A discussion with the developer can then be initiated and, if a resolution is found, the developer can maybe 
-be added again.</p>
+<p dir="ltr">Admins handles adding and removing developers as well as
+handling their permissions to various parts of the project. An admin
+should make sure that the people having developer status also are
+reasonably active within the project. If it is discovered or suspected
+that a developer is doing something dangerous or detrimental to the
+JVCL project (like removing files or making strange changes), he should
+be removed <i>immediately</i>. A discussion with the developer can
+then be initiated and, if a resolution is found, the developer can
+maybe be added again.</p>
 <h4 dir="ltr">&nbsp;</h4>
 <h4 dir="ltr">The CVS repository</h4>
-<p dir="ltr">The CVS repository can be access by anyone having developer access. An admins main responsibility in CVS is to add and remove 
-folder structures when needed and generally keep CVS clean.&nbsp; Problems with CVS that cannot be resolved by the admin, should be reported 
-to SF for resolution (stale locks, file recasing, folder deletion etc).</p>
+<p dir="ltr">The CVS repository can be access by anyone having
+developer access. An admins main responsibility in CVS is to add and
+remove folder structures when needed and generally keep CVS
+clean.&nbsp; Problems with CVS that cannot be resolved by the admin,
+should be reported to SF for resolution (stale locks, file recasing,
+folder deletion etc).</p>
 <h4 dir="ltr">&nbsp;</h4>
 <h4 dir="ltr">Preparing releases</h4>
-<p>One of the most important tasks for an admin is making sure the releases are created and uploaded. In JVCL3, the release mechanism has 
-been greatly simplified thanks to the use of want (a commandline script tool). </p>
-<p>To prepare and create a release, an admin needs to perform the following tasks:</p>
+<p>One of the most important tasks for an admin is making sure the
+releases are created and uploaded. In JVCL3, the release mechanism has
+been greatly simplified thanks to the use of want (a commandline script
+tool). </p>
+<p>To prepare and create a release, an admin needs to perform the
+following tasks:</p>
 <ul>
-  <li>Check out a clean copy of JCL and JVCL and test the installation on all available Delphi/BCB/Kylix versions.</li>
+  <li>Check out a clean copy of JCL and JVCL and test the installation
+on all available Delphi/BCB/Kylix versions.</li>
   <li>Check that all examples compiles.</li>
+  <li>Once the installation is verified to work, branch the CVS
+repository. The branch should be on the form
+JVCL&lt;ALPHA|BETA|GAMMA|RELEASE|FINAL&gt;&lt;version&gt;. Should any
+last minute update come in, add them to the HEAD and the Branch.
+Creating a branch allows developers to continue their work without
+impacting on the admin preparation work.<br>
+  </li>
   <li>Obtain a fresh copy of the help file from the Help Coordinator.</li>
-  <li>Once the installation is verified to work, tag the CVS repository. The tag should be on the form 
-  JVCL&lt;ALPHA|BETA|GAMMA|RELEASE|FINAL&gt;&lt;version&gt;.</li>
   <li dir="ltr">
-<p dir="ltr">Run the want script in dev/JVCL3/install/release from a command
-prompt to create the releases. To see available options, use &quot;want help&quot;.</p>
+    <p dir="ltr">Run the want script in dev/JVCL3/install/release from
+a command
+prompt to create the releases. To see available options, use "want
+help" and follow indications in readme.txt.</p>
   </li>
   <li dir="ltr">
-<p dir="ltr">Once the zip files have been created, upload them to sourceforge's ftp folder (/ incoming).</p>
+    <p dir="ltr">Once the zip files have been created, upload them to
+sourceforge's ftp folder (/ incoming).</p>
   </li>
   <li dir="ltr">
-<p dir="ltr">Go to the sf project page, log in as an admin and create a new release in the release system.</p>
+    <p dir="ltr">Go to the sf project page, log in as an admin and
+create a new release in the release system.</p>
   </li>
   <li dir="ltr">
-<p dir="ltr">Add the uploaded files to the release as required.</p>
+    <p dir="ltr">Add the uploaded files to the release as required.</p>
   </li>
   <li dir="ltr">
-<p dir="ltr">Post update announcements to all mailing lists, newsgroups and magazines as listed in dev/JVCL3/install/release/announce.txt 
-(and any others you can come up with). </p>
+    <p dir="ltr">Post update announcements to all mailing lists,
+newsgroups and magazines as listed in
+dev/JVCL3/install/release/announce.txt (and any others you can come up
+with). </p>
   </li>
 </ul>
 <p dir="ltr">&nbsp; </p>
 <h4 dir="ltr">The bug tracker</h4>
-<p>Admins should have admin access to the bug tracker (contact one of the current Mantis admins if you are a JVCL admin and don't have 
- 
-admin access to Mantis). As an admin, you should clean up the users list from time to time and also close old bugs that are either resolved or 
-have been inactive for  a long time. </p>
+<p>Admins should have admin access to the bug tracker (contact one of
+the current Mantis admins if you are a JVCL admin and don't have admin
+access to Mantis). As an admin, you should clean up the users list from
+time to time and also close old bugs that are either resolved or have
+been inactive for a long time. </p>
 <h4 dir="ltr">&nbsp;</h4>
 <h4 dir="ltr">JEDI Steering</h4>
-<p>An admin that is also a member of JEDI Steering, should  participate in the discussions on the JEDI Steering mailing list as much as 
-needed. JEDI Steering is, despite it's name, not steering the JVCL or any other JEDI project. Instead, Steering is a forum for JEDI project admins to discuss and decide on matters that affects 
-all JEDI groups. Active JEDI projects should have at least one 
-representative in JEDI Steering.</p>
+<p>An admin that is also a member of JEDI Steering, should participate
+in the discussions on the JEDI Steering mailing list as much as needed.
+JEDI Steering is, despite it's name, not steering the JVCL or any other
+JEDI project. Instead, Steering is a forum for JEDI project admins to
+discuss and decide on matters that affects all JEDI groups. Active JEDI
+projects should have at least one representative in JEDI Steering.</p>
 </body>
 </html>
