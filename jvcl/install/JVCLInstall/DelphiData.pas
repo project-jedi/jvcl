@@ -164,6 +164,14 @@ function AnsiStartsText(const SubStr, Text: string): Boolean;
 begin
   Result := AnsiStrLIComp(PChar(SubStr), PChar(Text), Length(SubStr)) = 0;
 end;
+
+function ExcludeTrailingPathDelimiter(const Path: string): string;
+begin
+  if (Path <> '') and (Path[Length(Path)] = '\') then // Delphi 5 only knows Windows
+    Result := Copy(Path, 1, Length(Path) - 1)
+  else
+    Result := Path;
+end;
 {$ENDIF COMPIELR5}
 
 const
@@ -193,7 +201,7 @@ begin
     while not (P[0] in [#0, ';']) do
       Inc(P);
     SetString(S, F, P - F);
-    List.Add(S);
+    List.Add(ExcludeTrailingPathDelimiter(S));
     if P[0] = #0 then
       Break;
     Inc(P);
@@ -462,8 +470,8 @@ begin
    // get library paths
     if Reg.OpenKeyReadOnly(RegistryKey + '\Library') then // do not localize
     begin
-      FDCPOutputDir := Reg.ReadString('Package DCP Output'); // do not localize
-      FBPLOutputDir := Reg.ReadString('Package DPL Output'); // do not localize
+      FDCPOutputDir := ExcludeTrailingPathDelimiter(Reg.ReadString('Package DCP Output')); // do not localize
+      FBPLOutputDir := ExcludeTrailingPathDelimiter(Reg.ReadString('Package DPL Output')); // do not localize
       ConvertPathList(Reg.ReadString('Browsing Path'), FBrowsingPaths); // do not localize
       ConvertPathList(Reg.ReadString('Package Search Path'), FPackageSearchPaths); // do not localize
       ConvertPathList(Reg.ReadString('Search Path'), FSearchPaths); // do not localize
