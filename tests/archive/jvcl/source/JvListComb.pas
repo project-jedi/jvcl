@@ -659,7 +659,7 @@ procedure TJvImageComboBox.MeasureItem(Index: Integer; var Height: Integer);
 begin
   Height := Max(GetItemHeight(Font) + 4, FHeight + (Ord(ButtonFrame) * 4));
   if Assigned(FImageList) then
-    Height := Max(Height,FImageList.Height + 2);
+    Height := Max(Height,FImageList.Height);
 end;
 
 procedure TJvImageComboBox.SetColorHighlight(Value: TColor);
