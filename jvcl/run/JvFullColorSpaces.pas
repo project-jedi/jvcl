@@ -339,9 +339,9 @@ uses
   Controls, StdCtrls, ExtCtrls,
   {$ENDIF COMPILER6_UP}
   JvResources, TypInfo,
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   JclMath,   // For EnsureRange
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
   Math;
 
 var

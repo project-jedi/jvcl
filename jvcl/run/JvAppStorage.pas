@@ -809,10 +809,10 @@ const
   aptFolder = 1;
   aptValue  = 2;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 function Supports(Instance: TObject; const Intf: TGUID): Boolean; overload;
 function Supports(AClass: TClass; const Intf: TGUID): Boolean; overload;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -861,6 +861,7 @@ const
   cSubStorePath = PathDelim + '*' ;
 
 {$IFDEF COMPILER5}
+
 function Supports(Instance: TObject; const Intf: TGUID): Boolean;
 begin
   Result := Instance.GetInterfaceEntry(Intf) <> nil;
@@ -878,6 +879,7 @@ begin
   Attr := GetFileAttributes(PChar(FileName));
   Result := (Attr <> $FFFFFFFF) and (Attr and FILE_ATTRIBUTE_READONLY <> 0);
 end;
+
 {$ENDIF COMPILER5}
 
 procedure UpdateGlobalPath(GlobalPaths, NewPaths: TStrings);
@@ -3016,7 +3018,6 @@ function TJvCustomAppMemoryFileStorage.DefaultExtension: string;
 begin
   Result := '';
 end;
-
 
 //=== { TJvAppStoragePropertyBaseEngine } ====================================
 

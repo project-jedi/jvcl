@@ -229,7 +229,7 @@ type
     function IsEqualToAncestor: Boolean;
   end;
 
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   { Needed in D5 to use components with interface. Declaration copied from D6 Classes.pas. See
     various filler implementations for details. This declaration should probably be moved to
     JvTypes or JvComponents. }
@@ -237,7 +237,7 @@ type
     ['{E28B1858-EC86-4559-8FCD-6B4F824151ED}']
     function GetComponent: TComponent;
   end;
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
 
   IJvDataConsumer = interface
     ['{B2F18D03-F615-4AA2-A51A-74D330C05C0E}']

@@ -541,10 +541,10 @@ begin
   if Result then
   begin
     Color := StrToInt('$0' + Copy(S, 8, 8));
-{$IFDEF COMPILER7_UP}
-    if (Color and $80000000)<>0 then
+    {$IFDEF COMPILER7_UP}
+    if (Color and $80000000) <> 0 then
       Color := Color or TColor(clSystemColor);
-{$ENDIF COMPILER7_UP}
+    {$ENDIF COMPILER7_UP}
   end;
 end;
 
@@ -1643,10 +1643,10 @@ begin
   end;
   if ColorFound then
   begin
-{$IFDEF COMPILER7_UP}
-    if (ColorValue and clSystemColor)=clSystemColor then
+    {$IFDEF COMPILER7_UP}
+    if (ColorValue and clSystemColor) = clSystemColor then
       ColorValue := ColorValue and $80FFFFFF;
-{$ENDIF COMPILER7_UP}
+    {$ENDIF COMPILER7_UP}
     SetID(cColorItemIDPrefix + IntToHex(ColorValue, 8));
   end
   else

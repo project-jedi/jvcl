@@ -185,10 +185,10 @@ implementation
 uses
   JvResources,
   TypInfo,
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   JclMath,   // For EnsureRange
   JvJCLUtils,   // for TryStrToInt
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
   Math;
 
 {$R *.dfm}

@@ -39,9 +39,9 @@ interface
 
 uses
   Windows, Messages, Graphics, Controls, Forms, ToolWin,
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_TYPES}
   Types,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_TYPES}
   Classes, SysUtils,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,

@@ -121,9 +121,9 @@ const
 implementation
 
 uses
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   JvJCLUtils,   // for TryStrToInt
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
   JvResources;
 
 {$R *.dfm}

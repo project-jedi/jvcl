@@ -173,9 +173,9 @@ type
   PInteger = ^Integer;
   PDouble = ^Double;
   PBoolean = ^Boolean;
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   PWordBool = ^WordBool;
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
   EJvCsvDataSetError = class(EDatabaseError);
   // Subclass DB.EDatabaseError so we can work nicely with existing Delphi apps.
 

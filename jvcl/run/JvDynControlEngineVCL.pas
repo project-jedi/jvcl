@@ -1914,9 +1914,10 @@ begin
   {$IFDEF COMPILER6_UP}
   {$IFDEF VCL}
   Result := Header[Index];
-  {$ELSE}
-  Result := False;
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Result := False;
+  {$ENDIF VisualCLX}
   {$ELSE}
   Result := False;
   {$ENDIF COMPILER6_UP}

@@ -2656,7 +2656,7 @@ begin
   TJvTreeNode(Node).Checked := Value;
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 procedure TJvTreeView.SetMultiSelect(const Value: Boolean);
 begin
   if FMultiSelect <> Value then
@@ -2666,7 +2666,7 @@ begin
     ClearSelection;
   end;
 end;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 procedure TJvTreeView.SetNodePopup(Node: TTreeNode; Value: TPopupMenu);
 begin
