@@ -1094,6 +1094,11 @@ function SetDoubleClickTime(Interval: Cardinal): LongBool;
 function Win2QtAlign(Flags: Integer): Integer;
 function QtStdAlign(Flags: Integer): Word;
 
+
+function IsCharAlpha(Ch: Char): LongBool;
+function IsCharAlphaNumeric(Ch: Char): LongBool;
+
+
 { Message }
 //  (ahuser) Do not rename PostMsg/SendMsg to PostMessage/SendMessage because
 //  it is easier to find non-working PostMessage/SendMessage calls when the
@@ -1115,6 +1120,9 @@ function KillTimer(Wnd: Cardinal; IDEvent: Cardinal): LongBool; overload;
 const
   WM_USER             = $0400;
   WM_TIMER            = $0113;
+
+  EM_GETRECT          = $00B2;
+  EM_SETRECT          = $00B3;
 
 {$IFDEF LINUX}
 
@@ -5357,6 +5365,19 @@ begin
   Result := Word(Flags and QtAlignMask);
 end;
 
+
+function IsCharAlpha(Ch: Char): LongBool;
+begin
+  // (ahuser) What about other languages than English ?
+  Result := Ch in ['A'..'Z', 'a'..'z'];
+end;
+
+function IsCharAlphaNumeric(Ch: Char): LongBool;
+begin
+  Result := (Ch in ['0'..'9']) or IsCharAlpha(Ch);
+end;
+
+
 {$IFDEF LINUX}
 
 function FileGetAttr(const FileName: string): Integer;
@@ -5502,8 +5523,6 @@ begin
   QApplication_beep;
 end;
 
-{ --------------------- }
-type
 {---------------------------------------}
 
 type
