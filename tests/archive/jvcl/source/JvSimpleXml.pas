@@ -94,6 +94,7 @@ type
   TJvSimpleXmlElems = class(TObject)
   private
     FElems: THashedStringList;
+    FParent: TJvSimpleXmlElem;
     function GetCount: Integer;
     function GetItemNamed(const Name: string): TJvSimpleXmlElem;
   protected
@@ -102,7 +103,7 @@ type
     procedure AddChildFirst(var Value: TJvSimpleXmlElem);
     procedure DoItemRename(var Value: TJvSimpleXmlElem; const Name: string);
   public
-    constructor Create;
+    constructor Create(const AOwner: TJvSimpleXmlElem);
     destructor Destroy; override;
     function Add(const Name: string): TJvSimpleXmlElem; overload;
     function Add(const Name, Value: string): TJvSimpleXmlElem; overload;
@@ -118,6 +119,7 @@ type
     function BoolValue(const Name: string; Default: Boolean = true): Boolean;
     procedure BinaryValue(const Name: string; const Stream: TStream);
 
+    property Parent: TJvSimpleXmlElem read FParent write FParent;
     property Item[const Index: Integer]: TJvSimpleXmlElem read GetItem; default;
     property ItemNamed[const Name: string]: TJvSimpleXmlElem read GetItemNamed;
     property Count: Integer read GetCount;
@@ -714,7 +716,7 @@ constructor TJvSimpleXmlElem.Create(const AOwner: TJvSimpleXmlElem);
 begin
   FName := '';
   FParent := TJvSimpleXmlElem(AOwner);
-  FItems := TJvSimpleXmlElems.Create();
+  FItems := TJvSimpleXmlElems.Create(self);
   FProps := TJvSimpleXmlProps.Create();
 end;
 {*************************************************}
@@ -821,7 +823,7 @@ end;
 
 function TJvSimpleXmlElems.Add(const Name: string): TJvSimpleXmlElem;
 begin
-  result := TJvSimpleXmlElem.Create(self);
+  result := TJvSimpleXmlElem.Create(Parent);
   result.Name := Name;
   AddChild(result);
 end;
@@ -829,7 +831,7 @@ end;
 
 function TJvSimpleXmlElems.Add(const Name, Value: string): TJvSimpleXmlElem;
 begin
-  result := TJvSimpleXmlElem.Create(self);
+  result := TJvSimpleXmlElem.Create(Parent);
   result.Name := Name;
   result.Value := Value;
   AddChild(result);
@@ -920,9 +922,10 @@ begin
 end;
 {*************************************************}
 
-constructor TJvSimpleXmlElems.Create;
+constructor TJvSimpleXmlElems.Create(const AOwner: TJvSimpleXmlElem);
 begin
   FElems := THashedStringList.Create;
+  FParent := AOwner;
 end;
 {*************************************************}
 
