@@ -221,20 +221,8 @@ const
   Separators: set of Char = [#00, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',
   ':', '+', '%', '*', '(', ')', ';', '=', '{', '}', '[', ']', '{', '}', '<', '>'];
 
-{$IFDEF DELPHI}
 type
   TSetOfChar = set of Char;
-{$ENDIF DELPHI}
-{$IFDEF CBUILDER}
-{$IFNDEF BCB6}
-type
-  TSetOfChar = string;
-{$ENDIF}
-{$ENDIF CBUILDER}
-{$IFDEF BCB6}
-type
-  TSetOfChar = set of Char;
-{$ENDIF}
 
 type
   TDateOrder = (doMDY, doDMY, doYMD);
