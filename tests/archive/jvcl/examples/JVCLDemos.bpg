@@ -14,7 +14,7 @@ PROJECTS = AppDdeCmdExample.exe ArrowButtonDemo.exe BmpAnimDemo.exe \
   ContentScrollerDemo.exe ControlsExample.exe CreateProcessExample.exe \
   WebMapper.exe UseCase.exe DSAExamples.exe MessageDlgEditor.exe \
   EnvironmentList.exe FileDirDemo.exe FindReplaceDemo.exe BasicDemo.exe \
-  CollectionDemo.exe SimpleHIDWrite.exe GreyMouser.exe ImageWindowDemo.exe \
+  SimpleHIDWrite.exe CollectionDemo.exe GreyMouser.exe ImageWindowDemo.exe \
   Install2LabelDemo.exe JvAniProj.exe JvAppHotKeyDemo.exe JvBrowserFolder.exe \
   JvClipboardViewerProj.exe JVCLDemo.exe ColorComboDemo.exe \
   JvDataEmbeddedProj.exe DBDTPDemo.exe JvDialogs.exe JvEdits.exe prjControls.exe \
@@ -90,9 +90,6 @@ BasicDemo.exe: HID\BasicDemo\BasicDemo.dpr
   $(DCC)
 
 CollectionDemo.exe: HID\CollectionDemo\CollectionDemo.dpr
-  $(DCC)
-
-SimpleHIDWrite.exe: HID\ReadWriteDemo\SimpleHIDWrite.dpr
   $(DCC)
 
 GreyMouser.exe: HID\ThreadDemo\GreyMouser.dpr
@@ -309,6 +306,9 @@ SimpleTLTest1.exe: TMTimeLine\SimpleTLTest1.dpr
   $(DCC)
 
 TransparentButtonDemo.exe: TransBtn\TransparentButtonDemo.dpr
+  $(DCC)
+
+SimpleHIDWrite.exe: HID\ReadWriteDemo\SimpleHIDWrite.dpr
   $(DCC)
 
 

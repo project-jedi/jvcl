@@ -7,7 +7,7 @@ uses
   Dialogs, JvColorCombo, StdCtrls, JvCombobox;
 
 type
-  TForm1 = class(TForm)
+  TfrmMain = class(TForm)
     JvColorComboBox1: TJvColorComboBox;
     Memo1: TMemo;
     Button1: TButton;
@@ -28,31 +28,31 @@ type
   end;
 
 var
-  Form1: TForm1;
+  frmMain: TfrmMain;
 
 implementation
 
 {$R *.dfm}
 
-procedure TForm1.DoBeforeCustom(Sender: TObject);
+procedure TfrmMain.DoBeforeCustom(Sender: TObject);
 begin
   JvColorComboBox1.ColorNameMap.Add('$00CECECE=Custom');
   JvColorComboBox1.AddColor($00CECECE, '');
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   JvColorComboBox1.Options := [coText,coSysColors,coCustomColors];
   JvColorComboBox1.OnBeforeCustom := DoBeforeCustom;
   JvColorComboBox1.GetColors;
 end;
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TfrmMain.Button1Click(Sender: TObject);
 begin
   Memo1.Lines := JvColorComboBox1.ColorNameMap;
 end;
 
-procedure TForm1.JvColorComboBox1NewColor(Sender: TObject; Color: TColor;
+procedure TfrmMain.JvColorComboBox1NewColor(Sender: TObject; Color: TColor;
   var DisplayName: string; var AllowAdd: Boolean);
 begin
   if Edit1.Text <> '' then
@@ -60,7 +60,7 @@ begin
   JvColorComboBox1.ColorNameMap.Add(Format('$%s=%s', [IntToHex(Color, 8), DisplayName]));
 end;
 
-procedure TForm1.CheckBox1Click(Sender: TObject);
+procedure TfrmMain.CheckBox1Click(Sender: TObject);
 begin
   if CheckBox1.Checked then
     JvColorComboBox1.Options := JvColorComboBox1.Options + [coCustomColors]

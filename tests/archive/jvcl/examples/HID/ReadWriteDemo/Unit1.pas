@@ -7,7 +7,7 @@ uses
   Math, StdCtrls, JvHidControllerClass, JvComponent;
 
 type
-  TForm1 = class(TForm)
+  TfrmMain = class(TForm)
     ListBox1: TListBox;
     WriteButton: TButton;
     ReportID: TEdit;
@@ -38,7 +38,7 @@ type
   end;
 
 var
-  Form1: TForm1;
+  frmMain: TfrmMain;
   TheDev: TJvHidDevice;
 
 implementation
@@ -47,7 +47,7 @@ uses Unit2;
 
 {$R *.DFM}
 
-procedure TForm1.HidCtlDeviceChange(Sender: TObject);
+procedure TfrmMain.HidCtlDeviceChange(Sender: TObject);
 var
   I: Integer;
 begin
@@ -74,7 +74,7 @@ begin
   end;
 end;
 
-function TForm1.HidCtlEnumerate(const HidDev: TJvHidDevice;
+function TfrmMain.HidCtlEnumerate(const HidDev: TJvHidDevice;
   const Index: Integer): Boolean;
 var
   Dev: TJvHidDevice;
@@ -93,7 +93,7 @@ begin
   Result := True;
 end;
 
-procedure TForm1.FormActivate(Sender: TObject);
+procedure TfrmMain.FormActivate(Sender: TObject);
 var
   I, J: Integer;
 begin
@@ -117,7 +117,7 @@ begin
   HidCtlDeviceChange(Self);
 end;
 
-procedure TForm1.FormDestroy(Sender: TObject);
+procedure TfrmMain.FormDestroy(Sender: TObject);
 var
   I: Integer;
 begin
@@ -129,7 +129,7 @@ begin
   DevList.Free;
 end;
 
-procedure TForm1.InfoButtonClick(Sender: TObject);
+procedure TfrmMain.InfoButtonClick(Sender: TObject);
 begin
   if (ListBox1.Items.Count > 0) and
      (ListBox1.ItemIndex >= 0) then
@@ -140,7 +140,7 @@ begin
     end;
 end;
 
-procedure TForm1.DoRead(Feature: Boolean);
+procedure TfrmMain.DoRead(Feature: Boolean);
 var
   I: Integer;
   Buf: array [0..64] of Byte;
@@ -185,7 +185,7 @@ begin
   end;
 end;
 
-procedure TForm1.DoWrite(Feature: Boolean);
+procedure TfrmMain.DoWrite(Feature: Boolean);
 var
   I: Integer;
   Buf: array [0..64] of Byte;
@@ -229,17 +229,17 @@ begin
   end;
 end;
 
-procedure TForm1.ReadButtonClick(Sender: TObject);
+procedure TfrmMain.ReadButtonClick(Sender: TObject);
 begin
   DoRead(Sender = GetFeatureButton);
 end;
 
-procedure TForm1.WriteButtonClick(Sender: TObject);
+procedure TfrmMain.WriteButtonClick(Sender: TObject);
 begin
   DoWrite(Sender = SetFeatureButton);
 end;
 
-procedure TForm1.ListBox1Click(Sender: TObject);
+procedure TfrmMain.ListBox1Click(Sender: TObject);
 var
   I: Integer;
   N: Word;

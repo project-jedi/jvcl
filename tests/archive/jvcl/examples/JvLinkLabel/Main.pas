@@ -37,7 +37,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvCategoryChooser, StdCtrls, ExtCtrls, JvLinkLabel;
+  CategCh, StdCtrls, ExtCtrls, JvLinkLabel;
 
 type
   TfrmMain = class(TForm)
