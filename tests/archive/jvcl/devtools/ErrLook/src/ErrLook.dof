@@ -1,6 +1,6 @@
 [Directories]
 OutputDir=..\bin
-UnitOutputDir=..\..\dcu
+UnitOutputDir=..\dcu
 [Version Info]
 IncludeVerInfo=1
 [Version Info Keys]
