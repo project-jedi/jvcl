@@ -754,7 +754,7 @@ end;
 
 procedure TJvAppXMLFileStorage.Flush;
 begin
-  if FullFileName <> '' then
+  if (FullFileName <> '') and not Readonly then
     Xml.SaveToFile(FullFileName);
 end;
 
