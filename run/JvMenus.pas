@@ -521,6 +521,13 @@ type
     // draws the text at the given place
     procedure DrawText(ARect: TRect; const Text: string; Flags: Longint); virtual;
 
+    // same version of DrawText but with a suffix so that BCB users can actually
+    // use the DrawText because of the #define DrawText DrawTextA from windows.h
+    // This compiler directive means that the header file will define DrawTextA
+    // when the object file defines DrawText. Using DrawTextBCB goes around
+    // this problem, and simply calls DrawText internally in the Delphi code
+    procedure DrawTextBCB(ARect: TRect; const Text: string; Flags: Longint); virtual;
+
     procedure DrawLeftMargin(ARect: TRect); virtual;
     procedure DefaultDrawLeftMargin(ARect: TRect; StartColor, EndColor: TColor);
 
@@ -591,6 +598,7 @@ type
     function GetTextMargin: Integer; override;
     procedure DrawCheckImage(ARect: TRect); override;
     procedure DrawText(ARect: TRect; const Text: string; Flags: Longint); override;
+    procedure DrawTextBCB(ARect: TRect; const Text: string; Flags: Longint); override;
     procedure DrawItemBackground(ARect: TRect); override;
   public
     procedure Paint(Item: TMenuItem; ItemRect: TRect; State: TMenuOwnerDrawState); override;
@@ -667,6 +675,7 @@ type
     procedure DrawSelectedFrame(ARect: TRect); override;
     procedure DrawSeparator(ARect: TRect); override;
     procedure DrawText(ARect: TRect; const Text: string; Flags: Longint); override;
+    procedure DrawTextBCB(ARect: TRect; const Text: string; Flags: Longint); override;
     function GetDrawHighlight: Boolean; override;
     procedure UpdateFieldsFromMenu; override;
     function GetTextMargin: Integer; override;
@@ -2059,6 +2068,11 @@ begin
   Windows.DrawText(Canvas.Handle, PChar(Text), Length(Text), ARect, Flags)
 end;
 
+procedure TJvCustomMenuItemPainter.DrawTextBCB(ARect: TRect; const Text: string; Flags: Longint);
+begin
+  DrawText(ARect, Text, Flags);
+end;
+
 procedure TJvCustomMenuItemPainter.PreparePaint(Item: TMenuItem;
   ItemRect: TRect; State: TMenuOwnerDrawState; Measure: Boolean);
 var
@@ -2839,6 +2853,12 @@ begin
   inherited DrawText(Rect(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom - 1), Text, Flags);
 end;
 
+procedure TJvOfficeMenuItemPainter.DrawTextBCB(ARect: TRect;
+  const Text: string; Flags: Integer);
+begin
+  DrawText(ARect, Text, Flags);
+end;
+
 procedure TJvOfficeMenuItemPainter.DrawItemBackground(ARect: TRect);
 begin
   inherited DrawItemBackground(ARect);
@@ -3280,6 +3300,12 @@ begin
   inherited DrawText(Rect(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom - 1), Text, Flags);
 end;
 
+procedure TJvXPMenuItemPainter.DrawTextBCB(ARect: TRect; const Text: string;
+  Flags: Integer);
+begin
+  DrawText(ARect, Text, Flags);
+end;
+
 function TJvXPMenuItemPainter.GetTextMargin: Integer;
 begin
   Result := inherited GetTextMargin + 2;
@@ -3413,4 +3439,6 @@ finalization
   {$ENDIF UNITVERSIONING}
 
 end.
+
+
 
