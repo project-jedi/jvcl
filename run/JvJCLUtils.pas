@@ -115,7 +115,6 @@ type
     procedure Delete(Index: Integer); override;
     procedure Exchange(Index1, Index2: Integer); override;
     function IndexOf(const S: string): Integer; override;
-    function IndexOfName(const Name: string): Integer; override;
     procedure Insert(Index: Integer; const S: string); override;
     procedure Move(CurIndex, NewIndex: Integer); override;
 
@@ -5812,11 +5811,6 @@ end;
 function TAnsiToWideStrings.IndexOf(const S: string): Integer;
 begin
   Result := FWideStrings.IndexOf(S);
-end;
-
-function TAnsiToWideStrings.IndexOfName(const Name: string): Integer;
-begin
-  Result := FWideStrings.IndexOfName(Name);
 end;
 
 procedure TAnsiToWideStrings.Insert(Index: Integer; const S: string);
