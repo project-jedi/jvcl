@@ -41,10 +41,13 @@ uses
 
   JvQDsgnConsts, JvQQtKeyEditorForm,
   JvQAni, JvQBmpAnimator, JvQPicClip, JvQIconList,
-  JvQGradient, JvQGradientHeaderPanel, JvQId3v1, JvQId3v2,
+  JvQGradient, JvQGradientHeaderPanel,
+  {$IFDEF MSWINDOWS}
+  JvQId3v1, JvQId3v2, JvQID3v2Base, JvQWavePlayer,
+  {$ENDIF MSWINDOWS}
   JvQImageRotate, JvQImageTransform, JvQImageSquare, JvQStarfield,
-  JvQWaitingGradient, JvQWaitingProgress, JvQWavePlayer, JvQSpecialProgress,
-  JvQSlider, JvQID3v2Base, JvQAnimatedImage, JvQSpecialImage,
+  JvQWaitingGradient, JvQWaitingProgress, JvQSpecialProgress,
+  JvQSlider, JvQAnimatedImage, JvQSpecialImage,
   JvQIconListForm {, JvQPictureEditors,  JvQPictureEditForm};
 
 
@@ -58,7 +61,9 @@ begin
     TJvAnimatedImage, TJvSpecialImage]);
   RegisterComponents(RsPaletteBarPanel, [TJvGradientHeaderPanel, TJvGradient,
     TJvWaitingGradient, TJvSpecialProgress, TJvWaitingProgress]);
+  {$IFDEF WINDOWS}
   RegisterComponents(RsPaletteNonVisual, [TJvID3v1, TJvID3v2, TJvWavePlayer]);
+  {$ENDIF MSWINDOWS}
   RegisterComponents(RsPaletteSliderSplitter, [TJvSlider]);
 
   RegisterPropertyEditor(TypeInfo(TJvIconList), nil, '', TIconListProperty);

@@ -48,7 +48,7 @@ uses
   DesignEditors, DesignIntf,
 
   JvQBehaviorLabelEditor, JvQHTHintForm, JvQFooterEditor,
-  JvQGroupHeaderEditor, 
+  JvQGroupHeaderEditor,
 
   JvQDsgnConsts,
   JvQOfficeColorButton, JvQOfficeColorPanel,
@@ -64,6 +64,7 @@ uses
   JvQRollOut, JvQRollOutEditor,
   JvQScrollText, JvQSpacer, JvQSplitter, JvQNetscapeSplitter,
   JvQSwitch,
+  JvQTransparentButton, 
   JvQColorForm, JvQDsgnIntf,
   JvQImageDrawThread, JvQWinampLabel, JvQComponentPanel,
   JvQButtons, JvQCaptionPanel, JvQMovableBevel
@@ -78,7 +79,8 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents(RsPaletteButton, [TJvArrowButton, TJvColorButton,
+  RegisterComponents(RsPaletteButton, [TJvTransparentButton,
+    TJvTransparentButton2, TJvArrowButton, TJvColorButton,
     TJvHTButton, TJvSpacer, TJvSwitch, TJvColorBox, TJvColorSquare,
     TJvDropButton, TJvOfficeColorButton, TJvOfficeColorPanel]);
   RegisterComponents(RsPaletteBarPanel, [TJvCaptionPanel,

@@ -42,7 +42,7 @@ uses
   Classes,
 
 
-  QDialogs, QActnList,
+  QDialogs, QActnList, QExtDlgs,
 
 
   DesignEditors, DesignIntf,
@@ -58,6 +58,7 @@ uses
 procedure Register;
 begin
   RegisterComponents(RsPaletteDialog, [
+    TOpenPictureDialog, TSavePictureDialog, TPrinterSetupDialog,
     TJvDualListDialog, TJvImageDialog,
     TJvProgressDialog, TJvProgressComponent, TJvTipOfDay]);
   RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);

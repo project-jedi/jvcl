@@ -49,7 +49,7 @@ uses
   JvQMaskEdit, JvQBaseEdits, JvQCalc, JvQToolEdit,
   JvQBevel, JvQCheckBox, JvQSpeedButton,
   JvQGroupBox, JvQHeaderControl,
-  JvQImage, JvQLabel, JvQRadioButton, JvQRadioGroup,
+  JvQImage, {JvQLabel,} JvQRadioButton, JvQRadioGroup,
   JvQScrollBar, JvQShape, JvQControlBar,
   JvQTabControl, JvQBitBtn, JvQPickDate, JvQStringGrid,
   JvQPanel, JvQImageList, JvQProgressEditor, JvQDsgnEditors;
@@ -78,7 +78,7 @@ begin
   RegisterComponents(RsPaletteBarPanel, [TJvTabControl, TJvControlBar,
     TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
     TJvTransparentPanel]);
-  RegisterComponents(RsPaletteLabel, [TJvLabel]);
+//  RegisterComponents(RsPaletteLabel, [TJvLabel]);
   RegisterComponents(RsPaletteScrollerTracker, [TJvScrollBar]);
   RegisterComponents(RsPaletteListComboTree, [TJvStringGrid]);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);
@@ -89,7 +89,8 @@ begin
   RegisterPropertyEditor(TypeInfo(string), TJvCustomComboEdit, 'ButtonHint', TJvHintProperty);
 //  RegisterPropertyEditor(TypeInfo(TJvImgBtnKind), TJvImgBtn, 'Kind', TJvNosortEnumProperty);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedButton, 'Caption', TJvHintProperty);
-  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvCustomLabel, 'ImageIndex',TJvDefaultImageIndexProperty);
+//  RegisterPropertyEditor(TypeInfo(TWStringList), '', 'Hints', TJvHintProperty);
+//  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvCustomLabel, 'ImageIndex',TJvDefaultImageIndexProperty);
 end;
 
 end.

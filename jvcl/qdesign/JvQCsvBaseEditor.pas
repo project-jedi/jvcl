@@ -30,7 +30,7 @@ Known Issues:
 
 {$I jvcl.inc}
 
-unit JvQCSVBaseEditor;
+unit JvQCsvBaseEditor;
 
 interface
 

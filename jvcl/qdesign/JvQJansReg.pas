@@ -19,7 +19,7 @@ uses
   JvQYearGrid, JvQTracker, JvQAirBrush, JvQGridFilter, JvQGridPrinter,
   JvQArrayButton, JvQForth, JvQTurtle, JvQPaintFX, JvQDrawImage,
   JvQBitmapButton, JvQSimScope, JvQSimIndicator, JvQSimPID, JvQSIMPIDLinker,
-  JvQSimLogic, JvQSpellerForm, JvQCSVBaseControls, JvQCSVBaseEditor;
+  JvQSimLogic, JvQSpellerForm, JvQCSVBaseControls, JvQCsvBaseEditor;
 
 procedure Register;
 
