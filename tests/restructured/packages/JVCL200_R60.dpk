@@ -32,8 +32,7 @@ requires
   vclx,
   vcljpg,
   dbrtl,
-  vcldb,
-  DJCL;
+  vcldb;
 
 contains
   JvAddPrinter in '..\Source\JvAddPrinter.pas',
