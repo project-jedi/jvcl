@@ -1,3 +1,5 @@
+{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
+{$I JEDI.INC}
 package JVCL200_D50;
 
 {$R *.res}
@@ -26,6 +28,9 @@ package JVCL200_D50;
 {$IMPLICITBUILD ON}
 
 requires
+  dcldb50,
+  dclsmp50,
+  dclstd50,
   vcl50,
   vcldb50,
   JVCL200_R50;
@@ -60,6 +65,31 @@ contains
   JvChNtfyProperty in '..\Source\JvChNtfyProperty.pas',
   JvLCProperty in '..\Source\JvLCProperty.pas',
   JvTipProperty in '..\Source\JvTipProperty.pas',
-  JvAppletProperty in '..\source\JvAppletProperty.pas';
+  JvAppletProperty in '..\source\JvAppletProperty.pas',
+  // Rx Controls
+  JvLConst in '..\source\JvLConst.pas',
+  JvHintProp in '..\source\JvHintProp.pas',
+  JvCheckItm in '..\source\JvCheckItm.pas',
+  JvxStrLEdit in '..\source\JvxStrLEdit.pas',
+  JvColors in '..\source\JvColors.pas',
+  JvDsgn in '..\source\JvDsgn.pas',
+  JvPresrDsn in '..\source\JvPresrDsn.pas',
+  JvMinMaxEd in '..\source\JvMinMaxEd.pas',
+  JvSbEdit in '..\source\JvSbEdit.pas',
+  JvPgMngrEd in '..\source\JvPgMngrEd.pas',
+  JvTimLstEd in '..\source\JvTimLstEd.pas',
+  JvIcoLEdit in '..\source\JvIcoLEdit.pas',
+//  JvResExp in '..\source\JvResExp.pas',
+  JvPictEdit in '..\source\JvPictEdit.pas',
+  JvDirFrm in '..\source\JvDirFrm.pas',
+  JvGradEdit in '..\source\JvGradEdit.pas',
+  JvCtlReg in '..\source\JvCtlReg.pas',
+  JvTooReg in '..\source\JvTooReg.pas',
+  // Rx DB Controls
+  JvSelDSFrm in '..\source\JvSelDSFrm.pas',
+  JvDBReg in '..\source\JvDBReg.pas',
+  // Rx BDE Controls
+  JvQBndDlg in '..\source\JvQBndDlg.pas',
+  JvBDEReg in '..\source\JvBDEReg.pas';
 
 end.
