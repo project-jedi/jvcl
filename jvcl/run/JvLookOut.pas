@@ -255,7 +255,7 @@ type
     property LargeImages;
     property Left;
     property Offset default 1;
-    property ParentFont;
+    property ParentFont default false;
     property ParentImageSize;
     property ParentShowHint;
     property PopupMenu;
@@ -1615,8 +1615,9 @@ begin
   FillColor := clBtnFace;
   Offset := 1;
   FButtonBorder := bbLight;
-  FHighlightFont.Color := clBlack;
-  Font.Color := clWhite;
+  FHighlightFont.Color := clWindowText;
+  ParentFont := false;
+  Font.Color := clHighlightText;
 end;
 
 //=== { TJvLookOutPage } =====================================================
