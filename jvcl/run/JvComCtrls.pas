@@ -54,17 +54,17 @@ const
   TVM_GETLINECOLOR = TV_FIRST + 41;
 
 type
-  TJvIpAddress = class;
+  TJvIPAddress = class;
 
-  TJvIpAddressMinMax = record
+  TJvIPAddressMinMax = record
     Min: Byte;
     Max: Byte;
   end;
 
-  TJvIpAddressRange = class(TPersistent)
+  TJvIPAddressRange = class(TPersistent)
   private
     FControl: TWinControl;
-    FRange: array[0..3] of TJvIpAddressMinMax;
+    FRange: array[0..3] of TJvIPAddressMinMax;
     function GetMaxRange(Index: Integer): Byte;
     function GetMinRange(Index: Integer): Byte;
     procedure SetMaxRange(const Index: Integer; const Value: Byte);
@@ -85,11 +85,11 @@ type
     property Field4Max: Byte index 3 read GetMaxRange write SetMaxRange default 255;
   end;
 
-  TJvIpAddrFieldChangeEvent = procedure(Sender: TJvIpAddress; FieldIndex: Integer;
-    FieldRange: TJvIpAddressMinMax; var Value: Integer) of object;
+  TJvIpAddrFieldChangeEvent = procedure(Sender: TJvIPAddress; FieldIndex: Integer;
+    FieldRange: TJvIPAddressMinMax; var Value: Integer) of object;
   TJvIPAddressChanging = procedure(Sender: TObject; Index: Integer; Value: Byte; var AllowChange: Boolean) of object;
 
-  TJvIpAddressValues = class(TPersistent)
+  TJvIPAddressValues = class(TPersistent)
   private
     FValues: array[0..3] of Byte;
     FOnChange: TNotifyEvent;
@@ -112,14 +112,14 @@ type
     property Value4: Byte index 3 read GetValues write SetValues;
   end;
 
-  TJvIpAddress = class(TWinControl)
+  TJvIPAddress = class(TWinControl)
   private
     {    FEditControls: array [0..3] of HWND;
         FEditControlCount: Integer;}
     FAddress: LongWord;
     FChanging: Boolean;
-    FRange: TJvIpAddressRange;
-    FAddressValues: TJvIpAddressValues;
+    FRange: TJvIPAddressRange;
+    FAddressValues: TJvIPAddressValues;
     FSaveBlank: Boolean;
     FOnFieldChange: TJvIpAddrFieldChangeEvent;
     LocalFont: HFONT;
@@ -137,7 +137,7 @@ type
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure WMParentNotify(var Msg: TWMParentNotify); message WM_PARENTNOTIFY;
     procedure WMSetFont(var Msg: TWMSetFont); message WM_SETFONT;
-    procedure SetAddressValues(const Value: TJvIpAddressValues);
+    procedure SetAddressValues(const Value: TJvIPAddressValues);
   protected
     procedure AdjustHeight;
     procedure AdjustSize; override;
@@ -158,7 +158,7 @@ type
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Address: LongWord read FAddress write SetAddress default 0;
-    property AddressValues: TJvIpAddressValues read FAddressValues write SetAddressValues;
+    property AddressValues: TJvIPAddressValues read FAddressValues write SetAddressValues;
     property Anchors;
     property Constraints;
     property DragCursor;
@@ -169,7 +169,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-    property Range: TJvIpAddressRange read FRange write FRange;
+    property Range: TJvIPAddressRange read FRange write FRange;
     property ShowHint;
     property TabOrder;
     property TabStop default True;
@@ -450,9 +450,9 @@ uses
 const
   TVIS_CHECKED = $2000;
 
-  // === TJvIpAddressRange =====================================================
+  // === TJvIPAddressRange =====================================================
 
-constructor TJvIpAddressRange.Create(Control: TWinControl);
+constructor TJvIPAddressRange.Create(Control: TWinControl);
 var
   I: Integer;
 begin
@@ -465,10 +465,10 @@ begin
   end;
 end;
 
-procedure TJvIpAddressRange.AssignTo(Dest: TPersistent);
+procedure TJvIPAddressRange.AssignTo(Dest: TPersistent);
 begin
-  if Dest is TJvIpAddressRange then
-    with TJvIpAddressRange(Dest) do
+  if Dest is TJvIPAddressRange then
+    with TJvIPAddressRange(Dest) do
     begin
       FRange := Self.FRange;
       Change(-1);
@@ -477,7 +477,7 @@ begin
     inherited AssignTo(Dest);
 end;
 
-procedure TJvIpAddressRange.Change(Index: Integer);
+procedure TJvIPAddressRange.Change(Index: Integer);
 var
   I: Integer;
 
@@ -497,36 +497,36 @@ begin
     ChangeRange(Index);
 end;
 
-function TJvIpAddressRange.GetMaxRange(Index: Integer): Byte;
+function TJvIPAddressRange.GetMaxRange(Index: Integer): Byte;
 begin
   Result := FRange[Index].Max;
 end;
 
-function TJvIpAddressRange.GetMinRange(Index: Integer): Byte;
+function TJvIPAddressRange.GetMinRange(Index: Integer): Byte;
 begin
   Result := FRange[Index].Min;
 end;
 
-procedure TJvIpAddressRange.SetMaxRange(const Index: Integer; const Value: Byte);
+procedure TJvIPAddressRange.SetMaxRange(const Index: Integer; const Value: Byte);
 begin
   FRange[Index].Max := Value;
   Change(Index);
 end;
 
-procedure TJvIpAddressRange.SetMinRange(const Index: Integer; const Value: Byte);
+procedure TJvIPAddressRange.SetMinRange(const Index: Integer; const Value: Byte);
 begin
   FRange[Index].Min := Value;
   Change(Index);
 end;
 
-// === TJvIpAddress ==========================================================
+// === TJvIPAddress ==========================================================
 
-constructor TJvIpAddress.Create(AOwner: TComponent);
+constructor TJvIPAddress.Create(AOwner: TComponent);
 begin
   CheckCommonControl(ICC_INTERNET_CLASSES);
   inherited Create(AOwner);
-  FRange := TJvIpAddressRange.Create(Self);
-  FAddressValues := TJvIpAddressValues.Create;
+  FRange := TJvIPAddressRange.Create(Self);
+  FAddressValues := TJvIPAddressValues.Create;
   FAddressValues.OnChange := DoAddressChange;
   FAddressValues.OnChanging := DoAddressChanging;
 
@@ -538,14 +538,14 @@ begin
   AdjustHeight;
 end;
 
-destructor TJvIpAddress.Destroy;
+destructor TJvIPAddress.Destroy;
 begin
   FreeAndNil(FRange);
   FreeAndNil(FAddressValues);
   inherited Destroy;
 end;
 
-procedure TJvIpAddress.CreateParams(var Params: TCreateParams);
+procedure TJvIPAddress.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   CreateSubClass(Params, WC_IPADDRESS);
@@ -556,7 +556,7 @@ begin
   end;
 end;
 
-procedure TJvIpAddress.CreateWnd;
+procedure TJvIPAddress.CreateWnd;
 begin
   //  ClearEditControls;
   FChanging := True;
@@ -575,7 +575,7 @@ begin
   end;
 end;
 
-procedure TJvIpAddress.DestroyLocalFont;
+procedure TJvIPAddress.DestroyLocalFont;
 begin
   if LocalFont <> 0 then
   begin
@@ -584,13 +584,13 @@ begin
   end;
 end;
 
-procedure TJvIpAddress.DestroyWnd;
+procedure TJvIPAddress.DestroyWnd;
 begin
   FSaveBlank := IsBlank;
   inherited DestroyWnd;
 end;
 
-procedure TJvIpAddress.AdjustHeight;
+procedure TJvIPAddress.AdjustHeight;
 var
   DC: HDC;
   SaveFont: HFont;
@@ -616,39 +616,39 @@ begin
     end;}
 end;
 
-procedure TJvIpAddress.AdjustSize;
+procedure TJvIPAddress.AdjustSize;
 begin
   inherited AdjustSize;
   RecreateWnd;
 end;
 
-procedure TJvIpAddress.ClearAddress;
+procedure TJvIPAddress.ClearAddress;
 begin
   if HandleAllocated then
     Perform(IPM_CLEARADDRESS, 0, 0);
   FAddressValues.Address := 0;
 end;
 
-{procedure TJvIpAddress.ClearEditControls;
+{procedure TJvIPAddress.ClearEditControls;
 begin
   FillChar(FEditControls, Sizeof(FEditControls), #0);
   FEditControlCount := 0;
 end;}
 
-procedure TJvIpAddress.CMColorChanged(var Msg: TMessage);
+procedure TJvIPAddress.CMColorChanged(var Msg: TMessage);
 begin
   inherited;
   Invalidate;
 end;
 
-procedure TJvIpAddress.CMFontChanged(var Msg: TMessage);
+procedure TJvIPAddress.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
   AdjustHeight;
   Invalidate;
 end;
 
-procedure TJvIpAddress.CNCommand(var Msg: TWMCommand);
+procedure TJvIPAddress.CNCommand(var Msg: TWMCommand);
 begin
   with Msg do
     case NotifyCode of
@@ -672,7 +672,7 @@ begin
   inherited;
 end;
 
-procedure TJvIpAddress.CNNotify(var Msg: TWMNotify);
+procedure TJvIPAddress.CNNotify(var Msg: TWMNotify);
 begin
   with Msg, NMHdr^ do
     if code = IPN_FIELDCHANGED then
@@ -681,37 +681,37 @@ begin
   inherited;
 end;
 
-procedure TJvIpAddress.DoAddressChange(Sender: TObject);
+procedure TJvIPAddress.DoAddressChange(Sender: TObject);
 begin
   Address := FAddressValues.Address;
 end;
 
-procedure TJvIpAddress.DoAddressChanging(Sender: TObject; Index: Integer; Value: Byte; var AllowChange: Boolean);
+procedure TJvIPAddress.DoAddressChanging(Sender: TObject; Index: Integer; Value: Byte; var AllowChange: Boolean);
 begin
   AllowChange := (Index > -1) and (Index < 4) and
     (Value >= FRange.FRange[Index].Min) and (Value <= FRange.FRange[Index].Max);
 end;
 
-procedure TJvIpAddress.DoChange;
+procedure TJvIPAddress.DoChange;
 begin
   if Assigned(FOnChange) then
     FOnChange(Self);
 end;
 
-procedure TJvIpAddress.DoFieldChange(FieldIndex: Integer; var FieldValue: Integer);
+procedure TJvIPAddress.DoFieldChange(FieldIndex: Integer; var FieldValue: Integer);
 begin
   if Assigned(FOnFieldChange) then
     FOnFieldChange(Self, FieldIndex, FRange.FRange[FieldIndex], FieldValue);
 end;
 
-function TJvIpAddress.IsBlank: Boolean;
+function TJvIPAddress.IsBlank: Boolean;
 begin
   Result := False;
   if HandleAllocated then
     Result := SendMessage(Handle, IPM_ISBLANK, 0, 0) <> 0;
 end;
 
-procedure TJvIpAddress.SetAddress(const Value: LongWord);
+procedure TJvIPAddress.SetAddress(const Value: LongWord);
 begin
   if FAddress <> Value then
   begin
@@ -722,30 +722,30 @@ begin
   end;
 end;
 
-procedure TJvIpAddress.SetAddressValues(const Value: TJvIpAddressValues);
+procedure TJvIPAddress.SetAddressValues(const Value: TJvIPAddressValues);
 begin
   //  (p3) do nothing
 end;
 
-procedure TJvIpAddress.WMDestroy(var Msg: TWMNCDestroy);
+procedure TJvIPAddress.WMDestroy(var Msg: TWMNCDestroy);
 begin
   DestroyLocalFont;
   inherited;
 end;
 
-procedure TJvIpAddress.WMEraseBkgnd(var Msg: TWmEraseBkgnd);
+procedure TJvIPAddress.WMEraseBkgnd(var Msg: TWmEraseBkgnd);
 begin
   Msg.Result := 1;
 end;
 
-procedure TJvIpAddress.WMGetDlgCode(var Msg: TWMGetDlgCode);
+procedure TJvIPAddress.WMGetDlgCode(var Msg: TWMGetDlgCode);
 begin
   inherited;
   with Msg do
     Result := Result or DLGC_WANTARROWS;
 end;
 
-procedure TJvIpAddress.WMParentNotify(var Msg: TWMParentNotify);
+procedure TJvIPAddress.WMParentNotify(var Msg: TWMParentNotify);
 begin
   with Msg do
     case Event of
@@ -763,7 +763,7 @@ begin
   inherited;
 end;
 
-procedure TJvIpAddress.WMSetFont(var Msg: TWMSetFont);
+procedure TJvIPAddress.WMSetFont(var Msg: TWMSetFont);
 var
   LF: TLogFont;
 begin
@@ -1698,32 +1698,32 @@ begin
     FOnVScroll(Self);
 end;
 
-// === TJvIpAddressValues ====================================================
+// === TJvIPAddressValues ====================================================
 
-procedure TJvIpAddressValues.Change;
+procedure TJvIPAddressValues.Change;
 begin
   if Assigned(FOnChange) then
     FOnChange(Self);
 end;
 
-function TJvIpAddressValues.Changing(Index: Integer; Value: Byte): Boolean;
+function TJvIPAddressValues.Changing(Index: Integer; Value: Byte): Boolean;
 begin
   Result := True;
   if Assigned(FOnChanging) then
     FOnChanging(Self, Index, Value, Result);
 end;
 
-function TJvIpAddressValues.GetValue: Cardinal;
+function TJvIPAddressValues.GetValue: Cardinal;
 begin
   Result := MAKEIPADDRESS(FValues[0], FValues[1], FValues[2], FValues[3]);
 end;
 
-function TJvIpAddressValues.GetValues(Index: Integer): Byte;
+function TJvIPAddressValues.GetValues(Index: Integer): Byte;
 begin
   Result := FValues[Index];
 end;
 
-procedure TJvIpAddressValues.SetValue(const AValue: Cardinal);
+procedure TJvIPAddressValues.SetValue(const AValue: Cardinal);
 var
   FChange: Boolean;
 begin
@@ -1755,7 +1755,7 @@ begin
   end;
 end;
 
-procedure TJvIpAddressValues.SetValues(Index: Integer; Value: Byte);
+procedure TJvIPAddressValues.SetValues(Index: Integer; Value: Byte);
 begin
   if (Index >= Low(FValues)) and (Index <= High(FValues)) and (FValues[Index] <> Value) then
   begin

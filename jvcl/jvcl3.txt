@@ -89,6 +89,9 @@ DONE - Remove unnecessary IFDEF's (WIN32, COMPILER3, COMPILER4 etc). We don't su
 DONE - Merge utility units into one and put component specific routines into separate units. 
 * Split design units where editors and forms are in the same file (bad!)
 DONE - Rename all DB related units to "JvDB", all BDE related to "JvBDE" etc 
+* Missing/unregistered components: 
+  -  TJvSpinButton (JvSpin)
+  
 * Add remaining donations:
 
 DONE - Globus (Andrey Chudin) - already compliant 

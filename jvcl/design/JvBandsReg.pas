@@ -11,7 +11,7 @@ uses
   ExptIntf, ToolsApi,
   JclSchedule,
 
-  JvBandForms, JvBAndObject, JvBandObjectDLLWizard, JvBandObjectDLLWizardForm;
+  JvBandForms, JvBandObject, JvBandObjectDLLWizard, JvBandObjectDLLWizardForm;
 procedure Register;
 begin
   RegisterCustomModule(TJvBandForm, TCustomModule);

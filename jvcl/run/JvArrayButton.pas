@@ -34,7 +34,7 @@ uses
   ExtCtrls;
 
 type
-  TarrayButtonClicked = procedure(acol, arow: integer) of object;
+  TArrayButtonClicked = procedure(acol, arow: integer) of object;
 
   TJvArrayButton = class(TGraphicControl)
   private
@@ -43,13 +43,13 @@ type
     FColor: TColor;
     Frows: integer;
     Fcols: integer;
-    FonArrayButtonClicked: TarrayButtonClicked;
+    FonArrayButtonClicked: TArrayButtonClicked;
     FCaptions: Tstringlist;
     FColors: TStringlist;
     FHints: TStringlist;
     procedure Setcols(const Value: integer);
     procedure Setrows(const Value: integer);
-    procedure SetonArrayButtonClicked(const Value: TarrayButtonClicked);
+    procedure SetonArrayButtonClicked(const Value: TArrayButtonClicked);
     procedure SetCaptions(const Value: Tstringlist);
     procedure SetColors(const Value: TStringlist);
     procedure MouseToCell(const x, y: integer; var acol, arow: integer);
@@ -103,7 +103,7 @@ type
      please note the hex order in Delphi is BGR i.s.o. the RGB order you may know from HTML hex color triplets}
     property Hint;
     property ShowHint;
-    property onArrayButtonClicked: TarrayButtonClicked read FonArrayButtonClicked write SetonArrayButtonClicked;
+    property onArrayButtonClicked: TArrayButtonClicked read FonArrayButtonClicked write SetonArrayButtonClicked;
     {provides you with the column and row of the clicked button
     the topleft button has column=0 and row=0}
   end;
@@ -270,7 +270,7 @@ begin
 end;
 
 procedure TJvArrayButton.SetonArrayButtonClicked(
-  const Value: TarrayButtonClicked);
+  const Value: TArrayButtonClicked);
 begin
   FonArrayButtonClicked := Value;
 end;

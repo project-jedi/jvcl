@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvCabFile.PAS, released on 2001-02-28.
+The Original Code is: JvCABFile.PAS, released on 2001-02-28.
 
 The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
@@ -26,7 +26,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvCabFile;
+unit JvCABFile;
 
 interface
 
@@ -35,7 +35,7 @@ uses
   JvTypes, JvComponent;
 
 type
-  TCabInfo = record
+  TCABInfo = record
     CabinetPath: string;
     CabinetFile: string;
     DiskName: string;
@@ -43,18 +43,18 @@ type
     CabinetNumber: Shortint;
   end;
 
-  TOnCabInfo = procedure(Sender: TObject; CabInfo: TCabInfo) of object;
+  TOnCABInfo = procedure(Sender: TObject; CABInfo: TCABInfo) of object;
   TOnExtracted = procedure(Sender: TObject; Successed: Boolean; var Cont: Boolean;
     Source, Dest: string) of object;
   TOnExtractFile = procedure(Sender: TObject; FileName: string; DestPath: string) of object;
-  TOnNeedNewCabinet = procedure(Sender: TObject; var Cont: Boolean; CabInfo: TCabInfo;
+  TOnNeedNewCabinet = procedure(Sender: TObject; var Cont: Boolean; CABInfo: TCABInfo;
     var NewPath: string) of object;
 
-  TJvCabFile = class(TJvComponent)
+  TJvCABFile = class(TJvComponent)
   private
     FFileName: TFileName;
     FFiles: TStringList;
-    FOnCabInfo: TOnCabInfo;
+    FOnCABInfo: TOnCABInfo;
     FOnFiles: TNotifyEvent;
     FOnExtracted: TOnExtracted;
     FDestPath: string;
@@ -73,7 +73,7 @@ type
   published
     property FileName: TFileName read FFileName write SetFileName;
     property Files: TStringList read FFiles write SetFiles;
-    property OnCabInfo: TOnCabInfo read FOnCabInfo write FOnCabInfo;
+    property OnCABInfo: TOnCABInfo read FOnCABInfo write FOnCABInfo;
     property OnFilesListed: TNotifyEvent read FOnFiles write FonFiles;
     property OnFileExtracted: TOnExtracted read FOnExtracted write FOnExtracted;
     property OnStartFileExtraction: TOnExtractFile read FOnExtractFile write FonExtractFile;
@@ -86,9 +86,9 @@ resourcestring
   RC_ErrorSetupDll = 'Unable to find SetupApi.dll';
 
 const
-  SPFILENOTIFY_CABINETINFO    = $00000010;
-  SPFILENOTIFY_FILEINCABINET  = $00000011;
-  SPFILENOTIFY_NEEDNEWCABINET = $00000012;
+  SPFILENOTIFY_CabinetINFO    = $00000010;
+  SPFILENOTIFY_FILEINCabinet  = $00000011;
+  SPFILENOTIFY_NEEDNEWCabinet = $00000012;
   SPFILENOTIFY_FILEEXTRACTED  = $00000013;
   SPFILENOTIFY_FILEOPDELAYED  = $00000014;
   FILEOP_ABORT   = 0;
@@ -108,7 +108,7 @@ type
     MsgHandler: TSPFileCallback; Context: Pointer): LongBool; stdcall;
 
   PFileInCabinetInfo = ^TFileInCabinetInfo;
-  FILE_IN_CABINET_INFO = packed record
+  FILE_IN_Cabinet_INFO = packed record
     NameInCabinet: PAnsiChar;
     FileSize: DWORD;
     Win32Error: DWORD;
@@ -117,17 +117,17 @@ type
     DosAttribs: Word;
     FullTargetName: array [0..MAX_PATH - 1] of AnsiChar;
   end;
-  TFileInCabinetInfo = FILE_IN_CABINET_INFO;
+  TFileInCabinetInfo = FILE_IN_Cabinet_INFO;
 
   PCabinetInfo = ^TCabinetInfo;
-  CABINET_INFO = packed record
+  Cabinet_INFO = packed record
     CabinetPath: PAnsiChar;
     CabinetFile: PAnsiChar;
     DiskName: PAnsiChar;
     SetId: Word;
     CabinetNumber: Word;
   end;
-  TCabinetInfo = CABINET_INFO;
+  TCabinetInfo = Cabinet_INFO;
 
   PFilePaths = ^TFilePaths;
   FILEPATHS = packed record
@@ -138,7 +138,7 @@ type
   end;
   TFilePaths = FILEPATHS;
 
-constructor TJvCabFile.Create(AOwner: TComponent);
+constructor TJvCABFile.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FFiles := TStringList.Create;
@@ -148,7 +148,7 @@ begin
     raise EJVCLException.Create(RC_ErrorSetupDll);
 end;
 
-destructor TJvCabFile.Destroy;
+destructor TJvCABFile.Destroy;
 begin
   FFiles.Free;
   if FDll <> 0 then
@@ -156,49 +156,49 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvCabFile.SetFileName(const Value: TFileName);
+procedure TJvCABFile.SetFileName(const Value: TFileName);
 begin
   FFileName := Value;
   RefreshFiles;
 end;
 
-procedure TJvCabFile.SetFiles(const Value: TStringList);
+procedure TJvCABFile.SetFiles(const Value: TStringList);
 begin
   //do nothing !!!!
 end;
 
 function CBack(Context: Pointer; Notification: UINT; Param1, Param2: UINT_PTR): UINT; stdcall;
 var
-  Cab: PFileInCabinetInfo;
-  Sender: TJvCabFile;
-  CabInfo: TCabInfo;
+  CAB: PFileInCabinetInfo;
+  Sender: TJvCABFile;
+  CABInfo: TCABInfo;
   ParamInfo: PCabinetInfo;
 begin
   Result := ERROR_BAD_COMMAND;
   if Context <> nil then
-    Sender := TJvCabFile(Context^)
+    Sender := TJvCABFile(Context^)
   else
     Exit;
 
-  //this callback is only for listing files in a cabinet ... pouet pouet !
-  if Notification = SPFILENOTIFY_FILEINCABINET then //found a file in the cabinet
+  //this callback is only for listing files in a Cabinet ... pouet pouet !
+  if Notification = SPFILENOTIFY_FILEINCabinet then //found a file in the Cabinet
   begin
     Result := FILEOP_SKIP;
-    Cab := PFileInCabinetInfo(Param1);
-    Sender.FFiles.Add(StrPas(Cab^.NameInCabinet));
+    CAB := PFileInCabinetInfo(Param1);
+    Sender.FFiles.Add(StrPas(CAB^.NameInCabinet));
   end
   else
-  if Notification = SPFILENOTIFY_CABINETINFO then //give cabinet info
+  if Notification = SPFILENOTIFY_CabinetINFO then //give Cabinet info
   begin
-    if Assigned(Sender.FOnCabInfo) and (Param1 <> 0) then
+    if Assigned(Sender.FOnCABInfo) and (Param1 <> 0) then
     begin
       ParamInfo := PCabinetInfo(Param1);
-      CabInfo.CabinetPath := StrPas(ParamInfo^.CabinetPath);
-      CabInfo.CabinetFile := StrPas(ParamInfo^.CabinetFile);
-      CabInfo.DiskName := StrPas(ParamInfo^.DiskName);
-      CabInfo.Id := ParamInfo^.SetId;
-      CabInfo.CabinetNumber := ParamInfo^.CabinetNumber;
-      Sender.FOnCabInfo(Sender, CabInfo);
+      CABInfo.CabinetPath := StrPas(ParamInfo^.CabinetPath);
+      CABInfo.CabinetFile := StrPas(ParamInfo^.CabinetFile);
+      CABInfo.DiskName := StrPas(ParamInfo^.DiskName);
+      CABInfo.Id := ParamInfo^.SetId;
+      CABInfo.CabinetNumber := ParamInfo^.CabinetNumber;
+      Sender.FOnCABInfo(Sender, CABInfo);
     end;
     Result := 0;
   end;
@@ -206,9 +206,9 @@ end;
 
 function CExtract(Context: Pointer; Notification: UINT; Param1, Param2: UINT_PTR): UINT; stdcall;
 var
-  Cab: PFileInCabinetInfo;
-  Sender: TJvCabFile;
-  CabInfo: TCabInfo;
+  CAB: PFileInCabinetInfo;
+  Sender: TJvCABFile;
+  CABInfo: TCABInfo;
   Cont: Boolean;
   Pathes: TFilePaths;
   Path: string;
@@ -216,42 +216,42 @@ var
 begin
   Result := ERROR_BAD_COMMAND;
   if Context <> nil then
-    Sender := TJvCabFile(Context^)
+    Sender := TJvCABFile(Context^)
   else
     Exit;
 
-  //this callback is only for listing files in a cabinet ...
-  if Notification = SPFILENOTIFY_CABINETINFO then
+  //this callback is only for listing files in a Cabinet ...
+  if Notification = SPFILENOTIFY_CabinetINFO then
     Result := 0
   else
-  if Notification = SPFILENOTIFY_FILEINCABINET then //found a file in the cabinet
+  if Notification = SPFILENOTIFY_FILEINCabinet then //found a file in the Cabinet
   begin
     try
       Result := FILEOP_DOIT;
-      Cab := PFileInCabinetInfo(Param1);
+      CAB := PFileInCabinetInfo(Param1);
 
       if Sender.FDestPath[Length(Sender.FDestPath)] = '\' then
       begin
         //extract all
-        Path := Sender.FDestPath + StrPas(Cab^.NameInCabinet);
+        Path := Sender.FDestPath + StrPas(CAB^.NameInCabinet);
         for I := 1 to Length(Path) do
-          Cab^.FullTargetName[I-1] := Path[I];
-        Cab^.FullTargetName[Length(Path)] := #0;
+          CAB^.FullTargetName[I-1] := Path[I];
+        CAB^.FullTargetName[Length(Path)] := #0;
 
         if Assigned(Sender.FOnExtractFile) then
-          Sender.FOnExtractFile(Sender, Cab^.FullTargetName, Sender.FDestPath);
+          Sender.FOnExtractFile(Sender, CAB^.FullTargetName, Sender.FDestPath);
       end
       else
       begin
         //Extract specific file
-        if UpperCase(ExtractFileName(Sender.FDestPath)) = UpperCase(StrPas(Cab^.NameInCabinet)) then
+        if UpperCase(ExtractFileName(Sender.FDestPath)) = UpperCase(StrPas(CAB^.NameInCabinet)) then
         begin
           Path := Sender.FDestPath;
           for I := 1 to Length(Path) do
-            Cab^.FullTargetName[I-1] := Path[I];
-          Cab^.FullTargetName[Length(Path)] := #0;
+            CAB^.FullTargetName[I-1] := Path[I];
+          CAB^.FullTargetName[Length(Path)] := #0;
           if Assigned(Sender.FOnExtractFile) then
-            Sender.FOnExtractFile(Sender, Cab^.FullTargetName, Sender.FDestPath);
+            Sender.FOnExtractFile(Sender, CAB^.FullTargetName, Sender.FDestPath);
         end
         else
           Result := FILEOP_SKIP;
@@ -275,20 +275,20 @@ begin
       Result := ERROR_BAD_COMMAND;
   end
   else
-  if Notification = SPFILENOTIFY_NEEDNEWCABINET then
+  if Notification = SPFILENOTIFY_NEEDNEWCabinet then
   begin
     if Param1 <> 0 then
     begin
-      CabInfo.CabinetPath := StrPas(PCabinetInfo(Param1)^.CabinetPath);
-      CabInfo.CabinetFile := StrPas(PCabinetInfo(Param1)^.CabinetFile);
-      CabInfo.DiskName := StrPas(PCabinetInfo(Param1)^.DiskName);
-      CabInfo.Id := PCabinetInfo(Param1)^.SetId;
-      CabInfo.CabinetNumber := PCabinetInfo(Param1)^.CabinetNumber;
+      CABInfo.CabinetPath := StrPas(PCabinetInfo(Param1)^.CabinetPath);
+      CABInfo.CabinetFile := StrPas(PCabinetInfo(Param1)^.CabinetFile);
+      CABInfo.DiskName := StrPas(PCabinetInfo(Param1)^.DiskName);
+      CABInfo.Id := PCabinetInfo(Param1)^.SetId;
+      CABInfo.CabinetNumber := PCabinetInfo(Param1)^.CabinetNumber;
       Cont := True;
       Path := '';
       if Assigned(Sender.FOnNeed) then
       begin
-        Sender.FOnNeed(Sender, Cont, CabInfo, Path);
+        Sender.FOnNeed(Sender, Cont, CABInfo, Path);
         Sender.FTmpString := Path;
         PDWORD(Param2)^ := DWORD(PChar(Sender.FTmpString));
       end
@@ -300,7 +300,7 @@ begin
   end;
 end;
 
-procedure TJvCabFile.RefreshFiles;
+procedure TJvCABFile.RefreshFiles;
 var
   SetupIterateCabinet: TSetupIterateCabinet;
 begin
@@ -311,7 +311,7 @@ begin
       FOnFiles(Self);
 end;
 
-function TJvCabFile.ExtractAll(DestPath: string): Boolean;
+function TJvCABFile.ExtractAll(DestPath: string): Boolean;
 var
   SetupIterateCabinet: TSetupIterateCabinet;
 begin
@@ -322,7 +322,7 @@ begin
   Result := SetupIterateCabinet(PChar(FFileName), 0, CExtract, @Self);
 end;
 
-function TJvCabFile.ExtractFile(FileName, DestPath: string): Boolean;
+function TJvCABFile.ExtractFile(FileName, DestPath: string): Boolean;
 var
   SetupIterateCabinet: TSetupIterateCabinet;
 begin

@@ -99,11 +99,11 @@ type
     property Visible;
     property ShowHint;
     property Popupmenu;
-    property onMouseDown;
-    property onMouseMove;
-    property onMouseUp;
-    property onClick;
-    property onDblClick;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnClick;
+    property OnDblClick;
     { Published declarations }
 
   end;

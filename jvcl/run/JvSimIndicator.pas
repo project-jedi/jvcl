@@ -56,9 +56,9 @@ type
     procedure paint; override;
   published
     { Published declarations }
-    property value: integer read Fvalue write Setvalue;
-    property minimum: integer read Fminimum write Setminimum;
-    property maximum: integer read Fmaximum write Setmaximum;
+    property Value: integer read Fvalue write Setvalue;
+    property Minimum: integer read Fminimum write Setminimum;
+    property Maximum: integer read Fmaximum write Setmaximum;
     property BarColor: TColor read FColor write SetBarColor;
     property BackColor: TColor read FBackColor write SetBackColor;
   end;

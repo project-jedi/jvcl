@@ -36,7 +36,7 @@ uses
 
 type
   { (RB) Construct a abstract base class for encoders/decoders }
-  TJvXorCipher = class(TJvComponent)
+  TJvXORCipher = class(TJvComponent)
   private
     FDecoded: string;
     FEncoded: string;
@@ -62,7 +62,7 @@ type
 
 implementation
 
-function TJvXorCipher.Crypt(S: string): string;
+function TJvXORCipher.Crypt(S: string): string;
 var
   I: Byte;
 begin
@@ -71,19 +71,19 @@ begin
     Result := Result + Char(Ord(S[I]) xor FPivot);
 end;
 
-procedure TJvXorCipher.SetDecoded(S: string);
+procedure TJvXORCipher.SetDecoded(S: string);
 begin
   FDecoded := S;
   FEncoded := Crypt(S);
 end;
 
-procedure TJvXorCipher.SetEncoded(S: string);
+procedure TJvXORCipher.SetEncoded(S: string);
 begin
   FEncoded := S;
   FDecoded := Crypt(S);
 end;
 
-procedure TJvXorCipher.Decode(Strings: TStrings);
+procedure TJvXORCipher.Decode(Strings: TStrings);
 var
   I: Integer;
 begin
@@ -91,12 +91,12 @@ begin
     Strings[I] := Crypt(Strings[I]);
 end;
 
-procedure TJvXorCipher.Encode(Strings: TStrings);
+procedure TJvXORCipher.Encode(Strings: TStrings);
 begin
   Decode(Strings);
 end;
 
-function TJvXorCipher.DecodeStream(Value: TStream): TStream;
+function TJvXORCipher.DecodeStream(Value: TStream): TStream;
 var
   Buffer: array [0..1023] of Byte;
   I, Count: Integer;
@@ -112,7 +112,7 @@ begin
   end;
 end;
 
-function TJvXorCipher.EncodeStream(Value: TStream): TStream;
+function TJvXORCipher.EncodeStream(Value: TStream): TStream;
 begin
   Result := DecodeStream(Value);
 end;

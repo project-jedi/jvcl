@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvFtpGrabber.PAS, released on 2001-02-28.
+The Original Code is: JvFTPGrabber.PAS, released on 2001-02-28.
 
 The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
@@ -27,7 +27,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvFtpGrabber;
+unit JvFTPGrabber;
 
 interface
 
@@ -73,7 +73,7 @@ type
       OnStatus: TJvFTPProgressEvent; Sender: TObject; OnClosedConnection: TNotifyEvent); // acp
   end;
 
-  TJvFtpGrabber = class(TJvComponent)
+  TJvFTPGrabber = class(TJvComponent)
   private
     FSize: Integer; // acp
     FThread: TJvFtpThread;
@@ -154,9 +154,9 @@ function FtpGetFileSize(hFile: HINTERNET; lpdwFileSizeHigh: LPDWORD): DWORD; std
 {$EXTERNALSYM FtpGetFileSize}
 {$ENDIF}
 
-//=== TJvFtpGrabber ==========================================================
+//=== TJvFTPGrabber ==========================================================
 
-constructor TJvFtpGrabber.Create(AOwner: TComponent);
+constructor TJvFTPGrabber.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FUrl := '';
@@ -170,7 +170,7 @@ begin
   FSize := 0;
 end;
 
-destructor TJvFtpGrabber.Destroy;
+destructor TJvFTPGrabber.Destroy;
 begin
   if FThread <> nil then
   begin
@@ -180,39 +180,39 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvFtpGrabber.Terminate; // acp
+procedure TJvFTPGrabber.Terminate; // acp
 begin
   if Assigned(FThread) then
     FThread.Terminate;
 end;
 
-procedure TJvFtpGrabber.DoneFile(Sender: TObject; FileName: string;
+procedure TJvFTPGrabber.DoneFile(Sender: TObject; FileName: string;
   FileSize: Integer; Url: string);
 begin
   if Assigned(FOnDoneFile) then
     FOnDoneFile(Self, FileName, FileSize, Url);
 end;
 
-procedure TJvFtpGrabber.DoneStream(Sender: TObject; Stream: TStream;
+procedure TJvFTPGrabber.DoneStream(Sender: TObject; Stream: TStream;
   StreamSize: Integer; Url: string);
 begin
   if Assigned(FOnDoneStream) then
     FOnDoneStream(Self, Stream, StreamSize, Url);
 end;
 
-procedure TJvFtpGrabber.Error(Sender: TObject; ErrorMsg: string);
+procedure TJvFTPGrabber.Error(Sender: TObject; ErrorMsg: string);
 begin
   if Assigned(FOnError) then
     FOnError(Self, ErrorMsg);
 end;
 
-procedure TJvFtpGrabber.Closed(Sender: TObject);
+procedure TJvFTPGrabber.Closed(Sender: TObject);
 begin
   if Assigned(FOnClosed) then
     FOnClosed(Self);
 end;
 
-procedure TJvFtpGrabber.Execute;
+procedure TJvFTPGrabber.Execute;
 begin
    //Download it
   if FThread = nil then
@@ -224,13 +224,13 @@ begin
   end;
 end;
 
-procedure TJvFtpGrabber.Progress(Sender: TObject; Position: Integer; Url: string);
+procedure TJvFTPGrabber.Progress(Sender: TObject; Position: Integer; Url: string);
 begin
   if Assigned(FOnProgress) then
     FOnProgress(Self, Position, Url);
 end;
 
-procedure TJvFtpGrabber.Status(Sender: TObject; Position: Integer; Url: string);
+procedure TJvFTPGrabber.Status(Sender: TObject; Position: Integer; Url: string);
 begin
   case Position of
     INTERNET_STATUS_RESOLVING_NAME:
@@ -275,7 +275,7 @@ begin
   end;
 end;
 
-procedure TJvFtpGrabber.ThreadFinished(Sender: TObject);
+procedure TJvFTPGrabber.ThreadFinished(Sender: TObject);
 begin
   FThread := nil;
 end;
@@ -431,7 +431,7 @@ begin
         Synchronize(Error);
         Exit;
       end;
-      (FSender as TJvFtpGrabber).FSize := FtpGetFileSize(hDownload, @dwFileSizeHigh); // acp
+      (FSender as TJvFTPGrabber).FSize := FtpGetFileSize(hDownload, @dwFileSizeHigh); // acp
 
       FStream := TMemoryStream.Create;
 

@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvId3v2Types.PAS, released on 2001-02-28.
+The Original Code is: JvID3v2Types.PAS, released on 2001-02-28.
 
 The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
@@ -28,7 +28,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvId3v2Types;
+unit JvID3v2Types;
 
 interface
 
@@ -228,8 +228,8 @@ type
     { WPAY } fiWWWPayment, { Payment }
     { WPUB } fiWWWPublisher, { Official publisher webpage }
     { WXXX } fiWWWUser, { User defined URL link }
-    {      } fiMetaCrypto, { Encrypted meta frame (id3v2.2.x) }
-    {      } fiMetaCompression { Compressed meta frame (id3v2.2.1) }
+    {      } fiMetaCrypto, { Encrypted meta frame (ID3v2.2.x) }
+    {      } fiMetaCompression { Compressed meta frame (ID3v2.2.1) }
     );
   TJvID3FrameIDs = set of TJvID3FrameID;
 

@@ -42,7 +42,7 @@ uses
   {$ENDIF COMPLIB_CLX}
 
 type
-  TJvHtListBox = class(TCustomListBox)
+  TJvHTListBox = class(TCustomListBox)
   private
     FHideSel: Boolean;
     {$IFDEF COMPLIB_VCL}
@@ -487,23 +487,23 @@ begin
   Result := W;
 end;
 
-//=== TJvHtListBox ===========================================================
+//=== TJvHTListBox ===========================================================
 
-constructor TJvHtListBox.Create(AOwner: TComponent);
+constructor TJvHTListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Style := lbOwnerDrawFixed;
 end;
 
 {$IFDEF COMPLIB_VCL}
-procedure TJvHtListBox.DrawItem(Index: Integer; Rect: TRect;
+procedure TJvHTListBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
 begin
   ItemHtDraw(Canvas, Rect, State, Items[Index], FHideSel);
 end;
 {$ENDIF COMPLIB_VCL}
 {$IFDEF COMPLIB_CLX}
-function TJvHtListBox.DrawItem(Index: Integer; Rect: TRect;
+function TJvHTListBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState): Boolean;
 begin
   ItemHtDraw(Canvas, Rect, State, Items[Index], FHideSel);
@@ -512,23 +512,23 @@ end;
 {$ENDIF COMPLIB_CLX}
 
 {$IFDEF COMPLIB_VCL}
-procedure TJvHtListBox.CMFontChanged(var Msg: TMessage);
+procedure TJvHTListBox.CMFontChanged(var Msg: TMessage);
 {$ENDIF COMPLIB_VCL}
 {$IFDEF COMPLIB_CLX}
-procedure TJvHtListBox.FontChanged;
+procedure TJvHTListBox.FontChanged;
 {$ENDIF COMPLIB_CLX}
 begin
   Canvas.Font := Font;
   ItemHeight := Canvas.TextHeight('W');
 end;
 
-procedure TJvHtListBox.SetHideSel(Value: Boolean);
+procedure TJvHTListBox.SetHideSel(Value: Boolean);
 begin
   FHideSel := Value;
   Invalidate;
 end;
 
-function TJvHtListBox.GetPlainItems(Index: Integer): string;
+function TJvHTListBox.GetPlainItems(Index: Integer): string;
 begin
   Result := ItemHtPlain(Items[Index]);
 end;

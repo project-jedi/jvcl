@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvMultiHttpGrabber.PAS, released on 2001-02-28.
+The Original Code is: JvMultiHTTPGrabber.PAS, released on 2001-02-28.
 
 The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
@@ -26,7 +26,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvMultiHttpGrabber;
+unit JvMultiHTTPGrabber;
 
 interface
 
@@ -54,7 +54,7 @@ type
   TDateEvent = procedure(Sender: TObject; UserData: Integer; FileDate: TDateTime;
     Url: string) of object;
 
-  TJvMultiHttpGrabber = class(TJvComponent)
+  TJvMultiHTTPGrabber = class(TJvComponent)
   private
     FAgent: string;
     FUrl: string;
@@ -154,7 +154,7 @@ implementation
 
 resourcestring
   RES_ErrorConnection = 'Unable to connect';
-  RES_Agent = 'TJvMultiHttpGrabber Component';
+  RES_Agent = 'TJvMultiHTTPGrabber Component';
 
 type
   PRequestInfos = ^TRequestInfos;
@@ -167,13 +167,13 @@ type
     hRequest: HINTERNET;
     FileSize: Integer;
     IgnoreMsg: Boolean;
-    Grabber: TJvMultiHttpGrabber;
+    Grabber: TJvMultiHTTPGrabber;
     UserData: Integer;
   end;
 
-  //=== TJvMultiHttpGrabber ====================================================
+  //=== TJvMultiHTTPGrabber ====================================================
 
-constructor TJvMultiHttpGrabber.Create(AOwner: TComponent);
+constructor TJvMultiHTTPGrabber.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FOutputMode := omStream;
@@ -223,7 +223,7 @@ begin
       end;
 end;
 
-procedure TJvMultiHttpGrabber.Download(UserData: Integer);
+procedure TJvMultiHTTPGrabber.Download(UserData: Integer);
 var
   Infos: PRequestInfos;
 begin
@@ -238,7 +238,7 @@ begin
     end;
 end;
 
-procedure TJvMultiHttpGrabber.GetFileAge(UserData: Integer = 0);
+procedure TJvMultiHTTPGrabber.GetFileAge(UserData: Integer = 0);
 var
   Infos: PrequestInfos;
 begin
@@ -252,12 +252,12 @@ begin
     end;
 end;
 
-function TJvMultiHttpGrabber.GetWorking: Boolean;
+function TJvMultiHTTPGrabber.GetWorking: Boolean;
 begin
   Result := FCount > 0;
 end;
 
-procedure TJvMultiHttpGrabber.RaiseError(Value: Pointer);
+procedure TJvMultiHTTPGrabber.RaiseError(Value: Pointer);
 var
   Msg: array[0..256] of Char;
 begin
@@ -270,7 +270,7 @@ begin
     end;
 end;
 
-procedure TJvMultiHttpGrabber.RaiseWebError(Infos: Pointer);
+procedure TJvMultiHTTPGrabber.RaiseWebError(Infos: Pointer);
 var
   dwIndex, dwBufLen: DWORD;
   Buf: array[0..1024] of Char;
@@ -285,7 +285,7 @@ begin
   end;
 end;
 
-function TJvMultiHttpGrabber.StartConnection(UserData: Integer; IgnoreMessages: Boolean): Pointer;
+function TJvMultiHTTPGrabber.StartConnection(UserData: Integer; IgnoreMessages: Boolean): Pointer;
 var
   Infos: PRequestInfos;
   HostName, FilePath: string;
@@ -357,14 +357,14 @@ begin
   Result := Infos;
 end;
 
-procedure TJvMultiHttpGrabber.StopConnection(Infos: Pointer);
+procedure TJvMultiHTTPGrabber.StopConnection(Infos: Pointer);
 begin
   InternetCloseHandle(PRequestInfos(Infos)^.hRequest);
   InternetCloseHandle(PRequestInfos(Infos)^.hHostConnect);
   InternetCloseHandle(PRequestInfos(Infos)^.hSession);
 end;
 
-procedure TJvMultiHttpGrabber.ThreadDateTerminated(Sender: TObject);
+procedure TJvMultiHTTPGrabber.ThreadDateTerminated(Sender: TObject);
 begin
   with Sender as TJvMultiDateHttpThread do
   begin
@@ -378,7 +378,7 @@ begin
   end;
 end;
 
-procedure TJvMultiHttpGrabber.ThreadTerminated(Sender: TObject);
+procedure TJvMultiHTTPGrabber.ThreadTerminated(Sender: TObject);
 var
   TT: TJvMultiHttpThread;
 begin

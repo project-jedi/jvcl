@@ -56,15 +56,16 @@ type
   private
     { Private declarations }
     FSourceText: string;
-    Dictionary: string;
+    Dict: string;
     UserDic: string;
-    UserDicFile: string;
     UserDicChanged: boolean;
     DicIndex: array[1..26] of integer;
     UserDicIndex: array[1..26] of integer;
     SpellerDlg: TJvSpellerFrm;
     FWordBegin: integer;
     FWordEnd: integer;
+    FDictionary: TFilename;
+    FUserDictionary: TFilename;
     function WordBegin: boolean;
     function WordEnd: boolean;
     function ParseWord: string;
@@ -74,6 +75,8 @@ type
     procedure Change(sender: Tobject);
     procedure IndexDictionary;
     procedure IndexUserDictionary;
+    procedure SetDictionary(const Value: TFilename);
+    procedure SetUserDictionary(const Value: TFilename);
   protected
     { Protected declarations }
   public
@@ -84,6 +87,8 @@ type
     procedure Spell(var SourceText: string);
   published
     { Published declarations }
+    property Dictionary:TFilename read FDictionary write SetDictionary;
+    property UserDictionary:TFilename read FUserDictionary write SetUserDictionary;
   end;
 
 var
@@ -225,7 +230,7 @@ begin
       Startpos := DicIndex[i - 1]
     else
       StartPos := 1;
-    p := Q_PosStr(cr + chr(96 + i), Dictionary, startpos);
+    p := Q_PosStr(cr + chr(96 + i), Dict, startpos);
     if p <> 0 then
       DicIndex[i] := p
     else
@@ -255,16 +260,20 @@ end;
 procedure TJvSpeller.LoadDictionary(aFile: string);
 begin
   if fileexists(aFile) then
-    Dictionary := LoadString(aFile);
+    Dict := LoadString(aFile)
+  else
+    Dict := '';
   IndexDictionary;
 end;
 
 procedure TJvSpeller.LoadUserDictionary(aFile: string);
 begin
-  UserDicFile := aFile;
+  UserDictionary := aFile;
   UserDicChanged := false;
   if fileexists(aFile) then
-    UserDic := LoadString(afile);
+    UserDic := LoadString(afile)
+  else
+    UserDic := '';
   IndexUserDictionary;
 end;
 
@@ -274,6 +283,24 @@ begin
   if not WordBegin then exit;
   if not WordEnd then exit;
   result := copy(FSourceText, FWordBegin, FWordEnd - FWordBegin);
+end;
+
+procedure TJvSpeller.SetDictionary(const Value: TFilename);
+begin
+  if FDictionary <> Value then
+  begin
+    FDictionary := Value;
+    LoadDictionary(FDictionary)
+  end;
+end;
+
+procedure TJvSpeller.SetUserDictionary(const Value: TFilename);
+begin
+  if FUserDictionary <> Value then
+  begin
+    FUserDictionary := Value;
+    LoadUserDictionary(FUserDictionary)
+  end;
 end;
 
 procedure TJvSpeller.Skip(Sender: TObject);
@@ -288,7 +315,7 @@ var
   startpos, index: integer;
 begin
   FSourceText := SourceText;
-  if Dictionary = '' then
+  if Dict = '' then
   begin
     showmessage('no dictionary loaded');
     exit;
@@ -304,7 +331,7 @@ begin
         StartPos := DicIndex[index]
       else
         StartPos := 1;
-      if Q_PosStr(s + cr, Dictionary, StartPos) = 0 then
+      if Q_PosStr(s + cr, Dict, StartPos) = 0 then
         if UserDic <> '' then
         begin
           if (index > 0) and (index < 27) then
@@ -318,7 +345,7 @@ begin
             SpellerDlg.btnSkip.OnClick := Skip;
             SpellerDlg.btnchange.OnClick := Change;
             SpellerDlg.btnAdd.OnClick := Add;
-            SpellerDlg.btnAdd.Visible := (UserDicFile <> '');
+            SpellerDlg.btnAdd.Visible := (UserDictionary <> '');
             SpellerDlg.txtspell.text := spw;
             SpellerDlg.lblcontext.caption := Copy(FSourceText, FWordbegin, 75);
 
@@ -328,7 +355,7 @@ begin
                 SourceText := FSourceText;
                 if UserDicChanged then
                   if UserDic <> '' then
-                    SaveString(UserDicFile, UserDic);
+                    SaveString(UserDictionary, UserDic);
               end;
             finally
               SpellerDlg.free;
@@ -343,7 +370,7 @@ begin
           SpellerDlg.btnSkip.OnClick := Skip;
           SpellerDlg.btnchange.OnClick := Change;
           SpellerDlg.btnAdd.OnClick := Add;
-          SpellerDlg.btnAdd.Visible := (UserDicFile <> '');
+          SpellerDlg.btnAdd.Visible := (UserDictionary <> '');
           SpellerDlg.txtspell.text := spw;
           SpellerDlg.lblcontext.caption := Copy(FSourceText, FWordbegin, 75);
           try
@@ -352,7 +379,7 @@ begin
               SourceText := FSourceText;
               if UserDicChanged then
                 if UserDic <> '' then
-                  SaveString(UserDicFile, UserDic);
+                  SaveString(UserDictionary, UserDic);
             end;
           finally
             SpellerDlg.free;
@@ -378,7 +405,7 @@ begin
         StartPos := DicIndex[index]
       else
         StartPos := 1;
-      if Q_PosStr(s + cr, Dictionary, StartPos) = 0 then
+      if Q_PosStr(s + cr, Dict, StartPos) = 0 then
         if UserDic <> '' then
         begin
           if (index > 0) and (index < 27) then

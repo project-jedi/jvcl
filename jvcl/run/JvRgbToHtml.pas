@@ -26,7 +26,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvRgbToHtml;
+unit JvRGBToHTML;
 
 interface
 
@@ -35,7 +35,7 @@ uses
   JvComponent;
 
 type
-  TJvRgbToHtml = class(TJvComponent)
+  TJvRGBToHTML = class(TJvComponent)
   private
     FHtml: string;
     FColor: TColor;
@@ -44,8 +44,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property RgbColor: TColor read FColor write SetColor default clBlack;
-    property HtmlColor: string read FHtml write SetHtml;
+    property RGBColor: TColor read FColor write SetColor default clBlack;
+    property HTMLColor: string read FHtml write SetHtml;
   end;
 
 function RgbToHtml(Value: TColor): string;
@@ -54,7 +54,7 @@ implementation
 
 function RgbToHtml(Value: TColor): string;
 begin
-  with TJvRgbToHtml.Create(nil) do
+  with TJvRGBToHTML.Create(nil) do
   begin
     RgbColor := Value;
     Result := HtmlColor;
@@ -62,14 +62,14 @@ begin
   end;
 end;
 
-constructor TJvRgbToHtml.Create(AOwner: TComponent);
+constructor TJvRGBToHTML.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FColor := clBlack;
   FHtml := '000000';
 end;
 
-procedure TJvRgbToHtml.SetColor(const Value: TColor);
+procedure TJvRGBToHTML.SetColor(const Value: TColor);
 var
   Clr: TColor;
 begin
@@ -78,7 +78,7 @@ begin
   FHtml := IntToHex(GetRValue(Clr), 2) + IntToHex(GetGValue(Clr), 2) + IntToHex(GetBValue(Clr), 2);
 end;
 
-procedure TJvRgbToHtml.SetHtml(const Value: string);
+procedure TJvRGBToHTML.SetHtml(const Value: string);
 var
   C: TColor;
   R, G, B: Byte;

@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvHtmlParser.PAS, released on 2001-02-28.
+The Original Code is: JvHTMLParser.PAS, released on 2001-02-28.
 
 The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
@@ -27,7 +27,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvHtmlParser;
+unit JvHTMLParser;
 
 interface
 
@@ -53,7 +53,7 @@ type
     procedure Clear; override;
   end;
 
-  TJvHtmlParser = class(TJvComponent)
+  TJvHTMLParser = class(TJvComponent)
   private
     FOnKeyFound: TJvKeyFoundEvent;
     FParser: TJvParserInfoList;
@@ -96,9 +96,9 @@ begin
   Result := (PTagInfo(Item1).BeginPos - PTagInfo(Item2).BeginPos);
 end;
 
-//=== TJvHtmlParser ==========================================================
+//=== TJvHTMLParser ==========================================================
 
-constructor TJvHtmlParser.Create(AOwner: TComponent);
+constructor TJvHTMLParser.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FParser := TStringList.Create;
@@ -106,7 +106,7 @@ begin
   FTagList := TTagInfoList.Create;
 end;
 
-destructor TJvHtmlParser.Destroy;
+destructor TJvHTMLParser.Destroy;
 begin
   FParser.Free;
   FKeys.Free;
@@ -114,7 +114,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvHtmlParser.SetFile(Value: TFileName);
+procedure TJvHTMLParser.SetFile(Value: TFileName);
 begin
   if FFile <> Value then
   begin
@@ -124,7 +124,7 @@ begin
   end;
 end;
 
-procedure TJvHtmlParser.SetParser(Value: TJvParserInfoList);
+procedure TJvHTMLParser.SetParser(Value: TJvParserInfoList);
 var
   I: Integer;
   ob: TJvParserInfo;
@@ -155,7 +155,7 @@ end;
 
 // (rom) reimplemented with a TStringList
 
-procedure TJvHtmlParser.AnalyseFile;
+procedure TJvHTMLParser.AnalyseFile;
 var
   List: TStringList;
 begin
@@ -173,7 +173,7 @@ begin
   end;
 end;
 
-procedure TJvHtmlParser.AnalyseString(Str: string);
+procedure TJvHTMLParser.AnalyseString(Str: string);
 var
   st2: string;
   I, J, K, Index: Integer;
@@ -240,7 +240,7 @@ begin
   end;
 end;
 
-procedure TJvHtmlParser.AddCondition(Keyword, StartTag, EndTag: string;
+procedure TJvHTMLParser.AddCondition(Keyword, StartTag, EndTag: string;
   TextSelection: Integer = 0);
 var
   ob: TJvParserInfo;
@@ -252,42 +252,42 @@ begin
   FKeys.AddObject(Keyword, TObject(ob));
 end;
 
-procedure TJvHtmlParser.RemoveCondition(Index: Integer);
+procedure TJvHTMLParser.RemoveCondition(Index: Integer);
 begin
   FKeys.Delete(Index);
 end;
 
-procedure TJvHtmlParser.ClearConditions;
+procedure TJvHTMLParser.ClearConditions;
 begin
   FParser.Clear;
   FKeys.Clear;
 end;
 
-procedure TJvHtmlParser.GetCondition(Index: Integer; var Keyword, StartTag, EndTag: string);
+procedure TJvHTMLParser.GetCondition(Index: Integer; var Keyword, StartTag, EndTag: string);
 begin
   Keyword := FKeys[Index];
   StartTag := TJvParserInfo(FKeys.Objects[Index]).StartTag;
   EndTag := TJvParserInfo(FKeys.Objects[Index]).EndTag;
 end;
 
-procedure TJvHtmlParser.GetCondition(Index: Integer; var Keyword, StartTag, EndTag: string;
+procedure TJvHTMLParser.GetCondition(Index: Integer; var Keyword, StartTag, EndTag: string;
   var TextSelection: Integer);
 begin
   GetCondition(Index, Keyword, StartTag, EndTag);
   TextSelection := TJvParserInfo(FKeys.Objects[Index]).TakeText;
 end;
 
-function TJvHtmlParser.GetConditionsCount: Integer;
+function TJvHTMLParser.GetConditionsCount: Integer;
 begin
   Result := FKeys.Count;
 end;
 
-procedure TJvHtmlParser.SetTagList(const Value: TTagInfoList);
+procedure TJvHTMLParser.SetTagList(const Value: TTagInfoList);
 begin
   FTagList := Value;
 end;
 
-procedure TJvHtmlParser.Loaded;
+procedure TJvHTMLParser.Loaded;
 begin
   inherited Loaded;
   SetParser(FParser);

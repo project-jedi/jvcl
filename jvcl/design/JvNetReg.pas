@@ -15,8 +15,8 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvTypes, JvConsts,
-  JvStringListToHtml, JvFormToHtml, JvFtpGrabber, JvHtmlParser, JvHttpGrabber,
-  JvMultiHttpGrabber, JvRgbToHtml, JvRichEditToHtml, JvStrToHtml, JvMail,
+  JvStringListToHTML, JvFormToHTML, JvFTPGrabber, JvHTMLParser, JvHTTPGrabber,
+  JvMultiHTTPGrabber, JvRGBToHTML, JvRichEditToHTML, JvStrToHTML, JvMail,
   JvMailEditor, JvHTMLParserEditor;
 
 {$R ..\resources\JvNetReg.dcr}
@@ -24,13 +24,13 @@ uses
 procedure Register;
 begin
   RegisterComponents(SPaletteInterNetWork,[
-    TJvFtpGrabber, TJvHttpGrabber, TJvMultiHttpGrabber,
-    TJvMail, TJvHtmlParser,
-    TJvStrToHtml, TJvStringListToHtml, TJvFormToHtml,
-    TJvRichEditToHtml, TJvRgbToHtml
+    TJvFTPGrabber, TJvHTTPGrabber, TJvMultiHTTPGrabber,
+    TJvMail, TJvHTMLParser,
+    TJvStrToHTML, TJvStringListToHTML, TJvFormToHTML,
+    TJvRichEditToHTML, TJvRGBToHTML
     ]);
 
-  RegisterPropertyEditor(TypeInfo(TJvParserInfoList), TJvHtmlParser, 'Parser', TJvHtmlParserEditor);
+  RegisterPropertyEditor(TypeInfo(TJvParserInfoList), TJvHTMLParser, 'Parser', TJvHTMLParserEditor);
   
   RegisterComponentEditor(TJvMail, TJvMailEditor);
 end;

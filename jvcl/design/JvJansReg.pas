@@ -23,7 +23,7 @@ procedure Register;
 begin
   //TODO: Register a TShortCut Property Editor on TTreeKeyMappings class in TJvJanTreeView
   RegisterComponents('Jv Jans', [
-    TJvMarkupLabel,TJvMarkupViewer, TJvSAL, TJvSticker, TJvSALCore, TJvSALMath, TJvYearGrid,
+    TJvMarkupLabel, TJvMarkupViewer, TJvSAL, TJvSticker, TJvSALCore, TJvSALMath, TJvYearGrid,
     TJvAirBrush, TJvTracker, TJvGridFilter, TJvGridPrinter, TJvJanTreeview, TJvPaintFX,
     TJvDrawImage, TJvArrayButton, TJvForthScript, TJvTurtle, TJvBitmapButton, TJvSpeller, TJvShapedButton]);
 

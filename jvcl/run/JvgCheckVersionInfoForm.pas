@@ -35,7 +35,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Buttons, JvgSpeedButton, JvgWizardHeader, JvgShadow,
-  ComCtrls, JvgSmallFontsDefense, JvComponent;
+  ComCtrls, JvgSmallFontsDefense;
 
 type
   TJvgfCheckVersionInfo = class(TForm)
@@ -68,7 +68,8 @@ var
   fCheckVersionInfo: TJvgfCheckVersionInfo;
 
 implementation
-uses ShellApi, JvgHTTPVersionInfo;
+uses
+  ShellApi, JvgHTTPVersionInfo;
 {$R *.DFM}
 
 { TJvgfCheckVersionInfo }

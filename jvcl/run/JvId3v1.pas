@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvId3v1.PAS, released on 2001-02-28.
+The Original Code is: JvID3v1.PAS, released on 2001-02-28.
 
 The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
@@ -26,7 +26,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvId3v1;
+unit JvID3v1;
 
 interface
 
@@ -35,7 +35,7 @@ uses
   JvComponent;
 
 type
-  TId3v1Tag = packed record
+  TID3v1Tag = packed record
     Identifier: array [0..2] of Char;
     SongName: array [0..29] of Char;
     Artist: array [0..29] of Char;
@@ -45,7 +45,7 @@ type
     Genre: Byte;
   end;
 
-  TJvId3v1 = class(TJvComponent)
+  TJvID3v1 = class(TJvComponent)
   private
     FSongName: string;
     FArtist: string;
@@ -98,9 +98,9 @@ type
   end;
 
 function HasID3v1Tag(const AFileName: string): Boolean;
-function ReadID3v1Tag(const AFileName: string; var ATag: TId3v1Tag): Boolean;
+function ReadID3v1Tag(const AFileName: string; var ATag: TID3v1Tag): Boolean;
 procedure RemoveID3v1Tag(const AFileName: string);
-function WriteID3v1Tag(const AFileName: string; const ATag: TId3v1Tag): Boolean;
+function WriteID3v1Tag(const AFileName: string; const ATag: TID3v1Tag): Boolean;
 
 implementation
 
@@ -134,7 +134,7 @@ begin
   end;
 end;
 
-function ReadID3v1Tag(const AFileName: string; var ATag: TId3v1Tag): Boolean;
+function ReadID3v1Tag(const AFileName: string; var ATag: TID3v1Tag): Boolean;
 begin
   try
     with TFileStream.Create(AFileName, fmOpenRead or fmShareDenyWrite) do
@@ -176,7 +176,7 @@ begin
   SetString(Result, Q, P - Q);
 end;
 
-function WriteID3v1Tag(const AFileName: string; const ATag: TId3v1Tag): Boolean;
+function WriteID3v1Tag(const AFileName: string; const ATag: TID3v1Tag): Boolean;
 var
   TagID: array [0..CTagIDSize - 1] of Char;
 begin
@@ -209,22 +209,22 @@ begin
   end;
 end;
 
-//=== TJvId3v1 ===============================================================
+//=== TJvID3v1 ===============================================================
 
-procedure TJvId3v1.CheckActive;
+procedure TJvID3v1.CheckActive;
 begin
   if not FActive then
     raise Exception.Create('Not active');
 end;
 
-procedure TJvId3v1.Close;
+procedure TJvID3v1.Close;
 begin
   SetActive(False);
 end;
 
-function TJvId3v1.Commit: Boolean;
+function TJvID3v1.Commit: Boolean;
 var
-  Tag: TId3v1Tag;
+  Tag: TID3v1Tag;
 begin
   CheckActive;
 
@@ -246,17 +246,17 @@ begin
   Result := WriteID3v1Tag(FileName, Tag);
 end;
 
-procedure TJvId3v1.DoClose;
+procedure TJvID3v1.DoClose;
 begin
   Reset;
 end;
 
-procedure TJvId3v1.DoOpen;
+procedure TJvID3v1.DoOpen;
 begin
   ReadTag;
 end;
 
-procedure TJvId3v1.Erase;
+procedure TJvID3v1.Erase;
 var
   SavedActive: Boolean;
 begin
@@ -273,12 +273,12 @@ begin
   end;
 end;
 
-function TJvId3v1.GetGenreAsString: string;
+function TJvID3v1.GetGenreAsString: string;
 begin
   Result := ID3_IDToGenre(Genre);
 end;
 
-function TJvId3v1.GetHasTag: Boolean;
+function TJvID3v1.GetHasTag: Boolean;
 begin
   if FHasTagDirty then
   begin
@@ -289,7 +289,7 @@ begin
   Result := FHasTag;
 end;
 
-procedure TJvId3v1.Loaded;
+procedure TJvID3v1.Loaded;
 begin
   inherited Loaded;
 
@@ -298,14 +298,14 @@ begin
     SetActive(True);
 end;
 
-procedure TJvId3v1.Open;
+procedure TJvID3v1.Open;
 begin
   SetActive(True);
 end;
 
-function TJvId3v1.ReadTag: Boolean;
+function TJvID3v1.ReadTag: Boolean;
 var
-  Tag: TId3v1Tag;
+  Tag: TID3v1Tag;
 begin
   CheckActive;
 
@@ -332,14 +332,14 @@ begin
     Reset;
 end;
 
-procedure TJvId3v1.Refresh;
+procedure TJvID3v1.Refresh;
 begin
   CheckActive;
 
   ReadTag;
 end;
 
-procedure TJvId3v1.Reset;
+procedure TJvID3v1.Reset;
 begin
   FSongName := '';
   FArtist := '';
@@ -349,7 +349,7 @@ begin
   FGenre := 255;
 end;
 
-procedure TJvId3v1.SetActive(const Value: Boolean);
+procedure TJvID3v1.SetActive(const Value: Boolean);
 begin
   { Based on TCustomConnection.SetConnected }
   if (csReading in ComponentState) and Value then
@@ -366,7 +366,7 @@ begin
   end;
 end;
 
-procedure TJvId3v1.SetFileName(const Value: TFileName);
+procedure TJvID3v1.SetFileName(const Value: TFileName);
 var
   SavedActive: Boolean;
 begin
@@ -384,7 +384,7 @@ begin
   end;
 end;
 
-procedure TJvId3v1.SetGenreAsString(const Value: string);
+procedure TJvID3v1.SetGenreAsString(const Value: string);
 begin
   Genre := ID3_GenreToID(Value);
 end;

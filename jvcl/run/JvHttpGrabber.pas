@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvHttpGrabber.PAS, released on 2001-02-28.
+The Original Code is: JvHTTPGrabber.PAS, released on 2001-02-28.
 
 The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
@@ -28,7 +28,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvHttpGrabber;
+unit JvHTTPGrabber;
 
 interface
 
@@ -71,7 +71,7 @@ type
     destructor Destroy; override;
   end;
 
-  TJvHttpGrabber = class(TJvComponent)
+  TJvHTTPGrabber = class(TJvComponent)
   private
     FThread: TJvHttpThread;
     FUrl: string;
@@ -140,9 +140,9 @@ type
 
 implementation
 
-//=== TJvHttpGrabber =========================================================
+//=== TJvHTTPGrabber =========================================================
 
-constructor TJvHttpGrabber.Create(AOwner: TComponent);
+constructor TJvHTTPGrabber.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FUrl := '';
@@ -151,11 +151,11 @@ begin
   FReferer := '';
   FFileName := '';
   FOutputMode := omStream;
-  FAgent := 'TJvHttpGrabber Component';
+  FAgent := 'TJvHTTPGrabber Component';
   FThread := nil;
 end;
 
-destructor TJvHttpGrabber.Destroy;
+destructor TJvHTTPGrabber.Destroy;
 begin
   if FThread <> nil then
   begin
@@ -167,7 +167,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvHttpGrabber.Abort;
+procedure TJvHTTPGrabber.Abort;
 begin
   if FThread <> nil then
   begin
@@ -181,7 +181,7 @@ begin
   end;
 end;
 
-procedure TJvHttpGrabber.DoneFile(Sender: TObject; FileName: string;
+procedure TJvHTTPGrabber.DoneFile(Sender: TObject; FileName: string;
   FileSize: Integer; Url: string);
 begin
   if Assigned(FOnDoneFile) then
@@ -189,7 +189,7 @@ begin
   FThread := nil;
 end;
 
-procedure TJvHttpGrabber.DoneStream(Sender: TObject; FStream: TStream;
+procedure TJvHTTPGrabber.DoneStream(Sender: TObject; FStream: TStream;
   StreamSize: Integer; Url: string);
 begin
   if Assigned(FOnDoneStream) then
@@ -197,13 +197,13 @@ begin
   FThread := nil;
 end;
 
-procedure TJvHttpGrabber.Error(Sender: TObject; ErrorMsg: string);
+procedure TJvHTTPGrabber.Error(Sender: TObject; ErrorMsg: string);
 begin
   if Assigned(FOnError) then
     FOnError(Self, ErrorMsg);
 end;
 
-procedure TJvHttpGrabber.Execute;
+procedure TJvHTTPGrabber.Execute;
 begin
   //Download it
   if FThread = nil then
@@ -216,19 +216,19 @@ begin
   end;
 end;
 
-function TJvHttpGrabber.GetWorking: Boolean;
+function TJvHTTPGrabber.GetWorking: Boolean;
 begin
   Result := FThread <> nil;
 end;
 
-procedure TJvHttpGrabber.Progress(Sender: TObject; Position,
+procedure TJvHTTPGrabber.Progress(Sender: TObject; Position,
   TotalSize: Integer; Url: string; var Continue: Boolean);
 begin
   if Assigned(FOnProgress) then
     FOnProgress(Self, Position, TotalSize, Url, Continue);
 end;
 
-procedure TJvHttpGrabber.Status(Sender: TObject; Position: Integer;
+procedure TJvHTTPGrabber.Status(Sender: TObject; Position: Integer;
   Url: string);
 begin
   case Position of
@@ -274,7 +274,7 @@ begin
   end;
 end;
 
-procedure TJvHttpGrabber.ThreadFinished(Sender: TObject);
+procedure TJvHTTPGrabber.ThreadFinished(Sender: TObject);
 begin
   FThread := nil;
 end;

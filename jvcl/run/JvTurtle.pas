@@ -194,7 +194,7 @@ type
     property Heading: real read FHeading write SetHeading;
     property PenDown: boolean read FPenDown write SetPenDown;
     property Width: integer read GetWidth write SetWidth;
-    function docom: string;
+    function DoCom: string;
     procedure Turn(Aangle: real);
     procedure Right(AAngle: real);
     procedure MoveForward(Adistance: real);

@@ -23,7 +23,7 @@ begin
   RegisterComponents('Jv Custom',[
     TJvPluginManager
     ]);
-  RegisterPackageWizard( TjvPluginWizard.Create );
+  RegisterPackageWizard( TJvPluginWizard.Create );
 //  RegisterLibraryExpert(TJvPluginWizard.Create)
 end;
   

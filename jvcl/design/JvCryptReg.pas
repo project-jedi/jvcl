@@ -16,8 +16,8 @@ uses
 procedure Register;
 begin
   RegisterComponents(SPaletteEncryptCompress,[
-    TJvVigenereCipher, TJvXorCipher, TJvCaesarCipher, TJvGenetic,
-    TJvCabFile, TJvZlibMultiple, TJvSerialMaker
+    TJvVigenereCipher, TJvXORCipher, TJvCaesarCipher, TJvGenetic,
+    TJvCABFile, TJvZlibMultiple, TJvSerialMaker
     ]);
 end;
 
