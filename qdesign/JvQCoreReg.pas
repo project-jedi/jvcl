@@ -77,7 +77,7 @@ begin
      {$IFDEF MSWINDOWS}TJvAppRegistryStorage,{$ENDIF}
      TJvAppIniFileStorage, TJvAppStorageSelectList]);
 
-  RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCL', TJVCLAboutDialogProperty);
+  RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCL' + 'X', TJVCLAboutDialogProperty);
 
   // The TJvPersistent class needs an editor for D5 and BCB5, but for
   // all other compilers, it doesn't need anything as it is declared as
@@ -120,6 +120,7 @@ begin
 
   RegisterPropertyEditor(TypeInfo(TShortCut), TJvComponent, '', TJvShortCutProperty);
   RegisterPropertyEditor(TypeInfo(TDayOfWeekName), nil, '', TJvWeekDayProperty);
+  {$IFDEF MSWINDOWS}
   // DataProvider related editors
   RegisterPropertyEditor(TypeInfo(TJvColorProviderMapping), TPersistent, '', TJvColorProviderMappingProperty);
   RegisterPropertyEditor(TypeInfo(TJvDataConsumer), TPersistent, '', TJvDataConsumerProperty);
@@ -130,7 +131,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TJvColorProviderAddColorStyle), nil, '', TJvColorProviderAddColorStyleEditor);
   RegisterComponentEditor(TJvCustomDataProvider, TJvProviderEditor);
   RegisterComponentEditor(TJvColorProvider, TJvColorProviderEditor);
-
+  {$ENDIF MSWINDOWS}
   RegisterActions(RsJVCLActionsCategory, [
   {$IFDEF MSWINDOWS}TJvSendMailAction,{$ENDIF}TJvWebAction], TJvStandardActions);
   RegisterZoom;

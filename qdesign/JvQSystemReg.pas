@@ -46,21 +46,21 @@ uses
   JvQDsgnConsts,
   {$IFDEF MSWINDOWS}
   JvQJoystick, JvQSoundControl, JvQChangeNotifyEditor, JvQChangeNotify,
-  {$ENDIF MSWINDOWS}
   JvQScreenSaver,
+  {$ENDIF MSWINDOWS}
   JvQSystemColors,
   JvQSimpleXml, JvQXmlDatabase, JvQTimer, JvQFormPlacement,
   JvQMinMaxForm, JvQThread, JvQThreadTimer,
   JvQFormPropertiesForm, JvQDsgnEditors, JvQFormPlacementSelectList,
-  JvQAppXmlStorage;
+  JvQAppXMLStorage;
 
 {$R ../Resources/JvSystemReg.dcr}
 
 procedure Register;
 begin
-  RegisterComponents(RsPaletteSystem, [TJvScreenSaver,
+  RegisterComponents(RsPaletteSystem, [
       {$IFDEF MSWINDOWS}
-      TJvJoystick, TJvSoundControl, TJvChangeNotify,
+      TJvScreenSaver, TJvJoystick, TJvSoundControl, TJvChangeNotify,
       {$ENDIF MSWINDOWS}
       TJvSystemColors]);
   RegisterComponents(RsPaletteInternetWork, [TJvSimpleXML, TJvXMLDatabase]);
