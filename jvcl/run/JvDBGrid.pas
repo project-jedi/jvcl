@@ -1168,6 +1168,8 @@ begin
 end;
 
 function TJvDBGrid.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean;
+var
+  Distance:integer;
 begin
   Result := False;
   if Assigned(OnMouseWheelDown) then
@@ -1176,12 +1178,18 @@ begin
   begin
     if not AcquireFocus then
       Exit;
+    if ssCtrl in Shift then
+      Distance := VisibleRowCount - 1
+    else
+      Distance := 1;
     if DataLink.Active then
-      Result := DataLink.DataSet.MoveBy(1) <> 0;
+      Result := DataLink.DataSet.MoveBy(Distance) <> 0;
   end;
 end;
 
 function TJvDBGrid.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean;
+var
+  Distance:integer;
 begin
   Result := False;
   if Assigned(OnMouseWheelUp) then
@@ -1190,8 +1198,12 @@ begin
   begin
     if not AcquireFocus then
       Exit;
+    if ssCtrl in Shift then
+      Distance := VisibleRowCount - 1
+    else
+      Distance := 1;
     if DataLink.Active then
-      Result := DataLink.DataSet.MoveBy(-1) <> 0;
+      Result := DataLink.DataSet.MoveBy(-Distance) <> 0;
   end;
 end;
 
