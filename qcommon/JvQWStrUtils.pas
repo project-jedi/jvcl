@@ -198,8 +198,8 @@ type
     property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
   end;
 
-  TWideStringList = TWStringList;
-  TWideStrings = TWStrings;
+  TWideStringList = class(TWStringList);
+  TWideStrings = class(TWStrings);
 
 
 // WideChar functions
