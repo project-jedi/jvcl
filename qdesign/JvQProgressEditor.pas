@@ -35,10 +35,15 @@ unit JvQProgressEditor;
 interface
 
 uses
-  Classes, SysUtils, QControls, QForms,
-
-  RTLConsts, DesignIntf, DesignEditors;
   
+  RTLConsts, DesignIntf, DesignEditors,
+  
+  
+  
+  
+  QControls, QForms,
+  
+  Classes, SysUtils;
 
 type
   TJvProgressControlProperty = class(TComponentProperty)

@@ -49,7 +49,7 @@ uses
 
   JvQTypes, JvQDsgnConsts, JvQJCLUtils, JVQCLVer, JvQComponent,
   JvQActions, JvQActnResForm, JvQJVCLAboutForm, JvQDsgnEditors, JvQIDEZoom,
-  JvQJVCLAboutEditor, JvQBaseDlgEditor,
+  JvQJVCLAboutEditor, JvQBaseDlgEditor, JvQBaseDlg,
 
   JvQPaintBoxEditor, JvQContextProvider,
   {$IFDEF MSWINDOWS}
@@ -79,7 +79,7 @@ begin
     {$ENDIF MSWINDOWS}
     TJvAppIniFileStorage]);
 
-  RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCL', TJVCLAboutDialogProperty);
+  RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCLX', TJVCLAboutDialogProperty);
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirectoryProperty);
