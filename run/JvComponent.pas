@@ -31,6 +31,9 @@ unit JvComponent;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes,
   {$IFDEF USE_DXGETTEXT}
   JvGnugettext,
@@ -121,12 +124,18 @@ type
     procedure KeyPress(var Key: Char); override;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
 
 {$IFDEF USE_DXGETTEXT}
 const
@@ -234,25 +243,13 @@ begin
   inherited KeyPress(Key);
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   {$IFDEF USE_DXGETTEXT}
   AddDomainForResourceString(cDomainName);
   {$ENDIF USE_DXGETTEXT}
-
 
 {$IFDEF UNITVERSIONING}
 finalization

@@ -33,6 +33,9 @@ unit JvResources;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvConsts;
 
 //=== used in several files ==================================================
@@ -2284,17 +2287,6 @@ resourcestring
   SExprBadCompare = 'Relational operators require a field and a constant';
 }
 
-implementation
-
-{$IFNDEF USEJVCL}
-  {$UNDEF UNITVERSIONING}
-{$ENDIF !USEJVCL}
-
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -2303,7 +2295,16 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+{$ENDIF UNITVERSIONING}
 
+implementation
+
+{$IFNDEF USEJVCL}
+  {$UNDEF UNITVERSIONING}
+{$ENDIF !USEJVCL}
+
+
+{$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -33,6 +33,9 @@ WARNINGHEADER
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, Graphics, Controls, Forms, Buttons, DBCtrls,
   {$IFDEF COMPILER6_UP}
   Types,
@@ -59,12 +62,17 @@ type
   JV_WINCONTROL_EVENTS(DBRichEdit)
   JV_CONTROL_EVENTS_BEGIN(NavButton)
 
-implementation
-
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
 {$ENDIF UNITVERSIONING}
+
+implementation
 
 JV_WINCONTROL_EVENTS_IMPL(DBEdit)
 JV_CONTROL_EVENTS_IMPL(DBText)
@@ -83,14 +91,6 @@ JV_WINCONTROL_EVENTS_IMPL(DBRichEdit)
 JV_CONTROL_EVENTS_IMPL(NavButton)
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

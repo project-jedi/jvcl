@@ -31,6 +31,11 @@ unit JvgQPrintSetupForm;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   Windows, Controls, Forms, StdCtrls, ExtCtrls, Classes;
 
 type
@@ -43,17 +48,6 @@ type
 var
   JvgPrintSetup: TJvgPrintSetup;
 
-implementation
-
-{$IFDEF USEJVCL}
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
-
-{$R *.dfm}
-
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
@@ -63,7 +57,15 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
+implementation
+
+{$R *.dfm}
+
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

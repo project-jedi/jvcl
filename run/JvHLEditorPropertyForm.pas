@@ -33,6 +33,9 @@ unit JvHLEditorPropertyForm;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Graphics, ComCtrls, Controls,
   Forms, StdCtrls, ExtCtrls,
   JvFormPlacement, JvEditorCommon, JvComponent, JvHLEditor;
@@ -186,12 +189,19 @@ const
    ('Default', 'Pascal', 'CBuilder', 'Sql', 'Python', 'Java', 'VB', 'Html',
     'Perl', 'Ini', 'Coco/R', 'PHP', 'NQC', 'C#', 'Custom');
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Math,
   JvJVCLUtils, JvJCLUtils, JvResources, JvTypes;
 
@@ -1406,14 +1416,6 @@ end;
 *)
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

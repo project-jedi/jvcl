@@ -58,6 +58,9 @@ unit JvCaptionButton;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, Forms,
   {$IFDEF COMPILER6_UP}
   Types,
@@ -304,12 +307,19 @@ function AlphaBlend(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest,
   nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc,
   nHeightSrc: Integer; BlendFunction: BLENDFUNCTION): BOOL; stdcall;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   CommCtrl, Buttons, SysUtils,
   JvThemes,
   {$IFDEF JVCLThemesEnabled}
@@ -2750,16 +2760,6 @@ begin
   if IsVisibleLinked then
     FClient.Visible := Value;
 end;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
 
 initialization
   {$IFDEF UNITVERSIONING}

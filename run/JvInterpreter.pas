@@ -178,6 +178,9 @@ unit JvInterpreter;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   Windows,
@@ -1244,12 +1247,19 @@ const
   irStringConstant = 308;
   irStatement = 309;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   TypInfo,
   {$IFDEF JvInterpreter_OLEAUTO}
   OleConst, ActiveX, ComObj,
@@ -8060,28 +8070,9 @@ var
   OleInitialized: Boolean;
 {$ENDIF JvInterpreter_OLEAUTO}
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
-initialization
-  {$IFDEF UNITVERSIONING}
-  RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING}
-
-  {$IFDEF JvInterpreter_OLEAUTO}
-  OleInitialized := OleInitialize(nil) = S_OK;
-  {$ENDIF JvInterpreter_OLEAUTO}
-
-finalization
+procedure Finit;
+begin
   FreeAndNil(FieldGlobalJvInterpreterAdapter);
-
   {$IFDEF COMPILER6_UP}
   FreeAndNil(GlobalVariantObjectInstance);
   FreeAndNil(GlobalVariantRecordInstance);
@@ -8090,7 +8081,6 @@ finalization
   FreeAndNil(GlobalVariantSetInstance);
   FreeAndNil(GlobalVariantArrayInstance);
   {$ENDIF COMPILER6_UP}
-
   {$IFDEF JvInterpreter_OLEAUTO}
   if OleInitialized then
     OleUnInitialize;
@@ -8101,7 +8091,18 @@ finalization
       'ObjCount = ' + IntToStr(ObjCount)),
       'JvInterpreter Internal Error', MB_ICONERROR);
   {$ENDIF JvInterpreter_DEBUG}
+end;
 
+initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+  {$IFDEF JvInterpreter_OLEAUTO}
+  OleInitialized := OleInitialize(nil) = S_OK;
+  {$ENDIF JvInterpreter_OLEAUTO}
+
+finalization
+  Finit;
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

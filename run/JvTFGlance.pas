@@ -31,6 +31,11 @@ unit JvTFGlance;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   SysUtils, Classes, Windows, Messages, Graphics, Controls, Forms, Dialogs, ImgList,
   {$IFDEF BCB}
   JvTypes, // TDate/TTime
@@ -474,7 +479,7 @@ type
     procedure SetTitleAttr(Value: TJvTFGlanceMainTitle);
 
     procedure SetCellAttr(Value: TJvTFGlanceCellAttr);
-    procedure SeTJvTFSelCellAttr(Value: TJvTFGlanceCellAttr);
+    procedure SetTFSelCellAttr(Value: TJvTFGlanceCellAttr);
     procedure SetViewer(Value: TJvTFGlanceViewer);
     procedure SetCellPics(Value: TCustomImageList);
 
@@ -578,7 +583,7 @@ type
     property OnConfigCells: TNotifyEvent read FOnConfigCells write FOnConfigCells;
     property StartOfWeek: TTFDayOfWeek read FStartOfWeek write SetStartOfWeek default dowSunday;
   public
-    function GeTJvTFHintClass: TJvTFHintClass; dynamic;
+    function GetTFHintClass: TJvTFHintClass; dynamic;
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -623,7 +628,7 @@ type
     property GapSize: Integer read FGapSize write FGapSize;
     property TitleAttr: TJvTFGlanceMainTitle read FTitleAttr write SetTitleAttr;
     property CellAttr: TJvTFGlanceCellAttr read FCellAttr write SetCellAttr;
-    property SelCellAttr: TJvTFGlanceCellAttr read FSelCellAttr write SeTJvTFSelCellAttr;
+    property SelCellAttr: TJvTFGlanceCellAttr read FSelCellAttr write SetTFSelCellAttr;
     property CellPics: TCustomImageList read FCellPics write SetCellPics;
     property Viewer: TJvTFGlanceViewer read FViewer write SetViewer;
     property HintProps: TJvTFHintProps read FHintProps write SetHintProps;
@@ -735,13 +740,22 @@ type
     property OnConfigCells;
   end;
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
+
 implementation
 
 {$IFDEF USEJVCL}
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvConsts, JvResources;
 {$ENDIF USEJVCL}
 
@@ -1324,7 +1338,7 @@ begin
 
   FHintProps := TJvTFHintProps.Create(Self);
   //FHint := TJvTFHint.Create(Self);
-  FHint := GeTJvTFHintClass.Create(Self);
+  FHint := GetTFHintClass.Create(Self);
   FHint.RefProps := FHintProps;
 
   FCreatingControl := False;
@@ -2090,7 +2104,7 @@ begin
   end;
 end;
 
-procedure TJvTFCustomGlance.SeTJvTFSelCellAttr(Value: TJvTFGlanceCellAttr);
+procedure TJvTFCustomGlance.SetTFSelCellAttr(Value: TJvTFGlanceCellAttr);
 begin
   FSelCellAttr.Assign(Value);
 end;
@@ -3063,7 +3077,7 @@ begin
   ACell.Combine;
 end;
 
-function TJvTFCustomGlance.GeTJvTFHintClass: TJvTFHintClass;
+function TJvTFCustomGlance.GetTFHintClass: TJvTFHintClass;
 begin
   Result := TJvTFHint;
 end;
@@ -4027,14 +4041,6 @@ end;
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

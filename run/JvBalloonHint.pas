@@ -33,6 +33,9 @@ unit JvBalloonHint;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Controls, Graphics, Forms, ImgList,
   JvComponent;
 
@@ -263,12 +266,19 @@ type
     property OnMouseUp: TMouseEvent read FOnMouseUp write FOnMouseUp;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils, Math,
   Registry, CommCtrl, MMSystem,
   ComCtrls, // needed for GetComCtlVersion
@@ -1968,16 +1978,6 @@ procedure TJvBalloonWindowEx.WMNCHitTest(var Msg: TWMNCHitTest);
 begin
   Msg.Result := HTCLIENT;
 end;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
 
 initialization
   {$IFDEF UNITVERSIONING}

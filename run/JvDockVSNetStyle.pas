@@ -30,6 +30,11 @@ unit JvDockVSNetStyle;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   Windows, Messages, Classes, Graphics, Controls, Forms, ExtCtrls,
   JvDockControlForm, JvDockSupportControl, JvDockTree, JvDockVIDStyle;
 
@@ -487,14 +492,21 @@ procedure UnAutoHideDockForm(ADockWindow: TWinControl);
 var
   DefaultVSChannelClass: TJvDockVSChannelClass = nil;
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
+
 implementation
 
 uses
-  {$IFDEF USEJVCL}
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   SysUtils, Math, {AppEvnts,}
   JvDockSupportProc, JvDockGlobals;
 
@@ -3621,18 +3633,6 @@ begin
       Inc(FCurrentWidth, TJvDockVSNetStyle.GetAnimationMoveWidth);
   end;
 end;
-
-{$IFDEF USEJVCL}
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 initialization
   {$IFDEF USEJVCL}

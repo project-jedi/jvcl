@@ -29,6 +29,9 @@ unit JvBDECheckPasswordForm;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, SysUtils, Classes, Controls, Forms, StdCtrls, Buttons,
   DBTables, DB,
   JvComponent;
@@ -42,12 +45,19 @@ function ChangePasswordDialog(Database: TDatabase; AttemptNumber: Integer;
   MaxPwdLen: Integer; EnableEmptyPassword: Boolean;
   ChangePasswordEvent: TChangePasswordEvent): Boolean;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Consts,
   JvResources, JvJVCLUtils;
 
@@ -213,14 +223,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

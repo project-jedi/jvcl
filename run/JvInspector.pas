@@ -165,6 +165,9 @@ unit JvInspector;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF VisualCLX}
   Qt,
   {$ENDIF VisualCLX}
@@ -2077,12 +2080,19 @@ procedure RegisterTypeInfoHelper(AClass: TJvTypeInfoHelperClass);
 {$HPPEMIT '#define TypeInfo(type) TypeInfoFromName(STR(type))'}
 {$HPPEMIT ''}
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
@@ -12796,16 +12806,6 @@ procedure RegisterConsts;
 begin
   RegisterIntegerConsts(TypeInfo(TItemRowSizing), IrsToInt, IntToIrs);
 end;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
 
 initialization
   {$IFDEF UNITVERSIONING}

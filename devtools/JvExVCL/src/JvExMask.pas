@@ -33,6 +33,9 @@ WARNINGHEADER
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Mask,
   {$ENDIF VCL}
@@ -73,12 +76,17 @@ type
     property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
   JV_EDITCONTROL_EVENTS_END(MaskEdit)
 
-implementation
-
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
 {$ENDIF UNITVERSIONING}
+
+implementation
 
 { The CONSTRUCTOR_CODE macro is used to extend the constructor by the macro
   content. }
@@ -115,14 +123,6 @@ end;
 JV_EDITCONTROL_EVENTS_IMPL_END(MaskEdit)
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

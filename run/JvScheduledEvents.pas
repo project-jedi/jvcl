@@ -32,6 +32,9 @@ unit JvScheduledEvents;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Contnrs, SyncObjs,
   {$IFDEF MSWINDOWS}
   Windows,
@@ -223,12 +226,19 @@ type
     property OnExecute: TScheduledEventExecute read FOnExecute write FOnExecute;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   TypInfo,
   JclDateTime, JclRTTI,
   JvJVCLUtils, JvResources, JvTypes;
@@ -1241,16 +1251,6 @@ begin
   ScheduledEventStore_Stream(S, True, False).SaveSchedule(Self);
 end;
 *)
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
 
 initialization
   {$IFDEF UNITVERSIONING}

@@ -30,6 +30,9 @@ unit JvFullColorCircleForm;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   ExtCtrls, StdCtrls, Mask, 
   JvFullColorDialogs, JvFullColorCtrls, JvFullColorSpaces, JvFullColorRotate,
@@ -167,12 +170,19 @@ type
     property OnApply: TNotifyEvent read FOnApply write FOnApply;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvResources,
   TypInfo,
   {$IFNDEF COMPILER6_UP}
@@ -954,21 +964,11 @@ begin
   GlobalRange := Copy(LString, 3, Length(LString) - 2);
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-    );
-{$ENDIF UNITVERSIONING}
-
 initialization
-  InitializeStrings;
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
+  InitializeStrings;
 
 {$IFDEF UNITVERSIONING}
 finalization

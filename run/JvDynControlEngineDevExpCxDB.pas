@@ -30,6 +30,9 @@ interface
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes, ExtCtrls, ExtDlgs, Graphics, Buttons, Controls, Dialogs, FileCtrl,
   Forms, DBCtrls, DB, DBGrids, StdCtrls,
   cxDBEdit, cxDBNavigator,
@@ -560,13 +563,19 @@ procedure SetDefaultDynControlEngineDBDevExp;
 
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
-
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
@@ -2490,16 +2499,6 @@ begin
 end;
 
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
 
 initialization
   {$IFDEF UNITVERSIONING}

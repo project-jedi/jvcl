@@ -33,6 +33,9 @@ unit JvImageList;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows,
   {$IFDEF MSWINDOWS}
   CommCtrl,
@@ -237,12 +240,19 @@ function LoadImageListFromBitmap(ImgList: TCustomImageList; const Bitmap: TBitma
 function LoadImageListFromBitmap(ImgList: TCustomImageList; const Bitmap: TBitmap;
   MaskBitmap: TBitmap): Integer; overload;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Consts, TypInfo,
   {$IFDEF VCL}
   ActiveX,
@@ -1253,16 +1263,6 @@ procedure TJvImageList.ItemListError;
 begin
   raise EJvImageListError.CreateResFmt(@RsEWrongImageListMode, ['imItemList']);
 end;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
 
 initialization
   {$IFDEF UNITVERSIONING}

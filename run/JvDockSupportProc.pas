@@ -30,6 +30,11 @@ unit JvDockSupportProc;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   Windows, Messages, Classes, Graphics, Controls, Forms;
 
 type
@@ -84,14 +89,21 @@ function JvDockExchangeOrient(Orient: TDockOrientation): TDockOrientation;
 function JvDockGetControlOrient(AControl: TControl): TDockOrientation;
 function JvDockGetControlSize(AControl: TControl): Integer;
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
+
 implementation
 
 uses
-  {$IFDEF USEJVCL}
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   SysUtils, Math,
   JvDockControlForm, JvDockGlobals;
 
@@ -374,18 +386,6 @@ begin
     raise Exception.CreateRes(@RsEDockCannotGetValueWithNoOrient);
   end;
 end;
-
-{$IFDEF USEJVCL}
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 initialization
   {$IFDEF USEJVCL}

@@ -30,6 +30,9 @@ interface
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes, Controls, StdCtrls, ExtCtrls, ComCtrls, Mask, Forms, Graphics,
   Buttons, Dialogs, FileCtrl, ActnList, 
   cxLookAndFeels, cxMaskEdit, cxLabel, cxButtons, cxListBox, cxDropDownEdit,
@@ -601,7 +604,7 @@ type
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: String);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
@@ -671,14 +674,21 @@ procedure SetDynControlEngineDevExpCxDefault;
 
 function DynControlEngineDevExpCx: TJvDynControlEngineDevExpCx;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils, ExtDlgs,
   {$IFDEF COMPILER6_UP}
   Variants,
@@ -2731,16 +2741,6 @@ begin
   Result := nil;
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 end;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
 
 initialization
   {$IFDEF UNITVERSIONING}

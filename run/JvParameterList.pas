@@ -28,6 +28,9 @@ unit JvParameterList;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes, SysUtils, Windows, Messages,
   StdCtrls, ExtCtrls, Graphics, Forms, Controls, Dialogs, ComCtrls,
   {$IFDEF HAS_UNIT_VARIANTS}
@@ -291,8 +294,8 @@ type
     procedure SetArrangeSettings(Value: TJvArrangeSettings);
     procedure SetAppStoragePath(const Value: string);
     function GetAppStoragePath: string;
-    function GetJvAppStorage: TJvCustomAppStorage;
-    procedure SetJvAppStorage(Value: TJvCustomAppStorage);
+    function GetAppStorage: TJvCustomAppStorage;
+    procedure SetAppStorage(Value: TJvCustomAppStorage);
 
     procedure ResizeDialogAfterArrange(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer);
 
@@ -400,7 +403,7 @@ type
     property CancelButtonVisible: Boolean read FCancelButtonVisible write FCancelButtonVisible;
     property HistoryEnabled: Boolean read FHistoryEnabled write FHistoryEnabled;
     property LastHistoryName: string read FLastHistoryName write FLastHistoryName;
-    property AppStorage: TJvCustomAppStorage read GetJvAppStorage write SetJvAppStorage;
+    property AppStorage: TJvCustomAppStorage read GetAppStorage write SetAppStorage;
   end;
 
   TJvParameterListSelectList = class(TJvAppStorageSelectList)
@@ -430,12 +433,19 @@ type
     property ParameterList: TJvParameterList read FParameterList write FParameterList;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JclStrings,
   JvParameterListParameter, JvResources;
 
@@ -1140,12 +1150,12 @@ begin
   Result := FParameterListPropertyStore.AppStoragePath;
 end;
 
-function TJvParameterList.GetJvAppStorage: TJvCustomAppStorage;
+function TJvParameterList.GetAppStorage: TJvCustomAppStorage;
 begin
   Result := FParameterListPropertyStore.AppStorage;
 end;
 
-procedure TJvParameterList.SetJvAppStorage(Value: TJvCustomAppStorage);
+procedure TJvParameterList.SetAppStorage(Value: TJvCustomAppStorage);
 begin
   FParameterListPropertyStore.AppStorage := Value;
   if Assigned(Value) then
@@ -1957,14 +1967,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -56,6 +56,9 @@ unit JvInterpreterFm;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Controls, Forms,
   JvInterpreter, JvJVCLUtils;
 
@@ -137,12 +140,19 @@ var
   JvInterpreterRunReportPreviewProc: procedure(const FileName: string);
   JvInterpreterRunReportPreview2Proc: procedure(const FileName: string; JvInterpreterProgram: TJvInterpreterFm);
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   TypInfo,
   JvResources, JvTypes, JvJCLUtils;
 
@@ -673,14 +683,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -34,6 +34,11 @@ unit JvgRichEditUtils;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   Windows, Messages, Graphics, ComCtrls, Classes;
 
 procedure AddNl(RE: TRichEdit);
@@ -43,14 +48,19 @@ procedure AddTextNl(RE: TRichEdit; const Str: string; TxtSize: Integer;
   TxtStyle: TFontStyles; TxtColor: TColor);
 procedure DoSyntaxHighlight(Memo: TRichEdit);
 
-implementation
-
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
 {$ENDIF UNITVERSIONING}
 {$ENDIF USEJVCL}
+
+implementation
 
 procedure AddNl(RE: TRichEdit);
 begin
@@ -234,14 +244,6 @@ end;
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -31,6 +31,11 @@ unit JvDotNetUtils;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   Windows, Messages, Classes, Graphics, Controls;
 
 procedure DotNetMessageHandler(var Msg: TMessage; AControl: TWinControl;
@@ -38,14 +43,19 @@ procedure DotNetMessageHandler(var Msg: TMessage; AControl: TWinControl;
 procedure DrawDotNetControl(Control: TWinControl; AColor: TColor; InControl: Boolean);
 procedure SetDotNetFrameColors(FocusedColor, UnfocusedColor: TColor);
 
-implementation
-
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
 {$ENDIF UNITVERSIONING}
 {$ENDIF USEJVCL}
+
+implementation
 
 var
   InternalFocusedColor: TColor = TColor($00733800);
@@ -106,14 +116,6 @@ end;
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

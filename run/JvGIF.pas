@@ -31,6 +31,9 @@ unit JvGIF;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows,
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
@@ -246,12 +249,19 @@ var
 function GIFVersionName(Version: TGIFVersion): string;
 procedure JvGif_Dummy;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Consts, Math,
   JvJCLUtils, JvJVCLUtils, JvAni, JvConsts, JvResources, JvTypes;
 
@@ -3046,23 +3056,9 @@ begin
   Progress(Self, Stage, PercentDone, False, Rect(0, 0, 0, 0), Msg);
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
-initialization
-  {$IFDEF UNITVERSIONING}
-  RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING}
-
+procedure Init;
+begin
   CF_GIF := RegisterClipboardFormat('GIF Image');
-
   {$IFDEF VCL}
   {$IFDEF COMPILER7_UP}
   GroupDescendentsWith(TJvGIFFrame, TControl);
@@ -3074,6 +3070,13 @@ initialization
   TPicture.RegisterFileFormat('gif', RsGIFImage, TJvGIFImage);
   TPicture.RegisterClipboardFormat(CF_GIF, TJvGIFImage);
   {$ENDIF USE_JV_GIF}
+end;
+
+initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+  Init;
 
 finalization
   {$IFDEF USE_JV_GIF}

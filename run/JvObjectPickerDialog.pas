@@ -30,6 +30,9 @@ unit JvObjectPickerDialog;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, ActiveX, ComObj, SysUtils, Classes, 
   ObjSel,
   JvBaseDlg, JvTypes;
@@ -259,12 +262,19 @@ type
   // just to be able to distinguish between exceptions raised by the Object Picker specifically and all others
   EObjectPickerError = class(EJVCLException);
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvResources;
 
 function ScopeTypesToOrdinal(const ScopeTypes: TScopeTypes): Cardinal;
@@ -751,14 +761,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -31,6 +31,11 @@ unit JvTFManager;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   Classes, SysUtils, Windows, Controls, Messages,
   Graphics, ImgList, ExtCtrls, Printers,
   {$IFDEF USEJVCL}
@@ -474,7 +479,7 @@ type
     procedure SetCustomImages(Value: TCustomImageList);
     procedure SetCache(Value: TJvTFScheduleManagerCache);
 
-    procedure SeTJvTFSchedLoadMode(Value: TJvTFSchedLoadMode);
+    procedure SetTFSchedLoadMode(Value: TJvTFSchedLoadMode);
     procedure SetRefreshAutoReconcile(Value: Boolean);
   protected
     FLoadingAppts: Boolean;
@@ -631,7 +636,7 @@ type
       write FOnSetApptDescription;
 
     property SchedLoadMode: TJvTFSchedLoadMode read FSchedLoadMode
-      write SeTJvTFSchedLoadMode default slmOnDemand;
+      write SetTFSchedLoadMode default slmOnDemand;
     property RefreshAutoReconcile: Boolean read FRefreshAutoReconcile
       write SetRefreshAutoReconcile default False;
   end;
@@ -1035,13 +1040,22 @@ type
   //      write FAfterNavigate;
   //  end;
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
+
 implementation
 
 uses
   {$IFDEF USEJVCL}
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvConsts, JvResources,
   {$ENDIF USEJVCL}
   Dialogs, Forms;
@@ -2219,7 +2233,7 @@ Var
   RefList : TStringList;
   Appt : TJvTFAppt;
   Sched : TJvTFSched;
-  RefID : String;
+  RefID : string;
 begin
   // In a multi-user environment, appt objects may be deleted as a result
   // of calling dbRefreshAppt.  (Component user may call Appt.Free.)
@@ -3427,7 +3441,7 @@ begin
   end;
 end;
 
-procedure TJvTFScheduleManager.SeTJvTFSchedLoadMode(Value: TJvTFSchedLoadMode);
+procedure TJvTFScheduleManager.SetTFSchedLoadMode(Value: TJvTFSchedLoadMode);
 begin
   if (Value <> FSchedLoadMode) and (Value = slmOnDemand) then
     // make sure we process any queued batches before changing mode
@@ -5370,14 +5384,6 @@ end;
 
   {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

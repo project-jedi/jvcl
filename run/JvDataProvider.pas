@@ -36,6 +36,9 @@ interface
 {$ENDIF COMPILER6_UP}
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows,
   {$IFDEF VCL}
   {$IFDEF HAS_UNIT_LIBC}
@@ -1187,12 +1190,19 @@ function HexBytes(const Buf; Length: Integer): string;
 // Move to other unit? Render text in a disabled way (much like TLabel does)
 procedure DisabledTextRect(ACanvas: TCanvas; var ARect: TRect; Left, Top: Integer; Text: string);
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   ActiveX,
   {$ENDIF MSWINDOWS}
@@ -5488,21 +5498,10 @@ begin
   // Do not allow the consumer view list to be modified this way.
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
+//============================================================================
 
-initialization
-  {$IFDEF UNITVERSIONING}
-  RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING}
-
+procedure Init;
+begin
   {$IFDEF COMPILER7_UP}
   GroupDescendentsWith(TExtensibleInterfacedPersistent, TControl);
   GroupDescendentsWith(TAggregatedPersistent, TControl);
@@ -5519,7 +5518,13 @@ initialization
     TJvDataContexts,
     // Context related
     TJvDataContext, TJvManagedDataContext, TJvFixedDataContext]);
+end;
 
+initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+  Init;
 
 {$IFDEF UNITVERSIONING}
 finalization

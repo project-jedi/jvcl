@@ -43,6 +43,9 @@ interface
 {$HPPEMIT '#define CHARFORMAT2A Richedit::CHARFORMAT2A'}
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, ActiveX, ComObj, CommCtrl, Messages, SysUtils, Classes, Controls,
   Forms, Graphics, StdCtrls, Dialogs, RichEdit, Menus, ComCtrls, SyncObjs,
   JVCLVer, JvExStdCtrls;
@@ -883,12 +886,19 @@ procedure BitmapToRTF(ABitmap: TBitmap; AStream: TStream);
 { uses the \wmetafile identifier }
 function BitmapToRTF2(ABitmap: TBitmap; AStream: TStream): Boolean;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   OleCtnrs,
   Printers, ComStrs, OleConst, OleDlg, Math, Registry, Contnrs,
   JvThemes, JvConsts, JvResources, JvFixedEditPopUp;
@@ -7189,23 +7199,11 @@ begin
   end;
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   InitRichEditDll;
-
   CFEmbeddedObject := RegisterClipboardFormat(CF_EMBEDDEDOBJECT);
   CFLinkSource := RegisterClipboardFormat(CF_LINKSOURCE);
   CFRtf := RegisterClipboardFormat(CF_RTF);
@@ -7214,7 +7212,6 @@ initialization
 finalization
   FreeAndNil(GlobalConversionFormatList);
   FinalRichEditDll;
-  
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

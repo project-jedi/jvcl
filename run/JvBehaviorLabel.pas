@@ -43,6 +43,9 @@ unit JvBehaviorLabel;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes, Windows, Messages, Controls, ExtCtrls,
   JvExStdCtrls;
 
@@ -394,12 +397,19 @@ function GetLabelBehaviorName(BehaviorOptionsClass: TJvLabelBehaviorOptionsClass
 // registered class and each Objects[] is a pointer to the corresponding class
 procedure GetRegisteredLabelBehaviorOptions(Strings: TStrings);
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils, Forms,
   JvTypes, JvResources;
 
@@ -1293,22 +1303,11 @@ begin
   inherited Stop;
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
- // (ahuser) registration is done in the constructor the first time it is called
+  // (ahuser) registration is done in the constructor the first time it is called
 
 finalization
   FreeAndNil(AllBehaviorOptions);

@@ -65,6 +65,11 @@ interface
 {$ENDIF USE_AM_GIF}
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   Windows, Messages, Contnrs, Graphics, Controls, Forms, Classes,
   JclGraphUtils,
   JvTypes;
@@ -242,12 +247,21 @@ type
 
 procedure GetMappedGrays(var Shades: array of TColor; StartIntensity: Byte);
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils, jpeg,
   StdCtrls, CommCtrl, ComCtrls, Dialogs,
   {$IFDEF USE_AM_GIF}
@@ -1830,16 +1844,6 @@ begin
   Result := Clients.IndexOf(Control) >= 0;
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -1848,7 +1852,6 @@ initialization
 finalization
   FreeAndNil(Hooked);
   FreeAndNil(Backgrounds);
-
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

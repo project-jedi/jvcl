@@ -40,11 +40,21 @@ unit JvDBRemoteLogin;
 interface
 
 {$IFDEF JV_MIDAS}
-
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Windows, Messages, Classes, Graphics, Controls, Forms,
   Dialogs, DBClient,
   JvLoginForm;
+{$ELSE}
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+{$ENDIF JV_MIDAS}
+
+{$IFDEF JV_MIDAS}
 
 type
   TJvDBRemoteLogin = class(TJvCustomLogin)
@@ -90,12 +100,19 @@ type
 
 {$ENDIF JV_MIDAS}
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   IniFiles,
   {$IFDEF JV_MIDAS}
   MConnect,
@@ -312,14 +329,6 @@ end;
 {$ENDIF JV_MIDAS}
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

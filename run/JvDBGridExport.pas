@@ -31,6 +31,9 @@ unit JvDBGridExport;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Classes, SysUtils, DB, DBGrids,
   JvComponent, JvSimpleXml, JvTypes;
 
@@ -239,12 +242,19 @@ function WordGridFormatIdentToInt(const Ident: string; var Value: Longint): Bool
 function IntToWordGridFormatIdent(Value: Longint; var Ident: string): Boolean;
 procedure GetWordGridFormatValues(Proc: TGetStrProc);
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
@@ -1215,16 +1225,6 @@ begin
   for I := Low(GridFormats) to High(GridFormats) do
     Proc(GridFormats[I].Name);
 end;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
 
 initialization
   {$IFDEF UNITVERSIONING}

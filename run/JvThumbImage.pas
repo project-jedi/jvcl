@@ -48,6 +48,9 @@ unit JvThumbImage;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Classes, Controls, ExtCtrls, SysUtils, Messages, Graphics, Forms,
   jpeg, Dialogs,
   JvBaseThumbnail;
@@ -111,12 +114,19 @@ type
     property OnInvalidImage: TInvalidImageEvent read FOnInvalidImage write FOnInvalidImage;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvThumbnails, JvTypes, JvResources;
 
 constructor TJvThumbImage.Create(AOwner: TComponent);
@@ -957,14 +967,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

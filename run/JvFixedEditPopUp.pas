@@ -83,6 +83,9 @@ unit JvFixedEditPopUp;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Controls, Menus, TypInfo,
   JvTypes;
 
@@ -120,12 +123,19 @@ procedure FixedDefaultEditPopUseResourceString(Value: Boolean);
 // Updates the menu items enabled property
 procedure FixedDefaultEditPopupUpdate(AEdit: TWinControl);
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvResources;
 
 type
@@ -485,16 +495,6 @@ begin
   if (Operation = opRemove) and (AComponent = FEdit) then
     FEdit := nil;
 end;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
 
 initialization
   {$IFDEF UNITVERSIONING}

@@ -45,6 +45,9 @@ unit JvTimeLine;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ImgList,
   {$IFDEF BCB}
@@ -165,7 +168,7 @@ type
     {$ENDIF JVCLThemesEnabled}
     procedure SetDirection(const Value: TJvScrollArrow);
     procedure SetFlat(const Value: Boolean);
-    procedure SeTJvTimeLine(const Value: TJvCustomTimeLine);
+    procedure SetTimeLine(const Value: TJvCustomTimeLine);
     procedure UpdatePlacement;
     procedure OnTimer(Sender: TObject);
   protected
@@ -185,7 +188,7 @@ type
   published
     property Flat: Boolean read FFlat write SetFlat;
     property Direction: TJvScrollArrow read FDirection write SetDirection;
-    property TimeLine: TJvCustomTimeLine read FTimeLine write SeTJvTimeLine;
+    property TimeLine: TJvCustomTimeLine read FTimeLine write SetTimeLine;
   end;
 
   TJvCustomTimeLine = class(TJvCustomControl)
@@ -511,12 +514,19 @@ type
     property OnItemMoving;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Math,
   {$IFDEF COMPILER6_UP}
   DateUtils,
@@ -963,7 +973,7 @@ begin
   end;
 end;
 
-procedure TJvTLScrollBtn.SeTJvTimeLine(const Value: TJvCustomTimeLine);
+procedure TJvTLScrollBtn.SetTimeLine(const Value: TJvCustomTimeLine);
 begin
   FTimeLine := Value;
   Invalidate;
@@ -2995,14 +3005,6 @@ end;
 //  SystemParametersInfo(SPI_GETKEYBOARDSPEED, 0, @FRepeatPause, 0);
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

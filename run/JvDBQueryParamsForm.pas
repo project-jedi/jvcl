@@ -29,6 +29,9 @@ unit JvDBQueryParamsForm;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Controls, Forms, StdCtrls, DB,
   JvComponent;
 
@@ -64,12 +67,19 @@ type
 function EditQueryParams(DataSet: TDataSet; List: TParams;
   AHelpContext: THelpContext = 0): Boolean;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   DbConsts,
   JvTypes, JvResources;
 
@@ -306,16 +316,6 @@ procedure TJvQueryParamsDialog.HelpBtnClick(Sender: TObject);
 begin
   Application.HelpContext(HelpContext);
 end;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
 
 initialization
   {$IFDEF UNITVERSIONING}

@@ -30,6 +30,11 @@ unit JvDockGlobals;
 interface
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   Messages, Graphics,
   JvDockControlForm, JvDockInfo, JvDockSupportControl;
 
@@ -141,13 +146,8 @@ var
   JvGlobalDockIsLoading: Boolean = False;
   JvGlobalDockClient: TJvDockClient = nil;
 
-implementation
-
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$RCSfile$';
@@ -155,7 +155,13 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
+implementation
+
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

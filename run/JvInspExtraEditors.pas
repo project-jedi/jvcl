@@ -34,6 +34,9 @@ unit JvInspExtraEditors;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Graphics, Controls, StdCtrls, ImgList,
   JvInspector;
@@ -174,12 +177,19 @@ type
     property Images: TCustomImageList read FImageList write FImageList;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   TypInfo,
   JclRTTI,
   JvResources;
@@ -1002,24 +1012,12 @@ begin
   TJvCustomInspectorData.ItemRegister.Delete(Self);
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   // Register our Extra TypeInfo helper class for BCB
   RegisterTypeInfoHelper(TJvTypeInfoExtraHelper);
-
 
 {$IFDEF UNITVERSIONING}
 finalization

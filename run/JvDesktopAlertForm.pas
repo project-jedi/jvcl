@@ -34,6 +34,9 @@ unit JvDesktopAlertForm;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   ImgList, ActnList,
   JvButton, JvLabel, JvComponent, JvConsts;
@@ -129,12 +132,19 @@ type
     property OnUserMove: TNotifyEvent read FOnUserMove write FOnUserMove;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Menus, SysUtils,
   JvJVCLUtils, JvDesktopAlert, JvResources;
 
@@ -691,16 +701,6 @@ begin
   FEndInterval := TJvDesktopAlert(Owner).StyleHandler.EndInterval;
   TJvDesktopAlert(Owner).StyleHandler.EndInterval := 0;
 end;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
 
 initialization
   {$IFDEF UNITVERSIONING}

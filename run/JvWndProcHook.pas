@@ -36,6 +36,9 @@ unit JvWndProcHook;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Controls, Forms, Classes,
   JvComponent;
 
@@ -87,12 +90,18 @@ function UnRegisterWndProcHook(AHandle: HWND; Hook: TJvControlHook;
   const Order: TJvHookOrder): Boolean; overload;
 procedure ReleaseObj(AObject: TObject);
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
 
 type
   PJvHookInfo = ^TJvHookInfo;
@@ -989,16 +998,6 @@ begin
   end;
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -1010,7 +1009,7 @@ finalization
     GReleaser.Destroy }
   GReleaser.Free;
   FreeAndNil(GJvWndProcHook);
-
+  GReleaser := nil;
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

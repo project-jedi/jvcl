@@ -33,6 +33,9 @@ WARNINGHEADER
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, Graphics, Controls, Forms, ComCtrls,
   {$IFDEF COMPILER6_UP}
   Types,
@@ -78,12 +81,17 @@ type
   JV_WINCONTROL_EVENTS(ToolBar)
   JV_CONTROL_EVENTS(ToolButton)
 
-implementation
-
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
 {$ENDIF UNITVERSIONING}
+
+implementation
 
 {$IFDEF COMPILER6_UP}
 JV_WINCONTROL_EVENTS_IMPL(CustomComboBoxEx)
@@ -121,14 +129,6 @@ JV_WINCONTROL_EVENTS_IMPL(StatusBar)
 JV_CONTROL_EVENTS_IMPL(ToolButton)
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

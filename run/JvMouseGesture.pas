@@ -58,6 +58,9 @@ unit JvMouseGesture;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Controls, Windows, Messages,
   {$IFDEF VisualCLX}
   Qt, QControls, QForms,
@@ -415,12 +418,19 @@ function JvMouseGestureHook(Code: Integer; wParam: Word; lParam: Longword): Long
 function JvMouseGestureHook(App: TObject; Sender: QObjectH; Event: QEventH): Boolean;
 {$ENDIF VisualCLX}
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvResources, JvTypes;
 
 const
@@ -1018,14 +1028,6 @@ end;
 {$ENDIF VisualCLX}
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
