@@ -2391,25 +2391,28 @@ end;
   as a TString LIst. This creates that TString List. }
 
 function TJvCsvCustomInMemoryDataSet.GetFileName:String;
-var
- ufilename:String;
- FullyQualified:Boolean;
+//var
+// ufilename:String;
+// FullyQualified:Boolean;
 begin
- FullyQualified := False;
- if Length(FTableName)=0 then Exit;
- ufilename := UpperCase(FTableName);
-  if Length(ufilename)>2 then begin
-      if  ( ufilename[1] >= 'A' ) and ( ufilename[2]<='Z' ) then begin
-          if ufilename[2] = ':' then
-              FullyQualified := True;
-      end else if ufilename[1] = '\' then begin
-              FullyQualified := True;
-      end;
-  end;
-  if FullyQualified then
-      result := FTableName
-  else
-      result :=  FInitialWorkingDirectory+'\'+FTableName;
+ Result := ExpandUNCFilename(FTableName);
+ if not FileExists(Result) then
+   Result := IncludeTrailingPathDelimiter(FInitialWorkingDirectory) + ExtractFileName(FTableName);
+// FullyQualified := False;
+// if Length(FTableName)=0 then Exit;
+// ufilename := UpperCase(FTableName);
+//  if Length(ufilename)>2 then begin
+//      if  ( ufilename[1] >= 'A' ) and ( ufilename[2]<='Z' ) then begin
+//          if ufilename[2] = ':' then
+//              FullyQualified := True;
+//      end else if ufilename[1] = '\' then begin
+//              FullyQualified := True;
+//      end;
+//  end;
+//  if FullyQualified then
+//      result := FTableName
+//  else
+//      result :=  FInitialWorkingDirectory+'\'+FTableName;
 end;
 
 function TJvCsvCustomInMemoryDataSet.InternalLoadFileStrings: Boolean;
@@ -2641,8 +2644,8 @@ procedure TJvCsvCustomInMemoryDataSet.SetTableName(const Value: string);
 begin
   CheckInActive;
   FTableName := Value;
-  if ExtractFileExt(FTableName) = '' then
-    FTableName := FTableName + '.csv';
+//  if (ExtractFileExt(FTableName) = '') and (FTableName <> '') then
+//    FTableName := ChangeFileExt(FTableName,'.csv');
 
   { update internal filename table }
 //  FBmkFileName:= ChangeFileExt(FTableName, '.bmk' ); // bookmark file
