@@ -1,9 +1,9 @@
 ##Package: Dlgs
-##Status: Completed but needs review (p3)
+##Status: Completed (p3)
 ----------------------------------------------------------------------------------------------------
 @@JvFindFiles.pas
 Summary
-  Contains the TJvFindFiles component.
+  Contains the TJvFindFilesDialog component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
@@ -30,7 +30,7 @@ See Also
 <TITLEIMG TJvFindFilesDialog>
 JVCLInfo
   GROUP=JVCL.Dialogs.Common
-  FLAG=Component               
+  FLAG=Component
 Summary
   Simplifies searching for files.
 Description
@@ -47,7 +47,7 @@ Summary
   Specifies the start directory for the search.
 Description
   Set Directory to the file system directory where the search should start. To start the search in a
-  special folder (like Control Panel or Printers), use the SpecialFolder property instead.
+  special folder (like Control Panel or \Printers), use the SpecialFolder property instead.
 Note
   The UseSpecialFolder property controls whether Directory or SpecialFolder is used as the start
   value.
@@ -56,7 +56,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvFindFilesDialog.Execute
 Summary
-  Show the search dialog.
+  Shows the search dialog.
 Description
   Call Execute to display the search dialog.
 Return value
@@ -67,7 +67,7 @@ Summary
   Specifies the start folder for the search.
 Description
   Use SpecialFolder when you want to start a search in folders like Control Panel or Printers or a
-  special folder that isn't a real file system folder. 
+  special folder that isn't a real file system folder.
 See Also
   Directory
 ----------------------------------------------------------------------------------------------------
@@ -76,7 +76,7 @@ Summary
   Specifies what property is used for the root search folder.
 Description
   Use UseSpecialFolder to specify whether the Directory or SpecialFolder property is used as
-  the root folder for the search. Set this value to false to use Directory and to true to use 
+  the root folder for the search. Set this value to false to use Directory and to true to use
   SpecialFolder.
 See Also
   Directory, SpecialFolder

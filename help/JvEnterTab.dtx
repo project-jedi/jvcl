@@ -1,5 +1,5 @@
 ##Package: Cmp
-##Status: Completed but needs review (p3)
+##Status: Completed (p3)
 ----------------------------------------------------------------------------------------------------
 @@JvEnterTab.pas
 Summary
@@ -13,21 +13,17 @@ Author
 JVCLInfo
   GROUP=JVCL.Miscel
   FLAG=Component
-
 Summary
   A component to redirect all ENTER keys to TAB keys.
-
 Description
-
   Use a TJvEnterAsTab component when you need to redirect ENTER
   keys to TAB keys.
 
   Many DOS programs use ENTER to move between the entry fields
-  in the "form". Windows program use the TAB character instead
+  in the "form". Windows programs use the TAB character instead
   but many users still prefer using the ENTER key. Especially
   when working with the numeric keypad, using ENTER as TAB
   speeds up data entry manifold.
-
 Note
   TJvEnterAsTab is actually a visual component (derived from
   TGraphicControl) but it behaves as a TComponent both at
@@ -35,7 +31,7 @@ Note
   inheriting from a visual control, there is no need to create
   a hidden window to receive the key presses since this
   functionality is already built into visual controls.
-
+----------------------------------------------------------------------------------------------------
 @@TJvEnterAsTab.AllowDefault
 Summary
   Specifies if the component should consider button controls.
@@ -51,7 +47,7 @@ Summary
 Description
   Set EnterAsTab to true to active the key redirection.
 See Also
-  AllowDefault  
+  AllowDefault
 ----------------------------------------------------------------------------------------------------
 @@TJvEnterAsTab.SetBounds
 Summary

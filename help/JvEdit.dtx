@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Needs review
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvEdit.pas
 Summary
@@ -12,7 +12,7 @@ Author
 Summary
   Base class from which all enhanced edit-box and memo controls are derived.
 Description
-  TJvCustomEdit encapsulates new behavior common to all enhanced components for editing text by 
+  TJvCustomEdit encapsulates new behavior common to all enhanced components for editing text by
   introducing methods and properties that provide ability to:
 
   * Automatically load and save the content of the control.
@@ -21,10 +21,10 @@ Description
   * Specify a disabled color and text color.
   * Disable specific clipboard commands.
   * Provide custom caret shapes.
-  
-  Do not create instances of TJvCustomEdit. Use TJvCustomEdit as a base class when declaring control 
+
+  Do not create instances of TJvCustomEdit. Use TJvCustomEdit as a base class when declaring control
   objects that permit the user to enter or modify text, that will use the new behavior introduced
-  in TJvCustomEdit. 
+  in TJvCustomEdit.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -49,21 +49,21 @@ Summary
 Description
   Caret holds the settings for the custom caret.
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomEdit.ClipBoardCommands
+@@TJvCustomEdit.ClipboardCommands
 Summary
   Specifies the clipboard commands that are enabled for the control.
 Description
-  Use ClipBoardCommands to specify which clipboard commands are allowed for the edit control.
+  Use ClipboardCommands to specify which clipboard commands are allowed for the edit control.
 
-  ClipBoardCommmands can't be set to []. If ClipBoardCommands is set to [caCopy] then property
-  ReadOnly is set to True.
+  * ClipboardCommands can't be set to [].
+  * If ClipboardCommands is set to [caCopy] then property ReadOnly is set to True.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.DisabledColor
 Summary
   Specifies the background color of the control displayed when the control isn't enabled.
 Description
   Use DisabledColor to read or change the background color displayed when the control isn't enabled.
-  
+
   Set Enabled to False to disable the control.
 See Also
   DisabledTextColor
@@ -74,8 +74,7 @@ Summary
 Description
   Use DisabledTextColor to specify the color of the text characters (as opposed to the background color),
   when the control isn't enabled.
-  If DisabledTextColor is set to a dithered color, the text appears in the closest non-dithered value.
-  
+
   Set Enabled to False to disable the control.
 See Also
   DisabledColor
@@ -86,9 +85,9 @@ Summary
 Description
   When GroupIndex is set to -1, the edit control behaves as normal.
 
-  Edit controls with the same GroupIndex property value (other than -1), work together as a group. 
-  When the user enters one of these edit controls, the text on the other edits belonging to the 
-  same group will be cleared. 
+  Edit controls with the same GroupIndex property value (other than -1), work together as a group.
+  When the user enters one of these edit controls, the text on the other edits belonging to the
+  same group will be cleared.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.HintColor
 Summary
@@ -108,7 +107,7 @@ Description
   is False, there is no visual feedback when the mouse passes over the edit control.
 Note
   The HotTrack property only works if BorderStyle is set to bsSingle and BevelKind is set to bvNone.
-See Also 
+See Also
   OnMouseEnter, OnMouseLeave
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.IsEmpty
@@ -133,7 +132,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the edit control.
 Description
-  \Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  \Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   edit control.
 See Also
   HotTrack, OnMouseLeave
@@ -158,9 +157,9 @@ Description
 Summary
   Specifies whether to protect to text of the edit control.
 Description
-  Setting ProtectPassword to True will prevent other programs from access to the text of this edit 
+  Setting ProtectPassword to True will prevent other programs from access to the text of this edit
   control, and disable altering the PasswordChar.
-  
+
   This is usefull if you want the user to type enter a password in this edit control, and want to
   prevent possible trojans from retrieving the typed password.
 ----------------------------------------------------------------------------------------------------
@@ -169,11 +168,11 @@ Summary
   Specifies if the edit is in read only mode.
 Description
   ReadOnly specifies if the user can modify the text of the edit.
-  
+
   If set to True the user can not modify the text of the edit control.
-  
+
   If set to False the user can modify the text of the edit control.
-  
+
   Regardless of the setting of this property, you can change the text of the edit through code.
 ----------------------------------------------------------------------------------------------------
 @@TJvEdit
@@ -186,10 +185,9 @@ Summary
 Description
   TJvEdit implements the generic behavior introduced in TJvCustomEdit:
 
-  * Use AutoSave to automatically load and save the content of the control.
   * Use Alignment to align the text in the edit box.
   * Use MaxPixel to limit the maximum text size in pixels.
   * Use DisabledColor and DisabledTextColor to specify a disabled color and text color.
-  * Use ClipBoardCommands to disable specific clipboard commands.
+  * Use ClipboardCommands to disable specific clipboard commands.
   * Use Caret to provide a custom caret shape.
 ----------------------------------------------------------------------------------------------------
