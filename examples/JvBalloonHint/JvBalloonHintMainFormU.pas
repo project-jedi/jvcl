@@ -16,9 +16,7 @@ type
     grbDefaultImageIndex: TGroupBox;
     ilbDefaultImageIndex: TJvImageListBox;
     rgrDefaultBalloonPosition: TRadioGroup;
-    JvGradientCaption1: TJvGradientCaption;
     pnlBalloon: TPanel;
-    JvGradientCaption3: TJvGradientCaption;
     grbOptions: TGroupBox;
     chbUseDefaultHeader: TCheckBox;
     chbUseDefaultIcon: TCheckBox;
@@ -42,14 +40,11 @@ type
     pnlApplicationHint: TPanel;
     chbShowHeaderInHint: TCheckBox;
     chbShowIconInHint: TCheckBox;
-    chbUseBalloonAsHint: TCheckBox;
     chbPlaySound: TCheckBox;
-    JvGradientCaption2: TJvGradientCaption;
     JvBalloonHint1: TJvBalloonHint;
     procedure edtDefaultHeaderChange(Sender: TObject);
     procedure chbShowHeaderInHintClick(Sender: TObject);
     procedure chbShowIconInHintClick(Sender: TObject);
-    procedure chbUseBalloonAsHintClick(Sender: TObject);
     procedure chbPlaySoundClick(Sender: TObject);
     procedure rgrDefaultIconClick(Sender: TObject);
     procedure ilbDefaultImageIndexClick(Sender: TObject);
@@ -100,14 +95,6 @@ begin
     JvBalloonHint1.ApplicationHintOptions := JvBalloonHint1.ApplicationHintOptions - [ahShowIconInHint];
 end;
 
-procedure TJvBalloonHintMainForm.chbUseBalloonAsHintClick(Sender: TObject);
-begin
-  if chbUseBalloonAsHint.Checked then
-    JvBalloonHint1.ApplicationHintOptions := JvBalloonHint1.ApplicationHintOptions + [ahUseBalloonAsHint]
-  else
-    JvBalloonHint1.ApplicationHintOptions := JvBalloonHint1.ApplicationHintOptions - [ahUseBalloonAsHint];
-end;
-
 procedure TJvBalloonHintMainForm.chbPlaySoundClick(Sender: TObject);
 begin
   if chbPlaySound.Checked then
@@ -139,7 +126,6 @@ begin
   begin
     chbShowHeaderInHint.Checked := ahShowHeaderInHint in ApplicationHintOptions;
     chbShowIconInHint.Checked := ahShowIconInHint in ApplicationHintOptions;
-    chbUseBalloonAsHint.Checked := ahUseBalloonAsHint in ApplicationHintOptions;
     chbPlaySound.Checked := ahPlaySound in ApplicationHintOptions;
     rgrDefaultIcon.ItemIndex := Integer(DefaultIcon);
     rgrDefaultBalloonPosition.ItemIndex := Integer(DefaultBalloonPosition);

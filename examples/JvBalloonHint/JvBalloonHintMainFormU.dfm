@@ -99,7 +99,7 @@ object JvBalloonHintMainForm: TJvBalloonHintMainForm
             Indent = 0
           end>
         ButtonStyle = fsLighter
-        ImageList = ImageList2
+        Images = ImageList2
         ItemHeight = 20
         ParentCtl3D = False
         ParentShowHint = False
@@ -124,26 +124,6 @@ object JvBalloonHintMainForm: TJvBalloonHintMainForm
       ShowHint = True
       TabOrder = 3
       OnClick = rgrDefaultBalloonPositionClick
-    end
-    object JvGradientCaption1: TJvGradientCaption
-      Left = 1
-      Top = 1
-      Width = 359
-      Height = 40
-      GradientStartColor = clNavy
-      GradientEndColor = clAqua
-      GradientStyle = grHorizontal
-      LabelCaption = 'Default Values'
-      LabelFont.Charset = DEFAULT_CHARSET
-      LabelFont.Color = clWhite
-      LabelFont.Height = -21
-      LabelFont.Name = 'Verdana'
-      LabelFont.Style = [fsBold]
-      LabelAlignment = taLeftJustify
-      Align = alTop
-      Ctl3D = False
-      DoubleBuffered = False
-      TabOrder = 4
     end
   end
   object pnlBalloon: TPanel
@@ -180,33 +160,13 @@ object JvBalloonHintMainForm: TJvBalloonHintMainForm
       Height = 13
       Caption = 'Anchor:'
     end
-    object JvGradientCaption3: TJvGradientCaption
-      Left = 1
-      Top = 1
-      Width = 647
-      Height = 40
-      GradientStartColor = clNavy
-      GradientEndColor = clAqua
-      GradientStyle = grHorizontal
-      LabelCaption = 'Balloon'
-      LabelFont.Charset = DEFAULT_CHARSET
-      LabelFont.Color = clWhite
-      LabelFont.Height = -21
-      LabelFont.Name = 'Verdana'
-      LabelFont.Style = [fsBold]
-      LabelAlignment = taLeftJustify
-      Align = alTop
-      Ctl3D = False
-      DoubleBuffered = False
-      TabOrder = 0
-    end
     object grbOptions: TGroupBox
       Left = 232
       Top = 48
       Width = 153
       Height = 201
       Caption = ' Options: '
-      TabOrder = 1
+      TabOrder = 0
       object chbUseDefaultHeader: TCheckBox
         Left = 8
         Top = 24
@@ -276,7 +236,7 @@ object JvBalloonHintMainForm: TJvBalloonHintMainForm
       Width = 75
       Height = 25
       Caption = 'Launch'
-      TabOrder = 2
+      TabOrder = 1
       OnClick = btnLaunchClick
     end
     object grbCustomAnimation: TGroupBox
@@ -285,7 +245,7 @@ object JvBalloonHintMainForm: TJvBalloonHintMainForm
       Width = 217
       Height = 201
       Caption = ' CustomAnimation: '
-      TabOrder = 3
+      TabOrder = 2
       object lblCustomAnimationTime: TLabel
         Left = 8
         Top = 24
@@ -339,7 +299,7 @@ object JvBalloonHintMainForm: TJvBalloonHintMainForm
       Height = 21
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 4
+      TabOrder = 3
       OnChange = edtDefaultHeaderChange
     end
     object edtVisibleTime: TEdit
@@ -349,7 +309,7 @@ object JvBalloonHintMainForm: TJvBalloonHintMainForm
       Height = 21
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 5
+      TabOrder = 4
       OnChange = edtDefaultHeaderChange
     end
     object cmbAnchorCtrl: TComboBox
@@ -367,7 +327,7 @@ object JvBalloonHintMainForm: TJvBalloonHintMainForm
       Top = 48
       Width = 166
       Height = 81
-      TabOrder = 7
+      TabOrder = 5
     end
   end
   object pnlApplicationHint: TPanel
@@ -402,49 +362,17 @@ object JvBalloonHintMainForm: TJvBalloonHintMainForm
       TabOrder = 1
       OnClick = chbShowIconInHintClick
     end
-    object chbUseBalloonAsHint: TCheckBox
-      Left = 16
-      Top = 120
-      Width = 121
-      Height = 17
-      Hint = 'Use balloon as hint'
-      Caption = 'Use Balloon as Hint'
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 2
-      OnClick = chbUseBalloonAsHintClick
-    end
     object chbPlaySound: TCheckBox
       Left = 16
-      Top = 144
+      Top = 120
       Width = 81
       Height = 17
       Hint = 'Plays a sound when the hint shows'
       Caption = 'Play Sound'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 3
+      TabOrder = 2
       OnClick = chbPlaySoundClick
-    end
-    object JvGradientCaption2: TJvGradientCaption
-      Left = 1
-      Top = 1
-      Width = 279
-      Height = 40
-      GradientStartColor = clNavy
-      GradientEndColor = clAqua
-      GradientStyle = grHorizontal
-      LabelCaption = 'Application Hint'
-      LabelFont.Charset = DEFAULT_CHARSET
-      LabelFont.Color = clWhite
-      LabelFont.Height = -21
-      LabelFont.Name = 'Verdana'
-      LabelFont.Style = [fsBold]
-      LabelAlignment = taLeftJustify
-      Align = alTop
-      Ctl3D = False
-      DoubleBuffered = False
-      TabOrder = 4
     end
   end
   object ImageList2: TImageList
@@ -666,7 +594,7 @@ object JvBalloonHintMainForm: TJvBalloonHintMainForm
     DefaultBalloonPosition = bpRightDown
     Images = ImageList2
     Options = [boUseDefaultIcon, boUseDefaultImageIndex, boShowCloseBtn]
-    ApplicationHintOptions = [ahShowHeaderInHint, ahShowIconInHint, ahUseBalloonAsHint]
+    UseBalloonAsApplicationHint = False
     Left = 528
     Top = 296
   end
