@@ -43,7 +43,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS} 
-  JclBase,
+  JclBase, QTypes,
   JvQComponent, JvQTypes;
 
 // Additional color values for unlit color settings (TUnlitColor type)
@@ -97,15 +97,15 @@ type
     FSegmentThickness: Integer;
     FSegmentUnlitColor: TUnlitColor;
     FSlant: TSlantAngle;
-    FText: string; 
+    FText: TCaption;
     FAutoSize: boolean;
-    procedure SetAutoSize(Value: boolean); 
+    procedure SetAutoSize(Value: boolean);
   protected
     procedure DefineProperties(Filer: TFiler); override;
     procedure Loaded; override;
     procedure Paint; override;
-    function GetText: string;
-    procedure SetText(Value: string);
+    function GetText: TCaption; override;
+    procedure SetText(const Value: TCaption); override;
     procedure SetDigitHeight(Value: Integer);
     procedure SetDigits(Value: TJvSegmentedLEDDigits);
     procedure SetDigitSpacing(Value: Integer);
@@ -129,8 +129,8 @@ type
     procedure InvalidateDigits;
     procedure InvalidateView;
     procedure UpdateText;
-    procedure UpdateBounds;  
-    property AutoSize: boolean read FAutoSize write SetAutoSize default True; 
+    procedure UpdateBounds;
+    property AutoSize: boolean read FAutoSize write SetAutoSize default True;
     property CharacterMapper: TJvSegmentedLEDCharacterMapper read FCharacterMapper;
     property DigitClass: TJvSegmentedLEDDigitClass read FDigitClass write SetDigitClass;
     // Solely needed for design time support of DigitClass
@@ -145,7 +145,7 @@ type
     property SegmentThickness: Integer read FSegmentThickness write SetSegmentThickness default 2;
     property SegmentUnlitColor: TUnlitColor read FSegmentUnlitColor write SetSegmentUnlitColor default clDefaultLitColor;
     property Slant: TSlantAngle read FSlant write SetSlant default 0;
-    property Text: string read GetText write SetText;
+    property Text: TCaption read GetText write SetText;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -530,12 +530,12 @@ begin
     Digits[I].Paint;
 end;
 
-function TJvCustomSegmentedLEDDisplay.GetText: string;
+function TJvCustomSegmentedLEDDisplay.GetText: TCaption;
 begin
   Result := FText;
 end;
 
-procedure TJvCustomSegmentedLEDDisplay.SetText(Value: string);
+procedure TJvCustomSegmentedLEDDisplay.SetText(const Value: TCaption);
 begin
   if Value <> Text then
     PrimSetText(Value);
