@@ -28,7 +28,8 @@ package JvQCoreK3R;
 
 requires
   DJcl,
-  visualclx;
+  visualclx,
+  rtl;
 
 contains
   JvQConsts in '../../qcommon/JvQConsts.pas',
@@ -76,6 +77,7 @@ contains
   QWinCursors in '../../qcommon/QWinCursors.pas',
   JvQRegistryIniFile,
   JvQExComboEdits in '../../qrun/JvQExComboEdits.pas',
-  QComboEdits in '../../qcommon/QComboEdits.pas';
+  QComboEdits in '../../qcommon/QComboEdits.pas',
+  JvQColorProvider in '../../qrun/JvQColorProvider.pas';
 
 end.
