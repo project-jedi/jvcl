@@ -155,7 +155,6 @@ type
   end;
 
   TJvCreateDataset = procedure(Sender: TObject; var Dataset: TDataset) of object;
-  TJvSaveDataset = procedure(Sender: TObject; Dataset: TDataset) of object;
 
   TJvgExportDataset = class(TJvgCommonExport)
   private
@@ -592,8 +591,9 @@ begin
     FieldType := DataSet.Fields[I].DataType;
     if FieldType = ftAutoInc then
       FieldType := ftInteger;
-    Dest.FieldDefs.Add(DataSet.Fields[I].Name, FieldType,
-      DataSet.Fields[I].Size, DataSet.Fields[I].Required);
+    if not DataSet.DefaultFields then
+      Dest.FieldDefs.Add(DataSet.Fields[I].Name, FieldType,
+        DataSet.Fields[I].Size, DataSet.Fields[I].Required);
   end;
 
   Dest.Open;
@@ -624,7 +624,8 @@ begin
     if Assigned(FOnSaveDest) then
       FOnSaveDest(Self, Dest);
   finally
-    Dest.Close;
+    if Dest <> nil then
+      Dest.Close;
     FreeAndNil(Dest);
   end;
 end;
