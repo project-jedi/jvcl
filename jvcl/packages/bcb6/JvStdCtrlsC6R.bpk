@@ -31,8 +31,10 @@
       ..\..\dcu\JvStringGrid.obj ..\..\dcu\JvSystemPopup.obj 
       ..\..\dcu\JvTabControl.obj ..\..\dcu\JvToolBar.obj 
       ..\..\dcu\JvToolEdit.obj ..\..\dcu\JvTransparentPanel.obj 
-      ..\..\dcu\JvUpDown.obj ..\..\dcu\JvxCtrls.obj"
-      ..\..\dcu\JvImageList.obj/>
+      ..\..\dcu\JvUpDown.obj ..\..\dcu\JvxCtrls.obj
+      ..\..\dcu\JvImageList.obj ..\..\dcu\JvSecretPanel.obj
+      ..\..\dcu\JvSpeedButton.obj ..\..\dcu\JvTextListBox.obj
+      ..\..\dcu\JvxCheckListBox.obj"/>
     <RESFILES value="JvStdCtrlsC6R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -80,7 +82,6 @@
       <FILE FILENAME="JvStdCtrlsC6R.res" FORMNAME="" UNITNAME="JvStdCtrlsC6R.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvStdCtrlsC6R.cpp" FORMNAME="" UNITNAME="JvStdCtrlsC6R" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvxSlider.pas" FORMNAME="" UNITNAME="JvxSlider" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvBaseEdits.pas" FORMNAME="" UNITNAME="JvBaseEdits" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvBevel.pas" FORMNAME="" UNITNAME="JvBevel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvBitBtn.pas" FORMNAME="" UNITNAME="JvBitBtn" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -113,6 +114,7 @@
       <FILE FILENAME="..\..\run\JvHints.pas" FORMNAME="" UNITNAME="JvHints" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvHotKey.pas" FORMNAME="" UNITNAME="JvHotKey" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvImage.pas" FORMNAME="" UNITNAME="JvImage" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvImageList.pas" FORMNAME="" UNITNAME="JvImageList" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvItemsSearchs.pas" FORMNAME="" UNITNAME="JvItemsSearchs" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvLabel.pas" FORMNAME="" UNITNAME="JvLabel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvListBox.pas" FORMNAME="" UNITNAME="JvListBox" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -130,7 +132,9 @@
       <FILE FILENAME="..\..\run\JvRichEdit.pas" FORMNAME="" UNITNAME="JvRichEdit" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvScrollBar.pas" FORMNAME="" UNITNAME="JvScrollBar" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvScrollBox.pas" FORMNAME="" UNITNAME="JvScrollBox" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvSecretPanel.pas" FORMNAME="" UNITNAME="JvSecretPanel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvShape.pas" FORMNAME="" UNITNAME="JvShape" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvSpeedButton.pas" FORMNAME="" UNITNAME="JvSpeedButton" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvSpin.pas" FORMNAME="" UNITNAME="JvSpin" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvStartMenuButton.pas" FORMNAME="" UNITNAME="JvStartMenuButton" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvStaticText.pas" FORMNAME="" UNITNAME="JvStaticText" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -138,12 +142,13 @@
       <FILE FILENAME="..\..\run\JvStringGrid.pas" FORMNAME="" UNITNAME="JvStringGrid" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvSystemPopup.pas" FORMNAME="" UNITNAME="JvSystemPopup" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvTabControl.pas" FORMNAME="" UNITNAME="JvTabControl" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvTextListBox.pas" FORMNAME="" UNITNAME="JvTextListBox" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvToolBar.pas" FORMNAME="" UNITNAME="JvToolBar" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvToolEdit.pas" FORMNAME="" UNITNAME="JvToolEdit" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvTransparentPanel.pas" FORMNAME="" UNITNAME="JvTransparentPanel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvUpDown.pas" FORMNAME="" UNITNAME="JvUpDown" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvxCtrls.pas" FORMNAME="" UNITNAME="JvxCtrls" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvImageList.pas" FORMNAME="" UNITNAME="JvImageList" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvxCheckListBox.pas" FORMNAME="" UNITNAME="JvxCheckListBox" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvxSlider.pas" FORMNAME="" UNITNAME="JvxSlider" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvCoreC6R.bpi" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
