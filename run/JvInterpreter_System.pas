@@ -257,16 +257,16 @@ procedure JvInterpreter_VarArrayCreate(var Value: Variant; Args: TJvInterpreterA
 var
   OA: TOpenArray;
   OAV: TValueArray;
-  OAS: integer;
-  i: integer;
-  AI: array of integer;
+  OAS: Integer;
+  I: Integer;
+  AI: array of Integer;
 begin
   V2OA(Args.Values[0], OA, OAV, OAS);
   if Odd(OAS) then
     raise EJVCLException.CreateRes(@RsESizeMustBeEven);
   SetLength(AI, OAS);
-  for i := 0 to OAS -1 do
-    AI[i] := OAV[i];
+  for I := 0 to OAS -1 do
+    AI[I] := OAV[I];
   Value := VarArrayCreate(AI, Args.Values[1]);
 end;
 
@@ -275,14 +275,14 @@ procedure JvInterpreter_VarArrayOf(var Value: Variant; Args: TJvInterpreterArgs)
 var
   OA: TOpenArray;
   OAV: TValueArray;
-  OAS: integer;
-  i: integer;
+  OAS: Integer;
+  I: Integer;
   AV: array of Variant;
 begin
   V2OA(Args.Values[0], OA, OAV, OAS);
   SetLength(AV, OAS);
-  for i := 0 to OAS -1 do
-    AV[i] := OAV[i];
+  for I := 0 to OAS -1 do
+    AV[I] := OAV[I];
   Value := VarArrayOf(AV);
 end;
 
@@ -415,61 +415,61 @@ end;
 
 {procedure Insert(Source: string; var S: string; Index: Integer);}
 
-procedure JvInterpreter_Insert(var value: Variant; Args: TJvInterpreterArgs);
+procedure JvInterpreter_Insert(var Value: Variant; Args: TJvInterpreterArgs);
 var
-  s: string;
+  S: string;
 begin
-  s := Args.Values[1];
+  S := Args.Values[1];
   Insert(string(Args.Values[0]), S, Integer(Args.Values[2]));
-  Args.Values[1] := s;
+  Args.Values[1] := S;
   Value := S;
 end;
 
 { function Sqr(X: Extended): Extended; }
 
-procedure JvInterpreter_Sqr(var value: Variant; Args: TJvInterpreterArgs);
+procedure JvInterpreter_Sqr(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Sqr(Args.Values[0]);
 end;
 
 { function Sqrt(X: Extended): Extended; }
 
-procedure JvInterpreter_Sqrt(var value: Variant; Args: TJvInterpreterArgs);
+procedure JvInterpreter_Sqrt(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Sqrt(Args.Values[0]);
 end;
 
 { function Exp(X: Extended): Extended; }
 
-procedure JvInterpreter_Exp(var value: Variant; Args: TJvInterpreterArgs);
+procedure JvInterpreter_Exp(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Exp(Args.Values[0]);
 end;
 
 { function Ln(X: Extended): Extended; }
 
-procedure JvInterpreter_Ln(var value: Variant; Args: TJvInterpreterArgs);
+procedure JvInterpreter_Ln(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Ln(Args.Values[0]);
 end;
 
 { function Sin(X: Extended): Extended; }
 
-procedure JvInterpreter_Sin(var value: Variant; Args: TJvInterpreterArgs);
+procedure JvInterpreter_Sin(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Sin(Args.Values[0]);
 end;
 
 { function Cos(X: Extended): Extended; }
 
-procedure JvInterpreter_Cos(var value: Variant; Args: TJvInterpreterArgs);
+procedure JvInterpreter_Cos(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Cos(Args.Values[0]);
 end;
 
 { function Tan(X: Extended): Extended; }
 
-procedure JvInterpreter_Tan(var value: Variant; Args: TJvInterpreterArgs);
+procedure JvInterpreter_Tan(var Value: Variant; Args: TJvInterpreterArgs);
 begin
 //(p3) Tan() is defined in Math.pas which isn't available in all Delphi SKU's
 //  Tan(X) = Sin(X)/ Cos(X)
@@ -478,7 +478,7 @@ end;
 
 { function ArcTan(X: Extended): Extended; }
 
-procedure JvInterpreter_ArcTan(var value: Variant; Args: TJvInterpreterArgs);
+procedure JvInterpreter_ArcTan(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := ArcTan(Args.Values[0]);
 end;

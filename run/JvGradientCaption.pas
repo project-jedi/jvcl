@@ -48,7 +48,7 @@ type
   private
     FActive: Boolean;
     FWindowActive: Boolean;
-    FSaveRgn: HRgn;
+    FSaveRgn: HRGN;
     FRgnChanged: Boolean;
     FWinHook: TJvWindowHook;
     FStartColor: TColor;
@@ -209,7 +209,7 @@ begin
   try
     Canvas := TCanvas.Create;
     try
-      Canvas.Handle := PS.hDC;
+      Canvas.Handle := PS.hdc;
       Canvas.Font := Font;
       Result := Canvas.TextWidth(Caption);
     finally
@@ -614,7 +614,7 @@ begin
     case Msg.Msg of
       WM_NCACTIVATE:
         begin
-          FWindowActive := (Msg.wParam <> 0);
+          FWindowActive := (Msg.WParam <> 0);
         end;
       WM_NCRBUTTONDOWN:
         if Assigned(FPopupMenu) and FPopupMenu.AutoPopup then
@@ -636,7 +636,7 @@ begin
           end;
       WM_NCPAINT:
         begin
-          FSaveRgn := Msg.wParam;
+          FSaveRgn := Msg.WParam;
           FRgnChanged := False;
           CalculateGradientParams(R, Icons);
           if RectInRegion(FSaveRgn, R) then

@@ -259,7 +259,7 @@ begin
 end;
 }
 
-function BufToStr(Buffer: array of byte; BufSize: Integer): string;
+function BufToStr(Buffer: array of Byte; BufSize: Integer): string;
 var
   I: Integer;
 begin
@@ -329,7 +329,7 @@ begin
     Dec(Level);
     if Level = 1 then
     begin
-      AStrings := TStringlist.Create;
+      AStrings := TStringList.Create;
       try
         FReg.GetKeyNames(AStrings);
         for I := 0 to AStrings.Count - 1 do
@@ -502,7 +502,7 @@ begin
 
     if hkCurrentUser in FRegistryKeys then
     begin
-      FReg.Rootkey := HKEY_CURRENT_USER;
+      FReg.RootKey := HKEY_CURRENT_USER;
       NewNode := Items.AddChild(ANode, 'HKEY_CURRENT_USER');
       NewNode.ImageIndex := imClosed;
       NewNode.SelectedIndex := imOpen;
@@ -513,7 +513,7 @@ begin
 
     if hkLocalMachine in FRegistryKeys then
     begin
-      FReg.Rootkey := HKEY_LOCAL_MACHINE;
+      FReg.RootKey := HKEY_LOCAL_MACHINE;
       NewNode := Items.AddChild(ANode, 'HKEY_LOCAL_MACHINE');
       NewNode.ImageIndex := imClosed;
       NewNode.SelectedIndex := imOpen;
@@ -524,7 +524,7 @@ begin
 
     if hkUsers in FRegistryKeys then
     begin
-      FReg.Rootkey := HKEY_USERS;
+      FReg.RootKey := HKEY_USERS;
       NewNode := Items.AddChild(ANode, 'HKEY_USERS');
       NewNode.ImageIndex := imClosed;
       NewNode.SelectedIndex := imOpen;
@@ -535,7 +535,7 @@ begin
 
     if hkPerformanceData in FRegistryKeys then
     begin
-      FReg.Rootkey := HKEY_PERFORMANCE_DATA;
+      FReg.RootKey := HKEY_PERFORMANCE_DATA;
       NewNode := Items.AddChild(ANode, 'HKEY_PERFORMANCE_DATA');
       NewNode.ImageIndex := imClosed;
       NewNode.SelectedIndex := imOpen;
@@ -546,7 +546,7 @@ begin
 
     if hkCurrentConfig in FRegistryKeys then
     begin
-      FReg.Rootkey := HKEY_CURRENT_CONFIG;
+      FReg.RootKey := HKEY_CURRENT_CONFIG;
       NewNode := Items.AddChild(ANode, 'HKEY_CURRENT_CONFIG');
       NewNode.ImageIndex := imClosed;
       NewNode.SelectedIndex := imOpen;
@@ -556,7 +556,7 @@ begin
     end;
     if hkDynData in FRegistryKeys then
     begin
-      FReg.Rootkey := HKEY_DYN_DATA;
+      FReg.RootKey := HKEY_DYN_DATA;
       NewNode := Items.AddChild(ANode, 'HKEY_DYN_DATA');
       NewNode.ImageIndex := imClosed;
       NewNode.SelectedIndex := imOpen;

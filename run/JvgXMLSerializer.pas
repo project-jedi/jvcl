@@ -342,7 +342,7 @@ var
   procedure addOpenTag(const Value: string);
   begin
     WriteOutStream(CR + DupStr(TAB, Level) + '<' + Value + '>');
-    inc(Level);
+    Inc(Level);
   end;
 
   //{ Добавляет закрывающий тег с заданным именем }
@@ -350,7 +350,7 @@ var
 
   procedure addCloseTag(const Value: string; addBreak: boolean = false);
   begin
-    dec(Level);
+    Dec(Level);
     if addBreak then
       WriteOutStream(CR + DupStr(TAB, Level));
     WriteOutStream('</' + Value + '>');
@@ -577,7 +577,7 @@ var
   procedure SkipSpaces(var TagEnd: PChar);
   begin
     while TagEnd[0] <= #33 do
-      inc(TagEnd);
+      Inc(TagEnd);
   end;
 
   //  StrPosExt - ищет позицию одной строки в другой с заданной длиной.
@@ -661,12 +661,12 @@ begin
     { Otherwise check its presence  [translated] }
     check(BlockStart <> nil, Format(RsOpenXMLTagNotFound,
       [ComponentTagName]), EJvgXMLOpenTagNotFoundException);
-    inc(BlockStart, length(ComponentTagName) + 2);
+    Inc(BlockStart, Length(ComponentTagName) + 2);
 
     //{ ищем закрывающий тег }
     { Looking for closing tag  [translated] }
     BlockEnd := StrPosExt(BlockStart, PChar('</' + ComponentTagName + '>'),
-      BufferEnd - BlockStart + 3 + length(ComponentTagName) {BufferLength});
+      BufferEnd - BlockStart + 3 + Length(ComponentTagName) {BufferLength});
     check(BlockEnd <> nil, Format(RsCloseXMLTagNotFound,
       [ComponentTagName]), EJvgXMLCloseTagNotFoundException);
 
@@ -713,13 +713,13 @@ begin
         //{ TagEnd - закрывающий тег }
         { TagEnd - Closing tag   [translated] }
         TagEnd := StrPosExt(TagEnd, PChar('</' + TagName + '>'), BufferEnd -
-          TagEnd + 3 + length(TagName) { = BufferLength});
+          TagEnd + 3 + Length(TagName) { = BufferLength});
 
-        //inc(TagStart, length('</' + TagName + '>')-1);
+        //Inc(TagStart, Length('</' + TagName + '>')-1);
 
         //{ начало очередного дочернего тега }
         { Beginning of the next nested("children") tag [translated] }
-        TagValue := TagStart + length('</' + TagName + '>') - 1;
+        TagValue := TagStart + Length('</' + TagName + '>') - 1;
         TagValueEnd := TagEnd;
 
         //{ поиск свойства, соответствующего тегу }
@@ -728,7 +728,7 @@ begin
 
         if not WrapCollections and (PropIndex = -1) then
         begin
-          PropIndex := FindProperty(Pchar(TagName + 's'));
+          PropIndex := FindProperty(PChar(TagName + 's'));
 
         end
         else
@@ -742,7 +742,7 @@ begin
           SetPropertyValue(Component, PropList^[PropIndex], TagValue,
             TagValueEnd, BlockEnd);
 
-        inc(TagEnd, length('</' + TagName + '>'));
+        Inc(TagEnd, Length('</' + TagName + '>'));
         SkipSpaces(TagEnd);
 
       finally
@@ -947,7 +947,7 @@ const
     if Data = '' then
       Data := PCDATA;
     s := s + '(' + Data + ')>'#13#10;
-    Stream.Write(PChar(s)[0], length(s));
+    Stream.Write(PChar(s)[0], Length(s));
   end;
 begin
   { Playing with RTTI }

@@ -68,7 +68,7 @@ const
 
 type
   // type of operation to perform
-  TJvShFileMappingEvent = procedure(Sender: TObject; const OldFileName, NewFilename: string) of object;
+  TJvShFileMappingEvent = procedure(Sender: TObject; const OldFileName, NewFileName: string) of object;
   TJvSHFileOpType = (foCopy, foDelete, foMove, foRename);
 
   TJvSHFileOption = (fofAllowUndo, fofConfirmMouse, fofFilesOnly, fofMultiDestFiles,
@@ -92,7 +92,7 @@ type
   protected
     // returns a Handle to the window that owns this dialog
     function GetWinHandle: THandle; virtual;
-    procedure DoFileMapping(const OldFilename, NewFilename: string); virtual;
+    procedure DoFileMapping(const OldFileName, NewFileName: string); virtual;
   public
     // performs the Operation and returns True if no errors occurred
     function Execute: Boolean; override;
@@ -118,14 +118,14 @@ type
 implementation
 
 uses
-  JvConsts, JvTypes, JvResources;
+  JvConsts, JvResources, JvTypes;
 
 type
   // helper object for file mappings
   PShHandleToMappings = ^TShHandleToMappings;
   TShHandleToMappings = packed record
     Count: UINT;
-    PNameMappings: PShNameMapping;
+    PNameMappings: PSHNameMapping;
   end;
 
 constructor TJvSHFileOperation.Create(AOwner: TComponent);
@@ -266,10 +266,10 @@ begin
     Result := GetForegroundWindow;
 end;
 
-procedure TJvSHFileOperation.DoFileMapping(const OldFilename, NewFilename: string);
+procedure TJvSHFileOperation.DoFileMapping(const OldFileName, NewFileName: string);
 begin
   if Assigned(FOnFileMapping) then
-    FOnFileMapping(Self, OldFilename, NewFilename);
+    FOnFileMapping(Self, OldFileName, NewFileName);
 end;
 
 end.

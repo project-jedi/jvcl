@@ -159,8 +159,8 @@ type
     property PollTime: Cardinal read FPoll write FPoll default 50;
     property CaptureJoystick1: Boolean read FCapture1 write SetCapture1 default False;
     property CaptureJoystick2: Boolean read FCapture2 write SetCapture2 default False;
-    property JoyStick1: TJoyStick read FJoy1;
-    property JoyStick2: TJoyStick read FJoy2;
+    property JoyStick1: TJoystick read FJoy1;
+    property JoyStick2: TJoystick read FJoy2;
     property Joy1ButtonDown: TJoyButtonDown read FJoy1ButtonDown write FJoy1ButtonDown;
     property Joy2ButtonDown: TJoyButtonDown read FJoy2ButtonDown write FJoy2ButtonDown;
     property Joy1ButtonUp: TJoyButtonDown read FJoy1ButtonUp write FJoy1ButtonUp;
@@ -182,7 +182,7 @@ uses
 constructor TJvJoystick.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FJoyStick1 := joyGetNumDevs > 0;
+  FJoystick1 := joyGetNumDevs > 0;
   FJoystick2 := joyGetNumDevs > 1;
   FJoy1 := TJoystick.CreateJoy(Self, JOYSTICKID1);
   FJoy2 := TJoystick.CreateJoy(Self, JOYSTICKID2);
@@ -362,7 +362,7 @@ begin
     MM_JOY2ZMOVE:
       TestButtonZMove(FJoy1ZMove);
   else
-    Msg.Result := DefWindowProc(FHandle, Msg.Msg, Msg.wParam, Msg.lParam);
+    Msg.Result := DefWindowProc(FHandle, Msg.Msg, Msg.WParam, Msg.LParam);
   end;
 end;
 

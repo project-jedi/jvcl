@@ -307,7 +307,7 @@ var
      end;}
   end;
 
-  procedure DrawBackGround;
+  procedure DrawBackground;
   begin
     { Changed By Steve Childs 18/04/00 - Now Refers To Buffer Bitmap}
     if FBackBorder then
@@ -638,10 +638,10 @@ begin
         // 2-jul-2000 Jan Verhoeven
         if Orientation = jtbHorizontal then
         begin
-          if x < FTrackRect.Left then
+          if X < FTrackRect.Left then
             FThumbPosition := FTrackRect.Left - 1
           else
-          if x > FTrackRect.Right then
+          if X > FTrackRect.Right then
             FThumbPosition := FTrackRect.Right + 1
           else
             FThumbPosition := X;

@@ -84,7 +84,7 @@ type
   THData = record
     Word: string;
     Color: TColor;
-    Bold: boolean;
+    Bold: Boolean;
   end;
 
   TLexemKind = (ltTag, ltComma);
@@ -122,7 +122,7 @@ var
   var
     Pos: Integer;
   begin
-    pos := pos1;
+    Pos := Pos1;
     if MemoText[Pos] = ' ' then
       repeat
         Inc(Pos);
@@ -181,11 +181,11 @@ begin
       end
       else
       if MemoText[Pos1] = '<' then
-        LastLexem.Tag.StartPos := pos1 - 1
+        LastLexem.Tag.StartPos := Pos1 - 1
       else
       if (MemoText[Pos1] = '''') or (MemoText[Pos1] = '"') then
-        LastLexem.Comma.StartPos := pos1 - 1;
-      Inc(pos1);
+        LastLexem.Comma.StartPos := Pos1 - 1;
+      Inc(Pos1);
       if (MemoText[Pos1 - 1] = '<') and (MemoText[Pos1] = '#') then
         doBold := True;
     end;

@@ -78,8 +78,8 @@ type
     FDefaultGrabbersProperties: TJvUrlGrabberDefaultPropertiesList;
     // gets/sets the URLs property, assigning the given strings
     // to the internal FURLs field
-    function GetUrls: TStrings;
-    procedure SetUrls(const Value: TStrings);
+    function GetURLs: TStrings;
+    procedure SetURLs(const Value: TStrings);
 
     // sets the Default Grabber value, ensuring that it doesn't go
     // below -1 or above the number of registered grabber classes
@@ -121,7 +121,7 @@ type
     property CleanupThreshold: Cardinal read FCleanupThreshold write FCleanupThreshold default 10;
 
     // The Urls to grab
-    property URLs: TStrings read GetURLs write SetUrls;
+    property URLs: TStrings read GetURLs write SetURLs;
     // The default properties for each family of grabber
     property DefaultGrabbersProperties : TJvUrlGrabberDefaultPropertiesList read FDefaultGrabbersProperties;
     // Events
@@ -298,7 +298,7 @@ type
 
     // Event callers
     procedure DoError(ErrorMsg: string);
-    procedure DoProgress(Position: Integer; var Continue: boolean);
+    procedure DoProgress(Position: Integer; var Continue: Boolean);
     procedure DoEnded;
     procedure DoClosed;
     
@@ -391,7 +391,7 @@ type
     FErrorText: string; // the error string received from the server
     FGrabber: TJvCustomUrlGrabber;
     FStatus: DWORD;
-    FContinue: boolean;
+    FContinue: Boolean;
     
     procedure Error;
     procedure Ended;
@@ -495,7 +495,7 @@ begin
   // if not found, mark the object as nil which in turn
   // will delete it
   for I := 0 to FGrabbers.Count - 1 do
-    if FUrls.IndexOfObject(FGrabbers[I]) = -1 then
+    if FURLs.IndexOfObject(FGrabbers[I]) = -1 then
       FGrabbers[I] := nil;
   // pack the list
   FGrabbers.Pack;
@@ -517,12 +517,12 @@ begin
     FDefaultGrabberIndex := Value;
 end;
 
-function TJvUrlListGrabber.GetUrls: TStrings;
+function TJvUrlListGrabber.GetURLs: TStrings;
 begin
   Result := FURLs;
 end;
 
-procedure TJvUrlListGrabber.SetUrls(const Value: TStrings);
+procedure TJvUrlListGrabber.SetURLs(const Value: TStrings);
 begin
   FURLs.Assign(Value);
 end;
@@ -531,7 +531,7 @@ procedure TJvUrlListGrabber.StartAll;
 var
   I: Integer;
 begin
-  for I := 0 to FUrls.Count - 1 do
+  for I := 0 to FURLs.Count - 1 do
     Grabbers[I].Start;
 end;
 
@@ -539,7 +539,7 @@ procedure TJvUrlListGrabber.StopAll;
 var
   I: Integer;
 begin
-  for I := 0 to FUrls.Count - 1 do
+  for I := 0 to FURLs.Count - 1 do
     Grabbers[I].Stop;
 end;
 
@@ -548,22 +548,22 @@ var
   I: Integer;
   TmpGrabber: TJvCustomUrlGrabber;
 begin
-  for I := 0 to FUrls.Count - 1 do
+  for I := 0 to FURLs.Count - 1 do
   begin
-    if not Assigned(FUrls.Objects[I]) then
+    if not Assigned(FURLs.Objects[I]) then
     begin
-      TmpGrabber := JvUrlGrabberClassList.CreateFor(Self, FUrls[I], FDefaultGrabbersProperties);
+      TmpGrabber := JvUrlGrabberClassList.CreateFor(Self, FURLs[I], FDefaultGrabbersProperties);
       if Assigned(TmpGrabber) then
-        FUrls.Objects[I] := TmpGrabber
+        FURLs.Objects[I] := TmpGrabber
       else
       if DefaultGrabberIndex > -1 then
-        FUrls.Objects[I] := JvUrlGrabberClassList[DefaultGrabberIndex].Create(Self, FUrls[I], FDefaultGrabbersProperties.Items[DefaultGrabberIndex])
+        FURLs.Objects[I] := JvUrlGrabberClassList[DefaultGrabberIndex].Create(Self, FURLs[I], FDefaultGrabbersProperties.Items[DefaultGrabberIndex])
       else
-        raise ENoGrabberForUrl.CreateResFmt(@RsENoGrabberForUrl, [FUrls[I]]);
+        raise ENoGrabberForUrl.CreateResFmt(@RsENoGrabberForUrl, [FURLs[I]]);
 
       // add in the list of owned objects
-      FGrabbers.Add(TJvCustomUrlGrabber(FUrls.Objects[I]));
-      if Cardinal(FGrabbers.Count - FUrls.Count) > FCleanupThreshold then
+      FGrabbers.Add(TJvCustomUrlGrabber(FURLs.Objects[I]));
+      if Cardinal(FGrabbers.Count - FURLs.Count) > FCleanupThreshold then
         Cleanup;
     end;
   end;
@@ -652,7 +652,7 @@ begin
     FOnError(Self, ErrorMsg);
 end;
 
-procedure TJvCustomUrlGrabber.DoProgress(Position: Integer; var Continue: boolean);
+procedure TJvCustomUrlGrabber.DoProgress(Position: Integer; var Continue: Boolean);
 begin
   if Assigned(FOnProgress) then
     FOnProgress(Self, Position, FSize, Url, Continue);
@@ -915,7 +915,7 @@ type
   // It works quite well and shouldn't need much improvement. 
   TDFMPropertiesCollectionItem = class(TCollectionItem)
   private
-    FOwnValue: boolean;
+    FOwnValue: Boolean;
 
     FValue: TJvCustomUrlGrabberDefaultProperties;
     FUrlType: string;

@@ -101,8 +101,8 @@ begin
   inherited Resize;
   if not Assigned(Grid) then
   begin
-    //  for i:=0 to TJvgPublicGrid(Grid).ColCount-1 do
-    //    aColWidths[i] := TJvgPublicGrid(Grid).ColWidths[i];
+    //  for I:=0 to TJvgPublicGrid(Grid).ColCount-1 do
+    //    aColWidths[I] := TJvgPublicGrid(Grid).ColWidths[I];
     ResizeColumns;
   end;
 end;
@@ -116,7 +116,7 @@ end;
 procedure TJvgGridHeaderControl.ResizeColumns;
 var
   //   ItemsCount,
-  i, Col, Sect, ColsToJoin, ColsToJoinWidth: Integer;
+  I, Col, Sect, ColsToJoin, ColsToJoinWidth: Integer;
   Indicator: Boolean;
   G: TJvgPublicGrid;
 begin
@@ -140,7 +140,7 @@ begin
   {$IFDEF DelphiPersonalEdition}
   Indicator := False;
   {$ELSE}
-  Indicator := (Grid is TDBGrid) and (dgIndicator in TDBGrid(g).Options);
+  Indicator := (Grid is TDBGrid) and (dgIndicator in TDBGrid(G).Options);
   {$ENDIF DelphiPersonalEdition}
   if Indicator then
     Col := 1;
@@ -156,8 +156,8 @@ begin
     //      inc(ColsToJoinWidth ,-ColsToJoin);
 
     //    ColsToJoinWidth := 0;
-    //    for i:=0 to ColsToJoin-1 do
-    //      inc(ColsToJoinWidth, G.ColWidths[Col+i]);
+    //    for I:=0 to ColsToJoin-1 do
+    //      inc(ColsToJoinWidth, G.ColWidths[Col+I]);
 
     if ColsToJoinWidth <> 0 then
     begin

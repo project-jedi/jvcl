@@ -542,13 +542,13 @@ const
 begin
   Check(DbiQAlloc(DBHandle, qrylangQBE, FStmtHandle));
   try
-    Check(DBiSetProp(hDbiObj(StmtHandle), stmtLIVENESS,
+    Check(DbiSetProp(hDBIObj(StmtHandle), stmtLIVENESS,
       DataType[RequestLive and not ForceUpdateCallback]));
-    Check(DBiSetProp(hDbiObj(StmtHandle), stmtAUXTBLS, Longint(FAuxiliaryTables)));
+    Check(DbiSetProp(hDBIObj(StmtHandle), stmtAUXTBLS, Longint(FAuxiliaryTables)));
     if Local and RequestLive and Constrained then
-      Check(DBiSetProp(hDbiObj(StmtHandle), stmtCONSTRAINED, LongInt(True)));
+      Check(DbiSetProp(hDBIObj(StmtHandle), stmtCONSTRAINED, Ord(True)));
     if FBlankAsZero then
-      Check(DbiSetProp(hDbiObj(StmtHandle), stmtBLANKS, Longint(True)));
+      Check(DbiSetProp(hDBIObj(StmtHandle), stmtBLANKS, Ord(True)));
     while not CheckOpen(DbiQPrepare(FStmtHandle, QBEText)) do {Retry}
       ;
   except

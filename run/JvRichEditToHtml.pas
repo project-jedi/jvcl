@@ -153,7 +153,7 @@ begin
   FEndSection := cHTMLFontEnd;
   FCToH.RgbColor := Value.Color;
   Result := Format('<FONT COLOR="#%s" SIZE="%d" FACE="%s">',
-                    [FCtoH.HtmlColor,(Value.Size mod 8) + 2,Value.Name]);
+                    [FCToH.HtmlColor,(Value.Size mod 8) + 2,Value.Name]);
   if fsBold in Value.Style then
   begin
     FEndSection := cHTMLBoldEnd + FEndSection;
@@ -234,7 +234,7 @@ begin
     DPara.Numbering := ComCtrls.nsNone;
     CurrPara.Alignment := DPara.Alignment;
     CurrPara.Numbering := DPara.Numbering;
-    FendPara := '';
+    FEndPara := '';
 
     Datt.Assign(Value.DefAttributes);
     Strings.Add(AttToHtml(Datt));
@@ -247,7 +247,7 @@ begin
     begin
       St := '';
       CurrPara.Numbering := ComCtrls.nsNone;
-      if Length(Value.lines[I]) > 0 then
+      if Length(Value.Lines[I]) > 0 then
       begin
         for J := 1 to Length(Value.Lines[I]) do
         begin
@@ -332,7 +332,7 @@ begin
     DPara.Numbering := nsNone;
     CurrPara.Alignment := DPara.Alignment;
     CurrPara.Numbering := DPara.Numbering;
-    FendPara := '';
+    FEndPara := '';
 
     Datt.Assign(Value.DefAttributes);
     Strings.Add(AttToHtml(Datt));
@@ -345,7 +345,7 @@ begin
     begin
       St := '';
       CurrPara.Numbering := nsNone;
-      if Length(Value.lines[I]) > 0 then
+      if Length(Value.Lines[I]) > 0 then
       begin
         for J := 1 to Length(Value.Lines[I]) do
         begin

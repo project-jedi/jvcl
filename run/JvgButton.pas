@@ -631,15 +631,15 @@ end;
 procedure TJvgButton.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   Pt: TPoint;
-  fMouseInControl_: Boolean;
+  MouseInControl: Boolean;
 begin
   inherited MouseMove(Shift, X, Y);
   Pt.X := X;
   Pt.Y := Y;
   if PtInRectExclusive(ClientRect, Pt) then
   begin
-    fMouseInControl_ := IsMouseInControl;
-    if fMouseInControl_ <> FMouseInControl then
+    MouseInControl := IsMouseInControl;
+    if MouseInControl <> FMouseInControl then
     begin
       if FMouseInControl then
         if Assigned(OnMouseEnter) then
@@ -647,7 +647,7 @@ begin
         else
         if Assigned(OnMouseLeave) then
           OnMouseLeave(Self);
-      FMouseInControl := FMouseInControl_;
+      FMouseInControl := MouseInControl;
       Paint_;
     end;
   end;
@@ -1075,7 +1075,7 @@ end;
 function TJvgButton.IsMouseInControl: Boolean;
 var
   Pt: TPoint;
-  PixelColor: TCOLORREF;
+  PixelColor: TColorRef;
 begin
   GetCursorPos(Pt);
   Pt := ScreenToClient(Pt);

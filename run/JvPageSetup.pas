@@ -104,7 +104,7 @@ type
     procedure ReadMinValues(AReader: TReader);
     procedure WriteMinValues(AWriter: TWriter);
     procedure WMHelp(var Msg: TWMHelp); message WM_HELP;
-    procedure WMCommand(var Msg: TMessage); message WM_COMMAND;
+    procedure WMCommand(var Msg: TWMCommand); message WM_COMMAND;
     procedure WMPaintInit(var Msg: TMessage); message CM_PAINTINIT;
     procedure WMPaintPage(var Msg: TMessage); message CM_PAINTPAGE;
   protected
@@ -461,12 +461,12 @@ end;
 
 // Processing <Printer> button
 
-procedure TJvPageSetupDialog.WMCommand(var Msg: TMessage);
+procedure TJvPageSetupDialog.WMCommand(var Msg: TWMCommand);
 const
   IDPRINTERBTN = $0402;
 begin
-  if not ((LongRec(Msg.WParam).Lo = IDPRINTERBTN) and
-    (LongRec(Msg.WParam).Hi = BN_CLICKED) and DoPrinter) then
+  if not ((Msg.ItemID = IDPRINTERBTN) and
+    (Msg.NotifyCode = BN_CLICKED) and DoPrinter) then
     inherited;
 end;
 

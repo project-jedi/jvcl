@@ -536,31 +536,28 @@ begin
   end;
 end;
 
-
-
 // NEW: Set Control Background Color
 procedure TJvCustomOfficeColorButton.SetControlBgColor(const Value: TColor);
 begin
   if Value = clDefault then // If set to clDefault then no change.
-      exit;
-  if Value<>FArrowButton.Color then begin
-      FMainButton.Color := Value;
-      FArrowButton.Color := Value;
+    Exit;
+  if Value <> FArrowButton.Color then
+  begin
+    FMainButton.Color := Value;
+    FArrowButton.Color := Value;
   end;
 end;
 
 function TJvCustomOfficeColorButton.GetControlBgColor: TColor;
 begin
- result := FArrowButton.Color;
+  Result := FArrowButton.Color;
 end;
 
 {WPostma - Property SelectedColor (GetColor/SetColor) is the actual user-selected value}
 procedure TJvCustomOfficeColorButton.SetSelectedColor(const Value: TColor);
 begin
   if FColorsForm.ColorPanel.SelectedColor <> Value then
-  begin
     FColorsForm.ColorPanel.SelectedColor := Value;
-  end;
 end;
 
 procedure TJvCustomOfficeColorButton.AdjustColorForm(X: Integer = 0; Y: Integer = 0);

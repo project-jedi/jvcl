@@ -906,7 +906,7 @@ begin
           end;
         end;
       end;
-      if CurrControlCount = LastControlCOunt then
+      if CurrControlCount = LastControlCount then
         Break;
       LastControlCount := CurrControlCount;
     end;

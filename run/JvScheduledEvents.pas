@@ -232,6 +232,7 @@ uses
 
 const
   sUnitName = 'JvScheduledEvents';
+  cEventPrefix = 'Event ';
 
 //=== { TScheduleThread } ====================================================
 
@@ -516,22 +517,22 @@ var
   EventName: string;
   Event: TJvEventCollectionItem;
 begin
-  EventName := Sender.ReadString(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'Eventname']));
+  EventName := Sender.ReadString(Sender.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'Eventname']));
   if EventName <> '' then
   begin
-    Stamp.Date := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'Stamp.Date']));
-    Stamp.Time := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'Stamp.Time']));
-    TriggerCount := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'TriggerCount']));
-    DayCount := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'DayCount']));
-    Snooze.Date := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'Snooze.Date']));
-    Snooze.Time := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'Snooze.Time']));
-    SnoozeInterval.wYear := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wYear']));
-    SnoozeInterval.wMonth := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wMonth']));
-    SnoozeInterval.wDay := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wDay']));
-    SnoozeInterval.wHour := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wHour']));
-    SnoozeInterval.wMinute := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wMinute']));
-    SnoozeInterval.wSecond := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wSecond']));
-    SnoozeInterval.wMilliseconds := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wMilliseconds']));
+    Stamp.Date := Sender.ReadInteger(Sender.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'Stamp.Date']));
+    Stamp.Time := Sender.ReadInteger(Sender.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'Stamp.Time']));
+    TriggerCount := Sender.ReadInteger(Sender.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'TriggerCount']));
+    DayCount := Sender.ReadInteger(Sender.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'DayCount']));
+    Snooze.Date := Sender.ReadInteger(Sender.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'Snooze.Date']));
+    Snooze.Time := Sender.ReadInteger(Sender.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'Snooze.Time']));
+    SnoozeInterval.wYear := Sender.ReadInteger(Sender.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'SnoozeInterval.wYear']));
+    SnoozeInterval.wMonth := Sender.ReadInteger(Sender.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'SnoozeInterval.wMonth']));
+    SnoozeInterval.wDay := Sender.ReadInteger(Sender.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'SnoozeInterval.wDay']));
+    SnoozeInterval.wHour := Sender.ReadInteger(Sender.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'SnoozeInterval.wHour']));
+    SnoozeInterval.wMinute := Sender.ReadInteger(Sender.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'SnoozeInterval.wMinute']));
+    SnoozeInterval.wSecond := Sender.ReadInteger(Sender.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'SnoozeInterval.wSecond']));
+    SnoozeInterval.wMilliseconds := Sender.ReadInteger(Sender.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'SnoozeInterval.wMilliseconds']));
     Event := TJvEventCollection(List).Add;
     Event.Name := EventName;
     Event.LoadState(Stamp, TriggerCount, DayCount, Snooze, SnoozeInterval);
@@ -566,20 +567,20 @@ begin
   StampTime := Stamp.Time;
   SnoozeDate := SnoozeStamp.Date;
   SnoozeTime := SnoozeStamp.Time;
-  AppStorage.WriteString(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'Eventname']), FEvents[Index].Name);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'Stamp.Date']), StampDate);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'Stamp.Time']), StampTime);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'TriggerCount']), TriggerCount);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'DayCount']), DayCount);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'Snooze.Date']), SnoozeDate);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'Snooze.Time']), SnoozeTime);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wYear']), SnoozeInterval.wYear);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wMonth']), SnoozeInterval.wMonth);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wDay']), SnoozeInterval.wDay);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wHour']), SnoozeInterval.wHour);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wMinute']), SnoozeInterval.wMinute);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wSecond']), SnoozeInterval.wSecond);
-  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wMilliseconds']), SnoozeInterval.wMilliseconds);
+  AppStorage.WriteString(AppStorage.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'Eventname']), FEvents[Index].Name);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'Stamp.Date']), StampDate);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'Stamp.Time']), StampTime);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'TriggerCount']), TriggerCount);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'DayCount']), DayCount);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'Snooze.Date']), SnoozeDate);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'Snooze.Time']), SnoozeTime);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'SnoozeInterval.wYear']), SnoozeInterval.wYear);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'SnoozeInterval.wMonth']), SnoozeInterval.wMonth);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'SnoozeInterval.wDay']), SnoozeInterval.wDay);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'SnoozeInterval.wHour']), SnoozeInterval.wHour);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'SnoozeInterval.wMinute']), SnoozeInterval.wMinute);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'SnoozeInterval.wSecond']), SnoozeInterval.wSecond);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, cEventPrefix + IntToStr(Index), 'SnoozeInterval.wMilliseconds']), SnoozeInterval.wMilliseconds);
 end;
 
 procedure TJvCustomScheduledEvents.DeleteSingleEvent(Sender: TJvCustomAppStorage; const Path: string;
@@ -588,7 +589,7 @@ var
   I: Integer;
 begin
   for I := First to Last do
-    Sender.DeleteSubTree(Sender.ConcatPaths([Path, 'Event ' + IntToStr(I)]));
+    Sender.DeleteSubTree(Sender.ConcatPaths([Path, cEventPrefix + IntToStr(I)]));
 end;
 
 procedure TJvCustomScheduledEvents.SaveEventStates;
@@ -887,7 +888,7 @@ begin
   MSecs := StrToInt(Copy(Str, 18, 2)) * 1000 + StrToInt(Copy(Str, 21, 3));
 
   Stamp := DateTimeToTimeStamp(EncodeDate(Y, M, D));
-  Stamp.Time := H * 3600000 + MIn * 60000 + MSecs;
+  Stamp.Time := H * 3600000 + Min * 60000 + MSecs;
 end;
 
 procedure TJvEventCollectionItem.PropDateWrite(Writer: TWriter; const Stamp: TTimeStamp);

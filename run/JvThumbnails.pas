@@ -233,7 +233,7 @@ begin
   FDestroying := True;
   Photo.OnProgress := nil;
   FPhotoName.Free;
-  FTitleFont.Onchange := nil;
+  FTitleFont.OnChange := nil;
   FTitleFont.Free;
   inherited Destroy;
 end;
@@ -557,7 +557,7 @@ begin
   FTitleFont.Assign(Value);
 end;
 
-procedure TJvThumbnail.Refreshfont(Sender: TObject);
+procedure TJvThumbnail.RefreshFont(Sender: TObject);
 begin
   FTitlePanel.Font.Assign(FTitleFont);
 end;

@@ -38,9 +38,9 @@ a class that can handle the OnProgress event, there are times when you can't use
 has methods and properties you can call directly (ProgressStepIt is the most important) to update the dialog.
 
 Methods:
-Execute: boolean - shows the dialog modally and returns true if the user did not cancel it. The user
+Execute: Boolean - shows the dialog modally and returns true if the user did not cancel it. The user
                    can cancel the dialog only when the Cancel button is visible by clicking it or hitting Esc key
-ShowModal: integer - same as Execute but returns mrCancel on cancel and mrOK otherwise
+ShowModal: Integer - same as Execute but returns mrCancel on cancel and mrOK otherwise
 Show               - shows the dialog non-modally
 Hide               - hides (closes) the dialog if it is visible
 
@@ -124,7 +124,7 @@ type
     FOnClose: TNotifyEvent;
     FOnShow: TNotifyEvent;
     FCancelled: Boolean;
-    FSmooth: boolean;
+    FSmooth: Boolean;
     FScreenPosition: TPosition;
     procedure SetPicture(const Value: TPicture);
     procedure SetCaption(const Value: string);
@@ -147,7 +147,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure InitValues(AMin, AMax, AInterval, APosition: integer; const ACaption, AText: string);
+    procedure InitValues(AMin, AMax, AInterval, APosition: Integer; const ACaption, AText: string);
 
     function Execute: Boolean; override;
     function ShowModal: Integer;
@@ -418,7 +418,7 @@ begin
   FIText := Text;
 end;
 
-procedure TJvProgressDialog.InitValues(AMin, AMax, AInterval, APosition: integer;
+procedure TJvProgressDialog.InitValues(AMin, AMax, AInterval, APosition: Integer;
       const ACaption, AText: string);
 begin
   Min := AMin;

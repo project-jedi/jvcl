@@ -318,7 +318,7 @@ begin
   end;
   Result := (GlobalLibHandle > 0) and Assigned(RegisterShellHookWindow) and Assigned(DeregisterShellHookWindow);
 
-  AddFinalizeProc(sUnitName, UninitJvShellHooks);
+  AddFinalizeProc(sUnitName, UnInitJvShellHooks);
 end;
 
 destructor TJvShellHook.Destroy;
@@ -367,6 +367,7 @@ begin
   if Msg.Msg = FHookMsg then
     DoShellMessage(Msg)
   else
+    // (rom) why inherited? The method is introduced here.
     inherited;
 end;
 

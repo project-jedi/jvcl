@@ -80,8 +80,9 @@ type
     FNullPixmap: QPixmapH;
     {$ENDIF VisualCLX}
     FEmptyValue: string;
-    FIsEmptyValue: boolean;
-    FEmptyFontColor, FOldFontColor: TColor;
+    FIsEmptyValue: Boolean;
+    FEmptyFontColor: TColor;
+    FOldFontColor: TColor;
     function GetPasswordChar: Char;
     procedure SetAlignment(Value: TAlignment);
     procedure SetCaret(const Value: TJvCaret);
@@ -140,7 +141,6 @@ type
     function IsEmpty: Boolean;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     {$IFDEF VCL}
     procedure DefaultHandler(var Msg); override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -325,10 +325,9 @@ begin
 end;
 
 {$IFDEF VCL}
-
 procedure TJvCustomEdit.CreateParams(var Params: TCreateParams);
 const
-  Styles: array[TAlignment] of DWORD = (ES_LEFT, ES_RIGHT, ES_CENTER);
+  Styles: array [TAlignment] of DWORD = (ES_LEFT, ES_RIGHT, ES_CENTER);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or Styles[FAlignment];
@@ -457,15 +456,14 @@ begin
     Canvas.FillRect(R);
     Result := True;
     {$IFDEF VisualCLX}
-   // paint Border
-    if (BorderStyle = bsSingle) then
+    // paint Border
+    if BorderStyle = bsSingle then
       QGraphics.DrawEdge(Canvas, R, esLowered, esLowered, ebRect);
     {$ENDIF VisualCLX}
   end;
 end;
 
 {$IFDEF VCL}
-
 procedure TJvCustomEdit.WMPaint(var Msg: TWMPaint);
 var
   Canvas: TControlCanvas;
@@ -492,6 +490,7 @@ begin
   end;
 end;
 {$ENDIF VCL}
+
 {$IFDEF VisualCLX}
 
 procedure TJvCustomEdit.Paint;
@@ -627,6 +626,7 @@ begin
     end;
   end;
 end;
+
 {$ENDIF VCL}
 
 procedure TJvCustomEdit.SetPasswordChar(Value: Char);
@@ -651,7 +651,6 @@ begin
 end;
 
 {$IFDEF VCL}
-
 procedure TJvCustomEdit.DefaultHandler(var Msg);
 begin
   if ProtectPassword then
@@ -660,10 +659,10 @@ begin
         WM_CUT, WM_COPY, WM_GETTEXT, WM_GETTEXTLENGTH, EM_SETPASSWORDCHAR:
           Result := 0;
       else
-        inherited
+        inherited DefaultHandler(Msg);
       end
   else
-    inherited;
+    inherited DefaultHandler(Msg);
 end;
 {$ENDIF VCL}
 
@@ -715,6 +714,7 @@ end;
 function TJvCustomEdit.GetFlat: Boolean;
 begin
   {$IFDEF VCL}
+  // (rom) Is this correct? I would assume "not Ctl3D" as value.
   FFlat := Ctl3D; // update
   {$ENDIF VCL}
   Result := FFlat;
@@ -726,6 +726,7 @@ begin
   begin
     FFlat := Value;
     {$IFDEF VCL}
+    // (rom) Is this correct? I would assume "not FFlat" as value.
     Ctl3D := FFlat;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
@@ -765,18 +766,18 @@ begin
       C.Control := Self;
       {$IFDEF VCL}
       if GetTextExtentPoint32(C.Handle, PChar(Text), Length(Text), Size) then
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        if GetTextExtentPoint32W(C.Handle, PWideChar(Text), Length(Text), Size) then
-          {$ENDIF VisualCLX}
-        begin
-          if (ClientWidth <= Size.cx) then
-            Hint := Text
-          else
-            Hint := FOldHint;
-        end
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      if GetTextExtentPoint32W(C.Handle, PWideChar(Text), Length(Text), Size) then
+      {$ENDIF VisualCLX}
+      begin
+        if ClientWidth <= Size.cx then
+          Hint := Text
         else
           Hint := FOldHint;
+      end
+      else
+        Hint := FOldHint;
     finally
       C.Free;
     end;
@@ -821,7 +822,7 @@ begin
     if FIsEmptyValue then
     begin
       Text := '';
-      FIsEmptyValue := false;
+      FIsEmptyValue := False;
       if not (csDesigning in ComponentState) then
         Font.Color := FOldFontColor;
     end;
@@ -835,7 +836,7 @@ begin
     if Text = '' then
     begin
       Text := EmptyValue;
-      FIsEmptyValue := true;
+      FIsEmptyValue := True;
       if not (csDesigning in ComponentState) then
       begin
         FOldFontColor := Font.Color;
@@ -870,7 +871,6 @@ begin
       DoEmptyValueExit;
   end;
 end;
-
 
 end.
 

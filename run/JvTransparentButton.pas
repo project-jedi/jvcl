@@ -443,7 +443,7 @@ begin
   FNumGlyphs := 1;
   FSpacing := 2;
   FTextAlign := ttaCenter;
-  FWordwrap := False;
+  FWordWrap := False;
   FOutline := fsExplorer;
 end;
 
@@ -565,7 +565,7 @@ procedure TJvTransparentButton.SetWordWrap(Value: Boolean);
 begin
   if FWordWrap <> Value then
   begin
-    FWordwrap := Value;
+    FWordWrap := Value;
     Invalidate;
   end;
 end;
@@ -977,7 +977,7 @@ begin
   FImList := TImageList.CreateSize(Width, Height);
   FSpacing := 2;
   FTextAlign := ttaCenter;
-  FWordwrap := False;
+  FWordWrap := False;
   FOutline := fsExplorer;
 end;
 
@@ -1220,7 +1220,7 @@ procedure TJvTransparentButton2.SetWordWrap(Value: Boolean);
 begin
   if FWordWrap <> Value then
   begin
-    FWordwrap := Value;
+    FWordWrap := Value;
     Invalidate;
   end;
 end;

@@ -130,7 +130,7 @@ type
     procedure xProc;
     procedure xNoParser;
   public
-    constructor Create(AOwner: Tcomponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ClearProcedures;
     procedure AddProcedure(AName: string; AProcedure, AParser: TJvSALProc);
@@ -144,7 +144,7 @@ type
     procedure LoadFromFile(FileName: string);
     procedure Execute;
     procedure Stop;
-    property PC: Integer read FPC write Setpc;
+    property PC: Integer read FPC write SetPC;
     property Atoms: TJvAtoms read FAtoms;
     property PCProc: Integer read FPCProc;
     property Token: string read FToken write SetToken;
@@ -585,7 +585,7 @@ begin
   FStringDelimiter := Value;
 end;
 
-procedure TJvSAL.Setpc(const Value: Integer);
+procedure TJvSAL.SetPC(const Value: Integer);
 begin
   FPC := Value;
 end;

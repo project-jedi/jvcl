@@ -41,7 +41,7 @@ uses
 type
   TJvgCGI = class(TObject)
   private
-    FAutoHeaderAndFooter: boolean;
+    FAutoHeaderAndFooter: Boolean;
     procedure Split(S: string);
     procedure Decode(sl: TStringList);
   public
@@ -131,7 +131,7 @@ end;
 
 procedure TJvgCGI.Split(S: string);
 var
-  I, lastI: Integer;
+  I, LastI: Integer;
 
   procedure Extract(LastI, I: Integer);
 //  var
@@ -145,13 +145,13 @@ var
   end;
 begin
   I := 1;
-  lastI := 1;
+  LastI := 1;
   while I < Length(S) do
   begin
     if (S[I] = '&') or (S[I] = '?') then
     begin
       Extract(LastI, I - 1);
-      lastI := I + 1;
+      LastI := I + 1;
     end;
     Inc(I);
   end;

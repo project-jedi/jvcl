@@ -98,8 +98,8 @@ type
       Pos: Cardinal; UseRightToLeft: Boolean); override;
     function SelectCell(ACol, ARow: Longint): Boolean; override;
     {$ENDIF VisualCLX}
-    procedure DoLoadProgress(Position, Count: integer);
-    procedure DoSaveProgress(Position, Count: integer);
+    procedure DoLoadProgress(Position, Count: Integer);
+    procedure DoSaveProgress(Position, Count: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -266,7 +266,7 @@ var
   TmpF: Extended;
   TmpD: TDateTime;
   LStart: Integer;
-  lEnd: Integer;
+  LEnd: Integer;
 
   procedure ExchangeGridRows(I, J: Integer);
   var
@@ -471,12 +471,12 @@ begin
       LStart := 0
     else
       LStart := FixedRows;
-    lEnd := RowCount - 1;
+    LEnd := RowCount - 1;
     if BlankTop then
       LStart := MoveBlankTop;
     if LStart < LEnd then
     begin
-      QuickSort(LStart, lEnd);
+      QuickSort(LStart, LEnd);
       if not BlankTop then
         MoveBlankBottom;
       if not Ascending then
@@ -519,7 +519,7 @@ var
     begin
       if Line[I] = QuoteChar then
       begin
-        inc(QuoteCount);
+        Inc(QuoteCount);
         {* A Delimiter surrounded by a pair of QuoteChar has to be ignored.
            See example above: "FirstName, LastName"
            therefor: *}
@@ -1119,13 +1119,13 @@ begin
     RowHeights[ARow] := AHeight;
 end;
 
-procedure TJvStringGrid.DoLoadProgress(Position, Count: integer);
+procedure TJvStringGrid.DoLoadProgress(Position, Count: Integer);
 begin
   if Assigned(FOnLoadProgress) then
     FOnLoadProgress(Self, Position, Count);
 end;
 
-procedure TJvStringGrid.DoSaveProgress(Position, Count: integer);
+procedure TJvStringGrid.DoSaveProgress(Position, Count: Integer);
 begin
   if Assigned(FOnSaveProgress) then
     FOnSaveProgress(Self, Position, Count);
