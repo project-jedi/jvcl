@@ -19,7 +19,7 @@ Contributor(s):
   Remko Bonte
   Peter Thörnqvist
 
-Last Modified: 2004-02-05
+Last Modified: 2004-02-18
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -4956,7 +4956,7 @@ begin
     Move(FViewItems[Index + 1], FViewItems[Index], (Length(FViewItems) - Index) * SizeOf(FViewItems[0]));
   FillChar(FViewItems[High(FViewItems)], SizeOf(FViewItems[0]), 0);
   SetLength(FViewItems, High(FViewItems));
-  if PrevIsParent and ((Index = High(FViewItems)) or (ItemLevel(Index - 1) <> (ItemLevel(Index) - 1))) then
+  if PrevIsParent and ((Index = Length(FViewItems)) or (ItemLevel(Index - 1) <> (ItemLevel(Index) - 1))) then
     FViewItems[Index - 1].Flags := FViewItems[Index - 1].Flags and not (vifHasChildren or vifExpanded);
 end;
 
