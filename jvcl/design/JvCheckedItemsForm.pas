@@ -117,18 +117,20 @@ implementation
 
 uses
   {$IFDEF VCL}
-  Consts,
-  {$ELSE}
-  QConsts,
   {$ENDIF VCL}
+  Consts,
+  {$IFDEF VisualCLX}
+  QConsts,
+  {$ENDIF VisualCLX}
   JvStringsForm, JvConsts, JvDsgnConsts, JvJVCLUtils, JvBoxProcs;
 
 const
   {$IFDEF VCL}
-  cFontMSSansSerif = 'MS Sans Serif';
-  {$ELSE}
-  cFontMSSansSerif = 'Helvetica';
+  cDefaultFontName = 'MS Sans Serif';
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  cDefaultFontName = 'Helvetica';
+  {$ENDIF VisualCLX}
 
 //=== TJvCheckItemsProperty ==================================================
 
@@ -184,7 +186,7 @@ begin
   ClientHeight := 92;
   ClientWidth := 330;
   Font.Color := clWindowText;
-  Font.Name := cFontMSSansSerif;
+  Font.Name := cDefaultFontName;
   Font.Size := 8;
   Font.Style := [];
   Scaled := True;
@@ -286,7 +288,7 @@ begin
         ScaleBy(Screen.PixelsPerInch, 96);
         { The ScaleBy method does not scale the font well, so set the
           font back to the original info. }
-        Font.Name := cFontMSSansSerif;
+        Font.Name := cDefaultFontName;
         Font.Size := 8;
         Left := (Screen.Width div 2) - (Width div 2);
         Top := (Screen.Height div 2) - (Height div 2);

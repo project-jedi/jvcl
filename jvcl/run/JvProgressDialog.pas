@@ -62,20 +62,20 @@ Image - (optional) image to display in dialog. The image can be any size as the 
 Transparent - set to true if Image should be rendered transparently (this value cannot be changed in OnProgress)
 
 Events:
-OnProgress:TJvProgressDialogEvent = procedure(Sender: TObject; var AContinue: boolean) of object;
+OnProgress: TJvProgressDialogEvent = procedure(Sender: TObject; var AContinue: Boolean) of object;
   - called every Interval so you can update the values of the component.
     To change the values in the dialog, assign new values to the properties of the component.
     You can change the values Min, Max, Position, Interval, Image, Caption and Text.
-    Set AContinue to false to close the dialog.
-OnShow:TNotifyEvent = procedure(Sender:TObject) of object;
+    Set AContinue to False to close the dialog.
+OnShow: TNotifyEvent = procedure(Sender: TObject) of object;
   - called just before the dialog is shown on screen
-OnClose:TNotifyEvent = procedure(Sender:TObject) of object;
+OnClose: TNotifyEvent = procedure(Sender: TObject) of object;
   - called just after the dialog is closed
-OnCancel:TNotifyEvent = procedure(Sender:TObject) of object;
+OnCancel: TNotifyEvent = procedure(Sender: TObject) of object;
   - called if the user clicks the Cancel button. NB that this event is called *before* the dialog is closed
 
 NB!
- During execution of the dialog, the component properties reflects the
+ During execution of the dialog, the component properties reflect the
  *current* values in the dialog (as changed in OnProgress). After execution, the
  properties are reset to their original ("start") values.
 -----------------------------------------------------------------------------}

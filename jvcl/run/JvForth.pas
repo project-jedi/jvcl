@@ -353,9 +353,9 @@ implementation
 uses
   Math,
   {$IFDEF BCB}
-   {$IFNDEF BCB5}
+  {$IFNDEF BCB5}
   Variants,
-   {$ENDIF BCB5}
+  {$ENDIF BCB5}
   {$ENDIF BCB}
   JvConsts, JvResources;
 
@@ -371,11 +371,11 @@ begin
   {$IFDEF VCL}
   ShellExecute(Application.Handle, 'open', PChar(Command),
     PChar(Params), PChar(WorkDir), SW_SHOWNORMAL);
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   ShellExecute(0, 'open', PChar(Command),
     PChar(Params), PChar(WorkDir), SW_SHOWNORMAL);
-  {$ENDIF}
+  {$ENDIF VisualCLX}
 end;
 
 procedure GlobalSetValue(var aText: string; aName, aValue: string);
@@ -1873,18 +1873,16 @@ var
 begin
   Dir := FDSOBase;
   if SelectDirectory(Dir, [sdAllowCreate, sdPerformCreate, sdPrompt], 0) then
-    FDSOBase := dir;
+    FDSOBase := Dir;
 end;
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 var
-  Dir: widestring;
+  Dir: WideString;
 begin
   Dir := FDSOBase;
-  if SelectDirectory('Select Directory', PathDelim ,Dir
-                      {$IFDEF LINUX}, true {$ENDIF LINUX})
-  then
-    FDSOBase := dir;
+  if SelectDirectory('Select Directory', PathDelim, Dir {$IFDEF LINUX}, True {$ENDIF}) then
+    FDSOBase := Dir;
 end;
 {$ENDIF VisualCLX}
 

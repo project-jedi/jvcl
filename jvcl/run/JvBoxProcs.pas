@@ -286,7 +286,6 @@ begin
       TJvxCheckListBox(DstList).State[NewIndex] :=
         TJvxCheckListBox(SrcList).State[I];
     {$ENDIF VCL}
-
   end;
   BoxItems(SrcList).Clear;
   BoxSetItem(SrcList, 0);
@@ -332,9 +331,7 @@ var
 begin
   if Source <> List then
     Accept := (Source is TWinControl)
-              {$IFDEF VCL}
-              or (Source is TJvxCustomListBox)
-              {$ENDIF}
+      {$IFDEF VCL} or (Source is TJvxCustomListBox) {$ENDIF}
   else
   begin
     if Sorted then

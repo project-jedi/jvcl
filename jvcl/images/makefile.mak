@@ -49,7 +49,6 @@ JvgHint.res \
 JvgLabelEditorForm.res \
 JvgTreeView.res \
 JvLED.res \
-JvLinkLabel.res \
 JvOutlookBar.res \
 JvPageSetupTitledEng.res \
 JvPageSetupTitledRus.res \
@@ -124,7 +123,6 @@ JvgHint.res: JvgHint.rc
 JvgLabelEditorForm.res: JvgLabelEditorForm.rc
 JvgTreeView.res: JvgTreeView.rc
 JvLED.res: JvLED.rc
-JvLinkLabel.res: JvLinkLabel.rc
 JvOutlookBar.res: JvOutlookBar.rc
 JvPageSetupTitledEng.res: JvPageSetupTitledEng.rc
 JvPageSetupTitledRus.res: JvPageSetupTitledRus.rc

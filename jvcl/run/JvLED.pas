@@ -55,9 +55,9 @@ type
     FOnChange: TNotifyEvent;
     FInterval: Cardinal;
     {$IFDEF VisualCLX}
-    FAutosize: boolean;
-    procedure SetAutoSize(value: Boolean);
-    {$ENDIF}
+    FAutoSize: Boolean;
+    procedure SetAutoSize(Value: Boolean);
+    {$ENDIF VisualCLX}
     procedure SetColorOn(Value: TColor);
     procedure SetColorOff(Value: TColor);
     procedure SetInterval(Value: Cardinal);
@@ -285,13 +285,12 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-procedure TJvCustomLED.SetAutoSize(value: boolean);
+procedure TJvCustomLED.SetAutoSize(Value: Boolean);
 begin
-  if value <> FAutosize then
+  if Value <> FAutoSize then
   begin
-    FAutoSize := value;
-    if FAutoSize
-    then
+    FAutoSize := Value;
+    if FAutoSize then
       SetBounds(Left, Top, Width, Height);
   end;
 end;

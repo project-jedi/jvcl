@@ -165,12 +165,14 @@ end;
 
 {$IFDEF VCL}
 procedure TJvMarkupViewer.CreateWnd;
+begin
+  inherited CreateWnd;
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 procedure TJvMarkupViewer.CreateWidget;
-{$ENDIF VisualCLX}
 begin
-  inherited;
+  inherited CreateWidget;
+{$ENDIF VisualCLX}
   FScrollBar := TScrollBar.Create(Self);
   FScrollBar.Kind := sbVertical;
   FScrollBar.Parent := Self;

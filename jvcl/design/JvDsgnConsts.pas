@@ -55,6 +55,8 @@ resourcestring
   RsSystemColors = 'System colors';
   RsStandardColors = 'Standard colors';
 
+  RsEInvalidPropertyValue = 'Invalid property value';
+
 //=== JVCL IDE palettes ======================================================
 resourcestring
   RsPaletteSystem = 'Jv System';
@@ -128,6 +130,10 @@ resourcestring
     'Band Type' + sLineBreak +
     'Select the type of band object to create.';
 
+//=== JvBaseDsgnForm.pas =====================================================
+resourcestring
+  RsBaseDesignFormName = 'JEDI-VCL Editor';
+
 //=== JvChangeNotifyEditor.pas ===============================================
 resourcestring
   RsNotificationsEllipsis = 'Notifications...';
@@ -150,7 +156,6 @@ resourcestring
 //=== JvColorProviderEditors.pas =============================================
 resourcestring
   RsEMappingDoesNotExistForThisColorProv = 'Mapping does not exist for this color provider.';
-  RsEInvalidPropertyValue = 'Invalid property value';
 
 //=== JvCsvDataEditor.pas ====================================================
 resourcestring
@@ -188,6 +193,10 @@ resourcestring
 //=== JvDataContextManagerForm.pas ===========================================
 resourcestring
   RsDataProviderContextManager = 'DataProvider Context Manager';
+
+//=== JvDataEmbeddedEditor.pas ===============================================
+resourcestring
+   RsLoadFromFileEllipsis = 'Load from File...';
 
 //=== JvDataProviderDesignerForm.pas =========================================
 resourcestring

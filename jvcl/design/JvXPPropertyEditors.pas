@@ -84,12 +84,17 @@ type
 implementation
 
 uses
+  {$IFDEF USEJVCL}
+  JvDsgnConsts,
+  {$ENDIF USEJVCL}
   JvXPBar;
 
+{$IFNDEF USEJVCL}
 resourcestring
   RsItemEditorEllipsis = 'Item Editor...';
   RsDefaultColorItem = 'Restore Default Colors';
   RsDefaultFontsItem = 'Restore Default Fonts';
+{$ENDIF USEJVCL}
 
 type
   TCustomWinXPBar = class(TJvXPCustomWinXPBar)
@@ -99,39 +104,15 @@ type
 
 //=== TJvXPCustomImageIndexPropertyEditor ====================================
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomImageIndexPropertyEditor.GetAttributes
-  Author:    mh
-  Date:      28-Okt-2002
-  Arguments: None
-  Result:    TPropertyAttributes
------------------------------------------------------------------------------}
-
 function TJvXPCustomImageIndexPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paValueList, paRevertable];
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomImageIndexPropertyEditor.GetImageListAt
-  Author:    mh
-  Date:      28-Okt-2002
-  Arguments: Index: Integer
-  Result:    TCustomImageList
------------------------------------------------------------------------------}
-
 function TJvXPCustomImageIndexPropertyEditor.GetImageListAt(Index: Integer): TCustomImageList;
 begin
   Result := nil;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomImageIndexPropertyEditor.GetValues
-  Author:    mh
-  Date:      28-Okt-2002
-  Arguments: Proc: TGetStrProc
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomImageIndexPropertyEditor.GetValues(Proc: TGetStrProc);
 var
@@ -143,15 +124,6 @@ begin
     for I := 0 to ImgList.Count -1 do
       Proc(IntToStr(I));
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomImageIndexPropertyEditor.ListDrawValue
-  Author:    mh
-  Date:      28-Okt-2002
-  Arguments: const Value: string; ACanvas: TCanvas; const ARect: TRect;
-    ASelected: Boolean
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomImageIndexPropertyEditor.ListDrawValue(const Value: string;
   ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
@@ -170,14 +142,6 @@ begin
   ACanvas.TextOut(X + 3, ARect.Top + 1, Value);
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomImageIndexPropertyEditor.ListMeasureHeight
-  Author:    mh
-  Date:      28-Okt-2002
-  Arguments: const Value: string; ACanvas: TCanvas; var AHeight: Integer
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomImageIndexPropertyEditor.ListMeasureHeight(const Value: string;
   ACanvas: TCanvas; var AHeight: Integer);
 var
@@ -188,14 +152,6 @@ begin
   if Assigned(ImgList) and (ImgList.Height + 4 > AHeight) then
     AHeight := ImgList.Height + 4;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomImageIndexPropertyEditor.ListMeasureWidth
-  Author:    mh
-  Date:      28-Okt-2002
-  Arguments: const Value: string; ACanvas: TCanvas; var AWidth: Integer
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomImageIndexPropertyEditor.ListMeasureWidth(const Value: string;
   ACanvas: TCanvas; var AWidth: Integer);
@@ -210,14 +166,6 @@ end;
 
 //=== TJvXPItemImageIndexPropertyEditor ======================================
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPItemImageIndexPropertyEditor.GetImageListAt
-  Author:    mh
-  Date:      29-Okt-2002
-  Arguments: Index: Integer
-  Result:    TCustomImageList
------------------------------------------------------------------------------}
-
 function TJvXPItemImageIndexPropertyEditor.GetImageListAt(Index: Integer):
   TCustomImageList;
 var
@@ -231,14 +179,6 @@ end;
 
 //=== TJvXPBarItemEditor =====================================================
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItemEditor.Edit
-  Author:    mh
-  Date:      30-Okt-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPBarItemEditor.Edit;
 var
   Components: TDesignerSelectionList;
@@ -251,14 +191,6 @@ begin
   Components.Add(Component);
   GetComponentProperties(Components, [tkClass], Designer, RunPropertyEditor);
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItemEditor.ExecuteVerb
-  Author:    mh
-  Date:      30-Okt-2002
-  Arguments: Index: Integer
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPBarItemEditor.ExecuteVerb(Index: Integer);
 const
@@ -287,14 +219,6 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItemEditor.GetVerb
-  Author:    mh
-  Date:      30-Okt-2002
-  Arguments: Index: Integer
-  Result:    string
------------------------------------------------------------------------------}
-
 function TJvXPBarItemEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
@@ -307,26 +231,10 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItemEditor.GetVerbCount
-  Author:    mh
-  Date:      30-Okt-2002
-  Arguments: None
-  Result:    Integer
------------------------------------------------------------------------------}
-
 function TJvXPBarItemEditor.GetVerbCount: Integer;
 begin
   Result := 3;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItemEditor.RunPropertyEditor
-  Author:    mh
-  Date:      30-Okt-2002
-  Arguments: const Prop: IProperty
-  Result:    None
------------------------------------------------------------------------------}
 
 {$IFDEF COMPILER6_UP}
 procedure TJvXPBarItemEditor.RunPropertyEditor(const Prop: IProperty);
