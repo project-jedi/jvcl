@@ -66,7 +66,7 @@ type
     function UsingVirtualRoot: Boolean;
     procedure UpdateColumnSize;
     procedure UpdateSelectedItem; virtual;
-    procedure ConsumerChanged(Sender: TObject; Reason: TJvDataConsumerChangeReason); virtual;
+    procedure ConsumerChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason); virtual;
     procedure GenerateVirtualRoot; dynamic;
     property LastSelectIdx: Integer read FLastSelectIdx write FLastSelectIdx;
   public
@@ -126,7 +126,7 @@ begin
       FVirtualRoot := nil
     else
       GenerateVirtualRoot;
-    ConsumerChanged(Self, ccrViewChanged);
+    ConsumerChanged(Provider, ccrViewChanged);
   end;
 end;
 
@@ -150,7 +150,7 @@ begin
   DoItemSelect;
 end;
 
-procedure TfmeJvProviderTreeList.ConsumerChanged(Sender: TObject;
+procedure TfmeJvProviderTreeList.ConsumerChanged(Sender: TJvDataConsumer;
   Reason: TJvDataConsumerChangeReason);
 begin
   if UseVirtualRoot then
