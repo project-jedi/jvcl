@@ -370,7 +370,8 @@ type
     function GetRollWidth: Integer;
     procedure SetHeaderRounded(const Value: Boolean);
     procedure SetTopSpace(const Value: Integer);
-  protected  
+  protected
+    function WidgetFlags: Integer; override;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override; 
     class function GetBarItemsClass: TJvXPBarItemsClass; virtual;
@@ -2150,6 +2151,10 @@ begin
   Result := inherited WantKey(Key, Shift, KeyText);
 end;
 
+function TJvXPCustomWinXPBar.WidgetFlags: Integer;
+begin
+  Result := inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
+end;
 
 class function TJvXPCustomWinXPBar.GetBarItemsClass: TJvXPBarItemsClass;
 begin

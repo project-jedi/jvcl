@@ -146,13 +146,13 @@ uses
 
 type
   TNoEventLabel = class(TLabel)
-  public
-    constructor Create(AOwner: TComponent); override;
+  public  
+    constructor Create(AOwner: TComponent); override; 
   end;
 
   TNoEventGradient = class(TJvGradient)
-  public
-    constructor Create(AOwner: TComponent); override;
+  public  
+    constructor Create(AOwner: TComponent); override; 
   end;
 
 constructor TJvGradientHeaderPanel.Create(AOwner: TComponent);
@@ -408,6 +408,9 @@ end;
 *)
 
 { TNoEventLabel }
+
+
+
 constructor TNoEventLabel.Create(AOwner: TComponent);
 begin
   inherited;
@@ -419,6 +422,7 @@ begin
   inherited;
   ControlStyle := ControlStyle - [csNoStdEvents];
 end;
+
 
 end.
 

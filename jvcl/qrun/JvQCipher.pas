@@ -42,44 +42,59 @@ uses
 type
   // abstract base class for simple ciphers
   // which do not change the length of the data
-  TJvCipher = class(TJvComponent)
+  TJvCustomCipher = class(TJvComponent)
+  private
+    FEncoded: string;
+    FKey: string;
+    FIsStored: Boolean;
+    function GetDecoded: string;
+    procedure SetDecoded(const Value: string);
+    function GetIsStored: Boolean;
   protected
-    procedure Decode(Key: string; Buf: PChar; Size: Cardinal); virtual; abstract;
-    procedure Encode(Key: string; Buf: PChar; Size: Cardinal); virtual; abstract;
+    procedure Decode(const Key: string; Buf: PChar; Size: Cardinal); virtual; abstract;
+    procedure Encode(const Key: string; Buf: PChar; Size: Cardinal); virtual; abstract;
   public
-    procedure DecodeList(Key: string; List: TStrings);
-    procedure EncodeList(Key: string; List: TStrings);
-    procedure DecodeStream(Key: string; Stream: TStream);
-    procedure EncodeStream(Key: string; Stream: TStream);
-    procedure DecodeFile(Key: string; FileName: string);
-    procedure EncodeFile(Key: string; FileName: string);
+    procedure DecodeList(const Key: string; List: TStrings);
+    procedure EncodeList(const Key: string; List: TStrings);
+    procedure DecodeStream(const Key: string; Stream: TStream);
+    procedure EncodeStream(const Key: string; Stream: TStream);
+    procedure DecodeFile(const Key: string; const FileName: string);
+    procedure EncodeFile(const Key: string; const FileName: string);
+    function DecodeString(const Key: string; const Value: string): string;
+    function EncodeString(const Key: string; const Value: string): string;
+    constructor Create(AOwner: TComponent); override;
+  published
+    property Key: string read FKey write FKey stored GetIsStored;
+    property Encoded: string read FEncoded write FEncoded stored GetIsStored;
+    property Decoded: string read GetDecoded write SetDecoded stored False;
+    property IsStored: Boolean read GetIsStored write FIsStored default True;
   end;
 
-  TJvCaesarCipher = class(TJvCipher)
+  TJvCaesarCipher = class(TJvCustomCipher)
   public
-    procedure Decode(Key: string; Buf: PChar; Size: Cardinal); override;
-    procedure Encode(Key: string; Buf: PChar; Size: Cardinal); override;
+    procedure Decode(const Key: string; Buf: PChar; Size: Cardinal); override;
+    procedure Encode(const Key: string; Buf: PChar; Size: Cardinal); override;
   end;
 
-  TJvXORCipher = class(TJvCipher)
+  TJvXORCipher = class(TJvCustomCipher)
   public
-    procedure Decode(Key: string; Buf: PChar; Size: Cardinal); override;
-    procedure Encode(Key: string; Buf: PChar; Size: Cardinal); override;
+    procedure Decode(const Key: string; Buf: PChar; Size: Cardinal); override;
+    procedure Encode(const Key: string; Buf: PChar; Size: Cardinal); override;
   end;
 
-  TJvVigenereCipher = class(TJvCipher)
+  TJvVigenereCipher = class(TJvCustomCipher)
   private
     function Trans(Ch: Char; K: Byte): Char;
   public
-    procedure Decode(Key: string; Buf: PChar; Size: Cardinal); override;
-    procedure Encode(Key: string; Buf: PChar; Size: Cardinal); override;
+    procedure Decode(const Key: string; Buf: PChar; Size: Cardinal); override;
+    procedure Encode(const Key: string; Buf: PChar; Size: Cardinal); override;
   end;
 
 implementation
 
-//=== TJvCipher ==============================================================
+//=== TJvCustomCipher ==============================================================
 
-procedure TJvCipher.DecodeList(Key: string; List: TStrings);
+procedure TJvCustomCipher.DecodeList(const Key: string; List: TStrings);
 var
   I: Integer;
 begin
@@ -93,7 +108,7 @@ begin
   end;
 end;
 
-procedure TJvCipher.EncodeList(Key: string; List: TStrings);
+procedure TJvCustomCipher.EncodeList(const Key: string; List: TStrings);
 var
   I: Integer;
 begin
@@ -107,7 +122,7 @@ begin
   end;
 end;
 
-procedure TJvCipher.DecodeStream(Key: string; Stream: TStream);
+procedure TJvCustomCipher.DecodeStream(const Key: string; Stream: TStream);
 var
   MemStream: TMemoryStream;
   Count: Cardinal;
@@ -130,7 +145,7 @@ begin
   end;
 end;
 
-procedure TJvCipher.EncodeStream(Key: string; Stream: TStream);
+procedure TJvCustomCipher.EncodeStream(const Key: string; Stream: TStream);
 var
   MemStream: TMemoryStream;
   Count: Cardinal;
@@ -153,7 +168,7 @@ begin
   end;
 end;
 
-procedure TJvCipher.DecodeFile(Key: string; FileName: string);
+procedure TJvCustomCipher.DecodeFile(const Key: string; const FileName: string);
 var
   Stream: TFileStream;
 begin
@@ -165,7 +180,7 @@ begin
   end;
 end;
 
-procedure TJvCipher.EncodeFile(Key: string; FileName: string);
+procedure TJvCustomCipher.EncodeFile(const Key: string; const FileName: string);
 var
   Stream: TFileStream;
 begin
@@ -177,35 +192,90 @@ begin
   end;
 end;
 
-//=== TJvCaesarCipher ========================================================
-
-procedure TJvCaesarCipher.Decode(Key: string; Buf: PChar; Size: Cardinal);
-var
-  N: Integer;
-  I: Cardinal;
+function TJvCustomCipher.GetDecoded: string;
 begin
-  N := StrToIntDef(Key, 13);
-  if (N <= 0) or (N >= 256) then
-    N := 13;
-  for I := 0 to Size - 1 do
-    Buf[I] := Char(Cardinal(Buf[I]) - Cardinal(N));
+  Result := DecodeString(FKey, FEncoded);
 end;
 
-procedure TJvCaesarCipher.Encode(Key: string; Buf: PChar; Size: Cardinal);
+procedure TJvCustomCipher.SetDecoded(const Value: string);
+begin
+  FEncoded := EncodeString(FKey, Value);
+end;
+
+function TJvCustomCipher.DecodeString(const Key, Value: string): string;
+var
+  Tmp : PChar;
+begin
+  GetMem(Tmp, Length(Value)+1);
+  try
+    StrPCopy(Tmp, Value);
+    Decode(Key, Tmp, Length(Value));
+    Result := Tmp;
+  finally
+    FreeMem(Tmp);
+  end;
+end;
+
+function TJvCustomCipher.EncodeString(const Key, Value: string): string;
+var
+  Tmp : PChar;
+begin
+  GetMem(Tmp, Length(Value)+1);
+  try
+    StrPCopy(Tmp, Value);
+    Encode(Key, Tmp, Length(Value));
+    Result := Tmp;
+  finally
+    FreeMem(Tmp);
+  end;
+end;
+
+function TJvCustomCipher.GetIsStored: Boolean;
+begin
+  Result := FIsStored;
+end;
+
+constructor TJvCustomCipher.Create(AOwner: TComponent);
+begin
+  inherited;
+  FIsStored := True;
+end;
+
+//=== TJvCaesarCipher ========================================================
+
+procedure TJvCaesarCipher.Decode(const Key: string; Buf: PChar; Size: Cardinal);
 var
   N: Integer;
   I: Cardinal;
 begin
-  N := StrToIntDef(Key, 13);
-  if (N <= 0) or (N >= 256) then
-    N := 13;
-  for I := 0 to Size - 1 do
-    Buf[I] := Char(Cardinal(Buf[I]) + Cardinal(N));
+  if Size > 0 then
+  begin
+    N := StrToIntDef(Key, 13);
+    if (N <= 0) or (N >= 256) then
+      N := 13;
+    for I := 0 to Size - 1 do
+      Buf[I] := Char(Cardinal(Buf[I]) - Cardinal(N));
+  end;
+end;
+
+procedure TJvCaesarCipher.Encode(const Key: string; Buf: PChar; Size: Cardinal);
+var
+  N: Integer;
+  I: Cardinal;
+begin
+  if Size > 0 then
+  begin
+    N := StrToIntDef(Key, 13);
+    if (N <= 0) or (N >= 256) then
+      N := 13;
+    for I := 0 to Size - 1 do
+      Buf[I] := Char(Cardinal(Buf[I]) + Cardinal(N));
+  end;
 end;
 
 //=== TJvXORCipher ===========================================================
 
-procedure TJvXORCipher.Decode(Key: string; Buf: PChar; Size: Cardinal);
+procedure TJvXORCipher.Decode(const Key: string; Buf: PChar; Size: Cardinal);
 var
   I: Cardinal;
   J: Cardinal;
@@ -221,7 +291,7 @@ begin
   end;
 end;
 
-procedure TJvXORCipher.Encode(Key: string; Buf: PChar; Size: Cardinal);
+procedure TJvXORCipher.Encode(const Key: string; Buf: PChar; Size: Cardinal);
 begin
   Decode(Key, Buf, Size);
 end;
@@ -233,12 +303,12 @@ begin
   Result := Char((256 + Ord(Ch) + K) mod 256);
 end;
 
-procedure TJvVigenereCipher.Decode(Key: string; Buf: PChar; Size: Cardinal);
+procedure TJvVigenereCipher.Decode(const Key: string; Buf: PChar; Size: Cardinal);
 var
   I: Cardinal;
   J: Cardinal;
 begin
-  if Key <> '' then
+  if (Key <> '') and (Size > 0) then
   begin
     J := 1;
     for I := 0 to Size - 1 do
@@ -249,12 +319,12 @@ begin
   end;
 end;
 
-procedure TJvVigenereCipher.Encode(Key: string; Buf: PChar; Size: Cardinal);
+procedure TJvVigenereCipher.Encode(const Key: string; Buf: PChar; Size: Cardinal);
 var
   I: Cardinal;
   J: Cardinal;
 begin
-  if Key <> '' then
+  if (Key <> '') and (Size > 0) then
   begin
     J := 1;
     for I := 0 to Size - 1 do

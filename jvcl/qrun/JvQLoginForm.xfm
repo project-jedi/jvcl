@@ -4,8 +4,8 @@ object JvLoginForm: TJvLoginForm
   Width = 442
   Height = 159
   Cursor = crArrow
+  VertScrollBar.Range = 145
   HorzScrollBar.Range = 433
-  VertScrollBar.Range = 150
   ActiveControl = UserNameEdit
   BorderIcons = []
   BorderStyle = fbsDialog
@@ -22,7 +22,7 @@ object JvLoginForm: TJvLoginForm
   Scaled = False
   OnCreate = FormCreate
   OnShow = FormShow
-  PixelsPerInch = 113
+  PixelsPerInch = 96
   object AppIcon: TImage
     Left = 14
     Top = 12
@@ -107,7 +107,7 @@ object JvLoginForm: TJvLoginForm
     Left = 172
     Top = 60
     Width = 169
-    Height = 26
+    Height = 21
     Cursor = crIBeam
     TabOrder = 0
   end
@@ -115,7 +115,7 @@ object JvLoginForm: TJvLoginForm
     Left = 172
     Top = 92
     Width = 169
-    Height = 26
+    Height = 21
     Cursor = crIBeam
     EchoMode = emPassword
     TabOrder = 1
@@ -144,9 +144,9 @@ object JvLoginForm: TJvLoginForm
     Left = 172
     Top = 124
     Width = 169
-    Height = 26
+    Height = 21
     Style = csDropDownList
-    ItemHeight = 20
+    ItemHeight = 15
     Sorted = True
     TabOrder = 2
   end

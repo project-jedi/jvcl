@@ -1832,7 +1832,8 @@ var
     R := ButtonRect;
 
     with ABitmap.Canvas do
-    begin
+    begin 
+      Start; 
       LColors := CColors;
       if ADownState = sbTopDown then
       begin
@@ -1870,7 +1871,8 @@ var
         DownArrow.LoadFromResourceName(HInstance, sSpinDownBtn);
         DownArrow.Transparent := True;
         JvDrawArrows(ABitmap.Canvas, ADownState, Enabled, UpArrow, DownArrow);
-      end;
+      end; 
+      Stop; 
     end;
   end;
 
@@ -1885,7 +1887,8 @@ var
     BottomFlags := EDGE_RAISED;
 
     with ABitmap.Canvas do
-    begin
+    begin 
+      Start; 
       { top glyph }
       H := Height div 2;
       R := Bounds(0, 0, Width, H);
@@ -1900,7 +1903,6 @@ var
       R1 := Bounds(0, H, Width, Height);
       R1.Bottom := Height;
       DrawEdge(Handle, R1, BottomFlags, BF_RECT or BF_SOFT or BF_ADJUST);
-
       if not CustomGlyphs then
       begin
         UpArrow.LoadFromResourceName(HInstance, sSpinUpBtnPole);
@@ -1908,7 +1910,8 @@ var
         DownArrow.LoadFromResourceName(HInstance, sSpinDownBtnPole);
         DownArrow.Transparent := True;
         PoleDrawArrows(ABitmap.Canvas, ADownState, Enabled, UpArrow, DownArrow);
-      end;
+      end; 
+      Stop; 
     end;
   end;
 
@@ -2040,6 +2043,7 @@ begin
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(AUpArrow, clBlack);
+      DisabledBitmap.SaveToFile('disabledUp.bmp');
       try
         Draw(X, Y, DisabledBitmap);
       finally
@@ -2062,6 +2066,7 @@ begin
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(ADownArrow, clBlack);
+      DisabledBitmap.SaveToFile('disabledDown.bmp');
       try
         Draw(X, Y, DisabledBitmap);
       finally

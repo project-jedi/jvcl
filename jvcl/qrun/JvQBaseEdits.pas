@@ -41,8 +41,9 @@ unit JvQBaseEdits;
 interface
 
 uses
-  SysUtils, Classes,  
-  QTypes, QGraphics, QControls, QImgList, QWindows, Types, 
+  SysUtils, Classes,
+  QWindows, QMessages, Types, QGraphics, QControls, QImgList, 
+  QTypes,  
   JvQToolEdit;
 
 type
@@ -274,15 +275,15 @@ type
 
 implementation
 
-uses  
-  QConsts, 
+uses
+  QConsts,
   Math, JvQJCLUtils, JvQCalc, JvQConsts, JvQResources;
 
 {$IFDEF MSWINDOWS}
-{$R ..\Resources\JvBaseEdits.res}
+{$R ..\Resources\JvBaseEdits.Res}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../Resources/JvBaseEdits.res}
+{$R ../Resources/JvBaseEdits.Res}
 {$ENDIF LINUX}
 
 const

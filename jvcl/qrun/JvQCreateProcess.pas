@@ -21,7 +21,7 @@ Portions created by Microsoft are Copyright (C) 1998, 1999 Microsoft Corp.
 All Rights Reserved.
 
 Contributor(s):
-  Marcel van Brakel <brakelm@bart.nl>.
+  Marcel van Brakel <brakelm att bart dott nl>.
   Remko Bonte <remkobonte att myrealbox dott com> (redirect console output)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,

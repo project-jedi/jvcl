@@ -149,9 +149,9 @@
         with parameters that are const pointers
     Oct 10, 2003, Andreas Hausladen Andreas dott Hausladen att gmx dott de
       - implemented Theming and MouseWheel
-    Oct 1, 2003, Warren Postma warrenpstma@hotmail.com
+    Oct 1, 2003, Warren Postma warrenpstma att hotmail dott com
       - New Name, UserData properties in TJvInspectorCustomCategoryItem
-    September 30, Warren Postma warrenpstma@hotmail.com
+    September 30, Warren Postma warrenpstma att hotmail dott com
       - New string property Name, in inspector and category items
         (TJvCustomInspectorItem, and descendants, ie TJvInspectorCustomCategoryItem )
         holds the variable name or property name or ini file entry name, whereas

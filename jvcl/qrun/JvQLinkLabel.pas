@@ -15,7 +15,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvLinkLabel.pas, released 2002-01-06.
 
-The Initial Developer of the Original Code is David Polberger <dpol@swipnet.se>
+The Initial Developer of the Original Code is David Polberger <dpol att swipnet dott se>
 Portions created by David Polberger are Copyright (C) 2002 David Polberger.
 All Rights Reserved.
 
@@ -45,8 +45,9 @@ unit JvQLinkLabel;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QStdCtrls, Types, QTypes, 
+  SysUtils, Classes, 
+  Types, QGraphics, QControls, QForms, QStdCtrls, 
+  QTypes, 
   JvQLinkLabelParser, JvQLinkLabelRenderer, JvQLinkLabelTree,
   JvQTypes, JvQComponent;
 
@@ -121,7 +122,8 @@ type
     property Parser: IParser read FParser;
     property Renderer: IRenderer read FRenderer;
     property Caption: TCaption read FCaption write SetText;
-    property Strings: TStrings read GetStrings write SetStrings;
+    
+    property Text: TStrings read GetStrings write SetStrings;
     property Transparent: Boolean read GetTransparent write SetTransparent default False;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;                // Bianconi
     property LinkColor: TColor read GetLinkColor write SetLinkColor default clBlue;
@@ -147,7 +149,7 @@ type
   TJvLinkLabel = class(TJvCustomLinkLabel)
   published
     property Caption;
-    property Strings;
+    property Text;
     property Anchors;
     property Transparent;
     property Layout;                   // Bianconi
@@ -577,14 +579,13 @@ begin
   if Value <> FCaption then
   begin
     FCaption := Value;
-    Strings.Clear;
-    Strings.Add(FCaption);
+    Text.Clear;
+    Text.Add(FCaption);
     FActiveLinkNode := nil; // We're about to free the tree containing the node it's pointing to
     FNodeTree.Free;
     ResetNodeCount;
     FNodeTree := FParser.Parse(Value);
     SynchronizeRootAndFont;
-//    ActivateLinkNodeAtPos(Point(1, 1), lsHot);
     Invalidate;
     DoCaptionChanged;
   end;

@@ -1093,9 +1093,10 @@ const
 
 procedure InternalStyleManagerChanged(AControl: TWinControl; AStyleManager: TJvNavPaneStyleManager);
 var
-  Msg: TMsgStyleManagerChange; 
-  I: Integer; 
+  Msg: TMsgStyleManagerChange;
+  I: Integer;
 begin
+  if not assigned(AControl.Parent) then exit; 
   Msg.Msg := CM_PARENTSTYLEMANAGERCHANGED;
   Msg.Sender := AControl;
   Msg.StyleManager := AStyleManager;
@@ -1981,6 +1982,7 @@ var
   P: TPoint;
   I: Integer;
 begin
+  if not assigned(parent) then exit;
   with Canvas do
   begin
     Rect := ClientRect;
@@ -2154,7 +2156,7 @@ end;
 
 procedure TJvNavIconButton.ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange);
 begin
-  if (Msg.Sender <> Self) and ParentStyleManager then
+  if (Msg.Sender <> Self) and ParentStyleManager and assigned(parent) then
   begin
     StyleManager := Msg.StyleManager;
     ParentStyleManager := True;
@@ -2166,7 +2168,7 @@ begin
   if FParentStyleManager <> Value then
   begin
     FParentStyleManager := Value;
-    if FParentStyleManager and (Parent <> nil) then  
+    if FParentStyleManager then
       QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
   end;
 end;
@@ -3090,7 +3092,7 @@ end;
 
 function TJvNavPanelPage.GetAction: TBasicAction;
 begin 
-  Result := inherited GetAction; 
+  Result := inherited GetAction;
 end;
 
 procedure TJvNavPanelPage.SetAction(const Value: TBasicAction);
@@ -3270,7 +3272,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then  
-      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
+      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
   end;
 end;
 
@@ -4036,6 +4038,7 @@ begin
   Width := 185;
   Height := 41;
   FParentStyleManager := True;
+  Masked := false;
 end;
 
 destructor TJvCustomNavPaneToolPanel.Destroy;
