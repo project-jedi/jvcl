@@ -69,7 +69,7 @@ WebMapper.exe \
 AppDdeCmdExample.exe \
 ControlsExample.exe \
 CreateProcessExample.exe \ 
-EvnironmentList.exe \
+EnvironmentList.exe \
 MailExample.exe \
 DBexpl32.exe \
 RxDemo.exe \
@@ -99,6 +99,8 @@ MDIapp.exe \
 RANotepad.exe \
 JVCLDemo.exe \
 prjControls.exe \
+JvAppHotKeyDemo.exe \
+ColorComboDemo.exe \
 EventViewer.exe \
 PlugInDemo.exe \
 SamplePluginOne.dll \
@@ -109,7 +111,8 @@ ChangePropertiesPlugin.dll \
 ExceptionPlugInDemo.exe \
 ExceptionPlugin.dll \
 DataPlugInDemo.exe \
-DataPlugin.dll 
+DataPlugin.dll \
+
  
 #---------------------------------------------------------------------------------------------------
 
@@ -343,8 +346,8 @@ CreateProcessExample.exe: CreateProcessExample\CreateProcessExample.dpr
   $(DCC) $&.dpr
   cd ..
   
-EvnironmentList.exe: EvnironmentList\EvnironmentList.dpr
-  cd EvnironmentList
+EnvironmentList.exe: EnvironmentList\EnvironmentList.dpr
+  cd EnvironmentList
   $(DCC) $&.dpr
   cd ..
   
@@ -498,6 +501,16 @@ prjControls.exe: JVFooterAndGroupHeader\prjControls.dpr
   $(DCC) $&.dpr
   cd ..
 
+JvAppHotKeyDemo.exe: JvAppHotKeyDemo\JvAppHotKeyDemo.dpr
+  cd JvAppHotKeyDemo
+  $(DCC) $&.dpr
+  cd ..
+
+ColorComboDemo.exe: JvColorComboDemo\ColorComboDemo.dpr
+  cd JvColorComboDemo
+  $(DCC) $&.dpr
+  cd ..
+
 EventViewer.exe: JvNTEventLog\EventViewer.dpr
   cd JvNTEventLog
   $(DCC) $&.dpr
@@ -552,3 +565,4 @@ DataPlugin.dll: JvPlugin\5DataAware\DataPlugin.dpr
   cd JvPlugin\5DataAware
   $(DCCH) $&.dpr
   cd ..\..
+
