@@ -185,19 +185,24 @@ CompilePackages:
 ################################################################################
 Clean:
 	@echo [Cleaning...]
+	@cd ..
 	-del /f /q "$(PKGDIR) Packages.mak" 2>NUL
 	-del /f /q "$(PKGDIR)\*.cfg" "$(PKGDIR)\*.mak" 2>NUL
+	-@IF NOT "$(PKGDIR_MASTEREDITION)!" == "!" del /f /q "$(PKGDIR_MASTEREDITION)\*.mak" 2>NUL
+	@cd bin
 
 ################################################################################
 Installer:
 	@echo [Compiling: Installer]
+	$(MAKE) -f makefile.mak "-DCFG=..\..\install\JVCLInstall\JVCLInstall.cfg" configfile >NUL
 	@cd ..\..\install\JVCLInstall
-	@$(MAKE) -f makefile.mak "-DCFG=JVCLInstall.cfg" configfile >NUL
 	#
 	@echo -E"$(JVCLROOT)\bin">>JVCLInstall.cfg
+	@echo -N"$(JVCLROOT)\dcu">>JVCLInstall.cfg
+	@echo -DNO_JCL>>JVCLInstall.cfg
 	#
 	#
 	@$(DCC) -DNO_JCL JVCLInstall.dpr
-	@start ..\..\bin\JVCLInstall.exe "--jcl-path=$(JCLROOT)"
+	@start ..\..\bin\JVCLInstall.exe
 
 
