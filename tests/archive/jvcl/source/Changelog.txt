@@ -1,3 +1,16 @@
+2003-06-17:
+- New properties and procedures for TJvTreeView:
+  * ItemHeight:integer - sets the pixel height of the items. If you try to set ItemHeight <= 0, it will currently restore the default height (which is 16px) 
+  * LineColor:TColor - sets the color of the lines connecting nodes as well as the frame around the '+' and '-' buttons. Color of '+' and '-' is controlled by Font.Color. To assign same color to lines as to text, set LineColor to clDefault. 
+  * InsertMarkColor:TColor - sets the color of the insertion marker (see InsertMark below). Use clDefault to set to same color as the font 
+  * MaxScrollTime:integer - the maximum time a scroll should take in ms 
+  * UseUnicode:boolean - determines if the control uses the Unicode character set. Only use on Win95/98 with IE5 or above installed 
+  * procedure InsertMark(Node:TTreeNode;MarkAfter:boolean); 
+    Shows an insertion mark at Node, either above or below depending on MarkAfter. If Node is nil, works like RemoveMark 
+  * procedure RemoveMark; 
+  Removes the insertion mark if visible 
+  // peter3
+
 2003-06-16:
 - Renamed TJVAnalogClock.ClockEnabled to TJVAnalogClock.Active // peter3
 - Renamed TJVAnalogClock.TimeSet to TJVAnalogClock.Time // peter3
