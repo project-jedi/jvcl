@@ -31,28 +31,30 @@ unit JvClock;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  StdCtrls, ExtCtrls,
   JvComponent;
 
 type
-  TClockStyle = (csTime, csTimeDate, csDateTime, csDate);
-  TOnUpdate = procedure(Sender: TObject; Value: string) of object;
+  TJvClockStyle = (csTime, csTimeDate, csDateTime, csDate);
+  TJvOnTimeUpdate = procedure(Sender: TObject; Value: string) of object;
 
   TJvClock = class(TJvWinControl)
   private
     FLabel: TLabel;
     FTimer: TTimer;
-    FOnUpdate: TOnUpdate;
+    FOnTime: TJvOnTimeUpdate;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    FColor: TColor;
+    FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
-    FClock: TClockStyle;
+    FClock: TJvClockStyle;
     function GetFont: TFont;
     procedure SetFont(const Value: TFont);
-    procedure OnUpdate(Sender: TObject);
-    procedure SetClockStyle(const Value: TClockStyle);
+    procedure OnTimeUpdate(Sender: TObject);
+    procedure SetClockStyle(const Value: TJvClockStyle);
+    procedure UpdateTextPosition;
   protected
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -61,11 +63,11 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property ClockStyle: TClockStyle read FClock write SetClockStyle default csTime;
+    property ClockStyle: TJvClockStyle read FClock write SetClockStyle default csTime;
     property Font: TFont read GetFont write SetFont;
     property Height default 50;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
-    property OnTime: TOnUpdate read FOnUpdate write FOnUpdate;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property OnTime: TJvOnTimeUpdate read FOnTime write FOnTime;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property ShowHint;
@@ -91,7 +93,7 @@ constructor TJvClock.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   IncludeThemeStyle(Self, [csParentBackground]);
-  FColor := clInfoBk;
+  FHintColor := clInfoBk;
   FOver := False;
   FClock := csTime;
 
@@ -102,20 +104,18 @@ begin
   FLabel.Caption := TimeToStr(Time);
   FLabel.Parent := Self;
   FLabel.AutoSize := True;
-  FLabel.Left := (Width div 2) - (FLabel.Width div 2);
-  FLabel.Top := (Height div 2) - (FLabel.Height div 2);
+  UpdateTextPosition;
   FLabel.Visible := True;
 
   FTimer := TTimer.Create(Self);
-  FTimer.OnTimer := OnUpdate;
+  FTimer.OnTimer := OnTimeUpdate;
   FTimer.Interval := 910;
   FTimer.Enabled := True;
 end;
 
 destructor TJvClock.Destroy;
 begin
-  FTImer.Free;
-  FLabel.Free;
+  FTimer.Enabled := False;
   inherited Destroy;
 end;
 
@@ -124,7 +124,7 @@ begin
   Result := FLabel.Font;
 end;
 
-procedure TJvClock.OnUpdate(Sender: TObject);
+procedure TJvClock.OnTimeUpdate(Sender: TObject);
 begin
   case FClock of
     csTime:
@@ -136,22 +136,20 @@ begin
     csDate:
       FLabel.Caption := DateToStr(Date);
   end;
-  if Assigned(FOnUpdate) then
-    FOnUpdate(Self, FLabel.Caption);
+  if Assigned(FOnTime) then
+    FOnTime(Self, FLabel.Caption);
 end;
 
 procedure TJvClock.SetFont(const Value: TFont);
 begin
   FLabel.Font := Value;
-  FLabel.Left := (Width div 2) - (FLabel.Width div 2);
-  FLabel.Top := (Height div 2) - (FLabel.Height div 2);
+  UpdateTextPosition;
 end;
 
 procedure TJvClock.WMSize(var Msg: TWMSize);
 begin
   inherited;
-  FLabel.Left := (Width div 2) - (FLabel.Width div 2);
-  FLabel.Top := (Height div 2) - (FLabel.Height div 2);
+  UpdateTextPosition;
 end;
 
 procedure TJvClock.CMMouseEnter(var Msg: TMessage);
@@ -161,7 +159,7 @@ begin
   // for D7...
   if csDesigning in ComponentState then
     Exit;
-  Application.HintColor := FColor;
+  Application.HintColor := FHintColor;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
@@ -174,10 +172,17 @@ begin
     FOnMouseLeave(Self);
 end;
 
-procedure TJvClock.SetClockStyle(const Value: TClockStyle);
+procedure TJvClock.SetClockStyle(const Value: TJvClockStyle);
 begin
   FClock := Value;
-  OnUpdate(Self);
+  OnTimeUpdate(Self);
+  UpdateTextPosition;
+  FLabel.Left := (Width div 2) - (FLabel.Width div 2);
+  FLabel.Top := (Height div 2) - (FLabel.Height div 2);
+end;
+
+procedure TJvClock.UpdateTextPosition;
+begin
   FLabel.Left := (Width div 2) - (FLabel.Width div 2);
   FLabel.Top := (Height div 2) - (FLabel.Height div 2);
 end;

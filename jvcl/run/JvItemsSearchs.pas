@@ -36,12 +36,12 @@ uses
 type
   TJvItemsSearchs = class(TObject)
   public
-    function SearchExactString(Items: TStrings; Value: string; CaseSensitive: Boolean = True;
-      StartIndex: Integer = -1): Integer;
-    function SearchPrefix(Items: TStrings; Value: string; CaseSensitive: Boolean = True;
-      StartIndex: Integer = -1): Integer;
-    function SearchSubString(Items: TStrings; Value: string; CaseSensitive: Boolean = True;
-      StartIndex: Integer = -1): Integer;
+    function SearchExactString(Items: TStrings; Value: string;
+      CaseSensitive: Boolean = True; StartIndex: Integer = -1): Integer;
+    function SearchPrefix(Items: TStrings; Value: string;
+      CaseSensitive: Boolean = True; StartIndex: Integer = -1): Integer;
+    function SearchSubString(Items: TStrings; Value: string;
+      CaseSensitive: Boolean = True; StartIndex: Integer = -1): Integer;
     function DeleteExactString(Items: TStrings; Value: string; All: Boolean;
       CaseSensitive: Boolean = True): Integer;
   end;
@@ -49,7 +49,7 @@ type
 implementation
 
 function TJvItemsSearchs.DeleteExactString(Items: TStrings; Value: string;
-  All, CaseSensitive: Boolean): Integer;
+  All: Boolean; CaseSensitive: Boolean): Integer;
 var
   I: Integer;
 begin

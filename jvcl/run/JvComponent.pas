@@ -64,12 +64,12 @@ type
   TJvCustomPanel = class(TCustomPanel)
   private
     FAboutJVCL: TJVCLAboutInfo;
-{$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD56}
     function GetParentBackground: Boolean;
     procedure SetParentBackground(const Value: Boolean);
   protected
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-{$ENDIF}
+  {$ENDIF JVCLThemesEnabledD56}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -77,12 +77,12 @@ type
   TJvCustomControl = class(TCustomControl)
   private
     FAboutJVCL: TJVCLAboutInfo;
-{$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD56}
     function GetParentBackground: Boolean;
     procedure SetParentBackground(const Value: Boolean);
   protected
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-{$ENDIF}
+  {$ENDIF JVCLThemesEnabledD56}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -90,37 +90,29 @@ type
   TJvWinControl = class(TWinControl)
   private
     FAboutJVCL: TJVCLAboutInfo;
-{$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD56}
     function GetParentBackground: Boolean;
     procedure SetParentBackground(const Value: Boolean);
   protected
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-{$ENDIF}
+  {$ENDIF JVCLThemesEnabledD56}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvForm = class(TForm)
   private
-{$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD56}
     function GetParentBackground: Boolean;
     procedure SetParentBackground(const Value: Boolean);
   protected
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-{$ENDIF}
-{$IFDEF USE_DXGETTEXT}
+  {$ENDIF JVCLThemesEnabledD56}
+  // (rom) this has to be removed if gettext is GPL
+  {$IFDEF USE_DXGETTEXT}
   public
     constructor Create(AOwner: TComponent); override;
-{$ENDIF}
-  end;
-
-  // (p3) obsolete - MultiSelect is already published in JvCheckListBox
-  TJvMultiselectCheckListBox = class(TCheckListBox)
-  private
-    FAboutJVCL: TJVCLAboutInfo;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL;
-    property MultiSelect;
+  {$ENDIF USE_DXGETTEXT}
   end;
 
 implementation
@@ -170,7 +162,7 @@ begin
   JvThemes.SetParentBackground(Self, Value);
 end;
 
-{$ENDIF}
+{$ENDIF JVCLThemesEnabledD56}
 
 {$IFDEF USE_DXGETTEXT}
 constructor TJvForm.Create(AOwner: TComponent);
@@ -179,6 +171,5 @@ begin
   TranslateComponent(Self);
 end;
 {$ENDIF}
-
 
 end.

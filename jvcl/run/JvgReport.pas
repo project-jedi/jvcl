@@ -30,27 +30,29 @@ Known Issues:
 unit JvgReport;
 
 interface
-uses
-  Windows, Messages, Classes, Controls, Graphics, JvgTypes, JvgCommClasses,
-  JvComponent, JvgUtils, Forms, OleCtnrs, ExtCtrls, SysUtils, Printers;
-type
 
+uses
+  Windows, Messages, Classes, Controls, Graphics,
+  Forms, OleCtnrs, ExtCtrls, SysUtils, Printers,
+  JvComponent, JvgUtils, JvgTypes, JvgCommClasses;
+
+type
   TJvgReport = class;
 
-  TglRepParamType = (gptUnknown, gptEdit, gptRadio, gptCheck);
+  TJvgReportParamKind = (gptUnknown, gptEdit, gptRadio, gptCheck);
 
-  TJvgRepScrollBox = class(TScrollBox)
+  TJvgReportScrollBox = class(TScrollBox)
   private
-    GridImage: TBitmap;
+    FGridImage: TBitmap;
+    FOnDraw: TNotifyEvent;
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
   public
-    OnDraw: TNotifyEvent;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
+    property OnDraw: TNotifyEvent read FOnDraw write FOnDraw;
   end;
 
-  TJvgReportItem = class(TJvGraphicControl) //TCustomPanel) //TGraphicControl)
+  TJvgReportItem = class(TJvGraphicControl)
   private
     FSelected: boolean;
     FBkColor: integer;
@@ -172,7 +174,7 @@ type
       default 0;
   end;
 
-  TBeforePrintEvent = procedure(Sender: TJvgReport) of object;
+  TJvgReportBeforePrintEvent = procedure(Sender: TJvgReport) of object;
 
   TJvgReport = class(TJvComponent)
   private
@@ -188,7 +190,7 @@ type
     ParamTypes: TList;
     FReportList: TStringList;
     ComponentList: TList;
-    FBeforePrint: TBeforePrintEvent;
+    FBeforePrint: TJvgReportBeforePrintEvent;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Save;
@@ -211,7 +213,7 @@ type
   published
     property Report: TStringList read FReportList;
     property ReportText: TStringList read GetReportText write SetReportText;
-    property BeforePrint: TBeforePrintEvent read FBeforePrint write
+    property BeforePrint: TJvgReportBeforePrintEvent read FBeforePrint write
       FBeforePrint;
   end;
 
@@ -222,6 +224,7 @@ resourcestring
   sErrorReadingComponent = 'Error reading component.';
 
 implementation
+
 uses
   JvConsts;
 
@@ -229,26 +232,26 @@ const
   S = 2;
   DS = 2 * S + 1;
 
-//________________________________________________________ Methods _
+//=== TJvgReportScrollBox ====================================================
 
-constructor TJvgRepScrollBox.Create(AOwner: TComponent);
+constructor TJvgReportScrollBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  GridImage := TBitmap.Create;
-  GridImage.Width := 8;
-  GridImage.Height := 8;
-  GridImage.Canvas.Brush.Color := clWhite; //clWindow;
-  GridImage.Canvas.FillRect(Rect(0, 0, 8, 8));
-  GridImage.Canvas.Pixels[7, 7] := 0;
+  FGridImage := TBitmap.Create;
+  FGridImage.Width := 8;
+  FGridImage.Height := 8;
+  FGridImage.Canvas.Brush.Color := clWhite; //clWindow;
+  FGridImage.Canvas.FillRect(Rect(0, 0, 8, 8));
+  FGridImage.Canvas.Pixels[7, 7] := 0;
 end;
 
-destructor TJvgRepScrollBox.Destroy;
+destructor TJvgReportScrollBox.Destroy;
 begin
-  GridImage.Free;
-  inherited;
+  FGridImage.Free;
+  inherited Destroy;
 end;
 
-procedure TJvgRepScrollBox.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+procedure TJvgReportScrollBox.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   with TCanvas.Create do
   begin
@@ -256,15 +259,17 @@ begin
     //    Pen.Color := clWindow;
     //    Brush.Color := clWindow;
     //    Brush.Style := bsCross;
-    Brush.Bitmap := GridImage;
+    Brush.Bitmap := FGridImage;
     FillRect(ClientRect);
     Handle := 0;
     Free;
   end;
   Msg.Result := 1;
-  if Assigned(OnDraw) then
-    OnDraw(self);
+  if Assigned(FOnDraw) then
+    FOnDraw(Self);
 end;
+
+//=== TJvgReportItem =========================================================
 
 constructor TJvgReportItem.Create(AOwner: TComponent);
 var
@@ -934,10 +939,10 @@ begin
     Printer.BeginDoc;
     ScreenDC := GetDC(0);
 
-    HS := SantimsToPixels(ScreenDC, 21, true);
-    WS := SantimsToPixels(ScreenDC, 21, false);
-    HP := SantimsToPixels(Printer.Canvas.Handle, 21, true);
-    WP := SantimsToPixels(Printer.Canvas.Handle, 21, false);
+    HS := CentimetersToPixels(ScreenDC, 21, true);
+    WS := CentimetersToPixels(ScreenDC, 21, false);
+    HP := CentimetersToPixels(Printer.Canvas.Handle, 21, true);
+    WP := CentimetersToPixels(Printer.Canvas.Handle, 21, false);
 
     ReleaseDC(0, ScreenDC);
 
@@ -1258,11 +1263,11 @@ procedure TJvgReport.AnalyzeParams(Item: TJvgReportItem; DefName: string);
 var
   LastPos: integer;
   SList: TStringList;
-  ParamType: TglRepParamType;
+  ParamType: TJvgReportParamKind;
   ParamText, ParamName, ParamMask, ParamValue: string;
 
   function ExtractParam(Item: TJvgReportItem; var SrchPos: integer; var
-    ParamName: string; var ParamType: TglRepParamType): boolean;
+    ParamName: string; var ParamType: TJvgReportParamKind): boolean;
   var
     i, j: integer;
     f: boolean;

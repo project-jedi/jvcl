@@ -22,21 +22,23 @@ Last Modified:  2003-01-15
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  This unit implements the TJvgBevel component which is an extended
+  TBevel Delphi component with gradient filling and advanced borders
+  drawing.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
 
-{  This unit implements the TJvgBevel component which is an  extended
- TBevel Delphi component with gradient filling and advanced  borders
- drawing.}
-
 unit JvgDBNav;
 
 interface
+
 uses
-  Windows, Messages, Classes, JVCLVer, Controls, Graphics, DBCtrls,
-  JvgTypes, JvgCommClasses, JvgUtils;
+  Windows, Messages, Classes, Controls, Graphics, DBCtrls,
+  JVCLVer, JvgTypes, JvgCommClasses, JvgUtils;
 
 type
   TJvgDBNavigator = class(TDBNavigator)
@@ -45,7 +47,7 @@ type
     //      FNewWndProc: Pointer;
           //    procedure CMMouseMove(var Message: TMessage); message CM_MOUSEMOVE;
           //    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
+    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     //      procedure PaintControls(DC: HDC; First: TControl);
     //      procedure HookFocusControlWndProc;
     //      procedure UnhookFocusControlWndProc;
@@ -65,11 +67,9 @@ implementation
 uses
   JvThemes;
 
-//________________________________________________________ Methods _
-
 constructor TJvgDBNavigator.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   IncludeThemeStyle(Self, [csParentBackground]);
   //  FocusControl := Controls[0];
   //  HookFocusControlWndProc;
@@ -78,28 +78,29 @@ end;
 destructor TJvgDBNavigator.Destroy;
 begin
   //  UnhookFocusControlWndProc;
-  inherited;
+  inherited Destroy;
 end;
 
-procedure TJvgDBNavigator.WMPaint(var message: TWMPaint);
+procedure TJvgDBNavigator.WMPaint(var Msg: TWMPaint);
 var
   DC: HDC;
-  i: integer;
+  I: Integer;
   PS: TPaintStruct;
 begin
   //   DC := BeginPaint(Handle, PS);
   EndPaint(Handle, PS);
-  exit;
-  DC := message.DC;
+  Exit;
+
+  DC := Msg.DC;
   if DC = 0 then
     DC := BeginPaint(Handle, PS);
   try
     //PaintWindow(DC);
-    for i := 0 to ControlCount - 1 do
-      if Controls[i] is TNavButton then
-        with TNavButton(Controls[i]) do
+    for I := 0 to ControlCount - 1 do
+      if Controls[I] is TNavButton then
+        with TNavButton(Controls[I]) do
           if Visible and Enabled then
-            //        BitBlt( DC, Width*I,1,{Glyph.width,Glyph.Height}10,10,Glyph.Canvas.Handle, 0,0, SRCCOPY);
+            //        BitBlt( DC, Width*I,1,{Glyph.Width,Glyph.Height}10,10,Glyph.Canvas.Handle, 0,0, SRCCOPY);
 
             SetPixel(DC, 2, 2, 0);
     //    BitBlt( DC, 0,0,10,10,TNavButton(Controls[0]).Glyph.Canvas.Handle,0,0, SRCCOPY);
@@ -107,7 +108,7 @@ begin
 
     end;
   finally
-    if message.DC = 0 then
+    if Msg.DC = 0 then
       EndPaint(Handle, PS);
   end;
 end;

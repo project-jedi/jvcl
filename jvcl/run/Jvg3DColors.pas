@@ -32,7 +32,7 @@ unit Jvg3DColors;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   JvComponent;
 
 type
@@ -72,13 +72,13 @@ type
   end;
 
 
-resourcestring
-  sCannotCreateMoreThanOneInstanceOfTJ = 'Cannot create more than one instance of TJvg3DLocalColors component';
-
 implementation
 
 uses
   JvConsts, JvgUtils, JvgTypes;
+
+resourcestring
+  sCannotCreateMoreThanOneInstanceOfTJ = 'Cannot create more than one instance of TJvg3DLocalColors component';
 
 //=== TJvg3DLocalColors ======================================================
 
@@ -109,12 +109,13 @@ var
 begin
   if (BaseColor and $80000000) <> 0 then
     BaseColor := GetSysColor(BaseColor and $FF);
-  B := (BaseColor and $00FF0000) shr 16;
-  G := (BaseColor and $0000FF00) shr 8;
-  R := BaseColor and $000000FF;
-  FShadow := RGB(Max(R - ColorShadowShift, 0), Max(G - ColorShadowShift, 0), Max(B - ColorShadowShift, 0));
-  FHighlight := RGB(Min(r + ColorHighlightShift, 255), min(g + ColorHighlightShift, 255), min(b + ColorHighlightShift,
-    255));
+  B := GetRValue(BaseColor);
+  G := GetGValue(BaseColor);
+  R := GetBValue(BaseColor);
+  FShadow := RGB(Max(R - ColorShadowShift, 0),
+    Max(G - ColorShadowShift, 0), Max(B - ColorShadowShift, 0));
+  FHighlight := RGB(Min(R + ColorHighlightShift, 255),
+    Min(G + ColorHighlightShift, 255), Min(B + ColorHighlightShift, 255));
 end;
 
 procedure TJvg3DLocalColors.MakeGlobal;

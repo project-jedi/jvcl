@@ -63,8 +63,8 @@ uses
 {$R *.DFM}
 
 resourcestring
-  sJvPatcherEditorComparingFilesd = 'Jv - Patcher Editor : Comparing files %d%%';
-  sJvPatcherEditorEndStep = 'Jv - Patcher Editor : end step ...';
+  sJvPatcherEditorComparingFilesd = 'Jv - Patcher Editor: Comparing files %d%%';
+  sJvPatcherEditorEndStep = 'Jv - Patcher Editor: end step ...';
 
 procedure TFoPatch.LoadFromStr(Value: TStringList);
 begin

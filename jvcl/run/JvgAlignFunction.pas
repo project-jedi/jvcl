@@ -32,12 +32,13 @@ unit JvgAlignFunction;
 interface
 
 uses
-  Controls, JvgTypes;
+  Controls,
+  JvgTypes;
 
 type
-  TNeedAlign = function(Control: TControl): Boolean;
+  TJvgNeedAlign = function(Control: TControl): Boolean;
 
-procedure AlignControlsInWindow(Wnd: TWinControl; NeedAlign: TNeedAlign;
+procedure AlignControlsInWindow(Wnd: TWinControl; NeedAlign: TJvgNeedAlign;
   HCAlign: TglHComponentAlign; VCAlign: TglVComponentAlign);
 
 implementation
@@ -46,13 +47,7 @@ uses
   Windows, Classes,
   JvgUtils;
 
-{
-var
-  fHorizSort: Boolean;
-  C: TControl;
-}
-
-procedure AlignControlsInWindow(Wnd: TWinControl; NeedAlign: TNeedAlign;
+procedure AlignControlsInWindow(Wnd: TWinControl; NeedAlign: TJvgNeedAlign;
   HCAlign: TglHComponentAlign; VCAlign: TglVComponentAlign);
 var
   I, TotalControls, ControlNo: Integer;
@@ -61,33 +56,34 @@ var
   ControlsList: TList;
   Control: TControl;
 
-  procedure Sort(fHorizSort: Boolean);
+  procedure Sort(AHorizSort: Boolean);
   var
     I: Integer;
-    fSorted: Boolean;
+    Sorted: Boolean;
     Control2: TControl;
   begin
     repeat
-      fSorted := True;
+      Sorted := True;
       for I := 0 to ControlsList.Count - 2 do
       begin
         Control := ControlsList[I];
         Control2 := ControlsList[I + 1];
-        if fHorizSort then
+        if AHorizSort then
         begin
           if Control.Left > Control2.Left then
           begin
             ControlsList.Exchange(I, I + 1);
-            fSorted := False;
+            Sorted := False;
           end;
         end
-        else if Control.Top > Control2.Top then
+        else
+        if Control.Top > Control2.Top then
         begin
           ControlsList.Exchange(I, I + 1);
-          fSorted := False;
+          Sorted := False;
         end;
       end;
-    until fSorted;
+    until Sorted;
   end;
 
 begin
@@ -95,7 +91,7 @@ begin
     Exit;
   ControlsList := TList.Create;
   try
-    R := Rect(65536, 65536, 0, 0);
+    R := Rect(MaxInt, MaxInt, 0, 0);
     TotalSize.cx := 0;
     TotalSize.cy := 0;
     AccumulatedSize.cx := 0;
@@ -116,8 +112,8 @@ begin
             Inc(TotalControls);
             ControlsList.Add(Controls[I]);
           end;
-
     Sort(True);
+
     //..h aligning
     for I := 0 to ControlsList.Count - 1 do
       with Control do
@@ -132,8 +128,8 @@ begin
             Left := R.Right - Width;
           haSpaceEqually:
             if ControlNo <> TotalControls then
-              Left := R.Left + AccumulatedSize.cx + Trunc((R.Right - R.Left - TotalSize.cx) / TotalControls *
-                ControlNo);
+              Left := R.Left + AccumulatedSize.cx +
+                Trunc((R.Right - R.Left - TotalSize.cx) / TotalControls * ControlNo);
           haCenterWindow:
             Left := (Wnd.Width - Width) div 2;
           haClose:
@@ -144,6 +140,7 @@ begin
       end;
     ControlNo := 0;
     Sort(False);
+
     //..v aligning
     for I := 0 to ControlsList.Count - 1 do
       with Control do
@@ -158,7 +155,8 @@ begin
             Top := R.Bottom - Height;
           vaSpaceEqually:
             if ControlNo <> TotalControls then
-              Top := R.Top + AccumulatedSize.cy + trunc((R.Bottom - R.Top - TotalSize.cy) / TotalControls * ControlNo);
+              Top := R.Top + AccumulatedSize.cy +
+                Trunc((R.Bottom - R.Top - TotalSize.cy) / TotalControls * ControlNo);
           vaCenterWindow:
             Top := (Wnd.Height - Height) div 2;
           vaClose:

@@ -233,7 +233,7 @@ type
 implementation
 
 uses
-  Math, ClipBrd,
+  Math, Clipbrd,
   JvTypes, JvPainterEffectsForm, JvQuickPreviewForm, JvPainterQBForm;
 
 resourcestring

@@ -40,7 +40,8 @@ function Max(i1, i2: integer): integer;
 function MinSingle(r1, r2: Single): Single;
 function MaxSingle(r1, r2: Single): Single;
 function IsEven(i: integer): boolean;
-function SantimsToPixels(DC: HDC; Value: single; IsHosiz: boolean): integer;
+function InchesToPixels(DC: HDC; Value: Single; IsHorizontal: Boolean): Integer;
+function CentimetersToPixels(DC: HDC; Value: Single; IsHorizontal: Boolean): Integer;
 
 procedure SwapInt(var i1, i2: integer);
 function Spaces(count: integer): string;
@@ -324,11 +325,18 @@ end;
 //{ Переводит сантиметра в пиксели }
 { Centimeter -> Pixels [translated] }
 
-function SantimsToPixels(DC: HDC; Value: single; IsHosiz: boolean): integer;
+function InchesToPixels(DC: HDC; Value: Single; IsHorizontal: Boolean): Integer;
 const
-  LOGPIXELS: array[boolean] of integer = (LOGPIXELSY, LOGPIXELSX);
+  LogPixels: array [Boolean] of Integer = (LOGPIXELSY, LOGPIXELSX);
 begin
-  Result := round(Value * GetDeviceCaps(DC, LOGPIXELS[IsHosiz]) * 1.541 * 2.54 / 10);
+  Result := Round(Value * GetDeviceCaps(DC, LogPixels[IsHorizontal]) * 1.541 / 10);
+end;
+
+function CentimetersToPixels(DC: HDC; Value: Single; IsHorizontal: Boolean): Integer;
+const
+  LogPixels: array [Boolean] of Integer = (LOGPIXELSY, LOGPIXELSX);
+begin
+  Result := Round(Value * GetDeviceCaps(DC, LogPixels[IsHorizontal]) * 1.541 * 2.54 / 10);
 end;
 
 //{ Проверяет создан ли объеки bitmap и имеет ли он размер }
