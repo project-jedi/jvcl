@@ -363,6 +363,7 @@ contains
   JvCtlConst in '..\Source\JvCtlConst.pas',
   JvHLParser in '..\Source\JvHLParser.pas',
   JvInterpreterParser in '..\Source\JvInterpreterParser.pas',
+  JvInterpreterVariants in '..\Source\JvInterpreterVariants.pas',
   JvInterpreterFm in '..\Source\JvInterpreterFm.pas',
   JvInterpreterConst in '..\Source\JvInterpreterConst.pas',
   JvInterpreter in '..\source\JvInterpreter.pas',
