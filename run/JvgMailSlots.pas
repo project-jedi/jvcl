@@ -213,6 +213,7 @@ begin
   { Querying user name [translated] }
   // First query with a buffer too small, to get the required size
   Size := 0;
+  UserName := nil;
   GetUserName(UserName, Size);
 
   // then allocate some memory for the user name

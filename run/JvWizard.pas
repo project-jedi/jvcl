@@ -16,8 +16,9 @@ All Rights Reserved.
 
 Contributor(s):
 Peter Thörnqvist - converted to JVCL naming conventions on 2003-07-11
+Andreas Hausladen - fixed some bugs, refactoring of the Wizard button classes on 2004-02-29
 
-Last Modified: 2004-02-13
+Last Modified: 2004-03-25
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -940,7 +941,7 @@ resourcestring
 {$ENDIF USEJVCL}
 
 type
-  // (ahuser) introduces for refactoring  the WizardButtons
+  // (ahuser) introduced for refactoring the WizardButtons
   TJvWizardBaseButton = class(TJvWizardButtonControl)
   protected
     procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); virtual; abstract;

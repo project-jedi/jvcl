@@ -4517,6 +4517,7 @@ begin
   Result := -1;
 end;
 
+{ (ahuser) make Delphi 5 Compiler happy
 function MapToGet(Index: integer): integer;
 var
   i: integer;
@@ -4529,7 +4530,7 @@ begin
       Exit;
     end;
   Result := -1;
-end;
+end;}
 
 constructor TJvSystemParametersInfo.Create;
 begin
