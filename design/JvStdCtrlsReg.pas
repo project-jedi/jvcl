@@ -140,7 +140,7 @@ begin
     TJvStaticText,
     {$ENDIF VCL}
     TJvLabel]);
-  RegisterComponents(RsPaletteListComboTree, [TJvComboBox,
+  RegisterComponents(RsPaletteListComboTree, [TJvComboBox, TJvCheckedComboBox, 
     {$IFDEF VCL}
     TJvListBox,
     {$ENDIF VCL}
