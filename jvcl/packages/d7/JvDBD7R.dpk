@@ -1,0 +1,46 @@
+package JvDBD7R;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$RUNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  rtl,
+  JvCoreD7R,
+  dbrtl,
+  vcldb;
+
+contains
+  JvDBConst in '..\..\run\JvDBConst.pas',
+  JvDBDatePickerEdit in '..\..\run\JvDBDatePickerEdit.pas',
+  JvDBDateTimePicker in '..\..\run\JvDBDateTimePicker.pas',
+  JvDBLookupTreeView in '..\..\run\JvDBLookupTreeView.pas',
+  JvDBProgressBar in '..\..\run\JvDBProgressBar.pas',
+  JvDBRichEd in '..\..\run\JvDBRichEd.pas',
+  JvDBSpinEdit in '..\..\run\JvDBSpinEdit.pas',
+  JvDBTreeView in '..\..\run\JvDBTreeView.pas',
+  JvLookup in '..\..\run\JvLookup.pas',
+  JvDBUtils in '..\..\run\JvDBUtils.pas';
+
+end.

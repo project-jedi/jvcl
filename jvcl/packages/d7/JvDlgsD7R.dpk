@@ -1,0 +1,55 @@
+package JvDlgsD7R;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$RUNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  rtl,
+  vcljpg,
+  vcl,
+  vclx;
+
+contains
+  JvDSADialogs in '..\..\run\JvDSADialogs.pas',
+  JvTipOfDay in '..\..\run\JvTipOfDay.pas',
+  JvWinDialogs in '..\..\run\JvWinDialogs.pas',
+  JvAddPrinter in '..\..\run\JvAddPrinter.pas',
+  JvCommonDialogD in '..\..\run\JvCommonDialogD.pas',
+  JvCommonExecDlg in '..\..\run\JvCommonExecDlg.pas',
+  JvDialogActns in '..\..\run\JvDialogActns.pas',
+  JvDialogs in '..\..\run\JvDialogs.pas',
+  JvDlg in '..\..\run\JvDlg.pas',
+  JvPageSetupTitled in '..\..\run\JvPageSetupTitled.pas',
+  JvPageSetup in '..\..\run\JvPageSetup.pas',
+  JvConnectNetwork in '..\..\run\JvConnectNetwork.pas',
+  JvSelectDirectory in '..\..\run\JvSelectDirectory.pas',
+  JvBrowseFolder in '..\..\run\JvBrowseFolder.pas',
+  JvCopyError in '..\..\run\JvCopyError.pas',
+  JvDeleteError in '..\..\run\JvDeleteError.pas',
+  JvRenameError in '..\..\run\JvRenameError.pas',
+  JvDiskPrompt in '..\..\run\JvDiskPrompt.pas',
+  JvFindFiles in '..\..\run\JvFindFiles.pas';
+
+end.

@@ -1,0 +1,63 @@
+package JvCustomD7R;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$RUNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  rtl,
+  vcl,
+  vclx,
+  vcljpg;
+
+contains
+  JvTrayIcon in '..\..\run\JvTrayIcon.pas',
+  JvDiagramShape in '..\..\run\JvDiagramShape.pas',
+  JvGammaPanel in '..\..\run\JvGammaPanel.pas',
+  JvInspector in '..\..\run\JvInspector.pas',
+  JvInspExtraEditors in '..\..\run\JvInspExtraEditors.pas',
+  JvLinkLabel in '..\..\run\JvLinkLabel.pas',
+  JvLinkLabelDebug in '..\..\run\JvLinkLabelDebug.pas',
+  JvLinkLabelParser in '..\..\run\JvLinkLabelParser.pas',
+  JvLinkLabelRenderer in '..\..\run\JvLinkLabelRenderer.pas',
+  JvLinkLabelTextHandler in '..\..\run\JvLinkLabelTextHandler.pas',
+  JvLinkLabelTools in '..\..\run\JvLinkLabelTools.pas',
+  JvLinkLabelTree in '..\..\run\JvLinkLabelTree.pas',
+  JvLookOut in '..\..\run\JvLookOut.pas',
+  JvOLBar in '..\..\run\JvOLBar.pas',
+  JvRadioCtl in '..\..\run\JvRadioCtl.pas',
+  JvSchedEvtStore in '..\..\run\JvSchedEvtStore.pas',
+  JvScheduledEvents in '..\..\run\JvScheduledEvents.pas',
+  JvThumbImage in '..\..\run\JvThumbImage.pas',
+  JvThumbnails in '..\..\run\jvThumbNails.pas',
+  JvThumbviews in '..\..\run\JvThumbviews.pas',
+  JvTimeLine in '..\..\run\JvTimeLine.pas',
+  JvTMTL in '..\..\run\JvTMTL.pas',
+  JvBalloonHint in '..\..\run\JvBalloonHint.pas',
+  JvBandForms in '..\..\run\JvBandForms.pas',
+  JvBandObject in '..\..\run\JvBandObject.pas',
+  JvUtils in '..\..\run\JvUtils.pas',
+  JvBaseThumbnail in '..\..\run\JvBaseThumbnail.pas';
+
+end.

@@ -17,49 +17,49 @@ PROJECTS = DJCL70.bpl JvCoreD7R.bpl JvCoreD7D.bpl JvSystemD7R.bpl \
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
-JvCoreD7D.bpl: JvCoreD7D.dpk
+JvCoreD7D.bpl: d7\JvCoreD7D.dpk
   $(DCC)
 
-JvCoreD7R.bpl: JvCoreD7R.dpk
+JvCoreD7R.bpl: d7\JvCoreD7R.dpk
   $(DCC)
 
-JvAppFrmD7R.bpl: JvAppFrmD7R.dpk
+JvAppFrmD7R.bpl: d7\JvAppFrmD7R.dpk
   $(DCC)
 
-JvBDED7R.bpl: JvBDED7R.dpk
+JvBDED7R.bpl: d7\JvBDED7R.dpk
   $(DCC)
 
-JvCmpD7R.bpl: JvCmpD7R.dpk
+JvCmpD7R.bpl: d7\JvCmpD7R.dpk
   $(DCC)
 
-JvCryptD7R.bpl: JvCryptD7R.dpk
+JvCryptD7R.bpl: d7\JvCryptD7R.dpk
   $(DCC)
 
-JvCtrlsD7R.bpl: JvCtrlsD7R.dpk
+JvCtrlsD7R.bpl: d7\JvCtrlsD7R.dpk
   $(DCC)
 
-JvCustomD7R.bpl: JvCustomD7R.dpk
+JvCustomD7R.bpl: d7\JvCustomD7R.dpk
   $(DCC)
 
-JvDBD7R.bpl: JvDBD7R.dpk
+JvDBD7R.bpl: d7\JvDBD7R.dpk
   $(DCC)
 
-JvDlgsD7R.bpl: JvDlgsD7R.dpk
+JvDlgsD7R.bpl: d7\JvDlgsD7R.dpk
   $(DCC)
 
-JvInterpreterD7R.bpl: JvInterpreterD7R.dpk
+JvInterpreterD7R.bpl: d7\JvInterpreterD7R.dpk
   $(DCC)
 
-JvMMD7R.bpl: JvMMD7R.dpk
+JvMMD7R.bpl: d7\JvMMD7R.dpk
   $(DCC)
 
-JvNetD7R.bpl: JvNetD7R.dpk
+JvNetD7R.bpl: d7\JvNetD7R.dpk
   $(DCC)
 
-JvStdCtrlsD7R.bpl: JvStdCtrlsD7R.dpk
+JvStdCtrlsD7R.bpl: d7\JvStdCtrlsD7R.dpk
   $(DCC)
 
-JvSystemD7R.bpl: JvSystemD7R.dpk
+JvSystemD7R.bpl: d7\JvSystemD7R.dpk
   $(DCC)
 
 DJCL70.bpl: ..\..\..\JCL\packages\DJCL70.dpk

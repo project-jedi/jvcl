@@ -1,0 +1,93 @@
+package JvStdCtrlsD7R;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$IMPLICITBUILD ON}
+
+requires
+  rtl,
+  JvCoreD7R;
+
+contains
+  JvSpin in '..\..\run\JvSpin.pas',
+  JvEdit in '..\..\run\JvEdit.pas',
+  JvRichEd in '..\..\run\JvRichEd.pas',
+  JvProgressBar in '..\..\run\JvProgressBar.pas',
+  JvDateTimePicker in '..\..\run\JvDateTimePicker.pas',
+  JvDatePickerEdit in '..\..\run\JvDatePickerEdit.pas',
+  JvCheckedMaskEdit in '..\..\run\JvCheckedMaskEdit.pas',
+  JvMaskEdit in '..\..\run\JvMaskEdit.pas',
+  JvDropDownForm in '..\..\run\JvDropDownForm.pas',
+  JvCalendar in '..\..\run\JvCalendar.pas',
+  JvCurrEdit in '..\..\run\JvCurrEdit.pas',
+  JvCalc in '..\..\run\JvCalc.pas',
+  JvToolEdit in '..\..\run\JvToolEdit.pas',
+  JvPickDate in '..\..\run\JvPickDate.pas',
+  JvxCtrls in '..\..\run\JvxCtrls.pas',
+  JvPlacemnt in '..\..\run\JvPlacemnt.pas',
+  JvProps in '..\..\run\JvProps.pas',
+  JvAppUtils in '..\..\run\JvAppUtils.pas',
+  JvxSlider in '..\..\run\JvxSlider.pas',
+  JvBevel in '..\..\run\JvBevel.pas',
+  JvButton in '..\..\run\JvButton.pas',
+  JvButtonPersistent in '..\..\run\JvButtonPersistent.pas',
+  JvCheckBox in '..\..\run\JvCheckBox.pas',
+  JvCheckListBox in '..\..\run\JvCheckListBox.pas',
+  JvCombobox in '..\..\run\JvCombobox.pas',
+  JvComCtrls in '..\..\run\JvComCtrls.pas',
+  JvControlBar in '..\..\run\JvControlBar.pas',
+  JvCoolBar in '..\..\run\JvCoolBar.pas',
+  JvCtrls in '..\..\run\JvCtrls.pas',
+  JvGroupBox in '..\..\run\JvGroupBox.pas',
+  JvGroupHeader in '..\..\run\JvGroupHeader.pas',
+  JvHeaderControl in '..\..\run\JvHeaderControl.pas',
+  JvHints in '..\..\run\JvHints.pas',
+  JvHotKey in '..\..\run\JvHotKey.pas',
+  JvImage in '..\..\run\JvImage.pas',
+  JvLabel in '..\..\run\JvLabel.pas',
+  JvListBox in '..\..\run\JvListBox.pas',
+  JvListView in '..\..\run\JvListView.pas',
+  JvMemo in '..\..\run\JvMemo.pas',
+  JvMenus in '..\..\run\JvMenus.pas',
+  JvRadioButton in '..\..\run\JvRadioButton.pas',
+  JvRadioGroup in '..\..\run\JvRadioGroup.pas',
+  JvScrollBar in '..\..\run\JvScrollBar.pas',
+  JvScrollBox in '..\..\run\JvScrollBox.pas',
+  JvShape in '..\..\run\JvShape.pas',
+  JvStaticText in '..\..\run\JvStaticText.pas',
+  JvStatusBar in '..\..\run\JvStatusBar.pas',
+  JvStringGrid in '..\..\run\JvStringGrid.pas',
+  JvSystemPopup in '..\..\run\JvSystemPopup.pas',
+  JvTabControl in '..\..\run\JvTabControl.pas',
+  JvToolBar in '..\..\run\JvToolBar.pas',
+  JvUpDown in '..\..\run\JvUpDown.pas',
+  JvxAnimate in '..\..\run\JvxAnimate.pas',
+  JvItemsSearchs in '..\..\run\JvItemsSearchs.pas',
+  JvBitBtn in '..\..\run\JvBitBtn.pas',
+  JvCtlConst in '..\..\run\JvCtlConst.pas',
+  JvBoxProcs in '..\..\run\JvBoxProcs.pas',
+  JvPanel in '..\..\run\JvPanel.pas',
+  JvMonthCalendar in '..\..\run\JvMonthCalendar.pas',
+  JvFindReplace in '..\..\run\JvFindReplace.pas';
+
+end.
