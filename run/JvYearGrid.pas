@@ -14,7 +14,9 @@ The Initial Developer of the Original Code is Jan Verhoeven [jan1 dott verhoeven
 Portions created by Jan Verhoeven are Copyright (C) 2002 Jan Verhoeven.
 All Rights Reserved.
 
-Contributor(s): Robert Love [rlove att slcdug dott org].
+Contributor(s):
+  Robert Love [rlove at slcdug dot org].
+  Olivier Sannier [obones at users dot sourceforge dot net]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -38,49 +40,77 @@ uses
   QGraphics, QControls, QForms, QDialogs, QGrids, QMenus, QClipbrd, Types,
   QWindows,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
-  JvTypes;
+  {$IFDEF USEJVCL}
+  JvTypes,
+  {$ENDIF USEJVCL}
+  SysUtils, StdCtrls, Classes;
 
 {$HPPEMIT '#define TDate Controls::TDate'}
 
 type
+  {$IFNDEF USEJVCL}
+  THintString = string;
+  {$ENDIF USEJVCL}
+
   TYearData = record
-    DisplayText: string;
-    InfoText: string;
+    DisplayText : string;
+    InfoText    : string;
+    DayInMonth  : Integer;
     DefaultColor: TColor;
-    CustomColor: TColor;
-    Custom: Boolean;
-    BookMark: Boolean; // this is not saved
+    CustomColor : TColor;
+    Custom      : Boolean;
+    BookMark    : Boolean; // this is not saved
   end;
+
+  TJvYearGridOrientation = (yoHorizontal, yoVertical);
+  TJvWeekDay = (wdMonday, wdTuesday, wdWednesday, wdThursday, wdFriday, wdSaturday, wdSunday);
+  TJvWeekDaySet = set of TJvWeekDay;
+  TJvAutoSizeOptions = set of (aoGrid, aoFirstColumn, aoFirstRow, aoColumns, aoRows);
 
   TOnYearChanged = procedure(Sender: TObject; AYear: Integer) of object;
   TOnSelectDate = procedure(Sender: TObject; ADate: TDate; InfoText: string; InfoColor: TColor) of object;
   TOnInfoChanging = procedure(Sender: TObject; var InfoText: string; var CanChange: Boolean) of object;
+  {$IFDEF COMPILER6_UP}
+  TJvYearGrid = class(TCustomDrawGrid)
+  {$ELSE}
   TJvYearGrid = class(TDrawGrid)
+  {$ENDIF COMPILER6_UP}
   private
     FGridPop: TPopupMenu;
     FCurrentYear: Word;
     FCurrentMonth: Word;
     FCurrentDay: Word;
     FHTMLBorder: Boolean;
-    FGridYear: Integer;
     FOnYearChanged: TOnYearChanged;
     FHTMLFontName: string;
     FOnSelectDate: TOnSelectDate;
     FBorderColor: TColor;
     FOnInfoChanging: TOnInfoChanging;
     FBookMarkColor: TColor;
+    FAutoSize: Boolean;
+    
+    DaysInMonth: array [1..12] of Integer;
+    StartDays: array [1..12] of Integer;
+    
     FYearData: array [0..37, 0..12] of TYearData;
     FYearFile: string;
+
+    FOrientation: TJvYearGridOrientation;
+
+    FSavedScrollBars: TScrollStyle;
+
+    {$IFNDEF COMPILER6_UP}
+    procedure MouseToCell(X, Y: Integer; var ACol, ARow: Longint);
+    {$ENDIF COMPILER6_UP}
+
     procedure DoShowHint(var HintStr: THintString; var CanShow: Boolean;
       var HintInfo: THintInfo);
     procedure MakeHTML(AList: TStringList; Border, Filter: Boolean);
     procedure SetHTMLBorder(const Value: Boolean);
-    procedure SetGridYear(const Value: Integer);
+
     procedure SetYearChanged(const Value: TOnYearChanged);
-    procedure SetYear(AYear: Word);
-    procedure LoadYear;
-    procedure SaveYear;
+    procedure SetYear(const Value: Integer);
+    
     procedure SetupYearData;
     procedure SetupMonths;
     function GetCellData(var S: string): Boolean;
@@ -109,112 +139,263 @@ type
     procedure Find1Click(Sender: TObject);
     procedure ClearFind1Click(Sender: TObject);
     procedure SaveFound(Sender: TObject);
+    procedure SetOrientation(const Value: TJvYearGridOrientation);
+    function IsCurrentYear: Boolean;
+  private
+    FFirstDayOfWeek: TJvWeekDay;
+    FWeekendDays: TJvWeekDaySet;
+    FAutoSizeOptions: TJvAutoSizeOptions;
+
+    {$IFDEF USEJVCL}
+    FCellMargins: TJvRect;
+    {$ENDIF USEJVCL}
+    {$IFNDEF COMPILER6_UP}
+    FOnSelectCell: TSelectCellEvent;
+    FOnDrawCell: TDrawCellEvent;
+    {$ENDIF COMPILER6_UP}
+    FDaysAlignment: TAlignment;
+    FDayNamesAlignment: TAlignment;
+    FMonthNamesAlignment: TAlignment;
+    FYearAlignment: TAlignment;
+    FYear: Integer;
+
+    {$IFDEF USEJVCL}
+    procedure CellMarginsChange(Sender: TObject);
+    {$ENDIF USEJVCL}
+
+    procedure SetFirstDayOfWeek(const Value: TJvWeekDay);
+    function GetDefaultColWidth: Integer;
+    function GetDefaultRowHeight: Integer;
+    procedure SetDefaultColWidth(const Value: Integer);
+    procedure SetDefaultRowHeihgt(const Value: Integer);
+    procedure SetFirstColWidth(const Value: Integer);
+    procedure SetFirstRowHeight(const Value: Integer);
+    procedure SetWeekendDays(const Value: TJvWeekDaySet);
+    procedure SetAutoSizeOptions(const Value: TJvAutoSizeOptions);
+    {$IFDEF USEJVCL}
+    procedure SetCellMargins(const Value: TJvRect);
+    {$ENDIF USEJVCL}
+    procedure SetDayNamesAlignment(const Value: TAlignment);
+    procedure SetDaysAlignment(const Value: TAlignment);
+    procedure SetMonthNamesAlignment(const Value: TAlignment);
+    procedure SetYearAlignment(const Value: TAlignment);
+    function GetFirstColWidth: Integer;
+    function GetFirstRowHeight: Integer;
+    procedure ColRowToDayMonthIndex(ACol, ARow: Integer; var DayIndex, MonthIndex: Integer);
+    procedure DayMonthIndexToColRow(DayIndex: Integer; MonthIndex: Integer; var ACol, ARow: Integer);
   protected
     procedure DrawCell(ACol, ARow: Integer; Rect: TRect; State: TGridDrawState); override;
     function SelectCell(ACol, ARow: Integer): Boolean; override;
     procedure DblClick; override;
+    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP}override;{$ENDIF COMPILER6_UP}
+    procedure UpdateAllSizes;
+    procedure AdjustBounds;
+    procedure Loaded; override;
+    procedure SetParent(AParent: TWinControl); override;
+
+    // Those three methods are used to provide support for reading
+    // the GridYear property from DFM files that were using
+    // this component before its rewrite. The writer does nothing
+    // because the value is now stored as Year.
+    procedure ReadGridYear(Reader: TReader);
+    procedure WriteGridYear(Writer: TWriter);
+    procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure LoadYear(Filename: string = '');
+    procedure SaveYear(Filename: string = '');
+
     function GetSelDateText: string;
     procedure SetSelDateText(AText: string);
+
     function GetDateInfo(ADate: TDate; var AText: string): Boolean;
     function SetDateInfo(ADate: TDate; AText: string): Boolean;
+
+    // This procedure does the default drawing for a given cell
+    // It is made public so that you can call it in your OnDrawCell event
+    procedure DefaultDrawCell(ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
+
+    // Converts a (col, row) couple to a (day, month) couple taking
+    // into account the orientation. If no day is in the indicated cell
+    // then the value of ADay is 0 on exit.
+    procedure ColRowToDayMonth(ACol, ARow: Integer; var ADay, AMonth: Integer);
+
+    // Converts a (day, month) couple to a (col, row) couple taking
+    // into account the orientation. If the day doesn't exist in the month
+    // the indicated cell may be outside the grid
+    procedure DayMonthToColRow(ADay, AMonth: Integer; var ACol, ARow: Integer);
+
     procedure Find;
+
   published
-    property HTMLBorder: Boolean read FHTMLBorder write SetHTMLBorder;
-    property HTMLFontName: string read FHTMLFontName write SetHTMLFontName;
-    property GridYear: Integer read FGridYear write SetGridYear;
-    property BorderColor: TColor read FBorderColor write SetBorderColor default $EEF5FF;
-    property BookMarkColor: TColor read FBookMarkColor write SetBookMarkColor default clYellow;
-    property OnYearChanged: TOnYearChanged read FOnYearChanged write SetYearChanged;
-    property OnSelectDate: TOnSelectDate read FOnSelectDate write SetSelectDate;
-    property OnInfoChanging: TOnInfoChanging read FOnInfoChanging write SetInfoChanging;
-    property Width default 746;
-    property Height default 353;
-    property DefaultColWidth default 16;
-    property DefaultRowHeight default 24;
-    property ColCount default 38;
-    property RowCount default 13;
+    property HTMLBorder    : Boolean                read FHTMLBorder     write SetHTMLBorder;
+    property HTMLFontName  : string                 read FHTMLFontName   write SetHTMLFontName;
+    property BorderColor   : TColor                 read FBorderColor    write SetBorderColor    default $EEF5FF;
+    property BookMarkColor : TColor                 read FBookMarkColor  write SetBookMarkColor  default clYellow;
+    property Orientation   : TJvYearGridOrientation read FOrientation    write SetOrientation    default yoHorizontal;
+    property FirstDayOfWeek: TJvWeekDay             read FFirstDayOfWeek write SetFirstDayOfWeek default wdMonday;
+
+    property Year    : Integer read FYear     write SetYear;
+    property YearFile: string  read FYearFile write FYearFile;
+
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
+    property AutoSizeOptions: TJvAutoSizeOptions read FAutoSizeOptions write SetAutoSizeOptions;
+
+    property FirstColWidth : Integer read GetFirstColWidth  write SetFirstColWidth;
+    property FirstRowHeight: Integer read GetFirstRowHeight write SetFirstRowHeight;
+
+    {$IFDEF USEJVCL}
+    property CellMargins: TJvRect read FCellMargins write SetCellMargins;
+    {$ENDIF USEJVCL}
+
+    property WeekendDays : TJvWeekDaySet read FWeekendDays write SetWeekendDays;
+
+    property MonthNamesAlignment: TAlignment read FMonthNamesAlignment write SetMonthNamesAlignment default taLeftJustify;
+    property DayNamesAlignment  : TAlignment read FDayNamesAlignment   write SetDayNamesAlignment   default taLeftJustify;
+    property DaysAlignment      : TAlignment read FDaysAlignment       write SetDaysAlignment       default taLeftJustify;
+    property YearAlignment      : TAlignment read FYearAlignment       write SetYearAlignment       default taLeftJustify;
+
+    {$IFDEF COMPILER6_UP}
+    property OnSelectCell;
+    property OnDrawCell;
+    {$ELSE}
+    property OnSelectCell: TSelectCellEvent read FOnSelectCell write FOnSelectCell;
+    property OnDrawCell  : TDrawCellEvent   read FOnDrawCell   write FOnDrawCell;
+    {$ENDIF COMPILER6_UP}
+
+    property OnYearChanged : TOnYearChanged   read FOnYearChanged  write SetYearChanged;
+    property OnSelectDate  : TOnSelectDate    read FOnSelectDate   write SetSelectDate;
+    property OnInfoChanging: TOnInfoChanging  read FOnInfoChanging write SetInfoChanging;
+    property OnDblClick;
+    property OnClick;
+
+    property DefaultColWidth : Integer read GetDefaultColWidth  write SetDefaultColWidth  default 16;
+    property DefaultRowHeight: Integer read GetDefaultRowHeight write SetDefaultRowHeihgt default 18;
+
+    property ScrollBars;
   end;
 
-{$HPPEMIT '#undef TDate'}
+{.$HPPEMIT '#undef TDate'}
 
 implementation
 
 uses
-  JvConsts, JvResources, JvYearGridEditForm;
+{$IFDEF USEJVCL}
+  JvConsts,
+  JvResources,
+{$ENDIF USEJVCL}
+  JvYearGridEditForm;
+
+{$IFNDEF USEJVCL}
+resourcestring
+  RsYearGrid = 'YearGrid';
+  RsEnterYear = 'Enter year (1999-2050):';
+  RsInvalidYear = 'invalid year';
+  RsYear = '&Year...';
+  RsEdit = '&Edit';
+  RsColor = '&Color...';
+  RsNoColor = '&No Color';
+  RsSaveAllInfo = '&Save All Info';
+  RsSaveFoundInfo = 'Save Found Info';
+  RsBorderColor = '&Border Color...';
+  RsBookMarkColor = 'Book&Mark Color...';
+  RsFindItem = '&Find...';
+  RsClearFind = 'Clear Find';
+  RsYearGridFind = 'YearGrid Find';
+  RsEnterSeachText = 'Enter seach text:';
+  RsFounds = 'Found %s';
+  RsToday = 'Today ';
+  RsCutItem = 'Cu&t';
+  RsCopyItem = '&Copy';
+  RsPasteItem = '&Paste';
+  RsDeleteItem = '&Delete';
+
+const
+  Cr = #13;
+{$ENDIF USEJVCL}
 
 const
   TodayFontColor = clWhite;
   TodayBrushColor = clRed;
 
-var
-  DaysInMonth: array [1..12] of Integer;
-  StartDays: array [1..12] of Integer;
-  TheYear: Word;
-  IsThisYear: Boolean;
-
 constructor TJvYearGrid.Create(AOwner: TComponent);
+var
+  AYear, AMonth, ADay: Word;
 begin
   inherited Create(AOwner);
-  Width := 746;
-  Height := 353;
-  DefaultColWidth := 16;
-  DefaultRowHeight := 24;
-  ColCount := 38;
-  RowCount := 13;
+
+  {$IFDEF USEJVCL}
+  FCellMargins := TJvRect.Create;
+  FCellMargins.Top    := 1;
+  FCellMargins.Left   := 1;
+  FCellMargins.Bottom := 1;
+  FCellMargins.Right  := 1;
+  FCellMargins.OnChange := CellMarginsChange; // Must be set last
+  {$ENDIF USEJVCL}
+
+  FOrientation := yoHorizontal;
+
+  FFirstDayOfWeek := wdMonday;
+  FWeekendDays := [wdSaturday, wdSunday];
+
+  FAutoSizeOptions := [aoGrid, aoFirstColumn, aoFirstRow, aoColumns, aoRows];
+
   FBorderColor := $EEF5FF;
   FBookMarkColor := clYellow;
   ShowHint := True;
   CreatePopup;
   PopupMenu := FGridPop;
   FGridPop.OnPopup := SetupGridPop;
-  ColWidths[0] := 70;
+
+  // Those two must be set before setting DefaultColWidth and DefaultRowHeight
+  FirstRowHeight := 18;
+  FirstColWidth := 70;
+  
+  DefaultColWidth := 16;
+  DefaultRowHeight := 18;//FFirstRowHeight;
+
+  ColCount := 38;
+  RowCount := 13;
+  Width := 512;
+  Height := 213;
+
+  // THIS IS WRONG, VERY WRONG! (obones)
   Application.ShowHint := True;
   Application.OnShowHint := DoShowHint;
+  Application.HintHidePause := 5000;
+
   DecodeDate(Now, FCurrentYear, FCurrentMonth, FCurrentDay);
   HTMLFontName := 'Arial';
-  Application.HintHidePause := 5000;
-  SetYear(0);
+
+  DecodeDate(Now, AYear, AMonth, ADay);
+  FYear := AYear;
+  SetupYearData;
+
+  FAutoSize := True;
+  FSavedScrollBars := ScrollBars;
+  Invalidate;
 end;
 
 destructor TJvYearGrid.Destroy;
 begin
-  SaveYear;
+//  SaveYear;
   FGridPop.Free;
+  {$IFDEF USEJVCL}
+  FCellMargins.Free;
+  {$ENDIF USEJVCL}
   inherited destroy;
 end;
 
 procedure TJvYearGrid.DrawCell(ACol, ARow: Integer;
   Rect: TRect; State: TGridDrawState);
-var
-  S: string;
 begin
   if Assigned(OnDrawCell) then
-    OnDrawCell(Self, ACol, ARow, Rect, State);
-  S := FYearData[ACol, ARow].DisplayText;
-  with Canvas do
+    OnDrawCell(Self, ACol, ARow, Rect, State)
+  else
   begin
-    Font.Color := clBlack;
-    Font.Style := Font.Style - [fsBold];
-    if (ACol = 0) or ((ARow = 0) and (FYearData[ACol, ARow].DefaultColor = clWhite)) then
-      Brush.Color := BorderColor
-    else
-    if IsThisYear and (ARow = FCurrentMonth) and (S = IntToStr(FCurrentDay)) then
-    begin
-      Font.Color := TodayFontColor;
-      Brush.Color := TodayBrushColor;
-      Font.Style := Font.Style + [fsBold];
-    end
-    else
-    if FYearData[ACol, ARow].Custom then
-      Brush.Color := FYearData[ACol, ARow].CustomColor
-    else
-      Brush.Color := FYearData[ACol, ARow].DefaultColor;
-    if FYearData[ACol, ARow].BookMark then
-      Brush.Color := BookMarkColor;
-    TextRect(Rect, Rect.Left, Rect.Top, S);
+    DefaultDrawCell(ACol, ARow, Rect, State);
   end;
 end;
 
@@ -232,7 +413,7 @@ begin
     if (ACol < 0) or (ARow < 0) then
       Exit;
     DS := FYearData[ACol, ARow].DisplayText;
-    if IsThisYear and (ARow = FCurrentMonth) and (DS = IntToStr(FCurrentDay)) then
+    if IsCurrentYear and (ARow = FCurrentMonth) and (DS = IntToStr(FCurrentDay)) then
       S := RsToday;
     CanShow := False;
     if (ACol >= 0) and (ARow >= 0) then
@@ -261,10 +442,10 @@ begin
     Tbs := '1'
   else
     Tbs := '0';
-  AList.Append('<html><head><title>Year ' + IntToStr(TheYear) + '</title></head>');
+  AList.Append('<html><head><title>Year ' + IntToStr(Year) + '</title></head>');
   AList.Append('<body>');
   AList.Append('<font size=2 face="' + HTMLFontName + '">');
-  AList.Append('<center><h3>Year ' + IntToStr(TheYear) + '</h3></center>');
+  AList.Append('<center><h3>Year ' + IntToStr(Year) + '</h3></center>');
   AList.Append('<Table width=100% border=' + Tbs + '>');
   for ARow := 1 to 12 do
     for ACol := 1 to 37 do
@@ -278,7 +459,7 @@ begin
       begin
         Month := ARow;
         Day := StrToInt(FYearData[ACol, ARow].DisplayText);
-        ADate := EncodeDate(TheYear, Month, Day);
+        ADate := EncodeDate(Year, Month, Day);
         DS := FormatDateTime('d-mmm-yyyy', ADate);
         W := DayOfWeek(ADate);
         DS := ShortDayNames[W] + ' ' + DS;
@@ -317,60 +498,49 @@ begin
   FOnYearChanged := Value;
 end;
 
-procedure TJvYearGrid.SetGridYear(const Value: Integer);
-begin
-  if Value <> FGridYear then
-  begin
-    FGridYear := Value;
-    SetYear(FGridYear);
-    if Assigned(FOnYearChanged) then
-      FOnYearChanged(Self, FGridYear);
-  end;
-end;
-
-procedure TJvYearGrid.SetYear(AYear: Word);
+procedure TJvYearGrid.SetYear(const Value: Integer);
 var
-  Year, Month, Day: Word;
+  AYear, AMonth, ADay: Word;
 begin
-  if AYear = 0 then
+  if Value <> FYear then
   begin
-    DecodeDate(Now, Year, Month, Day);
-    TheYear := Year;
-    FGridYear := TheYear;
-  end
-  else
-  begin
-    SaveYear;
-    TheYear := AYear;
-  end;
-  FYearFile := 'year' + IntToStr(TheYear) + '.csv';
-  IsThisYear := TheYear = FCurrentYear;
-  if FileExists(FYearFile) then
-    LoadYear
-  else
+    FYear := Value;
+
+    if Value = 0 then
+    begin
+      DecodeDate(Now, AYear, AMonth, ADay);
+      FYear := AYear;
+    end
+    else
+      FYear := Value;
     SetupYearData;
+
+    if Assigned(FOnYearChanged) then
+      FOnYearChanged(Self, FYear);
+  end;
 end;
 
-procedure TJvYearGrid.SaveYear;
+procedure TJvYearGrid.SaveYear(Filename: string);
 var
-  ARow, ACol: Integer;
+  MonthIndex, DayIndex: Integer;
   YList, DList: TStringList;
   S: string;
 begin
   YList := TStringList.Create;
   DList := TStringList.Create;
-  for ARow := 0 to 12 do
+
+  for MonthIndex := 0 to 12 do
   begin
-    for ACol := 0 to 37 do
+    for DayIndex := 0 to 37 do
     begin
       DList.Clear;
-      DList.Append(FYearData[ACol, ARow].DisplayText);
-      S := FYearData[ACol, ARow].InfoText;
+      DList.Append(FYearData[DayIndex, MonthIndex].DisplayText);
+      S := FYearData[DayIndex, MonthIndex].InfoText;
       S := StringReplace(S, Cr, '||', [rfReplaceAll]);
       DList.Append(S);
-      DList.Append(ColorToString(FYearData[ACol, ARow].DefaultColor));
-      DList.Append(ColorToString(FYearData[ACol, ARow].CustomColor));
-      if FYearData[ACol, ARow].Custom then
+      DList.Append(ColorToString(FYearData[DayIndex, MonthIndex].DefaultColor));
+      DList.Append(ColorToString(FYearData[DayIndex, MonthIndex].CustomColor));
+      if FYearData[DayIndex, MonthIndex].Custom then
         S := 'true'
       else
         S := 'false';
@@ -378,34 +548,42 @@ begin
       YList.Append(DList.CommaText);
     end;
   end;
-  YList.SaveToFile(FYearFile);
+  if Filename = '' then
+    YList.SaveToFile(FYearFile)
+  else
+    YList.SaveToFile(Filename);
+
   DList.Free;
   Ylist.Free;
 end;
 
-procedure TJvYearGrid.LoadYear;
+procedure TJvYearGrid.LoadYear(Filename: string);
 var
-  ARow, ACol, Index: Integer;
+  MonthIndex, DayIndex, Index: Integer;
   YList, DList: TStringList;
   S: string;
 begin
   YList := TStringList.Create;
   DList := TStringList.Create;
-  YList.LoadFromFile(FYearFile);
+  if Filename = '' then
+    YList.LoadFromFile(FYearFile)
+  else
+    YList.LoadFromFile(Filename);
+
   Index := 0;
-  for ARow := 0 to 12 do
+  for MonthIndex := 0 to 12 do
   begin
-    for ACol := 0 to 37 do
+    for DayIndex := 0 to 37 do
     begin
       DList.CommaText := YList[Index];
       Inc(Index);
-      FYearData[ACol, ARow].DisplayText := DList[0];
+      FYearData[DayIndex, MonthIndex].DisplayText := DList[0];
       S := DList[1];
       S := StringReplace(S, '||', Cr, [rfReplaceAll]);
-      FYearData[ACol, ARow].InfoText := S;
-      FYearData[ACol, ARow].DefaultColor := StringToColor(DList[2]);
-      FYearData[ACol, ARow].CustomColor := StringToColor(DList[3]);
-      FYearData[ACol, ARow].Custom := (DList[4] = 'true');
+      FYearData[DayIndex, MonthIndex].InfoText := S;
+      FYearData[DayIndex, MonthIndex].DefaultColor := StringToColor(DList[2]);
+      FYearData[DayIndex, MonthIndex].CustomColor := StringToColor(DList[3]);
+      FYearData[DayIndex, MonthIndex].Custom := (DList[4] = 'true');
     end;
   end;
   DList.Free;
@@ -416,29 +594,45 @@ end;
 procedure TJvYearGrid.SetupYearData;
 var
   S, D: string;
-  I, ACol, ARow: Integer;
+  DayOfWeekIndex, DayIndex, MonthIndex: Integer;
   AColor: TColor;
 begin
   SetupMonths;
-  for ARow := 0 to 12 do
-    for ACol := 0 to 37 do
+  for MonthIndex := 0 to 12 do
+    for DayIndex := 0 to 37 do
     begin
       S := '';
-      if ACol > 0 then
+      if DayIndex > 0 then
       begin
-        I := ((ACol - 1) mod 7) + 1;
-        D := ShortDayNames[I][1];
+        // This gives a value from 1 to 7, with 1 being the first day
+        // of the week.
+        DayOfWeekIndex := ((DayIndex - 1) mod 7) + 1;
+
+        // As ShortDayNames considers the first day to be a Sunday,
+        // we have to offset the value of DayOfTheWeekIndex to match the
+        // desired first day of the week
+        Inc(DayOfWeekIndex, Integer(FFirstDayOfWeek)+1);
+        If DayOfWeekIndex > 7 then
+          DayOfWeekIndex := DayOfWeekIndex - 7;
+        D := ShortDayNames[DayOfWeekIndex][1];
       end;
-      if (ARow = 0) and (ACol = 0) then
-        S := IntToStr(TheYear);
-      if (ARow = 0) and (ACol > 0) then
+
+      // By default, there is no day in the current cell
+      FYearData[DayIndex, MonthIndex].DayInMonth := 0;
+
+      if (MonthIndex = 0) and (DayIndex = 0) then
+        S := IntToStr(Year);
+      if (MonthIndex = 0) and (DayIndex > 0) then
         S := D;
-      if (ARow <> 0) and (ACol = 0) then
-        S := LongMonthNames[ARow];
-      if (ARow <> 0) and (ACol > 0) then
+      if (MonthIndex <> 0) and (DayIndex = 0) then
+        S := LongMonthNames[MonthIndex];
+      if (MonthIndex <> 0) and (DayIndex > 0) then
       begin
-        if (ACol >= StartDays[ARow]) and (ACol < StartDays[ARow] + DaysInMonth[ARow]) then
-          S := IntToStr(ACol - StartDays[ARow] + 1);
+        if (DayIndex >= StartDays[MonthIndex]) and (DayIndex < StartDays[MonthIndex] + DaysInMonth[MonthIndex]) then
+        begin
+          FYearData[DayIndex, MonthIndex].DayInMonth := DayIndex - StartDays[MonthIndex] + 1;
+          S := IntToStr(FYearData[DayIndex, MonthIndex].DayInMonth);
+        end;
       end;
 
       // AColor might have not been initialized with the following code.
@@ -447,17 +641,18 @@ begin
       //if ((ACol>0)and (D<>'S')) then
       //  AColor:=clwhite;
       //  Change to:
-      if (ACol > 0) and (D = 'S') then
+      if (DayIndex > 0) and (D = 'S') then
         AColor := clSilver
       else
         AColor := clWhite;
-      FYearData[ACol, ARow].DisplayText := S;
-      FYearData[ACol, ARow].InfoText := '';
-      FYearData[ACol, ARow].DefaultColor := AColor;
-      FYearData[ACol, ARow].CustomColor := AColor;
-      FYearData[ACol, ARow].Custom := False;
-      FYearData[ACol, ARow].BookMark := False;
+      FYearData[DayIndex, MonthIndex].DisplayText := S;
+      FYearData[DayIndex, MonthIndex].InfoText := '';
+      FYearData[DayIndex, MonthIndex].DefaultColor := AColor;
+      FYearData[DayIndex, MonthIndex].CustomColor := AColor;
+      FYearData[DayIndex, MonthIndex].Custom := False;
+      FYearData[DayIndex, MonthIndex].BookMark := False;
     end;
+  AdjustBounds;
   Invalidate;
 end;
 
@@ -479,29 +674,32 @@ end;
 
 procedure TJvYearGrid.SetupMonths;
 var
-  Year, Month, Day: Word;
+  AYear, AMonth, ADay: Word;
   ADate: TDate;
   I: Integer;
 begin
   for I := 1 to 12 do
   begin
-    Year := TheYear;
-    Month := I + 1;
-    if Month = 13 then
+    AYear := Self.Year;
+    AMonth := I + 1;
+    if AMonth = 13 then
     begin
-      Year := Year + 1;
-      Month := 1;
+      AYear := AYear + 1;
+      AMonth := 1;
     end;
-    Day := 1;
-    ADate := EncodeDate(Year, Month, Day);
+    ADay := 1;
+    ADate := EncodeDate(AYear, AMonth, ADay);
     ADate := ADate - 1;
-    DecodeDate(ADate, Year, Month, Day);
-    DaysInMonth[I] := Day;
-    Year := TheYear;
-    Month := I;
-    Day := 1;
-    ADate := EncodeDate(Year, Month, Day);
+    DecodeDate(ADate, AYear, AMonth, ADay);
+    DaysInMonth[I] := ADay;
+    AYear := Self.Year;
+    AMonth := I;
+    ADay := 1;
+    ADate := EncodeDate(AYear, AMonth, ADay);
     StartDays[I] := DayOfWeek(ADate);
+    Dec(StartDays[I], Integer(FFirstDayOfWeek)+1);
+    If StartDays[I] < 1 then
+      StartDays[I] := StartDays[I] + 7;
   end;
 end;
 
@@ -557,16 +755,16 @@ end;
 procedure TJvYearGrid.Year1Click(Sender: TObject);
 var
   S: string;
-  Year: Word;
+  AYear: Word;
 begin
-  S := InputBox(RsYearGrid, RsEnterYear, IntToStr(GridYear));
+  S := InputBox(RsYearGrid, RsEnterYear, IntToStr(Self.Year));
   try
     if S = '' then
       Exit;
-    Year := StrToInt(S);
-    if (Year < 1999) or (Year > 2050) then
+    AYear := StrToInt(S);
+    if (AYear < 1999) or (AYear > 2050) then
       Exit;
-    GridYear := Year;
+    Self.Year := AYear;
   except
     ShowMessage(RsInvalidYear);
   end;
@@ -820,7 +1018,8 @@ var
   ADate: TDate;
   InfoText: string;
   InfoColor: TColor;
-  Month, Day: Word;
+//  Month, Day: Word;
+  MonthIndex, DayIndex: Integer;
   CanSelect: Boolean;
 begin
   CanSelect := True;
@@ -834,17 +1033,20 @@ begin
   Result := False;
   if (ACol < 1) or (ARow < 1) then
     Exit;
-  DS := FYearData[ACol, ARow].DisplayText;
+
+  ColRowToDayMonthIndex(ACol, ARow, DayIndex, MonthIndex);  
+
+  DS := FYearData[DayIndex, MonthIndex].DisplayText;
   if DS = '' then
     Exit;
-  Month := ARow;
-  Day := StrToInt(FYearData[ACol, ARow].DisplayText);
-  ADate := EncodeDate(TheYear, Month, Day);
-  InfoText := FYearData[ACol, ARow].InfoText;
-  if FYearData[ACol, ARow].Custom then
-    InfoColor := FYearData[ACol, ARow].CustomColor
+//  Month := ARow;
+//  Day := StrToInt(FYearData[ACol, ARow].DisplayText);
+  ADate := EncodeDate(Year, MonthIndex, FYearData[DayIndex, MonthIndex].DayInMonth);
+  InfoText := FYearData[DayIndex, MonthIndex].InfoText;
+  if FYearData[DayIndex, MonthIndex].Custom then
+    InfoColor := FYearData[DayIndex, MonthIndex].CustomColor
   else
-    InfoColor := FYearData[ACol, ARow].DefaultColor;
+    InfoColor := FYearData[DayIndex, MonthIndex].DefaultColor;
   if Assigned(FOnSelectDate) then
     FOnSelectDate(Self, ADate, InfoText, InfoColor);
   Result := True;
@@ -853,9 +1055,10 @@ end;
 procedure TJvYearGrid.DblClick;
 begin
   if Assigned(OnDblClick) then
-    OnDblClick(Self);
-  if (Col > 0) and (Row > 0) and (FYearData[Col, Row].DisplayText <> '') then
-    Edit1Click(nil);
+    OnDblClick(Self)
+  else
+    if (Col > 0) and (Row > 0) and (FYearData[Col, Row].DisplayText <> '') then
+      Edit1Click(nil);
 end;
 
 procedure TJvYearGrid.SetBorderColor(const Value: TColor);
@@ -900,16 +1103,18 @@ end;
 
 function TJvYearGrid.DateToCell(ADate: TDate; var ACol, ARow: Integer): Boolean;
 var
-  Year, Month, Day: Word;
+  AYear, AMonth, ADay: Word;
   WD: Integer;
 begin
   Result := False;
-  DecodeDate(ADate, Year, Month, Day);
-  if Year <> GridYear then
+  DecodeDate(ADate, AYear, AMonth, ADay);
+  if AYear <> Self.Year then
     Exit;
-  ARow := Month;
-  WD := DayOfWeek(EncodeDate(Year, Month, 1));
-  ACol := WD + Day - 1;
+  WD := DayOfWeek(EncodeDate(AYear, AMonth, 1));
+  Inc(WD, Integer(FirstDayOfWeek));
+  if WD > 7 then
+    Dec(WD, 7); 
+  DayMonthIndexToColRow(WD + ADay - 1, AMonth, ACol, ARow);
   Result := True;
 end;
 
@@ -978,6 +1183,426 @@ begin
   List.SaveToFile(FileName);
   List.Free;
   Launch(FileName);
+end;
+
+procedure TJvYearGrid.SetOrientation(const Value: TJvYearGridOrientation);
+begin
+  if FOrientation <> Value then
+  begin
+    FOrientation := Value;
+    if FOrientation = yoHorizontal then
+    begin
+      ColCount := 38;
+      RowCount := 13;
+    end
+    else
+    begin
+      ColCount := 13;
+      RowCount := 38;
+    end;
+    AdjustBounds;
+    Invalidate;
+  end;
+end;
+
+procedure TJvYearGrid.SetFirstDayOfWeek(const Value: TJvWeekDay);
+begin
+  if FFirstDayOfWeek <> Value then
+  begin
+    FFirstDayOfWeek := Value;
+    SetupYearData;
+  end;
+end;
+
+procedure TJvYearGrid.SetAutoSize(Value: Boolean);
+begin
+  if Value then
+  begin
+    if (aoGrid in AutoSizeOptions) then
+    begin
+      FSavedScrollBars := ScrollBars;
+      ScrollBars := ssNone;
+    end;
+  end
+  else
+    Scrollbars := FSavedScrollBars;
+
+  FAutoSize := Value;
+  AdjustBounds;   
+end;
+
+function TJvYearGrid.GetDefaultColWidth: Integer;
+begin
+  Result := inherited DefaultColWidth;
+end;
+
+function TJvYearGrid.GetDefaultRowHeight: Integer;
+begin
+  Result := inherited DefaultRowHeight;
+end;
+
+procedure TJvYearGrid.SetDefaultColWidth(const Value: Integer);
+var
+  SavedFirstColWidth: Integer;
+begin
+  SavedFirstColWidth := ColWidths[0];
+  inherited DefaultColWidth := Value;
+  ColWidths[0] := SavedFirstColWidth;
+end;
+
+procedure TJvYearGrid.SetDefaultRowHeihgt(const Value: Integer);
+var
+  SavedFirstRowHeight: Integer;
+begin
+  SavedFirstRowHeight := RowHeights[0];
+  inherited DefaultRowHeight := Value;
+  RowHeights[0] := SavedFirstRowHeight;
+end;
+
+procedure TJvYearGrid.SetFirstColWidth(const Value: Integer);
+begin
+  ColWidths[0] := Value;
+end;
+
+procedure TJvYearGrid.SetFirstRowHeight(const Value: Integer);
+begin
+  RowHeights[0] := Value;
+end;
+
+procedure TJvYearGrid.SetWeekendDays(const Value: TJvWeekDaySet);
+begin
+  FWeekendDays := Value;
+end;
+
+procedure TJvYearGrid.SetAutoSizeOptions(const Value: TJvAutoSizeOptions);
+begin
+  FAutoSizeOptions := Value;
+end;
+
+procedure TJvYearGrid.UpdateAllSizes;
+var
+  I: Integer;
+  CurValue: Integer;
+  MaxValue: Integer;
+  
+  function GetHighestTextInRow(Row: Integer): Integer;
+  var
+    I: Integer;
+    CurValue: Integer;
+  begin
+      // find the highest text in the row.
+      Result := 0;
+      for I := 0 to ColCount-1 do
+      begin
+        if Orientation = yoHorizontal then
+          CurValue := Canvas.TextHeight(FYearData[I,Row].DisplayText)
+        else
+          CurValue := Canvas.TextHeight(FYearData[Row,I].DisplayText);
+        if CurValue > Result then
+          Result := CurValue;
+      end;
+  end;
+
+  function GetLargestTextInColumn(Column: Integer): Integer;
+  var
+    I: Integer;
+    CurValue: Integer;
+  begin
+    // find the largest text in the column
+    Result := 0;
+    for I := 0 to RowCount-1 do
+    begin
+      if Orientation = yoHorizontal then
+        CurValue := Canvas.TextWidth(FYearData[Column,I].DisplayText)
+      else
+        CurValue := Canvas.TextWidth(FYearData[I,Column].DisplayText);
+      if CurValue > Result then
+        Result := CurValue;
+    end;
+  end;
+begin
+  if AutoSize then
+  begin
+    if aoFirstRow in AutoSizeOptions then
+    begin
+      RowHeights[0] := GetHighestTextInRow(0) {$IFDEF USEJVCL}+ CellMargins.Top + CellMargins.Bottom{$ENDIF USEJVCL};
+    end;
+    
+    if aoFirstColumn in AutoSizeOptions then
+    begin
+      ColWidths[0] := GetLargestTextInColumn(0) {$IFDEF USEJVCL}+ CellMargins.Left + CellMargins.Right{$ENDIF USEJVCL}; 
+    end;
+
+    if aoRows in AutoSizeOptions then
+    begin
+      // find the highest text in each row and only use the
+      // highest value among those found
+      MaxValue := 0;
+      for I := 1 to RowCount-1 do
+      begin
+        CurValue := GetHighestTextInRow(I);
+        if CurValue > MaxValue then
+          MaxValue := CurValue;
+      end;
+        
+      for I := 1 to RowCount-1 do
+        RowHeights[I] := MaxValue {$IFDEF USEJVCL}+ CellMargins.Top + CellMargins.Bottom{$ENDIF USEJVCL};
+    end;
+
+    if aoColumns in AutoSizeOptions then
+    begin
+      // find the largest text in each column and only use
+      // the highest value among those found
+      MaxValue := 0;
+      for I := 1 to ColCount-1 do
+      begin
+        CurValue := GetLargestTextInColumn(I);
+        if CurValue > MaxValue then
+          MaxValue := CurValue;
+      end;
+
+      for I := 1 to ColCount-1 do
+        ColWidths[I] := MaxValue {$IFDEF USEJVCL}+ CellMargins.Left + CellMargins.Top{$ENDIF USEJVCL};
+    end;
+  end;
+end;
+
+{$IFDEF USEJVCL}
+procedure TJvYearGrid.SetCellMargins(const Value: TJvRect);
+begin
+  FCellMargins.Assign(Value);
+  AdjustBounds;
+end;
+{$ENDIF USEJVCL}
+
+procedure TJvYearGrid.AdjustBounds;
+var
+  I: Integer;
+  NewWidth, NewHeight: Integer;
+begin
+  if not (csReading in ComponentState) and FAutoSize then
+  begin
+    UpdateAllSizes;
+    if aoGrid in AutoSizeOptions then
+    begin
+      NewWidth := GridLineWidth + {GetSystemMetrics(SM_CXVSCROLL) +} 4;
+      for I := 0 to ColCount-1 do
+        Inc(NewWidth, ColWidths[I]+GridLineWidth);
+      NewHeight := GridLineWidth + {GetSystemMetrics(SM_CYHSCROLL) +} 4;
+      for I := 0 to RowCount-1 do
+        Inc(NewHeight, RowHeights[I]+GridLineWidth);
+      SetBounds(Left, Top, NewWidth, NewHeight);
+    end;
+  end;
+end;
+
+procedure TJvYearGrid.Loaded;
+begin
+  inherited Loaded;
+  AdjustBounds;
+end;
+
+procedure TJvYearGrid.SetParent(AParent: TWinControl);
+begin
+  inherited SetParent(AParent);
+  if Parent <> nil then
+    AdjustBounds;
+end;
+
+{$IFDEF USEJVCL}
+procedure TJvYearGrid.CellMarginsChange(Sender: TObject);
+begin
+  AdjustBounds;
+end;
+{$ENDIF USEJVCL}
+
+procedure TJvYearGrid.SetDayNamesAlignment(const Value: TAlignment);
+begin
+  if FDayNamesAlignment <> Value then
+  begin
+    FDayNamesAlignment := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvYearGrid.SetDaysAlignment(const Value: TAlignment);
+begin
+  if FDaysAlignment <> Value then
+  begin
+    FDaysAlignment := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvYearGrid.SetMonthNamesAlignment(const Value: TAlignment);
+begin
+  if FMonthNamesAlignment <> Value then
+  begin
+    FMonthNamesAlignment := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvYearGrid.SetYearAlignment(const Value: TAlignment);
+begin
+  if FYearAlignment <> Value then
+  begin
+    FYearAlignment := Value;
+    Invalidate;
+  end;
+end;
+
+function TJvYearGrid.GetFirstColWidth: Integer;
+begin
+  Result := ColWidths[0];
+end;
+
+function TJvYearGrid.GetFirstRowHeight: Integer;
+begin
+  Result := RowHeights[0];
+end;
+
+function TJvYearGrid.IsCurrentYear: Boolean;
+begin
+  Result := Year = FCurrentYear;
+end;
+
+{$IFNDEF COMPILER6_UP}
+procedure TJvYearGrid.MouseToCell(X, Y: Integer; var ACol, ARow: Integer);
+var
+  Coord: TGridCoord;
+begin
+  Coord := MouseCoord(X, Y);
+  ACol := Coord.X;
+  ARow := Coord.Y;
+end;
+{$ENDIF COMPILER6_UP}
+
+procedure TJvYearGrid.ReadGridYear(Reader: TReader);
+begin
+  Year := Reader.ReadInteger;
+end;
+
+procedure TJvYearGrid.WriteGridYear(Writer: TWriter);
+begin
+  // Do nothing, we only provide read support for legacy reasons
+end;
+
+procedure TJvYearGrid.DefineProperties(Filer: TFiler);
+begin
+  inherited;
+  Filer.DefineProperty('GridYear', ReadGridYear, WriteGridYear, False);
+end;
+
+procedure TJvYearGrid.ColRowToDayMonthIndex(ACol, ARow: Integer;
+  var DayIndex, MonthIndex: Integer);
+begin
+  if Orientation = yoHorizontal then
+  begin
+    DayIndex := ACol;
+    MonthIndex := ARow;
+  end
+  else
+  begin
+    DayIndex := ARow;
+    MonthIndex := ACol;
+  end;
+end;
+
+procedure TJvYearGrid.DayMonthIndexToColRow(DayIndex, MonthIndex: Integer;
+  var ACol, ARow: Integer);
+begin
+  if Orientation = yoHorizontal then
+  begin
+    ACol := DayIndex;
+    ARow := MonthIndex;
+  end
+  else
+  begin
+    ARow := DayIndex;
+    ACol := MonthIndex;
+  end;
+end;
+
+procedure TJvYearGrid.ColRowToDayMonth(ACol, ARow: Integer; var ADay,
+  AMonth: Integer);
+var
+  DayIndex, MonthIndex: Integer;
+begin
+  ColRowToDayMonthIndex(ACol, ARow, DayIndex, MonthIndex);
+  AMonth := MonthIndex;
+  ADay := FYearData[MonthIndex, DayIndex].DayInMonth; 
+end;
+
+procedure TJvYearGrid.DayMonthToColRow(ADay, AMonth: Integer; var ACol,
+  ARow: Integer);
+begin
+  DayMonthIndexToColRow(ADay, AMonth, ACol, ARow);
+end;
+
+procedure TJvYearGrid.DefaultDrawCell(ACol, ARow: Integer; Rect: TRect;
+  State: TGridDrawState);
+var
+  S: string;
+  MonthIndex: Integer;
+  DayIndex: Integer;
+  SWidth: Integer;
+  TextLeft: Integer;
+
+  function GetTextLeft(Alignment: TAlignment): Integer;
+  begin
+    case Alignment of
+      taRightJustify: Result := Rect.Right - SWidth {$IFDEF USEJVCL}- CellMargins.Right{$ENDIF USEJVCL};
+      taCenter      : Result := Rect.Left + (Rect.Right-Rect.Left - SWidth{$IFDEF USEJVCL}- CellMargins.Left - CellMargins.Right{$ENDIF USEJVCL} + 2) div 2;
+      else            Result := Rect.Left{$IFDEF USEJVCL}+ CellMargins.Left{$ENDIF USEJVCL};
+    end;
+  end;
+begin
+  ColRowToDayMonthIndex(ACol, ARow, DayIndex, MonthIndex);
+
+  S := FYearData[DayIndex, MonthIndex].DisplayText;
+  TextLeft := Rect.Left;
+  with Canvas do
+  begin
+    SWidth := TextWidth(S);
+    Font.Color := clBlack;
+    Font.Style := Font.Style - [fsBold];
+    if (DayIndex = 0) then
+    begin
+      Brush.Color := BorderColor;
+      TextLeft := GetTextLeft(MonthNamesAlignment);
+    end;
+
+    if (MonthIndex = 0) then
+    begin
+      if (FYearData[DayIndex, MonthIndex].DefaultColor = clWhite) then
+        Brush.Color := BorderColor;
+
+      if DayIndex = 0 then
+        TextLeft := GetTextLeft(YearAlignment)
+      else
+        TextLeft := GetTextLeft(DayNamesAlignment);
+    end;
+
+    if (DayIndex > 0) and (MonthIndex > 0) then
+    begin
+      TextLeft := GetTextLeft(DaysAlignment);
+      if IsCurrentYear and (MonthIndex = FCurrentMonth) and (S = IntToStr(FCurrentDay)) then
+      begin
+        Font.Color := TodayFontColor;
+        Brush.Color := TodayBrushColor;
+        Font.Style := Font.Style + [fsBold];
+      end
+      else
+      if FYearData[DayIndex, MonthIndex].Custom then
+        Brush.Color := FYearData[DayIndex, MonthIndex].CustomColor
+      else
+        Brush.Color := FYearData[DayIndex, MonthIndex].DefaultColor;
+    end;
+    if FYearData[DayIndex, MonthIndex].BookMark then
+      Brush.Color := BookMarkColor;
+    TextRect(Rect, TextLeft, Rect.Top, S);
+  end;
 end;
 
 end.
