@@ -51,7 +51,7 @@ Description:
   are automatically enabled / disabled according to the current state of the edit.
 
   The popup is "self-translating" based on Windows locale. If you want to
-  use resourcestrings and supply your own translations, call FixedDefaultEditPopUseResourceString(true);
+  use resourcestrings and supply your own translations, call FixedDefaultEditPopUseResourceString(True);
   (yes, the name is that long on purpose) *before the first call* to FixedDefaultEditPopUp.
 
   UPDATE 2003-07-14:
@@ -77,7 +77,7 @@ Description:
 3.0:
   2003-09-19:
     - introduced IFixedPopupIntf
-    - speed optimation in THiddenPopupObject.GetPopUpMenu
+    - speed optimation in THiddenPopupObject.GetPopupMenu
 
 }
 
@@ -114,7 +114,7 @@ type
 // Returns a popup menu with the standard actions associated with edit controls (Undo, Cut, Copy, Paste, Delete, Select All).
 // The actions are handled autmatically by sending messages (WM_COPY, WM_CUT etc) to the control
 function FixedDefaultEditPopup(AEdit: TWinControl; Update: Boolean = True): TPopupMenu;
-// Call with Value set to true to use the internal resourcestrings instead of those
+// Call with Value set to True to use the internal resourcestrings instead of those
 // provided by Windows. These strings can subsequently be translated using the ITE.
 // By default, the Windows provided strings are used.
 procedure FixedDefaultEditPopUseResourceString(Value: Boolean);
@@ -123,7 +123,6 @@ procedure FixedDefaultEditPopUseResourceString(Value: Boolean);
 procedure FixedDefaultEditPopupUpdate(AEdit: TWinControl);
 
 implementation
-
 uses
   JvResources;
 
@@ -185,7 +184,7 @@ begin
   if (Edit <> nil) and Edit.HandleAllocated then
     Result := SendMessage(Edit.Handle, EM_CANUNDO, 0, 0) <> 0
   else
-    Result := false;
+    Result := False;
 end;
 
 procedure THiddenPopupObject.DoCopy(Sender: TObject);
@@ -258,7 +257,7 @@ var
   Value: TIntegerSet;
   i: integer;
 begin
-  if IsPublishedProp(Edit,'ClipboardCommands') then
+  if IsPublishedProp(Edit, 'ClipboardCommands') then
   begin
     Result := [];
     // does it really have to be this complicated ?!
@@ -286,19 +285,19 @@ begin
     if hSubMenu = 0 then Exit;
 
     if GetMenuString(hSubMenu, WM_UNDO, buf, SizeOf(buf), MF_BYCOMMAND) <> 0 then
-      FPopUpMenu.Items[0].Caption := buf;
+      FPopupMenu.Items[0].Caption := buf;
 
     if GetMenuString(hSubMenu, WM_CUT, buf, SizeOf(buf), MF_BYCOMMAND) <> 0 then
-      FPopUpMenu.Items[2].Caption := buf;
+      FPopupMenu.Items[2].Caption := buf;
     if GetMenuString(hSubMenu, WM_COPY, buf, SizeOf(buf), MF_BYCOMMAND) <> 0 then
-      FPopUpMenu.Items[3].Caption := buf;
+      FPopupMenu.Items[3].Caption := buf;
     if GetMenuString(hSubMenu, WM_PASTE, buf, SizeOf(buf), MF_BYCOMMAND) <> 0 then
-      FPopUpMenu.Items[4].Caption := buf;
+      FPopupMenu.Items[4].Caption := buf;
     if GetMenuString(hSubMenu, WM_CLEAR, buf, SizeOf(buf), MF_BYCOMMAND) <> 0 then
-      FPopUpMenu.Items[5].Caption := buf;
+      FPopupMenu.Items[5].Caption := buf;
 
     if GetMenuString(hSubMenu, EM_SETSEL, buf, SizeOf(buf), MF_BYCOMMAND) <> 0 then
-      FPopUpMenu.Items[7].Caption := buf;
+      FPopupMenu.Items[7].Caption := buf;
 
   finally
     DestroyMenu(hMenu);
@@ -307,16 +306,16 @@ end;
 
 function THiddenPopupObject.GetPopupMenu: TPopupMenu;
 begin
-  Result := GetPopupMenuEx(true);
+  Result := GetPopupMenuEx(True);
 end;
 
 function THiddenPopupObject.GetPopupMenuEx(Update: Boolean): TPopupMenu;
 var
   m: TMenuItem;
 begin
-  if FPopUpMenu = nil then
+  if FPopupMenu = nil then
   begin
-    FPopUpMenu := TPopUpMenu.Create(self);
+    FPopupMenu := TPopupMenu.Create(self);
     { build menu:
       Undo
       -
@@ -332,47 +331,47 @@ begin
     m := TMenuItem.Create(self);
     m.Caption := SDefaultPopUpUndo;
     m.OnClick := DoUndo;
-    FPopUpMenu.Items.Add(m);
+    FPopupMenu.Items.Add(m);
 
     m := TMenuItem.Create(self);
     m.Caption := '-';
-    FPopUpMenu.Items.Add(m);
+    FPopupMenu.Items.Add(m);
 
     m := TMenuItem.Create(self);
     m.Caption := SDefaultPopUpCut;
     m.OnClick := DoCut;
-    FPopUpMenu.Items.Add(m);
+    FPopupMenu.Items.Add(m);
 
     m := TMenuItem.Create(self);
     m.Caption := SDefaultPopUpCopy;
     m.OnClick := DoCopy;
-    FPopUpMenu.Items.Add(m);
+    FPopupMenu.Items.Add(m);
 
     m := TMenuItem.Create(self);
     m.Caption := SDefaultPopUpPaste;
     m.OnClick := DoPaste;
-    FPopUpMenu.Items.Add(m);
+    FPopupMenu.Items.Add(m);
 
     m := TMenuItem.Create(self);
     m.Caption := SDefaultPopUpDelete;
     m.OnClick := DoDelete;
-    FPopUpMenu.Items.Add(m);
+    FPopupMenu.Items.Add(m);
 
     m := TMenuItem.Create(self);
     m.Caption := '-';
-    FPopUpMenu.Items.Add(m);
+    FPopupMenu.Items.Add(m);
 
     m := TMenuItem.Create(self);
     m.Caption := SDefaultPopUpSelAll;
     m.OnClick := DoSelectAll;
-    FPopUpMenu.Items.Add(m);
+    FPopupMenu.Items.Add(m);
 
     if not FUseResourceStrings then
       GetDefaultMenuCaptions;
   end;
   if Update then
     UpdateItems;
-  Result := FPopUpMenu;
+  Result := FPopupMenu;
 end;
 
 procedure THiddenPopupObject.UpdateItems;
@@ -391,17 +390,17 @@ begin
     if Edit.GetInterface(IFixedPopupIntf, PopupIntf) then
     begin
       // undo
-      FPopUpMenu.Items[0].Enabled := (caUndo in cc) and PopupIntf.CanUndo;
+      FPopupMenu.Items[0].Enabled := (caUndo in cc) and PopupIntf.CanUndo;
       // cut
-      FPopUpMenu.Items[2].Enabled := (caCut in cc) and PopupIntf.HasSelection and PopupIntf.CanCut;
+      FPopupMenu.Items[2].Enabled := (caCut in cc) and PopupIntf.HasSelection and PopupIntf.CanCut;
       // copy
-      FPopUpMenu.Items[3].Enabled := (caCopy in cc) and PopupIntf.HasSelection and PopupIntf.CanCopy;
+      FPopupMenu.Items[3].Enabled := (caCopy in cc) and PopupIntf.HasSelection and PopupIntf.CanCopy;
       // paste
-      FPopUpMenu.Items[4].Enabled := (caPaste in cc) and PopupIntf.CanPaste;
+      FPopupMenu.Items[4].Enabled := (caPaste in cc) and PopupIntf.CanPaste;
       // delete
-      FPopUpMenu.Items[5].Enabled := PopupIntf.HasSelection and PopupIntf.CanCut;
+      FPopupMenu.Items[5].Enabled := PopupIntf.HasSelection and PopupIntf.CanCut;
       // select all
-      FPopUpMenu.Items[7].Enabled := PopupIntf.CanSelectAll;
+      FPopupMenu.Items[7].Enabled := PopupIntf.CanSelectAll;
     end
     else
     begin
@@ -410,17 +409,17 @@ begin
       ATextLen := GetTextLen;
 
       // undo
-      FPopUpMenu.Items[0].Enabled := (caUndo in cc) and CanUndo;
+      FPopupMenu.Items[0].Enabled := (caUndo in cc) and CanUndo;
       // cut
-      FPopUpMenu.Items[2].Enabled := (ASelLength > 0) and not AReadOnly and (caCut in cc);
+      FPopupMenu.Items[2].Enabled := (ASelLength > 0) and not AReadOnly and (caCut in cc);
       // copy
-      FPopUpMenu.Items[3].Enabled := (ASelLength > 0) and (caCopy in cc);
+      FPopupMenu.Items[3].Enabled := (ASelLength > 0) and (caCopy in cc);
       // paste
-      FPopUpMenu.Items[4].Enabled := not AReadOnly and (caPaste in cc);
+      FPopupMenu.Items[4].Enabled := not AReadOnly and (caPaste in cc);
       // delete
-      FPopUpMenu.Items[5].Enabled := (ASelLength > 0) and not AReadOnly { and (caCut in cc)};
+      FPopupMenu.Items[5].Enabled := (ASelLength > 0) and not AReadOnly { and (caCut in cc)};
       // select all
-      FPopUpMenu.Items[7].Enabled := (ATextLen > 0) and (ASelLength <> ATextLen);
+      FPopupMenu.Items[7].Enabled := (ATextLen > 0) and (ASelLength <> ATextLen);
     end;
   end;
 end;
@@ -438,27 +437,21 @@ begin
   if (Edit <> nil) and Edit.HandleAllocated then
     Result := GetWindowLong(Edit.Handle, GWL_STYLE) and ES_READONLY = ES_READONLY
   else
-    Result := false;
+    Result := False;
 end;
-
-type
-  TSelection = record
-    StartPos, EndPos: Integer;
-  end;
 
 function THiddenPopupObject.SelLength: integer;
 var
-  Selection: TSelection;
+  StartPos, EndPos: Integer;
   MsgResult: Longint;
 begin
   Result := 0;
   if (Edit <> nil) and Edit.HandleAllocated then
   begin
-    Selection.StartPos := 0;
-    Selection.EndPos := 0;
-    MsgResult := SendMessage(Edit.Handle, EM_GETSEL, Longint(@Selection.StartPos), Longint(@Selection.EndPos));
-//    MsgResult := SendMessage(Edit.Handle, EM_GETSEL, 0, 0); // (p3) for testing only
-    Result := Selection.EndPos - Selection.StartPos;
+    StartPos := 0;
+    EndPos := 0;
+    MsgResult := SendMessage(Edit.Handle, EM_GETSEL, Longint(@StartPos), Longint(@EndPos));
+    Result := EndPos - StartPos;
     if (Result <= 0) and (MsgResult > 0) then
       Result := LongRec(MsgResult).Hi - LongRec(MsgResult).Lo;
   end;
