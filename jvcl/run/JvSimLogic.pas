@@ -29,7 +29,8 @@ unit JvSimLogic;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, extctrls;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, extctrls,
+  JvTypes;
 
 { Copyright 2000 by Jan Verhoeven
 This unit includes several visual logic blocks that can be used without any programming.
@@ -84,14 +85,14 @@ type
     FToLogic: TJvLogic;
     FFromGate: integer;
     FToGate: integer;
-    FFromPoint: TPoint;
-    FToPoint: TPoint;
+    FFromPoint: TJvPoint;
+    FToPoint: TJvPoint;
     procedure SetFromLogic(const Value: TJvLogic);
     procedure SetToLogic(const Value: TJvLogic);
     procedure SetFromGate(const Value: integer);
     procedure SetToGate(const Value: integer);
-    procedure SetFromPoint(const Value: TPoint);
-    procedure SetToPoint(const Value: TPoint);
+    procedure SetFromPoint(const Value: TJvPoint);
+    procedure SetToPoint(const Value: TJvPoint);
     procedure DisConnectFinal;
   protected
     { Protected declarations }
@@ -101,6 +102,7 @@ type
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DoMouseDown(x, y: integer);
@@ -113,10 +115,10 @@ type
     { Published declarations }
     property FromLogic: TJvLogic read FFromLogic write SetFromLogic;
     property FromGate: integer read FFromGate write SetFromGate;
-    property FromPoint: TPoint read FFromPoint write SetFromPoint;
+    property FromPoint: TJvPoint read FFromPoint write SetFromPoint;
     property ToLogic: TJvLogic read FToLogic write SetToLogic;
     property ToGate: integer read FToGate write SetToGate;
-    property ToPoint: TPoint read FToPoint write SetToPoint;
+    property ToPoint: TJvPoint read FToPoint write SetToPoint;
   end;
 
   TJvLogic = class(TGraphicControl)
@@ -357,6 +359,8 @@ begin
   conSize := 8;
   conPos := jcpTL;
   Edge := 0.5;
+  FFromPoint := TJvPoint.Create;
+  FToPoint := TJvPoint.Create;
 end;
 
 procedure TJvSIMConnector.DoMouseDown(x, y: integer);
@@ -744,12 +748,12 @@ begin
   FToLogic := Value;
 end;
 
-procedure TJvSIMConnector.SetFromPoint(const Value: TPoint);
+procedure TJvSIMConnector.SetFromPoint(const Value: TJvPoint);
 begin
   FFromPoint := Value;
 end;
 
-procedure TJvSIMConnector.SetToPoint(const Value: TPoint);
+procedure TJvSIMConnector.SetToPoint(const Value: TJvPoint);
 begin
   FToPoint := Value;
 end;
@@ -1352,6 +1356,13 @@ begin
   end;
   // clear logic inputs and lights
   setvo;
+end;
+
+destructor TJvSIMConnector.Destroy;
+begin
+  FFromPoint.Free;
+  FToPoint.Free;
+  inherited;
 end;
 
 { TJvLogic }
