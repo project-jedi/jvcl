@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 204
-  Top = 104
+  Left = 251
+  Top = 110
   Width = 620
   Height = 400
   Caption = 'JvPreviewDocument Demo'
@@ -22,7 +22,7 @@ object frmMain: TfrmMain
   TextHeight = 13
   object pnlBottom: TPanel
     Left = 0
-    Top = 262
+    Top = 270
     Width = 612
     Height = 65
     Align = alBottom
@@ -244,18 +244,18 @@ object frmMain: TfrmMain
     Left = 0
     Top = 0
     Width = 612
-    Height = 262
+    Height = 270
     ActivePage = tabOriginal
     Align = alClient
     TabOrder = 1
     object tabOriginal: TTabSheet
       Caption = 'Original'
       ImageIndex = 1
-      object reOriginal: TRichEdit
+      object reOriginal: TJvRichEdit
         Left = 0
         Top = 0
         Width = 604
-        Height = 234
+        Height = 242
         Align = alClient
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -265,6 +265,7 @@ object frmMain: TfrmMain
         ParentFont = False
         TabOrder = 0
         WantTabs = True
+        Zoom = 100
       end
     end
     object tabPreview: TTabSheet
@@ -273,7 +274,7 @@ object frmMain: TfrmMain
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 327
+    Top = 335
     Width = 612
     Height = 19
     Panels = <
@@ -289,7 +290,7 @@ object frmMain: TfrmMain
     SimplePanel = False
   end
   object PrinterSetupDialog1: TPrinterSetupDialog
-    Left = 152
+    Left = 182
     Top = 64
   end
   object MainMenu1: TMainMenu
@@ -379,7 +380,6 @@ object frmMain: TfrmMain
   end
   object OpenDialog1: TOpenDialog
     Filter = 'RTF files|*.rtf|Text files|*.txt'
-    InitialDir = '.'
     Options = [ofHideReadOnly, ofAllowMultiSelect, ofEnableSizing]
     Left = 92
     Top = 112

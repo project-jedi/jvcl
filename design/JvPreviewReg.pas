@@ -94,7 +94,7 @@ end;
 procedure Register;
 begin
   RegisterComponents(RsPalettePrintPreview, [TJvPreviewControl,
-    TJvPreviewRenderRichEdit, TJvPreviewRenderStrings,
+    TJvPreviewRenderRichEdit, TJvPreviewRenderJvRichEdit, TJvPreviewRenderStrings,
     TJvPreviewRenderGraphics, TJvPreviewRenderControl, TJvPreviewPrinter]);
   RegisterComponentEditor(TJvCustomPreviewRenderer, TJvPreviewerEditor);
 end;
