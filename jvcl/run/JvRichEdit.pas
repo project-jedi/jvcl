@@ -1252,6 +1252,10 @@ begin
     dwMask := dwMask or CFM_SIZE or CFM_BOLD or CFM_ITALIC or
       CFM_UNDERLINE or CFM_STRIKEOUT or CFM_FACE or CFM_COLOR;
     yHeight := Font.Size * 20;
+    if (Font.Color = clWindowText) or (Font.Color = clDefault) then
+      dwEffects := CFE_AUTOCOLOR
+    else
+      crTextColor := ColorToRGB(Font.Color);
     if fsBold in Font.Style then
       dwEffects := dwEffects or CFE_BOLD;
     if fsItalic in Font.Style then
@@ -1261,10 +1265,6 @@ begin
     if fsStrikeOut in Font.Style then
       dwEffects := dwEffects or CFE_STRIKEOUT;
     StrPLCopy(szFaceName, Font.Name, SizeOf(szFaceName));
-    if (Font.Color = clWindowText) or (Font.Color = clDefault) then
-      dwEffects := CFE_AUTOCOLOR
-    else
-      crTextColor := ColorToRGB(Font.Color);
     dwMask := dwMask or CFM_CHARSET;
     bCharSet := Font.Charset;
     if GetObject(Font.Handle, SizeOf(LogFont), @LogFont) <> 0 then
