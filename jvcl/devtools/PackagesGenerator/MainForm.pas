@@ -95,8 +95,6 @@ type
     procedure actSaveUpdate(Sender: TObject);
     procedure ledC6PFlagsChange(Sender: TObject);
     procedure ledC5PFlagsChange(Sender: TObject);
-    procedure jsgFilesSetEditText(Sender: TObject; ACol, ARow: Integer;
-      const Value: String);
     procedure jsgDependenciesSetEditText(Sender: TObject; ACol,
       ARow: Integer; const Value: String);
     procedure ledDescriptionChange(Sender: TObject);
@@ -123,9 +121,15 @@ type
     procedure jlbListMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure sptDepAndFilesMoved(Sender: TObject);
+    procedure jsgFilesGetEditText(Sender: TObject; ACol, ARow: Integer;
+      var Value: String);
   private
     { Private declarations }
     Changed : Boolean; // true if current file has changed
+    FOrgValueDep: string; // original value of current column (dependencies list)
+    FOrgValueFiles: string; // original value of current column (files list)
+    FValidOrgDep: Boolean; // True if FOrgValueDep is officially set
+    FValidOrgFiles: Boolean; // True if FOrgValueFiles is officially set
 
     procedure LoadPackagesList;
     procedure LoadPackage;
@@ -223,15 +227,18 @@ begin
        (Sender.Cells[0, ARow] = '') and
        (ARow < Sender.RowCount-1) then
       Sender.RemoveRow(ARow);
-
-    if (Sender.RowCount > 1) and
-       (Sender.Cells[0, Sender.RowCount-1] <> '') then
-    begin
-      Sender.InsertRow(Sender.RowCount);
-      row := Sender.Rows[ARow];
-      row[1] := 'all';
-    end;
   end;
+  if (Sender.RowCount > 1) and
+     (Sender.Cells[0, Sender.RowCount-1] <> '') then
+  begin
+    Sender.InsertRow(Sender.RowCount);
+    row := Sender.Rows[ARow];
+    row[1] := 'all';
+    Changed := True;
+  end;
+  if (ARow > 0) and (((Sender = jsgDependencies) and FValidOrgDep and (FOrgValueDep <> EditText) or
+      (Sender = jsgFiles) and FValidOrgFiles and (FOrgValueFiles <> EditText))) then
+    Changed := True;
 end;
 
 procedure TfrmMain.actAddFilesExecute(Sender: TObject);
@@ -319,16 +326,10 @@ begin
   Changed := True;
 end;
 
-procedure TfrmMain.jsgFilesSetEditText(Sender: TObject; ACol,
-  ARow: Integer; const Value: String);
-begin
-  Changed := True;
-end;
-
 procedure TfrmMain.jsgDependenciesSetEditText(Sender: TObject; ACol,
   ARow: Integer; const Value: String);
 begin
-  Changed := True;
+  FOrgValueDep := jsgDependencies.Cells[ACol, ARow];
 end;
 
 procedure TfrmMain.ledDescriptionChange(Sender: TObject);
@@ -714,6 +715,22 @@ begin
   lblFiles.Top := pnlDepAndFiles.Top +
                   pnlDepAndFiles.Height - jsgFiles.Height +
                         (jsgFiles.Height - lblFiles.Height) div 2;
+end;
+
+procedure TfrmMain.jsgFilesGetEditText(Sender: TObject; ACol,
+  ARow: Integer; var Value: String);
+begin
+  if Sender = jsgDependencies then
+  begin
+    FOrgValueDep := Value;
+    FValidOrgDep := True;
+  end
+  else
+  if Sender = jsgFiles then
+  begin
+    FOrgValueFiles := Value;
+    FValidOrgFiles := True;
+  end;
 end;
 
 end.
