@@ -2,12 +2,12 @@ program JvSearchFileProj;
 
 uses
   Forms,
-  fSearchFile in 'fSearchFile.pas' {Form1};
+  fSearchFile in 'fSearchFile.pas' {MainFrm};
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TMainFrm, MainFrm);
   Application.Run;
 end.
