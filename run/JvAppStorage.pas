@@ -597,7 +597,7 @@ type
     FAutoFlush: Boolean;
     FFileName: TFileName;
     FLocation: TFileLocation;
-    FLocationInitialized: Boolean;
+    FLoadedFinished: Boolean;
     FOnGetFileName: TJvAppStorageGetFileNameEvent;
 
     function GetAsString: string; virtual; abstract;
@@ -618,6 +618,9 @@ type
     property OnGetFileName: TJvAppStorageGetFileNameEvent
       read FOnGetFileName write FOnGetFileName;
       // OnGetFileName triggered on Location = flCustom
+
+    procedure Loaded; override;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -2251,13 +2254,23 @@ begin
   inherited Create(AOwner);
   FLocation := flExeFile;
   FAutoFlush := False;
-  FLocationInitialized := False;
+  FLoadedFinished := False;
 end;
 
 destructor TJvCustomAppMemoryFileStorage.Destroy;
 begin
   Flush;
   inherited Destroy;
+end;
+
+procedure TJvCustomAppMemoryFileStorage.Loaded;
+begin
+  try
+    inherited loaded;
+  finally
+    FLoadedFinished := True;
+  end;
+  Reload;
 end;
 
 function TJvCustomAppMemoryFileStorage.DoGetFileName: TFileName;
@@ -2272,7 +2285,7 @@ var
   NameOnly: string;
   RelPathName: string;
 begin
-  if (FileName = '') or not FLocationInitialized then
+  if (FileName = '') then
     Result := ''
   else
   begin
@@ -2301,17 +2314,18 @@ begin
   if FFileName <> Value then
   begin
     FFileName := Value;
-    Reload;
+    if FLoadedFinished then
+      Reload;
   end;
 end;
 
 procedure TJvCustomAppMemoryFileStorage.SetLocation(const Value: TFileLocation);
 begin
-  FLocationInitialized := True;
   if FLocation <> Value then
   begin
     FLocation := Value;
-    Reload;
+    if FLoadedFinished then
+      Reload;
   end;
 end;
 
