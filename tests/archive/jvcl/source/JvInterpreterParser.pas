@@ -87,6 +87,7 @@ const
   ttSemicolon = 45; { ; }
   ttLS = 46; { [ }
   ttRS = 47; { ] }
+  ttDoublePoint = 48; {..}
 
   ttFalse = 63; { false }
   ttTrue = 65; { true }
@@ -132,6 +133,7 @@ const
   ttProgram = 104; { Program }
   ttIn = 105; { In }
   ttRecord = 106; { Record }
+  ttDownTo = 107; { DownTo }
 
   { priority 8 - highest }
   ttNot = 21; { not }
@@ -225,6 +227,7 @@ const
   kwPROGRAM = 'program';
   kwIN = 'in';
   kwRECORD = 'record';
+  kwDOWNTO = 'downto';
 
 implementation
 
@@ -280,7 +283,7 @@ const
    {50}  42,  4, -1, -1, -1, 36, -1, 26, -1, 20,
    {60}  -1, 21, -1, -1, -1, 47, -1, -1, 24, -1,
    {70}  38, -1, 45, 16, 14,  0, -1, -1, 25, -1,
-   {80}  46, -1, 10, 22,  7, -1, 34, -1, -1, -1,
+   {80}  46, -1, 10, 22,  7, 48, 34, -1, -1, -1,
    {90}  39, 27,  6, -1, 33, -1, -1,  1, -1, -1,
    {100} 41, -1, -1, 17, -1, 29, 44, -1, 28, -1,
    {110} 15,  8, -1, 32, 12, -1, -1, -1, 11, -1,
@@ -291,7 +294,7 @@ const
    {160} -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
    {170} -1, -1, -1, -1, -1, -1, -1);
 
-  WordList: array [0..47] of TTokenTag = (
+  WordList: array [0..48] of TTokenTag = (
     (Token: kwTRUE; TTyp: ttTrue),
     (Token: kwFALSE; TTyp: ttFalse),
     (Token: kwOR; TTyp: ttOr),
@@ -339,7 +342,9 @@ const
     (Token: kwCASE; TTyp: ttCase),
     (Token: kwPROGRAM; TTyp: ttProgram),
     (Token: kwIN; TTyp: ttIn),
-    (Token: kwRECORD; TTyp: ttRecord));
+    (Token: kwRECORD; TTyp: ttRecord),
+    (Token: kwDOWNTO; TTyp: ttDownTo)
+    );
 
 { convert string into token number using hash tables }
 
@@ -429,6 +434,14 @@ begin
   end
   else
     case T1 of
+      '.':
+        { may be '..' }
+        begin
+          if Token[2] = '.' then
+            Result := ttDoublePoint
+          else
+            goto Any;
+        end;
       '$':
         { may be hex constant }
         begin
@@ -564,6 +577,7 @@ var
   P, F: PChar;
   F1: PChar;
   I: Integer;
+  PointCount: Integer;
 
   procedure Skip;
   begin
@@ -643,7 +657,11 @@ begin
   begin
     {$IFDEF Delphi}
     while (P[0] in StConstSymbols10) or (P[0] = '.') do
+    begin
+      if (P[0] = '.') and (P[1] = '.') then
+        break;
       Inc(P);
+    end;
     {$ELSE}
     while HasChar(P[0], StConstSymbols10) or (P[0] = '.') do
       Inc(P);
@@ -714,8 +732,14 @@ begin
     Result := '''' + Chr(StrToInt(Result)) + '''';
   end
   else
-  if P[0] in ['>', '=', '<'] then
+  if P[0] in ['>', '=', '<', '.'] then
   begin
+    if (P[0] = '.') and (P[1] = '.') then
+    begin
+      Result := '..';
+      Inc(P, 2);
+    end
+    else
     if (P[0] = '>') and (P[1] = '=') then
     begin
       Result := '>=';

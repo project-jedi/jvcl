@@ -749,8 +749,14 @@ end;
 { procedure ReadBuffer(var Buffer; Count: Longint); }
 
 procedure TStream_ReadBuffer(var Value: Variant; Args: TJvInterpreterArgs);
+var
+  P: PChar;
+  S: String;
 begin
-  TStream(Args.Obj).ReadBuffer(Args.Values[0], Args.Values[1]);
+  SetLength(S, Integer(Args.Values[1]));
+  P := PChar(S);
+  TStream(Args.Obj).ReadBuffer(P^, Args.Values[1]);
+  Args.Values[0] := S;
 end;
 
 { procedure WriteBuffer(const Buffer; Count: Longint); }

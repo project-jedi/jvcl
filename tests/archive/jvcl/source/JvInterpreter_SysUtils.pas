@@ -35,7 +35,7 @@ interface
 
 uses
   SysUtils,
-  JvInterpreter;
+  JvInterpreter, JvStrUtils;
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 
@@ -289,6 +289,11 @@ end;
 procedure JvInterpreter_CompareText(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := CompareText(Args.Values[0], Args.Values[1]);
+end;
+{ function ExtractQuotedString(s: string; Quote: Char): string; }
+procedure JvInterpreter_ExtractQuotedString(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  Value := ExtractQuotedString(Args.Values[0], string(Args.Values[1])[1]);
 end;
 
 { function AnsiUpperCase(const S: string): string; }
@@ -1890,6 +1895,7 @@ begin
     {$IFDEF COMPILER3_UP}
     AddFun(cSysUtils, 'AnsiQuotedStr', JvInterpreter_AnsiQuotedStr, 2, [varEmpty, varEmpty], varEmpty);
     AddFun(cSysUtils, 'AnsiExtractQuotedStr', JvInterpreter_AnsiExtractQuotedStr, 2, [varByRef, varEmpty], varEmpty);
+    AddFun(cSysUtils, 'ExtractQuotedString', JvInterpreter_ExtractQuotedString, 2, [varEmpty, varEmpty], varEmpty);
     {$ENDIF COMPILER3_UP}
     AddFun(cSysUtils, 'AdjustLineBreaks', JvInterpreter_AdjustLineBreaks, 1, [varEmpty], varEmpty);
     AddFun(cSysUtils, 'IsValidIdent', JvInterpreter_IsValidIdent, 1, [varEmpty], varEmpty);

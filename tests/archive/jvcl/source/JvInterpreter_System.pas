@@ -36,7 +36,7 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF}
-  JvInterpreter;
+  JvInterpreter, SysUtils;
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 
@@ -251,17 +251,38 @@ begin
   Value := VarToDateTime(Args.Values[0]);
 end;
 
-(*
 { function VarArrayCreate(const Bounds: array of Integer; VarType: Integer): Variant; }
 procedure JvInterpreter_VarArrayCreate(var Value: Variant; Args: TJvInterpreterArgs);
+var
+  OA: TOpenArray;
+  OAV: TValueArray;
+  OAS: integer;
+  i: integer;
+  AI: array of integer;
 begin
-  Value := VarArrayCreate(Args.Values[0], Args.Values[1]);
+  V2OA(Args.Values[0], OA, OAV, OAS);
+  if Odd(OAS) then
+    raise Exception.Create('The size of bounds array must be even!');
+  SetLength(AI, OAS);
+  for i := 0 to OAS -1 do
+    AI[i] := OAV[i];
+  Value := VarArrayCreate(AI, Args.Values[1]);
 end;
 
-{ function VarArrayOf(const Values: array of Variant): Variant; }
+{function VarArrayOf(const Values: array of Variant): Variant; }
 procedure JvInterpreter_VarArrayOf(var Value: Variant; Args: TJvInterpreterArgs);
+var
+  OA: TOpenArray;
+  OAV: TValueArray;
+  OAS: integer;
+  i: integer;
+  AV: array of Variant;
 begin
-  Value := VarArrayOf(Args.Values[0]);
+  V2OA(Args.Values[0], OA, OAV, OAS);
+  SetLength(AV, OAS);
+  for i := 0 to OAS -1 do
+    AV[i] := OAV[i];
+  Value := VarArrayOf(AV);
 end;
 
 { function VarArrayDimCount(const A: Variant): Integer; }
@@ -282,7 +303,7 @@ begin
   Value := VarArrayHighBound(Args.Values[0], Args.Values[1]);
 end;
 
-{ function VarArrayLock(const A: Variant): Pointer; }
+(*{ function VarArrayLock(const A: Variant): Pointer; }
 procedure JvInterpreter_VarArrayLock(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := P2V(VarArrayLock(Args.Values[0]));
@@ -298,14 +319,13 @@ end;
 procedure JvInterpreter_VarArrayRef(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := VarArrayRef(Args.Values[0]);
-end;
+end;*)
 
 { function VarIsArray(const A: Variant): Boolean; }
 procedure JvInterpreter_VarIsArray(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := VarIsArray(Args.Values[0]);
 end;
-*)
 
 { function Ord(const A: Variant): Integer; }
 
@@ -338,7 +358,13 @@ end;
 
 procedure JvInterpreter_Length(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  if TVarData(Args.Values[0]).vType = varArray then
+  if VarIsArray(Args.Values[0]) then
+  begin
+    if VarArrayDimCount(Args.Values[0]) > 1 then
+      raise exception.Create('Sorry. For one-dimensional arrays only.');
+    Value := VarArrayHighBound(Args.Values[0], 1)-VarArrayLowBound(Args.Values[0], 1);
+  end
+  else if TVarData(Args.Values[0]).vType = varArray then
     Value := JvInterpreterArrayLength(Args.Values[0])
   else
     Value := Length(Args.Values[0]);
@@ -470,14 +496,28 @@ end;
 
 procedure JvInterpreter_High(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := JvInterpreterArrayHigh(Args.Values[0]);
+  if VarIsArray(Args.Values[0]) then
+  begin
+    if VarArrayDimCount(Args.Values[0]) > 1 then
+      raise exception.Create('Sorry. For one-dimensional arrays only.');
+    Value := VarArrayLowBound(Args.Values[0], 1);
+  end
+  else
+    Value := JvInterpreterArrayHigh(Args.Values[0]);
 end;
 
 {procedure Low(var Value: Variant; Args: TJvInterpreterArgs);}
 
 procedure JvInterpreter_Low(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := JvInterpreterArrayLow(Args.Values[0]);
+  if VarIsArray(Args.Values[0]) then
+  begin
+    if VarArrayDimCount(Args.Values[0]) > 1 then
+      raise exception.Create('Sorry. For one-dimensional arrays only.');
+    Value := VarArrayLowBound(Args.Values[0], 1);
+  end
+  else
+    Value := JvInterpreterArrayLow(Args.Values[0]);
 end;
 
 {procedure DeleteFromArray(var Value: Variant; Args: TJvInterpreterArgs);}
@@ -536,15 +576,15 @@ begin
     AddFun(cSystem, 'VarToStr', JvInterpreter_VarToStr, 1, [varEmpty], varEmpty);
     AddFun(cSystem, 'VarFromDateTime', JvInterpreter_VarFromDateTime, 1, [varEmpty], varEmpty);
     AddFun(cSystem, 'VarToDateTime', JvInterpreter_VarToDateTime, 1, [varEmpty], varEmpty);
-    { AddFun(cSystem, 'VarArrayCreate', JvInterpreter_VarArrayCreate, 2, [varEmpty, varEmpty], varEmpty);
-      AddFun(cSystem, 'VarArrayOf', JvInterpreter_VarArrayOf, 1, [varEmpty], varEmpty);
-      AddFun(cSystem, 'VarArrayDimCount', JvInterpreter_VarArrayDimCount, 1, [varEmpty], varEmpty);
-      AddFun(cSystem, 'VarArrayLowBound', JvInterpreter_VarArrayLowBound, 2, [varEmpty, varEmpty], varEmpty);
-      AddFun(cSystem, 'VarArrayHighBound', JvInterpreter_VarArrayHighBound, 2, [varEmpty, varEmpty], varEmpty);
-      AddFun(cSystem, 'VarArrayLock', JvInterpreter_VarArrayLock, 1, [varEmpty], varEmpty);
-      AddFun(cSystem, 'VarArrayUnlock', JvInterpreter_VarArrayUnlock, 1, [varEmpty], varEmpty);
-      AddFun(cSystem, 'VarArrayRef', JvInterpreter_VarArrayRef, 1, [varEmpty], varEmpty);
-      AddFun(cSystem, 'VarIsArray', JvInterpreter_VarIsArray, 1, [varEmpty], varEmpty); }
+    AddFun(cSystem, 'VarArrayCreate', JvInterpreter_VarArrayCreate, 2, [varEmpty, varEmpty], varEmpty);
+    AddFun(cSystem, 'VarArrayOf', JvInterpreter_VarArrayOf, 1, [varEmpty], varEmpty);
+    AddFun(cSystem, 'VarArrayDimCount', JvInterpreter_VarArrayDimCount, 1, [varEmpty], varEmpty);
+    AddFun(cSystem, 'VarArrayLowBound', JvInterpreter_VarArrayLowBound, 2, [varEmpty, varEmpty], varEmpty);
+    AddFun(cSystem, 'VarArrayHighBound', JvInterpreter_VarArrayHighBound, 2, [varEmpty, varEmpty], varEmpty);
+    {AddFun(cSystem, 'VarArrayLock', JvInterpreter_VarArrayLock, 1, [varEmpty], varEmpty);
+    AddFun(cSystem, 'VarArrayUnlock', JvInterpreter_VarArrayUnlock, 1, [varEmpty], varEmpty);
+    AddFun(cSystem, 'VarArrayRef', JvInterpreter_VarArrayRef, 1, [varEmpty], varEmpty);}
+    AddFun(cSystem, 'VarIsArray', JvInterpreter_VarIsArray, 1, [varEmpty], varEmpty);
     AddFun(cSystem, 'ord', JvInterpreter_Ord, 1, [varEmpty], varEmpty);
 
     AddFun(cSystem, 'Chr', JvInterpreter_Chr, 1, [varEmpty], varEmpty);
@@ -574,6 +614,33 @@ begin
     AddFun(cSystem, 'Low', JvInterpreter_Low, 1, [varEmpty], varEmpty);
     AddFun(cSystem, 'DeleteFromArray', JvInterpreter_DeleteFromArray, 2, [varEmpty, varEmpty], varEmpty);
     AddFun(cSystem, 'InsertIntoArray', JvInterpreter_InsertIntoArray, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    //
+    AddConst('cSystem', 'varEmpty', integer(varEmpty));
+    AddConst('cSystem', 'varSmallint', integer(varSmallint));
+    AddConst('cSystem', 'varInteger', integer(varInteger));
+    AddConst('cSystem', 'varSingle', integer(varSingle));
+    AddConst('cSystem', 'varCurrency', integer(varCurrency));
+    AddConst('cSystem', 'varDouble', integer(varDouble));
+    AddConst('cSystem', 'varDate', integer(varDate));
+    AddConst('cSystem', 'varOleStr', integer(varOleStr));
+    AddConst('cSystem', 'varDispatch', integer(varDispatch));
+    AddConst('cSystem', 'varError', integer(varError));
+    AddConst('cSystem', 'varBoolean', integer(varBoolean));
+    AddConst('cSystem', 'varVariant', integer(varVariant));
+    AddConst('cSystem', 'varUnknown', integer(varUnknown));
+    AddConst('cSystem', 'varByte', integer(varByte));
+    AddConst('cSystem', 'varStrArg', integer(varStrArg));
+    AddConst('cSystem', 'varSrting', integer(varString));
+    AddConst('cSystem', 'varAny', integer(varAny));
+    AddConst('cSystem', 'varTypeMask', integer(varTypeMask));
+    AddConst('cSystem', 'varArray', integer(varArray));
+    AddConst('cSystem', 'varByRef', integer(varByRef));
+    {$IFDEF COMPILER6_UP}
+    AddConst('cSystem', 'varShortInt', integer(varShortInt));
+    AddConst('cSystem', 'varWord', integer(varWord));
+    AddConst('cSystem', 'varLongWord', integer(varLongWord));
+    AddConst('cSystem', 'varInt64', integer(varInt64));
+    {$ENDIF COMPILER6_UP}
   end;
 end;
 
