@@ -39,7 +39,7 @@ uses
 
 type
   TJvChartDemoForm = class(TForm)
-    Panel1: TPanel;
+    PanelTop: TPanel;
     ButtonBarChart: TSpeedButton;
     ButtonLine: TSpeedButton;
     ButtonStackedBarAve: TSpeedButton;
@@ -72,6 +72,10 @@ type
     ShowDataInListbox1: TMenuItem;
     N4: TMenuItem;
     LargeDataset576samples1: TMenuItem;
+    DateTimeAxisMode: TMenuItem;
+    PrintOptions1: TMenuItem;
+    PrinterSetupDialog1: TPrinterSetupDialog;
+    PrintDialog1: TPrintDialog;
     procedure FormResize(Sender: TObject);
     procedure ButtonLineClick(Sender: TObject);
     procedure ButtonBarChartClick(Sender: TObject);
@@ -99,7 +103,22 @@ type
     procedure Timer1Timer(Sender: TObject);
     procedure ShowDataInListbox1Click(Sender: TObject);
     procedure LargeDataset576samples1Click(Sender: TObject);
+    procedure DateTimeAxisModeClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure PrintOptions1Click(Sender: TObject);
   private
+
+      // Our waveform generator uses the following as state-variables:
+     FGenerationIndex:Integer;
+     Foo,Foo1,Foo2:Integer;
+     Fhgt, Fhg0, Fhg2p: Double;
+     FStatHgt,FStatHg0:TStatArray;
+     Fdt,Fds:Double;
+     
+  protected
+    procedure _Generate;
+    procedure _StoreValue(I:integer);
+  
   public
       procedure NewValues;
   end;
@@ -117,92 +136,101 @@ uses JvJVCLAboutForm, JVCLVer, JvDsgnConsts, // JVCL About box stuff
 
 {$R *.dfm}
 
-procedure TJvChartDemoForm.NewValues;
-var
-  I: Integer;
-  nValueCount: Integer;
-  hgt, hg0, hg2p: Double;
-  StatHgt,StatHg0:TStatArray;
-  dt,ds:Double;
-  foo,foo1,foo2:Integer;
+
+procedure TJvChartDemoForm._Generate;
 begin
-  ListBox1.Clear;
-  Chart.Data.Clear;
+        FHgt := Abs(Random(80)+(Random(((FGenerationIndex div foo) mod foo1) * 250) * 5 + 9500));
+        FHg0 := Abs(Random(280)+Random(((FGenerationIndex div foo) mod foo2) * 650)*5 + 1003);
+        Inc(FGenerationIndex);
+end;
 
-  StatHgt := TStatArray.Create(10); // Initialize for rolling average of last 10 samples.
-  StatHg0 := TStatArray.Create(10);
-  try
-
-  Randomize;
-
-  if LargeDataset576samples1.Checked  then begin
-
-     // A larger bogus data set for demonstration purposes.
-     nValueCount := 576;  // 2.5 minute sample period, 576 samples = 1 day.
-     foo := 20; // Used in generating our bogus data below, not really important.
-     Chart.Options.XAxisValuesPerDivision := 24; // 24 samples * 150 seconds = 1 hour time divisions (     Chart.Options.XAxisValuesPerDivision := 4;
-     Chart.Options.XAxisDateTimeMode := true;  // Use datetime timestamp labels, just Fer Instance.
-
-  end else begin
-
-     // A smaller bogus data set for demonstration purposes.
-     nValueCount := 20; // Other chart types don't deal well with 576 samples.
-     foo := 1;  // Used in generating our bogus data below, not really important.
-     Chart.Options.XAxisValuesPerDivision := 4; // five divisions, 4 values per division
-     Chart.Options.XAxisDateTimeMode := false; // Use text labels, just Fer Instance.
-
-     // Print every fifth sample's X Axis Legend value, below
-     // the chart value (Set to XAxisLegendSkipBy 1 to print em all,
-     // which would get crowded awful quick)
-     Chart.Options.XAxisLegendSkipBy := 5;
-  end;
-
-  //Chart.ResetGraphModule;    // Clears YMax.
-  dt := Trunc(now- 1.0); // yesterday, midnight.
-  foo1 := Random(5)+2;   // more randomness
-  foo2 := Random(3)+5;   // more randomness
-  for I := 0 to nValueCount - 1 do
-  begin
-    if i > 0 then
-    begin  // generate random data that appears to show a sawtooth-frequency-pattern plus a lot of random noise:
-      hgt := Abs(Random(80)+(Random(((I div foo) mod foo1) * 250) * 5 + 9500));
-      hg0 := Abs(Random(280)+Random(((I div foo) mod foo2) * 650)*5 + 1003);
-    end
-    else
-    begin
-      hgt := 7000; // First sample always known value, helps me troubleshoot.
-      hg0 := 1000;
-    end;
-    StatHgt.AddValue(hgt);
-    StatHg0.AddValue(hg0);
+procedure TJvChartDemoForm._StoreValue(I:integer);
+begin
+    FStatHgt.AddValue(Fhgt);
+    FStatHg0.AddValue(Fhg0);
 
 
     // PAY ATTENTION HERE, this is where we set the Chart.Data.Value[ index,pen] := <values>
     // stuff which is the MOST IMPORTANT THING, unless you like blank charts:
 
     // Set Data.Value[Pen, Series] := dataValue ...
-    Chart.Data.Value[0, I] := StatHgt.Average /1000;
+    Chart.Data.Value[0, I] := FStatHgt.Average /1000;
 
     // Test blanks on big chart, show missing data:
-     Chart.Data.Value[1, I] := StatHg0.Average/1000;
+     Chart.Data.Value[1, I] := FStatHg0.Average/1000;
 
-    hg2p := (StatHgt.Average - StatHg0.Average)/1000;
-    if hg2p < 0.0 then
-        hg2p := 0.0;
-    Chart.Data.Value[2, I] := hg2p;
-    ds := dt + (i / 576);
+    Fhg2p := ( FStatHgt.Average - FStatHg0.Average)/1000;
+    if Fhg2p < 0.0 then
+        Fhg2p := 0.0;
+    Chart.Data.Value[2, I] := Fhg2p;
+
+    Fds := Fdt + (FGenerationIndex / 576);
 
     // There are TWO ways to get an X Axis label plotted:
-    if Chart.Options.XAxisDateTimeMode then
-         Chart.Data.Timestamp[I] := ds // X legends generated by timestamps
+    if DateTimeAxisMode.Checked then
+         Chart.Data.Timestamp[I] := Fds // X legends generated by timestamps
     else
         // X Legends generated by user are used by default.
         // This would be redundant, and would be a waste of memory
         // if Chart.Options.XAxisDateTimeMode was also set.
-        Chart.Options.XLegends.Add(FormatDateTime('hh:nn:ss', ds) );
+        Chart.Options.XLegends.Add(FormatDateTime('hh:nn:ss', Fds) );
+
+
+end;
+
+procedure TJvChartDemoForm.NewValues;
+var
+  I: Integer;
+  nValueCount: Integer;
+begin
+ 
+  ListBox1.Clear;
+  Chart.Data.Clear;
+
+
+  Randomize;
+
+   Chart.Options.XAxisDateTimeMode := DateTimeAxisMode.Checked;  // Use datetime timestamp labels, just Fer Instance.
+
+   if  not Chart.Options.XAxisDateTimeMode then
+        Chart.Options.XAxisLegendSkipBy := 5;
 
 
 
+  if LargeDataset576samples1.Checked  then begin
+     // A larger bogus data set for demonstration purposes.
+     nValueCount := 576;  // 2.5 minute sample period, 576 samples = 1 day.
+     foo := 5; // Used in generating our bogus data below, not really important.
+     Chart.Options.XAxisValuesPerDivision := 24; // 24 samples * 150 seconds = 1 hour time divisions (     Chart.Options.XAxisValuesPerDivision := 4;
+  end else begin
+     // A smaller bogus data set for demonstration purposes.
+     nValueCount := 24; // 2.5 minute sample period, 24 samples =1 hour.
+     foo := 1;  // Used in generating our bogus data below, not really important.
+     Chart.Options.XAxisValuesPerDivision := 4; // five divisions, 4 values per division     
+  end;
+
+  //Chart.ResetGraphModule;    // Clears YMax.
+  Fdt := Trunc(now- 1.0); // yesterday, midnight.
+  Foo1 := Random(5)+2;   // more randomness
+  Foo2 := Random(3)+5;   // more randomness
+  FGenerationIndex := 1;
+  for I := 0 to nValueCount - 1 do
+  begin
+    if i > 0 then
+    begin  // generate random data that appears to show a sawtooth-frequency-pattern plus a lot of random noise:
+      _Generate;
+    end
+    else
+    begin
+      Fhgt := 7000; // First sample always known value, helps me troubleshoot.
+      Fhg0 := 1000;
+    end;
+
+    _StoreValue(I);
+    
+
+    // Override stored value in special cases:
+    
     { How to make a gap in the data! }
     if (nValueCount>100 ) and ShowgapinLineChart1.Checked then begin
       if (I > 100) and (I < 130) then begin
@@ -256,20 +284,19 @@ begin
     Chart.AutoFormatGraph;
     //Chart.PlotGraph;
    //Chart.ResizeChartCanvas;
-  finally
-      FreeAndNil(StatHgt);
-      FreeAndNil(StatHg0);
-  end;
 end;
 
 procedure TJvChartDemoForm.FormResize(Sender: TObject);
 begin
+ 
   if Assigned(Chart) then
     Chart.ResizeChartCanvas;
 end;
 
 procedure TJvChartDemoForm.ButtonBarChartClick(Sender: TObject);
 begin
+ Chart.Options.PenStyle[0] := psSolid; // make pen 0 visible if it was invisible before.
+ 
   Chart.Options.ChartKind := ckChartBar;
   NewValues;
   //Chart.PlotGraph;
@@ -279,6 +306,8 @@ procedure TJvChartDemoForm.ButtonLineClick(Sender: TObject);
 var
  I:Integer;
 begin
+ Chart.Options.PenStyle[0] := psSolid; // make pen 0 visible if it was invisible before.
+
   Chart.Options.ChartKind := ckChartLine;
   for I := 0 to Chart.Options.PenCount-1 do begin
      Chart.Options.PenMarkerKind[I] := pmkNone;
@@ -292,6 +321,8 @@ procedure TJvChartDemoForm.ButtonLineMarkerClick(Sender: TObject);
 var
   I:Integer;
 begin
+ Chart.Options.PenStyle[0] := psSolid; // make pen 0 visible if it was invisible before.
+
   Chart.Options.ChartKind := ckChartLine;
   Chart.Options.PenMarkerKind[0] := pmkDiamond; // demonstrate both Diamond and Circle Marks.
   Chart.Options.PenMarkerKind[1] := pmkDiamond;
@@ -304,12 +335,14 @@ end;
 
 procedure TJvChartDemoForm.ButtonStackedBarAveClick(Sender: TObject);
 begin
+  Chart.Options.PenStyle[0] := psSolid; // make pen 0 visible if it was invisible before.
   Chart.Options.ChartKind := ckChartStackedBarAverage;
   NewValues;
 end;
 
 procedure TJvChartDemoForm.ButtonStackedBarClick(Sender: TObject);
 begin
+  Chart.Options.PenStyle[0] := psClear; // Hide Pen Zero (total) since stacked bars ARE a total.
   Chart.Options.ChartKind := ckChartStackedBar;
   NewValues;
 end;
@@ -366,6 +399,10 @@ end;
 
 procedure TJvChartDemoForm.FormCreate(Sender: TObject);
 begin
+
+  FStatHgt := TStatArray.Create(10); // Initialize for rolling average of last 10 samples.
+  FStatHg0 := TStatArray.Create(10);
+
   if Assigned(Chart) then
     //   Chart.ShowAsLineWithMark;
     NewValues;
@@ -386,6 +423,7 @@ end;
 
 procedure TJvChartDemoForm.Print1Click(Sender: TObject);
 begin
+ if PrintDialog1.Execute then 
   Chart.PrintGraph;
 end;
 
@@ -433,6 +471,8 @@ end;
 procedure TJvChartDemoForm.Timer1Timer(Sender: TObject);
 begin
   Chart.Data.Scroll;
+  _Generate;
+  _StoreValue( Chart.Data.ValueCount-1 );
   Chart.PlotGraph;
 
 end;
@@ -447,6 +487,24 @@ procedure TJvChartDemoForm.LargeDataset576samples1Click(Sender: TObject);
 begin
    LargeDataset576samples1.Checked := not LargeDataset576samples1.Checked;
    NewValues;
+end;
+
+procedure TJvChartDemoForm.DateTimeAxisModeClick(Sender: TObject);
+begin
+  DateTimeAxisMode.Checked := not DateTimeAxisMode.Checked;
+  NewValues;
+end;
+
+procedure TJvChartDemoForm.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil( FStatHgt );
+  FreeAndNil( FStatHg0 );
+
+end;
+
+procedure TJvChartDemoForm.PrintOptions1Click(Sender: TObject);
+begin
+    PrinterSetupDialog1.Execute;
 end;
 
 end.

@@ -14,6 +14,7 @@ object JvChartDemoForm: TJvChartDemoForm
   OldCreateOrder = True
   Position = poScreenCenter
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 16
@@ -61,7 +62,7 @@ object JvChartDemoForm: TJvChartDemoForm
     Top = 35
     Height = 408
   end
-  object Panel1: TPanel
+  object PanelTop: TPanel
     Left = 0
     Top = 0
     Width = 721
@@ -384,6 +385,10 @@ object JvChartDemoForm: TJvChartDemoForm
         ShortCut = 16464
         OnClick = Print1Click
       end
+      object PrintOptions1: TMenuItem
+        Caption = '&Print Options'
+        OnClick = PrintOptions1Click
+      end
       object N1: TMenuItem
         Caption = '-'
       end
@@ -397,6 +402,10 @@ object JvChartDemoForm: TJvChartDemoForm
         ShortCut = 16455
         OnClick = ShowgapinLineChart1Click
       end
+      object DateTimeAxisMode: TMenuItem
+        Caption = 'Date/Time Axis Mode'
+        OnClick = DateTimeAxisModeClick
+      end
       object N4: TMenuItem
         Caption = '-'
       end
@@ -407,6 +416,7 @@ object JvChartDemoForm: TJvChartDemoForm
       end
       object LargeDataset576samples1: TMenuItem
         Caption = '&Large Dataset (576 samples)'
+        ShortCut = 16460
         OnClick = LargeDataset576samples1Click
       end
     end
@@ -429,5 +439,13 @@ object JvChartDemoForm: TJvChartDemoForm
     OnTimer = Timer1Timer
     Left = 170
     Top = 6
+  end
+  object PrinterSetupDialog1: TPrinterSetupDialog
+    Left = 168
+    Top = 36
+  end
+  object PrintDialog1: TPrintDialog
+    Left = 200
+    Top = 36
   end
 end
