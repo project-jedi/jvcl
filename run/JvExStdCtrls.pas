@@ -921,6 +921,7 @@ type
    {$IFEND}
   {$ENDIF}
   end;
+{$IFDEF VCL}
   //
   // --------------------------------------
   TJvExCustomStaticText = class(TCustomStaticText, IJvWinControlEvents, IJvControlEvents)
@@ -1015,6 +1016,7 @@ type
    {$IFEND}
   {$ENDIF}
   end;
+{$ENDIF VCL}
 
 implementation
 
@@ -3409,6 +3411,7 @@ begin
     inherited Dispatch(Message);
 end;
 {$ENDIF VCL}
+{$IFDEF VCL}
 //
 // -----------------------------------------------------------------------------
 {$IFDEF VCL}
@@ -3666,6 +3669,7 @@ begin
   if not DispatchMsg(Self, Message) then
     inherited Dispatch(Message);
 end;
+{$ENDIF VCL}
 {$ENDIF VCL}
 
 end.
