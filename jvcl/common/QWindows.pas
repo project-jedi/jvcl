@@ -1045,7 +1045,8 @@ function OffsetClipRgn(Handle: QPainterH; X, Y: Integer): Integer;
 function OffsetRgn(Region: QRegionH; X, Y: Integer): Integer;
 function PtInRegion(Rgn: QRegionH; X, Y: Integer): Boolean;
 function RectInRegion(RGN: QRegionH; const Rect: TRect): LongBool;
-function SelectClipRgn(Handle: QPainterH; Region: QRegionH): Integer;
+function SelectClipRgn(Handle: QPainterH; Region: QRegionH): Integer; overload;
+function SelectClipRgn(Handle: QPainterH; Region: Integer): Integer; overload;
 function SetRectRgn(Rgn: QRegionH; X1, Y1, X2, Y2: Integer): LongBool;
 function SetWindowRgn(Handle: QWidgetH; Region: QRegionH; Redraw: LongBool): Integer;
   { SetWindowRgn limitation: The region must have negative top coordinate in
@@ -1151,6 +1152,40 @@ function GetComputerName(Buffer: PChar; var Size: Cardinal): LongBool;
 function MakeIntResource(Value: Integer): PChar;
 function GetTickCount: Cardinal;
 procedure MessageBeep(Value: Integer);   // value ignored
+
+// writes the string to ErrOutput
+procedure OutputDebugString(lpOutputString: PChar);
+
+
+function GetCurrentProcess: THandle;
+
+const
+  PAGE_NOACCESS = 0;
+  PAGE_READONLY = PROT_READ;
+  PAGE_READWRITE = PROT_READ or PROT_WRITE;
+  //PAGE_WRITECOPY = PROT_ ; // not implemented
+  PAGE_EXECUTE = PROT_EXEC;
+  PAGE_EXECUTE_READ = PAGE_EXECUTE or PAGE_READONLY;
+  PAGE_EXECUTE_READWRITE = PAGE_EXECUTE or PAGE_READWRITE;
+  // PAGE_EXECUTE_WRITECOPY = PAGE_EXECUTE or PAGE_WRITECOPY;
+
+function VirtualProtect(lpAddress: Pointer; dwSize, flNewProtect: Cardinal;
+  lpflOldProtect: Pointer): LongBool; overload;
+function VirtualProtect(lpAddress: Pointer; dwSize, flNewProtect: Cardinal;
+  var OldProtect: Cardinal): LongBool; overload;
+
+function ReadProcessMemory(hProcess: THandle; const lpBaseAddress: Pointer;
+  lpBuffer: Pointer; nSize: LongWord; var lpNumberOfBytesRead: Longword): LongBool;
+function WriteProcessMemory(hProcess: THandle; const lpBaseAddress: Pointer;
+  lpBuffer: Pointer; nSize: LongWord; var lpNumberOfBytesWritten: Longword): LongBool;
+
+
+{ Limitations:
+    - GetKeyState calls GetAsyncKeyState
+    - GetAsyncKeyState only supports VK_SHIFT, VK_CONTROL and VK_MENU }
+function GetKeyState(nVirtKey: Integer): Smallint;
+function GetAsyncKeyState(vKey: Integer): Smallint;
+
 
 const
   MAX_COMPUTERNAME_LENGTH = 15;
@@ -3036,6 +3071,11 @@ begin
   except
     Result := RGN_ERROR;
   end;
+end;
+
+function SelectClipRgn(Handle: QPainterH; Region: Integer): Integer;
+begin
+  Result := SelectClipRgn(Handle, QRegionH(Region));
 end;
 
 function ExcludeClipRect(Handle: QPainterH; X1, Y1, X2, Y2: Integer): Integer;
@@ -5582,6 +5622,134 @@ end;
 procedure MessageBeep(Value: Integer);
 begin
   QApplication_beep;
+end;
+
+procedure OutputDebugString(lpOutputString: PChar);
+begin
+  WriteLn(ErrOutput, string(lpOutputString));
+end;
+
+function GetCurrentProcess: THandle;
+begin
+  Result := THandle(0);
+end;
+
+function VirtualProtect(lpAddress: Pointer; dwSize, flNewProtect: Cardinal;
+  lpflOldProtect: Pointer): LongBool; overload;
+var
+  AlignedAddress: Cardinal;
+  PageSize, ProtectSize: Cardinal;
+begin
+  if lpflOldProtect <> nil then
+  begin
+    // (ahuser) I have not found a Libc function for that
+    lpflOldProtect^ := PAGE_EXECUTE_READWRITE;
+  end;
+
+  PageSize := Cardinal(Libc.getpagesize);
+  AlignedAddress := Cardinal(lpAddress) and not (PageSize - 1); // start memory page
+  // get the number of needed memory pages
+  ProtectSize := PageSize;
+  while Cardinal(BaseAddress) + dwSize > AlignedAddress + ProtectSize do
+    Inc(ProtectSize, PageSize);
+  Result := mprotect(Pointer(AlignedAddress), ProtectSize, flNewProtect) = 0;
+end;
+
+function VirtualProtect(lpAddress: Pointer; dwSize, flNewProtect: Cardinal;
+  var OldProtect: Cardinal): LongBool; overload;
+begin
+  Result := VirtualProtect(lpAddress, dwSize, flNewProtect, @OldProtect);
+end;
+
+function ReadProcessMemory(hProcess: THandle; const lpBaseAddress: Pointer;
+  lpBuffer: Pointer; nSize: LongWord; var lpNumberOfBytesRead: Cardinal): LongBool;
+var
+  Prot: Cardinal;
+begin
+  Result := False;
+  lpNumberOfBytesRead := 0;
+  if (hProcess = GetCurrentProcess) and (lpBuffer <> nil) then
+  begin
+    if nSize = 0 then
+      Result := True
+    else
+    if VirtualProtect(lpBaseAddress, nSize, PAGE_READWRITE, Prot) then
+    begin
+      try
+        Move(lpBaseAddress^, lpBuffer^, nSize);
+        lpNumberOfBytesRead := nSize;
+        Result := True;
+      except
+        Result := False;
+      end;
+      VirtualProtect(lpBaseAddress, nSize, Prot, nil);
+    end;
+  end;
+end;
+
+function WriteProcessMemory(hProcess: THandle; const lpBaseAddress: Pointer;
+  lpBuffer: Pointer; nSize: LongWord; var lpNumberOfBytesWritten: Longword): LongBool;
+var
+  Prot: Cardinal;
+begin
+  Result := False;
+  lpNumberOfBytesWritten := 0;
+  if (hProcess = GetCurrentProcess) and (lpBuffer <> nil) then
+  begin
+    if nSize = 0 then
+      Result := True
+    else
+    if VirtualProtect(lpBaseAddress, nSize, PAGE_READWRITE, Prot) then
+    begin
+      try
+        Move(lpBuffer^, lpBaseAddress^, nSize);
+        lpNumberOfBytesWritten := nSize;
+        Result := True;
+      except
+        Result := False;
+      end;
+      VirtualProtect(lpBaseAddress, nSize, Prot, nil);
+    end;
+  end;
+end;
+
+procedure FlushInstructionCache;
+asm
+        JMP     @@Exit
+// 64 Bytes:
+        DD      0, 0, 0, 0, 0, 0, 0, 0,
+        DD      0, 0, 0, 0, 0, 0, 0, 0,
+@@Exit:
+end;
+
+
+function GetKeyState(nVirtKey: Integer): Smallint;
+begin
+  Result := GetAsyncKeyState(nVirtKey);
+end;
+
+function GetAsyncKeyState(vKey: Integer): Smallint;
+var
+  Root: Window;
+  Child: Window;
+  RootX, RootY, WinX, WinY: Longint;
+  Mask: Cardinal;
+begin
+  XQueryPointer(Application.Display,
+    XRootWindow(Application.Display, XDefaultScreen(Application.Display)),
+    @Root, @Child, @RootX, @RootY, @WinX, @WinY, @Mask);
+  Result := 0;
+  case vKey of
+    VK_SHIFT:
+      if Mask and ShiftMask <> 0 then
+        Result := $8000;
+    VK_CONTROL:
+      if Mask and ControlMask <> 0 then
+        Result := $8000;
+    VK_MENU:
+      if Mask and Mod1Mask <> 0 then
+        Result := $8000;
+  end;
 end;
 
 {---------------------------------------}
