@@ -43,7 +43,7 @@ type
   private
     FRegistryKeys: TJvRegKeys;
     FInternalImages: TImageList;
-    FListView: TListView;
+    FListView: TCustomListView;
     FRootCaption: string;
     FDefaultCaption: string;
     FDefaultNoValue: string;
@@ -103,7 +103,7 @@ type
     property HideSelection;
     property RegistryKeys: TJvRegKeys read FRegistryKeys write SetRegistryKeys default
       [hkCurrentUser, hkLocalMachine];
-    property ListView: TListView read FListView write FListView;
+    property ListView: TCustomListView read FListView write FListView;
     property RootCaption: string read FRootCaption write SetRootCaption;
     property DefaultCaption: string read FDefaultCaption write SetDefaultCaption;
     property DefaultNoValueCaption: string read FDefaultNoValue write SetDefaultNoValue;
@@ -165,6 +165,7 @@ const
 
 type
   TRegistryAccessProtected = class(TRegistry);
+  TListViewAccessProtected = class(TCustomListView);
 
 function SetRootKey(Reg: TRegistry; Node: TTreeNode): Boolean;
 var
@@ -338,6 +339,8 @@ begin
         FReg.GetKeyNames(AStrings);
         for I := 0 to AStrings.Count - 1 do
         begin
+          if AStrings[i] = '' then
+            AStrings[i] := Format('%.04d',[i]);
           NewNode := Items.AddChild(ANode, AStrings[I]);
           NewNode.ImageIndex := imClosed;
           NewNode.SelectedIndex := imOpen;
@@ -375,16 +378,18 @@ var
   Buffer: array [0..4095] of Byte;
   S: string;
   DefaultSet: Boolean;
+  AListView:TListViewAccessProtected;
 begin
   Result := False;
   if not Assigned(FListView) then
     Exit;
+  AListView := TListViewAccessProtected(FListView);
   OpenRegistry(Node);
-  FListView.Items.BeginUpdate;
+  AListView.Items.BeginUpdate;
   try
-    FListView.Items.Clear;
-    if FListView.SmallImages = nil then
-      FListView.SmallImages := Images;
+    AListView.Items.Clear;
+    if AListView.SmallImages = nil then
+      AListView.SmallImages := Images;
     if (Node = nil) or (Node = Items.GetFirstNode) then
       Exit;
     { set current root }
@@ -399,13 +404,13 @@ begin
         { set default item }
         if (Strings[I] = '') and not DefaultSet then
         begin
-          TmpItem := FListView.Items.Insert(0);
+          TmpItem := AListView.Items.Insert(0);
           TmpItem.Caption := FDefaultCaption;
           DefaultSet := True;
         end
         else
         begin
-          TmpItem := FListView.Items.Add;
+          TmpItem := AListView.Items.Add;
           TmpItem.Caption := Strings[I];
         end;
 
@@ -445,14 +450,14 @@ begin
     { set default item }
     if (Node.Parent <> nil) and not DefaultSet then
     begin
-      TmpItem := FListView.Items.Insert(0);
+      TmpItem := AListView.Items.Insert(0);
       TmpItem.ImageIndex := imText;
       TmpItem.Caption := FDefaultCaption;
       TmpItem.SubItems.Add(FDefaultNoValue);
       TmpItem.SubItems.Add('REG_SZ');
     end;
   finally
-    FListView.Items.EndUpdate;
+    AListView.Items.EndUpdate;
     CloseRegistry;
   end;
 end;
@@ -628,8 +633,8 @@ begin
   inherited Notification(AComponent, Operation);
   if (AComponent = FListView) and (Operation = opRemove) then
   begin
-    if FListView.SmallImages = FInternalImages then
-      FListView.SmallImages := nil;
+    if TListViewAccessProtected(FListView).SmallImages = FInternalImages then
+      TListViewAccessProtected(FListView).SmallImages := nil;
     FListView := nil;
   end;
   if (AComponent = Images) and (Operation = opRemove) then
@@ -648,8 +653,8 @@ end;
 
 destructor TJvRegistryTreeView.Destroy;
 begin
-  if Assigned(FListView) and (FListView.SmallImages = FInternalImages) then
-    FListView.SmallImages := nil;
+  if Assigned(FListView) and (TListViewAccessProtected(FListView).SmallImages = FInternalImages) then
+    TListViewAccessProtected(FListView).SmallImages := nil;
   if Assigned(FInternalImages) then
     FInternalImages.Free;
   inherited Destroy;
