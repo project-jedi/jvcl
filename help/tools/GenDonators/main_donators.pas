@@ -210,10 +210,10 @@ var
 begin
   AuthorFile := TStringList.Create;
   try
-(*    AuthorFile.Add(StringOfChar('#', 100));
+    AuthorFile.Add(StringOfChar('#', 100));
     AuthorFile.Add('## Donator list generated on ' + FormatDateTime('mm-dd-yyyy hh:nn:ss', Now) +
       StringOfChar(' ', 100 - 19 - 27 - 4) + '##');
-    AuthorFile.Add(StringOfChar('#', 100)); *)
+    AuthorFile.Add(StringOfChar('#', 100));
     AuthorFile.Add('');
     for I := 0 to AuthorList.Count - 1 do
     begin
