@@ -68,7 +68,7 @@ AnsiString IncludeTrailingPathDelimiter(const AnsiString &S)
 {
   AnsiString Result = S;
   if (!IsPathDelimiter(Result, Result.Length()))
-    Result += PathDelim;
+    Result += Sysutils::PathDelim;
   return Result;
 }
 
