@@ -6,7 +6,6 @@ JvAnimatedImage
 JvAppEvent
 JvArrayButton
 JvaScrollText
-JvAVICapture
 JvBandForms
 JvBandObject
 JvBaseEdits
@@ -298,7 +297,6 @@ JvUIBSrv
 JvUpDown
 JvVersionInfo
 JvVigenereCipher
-JvVirtualKeySelectionFrame
 JvWaitingGradient
 JvWaitingProgress
 JvWavePlayer

@@ -4,6 +4,7 @@ JvAppAnimatedIcon
 JvAppHotKey
 JvAppInfo
 JvArrowButton
+JvAVICapture
 JvBaseDlg
 JvBehaviorLabel
 JvBevel
@@ -26,3 +27,5 @@ JvRenameError
 JvStringListToHtml
 JvTranslator
 JvTransparentButton
+JvVirtualKeySelectionFrame
+
