@@ -1,3 +1,4 @@
+{$I JVCL.INC}
 unit JvDataProviderDesignerForm;
 
 interface

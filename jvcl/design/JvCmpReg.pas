@@ -18,7 +18,7 @@ uses
   JvEnterTab, JvMergeManager, JvPageManager, JvPatchFile,
   JvStringHolder, JvTimeLimit, JvWinHelp, JvTranslator, JvPrint, JvEasterEgg,
   JvDataEmbeddedEditor, JvPatcherEditor, JvProfilerForm,
-  JvAlarmsEditor, JvPageManagerForm,
+  JvPageManagerForm,
   JvDsgnEditors;
 
 {$R ..\resources\JvCmpReg.dcr}
@@ -35,7 +35,6 @@ begin
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess, 'CurrentDirectory', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(TStream), TJvDataEmbedded, 'Data', TJvDataEmbeddedEditor);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvPatchFile, 'Differences', TJvPatcherEditor);
-  RegisterPropertyEditor(TypeInfo(TStrings), TJvAlarms, 'Alarms', TJvAlarmsEditor);
   RegisterPropertyEditor(TypeInfo(TList), TJvPageManager, 'PageProxies', TJvProxyListProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvPageProxy, 'PageName', TJvPageNameProperty);
   RegisterPropertyEditor(TypeInfo(TControl), TJvPageManager, 'PriorBtn', TJvPageBtnProperty);
