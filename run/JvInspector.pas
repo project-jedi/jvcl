@@ -7534,8 +7534,8 @@ begin
     begin
 //      FListBox := TJvPopupListBox.Create(Inspector);
       FListBox := TJvInspectorListBox.Create(Inspector);
-      ListBox.Visible := False;
       ListBox.Parent := EditCtrl;
+      ListBox.Visible := False;
       {$IFDEF VCL}
       TListBox(ListBox).IntegralHeight := not (iifOwnerDrawListVariable in Flags);
       {$ENDIF VCL}
