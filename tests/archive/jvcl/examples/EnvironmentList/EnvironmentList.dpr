@@ -1,4 +1,4 @@
-program EvnironmentList;
+program EnvironmentList;
 
 {$APPTYPE CONSOLE}
 
