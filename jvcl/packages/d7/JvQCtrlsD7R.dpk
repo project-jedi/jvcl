@@ -61,6 +61,10 @@ contains
   JvQBehaviorLabel in '..\..\qrun\JvQBehaviorLabel.pas',
   JvQButtons in '..\..\qrun\JvQButtons.pas',
   JvQCaptionPanel in '..\..\qrun\JvQCaptionPanel.pas',
-  JvQRollOut in '..\..\qrun\JvQRollOut.pas';
+  JvQRollOut in '..\..\qrun\JvQRollOut.pas',
+  JvQOfficeColorPanel in '..\..\qrun\JvQOfficeColorPanel.pas',
+  JvQOfficeColorButton in '..\..\qrun\JvQOfficeColorButton.pas',
+  JvQOfficeColorForm in '..\..\qrun\JvQOfficeColorForm.pas',
+  JvQObjectPickerDialog in '..\..\qrun\JvQObjectPickerDialog.pas';
 
 end.
