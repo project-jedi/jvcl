@@ -34,8 +34,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  Controls, Forms, ToolWin,
-  Menus, ActnList, ComCtrls, ImgList,
+  Controls, Forms, ToolWin, Menus, ActnList, ComCtrls, ImgList,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, DesignMenus, DesignWindows,
   {$ELSE}
@@ -586,7 +585,7 @@ end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 begin
-  with TJvRegistryFile.Create(HKEY_CURRENT_USER) do
+  with TJvRegistryIniFile.Create do
   try
     if OpenKey(GetRegPath, True) then
     try
@@ -627,7 +626,7 @@ end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 begin
-  with TJvRegistryIniFile.Create(HKEY_CURRENT_USER) do
+  with TJvRegistryIniFile.Create do
   try
     if OpenKey(GetRegPath, True) then
     try
