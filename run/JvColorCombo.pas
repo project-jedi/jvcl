@@ -484,11 +484,16 @@ begin
   begin
     InsertColor(Items.Count - 1, Value, Format(FPrefix, [FCustCnt]));
         //      Items.InsertObject(Items.Count, FPrefix + IntToStr(FCustCnt), TObject(Value))
+    ItemIndex := Items.Count - 2;
+    Change;
   end
   else
+  begin
     AddColor(Value, Format(FPrefix, [FCustCnt]));
+    ItemIndex := Items.Count - 1;
+    Change;
+  end;
     //      Items.AddObject(FPrefix + IntToStr(FCustCnt), TObject(Value));
-  ItemIndex := Items.Count - 2;
   FColorValue := Value;
 end;
 
