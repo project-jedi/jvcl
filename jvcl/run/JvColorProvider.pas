@@ -17,7 +17,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-09-17
+Last Modified: 2004-02-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -1951,6 +1951,8 @@ begin
     SetLength(FColorList, Result + 1);
     FColorList[Result].Value := Color;
     SetLength(FColorList[Result].Names, Mappings.Count);
+    if Mappings.Count > 0 then
+      FColorList[Result].Names[0] := Format('%s%.8x', [HexDisplayPrefix, Color]);
     FColorListChanged := True;
     if AddToCustomDefaultList then
     begin
