@@ -81,6 +81,11 @@ BuildJCLdcpFiles:
         IF EXIST "$(ROOT)\bin\bcc32.exe" IF NOT EXIST "$(DCPDIR)\CJclVClx.dcp" $(MAKE) -s -f MakeJCLDcp4BCB.mak
 
 ################################################################################
+BuildJCLdcpFilesForce:
+        # for C++ targets compile JCL .dcp files
+        IF EXIST "$(ROOT)\bin\bcc32.exe" $(MAKE) -s -f MakeJCLDcp4BCB.mak
+
+################################################################################
 Bpg2Make.exe:
         @echo [Compiling: Bpg2Make.exe]
         @cd $(DEVTOOLS)
@@ -98,8 +103,8 @@ GeneratePackages:
         #-SET C5PFLAGS=
         @cd $(DEVTOOLS_BACK)
         echo [Generating: Delphi Packages]
-        $(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -t=$(EDITION) -x=$(DEVTOOLS)\bin\pgEdit.xml
-        IF NOT $(MASTEREDITION)! == ! $(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -t=$(MASTEREDITION) -x=$(DEVTOOLS)\bin\pgEdit.xml
+        @$(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -t=$(EDITION) -x=$(DEVTOOLS)\bin\pgEdit.xml
+        @IF NOT $(MASTEREDITION)! == ! @$(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -t=$(MASTEREDITION) -x=$(DEVTOOLS)\bin\pgEdit.xml
 
 ################################################################################
 pg.exe: Templates GeneratePackages
