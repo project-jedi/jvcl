@@ -2118,14 +2118,18 @@ begin
             ChangeBoolean(1);  // check
         end;
     end;
-    Exit;
+  end
+  else
+  begin
+    if not Assigned(FCurrentControl) then
+      DoKeyPress(Msg)
+    else
+      inherited;
+
+    if Assigned(FCurrentControl) then
+      if FCurrentControl.Visible then
+        PostMessage(FCurrentControl.Handle, WM_CHAR, Msg.CharCode, Msg.KeyData);
   end;
-
-  inherited;
-
-  if Assigned(FCurrentControl) then
-    if FCurrentControl.Visible then
-      PostMessage(FCurrentControl.Handle, WM_CHAR, Msg.CharCode, Msg.KeyData);
 end;
 
 procedure TJvDBGrid.KeyPress(var Key: Char);
