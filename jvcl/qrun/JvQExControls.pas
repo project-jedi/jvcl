@@ -45,14 +45,13 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF HAS_UNIT_LIBC}
   Libc,
-  {$ENDIF LINUX} 
-  Types, QGraphics, QControls, QForms, 
-  Qt, QTypes, QStdCtrls, QMask, QClipbrd, QWindows, 
+  {$ENDIF HAS_UNIT_LIBC}
+  QMessages, QGraphics, QControls, QForms,
+  Qt, QTypes, QStdCtrls, QMask, QClipbrd, QWindows, QExtCtrls,
   Classes, SysUtils,
   JvQTypes, JvQThemes, JVCLXVer;
-
 
 
 
@@ -76,16 +75,23 @@ type
     Align: TAlign;
     Scratch: Integer;
   end;
+
+  TBevelKind = (bkNone, bkTile, bkSoft, bkFlat);
+
+  TCaption = QTypes.TCaption;
   HWND = QWindows.HWND;
   TClxWindowProc = procedure(var Msg: TMessage) of object;
+  TCMFocusChanged = QMessages.TCMFocusChanged ;
+  {$NODEFINE TCMFocusChanged}
+  
 const
   QEventType_FontChanged = QEventType(Integer(QEventType_User) + $70);
-
+  CM_FOCUSCHANGED = QMessages.CM_FOCUSCHANGED;
 
 const
   dcWantMessage = dcWantAllKeys;
 
-type 
+type
 
   IJvControlEvents = interface(IPerformControl)
     ['{61FC57FF-D4DA-4840-B871-63DE804E9921}']
@@ -103,7 +109,7 @@ type
     function HitTest(X, Y: Integer): Boolean; // CM_HITTEST
     procedure MouseEnter(AControl: TControl);
     procedure MouseLeave(AControl: TControl);
-    procedure DoFocusChanged(Control: TWinControl); 
+    procedure DoFocusChanged(Control: TWinControl);
   end;
 
   IJvWinControlEvents = interface(IJvControlEvents)
@@ -117,16 +123,16 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); // WM_GETDLGCODE
     procedure DoSetFocus(FocusedWnd: HWND);  // WM_SETFOCUS
     procedure DoKillFocus(FocusedWnd: HWND); // WM_KILLFOCUS
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; // WM_ERASEBKGND 
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; // WM_ERASEBKGND
     procedure DoFontChanged(Sender: TObject);  // CM_FONTCHANGED
-    procedure Paint; 
+    procedure Paint;
   end;
 
   IJvCustomControlEvents = interface(IJvWinControlEvents)
-    ['{7804BD3A-D7A5-4314-9259-6DE08A0DC38A}'] 
+    ['{7804BD3A-D7A5-4314-9259-6DE08A0DC38A}']
     // implements doublebuffering for  TCustomControl derived classes and
     // TJvExWidgetControl.
-    function GetDoubleBuffered: Boolean; 
+    function GetDoubleBuffered: Boolean;
   end;
 
   IJvEditControlEvents = interface(IPerformControl)
@@ -137,6 +143,8 @@ type
     procedure DoUndo;
     procedure DoClearText;
   end;
+
+//  IJvEdit = interface
 
 
 
@@ -152,7 +160,7 @@ type
     ['{76942BC0-2A6E-4DC4-BFC9-8E110DB7F601}']
   end;
 
-
+(*
 const
   CM_FOCUSCHANGED = CM_BASE + 17; // VCL Controls: CM_BASE + 7
 
@@ -163,10 +171,10 @@ type
     Sender: TWinControl;
     Result: Longint;
   end;
+*)
 
 
-type
-  TJvExControl = class(TControl, IJvControlEvents, IPerformControl)  
+  TJvExControl = class(TControl, IJvControlEvents, IPerformControl)
   // IJvControlEvents
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -205,10 +213,31 @@ type
     destructor Destroy; override;
   end;
 
-  TJvExPubControl = class(TJvExControl) 
+  TJvExPubControl = class(TJvExControl)
   end;
-    
-  TJvExWinControl = class(TWinControl,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)  
+
+  TJvExWinControl = class(TWinControl, IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
+  private
+    FBevelEdges: TBevelEdges;
+    FBevelInner: TBevelCut;
+    FBevelOuter: TBevelCut;
+    FBevelKind: TBevelKind;
+    FBevelWidth: TBevelWidth;
+    FBorderWidth: TBorderWidth;
+    procedure SetBevelCut(Index: Integer; Value: TBevelCut);
+    procedure SetBevelEdges(Value: TBevelEdges);
+    procedure SetBevelKind(Value: TBevelKind);
+    procedure SetBevelWidth(Value: TBevelWidth);
+    procedure SetBorderWidth(Value: TBorderWidth);
+  protected
+    procedure AdjustClientRect(var Rect: TRect); override;
+    function ColorToRGB(AColor: TColor): TColor;
+    property BevelEdges: TBevelEdges read FBevelEdges write SetBevelEdges default [beLeft, beTop, beRight, beBottom];
+    property BevelInner: TBevelCut index 0 read FBevelInner write SetBevelCut default bvRaised;
+    property BevelOuter: TBevelCut index 1 read FBevelOuter write SetBevelCut default bvLowered;
+    property BevelKind: TBevelKind read FBevelKind write SetBevelKind default bkNone;
+    property BevelWidth: TBevelWidth read FBevelWidth write SetBevelWidth default 1;
+    property BorderWidth: TBorderWidth read FBorderWidth write SetBorderWidth default 0;
   // IJvControlEvents
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -220,7 +249,8 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
   private
-    InternalFontChanged: TNotifyEvent;
+//    InternalFontChanged: TNotifyEvent;
+    FFontHeight: integer;
     procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
@@ -235,7 +265,7 @@ type
     procedure CreateWidget; override;
     procedure RecreateWnd;
   public
-    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer); 
+    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
@@ -283,7 +313,7 @@ type
     destructor Destroy; override;
   end;
 
-  TJvExPubWinControl = class(TJvExWinControl) 
+  TJvExPubWinControl = class(TJvExWinControl)
   end;
    
   TJvExGraphicControl = class(TGraphicControl, IJvControlEvents, IPerformControl)  
@@ -349,7 +379,8 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
   private
-    InternalFontChanged: TNotifyEvent;
+//    InternalFontChanged: TNotifyEvent;
+    FFontHeight: integer;
     procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
@@ -425,7 +456,8 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
   private
-    InternalFontChanged: TNotifyEvent;
+//    InternalFontChanged: TNotifyEvent;
+    FFontHeight: integer;
     procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
@@ -498,7 +530,8 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
   private
-    InternalFontChanged: TNotifyEvent;
+//    InternalFontChanged: TNotifyEvent;
+    FFontHeight: integer;
     procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
@@ -532,7 +565,7 @@ type
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private  
+  private
     FAboutJVCLX: TJVCLAboutInfo;
   published
     property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
@@ -546,17 +579,17 @@ type
     FCanvas: TCanvas;
   protected
     procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas; 
+    property Canvas: TCanvas read FCanvas;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
 
-  TJvExPubFrameControl = class(TJvExFrameControl) 
+  TJvExPubFrameControl = class(TJvExFrameControl)
   end;
-   
 
 
+function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
 
 
 
@@ -602,9 +635,14 @@ procedure TCustomEdit_Cut(Instance: TWinControl);
 
 implementation
 
+type
+  THackedWidgetControl = class(TWidgetControl);
 
 
-
+function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
+begin
+  Result := QWindows.ColorToRGB(Color, Instance);
+end;
 
 procedure Control_MouseEnter(Instance, Control: TControl; var FMouseOver: Boolean;
   var FSavedHintColor: TColor; FHintColor: TColor);
@@ -633,13 +671,13 @@ begin
   if  FMouseOver and not (csDesigning in Instance.ComponentState) then
   begin
     FMouseOver := False;
-    Application.HintColor := FSavedHintColor; 
+    Application.HintColor := FSavedHintColor;
   end; 
 end;
 
 function DefaultDoPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
-begin  
-  Result := False; 
+begin
+  Result := false; //QWidget_BackgroundMode(Instance.Handle) = QWidgetBackgroundMode_NoBackground;
 end;
 
 type
@@ -700,7 +738,6 @@ begin
   except
     on E: Exception do
     begin
-      E.Message := 'JvQExControls:' + E.Message;  
       Application.ShowException(E);
       Result := False;
     end;
@@ -798,7 +835,8 @@ procedure WidgetControl_Painting(Instance: TWidgetControl; Canvas: TCanvas;
 var
   R: TRect;
 begin
-  if (csDestroying in Instance.ComponentState) or not Assigned(Instance.Parent) then
+  if (csDestroying in Instance.ComponentState) or
+    not Assigned(Instance.Parent) then
     Exit;
 
   R := Rect(0, 0, 0, 0);
@@ -821,6 +859,54 @@ begin
         (Instance as IJvWinControlEvents).Paint;
     finally
       TControlCanvas(Canvas).StopPaint;
+    end;
+  end;
+end;
+
+type
+  THackedExWinControl = class(TJvExWinControl);
+
+procedure WinControl_Paint(Instance: TWidgetControl; Canvas: TCanvas);
+const
+  InnerStyles: array[TBevelCut] of Integer = (0, BDR_SUNKENINNER, BDR_RAISEDINNER);
+  OuterStyles: array[TBevelCut] of Integer = (0, BDR_SUNKENOUTER, BDR_RAISEDOUTER);
+  EdgeStyles: array[TBevelKind] of Integer = (0, 0, BF_SOFT, BF_FLAT);
+var
+  FEdgeSize: Integer;
+  R: TRect;
+begin
+  WidgetControl_DefaultPaint(Instance, Canvas);
+  with Canvas, THackedExWinControl(Instance) do
+  begin
+    if BevelKind = bkNone then Exit;
+    R := ClientRect;
+    Canvas.Brush.Color := Color;
+    QWindows.FrameRect(Canvas, R);
+    InflateRect(R,-1,-1);
+    QWindows.FrameRect(Canvas, R);
+    if BevelKind <> bkNone then
+    begin
+      FEdgeSize := 0;
+      if BevelInner <> bvNone then Inc(FEdgeSize, BevelWidth);
+      if BevelOuter <> bvNone then Inc(FEdgeSize, BevelWidth);
+      if FEdgeSize = 0 then
+      begin
+        R := ClientRect;
+        Canvas.Brush.Color := Color;
+        QWindows.FrameRect(Canvas, R);
+        InflateRect(R, -1, -1);
+        QWindows.FrameRect(Canvas, R);
+      end;
+      R := ClientRect;
+      with BoundsRect do
+      begin
+        if beLeft in BevelEdges then Dec(Left, FEdgeSize);
+        if beTop in BevelEdges then Dec(Top, FEdgeSize);
+        if beRight in BevelEdges then Inc(Right, FEdgeSize);
+        if beBottom in BevelEdges then Inc(Bottom, FEdgeSize);
+      end;
+      DrawEdge(Canvas.Handle, R, InnerStyles[BevelInner] or OuterStyles[BevelOuter],
+        Byte(BevelEdges) or EdgeStyles[BevelKind] or BF_ADJUST);
     end;
   end;
 end;
@@ -1084,7 +1170,7 @@ constructor TJvExControl.Create(AOwner: TComponent);
 begin 
   WindowProc := WndProc; 
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
+  FHintColor := Application.HintColor;
   
 end;
 
@@ -1160,6 +1246,12 @@ procedure TJvExWinControl.OnFontChanged(Sender: TObject);
 var
   FontChangedEvent: QEventH;
 begin
+  ParentFont := False;
+  if Font.Height <> FFontHeight then
+  begin
+    ScalingFlags := ScalingFlags + [sfFont];
+    FFontHeight := Font.Height;
+  end;
   FontChangedEvent := QEvent_create(QEventType_FontChanged);
   if FontChangedEvent <> nil then
     QApplication_postEvent(Handle, FontChangedEvent);
@@ -1167,8 +1259,9 @@ end;
 
 procedure TJvExWinControl.DoFontChanged(Sender: TObject);
 begin
-  if Assigned(InternalFontChanged) then
-    InternalFontChanged(self);
+//  if Assigned(InternalFontChanged) then
+//    InternalFontChanged(self);
+  FontChanged;
 end;
 
 procedure TJvExWinControl.BoundsChanged;
@@ -1214,7 +1307,7 @@ procedure TJvExWinControl.PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
 begin
   WidgetControl_PaintTo(self, PaintDevice, X, Y);
 end;
-  
+
 
 procedure TJvExWinControl.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -1225,7 +1318,7 @@ end;
 procedure TJvExWinControl.DoFocusChanged(Control: TWinControl);
 begin
 end;
-  
+
 procedure TJvExWinControl.DoBoundsChanged;
 begin
 end;
@@ -1246,7 +1339,7 @@ function TJvExWinControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boo
 asm
   JMP   DefaultDoPaintBackground
 end;
-  
+
 
 
 constructor TJvExWinControl.Create(AOwner: TComponent);
@@ -1255,24 +1348,96 @@ begin
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  InternalFontChanged := Font.OnChange;
+//  InternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged;
-  
+  FBevelEdges := [beLeft, beTop, beRight, beBottom];
   DoubleBuffered := True;
+  FHintColor := Application.HintColor;
 end;
 
 destructor TJvExWinControl.Destroy;
 begin
-  
+
   FCanvas.Free;
   inherited Destroy;
 end;
 
+function TJvExWinControl.ColorToRGB(AColor: TColor): TColor;
+begin
+  Result := QWindows.ColorToRGB(AColor, self);
+end;
+
+procedure TJvExWinControl.SetBevelCut(Index: Integer; Value: TBevelCut);
+begin
+  case Index of
+    0: { BevelInner }
+      if Value <> FBevelInner then
+      begin
+        FBevelInner := Value;
+        Invalidate; //Perform(CM_BORDERCHANGED, 0, 0);
+      end;
+    1: { BevelOuter }
+      if Value <> FBevelOuter then
+      begin
+        FBevelOuter := Value;
+        Invalidate; //Perform(CM_BORDERCHANGED, 0, 0);
+      end;
+  end;
+end;
+
+procedure TJvExWinControl.SetBevelEdges(Value: TBevelEdges);
+begin
+  if Value <> FBevelEdges then
+  begin
+    FBevelEdges := Value;
+    Invalidate; //Perform(CM_BORDERCHANGED, 0, 0);
+  end;
+end;
+
+procedure TJvExWinControl.SetBevelKind(Value: TBevelKind);
+begin
+  if Value <> FBevelKind then
+  begin
+    FBevelKind := Value;
+    Invalidate; //Perform(CM_BORDERCHANGED, 0, 0);
+  end;
+end;
+
+procedure TJvExWinControl.SetBevelWidth(Value: TBevelWidth);
+begin
+  if Value <> FBevelWidth then
+  begin
+    FBevelWidth := Value;
+    Invalidate; // Perform(CM_BORDERCHANGED, 0, 0);
+  end;
+end;
+
+procedure TJvExWinControl.SetBorderWidth(Value: TBorderWidth);
+begin
+  if Value <> FBorderWidth then
+  begin
+    FBorderWidth := Value;
+    Invalidate; // Perform(CM_BORDERCHANGED, 0, 0);
+  end;
+end;
+
+procedure TJvExWinControl.AdjustClientRect(var Rect: TRect);
+var
+  BevelSize: Integer;
+begin
+  inherited AdjustClientRect(Rect);
+  InflateRect(Rect, -BorderWidth, -BorderWidth);
+  BevelSize := 0;
+  if BevelOuter <> bvNone then Inc(BevelSize, BevelWidth);
+  if BevelInner <> bvNone then Inc(BevelSize, BevelWidth);
+  InflateRect(Rect, -BevelSize, -BevelSize);
+end;
+
 procedure TJvExWinControl.Paint;
 begin
-  WidgetControl_DefaultPaint(self, Canvas);
+  WinControl_Paint(self, Canvas);
 end;
-  
+
 procedure TJvExWinControl.ColorChanged;
 begin
   WidgetControl_ColorChanged(Self);
@@ -1299,8 +1464,8 @@ procedure TJvExWinControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   CustomControl_Painting(Self, Canvas, EventRegion);
 end;
- 
-  
+
+
 
 
 
@@ -1372,7 +1537,7 @@ constructor TJvExGraphicControl.Create(AOwner: TComponent);
 begin 
   WindowProc := WndProc; 
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
+  FHintColor := Application.HintColor;
   
 end;
 
@@ -1482,6 +1647,12 @@ procedure TJvExCustomControl.OnFontChanged(Sender: TObject);
 var
   FontChangedEvent: QEventH;
 begin
+  ParentFont := False;
+  if Font.Height <> FFontHeight then
+  begin
+    ScalingFlags := ScalingFlags + [sfFont];
+    FFontHeight := Font.Height;
+  end;
   FontChangedEvent := QEvent_create(QEventType_FontChanged);
   if FontChangedEvent <> nil then
     QApplication_postEvent(Handle, FontChangedEvent);
@@ -1489,8 +1660,9 @@ end;
 
 procedure TJvExCustomControl.DoFontChanged(Sender: TObject);
 begin
-  if Assigned(InternalFontChanged) then
-    InternalFontChanged(self);
+//  if Assigned(InternalFontChanged) then
+//    InternalFontChanged(self);
+  FontChanged;
 end;
 
 procedure TJvExCustomControl.BoundsChanged;
@@ -1575,10 +1747,11 @@ constructor TJvExCustomControl.Create(AOwner: TComponent);
 begin
   WindowProc := WndProc;
   inherited Create(AOwner);
-  InternalFontChanged := Font.OnChange;
+//  InternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged;
   
   DoubleBuffered := True;
+  FHintColor := Application.HintColor;
 end;
 
 destructor TJvExCustomControl.Destroy;
@@ -1681,6 +1854,12 @@ procedure TJvExHintWindow.OnFontChanged(Sender: TObject);
 var
   FontChangedEvent: QEventH;
 begin
+  ParentFont := False;
+  if Font.Height <> FFontHeight then
+  begin
+    ScalingFlags := ScalingFlags + [sfFont];
+    FFontHeight := Font.Height;
+  end;
   FontChangedEvent := QEvent_create(QEventType_FontChanged);
   if FontChangedEvent <> nil then
     QApplication_postEvent(Handle, FontChangedEvent);
@@ -1688,8 +1867,9 @@ end;
 
 procedure TJvExHintWindow.DoFontChanged(Sender: TObject);
 begin
-  if Assigned(InternalFontChanged) then
-    InternalFontChanged(self);
+//  if Assigned(InternalFontChanged) then
+//    InternalFontChanged(self);
+  FontChanged;
 end;
 
 procedure TJvExHintWindow.BoundsChanged;
@@ -1774,10 +1954,11 @@ constructor TJvExHintWindow.Create(AOwner: TComponent);
 begin
   WindowProc := WndProc;
   inherited Create(AOwner);
-  InternalFontChanged := Font.OnChange;
+//  InternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged;
   
   DoubleBuffered := True;
+  FHintColor := Application.HintColor;
 end;
 
 destructor TJvExHintWindow.Destroy;
@@ -1881,6 +2062,12 @@ procedure TJvExFrameControl.OnFontChanged(Sender: TObject);
 var
   FontChangedEvent: QEventH;
 begin
+  ParentFont := False;
+  if Font.Height <> FFontHeight then
+  begin
+    ScalingFlags := ScalingFlags + [sfFont];
+    FFontHeight := Font.Height;
+  end;
   FontChangedEvent := QEvent_create(QEventType_FontChanged);
   if FontChangedEvent <> nil then
     QApplication_postEvent(Handle, FontChangedEvent);
@@ -1888,8 +2075,9 @@ end;
 
 procedure TJvExFrameControl.DoFontChanged(Sender: TObject);
 begin
-  if Assigned(InternalFontChanged) then
-    InternalFontChanged(self);
+//  if Assigned(InternalFontChanged) then
+//    InternalFontChanged(self);
+  FontChanged;
 end;
 
 procedure TJvExFrameControl.BoundsChanged;
@@ -1974,9 +2162,9 @@ begin
   inherited Create(AOwner); 
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  InternalFontChanged := Font.OnChange;
+//  InternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged; 
-  FHintColor := clInfoBk;
+  FHintColor := Application.HintColor;
 end;
 
 
@@ -2198,7 +2386,7 @@ end;
 var
   CallCutToClipboard, CallPasteFromClipboard,
     CallCopyToClipboard, CallUndo: TOrgCallCode;
-(*
+
 initialization
 //  InstallProcHook(@TCustomForm.SetFocusedControl, @SetFocusedControlHook,
 //    @CallSetFocusedControl);
@@ -2207,17 +2395,17 @@ initialization
   InstallProcHook(@TCustomEdit.CopyToClipboard, @CopyToClipboardHook,
     @CallCopyToClipboard);
   InstallProcHook(@TCustomEdit.PasteFromClipboard, @PasteFromClipboardHook,
-    @CallPasteFromClipboard);
+    @CallPasteFromClipboard); 
   InstallProcHook(@TCustomEdit.Undo, @UndoHook,
-    @CallUndo);
+    @CallUndo); 
 
 finalization
   UninstallProcHook(@CallCutToClipboard);
   UninstallProcHook(@CallCopyToClipboard);
-  UninstallProcHook(@CallPasteFromClipboard);
-  UninstallProcHook(@CallUndo);
+  UninstallProcHook(@CallPasteFromClipboard); 
+  UninstallProcHook(@CallUndo); 
 //  UninstallProcHook(@CallSetFocusedControl);
-*)
+
 
 end.
 
