@@ -2,7 +2,7 @@ unit JvFillIntf;
 {$I JVCL.INC}
 interface
 uses
-  Windows, {$IFDEF COMPILER6_UP}Controls{$ELSE}ImgList{$ENDIF}, Classes, Graphics;
+  Windows, {$IFNDEF COMPILER7_UP}Controls{$ELSE}ImgList{$ENDIF}, Classes, Graphics;
 
 type
   TJvFillerChangeReason = (frAdd,     // an item is added
@@ -146,6 +146,16 @@ type
   ['{86859A20-560D-4E9A-AC8B-2457789451B0}']
     function Execute(Index:integer):boolean;
   end;
+
+  {$IFNDEF COMPILER6_UP}
+  { Needed in D5 to use components with interface. Declaration copied from D6 Classes.pas. See
+    various filler implementations for details. This declaration should probably be moved to
+    JvTypes or JvComponents. }
+  IInterfaceComponentReference = interface
+    ['{E28B1858-EC86-4559-8FCD-6B4F824151ED}']
+    function GetComponent: TComponent;
+  end;
+  {$ENDIF}
 
   { base class for options that are dynamically added to the client by the server implementation,
     see JvFillBasicImpl for details }

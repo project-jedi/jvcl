@@ -1,0 +1,4 @@
+[Directories]
+OutputDir=
+UnitOutputDir=..\..\..\jvcl\lib6
+SearchPath=..\..\..\jvcl\lib6;..\..\..\jvcl\common

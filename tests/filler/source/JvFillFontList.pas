@@ -2,17 +2,23 @@ unit JvFillFontList;
 
 interface
 
+{$I JVCL.INC}
+
 uses
   Windows, SysUtils, Classes,
   JvFillBasicImpl, JvFillIntf;
 
 type
-  TJvFontFiller = class(TComponent, IBaseFiller, IFiller, IFillerItems)
+  TJvFontFiller = class(TComponent, {$IFNDEF COMPILER6_UP}IInterfaceComponentReference, {$ENDIF}IBaseFiller, IFiller, IFillerItems)
   private
     FFillerItemsImpl: TJvFillerItems;
     FNotifiers: TInterfaceList;
   protected
     procedure NotifyConsumers(ChangeReason: TJvFillerChangeReason);
+    {$IFNDEF COMPILER6_UP}
+    { IInterfaceComponentReference }
+    function GetComponent: TComponent;
+    {$ENDIF COMPILER6_UP}
     { IFiller }
     function getSupports: TJvFillerSupports;
     function getOptionClass: TJvFillerOptionsClass;
@@ -154,6 +160,13 @@ begin
     (FNotifiers[I] as IFillerNotify).FillerChanging(Self, ChangeReason);
 end;
 
+{$IFNDEF COMPILER6_UP}
+function TJvFontFiller.GetComponent: TComponent;
+begin
+  Result := Self;
+end;
+{$ENDIF COMPILER6_UP}
+
 function TJvFontFiller.getSupports: TJvFillerSupports;
 begin
   Result := [fsText, fsReadOnly, fsCanrender, fsCanMeasure];
@@ -179,7 +192,7 @@ constructor TJvFontFiller.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FNotifiers := TInterfaceList.Create;
-  FFillerItemsImpl := TJvFontItems.CreateFiller(Self as IBaseFiller);
+  FFillerItemsImpl := TJvFontItems.CreateFiller(Self);
 end;
 
 destructor TJvFontFiller.Destroy;

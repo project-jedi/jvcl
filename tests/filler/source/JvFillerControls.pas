@@ -1,29 +1,48 @@
 unit JvFillerControls;
 // peter3
 interface
+
+{$I JVCL.INC}
+
 uses
-  Windows, Classes, StdCtrls, Controls, Graphics, JvFillIntf5;
+  Windows, Classes, StdCtrls, Controls, Graphics, JvFillIntf, JvListBox;
 
 type
-  TJvFillListBox = class(TCustomListBox, IFillerNotify)
+  TJvFillListBox = class(TJvCustomListBox, IFillerNotify)
   private
     FFiller: IFiller;
     procedure FillerChanging(const AFiller: IFiller; AReason: TJvFillerChangeReason);
     procedure FillerChanged(const AFiller: IFiller; AReason: TJvFillerChangeReason);
     procedure setFiller(const Value: iFiller);
+    {$IFNDEF COMPILER6_UP}
+    function GetFillerComp: TComponent;
+    procedure SetFillerComp(Value: TComponent);
+    {$ENDIF COMPILER6_UP}
   protected
-    procedure DrawItem(Index: Integer; Rect: TRect;
-      State: TOwnerDrawState); override;
+    { Used to emulate owner draw, creates a list of empty items (low overhead for the items) and
+      thus maintain the ability to use lbOwnerDrawVariable as drawing style. }
+    function GetCount: Integer; {$IFNDEF COMPILER6_UP}virtual;{$ELSE}override;{$ENDIF COMPILER6_UP}
+    procedure SetCount(Value: Integer); virtual;
+    { Direct link to actual filler interface. This is done to aid in the implementation (less
+      IFDEF's in the code; always refer to FillerIntf and it's working in all Delphi versions). }
+    function FillerIntf: IFiller;
+    procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure MeasureItem(Index: Integer; var Height: Integer);override;
-
+    property Count: Integer read GetCount write SetCount;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
-      AHeight: Integer);override;
+    procedure CreateParams(var Params: TCreateParams); override;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer);override;
   published
-    property Items: IFiller read FFiller write setFiller;
+    {$IFDEF COMPILER6_UP}
+    property Filler: IFiller read FFiller write setFiller;
+    {$ELSE}
+    property Filler: TComponent read GetFillerComp write SetFillerComp;
+    {$ENDIF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     property AutoComplete;
+    {$ENDIF COMPILER6_UP}
     property Align;
     property Anchors;
     property BevelEdges;
@@ -53,18 +72,23 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
+    {$IFDEF COMPILER6_UP}
     property ScrollWidth;
+    {$ENDIF COMPILER6_UP}
     property ShowHint;
     property Sorted;
+    property Style;
     property TabOrder;
     property TabStop;
     property TabWidth;
     property Visible;
     property OnClick;
     property OnContextPopup;
+    {$IFDEF COMPILER6_UP}
     property OnData;
     property OnDataFind;
     property OnDataObject;
+    {$ENDIF COMPILER6_UP}
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -84,17 +108,15 @@ type
     property OnStartDrag;
   end;
 
-  TFillLabel = class(TCustomLabel, IFillerNotify)
+(*  TFillLabel = class(TCustomLabel, IFillerNotify)
   private
     FFiller: IFiller;
     FIndex: Integer;
     procedure SetFiller(const Value: IFiller);
     procedure SetIndex(const Value: Integer);
   protected
-    procedure FillerChanging(const AFiller: IFiller; AReason:
-      TJvFillerChangeReason);
-    procedure FillerChanged(const AFiller: IFiller; AReason:
-      TJvFillerChangeReason);
+    procedure FillerChanging(const AFiller: IFiller; AReason: TJvFillerChangeReason);
+    procedure FillerChanged(const AFiller: IFiller; AReason: TJvFillerChangeReason);
     procedure UpdateCaption;
     function GetLabelText: string; override;
     procedure DoDrawText(var Rect: TRect; Flags: Longint); override;
@@ -140,36 +162,53 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    {$IFDEF COMPILER6_UP}
     property OnMouseEnter;
     property OnMouseLeave;
+    {$ENDIF COMPILER6_UP}
     property OnStartDock;
     property OnStartDrag;
-  end;
+  end;*)
 
 implementation
 
-uses Math;
-const
-  cStyle = lbVirtualOwnerDraw;
+uses
+  Math,
+  JclStrings,
+  JvTypes;
 
-  { TJvFillListBox }
+{ TJvFillListBox }
 
 constructor TJvFillListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  OwnerData := False;
 end;
 
 destructor TJvFillListBox.Destroy;
 begin
-  //  Style := lbStandard;
-  Items := nil;
+  Filler := nil;
   inherited;
 end;
 
-procedure TJvFillListBox.DrawItem(Index: Integer; Rect: TRect;
-  State: TOwnerDrawState);
+function TJvFillListBox.GetCount: Integer;
 begin
-  if Items <> nil then
+  Result := Items.Count;
+end;
+
+procedure TJvFillListBox.SetCount(Value: Integer);
+begin
+  Items.Text := StrRepeat(#13#10, Value);
+end;
+
+function TJvFillListBox.FillerIntf: IFiller;
+begin
+  Result := FFiller;
+end;
+
+procedure TJvFillListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
+begin
+  if FillerIntf <> nil then
   begin
     Canvas.Font := Font;
     if odSelected in State then
@@ -179,54 +218,76 @@ begin
     end
     else
       Canvas.Brush.Color := Color;
-    Items.DrawItem(Canvas, Rect, Index, State);
+    (FillerIntf as IFillerItems).DrawItem(Canvas, Rect, Index, State);
   end
   else
     inherited;
 end;
 
-procedure TJvFillListBox.FillerChanged(const AFiller: IFiller;
-  AReason: TJvFillerChangeReason);
+procedure TJvFillListBox.FillerChanged(const AFiller: IFiller; AReason: TJvFillerChangeReason);
 begin
   case AReason of
     frDestroy:
       begin
-        if Style = cStyle then
+        if HasParent then
+        begin
+//          OwnerData := True;
           Count := 0;
-        Items := nil;
+        end;
+        FFiller := nil;
       end;
-  else
-    if Style = cStyle then
-      Count := Items.Count;
-    Invalidate;
+    else
+      begin
+        if HasParent then
+        begin
+//          OwnerData := True;
+          Count := (FillerIntf as IFillerItems).Count;
+        end;
+      end;
   end;
+  Invalidate;
 end;
 
-procedure TJvFillListBox.FillerChanging(const AFiller: IFiller;
-  AReason: TJvFillerChangeReason);
+procedure TJvFillListBox.FillerChanging(const AFiller: IFiller; AReason: TJvFillerChangeReason);
 begin
   case AReason of
     frDestroy:
       begin
-        if Style = cStyle then
+        if HasParent then
+        begin
+//          OwnerData := True;
           Count := 0;
-        Items := nil;
+        end;
+        FFiller := nil;
       end;
-  else
-    if Style = cStyle then
-      Count := Items.Count;
-    Invalidate;
+    else
+      begin
+        if HasParent then
+        begin
+//          OwnerData := True;
+          Count := (FillerIntf as IFillerItems).Count;
+        end;
+      end;
   end;
+  Invalidate;
 end;
 
 procedure TJvFillListBox.MeasureItem(Index: Integer; var Height: Integer);
-var aSize: TSize;
+var
+  aSize: TSize;
 begin
-  aSize.cy := 0;
-  if Items <> nil then
-    aSize := Items.MeasureItem(Canvas, Index);
+  aSize.cy := ItemHeight;
+  if FillerIntf <> nil then
+    aSize := (FillerIntf as IFillerItems).MeasureItem(Canvas, Index);
   if aSize.cy <> 0 then
     Height := aSize.cy;
+end;
+
+procedure TJvFillListBox.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  if Style = lbStandard then
+    Params.Style := Params.Style or LBS_OWNERDRAWFIXED;
 end;
 
 procedure TJvFillListBox.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
@@ -235,16 +296,20 @@ begin
   Invalidate;
 end;
 
-procedure TJvFillListBox.setFiller(const Value: iFiller);
-var aSize:TSize;
+procedure TJvFillListBox.setFiller(const Value: IFiller);
+var
+  aSize:TSize;
 begin
   if FFiller <> Value then
   begin
     if FFiller <> nil then
     begin
       FFiller.UnRegisterChangeNotify(self);
-      if (Style = cStyle) and HasParent then
+      if HasParent then
+      begin
+//        OwnerData := True;
         Count := 0;
+      end;
     end;
     FFiller := Value;
     if FFiller <> nil then
@@ -252,12 +317,12 @@ begin
       FFiller.RegisterChangeNotify(self);
       if HasParent then
       begin
-        Style := cStyle;
-        Count := FFiller.Count;
-      end
-      else
-        Style := lbStandard;
-      aSize := FFiller.MeasureItem(Canvas,-1);
+//        OwnerData := True;
+        Count := (FillerIntf as IFillerItems).Count;
+      end;
+{      else
+        OwnerData := False;}
+      aSize := (FillerIntf as IFillerItems).MeasureItem(Canvas, -1);
       if aSize.cx <> 0 then
         ClientWidth := aSize.cx;
       if aSize.cy <> 0 then
@@ -266,7 +331,45 @@ begin
   end;
 end;
 
-{ TFillLabel }
+{$IFNDEF COMPILER6_UP}
+function TJvFillListBox.GetFillerComp: TComponent;
+var
+  CompRef: IInterfaceComponentReference;
+begin
+  if FFiller = nil then
+    Result := nil
+  else
+  begin
+    if Succeeded(FFiller.QueryInterface(IInterfaceComponentReference, CompRef)) then
+      Result := CompRef.GetComponent
+    else
+      Result := nil;
+  end;
+end;
+
+procedure TJvFillListBox.SetFillerComp(Value: TComponent);
+var
+  CompRef: IInterfaceComponentReference;
+  FillerRef: IFiller;
+begin
+  if Value = nil then
+    setFiller(nil)
+  else
+  begin
+    if Value.GetInterface(IInterfaceComponentReference, CompRef) then
+    begin
+      if Value.GetInterface(IFiller, FillerRef) then
+        setFiller(FillerRef)
+      else
+        raise EJVCLException.Create('Component does not support the IFiller interface.');
+    end
+    else
+      raise EJVCLException.Create('Component does not support the IInterfaceComponentReference interface.');
+  end;
+end;
+{$ENDIF COMPILER6_UP}
+
+(*{ TFillLabel }
 
 constructor TFillLabel.Create(AOwner: TComponent);
 begin
@@ -353,6 +456,6 @@ begin
   end;
   Perform(CM_TEXTCHANGED, 0, 0);
 end;
-
+*)
 end.
 

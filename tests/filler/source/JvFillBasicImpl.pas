@@ -11,7 +11,7 @@ unit JvFillBasicImpl;
 interface
 
 uses
-  Windows, Classes, SysUtils, Graphics, JvFillIntf;
+  Windows, Classes, SysUtils, Graphics, JvFillIntf{$IFNDEF COMPILER6UP}, ComObj{$ENDIF};
 
 type
   // Basic implementers
@@ -103,7 +103,6 @@ type
   end;
 
 implementation
-
 
 { TJvFillerTextItem }
 
