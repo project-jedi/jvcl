@@ -151,10 +151,6 @@
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
-    {$IFDEF REINTRODUCE_HITTEST}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -330,12 +326,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
- {$IFDEF REINTRODUCE_HITTEST}
-function TJvEx##ClassName.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
- {$ENDIF REINTRODUCE_HITTEST}
 
  {$IF not declared(PatchedVCLX)}
 procedure TJvEx##ClassName.MouseEnter(Control: TControl);
@@ -362,12 +352,7 @@ begin
 end;
 *)
 
-(*$DEFINE JV_CONTROL_EVENTS_IMPL(ClassName)
-JV_CONTROL_EVENTS_IMPLX(ClassName)
-{$IFDEF VCL}
-DISPATCHCODE(ClassName)
-{$ENDIF VCL}
-*)
+
 
 (*$DEFINE JV_WINCONTROL_EVENTS_IMPLX_OPEN_VCL(ClassName)
 JV_CONTROL_EVENTS_IMPLX(ClassName)
@@ -474,11 +459,13 @@ JV_WINCONTROL_EVENTS_IMPLX_OPEN_VCL
   EMPTYLINE
 *)
 
-(*$DEFINE JV_CUSTOMCONTROL_EVENTS_IMPL(ClassName)
-JV_WINCONTROL_EVENTS_IMPLX_OPEN_VCL(ClassName)
+
+
+(*$DEFINE JV_CONTROL_EVENTS_IMPL(ClassName)
+JV_CONTROL_EVENTS_IMPLX(ClassName)
+{$IFDEF VCL}
 DISPATCHCODE(ClassName)
 {$ENDIF VCL}
-  EMPTYLINE
 *)
 
 (*$DEFINE JV_WINCONTROL_EVENTS_IMPL(ClassName)
@@ -488,3 +475,19 @@ DISPATCHCODE(ClassName)
 {$ENDIF VCL}
   EMPTYLINE
 *)
+
+(*$DEFINE JV_CUSTOMCONTROL_EVENTS_IMPL(ClassName)
+JV_WINCONTROL_EVENTS_IMPLX_OPEN_VCL(ClassName)
+DISPATCHCODE(ClassName)
+{$ENDIF VCL}
+  EMPTYLINE
+*)
+
+{$DEFINE JV_CONTROL_EVENTS_IMPL_FEATURE_BEGIN(ClassName) JV_CONTROL_EVENTS_IMPL(ClassName)}
+{$DEFINE JV_WINCONTROL_EVENTS_IMPL_FEATURE_BEGIN(ClassName) JV_WINCONTROL_EVENTS_IMPL(ClassName)}
+{$DEFINE JV_CUSTOMCONTROL_EVENTS_IMPL_FEATURE_BEGIN(ClassName) JV_CUSTOMCONTROL_EVENTS_IMPL(ClassName)}
+
+{$DEFINE JV_CONTROL_EVENTS_IMPL_FEATURE_END(ClassName) }
+{$DEFINE JV_WINCONTROL_EVENTS_IMPL_FEATURE_END(ClassName) }
+{$DEFINE JV_CUSTOMCONTROL_EVENTS_IMPL_FEATURE_END(ClassName) }
+
