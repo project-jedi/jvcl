@@ -59,7 +59,6 @@ type
     dpColorMapping: TJvColorMappingProvider;
     procedure btnOKClick(Sender: TObject);
   private
-    { Private declarations }
     FDesigner: IFormDesigner;
     FDesignConsumer: TJvDataConsumer;
     FMappingConsumer: TJvDataConsumer;
@@ -96,11 +95,9 @@ function IsColorProviderDesingForm(Form: TJvBaseDesign; const Args: array of con
 begin
   Result := Form is TfrmJvColorProviderDesigner;
   if Result then
-  begin
     with Form as TfrmJvColorProviderDesigner do
       Result := (Pointer(Provider) = Args[0].VInterface) and
         (Pointer(Designer) = Args[1].VInterface);
-  end;
 end;
 
 procedure DesignColorProvider(AProvider: IJvDataProvider; ADesigner: IFormDesigner);

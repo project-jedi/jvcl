@@ -28,7 +28,8 @@ package JvWizardD5D;
 
 requires
   vcl50,
-  JvWizardD5R;
+  JvWizardD5R,
+  JvCoreD5D;
 
 contains
   JvWizardReg in '..\..\design\JvWizardReg.pas',

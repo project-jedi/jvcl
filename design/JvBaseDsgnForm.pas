@@ -39,7 +39,7 @@ type
   TJvBaseDesign = class(TJvForm)
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
-    procedure CMShowingChanged(var Msg: TMessage); message CM_SHowingChanged;
+    procedure CMShowingChanged(var Msg: TMessage); message CM_SHOWINGCHANGED;
   protected
     { Determines the key to write the settings to or read from. Generally you don't need to override
       this method.
@@ -79,6 +79,12 @@ uses
 
 {$R *.DFM}
 
+const
+  cHeight = 'Height';
+  cWidth = 'Width';
+  cLeft = 'Left';
+  cTop = 'Top';
+
 var
   DsgnFrmList: TList = nil;
 
@@ -87,6 +93,7 @@ var
   I: Integer;
 begin
   Result := nil;
+  // (rom) seems a capital bug calling CompareFunc which is explicitly nil
   if (DsgnFrmList <> nil) and (@CompareFunc = nil) then
   begin
     I := DsgnFrmList.Count - 1;
@@ -135,10 +142,10 @@ begin
     LazyWrite := False;
     if OpenKey(GetRegKey, True) then
     try
-      WriteInteger('Left', Left);
-      WriteInteger('Top', Top);
-      WriteInteger('Width', Width);
-      WriteInteger('Height', Height);
+      WriteInteger(cLeft, Left);
+      WriteInteger(cTop, Top);
+      WriteInteger(cWidth, Width);
+      WriteInteger(cHeight, Height);
     finally
       CloseKey;
     end;
@@ -158,14 +165,14 @@ begin
   try
     if OpenKey(GetRegKey, False) then
     try
-      if ValueExists('Width') then
-        Width := ReadInteger('Width');
-      if ValueExists('Height') then
-        Height := ReadInteger('Height');
-      if ValueExists('Left') then
-        Left := ReadInteger('Left');
-      if ValueExists('Top') then
-        Top := ReadInteger('Top');
+      if ValueExists(cWidth) then
+        Width := ReadInteger(cWidth);
+      if ValueExists(cHeight) then
+        Height := ReadInteger(cHeight);
+      if ValueExists(cLeft) then
+        Left := ReadInteger(cLeft);
+      if ValueExists(cTop) then
+        Top := ReadInteger(cTop);
     finally
       CloseKey;
     end;

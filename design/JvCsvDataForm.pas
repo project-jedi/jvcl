@@ -151,7 +151,7 @@ begin
   try
     if Count < 2 then
     begin { no colon! }
-        { defaults to string, length DEFAULT_CSV_STR_FIELD}
+      { defaults to string, length DEFAULT_CSV_STR_FIELD}
       EditFieldName.Text := SelectedText;
       FFieldTypeCh := '$';
       FieldLength := DEFAULT_CSV_STR_FIELD;
@@ -322,9 +322,9 @@ begin
   end;
    // XXX Check Validity and Uniqueness before adding.
   F := FieldNameOnly(S);
-  if (not ValidIdentifier(PChar(F))) then
+  if not ValidIdentifier(PChar(F)) then
   begin
-    MessageBox(Self.Handle, PChar(Format(SsFieldNameIsNotAValidIdentifier, [S])),
+    MessageBox(Self.Handle, PChar(Format(SFieldNameIsNotAValidIdentifier, [S])),
       PChar(SAddFailed), MB_OK or MB_ICONERROR);
     Exit;
   end;
@@ -368,7 +368,7 @@ begin
   F := FieldNameOnly(S);
   if not ValidIdentifier(PChar(F)) then
   begin
-    MessageBox(Self.Handle, PChar(Format(SsFieldNameIsNotAValidIdentifier, [S])),
+    MessageBox(Self.Handle, PChar(Format(SFieldNameIsNotAValidIdentifier, [S])),
       PChar(SUpdateFailed), MB_OK or MB_ICONERROR);
     Exit;
   end;

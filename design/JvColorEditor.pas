@@ -37,7 +37,7 @@ uses
   RTLConsts, DesignIntf, VCLEditors, DesignEditors,
   {$ELSE}
   DsgnIntf,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvTypes, JvJVCLUtils;
 
 type
@@ -153,6 +153,8 @@ var
   OldPenColor, OldBrushColor: TColor;
 
   function ColorToBorderColor(AColor: TColor): TColor;
+  const
+    cBlackLevel = 192;
   type
     TColorQuad = record
       Red: Byte;
@@ -161,8 +163,9 @@ var
       Alpha: Byte;
     end;
   begin
-    if (TColorQuad(AColor).Red > 192) or (TColorQuad(AColor).Green > 192) or
-      (TColorQuad(AColor).Blue > 192) then
+    // (rom) > or >= ?
+    if (TColorQuad(AColor).Red > cBlackLevel) or (TColorQuad(AColor).Green > cBlackLevel) or
+      (TColorQuad(AColor).Blue > cBlackLevel) then
       Result := clBlack
     else
     if ASelected then

@@ -47,14 +47,10 @@ type
     function GetAttributes: TPropertyAttributes; override;
   end;
 
-
 implementation
 
 uses
   JvBehaviorLabel;
-
-
-//=== TJvLabelBehaviorProperty ===============================================
 
 function TJvLabelBehaviorProperty.AutoFill: Boolean;
 begin

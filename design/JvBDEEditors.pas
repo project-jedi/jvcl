@@ -51,7 +51,6 @@ type
     procedure GetValueList(List: TStrings); override;
   end;
 
-
 implementation
 
 uses

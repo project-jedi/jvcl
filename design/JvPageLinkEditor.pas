@@ -281,7 +281,7 @@ begin
   with Self.Create(Application) do
   try
     AssignComponents(TreeView, PageList);
-    Result := ShowModal = mrOK;
+    Result := ShowModal = mrOk;
     if Result then
       AssignToComponents(TreeView, PageList);
   finally

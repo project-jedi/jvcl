@@ -23,21 +23,23 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 {$I WINDOWSONLY.INC}
+
 unit JvValidatorsEditorForm;
 
 interface
 
-uses                 
+uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ComCtrls, ToolWin, JvValidators,
-{$IFDEF COMPILER6_UP}
+  Dialogs, ComCtrls, ToolWin, StdCtrls, Menus, ActnList, ImgList,
+  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, DesignWindows,
-{$ELSE}
+  {$ELSE}
   DsgnIntf, DsgnWnds,
-{$ENDIF}
-  StdCtrls, Menus, ActnList, ImgList;
+  {$ENDIF COMPILER6_UP}
+  JvValidators;
 
 type
   TfrmValidatorsEditor = class(TDesignWindow)
@@ -79,30 +81,29 @@ type
     procedure acMoveDownExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
-    { Private declarations }
     FValidator: TJvValidators;
-    function AddExisting(Validator: TJvBaseValidator): integer; overload;
-    function AddNew(ValidatorClass: TJvBaseValidatorClass): integer; overload;
-    procedure Delete(Index: integer);
+    function AddExisting(Validator: TJvBaseValidator): Integer; overload;
+    function AddNew(ValidatorClass: TJvBaseValidatorClass): Integer; overload;
+    procedure Delete(Index: Integer);
     procedure ClearValidators;
     procedure SelectItem(AObject: TPersistent);
-    procedure UpdateItem(Index: integer);
+    procedure UpdateItem(Index: Integer);
     procedure UpdateCaption;
     procedure SetValidator(const Value: TJvValidators);
     procedure DoAddNewValidator(Sender: TObject);
     procedure AddValidatorClasses;
   public
     procedure Activated; override;
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     procedure DesignerClosed(const Designer: IDesigner; AGoingDormant: Boolean); override;
     procedure ItemsModified(const Designer: IDesigner); override;
-{$ELSE}
+    {$ELSE}
     procedure ComponentDeleted(Component: IPersistent); override;
     function UniqueName(Component: TComponent): string; override;
     procedure FormClosed(AForm: TCustomForm); override;
     procedure FormModified; override;
-{$ENDIF}
+    {$ENDIF}
     function GetEditState: TEditState; override;
     property Validator: TJvValidators read FValidator write SetValidator;
   end;
@@ -131,83 +132,69 @@ type
   TJvErrorIndicatorProperty = class(TComponentProperty)
     procedure GetValues(Proc: TGetStrProc); override;
   end;
-  {$ENDIF}
-
-
-
-
-resourcestring
-  sJvValidatorsItemsEditor = 'JvValidators Items Editor...';
-  sJvValidatorItemsEditor = 'JvValidator Items Editor';
+  {$ENDIF COMPILER6_UP}
 
 implementation
+
 uses
-  JvErrorIndicator, TypInfo;
+  TypInfo,
+  JvErrorIndicator, JvDsgnConsts;
 
 {$R *.dfm}
 
 procedure ShowEditor(Designer: IDesigner; AValidator: TJvValidators);
 var
-  i: Integer;
+  I: Integer;
   AEditor: TfrmValidatorsEditor;
 begin
   // because the page list editor is not show modal, so
   // we need to find it rather than create a new instance.
   AEditor := nil;
-  for i := 0 to Screen.FormCount - 1 do
-  begin
-    if Screen.Forms[i] is TfrmValidatorsEditor then
-    begin
-      if TfrmValidatorsEditor(Screen.Forms[i]).Validator = AValidator then
+  for I := 0 to Screen.FormCount - 1 do
+    if Screen.Forms[I] is TfrmValidatorsEditor then
+      if TfrmValidatorsEditor(Screen.Forms[I]).Validator = AValidator then
       begin
-        AEditor := TfrmValidatorsEditor(Screen.Forms[i]);
+        AEditor := TfrmValidatorsEditor(Screen.Forms[I]);
         Break;
       end;
-    end;
-  end;
   // Show the wizard editor
   if Assigned(AEditor) then
   begin
     AEditor.Show;
     if AEditor.WindowState = wsMinimized then
-    begin
       AEditor.WindowState := wsNormal;
-    end;
   end
   else
   begin
     AEditor := TfrmValidatorsEditor.Create(Application);
     try
-{$IFDEF COMPILER6_UP}
+      {$IFDEF COMPILER6_UP}
       AEditor.Designer := Designer;
-{$ELSE}
+      {$ELSE}
       AEditor.Designer := Designer as IFormDesigner;
-{$ENDIF}
+      {$ENDIF COMPILER6_UP}
       AEditor.Validator := AValidator;
       AEditor.Show;
     except
-      if Assigned(AEditor) then
-      begin
-        AEditor.Free;
-      end;
+      AEditor.Free;
       raise;
     end;
   end;
 end;
 
-{ TJvValidatorComponent }
+//=== TJvValidatorComponent ==================================================
 
 procedure TJvValidatorComponent.ExecuteVerb(Index: Integer);
 begin
   if (Index = 0) and (Component is TJvValidators) then
     ShowEditor(Designer, TJvValidators(Component))
   else
-    inherited;
+    inherited ExecuteVerb(Index);
 end;
 
 function TJvValidatorComponent.GetVerb(Index: Integer): string;
 begin
-  Result := sJvValidatorsItemsEditor;
+  Result := SJvValidatorsItemsEditorEllipsis;
 end;
 
 function TJvValidatorComponent.GetVerbCount: Integer;
@@ -215,7 +202,7 @@ begin
   Result := 1;
 end;
 
-{ TfrmValidatorsEditor }
+//== TfrmValidatorsEditor ====================================================
 
 procedure TfrmValidatorsEditor.FormCreate(Sender: TObject);
 begin
@@ -223,16 +210,17 @@ begin
 end;
 
 procedure TfrmValidatorsEditor.Activated;
-var i: integer;
+var
+  I: Integer;
 begin
-  inherited;
+  inherited Activated;
   ClearValidators;
   if FValidator = nil then
     Exit;
   lbValidators.Items.BeginUpdate;
   try
-    for i := 0 to FValidator.Count - 1 do
-      AddExisting(FValidator.Items[i]);
+    for I := 0 to FValidator.Count - 1 do
+      AddExisting(FValidator.Items[I]);
   finally
     lbValidators.Items.EndUpdate;
     lbValidators.ItemIndex := 0;
@@ -255,9 +243,10 @@ end;
 
 procedure TfrmValidatorsEditor.ItemDeleted(const ADesigner: IDesigner;
   Item: TPersistent);
-var i, j: integer;
+var
+  I, J: Integer;
 begin
-  inherited;
+  inherited ItemDeleted(ADesigner, Item);
   if not (csDestroying in ComponentState) then
   begin
     if Item = Validator then
@@ -267,15 +256,15 @@ begin
       Close;
     end
     else
-      for i := 0 to lbValidators.Items.Count - 1 do
-        if Item = lbValidators.Items.Objects[i] then
+      for I := 0 to lbValidators.Items.Count - 1 do
+        if Item = lbValidators.Items.Objects[I] then
         begin
-          j := lbValidators.ItemIndex;
-          lbValidators.Items.Delete(i);
+          J := lbValidators.ItemIndex;
+          lbValidators.Items.Delete(I);
           if lbValidators.ItemIndex < 0 then
-            lbValidators.ItemIndex := j;
+            lbValidators.ItemIndex := J;
           if lbValidators.ItemIndex < 0 then
-            lbValidators.ItemIndex := j - 1;
+            lbValidators.ItemIndex := J - 1;
           Exit;
         end;
     UpdateCaption;
@@ -284,19 +273,22 @@ end;
 
 procedure TfrmValidatorsEditor.ItemsModified(const Designer: IDesigner);
 begin
-  inherited;
+  inherited ItemsModified(Designer);
   if not (csDestroying in ComponentState) then
   begin
     UpdateItem(lbValidators.ItemIndex);
     UpdateCaption;
   end;
 end;
+
 {$ELSE}
 
 procedure TfrmValidatorsEditor.ComponentDeleted(Component: IPersistent);
-var Item: TPersistent; i, j: integer;
+var
+  Item: TPersistent;
+  I, J: Integer;
 begin
-  inherited;
+  inherited ComponentDeleted(Component);
   Item := ExtractPersistent(Component);
   if not (csDestroying in ComponentState) then
   begin
@@ -307,15 +299,15 @@ begin
       Close;
     end
     else
-      for i := 0 to lbValidators.Items.Count - 1 do
-        if Item = lbValidators.Items.Objects[i] then
+      for I := 0 to lbValidators.Items.Count - 1 do
+        if Item = lbValidators.Items.Objects[I] then
         begin
-          j := lbValidators.ItemIndex;
-          lbValidators.Items.Delete(i);
+          J := lbValidators.ItemIndex;
+          lbValidators.Items.Delete(I);
           if lbValidators.ItemIndex < 0 then
-            lbValidators.ItemIndex := j;
+            lbValidators.ItemIndex := J;
           if lbValidators.ItemIndex < 0 then
-            lbValidators.ItemIndex := j - 1;
+            lbValidators.ItemIndex := J - 1;
           Exit;
         end;
     UpdateCaption;
@@ -324,14 +316,14 @@ end;
 
 procedure TfrmValidatorsEditor.FormClosed(AForm: TCustomForm);
 begin
-  inherited;
+  inherited FormClosed(AForm);
   if AForm = Designer.Form then
     Close;
 end;
 
 procedure TfrmValidatorsEditor.FormModified;
 begin
-  inherited;
+  inherited FormModified;
   if not (csDestroying in ComponentState) then
   begin
     UpdateItem(lbValidators.ItemIndex);
@@ -344,30 +336,30 @@ begin
   Result := Designer.UniqueName(Component.ClassName);
 end;
 
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
-procedure TfrmValidatorsEditor.UpdateItem(Index: integer);
-var i: integer;
+procedure TfrmValidatorsEditor.UpdateItem(Index: Integer);
+var
+  I: Integer;
 begin
   with lbValidators do
     if (Index < 0) or (Index >= Items.Count) then
-    begin
-      for i := 0 to Items.Count - 1 do
-        Items[i] := TComponent(Items.Objects[i]).Name;
-    end
+      for I := 0 to Items.Count - 1 do
+        Items[I] := TComponent(Items.Objects[I]).Name
     else
       Items[Index] := TComponent(Items.Objects[Index]).Name;
 end;
 
-function TfrmValidatorsEditor.AddExisting(Validator: TJvBaseValidator): integer;
+function TfrmValidatorsEditor.AddExisting(Validator: TJvBaseValidator): Integer;
 begin
   Result := lbValidators.Items.AddObject(Validator.Name, Validator);
   lbValidators.ItemIndex := Result;
   lbValidatorsClick(nil);
 end;
 
-function TfrmValidatorsEditor.AddNew(ValidatorClass: TJvBaseValidatorClass): integer;
-var V: TJvBaseValidator;
+function TfrmValidatorsEditor.AddNew(ValidatorClass: TJvBaseValidatorClass): Integer;
+var
+  V: TJvBaseValidator;
 begin
   V := ValidatorClass.Create(FValidator.Owner);
   try
@@ -385,8 +377,9 @@ begin
   lbValidators.Items.Clear;
 end;
 
-procedure TfrmValidatorsEditor.Delete(Index: integer);
-var V:TJvBaseValidator;
+procedure TfrmValidatorsEditor.Delete(Index: Integer);
+var
+  V: TJvBaseValidator;
 begin
   with lbValidators do
     if (Index > -1) and (Index < Items.Count) then
@@ -412,7 +405,7 @@ end;
 
 procedure TfrmValidatorsEditor.UpdateCaption;
 begin
-  Caption := sJvValidatorItemsEditor;
+  Caption := SJvValidatorItemsEditorEllipsis;
 end;
 
 procedure TfrmValidatorsEditor.FormClose(Sender: TObject;
@@ -433,7 +426,8 @@ procedure TfrmValidatorsEditor.alEditorUpdate(Action: TBasicAction;
 begin
   acDelete.Enabled := lbValidators.ItemIndex > -1;
   acMoveUp.Enabled := lbValidators.ItemIndex > 0;
-  acMoveDown.Enabled := (lbValidators.ItemIndex < lbValidators.Items.Count - 1) and acDelete.Enabled;
+  acMoveDown.Enabled := (lbValidators.ItemIndex < lbValidators.Items.Count - 1) and
+    acDelete.Enabled;
 end;
 
 procedure TfrmValidatorsEditor.acNewRequiredExecute(Sender: TObject);
@@ -467,28 +461,30 @@ begin
 end;
 
 procedure TfrmValidatorsEditor.acMoveUpExecute(Sender: TObject);
-var i: integer;
+var
+  I: Integer;
 begin
   with lbValidators do
   begin
-    i := ItemIndex;
-    Items.Exchange(i, i - 1);
-    FValidator.Exchange(i, i - 1);
+    I := ItemIndex;
+    Items.Exchange(I, I - 1);
+    FValidator.Exchange(I, I - 1);
   end;
 end;
 
 procedure TfrmValidatorsEditor.acMoveDownExecute(Sender: TObject);
-var i: integer;
+var
+  I: Integer;
 begin
   with lbValidators do
   begin
-    i := ItemIndex;
-    Items.Exchange(i, i + 1);
-    FValidator.Exchange(i, i + 1);
+    I := ItemIndex;
+    Items.Exchange(I, I + 1);
+    FValidator.Exchange(I, I + 1);
   end;
 end;
 
-procedure TfrmValidatorsEditor.DoAddNewValidator(Sender:TObject);
+procedure TfrmValidatorsEditor.DoAddNewValidator(Sender: TObject);
 begin
   with Sender as TAction do
     AddNew(TJvBaseValidatorClass(Tag));
@@ -498,46 +494,47 @@ type
   TJvBaseValidatorAccess = class(TJvBaseValidator);
 
 procedure TfrmValidatorsEditor.AddValidatorClasses;
-var i,j,k:integer;
-    A:TAction;
-    M:TMenuItem;
-    AName:string;
-    AClass:TJvBaseValidatorClass;
+var
+  I, J, K: Integer;
+  A: TAction;
+  M: TMenuItem;
+  AName: string;
+  AClass: TJvBaseValidatorClass;
 begin
-  j := TJvBaseValidatorAccess.BaseValidatorsCount;
-  k := 0;
-  for i := 0 to j - 1 do
+  J := TJvBaseValidatorAccess.BaseValidatorsCount;
+  K := 0;
+  for I := 0 to J - 1 do
   begin
-    TJvBaseValidatorAccess.GetBaseValidatorInfo(i,AName,AClass);
+    TJvBaseValidatorAccess.GetBaseValidatorInfo(I, AName, AClass);
     if AName = '' then
     begin
-      Inc(k);
+      Inc(K);
       Continue;
     end;
-    A := TAction.Create(self);
+    A := TAction.Create(Self);
     A.Caption := AName;
-    A.Tag := integer(AClass);
+    A.Tag := Integer(AClass);
     A.ImageIndex := 0;
-    if i-k < 9 then
-      A.ShortCut := ShortCut(Ord('0')+i+1-k,[ssCtrl]);
+    if I - K < 9 then
+      A.ShortCut := ShortCut(Ord('0') + I + 1 - K, [ssCtrl]);
     A.OnExecute := DoAddNewValidator;
-    M := TMenuItem.Create(self);
+    M := TMenuItem.Create(Self);
     M.Action := A;
-    if i = 0 then
+    if I = 0 then
     begin
-      M.Default := true;
+      M.Default := True;
       btnNew.Action := A;
     end;
     popNew.Items.Add(M);
   end;
-  if j < 2 then
+  if J < 2 then
     btnNew.Style := tbsButton
   else
     btnNew.Style := tbsDropDown;
   ToolBar1.Width := 0;
 end;
 
-{ TJvPropertyValidateProperty }
+//=== TJvPropertyValidateProperty ============================================
 
 function TJvPropertyValidateProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -546,28 +543,30 @@ end;
 
 procedure TJvPropertyValidateProperty.GetValues(Proc: TGetStrProc);
 const
-  ValidKinds: TTypeKinds = [tkInteger, tkChar, tkEnumeration, tkFloat,
-  tkString, tkSet, tkWChar, tkLString, tkWString, tkVariant, tkInt64];
+  ValidKinds: TTypeKinds =
+    [tkInteger, tkChar, tkEnumeration, tkFloat, tkString, tkSet,
+     tkWChar, tkLString, tkWString, tkVariant, tkInt64];
 var
   PropList: PPropList;
   PropInfo: PPropInfo;
-  i, j: integer;
+  I, J: Integer;
   C: TControl;
 begin
-  if not (GetComponent(0) is TJvBaseValidator) then Exit;
+  if not (GetComponent(0) is TJvBaseValidator) then
+    Exit;
   C := TJvBaseValidator(GetComponent(0)).ControlToValidate;
   if C = nil then
     Exit;
-  j := GetPropList(PTypeInfo(C.ClassInfo), ValidKinds, nil);
-  if j > 0 then
+  J := GetPropList(PTypeInfo(C.ClassInfo), ValidKinds, nil);
+  if J > 0 then
   begin
-    GetMem(PropList, j * SizeOf(Pointer));
-    j := GetPropList(PTypeInfo(C.ClassInfo), ValidKinds, PropList);
-    if j > 0 then
+    GetMem(PropList, J * SizeOf(Pointer));
+    J := GetPropList(PTypeInfo(C.ClassInfo), ValidKinds, PropList);
+    if J > 0 then
     try
-      for i := 0 to j - 1 do
+      for I := 0 to J - 1 do
       begin
-        PropInfo := PropList^[i];
+        PropInfo := PropList^[I];
         if (PropInfo <> nil) and (PropInfo.PropType^.Kind in ValidKinds) then
           Proc(PropInfo.Name);
       end;
@@ -577,28 +576,35 @@ begin
   end;
 end;
 
-{ TJvValidationSummaryProperty }
 {$IFNDEF COMPILER6_UP}
+
+//=== TJvValidationSummaryProperty ===========================================
+
 procedure TJvValidationSummaryProperty.GetValues(Proc: TGetStrProc);
-var i:integer;obj:IJvValidationSummary;
+var
+  I: Integer;
+  Obj: IJvValidationSummary;
 begin
-  for i := 0 to Designer.Form.ComponentCount - 1 do
-    if Supports(Designer.Form.Components[i],IJvValidationSummary,obj) and
-      (Designer.Form.Components[i] <> GetComponent(0)) then
-      Proc(Designer.Form.Components[i].Name);
+  for I := 0 to Designer.Form.ComponentCount - 1 do
+    if Supports(Designer.Form.Components[I], IJvValidationSummary, Obj) and
+      (Designer.Form.Components[I] <> GetComponent(0)) then
+      Proc(Designer.Form.Components[I].Name);
 end;
 
-{ TJvErrorIndicatorProperty }
+//=== TJvErrorIndicatorProperty ==============================================
 
 procedure TJvErrorIndicatorProperty.GetValues(Proc: TGetStrProc);
-var i:integer;obj:IJvErrorIndicator;
+var
+  I: Integer;
+  Obj: IJvErrorIndicator;
 begin
-  for i := 0 to Designer.Form.ComponentCount - 1 do
-    if Supports(Designer.Form.Components[i],IJvErrorIndicator,obj) and
-      (Designer.Form.Components[i] <> GetComponent(0)) then
-      Proc(Designer.Form.Components[i].Name);
+  for I := 0 to Designer.Form.ComponentCount - 1 do
+    if Supports(Designer.Form.Components[I], IJvErrorIndicator, Obj) and
+      (Designer.Form.Components[I] <> GetComponent(0)) then
+      Proc(Designer.Form.Components[I].Name);
 end;
-{$ENDIF}
+
+{$ENDIF COMPILER6_UP}
 
 end.
 

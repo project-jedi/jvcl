@@ -314,6 +314,7 @@ resourcestring
   SPaletteDialog = 'Jv Dialogs';
   SPaletteButton = 'Jv Buttons';
   SPaletteEdit = 'Jv Edits';
+  SPaletteCustom = 'Jv Custom';
   SPaletteBarPanel = 'Jv Bars and Panels';
   SPaletteLabel = 'Jv Labels';
   SPaletteListComboTree = 'Jv Lists, Combos and Trees';

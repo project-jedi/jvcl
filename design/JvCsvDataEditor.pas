@@ -21,7 +21,9 @@ Last Modified: 2003-04-26
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-description : TJvCsvDataSet data access component. Design time unit.
+Description:
+  TJvCsvDataSet data access component. Design time unit.
+  (contains property editors for TCsvDataSource component)
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -29,13 +31,6 @@ Known Issues:
 {$I JVCL.INC}
 
 unit JvCsvDataEditor;
-
-{
-  Design Time unit
-  (contains property editors for TCsvDataSource component)
-  Written by Warren Postma.
-  Donated to Delphi Jedi Project.
-}
 
 interface
 
@@ -74,7 +69,7 @@ procedure Register;
 implementation
 
 uses
-  JvCsvDataForm, JvDsgnConsts, JvConsts;
+  JvCsvDataForm, JvConsts, JvDsgnConsts;
 
 { CsvDataDefStrDsgn= String Editor at design time for CSVDefs }
 
@@ -109,18 +104,18 @@ end;
 
 procedure TJvCsvDefStrProperty.Edit;
 var
-  s1, s2: string;
+  S1, S2: string;
   Component: TJvCsvCustomInMemoryDataSet;
 begin
   Component := GetComponent(0) as TJvCsvCustomInMemoryDataSet;
 
-  s1 := GetValue;
-  if s1 = '' then
-    s1 := Component.GetCsvHeader; // TODO! read first line of CSV file!
-  s2 := DoCsvDefDialog(s1);
+  S1 := GetValue;
+  if S1 = '' then
+    S1 := Component.GetCsvHeader; // TODO! read first line of CSV file!
+  S2 := DoCsvDefDialog(S1);
 
-    //if s1<>s2 then begin // on change of csv value.
-  SetValue(s2);
+    //if S1 <> S2 then begin // on change of csv value.
+  SetValue(S2);
     //end
 end;
 
@@ -170,7 +165,6 @@ begin
   end;
 end;
 }
-
 
 //=== TJvFilenameProperty ====================================================
 

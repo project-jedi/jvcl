@@ -29,7 +29,8 @@ package JvWizardD7D;
 requires
   rtl,
   designide,
-  JvWizardD7R;
+  JvWizardD7R,
+  JvCoreD7D;
 
 contains
   JvWizardReg in '..\..\design\JvWizardReg.pas',

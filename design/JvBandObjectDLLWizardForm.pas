@@ -51,7 +51,6 @@ type
     procedure HelpClick(Sender: TObject);
   end;
 
-
 implementation
 
 uses
@@ -67,7 +66,7 @@ begin
     if not IsValidIdent(Text) then
     begin
       SetFocus;
-      raise Exception.Create(SBandNameHasToBeAValidIdentifier);
+      raise EJVCLException.Create(SBandNameHasToBeAValidIdentifier);
     end;
   end;
   with EditBandDesc do
@@ -76,10 +75,10 @@ begin
     if Text = '' then
     begin
       SetFocus;
-      raise Exception.Create(SPleaseEnterBandDescription);
+      raise EJVCLException.Create(SPleaseEnterBandDescription);
     end;
   end;
-  ModalResult := mrOK;
+  ModalResult := mrOk;
 end;
 
 procedure TzWizardForm.HelpClick(Sender: TObject);

@@ -36,7 +36,7 @@ uses
   DsgnIntf;
   {$ELSE}
   DesignIntf, DesignEditors;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 
 type
   // (p3) changed to show the "friendly" names in a list: replaces
@@ -74,7 +74,7 @@ begin
   GetControlPanelApplets(S, '*.cpl', FApplets, nil);
 end;
 
-//=== TJvAppletNameProperty ===================================================
+//=== TJvAppletNameProperty ==================================================
 
 function TJvAppletNameProperty.GetAttributes: TPropertyAttributes;
 begin

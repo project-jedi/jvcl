@@ -36,7 +36,7 @@ uses
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
   {$ELSE}
   LibIntf, DsgnIntf,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvDBEditors, JvBDESecurity;
 
 

@@ -203,7 +203,7 @@ begin
     for I := 0 to LogicProducer.CommentAreas.Count - 1 do
       AddShape(LogicProducer.CommentAreas[I]);
 
-    Result := ShowModal = mrOK;
+    Result := ShowModal = mrOk;
   finally
     fLogicItemEditor.Free;
   end;

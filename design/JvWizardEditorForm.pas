@@ -39,20 +39,21 @@ Known Issues:
                       TJvWizardPageList dialog form added
 ******************************************************************************}
 
+{$I JVCL.INC}
+
 unit JvWizardEditorForm;
 
 interface
 
-{$I JVCL.INC}
-
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvWizard, ActnList, ImgList, ComCtrls, StdCtrls, ToolWin, Menus,
+  ActnList, ImgList, ComCtrls, StdCtrls, ToolWin, Menus,
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, DesignWindows;
+  DesignIntf, DesignEditors, DesignWindows,
   {$ELSE}
-  DsgnIntf, DsgnWnds;
-  {$ENDIF}
+  DsgnIntf, DsgnWnds,
+  {$ENDIF COMPILER6_UP}
+  JvWizard;
 
 type
   TJvWizardActivePageProperty = class(TComponentProperty)
@@ -138,51 +139,38 @@ type
     function UniqueName(Component: TComponent): string; override;
     procedure FormClosed(AForm: TCustomForm); override;
     procedure FormModified; override;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     function GetEditState: TEditState; override;
   end;
 
 implementation
 
+uses
+  JvDsgnConsts;
+
 {$R *.DFM}
-
-resourcestring
-
-  rsPageList = 'Page List ...';
-  rsNewWelcomePage = 'New Welcome Page';
-  rsNewInteriorPage = 'New Interior Page';
-  rsNextPage = 'Next Page';
-  rsPreviousPage = 'Previous Page';
-  rsDeletePage = 'Delete Page';
-  rsNone = '(None)';
 
 procedure ShowWizardPageListEditor(Designer: IDesigner; AWizard: TJvWizard);
 var
-  i: Integer;
+  I: Integer;
   AWizardPageListEditor: TJvWizardPageListEditor;
 begin
   // because the page list editor is not show modal, so
   // we need to find it rather than create a new instance.
   AWizardPageListEditor := nil;
-  for i := 0 to Screen.FormCount - 1 do
-  begin
-    if Screen.Forms[i] is TJvWizardPageListEditor then
-    begin
-      if TJvWizardPageListEditor(Screen.Forms[i]).Wizard = AWizard then
+  for I := 0 to Screen.FormCount - 1 do
+    if Screen.Forms[I] is TJvWizardPageListEditor then
+      if TJvWizardPageListEditor(Screen.Forms[I]).Wizard = AWizard then
       begin
-        AWizardPageListEditor := TJvWizardPageListEditor(Screen.Forms[i]);
+        AWizardPageListEditor := TJvWizardPageListEditor(Screen.Forms[I]);
         Break;
       end;
-    end;
-  end;
   // Show the wizard editor
   if Assigned(AWizardPageListEditor) then
   begin
     AWizardPageListEditor.Show;
     if AWizardPageListEditor.WindowState = wsMinimized then
-    begin
       AWizardPageListEditor.WindowState := wsNormal;
-    end;
   end
   else
   begin
@@ -192,20 +180,17 @@ begin
       AWizardPageListEditor.Designer := Designer;
       {$ELSE}
       AWizardPageListEditor.Designer := IFormDesigner(Designer);
-      {$ENDIF}
+      {$ENDIF COMPILER6_UP}
       AWizardPageListEditor.Wizard := AWizard;
       AWizardPageListEditor.Show;
     except
-      if Assigned(AWizardPageListEditor) then
-      begin
-        AWizardPageListEditor.Free;
-      end;
+      AWizardPageListEditor.Free;
       raise;
     end;
   end;
 end;
 
-{ TJvWizardActivePageProperty }
+//=== TJvWizardActivePageProperty ============================================
 
 function TJvWizardActivePageProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -226,7 +211,7 @@ begin
   end;
 end;
 
-{ TJvWizardComponentEditor }
+//=== TJvWizardComponentEditor ===============================================
 
 procedure TJvWizardComponentEditor.AddPage(Page: TJvWizardCustomPage);
 begin
@@ -268,17 +253,23 @@ end;
 procedure TJvWizardComponentEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
-    0: ShowWizardPageListEditor(Designer, GetWizard);
-    1: AddWelcomePage;
-    2: AddInteriorPage;
-    3: NextPage(1);
-    4: NextPage(-1);
-    5: if Assigned(Wizard.ActivePage) then
-       begin
-         Designer.SelectComponent(Wizard);
-         Wizard.ActivePage.Free;
-         Designer.Modified;
-       end;
+    0:
+      ShowWizardPageListEditor(Designer, GetWizard);
+    1:
+      AddWelcomePage;
+    2:
+      AddInteriorPage;
+    3:
+      NextPage(1);
+    4:
+      NextPage(-1);
+    5:
+      if Assigned(Wizard.ActivePage) then
+      begin
+        Designer.SelectComponent(Wizard);
+        Wizard.ActivePage.Free;
+        Designer.Modified;
+      end;
   end;
 end;
 
@@ -293,12 +284,18 @@ end;
 function TJvWizardComponentEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := rsPageList;
-    1: Result := rsNewWelcomePage;
-    2: Result := rsNewInteriorPage;
-    3: Result := rsNextPage;
-    4: Result := rsPreviousPage;
-    5: Result := rsDeletePage;
+    0:
+      Result := SPageListEllipsis;
+    1:
+      Result := SNewWelcomePage;
+    2:
+      Result := SNewInteriorPage;
+    3:
+      Result := SNextPage;
+    4:
+      Result := SPreviousPage;
+    5:
+      Result := SDeletePage;
   end;
 end;
 
@@ -315,15 +312,13 @@ begin
   if Assigned(Page) and (Page <> Wizard.ActivePage) then
   begin
     if Component is TJvWizardCustomPage then
-    begin
       Designer.SelectComponent(Page);
-    end;
     Wizard.ActivePage := Page;
     Designer.Modified;
   end;
 end;
 
-{ TJvWizardPageListEditor }
+//=== TJvWizardPageListEditor ================================================
 
 procedure TJvWizardPageListProperty.Edit;
 begin
@@ -341,26 +336,24 @@ var
 begin
   APageList := TList(Pointer(GetOrdValue));
   if not Assigned(APageList) or (APageList.Count <= 0) then
-    Result := rsNone
+    Result := SNone
   else
     Result := Format('(%s)', [GetPropType^.Name]);
 end;
 
-{ TJvWizardPageList Dialog Form}
+//=== TJvWizardPageList Dialog Form ==========================================
 
 procedure TJvWizardPageListEditor.UpdatePageList(const CurrItemIndex: Integer);
 var
-  i: Integer;
+  I: Integer;
 begin
   if Assigned(FWizard) then
   begin
     lbxWizardPages.Items.BeginUpdate;
     try
       lbxWizardPages.Items.Clear;
-      for i := 0 to FWizard.PageCount - 1 do
-      begin
-        lbxWizardPages.Items.Add(TJvWizardCustomPage(FWizard.Pages[i]).Name);
-      end;
+      for I := 0 to FWizard.PageCount - 1 do
+        lbxWizardPages.Items.Add(TJvWizardCustomPage(FWizard.Pages[I]).Name);
       if (CurrItemIndex >= 0) and (CurrItemIndex < lbxWizardPages.Items.Count) then
         lbxWizardPages.ItemIndex := CurrItemIndex
       else
@@ -379,9 +372,7 @@ begin
   begin
     Page := nil;
     if (Index >= 0) and (Index < FWizard.PageCount) then
-    begin
       Page := TJvWizardCustomPage(FWizard.Pages[Index]);
-    end;
     Designer.SelectComponent(Page);
     Wizard.ActivePage := Page;
     Designer.Modified;
@@ -391,14 +382,10 @@ end;
 procedure TJvWizardPageListEditor.Activated;
 begin
   if (lbxWizardPages.ItemIndex < 0) and (lbxWizardPages.Items.Count > 0) then
-  begin
     lbxWizardPages.ItemIndex := 0;
-  end;
   if Assigned(FWizard) and Assigned(FWizard.ActivePage) and
-     (FWizard.ActivePage.PageIndex <> lbxWizardPages.ItemIndex) then
-  begin
+    (FWizard.ActivePage.PageIndex <> lbxWizardPages.ItemIndex) then
     lbxWizardPages.ItemIndex := FWizard.ActivePage.PageIndex;
-  end;
   SelectWizardPage(lbxWizardPages.ItemIndex);
 end;
 
@@ -408,9 +395,7 @@ procedure TJvWizardPageListEditor.DesignerClosed(const Designer: IDesigner;
   AGoingDormant: Boolean);
 begin
   if Designer = Self.Designer then
-  begin
     Close;
-  end;
 end;
 
 procedure TJvWizardPageListEditor.ItemDeleted(const ADesigner: IDesigner;
@@ -426,9 +411,7 @@ end;
 procedure TJvWizardPageListEditor.ItemsModified(const Designer: IDesigner);
 begin
   if not (csDestroying in ComponentState) then
-  begin
     UpdatePageList(lbxWizardPages.ItemIndex);
-  end;
 end;
 
 {$ELSE}
@@ -445,17 +428,13 @@ end;
 procedure TJvWizardPageListEditor.FormClosed(AForm: TCustomForm);
 begin
   if AForm = Designer.Form then
-  begin
     Close;
-  end;
 end;
 
 procedure TJvWizardPageListEditor.FormModified;
 begin
   if not (csDestroying in ComponentState) then
-  begin
     UpdatePageList(lbxWizardPages.ItemIndex);
-  end;
 end;
 
 function TJvWizardPageListEditor.UniqueName(Component: TComponent): string;
@@ -463,7 +442,7 @@ begin
   Result := Designer.UniqueName(Component.ClassName);
 end;
 
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 function TJvWizardPageListEditor.GetEditState: TEditState;
 begin
@@ -538,9 +517,7 @@ begin
   if Assigned(Wizard.ActivePage) then
   begin
     if lbxWizardPages.ItemIndex >= 0 then
-    begin
       lbxWizardPages.Items.Delete(Wizard.ActivePage.PageIndex);
-    end;
     Designer.SelectComponent(Wizard);
     Wizard.ActivePage.Free;
     Designer.Modified;
@@ -549,8 +526,8 @@ end;
 
 procedure TJvWizardPageListEditor.actDeletePagesUpdate(Sender: TObject);
 begin
-  (Sender as TAction).Enabled := (lbxWizardPages.Items.Count > 0) and
-                                 (lbxWizardPages.ItemIndex >= 0);
+  (Sender as TAction).Enabled :=
+    (lbxWizardPages.Items.Count > 0) and (lbxWizardPages.ItemIndex >= 0);
 end;
 
 procedure TJvWizardPageListEditor.lbxWizardPagesClick(Sender: TObject);
@@ -567,9 +544,10 @@ end;
 procedure TJvWizardPageListEditor.lbxWizardPagesDragOver(Sender, Source: TObject;
   X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-  Accept := (Source is TListBox) and
-            (lbxWizardPages.ItemAtPos(Point(X,Y), True) <> -1) and
-            (lbxWizardPages.ItemAtPos(Point(X,Y), True) <> lbxWizardPages.ItemIndex);
+  Accept :=
+    (Source is TListBox) and
+    (lbxWizardPages.ItemAtPos(Point(X, Y), True) <> -1) and
+    (lbxWizardPages.ItemAtPos(Point(X, Y), True) <> lbxWizardPages.ItemIndex);
 end;
 
 procedure TJvWizardPageListEditor.lbxWizardPagesDragDrop(Sender, Source: TObject;
@@ -591,30 +569,34 @@ procedure TJvWizardPageListEditor.actWizardPagesUpdate(
   Action: TBasicAction; var Handled: Boolean);
 begin
   acMoveUp.Enabled := lbxWizardPages.ItemIndex > 0;
-  acMoveDown.Enabled := (lbxWizardPages.ItemIndex <> -1) and (lbxWizardPages.ItemIndex < lbxWizardPages.Items.Count - 1);
+  acMoveDown.Enabled :=
+    (lbxWizardPages.ItemIndex <> -1) and
+    (lbxWizardPages.ItemIndex < lbxWizardPages.Items.Count - 1);
 end;
 
 procedure TJvWizardPageListEditor.acMoveUpExecute(Sender: TObject);
-var i:integer;
+var
+  I: Integer;
 begin
-  i := lbxWizardPages.ItemIndex;
-  lbxWizardPages.Items.Move(i, i-1);
+  I := lbxWizardPages.ItemIndex;
+  lbxWizardPages.Items.Move(I, I-1);
   if Assigned(FWizard) then
   begin
-    TJvWizardCustomPage(FWizard.Pages[i]).PageIndex := i - 1;
-    lbxWizardPages.ItemIndex := i - 1;
+    TJvWizardCustomPage(FWizard.Pages[I]).PageIndex := I - 1;
+    lbxWizardPages.ItemIndex := I - 1;
   end;
 end;
 
 procedure TJvWizardPageListEditor.acMoveDownExecute(Sender: TObject);
-var i:integer;
+var
+  I: Integer;
 begin
-  i := lbxWizardPages.ItemIndex;
-  lbxWizardPages.Items.Move(i, i+1);
+  I := lbxWizardPages.ItemIndex;
+  lbxWizardPages.Items.Move(I, I+1);
   if Assigned(FWizard) then
   begin
-    TJvWizardCustomPage(FWizard.Pages[i]).PageIndex := i + 1;
-    lbxWizardPages.ItemIndex := i + 1;
+    TJvWizardCustomPage(FWizard.Pages[I]).PageIndex := I + 1;
+    lbxWizardPages.ItemIndex := I + 1;
   end;
 end;
 

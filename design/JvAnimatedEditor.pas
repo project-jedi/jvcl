@@ -33,12 +33,12 @@ interface
 
 uses
   Windows, Forms, Graphics, ImgList,
+  SysUtils, Classes, Dialogs, Controls,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, DesignMenus, VCLEditors,
   {$ELSE}
   DsgnIntf,
-  {$ENDIF}
-  SysUtils, Classes, Dialogs, Controls,
+  {$ENDIF COMPILER6_UP}
   JvAnimatedImage, JvAniFile;
 
 type
@@ -49,7 +49,7 @@ type
     procedure CheckEdit(const PropertyEditor: IProperty);
     {$ELSE}
     procedure CheckEdit(PropertyEditor: TPropertyEditor);
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     procedure EditImage(Image: TJvAnimatedImage);
     procedure LoadAniFile(Image: TJvAnimatedImage);
   public
@@ -77,7 +77,7 @@ begin
 procedure TJvAnimatedEditor.CheckEdit(PropertyEditor: TPropertyEditor);
 begin
   try
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
     if FContinue and (CompareText(PropertyEditor.GetName, cGlyphName) = 0) then
     begin
       PropertyEditor.Edit;
@@ -87,13 +87,13 @@ begin
   finally
     PropertyEditor.Free;
   end;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 end;
 
 {$IFDEF COMPILER6_UP}
 type
   TDesignerSelectionList = IDesignerSelections;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 procedure TJvAnimatedEditor.EditImage(Image: TJvAnimatedImage);
 var
@@ -103,10 +103,10 @@ begin
   Components := TDesignerSelections.Create;
   {$ELSE}
   Components := TDesignerSelectionList.Create;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   {$IFNDEF COMPILER6_UP}
   try
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
     FContinue := True;
     Components.Add(Component);
     GetComponentProperties(Components, tkAny, Designer, CheckEdit);
@@ -114,7 +114,7 @@ begin
   finally
     Components.Free;
   end;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvAnimatedEditor.LoadAniFile(Image: TJvAnimatedImage);
