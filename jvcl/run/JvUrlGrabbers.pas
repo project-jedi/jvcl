@@ -487,7 +487,6 @@ end;
 constructor TJvHttpUrlGrabberThread.Create(Grabber: TJvCustomUrlGrabber);
 begin
   inherited Create(Grabber);
-  FContinue := True;
 end;
 
 procedure TJvHttpUrlGrabberThread.Execute;
@@ -503,6 +502,7 @@ var
 begin
   Buffer := nil;
 
+  FContinue := True;
   Grabber.FStream := nil;
   hSession := nil;
   hHostConnection := nil;
