@@ -37,7 +37,7 @@ procedure Register;
 implementation
 
 uses
-  Classes, Consts, {$IFNDEF COMPILER6_UP} DsgnIntf, {$ELSE} DesignIntf, DesignEditors, {$ENDIF}
+  Classes, {$IFNDEF COMPILER6_UP}Consts, DsgnIntf, {$ELSE}RTLConsts, DesignIntf, DesignEditors, {$ENDIF}
   SysUtils, TypInfo,
   JvDataProvider, JvDataProviderImpl, JvDataProviderDesignerForm;
 
@@ -61,13 +61,15 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
   end;
+{$ELSE}
+  TGetPropEditProc = TGetPropProc;
 {$ENDIF COMPILER6_UP}
 
   TJvDataConsumerProperty = class(TInterfaceProperty)
   private
     {$IFDEF COMPILER6_UP}
-    FOrgStrProc: TGetStrProc;
-    function CheckAndAddComp(const S: string);
+    OrgStrProc: TGetStrProc;
+    procedure CheckAndAddComp(const S: string);
     {$ENDIF COMPILER6_UP}
   protected
     function GetConsumerServiceAt(Index: Integer): TJvDataConsumer;
@@ -157,7 +159,7 @@ end;
 //===TJvDataConsumerProperty========================================================================
 
 {$IFDEF COMPILER6_UP}
-function TJvDataConsumerProperty.CheckAndAddComp(const S: string);
+procedure TJvDataConsumerProperty.CheckAndAddComp(const S: string);
 var
   Comp: TComponent;
   Prov: IJvDataProvider;
@@ -193,8 +195,10 @@ end;
 procedure TJvDataConsumerProperty.SetProviderIntfAt(Index: Integer; Value: IJvDataProvider);
 var
   Svc: TJvDataConsumer;
+  {$IFNDEF COMPILER6_UP}
   CompRef: IInterfaceComponentReference;
   ProvComp: TComponent;
+  {$ENDIF}
 begin
   Svc := GetConsumerServiceAt(Index);
   if Svc <> nil then
@@ -210,7 +214,7 @@ begin
       ProvComp := nil;
     Svc.Provider := ProvComp;
     {$ELSE}
-    Svc.Provider := Value
+    Svc.Provider := Value;
     {$ENDIF}
     Modified;
   end;
@@ -251,7 +255,7 @@ var
   Components: IDesignerSelections;
 begin
   Components := CreateSelectionList;
-  Components.Add(MakeIPersistent(ConsumerSvcExt));
+  Components.Add({$IFNDEF COMPILER6_UP}MakeIPersistent({$ENDIF}ConsumerSvcExt{$IFNDEF COMPILER6_UP}){$ENDIF});
   {$IFDEF COMPILER6_UP}
   GetComponentProperties(Components, tkAny, Designer, Proc);
   {$ELSE}
