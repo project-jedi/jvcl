@@ -1,5 +1,11 @@
 Changelog for JVCL 3.0
 ======================
+2003-06-20:
+- Merged all run-time util style units (JvAppUtils.pas,JvDateUtil.pas,JvFileUtil.pas,JvFunctions.pas,JvIconClipboardUtils.pas,JvRle.pas,JvStrUtil.pas,JvStrUtils.pas,JvUtils.pas,JvVCLUtils.pas) into JvJVCLUtils and JvJCLUtils (there's one for the interpreter as well, but that is untouched). Basically, anything that goes into JvJCLUtils is stuff that is "JCL compatible", i.e doesn't require Forms.pas or anything from JVCL. Everything else goes into JvJVCLUtils. The JvJCLUtils unit should then ne easier to integrate into JCL and eventually be removed.
+- Merged all const type units (JvxDConst.pas, JvConst.pas, JvCtlConst.pas, JvDBConst.pas, JvxRConst.pas) into common\JvConsts and common\JvDBConsts (there's one for the interpreter as well, but that one is untouched).
+- Merged DBUtil into JvBDEUtils
+- Moved changelog.txt from \jvcl3\source to \jvcl3 (source will disappear eventually)
+
 2003-06-19:
 - Updated units with latest changes from official jvcl
 

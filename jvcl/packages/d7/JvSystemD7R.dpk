@@ -67,7 +67,6 @@ contains
   JvHook in '..\..\run\JvHook.pas',
   JvFormPlacement in '..\..\run\JvFormPlacement.pas',
   JvPropsStorage in '..\..\run\JvPropsStorage.pas',
-  JvAppUtils in '..\..\run\JvAppUtils.pas',
   JvTimer in '..\..\run\JvTimer.pas',
   JvCaret in '..\..\run\JvCaret.pas',
   JvSearchFiles in '..\..\run\JvSearchFiles.pas',

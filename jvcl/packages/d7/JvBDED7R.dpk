@@ -46,7 +46,7 @@ contains
   JvDBProgress in '..\..\run\JvDBProgress.pas',
   JvDBQBE in '..\..\run\JvDBQBE.pas',
   JvDBSecurity in '..\..\run\JvDBSecurity.pas',
-  JvDBUtil in '..\..\run\JvDBUtil.pas',
+  JvDBUtils in '..\..\run\JvDBUtils.pas',
   JvMemTable in '..\..\run\JvMemTable.pas',
   JvQuery in '..\..\run\JvQuery.pas',
   JvSQLScript in '..\..\run\JvSQLScript.pas',

@@ -34,26 +34,20 @@ requires
   vcljpg;
 
 contains
+  JvConsts in '..\..\common\JvConsts.pas',
   JVCLVer in '..\..\run\JVCLVer.pas',
   JvComponent in '..\..\run\JvComponent.pas',
-  JvFunctions in '..\..\run\JvFunctions.pas',
   JvVersionInfo in '..\..\run\JvVersionInfo.pas',
   JvTypes in '..\..\run\JvTypes.pas',
-  JvVCLUtils in '..\..\run\JvVCLUtils.pas',
-  JvConst in '..\..\run\JvConst.pas',
-  JvDateUtil in '..\..\run\JvDateUtil.pas',
-  JvStrUtils in '..\..\run\JvStrUtils.pas',
+  JvJVCLUtils in '..\..\run\JvJVCLUtils.pas',
+  JvJCLUtils in '..\..\run\JvJCLUtils.pas',
   JvMaxPixel in '..\..\run\JvMaxPixel.pas',
-  JvxRConst in '..\..\run\JvxRConst.pas',
-  JvFileUtil in '..\..\run\JvFileUtil.pas',
   JvProgressUtils in '..\..\run\JvProgressUtils.pas',
   JvAutoSave in '..\..\run\JvAutoSave.pas',
-  JvIconClipboardUtils in '..\..\run\JvIconClipboardUtils.pas',
   JvBaseDlg in '..\..\run\JvBaseDlg.pas',
   JvJVCLAbout in '..\..\run\JvJVCLAbout.pas' {JvJVCLAboutForm},
   JvActions in '..\..\run\JvActions.pas',
   JvMouseTimer in '..\..\run\JvMouseTimer.pas',
-  JvCtlConst in '..\..\run\JvCtlConst.pas',
   JvActnRes in '..\..\design\JvActnRes.pas' {JvStandardActions: TDataModule};
 
 end.
