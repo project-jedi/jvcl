@@ -1,10 +1,9 @@
 object JvAniMainForm: TJvAniMainForm
   Left = 291
   Top = 308
-  BorderStyle = bsDialog
+  Width = 497
+  Height = 347
   Caption = 'ANI Viewer'
-  ClientHeight = 317
-  ClientWidth = 489
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,15 +12,26 @@ object JvAniMainForm: TJvAniMainForm
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  DesignSize = (
+    489
+    317)
   PixelsPerInch = 96
   TextHeight = 13
   object Image1: TImage
-    Left = 262
-    Top = 64
+    Left = 254
+    Top = 8
     Width = 117
-    Height = 111
+    Height = 73
+    Anchors = [akLeft, akTop, akRight]
     Center = True
     Transparent = True
+  end
+  object Image2: TImage
+    Left = 160
+    Top = 96
+    Width = 321
+    Height = 105
+    Anchors = [akLeft, akTop, akRight]
   end
   object FileListBox1: TJvFileListBox
     Left = 0
@@ -58,10 +68,11 @@ object JvAniMainForm: TJvAniMainForm
     TabOrder = 2
   end
   object Memo1: TMemo
-    Left = 182
-    Top = 210
-    Width = 273
+    Left = 160
+    Top = 218
+    Width = 321
     Height = 89
+    Anchors = [akLeft, akTop, akRight]
     Color = clBtnFace
     TabOrder = 3
   end

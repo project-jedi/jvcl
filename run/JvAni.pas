@@ -73,6 +73,8 @@ type
     {$IFDEF VCL}
     procedure LoadFromClipboardFormat(AFormat: Word; AData: THandle; APalette: HPALETTE); override;
     procedure SaveToClipboardFormat(var Format: Word; var Data: THandle; var APalette: HPALETTE); override;
+    procedure AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
+      DecreaseColors, Vertical: Boolean);
     {$ENDIF VCL}
     procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
 
@@ -171,6 +173,12 @@ end;
 procedure TJvAni.SaveToClipboardFormat(var Format: Word; var Data: THandle; var APalette: HPALETTE);
 begin
   raise EInvalidGraphicOperation.Create(SIconToClipboard);
+end;
+
+procedure TJvAni.AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
+  DecreaseColors, Vertical: Boolean);
+begin
+  FIconData.AssignToBitmap(Bitmap, Backcolor, DecreaseColors, Vertical);
 end;
 
 {$ENDIF VCL}
