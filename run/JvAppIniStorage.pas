@@ -77,12 +77,16 @@ type
 //    FIdleDelay: Longint;                                          TIdleThread disabled for now
     FIniFile: TCustomIniFile;
     FLastUserAct: Longint;
+    FFileName: TJvAppStorageFileName;
   protected
     procedure CreateIniFile(Name: string);
     procedure DestroyIniFile;
     procedure SetBuffered(Value: Boolean);
-    function GetFileName: TFileName;
-    procedure SetFileName(Value: TFileName);
+    function GetFileName: TJvAppStorageFileName;
+    procedure SetFileName(Value: TJvAppStorageFileName);
+    procedure FileNameChanged(Sender: TObject);
+(*    function GetFileName: TFileName;
+    procedure SetFileName(Value: TFileName);*)
 //    function AppWindowMsg(var Msg: TMessage): Boolean;            TIdleThread disabled for now
     procedure EnumFolders(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); override;
@@ -106,7 +110,8 @@ type
   published
     property Buffered: Boolean read FBuffered write SetBuffered;
     property DefaultSection;
-    property FileName: TFileName read GetFileName write SetFileName;
+    property FileName: TJvAppStorageFileName read GetFileName write SetFileName;
+//    property FileName: TFileName read GetFileName write SetFileName;
     property SubStorages;
 //    property IdleDelay: Longint read FIdleDelay write FIdleDelay default 100; TIdleThread disabled for now
   end;
@@ -412,8 +417,8 @@ begin
 end;
 
 procedure TJvAppIniFileStorage.SetBuffered(Value: Boolean);
-var
-  FName: string;
+(*var
+  FName: string;*)
 begin
   if Value <> Buffered then
   begin
@@ -422,27 +427,28 @@ begin
     FBuffered := Value;
     if IniFile <> nil then
     begin
-      FName := FileName;
+//      FName := FileName;
       DestroyIniFile;
-      CreateIniFile(FName);
+      CreateIniFile(FileName.GetFileName);
     end;
   end;
 end;
 
-function TJvAppIniFileStorage.GetFileName: TFileName;
+function TJvAppIniFileStorage.GetFileName: TJvAppStorageFileName;
 begin
-  if IniFile <> nil then
-    Result := IniFile.FileName;
+(*  if IniFile <> nil then
+    Result := IniFile.FileName;*)
+  Result := FFileName;
 end;
 
-procedure TJvAppIniFileStorage.SetFileName(Value: TFileName);
+procedure TJvAppIniFileStorage.SetFileName(Value: TJvAppStorageFileName);
 begin
-  if Value <> FileName then
+(*  if Value <> FileName then
   begin
     FreeAndNil(FIniFile);
     if Value <> '' then
       CreateIniFile(Value);
-  end;
+  end; *)
 end;
 
 (*  This idle thread business is a death-trap at the moment. Commented out for now, maybe
@@ -454,6 +460,12 @@ begin
     FLastUserAct := GetTickCount;
   Result := False;
 end;*)
+
+procedure TJvAppIniFileStorage.FileNameChanged(Sender: TObject);
+begin
+  DestroyIniFile;
+  CreateIniFile(FileName.GetFileName);
+end;
 
 procedure TJvAppIniFileStorage.EnumFolders(const Path: string; const Strings: TStrings;
   const ReportListAsValue: Boolean);
@@ -582,6 +594,8 @@ end;
 constructor TJvAppIniFileStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FFileName := TJvAppStorageFileName.Create('ini');
+  FFileName.OnChange := FileNameChanged;
 //  FIdleDelay := 100; TIdleThread death-trap
 end;
 

@@ -1447,7 +1447,8 @@ var
 begin
   JvAppStorage := TJvAppIniFileStorage.Create(nil);
   try
-    JvAppStorage.FileName := FileName;
+    JvAppStorage.FileName.Location := flCustom;
+    JvAppStorage.FileName.FileName := FileName;
     SaveDockTreeToAppStorage(JvAppStorage);
   finally
     JvAppStorage.Free;
@@ -1460,7 +1461,8 @@ var
 begin
   JvAppStorage := TJvAppIniFileStorage.Create(nil);
   try
-    JvAppStorage.FileName := FileName;
+    JvAppStorage.FileName.Location := flCustom;
+    JvAppStorage.FileName.FileName := FileName;
     LoadDockTreeFromAppStorage(JvAppStorage);
   finally
     JvAppStorage.Free;

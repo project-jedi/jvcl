@@ -43,11 +43,12 @@ uses
 type
   TJvAppXMLStorage = class(TJvCustomAppStorage)
   protected
-    FFileName: TFileName;
+    FFileName: TJvAppStorageFileName;
     FXml: TJvSimpleXml;
     FCurrentNode: TJvSimpleXmlElem;
-    function GetFileName: TFileName;
-    procedure SetFileName(const Value: TFileName);
+    function GetFileName: TJvAppStorageFileName;
+    procedure SetFileName(const Value: TJvAppStorageFileName);
+    procedure FileLocationChanged(Sender: TObject);
     function GetRootNodeName: string;
     procedure SetRootNodeName(const Value: string);
     // Returns the last node in path, if it exists.
@@ -86,7 +87,7 @@ type
     procedure Reload;
     property Xml: TJvSimpleXml read FXml;
   published
-    property FileName: TFileName read GetFileName write SetFileName;
+    property FileName: TJvAppStorageFileName read GetFileName write SetFileName;
     property RootNodeName: string read GetRootNodeName write SetRootNodeName;
   end;
 
@@ -144,6 +145,8 @@ end;
 constructor TJvAppXMLStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FFileName := TJvAppStorageFileName.Create('xml');
+  FFileName.OnChange := FileLocationChanged;
   FXml := TJvSimpleXml.Create(nil);
   RootNodeName := 'Configuration';
   FCurrentNode := FXml.Root;
@@ -359,18 +362,23 @@ end;
 
 procedure TJvAppXMLStorage.Flush;
 begin
-  if FFileName <> '' then
-    FXml.SaveToFile(FFileName);
+  if FFileName.GetFileName <> '' then
+    FXml.SaveToFile(FFileName.GetFileName);
 end;
 
-function TJvAppXMLStorage.GetFileName: TFileName;
+function TJvAppXMLStorage.GetFileName: TJvAppStorageFileName;
 begin
   Result := FFileName;
 end;
 
-procedure TJvAppXMLStorage.SetFileName(const Value: TFileName);
+procedure TJvAppXMLStorage.SetFileName(const Value: TJvAppStorageFileName);
 begin
-  FFileName := Value;
+//  FFileName := Value;
+//  Reload;
+end;
+
+procedure TJvAppXMLStorage.FileLocationChanged(Sender: TObject);
+begin
   Reload;
 end;
 
@@ -468,8 +476,8 @@ end;
 
 procedure TJvAppXMLStorage.Reload;
 begin
-  if FileExists(FFileName) then
-    FXml.LoadFromFile(FFileName);
+  if FileExists(FFileName.GetFileName) then
+    FXml.LoadFromFile(FFileName.GetFileName);
 end;
 
 procedure TJvAppXMLStorage.CreateAndSetNode(Key: string);
