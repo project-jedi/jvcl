@@ -35,7 +35,7 @@ uses
 
 type
 {$IFNDEF COMPILER6_UP}
-  THashedStringList = class(TStringList);
+  THashedStringList = class(TStringlist);
   THandle = Longword;
 {$ENDIF}
   TJvSimpleXML = class;
@@ -45,11 +45,11 @@ type
   TJvSimpleXMLProps = class;
   TJvSimpleXMLElemComment = class;
   TJvSimpleXMLElemClassic = class;
-  TJvSimpleXMLElemCData = class;
+  TJvSimpleXmlElemCData = class;
   TJvSimpleXMLElemText = class;
   TJvOnSimpleXmlParsed = procedure(Sender: TObject; Name: string) of object;
   TJvOnValueParsed = procedure(Sender: TObject; Name, Value: string) of object;
-  TJvOnSimpleProgress = procedure(Sender: TObject; const Position, Total: Integer) of object;
+  TJvOnSimpleProgress = procedure(Sender: TObject; const Position, Total: integer) of object;
 
   //Those hash stuffs are for future use only
   //Plans are to replace current hash by this mechanism
@@ -63,7 +63,7 @@ type
   TJvHashList = array[0..25] of PJvHashRecord;
   PJvHashList = ^TJvHashList;
   TJvHashRecord = packed record
-    Count: Byte;
+    Count: byte;
     case Kind: TJvHashKind of
       hkList: (List: PJvHashList);
       hkDirect: (FirstElem: PJvHashElem);
@@ -87,8 +87,8 @@ type
     FParent: TJvSimpleXMLProps;
     FPointer: string;
     FData: Pointer;
-    function GetBoolValue: Boolean;
-    procedure SetBoolValue(const Value: Boolean);
+    function GetBoolValue: boolean;
+    procedure SetBoolValue(const Value: boolean);
     procedure SetName(const Value: string);
   protected
     function GetIntValue: Int64;
@@ -99,7 +99,7 @@ type
     property Name: string read FName write SetName;
     property Value: string read FValue write FValue;
     property IntValue: Int64 read GetIntValue write SetIntValue;
-    property BoolValue: Boolean read GetBoolValue write SetBoolValue;
+    property BoolValue: boolean read GetBoolValue write SetBoolValue;
     property Pointer: string read FPointer write FPointer;
 
     property Data: Pointer read FData write FData;
@@ -108,61 +108,61 @@ type
   TJvSimpleXMLProps = class(TObject)
   private
     FProperties: THashedStringList;
-    FParent : TJvSimpleXMLElem;
-    function GetCount: Integer;
+    FParent: TJvSimpleXMLElem;
+    function GetCount: integer;
     function GetItemNamed(const Name: string): TJvSimpleXMLProp;
   protected
-    function GetItem(const Index: Integer): TJvSimpleXMLProp;
+    function GetItem(const Index: integer): TJvSimpleXMLProp;
     procedure DoItemRename(var Value: TJvSimpleXMLProp; const Name: string);
-    procedure Error(const S:string);
-    procedure FmtError(const S:string;const Args:array of const);
+    procedure Error(const S: string);
+    procedure FmtError(const S: string; const Args: array of const);
   public
-    constructor Create(Parent : TJvSimpleXMLElem); reintroduce; overload;
+    constructor Create(Parent: TJvSimpleXMLElem);
     destructor Destroy; override;
     function Add(const Name, Value: string): TJvSimpleXMLProp; overload;
     function Add(const Name: string; const Value: Int64): TJvSimpleXMLProp; overload;
-    function Add(const Name: string; const Value: Boolean): TJvSimpleXMLProp; overload;
+    function Add(const Name: string; const Value: boolean): TJvSimpleXMLProp; overload;
     procedure Clear; virtual;
-    procedure Delete(const Index: Integer); overload;
+    procedure Delete(const Index: integer); overload;
     procedure Delete(const Name: string); overload;
     function Value(const Name: string; Default: string = ''): string;
     function IntValue(const Name: string; Default: Int64 = -1): Int64;
-    function BoolValue(const Name: string; Default: Boolean = True): Boolean;
+    function BoolValue(const Name: string; Default: boolean = true): boolean;
     procedure LoadFromStream(const Stream: TStream);
     procedure SaveToStream(const Stream: TStream);
-    property Item[const Index: Integer]: TJvSimpleXMLProp read GetItem; default;
+    property Item[const Index: integer]: TJvSimpleXMLProp read GetItem; default;
     property ItemNamed[const Name: string]: TJvSimpleXMLProp read GetItemNamed;
-    property Count: Integer read GetCount;
+    property Count: integer read GetCount;
   end;
 
   TJvSimpleXMLElemsProlog = class(TObject)
   private
     FElems: THashedStringList;
-    function GetCount: Integer;
-    function GetItem(const Index: Integer): TJvSimpleXMLElem;
+    function GetCount: integer;
+    function GetItem(const Index: integer): TJvSimpleXMLElem;
   protected
-    procedure Error(const S:string);
-    procedure FmtError(const S:string;const Args:array of const);
+    procedure Error(const S: string);
+    procedure FmtError(const S: string; const Args: array of const);
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
     function LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML = nil): string;
     procedure SaveToStream(const Stream: TStream; Parent: TJvSimpleXML = nil);
-    property Item[const Index: Integer]: TJvSimpleXMLElem read GetItem; default;
-    property Count: Integer read GetCount;
+    property Item[const Index: integer]: TJvSimpleXMLElem read GetItem; default;
+    property Count: integer read GetCount;
   end;
 
-  TJvSimpleXMLElemCompare = function(Elems: TJvSimpleXMLElems; Index1, Index2: Integer): Integer of object;
+  TJvSimpleXMLElemCompare = function(Elems: TJvSimpleXMLElems; Index1, Index2: integer): integer of object;
   TJvSimpleXMLElems = class(TObject)
   private
     FParent: TJvSimpleXMLElem;
-    function GetCount: Integer;
+    function GetCount: integer;
     function GetItemNamed(const Name: string): TJvSimpleXMLElem;
   protected
     FElems: THashedStringList;
     FCompare: TJvSimpleXMLElemCompare;
-    function GetItem(const Index: Integer): TJvSimpleXMLElem;
+    function GetItem(const Index: integer): TJvSimpleXMLElem;
     procedure AddChild(const Value: TJvSimpleXMLElem);
     procedure AddChildFirst(const Value: TJvSimpleXMLElem);
     procedure DoItemRename(var Value: TJvSimpleXMLElem; const Name: string);
@@ -173,29 +173,29 @@ type
     function Add(const Name: string): TJvSimpleXMLElemClassic; overload;
     function Add(const Name, Value: string): TJvSimpleXMLElemClassic; overload;
     function Add(const Name: string; const Value: Int64): TJvSimpleXMLElemClassic; overload;
-    function Add(const Name: string; const Value: Boolean): TJvSimpleXMLElemClassic; overload;
+    function Add(const Name: string; const Value: boolean): TJvSimpleXMLElemClassic; overload;
     function Add(const Name: string; const Value: TStream): TJvSimpleXMLElemClassic; overload;
     function Add(Value: TJvSimpleXMLElem): TJvSimpleXMLElem; overload;
     function AddFirst(Value: TJvSimpleXMLElem): TJvSimpleXMLElem; overload;
     function AddFirst(const Name: string): TJvSimpleXMLElemClassic; overload;
     function AddComment(const Name: string; const Value: string): TJvSimpleXMLElemComment;
-    function AddCData(const Name: string; const Value: string): TJvSimpleXMLElemCDATA;
+    function AddCData(const Name: string; const Value: string): TJvSimpleXmlElemCData;
     function AddText(const Name: string; const Value: string): TJvSimpleXMLElemText;
     procedure Clear; virtual;
-    procedure Delete(const Index: Integer); overload;
+    procedure Delete(const Index: integer); overload;
     procedure Delete(const Name: string); overload;
     function Value(const Name: string; Default: string = ''): string;
     function IntValue(const Name: string; Default: Int64 = -1): Int64;
-    function BoolValue(const Name: string; Default: Boolean = True): Boolean;
+    function BoolValue(const Name: string; Default: boolean = true): boolean;
     procedure BinaryValue(const Name: string; const Stream: TStream);
     function LoadFromStream(const Stream: TStream; AParent: TJvSimpleXML = nil): string;
     procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXML = nil);
     procedure Sort;
     procedure CustomSort(AFunction: TJvSimpleXMLElemCompare);
     property Parent: TJvSimpleXMLElem read FParent write FParent;
-    property Item[const Index: Integer]: TJvSimpleXMLElem read GetItem; default;
+    property Item[const Index: integer]: TJvSimpleXMLElem read GetItem; default;
     property ItemNamed[const Name: string]: TJvSimpleXMLElem read GetItemNamed;
-    property Count: Integer read GetCount;
+    property Count: integer read GetCount;
   end;
 
   TJvSimpleXMLElem = class(TObject)
@@ -207,43 +207,43 @@ type
     FValue: string;
     FPointer: string;
     FData: Pointer;
-    FSimpleXml : TJvSimpleXML;
+    FSimpleXml: TJvSimpleXML;
     function GetSimpleXml: TJvSimpleXML;
   protected
     function GetIntValue: Int64;
-    function GetBoolValue: Boolean;
-    function GetChildsCount: Integer;
+    function GetBoolValue: boolean;
+    function GetChildsCount: integer;
     function GetProps: TJvSimpleXMLProps;
-    procedure SetBoolValue(const Value: Boolean);
+    procedure SetBoolValue(const Value: boolean);
     procedure SetName(const Value: string);
     procedure SetIntValue(const Value: Int64);
     function GetItems: TJvSimpleXMLElems;
-    procedure Error(const S:string);
-    procedure FmtError(const S:string;const Args:array of const);
+    procedure Error(const S: string);
+    procedure FmtError(const S: string; const Args: array of const);
   public
-    constructor Create(const AOwner: TJvSimpleXMLElem);
+    constructor Create(const AOwner: TJvSimpleXMLElem); virtual;
     destructor Destroy; override;
     procedure Assign(Value: TJvSimpleXMLElem);
     procedure Clear; virtual;
     function SaveToString: string;
-    procedure LoadFromString(Value : string);
+    procedure LoadFromString(Value: string);
     procedure LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML = nil); virtual; abstract;
     procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXML = nil); virtual;
       abstract;
     procedure GetBinaryValue(const Stream: TStream);
     property Data: Pointer read FData write FData;
-    function GetChildIndex(const AChild: TJvSimpleXMLElem): Integer;
+    function GetChildIndex(const AChild: TJvSimpleXMLElem): integer;
 
-    property SimpleXml : TJvSimpleXML read GetSimpleXml;
+    property SimpleXml: TJvSimpleXML read GetSimpleXml;
   published
     property Name: string read FName write SetName;
     property Parent: TJvSimpleXMLElem read FParent write FParent;
     property Pointer: string read FPointer write FPointer;
-    property ChildsCount: Integer read GetChildsCount;
+    property ChildsCount: integer read GetChildsCount;
     property Items: TJvSimpleXMLElems read GetItems;
     property Properties: TJvSimpleXMLProps read GetProps;
     property IntValue: Int64 read GetIntValue write SetIntValue;
-    property BoolValue: Boolean read GetBoolValue write SetBoolValue;
+    property BoolValue: boolean read GetBoolValue write SetBoolValue;
     property Value: string read FValue write FValue;
   end;
 
@@ -259,7 +259,7 @@ type
     procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXML = nil); override;
   end;
 
-  TJvSimpleXMLElemCData = class(TJvSimpleXMLElem)
+  TJvSimpleXmlElemCData = class(TJvSimpleXMLElem)
   public
     procedure LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML = nil); override;
     procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXML = nil); override;
@@ -273,19 +273,20 @@ type
 
   TJvSimpleXMLElemHeader = class(TJvSimpleXMLElem)
   private
-    FStandalone: Boolean;
+    FStandalone: boolean;
     FEncoding: string;
     FVersion: string;
   public
-    constructor Create;
+
     procedure LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML = nil); override;
     procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXML = nil); override;
     property Version: string read FVersion write FVersion;
-    property Standalone: Boolean read FStandalone write FStandalone;
+    property Standalone: boolean read FStandalone write FStandalone;
     property Encoding: string read FEncoding write FEncoding;
+    constructor Create(const AOwner: TJvSimpleXMLElem); override;
   end;
 
-  TJvSimpleXMLElemDocType = class(TJvSimpleXMLElem)
+  TJvSimpleXmlElemDocType = class(TJvSimpleXMLElem)
   public
     procedure LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML = nil); override;
     procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXML = nil); override;
@@ -305,17 +306,17 @@ type
     procedure SetIndentString(const Value: string);
   protected
     FFileName: TFileName;
-    FOptions : TJvSimpleXMLOptions;
+    FOptions: TJvSimpleXMLOptions;
     FRoot: TJvSimpleXMLElemClassic;
     FOnTagParsed: TJvOnSimpleXmlParsed;
     FOnValue: TJvOnValueParsed;
     FOnLoadProg: TJvOnSimpleProgress;
     FOnSaveProg: TJvOnSimpleProgress;
     FProlog: TJvSimpleXMLElemsProlog;
-    FSaveCount, FSaveCurrent: Integer;
+    FSaveCount, FSaveCurrent: integer;
     procedure SetRoot(const Value: TJvSimpleXMLElemClassic);
     procedure SetFileName(Value: TFileName);
-    procedure DoLoadProgress(const APosition, ATotal: Integer);
+    procedure DoLoadProgress(const APosition, ATotal: integer);
     procedure DoSaveProgress;
     procedure DoTagParsed(const AName: string);
     procedure DoValueParsed(const AName, AValue: string);
@@ -333,8 +334,8 @@ type
     property Root: TJvSimpleXMLElemClassic read FRoot write SetRoot;
   published
     property FileName: TFileName read FFileName write SetFileName;
-    property IndentString : string read FIndentString write SetIndentString;
-    property Options : TJvSimpleXMLOptions read FOptions write FOptions;
+    property IndentString: string read FIndentString write SetIndentString;
+    property Options: TJvSimpleXMLOptions read FOptions write FOptions;
     property OnSaveProgress: TJvOnSimpleProgress read FOnSaveProg write FOnSaveProg;
     property OnLoadProgress: TJvOnSimpleProgress read FOnLoadProg write FOnLoadProg;
     property OnTagParsed: TJvOnSimpleXmlParsed read FOnTagParsed write FOnTagParsed;
@@ -346,22 +347,22 @@ type
   TXmlVariant = class(TInvokeableVariantType)
   public
     procedure Clear(var V: TVarData); override;
-    function IsClear(const V: TVarData): Boolean; override;
+    function IsClear(const V: TVarData): boolean; override;
     procedure Copy(var Dest: TVarData; const Source: TVarData;
-      const Indirect: Boolean); override;
+      const Indirect: boolean); override;
     procedure CastTo(var Dest: TVarData; const Source: TVarData;
       const AVarType: TVarType); override;
 
     function DoFunction(var Dest: TVarData; const V: TVarData;
-      const Name: string; const Arguments: TVarDataArray): Boolean; override;
+      const Name: string; const Arguments: TVarDataArray): boolean; override;
     function GetProperty(var Dest: TVarData; const V: TVarData;
-      const Name: string): Boolean; override;
+      const Name: string): boolean; override;
     function SetProperty(const V: TVarData; const Name: string;
-      const Value: TVarData): Boolean; override;
+      const Value: TVarData): boolean; override;
   end;
 
   TXmlVarData = packed record
-    VType: TVarType;
+    vType: TVarType;
     Reserved1: Word;
     Reserved2: Word;
     Reserved3: Word;
@@ -370,13 +371,22 @@ type
   end;
 
 procedure XmlCreateInto(var ADest: Variant; const AXml: TJvSimpleXMLElem);
-function XmlCreate(const AXml: TJvSimpleXMLElem): Variant; overload;
-function XmlCreate: Variant; overload;
+function XmlCreate(const AXml: TJvSimpleXMLElem): Variant; Overload;
+function XmlCreate: Variant; Overload;
 function VarXml: TVarType;
 
 {$ENDIF}
-function SimpleXmlEncode(const Value: string): string;
-procedure SimpleXmlDecode(var Value: string; TrimMultiple: Boolean = True);
+function SimpleXmlEncode(const S: string): string;
+// NB! This procedure has changed from passing in a var string to returning
+// a string. Previously, you used code like this to decode an XML string:
+// SimpleXMLDecode(SomeString);
+// DoSomething(SomeString);
+// Now you must call it like this:
+// SomeString := SimpleXMLDecode(SomeString);
+// when you've read this warning, you can remove the ProcedureChangedWarning parameter
+// since its only purpose was to get you to read this
+procedure SimpleXMLDecode(var S: string; TrimBlanks:boolean);
+
 
 implementation
 
@@ -387,8 +397,10 @@ resourcestring
 {$IFNDEF COMPILER6_UP}
 //  SInvalidBoolean = '''%s'' is not a valid Boolean value'; make Delphi 5 compiler happy // andreas
 {$ENDIF COMPILER6_UP}
-  sInvalidXMLElementUnexpectedCharacte = 'Invalid XML Element: Unexpected character in properties declaration ("%s" found).';
-  sInvalidXMLElementUnexpectedCharacte_ = 'Invalid XML Element: Unexpected character in property declaration. Expecting " or '' but "%s"  found.';
+  sInvalidXMLElementUnexpectedCharacte =
+    'Invalid XML Element: Unexpected character in properties declaration ("%s" found).';
+  sInvalidXMLElementUnexpectedCharacte_ =
+    'Invalid XML Element: Unexpected character in property declaration. Expecting " or '' but "%s"  found.';
   sUnexpectedValueForLPos = 'Unexpected value for lPos';
   sInvalidXMLElementExpectedBeginningO = 'Invalid XML Element: Expected beginning of tag but "%s" found.';
   sInvalidXMLElementExpectedEndOfTagBu = 'Invalid XML Element: Expected end of tag but "%s" found.';
@@ -403,7 +415,6 @@ resourcestring
   sInvalidStylesheetExpectedsButFounds = 'Invalid Stylesheet: expected "%s" but found "%s"';
   sInvalidStylesheetUnexpectedEndOfDat = 'Invalid Stylesheet: Unexpected end of data';
   sInvalidDocumentUnexpectedTextInFile = 'Invalid Document: Unexpected text in file prolog.';
-
 
 const
   cBufferSize = 8192;
@@ -438,7 +449,7 @@ begin
 
 end;
 
-function TryStrToFloat(const S: string; out Value: Extended): Boolean;
+function TryStrToFloat(const S: string; out Value: Extended): boolean;
 begin
   Result := TextToFloat(PChar(S), Value, fvExtended);
 end;
@@ -450,43 +461,43 @@ begin
 end;
 *)
 
-function TryStrToBool(const S: string; out Value: Boolean): Boolean;
+function TryStrToBool(const S: string; out Value: boolean): boolean;
 
-  function CompareWith(const AStrings: array of string): Boolean;
+  function CompareWith(const AStrings: array of string): boolean;
   var
-    I: Integer;
+    i: integer;
   begin
-    Result := False;
-    for I := Low(AStrings) to High(AStrings) do
-      if AnsiSameText(S, AStrings[I]) then
+    Result := false;
+    for i := Low(AStrings) to High(AStrings) do
+      if AnsiSameText(S, AStrings[i]) then
       begin
-        Result := True;
-        Break;
+        Result := true;
+        break;
       end;
   end;
 
 var
-  LResult: Extended;
+  lResult: Extended;
 begin
-  Result := TryStrToFloat(S, LResult);
+  Result := TryStrToFloat(S, lResult);
   if Result then
-    Value := LResult <> 0
+    Value := lResult <> 0
   else
   begin
     VerifyBoolStrArray;
     Result := CompareWith(TrueBoolStrs);
     if Result then
-      Value := True
+      Value := true
     else
     begin
       Result := CompareWith(FalseBoolStrs);
       if Result then
-        Value := False;
+        Value := false;
     end;
   end;
 end;
 
-function StrToBoolDef(const S: string; const Default: Boolean): Boolean;
+function StrToBoolDef(const S: string; const Default: boolean): boolean;
 begin
   if not TryStrToBool(S, Result) then
     Result := Default;
@@ -500,9 +511,9 @@ begin
 end;
 *)
 
-function BoolToStr(B: Boolean; UseBoolStrs: Boolean = False): string;
+function BoolToStr(B: boolean; UseBoolStrs: boolean = false): string;
 const
-  cSimpleBoolStrs: array[Boolean] of string = ('0', '-1');
+  cSimpleBoolStrs: array[boolean] of string = ('0', '-1');
 begin
   if UseBoolStrs then
   begin
@@ -518,212 +529,292 @@ end;
 
 {$ENDIF COMPILER6_UP}
 
-function SimpleXmlEncode(const Value: string): string;
+function SimpleXmlEncode(const S: string): string;
+const
+  NoConversion = [#0..#127] - ['"','&',#39,'<','>'];
 var
-  i: Integer;
-  lDiff: Boolean;
+  i, j, k: integer;
+  tmp: string;
 begin
-  //http://www.cs.tut.fi/~jkorpela/latin1/3.html#60
-  result := Value;
-  lDiff := false;
-  for i := 1 to Length(Value) do
-    if Value[i] in ['<', '>', '&', '"', ''''] then
-    begin
-      if not lDiff then
-      begin
-        lDiff := true;
-        result := Copy(Value, 1, i - 1);
-      end;
-      result := result + '&#' + IntToStr(Ord(Value[i])) + ';';
-    end
+  SetLength(Result, Length(S) * 6); // worst case
+  j := 1;
+  for i := 1 to Length(S) do
+  begin
+    if S[i] in NoConversion then
+      Result[j] := S[i]
     else
-      if lDiff then
-        result := result + Value[i];
+    begin
+      case S[i] of
+        '"':
+          tmp := '&quot;';
+        '&':
+          tmp := '&amp;';
+        #39:
+          tmp := '&apos;';
+        '<':
+          tmp := '&lt;';
+        '>':
+          tmp := '&gt;';
+      else
+        tmp := Format('&#x%.2x;', [Ord(S[i])]);
+      end;
+      for k := 1 to Length(tmp) do
+      begin
+        Result[j] := tmp[k];
+        Inc(j);
+      end;
+      Dec(j);
+    end;
+    Inc(j);
+  end;
+  if j > 0 then
+    SetLength(Result, j - 1)
+  else
+    SetLength(Result, 0);
 end;
 
-procedure SimpleXmlDecode(var Value: string; TrimMultiple: Boolean = True);
-var
-  i, j, k, l: Integer;
-  st: string;
-begin
-  st := '';
-  j := -1;
-  k := 1;
-  for i := 1 to Length(Value) do
-    case Value[i] of
-      ' ', #10, #13:
-        if (not TrimMultiple) or ((k = 1) or not (Value[k - 1] in [' ', #10, #13])) then
-        begin
-          if j > 0 then
-            st := st + Value[i]
-          else
-          begin
-            Value[k] := Value[i];
-            inc(k);
-          end;
-        end;
-      '&':
-        begin
-          if j <> -1 then
-          begin
-            Value[k] := '&';
-            inc(k);
-            for l := 1 to Length(st) do
-            begin
-              Value[k] := st[l];
-              inc(k);
-            end;
-          end;
-          j := 0;
-          st := '';
-        end;
-      '#':
-        if j = 0 then
-          j := 1
-        else if (j <> -1) then
-        begin
-          Value[k] := '&';
-          inc(k);
-          for l := 1 to Length(st) do
-          begin
-            Value[k] := st[l];
-            inc(k);
-          end;
-          Value[k] := Value[i];
-          inc(k);
-          st := '';
-        end
-        else
-        begin
-          for l := 1 to Length(st) do
-          begin
-            Value[k] := st[l];
-            inc(k);
-          end;
-          Value[k] := Value[i];
-          inc(k);
-          st := '';
-        end;
-      '0'..'9':
-        if j >= 1 then
-        begin
-          st := st + Value[i];
-          j := 2;
-        end
-        else
-        begin
-          Value[k] := Value[i];
-          inc(k);
-        end;
-      'a'..'z', 'A'..'Z':
-        if j >= 0 then
-        begin
-          st := st + Value[i];
-          inc(j);
-        end
-        else
-        begin
-          Value[k] := Value[i];
-          inc(k);
-        end;
-      ';':
-        if j <> 0 then
-        begin
-          j := StrToIntDef(st, -1);
-          case j of
-            -1:
-              begin
-                st := LowerCase(st);
-                if st = 'lt' then
-                begin
-                  Value[k] := '<';
-                  inc(k);
-                end
-                else if st = 'gt' then
-                begin
-                  Value[k] := '>';
-                  inc(k);
-                end
-                else if st = 'amp' then
-                begin
-                  Value[k] := '&';
-                  inc(k);
-                end
-                else
-                begin
-                  if st <> '' then
-                  begin
-                    Value[k] := '&';
-                    inc(k);
-                    for l := 1 to Length(st) do
-                    begin
-                      Value[k] := st[l];
-                      inc(k);
-                    end;
-                    st := '';
-                  end;
-                  Value[k] := ';';
-                  inc(k);
-                end
-              end;
-            0..100:
-              begin
-                Value[k] := Char(j);
-                inc(k);
-              end;
-            233:
-              begin
-                Value[k] := 'é';
-                inc(k);
-              end;
-            232:
-              begin
-                Value[k] := 'è';
-                inc(k);
-              end;
-          end;
-          st := '';
-          j := -1;
-        end
-        else
-        begin
-          Value[k] := Value[i];
-          inc(k);
-        end;
-    else
-      begin
-        if j > 0 then
-        begin
-          Value[k] := '&';
-          inc(k);
-          for l := 1 to Length(st) do
-          begin
-            Value[k] := st[l];
-            inc(k);
-          end;
-        end
-        else if j = 0 then
-        begin
-          Value[k] := '&';
-          inc(k);
-        end;
-        Value[k] := Value[i];
-        inc(k);
-        j := -1;
-      end;
-    end;
-  if j <> -1 then
+procedure SimpleXMLDecode(var S: string; TrimBlanks:boolean);
+var StringLength, ReadIndex, WriteIndex:Cardinal;
+  procedure DecodeEntity(var S: string; var StringLength, ReadIndex, WriteIndex: Cardinal);
+  const
+    cHexPrefix: array[boolean] of PChar = ('', '$');
+  var
+    i: Cardinal;
+    Value:integer;
+    IsHex: boolean;
   begin
-    Value[k] := '&';
-    inc(k);
-    for l := 1 to Length(st) do
+    Inc(ReadIndex, 2);
+    IsHex := (ReadIndex <= StringLength) and (S[ReadIndex] in ['x', 'X']);
+    Inc(ReadIndex, Ord(IsHex));
+    i := ReadIndex;
+    while ReadIndex <= StringLength do
     begin
-      Value[k] := st[l];
-      inc(k);
+      if S[ReadIndex] = ';' then
+      begin
+        Value := StrToIntDef(cHexPrefix[IsHex] + Copy(S, i, ReadIndex - i), -1); // no characters are less than 0
+        if Value > 0 then
+          S[WriteIndex] := Chr(Value)
+        else
+          ReadIndex := i - (2 + Cardinal(IsHex)); // reset to start
+        Exit;
+      end;
+      Inc(ReadIndex);
+    end;
+    ReadIndex := i - (2 + Cardinal(IsHex)); // reset to start
+  end;
+  procedure SkipBlanks(var S:String; var StringLength, ReadIndex:Cardinal);
+  begin
+    while ReadIndex < StringLength do
+    begin
+      if S[ReadIndex] = #13 then
+        S[ReadIndex] := #10
+      else if S[ReadIndex+1] = #13 then
+        S[ReadIndex+1] := #10;
+      if (S[ReadIndex] < #33) and (S[ReadIndex] = S[ReadIndex+1]) then
+        Inc(ReadIndex)
+      else
+        Exit;
     end;
   end;
-  SetLength(Value, k - 1);
+
+begin
+  // NB! This procedure replaces the text inplace to speed up the conversion. This
+  // works because when decoding, the string can only become shorter. This is
+  // accomplished by keeping track of the current read and write points.
+  // In addition, the original string length is read only once and passed to the
+  // inner procedures to speed up conversion as much as possible
+  ReadIndex := 1;
+  WriteIndex := 1;
+  StringLength := Length(S);
+  while ReadIndex <= StringLength do
+  begin
+    // this call lowers conversion speed by ~30%, ie 21MB/sec -> 15MB/sec (repeated tests, various inputs)
+    if TrimBlanks then
+      SkipBlanks(S, StringLength, ReadIndex);
+    if S[ReadIndex] = '&' then
+    begin
+      if S[ReadIndex + 1] = '#' then
+      begin
+        DecodeEntity(S, StringLength, ReadIndex, WriteIndex);
+        Inc(WriteIndex);
+      end
+      else if AnsiSameText(Copy(S, ReadIndex, 5), '&amp;') then
+      begin
+        S[WriteIndex] := '&';
+        Inc(WriteIndex);
+        Inc(ReadIndex,4);
+      end
+      else if AnsiSameText(Copy(S, ReadIndex, 4), '&lt;') then
+      begin
+        S[WriteIndex] := '<';
+        Inc(WriteIndex);
+        Inc(ReadIndex,3);
+      end
+      else if AnsiSameText(Copy(S, ReadIndex, 4), '&gt;') then
+      begin
+        S[WriteIndex] := '>';
+        Inc(WriteIndex);
+        Inc(ReadIndex,3);
+      end
+      else if AnsiSameText(Copy(S, ReadIndex, 6), '&apos;') then
+      begin
+        S[WriteIndex] := #39;
+        Inc(WriteIndex);
+        Inc(ReadIndex,5);
+      end
+      else if AnsiSameText(Copy(S, ReadIndex, 6), '&quot;') then
+      begin
+        S[WriteIndex] := '"';
+        Inc(WriteIndex);
+        Inc(ReadIndex,5);
+      end
+      else
+      begin
+        S[WriteIndex] := S[ReadIndex];
+        Inc(WriteIndex);
+      end;
+    end
+    else
+    begin
+      S[WriteIndex] := S[ReadIndex];
+      Inc(WriteIndex);
+    end;
+    Inc(ReadIndex);
+  end;
+  if WriteIndex > 0 then
+    SetLength(S, WriteIndex - 1)
+  else
+    SetLength(S, 0);
+    // this call lowers conversion speed by ~65%, ie 21MB/sec -> 7MB/sec (repeated tests, various inputs)
+//  if TrimBlanks then
+//    S := AdjustLineBreaks(S);
 end;
+
+(*
+procedure SimpleXMLDecode(var S: string; TrimBlanks:boolean);
+var
+  i, j, l: integer;
+  Result:string;
+
+  function DecodeEntity(const S: string; var Index: integer): char;
+  const
+    cHexPrefix: array[boolean] of PChar = ('', '$');
+  var
+    i, l, Value: integer;
+
+    IsHex: boolean;
+  begin
+    Inc(Index, 2);
+    l := Length(S);
+    IsHex := (Index <= l) and (S[Index] in ['x', 'X']);
+    Inc(Index, Ord(IsHex));
+    i := Index;
+    while Index <= l do
+    begin
+      if S[Index] = ';' then
+      begin
+        Value := StrToIntDef(cHexPrefix[IsHex] + Copy(S, i, Index - i), -1); // no characters are less than 0
+        if Value > 0 then
+          Result := Chr(Value)
+        else
+        begin
+          Result := #0; // mark this as invalid (will be handled in main procedure)
+          Index := i - (2 + Ord(IsHex));
+        end;
+        Exit;
+      end;
+      Inc(Index);
+    end;
+    Result := #0; // not an entity so...
+    Index := i - (2 + Ord(IsHex)); // ...reset to where we were
+  end;
+  procedure SkipBlanks(var S:String; var Index:integer);
+  var l:integer;
+  begin
+    l := Length(S);
+    while Index < l do
+    begin
+      if S[Index] = #13 then
+        S[Index] := #10
+      else if S[Index+1] = #13 then
+        S[Index+1] := #10;
+      if (S[Index] < #33) and (S[Index] = S[Index+1]) then
+        Inc(Index)
+      else
+        Exit;
+    end;
+  end;
+begin
+  SetLength(Result, Length(S)); // worst case (everything gets smaller)
+  j := 1;
+  i := 1;
+  l := Length(S);
+  while i <= l do
+  begin
+    if TrimBlanks then
+      SkipBlanks(S,i);
+    if S[i] = '&' then
+    begin
+      if S[i + 1] = '#' then
+      begin
+        Result[j] := DecodeEntity(S, i);
+        if Result[j] = #0 then
+          Result[j] := S[i];
+        Inc(j);
+      end
+      else if AnsiSameText(Copy(S, i, 5), '&amp;') then
+      begin
+        Result[j] := '&';
+        Inc(j);
+        Inc(i,4);
+      end
+      else if AnsiSameText(Copy(S, i, 4), '&lt;') then
+      begin
+        Result[j] := '<';
+        Inc(j);
+        Inc(i,3);
+      end
+      else if AnsiSameText(Copy(S, i, 4), '&gt;') then
+      begin
+        Result[j] := '>';
+        Inc(j);
+        Inc(i,3);
+      end
+      else if AnsiSameText(Copy(S, i, 6), '&apos;') then
+      begin
+        Result[j] := #39;
+        Inc(j);
+        Inc(i,5);
+      end
+      else if AnsiSameText(Copy(S, i, 6), '&quot;') then
+      begin
+        Result[j] := '"';
+        Inc(j);
+        Inc(i,5);
+      end
+      else
+      begin
+        Result[j] := S[i];
+        Inc(j);
+      end;
+    end
+    else
+    begin
+      Result[j] := S[i];
+      Inc(j);
+    end;
+    Inc(i);
+  end;
+  if j > 0 then
+    SetLength(Result, j - 1)
+  else
+    SetLength(Result, 0);
+  if TrimBlanks then
+    S := AdjustLineBreaks(Result)
+  else
+    S := Result;
+end;
+*)
 
 //=== TJvSimpleXML ===========================================================
 
@@ -739,12 +830,12 @@ end;
 
 destructor TJvSimpleXML.Destroy;
 begin
-  FRoot.Free;
-  FProlog.Free;
+  FreeAndNil(FRoot);
+  FreeAndNil(FProlog);
   inherited Destroy;
 end;
 
-procedure TJvSimpleXML.DoLoadProgress(const APosition, ATotal: Integer);
+procedure TJvSimpleXML.DoLoadProgress(const APosition, ATotal: integer);
 begin
   if Assigned(FOnLoadProg) then
     FOnLoadProg(Self, APosition, ATotal);
@@ -829,13 +920,13 @@ end;
 
 procedure TJvSimpleXML.LoadFromString(const Value: string);
 var
-  LStream: TStringStream;
+  lStream: TStringStream;
 begin
-  LStream := TStringStream.Create(Value);
+  lStream := TStringStream.Create(Value);
   try
-    LoadFromStream(LStream);
+    LoadFromStream(lStream);
   finally
-    LStream.Free;
+    lStream.Free;
   end;
 end;
 
@@ -859,7 +950,7 @@ end;
 
 procedure TJvSimpleXML.SaveToStream(const Stream: TStream);
 var
-  lCount: Integer;
+  lCount: integer;
 begin
   if Assigned(FOnSaveProg) then
   begin
@@ -880,14 +971,14 @@ end;
 
 function TJvSimpleXML.SaveToString: string;
 var
-  LStream: TStringStream;
+  lStream: TStringStream;
 begin
-  LStream := TStringStream.Create('');
+  lStream := TStringStream.Create('');
   try
-    SaveToStream(LStream);
-    Result := LStream.DataString;
+    SaveToStream(lStream);
+    Result := lStream.DataString;
   finally
-    LStream.Free;
+    lStream.Free;
   end;
 end;
 
@@ -903,7 +994,7 @@ procedure TJvSimpleXMLElem.Assign(Value: TJvSimpleXMLElem);
 var
   Elems: TJvSimpleXMLElem;
   Elem: TJvSimpleXMLElem;
-  I: Integer;
+  i: integer;
 begin
   Clear;
   if Value = nil then
@@ -911,13 +1002,13 @@ begin
   Elems := TJvSimpleXMLElem(Value);
   Name := Elems.Name;
   Self.Value := Elems.Value;
-  for I := 0 to Elems.Properties.Count - 1 do
-    Properties.Add(Elems.Properties[I].Name, Elems.Properties[I].Value);
+  for i := 0 to Elems.Properties.Count - 1 do
+    Properties.Add(Elems.Properties[i].Name, Elems.Properties[i].Value);
 
-  for I := 0 to Elems.Items.Count - 1 do
+  for i := 0 to Elems.Items.Count - 1 do
   begin
-    Elem := Items.Add(Elems.Items[I].Name, Elems.Items[I].Value);
-    Elem.Assign(TJvSimpleXMLElem(Elems.Items[I]));
+    Elem := Items.Add(Elems.Items[i].Name, Elems.Items[i].Value);
+    Elem.Assign(TJvSimpleXMLElem(Elems.Items[i]));
   end;
 end;
 
@@ -938,9 +1029,10 @@ end;
 
 destructor TJvSimpleXMLElem.Destroy;
 begin
+  FParent := nil;
   Clear;
-  FItems.Free;
-  FProps.Free;
+  FreeAndNil(FItems);
+  FreeAndNil(FProps);
   inherited Destroy;
 end;
 
@@ -952,39 +1044,39 @@ end;
 procedure TJvSimpleXMLElem.FmtError(const S: string;
   const Args: array of const);
 begin
-  Error(Format(S,Args));
+  Error(Format(S, Args));
 end;
 
 procedure TJvSimpleXMLElem.GetBinaryValue(const Stream: TStream);
 var
-  I, J: Integer;
+  i, j: integer;
   St: string;
-  Buf: array[0..cBufferSize - 1] of Byte;
+  Buf: array[0..cBufferSize - 1] of byte;
 begin
-  I := 1;
-  J := 0;
-  while I < Length(Value) do
+  i := 1;
+  j := 0;
+  while i < Length(Value) do
   begin
-    St := '$' + Value[I] + Value[I + 1];
-    if J = cBufferSize - 1 then //Buffered write to speed up the process a little
+    St := '$' + Value[i] + Value[i + 1];
+    if j = cBufferSize - 1 then //Buffered write to speed up the process a little
     begin
-      Stream.Write(Buf, J);
-      J := 0;
+      Stream.Write(Buf, j);
+      j := 0;
     end;
-    Buf[J] := StrToIntDef(St, 0);
-    Inc(J);
-    Inc(I, 2);
+    Buf[j] := StrToIntDef(St, 0);
+    Inc(j);
+    Inc(i, 2);
   end;
-  Stream.Write(Buf, J);
+  Stream.Write(Buf, j);
 end;
 
-function TJvSimpleXMLElem.GetBoolValue: Boolean;
+function TJvSimpleXMLElem.GetBoolValue: boolean;
 begin
-  Result := StrToBoolDef(Value, False);
+  Result := StrToBoolDef(Value, false);
 end;
 
 function TJvSimpleXMLElem.GetChildIndex(
-  const AChild: TJvSimpleXMLElem): Integer;
+  const AChild: TJvSimpleXMLElem): integer;
 begin
   if FItems = nil then
     Result := -1
@@ -992,14 +1084,14 @@ begin
     Result := FItems.FElems.IndexOfObject(AChild);
 end;
 
-function TJvSimpleXMLElem.GetChildsCount: Integer;
+function TJvSimpleXMLElem.GetChildsCount: integer;
 var
-  I: Integer;
+  i: integer;
 begin
   Result := 1;
   if FItems <> nil then
-    for I := 0 to FItems.Count - 1 do
-      Result := Result + FItems[I].ChildsCount;
+    for i := 0 to FItems.Count - 1 do
+      Result := Result + FItems[i].ChildsCount;
 end;
 
 function TJvSimpleXMLElem.GetIntValue: Int64;
@@ -1017,7 +1109,7 @@ end;
 function TJvSimpleXMLElem.GetProps: TJvSimpleXMLProps;
 begin
   if FProps = nil then
-    FProps := TJvSimpleXMLProps.Create(self);
+    FProps := TJvSimpleXMLProps.Create(Self);
   Result := FProps;
 end;
 
@@ -1031,7 +1123,7 @@ end;
 
 procedure TJvSimpleXMLElem.LoadFromString(Value: string);
 var
-  lStream : TStringStream;
+  lStream: TStringStream;
 begin
   lStream := TStringStream.Create(Value);
   try
@@ -1054,7 +1146,7 @@ begin
   end;
 end;
 
-procedure TJvSimpleXMLElem.SetBoolValue(const Value: Boolean);
+procedure TJvSimpleXMLElem.SetBoolValue(const Value: boolean);
 begin
   FValue := BoolToStr(Value);
 end;
@@ -1104,7 +1196,7 @@ begin
 end;
 
 function TJvSimpleXMLElems.Add(const Name: string;
-  const Value: Boolean): TJvSimpleXMLElemClassic;
+  const Value: boolean): TJvSimpleXMLElemClassic;
 begin
   Result := Add(Name, BoolToStr(Value));
 end;
@@ -1113,16 +1205,16 @@ function TJvSimpleXMLElems.Add(const Name: string;
   const Value: TStream): TJvSimpleXMLElemClassic;
 var
   Stream: TStringStream;
-  Buf: array[0..cBufferSize - 1] of Byte;
+  Buf: array[0..cBufferSize - 1] of byte;
   St: string;
-  I, Count: Integer;
+  i, Count: integer;
 begin
   Stream := TStringStream.Create('');
   repeat
     St := '';
-    Count := Value.Read(Buf, SizeOf(Buf));
-    for I := 0 to Count - 1 do
-      St := St + IntToHex(Buf[I], 2);
+    Count := Value.Read(Buf, sizeof(Buf));
+    for i := 0 to Count - 1 do
+      St := St + IntToHex(Buf[i], 2);
     Stream.WriteString(St);
   until Count = 0;
   Result := Add(Name, Stream.DataString);
@@ -1164,9 +1256,9 @@ begin
   AddChild(Result);
 end;
 
-function TJvSimpleXMLElems.AddCData(const Name, Value: string): TJvSimpleXMLElemCDATA;
+function TJvSimpleXMLElems.AddCData(const Name, Value: string): TJvSimpleXmlElemCData;
 begin
-  Result := TJvSimpleXMLElemCDATA.Create(Parent);
+  Result := TJvSimpleXmlElemCData.Create(Parent);
   Result.FName := Name;
   Result.Value := Value;
   AddChild(Result);
@@ -1191,7 +1283,7 @@ begin
 end;
 
 function TJvSimpleXMLElems.BoolValue(const Name: string;
-  Default: Boolean): Boolean;
+  Default: boolean): boolean;
 var
   Elem: TJvSimpleXMLElem;
 begin
@@ -1208,23 +1300,27 @@ end;
 
 procedure TJvSimpleXMLElems.Clear;
 var
-  I: Integer;
+  i: integer;
 begin
   if FElems <> nil then
   begin
-    for I := 0 to FElems.Count - 1 do
-      // TJvSimpleXMLElem(FElems.Objects[I]).Clear; // (p3) not needed -called in Destroy
-      TJvSimpleXMLElem(FElems.Objects[I]).Free;
+    for i := 0 to FElems.Count - 1 do
+    begin
+      // TJvSimpleXMLElem(FElems.Objects[i]).Clear; // (p3) not needed -called in Destroy
+      FElems.Objects[i].Free;
+      FElems.Objects[i] := nil;
+    end;
     FElems.Clear;
   end;
 end;
 
 constructor TJvSimpleXMLElems.Create(const AOwner: TJvSimpleXMLElem);
 begin
+  inherited Create;
   FParent := AOwner;
 end;
 
-procedure TJvSimpleXMLElems.Delete(const Index: Integer);
+procedure TJvSimpleXMLElems.Delete(const Index: integer);
 begin
   if (FElems <> nil) and (Index >= 0) and (Index < FElems.Count) then
   begin
@@ -1247,23 +1343,23 @@ end;
 
 destructor TJvSimpleXMLElems.Destroy;
 begin
+  FParent := nil;
   Clear;
-  if FElems <> nil then
-    FElems.Free;
+  FreeAndNil(FElems);
   inherited Destroy;
 end;
 
 procedure TJvSimpleXMLElems.DoItemRename(var Value: TJvSimpleXMLElem;
   const Name: string);
 var
-  I: Integer;
+  i: integer;
 begin
-  I := FElems.IndexOfObject(Value);
-  if I <> -1 then
-    FElems[I] := Name;
+  i := FElems.IndexOfObject(Value);
+  if i <> -1 then
+    FElems[i] := Name;
 end;
 
-function TJvSimpleXMLElems.GetCount: Integer;
+function TJvSimpleXMLElems.GetCount: integer;
 begin
   if FElems = nil then
     Result := 0
@@ -1271,7 +1367,7 @@ begin
     Result := FElems.Count;
 end;
 
-function TJvSimpleXMLElems.GetItem(const Index: Integer): TJvSimpleXMLElem;
+function TJvSimpleXMLElems.GetItem(const Index: integer): TJvSimpleXMLElem;
 begin
   if (FElems = nil) or (Index > FElems.Count) then
     Result := nil
@@ -1281,22 +1377,22 @@ end;
 
 function TJvSimpleXMLElems.GetItemNamed(const Name: string): TJvSimpleXMLElem;
 var
-  I: Integer;
+  i: integer;
 begin
   Result := nil;
   if FElems <> nil then
   begin
-    I := FElems.IndexOf(Name);
-    if I <> -1 then
-      Result := TJvSimpleXMLElem(FElems.Objects[I])
+    i := FElems.IndexOf(Name);
+    if i <> -1 then
+      Result := TJvSimpleXMLElem(FElems.Objects[i])
     else if Assigned(Parent) and
       Assigned(Parent.SimpleXml) and
       (sxoAutoCreate in Parent.SimpleXml.Options) then
       Result := Add(Name);
   end
   else if Assigned(Parent) and
-      Assigned(Parent.SimpleXml) and
-      (sxoAutoCreate in Parent.SimpleXml.Options) then
+    Assigned(Parent.SimpleXml) and
+    (sxoAutoCreate in Parent.SimpleXml.Options) then
     Result := Add(Name);
 end;
 
@@ -1313,8 +1409,8 @@ end;
 
 function TJvSimpleXMLElems.LoadFromStream(const Stream: TStream; AParent: TJvSimpleXML): string;
 var
-  I, lStreamPos, Count, lPos: Integer;
-  lBuf: array[0..cBufferSize - 1] of Char;
+  i, lStreamPos, Count, lPos: integer;
+  lBuf: array[0..cBufferSize - 1] of char;
   St: string;
   lElem: TJvSimpleXMLElem;
 begin
@@ -1324,10 +1420,10 @@ begin
   lPos := 0;
 
   repeat
-    Count := Stream.Read(lBuf, SizeOf(lBuf));
+    Count := Stream.Read(lBuf, sizeof(lBuf));
     if AParent <> nil then
       AParent.DoLoadProgress(Stream.Position, Stream.Size);
-    for I := 0 to Count - 1 do
+    for i := 0 to Count - 1 do
     begin
       //Increment Stream pos for after comment
       Inc(lStreamPos);
@@ -1335,14 +1431,14 @@ begin
       case lPos of
         0: //We are waiting for a tag and thus avoiding spaces
           begin
-            case lBuf[I] of
+            case lBuf[i] of
               ' ', #9, #13, #10:
                 begin
                 end;
               '<':
                 begin
                   lPos := 1;
-                  St := lBuf[I];
+                  St := lBuf[i];
                 end;
             else
               begin
@@ -1353,7 +1449,7 @@ begin
                 lStreamPos := Stream.Position;
                 CreateElems;
                 FElems.AddObject(lElem.Name, lElem);
-                Break;
+                break;
               end;
             end;
           end;
@@ -1361,7 +1457,7 @@ begin
         1: //We are trying to determine the kind of the tag
           begin
             lElem := nil;
-            case lBuf[I] of
+            case lBuf[i] of
               '/':
                 if St = '<' then
                 begin
@@ -1371,22 +1467,21 @@ begin
                 else
                 begin
                   lElem := TJvSimpleXMLElemClassic.Create(Parent);
-                  St := St + lBuf[I];
+                  St := St + lBuf[i];
                 end;
 
               ' ', '>', ':': //This should be a classic tag
                 begin
                   lElem := TJvSimpleXMLElemClassic.Create(Parent);
-                  St := St + lBuf[I];
+                  St := St + lBuf[i];
                 end;
             else
               begin
-                St := St + lBuf[I];
+                St := St + lBuf[i];
                 if St = '<![CDATA[' then
-                  lElem := TJvSimpleXMLElemCData.Create(Parent)
-                else
-                  if St = '<!--' then
-                    lElem := TJvSimpleXMLElemComment.Create(Parent);
+                  lElem := TJvSimpleXmlElemCData.Create(Parent)
+                else if St = '<!--' then
+                  lElem := TJvSimpleXMLElemComment.Create(Parent);
                   //<?
               end;
             end;
@@ -1400,19 +1495,19 @@ begin
               FElems.AddObject(lElem.Name, lElem);
               St := '';
               lPos := 0;
-              Break;
+              break;
             end;
           end;
 
         2: //This is an end tag
-          if lBuf[I] = '>' then
+          if lBuf[i] = '>' then
           begin
             Result := St;
             Count := 0;
-            Break;
+            break;
           end
           else
-            St := St + lBuf[I];
+            St := St + lBuf[i];
       end;
     end;
   until Count = 0;
@@ -1423,10 +1518,10 @@ end;
 procedure TJvSimpleXMLElems.SaveToStream(const Stream: TStream;
   const Level: string; Parent: TJvSimpleXML);
 var
-  I: Integer;
+  i: integer;
 begin
-  for I := 0 to Count - 1 do
-    Item[I].SaveToStream(Stream, Level, Parent);
+  for i := 0 to Count - 1 do
+    Item[i].SaveToStream(Stream, Level, Parent);
 end;
 
 function TJvSimpleXMLElems.Value(const Name: string; Default: string): string;
@@ -1441,9 +1536,9 @@ begin
     Result := Elem.Value;
 end;
 
-function SortItems(List: TStringList; Index1, Index2: Integer): Integer;
+function SortItems(List: TStringlist; Index1, Index2: integer): integer;
 var
-  i: Integer;
+  i: integer;
 begin
   Result := 0;
   for i := 0 to GSorts.Count - 1 do
@@ -1459,10 +1554,10 @@ procedure TJvSimpleXMLElems.CustomSort(
 begin
   if FElems <> nil then
   begin
-    GSorts.Add(self);
+    GSorts.Add(Self);
     FCompare := AFunction;
     FElems.CustomSort(SortItems);
-    GSorts.Remove(self);
+    GSorts.Remove(Self);
   end;
 end;
 
@@ -1471,7 +1566,6 @@ begin
   if FElems <> nil then
     FElems.Sort;
 end;
-
 
 //=== TJvSimpleXMLProps ======================================================
 
@@ -1494,13 +1588,13 @@ begin
   Result := Add(Name, IntToStr(Value));
 end;
 
-function TJvSimpleXMLProps.Add(const Name: string; const Value: Boolean): TJvSimpleXMLProp;
+function TJvSimpleXMLProps.Add(const Name: string; const Value: boolean): TJvSimpleXMLProp;
 begin
   Result := Add(Name, BoolToStr(Value));
 end;
 
 function TJvSimpleXMLProps.BoolValue(const Name: string;
-  Default: Boolean): Boolean;
+  Default: boolean): boolean;
 var
   Prop: TJvSimpleXMLProp;
 begin
@@ -1517,17 +1611,20 @@ end;
 
 procedure TJvSimpleXMLProps.Clear;
 var
-  I: Integer;
+  i: integer;
 begin
   if FProperties <> nil then
   begin
-    for I := 0 to FProperties.Count - 1 do
-      TJvSimpleXMLProp(FProperties.Objects[I]).Free;
+    for i := 0 to FProperties.Count - 1 do
+    begin
+      TJvSimpleXMLProp(FProperties.Objects[i]).Free;
+      FProperties.Objects[i] := nil;
+    end;
     FProperties.Clear;
   end;
 end;
 
-procedure TJvSimpleXMLProps.Delete(const Index: Integer);
+procedure TJvSimpleXMLProps.Delete(const Index: integer);
 begin
   if (FProperties <> nil) and (Index >= 0) and (Index < FProperties.Count) then
   begin
@@ -1550,20 +1647,21 @@ end;
 
 destructor TJvSimpleXMLProps.Destroy;
 begin
+  FParent := nil;
   Clear;
-  FProperties.Free;
+  FreeAndNil(FProperties);
   inherited Destroy;
 end;
 
 procedure TJvSimpleXMLProps.DoItemRename(var Value: TJvSimpleXMLProp;
   const Name: string);
 var
-  I: Integer;
+  i: integer;
 begin
   if FProperties = nil then Exit;
-  I := FProperties.IndexOfObject(Value);
-  if I <> -1 then
-    FProperties[I] := Name;
+  i := FProperties.IndexOfObject(Value);
+  if i <> -1 then
+    FProperties[i] := Name;
 end;
 
 procedure TJvSimpleXMLProps.Error(const S: string);
@@ -1574,10 +1672,10 @@ end;
 procedure TJvSimpleXMLProps.FmtError(const S: string;
   const Args: array of const);
 begin
-  Error(Format(S,Args));
+  Error(Format(S, Args));
 end;
 
-function TJvSimpleXMLProps.GetCount: Integer;
+function TJvSimpleXMLProps.GetCount: integer;
 begin
   if FProperties = nil then
     Result := 0
@@ -1585,7 +1683,7 @@ begin
     Result := FProperties.Count;
 end;
 
-function TJvSimpleXMLProps.GetItem(const Index: Integer): TJvSimpleXMLProp;
+function TJvSimpleXMLProps.GetItem(const Index: integer): TJvSimpleXMLProp;
 begin
   if FProperties <> nil then
     Result := TJvSimpleXMLProp(FProperties.Objects[Index])
@@ -1595,14 +1693,14 @@ end;
 
 function TJvSimpleXMLProps.GetItemNamed(const Name: string): TJvSimpleXMLProp;
 var
-  I: Integer;
+  i: integer;
 begin
   Result := nil;
   if FProperties <> nil then
   begin
-    I := FProperties.IndexOf(Name);
-    if I <> -1 then
-      Result := TJvSimpleXMLProp(FProperties.Objects[I])
+    i := FProperties.IndexOf(Name);
+    if i <> -1 then
+      Result := TJvSimpleXMLProp(FProperties.Objects[i])
     else if Assigned(FParent) and
       Assigned(FParent.SimpleXml) and
       (sxoAutoCreate in FParent.SimpleXml.Options) then
@@ -1640,10 +1738,10 @@ type
     );
 var
   lPos: TPosType;
-  I, lStreamPos, Count: Integer;
-  lBuf: array [0..cBufferSize-1] of Char;
+  i, lStreamPos, Count: integer;
+  lBuf: array[0..cBufferSize - 1] of char;
   lName, lValue, lPointer: string;
-  lPropStart: Char;
+  lPropStart: char;
 begin
   lStreamPos := Stream.Position;
   lValue := '';
@@ -1653,8 +1751,8 @@ begin
   lPos := ptWaiting;
 
   repeat
-    Count := Stream.Read(lBuf, SizeOf(lBuf));
-    for I := 0 to Count - 1 do
+    Count := Stream.Read(lBuf, sizeof(lBuf));
+    for i := 0 to Count - 1 do
     begin
       //Increment Stream pos for after comment
       Inc(lStreamPos);
@@ -1662,30 +1760,30 @@ begin
       case lPos of
         ptWaiting: //We are waiting for a property
           begin
-            case lBuf[I] of
+            case lBuf[i] of
               ' ', #9, #10, #13:
                 begin
                 end;
               'a'..'z', 'A'..'Z', '0'..'9', '-', '_':
                 begin
-                  lName := lBuf[I];
+                  lName := lBuf[i];
                   lPos := ptReadingName;
                 end;
               '/', '>', '?':
                 begin
                   Dec(lStreamPos);
                   Count := 0;
-                  Break;
+                  break;
                 end;
             else
-              FmtError(sInvalidXMLElementUnexpectedCharacte,[lBuf[I]]);
+              FmtError(sInvalidXMLElementUnexpectedCharacte, [lBuf[i]]);
             end;
           end;
 
         ptReadingName: //We are reading a property name
-          case lBuf[I] of
+          case lBuf[i] of
             'a'..'z', 'A'..'Z', '0'..'9', '-', '_':
-              lName := lName + lBuf[I];
+              lName := lName + lBuf[i];
             ':':
               begin
                 lPointer := lName;
@@ -1696,43 +1794,43 @@ begin
             ' ', #9, #10, #13:
               lPos := ptSpaceBeforeEqual;
           else
-            FmtError(sInvalidXMLElementUnexpectedCharacte,[lBuf[I]]);
+            FmtError(sInvalidXMLElementUnexpectedCharacte, [lBuf[i]]);
           end;
 
         ptStartingContent: //We are going to start a property content
-          case lBuf[I] of
+          case lBuf[i] of
             ' ', #9, #10, #13:
               ; // ignore white space
             '''', '"':
               begin
-                lPropStart := lBuf[I];
+                lPropStart := lBuf[i];
                 lValue := '';
                 lPos := ptReadingValue;
               end;
           else
-            FmtError(sInvalidXMLElementUnexpectedCharacte_,[lBuf[I]]);
+            FmtError(sInvalidXMLElementUnexpectedCharacte_, [lBuf[i]]);
           end;
         ptReadingValue: //We are reading a property
-          if lBuf[I] = lPropStart then
+          if lBuf[i] = lPropStart then
           begin
-            SimpleXmlDecode(lValue, False);
+            SimpleXMLDecode(lValue, true);
             with Add(lName, lValue) do
               Pointer := lPointer;
             lPos := ptWaiting;
           end
           else
-            lValue := lValue + lBuf[I];
+            lValue := lValue + lBuf[i];
         ptSpaceBeforeEqual: // We are reading the white space between a property name and the = sign
-          case lBuf[I] of
+          case lBuf[i] of
             ' ', #9, #10, #13:
               ; // more white space, stay in this state and ignore
             '=':
               lPos := ptStartingContent;
           else
-            FmtError(sInvalidXMLElementUnexpectedCharacte,[lBuf[I]]);
+            FmtError(sInvalidXMLElementUnexpectedCharacte, [lBuf[i]]);
           end;
       else
-        Assert(False, sUnexpectedValueForLPos);
+        Assert(false, sUnexpectedValueForLPos);
       end;
     end;
   until Count = 0;
@@ -1743,11 +1841,11 @@ end;
 procedure TJvSimpleXMLProps.SaveToStream(const Stream: TStream);
 var
   St: string;
-  I: Integer;
+  i: integer;
 begin
   St := '';
-  for I := 0 to Count - 1 do
-    St := St + Item[I].SaveToString;
+  for i := 0 to Count - 1 do
+    St := St + Item[i].SaveToString;
   if St <> '' then
     Stream.Write(St[1], Length(St));
 end;
@@ -1766,9 +1864,9 @@ end;
 
 //=== TJvSimpleXMLProp =======================================================
 
-function TJvSimpleXMLProp.GetBoolValue: Boolean;
+function TJvSimpleXMLProp.GetBoolValue: boolean;
 begin
-  Result := StrToBoolDef(Value, False);
+  Result := StrToBoolDef(Value, false);
 end;
 
 function TJvSimpleXMLProp.GetIntValue: Int64;
@@ -1784,7 +1882,7 @@ begin
     Result := Format(' %s="%s"', [Name, SimpleXmlEncode(Value)]);
 end;
 
-procedure TJvSimpleXMLProp.SetBoolValue(const Value: Boolean);
+procedure TJvSimpleXMLProp.SetBoolValue(const Value: boolean);
 begin
   FValue := BoolToStr(Value);
 end;
@@ -1811,8 +1909,8 @@ procedure TJvSimpleXMLElemClassic.LoadFromStream(const Stream: TStream; Parent: 
 //<element Prop="foo" Prop='bar'>foor<b>beuh</b>bar</element>
 //<xml:element Prop="foo" Prop='bar'>foor<b>beuh</b>bar</element>
 var
-  I, lStreamPos, Count, lPos: Integer;
-  lBuf: array[0..cBufferSize - 1] of Char;
+  i, lStreamPos, Count, lPos: integer;
+  lBuf: array[0..cBufferSize - 1] of char;
   St, lName, lValue, lPointer: string;
 begin
   lStreamPos := Stream.Position;
@@ -1822,42 +1920,42 @@ begin
   lPos := 1;
 
   repeat
-    Count := Stream.Read(lBuf, SizeOf(lBuf));
+    Count := Stream.Read(lBuf, sizeof(lBuf));
     if Parent <> nil then
       Parent.DoLoadProgress(Stream.Position, Stream.Size);
-    for I := 0 to Count - 1 do
+    for i := 0 to Count - 1 do
     begin
       //Increment Stream pos for after comment
       Inc(lStreamPos);
 
       case lPos of
         1:
-          if lBuf[I] = '<' then
+          if lBuf[i] = '<' then
             lPos := 2
           else
-            FmtError(sInvalidXMLElementExpectedBeginningO, [lBuf[I]]);
+            FmtError(sInvalidXMLElementExpectedBeginningO, [lBuf[i]]);
         -1:
-          if lBuf[I] = '>' then
+          if lBuf[i] = '>' then
           begin
             Count := 0;
-            Break;
+            break;
           end
           else
-            FmtError(sInvalidXMLElementExpectedEndOfTagBu,[lBuf[I]]);
+            FmtError(sInvalidXMLElementExpectedEndOfTagBu, [lBuf[i]]);
       else
         begin
-          if lBuf[I] in [#9, #10, #13, ' ', '.'] then
+          if lBuf[i] in [#9, #10, #13, ' ', '.'] then
           begin
             if lPos = 2 then
               Error(sInvalidXMLElementMalformedTagFoundn);
             Stream.Seek(lStreamPos, soFromBeginning);
             Properties.LoadFromStream(Stream);
             lStreamPos := Stream.Position;
-            Break; //Re read buffer
+            break; //Re read buffer
           end
           else
           begin
-            case lBuf[I] of
+            case lBuf[i] of
               '>':
                 begin
                   lName := St;
@@ -1865,7 +1963,7 @@ begin
                   Stream.Seek(lStreamPos, soFromBeginning);
                   St := Items.LoadFromStream(Stream, Parent);
                   if lName <> St then
-                    FmtError(sInvalidXMLElementErroneousEndOfTagE,[lName,St]);
+                    FmtError(sInvalidXMLElementErroneousEndOfTagE, [lName, St]);
                   lStreamPos := Stream.Position;
 
                   //Set value if only one sub element
@@ -1877,7 +1975,7 @@ begin
                   end;
 
                   Count := 0;
-                  Break;
+                  break;
                 end;
               '/':
                 begin
@@ -1891,7 +1989,7 @@ begin
                 end;
             else
               begin
-                St := St + lBuf[I];
+                St := St + lBuf[i];
                 Inc(lPos);
               end;
             end;
@@ -1902,7 +2000,7 @@ begin
   until Count = 0;
 
   Name := lName;
-  SimpleXmlDecode(lValue);
+  SimpleXMLDecode(lValue, true);
   Value := lValue;
   Pointer := lPointer;
 
@@ -1918,7 +2016,7 @@ end;
 procedure TJvSimpleXMLElemClassic.SaveToStream(const Stream: TStream; const Level: string; Parent: TJvSimpleXML);
 var
   St: string;
-  LevelAdd : string;
+  LevelAdd: string;
 begin
   if Name <> '' then
   begin
@@ -1934,7 +2032,7 @@ begin
       if Value = '' then
         St := '/>' + sLineBreak
       else
-       St := '>' + SimpleXmlEncode(Value) + '</' + Name + '>' + sLineBreak;
+        St := '>' + SimpleXmlEncode(Value) + '</' + Name + '>' + sLineBreak;
       Stream.Write(St[1], Length(St));
     end;
   end
@@ -1969,56 +2067,56 @@ const
   CS_START_COMMENT = '<!--';
   CS_STOP_COMMENT = '    -->';
 var
-  I, lStreamPos, Count, lPos: Integer;
-  lBuf: array[0..cBufferSize - 1] of Char;
+  i, lStreamPos, Count, lPos: integer;
+  lBuf: array[0..cBufferSize - 1] of char;
   St: string;
-  lOk: Boolean;
+  lOk: boolean;
 begin
   lStreamPos := Stream.Position;
   St := '';
   lPos := 1;
-  lOk := False;
+  lOk := false;
 
   repeat
-    Count := Stream.Read(lBuf, SizeOf(lBuf));
+    Count := Stream.Read(lBuf, sizeof(lBuf));
     if Parent <> nil then
       Parent.DoLoadProgress(Stream.Position, Stream.Size);
-    for I := 0 to Count - 1 do
+    for i := 0 to Count - 1 do
     begin
       //Increment Stream pos for after comment
       Inc(lStreamPos);
 
       case lPos of
         1..4: //<!--
-          if lBuf[I] = CS_START_COMMENT[lPos] then
+          if lBuf[i] = CS_START_COMMENT[lPos] then
             Inc(lPos)
           else
-            FmtError(sInvalidCommentExpectedsButFounds,[CS_START_COMMENT[lPos],lBuf[I]]);
+            FmtError(sInvalidCommentExpectedsButFounds, [CS_START_COMMENT[lPos], lBuf[i]]);
         5:
-          if lBuf[I] = CS_STOP_COMMENT[lPos] then
+          if lBuf[i] = CS_STOP_COMMENT[lPos] then
             Inc(lPos)
           else
-            St := St + lBuf[I];
+            St := St + lBuf[i];
         6: //-
-          if lBuf[I] = CS_STOP_COMMENT[lPos] then
+          if lBuf[i] = CS_STOP_COMMENT[lPos] then
             Inc(lPos)
           else
           begin
-            St := St + '-' + lBuf[I];
+            St := St + '-' + lBuf[i];
             Dec(lPos);
           end;
         7: //>
-          if lBuf[I] = CS_STOP_COMMENT[lPos] then
+          if lBuf[i] = CS_STOP_COMMENT[lPos] then
           begin
             Count := 0; //End repeat
-            lOk := True;
-            Break; //End if
+            lOk := true;
+            break; //End if
           end
           else
           begin
-            if lBuf[i+1] <> '>' then
+            if lBuf[i + 1] <> '>' then
               Error(sInvalidCommentNotAllowedInsideComme);
-            St := St + '--' + lBuf[I];
+            St := St + '--' + lBuf[i];
             Dec(lPos, 2);
           end;
       end;
@@ -2053,60 +2151,60 @@ end;
 
 //=== TJvSimpleXMLElemCData ==================================================
 
-procedure TJvSimpleXMLElemCData.LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML);
+procedure TJvSimpleXmlElemCData.LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML);
 //<![CDATA[<greeting>Hello, world!</greeting>]]>
 const
   CS_START_CDATA = '<![CDATA[';
   CS_STOP_CDATA = '         ]]>';
 var
-  I, lStreamPos, Count, lPos: Integer;
-  lBuf: array[0..cBufferSize - 1] of Char;
+  i, lStreamPos, Count, lPos: integer;
+  lBuf: array[0..cBufferSize - 1] of char;
   St: string;
-  lOk: Boolean;
+  lOk: boolean;
 begin
   lStreamPos := Stream.Position;
   St := '';
   lPos := 1;
-  lOk := False;
+  lOk := false;
 
   repeat
-    Count := Stream.Read(lBuf, SizeOf(lBuf));
+    Count := Stream.Read(lBuf, sizeof(lBuf));
     if Parent <> nil then
       Parent.DoLoadProgress(Stream.Position, Stream.Size);
-    for I := 0 to Count - 1 do
+    for i := 0 to Count - 1 do
     begin
       //Increment Stream pos for after comment
       Inc(lStreamPos);
 
       case lPos of
         1..9: //<![CDATA[
-          if lBuf[I] = CS_START_CDATA[lPos] then
+          if lBuf[i] = CS_START_CDATA[lPos] then
             Inc(lPos)
           else
-            FmtError(sInvalidCDATAExpectedsButFounds,[CS_START_CDATA[lPos],lBuf[I]]);
+            FmtError(sInvalidCDATAExpectedsButFounds, [CS_START_CDATA[lPos], lBuf[i]]);
         10:
-          if lBuf[I] = CS_STOP_CDATA[lPos] then
+          if lBuf[i] = CS_STOP_CDATA[lPos] then
             Inc(lPos)
           else
-            St := St + lBuf[I];
+            St := St + lBuf[i];
         11: //-
-          if lBuf[I] = CS_STOP_CDATA[lPos] then
+          if lBuf[i] = CS_STOP_CDATA[lPos] then
             Inc(lPos)
           else
           begin
-            St := St + ']' + lBuf[I];
+            St := St + ']' + lBuf[i];
             Dec(lPos);
           end;
         12: //>
-          if lBuf[I] = CS_STOP_CDATA[lPos] then
+          if lBuf[i] = CS_STOP_CDATA[lPos] then
           begin
             Count := 0; //End repeat
-            lOk := True;
-            Break; //End if
+            lOk := true;
+            break; //End if
           end
           else
           begin
-            St := St + ']]' + lBuf[I];
+            St := St + ']]' + lBuf[i];
             Dec(lPos, 2);
           end;
       end;
@@ -2125,7 +2223,7 @@ begin
   Stream.Seek(lStreamPos, soFromBeginning);
 end;
 
-procedure TJvSimpleXMLElemCData.SaveToStream(const Stream: TStream; const Level: string; Parent: TJvSimpleXML);
+procedure TJvSimpleXmlElemCData.SaveToStream(const Stream: TStream; const Level: string; Parent: TJvSimpleXML);
 var
   St: string;
 begin
@@ -2143,8 +2241,8 @@ end;
 
 procedure TJvSimpleXMLElemText.LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML);
 var
-  I, lStreamPos, Count, lPos: Integer;
-  lBuf: array[0..cBufferSize - 1] of Char;
+  i, lStreamPos, Count, lPos: integer;
+  lBuf: array[0..cBufferSize - 1] of char;
   St: string;
 begin
   lStreamPos := Stream.Position;
@@ -2152,21 +2250,21 @@ begin
   lPos := 0;
 
   repeat
-    Count := Stream.Read(lBuf, SizeOf(lBuf));
+    Count := Stream.Read(lBuf, sizeof(lBuf));
     if Parent <> nil then
       Parent.DoLoadProgress(Stream.Position, Stream.Size);
-    for I := 0 to Count - 1 do
+    for i := 0 to Count - 1 do
     begin
       //Increment Stream pos for after comment
       Inc(lStreamPos);
 
-      case lBuf[I] of
+      case lBuf[i] of
         '<':
           begin
             //Quit text
             Dec(lStreamPos);
             Count := 0;
-            Break;
+            break;
           end;
         ' ':
           if lPos = 0 then
@@ -2177,13 +2275,13 @@ begin
       else
         begin
           lPos := 0;
-          St := St + lBuf[I];
+          St := St + lBuf[i];
         end;
       end;
     end;
   until Count = 0;
 
-  SimpleXmlDecode(St);
+  SimpleXMLDecode(St, true);
   Value := St;
   Name := '';
 
@@ -2208,11 +2306,12 @@ end;
 
 //=== TJvSimpleXMLElemHeader =================================================
 
-constructor TJvSimpleXMLElemHeader.Create;
+constructor TJvSimpleXMLElemHeader.Create(const AOwner: TJvSimpleXMLElem);
 begin
+  inherited Create(AOwner);
   FVersion := '1.0';
   FEncoding := 'iso-8859-1';
-  FStandalone := False;
+  FStandalone := false;
 end;
 
 procedure TJvSimpleXMLElemHeader.LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML);
@@ -2221,31 +2320,31 @@ const
   CS_START_HEADER = '<?xml';
   CS_STOP_HEADER = '     ?>';
 var
-  I, lStreamPos, Count, lPos: Integer;
-  lBuf: array[0..cBufferSize - 1] of Char;
-  lOk: Boolean;
+  i, lStreamPos, Count, lPos: integer;
+  lBuf: array[0..cBufferSize - 1] of char;
+  lOk: boolean;
 begin
   lStreamPos := Stream.Position;
   lPos := 1;
-  lOk := False;
+  lOk := false;
 
   repeat
-    Count := Stream.Read(lBuf, SizeOf(lBuf));
+    Count := Stream.Read(lBuf, sizeof(lBuf));
     if Parent <> nil then
       Parent.DoLoadProgress(Stream.Position, Stream.Size);
-    for I := 0 to Count - 1 do
+    for i := 0 to Count - 1 do
     begin
       //Increment Stream pos for after comment
       Inc(lStreamPos);
 
       case lPos of
         1..4: //<?xml
-          if lBuf[I] = CS_START_HEADER[lPos] then
+          if lBuf[i] = CS_START_HEADER[lPos] then
             Inc(lPos)
           else
-            FmtError(sInvalidHeaderExpectedsButFounds,[CS_START_HEADER[lPos],lBuf[I]]);
+            FmtError(sInvalidHeaderExpectedsButFounds, [CS_START_HEADER[lPos], lBuf[i]]);
         5: //L
-          if lBuf[I] = CS_START_HEADER[lPos] then
+          if lBuf[i] = CS_START_HEADER[lPos] then
           begin
             Stream.Seek(lStreamPos, soFromBeginning);
             Properties.LoadFromStream(Stream);
@@ -2258,24 +2357,24 @@ begin
 
             Properties.Clear;
 
-            Break; //Re read buffer
+            break; //Re read buffer
           end
           else
-            FmtError(sInvalidHeaderExpectedsButFounds,[CS_START_HEADER[lPos],lBuf[I]]);
+            FmtError(sInvalidHeaderExpectedsButFounds, [CS_START_HEADER[lPos], lBuf[i]]);
         6: //?
-          if lBuf[I] = CS_STOP_HEADER[lPos] then
+          if lBuf[i] = CS_STOP_HEADER[lPos] then
             Inc(lPos)
           else
-            FmtError(sInvalidHeaderExpectedsButFounds,[CS_STOP_HEADER[lPos],lBuf[I]]);
+            FmtError(sInvalidHeaderExpectedsButFounds, [CS_STOP_HEADER[lPos], lBuf[i]]);
         7: //>
-          if lBuf[I] = CS_STOP_HEADER[lPos] then
+          if lBuf[i] = CS_STOP_HEADER[lPos] then
           begin
             Count := 0; //End repeat
-            lOk := True;
-            Break; //End if
+            lOk := true;
+            break; //End if
           end
           else
-            FmtError(sInvalidHeaderExpectedsButFounds,[CS_STOP_HEADER[lPos],lBuf[I]]);
+            FmtError(sInvalidHeaderExpectedsButFounds, [CS_STOP_HEADER[lPos], lBuf[i]]);
       end;
     end;
   until Count = 0;
@@ -2306,7 +2405,7 @@ end;
 
 //=== TJvSimpleXMLElemDocType ================================================
 
-procedure TJvSimpleXMLElemDocType.LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML);
+procedure TJvSimpleXmlElemDocType.LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML);
 {
 <!DOCTYPE test [
 <!ELEMENT test (#PCDATA) >
@@ -2320,52 +2419,52 @@ procedure TJvSimpleXMLElemDocType.LoadFromStream(const Stream: TStream; Parent: 
 const
   CS_START_DOCTYPE = '<!DOCTYPE';
 var
-  I, lStreamPos, Count, lPos: Integer;
-  lBuf: array[0..cBufferSize - 1] of Char;
-  lOk: Boolean;
-  lChar: Char;
+  i, lStreamPos, Count, lPos: integer;
+  lBuf: array[0..cBufferSize - 1] of char;
+  lOk: boolean;
+  lChar: char;
   St: string;
 begin
   lStreamPos := Stream.Position;
   lPos := 1;
-  lOk := False;
+  lOk := false;
   lChar := '>';
   St := '';
 
   repeat
-    Count := Stream.Read(lBuf, SizeOf(lBuf));
+    Count := Stream.Read(lBuf, sizeof(lBuf));
     if Parent <> nil then
       Parent.DoLoadProgress(Stream.Position, Stream.Size);
-    for I := 0 to Count - 1 do
+    for i := 0 to Count - 1 do
     begin
       //Increment Stream pos for after comment
       Inc(lStreamPos);
 
       case lPos of
         1..9: //<!DOCTYPE
-          if lBuf[I] = CS_START_DOCTYPE[lPos] then
+          if lBuf[i] = CS_START_DOCTYPE[lPos] then
             Inc(lPos)
           else
-            FmtError(sInvalidHeaderExpectedsButFounds,[CS_START_DOCTYPE[lPos],lBuf[I]]);
+            FmtError(sInvalidHeaderExpectedsButFounds, [CS_START_DOCTYPE[lPos], lBuf[i]]);
         10: //]> or >
-          if lChar = lBuf[I] then
+          if lChar = lBuf[i] then
           begin
             if lChar = '>' then
             begin
-              lOk := True;
+              lOk := true;
               Count := 0;
-              Break; //This is the end
+              break; //This is the end
             end
             else
             begin
-              St := St + lBuf[I];
+              St := St + lBuf[i];
               lChar := '>';
             end;
           end
           else
           begin
-            St := St + lBuf[I];
-            if lBuf[I] = '[' then
+            St := St + lBuf[i];
+            if lBuf[i] = '[' then
               lChar := ']';
           end;
       end;
@@ -2384,7 +2483,7 @@ begin
   Stream.Seek(lStreamPos, soFromBeginning);
 end;
 
-procedure TJvSimpleXMLElemDocType.SaveToStream(const Stream: TStream;
+procedure TJvSimpleXmlElemDocType.SaveToStream(const Stream: TStream;
   const Level: string; Parent: TJvSimpleXML);
 var
   St: string;
@@ -2404,54 +2503,54 @@ const
   CS_START_PI = '<?xml-stylesheet';
   CS_STOP_PI = '                ?>';
 var
-  I, lStreamPos, Count, lPos: Integer;
-  lBuf: array[0..cBufferSize - 1] of Char;
-  lOk: Boolean;
+  i, lStreamPos, Count, lPos: integer;
+  lBuf: array[0..cBufferSize - 1] of char;
+  lOk: boolean;
 begin
   lStreamPos := Stream.Position;
   lPos := 1;
-  lOk := False;
+  lOk := false;
 
   repeat
-    Count := Stream.Read(lBuf, SizeOf(lBuf));
+    Count := Stream.Read(lBuf, sizeof(lBuf));
     if Parent <> nil then
       Parent.DoLoadProgress(Stream.Position, Stream.Size);
-    for I := 0 to Count - 1 do
+    for i := 0 to Count - 1 do
     begin
       //Increment Stream pos for after comment
       Inc(lStreamPos);
 
       case lPos of
         1..15: //<?xml-stylesheet
-          if lBuf[I] = CS_START_PI[lPos] then
+          if lBuf[i] = CS_START_PI[lPos] then
             Inc(lPos)
           else
-            FmtError(sInvalidStylesheetExpectedsButFounds,[CS_START_PI[lPos],lBuf[I]]);
+            FmtError(sInvalidStylesheetExpectedsButFounds, [CS_START_PI[lPos], lBuf[i]]);
         16: //L
-          if lBuf[I] = CS_START_PI[lPos] then
+          if lBuf[i] = CS_START_PI[lPos] then
           begin
             Stream.Seek(lStreamPos, soFromBeginning);
             Properties.LoadFromStream(Stream);
             lStreamPos := Stream.Position;
             Inc(lPos);
-            Break; //Re read buffer
+            break; //Re read buffer
           end
           else
-            FmtError(sInvalidStylesheetExpectedsButFounds,[CS_START_PI[lPos],lBuf[I]]);
+            FmtError(sInvalidStylesheetExpectedsButFounds, [CS_START_PI[lPos], lBuf[i]]);
         17: //?
-          if lBuf[I] = CS_STOP_PI[lPos] then
+          if lBuf[i] = CS_STOP_PI[lPos] then
             Inc(lPos)
           else
-            FmtError(sInvalidStylesheetExpectedsButFounds,[CS_STOP_PI[lPos],lBuf[I]]);
+            FmtError(sInvalidStylesheetExpectedsButFounds, [CS_STOP_PI[lPos], lBuf[i]]);
         18: //>
-          if lBuf[I] = CS_STOP_PI[lPos] then
+          if lBuf[i] = CS_STOP_PI[lPos] then
           begin
             Count := 0; //End repeat
-            lOk := True;
-            Break; //End if
+            lOk := true;
+            break; //End if
           end
           else
-            FmtError(sInvalidStylesheetExpectedsButFounds,[CS_STOP_PI[lPos],lBuf[I]]);
+            FmtError(sInvalidStylesheetExpectedsButFounds, [CS_STOP_PI[lPos], lBuf[i]]);
       end;
     end;
   until Count = 0;
@@ -2467,12 +2566,12 @@ end;
 procedure TJvSimpleXMLElemSheet.SaveToStream(const Stream: TStream;
   const Level: string; Parent: TJvSimpleXML);
 var
-  I: integer;
+  i: integer;
   St: string;
 begin
   St := Level + '<?xml-stylesheet';
-  for I := 0 to Properties.GetCount - 1 do
-    St := St + Properties.Item[I].SaveToString;
+  for i := 0 to Properties.GetCount - 1 do
+    St := St + Properties.Item[i].SaveToString;
   St := St + '?>' + sLineBreak;
   Stream.Write(St[1], Length(St));
   if Parent <> nil then
@@ -2490,24 +2589,28 @@ end;
 destructor TJvSimpleXMLElemsProlog.Destroy;
 begin
   Clear;
-  FElems.Free;
+  FreeAndNil(FElems);
   inherited Destroy;
 end;
 
 procedure TJvSimpleXMLElemsProlog.Clear;
-var i: integer;
+var
+  i: integer;
 begin
   for i := 0 to FElems.Count - 1 do
-    TJvSimpleXMLElem(FElems.Objects[i]).Free;
+  begin
+    FElems.Objects[i].Free;
+    FElems.Objects[i] := nil;
+  end;
   FElems.Clear;
 end;
 
-function TJvSimpleXMLElemsProlog.GetCount: Integer;
+function TJvSimpleXMLElemsProlog.GetCount: integer;
 begin
   Result := FElems.Count;
 end;
 
-function TJvSimpleXMLElemsProlog.GetItem(const Index: Integer): TJvSimpleXMLElem;
+function TJvSimpleXMLElemsProlog.GetItem(const Index: integer): TJvSimpleXMLElem;
 begin
   Result := TJvSimpleXMLElem(FElems.Objects[Index]);
 end;
@@ -2524,10 +2627,10 @@ function TJvSimpleXMLElemsProlog.LoadFromStream(
 <?xml version="1.0"?> <!DOCTYPE greeting SYSTEM "hello.dtd"> <greeting>Hello, world!</greeting>
 }
 var
-  I, lStreamPos, Count, lPos: Integer;
-  lBuf: array[0..cBufferSize - 1] of Char;
+  i, lStreamPos, Count, lPos: integer;
+  lBuf: array[0..cBufferSize - 1] of char;
   St: string;
-  lEnd: Boolean;
+  lEnd: boolean;
   lElem: TJvSimpleXMLElem;
 begin
   lStreamPos := Stream.Position;
@@ -2536,10 +2639,10 @@ begin
   lPos := 0;
 
   repeat
-    Count := Stream.Read(lBuf, SizeOf(lBuf));
+    Count := Stream.Read(lBuf, sizeof(lBuf));
     if Parent <> nil then
       Parent.DoLoadProgress(Stream.Position, Stream.Size);
-    for I := 0 to Count - 1 do
+    for i := 0 to Count - 1 do
     begin
       //Increment Stream pos for after comment
       Inc(lStreamPos);
@@ -2547,14 +2650,14 @@ begin
       case lPos of
         0: //We are waiting for a tag and thus avoiding spaces
           begin
-            case lBuf[I] of
+            case lBuf[i] of
               ' ', #9, #13, #10:
                 begin
                 end;
               '<':
                 begin
                   lPos := 1;
-                  St := lBuf[I];
+                  St := lBuf[i];
                 end;
             else
               Error(sInvalidDocumentUnexpectedTextInFile);
@@ -2563,44 +2666,38 @@ begin
         1: //We are trying to determine the kind of the tag
           begin
             lElem := nil;
-            lEnd := False;
+            lEnd := false;
 
-            St := St + lBuf[I];
+            St := St + lBuf[i];
             if St = '<![CDATA[' then
-              lEnd := True
-            else
-              if St = '<!--' then
-                lElem := TJvSimpleXMLElemComment.Create(nil)
-              else
-                if St = '<?xml-stylesheet' then
-                  lElem := TJvSimpleXMLElemSheet.Create(nil)
-                else
-                  if St = '<?xml ' then
-                    lElem := TJvSimpleXMLElemHeader.Create
-                  else
-                    if St = '<!DOCTYPE' then
-                      lElem := TJvSimpleXMLElemDoctype.Create(nil)
-                    else
-                      if (Length(St) > 1) and not (St[2] in ['!', '?']) then
-                        lEnd := True;
+              lEnd := true
+            else if St = '<!--' then
+              lElem := TJvSimpleXMLElemComment.Create(nil)
+            else if St = '<?xml-stylesheet' then
+              lElem := TJvSimpleXMLElemSheet.Create(nil)
+            else if St = '<?xml ' then
+              lElem := TJvSimpleXMLElemHeader.Create(nil)
+            else if St = '<!DOCTYPE' then
+              lElem := TJvSimpleXmlElemDocType.Create(nil)
+            else if (Length(St) > 1) and not (St[2] in ['!', '?']) then
+              lEnd := true;
 
             if lEnd then
             begin
               lStreamPos := lStreamPos - Length(St);
               Count := 0;
-              Break;
+              break;
             end
-            else
-              if lElem <> nil then
-              begin
-                Stream.Seek(lStreamPos - (Length(St)), soFromBeginning);
-                lElem.LoadFromStream(Stream);
-                lStreamPos := Stream.Position;
-                FElems.AddObject(lElem.Name, lElem);
-                St := '';
-                lPos := 0;
-                Break;
-              end;
+            else if lElem <> nil then
+            begin
+              Stream.Seek(lStreamPos - (Length(St)), soFromBeginning);
+              lElem.LoadFromStream(Stream);
+              lStreamPos := Stream.Position;
+              FElems.AddObject(lElem.Name, lElem);
+              St := '';
+              lPos := 0;
+              break;
+            end;
           end;
       end;
     end;
@@ -2611,12 +2708,12 @@ end;
 
 procedure TJvSimpleXMLElemsProlog.SaveToStream(const Stream: TStream; Parent: TJvSimpleXML);
 var
-  I: Integer;
+  i: integer;
 begin
   if Count = 0 then
-    FElems.AddObject('', TJvSimpleXMLElemHeader.Create);
-  for I := 0 to Count - 1 do
-    Item[I].SaveToStream(Stream, '', Parent);
+    FElems.AddObject('', TJvSimpleXMLElemHeader.Create(nil));
+  for i := 0 to Count - 1 do
+    Item[i].SaveToStream(Stream, '', Parent);
 end;
 
 //=== TJvSimpleHashTable =====================================================
@@ -2661,7 +2758,7 @@ end;
 
 procedure XmlCreateInto(var ADest: Variant; const AXml: TJvSimpleXMLElem);
 begin
-  TXmlVarData(ADest).VType := VarXml;
+  TXmlVarData(ADest).vType := VarXml;
   TXmlVarData(ADest).Xml := AXml;
 end;
 
@@ -2680,7 +2777,7 @@ end;
 procedure TXmlVariant.CastTo(var Dest: TVarData; const Source: TVarData;
   const AVarType: TVarType);
 begin
-  if Source.VType = VarType then
+  if Source.vType = VarType then
   begin
     case AVarType of
       varOleStr:
@@ -2697,73 +2794,73 @@ end;
 
 procedure TXmlVariant.Clear(var V: TVarData);
 begin
-  V.VType := varEmpty;
+  V.vType := varEmpty;
   TXmlVarData(V).Xml := nil;
 end;
 
 procedure TXmlVariant.Copy(var Dest: TVarData; const Source: TVarData;
-  const Indirect: Boolean);
+  const Indirect: boolean);
 begin
   if Indirect and VarDataIsByRef(Source) then
     VarDataCopyNoInd(Dest, Source)
   else
     with TXmlVarData(Dest) do
     begin
-      VType := VarType;
+      vType := VarType;
       Xml := TXmlVarData(Source).Xml;
     end;
 end;
 
 function TXmlVariant.DoFunction(var Dest: TVarData; const V: TVarData;
-  const Name: string; const Arguments: TVarDataArray): Boolean;
+  const Name: string; const Arguments: TVarDataArray): boolean;
 var
   lXml: TJvSimpleXMLElem;
-  I, J, K: Integer;
+  i, j, k: integer;
 begin
-  Result := False;
-  if (Length(Arguments) = 1) and (Arguments[0].VType in [vtInteger, vtExtended]) then
+  Result := false;
+  if (Length(Arguments) = 1) and (Arguments[0].vType in [vtInteger, vtExtended]) then
     with TXmlVarData(V) do
     begin
-      K := Arguments[0].vInteger;
-      J := 0;
+      k := Arguments[0].vInteger;
+      j := 0;
 
-      if K > 0 then
-        for I := 0 to Xml.Items.Count - 1 do
-          if UpperCase(Xml.Items[I].Name) = Name then
+      if k > 0 then
+        for i := 0 to Xml.Items.Count - 1 do
+          if UpperCase(Xml.Items[i].Name) = Name then
           begin
-            Inc(J);
-            if J = K then
-              Break;
+            Inc(j);
+            if j = k then
+              break;
           end;
 
-      if (J = K) and (J < Xml.Items.Count) then
+      if (j = k) and (j < Xml.Items.Count) then
       begin
-        lXml := Xml.Items[J];
+        lXml := Xml.Items[j];
         if lXml <> nil then
         begin
-          Dest.VType := VarXml;
+          Dest.vType := VarXml;
           TXmlVarData(Dest).Xml := lXml;
-          Result := True;
+          Result := true;
         end
       end;
     end;
 end;
 
 function TXmlVariant.GetProperty(var Dest: TVarData; const V: TVarData;
-  const Name: string): Boolean;
+  const Name: string): boolean;
 var
   lXml: TJvSimpleXMLElem;
   lProp: TJvSimpleXMLProp;
 begin
-  Result := False;
+  Result := false;
   with TXmlVarData(V) do
   begin
     lXml := Xml.Items.ItemNamed[Name];
     if lXml <> nil then
     begin
-      Dest.VType := VarXml;
+      Dest.vType := VarXml;
       TXmlVarData(Dest).Xml := lXml;
-      Result := True;
+      Result := true;
     end
     else
     begin
@@ -2771,20 +2868,20 @@ begin
       if lProp <> nil then
       begin
         VarDataFromOleStr(Dest, lProp.Value);
-        Result := True;
+        Result := true;
       end;
     end;
   end;
 end;
 
-function TXmlVariant.IsClear(const V: TVarData): Boolean;
+function TXmlVariant.IsClear(const V: TVarData): boolean;
 begin
   Result := (TXmlVarData(V).Xml = nil) or
     (TXmlVarData(V).Xml.Items.Count = 0);
 end;
 
 function TXmlVariant.SetProperty(const V: TVarData; const Name: string;
-  const Value: TVarData): Boolean;
+  const Value: TVarData): boolean;
 var
   lXml: TJvSimpleXMLElem;
   lProp: TJvSimpleXMLProp;
@@ -2799,7 +2896,7 @@ var
   end;
 
 begin
-  Result := False;
+  Result := false;
   with TXmlVarData(V) do
   begin
     lXml := Xml.Items.ItemNamed[Name];
@@ -2809,13 +2906,13 @@ begin
       if lProp <> nil then
       begin
         lProp.Value := GetStrValue;
-        Result := True;
+        Result := true;
       end;
     end
     else
     begin
       lXml.Value := GetStrValue;
-      Result := True;
+      Result := true;
     end;
   end;
 end;
@@ -2829,21 +2926,21 @@ end;
 procedure TJvSimpleXMLElemsProlog.FmtError(const S: string;
   const Args: array of const);
 begin
-  Error(Format(S,Args));
+  Error(Format(S, Args));
 end;
 
 procedure TJvSimpleXML.SetIndentString(const Value: string);
 var
-  ValueOk : Boolean;
-  I : Integer;
+  ValueOk: boolean;
+  i: integer;
 begin
   // test if the new value is only made of spaces or tabs
-  ValueOk := True;
-  I := 0;
-  while (I < Length(Value)) and ValueOk do
+  ValueOk := true;
+  i := 0;
+  while (i < Length(Value)) and ValueOk do
   begin
-    Inc(I);
-    ValueOk := (Value[I] = ' ') or (Value[I] = #8);
+    Inc(i);
+    ValueOk := (Value[i] = ' ') or (Value[i] = #8);
   end;
   if ValueOk then
     FIndentString := Value;
@@ -2864,7 +2961,7 @@ initialization
   XmlVariant := TXmlVariant.Create;
 {$ENDIF}
   GSorts := TList.Create;
-  
+
 finalization
 {$IFDEF COMPILER6_UP}
   FreeAndNil(XmlVariant);
