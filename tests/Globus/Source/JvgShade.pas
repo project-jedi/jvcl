@@ -27,131 +27,147 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvgShade;
+UNIT JvgShade;
 
-interface
+INTERFACE
 
-uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, JvgTypes, JvgUtils, JvgCommClasses;
+USES
+   Windows,
+   Messages,
+   SysUtils,
+   Classes,
+   Graphics,
+   Controls,
+   Forms,
+   Dialogs,
+   ExtCtrls,
+   JvgTypes,
+   JvgUtils,
+   JVComponent,
+   JvgCommClasses;
 
-type
+TYPE
 
-  TJvgShade = class(TCustomPanel)
-  private
-    FImage: TBitmap;
-    fLoaded: boolean;
-    fNeedRebuildImage: boolean;
+   TJvgShade = CLASS(TJvCustomPanel)
+   PRIVATE
+      FImage: TBitmap;
+      fLoaded: boolean;
+      fNeedRebuildImage: boolean;
 
-  protected
-    property Color; //...hide
-    procedure Paint; override;
-    procedure WMSize(var Msg: TMessage); message WM_SIZE;
-  public
-    property Canvas;
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
+   PROTECTED
+      PROPERTY Color;                   //...hide
+      PROCEDURE Paint; OVERRIDE;
+      PROCEDURE WMSize(VAR Msg: TMessage); MESSAGE WM_SIZE;
+   PUBLIC
+      PROPERTY Canvas;
+      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
+      DESTRUCTOR Destroy; OVERRIDE;
 
-    procedure RemakeBackground; //...for users
-  published
-    property Align;
-    property Enabled;
-    property Visible;
-    property Image: TBitmap read FImage write FImage;
-  end;
+      PROCEDURE RemakeBackground;       //...for users
+   PUBLISHED
+      PROPERTY Align;
+      PROPERTY Enabled;
+      PROPERTY Visible;
+      PROPERTY Image: TBitmap READ FImage WRITE FImage;
+   END;
 
-procedure Register;
+PROCEDURE Register;
 
-implementation
+IMPLEMENTATION
 //uses test;
 
-procedure Register;
-begin
-end;
+PROCEDURE Register;
+BEGIN
+END;
 //*****************************************_____________LowLevel METHODS
 //________________________________________________________
 
-constructor TJvgShade.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
+CONSTRUCTOR TJvgShade.Create(AOwner: TComponent);
+BEGIN
+   INHERITED Create(AOwner);
 
-  Width := 105;
-  Height := 105;
-  Image := TBitmap.create;
-  fLoaded := true;
-  //...defaults
-  fNeedRebuildImage := (csDesigning in ComponentState) and not (csLoading in ComponentState);
-end;
+   Width := 105;
+   Height := 105;
+   Image := TBitmap.create;
+   fLoaded := true;
+   //...defaults
+   fNeedRebuildImage := (csDesigning IN ComponentState) AND NOT (csLoading IN
+      ComponentState);
+END;
 //________________________________________________________
 
-destructor TJvgShade.Destroy;
-begin
-  Image.Free;
-  inherited Destroy;
-end;
+DESTRUCTOR TJvgShade.Destroy;
+BEGIN
+   Image.Free;
+   INHERITED Destroy;
+END;
 //________________________________________________________
 
-procedure TJvgShade.WMSize(var Msg: TMessage);
-begin
-  if (csDesigning in ComponentState) and not (csLoading in ComponentState) then RemakeBackground;
-end;
+PROCEDURE TJvgShade.WMSize(VAR Msg: TMessage);
+BEGIN
+   IF (csDesigning IN ComponentState) AND NOT (csLoading IN ComponentState) THEN
+      RemakeBackground;
+END;
 //________________________________________________________
 
-procedure TJvgShade.Paint;
-var
-  i, j, o: integer;
-  RGB: COLORREF;
-  R, G, B: byte;
-const
-  SHIFTCOLOR = $003939;
-begin
-  if fNeedRebuildImage then
-  begin
-    Image.Width := Width;
-    Image.Height := Height;
-    //..prepare tabula rasa :)
-    Image.Canvas.Brush.Color := Parent.Brush.Color;
-    Image.Canvas.Brush.Style := bsSolid;
-    Image.Canvas.FillRect(ClientRect);
-    GetParentImageRect(self, Bounds(Left, Top, Width, Height), Image.Canvas.Handle);
-    for j := 0 to Height do
-      for i := 0 to Width do
-        //	if Image.Canvas.Pixels[i,j] > SHIFTCOLOR then
-      begin
-        if o <> Image.Canvas.Pixels[i, j] then
-        begin
-          //o := Image.Canvas.Pixels[i,j];
-          //Form1.Memo1.Lines.Add(Format('%x',[o]));
-        end;
-        //	  if Image.Canvas.Pixels[i,j] = $C8B8A0 then
-        RGB := Image.Canvas.Pixels[i, j];
-        R := byte(RGB shr 16);
-        G := byte(RGB shr 8);
-        B := byte(RGB);
-        //	  RShift := $
-        Image.Canvas.Pixels[i, j] := Image.Canvas.Pixels[i, j] + SHIFTCOLOR;
-      end;
-    fNeedRebuildImage := false
-  end;
+PROCEDURE TJvgShade.Paint;
+VAR
+   i, j, o                    : integer;
+   RGB                        : COLORREF;
+   R, G, B                    : byte;
+CONST
+   SHIFTCOLOR                 = $003939;
+BEGIN
+   IF fNeedRebuildImage THEN
+   BEGIN
+      Image.Width := Width;
+      Image.Height := Height;
+      //..prepare tabula rasa :)
+      Image.Canvas.Brush.Color := Parent.Brush.Color;
+      Image.Canvas.Brush.Style := bsSolid;
+      Image.Canvas.FillRect(ClientRect);
+      GetParentImageRect(self, Bounds(Left, Top, Width, Height),
+         Image.Canvas.Handle);
+      FOR j := 0 TO Height DO
+         FOR i := 0 TO Width DO
+            //	if Image.Canvas.Pixels[i,j] > SHIFTCOLOR then
+         BEGIN
+            IF o <> Image.Canvas.Pixels[i, j] THEN
+            BEGIN
+               //o := Image.Canvas.Pixels[i,j];
+               //Form1.Memo1.Lines.Add(Format('%x',[o]));
+            END;
+            //	  if Image.Canvas.Pixels[i,j] = $C8B8A0 then
+            RGB := Image.Canvas.Pixels[i, j];
+            R := byte(RGB SHR 16);
+            G := byte(RGB SHR 8);
+            B := byte(RGB);
+            //	  RShift := $
+            Image.Canvas.Pixels[i, j] := Image.Canvas.Pixels[i, j] + SHIFTCOLOR;
+         END;
+      fNeedRebuildImage := false
+   END;
 
-  BitBlt(Canvas.Handle, 0, 0, Width, Height, Image.Canvas.Handle, 0, 0, SRCCOPY);
+   BitBlt(Canvas.Handle, 0, 0, Width, Height, Image.Canvas.Handle, 0, 0,
+      SRCCOPY);
 
-  if csDesigning in ComponentState then
-    with Canvas do
-    begin
-      Pen.Color := clBlack;
-      Pen.Style := psDash;
-      Brush.Style := bsClear;
-      Rectangle(0, 0, width, height);
-    end;
+   IF csDesigning IN ComponentState THEN
+      WITH Canvas DO
+      BEGIN
+         Pen.Color := clBlack;
+         Pen.Style := psDash;
+         Brush.Style := bsClear;
+         Rectangle(0, 0, width, height);
+      END;
 
-end;
+END;
 
-procedure TJvgShade.RemakeBackground; //...for users
-begin
-  fNeedRebuildImage := true;
-  Repaint;
-end;
+PROCEDURE TJvgShade.RemakeBackground;   //...for users
+BEGIN
+   fNeedRebuildImage := true;
+   Repaint;
+END;
 //________________________________________________________
 
-end.
+END.
+

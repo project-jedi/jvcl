@@ -32,470 +32,521 @@ Known Issues:
  captions and fill background with bitmap.  You  can  set  different
  fonts for selected page caption and for other captions.}
 
-unit JvgTab;
-interface
+UNIT JvgTab;
+INTERFACE
 
-uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, CommCtrl, JvgTypes, JvgUtils, JvgDrawTab, JvgTabComm, ExtCtrls, JvgCommClasses{$IFDEF COMPILER4_UP}, Imglist{$ENDIF};
+USES
+   Windows,
+   Messages,
+   SysUtils,
+   Classes,
+   Graphics,
+   Controls,
+   Forms,
+   Dialogs,
+   ComCtrls,
+   JvclVer,
+   CommCtrl,
+   JvgTypes,
+   JvgUtils,
+   JvgDrawTab,
+   JvgTabComm,
+   ExtCtrls,
+   JvgCommClasses{$IFDEF COMPILER4_UP},
+   Imglist{$ENDIF};
 
-const
-  TCM_SETTEXTCOLOR = (TCM_FIRST + 36);
-type
+CONST
+   TCM_SETTEXTCOLOR           = (TCM_FIRST + 36);
+TYPE
 
-  TJvgTabControl = class(TTabControl)
-  private
-    FGlyphs: TImageList;
-    FSingleGlyph: boolean;
-    FTabStyle: TJvgTabStyle;
-    FTabSelectedStyle: TJvgTabStyle;
-    FWallpaper: TJvgTabsWallpaper;
-    FDrawGlyphsOption: TglWallpaperOption;
-    FLookLikeButtons: boolean;
-    FTabsPosition: TglSide;
-    FOptions: TglTabOptions;
-    FFontDirection: TglLabelDir;
-    FOnGetItemColor: TglOnGetItemColorEvent;
-    FOnGetItemFontColor: TglOnGetItemColorEvent;
+   TJvgTabControl = CLASS(TTabControl)
+   PRIVATE
+      FGlyphs: TImageList;
+      FSingleGlyph: boolean;
+      FTabStyle: TJvgTabStyle;
+      FTabSelectedStyle: TJvgTabStyle;
+      FWallpaper: TJvgTabsWallpaper;
+      FDrawGlyphsOption: TglWallpaperOption;
+      FLookLikeButtons: boolean;
+      FTabsPosition: TglSide;
+      FOptions: TglTabOptions;
+      FFontDirection: TglLabelDir;
+      FOnGetItemColor: TglOnGetItemColorEvent;
+      FOnGetItemFontColor: TglOnGetItemColorEvent;
 
-    GlyphsChangeLink: TChangeLink;
-    DrawTabStr: TDRAWTABSTRUCT;
-    GlyphTmpBitmap: TBitmap;
-    FontNormal: TFont;
-    FontSelected: TFont;
-    fNotFirst: boolean;
-    aTabColors: array[0..100] of TColor;
+      GlyphsChangeLink: TChangeLink;
+      DrawTabStr: TDRAWTABSTRUCT;
+      GlyphTmpBitmap: TBitmap;
+      FontNormal: TFont;
+      FontSelected: TFont;
+      fNotFirst: boolean;
+      aTabColors: ARRAY[0..100] OF TColor;
+      FAboutJVCL: TJVCLAboutInfo;
 
-    function GetGlyphIndex(Index: Integer): Integer;
-    procedure SetGlyphIndex(Index: Integer; imgIndex: Integer);
-    procedure SetGlyphs(Value: TImageList);
-    procedure SetSingleGlyph(Value: boolean);
-    procedure SetDrawGlyphsOption(Value: TglWallpaperOption);
-    procedure SetLookLikeButtons(Value: boolean);
-    procedure SetTabsPosition(Value: TglSide);
-    procedure SetOptions(Value: TglTabOptions);
-    procedure SetFontDirection(Value: TglLabelDir);
-    function GetFont: TFont;
-    procedure SetFont(Value: TFont);
-    function GetTabColor(Index: integer): TColor;
-    procedure SetTabColor(Index: integer; Value: TColor);
+      FUNCTION GetGlyphIndex(Index: Integer): Integer;
+      PROCEDURE SetGlyphIndex(Index: Integer; imgIndex: Integer);
+      PROCEDURE SetGlyphs(Value: TImageList);
+      PROCEDURE SetSingleGlyph(Value: boolean);
+      PROCEDURE SetDrawGlyphsOption(Value: TglWallpaperOption);
+      PROCEDURE SetLookLikeButtons(Value: boolean);
+      PROCEDURE SetTabsPosition(Value: TglSide);
+      PROCEDURE SetOptions(Value: TglTabOptions);
+      PROCEDURE SetFontDirection(Value: TglLabelDir);
+      FUNCTION GetFont: TFont;
+      PROCEDURE SetFont(Value: TFont);
+      FUNCTION GetTabColor(Index: integer): TColor;
+      PROCEDURE SetTabColor(Index: integer; Value: TColor);
 
-    procedure SmthChanged(Sender: TObject);
-    procedure FontsChanged(Sender: TObject);
-    procedure DrawItem(lpDrawItemStr: PDRAWITEMSTRUCT);
-    procedure CNDrawItem(var Message: TWMDrawItem); message CN_DRAWITEM;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-  protected
-    procedure GlyphsListChanged(Sender: TObject);
-    procedure WndProc(var Message: TMessage); override;
-    procedure CreateParams(var Params: TCreateParams); override;
-    procedure Loaded; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-  public
-    fSupressDraw: boolean;
-    procedure RemakeFonts;
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
+      PROCEDURE SmthChanged(Sender: TObject);
+      PROCEDURE FontsChanged(Sender: TObject);
+      PROCEDURE DrawItem(lpDrawItemStr: PDRAWITEMSTRUCT);
+      PROCEDURE CNDrawItem(VAR Message: TWMDrawItem); MESSAGE CN_DRAWITEM;
+      PROCEDURE CMFontChanged(VAR Message: TMessage); MESSAGE CM_FONTCHANGED;
+   PROTECTED
+      PROCEDURE GlyphsListChanged(Sender: TObject);
+      PROCEDURE WndProc(VAR Message: TMessage); OVERRIDE;
+      PROCEDURE CreateParams(VAR Params: TCreateParams); OVERRIDE;
+      PROCEDURE Loaded; OVERRIDE;
+      PROCEDURE Notification(AComponent: TComponent; Operation: TOperation);
+         OVERRIDE;
+   PUBLIC
+      fSupressDraw: boolean;
+      PROCEDURE RemakeFonts;
+      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
+      DESTRUCTOR Destroy; OVERRIDE;
 
-    property GlyphIndex[Index: Integer]: Integer read GetGlyphIndex write SetGlyphIndex;
-    property TabColor[Index: integer]: TColor read GetTabColor write SetTabColor;
-    //     property GlyphState[Index: Integer]: Integer read GetGlyphState write SetGlyphState;
-  published
-    property Glyphs: TImageList read FGlyphs write SetGlyphs;
-    property SingleGlyph: boolean read FSingleGlyph write SetSingleGlyph
-      default false;
-    property TabStyle: TJvgTabStyle read FTabStyle write FTabStyle;
-    property TabSelectedStyle: TJvgTabStyle read FTabSelectedStyle write FTabSelectedStyle;
-    property Wallpaper: TJvgTabsWallpaper read FWallpaper write FWallpaper;
-    property DrawGlyphsOption: TglWallpaperOption
-      read FDrawGlyphsOption write SetDrawGlyphsOption default fwoNone;
-    property LookLikeButtons: boolean read FLookLikeButtons write SetLookLikeButtons
-      default false;
-    property TabsPosition: TglSide read FTabsPosition write SetTabsPosition
-      default fsdTop;
-    property Options: TglTabOptions read FOptions write SetOptions;
-    property FontDirection: TglLabelDir
-      read FFontDirection write SetFontDirection default fldLeftRight;
-    property Font: TFont read GetFont write SetFont;
-    property OnGetItemColor: TglOnGetItemColorEvent read FOnGetItemColor write FOnGetItemColor;
-    property OnGetItemFontColor: TglOnGetItemColorEvent read FOnGetItemFontColor write FOnGetItemFontColor;
-  end;
+      PROPERTY GlyphIndex[Index: Integer]: Integer READ GetGlyphIndex WRITE
+         SetGlyphIndex;
+      PROPERTY TabColor[Index: integer]: TColor READ GetTabColor WRITE
+         SetTabColor;
+      //     property GlyphState[Index: Integer]: Integer read GetGlyphState write SetGlyphState;
+   PUBLISHED
+      PROPERTY AboutJVCL: TJVCLAboutInfo READ FAboutJVCL WRITE FAboutJVCL STORED
+         False;
+      PROPERTY Glyphs: TImageList READ FGlyphs WRITE SetGlyphs;
+      PROPERTY SingleGlyph: boolean READ FSingleGlyph WRITE SetSingleGlyph
+         DEFAULT false;
+      PROPERTY TabStyle: TJvgTabStyle READ FTabStyle WRITE FTabStyle;
+      PROPERTY TabSelectedStyle: TJvgTabStyle READ FTabSelectedStyle WRITE
+         FTabSelectedStyle;
+      PROPERTY Wallpaper: TJvgTabsWallpaper READ FWallpaper WRITE FWallpaper;
+      PROPERTY DrawGlyphsOption: TglWallpaperOption
+         READ FDrawGlyphsOption WRITE SetDrawGlyphsOption DEFAULT fwoNone;
+      PROPERTY LookLikeButtons: boolean READ FLookLikeButtons WRITE
+         SetLookLikeButtons
+         DEFAULT false;
+      PROPERTY TabsPosition: TglSide READ FTabsPosition WRITE SetTabsPosition
+         DEFAULT fsdTop;
+      PROPERTY Options: TglTabOptions READ FOptions WRITE SetOptions;
+      PROPERTY FontDirection: TglLabelDir
+         READ FFontDirection WRITE SetFontDirection DEFAULT fldLeftRight;
+      PROPERTY Font: TFont READ GetFont WRITE SetFont;
+      PROPERTY OnGetItemColor: TglOnGetItemColorEvent READ FOnGetItemColor WRITE
+         FOnGetItemColor;
+      PROPERTY OnGetItemFontColor: TglOnGetItemColorEvent READ
+         FOnGetItemFontColor WRITE FOnGetItemFontColor;
+   END;
 
-procedure Register;
+PROCEDURE Register;
 
-implementation
-const
-  FontDirs: array[TglSide] of TglLabelDir
-  = (fldDownUp, fldLeftRight, fldUpDown, fldLeftRight);
+IMPLEMENTATION
+CONST
+   FontDirs                   : ARRAY[TglSide] OF TglLabelDir
+                                    = (fldDownUp, fldLeftRight, fldUpDown,
+         fldLeftRight);
 
-procedure Register;
-begin
-end;
+PROCEDURE Register;
+BEGIN
+END;
 //*****************************************_____________LowLevel METHODS
 
-constructor TJvgTabControl.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
+CONSTRUCTOR TJvgTabControl.Create(AOwner: TComponent);
+BEGIN
+   INHERITED Create(AOwner);
 
-  TabStop := false;
-  FTabStyle := TJvgTabStyle.Create(self);
-  FTabSelectedStyle := TJvgTabStyle.Create(self);
-  FWallpaper := TJvgTabsWallpaper.Create;
-  FontNormal := TFont.Create;
-  FontSelected := TFont.Create;
-  DrawTabStr.Font_ := TFont.Create;
+   TabStop := false;
+   FTabStyle := TJvgTabStyle.Create(self);
+   FTabSelectedStyle := TJvgTabStyle.Create(self);
+   FWallpaper := TJvgTabsWallpaper.Create;
+   FontNormal := TFont.Create;
+   FontSelected := TFont.Create;
+   DrawTabStr.Font_ := TFont.Create;
 
-  FTabStyle.Font.Name := 'Arial';
-  FTabSelectedStyle.Font.Name := 'Arial';
+   FTabStyle.Font.Name := 'Arial';
+   FTabSelectedStyle.Font.Name := 'Arial';
 
-  //  if csDesigning in ComponentState then
-  //    FTabSelectedStyle.BackgrColor := clbtnHighlight;
+   //  if csDesigning in ComponentState then
+   //    FTabSelectedStyle.BackgrColor := clbtnHighlight;
 
-  GlyphTmpBitmap := TBitmap.Create;
-  GlyphsChangeLink := TChangeLink.Create;
-  GlyphsChangeLink.OnChange := GlyphsListChanged;
+   GlyphTmpBitmap := TBitmap.Create;
+   GlyphsChangeLink := TChangeLink.Create;
+   GlyphsChangeLink.OnChange := GlyphsListChanged;
 
-  //...set defaults
-  FSingleGlyph := false;
+   //...set defaults
+   FSingleGlyph := false;
 
-  FDrawGlyphsOption := fwoNone;
-  FTabsPosition := fsdTop;
-  FOptions := [ftoAutoFontDirection, ftoExcludeGlyphs];
-  FFontDirection := fldLeftRight;
+   FDrawGlyphsOption := fwoNone;
+   FTabsPosition := fsdTop;
+   FOptions := [ftoAutoFontDirection, ftoExcludeGlyphs];
+   FFontDirection := fldLeftRight;
 
-  FTabStyle.OnChanged := SmthChanged;
-  FTabSelectedStyle.OnChanged := SmthChanged;
-  FTabStyle.OnFontChanged := FontsChanged;
-  FTabSelectedStyle.OnFontChanged := FontsChanged;
-  FWallpaper.OnChanged := SmthChanged;
-  FillMemory(@aTabColors, sizeof(aTabColors), $FF);
-end;
+   FTabStyle.OnChanged := SmthChanged;
+   FTabSelectedStyle.OnChanged := SmthChanged;
+   FTabStyle.OnFontChanged := FontsChanged;
+   FTabSelectedStyle.OnFontChanged := FontsChanged;
+   FWallpaper.OnChanged := SmthChanged;
+   FillMemory(@aTabColors, sizeof(aTabColors), $FF);
+END;
 
-destructor TJvgTabControl.Destroy;
-begin
-  FTabStyle.Free;
-  FTabSelectedStyle.Free;
-  GlyphTmpBitmap.Free;
-  FWallpaper.Free;
-  GlyphsChangeLink.Free;
-  FontNormal.Free;
-  FontSelected.Free;
-  DrawTabStr.Font_.Free;
-  inherited;
-end;
+DESTRUCTOR TJvgTabControl.Destroy;
+BEGIN
+   FTabStyle.Free;
+   FTabSelectedStyle.Free;
+   GlyphTmpBitmap.Free;
+   FWallpaper.Free;
+   GlyphsChangeLink.Free;
+   FontNormal.Free;
+   FontSelected.Free;
+   DrawTabStr.Font_.Free;
+   INHERITED;
+END;
 
-procedure TJvgTabControl.SmthChanged;
-begin
-  Invalidate;
-end;
+PROCEDURE TJvgTabControl.SmthChanged;
+BEGIN
+   Invalidate;
+END;
 
-procedure TJvgTabControl.FontsChanged;
-begin
-  RemakeFonts;
-  Invalidate;
-end;
+PROCEDURE TJvgTabControl.FontsChanged;
+BEGIN
+   RemakeFonts;
+   Invalidate;
+END;
 
 //---------------------------------------------------special procs
 
-procedure TJvgTabControl.CreateParams(var Params: TCreateParams);
-const
-  PosStyles: array[TglSide] of DWORD =
-  (TCS_VERTICAL, 0, TCS_VERTICAL or TCS_RIGHT, TCS_BOTTOM {or TCS_SCROLLOPPOSITE or TCS_BUTTONS});
-begin
-  inherited CreateParams(Params);
-  with Params do
-  begin
-    if LookLikeButtons then Style := Style or TCS_BUTTONS;
-    Style := Style or TCS_OWNERDRAWFIXED or PosStyles[FTabsPosition];
-  end;
-end; // {TCS_HOTTRACK-?};
+PROCEDURE TJvgTabControl.CreateParams(VAR Params: TCreateParams);
+CONST
+   PosStyles                  : ARRAY[TglSide] OF DWORD =
+      (TCS_VERTICAL, 0, TCS_VERTICAL OR TCS_RIGHT, TCS_BOTTOM
+         {or TCS_SCROLLOPPOSITE or TCS_BUTTONS});
+BEGIN
+   INHERITED CreateParams(Params);
+   WITH Params DO
+   BEGIN
+      IF LookLikeButtons THEN
+         Style := Style OR TCS_BUTTONS;
+      Style := Style OR TCS_OWNERDRAWFIXED OR PosStyles[FTabsPosition];
+   END;
+END;                                    // {TCS_HOTTRACK-?};
 
-procedure TJvgTabControl.Loaded;
-begin
-  inherited Loaded;
-  RemakeFonts;
-  if Assigned(Wallpaper.Bitmap) and (not Wallpaper.Bitmap.Empty) then Wallpaper.bmp := Wallpaper.Bitmap;
-end;
+PROCEDURE TJvgTabControl.Loaded;
+BEGIN
+   INHERITED Loaded;
+   RemakeFonts;
+   IF Assigned(Wallpaper.Bitmap) AND (NOT Wallpaper.Bitmap.Empty) THEN
+      Wallpaper.bmp := Wallpaper.Bitmap;
+END;
 
-procedure TJvgTabControl.Notification(AComponent: TComponent; Operation: TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-  if Assigned(Wallpaper) and (AComponent = Wallpaper.Image) and (Operation = opRemove) then Wallpaper.Image := nil;
-end;
+PROCEDURE TJvgTabControl.Notification(AComponent: TComponent; Operation:
+   TOperation);
+BEGIN
+   INHERITED Notification(AComponent, Operation);
+   IF Assigned(Wallpaper) AND (AComponent = Wallpaper.Image) AND (Operation =
+      opRemove) THEN
+      Wallpaper.Image := NIL;
+END;
 
-procedure TJvgTabControl.CNDrawItem(var Message: TWMDrawItem);
-begin
-  DrawItem(Pointer(Message.DrawItemStruct));
-end;
+PROCEDURE TJvgTabControl.CNDrawItem(VAR Message: TWMDrawItem);
+BEGIN
+   DrawItem(Pointer(Message.DrawItemStruct));
+END;
 
-procedure TJvgTabControl.WndProc(var Message: TMessage);
-var
-  GlyphID: integer;
-begin
-  inherited WndProc(Message);
-  with Message do
-    case Msg of
-      TCM_INSERTITEM:
-        begin
-          result := 0;
-          if not Assigned(FGlyphs) then exit;
-          GlyphID := -1;
-          if FSingleGlyph then
-            GlyphID := 0
-          else if wParam < FGlyphs.Count then
-            GlyphID := wParam;
-          if GlyphID = -1 then exit;
-          TTCItem(Pointer(Message.lParam)^).iImage := GlyphID;
-          TTCItem(Pointer(Message.lParam)^).Mask := TCIF_IMAGE;
-          SendMessage(handle, TCM_SETITEM, wParam, lParam);
-        end;
-      TCM_DELETEITEM:
-        begin
-        end;
-      TCM_DELETEALLITEMS:
-        begin
-        end;
-    end;
-end;
+PROCEDURE TJvgTabControl.WndProc(VAR Message: TMessage);
+VAR
+   GlyphID                    : integer;
+BEGIN
+   INHERITED WndProc(Message);
+   WITH Message DO
+      CASE Msg OF
+         TCM_INSERTITEM:
+            BEGIN
+               result := 0;
+               IF NOT Assigned(FGlyphs) THEN
+                  exit;
+               GlyphID := -1;
+               IF FSingleGlyph THEN
+                  GlyphID := 0
+               ELSE IF wParam < FGlyphs.Count THEN
+                  GlyphID := wParam;
+               IF GlyphID = -1 THEN
+                  exit;
+               TTCItem(Pointer(Message.lParam)^).iImage := GlyphID;
+               TTCItem(Pointer(Message.lParam)^).Mask := TCIF_IMAGE;
+               SendMessage(handle, TCM_SETITEM, wParam, lParam);
+            END;
+         TCM_DELETEITEM:
+            BEGIN
+            END;
+         TCM_DELETEALLITEMS:
+            BEGIN
+            END;
+      END;
+END;
 
-procedure TJvgTabControl.GlyphsListChanged(Sender: TObject);
-begin
-  if HandleAllocated then
-    SendMessage(Handle, TCM_SETIMAGELIST, 0,
-      Longint(TImageList(Sender).Handle));
-end;
+PROCEDURE TJvgTabControl.GlyphsListChanged(Sender: TObject);
+BEGIN
+   IF HandleAllocated THEN
+      SendMessage(Handle, TCM_SETIMAGELIST, 0,
+         Longint(TImageList(Sender).Handle));
+END;
 
-procedure TJvgTabControl.DrawItem(lpDrawItemStr: PDRAWITEMSTRUCT);
+PROCEDURE TJvgTabControl.DrawItem(lpDrawItemStr: PDRAWITEMSTRUCT);
 //var lpTabBoxStyle:^TTabBoxStyle;
-var
-  FontColor: TColor;
-begin
-  if fSupressDraw then exit;
-  with lpDrawItemStr^ do
-    if CtlType = ODT_TAB then
-    begin
-      //fLoaded:=true; Options:=NewOptions;
-      DrawTabStr.lpDrawItemStr := lpDrawItemStr;
-      DrawTabStr.Caption := Tabs[ItemID];
+VAR
+   FontColor                  : TColor;
+BEGIN
+   IF fSupressDraw THEN
+      exit;
+   WITH lpDrawItemStr^ DO
+      IF CtlType = ODT_TAB THEN
+      BEGIN
+         //fLoaded:=true; Options:=NewOptions;
+         DrawTabStr.lpDrawItemStr := lpDrawItemStr;
+         DrawTabStr.Caption := Tabs[ItemID];
 
-      if GlyphIndex[ItemID] <> -1 then
-      begin
-        FGlyphs.GetBitmap(GlyphIndex[ItemID], GlyphTmpBitmap);
-        DrawTabStr.Glyph := GlyphTmpBitmap;
-      end
-      else
-        DrawTabStr.Glyph := nil;
+         IF GlyphIndex[ItemID] <> -1 THEN
+         BEGIN
+            FGlyphs.GetBitmap(GlyphIndex[ItemID], GlyphTmpBitmap);
+            DrawTabStr.Glyph := GlyphTmpBitmap;
+         END
+         ELSE
+            DrawTabStr.Glyph := NIL;
 
-      if (itemState and ODS_DISABLED) <> 0 then
-      begin
-        DrawTabStr.BoxStyle := FTabStyle;
-        DrawTabStr.Font_.Assign(FontNormal);
-      end
-      else if (itemState and ODS_SELECTED) <> 0 then
-      begin
-        DrawTabStr.BoxStyle := FTabSelectedStyle;
-        DrawTabStr.Font_.Assign(FontSelected);
-      end
-      else
-      begin
-        DrawTabStr.BoxStyle := FTabStyle;
-        DrawTabStr.Font_.Assign(FontNormal);
-      end;
+         IF (itemState AND ODS_DISABLED) <> 0 THEN
+         BEGIN
+            DrawTabStr.BoxStyle := FTabStyle;
+            DrawTabStr.Font_.Assign(FontNormal);
+         END
+         ELSE IF (itemState AND ODS_SELECTED) <> 0 THEN
+         BEGIN
+            DrawTabStr.BoxStyle := FTabSelectedStyle;
+            DrawTabStr.Font_.Assign(FontSelected);
+         END
+         ELSE
+         BEGIN
+            DrawTabStr.BoxStyle := FTabStyle;
+            DrawTabStr.Font_.Assign(FontNormal);
+         END;
 
-      if Assigned(OnGetItemFontColor) then
-      begin
-        OnGetItemFontColor(self, ItemID, FontColor);
-        DrawTabStr.Font_.Color := FontColor;
-      end;
+         IF Assigned(OnGetItemFontColor) THEN
+         BEGIN
+            OnGetItemFontColor(self, ItemID, FontColor);
+            DrawTabStr.Font_.Color := FontColor;
+         END;
 
-      DrawTabStr.GlyphOption := FDrawGlyphsOption;
-      DrawTabStr.Wallpaper := FWallpaper;
-      DrawTabStr.ClientR := ClientRect;
-      DrawTabStr.TabsCount := Tabs.Count;
-      DrawTabStr.fButton := LookLikeButtons;
-      DrawTabStr.Position := TabsPosition;
-      DrawTabStr.Options := Options;
-      DrawTabStr.FontDirection := FontDirection;
-      if Assigned(OnGetItemColor) then
-        OnGetItemColor(self, ItemID, DrawTabStr.BackgrColor_)
-      else if aTabColors[ItemID] <> -1 then
-        DrawTabStr.BackgrColor_ := aTabColors[ItemID]
-      else
-        DrawTabStr.BackgrColor_ := DrawTabStr.BoxStyle.BackgrColor;
-      DrawOwnTab(DrawTabStr); //FWallpaper.IncludeBevels
-    end;
-end;
+         DrawTabStr.GlyphOption := FDrawGlyphsOption;
+         DrawTabStr.Wallpaper := FWallpaper;
+         DrawTabStr.ClientR := ClientRect;
+         DrawTabStr.TabsCount := Tabs.Count;
+         DrawTabStr.fButton := LookLikeButtons;
+         DrawTabStr.Position := TabsPosition;
+         DrawTabStr.Options := Options;
+         DrawTabStr.FontDirection := FontDirection;
+         IF Assigned(OnGetItemColor) THEN
+            OnGetItemColor(self, ItemID, DrawTabStr.BackgrColor_)
+         ELSE IF aTabColors[ItemID] <> -1 THEN
+            DrawTabStr.BackgrColor_ := aTabColors[ItemID]
+         ELSE
+            DrawTabStr.BackgrColor_ := DrawTabStr.BoxStyle.BackgrColor;
+         DrawOwnTab(DrawTabStr);        //FWallpaper.IncludeBevels
+      END;
+END;
 
-procedure TJvgTabControl.CMFontChanged(var Message: TMessage);
-begin
-  inherited;
-  if ftoInheriteTabFonts in Options then
-  begin
-    FTabStyle.Font.Assign(inherited Font);
-    FTabSelectedStyle.Font.Assign(inherited Font);
-    // Disabled.Assign(inherited Font);
-    RemakeFonts;
-  end;
-end;
+PROCEDURE TJvgTabControl.CMFontChanged(VAR Message: TMessage);
+BEGIN
+   INHERITED;
+   IF ftoInheriteTabFonts IN Options THEN
+   BEGIN
+      FTabStyle.Font.Assign(INHERITED Font);
+      FTabSelectedStyle.Font.Assign(INHERITED Font);
+      // Disabled.Assign(inherited Font);
+      RemakeFonts;
+   END;
+END;
 
-procedure TJvgTabControl.RemakeFonts;
-const
-  RadianEscapments: array[TgllabelDir] of integer = (0, -1800, -900, 900);
-begin
-  if csReading in ComponentState then exit;
-  if fNotFirst then DeleteObject(FTabStyle.Font.Handle);
-  fNotFirst := true;
+PROCEDURE TJvgTabControl.RemakeFonts;
+CONST
+   RadianEscapments              : ARRAY[TgllabelDir] OF integer = (0, -1800, -900,
+      900);
+BEGIN
+   IF csReading IN ComponentState THEN
+      exit;
+   IF fNotFirst THEN
+      DeleteObject(FTabStyle.Font.Handle);
+   fNotFirst := true;
 
-  FontNormal.Handle := CreateRotatedFont(FTabStyle.Font, RadianEscapments[FFontDirection]);
-  FontNormal.Color := FTabStyle.Font.Color;
-  FontSelected.Handle := CreateRotatedFont(FTabSelectedStyle.Font, RadianEscapments[FFontDirection]);
-  FontSelected.Color := FTabSelectedStyle.Font.Color;
+   FontNormal.Handle := CreateRotatedFont(FTabStyle.Font,
+      RadianEscapments[FFontDirection]);
+   FontNormal.Color := FTabStyle.Font.Color;
+   FontSelected.Handle := CreateRotatedFont(FTabSelectedStyle.Font,
+      RadianEscapments[FFontDirection]);
+   FontSelected.Color := FTabSelectedStyle.Font.Color;
 
-end;
+END;
 //*****************************************_____________PROPERTY METHODS
 
-procedure TJvgTabControl.SetGlyphs(Value: TImageList);
-var
-  i: word;
-label
-  SkipAutoGlypsSet;
-begin
-  if Assigned(FGlyphs) then FGlyphs.UnregisterChanges(GlyphsChangeLink);
-  FGlyphs := Value;
-  if Assigned(FGlyphs) then
-  begin
-    FGlyphs.RegisterChanges(GlyphsChangeLink);
-    SendMessage(Handle, TCM_SETIMAGELIST, 0, Longint(FGlyphs.Handle));
-    for i := 0 to min(Tabs.Count - 1, FGlyphs.Count - 1) do
-      if GlyphIndex[i] <> -1 then goto SkipAutoGlypsSet;
-    SetSingleGlyph(FSingleGlyph);
-    SkipAutoGlypsSet:
-  end
-  else
-    SendMessage(Handle, TCM_SETIMAGELIST, 0, Longint(0));
-end;
+PROCEDURE TJvgTabControl.SetGlyphs(Value: TImageList);
+VAR
+   i                          : word;
+LABEL
+   SkipAutoGlypsSet;
+BEGIN
+   IF Assigned(FGlyphs) THEN
+      FGlyphs.UnregisterChanges(GlyphsChangeLink);
+   FGlyphs := Value;
+   IF Assigned(FGlyphs) THEN
+   BEGIN
+      FGlyphs.RegisterChanges(GlyphsChangeLink);
+      SendMessage(Handle, TCM_SETIMAGELIST, 0, Longint(FGlyphs.Handle));
+      FOR i := 0 TO min(Tabs.Count - 1, FGlyphs.Count - 1) DO
+         IF GlyphIndex[i] <> -1 THEN
+            GOTO SkipAutoGlypsSet;
+      SetSingleGlyph(FSingleGlyph);
+      SkipAutoGlypsSet:
+   END
+   ELSE
+      SendMessage(Handle, TCM_SETIMAGELIST, 0, Longint(0));
+END;
 
-procedure TJvgTabControl.SetGlyphIndex(Index: Integer; imgIndex: Integer);
-var
-  r: TRect;
-  Item: TTCItem;
-begin
-  Item.iImage := imgIndex;
-  Item.mask := TCIF_IMAGE;
-  SendMessage(Handle, TCM_SETITEM, Index, Longint(@Item));
-  SendMessage(Handle, TCM_GETITEMRECT, Index, Longint(@r));
-  InvalidateRect(Handle, @r, true);
-end;
+PROCEDURE TJvgTabControl.SetGlyphIndex(Index: Integer; imgIndex: Integer);
+VAR
+   r                          : TRect;
+   Item                       : TTCItem;
+BEGIN
+   Item.iImage := imgIndex;
+   Item.mask := TCIF_IMAGE;
+   SendMessage(Handle, TCM_SETITEM, Index, Longint(@Item));
+   SendMessage(Handle, TCM_GETITEMRECT, Index, Longint(@r));
+   InvalidateRect(Handle, @r, true);
+END;
 
-function TJvgTabControl.GetGlyphIndex(Index: Integer): Integer;
-var
-  imgItem: TTCItem;
-begin
-  if Assigned(FGlyphs) then
-  begin
-    imgItem.mask := TCIF_IMAGE;
-    SendMessage(Handle, TCM_GETITEM, Index, Longint(@imgItem));
-    Result := imgItem.iImage;
-  end
-  else
-    Result := -1;
-end;
+FUNCTION TJvgTabControl.GetGlyphIndex(Index: Integer): Integer;
+VAR
+   imgItem                    : TTCItem;
+BEGIN
+   IF Assigned(FGlyphs) THEN
+   BEGIN
+      imgItem.mask := TCIF_IMAGE;
+      SendMessage(Handle, TCM_GETITEM, Index, Longint(@imgItem));
+      Result := imgItem.iImage;
+   END
+   ELSE
+      Result := -1;
+END;
 
-procedure TJvgTabControl.SetSingleGlyph(Value: boolean);
-var
-  i: word;
-begin
-  FSingleGlyph := Value;
-  if (Tabs = nil) or (FGlyphs = nil) then exit;
-  if FSingleGlyph then
-    for i := 0 to Tabs.Count - 1 do
-      GlyphIndex[i] := 0
-  else
-    for i := 0 to Tabs.Count - 1 do
-      if FGlyphs.Count >= i then
-        GlyphIndex[i] := i
-      else
-        break;
-end;
+PROCEDURE TJvgTabControl.SetSingleGlyph(Value: boolean);
+VAR
+   i                          : word;
+BEGIN
+   FSingleGlyph := Value;
+   IF (Tabs = NIL) OR (FGlyphs = NIL) THEN
+      exit;
+   IF FSingleGlyph THEN
+      FOR i := 0 TO Tabs.Count - 1 DO
+         GlyphIndex[i] := 0
+   ELSE
+      FOR i := 0 TO Tabs.Count - 1 DO
+         IF FGlyphs.Count >= i THEN
+            GlyphIndex[i] := i
+         ELSE
+            break;
+END;
 
-procedure TJvgTabControl.SetDrawGlyphsOption(Value: TglWallpaperOption);
-begin
-  if FDrawGlyphsOption = Value then exit;
-  FDrawGlyphsOption := Value;
-  Invalidate;
-end;
+PROCEDURE TJvgTabControl.SetDrawGlyphsOption(Value: TglWallpaperOption);
+BEGIN
+   IF FDrawGlyphsOption = Value THEN
+      exit;
+   FDrawGlyphsOption := Value;
+   Invalidate;
+END;
 
-procedure TJvgTabControl.SetLookLikeButtons(Value: boolean);
-begin
-  if FLookLikeButtons = Value then exit;
-  FLookLikeButtons := Value;
-  RecreateWnd;
-end;
+PROCEDURE TJvgTabControl.SetLookLikeButtons(Value: boolean);
+BEGIN
+   IF FLookLikeButtons = Value THEN
+      exit;
+   FLookLikeButtons := Value;
+   RecreateWnd;
+END;
 
-procedure TJvgTabControl.SetTabsPosition(Value: TglSide);
-begin
-  if FTabsPosition = Value then exit;
-  FTabsPosition := Value;
-  RecreateWnd;
-  if (ftoAutoFontDirection in FOptions) and not (csLoading in ComponentState) then
-    FontDirection := FontDirs[TabsPosition];
-end;
+PROCEDURE TJvgTabControl.SetTabsPosition(Value: TglSide);
+BEGIN
+   IF FTabsPosition = Value THEN
+      exit;
+   FTabsPosition := Value;
+   RecreateWnd;
+   IF (ftoAutoFontDirection IN FOptions) AND NOT (csLoading IN ComponentState)
+      THEN
+      FontDirection := FontDirs[TabsPosition];
+END;
 
-procedure TJvgTabControl.SetOptions(Value: TglTabOptions);
-begin
-  if FOptions = Value then exit;
-  FOptions := Value;
-  if ftoAutoFontDirection in FOptions then
-    FontDirection := FontDirs[TabsPosition];
-  Invalidate;
-end;
+PROCEDURE TJvgTabControl.SetOptions(Value: TglTabOptions);
+BEGIN
+   IF FOptions = Value THEN
+      exit;
+   FOptions := Value;
+   IF ftoAutoFontDirection IN FOptions THEN
+      FontDirection := FontDirs[TabsPosition];
+   Invalidate;
+END;
 
-procedure TJvgTabControl.SetFontDirection(Value: TgllabelDir);
-begin
-  if FFontDirection = Value then exit;
-  FFontDirection := Value;
-  RemakeFonts;
-  Invalidate;
-end;
+PROCEDURE TJvgTabControl.SetFontDirection(Value: TgllabelDir);
+BEGIN
+   IF FFontDirection = Value THEN
+      exit;
+   FFontDirection := Value;
+   RemakeFonts;
+   Invalidate;
+END;
 
-function TJvgTabControl.GetFont: TFont;
-begin
-  Result := inherited Font;
-end;
+FUNCTION TJvgTabControl.GetFont: TFont;
+BEGIN
+   Result := INHERITED Font;
+END;
 
-procedure TJvgTabControl.SetFont(Value: TFont);
-begin
-  inherited Font := Value;
-  if ftoInheriteTabFonts in Options then
-  begin
-    FTabStyle.Font.Assign(inherited Font);
-    FTabSelectedStyle.Font.Assign(inherited Font);
-  end;
-end;
+PROCEDURE TJvgTabControl.SetFont(Value: TFont);
+BEGIN
+   INHERITED Font := Value;
+   IF ftoInheriteTabFonts IN Options THEN
+   BEGIN
+      FTabStyle.Font.Assign(INHERITED Font);
+      FTabSelectedStyle.Font.Assign(INHERITED Font);
+   END;
+END;
 
-function TJvgTabControl.GetTabColor(Index: integer): TColor;
-begin
-  if Index < 100 then
-    Result := aTabColors[Index]
-  else
-    Result := -1;
-end;
+FUNCTION TJvgTabControl.GetTabColor(Index: integer): TColor;
+BEGIN
+   IF Index < 100 THEN
+      Result := aTabColors[Index]
+   ELSE
+      Result := -1;
+END;
 
-procedure TJvgTabControl.SetTabColor(Index: integer; Value: TColor);
-var
-  TCItem: TTCItem;
-begin
-  if (Index < 100) and (TabColor[Index] <> Value) then
-    aTabColors[Index] := Value
-  else
-    exit;
-  if not fSupressDraw then
-  begin
-    //  Repaint;
-    TCItem.mask := TCIF_TEXT;
-    TCItem.pszText := PChar(Tabs[Index]);
-    SendMessage(Handle, TCM_SETITEM, Index, Longint(@TCItem));
-  end;
-end;
+PROCEDURE TJvgTabControl.SetTabColor(Index: integer; Value: TColor);
+VAR
+   TCItem                     : TTCItem;
+BEGIN
+   IF (Index < 100) AND (TabColor[Index] <> Value) THEN
+      aTabColors[Index] := Value
+   ELSE
+      exit;
+   IF NOT fSupressDraw THEN
+   BEGIN
+      //  Repaint;
+      TCItem.mask := TCIF_TEXT;
+      TCItem.pszText := PChar(Tabs[Index]);
+      SendMessage(Handle, TCM_SETITEM, Index, Longint(@TCItem));
+   END;
+END;
 
-end.
+END.
+

@@ -29,56 +29,53 @@ Known Issues:
 
 unit JvgSplit;
 
-interface
-uses
-  Windows,
-  Messages,
-  Classes,
-  Controls,
-  Graphics,
-  JvgTypes,
-  JvgCommClasses,
-  JvgUtils,
-  ExtCtrls;
-type
+INTERFACE
+USES
+   Windows,
+   Messages,
+   Classes,
+   Controls,
+   Graphics,
+   JVComponent,
+   JvgTypes,    JVCLVer,
+   JvgCommClasses,
+   JvgUtils,
+   ExtCtrls;
+TYPE
 
-  TJvgSplitter = class(TSplitter)
-  private
-    FHotTrack: boolean;
-    FTrackCount: integer;
-    fActive: boolean;
-    FDisplace: boolean;
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure WMMouseDblClick(var Message: TMessage); message
-      WM_LBUTTONDBLCLK;
-    procedure SetTrackCount(const Value: integer);
-    procedure UpdateControlSize;
-    function FindControl: TControl;
-    procedure PrepareMarcs(Align: TAlign; var pt1, pt2, pt3, pt4, pt5,
-      pt6: TPoint);
-    procedure SetDisplace(const Value: boolean);
-  protected
-  public
-    constructor Create(AOwner: TComponent); override;
-    procedure Paint; override;
-  published
-    property HotTrack: boolean read FHotTrack write FHotTrack default true;
-    property TrackCount: integer read FTrackCount write SetTrackCount default
-      20;
-    property Displace: boolean read FDisplace write SetDisplace default true;
-  end;
+   TJvgSplitter = CLASS(TSplitter)
+   PRIVATE
+    FAboutJVCL: TJVCLAboutInfo;
+      FHotTrack: boolean;
+      FTrackCount: integer;
+      fActive: boolean;
+      FDisplace: boolean;
+      PROCEDURE CMMouseEnter(VAR Message: TMessage); MESSAGE CM_MOUSEENTER;
+      PROCEDURE CMMouseLeave(VAR Message: TMessage); MESSAGE CM_MOUSELEAVE;
+      PROCEDURE WMMouseDblClick(VAR Message: TMessage); MESSAGE
+         WM_LBUTTONDBLCLK;
+      PROCEDURE SetTrackCount(CONST Value: integer);
+      PROCEDURE UpdateControlSize;
+      FUNCTION FindControl: TControl;
+      PROCEDURE PrepareMarcs(Align: TAlign; VAR pt1, pt2, pt3, pt4, pt5,
+         pt6: TPoint);
+      PROCEDURE SetDisplace(CONST Value: boolean);
+   PROTECTED
+   PUBLIC
+      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
+      PROCEDURE Paint; OVERRIDE;
+   PUBLISHED
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+      PROPERTY HotTrack: boolean READ FHotTrack WRITE FHotTrack DEFAULT true;
+      PROPERTY TrackCount: integer READ FTrackCount WRITE SetTrackCount DEFAULT
+         20;
+      PROPERTY Displace: boolean READ FDisplace WRITE SetDisplace DEFAULT true;
+   END;
 
-procedure Register;
 
 implementation
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 
-procedure Register;
-begin
-end;
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
-//________________________________________________________ Methods _
 
 procedure TJvgSplitter.Paint;
 var

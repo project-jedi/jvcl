@@ -159,93 +159,91 @@ begin
   RegisterComponents('Jv Dialogs', [
     ]);
 
-  RegisterComponents('Jv System', [
-    TJvgSysInfo
-      ]);
+   RegisterComponents('Jv System', [
+      TJvgSysInfo
+         ]);
 
-  RegisterComponents('Jvg Additional', [
-    TJvgMaskEdit,
-      TJvgBevel,
-      TJvgBitBtn,
-      TJvgGraphicButton,
-      TJvgGraph,
-      TJvgTreeView,
-      TJvgCheckTreeView,
-      TJvgSplitter,
-      TJvgShadow,
-      TJvgShade,
-      TJvgButton,
-      TJvgImageGroup,
-      TJvgProgress,
-      TJvgTranspMemo,
-      TJvgWinMask,
-      TJvgGroupBox,
-      TJvgBitmapImage,
-      TJvgListBox,
-      TJvgCheckListBox,
-      TJvgAskListBox,
-      TJvgScrollBox,
-      TJvgStringGrid,
-      TJvgSpeedButton,
-      TJvgHelpPanel,
-      TJvgWizardHeader,
-      TJvg3DColors,
-      TJvgCaption,
-      TJvgHint,
-      TJvgJumpingComponent,
-      TJvgStringContainer,
-      TJvgSysRequirements,
-      TJvgSmallFontsDefence,
-      TJvgMultipleResources,
-      TJvgGridHeaderControl,
-      TJvginspectorGrid,
-      TJvgReportParamsEditor,
-      TJvgLogicProducer
-      ]);
+   RegisterComponents('Jvg Additional', [
+      TJvgMaskEdit,
+         TJvgBevel,
+         TJvgBitBtn,
+         TJvgGraphicButton,
+         TJvgGraph,
+         TJvgTreeView,
+         TJvgCheckTreeView,
+         TJvgSplitter,
+         TJvgShadow,
+         TJvgShade,
+         TJvgButton,
+         TJvgImageGroup,
+         TJvgProgress,
+         TJvgTranspMemo,
+         TJvgWinMask,
+         TJvgGroupBox,
+         TJvgBitmapImage,
+         TJvgListBox,
+         TJvgCheckListBox,
+         TJvgAskListBox,
+         TJvgScrollBox,
+         TJvgStringGrid,
+         TJvgSpeedButton,
+         TJvgWizardHeader,
+         TJvgCaption,
+         TJvgGridHeaderControl
+         ]);
 
-  RegisterComponents('Jv Standard', [
-    TJvgCheckBox
-      ]);
+   RegisterComponents('Jv Standard', [
+      TJvgCheckBox
+         ]);
 
-  RegisterComponents('Jv Controls', [
-    TJvgRuler
-      ]);
+   RegisterComponents('Jv Controls', [
+      TJvgRuler
+         ]);
 
-  RegisterComponents('Jv Win32', [
-    TJvgPageControl,
-      TJvgTabControl,
-      TJvgProcess
-      ]);
+   RegisterComponents('Jv Win32', [
+      TJvgPageControl,
+         TJvgTabControl,
+         TJvgProcess
+         ]);
 
-  RegisterComponents('Jv Internet', [
-    TJvgMailSlotServer,
-      TJvgMailSlotClient
-      ]);
+   RegisterComponents('Jv Internet', [
+      TJvgMailSlotServer,
+         TJvgMailSlotClient
+         ]);
 
-  RegisterComponents('Jv Labels', [
-    TJvgLabel,
-      TJvgFlyingText,
-      TJvgDigits,
-      TJvgStaticTextLabel
-      ]);
+   RegisterComponents('Jv Labels', [
+      TJvgLabel,
+         TJvgFlyingText,
+         TJvgDigits,
+         TJvgStaticText
+         ]);
+   RegisterComponents('Jv Forms', [
+      TJvgHoleShape
+         ]);
 
-  RegisterComponents('Jv MultiMedia', [
-    ]);
+   RegisterComponents('JvG Utils', [
+      TJvgExportExcel,
+         TJvgExportHTML,
+         TJvgHelpPanel,
+         TJvgExportXML,
+         TJvgXMLSerializer,
+         TJvgLanguageLoader,
+         TJvgExceptionHandler,
+         TJvgJumpingComponent,
+         TJvgStringContainer,
+         TJvgSysRequirements,
+         TJvg3DColors,
+         TJvgHint,
+         TJvginspectorGrid,
+         TJvgReportParamsEditor,
+         TJvgLogicProducer,
+         TJvgSmallFontsDefence,
+         TJvgMultipleResources,
+         TJvgSingleInstance,
+         TJvgFixFont,
+         TJvgComponentDescription]);
 
-  RegisterComponents('Jv Forms', [
-    TJvgHoleShape
-      ]);
 
-  RegisterComponents('Jv Utils', [
-    TJvgExportExcel,
-      TJvgExportHTML,
-      TJvgExportXML,
-      TJvgXMLSerializer,
-      TJvgLanguageLoader,
-      TJvgExceptionHandler,
-      TJvgSingleInstance,
-      TJvgFixFont,
-      TJvgComponentDescription]);
 
   RegisterComponents('Jv Composites', [
     ]);

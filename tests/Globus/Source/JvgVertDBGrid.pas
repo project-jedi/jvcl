@@ -32,7 +32,7 @@ unit JvgVertDBGrid;
 interface
 uses
   Windows, Messages, Classes, Controls, Graphics, JvgTypes, JvgCommClasses,
-  JvgUtils, grids, JvgStringGrid, DB, SysUtils;
+  JvgUtils, JVClVer, grids, JvgStringGrid, DB, SysUtils;
 
 type
 
@@ -45,6 +45,7 @@ type
     fIgnoreSetText: boolean;
     LastEditTextRow: integer;
     LastEditValue: string;
+    FAboutJVCL: TJVCLAboutInfo;
     procedure SetDataToFiled(Field: TField; Str: string);
     function GetDataFromFiled(Field: TField): string;
 
@@ -68,6 +69,7 @@ type
     destructor Destroy; override;
     procedure FillGridWithData;
   protected
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property DataSource: TDataSource read FDataSource write SetDataSource;
     property ShowFromFieldNo: word read FShowFromFieldNo write SetShowFromFieldNo
       default 0;

@@ -27,128 +27,143 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvgBitBtn;
+UNIT JvgBitBtn;
 
-interface
-uses
-  Windows, Messages, Classes, Controls, Graphics, JvgTypes, JvgCommClasses,
-  JvgUtils, ExtCtrls, buttons;
-type
+INTERFACE
+USES
+   Windows,
+   Messages,
+   Classes,
+   Controls,
+   Graphics,
+   JvgTypes,
+   JvgCommClasses,
+   JvgUtils,
+   JvclVer,
+   ExtCtrls,
+   buttons;
+TYPE
 
-  TJvgBitBtn = class(TBitBtn)
-  private
-    FCanvas: TCanvas;
-    fMouseEnter: boolean;
-    procedure CNDrawItem(var Message: TWMDrawItem); message CN_DRAWITEM;
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-  protected
-    procedure DrawItem(const DrawItemStruct: TDrawItemStruct);
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  published
-  end;
+   TJvgBitBtn = CLASS(TBitBtn)
+   PRIVATE
+      FCanvas: TCanvas;
+      fMouseEnter: boolean;
+    FAboutJVCL: TJVCLAboutInfo;
+      PROCEDURE CNDrawItem(VAR Message: TWMDrawItem); MESSAGE CN_DRAWITEM;
+      PROCEDURE CMMouseEnter(VAR Message: TMessage); MESSAGE CM_MOUSEENTER;
+      PROCEDURE CMMouseLeave(VAR Message: TMessage); MESSAGE CM_MOUSELEAVE;
+   PROTECTED
+      PROCEDURE DrawItem(CONST DrawItemStruct: TDrawItemStruct);
+   PUBLIC
+      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
+      DESTRUCTOR Destroy; OVERRIDE;
+   PUBLISHED
+      PROPERTY AboutJVCL: TJVCLAboutInfo READ FAboutJVCL WRITE FAboutJVCL STORED
+         False;
+   END;
 
-implementation
+IMPLEMENTATION
 
 //________________________________________________________ Methods _
 
-constructor TJvgBitBtn.Create(AOwner: TComponent);
-begin
-  inherited;
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self; //...i can draw now! :)
-  //..defaults
-end;
+CONSTRUCTOR TJvgBitBtn.Create(AOwner: TComponent);
+BEGIN
+   INHERITED;
+   FCanvas := TControlCanvas.Create;
+   TControlCanvas(FCanvas).Control := Self; //...i can draw now! :)
+   //..defaults
+END;
 
-destructor TJvgBitBtn.Destroy;
-begin
-  FCanvas.Free;
-  inherited;
-end;
+DESTRUCTOR TJvgBitBtn.Destroy;
+BEGIN
+   FCanvas.Free;
+   INHERITED;
+END;
 
-procedure TJvgBitBtn.CNDrawItem(var Message: TWMDrawItem);
-begin
-  inherited;
-  DrawItem(Message.DrawItemStruct^);
-end;
+PROCEDURE TJvgBitBtn.CNDrawItem(VAR Message: TWMDrawItem);
+BEGIN
+   INHERITED;
+   DrawItem(Message.DrawItemStruct^);
+END;
 
-procedure TJvgBitBtn.DrawItem(const DrawItemStruct: TDrawItemStruct);
-var
-  IsDown {, IsDefault}: Boolean;
-  //State: TButtonState;
-  R: TRect;
-  BPen, FPen, SPen, OldPen: HPEN;
-  FBrush: HBRUSH;
-begin
-  R := ClientRect;
+PROCEDURE TJvgBitBtn.DrawItem(CONST DrawItemStruct: TDrawItemStruct);
+VAR
+   IsDown {, IsDefault}       : Boolean;
+   //State: TButtonState;
+   R                          : TRect;
+   BPen, FPen, SPen, OldPen   : HPEN;
+   FBrush                     : HBRUSH;
+BEGIN
+   R := ClientRect;
 
-  with DrawItemStruct do
-  begin
-    IsDown := itemState and ODS_SELECTED <> 0;
-    //IsDefault := itemState and ODS_FOCUS <> 0;
+   WITH DrawItemStruct DO
+   BEGIN
+      IsDown := itemState AND ODS_SELECTED <> 0;
+      //IsDefault := itemState and ODS_FOCUS <> 0;
 
-    {if not Enabled then State := bsDisabled
-    else if IsDown then State := bsDown
-    else State := bsUp;}
-  end;
-  R := ClientRect;
-  if (not fMouseEnter) and (not IsDown) then
-  begin
+      {if not Enabled then State := bsDisabled
+      else if IsDown then State := bsDown
+      else State := bsUp;}
+   END;
+   R := ClientRect;
+   IF (NOT fMouseEnter) AND (NOT IsDown) THEN
+   BEGIN
 
-    FBrush := CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
-    if not Focused and not Default then
-    begin
-      SPen := CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNSHADOW));
-      FPen := CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNFACE));
-      BPen := CreatePen(PS_SOLID, 1, ColorToRGB((Parent as TWinControl).Brush.Color));
-      OldPen := SelectObject(DrawItemStruct.hDC, FPen);
+      FBrush := CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
+      IF NOT Focused AND NOT Default THEN
+      BEGIN
+         SPen := CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNSHADOW));
+         FPen := CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNFACE));
+         BPen := CreatePen(PS_SOLID, 1, ColorToRGB((Parent AS
+            TWinControl).Brush.Color));
+         OldPen := SelectObject(DrawItemStruct.hDC, FPen);
 
-      MoveToEx(DrawItemStruct.hDC, R.Left + 1, R.Top + 1, nil);
-      LineTo(DrawItemStruct.hDC, R.Right - 1, R.Top + 1);
-      MoveToEx(DrawItemStruct.hDC, R.Left + 1, R.Top + 1, nil);
-      LineTo(DrawItemStruct.hDC, R.Left + 1, R.Bottom - 1);
+         MoveToEx(DrawItemStruct.hDC, R.Left + 1, R.Top + 1, NIL);
+         LineTo(DrawItemStruct.hDC, R.Right - 1, R.Top + 1);
+         MoveToEx(DrawItemStruct.hDC, R.Left + 1, R.Top + 1, NIL);
+         LineTo(DrawItemStruct.hDC, R.Left + 1, R.Bottom - 1);
 
-      SelectObject(DrawItemStruct.hDC, BPen);
+         SelectObject(DrawItemStruct.hDC, BPen);
 
-      MoveToEx(DrawItemStruct.hDC, R.Left, R.Bottom - 1, nil);
-      LineTo(DrawItemStruct.hDC, R.Right, R.Bottom - 1);
-      MoveToEx(DrawItemStruct.hDC, R.Right - 1, R.Top, nil);
-      LineTo(DrawItemStruct.hDC, R.Right - 1, R.Bottom);
+         MoveToEx(DrawItemStruct.hDC, R.Left, R.Bottom - 1, NIL);
+         LineTo(DrawItemStruct.hDC, R.Right, R.Bottom - 1);
+         MoveToEx(DrawItemStruct.hDC, R.Right - 1, R.Top, NIL);
+         LineTo(DrawItemStruct.hDC, R.Right - 1, R.Bottom);
 
-      SelectObject(DrawItemStruct.hDC, SPen);
+         SelectObject(DrawItemStruct.hDC, SPen);
 
-      MoveToEx(DrawItemStruct.hDC, R.Left - 2, R.Bottom - 2, nil);
-      LineTo(DrawItemStruct.hDC, R.Right - 1, R.Bottom - 2);
-      MoveToEx(DrawItemStruct.hDC, R.Right - 2, R.Top, nil);
-      LineTo(DrawItemStruct.hDC, R.Right - 2, R.Bottom - 1);
+         MoveToEx(DrawItemStruct.hDC, R.Left - 2, R.Bottom - 2, NIL);
+         LineTo(DrawItemStruct.hDC, R.Right - 1, R.Bottom - 2);
+         MoveToEx(DrawItemStruct.hDC, R.Right - 2, R.Top, NIL);
+         LineTo(DrawItemStruct.hDC, R.Right - 2, R.Bottom - 1);
 
-      DeleteObject(SelectObject(DrawItemStruct.hDC, OldPen));
-      DeleteObject(FPen);
-      DeleteObject(BPen);
-    end
-    else
-    begin
-      FrameRect(DrawItemStruct.hDC, Rect(R.Left + 2, R.Top + 2, R.Right - 2, R.Bottom - 2), FBrush);
-      DeleteObject(FBrush);
-    end;
-  end;
+         DeleteObject(SelectObject(DrawItemStruct.hDC, OldPen));
+         DeleteObject(FPen);
+         DeleteObject(BPen);
+      END
+      ELSE
+      BEGIN
+         FrameRect(DrawItemStruct.hDC, Rect(R.Left + 2, R.Top + 2, R.Right - 2,
+            R.Bottom - 2), FBrush);
+         DeleteObject(FBrush);
+      END;
+   END;
 
-end;
+END;
 
-procedure TJvgBitBtn.CMMouseEnter(var Message: TMessage);
-begin
-  inherited;
-  fMouseEnter := true;
-  Repaint;
-end;
+PROCEDURE TJvgBitBtn.CMMouseEnter(VAR Message: TMessage);
+BEGIN
+   INHERITED;
+   fMouseEnter := true;
+   Repaint;
+END;
 
-procedure TJvgBitBtn.CMMouseLeave(var Message: TMessage);
-begin
-  inherited;
-  fMouseEnter := false;
-  Repaint;
-end;
+PROCEDURE TJvgBitBtn.CMMouseLeave(VAR Message: TMessage);
+BEGIN
+   INHERITED;
+   fMouseEnter := false;
+   Repaint;
+END;
 
-end.
+END.
+

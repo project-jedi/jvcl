@@ -32,7 +32,7 @@ unit JvgDBGrid;
 interface
 uses
   Windows, Messages, Classes, Controls, Graphics, JvgTypes, JvgCommClasses,
-  JvgUtils, ExtCtrls, grids, dbgrids, ImgList;
+  JvgUtils, ExtCtrls, grids, dbgrids, JVCLVer, ImgList;
 
 type
 
@@ -48,6 +48,7 @@ type
 
     GlyphsChangeLink: TChangeLink;
     Glyph: TBitmap;
+    FAboutJVCL: TJVCLAboutInfo;
     procedure SetAlignment(Value: TAlignment);
     procedure SetCaptionHeight(Value: integer);
     function GetBitmap: TBitmap;
@@ -64,6 +65,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property CaptionTextAlignment: TAlignment read FAlignment write SetAlignment
       default taCenter;
     property CaptionHeight: integer read FCaptionHeight write SetCaptionHeight
