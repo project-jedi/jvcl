@@ -57,11 +57,11 @@ is the IDE version you have installed)</li>
 of JCL (JEDI Code Library). Currently, this is the JCL 1.9 Beta (Build
 1391), but
 newer versions might have been released since this document was
-published. The file you need is here:<br>
+published. The file you need is here:
 <a
- href="http://prdownloads.sourceforge.net/jcl/Jcl1.90Build1391.zip?download">http://prdownloads.sourceforge.net/jcl/Jcl1.90Build1391.zip?download</a><br>
+ href="http://prdownloads.sourceforge.net/jcl/Jcl1.90Build1391.zip?download">http://prdownloads.sourceforge.net/jcl/Jcl1.90Build1391.zip?download</a>
 and instructions for the JCL can be found starting at this
-page: <a href="http://homepages.borland.com/jedi/jcl/"></a><a
+page:&nbsp; <a href="http://homepages.borland.com/jedi/jcl/"></a><a
  href="http://homepages.borland.com/jedi/jcl/">http://homepages.borland.com/jedi/jcl/</a>.</p>
 <p align="left">As of today (27th of December 2003), the JCL package
 contains all that is needed to make the JVCL preview work, especially
@@ -75,6 +75,179 @@ repository, please ask us and we may be able to provide you with a zip
 file containing a version known to build.<br>
 <br>
 </p>
+<hr style="width: 100%; height: 2px;">
+<h2 align="left">Installing using the JVCL Installer</h2>
+<p align="left">An installer is provided with the JVCL distribution and it is 
+the recommended way of installing the JVCL. If using it is not an option or it 
+doesn't work for you, please see the section below on manual installation. </p>
+<div class="InfoField"> 
+<p align="left">Even if you use the installer, you must first remove any JVCL (before version 3) and JCL (any version) manually. For instructions on 
+manual removal, see 
+the section above titled &quot;Uninstalling previous versions of JVCL&quot;. For removing 
+a previous installation of JVCL version 3, see the section &quot;Uninstalling using the 
+Installer&quot; below.</p>
+</div>
+<p align="left">&nbsp;</p>
+<div class="InfoField"> 
+<p align="left">The installer does not copy any files: instead, it builds and 
+installs the packages in the Delphi/BCB IDE. So, before running the installer, 
+make sure the JVCL (and JCL) files are located in the folder where you want them 
+to be.</p>
+</div>
+<p align="left">To use the installer, first make sure Delphi or C++Builder are 
+closed (the installer will not be able to run if they are active) and then 
+double-click the install.bat file in the jvcl root. The installer will be 
+compiled using the Delphi command-line compiler dcc32.exe. If the compile fails, 
+open a command prompt in the jvcl folder, type &quot;install.bat&quot; and hit &lt;ENTER&gt;. 
+You should now be able to see any error messages displayed and respond 
+accordingly. If the error message says that dcc32.exe could not be found, make 
+sure the path to your Delphi \bin folder is in your system path and try running install.bat again. </p>
+<p align="left">Once the compilation succeeds, the installer is started 
+automatically and it should look something like this: </p>
+<p align="left">&nbsp;</p>
+<p align="left">
+<img border="0" src="installer_main.jpg" width="729" height="561"></p>
+<p align="left">&nbsp;</p>
+<p align="left">At the top left is a list of all installed and supported Delphi 
+and C++Builder editions. Check the ones for which 
+ 
+you want to install the JVCL. </p>
+<p align="left">&nbsp;</p>
+<p align="left">Below the list is a set of checkboxes for selecting different 
+features of the install. The following features are available:</p>
+<ul>
+  <li>
+  <p align="left"><b>Build packages</b> - build  instead of compile. When building, all dcu's are regenerated 
+  even if not absolutely necessary. This is recommended 
+  when reinstalling.</li>
+  <li>
+  <p align="left"><b>Install JCL</b> - also compiles the JCL package(s). If the 
+  JCL is in the same parent folder as the jvcl (for example, JVCL is in JEDI\jvcl and 
+  JCL is in JEDI\jcl), it will be detected automatically. If you have the JCL 
+  files in 
+  another folder, specify it's path by clicking the ellipsis button next to the 
+  edit box labeled &quot;JCL&quot; (see below).</li>
+  <li>
+  <p align="left"><b>JVCL Developer Installation</b> - determines what paths to 
+  add to Delphi/BCB's library path. If checked,&nbsp;the paths to \run and 
+  \common are added. If unselected, the paths to the dcu output folder is added 
+  instead (the dcu putput folder is specific for each Delphi/BCB version). A developer install is recommended if you plan to make changes to the 
+  source units, a &quot;normal&quot; install is recommended if you are only planning on 
+  using JVCL without modifying it yourself.</li>
+  <li>
+  <p align="left"><b>Clean JVCL component palette</b> - removes old  JVCL component 
+  palette entries from the registry. This assures that 
+  components are located on their default palette after installation. 
+  Recommended.</li>
+  <li dir="ltr">
+  <p align="left" dir="ltr"><b>Compile only (error check)</b> - builds 
+  everything as specified but does not install anything into Delphi/BCB. Good 
+  for checking for errors before doing a real install.</li>
+  <li>
+  <p align="left"><b>Hpp files</b> - only enabled when a C++Builder version is 
+  selected in the compiler list. If the displayed path is wrong, click the 
+  ellipsis button to select another path. Click the &quot;BCB installation guide&quot; 
+  link (only visible when a BCB compiler is selected) to display a document with 
+  detailed instructions on installation in C++Builder.</li>
+  <li>
+  <p align="left"><b>Standard/Personal Edition</b> - checked if you have Delphi 
+  5 Standard or any of the Personal Editions installed. These editions have less 
+  functionality and some features in JVCL has to be disabled to make it work 
+  with these editions.</li>
+  <li>
+  <p align="left"><b>JCL</b> - displays the path to the JCL folder. If the 
+  displayed folder is wrong, click the ellipsis button to select another folder.</li>
+</ul>
+<p align="left">&nbsp;</p>
+<p align="left">Next comes a couple of checkboxes that controls the enabling and 
+disabling of specific features in JVCL. You can check the boxes directly or 
+click on the <b>Advanced</b> button to see all available options in a dialog. 
+The options are read from the jvcl.inc file (in the \common folder) and 
+displayed in the list, so they might differ from what is shown below if options 
+have been added or removed since this dcument was written. Select an item to see 
+it's explanation. Check an item to enable it, uncheck to disable it. </p>
+<p align="left" dir="ltr">&nbsp;</p>
+<p align="left" dir="ltr">
+<img border="0" src="config_editor.jpg" width="750" height="422"></p>
+<p align="left" dir="ltr">&nbsp;</p>
+<p align="left" dir="ltr">These are the currently available options:</p>
+<ul>
+  <li>
+  <p align="left"><b>JVCL_REGISTER_GLOBAL_DESIGNEDITORS </b>- if enabled, 
+  registers property editors for common types so the property editor can be used 
+  with any component, not only those in JVCL.</li>
+  <li dir="ltr">
+  <p align="left" dir="ltr"><b>USEJVCL </b>- some packages (JvGlobus, JvUIB, 
+  JvTimeFramework, JvDocking, JvDotNet, JvXPCtrls, JvWizard) can be installed as 
+  &quot;stand-alone&quot; as well as a part of JVCL. If you only need a single package 
+  from the JVCL (like JvWizard), disable this define. If you plan to install 
+  other parts of the JVCL as well, you are recommended to enable it. </li>
+  <li dir="ltr">
+  <p dir="ltr"><b>USE_DXGETTEXT </b>- if you have dxgettext installed (<a href="http://dxgettext.sourceforge.net">http://dxgettext.sourceforge.net</a>) 
+  and want to use it with JVCL, you should enable this define. A PO file with 
+  the JVCL strings is located in \devtools\po (\devtools is only included in the 
+  full JVCL install).</li>
+  <li dir="ltr">
+  <p align="left" dir="ltr"><b>DelphiPersonalEdition </b>- enable this define if 
+  you are using Delphi 5 Standard or one of the Delphi/BCB Personal Editions. 
+  The Standard and Personal Editions doesn't support all components included in 
+  JVCL (mostly database realted) and enabling this define will remove these 
+  components from the JVCL palettes. </li>
+  <li dir="ltr">
+  <p align="left" dir="ltr"><b>JVCLThemesEnabled </b>- enable this define if you 
+  have Delphi 7 or want to use Mike Lischke's ThemeManager (<a href="http://www.lischke-online.de">http://www.lischke-online.de</a>). 
+  Note that even if you enable theme support, you still need a manifest for your 
+  application and you will only see the effects of theming when running on 
+  Windows XP.</li>
+  <li dir="ltr">
+  <p align="left" dir="ltr"><b>USE_JV_GIF </b>- enable this define if you want 
+  to enable JVCL's GIF support. Disable if want to use another GIF library or 
+  don't want GIF support.</li>
+  <li dir="ltr">
+  <p align="left" dir="ltr"><b>USE_PROGESSBAR </b>- enable to use a standard 
+  TProgressbar instead of a TGauge (from the Sample palette) in some components.</li>
+  <li dir="ltr">
+  <p align="left" dir="ltr"><b>USE_FOUR_DIGIT_YEAR </b>- controls whether 
+  TDateEdit and descendants are forced to use four digit years in their display. 
+  When disabled, the ShortDateFormat is used to determine the number of year 
+  digits.</li>
+  <li dir="ltr">
+  <p align="left" dir="ltr"><b>DEFAULT_POPUP_CALENDAR </b>- enable to use a 
+  popup calendar in TDateEdit and descendants. If disabled, uses a modal dialog 
+  instead.</li>
+  <li dir="ltr">
+  <p align="left" dir="ltr"><b>TIMEBLOCKS </b>- used by the JvTimeFramework 
+  components and should be enabled unless you have very specific reason not to 
+  (see JvTFDays.pas for more info).</li>
+</ul>
+<p align="left" dir="ltr">&nbsp;</p>
+<p align="left">Fillling up most of the installer window is a list of all 
+available design packages. To see the run-time packages as well, check the &quot;<b>Show 
+runtime packages</b>&quot; at the top right. Note that the installation compiles all 
+required packages regardless of what is currently displayed in the list.</p>
+<p align="left">Select the packages you want to install by checking and 
+unchecking the items in the list. When you check a package, all packages that it 
+depends on are checked as well. If you uncheck a package that other packages 
+depends on, they will be unchecked automatically. </p>
+<p align="left">We recommend that you check all packages for a first time 
+install and if you decide later on that you don't want to use a specific package, 
+uncheck or remove it from Delphi/BCB's&nbsp; package manager dialog (<b>Components|Install 
+Packages</b> in Delphi).</p>
+<p align="left">When you are done selecting packages, click the <b>Install </b>
+button. A progress dialog is displayed that shows details about what is 
+currently happening. If something goes wrong, see the Compiler Output tab for 
+detailed error messages. </p>
+<p align="left">&nbsp;</p>
+<p align="left">Once the packages are compiled and installed, you should be 
+ready to start using JVCL.</p>
+<p align="left">&nbsp;</p>
+<h2 align="left">Uninstalling with the Installer</h2>
+<p align="left">To remove the JVCL, run the installer  and 
+click the <b>Uninstall </b>button instead. This will uninstall and delete <i>all
+</i>JVCL related bpl, dcp and dcu files, regardless of  package 
+selection in the  list. Note that the uninstall option will only work for
+<i>this </i>version of JVCL, not the previous 2.10 version or any version before 
+that.</p>
 <hr style="width: 100%; height: 2px;">
 <h2>Manual install for Delphi<br>
 </h2>

@@ -40,7 +40,7 @@ type
   TJvgHelpPanel = class(TJvCustomPanel)
   private
     FRich: TRichEdit;
-    FStrings: TStringList;
+    FStrings: TStrings;
     FButtonRect: TRect;
     FHighlightButton: Boolean;
     FExpanded: Boolean;

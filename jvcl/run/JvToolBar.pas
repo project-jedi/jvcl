@@ -57,6 +57,9 @@ type
     procedure MenuChange(Sender: TJvMainMenu; Source: TMenuItem; Rebuild: Boolean);
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure CNDropDownClosed(var Msg: TMessage); message CN_DROPDOWNCLOSED;
+    {$IFNDEF COMPILER6_UP}
+    procedure BuildButtons(AMenu: TMainMenu);
+    {$ENDIF}
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -135,6 +138,46 @@ begin
   {$ENDIF COMPILER6_UP}
 end;
 
+{$IFNDEF COMPILER6_UP}
+procedure TJvToolBar.BuildButtons(AMenu:TMainMenu);
+var
+  I: Integer;
+begin
+  if csAcceptsControls in ControlStyle then
+  begin
+    ControlStyle := [csCaptureMouse, csClickEvents,
+      csDoubleClicks, csMenuEvents, csSetCaption];
+    RecreateWnd;
+  end;
+  ShowCaptions := True;
+  if Assigned(FMenu) then
+  begin
+    for I := ButtonCount - 1 downto 0 do
+      Buttons[I].Free;
+    FMenu.RemoveFreeNotification(Self);
+  end;
+  FMenu := AMenu;
+  if not Assigned(FMenu) then Exit;
+  FMenu.FreeNotification(Self);
+
+  for I := ButtonCount to FMenu.Items.Count - 1 do
+  begin
+    with TToolButton.Create(Self) do
+    try
+      AutoSize := True;
+      Grouped := True;
+      Parent := Self;
+      Buttons[I].MenuItem := FMenu.Items[I];
+    except
+      Free;
+      raise;
+    end;
+  end;
+  for I := 0 to FMenu.Items.Count - 1 do
+    Buttons[i].MenuItem := FMenu.Items[I];
+end;
+{$ENDIF}
+
 procedure TJvToolBar.SetMenu(const Value: TMainMenu);
 begin
   // if trying to set the same menu, do nothing
@@ -161,7 +204,7 @@ begin
   {$IFDEF COMPILER6_UP}
   inherited Menu := Value;
   {$ELSE}
-  FMenu := Value;
+  BuildButtons(Value);
   {$ENDIF COMPILER6_UP}
 end;
 

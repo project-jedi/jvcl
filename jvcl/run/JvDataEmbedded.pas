@@ -88,6 +88,7 @@ end;
 
 function TJvDataEmbedded.GetStream: TStream;
 begin
+  // (p3) memory leak?
   Result := TMemoryStream.Create;
   Result.CopyFrom(FStream, 0);
   Result.Position := 0;
