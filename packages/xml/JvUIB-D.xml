@@ -2,6 +2,7 @@
 <Package Name="JvUIB" Design="-1">
   <Description>JVCL Unified Interbase Components</Description>
   <ClxDescription>JVCLX Unified Interbase Components</ClxDescription>
+  <GUID>{966F0F19-43EC-4A2B-AACD-9E43BFF11FF0}</GUID>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50(USEJVCL)</C5PFlags>
   <C6PFlags>-LUDesignIde -LUCJcl(USEJVCL)</C6PFlags>
   <C5Libs/>
@@ -11,8 +12,8 @@
     <Package Name="JvCore-R" Targets="C5,C5s,C6,C6p" Condition="USEJVCL"/>
     <Package Name="JvCore-D" Targets="all" Condition="USEJVCL"/>
     <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
-    <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
+    <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
   </Requires>

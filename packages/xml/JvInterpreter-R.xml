@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvInterpreter" Design="0">
   <Description>JVCL Interpreter Components Runtime Package</Description>
+  <GUID>{402000FB-ED18-476D-9D5A-AE398F019FD6}</GUID>
   <C5PFlags>-LUvcl50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUCJcl</C6PFlags>
   <C5Libs/>

@@ -2,6 +2,7 @@
 <Package Name="JvCmp" Design="0">
   <Description>JVCL Components Runtime Package</Description>
   <ClxDescription>JVCLX Components Runtime Package</ClxDescription>
+  <GUID>{D967C259-8727-4B1D-8824-FC792F5A9F89}</GUID>
   <C5PFlags>-LUvcl50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUCJcl</C6PFlags>
   <C5Libs/>

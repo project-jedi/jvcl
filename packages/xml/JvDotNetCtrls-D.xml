@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvDotNetCtrls" Design="-1">
   <Description>JVCL DotNet Controls</Description>
+  <GUID>{F7FFBA61-6088-4CE8-B542-EC81959A4DC5}</GUID>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50(USEJVCL)</C5PFlags>
   <C6PFlags>-LUDesignIde -LUCJcl(USEJVCL)</C6PFlags>
   <C5Libs/>
@@ -10,9 +11,9 @@
     <Package Name="CJCL" Targets="C6,C6p" Condition="USEJVCL"/>
     <Package Name="CJCL50" Targets="C5,C5s" Condition="USEJVCL"/>
     <Package Name="JvDotNetCtrls-R" Targets="allbutclx" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
-    <Package Name="vclx" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
+    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
+    <Package Name="vclx" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
     <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
     <Package Name="vclx50" Targets="C5,C5s,D5,D5s" Condition=""/>
   </Requires>

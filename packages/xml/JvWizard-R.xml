@@ -2,6 +2,7 @@
 <Package Name="JvWizard" Design="0">
   <Description>JVCL Wizard Run Time Package</Description>
   <ClxDescription>JVCLX Wizard Run Time Package</ClxDescription>
+  <GUID>{86DF4ED4-828C-457A-ADE5-78BE9050BCF6}</GUID>
   <C5PFlags>-LUvcl50 -LUCJcl50(USEJVCL)</C5PFlags>
   <C6PFlags>-LUCJcl(USEJVCL)</C6PFlags>
   <C5Libs/>
@@ -13,8 +14,8 @@
     <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
     <Package Name="bcbsmp50" Targets="C5,C5s" Condition=""/>
     <Package Name="bcbie50" Targets="C5,C5s" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
+    <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="D6,D6p,D7,D7p,D9" Condition=""/>

@@ -2,6 +2,7 @@
 <Package Name="JvUIB" Design="0">
   <Description>UIB - Unified Interbase Components</Description>
   <ClxDescription>JVCLX Unified Interbase Components Runtime</ClxDescription>
+  <GUID>{A8B6FFD1-E0CC-408F-A520-32B90D3AF6D6}</GUID>
   <C5PFlags>-LUvcl50 -LUCJcl50(USEJVCL)</C5PFlags>
   <C6PFlags>-LUCJcl(USEJVCL)</C6PFlags>
   <C5Libs/>

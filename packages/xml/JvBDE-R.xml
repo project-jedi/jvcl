@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvBDE" Design="0">
   <Description>JVCL BDE Components Runtime Package</Description>
+  <GUID>{9189FAE4-7284-4821-8E3F-0F17EA23C445}</GUID>
   <C5PFlags>-LUvcl50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUCJcl</C6PFlags>
   <C5Libs/>

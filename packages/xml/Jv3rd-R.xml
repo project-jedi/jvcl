@@ -2,6 +2,7 @@
 <Package Name="Jv3rd" Design="0">
   <Description>JVCL 3rd party Runtime Package</Description>
   <ClxDescription>JVCLX 3rd party Runtime Package</ClxDescription>
+  <GUID>{A33B96A1-B3B7-4069-A68D-F5D1D81452A1}</GUID>
   <C5PFlags>-LUvcl50</C5PFlags>
   <C6PFlags/>
   <C5Libs/>

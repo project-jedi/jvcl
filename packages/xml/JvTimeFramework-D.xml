@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvTimeFramework" Design="-1">
   <Description>JVCL Time Framework</Description>
+  <GUID>{D6D9B4EE-4AC3-4971-8178-DC1EA29EC16F}</GUID>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50(USEJVCL)</C5PFlags>
   <C6PFlags>-LUDesignIde -LUCJcl(USEJVCL)</C6PFlags>
   <C5Libs/>
@@ -10,8 +11,8 @@
     <Package Name="JvTimeFramework-R" Targets="allbutclx" Condition=""/>
     <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
     <Package Name="dsnide50" Targets="C5,C5s,D5,D5s" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
-    <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
+    <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>

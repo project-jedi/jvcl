@@ -2,6 +2,7 @@
 <Package Name="JvValidators" Design="-1">
   <Description>JVCL Validators and Error Provider Components</Description>
   <ClxDescription>JVCLX Validators and Error Provider Components</ClxDescription>
+  <GUID>{8254BB6B-AC1A-438D-A9AE-734CF4387F38}</GUID>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUdclstd -LUCJcl</C6PFlags>
   <C5Libs/>
@@ -16,7 +17,7 @@
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
     <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
     <Package Name="dclstd" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
     <Package Name="JvStdCtrls-D" Targets="allclx" Condition=""/>

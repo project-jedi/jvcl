@@ -2,6 +2,7 @@
 <Package Name="JvCtrls" Design="-1">
   <Description>JVCL Visual Controls</Description>
   <ClxDescription>JVCLX Visual Controls</ClxDescription>
+  <GUID>{F0549080-9D89-4D9C-98E1-34930BCF1360}</GUID>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUdclstd -LUCJcl</C6PFlags>
   <C5Libs/>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvBands" Design="0">
   <Description>JVCL Band Objects Runtime Package</Description>
-  <C5PFlags>-LUvcl50  -LUCJcl50</C5PFlags>
+  <GUID>{DD2CB040-B066-4061-B05C-1F1CD0FD0D5D}</GUID>
+  <C5PFlags>-LUvcl50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUCJcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>

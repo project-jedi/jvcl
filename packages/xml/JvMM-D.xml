@@ -2,6 +2,7 @@
 <Package Name="JvMM" Design="-1">
   <Description>JVCL Multimedia and Image Components</Description>
   <ClxDescription>JVCLX Multimedia and Image Components</ClxDescription>
+  <GUID>{C1AE6119-BCF7-466D-A392-739C2DF6A51F}</GUID>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUCJcl</C6PFlags>
   <C5Libs/>
@@ -15,9 +16,9 @@
     <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
     <Package Name="vclx50" Targets="C5,C5s" Condition=""/>
     <Package Name="CJCL50" Targets="C5,C5s" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p,D7,D7p" Condition=""/>
-    <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p,D7,D7p" Condition=""/>
+    <Package Name="rtl" Targets="C6,C6p,D7,D7p,D9" Condition=""/>
+    <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
+    <Package Name="vcl" Targets="C6,C6p,D7,D7p,D9" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>

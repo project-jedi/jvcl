@@ -2,6 +2,7 @@
 <Package Name="JvDlgs" Design="-1">
   <Description>JVCL Dialog Components</Description>
   <ClxDescription>JVCLX Dialog Components</ClxDescription>
+  <GUID>{E8C27CA0-25DE-4D94-B6DF-42592413F205}</GUID>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUCJcl</C6PFlags>
   <C5Libs/>

@@ -2,6 +2,7 @@
 <Package Name="JvCustom" Design="-1">
   <Description>JVCL Custom Controls</Description>
   <ClxDescription>JVCLX Custom Controls</ClxDescription>
+  <GUID>{3CC450E5-643D-41C8-957A-BA5244E94939}</GUID>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUdclstd -LUCJcl</C6PFlags>
   <C5Libs/>

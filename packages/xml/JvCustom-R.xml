@@ -2,6 +2,7 @@
 <Package Name="JvCustom" Design="0">
   <Description>JVCL Custom Controls Runtime Package</Description>
   <ClxDescription>JVCLX Custom Controls Runtime Package</ClxDescription>
+  <GUID>{4A50AFAA-822C-4884-9143-3B7A7963E7CB}</GUID>
   <C5PFlags>-LUvcl50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUCJcl</C6PFlags>
   <C5Libs/>
@@ -10,6 +11,7 @@
     <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
     <Package Name="JvCtrls-R" Targets="C5,C5s,C6,C6p,D5,D5s,D6,D6p" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="C5,C5s,C6,C6p,D7,D7p,allclx" Condition=""/>
+    <Package Name="JvStdCtrls-D" Targets="D9" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
     <Package Name="vcljpg50" Targets="C5,C5s" Condition=""/>
@@ -17,8 +19,8 @@
     <Package Name="bcbsmp50" Targets="C5,C5s" Condition=""/>
     <Package Name="bcbie50" Targets="C5,C5s" Condition=""/>
     <Package Name="vclx50" Targets="C5,C5s" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p,D7,D7p" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p,D7,D7p" Condition=""/>
+    <Package Name="rtl" Targets="C6,C6p,D7,D7p,D9" Condition=""/>
+    <Package Name="vcl" Targets="C6,C6p,D7,D7p,D9" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
     <Package Name="vcljpg" Targets="C6,C6p" Condition=""/>
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
