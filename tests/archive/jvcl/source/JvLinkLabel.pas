@@ -53,7 +53,7 @@ type
   TJvCustomLinkLabel = class(TGraphicControl, IDynamicNodeHandler)
   private
     FCaption: TCaption;
-    FText: TStringList;
+    FText: TStrings;
     FRenderer: IRenderer;
     FActiveLinkNode: TLinkNode;
     FHotLinks: Boolean;
@@ -89,7 +89,7 @@ type
     procedure SetAutoHeight(const Value: Boolean);
     procedure SetMarginHeight(const Value: Integer);
     procedure SetMarginWidth(const Value: Integer);
-    procedure SetText(const Value: TStringList);
+    procedure SetText(const Value: TStrings);
 
   protected
     FNodeTree: TNodeTree;
@@ -114,7 +114,7 @@ type
 
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Caption: TCaption read FCaption write SetCaption;
-    property Text: TStringList read FText write SetText;
+    property Text: TStrings read FText write SetText;
     property Transparent: Boolean read GetTransparent write SetTransparent;
     property LinkColor: TColor read GetLinkColor write SetLinkColor;
     property LinkColorClicked: TColor read GetLinkColorClicked write SetLinkColorClicked;
@@ -526,10 +526,10 @@ begin
   Invalidate;
 end;
 
-procedure TJvCustomLinkLabel.SetText(const Value: TStringList);
+procedure TJvCustomLinkLabel.SetText(const Value: TStrings);
 begin
   FText.Assign(Value);
-  SetCaption(TStringTools.RemoveCRLF(FText.Text));
+  SetCaption(FText.Text);
 end;
 
 procedure TJvCustomLinkLabel.SetTransparent(const Value: Boolean);
