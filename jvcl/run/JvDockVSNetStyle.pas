@@ -140,6 +140,7 @@ type
 
   TJvDockVSChannel = class(TCustomControl)
   private
+    FAnimationStartTimer: TTimer;
     FActiveDockForm: TForm;
     FActivePane: TJvDockVSPane;
     FVSNETDockPanel: TJvDockVSNETPanel;
@@ -162,6 +163,7 @@ type
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure FreeBlockList;
     procedure SetActivePaneSize(const Value: Integer);
+    procedure AnimationStartTimerOnTimerHandler(Sender: TObject);
   protected
     procedure ResetFontAngle; virtual;
     procedure ResetBlock; virtual;
@@ -241,7 +243,7 @@ type
     procedure RestoreClient(DockClient: TJvDockClient); override;
     class procedure SetAnimationInterval(const Value: Integer);
     class function GetAnimationInterval: Integer;
-    class function GetAnimationStartInterval:integer;
+    class function GetAnimationStartInterval: Integer;
     class procedure SetAnimationMoveWidth(const Value: Integer);
     class function GetAnimationMoveWidth: Integer;
   published
@@ -487,7 +489,7 @@ var
   GlobalPopupPanelAnimate: TPopupPanelAnimate = nil;
   // (ahuser) not used:
   // GlobalApplicationEvents: TJvDockAppEvents = nil;
-  GlobalPopupPanelAnimateInterval: Integer = 20;
+  GlobalPopupPanelAnimateInterval: Integer = 16;
   GlobalPopupPanelAnimateMoveWidth: Integer = 20;
   GlobalPopupPanelStartAnimateInterval: Integer  = 400;
 
@@ -1481,6 +1483,8 @@ end;
 destructor TJvDockVSChannel.Destroy;
 begin
   FreeBlockList;
+  if FAnimationStartTimer <> nil then
+    FAnimationStartTimer.Free;
   inherited Destroy;
 end;
 
@@ -1686,16 +1690,36 @@ begin
   VSPane := GetDockFormWithMousePos(Point(X, Y));
   if VSPane <> nil then
   begin
-    VSPane.FActive := True;
-    if VSPane.FDockForm.CanFocus then
+    // There is not "DockFormVisible" or "Hidden" property, so we just use
+    // VSPane.FDockForm.CanFocus, which seems to work fine.
+    if VSPane.FDockForm.CanFocus then begin
+      VSPane.FActive := True;
       VSPane.FDockForm.SetFocus;
+    end else
+      PopupDockForm(VSPane);
   end;
 end;
 
 procedure TJvDockVSChannel.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseMove(Shift, X, Y);
-  PopupDockForm(GetDockFormWithMousePos(Point(X, Y)));
+
+  // Create the timer object if not existing
+  if FAnimationStartTimer = nil then begin
+    FAnimationStartTimer := TTimer.Create(nil);
+    FAnimationStartTimer.OnTimer := AnimationStartTimerOnTimerHandler;
+    FAnimationStartTimer.Interval := TJvDockVSNetStyle.GetAnimationStartInterval;
+    FAnimationStartTimer.Enabled := True;
+  end
+  // Restart the timer only, if mouse is above another pane now
+  else if GetDockFormWithMousePos(Point(X, Y)) <>
+                         Pointer(FAnimationStartTimer.Tag) then
+  begin
+    FAnimationStartTimer.Enabled := False;
+    FAnimationStartTimer.Enabled := True;
+  end;
+  // Store pane under mouse in tag property of the timer
+  FAnimationStartTimer.Tag := Integer(GetDockFormWithMousePos(Point(X, Y)));
 end;
 
 procedure TJvDockVSChannel.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -2791,7 +2815,6 @@ begin
   if FVSChannel <> nil then
     Exit;
   FVSChannel := VSChannel;
-  Interval := TJvDockVSNetStyle.GetAnimationStartInterval;
   Enabled := (FVSChannel <> nil) and (FVSChannel.ActiveDockForm <> nil);
   if FVSChannel <> nil then
   begin
@@ -2811,7 +2834,6 @@ begin
   if (FCurrentWidth > 0) and (FVSChannel <> nil) then
     FVSChannel.Parent.EnableAlign;
   FVSChannel := VSChannel;
-  Interval := TJvDockVSNetStyle.GetAnimationStartInterval;
   Enabled := FVSChannel <> nil;
   if FVSChannel <> nil then
   begin
@@ -2839,7 +2861,6 @@ var
 
 begin
   inherited Timer;
-  Interval := TJvDockVSNetStyle.GetAnimationInterval;
   if FVSChannel <> nil then
   begin
     SuitableWidth := min(FCurrentWidth, FMaxwidth);
@@ -2971,7 +2992,7 @@ begin
   inherited Create(ADockStyle);
   FActivePaneSize := 100;
   FShowImage := True;
-  FMouseleaveHide := True;
+  FMouseleaveHide := False;
   FHideHoldTime := 1000;
   FTabColor := clBtnFace;
 end;
@@ -3131,6 +3152,24 @@ end;
 class function TJvDockVSNetStyle.GetAnimationStartInterval: integer;
 begin
   Result := GlobalPopupPanelStartAnimateInterval;
+end;
+
+procedure TJvDockVSChannel.AnimationStartTimerOnTimerHandler(
+  Sender: TObject);
+var
+  CursorPos: TPoint;
+begin
+  // Show the form only if the cursor is still above the same pane
+  try
+    GetCursorPos(CursorPos);
+    CursorPos := Self.ScreenToClient(CursorPos);
+    if GetDockFormWithMousePos(Point(CursorPos.X, CursorPos.Y)) =
+           Pointer(FAnimationStartTimer.Tag) then
+      PopupDockForm(TJvDockVSPane(Pointer(FAnimationStartTimer.Tag)));
+  finally
+    FAnimationStartTimer.Free;
+    FAnimationStartTimer := nil;
+  end;
 end;
 
 initialization
