@@ -28,8 +28,6 @@ Known Issues:
 
 unit JvSystemPopup;
 
-
-
 interface
 
 uses
@@ -43,7 +41,6 @@ type
   private
     FPopup: TPopupMenu;
     FOwnerForm: TForm;
-    FOldWndProc: TWndMethod;
     FIsHooked: Boolean;
     FPosition: TPopupPosition;
     FPositionInMenu: TPositionInMenu;
@@ -52,7 +49,6 @@ type
     procedure UnHook;
     procedure ResetSystemMenu;
     function HandleWndProc(var Message: TMessage): Boolean;
-    procedure WndProc(var Message: TMessage);
     procedure SetPopup(const Value: TPopupMenu);
     procedure MenuChanged(Sender: TObject; Source: TMenuItem; Rebuild: Boolean);
     procedure PopulateMenu;
@@ -77,12 +73,15 @@ type
 
 implementation
 
+uses
+  JvWndProcHook;
+
 type
   TMenuItemProtectedAccess = class(TMenuItem);
 
   TMenuItemPrivateAccess = class(TComponent)
   private
-    // FCaption *must* be included here: it's a hack to get the same offset for FHandle as in 
+    // FCaption *must* be included here: it's a hack to get the same offset for FHandle as in
     // TMenuItem
     FCaption: string;
     FHandle: HMENU;
@@ -134,17 +133,17 @@ function TJvSystemPopup.HandleWndProc(var Message: TMessage): Boolean;
 
   function Iterate(MenuItem: TMenuItem): Boolean;
   var
-    i: Integer;
+    I: Integer;
   begin
     Result := False;
-    for i := 0 to MenuItem.Count - 1 do
-      if MenuItem[i].Command = Cardinal(Message.WParam) then
+    for I := 0 to MenuItem.Count - 1 do
+      if MenuItem[I].Command = Cardinal(Message.WParam) then
       begin
         Result := True;
-        MenuItem[i].Click;
+        MenuItem[I].Click;
       end
-      else if MenuItem[i].Count > 0 then
-        Result := Iterate(MenuItem[i]);
+      else if MenuItem[I].Count > 0 then
+        Result := Iterate(MenuItem[I]);
   end;
 
 var
@@ -233,8 +232,7 @@ begin
         if not Assigned(FOwnerForm) then
           Exit;
         Assert(not FIsHooked, 'Already hooked');
-        FOldWndProc := FOwnerForm.WindowProc;
-        FOwnerForm.WindowProc := WndProc;
+        RegisterWndProcHook(FOwnerForm, HandleWndProc, hoBeforeMsg);
         FIsHooked := True;
       end;
     ppApplication:
@@ -354,7 +352,7 @@ end;
 procedure IterateMenu(AMenu: HMenu; AMenuItem: TMenuItem;
   ARightToLeft: Boolean; InsertAt: Integer);
 var
-  i: Integer;
+  I: Integer;
   SubMenu: HMenu;
 begin
   { We need a dirty hack to ensure that a menu item is changed when
@@ -366,14 +364,14 @@ begin
   TMenuItemPrivateAccess(AMenuItem).FHandle := AMenu;
 
   with AMenuItem do
-    for i := 0 to Count - 1 do
+    for I := 0 to Count - 1 do
     begin
-      if AppendMenuItemTo(AMenu, Items[i], ARightToLeft, InsertAt, SubMenu) and
+      if AppendMenuItemTo(AMenu, Items[I], ARightToLeft, InsertAt, SubMenu) and
         (InsertAt >= 0) then
         Inc(InsertAt);
 
       if SubMenu > 0 then
-        IterateMenu(SubMenu, Items[i], ARightToLeft, 0);
+        IterateMenu(SubMenu, Items[I], ARightToLeft, 0);
     end;
 end;
 
@@ -522,7 +520,7 @@ begin
       begin
         if not Assigned(FOwnerForm) then
           Exit;
-        FOwnerForm.WindowProc := FOldWndProc;
+        UnRegisterWndProcHook(FOwnerForm, HandleWndProc, hoBeforeMsg);
         FIsHooked := False;
       end;
     ppApplication:
@@ -531,14 +529,6 @@ begin
         FIsHooked := False;
       end;
   end;
-end;
-
-{**************************************************}
-
-procedure TJvSystemPopup.WndProc(var Message: TMessage);
-begin
-  if not HandleWndProc(Message) then
-    FOldWndProc(Message);
 end;
 
 end.

@@ -483,6 +483,9 @@ end;
 
 procedure TJvWindowHook.SetActive(Value: Boolean);
 begin
+  if FActive = Value then
+    Exit;
+
   if not (csDesigning in ComponentState) then
   begin
     if Value then
