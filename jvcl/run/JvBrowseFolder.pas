@@ -287,7 +287,6 @@ implementation
 
 uses
   Consts, FileCtrl,
-  JclSysUtils,
   JvJVCLUtils, JvTypes, JvResources;
 
 type
@@ -1081,7 +1080,7 @@ begin
   BrowseInfo.lParam := Longint(Self);
 
   if (FStatusText = '') or not (odNewDialogStyle in FUsedOptions) then
-    BrowseInfo.lpszTitle := PCharOrNil(FTitle)
+    BrowseInfo.lpszTitle := Pointer(FTitle)
   else
   if FTitle = '' then
     BrowseInfo.lpszTitle := PChar(FStatusText)
@@ -1302,7 +1301,7 @@ end;
 procedure TJvBrowseForFolderDialog.SetSelection(const APath: string);
 begin
   if FDialogWindow <> 0 then
-    SendMessage(FDialogWindow, BFFM_SETSELECTION, WParam(True), LParam(PCharOrNil(APath)));
+    SendMessage(FDialogWindow, BFFM_SETSELECTION, WParam(True), LParam(Pointer(APath)));
 end;
 
 procedure TJvBrowseForFolderDialog.SetSelection(IDList: PItemIDList);
@@ -1314,7 +1313,7 @@ end;
 procedure TJvBrowseForFolderDialog.SetStatusText(const AText: string);
 begin
   if FDialogWindow <> 0 then
-    SendMessage(FDialogWindow, BFFM_SETSTATUSTEXT, 0, LParam(PCharOrNil(AText)));
+    SendMessage(FDialogWindow, BFFM_SETSTATUSTEXT, 0, LParam(Pointer(AText)));
 end;
 
 procedure TJvBrowseForFolderDialog.SetStatusTextW(const AText: WideString);
