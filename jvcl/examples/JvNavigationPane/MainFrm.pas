@@ -7,7 +7,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvOutlookBar, ComCtrls, CheckLst, JvComponent,
   JvNavigationPane, ImgList, Menus, JvPageList, JclWin32, JvExControls, ExtCtrls,
-  JvExExtCtrls;
+  JvExExtCtrls, ExtDlgs;
 
 type
   TForm1 = class(TForm)
@@ -31,6 +31,8 @@ type
     ToolImages: TImageList;
     ShowCloseButton1: TMenuItem;
     N3: TMenuItem;
+    BackgroundImage1: TMenuItem;
+    OpenPictureDialog1: TOpenPictureDialog;
     procedure FormCreate(Sender: TObject);
     procedure Dontallowresize1Click(Sender: TObject);
     procedure HideAll1Click(Sender: TObject);
@@ -40,6 +42,7 @@ type
     procedure PopupMenu1Popup(Sender: TObject);
     procedure ShowToolPanel1Click(Sender: TObject);
     procedure ShowCloseButton1Click(Sender: TObject);
+    procedure BackgroundImage1Click(Sender: TObject);
   private
     { Private declarations }
     procedure DoToolMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
@@ -65,7 +68,6 @@ uses
 procedure TForm1.FormCreate(Sender: TObject);
 var
   Page: TJvNavPanelPage;
-  GH: TJvNavPanelHeader;
   N: TTreeNode;
   R: TRect;
   i: integer;
@@ -86,35 +88,13 @@ begin
   NP.DropDownMenu := PopupMenu1;
   NP.SmallImages := SmallImages;
   NP.LargeImages := LargeImages;
+  NP.AutoHeaders := True;
   NP.StyleManager := JvNavPaneStyleManager1;
 
   Page := TJvNavPanelPage.Create(Self);
   Page.Caption := '&Mail';
   Page.ImageIndex := 0;
   Page.PageList := NP;
-  GH := TJvNavPanelHeader.Create(Self);
-  GH.Parent := Page;
-  GH.Align := alTop;
-  GH.Images := SmallImages;
-  GH.ImageIndex := -1;
-
-  GH.Caption := StripHotkey(Page.Caption);
-  GH.StyleManager := JvNavPaneStyleManager1;
-  // use a button here instead of the icon:
-  with TJvNavIconButton.Create(Self) do
-  begin
-    Parent := GH;
-    Align := alRight;
-    ButtonType := nibImage;
-    //    Colors.SelectedColorFrom := clNone;
-    //    Colors.SelectedColorTo := clNone;
-    Colors.ButtonHotColorFrom := clNone;
-    Colors.ButtonHotColorTo := clNone;
-    Images := SmallImages;
-    DropDownMenu := PopupMenu1;
-    ImageIndex := 0;
-    StyleManager := JvNavPaneStyleManager1;
-  end;
 
   with TJvNavPanelDivider.Create(Self) do
   begin
@@ -175,13 +155,6 @@ begin
   Page.Caption := '&Calendar';
   Page.ImageIndex := 1;
   Page.PageList := NP;
-  GH := TJvNavPanelHeader.Create(Self);
-  GH.Parent := Page;
-  GH.Align := alTop;
-  GH.Caption := StripHotKey(Page.Caption);
-  GH.Images := SmallImages;
-  GH.ImageIndex := Page.ImageIndex;
-  GH.StyleManager := JvNavPaneStyleManager1;
   // NB! TMonthCalendar messes up the form when you size the form smaller than one calendar width
   with TMonthCalendar.Create(Self) do
   begin
@@ -259,13 +232,6 @@ begin
   Page.Caption := 'C&ontacts';
   Page.ImageIndex := 2;
   Page.PageList := NP;
-  GH := TJvNavPanelHeader.Create(Self);
-  GH.Parent := Page;
-  GH.Align := alTop;
-  GH.Caption := StripHotkey(Page.Caption);
-  GH.Images := SmallImages;
-  GH.ImageIndex := Page.ImageIndex;
-  GH.StyleManager := JvNavPaneStyleManager1;
   with TListBox.Create(Self) do
   begin
     Parent := Page;
@@ -301,37 +267,16 @@ begin
   Page.Caption := '&Tasks';
   Page.ImageIndex := 3;
   Page.PageList := NP;
-  GH := TJvNavPanelHeader.Create(Self);
-  GH.Parent := Page;
-  GH.Align := alTop;
-  GH.Caption := StripHotkey(Page.Caption);
-  GH.Images := SmallImages;
-  GH.ImageIndex := Page.ImageIndex;
-  GH.StyleManager := JvNavPaneStyleManager1;
 
   Page := TJvNavPanelPage.Create(Self);
   Page.Caption := '&Notes';
   Page.ImageIndex := 4;
   Page.PageList := NP;
-  GH := TJvNavPanelHeader.Create(Self);
-  GH.Parent := Page;
-  GH.Align := alTop;
-  GH.Caption := StripHotkey(Page.Caption);
-  GH.Images := SmallImages;
-  GH.ImageIndex := Page.ImageIndex;
-  GH.StyleManager := JvNavPaneStyleManager1;
 
   Page := TJvNavPanelPage.Create(Self);
   Page.Caption := '&Folder List';
   Page.ImageIndex := 5;
   Page.PageList := NP;
-  GH := TJvNavPanelHeader.Create(Self);
-  GH.Parent := Page;
-  GH.Align := alTop;
-  GH.Caption := StripHotkey(Page.Caption);
-  GH.Images := SmallImages;
-  GH.ImageIndex := Page.ImageIndex;
-  GH.StyleManager := JvNavPaneStyleManager1;
 
   {  with TJvOutlookSplitter.Create(Self) do
     begin
@@ -469,6 +414,17 @@ begin
     NT.Cursor := crSize
   else
     NT.Cursor := crDefault;
+end;
+
+procedure TForm1.BackgroundImage1Click(Sender: TObject);
+begin
+  if OpenPictureDialog1.Execute then
+  begin
+    NP.Background.Picture.LoadFromFile(OpenPictureDialog1.Filename);
+    NP.Background.Tile := True;
+    NT.Background.Picture.LoadFromFile(OpenPictureDialog1.Filename);
+    NT.Background.Tile := True;
+  end;
 end;
 
 end.

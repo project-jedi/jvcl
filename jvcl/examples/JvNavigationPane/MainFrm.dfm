@@ -23,7 +23,10 @@ object Form1: TForm1
     Height = 434
     Cursor = crSizeWE
     Align = alLeft
+    ColorFrom = 7703937
+    ColorTo = 3823693
     StyleManager = JvNavPaneStyleManager1
+    ParentStyleManager = False
   end
   object PopupMenu1: TPopupMenu
     OnPopup = PopupMenu1Popup
@@ -74,6 +77,10 @@ object Form1: TForm1
         RadioItem = True
         OnClick = SchemaClick
       end
+    end
+    object BackgroundImage1: TMenuItem
+      Caption = 'Background Image...'
+      OnClick = BackgroundImage1Click
     end
     object N2: TMenuItem
       Caption = '-'
@@ -703,35 +710,7 @@ object Form1: TForm1
       000000000000}
   end
   object JvNavPaneStyleManager1: TJvNavPaneStyleManager
-    Theme = nptCustom
-    Colors.SplitterColorFrom = 14059090
-    Colors.SplitterColorTo = 9715984
-    Colors.DividerColorFrom = 16771022
-    Colors.DividerColorTo = 15181435
-    Colors.HeaderColorFrom = 14059090
-    Colors.HeaderColorTo = 9715984
-    Colors.ButtonColorFrom = 16771022
-    Colors.ButtonColorTo = 15181435
-    Colors.ButtonHotColorFrom = 9234431
-    Colors.ButtonHotColorTo = 1087215
-    Colors.ButtonSelectedColorFrom = 5496319
-    Colors.ButtonSelectedColorTo = 883654
-    Colors.FrameColor = 9711616
-    Fonts.NavPanelFont.Charset = ANSI_CHARSET
-    Fonts.NavPanelFont.Color = clWindowText
-    Fonts.NavPanelFont.Height = -11
-    Fonts.NavPanelFont.Name = 'Tahoma'
-    Fonts.NavPanelFont.Style = [fsBold]
-    Fonts.DividerFont.Charset = ANSI_CHARSET
-    Fonts.DividerFont.Color = clWindowText
-    Fonts.DividerFont.Height = -11
-    Fonts.DividerFont.Name = 'Tahoma'
-    Fonts.DividerFont.Style = []
-    Fonts.HeaderFont.Charset = DEFAULT_CHARSET
-    Fonts.HeaderFont.Color = clWhite
-    Fonts.HeaderFont.Height = -16
-    Fonts.HeaderFont.Name = 'Arial'
-    Fonts.HeaderFont.Style = [fsBold]
+    Theme = nptXPOlive
     Left = 32
     Top = 50
   end
@@ -864,5 +843,9 @@ object Form1: TForm1
       0000008008000000000000E00E000000000000E00E000000000000E00E000000
       000000F01F010000FFFFFFF83F83000000000000000000000000000000000000
       000000000000}
+  end
+  object OpenPictureDialog1: TOpenPictureDialog
+    Left = 128
+    Top = 48
   end
 end
