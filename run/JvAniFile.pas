@@ -48,12 +48,10 @@ type
     FIcon: TIcon;
     FIsIcon: Boolean;
     FHotSpot: TPoint;
-    FJiffRate: Longint;
   public
-    constructor Create(Jiff: Longint);
+    constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    property JiffRate: Longint read FJiffRate;
     property Icon: TIcon read FIcon;
     property HotSpot: TPoint read FHotSpot;
   end;
@@ -75,9 +73,9 @@ type
       var HotSpot: TPoint; var IsIcon: Boolean): TIcon;
     function GetIconCount: Integer;
     function GetFrameCount: Integer;
-    function GetIcon(Index: Integer): TIcon;
-    function GetFrame(Index: Integer): TJvIconFrame;
-    function GetDefaultRate: Longint;
+    function GetIcons(Index: Integer): TIcon;
+    function GetFrames(Index: Integer): TJvIconFrame;
+    function GetRates(Index: Integer): Longint;
     procedure SetIndex(Value: Integer);
     procedure ReadAniStream(Stream: TStream);
     procedure WriteAniStream(Stream: TStream);
@@ -95,11 +93,11 @@ type
     procedure AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
       DecreaseColors, Vertical: Boolean);
     {$ENDIF VCL}
-    property DefaultRate: Longint read GetDefaultRate;
     property IconCount: Integer read GetIconCount;
     property FrameCount: Integer read GetFrameCount;
-    property Icons[Index: Integer]: TIcon read GetIcon;
-    property Frames[Index: Integer]: TJvIconFrame read GetFrame;
+    property Icons[Index: Integer]: TIcon read GetIcons;
+    property Frames[Index: Integer]: TJvIconFrame read GetFrames;
+    property Rates[Index: Integer]: Longint read GetRates;
     property Title: string read FTitle write FTitle;
     property Creator: string read FCreator write FCreator;
     property OriginalColors: Word read FOriginalColors;
@@ -212,10 +210,9 @@ type
 
 //=== TJvIconFrame ===========================================================
 
-constructor TJvIconFrame.Create(Jiff: Longint);
+constructor TJvIconFrame.Create;
 begin
   inherited Create;
-  FJiffRate := Jiff;
 end;
 
 destructor TJvIconFrame.Destroy;
@@ -234,7 +231,6 @@ begin
       Self.FIcon.Assign(Icon);
       Self.FIsIcon := FIsIcon;
       Self.FHotSpot := HotSpot;
-      Self.FJiffRate := JiffRate;
     end
   else
     inherited Assign(Source);
@@ -292,7 +288,7 @@ begin
   Result := FFrameCount;
 end;
 
-function TJvAnimatedCursorImage.GetIcon(Index: Integer): TIcon;
+function TJvAnimatedCursorImage.GetIcons(Index: Integer): TIcon;
 begin
   if (Index >= 0) and (Index < IconCount) then
     Result := TJvIconFrame(FIcons[Index]).FIcon
@@ -300,17 +296,25 @@ begin
     Result := nil;
 end;
 
-function TJvAnimatedCursorImage.GetFrame(Index: Integer): TJvIconFrame;
+function TJvAnimatedCursorImage.GetFrames(Index: Integer): TJvIconFrame;
 begin
   if (Index >= 0) and (Index < FrameCount) then
-    Result := TJvIconFrame(FIcons[FSequence[Index]])
+  begin
+    if Index < Length(FSequence) then
+      Result := TJvIconFrame(FIcons[FSequence[Index]])
+    else
+      Result := TJvIconFrame(FIcons[Index]);
+  end
   else
     Result := nil;
 end;
 
-function TJvAnimatedCursorImage.GetDefaultRate: Longint;
+function TJvAnimatedCursorImage.GetRates(Index: Integer): Longint;
 begin
-  Result := Max(0, Min((FHeader.dwJIFRate * 100) div 6, High(Result)));
+  if (Index >= 0) and (Index < Length(FRates)) then
+    Result := FRates[Index]
+  else
+    Result := Header.dwJIFRate;
 end;
 
 procedure TJvAnimatedCursorImage.SetIndex(Value: Integer);
@@ -339,12 +343,14 @@ begin
         Self.FOriginalColors := FOriginalColors;
         Self.FFrameCount := FrameCount;
         SetLength(Self.FRates, Length(FRates));
-        Move(FRates[0], Self.FRates[0], Length(FRates)*SizeOf(Longint));
+        if Length(FRates) <> 0 then
+          Move(FRates[0], Self.FRates[0], Length(FRates)*SizeOf(Longint));
         SetLength(Self.FSequence, Length(FSequence));
-        Move(FSequence[0], Self.FSequence[0], Length(FSequence)*SizeOf(Longint));
+        if Length(FSequence) <> 0 then
+          Move(FSequence[0], Self.FSequence[0], Length(FSequence)*SizeOf(Longint));
         for I := 0 to FIcons.Count - 1 do
         begin
-          Frame := TJvIconFrame.Create(FHeader.dwJIFRate);
+          Frame := TJvIconFrame.Create;
           try
             Frame.Assign(TJvIconFrame(FIcons[I]));
             Self.FIcons.Add(Frame);
@@ -546,7 +552,7 @@ begin
             Icon := ReadCreateIcon(Stream, Tag.ckSize, HotSpot, IsIcon);
             if Icon = nil then
               Break;
-            Frame := TJvIconFrame.Create(FHeader.dwJIFRate);
+            Frame := TJvIconFrame.Create;
             Frame.FIcon := Icon;
             Frame.FHotSpot := HotSpot;
             Frame.FIsIcon := IsIcon;
@@ -617,25 +623,13 @@ begin
       FIcons.Delete(I);
     end;
   end;
-  FHeader.dwFrames := FIcons.Count;
-  if Length(FSequence) = 0 then
-  begin
+  if FrameCount = 0 then
     FFrameCount := FIcons.Count;
-    SetLength(FSequence, FFrameCount);
-    for I := 0 to FFrameCount - 1 do
-      FSequence[I] := I;
-  end;
-  if Length(FRates) = 0 then
-  begin
-    SetLength(FRates, FFrameCount);
-    for I := 0 to FFrameCount - 1 do
-      FRates[I] := FHeader.dwJIFRate;
-  end;
+  FHeader.dwFrames := FIcons.Count;
   if FHeader.dwFrames = 0 then
     RiffReadError;
 end;
 
-{
 procedure SetFOURCC(var FourCC: TJvFourCC; ID: string);
 begin
   FourCC[0] := ID[1];
@@ -651,7 +645,7 @@ begin
   Stream.Write(Tag, SizeOf(Tag));
 end;
 
-procedure EndWriteChunk(Stream: TStream; var Tag: TJvAniTag);
+procedure EndWriteChunk(Stream: TStream; var Tag: TJvAniTag; AddSize: Integer);
 var
   Pos: Int64;
   B: Byte;
@@ -659,6 +653,8 @@ begin
   Pos := Stream.Position;
   Tag.ckSize := Pos - Tag.ckSize;
   Stream.Seek(-Tag.ckSize, soFromCurrent);
+  Dec(Tag.ckSize, SizeOf(TJvAniTag));
+  Inc(Tag.ckSize, AddSize);
   Stream.Write(Tag, SizeOf(Tag));
   Stream.Seek(Pos, soFromBeginning);
   if Odd(Tag.ckSize) then
@@ -690,30 +686,33 @@ begin
       if Title <> '' then
       begin
         StartWriteChunk(MemStream, Tag, FOURCC_INAM);
-        MemStream.Write(PChar(Title)^, Length(Title));
-        EndWriteChunk(MemStream, Tag);
+        MemStream.Write(PChar(Title)^, Length(Title)+1);
+        EndWriteChunk(MemStream, Tag, 0);
       end;
       if Creator <> '' then
       begin
         StartWriteChunk(MemStream, Tag, FOURCC_IART);
-        MemStream.Write(PChar(Creator)^, Length(Creator));
-        EndWriteChunk(MemStream, Tag);
+        MemStream.Write(PChar(Creator)^, Length(Creator)+1);
+        EndWriteChunk(MemStream, Tag, 0);
       end;
-      EndWriteChunk(MemStream, TagLIST);
+      EndWriteChunk(MemStream, TagLIST, 0);
     end;
-    SetFOURCC(Id, FOURCC_anih);
-    MemStream.Write(Id, SizeOf(TJvFourCC));
-    I := SizeOf(TJvAniHeader);
-    MemStream.Write(I, SizeOf(Integer));
+    StartWriteChunk(MemStream, Tag, FOURCC_anih);
     FHeader.dwFrames := IconCount;
     MemStream.Write(FHeader, SizeOf(TJvAniHeader));
-    StartWriteChunk(MemStream, Tag, FOURCC_rate);
-    MemStream.Write(Frames[0].FJiffRate, SizeOf(Integer));
-    EndWriteChunk(MemStream, Tag);
-    StartWriteChunk(MemStream, Tag, FOURCC_seq);
-    I := IconCount;
-    MemStream.Write(I, SizeOf(Integer));
-    EndWriteChunk(MemStream, Tag);
+    EndWriteChunk(MemStream, Tag, 0);
+    if Length(FRates) <> 0 then
+    begin
+      StartWriteChunk(MemStream, Tag, FOURCC_rate);
+      MemStream.Write(FRates, Length(FRates)*SizeOf(Longint));
+      EndWriteChunk(MemStream, Tag, 0);
+    end;
+    if Length(FSequence) <> 0 then
+    begin
+      StartWriteChunk(MemStream, Tag, FOURCC_seq);
+      MemStream.Write(FSequence[0], Length(FSequence)*SizeOf(Longint));
+      EndWriteChunk(MemStream, Tag, 0);
+    end;
 
     StartWriteChunk(MemStream, TagLIST, FOURCC_LIST);
     SetFOURCC(Id, FOURCC_fram);
@@ -722,21 +721,15 @@ begin
     begin
       StartWriteChunk(MemStream, Tag, FOURCC_icon);
       Icons[I].SaveToStream(MemStream);
-      EndWriteChunk(MemStream, Tag);
+      EndWriteChunk(MemStream, Tag, 0);
     end;
-    EndWriteChunk(MemStream, TagLIST);
+    EndWriteChunk(MemStream, TagLIST, 0);
 
-    EndWriteChunk(MemStream, TagRIFF);
+    EndWriteChunk(MemStream, TagRIFF, SizeOf(TJvAniTag));
     Stream.CopyFrom(MemStream, 0);
   finally
     MemStream.Free;
   end;
-end;
-}
-
-procedure TJvAnimatedCursorImage.WriteAniStream(Stream: TStream);
-begin
-  raise EInvalidGraphicOperation.Create('writing of ANI files not yet supported');
 end;
 
 procedure TJvAnimatedCursorImage.LoadFromStream(Stream: TStream);
