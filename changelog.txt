@@ -1,5 +1,11 @@
 Changelog for JVCL 3.0
 ======================
+2003-08-23:
+- Merged TJvTransLED and TJvBLinkingLED into TJv(Custom)LED
+- Moved JvLED to JvHMI package
+2003-08-22:
+- Added new HMI package
+- Added rewritten LEDDisplay donation by Jay Dubal (JvHMI package)
 2003-08-17:
 - Added Images, ImageList and Spacing to TJvCustomLabel
 - Moved code from TJvLabel to TJvCustomLabel
