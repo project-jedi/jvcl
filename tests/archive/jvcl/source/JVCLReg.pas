@@ -264,7 +264,7 @@ begin
   RegisterComponents(srJvAdditionalPalette,
     [TJvBitBtn, TJvImgBtn, TJvSpeedButton, TJvMultilineButton,
      TJvOneSizeFitsAllButton, TJvButtonShaped, TJvArrowButton,
-     TJvTransparentButton, 
+     TJvTransparentButton, TJvTransparentButton2, 
 
      TJvPopupMemo, TJvStringGrid, TJvDrawGrid, TJvButtonDrawGrid,
 

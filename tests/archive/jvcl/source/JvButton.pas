@@ -222,11 +222,11 @@ end;
 
 procedure TJvCustomGraphicButton.Paint;
 begin
-  FBuffer.Width := Width;
-  FBuffer.Height := Height;
-  PaintFrame(FBuffer.Canvas);
-  PaintButton(FBuffer.Canvas);
-  BitBlt(Canvas.Handle,0,0,Width,Height,FBuffer.Canvas.Handle,0,0,SRCCOPY);
+//  FBuffer.Width := Width;
+//  FBuffer.Height := Height;
+  PaintFrame(Canvas);
+  PaintButton(Canvas);
+//  BitBlt(Canvas.Handle,0,0,Width,Height,FBuffer.Canvas.Handle,0,0,SRCCOPY);
 end;
 
 procedure TJvCustomGraphicButton.PaintFrame(Canvas: TCanvas);
