@@ -56,6 +56,7 @@ object frmDrop: TfrmDrop
     HideSelection = False
     Images = ilSmallIcons
     Indent = 19
+    ReadOnly = True
     TabOrder = 1
     OnChange = tvFoldersChange
     OnDblClick = tvFoldersDblClick

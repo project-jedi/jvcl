@@ -153,7 +153,7 @@ begin
   if FindFirst(S + '*.*', faDirectory, F) = 0 then
   begin
     repeat
-      if (F.Name[1] <> '.') and DirectoryExists(S + F.Name) then
+      if (F.Name[1] <> '.') and (F.Attr and faDirectory = faDirectory) then
         BuildFolderList(Items, Items.AddChild(Parent, F.Name), S + F.Name, Level - 1, IncludeFiles);
     until FindNext(F) <> 0;
     FindClose(F);
