@@ -10,7 +10,7 @@ implementation
 uses
   Classes, JvVigenereCipher, JvCabFile, JvCaesarCipher, JvGenetic, JvSerialMaker,
   JvXorCipher, JvZlibMultiple;
-{.$R ..\resources\JvCryptReg.dcr}
+{$R ..\resources\JvCryptReg.dcr}
 
 procedure Register;
 begin

@@ -24,7 +24,7 @@ uses
   JvDsgnEditors;
 
 
-{.$R ..\resources\JvStdCtrlsReg.dcr}
+{$R ..\resources\JvStdCtrlsReg.dcr}
 
 procedure Register;
 const

@@ -1,6 +1,7 @@
 brc32 JvAppFrmReg.rc -r -fo..\Resources\JvAppFrmReg.dcr
 brc32 JvBDEReg.rc -r -fo..\Resources\JvBDEReg.dcr
 brc32 JvCmpReg.rc -r -fo..\Resources\JvCmpReg.dcr
+brc32 JvCustomReg.rc -r -fo..\Resources\JvCustomReg.dcr
 brc32 JvCoreReg.rc -r -fo..\Resources\JvCoreReg.dcr
 brc32 JvCryptReg.rc -r -fo..\Resources\JvCryptReg.dcr
 brc32 JvCtrlsReg.rc -r -fo..\Resources\JvCtrlsReg.dcr

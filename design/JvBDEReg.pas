@@ -16,7 +16,7 @@ uses
   JvBDEMemTableEditor, JvBDESecurityEditor;
 
 
-{.$R ..\resources\JvBDEReg.dcr}
+{$R ..\resources\JvBDEReg.dcr}
 
 procedure Register;
 begin

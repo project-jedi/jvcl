@@ -26,7 +26,7 @@ uses
   JvTimeLineEditor, JvHLEditEditor, JvScheduleEditors, JvOutlookBarEditors, JvLookoutEditor;
 
 
-{.$R ..\resources\JvCustomReg.dcr}
+{$R ..\resources\JvCustomReg.dcr}
 
 procedure Register;
 begin
@@ -34,10 +34,10 @@ begin
     TJvTrayIcon, TJvGammaPanel, TJvLinkLabel,
     TJvInspector, TJvInspectorBorlandPainter, TJvInspectorDotNETPainter,
     TJvLookout, TJvLookOutPage, TJvLookOutButton,
-    TJvExpress, TJvExpressButton,
+    TJvExpress, TJvExpressButton, TJvValidateEdit,
     TJvOutlookBar, TJvRadioControl, TJvScheduledEvents,
-    TJvThumbImage, TJvTimeLine, TJvTMTimeLine, TJvBalloonHint,
-    TJvPluginManager, TJvValidateEdit,
+    TJvThumbImage, TJvTimeLine, TJvTMTimeLine, TJvBalloonHint
+    ,TJvPluginManager,
     TJvEditor, TJvHLEditor, TJvHLEdPropDlg
     ]);
 
@@ -66,7 +66,6 @@ begin
   RegisterComponentEditor(TJvLookOutPage, TJvLookOutPageEditor);
   RegisterComponentEditor(TJvExpress, TJvExpressEditor);
   RegisterComponentEditor(TJvCustomScheduledEvents, TJvSchedEventComponentEditor);
-
   RegisterCustomModule(TJvBandForm, TCustomModule);
   RegisterPackageWizard(TJvBandObjectDLLWizard.Create);
   RegisterLibraryExpert(TJvPluginWizard.Create)

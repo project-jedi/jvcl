@@ -16,7 +16,7 @@ uses
   JvInterpreter_Menus, JvInterpreter_Quickrpt, JvInterpreter_StdCtrls, JvInterpreter_System, JvInterpreter_SysUtils,
   JvInterpreter_Types, JvInterpreter_Windows, JvInterpreterConst, JvInterpreterFm, JvDsgnEditors;
 
-{.$R ..\resources\JvInterpreterReg.dcr}
+{$R ..\resources\JvInterpreterReg.dcr}
 
 procedure Register;
 begin
