@@ -149,6 +149,7 @@ uses
   Graphics, DB;
 
 const
+  MaxCalcDataOffset = 128; // 128 bytes per record for Calculated Field Data.
   JvCsvSep = ',';
   MAXCOLUMNS = 80;
   DEFAULT_CSV_STR_FIELD = 80;
@@ -1039,8 +1040,9 @@ begin
 
   // initial FBufferSize size: My theory is that we should pick a conservative
   // estimate plus a margin for error:
-  FBufferSize := sizeof(TJvCsvRow) + 128; {CalcFieldsSize}
-  ; // our regular record + calculated field data.
+
+  FBufferSize := sizeof(TJvCsvRow) + MaxCalcDataOffset; //;128; {CalcFieldsSize}
+  //; // our regular record + calculated field data.
 
   FReadOnly := false;
   FCursorOpen := false;
@@ -1513,7 +1515,7 @@ begin
  // If this is a calculated field or lookup field then...
   if (Field.FieldKind = fkCalculated) or (Field.FieldKind = fkLookup) then
   begin
-    if (Field.Offset = 0) then
+    if (Field.Offset < 0) or (Field.Offset+Field.DataSize > MaxCalcDataOffset) then
     begin
       OutputDebugString('JvCsvData.SetFieldData: Invalid field.Offset in Calculated or Lookup field.');
       Exit;
@@ -1750,10 +1752,10 @@ begin
   //------------------------------------------------------------------------
   if (Field.FieldKind = fkCalculated) or (Field.FieldKind = fkLookup) then
   begin
-    if (Field.Offset = 0) then
+    if (Field.Offset < 0) or (Field.Offset+Field.DataSize > MaxCalcDataOffset) then
     begin
-            // Invalid offset!
-      OutputDebugString('JvCsvData.GetFieldData: Invalid field.Offset in Calculated or Lookup field.');
+       OutputDebugString('JvCsvData.GetFieldData: Invalid field.Offset in Calculated or Lookup field.');
+       exit;
     end;
     Inc(pSource, sizeof(TJvCsvRow) + Field.Offset);
     if (pSource[0] = #0) or (Buffer = nil) then
@@ -2497,6 +2499,8 @@ begin
   end;
 
   FBufferSize := sizeof(TJvCsvRow) + CalcFieldsSize; // our regular record + calculated field data.
+//  if CalcFieldsSize>0 then
+//      OutputDebugString('Calculated Fields Debug');
   FRecordPos := ON_BOF_CRACK; // initial record pos before BOF
   BookmarkSize := sizeof(integer); // initialize bookmark size for VCL (Integer uses 4 bytes on 32 bit operating systems)
 
