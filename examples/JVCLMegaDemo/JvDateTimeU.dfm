@@ -1,9 +1,10 @@
 object JvDateTimeFrm: TJvDateTimeFrm
   Left = 358
   Top = 107
-  Width = 559
-  Height = 481
+  BorderStyle = bsDialog
   Caption = 'various date time components'
+  ClientHeight = 444
+  ClientWidth = 607
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -28,7 +29,7 @@ object JvDateTimeFrm: TJvDateTimeFrm
     Transparent = True
   end
   object Label3: TLabel
-    Left = 344
+    Left = 400
     Top = 8
     Width = 105
     Height = 16
@@ -41,26 +42,12 @@ object JvDateTimeFrm: TJvDateTimeFrm
     ParentFont = False
     Transparent = True
   end
-  object Label8: TLabel
-    Left = 344
-    Top = 200
-    Width = 112
-    Height = 16
-    Caption = 'JvMonthCalendar2'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNone
-    Font.Height = -13
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
-    Transparent = True
-  end
   object Label1: TLabel
     Left = 8
     Top = 48
-    Width = 69
+    Width = 127
     Height = 16
-    Caption = 'JvYearEdit:'
+    Caption = 'JvValidateEdit (Year)'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNone
     Font.Height = -13
@@ -85,7 +72,7 @@ object JvDateTimeFrm: TJvDateTimeFrm
   end
   object Label6: TLabel
     Left = 32
-    Top = 368
+    Top = 224
     Width = 51
     Height = 16
     Caption = 'JvClock:'
@@ -97,26 +84,12 @@ object JvDateTimeFrm: TJvDateTimeFrm
     ParentFont = False
     Transparent = True
   end
-  object Label7: TLabel
-    Left = 16
-    Top = 184
-    Width = 94
-    Height = 16
-    Caption = 'JvAnalogClock:'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNone
-    Font.Height = -13
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
-    Transparent = True
-  end
   object Label5: TLabel
-    Left = 24
-    Top = 304
-    Width = 57
+    Left = 30
+    Top = 148
+    Width = 51
     Height = 16
-    Caption = 'JvxClock:'
+    Caption = 'JvClock:'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNone
     Font.Height = -13
@@ -137,38 +110,33 @@ object JvDateTimeFrm: TJvDateTimeFrm
     NullText = '(none)'
   end
   object JvMonthCalendar1: TJvMonthCalendar
-    Left = 344
+    Left = 400
     Top = 24
     Width = 191
     Height = 154
-    Date = 37421.493829884260000000
+    Date = 37421.079300000000000000
     TabOrder = 1
-  end
-  object JvMonthCalendar21: TJvMonthCalendar2
-    Left = 344
-    Top = 224
-    Width = 191
-    Height = 154
-    ParentColor = False
-    TabStop = True
-    TabOrder = 2
-    DateFirst = 37421.000000000000000000
-    Today = 37421.516127847200000000
   end
   object JvYearEdit1: TJvValidateEdit
     Left = 152
     Top = 48
     Width = 105
     Height = 21
-    Alignment = taRightJustify
-    ReadOnly = False
-    TabOrder = 3
-    Value = 2000
-    MaxValue = 9999
-    MinValue = 0
+    CheckChars = '0123456789'
+    CriticalPoints.CheckPoints = cpNone
+    CriticalPoints.ColorAbove = clBlue
+    CriticalPoints.ColorBelow = clRed
+    DisplayFormat = dfYear
+    EditText = '2003'
     HasMaxValue = True
     HasMinValue = True
-    WindowsillYear = 71
+    MaxLength = 4
+    MaxValue = 9999.000000000000000000
+    PasswordChar = #0
+    ReadOnly = False
+    TabOrder = 2
+    Text = '2003'
+    Value = 2003
   end
   object JvDateEdit1: TJvDateEdit
     Left = 152
@@ -177,44 +145,23 @@ object JvDateTimeFrm: TJvDateTimeFrm
     Height = 21
     ButtonFlat = False
     NumGlyphs = 2
-    TabOrder = 4
+    TabOrder = 3
+  end
+  object JvxClock1: TJvClock
+    Left = 122
+    Top = 134
+    Width = 220
+    Height = 41
+    BevelInner = bvRaised
+    BevelOuter = bvLowered
   end
   object JvClock1: TJvClock
-    Left = 136
-    Top = 352
-    Width = 145
-    ClockStyle = csDateTime
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-  end
-  object JvAnalogClock1: TJvAnalogClock
-    Left = 136
-    Top = 128
-    SpiderClock = True
-    TabOrder = 6
-  end
-  object JvxClock1: TJvxClock
-    Left = 128
-    Top = 296
-    Width = 185
-    Height = 41
-  end
-  object ComboBox1: TComboBox
-    Left = 32
-    Top = 400
-    Width = 105
-    Height = 21
-    ItemHeight = 13
-    TabOrder = 8
-    Text = 'Choose a stlye'
-    OnChange = ComboBox1Change
-    Items.Strings = (
-      'Time'
-      'TimeDate'
-      'DateTime;'
-      'csDate')
+    Left = 122
+    Top = 218
+    Width = 220
+    Height = 215
+    BevelInner = bvNone
+    BevelOuter = bvLowered
+    ShowMode = scAnalog
   end
 end
