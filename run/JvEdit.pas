@@ -338,7 +338,7 @@ end;
 
 procedure TJvCustomEdit.CMHintShow(var Msg: TMessage);
 begin
-  if not TextFitsInCtrl(Self, Self.Text) then
+  if AutoHint and not TextFitsInCtrl(Self, Self.Text) then
     with TCMHintShow(Msg) do
     begin
       HintInfo.HintPos := Self.ClientToScreen(Point(-2, Height - 2));
