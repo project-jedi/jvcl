@@ -150,7 +150,7 @@ type
     procedure Button18Click(Sender: TObject);
   private
     { Private-Deklarationen }
-    Form : TCustomForm;
+    UnitVersionForm : TCustomForm;
     RCSFilePanel,
     RevisionPanel,
     DatePanel,
@@ -165,6 +165,7 @@ type
     procedure ShowTest3ButttonClick(const ParameterList: TJvParameterList; const Parameter: TJvBaseParameter);
     function DefaultStorage : TJvCustomAppStorage;
     procedure TreeViewOnChange(Sender: TObject; Node: TTreeNode);
+    procedure CloseButtonOnClick(Sender : TObject);
   public
     { Public-Deklarationen }
     procedure ShowTest1(const aDynControlEngine: tJvDynControlEngine);
@@ -183,14 +184,14 @@ implementation
 
 uses JvDynControlEngineVCL,
   JvDynControlEngineJVCL,
-  JclBase,
+  JclBase, JclFileUtils,
   JvFormPlacementSelectList,
   JvDynControlEngineVCLRed
   {$IFDEF INCLUDE_DEVEXP_CX}
   , JvDynControlEngineDevExpCx
   , cxLookAndFeels
   {$ENDIF}
-  , JvDynControlEngineIntf, JclUnitVersioning;
+  , JvDynControlEngineIntf, JclUnitVersioning, JclStrings;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
@@ -1107,90 +1108,146 @@ var
   DynEngine : TJvDynControlEngine;
   MainPanel,
   ButtonPanel : TWinControl;
-  LeftBox,
-  RightBox : TWinControl;
+  TopBox,
+  BottomBox : TWinControl;
   Button : TButton;
   TreeView : TWinControl;
   IJvReadOnly: IJvDynControlReadOnly;
   IJvTreeView: IJvDynControlTreeView;
   i: Integer;
+  MainNode,
   Node: TTreeNode;
   Nodes: TTreeNodes;
+
+  function FindMasterNode (iNodes : TTreeNodes; iNode : TTreeNode; const iPath : String) : tTreeNode;
+  var
+    Part1, Part2 : String;
+    I : Integer;
+  begin
+    Result := nil;
+    Part2 := iPath;
+    Part1 := '';
+    while (Part1 = '') and (Part2 <> '') do
+    begin
+      Part1 := trim(StrBefore('\', Part2));
+      Part2 := trim(StrAfter('\', Part2));
+    end;
+    if Part1 <> '' then
+    begin
+      for i := 0 to iNode.Count-1 do
+      begin
+        if iNode.Item[i].Text = Part1 then
+        begin
+          Result := FindMasterNode (iNodes, iNode.Item[i], Part2);
+          break;
+        end;
+      end;
+      if Result = nil then
+      begin
+        Result := iNodes.AddChild(iNode, Part1);
+        Result := FindMasterNode (iNodes, Result, Part2);
+      end;
+    end
+    else
+      Result := iNode;
+  end;
+
 begin
   if Assigned(aDynControlEngine) then
     DynEngine := aDynControlEngine
   else
     DynEngine := DefaultDynControlEngine;
-  Form := DynEngine.CreateForm ('Unit Versioning Sample', '');
+  UnitVersionForm := DynEngine.CreateForm ('Unit Versioning Sample', '');
   try
-    if Form is TForm then
-      TForm(Form).Position := poDesktopCenter;
-    Form.Width := 600;
-    Form.Height := 500;
-    ButtonPanel := DynEngine.CreatePanelControl(Form, Form, 'ButtonPanel', '', alBottom);
-    MainPanel := DynEngine.CreatePanelControl(Form, Form, 'MainPanel', '', alClient);
+    if UnitVersionForm is TForm then
+      TForm(UnitVersionForm).Position := poDesktopCenter;
+    UnitVersionForm.Width := 500;
+    UnitVersionForm.Height := 500;
+    ButtonPanel := DynEngine.CreatePanelControl(UnitVersionForm, UnitVersionForm, 'ButtonPanel', '', alBottom);
+    MainPanel := DynEngine.CreatePanelControl(UnitVersionForm, UnitVersionForm, 'MainPanel', '', alClient);
     if MainPanel is TPanel then
       TPanel(MainPanel).borderWidth := 3;
-    Button:= DynEngine.CreateButton(Form, ButtonPanel,'CloseBtn', 'Close', '', nil, True, True);
-    Button.Left := Round((Form.Width-Button.Width)/2);
+    Button:= DynEngine.CreateButton(UnitVersionForm, ButtonPanel,'CloseBtn', 'Close', '', CloseButtonOnClick, True, True);
+    Button.Left := Round((UnitVersionForm.Width-Button.Width)/2);
     Button.Top := Round((ButtonPanel.Height-Button.Height)/2);
-    RightBox := DynEngine.CreateGroupBoxControl(Form, MainPanel, 'RightBox', 'Details');
-    RightBox.Align := alRight;
-    RightBox.Width := 300;
-    LeftBox := DynEngine.CreateGroupBoxControl(Form, MainPanel, 'LeftBox', 'Unit Versions');
-    LeftBox.Align := alClient;
-    TreeView := DynEngine.CreateTreeViewControl(Form, LeftBox, 'TreeView');
+    BottomBox := DynEngine.CreateGroupBoxControl(UnitVersionForm, MainPanel, 'BottomBox', 'Details');
+    BottomBox.Align := alBottom;
+    TopBox := DynEngine.CreateGroupBoxControl(UnitVersionForm, MainPanel, 'TopBox', 'Unit Versions');
+    TopBox.Align := alClient;
+    TreeView := DynEngine.CreateTreeViewControl(UnitVersionForm, TopBox, 'TreeView');
     TreeView.Align := alClient;
-    RCSFilePanel := DynEngine.CreatePanelControl(Form, RightBox, 'RCSFilePanel', '', alTop);
+    RCSFilePanel := DynEngine.CreatePanelControl(UnitVersionForm, BottomBox, 'RCSFilePanel', '', alTop);
     RCSFilePanel.Align := alTop;
-    RCSFileEdit := DynEngine.CreateEditControl(Form, RCSFilePanel, 'RCSFileEdit');
+    RCSFileEdit := DynEngine.CreateEditControl(UnitVersionForm, RCSFilePanel, 'RCSFileEdit');
+    RCSFileEdit.Width := 340;
     if Supports(RCSFileEdit, IJvDynControlReadOnly, IJvReadOnly) then
       IJvReadOnly.ControlSetReadOnly(True);
-    LabelControl := DynEngine.CreateLabelControlPanel(Form, RCSFilePanel,'RCSFileLabel', 'RCS File', RCSFileEdit, False, 80);
-    RCSFilePanel.Height := RCSFileEdit.Height;
-    RevisionPanel := DynEngine.CreatePanelControl(Form, RightBox, 'RevisionPanel', '', alTop);
+    LabelControl := DynEngine.CreateLabelControlPanel(UnitVersionForm, RCSFilePanel,'RCSFileLabel', 'RCS File', RCSFileEdit, False, 80);
+    RCSFilePanel.Height := RCSFileEdit.Height+1;
+    RevisionPanel := DynEngine.CreatePanelControl(UnitVersionForm, BottomBox, 'RevisionPanel', '', alTop);
     RevisionPanel.Align := alTop;
-    RevisionEdit := DynEngine.CreateEditControl(Form, RevisionPanel, 'RevisionEdit');
-    LabelControl := DynEngine.CreateLabelControlPanel(Form, RevisionPanel,'RevisionLabel', 'Revision', RevisionEdit, False, 80);
+    RevisionEdit := DynEngine.CreateEditControl(UnitVersionForm, RevisionPanel, 'RevisionEdit');
+    RevisionEdit.Width := 340;
+    LabelControl := DynEngine.CreateLabelControlPanel(UnitVersionForm, RevisionPanel,'RevisionLabel', 'Revision', RevisionEdit, False, 80);
     if Supports(RevisionEdit, IJvDynControlReadOnly, IJvReadOnly) then
       IJvReadOnly.ControlSetReadOnly(True);
-    RevisionPanel.Height := RevisionEdit.Height;
-    DatePanel := DynEngine.CreatePanelControl(Form, RightBox, 'DatePanel', '', alTop);
+    RevisionPanel.Height := RevisionEdit.Height+1;
+    DatePanel := DynEngine.CreatePanelControl(UnitVersionForm, BottomBox, 'DatePanel', '', alTop);
     DatePanel.Align := alTop;
-    DateEdit := DynEngine.CreateEditControl(Form, DatePanel, 'DateEdit');
-    LabelControl := DynEngine.CreateLabelControlPanel(Form, DatePanel,'DateLabel', 'Date', DateEdit, False, 80);
+    DateEdit := DynEngine.CreateEditControl(UnitVersionForm, DatePanel, 'DateEdit');
+    DateEdit.Width := 340;
+    LabelControl := DynEngine.CreateLabelControlPanel(UnitVersionForm, DatePanel,'DateLabel', 'Date', DateEdit, False, 80);
     if Supports(DateEdit, IJvDynControlReadOnly, IJvReadOnly) then
       IJvReadOnly.ControlSetReadOnly(True);
-    DatePanel.Height := DateEdit.Height;
-    PathPanel := DynEngine.CreatePanelControl(Form, RightBox, 'PathPanel', '', alTop);
+    DatePanel.Height := DateEdit.Height+1;
+    PathPanel := DynEngine.CreatePanelControl(UnitVersionForm, BottomBox, 'PathPanel', '', alTop);
     PathPanel.Align := alTop;
-    PathEdit := DynEngine.CreateEditControl(Form, PathPanel, 'PathEdit');
-    LabelControl := DynEngine.CreateLabelControlPanel(Form, PathPanel,'PathLabel', 'Path', PathEdit, False, 80);
+    PathEdit := DynEngine.CreateEditControl(UnitVersionForm, PathPanel, 'PathEdit');
+    PathEdit.Width := 340;
+    LabelControl := DynEngine.CreateLabelControlPanel(UnitVersionForm, PathPanel,'PathLabel', 'Path', PathEdit, False, 80);
     if Supports(PathEdit, IJvDynControlReadOnly, IJvReadOnly) then
       IJvReadOnly.ControlSetReadOnly(True);
-    PathPanel.Height := PathEdit.Height;
-    ExtraPanel := DynEngine.CreatePanelControl(Form, RightBox, 'ExtraPanel', '', alTop);
+    PathPanel.Height := PathEdit.Height+1;
+    ExtraPanel := DynEngine.CreatePanelControl(UnitVersionForm, BottomBox, 'ExtraPanel', '', alTop);
     ExtraPanel.Align := alTop;
-    ExtraEdit := DynEngine.CreateMemoControl(Form, ExtraPanel, 'ExtraEdit');
-    if Supports(ExtraEdit, IJvDynControlReadOnly, IJvReadOnly) then
-      IJvReadOnly.ControlSetReadOnly(True);
-    LabelControl := DynEngine.CreateLabelControlPanel(Form, ExtraPanel,'ExtraLabel', 'Extra', ExtraEdit, True, 80);
+    ExtraEdit := DynEngine.CreateMemoControl(UnitVersionForm, ExtraPanel, 'ExtraEdit');
+//    if Supports(ExtraEdit, IJvDynControlReadOnly, IJvReadOnly) then
+//      IJvReadOnly.ControlSetReadOnly(True);
+    ExtraEdit.Width := 400;
+    LabelControl := DynEngine.CreateLabelControlPanel(UnitVersionForm, ExtraPanel,'ExtraLabel', 'Extra', ExtraEdit, True, 80);
     LabelControl.Width := 80 + PathEdit.Width;
     ExtraPanel.Height := LabelControl.Height;
+
+    BottomBox.Height := DatePanel.Height*4+10+ExtraPanel.Height;
+
+    if Supports(TreeView, IJvDynControlReadOnly, IJvReadOnly) then
+      IJvReadOnly.ControlSetReadOnly(True);
+
     if Supports(TreeView, IJvDynControlTreeView, IJvTreeView) then
     begin
       Nodes := IJvTreeView.ControlGetItems;
+      Nodes.Clear;
       IJvTreeView.ControlSetOnChange(TreeViewOnChange);
+      MainNode := Nodes.AddChild(nil,extractfilename(ParamStr(0))+' '+VersionFixedFileInfoString( ParamStr(0)));
       with GetUnitVersioning do
         for i := 0 to count-1 do
-          node := Nodes.AddChildObject(nil, Items[i].RCSfile+' - '+Items[i].Revision, Items[i]);
+          node := Nodes.AddChildObject(FindMasterNode (Nodes, MainNode, Items[i].LogPath), Items[i].RCSfile+' - '+Items[i].Revision, Items[i]);
       IJvTreeView.ControlSetSortType (stText);
+      if TreeView is TTreeView then
+        TTreeView(TreeView).FullExpand;
+      MainNode.Selected := True;
     end;
     TreeViewOnChange(nil, nil);
-    Form.ShowModal;
+    UnitVersionForm.ShowModal;
   finally
-    Form.Free;
+    UnitVersionForm.Free;
   end;
+end;
+
+procedure TForm1.CloseButtonOnClick(Sender : TObject);
+begin
+  if Assigned(UnitVersionForm) then
+    UnitVersionForm.ModalResult := mrOk;
 end;
 
 procedure TForm1.TreeViewOnChange(Sender: TObject; Node: TTreeNode);
