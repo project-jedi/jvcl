@@ -199,7 +199,7 @@ type
     procedure SetImageKind(const Value: TJvImageKind);
     procedure SetImages(const Value: TCustomImageList);
     procedure SetNumGlyphs(const Value: TNumGlyphs);
-    procedure UpdateBtnBounds;
+    procedure UpdateBtnBounds(var NewLeft, NewTop, NewWidth, NewHeight: Integer);
     { (rb) renamed from UpdateEdit }
     procedure UpdateGroup; // RDB
 
@@ -221,6 +221,8 @@ type
     FPopupVisible: Boolean; // Polaris
     FFocused: Boolean; // Polaris
     FPopup: TWinControl;
+    procedure CustomAlignPosition(Control: TControl; var NewLeft, NewTop, NewWidth,
+      NewHeight: Integer; var AlignRect: TRect; AlignInfo: TAlignInfo); override;
     procedure DoClearText; override;
     procedure DoClipboardCut; override;
     procedure DoClipboardPaste; override;
@@ -232,7 +234,7 @@ type
     procedure DoEnter; override;
     procedure DoCtl3DChanged; virtual;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
-    { Repositions the child controls; button, checkbox }
+    { Repositions the child controls; checkbox }
     procedure UpdateControls; virtual;
     { Updates the margins of the edit box }
     procedure UpdateMargins; dynamic;
@@ -334,6 +336,7 @@ type
     property AutoSize;
     {$IFDEF VCL}
     property BiDiMode;
+    property Ctl3D;
     property DragCursor;
     property DragKind;
     property ImeMode;
@@ -390,6 +393,8 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
@@ -458,7 +463,7 @@ type
     {$IFDEF VCL}
     property AcceptFiles: Boolean read FAcceptFiles write SetAcceptFiles default True;
     {$ENDIF VCL}
-    property AutoSize;
+    //property AutoSize;
     property OnBeforeDialog: TExecOpenDialogEvent read FOnBeforeDialog
       write FOnBeforeDialog;
     property OnAfterDialog: TExecOpenDialogEvent read FOnAfterDialog
@@ -468,7 +473,7 @@ type
     property ClipboardCommands; // RDB
     property DisabledTextColor; // RDB
     property DisabledColor; // RDB
-    property OnKeyDown; // RDB
+    //property OnKeyDown; // RDB
   end;
 
   TFileDialogKind = (dkOpen, dkSave, dkOpenPicture, dkSavePicture);
@@ -528,6 +533,7 @@ type
     {$IFDEF VCL}
     property AutoComplete;
     property AutoCompleteOptions default [acoAutosuggestForceOn, acoFileSystem];
+    property Ctl3D;
     { (rb) Obsolete; added 'stored False', eventually remove }
     property FileEditStyle: TFileEditStyle read GetFileEditStyle write SetFileEditStyle stored False;
     {$ENDIF VCL}
@@ -564,6 +570,7 @@ type
     property Enabled;
     property Font;
     property Glyph;
+    property GroupIndex;
     property ImageIndex;
     property Images;
     property ImageKind;
@@ -594,6 +601,8 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
@@ -629,6 +638,7 @@ type
     {$IFDEF VCL}
     property AutoComplete;
     property AutoCompleteOptions default [acoAutosuggestForceOn, acoFileSystem, acoFileSysDirs];
+    property Ctl3D;
     property DialogOptions: TSelectDirOpts read FOptions write FOptions default [];
     {$ENDIF VCL}
     property InitialDir: string read FInitialDir write FInitialDir;
@@ -656,6 +666,7 @@ type
     property Enabled;
     property Font;
     property Glyph;
+    property GroupIndex;
     property ImageIndex;
     property Images;
     property ImageKind;
@@ -686,6 +697,8 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
@@ -861,6 +874,7 @@ type
     property Enabled;
     property Font;
     property Glyph;
+    property GroupIndex;
     property ImageIndex;
     property Images;
     property ImageKind;
@@ -901,6 +915,8 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
@@ -1824,7 +1840,8 @@ begin
   {$IFDEF VisualCLX}
   FBtnControl.Parent := Self.ClientArea;
   {$ENDIF VisualCLX}
-  FBtnControl.Anchors := [akRight, akTop, akBottom];
+  //FBtnControl.Anchors := [akRight, akTop, akBottom];
+  FBtnControl.Align := alCustom;
   FButton := TJvEditButton.Create(Self);
   FButton.SetBounds(0, 0, FBtnControl.Width, FBtnControl.Height);
   FButton.Visible := True;
@@ -2228,7 +2245,6 @@ begin
   if FStreamedButtonWidth >= 0 then
     SetButtonWidth(FStreamedButtonWidth);
 
-  { (rb) Should be removed }
   UpdateControls;
   UpdateMargins;
 end;
@@ -2525,7 +2541,7 @@ begin
     if csCreating in ControlState then
     begin
       FBtnControl.Width := Value;
-      //FButton.Width := Value;
+      FButton.Width := Value;
       with FButton do
         ControlStyle := ControlStyle - [csFixedWidth];
       RecreateGlyph;
@@ -2698,8 +2714,10 @@ begin
         end;
       ikDropDown:
         begin
-          { Dropdown has a default width }
+          { Dropdown has a default width; changing the buttonwidth
+            will remove the csFixedWidth flag.. }
           ButtonWidth := GetSystemMetrics(SM_CXVSCROLL);
+          { ..so reapply it: }
           with FButton do
             ControlStyle := ControlStyle + [csFixedWidth];
         end;
@@ -2763,7 +2781,7 @@ begin
   TJvPopupWindow(FPopup).Show(Origin);
 end;
 
-procedure TJvCustomComboEdit.UpdateBtnBounds;
+procedure TJvCustomComboEdit.UpdateBtnBounds(var NewLeft, NewTop, NewWidth, NewHeight: Integer);
 var
   BtnRect: TRect;
 begin
@@ -2807,15 +2825,20 @@ begin
     end
   else
     BtnRect := Bounds(Width - FButton.Width, 0, FButton.Width, Height);
-  with BtnRect do
-    FBtnControl.SetBounds(Left, Top, Right - Left, Bottom - Top);
+  //with BtnRect do
+  //  FBtnControl.SetBounds(Left, Top, Right - Left, Bottom - Top);
+  NewLeft := BtnRect.Left;
+  NewTop := BtnRect.Top;
+  NewWidth := BtnRect.Right - BtnRect.Left;
+  NewHeight := BtnRect.Bottom - BtnRect.Top;
+
   //FButton.Height := FBtnControl.Height;
 //  SetEditRect;
 end;
 
 procedure TJvCustomComboEdit.UpdateControls;
 begin
-  UpdateBtnBounds;
+  { Notification }
 end;
 
 procedure TJvCustomComboEdit.UpdateMargins;
@@ -2823,6 +2846,9 @@ var
   LLeft, LRight, LTop: Integer;
   Loc: TRect;
 begin
+  { delay until Loaded }
+  if csLoading in ComponentState then
+    Exit;
 
   {UpdateMargins gets called whenever the layout of child controls changes.
    It uses GetInternalMargins to determine the left and right margins of the
@@ -4607,6 +4633,14 @@ end;
 //  inherited;
 //  UpdateMargins;
 //end;
+
+procedure TJvCustomComboEdit.CustomAlignPosition(Control: TControl;
+  var NewLeft, NewTop, NewWidth, NewHeight: Integer; var AlignRect: TRect;
+  AlignInfo: TAlignInfo);
+begin
+  if Control = FBtnControl then
+    UpdateBtnBounds(NewLeft, NewTop, NewWidth, NewHeight);
+end;
 
 initialization
 

@@ -64,7 +64,8 @@ interface
                                                                        
 uses
   Classes, Controls, Graphics, Messages, ComCtrls, Buttons,
-  JvTypes, JvCalendar, JvDropDownForm, JvCheckedMaskEdit, JvButton;
+  JvTypes, JvCalendar, JvDropDownForm, JvCheckedMaskEdit, JvButton,
+  JvToolEdit;
 
 type
   {Types used to handle and convert between date format strings and EditMasks:}
@@ -193,6 +194,7 @@ type
     property DateSeparator: Char read FDateSeparator write SetDateSeparator stored FStoreDateFormat;
     property Dropped: Boolean read GetDropped;
     property EnableValidation: Boolean read GetEnableValidation write FEnableValidation default True;
+    property ImageKind default ikDropDown;
     //    property MaxYear: Word read FMaxYear write FMaxYear;
     //    property MinYear: Word read FMinYear write FMinYear;
     property NoDateShortcut: TShortcut read FNoDateShortcut write FNoDateShortcut stored IsNoDateShortcutStored;
@@ -212,23 +214,40 @@ type
   public
     property Dropped;
   published
+    property Action;
+    property Align; 
     property AllowNoDate;
     property AlwaysReturnEditDate;
     property Anchors;
     property AutoSelect;
-    property AutoSize default False;
+    property AutoSize;
     property BorderStyle;
+    property ButtonFlat;
+    property ButtonHint;
+    property ButtonWidth;
     property CalendarAppearance;
     property Caret;
     property CharCase;
     property Checked;
+    property ClickKey;
     property ClipboardCommands;
     property Color;
     property Constraints;
-    property Cursor;
+    property Ctl3D;
+    //property Cursor; {already published}
     property Date;
     property DateFormat;
     property DateSeparator;
+    {$IFDEF VCL}
+    {property BiDiMode;}
+    {property ParentBiDiMode;}
+    property ImeMode;
+    property ImeName;
+    property OEMConvert;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF VCL}
+    property DirectInput;
     property DisabledColor;
     property DisabledTextColor;
     property DragCursor;
@@ -237,13 +256,19 @@ type
     property Enabled;
     property EnableValidation;
     property Font;
+    property Glyph;
     property GroupIndex;
+    property HideSelection;
     property HintColor;
     property HotTrack;
     //    property MaxYear default 2900;
     //    property MinYear default 1900;
+    property ImageIndex;
+    property ImageKind;
+    property Images;
     property NoDateShortcut;
     property NoDateText;
+    property NumGlyphs;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -254,10 +279,13 @@ type
     property StoreDate;
     property StoreDateFormat;
     property TabOrder;
+    property TabStop;
     property Visible;
+    property OnButtonClick;
     property OnChange;
     property OnClick;
     property OnCheckClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -284,7 +312,7 @@ implementation
 uses
   Windows, Menus, SysUtils,
   JclStrings, JclGraphUtils,
-  JvResources, JvToolEdit;
+  JvResources;
 
 //=== TJvCustomDatePickerEdit ================================================
 
