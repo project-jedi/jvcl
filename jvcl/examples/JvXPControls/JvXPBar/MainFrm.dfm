@@ -19,6 +19,7 @@ object frmMain: TfrmMain
     Top = 0
     Width = 4
     Height = 343
+    Cursor = crHSplit
     ResizeStyle = rsUpdate
   end
   object cntWinXPBar: TJvXPContainer
@@ -61,7 +62,6 @@ object frmMain: TfrmMain
           Height = 103
           Align = alClient
           Caption = 'Connect'
-          Colors.SeperatorColor = clBlack
           Items = <
             item
               Action = acConnectRemoteServer
@@ -161,7 +161,6 @@ object frmMain: TfrmMain
           Height = 123
           Align = alClient
           Caption = 'Settings'
-          Colors.SeperatorColor = clBlack
           Items = <
             item
               Action = acSettingsDatabase
@@ -264,7 +263,6 @@ object frmMain: TfrmMain
           Height = 83
           Align = alClient
           Caption = 'Synchronize'
-          Colors.SeperatorColor = clBlack
           Items = <
             item
               Action = acSynchronizeUnknown
