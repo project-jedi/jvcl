@@ -68,11 +68,11 @@ type
     FOnShow: TNotifyEvent;
   protected
     {$IFDEF VCL}
-    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure CreateParams(var Params: TCreateParams); override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    function WidgetFlags: integer; override;
+    function WidgetFlags: Integer; override;
     {$ENDIF VisualCLX}
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure SetPageIndex(Value: Integer);virtual;
@@ -121,7 +121,7 @@ type
     FOnChanging: TJvPageChangingEvent;
     FShowDesignCaption: TJvShowDesignCaption;
     {$IFDEF VCL}
-    procedure CMDesignHitTest(var Message: TCMDesignHitTest); message CM_DESIGNHITTEST;
+    procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
     {$ENDIF VCL}
     procedure UpdateEnabled;
     procedure SetPropagateEnable(const Value: Boolean);
@@ -272,6 +272,7 @@ type
   end;
 
 implementation
+
 {$IFDEF VCL}
 uses
   {$IFNDEF COMPILER6_UP}
@@ -284,7 +285,7 @@ uses
   QForms;
 {$ENDIF VisualCLX}
 
-{ TJvCustomPage }
+//=== TJvCustomPage ==========================================================
 
 constructor TJvCustomPage.Create(AOwner: TComponent);
 begin
@@ -329,22 +330,32 @@ end;
 function GetDesignCaptionFlags(Value: TJvShowDesignCaption): Cardinal;
 begin
   case Value of
-    sdcTopLeft: Result := DT_TOP or DT_LEFT;
-    sdcTopCenter: Result := DT_TOP or DT_CENTER;
-    sdcTopRight: Result := DT_TOP or DT_RIGHT;
-    sdcLeftCenter: Result := DT_VCENTER or DT_LEFT;
-    sdcCenter: Result := DT_VCENTER or DT_CENTER;
-    sdcRightCenter: Result := DT_VCENTER or DT_RIGHT;
-    sdcBottomLeft: Result := DT_BOTTOM or DT_LEFT;
-    sdcBottomCenter: Result := DT_BOTTOM or DT_CENTER;
-    sdcBottomRight: Result := DT_BOTTOM or DT_RIGHT;
+    sdcTopLeft:
+      Result := DT_TOP or DT_LEFT;
+    sdcTopCenter:
+      Result := DT_TOP or DT_CENTER;
+    sdcTopRight:
+      Result := DT_TOP or DT_RIGHT;
+    sdcLeftCenter:
+      Result := DT_VCENTER or DT_LEFT;
+    sdcCenter:
+      Result := DT_VCENTER or DT_CENTER;
+    sdcRightCenter:
+      Result := DT_VCENTER or DT_RIGHT;
+    sdcBottomLeft:
+      Result := DT_BOTTOM or DT_LEFT;
+    sdcBottomCenter:
+      Result := DT_BOTTOM or DT_CENTER;
+    sdcBottomRight:
+      Result := DT_BOTTOM or DT_RIGHT;
   else
     Result := 0;
   end;
 end;
 
 procedure TJvCustomPage.DoPaint(ACanvas: TCanvas; ARect: TRect);
-var S: string;
+var
+  S: string;
 begin
   with ACanvas do
   begin
@@ -402,7 +413,8 @@ begin
 end;
 
 procedure TJvCustomPage.Paint;
-var R: TRect;
+var
+  R: TRect;
 begin
   R := ClientRect;
   if DoBeforePaint(Canvas, R) then
@@ -472,65 +484,35 @@ procedure TJvCustomPage.ShowingChanged;
 begin
   inherited ShowingChanged;
   if Showing then
-  begin
     try
       DoShow
     except
       Application.HandleException(Self);
-    end;
-  end
+    end
   else
   if not Showing then
-  begin
     try
       DoHide;
     except
       Application.HandleException(Self);
     end;
-  end;
 end;
 
 {$IFDEF VCL}
-procedure TJvCustomPage.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+procedure TJvCustomPage.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
-  Message.Result := 1;
+  Msg.Result := 1;
 end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-function TJvCustomPage.WidgetFlags: integer;
+function TJvCustomPage.WidgetFlags: Integer;
 begin
-  Result := Inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
+  Result := inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
 end;
 {$ENDIF VisualCLX}
 
-
-{ TJvCustomPageList }
-
-function TJvCustomPageList.CanChange(AIndex: Integer): Boolean;
-begin
-  Result := (AIndex >= 0) and (AIndex < GetPageCount);
-  if Result and Assigned(FOnChanging) then
-    FOnChanging(Self, AIndex, Result);
-end;
-
-procedure TJvCustomPageList.Change;
-begin
-  if Assigned(FOnChange) then
-    FOnChange(Self);
-end;
-
-{$IFDEF VCL}
-procedure TJvCustomPageList.CMDesignHitTest(var Message: TCMDesignHitTest);
-var
-  Pt: TPoint;
-begin
-  inherited;
-  Pt := SmallPointToPoint(Message.Pos);
-  if Assigned(ActivePage) and PtInRect(ActivePage.BoundsRect, Pt) then
-    Message.Result := 1;
-end;
-{$ENDIF VCL}
+//=== TJvCustomPageList ======================================================
 
 constructor TJvCustomPageList.Create(AOwner: TComponent);
 begin
@@ -546,25 +528,50 @@ end;
 
 destructor TJvCustomPageList.Destroy;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := FPages.Count - 1 downto 0 do
-    TJvCustomPage(FPages[i]).FPageList := nil;
+  for I := FPages.Count - 1 downto 0 do
+    TJvCustomPage(FPages[I]).FPageList := nil;
   FPages.Free;
   inherited Destroy;
 end;
 
+function TJvCustomPageList.CanChange(AIndex: Integer): Boolean;
+begin
+  Result := (AIndex >= 0) and (AIndex < GetPageCount);
+  if Result and Assigned(FOnChanging) then
+    FOnChanging(Self, AIndex, Result);
+end;
+
+procedure TJvCustomPageList.Change;
+begin
+  if Assigned(FOnChange) then
+    FOnChange(Self);
+end;
+
+{$IFDEF VCL}
+procedure TJvCustomPageList.CMDesignHitTest(var Msg: TCMDesignHitTest);
+var
+  Pt: TPoint;
+begin
+  inherited;
+  Pt := SmallPointToPoint(Msg.Pos);
+  if Assigned(ActivePage) and PtInRect(ActivePage.BoundsRect, Pt) then
+    Msg.Result := 1;
+end;
+{$ENDIF VCL}
+
 procedure TJvCustomPageList.GetChildren(Proc: TGetChildProc;
   Root: TComponent);
 var
-  i: Integer;
+  I: Integer;
   Control: TControl;
 begin
-  for i := 0 to FPages.Count - 1 do
-    Proc(TComponent(FPages[i]));
-  for i := 0 to ControlCount - 1 do
+  for I := 0 to FPages.Count - 1 do
+    Proc(TComponent(FPages[I]));
+  for I := 0 to ControlCount - 1 do
   begin
-    Control := Controls[i];
+    Control := Controls[I];
     if not (Control is TJvCustomPage) and (Control.Owner = Root) then
       Proc(Control);
   end;
@@ -618,7 +625,7 @@ end;
 
 procedure TJvCustomPageList.RemovePage(APage: TJvCustomPage);
 var
-  i:integer;
+  I: Integer;
   NextPage: TJvCustomPage;
 begin
   NextPage := FindNextPage(APage, True, not (csDesigning in ComponentState));
@@ -633,10 +640,10 @@ begin
   if (FActivePage = APage) or (FActivePage = nil) then
   begin
     FActivePage := nil;
-    for i := 0 to PageCount - 1 do
-      if Pages[i] <> APage then
+    for I := 0 to PageCount - 1 do
+      if Pages[I] <> APage then
       begin
-        FActivePage := Pages[i];
+        FActivePage := Pages[I];
         Break;
       end;
   end;
@@ -660,7 +667,7 @@ end;
 
 procedure TJvCustomPageList.ShowControl(AControl: TControl);
 begin
-  if (AControl is TJvCustomPage) then
+  if AControl is TJvCustomPage then
     ActivePage := TJvCustomPage(AControl);
   inherited ShowControl(AControl);
 end;
@@ -676,7 +683,7 @@ var
 begin
   if (csLoading in ComponentState) or ((Page <> nil) and (Page.PageList <> Self)) then
     Exit;
-  if (FActivePage <> Page) then
+  if FActivePage <> Page then
   begin
     ParentForm := GetParentForm(Self);
     if (ParentForm <> nil) and (FActivePage <> nil) and
@@ -763,7 +770,7 @@ end;
 function TJvCustomPageList.FindNextPage(CurPage: TJvCustomPage;
   GoForward, IncludeDisabled: Boolean): TJvCustomPage;
 var
-  i, StartIndex: Integer;
+  I, StartIndex: Integer;
 begin
   if PageCount <> 0 then
   begin
@@ -773,24 +780,24 @@ begin
         StartIndex := FPages.Count - 1
       else
         StartIndex := 0;
-    i := StartIndex;
+    I := StartIndex;
     repeat
       if GoForward then
       begin
-        Inc(i);
-        if i >= FPages.Count - 1 then
-          i := 0;
+        Inc(I);
+        if I >= FPages.Count - 1 then
+          I := 0;
       end
       else
       begin
-        if i <= 0 then
-          i := FPages.Count - 1;
-        Dec(i);
+        if I <= 0 then
+          I := FPages.Count - 1;
+        Dec(I);
       end;
-      Result := Pages[i];
+      Result := Pages[I];
       if IncludeDisabled or Result.Enabled then
         Exit;
-    until i = StartIndex;
+    until I = StartIndex;
   end;
   Result := nil;
 end;
@@ -801,26 +808,29 @@ begin
   begin
     FShowDesignCaption := Value;
     if HandleAllocated and (csDesigning in ComponentState) then
-    {$IFDEF VCL}
+      {$IFDEF VCL}
       RedrawWindow(Handle, nil, 0, RDW_UPDATENOW or RDW_INVALIDATE or RDW_ALLCHILDREN);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
       Invalidate;
-    {$ENDIF VisualCLX}
+      {$ENDIF VisualCLX}
   end;
 end;
 
 procedure TJvCustomPageList.UpdateEnabled;
+
   procedure InternalSetEnabled(AControl: TWinControl);
-  var i: Integer;
+  var
+    I: Integer;
   begin
-    for i := 0 to AControl.ControlCount - 1 do
+    for I := 0 to AControl.ControlCount - 1 do
     begin
-      AControl.Controls[i].Enabled := Self.Enabled;
-      if AControl.Controls[i] is TWinControl then
-        InternalSetEnabled(TWinControl(AControl.Controls[i]));
+      AControl.Controls[I].Enabled := Self.Enabled;
+      if AControl.Controls[I] is TWinControl then
+        InternalSetEnabled(TWinControl(AControl.Controls[I]));
     end;
   end;
+
 begin
   if PropagateEnable then
     InternalSetEnabled(Self);
@@ -834,7 +844,7 @@ begin
     Result := nil;
 end;
 
-{ TJvPageList }
+//===TJvPageList =============================================================
 
 function TJvPageList.InternalGetPageClass: TJvCustomPageClass;
 begin

@@ -136,6 +136,8 @@ const
   EVENTLOG_FORWARDS_READ = $0004;
   EVENTLOG_BACKWARDS_READ = $0008;
 
+  cEventLogBaseKey = 'SYSTEM\CurrentControlSet\Services\EventLog';
+
 type
   PEventLogRecord = ^TEventLogRecord;
   TEventLogRecord = packed record
@@ -335,7 +337,7 @@ begin
     AStrings.BeginUpdate;
     try
       RootKey := HKEY_LOCAL_MACHINE;
-      OpenKey('SYSTEM\CurrentControlSet\Services\EventLog', False);
+      OpenKey(cEventLogBaseKey, False);
       GetKeyNames(AStrings);
     finally
       Free;
@@ -454,7 +456,7 @@ begin
     with TRegistry.Create do
     begin
       RootKey := HKEY_LOCAL_MACHINE;
-      OpenKey(Format('SYSTEM\CurrentControlSet\Services\EventLog\%s\%s', [FEventLog.Log, Source]), False); {rw}
+      OpenKey(Format('%s\%s\%s', [cEventLogBaseKey, FEventLog.Log, Source]), False); {rw}
 //      OpenKey(Format('SYSTEM\CurrentControlSet\Services\EventLog\%s\%s', [FEventLog.Log, FEventLog.Source]), False);
       MessagePath := ReadString('EventMessageFile');
       repeat
