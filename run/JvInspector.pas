@@ -338,6 +338,7 @@ type
     function CalcImageHeight: Integer; virtual;
     function CalcItemIndex(X, Y: Integer; var Rect: TRect): Integer; virtual;
     function CalcItemRect(const Item: TJvCustomInspectorItem): TRect; virtual;
+    procedure CMActivate(var Msg: TCMActivate); message CM_ACTIVATE;
     procedure CMDeactivate(var Msg: TCMActivate); message CM_DEACTIVATE;
     procedure DoAfterDataCreate(const Data: TJvCustomInspectorData); virtual;
     procedure DoAfterItemCreate(const Item: TJvCustomInspectorItem); virtual;
@@ -2246,11 +2247,11 @@ var
 {$IFDEF VCL}
 begin
   Result := False;
-  if Msg.Msg = CM_DEACTIVATE then
-    // Post the CM_DEACTIVATE message to all registered inspectors
+  if (Msg.Msg = CM_ACTIVATE) or (Msg.Msg = CM_DEACTIVATE) then
+    // Post the CM_(DE)ACTIVATE message to all registered inspectors
     for I := High(FInspectors) downto 0 do
       if FInspectors[I].HandleAllocated then
-        PostMessage(FInspectors[I].Handle, CM_DEACTIVATE, 0, 0);
+        PostMessage(FInspectors[I].Handle, Msg.Msg, 0, 0);
 end;
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
@@ -2567,11 +2568,17 @@ begin
   Result := Item.Rects[iprItem];
 end;
 
+procedure TJvCustomInspector.CMActivate(var Msg: TCMActivate);
+begin
+  Invalidate;
+end;
+
 procedure TJvCustomInspector.CMDeactivate(var Msg: TCMActivate);
 begin
   inherited;
   if Selected <> nil then
     Selected.Deactivate;
+  Invalidate;
 end;
 
 procedure TJvCustomInspector.DoAfterDataCreate(const Data: TJvCustomInspectorData);
