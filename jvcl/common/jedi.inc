@@ -40,9 +40,9 @@
   C++ Builder (in the near future "Kylix" will be added).
 
   Directive    Description
-  ------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------
   DELPHI       Defined if compiled with Delphi
-  CBUILDER     Defined if compiled with C++ Builder
+  BCB          Defined if compiled with C++ Builder
 
 - Platform Directives
 
@@ -50,8 +50,8 @@
   by the compiler itself. They are listed here only for completeness.
 
   Directive    Description
-  ------------------------------------------------------------------------------
-  WIN32        Defined when target platform is 32 bit Windows
+  --------------------------------------------------------------------------------------------------
+  MSWINDOWS    Defined when target platform is 32 bit Windows
   LINUX        Defined when target platform is Linux
 
 - Delphi Versions
@@ -61,13 +61,14 @@
   the compiler is Delphi (ie DELPHI is defined).
 
   Directive    Description
-  ------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------
   DELPHI1      Defined when compiling with Delphi 1
   DELPHI2      Defined when compiling with Delphi 2
   DELPHI3      Defined when compiling with Delphi 3
   DELPHI4      Defined when compiling with Delphi 4
   DELPHI5      Defined when compiling with Delphi 5
   DELPHI6      Defined when compiling with Delphi 6
+  DELPHI7      Defined when compiling with Delphi 7
   DELPHI1_UP   Defined when compiling with Delphi 1 or higher
   DELPHI2_UP   Defined when compiling with Delphi 2 or higher
   DELPHI3_UP   Defined when compiling with Delphi 3 or higher
@@ -83,7 +84,7 @@
   the compiler is C++ Builder (ie BCB is defined).
 
   Directive    Description
-  ------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------
   BCB1         Defined when compiling with C++ Builder 1
   BCB3         Defined when compiling with C++ Builder 3
   BCB4         Defined when compiling with C++ Builder 4
@@ -106,7 +107,7 @@
   Delphi or C++ Builder.
 
   Directive    Description
-  ------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------
   COMPILER1    Defined when compiling with Delphi 1
   COMPILER2    Defined when compiling with Delphi 2 or C++ Builder 1
   COMPILER3    Defined when compiling with Delphi 3
@@ -114,14 +115,15 @@
   COMPILER4    Defined when compiling with Delphi 4 or C++ Builder 4
   COMPILER5    Defined when compiling with Delphi 5 or C++ Builder 5
   COMPILER6    Defined when compiling with Delphi 6 or C++ Builder 6
+  COMPILER7    Defined when compiling with Delphi 7 or C++ Builder 7
   COMPILER1_UP Defined when compiling with Delphi 1 or higher
   COMPILER2_UP Defined when compiling with Delphi 2 or C++ Builder 1 or higher
   COMPILER3_UP Defined when compiling with Delphi 3 or higher
-  COMPILER35_UP Defined when compiling with C++ Builder 3 or higher
+  COMPILER35UP Defined when compiling with C++ Builder 3 or higher
   COMPILER4_UP Defined when compiling with Delphi 4 or C++ Builder 4 or higher
   COMPILER5_UP Defined when compiling with Delphi 5 or C++ Builder 5 or higher
   COMPILER6_UP Defined when compiling with Delphi 6 or C++ Builder 6 or higher
-  COMPILER7_UP Defined when compiling with Delphi 6 or C++ Builder 6 or higher
+  COMPILER7_UP Defined when compiling with Delphi 7 or C++ Builder 6 or higher
 
 - Feature Directives
 
@@ -131,7 +133,7 @@
   directives.
 
   Directive              Description
-  ------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------
   SUPPORTS_WIDESTRING    Compiler supports the WideString type (D3/BCB3 up)
   SUPPORTS_INTERFACE     Compiler supports interfaces (D3/BCB3)
   SUPPORTS_EXTSYM        Compiler supports the $EXTERNALSYM directive (D4/BCB3)
@@ -148,7 +150,7 @@
   compact and readible manner.
 
   Directive              Description
-  ------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------
   ALIGN_ON               Compiling in the A+ state (no alignment)
   BOOLEVAL_ON            Compiling in the B+ state (complete boolean evaluation)
   ASSERTIONS_ON          Compiling in the C+ state (assertions on)
@@ -171,9 +173,9 @@
 
 *)
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Compiler settings
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$IFOPT A+} {$DEFINE ALIGN_ON} {$ENDIF}
 {$IFOPT B+} {$DEFINE BOOLEVAL_ON} {$ENDIF}
@@ -198,15 +200,15 @@
 //WARNINGS
 {$IFOPT X+} {$DEFINE EXTENDEDSYNTAX_ON} {$ENDIF}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // VERXXX to COMPILERX, DELPHIX and BCBX mappings
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$IFDEF VER150}
   {$DEFINE COMPILER7}
   {$IFDEF BCB}
     {$DEFINE BCB7}
-    {$DEFINE CBUILDER}
+    {$DEFINE BCB}
   {$ELSE}
     {$DEFINE DELPHI7}
     {$DEFINE DELPHI}
@@ -217,7 +219,7 @@
   {$DEFINE COMPILER6}
   {$IFDEF BCB}
     {$DEFINE BCB6}
-    {$DEFINE CBUILDER}
+    {$DEFINE BCB}
   {$ELSE}
     {$DEFINE DELPHI6}
     {$DEFINE DELPHI}
@@ -228,7 +230,7 @@
   {$DEFINE COMPILER5}
   {$IFDEF BCB}
     {$DEFINE BCB5}
-    {$DEFINE CBUILDER}
+    {$DEFINE BCB}
   {$ELSE}
     {$DEFINE DELPHI5}
     {$DEFINE DELPHI}
@@ -238,7 +240,7 @@
 {$IFDEF VER125}
   {$DEFINE COMPILER4}
   {$DEFINE BCB4}
-  {$DEFINE CBUILDER}
+  {$DEFINE BCB}
 {$ENDIF}
 
 {$IFDEF VER120}
@@ -250,7 +252,7 @@
 {$IFDEF VER110}
   {$DEFINE COMPILER35}
   {$DEFINE BCB3}
-  {$DEFINE CBUILDER}
+  {$DEFINE BCB}
 {$ENDIF}
 
 {$IFDEF VER100}
@@ -262,7 +264,7 @@
 {$IFDEF VER93}
   {$DEFINE COMPILER2}
   {$DEFINE BCB1}
-  {$DEFINE CBUILDER}
+  {$DEFINE BCB}
 {$ENDIF}
 
 {$IFDEF VER90}
@@ -277,9 +279,9 @@
   {$DEFINE DELPHI}
 {$ENDIF}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // DELPHIX_UP from DELPHIX mappings
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$IFDEF DELPHI7}
   {$DEFINE DELPHI7_UP}
@@ -330,9 +332,9 @@
   {$DEFINE DELPHI1_UP}
 {$ENDIF}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // BCBX_UP from BCBX mappings
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$IFDEF BCB7}
   {$DEFINE BCB7_UP}
@@ -373,10 +375,9 @@
   {$DEFINE BCB1_UP}
 {$ENDIF}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // COMPILERX_UP from COMPILERX mappings
-//------------------------------------------------------------------------------
-
+//--------------------------------------------------------------------------------------------------
 
 {$IFDEF COMPILER7}
   {$DEFINE COMPILER7_UP}
@@ -438,9 +439,9 @@
   {$DEFINE COMPILER1_UP}
 {$ENDIF}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Map COMPILERX_UP to friendly feature names
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$IFDEF COMPILER3_UP}
   {$DEFINE SUPPORTS_WIDESTRING}
@@ -459,9 +460,20 @@
   {$DEFINE SUPPORTS_OVERLOAD}
 {$ENDIF}
 
-//------------------------------------------------------------------------------
+{$IFDEF COMPILER6_UP}
+  {$DEFINE SUPPORTS_DEPRECATED}
+  {$DEFINE SUPPORTS_LIBRARY}
+  {$DEFINE SUPPORTS_PLATFORM}
+  {$DEFINE SUPPORTS_CUSTOMVARIANTS}
+  {$DEFINE HAS_UNIT_RTLCONSTS}
+  {$DEFINE HAS_UNIT_STRUTILS}
+  {$DEFINE HAS_UNIT_TYPES}
+  {$DEFINE HAS_UNIT_VARIANTS}
+{$ENDIF COMPILER6_UP}
+
+//--------------------------------------------------------------------------------------------------
 // Cross-platform related defines
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$IFDEF WIN32}
   {$DEFINE MSWINDOWS}
@@ -469,9 +481,18 @@
 
 {$IFDEF LINUX}
   {$DEFINE UNIX}
-  {$DEFINE COMPLIB_CLX}
+  {$DEFINE VisualCLX}
 {$ENDIF}
 
-{$IFNDEF COMPLIB_CLX}
-  {$DEFINE COMPLIB_VCL}
+{$IFNDEF VisualCLX}
+  {$DEFINE VCL}
 {$ENDIF}
+
+{$IFDEF VisualCLX}
+  {$DEFINE COMPLIB_CLX} // kept for backward compatibility, use VisualCLX instead
+{$ENDIF}
+
+{$IFDEF VCL}
+  {$DEFINE COMPLIB_VCL} // kept for backward compatibility, use VCL instead
+{$ENDIF}
+
