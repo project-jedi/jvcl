@@ -36,13 +36,8 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Graphics, Controls, ImgList,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QImgList, Types, Qt, QWindows,
-  {$ENDIF VisualCLX}
-  JvComponent;
+  JvJCLUtils, JvComponent;
 
 type
   TJvInstallLabel = class(TJvGraphicControl)
@@ -260,12 +255,6 @@ procedure TJvInstallLabel.Paint;
 var
   Tmp, H, W, I: Integer;
   aRect: TRect;
-  {$IFDEF VCL}
-  aHandle: THandle;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  aHandle: QPainterH;
-  {$ENDIF VisualCLX}
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -282,13 +271,7 @@ begin
 
   UpdateStyles;
   Canvas.Font := Font;
-  aHandle := Canvas.Handle;
-  {$IFDEF VCL}
-  SetBkMode(aHandle, Windows.Transparent);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  SetBkMode(aHandle, QWindows.Transparent);
-  {$ENDIF VisualCLX}
+  SetBkMode(Canvas.Handle, Windows.Transparent);
   H := CanvasMaxTextHeight(Canvas);
   for I := 0 to Lines.Count - 1 do
   begin
@@ -296,7 +279,7 @@ begin
     W := Canvas.TextWidth(Lines[I]);
     Tmp := I * (H + FLineSpacing) + FLineSpacing;
     aRect := Rect(FTextOffset, Tmp, FTextOffset + W, Tmp + H);
-    DrawText(aHandle, PChar(Lines[I]), -1, aRect, DT_CENTER or DT_VCENTER or
+    DrawText(Canvas, Lines[I], -1, aRect, DT_CENTER or DT_VCENTER or
       DT_SINGLELINE or DT_NOPREFIX or DT_NOCLIP);
     if Assigned(FImageList) then
     begin
