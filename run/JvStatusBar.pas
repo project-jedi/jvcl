@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, ComCtrls, Forms,
-  JvTypes, StdActns, CommCtrl, JVCLVer;
+  JvTypes, StdActns, CommCtrl, JVCLVer, Contnrs;
 
 type
   TJvStatusPanel = class(TStatusPanel)
@@ -53,7 +53,7 @@ type
   end;
 
   TJvStatusPanels = class(TStatusPanels)
-  private
+  protected
     function GetItem(Index: integer): TJvStatusPanel;
     procedure SetItem(Index: integer; const Value: TJvStatusPanel);
   public
@@ -73,7 +73,6 @@ type
     FOnParentColorChanged: TNotifyEvent;
     FAutoHintShown: Boolean;
     FHiddenControls: array of TControl;
-    FPanels: TJvStatusPanels;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -82,10 +81,12 @@ type
     procedure WMSize(var Msg: TMessage); message WM_SIZE;
     procedure MovePanelControls;
     procedure SetPanels(const Value: TJvStatusPanels);
+    function GetPanels: TJvStatusPanels;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
+    function GetPanelClass: TStatusPanelClass; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy;override;
@@ -94,7 +95,7 @@ type
   published
     property Color;
     property Font;
-    property Panels:TJvStatusPanels read FPanels write SetPanels;
+    property Panels:TJvStatusPanels read GetPanels write SetPanels;
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -110,7 +111,7 @@ uses
 constructor TJvStatusBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FPanels := TJvStatusPanels.Create(self);
+//  FPanels := TJvStatusPanels.Create(self);
   FHintColor := clInfoBk;
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
@@ -298,12 +299,14 @@ end;
 
 procedure TJvStatusBar.MovePanelControls;
 var i, ALeft:integer;
+  tmpJvPanel : TJvStatusPanel;
 begin
   ALeft := 0;
   for i := 0 to Panels.Count - 1 do
   begin
-    if TJvStatusPanel(Panels[i]).Control <> nil then
-      with TJvStatusPanel(Panels[i]) do
+    tmpJvPanel := TJvStatusPanel(Panels[i]);
+    if tmpJvPanel.Control <> nil then
+      with tmpJvPanel do
         Control.SetBounds(ALeft + MarginLeft,MarginTop,Control.Width, Control.Height);
     Inc(ALeft,TJvStatusPanel(Panels[i]).Width);
   end;
@@ -318,7 +321,7 @@ end;
 
 constructor TJvStatusPanels.Create(StatusBar: TStatusBar);
 begin
-  inherited Create(StatusBar);  
+  inherited Create(StatusBar);
 end;
 
 function TJvStatusPanels.GetItem(Index: integer): TJvStatusPanel;
@@ -334,13 +337,22 @@ end;
 
 procedure TJvStatusBar.SetPanels(const Value: TJvStatusPanels);
 begin
-  FPanels.Assign(Value);
+  inherited Panels.Assign(Value);
 end;
 
 destructor TJvStatusBar.Destroy;
 begin
-  FPanels.Free;
   inherited;
+end;
+
+function TJvStatusBar.GetPanelClass: TStatusPanelClass;
+begin
+  Result := TJvStatusPanel;
+end;
+
+function TJvStatusBar.GetPanels: TJvStatusPanels;
+begin
+  Result := TJvStatusPanels(inherited Panels);
 end;
 
 end.
