@@ -161,8 +161,8 @@ type
     procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
     procedure WmSetFocus(var Msg:TMessage); message WM_SETFOCUS;
     procedure WmKillFocus(var Msg:TMessage);  message WM_KILLFOCUS;
-    procedure ChangeHeight(NewHeight, Increment: Integer);
-    procedure ChangeWidth(NewWidth, Increment: Integer);
+    procedure ChangeHeight(NewHeight: Integer);
+    procedure ChangeWidth(NewWidth: Integer);
     procedure SetShowFocus(const Value: boolean);
   protected
     procedure MouseEnter(Control: TControl); override;
@@ -253,10 +253,11 @@ type
 implementation
 uses
   Forms; // for IsAccel()
-  
-const
+
+// (p3) not used
+// const
 //  cIncrement = 24;
-//  cSmooth = False; // (p3) not used
+//  cSmooth = False;
 
 procedure SetTextAngle(Cnv: TCanvas; Angle: Integer);
 var
@@ -576,7 +577,7 @@ begin
   end;
 end;
 
-procedure TJvCustomRollOut.ChangeHeight(NewHeight, Increment: Integer);
+procedure TJvCustomRollOut.ChangeHeight(NewHeight: Integer);
 var
   OldHeight: Integer;
 begin
@@ -593,7 +594,7 @@ begin
   end;
 end;
 
-procedure TJvCustomRollOut.ChangeWidth(NewWidth, Increment: Integer);
+procedure TJvCustomRollOut.ChangeWidth(NewWidth: Integer);
 var
   OldWidth: integer;
 begin
