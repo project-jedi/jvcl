@@ -614,7 +614,7 @@ type
     procedure BlobReadVariant(var BlobHandle: IscBlobHandle; var Value: Variant);
     // you must free memory allocated by this method !!
     procedure BlobReadBuffer(var BlobHandle: IscBlobHandle; var Size: Integer; var Buffer: Pointer);
-    function  BlobCreate(var DBHandle: IscDbHandle; var TraHandle: IscTrHandle; var BlobHandle: IscBlobHandle): TISCQuad;
+    function  BlobCreate(var DBHandle: IscDbHandle; var TraHandle: IscTrHandle; var BlobHandle: IscBlobHandle; BPB: string = ''): TISCQuad;
     procedure BlobWriteSegment(var BlobHandle: IscBlobHandle; BufferLength: Word; Buffer: PChar);
     procedure BlobWriteString(var BlobHandle: IscBlobHandle; var Str: String);
     procedure BlobWriteStream(var BlobHandle: IscBlobHandle; Stream: TStream);
@@ -1750,8 +1750,8 @@ type
   var
     BlobInfos: array[0..2] of TBlobInfo;
     CurrentLength: Word;
-    Buffer: PChar;
-    Pos: Integer;
+    Buffer: Pointer;
+    Len: Cardinal;
   begin
     Lock;
     try
@@ -1762,16 +1762,14 @@ type
       UnLock;
     end;
     SetLength(Str, BlobInfos[1].CardType);
-    Pos := 1;
-    Getmem(Buffer, BlobInfos[0].CardType);
-    try
-      while BlobGetSegment(BlobHandle, CurrentLength, BlobInfos[0].CardType, Buffer) do
-      begin
-        move(Buffer^, Str[Pos], CurrentLength);
-        inc(Pos, CurrentLength);
-      end;
-    finally
-      FreeMem(Buffer);
+    Buffer := PChar(Str);
+    len := 0;
+    while BlobGetSegment(BlobHandle, CurrentLength, BlobInfos[0].CardType, Buffer) do
+    begin
+      inc(Integer(Buffer), CurrentLength);
+      inc(len, CurrentLength);
+      if len = BlobInfos[1].CardType then
+        Break;
     end;
   end;
 
@@ -1779,8 +1777,8 @@ type
   var
     BlobInfos: array[0..2] of TBlobInfo;
     CurrentLength: Word;
-    TMP: PChar;
-    Pos: Integer;
+    TMP: Pointer;
+    Len: Integer;
   begin
     Lock;
     try
@@ -1792,16 +1790,14 @@ type
     end;
     Size := BlobInfos[1].CardType;
     GetMem(Buffer, Size);
-    Pos := 0;
-    Getmem(TMP, BlobInfos[0].CardType);
-    try
-      while BlobGetSegment(BlobHandle, CurrentLength, BlobInfos[0].CardType, TMP) do
-      begin
-        move(TMP^, PChar(Buffer)[Pos], CurrentLength);
-        inc(Pos, CurrentLength);
-      end;
-    finally
-      FreeMem(TMP);
+    TMP := Buffer;
+    Len := 0;
+    while BlobGetSegment(BlobHandle, CurrentLength, BlobInfos[0].CardType, TMP) do
+    begin
+      inc(Integer(TMP), CurrentLength);
+      inc(Len, CurrentLength);
+      if len = Size then
+        break;
     end;
   end;
 
@@ -1838,11 +1834,11 @@ type
   end;
 
   function TUIBLibrary.BlobCreate(var DBHandle: IscDbHandle; var TraHandle: IscTrHandle;
-    var BlobHandle: IscBlobHandle): TISCQuad;
+    var BlobHandle: IscBlobHandle; BPB: string = ''): TISCQuad;
   begin
     Lock;
     try
-      CheckUIBApiCall(isc_create_blob(@FStatusVector, @DBHandle, @TraHandle, @BlobHandle, @Result));
+      CheckUIBApiCall(isc_create_blob2(@FStatusVector, @DBHandle, @TraHandle, @BlobHandle, @Result, Length(BPB), PChar(BPB)));
     finally
       UnLock;
     end;
@@ -1865,17 +1861,23 @@ type
 
   procedure TUIBLibrary.BlobWriteStream(var BlobHandle: IscBlobHandle; Stream: TStream);
   var
-    Buffer: array[0..255] of Char;
-    count: Integer;
+    Buffer: PChar;
   begin
     Stream.Seek(0, soFromBeginning);
-    count := Stream.Read(Buffer, 256);
-    while Count > 0 do
+    if Stream is TCustomMemoryStream then
+      BlobWriteSegment(BlobHandle, TCustomMemoryStream(Stream).Size,
+        TCustomMemoryStream(Stream).Memory) else
+
     begin
-      BlobWriteSegment(BlobHandle, count, Buffer);
-      count := Stream.Read(Buffer, 256);
+      GetMem(Buffer, Stream.Size);
+      try
+        Stream.Read(Buffer^, Stream.Size);
+        BlobWriteSegment(BlobHandle, Stream.Size, Buffer);
+        Stream.Seek(0, soFromBeginning);
+      finally
+        FreeMem(buffer);
+      end;
     end;
-    Stream.Seek(0, soFromBeginning);
   end;
 
 {$IFDEF IB71_UP}

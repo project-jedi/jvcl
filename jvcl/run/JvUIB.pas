@@ -1460,10 +1460,10 @@ procedure TJvUIBStatement.InternalReadBlob(sqlda: TSQLDA; const Index: Word;
 var
   BlobHandle: IscBlobHandle;
 begin
-//  if (not sqlda.IsBlob[Index]) then
-//    raise EUIBConvertError.Create(EUIB_CASTERROR);
-//  if sqlda.IsNull[Index] then
-//     str := '' else
+  if (not sqlda.IsBlob[Index]) then
+    raise EUIBConvertError.Create(EUIB_CASTERROR);
+  if sqlda.IsNull[Index] then
+     str := '' else
   begin
     Lock;
     with FTransaction.FDataBase.FLibrary do
