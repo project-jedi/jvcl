@@ -48,13 +48,15 @@ begin
 end;
 
 procedure TJvLabelBehaviorProperty.SetValue(const Value: string);
-//var List:IDesignerSelections;
+var List:IDesignerSelections;ADesigner:{$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF};
 begin
   inherited;
-  Designer.Modified;
-//  List := CreateSelectionList;
-//  Designer.GetSelections(List);
-//  Designer.SetSelections(List);
+  List := CreateSelectionList;
+  Designer.GetSelections(List);
+  ADesigner := Designer;  // keep Designer alive
+  ADesigner.SetSelections(nil);
+  ADesigner.SetSelections(List);
+//  Designer.Modified;
 end;
 
 end.

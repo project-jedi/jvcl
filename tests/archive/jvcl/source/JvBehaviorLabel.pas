@@ -286,8 +286,14 @@ type
 resourcestring
   SNone = '(none)';
 
+// register a new behaviour
 procedure RegisterLabelBehaviorOptions(const Name: TJvLabelBehaviorName; BehaviorOptionsClass: TJvLabelBehaviorOptionsClass);
+// returns the class of the behaviour named Name or TJvLabelBehavior if Name not registered
 function GetLabelBehaviorOptionsClass(const Name: TJvLabelBehaviorName): TJvLabelBehaviorOptionsClass;
+// returns the registered name of BehaviorOptionsClass or an empty string if BehaviorOptionsClass is not registered
+function GetLabelBehaviorName(BehaviorOptionsClass: TJvLabelBehaviorOptionsClass): string;
+// Copies the internal TStrings list to Strings where each Strings[] is the name of a
+// registered class and each Objects[] is a pointer to the corresponding class
 procedure GetRegisteredLabelBehaviorOptions(Strings:TStrings);
 
 implementation
@@ -310,9 +316,22 @@ begin
   end;
 end;
 
+function GetLabelBehaviorName(BehaviorOptionsClass: TJvLabelBehaviorOptionsClass): string;
+var i: integer;
+begin
+  Result := '';
+  if (FBehaviorOptions <> nil) then
+  begin
+    i := FBehaviorOptions.IndexOfObject(TObject(BehaviorOptionsClass));
+    if i >= 0 then
+      Result := FBehaviorOptions[i];
+  end;
+end;
+
 procedure GetRegisteredLabelBehaviorOptions(Strings:TStrings);
 begin
-  Strings.Assign(FBehaviorOptions);
+  if Strings <> nil then
+    Strings.Assign(FBehaviorOptions);
 end;
 
 procedure RegisterLabelBehaviorOptions(const Name: TJvLabelBehaviorName; BehaviorOptionsClass: TJvLabelBehaviorOptionsClass);
@@ -323,7 +342,7 @@ begin
     FBehaviorOptions.Sorted := true;
   end;
   if FBehaviorOptions.IndexOf(Name) >= 0 then Exit;
-//    raise Exception.CreateFmt('Options %s already registerd!',[Name]); // can't raise here: we are probably in an initialization section
+//    raise Exception.CreateFmt('Options %s already registered!',[Name]); // can't raise here: we are probably in an initialization section
   FBehaviorOptions.AddObject(Name, TObject(BehaviorOptionsClass));
 end;
 
@@ -450,7 +469,11 @@ end;
 
 procedure TJvCustomBehaviorLabel.SetOptions(const Value: TJvLabelBehavior);
 begin
-  //
+  if Value = nil then
+    Behavior := ''
+  else if (FOptions = nil) or (FOptions.ClassType <> Value.ClassType) then
+    Behavior := GetLabelBehaviorName(TJvLabelBehaviorOptionsClass(Value.ClassType));
+  UpdateDesigner;
 end;
 
 procedure TJvCustomBehaviorLabel.UpdateDesigner;
@@ -508,6 +531,7 @@ end;
 procedure TJvLabelBlink.Start;
 begin
   inherited;
+  if (csLoading in OwnerLabel.ComponentState) then Exit;
   if FTimer = nil then
   begin
     FTimer := TTimer.Create(nil);
@@ -518,7 +542,7 @@ begin
   FOldCaption := OwnerLabel.Caption;
   FToggled := false;
   if FDelay = 0 then FDelay := 1;
-  FTimer.Enabled := not (csDesigning in Ownerlabel.ComponentState);
+  FTimer.Enabled := true; // not (csDesigning in Ownerlabel.ComponentState);
 end;
 
 procedure TJvLabelBlink.Stop;
@@ -631,6 +655,7 @@ end;
 
 procedure TJvLabelBounce.Start;
 begin
+  if (csLoading in OwnerLabel.ComponentState) then Exit;
   FParent := OwnerLabel.Parent;
   if FParent = nil then
     raise Exception.Create('OwnerLabel.Parent is nil in TJvLabelBounce.Start!');
@@ -703,6 +728,7 @@ end;
 procedure TJvLabelScroll.Start;
 begin
   inherited;
+  if (csLoading in OwnerLabel.ComponentState) then Exit;
   if FTimer = nil then
   begin
     FTimer := TTimer.Create(nil);
@@ -848,6 +874,7 @@ end;
 
 procedure TJvLabelAppear.Start;
 begin
+  if (csLoading in OwnerLabel.ComponentState) then Exit;
   FParent := OwnerLabel.Parent;
   if FParent = nil then
     raise Exception.Create('OwnerLabel.Parent is nil in TJvLabelAppear.Start!');
@@ -930,7 +957,7 @@ end;
 procedure TJvLabelTyping.Start;
 begin
   inherited;
-//  if (csLoading in OwnerLabel.ComponentState) or (csDesigning in OwnerLabel.ComponentState) then Exit;
+  if (csLoading in OwnerLabel.ComponentState) then Exit;
   if FTimer = nil then
   begin
     FTimer := TTimer.Create(nil);
@@ -993,6 +1020,7 @@ end;
 procedure TJvLabelSpecial.Start;
 begin
   inherited;
+  if (csLoading in OwnerLabel.ComponentState) then Exit;
   if FTimer = nil then
   begin
     FTimer := TTimer.Create(nil);
@@ -1023,6 +1051,8 @@ initialization
   RegisterLabelBehaviorOptions('Typing', TJvLabelTyping);
   RegisterLabelBehaviorOptions('Appearing', TJvLabelAppear);
   RegisterLabelBehaviorOptions('Special', TJvLabelSpecial);
+finalization
+  FreeAndNil(FBehaviorOptions);
 
 end.
 
