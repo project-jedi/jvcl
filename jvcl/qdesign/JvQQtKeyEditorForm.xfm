@@ -1,4 +1,4 @@
-object frmJvVirtualKeyEditor: TfrmJvVirtualKeyEditor
+object frmJvQtKeyEditor: TfrmJvQtKeyEditor
   Left = 374
   Top = 326
   Width = 228
