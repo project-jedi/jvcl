@@ -31,15 +31,13 @@ unit JvTransparentPanel;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JvPanel;
 
 type
-  TJvTransparentPanel = class(TPanel)
+  TJvTransparentPanel = class(TJvMultilinePanel)
   private
     { Private declarations }
     FBackground: TBitmap;
-    FAboutJVCL: TJVCLAboutInfo;
-
     procedure WMEraseBkGnd(var msg: TWMEraseBkGnd);
       message WM_ERASEBKGND;
   protected
@@ -53,7 +51,6 @@ type
     destructor Destroy; override;
   published
     { Published declarations }
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
 implementation

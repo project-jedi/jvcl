@@ -31,13 +31,12 @@ unit JvSpacer;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JvComponent;
 
 type
-  TJvSpacer = class(TCustomPanel)
+  TJvSpacer = class(TJvCustomPanel)
   private
     FSpacing: Integer;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure SetSpacing(const Value: Integer);
     { Private declarations }
   protected
@@ -48,7 +47,6 @@ type
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   published
     { Published declarations }
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Spacing: Integer read FSpacing write SetSpacing default 4;
 
     property Align;

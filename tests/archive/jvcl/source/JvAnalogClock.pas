@@ -32,17 +32,16 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, JVCLVer;
+  ExtCtrls, JvComponent;
 
 type
   TJvNotifyTime = procedure(Sender: TObject; nHour, nMin, nSec: integer) of
     object;
   TJvHourStyle = (hsLine, hsCircle, hsNumber, hsNumInCir);
   TJvHourMarks = (hmNone, hmFour, hmAll);
-  TJvAnalogClock = class(TCustomPanel)
+  TJvAnalogClock = class(TJvCustomPanel)
   private
     { Private declarations }
-    FAboutJVCL:TJVCLAboutInfo;
     phStyle: TJvHourStyle;
     pmStyle: TJvHourStyle;
     pHrMarks: TJvHourMarks;
@@ -94,7 +93,7 @@ type
     FOnChangeHour: TJvNotifyTime;
     FOnSameTime: TNotifyEvent;
 
-//  	pfMinFont :TFont;
+//    pfMinFont :TFont;
   protected
 
     { Protected declarations }
@@ -106,7 +105,7 @@ type
     procedure PphStyle(Value: TJvHourStyle);
     procedure PpmStyle(Value: TJvHourStyle);
     procedure PpHrMarks(Value: TJvHourMarks);
-//		procedure ppHrSize(Value: integer);
+//    procedure ppHrSize(Value: integer);
     procedure ppHrSize(Value: integer);
     procedure ppMinSize(Value: integer);
     procedure ppMinFontSize(Value: integer);
@@ -143,7 +142,6 @@ type
     destructor Destroy; override;
   published
     { Published declarations }
-    property AboutJVCL:TJVCLAboutInfo read FAboutJVCL write FAboutJVCL;
 
     property Date: Boolean read plDate write PplDate default false;
     property ClockEnabled: Boolean read plEnabled write PplEnabled default True;
@@ -281,15 +279,15 @@ begin
 
 //  pfMinFont := TFont.Create;
 //  pfMinFont := TTextAttributes.Create;
-//	pfMinFont.Assign(Font);
-//	pfMinFont.Charset := Font.Charset;
-//	pfMinFont.Name := Font.Name;
-//	pfMinFont.Color := Font.Color;
-//	pfMinFont.Size := Font.Size;
-//	pfMinFont.Style := Font.Style;
-//	pfMinFont.Pitch := Font.Pitch;
-//	pfMinFont.FontAdapter := Font.FontAdapter;
-//	pfMinFont.OnChange := Font.OnChange;
+//  pfMinFont.Assign(Font);
+//  pfMinFont.Charset := Font.Charset;
+//  pfMinFont.Name := Font.Name;
+//  pfMinFont.Color := Font.Color;
+//  pfMinFont.Size := Font.Size;
+//  pfMinFont.Style := Font.Style;
+//  pfMinFont.Pitch := Font.Pitch;
+//  pfMinFont.FontAdapter := Font.FontAdapter;
+//  pfMinFont.OnChange := Font.OnChange;
  //InternalPaint;
 
   DecodeTime(Now, h, m, s, hund);
@@ -599,7 +597,7 @@ begin
       begin
         if ((t mod 5) > 0) or (pHrMarks = hmNone) or ((pHrMarks = hmFour) and
           (((t div 5) mod 3) > 0)) then
-//			if ((t mod 5) > 0) then
+//      if ((t mod 5) > 0) then
         begin
           nUrca := ((t) * 100);
           if npYk < npXk then

@@ -31,7 +31,7 @@ unit JvSplit;
 interface
 
 uses Classes, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  Controls, ExtCtrls, Forms, Graphics, JvVCLUtils;
+  Controls, ExtCtrls, Forms, Graphics, JvVCLUtils, JvComponent;
 
 type
 
@@ -43,7 +43,7 @@ type
   TSplitterMoveEvent = procedure (Sender: TObject; X, Y: Integer;
     var AllowChange: Boolean) of object;
 
-  TJvxSplitter = class(TCustomPanel)
+  TJvxSplitter = class(TJvCustomPanel)
   private
     FControlFirst: TControl;
     FControlSecond: TControl;

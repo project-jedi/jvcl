@@ -36,7 +36,7 @@ RTLConsts,
 {$ENDIF}
 SysUtils, Classes, Messages, Menus, Buttons, Controls, Graphics, Forms,
   {$IFDEF COMPILER4_UP} ImgList, ActnList, {$ENDIF} ExtCtrls, Grids, IniFiles,
-  JvTypes, JvxCtrls, JvPlacemnt;
+  JvTypes, JvxCtrls, JvPlacemnt, JvComponent;
 
 const
   DefButtonWidth = 24;
@@ -62,7 +62,7 @@ type
     var Apply: Boolean) of object;
 
   
-  TJvSpeedBar = class(TCustomPanel)
+  TJvSpeedBar = class(TJvCustomPanel)
   private
     FSections: TList;
     FPosition: TBarPosition;

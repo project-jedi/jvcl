@@ -36,7 +36,7 @@ uses Windows, Registry,
 RTLConsts,
 {$ENDIF}
 Messages, Classes, Controls, Graphics, StdCtrls, ExtCtrls, Forms,
-  Buttons, Menus, JvTimer, JvConst, IniFiles, JvPlacemnt;
+  Buttons, Menus, JvTimer, JvConst, IniFiles, JvPlacemnt,JvComponent;
 
 type
   TPositiveInt = 1..MaxInt;
@@ -133,7 +133,7 @@ type
   TGetItemWidthEvent = procedure(Control: TWinControl; Index: Integer;
     var Width: Integer) of object;
 
-  TJvxCustomListBox = class(TWinControl)
+  TJvxCustomListBox = class(TJvWinControl)
   private
     FItems: TStrings;
     FBorderStyle: TBorderStyle;
@@ -414,7 +414,7 @@ type
   TTextLayout = (tlTop, tlCenter, tlBottom);
 {$ENDIF}
 
-  TJvCustomLabel = class(TGraphicControl)
+  TJvCustomLabel = class(TJvGraphicControl)
   private
     FFocusControl: TWinControl;
     FAlignment: TAlignment;
@@ -560,7 +560,7 @@ type
   TPanelDrawEvent = procedure(Sender: TObject; Canvas: TCanvas;
     Rect: TRect) of object;
 
-  TJvSecretPanel = class(TCustomPanel)
+  TJvSecretPanel = class(TJvCustomPanel)
   private
     FActive: Boolean;
     FAlignment: TAlignment;
@@ -693,7 +693,7 @@ type
   TJvDropDownMenuPos = (dmpBottom, dmpRight);
   TJvButtonState = (rbsUp, rbsDisabled, rbsDown, rbsExclusive, rbsInactive);
 
-  TJvxSpeedButton = class(TGraphicControl)
+  TJvxSpeedButton = class(TJvGraphicControl)
   private
     FGroupIndex: Integer;
     FStyle: TButtonStyle;

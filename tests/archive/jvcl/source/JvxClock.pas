@@ -32,7 +32,7 @@ interface
 
 
 uses Windows, SysUtils, Messages, Classes, Graphics, Controls,
-    Forms, StdCtrls, ExtCtrls, Menus, JvTimer
+    Forms, StdCtrls, ExtCtrls, Menus, JvTimer, JvComponent
 
 {$IFDEF COMPILER6_UP}
     , RTLConsts
@@ -51,7 +51,7 @@ type
 
 { TJvxClock }
 
-  TJvxClock = class(TCustomPanel)
+  TJvxClock = class(TJvCustomPanel)
   private
     { Private declarations }
     FTimer: TJvTimer;

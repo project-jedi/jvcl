@@ -33,10 +33,10 @@ unit JvPerforated;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, JvComponent;
 
 type
-  TJvPerforated = class(TCustomPanel)
+  TJvPerforated = class(TJvCustomPanel)
   private
     FHandle: THandle;
     FForm: TCustomForm;
@@ -47,7 +47,6 @@ type
     FX: Integer;
     FY: Integer;
     FTransparent: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure SetTransparent(Value: Boolean);
     procedure WMMove(var Msg: TWMMove); message WM_MOVE;
   protected
@@ -56,7 +55,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
   end;
 

@@ -43,7 +43,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Forms, Dialogs,
-  ExtCtrls, StdCtrls, Controls, Buttons, JvButtons;
+  ExtCtrls, StdCtrls, Controls, Buttons, JvButtons,JvComponent;
 
 
  { TJvScrollMax }
@@ -209,7 +209,7 @@ type
     property OnScroll : TNotifyEvent read FOnScroll write FOnScroll;
   end;
 
-  TJvScrollMax = class(TCustomPanel)
+  TJvScrollMax = class(TJvCustomPanel)
   private
     pnlEdit    : TJvScrollMaxBands;
     ScrollBar  : TJvScrollBar;
