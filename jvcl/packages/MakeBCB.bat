@@ -83,7 +83,7 @@ echo.
 echo     PackageName       The name of the group file to use
 echo                       e.g. "BCB6 Packages"
 echo     PackageDirectory  The directory where the packages for the given
-echo                       group are. e.g. "bcb6"
+echo                       group are. e.g. "c6"
 echo     BCBDirectory      The place where BCB is installed.
 echo                       e.g. "C:\Program Files\CBuilder6"
 echo     LIBDirectory      The place where to put the BPI and LIB files.

@@ -42,235 +42,235 @@ PROJECTS = JvCoreC5R.bpl JvCoreC5D.bpl                     \
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
-JvCoreC5R.bpl: bcb5\JvCoreC5R.bpk
+JvCoreC5R.bpl: c5\JvCoreC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCoreC5D.bpl: bcb5\JvCoreC5D.bpk
+JvCoreC5D.bpl: c5\JvCoreC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvSystemC5R.bpl: bcb5\JvSystemC5R.bpk
+JvSystemC5R.bpl: c5\JvSystemC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvSystemC5D.bpl: bcb5\JvSystemC5D.bpk
+JvSystemC5D.bpl: c5\JvSystemC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvStdCtrlsC5R.bpl: bcb5\JvStdCtrlsC5R.bpk
+JvStdCtrlsC5R.bpl: c5\JvStdCtrlsC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvStdCtrlsC5D.bpl: bcb5\JvStdCtrlsC5D.bpk
+JvStdCtrlsC5D.bpl: c5\JvStdCtrlsC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCtrlsC5R.bpl: bcb5\JvCtrlsC5R.bpk
+JvCtrlsC5R.bpl: c5\JvCtrlsC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCtrlsC5D.bpl: bcb5\JvCtrlsC5D.bpk
+JvCtrlsC5D.bpl: c5\JvCtrlsC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCmpC5R.bpl: bcb5\JvCmpC5R.bpk
+JvCmpC5R.bpl: c5\JvCmpC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCmpC5D.bpl: bcb5\JvCmpC5D.bpk
+JvCmpC5D.bpl: c5\JvCmpC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCustomC5R.bpl: bcb5\JvCustomC5R.bpk
+JvCustomC5R.bpl: c5\JvCustomC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCustomC5D.bpl: bcb5\JvCustomC5D.bpk
+JvCustomC5D.bpl: c5\JvCustomC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvDlgsC5R.bpl: bcb5\JvDlgsC5R.bpk
+JvDlgsC5R.bpl: c5\JvDlgsC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvDlgsC5D.bpl: bcb5\JvDlgsC5D.bpk
+JvDlgsC5D.bpl: c5\JvDlgsC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCryptC5R.bpl: bcb5\JvCryptC5R.bpk
+JvCryptC5R.bpl: c5\JvCryptC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCryptC5D.bpl: bcb5\JvCryptC5D.bpk
+JvCryptC5D.bpl: c5\JvCryptC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvMMC5R.bpl: bcb5\JvMMC5R.bpk
+JvMMC5R.bpl: c5\JvMMC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvMMC5D.bpl: bcb5\JvMMC5D.bpk
+JvMMC5D.bpl: c5\JvMMC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvNetC5R.bpl: bcb5\JvNetC5R.bpk
+JvNetC5R.bpl: c5\JvNetC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvNetC5D.bpl: bcb5\JvNetC5D.bpk
+JvNetC5D.bpl: c5\JvNetC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvAppFrmC5R.bpl: bcb5\JvAppFrmC5R.bpk
+JvAppFrmC5R.bpl: c5\JvAppFrmC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvAppFrmC5D.bpl: bcb5\JvAppFrmC5D.bpk
+JvAppFrmC5D.bpl: c5\JvAppFrmC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvDBC5R.bpl: bcb5\JvDBC5R.bpk
+JvDBC5R.bpl: c5\JvDBC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvDBC5D.bpl: bcb5\JvDBC5D.bpk
+JvDBC5D.bpl: c5\JvDBC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvBDEC5R.bpl: bcb5\JvBDEC5R.bpk
+JvBDEC5R.bpl: c5\JvBDEC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvBDEC5D.bpl: bcb5\JvBDEC5D.bpk
+JvBDEC5D.bpl: c5\JvBDEC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvInterpreterC5R.bpl: bcb5\JvInterpreterC5R.bpk
+JvInterpreterC5R.bpl: c5\JvInterpreterC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvInterpreterC5D.bpl: bcb5\JvInterpreterC5D.bpk
+JvInterpreterC5D.bpl: c5\JvInterpreterC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvBandsC5R.bpl: bcb5\JvBandsC5R.bpk
+JvBandsC5R.bpl: c5\JvBandsC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvBandsC5D.bpl: bcb5\JvBandsC5D.bpk
+JvBandsC5D.bpl: c5\JvBandsC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvPluginC5R.bpl: bcb5\JvPluginC5R.bpk
+JvPluginC5R.bpl: c5\JvPluginC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvPluginC5D.bpl: bcb5\JvPluginC5D.bpk
+JvPluginC5D.bpl: c5\JvPluginC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvJansC5R.bpl: bcb5\JvJansC5R.bpk
+JvJansC5R.bpl: c5\JvJansC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvJansC5D.bpl: bcb5\JvJansC5D.bpk
+JvJansC5D.bpl: c5\JvJansC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvGlobusC5R.bpl: bcb5\JvGlobusC5R.bpk
+JvGlobusC5R.bpl: c5\JvGlobusC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvGlobusC5D.bpl: bcb5\JvGlobusC5D.bpk
+JvGlobusC5D.bpl: c5\JvGlobusC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvPrintPreviewC5R.bpl: bcb5\JvPrintPreviewC5R.bpk
+JvPrintPreviewC5R.bpl: c5\JvPrintPreviewC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvPrintPreviewC5D.bpl: bcb5\JvPrintPreviewC5D.bpk
+JvPrintPreviewC5D.bpl: c5\JvPrintPreviewC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvPageCompsC5R.bpl: bcb5\JvPageCompsC5R.bpk
+JvPageCompsC5R.bpl: c5\JvPageCompsC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvPageCompsC5D.bpl: bcb5\JvPageCompsC5D.bpk
+JvPageCompsC5D.bpl: c5\JvPageCompsC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvValidatorsC5R.bpl: bcb5\JvValidatorsC5R.bpk
+JvValidatorsC5R.bpl: c5\JvValidatorsC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvValidatorsC5D.bpl: bcb5\JvValidatorsC5D.bpk
+JvValidatorsC5D.bpl: c5\JvValidatorsC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvUIBC5R.bpl: bcb5\JvUIBC5R.bpk
+JvUIBC5R.bpl: c5\JvUIBC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvUIBC5D.bpl: bcb5\JvUIBC5D.bpk
+JvUIBC5D.bpl: c5\JvUIBC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvWizardC5R.bpl: bcb5\JvWizardC5R.bpk
+JvWizardC5R.bpl: c5\JvWizardC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvWizardC5D.bpl: bcb5\JvWizardC5D.bpk
+JvWizardC5D.bpl: c5\JvWizardC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvTimeFrameworkC5R.bpl: bcb5\JvTimeFrameworkC5R.bpk
+JvTimeFrameworkC5R.bpl: c5\JvTimeFrameworkC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvTimeFrameworkC5D.bpl: bcb5\JvTimeFrameworkC5D.bpk
+JvTimeFrameworkC5D.bpl: c5\JvTimeFrameworkC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvHMIC5R.bpl: bcb5\JvHMIC5R.bpk
+JvHMIC5R.bpl: c5\JvHMIC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvHMIC5D.bpl: bcb5\JvHMIC5D.bpk
+JvHMIC5D.bpl: c5\JvHMIC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvManagedThreadsC5R.bpl: bcb5\JvManagedThreadsC5R.bpk
+JvManagedThreadsC5R.bpl: c5\JvManagedThreadsC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvManagedThreadsC5D.bpl: bcb5\JvManagedThreadsC5D.bpk
+JvManagedThreadsC5D.bpl: c5\JvManagedThreadsC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvXPCtrlsC5R.bpl: bcb5\JvXPCtrlsC5R.bpk
+JvXPCtrlsC5R.bpl: c5\JvXPCtrlsC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvXPCtrlsC5D.bpl: bcb5\JvXPCtrlsC5D.bpk
+JvXPCtrlsC5D.bpl: c5\JvXPCtrlsC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvDockingC5R.bpl: bcb5\JvDockingC5R.bpk
+JvDockingC5R.bpl: c5\JvDockingC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvDockingC5D.bpl: bcb5\JvDockingC5D.bpk
+JvDockingC5D.bpl: c5\JvDockingC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvDotNetCtrlsC5R.bpl: bcb5\JvDotNetCtrlsC5R.bpk
+JvDotNetCtrlsC5R.bpl: c5\JvDotNetCtrlsC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvDotNetCtrlsC5D.bpl: bcb5\JvDotNetCtrlsC5D.bpk
+JvDotNetCtrlsC5D.bpl: c5\JvDotNetCtrlsC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
