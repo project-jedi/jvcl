@@ -766,7 +766,7 @@ procedure TJvCustomComboBox.KeyPress(var Key: Char);
   procedure DeleteSelectedText;
   var
     StartPos, EndPos: DWORD;
-    OldText: String;
+    OldText: string;
   begin
     OldText := Text;
     SendMessage(Handle, CB_GETEDITSEL, Integer(@StartPos), Integer(@EndPos));
@@ -848,7 +848,7 @@ begin
 end;
 
 // SPM - Ported backward from Delphi 7 and modified:
-function TJvCustomComboBox.SelectItem(const AnItem: String): Boolean;
+function TJvCustomComboBox.SelectItem(const AnItem: string): Boolean;
 var
   Idx: Integer;
   ValueChange: Boolean;
@@ -866,7 +866,7 @@ begin
     Exit;
   ValueChange := Idx <> ItemIndex;
   SendMessage(Handle, CB_SETCURSEL, Idx, 0);
-  if (Style in [csDropDown, csSimple]) then
+  if Style in [csDropDown, csSimple] then
   begin
     Text := AnItem + Copy(GetItemText(Idx), Length(AnItem) + 1, MaxInt);
     SendMessage(Handle, CB_SETEDITSEL, 0, MakeLParam(Length(AnItem), Length(Text)));

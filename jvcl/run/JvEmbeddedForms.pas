@@ -213,7 +213,8 @@ procedure TJvEmbeddedFormPanel.UpdateLinkedForm;
 begin
   if (FLinkedForm.Parent <> Self) and (FLinkedForm.Parent <> nil) and IsOwnerFormActive then
     SetLinkedForm
-  else if AlwaysVisible then
+  else
+  if AlwaysVisible then
     DrawFormImage;
 end;
 
@@ -257,7 +258,8 @@ begin
   begin
     if Value = nil then
       ClearLinkedForm
-    else if Value.Owner = Owner then
+    else
+    if Value.Owner = Owner then
       raise Exception.Create(RsELinkCircularRef)
     else
     begin

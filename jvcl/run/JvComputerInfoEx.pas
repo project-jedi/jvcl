@@ -378,9 +378,9 @@ type
     procedure SetSystem(const Value: string);
     procedure SetTemp(const Value: string);
     function GetCommonFiles: string;
-    function AdjustPathDelimiter(const S:String):String;
+    function AdjustPathDelimiter(const S: string): string;
   published
-    property TrailingPathDelimiter:Boolean read FTrailingPathDelimiter write FTrailingPathDelimiter default False;
+    property TrailingPathDelimiter: Boolean read FTrailingPathDelimiter write FTrailingPathDelimiter default False;
     property CommonFiles: string read GetCommonFiles write SetCommonFiles stored False;
     property Current: string read GetCurrent write SetCurrent stored False;
     property ProgramFiles: string read GetProgramFiles write SetProgramFiles stored False;
@@ -509,7 +509,7 @@ type
     property RegisteredCompany: string read GetRegisteredCompany write SetRegisteredCompany stored False;
     property RegisteredOwner: string read GetRegisteredOwner write SetRegisteredOwner stored False;
     // NB!!! "Comment" property only supported on Win95, 96 and some NT OS's!
-    property Comment:string read GetComment write SetComment stored False;
+    property Comment: string read GetComment write SetComment stored False;
   end;
 
   TJvDisplayFlags = set of (dmGrayScale, dmInterlaced);
@@ -784,7 +784,8 @@ type
     property MenuRightAligned: Boolean index SM_MENUDROPALIGNMENT read GetBoolMetrics write SetBoolMetrics stored False;
     property MidEastEnabled: Boolean index SM_MIDEASTENABLED read GetBoolMetrics write SetBoolMetrics stored False;
     property MousePresent: Boolean index SM_MOUSEPRESENT read GetBoolMetrics write SetBoolMetrics stored False;
-    property MouseWheelPresent: Boolean index SM_MOUSEWHEELPRESENT read GetBoolMetrics write SetBoolMetrics stored False;
+    property MouseWheelPresent: Boolean index SM_MOUSEWHEELPRESENT read GetBoolMetrics write SetBoolMetrics stored
+      False;
     property Networked: Boolean index SM_NETWORK read GetBoolMetrics write SetBoolMetrics stored False;
     property PenWindows: Boolean index SM_PENWINDOWS read GetBoolMetrics write SetBoolMetrics stored False;
     property Secure: Boolean index SM_SECURE read GetBoolMetrics write SetBoolMetrics stored False;
@@ -1181,7 +1182,8 @@ type
     property WheelScrollLines: Integer index SPI_GETWHEELSCROLLLINES read GetIntInfo write SetIntInfo stored False;
     property WindowsExtensions: Boolean index SPI_GETWINDOWSEXTENSION read GetBoolInfo write SetBoolInfo stored False;
     property WorkArea: TJvRect read GetWorkArea write SetWorkArea stored False;
-    property ScreenSaverRunning: Boolean index SPI_GETSCREENSAVERRUNNING read GetBoolInfo write SetBoolInfo stored False;
+    property ScreenSaverRunning: Boolean index SPI_GETSCREENSAVERRUNNING read GetBoolInfo write SetBoolInfo stored
+      False;
     // New (W2k, XP and up)
     property FocusBorderHeight: Integer index SPI_GETFOCUSBORDERHEIGHT read GetIntInfo write SetIntInfo stored False;
     property FocusBorderWidth: Integer index SPI_GETFOCUSBORDERWIDTH read GetIntInfo write SetIntInfo stored False;
@@ -1192,17 +1194,21 @@ type
     property DeskWallpaper: string read GetDeskWallpaper write SetDeskWallpaper stored False;
     property DropShadow: Boolean index SPI_GETDROPSHADOW read GetBoolInfo write SetBoolInfo stored False;
     property FlatMenu: Boolean index SPI_GETFLATMENU read GetBoolInfo write SetBoolInfo stored False;
-    property FontSmoothingContrast: Integer index SPI_GETFONTSMOOTHINGCONTRAST read GetIntInfo write SetIntInfo stored False;
+    property FontSmoothingContrast: Integer index SPI_GETFONTSMOOTHINGCONTRAST read GetIntInfo write SetIntInfo stored
+      False;
     property FontSmoothingType: TJvFontSmoothingType read GetFontSmoothingType write SetFontSmoothingType stored False;
     property MenuShowDelay: Integer index SPI_GETMENUSHOWDELAY read GetIntInfo write SetIntInfo stored False;
     property ShowIMEUI: Boolean index SPI_GETSHOWIMEUI read GetBoolInfo write SetBoolInfo stored False;
-    property ActiveWindowTracking: Boolean index SPI_GETACTIVEWINDOWTRACKING read GetBoolInfo write SetBoolInfo stored False;
+    property ActiveWindowTracking: Boolean index SPI_GETACTIVEWINDOWTRACKING read GetBoolInfo write SetBoolInfo stored
+      False;
     property MenuAnimation: Boolean index SPI_GETMENUANIMATION read GetBoolInfo write SetBoolInfo stored False;
     property ComboboxAnimation: Boolean index SPI_GETCOMBOBOXANIMATION read GetBoolInfo write SetBoolInfo stored False;
-    property ListboxSmoothScrolling: Boolean index SPI_GETLISTBOXSMOOTHSCROLLING read GetBoolInfo write SetBoolInfo stored False;
+    property ListboxSmoothScrolling: Boolean index SPI_GETLISTBOXSMOOTHSCROLLING read GetBoolInfo write SetBoolInfo
+      stored False;
     property GradientCaptions: Boolean index SPI_GETGRADIENTCAPTIONS read GetBoolInfo write SetBoolInfo stored False;
     property MenuUnderLines: Boolean index SPI_GETMENUUNDERLINES read GetBoolInfo write SetBoolInfo stored False;
-    property ActiveWindowTrackZOrder: Boolean index SPI_GETACTIVEWNDTRKZORDER read GetBoolInfo write SetBoolInfo stored False;
+    property ActiveWindowTrackZOrder: Boolean index SPI_GETACTIVEWNDTRKZORDER read GetBoolInfo write SetBoolInfo stored
+      False;
     property HotTracking: Boolean index SPI_GETHOTTRACKING read GetBoolInfo write SetBoolInfo stored False;
     property MenuFade: Boolean index SPI_GETMENUFADE read GetBoolInfo write SetBoolInfo stored False;
     property SelectionFade: Boolean index SPI_GETSELECTIONFADE read GetBoolInfo write SetBoolInfo stored False;
@@ -1210,9 +1216,12 @@ type
     property ToolTipFade: Boolean index SPI_GETTOOLTIPFADE read GetBoolInfo write SetBoolInfo stored False;
     property CursorShadow: Boolean index SPI_GETCURSORSHADOW read GetBoolInfo write SetBoolInfo stored False;
     property UIEffects: Boolean index SPI_GETUIEFFECTS read GetBoolInfo write SetBoolInfo stored False;
-    property ForegroundLockTimeOut: Integer index SPI_GETFOREGROUNDLOCKTIMEOUT read GetIntInfo write SetIntInfo stored False;
-    property ActiveWindowTrackTimeOut: Integer index SPI_GETACTIVEWNDTRKTIMEOUT read GetIntInfo write SetIntInfo stored False;
-    property ForegroundFlashCount: Integer index SPI_GETFOREGROUNDFLASHCOUNT read GetIntInfo write SetIntInfo stored False;
+    property ForegroundLockTimeOut: Integer index SPI_GETFOREGROUNDLOCKTIMEOUT read GetIntInfo write SetIntInfo stored
+      False;
+    property ActiveWindowTrackTimeOut: Integer index SPI_GETACTIVEWNDTRKTIMEOUT read GetIntInfo write SetIntInfo stored
+      False;
+    property ForegroundFlashCount: Integer index SPI_GETFOREGROUNDFLASHCOUNT read GetIntInfo write SetIntInfo stored
+      False;
     property CaretWidth: Integer index SPI_GETCARETWIDTH read GetIntInfo write SetIntInfo stored False;
     property IconHorizontalSpacing: Integer index 0 read GetIconSpacing write SetIconSpacing stored False;
     property IconVerticalSpacing: Integer index 1 read GetIconSpacing write SetIconSpacing stored False;
@@ -1251,8 +1260,10 @@ type
     property ColorWindowFrame: TColor index COLOR_WINDOWFRAME read GetColor write SetColor stored False;
     property ColorWindowText: TColor index COLOR_WINDOWTEXT read GetColor write SetColor stored False;
     property ColorHotLight: TColor index COLOR_HOTLIGHT read GetColor write SetColor stored False;
-    property ColorGradientActiveCaption: TColor index COLOR_GRADIENTACTIVECAPTION read GetColor write SetColor stored False;
-    property ColorGradientInactiveCaption: TColor index COLOR_GRADIENTINACTIVECAPTION read GetColor write SetColor stored False;
+    property ColorGradientActiveCaption: TColor index COLOR_GRADIENTACTIVECAPTION read GetColor write SetColor stored
+      False;
+    property ColorGradientInactiveCaption: TColor index COLOR_GRADIENTINACTIVECAPTION read GetColor write SetColor stored
+      False;
     property ColorMenuHighlight: TColor index COLOR_MENUHILIGHT read GetColor write SetColor stored False;
     property ColorMenuBar: TColor index COLOR_MENUBAR read GetColor write SetColor stored False;
   end;
@@ -1291,7 +1302,7 @@ type
     property SmallImages: TImageList read FSmallImages;
     property IconHandle: THandle read GetIconHandle stored False;
     property Attributes: Integer read GetAttributes stored False;
-    function GetFileInfo(const Filename: string; Attributes:Cardinal; out Info:ShFileInfo; Flags:Cardinal):Cardinal;
+    function GetFileInfo(const Filename: string; Attributes: Cardinal; out Info: ShFileInfo; Flags: Cardinal): Cardinal;
   published
     constructor Create;
     destructor Destroy; override;
@@ -1406,7 +1417,7 @@ type
     property BIOS: TJvBIOSInfo read GetBIOSInfo write SetBIOSInfo stored False;
     property Colors: TJvSystemColorsInfo read GetColors write SetColors stored False;
     property CPU: TJvCPUInfo read GetCPUInfo write SetCPUInfo stored False;
-    property FileInfo:TJvFileInfo read GetFileInfo write SetFileInfo stored False;
+    property FileInfo: TJvFileInfo read GetFileInfo write SetFileInfo stored False;
     property Folders: TJvSystemFolders read GetSystemFolders write SetSystemFolders stored False;
     property Identification: TJvIdentification read GetIdentification write SetIdentification stored False;
     property Keyboard: TJvKeyInfo read GetKeyInfo write SetKeyInfo stored False;
@@ -1506,41 +1517,41 @@ begin
   if Value and ARW_HIDE = ARW_HIDE then
     Include(Result, waHide)
   else
-    if Value and ARW_BOTTOMLEFT = ARW_BOTTOMLEFT then
-    begin
-      Include(Result, waBottomLeft);
-      if Value and ARW_UP = ARW_UP then
-        Include(Result, waUp)
-      else
-        Include(Result, waRight);
-    end
+  if Value and ARW_BOTTOMLEFT = ARW_BOTTOMLEFT then
+  begin
+    Include(Result, waBottomLeft);
+    if Value and ARW_UP = ARW_UP then
+      Include(Result, waUp)
     else
-      if Value and ARW_BOTTOMRIGHT = ARW_BOTTOMRIGHT then
-      begin
-        Include(Result, waBottomRight);
-        if Value and ARW_UP = ARW_UP then
-          Include(Result, waUp)
-        else
-          Include(Result, waLeft);
-      end
-      else
-        if Value and ARW_TOPLEFT = ARW_TOPLEFT then
-        begin
-          Include(Result, waTopLeft);
-          if Value and ARW_DOWN = ARW_DOWN then
-            Include(Result, waDown)
-          else
-            Include(Result, waRight);
-        end
-        else
-          if Value and ARW_TOPRIGHT = ARW_TOPRIGHT then
-          begin
-            Include(Result, waTopRight);
-            if Value and ARW_DOWN = ARW_DOWN then
-              Include(Result, waDown)
-            else
-              Include(Result, waLeft);
-          end;
+      Include(Result, waRight);
+  end
+  else
+  if Value and ARW_BOTTOMRIGHT = ARW_BOTTOMRIGHT then
+  begin
+    Include(Result, waBottomRight);
+    if Value and ARW_UP = ARW_UP then
+      Include(Result, waUp)
+    else
+      Include(Result, waLeft);
+  end
+  else
+  if Value and ARW_TOPLEFT = ARW_TOPLEFT then
+  begin
+    Include(Result, waTopLeft);
+    if Value and ARW_DOWN = ARW_DOWN then
+      Include(Result, waDown)
+    else
+      Include(Result, waRight);
+  end
+  else
+  if Value and ARW_TOPRIGHT = ARW_TOPRIGHT then
+  begin
+    Include(Result, waTopRight);
+    if Value and ARW_DOWN = ARW_DOWN then
+      Include(Result, waDown)
+    else
+      Include(Result, waLeft);
+  end;
 end;
 
 function WindowsArrangeToArrange(Value: TJvWindowsArrange): DWORD;
@@ -1990,7 +2001,7 @@ end;
 
 //=== { TJvSystemFolders } ===================================================
 
-function TJvSystemFolders.AdjustPathDelimiter(const S: String): String;
+function TJvSystemFolders.AdjustPathDelimiter(const S: string): string;
 begin
   if TrailingPathDelimiter then
     Result := IncludeTrailingPathDelimiter(S)
@@ -2077,7 +2088,7 @@ end;
 
 //=== { TJvMemInfo } =========================================================
 
-function GetMemoryStatus:TMemoryStatus;
+function GetMemoryStatus: TMemoryStatus;
 begin
   FillChar(Result, SizeOf(Result), 0);
   Result.dwLength := SizeOf(MemoryStatus);
@@ -2287,9 +2298,9 @@ function TJvIdentification.GetComment: string;
 begin
   if IsWinNT then
     // (p3) should return empty string on unsupported NT OS's
-    Result := RegReadStringDef(HKEY_LOCAL_MACHINE,cCommentRegPathNT, 'srvcomment','')
+    Result := RegReadStringDef(HKEY_LOCAL_MACHINE, cCommentRegPathNT, 'srvcomment', '')
   else
-    Result := RegReadStringDef(HKEY_LOCAL_MACHINE,cCommentRegPath, 'Comment','')
+    Result := RegReadStringDef(HKEY_LOCAL_MACHINE, cCommentRegPath, 'Comment', '')
 end;
 
 function TJvIdentification.GetDomainName: string;
@@ -2327,7 +2338,7 @@ type
     wki100_ver_major: DWORD;
     wki100_ver_minor: DWORD;
   end;
-{$EXTERNALSYM _WKSTA_INFO_100}
+  {$EXTERNALSYM _WKSTA_INFO_100}
   TWkstaInfo100 = _WKSTA_INFO_100;
 
 const
@@ -2430,10 +2441,11 @@ begin
     // Currently, only allow to write if known to be supported and raise error if not supported,
     // but maybe that's a bad idea?
     if IsWinXP then // "srvcomment" property only supported on WinXP AFAIK
-      RegWriteString(HKEY_LOCAL_MACHINE, cCommentRegPathNT, 'srvcomment',Value)
-    else if not IsWinNT then
+      RegWriteString(HKEY_LOCAL_MACHINE, cCommentRegPathNT, 'srvcomment', Value)
+    else
+    if not IsWinNT then
       // Win95/98 both support Comment
-      RegWriteString(HKEY_LOCAL_MACHINE,cCommentRegPath, 'Comment',Value)
+      RegWriteString(HKEY_LOCAL_MACHINE, cCommentRegPath, 'Comment', Value)
     else
       RaiseReadOnly; // ?? - or just let it pass unnoticed?
   end
@@ -2870,10 +2882,10 @@ begin
   if Index < 0 then
     Result := FDefaultMode
   else
-    if (Index >= 0) and (Index < Count) then
-      Result := TJvScreenMode(FItems[Index])
-    else
-      Result := nil;
+  if (Index >= 0) and (Index < Count) then
+    Result := TJvScreenMode(FItems[Index])
+  else
+    Result := nil;
 end;
 
 procedure TJvScreenModes.Refresh;
@@ -3257,7 +3269,7 @@ begin
       1:
         P.Y := Value;
     end;
-    Windows.SetCursorPos(P.x, P.Y);
+    Windows.SetCursorPos(P.X, P.Y);
   end
   else
     RaiseReadOnly;
@@ -4792,7 +4804,7 @@ end;
 
 function TJvSystemParametersInfo.GetIconSpacing(const Index: Integer): Integer;
 const
-  cIconSpacing: array[0..1] of DWORD = (SPI_ICONHORIZONTALSPACING, SPI_ICONVERTICALSPACING);
+  cIconSpacing: array [0..1] of DWORD = (SPI_ICONHORIZONTALSPACING, SPI_ICONVERTICALSPACING);
 begin
   SystemParametersInfo(cIconSpacing[Index], 0, @Result, 0);
 end;
@@ -4816,7 +4828,7 @@ end;
 
 function TJvSystemParametersInfo.GetKeyboardLayoutName: string;
 var
-  Buf: array[0..8] of Char;
+  Buf: array [0..8] of Char;
 begin
   if Windows.GetKeyboardLayoutName(Buf) then
     Result := Buf
@@ -4833,7 +4845,7 @@ end;
 
 function TJvSystemParametersInfo.GetMouseInfo(const Index: Integer): Integer;
 var
-  Mouse: array[0..2] of Integer;
+  Mouse: array [0..2] of Integer;
 begin
   if (Index in [0..2]) and SystemParametersInfo(SPI_GETMOUSE, SizeOf(Mouse), @Mouse, 0) then
     Result := Mouse[Index]
@@ -5047,8 +5059,8 @@ end;
 
 procedure TJvSystemParametersInfo.SetIconSpacing(const Index, Value: Integer);
 const
-  cIconSpacing: array[0..1] of DWORD =
-  (SPI_ICONHORIZONTALSPACING, SPI_ICONVERTICALSPACING);
+  cIconSpacing: array [0..1] of DWORD =
+    (SPI_ICONHORIZONTALSPACING, SPI_ICONVERTICALSPACING);
 begin
   if not IsDesigning and not ReadOnly then
     SystemParametersInfo(cIconSpacing[Index], Value, nil, 0)
@@ -5097,7 +5109,7 @@ end;
 
 procedure TJvSystemParametersInfo.SetMouseInfo(const Index, Value: Integer);
 var
-  Mouse: array[0..2] of Integer;
+  Mouse: array [0..2] of Integer;
 begin
   if not IsDesigning and not ReadOnly then
   begin
@@ -5285,7 +5297,7 @@ var
 begin
   if not Assigned(FLargeImages) then
     FLargeImages := TImageList.Create(nil);
-  SysIL := GetFileInfo('',0, sfi,SHGFI_SYSICONINDEX or SHGFI_LARGEICON);
+  SysIL := GetFileInfo('', 0, sfi, SHGFI_SYSICONINDEX or SHGFI_LARGEICON);
   if SysIL <> 0 then
     FLargeImages.Handle := SysIL;
   FLargeImages.ShareImages := True;
@@ -5299,7 +5311,7 @@ var
 begin
   if not Assigned(FSmallImages) then
     FSmallImages := TImageList.Create(nil);
-  SysIL := GetFileInfo('',0, sfi,SHGFI_SYSICONINDEX or SHGFI_SMALLICON);
+  SysIL := GetFileInfo('', 0, sfi, SHGFI_SYSICONINDEX or SHGFI_SMALLICON);
   if SysIL <> 0 then
     FSmallImages.Handle := SysIL;
   FSmallImages.ShareImages := True;
@@ -5311,7 +5323,7 @@ begin
   if FModifiers <> Value then
   begin
     FModifiers := Value;
-    Include(FModifiers,imNormal); // imNormal can never be removed (equals 0)
+    Include(FModifiers, imNormal); // imNormal can never be removed (equals 0)
     GetIconHandle;
   end;
 end;
@@ -5349,7 +5361,7 @@ function TJvFileInfo.GetIconIndex: Integer;
 var
   sfi: TSHFileInfo;
 begin
-  GetFileInfo(FFileName, 0 , sfi, SHGFI_SYSICONINDEX);
+  GetFileInfo(FFileName, 0, sfi, SHGFI_SYSICONINDEX);
   Result := sfi.iIcon;
 end;
 
@@ -5357,7 +5369,7 @@ function TJvFileInfo.GetDisplayName: string;
 var
   sfi: TSHFileInfo;
 begin
-  GetFileInfo(FFileName, 0, sfi,SHGFI_DISPLAYNAME);
+  GetFileInfo(FFileName, 0, sfi, SHGFI_DISPLAYNAME);
   Result := sfi.szDisplayName;
 end;
 
@@ -5368,7 +5380,7 @@ var
 begin
   Result := etNone;
 
-  Res := GetFileInfo(FFileName, 0, sfi,SHGFI_EXETYPE);
+  Res := GetFileInfo(FFileName, 0, sfi, SHGFI_EXETYPE);
   if Res = 0 then
     Exit;
   case Lo(Res) of
@@ -5524,19 +5536,20 @@ const
     (0, SHGFI_LINKOVERLAY, SHGFI_SELECTED, SHGFI_OPENICON, SHGFI_SHELLICONSIZE, SHGFI_SMALLICON);
 var
   sfi: TSHFileInfo;
-  Flags:Integer;
-  i:TJvIconModifier;
+  Flags: Integer;
+  I: TJvIconModifier;
 begin
   Flags := 0;
-  for i := Low(TJvIconModifier) to High(TJvIconModifier) do
-    if i in Modifiers then
-      Flags := Flags or Modifier[i];
+  for I := Low(TJvIconModifier) to High(TJvIconModifier) do
+    if I in Modifiers then
+      Flags := Flags or Modifier[I];
   GetFileInfo(FFileName, 0, sfi, SHGFI_SYSICONINDEX or SHGFI_ICON or Flags);
   Result := sfi.hIcon;
   FIcon.Handle := sfi.hIcon;
 end;
 
-function TJvFileInfo.GetFileInfo(const Filename: string; Attributes:Cardinal; out Info:ShFileInfo; Flags:Cardinal):Cardinal;
+function TJvFileInfo.GetFileInfo(const Filename: string; Attributes: Cardinal; out Info: ShFileInfo; Flags: Cardinal):
+  Cardinal;
 begin
   FillChar(Info, sizeof(Info), 0);
   Result := SHGetFileInfo(PChar(Filename), Attributes, Info, SizeOf(Info), Flags);
@@ -5582,8 +5595,8 @@ begin
       FOnDeviceRemoved(Self, Drive);
   end
   else
-    if Assigned(FOnDeviceAdded) then
-      FOnDeviceAdded(Self, Drive);
+  if Assigned(FOnDeviceAdded) then
+    FOnDeviceAdded(Self, Drive);
 end;
 
 function TJvComputerInfoEx.FirstDrive(AMask: Integer): Char;
@@ -5975,7 +5988,6 @@ begin
     SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETNONCLIENTMETRICS, 0);
   end;
 end;
-
 
 initialization
 

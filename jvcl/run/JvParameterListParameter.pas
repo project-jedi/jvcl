@@ -656,7 +656,8 @@ begin
       if FramePanel.Width <= 0 then
         FramePanel.Width := WinControl.Width;
     end
-    else if RightSpace > 0 then
+    else
+    if RightSpace > 0 then
       if FramePanel.Width > 0 then
         WinControl.Width := FramePanel.Width - RightSpace
       else
@@ -664,7 +665,8 @@ begin
         FramePanel.Width := WinControl.Width;
         WinControl.Width := WinControl.Width - RightSpace;
       end
-    else if FramePanel.Width > 0 then
+    else
+    if FramePanel.Width > 0 then
       WinControl.Width := FramePanel.Width
     else
       FramePanel.Width := WinControl.Width;
@@ -689,7 +691,8 @@ begin
       if FramePanel.Width <= 0 then
         FramePanel.Width := WinControl.Width;
     end
-    else if RightSpace > 0 then
+    else
+    if RightSpace > 0 then
       if FramePanel.Width > 0 then
         WinControl.Width := FramePanel.Width - RightSpace
       else
@@ -697,7 +700,8 @@ begin
         FramePanel.Width := WinControl.Width;
         WinControl.Width := WinControl.Width - RightSpace;
       end
-    else if FramePanel.Width > 0 then
+    else
+    if FramePanel.Width > 0 then
       WinControl.Width := FramePanel.Width
     else
       FramePanel.Width := WinControl.Width;
@@ -709,7 +713,8 @@ begin
         WinControl.Height := Height - (LabelControl.Height + 3)
       else
         WinControl.Height := Height
-    else if Assigned(LabelControl) then
+    else
+    if Assigned(LabelControl) then
       FramePanel.Height := WinControl.Height + LabelControl.Height + 3
     else
       FramePanel.Height := WinControl.Height;
@@ -1114,7 +1119,8 @@ begin
       FItemIndex := Value;
     if VariantAsItemIndex then
       inherited SetAsVariant(FItemIndex)
-    else if (FItemIndex >= 0) and (FItemIndex < ItemList.Count) then
+    else
+    if (FItemIndex >= 0) and (FItemIndex < ItemList.Count) then
       inherited SetAsVariant(ItemList[FItemIndex])
     else
       inherited SetAsVariant('');
@@ -1139,7 +1145,8 @@ begin
     Index := -1;
   if VariantAsItemIndex then
     Result := Index
-  else if (Index >= 0) and (Index < ItemList.Count) then
+  else
+  if (Index >= 0) and (Index < ItemList.Count) then
     Result := ItemList[Index]
   else
     Result := '';
@@ -1667,7 +1674,8 @@ var
 begin
   if (EditorType = netCalculate) and DynControlEngine.IsControlTypeRegistered(jctCalculateEdit) then
     WinControl := DynControlEngine.CreateCalculateControl(Self, AParameterParent, GetParameterName)
-  else if (EditorType = netSpin) and DynControlEngine.IsControlTypeRegistered(jctSpinEdit) then
+  else
+  if (EditorType = netSpin) and DynControlEngine.IsControlTypeRegistered(jctSpinEdit) then
     WinControl := DynControlEngine.CreateSpinControl(Self, AParameterParent, GetParameterName)
   else
     WinControl := DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName);
@@ -1752,7 +1760,8 @@ var
 begin
   if (EditorType = netCalculate) and DynControlEngine.IsControlTypeRegistered(jctCalculateEdit) then
     WinControl := DynControlEngine.CreateCalculateControl(Self, AParameterParent, GetParameterName)
-  else if (EditorType = netSpin) and DynControlEngine.IsControlTypeRegistered(jctSpinEdit) then
+  else
+  if (EditorType = netSpin) and DynControlEngine.IsControlTypeRegistered(jctSpinEdit) then
     WinControl := DynControlEngine.CreateSpinControl(Self, AParameterParent, GetParameterName)
   else
     WinControl := DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName);

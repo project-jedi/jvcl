@@ -298,7 +298,8 @@ begin
     {$ENDIF JVCLThemesEnabled}
     if BorderStyle = bsNone then
       ALeft := ALeft + 1
-    else if not Ctl3D then
+    else
+    if not Ctl3D then
       ALeft := ALeft - 1;
     {$ENDIF VCL}
   end;

@@ -466,9 +466,9 @@ begin
       Msg.NewSize.Y := AHeight;
       Form.Broadcast(Msg);
       {$IFDEF VisualCLX}
-      for i := 0 to Form.ControlCount - 1 do
-        if Form.Controls[i] is TJvCustomGraphicButton then
-          TJvCustomGraphicButton(Form.Controls[i]).ForceSize(Self, AWidth, AHeight);
+      for I := 0 to Form.ControlCount - 1 do
+        if Form.Controls[I] is TJvCustomGraphicButton then
+          TJvCustomGraphicButton(Form.Controls[I]).ForceSize(Self, AWidth, AHeight);
       {$ENDIF VisualCLX}
     end;
   end;
