@@ -54,6 +54,7 @@ type
     function GetPicture: TPicture;
     procedure SetPicture(const Value: TPicture);
   protected
+    procedure Loaded; override;  
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -252,6 +253,12 @@ end;
 function TJvSpecialImage.GetPicture: TPicture;
 begin
   Result := inherited Picture;
+end;
+
+procedure TJvSpecialImage.Loaded;
+begin
+  inherited;
+  FOriginal.Assign(Picture);
 end;
 
 procedure TJvSpecialImage.PictureChanged(Sender: TObject);
