@@ -87,13 +87,13 @@ begin
         NewStore.FileName := ExtractFilePath(PakName) + srJvHLEdPropDlgIni;
         with Component as TJvHLEdPropDlg do
         begin
-          OldRegAuto := RegAuto;
+          OldRegAuto := Storage;
           try
-            RegAuto := NewRegAuto;
+            Storage := NewRegAuto;
             if Execute then
               Designer.Modified;
           finally
-            RegAuto := OldRegAuto;
+            Storage := OldRegAuto;
           end;
         end;
       finally
