@@ -218,11 +218,13 @@ resourcestring
   RsBorrowStructure = 'Borrow structure...';
 
 //=== JvDockPropertyEditors.pas ==============================================
+{$IFDEF USEJVCL}
 resourcestring
   RsDockNewPage = 'Ne&w Page';
   RsDockNextPage = 'Ne&xt Page';
   RsDockPreviousPage = '&Previous Page';
   RsDockDeletePage = '&Delete Page';
+{$ENDIF USEJVCL}
 
 //=== JvDsgnEditors.pas ======================================================
 resourcestring

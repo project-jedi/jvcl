@@ -22,15 +22,17 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-}
+-----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 
 unit JvDockGlobals;
 
 interface
 
-
-uses Messages, JvDockControlForm, JvDockInfo, JvDockSupportControl;
+uses
+  Messages,
+  JvDockControlForm, JvDockInfo, JvDockSupportControl;
 
 resourcestring
   RsDockProductName = 'Jv Docking';
@@ -44,9 +46,8 @@ resourcestring
   RsDockClientName = 'JVCL Dock Client Component';
   RsDockStyleName = 'JVCL Dock Style Component';
 
-
   RsDockManagerVersion = '1.0.0.0';
-  RsDockStyleVersion   = '1.0.0.0';
+  RsDockStyleVersion = '1.0.0.0';
 
   RsDockManagerCopyRightBegin = '2002';
   RsDockManagerCopyRightEnd = '2003';
@@ -60,18 +61,17 @@ resourcestring
 
   RsDockAbout = 'About';
   RsDockManagerAbout = 'This is a %s, Version is %s,' + #13#10 +
-                          'Copyright: %s-%s, Author: %s %s,' + #13#10 +
-                          'Home Page: %s,' + #13#10 +
-                          'Email: %s';
-  RsDockStyleAbout =   'This is a %s, Version is %s,' + #13#10 +
-                          'Copyright: %s-%s, Author: %s %s,' + #13#10 +
-                          'Home Page: %s,' + #13#10 +
-                          'Email: %s';
-  {$ENDIF}
+    'Copyright: %s-%s, Author: %s %s,' + #13#10 +
+    'Home Page: %s,' + #13#10 +
+    'Email: %s';
+  RsDockStyleAbout = 'This is a %s, Version is %s,' + #13#10 +
+    'Copyright: %s-%s, Author: %s %s,' + #13#10 +
+    'Home Page: %s,' + #13#10 +
+    'Email: %s';
+  {$ENDIF USEJVCL}
 
   RsDockStringSplitter = ' ';
   RsDockJvDockInfoSplitter = '@';
-
 
   RsDockJvDockTreeCloseBtnHint = 'Close';
   RsDockVCDockTreeExpandBtnHint = 'Expand';
@@ -79,52 +79,43 @@ resourcestring
   RsDockJvDockTreeVSplitterHint = 'Vertical Splitter';
   RsDockJvDockTreeHSplitterHint = 'Horizontal Splitter';
 
-  
   RsDockTableIndexError = 'Table''s index out of range';
   RsDockNodeExistedError = 'Node already exist';
   RsDockComProcError = 'The function address is nil';
 
-  
   RsDockControlCannotIsNil = 'Parameter Control can not be nil';
   RsDockCannotGetValueWithNoOrient = 'Cannot get data of control that has no dock orient';
   RsDockCannotSetValueWithNoOrient = 'Cannot set data of control that has no dock orient';
 
-  
   RsDockCannotChangeDockStyleProperty = 'Changing DockStyle at runtime is not supported';
   RsDockCannotLayAnother = 'ONly one %s allowed on each form.Cannot add another %s';
 
-  
   RsDockCannotSetTabPosition = 'Can not set TabPosition property to tpLeft or tpRight';
   RsDockTabPositionMustBetpBottom = 'TabPosition property must be tpBottom';
 
-  
   RsDockLikeDelphiStyle = 'Similar to Delphi''s %s';
   RsDockLikeVCStyle = 'Similar to Visual C++''s %s';
   RsDockLikeVIDStyle = 'Similar to Visual InterDev''s %s';
   RsDockLikeVSNETStyle = 'Similar to Visual Studio.Net''s %s';
   RsDockLikeEclipseStyle = 'Similar to Java Eclipse''s %s';
 
-  
   RsDockCannotFindWindow = 'Cannot find window';
 
-const  
+const
   RsDockBaseDockTreeVersion = $00040000;
-  
+
   RsDockVCDockTreeVersion = $00040010;
 
-  
   DefExpandoRect = 10;
 
-  
   WM_NCMOUSEFIRST = WM_NCMOUSEMOVE;
-  WM_NCMOUSELAST  = WM_NCMBUTTONDBLCLK;
-
+  WM_NCMOUSELAST = WM_NCMBUTTONDBLCLK;
 
 var
   JvGlobalDockManager: TJvDockManager = nil;
   JvGlobalDockIsLoading: Boolean = False;
   JvGlobalDockClient: TJvDockClient = nil;
-  
+
 implementation
 
 end.
