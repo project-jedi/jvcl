@@ -646,7 +646,7 @@ type
   TJvWizardChangePageEvent = procedure(Sender: TObject;
     const FromPage: TJvWizardCustomPage) of object;
   TJvWizardChangingPageEvent = procedure(Sender: TObject;
-    const ToPage: TJvWizardCustomPage) of object;
+    var ToPage: TJvWizardCustomPage) of object;
 
   { YW - Wizard Custom Page }
   TJvWizardCustomPage = class(TCustomControl)
@@ -846,7 +846,7 @@ type
     procedure RemovePage(Page: TJvWizardCustomPage);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function GetButtonControlClass(AKind: TJvWizardButtonKind): TJvWizardButtonControlClass; virtual;
-    procedure DoActivePageChanging(ToPage: TJvWizardCustomPage); dynamic; 
+    procedure DoActivePageChanging(var ToPage: TJvWizardCustomPage); dynamic; 
     procedure DoActivePageChanged; dynamic;
   public
     constructor Create(AOwner: TComponent); override;
@@ -2779,6 +2779,8 @@ begin
   if FActivePage <> Page then
   begin
     DoActivePageChanging(Page);
+    if Page = FActivePage then
+      Exit;
 
     ParentForm := GetParentForm(Self);
     if Assigned(ParentForm) and Assigned(FActivePage) and
@@ -3197,7 +3199,7 @@ begin
     FOnActivePageChanged(Self);
 end;
 
-procedure TJvWizard.DoActivePageChanging(ToPage: TJvWizardCustomPage);
+procedure TJvWizard.DoActivePageChanging(var ToPage: TJvWizardCustomPage);
 begin
   if Assigned(FOnActivePageChanging) then
     FOnActivePageChanging(Self, ToPage);
