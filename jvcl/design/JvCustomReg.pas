@@ -22,10 +22,11 @@ uses
   JvThumbnails, JvThumbviews, JvTimeLine, JvTMTimeLine, JvBalloonHint,
   JvValidateEdit, JvEditor, JvHLEditor, JvHLEditorPropertyForm, JvHLParser,
   JvTimeLineEditor, JvHLEditEditor, JvScheduleEditors,
-  JvOutlookBarEditors, JvLookoutEditor;
+  JvOutlookBarEditors, JvLookoutEditor, JvChart;
 
 
 {$R ..\resources\JvCustomReg.dcr}
+{$R ..\resources\JvChart.dcr}
 
 procedure Register;
 begin
@@ -45,11 +46,13 @@ begin
     TJvThumbView, TJvThumbnail, TJvThumbImage
     ]);
   RegisterComponents(SPaletteVisual,[
-    TJvInspector, TJvInspectorBorlandPainter, TJvInspectorDotNETPainter, TJvTimeLine, TJvTMTimeLine
+    TJvInspector, TJvInspectorBorlandPainter, TJvInspectorDotNETPainter, TJvTimeLine,
+    TJvTMTimeLine, TJvChart
     ]);
   RegisterComponents(SPaletteNonVisual,[
     TJvTrayIcon, TJvScheduledEvents, TJvBalloonHint
     ]);
+
 
   RegisterPropertyEditor(TypeInfo(Integer),
     TJvCustomOutlookBar, 'ActivePageIndex', TJvOutlookBarActivePageEditor);
