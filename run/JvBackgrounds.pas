@@ -24,6 +24,7 @@ Known Issues:
 // $Id$
 
 {$I jedi.inc}
+{$I windowsonly.inc}
 
 unit JvBackgrounds;
 
@@ -63,7 +64,7 @@ interface
 {$ENDIF USE_AM_GIF}
 
 uses
-  SysUtils, Windows, Messages, Contnrs, Graphics, jpeg, Controls, Forms, Classes,
+  Windows, Messages, Contnrs, Graphics, Controls, Forms, Classes,
   JclGraphUtils,
   JvTypes;
 
@@ -243,6 +244,7 @@ procedure GetMappedGrays(var Shades: array of TColor; StartIntensity: Byte);
 implementation
 
 uses
+  SysUtils, jpeg,
   StdCtrls, CommCtrl, ComCtrls, Dialogs,
   {$IFDEF USE_AM_GIF}
   GIFImage,

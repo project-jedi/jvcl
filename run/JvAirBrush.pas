@@ -30,7 +30,7 @@ unit JvAirBrush;
 interface
 
 uses
-  SysUtils, Classes,
+  Classes,
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -40,7 +40,7 @@ uses
   {$IFDEF VisualCLX}
   Types, QWindows, QGraphics,
   {$ENDIF VisualCLX}
-  JvTypes, JvComponent;
+  JvComponent;
 
 type
   TJvAirBrushShape = (absRound, absSquare, absLeftSlash, absRightSlash,

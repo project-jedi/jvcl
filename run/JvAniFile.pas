@@ -29,16 +29,17 @@ unit JvAniFile;
 interface
 
 uses
-  SysUtils, Classes,
+  Classes,
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF COMPILER6_UP}
   {$IFDEF VCL}
-  Windows, Graphics, Forms,
+  Windows,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, QGraphics, QForms, Types,
+  QWindows, Types,
   {$ENDIF VisualCLX}
+  Graphics, 
   JvTypes;
 
 type
@@ -104,6 +105,7 @@ type
 implementation
 
 uses
+  SysUtils,
   Consts, Math,
   JvJVCLUtils, JvJCLUtils, JvIconList, JvConsts, JvResources;
 

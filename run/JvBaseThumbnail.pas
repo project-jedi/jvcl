@@ -42,12 +42,12 @@ uses
   Libc, // stat()
   {$ENDIF LINUX}
   {$IFDEF VCL}
-  Messages, Graphics, Controls, Forms, ExtCtrls,
+  Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QExtCtrls, Types,
+  Types,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
+  Classes, Graphics, Controls, Forms, ExtCtrls,
   JvExForms, JvExExtCtrls;
 
 // (rom) TFileName is already declared in SysUtils
@@ -189,6 +189,7 @@ function ReplaceAllStr(const Str, SearchFor, ReplaceWith: string;
 implementation
 
 uses
+  SysUtils,
   JvThemes;
 
 function ReplaceAllStr(const Str, SearchFor, ReplaceWith: string;

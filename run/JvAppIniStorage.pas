@@ -39,7 +39,7 @@ uses
   {$IFDEF LINUX}
   Libc, QWindows,
   {$ENDIF LINUX}
-  SysUtils, Classes, IniFiles,
+  Classes, IniFiles,
   JvAppStorage;
 
 type
@@ -103,6 +103,7 @@ type
 implementation
 
 uses
+  SysUtils,
   JvTypes, JvResources;
 
 const

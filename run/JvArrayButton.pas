@@ -31,12 +31,12 @@ interface
 
 uses
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, ExtCtrls, Buttons,
+  Windows, Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QForms, QExtCtrls, QButtons, QWindows,
+  Types, QWindows,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
+  Classes, Graphics, Controls, Forms, 
   JvComponent, JvTypes;
 
 type
@@ -128,6 +128,7 @@ type
 implementation
 
 uses
+  ExtCtrls, Buttons,
   JvJCLUtils, JvThemes;
 
 constructor TJvArrayButton.Create(AOwner: TComponent);

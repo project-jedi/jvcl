@@ -30,13 +30,7 @@ unit JvBaseDlg;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
   Dialogs,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QDialogs,
-  {$ENDIF VisualCLX}
   JVCLVer, JvComponent;
 
 type

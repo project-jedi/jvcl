@@ -31,15 +31,8 @@ unit JvAppInst;
 interface
 
 uses
-  Windows, Messages, SysUtils,
-  {$IFDEF VCL}
-  Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QForms,
-  {$ENDIF VIsualCLX}
-  Classes,
-  { Classes must be after Forms for Delphi 5 compatibility. }
+  Windows, Messages, Forms,
+  Classes, { Classes must be after Forms for Delphi 5 compatibility. }
   JclAppInst;
 
 type
@@ -110,6 +103,7 @@ type
 implementation
 
 uses
+  SysUtils,
   JvJVCLUtils;
 
 const

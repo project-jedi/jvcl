@@ -30,8 +30,8 @@ unit JvAppAnimatedIcon;
 interface
 
 uses
-  SysUtils, Classes,
-  Controls, Forms, ExtCtrls,
+  Classes,
+  Controls, ExtCtrls,
   {$IFDEF VisualCLX}
   Types, QGraphics, QImgList,
   {$ENDIF VisualCLX}
@@ -59,6 +59,9 @@ type
   end;
 
 implementation
+
+uses
+  Forms;
 
 constructor TJvAppAnimatedIcon.Create(AOwner: TComponent);
 begin

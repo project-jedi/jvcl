@@ -25,13 +25,7 @@ unit JvAppStorageSelectList;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Controls, Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QForms,
-  {$ENDIF VisualCLX}
+  Classes, Controls, Forms,
   JvComponent, JvTypes, JvAppStorage, JvDynControlEngine,
   JvDynControlEngineIntf;
 
@@ -100,6 +94,7 @@ type
 implementation
 
 uses
+  SysUtils,
   JvConsts, JvResources;
 
 constructor TJvAppStorageSelectList.Create(AOwner: TComponent);

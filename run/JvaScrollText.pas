@@ -32,15 +32,13 @@ unit JvaScrollText;
 interface
 
 uses
-  SysUtils, Classes,
+  Classes,
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
-  Controls, ExtCtrls, Forms, Graphics,
-  {$ENDIF VCL}
+  Controls, ExtCtrls, Graphics,
   {$IFDEF VisualCLX}
-  Types, QWindows, QControls, QExtCtrls, QForms, QGraphics,
+  Types, QWindows,
   {$ENDIF VisualCLX}
   JvComponent;
 
@@ -93,6 +91,7 @@ type
 implementation
 
 uses
+  SysUtils, Forms,
   JvJCLUtils, JvDsgnIntf, JvThemes;
 
 const

@@ -34,12 +34,7 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF VCL}
   DBCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QDBCtrls,
-  {$ENDIF VisualCLX}
   JvAppStorage;
 
 // DB table must contain 3 fields for the storage

@@ -26,15 +26,15 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvBalloonHint;
 
 interface
 
 uses
-  Windows, Messages, CommCtrl, Registry, SysUtils, Classes, Graphics, Controls,
-  Forms, ImgList,
-  JvComponent, JvFinalize;
+  Windows, Messages, Classes, Controls, Forms, ImgList,
+  JvComponent;
 
 const
   CJvBallonHintVisibleTimeDefault = 5000;
@@ -266,10 +266,10 @@ type
 implementation
 
 uses
-  Math,
-  MMSystem, // needed for sndPlaySound
-  ComCtrls, // needed for GetComCtlVersion
-  JvJVCLUtils, JvThemes, JvWndProcHook, JvResources;
+  SysUtils, Math,
+  Registry, CommCtrl, MMSystem,
+  Graphics, ComCtrls, // needed for GetComCtlVersion
+  JvJVCLUtils, JvThemes, JvWndProcHook, JvResources, JvFinalize;
 
 const
   sUnitName = 'JvBalloonHint';
