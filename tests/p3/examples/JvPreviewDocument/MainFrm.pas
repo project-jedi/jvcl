@@ -80,7 +80,7 @@ type
     FCurrentRow: integer;
     procedure CreatePreview;
     procedure DoAddPage(Sender: TObject; PageIndex: integer;
-      Canvas: TCanvas; PageRect, PrintRect: TRect);
+      Canvas: TCanvas; PageRect, PrintRect: TRect;var NeedMorePages:boolean);
   public
     constructor Create(Preview: TJvPreviewDoc; Strings: TStrings);
     destructor Destroy; override;
@@ -94,7 +94,7 @@ type
     FRE: TRichEdit;
     FPreview: TJvPreviewDoc;
     procedure DoAddPage(Sender: TObject; PageIndex: integer;
-      Canvas: TCanvas; PageRect, PrintRect: TRect);
+      Canvas: TCanvas; PageRect, PrintRect: TRect;var NeedMorePages:boolean);
     procedure CreatePreview;
   public
     constructor Create(Preview: TJvPreviewDoc; RichEdit: TRichEdit);
@@ -141,7 +141,7 @@ begin
 end;
 
 procedure TJvStringsPreviewRenderer.DoAddPage(Sender: TObject; PageIndex: integer; Canvas: TCanvas;
-  PageRect, PrintRect: TRect);
+  PageRect, PrintRect: TRect;var NeedMorePages:boolean);
 var i, IncValue: integer; ARect: TRect; tm: TTextMetric; S: string;
 begin
   if not FFinished then
@@ -169,6 +169,7 @@ begin
       begin
         FPreview.Add; // New Page
         FCurrentRow := i;
+        NeedMorePages := true;
         Exit;
       end;
       DrawText(Canvas.Handle, PChar(S), Length(S), ARect, DT_NOPREFIX or DT_EXPANDTABS or DT_WORDBREAK or DT_LEFT or DT_TOP);
@@ -334,7 +335,7 @@ end;
 
 // this code was almost entirely stolen from TRichEdit.Print
 procedure TJvRTFRenderer.DoAddPage(Sender: TObject; PageIndex: integer;
-  Canvas: TCanvas; PageRect, PrintRect: TRect);
+  Canvas: TCanvas; PageRect, PrintRect: TRect;var NeedMorePages:boolean);
 var
   Range: TFormatRange;
   OutDC: HDC;
@@ -372,8 +373,8 @@ begin
       Range.chrg.cpMin := FLastChar;
       FLastChar := SendMessage(FRE.Handle, EM_FORMATRANGE, 1, Longint(@Range));
       FFinished := (FLastChar >= MaxLen) or (FLastChar = -1);
+      NeedMorePages := not FFinished;
       SendMessage(FRE.Handle, EM_FORMATRANGE, 0, 0); // flush buffer
-      if not Finished then FPreview.Add;
     finally
       SetMapMode(OutDC, OldMap);
     end;
@@ -444,11 +445,22 @@ end;
 procedure TfrmMain.Print1Click(Sender: TObject);
 var jp:TJvPrinter;
 begin
+  if pd.PageCount < 1 then
+    PrintDialog1.Options := PrintDialog1.Options - [poPageNums]
+  else
+  begin
+    PrintDialog1.Options := PrintDialog1.Options + [poPageNums];
+    PrintDialog1.FromPage := 1;
+    PrintDialog1.ToPage := pd.PageCount;
+  end;
   if PrintDialog1.Execute then
   begin
     jp := TJvPrinter.Create(Printer);
     try
-      pd.PrintRange(jp,0,-1,1,false);
+      if PrintDialog1.PrintRange = prPageNums then
+        pd.PrintRange(jp,PrintDialog1.FromPage-1,PrintDialog1.ToPage-1,PrintDialog1.Copies,PrintDialog1.Collate)
+      else
+        pd.PrintRange(jp,0,-1,PrintDialog1.Copies,PrintDialog1.Collate)
     finally
       jp.Free;
     end;
