@@ -48,5 +48,6 @@
     <File Name="..\..\design\JvDsgnTypes.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvColorProviderDsgnTreeFrame.pas" Targets="all" Formname="fmeJvColorProviderDsgnTree: TFrame" Condition=""/>
     <File Name="..\..\design\JvColorProviderAddDialogForm.pas" Targets="all" Formname="frmAddColor" Condition=""/>
+    <File Name="..\..\design\JvActnResForm.pas" Targets="all" Formname="JvStandardActions: TDataModule" Condition=""/>
   </Contains>
 </Package>
