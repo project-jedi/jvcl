@@ -117,6 +117,4 @@ begin
   ShowMessage('Nice try !');
 end;
 
-initialization
-  RegisterClass(TToolButton);
 end.
