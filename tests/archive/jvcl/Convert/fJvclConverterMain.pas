@@ -19,20 +19,18 @@ Igor Komar (the original Replace routines)
 Dave Jewell (new GUI for Igor's code)
 Martin Waldenburg (FastTime)
 
-Contributor(s):
-Peter Thörnqvist <peter3@peter3.com>
-mrdave
+Contributor(s): Peter Thörnqvist <peter3@peter3.com>
+                Arioch <the_Arioch@chat.ru>
 
-
-Last Modified: 2002-11-03
+Last Modified: 2002-07-18
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
-{$I JEDI.INC}
+{$I JVCL.INC}
+
 unit fJvclConverterMain;
 
 interface
@@ -64,6 +62,16 @@ uses
   JvBrowseFolder;
 
 type
+  { TValueListEditor (imposer class that allows "=" in strings) }
+  TValueListEditor = class(ValEdit.TValueListEditor)
+  protected
+    procedure SetEditText(ACol: Integer; ARow: Integer;
+      const Value: String); override;
+    function GetEditText(ACol: Integer; ARow: Integer): String; override;
+    procedure DrawCell(ACol: Integer; ARow: Integer; ARect: TRect;
+      AState: TGridDrawState); override;
+  end;
+
   TfrmMain = class(TForm)
     OpenDialog: TOpenDialog;
     JvPageControl: TPageControl;
@@ -88,7 +96,6 @@ type
     btnAboutMe: TToolButton;
     btnExit: TToolButton;
     ActionList1: TActionList;
-    StandardImages: TImageList;
     FileExit1: TFileExit;
     FileOpen: TAction;
     Convert: TAction;
@@ -127,7 +134,7 @@ type
     SelectAll: TAction;
     Edit: TMenuItem;
     SelectAll1: TMenuItem;
-    sbStatus: TStatusBar;
+    StandardImages: TImageList;
     SearchList: TListView;
     procedure btnAddClick(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
@@ -160,11 +167,9 @@ type
       Shift: TShiftState);
     procedure SelectAllExecute(Sender: TObject);
     procedure SelectAllUpdate(Sender: TObject);
-    procedure FormResize(Sender: TObject);
   private
     { Private declarations }
     fCurrentDataFile: string;
-    procedure SetStatus(const Msgs: array of string);
     procedure AddFiles(const FileName: string);
     function StringReplace(const FullFileName: string; WholeWord, Backup, Simulate: Boolean; var ReplaceTime: TLargeInteger): Integer;
     procedure FileNameReplace(var FileItem: TListItem);
@@ -194,29 +199,11 @@ uses
 
 const
   Allowed = (['a'..'z', 'A'..'Z', '0'..'9', '_']);
+  cReplaceEquals = #2;
 
 var
   Lines: TStringList; // create this once to speed things up
   ch: char;
-
-procedure StartRedraw(Control: TWinControl);
-begin
-  if Assigned(Control) then
-  begin
-    Control.Perform(WM_SETREDRAW, 1, 0);
-    RedrawWindow(Control.Handle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_NOINTERNALPAINT);
-  end;
-end;
-
-// Stops redrawing a control, without flicker. Use this when you want to
-// update several properties within a control without redrawing afer each operation.
-// Call StartRedraw when done
-
-procedure StopRedraw(Control: TWinControl);
-begin
-  if Assigned(Control) then
-    Control.Perform(WM_SETREDRAW, 0, 0);
-end;
 
 function TfrmMain.StringReplace(const FullFileName: string; WholeWord, Backup, Simulate: Boolean; var ReplaceTime: TLargeInteger): Integer;
 var
@@ -232,31 +219,31 @@ var
   begin
     Result := 0;
     for LineNum := 0 to Lines.Count - 1 do
-    begin
-      OldLine := Lines[LineNum];
-      NewLine := '';
-      HiLine := UpperCase(OldLine);
-
-      while True do
       begin
-        P := Pos(FromStr, HiLine);
-        if P <= 0 then
-          break;
-        if not WholeWord or (((P = 1) or (not (OldLine[P - 1] in Allowed))) and ((P + Length(FromStr) > Length(OldLine)) or (not (OldLine[P + Length(FromStr)] in Allowed)))) then
-        begin
-          Inc(Result);
-          NewLine := NewLine + Copy(OldLine, 1, P - 1) + ToStr;
-        end
-        else
-        begin
-          NewLine := NewLine + Copy(OldLine, 1, P + Length(FromStr) - 1);
-        end;
-        Delete(OldLine, 1, P + Length(FromStr) - 1);
-        Delete(HiLine, 1, P + Length(FromStr) - 1);
-      end;
+        OldLine := Lines[LineNum];
+        NewLine := '';
+        HiLine := UpperCase(OldLine);
 
-      Lines.Strings[LineNum] := NewLine + OldLine;
-    end;
+        while True do
+          begin
+            P := Pos(FromStr, HiLine);
+            if P <= 0 then
+              break;
+            if not WholeWord or (((P = 1) or (not (OldLine[P - 1] in Allowed))) and ((P + Length(FromStr) > Length(OldLine)) or (not (OldLine[P + Length(FromStr)] in Allowed)))) then
+              begin
+                Inc(Result);
+                NewLine := NewLine + Copy(OldLine, 1, P - 1) + ToStr;
+              end
+            else
+              begin
+                NewLine := NewLine + Copy(OldLine, 1, P + Length(FromStr) - 1);
+              end;
+            Delete(OldLine, 1, P + Length(FromStr) - 1);
+            Delete(HiLine, 1, P + Length(FromStr) - 1);
+          end;
+
+        Lines.Strings[LineNum] := NewLine + OldLine;
+      end;
   end;
 
 begin
@@ -264,59 +251,59 @@ begin
 
   //if this is DFM file, convert it to text
   if upperCase(ExtractFileExt(FullFileName)) = '.DFM' then
-  begin
-    InputStream := TFileStream.Create(FullFileName, fmOpenRead or fmShareDenyWrite);
-    try
-      begin
-        //      if Size < 2 then memLog.Lines.Add('File size ' + IntToStr(Size) + ' for form ' + s);
-        ch := #0;
-        InputStream.Read(ch, 1);
-        case ch of
-          'o', 'O', 'i','I': Lines.LoadFromFile(FullFileName); //ok - text
-          #$FF: //memLog.Lines.Add('Form been saved as BINary: ' + s);
-            begin
-              OutputStream := TMemoryStream.Create;
-              try
-                InputStream.Position := 0;
-                ObjectResourceToText(InputStream, OutputStream);
-                OutputStream.Position := 0;
-                Lines.LoadFromStream(OutputStream);
-              finally
-                OutputStream.Free;
-              end; // try/finally
-            end;
+    begin
+      InputStream := TFileStream.Create(FullFileName, fmOpenRead or fmShareDenyWrite);
+      try
+        begin
+          //      if Size < 2 then memLog.Lines.Add('File size ' + IntToStr(Size) + ' for form ' + s);
+          ch := #0;
+          InputStream.Read(ch, 1);
+          case ch of
+            'o', 'O', 'i','I': Lines.LoadFromFile(FullFileName); //ok - text
+            #$FF: //memLog.Lines.Add('Form been saved as BINary: ' + s);
+              begin
+                OutputStream := TMemoryStream.Create;
+                try
+                    InputStream.Position := 0;
+                    ObjectResourceToText(InputStream, OutputStream);
+                    OutputStream.Position := 0;
+                    Lines.LoadFromStream(OutputStream);
+                finally
+                  OutputStream.Free;
+                end; // try/finally
+              end;
+          end;
         end;
-      end;
-    finally // wrap up
-      InputStream.Free;
-    end; // try/finally
-  end
+      finally // wrap up
+        InputStream.Free;
+      end; // try/finally
+    end
   else
     Lines.LoadFromFile(FullFileName);
 
   // For each line in the file...
   FastTimer.Start;
   for I := 1 to vleUnits.Strings.Count do // Iterate
-  begin
-    FromStr := UpperCase(vleUnits.Cells[0, i]);
-    ToStr := vleUnits.Cells[1, i];
-    Result := Result + SearchReplace;
-  end;
+    begin
+      FromStr := UpperCase(SysUtils.StringReplace(vleUnits.Cells[0, i],cReplaceEquals,'=',[rfReplaceAll]));
+      ToStr := SysUtils.StringReplace(vleUnits.Cells[1, i],cReplaceEquals,'=',[rfReplaceAll]);
+      Result := Result + SearchReplace;
+    end;
 
   FastTimer.Stop;
   ReplaceTime := FastTimer.ElapsedMicroseconds;
 
   if (Result > 0) and not Simulate then
-  begin
-    if Backup then
     begin
-      BackUpName := FullFileName + '.BAK';
-      if FileExists(BackUpName) then
-        DeleteFile(PChar(BackUpName));
-      RenameFile(FullFileName, BackUpName);
+      if Backup then
+        begin
+          BackUpName := ChangeFileExt(FullFileName, '.BAK');
+          if FileExists(BackUpName) then
+            DeleteFile(PChar(BackUpName));
+          RenameFile(FullFileName, BackUpName);
+        end;
+      Lines.SaveToFile(FullFileName);
     end;
-    Lines.SaveToFile(FullFileName);
-  end;
 end;
 
 procedure TfrmMain.FileNameReplace(var FileItem: TListItem);
@@ -333,23 +320,23 @@ begin
   FileExtension := ExtractFileExt(FileItem.Caption);
 
   for I := 1 to vleUnits.Strings.Count do // Iterate
-  begin
-    FromStr := UpperCase(vleUnits.Cells[0, i]);
-    ToStr := vleUnits.Cells[1, i];
-    if UpperCase(FileName) = FromStr then
-      NewFileName := FilePath + ToStr + FileExtension;
-  end;
+    begin
+      FromStr := UpperCase(vleUnits.Cells[0, i]);
+      ToStr := vleUnits.Cells[1, i];
+      if UpperCase(FileName) = FromStr then
+        NewFileName := FilePath + ToStr + FileExtension;
+    end;
 
   if NewFileName <> '' then
-  begin
-    Lines.LoadFromFile(FileItem.Caption);
-    Lines.SaveToFile(FilePath + FileName + '.~' + copy(FileExtension, 2, length(FileExtension) - 1));
+    begin
+      Lines.LoadFromFile(FileItem.Caption);
+      Lines.SaveToFile(FilePath + FileName + '.~' + copy(FileExtension, 2, length(FileExtension) - 1));
 
-    if not RenameFile(FileItem.Caption, NewFileName) then
-      raise Exception.Create('Unable to rename file.');
+      if not RenameFile(FileItem.Caption, NewFileName) then
+        raise Exception.Create('Unable to rename file.');
 
-    FileItem.Caption := NewFileName;
-  end;
+      FileItem.Caption := NewFileName;
+    end;
 end;
 
 procedure TfrmMain.AddFiles(const FileName: string);
@@ -370,22 +357,21 @@ var
   //  Item: TListItem;
 begin
   if OpenDialog.Execute then
-  begin
-    for Idx := 0 to OpenDialog.Files.Count - 1 do
-      AddFiles(OpenDialog.Files[Idx]);
-  end;
+    begin
+      for Idx := 0 to OpenDialog.Files.Count - 1 do
+        AddFiles(OpenDialog.Files[Idx]);
+    end;
 end;
 
 procedure TfrmMain.btnRemoveClick(Sender: TObject);
 var
   Idx: Integer;
 begin
-  SetStatus(['Removing files...']);
-  // this is faster...
-  for Idx := SearchList.Items.Count - 1 downto 0 do
-    if SearchList.Items[Idx].Selected then
+  while SearchList.Selected <> nil do
+    begin
+      Idx := SearchList.Items.IndexOf(SearchList.Selected);
       SearchList.Items.Delete(Idx);
-  SetStatus(['Ready']);
+    end;
 end;
 
 procedure TfrmMain.btnStartClick(Sender: TObject);
@@ -394,43 +380,38 @@ var
   FileNum, ReplaceCount: Integer;
   ReplaceTime: TLargeInteger;
 begin
-  SetStatus(['Scanning...']);
   Screen.Cursor := crHourglass;
+
   try
     // Reset all items
     for FileNum := 0 to SearchList.Items.Count - 1 do
-    begin
-      Item := SearchList.Items[FileNum];
-      if (Item.SubItems[0] <> '0') and (Item.SubItems[1] <> 'Waiting') and
-        (Item.SubItems[2] <> '-') then
       begin
+        Item := SearchList.Items[FileNum];
         Item.SubItems[0] := '0';
         Item.SubItems[1] := 'Waiting';
         Item.SubItems[2] := '-';
+        if mnuReplaceFileNames.Checked then
+          FileNameReplace(Item);
         Item.Update;
       end;
-      if mnuReplaceFileNames.Checked then
-        FileNameReplace(Item);
-    end;
 
     for FileNum := 0 to SearchList.Items.Count - 1 do
-    begin
-      Item := SearchList.Items[FileNum];
-      Item.SubItems[1] := 'Busy';
-      Item.Update;
-      SetStatus([Item.Caption]);
+      begin
+        Item := SearchList.Items[FileNum];
+        Item.SubItems[1] := 'Busy';
+        Item.Update;
 
-      ReplaceCount := StringReplace(Item.Caption, mnuWholeWords.Checked, mnuBackup.Checked, mnuSimulate.Checked, ReplaceTime);
+        ReplaceCount := StringReplace(Item.Caption, mnuWholeWords.Checked, mnuBackup.Checked, mnuSimulate.Checked, ReplaceTime);
 
-      Item.SubItems[0] := IntToStr(ReplaceCount);
-      Item.SubItems[1] := 'Done';
-      Item.SubItems[2] := IntToStr(ReplaceTime);
-      Item.Update;
-    end;
+        Item.SubItems[0] := IntToStr(ReplaceCount);
+        Item.SubItems[1] := 'Done';
+        Item.SubItems[2] := IntToStr(ReplaceTime);
+        Item.Update;
+      end;
   finally // wrap up
     Screen.Cursor := crDefault;
   end; // try/finally
-  SetStatus(['Ready']);
+
 end;
 
 procedure TfrmMain.SearchListDblClick(Sender: TObject);
@@ -458,7 +439,7 @@ procedure TfrmMain.WMDropFiles(var Msg: TWMDropFiles);
 {$IFDEF Windows}
 const
   MAX_PATH = 255;
-{$ENDIF}
+  {$ENDIF}
 var
   Pt: TPoint;
   Count, Loop: Integer;
@@ -469,10 +450,10 @@ begin
     DragQueryPoint(Msg.Drop, Pt);
     Count := DragQueryFile(Msg.Drop, Cardinal(-1), Buf, SizeOf(Buf));
     for Loop := 0 to Pred(Count) do
-    begin
-      DragQueryFile(Msg.Drop, Loop, Buf, SizeOf(Buf));
-      AddFiles(StrPas(Buf));
-    end
+      begin
+        DragQueryFile(Msg.Drop, Loop, Buf, SizeOf(Buf));
+        AddFiles(StrPas(Buf));
+      end
   finally
     DragFinish(Msg.Drop)
   end
@@ -487,20 +468,20 @@ end;
 procedure TfrmMain.btnSaveClick(Sender: TObject);
 begin
   with TSaveDialog.Create(nil) do
-  try
-    Filename := ExtractFileName(fCurrentDataFile);
-    Filter := 'Conversion files (*.dat)|*.dat';
-    DefaultExt := 'dat';
-    Options := Options + [ofOverWritePrompt];
-    if Execute then { Display Open dialog box }
-    begin
-      fCurrentDataFile := FileName;
-      vleUnits.Strings.SaveToFile(fCurrentDataFile);
-      SaveData.Enabled := False;
-    end;
-  finally // wrap up
-    Free;
-  end; // try/finally
+    try
+      Filename := ExtractFileName(fCurrentDataFile);
+      Filter := 'Conversion files (*.dat)|*.dat';
+      DefaultExt := 'dat';
+      Options := Options + [ofOverWritePrompt];
+      if Execute then { Display Open dialog box }
+        begin
+          fCurrentDataFile := FileName;
+          vleUnits.Strings.SaveToFile(fCurrentDataFile);
+          SaveData.Enabled := False;
+        end;
+    finally // wrap up
+      Free;
+    end; // try/finally
 end;
 
 procedure TfrmMain.btnDeleteClick(Sender: TObject);
@@ -513,37 +494,37 @@ end;
 procedure TfrmMain.AboutMeExecute(Sender: TObject);
 begin
   with TfrmAboutMe.Create(nil) do
-  try
-    showModal;
-  finally // wrap up
-    Free;
-  end; // try/finally
+    try
+      showModal;
+    finally // wrap up
+      Free;
+    end; // try/finally
 end;
 
 procedure TfrmMain.LoadDATFile(const Filename: string);
 begin
   if FileExists(Filename) then
-  begin
-    vleUnits.Strings.LoadFromFile(Filename);
-    fCurrentDataFile := Filename;
-  end;
+    begin
+      vleUnits.Strings.LoadFromFile(Filename);
+      fCurrentDataFile := Filename;
+    end;
 end;
 
 procedure TfrmMain.OpenDataExecute(Sender: TObject);
 begin
   with TOpenDialog.Create(nil) do
-  try
-    FileName := fCurrentDataFile;
-    Filter := 'Conversion files (*.dat)|*.dat';
-    DefaultExt := 'dat';
-    if Execute then { Display Open dialog box }
-    begin
-      LoadDATFile(Filename);
-      JvPageControl.ActivePage := tbsStrings;
-    end;
-  finally // wrap up
-    Free;
-  end; // try/finally
+    try
+      FileName := fCurrentDataFile;
+      Filter := 'Conversion files (*.dat)|*.dat';
+      DefaultExt := 'dat';
+      if Execute then { Display Open dialog box }
+        begin
+          LoadDATFile(Filename);
+          JvPageControl.ActivePage := tbsStrings;
+        end;
+    finally // wrap up
+      Free;
+    end; // try/finally
 end;
 
 procedure TfrmMain.mnuBackupClick(Sender: TObject);
@@ -590,12 +571,12 @@ procedure TfrmMain.IterateSubdirectoriesExecute(Sender: TObject);
 begin
   JvBrowseFolder1.Directory := ExcludeTrailingPathDelimiter(JvSearchFiles1.RootDirectory);
   if JvBrowseFolder1.Execute then
-  begin
-    JvSearchFiles1.RootDirectory := JvBrowseFolder1.Directory;
-    if JvSearchFiles1.FileParams.FileMask = '' then
-      JvSearchFiles1.FileParams.FileMask := '*.pas;*.dpr;*.dpk';
-    JvSearchFiles1.Search;
-  end;
+    begin
+      JvSearchFiles1.RootDirectory := JvBrowseFolder1.Directory;
+      if JvSearchFiles1.FileParams.FileMask = '' then
+        JvSearchFiles1.FileParams.FileMask := '*.pas;*.dpr;*.dpk';
+      JvSearchFiles1.Search;
+    end;
 end;
 
 procedure TfrmMain.JvSearchFiles1FindFile(Sender: TObject; const AName: string);
@@ -648,15 +629,14 @@ begin
     1: SortFunc := SortReplaceCount;
     2: SortFunc := SortStatus;
     3: SortFunc := SortMSecs;
-  else
-    SortFunc := nil;
+    else
+      SortFunc := nil;
   end;
   if Assigned(SortFunc) then
-  begin
-    LV.CustomSort(SortFunc, Ord(FDescending));
-    Column.ImageIndex := Ord(FDescending) + 1;
-  end;
-
+    begin
+      LV.CustomSort(SortFunc, Ord(FDescending));
+      Column.ImageIndex := Ord(FDescending) + 1;
+    end;
 end;
 
 procedure TfrmMain.SearchListColumnClick(Sender: TObject;
@@ -669,18 +649,17 @@ procedure TfrmMain.LoadSettings;
 begin
   try
     with TIniFile.Create(ChangeFileExt(Application.ExeName, '.ini')) do
-    try
-      JvSearchFiles1.RootDirectory := ReadString('Settings', 'Path', '');
-      JvSearchFiles1.FileParams.FileMask := ReadString('Settings', 'Mask', '*.dpr;*.dpk;*.pas');
-      SetStatus([sbStatus.Panels[0].Text, JvSearchFiles1.FileParams.FileMask]);
-      fCurrentDataFile := ReadString('Settings', 'DATFile', '');
-      mnuBackup.Checked := ReadBool('Settings', 'Backup', true);
-      mnuWholeWords.Checked := ReadBool('Settings', 'WholeWords', true);
-      mnuReplaceFileNames.Checked := ReadBool('Settings', 'ReaplceFileNames', true);
-      mnuSimulate.Checked := ReadBool('Settings', 'Simulate', false);
-    finally
-      Free;
-    end;
+      try
+        JvSearchFiles1.RootDirectory := ReadString('Settings', 'Path', '');
+        JvSearchFiles1.FileParams.FileMask := ReadString('Settings', 'Mask', '*.dpr;*.dpk;*.pas');
+        fCurrentDataFile := ReadString('Settings', 'DATFile', '');
+        mnuBackup.Checked := ReadBool('Settings', 'Backup', true);
+        mnuWholeWords.Checked := ReadBool('Settings', 'WholeWords', true);
+        mnuReplaceFileNames.Checked := ReadBool('Settings', 'ReaplceFileNames', true);
+        mnuSimulate.Checked := ReadBool('Settings', 'Simulate', false);
+      finally
+        Free;
+      end;
   except
     on E: Exception do
       ShowMessage(E.Message);
@@ -692,17 +671,17 @@ procedure TfrmMain.SaveSettings;
 begin
   try
     with TIniFile.Create(ChangeFileExt(Application.ExeName, '.ini')) do
-    try
-      WriteString('Settings', 'Path', JvSearchFiles1.RootDirectory);
-      WriteString('Settings', 'Mask', JvSearchFiles1.FileParams.FileMask);
-      WriteString('Settings', 'DATFile', fCurrentDataFile);
-      WriteBool('Settings', 'Backup', mnuBackup.Checked);
-      WriteBool('Settings', 'WholeWords', mnuWholeWords.Checked);
-      WriteBool('Settings', 'ReaplceFileNames', mnuReplaceFileNames.Checked);
-      WriteBool('Settings', 'Simulate', mnuSimulate.Checked);
-    finally
-      Free;
-    end;
+      try
+        WriteString('Settings', 'Path', JvSearchFiles1.RootDirectory);
+        WriteString('Settings', 'Mask', JvSearchFiles1.FileParams.FileMask);
+        WriteString('Settings', 'DATFile', fCurrentDataFile);
+        WriteBool('Settings', 'Backup', mnuBackup.Checked);
+        WriteBool('Settings', 'WholeWords', mnuWholeWords.Checked);
+        WriteBool('Settings', 'ReaplceFileNames', mnuReplaceFileNames.Checked);
+        WriteBool('Settings', 'Simulate', mnuSimulate.Checked);
+      finally
+        Free;
+      end;
   except
     on E: Exception do
       ShowMessage(E.Message);
@@ -716,7 +695,6 @@ begin
   S := JvSearchFiles1.FileParams.FileMask;
   if InputQuery('File Mask', 'Set new file mask:', S) and (S <> '') then
     JvSearchFiles1.FileParams.FileMask := S;
-  SetStatus([sbStatus.Panels[0].Text, JvSearchFiles1.FileParams.FileMask]);
 end;
 
 procedure TfrmMain.ActionList1Update(Action: TBasicAction;
@@ -741,8 +719,7 @@ procedure TfrmMain.SearchListKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_Delete then
-    if RemoveFiles.Enabled then
-      btnRemoveClick(self);
+    if RemoveFiles.Enabled then btnRemoveClick(self);
 end;
 
 procedure TfrmMain.SelectAllExecute(Sender: TObject);
@@ -755,23 +732,28 @@ begin
   SelectAll.Enabled := (SearchList.Items.Count > 0) and (JvPageControl.ActivePage = tbsFiles);
 end;
 
-procedure TfrmMain.FormResize(Sender: TObject);
+type
+  TValueListStringsEx = class(TValueListStrings);
+
+{ TValueListEditor }
+
+procedure TValueListEditor.DrawCell(ACol, ARow: Integer; ARect: TRect;
+  AState: TGridDrawState);
 begin
-  sbStatus.Panels[0].Width := sbStatus.ClientWidth - sbStatus.Canvas.TextWidth(sbStatus.Panels[1].Text) - 50;
+  Canvas.TextRect(ARect, ARect.Left+2, ARect.Top+2, StringReplace(Cells[ACol, ARow],cReplaceEquals,'=',[rfReplaceAll]));
 end;
 
-procedure TfrmMain.SetStatus(const Msgs: array of string);
-var i: integer;
-  function Min(Val1, Val2: integer): integer;
-  begin
-    Result := Val1;
-    if Val2 < Val1 then
-      Result := Val2;
-  end;
+function TValueListEditor.GetEditText(ACol, ARow: Integer): String;
 begin
-  for i := Low(Msgs) to Min(High(Msgs), sbStatus.Panels.Count - 1) do
-    sbStatus.Panels[i].Text := Msgs[i];
-  sbStatus.Update;
+  Result := StringReplace(inherited GetEditText(ACol,ARow),cReplaceEquals,'=',[rfReplaceAll]);
+end;
+
+procedure TValueListEditor.SetEditText(ACol, ARow: Integer;
+  const Value: String);
+var tmp:string;
+begin
+  tmp := StringReplace(Value,'=',cReplaceEquals,[rfReplaceAll]);
+  inherited SetEditText(ACol,ARow,tmp);
 end;
 
 initialization

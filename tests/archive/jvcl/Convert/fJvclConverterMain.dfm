@@ -15,25 +15,25 @@ object frmMain: TfrmMain
   Position = poScreenCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 14
   object JvPageControl: TPageControl
     Left = 0
     Top = 26
     Width = 463
-    Height = 295
-    ActivePage = tbsFiles
+    Height = 314
+    ActivePage = tbsStrings
     Align = alClient
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 0
     object tbsFiles: TTabSheet
+      BorderWidth = 2
       Caption = 'Select Files'
       object SearchList: TListView
         Left = 0
         Top = 0
-        Width = 455
-        Height = 266
+        Width = 451
+        Height = 281
         Align = alClient
         Columns = <
           item
@@ -54,6 +54,8 @@ object frmMain: TfrmMain
           end>
         FlatScrollBars = True
         MultiSelect = True
+        ReadOnly = True
+        RowSelect = True
         SmallImages = SortArrows
         TabOrder = 0
         ViewStyle = vsReport
@@ -63,13 +65,14 @@ object frmMain: TfrmMain
       end
     end
     object tbsStrings: TTabSheet
+      BorderWidth = 2
       Caption = 'Strings'
       ImageIndex = 1
       object vleUnits: TValueListEditor
         Left = 0
         Top = 0
-        Width = 455
-        Height = 266
+        Width = 451
+        Height = 281
         Align = alClient
         KeyOptions = [keyEdit, keyAdd]
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goThumbTracking]
@@ -80,7 +83,7 @@ object frmMain: TfrmMain
         OnStringsChange = vleUnitsStringsChange
         ColWidths = (
           283
-          166)
+          162)
       end
     end
   end
@@ -176,21 +179,6 @@ object frmMain: TfrmMain
       Top = 0
       Action = AboutMe
     end
-  end
-  object sbStatus: TStatusBar
-    Left = 0
-    Top = 321
-    Width = 463
-    Height = 19
-    Panels = <
-      item
-        Text = 'Ready'
-        Width = 250
-      end
-      item
-        Width = 50
-      end>
-    SimplePanel = False
   end
   object OpenDialog: TOpenDialog
     DefaultExt = 'pas'
