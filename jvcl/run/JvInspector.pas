@@ -23,6 +23,20 @@
 
  You may retrieve the latest version of this file at the Project JEDI home
  page, located at http://www.delphi-jedi.org
+
+ RECENT CHANGES:
+
+    September 30, Warren Postma warrenpstma@hotmail.com
+      - New string property Name, in inspector and category items
+        (TJvCustomInspectorItem, and descendants, ie TJvInspectorCustomCategoryItem )
+        holds the variable name or property name or ini file entry name, whereas
+        the DisplayName is a description for the end-user only. Note that this is
+        sometimes duplicated by the Item.Data.Name, but sometimes Item.Data is nil,
+        so this becomes important as a backup.
+      - System Sound (Beep) on enter key removed.
+    Oct 1, 2003, Warren Postma warrenpstma@hotmail.com
+      - New Name, UserData properties in TJvInspectorCustomCategoryItem
+    
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -548,11 +562,13 @@ type
   published
   end;
 
+
   TJvCustomInspectorItem = class(TPersistent)
   private
     FData: TJvCustomInspectorData;
     FDisplayIndex: Integer;
     FDisplayName: string;
+
     FDroppedDown: Boolean;
     FEditCtrl: TCustomEdit;
     FEditWndPrc: TWndMethod;
@@ -573,6 +589,7 @@ type
     FSortKind: TInspectorItemSortKind;
     FTracking: Boolean;
   protected
+    function GetName:String; virtual; // NEW: Warren added.
     procedure AlphaSort;
     procedure Apply; virtual;
     procedure ApplyDisplayIndices(const ItemList: TList); virtual;
@@ -611,7 +628,11 @@ type
     function GetCount: Integer; virtual;
     function GetData: TJvCustomInspectorData; virtual;
     function GetDisplayIndex: Integer; virtual;
-    function GetDisplayName: string; virtual;
+    function GetDisplayName: string; virtual; // NOTE THIS USES DISPLAY NAME PROPERTIES TO BUILD ITS RESULT
+
+    function GetFullName: string; // NOTE THIS USES THE INTERNAL NAME properties to build its result.
+
+
     function GetDisplayParent: TJvCustomInspectorItem; virtual;
     function GetDisplayValue: string; virtual;
     function GetDroppedDown: Boolean; virtual;
@@ -692,7 +713,10 @@ type
     property OnGetValueList: TInspectorItemGetValueListEvent read FOnGetValueList write FOnGetValueList;
     property Pressed: Boolean read FPressed write FPressed;
     property Tracking: Boolean read FTracking write FTracking;
+
   public
+    UserData:Pointer; // new: End user data pointer. WAP
+
     constructor Create(const AParent: TJvCustomInspectorItem; const AData: TJvCustomInspectorData); virtual;
     destructor Destroy; override;
     function Add(const Item: TJvCustomInspectorItem): Integer;
@@ -717,9 +741,15 @@ type
     property Count: Integer read GetCount;
     property Data: TJvCustomInspectorData read GetData;
     property DisplayIndex: Integer read GetDisplayIndex write SetDisplayIndex;
+    property Name: string read GetName;  // WAP.Aug2003
+
     property DisplayName: string read GetDisplayName write SetDisplayName;
+    property FullName:String read GetFullName;
     property DisplayValue: string read GetDisplayValue write SetDisplayValue;
     property Editing: Boolean read GetEditing;
+
+    function GetEditorText:String;
+
     property Expanded: Boolean read GetExpanded write SetExpanded;
     property Flags: TInspectorItemFlags read GetFlags write SetFlags;
     property Hidden: Boolean read GetHidden write SetHidden;
@@ -741,8 +771,13 @@ type
   end;
 
   TJvInspectorCustomCategoryItem = class(TJvCustomInspectorItem)
+  private
+     FName : String; //NEW: Warren added.
   protected
-    procedure SetFlags(const Value: TInspectorItemFlags); override;
+     function GetName:String; override; // NEW: Warren added.
+     procedure SetFlags(const Value: TInspectorItemFlags); override;
+  public
+     property Name:String read GetName write FName; //NEW: Warren added.
   end;
 
   TJvInspectorCompoundColumn = class(TPersistent)
@@ -1402,6 +1437,8 @@ type
     property OnSupportsMethodPointers: TJvInspSupportsMethodPointers read FOnSupportsMethodPointers write SetOnSupportsMethodPointers;
   end;
 
+  // used for inspecting INI and registry file data, validation rules
+  // are different than inspecting TComponent properties. -WAP.
   TJvInspectorCustomConfData = class(TJvCustomInspectorData)
   private
     FKey: string;
@@ -1413,8 +1450,8 @@ type
     function GetAsInt64: Int64; override;
     function GetAsMethod: TMethod; override;
     function GetAsOrdinal: Int64; override;
+    function ForceString: string; // NEW: Display something from an INI section that isn't the type it's supposed to be without exceptions and component failures.
     function GetAsString: string; override;
-    function ReadValue: string; virtual; abstract;
     function IsEqualReference(const Ref: TJvCustomInspectorData): Boolean; override;
     procedure SetAsFloat(const Value: Extended); override;
     procedure SetAsInt64(const Value: Int64); override;
@@ -1425,6 +1462,8 @@ type
     procedure SetSection(Value: string);
     procedure WriteValue(Value: string); virtual; abstract;
   public
+    function ReadValue: string; virtual; abstract; // made public to help fix a bug. WAP.
+
     procedure GetAsSet(var Buf); override;
     function HasValue: Boolean; override;
     function IsAssigned: Boolean; override;
@@ -4605,12 +4644,13 @@ begin
   begin
     case Key of
       VK_RETURN:
-        Apply;
+          Apply;
+
       VK_ESCAPE:
-        Undo;
+           Undo;
     end;
     if (Key = VK_RETURN) or (Key = VK_ESCAPE) then
-      Key := 0;
+       Key := VK_RIGHT;
   end
   else if Shift = [ssCtrl] then
     case Key of
@@ -4664,6 +4704,7 @@ end;
 procedure TJvCustomInspectorItem.Edit_WndProc(var Message: TMessage);
 var
   ExecInherited: Boolean;
+ // Key:Word;
 
   function LeftRightCanNavigate: Boolean;
   begin
@@ -4708,8 +4749,21 @@ begin
         end;
       end;
   end;
-  if ExecInherited then
+  { Bypass ENTER key from standard editor control WndProc: }
+  (* debug annoying message handling quirks:
+    if (Message.Msg <> WM_NCHITTEST) then
+      OutputDebugString( Pchar('inspector Msg = $'+IntToHex(Message.Msg,4)) );
+   *)
+  if (Message.Msg = WM_CHAR) and (Message.WParam=13) then begin
+      ExecInherited := false;   // ByeBye ANNOYING "BEEP" when you hit enter! ARGH!!!! -WAP August 2003
+      // Fire the OnEnter event if assigned.
+      if Assigned(FInspector.FOnEnter) then begin
+          FInspector.FOnEnter( FEditCtrl );
+      end;
+  end;
+  if ExecInherited then  begin
     EditWndPrc(Message);
+  end;
   case Message.Msg of
     WM_GETDLGCODE:
       begin
@@ -4771,6 +4825,29 @@ begin
     Result := Parent.DisplayName + '.' + Result;
 end;
 
+// NEW: TJvCustomInspectorItem.GetFullName
+// This allows us to internally fetch the fully qualified INTERNAL
+// names of any item using ONLY their internal names, NOT their display
+// names.
+// NOTE THIS USES INTERNAL NAME PROPERTIES (NOT DISPLAY NAME PROPERTIES)
+// TO BUILD ITS RESULT, UNLIKE GetDisplayName. it would do the same thing
+// as GetDisplayName, if and only if (a) the parents have iifQualifiednames
+// in their parent flags, and (b) if the display names and internal names
+// are the same.
+function TJvCustomInspectorItem.GetFullName: string;
+var
+  tmp:String;
+begin
+  Result := GetName;
+  if (Parent <> nil) then begin
+     tmp :=   Parent.GetFullName;
+     if Length(tmp)>0 then 
+        Result :=  tmp+ '.' + Result;
+  end;
+end;
+
+
+
 function TJvCustomInspectorItem.GetDisplayParent: TJvCustomInspectorItem;
 begin
   Result := Parent;
@@ -4793,6 +4870,12 @@ end;
 function TJvCustomInspectorItem.GetEditCtrl: TCustomEdit;
 begin
   Result := FEditCtrl;
+end;
+
+function TJvCustomInspectorItem.GetEditorText:String; {NEW:WAP}
+begin
+  if Assigned(FEditCtrl) then
+    Result := FEditCtrl.Text;
 end;
 
 function TJvCustomInspectorItem.GetEditing: Boolean;
@@ -5429,6 +5512,18 @@ begin
   FLastPaintGen := GetInspectorPaintGeneration;
 end;
 
+
+//NEW: Allow us to read the Name of an attribute from the
+// inspector item, since sometimes the data item is nil. Also make it virtual.
+// We override this in Category objects.
+function TJvCustomInspectorItem.GetName:string;
+begin
+  if Assigned(FData)  then
+      result := Self.FData.Name
+  else
+      result := '';
+end;
+
 constructor TJvCustomInspectorItem.Create(const AParent: TJvCustomInspectorItem;
   const AData: TJvCustomInspectorData);
 begin
@@ -5688,8 +5783,8 @@ begin
     if Multiline then
     begin
       Memo := TMemo.Create(Inspector);
-      if Assigned(Inspector.FOnEnter) then
-        Memo.OnEnter := Inspector.FOnEnter;
+      //if Assigned(Inspector.FOnEnter) then
+       //  Memo.OnEnter := Inspector.FOnEnter;
       if Assigned(Inspector.FOnContextPopup) then
         Memo.OnContextPopup := Inspector.FOnContextPopup;
       if Assigned(Inspector.FOnKeyUp) then
@@ -5704,8 +5799,8 @@ begin
     else
     begin
       Edit := TEdit.Create(Inspector);
-      if Assigned(Inspector.FOnEnter) then
-        Edit.OnEnter := Inspector.FOnEnter;
+      //if Assigned(Inspector.FOnEnter) then
+        // Edit.OnEnter := Inspector.FOnEnter;
       if Assigned(Inspector.FOnContextPopup) then
         Edit.OnContextPopup := Inspector.FOnContextPopup;
       if Assigned(Inspector.FOnKeyUp) then
@@ -5885,6 +5980,12 @@ begin
     iifAllowNonListValues, iifOwnerDrawListFixed, iifOwnerDrawListVariable,
     iifEditButton] + [iifReadonly, iifEditFixed];
   inherited SetFlags(NewFlags);
+end;
+
+
+function TJvInspectorCustomCategoryItem.GetName:String; //override; // NEW: Warren added.
+begin
+  result := FName;
 end;
 
 //=== TJvInspectorCompoundColumn =============================================
@@ -6584,7 +6685,22 @@ end;
 
 function TJvInspectorFloatItem.GetDisplayValue: string;
 begin
-  Result := SysUtils.Format(FFormat, [Data.AsFloat]);
+ // WAP: Inspector compononent doesn't handle exceptions well,
+ // so we mask the error nicely here. Ini file data in a float
+ // attribute that doesn't convert nicely to a float causes
+ // GUI Exception hell.
+ try
+    Result := FloatToStr(Data.AsFloat);
+ except
+   on E:EConvertError do begin
+      //if Data is
+      if Data is TJvInspectorCustomConfData then begin
+          Result := (Data as TJvInspectorCustomConfData).ForceString; // INI Display Workaround.
+      end else begin
+          Result := '0'; // Inspector compononent doesn't handle this exception well, so mask it. workaround. WAP
+      end;
+   end;
+ end;
 end;
 
 procedure TJvInspectorFloatItem.SetDisplayValue(const Value: string);
@@ -9963,6 +10079,14 @@ begin
   end;
 end;
 
+function TJvInspectorCustomConfData.ForceString: string;
+begin
+  CheckReadAccess;
+  Result := ReadValue;
+end;
+
+
+
 function TJvInspectorCustomConfData.GetAsString: string;
 begin
   CheckReadAccess;
@@ -10176,6 +10300,10 @@ begin
       begin
         TmpItem := TJvInspectorINIFileData.New(AParent, KeyName, ASection, SL[I], KeyTypeInfo,
           AINIFile);
+          // XXX Warren's first attempt to make inspector items know their data's names:
+          //if (TmpItem.Parent.Name <> ASection) then
+          //  TmpItem.Parent.Name := ASection;
+          //TmpItem.Name := KeyName;
         if TmpItem <> nil then
         begin
           SetLength(Result, Length(Result) + 1);
@@ -10218,7 +10346,9 @@ begin
       if AllowAddSection then
       begin
         CatItem := TJvInspectorCustomCategoryItem.Create(AParent, nil);
-        CatItem.DisplayName := CatName;
+        CatItem.Name := CatName;  // the internal value.
+        CatItem.DisplayName := CatName; // The displayed value
+        //AParent.Name := SL[I];
         TmpLst := TJvInspectorINIFileData.New(CatItem, SL[I], AINIFile, AOnAddKey);
         SetLength(Result, Length(Result) + Length(TmpLst));
         Move(TmpLst[0], Result[Length(Result) - Length(TmpLst)], Length(TmpLst));
