@@ -45,7 +45,6 @@ contains
   JvQCtrlsReg in '..\..\qdesign\JvQCtrlsReg.pas',
   JvQFooterEditor in '..\..\qdesign\JvQFooterEditor.pas',
   JvQGroupHeaderEditor in '..\..\qdesign\JvQGroupHeaderEditor.pas',
-  JvQRollOutEditor in '..\..\qdesign\JvQRollOutEditor.pas',
-  JvQPaintBoxEditor in '..\..\qdesign\JvQPaintBoxEditor.pas';
+  JvQRollOutEditor in '..\..\qdesign\JvQRollOutEditor.pas';
 
 end.
