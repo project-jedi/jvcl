@@ -31,7 +31,13 @@ unit JvMovableBevel;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Forms, ExtCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Controls, Forms, ExtCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QForms, QExtCtrls, Types,
+  {$ENDIF VisualCLX}
   JvExExtCtrls;
 
 type

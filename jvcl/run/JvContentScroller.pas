@@ -42,7 +42,7 @@ uses
   Graphics, Controls, Forms, Dialogs, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QForms, QDialogs, QExtCtrls,
+  Types, QGraphics, QControls, QForms, QDialogs, QExtCtrls, QTypes,
   {$ENDIF VisualCLX}
   JvComponent;
 
@@ -223,8 +223,10 @@ begin
   else
     ScrollBy(0, -FPosition);
   FPosition := 0;
+  {$IFDEF MSWINDOWS}
   if FileExists(FMediaFile) then
     PlaySound(nil, 0, SND_ASYNC);
+  {$ENDIF MSWINDOWS}
 end;
 
 procedure TJvContentScroller.DoTimer(Sender: TObject);

@@ -33,11 +33,14 @@ interface
 
 uses
   Classes, SysUtils,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Windows, Controls, Messages, Graphics, ImgList, ExtCtrls, Printers,
+  Controls, Messages, Graphics, ImgList, ExtCtrls, Printers,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, QControls, QGraphics, QImgList, QExtCtrls, QPrinters,
+  QControls, QGraphics, QImgList, QExtCtrls, QPrinters, Types, QWindows,
   {$ENDIF VisualCLX}
   {$IFDEF USEJVCL}
   JvComponent,
@@ -706,7 +709,12 @@ type
   public
     constructor Create(anApptCtrl: TJvTFControl); reintroduce;
     destructor Destroy; override;
+    {$IFDEF VCL}
     procedure ActivateHint(Rect: TRect; const AHint: string); override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure ActivateHint(Rect: TRect; const AHint: widestring); override;
+    {$ENDIF VisualCLX}
     procedure ApptHint(Appt: TJvTFAppt; X, Y: Integer;
       ShowDatesTimes, ShowDesc, FormattedDesc: Boolean); virtual;
     procedure StartEndHint(StartDate, EndDate: TDate; StartTime, EndTime: TTime;
@@ -886,8 +894,9 @@ type
     FOnMarginError: TNotifyEvent;
     FTitle: string;
     FDirectPrint: Boolean;
-
+    {$IFDEF VCL}
     function GetPage(Index: Integer): TMetafile;
+    {$ENDIF VCL}
     function GetBodyHeight: Integer; // always in pixels
     function GetBodyWidth: Integer; // always in pixels
     function GetBodyLeft: Integer; // always in pixels
@@ -936,8 +945,9 @@ type
     destructor Destroy; override;
 
     property PageCount: Integer read GetPageCount;
+    {$IFDEF VCL}
     property Pages[Index: Integer]: TMetafile read GetPage;
-
+    {$ENDIF}
     function ConvertMeasure(Value: Integer; FromMeasure,
       ToMeasure: TJvTFPrinterMeasure; Horizontal: Boolean): Integer;
     function ScreenToPrinter(Value: Integer; Horizontal: Boolean): Integer;
@@ -2058,7 +2068,12 @@ begin
   if (FConControls.Count = 0) and (FConComponents.Count = 0) then
   begin
     FCached := True;
+    {$IFDEF VCL}
     FCachedTime := Windows.GetTickCount;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FCachedTime := GetTickCount;
+    {$ENDIF VisualCLX}
   end
   else
     FCached := False;
@@ -3352,8 +3367,14 @@ begin
       while I < ScheduleCount do
       begin
         Sched := Schedules[I];
+        {$IFDEF VCL}
         CacheTimeUp := Windows.GetTickCount - Sched.CachedTime >=
           UINT(Cache.TimedDelay);
+        {$ENDIF VCL}
+        {$IFDEF VisualCLX}
+        CacheTimeUp := GetTickCount - Sched.CachedTime >=
+          UINT(Cache.TimedDelay);
+        {$ENDIF VisualCLX}
         if Sched.Cached and CacheTimeUp then
         begin
           if not FlushObject(Sched) then
@@ -3723,8 +3744,12 @@ begin
 
     FOnShowHint(Self, HintType, Ref, FHintRect, FHintText);
   end;
-
+  {$IFDEF VCL}
   if not Windows.IsRectEmpty(FHintRect) and (FHintText <> '') then
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  if not IsRectEmpty(FHintRect) and (FHintText <> '') then
+  {$ENDIF VisualCLX}
     if Sustained then
     begin
       inherited ActivateHint(FHintRect, FHintText);
@@ -3744,7 +3769,12 @@ begin
 end;
 {$ENDIF VCL}
 
+{$IFDEF VisualCLX}
+procedure TJvTFHint.ActivateHint(Rect: TRect; const AHint: widestring);
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
 procedure TJvTFHint.ActivateHint(Rect: TRect; const AHint: string);
+{$ENDIF VCL}
 begin
   PrepTimer(False);
   inherited;
@@ -4341,11 +4371,18 @@ const
 var
   PPI: Integer;
 begin
+  {$IFDEF VCL}
   if Horizontal then
     PPI := Windows.GetDeviceCaps(Printer.Handle, LOGPIXELSX)
   else
     PPI := Windows.GetDeviceCaps(Printer.Handle, LOGPIXELSY);
-
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  if Horizontal then
+    PPI := GetDeviceCaps(Printer.Handle, LOGPIXELSX)
+  else
+    PPI := GetDeviceCaps(Printer.Handle, LOGPIXELSY);
+  {$ENDIF VisualCLX}
   if (FromMeasure = pmPixels) and (ToMeasure = pmInches) then
     Result := round(Value / PPI * 100)
   else if (FromMeasure = pmPixels) and (ToMeasure = pmMM) then
@@ -4500,7 +4537,12 @@ var
     HeaderPels,
     FooterPels: Integer;
 begin
+  {$IFDEF VCL}
   PhysHeight := Windows.GetDeviceCaps(Printer.Handle, PHYSICALHEIGHT);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  PhysHeight := GetDeviceCaps(Printer.Handle, PHYSICALHEIGHT);
+  {$ENDIF VisualCLX}
   TopMarginPels := ConvertMeasure(PageLayout.MarginTop, Measure, pmPixels,
     False);
   BottomMarginPels := ConvertMeasure(PageLayout.MarginBottom, Measure, pmPixels,
@@ -4531,7 +4573,12 @@ var
     LeftMarginPels,
     RightMarginPels: Integer;
 begin
+  {$IFDEF VCL}
   PhysWidth := Windows.GetDeviceCaps(Printer.Handle, PHYSICALWIDTH);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  PhysWidth := GetDeviceCaps(Printer.Handle, PHYSICALWIDTH);
+  {$ENDIF VisualCLX}
   LeftMarginPels := ConvertMeasure(PageLayout.MarginLeft, Measure, pmPixels, True);
   RightMarginPels := ConvertMeasure(PageLayout.MarginRight, Measure, pmPixels, True);
 
@@ -4573,6 +4620,7 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 function TJvTFPrinter.GetPage(Index: Integer): TMetafile;
 begin
   if DirectPrint then
@@ -4582,7 +4630,7 @@ begin
     raise EJvTFPrinterError.Create(RsEDocumentPagesAreInaccessibleUntil);
   Result := TMetafile(FPages.Objects[Index]);
 end;
-
+{$ENDIF VCL}
 function TJvTFPrinter.GetPageCount: Integer;
 begin
   case State of
@@ -4604,10 +4652,18 @@ var
     WidthPrintable,
     HeightPrintable: Integer;
 begin
+  {$IFDEF VCL}
   LeftMarg := Windows.GetDeviceCaps(Printer.Handle, PHYSICALOFFSETX);
   TopMarg := Windows.GetDeviceCaps(Printer.Handle, PHYSICALOFFSETY);
   WidthPaper := Windows.GetDeviceCaps(Printer.Handle, PHYSICALWIDTH);
   HeightPaper := Windows.GetDeviceCaps(Printer.Handle, PHYSICALHEIGHT);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  LeftMarg := GetDeviceCaps(Printer.Handle, PHYSICALOFFSETX);
+  TopMarg := GetDeviceCaps(Printer.Handle, PHYSICALOFFSETY);
+  WidthPaper := GetDeviceCaps(Printer.Handle, PHYSICALWIDTH);
+  HeightPaper := GetDeviceCaps(Printer.Handle, PHYSICALHEIGHT);
+  {$ENDIF VisualCLX}
   WidthPrintable := Printer.PageWidth;
   HeightPrintable := Printer.PageHeight;
 
@@ -4691,8 +4747,8 @@ begin
       // the header and footer.
     aCanvas := TMetafileCanvas.Create(aMetafile, Printer.Handle);
   end;
-
   FBodies.AddObject('', aCanvas);
+  {$IFDEF VCL}
   aCanvas.Font.PixelsPerInch := Windows.GetDeviceCaps(Printer.Handle,
     LOGPIXELSX);
 
@@ -4700,7 +4756,16 @@ begin
   DrawBody(aCanvas, Rect(BodyLeft, BodyTop, BodyWidth - BodyLeft,
     BodyHeight - BodyTop), FPages.Count);
   Windows.SetViewPortOrgEx(aCanvas.Handle, 0, 0, nil);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  aCanvas.Font.PixelsPerInch := GetDeviceCaps(Printer.Handle,
+    LOGPIXELSX);
 
+  SetViewPortOrgEx(aCanvas.Handle, BodyLeft, BodyTop, nil);
+  DrawBody(aCanvas, Rect(BodyLeft, BodyTop, BodyWidth - BodyLeft,
+    BodyHeight - BodyTop), FPages.Count);
+  SetViewPortOrgEx(aCanvas.Handle, 0, 0, nil);
+  {$ENDIF VisualCLX}
   if DirectPrint then
   begin
     GetHeaderFooterRects(HeaderRect, FooterRect);
@@ -4758,11 +4823,18 @@ var
     PrinterPPI: Integer;
 begin
   ScreenPPI := Screen.PixelsPerInch;
+  {$IFDEF VCL}
   if Horizontal then
     PrinterPPI := Windows.GetDeviceCaps(Printer.Handle, LOGPIXELSX)
   else
     PrinterPPI := Windows.GetDeviceCaps(Printer.Handle, LOGPIXELSY);
-
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  if Horizontal then
+    PrinterPPI := GetDeviceCaps(Printer.Handle, LOGPIXELSX)
+  else
+    PrinterPPI := GetDeviceCaps(Printer.Handle, LOGPIXELSY);
+  {$ENDIF VisualCLX}
   Result := Trunc(ScreenPPI / PrinterPPI * Value);
 end;
 
@@ -4784,6 +4856,7 @@ var
     PrinterPPI: Integer;
 begin
   ScreenPPI := Screen.PixelsPerInch;
+  {$IFDEF VCL}
   if Horizontal then
   begin
     PrinterPPI := Windows.GetDeviceCaps(Printer.Handle, LOGPIXELSX);
@@ -4792,7 +4865,17 @@ begin
   begin
     PrinterPPI := Windows.GetDeviceCaps(Printer.Handle, LOGPIXELSY);
   end;
-
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  if Horizontal then
+  begin
+    PrinterPPI := GetDeviceCaps(Printer.Handle, LOGPIXELSX);
+  end
+  else
+  begin
+    PrinterPPI := GetDeviceCaps(Printer.Handle, LOGPIXELSY);
+  end;
+  {$ENDIF VisualCLX}
   Result := Trunc(PrinterPPI / ScreenPPI * Value);
 end;
 

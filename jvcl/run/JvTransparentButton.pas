@@ -31,8 +31,15 @@ unit JvTransparentButton;
 interface
 
 uses
-  SysUtils, Windows, Messages, Classes, Graphics, Controls, CommCtrl,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, CommCtrl,
   ExtCtrls, Menus, Forms, ImgList, ActnList, Buttons,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls,
+  QExtCtrls, QMenus, QForms, QImgList, QActnList, QButtons, QWindows,
+  {$ENDIF VisualCLX}
   JvComponent, JvButton;
 
 type

@@ -364,9 +364,11 @@ begin
     while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
       {nothing};
     {$ENDIF VCL}
-    {$IFDEF VCL}
-    Application.ProcessMessages; // (ahuser) does this really do the job? 
-    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    repeat
+      Application.ProcessMessages; // (ahuser) does this really do the job?
+    until QWidget_isVisible(DropDownMenu.handle) = false; // (asn) it did not, now it does
+    {$ENDIF VisualCLX}
     { release button }
     MouseUp(Button, Shift, X, Y);
   end;

@@ -31,7 +31,13 @@ unit JvWinampLabel;
 interface
 
 uses
-  Windows, SysUtils, Messages, Classes, Graphics, Controls, StdCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, StdCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QStdCtrls, QWindows,
+  {$ENDIF VisualCLX}
   JvExStdCtrls;
 
 type
@@ -133,7 +139,13 @@ const
   Row2: string[31] = '0123456789._:()-''!_+\/[]^&%.=$#';
   Row3: string[31] = 'ÂÖÄ?* ';
 
+{$IFDEF MSWINDOWS}
 {$R ..\resources\JvWinampLabel.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvWinampLabel.res}
+{$ENDIF}
+
 
 //=== TJvWinampThread ========================================================
 
