@@ -496,9 +496,10 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure Action_AboutExecute(Sender: TObject);
   private
     { Private declarations }
-    FCreated: Boolean;  // 是否已经创建主窗体
+    FCreated: Boolean;  
     procedure CreateDockableForm;
     procedure GetToolbarWidthArr;
     procedure SaveDefaultLayout;
@@ -523,9 +524,8 @@ implementation
 uses IniFiles, ProjectExplorerUnit, PropertiesUnit, ToolboxUnit, ImmediateUnit,
   AutosUnit, LocalsUnit, WatchUnit, ThreadsUnit, CallStackUnit,
   RunningDocumentsUnit, TaskListUnit, DocumentOutlineUnit, OutputUnit,
-  ScriptOutlineUnit, DefineWindowLayoutUnit, FindAndReplaceUnit;
+  ScriptOutlineUnit, DefineWindowLayoutUnit, FindAndReplaceUnit, SplashUnit;
 
-{ 创建可停靠的工具窗体 }
 procedure TMainForm.CreateDockableForm;
 begin
   ProjectExplorerForm := TProjectExplorerForm.Create(Self);   //创建Project Explorer工具窗体
@@ -552,13 +552,13 @@ end;
 
 procedure TMainForm.Action_FileExecute(Sender: TObject);
 begin
-// 没事做
+ //
 end;
 
 procedure TMainForm.GetToolbarWidthArr;
 var i: Integer;
 begin
-  // 循环MainControlBar中的各个Control，然后把每一个Control的宽度保存在Tag中
+  //
   for i := 0 to MainControlBar.ControlCount - 1 do
     MainControlBar.Controls[i].Tag := MainControlBar.Controls[i].Width;
   FCreated := True;
@@ -567,7 +567,7 @@ end;
 procedure TMainForm.MainControlBarBandMove(Sender: TObject;
   Control: TControl; var ARect: TRect);
 begin
-  // 当Toolbar移动的时候，调整它的Width
+  //
   if (Control.Tag <> ARect.Right - ARect.Left - 13) and FCreated then
   begin
     ARect.Right := ARect.Left + Control.Tag + 13;
@@ -576,13 +576,11 @@ end;
 
 procedure TMainForm.Action_New_ProjectExecute(Sender: TObject);
 begin
-  { 没事做，显示一个提示信息 }
-  ShowMessage(Format('You have click ''%s''', [TAction(Sender).Caption]));
+  MainFormStatusBar.Panels[2].Text := Format('You clicked ''%s''', [TAction(Sender).Caption]);
 end;
 
 procedure TMainForm.Action_ExitExecute(Sender: TObject);
 begin
-  { 关闭 }
   Close;
 end;
 
@@ -795,6 +793,16 @@ begin
   JvAppStorage := TJvAppIniFileStorage.Create(self);
   {$ENDIF}
   LoadDockInfo;
+end;
+
+procedure TMainForm.Action_AboutExecute(Sender: TObject);
+begin
+ with TSplashForm.Create(nil) do
+ try
+   ShowModal;
+ finally
+   Free;
+ end;
 end;
 
 end.

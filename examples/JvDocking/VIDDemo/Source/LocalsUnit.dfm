@@ -1,6 +1,6 @@
 object LocalsForm: TLocalsForm
-  Left = 256
-  Top = 183
+  Left = 620
+  Top = 246
   Width = 220
   Height = 270
   BorderStyle = bsSizeToolWin
@@ -12,12 +12,12 @@ object LocalsForm: TLocalsForm
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
-  Font.Name = #203#206#204#229
+  Font.Name = 'MS Sans Serif'
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   PixelsPerInch = 96
-  TextHeight = 15
+  TextHeight = 13
   object Panel1: TPanel
     Left = 0
     Top = 0
@@ -30,7 +30,7 @@ object LocalsForm: TLocalsForm
       Left = 0
       Top = 0
       Width = 212
-      Height = 30
+      Height = 26
       Align = alTop
       BevelOuter = bvNone
       TabOrder = 0
@@ -38,17 +38,17 @@ object LocalsForm: TLocalsForm
       object ComboBox: TComboBox
         Left = 0
         Top = 1
-        Width = 212
-        Height = 23
-        ItemHeight = 15
+        Width = 184
+        Height = 21
+        ItemHeight = 13
         TabOrder = 0
       end
     end
     object Panel: TPanel
       Left = 0
-      Top = 50
+      Top = 43
       Width = 212
-      Height = 193
+      Height = 200
       Align = alClient
       BevelInner = bvRaised
       BevelOuter = bvLowered
@@ -58,18 +58,18 @@ object LocalsForm: TLocalsForm
         Left = 2
         Top = 2
         Width = 208
-        Height = 189
+        Height = 196
         Align = alClient
         BorderStyle = bsNone
-        ItemHeight = 15
+        ItemHeight = 13
         TabOrder = 0
       end
     end
     object Header: THeader
       Left = 0
-      Top = 30
+      Top = 26
       Width = 212
-      Height = 20
+      Height = 17
       Align = alTop
       BorderStyle = bsNone
       Sections.Sections = (

@@ -1,6 +1,6 @@
 object PropertiesForm: TPropertiesForm
-  Left = 265
-  Top = 98
+  Left = 571
+  Top = 274
   Width = 257
   Height = 294
   BorderStyle = bsSizeToolWin
@@ -18,19 +18,19 @@ object PropertiesForm: TPropertiesForm
   OldCreateOrder = False
   OnResize = FormResize
   PixelsPerInch = 96
-  TextHeight = 14
+  TextHeight = 15
   object Panel: TPanel
     Left = 0
     Top = 0
     Width = 249
-    Height = 56
+    Height = 60
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
     OnResize = PanelResize
     object ToolBar1: TToolBar
       Left = 0
-      Top = 32
+      Top = 36
       Width = 249
       Height = 24
       Align = alBottom
@@ -62,17 +62,17 @@ object PropertiesForm: TPropertiesForm
     object ComboBox: TComboBox
       Left = 1
       Top = 2
-      Width = 253
-      Height = 22
-      ItemHeight = 14
+      Width = 271
+      Height = 23
+      ItemHeight = 15
       TabOrder = 1
     end
   end
   object Panel1: TPanel
     Left = 0
-    Top = 56
+    Top = 60
     Width = 249
-    Height = 211
+    Height = 207
     Align = alClient
     BevelInner = bvRaised
     BevelOuter = bvLowered
@@ -82,7 +82,7 @@ object PropertiesForm: TPropertiesForm
       Left = 2
       Top = 2
       Width = 245
-      Height = 207
+      Height = 203
       Align = alClient
       BorderStyle = bsNone
       ColCount = 2

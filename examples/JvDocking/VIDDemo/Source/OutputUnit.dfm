@@ -12,17 +12,17 @@ object OutputForm: TOutputForm
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
-  Font.Name = 'ËÎÌו'
+  Font.Name = #203#206#204#229
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   PixelsPerInch = 96
-  TextHeight = 12
+  TextHeight = 15
   object Shape1: TShape
     Left = 0
-    Top = 24
+    Top = 30
     Width = 212
-    Height = 169
+    Height = 164
     Align = alClient
     Brush.Color = clBtnFace
     Pen.Color = clGrayText
@@ -31,7 +31,7 @@ object OutputForm: TOutputForm
     Left = 0
     Top = 0
     Width = 212
-    Height = 24
+    Height = 30
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
@@ -39,9 +39,9 @@ object OutputForm: TOutputForm
     object ComboBox: TComboBox
       Left = 0
       Top = 1
-      Width = 177
-      Height = 20
-      ItemHeight = 12
+      Width = 221
+      Height = 23
+      ItemHeight = 15
       TabOrder = 0
     end
   end
@@ -50,6 +50,7 @@ object OutputForm: TOutputForm
     TBDockHeight = 100
     DirectDrag = False
     ShowHint = True
+    EnableCloseButton = True
     DockStyle = MainForm.JvDockVIDStyle1
     Left = 64
     Top = 88
