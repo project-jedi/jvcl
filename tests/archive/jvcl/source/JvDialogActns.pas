@@ -93,11 +93,11 @@ type
 
   TJvBrowseFolderAction = class(TJvCommonDialogAction)
   private
-    function GetDialog: TJvBrowseFolder;
+    function GetDialog: TJvBrowseForFolderDialog;
   protected
     function GetDialogClass: TJvCommonDialogClass; override;
   published
-    property Dialog: TJvBrowseFolder read GetDialog;
+    property Dialog: TJvBrowseForFolderDialog read GetDialog;
   end;
 
   TJvSelectDirectoryAction = class(TJvCommonDialogAction)
@@ -242,7 +242,7 @@ end;
 
 function TJvCommonDialogAction.HandlesTarget(Target: TObject): Boolean;
 begin
-  Result := true;
+  Result := True;
 end;
 
 //=== TJvCommonDialogPAction =================================================
@@ -284,19 +284,19 @@ end;
 
 function TJvCommonDialogPAction.HandlesTarget(Target: TObject): Boolean;
 begin
-  Result := true;
+  Result := True;
 end;
 
 //=== TJvBrowseFolderAction ==================================================
 
-function TJvBrowseFolderAction.GetDialog: TJvBrowseFolder;
+function TJvBrowseFolderAction.GetDialog: TJvBrowseForFolderDialog;
 begin
-  Result := TJvBrowseFolder(FDialog);
+  Result := TJvBrowseForFolderDialog(FDialog);
 end;
 
 function TJvBrowseFolderAction.GetDialogClass: TJvCommonDialogClass;
 begin
-  Result := TJvBrowseFolder;
+  Result := TJvBrowseForFolderDialog;
 end;
 
 //=== TJvSelectDirectoryAction ===============================================

@@ -35,32 +35,23 @@ uses
   JvBaseDlg, JvTypes;
 
 type
-  TJvCommonExecDlg = class(TJvCommonDialogP)
+  TJvCommonExecDialog = class(TJvCommonDialogP)
   private
-    FOwnerHandle: THandle;
+    FOwnerWindow: HWND;
   public
     constructor Create(AOwner: TComponent); override;
-  published
-    procedure Execute; override;
+    property OwnerWindow: HWND read FOwnerWindow;
   end;
 
 implementation
 
-resourcestring
-  RC_ErrorOwner = 'Owner must be of type TWinControl';
-
-constructor TJvCommonExecDlg.Create(AOwner: TComponent);
+constructor TJvCommonExecDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   if AOwner is TWinControl then
-    FOwnerHandle := (AOwner as TWinControl).Handle
+    FOwnerWindow := (AOwner as TWinControl).Handle
   else
-    raise EJVCLException.Create(RC_ErrorOwner);
-end;
-
-procedure TJvCommonExecDlg.Execute;
-begin
-  // (rom) TODO?
+    FOwnerWindow := 0;
 end;
 
 end.

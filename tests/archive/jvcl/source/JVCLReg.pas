@@ -311,7 +311,7 @@ begin
 
   // Jv Dialogs
   RegisterComponents('Jv Dialogs',
-    [TJvBrowseFolder, TJvSelectDirectory, TJvOpenDialog, TJvSaveDialog,
+    [TJvBrowseForFolderDialog, TJvSelectDirectory, TJvOpenDialog, TJvSaveDialog,
      TJvOpenDialog2000, TJvSaveDialog2000,TJvConnectNetwork,
      TJvDisconnectNetwork, TJvPageSetupDialog, TJvPageSetupTitledDialog,
      TJvAddPrinterDialog, TJvFindFilesDialog, TJvFormatDrive,

@@ -43,20 +43,21 @@ type
      sfMyComputer, sfFonts, sfNetHood, sfNetwork, sfPersonal, sfPrinters,
      sfPrograms, sfRecent, sfSendTo, sfStartMenu, stStartUp, sfTemplates);
 
-  TJvFindFilesDialog = class(TJvCommonDialog)
+  TJvFindFilesDialog = class(TJvCommonDialogF)
   private
-    FUse: Boolean;
-    FDir: string;
+    FUseSpecialFolder: Boolean;
+    FDirectory: string;
     FSpecial: TJvSpecialFolder;
   public
+    constructor Create(AOwner: TComponent); override;
     function Execute: Boolean; override;
   published
     // the directory to start the search in
-    property Directory: string read FDir write FDir;
+    property Directory: string read FDirectory write FDirectory;
     // ... or a special folder to start in
-    property SpecialFolder: TJvSpecialFolder read FSpecial write FSpecial;
+    property SpecialFolder: TJvSpecialFolder read FSpecial write FSpecial default sfMyComputer;
     // set to True to sue SpecialFolder instead of Directory
-    property UseSpecialFolder: Boolean read FUse write FUse;
+    property UseSpecialFolder: Boolean read FUseSpecialFolder write FUseSpecialFolder;
   end;
 
 function FindFilesDlg(StartIn: string; SpecialFolder: TJvSpecialFolder; UseFolder: Boolean): Boolean;
@@ -70,9 +71,16 @@ const
      CSIDL_PRINTERS, CSIDL_PROGRAMS, CSIDL_RECENT, CSIDL_SENDTO, CSIDL_STARTMENU,
      CSIDL_STARTUP, CSIDL_TEMPLATES);
 
+constructor TJvFindFilesDialog.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  // (rom) Create added to get a decent default for FSpecial
+  FSpecial := sfMyComputer;
+end;
+
 function TJvFindFilesDialog.Execute: Boolean;
 begin
-  Result := FindFilesDlg(FDir, FSpecial, FUse);
+  Result := FindFilesDlg(FDirectory, FSpecial, FUseSpecialFolder);
 end;
 
 function FindFilesDlg(StartIn: string; SpecialFolder: TJvSpecialFolder; UseFolder: Boolean): Boolean;

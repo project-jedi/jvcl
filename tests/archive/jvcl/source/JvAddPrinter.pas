@@ -36,9 +36,10 @@ uses
   JvBaseDlg;
 
 type
-  TJvAddPrinterDialog = class(TJvCommonDialogP)
+  // (rom) changed to new TJvCommonDialogF to get a better Execute
+  TJvAddPrinterDialog = class(TJvCommonDialogF)
   published
-    procedure Execute; override;
+    function Execute: Boolean; override;
   end;
 
 implementation
@@ -97,17 +98,17 @@ begin
   Result := NewItemIDList;
 end;
 
-function GetPrinterItemIDList(const DeskTopFolder: IShellFolder): PItemIDList;
+function GetPrinterItemIDList(const DesktopFolder: IShellFolder): PItemIDList;
 begin
   Result := nil;
-  if DeskTopFolder <> nil then
+  if DesktopFolder <> nil then
     if Failed(SHGetSpecialFolderLocation(0, CSIDL_PRINTERS, Result)) then
       Result := nil;
 end;
 
 function GetAddPrinterItem(const Allocator: IMalloc): PItemIDList;
 var
-  DeskTopFolder: IShellFolder;
+  DesktopFolder: IShellFolder;
   EnumIDList: IEnumIDList;
   hOK: HRESULT;
   PrinterItemIDList: PItemIDList;
@@ -117,12 +118,12 @@ var
 begin
   Result := nil;
   if Allocator <> nil then
-    if Succeeded(SHGetDesktopFolder(DeskTopFolder)) then
+    if Succeeded(SHGetDesktopFolder(DesktopFolder)) then
     begin
-      PrinterItemIDList := GetPrinterItemIDList(DeskTopFolder);
+      PrinterItemIDList := GetPrinterItemIDList(DesktopFolder);
       if PrinterItemIDList <> nil then
       begin
-        hOK := DeskTopFolder.BindToObject(PrinterItemIDList, nil, IID_IShellFolder, Pointer(PrintersFolder));
+        hOK := DesktopFolder.BindToObject(PrinterItemIDList, nil, IID_IShellFolder, Pointer(PrintersFolder));
         if Succeeded(hOK) then
           if Succeeded(PrintersFolder.EnumObjects(0, SHCONTF_FOLDERS or SHCONTF_NONFOLDERS, EnumIDList)) then
           begin
@@ -136,12 +137,13 @@ end;
 
 //=== TJvAddPrinterDialog ====================================================
 
-procedure TJvAddPrinterDialog.Execute;
+function TJvAddPrinterDialog.Execute: Boolean;
 var
   AddPrinterItemIDList: PItemIDList;
   Allocator: IMalloc;
   ShellExecuteInfo: TShellExecuteInfo;
 begin
+  Result := False;
   if CoGetMalloc(MEMCTX_TASK, Allocator) = S_OK then
   begin
     AddPrinterItemIDList := GetAddPrinterItem(Allocator);
@@ -156,7 +158,8 @@ begin
           lpIDList := AddPrinterItemIDList;
           nShow := SW_SHOWDEFAULT;
         end;
-        ShellExecuteEx(@ShellExecuteInfo);
+        // (rom) now reports success
+        Result := ShellExecuteEx(@ShellExecuteInfo);
       end;
     finally
       Allocator.Free(AddPrinterItemIDList);

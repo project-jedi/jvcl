@@ -33,8 +33,8 @@ interface
 
 uses
   ShellAPI, Windows, Classes, Forms, SysUtils, Graphics, Dialogs,
-  Controls, ShlOBJ, ComObj, ActiveX, CommDlg,
-  JvBaseDlg, JvFunctions; // For OSCheck
+  Controls, ShlObj, ComObj, ActiveX, CommDlg,
+  JvBaseDlg, JvTypes, JvComponent, JvFunctions; // For OSCheck
 
 type
   EShellOleError = class(Exception);
@@ -153,11 +153,23 @@ type
     procedure Execute; override;
   end;
 
-  TJvAppletDialog = class(TJvCommonDialog)
+  // (rom) largely reimplemented
+  TJvAppletDialog = class(TJvComponent)
   private
     FAppletName: string;
+    FModule: HMODULE;
+    FCount: Integer;
+    FAppletFunc: TCplApplet;
+    FAppletInfo: array of TJvCplInfo;
+    function GetAppletInfo(Index: Integer): TJvCplInfo;
+  protected
+    procedure Loaded; override;
   public
-    function Execute: Boolean; override;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function Execute(AppletIndex: Integer): Boolean;
+    property Count: Integer read FCount;
+    property AppletInfo[Index: Integer]: TJvCplInfo read GetAppletInfo;
   published
     property AppletName: string read FAppletName write FAppletName;
   end;
@@ -195,15 +207,16 @@ type
     property Caption: string read FCaption write FCaption;
   end;
 
-  TJvChangeIconDialog = class(TJvCommonDialogP)
+  // (rom) changed to new TJvCommonDialogF to get better Execute
+  TJvChangeIconDialog = class(TJvCommonDialogF)
   private
     FIconIndex: Integer;
-    FFilename: string;
+    FFileName: string;
   public
-    procedure Execute; override;
+    function Execute: Boolean; override;
   published
     property IconIndex: Integer read FIconIndex write FIconIndex;
-    property Filename: string read FFilename write FFilename;
+    property FileName: string read FFileName write FFileName;
   end;
 
   TJvShellAboutDialog = class(TJvCommonDialog)
@@ -355,9 +368,6 @@ type
   GetSaveFileNameExProc = function(var SaveFile: TOpenFileNameEx): BOOL; stdcall;
 
 implementation
-
-uses
-  JvTypes;
 
 var
   FreePIDL: FreePIDLProc = nil;
@@ -562,26 +572,86 @@ end;
 
 //=== TJvAppletDialog ========================================================
 
-function TJvAppletDialog.Execute: Boolean;
-var
-  APModule: THandle;
-  Applet: TCplApplet;
+constructor TJvAppletDialog.Create(AOwner: TComponent);
 begin
-  if FAppletName = '' then
+  inherited Create(AOwner);
+  FModule := HINSTANCE_ERROR;
+  FCount := 0;
+end;
+
+destructor TJvAppletDialog.Destroy;
+var
+  I: Integer;
+begin
+  for I := 0 to Count-1 do
   begin
-    Result := False;
-    Exit;
+    FAppletInfo[I].Icon.Free;
+    FAppletInfo[I].Name := '';
+    FAppletInfo[I].Info := '';
   end;
-  APModule := LoadLibrary(Pchar(AppletName));
-  if APModule <= HINSTANCE_ERROR then
+  if FModule > HINSTANCE_ERROR then
   begin
-    Result := False;
-    Exit;
+    FAppletFunc(Application.Handle, CPL_EXIT, 0, 0);
+    FreeLibrary(FModule);
   end;
-  Applet := TCplApplet(GetProcAddress(APModule, 'CPlApplet'));
-  Applet(0, CPL_DBLCLK, 0, 0);
-  FreeLibrary(ApModule);
-  Result := True;
+  inherited Destroy;
+end;
+
+procedure TJvAppletDialog.Loaded;
+var
+  I: Integer;
+  AplInfo: TCplInfo;
+  Buffer: array [0..1023] of Char;
+begin
+  inherited Loaded;
+  if AppletName <> '' then
+  begin
+    FModule := LoadLibrary(PChar(AppletName));
+    if FModule <= HINSTANCE_ERROR then
+      Exit;
+    FAppletFunc := TCplApplet(GetProcAddress(FModule, 'CPlApplet'));
+    if Assigned(FAppletFunc) and (FAppletFunc(Application.Handle, CPL_INIT, 0, 0) <> 0) then
+    begin
+      FCount := FAppletFunc(Application.Handle, CPL_GETCOUNT, 0, 0);
+      SetLength(FAppletInfo, FCount);
+      FCount := FAppletFunc(Application.Handle, CPL_GETCOUNT, 0, 0);
+      for I := 0 to Count-1 do
+      begin
+        FAppletFunc(Application.Handle, CPL_INQUIRE, I, Longint(@AplInfo));
+        with FAppletInfo[I] do
+        begin
+          Icon := TIcon.Create;
+          Icon.Handle := LoadIcon(FModule, MakeIntResource(AplInfo.idIcon));
+          LoadString(FModule, AplInfo.idName, Buffer, SizeOf(Buffer));
+          Name := Buffer;
+          LoadString(FModule, AplInfo.idInfo, Buffer, SizeOf(Buffer));
+          Info := Buffer;
+        end;
+      end;
+    end
+    else
+    begin
+      FreeLibrary(FModule);
+      FModule := HINSTANCE_ERROR;
+    end;
+  end;
+end;
+
+function TJvAppletDialog.GetAppletInfo(Index: Integer): TJvCplInfo;
+begin
+  FillChar(Result, SizeOf(Result), #0);
+  if (Index >= 0) and (Index < Count) then
+    Result := FAppletInfo[Index];
+end;
+
+function TJvAppletDialog.Execute(AppletIndex: Integer): Boolean;
+begin
+  Result := False;
+  if Assigned(FAppletFunc) and (AppletIndex >= 0) and (AppletIndex < Count) then
+  begin
+    FAppletFunc(Application.Handle, CPL_DBLCLK, AppletIndex, AppletInfo[AppletIndex].lData);
+    Result := True;
+  end;
 end;
 
 //=== TJvComputerNameDialog ==================================================
@@ -1022,7 +1092,7 @@ begin
     Exit;
   Applet := TCplApplet(GetProcAddress(APModule, 'CPlApplet'));
   Applet(0, CPL_DBLCLK, 0, 0);
-  FreeLibrary(ApModule);
+  FreeLibrary(APModule);
 end;
 
 function CreateShellLink(const AppName, Desc: string; Dest: string): string;
@@ -1149,9 +1219,9 @@ begin
   F.Wnd := 0;
   F.wFunc := FO_COPY;
   FromFile := FromFile + #0;
-  F.pFrom := pchar(FromFile);
+  F.pFrom := PChar(FromFile);
   ToDir := ToDir + #0;
-  F.pTo := pchar(ToDir);
+  F.pTo := PChar(ToDir);
   F.fFlags := FOF_ALLOWUNDO or FOF_NOCONFIRMATION;
   Result := ShFileOperation(F) = 0;
 end;
@@ -1165,7 +1235,7 @@ var
   APModule: THandle;
   Applet: CPLApplet;
 begin
-  APModule := LoadLibrary(Pchar(AppletName));
+  APModule := LoadLibrary(PChar(AppletName));
   if APModule <= HINSTANCE_ERROR then
     Exit;
   Applet := CPLApplet(GetProcAddress(APModule, 'CPlApplet'));
@@ -1222,23 +1292,25 @@ end;
 
 //=== TJvChangeIconDialog ====================================================
 
-procedure TJvChangeIconDialog.Execute;
+function TJvChangeIconDialog.Execute: Boolean;
 var
   Buf: array [0..MAX_PATH] of Char;
   BufW: array [0..MAX_PATH] of WideChar;
 begin
   if Assigned(SHChangeIconW) then
   begin
-    StringToWideChar(Filename, BufW, SizeOf(BufW));
-    if SHChangeIconW(Application.Handle, BufW, SizeOf(BufW), FIconIndex) = 1 then
-      Filename := BufW;
+    StringToWideChar(FileName, BufW, SizeOf(BufW));
+    Result := SHChangeIconW(Application.Handle, BufW, SizeOf(BufW), FIconIndex) = 1;
+    if Result then
+      FileName := BufW;
   end
   else
   if Assigned(SHChangeIcon) then
   begin
-    StrPCopy(Buf, Filename);
-    if SHChangeIcon(Application.Handle, Buf, SizeOf(Buf), FIconIndex) = 1 then
-      Filename := Buf;
+    StrPCopy(Buf, FileName);
+    Result := SHChangeIcon(Application.Handle, Buf, SizeOf(Buf), FIconIndex) = 1;
+    if Result then
+      FileName := Buf;
   end
   else
     raise EWinDialogError.Create(SNotSupported);

@@ -51,12 +51,14 @@ type
     odNewDialogStyle, odShareable);
   TOptionsDir = set of TOptionsDirectory;
 
-  TJvBrowseFolder = class(TJvCommonDialog)
+  // (rom) changed name
+  TJvBrowseForFolderDialog = class(TJvCommonDialog)
   private
+    // (rom) changed names to Window and type to HWND
     { Handle to the owner form of the dialog, used if Position = fpFormCenter }
-    FOwnerHandle: THandle;
+    FOwnerWindow: HWND;
     { Handle to the MS "Browse for folder" dialog }
-    FDialogHandle: THandle;
+    FDialogWindow: HWND;
     FTitle: string;
     FOptions: TOptionsDir;
     FDisplayName: string;
@@ -87,7 +89,7 @@ type
     procedure SetPath(const HWND: THandle; const Path: string);
     procedure WMShowWindow(var Msg: TMessage); message WM_SHOWWINDOW;
   protected
-    function GetOwnerHandle: THandle;
+    function GetOwnerWindow: HWND;
     procedure MainWndProc(var Msg: TMessage);
     procedure HookDialog;
   public
@@ -98,7 +100,7 @@ type
     procedure SetStatusText(Value: string);
     procedure SetOkEnabled(Value: Boolean);
     property LastPidl: TItemIDList read FPidl write FPidl;
-    property Handle: THandle read FDialogHandle;
+    property Handle: HWND read FDialogWindow;
 
     function Execute: Boolean; override;
   published
@@ -112,7 +114,6 @@ type
       FFromDirectory;
     property Title: string read FTitle write FTitle;
     property StatusText: string read FStatusText write FStatusText;
-
     property OnAcceptChange: TJvBrowseAcceptChange read FOnAcceptChange write
       FOnAcceptChange;
     property OnInitialized: TNotifyEvent read FOnInit write FOnInit;
@@ -137,7 +138,7 @@ const
 
 function BrowseForFolder(const ATitle: string; AllowCreate: Boolean; var ADirectory: string): Boolean;
 begin
-  with TJvBrowseFolder.Create(nil) do
+  with TJvBrowseForFolderDialog.Create(nil) do
   try
     Position := fpScreenCenter;
     Directory := ADirectory;
@@ -154,12 +155,12 @@ begin
   end;
 end;
 
-constructor TJvBrowseFolder.Create(AOwner: TComponent);
+constructor TJvBrowseForFolderDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FOptions := [odStatusAvailable, odNewDialogStyle];
   { (rb) delayed until execute }
-  //FOwnerHandle := GetOwnerHandle;
+  //FOwnerWindow := GetOwnerWindow;
   {$IFDEF COMPILER6_UP}
   FObjectInstance := Classes.MakeObjectInstance(MainWndProc);
   {$ELSE}
@@ -167,7 +168,7 @@ begin
   {$ENDIF}
 end;
 
-destructor TJvBrowseFolder.Destroy;
+destructor TJvBrowseForFolderDialog.Destroy;
 begin
   if FObjectInstance <> nil then
     {$IFDEF COMPILER6_UP}
@@ -232,7 +233,7 @@ begin
   end;
 end;
 
-procedure TJvBrowseFolder.UpdateStatusText(const HWND: THandle;
+procedure TJvBrowseForFolderDialog.UpdateStatusText(const HWND: THandle;
   const Text: string);
 const
   cStatusLabel = $3743;
@@ -268,17 +269,17 @@ procedure lpfnBrowseProc(hWnd: THandle; uMsg: Integer; lParam: LPARAM;
   lpData: LPARAM); stdcall;
 var
   Accept: Boolean;
-  FBrowser: TJvBrowseFolder;
+  FBrowser: TJvBrowseForFolderDialog;
   FBuff: array [0..MAX_PATH] of Char;
   APath: string;
 begin
   { TODO : Need to react on BFFM_IUNKNOWN (for custom filtering) and
            BFFM_VALIDATEFAILED }
 
-  FBrowser := TJvBrowseFolder(lpData);
+  FBrowser := TJvBrowseForFolderDialog(lpData);
   with FBrowser do
   begin
-    FDialogHandle := hWnd;
+    FDialogWindow := hWnd;
     case uMsg of
       BFFM_INITIALIZED:
         begin
@@ -288,16 +289,16 @@ begin
             // Delay the change until receive of WM_SHOWWINDOW
             HookDialog
           else
-            SetDialogPos(FOwnerHandle, FDialogHandle, Position);
+            SetDialogPos(FOwnerWindow, FDialogWindow, Position);
 
           //Change directory (if possible)
           if FDirectory <> '' then
-            SetPath(FDialogHandle, FDIrectory);
-          //            SendMessage(FDialogHandle, BFFM_SETSELECTION, Integer(True), Integer(PChar(FDirectory)));
+            SetPath(FDialogWindow, FDIrectory);
+          //            SendMessage(FDialogWindow, BFFM_SETSELECTION, Integer(True), Integer(PChar(FDirectory)));
           UpdateStatusText(HWND, FDirectory);
           //Call init event
           if Assigned(FOnInit) then
-            FOnInit(TObject(lpData) as TJvBrowseFolder);
+            FOnInit(TObject(lpData) as TJvBrowseForFolderDialog);
         end;
       BFFM_SELCHANGED:
         begin
@@ -317,19 +318,19 @@ begin
   end;
 end;
 
-procedure TJvBrowseFolder.SetOkEnabled(Value: Boolean);
+procedure TJvBrowseForFolderDialog.SetOkEnabled(Value: Boolean);
 begin
-  if FDialogHandle <> 0 then
-    SendMessage(FDialogHandle, BFFM_ENABLEOK, 0, LPARAM(Value));
+  if FDialogWindow <> 0 then
+    SendMessage(FDialogWindow, BFFM_ENABLEOK, 0, LPARAM(Value));
 end;
 
-procedure TJvBrowseFolder.SetStatusText(Value: string);
+procedure TJvBrowseForFolderDialog.SetStatusText(Value: string);
 begin
-  if FDialogHandle <> 0 then
-    SendMessage(FDialogHandle, BFFM_SETSTATUSTEXT, 0, LPARAM(PChar(Value)));
+  if FDialogWindow <> 0 then
+    SendMessage(FDialogWindow, BFFM_SETSTATUSTEXT, 0, LPARAM(PChar(Value)));
 end;
 
-function TJvBrowseFolder.Execute: Boolean;
+function TJvBrowseForFolderDialog.Execute: Boolean;
 const
   CSIDLLocations: array [TFromDirectory] of Cardinal =
     (0, CSIDL_BITBUCKET, CSIDL_CONTROLS, CSIDL_DESKTOP,
@@ -348,8 +349,8 @@ begin
   if ShellVersion < $00040000 then
     raise EJVCLException.Create('Shell not compatible with BrowseForFolder');
 
-  FDialogHandle := 0;
-  FOwnerHandle := GetOwnerHandle;
+  FDialogWindow := 0;
+  FOwnerWindow := GetOwnerWindow;
   FPositionSet := False;
   Result := False;
 
@@ -378,7 +379,7 @@ begin
   if (odShareable in FOptions) and (ShellVersion >= $00050000) then
     BrowseInfo.ulFlags := BrowseInfo.ulFlags or BIF_SHAREABLE;
 
-  BrowseInfo.hwndOwner := FOwnerHandle;
+  BrowseInfo.hwndOwner := FOwnerWindow;
   
   if CSIDLLocations[FFromDirectory] <> 0 then
     SHGetSpecialFolderLocation(Handle, CSIDLLocations[FFromDirectory],
@@ -414,11 +415,11 @@ begin
     CoUninitialize;
   except
   end;
-  FDialogHandle := 0;
-  FOwnerHandle := 0;
+  FDialogWindow := 0;
+  FOwnerWindow := 0;
 end;
 
-function TJvBrowseFolder.GetOwnerHandle: THandle;
+function TJvBrowseForFolderDialog.GetOwnerWindow: HWND;
 var
   F: TCustomForm;
 begin
@@ -439,12 +440,12 @@ begin
     Result := GetFocus;
 end;
 
-procedure TJvBrowseFolder.SetPath(const HWND: THandle; const Path: string);
+procedure TJvBrowseForFolderDialog.SetPath(const HWND: THandle; const Path: string);
 begin
   SendMessage(HWND, BFFM_SETSELECTION, Ord(True), Integer(PChar(Path)));
 end;
 
-procedure TJvBrowseFolder.MainWndProc(var Msg: TMessage);
+procedure TJvBrowseForFolderDialog.MainWndProc(var Msg: TMessage);
 begin
   try
     Dispatch(Msg);
@@ -453,23 +454,23 @@ begin
   end;
 end;
 
-procedure TJvBrowseFolder.DefaultHandler(var Msg);
+procedure TJvBrowseForFolderDialog.DefaultHandler(var Msg);
 begin
-  if FDialogHandle <> 0 then
+  if FDialogWindow <> 0 then
     with TMessage(Msg) do
-      Result := CallWindowProc(FDefWndProc, FDialogHandle, Msg, WParam, LParam)
+      Result := CallWindowProc(FDefWndProc, FDialogWindow, Msg, WParam, LParam)
   else
     inherited DefaultHandler(Msg);
 end;
 
-procedure TJvBrowseFolder.HookDialog;
+procedure TJvBrowseForFolderDialog.HookDialog;
 begin
-  if FDialogHandle <> 0 then
-    FDefWndProc := Pointer(SetWindowLong(FDialogHandle, GWL_WNDPROC,
+  if FDialogWindow <> 0 then
+    FDefWndProc := Pointer(SetWindowLong(FDialogWindow, GWL_WNDPROC,
       Longint(FObjectInstance)));
 end;
 
-procedure TJvBrowseFolder.WMShowWindow(var Msg: TMessage);
+procedure TJvBrowseForFolderDialog.WMShowWindow(var Msg: TMessage);
 begin
   { If the dialog isn't resized, we won't get a WM_SIZE message. Thus we
     respond to the WM_SHOWWINDOW message
@@ -477,7 +478,7 @@ begin
     Maybe good idea to only respond to WM_SHOWWINDOW <g> }
 
   if not FPositionSet then
-    SetDialogPos(FOwnerHandle, FDialogHandle, Position);
+    SetDialogPos(FOwnerWindow, FDialogWindow, Position);
   FPositionSet := True;
 
   inherited;

@@ -45,8 +45,9 @@ type
   public
   end;
 
-var
-  JvStandardActions: TJvStandardActions;
+// (rom) unused
+// var
+//   JvStandardActions: TJvStandardActions;
 
 implementation
 
