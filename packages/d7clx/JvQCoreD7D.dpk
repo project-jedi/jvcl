@@ -29,7 +29,13 @@ package JvQCoreD7D;
 requires
   JvQCoreD7R,
   designide,
-  clxdesigner;
+  clxdesigner,
+  rtl,
+  visualclx,
+  DJcl,
+  JvQStdCtrlsD7R,
+  JvQSystemD7R,
+  DJclVClx;
 
 contains
   JvQProviderTreeListDsgnFrame in '..\..\qdesign\JvQProviderTreeListDsgnFrame.pas' {fmeJvProviderTreeListDsgn: TFrame},
