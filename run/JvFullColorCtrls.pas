@@ -69,6 +69,7 @@ type
     FBuffer: TBitmap;
     FCreating: Boolean;
     FWantDrawBuffer: Boolean;
+    FMouseDragging: Boolean;
     function GetColorSpace: TJvColorSpace;
     procedure SetAxisConfig(const Value: TJvFullColorAxisConfig);
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
@@ -94,6 +95,7 @@ type
     procedure KeyMove(KeyCode: TJvKeyCode; MoveCount: Integer); virtual;
     procedure InvalidateCursor; virtual; abstract;
     property WantDrawBuffer: Boolean read FWantDrawBuffer write SetWantDrawBuffer;
+    property MouseDragging: Boolean read FMouseDragging;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -911,7 +913,10 @@ begin
   SetFocus;
   try
     if AutoMouse and (Shift * [ssLeft, ssMiddle, ssRight] <> []) then
+    begin
+      FMouseDragging := True;
       MouseColor(Shift, X, Y);
+    end;
     inherited MouseDown(Button, Shift, X, Y);
   finally
     SetCapture(Handle);
@@ -920,7 +925,7 @@ end;
 
 procedure TJvFullColorComponent.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
-  if AutoMouse and (Shift * [ssLeft, ssMiddle, ssRight] <> []) then
+  if MouseDragging and AutoMouse and (Shift * [ssLeft, ssMiddle, ssRight] <> []) then
     MouseColor(Shift, X, Y);
   inherited MouseMove(Shift, X, Y);
 end;
@@ -928,6 +933,7 @@ end;
 procedure TJvFullColorComponent.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   try
+    FMouseDragging := False;
     inherited MouseUp(Button, Shift, X, Y);
   finally
     ReleaseCapture;
