@@ -5,8 +5,8 @@ unit JvPrvwDoc;
     * Adjust Cols and/or Rows when Zoom changes
     * Center pages in view
     * Only show horizontal scroll when page is too large (1 page), otherwise size Cols to fit
-    * Draw to offscreen bitmap
-    * User configurable margins
+    + Draw to offscreen bitmap
+    * User configurable margins (could use DeviceInfo.OffsetLeft etc but needs to be available in inch/mm as well)
     * Handle getting/setting SelectedPage (click on page -> select it)
     * Draw "fake" text when page is small (like Word does)?
     * Handle wheel scroll (scroll: up-down / shift+scroll: left-right)
@@ -16,7 +16,7 @@ unit JvPrvwDoc;
     * if showing 1 page (page >= clientrect), show horz scrollbar, set scroll size ~ 1 line
     * if showing more than one col/row, hide horz scroll and scale pages to fit
       (i.e if Cols = 3, Rows = 2 -> scale to show 3x2 pages)
-      and vert scroll Rows count pages on each click (i.e if Rows = 4 -> scroll 4 pages)
+      and scroll Rows pages on each click (i.e if Rows = 4 -> scroll 4 pages)
     * if scaling would make pages too small, show as many pages as possible
 }
 
@@ -31,8 +31,11 @@ type
   TJvDrawPageEvent = procedure(Sender: TObject; PageIndex: integer; Canvas: TCanvas;
     PageRect, PrintRect: TRect) of object;
   TJvCustomPreviewDoc = class;
+
   IJvPrinter = interface
     ['{FDCCB7CD-8DF7-48B9-9924-CE439AE97999}']
+    procedure SetTitle(const Value:string);
+    function GetTitle:string;
     procedure BeginDoc;
     procedure EndDoc;
     procedure NewPage;
@@ -200,6 +203,7 @@ type
     function Add: TMetaFile;
     procedure Delete(Index: integer);
     procedure Clear;
+    procedure PrintRange(const APrinter:IJvPrinter; StartPage,EndPage,Copies:integer; Collate:boolean);
 
     property Pages[Index: integer]: TMetaFile read GetPage;
     property PageCount: integer read GetPageCount;
@@ -271,8 +275,6 @@ type
   end;
 
 implementation
-const
-  cZoomDivFactor = 300;
 
 function ceil(Value:double):integer;
 begin
@@ -514,6 +516,7 @@ begin
   ShowScrollbar(Handle, SB_HORZ, true);
   ShowScrollbar(Handle, SB_VERT, true);
   si.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
+
   si.nMin := 0;
   si.nPos := -FScrollPos.X;
   si.nPage := ClientWidth;
@@ -658,23 +661,51 @@ begin
 end;
 
 function TJvCustomPreviewDoc.GetPreviewPageHeight: Cardinal;
+var DC:HDC;
 begin
-  Result := round(DeviceInfo.PageHeight * Options.Zoom / cZoomDivFactor);
+  DC := GetDC(0);
+  try
+    Result := MulDiv(MulDiv(DeviceInfo.PageHeight,GetDeviceCaps(DC,LOGPIXELSY),
+      DeviceInfo.LogPixelsY),Options.Zoom,100);
+  finally
+    ReleaseDC(0,DC);
+  end;
 end;
 
 function TJvCustomPreviewDoc.GetPreviewPageOffsetX: Cardinal;
+var DC:HDC;
 begin
-  Result := round(DeviceInfo.OffsetLeft * Options.Zoom / cZoomDivFactor);
+  DC := GetDC(0);
+  try
+    Result := MulDiv(MulDiv(DeviceInfo.OffsetLeft,GetDeviceCaps(DC,LOGPIXELSX),
+      DeviceInfo.LogPixelsX),Options.Zoom,100);
+  finally
+    ReleaseDC(0,DC);
+  end;
 end;
 
 function TJvCustomPreviewDoc.GetPreviewPageOffsetY: Cardinal;
+var DC:HDC;
 begin
-  Result := round(DeviceInfo.OffsetTop * Options.Zoom / cZoomDivFactor);
+  DC := GetDC(0);
+  try
+    Result := MulDiv(MulDiv(DeviceInfo.OffsetTop,GetDeviceCaps(DC,LOGPIXELSY),
+      DeviceInfo.LogPixelsY),Options.Zoom,100);
+  finally
+    ReleaseDC(0,DC);
+  end;
 end;
 
 function TJvCustomPreviewDoc.GetPreviewPageWidth: Cardinal;
+var DC:HDC;
 begin
-  Result := round(DeviceInfo.PageWidth * Options.Zoom / cZoomDivFactor);
+  DC := GetDC(0);
+  try
+    Result := MulDiv(MulDiv(DeviceInfo.PageWidth,GetDeviceCaps(DC,LOGPIXELSX),
+      DeviceInfo.LogPixelsX),Options.Zoom,100);
+  finally
+    ReleaseDC(0,DC);
+  end;
 end;
 
 function TJvCustomPreviewDoc.GetPreviewRects(PageIndex: integer; var APageRect, APrintRect: TRect): boolean;
@@ -819,8 +850,9 @@ begin
 end;
 
 procedure TJvCustomPreviewDoc.WMHScroll(var Msg: TWMHScroll);
-var AValue:integer;
+var AValue,AMin,AMax:integer;
 begin
+  GetScrollRange(Handle,SB_HORZ,AMin,AMax);
   // TODO: check range!
   case Msg.ScrollCode of
     SB_TOP:
@@ -858,9 +890,9 @@ begin
 end;
 
 procedure TJvCustomPreviewDoc.WMVScroll(var Msg: TWMVScroll);
-var AValue:integer;
+var AValue,AMin,AMax:integer;
 begin
-  // TODO: check range!
+  GetScrollRange(Handle,SB_VERT,AMin,AMax);
   case Msg.ScrollCode of
     SB_TOP:
     begin
@@ -877,6 +909,8 @@ begin
     SB_LINEDOWN,SB_PAGEDOWN:
     begin
       AValue := -(GetPreviewPageHeight + Max(Options.VertSpacing,Options.Shadow.Offset));
+      if -AValue-FScrollPos.Y >= AMax then
+        AValue := 0;
       ScrollBy(0,AValue);
       FScrollPos.Y := FScrollPos.Y + AValue;
     end;
@@ -908,6 +942,97 @@ begin
   Result := Max(Min(PageCount,Options.Cols),1);
   Result := Result * (GetPreviewPageWidth + Max(Options.HorzSpacing,Options.Shadow.Offset));
   Result := Result + Max(Options.HorzSpacing,Options.Shadow.Offset);
+end;
+
+procedure TJvCustomPreviewDoc.PrintRange(const APrinter: IJvPrinter;
+  StartPage, EndPage, Copies: integer; Collate: boolean);
+var i,j:integer;
+begin
+  if (APrinter = nil) or APrinter.GetPrinting then Exit;
+  if StartPage < 0 then
+    StartPage := PageCount - 1;
+  if EndPage < 0 then
+    EndPage := PageCount - 1;
+  if Copies < 1 then
+    Copies := 1;
+  if Collate then // Range * Copies
+  begin
+    if StartPage > EndPage then
+    begin
+      // print backwards
+      for i := 0 to Copies - 1 do
+        for j := StartPage downto EndPage do
+        begin
+          if APrinter.GetAborted then
+          begin
+            if APrinter.GetPrinting then
+              APrinter.EndDoc;
+            Exit;
+          end;
+          if (j = StartPage) and (i = 0) then
+            APrinter.BeginDoc;
+          APrinter.NewPage;
+          APrinter.GetCanvas.Draw(0,0,Pages[j]);
+        end;
+    end
+    else
+    begin
+      for i := 0 to Copies - 1 do
+        for j := StartPage to EndPage do
+        begin
+          if APrinter.GetAborted then
+          begin
+            if APrinter.GetPrinting then
+              APrinter.EndDoc;
+            Exit;
+          end;
+          if (j = StartPage) and (i = 0) then
+            APrinter.BeginDoc;
+          APrinter.NewPage;
+          APrinter.GetCanvas.Draw(0,0,Pages[j]);
+        end;
+    end;
+  end
+  else // Page * Copies
+  begin
+    if StartPage > EndPage then
+    begin
+      // print backwards
+      for j := StartPage downto EndPage do
+        for i := 0 to Copies - 1 do
+        begin
+          if APrinter.GetAborted then
+          begin
+            if APrinter.GetPrinting then
+              APrinter.EndDoc;
+            Exit;
+          end;
+          if (j = StartPage) and (i = 0) then
+            APrinter.BeginDoc;
+          APrinter.NewPage;
+          APrinter.GetCanvas.Draw(0,0,Pages[j]);
+        end;
+    end
+    else
+    begin
+      for j := StartPage to EndPage do
+        for i := 0 to Copies - 1 do
+        begin
+          if APrinter.GetAborted then
+          begin
+            if APrinter.GetPrinting then
+              APrinter.EndDoc;
+            Exit;
+          end;
+          if (j = StartPage) and (i = 0) then
+            APrinter.BeginDoc;
+          APrinter.NewPage;
+          APrinter.GetCanvas.Draw(0,0,Pages[j]);
+        end;
+    end;
+  end;
+  if APrinter.GetPrinting then
+    APrinter.EndDoc;
 end;
 
 { TJvDeviceInfo }

@@ -45,6 +45,8 @@ type
     tabOriginal: TTabSheet;
     OpenDialog1: TOpenDialog;
     reOriginal: TJvRichEdit;
+    PrintDialog1: TPrintDialog;
+    Print1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure udColumnsClick(Sender: TObject; Button: TUDBtnType);
     procedure udRowsClick(Sender: TObject; Button: TUDBtnType);
@@ -60,6 +62,7 @@ type
     procedure Next1Click(Sender: TObject);
     procedure Last1Click(Sender: TObject);
     procedure About1Click(Sender: TObject);
+    procedure Print1Click(Sender: TObject);
   private
     procedure OpenFile(const Filename: string);
     { Private declarations }
@@ -88,10 +91,8 @@ type
   private
     FFinished: boolean;
     FLastChar: integer;
-    FSaveRect: TREct;
     FRE: TRichEdit;
     FPreview: TJvPreviewDoc;
-  protected
     procedure DoAddPage(Sender: TObject; PageIndex: integer;
       Canvas: TCanvas; PageRect, PrintRect: TRect);
     procedure CreatePreview;
@@ -100,6 +101,7 @@ type
     property Finished: boolean read FFinished;
   end;
 
+
 var
   frmMain: TfrmMain;
 
@@ -107,6 +109,25 @@ implementation
 uses
   RichEdit, Printers;
 {$R *.dfm}
+
+type
+  TJvPrinter = class(TInterfacedObject, IUnknown, IJvPrinter)
+  private
+    FPrinter:TPrinter;
+  public
+    constructor Create(APrinter:TPrinter);
+    procedure BeginDoc;
+    procedure EndDoc;
+    function GetAborted: Boolean;
+    function GetCanvas: TCanvas;
+    function GetPageHeight: Integer;
+    function GetPageWidth: Integer;
+    function GetPrinting: Boolean;
+    procedure NewPage;
+    function GetTitle: String;
+    procedure SetTitle(const Value: String);
+
+  end;
 
 { TJvStringsPreviewRenderer }
 
@@ -226,12 +247,14 @@ end;
 procedure TfrmMain.OpenFile(const Filename: string);
 begin
   reOriginal.Lines.LoadFromFile(OpenDialog1.Filename);
+  Screen.Cursor := crHourGlass;
   with TJvRTFRenderer.Create(pd, reOriginal) do
   try
-    while not Finished do
+    while not Finished do // hangs here sometimes, why?
       Application.ProcessMessages;
   finally
     Free;
+    Screen.Cursor := crDefault;
   end;
   Caption := Format('%s: - (%d pages)',
     [ExtractFilename(OpenDialog1.Filename), pd.PageCount]);
@@ -309,7 +332,7 @@ begin
     FFinished := true;
 end;
 
-// this code was almost entirely stolen from TRichEidt.Print
+// this code was almost entirely stolen from TRichEdit.Print
 procedure TJvRTFRenderer.DoAddPage(Sender: TObject; PageIndex: integer;
   Canvas: TCanvas; PageRect, PrintRect: TRect);
 var
@@ -337,7 +360,6 @@ begin
       Range.rc.right := FRE.PageRect.Right * 1440 div LogX;
       Range.rc.bottom := FRE.PageRect.Bottom * 1440 div LogY;
     end;
-    FSaveRect := Range.rc;
     Range.rcPage := Range.rc;
     MaxLen := FRE.GetTextLen;
     Range.chrg.cpMax := -1;
@@ -358,6 +380,79 @@ begin
     Exit;
   end;
 //  FFinished := true;
+end;
+
+{ TJvPrinter }
+
+procedure TJvPrinter.BeginDoc;
+begin
+  FPrinter.BeginDoc;
+end;
+
+constructor TJvPrinter.Create(APrinter: TPrinter);
+begin
+  Assert(APrinter <> nil,'');
+  inherited Create;
+  FPrinter := APrinter;
+end;
+
+procedure TJvPrinter.EndDoc;
+begin
+  FPrinter.EndDoc;
+end;
+
+function TJvPrinter.GetAborted: Boolean;
+begin
+  Result := FPrinter.Aborted;
+end;
+
+function TJvPrinter.GetCanvas: TCanvas;
+begin
+  Result := FPrinter.Canvas;
+end;
+
+function TJvPrinter.GetPageHeight: Integer;
+begin
+  Result := FPrinter.PageHeight;
+end;
+
+function TJvPrinter.GetPageWidth: Integer;
+begin
+  Result := FPrinter.PageWidth;
+end;
+
+function TJvPrinter.GetPrinting: Boolean;
+begin
+  Result := FPrinter.Printing;
+end;
+
+function TJvPrinter.GetTitle: String;
+begin
+  Result := FPrinter.Title;
+end;
+
+procedure TJvPrinter.NewPage;
+begin
+  FPrinter.NewPage;
+end;
+
+procedure TJvPrinter.SetTitle(const Value: String);
+begin
+  FPrinter.Title := Value;
+end;
+
+procedure TfrmMain.Print1Click(Sender: TObject);
+var jp:TJvPrinter;
+begin
+  if PrintDialog1.Execute then
+  begin
+    jp := TJvPrinter.Create(Printer);
+    try
+      pd.PrintRange(jp,0,-1,1,false);
+    finally
+      jp.Free;
+    end;
+  end;
 end;
 
 end.

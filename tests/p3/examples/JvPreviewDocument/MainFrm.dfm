@@ -204,9 +204,14 @@ object frmMain: TfrmMain
       object N1: TMenuItem
         Caption = '-'
       end
-      object Printer1: TMenuItem
-        Caption = 'Printer...'
+      object Print1: TMenuItem
+        Caption = 'Print...'
         ShortCut = 16464
+        OnClick = Print1Click
+      end
+      object Printer1: TMenuItem
+        Caption = 'Printer Settings...'
+        ShortCut = 24656
         OnClick = Printer1Click
       end
       object N2: TMenuItem
@@ -262,5 +267,14 @@ object frmMain: TfrmMain
     InitialDir = '.'
     Left = 92
     Top = 112
+  end
+  object PrintDialog1: TPrintDialog
+    Copies = 1
+    MaxPage = 33
+    Options = [poPageNums]
+    PrintRange = prPageNums
+    ToPage = 33
+    Left = 88
+    Top = 160
   end
 end
