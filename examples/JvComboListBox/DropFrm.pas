@@ -158,7 +158,7 @@ begin
     FOnAccept(self, -1, ExcludeTrailingPathDelimiter(GetFullPath(tvFolders.Selected)));
 //  Action := caFree;
 //  frmDrop := nil;
-end;
+end;                            
 
 procedure TfrmDrop.btnCancelClick(Sender: TObject);
 begin
