@@ -240,8 +240,9 @@ object frmMain: TfrmMain
     Top = 0
     Width = 775
     Height = 410
-    ActivePage = tabPreview
+    ActivePage = tabOriginal
     Align = alClient
+    TabIndex = 0
     TabOrder = 1
     object tabOriginal: TTabSheet
       Caption = 'Original'

@@ -385,7 +385,7 @@ object frmMain: TfrmMain
       32)
     object lblPage: TLabel
       Left = 10
-      Top = 9
+      Top = 8
       Width = 157
       Height = 16
       Caption = 'General Survey Settings'

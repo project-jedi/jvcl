@@ -33,9 +33,9 @@ object frmMain: TfrmMain
     object lblTitle: TLabel
       Left = 12
       Top = 7
-      Width = 27
+      Width = 38
       Height = 16
-      Caption = 'Title'
+      Caption = '(title)'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -68,6 +68,9 @@ object frmMain: TfrmMain
       Top = 24
       Width = 483
       Height = 54
+      Caption = '(description)'
+      Text.Strings = (
+        '(description)')
       Anchors = [akLeft, akTop, akRight, akBottom]
       Transparent = False
       LinkColor = clBlue

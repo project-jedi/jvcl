@@ -98,9 +98,9 @@ type
   public
     { Public declarations }
     pd: TJvPreviewControl;
-    JvRTF: TJvRichEditPreviewer;
-    JvTxt: TJvStringsPreviewer;
-    JvImg: TJvGraphicPreviewer;
+    JvRTF: TJvPreviewRenderRichEdit;
+    JvTxt: TJvPreviewRenderStrings;
+    JvImg: TJvPreviewRenderGraphics;
   end;
 
 
@@ -152,9 +152,9 @@ end;
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   OpenDialog1.Filter := OpenDialog1.Filter + '|' + GraphicFilter(TGraphic);
-  JvImg := TJvGraphicPreviewer.Create(self);
-  JvRTF := TJvRichEditPreviewer.Create(self);
-  JvTxt := TJvStringsPreviewer.Create(self);
+  JvImg := TJvPreviewRenderGraphics.Create(self);
+  JvRTF := TJvPreviewRenderRichEdit.Create(self);
+  JvTxt := TJvPreviewRenderStrings.Create(self);
 
   pd := TJvPreviewControl.Create(self);
   pd.Name := 'JvPreviewDoc1';
@@ -347,7 +347,7 @@ end;
 
 procedure TfrmMain.About1Click(Sender: TObject);
 begin
-  ShowMessage('JvPreviewDocument Demo');
+  ShowMessage('JvPreviewControl Demo');
 end;
 
 procedure TfrmMain.cbScaleModeChange(Sender: TObject);
@@ -379,7 +379,7 @@ begin
     CreatePreview(false);
   end;
 end;
-
+                 
 procedure TfrmMain.BuildTXTPreview;
 begin
   with JvTxt do
@@ -394,7 +394,7 @@ end;
 
 procedure TfrmMain.Control1Click(Sender: TObject);
 begin
-  with TJvControlPreviewer.Create(nil) do
+  with TJvPreviewRenderControl.Create(nil) do
   try
     pd.First;
     PrintPreview := pd;
