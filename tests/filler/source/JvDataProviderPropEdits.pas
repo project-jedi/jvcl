@@ -151,7 +151,7 @@ end;
 procedure RegDataProviderPropEdits;
 begin
 {$IFNDEF COMPILER6_UP}
-  RegisterPropertyEditor(TypeInfo(TComponent), TComponent, 'DataProvider', TJvDataProviderProperty);
+  RegisterPropertyEditor(TypeInfo(TComponent), TComponent, 'Provider', TJvDataProviderProperty);
 {$ENDIF COMPILER6_UP}
   RegisterPropertyEditor(TypeInfo(TJvDataProviderTree), TComponent, '', TJvDataProviderTreeProperty);
 end;
