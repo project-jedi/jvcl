@@ -48,8 +48,8 @@ type
     FData: TJVCLData;
     FSelTargets: TList;
 
-    function GetJclDir: string;
-    procedure SetJCLDir(const Value: string);
+    function GetJclDir: WideString;
+    procedure SetJCLDir(const Value: WideString);
     function GetJVCLDir: string;
     function GetSelTargetCount: Integer;
     function GetSelTargets(Index: Integer): TTargetConfig;
@@ -70,7 +70,7 @@ type
 
     property PackageInstaller: IPackageInstaller read FPackageInstaller;
     property InstallType: TInstallType read FInstallType write FInstallType;
-    property JCLDir: string read GetJclDir write SetJCLDir;
+    property JCLDir: WideString read GetJclDir write SetJCLDir;
     property JVCLDir: string read GetJVCLDir;
 
     property SelTargetCount: Integer read GetSelTargetCount;
@@ -172,7 +172,7 @@ begin
   // do nothing
 end;
 
-function TInstaller.GetJclDir: string;
+function TInstaller.GetJclDir: WideString;
 var
   i: Integer;
 begin
@@ -190,7 +190,7 @@ begin
     Result := Format(sJclRootDirName, [ExtractFileDir(JVCLDir)]);
 end;
 
-procedure TInstaller.SetJCLDir(const Value: string);
+procedure TInstaller.SetJCLDir(const Value: WideString);
 var
   I: Integer;
 begin
