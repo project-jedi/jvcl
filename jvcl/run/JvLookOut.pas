@@ -1617,7 +1617,11 @@ procedure TJvCustomLookOutButton.VisibleChanged;
 begin
   inherited VisibleChanged;
   if not (csCreating in ControlState) then
+  begin
     Invalidate;
+    if Parent is TJvLookOutPage then
+      TJvLookOutPage(Parent).ScrollChildren(0);
+  end;
 end;
 
 //=== TJvExpressButton =======================================================
