@@ -4382,6 +4382,18 @@ end;
 
 procedure InternalRestoreFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage;
   const StorePath: string; Options: TPlacementOptions = [fpState, fpSize, fpLocation]);
+
+    procedure ChangePosition (APosition : TPosition);
+    begin
+      TComponentAccessProtected(Form).SetDesigning(True);
+      try
+        Form.Position := APosition;
+      finally
+        TComponentAccessProtected(Form).SetDesigning(False);
+      end;
+    end;
+
+
 const
   Delims = [',', ' '];
 var
@@ -4452,15 +4464,24 @@ begin
               rcNormalPosition.Top, rcNormalPosition.Left + Width, rcNormalPosition.Top + Height);
         if rcNormalPosition.Right > rcNormalPosition.Left then
         begin
-          if (Position in [poScreenCenter, poDesktopCenter]) and
-            not (csDesigning in ComponentState) then
+          if not (csDesigning in ComponentState) then
           begin
-            TComponentAccessProtected(Form).SetDesigning(True);
-            try
-              Position := poDesigned;
-            finally
-              TComponentAccessProtected(Form).SetDesigning(False);
-            end;
+            if (fpSize in Options) and (fpLocation in Options)  then
+              ChangePosition(poDesigned)
+            else if (fpSize in Options) then
+            {.$IFDEF DELPHI????_UP}  // Change to the right version 5 or 6 ?
+              if Position = poDefault then
+                ChangePosition(poDefaultPosOnly)
+              else
+            {.ENDIF}
+            else if (fpLocation in Options) then // obsolete but better to read
+            {.$IFDEF DELPHI????_UP}  // Change to the right version 5 or 6 ?
+              if Position = poDefault then
+                ChangePosition(poDefaultSizeOnly)
+              else
+            {.ENDIF}
+                if Position <> poDesigned then
+                  ChangePosition(poDesigned);
           end;
           SetWindowPlacement(Handle, @Placement);
         end;
