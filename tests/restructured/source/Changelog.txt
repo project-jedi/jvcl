@@ -1,5 +1,16 @@
+2002-08-25
+- JvInspector: Added RelativeDivider property
+- JvInspector: Changed compound item to a protected base class
+- JvInspector: Added public compound item
+- JvInspector: Added options to compound item to allow a single name
+- JvInspector: Added TDate, TTime and TDateTime editors
+- JvInspector: Changed the way data instances/items are created 
+- JvInspector: All Items have their own separate DisplayName, initialized to the data's Name property
+- JvInspector: Minor fix-ups
+
 2002-08-23
 - Added JVDSADialogs donated by Marcel Bestebroer
+
 2002-08-10
 - Moved JvSearchFile.pas, JvSearchFiles.pas and JvSysComp to /archive //Remko Bonte
 - Removed JclFileMaskComparator and TJvFileTreescan out of JvSysComp.pas //Remko Bonte
