@@ -44,16 +44,13 @@ const
   StSeparators = ['(', ')', ',', '.', ';'];
 
 type
-  {JvInterpreter Error Descriptions}
   TJvInterpreterErrorsDescr = record
     ID: Integer;
     Description: string;
   end;
 
-// (rom) need to be made resourcestrings
-
 const
-  JvInterpreterErrors: array [0..48] of TJvInterpreterErrorsDescr =
+  JvInterpreterErrors: array [0..52] of TJvInterpreterErrorsDescr =
     ((ID: 0; Description: RsEInterpreter0),
      (ID: 1; Description: RsEInterpreter1),
      (ID: 2; Description: RsEInterpreter2),
@@ -108,6 +105,10 @@ const
      (ID: 303; Description: RsEInterpreter303),
      (ID: 304; Description: RsEInterpreter304),
      (ID: 305; Description: RsEInterpreter305),
+     (ID: 306; Description: RsEInterpreter306),
+     (ID: 307; Description: RsEInterpreter307),
+     (ID: 308; Description: RsEInterpreter308),
+     (ID: 309; Description: RsEInterpreter309),
 
      (ID: 401; Description: RsEInterpreter401));
 
