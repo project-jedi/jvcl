@@ -45,12 +45,22 @@ uses
   {$ENDIF USEJVCL}
   SysUtils, StdCtrls, Classes;
 
-{$HPPEMIT '#define TDate Controls::TDate'}
-
 type
-  {$IFNDEF USEJVCL}
+{$IFNDEF USEJVCL}
+
   THintString = string;
-  {$ENDIF USEJVCL}
+{$HPPEMIT '#ifndef TDate'}
+{$IFDEF VCL}
+{$HPPEMIT '#define TDate Controls::TDate'}
+{$HPPEMIT '#define TTime Controls::TTime'}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+{$HPPEMIT '#define TDate TDateTime'}
+{$HPPEMIT '#define TTime TDateTime'}
+{$ENDIF VisualCLX}
+{$HPPEMIT '#endif'}
+
+{$ENDIF USEJVCL}
 
   TYearData = record
     DisplayText : string;

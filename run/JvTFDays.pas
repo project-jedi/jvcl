@@ -57,9 +57,6 @@ uses
   QStdCtrls, QImgList, QWindows, Types,
   {$ENDIF VisualCLX}
   JvTFManager, JvTFSparseMatrix,
-  {$IFDEF USEJVCL}
-  JvTypes,
-  {$ENDIF USEJVCL}
   JvTFUtils;
 
 // (ahuser) do not convert to JvExVCL. This package is USEJVCL'ed
@@ -71,8 +68,6 @@ const
    gcGroupHdr = -2;
    gcHdr = -1;
 
-{$HPPEMIT '#define TDate Controls::TDate'}
-{$HPPEMIT '#define TTime Controls::TTime'}
 type
   EJvTFDaysError = class(Exception);
 
@@ -1759,15 +1754,12 @@ type
 //function BorlToDOW(BorlDOW: Integer): TTFDayOfWeek;
 {$ENDIF Jv_TIMEBLOCKS}
 
-{$HPPEMIT '#undef TDate'}
-{$HPPEMIT '#undef TTime'}
-
 implementation
 
 uses
   Consts, Printers,
   {$IFDEF USEJVCL}
-  JvJVCLUtils, JvConsts, JvResources,
+  JvConsts, JvResources,
   {$ENDIF USEJVCL}
   TypInfo;
 

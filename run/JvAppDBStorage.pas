@@ -173,6 +173,7 @@ end;
 
 destructor TJvCustomAppDBStorage.Destroy;
 begin
+  DataSource := nil;
   FreeAndNil(FSectionLink);
   FreeAndNil(FKeyLink);
   FreeAndNil(FValueLink);
@@ -305,8 +306,9 @@ procedure TJvCustomAppDBStorage.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if AComponent = DataSource then
-    DataSource := nil;
+  if (Operation = opRemove) and not (csDestroying in ComponentState) then
+    if AComponent = DataSource then
+      DataSource := nil;
 end;
 
 function TJvCustomAppDBStorage.PathExistsInt(const Path: string): boolean;

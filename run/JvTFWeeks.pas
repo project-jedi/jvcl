@@ -43,8 +43,6 @@ uses
   {$ENDIF USEJVCL}
   JvTFManager, JvTFGlance, JvTFUtils;
 
-{$HPPEMIT '#define TDate Controls::TDate'}
-
 type
   TJvTFDispOrder = (doLeftRight, doTopBottom);
 
@@ -104,8 +102,6 @@ type
 //    property Navigator;
 //    property OnNavigate;
   end;
-
-{$HPPEMIT '#undef TDate'}
 
 implementation
 

@@ -166,7 +166,7 @@ type
     procedure EnabledChanged; override;
     function GetChecked: Boolean; override;
     procedure SetChecked(const AValue: Boolean); override;
-    procedure SetShowCheckbox(const AValue: Boolean); override;
+    procedure SetShowCheckBox(const AValue: Boolean); override;
     function GetEnableValidation: Boolean; virtual;
     procedure UpdateDisplay; virtual;
     function ValidateDate(const ADate: TDateTime): Boolean; virtual;
@@ -240,8 +240,8 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
+    property ShowCheckBox;
     property ShowHint;
-    property ShowCheckbox;
     property StoreDate;
     property StoreDateFormat;
     property TabOrder;
@@ -488,7 +488,7 @@ begin
         RaiseNoDate;
 
     if not AValue then
-      ShowCheckbox := False;
+      ShowCheckBox := False;
   end;
 end;
 
@@ -522,9 +522,9 @@ begin
   UpdateDisplay;
 end;
 
-procedure TJvCustomDatePickerEdit.SetShowCheckbox(const AValue: Boolean);
+procedure TJvCustomDatePickerEdit.SetShowCheckBox(const AValue: Boolean);
 begin
-  inherited SetShowCheckbox(AValue);
+  inherited SetShowCheckBox(AValue);
   if AValue then
     AllowNoDate := True;
   UpdateDisplay;

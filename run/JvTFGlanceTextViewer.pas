@@ -75,7 +75,7 @@ type
 
   {$IFDEF USEJVCL}
   TJvTFGVTextControl = class(TJvCustomControl)
-  {$ELSE}
+  {$else}
   TJvTFGVTextControl = class(TCustomControl)
   {$ENDIF USEJVCL}
   private
@@ -265,8 +265,8 @@ end;
 
 constructor TJvTFGVTextControl.Create(AOwner: TComponent);
 begin
-  inherited;
-  If AOwner is TJvTFGlanceTextViewer Then
+  inherited Create(AOwner);
+  if AOwner is TJvTFGlanceTextViewer then
     FViewer := TJvTFGlanceTextViewer(AOwner);
 
   DoubleBuffered := True;
@@ -284,46 +284,46 @@ begin
   FEditor.Parent := Self;
   //FEditor.Parent := Viewer.GlanceControl;
   // (rom) deactivated seems of no use
-  // If FEditor.Parent = nil then
+  // if FEditor.Parent = nil then
   //   Beep;
 end;
 
 procedure TJvTFGVTextControl.DrawDDButton(aCanvas: TCanvas);
 begin
-  With aCanvas do
-    Begin
-      Brush.Color := clBtnFace;
-      FillRect(FDDBtnRect);
+  with aCanvas do
+  begin
+    Brush.Color := clBtnFace;
+    FillRect(FDDBtnRect);
 
-      DrawArrow(aCanvas, FDDBtnRect, dirDown);
+    DrawArrow(aCanvas, FDDBtnRect, dirDown);
 
-      Pen.Color := clBlack;
-      PolyLine([FDDBtnRect.TopLeft, Point(FDDBtnRect.Right, FDDBtnRect.Top),
-               FDDBtnRect.BottomRight, Point(FDDBtnRect.Left, FDDBtnRect.Bottom),
-               FDDBtnRect.TopLeft]);
-      {
-      If Windows.PtInRect(aRect, FMouseLoc) Then
-        Begin
-          Pen.Color := clBtnHighlight;
-          MoveTo(aRect.Left, aRect.Top);
-          LineTo(aRect.Left, aRect.Bottom);
-          MoveTo(aRect.Left, aRect.Top);
-          LineTo(aRect.Right, aRect.Top);
+    Pen.Color := clBlack;
+    PolyLine([FDDBtnRect.TopLeft, Point(FDDBtnRect.Right, FDDBtnRect.Top),
+             FDDBtnRect.BottomRight, Point(FDDBtnRect.Left, FDDBtnRect.Bottom),
+             FDDBtnRect.TopLeft]);
+    {
+    if Windows.PtInRect(aRect, FMouseLoc) then
+      begin
+        Pen.Color := clBtnHighlight;
+        MoveTo(aRect.Left, aRect.Top);
+        LineTo(aRect.Left, aRect.Bottom);
+        MoveTo(aRect.Left, aRect.Top);
+        LineTo(aRect.Right, aRect.Top);
 
-          Pen.Color := clBtnShadow;
-          MoveTo(aRect.Right - 1, aRect.Top);
-          LineTo(aRect.Right - 1, aRect.Bottom);
-          MoveTo(aRect.Right, aRect.Bottom - 1);
-          LineTo(aRect.Left, aRect.Bottom - 1);
-        End;
-      }
-    End;
+        Pen.Color := clBtnShadow;
+        MoveTo(aRect.Right - 1, aRect.Top);
+        LineTo(aRect.Right - 1, aRect.Bottom);
+        MoveTo(aRect.Right, aRect.Bottom - 1);
+        LineTo(aRect.Left, aRect.Bottom - 1);
+      end;
+    }
+  end;
 end;
 
 function TJvTFGVTextControl.GetGlanceControl: TJvTFCustomGlance;
 begin
   Result := nil;
-  If Assigned(Viewer) Then
+  if Assigned(Viewer) then
     Result := Viewer.GlanceControl;
 end;
 
@@ -362,20 +362,20 @@ info on the GlanceControl.
   DrawInfo.aRect := ClientRect;
 
   FReplicating := False;
-  Try
+  try
     PaintTo(Canvas, DrawInfo);
-  Finally
+  finally
     FReplicating := True;
-  End;
+  end;
 
 {
-  // FOR TESTING PURPOSES ONLY!!
-  With Canvas do
-    Begin
+  // for TESTING PURPOSES ONLY!!
+  with Canvas do
+    begin
       Pen.Color := clBlack;
       MoveTo(0, 0);
       LineTo(ClientWidth, ClientHeight);
-    End;
+    end;
 }
 end;
 
@@ -397,108 +397,108 @@ var
 begin
   Viewer.SetTo(DrawInfo.Cell);
 
-  With aCanvas do
-    Begin
-      aRect := DrawInfo.aRect;
+  with aCanvas do
+  begin
+    aRect := DrawInfo.aRect;
 
-      //Brush.Color := Viewer.Color;
-      Brush.Color := DrawInfo.Color;
-      FillRect(aRect);
+    //Brush.Color := Viewer.Color;
+    Brush.Color := DrawInfo.Color;
+    FillRect(aRect);
 
-      //Font.Assign(Viewer.Font);
-      Font.Assign(DrawInfo.Font);
-      Self.Canvas.Font.Assign(DrawInfo.Font);
+    //Font.Assign(Viewer.Font);
+    Font.Assign(DrawInfo.Font);
+    Self.Canvas.Font.Assign(DrawInfo.Font);
 
-      RegBrushColor := Brush.Color;
-      RegFontColor := Font.Color;
+    RegBrushColor := Brush.Color;
+    RegFontColor := Font.Color;
 
-      NextLineTop := aRect.Top;
-      LineRect.Left := aRect.Left;
-      LineRect.Right := aRect.Right;
+    NextLineTop := aRect.Top;
+    LineRect.Left := aRect.Left;
+    LineRect.Right := aRect.Right;
 
-      //Flags := DT_LEFT or DT_NOPREFIX or DT_SINGLELINE or DT_VCENTER;
-      Flags := DT_LEFT or DT_NOPREFIX or DT_SINGLELINE or DT_TOP;
+    //Flags := DT_LEFT or DT_NOPREFIX or DT_SINGLELINE or DT_VCENTER;
+    Flags := DT_LEFT or DT_NOPREFIX or DT_SINGLELINE or DT_TOP;
 
-      If csDesigning in ComponentState Then
-        LastLine := 2
-      Else
-        LastLine := Lesser(ViewableLines - 1, LineCount - TopLine - 1);
+    if csDesigning in ComponentState then
+      LastLine := 2
+    else
+      LastLine := Lesser(ViewableLines - 1, LineCount - TopLine - 1);
 
-      For I := 0 to LastLine do
-        Begin
-          Brush.Color := RegBrushColor;
-          Font.Color := RegFontColor;
+    for I := 0 to LastLine do
+    begin
+      Brush.Color := RegBrushColor;
+      Font.Color := RegFontColor;
 
-          LineRect.Top := NextLineTop;
-          LineRect.Bottom := Lesser(NextLineTop + CalcLineHeight, aRect.Bottom);
+      LineRect.Top := NextLineTop;
+      LineRect.Bottom := Lesser(NextLineTop + CalcLineHeight, aRect.Bottom);
 
-          If csDesigning in ComponentState Then
-            Txt := 'Appt ' + IntToStr(I)
-          Else
-            Begin
-              Appt := Viewer.Appts[AbsToRel(I)];
+      if csDesigning in ComponentState then
+        Txt := 'Appt ' + IntToStr(I)
+      else
+      begin
+        Appt := Viewer.Appts[AbsToRel(I)];
 
-              Txt := '';
-              If Viewer.ShowStartEnd Then
-                Txt := GetStartEndString(Appt) + ': ';
-              Txt := Txt + Appt.Description;
+        Txt := '';
+        if Viewer.ShowStartEnd then
+          Txt := GetStartEndString(Appt) + ': ';
+        Txt := Txt + Appt.Description;
 
-              If Appt = Viewer.SelAppt Then
-                Begin
-                  Brush.Color := Viewer.SelApptAttr.Color;
-                  Font.Color := Viewer.SelApptAttr.FontColor;
+        if Appt = Viewer.SelAppt then
+        begin
+          Brush.Color := Viewer.SelApptAttr.Color;
+          Font.Color := Viewer.SelApptAttr.FontColor;
 
-                  FillRect(LineRect);
+          FillRect(LineRect);
 
-                  If I <> 0 Then
-                    Begin
-                      MoveTo(aRect.Left, LineRect.Top);
-                      LineTo(aRect.Right, LineRect.Top);
-                    End;
-                  If I <> AbsLineCount - 1 Then
-                    Begin
-                      MoveTo(aRect.Left, LineRect.Bottom - 1);
-                      LineTo(aRect.Right, LineRect.Bottom - 1);
-                    End;
-                End;
-            End;
+          if I <> 0 then
+          begin
+            MoveTo(aRect.Left, LineRect.Top);
+            LineTo(aRect.Right, LineRect.Top);
+          end;
+          if I <> AbsLineCount - 1 then
+          begin
+            MoveTo(aRect.Left, LineRect.Bottom - 1);
+            LineTo(aRect.Right, LineRect.Bottom - 1);
+          end;
+        end;
+      end;
 
-          TxtRect := LineRect;
-          Windows.InflateRect(TxtRect, -1, -1);
+      TxtRect := LineRect;
+      Windows.InflateRect(TxtRect, -1, -1);
 
-          PTxt := StrAlloc((Length(Txt) + 4) * SizeOf(Char));
-          StrPCopy(PTxt, Txt);
-          Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
-          StrDispose(PTxt);
+      PTxt := StrAlloc((Length(Txt) + 4) * SizeOf(Char));
+      StrPCopy(PTxt, Txt);
+      Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
+      StrDispose(PTxt);
 
-          Inc(NextLineTop, CalcLineHeight);
-        End;
-    End;
+      Inc(NextLineTop, CalcLineHeight);
+    end;
+  end;
 
-  If not (csDesigning in ComponentState) Then
-    Begin
-      If not Replicating and (FMousePtInfo.RelLineNum < Viewer.ApptCount) and
-         FMouseInControl Then
-        DrawDDButton(aCanvas);
+  if not (csDesigning in ComponentState) then
+  begin
+    if not Replicating and (FMousePtInfo.RelLineNum < Viewer.ApptCount) and
+       FMouseInControl then
+      DrawDDButton(aCanvas);
 
-      BtnRect := ScrollUpBtnRect(DrawInfo.aRect);
-      If not Windows.IsRectEmpty(BtnRect) Then
-        DrawScrollUpBtn(aCanvas, DrawInfo.aRect);
+    BtnRect := ScrollUpBtnRect(DrawInfo.aRect);
+    if not Windows.IsRectEmpty(BtnRect) then
+      DrawScrollUpBtn(aCanvas, DrawInfo.aRect);
 
-      BtnRect := ScrollDnBtnRect(DrawInfo.aRect);
-      If not Windows.IsRectEmpty(BtnRect) Then
-        DrawScrollDnBtn(aCanvas, DrawInfo.aRect);
+    BtnRect := ScrollDnBtnRect(DrawInfo.aRect);
+    if not Windows.IsRectEmpty(BtnRect) then
+      DrawScrollDnBtn(aCanvas, DrawInfo.aRect);
 
-      {
-      If TopLine > 0 Then
-        DrawScrollUpBtn(aCanvas, DrawInfo.aRect);
+    {
+    if TopLine > 0 then
+      DrawScrollUpBtn(aCanvas, DrawInfo.aRect);
 
-      BottomLine := TopLine + FullViewableLines - 1;
-      LastLine := LineCount - 1;
-      If BottomLine < LastLine Then
-        DrawScrollDnBtn(aCanvas, DrawInfo.aRect);
-      }
-    End;
+    BottomLine := TopLine + FullViewableLines - 1;
+    LastLine := LineCount - 1;
+    if BottomLine < LastLine then
+      DrawScrollDnBtn(aCanvas, DrawInfo.aRect);
+    }
+  end;
 end;
 
 procedure TJvTFGVTextControl.WMEraseBkgnd(var Message: TMessage);
@@ -510,7 +510,7 @@ procedure TJvTFGVTextControl.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   GlancePt: TPoint;
 begin
-  inherited;
+  inherited MouseMove(Shift, X, Y);
   FMousePtInfo := CalcPointInfo(X, Y);
   MouseLine := FMousePtInfo.AbsLineNum;
   //SetFocus;
@@ -519,19 +519,19 @@ begin
   GlancePt := Viewer.GlanceControl.ScreenToClient(ClientToScreen(Point(X, Y)));
   Viewer.GlanceControl.CheckViewerApptHint(GlancePt.X, GlancePt.Y);
 
-  // FOR TESTING ONLY!!!
+  // for TESTING ONLY!!!
   //Invalidate;
   ////////////////////
 end;
 
 procedure TJvTFGVTextControl.SetMouseLine(Value: Integer);
 begin
-  If Value <> FMouseLine Then
-    Begin
-      FMouseLine := Value;
-      UpdateDDBtnRect;
-      Invalidate;
-    End;
+  if Value <> FMouseLine then
+  begin
+    FMouseLine := Value;
+    UpdateDDBtnRect;
+    Invalidate;
+  end;
 end;
 
 procedure TJvTFGVTextControl.DrawArrow(aCanvas: TCanvas; aRect: TRect;
@@ -544,68 +544,66 @@ var
   BaseY: Integer;
 begin
   ArrowWidth := RectWidth(aRect) - 2;
-  If not Odd(ArrowWidth) Then
+  if not Odd(ArrowWidth) then
     Dec(ArrowWidth);
   ArrowHeight := (ArrowWidth + 1) div 2;
 
   Case Direction of
-    dirUp :
-      Begin
+    dirUp:
+      begin
         BaseX := aRect.Left + RectWidth(aRect) div 2 - ArrowWidth div 2;
         BaseY := aRect.Top + RectHeight(aRect) div 2 + ArrowHeight div 2 - 1;
 
-        For I := ArrowHeight downto 1 do
-          With aCanvas do
-            Begin
-              MoveTo(BaseX, BaseY);
-              LineTo(BaseX + I * 2 - 1, BaseY);
-              Inc(BaseX);
-              Dec(BaseY);
-            End;
-      End;
-    dirDown :
-      Begin
+        for I := ArrowHeight downto 1 do
+          with aCanvas do
+          begin
+            MoveTo(BaseX, BaseY);
+            LineTo(BaseX + I * 2 - 1, BaseY);
+            Inc(BaseX);
+            Dec(BaseY);
+          end;
+      end;
+    dirDown:
+      begin
         BaseX := aRect.Left + RectWidth(aRect) div 2 - ArrowWidth div 2;
         BaseY := aRect.Top + RectHeight(aRect) div 2 - ArrowHeight div 2 + 1;
 
-        For I := ArrowHeight downto 1 do
-          With aCanvas do
-            Begin
-              MoveTo(BaseX, BaseY);
-              LineTo(BaseX + I * 2 - 1, BaseY);
-              Inc(BaseX);
-              Inc(BaseY);
-            End;
-      End;
-    dirLeft :
-      Begin
+        for I := ArrowHeight downto 1 do
+        with aCanvas do
+          begin
+            MoveTo(BaseX, BaseY);
+            LineTo(BaseX + I * 2 - 1, BaseY);
+            Inc(BaseX);
+            Inc(BaseY);
+          end;
+      end;
+    dirLeft:
+      begin
         BaseX := aRect.Left + RectWidth(aRect) div 2 + ArrowHeight div 2;
         BaseY := aRect.Top + RectHeight(aRect) div 2 - ArrowWidth div 2;
 
-        For I := ArrowHeight downto 1 do
-          With aCanvas do
-            Begin
-              MoveTo(BaseX, BaseY);
-              LineTo(BaseX, BaseY + I * 2 - 1);
-              Dec(BaseX);
-              Inc(BaseY);
-            End;
-      End;
-  Else
-    Begin
-      BaseX := aRect.Left + RectWidth(aRect) div 2 - ArrowHeight div 2;
-      BaseY := aRect.Top + RectHeight(aRect) div 2 - ArrowWidth div 2;
-
-      For I := ArrowHeight downto 1 do
-        With aCanvas do
-          Begin
+        for I := ArrowHeight downto 1 do
+          with aCanvas do
+          begin
             MoveTo(BaseX, BaseY);
             LineTo(BaseX, BaseY + I * 2 - 1);
-            Inc(BaseX);
+            Dec(BaseX);
             Inc(BaseY);
-          End;
-    End;
-  End;
+          end;
+      end;
+  else
+    BaseX := aRect.Left + RectWidth(aRect) div 2 - ArrowHeight div 2;
+    BaseY := aRect.Top + RectHeight(aRect) div 2 - ArrowWidth div 2;
+
+    for I := ArrowHeight downto 1 do
+      with aCanvas do
+      begin
+        MoveTo(BaseX, BaseY);
+        LineTo(BaseX, BaseY + I * 2 - 1);
+        Inc(BaseX);
+        Inc(BaseY);
+      end;
+  end;
 end;
 
 procedure TJvTFGVTextControl.UpdateDDBtnRect;
@@ -619,13 +617,13 @@ end;
 
 procedure TJvTFGVTextControl.DoEnter;
 begin
-  inherited;
+  inherited DoEnter;
   Viewer.SetSelAppt(FindApptAtLine(FMousePtInfo.RelLineNum));
 end;
 
 procedure TJvTFGVTextControl.DoExit;
 begin
-  inherited;
+  inherited DoExit;
   FMouseLine := -1; 
 end;
 {
@@ -637,7 +635,7 @@ begin
   Result := 0;
   aCell := Viewer.GlanceControl.Cells.Cells[Viewer.Col, Viewer.Row];
 
-  For I := 0 to aCell.ScheduleCount - 1 do
+  for I := 0 to aCell.ScheduleCount - 1 do
     Inc(Result, aCell.Schedules[I].ApptCount);
 end;
 }
@@ -653,13 +651,13 @@ end;
 
 function TJvTFGVTextControl.CalcPointInfo(X, Y: Integer): TJvTFGlTxtVwPointInfo;
 begin
-  With Result do
-    Begin
-      AbsX := X;
-      AbsY := Y;
-      AbsLineNum := CalcAbsLineNum(Y);
-      RelLineNum := TopLine + AbsLineNum;
-    End;
+  with Result do
+  begin
+    AbsX := X;
+    AbsY := Y;
+    AbsLineNum := CalcAbsLineNum(Y);
+    RelLineNum := TopLine + AbsLineNum;
+  end;
 end;
 
 function TJvTFGVTextControl.ViewableLines: Integer;
@@ -670,7 +668,7 @@ begin
     GlanceControl.CellIsSelected(Viewer.Cell), False);
 
   Result := RectHeight(aRect) div CalcLineHeight;
-  If RectHeight(aRect) mod CalcLineHeight > 0 Then
+  if RectHeight(aRect) mod CalcLineHeight > 0 then
     Inc(Result);
 end;
 
@@ -689,28 +687,28 @@ procedure TJvTFGVTextControl.MouseDown(Button: TMouseButton;
 var
   Appt: TJvTFAppt;
 begin
-  inherited;
+  inherited MouseDown(Button, Shift, X, Y);
   SetFocus;
 
-  If Windows.PtInRect(ScrollDnBtnRect(ClientRect), Point(X, Y)) Then
+  if Windows.PtInRect(ScrollDnBtnRect(ClientRect), Point(X, Y)) then
     Scroll(1)
-  Else If Windows.PtInRect(ScrollUpBtnRect(ClientRect), Point(X, Y)) Then
+  else if Windows.PtInRect(ScrollUpBtnRect(ClientRect), Point(X, Y)) then
     Scroll(-1)
-  Else
-    Begin
-      Appt := FindApptAtLine(FMousePtInfo.RelLineNum);
-      If Assigned(Appt) Then
-        Viewer.SetSelAppt(Appt);
+  else
+  begin
+    Appt := FindApptAtLine(FMousePtInfo.RelLineNum);
+    if Assigned(Appt) then
+      Viewer.SetSelAppt(Appt);
 
-      If Windows.PtInRect(FDDBtnRect, Point(X, Y)) and Assigned(Viewer) Then
-        Begin
-          EditAppt(Viewer.Cell, FMousePtInfo.RelLineNum, Appt);
-          Viewer.LineDDClick(MouseLine);
-        End
-      Else If not Windows.PtInRect(FDDBtnRect, Point(X, Y)) and
-                  Assigned(Appt) Then
-        Viewer.GlanceControl.BeginDrag(False);
-    End;
+    if Windows.PtInRect(FDDBtnRect, Point(X, Y)) and Assigned(Viewer) then
+    begin
+      EditAppt(Viewer.Cell, FMousePtInfo.RelLineNum, Appt);
+      Viewer.LineDDClick(MouseLine);
+    end
+    else if not Windows.PtInRect(FDDBtnRect, Point(X, Y)) and
+                Assigned(Appt) then
+      Viewer.GlanceControl.BeginDrag(False);
+  end;
 end;
 
 {$IFDEF USEJVCL}
@@ -749,14 +747,14 @@ var
   BtnLeft,
   BtnTop: Integer;
 begin
-  If TopLine + FullViewableLines - 1 < LineCount - 1 Then
-    Begin
-      Result := Rect(0, 0, FScrollDnBtnBMP.Width, FScrollDnBtnBMP.Height);
-      BtnLeft := aCellRect.Right - 10 - RectWidth(Result);
-      BtnTop := aCellRect.Bottom - RectHeight(Result);
-      Windows.OffsetRect(Result, BtnLeft, BtnTop);
-    End
-  Else
+  if TopLine + FullViewableLines - 1 < LineCount - 1 then
+  begin
+    Result := Rect(0, 0, FScrollDnBtnBMP.Width, FScrollDnBtnBMP.Height);
+    BtnLeft := aCellRect.Right - 10 - RectWidth(Result);
+    BtnTop := aCellRect.Bottom - RectHeight(Result);
+    Windows.OffsetRect(Result, BtnLeft, BtnTop);
+  end
+  else
     Result := Rect(0, 0, 0, 0);
 end;
 
@@ -764,13 +762,13 @@ function TJvTFGVTextControl.ScrollUpBtnRect(aCellRect: TRect): TRect;
 var
   BtnLeft: Integer;
 begin
-  If TopLine > 0 Then
-    Begin
-      Result := Rect(0, 0, FScrollUpBtnBMP.Width, FScrollUpBtnBMP.Height);
-      BtnLeft := aCellRect.Right - 10 - RectWidth(Result);
-      Windows.OffsetRect(Result, BtnLeft, aCellRect.Top);
-    End
-  Else
+  if TopLine > 0 then
+  begin
+    Result := Rect(0, 0, FScrollUpBtnBMP.Width, FScrollUpBtnBMP.Height);
+    BtnLeft := aCellRect.Right - 10 - RectWidth(Result);
+    Windows.OffsetRect(Result, BtnLeft, aCellRect.Top);
+  end
+  else
     Result := Rect(0, 0, 0, 0);
 end;
 
@@ -779,70 +777,70 @@ begin
   FEditor.Free;
   FScrollUpBtnBMP.Free;
   FScrollDnBtnBMP.Free;
-  
-  inherited;
+
+  inherited Destroy;
 end;
 
 procedure TJvTFGVTextControl.InitScrollDnBtnBMP;
 begin
-  With FScrollDnBtnBMP do
-    Begin
-      Height := 9;
-      Width := 16;
+  with FScrollDnBtnBMP do
+  begin
+    Height := 9;
+    Width := 16;
 
-      With Canvas do
-        Begin
-          Brush.Color := clBtnFace;
-          FillRect(Rect(0, 0, Width, Height));
+    with Canvas do
+    begin
+      Brush.Color := clBtnFace;
+      FillRect(Rect(0, 0, Width, Height));
 
-          Pen.Color := clBlack;
-          Polyline([Point(0, 0), Point(Width - 1, 0),
-                    Point(Width - 1, Height - 1), Point(0, Height - 1),
-                    Point(0, 0)]);
+      Pen.Color := clBlack;
+      Polyline([Point(0, 0), Point(Width - 1, 0),
+                Point(Width - 1, Height - 1), Point(0, Height - 1),
+                Point(0, 0)]);
 
-          MoveTo(2, 2);
-          LineTo(14, 2);
-          MoveTo(2, 3);
-          LineTo(14, 3);
-          MoveTo(7, 4);
-          LineTo(13, 4);
-          MoveTo(8, 5);
-          LineTo(12, 5);
-          MoveTo(9, 6);
-          LineTo(11, 6);
-        End;
-    End;
+      MoveTo(2, 2);
+      LineTo(14, 2);
+      MoveTo(2, 3);
+      LineTo(14, 3);
+      MoveTo(7, 4);
+      LineTo(13, 4);
+      MoveTo(8, 5);
+      LineTo(12, 5);
+      MoveTo(9, 6);
+      LineTo(11, 6);
+    end;
+  end;
 end;
 
 procedure TJvTFGVTextControl.InitScrollUpBtnBMP;
 begin
-  With FScrollUpBtnBMP do
-    Begin
-      Height := 9;
-      Width := 16;
+  with FScrollUpBtnBMP do
+  begin
+    Height := 9;
+    Width := 16;
 
-      With Canvas do
-        Begin
-          Brush.Color := clBtnFace;
-          FillRect(Rect(0, 0, Width, Height));
+    with Canvas do
+    begin
+      Brush.Color := clBtnFace;
+      FillRect(Rect(0, 0, Width, Height));
 
-          Pen.Color := clBlack;
-          Polyline([Point(0, 0), Point(Width - 1, 0),
-                    Point(Width - 1, Height - 1), Point(0, Height - 1),
-                    Point(0, 0)]);
+      Pen.Color := clBlack;
+      Polyline([Point(0, 0), Point(Width - 1, 0),
+                Point(Width - 1, Height - 1), Point(0, Height - 1),
+                Point(0, 0)]);
 
-          MoveTo(9, 2);
-          LineTo(11, 2);
-          MoveTo(8, 3);
-          LineTo(12, 3);
-          MoveTo(7, 4);
-          LineTo(13, 4);
-          MoveTo(2, 5);
-          LineTo(14, 5);
-          MoveTo(2, 6);
-          LineTo(14, 6);
-        End;
-    End;
+      MoveTo(9, 2);
+      LineTo(11, 2);
+      MoveTo(8, 3);
+      LineTo(12, 3);
+      MoveTo(7, 4);
+      LineTo(13, 4);
+      MoveTo(2, 5);
+      LineTo(14, 5);
+      MoveTo(2, 6);
+      LineTo(14, 6);
+    end;
+  end;
 end;
 
 procedure TJvTFGVTextControl.DrawScrollDnBtn(aCanvas: TCanvas; aCellRect: TRect);
@@ -885,50 +883,50 @@ var
   EditorRect: TRect;
 begin
   EditLine := RelToAbs(GetApptRelLineNum(Appt));
-  If not Assigned(Appt) or not CanEdit or
-     ((EditLine < 0) or (EditLine > AbsLineCount)) Then
+  if not Assigned(Appt) or not CanEdit or
+     ((EditLine < 0) or (EditLine > AbsLineCount)) then
     Exit;
 
   Viewer.EnsureCol(Col);
   Viewer.EnsureRow(Row);
-  If (Viewer.Col <> Col) or (Viewer.Row <> Row) Then
+  if (Viewer.Col <> Col) or (Viewer.Row <> Row) then
     Viewer.MoveTo(Col, Row);
 
-  If Viewer.EditorAlign = eaLine Then
-    Begin
-      EditorRect := LineRect(EditLine);
-      FEditor.WordWrap := False;
-      FEditor.BorderStyle := bsSingle;
-    End
-  Else
-    Begin
-      EditorRect := ClientRect;
-      FEditor.WordWrap := True;
-      FEditor.BorderStyle := bsNone;
-    End;
+  if Viewer.EditorAlign = eaLine then
+  begin
+    EditorRect := LineRect(EditLine);
+    FEditor.WordWrap := False;
+    FEditor.BorderStyle := bsSingle;
+  end
+  else
+  begin
+    EditorRect := ClientRect;
+    FEditor.WordWrap := True;
+    FEditor.BorderStyle := bsNone;
+  end;
 
-  With FEditor do
-    Begin
-      LinkedAppt := Appt;
-      Color := Viewer.SelApptAttr.Color;
-      Font := Viewer.GlanceControl.SelCellAttr.Font;
-      Font.Color := Viewer.SelApptAttr.FontColor;
-      BoundsRect := EditorRect;
+  with FEditor do
+  begin
+    LinkedAppt := Appt;
+    Color := Viewer.SelApptAttr.Color;
+    Font := Viewer.GlanceControl.SelCellAttr.Font;
+    Font.Color := Viewer.SelApptAttr.FontColor;
+    BoundsRect := EditorRect;
 
-      Text := Appt.Description;
-      {
-      If agoFormattedDesc in Options Then
-        Text := Appt.Description
-      Else
-        Text := StripCRLF(Appt.Description);
-      }
+    Text := Appt.Description;
+    {
+    if agoFormattedDesc in Options then
+      Text := Appt.Description
+    else
+      Text := StripCRLF(Appt.Description);
+    }
 
 {      //Self.Update;  // not calling update here increases flicker
-      Visible := True;
-      SetFocus;
-      SelLength := 0;
-      SelStart := 0;
-    End;
+    Visible := True;
+    SetFocus;
+    SelLength := 0;
+    SelStart := 0;
+  end;
 end;
 }
 
@@ -939,47 +937,47 @@ var
 begin
   //EditLine := RelToAbs(GetApptRelLineNum(Appt));
   EditLine := RelToAbs(RelLine);
-  If not Assigned(Appt) or not CanEdit or
-     ((EditLine < 0) or (EditLine > AbsLineCount)) Then
+  if not Assigned(Appt) or not CanEdit or
+     ((EditLine < 0) or (EditLine > AbsLineCount)) then
     Exit;
 
   Viewer.MoveTo(aCell);
 
-  If Viewer.EditorAlign = eaLine Then
-    Begin
-      EditorRect := LineRect(EditLine);
-      FEditor.WordWrap := False;
-      FEditor.BorderStyle := bsSingle;
-    End
-  Else
-    Begin
-      EditorRect := ClientRect;
-      FEditor.WordWrap := True;
-      FEditor.BorderStyle := bsNone;
-    End;
+  if Viewer.EditorAlign = eaLine then
+  begin
+    EditorRect := LineRect(EditLine);
+    FEditor.WordWrap := False;
+    FEditor.BorderStyle := bsSingle;
+  end
+  else
+  begin
+    EditorRect := ClientRect;
+    FEditor.WordWrap := True;
+    FEditor.BorderStyle := bsNone;
+  end;
 
-  With FEditor do
-    Begin
-      LinkedAppt := Appt;
-      Color := Viewer.SelApptAttr.Color;
-      Font := Viewer.GlanceControl.SelCellAttr.Font;
-      Font.Color := Viewer.SelApptAttr.FontColor;
-      BoundsRect := EditorRect;
+  with FEditor do
+  begin
+    LinkedAppt := Appt;
+    Color := Viewer.SelApptAttr.Color;
+    Font := Viewer.GlanceControl.SelCellAttr.Font;
+    Font.Color := Viewer.SelApptAttr.FontColor;
+    BoundsRect := EditorRect;
 
-      Text := Appt.Description;
-      {
-      If agoFormattedDesc in Options Then
-        Text := Appt.Description
-      Else
-        Text := StripCRLF(Appt.Description);
-      }
+    Text := Appt.Description;
+    {
+    if agoFormattedDesc in Options then
+      Text := Appt.Description
+    else
+      Text := StripCRLF(Appt.Description);
+    }
 
-      //Self.Update;  // not calling update here increases flicker
-      Visible := True;
-      SetFocus;
-      SelLength := 0;
-      SelStart := 0;
-    End;
+    //Self.Update;  // not calling update here increases flicker
+    Visible := True;
+    SetFocus;
+    SelLength := 0;
+    SelStart := 0;
+  end;
 end;
 
 
@@ -990,17 +988,17 @@ end;
 
 procedure TJvTFGVTextControl.FinishEditAppt;
 begin
-  If Assigned(FEditor.LinkedAppt) Then
+  if Assigned(FEditor.LinkedAppt) then
     FEditor.LinkedAppt.Description := FEditor.Text;
   FEditor.Visible := False;
 end;
 
 function TJvTFGVTextControl.FindApptAtLine(RelLineNum: Integer): TJvTFAppt;
 begin
-  If Assigned(Viewer) and
-     (RelLineNum >= 0) and (RelLineNum < Viewer.ApptCount) Then
+  if Assigned(Viewer) and
+     (RelLineNum >= 0) and (RelLineNum < Viewer.ApptCount) then
     Result := Viewer.Appts[RelLineNum]
-  Else
+  else
     Result := nil;
 end;
 
@@ -1009,14 +1007,14 @@ var
   I: Integer;
 begin
   Result := -1;
-  If not Assigned(Appt) Then
+  if not Assigned(Appt) then
     Exit;
 
   I := 0;
-  While (I < Viewer.ApptCount) and (Result = -1) do
-    If Viewer.Appts[I] = Appt Then
+  while (I < Viewer.ApptCount) and (Result = -1) do
+    if Viewer.Appts[I] = Appt then
       Result := I
-    Else
+    else
       Inc(I);
 end;
 
@@ -1024,8 +1022,8 @@ function TJvTFGVTextControl.AbsLineCount: Integer;
 begin
   //Result := Lesser(ViewableLines - 1, LineCount - TopLine - 1);
   Result := RectHeight(ClientRect) div CalcLineHeight;
-  If RectHeight(ClientRect) mod CalcLineHeight > 0 Then
-    Inc(Result); 
+  if RectHeight(ClientRect) mod CalcLineHeight > 0 then
+    Inc(Result);
 end;
 
 procedure TJvTFGVTextControl.MouseAccel(X, Y: Integer);
@@ -1033,7 +1031,7 @@ var
   Appt: TJvTFAppt;
 begin
   Appt := GetApptAccel(X, Y);
-  If Assigned(Appt) Then
+  if Assigned(Appt) then
     Viewer.SetSelAppt(Appt);
 end;
 
@@ -1049,12 +1047,12 @@ begin
   TimeFormat := Viewer.GlanceControl.TimeFormat;
 
   Result := '';
-  If ShowDates Then
+  if ShowDates then
     Result := FormatDateTime(DateFormat, Appt.StartDate) + ' ';
 
   Result := Result + FormatDateTime(TimeFormat, Appt.StartTime) + ' - ';
 
-  If ShowDates Then
+  if ShowDates then
     Result := Result + FormatDateTime(DateFormat, Appt.EndDate) + ' ';
 
   Result := Result + FormatDateTime(TimeFormat, Appt.EndTime);
@@ -1079,8 +1077,8 @@ end;
 procedure TJvTFGVTextControl.DragOver(Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
-  inherited;
-  If Source is TJvTFControl Then
+  inherited DragOver(Source, X, Y, State, Accept);
+  if Source is TJvTFControl then
     Viewer.Visible := False;
 end;
 
@@ -1093,7 +1091,7 @@ end;
 
 constructor TJvTFGlanceTextViewer.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
 
   FTopLines := TStringList.Create;
   FViewControl := TJvTFGVTextControl.Create(Self);
@@ -1109,7 +1107,7 @@ begin
   FTopLines.Free;
   FSelApptAttr.OnChange := nil;
   FSelApptAttr.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvTFGlanceTextViewer.SetEditorAlign(Value: TJvTFGlTxtVwEditorAlign);
@@ -1121,18 +1119,18 @@ function TJvTFGlanceTextViewer.GetDrawInfo(aCell: TJvTFGlanceCell): TJvTFGlTxtVw
 var
   Attr: TJvTFGlanceCellAttr;
 begin
-  If not Assigned(GlanceControl) Then
-    Raise EGlanceViewerError.Create(RsEGlanceControlNotAssigned);
+  if not Assigned(GlanceControl) then
+    raise EGlanceViewerError.Create(RsEGlanceControlNotAssigned);
 
-  With Result do
-    Begin
-      Cell := aCell;
-      Attr := GlanceControl.GetCellAttr(aCell);
-      Font := Attr.Font;
-      Color := Attr.Color;
-      aRect := GlanceControl.CalcCellBodyRect(aCell,
-        GlanceControl.CellIsSelected(aCell), False);
-    End;
+  with Result do
+  begin
+    Cell := aCell;
+    Attr := GlanceControl.GetCellAttr(aCell);
+    Font := Attr.Font;
+    Color := Attr.Color;
+    aRect := GlanceControl.CalcCellBodyRect(aCell,
+      GlanceControl.CellIsSelected(aCell), False);
+  end;
 end;
 
 function TJvTFGlanceTextViewer.GetTopLine(aCell: TJvTFGlanceCell): Integer;
@@ -1140,28 +1138,28 @@ var
   I: Integer;
 begin
   I := FTopLines.IndexOf(GetCellString(aCell));
-  If I > -1 Then
+  if I > -1 then
     Result := Integer(FTopLines.Objects[I])
-  Else
+  else
     Result := 0;
 end;
 
 procedure TJvTFGlanceTextViewer.LineDDClick(LineNum: Integer);
 begin
-  If Assigned(FOnLineDDClick) Then
+  if Assigned(FOnLineDDClick) then
     FOnLineDDClick(Self, LineNum);
 end;
 
 procedure TJvTFGlanceTextViewer.MouseAccel(X, Y: Integer);
 begin
-  inherited;
+  inherited MouseAccel(X, Y);
   FViewControl.MouseAccel(X, Y);
 end;
 
 procedure TJvTFGlanceTextViewer.Notify(Sender: TObject;
   Code: TJvTFServNotifyCode);
 begin
-  inherited;
+  inherited Notify(Sender, Code);
 end;
 
 procedure TJvTFGlanceTextViewer.PaintTo(aCanvas: TCanvas; aCell: TJvTFGlanceCell);
@@ -1171,13 +1169,13 @@ end;
 
 procedure TJvTFGlanceTextViewer.ParentReconfig;
 begin
-  inherited;
+  inherited ParentReconfig;
   FTopLines.Clear;
 end;
 
 procedure TJvTFGlanceTextViewer.Realign;
 begin
-  If not Assigned(GlanceControl) Then
+  if not Assigned(GlanceControl) then
     Exit;
 
   FViewControl.BoundsRect := CalcBoundsRect(Cell);
@@ -1204,18 +1202,18 @@ end;
 
 procedure TJvTFGlanceTextViewer.SetGlanceControl(Value: TJvTFCustomGlance);
 begin
-  inherited;
+  inherited SetGlanceControl(Value);
   FViewControl.Parent := Value;
 end;
 
 procedure TJvTFGlanceTextViewer.SetLineSpacing(Value: Integer);
 begin
   //Value := Greater(Value, 0);
-  If Value <> FLineSpacing Then
-    Begin
-      FLineSpacing := Value;
-      Change;
-    End;
+  if Value <> FLineSpacing then
+  begin
+    FLineSpacing := Value;
+    Change;
+  end;
 end;
 
 procedure TJvTFGlanceTextViewer.SetSelAppt(Value: TJvTFAppt);
@@ -1244,12 +1242,12 @@ begin
 
   CellStr := GetCellString(aCell);
   I := FTopLines.IndexOf(CellStr);
-  If I > -1 Then
-    If Value = 0 Then
+  if I > -1 then
+    if Value = 0 then
       FTopLines.Delete(I)
-    Else
+    else
       FTopLines.Objects[I] := TObject(Value)
-  Else If Value <> 0 Then
+  else if Value <> 0 then
     FTopLines.AddObject(CellStr, TObject(Value));
   Refresh;
 end;
@@ -1262,15 +1260,15 @@ end;
 
 procedure TJvTFGlanceTextViewer.SetShowStartEnd(Value: Boolean);
 begin
-  If Value <> FShowStartEnd Then
-    Begin
-      FShowStartEnd := Value;
-      If not (csLoading in ComponentState) Then
-        Begin
-          GlanceControl.Invalidate;
-          FViewControl.Invalidate;
-        End;
-    End;
+  if Value <> FShowStartEnd then
+  begin
+    FShowStartEnd := Value;
+    if not (csLoading in ComponentState) then
+    begin
+      GlanceControl.Invalidate;
+      FViewControl.Invalidate;
+    end;
+  end;
 end;
 
 function TJvTFGlanceTextViewer.GetApptAt(X, Y: Integer): TJvTFAppt;
@@ -1305,7 +1303,7 @@ begin
   if Assigned(aCell) then
   begin
     Result := IntToStr(aCell.ColIndex) + ',' + IntToStr(aCell.RowIndex);
-    If aCell.IsSubcell Then
+    if aCell.IsSubcell then
       Result := Result + 'S';
   end;
 end;
@@ -1314,7 +1312,7 @@ end;
 
 constructor TJvTFGVTxtEditor.Create(AOwner: TComponent);
 begin
-  Inherited;
+  inherited Create(AOwner);
 
   ControlStyle := ControlStyle + [csNoDesignVisible];
 
@@ -1324,32 +1322,32 @@ end;
 
 destructor TJvTFGVTxtEditor.Destroy;
 begin
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvTFGVTxtEditor.DoExit;
 begin
-  Inherited;
-  Try
-    If not FCancelEdit Then
+  inherited DoExit;
+  try
+    if not FCancelEdit then
       TJvTFGVTextControl(Owner).FinishEditAppt;
-  Finally
+  finally
     FCancelEdit := False;
     Parent.SetFocus;
-  End;
+  end;
 end;
 
 procedure TJvTFGVTxtEditor.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
 
-  If Key = VK_ESCAPE Then
-    Begin
-      FCancelEdit := True;
-      Key := 0;
-      Visible := False;
-    End
-  Else If (Key = VK_RETURN) and (ssCtrl in Shift) Then
+  if Key = VK_ESCAPE then
+  begin
+    FCancelEdit := True;
+    Key := 0;
+    Visible := False;
+  end
+  else if (Key = VK_RETURN) and (ssCtrl in Shift) then
     TJvTFGVTextControl(Owner).FinishEditAppt;
 end;
 
@@ -1357,19 +1355,19 @@ end;
 
 procedure TJvTFTxtVwApptAttr.Assign(Source: TPersistent);
 begin
-  If Source is TJvTFTxtVwApptAttr Then
-    Begin
-      FColor := TJvTFTxtVwApptAttr(Source).Color;
-      FFontColor := TJvTFTxtVwApptAttr(Source).FontColor;
-      Change;
-    End
-  Else
-    Inherited Assign(Source);
+  if Source is TJvTFTxtVwApptAttr then
+  begin
+    FColor := TJvTFTxtVwApptAttr(Source).Color;
+    FFontColor := TJvTFTxtVwApptAttr(Source).FontColor;
+    Change;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvTFTxtVwApptAttr.Change;
 begin
-  If Assigned(FOnChange) Then
+  if Assigned(FOnChange) then
     FOnChange(Self);
 end;
 
@@ -1382,20 +1380,20 @@ end;
 
 procedure TJvTFTxtVwApptAttr.SetColor(Value: TColor);
 begin
-  If Value <> FColor Then
-    Begin
-      FColor := Value;
-      Change;
-    End;
+  if Value <> FColor then
+  begin
+    FColor := Value;
+    Change;
+  end;
 end;
 
 procedure TJvTFTxtVwApptAttr.SetFontColor(Value: TColor);
 begin
-  If Value <> FFontColor Then
-    Begin
-      FFontColor := Value;
-      Change;
-    End;
+  if Value <> FFontColor then
+  begin
+    FFontColor := Value;
+    Change;
+  end;
 end;
 
 end.

@@ -38,10 +38,10 @@ uses
   {$IFDEF VisualCLX}
   QControls, QExtCtrls,
   {$ENDIF VisualCLX}
+  {$IFDEF BCB}
+  JvTypes,
+  {$ENDIF BCB}
   JvTFManager;
-
-{$HPPEMIT '#define TDate Controls::TDate'}
-{$HPPEMIT '#define TTime Controls::TTime'}
 
 type
   TJvTFAlarm = class;
@@ -109,9 +109,6 @@ type
     property DefaultSnoozeMins: Integer read FDefaultSnoozeMins write FDefaultSnoozeMins default 5;
     property OnAlarm: TJvTFAlarmEvent read FOnAlarm write FOnAlarm;
   end;
-
-{$HPPEMIT '#undef TDate'}
-{$HPPEMIT '#undef TTime'}
 
 implementation
 uses

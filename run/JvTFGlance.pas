@@ -38,9 +38,10 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs, QImgList, Types, QWindows,
   {$ENDIF VisualCLX}
+  {$IFDEF BCB}
+  JvTypes, // TDate/TTime
+  {$ENDIF BCB}
   JvTFUtils, JvTFManager;
-
-{$HPPEMIT '#define TDate Controls::TDate'}
 
 type
   EJvTFGlanceError = class(Exception);
@@ -764,8 +765,6 @@ type
     property OriginDate;
     property OnConfigCells;
   end;
-
-{$HPPEMIT '#undef TDate'}
 
 implementation
 

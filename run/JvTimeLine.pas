@@ -37,7 +37,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, ExtCtrls, ImgList, JvComponent;
+  StdCtrls, ExtCtrls, ImgList,
+  {$IFDEF BCB}
+  JvTypes, // TDate / TTime macros
+  {$ENDIF BCB}
+  JvComponent;
 
 const
   CM_MOVEDRAGLINE = WM_USER + 1;
@@ -49,10 +53,6 @@ type
 
   TJvTimeLineState = (tlDragPending, tlDragging, tlMouseDown, tlClearPending);
   TJvTimeLineStates = set of TJvTimeLineState;
-
-{$IFDEF BCB}
-  TDate = TDateTime;
-  {$ENDIF BCB}
 
   TJvTimeItem = class(TCollectionItem)
   private
