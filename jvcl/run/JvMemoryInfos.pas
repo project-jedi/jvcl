@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvMemoryInfos;
+
+{$I jvcl.inc}
 
 interface
 

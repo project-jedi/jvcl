@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvNTEventLog;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvNTEventLog;
 
 interface
 

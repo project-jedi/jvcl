@@ -24,10 +24,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvMenus;
+
 {$I jvcl.inc}
 {$I vclonly.inc}
-
-unit JvMenus;
 
 interface
 

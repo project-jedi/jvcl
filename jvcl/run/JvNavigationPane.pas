@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvNavigationPane;
+
+{$I jvcl.inc}
 
 interface
 

@@ -39,10 +39,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvMemo;
+
 {$I jvcl.inc}
 {$I vclonly.inc}
-
-unit JvMemo;
 
 interface
 

@@ -21,24 +21,11 @@ Arioch [the_Arioch att nm dott ru]
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
------------------------------------------------------------------------------}
-// $Id$
+Description:
+   This unit is an interface to the MRU List (comctl32)
+   Informations from :
+      http://www.geocities.com/SiliconValley/4942
 
-{$I jvcl.inc}
-{$I windowsonly.inc}
-
-unit JvMRUList;
-
-interface
-
-{*******************************************************}
-{   This unit is an interface to the MRU List (comctl32)}
-{   Informations from :                                 }
-{      http://www.geocities.com/SiliconValley/4942      }
-{*******************************************************}
-
-(*
 the_Arioch att nm dott ru
 
 Changes are:
@@ -57,7 +44,17 @@ Changes are:
 10) some storage modifiers added for published property
 xx) why keep UnicodeAvailable in every component? I wish Delphi could map
     property to a global variable :(
-*)
+
+Known Issues:
+-----------------------------------------------------------------------------}
+// $Id$
+
+unit JvMRUList;
+
+{$I jvcl.inc}
+{$I windowsonly.inc}
+
+interface
 
 uses
   {$IFDEF MSWINDOWS}
