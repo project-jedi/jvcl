@@ -49,7 +49,7 @@ type
     property N: Byte read Fn write Fn;
     property Encoded: string read Fencoded write SetEncoded;
     property Decoded: string read FDecoded write SetDecoded;
-    procedure Decode(It: Tstrings);
+    procedure Decode(It: TStrings);
     procedure Encode(It: TStrings);
     function EncodeStream(Value: TStream): TStream;
     function DecodeStream(Value: TStream): TStream;
@@ -112,7 +112,7 @@ end;
 
 {***********************************************************}
 
-procedure TJvCaesarCipher.Encode(it: Tstrings);
+procedure TJvCaesarCipher.Encode(it: TStrings);
 var
   i: Integer;
 begin
