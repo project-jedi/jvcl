@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2003-10-17:
+- JvStrToHtml.pas StringToHtml and HtmlToString had done the opposite // andreas
 2003-10-14:
 - Updated the BCB compatibility guide // olivier
 2003-10-13:
