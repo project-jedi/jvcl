@@ -1229,9 +1229,11 @@ begin
     Sender.WriteString(ConcatPaths([Path, ItemName + IntToStr(Index), cItemName]), TStrings(List)[Index]);
     Obj := TStrings(List).Objects[Index];
     if Assigned(Obj) then
-      if Obj is TJvCustomPropertyStore then
-        Sender.WritePersistent(ConcatPaths([Path, ItemName + IntToStr(Index), cObject]), TPersistent(Obj),
-          True, TJvCustomPropertyStore(Obj).CombinedIgnoreProperties)
+      if (Obj is TJvCustomPropertyStore) then
+        if not TJvCustomPropertyStore(Obj).ReadOnly then
+          Sender.WritePersistent(ConcatPaths([Path, ItemName + IntToStr(Index), cObject]), TPersistent(Obj),
+              True, TJvCustomPropertyStore(Obj).CombinedIgnoreProperties)
+        else
       else
         Sender.WritePersistent(ConcatPaths([Path, ItemName + IntToStr(Index), cObject]), TPersistent(Obj));
   end;
@@ -1278,8 +1280,10 @@ begin
     Item := TCollection(List).Items[Index];
     if Assigned(Item) then
       if Item is TJvCustomPropertyStore then
-        Sender.WritePersistent(ConcatPaths([Path, ItemName + IntToStr(Index)]), TPersistent(Item),
-          True, TJvCustomPropertyStore(Item).CombinedIgnoreProperties)
+        if not TJvCustomPropertyStore(Item).ReadOnly then
+          Sender.WritePersistent(ConcatPaths([Path, ItemName + IntToStr(Index)]), TPersistent(Item),
+            True, TJvCustomPropertyStore(Item).CombinedIgnoreProperties)
+        else
       else
         Sender.WritePersistent(ConcatPaths([Path, ItemName + IntToStr(Index)]), TPersistent(Item));
   end;
@@ -2246,6 +2250,7 @@ begin
           if SubObj is TJvCustomPropertyStore then
           begin
             TJvCustomPropertyStore(SubObj).AppStoragePath := Path;
+            TJvCustomPropertyStore(SubObj).AppStorage := Self;
             TJvCustomPropertyStore(SubObj).LoadProperties;
           end
           else
@@ -2407,7 +2412,7 @@ end;
 function TJvCustomAppStorage.TranslatePropertyName(Instance: TPersistent;
   const AName: string; const Reading: Boolean): string;
 begin
-  Result := AName;
+  Result := AName; 
   if Instance is TJvCustomPropertyStore then
     Result := TJvCustomPropertyStore(Instance).TranslatePropertyName(Result)
   else
