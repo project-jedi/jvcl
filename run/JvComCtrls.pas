@@ -485,6 +485,8 @@ type
     procedure SetMenu(const Value: TMenu);
     procedure DoMenuChange(Sender: TObject; Source: TMenuItem; Rebuild: Boolean);
     procedure SetPageControl(const Value: TPageControl);
+    function GetItemIndex: Integer;
+    procedure SetItemIndex(const Value: Integer);
   protected
     procedure RebuildFromMenu; virtual;
     function IsMenuItemClick(Node:TTreeNode):boolean;
@@ -541,11 +543,14 @@ type
 
     property HintColor;
 
+    property ItemIndex: Integer read GetItemIndex write SetItemIndex stored False;
+
     property Checkboxes: Boolean read FCheckBoxes write SetCheckBoxes default False;
     property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHScroll write FOnHScroll;
     property PageControl: TPageControl read FPageControl write SetPageControl;
     property OnPageChanged: TPageChangedEvent read FOnPage write FOnPage;
+
 
     property AutoDragScroll: Boolean read FAutoDragScroll write FAutoDragScroll default False;
 {$IFNDEF COMPILER6_UP}
@@ -2007,6 +2012,17 @@ begin
   Result := TTreeNode(FSelectedList[Index]);
 end;
 
+function TJvTreeView.GetItemIndex: Integer;
+begin
+  Result := -1;
+  if Assigned(Selected) and (Items.Count>0) then
+  begin
+    Result := 0;
+    while (Result<Items.Count) and (Items[Result] <> Selected) do
+      Inc(Result);
+  end;
+end;
+
 procedure TJvTreeView.InternalCustomDrawItem(Sender: TCustomTreeView;
   Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
 begin
@@ -2119,6 +2135,14 @@ procedure TJvTreeView.ResetPostOperationFlags;
 begin
   FClearBeforeSelect := False;
   FSelectThisNode := False;
+end;
+
+procedure TJvTreeView.SetItemIndex(const Value: Integer);
+begin
+  if ItemIndex = -1 then
+    Selected := nil
+  else
+    Selected := Items[Value];
 end;
 
 procedure TJvTreeView.SelectItem(Node: TTreeNode; Unselect: Boolean);
