@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-12-01
+Last Modified: 2003-12-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -329,7 +329,7 @@ begin
     end;
   end;
 
-  if (Result) and (FTarget.IsBCB) and IsJcl then
+  if Result and FTarget.IsBCB and IsJcl then
   begin
    // *****
    // C++BUILDER .dcp creation
@@ -366,6 +366,11 @@ begin
         Result := CaptureExecute('"' + FTarget.RootDir + '\Bin\make.exe"',
           '-B -f"' + JclMakeFilename + '"', StartDir, // hard coded "-B"
           CaptureLine) = 0;
+        if Result then
+        begin
+          DeleteDcuFiles(OutDir, StartDir + '\xyz');
+          DeleteDcuFiles(OutDir + '\obj', StartDir + '\xyz');
+        end;
       finally
         SetEnvironmentVariable('DCCOPT', nil);
         PrepareBpgData.Cleaning := Result;
@@ -396,7 +401,7 @@ begin
       JclIncludePaths,
       JclLibDir + '\' + FTarget.JclDirName + ';' + FTarget.DcpDir,
       JclSourcePaths,
-      JclLibDir + '\' + FTarget.JclDirName,
+      JclLibDir + '\' + FTarget.JclDirName + '\obj',
       FTarget.JCLPackageDir + '\' + FTarget.JclDirName,
       True);
     if Result then

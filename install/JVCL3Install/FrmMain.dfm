@@ -249,35 +249,42 @@ object FormMain: TFormMain
   end
   object Bevel1: TBevel
     Left = 8
-    Top = 200
+    Top = 168
     Width = 5
-    Height = 77
+    Height = 97
     Shape = bsRightLine
   end
   object Bevel2: TBevel
     Left = 12
-    Top = 216
+    Top = 184
     Width = 17
     Height = 9
     Shape = bsTopLine
   end
   object Bevel3: TBevel
     Left = 12
-    Top = 236
+    Top = 204
     Width = 17
     Height = 9
     Shape = bsTopLine
   end
   object Bevel4: TBevel
     Left = 12
-    Top = 256
+    Top = 224
     Width = 17
     Height = 9
     Shape = bsTopLine
   end
   object Bevel5: TBevel
     Left = 12
-    Top = 276
+    Top = 244
+    Width = 17
+    Height = 9
+    Shape = bsTopLine
+  end
+  object Bevel6: TBevel
+    Left = 12
+    Top = 264
     Width = 17
     Height = 9
     Shape = bsTopLine
@@ -496,7 +503,7 @@ object FormMain: TFormMain
     Left = 8
     Top = 24
     Width = 193
-    Height = 177
+    Height = 145
     Checkboxes = True
     Columns = <
       item
@@ -523,7 +530,7 @@ object FormMain: TFormMain
   end
   object CheckBoxClearJVCLPalette: TCheckBox
     Left = 16
-    Top = 268
+    Top = 236
     Width = 185
     Height = 17
     Hint = 
@@ -537,7 +544,7 @@ object FormMain: TFormMain
   end
   object CheckBoxBuild: TCheckBox
     Left = 16
-    Top = 208
+    Top = 176
     Width = 185
     Height = 17
     Hint = 
@@ -654,7 +661,7 @@ object FormMain: TFormMain
   end
   object CheckBoxDeveloperInstall: TCheckBox
     Left = 16
-    Top = 248
+    Top = 216
     Width = 185
     Height = 17
     Hint = 
@@ -668,7 +675,7 @@ object FormMain: TFormMain
   end
   object CheckBoxInstallJcl: TCheckBox
     Left = 16
-    Top = 228
+    Top = 196
     Width = 185
     Height = 17
     Hint = 'Install the JCL packages that are needed by the JVCL 3.'
@@ -694,11 +701,25 @@ object FormMain: TFormMain
     TabOrder = 8
     OnClick = CheckBoxShowRuntimePackagesClick
   end
+  object CheckBoxCompileOnly: TCheckBox
+    Left = 16
+    Top = 256
+    Width = 185
+    Height = 17
+    Hint = 
+      'Activate this option if you are a JVCL developer.'#13#10'This adds the' +
+      ' \run and \design directory to the library paths.'
+    Caption = 'Compile only (error check)'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 9
+    OnClick = CheckBoxClearJVCLPaletteClick
+  end
   object ImageListPackages: TImageList
     Left = 216
     Top = 56
     Bitmap = {
-      494C010103000400040010001000FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
+      494C010103000400040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000084848400000000008484840000000000000000000000
@@ -834,7 +855,8 @@ object FormMain: TFormMain
       C107C107C1070000000100010001000001010101010100000001000100010000
       0101010101010000000100010001000001010101010100000281028102810000
       111111111111000028292829282900001291129112910000C547C547C5470000
-      F01FF01FF01F0000FC7FFC7FFC7F0000}
+      F01FF01FF01F0000FC7FFC7FFC7F000000000000000000000000000000000000
+      000000000000}
   end
   object ImageListTargets: TImageList
     Left = 24

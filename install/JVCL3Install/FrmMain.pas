@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-12-01
+Last Modified: 2003-12-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -34,6 +34,9 @@ command line switches:
 
 unit FrmMain;
 interface
+{$IFDEF COMPILER6_UP}
+  {$WARN UNIT_PLATFORM OFF}
+{$ENDIF}
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, CheckLst, ExtCtrls, ComCtrls, ImgList, CommCtrl, ActnList, Buttons,
@@ -77,6 +80,8 @@ type
     CheckBoxInstallJcl: TCheckBox;
     Bevel5: TBevel;
     CheckBoxShowRuntimePackages: TCheckBox;
+    CheckBoxCompileOnly: TCheckBox;
+    Bevel6: TBevel;
     procedure BtnQuitClick(Sender: TObject);
     procedure BtnAdvancedOptionsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -98,8 +103,6 @@ type
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure LblVersionsClick(Sender: TObject);
     procedure LblPackagesClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
     procedure CheckBoxShowRuntimePackagesClick(Sender: TObject);
   private
     { Private-Deklarationen }
@@ -384,13 +387,19 @@ end;
 
 procedure TFormMain.ListViewTargetsSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
+
+  procedure SetEnable(e: Boolean);
+  begin
+    CheckBoxClearJVCLPalette.Enabled := e;
+    CheckBoxBuild.Enabled := e;
+    CheckBoxDeveloperInstall.Enabled := e;
+    CheckBoxInstallJcl.Enabled := e;
+    CheckBoxCompileOnly.Enabled := e;
+  end;
 begin
   Inc(FLockOptClick);
   try
-    CheckBoxClearJVCLPalette.Enabled := Selected;
-    CheckBoxBuild.Enabled := Selected;
-    CheckBoxDeveloperInstall.Enabled := Selected;
-    CheckBoxInstallJcl.Enabled := Selected;
+    SetEnable(Selected);
     if Selected then
     begin
       CheckTargetUpdates(Item.Data);
@@ -403,6 +412,7 @@ begin
         CheckBoxInstallJcl.Font.Style := []
       else
         CheckBoxInstallJcl.Font.Style := [fsBold];
+      CheckBoxCompileOnly.Checked := SelTarget.CompileOnly;
     end
     else
     begin
@@ -410,7 +420,8 @@ begin
       CheckBoxBuild.Checked := False;
       CheckBoxDeveloperInstall.Checked := False;
       CheckBoxInstallJcl.Checked := False;
-      CheckBoxInstallJcl.Font.Style := []
+      CheckBoxInstallJcl.Font.Style := [];
+      CheckBoxCompileOnly.Checked := False;
     end;
     UpdatePackageList;
   finally
@@ -538,6 +549,7 @@ begin
     SelTarget.Build := CheckBoxBuild.Checked;
     SelTarget.DeveloperInstall := CheckBoxDeveloperInstall.Checked;
     SelTarget.InstallJcl := CheckBoxInstallJcl.Checked;
+    SelTarget.CompileOnly := CheckBoxCompileOnly.Checked;
   end;
 end;
 
@@ -669,16 +681,6 @@ end;
 procedure TFormMain.LblPackagesClick(Sender: TObject);
 begin
   ListViewPackages.SetFocus;
-end;
-
-procedure TFormMain.Button1Click(Sender: TObject);
-begin
-  SelTarget.RegistryInstall;
-end;
-
-procedure TFormMain.Button2Click(Sender: TObject);
-begin
-  SelTarget.RegistryUnInstall;
 end;
 
 procedure TFormMain.CheckBoxShowRuntimePackagesClick(Sender: TObject);

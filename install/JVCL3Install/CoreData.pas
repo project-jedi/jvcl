@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-12-01
+Last Modified: 2003-12-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -63,6 +63,7 @@ type
     FDeveloperInstall: Boolean;
     FInstallJcl: Boolean;
     FJCLNeedsDcp: Boolean;
+    FCompileOnly: Boolean;
 
     function GetSymbol: string;
     function GetMajorVersion: Integer;
@@ -140,6 +141,7 @@ type
     property Build: Boolean read FBuild write FBuild;
     property DeveloperInstall: Boolean read FDeveloperInstall write FDeveloperInstall;
     property InstallJcl: Boolean read FInstallJcl write FInstallJcl;
+    property CompileOnly: Boolean read FCompileOnly write FCompileOnly;
 
     property Packages: TPackageList read FPackages;
     property TargetList: TTargetList read FTargetList;
@@ -943,6 +945,8 @@ procedure TTargetInfo.RegistryInstall;
 var
   i: Integer;
 begin
+  if FCompileOnly then Exit;
+
   AddRemoveJVCLPaths(True);
   if FClearJVCLPalette then
     DoClearJVCLPalette;
@@ -956,6 +960,8 @@ end;
 procedure TTargetInfo.RegistryUninstall;
 var i: Integer;
 begin
+  if FCompileOnly then Exit;
+
   AddRemoveJVCLPaths(False);
   DoClearJVCLPalette;
   for i := 0 to Packages.Count - 1 do
@@ -970,7 +976,9 @@ end;
 
 procedure TTargetInfo.JclRegistryInstall;
 begin
-  if JCLPairInstallation then
+  if FCompileOnly then Exit;
+
+  if JCLDir <> '' then
     AddRemoveJCLPaths(True);
 end;
 
