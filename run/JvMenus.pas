@@ -34,7 +34,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Contnrs, Graphics, Controls, Forms,
   ExtCtrls, ImgList, Menus,
-  JvWndProcHook, JVCLVer, JvFinalize;
+  JvTypes, JvWndProcHook, JVCLVer, JvFinalize;
 
 const
   // custom painter constants
@@ -373,7 +373,7 @@ type
   end;
 
   // the event trigerred when the margin of a menu must be drawn
-  TDrawLeftMarginEvent = procedure(Sender: TMenu; Rect: TRect) of object;
+  TJvDrawLeftMarginEvent = procedure(Sender: TMenu; Rect: TRect) of object;
 
   { TJvCustomMenuItemPainter }
 
@@ -382,7 +382,7 @@ type
   // instance of one of the descendent which will be be in charge
   // of the painting of menu items. There is one descendent per
   // style in the TJvMenuStyle enumeration
-  TJvCustomMenuItemPainter = class (TPersistent)
+  TJvCustomMenuItemPainter = class (TJvPersistent)
   private
     procedure SetLeftMargin(const Value: Cardinal);
     procedure SetImageBackgroundColor(const Value: TColor);
@@ -390,7 +390,7 @@ type
     // property fields
     FImageBackgroundColor : TColor;
     FLeftMargin           : Cardinal;
-    FOnDrawLeftMargin     : TDrawLeftMarginEvent;
+    FOnDrawLeftMargin     : TJvDrawLeftMarginEvent;
 
     // other usage fields
     FMainMenu    : TJvMainMenu;
@@ -538,8 +538,7 @@ type
     property TextVAlignment  : TJvVerticalAlignment read GetTextVAlignment;
 
     // Left margin properties and events
-    property LeftMargin       : Cardinal             read FLeftMargin       write SetLeftMargin default 0;
-    property OnDrawLeftMargin : TDrawLeftMarginEvent read FOnDrawLeftMargin write FOnDrawLeftMargin;
+    property LeftMargin       : Cardinal               read FLeftMargin       write SetLeftMargin default 0;
   public
     // constructor, requires the menu to which this painter is linked
     // will create the objects derived from TPersistent which are
@@ -560,6 +559,7 @@ type
                     ItemRect : TRect;
                     State: TMenuOwnerDrawState); virtual;
   published
+    property OnDrawLeftMargin : TJvDrawLeftMarginEvent read FOnDrawLeftMargin write FOnDrawLeftMargin;
     property ImageBackgroundColor : TColor read FImageBackgroundColor write SetImageBackgroundColor default DefaultImageBackgroundColor;
   end;
 
@@ -684,7 +684,7 @@ uses
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF COMPILER6_UP}
-  JvConsts, JvTypes, JvJVCLUtils, JvJCLUtils;
+  JvConsts, JvJVCLUtils, JvJCLUtils;
 
 const
   sUnitName = 'JvMenus';
@@ -1659,7 +1659,8 @@ end;
 
 constructor TJvCustomMenuItemPainter.Create(Menu: TMenu);
 begin
-  inherited Create; //(nil);
+  inherited Create; {(Menu);
+  Name := 'ItemPainter';}
 
   // affect default values that are not 0
   FImageBackgroundColor := DefaultImageBackgroundColor;
@@ -2172,6 +2173,8 @@ end;
 function TJvCustomMenuItemPainter.GetTextWidth(Item: TMenuItem): Integer;
 var
   I: Integer;
+  MaxWidth: Integer;
+  tmpWidth: Integer;
 begin
   if IsPopup then
   begin
@@ -2179,23 +2182,31 @@ begin
     // Text Shortcut SubMenuArrow.
     // with the two last ones being not compulsory
 
-    Result := Canvas.TextWidth(DelChars(Item.Caption, '&'));
+    MaxWidth := Canvas.TextWidth(DelChars(Item.Caption, '&'));
+
+    // Find the widest item in the menu being displayed
+    if Item.Parent <> nil then
+      for I := 0 to Item.Parent.Count - 1 do
+      begin
+        tmpWidth := Canvas.TextWidth(Item.Parent.Items[I].Caption);
+        if tmpWidth > MaxWidth then
+          MaxWidth := tmpWidth;
+
+        // if the item has childs, then add then we add the required
+        // width for an arrow. It is considered to be the width of
+        // two spaces.
+        if Item.Parent.Items[I].Count > 0 then
+          Inc(MaxWidth, Canvas.TextWidth('  '));
+      end;
+    Result := MaxWidth;
+
+    // If there is a shortcut, add its width to the current width
     if Item.ShortCut <> scNone then
     begin
-      // It has been found that there are always two tabs
+      // It has been found that there are always one tab
       // in front of the text for the shortcut.
       Inc(Result, Canvas.TextWidth(ShortcutToText(Item.ShortCut)));
-      Inc(Result, Canvas.TextWidth(Tab + Tab));
-
-      // if the menu item has a parent and any of the child of the
-      // parent has child too, then we add the required width for
-      // an arrow. It is considered to be the width of two spaces.
-      if Item.Parent <> nil then
-      begin
-        for I := 0 to Item.Parent.Count - 1 do
-          if Item.Parent.Items[I].Count > 0 then
-            Inc(Result, Canvas.TextWidth('  '));
-      end;
+      Inc(Result, Canvas.TextWidth(Tab));
     end;
   end
   else
@@ -2593,7 +2604,17 @@ begin
   else
     Dec(X,3);
 
-  inherited DrawDisabledImage(X, Y);
+  if UseDisabledImages then
+  begin
+    ImageList_Draw(DisabledImages.Handle, FImageIndex, Canvas.Handle,
+      X, Y, ILD_NORMAL);
+  end
+  else
+  begin
+    //TODO: Change to draw greyscale image
+    ImageListDrawDisabled(Images, Canvas, X, Y, FImageIndex, clBtnHighlight, GrayColor,
+      DrawHighlight)
+  end;
 end;
 
 procedure TJvXPMenuItemPainter.DrawEnabledImage(X, Y: integer);
