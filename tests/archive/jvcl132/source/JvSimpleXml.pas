@@ -157,6 +157,7 @@ type
     FRoot: TJvSimpleXmlElem;
     FOnTagParsed: TJvOnSimpleXmlParsed;
     FOnValue: TJvOnValueParsed;
+    FEncoding: string;
   protected
     procedure SetFileName(Value: TFileName);
   public
@@ -172,6 +173,7 @@ type
 
     property Root: TJvSimpleXmlElem read FRoot write FRoot;
   published
+    property Encoding: string read FEncoding write FEncoding;
     property FileName: TFileName read FFileName write SetFileName;
     property OnTagParsed: TJvOnSimpleXmlParsed read FOnTagParsed write FOnTagParsed;
     property OnValueParsed: TJvOnValueParsed read FOnValue write FOnValue;
@@ -395,6 +397,7 @@ constructor TJvSimpleXml.Create(AOwner: TComponent);
 begin
   inherited;
   FRoot := TJvSimpleXmlElem.Create(nil);
+  FEncoding := 'windows-1252';
 end;
 {*************************************************}
 
@@ -611,7 +614,7 @@ procedure TJvSimpleXml.SaveToStream(const Stream: TStream);
   end;
 
 begin
-  WriteString('<?xml version="1.0" encoding="windows-1252" ?>');
+  WriteString('<?xml version="1.0" encoding="'+FEncoding+'" ?>');
   WriteElement(Root, '');
 end;
 {*************************************************}
