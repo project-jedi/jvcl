@@ -1,5 +1,8 @@
 JVCL Convert changes:
 =====================
+ver. 1.22 (2002-12-13)
+- can now handle '=' in replace strings. Added statusbar
+- faster multi-select delete
 
 Ver. 1.21 (2002-09-10)
 
