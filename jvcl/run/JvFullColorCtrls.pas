@@ -32,7 +32,11 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Controls, Graphics,
   ComCtrls, StdCtrls, ExtCtrls,
-  JvFullColorSpaces, JvFullColorRotate, JvTypes;
+  JvFullColorSpaces, JvFullColorRotate,
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
+  JvTypes;
 
 type
   TJvFullColorAxisConfig = (acXYZ, acXZY, acYXZ, acYZX, acZXY, acZYX);
@@ -729,9 +733,6 @@ uses
   {$IFNDEF COMPILER6_UP}
   JclMath, // For EnsureRange
   {$ENDIF !COMPILER6_UP}
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
   JvResources, JvConsts,
   Math, TypInfo,
   Forms;
