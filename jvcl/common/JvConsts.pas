@@ -268,6 +268,12 @@ const
   KeyboardShiftStates = [ssShift, ssAlt, ssCtrl];
   MouseShiftStates = [ssLeft, ssRight, ssMiddle, ssDouble];
 
+{$IFDEF VCL}
+const
+  // for CreateCompatibleDC
+  HDC_DESKTOP = HDC(0);
+{$ENDIF VCL}
+
 implementation
 
 end.

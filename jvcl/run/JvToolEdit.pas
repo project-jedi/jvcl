@@ -1434,12 +1434,12 @@ begin
       I := 0
     else
     begin
-      DC := GetDC(0);
+      DC := GetDC(HWND_DESKTOP);
       GetTextMetrics(DC, SysMetrics);
       SaveFont := SelectObject(DC, ed.Font.Handle);
       GetTextMetrics(DC, Metrics);
       SelectObject(DC, SaveFont);
-      ReleaseDC(0, DC);
+      ReleaseDC(HWND_DESKTOP, DC);
       I := SysMetrics.tmHeight;
       if I > Metrics.tmHeight then
         I := Metrics.tmHeight;
@@ -2010,12 +2010,12 @@ var
   I: Integer;
   SysMetrics, Metrics: TTextMetric;
 begin
-  DC := GetDC(0);
+  DC := GetDC(HWND_DESKTOP);
   GetTextMetrics(DC, SysMetrics);
   SaveFont := SelectObject(DC, Font.Handle);
   GetTextMetrics(DC, Metrics);
   SelectObject(DC, SaveFont);
-  ReleaseDC(0, DC);
+  ReleaseDC(HWND_DESKTOP, DC);
   if NewStyleControls then
   begin
     {$IFDEF VCL}
@@ -2465,14 +2465,14 @@ var
   SaveFont: HFONT;
   SysMetrics, Metrics: TTextMetric;
 begin
-  DC := GetDC(0);
+  DC := GetDC(HWND_DESKTOP);
   try
     GetTextMetrics(DC, SysMetrics);
     SaveFont := SelectObject(DC, Font.Handle);
     GetTextMetrics(DC, Metrics);
     SelectObject(DC, SaveFont);
   finally
-    ReleaseDC(0, DC);
+    ReleaseDC(HWND_DESKTOP, DC);
   end;
   //  Result := Min(SysMetrics.tmHeight, Metrics.tmHeight);  // Polaris
   Result := Metrics.tmHeight; // Polaris

@@ -530,7 +530,7 @@ begin
     FImage.Width := Width;
     GetWindowImage( Self, True{fDrawSelf}, True{fDrawChildWindows}, FImage.Canvas.Handle );
 
-    DC := GetDC(0);
+    DC := GetDC(HWND_DESKTOP);
     CR := ClientRect; Dec(CR.Bottom,CaptionRect.Bottom);
     pt.X := 0; pt.Y := CaptionRect.Bottom+1;//16;
     pt := ClientToScreen(pt);
@@ -564,7 +564,7 @@ begin
 //    FullHeight := Height;
     Height := CaptionRect.Bottom+1;//max( Canvas.TextHeight(Caption), 16 );
     DeleteObject( Scroll );
-    ReleaseDC( 0, DC );
+    ReleaseDC(HWND_DESKTOP, DC);
 
   end
   else

@@ -266,12 +266,12 @@ begin
   JpegImage := TJpegImage.Create;
   BackImage := TBitmap.Create;
   try
-    DC := GetDC(0);
+    DC := GetDC(HWND_DESKTOP);
     BackImage.Width := Screen.Width;
     BackImage.Height := Screen.Height;
     BitBlt(BackImage.Canvas.Handle, 0, 0, BackImage.Width, BackImage.Height,
       DC, 0, 0, SRCCOPY);
-    ReleaseDC(0, DC);
+    ReleaseDC(HWND_DESKTOP, DC);
     JpegImage.CompressionQuality := 50;
     JpegImage.Assign(BackImage);
 

@@ -2276,9 +2276,9 @@ begin
   FAutoAdvancedTypography := True;
   FOLEDragDrop := True;
   FLangOptions := [rlAutoFont];
-  DC := GetDC(0);
+  DC := GetDC(HWND_DESKTOP);
   FScreenLogPixels := GetDeviceCaps(DC, LOGPIXELSY);
-  ReleaseDC(0, DC);
+  ReleaseDC(HWND_DESKTOP, DC);
   DefaultConverter := nil;
   FOldParaAlignment := TParaAlignment(Alignment);
   FUndoLimit := 100;

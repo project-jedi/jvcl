@@ -311,12 +311,12 @@ begin
   if not (csReading in ComponentState) and AutoSize then
   begin
     Rect := ClientRect;
-    DC := GetDC(0);
+    DC := GetDC(HWND_DESKTOP);
     Canvas.Handle := DC;
     Windows.DrawText(Canvas.Handle, PChar(Caption), Length(Caption), Rect,
       DT_EXPANDTABS or DT_CALCRECT or WordWraps[WordWrap]);
     Canvas.Handle := 0;
-    ReleaseDC(0, DC);
+    ReleaseDC(HWND_DESKTOP, DC);
     X := Left;
     if Alignment = ftaRightJustify then
       Inc(X, Width - Rect.Right);

@@ -11130,11 +11130,11 @@ begin
   SaveRect := ARect;
 
   StrPCopy(cStr, aTxt);
-  DC := GetDC(0);
+  DC := GetDC(HWND_DESKTOP);
   hSavFont := SelectObject(DC, Font.Handle);
   GetTextExtentPoint32(DC, cStr, Length(aTxt), Size);
   SelectObject(DC, hSavFont);
-  ReleaseDC(0, DC);
+  ReleaseDC(HWND_DESKTOP, DC);
 
   x := 0;
   y := 0;

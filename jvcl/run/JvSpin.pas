@@ -1017,12 +1017,12 @@ var
   SaveFont: HFONT;
   SysMetrics, Metrics: TTextMetric;
 begin
-  DC := GetDC(0);
+  DC := GetDC(HWND_DESKTOP);
   GetTextMetrics(DC, SysMetrics);
   SaveFont := SelectObject(DC, Font.Handle);
   GetTextMetrics(DC, Metrics);
   SelectObject(DC, SaveFont);
-  ReleaseDC(0, DC);
+  ReleaseDC(HWND_DESKTOP, DC);
   SysHeight := SysMetrics.tmHeight;
   Height := Metrics.tmHeight;
 end;

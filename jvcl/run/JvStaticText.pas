@@ -338,7 +338,7 @@ var
 begin
   if not (csReading in ComponentState) and AutoSize and HandleAllocated then
   begin
-    DC := GetDC(0);
+    DC := GetDC(HWND_DESKTOP);
     if not WordWrap then
     begin
       SaveFont := SelectObject(DC, Font.Handle);
@@ -359,7 +359,7 @@ begin
       GetTextDisplayInfo(DC, R);
       SetBounds(Left, Top, R.Right, R.Bottom);
     end;
-    ReleaseDC(0, DC);
+    ReleaseDC(HWND_DESKTOP, DC);
   end;
 end;
 

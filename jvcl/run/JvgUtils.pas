@@ -2025,10 +2025,10 @@ function IsSmallFonts: Boolean;
 var
   DC: HDC;
 begin
-  DC := GetDC(0);
+  DC := GetDC(HWND_DESKTOP);
   Result := (GetDeviceCaps(DC, LOGPIXELSX) = 96);
   { For large font it would be 120 }
-  ReleaseDC(0, DC);
+  ReleaseDC(HWND_DESKTOP, DC);
 end;
 
 { Color depth in system: 8, 16 or 32 bits }
@@ -2037,9 +2037,9 @@ function SystemColorDepth: Integer;
 var
   DC: HDC;
 begin
-  DC := GetDC(0);
+  DC := GetDC(HWND_DESKTOP);
   Result := GetDeviceCaps(DC, BITSPIXEL);
-  ReleaseDC(0, DC);
+  ReleaseDC(HWND_DESKTOP, DC);
 end;
 
 function GetFileType(const FileName: string): TglFileType;

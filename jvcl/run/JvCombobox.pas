@@ -576,12 +576,12 @@ var
   I: Integer;
   SysMetrics, Metrics: TTextMetric;
 begin
-  DC := GetDC(0);
+  DC := GetDC(HWND_DESKTOP);
   GetTextMetrics(DC, SysMetrics);
   SaveFont := SelectObject(DC, Font.Handle);
   GetTextMetrics(DC, Metrics);
   SelectObject(DC, SaveFont);
-  ReleaseDC(0, DC);
+  ReleaseDC(HWND_DESKTOP, DC);
   if NewStyleControls then
   begin
     if Ctl3D then

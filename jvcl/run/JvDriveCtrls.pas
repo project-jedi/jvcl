@@ -64,9 +64,11 @@ type
     FLarge: Integer;
     FDisplayName: string;
     FDirList: TJvDirectoryListBox;
+    procedure RecreateImageList;
     procedure ResetItemHeight;
     procedure SetImageSize(Value: TJvImageSize);
     procedure SetOffset(Value: Integer);
+    function DriveChangeMessage(var Msg: TMessage): Boolean;
   protected
     procedure FontChanged; override;
     procedure CreateWnd; override;
@@ -92,7 +94,7 @@ type
     property Drive: Char read FDrive write SetDrive stored False;
     property DriveTypes: TJvDriveTypes read FDriveTypes write SetDriveTypes;
     property Offset: Integer read FOffset write SetOffset;
-    property ImageSize: TJvImageSize read FImageSize write SetImageSize;
+    property ImageSize: TJvImageSize read FImageSize write SetImageSize default isSmall;
     property DisplayName: string read FDisplayName;
     property Color;
     property DragMode;
@@ -152,6 +154,7 @@ type
     procedure SetOffset(Value: Integer);
     function GetDrives(Index: Integer): string;
     function GetDriveCount: Integer;
+    function DriveChangeMessage(var Msg: TMessage): Boolean;
   protected
     procedure Resize; override;
     procedure FontChanged; override;
@@ -377,6 +380,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   ShellAPI, SysUtils, Math, Forms, ImgList,
+  DBT,
   JvJCLUtils, JvJVCLUtils, JvConsts;
 
 const
@@ -388,17 +392,17 @@ var
   SaveFont: HFONT;
   Metrics: TTextMetric;
 begin
-  DC := GetDC(0);
+  DC := GetDC(HWND_DESKTOP);
   SaveFont := SelectObject(DC, Font.Handle);
   GetTextMetrics(DC, Metrics);
   SelectObject(DC, SaveFont);
-  ReleaseDC(0, DC);
+  ReleaseDC(HWND_DESKTOP, DC);
   Result := Metrics.tmHeight;
 end;
 
 function IsValidDriveType(DriveTypes: TJvDriveTypes; DriveType: UINT): Boolean;
 const
-  cDriveMasks: array[TJvDriveType] of UINT =
+  cDriveMasks: array [TJvDriveType] of UINT =
   (DRIVE_UNKNOWN, DRIVE_REMOVABLE, DRIVE_FIXED, DRIVE_REMOTE, DRIVE_CDROM, DRIVE_RAMDISK);
 var
   I: TJvDriveType;
@@ -422,27 +426,45 @@ begin
   FDrives := TStringList.Create;
   FDriveTypes := dtStandard;
 
-  if FImageSize = isSmall then
-    FImages := TImageList.CreateSize(FSmall, FSmall)
-  else
-    FImages := TImageList.CreateSize(FLarge, FLarge);
-
-  FImages.DrawingStyle := dsTransparent;
+  FImageSize := isSmall;
+  RecreateImageList;
   FImageWidth := FImages.Width;
-  FImages.ShareImages := True;
 
   FItemIndex := 0;
   FOffset := 4;
   Color := clWindow;
   Style := csOwnerDrawFixed;
   ResetItemHeight;
+  Application.HookMainWindow(DriveChangeMessage);
 end;
 
 destructor TJvDriveCombo.Destroy;
 begin
+  Application.UnhookMainWindow(DriveChangeMessage);
   FDrives.Free;
   FImages.Free;
   inherited Destroy;
+end;
+
+function TJvDriveCombo.DriveChangeMessage(var Msg: TMessage): Boolean;
+begin
+  Result := False;
+  if Msg.Msg = WM_DEVICECHANGE then
+    if ((TWMDeviceChange(Msg).Event = DBT_DEVICEARRIVAL) or
+      (TWMDeviceChange(Msg).Event = DBT_DEVICEREMOVECOMPLETE)) and
+      (PDevBroadcastVolume(TWMDeviceChange(Msg).dwData)^.dbcv_devicetype = DBT_DEVTYP_VOLUME) then
+      Refresh;
+end;
+
+procedure TJvDriveCombo.RecreateImageList;
+begin
+  if FImageSize = isSmall then
+    FImages := TImageList.CreateSize(FSmall, FSmall)
+  else
+    FImages := TImageList.CreateSize(FLarge, FLarge);
+
+  FImages.DrawingStyle := dsTransparent;
+  FImages.ShareImages := True;
 end;
 
 procedure TJvDriveCombo.BuildList;
@@ -452,7 +474,7 @@ var
   Options: Integer;
   Drv: Char;
   LastErrorMode: Cardinal;
-  Tmp: array[0..104] of Char; // 4 chars ('C:\#0') * 26 possible drives + 1 terminating #0 = 105 chars
+  Tmp: array [0..104] of Char; // 4 chars ('C:\#0') * 26 possible drives + 1 terminating #0 = 105 chars
   P: PChar;
 begin
   Drv := Drive;
@@ -635,16 +657,8 @@ begin
 
     if Items.Count > 0 then
       Items.Clear;
-    if Assigned(FImages) then
-      FImages.Free;
 
-    if Value = isSmall then
-      FImages := TImageList.CreateSize(FSmall, FSmall)
-    else
-      FImages := TImageList.CreateSize(FLarge, FLarge);
-
-    FImages.DrawingStyle := dsTransparent;
-    FImages.ShareImages := True;
+    RecreateImageList;
     FImageWidth := FImages.Width;
     ResetItemHeight;
     RecreateWnd;
@@ -726,13 +740,25 @@ begin
   FOffset := 4;
   Style := lbOwnerDrawFixed;
   ResetItemHeight;
+  Application.HookMainWindow(DriveChangeMessage);
 end;
 
 destructor TJvDriveList.Destroy;
 begin
+  Application.UnhookMainWindow(DriveChangeMessage);
   FDrives.Free;
   FImages.Free;
   inherited Destroy;
+end;
+
+function TJvDriveList.DriveChangeMessage(var Msg: TMessage): Boolean;
+begin
+  Result := False;
+  if Msg.Msg = WM_DEVICECHANGE then
+    if ((TWMDeviceChange(Msg).Event = DBT_DEVICEARRIVAL) or
+      (TWMDeviceChange(Msg).Event = DBT_DEVICEREMOVECOMPLETE)) and
+      (PDevBroadcastVolume(TWMDeviceChange(Msg).dwData)^.dbcv_devicetype = DBT_DEVTYP_VOLUME) then
+      Refresh;
 end;
 
 procedure TJvDriveList.BuildList;
@@ -741,7 +767,7 @@ var
   S: string;
   Options: Integer;
   Drv: Char;
-  Tmp: array[0..104] of Char;
+  Tmp: array [0..104] of Char;
   P: PChar;
   LastErrorMode: Cardinal;
 begin
@@ -1511,7 +1537,7 @@ const
   SHGFI_OVERLAYINDEX = $00000040;
   {TFileAttr = (ftReadOnly, ftHidden, ftSystem, ftVolumeID, ftDirectory,
     ftArchive, ftNormal);}
-  Attributes: array[TFileAttr] of Word = (FILE_ATTRIBUTE_READONLY, FILE_ATTRIBUTE_HIDDEN,
+  Attributes: array [TFileAttr] of Word = (FILE_ATTRIBUTE_READONLY, FILE_ATTRIBUTE_HIDDEN,
     FILE_ATTRIBUTE_SYSTEM, 0 {faVolumeID}, 0 {faDirectory}, FILE_ATTRIBUTE_ARCHIVE,
     FILE_ATTRIBUTE_READONLY or FILE_ATTRIBUTE_ARCHIVE or FILE_ATTRIBUTE_NORMAL {faNormal});
   CAllAttributes = FILE_ATTRIBUTE_READONLY or FILE_ATTRIBUTE_HIDDEN or

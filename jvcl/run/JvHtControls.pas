@@ -733,7 +733,7 @@ begin
     {$ENDIF VisualCLX}
     Rect := ClientRect;
     {$IFDEF VCL}
-    DC := GetDC(0);
+    DC := GetDC(HWND_DESKTOP);
     try
       Canvas.Handle := DC;
       Canvas.Font.Assign(Font);
@@ -741,7 +741,7 @@ begin
       MaxWidth := ItemHTWidth(Canvas, Bounds(0, 0, 0, 0), [], Caption);
     finally
       Canvas.Handle := 0;
-      ReleaseDC(0, DC);
+      ReleaseDC(HWND_DESKTOP, DC);
     end;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}

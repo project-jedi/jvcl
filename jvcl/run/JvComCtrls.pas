@@ -978,11 +978,11 @@ var
   //  R: TRect;
   Metrics: TTextMetric;
 begin
-  DC := GetDC(0);
+  DC := GetDC(HWND_DESKTOP);
   SaveFont := SelectObject(DC, Font.Handle);
   GetTextMetrics(DC, Metrics);
   SelectObject(DC, SaveFont);
-  ReleaseDC(0, DC);
+  ReleaseDC(HWND_DESKTOP, DC);
   Height := Metrics.tmHeight + (GetSystemMetrics(SM_CYBORDER) * 8);
   {  for I := 0 to FEditControlCount - 1 do
     begin

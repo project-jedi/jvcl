@@ -2287,12 +2287,12 @@ var
   DC: Windows.HDC;
   R: TRect;
 begin
-  DC := Windows.GetDC(0);
+  DC := Windows.GetDC(HWND_DESKTOP);
   try
     R := Rect(RectOrg.X, RectOrg.Y, RectEnd.X, RectEnd.Y);
     Windows.InvertRect(DC, R);
   finally
-    Windows.ReleaseDC(0, DC);
+    Windows.ReleaseDC(HWND_DESKTOP, DC);
   end;
 end;
 
@@ -2301,7 +2301,7 @@ var
   DC: Windows.HDC;
   I: Integer;
 begin
-  DC := Windows.GetDC(0);
+  DC := Windows.GetDC(HWND_DESKTOP);
   try
     for I := 1 to Width do
     begin
@@ -2309,7 +2309,7 @@ begin
       //InflateRect(ScreenRect, -1, -1);
     end;
   finally
-    Windows.ReleaseDC(0, DC);
+    Windows.ReleaseDC(HWND_DESKTOP, DC);
   end;
 end;
 {$ENDIF VCL}
@@ -5735,7 +5735,7 @@ begin
   with TBitmapInfoHeader(BitmapInfo) do
     biHeight := Abs(biHeight);
   OldPal := 0;
-  DC := CreateCompatibleDC(0);
+  DC := CreateCompatibleDC(HDC_DESKTOP);
   try
     if Palette <> 0 then
     begin

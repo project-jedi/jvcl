@@ -372,10 +372,10 @@ begin
   begin
     Canvas.Lock;
     try
-      MemDC := GetDC(0);
+      MemDC := GetDC(HWND_DESKTOP);
       MemBitmap := CreateCompatibleBitmap(MemDC, ClientWidth, ClientHeight);
-      ReleaseDC(0, MemDC);
-      MemDC := CreateCompatibleDC(0);
+      ReleaseDC(HWND_DESKTOP, MemDC);
+      MemDC := CreateCompatibleDC(HDC_DESKTOP);
       OldBitmap := SelectObject(MemDC, MemBitmap);
       try
         DC := Msg.DC;

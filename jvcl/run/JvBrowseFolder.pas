@@ -861,6 +861,8 @@ begin
   end;
 end;
 
+//=== { TJvBrowseForFolderDialog } ===========================================
+
 function lpfnBrowseProc(Wnd: HWND; uMsg: UINT; lParam, lpData: LPARAM): Integer; stdcall;
 begin
   Result := 0;
@@ -882,8 +884,6 @@ begin
     end;
   end;
 end;
-
-//=== { TJvBrowseForFolderDialog } ===========================================
 
 constructor TJvBrowseForFolderDialog.Create(AOwner: TComponent);
 begin
@@ -1029,8 +1029,7 @@ begin
   end;
 end;
 
-function TJvBrowseForFolderDialog.DoShouldShow(
-  const AItem: string): Boolean;
+function TJvBrowseForFolderDialog.DoShouldShow(const AItem: string): Boolean;
 begin
   if Assigned(FOnShouldShow) then
     FOnShouldShow(Self, AItem, Result)
@@ -1038,8 +1037,7 @@ begin
     Result := True;
 end;
 
-function TJvBrowseForFolderDialog.DoValidateFailed(
-  AEditText: PChar): Integer;
+function TJvBrowseForFolderDialog.DoValidateFailed(AEditText: PChar): Integer;
 var
   CanClose: Boolean;
 begin
@@ -1055,8 +1053,7 @@ begin
     Result := 0; // = Integer(False)
 end;
 
-function TJvBrowseForFolderDialog.DoValidateFailedW(
-  AEditText: PWideChar): Integer;
+function TJvBrowseForFolderDialog.DoValidateFailedW(AEditText: PWideChar): Integer;
 begin
   { Explicit conversion }
   Result := DoValidateFailed(PChar(string(AEditText)));
@@ -1390,7 +1387,7 @@ const
 var
   WindowRect, ItemRect: TRect;
   ItemHandle: THandle;
-  ACanvas:TCanvas;
+  LCanvas: TCanvas;
 begin
   if [odStatusAvailable, odNewDialogStyle] * FUsedOptions <> [odStatusAvailable] then
     Exit;
@@ -1405,16 +1402,16 @@ begin
       GetWindowRect(FDialogWindow, WindowRect);
       GetWindowRect(ItemHandle, ItemRect);
       if Application.MainForm <> nil then
-        ACanvas := Application.MainForm.Canvas
+        LCanvas := Application.MainForm.Canvas
       else
       begin
-        ACanvas := TCanvas.Create;
-        ACanvas.Handle := GetDC(0);
+        LCanvas := TCanvas.Create;
+        LCanvas.Handle := GetDC(HWND_DESKTOP);
       end;
-      AText := MinimizeFileName(AText, ACanvas,
+      AText := MinimizeFileName(AText, LCanvas,
         (WindowRect.Right - WindowRect.Left) - (ItemRect.Left - WindowRect.Left) * 2 - 8);
       if Application.MainForm = nil then
-        ACanvas.Free;
+        LCanvas.Free;
     end;
   end;
 

@@ -1516,7 +1516,7 @@ var
 begin
   // determine scale factor for both sides, choose lesser
   // this is the opposite of setting FPageWidth/FPageHeight
-  DC := GetDC(0);
+  DC := GetDC(HWND_DESKTOP);
   try
     if AWidth > 0 then
       AWidth := MulDiv(AWidth, 100, MulDiv(DeviceInfo.PhysicalWidth,
@@ -1532,7 +1532,7 @@ begin
     else
       Result := AWidth;
   finally
-    ReleaseDC(0, DC);
+    ReleaseDC(HWND_DESKTOP, DC);
   end;
 end;
 
@@ -1559,7 +1559,7 @@ var
   DC: HDC;
 begin
   // precalc as much as possible to speed up rendering
-  DC := GetDC(0);
+  DC := GetDC(HWND_DESKTOP);
   try
     FPageWidth := MulDiv(MulDiv(DeviceInfo.PhysicalWidth, GetDeviceCaps(DC, LOGPIXELSX),
       DeviceInfo.LogPixelsX), Options.Scale, 100);
@@ -1626,7 +1626,7 @@ begin
     //      Dec(FMaxHeight,FPageHeight - Integer(Options.VertSpacing));
     FMaxWidth := TotalCols * (FPageWidth + Integer(Options.HorzSpacing)) + Integer(Options.HorzSpacing);
   finally
-    ReleaseDC(0, DC);
+    ReleaseDC(HWND_DESKTOP, DC);
   end;
 end;
 

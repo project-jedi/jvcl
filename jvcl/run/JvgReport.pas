@@ -981,14 +981,14 @@ begin
       Exit;
 
     Printer.BeginDoc;
-    ScreenDC := GetDC(0);
+    ScreenDC := GetDC(HWND_DESKTOP);
 
     HS := CentimetersToPixels(ScreenDC, 21, True);
     WS := CentimetersToPixels(ScreenDC, 21, False);
     HP := CentimetersToPixels(Printer.Canvas.Handle, 21, True);
     WP := CentimetersToPixels(Printer.Canvas.Handle, 21, False);
 
-    ReleaseDC(0, ScreenDC);
+    ReleaseDC(HWND_DESKTOP, ScreenDC);
 
     for I := 0 to ComponentList.Count - 1 do
     begin
