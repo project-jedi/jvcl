@@ -40,7 +40,7 @@
     <File Name="..\..\run\JvImageDrawThread.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvInstallLabel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvItemsPanel.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvListComb.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvListComb.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvMovableBevel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPageScroller.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvPlaylist.pas" Targets="allbutclx" Formname="" Condition=""/>

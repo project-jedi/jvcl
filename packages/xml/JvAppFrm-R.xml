@@ -31,6 +31,6 @@
     <File Name="..\..\run\JvFormMagnet.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormTransparent.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormWallpaper.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvEmbeddedForms.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvEmbeddedForms.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>
