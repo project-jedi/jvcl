@@ -46,9 +46,7 @@ uses
   JvQBevel, JvQCheckBox, JvQSpeedButton,
   JvQGroupBox, JvQHeaderControl,
   JvQImage, JvQRadioButton, JvQRadioGroup,
-  {$IFDEF MSWINDOWS}
   JvQLabel,
-  {$ENDIF MSWINDOWS}
   JvQScrollBar, JvQShape, JvQControlBar,
   JvQTabControl, JvQBitBtn, JvQPickDate, JvQStringGrid,
   JvQPanel, JvQImageList, JvQProgressEditor, JvQDsgnEditors;
@@ -72,10 +70,8 @@ begin
   RegisterComponents(RsPaletteBarPanel, [TJvTabControl, TJvControlBar,
     TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
     TJvTransparentPanel]);
-  {$IFDEF MSWINDOWS}
   RegisterComponents(RsPaletteLabel, [TJvLabel]);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvCustomLabel, 'ImageIndex',TJvDefaultImageIndexProperty);
-  {$ENDIF MSWINDOWS}
   RegisterComponents(RsPaletteScrollerTracker, [TJvScrollBar]);
   RegisterComponents(RsPaletteListComboTree, [TJvStringGrid]);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);
