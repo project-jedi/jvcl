@@ -1409,7 +1409,7 @@ begin
         Index := LSourceList.IndexOf(FSourceList[I]);
         if Index > 0 then
         begin
-          AddToRenameList_NF(I, FSourceList.IndexOf(LSourceList[I]));
+          AddToRenameList_NF(I, FSourceList.IndexOf(LSourceList[Index]));
           LSourceList.Delete(Index);
           Dec(I, 2);
           if I < 0 then
@@ -1457,6 +1457,8 @@ begin
   FFilteredSkipList.Sorted := True;
   FFilteredAddList.Sorted := True;
   FFilteredDeleteList.Sorted := True;
+
+  FSourceList.CaseSensitive := True;
 
   FSourceList.OnChange := SourceListChanged;
   FAddList.OnChange := AddListChanged;
