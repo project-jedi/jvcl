@@ -138,7 +138,7 @@ type
     property OnDockOver;
     property OnGetSiteInfo;
     property OnUnDock;
-    {$ENDIF}
+    {$ENDIF VCL}
     property OnClick;
     property OnConstrainedResize;
     property OnContextPopup;
@@ -362,14 +362,19 @@ end;
 
 {$IFDEF VisualCLX}
 procedure TJvGradientHeaderPanel.AdjustSize;
-{$ENDIF}
+begin
+  inherited AdjustSize;
+  AdjustLabelWidth;
+end;
+{$ENDIF VisualCLX}
+
 {$IFDEF VCL}
 procedure TJvGradientHeaderPanel.WMSize(var Msg: TWMSize);
-{$ENDIF VCL}
 begin
   inherited;
   AdjustLabelWidth;
 end;
+{$ENDIF VCL}
 
 procedure TJvGradientHeaderPanel.AdjustLabelWidth;
 var

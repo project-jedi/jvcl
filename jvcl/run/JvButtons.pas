@@ -79,7 +79,7 @@ uses
   JvComponent, JvExButtons;
 
 type
-  { VCL Buttons unit does not publish TJvButtonGlyph  class,
+  { VCL Buttons unit does not publish TJvButtonGlyph class,
     so we do it for other programers (Delphi 3 version) }
   TJvButtonGlyph = class(TObject)
   private
@@ -144,7 +144,7 @@ type
       Caption: string); override;
   end;
 
-{$IFDEF VCL}
+  {$IFDEF VCL}
   TJvaCaptionButton = class(TJvComponent)
   private
     FGlyph: TJvButtonGlyph;
@@ -213,7 +213,7 @@ type
     property Visible: Boolean read FVisible write SetVisible default True;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
   end;
-{$ENDIF VCL}
+  {$ENDIF VCL}
 
   TPaintButtonEvent = procedure(Sender: TObject; IsDown, IsDefault: Boolean; State: TButtonState) of object;
 
@@ -287,7 +287,7 @@ type
     constructor CreateSize(AWidth, AHeight: Integer);
     destructor Destroy; override;
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
-      {$IFDEF VisualCLX} reintroduce; {$ENDIF VisualCLX}
+      {$IFDEF VisualCLX} reintroduce; {$ENDIF}
     procedure Delete(Index: Integer);
     property Count: Integer read FCount;
   end;
@@ -303,7 +303,7 @@ type
     function Empty: Boolean;
   end;
 
-// == TJvGlyphList ===========================================================
+//=== TJvGlyphList ===========================================================
 
 constructor TJvGlyphList.CreateSize(AWidth, AHeight: Integer);
 begin
@@ -344,7 +344,7 @@ begin
   end;
 end;
 
-// == TJvGlyphCache ==========================================================
+//=== TJvGlyphCache ==========================================================
 
 constructor TJvGlyphCache.Create;
 begin
@@ -389,7 +389,7 @@ begin
   Result := FGlyphLists.Count = 0;
 end;
 
-// == TJvButtonGlyph =========================================================
+//=== TJvButtonGlyph =========================================================
 
 var
   GlyphCache: TJvGlyphCache = nil;
@@ -486,6 +486,7 @@ begin
     Invalidate;
   end;
 end;
+
 {$ENDIF VCL}
 
 procedure TJvButtonGlyph.SetGlyph(Value: TBitmap);
@@ -696,7 +697,7 @@ begin
     begin
       FGlyphList.Masked := True;
       FGlyphList.BkColor := clNone;
-      FGlyphList.Draw(Canvas, X, Y, Index, itImage) // (ahuser) VisualCLX missing Transparent draw method
+      FGlyphList.Draw(Canvas, X, Y, Index, itImage); // (ahuser) VisualCLX missing Transparent draw method
     end
     else
     begin
@@ -926,8 +927,9 @@ TextRect := Rect(0, 0, ItemHtWidth(Canvas, TextRect, [], Caption),
     ItemHtHeight(Canvas, Caption));     // Kaczkowski
 end;
 
+//=== TJvaCaptionButton ======================================================
+
 {$IFDEF VCL}
-// == TJvaCaptionButton ======================================================
 
 constructor TJvaCaptionButton.Create(AOwner: TComponent);
 
@@ -1481,9 +1483,10 @@ begin
       ;
   end;
 end;
+
 {$ENDIF VCL}
 
-// == TJvaColorButton ========================================================
+//=== TJvaColorButton ========================================================
 
 constructor TJvaColorButton.Create(AOwner: TComponent);
 begin
@@ -1507,6 +1510,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvaColorButton.SetButtonStyle(ADefault: Boolean);
 begin
   if ADefault <> IsFocused then
@@ -1545,7 +1549,9 @@ begin
 
   FCanvas.Handle := 0;
 end;
+
 {$ENDIF VCL}
+
 {$IFDEF VisualCLX}
 procedure TJvaColorButton.Paint;
 var
@@ -1645,7 +1651,7 @@ begin
   end;
 end;
 
-// == TJvNoFrameButton =======================================================
+//=== TJvNoFrameButton =======================================================
 
 constructor TJvNoFrameButton.Create(AOwner: TComponent);
 begin
