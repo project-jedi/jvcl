@@ -74,9 +74,14 @@ uses
   JvgGridHeaderControl, 
   {$IFNDEF DelphiPersonalEdition}
   JvgCrossTable, JvgDBNav, JvgExport, JvgDBGrid, JvgExportComponents,
+  {$IFNDEF COMPILER8_UP}
   JvgWebDocumentIterator, JvgHTTPVersionInfo,
-  JvgQPrintPreviewForm, JvgQPrintSetupForm, JvgQRLabel, JvgVertDBGrid,
   JvgCheckVersionInfoForm,
+  {$ENDIF}
+  {$IFDEF JVCL_UseQuickReport}
+  JvgQPrintPreviewForm, JvgQPrintSetupForm, JvgQRLabel,
+  {$ENDIF JVCL_UseQuickReport}
+  JvgVertDBGrid,
   {$ENDIF DelphiPersonalEdition}
   JvgLabelEditorForm;
 
@@ -108,8 +113,8 @@ begin
     TJvg3DColors, TJvgHint, TJvginspectorGrid, TJvgReport,
     TJvgReportParamsEditor, TJvgLogicProducer, TJvgSmallFontsDefense,
     {$IFNDEF DelphiPersonalEdition}
-    TJvgExportExcel, TJvgExportHTML, TJvgExportXML, TJvgExportDataset, TJvgQRLabel, TJvgQRDBText,
-    TJvgMyQRPreview,
+    TJvgExportExcel, TJvgExportHTML, TJvgExportXML, TJvgExportDataset,
+    {$IFDEF JVCL_UseQuickReport}TJvgQRLabel, TJvgQRDBText, TJvgMyQRPreview,{$ENDIF}
     {$ENDIF DelphiPersonalEdition}
     {TJvgMultipleResources,} {TJvgComponentDescription,} TJvgSingleInstance,
     TJvgFixFont]);

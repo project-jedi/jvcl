@@ -88,7 +88,7 @@ const
   DefaultDateOrder = doDMY;
   CenturyOffset: Byte = 60;
   NullDate: TDateTime = {-693594} 0;
-
+                 
 function USToLocalFloatStr(const Text: string): string;
 function StrToFloatUS(const Text: string): Extended;
 // StrToFloatUS uses US '.' as decimal seperator and ',' as thousand separator
@@ -1947,9 +1947,10 @@ end;
 
 { (rb) maybe construct a english variant? }
 
+
 function LastDateRUS(const Dat: TDateTime): string;
 const
-  D2D: array [0..9] of 1..3 =
+  D2D: array [0..9] of byte =
     (3, 1, 2, 2, 2, 3, 3, 3, 3, 3);
   Day: array [1..3] of PChar =
     ('день', 'дня', 'дней'); // Day, Days, Days
@@ -1961,7 +1962,7 @@ const
     ('неделю', '2 недели', '3 недели', 'месяц'); // Week, 2 Weeks, 3 Weeks, Month
 var
   Y, M, D: Integer;
-begin
+begin                      
   if Date = Dat then
     Result := 'сегодня' // Today
   else
