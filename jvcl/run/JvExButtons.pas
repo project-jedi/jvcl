@@ -23,13 +23,10 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-
 {$I jvcl.inc}
 
 unit JvExButtons;
-
 interface
-
 uses
   {$IFDEF VCL}
   Windows, Messages, Controls, Forms, Buttons, StdCtrls,
@@ -49,7 +46,7 @@ type
   TJvExSpeedButton = class(TSpeedButton, IJvSpeedButtonEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
-    // TControl
+   // TControl
     procedure VisibleChanged; dynamic;
     procedure EnabledChanged; dynamic;
     procedure TextChanged; dynamic;
@@ -65,7 +62,7 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   protected
-    // TJvExSpeedButton
+   // IJvSpeedButtonEvents
     procedure ButtonPressed(Sender: TSpeedButton; GroupIndex: Integer); dynamic;
   public
     procedure Dispatch(var Msg); override;
@@ -77,7 +74,7 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  {$IF not declared(PatchedVCLX)}
+   {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -86,14 +83,14 @@ type
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$IFEND}
+   {$IFEND}
   {$ENDIF VisualCLX}
   end;
 
   TJvExBitBtn = class(TBitBtn, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
-    // TControl
+   // TControl
     procedure VisibleChanged; dynamic;
     procedure EnabledChanged; dynamic;
     procedure TextChanged; dynamic;
@@ -109,7 +106,7 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
   protected
-    // TWinControl
+   // TWinControl
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -125,7 +122,7 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  {$IF not declared(PatchedVCLX)}
+   {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -134,15 +131,13 @@ type
     procedure MouseLeave(Control: TControl); override;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$IFEND}
+   {$IFEND}
   {$ENDIF VisualCLX}
   end;
 
 implementation
 
 {$IFDEF VCL}
-
-//=== TJvExSpeedButton =======================================================
 
 procedure TJvExSpeedButton.VisibleChanged;
 begin
@@ -213,12 +208,9 @@ begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
-
 {$ENDIF VCL}
-
 {$IFDEF VisualCLX}
-{$IF not declared(PatchedVCLX)}
-
+ {$IF not declared(PatchedVCLX)}
 procedure TJvExSpeedButton.MouseEnter(Control: TControl);
 begin
   inherited MouseEnter(Control);
@@ -232,12 +224,10 @@ begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
-
-{$IFEND}
+ {$IFEND}
 {$ENDIF VisualCLX}
 
 {$IFDEF VCL}
-
 procedure TJvExSpeedButton.ButtonPressed(Sender: TSpeedButton; GroupIndex: Integer);
 begin
   InheritMsg(Self, CM_BUTTONPRESSED, GroupIndex, Integer(Sender));
@@ -254,8 +244,9 @@ begin
       inherited Dispatch(Msg);
     end;
 end;
+{$ENDIF VCL}
 
-//=== TJvExBitBtn ============================================================
+{$IFDEF VCL}
 
 procedure TJvExBitBtn.VisibleChanged;
 begin
@@ -326,12 +317,9 @@ begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
-
 {$ENDIF VCL}
-
 {$IFDEF VisualCLX}
-{$IF not declared(PatchedVCLX)}
-
+ {$IF not declared(PatchedVCLX)}
 procedure TJvExBitBtn.MouseEnter(Control: TControl);
 begin
   inherited MouseEnter(Control);
@@ -345,10 +333,8 @@ begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
-
-{$IFEND}
+ {$IFEND}
 {$ENDIF VisualCLX}
-
 {$IFDEF VCL}
 
 procedure TJvExBitBtn.CursorChanged;
@@ -381,7 +367,6 @@ begin
   else
     InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
-
 procedure TJvExBitBtn.Dispatch(var Msg);
 begin
   if not DispatchMsg(Self, Msg) then
