@@ -100,6 +100,7 @@ type
     FSubHeaderFont: TFont;
     FHeaderFont: TFont;
     FFooterFont: TFont;
+    FForceTextFormat:boolean;
     FOnGetSubHeaderLineFont: TJvGetLineFontEvent;
     function GetHeader: TStrings;
     function GetFooter: TStrings;
@@ -135,6 +136,7 @@ type
     property BackgroundPicture: TFileName read FBackgroundPicture write
       SetBackgroundPicture;
     property ExcelVisible: boolean read FExcelVisible write SetExcelVisible;
+    property ForceTextFormat: boolean read FForceTextFormat write FForceTextFormat default false;
     property CloseExcel: boolean read FCloseExcel write SetCloseExcel;
 
     property OnGetHeaderLineFont: TJvGetLineFontEvent read FOnGetHeaderLineFont write FOnGetHeaderLineFont;
@@ -405,8 +407,11 @@ begin
             ftParadoxOle, ftDBaseOle, ftTypedBinary,
               ftReference, ftDataSet, ftOraBlob, ftOraClob, ftInterface,
               ftIDispatch]) then
-            Sheet.Cells[RecNo, ColNo + i] :=
-              GetFieldValue(DataSet.Fields[i]);
+          begin
+            if ForceTextFormat then
+              Sheet.Cells.NumberFormat := '@';
+            Sheet.Cells[RecNo, ColNo + i] := GetFieldValue(DataSet.Fields[i]);
+          end;
       end;
       DoProgress(0, RecCount, RecNo, '');
       Inc(RecNo);
