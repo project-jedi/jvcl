@@ -335,7 +335,7 @@ begin
     if IsDelphi then
       Result := 'D' + IntToStr(MajorVersion)
     else
-      Result := 'BCB' + IntToStr(MajorVersion);
+      Result := 'C' + IntToStr(MajorVersion);
 
     if IsPersonal then
       if MajorVersion >= 6 then
@@ -1057,7 +1057,7 @@ begin
   if IsDelphi then
     Result := 'lib\d' + IntToStr(MajorVersion)
   else
-    Result := 'lib\c' + IntToStr(MajorVersion);
+    Result := 'lib\c' + IntToStr(MajorVersion)+'\obj';
 end;
 
 procedure TTargetInfo.ReadData;
