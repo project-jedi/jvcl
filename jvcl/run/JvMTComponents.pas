@@ -31,12 +31,7 @@ interface
 
 uses
   SysUtils, Classes, SyncObjs,
-  {$IFDEF VCL}
   Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
   {$IFDEF USEJVCL}
   JvComponent,
   {$ENDIF USEJVCL}
