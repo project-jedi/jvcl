@@ -31,16 +31,15 @@ unit JvSpecialProgressMainFormU;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, Gauges, JvSpecialProgress, ComCtrls, ExtCtrls, StdCtrls, JvPanel,
-  JvSpacer, JvExControls, JvComponent;
+  QWindows, QMessages, SysUtils, Classes, QGraphics, QControls, QForms,
+  QDialogs, Gauges, JvQSpecialProgress, QComCtrls, QExtCtrls, QStdCtrls, JvQPanel,
+  JvQSpacer, JvQExControls, JvQComponent, JvQGauges;
 
 type
   TJvSpecialProgressMainForm = class(TForm)
     Panel1: TPanel;
     TrackBar1: TTrackBar;
     JvSpecialProgress1: TJvSpecialProgress;
-    Gauge1: TGauge;
     ProgressBar1: TProgressBar;
     Panel2: TPanel;
     rgrStartColor: TRadioGroup;
@@ -64,6 +63,7 @@ type
     btnStepIt: TButton;
     chbPanelDoubleBuffered: TCheckBox;
     btnRandom: TButton;
+    Gauge1: TJvGauge;
     procedure TrackBar1Change(Sender: TObject);
     procedure chbTextVisibleClick(Sender: TObject);
     procedure chbSolidClick(Sender: TObject);
@@ -88,7 +88,7 @@ var
 
 implementation
 
-{$R *.dfm}
+{$R *.xfm}
 
 procedure TJvSpecialProgressMainForm.TrackBar1Change(Sender: TObject);
 begin
@@ -221,7 +221,7 @@ end;
 
 procedure TJvSpecialProgressMainForm.chbPanelDoubleBufferedClick(Sender: TObject);
 begin
-  Panel2.DoubleBuffered := chbPanelDoubleBuffered.Checked;
+//  Panel2.DoubleBuffered := chbPanelDoubleBuffered.Checked;
 end;
 
 procedure TJvSpecialProgressMainForm.RandomizeControls;
