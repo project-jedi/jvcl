@@ -2069,10 +2069,7 @@ begin
           if S <> '' then
           begin
             ColumnArray[I].EndIndex := StrToIntDef(ExtractWord(1, S, Delims), ColumnArray[I].EndIndex);
-            Items[I].Width := StrToIntDef(ExtractWord(2, S, Delims),
-              Items[I].Width);
-            S := ExtractWord(2, S, Delims);
-            Items[I].Width := StrToIntDef(S, Items[I].Width);
+            Items[I].Width := StrToIntDef(ExtractWord(2, S, Delims), Items[I].Width);
             Items[I].Visible := (S <> '-1');
           end;
         end;
