@@ -3526,6 +3526,8 @@ end;
 procedure TJvColorMapItems.DataProviderChanging(ADataProvider: IJvDataProvider;
   AReason: TDataProviderChangeReason; Source: IUnknown);
 begin
+  if AReason = pcrDestroy then
+    ClientProvider := nil;
 end;
 
 procedure TJvColorMapItems.DataProviderChanged(ADataProvider: IJvDataProvider;
