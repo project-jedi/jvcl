@@ -145,7 +145,7 @@ uses
 {$ENDIF UNIX}
 
 const
-  ResName: array [Boolean] of PChar = ('JV_SWITCH_OFF', 'JV_SWITCH_ON'); 
+  ResName: array [Boolean] of PChar = ('JvSwitchOFF', 'JvSwitchON'); 
   
 constructor TJvSwitch.Create(AOwner: TComponent);
 var

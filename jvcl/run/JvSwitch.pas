@@ -155,7 +155,7 @@ uses
 {$ENDIF UNIX}
 
 const
-  ResName: array [Boolean] of PChar = ('JV_SWITCH_OFF', 'JV_SWITCH_ON');
+  ResName: array [Boolean] of PChar = ('JvSwitchOFF', 'JvSwitchON');
   {$IFDEF VCL}
   BorderStyles: array [TBorderStyle] of Longint = (0, WS_BORDER);
   {$ENDIF VCL}

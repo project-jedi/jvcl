@@ -445,7 +445,7 @@ begin
       Parent := AForm;
       SetBounds(30, 28, 40, 53);
       AutoSize := True;
-      Picture.Bitmap.LoadFromResourceName(HInstance, 'JVTIPOFDAYPIC2');
+      Picture.Bitmap.LoadFromResourceName(HInstance, 'JvTipOfDayPIC2');
       Transparent := True;
     end;
     { Header: 'Did you know...' }
@@ -568,7 +568,7 @@ begin
     begin
       Parent := AForm;
       SetBounds(21, 22, 41, 43);
-      Picture.Bitmap.LoadFromResourceName(HInstance, 'JVTIPOFDAYPIC1');
+      Picture.Bitmap.LoadFromResourceName(HInstance, 'JvTipOfDayPIC1');
     end;
 
     { CheckBox: 'Show Tips on StartUp' }

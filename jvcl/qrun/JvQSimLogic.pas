@@ -2289,7 +2289,7 @@ begin
   Width := 65;
   Height := 65;
   FBmpBin := TBitmap.Create;
-  FBmpBin.LoadFromResourceName(HInstance, 'RBIN'); // do not localize
+  FBmpBin.LoadFromResourceName(HInstance, 'JvSimLogicBoxBIN'); // do not localize
 end;
 
 destructor TJvSimBin.Destroy;
@@ -2329,12 +2329,12 @@ begin
   FBmpLight := TBitmap.Create;
   FBmpRev := TBitmap.Create;
   FBmpBin := TBitmap.Create;
-  FBmpCon.LoadFromResourceName(HInstance, 'RCON'); // do not localize
-  FBmpLogic.LoadFromResourceName(HInstance, 'RLOGIC'); // do not localize
-  FBmpButton.LoadFromResourceName(HInstance, 'RBUTTON'); // do not localize
-  FBmpLight.LoadFromResourceName(HInstance, 'RLIGHT'); // do not localize
-  FBmpRev.LoadFromResourceName(HInstance, 'RREV'); // do not localize
-  FBmpBin.LoadFromResourceName(HInstance, 'RBIN'); // do not localize
+  FBmpCon.LoadFromResourceName(HInstance, 'JvSimLogicBoxCON'); // do not localize
+  FBmpLogic.LoadFromResourceName(HInstance, 'JvSimLogicBoxLOGIC'); // do not localize
+  FBmpButton.LoadFromResourceName(HInstance, 'JvSimLogicBoxBUTTON'); // do not localize
+  FBmpLight.LoadFromResourceName(HInstance, 'JvSimLogicBoxLIGHT'); // do not localize
+  FBmpRev.LoadFromResourceName(HInstance, 'JvSimLogicBoxREV'); // do not localize
+  FBmpBin.LoadFromResourceName(HInstance, 'JvSimLogicBoxBIN'); // do not localize
   FRCon := Rect(0, 0, 32, 32);
   FRLogic := Rect(33, 0, 64, 32);
   FRButton := Rect(0, 33, 32, 64);

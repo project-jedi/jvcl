@@ -166,7 +166,8 @@ uses
 
 const
   SBtnGlyphs: array [0..3] of PChar =
-    ('JV_PREV2', 'JV_PREV1', 'JV_NEXT1', 'JV_NEXT2');
+   ('JvPickDatePREV2', 'JvPickDatePREV1',
+    'JvPickDateNEXT1', 'JvPickDateNEXT2');
 
 procedure FontSetDefault(AFont: TFont);
   

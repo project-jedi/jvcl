@@ -153,8 +153,8 @@ begin
   FChanged := False;
   FHorizontal := True;
   FChanging := False;
-  FImageThumb.LoadFromResourceName(HInstance, 'THUMB');
-  FImageRuler.LoadFromResourceName(HInstance, 'RULER');
+  FImageThumb.LoadFromResourceName(HInstance, 'JvSliderTHUMB');
+  FImageRuler.LoadFromResourceName(HInstance, 'JvSliderRULER');
   Calculate;
   FImageThumb.OnChange := ThumbChanged;
   Self.OnResize := ReCalcule;

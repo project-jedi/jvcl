@@ -345,11 +345,11 @@ begin
     FInternalImages := TImageList.CreateSize(16, 16);
   if FInternalImages.Count = 0 then
   begin
-    FInternalImages.GetInstRes(HInstance, rtBitmap, 'REGTV_MYCOMPUTER', 16, [], clFuchsia);
-    FInternalImages.GetInstRes(HInstance, rtBitmap, 'REGTV_CLOSEDFOLDER', 16, [], clFuchsia);
-    FInternalImages.GetInstRes(HInstance, rtBitmap, 'REGTV_OPENFOLDER', 16, [], clFuchsia);
-    FInternalImages.GetInstRes(HInstance, rtBitmap, 'REGTV_TEXTIMAGE', 16, [], clFuchsia);
-    FInternalImages.GetInstRes(HInstance, rtBitmap, 'REGTV_BINIMAGE', 16, [], clFuchsia);
+    FInternalImages.GetInstRes(HInstance, rtBitmap, 'JvRegistryTreeViewMYCOMPUTER', 16, [], clFuchsia);
+    FInternalImages.GetInstRes(HInstance, rtBitmap, 'JvRegistryTreeViewCLOSEDFOLDER', 16, [], clFuchsia);
+    FInternalImages.GetInstRes(HInstance, rtBitmap, 'JvRegistryTreeViewOPENFOLDER', 16, [], clFuchsia);
+    FInternalImages.GetInstRes(HInstance, rtBitmap, 'JvRegistryTreeViewTEXTIMAGE', 16, [], clFuchsia);
+    FInternalImages.GetInstRes(HInstance, rtBitmap, 'JvRegistryTreeViewBINIMAGE', 16, [], clFuchsia);
   end;
   Images := FInternalImages;
 end;

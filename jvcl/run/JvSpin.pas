@@ -389,10 +389,10 @@ uses
 {$ENDIF UNIX}
 
 const
-  sSpinUpBtn = 'JVSPINUP';
-  sSpinDownBtn = 'JVSPINDOWN';
-  sSpinUpBtnPole = 'JVSPINUPPOLE';
-  sSpinDownBtnPole = 'JVSPINDOWNPOLE';
+  sSpinUpBtn = 'JvSpinUP';
+  sSpinDownBtn = 'JvSpinDOWN';
+  sSpinUpBtnPole = 'JvSpinUPPOLE';
+  sSpinDownBtnPole = 'JvSpinDOWNPOLE';
 
 const
   InitRepeatPause = 400; { pause before repeat timer (ms) }

@@ -1001,9 +1001,9 @@ begin
   Bmp := TBitmap.Create;
   FItemHintImageList := TImageList.CreateSize(14, 6);
   try
-    Bmp.LoadFromResourceName(HInstance, 'JvTIMELINEITEMLEFT');
+    Bmp.LoadFromResourceName(HInstance, 'JvCustomTimeLineITEMLEFT');
     FItemHintImageList.Add(Bmp, nil);
-    Bmp.LoadFromResourceName(HInstance, 'JvTIMELINEITEMRIGHT');
+    Bmp.LoadFromResourceName(HInstance, 'JvCustomTimeLineITEMRIGHT');
     FItemHintImageList.Add(Bmp, nil);
   finally
     Bmp.Free;
