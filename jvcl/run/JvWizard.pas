@@ -2442,10 +2442,10 @@ end;
 {$IFDEF VCL}
 procedure TJvWizardCustomPage.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
-  {$IFDEF JVCLThemesEnabled}
+  {$IFDEF JVCLThemesEnabledD56}
   if ThemeServices.ThemesEnabled then
     inherited;
-  {$ENDIF JVCLThemesEnabled}
+  {$ENDIF JVCLThemesEnabledD56}
   Msg.Result := 1;
 end;
 {$ENDIF VCL}
@@ -2993,10 +2993,10 @@ end;
 {$IFDEF VCL}
 procedure TJvWizard.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
-  {$IFDEF JVCLThemesEnabled}
+  {$IFDEF JVCLThemesEnabledD56}
   if ThemeServices.ThemesEnabled then
     inherited;
-  {$ENDIF JVCLThemesEnabled}
+  {$ENDIF JVCLThemesEnabledD56}
   Msg.Result := 1;
 end;
 {$ENDIF VCL}
