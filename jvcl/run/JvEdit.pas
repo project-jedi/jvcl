@@ -166,6 +166,7 @@ type
     // property SelStart; (p3) why published?
     //property SelText;
     // property SelLength; (p3) why published?
+    property UseFixedPopup;
     property OnMouseEnter;
     property OnMouseLeave;
     property OnCtl3DChanged;
