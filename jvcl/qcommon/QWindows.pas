@@ -853,6 +853,10 @@ function DrawTextEx(Handle: QPainterH; var Text: WideString; Len: Integer;
   var R: TRect; WinFlags: Integer; DTParams: Pointer): Integer; overload;
 function DrawTextEx(Handle: QPainterH; Text: PChar; Len: Integer;
   var R: TRect; WinFlags: Integer; DTParams: Pointer): Integer; overload;
+function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
+  x,y, w, h: integer; WinFlags: Integer; Angle: integer): Integer;  overload;
+function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
+  var R: TRect; WinFlags: Integer; Angle: integer): Integer; overload;
 
 const
   { DrawText format (windows) flags }
@@ -4372,6 +4376,36 @@ begin
   Result := DrawText(Handle, Text, Len, R, WinFlags);
 end;
 
+function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
+  var R: TRect; WinFlags: Integer; Angle: integer): Integer;
+var
+  R2: TRect;
+begin
+  R2:= R;
+  OffsetRect(R2, -R.Left, -R.Top);
+  try
+    QPainter_save(Handle);
+    QPainter_translate(Handle, R.Left, R.Top);
+    QPainter_rotate(Handle, -Angle);
+    Result := DrawText(Handle, Text, Len, R2, WinFlags);
+//    QPainter_drawText(Handle, 0, 0, @Text, -1);
+  finally
+    QPainter_restore(Handle);
+  end;
+  OffsetRect(R2, R.Left, R.Top);
+  R := R2;
+end;
+
+function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
+  x,y, w, h: integer; WinFlags: Integer; Angle: integer): Integer;
+var
+  R2: TRect;
+begin
+  R2 := Bounds(x,y,w,h);
+  Result := DrawText(Handle, Text, Len, R2, WinFlags, Angle);
+end;
+
+
 function ExtTextOut(Handle: QPainterH; X, Y: Integer; WinFlags: Cardinal;
   R: PRect; const Text: WideString; Len: Integer; lpDx: Pointer): LongBool;
 var
@@ -4714,6 +4748,7 @@ begin
     Exit;
 
   QPainter_save(Handle);
+  oBkMode := TRANSPARENT; // asn: satisfy compiler
   try
     if uState and DFCS_TRANSPARENT <> 0 then
     begin
