@@ -50,19 +50,24 @@ type
   private
     FBeepOnError: Boolean;
   protected
-    property BeepOnError: Boolean read FBeepOnError write FBeepOnError;
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
   JV_WINCONTROL_EVENTS_FEATURE_END(CustomMaskEdit)
 
   JV_WINCONTROL_EVENTS_FEATURE_BEGIN(MaskEdit)
   private
     FBeepOnError: Boolean;
   protected
-    property BeepOnError: Boolean read FBeepOnError write FBeepOnError;
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
   JV_WINCONTROL_EVENTS_FEATURE_END(CustomMaskEdit)
 
 implementation
 
+{$UNDEF CONSTRUCTOR_CODE}
+{$DEFINE CONSTRUCTOR_CODE
+  FBeepOnError := True;
+}
 JV_WINCONTROL_EVENTS_IMPL(CustomMaskEdit)
 JV_WINCONTROL_EVENTS_IMPL(MaskEdit)
 
+{$UNDEF CONSTRUCTOR_CODE} // undefine at file end
 end.

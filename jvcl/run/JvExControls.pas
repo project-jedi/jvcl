@@ -115,6 +115,8 @@ type
   public
     procedure Dispatch(var Msg); override;
   {$ENDIF VCL}
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -173,6 +175,8 @@ type
   public
     procedure Dispatch(var Msg); override;
   {$ENDIF VCL}
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -195,9 +199,6 @@ type
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure Paint; virtual;
     property Canvas: TCanvas read FCanvas;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   {$ENDIF VisualCLX}
   end;
   
@@ -228,6 +229,8 @@ type
   public
     procedure Dispatch(var Msg); override;
   {$ENDIF VCL}
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -286,6 +289,8 @@ type
   public
     procedure Dispatch(var Msg); override;
   {$ENDIF VCL}
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -346,6 +351,8 @@ type
   public
     procedure Dispatch(var Msg); override;
   {$ENDIF VCL}
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -736,6 +743,17 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+constructor TJvExControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  
+end;
+
+destructor TJvExControl.Destroy;
+begin
+  
+  inherited Destroy;
+end;
 
 {$IFDEF VCL}
 procedure TJvExWinControl.VisibleChanged;
@@ -894,19 +912,6 @@ end;
 {$ENDIF JVCLThemesEnabledD56}
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-constructor TJvExWinControl.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;
-end;
-
-destructor TJvExWinControl.Destroy;
-begin
-  FCanvas.Free;
-  inherited Destroy;
-end;
-
 procedure TJvExWinControl.Paint;
 begin
   WidgetControl_DefaultPaint(Self, Canvas);
@@ -917,7 +922,35 @@ procedure TJvExWinControl.Dispatch(var Msg);
 begin
   DispatchMsg(Self, Msg);
 end;
+
+constructor TJvExWinControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  
+end;
+
+destructor TJvExWinControl.Destroy;
+begin
+  
+  inherited Destroy;
+end;
 {$ENDIF VCL}
+{$IFDEF VisualCLX}
+constructor TJvExWinControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
+  
+end;
+
+destructor TJvExWinControl.Destroy;
+begin
+  
+  FCanvas.Free;
+  inherited Destroy;
+end;
+{$ENDIF VisualCLX}
   
 
 
@@ -1035,6 +1068,17 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+constructor TJvExGraphicControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  
+end;
+
+destructor TJvExGraphicControl.Destroy;
+begin
+  
+  inherited Destroy;
+end;
 
 {$IFDEF VCL}
 procedure TJvExCustomControl.VisibleChanged;
@@ -1196,6 +1240,20 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+
+constructor TJvExCustomControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  
+end;
+
+destructor TJvExCustomControl.Destroy;
+begin
+  
+
+  inherited Destroy;
+end;
   
 
 {$IFDEF VCL}
@@ -1358,6 +1416,20 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+
+constructor TJvExHintWindow.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  
+end;
+
+destructor TJvExHintWindow.Destroy;
+begin
+  
+
+  inherited Destroy;
+end;
   
 
 {$IFNDEF COMPILER6_UP}

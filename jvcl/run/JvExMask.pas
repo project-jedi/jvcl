@@ -85,6 +85,8 @@ type
   public
     procedure Dispatch(var Msg); override;
   {$ENDIF VCL}
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -107,14 +109,11 @@ type
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure Paint; virtual;
     property Canvas: TCanvas read FCanvas;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   {$ENDIF VisualCLX}
   private
     FBeepOnError: Boolean;
   protected
-    property BeepOnError: Boolean read FBeepOnError write FBeepOnError;
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
   end;
   
 
@@ -157,6 +156,8 @@ type
   public
     procedure Dispatch(var Msg); override;
   {$ENDIF VCL}
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -179,19 +180,20 @@ type
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure Paint; virtual;
     property Canvas: TCanvas read FCanvas;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   {$ENDIF VisualCLX}
   private
     FBeepOnError: Boolean;
   protected
-    property BeepOnError: Boolean read FBeepOnError write FBeepOnError;
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
   end;
   
 
 implementation
 
+{$UNDEF CONSTRUCTOR_CODE}
+{$DEFINE CONSTRUCTOR_CODE
+  FBeepOnError := True;
+}
 
 {$IFDEF VCL}
 procedure TJvExCustomMaskEdit.VisibleChanged;
@@ -350,19 +352,6 @@ end;
 {$ENDIF JVCLThemesEnabledD56}
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-constructor TJvExCustomMaskEdit.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;
-end;
-
-destructor TJvExCustomMaskEdit.Destroy;
-begin
-  FCanvas.Free;
-  inherited Destroy;
-end;
-
 procedure TJvExCustomMaskEdit.Paint;
 begin
   WidgetControl_DefaultPaint(Self, Canvas);
@@ -373,7 +362,35 @@ procedure TJvExCustomMaskEdit.Dispatch(var Msg);
 begin
   DispatchMsg(Self, Msg);
 end;
+
+constructor TJvExCustomMaskEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FBeepOnError := True;
+end;
+
+destructor TJvExCustomMaskEdit.Destroy;
+begin
+  
+  inherited Destroy;
+end;
 {$ENDIF VCL}
+{$IFDEF VisualCLX}
+constructor TJvExCustomMaskEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
+  FBeepOnError := True;
+end;
+
+destructor TJvExCustomMaskEdit.Destroy;
+begin
+  
+  FCanvas.Free;
+  inherited Destroy;
+end;
+{$ENDIF VisualCLX}
   
 
 {$IFDEF VCL}
@@ -533,19 +550,6 @@ end;
 {$ENDIF JVCLThemesEnabledD56}
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-constructor TJvExMaskEdit.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;
-end;
-
-destructor TJvExMaskEdit.Destroy;
-begin
-  FCanvas.Free;
-  inherited Destroy;
-end;
-
 procedure TJvExMaskEdit.Paint;
 begin
   WidgetControl_DefaultPaint(Self, Canvas);
@@ -556,7 +560,36 @@ procedure TJvExMaskEdit.Dispatch(var Msg);
 begin
   DispatchMsg(Self, Msg);
 end;
+
+constructor TJvExMaskEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FBeepOnError := True;
+end;
+
+destructor TJvExMaskEdit.Destroy;
+begin
+  
+  inherited Destroy;
+end;
 {$ENDIF VCL}
+{$IFDEF VisualCLX}
+constructor TJvExMaskEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
+  FBeepOnError := True;
+end;
+
+destructor TJvExMaskEdit.Destroy;
+begin
+  
+  FCanvas.Free;
+  inherited Destroy;
+end;
+{$ENDIF VisualCLX}
   
 
+{$UNDEF CONSTRUCTOR_CODE} // undefine at file end
 end.

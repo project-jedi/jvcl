@@ -1,4 +1,9 @@
+{$UNDEF CONSTRUCTOR_CODE}
+{$UNDEF DESTRUCTOR_CODE}
+
 {$DEFINE EMPTYLINE}
+{$DEFINE CONSTRUCTOR_CODE}
+{$DEFINE DESTRUCTOR_CODE}
 
 { CustomControl differs from WinControl in JV_xxx_EVENTS_END }
 
@@ -145,6 +150,8 @@
   public
     procedure Dispatch(var Msg); override;
   {$ENDIF VCL}
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -176,9 +183,6 @@
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure Paint; virtual;
     property Canvas: TCanvas read FCanvas;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   {$ENDIF VisualCLX}
 *)
 
@@ -411,19 +415,6 @@ end;
 JV_WINCONTROL_EVENTS_IMPLX_OPEN_VCL(ClassName)
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-constructor TJvEx##ClassName.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;
-end;
-
-destructor TJvEx##ClassName.Destroy;
-begin
-  FCanvas.Free;
-  inherited Destroy;
-end;
-
 procedure TJvEx##ClassName.Paint;
 begin
   WidgetControl_DefaultPaint(Self, Canvas);
@@ -444,13 +435,53 @@ JV_CONTROL_EVENTS_IMPLX(ClassName)
 {$IFDEF VCL}
 DISPATCHCODE(ClassName)
 {$ENDIF VCL}
+constructor TJvEx##ClassName.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  CONSTRUCTOR_CODE
+end;
+
+destructor TJvEx##ClassName.Destroy;
+begin
+  DESTRUCTOR_CODE
+  inherited Destroy;
+end;
 *)
 
+// WinControl has different constructors/destructor for VCL and VisualCLX
 (*$DEFINE JV_WINCONTROL_EVENTS_IMPL(ClassName)
 JV_WINCONTROL_EVENTS_IMPLX(ClassName)
 {$IFDEF VCL}
 DISPATCHCODE(ClassName)
+
+constructor TJvEx##ClassName.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  CONSTRUCTOR_CODE
+end;
+
+destructor TJvEx##ClassName.Destroy;
+begin
+  DESTRUCTOR_CODE
+  inherited Destroy;
+end;
 {$ENDIF VCL}
+{$IFDEF VisualCLX}
+constructor TJvEx##ClassName.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
+  CONSTRUCTOR_CODE
+end;
+
+destructor TJvEx##ClassName.Destroy;
+begin
+  DESTRUCTOR_CODE
+  FCanvas.Free;
+  inherited Destroy;
+end;
+{$ENDIF VisualCLX}
   EMPTYLINE
 *)
 
@@ -458,6 +489,20 @@ DISPATCHCODE(ClassName)
 JV_WINCONTROL_EVENTS_IMPLX_OPEN_VCL(ClassName)
 DISPATCHCODE(ClassName)
 {$ENDIF VCL}
+
+constructor TJvEx##ClassName.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  CONSTRUCTOR_CODE
+end;
+
+destructor TJvEx##ClassName.Destroy;
+begin
+  DESTRUCTOR_CODE
+
+  inherited Destroy;
+end;
   EMPTYLINE
 *)
 
