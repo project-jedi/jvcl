@@ -39,7 +39,8 @@ uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls,
   ComCtrls, ExtCtrls, Grids, ValEdit, JvComCtrls, Menus, ActnList, StdActns, ImgList,
   ToolWin,
-  JvComponent, JvSearchFiles, JvBaseDlg, JvBrowseFolder, JVCLConvertUtils;
+  JvComponent, JvSearchFiles, JvBaseDlg, JvBrowseFolder, JVCLConvertUtils,
+  JvFormPlacement, JvAppStorage, JvAppIniStorage;
 
 type
   { TValueListEditor (imposer class that allows "=" in strings) }
@@ -116,6 +117,8 @@ type
     Options2: TMenuItem;
     N3: TMenuItem;
     FileMask: TAction;
+    JvAppIniFileStorage: TJvAppIniFileStorage;
+    JvFormStorage: TJvFormStorage;
     procedure btnAddClick(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
     procedure btnStartClick(Sender: TObject);
@@ -170,7 +173,8 @@ implementation
 {$R *.DFM}
 
 uses
-  ShellAPI, FastTime, fAboutMe, IniFiles, CommCtrl, OptionsFrm;
+  ShellAPI, FastTime, fAboutMe, CommCtrl, OptionsFrm,
+  JvPropertyStore;
 
 const
   Allowed = (['a'..'z', 'A'..'Z', '0'..'9', '_']);
@@ -445,6 +449,10 @@ end;
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   DragAcceptFiles(Handle, true);
+  FAppOptions:= TAppOptions.Create(self);
+  FAppOptions.AppStorage := JvAppIniFileStorage;
+  FAppOptions.AppStoragePath := 'Settings';
+  JvAppIniFileStorage.FileName := ChangeFileExt(Application.ExeName, '.ini');
   LoadSettings;
 end;
 
@@ -452,6 +460,7 @@ procedure TfrmMain.FormDestroy(Sender: TObject);
 begin
   DragAcceptFiles(Handle, false);
   SaveSettings;
+  FreeAndNil(FAppOptions);
 end;
 
 procedure TfrmMain.WMDropFiles(var Msg: TWMDropFiles);
@@ -649,10 +658,9 @@ end;
 
 procedure TfrmMain.LoadSettings;
 begin
-  FreeAndNil(FAppOptions);
-  FAppOptions := TAppOptions.Create(ChangeFileExt(Application.ExeName, '.ini'));
   with FAppOptions do
   begin
+    LoadProperties;
     JvSearchFiles1.RootDirectory := RootDirectory;
     JvSearchFiles1.FileParams.FileMask := FileMask;
     fCurrentDataFile := DATFile;
@@ -665,14 +673,12 @@ end;
 
 procedure TfrmMain.SaveSettings;
 begin
-  if FAppOptions = nil then
-    FAppOptions := TAppOptions.Create(ChangeFileExt(Application.ExeName, '.ini'));
   with FAppOptions do
   begin
     RootDirectory := JvSearchFiles1.RootDirectory;
     FileMask := JvSearchFiles1.FileParams.FileMask;
     DATFile := fCurrentDataFile;
-    SaveSettings;
+    StoreProperties;
   end;
 end;
 
