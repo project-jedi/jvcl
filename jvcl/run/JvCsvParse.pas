@@ -53,10 +53,10 @@ const
 { String Class Functions - uses Delphi String objects instead of Pascal PChars }
 
 {new 2003}
-function StrSplit(const inString: string; const splitChar, quoteChar: Char;
+function StrSplit(const InString: string; const SplitChar, QuoteChar: Char;
   var OutStrings: array of string; MaxSplit: Integer): Integer;
 {new 2004}
-function StrSplitStrings(const inString: string; const splitChar, quoteChar: Char; OutStrings: TStrings): Integer;
+function StrSplitStrings(const InString: string; const SplitChar, QuoteChar: Char; OutStrings: TStrings): Integer;
 
 { circa 1998-2001 classic functions }
 function StrStrip(S: string): string; // Strip whitespace, carriage returns, linefeeds.
@@ -84,7 +84,7 @@ function ValidStringLiteral(S1: PChar): Boolean;
 function StripPCharQuotes(S1: PChar): string;
 
 function ValidIdentifier(S1: PChar): Boolean;
-function EndChar(x: Char): Boolean;
+function EndChar(X: Char): Boolean;
 procedure GetToken(S1, S2: PChar);
 function IsExpressionKeyword(S1: PChar): Boolean;
 function IsKeyword(S1: PChar): Boolean;
@@ -110,14 +110,14 @@ var
 
 function ValidNumericLiteral(S1: PChar): Boolean;
 var
-  l, x, x1: Integer;
+  L, X, X1: Integer;
   DecimalFlag: Boolean;
 begin
-  l := StrLen(S1);
+  L := StrLen(S1);
   DecimalFlag := False;
-  x1 := 0;
+  X1 := 0;
 
-  if l <= 0 then
+  if L <= 0 then
   begin
     Result := False;
     Exit;
@@ -125,11 +125,11 @@ begin
 
   { detect leading minus }
   if S1[0] = '-' then
-    Inc(x1); // skip the minus, as it's okay as a leading character
+    Inc(X1); // skip the minus, as it's okay as a leading character
 
   { Detect a decimal number or integer number }
-  for x := x1 to l - 1 do
-    if S1[x] = '.' then
+  for X := X1 to L - 1 do
+    if S1[X] = '.' then
     begin
       if DecimalFlag then
       begin
@@ -139,7 +139,7 @@ begin
       DecimalFlag := True;
     end
     else
-    if not (S1[x] in DigitSymbols) then
+    if not (S1[X] in DigitSymbols) then
     begin
       Result := False;
       Exit;
@@ -152,22 +152,22 @@ end;
 
 function ValidIntLiteral(S1: PChar): Boolean;
 var
-  l, x, x1: Integer;
+  L, X, X1: Integer;
 begin
-  l := StrLen(S1);
-  x1 := 0;
-  if l <= 0 then
+  L := StrLen(S1);
+  X1 := 0;
+  if L <= 0 then
   begin
     Result := False;
     Exit;
   end;
   { detect leading minus }
   if S1[0] = '-' then
-    Inc(x1); // skip the minus, as it's okay as a leading character
+    Inc(X1); // skip the minus, as it's okay as a leading character
 
   { Detect a decimal number or integer number }
-  for x := x1 to l - 1 do
-    if not (S1[x] in DigitSymbols) then
+  for X := X1 to L - 1 do
+    if not (S1[X] in DigitSymbols) then
     begin
       Result := False;
       Exit;
@@ -180,21 +180,21 @@ end;
 
 function ValidHexLiteral(S1: PChar): Boolean;
 var
-  l, x: Integer;
+  L, X: Integer;
 begin
-  l := StrLen(S1);
-  //  x1 := 0;
+  L := StrLen(S1);
+  //  X1 := 0;
 
   { detect hex code type indicator }
-  if (l < 2) or (S1[0] <> '$') then
+  if (L < 2) or (S1[0] <> '$') then
   begin
     Result := False;
     Exit;
   end;
 
   { Detect hex digits }
-  for x := 1 to l - 2 do
-    if not (S1[x] in HexadecimalSymbols) then
+  for X := 1 to L - 2 do
+    if not (S1[X] in HexadecimalSymbols) then
     begin
       Result := False;
       Exit;
@@ -204,26 +204,26 @@ end;
 
 function HexPCharToInt(S1: PChar): Integer;
 var
-  x, l: Integer;
+  X, L: Integer;
   Digit, Val: Integer;
 begin
-  l := StrLen(S1);
-  if (l < 2) or (l > 9) then
+  L := StrLen(S1);
+  if (L < 2) or (L > 9) then
     raise EJVCLException.CreateRes(@RsEInvalidHexLiteral);
   if S1[0] <> '$' then
     raise EJVCLException.CreateRes(@RsEInvalidHexLiteral);
   Val := 0;
-  for x := 1 to l - 2 do
+  for X := 1 to L - 2 do
   begin
     Val := Val * 16; { shift right four bits at a time }
-    if S1[x] in DigitSymbols then
-      Digit := Ord(S1[x]) - Ord('0')
+    if S1[X] in DigitSymbols then
+      Digit := Ord(S1[X]) - Ord('0')
     else
-    if S1[x] in HexadecimalLowercaseLetters then
-      Digit := Ord(S1[x]) - Ord('a') + 10
+    if S1[X] in HexadecimalLowercaseLetters then
+      Digit := Ord(S1[X]) - Ord('a') + 10
     else
-    if S1[x] in HexadecimalUppercaseLetters then
-      Digit := Ord(S1[x]) - Ord('A') + 10
+    if S1[X] in HexadecimalUppercaseLetters then
+      Digit := Ord(S1[X]) - Ord('A') + 10
     else
       raise EJVCLException.CreateRes(@RsEInvalidHexLiteral);
     Val := Val + Digit;
@@ -251,13 +251,13 @@ end;
 function StripPCharQuotes(S1: PChar): string;
 var
   TempBuf: array [0..256] of Char;
-  l: Integer;
+  L: Integer;
 begin
-  l := StrLen(S1);
-  if l > 255 then
-    l := 255;
+  L := StrLen(S1);
+  if L > 255 then
+    L := 255;
   if ValidStringLiteral(S1) then
-    StrLCopy(TempBuf, S1 + 1, l - 2);
+    StrLCopy(TempBuf, S1 + 1, L - 2);
   Result := string(TempBuf);
 end;
 
@@ -313,8 +313,8 @@ end;
 
 function ValidIdentifier(S1: PChar): Boolean;
 var
-  x, y: Integer;
-  pass: Boolean;
+  X, Y: Integer;
+  Pass: Boolean;
 begin
   Pass := True;
 
@@ -324,8 +324,8 @@ begin
     Exit;
   end;
 
-  x := StrLen(S1);
-  if (x < 1) or (x > 32) then
+  X := StrLen(S1);
+  if (X < 1) or (X > 32) then
   begin
     Result := False;
     Exit;
@@ -334,34 +334,32 @@ begin
   if not (S1[0] in IdentifierFirstSymbols) then
     Pass := False;
 
-  if Pass and (x > 1) then
-    for y := 1 to x - 1 do
-    begin
-      if not (S1[y] in IdentifierSymbols) then
+  if Pass and (X > 1) then
+    for Y := 1 to X - 1 do
+      if not (S1[Y] in IdentifierSymbols) then
       begin
         Pass := False;
         Result := Pass;
         Exit;
       end;
-    end;
 
   Result := Pass;
 end;
 
-function EndChar(x: Char): Boolean;
+function EndChar(X: Char): Boolean;
 begin
-  Result := (x = ',') or (x = ';') or (x = ':') or (x = '[') or (x = ']') or
-    (x = '(') or (x = ')') or (x = '#') or (x = '<') or (x = '>') or (x = '=') or
-    (x = '*') or (x = '/') or (x = '+') or (x = Chr(0));
+  Result := (X = ',') or (X = ';') or (X = ':') or (X = '[') or (X = ']') or
+    (X = '(') or (X = ')') or (X = '#') or (X = '<') or (X = '>') or (X = '=') or
+    (X = '*') or (X = '/') or (X = '+') or (X = Chr(0));
 end;
 
 procedure GetToken(S1, S2: PChar);
 var
-  w, x, y: Integer;
+  W, X, Y: Integer;
   InQuotes: Boolean;
 begin
-  x := 0;
-  w := 0;
+  X := 0;
+  W := 0;
 
   { Empty in, Empty Out }
   if StrLen(S1) = 0 then
@@ -370,70 +368,70 @@ begin
   InQuotes := False;
 
   { skip leading space }
-  while (S1[x] = ' ') or (S1[x] = Chr(9)) do
-    Inc(x);
+  while (S1[X] = ' ') or (S1[X] = Tab) do
+    Inc(X);
 
   while True do
   begin
-    if EndChar(S1[x]) and not InQuotes then
+    if EndChar(S1[X]) and not InQuotes then
     begin
       { return punctuation one symbol at a time }
-      if w < 1 then
+      if W < 1 then
       begin
-        S2[w] := S1[x];
-        Inc(w);
-        Inc(x);
+        S2[W] := S1[X];
+        Inc(W);
+        Inc(X);
       end;
       Break;
     end;
 
-    if S1[x] = '"' then
+    if S1[X] = '"' then
       InQuotes := not InQuotes;
 
     { Break if space found and not in quotes }
-    if (S1[x] = ' ') and not InQuotes then
+    if (S1[X] = ' ') and not InQuotes then
       Break
     else
     begin
-      S2[w] := S1[x];
-      Inc(w);
+      S2[W] := S1[X];
+      Inc(W);
     end;
 
-    Inc(x);
+    Inc(X);
   end;
-  // S2[x] := Chr(0);
+  // S2[X] := Chr(0);
 
   { detect not-equal, less-than-or-equal and greater-than-or-equal operators }
-  if w = 1 then
-    if (S2[0] = '<') and (S1[x] = '>') then
+  if W = 1 then
+    if (S2[0] = '<') and (S1[X] = '>') then
     begin
-      S2[w] := '>';
-      Inc(x);
-      Inc(w); // char literal
+      S2[W] := '>';
+      Inc(X);
+      Inc(W); // char literal
     end
     else
-    if (S2[0] = '<') and (S1[x] = '=') then
+    if (S2[0] = '<') and (S1[X] = '=') then
     begin
-      S2[w] := '=';
-      Inc(x);
-      Inc(w);
+      S2[W] := '=';
+      Inc(X);
+      Inc(W);
     end
     else
-    if (S2[0] = '>') and (S1[x] = '=') then
+    if (S2[0] = '>') and (S1[X] = '=') then
     begin
-      S2[w] := '=';
-      Inc(x);
-      Inc(w);
+      S2[W] := '=';
+      Inc(X);
+      Inc(W);
     end;
 
   { remove token from initial buffer, move to second buffer }
-  y := Integer(StrLen(S1)) - x;
-  if y > 0 then
-    StrLCopy(S1, S1 + x, y) { copy remaining characters }
+  Y := Integer(StrLen(S1)) - X;
+  if Y > 0 then
+    StrLCopy(S1, S1 + X, Y) { copy remaining characters }
   else
     S1[0] := Chr(0); { just erase all of old string }
 
-  S2[w] := Chr(0); { Terminate new string }
+  S2[W] := Chr(0); { Terminate new string }
   Inc(TokenCount);
 end;
 
@@ -463,11 +461,11 @@ begin
     Exit;
   { skip spaces starting at the beginning }
   for T := 0 to L do
-    if (S1[T] <> ' ') and (S1[T] <> Chr(9)) then
+    if (S1[T] <> ' ') and (S1[T] <> Tab) then
       Break;
   { skip spaces starting at the end }
   for U := L - 1 downto T do
-    if (S1[U] <> ' ') and (S1[U] <> Chr(9)) then
+    if (S1[U] <> ' ') and (S1[U] <> Tab) then
       Break;
   if (T > 0) or (U < L - 1) then
     if T > U then  // was T>=U (test me!)
@@ -551,7 +549,7 @@ end;
 
 function ValidVarReference(S1: PChar): Boolean;
 var
-  len1: Integer;
+  Len1: Integer;
   TempBuf1, TempBuf2: array [0..128] of Char;
 begin
   StrCopy(S1, TempBuf1);
@@ -560,8 +558,8 @@ begin
     Result := ValidIdentifier(S1)
   else
   begin
-    len1 := StrLen(TempBuf1);
-    if (TempBuf1[0] = '[') and (TempBuf1[len1 - 1] = ']') then
+    Len1 := StrLen(TempBuf1);
+    if (TempBuf1[0] = '[') and (TempBuf1[Len1 - 1] = ']') then
       Result := ValidIdentifier(S1)
     else
       Result := False;
@@ -590,14 +588,14 @@ end;
 { Encoding function named in honor of Dennis Forbes' favourite word }
 {procedure Gibble(var S: string);
 var
- t, l, c1: Integer;
+ I, L, c1: Integer;
  lo, hi: Byte;
- x: array [0..255] of Char;
+ X: array [0..255] of Char;
 begin
- l := Length(S);
- for t:= 0 to l-1 do
+ L := Length(S);
+ for I:= 0 to L-1 do
  begin
-     c1 := Ord(S[t+1] );
+     c1 := Ord(S[I+1] );
      if (c1  >= 32 ) AND (c1 <= 231) then
      begin
         c1 := c1 - 32;
@@ -605,66 +603,66 @@ begin
         hi := c1 div 25;
         lo := 24-lo;
         c1 := ((hi*25)+lo ) +32;
-        x[t] := Chr(c1);
+        X[I] := Chr(c1);
      end
      else
-        x[t] := Chr(c1);
+        X[I] := Chr(c1);
  end;
- x[l] := Chr(0);
- S := String(x);
+ X[L] := Chr(0);
+ S := String(X);
 end;
  }
 
 function BuildPathName(const PathName, FileName: string): string;
 var
-  l: Integer;
+  L: Integer;
 begin
-  l := Length(PathName);
-  if l = 0 then
+  L := Length(PathName);
+  if L = 0 then
     Result := FileName
   else
-  if PathName[l] = '\' then
+  if PathName[L] = '\' then
     Result := PathName + FileName
   else
     Result := PathName + '\' + FileName;
 end;
 
-function HexDigitVal(c: Char): Integer;
+function HexDigitVal(C: Char): Integer;
 begin
-  if c in DigitSymbols then
-    Result := Ord(c) - Ord('0')
+  if C in DigitSymbols then
+    Result := Ord(C) - Ord('0')
   else
-  if c in HexadecimalLowercaseLetters then
-    Result := Ord(c) - Ord('a') + 10
+  if C in HexadecimalLowercaseLetters then
+    Result := Ord(C) - Ord('a') + 10
   else
-  if c in HexadecimalUppercaseLetters then
-    Result := Ord(c) - Ord('A') + 10
+  if C in HexadecimalUppercaseLetters then
+    Result := Ord(C) - Ord('A') + 10
   else
     Result := 0;
 end;
 
 function HexToAscii(const S: string): string;
 var
-  t, y, L: Integer;
-  c: array [0..256] of Char;
+  I, Y, L: Integer;
+  C: array [0..256] of Char;
 begin
   L := Length(S) div 2;
-  for t := 0 to L - 1 do
+  for I := 0 to L - 1 do
   begin
-    y := (t * 2) + 1;
-    c[t] := Char(HexDigitVal(S[y]) * 16 + HexDigitVal(S[y + 1]));
+    Y := (I * 2) + 1;
+    C[I] := Char(HexDigitVal(S[Y]) * 16 + HexDigitVal(S[Y + 1]));
   end;
-  c[L] := Chr(0);
-  Result := string(c);
+  C[L] := Chr(0);
+  Result := C;
 end;
 
 function AsciiToHex(const S: string): string;
 var
-  t: Integer;
+  I: Integer;
   S2: string;
 begin
-  for t := 1 to Length(S) do
-    S2 := S2 + IntToHex(Ord(S[t]), 2);
+  for I := 1 to Length(S) do
+    S2 := S2 + IntToHex(Ord(S[I]), 2);
   Result := S2;
 end;
 
@@ -679,8 +677,8 @@ end;
 // Label Name = Value    - labels names can contain spaces.
 //-----------------------------------------------------------------------------
 
-function GetIntValueFromResultString(const VarName: string; ResultStrings: TStrings;
-  DefVal: Integer): Integer;
+function GetIntValueFromResultString(const VarName: string;
+  ResultStrings: TStrings; DefVal: Integer): Integer;
 var
   S: string;
 begin
@@ -699,8 +697,8 @@ end;
 
 function GetValueFromResultString(const VarName: string; ResultStrings: TStrings): string;
 var
-  label1, value1: string;
-  len1, pos1, t, Count: Integer;
+  Label1, Value1: string;
+  Len1, Pos1, I, Count: Integer;
 begin
   if not Assigned(ResultStrings) then
   begin
@@ -709,17 +707,17 @@ begin
   end;
 
   Count := ResultStrings.Count;
-  for t := 0 to Count - 1 do
+  for I := 0 to Count - 1 do
   begin
-    len1 := Length(ResultStrings[t]);
-    pos1 := Pos(':', ResultStrings[t]);
-    if pos1 = 0 then
-      pos1 := Pos('=', ResultStrings[t]);
+    Len1 := Length(ResultStrings[I]);
+    Pos1 := Pos(':', ResultStrings[I]);
+    if Pos1 = 0 then
+      Pos1 := Pos('=', ResultStrings[I]);
     // found a value to extract:
-    if pos1 > 0 then
+    if Pos1 > 0 then
     begin
-      Label1 := Copy(ResultStrings[t], 1, pos1 - 1);
-      Value1 := Copy(ResultStrings[t], pos1 + 1, len1);
+      Label1 := Copy(ResultStrings[I], 1, Pos1 - 1);
+      Value1 := Copy(ResultStrings[I], Pos1 + 1, Len1);
 
       if VarName = Label1 then
       begin // found it!
@@ -755,7 +753,7 @@ function GetString(var Source: string; const Separator: string): string;
 var
   I, J, Len: Integer;
 begin
-  //source:=StrStrip(source);
+  //Source := StrStrip(Source);
   Len := Length(Source);
   I := 0;
   for J := 1 to Len do
@@ -779,7 +777,7 @@ end;
 
 //------------------------------------------------------------------------------------------
 // StrSplit
-//   Given aString='Blah,Blah,Blah', splitChar=',', writes to OutStrings an Array
+//   Given aString='Blah,Blah,Blah', SplitChar=',', writes to OutStrings an Array
 //   ie ('blah','blah','blah ) and returns the integer count of how many items are in
 //   the resulting array, or -1 if more than MaxSplit items were found in the input
 //   string.
@@ -792,24 +790,24 @@ end;
 //     if it starts at element 1, then you'll get exceptions XXX
 //------------------------------------------------------------------------------------------
 
-function StrSplit(const inString: string; const splitChar, quoteChar: Char;
+function StrSplit(const InString: string; const SplitChar, QuoteChar: Char;
   var OutStrings: array of string; MaxSplit: Integer): Integer;
 var
-  t, Len, SplitCounter: Integer;
+  I, Len, SplitCounter: Integer;
   Ch: Char;
-  inQuotes: Boolean;
+  InQuotes: Boolean;
 begin
-  inQuotes := False;
-  Len := Length(inString);
-  for t := Low(OutStrings) to High(OutStrings) do // clear array that is passed in!
-    OutStrings[t] := '';
+  InQuotes := False;
+  Len := Length(InString);
+  for I := Low(OutStrings) to High(OutStrings) do // clear array that is passed in!
+    OutStrings[I] := '';
 
   SplitCounter := 0; // ALWAYS ASSUME THAT ZERO IS VALID IN THE OUTGOING ARRAY.
 
-  for t := 1 to Len do
+  for I := 1 to Len do
   begin
-    Ch := inString[t];
-    if (Ch = splitChar) and not inQuotes then
+    Ch := InString[I];
+    if (Ch = SplitChar) and not InQuotes then
     begin
       Inc(SplitCounter);
       if SplitCounter > MaxSplit then
@@ -820,9 +818,9 @@ begin
     end
     else
     begin
-      OutStrings[SplitCounter] := OutStrings[SplitCounter] + ch;
-      if ch = quoteChar then
-        inQuotes := not inQuotes;
+      OutStrings[SplitCounter] := OutStrings[SplitCounter] + Ch;
+      if Ch = QuoteChar then
+        InQuotes := not InQuotes;
     end;
   end;
   Inc(SplitCounter);
@@ -831,22 +829,22 @@ end;
 
 // NEW 2004 WP
 
-function StrSplitStrings(const inString: string; const splitChar, quoteChar: Char; OutStrings: TStrings): Integer;
+function StrSplitStrings(const InString: string; const SplitChar, QuoteChar: Char; OutStrings: TStrings): Integer;
 var
-  t, Len, SplitCounter: Integer;
+  I, Len, SplitCounter: Integer;
   Ch: Char;
-  inQuotes: Boolean;
+  InQuotes: Boolean;
   OutString: string;
 begin
-  inQuotes := False;
-  Len := Length(inString);
+  InQuotes := False;
+  Len := Length(InString);
   OutStrings.Clear;
   SplitCounter := 0; // ALWAYS ASSUME THAT ZERO IS VALID IN THE OUTGOING ARRAY.
 
-  for t := 1 to Len do
+  for I := 1 to Len do
   begin
-    Ch := inString[t];
-    if (Ch = splitChar) and not inQuotes then
+    Ch := InString[I];
+    if (Ch = SplitChar) and not InQuotes then
     begin
       OutStrings.Add(OutString);
       OutString := '';
@@ -854,9 +852,9 @@ begin
     end
     else
     begin
-      OutString := OutString + ch;
-      if ch = quoteChar then
-        inQuotes := not inQuotes;
+      OutString := OutString + Ch;
+      if Ch = QuoteChar then
+        InQuotes := not InQuotes;
     end;
   end;
   OutStrings.Add(OutString);
