@@ -175,7 +175,7 @@ begin
   FolderIndex := 1;
   while res = 0 do
   begin
-    if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
+    if (SearchRec.FindData.cFilename[0] <> '.') then
     begin
       if (SearchRec.Attr and faDirectory = faDirectory) then
       begin
@@ -205,7 +205,6 @@ begin
           AddIconFrom(Directory + SearchRec.Name);
         it := TMenuItem.Create(Item);
         it.Caption := ChangeFileExt(SearchRec.Name, '');
-        ;
         it.OnClick := UrlClick;
         it.Hint := Directory + SearchRec.Name;
         it.ImageIndex := 1;
@@ -232,7 +231,7 @@ var
   bmp: TBitmap;
 begin
   SHGetFileInfo(PChar(Path), 0, FileInfo, SizeOf(FileInfo), SHGFI_ICON or SHGFI_SMALLICON);
-  bmp := IconToBitmap2(FileInfo.hIcon,16,clWhite);
+  bmp := IconToBitmap2(FileInfo.hIcon,16,clMenu);
   FImages.AddMasked(bmp, bmp.TransparentColor);
   bmp.Free;
 end;
