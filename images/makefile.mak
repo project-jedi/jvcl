@@ -47,6 +47,7 @@ JvgCheckBox.res \
 JvgHint.res \
 JvgLabelEditorForm.res \
 JvgTreeView.res \
+JvInterpreter.res \
 JvLED.res \
 JvLinkLabel.res \
 JvOutlookBar.res \
@@ -66,11 +67,10 @@ JvTipOfDay.res \
 JvTMTimeLine.res \
 JvToolEdit.res \
 JvWinampLabel.res \
-JvxCheckListBox.res \
-JvxSlider.res \
-JvInterpreter.res \
 JvXPBar.res \
-JvXPCore.res
+JvXPCore.res \
+JvxCheckListBox.res \
+JvxSlider.res
 
 DcrGenerate: \
 JvAppFrmReg.dcr \
@@ -82,25 +82,25 @@ JvCryptReg.dcr \
 JvCtrlsReg.dcr \
 JvDBReg.dcr \
 JvDlgsReg.dcr \
-JvInterpreterReg.dcr \
+JvDockingReg.dcr \
+JvDotNetCtrlsReg.dcr \
+JvGlobusReg.dcr \
 JvHMIReg.dcr \
+JvInterpreterReg.dcr \
+JvJansReg.dcr \
+JvManagedThreadsReg.dcr \
 JvMMReg.dcr \
 JvNetReg.dcr \
+JvPageListTreeViewReg.dcr \
+JvPluginReg.dcr \
+JvPreviewReg.dcr \
 JvStdCtrlsReg.dcr \
 JvSystemReg.dcr \
-JvPluginReg.dcr \
-JvJansReg.dcr \
-JvGlobusReg.dcr \
+JvTimeFrameWorkReg.dcr \
 JvUIBReg.dcr \
-JvPageListTreeViewReg.dcr \
-JvPreviewReg.dcr \
 JvValidatorsReg.dcr \
 JvWizardReg.dcr \
-JvTimeFrameWorkReg.dcr \
-JvManagedThreadsReg.dcr \
-JvXPCtrlsReg.dcr \
-JvDotNetCtrlsReg.dcr \
-JvDockingReg.dcr
+JvXPCtrlsReg.dcr
 
 #--- RES ---------------------------------------
 JvBaseEdits.res: JvBaseEdits.rc
