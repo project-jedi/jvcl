@@ -33,6 +33,8 @@ interface
 uses
   Windows, ShellAPI, SysUtils, Classes, JvConsts;
 
+function CompareFileAge(const Filename1Fmt: string; const Args1: array of const;
+  const Filename2Fmt: string; const Args2: array of const): Integer;
 function GetReturnPath(const Dir: string): string;
 function FileExists(const Filename: string): Boolean;
 function DirectoryExists(const Dir: string): Boolean;
@@ -60,6 +62,14 @@ function Supports(const Intf: IInterface; const IID: TGUID): Boolean; overload;
 {$ENDIF COMPILER5}
 
 implementation
+
+function CompareFileAge(const Filename1Fmt: string; const Args1: array of const;
+  const Filename2Fmt: string; const Args2: array of const): Integer;
+begin
+  Result := FileAge(Format(Filename1Fmt, Args1))
+            -
+            FileAge(Format(Filename2Fmt, Args2));
+end;
 
 function GetReturnPath(const Dir: string): string;
 var
