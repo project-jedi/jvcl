@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: JVCL\n"
 "POT-Creation-Date: 2004-10-14 21:23\n"
-"PO-Revision-Date: 2004-10-15 00:47+0100\n"
+"PO-Revision-Date: 2004-12-11 16:38+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -495,10 +495,10 @@ msgstr ""
 
 #  FrameConfigPage..CheckBoxCompileJclDcp..Caption
 #  FrameConfigPage..CheckBoxCompileJclDcp..Caption
-#. FrameConfigPage..CheckBoxCompileJclDcp..Caption
+#  FrameConfigPage..CheckBoxCompileJclDcp..Caption
 #: Frames/FrmConfigPage.dfm:361
 msgid "Co&mpile JCL .dcp files for C++Builder"
-msgstr "JCL .dcp Dateien, wenn notwenig, &kompilieren."
+msgstr "JCL .dcp Dateien, wenn notwendig, &kompilieren."
 
 #  FrameConfigPage..CheckBoxVerbose....Height
 #. FrameConfigPage..CheckBoxVerbose....Height
