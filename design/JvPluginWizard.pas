@@ -219,7 +219,7 @@ end;
 
 function TJvPluginWizard.GetGlyph: {$IFDEF COMPILER6_UP} Cardinal; {$ELSE} HICON; {$ENDIF}
 begin
-  Result := LoadIcon(HInstance, 'JvPLUGINWIZ');
+  Result := LoadIcon(HInstance, 'JVPLUGINWIZ');
 end;
 
 procedure TJvPluginWizard.Execute;
