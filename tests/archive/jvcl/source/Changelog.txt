@@ -1,4 +1,7 @@
 2002-07-20
+- fixed a few minor bugs
+- added Ariochs fixes to JvMRU
+- added modifications from Rudy Velthuis to JvRadioControl (better drawing)
 - moved JvFormDirectory to \archive (part of removed Installer)
 - moved JvFormCalculator to \archive
 - moved JvCalculator, JvCalculatorBox, JvButtonBox, JvCustomBox, JvDirectoryBox, JvFilenameBox, JvImageBox to \archive
@@ -43,7 +46,7 @@
 - Extracted and added images from RxLib to \images and updated rc script
 
 2002-07-11
-- Added Robert Marquardt's HID component to the JV System tab and a couple of demos to \examples
+- Added Robert Marquardt's HID component to the Jv System tab and a couple of demos to \examples
 - JvRecentMenuBtn: fixed bug where folders were included
 - JvDirectories: added properties for getting the Common and All Users folders
 - JvFavoritesButton: now folders are placed ahead of files
