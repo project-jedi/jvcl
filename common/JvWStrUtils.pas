@@ -18,6 +18,8 @@ Contributers:
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+This is a light weight Unicode unit. For more features use JclUnicode.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
@@ -425,7 +427,7 @@ begin
     else
     begin
       P := Result + 1;
-      I := 0;
+      I := 1;
       while (P^ <> #0) and (P^ = SubStr[I]) do
       begin
         Inc(I);
