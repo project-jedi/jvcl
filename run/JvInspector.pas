@@ -165,12 +165,12 @@ unit JvInspector;
 interface
 
 uses
+  {$IFDEF VisualCLX}
+  Qt,
+  {$ENDIF VisualCLX}
   SysUtils, Classes, Contnrs, TypInfo, IniFiles,
   Windows, Messages, Graphics, Controls, StdCtrls, ExtCtrls,
-  {$IFDEF VisualCLX}
-  Qt, JvQExExtCtrls,
-  {$ENDIF VisualCLX}
-  JvAutoComplete, JvJVCLUtils, JvComponent, JvTypes, JvExControls;
+  JvExControls, JvExExtCtrls, JvAutoComplete, JvJVCLUtils, JvComponent, JvTypes;
 
 const
   { Inspector Row Size constants }
@@ -486,7 +486,9 @@ type
     function ViewWidth: Integer;
     procedure WMHScroll(var Msg: TWMScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
+    {$IFDEF VCL}
     procedure GetDlgCode(var Code: TDlgCodes); override;
+    {$ENDIF VCL}
     procedure DoSetFocus(Focused: HWND); override;
     procedure DoKillFocus(Focused: HWND); override;
     {$IFDEF VisualCLX}
@@ -2670,6 +2672,8 @@ begin
     fit into the adjusted client rect. To prevent this the AdjustClientRect only
     adjusts the client rect if ScrollBar.Align <> alBottom/alRight. This is
     the case after the first Paint event. }
+
+  InputKeys := [ikArrows];
   {$ENDIF VisualCLX}
 
   FExpandButton := TBitmap.Create;
@@ -3958,7 +3962,10 @@ begin
     RecreateWnd;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    //RecreateWidget; 
+    if Value then
+      InputKeys := InputKeys + [ikTabs]
+    else
+      InputKeys := InputKeys - [ikTabs];
     {$ENDIF VisualCLX}
   end;
 end;
@@ -4084,12 +4091,14 @@ begin
   Result := RectWidth(ViewRect);
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomInspector.GetDlgCode(var Code: TDlgCodes);
 begin
   Code := [dcWantArrows];
   if WantTabs then
     Include(Code, dcWantTab);
 end;
+{$ENDIF VCL}
 
 procedure TJvCustomInspector.DoSetFocus(Focused: HWND);
 begin
@@ -5936,7 +5945,7 @@ begin
   begin
     if not Assigned(FAutoComplete) then
     begin
-      FAutoComplete := TJvEditListBoxAutoComplete.Create(EditCtrl, ListBox);
+      FAutoComplete := TJvEditListBoxAutoComplete.Create(TCustomEdit(EditCtrl), ListBox);
       FAutoComplete.OnDropDown := AutoCompleteStart;
     end;
     FAutoComplete.AutoComplete(Key);
@@ -7289,7 +7298,7 @@ begin
       {$ENDIF VisualCLX}
 
      if Assigned(Inspector.BeforeEdit) then
-       Inspector.BeforeEdit(Inspector as TObject, Self, Memo as TCustomEdit);
+       Inspector.BeforeEdit(Inspector as TObject, Self, TCustomEdit(Memo));
     end
     else
     begin
