@@ -2,7 +2,7 @@
 VERSION = BWS.02.5
 #------------------------------------------------------------------------------
 ifndef ROOT
-ROOT = /usr/share/Kylix3OE
+ROOT = /usr/local/Kylix3
 endif
 #------------------------------------------------------------------------------
 MAKE = make -$(MAKEFLAGS) -f$**
@@ -16,105 +16,118 @@ PROJECTS = bplJvQCoreK3R.so bplJvQCoreK3D.so bplJvQSystemK3R.so \
   bplJvQAppFrmK3D.so bplJvQJansK3R.so bplJvQJansK3D.so bplJvQWizardK3R.so \
   bplJvQWizardK3D.so bplJvQManagedThreadsK3R.so bplJvQManagedThreadsK3D.so \
   bplJvQUIBK3R.so bplJvQUIBK3D.so bplJvQHMIK3R.so bplJvQHMIK3D.so bplJvQNetK3R.so \
-  bplJvQNetK3D.so
+  bplJvQNetK3D.so bplJvQPageCompsK3R.so bplJvQPageCompsK3D.so bplJvQEDIK3R.so \
+  bplJvQEDIK3D.so bplJvQXPCtrlsK3R.so bplJvQXPCtrlsK3D.so
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
-bplJvQCoreK3R.so: k3per/JvQCoreK3R.dpk
+bplJvQCoreK3R.so: k3/JvQCoreK3R.dpk
 	$(DCC)
 
-bplJvQCoreK3D.so: k3per/JvQCoreK3D.dpk
+bplJvQCoreK3D.so: k3/JvQCoreK3D.dpk
 	$(DCC)
 
-bplJvQSystemK3R.so: k3per/JvQSystemK3R.dpk
+bplJvQSystemK3R.so: k3/JvQSystemK3R.dpk
 	$(DCC)
 
-bplJvQSystemK3D.so: k3per/JvQSystemK3D.dpk
+bplJvQSystemK3D.so: k3/JvQSystemK3D.dpk
 	$(DCC)
 
-bplJvQStdCtrlsK3R.so: k3per/JvQStdCtrlsK3R.dpk
+bplJvQStdCtrlsK3R.so: k3/JvQStdCtrlsK3R.dpk
 	$(DCC)
 
-bplJvQStdCtrlsK3D.so: k3per/JvQStdCtrlsK3D.dpk
+bplJvQStdCtrlsK3D.so: k3/JvQStdCtrlsK3D.dpk
 	$(DCC)
 
-bplJvQCtrlsK3R.so: k3per/JvQCtrlsK3R.dpk
+bplJvQCtrlsK3R.so: k3/JvQCtrlsK3R.dpk
 	$(DCC)
 
-bplJvQCmpK3D.so: k3per/JvQCmpK3D.dpk
+bplJvQCmpK3D.so: k3/JvQCmpK3D.dpk
 	$(DCC)
 
-bplJvQCtrlsK3D.so: k3per/JvQCtrlsK3D.dpk
+bplJvQCtrlsK3D.so: k3/JvQCtrlsK3D.dpk
 	$(DCC)
 
-bplJvQCmpK3R.so: k3per/JvQCmpK3R.dpk
+bplJvQCmpK3R.so: k3/JvQCmpK3R.dpk
 	$(DCC)
 
-bplJvQCustomK3R.so: k3per/JvQCustomK3R.dpk
+bplJvQCustomK3R.so: k3/JvQCustomK3R.dpk
 	$(DCC)
 
-bplJvQCustomK3D.so: k3per/JvQCustomK3D.dpk
+bplJvQCustomK3D.so: k3/JvQCustomK3D.dpk
 	$(DCC)
 
-bplJvQDlgsK3R.so: k3per/JvQDlgsK3R.dpk
+bplJvQDlgsK3R.so: k3/JvQDlgsK3R.dpk
 	$(DCC)
 
-bplJvQDlgsK3D.so: k3per/JvQDlgsK3D.dpk
+bplJvQDlgsK3D.so: k3/JvQDlgsK3D.dpk
 	$(DCC)
 
-bplJvQCryptK3R.so: k3per/JvQCryptK3R.dpk
+bplJvQCryptK3R.so: k3/JvQCryptK3R.dpk
 	$(DCC)
 
-bplJvQCryptK3D.so: k3per/JvQCryptK3D.dpk
+bplJvQCryptK3D.so: k3/JvQCryptK3D.dpk
 	$(DCC)
 
-bplJvQMMK3R.so: k3per/JvQMMK3R.dpk
+bplJvQMMK3R.so: k3/JvQMMK3R.dpk
 	$(DCC)
 
-bplJvQMMK3D.so: k3per/JvQMMK3D.dpk
+bplJvQMMK3D.so: k3/JvQMMK3D.dpk
 	$(DCC)
 
-bplJvQAppFrmK3R.so: k3per/JvQAppFrmK3R.dpk
+bplJvQAppFrmK3R.so: k3/JvQAppFrmK3R.dpk
 	$(DCC)
 
-bplJvQAppFrmK3D.so: k3per/JvQAppFrmK3D.dpk
+bplJvQAppFrmK3D.so: k3/JvQAppFrmK3D.dpk
 	$(DCC)
 
-bplJvQJansK3R.so: k3per/JvQJansK3R.dpk
+bplJvQJansK3R.so: k3/JvQJansK3R.dpk
 	$(DCC)
 
-bplJvQJansK3D.so: k3per/JvQJansK3D.dpk
+bplJvQJansK3D.so: k3/JvQJansK3D.dpk
 	$(DCC)
 
-bplJvQWizardK3R.so: k3per/JvQWizardK3R.dpk
+bplJvQWizardK3R.so: k3/JvQWizardK3R.dpk
 	$(DCC)
 
-bplJvQWizardK3D.so: k3per/JvQWizardK3D.dpk
+bplJvQWizardK3D.so: k3/JvQWizardK3D.dpk
 	$(DCC)
 
-bplJvQManagedThreadsK3R.so: k3per/JvQManagedThreadsK3R.dpk
+bplJvQManagedThreadsK3R.so: k3/JvQManagedThreadsK3R.dpk
 	$(DCC)
 
-bplJvQManagedThreadsK3D.so: k3per/JvQManagedThreadsK3D.dpk
+bplJvQManagedThreadsK3D.so: k3/JvQManagedThreadsK3D.dpk
 	$(DCC)
 
 bplJvQUIBK3R.so: k3per/JvQUIBK3R.dpk
 	$(DCC)
 
-bplJvQUIBK3D.so: k3per/JvQUIBK3D.dpk
+bplJvQUIBK3D.so: k3/JvQUIBK3D.dpk
 	$(DCC)
 
-bplJvQHMIK3R.so: k3per/JvQHMIK3R.dpk
+bplJvQHMIK3R.so: k3/JvQHMIK3R.dpk
 	$(DCC)
 
-bplJvQHMIK3D.so: k3per/JvQHMIK3D.dpk
+bplJvQHMIK3D.so: k3/JvQHMIK3D.dpk
 	$(DCC)
 
-bplJvQNetK3R.so: k3per/JvQNetK3R.dpk
+bplJvQNetK3R.so: k3/JvQNetK3R.dpk
 	$(DCC)
 
-bplJvQNetK3D.so: k3per/JvQNetK3D.dpk
+bplJvQNetK3D.so: k3/JvQNetK3D.dpk
+	$(DCC)
+
+bplJvQPageCompsK3R.so: k3/JvQPageCompsK3R.dpk
+	$(DCC)
+
+bplJvQPageCompsK3D.so: k3/JvQPageCompsK3D.dpk
+	$(DCC)
+
+bplJvQXPCtrlsK3R.so: k3/JvQXPCtrlsK3R.dpk
+	$(DCC)
+
+bplJvQXPCtrlsK3D.so: k3/JvQXPCtrlsK3D.dpk
 	$(DCC)
 
 
