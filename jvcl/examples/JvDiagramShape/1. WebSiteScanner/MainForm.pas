@@ -31,7 +31,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, JvDiagramShape, ComCtrls, ImgList,
-  JvComponent, JvHttpGrabber;
+  JvComponent, JvUrlGrabbers, JvUrlListGrabber;
 
 type
   TMainDlg = class(TForm)
@@ -48,7 +48,7 @@ type
     CancelBtn: TButton;
     Label2: TLabel;
     PageNameLabel: TLabel;
-    JvHttpGrabber1: TJvHttpGrabber;
+    JvHttpGrabber1: TJvHttpUrlGrabber;
     procedure ParseBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -117,7 +117,7 @@ procedure TMainDlg.GetHttpDocument(const Url: string);
 begin {GetHttpDocument}
   // Request the HTML document
   JvHttpGrabber1.Url := URL;
-  JvHttpGrabber1.Execute;
+  JvHttpGrabber1.Start;
   //when it's done, the OnDoneStream will be started
 end; {GetHttpDocument}
 
@@ -176,6 +176,7 @@ begin {ClearAll}
     while i < ControlCount do
     begin
       if (Controls[i] is TJvCustomDiagramShape) and
+        Assigned(ExceptShape) and
         (Controls[i] <> ExceptShape) and
         (Controls[i] <> ExceptShape.Caption) then
         begin
@@ -424,7 +425,7 @@ end;
 
 procedure TMainDlg.CancelBtnClick(Sender: TObject);
 begin
-  JvHttpGrabber1.Abort;
+  JvHttpGrabber1.Stop;
 end;
 
 
