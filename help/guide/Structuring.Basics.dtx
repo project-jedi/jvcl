@@ -1,0 +1,40 @@
+@@JVCL.HWG.Struct.Basics
+<GROUP JVCL.HWG.Struct>
+<TITLE Basic topic file structure>
+<TOPICORDER 100>
+  In general each topic file corresponds to a Delphi unit. The only exception would be for very
+  large units, but even then it's still better to keep a single topic file for each unit.
+  
+  Topic files follow very simple formatting rules:
+    
+    * Wrap at or just before 100 characters.
+    * The contents of each section should be indented by two spaces.
+    * Don't use TAB characters.
+    * Separate topics with a line of 100 dashes (-).
+    
+  As for the general structure of the topic file:
+
+    * Unit symbol *
+    
+    The unit symbol is required for all units.
+        
+    1. Always start with the unit symbol.
+    2. Describe the main component/class/routine first (do not include the members of the main class
+       or component).
+    3. If the main component or class is inherited from another class in the same unit (e.g. 
+       TJvInspector is derived from TJvCustomInspector), describe that base class.
+    4. Add all members of the base component/class in alphabetical order. Exception: if the
+       constructor and/or destructor should be documented, add them as the first members.
+    5. Add all members of the main component/class in alphabetical order. Exception: if the
+       constructor and/or destructor should be documented, add them as the first members.
+    6. Add all other classes in alphabetical order. For class hierarchies, start with the root class
+       and work your way down. Each class should be followed by their members in alphabetical order.
+       Exception: if the constructor and/or destructor should be documented, add them as the first
+       members.
+    7. Add all types in alphabetical order. For types that refer to eachother in the declaration,
+       start with the simple type and followup with the related type(s) (such as a set referring to
+       an enumeration or a pointer type referring to a record). For enumerations and records you
+       should add the members (enumeration values or record fields) within the same topic as the
+       base type.
+    8. Add all constants and variables in alphabetical order.
+    9. Add all helper procedures/functions in alphabetical order.
