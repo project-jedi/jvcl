@@ -178,7 +178,7 @@ type
     property RightMargin: Integer read FRightMargin write SetRightMargin default 0;
     property ShadowColor: TColor read FShadowColor write SetShadowColor default clBtnHighlight;
     property ShadowSize: Byte read FShadowSize write SetShadowSize default 0;
-    property ShadowPos: TShadowPosition read FShadowPos write SetShadowPos default spLeftTop;
+    property ShadowPos: TShadowPosition read FShadowPos write SetShadowPos default spRightBottom;
     property ShowAccelChar: Boolean read FShowAccelChar write SetShowAccelChar default True;
     property ShowFocus: Boolean read FShowFocus write SetShowFocus default False;
     property Transparent: Boolean read GetTransparent write SetTransparent default False;
@@ -330,7 +330,7 @@ begin
   FShowAccelChar := True;
   FShadowColor := clBtnHighlight;
   FShadowSize := 0;
-  FShadowPos := spLeftTop;
+  FShadowPos := spRightBottom;
   FHotTrackFontOptions := DefaultTrackFontOptions;
 end;
 
