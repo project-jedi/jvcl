@@ -131,6 +131,7 @@ msgid ""
 msgstr ""
 "http://dxgettext.sourceforge.net|Scaricalo da <c:blue>http://dxgettext.sourceforge.net<c:black>\n"
 "<c:red>La unit gnugettext.pas verrà aggiunta alla lista\n"
+"di JvCore-R"
 
 #. FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage..Caption
 #: Frames/FrmConfigPage.dfm:46
@@ -533,56 +534,6 @@ msgstr "Project JEDI   Installazione JVCL 3 - Editor jvcl.inc"
 #: Helpers/MainConfig.dfm:134
 msgid "Assigned to runtime"
 msgstr "Assegnato al runtime"
-
-#  Programmer's name for it: RsPackagesAreUpToDate
-#: Compile.pas:133
-msgid "Packages are up to date"
-msgstr ""
-
-#  Programmer's name for it: RsGeneratingTemplates
-#: Compile.pas:141
-msgid "Generating templates..."
-msgstr ""
-
-#  Programmer's name for it: RsGeneratingPackages
-#: Compile.pas:142
-msgid "Generating packages..."
-msgstr ""
-
-#  Programmer's name for it: RsGeneratingResources
-#: Compile.pas:143
-msgid "Generating resources..."
-msgstr ""
-
-#  Programmer's name for it: RsCompilingPackages
-#: Compile.pas:144
-msgid "Compiling packages..."
-msgstr ""
-
-#  Programmer's name for it: RsFinished
-#: Compile.pas:145
-msgid "Finished."
-msgstr ""
-
-#  Programmer's name for it: RsCompilingJCL
-#: Compile.pas:146
-msgid "Compiling JCL dcp files..."
-msgstr ""
-
-#  Programmer's name for it: RsAbortedByUser
-#: Compile.pas:149
-msgid "Aborted by User"
-msgstr ""
-
-#. Programmer's name for it: RsErrorLoadingPackageGeneratorConfigFile
-#: Compile.pas:150
-msgid "Error loading devtools\\bin\\pgEdit.xml"
-msgstr ""
-
-#. Programmer's name for it: RsErrorGeneratingPackages
-#: Compile.pas:151
-msgid "Error while generating packages for %s"
-msgstr ""
 
 #  Programmer's name for it: RsErrorGeneratingTemplates
 #  FormJvclIncConfig..BtnCancel..Caption
@@ -1048,16 +999,6 @@ msgstr "Eliminazione registrazione packages..."
 #: JVCLData.pas:283
 msgid "Deleting files..."
 msgstr "Cancellazione files..."
-
-#  Programmer's name for it: STR_HELPBTN
-#: Helpers/AHCompBrowseFolderDlg.pas:119
-msgid "&Help"
-msgstr "&Aiuto"
-
-#  FormMain..JvWizard..ButtonCancel.Caption
-#: Main.dfm:40
-msgid "Cancel"
-msgstr ""
 
 #  FormMain..JvWizard..LblHomepage..Hint
 #: Main.dfm:60
