@@ -35,10 +35,16 @@ interface
 
 uses
   Classes, Graphics, Windows,
+  {$IFDEF VisualCLX}
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  {$ENDIF VisualCLX}
   JclBase,
   JvComponent, JvTypes;
 
 // Additional color values for unlit color settings (TUnlitColor type)
+// asn: does this work with clx/linux?
 const
   clDefaultBackground = TColor($20100001);
   clDefaultLitColor = TColor($20100002);
@@ -89,6 +95,10 @@ type
     FSegmentUnlitColor: TUnlitColor;
     FSlant: TSlantAngle;
     FText: string;
+    {$IFDEF VisualCLX}
+    FAutoSize: boolean;
+    procedure SetAutoSize(Value: boolean);
+    {$ENDIF VisualCLX}
   protected
     procedure DefineProperties(Filer: TFiler); override;
     procedure Loaded; override;
@@ -119,8 +129,12 @@ type
     procedure InvalidateView;
     procedure UpdateText;
     procedure UpdateBounds;
-
+    {$IFDEF VCL}
     property AutoSize default True;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    property AutoSize: boolean read FAutoSize write SetAutoSize default True;
+    {$ENDIF VisualCLX}
     property CharacterMapper: TJvSegmentedLEDCharacterMapper read FCharacterMapper;
     property DigitClass: TJvSegmentedLEDDigitClass read FDigitClass write SetDigitClass;
     // Solely needed for design time support of DigitClass
@@ -434,6 +448,12 @@ begin
 end;
 
 procedure UnregisterModuleSegmentedLEDDigitClasses(Module: HMODULE);
+{$IFDEF LINUX}
+begin
+  // ?
+end;
+{$ENDIF LINUX}
+{$IFDEF MSWINDOWS}
 var
   I: Integer;
   M: TMemoryBasicInformation;
@@ -450,6 +470,8 @@ begin
     DigitClassList.UnlockList;
   end;
 end;
+{$ENDIF MSWINDOWS}
+
 
 //=== Helper routine: AngleAdjustPoint =======================================
 
@@ -465,7 +487,12 @@ constructor TJvCustomSegmentedLEDDisplay.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   IncludeThemeStyle(Self, [csParentBackground]);
+  {$IFDEF VCL}
   AutoSize := True;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  FAutoSize := True; // asn: prevents redraws
+  {$ENDIF VisualCLX}
   FDigitClass := TJv7SegmentedLEDDigit;
   FCharacterMapper := TJvSegmentedLEDCharacterMapper.Create(Self);
   FDigits := TJvSegmentedLEDDigits.Create(Self);
@@ -653,6 +680,15 @@ begin
     UpdateDigitsPositions;
   end;
 end;
+
+{$IFDEF VisualCLX}
+procedure TJvCustomSegmentedLEDDisplay.SetAutoSize(Value: boolean);
+begin
+  FAutoSize := value;
+  if Value then
+    UpdateBounds;
+end;
+{$ENDIF VisualCLX}
 
 function TJvCustomSegmentedLEDDisplay.GetDigitClassName: TJvSegmentedLEDDigitClassName;
 begin
