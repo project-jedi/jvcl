@@ -4,32 +4,51 @@
 @@JvAppInst.pas
 Summary
   Contains the TJvAppInst component.
-<INCLUDE JVCL.UnitText.dtx>
+  <INCLUDE JVCL.UnitText.dtx>
 Author
   Andreas Hausladen
+
+
 ----------------------------------------------------------------------------------------------------
 @@TCmdLineReceivedEvent
 <TITLE TCmdLineReceivedEvent type>
 <COMBINE TJvAppInstances.OnCmdLineReceived>
+Summary
+  Event type for the OnCmdLineReceived
+Description
+  The CmdLine parameter contains the command line arguments from ParamStr(1) to ParamStr(ParamCount).
+See Also
+  TJvAppInstances.OnCmdLineReceived
+
+
 ----------------------------------------------------------------------------------------------------
 @@TDataAvailableEvent
 <TITLE TDataAvailableEvent type>
 <COMBINE TJvAppInstances.OnDataAvailable>
+Summary
+  Event type for the OnDataAvailable
+Description
+  Data contains the sent data and is released when the function returns.
+See Also
+  TJvAppInstances.SendData
+
+
 ----------------------------------------------------------------------------------------------------
 @@TInstanceChangeEvent
 <TITLE TInstanceChangeEvent type>
 Summary
-  Write here a summary (1 line)
+  Event type
 Description
-  This type is used by (for reference):
+  This type is used by:
     TJvAppInstances.OnInstanceCreated
     TJvAppInstances.OnInstanceDestroyed
 Parameters
-  Sender    - Description for this parameter
-  ProcessId - Description for this parameter
+  Sender    - TJvAppInstance object
+  ProcessId - The process id of the created/destroyed application instance
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvAppInstances.OnInstanceCreated,TJvAppInstances.OnInstanceDestroyed
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances
 <TITLEIMG TJvAppInstances>
@@ -37,176 +56,201 @@ JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  TJvAppInstance encapsulates the TJclAppInstance class.
 Description
-  Write here a description
+  The TJvAppInstance class allows you to control the number of application instances running at the
+  same time. If a new instance is rejected it can send its command line and other commands to the
+  first instance.
+  
+  To set a UniqueAppIdGuidStr you must call JclAppInst.JclAppInstances in the initialization section
+  of a unit or before the forms are created (OnCreate is too late).
+  
+  This class is not thread safe.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.Active
 Summary
-  Write here a summary (1 line)
+  Active controls the state of the component.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Set Active to False if you want to disable the component.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.AppInstances
 Summary
-  Write here a summary (1 line)
+  Access to the underlying TJclAppInstances class
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This property gives you access to the underlying JEDI Code Library TJclAppInstances class.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.AutoActivate
 Summary
-  Write here a summary (1 line)
+  Controls the activation of the first instance.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  If AutoActivate is True then the first instance is brought to front by the second process instance.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.Check
 Summary
-  Write here a summary (1 line)
+  Check tests for an existing instance.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  If Check finds an existing appliaction instance it will communicate with the first instance and
+  then it terminates.
+  
+  Check is called by the Loaded method. So there is no need to call it directly.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.Handle
 Summary
-  Write here a summary (1 line)
+  Window Handle to the communication window
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Every instance has its own communication window. So you can use SendMessage/PostMessage with this
+  handle.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.MaxInstances
 Summary
-  Write here a summary (1 line)
+  Maximum number of simultanous running application instances
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MaxInstances specifies the maximum paralelle running application instances. If the maximum number
+  is reached and a new instance is started it will send its commandline to the first instance and
+  terminates.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.OnCmdLineReceived
 Summary
-  Write here a summary (1 line)
+  OnCmdLineReceived is raised when a command line was received.
 Description
-  Write here a description
+  Install an event handler for this event if you want to receive the command lines from other
+  rejected instances.
 Parameters
-  Sender  - Description for this parameter
-  CmdLine - Description for this parameter
+  Sender  - calling TJvAppInstances object
+  CmdLine - contains the command line arguments (1 to ParamCount)
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TCmdLineReceivedEvent
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.OnDataAvailable
 Summary
-  Write here a summary (1 line)
+  OnDataAvailable is raised when data from a SendData call are available.
 Description
-  Write here a description
+  Install an event handler for this event if you want to receive data from other instances sent by
+  SendData
 Parameters
-  Sender - Description for this parameter
-  Kind   - Description for this parameter
-  Data   - Description for this parameter
-  Size   - Description for this parameter
+  Sender - calling TJvAppInstances object
+  Kind   - what kind of message
+  Data   - pointer to the message data (automatically released)
+  Size   - size of the message data
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TDataAvailableEvent
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.OnInstanceCreated
 Summary
-  Write here a summary (1 line)
+  OnInstanceCreated is raised when another instances was started.
 Description
-  Write here a description
+  Install an event handler for this event if you want to be notified about new application instances.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TInstanceChangeEvent
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.OnInstanceDestroyed
 Summary
-  Write here a summary (1 line)
+  OnInstanceDestroyed is raised when another instances is terminating.
 Description
-  Write here a description
+  Install an event handler for this event if you want to be notified about terminating application
+  instances.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TInstanceChangeEvent
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.OnRejected
 Summary
-  Write here a summary (1 line)
+  OnRejected is raised when this instance was rejected by another instance
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnRejected is raised and handled by the instance that wants to start if another instance does not
+  allow further instances
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.OnUserNotify
 Summary
-  Write here a summary (1 line)
+  OnUserNotify is raised when a message sent by UserNotify receives.
 Description
-  Write here a description
+  Install an event handler for this event if you want to receive messages sent by UserNotify.
 Parameters
-  Sender - Description for this parameter
-  Param  - Description for this parameter
+  Sender - calling TJvAppInstances object
+  Param  - The argument specified by the UserNotify call
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvAppInstances.UserNotify
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.SendCmdLine
 Summary
-  Write here a summary (1 line)
+  SendCmdLine sends the command line to the first instance.
 Description
-  Write here a description
+  Messages sent by SendCmdLine are sent to all running instances. Also the calling instance receives
+  the command line.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvAppInstances.SendData,TJvAppInstances.OnCmdLineReceived
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.SendData
 Summary
-  Write here a summary (1 line)
+  SendData sends a message to all instances.
 Description
-  Write here a description
+  Messages sent by SendData are sent to all running instances. Also the calling instance receives the
+  command line.
 Parameters
-  DataKind - Description for this parameter
-  Data     - Description for this parameter
-  Size     - Description for this parameter
+  DataKind - what kind of message
+  Data     - data to send
+  Size     - size of Data
 Return value
-  Describe here what the function returns
+  Returns False if the function fails.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvAppInstances.SendCmdLine,TJvAppInstances.OnDataAvailable
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.UserNotify
 Summary
-  Write here a summary (1 line)
+  Sends a simple message to all instances.
 Description
-  Write here a description
+  Use UserNotify to send a simple message to all instances.
 Parameters
-  Param - Description for this parameter
+  Param - userdefined value that is sent to all instances
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvAppInstances.SendData,TJvAppInstances.OnUserNotify
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstDataKind
 <TITLE TJvAppInstDataKind type>
 Summary
-  Write here a summary (1 line)
+  Type for TJvAppInstances.SendData
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = TJclAppInstDataKind; - for reference)
+  TJvAppInstDataKind = TJclAppInstDataKind
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvAppInstances.SendData
+
+
 ----------------------------------------------------------------------------------------------------
 @@TUserNotifyEvent
 <TITLE TUserNotifyEvent type>
 <COMBINE TJvAppInstances.OnUserNotify>
+Summary
+  Event type for TJvAppInstances.OnUserNofity
+
+
