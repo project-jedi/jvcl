@@ -1277,7 +1277,7 @@ begin
     else if Assigned(Parent) and
       Assigned(Parent.SimpleXml) and
       (sxoAutoCreate in Parent.SimpleXml.Options) then
-      Result := Add(Name); 
+      Result := Add(Name);
   end
   else if Assigned(Parent) and
       Assigned(Parent.SimpleXml) and
@@ -1905,30 +1905,42 @@ var
   St: string;
   LevelAdd : string;
 begin
-  St := Level + '<' + Name;
-  Stream.Write(St[1], Length(St));
-  Properties.SaveToStream(Stream);
-
-  if Items.Count = 0 then
+  if Name <> '' then
   begin
-    if Value = '' then
-      St := '/>' + CrLf
-    else
-      St := '>' + SimpleXmlEncode(Value) + '</' + Name + '>' + CrLf;
+    St := Level + '<' + Name;
     Stream.Write(St[1], Length(St));
+    Properties.SaveToStream(Stream);
+  end;
+
+  if (Items.Count = 0) then
+  begin
+    if (Name <> '') then
+    begin
+      if Value = '' then
+        St := '/>' + CrLf
+      else
+       St := '>' + SimpleXmlEncode(Value) + '</' + Name + '>' + CrLf;
+      Stream.Write(St[1], Length(St));
+    end;
   end
   else
   begin
-    St := '>' + CrLf;
-    Stream.Write(St[1], Length(St));
+    if (Name <> '') then
+    begin
+      St := '>' + CrLf;
+      Stream.Write(St[1], Length(St));
+    end;
     if Assigned(SimpleXml) and
       (sxoAutoIndent in SimpleXml.Options) then
     begin
       LevelAdd := SimpleXml.IndentString;
     end;
     Items.SaveToStream(Stream, Level + LevelAdd, Parent);
-    St := Level + '</' + Name + '>' + CrLf;
-    Stream.Write(St[1], Length(St));
+    if Name <> '' then
+    begin
+      St := Level + '</' + Name + '>' + CrLf;
+      Stream.Write(St[1], Length(St));
+    end;
   end;
   if Parent <> nil then
     Parent.DoSaveProgress;
