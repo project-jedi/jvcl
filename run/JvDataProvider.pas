@@ -4981,10 +4981,8 @@ end;
 function TJvDataConsumerViewList.Item(Index: Integer): IJvDataItem;
 var
   Items: IJvDataItems;
-  {$IFDEF ViewList_UseFinder}
   Finder: IJvDataIDSearch;
-  {$ELSE}
-  ItemIdx: Integer;
+  {$IFNDEF ViewList_UseFinder}
   ParIdx: Integer;
   {$ENDIF ViewList_UseFinder}
 begin
@@ -4995,11 +4993,12 @@ begin
   if Supports(RootItems, IJvDataIDSearch, Finder) then
     Result := Finder.Find(FViewItems[Index].ItemID, True);
   {$ELSE}
-  { This should be faster, especially with larger trees. Determine the child index, retrieve the
-    parent item (using this same method) and then get the specified sub item directly.
-    Saves a huge number of ID comparisons and for dynamic items also an enormous amount of
-    creation/destruction of items. }
-  ItemIdx := ChildIndexOfID(FViewItems[Index].ItemID);
+  { This should be faster, especially with larger trees. This will only scan the parent item's
+    IJvDataItems list (the parent item is retrieved using this same method). This still saves a lot
+    of ID comparisons in large trees and for dynamic items also an enormous amount of
+    creation/destruction of items. The entire implementation of this class should be adapted to not
+    store the ID but the item's index in the provider list, so we can streamline this method to use
+    and index path only. }
   ParIdx := ItemParentIndex(Index);
   if ParIdx >= 0 then
     // Parent found, retrieve the IJVDataItems reference
@@ -5007,8 +5006,8 @@ begin
   else
     // Apparantly this item is at the root of the view; retrieve the proper IJvDataItems reference
     Items := RootItems;
-  // Retrieve the child item.
-  Result := Items.GetItem(ItemIdx);
+  if Supports(RootItems, IJvDataIDSearch, Finder) then
+    Result := Finder.Find(FViewItems[Index].ItemID, False);
   {$ENDIF ViewList_UseFinder}
 end;
 
