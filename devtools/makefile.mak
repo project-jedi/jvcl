@@ -29,6 +29,8 @@ JConvert.exe \
 JTouch.exe \
 crlf.exe \
 MakeDOF.exe \
+MakeCFG.exe \
+Bgp2Make \
 MakeRC.exe \
 dc.exe \
 MakePNG.exe \
@@ -54,6 +56,16 @@ jconvert.exe: JConvert\jconvert.dpr
 
 MakeDOF.exe: MakeDOF\MakeDOF.dpr
   cd MakeDOF
+  $(DCC) $&.dpr
+  cd ..
+
+MakeCFG.exe: MakeCFG\MakeCFG.dpr
+  cd MakeCFG
+  $(DCC) $&.dpr
+  cd ..
+
+Bpg2Make.exe: Bpg2Make\Bpg2Make.dpr
+  cd Bpg2Make
   $(DCC) $&.dpr
   cd ..
 
