@@ -2019,8 +2019,8 @@ const
 begin
   Result := fftUndefined;
   Ext := ExtractFileExt(FileName);
-  for I := 0 to 3 do
-    if AnsiCompareText(Ext, Extensions[I]) = 0 then
+  for I := Low(Extensions) to High(Extensions) do
+    if SameFileName(Ext, Extensions[I]) then
     begin
       Result := Types[I];
       Break;

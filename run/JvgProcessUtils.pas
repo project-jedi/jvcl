@@ -102,7 +102,7 @@ begin
 
   if Process32First(hSnapshot, Pe32) then
     repeat
-      if AnsiCompareText(ExtractFileName(Pe32.szExeFile), Name) = 0 then
+      if SameFileName(ExtractFileName(Pe32.szExeFile), Name) then
       begin
         hProc := OpenProcess(PROCESS_TERMINATE, False, Pe32.th32ProcessID);
         if hProc <> 0 then
