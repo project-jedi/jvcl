@@ -57,13 +57,13 @@ type
     {$ENDIF VisualCLX}
     procedure CheckClick(Sender: TObject);
     function GetShowCheckBox: Boolean;
-    {$IFDEF VCL}
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
-    {$ENDIF VCL}
+//    {$IFDEF VCL}
+//    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
+//    {$ENDIF VCL}
   protected
     procedure DoCheckClick; dynamic;
     {$IFDEF VCL}
-    procedure DoCtl3DChanged; dynamic;
+//    procedure DoCtl3DChanged; dynamic;
     procedure DoKillFocusEvent(const ANextControl: TWinControl); override;
     {$ENDIF VCL}
     procedure EnabledChanged; override;
@@ -72,20 +72,22 @@ type
     procedure SetChecked(const AValue: Boolean); virtual;
     procedure SetShowCheckBox(const AValue: Boolean); virtual;
 
-    procedure GetInternalMargins(var ALeft, ARight: Integer); virtual;
-    procedure UpdateControls; dynamic;
+    procedure GetInternalMargins(var ALeft, ARight: Integer); override;
+    //procedure UpdateControls; dynamic;
 
     {$IFDEF VCL}
+    procedure UpdateControls; override;
     //procedure CreateParams(var AParams: TCreateParams); override;
-    procedure CreateWnd; override;
+//    procedure CreateWnd; override;
+    procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    procedure CreateWidget; override;
+//    procedure CreateWidget; override;
     procedure ColorChanged; override;
     {$ENDIF VisualCLX}
     procedure Change; override;
-    procedure Resize; override;
-    procedure Loaded; override;
+//    procedure Resize; override;
+//    procedure Loaded; override;
     procedure BeginInternalChange;
     procedure EndInternalChange;
     function InternalChanging: Boolean;
@@ -169,7 +171,7 @@ type
 implementation
 
 uses
-  JvTypes, JvResources;
+  JvTypes, JvResources, JvThemes;
 
 constructor TJvCustomCheckedMaskEdit.Create(AOwner: TComponent);
 begin
@@ -189,7 +191,7 @@ begin
   inherited Destroy;
 end;
 
-{$IFDEF VCL}
+//{$IFDEF VCL}
 //procedure TJvCustomCheckedMaskEdit.CreateParams(var AParams: TCreateParams);
 //begin
 //  inherited CreateParams(AParams);
@@ -197,19 +199,19 @@ end;
 //  AParams.Style := AParams.Style or WS_CLIPCHILDREN;
 //end;
 
-procedure TJvCustomCheckedMaskEdit.CreateWnd;
-begin
-  inherited CreateWnd;
-  UpdateControls;
-end;
-{$ENDIF VCL}
+//procedure TJvCustomCheckedMaskEdit.CreateWnd;
+//begin
+//  inherited CreateWnd;
+//  UpdateControls;
+//end;
+//{$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-procedure TJvCustomCheckedMaskEdit.CreateWidget;
-begin
-  inherited CreateWidget;
-  UpdateControls;
-end;
+//procedure TJvCustomCheckedMaskEdit.CreateWidget;
+//begin
+//  inherited CreateWidget;
+//  UpdateControls;
+//end;
 
 procedure TJvCustomCheckedMaskEdit.ColorChanged;
 begin
@@ -277,38 +279,58 @@ begin
     end
     else
       FreeAndNil(FCheck);
+
+    UpdateControls;
+    UpdateMargins;
+    Repaint;
   end;
-  UpdateControls;
+  //UpdateControls;
 end;
 
-procedure TJvCustomCheckedMaskEdit.UpdateControls;
-var
-  LLeft, LRight: Integer;
-  {$IFDEF VisualCLX}
-  Loc: TRect;
-  {$ENDIF VisualCLX}
-begin
-  {UpdateControls gets called whenever the layout of child controls changes.
-   It uses GetInternalMargins to determine the left and right margins of the
-   actual text area.}
-  LLeft := 0;
-  LRight := 0;
-  GetInternalMargins(LLeft, LRight);
-  {$IFDEF VCL}
-  SendMessage(Handle, EM_SETMARGINS, EC_RIGHTMARGIN or EC_LEFTMARGIN, MakeLong(LLeft, LRight));
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  SetRect(Loc, LLeft, 0, ClientWidth - LRight, ClientHeight);
-  SetEditorRect(@Loc);
-  {$ENDIF VisualCLX}
-end;
+//procedure TJvCustomCheckedMaskEdit.UpdateControls;
+//var
+//  LLeft, LRight: Integer;
+//  {$IFDEF VisualCLX}
+//  Loc: TRect;
+//  {$ENDIF VisualCLX}
+//begin
+//  {UpdateControls gets called whenever the layout of child controls changes.
+//   It uses GetInternalMargins to determine the left and right margins of the
+//   actual text area.}
+//  LLeft := 0;
+//  LRight := 0;
+//  GetInternalMargins(LLeft, LRight);
+//  {$IFDEF VCL}
+//  SendMessage(Handle, EM_SETMARGINS, EC_RIGHTMARGIN or EC_LEFTMARGIN, MakeLong(LLeft, LRight));
+//  {$ENDIF VCL}
+//  {$IFDEF VisualCLX}
+//  SetRect(Loc, LLeft, 0, ClientWidth - LRight, ClientHeight);
+//  SetEditorRect(@Loc);
+//  {$ENDIF VisualCLX}
+//end;
 
 procedure TJvCustomCheckedMaskEdit.GetInternalMargins( var ALeft, ARight: Integer);
 begin
   {This gets called by UpodateControls and should be overridden by descendants
    that add additional child controls.}
+
+  inherited GetInternalMargins(ALeft, ARight);
+
   if ShowCheckBox then
+  begin
     ALeft := FCheck.Left + FCheck.Width;
+    {$IFDEF VCL}
+    // ensure the text starts 2 points from the checkbox edge
+    {$IFDEF JVCLThemesEnabled}
+    if ThemeServices.ThemesEnabled then
+      ALeft := ALeft + 1;
+    {$ENDIF JVCLThemesEnabled}
+    if BorderStyle = bsNone then
+      ALeft := ALeft + 1
+    else if not Ctl3D then
+      ALeft := ALeft - 1;
+    {$ENDIF VCL}
+  end;
 end;
 
 procedure TJvCustomCheckedMaskEdit.Change;
@@ -320,17 +342,17 @@ begin
     inherited Change;
 end;
 
-procedure TJvCustomCheckedMaskEdit.Loaded;
-begin
-  inherited Loaded;
-  UpdateControls;
-end;
+//procedure TJvCustomCheckedMaskEdit.Loaded;
+//begin
+//  inherited Loaded;
+//  UpdateControls;
+//end;
 
-procedure TJvCustomCheckedMaskEdit.Resize;
-begin
-  inherited Resize;
-  UpdateControls;
-end;
+//procedure TJvCustomCheckedMaskEdit.Resize;
+//begin
+//  inherited Resize;
+//  UpdateControls;
+//end;
 
 {Begin/EndInternalChange and InternalChanging implement a simple locking
  mechanism to prevent change processing and display updates during internal
@@ -372,25 +394,25 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvCustomCheckedMaskEdit.CMCtl3DChanged(var Msg: TMessage);
-begin
-  DoCtl3DChanged;
-end;
+//procedure TJvCustomCheckedMaskEdit.CMCtl3DChanged(var Msg: TMessage);
+//begin
+//  DoCtl3DChanged;
+//end;
 
-procedure TJvCustomCheckedMaskEdit.DoCtl3DChanged;
-begin
-  { propagate to child controls: }
-  if ShowCheckBox then
-  begin
-    FCheck.Ctl3D := Self.Ctl3D;
-    // adjust layout quirks:
-    if Self.Ctl3D then
-      FCheck.Left := 0
-    else
-      FCheck.Left := 1;
-  end;
-  UpdateControls;
-end;
+//procedure TJvCustomCheckedMaskEdit.DoCtl3DChanged;
+//begin
+//  { propagate to child controls: }
+//  if ShowCheckBox then
+//  begin
+//    FCheck.Ctl3D := Self.Ctl3D;
+//    // adjust layout quirks:
+//    if Self.Ctl3D then
+//      FCheck.Left := 0
+//    else
+//      FCheck.Left := 1;
+//  end;
+//  UpdateControls;
+//end;
 
 procedure TJvCustomCheckedMaskEdit.DoKillFocusEvent(const ANextControl: TWinControl);
 begin
@@ -410,5 +432,49 @@ begin
      FOnEnabledChanged(self);
   {$ENDIF VisualCLX}
 end;
+
+{$IFDEF VCL}
+procedure TJvCustomCheckedMaskEdit.UpdateControls;
+begin
+  inherited UpdateControls;
+
+  { propagate to child controls: }
+  if ShowCheckBox then
+  begin
+    FCheck.Ctl3D := Self.Ctl3D;
+
+    { Adjust layout quirks:
+      We want to place the checkbox 2 points from the edge
+
+                        BorderStyle
+                     bsNone  bsSingle
+      Ctl3d   Yes:      0       0
+              No :      0       1
+    }
+    if not Self.Ctl3D and (Self.BorderStyle = bsSingle) then
+      FCheck.Left := 1
+    else
+      FCheck.Left := 0;
+  end;
+
+  //UpdateControls;
+end;
+{$ENDIF VCL}
+
+{$IFDEF VCL}
+procedure TJvCustomCheckedMaskEdit.WMNCHitTest(var Msg: TWMNCHitTest);
+var
+  P: TPoint;
+begin
+  inherited;
+  if (Msg.Result = HTCLIENT) and ShowCheckBox and not (csDesigning in ComponentState) then
+  begin
+    P := Point(FCheck.Left + FCheck.Width, FCheck.Top);
+    Windows.ClientToScreen(FCheck.Handle, P);
+    if Msg.XPos < P.X then
+      Msg.Result := HTBORDER; {HTCAPTION;}
+  end;
+end;
+{$ENDIF VCL}
 
 end.

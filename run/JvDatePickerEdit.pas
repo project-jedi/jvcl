@@ -936,7 +936,7 @@ begin
   if not (Self.Enabled) and Dropped then
     CloseUp;
   //FDropButton.Enabled := Self.Enabled;
-  Button.Enabled := Self.Enabled;
+  //Button.Enabled := Self.Enabled;
 end;
 
 procedure TJvCustomDatePickerEdit.CreateWnd;
