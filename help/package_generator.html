@@ -9,8 +9,23 @@
 <body>
 <h1>Jedi Package Generator</h1>
 <hr style="width: 100%; height: 2px;"><br>
-In an effort to easify the generation of component packages for the
-JVCL, a package generator has been created. Even if it is extensively
+<h2>Summary</h2>
+<a href="#Introduction">Introduction<br>
+</a><a href="#About_the_package_generator">About the package generator<br>
+</a><a href="#Package_XML_Source_Files_Format">Package XML source files
+format<br>
+</a><a href="#XML_Configuration_File_Format">XML Configuration file
+format<br>
+</a><a href="#Template_Files_Format">Template Files format<br>
+</a><a href="#Include_File_parsing">Include File parsing<br>
+</a><a href="#Detailed_Generation_process">Detailed generation process<br>
+</a><a href="#Command_line_reference">Command line reference<br>
+</a><a href="#Notes_to_developers">Notes to developers<br>
+</a><br>
+<h2><a name="Introduction"></a>Introduction</h2>
+In an effort to make the generation of component packages for the
+JVCL easier, a package generator has been created. Even if it is
+extensively
 used by the JVCL team, it has been designed to be as generic as
 possible and as such may seem a bit complex at first. You will find in
 this file the documentation you need to understand how to take
@@ -35,7 +50,7 @@ Each file has its own role:<br>
  href="#Package_XML_Source_Files_Format">Package XML
 Source Files</a><br>
       </td>
-      <td style="vertical-align: top;">Each packageXML source file
+      <td style="vertical-align: top;">Each package XML source file
 indicates which files are to be included in the package, which other
 packages this package depends on and various compilation options such
 as PFLAGS (Pascal Flags) for C++ Builder. All inclusions and
@@ -94,6 +109,17 @@ will be left untouched.<br>
     </tr>
   </tbody>
 </table>
+<br>
+<h2><a name="About_the_package_generator"></a>About the package
+generator<br>
+</h2>
+The package generator is released by the Jedi VCL group under the
+Mozilla Public License 1.1 and was originnaly written by <a
+ href="mailto:obones@meloo.com">Olivier Sannier</a>. I has since
+benefited from the contributions of various people in order to make it
+as generic as possible. Should you have any questions regarding this
+program, please feel free to contact the original author or the JVCL
+team.<br>
 <br>
 <h2><a name="Package_XML_Source_Files_Format"></a>Package XML Source
 Files Format</h2>
@@ -406,8 +432,9 @@ value="d7,d7p"/&gt;<br>
 <br>
 Contrary to the package XML source files, the validity of this file is
 checked when read and an explicative message will be given to you if
-the file is corrupted. However, a non corrupted file doesn't mean it
-does something useful. For that, you need to indicate the correct
+the file is corrupted. However, only the basic structure is checked and
+you may end up with an Acces Violation exception anyway. To get a
+meaningful file, you need to indicate the correct
 values according to the following table:<br>
 <br>
 <table style="text-align: left; width: 100%;" border="1" cellspacing="1"
@@ -490,7 +517,10 @@ information.<br>
             <td style="vertical-align: top;">format<br>
             </td>
             <td style="vertical-align: top;">The format of the string
-that will replace a package name that matched the prefix. Please see
+that will replace 'template' in a template filename. It will also
+replace a package name that matched the prefix while being processed in
+the '<a href="#Template_Files_Format">Requires section</a>' state.
+Please see
 the detailed description of the <a href="#Detailed_Generation_process">generation
 process</a> for further information. Some special markers will get
 replaced:<br>
@@ -852,7 +882,11 @@ to the type of the package.<br>
       </td>
       <td style="vertical-align: top;">Replaced by the current date and
 time adjusted to UTC, formated according to the string 'dd-mm-yyyy
-hh:nn:ss' and followed by ' UTC'<br>
+hh:nn:ss' and followed by ' UTC'.<br>
+You should only use this marker once in the entire template for the
+difference detection mechanism to work correctly. Please see the
+detailed description of the <a href="#Detailed_Generation_process">generation
+process</a> for more details.<br>
       </td>
     </tr>
     <tr>
@@ -1020,7 +1054,7 @@ being generated. That is for every name in the space delimited value of
 the 'C5Libs' or 'C6Libs' node in the package XML source file. The node
 used depends on the target for which the generation takes place. If the
 target environment is not C and/or its version is not 5 or 6, the
-generator will most likely trigger an error.<br>
+generator will most likely trigger an Access Violation exception.<br>
       </td>
     </tr>
     <tr>
@@ -1028,7 +1062,7 @@ generator will most likely trigger an error.<br>
       </td>
       <td style="vertical-align: top;">The lines read while in this
 state will be replaced for every file to be included in the package
-being generated. That is for every file 'node' found in the package XML
+being generated. That is for every 'file' node found in the package XML
 source file. The markers will be replaced before the output occurs.<br>
       </td>
     </tr>
@@ -1044,11 +1078,307 @@ only be used if its 'formname' attribute is not empty.<br>
 </table>
 <br>
 <h2><a name="Include_File_parsing"></a>Include File parsing</h2>
+Delphi package files are source files and as such accept conditional
+compilation directives. These are used in the JVCL to include files
+depending on settings in the jvcl.inc file. These includes use of
+DxGettext, use of the GIF file format, use of the ThemeManager and many
+others.<br>
+C++ Builder package files, however, are XML files and do not support
+conditional compilation directives. The only way to reproduce the
+behaviour shown by Delphi is to regenerate the packages every time the
+include file is modified. This is because the package generator
+analyses the include file (if told to do so by the model) and outputs a
+conditionned line if the condition is defined in the include file.<br>
+Before the generation process takes place, the include file is parsed
+to determine which conditions are defined. A list of 'defines' is
+created from the file, and each 'define' has a list of 'ifdefs'
+associated with it. This list indicates which other conditions must or
+must not be defined for this one to be defined. Let's consider this
+simple file:<br>
 <br>
+<table
+ style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="0" cellspacing="0" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><code>{$DEFINE
+DIRECT_DEFINE}<br>
+      <br>
+{$IFDEF TEST}<br>
+&nbsp; {$DEFINE INSIDE_TEST}<br>
+{$ELSE}<br>
+&nbsp; {$DEFINE INSIDE_NOT_TEST}<br>
+{$ENDIF}<br>
+      <br>
+{$IFNDEF SOME_STUFF}<br>
+&nbsp; {$DEFINE OTHER}<br>
+{$ENDIF}<br>
+      </code></td>
+    </tr>
+  </tbody>
+</table>
+<br>
+After the file has been processed, the following will be used:<br>
+<ul>
+  <li>DIRECT_DEFINE is defined</li>
+  <li>INSIDE_TEST is defined if TEST is defined</li>
+  <li>INSIDE_NOT_TEST is defined if TEST is not defined</li>
+  <li>OTHER is defined if SOME_STUFF is not defined<br>
+  </li>
+</ul>
+Then when a node in the package XML source file indicates a condition,
+the list of 'defines' is read to determine if the node must be
+considered or not. If the target doesn't indicate any additional
+'define' then only DIRECT_DEFINE and INSIDE_NOT_TEST are defined. But
+if the target indicates that TEST is defined, then only DIRECT_DEFINE
+and INSIDE_TEST are defined. The same goes for SOME_STUFF: If the
+target defines it then OTHER will be defined. When a 'define' depends
+on other 'defines' the list is read recursively but only up to the line
+where the define was found. This ensure a behaviour similar to what the
+compiler does. A define provided by a target is considered to exist
+even before the first line of the file.<br>
+There is no limit but the available memory for the number of tests that
+can be done before the definition of a symbol.<br>
 <br>
 <h2><a name="Detailed_Generation_process"></a>Detailed Generation
 process</h2>
+This detailed description will not be narrative, but rather
+algorithmic. You should not have to know any particular programming
+language to understand it, simple logic should be enough.<br>
 <br>
+Read the xml configuration file<br>
+Load the model to use<br>
+Load the include file indicated by the model, if any.<br>
+<span style="font-weight: bold;"></span><span style="font-weight: bold;">For</span>
+all asked targets <span style="font-weight: bold;">do</span><br>
+<div style="margin-left: 40px;"><span style="font-weight: bold;">For</span>
+all 'template.*' files in the target's subdirectory of the packages
+root directory ('..\..\packages' in the <a
+ href="file:///C:/Perso/Prog/JVCL%20from%20CVS/dev/JVCL3/help/package_generator.html#XML_Configuration_File_Format">example</a>
+above)<sup>1.</sup> <span style="font-weight: bold;">do</span><br>
+<span style="font-weight: bold;"></span></div>
+<div style="margin-left: 40px;">
+<div style="margin-left: 40px;"><span style="font-weight: bold;">For</span>
+all '*.xml' files in the 'xml' subdirectory of the packages root
+directory<sup>2.</sup> <span style="font-weight: bold;">do</span><br>
+<span style="font-weight: bold;"></span>
+<div style="margin-left: 40px;"><span style="font-weight: bold;"></span><span
+ style="font-weight: bold;"></span>Determine the output filename by
+applying the format read in the model and using the extension of the
+template file<sup>3.</sup>.<br>
+</div>
+<div style="margin-left: 40px;"><span style="font-weight: bold;">If</span>
+the template is binary and is different<sup>4.</sup> from the exisiting
+output file <span style="font-weight: bold;">then</span><br>
+<div style="margin-left: 40px;">Copy the binary file to the output file<br>
+</div>
+<span style="font-weight: bold;">else<br>
+</span>
+<div style="margin-left: 40px;">Create an output file in memory<br>
+</div>
+<div style="margin-left: 40px;"><span style="font-weight: bold;">For</span>
+every line in the template file <span style="font-weight: bold;">do</span><br>
+<div style="margin-left: 40px;"><span style="font-weight: bold;">If</span>
+the line starts a 'Requires' section <span style="font-weight: bold;">then<br>
+</span>
+<div style="margin-left: 40px;">Read lines until the end marker is found<br>
+<span style="font-weight: bold;">For</span> all required packages <span
+ style="font-weight: bold;">do</span><br>
+<div style="margin-left: 40px;">Do the required replacements in the
+read lines<br>
+</div>
+<div style="margin-left: 40px;">Copy the modified lines read in the
+memory output file <br>
+</div>
+</div>
+<span style="font-weight: bold;">else if</span> the line starts a
+'Files' section <span style="font-weight: bold;">then<br>
+</span>
+<div style="margin-left: 40px;">Read lines until the end marker is found<br>
+<span style="font-weight: bold;">For</span> all required packages <span
+ style="font-weight: bold;">do</span><br>
+</div>
+<div style="margin-left: 80px;">Do the required replacements in the
+read lines<br>
+</div>
+<div style="margin-left: 80px;">Copy the modified lines read in the
+memory output file<br>
+</div>
+<span style="font-weight: bold;">else if</span> the line starts a
+'Forms' section <span style="font-weight: bold;">then</span><br>
+<div style="margin-left: 40px;">Read lines until the end marker is found<br>
+<span style="font-weight: bold;">For</span> all required packages <span
+ style="font-weight: bold;">do</span><br>
+</div>
+<div style="margin-left: 80px;">Do the required replacements in the
+read lines<br>
+</div>
+<div style="margin-left: 80px;">Copy the modified lines read in the
+memory output file<br>
+</div>
+<span style="font-weight: bold;"></span><span style="font-weight: bold;"></span><span
+ style="font-weight: bold;">else if</span> the line starts a 'Libs'
+section <span style="font-weight: bold;">then</span><br>
+<div style="margin-left: 40px;">Read lines until the end marker is found<br>
+<span style="font-weight: bold;">For</span> all required packages <span
+ style="font-weight: bold;">do</span><br>
+</div>
+<div style="margin-left: 80px;">Do the required replacements in the
+read lines<br>
+</div>
+<div style="margin-left: 80px;">Copy the modified lines read in the
+memory output file<br>
+</div>
+<span style="font-weight: bold;"></span><span style="font-weight: bold;">else</span><br>
+<div style="margin-left: 40px;">Do the appropriate replacements in the
+line<br>
+Copy the modified line in the memory output file<br>
+</div>
+</div>
+<span style="font-weight: bold;">If</span> the memory output file is
+different<sup>5.</sup> from the existing output file <span
+ style="font-weight: bold;">then</span><br>
+<div style="margin-left: 40px;">Write the memory output file into the
+output file on disk<br>
+</div>
+<span style="font-weight: bold;">If</span> a difference was detected
+between the current target and the associated perso target<sup>6.</sup>
+<span style="font-weight: bold;">then</span><br>
+<div style="margin-left: 40px;"><span style="font-weight: bold;">If</span>
+the perso directory contains a template named the same as the current
+template <span style="font-weight: bold;">then</span><br>
+<div style="margin-left: 40px;">Use that template<br>
+</div>
+Generate the output file for the perso target<sup>7.</sup><br>
+</div>
+<div style="margin-left: 40px;">
+<div style="margin-left: 40px;"><br>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+Notes:<br>
+<sup>1.</sup> If the current target directory name is 'c6' then this
+means '..\..\packages\c6\template.*'<br>
+<sup>2.</sup> Using the example above, this would be
+'..\..\packages\xml\*.xml'<br>
+<sup>3.</sup> If 'template.bpk' was used with the example configuration
+file, a target called 'c6' and the file JvCore-R.xml, this would expand
+to JvCoreC6R.bpk<br>
+<sup>4.</sup> The difference is determined by performing a byte per
+byte comparison.<br>
+<sup>5.</sup> The difference is determined by doing a line by line
+comparison. The last %DATETIME% marker in the file will be ignored,
+thus allowing a file that is only different by the date time tag to be
+considered as not being different.<br>
+<sup>6.</sup> This is determined while processing 'package' and 'file'
+nodes. If a file or package is used by a target and not its associated
+perso target (or vice-versa), then the two 'flavors' of the package
+being generated are different.<br>
+<sup>7.</sup> The output file will be placed in the directory set for
+the perso target. This is done by repeating all steps from the line
+where note 4 is. As the target name is a perso target, it has no
+associated perso target and the test for a difference between
+'flavours' <br>
+<br>
+<h2><a name="Command_line_reference"></a>Command line reference</h2>
+pg.exe is the command line version of the package generator. It has
+been designed to be used from batch files and the JVLC installer. Here
+are the options it accepts:<br>
+<table
+ style="width: 80%; margin-left: auto; margin-right: auto; text-align: left;"
+ border="0" cellspacing="0" cellpadding="4">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">-h<br>
+      </td>
+      <td style="vertical-align: top;">Displays a help message,
+reminder of the available options, then exits.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">-m=MODEL<br>
+      </td>
+      <td style="vertical-align: top;">Indicates the model to use. The
+model must exist in the configuration file.<br>
+Defaults to 'JVCL'.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">-x=CONFIGFILE<br>
+      </td>
+      <td style="vertical-align: top;">Indicates the location of the
+xml configuration file. <br>
+Defaults to 'pg.xml'. If 'pg.xml' does not exists, defaults to
+'pgEdit.xml'. This has been done to allow for the usage of one xml file
+shared by both pg.exe and pgedit.exe.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">-t=TARGETS<br>
+      </td>
+      <td style="vertical-align: top;">Indicates the targets to build
+as a list of comma separated target names. You should not indicate any
+perso targets here.<br>
+Defaults to 'all'.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">-p=PATH<br>
+      </td>
+      <td style="vertical-align: top;">Indicates the root path for the
+packages.<br>
+Defaults to the value defined in the model to use.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">-r=PREFIX<br>
+      </td>
+      <td style="vertical-align: top;">Indicates the prefix for the
+packages.<br>
+Defaults to the value defined in the model to use.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">-f=FORMAT<br>
+      </td>
+      <td style="vertical-align: top;">Indicates the format of the name
+of packages.<br>
+Defaults to the value defined in the model to use.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">-i=INCLUDEFILE<br>
+      </td>
+      <td style="vertical-align: top;">Indicates the name of the
+include file to parse.<br>
+Defaults to the value defined in the model to use.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">-d<br>
+      </td>
+      <td style="vertical-align: top;">DEPRECATED. Forces the
+generation of the dof files by calling MakeDofs.bat.<br>
+This option shouldn't be used but rather a 'template.dof' be used
+instead.<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<h2><a name="Notes_to_developers"></a>Notes to developers</h2>
+Even if th package generator is considered to be fairly complete at the
+time of writing, it may need some further refinements. If you want to
+suggest an improvement and provide the code for it, please be sure to
+have read this documentation entirely and to keep in mind that the
+package generator must be generic so that it can be used by other
+groups. If you want to fix a bug that occurs with the JVCL, please
+think about a generic way to fix it, rather than hard-coding strings in
+a test for instance.<br>
+In any case, please feel free to contact the JVCL team.<br>
 <br>
 </body>
 </html>
