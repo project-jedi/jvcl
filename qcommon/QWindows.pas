@@ -517,15 +517,15 @@ function SetWindowOrgEx(Handle: QPainterH; X, Y: Integer; OldOrg: PPoint): LongB
 function GetWindowOrgEx(Handle: QPainterH; Org: PPoint): LongBool;
 { limited implementations of }
 function BitBlt(DestDC: QPainterH; X, Y, Width, Height: Integer; SrcDC: QPainterH;
-  XSrc, YSrc: Integer; Rop: RasterOp): LongBool; overload;
+  XSrc, YSrc: Integer; Rop: RasterOp; IgnoreMask: Boolean = true): LongBool; overload;
 function BitBlt(DestDC: QPainterH; X, Y, Width, Height: Integer; SrcDC: QPainterH;
-  XSrc, YSrc: Integer; WinRop: Cardinal): LongBool; overload;
+  XSrc, YSrc: Integer; WinRop: Cardinal; IgnoreMask: Boolean = true): LongBool; overload;
 //
 // does the required start/stop painting if needed
 // adjust x,y & XSrc,YSrc ico TControlCanvas (as used by TGraphicControl)
 //
 function BitBlt(DestCanvas: TCanvas; X, Y, Width, Height: Integer; SrcCanvas: TCanvas;
-  XSrc, YSrc: Integer; WinRop: Cardinal): LongBool; overload;
+  XSrc, YSrc: Integer; WinRop: Cardinal; IgnoreMask: Boolean = true): LongBool; overload;
 
 //
 // Calculates coord of TopLeft in Paintdevice coordinates
@@ -542,9 +542,12 @@ procedure CopyRect(DstCanvas: TCanvas; const Dest: TRect; Canvas: TCanvas;
   const Source: TRect); overload;
 
 function StretchBlt(DestDC: QPainterH; dx, dy, dw, dh: Integer;
-  SrcDC: QPainterH; sx, sy, sw, sh: Integer; WinRop: Cardinal): LongBool; overload;
+  SrcDC: QPainterH; sx, sy, sw, sh: Integer; WinRop: Cardinal; IgnoreMask: Boolean = true): LongBool; overload;
 function StretchBlt(DestDC: QPainterH; dx, dy, dw, dh: Integer;
-  SrcDC: QPainterH; sx, sy, sw, sh: Integer; Rop: RasterOp): LongBool; overload;
+  SrcDC: QPainterH; sx, sy, sw, sh: Integer; Rop: RasterOp; IgnoreMask: Boolean = true): LongBool; overload;
+function StretchBlt(DestCanvas: TCanvas; dx, dy, dw, dh: Integer;
+  SrcCanvas: TCanvas; sx, sy, sw, sh: Integer; WinRop: Cardinal; IgnoreMask: Boolean = true): LongBool; overload;
+
 
 function ScrollDC(Handle: QPainterH; dx, dy: Integer; var Scroll, Clip: TRect;
                   Rgn: QRegionH; Update: PRect): LongBool;
@@ -793,11 +796,14 @@ const
   DI_DEFAULTSIZE = 8;
 
 function DrawFrameControl(Handle: QPainterH; const Rect: TRect; uType,
-  uState: Longword): LongBool;
+  uState: Longword): LongBool; overload;
   { missing DrawFrameControl flags:
       DFC_SCROLL: DFCS_SCROLLCOMBOBOX, DFCS_SCROLLSIZEGRIP, DFCS_SCROLLSIZEGRIPRIGHT
       DFC_BUTTON: all except DFCS_PUSHBUTTON, DFCS_BUTTONRADIO, DFCS_BUTTONCHECK
       DFC_POPUPMENU: all }
+function DrawFrameControl(Canvas: TCanvas; const Rect: TRect; uType,
+  uState: Longword): LongBool; overload;
+
 function DrawEdge(Handle: QPainterH; var Rect: TRect; Edge: Cardinal;
   Flags: Cardinal): LongBool;
 
@@ -2537,13 +2543,13 @@ begin
 end;
 
 function BitBlt(DestDC: QPainterH; X, Y, Width, Height: Integer; SrcDC: QPainterH;
-  XSrc, YSrc: Integer; WinRop: Cardinal): LongBool;
+  XSrc, YSrc: Integer; WinRop: Cardinal; IgnoreMask: Boolean): LongBool;
 var
   TempDC: QPainterH;
   Rop: RasterOp;
 begin
   if WinRopToRasterOp(WinRop, Rop) then  // directly maps ?
-    Result := BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop)
+    Result := BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop, IgnoreMask)
   else // no
   begin
     case WinRop of
@@ -2599,7 +2605,7 @@ begin
 end;
 
 function BitBlt(DestDC: QPainterH; X, Y, Width, Height: Integer; SrcDC: QPainterH;
-  XSrc, YSrc: Integer; Rop: RasterOp): LongBool;
+  XSrc, YSrc: Integer; Rop: RasterOp; IgnoreMask: Boolean): LongBool;
 var
   d_dx, d_dy, d_sx, d_sy, d_sw, d_sh, d_dw, d_dh: Integer;
 begin
@@ -2621,10 +2627,10 @@ begin
       if (d_dw = d_sw) and (d_dh = d_sh) then // device bitBlt possible
         Qt.bitBlt(QPainter_device(DestDC), d_dx, d_dy, QPainter_device(SrcDC),
           d_sx, d_sy, d_sw, d_sh, Rop,
-          True) // ignore the Mask because Windows's BitBlt does not use Masks
+          IgnoreMask) // ignore the Mask because Windows's BitBlt does not use Masks
       else
         StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Width, Height,
-          Rop);
+          Rop, IgnoreMask);
     except
       Result := False;
     end;
@@ -2653,7 +2659,7 @@ begin
 end;
 
 function BitBlt(DestCanvas: TCanvas; X, Y, Width, Height: Integer; SrcCanvas: TCanvas;
-  XSrc, YSrc: Integer; WinRop: Cardinal): LongBool;
+  XSrc, YSrc: Integer; WinRop: Cardinal; IgnoreMask: boolean): LongBool;
 var
   d,s :TPoint;
 begin
@@ -2662,7 +2668,7 @@ begin
   d := PainterOffset(DestCanvas);
   s := PainterOffset(SrcCanvas);
   Result := BitBlt(DestCanvas.Handle, X + d.x , Y + d.y , Width, Height, SrcCanvas.Handle,
-    XSrc + s.x, YSrc + s.y, WinRop);
+    XSrc + s.x, YSrc + s.y, WinRop, IgnoreMask);
   SrcCanvas.Stop;
   DestCanvas.Stop;
 end;
@@ -2704,7 +2710,7 @@ begin
     finally
       Stop;
     end;
-  end;  
+  end;
 end;
 
 
@@ -2722,7 +2728,7 @@ end;
 
 
 function StretchBlt(DestDC: QPainterH; dx, dy, dw, dh: Integer;
-  SrcDC: QPainterH; sx, sy, sw, sh: Integer; WinRop: Cardinal): LongBool;
+  SrcDC: QPainterH; sx, sy, sw, sh: Integer; WinRop: Cardinal; IgnoreMask: Boolean): LongBool;
 var
   Bmp1, Bmp2: QPixmapH;
   Painter : QPainterH;
@@ -2744,7 +2750,7 @@ begin
   MapPainterLPwh(SrcDC, d_sw, d_sh);
 
   if (d_dw = d_sw) and (d_dh = d_sh) then // device bitBlt possible
-    Result := BitBlt(DestDC, dx, dy, dw, dh, SrcDC, sx, sy, WinRop)
+    Result := BitBlt(DestDC, dx, dy, dw, dh, SrcDC, sx, sy, WinRop, IgnoreMask)
   else
   begin
     if not QPainter_isActive(SrcDC) then
@@ -2757,13 +2763,13 @@ begin
         Bmp1 := CreateCompatibleBitmap(SrcDC, d_sw, d_sh);
         Bmp2 := CreateCompatibleBitmap(DestDC, d_dw, d_dh);
         Qt.bitBlt(Bmp1, 0, 0, QPainter_device(SrcDC), d_sx, d_sy, d_sw, d_sh,
-          RasterOp_CopyROP, True); // use device units
+          RasterOp_CopyROP, IgnoreMask); // use device units
         Painter := QPainter_create(Bmp2);
         QPainter_save(Painter);
         QPainter_scale(Painter, d_dw/d_sw, d_dh/d_sh);
         QPainter_drawPixmap(Painter, 0, 0, Bmp1, 0, 0, d_sw, d_sh);
         QPainter_restore(Painter);
-        Result := BitBlt(DestDC, dx, dy, dw, dh, Painter, 0, 0, WinRop); // maps logical units
+        Result := BitBlt(DestDC, dx, dy, dw, dh, Painter, 0, 0, WinRop, IgnoreMask); // maps logical units
         QPainter_destroy(Painter);
       finally
         if Assigned(Bmp1) then
@@ -2778,10 +2784,25 @@ begin
 end;
 
 function StretchBlt(DestDC: QPainterH; dx, dy, dw, dh: Integer;
-  SrcDC: QPainterH; sx, sy, sw, sh: Integer; Rop: RasterOp): LongBool;
+  SrcDC: QPainterH; sx, sy, sw, sh: Integer; Rop: RasterOp; IgnoreMask: Boolean): LongBool;
 begin
   Result := StretchBlt(DestDC, dx, dy, dw, dh, SrcDC, sx, sy, sw, sh,
-    RasterOpToWinRop(Rop));
+    RasterOpToWinRop(Rop), IgnoreMask);
+end;
+
+function StretchBlt(DestCanvas: TCanvas; dx, dy, dw, dh: Integer;
+  SrcCanvas: TCanvas; sx, sy, sw, sh: Integer; WinRop: Cardinal; IgnoreMask: Boolean): LongBool;
+var
+  d,s :TPoint;
+begin
+  DestCanvas.Start;
+  SrcCanvas.Start;
+  d := PainterOffset(DestCanvas);
+  s := PainterOffset(SrcCanvas);
+  Result := StretchBlt(DestCanvas.Handle, dx + d.x, dy + d.y, dw, dh, SrcCanvas.Handle,
+    sx + s.x, sy + s.y, sw, sh, WinRop,  IgnoreMask);
+  SrcCanvas.Stop;
+  DestCanvas.Stop;
 end;
 
 function GetStretchBltMode(DC: QPainterH): TStretchMode;
@@ -2808,6 +2829,8 @@ begin
     Result := STRETCH_DELETESCANS;
   end;
 end;
+
+
 
 function ScrollDC(Handle: QPainterH; dx, dy: Integer; var Scroll, Clip: TRect;
                   Rgn: QRegionH; Update: PRect): LongBool;
@@ -5437,6 +5460,17 @@ begin
     end;
   finally
     QPainter_restore(Handle);
+  end;
+end;
+
+function DrawFrameControl(Canvas: TCanvas; const Rect: TRect; uType, uState: Longword): LongBool;
+begin
+  with Canvas do
+  begin
+    Start;
+    RequiredState(Canvas, [csHandleValid, csBrushValid, csPenValid]);
+    Result := DrawFrameControl(Canvas.Handle, Rect, uType, uState);
+    Stop;
   end;
 end;
 
