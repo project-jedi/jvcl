@@ -230,3 +230,4 @@ _deDOT_=dlDOT
 BackgrColor=BackgroundColor
 InsertSpSymbolAt=InsertSpecialSymbolAt
 TCustomJvDBTreeView=TJvCustomDBTreeView
+OnParentColorChange=OnParentColorChanged
