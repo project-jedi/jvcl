@@ -20,7 +20,6 @@ function Generate(packages : TStrings;
                    const XmlFileName : string;
                    const ModelName : string;
                    var ErrMsg : string;
-                   makeDof : Boolean = False;
                    path : string = '';
                    prefix : string = '';
                    format : string = '';
@@ -145,6 +144,31 @@ type
     property Items[index : integer] : TDefine read GetItems write SetItems; default;
   end;
 
+  TClxReplacement = class (TObject)
+  private
+    FOriginal: string;
+    FReplacement: string;
+  public
+    constructor Create(Node : TJvSimpleXmlElem); overload;
+
+    function DoReplacement(const Filename: string): string;
+
+    property Original  : string read FOriginal;
+    property Replacement : string read FReplacement;
+  end;
+
+  TClxReplacementList = class (TObjectList)
+  private
+    function GetItems(index: integer): TClxReplacement;
+    procedure SetItems(index: integer; const Value: TClxReplacement);
+  public
+    constructor Create(Node : TJvSimpleXmlElem); overload;
+
+    function DoReplacement(const Filename: string): string;
+
+    property Items[index : integer] : TClxReplacement read GetItems write SetItems;
+  end;
+
 var
   GCallBack         : TGenerateCallBack;
   GPackagesLocation : string;
@@ -158,6 +182,7 @@ var
   TargetList        : TTargetList;
   AliasList         : TAliasList;
   DefinesList       : TDefinesList;
+  ClxReplacementList: TClxReplacementList;
   IsBinaryCache     : TStringList;
 
 function PackagesLocation : string;
@@ -479,6 +504,7 @@ begin
 
       TargetList := TTargetList.Create(Node.Items.ItemNamed['targets']);
       AliasList  := TAliasList.Create(Node.Items.ItemNamed['aliases']);
+      ClxReplacementList := TClxReplacementList.Create(Node.Items.ItemNamed['ClxReplacements']);
 
       GIncFileName      := Node.Properties.ItemNamed['IncFile'].Value;
       GPackagesLocation := Node.Properties.ItemNamed['packages'].Value;
@@ -855,6 +881,11 @@ begin
   formNameAndType := fileNode.Properties.ItemNamed['FormName'].Value;
   incFileName := fileNode.Properties.ItemNamed['Name'].Value;
 
+  // Do the CLX filename replacements if the target is marked as
+  // being a CLX target
+  if TargetList[GetNonPersoTarget(target)].IsCLX then
+    incFileName := ClxReplacementList.DoReplacement(incFileName);
+
   unitname := GetUnitName(incFileName);
   punitname := AnsiLowerCase(unitname);
   punitname[1] := CharUpper(punitname[1]);
@@ -1101,6 +1132,14 @@ begin
   end;
 end;
 
+function GetDescription(rootNode: TJvSimpleXmlElem; const target: string): string;
+begin
+  if TargetList[GetNonPersoTarget(target)].IsCLX then
+    Result := rootNode.Items.ItemNamed['ClxDescription'].Value
+  else
+    Result := rootNode.Items.ItemNamed['Description'].Value;
+end;
+
 function ApplyTemplateAndSave(const path, target, package, extension
  : string; template : TStrings; xml : TJvSimpleXml;
   const templateName, xmlName : string) : string;
@@ -1320,7 +1359,7 @@ begin
           if MacroReplace(curLine, '%',
             ['NAME%', PathExtractFileNameNoExt(OutFileName),
              'XMLNAME%', ExtractFileName(xmlName),
-             'DESCRIPTION%', rootNode.Items.ItemNamed['Description'].Value,
+             'DESCRIPTION%', GetDescription(rootNode, target),
              'C5PFLAGS%', EnsurePFlagsCondition(
                             rootNode.Items.ItemNamed['C5PFlags'].Value, target
                           ),
@@ -1465,7 +1504,6 @@ function Generate(packages : TStrings;
                    const XmlFileName : string;
                    const ModelName : string;
                    var ErrMsg : string;
-                   makeDof : Boolean = False;
                    path : string = '';
                    prefix : string = '';
                    format : string = '';
@@ -1632,8 +1670,7 @@ begin
   finally
     XmlFileCache.Free;
   end;
-
-  if makeDof then
+{  if makeDof then
   begin
     SendMsg('Calling MakeDofs.bat');
     ShellExecute(0,
@@ -1642,7 +1679,7 @@ begin
                 '',
                 PChar(ExtractFilePath(ParamStr(0))),
                 SW_SHOW);
-  end;
+  end;}
 end;
 
 procedure EnumerateTargets(targets : TStrings);
@@ -1948,6 +1985,59 @@ begin
   inherited Items[index] := Value;
 end;
 
+{ TClxReplacement }
+
+constructor TClxReplacement.Create(Node: TJvSimpleXmlElem);
+begin
+  inherited Create;
+  FOriginal := Node.Properties.ItemNamed['original'].Value;
+  FReplacement := Node.Properties.ItemNamed['replacement'].Value;
+end;
+
+function TClxReplacement.DoReplacement(const Filename: string): string;
+begin
+  Result := Filename;
+  StrReplace(Result, Original, Replacement, [rfIgnoreCase]);
+end;
+
+{ TClxReplacementList }
+
+constructor TClxReplacementList.Create(Node: TJvSimpleXmlElem);
+var
+  i : integer;
+begin
+  inherited Create(True);
+  if Assigned(Node) then
+    for i := 0 to Node.Items.Count - 1 do
+    begin
+      Add(TClxReplacement.Create(Node.Items[i]));
+    end;
+end;
+
+function TClxReplacementList.DoReplacement(
+  const Filename: string): string;
+var
+  i : Integer;
+begin
+  Result := Filename;
+  for i := 0 to Count -1 do
+  begin
+    Result := Items[i].DoReplacement(Result);
+  end;
+end;
+
+function TClxReplacementList.GetItems(
+  index: integer): TClxReplacement;
+begin
+  Result := TClxReplacement(inherited Items[index]);
+end;
+
+procedure TClxReplacementList.SetItems(index: integer;
+  const Value: TClxReplacement);
+begin
+  inherited Items[index] := Value;
+end;
+
 initialization
   StartupDir := GetCurrentDir;
 
@@ -1957,11 +2047,13 @@ initialization
   TargetList := nil;
   AliasList := nil;
   DefinesList := nil;
+  ClxReplacementList := nil;
 
 finalization
   TargetList.Free;
   AliasList.Free;
   DefinesList.Free;
   IsBinaryCache.Free;
+  ClxReplacementList.Free;
 
 end.
