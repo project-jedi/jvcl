@@ -499,7 +499,7 @@ uses
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   cxCustomData,
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-  JvResources, JvParameterList, JvParameterListParameter;
+  JvResources, JvParameterList, JvParameterListParameter, TypInfo;
 
 var
   IntRegisteredActionEngineList: TJvDatabaseActionEngineList;
@@ -858,15 +858,25 @@ begin
             Control.Width := FieldDefaultWidth
           else
           begin
-            if Field.Size > 0 then
-              Control.Width :=
-                TAccessCustomControl(AParentControl).Canvas.TextWidth(' ') * Field.Size;
+            if UseFieldSizeForWidth then
+              if Field.Size > 0 then
+                Control.Width :=
+                  TAccessCustomControl(AParentControl).Canvas.TextWidth('X') * Field.Size
+              else
+            else
+              if Field.DisplayWidth > 0 then
+                Control.Width :=
+                  TAccessCustomControl(AParentControl).Canvas.TextWidth('X') * Field.DisplayWidth;
             if (FieldMaxWidth > 0) and (Control.Width > FieldMaxWidth) then
               Control.Width := FieldMaxWidth
             else
             if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
               Control.Width := FieldMinWidth;
           end;
+          if UseParentColorForReadOnly then
+            if (Assigned(ds.DataSet) and not ds.DataSet.CanModify) or Field.ReadOnly then
+              if isPublishedProp(Control, 'ParentColor') then
+                SetOrdProp(Control, 'ParentColor', Ord(True));
           LabelControl := ADynControlEngineDB.DynControlEngine.CreateLabelControlPanel(AParentControl, AParentControl,
             '', '&' + Column.Title.Caption, Control, True, 0);
           if FieldWidthStep > 0 then

@@ -64,6 +64,8 @@ type
     FFieldMinWidth: Integer ;
     FFieldMaxWidth: Integer ;
     FFieldWidthStep: Integer;
+    FUseFieldSizeForWidth: Boolean;
+    FUseParentColorForReadOnly: Boolean;
   protected
     procedure SetFieldWidthStep(Value: Integer);
   public
@@ -77,6 +79,8 @@ type
     property FieldMinWidth: Integer read FFieldMinWidth write FFieldMinWidth default 20;
     property FieldMaxWidth: Integer read FFieldMaxWidth write FFieldMaxWidth default 300;
     property FieldWidthStep: Integer read FFieldWidthStep write SetFieldWidthStep default 50;
+    property UseFieldSizeForWidth: Boolean read FUseFieldSizeForWidth write FUseFieldSizeForWidth default True;
+    property UseParentColorForReadOnly: Boolean read FUseParentColorForReadOnly write FUseParentColorForReadOnly default True;
   end;
 
   TJvDynControlEngineDB = class(TJvCustomDynControlEngine)
@@ -179,6 +183,8 @@ begin
   FFieldMinWidth := 20;
   FFieldMaxWidth := 300;
   FFieldWidthStep := 50;
+  FUseFieldSizeForWidth := True;
+  FUseParentColorForReadOnly := True;
 end;
 
 procedure TJvCreateDBFieldsOnControlOptions.Assign(Source: TPersistent);
@@ -192,6 +198,8 @@ begin
     FieldMinWidth := TJvCreateDBFieldsOnControlOptions(Source).FieldMinWidth;
     FieldMaxWidth := TJvCreateDBFieldsOnControlOptions(Source).FieldMaxWidth;
     FieldWidthStep := TJvCreateDBFieldsOnControlOptions(Source).FieldWidthStep;
+    UseFieldSizeForWidth  := TJvCreateDBFieldsOnControlOptions(Source).UseFieldSizeForWidth;
+    UseParentColorForReadOnly := TJvCreateDBFieldsOnControlOptions(Source).UseParentColorForReadOnly;
   end
   else
     inherited Assign(Source);
@@ -512,15 +520,27 @@ begin
             Control.Width := FieldDefaultWidth
           else
           begin
-            if ADataSource.DataSet.Fields[I].Size > 0 then
-              Control.Width :=
-                TAccessCustomControl(AControl).Canvas.TextWidth('X') * ADataSource.DataSet.Fields[I].Size;
+            if UseFieldSizeForWidth then
+              if ADataSource.DataSet.Fields[I].Size > 0 then
+                Control.Width :=
+                  TAccessCustomControl(AControl).Canvas.TextWidth('X') * ADataSource.DataSet.Fields[I].Size
+              else
+            else
+              if ADataSource.DataSet.Fields[I].DisplayWidth > 0 then
+                Control.Width :=
+                  TAccessCustomControl(AControl).Canvas.TextWidth('X') * ADataSource.DataSet.Fields[I].DisplayWidth;
             if (FieldMaxWidth > 0) and (Control.Width > FieldMaxWidth) then
               Control.Width := FieldMaxWidth
             else
             if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
               Control.Width := FieldMinWidth
           end;
+
+          if UseParentColorForReadOnly then
+            // Use ParentColor when the field is ReadOnly
+            if not ADataSource.DataSet.CanModify or ADataSource.DataSet.Fields[I].ReadOnly then
+              if isPublishedProp(Control, 'ParentColor') then
+                SetOrdProp(Control, 'ParentColor', Ord(True));
           LabelControl := GetDynControlEngine.CreateLabelControlPanel(AControl, AControl,
             '', '&' + ADataSource.DataSet.Fields[I].DisplayLabel, Control, LabelOnTop, LabelDefaultWidth);
           if FieldWidthStep > 0 then
