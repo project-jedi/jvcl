@@ -5,7 +5,6 @@ JvAniFile
 JvAnimatedImage
 JvAppEvent
 JvAppInst
-JvAppStorageSelectList
 JvAppXMLStorage
 JvAppXmlStore
 JvArrayButton
@@ -34,7 +33,6 @@ JvButtonPersistent
 JvButtons
 JvButtonUtils
 JvChart
-JvCheckListBox
 JvClipboardMonitor
 JvClipboardViewer
 JvClipbrd
@@ -92,15 +90,6 @@ JvDynControlEngineJVCL
 JvDynControlEngineVCL
 JvEasterEgg
 JvEditor
-JvExButtons
-JvExCheckLst
-JvExComCtrls
-JvExControls
-JvExExtCtrls
-JvExForms
-JvExGrids
-JvExMask
-JvExStdCtrls
 JvFavoritesButton
 JvFooter
 JvFormAnimatedIcon
@@ -213,7 +202,6 @@ JvImageDlg
 JvImageDrawThread
 JvImageList
 JvImageRotate
-JvImageSquare
 JvInspDB
 JvInspExtraEditors
 JvInspXVCL
@@ -235,7 +223,6 @@ JvLinkLabelTools
 JvLinkLabelTree
 JvListView
 JvLogFile
-JvMail
 JvMarkupCommon
 JvMarkupLabel
 JvMarkupViewer
@@ -303,8 +290,6 @@ JvSimPIDLinker
 JvSimpleXml
 JvSimScope
 JvSpeedbar
-JvSpellChecker
-JvSpellIntf
 JvSpin
 JvSplashWindow
 JvSplit
@@ -335,7 +320,6 @@ JvUIB
 JvUIBDataSet
 JvUIBLib
 JvUIBMetaData
-JvUIBObj
 JvUIBSrv
 JvUnicodeCanvas
 JvUnicodeEditor
@@ -359,12 +343,8 @@ JvxClock
 JvxCtrls
 JvXmlTree
 JvXorCipher
-JvXPBar
 JvXPButtons
-JvXPCheckCtrls
-JvXPContainer
 JvXPCore
-JvXPCoreUtils
 JvxSlider
 JvYearGrid
 JvZlibMultiple

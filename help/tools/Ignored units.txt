@@ -16,6 +16,7 @@ JvCtlReg
 JvDataEmbeddedEditor
 JvDatePickerReg
 JvDBConst
+JvDBGridSelectColumnForm
 JvDBQueryParamsForm
 JvDBReg
 JvDBRemoteLogin
@@ -95,6 +96,7 @@ JvProfilerForm
 JvProgressEditor
 JvProgressForm
 JvQbnddlg
+JvQtKeySelectionFrame
 JvQuickPreviewForm
 JvRegAutoEditor
 JvSbEdit
@@ -115,6 +117,7 @@ JvTransparentForm
 JvUIBase
 JvUIBConst
 JvUIBError
+JvUIBObj
 JvUIBSQLParser
 JvWallpaperEditForm
 JvxDConst

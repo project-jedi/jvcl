@@ -14,7 +14,7 @@ TJvApplicationHotKey
 TJvAppRegistryStorage
 TJvAppStorage
 TJvAppStorageSelectList
-TJvAppXMLStorage
+TJvAppXMLFileStorage
 TJvArrayButton
 TJvArrowButton
 TJvaScrollText
@@ -83,6 +83,10 @@ TJvDBDatePickerEdit
 TJvDBDateTimePicker
 TJvDBFilter
 TJvDBGrid
+TJvDBGridCSVExport
+TJvDBGridExcelExport
+TJvDBGridHTMLExport
+TJvDBGridWordExport
 TJvDBIndexCombo
 TJvDBLookupCombo
 TJvDBLookupComboEdit
@@ -260,8 +264,10 @@ TJvImageComboBox
 TJvImageDialog
 TJvImageList
 TJvImageListBox
+TJvImageListViewer
 TJvImageRotate
 TJvImageSquare
+TJvImagesViewer
 TJvImageTransform
 TJvImgBtn
 TJvInspector
@@ -318,6 +324,7 @@ TJvOpenWithDialog
 TJvOrganizeFavoritesDialog
 TJvOutlookBar
 TJvOutOfMemoryDialog
+TJvOwnerDrawViewer
 TJvPageControl
 TJvPageList
 TJvPageListTreeView
