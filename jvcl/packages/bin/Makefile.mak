@@ -76,6 +76,7 @@ JVCLRESDIRS=$(JVCLROOT)\Resources
 
 default: \
 		BuildJCLdcpFiles \
+		Resources \
 		pg.exe \
 		Compile \
 		Clean
@@ -90,6 +91,11 @@ BuildJCLdcpFiles:
 BuildJCLdcpFilesForce:
 	# for C++ targets compile JCL .dcp files
 	IF EXIST "$(ROOT)\bin\bcc32.exe" $(MAKE) -s -f MakeJCLDcp4BCB.mak
+
+Resources:
+	cd ..\..\images
+	$(MAKE) -f makefile.mak
+	cd ..\packages\bin
 
 ################################################################################
 Bpg2Make.exe:
