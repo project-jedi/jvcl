@@ -10,22 +10,26 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Fedor Koshevnikov, Igor Pavluk and Serge Korolev
+
+
 ----------------------------------------------------------------------------------------------------
 @@CF_GIF
 <TITLE CF_GIF variable>
 Summary
   Clipboard format for GIF images.
 Description
-  The CF_GIF clipboard format is registered by calling the RegisterClipboardFormat procedure
-  passing in 'GIF Image' as the identifier for the format.
+  The CF_GIF clipboard format is registered by calling the RegisterClipboardFormat procedure passing
+  in 'GIF Image' as the identifier for the format.
+
 ----------------------------------------------------------------------------------------------------
 @@GIFLoadCorrupted
 <TITLE GIFLoadCorrupted variable>
 Summary
   Determines if errors are reported when a GIF image is loaded.
 Description
-  GIFLoadCorrupted is a global variable that controls whether errors and exceptions are reported when an
-  invalid image is loaded into a TJvGIFImage graphic. By default, this value is true.
+  GIFLoadCorrupted is a global variable that controls whether errors and exceptions are reported when
+  an invalid image is loaded into a TJvGIFImage graphic. By default, this value is true.
+
 ----------------------------------------------------------------------------------------------------
 @@GIFVersionName
 <TITLE GIFVersionName function>
@@ -33,33 +37,52 @@ Summary
   Returns the version string for a specific GIF version.
 Description
   Call GIFVersionName to retrieve the string name of a specific GIF version. Currently, this function
-  returns either '87a' or '89a'. If the requested version is gvUnknown, the string #0#0#0 is returned instead.
+  returns either '87a' or '89a'. If the requested version is gvUnknown, the string #0#0#0 is returned
+  instead.
 Parameters
   Version - The version to get a string for.
+
 ----------------------------------------------------------------------------------------------------
 @@TDisposalMethod
 <TITLE TDisposalMethod type>
 Summary
   Specifies how the graphic is to be treated after a frame has been been displayed.
 Description
-  TDisposalMethod is the type of the DisposalMethod property of a TJvGIFFrame and defines how the GIF image
-  is to be updated after a frame has been displayed.
+  TDisposalMethod is the type of the DisposalMethod property of a TJvGIFFrame and defines how the GIF
+  image is to be updated after a frame has been displayed.
+
+----------------------------------------------------------------------------------------------------
 @@TDisposalMethod.dmUndefined
-  The disposal method is not defined. This value indicates a GIF87a image.
+The disposal method is not defined. This value indicates a GIF87a image.
+
+----------------------------------------------------------------------------------------------------
 @@TDisposalMethod.dmLeave
-  Leave frame on-screen.
+Leave frame on-screen.
+
+----------------------------------------------------------------------------------------------------
 @@TDisposalMethod.dmRestoreBackground
-  Restore the background.
+Restore the background.
+
+----------------------------------------------------------------------------------------------------
 @@TDisposalMethod.dmRestorePrevious
-  Restore the previous frame.
+Restore the previous frame.
+
+----------------------------------------------------------------------------------------------------
 @@TDisposalMethod.dmReserved4
-  Reserved. Do not use.
+Reserved. Do not use.
+
+----------------------------------------------------------------------------------------------------
 @@TDisposalMethod.dmReserved5
-  Reserved. Do not use.
+Reserved. Do not use.
+
+----------------------------------------------------------------------------------------------------
 @@TDisposalMethod.dmReserved6
-  Reserved. Do not use.
+Reserved. Do not use.
+
+----------------------------------------------------------------------------------------------------
 @@TDisposalMethod.dmReserved7
-  Reserved. Do not use.
+Reserved. Do not use.
+
 ----------------------------------------------------------------------------------------------------
 @@TGIFBits
 <TITLE TGIFBits type>
@@ -68,10 +91,11 @@ Summary
 Description
   You don't have to document already described items such as sets,
   pointers to records etc.
-(Value = 1..8; - for reference)
+  (Value = 1..8; - for reference)
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TGIFColorItem
 <TITLE TGIFColorItem type>
@@ -82,12 +106,19 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TGIFColorItem.Red
-  Description for Red
+Description for Red
+
+----------------------------------------------------------------------------------------------------
 @@TGIFColorItem.Green
-  Description for Green
+Description for Green
+
+----------------------------------------------------------------------------------------------------
 @@TGIFColorItem.Blue
-  Description for Blue
+Description for Blue
+
 ----------------------------------------------------------------------------------------------------
 @@TGIFColorTable
 <TITLE TGIFColorTable type>
@@ -98,10 +129,15 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TGIFColorTable.Count
-  Description for Count
+Description for Count
+
+----------------------------------------------------------------------------------------------------
 @@TGIFColorTable.Colors
-  Description for Colors
+Description for Colors
+
 ----------------------------------------------------------------------------------------------------
 @@TGIFVersion
 <TITLE TGIFVersion type>
@@ -109,18 +145,26 @@ Summary
   Defines the available GIF versions as an enumeration.
 Description
   TGIFVersion
+
+----------------------------------------------------------------------------------------------------
 @@TGIFVersion.gvUnknown
-  The version is unknown.
+The version is unknown.
+
+----------------------------------------------------------------------------------------------------
 @@TGIFVersion.gv87a
-  The GIF87a version
+The GIF87a version
+
+----------------------------------------------------------------------------------------------------
 @@TGIFVersion.gv89a
-  The GIF89a version
+The GIF89a version
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFFrame
 Summary
   Write here a summary (1 line)
 Description
   Object storing a Frame of a GIF image
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFFrame.AnimateInterval
 Summary
@@ -132,6 +176,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFFrame.Bitmap
 Summary
@@ -141,6 +186,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFFrame.ColorCount
 Summary
@@ -154,6 +200,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFFrame.Comment
 Summary
@@ -165,6 +212,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFFrame.Corrupted
 Summary
@@ -178,6 +226,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFFrame.DisposalMethod
 Summary
@@ -189,6 +238,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFFrame.Draw
 Summary
@@ -202,6 +252,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFFrame.Height
 Summary
@@ -215,6 +266,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFFrame.Interlaced
 Summary
@@ -228,6 +280,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFFrame.Origin
 Summary
@@ -239,17 +292,19 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFFrame.TransparentColor
 Summary
   Write here a summary (1 line)
 Description
-  Frame transparent color 
+  Frame transparent color
 
   Run-time only
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFFrame.Width
 Summary
@@ -263,38 +318,40 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage
 Summary
   Write here a summary (1 line)
 Description
-  TGIFImage supports reading and writing GIF compressed image data. The GIFImage object uses the
-  data from an instance of a TGIFData object, which contains that actual GIF data source and is
-  never modified. Each GIF image object may share this data source object with other instances of a 
-  GIF image that are copies of it, created by using the Assign method. The GIF data source does 
+  TGIFImage supports reading and writing GIF compressed image data. The GIFImage object uses the data
+  from an instance of a TGIFData object, which contains that actual GIF data source and is never
+  modified. Each GIF image object may share this data source object with other instances of a
+  GIF image that are copies of it, created by using the Assign method. The GIF data source does
   referencing counting for the GIF image objects that are linked to it.
 
   The properties of TGIFImage indicate the size and characteristics of the GIF image.
 
-  TGIFImage supports up to 256-colors GIF images versions 87a and 89a (you can determine version of 
-  loaded image by Version property), and supports graphic control extensions (multiple images, 
+  TGIFImage supports up to 256-colors GIF images versions 87a and 89a (you can determine version of
+  loaded image by Version property), and supports graphic control extensions (multiple images,
   transparency) and comment extensions of GIF format. Plain text extensions are not supported.
 
   Single image from GIF animation sequence can be accessible by the Frames property.
 
-  TGIFImage has an internal bitmaps for each frame that contains the GIF image. These internal images 
+  TGIFImage has an internal bitmaps for each frame that contains the GIF image. These internal images
   and the original data source of a GIF image are read only.
 
   A TGIFImage object:
 
-  * Has no canvas (and thus it cannot draw onto a canvas). A TGIFImage object does implement the 
-    protected Draw method introduced in TGraphic. This means that it can draw itself. When TGIFImage 
-    contains multiple frames (animated GIF) the Draw method will be draw frame specified by FrameIndex 
+  * Has no canvas (and thus it cannot draw onto a canvas). A TGIFImage object does implement the
+    protected Draw method introduced in TGraphic. This means that it can draw itself. When TGIFImage
+    contains multiple frames (animated GIF) the Draw method will be draw frame specified by FrameIndex
     property.
   * Provides no access to the internal bitmap image that it creates for the GIF image.
-  * TGIFImage and TGIFFrame can be assign to TBitmap object and you can assign TBitmap object 
-    to the TGIFImage or TGIFFrame. So you can create TGIFImage, assign bitmap to it and then store image 
+  * TGIFImage and TGIFFrame can be assign to TBitmap object and you can assign TBitmap object   to
+    the TGIFImage or TGIFFrame. So you can create TGIFImage, assign bitmap to it and then store image
     as GIF file by using SaveToFile method.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.AddFrame
 Summary
@@ -308,17 +365,19 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.BackgroundColor
 Summary
   Write here a summary (1 line)
 Description
   The BackgroundColor property determines which background color stored in the GIF file to use when
-  drawing a GIF image. The background color is the color used for those pixels on the screen that
-  are not covered by an image.
+  drawing a GIF image. The background color is the color used for those pixels on the screen that are
+  not covered by an image.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.Bitmap
 Summary
@@ -328,6 +387,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.Clear
 Summary
@@ -337,6 +397,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.Comment
 Summary
@@ -348,6 +409,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.Corrupted
 Summary
@@ -357,6 +419,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.Count
 Summary
@@ -370,6 +433,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.DecodeAllFrames
 Summary
@@ -379,6 +443,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.DeleteFrame
 Summary
@@ -390,6 +455,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.EncodeAllFrames
 Summary
@@ -399,6 +465,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.FrameIndex
 Summary
@@ -411,6 +478,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.Frames
 Summary
@@ -424,6 +492,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.GlobalColorCount
 Summary
@@ -437,6 +506,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.Grayscale
 Summary
@@ -448,6 +518,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.LoadFromClipboardFormat
 Summary
@@ -463,6 +534,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.LoadFromResourceID
 Summary
@@ -476,6 +548,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.LoadFromResourceName
 Summary
@@ -489,6 +562,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.LoadFromStream
 Summary
@@ -502,6 +576,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.Looping
 Summary
@@ -513,6 +588,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.MoveFrame
 Summary
@@ -525,6 +601,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.PixelFormat
 Summary
@@ -538,6 +615,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.RepeatCount
 Summary
@@ -549,6 +627,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.SaveToClipboardFormat
 Summary
@@ -564,6 +643,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.SaveToStream
 Summary
@@ -577,6 +657,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.ScreenHeight
 Summary
@@ -588,7 +669,8 @@ Description
 
   Read-only
 See Also
-  ScreenWidth
+  TJvGIFImage.ScreenWidth
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.ScreenWidth
 Summary
@@ -600,7 +682,8 @@ Description
 
   Read-only
 See Also
-  ScreenHeight
+  TJvGIFImage.ScreenHeight
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.TransparentColor
 Summary
@@ -614,6 +697,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.Version
 Summary
@@ -627,3 +711,4 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+

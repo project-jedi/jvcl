@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDeleteError
 <TITLEIMG TJvDeleteError>
@@ -18,6 +20,7 @@ Summary
 Description
   This component is used to display a dialog box encountered when deleting a file during a setup
   routine. It is a wrapper for the SetupDeleteError API call.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDeleteError.Execute
 Summary
@@ -25,8 +28,9 @@ Summary
 Description
   This method shows the SetupDeleteError dialog box.
 Return value
-  This method returns dsSuccess if the user pressed "Retry", dsCancel if the user pressed
-  "Cancel", dsSkipFile if the user pressed "Skip File", and dsError if an error occurred.
+  This method returns dsSuccess if the user pressed "Retry", dsCancel if the user pressed "Cancel",
+  dsSkipFile if the user pressed "Skip File", and dsError if an error occurred.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDeleteError.FileName
 Summary
@@ -35,19 +39,22 @@ Description
   This property contains the complete pathname of the file that was being deleted when the error.
   occurred.
 See Also
-  Win32ErrorCode
+  TJvDeleteError.Win32ErrorCode
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDeleteError.Style
 Summary
   Flags used for modifying the dialog box.
 Description
   These flags modify how the dialog box is presented to the user.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDeleteError.Win32ErrorCode
 Summary
   Error code listed in the dialog box.
 Description
-  This property contains the Windows error code that occurred for presentation to and
-  interpretation for the user.
+  This property contains the Windows error code that occurred for presentation to and interpretation
+  for the user.
 See Also
-  FileName
+  TJvDeleteError.FileName
+

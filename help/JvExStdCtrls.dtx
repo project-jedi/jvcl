@@ -24,10 +24,13 @@
 ----------------------------------------------------------------------------------------------------
 @@JvExStdCtrls.pas
 Summary
-  Contains components that extend the components from Delphi's StdCtrls.pas with generic properties and CLX code.
+  Contains components that extend the components from Delphi's StdCtrls.pas with generic properties
+  and CLX code.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Andreas Hausladen
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExButton
 Summary
@@ -35,11 +38,13 @@ Summary
 Description
   TJvExButton is a base class for classes in the JVCL library that descend from TButton.
 
-  Do not create instances of TJvExButton. Use a descendant of TJvExButton or create your
-  own descendant class.
+  Do not create instances of TJvExButton. Use a descendant of TJvExButton or create your own
+  descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExButton.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExButton.HintColor
 Summary
@@ -48,6 +53,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExButton.MouseOver
 Summary
@@ -55,7 +61,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the button.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExButton.OnMouseEnter, TJvExButton.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExButton.OnMouseEnter
 Summary
@@ -64,23 +71,26 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   button.
 See Also
-  OnMouseLeave
+  TJvExButton.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExButton.OnMouseLeave
 Summary
   Occurs when the mouse pointer moves off the button.
 Description
   Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  button. For example, you can use this event to undo changes that were made in an OnMouseEnter
-  event handler.
+  button. For example, you can use this event to undo changes that were made in an OnMouseEnter event
+  handler.
 See Also
-  OnMouseEnter
+  TJvExButton.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExButton.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExButtonControl
 Summary
@@ -88,11 +98,13 @@ Summary
 Description
   TJvExButtonControl is a base class for classes in the JVCL library that descend from TButtonControl.
 
-  Do not create instances of TJvExButtonControl. Use a descendant of TJvExButtonControl or create your
-  own descendant class.
+  Do not create instances of TJvExButtonControl. Use a descendant of TJvExButtonControl or create
+  your own descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExButtonControl.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExButtonControl.HintColor
 Summary
@@ -101,6 +113,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExButtonControl.MouseOver
 Summary
@@ -108,7 +121,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the button.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExButtonControl.OnMouseEnter, TJvExButtonControl.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExButtonControl.OnMouseEnter
 Summary
@@ -117,23 +131,26 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   button.
 See Also
-  OnMouseLeave
+  TJvExButtonControl.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExButtonControl.OnMouseLeave
 Summary
   Occurs when the mouse pointer moves off the button.
 Description
   Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  button. For example, you can use this event to undo changes that were made in an OnMouseEnter
-  event handler.
+  button. For example, you can use this event to undo changes that were made in an OnMouseEnter event
+  handler.
 See Also
-  OnMouseEnter
+  TJvExButtonControl.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExButtonControl.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCheckBox
 Summary
@@ -141,11 +158,13 @@ Summary
 Description
   TJvExCheckBox is a base class for classes in the JVCL library that descend from TCheckBox.
 
-  Do not create instances of TJvExCheckBox. Use a descendant of TJvExCheckBox or create your
-  own descendant class.
+  Do not create instances of TJvExCheckBox. Use a descendant of TJvExCheckBox or create your own
+  descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCheckBox.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCheckBox.HintColor
 Summary
@@ -154,6 +173,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCheckBox.MouseOver
 Summary
@@ -161,7 +181,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the check box.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExCheckBox.OnMouseEnter, TJvExCheckBox.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCheckBox.OnMouseEnter
 Summary
@@ -170,7 +191,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   check box.
 See Also
-  OnMouseLeave
+  TJvExCheckBox.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCheckBox.OnMouseLeave
 Summary
@@ -180,13 +202,15 @@ Description
   check box. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExCheckBox.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCheckBox.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExComboBox
 Summary
@@ -194,11 +218,13 @@ Summary
 Description
   TJvExComboBox is a base class for classes in the JVCL library that descend from TComboBox.
 
-  Do not create instances of TJvExComboBox. Use a descendant of TJvExComboBox or create your
-  own descendant class.
+  Do not create instances of TJvExComboBox. Use a descendant of TJvExComboBox or create your own
+  descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExComboBox.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExComboBox.HintColor
 Summary
@@ -207,6 +233,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExComboBox.MouseOver
 Summary
@@ -214,7 +241,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the combo box.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExComboBox.OnMouseEnter, TJvExComboBox.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExComboBox.OnMouseEnter
 Summary
@@ -223,7 +251,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   combo box.
 See Also
-  OnMouseLeave
+  TJvExComboBox.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExComboBox.OnMouseLeave
 Summary
@@ -233,25 +262,30 @@ Description
   combo box. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExComboBox.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExComboBox.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomCheckBox
 Summary
   Base class for extended Windows check boxes.
 Description
-  TJvExCustomCheckBox is a base class for classes in the JVCL library that descend from TCustomCheckBox.
+  TJvExCustomCheckBox is a base class for classes in the JVCL library that descend from
+  TCustomCheckBox.
 
-  Do not create instances of TJvExCustomCheckBox. Use a descendant of TJvExCustomCheckBox or create your
-  own descendant class.
+  Do not create instances of TJvExCustomCheckBox. Use a descendant of TJvExCustomCheckBox or create
+  your own descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomCheckBox.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomCheckBox.HintColor
 Summary
@@ -260,6 +294,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomCheckBox.MouseOver
 Summary
@@ -267,7 +302,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the check box.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExCustomCheckBox.OnMouseEnter, TJvExCustomCheckBox.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomCheckBox.OnMouseEnter
 Summary
@@ -276,7 +312,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   check box.
 See Also
-  OnMouseLeave
+  TJvExCustomCheckBox.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomCheckBox.OnMouseLeave
 Summary
@@ -286,13 +323,15 @@ Description
   check box. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExCustomCheckBox.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomCheckBox.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomCombo
 Summary
@@ -302,9 +341,11 @@ Description
 
   Do not create instances of TJvExCustomCombo. Use a descendant of TJvExCustomCombo or create your
   own descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomCombo.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomCombo.HintColor
 Summary
@@ -313,6 +354,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomCombo.MouseOver
 Summary
@@ -320,7 +362,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the combo box.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExCustomCombo.OnMouseEnter, TJvExCustomCombo.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomCombo.OnMouseEnter
 Summary
@@ -329,7 +372,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   combo box.
 See Also
-  OnMouseLeave
+  TJvExCustomCombo.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomCombo.OnMouseLeave
 Summary
@@ -339,25 +383,30 @@ Description
   combo box. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExCustomCombo.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomCombo.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomComboBox
 Summary
   Base class for extended Windows combo boxes.
 Description
-  TJvExCustomComboBox is a base class for classes in the JVCL library that descend from TCustomComboBox.
+  TJvExCustomComboBox is a base class for classes in the JVCL library that descend from
+  TCustomComboBox.
 
-  Do not create instances of TJvExCustomComboBox. The TJvComboBox class provides a generic implementation
-  of TJvExCustomComboBox. You can also create your own descendant class.
+  Do not create instances of TJvExCustomComboBox. The TJvComboBox class provides a generic
+  implementation of TJvExCustomComboBox. You can also create your own descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomComboBox.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomComboBox.HintColor
 Summary
@@ -366,6 +415,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomComboBox.MouseOver
 Summary
@@ -373,7 +423,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the combo box.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExCustomComboBox.OnMouseEnter, TJvExCustomComboBox.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomComboBox.OnMouseEnter
 Summary
@@ -382,7 +433,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   combo box.
 See Also
-  OnMouseLeave
+  TJvExCustomComboBox.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomComboBox.OnMouseLeave
 Summary
@@ -392,13 +444,15 @@ Description
   combo box. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExCustomComboBox.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomComboBox.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomEdit
 Summary
@@ -406,11 +460,13 @@ Summary
 Description
   TJvExCustomEdit is a base class for classes in the JVCL library that descend from TCustomEdit.
 
-  Do not create instances of TJvExCustomEdit. The TJvEdit class provides a generic implementation
-  of TJvExCustomEdit. You can also create your own descendant class.
+  Do not create instances of TJvExCustomEdit. The TJvEdit class provides a generic implementation of
+  TJvExCustomEdit. You can also create your own descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomEdit.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomEdit.ClipboardCommands
 Summary
@@ -420,6 +476,7 @@ Description
 
   * ClipboardCommands can't be set to [].
   * If ClipboardCommands is set to [caCopy] then property ReadOnly is set to True.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomEdit.HintColor
 Summary
@@ -428,6 +485,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomEdit.MouseOver
 Summary
@@ -435,7 +493,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the edit box.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExCustomEdit.OnMouseEnter, TJvExCustomEdit.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomEdit.OnMouseEnter
 Summary
@@ -444,7 +503,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   edit box.
 See Also
-  OnMouseLeave
+  TJvExCustomEdit.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomEdit.OnMouseLeave
 Summary
@@ -454,25 +514,30 @@ Description
   edit box. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExCustomEdit.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomEdit.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomGroupBox
 Summary
   Base class for extended Windows group boxes.
 Description
-  TJvExCustomGroupBox is a base class for classes in the JVCL library that descend from TCustomGroupBox.
+  TJvExCustomGroupBox is a base class for classes in the JVCL library that descend from
+  TCustomGroupBox.
 
-  Do not create instances of TJvExCustomGroupBox. Use a descendant of TJvExCustomGroupBox or create your
-  own descendant class.
+  Do not create instances of TJvExCustomGroupBox. Use a descendant of TJvExCustomGroupBox or create
+  your own descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomGroupBox.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomGroupBox.HintColor
 Summary
@@ -481,6 +546,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomGroupBox.MouseOver
 Summary
@@ -488,7 +554,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the control.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExCustomGroupBox.OnMouseEnter, TJvExCustomGroupBox.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomGroupBox.OnMouseEnter
 Summary
@@ -497,7 +564,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
-  OnMouseLeave
+  TJvExCustomGroupBox.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomGroupBox.OnMouseLeave
 Summary
@@ -507,13 +575,15 @@ Description
   control. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExCustomGroupBox.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomGroupBox.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomLabel
 Summary
@@ -523,9 +593,11 @@ Description
 
   Do not create instances of TJvExCustomLabel. Use a descendant of TJvExCustomLabel or create your
   own descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomLabel.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomLabel.HintColor
 Summary
@@ -534,6 +606,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomLabel.MouseOver
 Summary
@@ -541,7 +614,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the label.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExCustomLabel.OnMouseEnter, TJvExCustomLabel.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomLabel.OnMouseEnter
 Summary
@@ -550,23 +624,26 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   label.
 See Also
-  OnMouseLeave
+  TJvExCustomLabel.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomLabel.OnMouseLeave
 Summary
   Occurs when the mouse pointer moves off the label.
 Description
   Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  label. For example, you can use this event to undo changes that were made in an OnMouseEnter
-  event handler.
+  label. For example, you can use this event to undo changes that were made in an OnMouseEnter event
+  handler.
 See Also
-  OnMouseEnter
+  TJvExCustomLabel.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomLabel.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomListBox
 Summary
@@ -574,11 +651,13 @@ Summary
 Description
   TJvExCustomListBox is a base class for classes in the JVCL library that descend from TCustomListBox.
 
-  Do not create instances of TJvExCustomListBox. The TJvListBox class provides a generic implementation
-  of TJvExCustomListBox. You can also create your own descendant class.
+  Do not create instances of TJvExCustomListBox. The TJvListBox class provides a generic
+  implementation of TJvExCustomListBox. You can also create your own descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomListBox.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomListBox.HintColor
 Summary
@@ -587,6 +666,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomListBox.MouseOver
 Summary
@@ -594,7 +674,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the list box.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExCustomListBox.OnMouseEnter, TJvExCustomListBox.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomListBox.OnMouseEnter
 Summary
@@ -603,7 +684,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   list box.
 See Also
-  OnMouseLeave
+  TJvExCustomListBox.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomListBox.OnMouseLeave
 Summary
@@ -613,13 +695,15 @@ Description
   list box. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExCustomListBox.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomListBox.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMemo
 Summary
@@ -627,11 +711,13 @@ Summary
 Description
   TJvExCustomMemo is a base class for classes in the JVCL library that descend from TCustomMemo.
 
-  Do not create instances of TJvExCustomMemo. The TJvMemo class provides a generic implementation
-  of TJvExCustomMemo. You can also create your own descendant class.
+  Do not create instances of TJvExCustomMemo. The TJvMemo class provides a generic implementation of
+  TJvExCustomMemo. You can also create your own descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMemo.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMemo.ClipboardCommands
 Summary
@@ -641,6 +727,7 @@ Description
 
   * ClipboardCommands can't be set to [].
   * If ClipboardCommands is set to [caCopy] then property ReadOnly is set to True.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMemo.HintColor
 Summary
@@ -649,6 +736,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMemo.MouseOver
 Summary
@@ -656,7 +744,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the control.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExCustomMemo.OnMouseEnter, TJvExCustomMemo.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMemo.OnMouseEnter
 Summary
@@ -665,7 +754,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
-  OnMouseLeave
+  TJvExCustomMemo.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMemo.OnMouseLeave
 Summary
@@ -675,25 +765,30 @@ Description
   control. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExCustomMemo.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMemo.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomStaticText
 Summary
   Base class for extended windowed labels.
 Description
-  TJvExCustomStaticText is a base class for classes in the JVCL library that descend from TCustomStaticText.
+  TJvExCustomStaticText is a base class for classes in the JVCL library that descend from
+  TCustomStaticText.
 
-  Do not create instances of TJvExCustomStaticText. Use a descendant of TJvExCustomStaticText or create your
-  own descendant class.
+  Do not create instances of TJvExCustomStaticText. Use a descendant of TJvExCustomStaticText or
+  create your own descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomStaticText.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomStaticText.HintColor
 Summary
@@ -702,6 +797,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomStaticText.MouseOver
 Summary
@@ -709,7 +805,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the control.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExCustomStaticText.OnMouseEnter, TJvExCustomStaticText.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomStaticText.OnMouseEnter
 Summary
@@ -718,7 +815,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
-  OnMouseLeave
+  TJvExCustomStaticText.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomStaticText.OnMouseLeave
 Summary
@@ -728,13 +826,15 @@ Description
   control. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExCustomStaticText.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomStaticText.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExEdit
 Summary
@@ -742,11 +842,13 @@ Summary
 Description
   TJvExEdit is a base class for classes in the JVCL library that descend from TEdit.
 
-  Do not create instances of TJvExEdit. Use a descendant of TJvExEdit or create your
-  own descendant class.
+  Do not create instances of TJvExEdit. Use a descendant of TJvExEdit or create your own descendant
+  class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExEdit.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExEdit.ClipboardCommands
 Summary
@@ -756,6 +858,7 @@ Description
 
   * ClipboardCommands can't be set to [].
   * If ClipboardCommands is set to [caCopy] then property ReadOnly is set to True.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExEdit.HintColor
 Summary
@@ -764,6 +867,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExEdit.MouseOver
 Summary
@@ -771,7 +875,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the edit box.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExEdit.OnMouseEnter, TJvExEdit.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExEdit.OnMouseEnter
 Summary
@@ -780,7 +885,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   edit box.
 See Also
-  OnMouseLeave
+  TJvExEdit.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExEdit.OnMouseLeave
 Summary
@@ -790,13 +896,15 @@ Description
   edit box. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExEdit.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExEdit.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExGroupBox
 Summary
@@ -804,11 +912,13 @@ Summary
 Description
   TJvExGroupBox is a base class for classes in the JVCL library that descend from TGroupBox.
 
-  Do not create instances of TJvExGroupBox. Use a descendant of TJvExGroupBox or create your
-  own descendant class.
+  Do not create instances of TJvExGroupBox. Use a descendant of TJvExGroupBox or create your own
+  descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExGroupBox.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExGroupBox.HintColor
 Summary
@@ -817,6 +927,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExGroupBox.MouseOver
 Summary
@@ -824,7 +935,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the control.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExGroupBox.OnMouseEnter, TJvExGroupBox.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExGroupBox.OnMouseEnter
 Summary
@@ -833,7 +945,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
-  OnMouseLeave
+  TJvExGroupBox.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExGroupBox.OnMouseLeave
 Summary
@@ -843,13 +956,15 @@ Description
   control. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExGroupBox.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExGroupBox.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExLabel
 Summary
@@ -857,11 +972,13 @@ Summary
 Description
   TJvExLabel is a base class for classes in the JVCL library that descend from TLabel.
 
-  Do not create instances of TJvExLabel. Use a descendant of TJvExLabel or create your
-  own descendant class.
+  Do not create instances of TJvExLabel. Use a descendant of TJvExLabel or create your own descendant
+  class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExLabel.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExLabel.HintColor
 Summary
@@ -870,6 +987,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExLabel.MouseOver
 Summary
@@ -877,7 +995,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the label.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExLabel.OnMouseEnter, TJvExLabel.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExLabel.OnMouseEnter
 Summary
@@ -886,23 +1005,26 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   label.
 See Also
-  OnMouseLeave
+  TJvExLabel.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExLabel.OnMouseLeave
 Summary
   Occurs when the mouse pointer moves off the label.
 Description
   Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  label. For example, you can use this event to undo changes that were made in an OnMouseEnter
-  event handler.
+  label. For example, you can use this event to undo changes that were made in an OnMouseEnter event
+  handler.
 See Also
-  OnMouseEnter
+  TJvExLabel.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExLabel.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExListBox
 Summary
@@ -910,11 +1032,13 @@ Summary
 Description
   TJvExListBox is a base class for classes in the JVCL library that descend from TListBox.
 
-  Do not create instances of TJvExListBox. Use a descendant of TJvExListBox or create your
-  own descendant class.
+  Do not create instances of TJvExListBox. Use a descendant of TJvExListBox or create your own
+  descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExListBox.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExListBox.HintColor
 Summary
@@ -923,6 +1047,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExListBox.MouseOver
 Summary
@@ -930,7 +1055,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the list box.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExListBox.OnMouseEnter, TJvExListBox.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExListBox.OnMouseEnter
 Summary
@@ -939,7 +1065,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   list box.
 See Also
-  OnMouseLeave
+  TJvExListBox.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExListBox.OnMouseLeave
 Summary
@@ -949,13 +1076,15 @@ Description
   list box. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExListBox.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExListBox.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExMemo
 Summary
@@ -963,11 +1092,13 @@ Summary
 Description
   TJvExMemo is a base class for classes in the JVCL library that descend from TMemo.
 
-  Do not create instances of TJvExMemo. Use a descendant of TJvExMemo or create your
-  own descendant class.
+  Do not create instances of TJvExMemo. Use a descendant of TJvExMemo or create your own descendant
+  class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExMemo.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExMemo.ClipboardCommands
 Summary
@@ -977,6 +1108,7 @@ Description
 
   * ClipboardCommands can't be set to [].
   * If ClipboardCommands is set to [caCopy] then property ReadOnly is set to True.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExMemo.HintColor
 Summary
@@ -985,6 +1117,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExMemo.MouseOver
 Summary
@@ -992,7 +1125,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the control.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExMemo.OnMouseEnter, TJvExMemo.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExMemo.OnMouseEnter
 Summary
@@ -1001,7 +1135,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
-  OnMouseLeave
+  TJvExMemo.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExMemo.OnMouseLeave
 Summary
@@ -1011,13 +1146,15 @@ Description
   control. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExMemo.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExMemo.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExRadioButton
 Summary
@@ -1027,9 +1164,11 @@ Description
 
   Do not create instances of TJvExRadioButton. Use a descendant of TJvExRadioButton or create your
   own descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExRadioButton.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExRadioButton.HintColor
 Summary
@@ -1038,6 +1177,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExRadioButton.MouseOver
 Summary
@@ -1045,7 +1185,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the control.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExRadioButton.OnMouseEnter, TJvExRadioButton.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExRadioButton.OnMouseEnter
 Summary
@@ -1054,7 +1195,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
-  OnMouseLeave
+  TJvExRadioButton.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExRadioButton.OnMouseLeave
 Summary
@@ -1064,13 +1206,15 @@ Description
   control. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExRadioButton.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExRadioButton.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExScrollBar
 Summary
@@ -1078,11 +1222,13 @@ Summary
 Description
   TJvExScrollBar is a base class for classes in the JVCL library that descend from TScrollBar.
 
-  Do not create instances of TJvExScrollBar. Use a descendant of TJvExScrollBar or create your
-  own descendant class.
+  Do not create instances of TJvExScrollBar. Use a descendant of TJvExScrollBar or create your own
+  descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExScrollBar.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExScrollBar.HintColor
 Summary
@@ -1091,6 +1237,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExScrollBar.MouseOver
 Summary
@@ -1098,7 +1245,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the scroll bar.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExScrollBar.OnMouseEnter, TJvExScrollBar.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExScrollBar.OnMouseEnter
 Summary
@@ -1107,7 +1255,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   scroll bar.
 See Also
-  OnMouseLeave
+  TJvExScrollBar.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExScrollBar.OnMouseLeave
 Summary
@@ -1117,13 +1266,15 @@ Description
   scroll bar. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExScrollBar.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExScrollBar.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExStaticText
 Summary
@@ -1131,11 +1282,13 @@ Summary
 Description
   TJvExStaticText is a base class for classes in the JVCL library that descend from TStaticText.
 
-  Do not create instances of TJvExStaticText. Use a descendant of TJvExStaticText or create your
-  own descendant class.
+  Do not create instances of TJvExStaticText. Use a descendant of TJvExStaticText or create your own
+  descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExStaticText.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExStaticText.HintColor
 Summary
@@ -1144,6 +1297,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExStaticText.MouseOver
 Summary
@@ -1151,7 +1305,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the control.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExStaticText.OnMouseEnter, TJvExStaticText.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExStaticText.OnMouseEnter
 Summary
@@ -1160,7 +1315,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
-  OnMouseLeave
+  TJvExStaticText.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExStaticText.OnMouseLeave
 Summary
@@ -1170,10 +1326,12 @@ Description
   control. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExStaticText.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExStaticText.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+

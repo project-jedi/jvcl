@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Tim Sullivan
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPlugIn
 JVCLInfo
@@ -17,19 +19,20 @@ Summary
 Description
   TJvPlugin is the base class for new plugins.
 
-  TJvPlugin is not a component but a data module, and as such can contain non-visual components
-  (such as TTable, TQuery and TImageList).
+  TJvPlugin is not a component but a data module, and as such can contain non-visual components (such
+  as TTable, TQuery and TImageList).
 
   Because it's not a component you can not find it on the component palette. Instead you should use
-  \File|\New..., click on the 'Projects" tab and click on the 'JEDI Plugin Wizard'. This will generate
+  File|\New..., click on the 'Projects" tab and click on the 'JEDI Plugin Wizard'. This will generate
   a new project with a single unit containing a TJvPlugin data module.
 
-  In addition a number of properties are provided to specify the identity of the plugin (ID,
-  full name, version, author, copyright), commands added by the plugin, the number of instances
-  of this plugin that are generated, reference to the host application and the plugin manager.
+  In addition a number of properties are provided to specify the identity of the plugin (ID, full
+  name, version, author, copyright), commands added by the plugin, the number of instances of this
+  plugin that are generated, reference to the host application and the plugin manager.
 
-  For more information on writing plugins and make applications plugin enabled, take a look at
-  <LINK $JVCL.Info.Plugins, Writing plugins and plugin enabled applications>.
+  For more information on writing plugins and make applications plugin enabled, take a look at <LINK
+  $JVCL.Info.Plugins, Writing plugins and plugin enabled applications>.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPlugIn.Author
 Summary
@@ -39,10 +42,10 @@ Description
 
   As a plugin writer you should set this to your name, your company name or both.
 
-  The host application may read this property to provide additional information about a loaded
-  plugin.
+  The host application may read this property to provide additional information about a loaded plugin.
 See Also
-  Copyright
+  TJvPlugIn.Copyright
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPlugIn.Commands
 Summary
@@ -55,6 +58,7 @@ Description
   custom data and the handler to execute when the command is requested by the host application.
 See Also
   TJvPluginCommand
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPlugIn.Configure
 Summary
@@ -63,7 +67,8 @@ Description
   Configure is called by the host application to configure the plugin. As a plugin developer you
   could override this method, but it's better to just assign a handler to the OnConfigure event.
 See Also
-  OnConfigure
+  TJvPlugIn.OnConfigure
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPlugIn.Copyright
 Summary
@@ -73,10 +78,10 @@ Description
 
   As a plugin writer you may set this to any text you want (eg. 'Copyright © 2003 Project JEDI').
 
-  The host application may read this property to provide additional information about a loaded
-  plugin.
+  The host application may read this property to provide additional information about a loaded plugin.
 See Also
-  Author
+  TJvPlugIn.Author
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPlugIn.Description
 Summary
@@ -87,8 +92,8 @@ Description
   As a plugin writer you should set this to a short (1 or 2 sentences) description of what
   functionality the plugin provides.
 
-  The host application may read this property to provide additional information about a loaded
-  plugin.
+  The host application may read this property to provide additional information about a loaded plugin.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPlugIn.FileName
 Summary
@@ -96,6 +101,7 @@ Summary
 Description
   Filename holds the filename of the plugin after it is loaded. This can be useful to check if the
   plugin hasn't been renamed.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPlugIn.HostApplication
 Summary
@@ -107,6 +113,7 @@ Description
   If you write a plugin to store an MDI child for the host application, you should assign the value
   of this property to your own Application variable and restore your Application variable before you
   destroy the plugin.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPlugIn.Initialize
 Summary
@@ -123,9 +130,10 @@ Parameters
   Manager -         Reference to the host application's plugin manager component.
   HostApplication - Reference to the Application variable of the host.
   FileName -        Name of the DLL or package the plugin is loaded from. This may contain
-                    <B>CustomPlugin</B> if the plugin is loaded as a custom plugin.
+         <B>CustomPlugin</B> if the plugin is loaded as a custom plugin.
 See Also
-  OnInitialize
+  TJvPlugIn.OnInitialize
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPlugIn.InstanceCount
 Summary
@@ -135,6 +143,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPlugIn.Manager
 Summary
@@ -144,6 +153,7 @@ Description
   TJvPluginManager.
 See Also
   TJvPluginManager
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPlugIn.OnConfigure
 Summary
@@ -154,7 +164,8 @@ Description
 Parameters
   Sender -  Reference to the plugin.
 See Also
-  Configure, OnInitialize
+  TJvPlugIn.Configure, TJvPlugIn.OnInitialize
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPlugIn.OnInitialize
 Summary
@@ -169,9 +180,10 @@ Description
 Parameters
   Sender -    Reference to the plugin.
   AllowLoad - Flag to indicate if the plugin may load. Set this parameter to False to prevent the
-              plugin from being loaded.
+          plugin from being loaded.
 See Also
-  Initialize, OnConfigure
+  TJvPlugIn.Initialize, TJvPlugIn.OnConfigure
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPlugIn.OnPluginMessage
 Summary
@@ -191,6 +203,7 @@ Parameters
                     messages.
   AMessageText -    Additional paramters for the message. See the host application's documentation
                     for the meaning of this string for the message.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPlugIn.PluginID
 Summary
@@ -201,12 +214,13 @@ Description
   As a plugin writer you must set this property to the name (it's not required to set this to the
   Name property or even to a valid Delphi identifier, i.e. spaces and other symbols are allowed) of
   the plugin. Make sure the identification will be unique. A recommended way of doing this would be
-  to use an identification string in the form of
-  \<<I>company name or abbreviation</I>\><B>.</B>\<<I>plugin name</I>\>.
+  to use an identification string in the form of \<<I>company name or abbreviation</I>\><B>.</B>
+  <<I>plugin name</I>\>.
 
   The host application uses this property to display and identify which plugin(s) is/are loaded.
 See Also
-  PluginVersion
+  TJvPlugIn.PluginVersion
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPlugIn.PluginVersion
 Summary
@@ -219,6 +233,7 @@ Description
   or \<<I>Major</I>\><B>.</B>\<<I>Minor</I>\><B>.</B>\<<I>Release</I>\>).
 
   The host application may use this property to display the version of the plugin.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPlugIn.SendPluginMessage
 Summary
@@ -236,11 +251,12 @@ Description
   responsible of defining and documenting the meaning of the various message IDs you support.
 Parameters
   APluginMessage -  ID of the message. See the host application's documentation of available
-                    messages.
+           messages.
   AMessageText -    Additional paramters for the message. See the host application's documentation
-                    for the meaning of this string for the message.
+                 for the meaning of this string for the message.
 See Also
-  OnPluginMessage
+  TJvPlugIn.OnPluginMessage
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPluginCommand
 Summary
@@ -249,16 +265,17 @@ Description
   TJvPluginCommand is single plugin command. Each plugin stores zero or more of the objects in their
   <LINK TJvPlugin.Commands, Commands> property.
 
-  Generally speaking, each plugin usually represents a menu item, a button or both. Because both
-  menu items as well as buttons can have a bitmap, a plugin commands can specify a bitmap in
-  addition to a caption and a hint text.
+  Generally speaking, each plugin usually represents a menu item, a button or both. Because both menu
+  items as well as buttons can have a bitmap, a plugin commands can specify a bitmap in addition to a
+  caption and a hint text.
 
   A plugin is not required to have a command (a host may just send messages to the plugin), but
   usually it has at least one.
 Note
-  Due to an unresolved bug, you should make sure that TJvPluginManager is created <B>before</B>
-  the main menu if you add plug-ins to the main menu. TJvPluginManager should be available when the
-  main menu is destroyed.
+  Due to an unresolved bug, you should make sure that TJvPluginManager is created <B>before</B> the
+  main menu if you add plug-ins to the main menu. TJvPluginManager should be available when the main
+  menu is destroyed.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPluginCommand.Bitmap
 Summary
@@ -267,7 +284,8 @@ Description
   Bitmap contains the bitmap to display next to the caption of the menu item or button. If the
   command has no bitmap associated with it, Bitmap may be set to <B>nil</B>.
 See Also
-  Caption, Hint
+  TJvPluginCommand.Caption, TJvPluginCommand.Hint
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPluginCommand.Caption
 Summary
@@ -276,16 +294,18 @@ Description
   The Caption property contains the string to use as the caption of the menu item or button. It may
   contain an accelerator ('&').
 See Also
-  Bitmap, Hint
+  TJvPluginCommand.Bitmap, TJvPluginCommand.Hint
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPluginCommand.Data
 Summary
   Custom data associated with the command.
 Description
-  Data contains custom data associated with the command. The meaning of this property will be
-  defined by the host application. For example, a host application may require you to specify the
-  full path where the menu item is to be inserted: 'Tools\Plugins\Advanced' will add the command
-  to the Advanced sub menu of the Plugins submenu of the tools menu.
+  Data contains custom data associated with the command. The meaning of this property will be defined
+  by the host application. For example, a host application may require you to specify the full path
+  where the menu item is to be inserted: 'Tools\Plugins\Advanced' will add the command to the
+  Advanced sub menu of the Plugins submenu of the tools menu.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPluginCommand.Hint
 Summary
@@ -294,15 +314,17 @@ Description
   The Hint property contains the hint text to use for the menu item or button. It's exactly the same
   as the standard Hint property for a menu item or button.
 See Also
-  Bitmap, Caption
+  TJvPluginCommand.Bitmap, TJvPluginCommand.Caption
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPluginCommand.Name
 Summary
   The name of the command.
 Description
-  The Name property is used by the collection editor to identify the various plugins. It doesn't
-  have to be a valid Delphi identifier (i.e. it may contains spaces and other symbols). It's
-  generally not used by the host application.
+  The Name property is used by the collection editor to identify the various plugins. It doesn't have
+  to be a valid Delphi identifier (i.e. it may contains spaces and other symbols). It's generally not
+  used by the host application.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPluginCommand.OnExecute
 Summary
@@ -312,7 +334,8 @@ Description
   the host application.
 Parameters
   Sender -  Reference to the sender of the request (usually a menu item or button from the host
-            application.
+      application.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPluginCommand.ShortCut
 Summary
@@ -322,6 +345,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPluginCommands
 Summary
@@ -331,12 +355,15 @@ Description
   items. You can access this collection through the <LINK TJvPlugin.Commands, Commands> property of
   the <LINK TJvPlugin, plugin>.
 See Also
-  TJvPlugin, TJvPluginCommand, TJvPlugin.Commands
+  TJvPlugIn, TJvPlugIn.Commands, TJvPluginCommand
+
 ----------------------------------------------------------------------------------------------------
 @@TPluginInitializeEvent
 <TITLE TPluginInitializeEvent type>
 <COMBINE TJvPlugIn.OnInitialize>
+
 ----------------------------------------------------------------------------------------------------
 @@TPluginMessageEvent
 <TITLE TPluginMessageEvent type>
 <COMBINE TJvPlugIn.OnPluginMessage>
+

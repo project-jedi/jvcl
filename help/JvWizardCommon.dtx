@@ -7,12 +7,15 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   William Yu Wei.
+
+
 ----------------------------------------------------------------------------------------------------
 @@EJvWizardError
 Summary
   Exception class used by the TJvWizard components.
 Description
   EJvWizardError is the exception class used when raising errors in the JvWizard components and code.
+
 ----------------------------------------------------------------------------------------------------
 @@JvWizardDrawBorderEdges
 <TITLE JvWizardDrawBorderEdges function>
@@ -25,6 +28,7 @@ Parameters
   ABounds - The rect to draw in.
   AStyle  - The style to use.
   AEdges  - Edges to draw.
+
 ----------------------------------------------------------------------------------------------------
 @@JvWizardDrawEdges
 <TITLE JvWizardDrawEdges function>
@@ -38,6 +42,7 @@ Parameters
   ULColor - Color of left and upper edge.
   LRColor - Color of right and bottom edge.
   AEdges  - Edges to draw.
+
 ----------------------------------------------------------------------------------------------------
 @@JvWizardDrawImage
 <TITLE JvWizardDrawImage procedure>
@@ -51,6 +56,7 @@ Parameters
   ARect    - The area in the canvas to draw in.
   Align    - The alignment of the image.
   ALayout  - The layout of the image.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardFrameStyle
 <TITLE TJvWizardFrameStyle type>
@@ -58,20 +64,35 @@ Summary
   Defines available wizard frame styles.
 Description
   TJvWizardFrameStyle is used to define the styles that JvWizardDrawBorderEdges can draw in.
+
+----------------------------------------------------------------------------------------------------
 @@TJvWizardFrameStyle.fsWindows
-  Draw frames using default Windows style.
+Draw frames using default Windows style.
+
+----------------------------------------------------------------------------------------------------
 @@TJvWizardFrameStyle.fsNone
-  Don't draw any frame.
+Don't draw any frame.
+
+----------------------------------------------------------------------------------------------------
 @@TJvWizardFrameStyle.fsFlat
-  Draw frames using a single gray line.
+Draw frames using a single gray line.
+
+----------------------------------------------------------------------------------------------------
 @@TJvWizardFrameStyle.fsGroove
-  Draw frames with a double lowered edge.
+Draw frames with a double lowered edge.
+
+----------------------------------------------------------------------------------------------------
 @@TJvWizardFrameStyle.fsBump
-  Draw frames with a double raised edge.
+Draw frames with a double raised edge.
+
+----------------------------------------------------------------------------------------------------
 @@TJvWizardFrameStyle.fsLowered
-  Draw frames with a lowered edge.
+Draw frames with a lowered edge.
+
+----------------------------------------------------------------------------------------------------
 @@TJvWizardFrameStyle.fsRaised
-  Draw frames with a raised edge.
+Draw frames with a raised edge.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardImageAlignment
 <TITLE TJvWizardImageAlignment type>
@@ -81,35 +102,55 @@ Description
   TJvWizardImageAlignment is used by JvWizardDrawImage to define the horizontal alignment of the
   image it draws.
 See Also
-  TJvWizardImageLayout, JvWizardDrawImage
+  JvWizardDrawImage, TJvWizardImageLayout
+
+----------------------------------------------------------------------------------------------------
 @@TJvWizardImageAlignment.iaLeft
-  Align image to the left.
+Align image to the left.
+
+----------------------------------------------------------------------------------------------------
 @@TJvWizardImageAlignment.iaRight
-  Align image to the right.
+Align image to the right.
+
+----------------------------------------------------------------------------------------------------
 @@TJvWizardImageAlignment.iaCenter
-  Align image to the horizontal center.
+Align image to the horizontal center.
+
+----------------------------------------------------------------------------------------------------
 @@TJvWizardImageAlignment.iaStretch
-  Stretch image horizontally.
+Stretch image horizontally.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardImageLayout
 <TITLE TJvWizardImageLayout type>
 Summary
   Defines possible vertical alignment of wizard images.
 Description
-  TJvWizardImageLayout is used by JvWizardDrawImage to define the vertical alignment of the
-  image it draws.
+  TJvWizardImageLayout is used by JvWizardDrawImage to define the vertical alignment of the image it
+  draws.
 See Also
-  TJvWizardImageAlignment, JvWizardDrawImage
+  JvWizardDrawImage, TJvWizardImageAlignment
+
+----------------------------------------------------------------------------------------------------
 @@TJvWizardImageLayout.ilTop
-  Align image to the top.
+Align image to the top.
+
+----------------------------------------------------------------------------------------------------
 @@TJvWizardImageLayout.ilBottom
-  Align image to the bottom.
+Align image to the bottom.
+
+----------------------------------------------------------------------------------------------------
 @@TJvWizardImageLayout.ilCenter
-  Align image to the vertical center.
+Align image to the vertical center.
+
+----------------------------------------------------------------------------------------------------
 @@TJvWizardImageLayout.ilStretch
-  Stretch image vertically.
+Stretch image vertically.
+
+----------------------------------------------------------------------------------------------------
 @@TJvWizardImageLayout.ilTile
-  Tile image across client area.
+Tile image across client area.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardImageLeftRight
 <TITLE TJvWizardImageLeftRight type>
@@ -118,4 +159,5 @@ Summary
 Description
   TJvWizardImageLeftRight is a subrange of TJvWizardImageAlignment.
 See Also
-  TJvWizardImageAlignment, JvWizardDrawImage
+  JvWizardDrawImage, TJvWizardImageAlignment
+

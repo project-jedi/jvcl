@@ -4,7 +4,7 @@
 @@JvAppIniStorage.pas
 Summary
   Contains the TJvAppIniStorage component.
-  <INCLUDE JVCL.UnitText.dtx>
+<INCLUDE JVCL.UnitText.dtx>
 Author
   Marcel Bestebroer
 
@@ -24,48 +24,65 @@ Description
   as settings, form positions and sizes, etc) in an INI file format. This data will be stored in an
   actual file, represented in memory through the use of a TMemIniFile object.
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvAppIniFileStorage.AutoFlush
 Summary
   If set to True, the Flush method will be called whenever a modification has been made to the in
   memory file.
-  If set to False, the disk file will only be updated when you call Flush or when the component is
-  destroyed.
-See Also
-  Flush, AutoReload
+Description
+  Please note that if AutoReload is set to True and AutoFlush is not, then only the very last change
+  done will be written into the physical file. Look at this sequence:
 
+  Write (calls Reload before writing)
+  Write (calls Reload before writing)
+  Write (calls Reload before writing)
+  Write (calls Reload before writing)
+  Destroy (calls Flush)
+
+  The only time Flush is called is when the component is destroyed, thus only putting the last Write
+  into the file. This is why AutoFlush should always be set to True when AutoReload is. This is not
+  ensured by the component because some user may want this behaviour to happen.
+See Also
+  TJvAppIniFileStorage.AutoReload, TJvAppIniFileStorage.Flush
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppIniFileStorage.AutoReload
 Summary
   If set to True, the Reload method will be called whenever an information is about to be read from
   the in memory file.
-  If set to False, the disk file will only be read when you call Reload or when the FileName property
-  is set.
-See Also
-  Reload, FileName, AutoFlush
+Description
+  Please note that if AutoReload is set to True and AutoFlush is not, then only the very last change
+  done will be written into the physical file. Look at this sequence:
 
+  Write (calls Reload before writing)
+  Write (calls Reload before writing)
+  Write (calls Reload before writing)
+  Write (calls Reload before writing)
+  Destroy (calls Flush)
+
+  The only time Flush is called is when the component is destroyed, thus only putting the last Write
+  into the file. This is why AutoFlush should always be set to True when AutoReload is. This is not
+  ensured by the component because some user may want this behaviour to happen.
+See Also
+  TJvAppIniFileStorage.AutoFlush, TJvAppIniFileStorage.FileName, TJvAppIniFileStorage.Reload
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppIniFileStorage.FileName
 Summary
   Name of the INI file.
 Description
-  FileName specifies which file is to be used as a storage and will be taken into account according
-  to the value of Location:
-   - flExeFile: The path part of FileName is ignored and the file is created in the directory where
-   the application is located
-   - flTemp: The path part of FileName is ignored and the file is created in the temporary directory
-   - flUserFolder: The path part of FileName is ignored and the file is created in the data directory
-   of the current user
-   - flWindows: The path part of FileName is ignored and the file is created in the windows directory
+  FileName specifies which file is to be used as a storage and will be taken into account according to the value of Location:  - flExeFile: The path part
+  of FileName is ignored and the file is created in the directory where  the application is located
+  - flTemp: The path part of FileName is ignored and the file is created in the temporary directory
+   - flUserFolder: The file is created in the data directory  of the current user. You can specify a
+  relative path: "Appname\inifilename", but you will have to create directory "Appname". Unlike
+  flExeFile and flWindows, this setting will work when logged under a limited user account.
+    - flWindows: The path part of FileName is ignored and the file is created in the windows directory
    - flCustom: All parts of FileName are taken into account
-   
+
   Note: If you leave this property blank, the component will not load or save the values in a file.
 See Also
-  Location, Reload
-
+  Location
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppIniFileStorage.Flush
@@ -73,31 +90,28 @@ Summary
   Writes changes to the file.
 Description
   Flush will write any changes made to the storage to the underlaying INI file.
-  
+
   Flush is called automatically when the component is destroyed or AutoFlush is set to True and a
   call to a writing function has been done.
 See Also
-  AutoFlush, Reload
-
+  TJvAppIniFileStorage.AutoFlush, TJvAppIniFileStorage.Reload
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppIniFileStorage.IniFile
 Summary
   The in memory INI file object.
 Description
-  This property gives You direct access to the internal INI file object that the component uses as 
-  a storage for its data. This is provided if you want to directly access the INI file object, for 
+  This property gives You direct access to the internal INI file object that the component uses as a
+  storage for its data. This is provided if you want to directly access the INI file object, for
   instance if you want to add your own sections in it. Be very careful not to break anything while
   doing so.
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppIniFileStorage.Reload
 Summary
   Reloads the INI in memory file from the file indicated by FileName
 See Also
-  Flush, FileName
-
+  TJvAppIniFileStorage.FileName, TJvAppIniFileStorage.Flush
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppIniStorage
@@ -108,15 +122,14 @@ Description
   class provides the abstract interface to handle data in an INI file format. It does not refer to an
   INI file but implements the TJvCustomAppStorage methods to use an INI file format using a couple of
   simplified access methods.
-  
+
   As a descendant of TJvCustomAppMemoryFileStorage, it provides the standard interface for storing
   data (such as settings, form positions and sizes, etc).
-  
+
   The component introduces 4 abstract methods to <LINK ReadValue, read>, <LINK WriteValue, write>,
   <LINK RemoveValue, delete> and <LINK ValueExists, find> values using the Section/Key combination.
-  
-  All the abstract access methods are implemented to convert from/to one of the 4 new methods.
 
+  All the abstract access methods are implemented to convert from/to one of the 4 new methods.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppIniStorage.DefaultSection
@@ -126,7 +139,6 @@ Description
   When a property is to be stored and the section name for it is empty, then this value is used.
   You should always give a value to this property, or risk the creation of an invalid INI file with
   keys outside sections
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppIniStorage.IniFile
@@ -138,7 +150,6 @@ Description
 See Also
   Buffered
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvAppIniFileStorage.OnGetFileName
 Summary
@@ -146,7 +157,6 @@ Summary
 Description
   Write an OnGetFilenName event handler to change the fully qualified file name that is used to store
   the ini file.
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppIniStorage.ReadValue
@@ -158,8 +168,7 @@ Parameters
   Section - Section of the value to read.
   Key     - Key of the value to read.
 See Also
-  RemoveValue, WriteValue
-
+  TJvCustomAppIniStorage.RemoveValue, TJvCustomAppIniStorage.WriteValue
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppIniStorage.RemoveValue
@@ -171,8 +180,7 @@ Parameters
   Section - Section of the value to remove.
   Key     - Key of the value to remove.
 See Also
-  ReadValue, WriteValue
-
+  TJvCustomAppIniStorage.ReadValue, TJvCustomAppIniStorage.WriteValue
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppIniStorage.ValueExists
@@ -185,7 +193,6 @@ Parameters
   Section - Section of the value to check.
   Key     - Key of the value to check.
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppIniStorage.WriteValue
 Summary
@@ -197,6 +204,5 @@ Parameters
   Key     - Key of the value to write.
   Value   - Description for this parameter
 See Also
-  ReadValue, RemoveValue
-
+  TJvCustomAppIniStorage.ReadValue, TJvCustomAppIniStorage.RemoveValue
 

@@ -4,7 +4,7 @@
 @@JvAppStorage.pas
 Summary
   Contains the interface and generic implemention for the storage backend.
-  <INCLUDE JVCL.UnitText.dtx>
+<INCLUDE JVCL.UnitText.dtx>
 Author
   Marcel Bestebroer
 
@@ -15,7 +15,6 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
-
 
 ----------------------------------------------------------------------------------------------------
 @@IJvAppStorageHandler
@@ -31,20 +30,18 @@ Description
   and if the first is implemented it will call those methods (either in addition to the published
   properties or exclusively):
 
-  TPubOnly1 = class(TPersistent)
-  // only published properties
+  TPubOnly1 = class(TPersistent) // only published properties
 
-  TPubOnly2 = class(TInterfacedPersistent, IJvAppStoragePublishedProps)
-  // only published properties
+  TPubOnly2 = class(TInterfacedPersistent, IJvAppStoragePublishedProps) // only published properties
 
-  TIntfOnly = class(TInterfacedObject, IJvAppStorageHandler)
-  // only the IJvAppStorageHandler methods are used; does not have to be a TPersistent descendant or
-  have RTTI
+  TIntfOnly = class(TInterfacedObject, IJvAppStorageHandler) // only the IJvAppStorageHandler methods
+  are used; does not have to be a TPersistent descendant or have RTTI
 
-  TIntfAndPub = class(TInterfacedPersistent, IJVAppStorageHandler, IJvAppStoragePublishedProps)
-  // the IJvAppStorageHandler methods are used in addition to the published properties
+  TIntfAndPub = class(TInterfacedPersistent, IJVAppStorageHandler, IJvAppStoragePublishedProps) //
+  the IJvAppStorageHandler methods are used in addition to the published properties
 See Also
-  JvAppStorages.ReadPersistent,JvAppStorages.WritePersistent, IJvAppStoragePublishedProps
+  JvAppStorages.ReadPersistent,JvAppStorages.WritePersistent
+
 ----------------------------------------------------------------------------------------------------
 @@IJvAppStorageHandler.ReadFromAppStorage
 Summary
@@ -54,6 +51,7 @@ Description
 Parameters
   AppStorage - AppStorage Instances
   BasePath   - Path were the settings were stored.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvAppStorageHandler.WriteToAppStorage
 Summary
@@ -63,6 +61,7 @@ Description
 Parameters
   AppStorage - AppStorage Instances
   BasePath   - Path were the settings had to be stored.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvAppStoragePublishedProps
 Summary
@@ -78,40 +77,53 @@ Description
   and if the first is implemented it will call those methods (either in addition to the published
   properties or exclusively):
 
-  TPubOnly1 = class(TPersistent)
-  // only published properties
+  TPubOnly1 = class(TPersistent) // only published properties
 
-  TPubOnly2 = class(TInterfacedPersistent, IJvAppStoragePublishedProps)
-  // only published properties
+  TPubOnly2 = class(TInterfacedPersistent, IJvAppStoragePublishedProps) // only published properties
 
-  TIntfOnly = class(TInterfacedObject, IJvAppStorageHandler)
-  // only the IJvAppStorageHandler methods are used; does not have to be a TPersistent descendant or
-  have RTTI
+  TIntfOnly = class(TInterfacedObject, IJvAppStorageHandler) // only the IJvAppStorageHandler methods
+  are used; does not have to be a TPersistent descendant or have RTTI
 
-  TIntfAndPub = class(TInterfacedPersistent, IJVAppStorageHandler, IJvAppStoragePublishedProps)
-  // the IJvAppStorageHandler methods are used in addition to the published properties.
+  TIntfAndPub = class(TInterfacedPersistent, IJVAppStorageHandler, IJvAppStoragePublishedProps) //
+  the IJvAppStorageHandler methods are used in addition to the published properties.
 See Also
-  JvAppStorages.ReadPersistent,JvAppStorages.WritePersistent, IJvAppStorageHandler
+  JvAppStorages.ReadPersistent,JvAppStorages.WritePersistent
+
 ----------------------------------------------------------------------------------------------------
 @@TFileLocation
 <TITLE TFileLocation type>
 Summary
-  Write here a summary (1 line)
+  File-Location Type
 Description
-  Write here a description
+  Defines the location of a file.
+  - flCustom : Filename must contain a directory
+  - flExeFile : File is placed in the directory of the Exe-File
+  - flTemp : File is placed in the temp directory
+  - flUserFolder : File is placed in the user directory
+  - flWindows : File is placed in the windows directory
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvAppIniStorage, TJvAppXMLStorage
+
+----------------------------------------------------------------------------------------------------
 @@TFileLocation.flCustom
-  Description for flCustom
+Description for flCustom
+
+----------------------------------------------------------------------------------------------------
 @@TFileLocation.flWindows
-  Description for flWindows
+Description for flWindows
+
+----------------------------------------------------------------------------------------------------
 @@TFileLocation.flTemp
   Description for flTemp
+
+----------------------------------------------------------------------------------------------------
 @@TFileLocation.flExeFile
-  Description for flExeFile
+Description for flExeFile
+
+----------------------------------------------------------------------------------------------------
 @@TFileLocation.flUserFolder
-  Description for flUserFolder
+Description for flUserFolder
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppStorage
 <TITLEIMG TJvAppStorage>
@@ -119,10 +131,10 @@ JVCLInfo
   GROUP=JVCL.Miscel
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Storage Component without own storage mechanism.
 Description
-  Write here a description
-
+  Storage Component without own storage mechanism.
+  The component can only be used with substorages.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppStorageCryptEvent
@@ -138,7 +150,6 @@ Parameters
 See Also
   OnDecryptPropertyValue, OnEncryptPropertyValue
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvAppStorageEnumOption
 <TITLE TJvAppStorageEnumOption type>
@@ -149,24 +160,37 @@ Description
   in the storage backend.
 See Also
   TJvCustomAppStorage.GetStoredValues
+
+----------------------------------------------------------------------------------------------------
 @@TJvAppStorageEnumOption.aeoFolders
-  Enumerate folders (containers for values).
+Enumerate folders (containers for values).
+
+----------------------------------------------------------------------------------------------------
 @@TJvAppStorageEnumOption.aeoValues
-  Enumerate values.
+Enumerate values.
+
+----------------------------------------------------------------------------------------------------
 @@TJvAppStorageEnumOption.aeoReportListAsValue
-  Report lists as a single value. A list is generally a folder containing a 'Count' value and a number of items. If this option is specified such folders are reported as a single value.
+Report lists as a single value. A list is generally a folder containing a 'Count' value and a number of items. If this option is specified such folders are reported as a single value.
+
+----------------------------------------------------------------------------------------------------
 @@TJvAppStorageEnumOption.aeoReportRelative
-  Report all folders and values relative to the specified search path. If this option is not specified all reported folders and values are fully qualified (and start with a backslash).
+Report all folders and values relative to the specified search path. If this option is not specified all reported folders and values are fully qualified (and start with a backslash).
+
+----------------------------------------------------------------------------------------------------
 @@TJvAppStorageEnumOption.aeoRecursive
-  Search sub folders.
+Search sub folders.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppStorageEnumOptions
 <TITLE TJvAppStorageEnumOptions type>
 <COMBINE TJvAppStorageEnumOption>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppStorageGetFileNameEvent
 <TITLE TJvAppStorageGetFileNameEvent type>
 <COMBINE TJvCustomAppMemoryFileStorage.OnGetFileName>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppStorageListDeleteEvent
 <TITLE TJvAppStorageListDelete type>
@@ -180,10 +204,8 @@ Parameters
   List   - Description for this parameter
   First  - First item to remove.
   Last   - Last item to remove.
-  ItemName - Description for this parameter
 See Also
   TJvCustomAppStorage.WriteList
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppStorageListItemEvent
@@ -197,9 +219,9 @@ Parameters
   Path   - Path of the list.
   List   - Description for this parameter
   Index  - Index of the item to read or write.
-  ItemName - Description for this parameter
 See Also
   TJvCustomAppStorage.ReadList, TJvCustomAppStorage.WriteList
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppStorageObjectListItemCreateEvent
 <TITLE TJvAppStorageObjectListItemCreateEvent type>
@@ -214,13 +236,13 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppStorageOptions
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppStorageOptionsClass
@@ -232,12 +254,10 @@ Description
   reference for
   TJvCustomAppStorageOptions or for one of its descendants.
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvAppStoragePropTranslateEvent
 <TITLE TJvAppStoragePropTranslateEvent type>
 <COMBINE TJvCustomAppStorage.OnTranslatePropertyName>
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppSubStorage
@@ -245,7 +265,6 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppSubStorage.AppStorage
@@ -256,7 +275,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppSubStorage.GetDisplayName
@@ -272,7 +290,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvAppSubStorage.GetOwnerStore
 Summary
@@ -285,7 +302,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvAppSubStorage.OwnerStore
 Summary
@@ -295,6 +311,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppSubStorage.RootPath
 Summary
@@ -304,6 +321,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppSubStorage.SetAppStorage
 Summary
@@ -315,7 +333,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppSubStorage.SetRootPath
@@ -329,14 +346,12 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvAppSubStorages
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppSubStorages.Add
@@ -350,7 +365,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppSubStorages.CheckUniqueBase
@@ -367,7 +381,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvAppSubStorages.Delete@Integer
 Summary
@@ -382,7 +395,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppSubStorages.Delete@string@Boolean
@@ -400,7 +412,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvAppSubStorages.Delete@TJvCustomAppStorage
 Summary
@@ -416,7 +427,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvAppSubStorages.Items
 Summary
@@ -428,7 +438,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppSubStorages.MatchFor
@@ -445,7 +454,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvAppSubStorages.RootOptionsChanged
 Summary
@@ -455,7 +463,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppSubStorages.RootStorage
@@ -467,14 +474,12 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppMemoryFileStorage
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppMemoryFileStorage.AsString
@@ -486,7 +491,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppMemoryFileStorage.FileName
 Summary
@@ -496,6 +500,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppMemoryFileStorage.FullFileName
 Summary
@@ -506,7 +511,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppMemoryFileStorage.Location
 Summary
@@ -516,6 +520,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppMemoryFileStorage.OnGetFileName
 Summary
@@ -528,6 +533,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage
 Summary
@@ -546,8 +552,8 @@ Description
   the concept of folders and values (much like folders and files on an OS). The storage component can
   specify a <LINK Root, root path> that is to serve as the absolute root of the storage (i.e. the
   storage can not reference anything that is not a child of this root path).
-  Components and user code can specify paths that are either relative to a
-  <LINK Path, previously set path> or relative to the <LINK Root, root folder>.
+  Components and user code can specify paths that are either relative to a <LINK Path, previously set
+  path> or relative to the <LINK Root, root folder>.
 
   Folder names consisting solely of '.' (dot) characters are used to reference folders above the
   current one. Using one dot refers to the current folder. Every additional dot goes up one level in
@@ -564,6 +570,7 @@ Description
   Not all storages may surface this linking mechanism, but most do.
 
   You should not instantiate a TJvCustomAppStorage but rather one of its descendants.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.AutoFlush
 Summary
@@ -573,6 +580,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.AutoReload
 Summary
@@ -582,6 +590,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.BeginUpdate
 Summary
@@ -591,6 +600,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ConcatPaths
 Summary
@@ -614,7 +624,6 @@ Description
 Parameters
   Paths - List of paths to combine into one.
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.DeleteSubTree
 Summary
@@ -627,7 +636,6 @@ Parameters
 See Also
   DeleteValue
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.DeleteValue
 Summary
@@ -638,8 +646,7 @@ Description
 Parameters
   Path - Path (relative to the current path) of the value to delete.
 See Also
-  DeleteSubTree
-
+  TJvCustomAppStorage.DeleteSubTree
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.DisablePropertyValueCrypt
@@ -651,7 +658,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.EnablePropertyValueCrypt
 Summary
@@ -661,6 +667,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.EndUpdate
 Summary
@@ -670,6 +677,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.Flush
 Summary
@@ -679,6 +687,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.GetCharName
 Summary
@@ -693,7 +702,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.GetIntName
 Summary
@@ -707,7 +715,6 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.GetStoredValues
@@ -726,7 +733,6 @@ Parameters
 See Also
   TJvAppStorageEnumOptions
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.IsFolder
 Summary
@@ -737,14 +743,13 @@ Description
 
   * It has sub folders or values
   * ListIsValue is False or if it's True the path does not refer to a list (a folder is considered
-    a list if it contains the Count value and only Item<I>x</I> values; if it contains other values
-    as well it's considered to be a folder and a value).
+     a list if it contains the Count value and only Item<I>x</I> values; if it contains other values
+     as well it's considered to be a folder and a value).
 
   If the specified path refers to a folder IsFolder returns True, otherwise False is returned.
 Parameters
   Path        - Path (relative to the current path) to check.
   ListIsValue - Flag to interprete a list as value or not.
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.IsPropertyValueCryptEnabled
@@ -757,6 +762,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.IsUpdating
 Summary
@@ -766,6 +772,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ListStored
 Summary
@@ -778,8 +785,7 @@ Description
 Parameters
   Path - Path (relative to the current path) to check.
 See Also
-  IsFolder, ValueStored
-
+  TJvCustomAppStorage.IsFolder, TJvCustomAppStorage.ValueStored
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.OnDecryptPropertyValue
@@ -790,7 +796,6 @@ Description
 See Also
   TJvAppStorageCryptEvent
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.OnEncryptPropertyValue
 Summary
@@ -799,7 +804,6 @@ Description
   Write here a description
 See Also
   TJvAppStorageCryptEvent
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.OnTranslatePropertyName
@@ -831,10 +835,9 @@ Parameters
   Instance - Instance of the Parent object which is stored
   Name     - Name to be translated. The changed name is given back in the same parameter
   Reading  - Flag if the appstorage instance is reading or writing in this moment. This flag is
-  mainly for information. It has no change on the implementation.
+              mainly for information. It has no change on the implementation.
 See Also
   TJvAppStoragePropTranslateEvent
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.Path
@@ -848,8 +851,7 @@ Description
 
   Note that this path is relative to the absolute storage root specified by the Root property.
 See Also
-  Root
-
+  TJvCustomAppStorage.Root
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.PathExists
@@ -865,7 +867,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.PathExistsInt
 Summary
@@ -880,7 +881,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadBinary
 Summary
@@ -894,8 +894,9 @@ Parameters
   Buf     - Buffer in which to put the data read.
   BufSize - Size of the buffer. ReadBinary will return at most BufSize bytes.
 See Also
-  WriteBinary, ReadDateTime, ReadFloat, ReadInteger, ReadList, ReadString, ReadStringList
-
+  TJvCustomAppStorage.ReadDateTime, TJvCustomAppStorage.ReadFloat, TJvCustomAppStorage.ReadInteger,
+  TJvCustomAppStorage.ReadList, TJvCustomAppStorage.ReadString, TJvCustomAppStorage.ReadStringList,
+  TJvCustomAppStorage.WriteBinary
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadBoolean
@@ -912,7 +913,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadBooleanInt
 Summary
@@ -927,6 +927,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadCollection
 Summary
@@ -937,12 +938,12 @@ Parameters
   Path       - Description for this parameter
   List       - Description for this parameter
   ClearFirst - Description for this parameter
-  ItemName   - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadDateTime
 Summary
@@ -954,8 +955,9 @@ Parameters
   Path    - Path (relative to the current path) of the value to read.
   Default - Value to return if the specified path does not exist.
 See Also
-  WriteDateTime, ReadBinary, ReadFloat, ReadInteger, ReadList, ReadString, ReadStringList
-
+  TJvCustomAppStorage.ReadBinary, TJvCustomAppStorage.ReadFloat, TJvCustomAppStorage.ReadInteger,
+  TJvCustomAppStorage.ReadList, TJvCustomAppStorage.ReadString, TJvCustomAppStorage.ReadStringList,
+  TJvCustomAppStorage.WriteDateTime
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadEnumeration
@@ -972,7 +974,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadEnumerationInt
 Summary
@@ -988,7 +989,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadFloat
 Summary
@@ -1000,8 +1000,9 @@ Parameters
   Path    - Path (relative to the current path) of the value to read.
   Default - Value to return if the specified path does not exist.
 See Also
-  WriteFloat, ReadBinary, ReadDateTime, ReadInteger, ReadList, ReadString, ReadStringList
-
+  TJvCustomAppStorage.ReadBinary, TJvCustomAppStorage.ReadDateTime, TJvCustomAppStorage.ReadInteger,
+  TJvCustomAppStorage.ReadList, TJvCustomAppStorage.ReadString, TJvCustomAppStorage.ReadStringList,
+  TJvCustomAppStorage.WriteFloat
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadInteger
@@ -1014,8 +1015,9 @@ Parameters
   Path    - Path (relative to the current path) of the value to read.
   Default - Value to return if the specified path does not exist.
 See Also
-  WriteInteger, ReadBinary, ReadDateTime, ReadFloat, ReadList, ReadString, ReadStringList
-
+  TJvCustomAppStorage.ReadBinary, TJvCustomAppStorage.ReadDateTime, TJvCustomAppStorage.ReadFloat,
+  TJvCustomAppStorage.ReadList, TJvCustomAppStorage.ReadString, TJvCustomAppStorage.ReadStringList,
+  TJvCustomAppStorage.WriteInteger
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadList
@@ -1034,48 +1036,50 @@ Parameters
   Path       - Path (relative to the current path) of the value to read.
   List       - Description for this parameter
   OnReadItem - Method that will read each item from the storage.
-  ItemName   - Description for this parameter
 See Also
-  WriteList, ReadBinary, ReadDateTime, ReadFloat, ReadInteger, ReadString, ReadStringList
+  TJvCustomAppStorage.ReadBinary, TJvCustomAppStorage.ReadDateTime, TJvCustomAppStorage.ReadFloat,
+  TJvCustomAppStorage.ReadInteger, TJvCustomAppStorage.ReadString,
+  TJvCustomAppStorage.ReadStringList, TJvCustomAppStorage.WriteList
+
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomAppStorage.ReadObjectList@string@TList@Boolean@string
+@@TJvCustomAppStorage.ReadObjectList@string@TList@Boolean
 Summary
   Write here a summary (1 line)
 Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter"
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
 Parameters
   Path       - Description for this parameter
   List       - Description for this parameter
   ClearFirst - Description for this parameter
-  ItemName   - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomAppStorage.ReadObjectList@string@TList@TJvAppStorageObjectListItemCreateEvent@Boolean@string
+@@TJvCustomAppStorage.ReadObjectList@string@TList@TJvAppStorageObjectListItemCreateEvent@Boolean
 Summary
   Write here a summary (1 line)
 Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter"
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
 Parameters
   Path        - Description for this parameter
   List        - Description for this parameter
   ItemCreator - Description for this parameter
   ClearFirst  - Description for this parameter
-  ItemName    - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadPersistent
 Summary
@@ -1091,6 +1095,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadProperty
 Summary
@@ -1106,6 +1111,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadSet
 Summary
@@ -1120,7 +1126,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadSetInt
@@ -1137,7 +1142,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadString
 Summary
@@ -1149,17 +1153,17 @@ Parameters
   Path    - Path (relative to the current path) of the value to read.
   Default - Value to return if the specified path does not exist.
 See Also
-  WriteString, ReadBinary, ReadDateTime, ReadFloat, ReadInteger, ReadList, ReadStringList
-
+  TJvCustomAppStorage.ReadBinary, TJvCustomAppStorage.ReadDateTime, TJvCustomAppStorage.ReadFloat,
+  TJvCustomAppStorage.ReadInteger, TJvCustomAppStorage.ReadList, TJvCustomAppStorage.ReadStringList,
+  TJvCustomAppStorage.WriteString
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadStringList
 Summary
   Reads a list of strings.
 Description
-  ReadStringList reads a list of strings from the storage. ReadStringList uses the ReadList method in
-  combination with a specialised OnReadItem handler that will read the individual items in from the
-  list. Items are expected to be stored in the <B>Item<I>x</I></B> format where <I>x</I> is the
+  ReadStringList reads a list of strings from the storage. ReadStringList uses the ReadList method in combination with a specialised OnReadItem handler that will read the individual items in from
+  the list. Items are expected to be stored in the <B>Item<I>x</I></B> format where <I>x</I> is the
   0-based index of the item.
 
   The returned value is the number of strings read.
@@ -1167,48 +1171,11 @@ Parameters
   Path       - Path (relative to the current path) of the value to read.
   SL         - \String list in which to store the strings from the storage.
   ClearFirst - Flag to indicate if the string list should be cleared before reading commences.
-  ItemName   - Description for this parameter
 See Also
-  WriteStringList, ReadBinary, ReadDateTime, ReadFloat, ReadInteger, ReadList, ReadString
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppStorage.ReadStringObjectList@string@TStrings@Boolean@string
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
-Parameters
-  Path       - Description for this parameter
-  SL         - Description for this parameter
-  ClearFirst - Description for this parameter
-  ItemName   - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppStorage.ReadStringObjectList@string@TStrings@TJvAppStorageObjectListItemCreateEvent@Boolean@string
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
-Parameters
-  Path        - Description for this parameter
-  SL          - Description for this parameter
-  ItemCreator - Description for this parameter
-  ClearFirst  - Description for this parameter
-  ItemName    - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomAppStorage.ReadBinary, TJvCustomAppStorage.ReadDateTime, TJvCustomAppStorage.ReadFloat,
+  TJvCustomAppStorage.ReadInteger, TJvCustomAppStorage.ReadList, TJvCustomAppStorage.ReadString,
+  TJvCustomAppStorage.WriteStringList
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.Reload
 Summary
@@ -1218,6 +1185,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ResolvePath
 Summary
@@ -1237,14 +1205,14 @@ Description
   the absolute root of the sub store) and ResolvePath is executed on the sub store. Eventually the
   sub store to use and the path relative to the absolute root of that store are returned.
 Parameters
-  InPath    - The path to resolve. This may be any path specification, even one that's relative to
-              the currently selected path.
-  TargetStore  - The target store to use. The returned store is guaranteed to be the store that should
-              contain the specified path (ie. it can not reference any of it's linked sub stores).
+  InPath       - The path to resolve. This may be any path specification, even one that's relative to
+                  the currently selected path.
+  TargetStore  - The target store to use. The returned store is guaranteed to be the store that
+                  should contain the specified path (ie. it can not reference any of it's linked sub
+                  stores).
   TargetPath   - The path to use in the target store. The returned path is always canonical and
-              relative to the absolute root of the target store specified by TgtStore and will
-              reference the path specified by InPath.
-
+                  relative to the absolute root of the target store specified by TgtStore and will
+                  reference the path specified by InPath.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.Root
@@ -1258,8 +1226,7 @@ Description
   In contrast to the Path property, none of the methods are allowed to specify levels above this
   path, nor any siblings of this path.
 See Also
-  Path
-
+  TJvCustomAppStorage.Path
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.StorageOptions
@@ -1271,7 +1238,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.SubStorages
 Summary
@@ -1281,7 +1247,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.TranslatePropertyName
@@ -1299,7 +1264,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ValueStored
 Summary
@@ -1310,8 +1274,7 @@ Description
 Parameters
   Path - Path (relative to the current path) to check.
 See Also
-  IsFolder, ListStored
-
+  TJvCustomAppStorage.IsFolder, TJvCustomAppStorage.ListStored
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.WriteBinary
@@ -1324,8 +1287,9 @@ Parameters
   Buf     - Data to write to the storage.
   BufSize - Size of the buffer.
 See Also
-  ReadBinary, WriteDateTime, WriteFloat, WriteInteger, WriteList, WriteString, WriteStringList
-
+  TJvCustomAppStorage.ReadBinary, TJvCustomAppStorage.WriteDateTime, TJvCustomAppStorage.WriteFloat,
+  TJvCustomAppStorage.WriteInteger, TJvCustomAppStorage.WriteList, TJvCustomAppStorage.WriteString,
+  TJvCustomAppStorage.WriteStringList
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.WriteBoolean
@@ -1340,7 +1304,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.WriteBooleanInt
 Summary
@@ -1353,6 +1316,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.WriteCollection
 Summary
@@ -1362,10 +1326,10 @@ Description
 Parameters
   Path - Description for this parameter
   List - Description for this parameter
-  ItemName - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.WriteDateTime
 Summary
@@ -1376,8 +1340,9 @@ Parameters
   Path  - Path (relative to the current path) where the value is to be stored.
   Value - Value to store.
 See Also
-  ReadDateTime, WriteBinary, WriteFloat, WriteInteger, WriteList, WriteString, WriteStringList
-
+  TJvCustomAppStorage.ReadDateTime, TJvCustomAppStorage.WriteBinary, TJvCustomAppStorage.WriteFloat,
+  TJvCustomAppStorage.WriteInteger, TJvCustomAppStorage.WriteList, TJvCustomAppStorage.WriteString,
+  TJvCustomAppStorage.WriteStringList
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.WriteEnumeration
@@ -1393,7 +1358,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.WriteEnumerationInt
 Summary
@@ -1408,7 +1372,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.WriteFloat
 Summary
@@ -1419,8 +1382,9 @@ Parameters
   Path  - Path (relative to the current path) where the value is to be stored.
   Value - Value to store.
 See Also
-  ReadFloat, WriteBinary, WriteDateTime, WriteInteger, WriteList, WriteString, WriteStringList
-
+  TJvCustomAppStorage.ReadFloat, TJvCustomAppStorage.WriteBinary, TJvCustomAppStorage.WriteDateTime,
+  TJvCustomAppStorage.WriteInteger, TJvCustomAppStorage.WriteList, TJvCustomAppStorage.WriteString,
+  TJvCustomAppStorage.WriteStringList
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.WriteInteger
@@ -1432,8 +1396,9 @@ Parameters
   Path  - Path (relative to the current path) where the value is to be stored.
   Value - Value to store.
 See Also
-  ReadInteger, WriteBinary, WriteDateTime, WriteFloat, WriteList, WriteString, WriteStringList
-
+  TJvCustomAppStorage.ReadInteger, TJvCustomAppStorage.WriteBinary,
+  TJvCustomAppStorage.WriteDateTime, TJvCustomAppStorage.WriteFloat, TJvCustomAppStorage.WriteList,
+  TJvCustomAppStorage.WriteString, TJvCustomAppStorage.WriteStringList
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.WriteList
@@ -1457,9 +1422,11 @@ Parameters
   ItemCount     - Number of items to store.
   OnWriteItem   - Method that will write each item to the storage.
   OnDeleteItems - Method that will remove remaining items from a previous list.
-  ItemName      - Description for this parameter
 See Also
-  ReadList, WriteBinary, WriteDateTime, WriteFloat, WriteInteger, WriteString, WriteStringList
+  TJvCustomAppStorage.ReadList, TJvCustomAppStorage.WriteBinary, TJvCustomAppStorage.WriteDateTime,
+  TJvCustomAppStorage.WriteFloat, TJvCustomAppStorage.WriteInteger, TJvCustomAppStorage.WriteString,
+  TJvCustomAppStorage.WriteStringList
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.WriteObjectList
 Summary
@@ -1467,12 +1434,12 @@ Summary
 Description
   Write here a description
 Parameters
-  Path     - Description for this parameter
-  List     - Description for this parameter
-  ItemName - Description for this parameter
+  Path - Description for this parameter
+  List - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.WritePersistent
 Summary
@@ -1487,6 +1454,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.WriteProperty
 Summary
@@ -1501,6 +1469,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.WriteSet
 Summary
@@ -1514,7 +1483,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.WriteSetInt
@@ -1530,7 +1498,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.WriteString
 Summary
@@ -1541,8 +1508,9 @@ Parameters
   Path  - Path (relative to the current path) where the value is to be stored.
   Value - Value to store.
 See Also
-  ReadString, WriteBinary, WriteDateTime, WriteFloat, WriteInteger, WriteList, WriteStringList
-
+  TJvCustomAppStorage.ReadString, TJvCustomAppStorage.WriteBinary, TJvCustomAppStorage.WriteDateTime,
+  TJvCustomAppStorage.WriteFloat, TJvCustomAppStorage.WriteInteger, TJvCustomAppStorage.WriteList,
+  TJvCustomAppStorage.WriteStringList
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.WriteStringList
@@ -1556,29 +1524,17 @@ Description
 Parameters
   Path - Path (relative to the current path) where the strings are to be stored.
   SL   - \String list to store.
-  ItemName - Description for this parameter
 See Also
-  ReadStringList, WriteBinary, WriteDateTime, WriteFloat, WriteInteger, WriteList, WriteString
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppStorage.WriteStringObjectList
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Path     - Description for this parameter
-  SL       - Description for this parameter
-  ItemName - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomAppStorage.ReadStringList, TJvCustomAppStorage.WriteBinary,
+  TJvCustomAppStorage.WriteDateTime, TJvCustomAppStorage.WriteFloat,
+  TJvCustomAppStorage.WriteInteger, TJvCustomAppStorage.WriteList, TJvCustomAppStorage.WriteString
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.BooleanAsString
@@ -1590,7 +1546,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.BooleanStringFalseValues
 Summary
@@ -1600,7 +1555,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.BooleanStringTrueValues
@@ -1612,7 +1566,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.DateTimeAsString
 Summary
@@ -1622,7 +1575,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.DefaultFalseString
@@ -1636,7 +1588,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.DefaultIfReadConvertError
 Summary
@@ -1647,7 +1598,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.DefaultIfValueNotExists
 Summary
@@ -1657,7 +1607,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.DefaultTrueString
@@ -1671,7 +1620,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.EnumerationAsString
 Summary
@@ -1682,7 +1630,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.FloatAsString
 Summary
@@ -1692,7 +1639,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.IsValueFalseString
@@ -1707,7 +1653,6 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.IsValueListString
@@ -1724,7 +1669,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.IsValueTrueString
 Summary
@@ -1739,7 +1683,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.SetAsString
 Summary
@@ -1749,7 +1692,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.SetBooleanAsString
@@ -1763,7 +1705,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.SetBooleanStringFalseValues
 Summary
@@ -1775,7 +1716,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.SetBooleanStringTrueValues
@@ -1789,7 +1729,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.SetDateTimeAsStr
 Summary
@@ -1801,7 +1740,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.SetDefaultIfReadConvertError
@@ -1815,7 +1753,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.SetDefaultIfValueNotExists
 Summary
@@ -1827,7 +1764,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.SetEnumAsStr
@@ -1841,7 +1777,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.SetFloatAsStr
 Summary
@@ -1853,7 +1788,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.SetIntAsStr
@@ -1867,7 +1801,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.SetSetAsStr
 Summary
@@ -1880,7 +1813,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorageOptions.TypedIntegerAsString
 Summary
@@ -1890,5 +1822,4 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
 

@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorButton
 <TITLEIMG TJvColorButton>
@@ -16,57 +18,66 @@ JVCLInfo
 Summary
   A button that can display a color and a drop-down form to select another color.
 Description
-  Use TJvColorButton when you need a button to select a color. The TJvColorButton is visually
-  similar to the color selection button used in the Display Properties dialog in Windows. To select
-  a color, click the button and a color selection form is displayed with the common Windows colors.
+  Use TJvColorButton when you need a button to select a color. The TJvColorButton is visually similar
+  to the color selection button used in the Display Properties dialog in Windows. To select a color,
+  click the button and a color selection form is displayed with the common Windows colors.
   Click one of the color squares to select that color. To select a color not in the form, click the
   "Other" button to display a common color selection dialog.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorButton.Color
 Summary
   Specifies the currently selected color in the button.
 Description
-  Use Color to specify the color to display on the button. \Read Color to determine what color
-  is currently selected. You can't change the color of the actual button as this is determined by
-  the clBtnFace color constant.
+  Use Color to specify the color to display on the button. \Read Color to determine what color is
+  currently selected. You can't change the color of the actual button as this is determined by the
+  clBtnFace color constant.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorButton.CustomColors
 Summary
   List of custom colors.
 Description
   Use CustomColors to set the custom colors to add to the common color dialog displayed when the
-  "Other" button is clicked. \Read CustomColors to determine the custom colors added by the user from this dialog.
-  CustomColors is assignment compatible with the <LINK TColorDialog.CustomColors, CustomColors> property of
+  "Other" button is clicked. \Read CustomColors to determine the custom colors added by the user from
+  this dialog.
+  CustomColors is assignment compatible with the <LINK TColorDialog.CustomColors, CustomColors>
+  property of
   TColorDialog.
 See Also
-  TColorDialog, Color
+  TColorDialog
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorButton.EdgeWidth
 Summary
   Specifies the width of the edge surrounding the color square on the button.
 Description
-  Use EdgeWidth to set the size of the color square on the button. \Read EdgeWidth to determine
-  the current size of the color square. EdgeWidth is expressed in pixels.
+  Use EdgeWidth to set the size of the color square on the button. \Read EdgeWidth to determine the
+  current size of the color square. EdgeWidth is expressed in pixels.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorButton.OnChange
 Summary
   Occurs when the color in the color square changes.
 Description
   Write a handler for the OnChange event to take specific actions when the Color property is changed.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorButton.Options
 Summary
   Specifies options for the common color dialog.
 Description
-  Use Options to specify what options should be enabled when the common color dialog is displayed. Options
-  is equivalent to TColorDialog.Options. The common color dialog is displayed when the user clicks the
-  "Other" button.
+  Use Options to specify what options should be enabled when the common color dialog is displayed.
+  Options is equivalent to TColorDialog.Options. The common color dialog is displayed when the user
+  clicks the "Other" button.
 See Also
   TColorDialog.Options
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorButton.OtherCaption
 Summary
   Specifies the caption of the "Other" button.
 Description
-  Use OtherCaption to set the text that is displayed on the "Other" button. The "Other" button is used
-  to display a common color dialog and is located on the drop-down form of the button.
+  Use OtherCaption to set the text that is displayed on the "Other" button. The "Other" button is
+  used to display a common color dialog and is located on the drop-down form of the button.
+

@@ -9,38 +9,28 @@
 ----------------------------------------------------------------------------------------------------
 @@JvExGrids.pas
 Summary
-  Contains components that extend the components from Delphi's Grids.pas with generic properties and CLX code.
+  Contains components that extend the components from Delphi's Grids.pas with generic properties and
+  CLX code.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Andreas Hausladen
-----------------------------------------------------------------------------------------------------
-@@TEditStyle
-<TITLE TEditStyle type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-@@TEditStyle.esSimple
-  Description for esSimple
-@@TEditStyle.esEllipsis
-  Description for esEllipsis
-@@TEditStyle.esPickList
-  Description for esPickList
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomDrawGrid
 Summary
   Base class for extended grids.
 Description
-  TJvExCustomDrawGrid is a base class for classes in the JVCL library that descend from TCustomDrawGrid.
+  TJvExCustomDrawGrid is a base class for classes in the JVCL library that descend from
+  TCustomDrawGrid.
+  
+  Do not create instances of TJvExCustomDrawGrid. Use a descendant of TJvExCustomDrawGrid or create
+  your own descendant class.
 
-  Do not create instances of TJvExCustomDrawGrid. Use a descendant of TJvExCustomDrawGrid or create your
-  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomDrawGrid.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomDrawGrid.HintColor
 Summary
@@ -49,6 +39,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomDrawGrid.MouseOver
 Summary
@@ -56,7 +47,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the grid.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExCustomDrawGrid.OnMouseEnter, TJvExCustomDrawGrid.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomDrawGrid.OnMouseEnter
 Summary
@@ -65,35 +57,40 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   grid.
 See Also
-  OnMouseLeave
+  TJvExCustomDrawGrid.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomDrawGrid.OnMouseLeave
 Summary
   Occurs when the mouse pointer moves off the grid.
 Description
   Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  grid. For example, you can use this event to undo changes that were made in an OnMouseEnter
-  event handler.
+  grid. For example, you can use this event to undo changes that were made in an OnMouseEnter event
+  handler.
 See Also
-  OnMouseEnter
+  TJvExCustomDrawGrid.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomDrawGrid.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomGrid
 Summary
   Base class for extended grids.
 Description
   TJvExCustomGrid is a base class for classes in the JVCL library that descend from TCustomGrid.
+  
+  Do not create instances of TJvExCustomGrid. Use a descendant of TJvExCustomGrid or create your own
+  descendant class.
 
-  Do not create instances of TJvExCustomGrid. Use a descendant of TJvExCustomGrid or create your
-  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomGrid.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomGrid.HintColor
 Summary
@@ -102,6 +99,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomGrid.MouseOver
 Summary
@@ -109,7 +107,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the grid.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExCustomGrid.OnMouseEnter, TJvExCustomGrid.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomGrid.OnMouseEnter
 Summary
@@ -118,35 +117,40 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   grid.
 See Also
-  OnMouseLeave
+  TJvExCustomGrid.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomGrid.OnMouseLeave
 Summary
   Occurs when the mouse pointer moves off the grid.
 Description
   Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  grid. For example, you can use this event to undo changes that were made in an OnMouseEnter
-  event handler.
+  grid. For example, you can use this event to undo changes that were made in an OnMouseEnter event
+  handler.
 See Also
-  OnMouseEnter
+  TJvExCustomGrid.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomGrid.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExDrawGrid
 Summary
   Base class for extended grids.
 Description
   TJvExDrawGrid is a base class for classes in the JVCL library that descend from TDrawGrid.
+  
+  Do not create instances of TJvExDrawGrid. Use a descendant of TJvExDrawGrid or create your own
+  descendant class.
 
-  Do not create instances of TJvExDrawGrid. Use a descendant of TJvExDrawGrid or create your
-  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExDrawGrid.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExDrawGrid.HintColor
 Summary
@@ -155,6 +159,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExDrawGrid.MouseOver
 Summary
@@ -162,7 +167,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the grid.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExDrawGrid.OnMouseEnter, TJvExDrawGrid.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExDrawGrid.OnMouseEnter
 Summary
@@ -171,35 +177,40 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   grid.
 See Also
-  OnMouseLeave
+  TJvExDrawGrid.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExDrawGrid.OnMouseLeave
 Summary
   Occurs when the mouse pointer moves off the grid.
 Description
   Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  grid. For example, you can use this event to undo changes that were made in an OnMouseEnter
-  event handler.
+  grid. For example, you can use this event to undo changes that were made in an OnMouseEnter event
+  handler.
 See Also
-  OnMouseEnter
+  TJvExDrawGrid.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExDrawGrid.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExInplaceEdit
 Summary
   Base class for extended grid edit windows.
 Description
   TJvExInplaceEdit is a base class for classes in the JVCL library that descend from TInplaceEdit.
-
+  
   Do not create instances of TJvExInplaceEdit. Use a descendant of TJvExInplaceEdit or create your
   own descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExInplaceEdit.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExInplaceEdit.HintColor
 Summary
@@ -208,6 +219,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExInplaceEdit.MouseOver
 Summary
@@ -215,7 +227,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the control.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExInplaceEdit.OnMouseEnter, TJvExInplaceEdit.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExInplaceEdit.OnMouseEnter
 Summary
@@ -224,7 +237,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
-  OnMouseLeave
+  TJvExInplaceEdit.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExInplaceEdit.OnMouseLeave
 Summary
@@ -234,25 +248,30 @@ Description
   control. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExInplaceEdit.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExInplaceEdit.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExInplaceEditList
 Summary
   Base class for extended grid edit windows with pick list.
 Description
-  TJvExInplaceEditList is a base class for classes in the JVCL library that descend from TInplaceEditList.
+  TJvExInplaceEditList is a base class for classes in the JVCL library that descend from
+  TInplaceEditList.
+  
+  Do not create instances of TJvExInplaceEditList. Use a descendant of TJvExInplaceEditList or create
+  your own descendant class.
 
-  Do not create instances of TJvExInplaceEditList. Use a descendant of TJvExInplaceEditList or create your
-  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExInplaceEditList.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExInplaceEditList.HintColor
 Summary
@@ -261,6 +280,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExInplaceEditList.MouseOver
 Summary
@@ -268,7 +288,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the control.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExInplaceEditList.OnMouseEnter, TJvExInplaceEditList.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExInplaceEditList.OnMouseEnter
 Summary
@@ -277,7 +298,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
-  OnMouseLeave
+  TJvExInplaceEditList.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExInplaceEditList.OnMouseLeave
 Summary
@@ -287,25 +309,29 @@ Description
   control. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExInplaceEditList.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExInplaceEditList.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExStringGrid
 Summary
   Base class for extended string grids.
 Description
   TJvExStringGrid is a base class for classes in the JVCL library that descend from TStringGrid.
+  
+  Do not create instances of TJvExStringGrid. Use a descendant of TJvExStringGrid or create your own
+  descendant class.
 
-  Do not create instances of TJvExStringGrid. Use a descendant of TJvExStringGrid or create your
-  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExStringGrid.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExStringGrid.HintColor
 Summary
@@ -314,6 +340,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExStringGrid.MouseOver
 Summary
@@ -321,7 +348,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the string grid.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExStringGrid.OnMouseEnter, TJvExStringGrid.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExStringGrid.OnMouseEnter
 Summary
@@ -330,7 +358,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   string grid.
 See Also
-  OnMouseLeave
+  TJvExStringGrid.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExStringGrid.OnMouseLeave
 Summary
@@ -340,10 +369,12 @@ Description
   string grid. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExStringGrid.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExStringGrid.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+

@@ -11,12 +11,14 @@ Author
 @@TJvAlarmEvent
 <TITLE TJvAlarmEvent type>
 <COMBINE TJvAlarms.OnAlarm>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAlarmItem
 Summary
   Represents a single alarm event.
 Description
   Use TJvAlarmItem to describe the characteristics of a single alarm event.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAlarmItem.Kind
 Summary
@@ -24,7 +26,8 @@ Summary
 Description
   Use Kind to specify the kind of alarm.
 See Also
-  Name, Time
+  TJvAlarmItem.Name, TJvAlarmItem.Time
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAlarmItem.Name
 Summary
@@ -32,7 +35,8 @@ Summary
 Description
   Use Name to specify a name for an alarm item.
 See Also
-  Kind, Time
+  TJvAlarmItem.Kind, TJvAlarmItem.Time
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAlarmItem.Time
 Summary
@@ -40,13 +44,15 @@ Summary
 Description
   Use Time to specify the date and time at which the alarm is to be triggered.
 See Also
-  Kind, Name 
+  TJvAlarmItem.Kind, TJvAlarmItem.Name
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAlarmItems
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAlarmItems.Add
 Summary
@@ -58,6 +64,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAlarmItems.Items
 Summary
@@ -70,6 +77,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAlarms
 <TITLEIMG TJvAlarms>
@@ -89,7 +97,8 @@ Description
   * Write a handler for the <LINK TJvAlarms.OnAlarm, OnAlarm> event.
   * Set the Active property to True.
   * Add tasks to the component using the Add method in run time or the Alarms property editor in
-    design time.
+     design time.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAlarms.Active
 Summary
@@ -98,7 +107,8 @@ Description
   Active indicates if alarms will fire. When Active is set to False, no alarm will fire at the set
   date/time. When set to True, Alarms will fire at the set date/time.
 See Also
-  Running
+  TJvAlarms.Running
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAlarms.Add
 Summary
@@ -108,12 +118,13 @@ Description
   ID), a date/time when the alarm should fire and the kind of alarm (default's to one-shot).
 Parameters
   AName -  Name of the alarm. The name is the only way you can identify an alarm during an OnAlarm
-           event.
+            event.
   ATime -  Date and time at which the alarm should go off.
   AKind -  The kind of alarm to be added. Kind will default to tkOneShot, meaning that the alarm
-           will fire only once and at the specified time.
+            will fire only once and at the specified time.
 See Also
-  Alarms, Delete, OnAlarm, TJvTriggerKind
+  TJvAlarms.Alarms, TJvAlarms.Delete, TJvAlarms.OnAlarm, TJvTriggerKind
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAlarms.Alarms
 Summary
@@ -121,6 +132,7 @@ Summary
 Description
   Alarms is an array of registered alarms. The array is 0-based. Each item is a single alarm with a
   name, an initial fire date/time and the trigger kind (repeat interval).
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAlarms.Delete
 Summary
@@ -129,6 +141,7 @@ Description
   Delete removes the alarm at the specified index.
 Parameters
   Idx - Index of the alarm to delete.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAlarms.DoAlarm
 Summary
@@ -137,8 +150,9 @@ Description
   DoAlarm is a protected method that will call the assigned OnAlarm event if present. It's intended
   for descendants to call the OnAlarm event from their own code.
 Parameters
-  Alarm -       Reference to the alarm that fired.
+  Alarm       - Reference to the alarm that fired.
   TriggerTime - The time the alarm went off.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAlarms.OnAlarm
 Summary
@@ -146,9 +160,10 @@ Summary
 Description
   OnAlarm is an event that will be called for each alarm that fires.
 Parameters
-  Sender -      Reference to the TJvAlarms component generating the event.
-  Alarm -       Reference to the alarm that fired.
+  Sender      - Reference to the TJvAlarms component generating the event.
+  Alarm       - Reference to the alarm that fired.
   TriggerTime - The time the alarm went off.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAlarms.Running
 Summary
@@ -158,4 +173,5 @@ Description
   Active property is set to False, Running will also be False. When Active is set to True, Running
   will be True as long as Count > 0.
 See Also
-  Active
+  TJvAlarms.Active
+

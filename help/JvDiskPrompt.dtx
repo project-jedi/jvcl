@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDiskPrompt
 <TITLEIMG TJvDiskPrompt>
@@ -18,6 +20,7 @@ Summary
 Description
   This component is used to display a dialog box that prompts a user for a disk during a setup
   routine. It is a wrapper for the SetupPromptForDisk API call.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDiskPrompt.DiskName
 Summary
@@ -25,7 +28,8 @@ Summary
 Description
   This property contains the name of the disk the user will be prompted for.
 See Also
-  FileSought
+  TJvDiskPrompt.FileSought
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDiskPrompt.Execute
 Summary
@@ -33,8 +37,9 @@ Summary
 Description
   This method shows the SetupPromptForDisk dialog box.
 Return value
-  Returns dsSuccess if the file has been found, dsCancel if the user pressed "Cancel",
-  dsSkipFile if the user pressed "Skip File", and dsError if an error occurred.
+  Returns dsSuccess if the file has been found, dsCancel if the user pressed "Cancel", dsSkipFile if
+  the user pressed "Skip File", and dsError if an error occurred.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDiskPrompt.FileSought
 Summary
@@ -42,7 +47,8 @@ Summary
 Description
   This property contains the file that the user needs to provide the location for.
 See Also
-  NewPath, PathToSource
+  TJvDiskPrompt.NewPath, TJvDiskPrompt.PathToSource
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDiskPrompt.NewPath
 Summary
@@ -50,7 +56,8 @@ Summary
 Description
   This property contains the new path chosen by the user in the dialog box.
 See Also
-  PathToSource, FileSought
+  TJvDiskPrompt.FileSought, TJvDiskPrompt.PathToSource
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDiskPrompt.PathToSource
 Summary
@@ -58,20 +65,23 @@ Summary
 Description
   This property contains the initial contents for the combo box used to hold the user-selected path.
 See Also
-  DiskName, TagFile
+  TJvDiskPrompt.DiskName, TJvDiskPrompt.TagFile
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDiskPrompt.Style
 Summary
   Flags used for modifying the dialog box.
 Description
   These flags modify how the dialog box is presented to the user.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDiskPrompt.TagFile
 Summary
   An optional file name of which presence is verified.
 Description
-  This property contains the name of a file that will be used to verify presence of the proper
-  disk. If the tag file is not found in the root directory of the disk, then presence in the
-  user-supplied directory is verified. Use of this property is optional.
+  This property contains the name of a file that will be used to verify presence of the proper disk.
+  If the tag file is not found in the root directory of the disk, then presence in the user-supplied
+  directory is verified. Use of this property is optional.
 See Also
-  PathToSource
+  TJvDiskPrompt.PathToSource
+

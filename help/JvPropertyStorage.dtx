@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Fedor Koshevnikov, Igor Pavluk and Serge Korolev
+
+
 ----------------------------------------------------------------------------------------------------
 @@CreateStoredItem
 <TITLE CreateStoredItem function>
@@ -20,6 +22,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@ParseStoredItem
 <TITLE ParseStoredItem function>
@@ -34,12 +37,19 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TEraseSectEvent
+<TITLE TEraseSectEvent type>
+<COMBINE TJvPropertyStorage.OnEraseSection>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPropertyStorage
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPropertyStorage.AObject
 Summary
@@ -49,24 +59,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvPropertyStorage.AppStorage
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvPropertyStorage.AppStoragePath
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPropertyStorage.LoadAnyProperty
 Summary
@@ -78,6 +71,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPropertyStorage.LoadObjectsProps
 Summary
@@ -90,6 +84,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPropertyStorage.LoadProperties
 Summary
@@ -101,6 +96,45 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPropertyStorage.OnEraseSection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  APath - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPropertyStorage.OnReadString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  APath   - Description for this parameter
+  Default - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPropertyStorage.OnWriteString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  APath - Description for this parameter
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPropertyStorage.Prefix
 Summary
@@ -110,6 +144,17 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPropertyStorage.Section
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPropertyStorage.StoreAnyProperty
 Summary
@@ -121,6 +166,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPropertyStorage.StoreObjectsProps
 Summary
@@ -133,6 +179,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPropertyStorage.StoreProperties
 Summary
@@ -144,12 +191,14 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPropInfoList
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPropInfoList.Contains
 Summary
@@ -163,6 +212,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPropInfoList.Count
 Summary
@@ -172,6 +222,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPropInfoList.Delete
 Summary
@@ -183,6 +234,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPropInfoList.Find
 Summary
@@ -196,6 +248,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPropInfoList.Intersect
 Summary
@@ -207,6 +260,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPropInfoList.Items
 Summary
@@ -218,6 +272,17 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TReadStrEvent
+<TITLE TReadStrEvent type>
+<COMBINE TJvPropertyStorage.OnReadString>
+
+----------------------------------------------------------------------------------------------------
+@@TWriteStrEvent
+<TITLE TWriteStrEvent type>
+<COMBINE TJvPropertyStorage.OnWriteString>
+
 ----------------------------------------------------------------------------------------------------
 @@UpdateStoredList
 <TITLE UpdateStoredList procedure>
@@ -232,3 +297,4 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+

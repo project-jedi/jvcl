@@ -8,18 +8,23 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TCaptionClickEvent
 <TITLE TCaptionClickEvent type>
 <COMBINE TJvStringGrid.OnCaptionClick>
+
 ----------------------------------------------------------------------------------------------------
 @@TExitCellEvent
 <TITLE TExitCellEvent type>
 <COMBINE TJvStringGrid.OnExitCell>
+
 ----------------------------------------------------------------------------------------------------
 @@TGetCellAlignmentEvent
 <TITLE TGetCellAlignmentEvent type>
 <COMBINE TJvStringGrid.OnGetCellAlignment>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSortType
 <TITLE TJvSortType type>
@@ -27,25 +32,38 @@ Summary
   Enumerates comparison methods that can be used to sort a \string grid.
 Description
   Use the TJvSortType to specify a specific comparison method to sort a \string grid.
+
+----------------------------------------------------------------------------------------------------
 @@TJvSortType.stNone
-  No comparison.
+No comparison.
+
+----------------------------------------------------------------------------------------------------
 @@TJvSortType.stAutomatic
-  The comparison function automatically determines the type of the strings when comparing two strings.
-  If both strings represent an integer, floating-point value or a date, then the two strings are compared
-  as integer, floating-point value or data, respectively. Otherwise the two strings are compared as \string.
+The comparison function automatically determines the type of the strings when comparing two strings.
+If both strings represent an integer, floating-point value or a date, then the two strings are compared as integer, floating-point value or data, respectively. Otherwise the two strings are compared as \string.
+
+----------------------------------------------------------------------------------------------------
 @@TJvSortType.stClassic
-  The strings in the sort column are sorted without case-sensitivity.
+The strings in the sort column are sorted without case-sensitivity.
+
+----------------------------------------------------------------------------------------------------
 @@TJvSortType.stCaseSensitive
-  The strings in the sort column are sorted with case-sensitivity.
+The strings in the sort column are sorted with case-sensitivity.
+
+----------------------------------------------------------------------------------------------------
 @@TJvSortType.stNumeric
-  A numeric sort is used. Every \string in the sort column, that is included in the sort,must represent
-  a floating-point value.
+A numeric sort is used. Every \string in the sort column, that is included in the sort,must represent
+a floating-point value.
+
+----------------------------------------------------------------------------------------------------
 @@TJvSortType.stDate
-  A date sort is used. Every \string in the sort column, that is included in the sort, must specify a
-  date.
+A date sort is used. Every \string in the sort column, that is included in the sort, must specify a date.
+
+----------------------------------------------------------------------------------------------------
 @@TJvSortType.stCurrency
-  A currency sort is used. Every \string in the sort column, that is included in the sort must represent
-  a currency value.
+A currency sort is used. Every \string in the sort column, that is included in the sort must represent
+a currency value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid
 <TITLEIMG TJvStringGrid>
@@ -55,25 +73,26 @@ JVCLInfo
 Summary
   Supports extended features such as alternative cell alignment, sorting, loading and saving a grid.
 Description
-  Call method SortGrid to sort the grid. Call method SaveToCSV, SaveToFile or SaveToStream to save the
-  grid to a stream or file. Call method LoadFromCSV, LoadFromFile or LoadFromStream to load the grid
-  from a file or stream.
+  Call method SortGrid to sort the grid. Call method SaveToCSV, SaveToFile or SaveToStream to save
+  the grid to a stream or file. Call method LoadFromCSV, LoadFromFile or LoadFromStream to load the
+  grid from a file or stream.
 
-  You can use OnMouseEnter and OnMouseLeave to alter the grids look or behavoir, when the user
-  moves the mouse pointer over the control.
+  You can use OnMouseEnter and OnMouseLeave to alter the grids look or behavoir, when the user moves
+  the mouse pointer over the control.
 
   Property HintColor can be used to set a different color of the Help hint boxes for the grid.
 
   Use Alignment to set the default alignment for the grid. \Write an OnGetCellAlignment event handler
   to provide the grid with an alignment for a specific cell.
 
-  Call <LINK InvalidateCell>, <LINK InvalidateCol> or <LINK InvalidateRow> to repaint a cell,
-  column or row, respectively.
+  Call <LINK InvalidateCell>, <LINK InvalidateCol> or <LINK InvalidateRow> to repaint a cell, column
+  or row, respectively.
 
   Call ActivateCell to set the input focus to a specific cell. \Write an OnExitCell event handler to
   respend when the input focus shifts away from a cell.
 
   \Write an OnCaptionClick event handler to respond when the user clicks a fixed cell.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.ActivateCell
 Summary
@@ -83,6 +102,7 @@ Description
 Parameters
   AColumn - Indicates the column index of the cell that should get focus.
   ARow    - Indicates the row index of the cell that that should get focus.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.Alignment
 Summary
@@ -93,18 +113,20 @@ Description
   OnGetCellAlignment event handler to specify the alignment of a single cell. The value returned by
   OnGetCellAlignment then overrides the value specified by Alignment.
 See Also
-  OnGetCellAlignment
+  TJvStringGrid.OnGetCellAlignment
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.AutoSizeCol
 Summary
   Calculates and sets the width of a specific column or all columns.
 Description
-  Call AutoSizeCol to calculates and set the width of column specified by parameter Index, based
-  on the text in the affected cells.
+  Call AutoSizeCol to calculates and set the width of column specified by parameter Index, based on
+  the text in the affected cells.
 Parameters
   Index    - The index of the column to resize. If Index < 0, all columns are resized.
   MinWidth - Specifies a minimum width for the column(s). If MinWidth is < 0,
               DefaultColWidth is used instead.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.CaptionClick
 Summary
@@ -116,15 +138,18 @@ Parameters
   AColumn - Indicates the column index of the cell that is clicked.
   ARow    - Indicates the row index of the cell that is clicked.
 See Also
-  OnCaptionClick
+  TJvStringGrid.OnCaptionClick
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.Clear
 Summary
   Removes the content in the Cells, but does not remove any rows or columns.
 Description
-  Call Clear to remove the content in the Cells. Calling Clear will <i>not</i> remove any rows or columns.
+  Call Clear to remove the content in the Cells. Calling Clear will <i>not</i> remove any rows or
+  columns.
 See Also
-  HideAll
+  TJvStringGrid.HideAll
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.Create
 Summary
@@ -135,6 +160,7 @@ Description
   \Create calls the inherited \Create method, then sets the initial values for the grid as follows:
 Parameters
   AOwner - A component, typically the form, that is responsible for freeing the grid.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.CreateEditor
 Summary
@@ -142,22 +168,24 @@ Summary
 Description
   CreateEditor overrides the inherited method to be able to align the text of cells, and to fire the
   OnExitCell event.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.DefaultDrawCell
 Summary
   Draws the text in a column cell.
 Description
   Call DefaultDrawCell from an OnDrawCell event handler to draw the text in a column cell. If the
-  OnGetCellAlignment event handler is assigned, DefaultDrawCell fires the OnGetCellAlignment event
-  to get the alignment for the text. Otherwise it uses the Alignment property to align the cell text.
+  OnGetCellAlignment event handler is assigned, DefaultDrawCell fires the OnGetCellAlignment event to
+  get the alignment for the text. Otherwise it uses the Alignment property to align the cell text.
 Parameters
   AColumn - Indicates the column index of the cell that should be drawn.
   ARow    - Indicates the row index of the cell that should be drawn.
   Rect    - Indicates the location of the cell on the canvas.
-  State   - Indicates whether the cell has input focus, whether the cell is selected, and whether the cell
-             is a fixed (nonscrolling) cell.
+  State   - Indicates whether the cell has input focus, whether the cell is selected, and whether the
+  cell            is a fixed (nonscrolling) cell.
 See Also
-  OnGetCellAlignment
+  TJvStringGrid.OnGetCellAlignment
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.DrawCell
 Summary
@@ -175,10 +203,11 @@ Parameters
   AColumn - Indicate the column index of the cell that should be drawn.
   ARow    - Indicate the row index of the cell that should be drawn.
   Rect    - Indicates the location of the cell on the canvas.
-  State   - Indicates whether the cell has input focus, whether the cell is selected, and whether the cell
-           is a fixed (nonscrolling) cell.
+  State   - Indicates whether the cell has input focus, whether the cell is selected, and whether the
+  cell          is a fixed (nonscrolling) cell.
 See Also
-  DefaultDrawCell, OnSetCanvasProperties
+  TJvStringGrid.DefaultDrawCell, TJvStringGrid.OnSetCanvasProperties
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.ExitCell
 Summary
@@ -191,16 +220,19 @@ Parameters
   AColumn  - Indicate the column index of the cell that loses the input focus.
   ARow     - Indicate the row index of the cell that loses the input focus.
 See Also
-  OnExitCell
+  TJvStringGrid.OnExitCell
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.FixedFont
 Summary
   Specifies the font to use for the fixed columns and rows in the grid.
 Description
   Set the properties of FixedFont to change the visual appearance of the font used in the fixed rows
-  and columns in the grid. By default, the FixedFont properties are the same as the properties for Font.
+  and columns in the grid. By default, the FixedFont properties are the same as the properties for
+  Font.
 See Also
   Font
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.GetCellAlignment
 Summary
@@ -212,10 +244,11 @@ Description
 Parameters
   AColumn - The column index of the cell.
   ARow    - The row index of the cell that should be drawn.
-  State   - Indicates whether the cell has input focus, whether the cell is selected, and whether the cell
-           is a fixed (nonscrolling) cell.
+  State   - Indicates whether the cell has input focus, whether the cell is selected, and whether the
+  cell          is a fixed (nonscrolling) cell.
 See Also
-  OnGetCellAlignment
+  TJvStringGrid.OnGetCellAlignment
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.HideAll
 Summary
@@ -223,7 +256,9 @@ Summary
 Description
   Call HideAll to hide all rows and columns of the grid.
 See Also
-  Clear, HideCell, HideCol, HideRow, ShowAll
+  TJvStringGrid.Clear, TJvStringGrid.HideCell, TJvStringGrid.HideCol, TJvStringGrid.HideRow,
+  TJvStringGrid.ShowAll
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.HideCell
 Summary
@@ -234,7 +269,8 @@ Parameters
   ACol - Specifies the column to hide.
   ARow - Specifies the row to hide.
 See Also
-  HideAll, HideCol, HideRow, ShowCell
+  TJvStringGrid.HideAll, TJvStringGrid.HideCol, TJvStringGrid.HideRow, TJvStringGrid.ShowCell
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.HideCol
 Summary
@@ -242,11 +278,14 @@ Summary
 Description
   Call HideCol to hide the column at position Index. This is done by setting its ColWidth to -1.
 Note
-  Calling this method repeatedly does nothing (the hidden column retains its Index even if it's hidden)
+  Calling this method repeatedly does nothing (the hidden column retains its Index even if it's
+  hidden)
 Parameters
   Index - The index of the column to hide.
 See Also
-  HideAll, HideCell, HideRow, ShowCol, RemoveCol
+  TJvStringGrid.HideAll, TJvStringGrid.HideCell, TJvStringGrid.HideRow, TJvStringGrid.RemoveCol,
+  TJvStringGrid.ShowCol
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.HideRow
 Summary
@@ -258,7 +297,9 @@ Note
 Parameters
   Index - The index of the row to hide.
 See Also
-  HideAll, HideCell, HideCol, ShowRow, RemoveRow
+  TJvStringGrid.HideAll, TJvStringGrid.HideCell, TJvStringGrid.HideCol, TJvStringGrid.RemoveRow,
+  TJvStringGrid.ShowRow
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.HintColor
 Summary
@@ -267,6 +308,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.InsertCol
 Summary
@@ -279,20 +321,22 @@ Parameters
 Return value
   Returns the inserted column as an empty TStrings.
 See Also
-  InsertRow
+  TJvStringGrid.InsertRow
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.InsertRow
 Summary
   Inserts a new row in the grid.
 Description
-  Call InsertRow to insert a new row at the specified Index. All existing rows below and at the insertion
-  point will be moved down one step.
+  Call InsertRow to insert a new row at the specified Index. All existing rows below and at the
+  insertion point will be moved down one step.
 Parameters
   Index - The position in the grid where to insert a new row.
 Return value
   Returns the inserted row as an empty TStrings.
 See Also
-  InsertCol
+  TJvStringGrid.InsertCol
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.InvalidateCell
 Summary
@@ -305,17 +349,19 @@ Parameters
   ARow    - Row index of the cell.
 See Also
   <LINK InvalidateCol>, <LINK InvalidateRow>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.InvalidateCol
 Summary
-  Invalidates the region occupied by a column so that it will be repainted with the next Windows paint
-  message.
+  Invalidates the region occupied by a column so that it will be repainted with the next Windows
+  paint message.
 Description
   Call InvalidateCol when a column changes so that the area it occupies will need to be repainted.
 Parameters
   AColumn - Index of the column.
 See Also
   <LINK InvalidateCell>, <LINK InvalidateRow>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.InvalidateRow
 Summary
@@ -327,6 +373,7 @@ Parameters
   ARow - Index of the row.
 See Also
   <LINK InvalidateCell>, <LINK InvalidateCol>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.IsHidden
 Summary
@@ -340,15 +387,16 @@ Parameters
 Return value
   Returns true if the cell is hidden, otherwise false.
 See Also
-  HideCell
+  TJvStringGrid.HideCell
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.LoadFromCSV
 Summary
   Reads the comma seperated file specified in FileName and loads the data into the \string grid.
 Description
   Use the LoadFromCSV method to retrieve a \string grid from a comma seperated file. LoadFromCSV can
-  read files that list the cell strings - seperated with the character specified by Seperator - one row
-  per line.
+  read files that list the cell strings - seperated with the character specified by Seperator - one
+  row per line.
 Note
   String grid files contain only the text of the \string grid cells. They do not contain any data
   associated with a cell.
@@ -358,7 +406,9 @@ Parameters
   QuoteChar - Specifies the quote char.
   StripQuotes - Description for this parameter
 See Also
-  LoadFromFile, LoadFromStream, OnLoadProgress, SaveToCSV
+  TJvStringGrid.LoadFromFile, TJvStringGrid.LoadFromStream, TJvStringGrid.OnLoadProgress,
+  TJvStringGrid.SaveToCSV
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.LoadFromFile
 Summary
@@ -372,7 +422,9 @@ Note
 Parameters
   FileName - Name of a file that was saved using the SaveToFile method
 See Also
-  LoadFromCSV, LoadFromStream, OnLoadProgress, SaveToFile
+  TJvStringGrid.LoadFromCSV, TJvStringGrid.LoadFromStream, TJvStringGrid.OnLoadProgress,
+  TJvStringGrid.SaveToFile
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.LoadFromStream
 Summary
@@ -386,7 +438,9 @@ Note
 Parameters
   Stream - Specifies the stream from which to read the \string grid.
 See Also
-  LoadFromCSV, LoadFromFile, OnLoadProgress, SaveToStream
+  TJvStringGrid.LoadFromCSV, TJvStringGrid.LoadFromFile, TJvStringGrid.OnLoadProgress,
+  TJvStringGrid.SaveToStream
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.MoveColumn
 Summary
@@ -399,6 +453,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.MoveRow
 Summary
@@ -411,6 +466,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnCaptionClick
 Summary
@@ -422,39 +478,44 @@ Parameters
   Sender  - The grid that has fired this event.
   AColumn - Indicates the column index of the fixed cell that is clicked.
   ARow    - Indicates the row index of the fixed cell that is clicked.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnExitCell
 Summary
   Occurs when a cell loses the input focus.
 Description
-  \Write an OnExitCell event handler to take specific action when the input focus shifts away from
-  a cell.
+  \Write an OnExitCell event handler to take specific action when the input focus shifts away from a
+  cell.
 Parameters
   Sender   - The grid that has fired this event.
   AColumn  - Indicate the column index of the cell that loses the input focus.
   ARow     - Indicate the row index of the cell that loses the input focus.
   EditText - The text of the cell that loses the input focus.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnGetCellAlignment
 Summary
   Occurs when the grid request the alignment of a cell.
 Description
-  \Write an OnGetCellAlignment event handler to provide the grid with an alignment for a specific cell.
-  Set the cellAlignment parameter to the alignment for the cell specified by the ACol and ARow parameters.
-  cellAlignment is set to the value of property Alignment, so if you don't alter cellAlignment, the cell
-  is aligned as specified by Alignment.
+  \Write an OnGetCellAlignment event handler to provide the grid with an alignment for a specific
+  cell.
+  Set the cellAlignment parameter to the alignment for the cell specified by the ACol and ARow
+  parameters.
+  cellAlignment is set to the value of property Alignment, so if you don't alter cellAlignment, the
+  cell is aligned as specified by Alignment.
 
   OnGetCellAlignment is fired just before the cell is drawn, or if the user calls GetCellAlignment.
 Parameters
   Sender        - The grid that has fired this event.
   AColumn       - Indicates the column index of the cell that loses the input focus.
   ARow          - Indicates the row index of the cell that loses the input focus.
-  State         - Indicates whether the cell has input focus, whether the cell is selected, and whether
-                   the cell is a fixed (nonscrolling) cell.
-  CellAlignment - Specifies the alignment for the cell sepcified by the ACol and ARow parameters. If you
-                   don't alter cellAlignment the cell is aligned as specified by Alignment.
+  State         - Indicates whether the cell has input focus, whether the cell is selected, and
+  whether                  the cell is a fixed (nonscrolling) cell.
+  CellAlignment - Specifies the alignment for the cell sepcified by the ACol and ARow parameters. If
+  you                  don't alter cellAlignment the cell is aligned as specified by Alignment.
 See Also
-  Alignment, GetCellAlignment
+  TJvStringGrid.Alignment, TJvStringGrid.GetCellAlignment
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnHorizontalScroll
 Summary
@@ -463,7 +524,8 @@ Description
   \Write an OnHorizontalScroll event handler to take specific action when the user scrolls the
   horizontal scroll bar.
 See Also
-  OnVerticalScroll
+  TJvStringGrid.OnVerticalScroll
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnLoadProgress
 Summary
@@ -474,13 +536,15 @@ Description
   To calculate the percentage of progress to show in a progress indicator, multiply the value of
   Progression by 100 and divide by the value of Total.
 See Also
-  LoadFromCSV, LoadFromStream, LoadFromFile
+  TJvStringGrid.LoadFromCSV, TJvStringGrid.LoadFromFile, TJvStringGrid.LoadFromStream
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the grid changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnSaveProgress
 Summary
@@ -491,25 +555,28 @@ Description
   To calculate the percentage of progress to show in a progress indicator, multiply the value of
   Progression by 100 and divide by the value of Total.
 See Also
-  SaveToCSV, SaveToFile, SaveToStream
+  TJvStringGrid.SaveToCSV, TJvStringGrid.SaveToFile, TJvStringGrid.SaveToStream
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnSetCanvasProperties
 Summary
   Occurs immediately before a cell in the grid is drawn.
 Description
-  \Write an OnSetCanvasProperties event handler to provide any initialization of the canvas of a cell,
-  before cells are drawn. This event is fired just before TJvStringGrid calls DefaultDrawCell.
+  \Write an OnSetCanvasProperties event handler to provide any initialization of the canvas of a
+  cell, before cells are drawn. This event is fired just before TJvStringGrid calls DefaultDrawCell.
 See Also
-  DefaultDrawCell
+  TJvStringGrid.DefaultDrawCell
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.OnVerticalScroll
 Summary
   Occurs when the user scrolls the vertical scroll bar with the mouse or keyboard.
 Description
-  \Write an OnVerticalScroll event handler to take specific action when the user scrolls the
-  vertical scroll bar.
+  \Write an OnVerticalScroll event handler to take specific action when the user scrolls the vertical
+  scroll bar.
 See Also
-  OnHorizontalScroll
+  TJvStringGrid.OnHorizontalScroll
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.RemoveCol
 Summary
@@ -520,7 +587,8 @@ Description
 Parameters
   Index - Position of the column to remove.
 See Also
-  HideCol, RemoveRow
+  TJvStringGrid.HideCol, TJvStringGrid.RemoveRow
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.RemoveRow
 Summary
@@ -531,24 +599,28 @@ Description
 Parameters
   Index - Position of the row to remove.
 See Also
-  HideRow, RemoveCol
+  TJvStringGrid.HideRow, TJvStringGrid.RemoveCol
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.SaveToCSV
 Summary
   Saves the \string grid to the file specified in FileName.
 Description
-  Use the SaveToFile method to store \string grid cells to a text file. The cells can later be reloaded
-  from the file into a new \string grid object using the LoadFromCSV method. SaveToCSV writes the cell
-  strings to the file, seperated with the character specified by Seperator, and one row per line.
+  Use the SaveToFile method to store \string grid cells to a text file. The cells can later be
+  reloaded from the file into a new \string grid object using the LoadFromCSV method. SaveToCSV
+  writes the cell strings to the file, seperated with the character specified by Seperator, and one
+  row per line.
 
-  \Note: String grid files contain only the text of the \string grid cells. They do not contain any data
-  associated with a cell.
+  \Note: String grid files contain only the text of the \string grid cells. They do not contain any
+  data associated with a cell.
 Parameters
   FileName  - Name of the CSV file where to write the \string grid to.
   Separator - Character to be used in the CSV file to seperate cell strings.
   QuoteChar - Specifies the quote char.
 See Also
-  LoadFromCSV, OnSaveProgress, SaveToFile, SaveToStream
+  TJvStringGrid.LoadFromCSV, TJvStringGrid.OnSaveProgress, TJvStringGrid.SaveToFile,
+  TJvStringGrid.SaveToStream
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.SaveToFile
 Summary
@@ -557,12 +629,14 @@ Description
   Use the SaveToFile method to store \string grid cells to a file. The cells can later be reloaded
   from the file into a new \string grid object using the LoadFromFile method.
 
-  Note: String grid files contain only the text of the \string grid cells. They do not contain any data
-  associated with a cell.
+  Note: String grid files contain only the text of the \string grid cells. They do not contain any
+  data associated with a cell.
 Parameters
   FileName - Name of the file where to write the \string grid to.
 See Also
-  LoadFromFile, OnSaveProgress, SaveToCSV, SaveToStream
+  TJvStringGrid.LoadFromFile, TJvStringGrid.OnSaveProgress, TJvStringGrid.SaveToCSV,
+  TJvStringGrid.SaveToStream
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.SaveToStream
 Summary
@@ -571,12 +645,14 @@ Description
   Use the SaveToStream method to stream out the strings in a grid. It can be streamed back in to
   another \string grid object using the LoadFromStream method.
 
-  Note: String grid files contain only the text of the \string grid cells. They do not contain any data
-  associated with a cell.
+  Note: String grid files contain only the text of the \string grid cells. They do not contain any
+  data associated with a cell.
 Parameters
   Stream - The stream object to use for writing the information.
 See Also
-  LoadFromStream, OnSaveProgress, SaveToCSV, SaveToFile
+  TJvStringGrid.LoadFromStream, TJvStringGrid.OnSaveProgress, TJvStringGrid.SaveToCSV,
+  TJvStringGrid.SaveToFile
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.SetCanvasProperties
 Summary
@@ -588,10 +664,11 @@ Parameters
   AColumn - Indicate the column index of the cell that is about to be drawn.
   ARow    - Indicate the row index of the cell that is about to be drawn.
   Rect    - Indicates the location of the cell on the canvas.
-  State   - Indicates whether the cell has input focus, whether the cell is selected, and whether the cell
-             is a fixed (nonscrolling) cell.
+  State   - Indicates whether the cell has input focus, whether the cell is selected, and whether the
+  cell            is a fixed (nonscrolling) cell.
 See Also
-  DefaultDrawCell, OnSetCanvasProperties
+  TJvStringGrid.DefaultDrawCell, TJvStringGrid.OnSetCanvasProperties
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.ShowAll
 Summary
@@ -600,11 +677,12 @@ Description
   Call ShowAll to show all previously hidden cells.
 Parameters
   AWidth  - The new width of hidden cells. If AWidth is set to a value < 0, DefaultColWidth
-             determines the new width of the cells.
+   determines the new width of the cells.
   AHeight - The new height of hidden cells. If AHeight is set to a value < 0, DefaultRowHeight
-             determines the new height of the cells.
+      determines the new height of the cells.
 See Also
-  ShowCell, ShowCol, ShowRow
+  TJvStringGrid.ShowCell, TJvStringGrid.ShowCol, TJvStringGrid.ShowRow
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.ShowCell
 Summary
@@ -615,13 +693,14 @@ Parameters
   ACol    - Specifies the column to show.
   ARow    - Specifies the row to show.
   AWidth  - The new width for the hidden column. If AWidth is set to a value < 0, DefaultColWidth
-             determines the new width. If the column is not hidden, then the width of the column is not
+         determines the new width. If the column is not hidden, then the width of the column is not
              affected.
   AHeight - The new height of hidden row. If AHeight is set to a value < 0, DefaultRowHeight
-             determines the new height. If the row is not hidden, then the height of the row is not
+    determines the new height. If the row is not hidden, then the height of the row is not
              affected.
 See Also
-  ShowAll, ShowCol, ShowRow
+  TJvStringGrid.ShowAll, TJvStringGrid.ShowCol, TJvStringGrid.ShowRow
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.ShowCol
 Summary
@@ -631,10 +710,11 @@ Description
 Parameters
   Index   - Position of the hidden column.
   AWidth  - The new width for the hidden column. If AWidth is set to a value < 0, DefaultColWidth
-             determines the new width. If the column is not hidden, then the width of the column is not
+         determines the new width. If the column is not hidden, then the width of the column is not
              affected.
 See Also
-  ShowAll, ShowCell, ShowRow
+  TJvStringGrid.ShowAll, TJvStringGrid.ShowCell, TJvStringGrid.ShowRow
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.ShowRow
 Summary
@@ -644,43 +724,49 @@ Description
 Parameters
   Index   - Position of the hidden row.
   AHeight - The new height of hidden row. If AHeight is set to a value < 0, DefaultRowHeight
-             determines the new height. If the row is not hidden, then the height of the row is not
+    determines the new height. If the row is not hidden, then the height of the row is not
              affected.
 See Also
-  ShowAll, ShowCell, ShowCol
+  TJvStringGrid.ShowAll, TJvStringGrid.ShowCell, TJvStringGrid.ShowCol
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.SortGrid
 Summary
   Sorts the rows in the grid.
 Description
-  Call SortGrid to sort the rows in the grid on the value of the \string in the column specified by Column.
+  Call SortGrid to sort the rows in the grid on the value of the \string in the column specified by
+  Column.
 
   Set Ascending to True for an ascending sort, set Ascending to False for a descending sort.
 
-  Set Fixed to True to include the fixed rows in the sort. Set Fixed to False to exclude the fixed rows
-  in the sort.
+  Set Fixed to True to include the fixed rows in the sort. Set Fixed to False to exclude the fixed
+  rows in the sort.
 
-  Set BlankTop to True to move the rows with blank cells at the column with index Column before the sort,
-  and exclude them from the sort. If Ascending is True, the rows will be moved to the top of the grid.
+  Set BlankTop to True to move the rows with blank cells at the column with index Column before the
+  sort, and exclude them from the sort. If Ascending is True, the rows will be moved to the top of
+  the grid.
   If Ascending is False, the rows will be moved to the bottom of the grid. Set BlankTop to False to
   include the rows with blank cells at the column with index Column in the sort.
 
-  SortGrid uses the comparison function specified by SortType. SortType can have any of the following values:
+  SortGrid uses the comparison function specified by SortType. SortType can have any of the following
+  values:
   <TABLE>
   Value              Meaning
   -----              -------
-  stAutomatic        The comparison function automatically determines the type of the strings when comparing
-                      two strings. If both strings represent an integer, floating-point value or a date, then
-                      the two strings are compared as integer, floating-point value or data, respectively.
+  stAutomatic        The comparison function automatically determines the type of the strings when
+                      comparing two strings. If both strings represent an integer, floating-point
+                      value or a date, then
+                      the two strings are compared as integer, floating-point value or data,
+                      respectively.
                       Otherwise the two strings are compared as \string.
   stClassic          The strings in the sort column are sorted without case-sensitivity.
   stCaseSensitive    The strings in the sort column are sorted with case-sensitivity.
-  stNumeric          A numeric sort is used. Every \string in the sort column, that is included in the sort,
-                      must represent a floating-point value.
-  stDate             A date sort is used. Every \string in the sort column, that is included in the sort,
-                      must specify a date.
-  stCurrency         A currency sort is used. Every \string in the sort column, that is included in the
-                      sort must represent a currency value.
+  stNumeric          A numeric sort is used. Every \string in the sort column, that is included in
+                      the sort, must represent a floating-point value.
+  stDate             A date sort is used. Every \string in the sort column, that is included in the
+                      sort, must specify a date.
+  stCurrency         A currency sort is used. Every \string in the sort column, that is included in
+                      the sort must represent a currency value.
   </TABLE>
 Parameters
   Column    - Specifies the index of the column to use for the sort.
@@ -688,6 +774,7 @@ Parameters
   Fixed     - Indicates whether to include the fixed rows in the sort.
   SortType  - Specifies the comparison function.
   BlankTop  - Indicates whether to move blank cells before the sort.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.SortGridByCols
 Summary
@@ -699,6 +786,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TProgress
 <TITLE TProgress type>
@@ -709,8 +797,9 @@ Description
 Parameters
   Sender      - The grid that is in the process of loading or saving a grid.
   Progression - Indicates how much of the load or save operation has already been completed,
-                 on a scale of 0 to Total.
+        on a scale of 0 to Total.
   Total       - Specifies a value that must be reached by Progression to complete the operation.
 See Also
-    TJvStringGrid.OnLoadProgress
+  TJvStringGrid.OnLoadProgress
     TJvStringGrid.OnSaveProgress
+

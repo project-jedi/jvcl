@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBox
 <TITLEIMG TJvScrollBox>
@@ -45,6 +47,7 @@ Description
   END + Shift         Scrolls to the lower right.
   END                 Scrolls to the right.
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBox.HintColor
 Summary
@@ -54,7 +57,8 @@ Description
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
 See Also
-  HotTrack
+  TJvScrollBox.HotTrack
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBox.HotTrack
 Summary
@@ -64,6 +68,7 @@ Description
   When HotTrack is False, there is no visual feedback when the mouse passes over this control.
 See Also
   OnMouseEnter, OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBox.OnHorizontalScroll
 Summary
@@ -72,19 +77,22 @@ Description
   \Write an OnHorizontalScroll event handler to take specific action when the user scrolls the
   horizontal scroll bar.
 See Also
-  OnVerticalScroll
+  TJvScrollBox.OnVerticalScroll
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBox.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the scroll box changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBox.OnVerticalScroll
 Summary
   Occurs when the user scrolls the vertical scroll bar with the mouse or keyboard.
 Description
-  \Write an OnVerticalScroll event handler to take specific action when the user scrolls the
-  vertical scroll bar.
+  \Write an OnVerticalScroll event handler to take specific action when the user scrolls the vertical
+  scroll bar.
 See Also
-  OnHorizontalScroll
+  TJvScrollBox.OnHorizontalScroll
+

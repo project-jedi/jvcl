@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScreenResolution
 Summary
@@ -14,10 +16,11 @@ Summary
 Description
   TJvScreenResolution enables you to retrieve information about the possible graphics modes, and to
   change the settings of the default display device.
+  
+  Use Count to determine the number of graphics modes. Use Modes or <LINK GetSupportedModes> to
+  retrieve information about the possible graphics modes. Use <LINK SetMode> to change the settings
+  of the default display device.
 
-  Use Count to determine the number of graphics modes. Use Modes or <LINK GetSupportedModes> to retrieve
-  information about the possible graphics modes. Use <LINK SetMode> to change the settings of the default
-  display device.
 ----------------------------------------------------------------------------------------------------
 @@TJvScreenResolution.Count
 Summary
@@ -25,22 +28,24 @@ Summary
 Description
   Use Count when iterating over all the graphics modes in the object.
 See Also
-  Modes
+  TJvScreenResolution.Modes
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScreenResolution.GetSupportedModes
 Summary
   Retrieves all records describing the possible graphics modes for the display device.
 Description
-  Use GetSupportedModes to retrieve all records describing the possible graphics modes for the display
-  device.
-
+  Use GetSupportedModes to retrieve all records describing the possible graphics modes for the
+  display device.
+  
   Use property Count to determine the number of graphics modes for the display device.
 Parameters
-  Modes - A record array into which the function stores information about the graphics mode. Ensure
-          that the record is big enough to store all information.
+  Modes - A record array into which the function stores information about the graphics mode. Ensure  
+        that the record is big enough to store all information.
   Count - The number of graphics modes for a display device.
 See Also
-  Count, Modes
+  TJvScreenResolution.Count, TJvScreenResolution.Modes
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScreenResolution.Modes
 Summary
@@ -49,10 +54,11 @@ Description
   Use Items to access information about individual graphics modes. The Index parameter indicates the
   index of the information record, where 0 is the index of the first record,  1 is the index of the
   second record, and so on.
-
+  
   Use Items with the Count property to iterate through all of the records in the list.
 See Also
-  Count
+  TJvScreenResolution.Count
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScreenResolution.SetMode
 Summary
@@ -61,8 +67,10 @@ Description
   Call SetMode to change the settings of the default display device.
 Parameters
   Value - Describes the new graphics mode.
-Returns
-  Returns True when the settings change was successful and False when the settings change was unsuccessful,
-  possibly because the computer must be restarted in order for the graphics mode to work.
+  Returns
+  Returns True when the settings change was successful and False when the settings change was
+  unsuccessful, possibly because the computer must be restarted in order for the graphics mode to
+  work.
 See Also
   <LINK GetSupportedModes>
+

@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Below
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSyncSplitter
 <TITLEIMG TJvSyncSplitter>
@@ -17,16 +19,17 @@ Summary
   Synchronizes two split controls.
 Description
   Use TJvSyncSplitter to synchronize the movements of two splitters.
+  
+  Set Partner to specify another TJvSyncSplitter control which must be synchronized with the splitter.
+  
+  If you specify a Partner and change the position of the splitter at runtime, the position of the
+  "partner"
+  splitter will change also.
+  
+  If you also set the Partner property of the second splitter to the first splitter, then both
+  splitters will be synchronized. So if you move either of these TJvSyncSplitter controls at
+  run-time, the position of the other TJvSyncSplitter control will change also.
 
-  Set Partner to specify another TJvSyncSplitter which must be synchronized with this TJvSyncSplitter.
-
-  If you specify a Partner and change the position of TJvSyncSplitter at runtime, the partner
-  TJvSyncSplitter position will change also.
-
-  If you set the Partner property of the TJvSyncSplitter specified by the the Partner property of
-  this TJvSyncSplitter to this TJvSyncSplitter, then both TJvSyncSplitter will be synchronized. So
-  if you move either of these TJvSyncSplitter at runtime, the other TJvSyncSplitter position will
-  change also.
 ----------------------------------------------------------------------------------------------------
 @@TJvSyncSplitter.Notification
 Summary
@@ -39,14 +42,18 @@ Description
 Parameters
   AComponent - Identifies the component that is about to be created or destroyed.
   Operation  - Specifies whether the component is about to be created or destroyed.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSyncSplitter.Partner
 Summary
-  Specifies the partner TJvSyncSplitter.
+  Specifies the partner splitter control.
 Description
-  Use Partner to specify another TJvSyncSplitter which must be synchronized with this TJvSyncSplitter.
-  If you specify a Partner and change the position of TJvSyncSplitter at runtime, the partner
-  TJvSyncSplitter position will change also.
+  Use Partner to link the splitter to another splitter (the "partner") so that the position of the
+  partner will be synchronized with the splitters position.
+  Thus if you specify a Partner and change the position of the splitter at runtime, the position of
+  the "partner"
+  splitter will change also.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSyncSplitter.ResizeStyle
 Summary
@@ -56,6 +63,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSyncSplitter.WndProc
 Summary
@@ -65,3 +73,4 @@ Description
   the inherited WndProc.
 Parameters
   Msg - Represents the Windows message.
+

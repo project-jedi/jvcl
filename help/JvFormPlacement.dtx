@@ -7,16 +7,18 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Fedor Koshevnikov, Igor Pavluk and Serge Korolev
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement
 Summary
   Enables storing and retrieving the placement and size of a form.
 Description
-  TJvFormPlacement is a base class for the TJvFormStorage component. These components provide a
-  quick method for storing and retrieving data to a storage.
+  TJvFormPlacement is a base class for the TJvFormStorage component. These components provide a quick
+  method for storing and retrieving data to a storage.
 
-  The TJvFormPlacement component enables automatically storing and retrieving the placement and
-  size of its parent form.
+  The TJvFormPlacement component enables automatically storing and retrieving the placement and size
+  of its parent form.
 
   To use this component, do the following:
 
@@ -36,31 +38,34 @@ Description
     TJvDrawGrid, TJvSpeedbar, TJvMRUManager, TJvDBGrid) with no additional code.
 See Also
   TJvFormStorage
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.Active
 Summary
   Indicates whether the component automatically restores and saves the form's placement.
 Description
-  If Active is set to true, the component automatically restores the form's placement when the
-  form is shown, and saves the form's placement when the form is closed.
+  If Active is set to true, the component automatically restores the form's placement when the form
+  is shown, and saves the form's placement when the form is closed.
 
-  Alternatively, you can call the RestoreFormPlacement and SaveFormPlacement methods to
-  explicitly restore and save the form's placement.
+  Alternatively, you can call the RestoreFormPlacement and SaveFormPlacement methods to explicitly
+  restore and save the form's placement.
 See Also
   RestoreFormPlacement, SaveFormPlacement
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.AppStorage
 Summary
   Links the component to a storage component.
 Description
   Set AppStorage to an application storage component that gives access to a specific storage, such as
-  a xml file or the registry. AppStorage allows the TJvFormPlacement component to read from and write to the
-  storage.
+  a xml file or the registry. AppStorage allows the TJvFormPlacement component to read from and write
+  to the storage.
 
   To allow the placement data of a form to be read or written from a storage, both the AppStorage and
   the AppStoragePath properties must be set.
 See Also
-  AppStoragePath
+  TJvFormPlacement.AppStoragePath
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.AppStoragePath
 Summary
@@ -74,7 +79,8 @@ Description
   To allow the placement data of a form to be read or written from a storage, both the AppStorage and
   the AppStoragePath properties must be set.
 See Also
-  AppStorage
+  TJvFormPlacement.AppStorage
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.EraseSections
 Summary
@@ -83,13 +89,15 @@ Description
   Call EraseSection to remove all sections, all their keys, and their data values from the storage.
 See Also
   <LINK Version>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.Form
 Summary
   Provides access to the form which placement is controlled by the component.
 Description
-  Use Form to access the form - the owner of this component - which placement is controlled
-  by this component.
+  Use Form to access the form - the owner of this component - which placement is controlled by this
+  component.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.IsActive
 Summary
@@ -99,7 +107,8 @@ Description
 Return value
   Returns true when Active is true and AppStorage is not nil, otherwise returns false.
 See Also
-  Active, AppStorage
+  TJvFormPlacement.Active, TJvFormPlacement.AppStorage
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.MinMaxInfo
 Summary
@@ -109,19 +118,21 @@ Description
 
   When MinMaxInfo contains maximum or minimum values, the form cannot be resized to violate those
   constraints.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.OnRestorePlacement
 Summary
   Occurs after the form's placement has been retrieved and restored.
 Description
-  Write an OnRestorePlacement event handler to respond after the the form's placement has been
-  retrieved and restored. For example you can read other values from the storage that are not managed
-  by the component - using the <LINK ReadInteger> and <LINK ReadString> methods.
+  Write an OnRestorePlacement event handler to respond after the the form's placement has been retrieved and res
+  ored. For example you can read other values from the storage that are not managed by the component
+  - using the <LINK ReadInteger> and <LINK ReadString> methods.
 
   This event is fired before the control that has focus on the form is retrieved and restored; thus,
   you can alter this restoring behaviour in an event handler by modifying property Options.
 See Also
-  OnSavePlacement
+  TJvFormPlacement.OnSavePlacement
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.OnSavePlacement
 Summary
@@ -131,7 +142,8 @@ Description
   For example you can write other values to the storage that are not managed
   by the component - using the WriteInteger and WriteString methods.
 See Also
-  OnRestorePlacement
+  TJvFormPlacement.OnRestorePlacement
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.Options
 Summary
@@ -145,15 +157,17 @@ Description
     default values.
   * The control that has focus on the form.
 See Also
-  MinMaxInfo
+  TJvFormPlacement.MinMaxInfo
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.PreventResize
 Summary
   Specifies whether the component prevents the form from being resized.
 Description
   Set PreventResize to true, to prevent the form from being resized. For example, you can drop an
-  TJvFormPlacement component on a MDI child form, and set PreventResize to true, to prevent the
-  user from resizing the child form.
+  TJvFormPlacement component on a MDI child form, and set PreventResize to true, to prevent the user
+  from resizing the child form.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.ReadBoolean
 Summary
@@ -168,6 +182,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.ReadDateTime
 Summary
@@ -182,6 +197,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.ReadFloat
 Summary
@@ -196,6 +212,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.ReadInteger
 Summary
@@ -206,7 +223,8 @@ Parameters
   Ident   - Identifies the name of the data value from which to retrieve the value.
   Default - Specifies an integer value to use if the data value is not in the storage.
 See Also
-  AppStorage, AppStoragePath, <LINK ReadString>, <LINK WriteInteger>
+  <LINK ReadString>, <LINK WriteInteger>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.ReadString
 Summary
@@ -217,7 +235,8 @@ Parameters
   Ident   - Identifies the name of the data value from which to retrieve the value.
   Default - Specifies a string value to use if the data value is not in the storage.
 See Also
-  AppStorage, AppStoragePath, <LINK ReadInteger>, <LINK WriteString>
+  <LINK ReadInteger>, <LINK WriteString>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.RestoreFormPlacement
 Summary
@@ -229,7 +248,8 @@ Description
   If Active is set to true, the component automatically restores the placement information when the
   form is shown; thus, no call to RestoreFormPlacement is needed.
 See Also
-  Active, SaveFormPlacement
+  TJvFormPlacement.Active, SaveFormPlacement
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.SaveFormPlacement
 Summary
@@ -237,26 +257,30 @@ Summary
 Description
   Call SaveFormPlacement to explicitly store the form's placement in the storage.
 
-  If Active is set to true, the component automatically stores the placement information when the form
-  is closed; thus, no call to SaveFormPlacement is needed.
+  If Active is set to true, the component automatically stores the placement information when the
+  form is closed; thus, no call to SaveFormPlacement is needed.
 See Also
-  Active, RestoreFormPlacement
+  TJvFormPlacement.Active, RestoreFormPlacement
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.Version
 Summary
   Specifies a version number.
 Description
-  Use Version to prevent the component from retrieving the form's placement from out-of-date information
-  in the storage.
+  Use Version to prevent the component from retrieving the form's placement from out-of-date
+  information in the storage.
 
-  The Version number is stored together with the form's placement information in the storage. Then, before
-  the component retrieves the placement info from the storage, it compares the stored version number with
-  the value specified by Version. If the stored version is less then the value specified by Version, the
-  component does <i>not</i> retrieve the placement info.
+  The Version number is stored together with the form's placement information in the storage. Then,
+  before
+  the component retrieves the placement info from the storage, it compares the stored version number
+  with
+  the value specified by Version. If the stored version is less then the value specified by Version,
+  the component does <i>not</i> retrieve the placement info.
 
   Thus increase Version each time stored placement information becomes out-of-date.
 See Also
-  EraseSections
+  TJvFormPlacement.EraseSections
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.WriteBoolean
 Summary
@@ -269,6 +293,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.WriteDateTime
 Summary
@@ -281,6 +306,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.WriteFloat
 Summary
@@ -293,6 +319,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.WriteInteger
 Summary
@@ -303,7 +330,9 @@ Parameters
   Ident - Identifies the name of the data value into which to write.
   Value - The integer value to write.
 See Also
-  AppStorage, AppStoragePath, ReadInteger, WriteString
+  TJvFormPlacement.AppStorage, TJvFormPlacement.AppStoragePath, TJvFormPlacement.ReadInteger,
+  TJvFormPlacement.WriteString
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.WriteString
 Summary
@@ -314,7 +343,9 @@ Parameters
   Ident - Identifies the name of the data value into which to write.
   Value - The \string value to write.
 See Also
-  AppStorage, AppStoragePath, ReadString, WriteInteger
+  TJvFormPlacement.AppStorage, TJvFormPlacement.AppStoragePath, TJvFormPlacement.ReadString,
+  TJvFormPlacement.WriteInteger
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage
 <TITLEIMG TJvFormStorage>
@@ -325,12 +356,12 @@ Summary
   General storage component.
 Description
   Use a TJvFormStorage component to store and retrieve data from a storage - either the system
-  registry or an ini file. The component can store, retrieve and restore published properties of
-  any component on the form.
+  registry or an ini file. The component can store, retrieve and restore published properties of any
+  component on the form.
 
-  For example you can use the component to save the position of a splitter, the text of an edit
-  control or the checked value of a checkbox on closure of a form, and later retrieve and restore
-  the properties of these components on re-opening of the form.
+  For example you can use the component to save the position of a splitter, the text of an edit control or the checked value of a ch
+  ckbox on closure of a form, and later retrieve and restore the properties of these components on
+  re-opening of the form.
 
   TJvFormStorage descends from TJvFormPlacement; thus, it also enables you to store and retrieve the
   forms placement.
@@ -352,6 +383,7 @@ Description
     TJvDrawGrid, TJvSpeedbar, TJvMRUManager, TJvDBGrid) with no additional code.
 See Also
   TJvFormPlacement
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage.DefaultValue
 Summary
@@ -362,20 +394,24 @@ Description
 
   If you use DefaultValue to <i>get</i> the value of a stored value object that is NULL, DefaultValue
   returns the value represented by the Default parameter. If you try to <i>set</i> the value of a
-  stored value object to NULL, then it is actually set to the value represented by the Default parameter.
+  stored value object to NULL, then it is actually set to the value represented by the Default
+  parameter.
 Parameters
   Name     - Identifies the name of the stored value.
   DefValue - Specifies a value to use if the stored value is not in the storage.
 See Also
-  StoredValue
+  TJvFormStorage.StoredValue
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage.SetNotification
 Summary
-  Ensures that the storage component is notified that a component with a stored property is going to be destroyed.
+  Ensures that the storage component is notified that a component with a stored property is going to
+  be destroyed.
 Description
   SetNotification is called by the storage component, after an update of StoredProps. It ensures that
   the components whose properties are listed in StoredProps notify the storage component when they
   are going to be destroyed.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage.StoredProps
 Summary
@@ -384,25 +420,28 @@ Description
   Use StoredProps to directly determine the components and their properties that are managed by the
   storage component. The format of the list is:
 
+ 
   <AUTOLINK OFF>
   <CODE>
-  component.property
+  component.property 
   </CODE>
   <AUTOLINK ON>
 
   Thus for example:
 
+ 
   <AUTOLINK OFF>
   <CODE>
   CheckBox1.Checked
-  Button1.Caption
+  Button1.Caption 
   </CODE>
   <AUTOLINK ON>
 
-  A <LINK TJvFormStorage_StoredProps_Editor,StoredProps editor> is provided for design-time
-  editing of the StoredProps property.
+  A <LINK TJvFormStorage_StoredProps_Editor,StoredProps editor> is provided for design-time editing
+  of the StoredProps property.
 See Also
-  StoredValue
+  TJvFormStorage.StoredValue
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage.StoredValue
 Summary
@@ -411,15 +450,17 @@ Description
   Use the StoredValue property to get or set the value represented by a stored value object with a
   particular name.
 See Also
-  TJvStoredValues.Items, TJvStoredValues.Values, DefaultValue, StoredProps
+  TJvFormStorage.DefaultValue, TJvFormStorage.StoredProps, TJvStoredValues.Items,
+  TJvStoredValues.Values
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage.StoredValues
 Summary
   Contains the stored values for a storage component.
 Description
-  Access StoredValues at runtime to view and set stored value names and values dynamically
-  (at design time use the collection editor for the StoredProps property to set stored value
-  information). StoredValues can be accessed as a zero-based array of TJvStoredValue objects.
+  Access StoredValues at runtime to view and set stored value names and values dynamically (at design time use the collection editor f
+  r the StoredProps property to set stored value information). StoredValues can be accessed as a
+  zero-based array of TJvStoredValue objects.
   Index specifies the array element to access.
 
   The following code assumes that the storage component has 3 stored value objects, and sets and
@@ -429,7 +470,7 @@ Description
   JvFormStorage1.StoredValues[0].Value := 'Germany';
   JvFormStorage1.StoredValues[1].Value := 'Berlin';
   JvFormStorage1.StoredValues[2].Value := 10331000;
-  JvFormStorage1.StoredValues.SaveValues;
+  JvFormStorage1.StoredValues.SaveValues; 
   </CODE>
   <AUTOLINK ON>
 Note
@@ -437,65 +478,63 @@ Note
   object is known is to call StoredValue; however, StoredValue cannot be used to change a stored
   value’s name.
 See Also
-  StoredValue, TJvStoredValues, TJvStoredValues.Items
+  TJvFormStorage.StoredValue, TJvStoredValues, TJvStoredValues.Items
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage_StoredProps_Editor
-<TITLE StoredProps editor>
-<HASTOCENTRY OFF>
-<Description>
-  Use the StoredProps editor to define which properties to store and retrieve by the TJvFormStorage
-  component.
+<TITLE StoredProps editor> <HASTOCENTRY OFF> <Description>
+Use the StoredProps editor to define which properties to store and retrieve by the TJvFormStorage component.
 
-  To open the StoredProps editor:
+To open the StoredProps editor:
 
-  1. Place a TJvFormStorage component on the form.
-  2. Do one of the following:
-    * Double-click that component, or
-    * With the component selected, double-click the StoredProps property in the Object Inspector
-      to invoke the StoredProps editor.
+1. Place a TJvFormStorage component on the form.
+2. Do one of the following:
 
-  <b>Form Properties</b>
+  * Double-click that component, or
+  * With the component selected, double-click the StoredProps property in the Object Inspector
+    to invoke the StoredProps editor.
 
-  \Check the "Active Control" control to let the storage component store on closing of the form
-  and retrieve and restore on showing of the form, the control that has focus on the form.
+<b>Form Properties</b>
 
-  \Check "Form Position" to indicate that the component should store and retrieve the placement of the
-  form: the form's normal, minimized and maximized size and position and its minimum and maximum
-  tracking size.
+\Check the "Active Control" control to let the storage component store on closing of the form and retrieve and restore on showing of the form, the control that has focus on the form.
 
-  \Check the "Window State" control to indicate that the way how the form
-  appears on the screen - minimized, maximized, or in a normal state - should be stored and retrieved
-  by the component.
+\Check "Form Position" to indicate that the component should store and retrieve the placement of the form: the form's normal, minimized and maximized size and position and its minimum and maximum tracking size.
 
-  <b>Stored Properties</b>
+\Check the "Window State" control to indicate that the way how the form
+appears on the screen - minimized, maximized, or in a normal state - should be stored and retrieved by the component.
 
-  To add a property of a component to the storage component:
+<b>Stored Properties</b>
 
-  1. Select the component where from a property to add in the Components list.
-  2. Select the property of the component to add in the Properties list.
-  3. Choose Add.
+To add a property of a component to the storage component:
 
-  The selected component and its property are displayed in the Stored Properties list box. For example,
+1. Select the component where from a property to add in the Components list.
+2. Select the property of the component to add in the Properties list.
+3. Choose Add.
+
+The selected component and its property are displayed in the Stored Properties list box. For example,
   <AUTOLINK OFF>
   <CODE>
-  CheckBox1.Checked
+CheckBox1.Checked 
   </CODE>
   <AUTOLINK ON>
 See Also
   TJvFormStorage.StoredProps
+
 ----------------------------------------------------------------------------------------------------
 @@TJvIniLink
 Summary
-  Helper class used by objects that store data in a storage to coordinate to respond to storage events.
+  Helper class used by objects that store data in a storage to coordinate to respond to storage
+  events.
 Description
   Use TJvIniLink in any object that stores data in a storage to represent its link to a storage
   component or that needs to respond to storage events.
 
-  The constructor of the object that stores data in a storage should call the constructor of TJvIniLink,
-  and initialize any relevant properties. The object can then respond to the OnLoad and OnSave
-  events to store or retrieve its data from the storage.
+  The constructor of the object that stores data in a storage should call the constructor of
+  TJvIniLink, and initialize any relevant properties. The object can then respond to the OnLoad and
+  OnSave events to store or retrieve its data from the storage.
 See Also
-  TJvFormStorage, TJvFormPlacement
+  TJvFormPlacement, TJvFormStorage
+
 ----------------------------------------------------------------------------------------------------
 @@TJvIniLink.OnLoad
 Summary
@@ -504,10 +543,11 @@ Description
   Write an OnLoad event handler to take specific actions when the storage component specified by
   property Storage notifies the link a storage load event.
 
-  Objects that use a TJvIniLink object typically write an OnLoad event handler to retrieve its specific
-  data from the storage.
+  Objects that use a TJvIniLink object typically write an OnLoad event handler to retrieve its
+  specific data from the storage.
 See Also
-  OnSave
+  TJvIniLink.OnSave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvIniLink.OnSave
 Summary
@@ -519,7 +559,8 @@ Description
   Objects that use a TJvIniLink object typically write an OnSave event handler to store its specific
   data to the storage.
 See Also
-  OnLoad
+  TJvIniLink.OnLoad
+
 ----------------------------------------------------------------------------------------------------
 @@TJvIniLink.Storage
 Summary
@@ -530,16 +571,18 @@ Description
   TJvIniLink object - by triggering the OnLoad and OnSave envents.
 See Also
   TJvFormPlacement.Active, TJvFormPlacement.RestoreFormPlacement, TJvFormPlacement.SaveFormPlacement
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue
 Summary
   Represents a stored value.
 Description
   Use the properties of a TJvStoredValue object to get or set the value of a stored value. Storage
-  components such as TJvFormStorage create TJvStoredValue objects to represent a data value stored
-  in an ini file or in the system registry.
+  components such as TJvFormStorage create TJvStoredValue objects to represent a data value stored in
+  an ini file or in the system registry.
 See Also
   TJvFormStorage, TJvStoredValues
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.Clear
 Summary
@@ -547,7 +590,8 @@ Summary
 Description
   Use Clear to assign a NULL value to a stored value.
 See Also
-  Value
+  TJvStoredValue.Value
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.KeyString
 Summary
@@ -556,15 +600,17 @@ Description
   Use KeyString to specify a key that will be used for encoding and decoding the stored value.
 
   If you specify an empty \string for KeyString, the stored value is <i>not</i> encoded.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.Name
 Summary
   Specifies the name of the stored value.
 Description
-  Use Name to identify a particular stored value within a TJvStoredValues object. Name specifies
-  a \string that identifies the name of the data value into which to store the value.
+  Use Name to identify a particular stored value within a TJvStoredValues object. Name specifies a
+  string that identifies the name of the data value into which to store the value.
 See Also
-  Value
+  TJvStoredValue.Value
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.OnRestore
 Summary
@@ -574,53 +620,59 @@ Description
   the storage. Typically, you use this event to read the Value property of the stored value object,
   and take action depending on the value of Value.
 See Also
-  OnSave, Restore, Value
+  TJvStoredValue.OnSave, TJvStoredValue.Restore, TJvStoredValue.Value
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.OnSave
 Summary
   Occurs before the stored value is saved.
 Description
-  Write an OnSave event handler to take specific actions before the stored value is stored to
-  the storage. Typically, you use this event to set the Value property of the stored value object.
+  Write an OnSave event handler to take specific actions before the stored value is stored to the
+  storage. Typically, you use this event to set the Value property of the stored value object.
 See Also
-  OnRestore, Save, Value
+  TJvStoredValue.OnRestore, TJvStoredValue.Save, TJvStoredValue.Value
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.Restore
 Summary
   Restores the stored value.
 Description
-  Call Restore to set property Value to the data value read from the ini file or registry at a location
-  specified by the Name property.
+  Call Restore to set property Value to the data value read from the ini file or registry at a
+  location specified by the Name property.
 See Also
-  OnRestore, Save
+  TJvStoredValue.OnRestore, TJvStoredValue.Save
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.Save
 Summary
   Saves the stored value.
 Description
-  Call Save to write the value of property Value to the ini file or registry at a location
-  specified by the Name property.
+  Call Save to write the value of property Value to the ini file or registry at a location specified
+  by the Name property.
 See Also
-  OnSave, Restore
+  TJvStoredValue.OnSave, TJvStoredValue.Restore
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.StoredValues
 Summary
   Specifies the TJvStoredValues instance to which the TJvStoredValue belongs.
 Description
-  Each TJvStoredValue belongs to the TJvStoredValues which creates it. The StoredValues property points
-  to the collection object to which the item belongs.
+  Each TJvStoredValue belongs to the TJvStoredValues which creates it. The StoredValues property
+  points to the collection object to which the item belongs.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValue.Value
 Summary
   Represents the value of the stored value as a Variant.
 Description
-  Use Value in generic code that manipulates the values of stored values without needing to know
-  the type the stored value represent.
+  Use Value in generic code that manipulates the values of stored values without needing to know the
+  type the stored value represent.
 
   \Write OnRestore and OnSave event handles to set the value just before it is saved or get it just
   after it is read from the storage.
 See Also
-  Clear, OnRestore, OnSave
+  TJvStoredValue.Clear, TJvStoredValue.OnRestore, TJvStoredValue.OnSave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValueEvent
 <TITLE TJvStoredValueEvent type>
@@ -628,12 +680,13 @@ Summary
   Type for event handlers that let an application process data after it is retrieved from or before
   it is saved to the storage.
 Description
-  Use TJvStoredValueEvent to edit the value of data before it is written to the storage or after it is
-  read from the storage.
+  Use TJvStoredValueEvent to edit the value of data before it is written to the storage or after it
+  is read from the storage.
 Parameters
   Sender - Identifies the storage component that is about to store Value to a storage or has retrieved
            Value from the storage.
   Value  - Data value that the storage component just retrieved from or is about to save to a storage.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues
 Summary
@@ -649,7 +702,8 @@ Description
   * Iterate through all stored values.
   * \Copy a set of stored values to another stored values list.
 See Also
-  TJvStoredValue, TJvFormStorage
+  TJvFormStorage, TJvStoredValue
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues.IndexOf
 Summary
@@ -659,57 +713,64 @@ Description
 Parameters
   Name - Specifies the name of the stored value as the Name parameter.
 Return value
-  Returns a value from zero (the first position) to Count - 1, if Items contains a stored value
-  with the specified Name. Otherwise the return value is -1.
+  Returns a value from zero (the first position) to Count - 1, if Items contains a stored value with
+  the specified Name. Otherwise the return value is -1.
 See Also
-  Items, TJvStoredValue.Name
+  TJvStoredValue.Name, TJvStoredValues.Items
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues.Items
 Summary
   Lists the individual stored value objects of a TJvStoredValues object.
 Description
-  Use Items to iterate through all the stored values. Index identifies the index in the range 0
-  to Count - 1. Items can reference a particular stored value by its index, but the Values property
-  is preferred, because it does not depend on the order of the stored values.
+  Use Items to iterate through all the stored values. Index identifies the index in the range 0 to
+  Count - 1. Items can reference a particular stored value by its index, but the Values property is
+  preferred, because it does not depend on the order of the stored values.
 See Also
-  IndexOf, StoredValue, Values, TJvFormStorage.StoredValues
+  TJvFormStorage.StoredValues, TJvStoredValues.IndexOf, TJvStoredValues.StoredValue,
+  TJvStoredValues.Values
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues.RestoreValues
 Summary
   Restores the values represented by the stored value objects in the list.
 Description
   Call RestoreValues to restore the values of all stored value objects in the Items list.
-  Alternatively call the <LINK TJvStoredValue.Restore,Restore> method of a specific stored value object
-  to restore that stored value.
+  Alternatively call the <LINK TJvStoredValue.Restore,Restore> method of a specific stored value
+  object to restore that stored value.
 
-  Restoring a value of a stored value object means that the <LINK TJvStoredValue.Value,Value> property
-  of the stored value object is read from the ini file or registry at a location specified by
-  its <LINK TJvStoredValue.Name,Name> property.
+  Restoring a value of a stored value object means that the <LINK TJvStoredValue.Value,Value>
+  property of the stored value object is read from the ini file or registry at a location specified
+  by its <LINK TJvStoredValue.Name,Name> property.
 See Also
-  TJvStoredValue.OnRestore, TJvStoredValue.Restore, SaveValues
+  TJvStoredValue.OnRestore, TJvStoredValue.Restore, TJvStoredValues.SaveValues
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues.SaveValues
 Summary
   Saves the values represented by the stored value objects in the list.
 Description
   Call SaveValues to save the values of all stored value objects in the Items list.
-  Alternatively call the <LINK TJvStoredValue.Save,Save> method of a specific stored value object
-  to save only that stored value.
+  Alternatively call the <LINK TJvStoredValue.Save,Save> method of a specific stored value object to
+  save only that stored value.
 
   Saving a value of a stored value object means that the <LINK TJvStoredValue.Value,Value> property
-  of the stored value object is written to the ini file or registry at a location specified by
-  its <LINK TJvStoredValue.Name,Name> property.
+  of the stored value object is written to the ini file or registry at a location specified by its
+  <LINK TJvStoredValue.Name,Name> property.
 See Also
-  TJvStoredValue.OnSave, TJvStoredValue.Save, RestoreValues
+  TJvStoredValue.OnSave, TJvStoredValue.Save, TJvStoredValues.RestoreValues
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues.Storage
 Summary
-  Identifies the storage component that uses the stored values collection to represent all of its stored values.
+  Identifies the storage component that uses the stored values collection to represent all of its
+  stored values.
 Description
   \Check the value of the Storage property to determine the storage component that is associated with
   the TJvStoredValues object.
 
   Use the properties of the storage component to obtain additional information.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues.StoredValue
 Summary
@@ -718,7 +779,8 @@ Description
   Use the StoredValue property to get or set the value represented by a stored value object with a
   particular name.
 See Also
-  Items, Values
+  TJvStoredValues.Items, TJvStoredValues.Values
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStoredValues.Values
 Summary
@@ -727,29 +789,32 @@ Description
   Use the Values property to get or set the properties of a stored value object with a particular
   name.
 See Also
-  Items, StoredValue
+  TJvStoredValues.Items, TJvStoredValues.StoredValue
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo
 Summary
   Contains information about a window's maximized size and position and its minimum and maximum
   tracking size.
 Description
-  TJvWinMinMaxInfo is a wrapper for the windows MINMAXINFO structure. It contains the metrics of
-  a specific form.
+  TJvWinMinMaxInfo is a wrapper for the windows MINMAXINFO structure. It contains the metrics of a
+  specific form.
 
   TJvWinMinMaxInfo is used by TJvFormPlacement and TJvFormStorage to store information about the form.
 See Also
   TJvFormPlacement, TJvFormStorage
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.DefaultMinMaxInfo
 Summary
   Indicates whether to use the system-defined default values.
 Description
-  A TJvFormPlacement component reads DefaultMinMaxInfo to check whether to override the system-defined
-  default values for the window's maximized size and position and its minimum and maximum
-  tracking size.
+  A TJvFormPlacement component reads DefaultMinMaxInfo to check whether to override the
+  system-defined default values for the window's maximized size and position and its minimum and
+  maximum tracking size.
 Return value
   Returns true if all properties of the TWinMinMaxInfo are set to 0.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MaxPosLeft
 Summary
@@ -759,7 +824,8 @@ Description
 Note
   MaxPosLeft does <i>not</i> override the system-defined default value, if you set it to 0.
 See Also
-  MaxPosTop, MaxSizeHeight, MaxSizeWidth
+  TJvWinMinMaxInfo.MaxPosTop, TJvWinMinMaxInfo.MaxSizeHeight, TJvWinMinMaxInfo.MaxSizeWidth
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MaxPosTop
 Summary
@@ -769,7 +835,8 @@ Description
 Note
   MaxPosTop does <i>not</i> override the system-defined default value, if you set it to 0.
 See Also
-  MaxPosLeft, MaxSizeHeight, MaxSizeWidth
+  TJvWinMinMaxInfo.MaxPosLeft, TJvWinMinMaxInfo.MaxSizeHeight, TJvWinMinMaxInfo.MaxSizeWidth
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MaxSizeHeight
 Summary
@@ -779,7 +846,8 @@ Description
 Note
   MaxSizeHeight does <i>not</i> override the system-defined default value, if you set it to 0.
 See Also
-  MaxPosLeft, MaxPosTop, MaxSizeWidth
+  TJvWinMinMaxInfo.MaxPosLeft, TJvWinMinMaxInfo.MaxPosTop, TJvWinMinMaxInfo.MaxSizeWidth
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MaxSizeWidth
 Summary
@@ -789,35 +857,40 @@ Description
 Note
   MaxSizeWidth does <i>not</i> override the system-defined default value, if you set it to 0.
 See Also
-  MaxPosLeft, MaxPosTop, MaxSizeHeight
+  TJvWinMinMaxInfo.MaxPosLeft, TJvWinMinMaxInfo.MaxPosTop, TJvWinMinMaxInfo.MaxSizeHeight
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MaxTrackHeight
 Summary
   Specifies the minimum tracking height of the form at run-time.
 Description
   The system maintains a minimum and maximum tracking size for a form that has a sizing border.
-  The maximum tracking height is the largest window height you can produce by dragging the sizing border.
+  The maximum tracking height is the largest window height you can produce by dragging the sizing
+  border.
 
   A form's minimum and maximum tracking sizes are set to system-defined default values when the
   system creates the window. Use the MaxTrackHeight property to override one of these default values.
 Note
   MaxTrackHeight does <i>not</i> override the system-defined default value, if you set it to 0.
 See Also
-  MaxTrackWidth, MinTrackHeight, MinTrackWidth
+  TJvWinMinMaxInfo.MaxTrackWidth, TJvWinMinMaxInfo.MinTrackHeight, TJvWinMinMaxInfo.MinTrackWidth
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MaxTrackWidth
 Summary
   Specifies the maximum tracking width of the form at run-time.
 Description
   The system maintains a minimum and maximum tracking size for a form that has a sizing border.
-  The maximum tracking width is the largest window width you can produce by dragging the sizing border.
+  The maximum tracking width is the largest window width you can produce by dragging the sizing
+  border.
 
   A form's minimum and maximum tracking sizes are set to system-defined default values when the
   system creates the window. Use the MaxTrackWidth property to override one of these default values.
 Note
   MaxTrackWidth does <i>not</i> override the system-defined default value, if you set it to 0.
 See Also
-  MaxTrackHeight, MinTrackHeight, MinTrackWidth
+  TJvWinMinMaxInfo.MaxTrackHeight, TJvWinMinMaxInfo.MinTrackHeight, TJvWinMinMaxInfo.MinTrackWidth
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MinTrackHeight
 Summary
@@ -832,7 +905,8 @@ Description
 Note
   MinTrackHeight does <i>not</i> override the system-defined default value, if you set it to 0.
 See Also
-  MaxTrackHeight, MaxTrackWidth, MinTrackWidth
+  TJvWinMinMaxInfo.MaxTrackHeight, TJvWinMinMaxInfo.MaxTrackWidth, TJvWinMinMaxInfo.MinTrackWidth
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MinTrackWidth
 Summary
@@ -847,4 +921,27 @@ Description
 Note
   MinTrackWidth does <i>not</i> override the system-defined default value, if you set it to 0.
 See Also
-  MaxTrackHeight, MaxTrackWidth, MinTrackHeight
+  TJvWinMinMaxInfo.MaxTrackHeight, TJvWinMinMaxInfo.MaxTrackWidth, TJvWinMinMaxInfo.MinTrackHeight
+
+----------------------------------------------------------------------------------------------------
+@@TJvFormStorage.StoredPropsPath
+Summary
+  The path to add before the name of any item of StoredProps
+Description
+  If there are items of StoredProps and StoredValues that have the same name, the generated file will
+  be invalid and will not be readable. To avoid this, set this property and/or StoredValuesPath to a
+  non empty value.
+See Also
+  TJvFormStorage.StoredProps, TJvFormStorage.StoredValues, TJvFormStorage.StoredValuesPath
+
+----------------------------------------------------------------------------------------------------
+@@TJvFormStorage.StoredValuesPath
+Summary
+  The path to add before the name of any item of StoredValues
+Description
+  If there are items of StoredProps and StoredValues that have the same name, the generated file will
+  be invalid and will not be readable. To avoid this, set this property and/or StoredPropsPath to a
+  non empty value.
+See Also
+  TJvFormStorage.StoredProps, TJvFormStorage.StoredValues, TJvFormStorage.StoredPropsPath
+

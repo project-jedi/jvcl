@@ -10,18 +10,22 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Andreas Hausladen
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExBitBtn
 Summary
   Base class for extended bitmap buttons.
 Description
   TJvExBitBtn is a base class for classes in the JVCL library that descend from TBitBtn.
+  
+  Do not create instances of TJvExBitBtn. The TJvBitBtn class provides a generic implementation of
+  TJvExBitBtn. You can also create your own descendant class.
 
-  Do not create instances of TJvExBitBtn. The TJvBitBtn class provides a generic implementation
-  of TJvExBitBtn. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExBitBtn.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExBitBtn.HintColor
 Summary
@@ -30,6 +34,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExBitBtn.MouseOver
 Summary
@@ -37,7 +42,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the button.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExBitBtn.OnMouseEnter, TJvExBitBtn.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExBitBtn.OnMouseEnter
 Summary
@@ -46,35 +52,40 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   button.
 See Also
-  OnMouseLeave
+  TJvExBitBtn.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExBitBtn.OnMouseLeave
 Summary
   Occurs when the mouse pointer moves off the button.
 Description
   Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  button. For example, you can use this event to undo changes that were made in an OnMouseEnter
-  event handler.
+  button. For example, you can use this event to undo changes that were made in an OnMouseEnter event
+  handler.
 See Also
-  OnMouseEnter
+  TJvExBitBtn.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExBitBtn.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExSpeedButton
 Summary
   Base class for extended speed buttons.
 Description
   TJvExSpeedButton is a base class for classes in the JVCL library that descend from TSpeedButton.
+  
+  Do not create instances of TJvExSpeedButton. The TJvSpeedButton class provides a generic
+  implementation of TJvExSpeedButton. You can also create your own descendant class.
 
-  Do not create instances of TJvExSpeedButton. The TJvSpeedButton class provides a generic implementation
-  of TJvExSpeedButton. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExSpeedButton.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExSpeedButton.HintColor
 Summary
@@ -83,6 +94,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExSpeedButton.MouseOver
 Summary
@@ -90,7 +102,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the button.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExSpeedButton.OnMouseEnter, TJvExSpeedButton.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExSpeedButton.OnMouseEnter
 Summary
@@ -99,20 +112,23 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   button.
 See Also
-  OnMouseLeave
+  TJvExSpeedButton.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExSpeedButton.OnMouseLeave
 Summary
   Occurs when the mouse pointer moves off the button.
 Description
   Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  button. For example, you can use this event to undo changes that were made in an OnMouseEnter
-  event handler.
+  button. For example, you can use this event to undo changes that were made in an OnMouseEnter event
+  handler.
 See Also
-  OnMouseEnter
+  TJvExSpeedButton.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExSpeedButton.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+

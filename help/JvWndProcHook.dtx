@@ -7,22 +7,25 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist, Remko Bonte
+
+
 ----------------------------------------------------------------------------------------------------
 @@RegisterWndProcHook@HWND@TJvControlHook@TJvHookOrder
 <TITLE RegisterWndProcHook function>
 <COMBINE RegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder>
+
 ----------------------------------------------------------------------------------------------------
 @@RegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder
 <TITLE RegisterWndProcHook function>
 Summary
   Registers a hook.
 Description
-  Call RegisterWndProcHook to hook a control. Hooking a control allows you to respond to messages send
-  to that control.
+  Call RegisterWndProcHook to hook a control. Hooking a control allows you to respond to messages
+  send to that control.
 
   Use Order to specify whether you want to receive messages send to the hooked control, <i>before</i>
-  or <i>after</i> the control handles them. By setting Order to hoBeforeMsg you can prevent the control
-  to handle specific messages.
+  or <i>after</i> the control handles them. By setting Order to hoBeforeMsg you can prevent the
+  control to handle specific messages.
 
   TJvWindowHook calls this method when it wants to start hooking the control. An internal list is
   maintained to prevent "broken links" when a hook is removed.
@@ -34,7 +37,8 @@ Parameters
   Hook     - Specifies the control hook procedure.
   Order    - Specifies whether to receive messages before or after the control handles them.
 See Also
-  TJvControlHook, TJvWindowHook, UnRegisterWndProcHook
+  UnRegisterWndProcHook
+
 ----------------------------------------------------------------------------------------------------
 @@ReleaseObj
 <TITLE ReleaseObj procedure>
@@ -49,6 +53,7 @@ Note
   returning.
 Parameters
   AObject - Object that should be destroyed.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvControlHook
 <TITLE TJvControlHook type>
@@ -62,12 +67,13 @@ Description
   hook procedure is registered with parameter Order set to hoBeforeMsg, then returning true will
   prevent the hooked control to respond to the message.
 Note
-  Be careful with setting the result to true. For example, always returning true with a
-  hook procedure that is registered with parameter Order set to hoBeforeMsg, will crash your application.
+  Be careful with setting the result to true. For example, always returning true with a hook
+  procedure that is registered with parameter Order set to hoBeforeMsg, will crash your application.
 Parameters
   Msg - Represents the Windows message send to the hooked control.
 See Also
   RegisterWndProcHook, UnRegisterWndProcHook
+
 ----------------------------------------------------------------------------------------------------
 @@TJvHookMessageEvent
 <TITLE TJvHookMessageEvent type>
@@ -78,14 +84,15 @@ Description
   Use TJvHookMessageEvent to respond to messages send to the hooked control.
 
   Use parameter Handled to specify
-  whether the message is handled. Setting Handled to true will prevent other hooks or the hooked control -
-  if it has not received the message yet - to respond to this message.
+  whether the message is handled. Setting Handled to true will prevent other hooks or the hooked
+  control - if it has not received the message yet - to respond to this message.
 Parameters
   Sender  - The hook component that has send this message.
   Msg     - Represents the Windows message that is about to be send to or just has been send to the
-             hooked control.
+           hooked control.
   Handled - Set Handled to true to specify that the message is handled, and that no other hooks, or
-             the hooked control itself, may respond to this message.
+           the hooked control itself, may respond to this message.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvHookOrder
 <TITLE TJvHookOrder type>
@@ -93,11 +100,15 @@ Summary
   Represents different kinds of hook methods.
 Description
   The TJvHookOrder type is used to represent different kinds of hook methods.
+
+----------------------------------------------------------------------------------------------------
 @@TJvHookOrder.hoBeforeMsg
-  Represents a hook method that allows to handle a message <i>before</i> the hooked control handles that message.
+Represents a hook method that allows to handle a message <i>before</i> the hooked control handles that message.
+
+----------------------------------------------------------------------------------------------------
 @@TJvHookOrder.hoAfterMsg
-  Represents a hook method that allows to handle a message <i>after</i> the hooked control has handled that
-  message.
+Represents a hook method that allows to handle a message <i>after</i> the hooked control has handled that message.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWindowHook
 <TITLEIMG TJvWindowHook>
@@ -117,6 +128,7 @@ Description
   TJvWindowHook places and removes a hook on a control by a call to RegisterWndProcHook and
   UnRegisterWndProcHook, resp. An internal list is maintained to prevent "broken links" when a hook
   is removed.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWindowHook.Active
 Summary
@@ -124,15 +136,16 @@ Summary
 Description
   Use Active to determine or set whether the control specified by Control is hooked. When Active is
   false, no AfterMessage and BeforeMessage events will be triggered. When Active is true, the control
-  specified by Control is hooked. Before the hooked control receives a message a BeforeMessage event with
-  that message is fired. After the hooked control has handled that message an AfterMessage event will be
-  fired.
+  specified by Control is hooked. Before the hooked control receives a message a BeforeMessage event
+  with that message is fired. After the hooked control has handled that message an AfterMessage event
+  will be fired.
 
-  At design time, set Active to true to make the control hooked when the application starts
-  running (the default value is false). At run-time, use the HookControl or UnhookControl method to
-  hook the control or remove the hook.
+  At design time, set Active to true to make the control hooked when the application starts running
+  (the default value is false). At run-time, use the HookControl or UnhookControl method to hook the
+  control or remove the hook.
 See Also
-  Control, HookControl, UnHookControl
+  TJvWindowHook.Control, TJvWindowHook.HookControl, TJvWindowHook.UnHookControl
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWindowHook.AfterMessage
 Summary
@@ -147,7 +160,8 @@ Description
 
   This event is only triggered when Active is set to true.
 See Also
-  Active, BeforeMessage, Control
+  TJvWindowHook.Active, TJvWindowHook.BeforeMessage, TJvWindowHook.Control
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWindowHook.BeforeMessage
 Summary
@@ -157,15 +171,16 @@ Description
   fired <i>before</i> the hooked control has handled the message.
 
   Use parameter Handled to specify whether the hooked control may respond to this message. Setting
-  Handled to true will prevent the hooked control or other hooks placed on the control to respond
-  to this message.
+  Handled to true will prevent the hooked control or other hooks placed on the control to respond to
+  this message.
 
   This event is only triggered when Active is set to true.
 Note
-  Be careful with setting parameter Handled to true. For example, unconditionally returning true will crash
-  your application.
+  Be careful with setting parameter Handled to true. For example, unconditionally returning true will
+  crash your application.
 See Also
-  Active, AfterMessage, Control
+  TJvWindowHook.Active, TJvWindowHook.AfterMessage, TJvWindowHook.Control
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWindowHook.Control
 Summary
@@ -173,7 +188,8 @@ Summary
 Description
   Use property Control to specify which control must be hooked.
 See Also
-  Active
+  TJvWindowHook.Active
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWindowHook.HookControl
 Summary
@@ -182,21 +198,24 @@ Description
   Call HookControl to set the Active property for the hook component to true. When Active is true,
   AfterMessage and BeforeMessage will be triggered when the hooked control receives a message.
 See Also
-  Active, Control
+  TJvWindowHook.Active, TJvWindowHook.Control
+
 ----------------------------------------------------------------------------------------------------
 @@TJvWindowHook.UnHookControl
 Summary
   Unhooks the control.
 Description
-  Call UnHookControl to set the Active property for the hook component to false. When Active is false,
-  no AfterMessage and BeforeMessage will be triggered. If no other hook components have placed a hook
-  on the control, then the control will be unhooked.
+  Call UnHookControl to set the Active property for the hook component to false. When Active is
+  false, no AfterMessage and BeforeMessage will be triggered. If no other hook components have placed
+  a hook on the control, then the control will be unhooked.
 See Also
-  Active, Control
+  TJvWindowHook.Active, TJvWindowHook.Control
+
 ----------------------------------------------------------------------------------------------------
 @@UnRegisterWndProcHook@HWND@TJvControlHook@TJvHookOrder
 <TITLE UnRegisterWndProcHook function>
 <COMBINE UnRegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder>
+
 ----------------------------------------------------------------------------------------------------
 @@UnRegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder
 <TITLE UnRegisterWndProcHook function>
@@ -215,4 +234,5 @@ Parameters
   Order    - Specifies the kind of hook. It should be the same value as used by the call to
               RegisterWndProcHook.
 See Also
-  TJvControlHook, TJvWindowHook, RegisterWndProcHook
+  RegisterWndProcHook
+

@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBar
 <TITLEIMG TJvScrollBar>
@@ -16,18 +18,19 @@ JVCLInfo
 Summary
   Supports extended features such as hot tracking.
 Description
-  TJvScrollBar is a scroll bar that supports extended features such as hot tracking. It adds
-  events to TScrollBar: OnParentColorChange, OnMouseEnter and OnMouseLeave.
-
+  TJvScrollBar is a scroll bar that supports extended features such as hot tracking. It adds events
+  to TScrollBar: OnParentColorChange, OnMouseEnter and OnMouseLeave.
+  
   Use OnMouseEnter and OnMouseLeave to alter the controls look or behavior, when the user moves the
   mouse pointer over the control.
-
+  
   Alternatively, you could use property HotTrack to highlight the scroll bar automatically when the
   mouse passes over it.
-
+  
   Property HintColor can be used to set a different color of the Help hint boxes for the scroll bar.
-
+  
   A TJvScrollBar scroll bar can contain objects, such as TButton and TLabel objects.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBar.HintColor
 Summary
@@ -37,7 +40,8 @@ Description
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
 See Also
-  HotTrack
+  TJvScrollBar.HotTrack
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBar.HotTrack
 Summary
@@ -47,9 +51,11 @@ Description
   HotTrack is false, there is no visual feedback when the mouse passes over the scroll bar.
 See Also
   OnMouseEnter, OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBar.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the scroll bar changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+

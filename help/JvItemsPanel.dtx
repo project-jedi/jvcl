@@ -8,6 +8,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvItemsPanel
 <TITLEIMG TJvItemsPanel>
@@ -20,28 +22,32 @@ Description
   TJvItemsPanel is a simple class that can divide its client area into buttons where each button
   receives a caption as determined by the Items property. If Items contains 6 strings, TJvItemsPanel
   displays 6 buttons, if Items contains 2 strings, TJvItemsPanel displays 2 buttons etc.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvItemsPanel.AutoGrow
 Summary
   Specifies whether the controls size is adjusted to show all buttons.
 Description
-  Set AutoGrow to true to make the control resize to show all buttons. When AutoGrow
-  is set to true, the following happens:
+  Set AutoGrow to true to make the control resize to show all buttons. When AutoGrow is set to true,
+  the following happens:
+
     * AutoSize is set to false.
     * Align is set to alNone.
     * The Height or Width (depending on the value of Orientation) is set to ItemHeight * Items.Count.
 See Also
-  AutoSize, ItemHeight, Items, Height, Width, Orientation
+  Height, Width
+
 ----------------------------------------------------------------------------------------------------
 @@TJvItemsPanel.AutoSize
 Summary
   Specifies how buttons are sized.
 Description
-  Use AutoSize to specify how buttons are sized when the control is sized. If AutoSize is true, buttons
-  are sized so all buttons can be seen in the control. If AutoSize is false, buttons are sized according
-  to the ItemHeight property. If AutoSize is set to true, AutoGrow is set to false.
+  Use AutoSize to specify how buttons are sized when the control is sized. If AutoSize is true,
+  buttons are sized so all buttons can be seen in the control. If AutoSize is false, buttons are
+  sized according to the ItemHeight property. If AutoSize is set to true, AutoGrow is set to false.
 See Also
-  ItemHeight, AutoGrow
+  TJvItemsPanel.AutoGrow, TJvItemsPanel.ItemHeight
+
 ----------------------------------------------------------------------------------------------------
 @@TJvItemsPanel.Clickable
 Summary
@@ -50,13 +56,15 @@ Description
   Use Clickable to specify if clicking on a button is allowed or not. If Clickable is true, items
   behave as buttons and the OnItemClick event is triggered.
 See Also
-  OnItemClick
+  TJvItemsPanel.OnItemClick
+
 ----------------------------------------------------------------------------------------------------
 @@TJvItemsPanel.GetItemAt
 Summary
   Returns the item at the specified position.
 Description
-  Call GetItemAt to obtain the index for the item found at the position specified by the X and Y parameters.
+  Call GetItemAt to obtain the index for the item found at the position specified by the X and Y
+  parameters.
   X and Y specify the coordinates of the position, in pixels, relative to the top left corner of the
   control. If there is no item at the location, GetItemAt returns -1.
 Parameters
@@ -64,6 +72,7 @@ Parameters
   Y - The Y coordinate of the location.
 Return value
   Returns the index of the item or -1 if no item was found at the specified location.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvItemsPanel.GetItemRect
 Summary
@@ -74,25 +83,28 @@ Parameters
   Index - Index of the item in the list
 Return value
   A TRect in client coordinates that describes the position and size of the specified item.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvItemsPanel.HotTrack
 Summary
   Specifies whether items are highlighted when the mouse passes over them.
 Description
   Set HotTrack to True to provide visual feedback about which item is under the mouse; the color
-  specified by HotTrackColor is used for the frame around the item. When HotTrack is False,
-  there is no visual feedback when the mouse passes over the item.
+  specified by HotTrackColor is used for the frame around the item. When HotTrack is False, there is
+  no visual feedback when the mouse passes over the item.
 See Also
-  HotTrackColor
+  TJvItemsPanel.HotTrackColor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvItemsPanel.HotTrackColor
 Summary
   Specifies the color of the frame around items when the mouse hovers over them.
 Description
-  Use HotTrackColor to specify a color to use for the frame around an item when the user hovers
-  the mouse over it. HotTrackColor is used only if HotTrack is set to true.
+  Use HotTrackColor to specify a color to use for the frame around an item when the user hovers the
+  mouse over it. HotTrackColor is used only if HotTrack is set to true.
 See Also
-  HotTrack
+  TJvItemsPanel.HotTrack
+
 ----------------------------------------------------------------------------------------------------
 @@TJvItemsPanel.ItemHeight
 Summary
@@ -101,54 +113,65 @@ Description
   Use ItemHeight to specify the size of items in the control. ItemHeight is not used if
   AutoSize is true.
 
-  Depending on the value of Orientation, ItemHeight affects either the height
-  (Orientation is opVertical) or the width (Orientation is opHorizontal) of the items.
+  Depending on the value of Orientation, ItemHeight affects either the height (Orientation is
+  opVertical) or the width (Orientation is opHorizontal) of the items.
 See Also
-  AutoSize, AutoGrow
+  TJvItemsPanel.AutoGrow, TJvItemsPanel.AutoSize
+
 ----------------------------------------------------------------------------------------------------
 @@TJvItemsPanel.Items
 Summary
   Provides indexed access to the items on the control.
 Description
-  Use Items to access the items in the control using an index. Items is of type TStrings and you can use the
-  methods of TStrings to Add, Remove and rearrange items.
+  Use Items to access the items in the control using an index. Items is of type TStrings and you can
+  use the methods of TStrings to Add, Remove and rearrange items.
 See Also
   TStrings
+
 ----------------------------------------------------------------------------------------------------
 @@TJvItemsPanel.OnItemClick
 Summary
   Occur when an item is clicked and Clickable is set to true.
 Description
-  Write a handler for the OnItemClick event to take specific action when the user clicks an item in the control.
+  Write a handler for the OnItemClick event to take specific action when the user clicks an item in
+  the control.
 Parameters
   Sender    - The object that triggered the event.
   ItemIndex - The index of the item that was clicked.
 See Also
-  Clickable
+  TJvItemsPanel.Clickable
+
 ----------------------------------------------------------------------------------------------------
 @@TJvItemsPanel.Orientation
 Summary
   Specifies the display direction of the items.
 Description
   Use Orientation to specify how the items in the control are displayed. If Orientation is
-  poHorizontal, items are displayed from left to right and ItemHeight refers to the width of the items,
-  if Orientation is poVertical, items are displayed from top to bottom and ItemHeight refers to the
-  height of the items.
+  poHorizontal, items are displayed from left to right and ItemHeight refers to the width of the
+  items, if Orientation is poVertical, items are displayed from top to bottom and ItemHeight refers
+  to the height of the items.
 See Also
-  ItemHeight
+  TJvItemsPanel.ItemHeight
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPanelItemClickEvent
 <TITLE TJvPanelItemClickEvent type>
 <COMBINE TJvItemsPanel.OnItemClick>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPanelOrientation
 <TITLE TJvPanelOrientation type>
 Summary
   Type used to specify the orientation of items in a TJvItemsPanel.
 Description
-  TJvPanelOrientation is used for the <LINK TJvItemsPanel.Orientation, Orientation> property to specify
-  how items are displayed in the control.
+  TJvPanelOrientation is used for the <LINK TJvItemsPanel.Orientation, Orientation> property to
+  specify how items are displayed in the control.
+
+----------------------------------------------------------------------------------------------------
 @@TJvPanelOrientation.poHorizontal
-  Items are displayed from left to right.
+Items are displayed from left to right.
+
+----------------------------------------------------------------------------------------------------
 @@TJvPanelOrientation.poVertical
-  Items are displayed from top to bottom.
+Items are displayed from top to bottom.
+

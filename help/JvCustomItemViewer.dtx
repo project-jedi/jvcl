@@ -13,6 +13,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
+
+
 ----------------------------------------------------------------------------------------------------
 @@CenterRect
 <TITLE CenterRect function>
@@ -23,6 +25,7 @@ Description
 Parameters
   InnerRect - The rect to center.
   OuterRect - The rect to center against.
+
 ----------------------------------------------------------------------------------------------------
 @@ClearBrushPatterns
 <TITLE ClearBrushPatterns procedure>
@@ -33,32 +36,35 @@ Description
   Normally, you should not need to call this function.
 See Also
   CreateBrushPattern, ReleasePattern
+
 ----------------------------------------------------------------------------------------------------
 @@CreateBrushPattern
 <TITLE CreateBrushPattern function>
 Summary
   Creates a bitmap from a two-color pattern.
 Description
-  Call CreateBrushPattern to create and return a TBitmap object that can be assigned to
-  the Bitmap property of a TBrush and used to paint a background pattern on a control.
+  Call CreateBrushPattern to create and return a TBitmap object that can be assigned to the Bitmap
+  property of a TBrush and used to paint a background pattern on a control.
 
-  If the specified pattern already exist, the internal reference count is incremented
-  and the existing TBitmap is returned.
+  If the specified pattern already exist, the internal reference count is incremented and the
+  existing TBitmap is returned.
 Note
-  Do not destroy the returned TBitmap object. This is done automatically when the application closes down.
+  Do not destroy the returned TBitmap object. This is done automatically when the application closes
+  down.
 Parameters
   EvenColor - The color to use on even pixels in the bitmap.
   OddColor  - The color to use on odd pixels in the bitmap.
 See Also
   ClearBrushPatterns, ReleasePattern
+
 ----------------------------------------------------------------------------------------------------
 @@ReleasePattern
 <TITLE ReleasePattern procedure>
 Summary
   Frees a specific pattern if it is not in use anymore.
 Description
-  ReleasePattern decrements the internal reference count for the specified pattern and releases
-  the associated TBitmap object if the reference count is 0.
+  ReleasePattern decrements the internal reference count for the specified pattern and releases the
+  associated TBitmap object if the reference count is 0.
 
   The pattern to release must have been created by a call to CreateBrushPattern for
   ReleasePattern to find it.
@@ -66,7 +72,8 @@ Parameters
   EvenColor - The color used on even pixels in the bitmap.
   OddColor  - The color used on odd pixels in the bitmap.
 See Also
-  CreateBrushPattern, ClearBrushPatterns
+  ClearBrushPatterns, CreateBrushPattern
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBrushPattern
 Summary
@@ -75,6 +82,7 @@ Description
   TJvBrushPattern handles a brush pattern bitmap that can be used for the Bitmap propery of a TBrush.
   TJvBrushPattern creates the TBitmap as necessary and also makes sure that patterns not in use are
   disposed of correctly.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBrushPattern.Active
 Summary
@@ -85,7 +93,8 @@ Description
 
   By convention, when Active is false, OddColor is used to draw the background.
 See Also
-  GetBitmap, OddColor, EvenColor
+  TJvBrushPattern.EvenColor, TJvBrushPattern.GetBitmap, TJvBrushPattern.OddColor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBrushPattern.EvenColor
 Summary
@@ -94,50 +103,55 @@ Description
   Set the value of EvenColor to define what color is used for even pixels in the brush pattern
   returned by calling GetBitmap.
 
-Note
-  "OddColor" and "EvenColor" aren't exactly correct terminology in this context since the bitmap
-  is built by alternating EvenColor and OddColor in such a manner that it creates a checker board pattern.
+  Note "OddColor" and "EvenColor" aren't exactly correct terminology in this context since the bitmap
+  is built by alternating EvenColor and OddColor in such a manner that it creates a checker board
+  pattern.
 See Also
-  OddColor, GetBitmap
+  TJvBrushPattern.GetBitmap, TJvBrushPattern.OddColor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBrushPattern.GetBitmap
 Summary
   Returns a bitmap that can be used as a brush.
 Description
-  Call GetBitmap to get a reference to a 8x8 pixel TBitmap object that is assignable to the TBrush.Bitmap
-  property.
+  Call GetBitmap to get a reference to a 8x8 pixel TBitmap object that is assignable to the
+  TBrush.Bitmap property.
 
-  Do not free the returned TBitmap as it is internally managed and might be shared with other controls.
+  Do not free the returned TBitmap as it is internally managed and might be shared with other
+  controls.
 Return value
   If Active is false, nil is returned. If Active is true, a 8x8 TBitmap object is returned.
 See Also
-  Active, EvenColor, OddColor
+  TJvBrushPattern.Active, TJvBrushPattern.EvenColor, TJvBrushPattern.OddColor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBrushPattern.OddColor
 Summary
   Defines the color to use for the odd pixels in a pattern brush.
 Description
-  Set the value of OddColor to define what color is used for odd pixels in the brush pattern
-  returned by calling GetBitmap.
-Note
-  "OddColor" and "EvenColor" aren't exactly correct terminology in this context since the bitmap
-  is built by alternating EvenColor and OddColor in such a manner that it creates a checker board pattern.
+  Set the value of OddColor to define what color is used for odd pixels in the brush pattern returned
+  by calling GetBitmap.
+  Note "OddColor" and "EvenColor" aren't exactly correct terminology in this context since the bitmap
+  is built by alternating EvenColor and OddColor in such a manner that it creates a checker board
+  pattern.
 See Also
-  EvenColor, GetBitmap
+  TJvBrushPattern.EvenColor, TJvBrushPattern.GetBitmap
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer
 Summary
   Base class for visual components that can display its content in a grid like fashion.
 Description
-  Use TJvCustomItemViewer as a base class when defining components that represent information in
-  a grid like format. TJvCustomItemViewer introduces properties and methods to control the
-  appearance and behavior of the viewer, including responses to mouse, keyboard and wheel actions,
-  handling of multiselect, dragging, edge scrolling and memory conservation.
+  Use TJvCustomItemViewer as a base class when defining components that represent information in a
+  grid like format. TJvCustomItemViewer introduces properties and methods to control the appearance
+  and behavior of the viewer, including responses to mouse, keyboard and wheel actions, handling of
+  multiselect, dragging, edge scrolling and memory conservation.
 
-  Do not create instances of TJvCustomItemViewer. Instead, put a viewer control in a form by instantiating
-  a descendant of TJvCustomItemViewer. Use TJvImagesViewer to display images from graphic files
-  in a folder. Use a TJvImageListViewer to display items from a  TCustomImageList. Use TJvOwnerDrawViewer
-  to display arbitrary data where you are responsible for drawing each item.
+  Do not create instances of TJvCustomItemViewer. Instead, put a viewer control in a form by
+  instantiating a descendant of TJvCustomItemViewer. Use TJvImagesViewer to display images from
+  graphic files in a folder. Use a TJvImageListViewer to display items from a  TCustomImageList. Use
+  TJvOwnerDrawViewer to display arbitrary data where you are responsible for drawing each item.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.Add
 Summary
@@ -150,7 +164,8 @@ Parameters
 Return value
   The index of the newly added item.
 See Also
-  Clear, Insert, Delete
+  TJvCustomItemViewer.Clear, TJvCustomItemViewer.Delete, TJvCustomItemViewer.Insert
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.BeginUpdate
 Summary
@@ -160,16 +175,18 @@ Description
   Use BeginUpdate to speed processing and avoid flicker while items are added to, modified or deleted
   from the control.
 See Also
-  EndUpdate, UpdateCount
+  TJvCustomItemViewer.EndUpdate, TJvCustomItemViewer.UpdateCount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.BorderStyle
 Summary
   Determines whether the control has a single line border around the client area.
 Description
   Use BorderStyle to affect the sharpness with which the client area of the control stands out.
-  BorderStyle can have a value of either bsSingle or bsNone. If BorderStyle is bsSingle,
-  the control has a single-line border around the client area. If BorderStyle is bsNone,
+  BorderStyle can have a value of either bsSingle or bsNone. If BorderStyle is bsSingle, the control
+  has a single-line border around the client area. If BorderStyle is bsNone,
   there will be no border.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.BottomRightIndex
 Summary
@@ -177,17 +194,19 @@ Summary
 Description
   Read BottomRightIndex to determine the last visible item at the bottom right corner.
 See Also
-  TopLeftIndex
+  TJvCustomItemViewer.TopLeftIndex
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.CalcIndices
 Summary
   Calculates the range of visible items in the control.
 Description
   Call CalcIndices to recalculate the TopLeftIndex and BottomRightIndex. Normally, you do not need to
-  call this procedure since it is called automatically when the control is resized, scrolled or
-  when the Count property changes.
+  call this procedure since it is called automatically when the control is resized, scrolled or when
+  the Count property changes.
 See Also
-  TopLeftIndex, BottomRightIndex
+  TJvCustomItemViewer.BottomRightIndex, TJvCustomItemViewer.TopLeftIndex
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.Canvas
 Summary
@@ -195,30 +214,33 @@ Summary
 Description
   Use Canvas as the drawing surface for the control.
 See Also
-  OnDrawItem
+  TJvCustomItemViewer.OnDrawItem
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.Changed
 Summary
   Responds when Count or Items changes.
 Description
   Changed is called automatically when Items change or when the EndUpdate method signals that an
-  update is complete. It checks the value of UpdateCount, and if it is 0, calls the UpdateAll
-  method, which performs any necessary updates.
+  update is complete. It checks the value of UpdateCount, and if it is 0, calls the UpdateAll method,
+  which performs any necessary updates.
 
-  When writing a viewer descendant, there is no need to call Changed. Instead, bracket any changes
-  by calls to BeginUpdate and EndUpdate.
+  When writing a viewer descendant, there is no need to call Changed. Instead, bracket any changes by
+  calls to BeginUpdate and EndUpdate.
 See Also
-  BeginUpdate, EndUpdate, UpdateCount
+  TJvCustomItemViewer.BeginUpdate, TJvCustomItemViewer.EndUpdate, TJvCustomItemViewer.UpdateCount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.CheckHotTrack
 Summary
   Determines the item that should be hot tracked.
 Description
   CheckHotTrack is called automatically by the base control when it needs to determine what item
-  should be drawn in the hot track state. An item is only hottracked when the mouse is hovering over it
-  and the Options.HotTrack property is true.
+  should be drawn in the hot track state. An item is only hottracked when the mouse is hovering over
+  it and the Options.HotTrack property is true.
 See Also
-  Options
+  TJvCustomItemViewer.Options
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.Clear
 Summary
@@ -226,28 +248,33 @@ Summary
 Description
   Clear empties the Items array and frees the items.
 See Also
-  Add, Delete, Items
+  TJvCustomItemViewer.Add, TJvCustomItemViewer.Delete, TJvCustomItemViewer.Items
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.ColRowToIndex
 Summary
   Converts a column row index to an Items array index.
 Description
-  ColRowToIndex converts a columna nd row index to the corresponding Items index. This function does not check
+  ColRowToIndex converts a columna nd row index to the corresponding Items index. This function does
+  not check
   ACol and ARow, so if the column and row index are invalid, so is the result.
 Parameters
   ACol - The column index to convert. This is 0-based.
   ARow - The row index to convert. This is 0-based.
 Return value
   The corresponding Items index. This is 0-based.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.Count
 Summary
   Specifies the number of items in the control.
 Description
-  Use Count to read and change the number of items in the control. Changing Count will change the upper
-  bound of the Items array. Calling Add, Delete and Clear automatically changes Count.
+  Use Count to read and change the number of items in the control. Changing Count will change the
+  upper bound of the Items array. Calling Add, Delete and Clear automatically changes Count.
 See Also
-  Add, Delete, Clear, Items
+  TJvCustomItemViewer.Add, TJvCustomItemViewer.Clear, TJvCustomItemViewer.Delete,
+  TJvCustomItemViewer.Items
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.Delete
 Summary
@@ -256,6 +283,7 @@ Description
   Call delete to remove an item from the Items array. The item is freed when it is removed.
 Parameters
   Index - The 0-based index of the item to remove.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.DoReduceMemory
 Summary
@@ -265,21 +293,25 @@ Description
   DoReduceMemory calls each item's ReduceMemoryUsage procedure if Options.ReduceMemoryUsage is true.
   The base item class does nothing in its ReduceMemoryUsage procedure but descendant classes might
   implement this differently.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.DrawItem
 Summary
   Called when an item needs to be visually updated.
 Description
-  DrawItem is called for each item when it needs to be redrawn. Override this method
-  in a descendant class to change the way items are drawn. Depending on the value of Options.LazyRead, DrawItem
-  is called differently. If LazyRead is true, DrawItem is called for each visible item. If LazyRead is false,
+  DrawItem is called for each item when it needs to be redrawn. Override this method in a descendant
+  class to change the way items are drawn. Depending on the value of Options.LazyRead, DrawItem is
+  called differently. If LazyRead is true, DrawItem is called for each visible item. If LazyRead is
+  false,
   DrawItem is called for all items.
 Parameters
   Index    - The index of the item in the Items array.
   State    - The current state ofthe item to draw.
   Canvas   - The canvas to draw on.
   ItemRect - The rect of the item to draw excluding TextRect.
-  TextRect - The rect of the text (if any) to draw. This rect is adjusted according to Options.Layout and Options.Alignment.
+  TextRect - The rect of the text (if any) to draw. This rect is adjusted according to Options.Layout
+  and Options.Alignment.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.EndUpdate
 Summary
@@ -287,63 +319,75 @@ Summary
 Description
   Use EndUpdate to re-enable screen repainting that was turned off with the BeginUpdate method.
 See Also
-  BeginUpdate, UpdateCount
+  TJvCustomItemViewer.BeginUpdate, TJvCustomItemViewer.UpdateCount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.FindFirstSelected
 Summary
   Finds and returns the index of the first selected item.
 Description
-  Call FindFirstSelected to find and return the first selected item in the control. If Options.MultiSelect
-  is false, this is the same as SelectedIndex.
+  Call FindFirstSelected to find and return the first selected item in the control. If
+  Options.MultiSelect is false, this is the same as SelectedIndex.
 See Also
-  SelectedIndex, FindLastSelected
+  TJvCustomItemViewer.FindLastSelected, TJvCustomItemViewer.SelectedIndex
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.FindLastSelected
 Summary
   Finds and returns the index of the last selected item.
 Description
-  Call FindLastSelected to find and return the last selected item in the control. If Options.MultiSelect
-  is false, this is the same as SelectedIndex.
+  Call FindLastSelected to find and return the last selected item in the control. If
+  Options.MultiSelect is false, this is the same as SelectedIndex.
 See Also
-  SelectedIndex, FindFirstSelected
+  TJvCustomItemViewer.FindFirstSelected, TJvCustomItemViewer.SelectedIndex
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.GetDragImages
 Summary
   Returns the image list to be displayed during drag operations.
 Description
-  GetDragImages is called automatically during drag-and-drop operations to allow the control to supply
-  an image that is displayed while the one of the items is dragged. If an item is being dragged,
-  GetDragImages returns the image for the item that was selected when the DoStartDrag method was called.
+  GetDragImages is called automatically during drag-and-drop operations to allow the control to
+  supply an image that is displayed while the one of the items is dragged. If an item is being
+  dragged,
+  GetDragImages returns the image for the item that was selected when the DoStartDrag method was
+  called.
 Return value
   An imagelist containing one image representing the currently selected item.
 Note
   GetDragImages only returns the item under the cursor even if multiple items are selected.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.GetItemClass
 Summary
   Returns the class type of the items in the Items list.
 Description
-  Override GetItemClass in descendent classes to return the class type of the items in the Items array.
+  Override GetItemClass in descendent classes to return the class type of the items in the Items
+  array.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.GetItemState
 Summary
   Returns the current state of the specified item.
 Description
-  Call GetItemState to return the current state of an item in the Items array. Calling GetItemState is safer
-  than accessing the State property of an item in the Items array directly since GetItemState first checks that
+  Call GetItemState to return the current state of an item in the Items array. Calling GetItemState
+  is safer than accessing the State property of an item in the Items array directly since
+  GetItemState first checks that
   Index is valid. If Index is out of bounds, this method returns an emtpy set.
 Parameters
   Index - The index of the item in the Items array to return the state for.
 Return value
   The state of the specified item or an empty set if Index is out of bounds.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.GetOptionsClass
 Summary
   Returns the class type of the class used for the Options property.
 Description
-  Override GetOptionsClass in descendent classes to return the class type for the control's Options property.
+  Override GetOptionsClass in descendent classes to return the class type for the control's Options
+  property.
 Return value
   The class type of the Options property.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.GetTextHeight
 Summary
@@ -353,33 +397,37 @@ Description
   calculates the height of the text as a single line string.
 Return value
   The single line height of a text string using the current Font.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.GetTextRect
 Summary
   Adjusts a rect so it encloses the passed in string.
 Description
-  Call GetTextRect with a string and a rect to have the rect adjusted to enclose the string S. The rect
-  is adjusted according to the value of Options.Layout. ItemRect must contain the correct values for
+  Call GetTextRect with a string and a rect to have the rect adjusted to enclose the string S. The
+  rect is adjusted according to the value of Options.Layout. ItemRect must contain the correct values
+  for
   Left and Right before calling this method.
 Parameters
   S        - The string to calculate the rect for.
   ItemRect - The rect to adjust.
 Return value
   A TRect adjusted according to the value of Options.Layout.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.IndexOf
 Summary
   Returns the index of the first occurrence in the list of a specified item.
 Description
-  Call IndexOf to get the index for an item in the Items array. The first item in the array has
-  index 0, the second item has index 1, and so on.
+  Call IndexOf to get the index for an item in the Items array. The first item in the array has index
+  0, the second item has index 1, and so on.
 
-  If an item is not in the list, IndexOf returns -1. If an item appears more than once in the
-  list, IndexOf returns the index of the first appearance.
+  If an item is not in the list, IndexOf returns -1. If an item appears more than once in the list,
+  IndexOf returns the index of the first appearance.
 Parameters
   Item - The item to find.
 Return value
   The index of the item if found or -1 if Item is not in the Items array.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.IndexToColRow
 Summary
@@ -390,6 +438,7 @@ Parameters
   Index - The index of the item to convert.
   ACol  - The column index is returned in this parameter.
   ARow  - The row index is returned in this parameter.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.Insert
 Summary
@@ -400,7 +449,8 @@ Parameters
   Index - The position where the item should be inserted.
   AItem - iThe tem to insert.
 See Also
-  Add, Clear, Count
+  TJvCustomItemViewer.Add, TJvCustomItemViewer.Clear, TJvCustomItemViewer.Count
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.ItemAtPos
 Summary
@@ -408,29 +458,33 @@ Summary
 Description
   Use ItemAtPos to detect if an item exists at a particular point in the control.
 
-  The X and Y parameters is the point in the control in window coordinates. If C and Y is beyond the last item
-  in the control, the value of the Existing variable determines the returned value. If Existing is set to True,
-  ItemAtPos returns -1, indicating that no item exists at that point. If Existing is set to False, ItemAtPos
-  returns the index of the last item in the control plus one.
+  The X and Y parameters is the point in the control in window coordinates. If C and Y is beyond the
+  last item in the control, the value of the Existing variable determines the returned value. If
+  Existing is set to True,
+  ItemAtPos returns -1, indicating that no item exists at that point. If Existing is set to False,
+  ItemAtPos returns the index of the last item in the control plus one.
 Parameters
   X        - The horizontal position of the item.
   Y        - The vertical position of the item.
-  Existing - Determines if the method should return -1 or the last item plus one if there is no item at X, Y.
+  Existing - Determines if the method should return -1 or the last item plus one if there is no item
+  at X, Y.
 Return value
   The index of the control at X/Y or -1 if not found or the last item + 1 if Existing is false.
 See Also
-  IndexOf
+  TJvCustomItemViewer.IndexOf
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.ItemChanged
 Summary
   Called whenever an item property has \changed.
 Description
-  ItemChanged is called whenever an item (or one of its properties) in the Items array has changed. ItemChanged
-  calls the OnItemChanged event.
+  ItemChanged is called whenever an item (or one of its properties) in the Items array has changed.
+  ItemChanged calls the OnItemChanged event.
 Parameters
   Item - The item that has changed. This parameter can be nil.
 See Also
-  OnItemChanged
+  TJvCustomItemViewer.OnItemChanged
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.ItemChanging
 Summary
@@ -442,53 +496,59 @@ Parameters
   Item        - The item that is about to change.
   AllowChange - Determines if the item is allowed to change.
 See Also
-  OnItemChanging
+  TJvCustomItemViewer.OnItemChanging
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.ItemRect
 Summary
   Calculates the bounding rect of an item.
 Description
-  ItemRect calculates the bounding rect of an item and return the result. If IncludeSpacing is true, the values of
+  ItemRect calculates the bounding rect of an item and return the result. If IncludeSpacing is true,
+  the values of
   Options.VertSpacing and Options.HorzSpacing is included in the result.
 Parameters
   Index          - Index of the item to calculate.
   IncludeSpacing - If true, spacing is included in the returned rect.
 Return value
   The TRect that bounds the item.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.Items
 Summary
   Provides indexed access to the items in the control.
 Description
-  Use Items to read or modify an item at a particular position. Index gives the position of
-  the item, where 0 is the position of the first item, 1 is the position of the second item, and so on.
+  Use Items to read or modify an item at a particular position. Index gives the position of the item,
+  where 0 is the position of the first item, 1 is the position of the second item, and so on.
   To locate a particular item in the list, call the IndexOf method.
 See Also
-  IndexOf
+  TJvCustomItemViewer.IndexOf
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.ItemSize
 Summary
   Stores the height and width of an item in a single variable.
 Description
-  Read ItemSize to determine the height and width of an item in the list. The size of an item is determined
-  by Options.Width and Options.Height as well Options.VertSpacing and Options HorzSpacing.
+  Read ItemSize to determine the height and width of an item in the list. The size of an item is
+  determined by Options.Width and Options.Height as well Options.VertSpacing and Options HorzSpacing.
 
   ItemSize.cx stores the width of an item and ItemSize.cy stores the height.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.OnDeletion
 Summary
-  Write here a summary (1 line)
+  Occurs when an item is deleted in the list.
 Description
-  Write here a description
+  \\Write a handler for this event to take specific action when an item is deleted from the list.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomItemViewer.OnInsertion
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.OnDrawItem
 Summary
   Called whenever an item needs to be drawn.
 Description
-  Assign an event handler to the OnDrawItem to control the way an item is drawn in the control. DrawItem calls
+  Assign an event handler to the OnDrawItem to control the way an item is drawn in the control.
+  DrawItem calls
   OnDrawItem for each item in the Items array as needed.
 Parameters
   Sender   - The object that triggered the event.
@@ -498,35 +558,40 @@ Parameters
   ItemRect - The bounding rect of the item to draw, excluding the text area.
   TextRect - The bounding rect of the text area for the item.
 See Also
-  DrawItem
+  TJvCustomItemViewer.DrawItem
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.OnInsertion
 Summary
-  Write here a summary (1 line)
+  Occurs when an new item is added to the list.
 Description
-  Write here a description
+  \\Write a handler for this event to take specific action when an item is added to the list.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomItemViewer.OnDeletion
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.OnItemChanged
 Summary
   Called when an item has \changed.
 Description
-  Write an event handler for the OnItemChanged event to take specific action when an item in the Items array has changed.
-  For example, you might want to update a status display whenever a property of an item has been modified.
+  Write an event handler for the OnItemChanged event to take specific action when an item in the
+  Items array has changed.
+  For example, you might want to update a status display whenever a property of an item has been
+  modified.
 Parameters
   Sender - The object that triggered the event.
   Item   - The item that has changed.
 See Also
-  OnItemChanging
+  TJvCustomItemViewer.OnItemChanging
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.OnItemChanging
 Summary
   Called when an item is about to change.
 Description
-  Write an event handler for the OnItemChanging event to take specific action when an item in the Items array
-  is about to change. For example, you might want to prohibit changes to items under certain circumstances.
+  Write an event handler for the OnItemChanging event to take specific action when an item in the
+  Items array is about to change. For example, you might want to prohibit changes to items under
+  certain circumstances.
 
   To disallow an item to change, set the Allow parameter to false. By default, Allow is true.
 Parameters
@@ -534,85 +599,103 @@ Parameters
   Item   - The item that is about to change.
   Allow  - Set to false to disallow the change. Default value is true.
 See Also
-  OnItemChanged
+  TJvCustomItemViewer.OnItemChanged
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.OnItemHint
 Summary
-  Write here a summary (1 line)
+  Occurs when the hint for an item is about to be displayed.
 Description
-  Write here a description
+  \\Write a handler for this event to take specific action when the hint for an item is about to be
+  displayed.
 Parameters
-  Sender   - Description for this parameter
-  Index    - Description for this parameter
-  HintInfo - Description for this parameter
-  Handled  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Sender   - The item viewer that triggered the event.
+  Index    - The index of the item for which a hint is to be displayed
+  HintInfo - Provides access to the hint info.
+  Handled  - Set this to true if your code handles the hint itself.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.OnOptionsChanged
 Summary
   Called when an option has changed.
 Description
-  Write an event handler for the OnOptionsChanged event to take specific action whenever an option has changed.
+  Write an event handler for the OnOptionsChanged event to take specific action whenever an option
+  has changed.
 See Also
-  OptionsChanged
+  TJvCustomItemViewer.OptionsChanged
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.OnScroll
 Summary
   Called when the control is scrolled.
 Description
-  Write an event handler for the OnScroll event to take specific action when the control is scrolled using the
-  scroll bar.
+  Write an event handler for the OnScroll event to take specific action when the control is scrolled
+  using the scroll bar.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.Options
 Summary
   Provides access to the controls's options.
 Description
-  Use Options to read and modify the options for the control. The class type of the Options property is determined
-  by the value returned by the GetOptionsClass protected method. Descendant classes might override this method to return
-  an options class better tailored to the specific control.
+  Use Options to read and modify the options for the control. The class type of the Options property
+  is determined by the value returned by the GetOptionsClass protected method. Descendant classes
+  might override this method to return an options class better tailored to the specific control.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.OptionsChanged
 Summary
   Triggers the OnOptionsChanged event.
 Description
-  OptionsChanged is called when a property in the Options class is changed. OptionsChanged triggers the
+  OptionsChanged is called when a property in the Options class is changed. OptionsChanged triggers
+  the
   OnOptionsChanged event.
 See Also
-  OnOptionsChanged
+  TJvCustomItemViewer.OnOptionsChanged
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.ScrollBy
 Summary
-  Write here a summary (1 line)
+  Scroll control contents.
 Description
-  Write here a description
+  Call ScrollBy to scroll the contents within the control.
+
+  Applications seldom need to call the ScrollBy method unless they implement their own scrolling
+  interface rather than relying on a scroll bar.
+
+  The DeltaX parameter is the change in pixels along the X axis. A positive DeltaX value scrolls the
+  contents to the right; a negative value scrolls the contents to the left. The DeltaY parameter is
+  the change in pixels along the Y axis. A positive DeltaY value scrolls the contents down; a
+  negative value scrolls the contents up.
 Parameters
-  DeltaX - Description for this parameter
-  DeltaY - Description for this parameter
+  DeltaX - The number of pixels to scroll the control horizontally. This value can be negative.
+  DeltaY - The number of pixels to scroll the control vertically. This value can be negative.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomItemViewer.ScrollIntoView
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.ScrollIntoView
 Summary
-  Write here a summary (1 line)
+  Scrolls a specific item into view.
 Description
-  Write here a description
+  Use ScrollIntoView to make a specific item visible in the item viewer.
+
+Note
+  Do not confuse this method with ScrollInView. ScrollInView performs another taks altogether.
 Parameters
-  Index - Description for this parameter
+  Index - The index of the tem to make visible.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ScrollInView
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.SelectAll
 Summary
   Selects all items in the control.
 Description
-  Call SelectAll to select all the items in the Items array. SelectAll is functionally equivalent
-  to calling SelectItems with 0 and Count - 1 as parameters.
+  Call SelectAll to select all the items in the Items array. SelectAll is functionally equivalent to
+  calling SelectItems with 0 and Count - 1 as parameters.
 See Also
-  SelectItems, UnselectItems
+  TJvCustomItemViewer.SelectItems, TJvCustomItemViewer.UnselectItems
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.Selected
 Summary
@@ -623,7 +706,8 @@ Description
 Parameters
   Item - The item to read/write.
 See Also
-  SelectedIndex
+  TJvCustomItemViewer.SelectedIndex
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.SelectedIndex
 Summary
@@ -633,7 +717,8 @@ Description
   no item is selected. If Options.MultiSelect is true, SelectedIndex returns the index of the item
   that was selected most recently.
 See Also
-  Selected
+  TJvCustomItemViewer.Selected
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.SelectItems
 Summary
@@ -644,9 +729,11 @@ Description
 Parameters
   StartIndex - Index of the first item in the range.
   EndIndex   - Index of the last item in the range.
-  AppendSelection - If true, already selected items are left selected. If false, the current selection is first removed.
+  AppendSelection - If true, already selected items are left selected. If false, the current
+  selection is first removed.
 See Also
-  SelectAll, UnselectItems
+  TJvCustomItemViewer.SelectAll, TJvCustomItemViewer.UnselectItems
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.ToggleSelection
 Summary
@@ -656,6 +743,7 @@ Description
 Parameters
   Index        - Index of the item to toggle.
   SetSelection - Set to true to change the SelectedIndex if the item's selection state is toggled on.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.TopLeftIndex
 Summary
@@ -663,28 +751,31 @@ Summary
 Description
   Read TopLeftIndex to determine the first visible item at the top left corner.
 See Also
-  BottomRightIndex
+  TJvCustomItemViewer.BottomRightIndex
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.UnselectItems
 Summary
   Unselects a range of items.
 Description
-  Call UnselectItems to unselect a range of items in one go. UnselectItems calls BeginUpdate/EndUpdate to
-  speed the unselection process.
+  Call UnselectItems to unselect a range of items in one go. UnselectItems calls
+  BeginUpdate/EndUpdate to speed the unselection process.
 Parameters
   StartIndex - Index of the first item in the range.
   EndIndex - Index of the last item in the range.
 See Also
-  SelectAll, SelectItems
+  TJvCustomItemViewer.SelectAll, TJvCustomItemViewer.SelectItems
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.UpdateAll
 Summary
   Recalculates and updates all internal variables to reflect the current state.
 Description
-  Call UpdateAll to recalculate all internal variables and offsets as well as scrollbar information. UpdateAll
-  is called as needed and developers seldom need to call it directly.
+  Call UpdateAll to recalculate all internal variables and offsets as well as scrollbar information.
+  UpdateAll is called as needed and developers seldom need to call it directly.
 See Also
-  UpdateOffset
+  TJvCustomItemViewer.UpdateOffset
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.UpdateCount
 Summary
@@ -695,7 +786,8 @@ Description
   returns to 0, the control updates itself to reflect all changes that occurred since the first call
   to BeginUpdate.
 See Also
-  BeginUpdate, EndUpdate
+  TJvCustomItemViewer.BeginUpdate, TJvCustomItemViewer.EndUpdate
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.UpdateOffset
 Summary
@@ -704,24 +796,30 @@ Description
   Call UpdateOffset to recalculate the internal offset values. UpdateOffset is called as needed and
   developers seldom need to call it directly.
 See Also
-  UpdateAll
+  TJvCustomItemViewer.UpdateAll
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions
 Summary
   Base class for the Options property.
 Description
-  TJvCustomItemViewerOptions is the base class for Options property of TJvCustomItemViewer descendants.
-  When developing a new item viewer that needs options not available in this class, derive a new class from
-  TJvCustomItemViewerOptions, add the properties and methods needed. Finally, override the GetOptionsClass method
-  of your TJvCustomItemViewer descendant to return the new class.
+  TJvCustomItemViewerOptions is the base class for Options property of TJvCustomItemViewer
+  descendants.
+  When developing a new item viewer that needs options not available in this class, derive a new
+  class from
+  TJvCustomItemViewerOptions, add the properties and methods needed. Finally, override the
+  GetOptionsClass method of your TJvCustomItemViewer descendant to return the new class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions.Alignment
 Summary
   Specifies how text is aligned within an item.
 Description
-  Use Alignment to specify whether values should be left-justified, right-justified, or centered in an item.
+  Use Alignment to specify whether values should be left-justified, right-justified, or centered in
+  an item.
 See Also
-  Layout
+  TJvCustomItemViewerOptions.Layout
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions.AutoCenter
 Summary
@@ -731,31 +829,36 @@ Description
   depending on the value of ScrollBar. If ScrollBar is tvHorizontal, the visible items are center
   vertically in the control, otherwise they are centered horizontally.
 See Also
-  ScrollBar
+  TJvCustomItemViewerOptions.ScrollBar
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions.BrushPattern
 Summary
   Specifies the background brush pattern to use for a selected item.
 Description
-  BrushPattern provides access to properties that control the appearance of the background pattern used
-  for selected items in a TJvCustomItemViewer.
+  BrushPattern provides access to properties that control the appearance of the background pattern
+  used for selected items in a TJvCustomItemViewer.
 See Also
   TJvBrushPattern
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions.Change
 Summary
   Called when an option has changed.
 Description
-  Change is called automatically when an option property has changed. Change notifies the TJvCustomItemViewer
-  owning the class that an option has changed. If you derive a new class from TJvCustomItemViewerOptions,
-  do not forget to call Change in the property setters for new properties.
+  Change is called automatically when an option property has changed. Change notifies the
+  TJvCustomItemViewer owning the class that an option has changed. If you derive a new class from
+  TJvCustomItemViewerOptions, do not forget to call Change in the property setters for new properties.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions.DragAutoScroll
 Summary
   Specifies whether the control scrolls automatically when needed in a drag drop event.
 Description
-  Set DragAutoScroll to true to make the TJvCustomItemViewer scroll automatically when the mouse is near an
-  edge in a drag and drop process. SetAutoDragScroll to false, to disable or handle the scrolling manually.
+  Set DragAutoScroll to true to make the TJvCustomItemViewer scroll automatically when the mouse is
+  near an edge in a drag and drop process. SetAutoDragScroll to false, to disable or handle the
+  scrolling manually.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions.Height
 Summary
@@ -763,16 +866,19 @@ Summary
 Description
   Use the Height property to read or change the height of an item in the control.
 See Also
-  Width
+  TJvCustomItemViewerOptions.Width
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions.HorzSpacing
 Summary
   Specifies the horizontal spacing between items.
 Description
-  Use the HorzSpacing property to read or change the horizontal distance between two items in the control.
+  Use the HorzSpacing property to read or change the horizontal distance between two items in the
+  control.
   The distance is expressed in pixels.
 See Also
-  VertSpacing
+  TJvCustomItemViewerOptions.VertSpacing
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions.HotTrack
 Summary
@@ -780,32 +886,37 @@ Summary
 Description
   Set HotTrack to True to provide visual feedback about which item is under the mouse. When HotTrack
   is False, there is no visual feedback when the mouse passes over the item.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions.Layout
 Summary
   Specifies the vertical placement of the text within an item.
 Description
-  Set Layout to specify how the text of an item is placed within the bounds of the item. Layout is the
-  vertical analog to the Alignment property.
+  Set Layout to specify how the text of an item is placed within the bounds of the item. Layout is
+  the vertical analog to the Alignment property.
 See Also
-  Alignment
+  TJvCustomItemViewerOptions.Alignment
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions.LazyRead
 Summary
   Specifies how and when items are created.
 Description
   Use the LazyRead property to specify how and when items are created by the control. If LazyRead is
-  true, items are created and initialized when needed. If LazyRead is false, items are created as soon
-  as they are added to the Items array.
+  true, items are created and initialized when needed. If LazyRead is false, items are created as
+  soon as they are added to the Items array.
 See Also
-  TJvCustomItemViewer.Add, TJvCustomItemViewer.Insert,
-  TJvCustomItemViewer.Items, TJvCustomItemViewer.Count
+  TJvCustomItemViewer.Add, TJvCustomItemViewer.Count, TJvCustomItemViewer.Insert,
+  TJvCustomItemViewer.Items
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions.MultiSelect
 Summary
   Specifies whether the user can select more than one item at a time.
 Description
-  Use the MultiSelect property to specify whether the users can select more than one item at a time in the control.
+  Use the MultiSelect property to specify whether the users can select more than one item at a time
+  in the control.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions.ReduceMemoryUsage
 Summary
@@ -813,70 +924,82 @@ Summary
 Description
   Set ReduceMemoryUsage to minimize the memory usage of the items in the control. Note that reducing
   memory usage might affect the update speed of the control.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions.RightClickSelect
 Summary
   Determines whether items that are clicked using the right mouse button are also selected.
 Description
-  Use RightClickSelect to allow the user to seect items using the right mouse button.  If RightClickSelect
-  is True, the value of Selected is the value of the node last clicked with either the right or
-  left mouse button.  If RightClickSelect is False, the value of Selected is the node last
-  clicked using the left mouse button.
+  Use RightClickSelect to allow the user to seect items using the right mouse button.  If
+  RightClickSelect is True, the value of Selected is the value of the node last clicked with either
+  the right or left mouse button.  If RightClickSelect is False, the value of Selected is the node
+  last clicked using the left mouse button.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions.ScrollBar
 Summary
   Specifies which scrollbar is displayed when items cannot fit within the client rect of the control.
 Description
-  Set ScrollBar to tvHorizontal to display a horizontal scrollbar when the items cannot fit inside the
-  client area of the control. Set ScrollBar to tvVertical to display a vertical scrollbar when the items
-  cannot fit.
+  Set ScrollBar to tvHorizontal to display a horizontal scrollbar when the items cannot fit inside
+  the client area of the control. Set ScrollBar to tvVertical to display a vertical scrollbar when
+  the items cannot fit.
 Note
-  Although the control publishes the HorzScrollBar and VertScrollBar properties, do not use these to set the
-  Visible property of the scrollbars since it will be changed immediately by the control. HorzScrollBar and
-  VertScrollBar are published by the ancestor TScrollingWinControl and thus cannot be unpublished again.
+  Although the control publishes the HorzScrollBar and VertScrollBar properties, do not use these to
+  set the
+  Visible property of the scrollbars since it will be changed immediately by the control.
+  HorzScrollBar and
+  VertScrollBar are published by the ancestor TScrollingWinControl and thus cannot be unpublished
+  again.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions.ShowCaptions
 Summary
   Specifies whether items display text or not.
 Description
-  Use the ShowCaptions property to specify whether items show their captions or not. This property affects the
-  calculation of the ItemRect and TextRect parameters passed to TJvCustomItemViewer.DrawItem.
+  Use the ShowCaptions property to specify whether items show their captions or not. This property
+  affects the calculation of the ItemRect and TextRect parameters passed to
+  TJvCustomItemViewer.DrawItem.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions.Smooth
 Summary
   Specifies whether the amount the associated control scrolls is dynamically computed.
 Description
-  Set Smooth to True to specify that the scroll bar should dynamically adjust its scrolling
-  increment based on the size of the associated control’s client area.
+  Set Smooth to True to specify that the scroll bar should dynamically adjust its scrolling increment
+  based on the size of the associated control’s client area.
 
   When Smooth is True, clicking the end arrows of the scrollbar scrolls the associated control by
-  approximately one tenth of its client area, and clicking the scrollbar beside the thumb
-  tab scrolls the control by the length of the client area minus the amount scrolled by
-  the end arrows. When Smooth is False, the Increment property controls the amount of
-  scrolling when the user clicks the end arrows, and clicking beside the thumb tab
+  approximately one tenth of its client area, and clicking the scrollbar beside the thumb tab scrolls
+  the control by the length of the client area minus the amount scrolled by the end arrows. When
+  Smooth is False, the Increment property controls the amount of scrolling when the user clicks the
+  end arrows, and clicking beside the thumb tab
   scrolls the control by the entire length of the client area.
 See Also
-  Tracking
+  TJvCustomItemViewerOptions.Tracking
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions.Tracking
 Summary
   Determines whether the scroll box moves before the thumb tab is released.
 Description
-  Use Tracking to control whether the scrollbar and associated control repaint while the
-  thumb tab is dragged with the mouse.  If Tracking is True, the image moves as the user drags
+  Use Tracking to control whether the scrollbar and associated control repaint while the thumb tab is
+  dragged with the mouse.  If Tracking is True, the image moves as the user drags
   the thumb tab. If Tracking is False, the image remains static until the thumb tab is released.
 
-  Repainting while the thumb tab is dragged can provide useful feedback to the user about how far
-  the control has scrolled, but slows performance.
+  Repainting while the thumb tab is dragged can provide useful feedback to the user about how far the
+  control has scrolled, but slows performance.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions.VertSpacing
 Summary
   Specifies the vertical spacing between items.
 Description
-  Use the VertSpacing property to read or change the vertical distance between two items in the control.
+  Use the VertSpacing property to read or change the vertical distance between two items in the
+  control.
   The distance is expressed in pixels.
 See Also
-  HorzSpacing
+  TJvCustomItemViewerOptions.HorzSpacing
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions.Width
 Summary
@@ -884,29 +1007,35 @@ Summary
 Description
   Use the Width property to read or change the width of an item in the control.
 See Also
-  Height
+  TJvCustomItemViewerOptions.Height
+
 ----------------------------------------------------------------------------------------------------
 @@TJvItemViewerOptionsClass
 <TITLE TJvItemViewerOptionsClass type>
 Summary
   Defines the metaclass for TJvCustomItemViewerOptions.
 Description
-  TJvItemViewerOptionsClass is the metaclass for TJvCustomItemViewerOptions. Its value is the class reference for
+  TJvItemViewerOptionsClass is the metaclass for TJvCustomItemViewerOptions. Its value is the class
+  reference for
   TJvCustomItemViewerOptions or for one of its descendants.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvItemViewerScrollBar
 <TITLE TJvItemViewerScrollBar type>
 Summary
   Specifies the scrollbars allowed in a TJvCustomItemViewer.
 Description
-  TJvItemViewerScrollBar defines which scrollbar is visible in a TJvCustomItemViewer when not all items
-  can be displayed within the client area of the control.
+  TJvItemViewerScrollBar defines which scrollbar is visible in a TJvCustomItemViewer when not all
+  items can be displayed within the client area of the control.
+
+----------------------------------------------------------------------------------------------------
 @@TJvItemViewerScrollBar.tvHorizontal
-  The control displays a horizontal scrollbar when needed. Items are arranged so that the height of the
-  number of rows displayed never exceeds the client height of the control.
+The control displays a horizontal scrollbar when needed. Items are arranged so that the height of the number of rows displayed never exceeds the client height of the control.
+
+----------------------------------------------------------------------------------------------------
 @@TJvItemViewerScrollBar.tvVertical
-  The control displays a vertical scrollbar when needed. Items are arranged so that the width of the
-  number of columns displayed never exceeds the client width of the control.
+The control displays a vertical scrollbar when needed. Items are arranged so that the width of the number of columns displayed never exceeds the client width of the control.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvViewerAdvancedDrawEvent
 <TITLE TJvViewerAdvancedDrawEvent type>
@@ -917,11 +1046,13 @@ Description
 Parameters
   Sender      - The control that triggered the event.
   Stage       - The current draw stage.
-  Canvas      - The canvas to draw on. You can modify the properties of anvs (like Color and FOnt) to affect the default drawing.
+  Canvas      - The canvas to draw on. You can modify the properties of anvs (like Color and FOnt) to
+  affect the default drawing.
   R           - The rect area to draw in.
   DefaultDraw - Set this to true to have the control perform default drawing.
 See Also
   TJvViewerAdvancedItemDrawEvent
+
 ----------------------------------------------------------------------------------------------------
 @@TJvViewerAdvancedItemDrawEvent
 <TITLE TJvViewerAdvancedItemDrawEvent type>
@@ -934,25 +1065,31 @@ Parameters
   Stage       - The current draw stage.
   Index       - Index of the item to draw.
   State       - The items state.
-  Canvas      - The canvas to draw on. You can modify the properties of anvs (like Color and FOnt) to affect the default drawing.
+  Canvas      - The canvas to draw on. You can modify the properties of anvs (like Color and FOnt) to
+  affect the default drawing.
   ItemRect    - The rect area of the item excluding the text area.
   TextRect    - The text area of the control.
   DefaultDraw - Set this to true to have the control perform default drawing.
 See Also
   TJvViewerAdvancedDrawEvent
+
 ----------------------------------------------------------------------------------------------------
 @@TJvViewerItem
 Summary
   Base class for items in a TJvCustomItemViewer or descendant.
 Description
-  Use TJvViewerItem as the base class for items in the Items array of a TJvCustomItemViewer or descendant.
-  You can control the actual class instanciated by overriding the GetItemClass method of TJvCustomItemViewer.
+  Use TJvViewerItem as the base class for items in the Items array of a TJvCustomItemViewer or
+  descendant.
+  You can control the actual class instanciated by overriding the GetItemClass method of
+  TJvCustomItemViewer.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvViewerItem.Data
 Summary
   Specifies any application-specific data associated with the item.
 Description
   Use Data to associate arbitrary application data with the item.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvViewerItem.Delete
 Summary
@@ -960,22 +1097,23 @@ Summary
 Description
   Call Delete to delete the item from the list and free its memory.
 See Also
-  Deleting
+  TJvViewerItem.Deleting
+
 ----------------------------------------------------------------------------------------------------
 @@TJvViewerItem.Deleting
 Summary
   Indicates whether an item is in the process of being deleted.
 Description
-  Deleting returns True if the item is in the process of being deleted. Use Deleting to prevent infinite recursion in event handlers.
+  Deleting returns True if the item is in the process of being deleted. Use Deleting to prevent
+  infinite recursion in event handlers.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvViewerItem.Hint
 Summary
-  Write here a summary (1 line)
+  Specifies the hint to display for an item
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Hint to specify a hint for the item.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvViewerItem.ReduceMemoryUsage
 Summary
@@ -983,9 +1121,11 @@ Summary
 Description
   ReduceMemoryUsage is called automatically by the TJvCustomItemViewer owning the item when
   appropriate. You should never need to call this method yourself. If you derive a new item class from
-  TJvViewerItem, make sure to override this method if your class has some means of reducing memory consumption.
+  TJvViewerItem, make sure to override this method if your class has some means of reducing memory
+  consumption.
 
   For example, TJvImageItem overrides this method to free the image when the method is called.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvViewerItem.State
 Summary
@@ -995,14 +1135,17 @@ Description
   information that can affect how an item is drawn.
 Note
   All possible states might not apply to all item types.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvViewerItemChangedEvent
 <TITLE TJvViewerItemChangedEvent type>
 <COMBINE TJvCustomItemViewer.OnItemChanged>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvViewerItemChangingEvent
 <TITLE TJvViewerItemChangingEvent type>
 <COMBINE TJvCustomItemViewer.OnItemChanging>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvViewerItemClass
 <TITLE TJvViewerItemClass type>
@@ -1011,11 +1154,14 @@ Summary
 Description
   TJvViewerItemClass is the metaclass for TJvViewerItem. Its value is the class reference for
   TJvViewerItem or for one of its descendants.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvViewerItemDrawEvent
 <TITLE TJvViewerItemDrawEvent type>
 <COMBINE TJvCustomItemViewer.OnDrawItem>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvViewerItemHintEvent
 <TITLE TJvViewerItemHintEvent type>
 <COMBINE TJvCustomItemViewer.OnItemHint>
+

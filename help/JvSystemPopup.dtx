@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPositionInMenu
 <TITLE TJvPositionInMenu type>
@@ -14,10 +16,15 @@ Summary
   Represents different kinds of positions in a system menu.
 Description
   Use the TJvPositionInMenu type to specify a position in a system menu.
+
+----------------------------------------------------------------------------------------------------
 @@TJvPositionInMenu.pmTop
-  Inserts the menu items of the popup menu at the top of the system menu.
+Inserts the menu items of the popup menu at the top of the system menu.
+
+----------------------------------------------------------------------------------------------------
 @@TJvPositionInMenu.pmBottom
-  Inserts the menu items of the popup menu at the bottom of the system menu.
+Inserts the menu items of the popup menu at the bottom of the system menu.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemPopup
 <TITLEIMG TJvSystemPopup>
@@ -27,15 +34,16 @@ JVCLInfo
 Summary
   Adds menu items to the system menu.
 Description
-  Use TJvSystemPopup to add menu items to the system menu (also known as the system menu or the control
-  menu).
+  Use TJvSystemPopup to add menu items to the system menu (also known as the system menu or the
+  control menu).
 
   Use Popup to associate a pop-up menu with TJvSystemPopup. TJvSystemPopup adds the menu items of the
   pop-up menu to the system menu.
 
-  Use Position to specify whether the popup menu is inserted in the forms system menu, the application's
-  system menu, or isn't inserted at all. Use PositionInMenu to specify where the menu items are inserted
-  in the system menu: at the bottom or at the top.
+  Use Position to specify whether the popup menu is inserted in the forms system menu, the
+  application's system menu, or isn't inserted at all. Use PositionInMenu to specify where the menu
+  items are inserted in the system menu: at the bottom or at the top.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemPopup.Create
 Summary
@@ -43,14 +51,16 @@ Summary
 Description
   Use \Create to create and initialize a new TJvSystemPopup object.
 
-  \Create calls the inherited \Create method, then sets the initial values for the component as follows:
+  \Create calls the inherited \Create method, then sets the initial values for the component as
+  follows:
 
   * Position is set to ppNone.
   * PositionInMenu is set to pmTop.
 Parameters
   AOwner - A component, typically the form, that is responsible for freeing the component.
 See Also
-  Position, PositionInMenu
+  TJvSystemPopup.Position, TJvSystemPopup.PositionInMenu
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemPopup.Destroy
 Summary
@@ -61,20 +71,22 @@ Description
 Parameters
   None.
 See Also
-  Create
+  TJvSystemPopup.Create
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemPopup.Notification
 Summary
   Responds to notifications when objects are about to be created or destroyed.
 Description
   Notification is called automatically when components are created or destroyed. After calling the
-  inherited method, Notification checks whether the component specified by the Popup property is about
-  to be destroyed. If the component is going away, Notification sets the Popup property to nil.
+  inherited method, Notification checks whether the component specified by the Popup property is
+  about to be destroyed. If the component is going away, Notification sets the Popup property to nil.
 Parameters
   AComponent - Identifies the component that is about to be created or destroyed.
   Operation  - Specifies whether the component is about to be created or destroyed.
 See Also
-  Popup
+  TJvSystemPopup.Popup
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemPopup.Popup
 Summary
@@ -83,14 +95,15 @@ Description
   Use Popup to associate a pop-up menu with TJvSystemPopup. The component adds the menu items of the
   pop-up menu to the system menu.
 See Also
-  Position
+  TJvSystemPopup.Position
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemPopup.Position
 Summary
   Specifies in which system menu the popup menu items are inserted.
 Description
-  Use Position to specify whether the popup menu is inserted in the forms system menu, the application's
-  system menu, or isn't inserted at all.
+  Use Position to specify whether the popup menu is inserted in the forms system menu, the
+  application's system menu, or isn't inserted at all.
 
   These are the possible values of Position:
   <TABLE>
@@ -105,16 +118,18 @@ Description
                   application.
   </TABLE>
 See Also
-  Popup, PositionInMenu
+  TJvSystemPopup.Popup, TJvSystemPopup.PositionInMenu
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemPopup.PositionInMenu
 Summary
   Specifies where in the system menu the popup menu items are inserted.
 Description
-  Use PositionInMenu to specify whether the menu items of the popup menu specified by Popup are inserted
-  at the top or of the system menu, or at the botttom.
+  Use PositionInMenu to specify whether the menu items of the popup menu specified by Popup are
+  inserted at the top or of the system menu, or at the botttom.
 See Also
-  Position
+  TJvSystemPopup.Position
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemPopup.Refresh
 Summary
@@ -123,3 +138,4 @@ Description
   Call Refresh to refresh the system menu. Refresh resets the window menu back to the default state,
 Parameters
   SystemReset - Specifies whether to reset the system menu.
+

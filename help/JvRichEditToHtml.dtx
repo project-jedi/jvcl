@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvParaAttributesRec
 <TITLE TJvParaAttributesRec type>
@@ -17,112 +19,88 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-@@TJvParaAttributesRec.Alignment
-  Description for Alignment
-@@TJvParaAttributesRec.Numbering
-  Description for Numbering
+
 ----------------------------------------------------------------------------------------------------
-@@TJvRichEditParaAttributesRec
-<TITLE TJvRichEditParaAttributesRec type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-@@TJvRichEditParaAttributesRec.Alignment
-  Description for Alignment
-@@TJvRichEditParaAttributesRec.Numbering
-  Description for Numbering
+@@TJvParaAttributesRec.Alignment
+Description for Alignment
+
+----------------------------------------------------------------------------------------------------
+@@TJvParaAttributesRec.Numbering
+Description for Numbering
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRichEditToHtml
 <TITLEIMG TJvRichEditToHtml>
 JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
+  GROUP=JVCL.??? FLAG=Component
+Summary
+  Converts the contents of a rich edit control to HTML.
+Description
+  TJvRichEditToHtml is a TJvComponent used to convert the content in a rich edit control to HTML.
+  TJvRichEditToHtml provides methods and properties needed to control converting the RTF-based
+  content of a TRichEdit or TJvRichEdit component to HTML.
+
+  Use ConvertToHtml to store the converted RTF content for the rich edit control to a specified file
+  name.
+
+  Use ConvertToHtmlStrings to store the converted RTF content for the rich edit control to a TStrings
+  instance passed as a parameter to the method.
+
+  Use Header and Footer to control the HTML tags and attributes generated when converting the RTF
+  content for the rich edit control.
+
+  Use the Title property to set the value used in the HTML \\<TITLE\\> tag when converting the RTF
+  content for the rich edit control.
+
+  TJvRichEditToHtml detects changes to font and paragraph attributes in the RTF content for the
+  specified rich edit control, and converts the RTF markup to the equivalent HTML markup.
+
+  RTF Font attributes handled by TJvRichEditToHtml include:
+   * Font Family (or Face)
+   * Size
+   * Color
+
+  RTF Paragraph attributes handled by TJvRichEditToHtml include:
+   * Alignment
+   * Numbering
+   * Bullets
+   * Bold
+   * Italic
+   * Strike-Out
+   * Underline
+
+  Please note that TJvRichEditToHtml does not attempt to convert tabs, tables, images, or other
+  advanced RTF markup instructions.
+
+See Also
+  Title, Header, Footer, ConvertToHtml, ConvertToHtmlStrings
+
+----------------------------------------------------------------------------------------------------
+@@TJvRichEditToHtml.ConvertToHtml
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvRichEditToHtml.ConvertToHtml@TJvRichEdit@string
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
 Parameters
   Value    - Description for this parameter
   FileName - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
-@@TJvRichEditToHtml.ConvertToHtml@TRichEdit@string
+@@TJvRichEditToHtml.ConvertToHtmlStrings
 Summary
   Write here a summary (1 line)
 Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
-Parameters
-  Value    - Description for this parameter
-  FileName - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvRichEditToHtml.ConvertToHtmlStrings@TJvRichEdit@TStrings
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  Write here a description
 Parameters
   Value   - Description for this parameter
   Strings - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvRichEditToHtml.ConvertToHtmlStrings@TRichEdit@TStrings
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
-Parameters
-  Value   - Description for this parameter
-  Strings - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvRichEditToHtml.Footer
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvRichEditToHtml.Header
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRichEditToHtml.Title
 Summary
@@ -132,3 +110,4 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+

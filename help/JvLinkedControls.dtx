@@ -11,6 +11,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
+
+
 ----------------------------------------------------------------------------------------------------
 @@CheckLinkControlEnabled
 <TITLE CheckLinkControlEnabled function>
@@ -25,73 +27,94 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLinkedControl
 Summary
   An item in a TJvLinkedControls collection.
 Description
-  TJvLinkedControl is the type of the Items property of TJvLinkedControls. It has properties that specifies
-  which control it is linked to and options for how the control should be managed.
+  TJvLinkedControl is the type of the Items property of TJvLinkedControls. It has properties that
+  specifies which control it is linked to and options for how the control should be managed.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLinkedControl.Control
 Summary
   Specifies the control this item is linked to.
 Description
   Set Control to a TControl or descendant on the form that you want to link.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLinkedControl.Options
 Summary
   Specifies how the linked control is affected by changes to the owning control.
 Description
-  Use options to specify how Control is modified when the owning control's enabled and/Or checked state changes.
+  Use options to specify how Control is modified when the owning control's enabled and/Or checked
+  state changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLinkedControls
 Summary
   Maintains a list of linked controls.
 Description
-  TJvLinkedControls is used as a support class for controls that want to modify the Enabled state of other
-  controls when its own properties changes. TJvLinkedControls cannot be used by itself: it must be
-  associated with an owning control.
+  TJvLinkedControls is used as a support class for controls that want to modify the Enabled state of
+  other controls when its own properties changes. TJvLinkedControls cannot be used by itself: it must
+  be associated with an owning control.
 
   To add support for TJvLinkedControls to a control, you should:
-    * Declare a pubished property of type TJvLinkedControls
-    * Create the TJvLinkedControls instance in the constructor and set the AControl parameter of TJvLinkedControls.Create to self.
+
+    * Declare a pubished property of
+      type TJvLinkedControls
+    * Create the TJvLinkedControls instance in the constructor and set the AControl parameter of
+      TJvLinkedControls.Create to self.
     * Destroy the TJvLinkedControls instance in the destructor.
     * Override the control's Notification procedure and call TJvLinkedControls.Notification.
     * Implement a method that iterates the list of linked controls when the Enabled state of
       the linked controls needs to be checked or changed.
 
   For examples of controls using TJvLinkedControls, see TJvCheckBox and TJvRadioButton.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLinkedControls.RestoreEnabled
 Summary
-  Specifies whether the enabled state of linked controls are restored when the linked control is removed or
-  replaced.
+  Specifies whether the enabled state of linked controls are restored when the linked control is
+  removed or replaced.
 Description
-  Use RestoreEnabled to specify whether the Enabled state of linked controls is restored when the linked Control
-  is removed from the list or replaced by another Control. When RestoreEnabled is true, the Enabled state
-  is set to the same value as it was at the time the control was assigned. If false, the control's current
+  Use RestoreEnabled to specify whether the Enabled state of linked controls is restored when the
+  linked Control is removed from the list or replaced by another Control. When RestoreEnabled is
+  true, the Enabled state
+  is set to the same value as it was at the time the control was assigned. If false, the control's
+  current
   Enabled state is left untouched.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLinkedControlsOption
 <TITLE TJvLinkedControlsOption type>
 Summary
   Defines the available linking options for a linked control in a TJvLinkedControl.
 Description
-  TJvLinkedControlsOption defines the options available for how the Enabled state of a
-  linked control is modified when the Enabled and/or Checked state of the owning control
-  changes.
+  TJvLinkedControlsOption defines the options available for how the Enabled state of a linked control
+  is modified when the Enabled and/or Checked state of the owning control changes.
+
+----------------------------------------------------------------------------------------------------
 @@TJvLinkedControlsOption.loLinkChecked
-  Link the Checked state of the owning control to the Enabled state of the linked control.
+Link the Checked state of the owning control to the Enabled state of the linked control.
+
+----------------------------------------------------------------------------------------------------
 @@TJvLinkedControlsOption.loLinkEnabled
-  Link the Enabled state of the owning control to the Enabled state of the linked control.
+Link the Enabled state of the owning control to the Enabled state of the linked control.
+
+----------------------------------------------------------------------------------------------------
 @@TJvLinkedControlsOption.loInvertChecked
-  Changes the result of the loLinkChecked test, that is, when the owning controls
-  Checked state is false, the linked control is enabled and vice versa.
+Changes the result of the loLinkChecked test, that is, when the owning controls
+Checked state is false, the linked control is enabled and vice versa.
+
+----------------------------------------------------------------------------------------------------
 @@TJvLinkedControlsOption.loInvertEnabled
-  Changes the result of the loLinkEnabled test, that is, when the owning controls
-  Enabled state is false, the linked control is enabled and vice versa.
+Changes the result of the loLinkEnabled test, that is, when the owning controls
+Enabled state is false, the linked control is enabled and vice versa.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLinkedControlsOptions
 <TITLE TJvLinkedControlsOptions type>
 <COMBINE TJvLinkedControlsOption>
+

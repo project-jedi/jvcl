@@ -7,12 +7,15 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Petr Vones (petr dott v att mujmail dott cz)
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.Alignment
 Summary
@@ -22,6 +25,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.Animate
 Summary
@@ -31,6 +35,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.AnimateFrames
 Summary
@@ -40,6 +45,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.AnimateInterval
 Summary
@@ -49,6 +55,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.Canvas
 Summary
@@ -58,15 +65,18 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.Click
 Summary
   Write here a summary (1 line)
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  This is an overridden method, you don't have to describe these  if it does the same as the
+  inherited method
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.CurrentAnimateFrame
 Summary
@@ -76,6 +86,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.DrawButtonFocusRect
 Summary
@@ -87,6 +98,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.DrawButtonFrame
 Summary
@@ -99,6 +111,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.DrawButtonImage
 Summary
@@ -110,6 +123,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.DrawButtonText
 Summary
@@ -122,6 +136,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.ImageIndex
 Summary
@@ -131,6 +146,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.Images
 Summary
@@ -140,6 +156,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.ImageVisible
 Summary
@@ -149,42 +166,57 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.Kind
 Summary
-  Write here a summary (1 line)
+  Specifies the kind of image button.
 Description
-  Write here a description
+  Use Kind to specify the appearance of the image button and its response when the user clicks the
+  button.
+
+  The images (such as the green check mark on the OK button) appear on the button when using this
+  version of TBitBtn.
 See Also
   List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.Layout
 Summary
-  Write here a summary (1 line)
+  Specifies where the image appears on the image button.
 Description
-  Write here a description
+  Layout indicates whether the text appears on the left of the button (blImageLeft) or the right of
+  the button (blImageRight).
 See Also
   List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.Margin
 Summary
-  Write here a summary (1 line)
+  Specifies the number of pixels between the edge of the image and the edge of the button.
 Description
-  Write here a description
+  The margin is the space between the image edge and the button edge. The format of the edges depends
+  on the layout of the image and text (specified in the Layout property). For example, if Layout is
+  blImageLeft, the margin appears between the left edge of the image and the left edge of the button.
+  If Margin is 3, three pixels separate the image and the button edges. If Margin is 0, there is no
+  space between the image and the button edges.
+
+  If Margin is -1 (the default value), the image and text (specified in the Caption property) are
+  centered. The number of pixels between the image and button edge is equal to the number of pixels
+  between the opposite edge of the button and the text.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomImageButton.ImageIndex, TJvCustomImageButton.Images, TJvCustomImageButton.Layout
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.MouseInControl
 Summary
-  Write here a summary (1 line)
+  Indicates whether the mouse is over the button.
 Description
-  Write here a description
+  Read MouseInControl to determine whether the mouse is over the button.
+
 See Also
   List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.OnButtonDraw
 Summary
@@ -197,6 +229,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.OnGetAnimateIndex
 Summary
@@ -210,6 +243,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.OwnerDraw
 Summary
@@ -219,15 +253,17 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.Spacing
 Summary
-  Write here a summary (1 line)
+  Determines where the image and text appear on an image button.
 Description
-  Write here a description
+  Spacing determines the number of pixels between the image and the text. The default value is 4
+  pixels.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomImageButton.ImageIndex, TJvCustomImageButton.Images, TJvCustomImageButton.Layout
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtn
 <TITLEIMG TJvImgBtn>
@@ -238,20 +274,24 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtnActionLink
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtnAnimIndexEvent
 <TITLE TJvImgBtnAnimIndexEvent type>
 <COMBINE TJvCustomImageButton.OnGetAnimateIndex>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtnDrawEvent
 <TITLE TJvImgBtnDrawEvent type>
 <COMBINE TJvCustomImageButton.OnButtonDraw>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind
 <TITLE TJvImgBtnKind type>
@@ -262,39 +302,66 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkCustom
-  Description for bkCustom
+Description for bkCustom
+
+----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkOK
-  Description for bkOK
+Description for bkOK
+
+----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkCancel
-  Description for bkCancel
+Description for bkCancel
+
+----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkHelp
-  Description for bkHelp
+Description for bkHelp
+
+----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkYes
-  Description for bkYes
+Description for bkYes
+
+----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkNo
-  Description for bkNo
+Description for bkNo
+
+----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkClose
-  Description for bkClose
+Description for bkClose
+
+----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkAbort
-  Description for bkAbort
+Description for bkAbort
+
+----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkRetry
-  Description for bkRetry
+Description for bkRetry
+
+----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkIgnore
-  Description for bkIgnore
+Description for bkIgnore
+
+----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkAll
-  Description for bkAll
+Description for bkAll
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtnLayout
 <TITLE TJvImgBtnLayout type>
 Summary
-  Write here a summary (1 line)
+  Enumerates image locations on a button.
 Description
-  Write here a description
+  TJvImgBtnLayout defines the location of an image on a button.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomImageButton.Layout
+
+----------------------------------------------------------------------------------------------------
 @@TJvImgBtnLayout.blImageLeft
-  Description for blImageLeft
+Displays the image left of the caption.
+
+----------------------------------------------------------------------------------------------------
 @@TJvImgBtnLayout.blImageRight
-  Description for blImageRight
+Displays the image right of the caption.
+

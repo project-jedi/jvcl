@@ -12,28 +12,33 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Olivier Sannier
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvVirtualKeySelectionFrame
 Summary
   Allows you to select a virtual key.
 Description
-  This frame was originally created to be used with a TJvAVICapture component to select the
-  virtual key that would cancel the capture session; however, you can use this frame to allow
-  your user to select any virtual key for any other use.
+  This frame was originally created to be used with a TJvAVICapture component to select the virtual
+  key that would cancel the capture session; however, you can use this frame to allow your user to
+  select any virtual key for any other use.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvVirtualKeySelectionFrame.CombinedKeyCode
 Summary
   Returns a key code that contains the shift state.
 Description
   The combined key code is the KeyCode combined with the shift state according to this formula:
+ 
   <AUTOLINK OFF>
   <CODE>
   if ssShift in ShiftState then Result := Result or $4000;
-  if ssCtrl in ShiftState then Result := Result or $4000;
+  if ssCtrl in ShiftState then Result := Result or $4000; 
   </CODE>
   <AUTOLINK ON>
 See Also
-  KeyCode, ShiftState
+  TJvVirtualKeySelectionFrame.KeyCode, TJvVirtualKeySelectionFrame.ShiftState
+
 ----------------------------------------------------------------------------------------------------
 @@TJvVirtualKeySelectionFrame.KeyCode
 Summary
@@ -41,7 +46,8 @@ Summary
 Description
   If you want the shift state combined in this value, use CombinedKeyCode.
 See Also
-  CombinedKeyCode, ShiftState
+  TJvVirtualKeySelectionFrame.CombinedKeyCode, TJvVirtualKeySelectionFrame.ShiftState
+
 ----------------------------------------------------------------------------------------------------
 @@TJvVirtualKeySelectionFrame.ShiftState
 Summary
@@ -49,4 +55,5 @@ Summary
 Description
   The returned value is of type TShiftState to be used with standard Delphi events.
 See Also
-  CombinedKeyCode, KeyCode
+  TJvVirtualKeySelectionFrame.CombinedKeyCode, TJvVirtualKeySelectionFrame.KeyCode
+

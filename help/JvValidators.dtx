@@ -5,123 +5,147 @@
 ----------------------------------------------------------------------------------------------------
 @@JvValidators.pas
 Summary
-  Contains the validators components. Validators are used to perform validations on other controls without having to
-  write the validation code yourself. Instead, most of the validation is set up by using specific validation components
-  and setting their properties to appropriate values.
+  Contains the validators components. Validators are used to perform validations on other controls
+  without having to write the validation code yourself. Instead, most of the validation is set up by
+  using specific validation components and setting their properties to appropriate values.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
+
+
 ----------------------------------------------------------------------------------------------------
 @@EValidatorError
 Summary
   The exception type used by validator components.
 Description
-  EValidatorError is the Exception type used by validator components. EValidatorError is derived
-  from Exception but does not add any new functionality.
+  EValidatorError is the Exception type used by validator components. EValidatorError is derived from
+  Exception but does not add any new functionality.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseValidator
 Summary
   Base class for validators.
 Description
   TJvBaseValidator is the base class that other validators must derive from. To create your own
-  validator, derive a new validator from TJvBaseValidator and register it using <LINK RegisterBaseValidator>.
+  validator, derive a new validator from TJvBaseValidator and register it using <LINK
+  RegisterBaseValidator>.
   Since <LINK RegisterBaseValidator> is a class function, you can call it without an instance of the
   class, like this:
   <AUTOLINK OFF>
   <CODE>
-    TJvBaseValidator.RegisterBaseValidator('Master Card Validator',TMasterCardValidator);
+    TJvBaseValidator.RegisterBaseValidator('Master Card Validator',TMasterCardValidator); 
   </CODE>
+
+ 
   <AUTOLINK ON>
 See Also
   TJvValidationSummary, TJvValidators
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseValidator.ControlToValidate
 Summary
   Specifies the control to perform validation on.
 Description
-  Read ControlToValidate to determine the control the validation is to be performed against. ControlToValidate is one
-  of the two properties that has to be set up to make validation possible (PropertyToValidate is the other).
+  Read ControlToValidate to determine the control the validation is to be performed against.
+  ControlToValidate is one of the two properties that has to be set up to make validation possible
+  (PropertyToValidate is the other).
 
-  If you set up ControlToValidate to a valid TControl at design time, the Object Inspector lists all published
-  properties of the control in a drop-down list for the PropertyToValidate property.
+  If you set up ControlToValidate to a valid TControl at design time, the Object Inspector lists all
+  published properties of the control in a drop-down list for the PropertyToValidate property.
 See Also
-  PropertyToValidate, Validate, OnValidateFailed
+  Validate
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseValidator.Enabled
 Summary
   Specifies if the validator is Enabled or not.
 Description
-  Read Enabled to determine if the validator is active or not. Change Enabled to disable/enable a validator without
-  having to delete it.
+  Read Enabled to determine if the validator is active or not. Change Enabled to disable/enable a
+  validator without having to delete it.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseValidator.ErrorMessage
 Summary
   The message to display in case of error.
 Description
-  ErrorMessage is the text that describes the reason for a validation to fail. How the message is displayed is not
-  predefined You can use various methods to display the error, using the OnValidateFailed event, assigning a valid component
-  to <LINK TJvValidators.ValidationSummary,ValidationSummary> or a valid component to the
-  <LINK TJvValidators.ErrorIndicator,ErrorIndicator> property or use any other custom method of your choice.
+  ErrorMessage is the text that describes the reason for a validation to fail. How the message is
+  displayed is not predefined You can use various methods to display the error, using the
+  OnValidateFailed event, assigning a valid component to <LINK
+  TJvValidators.ValidationSummary,ValidationSummary> or a valid component to the <LINK
+  TJvValidators.ErrorIndicator,ErrorIndicator> property or use any other custom method of your choice.
 See Also
-  OnValidateFailed, TJvValidators.ErrorIndicator, TJvValidators.ValidationSummary
+  TJvBaseValidator.OnValidateFailed, TJvValidators.ErrorIndicator, TJvValidators.ValidationSummary
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseValidator.OnValidateFailed
 Summary
   Occurs when the validation fails.
 Description
-  Write a handler for the OnValidateFailed event to take specific action when a validation fails. If you don't write
-  any event handler, you should use one of the other means of displaying the error to the user, either using an
-  <LINK TJvValidators.ErrorIndicator,ErrorIndicator>, a <LINK TJvValidators.ValidationSummary,ValidationSummary>
-  or a custom method.
+  Write a handler for the OnValidateFailed event to take specific action when a validation fails. If
+  you don't write any event handler, you should use one of the other means of displaying the error to
+  the user, either using an <LINK TJvValidators.ErrorIndicator,ErrorIndicator>, a <LINK
+  TJvValidators.ValidationSummary,ValidationSummary> or a custom method.
 Note
-  TJvValidators also has an OnValidateFailed event. You can use either or both depending on your needs. The
-  OnValidateFailed event of TJvValidators is triggered even if the OnValidateFailed event of a validator is assigned.
+  TJvValidators also has an OnValidateFailed event. You can use either or both depending on your
+  needs. The
+  OnValidateFailed event of TJvValidators is triggered even if the OnValidateFailed event of a
+  validator is assigned.
 See Also
   TJvValidators.ErrorIndicator, TJvValidators.ValidationSummary
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseValidator.PropertyToValidate
 Summary
   Specifies the property to validate.
 Description
-  PropertyToValidate is the property in the control to perform validation against. You must assign a valid
-  published property of the control (as specified by ControlToValidate) for the validator to be able to perform
-  the validation.
+  PropertyToValidate is the property in the control to perform validation against. You must assign a
+  valid published property of the control (as specified by ControlToValidate) for the validator to be
+  able to perform the validation.
 
-  If the value to validate is not a published property or maybe not a value at all, you have two options: either use a
-  TJvCustomValidator or implement the IJvValidationProperty interface in the control that is to be validated.
+  If the value to validate is not a published property or maybe not a value at all, you have two
+  options: either use a
+  TJvCustomValidator or implement the IJvValidationProperty interface in the control that is to be
+  validated.
 
-  If ControlToValidate implements the IJvValidationProperty interface, the methods of that interface is called to
-  retrieve the value to validate and the PropertyToValidate is ignored completely.
+  If ControlToValidate implements the IJvValidationProperty interface, the methods of that interface
+  is called to retrieve the value to validate and the PropertyToValidate is ignored completely.
 See Also
-  ControlToValidate
+  TJvBaseValidator.ControlToValidate
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseValidator.RegisterBaseValidator
 Summary
   Registers a validator.
 Description
-  Call RegisterBaseValidator to register a new validator. Since RegisterBaseValidator is a class function, you
+  Call RegisterBaseValidator to register a new validator. Since RegisterBaseValidator is a class
+  function, you
   can call it without creating an instance of TJvBaseValidator, like this:
   <AUTOLINK OFF>
   <CODE>
-    TJvBaseValidator.RegisterBaseValidator('Master Card Validator',TMasterCardValidator);
+    TJvBaseValidator.RegisterBaseValidator('Master Card Validator',TMasterCardValidator); 
   </CODE>
+
+ 
   <AUTOLINK ON>
 Parameters
-  DisplayName     - The name to use for this validator. This name is used by the TJvValidators's design time
-                    editor to display a list of available validators.
+  DisplayName     - The name to use for this validator. This name is used by the TJvValidators's
+  design time                   editor to display a list of available validators.
   AValidatorClass - The class that should be registered.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseValidator.Valid
 Summary
   Specifies if the validation was successful.
 Description
-  Read Valid to find out if the validation was successful or not. Valid is a passive property, i.e it is not
-  updated unless a call is made to the protected Validate method or a value is assigned directly to the Valid property.
+  Read Valid to find out if the validation was successful or not. Valid is a passive property, i.e it
+  is not updated unless a call is made to the protected Validate method or a value is assigned
+  directly to the Valid property.
 
-  The value of Valid can only be trusted after a call to TJvValidators.Validate since this method forces all validators
-  to update the Valid property.
+  The value of Valid can only be trusted after a call to TJvValidators.Validate since this method
+  forces all validators to update the Valid property.
 See Also
-  Validate, TJvValidators.Validate
+  Validate
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseValidator.Value
 Summary
@@ -133,48 +157,56 @@ Description
 
   This property is read-only.
 See Also
-  ControlToValidate, PropertyToValidate
+  TJvBaseValidator.ControlToValidate, TJvBaseValidator.PropertyToValidate
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseValidatorClass
 Summary
   The class type for validators.
 Description
   TJvBaseValidatorClass is the class type for validators.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCompareValidator
 Summary
   Validator that can compare two values against each other.
 Description
-  Use a TJvCompareValidator when you need to compare two values. TJvCompareValidator can compare the values using
-  several different operators as specified by the Operator property.
+  Use a TJvCompareValidator when you need to compare two values. TJvCompareValidator can compare the
+  values using several different operators as specified by the Operator property.
 See Also
   TJvCustomValidator, TJvRangeValidator, TJvRegularExpressionValidator, TJvRequiredFieldValidator
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCompareValidator.Operator
 Summary
   The operator to use when comparing.
 Description
   This property determines the type of comparison done when Validate is called and whether
-  the validation succeeds or not. <LINK TJvBaseValidator.PropertyToValidate,PropertyToValidate>
-  is always the left operand and ValueToCompare the right operand.
+  the validation succeeds or not. <LINK TJvBaseValidator.PropertyToValidate,PropertyToValidate> is
+  always the left operand and ValueToCompare the right operand.
 See Also
-  ValueToCompare
+  TJvCompareValidator.ValueToCompare
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCompareValidator.ValueToCompare
 Summary
   The value to compare the property value agains.
 Description
-  Specify a value for ValueToCompare that <LINK TJvBaseValidator.PropertyToValidate,PropertyToValidate>
-  should be compared against. The value of Operator
-  determines how the comparision is performed. If ValueToCompare isn't set, it is assigned the default value NULL.
+  Specify a value for ValueToCompare that <LINK
+  TJvBaseValidator.PropertyToValidate,PropertyToValidate> should be compared against. The value of
+  Operator
+  determines how the comparision is performed. If ValueToCompare isn't set, it is assigned the
+  default value NULL.
 See Also
-  TJvBaseValidator.PropertyToValidate, Operator
+  TJvBaseValidator.PropertyToValidate, TJvCompareValidator.Operator
+
 ----------------------------------------------------------------------------------------------------
 @@TJvControlsCompareValidator
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvControlsCompareValidator.AllowNull
 Summary
@@ -184,6 +216,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvControlsCompareValidator.CompareToControl
 Summary
@@ -193,6 +226,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvControlsCompareValidator.CompareToProperty
 Summary
@@ -202,6 +236,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvControlsCompareValidator.Operator
 Summary
@@ -211,39 +246,45 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEvent
 <TITLE TJvCustomValidateEvent type>
 <COMBINE TJvCustomValidator.OnValidate>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidator
 Summary
   Validator for custom validation.
 Description
-  Use a TJvCustomValidator when none of the other validators can perform the validation you need. TJvCustomValidator
-  does not handle validate itself. Instead it delegates the validation to the OnValidate event.
+  Use a TJvCustomValidator when none of the other validators can perform the validation you need.
+  TJvCustomValidator does not handle validate itself. Instead it delegates the validation to the
+  OnValidate event.
 
-  Write an event handler for the OnValidate event that returns whether the validation succeeded or not.
-  You can perform validation without assigning to the <LINK TJvBaseValidator.ControlToValidate,ControlToValidate>
-  property or to the <LINK TJvBaseValidator.PropertyToValidate,PropertyToValidate> property since
-  this validator doesn't use these properties itself.
+  Write an event handler for the OnValidate event that returns whether the validation succeeded or
+  not.
+  You can perform validation without assigning to the <LINK
+  TJvBaseValidator.ControlToValidate,ControlToValidate> property or to the <LINK
+  TJvBaseValidator.PropertyToValidate,PropertyToValidate> property since this validator doesn't use
+  these properties itself.
 See Also
-  TJvCompareValidator, TJvRangeValidator, TJvRegularExpressionValidator,
-  TJvRequiredFieldValidator
+  TJvCompareValidator, TJvRangeValidator, TJvRegularExpressionValidator, TJvRequiredFieldValidator
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidator.OnValidate
 Summary
   Occurs when the custom validator needs to know if the validation is to succeed or not.
 Description
-  Write a handler for the OnValidate event to perform the validation. OnValidate is called by the Validate function
-  and the return value from this event is returned by Validate. If you don't assign an event handler, Validate always
-  returns true.
+  Write a handler for the OnValidate event to perform the validation. OnValidate is called by the
+  Validate function and the return value from this event is returned by Validate. If you don't assign
+  an event handler, Validate always returns true.
 Parameters
   Sender          - The object that triggered the event.
   ValueToValidate - The value to validate.
   Valid           - Set this parameter to true if the validation was successful, to false otherwise.
 See Also
   Validate
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRangeValidator
 Summary
@@ -251,8 +292,8 @@ Summary
 Description
   Use TJvRangeValidator when you need to determine if a value is within a specific range.
 See Also
-  TJvCompareValidator, TJvCustomValidator, TJvRegularExpressionValidator,
-  TJvRequiredFieldValidator
+  TJvCompareValidator, TJvCustomValidator, TJvRegularExpressionValidator, TJvRequiredFieldValidator
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRangeValidator.MaximumValue
 Summary
@@ -262,7 +303,8 @@ Description
   If MaximumValue is less than MinimumValue, the validation will always fail.
   If MinimumValue and MaximumValue have the same value, validation will only succeed for that value.
 See Also
-  MinimumValue
+  TJvRangeValidator.MinimumValue
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRangeValidator.MinimumValue
 Summary
@@ -272,15 +314,18 @@ Description
   If MinimumValue is larger than MaximumValue, the validation will always fail.
   If MinimumValue and MaximumValue have the same value, validation will only succeed for that value.
 See Also
-  MaximumValue
+  TJvRangeValidator.MaximumValue
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRegularExpressionValidator
 Summary
   Can perform validation based on regular expressions.
 Description
-  Use TJvRegularExpressionValidator when you need to validate comlex strings containing regular expression strings.
+  Use TJvRegularExpressionValidator when you need to validate comlex strings containing regular
+  expression strings.
 See Also
   TJvCompareValidator, TJvCustomValidator, TJvRangeValidator, TJvRequiredFieldValidator
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRegularExpressionValidator.ValidationExpression
 Summary
@@ -288,6 +333,7 @@ Summary
 Description
   Set ValidationExpression to the regular expression that <LINK TJvBaseValidator.PropertyToValidate,
   PropertyToValidate> must match.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRequiredFieldValidator
 Summary
@@ -296,6 +342,7 @@ Description
   Use a TJvRequiredFieldValidator when you need to validate if a property has a value or not.
 See Also
   TJvCompareValidator, TJvCustomValidator, TJvRangeValidator, TJvRegularExpressionValidator
+
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateCompareOperator
 <TITLE TJvValidateCompareOperator type>
@@ -304,25 +351,32 @@ Summary
 Description
   TJvValidateCompareOperator is the type of the <LINK TJvCompareValidator.Operator,Operator> property
   of TJvCompareValidator. It can have one of the following values:
+
+----------------------------------------------------------------------------------------------------
 @@TJvValidateCompareOperator.vcoLessThan
-  The comparision returns true if <LINK TJvBaseValidator.PropertyToValidate,PropertyToValidate>
-  is less than <LINK TJvCompareValidator.ValueToCompare,ValueToCompare>.
+The comparision returns true if <LINK TJvBaseValidator.PropertyToValidate,PropertyToValidate> is less than <LINK TJvCompareValidator.ValueToCompare,ValueToCompare>.
+
+----------------------------------------------------------------------------------------------------
 @@TJvValidateCompareOperator.vcoLessOrEqual
-  The comparision returns true if <LINK TJvBaseValidator.PropertyToValidate,PropertyToValidate>
-  is less than or equal to <LINK TJvCompareValidator.ValueToCompare,ValueToCompare>.
+The comparision returns true if <LINK TJvBaseValidator.PropertyToValidate,PropertyToValidate> is less than or equal to <LINK TJvCompareValidator.ValueToCompare,ValueToCompare>.
+
+----------------------------------------------------------------------------------------------------
 @@TJvValidateCompareOperator.vcoEqual
-  The comparision returns true if <LINK TJvBaseValidator.PropertyToValidate,PropertyToValidate>
-  is equal to <LINK TJvCompareValidator.ValueToCompare,ValueToCompare>.
+The comparision returns true if <LINK TJvBaseValidator.PropertyToValidate,PropertyToValidate> is equal to <LINK TJvCompareValidator.ValueToCompare,ValueToCompare>.
+
+----------------------------------------------------------------------------------------------------
 @@TJvValidateCompareOperator.vcoGreaterOrEqual
-  The comparision returns true if <LINK TJvBaseValidator.PropertyToValidate,PropertyToValidate>
-  is greater than or equal to <LINK TJvCompareValidator.ValueToCompare,ValueToCompare>.
+The comparision returns true if <LINK TJvBaseValidator.PropertyToValidate,PropertyToValidate> is greater than or equal to <LINK TJvCompareValidator.ValueToCompare,ValueToCompare>.
+
+----------------------------------------------------------------------------------------------------
 @@TJvValidateCompareOperator.vcoGreaterThan
-  The comparision returns true if <LINK TJvBaseValidator.PropertyToValidate,PropertyToValidate>
-  is greater than <LINK TJvCompareValidator.ValueToCompare,ValueToCompare>.
+The comparision returns true if <LINK TJvBaseValidator.PropertyToValidate,PropertyToValidate> is greater than <LINK TJvCompareValidator.ValueToCompare,ValueToCompare>.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateFailEvent
 <TITLE TJvValidateFailEvent type>
 <COMBINE TJvValidators.OnValidateFailed>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvValidationSummary
 <TITLEIMG TJvValidationSummary>
@@ -337,14 +391,17 @@ Description
   keep all the <LINK TJvBaseValidator.ErrorMessage,ErrorMessages> in one location.
 See Also
   TJvBaseValidator, TJvValidators
+
 ----------------------------------------------------------------------------------------------------
 @@TJvValidationSummary.OnAddError
 Summary
   Occurs when a message is added to Summaries.
 Description
-  Write a handler for the OnAddError event to take specific actions when a new error message is added to Summaries.
+  Write a handler for the OnAddError event to take specific actions when a new error message is added
+  to Summaries.
 See Also
-  OnChange, OnRemoveError
+  TJvValidationSummary.OnChange, TJvValidationSummary.OnRemoveError
+
 ----------------------------------------------------------------------------------------------------
 @@TJvValidationSummary.OnChange
 Summary
@@ -352,16 +409,18 @@ Summary
 Description
   Write a handler for the \OnChange event to take specific actions when Summaries is changed.
 See Also
-  OnAddError, OnRemoveError
+  TJvValidationSummary.OnAddError, TJvValidationSummary.OnRemoveError
+
 ----------------------------------------------------------------------------------------------------
 @@TJvValidationSummary.OnRemoveError
 Summary
   Occurs when an ErrorMessage is removed from Summaries.
 Description
-  Write a handler for the OnRemoveError event to take specific actions when one or more error messages
-  are removed from Summaries.
+  Write a handler for the OnRemoveError event to take specific actions when one or more error
+  messages are removed from Summaries.
 See Also
-  OnAddError, OnChange
+  TJvValidationSummary.OnAddError, TJvValidationSummary.OnChange
+
 ----------------------------------------------------------------------------------------------------
 @@TJvValidationSummary.Summaries
 Summary
@@ -370,9 +429,10 @@ Description
   Summaries is a TStrings containing all error messages collected from validations that has failed.
   Read Summaries to get a complete list of all errors reported by the available validators.
 
-  Only those validators that have this validation summary component associated with their
-  <LINK TJvValidators.ValidationSummary,ValidationSummary> property will automatically add and remove
-  their error messages from Summaries.
+  Only those validators that have this validation summary component associated with their <LINK
+  TJvValidators.ValidationSummary,ValidationSummary> property will automatically add and remove their
+  error messages from Summaries.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvValidators
 <TITLEIMG TJvValidators>
@@ -382,24 +442,30 @@ JVCLInfo
 Summary
   Maintains a list of TJvBaseValidator or descendants.
 Description
-  Use validators to handle the validation logic in your application. Traditionally, developers have been
-  forced to write validation logic for user input in their applications. With validators, the whole
-  process can be set up at design time and many times even without writing more than a single line of code.
+  Use validators to handle the validation logic in your application. Traditionally, developers have
+  been forced to write validation logic for user input in their applications. With validators, the
+  whole process can be set up at design time and many times even without writing more than a single
+  line of code.
 
-  When validators have been set up, a single call to the Validate method checks all validators which in turn
-  perform their validation according to their settings. If any of the validations fails, there are several options
-  available to handle the failure. Here are the options available:
+  When validators have been set up, a single call to the Validate method checks all validators which
+  in turn perform their validation according to their settings. If any of the validations fails,
+  there are several options available to handle the failure. Here are the options available:
 
-    * Use an ErrorIndicator. An ErrorIndicator can display an error icon next to the control that failed the validation. Moving the
+    * Use an ErrorIndicator. An ErrorIndicator can display an error icon next to the control that
+      failed the validation. Moving the
       mouse pointer over the error icon, displays the error message in a hint window.
-    * Use a ValidationSummary. A ValidationSummary collects all error messages and puts them into a string list. You can
-      display this list of errors any way you like. For example, you can easily display all active errors in a label on the form.
-    * Use the OnValidateFailed event. With the OnValidateFailed event, you can do any custom error handling of your choice.
+    * Use a ValidationSummary. A ValidationSummary collects all error messages and puts them into a
+      string list. You can
+      display this list of errors any way you like. For example, you can easily display all active
+      errors in a label on the form.
+    * Use the OnValidateFailed event. With the OnValidateFailed event, you can do any custom error
+      handling of your choice.
     * \Create a custom method of retrieveing failed validations.
 
   You can even use all of the options at the same time or in different combinations.
 See Also
   TJvBaseValidator, TJvValidationSummary
+
 ----------------------------------------------------------------------------------------------------
 @@TJvValidators.Count
 Summary
@@ -407,20 +473,24 @@ Summary
 Description
   Read Count to determine how many validators are maintained by this component.
 See Also
-  Items, Insert, Remove
+  TJvValidators.Insert, TJvValidators.Items, TJvValidators.Remove
+
 ----------------------------------------------------------------------------------------------------
 @@TJvValidators.ErrorIndicator
 Summary
   Specifies an optional ErrorIndicator that is used by this component.
 Description
-  Assign an ErrorIndicator to the component to have automatic inline display of error icons and error message hints.
-  When an ErrorIndicator is assigned, it will automatically pick up the control whose validation failed and the error
-  message to display. Depending on the settings of the ErrorIndicator, an error icon is placed next to the control and
-  the associated error message is displayed in a hint window of the icon.
+  Assign an ErrorIndicator to the component to have automatic inline display of error icons and error
+  message hints.
+  When an ErrorIndicator is assigned, it will automatically pick up the control whose validation
+  failed and the error message to display. Depending on the settings of the ErrorIndicator, an error
+  icon is placed next to the control and the associated error message is displayed in a hint window
+  of the icon.
 
   Using an ErrorIndicator is optional.
 See Also
-  ValidationSummary, OnValidateFailed
+  TJvValidators.OnValidateFailed, TJvValidators.ValidationSummary
+
 ----------------------------------------------------------------------------------------------------
 @@TJvValidators.Exchange
 Summary
@@ -433,7 +503,8 @@ Parameters
   Index1 - Index of the first validator in the Items array.
   Index2 - Index of the second validator in the Items array.
 See Also
-  Items, Insert, <LINK Remove>
+  <LINK Remove>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvValidators.Insert
 Summary
@@ -443,63 +514,77 @@ Description
 Parameters
   AValidator - The validator instance to add.
 See Also
-  <LINK Remove>, Items, Count
+  <LINK Remove>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvValidators.Items
 Summary
   Provides indexed access to the validators maintainded by this component.
 Description
-  Use Items to access individual validators in this component. The valid range of Index ís between 0 and Count - 1.
-  The order of the validators can have impact on how effective validations are. For example, a validation for a control that
-  can potentionally take a long time should be placed later in the list than a validation for the same control that
-  takes less time since validations are performed in order starting with the first validator. If the faster validation fails,
-  no time is wasted performing the slower validation.
+  Use Items to access individual validators in this component. The valid range of Index ís between 0
+  and Count - 1.
+  The order of the validators can have impact on how effective validations are. For example, a
+  validation for a control that can potentionally take a long time should be placed later in the list
+  than a validation for the same control that takes less time since validations are performed in
+  order starting with the first validator. If the faster validation fails, no time is wasted
+  performing the slower validation.
 
-  To rearrange validators at design time, click the Items property in the Object Inspector and use the up and down arrows to move the validator.
+  To rearrange validators at design time, click the Items property in the Object Inspector and use
+  the up and down arrows to move the validator.
   To rearrange validators at runtime, use the Exchange function.
 See Also
-  Count, Exchange
+  TJvValidators.Count, TJvValidators.Exchange
+
 ----------------------------------------------------------------------------------------------------
 @@TJvValidators.OnValidateFailed
 Summary
   Occurs when a validation fails.
 Description
-  Write a handler for the OnValidateFailed event to take specific action when a validation fails. If you don't write
-  any event handler, you should use one of the other means of displaying the error to the user, either using an ErrorIndicator,
-  a ValidationSummary or a custom method.
+  Write a handler for the OnValidateFailed event to take specific action when a validation fails. If
+  you don't write any event handler, you should use one of the other means of displaying the error to
+  the user, either using an ErrorIndicator, a ValidationSummary or a custom method.
 Parameters
   Sender        - The object that triggered the event.
   BaseValidator - The validator that failed.
-  Continue      - Set to true to continue validating the remaining validators, set to false to stop validation at once.
+  Continue      - Set to true to continue validating the remaining validators, set to false to stop
+  validation at once.
 Note
-  TJvBaseValidator also has an OnValidateFailed event. You can use either or both depending on your needs. The
-  OnValidateFailed event of TJvValidators is triggered even if the OnValidateFailed event of a validator is assigned.
+  TJvBaseValidator also has an OnValidateFailed event. You can use either or both depending on your
+  needs. The
+  OnValidateFailed event of TJvValidators is triggered even if the OnValidateFailed event of a
+  validator is assigned.
 See Also
-  ErrorIndicator, ValidationSummary
+  TJvValidators.ErrorIndicator, TJvValidators.ValidationSummary
+
 ----------------------------------------------------------------------------------------------------
 @@TJvValidators.Remove
 Summary
   Removes a validator at runtime.
 Description
-  Call Remove to remove a validator from the Items array at runtime. This does not unregister the validator class.
+  Call Remove to remove a validator from the Items array at runtime. This does not unregister the
+  validator class.
 Parameters
   AValidator - The validator instance to remove. If the validator is not found, nothing happens.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvValidators.Validate
 Summary
   Performs validation for all validators in Items.
 Description
-  Iterates over all the validators and call their protected Validate method and updates their
-  <LINK TJvBaseValidator.Valid,Valid> property. If any of the validation fails,
-  the OnValidateFailed event is triggered and any associated ValidationSummary and ErrorIndicator objects are notified.
+  Iterates over all the validators and call their protected Validate method and updates their <LINK
+  TJvBaseValidator.Valid,Valid> property. If any of the validation fails, the OnValidateFailed event
+  is triggered and any associated ValidationSummary and ErrorIndicator objects are notified.
 Return value
   Returns false if any of the validations failed, true otherwise.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvValidators.ValidationSummary
 Summary
   Specifies a component that collects the messages from all failed validations.
 Description
-  Assign a ValidationSummary component to this property to have automatic collection of error messages when Validate is called.
+  Assign a ValidationSummary component to this property to have automatic collection of error
+  messages when Validate is called.
   The assigned component must implement the IJvValidationSummary interface or an exception is raised.
 See Also
-  ErrorIndicator
+  TJvValidators.ErrorIndicator
+

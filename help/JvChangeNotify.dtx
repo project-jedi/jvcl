@@ -9,6 +9,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
+
+
 ----------------------------------------------------------------------------------------------------
 @@ActionsToString
 <TITLE ActionsToString function>
@@ -20,6 +22,7 @@ Parameters
   Actions :  The actions to convert.
 Return value
   \Returns a user friendly string describing a set of actions.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeAction
 <TITLE TJvChangeAction type>
@@ -27,40 +30,59 @@ Summary
   The type for change actions.
 Description
   TJvChangeAction is an enumeration describing the possible values of change notifications.
+
+----------------------------------------------------------------------------------------------------
 @@TJvChangeAction.caChangeFileName
-  Send notification when a filename changes.
+Send notification when a filename changes.
+
+----------------------------------------------------------------------------------------------------
 @@TJvChangeAction.caChangeDirName
-  Send notification when a directory changes.
+Send notification when a directory changes.
+
+----------------------------------------------------------------------------------------------------
 @@TJvChangeAction.caChangeAttributes
-  Send notification when the attributes of a file or directory changes.
+Send notification when the attributes of a file or directory changes.
+
+----------------------------------------------------------------------------------------------------
 @@TJvChangeAction.caChangeSize
-  Send notification when the size of a file or directory changes.
+Send notification when the size of a file or directory changes.
+
+----------------------------------------------------------------------------------------------------
 @@TJvChangeAction.caChangeLastWrite
-  Send notification when the last write time of a file changes.
+Send notification when the last write time of a file changes.
+
+----------------------------------------------------------------------------------------------------
 @@TJvChangeAction.caChangeSecurity
-  Send notification when the security attributes of a file or directory changes.
+Send notification when the security attributes of a file or directory changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeActions
 <TITLE TJvChangeActions type>
 <COMBINE TJvChangeAction>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeItem
 Summary
   Maintains a single folder that should be monitored for changes.
 Description
-  TJvChangeItem is a TCollectionItem descendant that contains the settings for a single directory that should
-  be monitored for changes. Instances of this class are created and used by the TJvChangeItems class.
-  To add a new instance at design-time, double-click the Notifications property of TJvChangeNotify to display the
-  design editor for TJvChangeItem's. To add an instance at run-time, call TJvChangeNotify.Notifications.Add.
+  TJvChangeItem is a TCollectionItem descendant that contains the settings for a single directory
+  that should be monitored for changes. Instances of this class are created and used by the
+  TJvChangeItems class.
+  To add a new instance at design-time, double-click the Notifications property of TJvChangeNotify to
+  display the design editor for TJvChangeItem's. To add an instance at run-time, call
+  TJvChangeNotify.Notifications.Add.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeItem.Actions
 Summary
   Specifies the actions to monitor.
 Description
   Use Actions to specify what actions should be monitored by this item. When one of the actions
-  occurs in the monitored directory (or sub-directories if that is enabled), the OnChange event is triggered.
+  occurs in the monitored directory (or sub-directories if that is enabled), the OnChange event is
+  triggered.
 See Also
-  Directory, OnChange
+  TJvChangeItem.Directory, TJvChangeItem.OnChange
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeItem.Assign
 Summary
@@ -72,46 +94,52 @@ Parameters
   Source - The object to copy from.
 See Also
   AssignTo
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeItem.Directory
 Summary
   Specifies the directory to monitor.
 Description
-  Use Directory to specify the directory to monitor. The directory is monitored for all changes as specified
-  by Actions. If IncludeSubTrees is true, all sub directories of Directory are monitored as well.
+  Use Directory to specify the directory to monitor. The directory is monitored for all changes as
+  specified by Actions. If IncludeSubTrees is true, all sub directories of Directory are monitored as
+  well.
 
   If Directory is empty or points to an invalid directory, no monitoring will be performed.
 See Also
-  Actions, IncludeSubTrees
+  TJvChangeItem.Actions, TJvChangeItem.IncludeSubTrees
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeItem.IncludeSubTrees
 Summary
   Specifies if sub directories are monitored as well as the main directory.
 Description
-  Use IncludeSubTrees to specify whether the item monitors only the changes in \Directory or if it also
-  monitors changes in sub directories as well.
+  Use IncludeSubTrees to specify whether the item monitors only the changes in \Directory or if it
+  also monitors changes in sub directories as well.
 Note
   This property might not have effect on all versions of Windows.
 See Also
-  Directory, Actions
+  TJvChangeItem.Actions, TJvChangeItem.Directory
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeItem.OnChange
 Summary
   Occurs when a change is detected in the monitored directory.
 Description
-  \Write a handler for this event to take specific actions when one of the events in Actions
-  have occurred in the monitored directory. For example, use this event to update a list of changes.
+  \Write a handler for this event to take specific actions when one of the events in Actions have
+  occurred in the monitored directory. For example, use this event to update a list of changes.
 See Also
-  Actions, Directory
+  TJvChangeItem.Actions, TJvChangeItem.Directory
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeItems
 Summary
   Maintains a list of change items.
 Description
-  TJvChangeItems is a TCollection descendant that maintains a list of TJvChangeItem. TJvChangeItems is the
-  type for the \Notifications property of TJvChangeNotify.
+  TJvChangeItems is a TCollection descendant that maintains a list of TJvChangeItem. TJvChangeItems
+  is the type for the \Notifications property of TJvChangeNotify.
 See Also
   TJvChangeNotify
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeItems.Add
 Summary
@@ -121,15 +149,16 @@ Description
 Return value
   A new instance of TJvChangeItem.
 See Also
-  Assign, Delete
+  Delete
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeItems.Items
 Summary
   Provides indexed access to the items in the list.
 Description
   Use Items to get access to individual TJvChangeItem objects using an index. The allowable range for
-  the index is between 0 and Items.Count - 1. Since Items is the default property of TJvChangeItems, you can
-  call it with or without the Items qualifier from a TJvChangeNotify component:
+  the index is between 0 and Items.Count - 1. Since Items is the default property of TJvChangeItems,
+  you can call it with or without the Items qualifier from a TJvChangeNotify component:
 
   <B>Example:</B>
   <AUTOLINK OFF>
@@ -139,11 +168,12 @@ Description
 
     <I>Equivalent:</I>
 
-    JvChangeNotify1.Notifications[i] := SomeValue;
+    JvChangeNotify1.Notifications[i] := SomeValue; 
   </CODE>
   <AUTOLINK ON>
 See Also
   TJvChangeItem, TJvChangeNotify, TJvChangeNotify.Notifications
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeNotify
 <TITLEIMG TJvChangeNotify>
@@ -153,17 +183,19 @@ JVCLInfo
 Summary
   Component that can monitor file and directory changes and report to the user when a change occurs.
 Description
-  Use a TJvChangeNotify component when you need to monitor changes in one or more directories on the computer.
+  Use a TJvChangeNotify component when you need to monitor changes in one or more directories on the
+  computer.
   The component can detect changes to files as well as folders. The component uses the
   FindFirstNotification API to perform the actual work of monitoring the directories (for more
-  information, see the Platform SDK Help or MSDN), so any limitations of that API is
-  also imposed on TJvChangeNotify. Specifically, there is no information on what file or files
-  have been changed in a directory, only that changes have occurred. If you need to know the details on
-  the exact file or files that have changed, you will have to write your own code.
+  information, see the Platform SDK Help or MSDN), so any limitations of that API is also imposed on
+  TJvChangeNotify. Specifically, there is no information on what file or files have been changed in a
+  directory, only that changes have occurred. If you need to know the details on the exact file or
+  files that have changed, you will have to write your own code.
 
   To avoid locking up the application, a thread is created when the component is activated. The
   thread then polls the \Notifications at a set interval. When a change has been detected, the
-  \OnChangeNotify event is triggered and monitoring continues.
+  OnChangeNotify event is triggered and monitoring continues.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeNotify.Active
 Summary
@@ -171,47 +203,61 @@ Summary
 Description
   Use Active to turn on and off monitoring of the directories in Notifications.
 See Also
-  Notifications
+  TJvChangeNotify.Notifications
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeNotify.CheckInterval
 Summary
   Specifies the time interval between monitoring checks.
 Description
-  Use CheckInterval to set the number of milliseconds between checks on monitored directories. The default value for
+  Use CheckInterval to set the number of milliseconds between checks on monitored directories. The
+  default value for
   CheckInterval is 100 milliseconds. To change CheckInterval, Active must be false.
 See Also
-  Notifications, Active
+  TJvChangeNotify.Active, TJvChangeNotify.Notifications
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeNotify.Notifications
 Summary
   Contains a list of monitored directories.
 Description
   Use Notifications to manage the directories that should be monitored by the component. To manage the
-  Notifications at design-time, click the Notifications property in the Object Inspector to display the
-  Collection Editor. To manage Notifications at run-time, use
-  <LINK TJvChangeItems.Add,Notifications.Add> and <LINK TCollection.Delete,Notifications.Delete>
-  to add and remove items.
+  Notifications at design-time, click the Notifications property in the Object Inspector to display
+  the
+  Collection Editor. To manage Notifications at run-time, use <LINK
+  TJvChangeItems.Add,Notifications.Add> and <LINK TCollection.Delete,Notifications.Delete> to add and
+  remove items.
 See Also
   TJvChangeItems
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeNotify.OnChangeNotify
 Summary
   Occurs when a change has been detected in a monitored directory.
 Description
   \Write a handler for this event to take specific action when a change has occurred in a monitored
-  directory. For example, use this event to update a list of changed files or folders displayed to the user.
+  directory. For example, use this event to update a list of changed files or folders displayed to
+  the user.
+
+Note
+  Do not change the state of the Active property inside the event unless FreeOnTerminate is true.
+  Doing so will most likely hang the application.
 Parameters
   Sender  - The object that triggered the event.
   Dir     - The directory where the change occurred.
   Actions - The action or actions that triggered the event.
+See Also
+  TJvChangeNotify.FreeOnTerminate
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeThread
 Summary
   Internal thread class for checking the monitored directories.
 Description
-  TJvChangeThread is used by the TJvChangeNotify component to periodically check the monitored folders
-  for any detected changes. Do not create instances of this class, it is only intended to be used
-  by the TJvChangeNotify component.
+  TJvChangeThread is used by the TJvChangeNotify component to periodically check the monitored
+  folders for any detected changes. Do not create instances of this class, it is only intended to be
+  used by the TJvChangeNotify component.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeThread.OnChangeNotify
 Summary
@@ -222,11 +268,28 @@ Description
 Parameters
   Sender - The object that triggered the event.
   Index  - The index of the item in \Notifications that has detected a change.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvNotifyEvent
 <TITLE TJvNotifyEvent type>
 <COMBINE TJvChangeNotify.OnChangeNotify>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvThreadNotifyEvent
 <TITLE TJvThreadNotifyEvent type>
 <COMBINE TJvChangeThread.OnChangeNotify>
+
+----------------------------------------------------------------------------------------------------
+@@TJvChangeNotify.FreeOnTerminate
+Summary
+  Determines how the internal thread is controlled.
+Description
+  Set FreeOnTerminate to True if you want the component to automatically release the listening thread
+  when you set Active to false. If you set FreeOnTerminate to False, the component will suspend the
+  thread and wait for it to terminate before freeing it.
+
+  To be able to set Active to False in the OnChangeNotify, you must set FreeOnTerminate to True. If
+  you fail to do so, the program will most likely hang.
+See Also
+  TJvChangeNotify.OnChangeNotify
+

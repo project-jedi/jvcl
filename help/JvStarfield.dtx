@@ -8,6 +8,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStarfield
 <TITLEIMG TJvStarfield>
@@ -22,17 +24,19 @@ Description
   * Use Stars to specify the amount of stars on the star field.
   * Use MaxSpeed to limit the amount of pixels a star will move per refresh event.
   * Set Delay to indicate the amount of time (in milli-seconds) between refresh events.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStarfield.Active
 Summary
   Indicates whether the stars are moving on the star field.
 Description
-  Set Active to True to move the stars on the star field. Set Active to False to interrupt
-  the stars when they are are moving.
+  Set Active to True to move the stars on the star field. Set Active to False to interrupt the stars
+  when they are are moving.
 
   Make sure to set MaxSpeed and Stars to a value greater than 0, otherwise the stars won't move.
 See Also
-  MaxSpeed, Stars
+  TJvStarfield.MaxSpeed, TJvStarfield.Stars
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStarfield.Clear
 Summary
@@ -42,6 +46,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStarfield.Delay
 Summary
@@ -55,7 +60,8 @@ Description
   Use Delay to specify any cardinal value as the interval between refresh events. The default value
   is 50 (1/20 second).
 See Also
-  MaxSpeed, Stars
+  TJvStarfield.MaxSpeed, TJvStarfield.Stars
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStarfield.MaxSpeed
 Summary
@@ -67,7 +73,8 @@ Description
 
   The default value for MaxSpeed is 10.
 See Also
-  Delay, Stars
+  Delay, TJvStarfield.Stars
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStarfield.OnActiveChanged
 Summary
@@ -77,6 +84,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStarfield.Stars
 Summary
@@ -84,4 +92,5 @@ Summary
 Description
   Set Stars to specify the amount of stars on the star field.
 See Also
-  Delay, MaxSpeed
+  Delay, TJvStarfield.MaxSpeed
+

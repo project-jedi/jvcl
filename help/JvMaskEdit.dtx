@@ -7,12 +7,15 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMaskEdit
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMaskEdit.Caret
 Summary
@@ -22,17 +25,40 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMaskEdit.DefaultHandler
 Summary
   Write here a summary (1 line)
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  This is an overridden method, you don't have to describe these  if it does the same as the
+  inherited method
 Parameters
   Msg - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomMaskEdit.DisabledColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomMaskEdit.DisabledTextColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMaskEdit.Entering
 Summary
@@ -42,16 +68,40 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomMaskEdit.GroupIndex
+Summary
+  Allows edit controls to work together as a group.
+Description
+  When GroupIndex is set to -1, the edit control behaves as normal.
+  
+  Edit controls with the same GroupIndex property value (other than -1), work together as a group.
+  When the user enters one of these edit controls, the text on the other edits belonging to the same
+  group will be cleared.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomMaskEdit.HintColor
+Summary
+  Determines the color of the hint boxes for the Help Hints for the <xxx>.
+Description
+  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
+  HintColor property in the constructor when the application is created. To change the HintColor
+  assign it a new TColor value.
+See Also
+  TJvCustomMaskEdit.HotTrack
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMaskEdit.HotTrack
 Summary
   Specifies whether the <xxx> is highlighted when the mouse passes over it.
 Description
-  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font 
-  specified by HotTrackFont is used for the <xxx> text. When HotTrack is False, there is no visual 
+  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font
+  specified by HotTrackFont is used for the <xxx> text. When HotTrack is False, there is no visual
   feedback when the mouse passes over the <xxx>.
-See Also 
+See Also
   HotGlyph, HotTrackFont, OnMouseEnter, OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMaskEdit.Leaving
 Summary
@@ -61,6 +111,17 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomMaskEdit.OnEnabledChanged
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMaskEdit.OnKillFocus
 Summary
@@ -70,6 +131,14 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomMaskEdit.OnParentColorChange
+Summary
+  Occurs when the color property for the parent of the control changes.
+Description
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMaskEdit.OnSetFocus
 Summary
@@ -79,6 +148,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMaskEdit.PasswordChar
 Summary
@@ -88,6 +158,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMaskEdit.ProtectPassword
 Summary
@@ -97,6 +168,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMaskEdit.Text
 Summary
@@ -106,6 +178,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMaskEdit
 <TITLEIMG TJvMaskEdit>
@@ -116,3 +189,4 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+

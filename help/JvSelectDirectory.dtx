@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDirectory
 <TITLEIMG TJvSelectDirectory>
@@ -22,6 +24,7 @@ Description
 
   Use property ClassicDialog to specify whether to show the Windows directory browser or the classic
   Select \Directory dialog box.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDirectory.ClassicDialog
 Summary
@@ -29,6 +32,7 @@ Summary
 Description
   Set ClassicDialog to True to show the classic Select \Directory dialog box when you call Execute.
   Set ClassicDialog to False to show the Windows directory browser when you call Execute.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDirectory.Directory
 Summary
@@ -38,9 +42,11 @@ Description
   selected directory when the dialog box appears. The name of the directory the user selects becomes
   the value of Directory when the function returns.
 
-  If ClassicDialog is set to False, then the selected directory is returned as the Directory parameter.
+  If ClassicDialog is set to False, then the selected directory is returned as the Directory
+  parameter.
 See Also
-  ClassicDialog, InitialDir
+  TJvSelectDirectory.ClassicDialog, TJvSelectDirectory.InitialDir
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDirectory.Execute
 Summary
@@ -50,21 +56,23 @@ Description
 
   Property ClassicDialog determines whether to show the Windows directory browser or the classic
   Select \Directory dialog box.
-Returns
+  Returns
   Returns True when the user selects a file and clicks Open. If the user clicks Cancel, Execute
   returns False.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDirectory.HelpContext
 Summary
   Specifies the context number for online Help.
 Description
-  The HelpContext property is an integer value that determines which Help screen appears when the user
-  requests context-sensitive online Help. If HelpContext is set to the default value of 0, the dialog
-  inherits the Help context of its parent.
+  The HelpContext property is an integer value that determines which Help screen appears when the
+  user requests context-sensitive online Help. If HelpContext is set to the default value of 0, the
+  dialog inherits the Help context of its parent.
 Note
   ClassicDialog must be set to True, otherwise the component ignores the value of this property.
 See Also
-  ClassicDialog
+  TJvSelectDirectory.ClassicDialog
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDirectory.InitialDir
 Summary
@@ -74,7 +82,8 @@ Description
 Note
   ClassicDialog must be set to False, otherwise the component ignores the value of this property.
 See Also
-  ClassicDialog, Directory
+  TJvSelectDirectory.ClassicDialog, TJvSelectDirectory.Directory
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDirectory.Options
 Summary
@@ -84,21 +93,24 @@ Description
 
   * Determine which controls in the dialog are disabled (grayed).
   * Determine which controls do not appear in the dialog.
-  * Specify settings for the search direction, case-sensitivity, and “whole word” attributes of the search.
+  * Specify settings for the search direction, case-sensitivity, and “whole word” attributes of the
+    search.
 
   By default, all options except frDown are off.
 Note
   ClassicDialog must be set to True, otherwise the component ignores the value of this property.
 See Also
-  ClassicDialog
+  TJvSelectDirectory.ClassicDialog
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDirectory.Title
 Summary
   Specifies the text in the dialog’s title bar.
 Description
-  Use Title to specify the text that appears in the directory selection dialog’s title bar. If no value is
-  assigned to Title, the dialog has the title "Open".
+  Use Title to specify the text that appears in the directory selection dialog’s title bar. If no
+  value is assigned to Title, the dialog has the title "Open".
 Note
   ClassicDialog must be set to False, otherwise the component ignores the value of this property.
 See Also
-  ClassicDialog
+  TJvSelectDirectory.ClassicDialog
+

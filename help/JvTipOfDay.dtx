@@ -7,10 +7,13 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse, Peter Thörnqvist, Remko Bonte.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCanShowEvent
 <TITLE TJvCanShowEvent type>
 <COMBINE TJvTipOfDay.OnCanShow>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay
 <TITLEIMG TJvTipOfDay>
@@ -24,8 +27,8 @@ Description
   a dialog that displays a tip on startup of the application. The user can uncheck a checkbox to
   specify that the application should no longer display the tip dialog at startup.
 
-  You can use a storage component to store the value of the checkbox. Alternatively, you can 
-  provide a custom store-retrieve method by writing an OnCanShow and an OnAfterExecute event handler.
+  You can use a storage component to store the value of the checkbox. Alternatively, you can provide
+  a custom store-retrieve method by writing an OnCanShow and an OnAfterExecute event handler.
 
   Use Tips to add, insert, delete and move tips. Property Tips is of type TStrings: each item of Tips
   specifies a single tip that can appear in the dialog.
@@ -33,6 +36,7 @@ Description
   Call the LoadFromFile and SaveToFile methods to load or save the tips from a file.
 
   Use the other properties of TJvTipOfDay to alter the appearance of the dialog.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.AppStorage
 Summary
@@ -43,10 +47,10 @@ Description
 
   If you don't link the component to a storage component, you have to store and retrieve the checkbox
   value manually by using OnCanShow and an OnAfterExecute event handlers.
-Note
-  \Include toUseAppStorage in Options otherwise the storage component is <i>not</i> used.
+  Note \Include toUseAppStorage in Options otherwise the storage component is <i>not</i> used.
 See Also
-  AppStoragePath, TJvAppStorage, TJvTipOfDayOption.toUseAppStorage
+  TJvAppStorage, TJvTipOfDay.AppStoragePath, TJvTipOfDayOption.toUseAppStorage
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.AppStoragePath
 Summary
@@ -54,7 +58,8 @@ Summary
 Description
   Specifies the path in which the settings for the Show On Startup Checkbox will be saved.
 See Also
-  AppStorage
+  TJvTipOfDay.AppStorage
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.ButtonClose
 Summary
@@ -63,37 +68,41 @@ Description
   Use the properties of ButtonClose to specify the characteristics of the close button on the tip
   dialog.
 See Also
-  ButtonNext
+  TJvTipOfDay.ButtonNext
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.ButtonNext
 Summary
   \Controls the attributes of the "Next Tip" button on the dialog.
 Description
-  Use the properties of ButtonNext to specify the characteristics of the "Next Tip" button on the
-  tip dialog.
+  Use the properties of ButtonNext to specify the characteristics of the "Next Tip" button on the tip
+  dialog.
 See Also
-  ButtonClose
+  TJvTipOfDay.ButtonClose
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.CheckBoxText
 Summary
   Specifies the text to appear on the checkbox.
 Description
-  The Tip of the Day dialog displays a checkbox that enables the user to specify whether the application
-  must show the dialog on the next startup of the application. Use CheckBoxText to change the text
-  for this checkbox.
+  The Tip of the Day dialog displays a checkbox that enables the user to specify whether the
+  application must show the dialog on the next startup of the application. Use CheckBoxText to change
+  the text for this checkbox.
 
   The default value of CheckBoxText is "Show \Tips on StartUp".
 
   \Include or exclude flag toShowOnStartUp in Options - before the dialog is displayed - to specify
   whether the checkbox must be checked or unchecked, respectively.
 See Also
-  HeaderText, Tips
+  TJvTipOfDay.HeaderText, TJvTipOfDay.Tips
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.Color
 Summary
   Specifies the background color of the tip text on the dialog.
 Description
   The Color property determines the background color of the the tip text on the dialog.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.DefaultFonts
 Summary
@@ -103,7 +112,8 @@ Description
   a specific dialog style as specified by property Style.
   Set DefaultFonts to false to display the header and tip text in a customized font.
 See Also
-  HeaderFont, Style, TipFont
+  TJvTipOfDay.HeaderFont, TJvTipOfDay.Style, TJvTipOfDay.TipFont
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.Execute
 Summary
@@ -116,29 +126,32 @@ Description
 
   * Placing a TJvTipOfDay component on the main form.
   * Include flag toUseAppStorage in Options.
-  * Link it to a storage component using the AppStorage property and specify a <LINK AppStoragePath,storage path>.
+  * Link it to a storage component using the AppStorage property and specify a <LINK
+    AppStoragePath,storage path>.
 
-  This way the component uses the storage component to store the value of the checkbox that enables the user to
-  specify whether the dialog must be shown at startup of the application.
+  This way the component uses the storage component to store the value of the checkbox that enables
+  the user to specify whether the dialog must be shown at startup of the application.
 
-  Alternatively, you can provide a custom store-retrieve method of the checkbox's value by writing
-  an OnCanShow and an OnAfterExecute event handler: Before the dialog is actually opened an OnCanShow
+  Alternatively, you can provide a custom store-retrieve method of the checkbox's value by writing an
+  OnCanShow and an OnAfterExecute event handler: Before the dialog is actually opened an OnCanShow
   event is fired, that may prevent the dialog from displaying. After the user closes the dialog an
   OnAfterExecute event is fired.
 See Also
-  OnAfterExecute, OnCanShow, Options
+  TJvTipOfDay.OnAfterExecute, TJvTipOfDay.OnCanShow, TJvTipOfDay.Options
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.HeaderFont
 Summary
   \Controls the attributes of the header text above the tip in the dialog.
 Description
-  Set Font to specify the font to use for displaying the header text above the tip in the Tip of the Day
-  dialog. The value of Font is a TFont object. Set the properties of the TFont object to specify the
-  font face, color, size, style, and any other aspects of the font.
+  Set Font to specify the font to use for displaying the header text above the tip in the Tip of the
+  Day dialog. The value of Font is a TFont object. Set the properties of the TFont object to specify
+  the font face, color, size, style, and any other aspects of the font.
 
   Set DefaultFonts to true, to assign the default font associated with Style to HeaderFont.
 See Also
-  DefaultFonts, HeaderText, TipFont
+  TJvTipOfDay.DefaultFonts, TJvTipOfDay.HeaderText, TJvTipOfDay.TipFont
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.HeaderText
 Summary
@@ -146,7 +159,8 @@ Summary
 Description
   Use HeaderText to specify the text to appear above the tip. The default value is "Did you know..."
 See Also
-  HeaderFont, Tips, Title
+  TJvTipOfDay.HeaderFont, TJvTipOfDay.Tips, TJvTipOfDay.Title
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.IsAutoExecute
 Summary
@@ -157,36 +171,40 @@ Description
   called Execute to display the dialog, or the dialog is automatically displayed.
 See Also
   Execute
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.LoadFromFile
 Summary
   Fills the tip list with the lines of text in a specified file.
 Description
-  Call LoadFromFile to fill the list Tips from the file specified by AFileName. Each line in the file,
-  as indicated by carriage return or linefeed characters, is appended as a string in the list.
+  Call LoadFromFile to fill the list Tips from the file specified by AFileName. Each line in the
+  file, as indicated by carriage return or linefeed characters, is appended as a string in the list.
 Parameters
   AFileName - Name of the file where to read the tips from.
 See Also
-  <LINK SaveToFile>, Tips
+  <LINK SaveToFile>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.OnAfterExecute
 Summary
   Occurs after the dialog is closed.
 Description
-  \Write an OnAfterExecute handler to store the value that determines whether the dialog must be shown
-  the next time the application starts up.
+  \Write an OnAfterExecute handler to store the value that determines whether the dialog must be
+  shown the next time the application starts up.
 
-  A user can uncheck the checkbox on the dialog to indicate that the dialog must not be shown the next
-  time the application starts up. The dialog can use a storage component to store this value, but
-  applications can provide a custom method to store this value.
+  A user can uncheck the checkbox on the dialog to indicate that the dialog must not be shown the
+  next time the application starts up. The dialog can use a storage component to store this value,
+  but applications can provide a custom method to store this value.
 
-  The flag toShowOnStartUp in Options indicates whether the checkbox was checked or unchecked, when the
-  user closed the dialog. If toShowOnStartUp is included in Options then the checkbox was checked,
-  otherwise it was unchecked.
+  The flag toShowOnStartUp in Options indicates whether the checkbox was checked or unchecked, when
+  the user closed the dialog. If toShowOnStartUp is included in Options then the checkbox was
+  checked, otherwise it was unchecked.
 
-  Use an OnCanShow event handler to retrieve the stored value and to determine whether the dialog can be shown.
+  Use an OnCanShow event handler to retrieve the stored value and to determine whether the dialog can
+  be shown.
 See Also
-  Execute, OnCanShow, Options
+  Execute, TJvTipOfDay.OnCanShow, TJvTipOfDay.Options
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.OnCanShow
 Summary
@@ -202,31 +220,35 @@ Parameters
   Sender  - The tip dialog that fired the event
   CanShow - Determines whether the tip dialog can be shown.
 See Also
-  Execute, OnAfterExecute
+  Execute, TJvTipOfDay.OnAfterExecute
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.Options
 Summary
   Specifies options for the dialog.
 Description
-  Use the Options property to customize the functionality of the dialog. Use these flags to specify 
+  Use the Options property to customize the functionality of the dialog. Use these flags to specify
   whether the dialog:
 
   * Should be shown at startup.
-  * Should use a storage component to store and retrieve the value of the "Show \Tips on StartUp" checkbox.
+  * Should use a storage component to store and retrieve the value of the "Show \Tips on StartUp"
+    checkbox.
   * Should be shown not before the parent form of the TJvTipOfDay component is shown.
 See Also
   Execute
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.SaveToFile
 Summary
   Saves the tips list to the specified file.
 Description
-  Call SaveToFile to save the tips in the list Tips to the file specified by AFileName. Each string in
-  the list is written to a separate line in the file.
+  Call SaveToFile to save the tips in the list Tips to the file specified by AFileName. Each string
+  in the list is written to a separate line in the file.
 Parameters
   AFileName - Name of the file where to write the tips to.
 See Also
-  <LINK LoadFromFile>, Tips
+  <LINK LoadFromFile>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.Style
 Summary
@@ -234,31 +256,34 @@ Summary
 Description
   Use Style to determine the appearance of the dialog.
 See Also
-  DefaultFonts
+  TJvTipOfDay.DefaultFonts
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.TipFont
 Summary
   \Controls the attributes of the text that displays the tip in the Tip of the Day dialog.
 Description
-  Set Font to specify the font to use for displaying the tips. The value of Font is a TFont
-  object. Set the properties of the TFont object to specify the font face, color, size, style, and
-  any other aspects of the font.
+  Set Font to specify the font to use for displaying the tips. The value of Font is a TFont object.
+  Set the properties of the TFont object to specify the font face, color, size, style, and any other
+  aspects of the font.
 
   Set DefaultFonts to true, to assign the default font associated with Style to TipFont.
 See Also
-  DefaultFonts, HeaderFont
+  TJvTipOfDay.DefaultFonts, TJvTipOfDay.HeaderFont
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.Tips
 Summary
   Contains the tips that can be displayed in the dialog.
 Description
-  Use Tips to add, insert, delete and move tips. Each item of Tips specifies a single tip that
-  can appear in the dialog.
+  Use Tips to add, insert, delete and move tips. Each item of Tips specifies a single tip that can
+  appear in the dialog.
 
   Property Tips is of type TStrings. Use this item type to access its methods or properties to
   manipulate the tips in the list.
 See Also
-  HeaderText, TipFont, Title
+  TJvTipOfDay.HeaderText, TJvTipOfDay.TipFont, TJvTipOfDay.Title
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDay.Title
 Summary
@@ -268,7 +293,8 @@ Description
 
   The default value is "\Tips and Tricks".
 See Also
-  HeaderText, Tips
+  TJvTipOfDay.HeaderText, TJvTipOfDay.Tips
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDayOption
 <TITLE TJvTipOfDayOption type>
@@ -279,23 +305,26 @@ Description
   the Day dialog.
 
   \TJvTipOfDayOption is a set of TJvTipOfDayOptions values.
-@@TJvTipOfDayOption.toShowOnStartUp
-  Specifies whether the checkbox on the dialog is checked or unchecked. Also, if no
-  <LINK TJvTipOfDay.OnCanShow,OnCanShow> event handler is used, it determines whether the dialog is
-  shown on startup of the application.
 
-  Use flag toShowOnStartUp before calling <LINK TJvTipOfDay.Execute,Execute>, to
-  specify whether the checkbox must be checked or unchecked. Use flag toShowOnStartUp
-  after calling <LINK TJvTipOfDay.Execute,Execute>, to determine whether the checkbox was checked or
-  unchecked when the user closed the dialog.
+----------------------------------------------------------------------------------------------------
+@@TJvTipOfDayOption.toShowOnStartUp
+Specifies whether the checkbox on the dialog is checked or unchecked. Also, if no <LINK TJvTipOfDay.OnCanShow,OnCanShow> event handler is used, it determines whether the dialog is shown on startup of the application.
+
+Use flag toShowOnStartUp before calling <LINK TJvTipOfDay.Execute,Execute>, to specify whether the checkbox must be checked or unchecked. Use flag toShowOnStartUp after calling <LINK TJvTipOfDay.Execute,Execute>, to determine whether the checkbox was checked or unchecked when the user closed the dialog.
+
+----------------------------------------------------------------------------------------------------
 @@TJvTipOfDayOption.toUseAppStorage
-  Specifies whether to use the storage component to store and retrieve the value of the checkbox.
+Specifies whether to use the storage component to store and retrieve the value of the checkbox.
+
+----------------------------------------------------------------------------------------------------
 @@TJvTipOfDayOption.toShowWhenFormShown
-  Shows the tip dialog not before the parent form of the TJvTipOfDay component is shown.
+Shows the tip dialog not before the parent form of the TJvTipOfDay component is shown.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDayOptions
 <TITLE TJvTipOfDayOptions type>
 <COMBINE TJvTipOfDayOption>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTipOfDayStyle
 <TITLE TJvTipOfDayStyle type>
@@ -303,7 +332,12 @@ Summary
   Specifies the way a Tip of the Day dialog is drawn.
 Description
   Use the TJvTipOfDayStyle type to specify the way a Tip of the Day dialog is drawn.
+
+----------------------------------------------------------------------------------------------------
 @@TJvTipOfDayStyle.tsVC
-  A "VC++ 4.0 look" Tip of the Day dialog.
+A "VC++ 4.0 look" Tip of the Day dialog.
+
+----------------------------------------------------------------------------------------------------
 @@TJvTipOfDayStyle.tsStandard
-  A "Standard Component Gallery" Tip of the Day dialog.
+A "Standard Component Gallery" Tip of the Day dialog.
+

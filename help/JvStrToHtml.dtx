@@ -7,18 +7,21 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@CharToHtml
 <TITLE CharToHtml function>
 Summary
   Converts a character to a string that can be used in a HTML document.
 Description
-  CharToHTML converts Ch to a character string that can be used in a HTML document regardless of
-  the users locale or Windows version. For example, the character '\<' is converted to the string '&lt;';
+  CharToHTML converts Ch to a character string that can be used in a HTML document regardless of the
+  users locale or Windows version. For example, the character '\<' is converted to the string '&lt;';
 Parameters
   Ch - The character to convert
 See Also
   HtmlToString, StringToHtml, TJvStrToHtml
+
 ----------------------------------------------------------------------------------------------------
 @@HtmlToString
 <TITLE HtmlToString function>
@@ -31,10 +34,11 @@ Parameters
   Value - The string to convert.
 See Also
   CharToHtml, StringToHtml, TJvStrToHtml
+
 ----------------------------------------------------------------------------------------------------
 @@StringToHtml
 <TITLE StringToHtml function>
-  Converts a plain string to a HTML string.
+Converts a plain string to a HTML string.
 Description
   StringToHtml converts the content of Value into an equivalent HTML string. For example, the string
   '\<CODE\>' is converted into '&lt;CODE&gt;'.
@@ -42,6 +46,7 @@ Parameters
   Value - The string to convert.
 See Also
   CharToHtml, HtmlToString, TJvStrToHtml
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStrToHtml
 <TITLEIMG TJvStrToHtml>
@@ -49,21 +54,24 @@ JVCLInfo
   GROUP=JVCL.Miscel, JVCL.Internet.ConvertersAndParsers.HTML
   FLAG=Component
 Summary
-  Component that can convert a string into a form that contains no values that are illegal in
-  an HTML document.
+  Component that can convert a string into a form that contains no values that are illegal in an HTML
+  document.
 Description
-  Use TJvStrToHTML when you need to convert a string into valid HTML or convert HTML to a valid string.
-  Use the Text and Html properties to perform the conversion using properties. To convert
-  any arbitrary string, use HtmlToText and TextToHtml instead.
+  Use TJvStrToHTML when you need to convert a string into valid HTML or convert HTML to a valid
+  string.
+  Use the Text and Html properties to perform the conversion using properties. To convert any
+  arbitrary string, use HtmlToText and TextToHtml instead.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStrToHtml.Html
 Summary
   Contains the HTML string.
 Description
-  \Read Html to convert the content of Text to HTML. Write to Html and then \read Text to access
-  the value of Html as a plain string.
+  \Read Html to convert the content of Text to HTML. Write to Html and then \read Text to access the
+  value of Html as a plain string.
 See Also
-  Text
+  TJvStrToHtml.Text
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStrToHtml.HtmlToText
 Summary
@@ -75,16 +83,18 @@ Parameters
 Return value
   The converted text.
 See Also
-  TextToHtml
+  TJvStrToHtml.TextToHtml
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStrToHtml.Text
 Summary
   Contains the plain text string.
 Description
-  \Read Text to convert Html to plain text. Write to Text and then \read Html to access the value of Text
-  as a HTML string.
+  \Read Text to convert Html to plain text. Write to Text and then \read Html to access the value of
+  Text as a HTML string.
 See Also
-  Html
+  TJvStrToHtml.Html
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStrToHtml.TextToHtml
 Summary
@@ -96,4 +106,5 @@ Parameters
 Return value
   The converted text.
 See Also
-  HtmlToText
+  TJvStrToHtml.HtmlToText
+

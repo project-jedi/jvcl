@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Marc Hoffman.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCheckbox
 <TITLEIMG TJvXPCheckbox>
@@ -17,22 +19,26 @@ Summary
   Checkbox that draws itself in an XP style.
 Description
   Use TJvXPCheckbox when you need to place a checkbox on your form that looks like checkboxes in
-  Windows XP. TJvXPCheckbox inherits from TJvXPCustomCheckControl and publishes most of its properties
-  and events but only overrides the DrawCheckSymbol to draw the different checkbox states.
+  Windows XP. TJvXPCheckbox inherits from TJvXPCustomCheckControl and publishes most of its
+  properties and events but only overrides the DrawCheckSymbol to draw the different checkbox states.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomCheckControl
 Summary
   Base class for check style controls that draws themselves in an XP style.
 Description
-  Use TJvXPCustomCheckControl as a base class to implement a check style control (like a checkbox or radiobutton).
+  Use TJvXPCustomCheckControl as a base class to implement a check style control (like a checkbox or
+  radiobutton).
   Most implementations need only override the DrawCheckSymbol method since this class implements the
   logic needed to manage the Checked property.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomCheckControl.BoundLines
 Summary
   Indicates which border lines are drawn.
 Description
   Use BoundLines to specify which border lines are drawn in the control.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomCheckControl.Checked
 Summary
@@ -40,6 +46,7 @@ Summary
 Description
   Use Checked to determine whether the check box is in the checked state. Checked is automatically
   toggled when the control is clicked
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomCheckControl.Spacing
 Summary
@@ -47,3 +54,4 @@ Summary
 Description
   Use Spacing to set the distance in pixels between the right edge of the checkbox symbol and the
   start of the text.
+

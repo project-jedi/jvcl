@@ -5,28 +5,36 @@
 ----------------------------------------------------------------------------------------------------
 @@JvExMask.pas
 Summary
-  Contains components that extend the components from Delphi's Mask.pas with generic properties and CLX code.
+  Contains components that extend the components from Delphi's Mask.pas with generic properties and
+  CLX code.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Andreas Hausladen
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMaskEdit
 Summary
   Base class for extended masked edit controls.
 Description
-  TJvExCustomMaskEdit is a base class for classes in the JVCL library that descend from TCustomMaskEdit.
+  TJvExCustomMaskEdit is a base class for classes in the JVCL library that descend from
+  TCustomMaskEdit.
 
-  Do not create instances of TJvExCustomMaskEdit. Use a descendant of TJvExCustomMaskEdit or create your
-  own descendant class.
+  Do not create instances of TJvExCustomMaskEdit. Use a descendant of TJvExCustomMaskEdit or create
+  your own descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMaskEdit.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMaskEdit.BeepOnError
 Summary
-  Specifies whether the edit control beeps when the user tries to enter text that does not match the mask.
+  Specifies whether the edit control beeps when the user tries to enter text that does not match the
+  mask.
 Description
   If BeepOnError is true (the default), the application beeps when a validation error occurs.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMaskEdit.ClipboardCommands
 Summary
@@ -36,6 +44,7 @@ Description
 
   * ClipboardCommands can't be set to [].
   * If ClipboardCommands is set to [caCopy] then property ReadOnly is set to True.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMaskEdit.HintColor
 Summary
@@ -44,6 +53,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMaskEdit.MouseOver
 Summary
@@ -51,7 +61,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the control.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExCustomMaskEdit.OnMouseEnter, TJvExCustomMaskEdit.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMaskEdit.OnMouseEnter
 Summary
@@ -60,7 +71,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
-  OnMouseLeave
+  TJvExCustomMaskEdit.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMaskEdit.OnMouseLeave
 Summary
@@ -70,13 +82,15 @@ Description
   control. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExCustomMaskEdit.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMaskEdit.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExMaskEdit
 Summary
@@ -84,17 +98,21 @@ Summary
 Description
   TJvExMaskEdit is a base class for classes in the JVCL library that descend from TMaskEdit.
 
-  Do not create instances of TJvExMaskEdit. Use a descendant of TJvExMaskEdit or create your
-  own descendant class.
+  Do not create instances of TJvExMaskEdit. Use a descendant of TJvExMaskEdit or create your own
+  descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExMaskEdit.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExMaskEdit.BeepOnError
 Summary
-  Specifies whether the edit control beeps when the user tries to enter text that does not match the mask.
+  Specifies whether the edit control beeps when the user tries to enter text that does not match the
+  mask.
 Description
   If BeepOnError is true (the default), the application beeps when a validation error occurs.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExMaskEdit.ClipboardCommands
 Summary
@@ -104,6 +122,7 @@ Description
 
   * ClipboardCommands can't be set to [].
   * If ClipboardCommands is set to [caCopy] then property ReadOnly is set to True.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExMaskEdit.HintColor
 Summary
@@ -112,6 +131,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExMaskEdit.MouseOver
 Summary
@@ -119,7 +139,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the control.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExMaskEdit.OnMouseEnter, TJvExMaskEdit.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExMaskEdit.OnMouseEnter
 Summary
@@ -128,7 +149,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
-  OnMouseLeave
+  TJvExMaskEdit.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExMaskEdit.OnMouseLeave
 Summary
@@ -138,10 +160,12 @@ Description
   control. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExMaskEdit.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExMaskEdit.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+

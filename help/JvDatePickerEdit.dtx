@@ -7,21 +7,24 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Oliver Giesen
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDatePickerEdit
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDatePickerEdit.AllowNoDate
 Summary
-  Write here a summary (1 line)
+  specifies whether the control allows clearing the value altogether
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ShowCheckbox
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDatePickerEdit.AlwaysReturnEditDate
 Summary
@@ -31,6 +34,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDatePickerEdit.CalendarAppearance
 Summary
@@ -40,24 +44,27 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDatePickerEdit.Clear
 Summary
   Write here a summary (1 line)
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  This is an overridden method, you don't have to describe these  if it does the same as the
+  inherited method
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDatePickerEdit.Date
 Summary
-  Write here a summary (1 line)
+  Returns the value of the control as TDateTime
 Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDatePickerEdit.DateFormat
 Summary
@@ -67,109 +74,65 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.DateSeparator
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.DefaultImageIndex
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDatePickerEdit.Dropped
 Summary
-  Write here a summary (1 line)
+  Indicates at runtime whether the calendar dropdown is currently visible
 Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.EditMask
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDatePickerEdit.EnableValidation
 Summary
-  Write here a summary (1 line)
+  Enables \"As-you-type\" validation of entries
 Description
-  Write here a description
+  If True, ranges on day and month figures will be enforced while typing, i.e. given a date format of \"dd-MM-yyyy\" an entry of \"00-00-0000\" would automatically be corrected to \"01-01-0000\" (enforcing of year ranges is not implemented yet because of the added complexity of handling two-digit years) and an entry of \"99-99-9999\" would automatically be corrected to \"31-12-9999\". The algorithm does not validate whe
+  her a given day is valid for the given month though, i.e. it does not yet catch an entry of 
+  "30-02-2005\".
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomDatePickerEdit.DateFormat
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDatePickerEdit.IsEmpty
 Summary
-  Write here a summary (1 line)
+  Indicates at runtime whether the control is currently empty, i.e. holds no date
 Description
   Write here a description
 Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDatePickerEdit.NoDateShortcut
 Summary
-  Write here a summary (1 line)
+  Specifies the keyboard shortcut that will trigger the clearing of the control
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ShowCheckbox
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDatePickerEdit.NoDateText
 Summary
-  Write here a summary (1 line)
+  Specifies the text that will be displayed at runtime when the control holds no date
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ShowCheckbox
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDatePickerEdit.StoreDate
 Summary
-  Write here a summary (1 line)
+  Specifies whether the date set or displayed at designtime will be restored at runtime
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.StoreDateFormat
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.Text
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomDatePickerEdit.Date
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDateFigure
 <TITLE TJvDateFigure type>
@@ -180,14 +143,23 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvDateFigure.dfNone
-  Description for dfNone
+Description for dfNone
+
+----------------------------------------------------------------------------------------------------
 @@TJvDateFigure.dfYear
-  Description for dfYear
+Description for dfYear
+
+----------------------------------------------------------------------------------------------------
 @@TJvDateFigure.dfMonth
-  Description for dfMonth
+Description for dfMonth
+
+----------------------------------------------------------------------------------------------------
 @@TJvDateFigure.dfDay
-  Description for dfDay
+Description for dfDay
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDateFigureInfo
 <TITLE TJvDateFigureInfo type>
@@ -198,14 +170,23 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvDateFigureInfo.Figure
-  Description for Figure
+Description for Figure
+
+----------------------------------------------------------------------------------------------------
 @@TJvDateFigureInfo.Start
-  Description for Start
+Description for Start
+
+----------------------------------------------------------------------------------------------------
 @@TJvDateFigureInfo.Length
-  Description for Length
+Description for Length
+
+----------------------------------------------------------------------------------------------------
 @@TJvDateFigureInfo.Index
-  Description for Index
+Description for Index
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDateFigures
 <TITLE TJvDateFigures type>
@@ -214,26 +195,25 @@ Summary
 Description
   You don't have to document already described items such as sets,
   pointers to records etc.
-(Value = array [0..2] of TJvDateFigureInfo; - for reference)
+  (Value = array [0..2] of TJvDateFigureInfo; - for reference)
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDatePickerEdit
-<TITLEIMG TJvDatePickerEdit>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDropCalendar
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDropCalendar.CreateWithAppearance
 Summary
@@ -246,6 +226,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDropCalendar.OnCancel
 Summary
@@ -255,6 +236,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDropCalendar.OnChange
 Summary
@@ -264,6 +246,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDropCalendar.OnSelect
 Summary
@@ -273,6 +256,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDropCalendar.SelDate
 Summary
@@ -282,15 +266,18 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDropCalendar.SetFocus
 Summary
   Write here a summary (1 line)
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  This is an overridden method, you don't have to describe these  if it does the same as the
+  inherited method
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDropCalendar.WithBeep
 Summary
@@ -300,3 +287,4 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+

@@ -8,6 +8,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageListViewer
 <TITLEIMG TJvImageListViewer>
@@ -17,7 +19,9 @@ JVCLInfo
 Summary
   Control that displays the images from an image list.
 Description
-  Use TJvImageListViewer when you need to display the images from an image list in a grid like control.
+  Use TJvImageListViewer when you need to display the images from an image list in a grid like
+  control.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageListViewer.Images
 Summary
@@ -25,6 +29,7 @@ Summary
 Description
   Images is a list of bitmaps that can be displayed for each item in the TJvImageListViewer.
   Each item in the control displays the image corresponding to the item's index in the control.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageListViewer.OnGetCaption
 Summary
@@ -36,48 +41,56 @@ Parameters
   Sender     - The object that triggered the event.
   ImageIndex - The index of the image in the image list to provide a caption for.
   ACaption   - The caption to draw along with the image.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageListViewer.Options
 Summary
   Specifies the global options for the control.
 Description
   Use Options to set the default behavior of the control.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageListViewerCaptionEvent
 <TITLE TJvImageListViewerCaptionEvent type>
 <COMBINE TJvImageListViewer.OnGetCaption>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageListViewerOptions
 Summary
   Options class for the TJvImageListViewer control.
 Description
-  TJvImageListViewerOptions is the class used for the Options property of a TJvImageListViewer. It derives
-  from TJvCustomItemViewerOptions and publishes many of its properties as well as introducing new ones.
+  TJvImageListViewerOptions is the class used for the Options property of a TJvImageListViewer. It
+  derives from TJvCustomItemViewerOptions and publishes many of its properties as well as introducing
+  new ones.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageListViewerOptions.DrawingStyle
 Summary
-  Specifies the style to be used when an item is drawn. 
+  Specifies the style to be used when an item is drawn.
 Description
   Use the DrawingStyle property to control how an item is to appear. DrawingStyle controls how much
-  of the blend color specified by the image list's BlendColor is combined with the foreground,
-  or what background color to use.
+  of the blend color specified by the image list's BlendColor is combined with the foreground, or
+  what background color to use.
 See Also
-  SelectedStyle
+  TJvImageListViewerOptions.SelectedStyle
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageListViewerOptions.FillCaption
 Summary
   Specifies whether the background of captions are filled in their entirety or not.
 Description
-  Use FillCaption to specify whether the background of the caption of an item is filled in such a manner
-  that the fill extends from the left to the right edge. If FillCaption is false, only the area covered
-  by the caption is filled.
+  Use FillCaption to specify whether the background of the caption of an item is filled in such a
+  manner that the fill extends from the left to the right edge. If FillCaption is false, only the
+  area covered by the caption is filled.
 
   FillCaption only affects selected items.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageListViewerOptions.SelectedStyle
 Summary
-  Specifies the style to be used when a selected item is drawn. 
+  Specifies the style to be used when a selected item is drawn.
 Description
   Use SelectedStyle to specify the style to use for selected items.
 See Also
-  DrawingStyle
+  TJvImageListViewerOptions.DrawingStyle
+

@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvButtonMouseState
 <TITLE TJvButtonMouseState type>
@@ -17,29 +19,38 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvButtonMouseState.bsMouseInside
-  Description for bsMouseInside
+Description for bsMouseInside
+
+----------------------------------------------------------------------------------------------------
 @@TJvButtonMouseState.bsMouseDown
-  Description for bsMouseDown
+Description for bsMouseDown
+
 ----------------------------------------------------------------------------------------------------
 @@TJvButtonMouseStates
 <TITLE TJvButtonMouseStates type>
 <COMBINE TJvButtonMouseState>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomButton
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomButton.Click
 Summary
   Write here a summary (1 line)
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  This is an overridden method, you don't have to describe these  if it does the same as the
+  inherited method
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomButton.DropDownMenu
 Summary
@@ -49,6 +60,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomButton.ForceSameSize
 Summary
@@ -58,16 +70,29 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomButton.HintColor
+Summary
+  Determines the color of the hint boxes for the Help Hints for the <xxx>.
+Description
+  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
+  HintColor property in the constructor when the application is created. To change the HintColor
+  assign it a new TColor value.
+See Also
+  TJvCustomButton.HotTrack
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomButton.HotTrack
 Summary
   Specifies whether the <xxx> is highlighted when the mouse passes over it.
 Description
-  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font 
-  specified by HotTrackFont is used for the <xxx> text. When HotTrack is False, there is no visual 
+  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font
+  specified by HotTrackFont is used for the <xxx> text. When HotTrack is False, there is no visual
   feedback when the mouse passes over the <xxx>.
-See Also 
-  HotGlyph, HotTrackFont, OnMouseEnter, OnMouseLeave
+See Also
+  HotGlyph, OnMouseEnter, OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomButton.HotTrackFont
 Summary
@@ -75,44 +100,47 @@ Summary
 Description
   When the mouse passes over the <xxx> and HotTrack is set to True, HotTrackFont is used as the font
   for the <xxx> text.
-  To change to a new font, specify a new TFont object. To modify a font, change the value of the 
+  To change to a new font, specify a new TFont object. To modify a font, change the value of the
   Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
 See Also
-  HotGlyph, HotTrack
+  HotGlyph
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomButton.HotTrackFontOptions
 Summary
   Specifies how changes to the Font affects HotTrackFont.
 Description
   HotTrackFontOptions defines a set of options that controls how changes to the Font property affects
-  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all property
-  changes in Font are copied to HotTrackFont except Color changes.
+  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all
+  property changes in Font are copied to HotTrackFont except Color changes.
   Note that hoFollowFont must be included for any properties to be copied at all.
-  To implement the HotTrackFontOptions property in a new control, you should perform the following steps:
-    * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
-    * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set it's default value
-      to be DefaultTrackFontOptions (defined in JvTypes).
-    * Set the default value in the constructor.
-    * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in JvJVCLUtils)
-      after calling inherited.
-    * Add a call to UpdateTrackFont in SetHotTrackFontOptions
+  To implement the HotTrackFontOptions property in a new control, you should perform the following
+  steps:
+
+  * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
+  * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set it's default
+    value to be DefaultTrackFontOptions (defined in JvTypes).
+  * Set the default value in the constructor.
+  * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in
+    JvJVCLUtils) after calling inherited.
+  * Add a call to UpdateTrackFont in SetHotTrackFontOptions
 See Also
-  HotTrack, HotTrackFont
+  TJvCustomButton.HotTrack, TJvCustomButton.HotTrackFont
+
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomButton.OnDropDownMenu
+@@TJvCustomButton.OnParentColorChange
 Summary
-  Write here a summary (1 line)
+  Occurs when the color property for the parent of the control changes.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomButton.SetBounds
 Summary
   Write here a summary (1 line)
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  This is an overridden method, you don't have to describe these  if it does the same as the
+  inherited method
 Parameters
   ALeft   - Description for this parameter
   ATop    - Description for this parameter
@@ -121,6 +149,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomButton.WordWrap
 Summary
@@ -130,12 +159,14 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.AllowAllUp
 Summary
@@ -145,6 +176,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.Down
 Summary
@@ -154,6 +186,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.DropDownMenu
 Summary
@@ -163,6 +196,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.Flat
 Summary
@@ -172,6 +206,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.ForceSameSize
 Summary
@@ -181,6 +216,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.GroupIndex
 Summary
@@ -190,16 +226,18 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.HotTrack
 Summary
   Specifies whether the <xxx> is highlighted when the mouse passes over it.
 Description
-  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font 
-  specified by HotTrackFont is used for the <xxx> text. When HotTrack is False, there is no visual 
+  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font
+  specified by HotTrackFont is used for the <xxx> text. When HotTrack is False, there is no visual
   feedback when the mouse passes over the <xxx>.
-See Also 
-  HotGlyph, HotTrackFont, OnMouseEnter, OnMouseLeave
+See Also
+  HotGlyph, OnMouseEnter, OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.HotTrackFont
 Summary
@@ -207,29 +245,33 @@ Summary
 Description
   When the mouse passes over the <xxx> and HotTrack is set to True, HotTrackFont is used as the font
   for the <xxx> text.
-  To change to a new font, specify a new TFont object. To modify a font, change the value of the 
+  To change to a new font, specify a new TFont object. To modify a font, change the value of the
   Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
 See Also
-  HotGlyph, HotTrack
+  HotGlyph
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.HotTrackFontOptions
 Summary
   Specifies how changes to the Font affects HotTrackFont.
 Description
   HotTrackFontOptions defines a set of options that controls how changes to the Font property affects
-  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all property
-  changes in Font are copied to HotTrackFont except Color changes.
+  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all
+  property changes in Font are copied to HotTrackFont except Color changes.
   Note that hoFollowFont must be included for any properties to be copied at all.
-  To implement the HotTrackFontOptions property in a new control, you should perform the following steps:
-    * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
-    * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set it's default value
-      to be DefaultTrackFontOptions (defined in JvTypes).
-    * Set the default value in the constructor.
-    * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in JvJVCLUtils)
-      after calling inherited.
-    * Add a call to UpdateTrackFont in SetHotTrackFontOptions
+  To implement the HotTrackFontOptions property in a new control, you should perform the following
+  steps:
+
+  * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
+  * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set it's default
+    value to be DefaultTrackFontOptions (defined in JvTypes).
+  * Set the default value in the constructor.
+  * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in
+    JvJVCLUtils) after calling inherited.
+  * Add a call to UpdateTrackFont in SetHotTrackFontOptions
 See Also
-  HotTrack, HotTrackFont
+  TJvCustomGraphicButton.HotTrack, TJvCustomGraphicButton.HotTrackFont
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.MouseStates
 Summary
@@ -239,15 +281,14 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomGraphicButton.OnDropDownMenu
+@@TJvCustomGraphicButton.OnParentColorChange
 Summary
-  Write here a summary (1 line)
+  Occurs when the color property for the parent of the control changes.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.Pattern
 Summary
@@ -257,12 +298,14 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.SetBounds
 Summary
   Write here a summary (1 line)
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  This is an overridden method, you don't have to describe these  if it does the same as the
+  inherited method
 Parameters
   ALeft   - Description for this parameter
   ATop    - Description for this parameter
@@ -271,9 +314,4 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDropDownButton
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+

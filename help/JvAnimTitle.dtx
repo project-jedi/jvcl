@@ -23,7 +23,7 @@ Description
 
   To use this component you should:
 
-##  * Drop TJvAnimTitle on a form
+  ##  * Drop TJvAnimTitle on a form
   * Construct a TJvAnimTitle instance at run-time.
   * Set the Title to the title to display (by default set to the forms
     Caption. Changes to the forms Caption are not mirrored in this property).
@@ -31,6 +31,7 @@ Description
   * Optionally set Blink to the number of blinks after the title is fully displayed or leave it at
     0 if you don't want the caption to blink.
   * Activate the component by setting property Enabled to true.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimTitle.Blink
 Summary
@@ -41,6 +42,7 @@ Description
   caption to blink at all, set this property to 0.
 See Also
   Delay
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimTitle.Delay
 Summary
@@ -49,7 +51,8 @@ Description
   Delay indicates the time in milliseconds to wait between two steps of animation. This value
   determines the speed at which the caption is to appear/disappear, as well as the rate of blinking.
 See Also
-  Blink, Enabled
+  TJvAnimTitle.Blink, TJvAnimTitle.Enabled
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimTitle.Enabled
 Summary
@@ -57,10 +60,12 @@ Summary
 Description
   Enabled indicates if the component is active. When set to True, the animation is executed,
   otherwise the form caption will not change.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimTitle.Title
 Summary
   The form caption to animate.
 Description
-  Title holds the caption text to animate. The property is initialized to the form's Caption, but
-  can be changed to anything.
+  Title holds the caption text to animate. The property is initialized to the form's Caption, but can
+  be changed to anything.
+

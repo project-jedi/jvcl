@@ -12,15 +12,20 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Marcel Bestebroer
+
+
 ----------------------------------------------------------------------------------------------------
 @@ctkAsk
 <ALIAS TDSACheckTextKind>
+
 ----------------------------------------------------------------------------------------------------
 @@ctkShow
 <ALIAS TDSACheckTextKind>
+
 ----------------------------------------------------------------------------------------------------
 @@ctkWarn
 <ALIAS TDSACheckTextKind>
+
 ----------------------------------------------------------------------------------------------------
 @@DSACount
 <TITLE DSACount function>
@@ -33,6 +38,7 @@ Description
   DSACount returns the number of DSA dialogs registered with the system.
 See Also
   DSAItem, RegisterDSA, UnregisterDSA
+
 ----------------------------------------------------------------------------------------------------
 @@DSAItem
 <TITLE DSAItem function>
@@ -48,6 +54,7 @@ Parameters
   Index - The item index to retrieve. Valid values lie in the range 0 .. DSACount-1.
 See Also
   DSACount, RegisterDSA, UnregisterDSA
+
 ----------------------------------------------------------------------------------------------------
 @@DSAMessageDlg@Integer@string@string@TGraphic@TMsgDlgButtons@Longint@TDlgCenterKind@Integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine
 <TITLE DSAMessageDlg function>
@@ -77,32 +84,35 @@ Parameters
   Buttons -       A list of buttons to display.
   HelpCtx -       Help context to use when the help button is clicked or F1 is pressed.
   Center -        Indicates how the dialog is to be centered. The default is to center on the
-                  screen, but you can specify to center on the main form or the active form.
+          screen, but you can specify to center on the main form or the active form.
   DefaultButton - The button to mark as default. If you do not provide a default button, the
-                  \MessageDlg mechanism is used to determine the default button.
+         \MessageDlg mechanism is used to determine the default button.
   CancelButton -  The button to mark as cancel. If you do not provide a cancel button, the
-                  \MessageDlg mechanism is used to determine the cancel button.
+       \MessageDlg mechanism is used to determine the cancel button.
   HelpButton -    The button to mark as help. If you do not provide a help button, the button mbHelp
-                  will be used. If such a button does not exist, no button will be marked as help.
+                 will be used. If such a button does not exist, no button will be marked as help.
   Caption -       The caption of the dialog.
   Picture -       A TGraphic descendant of the image to show or <B>nil</B> if no image should be
-                  shown.
+             shown.
   Timeout           - Description for this parameter
   ADynControlEngine - Description for this parameter
-Result
+  Result
   Returns the modal result of the displayed dialog or the last result if the dialog was suppressed.
 Note
   If the user presses Ctrl-C in the dialog, the contents of the dialog is copied to the clipboard.
 See Also
   DSAMessageDlgEx, MessageDlg
+
 ----------------------------------------------------------------------------------------------------
 @@DSAMessageDlg@Integer@string@string@TMsgDlgType@TMsgDlgButtons@Longint@TDlgCenterKind@Integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine
 <TITLE DSAMessageDlg function>
 <COMBINE DSAMessageDlg@Integer@string@string@TGraphic@TMsgDlgButtons@Longint@TDlgCenterKind@Integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine>
+
 ----------------------------------------------------------------------------------------------------
 @@DSAMessageDlg@Integer@string@TMsgDlgType@TMsgDlgButtons@Longint@TDlgCenterKind@Integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine
 <TITLE DSAMessageDlg function>
 <COMBINE DSAMessageDlg@Integer@string@string@TGraphic@TMsgDlgButtons@Longint@TDlgCenterKind@Integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine>
+
 ----------------------------------------------------------------------------------------------------
 @@DSAMessageDlgEx@Integer@string@string@TGraphic@array of string@array of Integer@Longint@TDlgCenterKind@Integer@Integer@Integer@Integer@TJvDynControlEngine
 <TITLE DSAMessageDlgEx function>
@@ -122,34 +132,37 @@ Parameters
   Results -       List of result codes.
   HelpCtx -       Help context to use when the help button is clicked or F1 is pressed.
   Center -        Indicates how the dialog is to be centered. The default is to center on the
-                  screen, but you can specify to center on the main form or the active form.
+          screen, but you can specify to center on the main form or the active form.
   DefaultButton - The button to mark as default. If you do not provide a default button, the first
-                  button is marked as default. If you do not want a default button, set this
+               button is marked as default. If you do not want a default button, set this
                   parameter to -1. This parameter is an index into the Buttons/Results array.
   CancelButton -  The button to mark as cancel. If you do not provide a cancel button, the second
-                  button is marked as cancel. If you do not want a cancel button, set this parameter
+              button is marked as cancel. If you do not want a cancel button, set this parameter
                   to -1. This parameter is an index into the Buttons/Results array.
   HelpButton -    The button to mark as help. If you do not provide a help button, no button will be
-                  marked as help. This parameter is an index into the Buttons/Results array.
+                 marked as help. This parameter is an index into the Buttons/Results array.
   Caption -       The caption of the dialog.
   Picture -       A TGraphic descendant of the image to show or <B>nil</B> if no image should be
-                  shown.
+             shown.
   Timeout           - Description for this parameter
   ADynControlEngine - Description for this parameter
-Result
+  Result
   Returns the modal result of the displayed dialog or the last result if the dialog was suppressed.
 Note
   If the user presses Ctrl-C in the dialog, the contents of the dialog is copied to the clipboard.
 See Also
   DSAMessageDlg, MessageDlgEx
+
 ----------------------------------------------------------------------------------------------------
 @@DSAMessageDlgEx@Integer@string@string@TMsgDlgType@array of string@array of Integer@Longint@TDlgCenterKind@Integer@Integer@Integer@Integer@TJvDynControlEngine
 <TITLE DSAMessageDlgEx function>
 <COMBINE DSAMessageDlgEx@Integer@string@string@TGraphic@array of string@array of Integer@Longint@TDlgCenterKind@Integer@Integer@Integer@Integer@TJvDynControlEngine>
+
 ----------------------------------------------------------------------------------------------------
 @@DSAMessageDlgEx@Integer@string@TMsgDlgType@array of string@array of Integer@Longint@TDlgCenterKind@Integer@Integer@Integer@Integer@TJvDynControlEngine
 <TITLE DSAMessageDlgEx function>
 <COMBINE DSAMessageDlgEx@Integer@string@string@TGraphic@array of string@array of Integer@Longint@TDlgCenterKind@Integer@Integer@Integer@Integer@TJvDynControlEngine>
+
 ----------------------------------------------------------------------------------------------------
 @@DSARegStore
 <TITLE DSARegStore function>
@@ -159,10 +172,11 @@ JVCLInfo
 Summary
   Retrieves a reference to the default registry storage.
 Description
-  DSARegStore retrieves a reference to internally create registry storage. The storage is
-  initialized to use <B>HKCU\\Software\\<I>Application.Title</I>\\DSA</B> as its storage.
+  DSARegStore retrieves a reference to internally create registry storage. The storage is initialized
+  to use <B>HKCU\\Software\\<I>Application.Title</I>\\DSA</B> as its storage.
 See Also
   TDSARegStorage
+
 ----------------------------------------------------------------------------------------------------
 @@DSAShowMessage
 <TITLE DSAShowMessage procedure>
@@ -178,11 +192,12 @@ Parameters
   DlgID -   ID of the dialog in the DSA system.
   Msg -     Contains the message to display.
   Center -  Indicates how the dialog is to be centered. The default is to center on the screen, but
-            you can specify to center on the main form or the active form.
+          you can specify to center on the main form or the active form.
   Timeout           - Description for this parameter
   ADynControlEngine - Description for this parameter
 See Also
-  ShowMessage, DSAShowMessageFmt
+  DSAShowMessageFmt, ShowMessage
+
 ----------------------------------------------------------------------------------------------------
 @@DSAShowMessageFmt
 <TITLE DSAShowMessageFmt procedure>
@@ -192,18 +207,19 @@ JVCLInfo
 Summary
   Display a message box.
 Description
-  DSAShowMessageFmt is a replacement for Delphi's \ShowMessageFmt. It allows you to optionally 
+  DSAShowMessageFmt is a replacement for Delphi's \ShowMessageFmt. It allows you to optionally
   specify how the dialog is centered. The user can optionally disable the dialog in the future.
 Parameters
   DlgID -   ID of the dialog in the DSA system.
   Msg -     Contains the message to display.
   Params -  Parameters to use for formatting.
   Center -  Indicates how the dialog is to be centered. The default is to center on the screen, but
-            you can specify to center on the main form or the active form.
+          you can specify to center on the main form or the active form.
   Timeout           - Description for this parameter
   ADynControlEngine - Description for this parameter
 See Also
-  ShowMessageFmt, DSAShowMessage
+  DSAShowMessage, ShowMessageFmt
+
 ----------------------------------------------------------------------------------------------------
 @@EJvDSADialog
 Summary
@@ -211,6 +227,7 @@ Summary
 Description
   EJvDSADialog is the exception class used for errors using the TJvDSADialog the TJvDSADialog
   component.
+
 ----------------------------------------------------------------------------------------------------
 @@GetDSACheckMarkText
 <TITLE GetDSACheckMarkText function>
@@ -226,6 +243,7 @@ Parameters
   ID - Description for this parameter
 See Also
   RegisterDSACheckMarkText, UnregisterDSACheckMarkText
+
 ----------------------------------------------------------------------------------------------------
 @@GetDSAState@Integer
 <TITLE GetDSAState function>
@@ -240,15 +258,17 @@ Description
 Parameters
   DlgID -         ID of the dialog in the DSA system.
   ResCode -       If this parameter is specified, it will receive the stored ModalResult value if
-                  the dialog is suppressed. Otherwise this parameter will be set to 0. 
+              the dialog is suppressed. Otherwise this parameter will be set to 0.
   OnCustomData -  Provide an OnCustomData handler if additional info should be retrieved from the
-                  storage. Leave this parameter <B>nil</B> if no additional data is to be retrieved.
+              storage. Leave this parameter <B>nil</B> if no additional data is to be retrieved.
 See Also
   SetDSAState
+
 ----------------------------------------------------------------------------------------------------
 @@GetDSAState@Integer@Integer@TDSACustomData
 <TITLE GetDSAState function>
 <COMBINE GetDSAState@Integer>
+
 ----------------------------------------------------------------------------------------------------
 @@LocateDSAReg
 <TITLE LocateDSAReg function>
@@ -264,16 +284,18 @@ Parameters
   DlgID - Description for this parameter
 See Also
   RegisterDSA, UnregisterDSA
+
 ----------------------------------------------------------------------------------------------------
 @@mbDefault
 Summary
   Used to identify default button mapping.
 Description
   mbDefault is used to indentify that the default button mapping is to be used to determine the
-  default and/or cancel button. It's primary use is for the DefaultButton and CancelButton
-  parameters for the various \MessageDlg routines.
+  default and/or cancel button. It's primary use is for the DefaultButton and CancelButton parameters
+  for the various \MessageDlg routines.
 See Also
   mbNone
+
 ----------------------------------------------------------------------------------------------------
 @@mbNone
 Summary
@@ -281,9 +303,10 @@ Summary
 Description
   mbNone is used to indentify that no button is to be used as a default, cancel or help button. It's
   primary use is for the DefaultButton, CancelButton and HelpButton parameters for the various
-  \MessageDlg routines.
+  MessageDlg routines.
 See Also
   mbDefault
+
 ----------------------------------------------------------------------------------------------------
 @@MessageDlg@string@string@TGraphic@TMsgDlgButtons@Longint@TDlgCenterKind@Integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine
 <TITLE MessageDlg function>
@@ -296,9 +319,9 @@ Description
   \MessageDlg is a replacement for the MessageDlg function in Delphi's Dialog unit. It gives you more
   control over the appearance of the dialog.
 
-  In its simplest form, it does exactly the same as the MessageDlg function in Delphi's Dialogs
-  unit, but has three optional parameters that allow you to choose different default, cancel and/or
-  help buttons.
+  In its simplest form, it does exactly the same as the MessageDlg function in Delphi's Dialogs unit,
+  but has three optional parameters that allow you to choose different default, cancel and/or help
+  buttons.
 
   The second form allows you to provide a different caption of the dialog, but otherwise does the
   same as the first form.
@@ -312,32 +335,35 @@ Parameters
   Buttons -       A list of buttons to display.
   HelpCtx -       Help context to use when the help button is clicked or F1 is pressed.
   Center -        Indicates how the dialog is to be centered. The default is to center on the
-                  screen, but you can specify to center on the main form or the active form.
+          screen, but you can specify to center on the main form or the active form.
   DefaultButton - The button to mark as default. If you do not provide a default button, the
                   MessageDlg mechanism is used to determine the default button.
   CancelButton -  The button to mark as cancel. If you do not provide a cancel button, the
                   MessageDlg mechanism is used to determine the cancel button.
   HelpButton -    The button to mark as help. If you do not provide a help button, the button mbHelp
-                  will be used. If such a button does not exist, no button will be marked as help.
+                 will be used. If such a button does not exist, no button will be marked as help.
   Caption -       The caption of the dialog.
   Picture -       A TGraphic descendant of the image to show or <B>nil</B> if no image should be
-                  shown.
+             shown.
   Timeout           - Description for this parameter
   ADynControlEngine - Description for this parameter
-Result
+  Result
   Returns the modal result of the displayed dialog.
 Note
   If the user presses Ctrl-C in the dialog, the contents of the dialog is copied to the clipboard.
 See Also
   DSAMessageDlg, MessageDlgEx
+
 ----------------------------------------------------------------------------------------------------
 @@MessageDlg@string@string@TMsgDlgType@TMsgDlgButtons@Longint@TDlgCenterKind@Integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine
 <TITLE MessageDlg function>
 <COMBINE MessageDlg@string@string@TGraphic@TMsgDlgButtons@Longint@TDlgCenterKind@Integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine>
+
 ----------------------------------------------------------------------------------------------------
 @@MessageDlg@string@TMsgDlgType@TMsgDlgButtons@Longint@TDlgCenterKind@Integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine
 <TITLE MessageDlg function>
 <COMBINE MessageDlg@string@string@TGraphic@TMsgDlgButtons@Longint@TDlgCenterKind@Integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine>
+
 ----------------------------------------------------------------------------------------------------
 @@MessageDlgEx@string@string@TGraphic@array of string@array of Integer@Longint@TDlgCenterKind@Integer@Integer@Integer@Integer@TJvDynControlEngine
 <TITLE MessageDlgEx function>
@@ -350,9 +376,8 @@ Description
   MessageDlgEx is an extension of Delphi's \MessageDlg function and an extension of JvDSADialog's
   MessageDlg that gives you more control over the appearance of the dialog.
 
-  MessageDlgEx allows to specify custom button captions and result codes for the dialog. Just as 
-  JvDSADialog's MessageDlg, MessageDlgEx has three forms that allow you to customize its
-  appearance.
+  MessageDlgEx allows to specify custom button captions and result codes for the dialog. Just as
+  JvDSADialog's MessageDlg, MessageDlgEx has three forms that allow you to customize its appearance.
 Parameters
   Msg -           Contains the message to display.
   DlgType -       The dialog type.
@@ -360,35 +385,37 @@ Parameters
   Results -       List of result codes.
   HelpCtx -       Help context to use when the help button is clicked or F1 is pressed.
   Center -        Indicates how the dialog is to be centered. The default is to center on the
-                  screen, but you can specify to center on the main form or the active form.
+          screen, but you can specify to center on the main form or the active form.
   DefaultButton - The button to mark as default. If you do not provide a default button, the first
-                  button is marked as default. If you do not want a default button, set this
+               button is marked as default. If you do not want a default button, set this
                   parameter to -1. This parameter is an index into the Buttons/Results array.
   CancelButton -  The button to mark as cancel. If you do not provide a cancel button, the second
-                  button is marked as cancel. If you do not want a cancel button, set this parameter
+              button is marked as cancel. If you do not want a cancel button, set this parameter
                   to -1. This parameter is an index into the Buttons/Results array.
   HelpButton -    The button to mark as help. If you do not provide a help button, no button will be
-                  marked as help. This parameter is an index into the Buttons/Results array.
+                 marked as help. This parameter is an index into the Buttons/Results array.
   Caption -       The caption of the dialog.
   Picture -       A TGraphic descendant of the image to show or <B>nil</B> if no image
-                  should be shown.
+   should be shown.
   Timeout           - Description for this parameter
   ADynControlEngine - Description for this parameter
-Result
+  Result
   Returns the modal result of the displayed dialog.
 Note
-  If the user presses Ctrl-C in the dialog, the contents of the dialog is copied
-  to the clipboard.
+  If the user presses Ctrl-C in the dialog, the contents of the dialog is copied to the clipboard.
 See Also
   DSAMessageDlgEx, MessageDlg
+
 ----------------------------------------------------------------------------------------------------
 @@MessageDlgEx@string@string@TMsgDlgType@array of string@array of Integer@Longint@TDlgCenterKind@Integer@Integer@Integer@Integer@TJvDynControlEngine
 <TITLE MessageDlgEx function>
 <COMBINE MessageDlgEx@string@string@TGraphic@array of string@array of Integer@Longint@TDlgCenterKind@Integer@Integer@Integer@Integer@TJvDynControlEngine>
+
 ----------------------------------------------------------------------------------------------------
 @@MessageDlgEx@string@TMsgDlgType@array of string@array of Integer@Longint@TDlgCenterKind@Integer@Integer@Integer@Integer@TJvDynControlEngine
 <TITLE MessageDlgEx function>
 <COMBINE MessageDlgEx@string@string@TGraphic@array of string@array of Integer@Longint@TDlgCenterKind@Integer@Integer@Integer@Integer@TJvDynControlEngine>
+
 ----------------------------------------------------------------------------------------------------
 @@RegisterDSA
 <TITLE RegisterDSA procedure>
@@ -398,22 +425,23 @@ JVCLInfo
 Summary
   Register a DSA dialog.
 Description
-  RegisterDSA registers a new DSA dialog with the system. The given ID and Name may not already
-  exist within the registration, but may exist in the storage device.
+  RegisterDSA registers a new DSA dialog with the system. The given ID and Name may not already exist
+  within the registration, but may exist in the storage device.
 
   If the given ID and Name match an existing dialog, the procedure will do nothing. If either the ID
   or Name are registered, an exception will be raised.
 Parameters
   DlgID -         ID of the dialog in the DSA system.
   Name -          Reference name of the dialog. Might be used by the storage device as an
-                  identification.
+      identification.
   Description -   Description of the dialog. Could be used by a UI for DSA managment (re-enabling
-                  disabled dialogs).
+              disabled dialogs).
   Storage -       Reference to the storage device that will maintain the DSA state.
   CheckTextKind - The kind of text to display next to the check box. See RegisterDSACheckMarkText
-                  and UnregisterDSACheckMarkText for more information.
+              and UnregisterDSACheckMarkText for more information.
 See Also
   UnregisterDSA
+
 ----------------------------------------------------------------------------------------------------
 @@RegisterDSACheckMarkText
 <TITLE RegisterDSACheckMarkText procedure>
@@ -430,6 +458,7 @@ Parameters
   Text - Description for this parameter
 See Also
   TDSACheckTextKind, UnregisterDSACheckMarkText
+
 ----------------------------------------------------------------------------------------------------
 @@SetDSAState
 <TITLE SetDSAState procedure>
@@ -443,12 +472,13 @@ Description
 Parameters
   DlgID -         ID of the dialog in the DSA system.
   DontShowAgain - Flag indicating if the dialog should be enabled or disabled. When set to True, the
-                  dialog will be disabled.
+                 dialog will be disabled.
   LastResult -    The ModalResult value to store. By default this is set to mrNone.
   OnCustomData -  Provide an OnCustomData handler if additional info should be stored in the
-                  storage. Leave this parameter <B>nil</B> if no additional data is to be stored.
+         storage. Leave this parameter <B>nil</B> if no additional data is to be stored.
 See Also
   GetDSAState
+
 ----------------------------------------------------------------------------------------------------
 @@ShowMessage
 <TITLE ShowMessage procedure>
@@ -458,16 +488,17 @@ JVCLInfo
 Summary
   Display a message box.
 Description
-  \ShowMessage is a replacement for Delphi's ShowMessage. It allows you to optionally specify how
-  the dialog is centered.
+  \ShowMessage is a replacement for Delphi's ShowMessage. It allows you to optionally specify how the
+  dialog is centered.
 Parameters
   Msg -     Contains the message to display.
   Center -  Indicates how the dialog is to be centered. The default is to center on the screen, but
-            you can specify to center on the main form or the active form.
+          you can specify to center on the main form or the active form.
   Timeout           - Description for this parameter
   ADynControlEngine - Description for this parameter
 See Also
   DSAShowMessage, ShowMessageFmt
+
 ----------------------------------------------------------------------------------------------------
 @@ShowMessageFmt
 <TITLE ShowMessageFmt procedure>
@@ -483,11 +514,12 @@ Parameters
   Msg -     Contains the message to display.
   Params -  Parameters to use for formatting.
   Center -  Indicates how the dialog is to be centered. The default is to center on the screen, but
-            you can specify to center on the main form or the active form.
+          you can specify to center on the main form or the active form.
   Timeout           - Description for this parameter
   ADynControlEngine - Description for this parameter
 See Also
   DSAShowMessageFmt, ShowMessage
+
 ----------------------------------------------------------------------------------------------------
 @@TDlgCenterKind
 <TITLE TDlgCenterKind type>
@@ -496,12 +528,19 @@ Summary
 Description
   The TDlgCenterKind is used to indicate the way a dialog should be centered. It's used for the
   Center parameter in the various \ShowMessage and \MessageDlg routines.
+
+----------------------------------------------------------------------------------------------------
 @@TDlgCenterKind.dckScreen
-  Center the dialog on the screen.
+Center the dialog on the screen.
+
+----------------------------------------------------------------------------------------------------
 @@TDlgCenterKind.dckMainForm
-  Center the dialog on the main form.
+Center the dialog on the main form.
+
+----------------------------------------------------------------------------------------------------
 @@TDlgCenterKind.dckActiveForm
-  Center the dialog on the active form.
+Center the dialog on the active form.
+
 ----------------------------------------------------------------------------------------------------
 @@TDSACheckTextKind
 <TITLE TDSACheckTextKind type>
@@ -516,10 +555,10 @@ Description
   -----           ----
   ctkShow         Don't show this dialog again
   ctkAsk          Don't ask me again
-  ctkWarn         Don't warn me again
-  </TABLE
+  ctkWarn         Don't warn me again </TABLE
 See Also
   RegisterDSACheckMarkText, UnregisterDSACheckMarkText
+
 ----------------------------------------------------------------------------------------------------
 @@TDSARegItem
 <TITLE TDSARegItem type>
@@ -529,19 +568,30 @@ Description
   TDSARegItem is a record to hold information about a registered DSA dialog. This type is used
   internally by the registration database and passed on to the storage device when retrieving state
   and values.
-  
+
   It is also used by the events that allow you to store or retrieve custom data associated with a
   dialog.
+
+----------------------------------------------------------------------------------------------------
 @@TDSARegItem.ID
-  The dialog ID number.
+The dialog ID number.
+
+----------------------------------------------------------------------------------------------------
 @@TDSARegItem.Name
-  The identifying name of the dialog.
+The identifying name of the dialog.
+
+----------------------------------------------------------------------------------------------------
 @@TDSARegItem.Description
-  The description of the dialog, useful for dialogs for restoring DSA states.
+The description of the dialog, useful for dialogs for restoring DSA states.
+
+----------------------------------------------------------------------------------------------------
 @@TDSARegItem.Storage
-  The storage device that holds the DSA state and values.
+The storage device that holds the DSA state and values.
+
+----------------------------------------------------------------------------------------------------
 @@TDSARegItem.ChkTextKind
-  The ID of the check mark text to use.
+The ID of the check mark text to use.
+
 ----------------------------------------------------------------------------------------------------
 @@TDSARegStorage
 Summary
@@ -557,6 +607,7 @@ Description
 
   The dialog's internal name (as specified by the Name parameter for RegisterDSA) is used as a sub
   key for the key specified by the Key property.
+
 ----------------------------------------------------------------------------------------------------
 @@TDSARegStorage.Create
 Summary
@@ -567,6 +618,7 @@ Description
 Parameters
   ARootKey - The HKEY value to initialize the RootKey property to.
   AKey - The value to initialize the Key property to.
+
 ----------------------------------------------------------------------------------------------------
 @@TDSARegStorage.Key
 Summary
@@ -575,7 +627,8 @@ Description
   Key holds the path from RootKey where the DSA info is to be stored. For each dialog a sub key with
   the name of the dialog will be generated, holding at least two values, DSA_State and LastResult.
 See Also
-  RootKey
+  TDSARegStorage.RootKey
+
 ----------------------------------------------------------------------------------------------------
 @@TDSARegStorage.RootKey
 Summary
@@ -583,7 +636,8 @@ Summary
 Description
   RootKey holds the HKEY value of the key the DSA info is to be stored.
 See Also
-  Key
+  TDSARegStorage.Key
+
 ----------------------------------------------------------------------------------------------------
 @@TDSAStorage
 Summary
@@ -593,35 +647,38 @@ Description
   create an instance of this class directly but rather use one of its descendants.
 
   When deriving a new class from TDSAStorage, always override all methods.
+
 ----------------------------------------------------------------------------------------------------
 @@TDSAStorage.CheckMarkTextSuffix
 Summary
   Suffix of the check mark caption.
 Description
   CheckMarkTextSuffix holds the string to append to the check mark text. Usually this will be an
-  empty string, but can be used to append texts such as "in the current queue", which would result
-  in "Don't show this dialog again in the current queue." or "Don't ask again in the current
-  queue.", depending on the dialogs ChkMarkTextKind settings.
+  empty string, but can be used to append texts such as "in the current queue", which would result in
+  "Don't show this dialog again in the current queue." or "Don't ask again in the current queue.",
+  depending on the dialogs ChkMarkTextKind settings.
 
   You should not append a period (.) at the end of this string; this will be done automatically.
 
   The base class declares this property read-only as this is the most common situation. Descendants
   might set the write specifier to SetCheckMarkCaption to allow changing the check mark text suffix.
 See Also
-  GetCheckMarkTextSuffix, SetCheckMarkTextSuffix
+  TDSAStorage.GetCheckMarkTextSuffix, TDSAStorage.SetCheckMarkTextSuffix
+
 ----------------------------------------------------------------------------------------------------
 @@TDSAStorage.GetCheckMarkTextSuffix
 Summary
   Retrieve the string to append to the check mark text.
 Description
-  GetCheckMarkTextSuffix returns the string to append to the check mark text. Usually this will be
-  an empty string, but can be used to append texts such as "in the current queue", which would
-  result in "Don't show this dialog again in the current queue." or "Don't ask again in the current
-  queue.", depending on the dialogs ChkMarkTextKind settings.
+  GetCheckMarkTextSuffix returns the string to append to the check mark text. Usually this will be an
+  empty string, but can be used to append texts such as "in the current queue", which would result in
+  "Don't show this dialog again in the current queue." or "Don't ask again in the current queue.",
+  depending on the dialogs ChkMarkTextKind settings.
 
   Since the method is declared abstract, descendants must override it.
 See Also
-  CheckMarkTextSuffix, SetCheckMarkTextSuffix
+  TDSAStorage.CheckMarkTextSuffix, TDSAStorage.SetCheckMarkTextSuffix
+
 ----------------------------------------------------------------------------------------------------
 @@TDSAStorage.GetState
 Summary
@@ -639,9 +696,10 @@ Parameters
   DSAInfo -       Registration info of the DSA dialog in question.
   LastResult -    On exit will hold the result code of the dialog when the DSA state was set.
   OnCustomData -  Provide an OnCustomData handler if additional info should be retrieved from the
-                  storage. Leave this parameter <B>nil</B> if no additional data is to be retrieved.
+              storage. Leave this parameter <B>nil</B> if no additional data is to be retrieved.
 See Also
-  SetState
+  TDSAStorage.SetState
+
 ----------------------------------------------------------------------------------------------------
 @@TDSAStorage.ReadBool
 Summary
@@ -656,6 +714,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TDSAStorage.ReadBoolDef
 Summary
@@ -671,6 +730,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TDSAStorage.ReadFloat
 Summary
@@ -685,6 +745,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TDSAStorage.ReadFloatDef
 Summary
@@ -700,6 +761,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TDSAStorage.ReadInt64
 Summary
@@ -714,6 +776,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TDSAStorage.ReadInt64Def
 Summary
@@ -729,6 +792,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TDSAStorage.ReadInteger
 Summary
@@ -743,6 +807,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TDSAStorage.ReadIntegerDef
 Summary
@@ -758,6 +823,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TDSAStorage.ReadString
 Summary
@@ -772,6 +838,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TDSAStorage.ReadStringDef
 Summary
@@ -787,6 +854,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TDSAStorage.SetCheckMarkTextSuffix
 Summary
@@ -799,9 +867,10 @@ Description
   text suffix are wanted.
 Parameters
   Value - String to set the suffix to. Do not append a period (.) to this string, as this will be
-          done when the full check mark text is determined.
+      done when the full check mark text is determined.
 See Also
-  CheckMarkTextSuffix, GetCheckMarkTextSuffix
+  TDSAStorage.CheckMarkTextSuffix, TDSAStorage.GetCheckMarkTextSuffix
+
 ----------------------------------------------------------------------------------------------------
 @@TDSAStorage.SetState
 Summary
@@ -811,15 +880,16 @@ Description
 Parameters
   DSAInfo -       Registration info of the DSA dialog in question.
   DontShowAgain - Flag to indicate if teh dialog should be suppressed. Some storage devices may
-                  elect to remove the reference of this dialog when this parameter is set to False,
+            elect to remove the reference of this dialog when this parameter is set to False,
                   others may leave the reference and just update the DSA state.
   LastResult -    The result code of the dialog when to store along with the DSA state. By
-                  convention, this parameter should be set to 0 if DontShowAgain is False.
+       convention, this parameter should be set to 0 if DontShowAgain is False.
                   Depending on the storage device, this might be enforced.
   OnCustomData -  Provide an OnCustomData handler if additional info should be stored in the
-                  storage. Leave this parameter <B>nil</B> if no additional data is to be retrieved.
+         storage. Leave this parameter <B>nil</B> if no additional data is to be retrieved.
 See Also
-  GetState
+  TDSAStorage.GetState
+
 ----------------------------------------------------------------------------------------------------
 @@TDSAStorage.WriteBool
 Summary
@@ -833,6 +903,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TDSAStorage.WriteFloat
 Summary
@@ -846,6 +917,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TDSAStorage.WriteInt64
 Summary
@@ -859,6 +931,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TDSAStorage.WriteInteger
 Summary
@@ -872,6 +945,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TDSAStorage.WriteString
 Summary
@@ -885,19 +959,22 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSAAutoCloseEvent
 <TITLE TJvDSAAutoCloseEvent type>
 <COMBINE TJvDSADialog.OnAutoClose>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADataEvent
 <TITLE TJvDSADataEvent type>
 Summary
-  The type for event handlers that respond when the DSA state is read from or written to the DSA storage.
+  The type for event handlers that respond when the DSA state is read from or written to the DSA
+  storage.
 Description
-  The event handlers for <LINK TJvDSADialog.OnApplyKeys,OnApplyKeysOn> and <LINK TJvDSADialog.OnUpdateKeys,OnUpdateKeys>
-  can respond when the DSA state is read from or written to the DSA storage. Use these events to retrieve
-  or store additional (custom) data from the DSA storage 
+  The event handlers for <LINK TJvDSADialog.OnApplyKeys,OnApplyKeysOn> and <LINK
+  TJvDSADialog.OnUpdateKeys,OnUpdateKeys> can respond when the DSA state is read from or written to
+  the DSA storage. Use these events to retrieve or store additional (custom) data from the DSA storage
   related to this dialog. These events allow you to store and retrieve
   additional information (e.g. the ItemIndex of a combo box) along with the DSA state and modal
   result for the dialog.
@@ -907,6 +984,7 @@ Parameters
   Storage - reference to the storage where the dialog info is stored.
 See Also
   TJvDSADialog.OnApplyKeys, TJvDSADialog.OnUpdateKeys
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog
 <TITLEIMG TJvDSADialog>
@@ -916,8 +994,8 @@ JVCLInfo
 Summary
   Converts a form into a "Don't Show Again" dialog.
 Description
-  The TJvDSADialog component converts the form its placed on into a DSA ("Don't Show Again")
-  dialog. The component is basically a link between a VCL form and the included DSA backend.
+  The TJvDSADialog component converts the form its placed on into a DSA ("Don't Show Again") dialog.
+  The component is basically a link between a VCL form and the included DSA backend.
 
   Converting a dialog into a DSA dialog involves the following tasks:
 
@@ -931,11 +1009,12 @@ Description
   * Use ShowModal to display the form or retrieve the last modal result if the form was previously
     suppressed.
 
-  TJvDSADialog will hook the ShowModal virtual method of the form it is on. This allows the
-  component to check the DSA state and either call the original ShowModal method or just return its
-  result. Note that because the ShowModal method of the form the component is on is being hooked, it
-  doesn't matter if a custom form is used that happens to override the ShowModal method. This
-  overriden method will be called if the dialog is to be displayed.
+  TJvDSADialog will hook the ShowModal virtual method of the form it is on. This allows the component
+  to check the DSA state and either call the original ShowModal method or just return its result.
+  Note that because the ShowModal method of the form the component is on is being hooked, it doesn't
+  matter if a custom form is used that happens to override the ShowModal method. This overriden
+  method will be called if the dialog is to be displayed.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.ApplySavedState
 Summary
@@ -946,7 +1025,8 @@ Description
   property. In addition, if an OnApplyKeys event is assigned, the event will be called with all
   neccessary information to retrieve custom stored data from the DSA storage.
 See Also
-  OnApplyKeys, UpdateDSAState
+  TJvDSADialog.OnApplyKeys, TJvDSADialog.UpdateDSAState
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.CancelCountdown
 Summary
@@ -956,6 +1036,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.CheckControl
 Summary
@@ -967,6 +1048,7 @@ Description
   TCheckBox control, but for TJvDSADialog it doesn't matter what kind of control is used (eg. it is
   possible to use a third party's check box equivalent control, even if it's not descending from
   TCustomCheckBox).
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.DialogID
 Summary
@@ -974,6 +1056,7 @@ Summary
 Description
   DialogID indicates the dialog's ID to use with the DSA system. If the specified ID is not
   registered, an exception will be raised as soon as the form is used.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.FormPatch
 Summary
@@ -982,11 +1065,12 @@ Description
   FormPatch will patch the form so that it can be used as a DSA dialog. The patch involves the
   following:
 
-  1 Retrieve the VMT index for ShowModal
-  2 Store the original pointer for ShowModal using SetOrgShowModalPtr.
+  1 Retrieve the VMT index for ShowModal 2 Store the original pointer for ShowModal using
+  SetOrgShowModalPtr.
   3 Set the pointer for ShowModal to a new ShowModal method declared in an internal form class.
 See Also
-  FormUnPatch
+  TJvDSADialog.FormUnPatch
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.FormUnPatch
 Summary
@@ -995,10 +1079,11 @@ Description
   FormUnPatch will unpatch the form so that it can no longer be used as a DSA dialog. Unpatch
   involves the following:
 
-  1 Retrieve the VMT index for ShowModal
-  2 Set the pointer for ShowModal to the original pointer, retrieved using GetOrgShowModalPtr.
+  1 Retrieve the VMT index for ShowModal 2 Set the pointer for ShowModal to the original pointer,
+  retrieved using GetOrgShowModalPtr.
 See Also
-  FormPatch
+  TJvDSADialog.FormPatch
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.GetDSAStateInternal
 Summary
@@ -1013,47 +1098,52 @@ Description
   (0).
 Parameters
   ModalResult - variable to retrieve the saved ModalResult value in.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.GetModalResult
 Summary
   Retrieves the ModalResult from the owner form.
 Description
-  GetModalResult retrieves the ModelResult from the Owner. Since TJvDSADialog can only be placed on
-  a TCustomForm descendant, a simple typecast is used to cast the owner to a TCustomForm and
-  retrieve the ModalResult value.
+  GetModalResult retrieves the ModelResult from the Owner. Since TJvDSADialog can only be placed on a
+  TCustomForm descendant, a simple typecast is used to cast the owner to a TCustomForm and retrieve
+  the ModalResult value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.GetOrgOwner
 Summary
   Retrieves the owner of the component.
 Description
-  GetOrgOwner retrieves the reference to owner (form) of the component. Because the Owner property
-  is set to nil before Destroy is called, the unpatching mechanism can not use Owner. To circumvent
+  GetOrgOwner retrieves the reference to owner (form) of the component. Because the Owner property is
+  set to nil before Destroy is called, the unpatching mechanism can not use Owner. To circumvent
   this, the patch method will store a reference to the form which the unpatch method can use.
 See Also
-  FormPatch, FormUnPatch
+  TJvDSADialog.FormPatch, TJvDSADialog.FormUnPatch
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.GetOrgShowModalPtr
 Summary
   Retrieves the original ShowModal code pointer.
 Description
-  GetOrgShowModalPtr retrieves the original ShowModal code pointer as stored by the FormPatch
-  method. The pointer is used in two situations:
+  GetOrgShowModalPtr retrieves the original ShowModal code pointer as stored by the FormPatch method.
+  The pointer is used in two situations:
 
   1 The dialog was not suppressed and needs to be displayed.
   2 The dialog is being disposed and needs to be unpatched.
 See Also
-  FormPatch, FormUnPatch
+  TJvDSADialog.FormPatch, TJvDSADialog.FormUnPatch
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.GetStorage
 Summary
   Retrieves a reference to storage device for this dialog.
 Description
-  GetStorage will retrieve the reference to the storage device assigned to the dialog. It is the
-  read method for the Storage property.
+  GetStorage will retrieve the reference to the storage device assigned to the dialog. It is the read
+  method for the Storage property.
 
   It's used internally to retrieve and store the DSA state and dialog result.
 See Also
-  Storage
+  TJvDSADialog.Storage
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.IgnoreDSAChkMrkTxt
 Summary
@@ -1063,27 +1153,30 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.IsDSAChecked
 Summary
   Checks if the DSA state has been set to "suppress".
 Description
-  IsDSAChecked checks if the DSA state has been set to suppressed state. The base implementation
-  does this by checking the CheckControl's Checked property, but descendant can override this to do
+  IsDSAChecked checks if the DSA state has been set to suppressed state. The base implementation does
+  this by checking the CheckControl's Checked property, but descendant can override this to do
   additional checking.
 See Also
-  CheckControl
+  TJvDSADialog.CheckControl
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.OnApplyKeys
 Summary
   Occurs when the DSA state is read in from the DSA storage.
 Description
-  Write an OnApplyKeys event handler to retrieve additional (custom) data from the DSA storage 
+  Write an OnApplyKeys event handler to retrieve additional (custom) data from the DSA storage
   related to this dialog. This event (together with OnUpdateKeys) allows you to store and retrieve
   additional information (e.g. the ItemIndex of a combo box) along with the DSA state and modal
   result for the dialog.
 See Also
-  OnUpdateKeys
+  TJvDSADialog.OnUpdateKeys
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.OnAutoClose
 Summary
@@ -1096,6 +1189,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.OnCountdown
 Summary
@@ -1105,17 +1199,19 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.OnUpdateKeys
 Summary
   Occurs when the DSA state is written to the DSA storage.
 Description
-  Write an OnUpdateKeys event handler to store additional (custom) data from the DSA storage 
-  related to this dialog. This event (together with OnApplyKeys) allows you to store and retrieve
-  additional information (e.g. the ItemIndex of a combo box) along with the DSA state and modal
-  result for the dialog.
+  Write an OnUpdateKeys event handler to store additional (custom) data from the DSA storage related
+  to this dialog. This event (together with OnApplyKeys) allows you to store and retrieve additional
+  information (e.g. the ItemIndex of a combo box) along with the DSA state and modal result for the
+  dialog.
 See Also
-  OnApplyKeys
+  TJvDSADialog.OnApplyKeys
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.OrgOwner
 Summary
@@ -1125,7 +1221,8 @@ Description
   to nil before Destroy is called, the unpatching mechanism can not use Owner. To circumvent this,
   the patch method will store a reference to the form which the unpatch method can use.
 See Also
-  FormPatch, FormUnPatch
+  TJvDSADialog.FormPatch, TJvDSADialog.FormUnPatch
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.OrgShowModalPtr
 Summary
@@ -1137,7 +1234,8 @@ Description
   1 The dialog was not suppressed and needs to be displayed.
   2 The dialog is being disposed and needs to be unpatched.
 See Also
-  FormPatch, FormUnPatch
+  TJvDSADialog.FormPatch, TJvDSADialog.FormUnPatch
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.SecondsLeft
 Summary
@@ -1149,6 +1247,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.Storage
 Summary
@@ -1157,6 +1256,7 @@ Description
   Storage holds the reference to the storage device assigned to the dialog.
 
   It's used internally to retrieve and store the DSA state and dialog result.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.Timeout
 Summary
@@ -1166,6 +1266,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.UpdateDSAState
 Summary
@@ -1175,7 +1276,8 @@ Description
   an event handler is assigned to OnUpdateKeys it will be triggered to allow storing custom data in
   the DSA storage.
 See Also
-  ApplySavedState, OnUpdateKeys
+  TJvDSADialog.ApplySavedState, TJvDSADialog.OnUpdateKeys
+
 ----------------------------------------------------------------------------------------------------
 @@UnregisterDSA
 <TITLE UnregisterDSA procedure>
@@ -1188,12 +1290,13 @@ Description
   UnregisterDSA removes a DSA dialog from the system.  If the specified dialog ID is not registered,
   the procedure does nothing.
 
-  Removing the DSA dialog does not remove it from the storage device, but the specified ID can not
-  be used to invoke a DSA dialog and will result in an exception.
+  Removing the DSA dialog does not remove it from the storage device, but the specified ID can not be
+  used to invoke a DSA dialog and will result in an exception.
 Parameters
   DlgID - ID of the dialog in the DSA system.
 See Also
   RegisterDSA
+
 ----------------------------------------------------------------------------------------------------
 @@UnregisterDSACheckMarkText
 <TITLE UnregisterDSACheckMarkText procedure>
@@ -1209,3 +1312,4 @@ Parameters
   ID - Description for this parameter
 See Also
   RegisterDSACheckMarkText, TDSACheckTextKind
+

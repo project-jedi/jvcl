@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDateTimePicker
 <TITLEIMG TJvDateTimePicker>
@@ -18,55 +20,60 @@ Summary
 Description
   This component is derived from the VCL DateTimePicker. Its enhanced in that it offers events for
   mouse entering and leaving as well as the OnParentColorChange event which gets triggered when the
-  color of the components parent changes. Further it provides a hint color property which can be
-  used to set the background color of the components hint box.
+  color of the components parent changes. Further it provides a hint color property which can be used
+  to set the background color of the components hint box.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDateTimePicker.DropDownDate
 Summary
-  Indicates the initial date to display when the calendar illustration is shown and
-  <LINK TDateTimePicker.Date,Date> or <LINK TDateTimePicker.Time,Time> equals
+  Indicates the initial date to display when the calendar illustration is shown and <LINK
+  TDateTimePicker.Date,Date> or <LINK TDateTimePicker.Time,Time> equals
   NullDate.
 Description
-  Use DropDownDate to specify an initial date that is shown in the drop-down calendar illustration,
-  when <LINK TDateTimePicker.Date,Date> or <LINK TDateTimePicker.Time,Time> - depending on the
-  <LINK TDateTimePicker.Kind,Kind> property - equals NullDate.
-
-  For example, if <LINK TDateTimePicker.Kind,Kind> is set to dtkDate, <LINK TDateTimePicker.Date,Date>
-  and NullDate are set to 1-1-2000, DropDownDate
+  Use DropDownDate to specify an initial date that is shown in the drop-down calendar illustration, when <LINK TDateTimePicker.Date,Dat
+  > or <LINK TDateTimePicker.Time,Time> - depending on the <LINK TDateTimePicker.Kind,Kind> property
+  - equals NullDate.
+  
+  For example, if <LINK TDateTimePicker.Kind,Kind> is set to dtkDate, <LINK
+  TDateTimePicker.Date,Date> and NullDate are set to 1-1-2000, DropDownDate
   is set to 2-2-2002 and NullDate equals '(None)', then the text '(None)' is shown in the edit box.
   If the user drops down the calendar illustration then the date 2-2-2002 is highlighted.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDateTimePicker.HintColor
 Summary
   Use this property to define the background color of the components hint box.
 Description
   Use this property to define the background color of the components hint box.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDateTimePicker.NullDate
 Summary
   Indicates the date or time that represents an empty "null" value.
 Description
-  Use NullDate to specify a date or time - depending on the <LINK TDateTimePicker.Kind,Kind>
-  property - that represents an
-  empty "null" value. If the user entered a date or time equal to NullDate, thus the
-  <LINK TDateTimePicker.Date,Date> or <LINK TDateTimePicker.Time,Time>
+  Use NullDate to specify a date or time - depending on the <LINK TDateTimePicker.Kind,Kind> property
+  - that represents an
+  empty "null" value. If the user entered a date or time equal to NullDate, thus the <LINK
+  TDateTimePicker.Date,Date> or <LINK TDateTimePicker.Time,Time>
   property is equal to NullDate, then the string represented by NullText is displayed.
 See Also
-  DropDownDate, NullText
+  TJvDateTimePicker.DropDownDate, TJvDateTimePicker.NullText
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDateTimePicker.NullText
 Summary
-  Indicates the text to display when <LINK TDateTimePicker.Date,Date> or <LINK TDateTimePicker.Time,Time>
-  equals NullDate.
+  Indicates the text to display when <LINK TDateTimePicker.Date,Date> or <LINK
+  TDateTimePicker.Time,Time> equals NullDate.
 Description
-  Use NullText to specify a date or time - depending on the <LINK TDateTimePicker.Kind,Kind>
-  property - that represents the
-  text to display when <LINK TDateTimePicker.Date,Date> or <LINK TDateTimePicker.Time,Time>
-  equals NullDate. If the user entered a date or time equal to
-  nulldate, thus the <LINK TDateTimePicker.Date,Date> or <LINK TDateTimePicker.Time,Time>
-  property is equal to NullDate, then the string represented by NullText is displayed.
+  Use NullText to specify a date or time - depending on the <LINK TDateTimePicker.Kind,Kind> property
+  - that represents the
+  text to display when <LINK TDateTimePicker.Date,Date> or <LINK TDateTimePicker.Time,Time> equals
+  NullDate. If the user entered a date or time equal to
+  nulldate, thus the <LINK TDateTimePicker.Date,Date> or <LINK TDateTimePicker.Time,Time> property is
+  equal to NullDate, then the string represented by NullText is displayed.
 See Also
-  DropDownDate
+  TJvDateTimePicker.DropDownDate
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDateTimePicker.OnParentColorChange
 Summary
@@ -74,6 +81,7 @@ Summary
 Description
   You can assign a method to this event that gets triggered whenever the color of the components
   parent changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDateTimePicker.WeekNumbers
 Summary
@@ -83,3 +91,4 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+

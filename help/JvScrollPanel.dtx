@@ -1,6 +1,5 @@
 ##Package: Ctrls
 ##Status: Completed (I) (peter3)
-##Skip: TJvScrollButton
 ----------------------------------------------------------------------------------------------------
 @@JvScrollPanel.pas
 Summary
@@ -8,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomScrollPanel
 Summary
@@ -17,16 +18,18 @@ Description
 
   Do not create instances of TJvCustomScrollPanel. Use the generic descendent TJvScrollingWindow, or
   create your own descendent class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomScrollPanel.AutoArrange
 Summary
-  Determines whether the controls on the scrolling panel are automatically rearranged if ScrollDirection
-  changes.
+  Determines whether the controls on the scrolling panel are automatically rearranged if
+  ScrollDirection changes.
 Description
   If AutoArrange is True and ScrollDirection changes then the control swaps the Left and Top values,
   and the Width and Height values of all controls in the scrolling panel.
 See Also
-  ScrollDirection
+  TJvCustomScrollPanel.ScrollDirection
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomScrollPanel.AutoHide
 Summary
@@ -38,28 +41,32 @@ Description
 
   If AutoHide is False, the scroll buttons don’t hide automatically.
 See Also
-  AutoRepeat, ScrollAmount
+  TJvCustomScrollPanel.AutoRepeat, TJvCustomScrollPanel.ScrollAmount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomScrollPanel.AutoRepeat
 Summary
-  Determines whether the scroll panel continues to be scrolled at regular intervals while a scroll button
-  is in the depressed state.
+  Determines whether the scroll panel continues to be scrolled at regular intervals while a scroll
+  button is in the depressed state.
 Description
-  If AutoRepeat is set to False, the scroll panel scrolls only once while a scroll button is depressed.
+  If AutoRepeat is set to False, the scroll panel scrolls only once while a scroll button is
+  depressed.
   If AutoRepeat is set to True, the scroll panel continues to be scrolled at regular intervals while
   a scroll button is in the depressed state.
 
   The default value is False
 See Also
-  AutoHide, ScrollAmount
+  TJvCustomScrollPanel.AutoHide, TJvCustomScrollPanel.ScrollAmount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomScrollPanel.Flat
 Summary
-  Determines whether the scroll buttons have a three-dimensional (3-D) look with borders
-  or two-dimensional look without borders.
+  Determines whether the scroll buttons have a three-dimensional (3-D) look with borders or
+  two-dimensional look without borders.
 Description
   When Flat is True, the scroll buttons appear flat and do not have borders separating them. When
   Flat is False, the buttons are clearly defined.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomScrollPanel.OnScrolled
 Summary
@@ -71,7 +78,8 @@ Parameters
   Sender - The scrolling panel control that has been scrolled.
   Kind   - Specifies the kind of scroll.
 See Also
-  OnScrolling, ScrollAmount
+  TJvCustomScrollPanel.OnScrolling, TJvCustomScrollPanel.ScrollAmount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomScrollPanel.OnScrolling
 Summary
@@ -86,7 +94,8 @@ Parameters
   AllowChange - Indicates whether the scroll should be permitted.
   Kind        - Specifies the kind of scroll.
 See Also
-  OnScrolled, ScrollAmount
+  TJvCustomScrollPanel.OnScrolled, TJvCustomScrollPanel.ScrollAmount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomScrollPanel.ScrollAmount
 Summary
@@ -98,7 +107,8 @@ Description
 
   Property ScrollDirection determines whether the scroll is horizontally or vertically.
 See Also
-  ScrollDirection
+  TJvCustomScrollPanel.ScrollDirection
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomScrollPanel.ScrollDirection
 Summary
@@ -106,7 +116,8 @@ Summary
 Description
   Set ScrollDirection to specify how the user can scroll the scrolling panel.
 See Also
-  AutoHide, ScrollAmount
+  TJvCustomScrollPanel.AutoHide, TJvCustomScrollPanel.ScrollAmount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDivideKind
 <TITLE TJvDivideKind type>
@@ -114,10 +125,15 @@ Summary
   Represents different kinds of dividers.
 Description
   Use the TJvDivideKind type to specify a specific divider kind.
+
+----------------------------------------------------------------------------------------------------
 @@TJvDivideKind.dkDivider
-  The control displays a line at the center of the client area.
+The control displays a line at the center of the client area.
+
+----------------------------------------------------------------------------------------------------
 @@TJvDivideKind.dkSeparator
-  The control fills an empty space.
+The control fills an empty space.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDivider
 Summary
@@ -127,6 +143,7 @@ Description
   controls on the scrolling panel both visually and functionally.
 See Also
   TJvScrollingWindow
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDivider.Kind
 Summary
@@ -134,16 +151,18 @@ Summary
 Description
   Kind specifies whether the control is a divider or a seperator.
 See Also
-  Vertical
+  TJvDivider.Vertical
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDivider.Vertical
 Summary
   Determines whether the divider is oriented vertically or horizontally.
 Description
-  Property Vertical has only meaning if Kind is dkDivider. It then specifies whether the line at
-  the center of the client area is oriented vertically or horizontally.
+  Property Vertical has only meaning if Kind is dkDivider. It then specifies whether the line at the
+  center of the client area is oriented vertically or horizontally.
 See Also
-  Kind
+  TJvDivider.Kind
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollDirection
 <TITLE TJvScrollDirection type>
@@ -151,18 +170,25 @@ Summary
   Represents different kinds of scroll directions.
 Description
   Use the TJvScrollDirection type to specify a specific scroll direction.
+
+----------------------------------------------------------------------------------------------------
 @@TJvScrollDirection.sdHorizontal
-  The user can scroll the scrolling panel horizontally.
+The user can scroll the scrolling panel horizontally.
+
+----------------------------------------------------------------------------------------------------
 @@TJvScrollDirection.sdVertical
-  The user can scroll the scrolling panel vertically.
+The user can scroll the scrolling panel vertically.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrolledEvent
 <TITLE TJvScrolledEvent type>
 <COMBINE TJvCustomScrollPanel.OnScrolled>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollingEvent
 <TITLE TJvScrollingEvent type>
 <COMBINE TJvCustomScrollPanel.OnScrolling>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollingWindow
 <TITLEIMG TJvScrollingWindow>
@@ -173,14 +199,15 @@ Summary
   Represents a scrolling toolbar.
 Description
   Use TJvScrollingWindow to create a scrollable container for controls. TJvScrollingWindow represents
-  a horizontally or vertically oriented toolbar that contains scroll buttons to scroll its content. Use
-  property <LINK TJvCustomScrollPanel.ScrollDirection,ScrollDirection> to specify whether the user
-  can scroll the content horizontally or vertically.
+  a horizontally or vertically oriented toolbar that contains scroll buttons to scroll its content.
+  Use property <LINK TJvCustomScrollPanel.ScrollDirection,ScrollDirection> to specify whether the
+  user can scroll the content horizontally or vertically.
 
   You can use component TJvDivider to act as a spacer or divider, so it can group controls on the
   scrolling panel both visually and functionally.
 See Also
   TJvDivider
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollKind
 <TITLE TJvScrollKind type>
@@ -189,11 +216,20 @@ Summary
 Description
   The TJvScrollKind type represents different kinds of scroll actions a user can perform on a
   scrolling panel.
+
+----------------------------------------------------------------------------------------------------
 @@TJvScrollKind.sbUp
-  The contents of a scrolling panel is scrolled up.
+The contents of a scrolling panel is scrolled up.
+
+----------------------------------------------------------------------------------------------------
 @@TJvScrollKind.sbDown
-  The contents of a scrolling panel is scrolled down.
+The contents of a scrolling panel is scrolled down.
+
+----------------------------------------------------------------------------------------------------
 @@TJvScrollKind.sbLeft
-  The contents of a scrolling panel is scrolled to the left.
+The contents of a scrolling panel is scrolled to the left.
+
+----------------------------------------------------------------------------------------------------
 @@TJvScrollKind.sbRight
-  The contents of a scrolling panel is scrolled to the right.
+The contents of a scrolling panel is scrolled to the right.
+

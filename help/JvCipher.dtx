@@ -4,9 +4,10 @@
 @@JvCipher.pas
 Summary
   Contains the TJvCaesarCipher, TJvVigenereCipher and TJvXorCipher components.
-  <INCLUDE JVCL.UnitText.dtx>
+<INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCaesarCipher
@@ -17,27 +18,22 @@ JVCLInfo
 Summary
   Enables you to (de)cipher strings.
 Description
-  TJvCaesarCipher is a component to (de)cipher strings or series of bytes using
-  "Caesar Cipher", one of the simplest forms of substitution cipher. The method
-  is named after Julius Ceasar who - as is said - used this method to communicate
-  with his army. The ciphering is usually done by substituting each letter in a
-  message by a letter that is on a fixed distance in the alphabet. TJvCaesarCipher
-  uses the whole character set (256 characters) for ciphering strings or series of bytes.
+  TJvCaesarCipher is a component to (de)cipher strings or series of bytes using "Caesar Cipher", one of 
+  he simplest forms of substitution cipher. The method is named after Julius Ceasar who - as is said
+  - used this method to communicate with his army. The ciphering is usually done by substituting each
+  letter in a message by a letter that is on a fixed distance in the alphabet. TJvCaesarCipher uses
+  the whole character set (256 characters) for ciphering strings or series of bytes.
   This makes it possible to cipher any series of bytes (not necessarily readable strings).
-  When used with strings it may result in strings that do not even look like strings
-  anymore.
-
-  Caesar Cipher is not a safe method to cipher text. When used with strings it is
-  easy to crack.
-
+  When used with strings it may result in strings that do not even look like strings anymore.
+  
+  Caesar Cipher is not a safe method to cipher text. When used with strings it is easy to crack.
+  
   The Key property must represent a number. If it does not, the value 13 will be used.
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCipher
 Summary
   Abstract base class for simple ciphers which do not change the length of the data
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCipher.Decode
@@ -48,8 +44,7 @@ Parameters
   Buf - The buffer to be decoded. Its value will be replaced
   Size - The number of bytes in the buffer
 See Also
-  Encode
-
+  TJvCustomCipher.Encode
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCipher.Decoded
@@ -59,8 +54,7 @@ Description
   Set this value to get its encoded version in the Encoded property.
   This value is never stored in the DFM file.
 See Also
-  Encoded, Key, IsStored
-
+  TJvCustomCipher.Encoded, TJvCustomCipher.IsStored, TJvCustomCipher.Key
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCipher.DecodeFile
@@ -72,8 +66,7 @@ Parameters
   \Key - The key to use to decode the file.
   FileName - The name of the file to decode
 See Also
-  EncodeFile
-
+  TJvCustomCipher.EncodeFile
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCipher.DecodeList
@@ -85,8 +78,7 @@ Parameters
   \Key - The key to use to decode the list.
   List - The string list to decode
 See Also
-  EncodeList
-
+  TJvCustomCipher.EncodeList
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCipher.DecodeStream
@@ -98,21 +90,19 @@ Parameters
   \Key - The key to use to decode the stream.
   Stream - The stream to decode
 See Also
-  EncodeStream
-
+  TJvCustomCipher.EncodeStream
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCipher.DecodeString
 Summary
   Decodes the given string
-Return Value
-  The decoded equivalent of the given string.
 Parameters
   \Key - The key to use to decode the string.
   Value - The string to decode
+Return value
+  The decoded equivalent of the given string.
 See Also
-  EncodeString
-
+  TJvCustomCipher.EncodeString
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCipher.Encode
@@ -123,8 +113,7 @@ Parameters
   Buf - The buffer to be encoded. Its value will be replaced
   Size - The number of bytes in the buffer
 See Also
-  Decode
-
+  TJvCustomCipher.Decode
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCipher.Encoded
@@ -134,8 +123,7 @@ Description
   Set this value to get the decoded version in the Decoded property.
   This property is stored in the DFM file only if IsStored is True
 See Also
-  Decoded, Key, IsStored
-
+  TJvCustomCipher.Decoded, TJvCustomCipher.IsStored, TJvCustomCipher.Key
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCipher.EncodeFile
@@ -147,8 +135,7 @@ Parameters
   \Key - The key to use to encode the file.
   FileName - The name of the file to encode
 See Also
-  DecodeFile
-
+  TJvCustomCipher.DecodeFile
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCipher.EncodeList
@@ -160,8 +147,7 @@ Parameters
   \Key - The key to use to encode the list.
   List - The string list to encode
 See Also
-  DecodeList
-
+  TJvCustomCipher.DecodeList
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCipher.EncodeStream
@@ -173,41 +159,41 @@ Parameters
   \Key - The key to use to encode the stream.
   Stream - The stream to encode
 See Also
-  DecodeStream, Key
-
+  TJvCustomCipher.DecodeStream, TJvCustomCipher.Key
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCipher.EncodeString
 Summary
   Encodes the given string
-Return Value
-  The encoded equivalent of the given string.
 Parameters
   \Key - The key to use to encode the string.
   Value - The string to encode
+Return value
+  The encoded equivalent of the given string.
 See Also
-  DecodeString
+  TJvCustomCipher.DecodeString
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCipher.IsStored
 Summary
   If True, the Key and Encoded properties are stored in the DFM file
 Description
-  For security reasons, you may not want to store the Encoded and Key values in the DFM file, and
-  as result they wouldn't appear in the final exe file. If that is the case, set this property
-  to False and the Encoded and Key values will not be stored. For backward compatibility, this
-  property is True by default.
+  For security reasons, you may not want to store the Encoded and Key values in the DFM file, and as
+  result they wouldn't appear in the final exe file. If that is the case, set this property to False
+  and the Encoded and Key values will not be stored. For backward compatibility, this property is
+  True by default.
 See Also
-  Encoded, Decoded, Key
+  TJvCustomCipher.Decoded, TJvCustomCipher.Encoded, TJvCustomCipher.Key
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCipher.Key
 Summary
   The key used for encoding/decoding via the Encoded/Decoded properties
 Description
-  This key will only be used by the Decoded and Encoded properties. It is stored in the DFM
-  file only if IsStored is True.
+  This key will only be used by the Decoded and Encoded properties. It is stored in the DFM file only
+  if IsStored is True.
 See Also
-  Encoded, Decoded, IsStored
+  TJvCustomCipher.Decoded, TJvCustomCipher.Encoded, TJvCustomCipher.IsStored
 
 ----------------------------------------------------------------------------------------------------
 @@TJvVigenereCipher
@@ -221,27 +207,26 @@ Description
   Here is a short explanation of the vigenere cipher, inspired by the much more complete description
   available at this address:
   http://www.trincoll.edu/depts/cpsc/cryptography/vigenere.html
-
+  
   For each letter of the Key, a new alphabet is created by shifting the usual alphabet to start at
   the same letter as in the key. For instance, if the key is CUP then three alphabets are created:
-
+  
    CDEFGHIJKLMNOPQRSTUVWXYZAB
    UVWXYZABCDEFGHIJKLMNOPQRST
    PQRSTUVWXYZABCDEFGHIJKLMNO
-
-  When encoding a string, each alphabet is used in turn as a lookup table. For instance, if we
-  encode HELLO, then we have this:
-
+  
+  When encoding a string, each alphabet is used in turn as a lookup table. For instance, if we encode
+  HELLO, then we have this:
+  
   H --> J
   E --> Y
   L --> A
   L --> N
   O --> I
-
+  
   As you can see, the same letter is not always encoded by the same letter, thus making statistical
   analysis a bit harder. The implementation in this component considers an alphabet of 255
   characters, thus encoding every single character no matter what its value is.
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXORCipher
@@ -254,18 +239,16 @@ Summary
 Description
   The XOR algorithm is really simple and as such really easy to crack. However it is fast and uses a
   symetrical algorithm:
-
+  
   Encoded[I] = Decoded[I] XOR Key[J]
   Decoded[I] = Encoded[I] XOR Key[J]
-
+  
   Set the Encoded property to get the \decoded value in Decoded.
   Set the Decoded property to get the \encoded value in Encoded.
-
-  Note: As the algorithm is symetrical, there is virtually no difference between setting Encoded
-  or Decoded to get the resulting value.
-
+  
+  Note: As the algorithm is symetrical, there is virtually no difference between setting Encoded or
+  Decoded to get the resulting value.
+  
   Each element of the string will be \encoded by its corresponding element in the Key. If the
   Key is too short, it is reused from the start.
-
-
 

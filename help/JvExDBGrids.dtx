@@ -5,22 +5,27 @@
 ----------------------------------------------------------------------------------------------------
 @@JvExDBGrids.pas
 Summary
-  Contains components that extend the components from Delphi's DBGrids.pas with generic properties and CLX code.
+  Contains components that extend the components from Delphi's DBGrids.pas with generic properties
+  and CLX code.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Andreas Hausladen
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomDBGrid
 Summary
   Base class for extended data-aware grids.
 Description
   TJvExCustomDBGrid is a base class for classes in the JVCL library that descend from TCustomDBGrid.
-
+  
   Do not create instances of TJvExCustomDBGrid. Use a descendant of TJvExCustomDBGrid or create your
   own descendant class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomDBGrid.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomDBGrid.HintColor
 Summary
@@ -29,6 +34,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomDBGrid.MouseOver
 Summary
@@ -36,7 +42,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the grid.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExCustomDBGrid.OnMouseEnter, TJvExCustomDBGrid.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomDBGrid.OnMouseEnter
 Summary
@@ -45,35 +52,40 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   grid.
 See Also
-  OnMouseLeave
+  TJvExCustomDBGrid.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomDBGrid.OnMouseLeave
 Summary
   Occurs when the mouse pointer moves off the grid.
 Description
   Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  grid. For example, you can use this event to undo changes that were made in an OnMouseEnter
-  event handler.
+  grid. For example, you can use this event to undo changes that were made in an OnMouseEnter event
+  handler.
 See Also
-  OnMouseEnter
+  TJvExCustomDBGrid.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomDBGrid.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExDBGrid
 Summary
   Base class for extended data-aware grids.
 Description
   TJvExDBGrid is a base class for classes in the JVCL library that descend from TDBGrid.
+  
+  Do not create instances of TJvExDBGrid. The TJvDBGrid class provides a generic implementation of
+  TJvExDBGrid. You can also create your own descendant class.
 
-  Do not create instances of TJvExDBGrid. The TJvDBGrid class provides a generic implementation
-  of TJvExDBGrid. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExDBGrid.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExDBGrid.HintColor
 Summary
@@ -82,6 +94,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExDBGrid.MouseOver
 Summary
@@ -89,7 +102,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the grid.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExDBGrid.OnMouseEnter, TJvExDBGrid.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExDBGrid.OnMouseEnter
 Summary
@@ -98,20 +112,23 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   grid.
 See Also
-  OnMouseLeave
+  TJvExDBGrid.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExDBGrid.OnMouseLeave
 Summary
   Occurs when the mouse pointer moves off the grid.
 Description
   Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  grid. For example, you can use this event to undo changes that were made in an OnMouseEnter
-  event handler.
+  grid. For example, you can use this event to undo changes that were made in an OnMouseEnter event
+  handler.
 See Also
-  OnMouseEnter
+  TJvExDBGrid.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExDBGrid.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+

@@ -13,6 +13,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Fedor Koshevnikov, Igor Pavluk and Serge Korolev
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton
 Summary
@@ -27,9 +29,9 @@ Description
   -------               -------
   Alignment             Determines how text is aligned within the button.
   DoubleBuffered        Determines whether the control’s image is rendered directly to the window or
-                         painted to an in-memory bitmap first.
+                        painted to an in-memory bitmap first.
   GrayedInactive        Indicates whether to display the image of the button grayed when the button
-                         is inactive.
+                       is inactive.
   GrayNewStyle          Specifies the graying style of the image when the button is not enabled.
   HintColor             Determines the color of the hint boxes for the Help Hints for the button.
   Style                 Determines the appearance of a button.
@@ -68,6 +70,7 @@ Description
   </TABLE>
 
   TJvCustomSpeedButton has two direct descendants: TJvImageSpeedButton and TJvSpeedButton.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.Alignment
 Summary
@@ -76,12 +79,12 @@ Description
   The possible values of Alignment are
 
   <TABLE>
-  Value             Meaning
-  -----             -------
+  Value             Meaning -----             -------
   taLeftJustify     Text is aligned at the left of the control.
   taCenter          Text is centered in the control.
   taRightJustify    Text is aligned at the right of the control.
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.AllowAllUp
 Summary
@@ -90,7 +93,8 @@ Summary
 Description
   See Delphi help at TSpeedButton.AllowAllUp for more info.
 See Also
-  <LINK Down>, GroupIndex
+  <LINK Down>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.AllowTimer
 Summary
@@ -99,28 +103,32 @@ Summary
 Description
   Use AllowTimer to specify whether an OnClick event continues to be generated at regular intervals
   while the button is in the depressed state. If AllowTimer is set to false, a single OnClick event
-  is generated when the button is released. If AllowTimer is set to true, the OnClick event
-  continues to be generated at regular intervals while the button is in the depressed state.
+  is generated when the button is released. If AllowTimer is set to true, the OnClick event continues
+  to be generated at regular intervals while the button is in the depressed state.
 
   Use InitPause and RepeatInterval to specify the amount of time, in milliseconds that passes before
   the <i>first</i> OnClick event is fired and before <i>another</i> OnClick event is fired, resp.
 See Also
-  InitPause, RepeatInterval
+  TJvCustomSpeedButton.InitPause, TJvCustomSpeedButton.RepeatInterval
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.ButtonClick
 Summary
   Simulates a mouse \click, as if the user had clicked the button.
 Description
-  Call Buttonclick to simulate a mouse \click. For a short time the button will be displayed as pressed.
+  Call Buttonclick to simulate a mouse \click. For a short time the button will be displayed as
+  pressed.
   Otherwise this method functions the same as Click.
 See Also
-  Click
+  TJvCustomSpeedButton.Click
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.ButtonGlyph
 Summary
   Gives access to the internal button render object.
 Description
   Use ButtonGlyph to access the internal button render object.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.CheckBtnMenuDropDown
 Summary
@@ -131,28 +139,31 @@ Return value
   Returns true and displays the menu if the speed button has an associated menu, otherwise returns
   false.
 See Also
-  DropDownMenu
+  TJvCustomSpeedButton.DropDownMenu
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.Click
 Summary
   Generates an OnClick event or triggers the associated action.
 Description
-  Calling Click generates an OnClick event, or triggers the associated action. Then, if ModalResult
-  isn't equal to mrNone, it assigns the value of the button’s ModalResult property to the ModalResult
-  property of its parent form. Otherwise it checks if a pop-up menu is associated with the button.
+  Calling Click generates an OnClick event, or triggers the associated action. Then, if ModalResult isn't equal to mrNone, it assigns the value of the button
+  s ModalResult property to the ModalResult property of its parent form. Otherwise it checks if a
+  pop-up menu is associated with the button.
   If so, it pops up that pop-up menu.
 See Also
-  ButtonClick, ModalResult
+  TJvCustomSpeedButton.ButtonClick, TJvCustomSpeedButton.ModalResult
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.DoubleBuffered
 Summary
-  Determines whether the control’s image is rendered directly to the window or painted to an in-memory
-  bitmap first.
+  Determines whether the control’s image is rendered directly to the window or painted to an
+  in-memory bitmap first.
 Description
   When DoubleBuffered is false, the windowed control paints itself directly to the window. When
   DoubleBuffered is true, the windowed control paints itself to an in-memory bitmap that is then used
   to paint the window. Double buffering reduces the amount of flicker when the control repaints, but
   is more memory intensive.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.Down
 Summary
@@ -160,7 +171,8 @@ Summary
 Description
   See Delphi help at TSpeedButton.Down for more info.
 See Also
-  AllowAllUp, GroupIndex
+  TJvCustomSpeedButton.AllowAllUp, TJvCustomSpeedButton.GroupIndex
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.DropDownMenu
 Summary
@@ -168,10 +180,11 @@ Summary
 Description
   Assign a value to DropDownMenu to make a menu appear when the button is pressed. (To display the
   menu programmatically, call the speed button’s Click or ButtonClickmethod.) If the menu’s
-  AutoPopup property is set to true, the menu appears automatically. If AutoPopup is false,
-  display the menu by calling the menu’s Popup method in the speed button’s OnClick event handler.
+  AutoPopup property is set to true, the menu appears automatically. If AutoPopup is false, display
+  the menu by calling the menu’s Popup method in the speed button’s OnClick event handler.
 See Also
-  Click, MarkDropDown, MenuPosition
+  TJvCustomSpeedButton.Click, TJvCustomSpeedButton.MarkDropDown, TJvCustomSpeedButton.MenuPosition
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.Flat
 Summary
@@ -179,24 +192,28 @@ Summary
 Description
   See Delphi help at TSpeedButton.Flat for more info.
 See Also
-  GrayedInactive
+  TJvCustomSpeedButton.GrayedInactive
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.GrayedInactive
 Summary
   Indicates whether to display the image of the button grayed when the button is inactive.
 Description
-  Set GrayedInactive to true to render the image of the button grayed, when the button is
-  <LINK TJvCustomSpeedButton.Flat,flat> and the mouse pointer is not on the button (i.e., the button
-  is inactive)
+  Set GrayedInactive to true to render the image of the button grayed, when the button is <LINK
+  TJvCustomSpeedButton.Flat,flat> and the mouse pointer is not on the button (i.e., the button is
+  inactive)
 See Also
-  Flat, GrayNewStyle
+  TJvCustomSpeedButton.Flat, TJvCustomSpeedButton.GrayNewStyle
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.GrayNewStyle
 Summary
   Specifies the graying style of the image when the button is not enabled.
 Description
-  Set GrayNewStyle to false to render the image of a disabled button the same way as TSpeedButton does.
+  Set GrayNewStyle to false to render the image of a disabled button the same way as TSpeedButton
+  does.
   Set GrayNewStyle to true to render the image of a disabled button the same way as TImageList does.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.GroupIndex
 Summary
@@ -204,7 +221,8 @@ Summary
 Description
   See Delphi help at TSpeedButton.GroupIndex for more info.
 See Also
-  AllowAllUp, <LINK Down>
+  <LINK Down>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.HotTrack
 Summary
@@ -214,8 +232,9 @@ Description
   specified by HotTrackFont is used for the button text. When HotTrack is false, there is no visual
   feedback when the mouse passes over the button.
 See Also
-  TJvImageSpeedButton.HotTrackImageIndex, TJvSpeedButton.HotTrackGlyph, HotTrackFont, OnMouseEnter,
+  OnMouseEnter,
   OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.HotTrackFont
 Summary
@@ -226,43 +245,50 @@ Description
   To change to a new font, specify a new TFont object. To modify a font, change the value of the
   Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
 See Also
-  TJvImageSpeedButton.HotTrackImageIndex, TJvSpeedButton.HotTrackGlyph, HotTrack
+  TJvCustomSpeedButton.HotTrack, TJvImageSpeedButton.HotTrackImageIndex, TJvSpeedButton.HotTrackGlyph
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.HotTrackFontOptions
 Summary
   Specifies how changes to the Font affects HotTrackFont.
 Description
   HotTrackFontOptions defines a set of options that controls how changes to the Font property affects
-  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all property
-  changes in Font are copied to HotTrackFont except Color changes.
-  
+  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all
+  property changes in Font are copied to HotTrackFont except Color changes.
+
   Note that hoFollowFont must be included for any properties to be copied at all.
-  
-  To implement the HotTrackFontOptions property in a new control, you should perform the following steps:
+
+  To implement the HotTrackFontOptions property in a new control, you should perform the following
+  steps:
+
     * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
-    * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set its default value
+    * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set its default
+      value
       to be DefaultTrackFontOptions (defined in JvTypes).
     * Set the default value in the constructor.
-    * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in JvJVCLUtils)
+    * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in
+      JvJVCLUtils)
       after calling inherited.
     * Add a call to UpdateTrackFont in SetHotTrackFontOptions
 See Also
-  HotTrack, HotTrackFont
+  TJvCustomSpeedButton.HotTrack, TJvCustomSpeedButton.HotTrackFont
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.InitPause
 Summary
   Determines the amount of time, in milliseconds, that passes before the button calls Click for the
   first time, when pressed.
 Description
-  Use InitPause to set the amount of time, in milliseconds, that passes before the button
-  calls Click <i>for the first time</i>, when pressed.
+  Use InitPause to set the amount of time, in milliseconds, that passes before the button calls Click
+  <i>for the first time</i>, when pressed.
 
   Property RepeatInterval determines the amount of time, in milliseconds, that passes before the
   button calls Click <i>again</i>, when pressed.
 Note
   AllowTimer must be set to true.
 See Also
-  AllowTimer, RepeatInterval
+  TJvCustomSpeedButton.AllowTimer, TJvCustomSpeedButton.RepeatInterval
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.IsDragging
 Summary
@@ -272,6 +298,7 @@ Description
   the user left-clicked on the speed button and is still holding the mouse button down.
 See Also
   <LINK Down>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.Layout
 Summary
@@ -280,7 +307,8 @@ Description
   Layout indicates whether the text appears on the left of the button (blGlyphLeft), the right of the
   button (blGlyphRight), the top (blGlyphTop) or the bottom (blGlyphBottom).
 See Also
-  Margin
+  TJvCustomSpeedButton.Margin
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.Margin
 Summary
@@ -293,11 +321,13 @@ Description
   If Margin is 3, three pixels separate the image and the button edges. If Margin is 0, there is no
   space between the image and the button edges.
 
-  If Margin is -1 (the default value), the image and text (specified in the Caption property) are centered.
+  If Margin is -1 (the default value), the image and text (specified in the Caption property) are
+  centered.
   The number of pixels between the image and button edge is equal to the number of pixels between the
   opposite edge of the button and the text.
 See Also
-  Spacing
+  TJvCustomSpeedButton.Spacing
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.MarkDropDown
 Summary
@@ -307,7 +337,8 @@ Description
   is typically set to true when a pop-up menu is associated with the speed button (via property
   DropDownMenu)
 See Also
-  DropDownMenu, MenuPosition
+  TJvCustomSpeedButton.DropDownMenu, TJvCustomSpeedButton.MenuPosition
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.MenuPosition
 Summary
@@ -316,21 +347,23 @@ Description
   Use MenuPosition to set the position where the pop-up menu will appear. Use property DropDownMenu
   to associate a pop-up menu with the speed button.
 See Also
-  DropDownMenu, MarkDropDown
+  TJvCustomSpeedButton.DropDownMenu, TJvCustomSpeedButton.MarkDropDown
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.ModalResult
 Summary
   Determines whether and how the button closes its (modal) parent form.
 Description
-  Setting the button’s ModalResult property is an easy way to make clicking the button close
-  a modal form. When a button is clicked, the ModalResult property of its parent form is set to the
-  same value as the button’s ModalResult property.
+  Setting the button’s ModalResult property is an easy way to make clicking the button close a modal
+  form. When a button is clicked, the ModalResult property of its parent form is set to the same
+  value as the button’s ModalResult property.
 
   For example, if a dialog box has OK and Cancel buttons, their ModalResult properties could be set
   at design time to mrOk and mrCancel, respectively. At runtime, clicking the OK button then changes
   the dialog’s ModalResult property to mrOk, and clicking the Cancel button changes the dialog’s
   ModalResult property to mrCancel. Unless further processing is required, no OnClick event handlers
   are required for the buttons.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.RepeatInterval
 Summary
@@ -345,7 +378,8 @@ Description
 Note
   AllowTimer must be set to true.
 See Also
-  AllowTimer, InitPause
+  TJvCustomSpeedButton.AllowTimer, TJvCustomSpeedButton.InitPause
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.Spacing
 Summary
@@ -353,14 +387,16 @@ Summary
 Description
   See Delphi help at TSpeedButton.Spacing for more info.
 See Also
-  Layout, Margin
+  TJvCustomSpeedButton.Layout, TJvCustomSpeedButton.Margin
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.Style
 Summary
   Determines the appearance of a button.
 Description
-  Style indicates whether the speed button uses the modern button look, or reflects the look of
-  a 16-bit Windows pushbutton.
+  Style indicates whether the speed button uses the modern button look, or reflects the look of a
+  16-bit Windows pushbutton.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.Transparent
 Summary
@@ -368,7 +404,8 @@ Summary
 Description
   Use Transparent to specify whether the background of the button is transparent.
 See Also
-  Flat
+  TJvCustomSpeedButton.Flat
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.UpdateTracking
 Summary
@@ -377,16 +414,18 @@ Description
   UpdateTracking is used internally by the speed button to resync the MouseInControl property.
 See Also
   MouseInControl
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.WordWrap
 Summary
   Specifies whether the button text wraps to fit the width of the control.
 Description
-  Set WordWrap to true to allow the speed button to display multiple line of text. When WordWrap is true,
-  text that is too wide for the control wraps at the right margin.
+  Set WordWrap to true to allow the speed button to display multiple line of text. When WordWrap is
+  true, text that is too wide for the control wraps at the right margin.
 
-  Set WordWrap to false to limit the button to a single line. When WordWrap is false, text that is too
-  wide for the button appears truncated.
+  Set WordWrap to false to limit the button to a single line. When WordWrap is false, text that is
+  too wide for the button appears truncated.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDropDownMenuPos
 <TITLE TJvDropDownMenuPos type>
@@ -396,17 +435,22 @@ Description
   Use the TJvDropDownMenuPos type to specify a position for a dropdown menu to appear.
 See Also
   TJvCustomSpeedButton.MenuPosition
+
+----------------------------------------------------------------------------------------------------
 @@TJvDropDownMenuPos.dmpBottom
-  The dropdown menu will appear below the associated control.
+The dropdown menu will appear below the associated control.
+
+----------------------------------------------------------------------------------------------------
 @@TJvDropDownMenuPos.dmpRight
-  The dropdown menu will appear on the right side of the associated control.
+The dropdown menu will appear on the right side of the associated control.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSpeedButton
 Summary
   Enhanced speed button.
 Description
-  TJvImageSpeedButton is a descendant of TJvCustomSpeedButton. See the help at TJvCustomSpeedButton for
-  the properties introduced by that component.
+  TJvImageSpeedButton is a descendant of TJvCustomSpeedButton. See the help at TJvCustomSpeedButton
+  for the properties introduced by that component.
 
   TJvImageSpeedButton introduces properties to display an image from an imagelist on the speed button:
 
@@ -418,6 +462,7 @@ Description
   ImageIndex            Determines which image appears on the button.
   Images                Lists the images that can appear on the button.
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSpeedButton.HotTrackImageIndex
 Summary
@@ -428,19 +473,21 @@ Description
 
   An image list is zero-based: the first image is indexed by 0, the second by 1, and so forth.
 See Also
-  ImageIndex, Images
+  TJvImageSpeedButton.ImageIndex, TJvImageSpeedButton.Images
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSpeedButton.ImageIndex
 Summary
   Determines which image appears on the button.
 Description
   The ImageIndex property determines which image from the Images list
-  appears on the button. If the HotTrackImageIndex is set, different images appear when the
-  mouse pointer passes over the button.
+  appears on the button. If the HotTrackImageIndex is set, different images appear when the mouse
+  pointer passes over the button.
 
   An image list is zero-based: the first image is indexed by 0, the second by 1, and so forth.
 See Also
-  HotTrackImageIndex, Images
+  TJvImageSpeedButton.HotTrackImageIndex, TJvImageSpeedButton.Images
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSpeedButton.Images
 Summary
@@ -449,18 +496,20 @@ Description
   Images contains a list of images that can appear on the button. If Images is unassigned, no
   images are displayed on the button.
 See Also
-  HotTrackImageIndex, ImageIndex
+  TJvImageSpeedButton.HotTrackImageIndex, TJvImageSpeedButton.ImageIndex
+
 ----------------------------------------------------------------------------------------------------
 @@TJvNumGlyphs
 <TITLE TJvNumGlyphs type>
 Summary
-  The number of images that are in the graphic specified in the
-  <LINK TJvSpeedButton.Glyph,Glyph> property for use on a speed button.
+  The number of images that are in the graphic specified in the <LINK TJvSpeedButton.Glyph,Glyph>
+  property for use on a speed button.
 Description
   TJvNumGlyphs has a value between 1 and 5 (inclusive). It indicates the number of distinct bitmap
   images stored for a <LINK TJvSpeedButton,speed button>.
 See Also
   TJvSpeedButton.NumGlyphs
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpeedButton
 <TITLEIMG TJvSpeedButton>
@@ -476,13 +525,13 @@ Description
   TJvSpeedButton introduces properties to display a bitmap on the speed button:
 
   <TABLE>
-  Propery               Meaning
-  -------               -------
+  Propery               Meaning -------               -------
   Glyph                 Specifies the bitmap that appears on the speed button.
   HotTrackGlyph         Specifies the bitmap that appears on the speed button when the mouse pointer
-                         passes over the button.
+                        passes over the button.
   NumGlyphs             Specifies the number of images included in the Glyph property.
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpeedButton.Glyph
 Summary
@@ -490,7 +539,8 @@ Summary
 Description
   See Delphi help at TSpeedButton.Glyph for more info.
 See Also
-  HotTrackGlyph, NumGlyphs
+  TJvSpeedButton.HotTrackGlyph, TJvSpeedButton.NumGlyphs
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpeedButton.HotTrackGlyph
 Summary
@@ -498,7 +548,8 @@ Summary
 Description
   See Delphi help at TSpeedButton.Glyph for more info.
 See Also
-  Glyph, NumGlyphs
+  TJvSpeedButton.Glyph, TJvSpeedButton.NumGlyphs
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpeedButton.NumGlyphs
 Summary
@@ -506,7 +557,8 @@ Summary
 Description
   Set NumGlyphs to the number of images provided by the bitmap assigned to the Glyph property. All
   images must be the same size and next to each other in a row. Unlike TSpeedbutton, the Glyph
-  property can provide up to five images (one image more, for the inactive state, ie when the
-  button is flat and and the mouse pointer is not on the button).
+  property can provide up to five images (one image more, for the inactive state, ie when the button
+  is flat and and the mouse pointer is not on the button).
 See Also
-  Glyph, HotTrackGlyph
+  TJvSpeedButton.Glyph, TJvSpeedButton.HotTrackGlyph
+

@@ -7,20 +7,24 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialog
 Summary
   Base class for all common dialogs.
 Description
   TJvCommonDialog is the base class for all common dialogs.
-
+  
   All descendants of TJvCommonDialog can be previewed at design-time, by right-clicking the component
   and clicking 'Preview...'.
 See Also
   TJvCommonDialogF, TJvCommonDialogP
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialog.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogF
 Summary
@@ -32,34 +36,38 @@ Description
   
   The Execute method will return False if the dialog was canceled. Otherwise True will be returned.
   
-  All descendants of TJvCommonDialogF can be previewed at design-time, by right-clicking the component
-  and clicking 'Preview...'.
+  All descendants of TJvCommonDialogF can be previewed at design-time, by right-clicking the
+  component and clicking 'Preview...'.
 See Also
   TJvCommonDialog, TJvCommonDialogP
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogF.Execute
 Summary
   Displays the dialog.
-Returns
+  Returns
   False if the dialog was canceled, otherwise True.
 Description
   Execute will show the common dialog.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogP
 Summary
-  Base class for all common dialogs that do not return a Boolean result to indicate if the dialog
-  was canceled or not.
+  Base class for all common dialogs that do not return a Boolean result to indicate if the dialog was
+  canceled or not.
 Description
   TJvCommonDialogP is the base class for all common dialogs that do not return a Boolean result to
   indicate if the dialog was canceled or not. 'P' stands for procedure.
-
-  All descendants of TJvCommonDialogP can be previewed at design-time, by right-clicking the component
-  and clicking 'Preview...'.
+  
+  All descendants of TJvCommonDialogP can be previewed at design-time, by right-clicking the
+  component and clicking 'Preview...'.
 See Also
   TJvCommonDialog, TJvCommonDialogF
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogP.Execute
 Summary
   Displays the dialog.
 Description
   Execute will show the common dialog.
+

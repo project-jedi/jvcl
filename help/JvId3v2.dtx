@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Images
 Summary
@@ -21,6 +23,7 @@ Description
   Versions               All
   Implemented by         TJvID3PictureFrame
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Images.Infos
 Summary
@@ -28,7 +31,8 @@ Summary
 Description
   Use the Infos property to access the descriptions fields of picture frames in an ID3 v2 tag.
 See Also
-  Pictures
+  TJvID3Images.Pictures
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Images.Pictures
 Summary
@@ -36,13 +40,15 @@ Summary
 Description
   Use the Pictures property to access the data fields of picture frames in an ID3 v2 tag.
 See Also
-  Infos
+  TJvID3Images.Infos
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Ipl
 Summary
   Contains the data of the involved people frames in an ID3 v2 tag.
 Description
-  Use the properties of a TJvID3Ipl to set or get fields of the involved people frames in an ID3 v2 tag.
+  Use the properties of a TJvID3Ipl to set or get fields of the involved people frames in an ID3 v2
+  tag.
 
   <TABLE>
   --------------         -----------------------
@@ -51,6 +57,7 @@ Description
   Versions               All
   Implemented by         TJvID3DoubleListFrame
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Ipl.ItemCount
 Summary
@@ -59,18 +66,20 @@ Description
   Read ItemCount to determine the number of involved people frames in the ID3 v2 tag. Use ItemCount
   as an upper limit when iterating over the frames.
 See Also
-  ItemIndex
+  TJvID3Ipl.ItemIndex
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Ipl.ItemIndex
 Summary
   Specifies the index of the current frame.
 Description
-  Read ItemIndex to determine which item is selected. The first item in the list has index 0, the 
-  second item has index 1, and so on. If no item is selected, the value of ItemIndex is -1. 
+  Read ItemIndex to determine which item is selected. The first item in the list has index 0, the
+  second item has index 1, and so on. If no item is selected, the value of ItemIndex is -1.
 
   Set ItemIndex programmatically to select a frame by passing in the index value.
 See Also
-  ItemCount
+  TJvID3Ipl.ItemCount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Ipl.Job
 Summary
@@ -78,7 +87,8 @@ Summary
 Description
   Use Job to specify the job of a person.
 See Also
-  ItemIndex, Person
+  TJvID3Ipl.ItemIndex, TJvID3Ipl.Person
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Ipl.Person
 Summary
@@ -86,7 +96,8 @@ Summary
 Description
   Use Person to specify the name of a person.
 See Also
-  ItemIndex, Job
+  TJvID3Ipl.ItemIndex, TJvID3Ipl.Job
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Owner
 Summary
@@ -95,7 +106,7 @@ Description
   The TJvID3Owner object contains the data of an ownership frame in an ID3 v2 tag.
 
   This frame might be used as a reminder of a made transaction or, if signed, as proof.
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             OWNE
@@ -105,6 +116,7 @@ Description
   </TABLE>
 See Also
   TJvID3OwnershipFrame
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Owner.DatePurchased
 Summary
@@ -112,7 +124,8 @@ Summary
 Description
   Use DatePurchased to specify the date of purchase.
 See Also
-  Price, Seller
+  TJvID3Owner.Price, TJvID3Owner.Seller
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Owner.Price
 Summary
@@ -122,10 +135,11 @@ Description
 
   The first three characters of Price should contain the currency used for
   the transaction, encoded according to ISO 4217 alphabetic currency code.
-  Concatenated to this is the actual price paid, as a numerical string using "." as the
-  decimal separator.
+  Concatenated to this is the actual price paid, as a numerical string using "." as the decimal
+  separator.
 See Also
-  DatePurchased, Seller
+  TJvID3Owner.DatePurchased, TJvID3Owner.Seller
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Owner.Seller
 Summary
@@ -133,19 +147,22 @@ Summary
 Description
   Use Seller to specify the name of the seller.
 See Also
-  DatePurchased, Price
+  TJvID3Owner.DatePurchased, TJvID3Owner.Price
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Persistent
 Summary
   Ancestor for objects that are mainted by a TJvID3Controller object.
 Description
   TJvID3Persistent is the base class for objects that are mainted by a TJvID3Controller object.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures
 Summary
   Contains the data fields of picture frames in an ID3 v2 tag.
 Description
   The TJvID3Pictures object contains the data fields of picture frames in an ID3 v2 tag.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures.Artist
 Summary
@@ -158,7 +175,8 @@ Description
   Setting Artist at design time brings up the Picture Editor, which can be used to specify the file
   that contains the image.
 See Also
-  Band, LeadArtist
+  TJvID3Pictures.Band, TJvID3Pictures.LeadArtist
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures.Band
 Summary
@@ -171,31 +189,36 @@ Description
   Setting Band at design time brings up the Picture Editor, which can be used to specify the file
   that contains the image.
 See Also
-  Artist, BandLogotype, LeadArtist
+  TJvID3Pictures.Artist, TJvID3Pictures.BandLogotype, TJvID3Pictures.LeadArtist
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures.BandLogotype
 Summary
   Specifies the '\Band/artist logotype' image.
 Description
-  Use BandLogotype to specify the '\Band/artist logotype' image. BandLogotype is a reference to a TPicture object.
+  Use BandLogotype to specify the '\Band/artist logotype' image. BandLogotype is a reference to a
+  TPicture object.
   Use properties and methods of TPicture to specify a bitmap, icon, metafile, or user-defined graphic
   to be displayed by the image control.
 
-  Setting BandLogotype at design time brings up the Picture Editor, which can be used to specify the file
-  that contains the image.
+  Setting BandLogotype at design time brings up the Picture Editor, which can be used to specify the
+  file that contains the image.
 See Also
-  Band
+  TJvID3Pictures.Band
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures.BrightColouredFish
 Summary
   Specifies the 'A bright coloured fish' image.
 Description
-  Use BrightColouredFish to specify the 'A bright coloured fish' image. BrightColouredFish is a reference to a TPicture object.
+  Use BrightColouredFish to specify the 'A bright coloured fish' image. BrightColouredFish is a
+  reference to a TPicture object.
   Use properties and methods of TPicture to specify a bitmap, icon, metafile, or user-defined graphic
   to be displayed by the image control.
 
-  Setting BrightColouredFish at design time brings up the Picture Editor, which can be used to specify the file
-  that contains the image.
+  Setting BrightColouredFish at design time brings up the Picture Editor, which can be used to
+  specify the file that contains the image.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures.Composer
 Summary
@@ -208,7 +231,8 @@ Description
   Setting Composer at design time brings up the Picture Editor, which can be used to specify the file
   that contains the image.
 See Also
-  Conductor
+  TJvID3Pictures.Conductor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures.Conductor
 Summary
@@ -218,10 +242,11 @@ Description
   Use properties and methods of TPicture to specify a bitmap, icon, metafile, or user-defined graphic
   to be displayed by the image control.
 
-  Setting Conductor at design time brings up the Picture Editor, which can be used to specify the file
-  that contains the image.
+  Setting Conductor at design time brings up the Picture Editor, which can be used to specify the
+  file that contains the image.
 See Also
-  Composer
+  TJvID3Pictures.Composer
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures.CoverBack
 Summary
@@ -231,10 +256,11 @@ Description
   Use properties and methods of TPicture to specify a bitmap, icon, metafile, or user-defined graphic
   to be displayed by the image control.
 
-  Setting CoverBack at design time brings up the Picture Editor, which can be used to specify the file
-  that contains the image.
+  Setting CoverBack at design time brings up the Picture Editor, which can be used to specify the
+  file that contains the image.
 See Also
-  CoverFront, Media
+  TJvID3Pictures.CoverFront, TJvID3Pictures.Media
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures.CoverFront
 Summary
@@ -244,121 +270,139 @@ Description
   Use properties and methods of TPicture to specify a bitmap, icon, metafile, or user-defined graphic
   to be displayed by the image control.
 
-  Setting CoverFront at design time brings up the Picture Editor, which can be used to specify the file
-  that contains the image.
+  Setting CoverFront at design time brings up the Picture Editor, which can be used to specify the
+  file that contains the image.
 See Also
-  CoverBack, Media
+  TJvID3Pictures.CoverBack, TJvID3Pictures.Media
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures.DuringPerformance
 Summary
   Specifies the 'During performance' image.
 Description
-  Use DuringPerformance to Specifies the 'During performance' image. DuringPerformance is a reference to a TPicture object.
+  Use DuringPerformance to Specifies the 'During performance' image. DuringPerformance is a reference
+  to a TPicture object.
   Use properties and methods of TPicture to specify a bitmap, icon, metafile, or user-defined graphic
   to be displayed by the image control.
 
-  Setting DuringPerformance at design time brings up the Picture Editor, which can be used to specify the file
-  that contains the image.
+  Setting DuringPerformance at design time brings up the Picture Editor, which can be used to specify
+  the file that contains the image.
 See Also
-  DuringRecording
+  TJvID3Pictures.DuringRecording
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures.DuringRecording
 Summary
   Specifies the 'During recording' image.
 Description
-  Use DuringRecording to Specifies the 'During recording' image. DuringRecording is a reference to a TPicture object.
+  Use DuringRecording to Specifies the 'During recording' image. DuringRecording is a reference to a
+  TPicture object.
   Use properties and methods of TPicture to specify a bitmap, icon, metafile, or user-defined graphic
   to be displayed by the image control.
 
-  Setting DuringRecording at design time brings up the Picture Editor, which can be used to specify the file
-  that contains the image.
+  Setting DuringRecording at design time brings up the Picture Editor, which can be used to specify
+  the file that contains the image.
 See Also
-  DuringPerformance, RecordingLocation
+  TJvID3Pictures.DuringPerformance, TJvID3Pictures.RecordingLocation
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures.FileIcon
 Summary
   Specifies the '32x32 pixels 'file icon' (PNG only)' image.
 Description
-  Use FileIcon to specify the '32x32 pixels 'file icon' (PNG only)' image. FileIcon is a reference to a TPicture object.
+  Use FileIcon to specify the '32x32 pixels 'file icon' (PNG only)' image. FileIcon is a reference to
+  a TPicture object.
   Use properties and methods of TPicture to specify a bitmap, icon, metafile, or user-defined graphic
   to be displayed by the image control.
 
   Setting FileIcon at design time brings up the Picture Editor, which can be used to specify the file
   that contains the image.
 See Also
-  OtherFileIcon
+  TJvID3Pictures.OtherFileIcon
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures.Illustration
 Summary
   Specifies the 'Illustration' image.
 Description
-  Use Illustration to specify the 'Illustration' image. Illustration is a reference to a TPicture object.
+  Use Illustration to specify the 'Illustration' image. Illustration is a reference to a TPicture
+  object.
   Use properties and methods of TPicture to specify a bitmap, icon, metafile, or user-defined graphic
   to be displayed by the image control.
 
-  Setting Illustration at design time brings up the Picture Editor, which can be used to specify the file
-  that contains the image.
+  Setting Illustration at design time brings up the Picture Editor, which can be used to specify the
+  file that contains the image.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures.LeadArtist
 Summary
   Specifies the 'Lead artist/lead performer/soloist' image.
 Description
-  Use LeadArtist to specify the 'Lead artist/lead performer/soloist' image. LeadArtist is a reference to a TPicture object.
+  Use LeadArtist to specify the 'Lead artist/lead performer/soloist' image. LeadArtist is a reference
+  to a TPicture object.
   Use properties and methods of TPicture to specify a bitmap, icon, metafile, or user-defined graphic
   to be displayed by the image control.
 
-  Setting LeadArtist at design time brings up the Picture Editor, which can be used to specify the file
-  that contains the image.
+  Setting LeadArtist at design time brings up the Picture Editor, which can be used to specify the
+  file that contains the image.
 See Also
-  Artist, Band
+  TJvID3Pictures.Artist, TJvID3Pictures.Band
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures.LeafletPage
 Summary
   Specifies the image for the 'Leaflet page'.
 Description
-  Use LeafletPage to specify the 'Leaflet page' image. LeafletPage is a reference to a TPicture object.
+  Use LeafletPage to specify the 'Leaflet page' image. LeafletPage is a reference to a TPicture
+  object.
   Use properties and methods of TPicture to specify a bitmap, icon, metafile, or user-defined graphic
   to be displayed by the image control.
 
-  Setting LeafletPage at design time brings up the Picture Editor, which can be used to specify the file
-  that contains the image.
+  Setting LeafletPage at design time brings up the Picture Editor, which can be used to specify the
+  file that contains the image.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures.Lyricist
 Summary
   Specifies the image for the 'Lyricist/text writer'.
 Description
-  Use Lyricist to specify the 'Lyricist/text writer' image. Lyricist is a reference to a TPicture object.
+  Use Lyricist to specify the 'Lyricist/text writer' image. Lyricist is a reference to a TPicture
+  object.
   Use properties and methods of TPicture to specify a bitmap, icon, metafile, or user-defined graphic
   to be displayed by the image control.
 
   Setting Lyricist at design time brings up the Picture Editor, which can be used to specify the file
   that contains the image.
 See Also
-  Composer
+  TJvID3Pictures.Composer
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures.Media
 Summary
   Specifies the image for the 'Media (e.g. lable side of CD)'.
 Description
-  Use Media to specify the 'Media (e.g. lable side of CD)' image. Media is a reference to a TPicture object.
+  Use Media to specify the 'Media (e.g. lable side of CD)' image. Media is a reference to a TPicture
+  object.
   Use properties and methods of TPicture to specify a bitmap, icon, metafile, or user-defined graphic
   to be displayed by the image control.
 
   Setting Media at design time brings up the Picture Editor, which can be used to specify the file
   that contains the image.
 See Also
-  CoverFront, CoverBack
+  TJvID3Pictures.CoverBack, TJvID3Pictures.CoverFront
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures.MovieVideoScreenCapture
 Summary
   Specifies the image for the 'Movie/video screen capture'.
 Description
-  Use MovieVideoScreenCapture to specify the 'Movie/video screen capture' image. MovieVideoScreenCapture
-  is a reference to a TPicture object. Use properties and methods of TPicture to specify a bitmap,
-  icon, metafile, or user-defined graphic to be displayed by the image control.
+  Use MovieVideoScreenCapture to specify the 'Movie/video screen capture' image. MovieVideoScreenCapture is a reference to a
+  Picture object. Use properties and methods of TPicture to specify a bitmap, icon, metafile, or
+  user-defined graphic to be displayed by the image control.
 
   Setting MovieVideoScreenCapture at design time brings up the Picture Editor, which can be used to
   specify the file that contains the image.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures.Other
 Summary
@@ -370,49 +414,55 @@ Description
 
   Setting Other at design time brings up the Picture Editor, which can be used to specify the file
   that contains the image.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures.OtherFileIcon
 Summary
   Specifies the image for the '\Other file icon'.
 Description
-  Use OtherFileIcon to specify the '\Other file icon' image. OtherFileIcon is a reference to a TPicture object.
+  Use OtherFileIcon to specify the '\Other file icon' image. OtherFileIcon is a reference to a
+  TPicture object.
   Use properties and methods of TPicture to specify a bitmap, icon, metafile, or user-defined graphic
   to be displayed by the image control.
 
-  Setting OtherFileIcon at design time brings up the Picture Editor, which can be used to specify the file
-  that contains the image.
+  Setting OtherFileIcon at design time brings up the Picture Editor, which can be used to specify the
+  file that contains the image.
 See Also
-  FileIcon
+  TJvID3Pictures.FileIcon
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures.PublisherLogotype
 Summary
   Specifies the image for the 'Publisher/Studio logotype'.
 Description
-  Use PublisherLogotype to specify the 'Publisher/Studio logotype' image. PublisherLogotype is a reference
-  to a TPicture object. Use properties and methods of TPicture to specify a bitmap, icon, metafile, or
+  Use PublisherLogotype to specify the 'Publisher/Studio logotype' image. PublisherLogotype is a reference to a
+  Picture object. Use properties and methods of TPicture to specify a bitmap, icon, metafile, or
   user-defined graphic to be displayed by the image control.
 
-  Setting PublisherLogotype at design time brings up the Picture Editor, which can be used to specify the file
-  that contains the image.
+  Setting PublisherLogotype at design time brings up the Picture Editor, which can be used to specify
+  the file that contains the image.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Pictures.RecordingLocation
 Summary
   Specifies the image for the 'Recording Location'.
 Description
-  Use RecordingLocation to specify the 'Recording Location' image. RecordingLocation is a reference to
-  a TPicture object. Use properties and methods of TPicture to specify a bitmap, icon, metafile, or 
+  Use RecordingLocation to specify the 'Recording Location' image. RecordingLocation is a reference to a
+  Picture object. Use properties and methods of TPicture to specify a bitmap, icon, metafile, or
   user-defined graphic to be displayed by the image control.
 
-  Setting RecordingLocation at design time brings up the Picture Editor, which can be used to specify the file
-  that contains the image.
+  Setting RecordingLocation at design time brings up the Picture Editor, which can be used to specify
+  the file that contains the image.
 See Also
-  DuringRecording
+  TJvID3Pictures.DuringRecording
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc
 Summary
   Contains the descriptions of picture frames in an ID3 v2 tag.
 Description
   The TJvID3PicturesDesc object contains the descriptions fields of picture frames in an ID3 v2 tag.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc.Artist
 Summary
@@ -421,7 +471,8 @@ Description
   Use the Artist property to specify a short description for the 'Artist/performer' image.
   Maximum length is 64 characters.
 See Also
-  Band, LeadArtist
+  TJvID3PicturesDesc.Band, TJvID3PicturesDesc.LeadArtist
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc.Band
 Summary
@@ -430,7 +481,8 @@ Description
   Use the Band property to specify a short description for the 'Band/Orchestra' image.
   Maximum length is 64 characters.
 See Also
-  Artist, BandLogotype, LeadArtist
+  TJvID3PicturesDesc.Artist, TJvID3PicturesDesc.BandLogotype, TJvID3PicturesDesc.LeadArtist
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc.BandLogotype
 Summary
@@ -439,7 +491,8 @@ Description
   Use the BandLogotype property to specify a short description for the '\Band/artist logotype' image.
   Maximum length is 64 characters.
 See Also
-  Band
+  TJvID3PicturesDesc.Band
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc.BrightColouredFish
 Summary
@@ -447,92 +500,104 @@ Summary
 Description
   Use the BrightColouredFish property to specify a short description for the 'A bright coloured fish'
   image. Maximum length is 64 characters.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc.Composer
 Summary
   Specifies the short description of the 'Composer' image.
 Description
-  Use the Composer property to specify a short description for the 'Composer' image. Maximum length is 64 
-  characters.
+  Use the Composer property to specify a short description for the 'Composer' image. Maximum length
+  is 64 characters.
 See Also
-  Conductor
+  TJvID3PicturesDesc.Conductor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc.Conductor
 Summary
   Specifies the short description of the 'Conductor' image.
 Description
-  Use the Conductor property to specify a short description for the 'Conductor' image. Maximum length is 64 
-  characters.
+  Use the Conductor property to specify a short description for the 'Conductor' image. Maximum length
+  is 64 characters.
 See Also
-  Composer
+  TJvID3PicturesDesc.Composer
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc.CoverBack
 Summary
   Specifies the short description of the 'Cover (back)' image.
 Description
-  Use the CoverBack property to specify a short description for the 'Cover (back)' image. Maximum 
+  Use the CoverBack property to specify a short description for the 'Cover (back)' image. Maximum
   length is 64 characters.
 See Also
-  CoverFront, Media
+  TJvID3PicturesDesc.CoverFront, TJvID3PicturesDesc.Media
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc.CoverFront
 Summary
   Specifies the short description of the 'Cover (front)' image.
 Description
-  Use the CoverFront property to specify a short description for the 'Cover (front)' image. Maximum length is 64 
-  characters.
+  Use the CoverFront property to specify a short description for the 'Cover (front)' image. Maximum
+  length is 64 characters.
 See Also
-  CoverBack, Media
+  TJvID3PicturesDesc.CoverBack, TJvID3PicturesDesc.Media
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc.DuringPerformance
 Summary
   Specifies the short description of the 'During performance' image.
 Description
-  Use the DuringPerformance property to specify a short description for the 'During performance' image. 
+  Use the DuringPerformance property to specify a short description for the 'During performance'
+  image.
   Maximum length is 64 characters.
 See Also
-  DuringRecording
+  TJvID3PicturesDesc.DuringRecording
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc.DuringRecording
 Summary
   Specifies the short description of the 'During recording' image.
 Description
-  Use the DuringRecording property to specify a short description for the 'During recording' image. 
+  Use the DuringRecording property to specify a short description for the 'During recording' image.
   Maximum length is 64 characters.
 See Also
-  DuringPerformance, RecordingLocation
+  TJvID3PicturesDesc.DuringPerformance, TJvID3PicturesDesc.RecordingLocation
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc.FileIcon
 Summary
   Specifies the short description of the '32x32 pixels 'file icon' (PNG only)' image.
 Description
-  Use the FileIcon property to specify a short description for the '32x32 pixels 'file icon' (PNG only)'
-  image. Maximum length is 64 characters.
+  Use the FileIcon property to specify a short description for the '32x32 pixels 'file icon' (PNG
+  only)' image. Maximum length is 64 characters.
 See Also
-  OtherFileIcon
+  TJvID3PicturesDesc.OtherFileIcon
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc.Illustration
 Summary
   Specifies the short description of the 'Illustration' image.
 Description
-  Use the Illustration property to specify a short description for the 'Illustration' image. Maximum length 
-  is 64 characters.
+  Use the Illustration property to specify a short description for the 'Illustration' image. Maximum
+  length is 64 characters.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc.LeadArtist
 Summary
   Specifies the short description of the 'Lead artist/lead performer/soloist' image.
 Description
-  Use the LeadArtist property to specify a short description for the 'Lead artist/lead performer/soloist'
-  image. Maximum length is 64 characters.
+  Use the LeadArtist property to specify a short description for the 'Lead artist/lead
+  performer/soloist' image. Maximum length is 64 characters.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc.LeafletPage
 Summary
   Specifies the short description of the 'Leaflet page' image.
 Description
-  Use the LeafletPage property to specify a short description for the 'Leaflet page' image. 
+  Use the LeafletPage property to specify a short description for the 'Leaflet page' image.
   Maximum length is 64 characters.
 See Also
-  Artist, Band
+  TJvID3PicturesDesc.Artist, TJvID3PicturesDesc.Band
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc.Lyricist
 Summary
@@ -541,7 +606,8 @@ Description
   Use the Lyricist property to specify a short description for the 'Lyricist/text writer' image.
   Maximum length is 64 characters.
 See Also
-  Composer
+  TJvID3PicturesDesc.Composer
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc.Media
 Summary
@@ -550,7 +616,8 @@ Description
   Use the Media property to specify a short description for the 'Media (e.g. lable side of CD)' image.
   Maximum length is 64 characters.
 See Also
-  CoverFront, CoverBack
+  TJvID3PicturesDesc.CoverBack, TJvID3PicturesDesc.CoverFront
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc.MovieVideoScreenCapture
 Summary
@@ -558,12 +625,15 @@ Summary
 Description
   Use the MovieVideoScreenCapture property to specify a short description for the 'Movie/video screen
   capture' image. Maximum length is 64 characters.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc.Other
 Summary
   Specifies the short description of the 'Other' image.
 Description
-  Use the Other property to specify a short description for the 'Other' image. Maximum length is 64 characters.
+  Use the Other property to specify a short description for the 'Other' image. Maximum length is 64
+  characters.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc.OtherFileIcon
 Summary
@@ -572,23 +642,28 @@ Description
   Use the OtherFileIcon property to specify a short description for the '\Other file icon' image.
   Maximum length is 64 characters.
 See Also
-  FileIcon
+  TJvID3PicturesDesc.FileIcon
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc.PublisherLogotype
 Summary
   Specifies the short description of the 'Publisher/Studio logotype' image.
 Description
-  Use the PublisherLogotype property to specify a short description for the 'Publisher/Studio logotype' image. 
+  Use the PublisherLogotype property to specify a short description for the 'Publisher/Studio
+  logotype' image.
   Maximum length is 64 characters.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PicturesDesc.RecordingLocation
 Summary
   Specifies the short description of the 'Recording Location' image.
 Description
-  Use the RecordingLocation property to specify a short description for the 'Recording Location' image.
+  Use the RecordingLocation property to specify a short description for the 'Recording Location'
+  image.
   Maximum length is 64 characters.
 See Also
-  DuringRecording
+  TJvID3PicturesDesc.DuringRecording
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Popularimeter
 Summary
@@ -603,6 +678,7 @@ Description
   Versions               All
   Implemented by         TJvID3PopularimeterFrame
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Popularimeter.Counter
 Summary
@@ -612,7 +688,8 @@ Description
 
   The value of Counter should be increased with one for every time the file is played.
 See Also
-  Rating, TJvID3PlayCounterFrame.Counter
+  TJvID3Popularimeter.Rating, TJvID3PlayCounterFrame.Counter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Popularimeter.EMailAddress
 Summary
@@ -620,7 +697,8 @@ Summary
 Description
   Use EMailAddress to specify the e-mail address to the user that made the rating.
 See Also
-  Rating
+  TJvID3Popularimeter.Rating
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Popularimeter.Rating
 Summary
@@ -629,16 +707,17 @@ Description
   Use Rating to speciy how good an audio file is. The rating is 1-255 where 1 is worst and 255 is
   best. 0 is unknown.
 See Also
-  Counter, EMailAddress
+  TJvID3Popularimeter.Counter, TJvID3Popularimeter.EMailAddress
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text
 Summary
   Contains the data of text frames in an ID3 v2 tag.
 Description
   The TJvID3Text object contains the data of text information frames in an ID3 v2 tag.
-  
-  The following table lists the relation between Winamp's description of frames and properties of
-  a TJvID3Text object: 
+
+  The following table lists the relation between Winamp's description of frames and properties of a
+  TJvID3Text object:
   <TABLE>
   Winamp              Property
   ------              --------
@@ -650,10 +729,13 @@ Description
   \Songname           Title
   \AlbumTrack         TrackNum
   </TABLE>
-  
-  The TJvID3ContentFrame object can be used to access comments in the tag. The following example alters
-  the first comment frame in a tag of JvID3v21 (if the tag has no comment frame, then one is inserted):
-  
+
+  The TJvID3ContentFrame object can be used to access comments in the tag. The following example
+  alters
+  the first comment frame in a tag of JvID3v21 (if the tag has no comment frame, then one is
+  inserted):
+
+ 
   <AUTOLINK OFF>
   <CODE>
   with TJvID3ContentFrame.FindOrCreate(JvID3v21, fiComment) do
@@ -661,9 +743,10 @@ Description
     Description := 'My comment';
     Language := 'eng';
     Text := 'Some'#13#10'Multi'#13#10'line'#13#10'comment'
-  end;
+  end; 
   </CODE>
   <AUTOLINK ON>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Album
 Summary
@@ -671,7 +754,7 @@ Summary
 Description
   Property Album represents the value of the 'Album/Movie/Show title' frame. It is intended for the
   title of the recording (or source of sound) from which the audio in the file is taken.
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             TALB
@@ -680,14 +763,15 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  AlbumSortOrder, PartInSet, TrackNum
+  TJvID3Text.AlbumSortOrder, TJvID3Text.PartInSet, TJvID3Text.TrackNum
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.AlbumSortOrder
 Summary
   Specifies a string to be used when sorting album names.
 Description
   Property AlbumSortOrder represents the value of the 'Album sort order' frame. It specifies a string
-  which should be used instead of the <LINK TJvID3Text.Album,album name> for sorting purposes. 
+  which should be used instead of the <LINK TJvID3Text.Album,album name> for sorting purposes.
   E.g. an album named "A Soundtrack" might preferably be sorted as "Soundtrack".
 
   <TABLE>
@@ -698,15 +782,16 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  Album
+  TJvID3Text.Album
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Band
 Summary
   Specifies additional information about the performers.
 Description
-  Property Band represents the value of the 'Band/Orchestra/Accompaniment' frame. It is used for 
+  Property Band represents the value of the 'Band/Orchestra/Accompaniment' frame. It is used for
   additional information about the performers in the recording.
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             TPE2
@@ -715,15 +800,16 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  Conductor
+  TJvID3Text.Conductor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.BPM
 Summary
   Specifies the number of beats per minute in the audio.
 Description
-  Property BPM represents the value of the 'BPM' frame. It contains the number of beats per minute in the
-  main part of the audio.
-   
+  Property BPM represents the value of the 'BPM' frame. It contains the number of beats per minute in
+  the main part of the audio.
+
   <TABLE>
   --------------         -----------------------
   Frame name             TBPM
@@ -732,18 +818,19 @@ Description
   Implemented by         TJvID3NumberFrame
   </TABLE>
 See Also
-  SongLen
+  TJvID3Text.SongLen
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Composer
 Summary
   Specifies the name(s) of the composer(s).
 Description
-  Property Composer represents the value of the 'Composer' frame. It is intended for the name(s) of the
-  composer(s).
-  
+  Property Composer represents the value of the 'Composer' frame. It is intended for the name(s) of
+  the composer(s).
+
   Property Composer is of type TStrings. Use this type to access its methods or properties to
   manipulate the composers in the list.
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             TCOM
@@ -752,7 +839,8 @@ Description
   Implemented by         TJvID3SimpleListFrame
   </TABLE>
 See Also
-  Conductor
+  TJvID3Text.Conductor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Conductor
 Summary
@@ -760,7 +848,7 @@ Summary
 Description
   Property Conductor represents the value of the 'Conductor' frame. It is used for the name of the
   conductor.
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             TPE3
@@ -769,16 +857,17 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  Band, Composer
+  TJvID3Text.Band, TJvID3Text.Composer
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.ContentGroup
 Summary
   Specifies a content group description for the audio.
 Description
-  Property ContentGroup represents the value of the 'Content group description' frame. It is used if
-  the sound belongs to a larger category of sounds/music. For example, classical music is often sorted
-  in different musical sections (e.g. "Piano Concerto", "Weather - Hurricane").
-  
+  Property ContentGroup represents the value of the 'Content group description' frame. It is used if the sound belongs to a larger category of sounds/music. For exam
+  le, classical music is often sorted in different musical sections (e.g. "Piano Concerto", "Weather
+  - Hurricane").
+
   <TABLE>
   --------------         -----------------------
   Frame name             TIT1
@@ -787,26 +876,25 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  ContentType, Title 
+  TJvID3Text.ContentType, TJvID3Text.Title
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.ContentType
 Summary
   Specifies the content type.
 Description
-  Property ContentType represents the value of the 'Content type' frame. 
-  
-  You can make references to the <LINK TJvID3Genre_Table,ID3v1 genres> by specifying '(x)' where x
-  is some number from the genres list. This is optionally followed by a refinement. Examples are:
-  
+  Property ContentType represents the value of the 'Content type' frame.
+
+  You can make references to the <LINK TJvID3Genre_Table,ID3v1 genres> by specifying '(x)' where x is
+  some number from the genres list. This is optionally followed by a refinement. Examples are:
+
   <TABLE>
   -------------
-  (21)
-  (4)Eurodisco
-  (51)(39)
+  (21) (4)Eurodisco (51)(39)
   (55)((I think...)
   Don't know
   </TABLE>
-     
+
   <TABLE>
   --------------         -----------------------
   Frame name             TCON
@@ -815,17 +903,18 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  ContentGroup, Mood, TJvID3v1.Genre, 
+  TJvID3v1.Genre, TJvID3Text.ContentGroup, TJvID3Text.Mood
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Copyright
 Summary
   Specifies the copyright holder of the original sound.
 Description
-  Property Copyright represents the value of the 'Copyright message' frame. It is intended for
-  the copyright holder of the original sound, not the audio file itself.
+  Property Copyright represents the value of the 'Copyright message' frame. It is intended for the
+  copyright holder of the original sound, not the audio file itself.
 
   Copyright must begin with a year and a space character (five characters).
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             TCOP
@@ -834,16 +923,17 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  ProducedNotice
+  TJvID3Text.ProducedNotice
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Date
 Summary
   Specifies the date for the recording of the audio.
 Description
   Property Date represents the value of the 'Date' frame. It contains the date for the recording.
-  
+
   This field is always four characters long; format is DDMM, with DD the days and MM the months.
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             TDAT
@@ -852,15 +942,16 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  RecordingDates, RecordingTime, Time, Year
+  TJvID3Text.RecordingDates, TJvID3Text.RecordingTime, TJvID3Text.Time, TJvID3Text.Year
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.EncodedBy
 Summary
   Specifies the person or organisation that encoded the audio file.
 Description
-  Property EncodedBy represents the value of the 'Encoded by' frame. It contains the name of the 
-  person or organisation that encoded the audio file. This field may contain a copyright message,
-  if the audio file also is copyrighted by the encoder.
+  Property EncodedBy represents the value of the 'Encoded by' frame. It contains the name of the
+  person or organisation that encoded the audio file. This field may contain a copyright message, if
+  the audio file also is copyrighted by the encoder.
 
   <TABLE>
   --------------         -----------------------
@@ -870,7 +961,8 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  EncoderSettings
+  TJvID3Text.EncoderSettings
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.EncoderSettings
 Summary
@@ -879,7 +971,7 @@ Description
   Property EncoderSettings represents the value of the 'Software/Hardware and settings used for
   encoding' frame. It includes the used audio encoder and its settings when the file was encoded.
   Hardware refers to hardware encoders, not the computer on which a program was run.
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             TSSE
@@ -888,7 +980,8 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  EncodedBy
+  TJvID3Text.EncodedBy
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.EncodingTime
 Summary
@@ -896,7 +989,7 @@ Summary
 Description
   Property EncodingTime represents the value of the 'Encoding time' frame. It contains a timestamp
   describing when the audio was encoded.
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             TDEN
@@ -905,15 +998,16 @@ Description
   Implemented by         TJvID3TimestampFrame
   </TABLE>
 See Also
-  TaggingTime
+  TJvID3Text.TaggingTime
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.FileOwner
 Summary
   Specifies the owner or licensee of the file and its contents.
 Description
-  Property FileOwner represents the value of the 'File owner/licensee' frame. It contains the name
-  of the owner or licensee of the file and its contents.
-  
+  Property FileOwner represents the value of the 'File owner/licensee' frame. It contains the name of
+  the owner or licensee of the file and its contents.
+
   <TABLE>
   --------------         -----------------------
   Frame name             TOWN
@@ -922,7 +1016,8 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  Copyright, ProducedNotice
+  TJvID3Text.Copyright, TJvID3Text.ProducedNotice
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.FileType
 Summary
@@ -939,17 +1034,18 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  MediaType
+  TJvID3Text.MediaType
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.InitialKey
 Summary
   Specifies the musical key in which the sound starts.
 Description
-  Property InitialKey represents the value of the 'Initial key' frame. It contains the musical key 
-  in which the sound starts. It is represented as a string with a maximum length of three characters.
-  The ground keys are represented with "A","B","C","D","E", "F" and "G" and halfkeys represented 
-  with "b" and "#". Minor is represented as "m", e.g. "Dbm". Off key is represented with an "o" only.
-  
+  Property InitialKey represents the value of the 'Initial key' frame. It contains the musical key in
+  which the sound starts. It is represented as a string with a maximum length of three characters.
+  The ground keys are represented with "A","B","C","D","E", "F" and "G" and halfkeys represented with
+  "b" and "#". Minor is represented as "m", e.g. "Dbm". Off key is represented with an "o" only.
+
   <TABLE>
   --------------         -----------------------
   Frame name             TKEY
@@ -957,14 +1053,15 @@ Description
   Versions               All
   Implemented by         TJvID3TextFrame
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.ISRC
 Summary
   Specifies the ISRC code.
 Description
-  Property ISRC represents the value of the 'ISRC' frame. It should contain the International 
+  Property ISRC represents the value of the 'ISRC' frame. It should contain the International
   Standard Recording Code (ISO 3901). It should be 12 characters long.
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             TSRC
@@ -972,15 +1069,16 @@ Description
   Versions               All
   Implemented by         TJvID3TextFrame
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Language
 Summary
   Specifies the language(s) of the text or lyrics in the audio.
 Description
-  Property Language represents the value of the 'Language' frame. It should contain the languages of
-  the text or lyrics spoken or sung in the audio. The language is represented with three characters
-  according to ISO-639-2. 
-  
+  Property Language represents the value of the 'Language' frame. It should contain the languages of the text or lyrics
+  spoken or sung in the audio. The language is represented with three characters according to
+  ISO-639-2.
+
   Property Language is of type TStrings. Use this type to access its methods or properties to
   manipulate the languages in the list.
 
@@ -991,14 +1089,16 @@ Description
   Versions               All
   Implemented by         TJvID3SimpleListFrame
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.LeadArtist
 Summary
   Specifies the main artist.
 Description
-  Property LeadArtist represents the value of the 'Lead artist/Lead performer/Soloist/Performing group' frame. 
+  Property LeadArtist represents the value of the 'Lead artist/Lead performer/Soloist/Performing
+  group' frame.
   It is used for the main artist.
-  
+
   Property LeadArtist is of type TStrings. Use this type to access its methods or properties to
   manipulate the names in the list.
 
@@ -1010,15 +1110,16 @@ Description
   Implemented by         TJvID3SimpleListFrame
   </TABLE>
 See Also
-  Band, OrigArtist
+  TJvID3Text.Band, TJvID3Text.OrigArtist
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Lyricist
 Summary
   Specifies the writer of the text or lyrics in the recording.
 Description
-  Property Lyricist represents the value of the 'Lyricist/Text writer' frame. It is intended 
-  for the writer of the text or lyrics in the recording.
-  
+  Property Lyricist represents the value of the 'Lyricist/Text writer' frame. It is intended for the
+  writer of the text or lyrics in the recording.
+
   Property Lyricist is of type TStrings. Use this type to access its methods or properties to
   manipulate the names in the list.
 
@@ -1030,15 +1131,16 @@ Description
   Implemented by         TJvID3SimpleListFrame
   </TABLE>
 See Also
-  OrigLyricist
+  TJvID3Text.OrigLyricist
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.MediaType
 Summary
   Specifies from which media the sound orginated.
 Description
-  Property MediaType represents the value of the 'Media type' frame. It describes from which media 
+  Property MediaType represents the value of the 'Media type' frame. It describes from which media
   the sound originated.
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             TMED
@@ -1047,16 +1149,18 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  FileType
+  TJvID3Text.FileType
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.MixArtist
 Summary
   Specifies information about the people behind a remix.
 Description
-  Property MixArtist represents the value of the 'Interpreted, remixed, or otherwise modified by' frame. 
+  Property MixArtist represents the value of the 'Interpreted, remixed, or otherwise modified by'
+  frame.
   It contains more information about the people behind a remix and similar interpretations of another
   existing piece.
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             TPE4
@@ -1065,7 +1169,8 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  LeadArtist
+  TJvID3Text.LeadArtist
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Mood
 Summary
@@ -1073,7 +1178,7 @@ Summary
 Description
   Property Mood represents the value of the 'Mood' frame. It is intended to reflect the mood of the
   audio with a few keywords, e.g. "Romantic" or "Sad".
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             TMOO
@@ -1082,15 +1187,16 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  ContentType
+  TJvID3Text.ContentType
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.NetRadioOwner
 Summary
   Specifies the owner of the internet radio station.
 Description
-  Property NetRadioOwner represents the value of the 'Internet radio station owner' frame. It contains
-  the name of the owner of the internet radio station from which the audio is streamed.
-  
+  Property NetRadioOwner represents the value of the 'Internet radio station owner' frame. It
+  contains the name of the owner of the internet radio station from which the audio is streamed.
+
   <TABLE>
   --------------         -----------------------
   Frame name             TRSO
@@ -1099,15 +1205,16 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  NetRadioStation
+  TJvID3Text.NetRadioStation
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.NetRadioStation
 Summary
   Specifies the internet radio station.
 Description
-  Property NetRadioStation represents the value of the 'nternet radio station name' frame. It contains
-  the name of the internet radio station from which the audio is streamed.
-  
+  Property NetRadioStation represents the value of the 'nternet radio station name' frame. It
+  contains the name of the internet radio station from which the audio is streamed.
+
   <TABLE>
   --------------         -----------------------
   Frame name             TRSN
@@ -1116,16 +1223,17 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  NetRadioOwner
+  TJvID3Text.NetRadioOwner
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.OrigAlbum
 Summary
   Specifies the title of the original recording.
 Description
-  Property OrigAlbum represents the value of the 'Original album/movie/show title' frame. It is intended
-  for the title of the original recording (or source of sound), if for example the music in the file 
-  should be a cover of a previously released song.
-  
+  Property OrigAlbum represents the value of the 'Original album/movie/show title' frame. It is
+  intended for the title of the original recording (or source of sound), if for example the music in
+  the file should be a cover of a previously released song.
+
   <TABLE>
   --------------         -----------------------
   Frame name             TOAL
@@ -1134,7 +1242,8 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  Album, OrigArtist
+  TJvID3Text.Album, TJvID3Text.OrigArtist
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.OrigArtist
 Summary
@@ -1143,7 +1252,7 @@ Description
   Property OrigArtist represents the value of the 'Original artist/performer' frame. It is intended
   for the performer of the original recording, if for example the music in the file should be a cover
   of a previously released song.
-  
+
   Property OrigArtist is of type TStrings. Use this type to access its methods or properties to
   manipulate the names in the list.
 
@@ -1155,16 +1264,18 @@ Description
   Implemented by         TJvID3SimpleListFrame
   </TABLE>
 See Also
-  LeadArtist, OrigAlbum
+  TJvID3Text.LeadArtist, TJvID3Text.OrigAlbum
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.OrigFileName
 Summary
   Specifies the preferred filename for the file.
 Description
-  Property OrigFileName represents the value of the 'Original filename' frame. It contains the preferred
-  filename for the file, since some media doesn't allow the desired length of the filename. The
+  Property OrigFileName represents the value of the 'Original filename' frame. It contains the
+  preferred filename for the file, since some media doesn't allow the desired length of the filename.
+  The
   filename is case sensitive and includes its suffix.
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             TOFN
@@ -1172,15 +1283,16 @@ Description
   Versions               All
   Implemented by         TJvID3TextFrame
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.OrigLyricist
 Summary
   Specifies the text writer of the original recording.
 Description
   Property OrigLyricist represents the value of the 'Original lyricist/text writer' frame. It is
-  intended for the text writer of the original recording, if for example the music in the file should 
+  intended for the text writer of the original recording, if for example the music in the file should
   be a cover of a previously released song.
-  
+
   Property OrigLyricist is of type TStrings. Use this type to access its methods or properties to
   manipulate the names in the list.
 
@@ -1192,15 +1304,16 @@ Description
   Implemented by         TJvID3SimpleListFrame
   </TABLE>
 See Also
-  Lyricist
+  TJvID3Text.Lyricist
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.OrigReleaseTime
 Summary
   Specifies the release time of the original recording.
 Description
   Property OrigReleaseTime represents the value of the 'Original release time' frame. It contains a
-  timestamp describing when the original recording of the audio was released. 
-  
+  timestamp describing when the original recording of the audio was released.
+
   <TABLE>
   --------------         -----------------------
   Frame name             TDOR
@@ -1209,18 +1322,19 @@ Description
   Implemented by         TJvID3TimestampFrame
   </TABLE>
 See Also
-  OrigAlbum, OrigArtist, ReleaseTime
+  TJvID3Text.OrigAlbum, TJvID3Text.OrigArtist, TJvID3Text.ReleaseTime
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.OrigYear
 Summary
   TORY
 Description
   Property OrigYear represents the value of the 'Original release year' frame. It is intended for the
-  year when the original recording, if for example the music in the file should be a cover of a 
-  previously released song, was released. 
-  
+  year when the original recording, if for example the music in the file should be a cover of a
+  previously released song, was released.
+
   This frames is always four characters long.
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             TORY
@@ -1229,19 +1343,20 @@ Description
   Implemented by         TJvID3NumberFrame
   </TABLE>
 See Also
-  OrigReleaseTime
+  TJvID3Text.OrigReleaseTime
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.PartInSet
 Summary
   Specifies which part of a set the audio came from.
 Description
   Property PartInSet represents the value of the 'Part of a set' frame. It describes which part of a
-  set the audio came from. This frame is used if the source described by the <LINK TJvID3Text.Album,Album>
-  property is divided into several mediums, e.g. a double CD. 
-  
-  The value may be extended with a "/" character and a numeric string containing the total number of 
+  set the audio came from. This frame is used if the source described by the <LINK
+  TJvID3Text.Album,Album> property is divided into several mediums, e.g. a double CD.
+
+  The value may be extended with a "/" character and a numeric string containing the total number of
   parts in the set. E.g. "1/2".
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             TPOS
@@ -1250,7 +1365,8 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  Album, SetSubTitle, TrackNum
+  TJvID3Text.Album, TJvID3Text.SetSubTitle, TJvID3Text.TrackNum
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.PerformerSortOrder
 Summary
@@ -1266,16 +1382,17 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  Band
+  TJvID3Text.Band
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.PlaylistDelay
 Summary
   Specifies the number of milliseconds of silence that should be inserted before this audio.
 Description
   Property PlaylistDelay represents the value of the 'Playlist delay' frame. It defines the numbers
-  of milliseconds of silence that should be inserted before this audio. The value zero indicates
-  that this is a part of a multifile audio track that should be played continuously.
-  
+  of milliseconds of silence that should be inserted before this audio. The value zero indicates that
+  this is a part of a multifile audio track that should be played continuously.
+
   <TABLE>
   --------------         -----------------------
   Frame name             TDLY
@@ -1284,17 +1401,18 @@ Description
   Implemented by         TJvID3NumberFrame
   </TABLE>
 See Also
-  SongLen
+  TJvID3Text.SongLen
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.ProducedNotice
 Summary
   Specifies the production copyright holder of the original sound.
 Description
-  Property ProducedNotice represents the value of the 'Produced notice' frame. It is intended for
-  the production copyright holder of the original sound, not the audio file itself. The absence of
+  Property ProducedNotice represents the value of the 'Produced notice' frame. It is intended for the
+  production copyright holder of the original sound, not the audio file itself. The absence of
   this frame means only that the production copyright information is unavailable or has been removed
-  and must not be interpreted to mean that the audio is public domain. 
-  
+  and must not be interpreted to mean that the audio is public domain.
+
   Every time this field is displayed the field must be preceded with "Produced (P) ", where (P) is
   one character showing a P in a circle.
 
@@ -1308,15 +1426,16 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  Copyright
+  TJvID3Text.Copyright
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Publisher
 Summary
   Specifies the name of the label or publisher.
 Description
-  Property Publisher represents the value of the 'Publisher' frame. It contains the name of the label or
-  publisher.
-  
+  Property Publisher represents the value of the 'Publisher' frame. It contains the name of the label
+  or publisher.
+
   <TABLE>
   --------------         -----------------------
   Frame name             TPUB
@@ -1325,16 +1444,17 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  ProducedNotice
+  TJvID3Text.ProducedNotice
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.RecordingDates
 Summary
   Specifies the recording dates of the audio.
 Description
   Property RecordingDates represents the value of the 'Recording dates' frame. It is intended to be
-  used as complement to the Year, Date and Time frames. E.g. "4th-7th June, 12th June" in 
-  combination with the Year frame.
-  
+  used as complement to the Year, Date and Time frames. E.g. "4th-7th June, 12th June" in combination
+  with the Year frame.
+
   <TABLE>
   --------------         -----------------------
   Frame name             TRDA
@@ -1343,15 +1463,16 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  Date, RecordingTime, Time, Year
+  TJvID3Text.Date, TJvID3Text.RecordingTime, TJvID3Text.Time, TJvID3Text.Year
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.RecordingTime
 Summary
   Specifies the time when the audio was recorded.
 Description
   Property RecordingTime represents the value of the 'Recording time' frame. It contains a timestamp
-  describing when the audio was recorded. 
-  
+  describing when the audio was recorded.
+
   <TABLE>
   --------------         -----------------------
   Frame name             TDRC
@@ -1360,15 +1481,16 @@ Description
   Implemented by         TJvID3TimestampFrame
   </TABLE>
 See Also
-  ReleaseTime
+  TJvID3Text.ReleaseTime
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.ReleaseTime
 Summary
   Specifies the time when the audio was first released.
 Description
   Property ReleaseTime represents the value of the 'Release time' frame. It contains a timestamp
-  describing when the audio was first released. 
-  
+  describing when the audio was first released.
+
   <TABLE>
   --------------         -----------------------
   Frame name             TDRL
@@ -1377,7 +1499,8 @@ Description
   Implemented by         TJvID3TimestampFrame
   </TABLE>
 See Also
-  OrigReleaseTime, RecordingTime
+  TJvID3Text.OrigReleaseTime, TJvID3Text.RecordingTime
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.SetSubTitle
 Summary
@@ -1385,7 +1508,7 @@ Summary
 Description
   Property SetSubTitle represents the value of the 'Set subtitle' frame. It is intended for the
   subtitle of the part of a set this track belongs to.
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             TSST
@@ -1394,15 +1517,16 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  PartInSet, SubTitle
+  TJvID3Text.PartInSet, TJvID3Text.SubTitle
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Size
 Summary
   Specifies the size of the audiofile in bytes.
 Description
-  Property Size represents the value of the 'Size' frame. It contains the size of the audiofile in 
-  bytes, excluding the ID3v2 tag.  
-  
+  Property Size represents the value of the 'Size' frame. It contains the size of the audiofile in
+  bytes, excluding the ID3v2 tag.
+
   <TABLE>
   --------------         -----------------------
   Frame name             TSIZ
@@ -1411,7 +1535,8 @@ Description
   Implemented by         TJvID3NumberFrame
   </TABLE>
 See Also
-  SongLen
+  TJvID3Text.SongLen
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.SongLen
 Summary
@@ -1419,7 +1544,7 @@ Summary
 Description
   Property SongLen represents the value of the 'Length' frame. It contains the length of the audio
   file in milliseconds.
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             TLEN
@@ -1428,15 +1553,17 @@ Description
   Implemented by         TJvID3NumberFrame
   </TABLE>
 See Also
-  PlaylistDelay, Size
+  TJvID3Text.PlaylistDelay, TJvID3Text.Size
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.SubTitle
 Summary
   Specifies information directly related to the contests title.
 Description
   Property SubTitle represents the value of the 'Subtitle/Description refinement' frame. It is used
-  for information directly related to the contents title (e.g. "Op. 16" or "Performed live at Wembley").
-  
+  for information directly related to the contents title (e.g. "Op. 16" or "Performed live at
+  Wembley").
+
   <TABLE>
   --------------         -----------------------
   Frame name             TIT3
@@ -1445,14 +1572,15 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  SetSubTitle, Title
+  TJvID3Text.SetSubTitle, TJvID3Text.Title
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.TaggingTime
 Summary
   Specifies the time when the audio was tagged.
 Description
   Property TaggingTime represents the value of the 'Tagging time' frame. It contains a timestamp
-  describing then the audio was tagged. 
+  describing then the audio was tagged.
 
   <TABLE>
   --------------         -----------------------
@@ -1462,14 +1590,15 @@ Description
   Implemented by         TJvID3TimestampFrame
   </TABLE>
 See Also
-  EncodingTime
+  TJvID3Text.EncodingTime
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Time
 Summary
   Specifies the time for the recording of the audio.
 Description
   Property Time represents the value of the 'Time' frame. It contains the time for the recording.
-  
+
   This field is always four characters long; format is HHMM, with HH the hours and MM the minutes.
 
   <TABLE>
@@ -1480,15 +1609,16 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  Date, RecordingDates, RecordingTime, Year
+  TJvID3Text.Date, TJvID3Text.RecordingDates, TJvID3Text.RecordingTime, TJvID3Text.Year
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Title
 Summary
   Specifies the actual name of the audio.
 Description
-  Property Title represents the value of the 'Title/Songname/Content description' frame. It contains the
-  actual name of the piece (e.g. "Adagio", "Hurricane Donna").
-   
+  Property Title represents the value of the 'Title/Songname/Content description' frame. It contains
+  the actual name of the piece (e.g. "Adagio", "Hurricane Donna").
+
   <TABLE>
   --------------         -----------------------
   Frame name             TIT2
@@ -1497,13 +1627,14 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  ContentGroup, SubTitle, TitleSortOrder
+  TJvID3Text.ContentGroup, TJvID3Text.SubTitle, TJvID3Text.TitleSortOrder
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.TitleSortOrder
 Summary
   Specifies a string to be used when sorting title names.
 Description
-  Property TitleSortOrder represents the value of the 'Title sort order' frame. It defines a string 
+  Property TitleSortOrder represents the value of the 'Title sort order' frame. It defines a string
   which should be used instead of the <LINK TJvID3Text.Title,title> for sorting purposes.
   <TABLE>
   --------------         -----------------------
@@ -1513,7 +1644,8 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  Title
+  TJvID3Text.Title
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.TrackNum
 Summary
@@ -1523,7 +1655,7 @@ Description
   order number of the audio-file on its original recording. This may be extended with a "/" character
   and a numeric string containing the total number of tracks/elements on the original recording.
   E.g. "4/9".
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             TRCK
@@ -1532,16 +1664,17 @@ Description
   Implemented by         TJvID3TextFrame
   </TABLE>
 See Also
-  Album, PartInSet
+  TJvID3Text.Album, TJvID3Text.PartInSet
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Text.Year
 Summary
   Specifies the year of the recording of the audio.
 Description
   Property Year represents the value of the 'Year' frame. It contains the year of the recording.
-  
+
   This frames is always four characters long.
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             TYER
@@ -1550,15 +1683,17 @@ Description
   Implemented by         TJvID3NumberFrame
   </TABLE>
 See Also
-  Date, RecordingDates, RecordingTime, Time
+  TJvID3Text.Date, TJvID3Text.RecordingDates, TJvID3Text.RecordingTime, TJvID3Text.Time
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3UDText
 Summary
   Contains the data of user defined text information frames.
 Description
   The TJvID3Text object contains the data of user defined text information frames in an ID3 v2 tag.
-  
-  These frames are intended for one-string text information concerning the audiofile in a similar way to
+
+  These frames are intended for one-string text information concerning the audiofile in a similar way
+  to
   the other text frames.
 
   <TABLE>
@@ -1570,6 +1705,7 @@ Description
   </TABLE>
 See Also
   TJvID3UserFrame
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3UDText.Add
 Summary
@@ -1580,7 +1716,8 @@ Parameters
   ADescription - Description for the information text.
   AValue       - The information text.
 See Also
-  ItemCount
+  TJvID3UDText.ItemCount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3UDText.Description
 Summary
@@ -1588,7 +1725,8 @@ Summary
 Description
   Use Description to specify the description field in the user defined text information frame.
 See Also
-  Value
+  TJvID3UDText.Value
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3UDText.ItemCount
 Summary
@@ -1597,18 +1735,20 @@ Description
   Read ItemCount to determine the number of user defined text information frames in the ID3 v2 tag.
   Use ItemCount as an upper limit when iterating over the frames.
 See Also
-  Add, ItemIndex
+  TJvID3UDText.Add, TJvID3UDText.ItemIndex
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3UDText.ItemIndex
 Summary
   Specifies the index of the current frame.
 Description
-  Read ItemIndex to determine which item is selected. The first item in the list has index 0, the 
-  second item has index 1, and so on. If no item is selected, the value of ItemIndex is -1. 
+  Read ItemIndex to determine which item is selected. The first item in the list has index 0, the
+  second item has index 1, and so on. If no item is selected, the value of ItemIndex is -1.
 
   Set ItemIndex programmatically to select a frame by passing in the index value.
 See Also
-  ItemCount
+  TJvID3UDText.ItemCount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3UDText.Value
 Summary
@@ -1616,18 +1756,20 @@ Summary
 Description
   Use Value to specify the information text field in the user defined text information frame.
 See Also
-  Description
+  TJvID3UDText.Description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3UDUrl
 Summary
   Contains the data of user defined \URL link frames.
 Description
   The TJvID3UDUrl object contains the data of user defined \URL link frames in an ID3 v2 tag.
-  
-  These frames are intended for \URL links concerning the audiofile in a similar way to the other "W"-frames.
-  A single frame consists of a <LINK TJvID3UDUrl.Descriptiondescription> of the string and the
-  actual URL.
-  
+
+  These frames are intended for \URL links concerning the audiofile in a similar way to the other
+  "W"-frames.
+  A single frame consists of a <LINK TJvID3UDUrl.Descriptiondescription> of the string and the actual
+  URL.
+
   <TABLE>
   --------------         -----------------------
   Frame name             WXXX
@@ -1635,6 +1777,7 @@ Description
   Versions               All
   Implemented by         TJvID3URLUserFrame
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3UDUrl.Add
 Summary
@@ -1645,7 +1788,8 @@ Parameters
   ADescription - Description for the \URL.
   AURL         - The URL.
 See Also
-  ItemCount
+  TJvID3UDUrl.ItemCount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3UDUrl.Description
 Summary
@@ -1653,27 +1797,30 @@ Summary
 Description
   Use Description to specify a string for the description field in the user defined URL link frame.
 See Also
-  URL
+  TJvID3UDUrl.URL
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3UDUrl.ItemCount
 Summary
   Indicates the number of user defined URL link frames in the ID3 v2 tag.
 Description
-  Read ItemCount to determine the number of user defined URL link frames in the ID3 v2 tag. Use ItemCount
-  as an upper limit when iterating over the frames.
+  Read ItemCount to determine the number of user defined URL link frames in the ID3 v2 tag. Use
+  ItemCount as an upper limit when iterating over the frames.
 See Also
-  Add, ItemIndex
+  TJvID3UDUrl.Add, TJvID3UDUrl.ItemIndex
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3UDUrl.ItemIndex
 Summary
   Specifies the index of the current frame.
 Description
-  Read ItemIndex to determine which item is selected. The first item in the list has index 0, the 
-  second item has index 1, and so on. If no item is selected, the value of ItemIndex is -1. 
+  Read ItemIndex to determine which item is selected. The first item in the list has index 0, the
+  second item has index 1, and so on. If no item is selected, the value of ItemIndex is -1.
 
   Set ItemIndex programmatically to select a frame by passing in the index value.
 See Also
-  ItemCount
+  TJvID3UDUrl.ItemCount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3UDUrl.URL
 Summary
@@ -1683,7 +1830,8 @@ Description
 
   A URL may be relative, e.g. "picture.png", "../doc.txt".
 See Also
-  Description
+  TJvID3UDUrl.Description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v2
 <TITLEIMG TJvID3v2>
@@ -1694,34 +1842,37 @@ Summary
   Gives easy access to a file's ID3 v2 tag.
 Description
   Use the TJvID3v2 component to read, alter or remove the ID3 v2 tag of a file.
-  
-  TJvID3v2 is a TJvID3Controller descendant. It introduces properties to easy access the frames
-  in an ID3 v2 tag.
 
-  Use <LINK TJvID3Controller.Active,Active> to open or close the tag controller. When 
-  <LINK TJvID3Controller.Active,Active> is set to true then you can use
-  the component's properties to alter the values of frames from the file specified by the 
-  <LINK TJvID3Controller.FileName,FileName> property.
-  
+  TJvID3v2 is a TJvID3Controller descendant. It introduces properties to easy access the frames in an
+  ID3 v2 tag.
+
+  Use <LINK TJvID3Controller.Active,Active> to open or close the tag controller. When <LINK
+  TJvID3Controller.Active,Active> is set to true then you can use
+  the component's properties to alter the values of frames from the file specified by the <LINK
+  TJvID3Controller.FileName,FileName> property.
+
   For more control, use the properties and methods of TJvID3Controller to access the frames.
 
-  At design time, read, alter or remove the tag controlled by the component by
-  right-clicking on the TJvID3v2 and using the pop-up menu.
+  At design time, read, alter or remove the tag controlled by the component by right-clicking on the
+  TJvID3v2 and using the pop-up menu.
 See Also
   TJvID3Controller
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v2.Images
 Summary
   Provides easy access to the picture frames in an ID3 v2 tag.
 Description
-  Use the Images property to access the picture frames in an ID3 v2 tag. Picture frames cntain pictures
-  directly related to the audio file.
+  Use the Images property to access the picture frames in an ID3 v2 tag. Picture frames cntain
+  pictures directly related to the audio file.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v2.InvolvedPeople
 Summary
   Provides easy access to the involved people frames in an ID3 v2 tag.
 Description
   Use the InvolvedPeople property to access the involved people frames in an ID3 v2 tag.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v2.Owner
 Summary
@@ -1729,6 +1880,7 @@ Summary
 Description
   Use the Owner property to access the ownership frame in an ID3 v2 tag.
   The ownership frame might be used as a reminder of a made transaction or, if signed, as proof.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v2.PlayCounter
 Summary
@@ -1744,26 +1896,29 @@ Description
   Implemented by         TJvID3PlayCounterFrame
   </TABLE>
 See Also
-  Popularimeter
+  TJvID3v2.Popularimeter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v2.Popularimeter
 Summary
   Provides easy access to the populari meter frame in an ID3 v2 tag.
 Description
   Use the Popularimeter property to access the populari meter frame in an ID3 v2 tag. The purpose of
-  this frame is to specify how good an audio file is. 
+  this frame is to specify how good an audio file is.
 See Also
-  PlayCounter
+  TJvID3v2.PlayCounter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v2.Texts
 Summary
   Provides easy access to the text frames in an ID3 v2 tag.
 Description
   Use the Texts property to access the text frames in an ID3 v2 tag.
-  The text information frames are the most important frames, containing information like artist, album
-  and more.
+  The text information frames are the most important frames, containing information like artist,
+  album and more.
 See Also
-  UserDefinedText, Web
+  TJvID3v2.UserDefinedText, TJvID3v2.Web
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v2.UserDefinedText
 Summary
@@ -1773,41 +1928,45 @@ Description
   These frame are intended for one-string text information concerning the audiofile in a similar way
   to the <LINK TJvID3v2.Texts,other "T"-frames>.
 See Also
-  Texts, UserDefinedWeb
+  TJvID3v2.Texts, TJvID3v2.UserDefinedWeb
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v2.UserDefinedWeb
 Summary
   Provides easy access to the user defined \URL link frames in an ID3 v2 tag.
 Description
   Use the UserDefinedWeb property to access the user defined \URL link frames in an ID3 v2 tag.
-  This frame is intended for URL links concerning the audiofile in a similar way to the 
-  <LINK TJvID3v2.Web,other "W"-frames>.
+  This frame is intended for URL links concerning the audiofile in a similar way to the <LINK
+  TJvID3v2.Web,other "W"-frames>.
 See Also
-  UserDefinedText, Web
+  TJvID3v2.UserDefinedText, TJvID3v2.Web
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v2.Web
 Summary
   Provides easy access to the \URL link frames in an ID3 v2 tag.
 Description
-  Use the Web property to access the \URL link frames in an ID3 v2 tag. With these frames dynamic data
-  such as webpages with touring information, price information or plain ordinary news can be 
+  Use the Web property to access the \URL link frames in an ID3 v2 tag. With these frames dynamic
+  data such as webpages with touring information, price information or plain ordinary news can be
   added to the tag.
 See Also
-  Texts, UserDefinedWeb
+  TJvID3v2.Texts, TJvID3v2.UserDefinedWeb
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Web
 Summary
   Contains the values of \URL link frames in an ID3 v2 tag.
 Description
   The TJvID3Web object contains the values of \URL link frames in an ID3 v2 tag.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Web.Artist
 Summary
   Specifies the URL of the artists official webpage.
 Description
   Property Artist represents the value of the 'Official artist/performer webpage' frame. It is a URL
-  pointing at the artists official webpage. 
-   
+  pointing at the artists official webpage.
+
   <TABLE>
   --------------         -----------------------
   Frame name             WOAR
@@ -1815,6 +1974,7 @@ Description
   Versions               All
   Implemented by         TJvID3URLFrame
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Web.AudioFile
 Summary
@@ -1822,7 +1982,7 @@ Summary
 Description
   Property AudioFile represents the value of the 'Official audio file webpage' frame. It is a URL
   pointing at a file specific webpage.
-   
+
   <TABLE>
   --------------         -----------------------
   Frame name             WOAF
@@ -1830,14 +1990,15 @@ Description
   Versions               All
   Implemented by         TJvID3URLFrame
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Web.AudioSource
 Summary
   Specifies the URL of the offical webpage for the source of the audio file.
 Description
-  Property AudioSource represents the value of the 'Official audio source webpage' frame. It is an 
+  Property AudioSource represents the value of the 'Official audio source webpage' frame. It is an
   URL pointing at the official webpage for the source of the audio file, e.g. a movie.
-   
+
   <TABLE>
   --------------         -----------------------
   Frame name             WOAS
@@ -1845,14 +2006,15 @@ Description
   Versions               All
   Implemented by         TJvID3URLFrame
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Web.CommercialInfo
 Summary
   Specifies the URL of a webpage with commercial information about the audio.
 Description
   Property CommercialInfo represents the value of the 'Commercial information' frame. It is a URL
-  pointing at a webpage with information such as where the album can be bought. 
-  
+  pointing at a webpage with information such as where the album can be bought.
+
   <TABLE>
   --------------         -----------------------
   Frame name             WCOM
@@ -1860,6 +2022,7 @@ Description
   Versions               All
   Implemented by         TJvID3URLFrame
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Web.Copyright
 Summary
@@ -1867,7 +2030,7 @@ Summary
 Description
   Property Copyright represents the value of the 'Copyright/Legal information' frame. It is a URL
   pointing at a webpage where the terms of use and ownership of the file is described.
-   
+
   <TABLE>
   --------------         -----------------------
   Frame name             WCOP
@@ -1875,6 +2038,7 @@ Description
   Versions               All
   Implemented by         TJvID3URLFrame
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Web.Payment
 Summary
@@ -1882,7 +2046,7 @@ Summary
 Description
   Property Payment represents the value of the 'Payment' frame. It is a URL pointing at a webpage
   that will handle the process of paying for this file.
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             WPAY
@@ -1890,14 +2054,15 @@ Description
   Versions               All
   Implemented by         TJvID3URLFrame
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Web.Publisher
 Summary
   Specifies the URL of the official webpage for the publisher.
 Description
-  Property Publisher represents the value of the 'Publishers official webpage' frame. It is an 
+  Property Publisher represents the value of the 'Publishers official webpage' frame. It is an
   URL pointing at the official webpage for the publisher.
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             WPUB
@@ -1905,14 +2070,15 @@ Description
   Versions               All
   Implemented by         TJvID3URLFrame
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Web.RadioPage
 Summary
   Specifies the URL of the homepage of the internet radio station.
 Description
-  Property RadioPage represents the value of the 'Official Internet radio station homepage' frame. 
+  Property RadioPage represents the value of the 'Official Internet radio station homepage' frame.
   It contains a URL pointing at the homepage of the internet radio station.
-  
+
   <TABLE>
   --------------         -----------------------
   Frame name             WORS
@@ -1920,3 +2086,4 @@ Description
   Versions               All
   Implemented by         TJvID3URLFrame
   </TABLE>
+

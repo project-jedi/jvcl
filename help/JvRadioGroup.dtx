@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRadioGroup
 <TITLEIMG TJvRadioGroup>
@@ -16,43 +18,48 @@ JVCLInfo
 Summary
   A radio group with enhancements.
 Description
-  Use TJvRadioGroup when you need a radio group with some extended capabilities. TJvRadioGroup derives
-  from TRadioGroup but adds the following enhancements: CaptionVisible, HintColor, 
-  EdgeBorders, EdgeInner, EdgeOuter, ReadOnly, OnMouseEnter, OnMouseLeave, OnItemHint and OnParentColorChanged.
+  Use TJvRadioGroup when you need a radio group with some extended capabilities. TJvRadioGroup
+  derives from TRadioGroup but adds the following enhancements: CaptionVisible, HintColor,
+  EdgeBorders, EdgeInner, EdgeOuter, ReadOnly, OnMouseEnter, OnMouseLeave, OnItemHint and
+  OnParentColorChanged.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRadioGroup.CaptionVisible
 Summary
   Determines whether the caption is visible or not.
 Description
-  Set CaptionVisible to false to not draw the Caption even if it contains text. You can use the effects of
-  the EdgeBorders, EdgeInner and EdgeOuter properties to control in detail how the caption
+  Set CaptionVisible to false to not draw the Caption even if it contains text. You can use the
+  effects of the EdgeBorders, EdgeInner and EdgeOuter properties to control in detail how the caption
   and borders of the control are drawn.
 See Also
-  EdgeBorders
+  TJvRadioGroup.EdgeBorders
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRadioGroup.EdgeBorders
 Summary
   Determines which sides of the control have visible borders.
 Description
-  Use the EdgeBorders property to add or remove borders. The appearance of the borders can be set with
-  the EdgeInner and EdgeOuter properties.
+  Use the EdgeBorders property to add or remove borders. The appearance of the borders can be set
+  with the EdgeInner and EdgeOuter properties.
 See Also
-  EdgeInner, EdgeOuter
+  TJvRadioGroup.EdgeInner, TJvRadioGroup.EdgeOuter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRadioGroup.EdgeInner
 Summary
   Determines the border style for the control’s inner edge.
 Description
-  Use EdgeInner to provide the control with a three-dimensional beveled look. A control has two borders
-  on each side, an outer border drawn next to the outer edge, and an inner border drawn inside the
-  outer border. EdgeInner specifies the appearance of the inner border. It can be raised (esRaised),
-  lowered (esLowered), or left off altogether (esNone).
+  Use EdgeInner to provide the control with a three-dimensional beveled look. A control has two
+  borders on each side, an outer border drawn next to the outer edge, and an inner border drawn
+  inside the outer border. EdgeInner specifies the appearance of the inner border. It can be raised
+  (esRaised), lowered (esLowered), or left off altogether (esNone).
 
   Use EdgeInner with EdgeOuter to give the component a three-dimensional look.
 Note
-	The EdgeInner property has an effect only on the sides specified by the EdgeBorders property.
+  The EdgeInner property has an effect only on the sides specified by the EdgeBorders property.
 See Also
-  EdgeBorders, EdgeOuter
+  TJvRadioGroup.EdgeBorders, TJvRadioGroup.EdgeOuter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRadioGroup.EdgeOuter
 Summary
@@ -60,35 +67,38 @@ Summary
 Description
   Use EdgeOuter to provide the control with a three-dimensional beveled look. A control has two
   borders on each side, an outer border drawn next to the outer edge, and an inner border drawn
-  inside the outer border. EdgeOuter specifies the appearance of the outer border. It can be
-  raised (esRaised), lowered (esLowered), or left off altogether (esNone).
+  inside the outer border. EdgeOuter specifies the appearance of the outer border. It can be raised
+  (esRaised), lowered (esLowered), or left off altogether (esNone).
 
   Use EdgeOuter with EdgeInner to give the component a three-dimensional look.
 Note
-	The EdgeInner property has an effect only on the sides specified by the EdgeBorders property.
+  The EdgeInner property has an effect only on the sides specified by the EdgeBorders property.
 See Also
-  EdgeBorders, EdgeInner
+  TJvRadioGroup.EdgeBorders, TJvRadioGroup.EdgeInner
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRadioGroup.HintColor
 Summary
-  Determines the color of the hint boxes for the Help Hints for the radio group.
+  Determines the color of the hint boxes for the Help Hints for the <xxx>.
 Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
 See Also
   HotTrack
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRadioGroup.OnItemHint
 Summary
   Occurs when a hint should be displayed for a radio button item.
 Description
-  \Write a handler for OnItemHint when you want to provide individual hints for the radio buttons
-  in the group.
+  \Write a handler for OnItemHint when you want to provide individual hints for the radio buttons in
+  the group.
 Parameters
   Sender   - The control that triggered the event.
   Index    - Specifies the 0-based index of the item to provide a hint for.
   AHint    - Specifies the hint to display. This defaults to the control's own hint.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRadioGroup.ReadOnly
 Summary
@@ -97,9 +107,9 @@ Description
   Set ReadOnly to true to prevent the user from changing the checked item in the group.
 See Also
   Enabled
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRadioGroupHintEvent
 <TITLE TJvRadioGroupHintEvent type>
 <COMBINE TJvRadioGroup.OnItemHint>
-
 

@@ -16,17 +16,18 @@ JVCLInfo
 Summary
   Registers a system wide hot key combination.
 Description
-  The TJvApplicationHotKey components allows you to register a system wide hot key
-  combination. When the key combination is pressed an event is generated.
+  The TJvApplicationHotKey components allows you to register a system wide hot key combination. When
+  the key combination is pressed an event is generated.
 
   To use this component you should:
 
   * Drop a TJvApplicationHotKey component on a form or data module.
   * Assign a <B>unique</B> <LINK TJvApplicationHotKey.HotKey, hot key combination> to the component.
   * <LINK TJvApplicationHotKey.OnHotKey, Assign a handler> to the notification event.
-  * You may assign a handler to OnHotKeyRegisterFailed to respond when the registration of the hot key
-    combination failed.
+  * You may assign a handler to OnHotKeyRegisterFailed to respond when the registration of the hot
+     key combination failed.
   * Activate the component by setting property Active to true.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvApplicationHotKey.Active
 Summary
@@ -36,7 +37,8 @@ Description
   the event will be generated for the key combination, otherwise the key combination is not
   registered and no event will be generated for the key combination.
 See Also
-  HotKey, OnHotKey
+  TJvApplicationHotKey.HotKey, TJvApplicationHotKey.OnHotKey
+
 ----------------------------------------------------------------------------------------------------
 @@TJvApplicationHotKey.DoHotKey
 Summary
@@ -45,16 +47,18 @@ Description
   DoHotKey is called when the registered key combination is pressed. DoHotKey will generate the
   OnHotKey event if a handler is assigned.
 See Also
-  OnHotKey
+  TJvApplicationHotKey.OnHotKey
+
 ----------------------------------------------------------------------------------------------------
 @@TJvApplicationHotKey.HotKey
 Summary
   The hot key combination to register.
 Description
-  HotKey is the hot key combination to register. The hot key can be changed even if the component
-  is activated. The old key combination will be unregistered and the new combination registered.
+  HotKey is the hot key combination to register. The hot key can be changed even if the component is
+  activated. The old key combination will be unregistered and the new combination registered.
 See Also
-  Active, OnHotKey
+  TJvApplicationHotKey.Active, TJvApplicationHotKey.OnHotKey
+
 ----------------------------------------------------------------------------------------------------
 @@TJvApplicationHotKey.OnHotKey
 Summary
@@ -62,7 +66,8 @@ Summary
 Description
   \Write an OnHotKey handler to take action when the HotKey key combination is pressed.
 See Also
-  Active, HotKey
+  TJvApplicationHotKey.Active, TJvApplicationHotKey.HotKey
+
 ----------------------------------------------------------------------------------------------------
 @@TJvApplicationHotKey.OnHotKeyRegisterFailed
 <COMBINEWITH TJvHotKeyRegisterFailed>
@@ -78,6 +83,8 @@ Description
 Parameters
   Sender - The object that triggered the event.
   HotKey - Specifies a new hot key combination.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvHotKeyRegisterFailed
 <TITLE TJvHotKeyRegisterFailed type>
+

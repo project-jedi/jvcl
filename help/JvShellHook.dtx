@@ -11,6 +11,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thornqvist
+
+
 ----------------------------------------------------------------------------------------------------
 @@GET_APPCOMMAND_LPARAM
 <TITLE GET_APPCOMMAND_LPARAM function>
@@ -20,7 +22,7 @@ Description
   The return value is the bits of the high-order word
   representing the application command. It can be one of the
   following values.
-<TABLE>
+  <TABLE>
   APPCOMMAND_BASS_BOOST               Toggle the bass boost on and off.
   APPCOMMAND_BASS_DOWN                Decrease the bass.
   APPCOMMAND_BASS_UP                  Increase the bass.
@@ -50,34 +52,38 @@ Description
   APPCOMMAND_VOLUME_DOWN              Lower the volume.
   APPCOMMAND_VOLUME_MUTE              Mute the volume.
   APPCOMMAND_VOLUME_UP                Raise the volume.
-</TABLE>
+  </TABLE>
 
   This function is a converted macro.
 Parameters
   lParam :  Specifies the value to be converted.
 See Also
-  TJvShellHook, <LINK GET_DEVICE_LPARAM>, <LINK GET_FLAGS_LPARAM>, <LINK GET_KEYSTATE_LPARAM>,
-  <LINK GET_MOUSEORKEY_LPARAM>
+  <LINK GET_DEVICE_LPARAM>, <LINK GET_FLAGS_LPARAM>, <LINK GET_KEYSTATE_LPARAM>, <LINK
+  GET_MOUSEORKEY_LPARAM>
+
 ----------------------------------------------------------------------------------------------------
 @@GET_DEVICE_LPARAM
 <TITLE GET_DEVICE_LPARAM function>
 Summary
   Retrieves the input device type from the specified LPARAM value.
 Description
-  The return value is the bit of the high-order word  representing the input device type. It can be one of the following values.
-<TABLE>
+  The return value is the bit of the high-order word  representing the input device type. It can be
+  one of the following values.
+  <TABLE>
   FAPPCOMMAND_KEY     User pressed a key.
   FAPPCOMMAND_MOUSE   User clicked a mouse button.
   FAPPCOMMAND_OEM     An unidentified hardware source generated the
                        event. It could be a mouse or a keyboard
                        event.
-</TABLE>
-  This function is identical to the <LINK GET_MOUSEORKEY_LPARAM> function. This function is a converted macro.
+  </TABLE>
+  This function is identical to the <LINK GET_MOUSEORKEY_LPARAM> function. This function is a
+  converted macro.
 Parameters
   lParam :  Specifies the value to be converted.
 See Also
-  TJvShellHook, <LINK GET_APPCOMMAND_LPARAM>, <LINK GET_FLAGS_LPARAM>, <LINK GET_KEYSTATE_LPARAM>,
-  <LINK GET_MOUSEORKEY_LPARAM>
+  <LINK GET_APPCOMMAND_LPARAM>, <LINK GET_FLAGS_LPARAM>, <LINK GET_KEYSTATE_LPARAM>, <LINK
+  GET_MOUSEORKEY_LPARAM>
+
 ----------------------------------------------------------------------------------------------------
 @@GET_FLAGS_LPARAM
 <TITLE GET_FLAGS_LPARAM function>
@@ -100,8 +106,9 @@ Description
 Parameters
   lParam :  Specifies the value to be converted.
 See Also
-  TJvShellHook, <LINK GET_APPCOMMAND_LPARAM>, <LINK GET_DEVICE_LPARAM>,
-  <LINK GET_KEYSTATE_LPARAM>, <LINK GET_MOUSEORKEY_LPARAM>
+  <LINK GET_APPCOMMAND_LPARAM>, <LINK GET_DEVICE_LPARAM>, <LINK GET_KEYSTATE_LPARAM>, <LINK
+  GET_MOUSEORKEY_LPARAM>
+
 ----------------------------------------------------------------------------------------------------
 @@GET_KEYSTATE_LPARAM
 <TITLE GET_KEYSTATE_LPARAM function>
@@ -126,8 +133,9 @@ Description
 Parameters
   lParam :  Specifies the value to be converted.
 See Also
-  TJvShellHook, <LINK GET_APPCOMMAND_LPARAM>, <LINK GET_DEVICE_LPARAM>,
-  <LINK GET_FLAGS_LPARAM>, <LINK GET_MOUSEORKEY_LPARAM>
+  <LINK GET_APPCOMMAND_LPARAM>, <LINK GET_DEVICE_LPARAM>, <LINK GET_FLAGS_LPARAM>, <LINK
+  GET_MOUSEORKEY_LPARAM>
+
 ----------------------------------------------------------------------------------------------------
 @@GET_MOUSEORKEY_LPARAM
 <TITLE GET_MOUSEORKEY_LPARAM function>
@@ -137,24 +145,26 @@ Description
   The return value is the bit of the high-order word
   representing the input device type. It can be one of the
   following values.
-<TABLE>
-FAPPCOMMAND_KEY     User pressed a key.
-FAPPCOMMAND_MOUSE   User clicked a mouse button.
-FAPPCOMMAND_OEM     An unidentified hardware source generated the
+  <TABLE>
+  FAPPCOMMAND_KEY     User pressed a key.
+  FAPPCOMMAND_MOUSE   User clicked a mouse button.
+  FAPPCOMMAND_OEM     An unidentified hardware source generated the
                      event. It could be a mouse or a keyboard
                      event.
-</TABLE>
+  </TABLE>
   This function is identical to the <LINK GET_DEVICE_LPARAM> function.
   This function is a converted macro.
 Parameters
   lParam :  Specifies the value to be converted.
 See Also
-  TJvShellHook, <LINK GET_APPCOMMAND_LPARAM>, <LINK GET_DEVICE_LPARAM>,
-  <LINK GET_FLAGS_LPARAM>, <LINK GET_KEYSTATE_LPARAM>
+  <LINK GET_APPCOMMAND_LPARAM>, <LINK GET_DEVICE_LPARAM>, <LINK GET_FLAGS_LPARAM>, <LINK
+  GET_KEYSTATE_LPARAM>
+
 ----------------------------------------------------------------------------------------------------
 @@PShellHookInfo
 <TITLE PShellHookInfo type>
 <COMBINE TShellHookInfo>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvShellHook
 <TITLEIMG TJvShellHook>
@@ -162,43 +172,46 @@ JVCLInfo
   GROUP=JVCL.Miscel
   FLAG=Component
 Summary
-  Wrapper component for the RegisterShellHookWindow and DeregisterShellHookWindow Windows API functions.
+  Wrapper component for the RegisterShellHookWindow and DeregisterShellHookWindow Windows API
+  functions.
 Description
   Wraps calls to RegisterShellHookWindow and DeregisterShellHookWindow into a simple to use component.
 
   RegisterShellHookWindow registers a specified shell window to receive certain messages for events
-  or notifications that can be useful to shell applications. The event messages received are
-  only those sent to the shell window associated with the specified window's desktop.
+  or notifications that can be useful to shell applications. The event messages received are only
+  those sent to the shell window associated with the specified window's desktop.
   Many of the messages are the same as those that can be received after calling the SetWindowsHookEx
-  function and specifying WH_SHELL for the hook type. The difference with RegisterShellHookWindow
-  is that the messages are received through the specified window's WindowProc and not through a
-  call back procedure.
+  function and specifying WH_SHELL for the hook type. The difference with RegisterShellHookWindow is
+  that the messages are received through the specified window's WindowProc and not through a call
+  back procedure.
 
   See MSDN (http://msdn.microsoft.com, search for "RegisterShellHookWindow") for more details
 Note
   The RegisterShellHookWindow and DeregisterShellHookWindow API functions may not be available on all
   versions of Windows. To detect if the API is available, set Active to true. If it remains true, the
   API is available. If it is reset to false, the API is not available.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvShellHook.Active
 Summary
   Specifies if shell messages are received and propagated to the event handler.
 Description
-  Use Active to specify whether the component receives shell messages or not. When Active is true, the
-  component calls the RegisterShellWindow API function to register its own message handler. Messages
-  received are relayed to the user through the OnShellMessage event handler.
+  Use Active to specify whether the component receives shell messages or not. When Active is true,
+  the component calls the RegisterShellWindow API function to register its own message handler.
+  Messages received are relayed to the user through the OnShellMessage event handler.
 See Also
-  OnShellMessage
+  TJvShellHook.OnShellMessage
+
 ----------------------------------------------------------------------------------------------------
 @@TJvShellHook.OnShellMessage
 Summary
   Occurs when a shell message is received.
 Description
-  Write a handler for the OnShellMessage event to take specific action when a shell message is received
-  by the component. Depending on the value of Msg.wParam, Msg.lParam contains various data as
-  described in the table below.
+  Write a handler for the OnShellMessage event to take specific action when a shell message is
+  received by the component. Depending on the value of Msg.wParam, Msg.lParam contains various data
+  as described in the table below.
 
-<TABLE>
+  <TABLE>
   wParam                       lParam
   ---------------------------  ----------------------------------------------
   HSHELL_GETMINRECT            A pointer to a SHELLHOOKINFO structure.
@@ -223,25 +236,32 @@ Description
                                 WM_APPCOMMAND in the Windows API Help and use
                                 the function <LINK GET_APPCOMMAND_LPARAM> to extract
                                 the parameter.
-</TABLE>
+  </TABLE>
 Parameters
   Sender :  The object that called the event.
   Msg :     The message received. lParam should be interpreted according to the value of wParam.
 See Also
-  Active, <LINK GET_APPCOMMAND_LPARAM>
+  <LINK GET_APPCOMMAND_LPARAM>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvShellHookEvent
 <TITLE TJvShellHookEvent type>
 <COMBINE TJvShellHook.OnShellMessage>
+
 ----------------------------------------------------------------------------------------------------
 @@TShellHookInfo
 <TITLE TShellHookInfo type>
 Summary
   Record type that contains info about a window's size.
 Description
-  TShellHookInfo is used by the Msg parameter of the OnShellMessage event in TJvShellHook. When
-  the wParam of the message is HSHELL_GETMINRECT, lParam contains a TShellHookInfo record.
+  TShellHookInfo is used by the Msg parameter of the OnShellMessage event in TJvShellHook. When the
+  wParam of the message is HSHELL_GETMINRECT, lParam contains a TShellHookInfo record.
+
+----------------------------------------------------------------------------------------------------
 @@TShellHookInfo.hwnd
-  Handle to the window.
+Handle to the window.
+
+----------------------------------------------------------------------------------------------------
 @@TShellHookInfo.rc
-  A rect describing the size of the window.
+A rect describing the size of the window.
+

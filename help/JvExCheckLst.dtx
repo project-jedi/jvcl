@@ -9,18 +9,22 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Andreas Hausladen
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCheckListBox
 Summary
   Base class for extended check list boxes.
 Description
   TJvExCheckListBox is a base class for classes in the JVCL library that descend from TCheckListBox.
+  
+  Do not create instances of TJvExCheckListBox. The TJvCheckListBox class provides a generic
+  implementation of TJvExCheckListBox. You can also create your own descendant class.
 
-  Do not create instances of TJvExCheckListBox. The TJvCheckListBox class provides a generic implementation
-  of TJvExCheckListBox. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCheckListBox.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCheckListBox.HintColor
 Summary
@@ -29,6 +33,7 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCheckListBox.MouseOver
 Summary
@@ -36,7 +41,8 @@ Summary
 Description
   Read MouseOver to determine whether the mouse pointer is over the list box.
 See Also
-  OnMouseEnter, OnMouseLeave
+  TJvExCheckListBox.OnMouseEnter, TJvExCheckListBox.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCheckListBox.OnMouseEnter
 Summary
@@ -45,7 +51,8 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   list box.
 See Also
-  OnMouseLeave
+  TJvExCheckListBox.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCheckListBox.OnMouseLeave
 Summary
@@ -55,10 +62,12 @@ Description
   list box. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  OnMouseEnter
+  TJvExCheckListBox.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvExCheckListBox.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+

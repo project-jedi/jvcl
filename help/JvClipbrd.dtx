@@ -4,7 +4,7 @@
 @@JvClipbrd.pas
 Summary
   Contains the TJvClipboard component.
-  <INCLUDE JVCL.UnitText.dtx>
+<INCLUDE JVCL.UnitText.dtx>
 Author
   Olivier Sannier
 
@@ -14,7 +14,6 @@ Author
 <TITLE JvClipboard function>
 Summary
   Returns an instance of TJvClipboard to be used by the application.
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvClipboard
@@ -30,7 +29,6 @@ Description
 See Also
   JvClipboard
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvClipboard.AddDelayed
 Summary
@@ -40,8 +38,7 @@ Description
 Parameters
   Format - The ID of the clipboard format to add. Must have been registered before
 See Also
-  RegisterFormat, OnRenderFormat
-
+  TJvClipboard.OnRenderFormat, TJvClipboard.RegisterFormat
 
 ----------------------------------------------------------------------------------------------------
 @@TJvClipboard.AsWideText
@@ -51,12 +48,10 @@ Description
   This property only returns a string if the CF_UNICODETEXT format is available in the clipboard.
   Copying a text in the clipboard will normally automatcially provide this format too.
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvClipboard.Clear
 Summary
   Clears the clipboard
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvClipboard.Close
@@ -66,8 +61,7 @@ Description
   The clipboard is effectively closed when the internal reference counter reaches 0.
   Hence, for every call to Open, there must be a call to Close
 See Also
-  Open
-
+  TJvClipboard.Open
 
 ----------------------------------------------------------------------------------------------------
 @@TJvClipboard.DestroyHandle
@@ -88,8 +82,7 @@ Description
   where the OnRenderFormat event handler is set (eg, the main form) as this component is likely to be
   destroyed before the clipboard itself.
 See Also
-  Handle, OnRenderFormat
-
+  TJvClipboard.Handle, TJvClipboard.OnRenderFormat
 
 ----------------------------------------------------------------------------------------------------
 @@TJvClipboard.GetBuffer
@@ -109,8 +102,7 @@ Parameters
 Return value
   True if data was successfuly retrieved, else use Windows.GetLastError to get the error code
 See Also
-  OnRenderFormat
-
+  TJvClipboard.OnRenderFormat
 
 ----------------------------------------------------------------------------------------------------
 @@TJvClipboard.Handle
@@ -118,7 +110,6 @@ Summary
   The handle to the underlying window handling the delayed rendering messages
 Description
   You shouldn't have to use this property directly, unless you want to use raw Win32 API calls.
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvClipboard.OnRenderFormat
@@ -144,8 +135,7 @@ Parameters
   FreeMem(buffer) after having copied the data in the system clipboard. This is useful only if you
   allocated the buffer using GetMem()
 See Also
-  AddDelayed
-
+  TJvClipboard.AddDelayed
 
 ----------------------------------------------------------------------------------------------------
 @@TJvClipboard.Open
@@ -155,8 +145,7 @@ Description
   If the clipboard is already opened, this has no effect but to increment the internal reference
   counter. As a result, every call to Open must have an associated call to Close
 See Also
-  Close
-
+  TJvClipboard.Close
 
 ----------------------------------------------------------------------------------------------------
 @@TJvClipboard.RegisterFormat
@@ -168,7 +157,6 @@ Parameters
   Name - The name of the format
 Return value
   The format identifier
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvClipboard.SetBuffer@Word@Pointer@Integer
@@ -183,8 +171,7 @@ Parameters
   Buffer - The buffer containing the data
   Size   - The size of the data in the buffer
 See Also
-  AddDelayed, SetComponent, SetTextBuf, OnRenderFormat
-
+  SetComponent, SetTextBuf
 
 ----------------------------------------------------------------------------------------------------
 @@TJvClipboard.SetComponent@TComponent@Boolean
@@ -198,8 +185,7 @@ Parameters
   Component - The component to copy in the clipboard
   Delayed   - If True, delayed rendering will be used
 See Also
-  AddDelayed, SetBuffer, SetTextBuf, OnRenderFormat
-
+  SetBuffer, SetTextBuf
 
 ----------------------------------------------------------------------------------------------------
 @@TJvClipboard.SetTextBuf@PChar@Boolean
@@ -213,12 +199,10 @@ Parameters
   Buffer  - The text buffer. A final #0 is expected to stop the string
   Delayed - If True, delayed rendering will be used
 See Also
-  AddDelayed, SetBuffer, SetComponent, OnRenderFormat
-
+  SetBuffer, SetComponent
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRenderFormatEvent
 <TITLE TJvRenderFormatEvent type>
 <COMBINE TJvClipboard.OnRenderFormat>
-
 

@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpellChecker
 Summary
@@ -16,8 +18,9 @@ Description
   TJvSpellChecker can spell check any text. TJvSpellChecker is a non-visual component and does not
   display any dialogs. To to implement a spell checking dialog, see the demo included with JVCL for
   an example on how to do that.
-
+  
   TJvSpellChecker implements the IJvSpellIntf interface.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpellChecker.Delimiters
 Summary
@@ -25,7 +28,8 @@ Summary
 Description
   Use Delimiters to set or \read the characters that are used to delimit text.
 See Also
-  Text
+  TJvSpellChecker.Text
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpellChecker.Dictionary
 Summary
@@ -34,18 +38,21 @@ Description
   Use Dictionary to set and \read the base dictionary used for spell checking. This value should
   point to a file on disk. If no dictionary is set, no spell checking can take place.
 See Also
-  UserDictionary
+  TJvSpellChecker.UserDictionary
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpellChecker.Ignores
 Summary
   Contains a list of words to ignore.
 Description
   Ignores is used for words that should be ignored in the current session. To make an ignored word
-  persistent, you should call UserDictionary.Add and then save/load the UserDictionary to storage as needed.
-
+  persistent, you should call UserDictionary.Add and then save/load the UserDictionary to storage as
+  needed.
+  
   In a typical spell checking application, Ignores is used to implement "Ignore All" functionality.
 See Also
-  Text, IJvSpellChecker.GetCurrentWord
+  TJvSpellChecker.Text, IJvSpellChecker.GetCurrentWord
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpellChecker.OnCanIgnore
 Summary
@@ -59,35 +66,42 @@ Parameters
   Sender    - The IJvSpellChecker implementor
   Value     - The string to check.
   CanIgnore - Set to true to skip the word, false to handle it normally.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpellChecker.SpellChecker
 Summary
   Reference to the implemented interface.
 Description
-  Use SpellChecker to access the IJvSpellChecker interface and its methods and properties. For example,
-  TJvSpellChecker does not surface any of the IJvSpellChecker methods like Seek, Next or GetCurrentWord.
+  Use SpellChecker to access the IJvSpellChecker interface and its methods and properties. For
+  example,
+  TJvSpellChecker does not surface any of the IJvSpellChecker methods like Seek, Next or
+  GetCurrentWord.
   To access these in your application, use the SpellChecker property.
 See Also
   IJvSpellChecker
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpellChecker.Text
 Summary
   The Text to spell check.
 Description
-  Use Text to set the text to spell check. When Text is changed, spell checking is reset to the start of the
-  string.
+  Use Text to set the text to spell check. When Text is changed, spell checking is reset to the start
+  of the string.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpellChecker.UserDictionary
 Summary
   A sorted list of words the user has selected as his own words.
 Description
   UserDictionary is used to manage the users own words. The main difference between a dictionary and a
-  user dictionary is that you cannot change the content of the main dictionary once loaded (without reloading it).
-
-  In addition, UserDictionary contains a list of sorted words, one per line, whereas the
-  dictionary might be in any format.
-
-  Use UserDictionary to create a list of words that the user has chosen as his own word. For example, in
-  a typical spell checking application, this property can be used to implement "Add" functionality.
+  user dictionary is that you cannot change the content of the main dictionary once loaded (without
+  reloading it).
+  
+  In addition, UserDictionary contains a list of sorted words, one per line, whereas the dictionary
+  might be in any format.
+  
+  Use UserDictionary to create a list of words that the user has chosen as his own word. For example,
+  in a typical spell checking application, this property can be used to implement "Add" functionality.
 See Also
-  Dictionary, Ignores
+  TJvSpellChecker.Dictionary, TJvSpellChecker.Ignores
+

@@ -8,6 +8,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView
 <TITLEIMG TJvRegistryTreeView>
@@ -17,8 +19,9 @@ JVCLInfo
 Summary
   Treeview that displays the hives and subnodes of the registry.
 Description
-  Use a TJvRegistryTreeview as a simple way of displaying the content of the registry with no
-  coding necessary.
+  Use a TJvRegistryTreeview as a simple way of displaying the content of the registry with no coding
+  necessary.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.AddBinaryValue
 Summary
@@ -34,6 +37,7 @@ Return value
   Returns the newly created node or nil if no node was created.
 See Also
   <LINK AddDWORDValue>, <LINK AddStringValue>, <LINK AddKey>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.AddDWORDValue
 Summary
@@ -48,6 +52,7 @@ Return value
   Returns the newly created node or nil if no node was created.
 See Also
   <LINK AddBinaryValue>, <LINK AddStringValue>, <LINK AddKey>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.AddKey
 Summary
@@ -61,6 +66,7 @@ Return value
   Returns the newly created node or nil if no node was created.
 See Also
   <LINK AddBinaryValue>, <LINK AddDWORDValue>, <LINK AddStringValue>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.AddStringValue
 Summary
@@ -75,15 +81,17 @@ Return value
   Returns the newly created node or nil if no node was created.
 See Also
   <LINK AddBinaryValue>, <LINK AddDWORDValue>, <LINK AddKey>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.CurrentKey
 Summary
   Specifies the currently select key (node) in the treeview.
 Description
-  \Read CurrentKey to access the HKEY value of the currently selected key. You can use the returned value
-  as a parameter to Windows API functions that expect a HKEY as parameter.
+  \Read CurrentKey to access the HKEY value of the currently selected key. You can use the returned
+  value as a parameter to Windows API functions that expect a HKEY as parameter.
 See Also
-  CurrentPath, ShortPath
+  TJvRegistryTreeView.CurrentPath, TJvRegistryTreeView.ShortPath
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.CurrentPath
 Summary
@@ -92,39 +100,43 @@ Description
   \Read CurrentPath to get the full path to the currently selected node in the tree, including the
   text on the "My Computer" root item. Nodes are delimited by '\' characters.
 See Also
-  CurrentKey, ShortPath, RootCaption
+  TJvRegistryTreeView.CurrentKey, TJvRegistryTreeView.RootCaption, TJvRegistryTreeView.ShortPath
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.DefaultCaption
 Summary
   Specifies the caption for items with empty names (default items) when displayed in the ListView.
 Description
-  Use DefaultCaption to change the text displayed in the ListView when an item doesn't have a name
-  of its own. Registry keys always have one, unnamed, item and this property is used to set a
-  display name for it.
+  Use DefaultCaption to change the text displayed in the ListView when an item doesn't have a name of
+  its own. Registry keys always have one, unnamed, item and this property is used to set a display
+  name for it.
 See Also
-  DefaultNoValueCaption
+  TJvRegistryTreeView.DefaultNoValueCaption
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.DefaultNoValueCaption
 Summary
   Specifies the text to display when an unnamed item doesn't have a value.
 Description
-  Use DefaultNoValueCaption to set the text to display in ListView when an unnamed item doesn't
-  have a value. This string is only used when the value of the unnamed item is empty.
+  Use DefaultNoValueCaption to set the text to display in ListView when an unnamed item doesn't have
+  a value. This string is only used when the value of the unnamed item is empty.
 See Also
-  DefaultCaption
+  TJvRegistryTreeView.DefaultCaption
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.Items
 Summary
   Lists the individual nodes that appear in the tree view control.
 Description
-  Individual nodes in a tree view are TTreeNode objects. These individual nodes can be accessed by
-  using the Items property along with the item's index into the tree view. The Items property
-  if this component should be considered as read-only although you can add new nodes in code.
+  Individual nodes in a tree view are TTreeNode objects. These individual nodes can be accessed by using the Items property along with th
+   item's index into the tree view. The Items property if this component should be considered as
+  read-only although you can add new nodes in code.
 Note
-  Adding new nodes using Items, will not affect the registry. To add new keys and values to the registry
-  use the functions provided specifically by the TJvRegistryTreeview.
+  Adding new nodes using Items, will not affect the registry. To add new keys and values to the
+  registry use the functions provided specifically by the TJvRegistryTreeview.
 See Also
   <LINK AddKey>, <LINK AddBinaryValue>, <LINK AddDWORDValue>, <LINK AddStringValue>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.ListView
 Summary
@@ -133,28 +145,32 @@ Description
   Assign a listview to the ListView property to have it automatically populated when the selected
   node in the treeview changes. If you display the items in report mode, add columns to the listview
   with the following names: "\Name", "\Value", "\Type". The "\Type" column doesn't have to be added
-  if you don't want to display the data type for items. If the listview is assigned, some items
-  are given the text values specified by DefaultCaption and DefaultNoValueCaption.
+  if you don't want to display the data type for items. If the listview is assigned, some items are
+  given the text values specified by DefaultCaption and DefaultNoValueCaption.
 See Also
-  DefaultCaption, DefaultNoValueCaption
+  TJvRegistryTreeView.DefaultCaption, TJvRegistryTreeView.DefaultNoValueCaption
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.LoadKey
 Summary
-  Creates a subkey under the root key and loads registry information from a file into the newly created subkey.
+  Creates a subkey under the root key and loads registry information from a file into the newly
+  created subkey.
 Description
-  Call LoadKey to:
-  1.  \Create a new subkey under the root key, and
-  2.  Load registry information from a file into the subkey. Registry information can include data
-       values, subkeys, and data values for those subkeys.
-
+  Call LoadKey to: 1.  \Create a new subkey under the root key, and 2.  Load registry information
+  from a file into the subkey. Registry information can include data      values, subkeys, and data
+  values for those subkeys.
+  
   LoadKey is intended to simplify creation of a key, its values and subkeys, and the values for those
   subkeys in a single operation. A key, its subkeys, and all data values of the key and its
-  subkeys is called a hive. Rather than creating each key and value separately, an application can read
-  a hive from a file. This is especially useful for applications that users can reconfigure at run time.
+  subkeys is called a hive. Rather than creating each key and value separately, an application can
+  read a hive from a file. This is especially useful for applications that users can reconfigure at
+  run time.
 Parameters
-  Filename - The location of the file containing registry information to store in the subkey. The file
-              specified by FileName must be one previously created using the <LINK SaveKey> function or the
-              RegSaveKey Windows API function. On systems that use a file allocation table (FAT), FileName
+  Filename - The location of the file containing registry information to store in the subkey. The
+  file             specified by FileName must be one previously created using the <LINK SaveKey>
+  function or the
+              RegSaveKey Windows API function. On systems that use a file allocation table (FAT),
+  FileName
               cannot include an extension.
 Return value
   Returns true if the data was successfully loaded.
@@ -162,17 +178,18 @@ Note
   The key to load data into is determined by the CurrentKey property.
 See Also
   <LINK SaveKey>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.RefreshNode
 Summary
   Updates the node's data.
 Description
-  Call RefreshNode to refresh the display for the selected node. To re-read all data from the registry,
-  set Node to nil. Calling RefreshNode will:
-    1. \Delete the subnodes in the treeview, and
+  Call RefreshNode to refresh the display for the selected node. To re-read all data from the
+  registry, set Node to nil. Calling RefreshNode will:   1. \Delete the subnodes in the treeview, and
     2. Re-read all the data from the registry again
 Parameters
   Node - The node to refresh
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.RegistryKeys
 Summary
@@ -181,8 +198,9 @@ Description
   Set RegistryKeys to define what nodes are displayed in the treeview. If RegistryKeys is set to [],
   nothing will be displayed. The default is to display HKEY_LOCAL_MACHINE and HKEY_LOCAL_USER.
 Note
-  Not all available values are available on all versions of Windows. If a specific hive is not found, it
-  is silently skipped.
+  Not all available values are available on all versions of Windows. If a specific hive is not found,
+  it is silently skipped.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.RootCaption
 Summary
@@ -190,27 +208,30 @@ Summary
 Description
   The root of the treeview displays a "My Computer" icon. This node is not an actual node in the
   registry but is provided to emulate the way the regedit.exe application displays the registry.
-  Use RootCaption to change the text displayed for this node. By default, the text is set to "My Computer".
+  Use RootCaption to change the text displayed for this node. By default, the text is set to "My
+  Computer".
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.SaveKey
 Summary
   Opens the specified key with the security access value KEY_ALL_ACCESS and saves the specified key
   and all of its subkeys and values to a hive file.
 Description
-  Call SaveKey to open a key with a security access value of KEY_ALL_ACCESS, and save the key
-  and its subkeys and data values to a hive file. A hive is a discrete collection of keys,
-  subkeys, and values that is rooted at the top of the registry hierarchy.
-
+  Call SaveKey to open a key with a security access value of KEY_ALL_ACCESS, and save the key and its
+  subkeys and data values to a hive file. A hive is a discrete collection of keys, subkeys, and
+  values that is rooted at the top of the registry hierarchy.
+  
   The key to save is read from the CurrentKey property.
-
+  
   Files created by SaveKey can be passed to the <LINK LoadKey> function.
 Parameters
-  Filename - the file into which to save the key information. It must be the name of a new file that
-              does not already exist. On FAT file systems FileName cannot include an extension.
+  Filename - the file into which to save the key information. It must be the name of a new file that 
+             does not already exist. On FAT file systems FileName cannot include an extension.
 Return value
   If SaveKey is successful it returns True.
 See Also
   <LINK LoadKey>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvRegistryTreeView.ShortPath
 Summary
@@ -219,4 +240,5 @@ Description
   Use ShortPath when you need to retrieve a path string to the currently selected node. ShortPath is
   just like CurrentPath but does not include the value of the "My Computer" item in the string.
 See Also
-  CurrentPath
+  TJvRegistryTreeView.CurrentPath
+

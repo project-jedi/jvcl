@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TBalance
 <TITLE TBalance type>
@@ -16,6 +18,7 @@ Description
   Allows to set the Balance property to values 0..100.
 See Also
   TJvSoundValue.Balance
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundControl
 <TITLEIMG TJvSoundControl>
@@ -27,51 +30,55 @@ Summary
 Description
   Use TJvSoundControl to change the balance or volume of output devices. TJvSoundControl has three
   properties that describe output devices:
-  
-  * Cd, the first auxiliary output device available on your system, usually the CD audio 
-    output from a CD-ROM drive. 
+
+  * Cd, the first auxiliary output device available on your system, usually the CD audio   output
+    from a CD-ROM drive.
   * Midi, the first MIDI output device available on your system.
   * Wave, the first waveform device available on your system.
 
   These properties all have a Balance and Volume property, which can be used to change the balance
   and volume of these devices.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundControl.Cd
 Summary
   Contains information about the first auxiliary output device available on your system.
 Description
   Access Cd at runtime to view and set volume and balance of the first auxiliary output device
-  available on your system dynamically (at design time use the object inspector to set the 
-  properties of Cd). 
-  
-  Auxiliary audio devices are audio devices whose output is mixed with the MIDI and waveform-audio 
-  output devices in a multimedia computer. An example of an auxiliary audio device is the CD audio 
-  output from a CD-ROM drive. 
+  available on your system dynamically (at design time use the object inspector to set the properties
+  of Cd).
+
+  Auxiliary audio devices are audio devices whose output is mixed with the MIDI and waveform-audio
+  output devices in a multimedia computer. An example of an auxiliary audio device is the CD audio
+  output from a CD-ROM drive.
 See Also
-  Midi, Wave
+  TJvSoundControl.Midi, TJvSoundControl.Wave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundControl.Create
 Summary
   Creates and initializes an instance of TJvSoundControl.
 Description
-  Call \Create to create an instance of TJvSoundControl at runtime. A TJvSoundControl component placed on a 
-  form at design time is created automatically.
+  Call \Create to create an instance of TJvSoundControl at runtime. A TJvSoundControl component
+  placed on a form at design time is created automatically.
 
-  Pass a single Component as a parameter to provide the control with an Owner that is responsible
-  for freeing it.
+  Pass a single Component as a parameter to provide the control with an Owner that is responsible for
+  freeing it.
 Parameters
   AOwner - The owner for the instance of TJvSoundControl.
 See Also
-  Destroy,
+  TJvSoundControl.Destroy
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundControl.Destroy
 Summary
   Destroys an instance of TJvSoundControl.
 Description
-  Do not call Destroy directly in an application. Instead, call Free. Free verifies that the 
+  Do not call Destroy directly in an application. Instead, call Free. Free verifies that the
   TJvSoundControl object is not nil and only then calls Destroy.
 See Also
-  Create
+  TJvSoundControl.Create
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundControl.LastError
 Summary
@@ -90,26 +97,27 @@ Description
   </TABLE>
 See Also
   TJvSoundValue.Balance, TJvSoundValue.Volume
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundControl.Midi
 Summary
   Contains information about the first MIDI output device available on your system.
 Description
-  Access Midi at runtime to view and set volume and balance of the first MIDI output device 
-  available on your system dynamically (at design time use the object inspector to set the 
-  properties of Midi). 
+  Access Midi at runtime to view and set volume and balance of the first MIDI output device available
+  on your system dynamically (at design time use the object inspector to set the properties of Midi).
 See Also
-  Cd, Wave
+  TJvSoundControl.Cd, TJvSoundControl.Wave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundControl.Wave
 Summary
   Contains information about the first waveform device available on your system.
 Description
-  Access Wave at runtime to view and set volume and balance of the first waveform device
-  available on your system dynamically (at design time use the object inspector to set the 
-  properties of Wave). 
+  Access Wave at runtime to view and set volume and balance of the first waveform device available on
+  your system dynamically (at design time use the object inspector to set the properties of Wave).
 See Also
-  Cd, Midi
+  TJvSoundControl.Cd, TJvSoundControl.Midi
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundValue
 Summary
@@ -117,19 +125,21 @@ Summary
 Description
   Use the properties of a TJvSoundValue to:
 
-  * Find or set the volume of a device. 
+  * Find or set the volume of a device.
   * Find or set the balance between the left and right volume of a device.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundValue.Balance
 Summary
   Specifies the balance between the left and right volume of a device.
 Description
-  Use Balance to find or set the balance between the left and right volume. The value for this property 
-  must be a number from 0 (only right) to 100 (only left).
-  
+  Use Balance to find or set the balance between the left and right volume. The value for this
+  property must be a number from 0 (only right) to 100 (only left).
+
   Use <LINK TJvSoundControl.LastError, LastError> to determine if the operation was successfull.
 See Also
-  Volume
+  TJvSoundValue.Volume
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundValue.Create
 Summary
@@ -138,8 +148,9 @@ Description
   Applications should not call \Create directly. A TJvSoundValue is created automatically by a
   TJvSoundControl for the first auxiliary output device, the first MIDI output device and the first
   waveform device available on your system.
-Params
+  Params
   AOwner - The owner for the instance of TJvSoundValue.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundValue.GetValue
 Summary
@@ -147,24 +158,28 @@ Summary
 Description
   Applications can’t call the protected GetValue method. A TJvSoundControl calls GetValue if a user
   sets property Balance or Volume.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundValue.Handle
 Summary
   Identifies the output device descriped by TJvSoundValue.
 Description
   Applications can’t use Handle. It's used internally by TJvSoundValue and TJvSoundControl.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundValue.OnRefresh
 Summary
   Occurs when the values of Balance or Volume needs to be refreshed.
 Description
   Applications can’t use OnRefresh. It's used internally by TJvSoundValue and TJvSoundControl.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundValue.OnUpdate
 Summary
   Occurs when the user changes the values of Balance or Volume.
 Description
   Applications can’t use OnUpdate. It's used internally by TJvSoundValue and TJvSoundControl.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundValue.SetValue
 Summary
@@ -174,20 +189,22 @@ Description
   reads property Balance or Volume.
 Parameters
   Vol - Determines the new values of Balance and Volume.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundValue.Volume
 Summary
   Specifies the volume of a device.
 Description
-  Use Volume to find or set the volume of a device. The value for this property must be a number from 
+  Use Volume to find or set the volume of a device. The value for this property must be a number from
   0 (silence) to 255 (maximum volume).
-  
-  Volume settings are interpreted logarithmically. This means the perceived volume increase is the same 
-  when increasing the volume level from 50 to 60 as it is from 40 to 50.
+
+  Volume settings are interpreted logarithmically. This means the perceived volume increase is the
+  same when increasing the volume level from 50 to 60 as it is from 40 to 50.
 
   Use <LINK TJvSoundControl.LastError, LastError> to determine if the operation was successfull.
 See Also
-  Balance
+  TJvSoundValue.Balance
+
 ----------------------------------------------------------------------------------------------------
 @@TJvVolumeRec
 <TITLE TJvVolumeRec type>
@@ -198,9 +215,16 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvVolumeRec.LongVolume
-  Description for LongVolume
+Description for LongVolume
+
+----------------------------------------------------------------------------------------------------
 @@TJvVolumeRec.LeftVolume
-  Description for LeftVolume
+Description for LeftVolume
+
+----------------------------------------------------------------------------------------------------
 @@TJvVolumeRec.RightVolume
-  Description for RightVolume
+Description for RightVolume
+

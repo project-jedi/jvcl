@@ -8,6 +8,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox
 <TITLEIMG TJvColorComboBox>
@@ -17,8 +19,9 @@ JVCLInfo
 Summary
   Combo box that enables the user to select a color from a drop-down list.
 Description
-  TJvColorComboBox is a TJvCustomComboBox descendant which enables the user to select a
-  color from a drop-down list.
+  TJvColorComboBox is a TJvCustomComboBox descendant which enables the user to select a color from a
+  drop-down list.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.AddColor
 Summary
@@ -29,7 +32,8 @@ Parameters
   AColor      - Specifies the color to add.
   DisplayName - The display text for the new color.
 See Also
-  ChangeColor, InsertColor
+  TJvColorComboBox.ChangeColor, TJvColorComboBox.InsertColor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.ChangeColor
 Summary
@@ -41,22 +45,25 @@ Parameters
   AColor      - Specifies the color to set at the specified index.
   DisplayName - The display text for the new color.
 See Also
-  AddColor, InsertColor
+  TJvColorComboBox.AddColor, TJvColorComboBox.InsertColor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.ColorDialogText
 Summary
   Specifies the display text for the special combo box item, used to select a color from a dialog.
 Description
-  Use ColorDialogText to specify a new \string for the combo box item, used to select a color from
-  a dialog. Thus, if the user selects this item, the component displays a dialog for selecting colors.
+  Use ColorDialogText to specify a new \string for the combo box item, used to select a color from a
+  dialog. Thus, if the user selects this item, the component displays a dialog for selecting colors.
 
-  If the user selects a color from the dialog, a new item is added to the combo box, with text specified
-  by NewColorText, and color as selected in the dialog.
+  If the user selects a color from the dialog, a new item is added to the combo box, with text
+  specified by NewColorText, and color as selected in the dialog.
 Note
   coCustomColors must be included in Options, otherwise the combobox doesn't display this special
   item.
 See Also
-  CustomColorCount, NewColorText, OnBeforeCustom, OnNewColor, Options
+  TJvColorComboBox.CustomColorCount, TJvColorComboBox.NewColorText, TJvColorComboBox.OnBeforeCustom,
+  TJvColorComboBox.OnNewColor, TJvColorComboBox.Options
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.ColorName
 Summary
@@ -67,10 +74,11 @@ Description
   the function might trigger the OnGetDisplayName event.
 Parameters
   AColor - Specifies the color to search a name for.
-Returns
+  Returns
   The current name for the color specified by AColor.
 See Also
-  FindColor
+  TJvColorComboBox.FindColor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.ColorNameMap
 Summary
@@ -78,22 +86,24 @@ Summary
 Description
   Use ColorNameMap to specify display names for colors. Each line must be in the form
   <AUTOLINK OFF>
+  
   <CODE>
-  Color=DisplayName
+
+  Color=DisplayName 
   </CODE>
   <AUTOLINK ON>
-  where Color is the symbolic constant defined for the color (such as clBlack or
-  clWindow) or if there is no such symbolic constant defined, the hex value of the color, formatted
-  as a \string such as '$02FF8800'. DisplayName specifies the display name for that color.
+  where Color is the symbolic constant defined for the color (such as clBlack or clWindow) or if
+  there is no such symbolic constant defined, the hex value of the color, formatted as a \string such
+  as '$02FF8800'. DisplayName specifies the display name for that color.
 
   For example, the following strings set the display names of clBlack and $00020202 to "Black" and
   "Almost Black", respectively:
   <AUTOLINK OFF>
   <CODE>
-  clBlack=Black
-  $00020202=Almost Black
+  clBlack=Black $00020202=Almost Black 
   </CODE>
   <AUTOLINK ON>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.ColorValue
 Summary
@@ -104,12 +114,14 @@ Description
 
   If ColorValue is set to a color that doesn't exists in the combo box's list, then the color is
   added to the list.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.ColorWidth
 Summary
   Specifies the width, in pixels, of the color boxes.
 Description
   Use ColorWidth to specify the width of the color boxes.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.CustomColorCount
 Summary
@@ -120,26 +132,30 @@ Note
   coCustomColors must be included in Options, otherwise the combobox doesn't allow colors to be added
   by the user.
 See Also
-  ColorDialogText, NewColorText, OnBeforeCustom, OnNewColor, Options
+  TJvColorComboBox.ColorDialogText, TJvColorComboBox.NewColorText, TJvColorComboBox.OnBeforeCustom,
+  TJvColorComboBox.OnNewColor, TJvColorComboBox.Options
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.DroppedDownWidth
 Summary
   Specifies the width, in pixels, of the drop-down list.
 Description
   Use DropDownWidth to customize the width of the drop-down list.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.FindColor
 Summary
   Returns the index of a specific color or -1 if not found.
 Description
-  Use FindColor to find the index of a specific color specified by the AColor parameter, in the
-  combo box's list.
+  Use FindColor to find the index of a specific color specified by the AColor parameter, in the combo
+  box's list.
 Parameters
   AColor - The color to search for.
-Returns
+  Returns
   The Index of the color specified by AColor, or -1 if not found.
 See Also
-  ColorName
+  TJvColorComboBox.ColorName
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.GetColors
 Summary
@@ -150,6 +166,7 @@ Description
   included in Options it also adds colors defined in the Windows Control panel, such as clMenu and
   clWindow. If coCustomColors is included in Options it also adds the special combo box items which
   allows the user to add custom colors to the combo box.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.GetCustomColors
 Summary
@@ -158,15 +175,17 @@ Description
   Use GetCustomColors to retrieve a list with the custom colors in the color combo box's list.
 Parameters
   AList - Specifies a list to be filled with custom colors.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.HiliteColor
 Summary
   Specifies the background color of the text that is focused.
 Description
-  Use HiliteColor to read or change the background color of the text that is focused. The focused line
-  is painted using highlight colors, to make it stand out.
+  Use HiliteColor to read or change the background color of the text that is focused. The focused
+  line is painted using highlight colors, to make it stand out.
 See Also
-  HiliteText
+  TJvColorComboBox.HiliteText
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.HiliteText
 Summary
@@ -175,7 +194,8 @@ Description
   Use HiliteText to specify the color of the text characters (as opposed to the background color) of
   the focused line. The focused text is painted using highlight colors, to make it stand out.
 See Also
-  HiliteColor
+  TJvColorComboBox.HiliteColor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.InsertColor
 Summary
@@ -187,7 +207,8 @@ Parameters
   AColor      - Specifies the color to insert.
   DisplayName - The display text for the new color.
 See Also
-  AddColor, ChangeColor
+  TJvColorComboBox.AddColor, TJvColorComboBox.ChangeColor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.NewColorText
 Summary
@@ -203,24 +224,29 @@ Note
   coCustomColors must be included in Options, otherwise the combobox doesn't allow colors to be added
   by the user.
 See Also
-  ColorDialogText, CustomColorCount, OnBeforeCustom, OnNewColor, Options
+  TJvColorComboBox.ColorDialogText, TJvColorComboBox.CustomColorCount,
+  TJvColorComboBox.OnBeforeCustom, TJvColorComboBox.OnNewColor, TJvColorComboBox.Options
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.OnBeforeCustom
 Summary
   Occurs before the special combo box item, used to select a color from a dialog, is added to the
   combo box's list.
 Description
-  Use OnBeforeCustom to respond when the special combo box item, with text as specified by ColorDialogText,
-  is added to the combo box's list.
+  Use OnBeforeCustom to respond when the special combo box item, with text as specified by
+  ColorDialogText, is added to the combo box's list.
 See Also
-  ColorDialogText, CustomColorCount, NewColorText, OnNewColor, Options
+  TJvColorComboBox.ColorDialogText, TJvColorComboBox.CustomColorCount, TJvColorComboBox.NewColorText,
+  TJvColorComboBox.OnNewColor, TJvColorComboBox.Options
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.OnGetDisplayName
 Summary
   Occurs immediately before an item is displayed in the color combobox.
 Description
   Use OnGetDisplayName to customize an item before it is displayed in the color combobox. Set the
-  values of the parameters in the event handler so that the item appears correctly when it is displayed.
+  values of the parameters in the event handler so that the item appears correctly when it is
+  displayed.
 Parameters
   Sender      - The TJvColorComboBox component that has sent this event.
   Index       - Specifies the zero-based position of the color item in the combo box's list.
@@ -228,6 +254,7 @@ Parameters
                 to display the color as specified in the combo box's list.
   DisplayName - Set DisplayName to specify a new display name for the to be displayed item. Leave
                 DisplayName unchanged to display the name as specified in the combo box's list.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.OnInsertColor
 Summary
@@ -239,12 +266,13 @@ Description
   Color indicates the new color the user wants to add.
 
   Parameter DisplayName specifies the display text for the new color. It consists of the NewColorText
-  and a number indicating the number of custom colors added by the user, so far. Alter DisplayName
-  to change the display text for the new color.
+  and a number indicating the number of custom colors added by the user, so far. Alter DisplayName to
+  change the display text for the new color.
 
   Set AllowAdd to False to disallow the user to add the color.
 See Also
-  AddColor, InsertColor
+  TJvColorComboBox.AddColor, TJvColorComboBox.InsertColor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.OnNewColor
 Summary
@@ -257,15 +285,17 @@ Description
   Color indicates the new color the user wants to add.
 
   Parameter DisplayName specifies the display text for the new color. It consists of the NewColorText
-  and a number indicating the number of custom colors added by the user, so far. Alter DisplayName
-  to change the display text for the new color.
+  and a number indicating the number of custom colors added by the user, so far. Alter DisplayName to
+  change the display text for the new color.
 
   Set AllowAdd to False to disallow the user to add the color.
 Note
   coCustomColors must be included in Options, otherwise the combobox doesn't allow colors to be added
   by the user.
 See Also
-  ColorDialogText, CustomColorCount, NewColorText, OnBeforeCustom, Options
+  TJvColorComboBox.ColorDialogText, TJvColorComboBox.CustomColorCount, TJvColorComboBox.NewColorText,
+  TJvColorComboBox.OnBeforeCustom, TJvColorComboBox.Options
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.Options
 Summary
@@ -279,7 +309,9 @@ Description
   * Enable the user to add colors to the combo box.
   * Add the system colors to the combo box.
 See Also
-  ColorDialogText, CustomColorCount, NewColorText, OnBeforeCustom, OnNewColor, TJvColorComboOption
+  TJvColorComboBox.ColorDialogText, TJvColorComboBox.CustomColorCount, TJvColorComboBox.NewColorText,
+  TJvColorComboBox.OnBeforeCustom, TJvColorComboBox.OnNewColor, TJvColorComboOption
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboOption
 <TITLE TJvColorComboOption type>
@@ -295,21 +327,33 @@ Description
   The following table lists the possible values:
 See Also
   TJvColorComboBox.Options
+
+----------------------------------------------------------------------------------------------------
 @@TJvColorComboOption.coText
-  Displays the name of the color.
+Displays the name of the color.
+
+----------------------------------------------------------------------------------------------------
 @@TJvColorComboOption.coHex
-  Displays the hexadecimal value of the color.
+Displays the hexadecimal value of the color.
+
+----------------------------------------------------------------------------------------------------
 @@TJvColorComboOption.coRGB
-  Displays the RGB value of the color.
+Displays the RGB value of the color.
+
+----------------------------------------------------------------------------------------------------
 @@TJvColorComboOption.coSysColors
-  Adds the system colors such as clWindow to the combo box.
+Adds the system colors such as clWindow to the combo box.
+
+----------------------------------------------------------------------------------------------------
 @@TJvColorComboOption.coCustomColors
-  Allows the user to add colors to the combo box, by selecting the special combo box item with text
-  ColorDialogText.
+Allows the user to add colors to the combo box, by selecting the special combo box item with text
+ColorDialogText.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboOptions
 <TITLE TJvColorComboOptions type>
 <COMBINE TJvColorComboOption>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox
 <TITLEIMG TJvFontComboBox>
@@ -319,9 +363,10 @@ JVCLInfo
 Summary
   Combo box that enables the user to select a font from a drop-down list.
 Description
-  TJvFontCombobox is a TJvCustomComboBox descendant which enables the user to select a
-  font from a drop-down list of the face names for all fonts supported by the
+  TJvFontCombobox is a TJvCustomComboBox descendant which enables the user to select a font from a
+  drop-down list of the face names for all fonts supported by the
   screen /installed on the system.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox.AddToMRU
 Summary
@@ -330,10 +375,12 @@ Description
   Call AddToMRU to programmatically add the currently selected font to the MRU list. This method only
   has effect if foMRU is in Options.
 Return value
-  0 if the item was added (MRU items are always added at the top) or the index of an existing
-  item in the MRU list.
+  0 if the item was added (MRU items are always added at the top) or the index of an existing item in
+  the MRU list.
 See Also
-  ClearMRU, MaxMRUCount, MRUCount, Options
+  TJvFontComboBox.ClearMRU, TJvFontComboBox.MaxMRUCount, TJvFontComboBox.MRUCount,
+  TJvFontComboBox.Options
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox.ClearMRU
 Summary
@@ -341,7 +388,8 @@ Summary
 Description
   Call ClearMRU to remove all fonts from the MRU list.
 See Also
-  AddToMRU
+  TJvFontComboBox.AddToMRU
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox.Device
 Summary
@@ -356,43 +404,49 @@ Description
   fdBoth        Retrieve from both the screen and the printer.
   </TABLE>
 See Also
-  UseImages
+  TJvFontComboBox.UseImages
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox.DroppedDownWidth
 Summary
   Specifies the width, in pixels, of the drop-down list.
 Description
   Use DropDownWidth to customize the width of the drop-down list.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox.FontName
 Summary
   Specifies the font name that is displayed in the edit box.
 Description
-  Use the FontName property to read the text of the combo box or specify a new \string for the FontName
-  value, to change the current selected font name.
+  Use the FontName property to read the text of the combo box or specify a new \string for the
+  FontName value, to change the current selected font name.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox.FontSubstitute
 Summary
   Returns a substitute font for a specific font.
 Description
   Call FontSubstitute to retrieve the name of a substitute font for a font specified by parameter
-  AFontName. This might be useful when a font is not installed on a system (for example, a font in
-  a specific locale).
+  AFontName. This might be useful when a font is not installed on a system (for example, a font in a
+  specific locale).
 Parameters
   AFontName - The name of the font to search a substitute for.
 Return value
-  Returns the name of a substitute font, or the value of parameter AFontName if no substitute is found.
+  Returns the name of a substitute font, or the value of parameter AFontName if no substitute is
+  found.
 See Also
-  FontName
+  TJvFontComboBox.FontName
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox.HiliteColor
 Summary
   Specifies the background color of the text that is focused.
 Description
-  Use HiliteColor to read or change the background color of the text that is focused. The focused line
-  is painted using highlight colors, to make it stand out.
+  Use HiliteColor to read or change the background color of the text that is focused. The focused
+  line is painted using highlight colors, to make it stand out.
 See Also
-  HiliteText
+  TJvFontComboBox.HiliteText
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox.HiliteText
 Summary
@@ -401,8 +455,9 @@ Description
   Use HiliteText to specify the color of the text characters (as opposed to the background color) of
   the focused line. The focused text is painted using highlight colors, to make it stand out.
 See Also
-MaxMRUCount
+  MaxMRUCount
   HiliteColor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox.MaxMRUCount
 Summary
@@ -413,7 +468,8 @@ Description
   To active the MRU list, include foMRU in Options. The MRu items are delimited by a double gray line
   beneath the last MRU item.
 See Also
-  AddToMRU, ClearMRU, MRUCount
+  TJvFontComboBox.AddToMRU, TJvFontComboBox.ClearMRU, TJvFontComboBox.MRUCount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox.MRUCount
 Summary
@@ -421,23 +477,25 @@ Summary
 Description
   Use MRUCount to \read the number of items currently in the MRU list.
 See Also
-  AddToMRU, ClearMRU, MaxMRUCount
+  TJvFontComboBox.AddToMRU, TJvFontComboBox.ClearMRU, TJvFontComboBox.MaxMRUCount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox.OnDrawPreviewEvent
 Summary
   Occurs when the control is about to draw a font preview.
 Description
-  Write a handler for the OnDrawPreviewEvent to selectively supress drawing of the font preview in the
-  control. OnDrawPreviewEvent is only called if foPreviewFont is in Options.
+  Write a handler for the OnDrawPreviewEvent to selectively supress drawing of the font preview in
+  the control. OnDrawPreviewEvent is only called if foPreviewFont is in Options.
 Parameters
   Sender       - The control that triggered the event.
   AFontName    - The name pf the fnt about to be drawn.
   APreviewText - The text to use to draw the preview.
   ATextWidth   - The approximate width required to draw the font name and the preview text.
-  DrawPreview  - Indicates whether to draw th epreview or not for this font. The default value is determined by
-                 comparing ATextWidth with ClientWidth.
+  DrawPreview  - Indicates whether to draw th epreview or not for this font. The default value is
+  determined by                comparing ATextWidth with ClientWidth.
 See Also
-  Options
+  TJvFontComboBox.Options
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox.Options
 Summary
@@ -446,12 +504,14 @@ Description
   Use the Options property to customize the appearance and functionality of the combo box.
 
   Use Options to
+
     * Specify which type of fonts the combobox should contain.
     * Display each font name in the combo box using the specific font.
     * Display a font preview in the control.
     * Display a MRU list at the top of the control.
 See Also
   TJvFontComboOptions
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox.Sorted
 Summary
@@ -464,7 +524,8 @@ Description
 Note
   If foMRU is in Options, Sorted is set to false and cannot be set to true.
 See Also
-  FontName, Options
+  TJvFontComboBox.FontName, TJvFontComboBox.Options
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox.UseImages
 Summary
@@ -481,6 +542,7 @@ Description
   <IMAGE FontType_Printer>    The printer supports downloading this TrueType font.
   <IMAGE FontType_Fixed>      Other font, such as vector or raster fonts.
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboOption
 <TITLE TJvFontComboOption type>
@@ -495,47 +557,67 @@ Description
   The following table lists the possible values:
 See Also
   TJvFontComboBox.Options
+
+----------------------------------------------------------------------------------------------------
 @@TJvFontComboOption.foAnsiOnly
-  Displays only fonts that use the Windows character set. Symbol fonts are not listed in the dialog.
+Displays only fonts that use the Windows character set. Symbol fonts are not listed in the dialog.
+
+----------------------------------------------------------------------------------------------------
 @@TJvFontComboOption.foTrueTypeOnly
-  Displays only TrueType fonts in the dialog. Other fonts are not listed.
+Displays only TrueType fonts in the dialog. Other fonts are not listed.
+
+----------------------------------------------------------------------------------------------------
 @@TJvFontComboOption.foFixedPitchOnly
-  Displays only monospaced fonts in the dialog. Proportionally spaced fonts are not listed, nor are
-  TrueType fonts that do not have the fixed-pitch flag set in the style header.
+Displays only monospaced fonts in the dialog. Proportionally spaced fonts are not listed, nor are
+TrueType fonts that do not have the fixed-pitch flag set in the style header.
+
+----------------------------------------------------------------------------------------------------
 @@TJvFontComboOption.foNoOEMFonts
-  Removes OEM fonts from the combo box. Lists only non-OEM fonts.
+Removes OEM fonts from the combo box. Lists only non-OEM fonts.
+
+----------------------------------------------------------------------------------------------------
 @@TJvFontComboOption.foOEMFontsOnly
-  Displays only OEM fonts in the combo box.
+Displays only OEM fonts in the combo box.
+
+----------------------------------------------------------------------------------------------------
 @@TJvFontComboOption.foScalableOnly
-  Displays only scalable fonts in the combo box. Non-scalable (bitmap) fonts are removed from the list.
+Displays only scalable fonts in the combo box. Non-scalable (bitmap) fonts are removed from the list.
+
+----------------------------------------------------------------------------------------------------
 @@TJvFontComboOption.foWysiWyg
-  Displays each font name in the combo box using the specific font.
+Displays each font name in the combo box using the specific font.
+
+----------------------------------------------------------------------------------------------------
 @@TJvFontComboOption.foDisableVerify
-  Allows you to insert a font name that doesn't exists in the combo box's list.
+Allows you to insert a font name that doesn't exists in the combo box's list.
+
+----------------------------------------------------------------------------------------------------
 @@TJvFontComboOption.foPreviewFont
-  Displays a font preview in the control. If set, the font name is drawn using the controls font and
-  a preview of the font is drawn using the string 'AbCdEfGhIj' right-aligned in the control. When this value is set,
-  foWysiWyg is disabled.
+Displays a font preview in the control. If set, the font name is drawn using the controls font and a preview of the font is drawn using the string 'AbCdEfGhIj' right-aligned in the control. When this value is set, foWysiWyg is disabled.
+
+----------------------------------------------------------------------------------------------------
 @@TJvFontComboOption.foMRU
-  Displays a MRU list of the last selected fonts at the top of the control. This value works in
-  comjuction with the MaxMRUCount property. When this property is set, Sorted cannot be set to true.
+Displays a MRU list of the last selected fonts at the top of the control. This value works in comjuction with the MaxMRUCount property. When this property is set, Sorted cannot be set to true.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboOptions
 <TITLE TJvFontComboOptions type>
 <COMBINE TJvFontComboOption>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvGetColorNameEvent
 <TITLE TJvGetColorNameEvent type>
 <COMBINE TJvColorComboBox.OnGetDisplayName>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvNewColorEvent
 <TITLE TJvNewColorEvent type>
 Summary
-  Type for event handlers that let an application respond before a color is added to a
-  color combo box.
+  Type for event handlers that let an application respond before a color is added to a color combo
+  box.
 Description
-  Use TJvNewColorEvent to conditionally prevent colors to be added to the color
-  combo box, or to alter the DisplayName of a new color.
+  Use TJvNewColorEvent to conditionally prevent colors to be added to the color combo box, or to
+  alter the DisplayName of a new color.
 Parameters
   Sender      - The TJvColorComboBox component that has sent this event.
   Color       - The new color added by the user.
@@ -543,3 +625,4 @@ Parameters
                  indicating the number of custom colors added by the user, so far. Alter DisplayName
                  to change the display text for the new color.
   AllowAdd    - Specifies whether the add should be permitted.
+

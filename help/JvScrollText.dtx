@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollText
 <TITLEIMG TJvScrollText>
@@ -22,6 +24,7 @@ Description
   * Use ScrollDirection to determine how text is scrolled within the control.
   * Use Delay to specify the interval between refresh events.
   * Set Active to true to scroll the text.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollText.Active
 Summary
@@ -29,7 +32,8 @@ Summary
 Description
   Set Active to true to scroll the text. Set Active to false to interrupt the scrolling.
 See Also
-  Pause, Reset, Unpause
+  TJvScrollText.Pause, TJvScrollText.Reset, TJvScrollText.Unpause
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollText.Alignment
 Summary
@@ -45,13 +49,15 @@ Description
     taRightJustify      Text is aligned at the right of the control.
   </TABLE>
 See Also
-  Items
+  TJvScrollText.Items
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollText.BackgroundColor
 Summary
   Specifies the background color of the control.
 Description
   Use Color to read or change the background color of the control.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollText.Delay
 Summary
@@ -63,7 +69,8 @@ Description
   Use Delay to specify any cardinal value as the interval between refresh events. The default value
   is 50 (1/20 second).
 See Also
-  Active
+  TJvScrollText.Active
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollText.Font
 Summary
@@ -72,7 +79,8 @@ Description
   To change to a new font, specify a new TFont object. To modify a font, change the value of the
   Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
 See Also
-  Items
+  TJvScrollText.Items
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollText.Items
 Summary
@@ -81,7 +89,8 @@ Description
   Use Items to add, insert, delete and move items. Items is of type TStringList. Use this item type
   to access its methods or properties to manipulate the items in the list.
 See Also
-  Font
+  TJvScrollText.Font
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollText.Pause
 Summary
@@ -89,7 +98,8 @@ Summary
 Description
   Call Pause to pause scrolling the text. Pause will decrease ScrollPixels until its equal to 0.
 See Also
-  Reset, ScrollPixels, Unpause
+  TJvScrollText.Reset, TJvScrollText.ScrollPixels, TJvScrollText.Unpause
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollText.Reset
 Summary
@@ -97,7 +107,8 @@ Summary
 Description
   Call \Reset to reposition the text to its start position.
 See Also
-  Pause, Unpause
+  TJvScrollText.Pause, TJvScrollText.Unpause
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollText.ScrollDirection
 Summary
@@ -113,26 +124,29 @@ Description
     drFromTop           Text is scrolled from top to bottom.
     drFromBottom        Text is scrolled from bottom to top.
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollText.ScrollPixels
 Summary
   Determines the amount of pixels the text is moved per scroll event.
 Description
-  Use ScrollPixels to set the number of pixels that the text will move per refresh. If ScrollPixels is 0,
-  the text on the control won't move at all.
+  Use ScrollPixels to set the number of pixels that the text will move per refresh. If ScrollPixels
+  is 0, the text on the control won't move at all.
 
   The default value for ScrollPixels is 1.
 See Also
   Delay
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollText.Unpause
 Summary
   Resumes scrolling the text.
 Description
-  Call Resume to resume scrolling the text. Resume will increase ScrollPixels until its equal to the value
-  specified by the user.
+  Call Resume to resume scrolling the text. Resume will increase ScrollPixels until its equal to the
+  value specified by the user.
 See Also
-  Pause, Reset, ScrollPixels
+  TJvScrollText.Pause, TJvScrollText.Reset, TJvScrollText.ScrollPixels
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollTextDirection
 <TITLE TJvScrollTextDirection type>
@@ -140,11 +154,20 @@ Summary
   Enumerates ways text can scroll on a control.
 Description
   Use the TJvScrollTextDirection type to specify how text should scroll on a control.
+
+----------------------------------------------------------------------------------------------------
 @@TJvScrollTextDirection.drFromLeft
-  Text is scrolled from left to right.
+Text is scrolled from left to right.
+
+----------------------------------------------------------------------------------------------------
 @@TJvScrollTextDirection.drFromRight
-  Text is scrolled from right to left.
+Text is scrolled from right to left.
+
+----------------------------------------------------------------------------------------------------
 @@TJvScrollTextDirection.drFromTop
-  Text is scrolled from top to bottom.
+Text is scrolled from top to bottom.
+
+----------------------------------------------------------------------------------------------------
 @@TJvScrollTextDirection.drFromBottom
-  Text is scrolled from bottom to top.
+Text is scrolled from bottom to top.
+

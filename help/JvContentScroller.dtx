@@ -7,166 +7,166 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvContentScrollDirection
 <TITLE TJvContentScrollDirection type>
 Summary
   Type used to specify the direction of the scrolling.
 Description
-  TJvContentScrollDirection is the type used to indicate the direction of the scrolling inside the control:
-  from bottom to top or from top to bottom.
+  TJvContentScrollDirection is the type used to indicate the direction of the scrolling inside the
+  control: from bottom to top or from top to bottom.
+
+----------------------------------------------------------------------------------------------------
 @@TJvContentScrollDirection.sdUp
-  Use sdUp to scroll contents from the bottom to the top.
+Use sdUp to scroll contents from the bottom to the top.
+
+----------------------------------------------------------------------------------------------------
 @@TJvContentScrollDirection.sdDown
-  Use sdUp to scroll contests from the top to the bottom.
+Use sdUp to scroll contests from the top to the bottom.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvContentScroller
 <TITLEIMG TJvContentScroller>
 JVCLInfo
   GROUP=JVCL.GridsAndContent.ScrollBoxes
   FLAG=Component
-
 Summary
   A TCustomPanel descendant that can scroll its content.
-
 Description
   Use TJvContentScroller as a container for controls to be scrolled on a specified area (the area of
   the TJvContentScroller).
-
+  
   You can control the speed and direction of the scrolling, and may specify a wave sound file to be
   played once or continuously while scrolling.
-
+  
   When the controls inside the TJvContentScroller reach its top (or bottom), they re-appear on the
   TJvContentScroller bottom (or top).
+
 ----------------------------------------------------------------------------------------------------
 @@TJvContentScroller.Active
 Summary
   Starts or stops the scrolling.
-
 Description
   You must set the Active property to true to start the scrolling inside the TJvContentScroller. Set
   Active to false to stop.
+  
+  It is possible to set Active to true on design time, and preview how the control will behave in run
+  time.
 
-  It is possible to set Active to true on design time, and preview how the control will behave in
-  run time.
 ----------------------------------------------------------------------------------------------------
 @@TJvContentScroller.LoopCount
 Summary
   Determines how many times the will do a loop with its contents.
-
 Description
   Use LoopCount to determine how many times the contents inside the control will loop, that is, how
   many times they will go from the top to the bottom or from the bottom to the top.
-
+  
   After LoopCount loops, the scrolling stops.
-
+  
   If you don't want to limit the looping, use LoopCount = -1.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvContentScroller.LoopMedia
 Summary
   Determines if MediaFile plays repedetely or not.
-
 Description
   When set to true, LoopMedia makes the sound specified by MediaFile (if there's one) be played
   repedetely while the contents are scrolled. If LoopMedia is set to false, the sound will be played
   only once.
-
 See Also
-  MediaFile 
+  TJvContentScroller.MediaFile
+
 ----------------------------------------------------------------------------------------------------
 @@TJvContentScroller.MediaFile
 Summary
   Specifies a sound file to be played while scrolling.
-
 Description
   Media file will have the name of a .wav file to be played while the scrolling is performed, or only
   once, on the beginning of the scrolling, depending on the LoopMedia value.
-
 See Also
-  LoopMedia
+  TJvContentScroller.LoopMedia
+
 ----------------------------------------------------------------------------------------------------
 @@TJvContentScroller.OnAfterScroll
 Summary
   Event called after each scrolling step.
-
 Description
   Write an OnAfterScroll event handler if you want to receive a notification after the execution of
   each scrolling step.
-
 See Also
-  OnBeforeScroll
+  TJvContentScroller.OnBeforeScroll
+
 ----------------------------------------------------------------------------------------------------
 @@TJvContentScroller.OnBeforeScroll
 Summary
   Event called before each scrolling step.
-
 Description
   Write an OnBeforeScroll event handler if you want to receive a notification before the execution of
   each scrolling step.
-
 See Also
-  OnAfterScroll
+  TJvContentScroller.OnAfterScroll
+
 ----------------------------------------------------------------------------------------------------
 @@TJvContentScroller.ScrollAmount
 Summary
   Determines in how many pixels the content of a TJvContentScroller will be moved in each step.
-
 Description
   Use the ScrollAmount to determine in how many pixels the content of a TJvContentScroller will be
   moved in each step, up or down, depending on the value of ScrollDirection.
-
+  
   You can think step as the move performed by the control continuosly, on the interval of
   ScrollIntervall miliseconds.
-
+  
   The higher is the value of ScrollAmount, the faster is the scrolling.
-
 See Also
-  ScrollIntervall, ScrollDirection
+  TJvContentScroller.ScrollDirection, TJvContentScroller.ScrollIntervall
+
 ----------------------------------------------------------------------------------------------------
 @@TJvContentScroller.ScrollContent
 Summary
   Function called on each scrolling step that performs the scrolling.
-
 Description
   ScrollContent is the function called inside the control's timer that performs the scrolling.
-
 Parameters
   Amount - Determines in how many pixels the controls will be moved by.
-
 See Also
-  ScrollAmount
+  TJvContentScroller.ScrollAmount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvContentScroller.ScrollDirection
 Summary
   Determines the direction of the scrolling.
-
 Description
   Use ScrollDirection to determine whether the scrolling will be done from the bottom to top, setting
   this to sdUp, or from top to bottom, setting this to sdDown.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvContentScroller.ScrollIntervall
 Summary
   Determines the time elapsed between each step on the scrolling.
-
 Description
-
+  
   The ScrollIntervall controls the interval between each step on scrolling, that is, the time elapsed
   each time the content is scrolled ScrollAmount pixels up or down.
-
+  
   The lower if the value for ScrollIntervall, the faster and smoother will be the scrolling, but it
   will also consume more CPU cycles.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvContentScroller.ScrollLength
 Summary
   Determines the range of the scrolling.
 Description
   Use ScrollLength to determine the range of the scrolling.
-
+  
   You'll probably prefer a value close to the Height value. Smaller values will make the controls
   inside the TJvContentScroller disapear before reaching the top/bottom border of the control.
-
+  
   High values will create a delay effect, that is, the contens will reach the border, and will take
   some time to reappear on the opposite border.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollAmount
 <TITLE TJvScrollAmount type>
@@ -174,3 +174,4 @@ Summary
   Used TJvScrollAmount to specify the values of ScrollAmount, ScrollIntervall and ScrollLength.
 Description
   TJvScrollAmount ranges from 1 to 65535.
+

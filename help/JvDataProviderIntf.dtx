@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Marcel Bestebroer, Remko Bonte, Peter Thörnqvist
+
+
 ----------------------------------------------------------------------------------------------------
 @@EJVCLDataConsumer
 Summary
@@ -14,6 +16,7 @@ Summary
 Description
   EJVCLDataConsumer is the exception class used for errors relating to the IJvDataConsumer interface
   or its support interfaces.
+
 ----------------------------------------------------------------------------------------------------
 @@EJVCLDataContexts
 Summary
@@ -21,6 +24,7 @@ Summary
 Description
   EJVCLDataContexts is the exception class used for errors relating to the IJvDataContext or
   IJvDataContexts interfaces.
+
 ----------------------------------------------------------------------------------------------------
 @@EJVCLDataItems
 Summary
@@ -28,13 +32,14 @@ Summary
 Description
   EJVCLDataItems is the exception class used for errors relating to the IJvDataItem or
   IJvDataItems interfaces.
+
 ----------------------------------------------------------------------------------------------------
 @@EJVCLDataProvider
 Summary
   Exception class for errors relating to the IJvDataProvider interface.
 Description
-  EJVCLDataProvider is the exception class used for errors relating to the IJvDataProvider
-  interface.
+  EJVCLDataProvider is the exception class used for errors relating to the IJvDataProvider interface.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumer
 Summary
@@ -58,25 +63,27 @@ Description
   Consumer Extension).
 See Also
   IJvDataProvider
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumer.AttributeApplies
 Summary
   Determines if an attribute applies to the consumer.
 Description
   AttributeApplies determines if the specified attribute applies to the consumer. The method is
-  primarily used by the <LINK IJvDataProvider, data provider>'s
-  <LINK IJvDataProvider.ConsumerClasses, ConsumerClasses> method to build the list of consumer
-  extensions.
+  primarily used by the <LINK IJvDataProvider, data provider>'s <LINK
+  IJvDataProvider.ConsumerClasses, ConsumerClasses> method to build the list of consumer extensions.
 
   If an attribute applies the function should return True, otherwise False should be returned.
 Parameters
   Attr - Attribute to check.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumer.VCLComponent
 Summary
   Retrieves a reference to the VCL component.
 Description
   VCLComponent retrieves a reference to the VCL component that functions as a consumer.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerClientNotify
 Summary
@@ -90,15 +97,16 @@ Description
 
   The IJvDataConsumerClientNotify always communicates with the IJvDataConsumerServerNotify of the
   server consumer to request itself being added to or removed from the server or to notify the
-  server when the provider is changed (the server will then determine if the client is still
-  allowed and optionally breaks the link if this is not the case).
+  server when the provider is changed (the server will then determine if the client is still allowed
+  and optionally breaks the link if this is not the case).
 
   Linking of consumers can be used (for example) to link a context selection consumer (e.g. a combo
   box linked to a context provider) to a client consumer and have the context of that consumer
   updated automatically when the context selection consumer selects a different context. In this
   scheme, IJvDataConsumerClientNotify is used at the client consumer.
 See Also
-	IJvDataConsumer, IJvDataConsumerServerNotify
+  IJvDataConsumer, IJvDataConsumerServerNotify
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerClientNotify.ItemSelected
 Summary
@@ -108,19 +116,21 @@ Description
 Parameters
   Server - Reference to the server notification interface of the server consumer.
   Value  - Reference to the item currently selected at the server consumer.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerClientNotify.LinkAdded
 Summary
   Called when the server consumer has added the client to its list of clients.
 Description
-  LinkAdded is called when the specified server consumer has added the client to its list of
-  clients. The provided reference to the server consumer should be stored so you can use it later
-  to notify the server consumer if a different provider is being selected or to manually remove the
-  link (i.e. when the consumer is being disposed).
+  LinkAdded is called when the specified server consumer has added the client to its list of clients.
+  The provided reference to the server consumer should be stored so you can use it later to notify
+  the server consumer if a different provider is being selected or to manually remove the link (i.e.
+  when the consumer is being disposed).
 Parameters
   Server - Reference to the server notification interface of the server consumer.
 See Also
-  LinkRemoved
+  IJvDataConsumerClientNotify.LinkRemoved
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerClientNotify.LinkRemoved
 Summary
@@ -133,26 +143,27 @@ Description
 Parameters
   Server - Reference to the server notification interface of the server consumer.
 See Also
-  LinkAdded
+  IJvDataConsumerClientNotify.LinkAdded
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerContext
 Summary
-	Data consumer support interface to retrieve the selected context.
+  Data consumer support interface to retrieve the selected context.
 Description
-	IJvDataConsumerContext is a consumer support interface to retrieve or specify the context of the
-	consumer.
+  IJvDataConsumerContext is a consumer support interface to retrieve or specify the context of the
+  consumer.
 
-	Various providers use contexts to differentiate between various tree configurations and/or
-	content. The IJvDataConsumerContext interface allows you to retrieve the current or specify a new
-	context for this consumer.
+  Various providers use contexts to differentiate between various tree configurations and/or content.
+  The IJvDataConsumerContext interface allows you to retrieve the current or specify a new
+  context for this consumer.
 
-	Providers rarely need to access this interface, since most of the time when a consumer is selected
-	as the current one, its context is automatically selected as well. With
-	<LINK IJvDataConsumerServerNotify, Server>/<LINK IJvDataConsumerClientNotify, Client> consumers,
-	access to the this interface might be useful. The interface is also used by the design time
-	editors.
+  Providers rarely need to access this interface, since most of the time when a consumer is selected
+  as the current one, its context is automatically selected as well. With <LINK
+  IJvDataConsumerServerNotify, Server>/<LINK IJvDataConsumerClientNotify, Client> consumers, access
+  to the this interface might be useful. The interface is also used by the design time editors.
 See Also
-	IJvDataConsumer
+  IJvDataConsumer
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerContext.GetContext
 Summary
@@ -162,7 +173,8 @@ Description
   selected nil will be returned, otherwise it's a reference to one of the contexts of the linked
   provider of this consumer.
 See Also
-  SetContext, IJvDataContext
+  IJvDataConsumerContext.SetContext, IJvDataContext
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerContext.SetContext
 Summary
@@ -176,23 +188,25 @@ Description
 Parameters
   Value - Reference to a new context to select for this consumer. Specify nil to select no context.
 See Also
-  GetContext, IJvDataContext
+  IJvDataConsumerContext.GetContext, IJvDataContext
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerItemSelect
 Summary
-	Data consumer support interface to determine the displayed (root) item.
+  Data consumer support interface to determine the displayed (root) item.
 Description
-	IJvDataConsumerItemSelect is a consumer support interface to retrieve or specify the (root) item
-	of the consumer.
+  IJvDataConsumerItemSelect is a consumer support interface to retrieve or specify the (root) item of
+  the consumer.
 
-	Consumers that only allow a single item to be used use this interface to specify which item is
-	used. If a nil item is specified, no item will be used by the consumer.
+  Consumers that only allow a single item to be used use this interface to specify which item is
+  used. If a nil item is specified, no item will be used by the consumer.
 
-	Consumers that allow multiple items to be rendered use this interface to specify which item will
-	be used as the root. In this case, nil means that all items are rendered, otherwise only items
-	below the specified item.
+  Consumers that allow multiple items to be rendered use this interface to specify which item will be
+  used as the root. In this case, nil means that all items are rendered, otherwise only items
+  below the specified item.
 See Also
-	IJvDataConsumer, IJvDataItem
+  IJvDataConsumer, IJvDataItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerItemSelect.GetItem
 Summary
@@ -200,14 +214,15 @@ Summary
 Description
   GetItem retrieves a reference to the current (root) item of the consumer.
 
-  For consumers that only allow a single item to be used, the retrieved item is the item used by
-  the consumer (or nil if no item is currently selected).
+  For consumers that only allow a single item to be used, the retrieved item is the item used by the
+  consumer (or nil if no item is currently selected).
 
-  For consumers that allow multiple items to be rendered, the retrieved item is the item used as
-  a root (or nil if the entire tree is to be used). The consumer will only use items that are a
-  child of the specified item; the item itself is not used.
+  For consumers that allow multiple items to be rendered, the retrieved item is the item used as a
+  root (or nil if the entire tree is to be used). The consumer will only use items that are a child
+  of the specified item; the item itself is not used.
 See Also
-  SetItem, IJvDataItem
+  IJvDataConsumerItemSelect.SetItem, IJvDataItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerItemSelect.SetItem
 Summary
@@ -215,31 +230,32 @@ Summary
 Description
   SetItem selects a new (root) item for the consumer.
 
-  For consumers that only allow a single item to be used, the new item is the item used by
-  the consumer (specify nil if no item is to be selected).
+  For consumers that only allow a single item to be used, the new item is the item used by the
+  consumer (specify nil if no item is to be selected).
 
-  For consumers that allow multiple items to be rendered, the new item is the item used as
-  a root (specify nil if the entire tree is to be used). The consumer will only use items that are a
-  child of the specified item; the item itself is not used.
+  For consumers that allow multiple items to be rendered, the new item is the item used as a root
+  (specify nil if the entire tree is to be used). The consumer will only use items that are a child
+  of the specified item; the item itself is not used.
 
   If the specified item does not belong to the provider linked to the consumer or does not exist
   within the <LINK IJvDataConsumerContext, current active context of the consumer>, and exception
   will be raised.
 Parameters
   Value - Item to be used as the active item or root item. Specify nil to use no item or use the
-  				entire tree.
+                                entire tree.
 See Also
-  GetItem, IJvDataConsumerContext, IJvDataItem
+  IJvDataConsumerContext, IJvDataConsumerItemSelect.GetItem, IJvDataItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerItemState
 Summary
-	Data consumer support interface to determine item states at the consumer side.
+  Data consumer support interface to determine item states at the consumer side.
 Description
-	IJvDataConsumerItemState is a consumer support interface to retrieve Enabled, CHecked and/or
-	Visible state of an item at the consumers side.
+  IJvDataConsumerItemState is a consumer support interface to retrieve Enabled, CHecked and/or
+  Visible state of an item at the consumers side.
 
-  When a provider	or consumer support interface needs one of the afformentioned states, it will
-  first request the state from the consumer (if it supports the IJvDataConsumerItemState interface).
+  When a provider       or consumer support interface needs one of the afformentioned states, it will first
+  request the state from the consumer (if it supports the IJvDataConsumerItemState interface).
   If this interface is not supported or if the returned state equals disNotUsed, the state is
   requested from the IJvDataItemStates interface of the item.
 
@@ -248,7 +264,8 @@ Description
   required to handle them. In addition a consumer may override the setting of the item at its
   discretion.
 See Also
-	IJvDataConsumer, IJvDataItem, IJvDataItemStates
+  IJvDataConsumer, IJvDataItem, IJvDataItemStates
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerItemState.Checked
 Summary
@@ -264,6 +281,7 @@ Parameters
   Item - Item to determine the checked state of.
 See Also
   IJvDataItemStates.Checked
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerItemState.Enabled
 Summary
@@ -279,7 +297,8 @@ Description
 Parameters
   Item - Item to determine the enabled state of.
 See Also
-  IJvDataItemStates.Enabled, IJvDataItemBasicAction
+  IJvDataItemBasicAction, IJvDataItemStates.Enabled
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerItemState.Visible
 Summary
@@ -299,46 +318,50 @@ Description
 Parameters
   Item - Item to determine the visible state of.
 See Also
-  IJvDataItemStates.Visible, IJvDataConsumerViewList
+  IJvDataConsumerViewList, IJvDataItemStates.Visible
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerProvider
 Summary
-	Data consumer support interface to retrieve the selected provider.
+  Data consumer support interface to retrieve the selected provider.
 Description
-	IJvDataConsumerProvider is a consumer support interface to retrieve the selected provider. This is
-	usually used only by the design time editors and not at the providers, since the provider already
-	knows the consumer is linked to that provider.
+  IJvDataConsumerProvider is a consumer support interface to retrieve the selected provider. This is
+  usually used only by the design time editors and not at the providers, since the provider already
+  knows the consumer is linked to that provider.
 See Also
-	IJvDataConsumer
+  IJvDataConsumer
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerProvider.GetProvider
 Summary
-	The provider the consumer is linked to.
+  The provider the consumer is linked to.
 Description
-	GetProvider returns a reference to the provider the consumer is linked to.
+  GetProvider returns a reference to the provider the consumer is linked to.
 See Also
-	IJvDataProvider
+  IJvDataProvider
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerServerNotify
 Summary
   Data consumer support interface to notify another consumer when the current item changes.
 Description
-  IJvDataConsumerServerNotify is a consumer support interface that allows other consumers
-  (supporting the IJvDataConsumerClientNotify interface) to be linked and notified if the current
-  item of this consumer changed.
+  IJvDataConsumerServerNotify is a consumer support interface that allows other consumers (supporting
+  the IJvDataConsumerClientNotify interface) to be linked and notified if the current item of this
+  consumer changed.
 
-  The implementer of this interface is notified when a client consumer changed its provider. You
-  are responsible for checking if the client consumer is still valid and optionally break the link
-  to the client if this is no longer the case. In addition you must keep a record of linked clients
-  and notify them when the selected item changed or the client is removed (either because the client
-  is no longer valid due to a provider change or because the server consumer is destroying).
+  The implementer of this interface is notified when a client consumer changed its provider. You are
+  responsible for checking if the client consumer is still valid and optionally break the link to the
+  client if this is no longer the case. In addition you must keep a record of linked clients and
+  notify them when the selected item changed or the client is removed (either because the client is
+  no longer valid due to a provider change or because the server consumer is destroying).
 
   Linking of consumers can be used (for example) to link a context selection consumer (e.g. a combo
   box linked to a context provider) to a client consumer and have the context of that consumer
   updated automatically when the context selection consumer selects a different context. In this
   scheme, IJvDataConsumerServerNotify is used at the context selection consumer.
 See Also
-	IJvDataConsumer, IJvDataConsumerClientNotify
+  IJvDataConsumer, IJvDataConsumerClientNotify
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerServerNotify.AddClient
 Summary
@@ -347,12 +370,14 @@ Description
   AddClient will attempt to add the specified client to the list of linked clients. Most
   implementations will check if the client is valid and not already linked before adding it.
 
-  When the client is added, the <LINK IJvDataConsumerClientNotify.LinkAdded, LinkAdded> method of
-  the client is called.
+  When the client is added, the <LINK IJvDataConsumerClientNotify.LinkAdded, LinkAdded> method of the
+  client is called.
 Parameters
   Client - Reference to the client consumer notification interface of the consumer to add.
 See Also
-	IsValidClient, RemoveClient, IJvDataConsumerClientNotify.LinkAdded
+  IJvDataConsumerClientNotify.LinkAdded, IJvDataConsumerServerNotify.IsValidClient,
+  IJvDataConsumerServerNotify.RemoveClient
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerServerNotify.IsValidClient
 Summary
@@ -370,24 +395,25 @@ Description
 Parameters
   Client - Reference to the client consumer notification interface of the consumer to check.
 See Also
-  NotifyProviderChanged, AddClient
+  IJvDataConsumerServerNotify.AddClient, IJvDataConsumerServerNotify.NotifyProviderChanged
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerServerNotify.NotifyProviderChanged
 Summary
-  Called by the client when it has changed provider or other setting that may influence the
-  validity.
+  Called by the client when it has changed provider or other setting that may influence the validity.
 Description
   NotifyProviderChanged is called by a client consumer when it has changed to another provider or
-  other setting that may influence the validity of the client. This allows the server to check if
-  the client can remain linked to the server or not.
+  other setting that may influence the validity of the client. This allows the server to check if the
+  client can remain linked to the server or not.
 
   Most implementers will first call IsValidClient to determine if the client consumer is still valid
   and if this is not the case will then call RemoveClient to break the link.
 Parameters
   Client - Reference to the client consumer notification interface of the consumer that changed
-           provider.
+     provider.
 See Also
-  IsValidClient, RemoveClient
+  IJvDataConsumerServerNotify.IsValidClient, IJvDataConsumerServerNotify.RemoveClient
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerServerNotify.RemoveClient
 Summary
@@ -400,24 +426,25 @@ Description
 Parameters
   Client - Reference to the client consumer notification interface of the consumer to add.
 See Also
-	AddClient, IJvDataConsumerClientNotify.LinkRemoved
+  IJvDataConsumerClientNotify.LinkRemoved, IJvDataConsumerServerNotify.AddClient
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList
 Summary
-	Data consumer support interface to manager the tree of data items in a flat list.
+  Data consumer support interface to manager the tree of data items in a flat list.
 Description
-	IJvDataConsumerViewList is a consumer support interface that manages the tree of data items in a
-	flat list.
+  IJvDataConsumerViewList is a consumer support interface that manages the tree of data items in a
+  flat list.
 
-	Consumers that can render multiple items but only in a flat list will use this support interface
-	to maintain a flat list representation of the tree and allow expand/collapse control of it.
+  Consumers that can render multiple items but only in a flat list will use this support interface to
+  maintain a flat list representation of the tree and allow expand/collapse control of it.
 
-	Implementers of this interface will have to handle changes at the provider (specifically the
-	adding and removing of items) and update the view list accordingly. Also some changes at the
-	consumer (such as context switching) may require updates in the view list or even complete
-	rebuilds.
+  Implementers of this interface will have to handle changes at the provider (specifically the adding
+  and removing of items) and update the view list accordingly. Also some changes at the consumer
+  (such as context switching) may require updates in the view list or even complete rebuilds.
 See Also
-	IJvDataConsumer
+  IJvDataConsumer
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.AutoExpandLevel
 Summary
@@ -429,7 +456,10 @@ Description
   If this property is set to 0 (zero), no automatic expansion will be taking place. A value of -1
   represents infinite expanding.
 See Also
-  ExpandOnNewItem, ExpandTreeTo, ItemIsExpanded, RebuildView, ToggleItem
+  IJvDataConsumerViewList.ExpandOnNewItem, IJvDataConsumerViewList.ExpandTreeTo,
+  IJvDataConsumerViewList.ItemIsExpanded, IJvDataConsumerViewList.RebuildView,
+  IJvDataConsumerViewList.ToggleItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.ChildIndexOfID
 Summary
@@ -442,7 +472,8 @@ Description
 Parameters
   ID - ID of the item to locate.
 See Also
-  ChildIndexOfItem, IndexOfID
+  IJvDataConsumerViewList.ChildIndexOfItem, IJvDataConsumerViewList.IndexOfID
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.ChildIndexOfItem
 Summary
@@ -455,7 +486,8 @@ Description
 Parameters
   Item - Reference to the item to locate.
 See Also
-  ChildIndexOfID, IndexOfItem
+  IJvDataConsumerViewList.ChildIndexOfID, IJvDataConsumerViewList.IndexOfItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.Count
 Summary
@@ -463,7 +495,8 @@ Summary
 Description
   Count determines the number of items currently in the view list.
 See Also
-  Item
+  IJvDataConsumerViewList.Item
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.ExpandOnNewItem
 Summary
@@ -475,10 +508,11 @@ Description
   Set ExpandOnNewItem to True if the sub tree the new item belongs to should be expanded to make the
   new item visible.
 
-  Set ExpandOnNewItem to False if adding items should not neccessarily make them visible when one
-  of its parents is still collapsed.
+  Set ExpandOnNewItem to False if adding items should not neccessarily make them visible when one of
+  its parents is still collapsed.
 See Also
-  ToggleItem, ExpandTreeTo
+  IJvDataConsumerViewList.ExpandTreeTo, IJvDataConsumerViewList.ToggleItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.ExpandTreeTo
 Summary
@@ -488,17 +522,19 @@ Description
 Parameters
   Item - Item to make visible.
 See Also
-  ToggleItem
+  IJvDataConsumerViewList.ToggleItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.Get_AutoExpandLevel
 Summary
   Retrieves the level to which the tree will be expanded automatically.
 Description
   Get_AutoExpandLevel returns the level to which the tree will be expanded automatically when the
-  view is <LINK IJvDataConsumerViewList.RebuildView, rebuild>. Get_AutoExpandLevel is the read
-  method for the AutoExpandLevel property.
+  view is <LINK IJvDataConsumerViewList.RebuildView, rebuild>. Get_AutoExpandLevel is the read method
+  for the AutoExpandLevel property.
 See Also
-  AutoExpandLevel, Set_AutoExpandLevel
+  IJvDataConsumerViewList.AutoExpandLevel, IJvDataConsumerViewList.Set_AutoExpandLevel
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.Get_ExpandOnNewItem
 Summary
@@ -507,7 +543,8 @@ Description
   Get_ExpandOnNewItem returns if the tree should be expanded when a new item is added to a collapsed
   (sub) tree. Get_ExpandOnNewItem is the read method for the ExpandOnNewItem property.
 See Also
-  ExpandOnNewItem, Set_ExpandOnNewItem
+  IJvDataConsumerViewList.ExpandOnNewItem, IJvDataConsumerViewList.Set_ExpandOnNewItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.Get_LevelIndent
 Summary
@@ -516,7 +553,8 @@ Description
   Get_LevelIndent returns how much an item is indented in the consumer's graphical representation for
   each level of the tree. Get_LevelIndent is the read method for the LevelIndent property.
 See Also
-  LevelIndent, Set_LevelIndent
+  IJvDataConsumerViewList.LevelIndent, IJvDataConsumerViewList.Set_LevelIndent
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.IndexOfID
 Summary
@@ -529,20 +567,22 @@ Description
 Parameters
   ID - ID of the item to locate.
 See Also
-  ChildIndexOfID, IndexOfItem
+  IJvDataConsumerViewList.ChildIndexOfID, IJvDataConsumerViewList.IndexOfItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.IndexOfItem
 Summary
   Locates an item and return its index in the view list.
 Description
-  IndexOfItem will locate the given item in the view list. The value returned is the 0-based index
-  of the item in the view list.
+  IndexOfItem will locate the given item in the view list. The value returned is the 0-based index of
+  the item in the view list.
 
   If the item is not found the method will return -1.
 Parameters
   Item - Reference to the item to locate.
 See Also
-  ChildIndexOfItem, IndexOfID
+  IJvDataConsumerViewList.ChildIndexOfItem, IJvDataConsumerViewList.IndexOfID
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.Item
 Summary
@@ -553,7 +593,8 @@ Parameters
   Index - 0-based index in the view list of the item to retrieve. Allowed values range from 0 to
           Count-1 (both inclusive).
 See Also
-  Count, IJvDataItem
+  IJvDataConsumerViewList.Count, IJvDataItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.ItemGroupInfo
 Summary
@@ -576,24 +617,26 @@ Description
   be drawn in the user interface.
 Parameters
   Index - 0-based index in the view list of the item to retrieve grouping information for. Allowed
-          values range from 0 to Count-1 (both inclusive).
+       values range from 0 to Count-1 (both inclusive).
 See Also
-  Count, ItemLevel, ItemSibling
+  IJvDataConsumerViewList.Count, IJvDataConsumerViewList.ItemLevel,
+  IJvDataConsumerViewList.ItemSibling
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.ItemHasChildren
 Summary
   Determines if an item has children.
 Description
   ItemHasChildren determines if the specified item has any children. This does not mean those child
-  items are actually visible in the view list, but it does mean the item can be expanded to show
-  them.
+  items are actually visible in the view list, but it does mean the item can be expanded to show them.
 
   If an item has children the method returns True, otherwise False is returned.
 Parameters
   Index - 0-based index in the view list of the item to test. Allowed values ranges from 0 to
           Count-1
 See Also
-  Count, ItemIsExpanded, SubItem
+  SubItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.ItemIsExpanded
 Summary
@@ -606,7 +649,8 @@ Parameters
   Index - 0-based index in the view list of the item to test. Allowed values ranges from 0 to
           Count-1
 See Also
-  Count, ItemHasChildren, SubItem
+  SubItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.ItemLevel
 Summary
@@ -618,7 +662,8 @@ Parameters
   Index - 0-based index in the view list of the item to test. Allowed values ranges from 0 to
           Count-1
 See Also
-  Count, ItemParent
+  IJvDataConsumerViewList.Count, IJvDataConsumerViewList.ItemParent
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.ItemParent
 Summary
@@ -631,7 +676,8 @@ Parameters
   Index - 0-based index in the view list of the item to test. Allowed values ranges from 0 to
           Count-1
 See Also
-  Count, ItemLevel, ItemParentIndex, SubItem
+  SubItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.ItemParentIndex
 Summary
@@ -639,13 +685,14 @@ Summary
 Description
   ItemParentIndex determines the index in the view list for the parent item of the specified item.
 
-  If the specified item is at the root level the method will return nil, otherwise a 0-based index
-  in the view list for the parent item is returned.
+  If the specified item is at the root level the method will return nil, otherwise a 0-based index in
+  the view list for the parent item is returned.
 Parameters
   Index - 0-based index in the view list of the item to test. Allowed values ranges from 0 to
           Count-1
 See Also
-  Count, ItemLevel, ItemParent, SubItemIndex
+  SubItemIndex
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.ItemSibling
 Summary
@@ -658,7 +705,8 @@ Parameters
   Index - 0-based index in the view list of the item to test. Allowed values ranges from 0 to
           Count-1
 See Also
-  Count, ItemSiblingIndex
+  IJvDataConsumerViewList.Count, IJvDataConsumerViewList.ItemSiblingIndex
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.ItemSiblingIndex
 Summary
@@ -672,7 +720,8 @@ Parameters
   Index - 0-based index in the view list of the item to test. Allowed values ranges from 0 to
           Count-1
 See Also
-  Count, ItemSibling
+  IJvDataConsumerViewList.Count, IJvDataConsumerViewList.ItemSibling
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.LevelIndent
 Summary
@@ -682,7 +731,8 @@ Description
   each level of the tree. What the value actually represents (e.g. pixels, characters, etc) depends
   solely on the consumer. Most consumers will represent the indentation in pixels.
 See Also
-  ItemLevel
+  IJvDataConsumerViewList.ItemLevel
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.RebuildView
 Summary
@@ -695,19 +745,21 @@ Description
   items are added to or removed from the provider tree the view list is updated automatically.
   Selecting a different provider or context also automatically refreshes the view.
 See Also
-  AutoExpandLevel, ExpandOnNewItem
+  IJvDataConsumerViewList.AutoExpandLevel, IJvDataConsumerViewList.ExpandOnNewItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.Set_AutoExpandLevel
 Summary
   Sets the level to which the tree will be expanded automatically.
 Description
-  Set_AutoExpandLevel sets the level to which the tree will be expanded automatically when the
-  view is <LINK IJvDataConsumerViewList.RebuildView, rebuild>. Set_AutoExpandLevel is the write
-  method for the AutoExpandLevel property.
+  Set_AutoExpandLevel sets the level to which the tree will be expanded automatically when the view
+  is <LINK IJvDataConsumerViewList.RebuildView, rebuild>. Set_AutoExpandLevel is the write method for
+  the AutoExpandLevel property.
 Parameters
   Value - New level to set.
 See Also
-  AutoExpandLevel, Get_AutoExpandLevel
+  IJvDataConsumerViewList.AutoExpandLevel, IJvDataConsumerViewList.Get_AutoExpandLevel
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.Set_ExpandOnNewItem
 Summary
@@ -718,7 +770,8 @@ Description
 Parameters
   Value - New state to set.
 See Also
-  ExpandOnNewItem, Get_ExpandOnNewItem
+  IJvDataConsumerViewList.ExpandOnNewItem, IJvDataConsumerViewList.Get_ExpandOnNewItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.Set_LevelIndent
 Summary
@@ -729,15 +782,16 @@ Description
 Parameters
   Value - New indentation to set.
 See Also
-  LevelIndent, Get_LevelIndent
+  IJvDataConsumerViewList.Get_LevelIndent, IJvDataConsumerViewList.LevelIndent
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.SubItem@IJvDataItem@Integer
 Summary
   Retrieve a reference to a child item of a given item.
 Description
   SubItem retrieves a reference to the specified child item of the specified parent item. The two
-  versions of this method allow to specify the parent either as a data item or as a 0-based index
-  in the view list.
+  versions of this method allow to specify the parent either as a data item or as a 0-based index in
+  the view list.
 
   If the parent item could not be found either an exception is raised or a nil pointer is returned
   (depends on the implementer).
@@ -747,37 +801,41 @@ Description
   pointer in this case, as there's no real way to tell the number of child items an item has.
 Parameters
   Parent - Either a reference to the parent item or a 0-based index in the view list of the parent
-           item. Allowed values for the index version ranges from 0 to Count-1.
+        item. Allowed values for the index version ranges from 0 to Count-1.
   Index  - 0-based index of the child item to retrieve.
 See Also
-  Count, ItemIsExpanded, ItemParent, SubItemIndex
+  SubItemIndex
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.SubItem@Integer@Integer
 <COMBINE IJvDataConsumerViewList.SubItem@IJvDataItem@Integer>
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.SubItemIndex@IJvDataItem@Integer
 Summary
   Retrieve the index to a child item of a given item.
 Description
-  SubItemIndex retrieves a 0-based index in the viewlist to the specified child item of the
-  specified parent item. The two versions of this method allow to specify the parent either as a
-  data item or as a 0-based index in the view list.
+  SubItemIndex retrieves a 0-based index in the viewlist to the specified child item of the specified pare
+  t item. The two versions of this method allow to specify the parent either as a data item or as a
+  0-based index in the view list.
 
-  If the parent item could not be found either an exception is raised or -1 is returned
-  (depends on the implementer).
+  If the parent item could not be found either an exception is raised or -1 is returned (depends on
+  the implementer).
 
   If the item has no children or the index is out of range either an exception is raised or -1 is
-  returned (depends on the implementer). Most implementers will choose to return -1 in this case,
-  as there's no real way to tell the number of child items an item has.
+  returned (depends on the implementer). Most implementers will choose to return -1 in this case, as
+  there's no real way to tell the number of child items an item has.
 Parameters
   Parent - Either a reference to the parent item or a 0-based index in the view list of the parent
-           item. Allowed values for the index version ranges from 0 to Count-1.
+        item. Allowed values for the index version ranges from 0 to Count-1.
   Index  - 0-based index of the child item to retrieve.
 See Also
-  Count, ItemIsExpanded, ItemParentIndex, SubItem
+  SubItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.SubItemIndex@Integer@Integer
 <COMBINE IJvDataConsumerViewList.SubItemIndex@IJvDataItem@Integer>
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.ToggleItem
 Summary
@@ -791,9 +849,11 @@ Description
   item. Note that upon expanding, the AutoExpandLevel property is taken into account.
 Parameters
   Index - 0-based index in the view list of the item to expand or collapse. Allowed values ranges
-          from 0 to Count-1
+      from 0 to Count-1
 See Also
-  Count, ItemHasChildren, ItemIsExpanded
+  IJvDataConsumerViewList.Count, IJvDataConsumerViewList.ItemHasChildren,
+  IJvDataConsumerViewList.ItemIsExpanded
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContext
 Summary
@@ -813,9 +873,9 @@ Description
   some providers will not allow this behaviour or even allow contexts at a deeper level than the
   root). This also contributes to reducing memory usage. The IJvDataContextSensitive interface
   manages the inherited state of the properties.
-
 See Also
-  IJvDataContexts, IJvDataContextSensitive, IJvDataProvider, IJvDataItems, IJvDataItem
+  IJvDataContexts, IJvDataContextSensitive, IJvDataItem, IJvDataItems, IJvDataProvider
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContext.Contexts
 Summary
@@ -824,12 +884,14 @@ Description
   Contexts is a reference to the context list this context belongs to.
 See Also
   IJvDataContexts
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContext.GetImplementer
 Summary
   Retrive the TObject implementing object.
 Description
   GetImplementer retrieves the TObject implementation that implements this interface.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContext.IsDeletable
 Summary
@@ -841,6 +903,7 @@ Description
   Some providers may generate 1 or more fixed contexts that are not to be deleted. These contexts
   will return False for this method. Most other (user generated) contexts are deletable and will
   return True for this method.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContext.Name
 Summary
@@ -854,6 +917,7 @@ Description
   changing the name will support the IJvDataContextManager interface as well.
 See Also
   IJvDataContextManager.SetName
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContextManager
 Summary
@@ -863,10 +927,11 @@ Description
   purpose is to allow changing the name of the context and has only one method.
 
   Not all providers may allow changing the context name (or not for all contexts) so the
-  IJvDataContext interface does not support that feature by default. Contexts that may allow
-  changing the name will support this interface as well.
+  IJvDataContext interface does not support that feature by default. Contexts that may allow changing
+  the name will support this interface as well.
 See Also
   IJvDataContext
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContextManager.SetName
 Summary
@@ -878,6 +943,7 @@ Parameters
   Value - New name for the context.
 See Also
   IJvDataContext.Name
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContexts
 Summary
@@ -888,34 +954,38 @@ Description
   context contains sub contexts.
 
   The IJvDataContexts interface provides methods that:
+
   * Allow retrieval of the number of contexts
   * All retrieval of a context based on its index, its name or name path.
   * Determine the ancestor context that owns this list.
   * Determine the provider to which the context list belongs.
   * Retrieve a reference to the TObject instance that implements this object.
 See Also
-  IJvDataProvider, IJvDataContextSensitive, IJvDataContextsManager, IJvDataContext
+  IJvDataContext, IJvDataContextSensitive, IJvDataContextsManager, IJvDataProvider
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContexts.Ancestor
 Summary
   Retrieve a reference to the ancestor context.
 Description
-  Ancestor retrieves a reference to the ancestor context that owns this list. The context list at
-  the root will have no ancestor and nil will be returned instead.
+  Ancestor retrieves a reference to the ancestor context that owns this list. The context list at the
+  root will have no ancestor and nil will be returned instead.
 See Also
   IJvDataContext
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContexts.GetContext
 Summary
   Retrieve the context specified by its index.
 Description
-  GetContext retrieves the context specified by the given index. Depending on the implementation,
-  the method either returns nil or raises an exception if an invalid index is given.
+  GetContext retrieves the context specified by the given index. Depending on the implementation, the
+  method either returns nil or raises an exception if an invalid index is given.
 Parameters
   Index - 0-based index of the context to retrieve. Values range from 0 to GetCount-1 (both
-          inclusive).
+  inclusive).
 See Also
-  GetContextByName, GetCount
+  IJvDataContexts.GetContextByName, IJvDataContexts.GetCount
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContexts.GetContextByName
 Summary
@@ -928,7 +998,8 @@ Description
 Parameters
   Name - Name or name path of the context to retrieve.
 See Also
-  GetContext
+  IJvDataContexts.GetContext
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContexts.GetCount
 Summary
@@ -936,7 +1007,8 @@ Summary
 Description
   GetCount return the number of contexts currently in this list.
 See Also
-  GetContext
+  IJvDataContexts.GetContext
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContexts.IndexOf
 Summary
@@ -946,6 +1018,7 @@ Description
   belong to this list -1 will returned.
 Parameters
   Ctx - Context to determine the index of.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContexts.Provider
 Summary
@@ -954,6 +1027,7 @@ Description
   Provider is a reference to the provider the context list belongs to.
 See Also
   IJvDataProvider
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContextSensitive
 Summary
@@ -962,11 +1036,12 @@ Description
   IJvDataContextSensitive is a supporting interface for IJvDataItems, IJvDataItem and any other
   IJvDataItem support interface.
 
-  It provides in methods that allow settings for a context to be reverted back to the ancestor
-  context (or context-less) settings and to determine if the info is specifically set for the
-  currently active context or taken from an ancestor context or context-less state.
+  It provides in methods that allow settings for a context to be reverted back to the ancestor context (or context-less) settings and to determine if the in
+  o is specifically set for the currently active context or taken from an ancestor context or
+  context-less state.
 See Also
-  IJvDataItems, IJvDataItem, IJvDataItemText, IJvDataItemImage, IJvDataItemStates, IJvDataContext
+  IJvDataContext, IJvDataItem, IJvDataItemImage, IJvDataItems, IJvDataItemStates, IJvDataItemText
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContextSensitive.IsEqualToAncestor
 Summary
@@ -978,19 +1053,21 @@ Description
   If the settings are set for the currently active context the method will return False, otherwise
   True will be returned.
 See Also
-  RevertToAncestor
+  IJvDataContextSensitive.RevertToAncestor
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContextSensitive.RevertToAncestor
 Summary
   Reverts the settings back to the ancestor context settings.
 Description
-  RevertToAncestor reverts the settings back to the settings for the ancestor context or
-  context-less state.
+  RevertToAncestor reverts the settings back to the settings for the ancestor context or context-less
+  state.
 
   It does this by simply removing any settings for the currently active context. If there were no
   settings for the currently active context, nothing will happen.
 See Also
-  IsEqualToAncestor
+  IJvDataContextSensitive.IsEqualToAncestor
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContextsManager
 Summary
@@ -1000,6 +1077,7 @@ Description
   context list.
 
   The interface provides methods to:
+
   * Add a specific context to the list.
   * Create and add a new context to the list.
   * Empty the list of contexts.
@@ -1007,6 +1085,7 @@ Description
 
   This interface is needed if the design time provider context manager should be able to add/delete
   contexts to/from the list.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContextsManager.Add
 Summary
@@ -1020,7 +1099,8 @@ Description
 Parameters
   Context - Reference to the data context to add.
 See Also
-  Delete, New, IJvDataContext.Name
+  IJvDataContext.Name, IJvDataContextsManager.Delete, IJvDataContextsManager.New
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContextsManager.Clear
 Summary
@@ -1029,7 +1109,8 @@ Description
   Clear will empty the list of contexts. After a call to this method the list of contexts is either
   empty or only contains fixed, non-deletable contexts.
 See Also
-  Delete, IJvDataContext.IsDeletable
+  IJvDataContext.IsDeletable, IJvDataContextsManager.Delete
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContextsManager.Delete
 Summary
@@ -1041,7 +1122,8 @@ Description
 Parameters
   Context - Reference to the data context to remove.
 See Also
-  Clear, IJvDataContext.IsDeletable
+  IJvDataContext.IsDeletable, IJvDataContextsManager.Clear
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContextsManager.New
 Summary
@@ -1052,7 +1134,8 @@ Description
 
   A reference to the created and added context is returned.
 See Also
-  Add, IJvDataContext.Name
+  IJvDataContext.Name, IJvDataContextsManager.Add
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataIDSearch
 Summary
@@ -1065,6 +1148,7 @@ Description
   requested ID value with each item in the list, optionally scanning sub trees.
 
   This search interface is normally always implemented for a data item list.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataIDSearch.Find
 Summary
@@ -1075,16 +1159,17 @@ Description
 Parameters
   ID        - ID of the item to locate.
   Recursive - Flag to specify if sub trees should be scanned as well. When set to True sub trees
-              will be scanned as well, otherwise the current list only will be scanned.
+         will be scanned as well, otherwise the current list only will be scanned.
 See Also
   IJvDataItem.GetID
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItem
 Summary
   Single Data Item.
 Description
-  IJvDataItem is the main interface for a single Data Item. A reference to this interface is
-  returned whenever an item is requested from the item list.
+  IJvDataItem is the main interface for a single Data Item. A reference to this interface is returned
+  whenever an item is requested from the item list.
 
   IJvDataItem only provides in some basic 'administrative' tasks and information. For Data Items to
   be generally usable they will usally also support and implement IJvDataItemText and optionally
@@ -1094,8 +1179,9 @@ Description
   representing a color might support an interface that allows access to the TColor value). Which
   interfaces are supported completely depends on what type of item you are dealing with.
 
-  A Data Item may also support IJvDataItems (a list of Data Items) which means the item supports
-  sub items.
+  A Data Item may also support IJvDataItems (a list of Data Items) which means the item supports sub
+  items.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItem.ContextDestroying
 Summary
@@ -1105,25 +1191,28 @@ Description
   remove context-specific data relating to this context (or child contexts) from the item.
 Parameters
   Context - Context about to be destroyed,
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItem.GetID
 Summary
   Retrieves the ID value of the Data Item.
 Description
-  GetID will retrieve the item's (usually unique) ID value. The ID value can be used to search for
-  a specific item if it's not known where in the tree that item resided.
+  GetID will retrieve the item's (usually unique) ID value. The ID value can be used to search for a
+  specific item if it's not known where in the tree that item resided.
 
   Normally the ID will be unique throughout the tree. There can be situations where this is not the
   case. Never assume the ID is unique and always usable to retrieve a specific item.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItem.GetImplementer
 Summary
   Reference to the implementing object.
 Description
-  GetImplementer returns a reference to the TObject instance implementing the IJvDataItem
-  interface. This method should be used with care, as you can never be sure which object implements
-  the interface. Callers should never assume a specific object unless it is enforced in the
+  GetImplementer returns a reference to the TObject instance implementing the IJvDataItem interface.
+  This method should be used with care, as you can never be sure which object implements the
+  interface. Callers should never assume a specific object unless it is enforced in the
   implementation of the various objects.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItem.GetIndex
 Summary
@@ -1131,7 +1220,8 @@ Summary
 Description
   GetIndex retrieves the item's index in the owning list (represented by the Items property).
 See Also
-  Items
+  IJvDataItem.Items
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItem.GetItems
 Summary
@@ -1140,16 +1230,18 @@ Description
   GetItems retrieves the reference to the IJvDataItems owner of this item. It's the Items property's
   read method.
 See Also
-  Items, GetIndex, IsParentOf
+  IJvDataItem.GetIndex, IJvDataItem.IsParentOf, IJvDataItem.Items
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItem.Implementer
 Summary
   Reference to the implementing object.
 Description
-  GetImplementer returns a reference to the TObject instance implementing the IJvDataItem
-  interface. This method should be used with care, as you can never be sure which object implements
-  the interface. Callers should never assume a specific object unless it is enforced in the
+  GetImplementer returns a reference to the TObject instance implementing the IJvDataItem interface.
+  This method should be used with care, as you can never be sure which object implements the
+  interface. Callers should never assume a specific object unless it is enforced in the
   implementation of the various objects.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItem.IsDeletable
 Summary
@@ -1158,9 +1250,10 @@ Description
   IsDeletable determines if the item is allowed to be removed from the <LINK Items, items list>. If
   the item is allowed to be removed the function will return True, False otherwise.
 
-  IsDeletable is used in those cases where the provider generates a number of fixed items that
-  should never be deleted. In most cases IsDeletable will be context-dependant, i.e. the item can't
-  be deleted from the context-less item tree, but is deletable from a context-specific tree.
+  IsDeletable is used in those cases where the provider generates a number of fixed items that should never be deleted. In most cases IsDeletable will be context-depend
+  nt, i.e. the item can't be deleted from the context-less item tree, but is deletable from a
+  context-specific tree.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItem.IsParentOf
 Summary
@@ -1176,12 +1269,13 @@ Description
   function will return False.
 Parameters
   AnItem       -  The item to check the parent chain of.
-  DirectParent -  Flag to control if only the direct parent
-                  (<LINK Items, Items>.<LINK IJvDataItems.Parent, Parent>) is checked
+  DirectParent -  Flag to control if only the direct parent                 (<LINK Items,
+  Items>.<LINK IJvDataItems.Parent, Parent>) is checked
                   (DirectParent=True), or if the entire parent chain is scanned
                   (DirectParent=False).
 See Also
-  Items, IJvDataItems.Parent
+  IJvDataItem.Items, IJvDataItems.Parent
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItem.Items
 Summary
@@ -1192,10 +1286,11 @@ Description
   Every item belongs to an item list. Which item list might be dependant on which context is
   currently active.
 
-  The Items property is also the only way to determine the parent item of this item. This can be
-  done with Items.Parent
+  The Items property is also the only way to determine the parent item of this item. This can be done
+  with Items.Parent
 See Also
-  GetIndex, IsParentOf, IJvDataItems.Parent
+  IJvDataItem.GetIndex, IJvDataItem.IsParentOf, IJvDataItems.Parent
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemBasicAction
 Summary
@@ -1204,14 +1299,15 @@ Description
   IJvDataItemBasicAction is a supporting interface for IJvDataItem that adds the capability of
   executing a task if the item is selected or double-clicked by the control.
 
-  Some items will have a specific task linked to them, e.g. a control applet provider might have
-  an action linked to each item that will execute that control applet. In other cases a provider
-  might provide a way to link a user event to each individual item (using a separate interface)
-  which will then be called through this interface from the consumer.
+  Some items will have a specific task linked to them, e.g. a control applet provider might have an
+  action linked to each item that will execute that control applet. In other cases a provider might
+  provide a way to link a user event to each individual item (using a separate interface) which will
+  then be called through this interface from the consumer.
 
   The interface provides in a single method that will perform an action linked to the item.
 See Also
   IJvDataItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemBasicAction.Execute
 Summary
@@ -1228,20 +1324,22 @@ Description
   discretion though).
 Parameters
   Sender - Reference to the control that initiated the action. Note that this may be nil in some
-           cases.
+      cases.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemDesigner
 Summary
   Data Item support interface to allow editing of an item in the design time provider editor.
 Description
-  IJvDataItemDesigner is an IJvDataItem support interface to support editing of an item in the
-  design time provider editor.
+  IJvDataItemDesigner is an IJvDataItem support interface to support editing of an item in the design
+  time provider editor.
 
   Items that allow the item to be edited in special ways need to implement this interface.
-Notes
+  Notes
   As this feature is currently not implemented there is a possibility this interface will be changed
   in the near future or might be dropped completely. It's highly recommended to not use this
   interface at this time.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemDesigner.ExecVerb
 Summary
@@ -1251,7 +1349,8 @@ Description
 Parameters
   Index - 0-based index in the list of actions.
 See Also
-  GetVerb, GetVerbCount
+  IJvDataItemDesigner.GetVerb, IJvDataItemDesigner.GetVerbCount
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemDesigner.GetVerb
 Summary
@@ -1266,7 +1365,8 @@ Parameters
   Visible   - Will receive the visible state of the action.
   RadioItem - Will receive the flag if the item is a radio item.
 See Also
-  GetVerbCount
+  IJvDataItemDesigner.GetVerbCount
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemDesigner.GetVerbCount
 Summary
@@ -1274,7 +1374,8 @@ Summary
 Description
   GetVerbCount returns the number of edit actions available for the item.
 See Also
-  ExecVerb, GetVerb
+  IJvDataItemDesigner.ExecVerb, IJvDataItemDesigner.GetVerb
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemImage
 Summary
@@ -1282,21 +1383,25 @@ Summary
 Description
   IJvDataItemImage is a supporting interface for IJvDataItem that adds image support to an item. For
   this interface to be useful, some things have to be taken care of:
-  * The IJvDataItems owner of the item (or any of the IJvDataItems owners in the parent chain) must
-    support the IJvDataItemsImages interface and atleast have a valid image list assigned to its
-    <LINK IJvDataItemsImages.Images, Images> property.
+
+  * The IJvDataItems owner of the
+     item (or any of the IJvDataItems owners in the parent chain) must   support the IJvDataItemsImages
+     interface and atleast have a valid image list assigned to its
+     <LINK IJvDataItemsImages.Images, Images> property.
   * The rendering code must be able to handle images. Rendering may be handled at the item itself
-    (IJvDataItemRenderer supported by this item), by the item list owner of this item of any item in
-    the parent chain (IJvDataItemsRenderer supported by an IJvDataItems implementation) or at the
-    consumer (client control). The JEDI-VCL provides generic render implementations of which some
+     (IJvDataItemRenderer supported by this item), by the item list owner of this item of any item in
+     the parent chain (IJvDataItemsRenderer supported by an IJvDataItems implementation) or at the
+     consumer (client control). The JEDI-VCL provides generic render implementations of which some
     do support image.
 
   The interface provides properties to manage:
+
   * The position of the image in relation to the caption
   * Which image to use in normal cases
   * which image to use when the item is selected/has focus.
 See Also
-  IJvDataItemsImages, IJvDataItem
+  IJvDataItem, IJvDataItemsImages
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemImage.Alignment
 Summary
@@ -1305,8 +1410,8 @@ Description
   Alignment specifies the position of the image with respect to the text. Read Alignment to retrieve
   the currently used alignment for the image or set Alignment to a new value.
 
-  Note that consumers/renderers are not required to use the setting of this property when they
-  render the item. Those that do usually follow these 'rules':
+  Note that consumers/renderers are not required to use the setting of this property when they render
+  the item. Those that do usually follow these 'rules':
   <TABLE>
     Value             Rendering result
     =====             ================
@@ -1317,6 +1422,7 @@ Description
     taRightJustify    The image is placed to the right of the text, the item is aligned to the right
                         of the control.
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemImage.GetAlignment
 Summary
@@ -1325,7 +1431,8 @@ Description
   GetAlignment retrieves the position of image with respect to the text. GetAlignment is the
   Alignment property's read method.
 See Also
-  SetAlignment, Alignment
+  IJvDataItemImage.Alignment, IJvDataItemImage.SetAlignment
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemImage.GetImageIndex
 Summary
@@ -1334,7 +1441,8 @@ Description
   GetImageIndex retrieves the index into the image list of the image to render. GetImageIndex is the
   ImageIndex property's read method.
 See Also
-  SetImageIndex, ImageIndex
+  IJvDataItemImage.ImageIndex, IJvDataItemImage.SetImageIndex
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemImage.GetSelectedIndex
 Summary
@@ -1343,7 +1451,8 @@ Description
   GetSelectedIndex retrieves the index into the image list of the image to render when the item is
   selected or has focus. GetSelectedIndex is the SelectedIndex property's read method.
 See Also
-  SetSelectedIndex, SelectedIndex
+  IJvDataItemImage.SelectedIndex, IJvDataItemImage.SetSelectedIndex
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemImage.ImageIndex
 Summary
@@ -1357,7 +1466,8 @@ Description
   The image specified by this property is only used when the item is not selected unless
   SelectedIndex is not specified, in which case the image specified by ImageIndex is always used.
 See Also
-  SelectedIndex
+  IJvDataItemImage.SelectedIndex
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemImage.SelectedIndex
 Summary
@@ -1369,7 +1479,8 @@ Description
 
   When this property is set to -1, the value for ImageIndex is used instead.
 See Also
-  ImageIndex
+  IJvDataItemImage.ImageIndex
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemImage.SetAlignment
 Summary
@@ -1379,9 +1490,10 @@ Description
   property's write method.
 Parameters
   Value - New image position. See description for the \Alignment property to determine the end
-          result of each value.
+   result of each value.
 See Also
-  GetAlignment, Alignment
+  IJvDataItemImage.Alignment, IJvDataItemImage.GetAlignment
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemImage.SetImageIndex
 Summary
@@ -1392,7 +1504,8 @@ Description
 Parameters
   Index - New index of the image to use.
 See Also
-  SetImageIndex, ImageIndex
+  IJvDataItemImage.ImageIndex, IJvDataItemImage.SetImageIndex
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemImage.SetSelectedIndex
 Summary
@@ -1403,7 +1516,8 @@ Description
 Parameters
   Value - New index of the image to use.
 See Also
-  GetSelectedIndex, SelectedIndex
+  IJvDataItemImage.GetSelectedIndex, IJvDataItemImage.SelectedIndex
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemRenderer
 Summary
@@ -1413,17 +1527,19 @@ Description
   capabilities to an item.
 
   Consumers generally handle rendering/measuring in the following way:
-  * Check if the item supports the IJvDataItemRenderer interface. If it does use it to perform the
-    rendering/measuring.
+
+  * Check if the item supports
+     the IJvDataItemRenderer interface. If it does use it to perform the   rendering/measuring.
   * Check for the closest IJvDataItemsRenderer interface (the direct owning IJvDataItems list or
-    any of the lists in its parent chain). If it finds one use it to perform the
-    rendering/measuring.
+     any of the lists in its parent chain). If it finds one use it to perform the
+     rendering/measuring.
   * Handle the rendering at the consumer side. This means all items are considered equal and usually
-    only IJvDataItemText and optionally IJvDataItemImage (and the corresponding IJvDataItemsImages)
-    are used. The entire rendering/measuing is then consumer (control) dependant and the provider
+     only IJvDataItemText and optionally IJvDataItemImage (and the corresponding IJvDataItemsImages)
+     are used. The entire rendering/measuing is then consumer (control) dependant and the provider
     tree may no longer look uniform in different consumers/clients.
 See Also
   IJvDataItem, IJvDataItemsRenderer
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemRenderer.Draw
 Summary
@@ -1435,14 +1551,15 @@ Description
   providing an appropiate rectangle (including any indentation for sub items).
 Parameters
   ACanvas - Canvas to render to. On entry to this method it is assumed the canvas brush, pen and
-            font are initialized to the proper values.
+       font are initialized to the proper values.
   ARect   - Rectangle in which to draw the item in. On entry it is assumed to be initialized
-            properly (including any indentation for sub items). On exit this will be set to the
+   properly (including any indentation for sub items). On exit this will be set to the
             textual part of the item.
   State   - Draw states to consider during drawing. This might be needed to determine which image
-            list and/or image index to use.
+        list and/or image index to use.
 See Also
-  Measure, IJvDataItemsRenderer.DrawItem
+  IJvDataItemRenderer.Measure, IJvDataItemsRenderer.DrawItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemRenderer.Measure
 Summary
@@ -1453,9 +1570,10 @@ Description
   The caller is responsible for initializing the canvas to the brush, pen and font color.
 Parameters
   ACanvas - Canvas to measure on. On entry to this method it is assumed the canvas brush, pen and
-            font are initialized to the proper values.
+        font are initialized to the proper values.
 See Also
-  Draw, IJvDataItemsRenderer.MeasureItem
+  IJvDataItemRenderer.Draw, IJvDataItemsRenderer.MeasureItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItems
 Summary
@@ -1466,6 +1584,7 @@ Description
   contains sub items.
 
   The IJvDataItems interface provides methods that:
+
   * Allow retrieval of the number of items
   * All retrieval of an item based on its index, its ID (or ID-path) or an index path.
   * Determine the parent item that owns this list.
@@ -1474,20 +1593,22 @@ Description
   * Determine if the items are generated dynamically upon requesting them
   * Take action when a context is destroying.
 See Also
-  IJvDataProvider, IJvDataItem
+  IJvDataItem, IJvDataProvider
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItems.ContextDestroying
 Summary
   Called when a context is about to be destroyed.
 Description
   ContextDestroying is called whenever a context is about to be destroyed. It's generally used to
-  notify all items a specific context (and all of its child contexts) will be no longer available
-  so context specific data for these items can be destroyed.
+  notify all items a specific context (and all of its child contexts) will be no longer available so
+  context specific data for these items can be destroyed.
 
   The implementation of this method should simply iterate over its item list and call each
   IJvDataItem instance's <LINK IJvDataItem.ContextDestroying, ContextDestroying> method.
 Parameters
   Context - Context about to be destroyed,
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItems.Count
 Summary
@@ -1495,7 +1616,8 @@ Summary
 Description
   Count indicates the number of items in the list.
 See Also
-  Items, GetCount
+  IJvDataItems.GetCount, IJvDataItems.Items
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItems.GetCount
 Summary
@@ -1503,16 +1625,18 @@ Summary
 Description
   GetCount retrieves the number of items that are in the list.
 See Also
-  Count
+  IJvDataItems.Count
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItems.GetImplementer
 Summary
   Reference to the implementing object.
 Description
-  GetImplementer returns a reference to the TObject instance implementing the IJvDataItems
-  interface. This method should be used with care, as you can never be sure which object implements
-  the interface. Callers should never assume a specific object unless it is enforced in the
+  GetImplementer returns a reference to the TObject instance implementing the IJvDataItems interface.
+  This method should be used with care, as you can never be sure which object implements the
+  interface. Callers should never assume a specific object unless it is enforced in the
   implementation of the various objects.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItems.GetItem
 Summary
@@ -1523,15 +1647,16 @@ Description
 Parameters
   Index - 0-based index of the item to retrieve. The possible values range from 0 .. Count-1.
 See Also
-  Count, Item, GetItemByID, GetItemByIndexPath
+  Item
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItems.GetItemByID
 Summary
   Retrieve an item from the list given its ID (or ID path).
 Description
-  GetItemByID retrieves a Data Item from the list given its ID or ID-path. Each item will be
-  initiated with an ID value which should be unique throughout the tree - although this is not
-  enforced - and this method allows to retrieve an item given that ID.
+  GetItemByID retrieves a Data Item from the list given its ID or ID-path. Each item will be in
+  tiated with an ID value which should be unique throughout the tree - although this is not enforced
+  - and this method allows to retrieve an item given that ID.
 
   The path is always considered relative to this list. If the ID string starts with a backslash (or
   forwardslash; both are allowed), the path is considered from the root of the provider
@@ -1544,26 +1669,28 @@ Description
 Parameters
   ID  - The ID or ID-path of the item to retrieve.
 See Also
-  GetItem, GetItemByIndexPath, IJvDataItem.GetID
+  IJvDataItem.GetID, IJvDataItems.GetItem, IJvDataItems.GetItemByIndexPath
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItems.GetItemByIndexPath
 Summary
   Retrieve an item from the list given its index path.
 Description
-  GetItemByIndexPath retrieves a Data Item from the list given its index path. If the specified
-  item could not be found the method returns nil.
+  GetItemByIndexPath retrieves a Data Item from the list given its index path. If the specified item
+  could not be found the method returns nil.
 
   Each integer in the array is considered to be an index into a list of items. The first integer
   refers to the IJvDataItems instance on which this method is called. If more index values follow,
   the item is queried for an IJvDataItems interface. If one is not found the end result will be nil,
   otherwise the next index is applied to the new found item list.
 
-  This process will be repeated until the entire path has been completed, or a specified index
-  fell out of the range for the list on which to apply it (in which case nil will be returned.
+  This process will be repeated until the entire path has been completed, or a specified index fell
+  out of the range for the list on which to apply it (in which case nil will be returned.
 Parameters
   IndexPath - array of item index values considered to be the path to the item to retrieve.
 See Also
-  GetItem, GetItemByID, IJvDataItem.GetIndex
+  IJvDataItem.GetIndex, IJvDataItems.GetItem, IJvDataItems.GetItemByID
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItems.GetParent
 Summary
@@ -1572,7 +1699,9 @@ Description
   GetParent is a reference to the parent item for this list or nil if this is the root list (i.e.
   implemented at the IJvDataProvider level).
 See Also
-  Parent, GetProvider, IJvDataItem, IJvDataProvider, IJvDataProvider.GetItems
+  IJvDataItem, IJvDataItems.GetProvider, IJvDataItems.Parent, IJvDataProvider,
+  IJvDataProvider.GetItems
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItems.GetProvider
 Summary
@@ -1580,7 +1709,8 @@ Summary
 Description
   GetProvider is a reference to the provider owning this list.
 See Also
-  Provider, GetParent, IJvDataProvider
+  IJvDataItems.GetParent, IJvDataItems.Provider, IJvDataProvider
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItems.IsDynamic
 Summary
@@ -1591,6 +1721,7 @@ Description
 
   The implementation object of IJvDataItem should reimplement IUnknown._AddRef and IUnknown._Release
   to ignore reference counting if this method returns False.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItems.Items
 Summary
@@ -1601,7 +1732,8 @@ Description
 Parameters
   Index - 0-based index of the item to retrieve.
 See Also
-  Count, GetItem
+  IJvDataItems.Count, IJvDataItems.GetItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItems.Parent
 Summary
@@ -1610,7 +1742,8 @@ Description
   Parent is a reference to the parent item or nil if this list is the root list (i.e. implemented at
   the IJvDataProvider level.
 See Also
-  Provider, GetParent
+  IJvDataItems.GetParent, IJvDataItems.Provider
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItems.Provider
 Summary
@@ -1618,7 +1751,8 @@ Summary
 Description
   Provider is a reference to the data provider instance.
 See Also
-  Parent, GetProvider
+  IJvDataItems.GetProvider, IJvDataItems.Parent
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsDesigner
 Summary
@@ -1626,13 +1760,14 @@ Summary
 Description
   IJvDataItemsDesigner is an optional supporting interface for IJvDataItems that is used solely by
   the Data Provider Tree Designer. It generates a list of item types that can be added. Upon
-  selection from the menu the requested item is created by the NewByKind method and is then added
-  to the list by using the IJvDataItemsManagement.Add method.
+  selection from the menu the requested item is created by the NewByKind method and is then added to
+  the list by using the IJvDataItemsManagement.Add method.
 
   IJvDataItemsDesigner is only usable if IJvDataItemsManagement is also supported by IJvDataItems.
   If this is not the case, the new items can't be added to the list which makes it quite useless.
 See Also
-  IJvDataItemsManagement, IJvDataItems, IJvDataItemDesigner
+  IJvDataItemDesigner, IJvDataItems, IJvDataItemsManagement
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsDesigner.GetCount
 Summary
@@ -1640,7 +1775,8 @@ Summary
 Description
   GetCount returns the number of item kinds this designer can generate.
 See Also
-  GetKind, NewByKind
+  IJvDataItemsDesigner.GetKind, IJvDataItemsDesigner.NewByKind
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsDesigner.GetKind
 Summary
@@ -1652,11 +1788,12 @@ Description
   If an invalid index is specified, the function returns False (Caption is undefined in this case).
 Parameters
   Index -   Index of the item kind for which to retrieve the catpion. Index is a 0-based value. If
-            the specified index is invalid the function will return nil.
+         the specified index is invalid the function will return nil.
   Caption - If the function returns True, this parameter will return the caption for the menu item
-            to generate.
+         to generate.
 See Also
-  GetCount
+  IJvDataItemsDesigner.GetCount
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsDesigner.NewByKind
 Summary
@@ -1668,10 +1805,11 @@ Description
   Which item type is created depends solely on the implementation of the interface.
 Parameters
   Kind - Index of the item type to create. This is a 0-based value. If the specified index is
-         invalid the function either returns nil or generates an exception (depending on the
+  invalid the function either returns nil or generates an exception (depending on the
          implementation).
 See Also
-  GetCount
+  IJvDataItemsDesigner.GetCount
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsImages
 Summary
@@ -1685,6 +1823,7 @@ Description
   owner of an item or can be supported anywhere up the item tree.
 
   The interface provides three different image lists:
+
   * an image list for disabled state.
   * an image list for "hot" items.
   * a normal image list.
@@ -1695,7 +1834,8 @@ Description
   If an item is "hot" (e.g. the mouse hovers over it) but there's no "hot" image list, the normal
   image list will be used.
 See Also
-  IJvDataItems, IJvDataItemImage
+  IJvDataItemImage, IJvDataItems
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsImages.DisabledImages
 Summary
@@ -1709,7 +1849,9 @@ Description
   normally use the normal image list (specified by Images) and render that bitmap in a
   greyed-out/disabled state.
 See Also
-  Images, HotImages, GetDisabledImages, SetDisabledImages
+  IJvDataItemsImages.GetDisabledImages, IJvDataItemsImages.HotImages, IJvDataItemsImages.Images,
+  IJvDataItemsImages.SetDisabledImages
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsImages.GetDisabledImages
 Summary
@@ -1718,16 +1860,17 @@ Description
   GetDisabledImages retrieves the image list for disabled items. It's the DisabledImages property
   read method.
 See Also
-  DisabledImages, SetDisabledImages
+  IJvDataItemsImages.DisabledImages, IJvDataItemsImages.SetDisabledImages
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsImages.GetHotImages
 Summary
   Retrieves the image list for "hot" items.
 Description
-  GetDisabledImages retrieves the image list for "hot" items. It's the HotImages property
-  read method.
+  GetDisabledImages retrieves the image list for "hot" items. It's the HotImages property read method.
 See Also
-  HotImages, SetHotImages
+  IJvDataItemsImages.HotImages, IJvDataItemsImages.SetHotImages
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsImages.GetImages
 Summary
@@ -1735,7 +1878,8 @@ Summary
 Description
   GetImages retrieves the image list for normal items. It's the Images property read method.
 See Also
-  Images, SetImages
+  IJvDataItemsImages.Images, IJvDataItemsImages.SetImages
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsImages.HotImages
 Summary
@@ -1748,7 +1892,9 @@ Description
   If an item is "hot" but HotImages is not assigned, the rendering code will normally use the normal
   image list (specified by Images).
 See Also
-  Images, DisabledImages, GetHotImages, SetHotImages
+  IJvDataItemsImages.DisabledImages, IJvDataItemsImages.GetHotImages, IJvDataItemsImages.Images,
+  IJvDataItemsImages.SetHotImages
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsImages.Images
 Summary
@@ -1761,7 +1907,9 @@ Description
   one, DisabledImages or HotImages). If one of the other two image lists is not assigned but should
   have been used in the drawing process, this list will be used instead.
 See Also
-  DisabledImages, HotImages, GetImages, SetImages
+  IJvDataItemsImages.DisabledImages, IJvDataItemsImages.GetImages, IJvDataItemsImages.HotImages,
+  IJvDataItemsImages.SetImages
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsImages.SetDisabledImages
 Summary
@@ -1772,18 +1920,20 @@ Description
 Parameters
   Value - Image list to use for disabled items.
 See Also
-  DisabledImages, GetDisabledImages
+  IJvDataItemsImages.DisabledImages, IJvDataItemsImages.GetDisabledImages
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsImages.SetHotImages
 Summary
   Specifies the image list for "hot" items.
 Description
-  SetDisabledImages specifies the image list to use for "hot" items. It's the HotImages
-  property write method.
+  SetDisabledImages specifies the image list to use for "hot" items. It's the HotImages property
+  write method.
 Parameters
   Value - Image list to use for "hot" items.
 See Also
-  HotImages, GetHotImages
+  IJvDataItemsImages.GetHotImages, IJvDataItemsImages.HotImages
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsImages.SetImages
 Summary
@@ -1793,7 +1943,8 @@ Description
 Parameters
   Value - Image list to use for normal items.
 See Also
-  Images, GetImages
+  IJvDataItemsImages.GetImages, IJvDataItemsImages.Images
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsManagement
 Summary
@@ -1803,6 +1954,7 @@ Description
   list.
 
   The interface provides methods to:
+
   * Add a specific item to the list.
   * Create and add a new item to the list.
   * Empty the list of items.
@@ -1812,6 +1964,7 @@ Description
   the list.
 See Also
   IJvDataItems, IJvDataItemsDesigner
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsManagement.Add
 Summary
@@ -1821,7 +1974,8 @@ Description
 Parameters
   Item - The item to add.
 See Also
-  New, Delete, Remove
+  IJvDataItemsManagement.Delete, IJvDataItemsManagement.New, IJvDataItemsManagement.Remove
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsManagement.Clear
 Summary
@@ -1829,7 +1983,8 @@ Summary
 Description
   Clear empties the list of items.
 See Also
-  Delete, Remove
+  IJvDataItemsManagement.Delete, IJvDataItemsManagement.Remove
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsManagement.Delete
 Summary
@@ -1837,9 +1992,9 @@ Summary
 Description
   Delete deletes the item specified by the Index parameter.
 
-  If the item list is a static list (i.e. IJvDataItems.IsDynamic returns False) there is a chance
-  the item being deleted is still referenced outside the provider. Using that reference might then
-  lead to Access Violations.
+  If the item list is a static list (i.e. IJvDataItems.IsDynamic returns False) there is a chance the
+  item being deleted is still referenced outside the provider. Using that reference might then lead
+  to Access Violations.
 
   If the item list is a dynamic list (i.e. IJvDataItems.IsDynamic returns True) the deletion will
   normally be performed (i.e. the reference is removed from the list) but the item might still be
@@ -1849,16 +2004,18 @@ Description
 Parameters
   Index - Index of the item to delete.
 See Also
-  Remove, Add
+  IJvDataItemsManagement.Add, IJvDataItemsManagement.Remove
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsManagement.New
 Summary
   Create and add a new item to the list.
 Description
-  New creates and adds a new Data Item to the list of items. What type of item is created depends
-  on the implementation but usually is a generic type the item list is intended for.
+  New creates and adds a new Data Item to the list of items. What type of item is created depends on
+  the implementation but usually is a generic type the item list is intended for.
 See Also
-  Add
+  IJvDataItemsManagement.Add
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsManagement.Remove
 Summary
@@ -1880,7 +2037,8 @@ Description
 Parameters
   Item - Reference to the item to delete.
 See Also
-  Delete, Add
+  IJvDataItemsManagement.Add, IJvDataItemsManagement.Delete
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsRenderer
 Summary
@@ -1891,6 +2049,7 @@ Description
   rendering and measuring of the items in the list.
 
   The interface provides methods to:
+
   * Draw an item given its index.
   * Measure an item given its index.
   * Draw the specified IJvDataItem instance.
@@ -1902,25 +2061,27 @@ Description
   implementation instead of handling it itself.
 
   Consumers generally handle rendering/measuring in the following way:
-  * Check if the item supports the IJvDataItemRenderer interface. If it does use it to perform the
-    rendering/measuring.
+
+  * Check if the item supports
+     the IJvDataItemRenderer interface. If it does use it to perform the   rendering/measuring.
   * Check for the closest IJvDataItemsRenderer interface (the direct owning IJvDataItems list or
-    any of the lists in its parent chain). If it finds one use it to perform the
-    rendering/measuring.
+     any of the lists in its parent chain). If it finds one use it to perform the
+     rendering/measuring.
   * Handle the rendering at the consumer side. This means all items are considered equal and usually
-    only IJvDataItemText and optionally IJvDataItemImage (and the corresponding IJvDataItemsImages)
-    are used. The entire rendering/measuing is then consumer (control) dependant and the provider
-    tree may no longer look uniform in different consumers/clients.
+     only IJvDataItemText and optionally IJvDataItemImage (and the corresponding IJvDataItemsImages)
+     are used. The entire rendering/measuing is then consumer (control) dependant and the provider
+     tree may no longer look uniform in different consumers/clients.
 See Also
-  IJvDataItems, IJvDataItemRenderer
+  IJvDataItemRenderer, IJvDataItems
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsRenderer.AvgItemSize
 Summary
   Determines the average item size.
 Description
   AvgItemSize determines the average size of the items in the list. It depends on the implementation
-  how this value is determined (either by iterating over the items and calculate the real average
-  or by assuming data depending on current font, etc).
+  how this value is determined (either by iterating over the items and calculate the real average or
+  by assuming data depending on current font, etc).
 
   The value returned should be considered a rough indication, not an exact value. It's possible that
   either the width, height or both are educated guesses based on the current select font.
@@ -1928,31 +2089,33 @@ Description
   The caller is responsible for initializing the canvas to the brush, pen and font color.
 Parameters
   ACanvas - Canvas to measure on. On entry to this method it is assumed the canvas brush, pen and
-            font are initialized to the proper values.
+        font are initialized to the proper values.
 See Also
-  MeasureItemByIndex, MeasureItem
+  IJvDataItemsRenderer.MeasureItem, IJvDataItemsRenderer.MeasureItemByIndex
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsRenderer.DrawItem
 Summary
   Draw an item.
 Description
-  DrawItem draws the item specified by the Item parameter. Depending on the implementation
-  the method might first check if the item to draw supports the IJvDataItemRenderer interface; if it
-  does, the drawing is handled by that interface instead.
+  DrawItem draws the item specified by the Item parameter. Depending on the implementation the method
+  might first check if the item to draw supports the IJvDataItemRenderer interface; if it does, the
+  drawing is handled by that interface instead.
 
   The caller is responsible for initializing the canvas to the brush, pen and font color and
   providing an appropiate rectangle (including any indentation for sub items).
 Parameters
   ACanvas - Canvas to render to. On entry to this method it is assumed the canvas brush, pen and
-            font are initialized to the proper values.
+       font are initialized to the proper values.
   ARect   - Rectangle in which to draw the item in. On entry it is assumed to be initialized
-            properly (including any indentation for sub items). On exit this will be set to the
+   properly (including any indentation for sub items). On exit this will be set to the
             textual part of the item.
   Item    - The Data Item to render.
   State   - Draw states to consider during drawing. This might be needed to determine which image
-            list and/or image index to use.
+        list and/or image index to use.
 See Also
-  DrawItemByIndex, MeasureItem
+  IJvDataItemsRenderer.DrawItemByIndex, IJvDataItemsRenderer.MeasureItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsRenderer.DrawItemByIndex
 Summary
@@ -1966,15 +2129,16 @@ Description
   providing an appropiate rectangle (including any indentation for sub items).
 Parameters
   ACanvas - Canvas to render to. On entry to this method it is assumed the canvas brush, pen and
-            font are initialized to the proper values.
+       font are initialized to the proper values.
   ARect   - Rectangle in which to draw the item in. On entry it is assumed to be initialized
-            properly (including any indentation for sub items). On exit this will be set to the
+   properly (including any indentation for sub items). On exit this will be set to the
             textual part of the item.
   Index   - Index into the items array of the item to render.
   State   - Draw states to consider during drawing. This might be needed to determine which image
-            list and/or image index to use.
+        list and/or image index to use.
 See Also
-  DrawItem, MeasureItemByIndex
+  IJvDataItemsRenderer.DrawItem, IJvDataItemsRenderer.MeasureItemByIndex
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsRenderer.MeasureItem
 Summary
@@ -1987,10 +2151,12 @@ Description
   The caller is responsible for initializing the canvas to the brush, pen and font color.
 Parameters
   ACanvas - Canvas to measure on. On entry to this method it is assumed the canvas brush, pen and
-            font are initialized to the proper values.
+        font are initialized to the proper values.
   Item    - The Data Item to measure.
 See Also
-  MeasureItemByIndex, DrawItem, AvgItemSize
+  IJvDataItemsRenderer.AvgItemSize, IJvDataItemsRenderer.DrawItem,
+  IJvDataItemsRenderer.MeasureItemByIndex
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsRenderer.MeasureItemByIndex
 Summary
@@ -2003,20 +2169,22 @@ Description
   The caller is responsible for initializing the canvas to the brush, pen and font color.
 Parameters
   ACanvas - Canvas to measure on. On entry to this method it is assumed the canvas brush, pen and
-            font are initialized to the proper values.
+        font are initialized to the proper values.
   Index   - Index into the items array of the item to measure.
 See Also
-  MeasureItem, DrawItemByIndex, AvgItemSize
+  IJvDataItemsRenderer.AvgItemSize, IJvDataItemsRenderer.DrawItemByIndex,
+  IJvDataItemsRenderer.MeasureItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemStates
 Summary
   Data Item support interface for keeping item states at the provider side.
 Description
-  IJvDataItemStates is a supporting interface for IJvDataItem that adds the capability of keeping
-  the Enabled, Checked and Visible states for an item at the provider side.
+  IJvDataItemStates is a supporting interface for IJvDataItem that adds the capability of keeping the
+  Enabled, Checked and Visible states for an item at the provider side.
 
-  When a provider	or consumer support interface needs one of the afformentioned states, it will
-  first request the state from the consumer (if it supports the IJvDataConsumerItemState interface).
+  When a provider       or consumer support interface needs one of the afformentioned states, it will first
+  request the state from the consumer (if it supports the IJvDataConsumerItemState interface).
   If this interface is not supported or if the returned state equals disNotUsed, the state is
   requested from the IJvDataItemStates interface of the item.
 
@@ -2025,26 +2193,26 @@ Description
   required to handle them. In addition a consumer may override the setting of the item at its
   discretion.
 See Also
-  IJvDataItem, IJvDataConsumerItemState
+  IJvDataConsumerItemState, IJvDataItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemStates.Checked
 Summary
   Specifies if the item is checked.
 Description
-  Checked specifies if the item is checked. Read Checked to read the setting or set it to a new
-  value.
+  Checked specifies if the item is checked. Read Checked to read the setting or set it to a new value.
 
   If Checked is set to disIndetermined the item's checkbox should be rendered in a gray state.
 
   If Checked is set to disNotUsed the caller determines the checked state (usually interpreted as
   False).
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemStates.Enabled
 Summary
   Specifies if the item is enabled.
 Description
-  Enabled specifies if the item is enabled. Read Enabled to read the setting or set it to a new
-  value.
+  Enabled specifies if the item is enabled. Read Enabled to read the setting or set it to a new value.
 
   If Enabled is set to disFalse the item should be rendered in a disabled state. If an action is
   linked to the item (through the IJvDataItemBasicAction interface), it should not be executed.
@@ -2053,6 +2221,7 @@ Description
   interpreted as True).
 See Also
   IJvDataItemBasicAction
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemStates.Get_Checked
 Summary
@@ -2061,7 +2230,8 @@ Description
   Get_Checked retrieves the checked state of the item. Get_Checked is the Checked property's read
   method.
 See Also
-  Set_Checked, Checked
+  IJvDataItemStates.Checked, IJvDataItemStates.Set_Checked
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemStates.Get_Enabled
 Summary
@@ -2070,7 +2240,8 @@ Description
   Get_Enabled retrieves the enabled state of the item. Get_Enabled is the Enabled property's read
   method.
 See Also
-  Set_Enabled, Enabled
+  IJvDataItemStates.Enabled, IJvDataItemStates.Set_Enabled
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemStates.Get_Visible
 Summary
@@ -2079,47 +2250,47 @@ Description
   Get_Visible retrieves the visible state of the item. Get_Visible is the Visible property's read
   method.
 See Also
-  Set_Visible, Visible
+  IJvDataItemStates.Set_Visible, IJvDataItemStates.Visible
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemStates.Set_Checked
 Summary
   Sets the checked state.
 Description
-  Set_Checked sets the checked state of the item. Set_Checked is the Checked property's write
-  method.
+  Set_Checked sets the checked state of the item. Set_Checked is the Checked property's write method.
 Parameters
   Value - New state.
 See Also
-  Get_Checked, Checked
+  IJvDataItemStates.Checked, IJvDataItemStates.Get_Checked
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemStates.Set_Enabled
 Summary
   Sets the enabled state.
 Description
-  Set_Enabled sets the enabled state of the item. Set_Enabled is the Enabled property's write
-  method.
+  Set_Enabled sets the enabled state of the item. Set_Enabled is the Enabled property's write method.
 Parameters
   Value - New state.
 See Also
-  Get_Enabled, Enabled
+  IJvDataItemStates.Enabled, IJvDataItemStates.Get_Enabled
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemStates.Set_Visible
 Summary
   Sets the visible state.
 Description
-  Set_Visible sets the visible state of the item. Set_Visible is the Visible property's write
-  method.
+  Set_Visible sets the visible state of the item. Set_Visible is the Visible property's write method.
 Parameters
   Value - New state.
 See Also
-  Get_Visible, Visible
+  IJvDataItemStates.Get_Visible, IJvDataItemStates.Visible
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemStates.Visible
 Summary
   Specifies if the item is visible.
 Description
-  Visible specifies if the item is visible. Read Visible to read the setting or set it to a new
-  value.
+  Visible specifies if the item is visible. Read Visible to read the setting or set it to a new value.
 
   If Visible is set to disIndetermined or disNotUsed, the setting is considered True in most cases
   (depends on the caller).
@@ -2128,6 +2299,7 @@ Description
   to determine if the item is to be added to the tree.
 See Also
   IJvDataConsumerViewList
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemText
 Summary
@@ -2136,52 +2308,57 @@ Description
   IJvDataItemText is a supporting interface for IJvDataItem that adds the capability of linking a
   caption for an item.
 
-	Almost every provider support the IJvDataItemText interface for its items. Besides access to the
-	caption, the interface also keeps track of the editability of the caption from the user interface.
+  Almost every provider support the IJvDataItemText interface for its items. Besides access to the
+  caption, the interface also keeps track of the editability of the caption from the user interface.
 See Also
   IJvDataItem
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemText.Caption
 Summary
-	Specifies the caption of the data item.
+  Specifies the caption of the data item.
 Description
-	Caption specifies the caption for the data item. The caption might be fixed by the object (i.e.
-	it can't be changed by assigning a new value to Caption) and might be depending on the current
-	context, consumer setting and/or consumer attributes.
+  Caption specifies the caption for the data item. The caption might be fixed by the object (i.e.
+  it can't be changed by assigning a new value to Caption) and might be depending on the current
+  context, consumer setting and/or consumer attributes.
 See Also
-	GetCaption, SetCaption, Editable
+  IJvDataItemText.Editable, IJvDataItemText.GetCaption, IJvDataItemText.SetCaption
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemText.Editable
 Summary
-	Specifies if the caption of the item is editable.
+  Specifies if the caption of the item is editable.
 Description
-	Editable specifies if the caption of the item is editable in the user interface (e.g. an edit
-	control). If the caption should be editable from the user interface the method returns True,
-	otherwise False is returned.
+  Editable specifies if the caption of the item is editable in the user interface (e.g. an edit
+  control). If the caption should be editable from the user interface the method returns True,
+  otherwise False is returned.
 
-	Note that the return value of Editable does not neccessarily mean the caption can or can't be
-	changed. It only enables/disables the editing from the user interface, but consumers may ignore
-	this method if they wish.
+  Note that the return value of Editable does not neccessarily mean the caption can or can't be
+  changed. It only enables/disables the editing from the user interface, but consumers may ignore
+  this method if they wish.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemText.GetCaption
 Summary
-	Retrieves the caption of the data item.
+  Retrieves the caption of the data item.
 Description
-	GetCaption retrieves the caption of the data item. It's the read access method for the Caption
-	property.
+  GetCaption retrieves the caption of the data item. It's the read access method for the Caption
+  property.
 See Also
-	Caption, SetCaption
+  IJvDataItemText.Caption, IJvDataItemText.SetCaption
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemText.SetCaption
 Summary
-	Sets a new caption for the data item.
+  Sets a new caption for the data item.
 Description
-	SetCaption sets a new caption for the data item. It's the write access method for the Caption
-	property.
+  SetCaption sets a new caption for the data item. It's the write access method for the Caption
+  property.
 Parameters
   Value - New caption for the data item.
 See Also
-	Caption, GetCaption
+  IJvDataItemText.Caption, IJvDataItemText.GetCaption
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider
 Summary
@@ -2190,25 +2367,28 @@ Description
   IJvDataProvider is the main Data Provider interface. A component that is to function as a Data
   Provider should always support this interface.
   The interface provides methods that:
+
   * allows registration/unregistration of change notifications
   * allows retrieval of the root items list.
   * allows change notification (both before and after changing)
   * selection of current consumer/context
   * various administrative tasks (destruction of consumer, specification of consumer service
-    extensions, allow provider designer and/or context manager).
+     extensions, allow provider designer and/or context manager).
+
   Although any component could function as a Data Provider, it's often wise to use the JVCL provided
-  base classes (in the JvDataProvider unit) to write new Data Providers as these classes deal
-  with most of the basics of the Data Provider mechanism so you can focus on writing the actual
-  provider.
+  base classes (in the JvDataProvider unit) to write new Data Providers as these classes deal with
+  most of the basics of the Data Provider mechanism so you can focus on writing the actual provider.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.AllowContextManager
 Summary
   Specifies if the provider allows its contexts to be managed at design time.
 Description
-  AllowContextManager signals if the provider allows its context tree to be designed at design
-  time. It's used by the component editor to enable/disable the 'Context manager...' menu item.
+  AllowContextManager signals if the provider allows its context tree to be designed at design time.
+  It's used by the component editor to enable/disable the 'Context manager...' menu item.
 See Also
-  AllowProviderDesigner
+  IJvDataProvider.AllowProviderDesigner
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.AllowProviderDesigner
 Summary
@@ -2217,7 +2397,8 @@ Description
   AllowProviderDesigner signals if the provider allows its tree to be designed at design time. It's
   used by the component editor to enable/disable the 'Tree designer...' menu item.
 See Also
-  AllowContextManager
+  IJvDataProvider.AllowContextManager
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.Changed
 Summary
@@ -2230,7 +2411,8 @@ Parameters
   Source  -       Reference to an interface instance linked to the change. See the description of
                   TDataProviderChangeReason to see the expected interface instances in each case.
 See Also
-  Changing, RegisterChangeNotify, IJvDataProviderNotify
+  IJvDataProvider.Changing, IJvDataProvider.RegisterChangeNotify, IJvDataProviderNotify
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.Changing
 Summary
@@ -2243,18 +2425,20 @@ Parameters
   Source  -       Reference to an interface instance linked to the change. See the description of
                   TDataProviderChangeReason to see the expected interface instances in each case.
 See Also
-  Changed, RegisterChangeNotify, IJvDataProviderNotify
+  IJvDataProvider.Changed, IJvDataProvider.RegisterChangeNotify, IJvDataProviderNotify
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.ConsumerClasses
 Summary
   Retrieves a list of consumer service extension classes needed by the provider.
 Description
-  ConsumerClasses will retrieve a list of consumer service extension classes the provider needs to
-  be used properly.
+  ConsumerClasses will retrieve a list of consumer service extension classes the provider needs to be
+  used properly.
 
   The list may be depending on the currently selected consumer and/or context, e.g. a consumer that
   can only handle a single item at a time will require a consumer service extension that allows the
   application developer to select the item to use.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.ConsumerDestroying
 Summary
@@ -2266,19 +2450,21 @@ Description
   ReleaseConsumer call will follow it later).
 Parameters
   Consumer  - Consumer about to be destroyed.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.ContextDestroying
 Summary
   Called when a context is about to be destroyed.
 Description
   ContextDestroying is called whenever a context is about to be destroyed. It's generally used to
-  notify all items a specific context (and all of its child contexts) will be no longer available
-  so context specific data for these items can be destroyed. Usually this will be done by
-  redirecting the call to the root items list (GetItems). In addition ContextDestroying will clean
-  up the selected context stack and nilling any reference to the context and/or any of its child
-  contexts (they are not removed from the stack as a ReleaseContext may follow later).
+  notify all items a specific context (and all of its child contexts) will be no longer available so
+  context specific data for these items can be destroyed. Usually this will be done by redirecting
+  the call to the root items list (GetItems). In addition ContextDestroying will clean up the
+  selected context stack and nilling any reference to the context and/or any of its child contexts
+  (they are not removed from the stack as a ReleaseContext may follow later).
 Parameters
   Context - Context about to be destroyed.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.GetImplementer
 Summary
@@ -2288,47 +2474,55 @@ Description
   interface. This method should be used with care, as you can never be sure which object implements
   the interface. Callers should never assume a specific object unless it is enforced in the
   implementation of the caller.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.GetItems
 Summary
   Retrieves the list of root items.
 Description
   GetItems retrieves the IJvDataItems instance containing the list of root items. Each Data Provider
-  has to have an IJvDataItems instance so you can safely assume that GetItems will never return a
-  nil reference.
+  has to have an IJvDataItems instance so you can safely assume that GetItems will never return a nil
+  reference.
 
   Note that it's common for the IJvDataProvider instance to support the IJvDataItems interface as
   well. This means that if dpvMe contains a reference to IJvDataProvider that:
-<AUTOLINK OFF>
-<CODE>
-  dpvMe.QueryInterface(IJvDataItems, disRoot)
-</CODE>
-  will be the same as:
-<CODE>
-  disRoot := dpvMe.GetItems
-</CODE>
-<AUTOLINK ON>
+  <AUTOLINK OFF>
+  <CODE>
+  dpvMe.QueryInterface(IJvDataItems, disRoot) 
+  </CODE>
+
+  will be the same as: 
+  <CODE>
+
+  disRoot := dpvMe.GetItems 
+  </CODE>
+  <AUTOLINK ON>
 See Also
   IJvDataItems
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.GetNotifier
 Summary
-	Retrieves a reference to a registered notifier.
+  Retrieves a reference to a registered notifier.
 Description
-	GetNotifier retrieves a reference to the notifier indicated by its index.
+  GetNotifier retrieves a reference to the notifier indicated by its index.
 Parameters
-	Index - Zero-based index of the notifier to retrieve. Allowable values range from 0 to
-					 GetNotifierCount-1 inclusive.
+  Index - Zero-based index of the notifier to retrieve. Allowable values range from 0 to
+  GetNotifierCount-1 inclusive.
 See Also
-	GetNotifierCount, RegisterChangeNotify, UnregisterChangeNotify
+  IJvDataProvider.GetNotifierCount, IJvDataProvider.RegisterChangeNotify,
+  IJvDataProvider.UnregisterChangeNotify
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.GetNotifierCount
 Summary
-	Retrieve the number of registered notifiers.
+  Retrieve the number of registered notifiers.
 Description
-	GetNotifierCount returns the number of notifiers registered for this provider.
+  GetNotifierCount returns the number of notifiers registered for this provider.
 See Also
-	GetNotifier, RegisterChangeNotify, UnregisterChangeNotify
+  IJvDataProvider.GetNotifier, IJvDataProvider.RegisterChangeNotify,
+  IJvDataProvider.UnregisterChangeNotify
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.RegisterChangeNotify
 Summary
@@ -2339,9 +2533,10 @@ Description
   interface is handled by the consumer to update its control as needed.
 Parameters
   ANotify - Notification interface to register. If the specified reference is already registered,
-            nothing will happen.
+        nothing will happen.
 See Also
-  UnregisterChangeNotify, IJvDataProviderNotify
+  IJvDataProvider.UnregisterChangeNotify, IJvDataProviderNotify
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.ReleaseConsumer
 Summary
@@ -2350,7 +2545,8 @@ Description
   ReleaseConsumer deselects the currently active consumer, reactivating the consumer that was active
   before it.
 See Also
-  SelectConsumer, SelectedConsumer, ReleaseContext
+  IJvDataProvider.ReleaseContext, IJvDataProvider.SelectConsumer, IJvDataProvider.SelectedConsumer
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.ReleaseContext
 Summary
@@ -2359,49 +2555,50 @@ Description
   ReleaseContext deselects the currently active context, reactivating the context that was active
   before it.
 See Also
-  SelectContext, SelectedContext, ReleaseConsumer
+  IJvDataProvider.ReleaseConsumer, IJvDataProvider.SelectContext, IJvDataProvider.SelectedContext
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.SelectConsumer
 Summary
   Selects a new consumer.
 Description
-  SelectConsumer selects a new consumer as the active consumer. The current consumer is pushed onto
-  a stack. Use ReleaseConsumer to return to it. When the provider is created no consumer is
-  selected.
+  SelectConsumer selects a new consumer as the active consumer. The current consumer is pushed onto a
+  stack. Use ReleaseConsumer to return to it. When the provider is created no consumer is selected.
 Parameters
-	Consumer - Reference to the consumer to select as the active consumer.
+  Consumer - Reference to the consumer to select as the active consumer.
 See Also
-  SelectedConsumer, ReleaseConsumer, SelectContext
+  IJvDataProvider.ReleaseConsumer, IJvDataProvider.SelectContext, IJvDataProvider.SelectedConsumer
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.SelectContext
 Summary
   Selects a new context.
 Description
-  SelectContext selects a new context as the active context. The current context is pushed onto
-  a stack. Use ReleaseContext to return to it. When the provider is created no context is
-  selected.
+  SelectContext selects a new context as the active context. The current context is pushed onto a
+  stack. Use ReleaseContext to return to it. When the provider is created no context is selected.
 Parameters
-	Context - Reference to the context to select as the active context.
+  Context - Reference to the context to select as the active context.
 See Also
-  SelectedContext, ReleaseContext, SelectConsumer
+  IJvDataProvider.ReleaseContext, IJvDataProvider.SelectConsumer, IJvDataProvider.SelectedContext
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.SelectedConsumer
 Summary
   Returns the last selected (currently active) consumer.
 Description
-  SelectedConsumer returns the currently active consumer. If no consumer is active it will return
-  nil.
+  SelectedConsumer returns the currently active consumer. If no consumer is active it will return nil.
 See Also
-  SelectConsumer, ReleaseConsumer, SelectedContext
+  IJvDataProvider.ReleaseConsumer, IJvDataProvider.SelectConsumer, IJvDataProvider.SelectedContext
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.SelectedContext
 Summary
   Returns the last selected (currently active) context.
 Description
-  SelectedContext returns the currently active context. If no context is active it will return
-  nil.
+  SelectedContext returns the currently active context. If no context is active it will return nil.
 See Also
-  SelectContext, ReleaseContext, SelectedConsumer
+  IJvDataProvider.ReleaseContext, IJvDataProvider.SelectContext, IJvDataProvider.SelectedConsumer
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.UnregisterChangeNotify
 Summary
@@ -2410,23 +2607,23 @@ Description
   UnregisterChangeNotify is used to unregister an IJvDataProviderNotify interface.
 Parameters
   ANotify - Notification interface to unregister. If the specified reference is not registered,
-            nothing will happen.
+      nothing will happen.
 See Also
-  RegisterChangeNotify, IJvDataProviderNotify
+  IJvDataProvider.RegisterChangeNotify, IJvDataProviderNotify
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProviderNotify
 Summary
   Callback interface to respond to changes at the provider.
 Description
-  IJvDataProviderNotify is a callback interface who's methods are called in response to changes
-  at the provider.
+  IJvDataProviderNotify is a callback interface who's methods are called in response to changes at
+  the provider.
 
   An object that wishes to be notified of changes occuring at the provider will register this
-  reference at the provider by calling the provider's
-  <LINK IJvDataProvider.RegisterChangeNotify, RegisterChangeNotify> method. If the object is no
-  longer interested in changes at a provider (i.e. another provider is selected or the object is
-  destroying), the <LINK IJvDataProvider.UnregisterChangeNotify, UnregisterChangeNotify> method
-  should be called.
+  reference at the provider by calling the provider's <LINK IJvDataProvider.RegisterChangeNotify,
+  RegisterChangeNotify> method. If the object is no longer interested in changes at a provider (i.e.
+  another provider is selected or the object is destroying), the <LINK
+  IJvDataProvider.UnregisterChangeNotify, UnregisterChangeNotify> method should be called.
 
   Note that it's perfectly legal to register the same change notification for multiple providers. In
   all cases a registered callback should eventually be unregistered before this object is destroyed.
@@ -2434,6 +2631,7 @@ Description
   callback is implicitly unregistered.
 See Also
   IJvDataProvider.RegisterChangeNotify
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProviderNotify.Consumer
 Summary
@@ -2443,21 +2641,23 @@ Description
   linked to the callback.
 See Also
   IJvDataConsumer
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProviderNotify.DataProviderChanged
 Summary
   Called when a change has occured at the provider.
 Description
-	DataProviderChanged is called whenever a change has occured at the provider (i.e. the provider's
-	<LINK IJvDataProvider.Changed, Changed> method is called).
+  DataProviderChanged is called whenever a change has occured at the provider (i.e. the provider's
+  <LINK IJvDataProvider.Changed, Changed> method is called).
 Parameters
   ADataProvider - The provider that is issuing the notification.
-  AReason       - The reason of the change as passed on to the provider's
-                  <LINK IJvDataProvider.Changed, Changed> method.
+  AReason       - The reason of the change as passed on to the provider's                 <LINK
+  IJvDataProvider.Changed, Changed> method.
   Source        - Reference to the object the change is for as passed on to the provider's
-                  <LINK IJvDataProvider.Changed, Changed> method.
+       <LINK IJvDataProvider.Changed, Changed> method.
 See Also
   IJvDataProvider.Changed
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProviderNotify.DataProviderChanging
 Summary
@@ -2467,12 +2667,13 @@ Description
   provider's <LINK IJvDataProvider.Changing, Changing> method is called).
 Parameters
   ADataProvider - The provider that is issuing the notification.
-  AReason       - The reason of the change as passed on to the provider's
-                  <LINK IJvDataProvider.Changing, Changing> method.
+  AReason       - The reason of the change as passed on to the provider's                 <LINK
+  IJvDataProvider.Changing, Changing> method.
   Source        - Reference to the object the change is for as passed on to the provider's
-                  <LINK IJvDataProvider.Changing, Changing> method.
+       <LINK IJvDataProvider.Changing, Changing> method.
 See Also
   IJvDataProvider.Changing
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataTextSearch
 Summary
@@ -2486,6 +2687,7 @@ Description
 
   This search interface is normally implemented for a data item list if any item in the list or sub
   tree will likely support the IJvDataItemText interface.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvDataTextSearch.Find
 Summary
@@ -2495,11 +2697,12 @@ Description
   reference to the data item is returned, otherwise False is returned.
 Parameters
   Text      - Text of the item to locate. Depending on the implementation, the comparison may be
-              case sensitive.
+         case sensitive.
   Recursive - Flag to specify if sub trees should be scanned as well. When set to True sub trees
-              will be scanned as well, otherwise the current list only will be scanned.
+         will be scanned as well, otherwise the current list only will be scanned.
 See Also
   IJvDataItemText.Caption
+
 ----------------------------------------------------------------------------------------------------
 @@TClassArray
 <TITLE TClassArray type>
@@ -2510,6 +2713,7 @@ Description
   IJvDataProvider.ConsumerClasses method to retrieve a list of consumer services to instantiate.
 See Also
   IJvDataProvider.ConsumerClasses
+
 ----------------------------------------------------------------------------------------------------
 @@TDataItemState
 <TITLE TDataItemState type>
@@ -2517,18 +2721,27 @@ Summary
   Type used to specify the state of a Data Item.
 Description
   The TDataItemState type ise used to specify a specific state for a Data Item. For each setting
-  (Enabled, Visible and Checked) this type specifies if that settings is off, on, indetermined or
-  not used.
+  (Enabled, Visible and Checked) this type specifies if that settings is off, on, indetermined or not
+  used.
 See Also
   IJvDataItemStates
+
+----------------------------------------------------------------------------------------------------
 @@TDataItemState.disFalse
-  Specifies the setting is False or 'off'.
+Specifies the setting is False or 'off'.
+
+----------------------------------------------------------------------------------------------------
 @@TDataItemState.disTrue
-  Specifies the setting is True or 'on'.
+Specifies the setting is True or 'on'.
+
+----------------------------------------------------------------------------------------------------
 @@TDataItemState.disIndetermined
-  Specifies the setting is 'indetermined' (neither False/off nor True/on).
+Specifies the setting is 'indetermined' (neither False/off nor True/on).
+
+----------------------------------------------------------------------------------------------------
 @@TDataItemState.disNotUsed
-  Specifies the setting is not used by this item.
+Specifies the setting is not used by this item.
+
 ----------------------------------------------------------------------------------------------------
 @@TDataProviderChangeReason
 <TITLE TDataProviderChangeReason type>
@@ -2538,52 +2751,58 @@ Description
   The TDataProviderChangeReason type is used to specify the reason why the
   ProviderChanging/ProviderChanged methods are called.
 See Also
-  IJvDataProvider.Changing, IJvDataProvider.Changed, IJvDataProviderNotify
+  IJvDataProvider.Changed, IJvDataProvider.Changing, IJvDataProviderNotify
+
+----------------------------------------------------------------------------------------------------
 @@TDataProviderChangeReason.pcrAdd
-  An item is about to be added or has just been added. The Source parameter will refer to the
-  IJvDataItems where the item is about to be added to (DataProviderChanging) or refers to the
-  IJvDataItem that has just been added (DataProviderChanged).
+An item is about to be added or has just been added. The Source parameter will refer to the
+IJvDataItems where the item is about to be added to (DataProviderChanging) or refers to the
+IJvDataItem that has just been added (DataProviderChanged).
+
+----------------------------------------------------------------------------------------------------
 @@TDataProviderChangeReason.pcrDelete
-  An item is about to be deleted or has just been deleted. The Source parameter will refer to the
-  IJvDataItem that is about to be deleted (DataProviderChanging) or refers to the IJvDataItems where
-  the item has been just removed from (DataProviderChanging). Note that any sub items are implicitly
-  also deleted, but there will be no additional calls to DataProviderChanging/DataProviderChanged
-  for them.
+An item is about to be deleted or has just been deleted. The Source parameter will refer to the
+IJvDataItem that is about to be deleted (DataProviderChanging) or refers to the IJvDataItems where the item has been just removed from (DataProviderChanging). Note that any sub items are implicitly also deleted, but there will be no additional calls to DataProviderChanging/DataProviderChanged for them.
+
+----------------------------------------------------------------------------------------------------
 @@TDataProviderChangeReason.pcrUpdateItem
-  An item is about to be changed or has just been changed. The Source parameter will refer to the
-  IJvDataItem that is about to change or has just changed. In general this change reason means that
-  one of the item's properties is changing, which also includes the properties of support
-  interfaces.
+An item is about to be changed or has just been changed. The Source parameter will refer to the
+IJvDataItem that is about to change or has just changed. In general this change reason means that one of the item's properties is changing, which also includes the properties of support interfaces.
+
+----------------------------------------------------------------------------------------------------
 @@TDataProviderChangeReason.pcrUpdateItems
-  An item list is about to be changed or has just been changed. The Source parameter will refer to
-  the IJvDataItems that is about to change or has just changed. In general this change reason means
-  that either the items list is about to be cleared (or has been cleared) or any of the items list
-  support interface's properties is changing (or has changed).
+An item list is about to be changed or has just been changed. The Source parameter will refer to the IJvDataItems that is about to change or has just changed. In general this change reason means
+that either the items list is about to be cleared (or has been cleared) or any of the items list support interface's properties is changing (or has changed).
+
+----------------------------------------------------------------------------------------------------
 @@TDataProviderChangeReason.pcrDestroy
-  The IJvDataProvider is destroying. This reason will only occur in the DataProviderChanging
-  notification.
+The IJvDataProvider is destroying. This reason will only occur in the DataProviderChanging notification.
+
+----------------------------------------------------------------------------------------------------
 @@TDataProviderChangeReason.pcrContextAdd
-  A context is about to be added or has just been added. Source refers to the context the new
-  context is added to (or nil if the context is added at the root) or the context that has just been
-  added.
+A context is about to be added or has just been added. Source refers to the context the new context is added to (or nil if the context is added at the root) or the context that has just been added.
+
+----------------------------------------------------------------------------------------------------
 @@TDataProviderChangeReason.pcrContextDelete
-  A context is about to be deleted or has just been deleted. Source refers to the context about to
-  be deleted or the context where a context has just been removed from (or nil if a context at the
-  root was deleted).
+A context is about to be deleted or has just been deleted. Source refers to the context about to be deleted or the context where a context has just been removed from (or nil if a context at the root was deleted).
+
+----------------------------------------------------------------------------------------------------
 @@TDataProviderChangeReason.pcrContextUpdate
-  A context is about to be changed or has just been changed. Source refers to the context changing
-  or changed. It usually signals the context name is changing or has changed.
+A context is about to be changed or has just been changed. Source refers to the context changing or changed. It usually signals the context name is changing or has changed.
+
+----------------------------------------------------------------------------------------------------
 @@TDataProviderChangeReason.pcrFullRefresh
-  The consumer should execute a full refresh (changes are made or being made that affect the entire
-  data tree, including tree structure).
+The consumer should execute a full refresh (changes are made or being made that affect the entire data tree, including tree structure).
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDataContextID
 <TITLE TJvDataContextID type>
 Summary
   Type used to link the context selection editor to.
 Description
-  The TJvDataContextID type is used in the consumer services to allow linking a design time editor
-  to the Context property.
+  The TJvDataContextID type is used in the consumer services to allow linking a design time editor to
+  the Context property.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemID
 <TITLE TJvDataItemID type>
@@ -2592,6 +2811,7 @@ Summary
 Description
   The TJvDataItemID type is used in the consumer services to allow linking a design time editor to
   the Item property.
+
 ----------------------------------------------------------------------------------------------------
 @@TProviderDrawState
 <TITLE TProviderDrawState type>
@@ -2600,21 +2820,37 @@ Summary
 Description
   The TProviderDrawState type is used to specify the draw state for the provider based rendering
   mechanism. It mostly follows the TOwnerDrawState type but adds a 'hot' state to the values.
+
+----------------------------------------------------------------------------------------------------
 @@TProviderDrawState.pdsSelected
-  The item is currently selected.
+The item is currently selected.
+
+----------------------------------------------------------------------------------------------------
 @@TProviderDrawState.pdsGrayed
-  The item is grayed out.
+The item is grayed out.
+
+----------------------------------------------------------------------------------------------------
 @@TProviderDrawState.pdsDisabled
-  The item is disabled.
+The item is disabled.
+
+----------------------------------------------------------------------------------------------------
 @@TProviderDrawState.pdsChecked
-  The item is checked.
+The item is checked.
+
+----------------------------------------------------------------------------------------------------
 @@TProviderDrawState.pdsFocused
-  The item has the focus.
+The item has the focus.
+
+----------------------------------------------------------------------------------------------------
 @@TProviderDrawState.pdsDefault
-  The item is the default item.
+The item is the default item.
+
+----------------------------------------------------------------------------------------------------
 @@TProviderDrawState.pdsHot
-  The item is hot (i.e. the mouse is hovering over it).
+The item is hot (i.e. the mouse is hovering over it).
+
 ----------------------------------------------------------------------------------------------------
 @@TProviderDrawStates
 <TITLE TProviderDrawStates type>
 <COMBINE TProviderDrawState>
+

@@ -12,6 +12,7 @@ Author
 @@EJvAppDBStorageError
 Summary
   Exception class used by TJvCustomAppDBStorage.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAppDBStorage
 JVCLInfo
@@ -22,6 +23,7 @@ Summary
 Description
   TJvAppDBStorage inherits from TJvCustomAppDBStorage and publishes all of it's properties and events
   but does not introduce any new behavior.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppDBStorage
 Summary
@@ -33,24 +35,29 @@ Description
   as settings, form positions and sizes, etc) in a dataset.
 
   The component introduces and publishes several new properties: DataSource, to indicate the dataset
-  used for storage, SectionField, KeyField and ValueField that indicates the fields
-  in the dataset to use to \read and \write the data.
+  used for storage, SectionField, KeyField and ValueField that indicates the fields in the dataset to
+  use to \read and \write the data.
 
-  A dataset used with TJvCustomAppDBStorage must be updateable (i.e not readonly), support the TDataset.Locate
-  standard search method and support bookmarks. Although not required, it is recommended (if possible) to create
-  an index on the fields used for the section and key name (SectionFiald and KeyField, respectively).
+  A dataset used with TJvCustomAppDBStorage must be updateable (i.e not readonly), support the
+  TDataset.Locate standard search method and support bookmarks. Although not required, it is
+  recommended (if possible) to create an index on the fields used for the section and key name
+  (SectionFiald and KeyField, respectively).
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppDBStorage.DataSource
 Summary
   Links the storage to a dataset.
 Description
-  Specify the data source component that identifies the dataset in which the target fields are found. To
-  allow the storage to represent the data for the fields, both the DataSource and the SectionField, KeyField and
+  Specify the data source component that identifies the dataset in which the target fields are found.
+  To allow the storage to represent the data for the fields, both the DataSource and the
+  SectionField, KeyField and
   ValueField properties must be set.
 
   If DataSource is nil, use the OnRead and OnWrite events to \read and \write data.
 See Also
-  SectionField, KeyField, ValueField, OnRead, OnWrite
+  TJvCustomAppDBStorage.KeyField, TJvCustomAppDBStorage.OnRead, TJvCustomAppDBStorage.OnWrite,
+  TJvCustomAppDBStorage.SectionField, TJvCustomAppDBStorage.ValueField
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppDBStorage.KeyField
 Summary
@@ -58,35 +65,39 @@ Summary
 Description
   Set KeyField to indicate which field in the dataset is used to store key names.
 See Also
-  DataSource, SectionField, ValueField
+  TJvCustomAppDBStorage.DataSource, TJvCustomAppDBStorage.SectionField,
+  TJvCustomAppDBStorage.ValueField
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppDBStorage.OnRead
 Summary
   Occurs when data is read.
 Description
-  Write a handler for the OnRead event to take specific action when data is read from storage. You can
-  use OnRead even if DataSource or any of the fields are unassigned.
+  Write a handler for the OnRead event to take specific action when data is read from storage. You
+  can use OnRead even if DataSource or any of the fields are unassigned.
 Parameters
   Sender  - The TJvCustomAppDBStorage that called the event.
   Section - The name of the section to read.
   Key     - The name of the key to read.
   Value   - The value that was read.
 See Also
-  OnWrite
+  TJvCustomAppDBStorage.OnWrite
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppDBStorage.OnWrite
 Summary
   Occurs when data is written.
 Description
-  Write a handler for the OnWrite event to take specific action when data is written to storage. You can
-  use OnWrite even if DataSource or any of the fields are unassigned.
+  Write a handler for the OnWrite event to take specific action when data is written to storage. You
+  can use OnWrite even if DataSource or any of the fields are unassigned.
 Parameters
   Sender  - The TJvCustomAppDBStorage that called the event.
   Section - The name of the section to write to. If it doesn't exist, it will be created.
   Key     - The name of the key to write to. If it doesn't exist, it will be created.
   Value   - The value to write.
 See Also
-  OnRead
+  TJvCustomAppDBStorage.OnRead
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppDBStorage.SectionField
 Summary
@@ -94,7 +105,8 @@ Summary
 Description
   Set SectionField to indicate which field the dataset is used to store section names.
 See Also
-  DataSource, KeyField, ValueField
+  TJvCustomAppDBStorage.DataSource, TJvCustomAppDBStorage.KeyField, TJvCustomAppDBStorage.ValueField
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppDBStorage.ValueField
 Summary
@@ -102,12 +114,15 @@ Summary
 Description
   Set ValueField to indicate which field the dataset is used to store value data.
 See Also
-  DataSource, SectionField, KeyField
+  TJvCustomAppDBStorage.DataSource, TJvCustomAppDBStorage.KeyField, TJvCustomAppDBStorage.SectionField
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBStorageReadEvent
 <TITLE TJvDBStorageReadEvent type>
 <COMBINE TJvCustomAppDBStorage.OnRead>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBStorageWriteEvent
 <TITLE TJvDBStorageWriteEvent type>
 <COMBINE TJvCustomAppDBStorage.OnWrite>
+

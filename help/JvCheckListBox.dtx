@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox
 <TITLEIMG TJvCheckListBox>
@@ -17,6 +19,7 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.CheckAll
 Summary
@@ -26,6 +29,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.DeleteExactString
 Summary
@@ -38,7 +42,8 @@ Parameters
   CaseSensitive - Specifies whether the strings in the list box must be compared case-sensitive with
                    Value.
 See Also
-  DeleteAllButSelected, DeleteSelected, InvertSelection, SelectAll, UnselectAll
+  DeleteAllButSelected, DeleteSelected, SelectAll
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.GetChecked
 Summary
@@ -50,6 +55,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.GetUnChecked
 Summary
@@ -61,6 +67,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.HintColor
 Summary
@@ -70,7 +77,8 @@ Description
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
 See Also
-  HotTrack
+  TJvCheckListBox.HotTrack
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.HorScrollbar
 Summary
@@ -80,16 +88,18 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.HotTrack
 Summary
   Specifies whether the list box is highlighted when the mouse passes over it.
 Description
-  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font 
-  specified by HotTrackFont is used for the list box text. When HotTrack is False, there is no visual 
+  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font
+  specified by HotTrackFont is used for the list box text. When HotTrack is False, there is no visual
   feedback when the mouse passes over the list box.
-See Also 
+See Also
   HotGlyph, HotTrackFont, OnMouseEnter, OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.InvertCheck
 Summary
@@ -99,6 +109,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.InvertSelection
 Summary
@@ -106,11 +117,12 @@ Summary
 Description
   If the MultiSelect property is True, InvertSelection selects all items that are current deselected,
   and deselects all items that are currently selected.
-
+  
   If the MultiSelect property is False, InvertSelection does nothing.
 See Also
   DeleteAllButSelected, <LINK TJvCheckListBox.DeleteExactString, DeleteExactString>, DeleteSelected,
-  SelectAll, UnselectAll
+  SelectAll
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.LoadFromFile
 Summary
@@ -122,6 +134,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.LoadFromStream
 Summary
@@ -133,6 +146,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.OnHorizontalScroll
 Summary
@@ -142,6 +156,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.OnParentColorChange
 Summary
@@ -151,6 +166,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.OnSelectCancel
 Summary
@@ -160,6 +176,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.OnVerticalScroll
 Summary
@@ -169,6 +186,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.SaveToFile
 Summary
@@ -180,6 +198,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.SaveToStream
 Summary
@@ -191,14 +210,16 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.SearchExactString
 Summary
   \Returns the position of a string in the list.
 Description
-  Call SearchExactString to obtain the position of the first occurrence of a string that matches Value.
-  A string matches Value if it is identical to Value or, if CaseSensitive is False, if it differs only
-  in case.
+  Call SearchExactString to obtain the position of the first occurrence of a string that matches
+  Value.
+  A string matches Value if it is identical to Value or, if CaseSensitive is False, if it differs
+  only in case.
 Parameters
   Value         - The string to search for.
   CaseSensitive - Indicates whether the match must be case\-sensitive.
@@ -207,6 +228,7 @@ Return value
 See Also
   <LINK TJvCheckListBox.SearchPrefix, SearchPrefix>,
   <LINK TJvCheckListBox.SearchSubString, SearchSubString>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.SearchPrefix
 Summary
@@ -223,13 +245,15 @@ Return value
 See Also
   <LINK TJvCheckListBox.SearchExactString, SearchExactString>,
   <LINK TJvCheckListBox.SearchSubString, SearchSubString>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.SearchSubString
 Summary
   \Returns the position of a string in the list.
 Description
-  Call SearchSubString to obtain the position of the first occurrence of a string that has a substring
-  that matches Value. A substring matches Value if it is identical to Value or, if CaseSensitive is
+  Call SearchSubString to obtain the position of the first occurrence of a string that has a
+  substring that matches Value. A substring matches Value if it is identical to Value or, if
+  CaseSensitive is
   False, if it differs only in case.
 Parameters
   Value         - The substring to search for.
@@ -239,6 +263,7 @@ Return value
 See Also
   <LINK TJvCheckListBox.SearchExactString, SearchExactString>,
   <LINK TJvCheckListBox.SearchPrefix, SearchPrefix>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.UnCheckAll
 Summary
@@ -247,7 +272,8 @@ Description
   Use UnselectAll to deselect all items in the list box.
 See Also
   DeleteAllButSelected, <LINK TJvCheckListBox.DeleteExactString, DeleteExactString>, DeleteSelected,
-  InvertSelection, SelectAll
+  SelectAll
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.UnselectAll
 Summary
@@ -256,4 +282,5 @@ Description
   Use UnselectAll to deselect all items in the list box.
 See Also
   DeleteAllButSelected, <LINK TJvCheckListBox.DeleteExactString, DeleteExactString>, DeleteSelected,
-  InvertSelection, SelectAll
+  SelectAll
+

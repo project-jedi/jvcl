@@ -8,6 +8,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
+
+
 ----------------------------------------------------------------------------------------------------
 @@DayStatesToString
 <TITLE DayStatesToString function>
@@ -22,13 +24,15 @@ Parameters
   Days - Parameter holding the days set as bold which are to be converted to a comma separated list.
 See Also
   <LINK StringToDayStates>
+
 ----------------------------------------------------------------------------------------------------
 @@EMonthCalError
 Summary
   \Exception class used for errors using the month calendar control or support functions.
 Description
-  EMonthCalError is the exception class used for errors using the month calendar control or
-  support functions.
+  EMonthCalError is the exception class used for errors using the month calendar control or support
+  functions.
+
 ----------------------------------------------------------------------------------------------------
 @@StringToDayStates
 <TITLE StringToDayStates function>
@@ -41,6 +45,7 @@ Parameters
   S    - String containing a comma separated list of day numbers.
 See Also
   <LINK DayStatesToString>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar
 Summary
@@ -49,6 +54,7 @@ Description
   TJvCustomMonthCalendar is the base component for MicroSoft® MonthCalendar control wrappers. Never
   use a TJvCustomMonthCalendar control directly but rather one of its descendants. Currently
   JEDI-VCL provides you with one descendant: TJvMonthCalendar2.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.Bold
 Summary
@@ -57,21 +63,22 @@ Description
   Bold holds bold day state information. Using the three array indices you can set or retrieve the
   bold state of specific date.
 
-  When setting the bold state for a date where the Year index is set to 0, the bold state applies
-  for every year on the given day and month.
+  When setting the bold state for a date where the Year index is set to 0, the bold state applies for
+  every year on the given day and month.
 Parameters
   Year  - The year part of the date to set or retrieve bold information for.
   Month - The month part of the date to set or retrieve bold information for.
   Day   - The day part of the date to set or retrieve bold information for.
 See Also
-  BoldDays, Days
+  TJvCustomMonthCalendar.BoldDays, TJvCustomMonthCalendar.Days
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.BoldDays
 Summary
   A list of bold dates.
 Description
-  BoldDays is a list of dates that have a bold state. The items in this list should be in one of
-  two formats:
+  BoldDays is a list of dates that have a bold state. The items in this list should be in one of two
+  formats:
 
   1. 0000mm=daylist
   2. yyyymm=daylist
@@ -88,17 +95,19 @@ Description
 
   Use the Days and Bold properties to simplify adding and removing bolding info.
 See Also
-  Bold, Days, <LINK StringToDayStates>
+  <LINK StringToDayStates>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.BorderStyle
 Summary
   Indicates the border type to place around the control.
 Description
-  BorderStyle indicates what kind of border should be drawn around the control. By default it is
-  set to bsNone.
+  BorderStyle indicates what kind of border should be drawn around the control. By default it is set
+  to bsNone.
 
   * bsSingle: a single border is drawn around the control.
   * bsNone: no border is drawn around the control.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.Change
 Summary
@@ -107,6 +116,7 @@ Description
   Change will apply the current state of the control to the underlaying MS MonthCalendar control.
   Change is automatically called whenever properties of the control are changed. There should be no
   need to call Change from an application.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.CheckDayState
 Summary
@@ -119,6 +129,7 @@ Parameters
   Year     - The year to retrieve the TMonthDayState value for.
   Month    - The month to retrieve the TMonthDayState value for.
   DayState - The variable to retrieve the TMonthDayState value in.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.CircleToday
 Summary
@@ -130,7 +141,8 @@ Description
 
   When set to False today's date will not be circled in the control.
 See Also
-  ShowToday, Today
+  TJvCustomMonthCalendar.ShowToday, TJvCustomMonthCalendar.Today
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.Colors
 Summary
@@ -139,13 +151,14 @@ Description
   Colors determine the various colors used by the control.
 See Also
   TJvMonthCalColors
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.CreateWithAppearance
 Summary
   \Create and instantiates a month calender with the specified appearance.
 Description
   CreateWithAppearance will create a month calendar with a given appearance instance. The normal
-  \Create constructor will call this method with a new appearance instance and sets the
+  Create constructor will call this method with a new appearance instance and sets the
   AOwnsAppearance parameter to True.
 
   Other controls that use this calendar as drop down or popup call this constructor to specify the
@@ -161,15 +174,18 @@ Parameters
                     <B>not</B> be freed before the calendar is disposed.
 See Also
   TJvMonthCalAppearance
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.DateFirst
 Summary
   Determines the first date selected.
 Description
-  DateFirst indicates the first date selected if MultiSelect is set to True. If MultiSelect is set
-  to False, DateFirst indicates the currently selected date.
+  DateFirst indicates the first date selected if MultiSelect is set to True. If MultiSelect is set to
+  False, DateFirst indicates the currently selected date.
 See Also
-  DateLast, MaxSelCount, MultiSelect
+  TJvCustomMonthCalendar.DateLast, TJvCustomMonthCalendar.MaxSelCount,
+  TJvCustomMonthCalendar.MultiSelect
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.DateLast
 Summary
@@ -178,7 +194,9 @@ Description
   DateLast indicates the last date selected. If MultiSelect is set to False, this property has no
   effect when changing its value.
 See Also
-  DateFirst, MaxSelCount, MultiSelect
+  TJvCustomMonthCalendar.DateFirst, TJvCustomMonthCalendar.MaxSelCount,
+  TJvCustomMonthCalendar.MultiSelect
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.DateMax
 Summary
@@ -187,7 +205,8 @@ Description
   DateMax indicates the maximum allowed date the user can scroll to. When set to 0, no limit is
   imposed.
 See Also
-  DateMin
+  TJvCustomMonthCalendar.DateMin
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.DateMin
 Summary
@@ -196,7 +215,8 @@ Description
   DateMin indicates the minimum allowed date the user can scroll to. When set to 0, no limit is
   imposed.
 See Also
-  DateMax
+  TJvCustomMonthCalendar.DateMax
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.Days
 Summary
@@ -210,7 +230,8 @@ Parameters
   Year  - The year part of the date to set or retrieve bold information for.
   Month - The month part of the date to set or retrieve bold information for.
 See Also
-  Bold, BoldDays, <LINK StringToDayStates>
+  <LINK StringToDayStates>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.DoDateSelChange
 Summary
@@ -223,7 +244,8 @@ Parameters
   StartDate - The start date of the selection
   EndDate   - The end date of the selection
 See Also
-  OnSelChange
+  TJvCustomMonthCalendar.OnSelChange
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.DoDateSelect
 Summary
@@ -235,7 +257,8 @@ Parameters
   StartDate - The start date of the selection
   EndDate   - The end date of the selection
 See Also
-  OnSelect
+  TJvCustomMonthCalendar.OnSelect
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.DoGetDayState
 Summary
@@ -251,7 +274,9 @@ Parameters
   DayState   - Variable to retrieve the day states in
   StateArray - An array to retieve the day states in.
 See Also
-  Bold, BoldDays, Days, OnGetDayState
+  TJvCustomMonthCalendar.Bold, TJvCustomMonthCalendar.BoldDays, TJvCustomMonthCalendar.Days,
+  TJvCustomMonthCalendar.OnGetDayState
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.Entering
 Summary
@@ -259,7 +284,9 @@ Summary
 Description
   \Read Entering to determine whether the control is receiving keyboard focus.
 See Also
-  Leaving, OnKillFocus, OnSetFocus
+  TJvCustomMonthCalendar.Leaving, TJvCustomMonthCalendar.OnKillFocus,
+  TJvCustomMonthCalendar.OnSetFocus
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.FirstDayOfWeek
 Summary
@@ -270,6 +297,7 @@ Description
   Setting FirstDayOfWeek to mcLocale will use the system's settings for first day of the week.
 See Also
   TJvMonthCalWeekDay
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.FirstVisibleDate
 Summary
@@ -280,22 +308,23 @@ Description
   month.
 Parameters
   Partial - Flag to include partially visible months. When set to True partially visible months are
-            included.
+          included.
 See Also
-  LastVisibleDate
+  TJvCustomMonthCalendar.LastVisibleDate
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.LastVisibleDate
 Summary
   Determines the last visible date.
 Description
   LastVisibleDate determines the lasst visible date. If the Partial parameter is set to True,
-  partially visible months are included, otherwise it's the last day of the last fully visible
-  month.
+  partially visible months are included, otherwise it's the last day of the last fully visible month.
 Parameters
   Partial - Flag to include partially visible months. When set to True partially visible months are
-            included.
+          included.
 See Also
-  FirstVisibleDate
+  TJvCustomMonthCalendar.FirstVisibleDate
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.Leaving
 Summary
@@ -303,7 +332,9 @@ Summary
 Description
   \Read Leaving to determine whether the control is losing the keyboard focus.
 See Also
-  Entering, OnKillFocus, OnSetFocus
+  TJvCustomMonthCalendar.Entering, TJvCustomMonthCalendar.OnKillFocus,
+  TJvCustomMonthCalendar.OnSetFocus
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.MaxSelCount
 Summary
@@ -311,19 +342,23 @@ Summary
 Description
   MaxSelcCount determines the number of days that can be selected.
 See Also
-  DateFirst, DateLast, MultiSelect
+  TJvCustomMonthCalendar.DateFirst, TJvCustomMonthCalendar.DateLast,
+  TJvCustomMonthCalendar.MultiSelect
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.MinSize
 Summary
   Determines the minimum required size.
 Description
   MinSize determines the minimum required size of the control to display the current month.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.MonthDelta
 Summary
   Determines how many months are scrolled.
 Description
   MonthDelta determines how many months are scrolled when the scroll buttons are clicked.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.MultiSelect
 Summary
@@ -332,7 +367,9 @@ Description
   MultiSelect determines if multiple days at a time can be selected. When set to True, up to
   MaxSelCount days can be selected in the control.
 See Also
-  DateFirst, DateLast, MaxSelCount
+  TJvCustomMonthCalendar.DateFirst, TJvCustomMonthCalendar.DateLast,
+  TJvCustomMonthCalendar.MaxSelCount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.OnGetDayState
 Summary
@@ -347,7 +384,8 @@ Parameters
   Count         - The number of days requested.
   DayStateArray - An array to retieve the day states in.
 See Also
-  Bold, BoldDays, Days
+  TJvCustomMonthCalendar.Bold, TJvCustomMonthCalendar.BoldDays, TJvCustomMonthCalendar.Days
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.OnKillFocus
 Summary
@@ -357,16 +395,18 @@ Description
 
   Parameter AFocusControl is the control that receives the keyboard focus. This parameter can be nil.
 See Also
-  Entering, Leaving, OnSetFocus
+  TJvCustomMonthCalendar.Entering, TJvCustomMonthCalendar.Leaving, TJvCustomMonthCalendar.OnSetFocus
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.OnSelChange
 Summary
   Responds to changes in the control.
 Description
-  Write an OnSelChange event handler to respond to changes, such as scrolling or
-  selecting, in the control.
+  Write an OnSelChange event handler to respond to changes, such as scrolling or selecting, in the
+  control.
 See Also
-  OnSelect
+  TJvCustomMonthCalendar.OnSelect
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.OnSelect
 Summary
@@ -374,7 +414,8 @@ Summary
 Description
   Write an OnSelect event handler to respond to the user selecting dates.
 See Also
-  OnSelChange
+  TJvCustomMonthCalendar.OnSelChange
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.OnSetFocus
 Summary
@@ -384,7 +425,8 @@ Description
 
   Parameter AFocusControl is the control that has lost the keyboard focus. This parameter can be nil.
 See Also
-  Entering, Leaving, OnKillFocus
+  TJvCustomMonthCalendar.Entering, TJvCustomMonthCalendar.Leaving, TJvCustomMonthCalendar.OnKillFocus
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.SetDayStates
 Summary
@@ -395,13 +437,13 @@ Description
   The method assumes the given array is at least the same size as the number of months currently
   visible (including partially visible months).
 
-  It also assumes the first month in the array is the first (partially) visible month of the
-  control.
+  It also assumes the first month in the array is the first (partially) visible month of the control.
 Parameters
   MonthCount - Number of months to pass to the control
   DayStates  - Array with day states for each month. Must be large enough to hold MonthCount
-               elements or the number of partially visible months, whichever is the largest. The
+      elements or the number of partially visible months, whichever is the largest. The
                first element is assumed to be the first (partially) visible month.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.ShowToday
 Summary
@@ -410,7 +452,8 @@ Description
   ShowToday indicates if today's date should be displayed at the bottom of the control. When set to
   True, today's date will be displayed at the bottom of the control, otherwise it will not.
 See Also
-  CircleToday, Today
+  TJvCustomMonthCalendar.CircleToday, TJvCustomMonthCalendar.Today
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.Today
 Summary
@@ -419,7 +462,8 @@ Description
   Today sets today's date for the calendar control. If either CircleToday or ShowToday is set to
   True, the value set in Today will be reflected in the display.
 See Also
-  CircleToday, ShowToday
+  TJvCustomMonthCalendar.CircleToday, TJvCustomMonthCalendar.ShowToday
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.TodayWidth
 Summary
@@ -429,7 +473,8 @@ Description
   value returned will allow any date to be fully visible and is not related to the date set by the
   Today property.
 See Also
-  ShowToday, Today
+  TJvCustomMonthCalendar.ShowToday, TJvCustomMonthCalendar.Today
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.VisibleMonths
 Summary
@@ -437,13 +482,16 @@ Summary
 Description
   VisibleMonths returns the number of months visible in the control, including any partially visible
   months at the beginning or end of the control.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.WeekNumbers
 Summary
   Specifies whether week numbers should be displayed.
 Description
-  Use WeekNumbers to specify whether week numbers should be displayed to the left of each week. When set to
+  Use WeekNumbers to specify whether week numbers should be displayed to the left of each week. When
+  set to
   True week numbers will be visible.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalAppearance
 Summary
@@ -453,13 +501,14 @@ Description
   descendant.
 See Also
   TJvCustomMonthCalendar, TJvCustomMonthCalendar.CreateWithAppearance
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalAppearance.BoldDays
 Summary
   A list of bold dates.
 Description
-  BoldDays is a list of dates that have a bold state. The items in this list should be in one of
-  two formats:
+  BoldDays is a list of dates that have a bold state. The items in this list should be in one of two
+  formats:
 
   1. 0000mm=daylist
   2. yyyymm=daylist
@@ -477,13 +526,15 @@ Description
   Use the <LINK TJvCustomMonthCalendar.Days,Days> and <LINK TJvCustomMonthCalendar.Bold,Bold>
   properties to simplify adding and removing bolding info.
 See Also
-  TJvCustomMonthCalendar.Bold, TJvCustomMonthCalendar.Days, <LINK StringToDayStates>
+  <LINK StringToDayStates>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalAppearance.Calendar
 Summary
   Reference to the calendar instance.
 Description
   Calendar is a reference to the calendar control this appearance instance controls.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalAppearance.CircleToday
 Summary
@@ -495,7 +546,8 @@ Description
 
   When set to False today's date will not be circled in the control.
 See Also
-  ShowToday, TJvCustomMonthCalendar.Today
+  TJvCustomMonthCalendar.Today, TJvMonthCalAppearance.ShowToday
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalAppearance.Colors
 Summary
@@ -504,6 +556,7 @@ Description
   Colors determine the various colors used by the control.
 See Also
   TJvMonthCalColors
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalAppearance.FirstDayOfWeek
 Summary
@@ -514,6 +567,7 @@ Description
   Setting FirstDayOfWeek to mcLocale will use the system's settings for first day of the week.
 See Also
   TJvMonthCalWeekDay
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalAppearance.ShowToday
 Summary
@@ -522,14 +576,17 @@ Description
   ShowToday indicates if today's date should be displayed at the bottom of the control. When set to
   True, today's date will be displayed at the bottom of the control, otherwise it will not.
 See Also
-  CircleToday, TJvCustomMonthCalendar.Today
+  TJvCustomMonthCalendar.Today, TJvMonthCalAppearance.CircleToday
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalAppearance.WeekNumbers
 Summary
   Specifies whether week numbers should be displayed.
 Description
-  Use WeekNumbers to specify whether week numbers should be displayed to the left of each week. When set to
+  Use WeekNumbers to specify whether week numbers should be displayed to the left of each week. When
+  set to
   True week numbers will be visible.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalColors
 Summary
@@ -538,18 +595,20 @@ Description
   TJvMonthCalColors is an auxiliary class to set the colors of various calendar items.
 See Also
   TJvMonthCalendar2
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalColors.BackColor
 Summary
   The background color of the control.
 Description
-  BackColor sets the background color of the control. The background is any part not belonging to
-  the calendar itself.
+  BackColor sets the background color of the control. The background is any part not belonging to the
+  calendar itself.
 Note
   BackColor doesn't seem to work as documented. Setting the Color property of the TJvMonthCalendar2
   control does work.
 See Also
-  MonthBackColor
+  TJvMonthCalColors.MonthBackColor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalColors.MonthBackColor
 Summary
@@ -557,7 +616,8 @@ Summary
 Description
   MonthBackColor sets the background color of the month(s) area.
 See Also
-  BackColor, TitleBackColor
+  TJvMonthCalColors.BackColor, TJvMonthCalColors.TitleBackColor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalColors.TextColor
 Summary
@@ -565,7 +625,8 @@ Summary
 Description
   TextColor sets the font color for the day numbers.
 See Also
-  TitleTextColor, TrailingTextColor
+  TJvMonthCalColors.TitleTextColor, TJvMonthCalColors.TrailingTextColor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalColors.TitleBackColor
 Summary
@@ -573,7 +634,8 @@ Summary
 Description
   TitleBackColor sets the background color of the title area.
 See Also
-  BackColor, MonthBackColor
+  TJvMonthCalColors.BackColor, TJvMonthCalColors.MonthBackColor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalColors.TitleTextColor
 Summary
@@ -581,17 +643,19 @@ Summary
 Description
   TitleTextColor sets the font color of the title text.
 See Also
-  TextColor, TrailingTextColor
+  TJvMonthCalColors.TextColor, TJvMonthCalColors.TrailingTextColor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalColors.TrailingTextColor
 Summary
   The color for day numbers not belonging to the current month.
 Description
   TrailingTextColor sets the font color used for day numbers that don't belong to the current month.
-  These are the days that are part of the month preceding or succeeding the month; they are
-  displayed at the start and/or end of the calendar.
+  These are the days that are part of the month preceding or succeeding the month; they are displayed
+  at the start and/or end of the calendar.
 See Also
-  TextColor, TitleTextColor
+  TJvMonthCalColors.TextColor, TJvMonthCalColors.TitleTextColor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalendar2
 ##<TITLEIMG TJvMonthCalendar2>
@@ -601,26 +665,29 @@ See Also
 Summary
   A wrapper component for the MS MonthCal control available in ComCtl32.dll versions 4.70 and above.
 Description
-  TJvMonthCalendar2 is a wrapper component for the MicroSoft Month Calendar control that is
-  available in <B>ComCtl32.dll, version 4.70 and above</B>. The control is the same as Delphi's
+  TJvMonthCalendar2 is a wrapper component for the MicroSoft Month Calendar control that is available
+  in <B>ComCtl32.dll, version 4.70 and above</B>. The control is the same as Delphi's
   TMonthCalendar control, but has an easier interface.
 
   The control displays a maximum of 12 months at a time, but you can't set the number of visible
-  months as this is automatically calculated from the controls size. If the window is larger than
-  the displayed months, they are centered in the window.
+  months as this is automatically calculated from the controls size. If the window is larger than the
+  displayed months, they are centered in the window.
 
   Sizing the window programmatically for best fit is problematic: the control needs one size for
-  displaying one month but a different (and smaller value) for each subsequent one. This value
-  varies depending on the currently used font.
+  displaying one month but a different (and smaller value) for each subsequent one. This value varies
+  depending on the currently used font.
 
   MinSize returns a TRect that contains the minimum size for a one month calendar.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalSelEvent
 <TITLE TJvMonthCalSelEvent type>
 Summary
-  Type for event handlers that respond to changes of the selection in a TJvCustomMonthCalendar descendant.
+  Type for event handlers that respond to changes of the selection in a TJvCustomMonthCalendar
+  descendant.
 Description
-  Use TJvMonthCalSelEvent to respond to changes in the selection in a TJvCustomMonthCalendar descendant.
+  Use TJvMonthCalSelEvent to respond to changes in the selection in a TJvCustomMonthCalendar
+  descendant.
 Parameters
   Sender    - Reference to the object generating the event. Usually this will be a
               TJvCustomMonthCalendar descendant.
@@ -628,34 +695,51 @@ Parameters
   EndDate   - Ending date of the selection.
 See Also
   TJvCustomMonthCalendar.OnSelChange, TJvCustomMonthCalendar.OnSelect
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalStateEvent
-<TITLE TJvMonthCalStateEvent type>
-<COMBINE TJvCustomMonthCalendar.OnGetDayState>
+<TITLE TJvMonthCalStateEvent type> <COMBINE TJvCustomMonthCalendar.OnGetDayState>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalWeekDay
 <TITLE TJvMonthCalWeekDay type>
 Summary
   Type used to determine which week day is shown as the first day of a week.
 Description
-  TJvMonthCalWeekDay is used by the month calendar to determine which day of the week is the first
-  to be shown.
+  TJvMonthCalWeekDay is used by the month calendar to determine which day of the week is the first to
+  be shown.
+
+----------------------------------------------------------------------------------------------------
 @@TJvMonthCalWeekDay.mcLocale
-  The first day of the week is determined by the system locale. This usually is Monday as specified
-  by the ISO 8601 specification.
+The first day of the week is determined by the system locale. This usually is Monday as specified by the ISO 8601 specification.
+
+----------------------------------------------------------------------------------------------------
 @@TJvMonthCalWeekDay.mcMonday
-  The first day of the week is Monday.
+The first day of the week is Monday.
+
+----------------------------------------------------------------------------------------------------
 @@TJvMonthCalWeekDay.mcTuesday
-  The first day of the week is Tuesday.
+The first day of the week is Tuesday.
+
+----------------------------------------------------------------------------------------------------
 @@TJvMonthCalWeekDay.mcWednesday
-  The first day of the week is Wednesday.
+The first day of the week is Wednesday.
+
+----------------------------------------------------------------------------------------------------
 @@TJvMonthCalWeekDay.mcThursday
-  The first day of the week is Thursday.
+The first day of the week is Thursday.
+
+----------------------------------------------------------------------------------------------------
 @@TJvMonthCalWeekDay.mcFriday
-  The first day of the week is Friday.
+The first day of the week is Friday.
+
+----------------------------------------------------------------------------------------------------
 @@TJvMonthCalWeekDay.mcSaturday
-  The first day of the week is Saturday.
+The first day of the week is Saturday.
+
+----------------------------------------------------------------------------------------------------
 @@TJvMonthCalWeekDay.mcSunday
-  The first day of the week is Sunday.
+The first day of the week is Sunday.
 See Also
   TJvCustomMonthCalendar.FirstDayOfWeek
+

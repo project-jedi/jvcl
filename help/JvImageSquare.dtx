@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSquare
 <TITLEIMG TJvImageSquare>
@@ -16,17 +18,20 @@ JVCLInfo
 Summary
   A control that can display an image from an imagelist.
 Description
-  Use TJvImageSquare when you need a control that can display an image from an imagelist. By setting the
+  Use TJvImageSquare when you need a control that can display an image from an imagelist. By setting
+  the
   Images and ImageIndex properties, the control displays the selected image in its client area.
+  
+  Use properties like Color, HiColor and BorderStyle to modify the control's appearance. Use
+  ShowClick to alter its behavior.
 
-  Use properties like Color, HiColor and BorderStyle to modify the control's appearance. Use ShowClick
-  to alter its behavior.
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSquare.BorderStyle
 Summary
   Specifies whether the control has a border.
 Description
   Use BorderStyle to get or set whether the control has a border.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSquare.HiColor
 Summary
@@ -35,32 +40,35 @@ Description
   Use HiColor to specify the color to use when the mouse is hovering over the control.
 See Also
   Color
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSquare.ImageIndex
 Summary
   Specifies the index of the image to display from the image list.
 Description
-  Use ImageIndex to specify the image to display in the control. The icon with
-  the specified index is drawn using Images. To not display an image, set ImageIndex to -1.
+  Use ImageIndex to specify the image to display in the control. The icon with the specified index is
+  drawn using Images. To not display an image, set ImageIndex to -1.
 See Also
-  Images
+  TJvImageSquare.Images
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSquare.Images
 Summary
   Specifies an imagelist to retrieve the displayed image from.
 Description
-  Set Images to an imagelist where the component should retrieve the image to display. Images
-  in combination with the ImageIndex property determines what image to display.
+  Set Images to an imagelist where the component should retrieve the image to display. Images in
+  combination with the ImageIndex property determines what image to display.
 See Also
-  ImageIndex
+  TJvImageSquare.ImageIndex
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSquare.ShowClick
 Summary
   Specifies if mouse clicks are shown visually.
 Description
   Use ShowClick to specify whether mouse clinks are shown or not. if ShowClick is true, a small,
-  double-line frame with a white background is drawn around the image when the user clicks with
-  the mouse.
+  double-line frame with a white background is drawn around the image when the user clicks with the
+  mouse.
 See Also
   Click, OnClick
 

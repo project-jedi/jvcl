@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Warren Postma
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart
 <TITLEIMG TJvChart>
@@ -17,11 +19,11 @@ Summary
   The TJvChart component is a Charting/Graphing component.
 Description
   TJvChart can do line charts (also known as graphs), bar charts, pie charts, and other
- charting/graphing/plotting.
+  charting/graphing/plotting.
 
-  To use it, you need to set the display/formatting options (which are sub-properties of TJvChart.Options)
-  and put data into the Data.Values property, set Data.ValuesCount to tell the chart how much data to
-  put into the chart, then call PlotGraph, to make it all appear.
+  To use it, you need to set the display/formatting options (which are sub-properties of
+  TJvChart.Options) and put data into the Data.Values property, set Data.ValuesCount to tell the
+  chart how much data to put into the chart, then call PlotGraph, to make it all appear.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.AddGraphToOpenPrintCanvas
@@ -34,6 +36,7 @@ Parameters
   YStartPos   - Description for this parameter
   GraphWidth  - Description for this parameter
   GraphHeight - Description for this parameter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.AutoHint
 Summary
@@ -43,18 +46,21 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.AverageData
 Summary
   This property contains the averaging data of all the pens.
 Description
   The average of all the pen values goes into AverageData. Only used on certain chart types.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.ChartCanvas
 Summary
   Internal. Returns the current canvas, printer or screen, that we are plotting on.
 Description
   Internal. Only invoked by painting code.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.CursorPosition
 Summary
@@ -64,6 +70,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.Data
 Summary
@@ -71,15 +78,19 @@ Summary
 Description
   This is the data we are plotting. You must set Data.Values[pen,index], and Data.ValueCount, and if
   the points also have a datetime value, set the Data.Timestamp[index].
-  After changing Data values, you must call PlotGraph to cause the change to become visible on the screen.
+  After changing Data values, you must call PlotGraph to cause the change to become visible on the
+  screen.
 See Also
-  PlotGraph
+  TJvChart.PlotGraph
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.GraphToClipboard
 Summary
   Copy graph image to clipboard.
 Description
-  Copy graph image to clipboard. After that, you can paste it as an image into another document or program.
+  Copy graph image to clipboard. After that, you can paste it as an image into another document or
+  program.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.OnAltYAxisClick
 Summary
@@ -89,6 +100,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.OnChartClick
 Summary
@@ -109,6 +121,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.OnTitleClick
 Summary
@@ -118,6 +131,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.OnXAxisClick
 Summary
@@ -127,6 +141,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.OnYAxisClick
 Summary
@@ -136,11 +151,13 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.Options
 Summary
   All the options for the appearance of the chart, including X and Y axis range options and labels,
   fonts, colors, and margins/spacing are set as sub-properties of this property.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.Picture
 Summary
@@ -148,22 +165,25 @@ Summary
 Description
   This is the TImage generated by PlotGraph
 See Also
- PlotGraph
+  TJvChart.PlotGraph
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.PivotData
 Summary
   Deprecated. Will be removed.
 Description
   Deprecated. Will be removed.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.PlotGraph
 Summary
   Draw Chart
 Description
-	Take the values in Data.Values and draw the chart. Uses options from TJvChart.Options to determine the appearance and style of the chart.
-
+  Take the values in Data.Values and draw the chart. Uses options from TJvChart.Options to determine
+  the appearance and style of the chart.
 See Also
   TJvChart.Options
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.PrintGraph
 Summary
@@ -171,7 +191,8 @@ Summary
 Description
   Print to current printer. Must call PlotGraph first.
 See Also
-  PlotGraph
+  TJvChart.PlotGraph
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.ResetGraphModule
 Summary
@@ -179,12 +200,14 @@ Summary
 Description
   Clear charting bbefore you begin charting a completely new chart. Erases everything in Data, but
   does NOT delete the current Options.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.ResizeChartCanvas
 Summary
   Internal. Invoked internally when the control resizes.
 Description
   Internal. Invoked internally when the control resizes. Replots graph with new dimensions.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.SetCursorPosition
 Summary
@@ -196,6 +219,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.XOrigin
 Summary
@@ -205,6 +229,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChart.YOrigin
 Summary
@@ -214,24 +239,28 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartClickEvent
 <TITLE TJvChartClickEvent type>
 <COMBINE TJvChart.OnChartClick>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartData
 Summary
-  This class is used to create the TJvChart.Data property. It contains a growable array of data values,
-  and optionally, timestamps.
+  This class is used to create the TJvChart.Data property. It contains a growable array of data
+  values, and optionally, timestamps.
 Description
-  This class is used to create the TJvChart.Data property. It contains a growable array of data values,
-  and optionally, timestamps.
+  This class is used to create the TJvChart.Data property. It contains a growable array of data
+  values, and optionally, timestamps.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartData.Clear
 Summary
   Clear data.
 Description
   Clear data.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartData.ClearPenValues
 Summary
@@ -241,6 +270,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartData.DebugStr
 Summary
@@ -254,6 +284,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartData.Scroll
 Summary
@@ -263,6 +294,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartData.Timestamp
 Summary
@@ -274,20 +306,22 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartData.Value
 Summary
   Pen Data Values.
 Description
-  Array property. Access as Value[pen,values] where values is the sample index, and pen is the pen index.
+  Array property. Access as Value[pen,values] where values is the sample index, and pen is the pen
+  index.
   pen and values are array indexes, and they start at 0.
-
 Parameters
   Pen        - Description for this parameter
   ValueIndex - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartData.ValueCount
 Summary
@@ -297,6 +331,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartDataArray
 <TITLE TJvChartDataArray type>
@@ -305,10 +340,11 @@ Summary
 Description
   You don't have to document already described items such as sets,
   pointers to records etc.
-(Value = array of array of Double; - for reference)
+  (Value = array of array of Double; - for reference)
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartEvent
 <TITLE TJvChartEvent type>
@@ -325,6 +361,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartKind
 <TITLE TJvChartKind type>
@@ -335,24 +372,43 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvChartKind.ckChartNone
-  Description for ckChartNone
+Description for ckChartNone
+
+----------------------------------------------------------------------------------------------------
 @@TJvChartKind.ckChartLine
-  Description for ckChartLine
+Description for ckChartLine
+
+----------------------------------------------------------------------------------------------------
 @@TJvChartKind.ckChartBar
-  Description for ckChartBar
+Description for ckChartBar
+
+----------------------------------------------------------------------------------------------------
 @@TJvChartKind.ckChartStackedBar
-  Description for ckChartStackedBar
+Description for ckChartStackedBar
+
+----------------------------------------------------------------------------------------------------
 @@TJvChartKind.ckChartBarAverage
-  Description for ckChartBarAverage
+Description for ckChartBarAverage
+
+----------------------------------------------------------------------------------------------------
 @@TJvChartKind.ckChartStackedBarAverage
-  Description for ckChartStackedBarAverage
+Description for ckChartStackedBarAverage
+
+----------------------------------------------------------------------------------------------------
 @@TJvChartKind.ckChartPieChart
-  Description for ckChartPieChart
+Description for ckChartPieChart
+
+----------------------------------------------------------------------------------------------------
 @@TJvChartKind.ckChartMarkers
-  Description for ckChartMarkers
+Description for ckChartMarkers
+
+----------------------------------------------------------------------------------------------------
 @@TJvChartKind.ckChartDeltaAverage
-  Description for ckChartDeltaAverage
+Description for ckChartDeltaAverage
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartLegend
 <TITLE TJvChartLegend type>
@@ -363,18 +419,26 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvChartLegend.clChartLegendNone
-  Description for clChartLegendNone
+Description for clChartLegendNone
+
+----------------------------------------------------------------------------------------------------
 @@TJvChartLegend.clChartLegendRight
-  Description for clChartLegendRight
+Description for clChartLegendRight
+
+----------------------------------------------------------------------------------------------------
 @@TJvChartLegend.clChartLegendBelow
-  Description for clChartLegendBelow
+Description for clChartLegendBelow
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.AutoUpdateGraph
 Summary
@@ -384,6 +448,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.AverageLineColor
 Summary
@@ -393,6 +458,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.AverageValue
 Summary
@@ -404,6 +470,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.AxisFont
 Summary
@@ -413,6 +480,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.AxisLineColor
 Summary
@@ -422,6 +490,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.AxisLineWidth
 Summary
@@ -431,6 +500,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.ChartKind
 Summary
@@ -440,6 +510,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.CursorColor
 Summary
@@ -449,6 +520,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.CursorStyle
 Summary
@@ -458,6 +530,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.DateTimeFormat
 Summary
@@ -467,6 +540,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.DivisionLineColor
 Summary
@@ -476,6 +550,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.HeaderFont
 Summary
@@ -485,16 +560,18 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.HintColor
 Summary
-  Determines the color of the hint boxes for the Help Hints for the chart.
+  Determines the color of the hint boxes for the Help Hints for the <xxx>.
 Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
 See Also
   HotTrack
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.Legend
 Summary
@@ -504,6 +581,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.LegendFont
 Summary
@@ -513,6 +591,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.LegendRowCount
 Summary
@@ -522,6 +601,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.LegendWidth
 Summary
@@ -531,6 +611,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.MarkerSize
 Summary
@@ -540,6 +621,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.MouseEdit
 Summary
@@ -549,6 +631,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.MouseInfo
 Summary
@@ -558,6 +641,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.PaperColor
 Summary
@@ -567,6 +651,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.PenAxis
 Summary
@@ -578,6 +663,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.PenColor
 Summary
@@ -589,6 +675,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.PenCount
 Summary
@@ -598,6 +685,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.PenLegends
 Summary
@@ -607,6 +695,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.PenLineWidth
 Summary
@@ -616,6 +705,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.PenMarkerKind
 Summary
@@ -627,6 +717,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.PenSecondaryAxisFlag
 Summary
@@ -638,6 +729,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.PenStyle
 Summary
@@ -649,6 +741,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.PenUnit
 Summary
@@ -658,6 +751,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.PenValueLabels
 Summary
@@ -669,6 +763,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.PrimaryYAxis
 Summary
@@ -678,6 +773,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.SecondaryYAxis
 Summary
@@ -687,6 +783,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.ShadowColor
 Summary
@@ -696,6 +793,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.Title
 Summary
@@ -705,6 +803,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.XAxisDateTimeFormat
 Summary
@@ -714,6 +813,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.XAxisDateTimeMode
 Summary
@@ -723,6 +823,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.XAxisDivisionMarkers
 Summary
@@ -732,6 +833,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.XAxisHeader
 Summary
@@ -741,6 +843,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.XAxisLegendSkipBy
 Summary
@@ -750,6 +853,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.XAxisValuesPerDivision
 Summary
@@ -759,6 +863,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.XEnd
 Summary
@@ -768,6 +873,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.XGap
 Summary
@@ -777,6 +883,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.XLegendMaxTextWidth
 Summary
@@ -786,6 +893,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.XLegends
 Summary
@@ -795,6 +903,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.XOrigin
 Summary
@@ -804,6 +913,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.XPixelGap
 Summary
@@ -813,6 +923,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.XStartOffset
 Summary
@@ -822,6 +933,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.XValueCount
 Summary
@@ -831,6 +943,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.YAxisDivisionMarkers
 Summary
@@ -840,6 +953,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.YAxisHeader
 Summary
@@ -849,6 +963,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.YEnd
 Summary
@@ -858,6 +973,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.YOrigin
 Summary
@@ -867,6 +983,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.YStartOffset
 Summary
@@ -876,6 +993,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartPenMarkerKind
 <TITLE TJvChartPenMarkerKind type>
@@ -886,22 +1004,34 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvChartPenMarkerKind.pmkNone
-  Description for pmkNone
+Description for pmkNone
+
+----------------------------------------------------------------------------------------------------
 @@TJvChartPenMarkerKind.pmkDiamond
-  Description for pmkDiamond
+Description for pmkDiamond
+
+----------------------------------------------------------------------------------------------------
 @@TJvChartPenMarkerKind.pmkCircle
-  Description for pmkCircle
+Description for pmkCircle
+
+----------------------------------------------------------------------------------------------------
 @@TJvChartPenMarkerKind.pmkSquare
-  Description for pmkSquare
+Description for pmkSquare
+
+----------------------------------------------------------------------------------------------------
 @@TJvChartPenMarkerKind.pmkCross
-  Description for pmkCross
+Description for pmkCross
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartYAxisOptions
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartYAxisOptions.Active
 Summary
@@ -911,6 +1041,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartYAxisOptions.Clear
 Summary
@@ -920,6 +1051,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartYAxisOptions.DefaultYLegends
 Summary
@@ -929,6 +1061,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartYAxisOptions.MarkerValueDecimals
 Summary
@@ -938,6 +1071,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartYAxisOptions.MaxYDivisions
 Summary
@@ -947,6 +1081,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartYAxisOptions.MinYDivisions
 Summary
@@ -956,6 +1091,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartYAxisOptions.Normalize
 Summary
@@ -965,6 +1101,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartYAxisOptions.YDivisions
 Summary
@@ -974,6 +1111,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartYAxisOptions.YGap
 Summary
@@ -983,6 +1121,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartYAxisOptions.YGap1
 Summary
@@ -992,6 +1131,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartYAxisOptions.YLegendDecimalPlaces
 Summary
@@ -1001,6 +1141,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartYAxisOptions.YLegends
 Summary
@@ -1010,6 +1151,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartYAxisOptions.YMax
 Summary
@@ -1019,6 +1161,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartYAxisOptions.YMin
 Summary
@@ -1028,6 +1171,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvChartYAxisOptions.YPixelGap
 Summary
@@ -1037,3 +1181,4 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+

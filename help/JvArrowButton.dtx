@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvArrowButton
 <TITLEIMG TJvArrowButton>
@@ -16,8 +18,9 @@ JVCLInfo
 Summary
   Office style button with arrow. Separated click events for button and arrow.
 Description
-  The TJvArrowButton control implements a button with a drop down arrow, like the buttons used
-  in MicroSoft® Office®. The control has separate click events for the button and the arrow. 
+  The TJvArrowButton control implements a button with a drop down arrow, like the buttons used in
+  MicroSoft® Office®. The control has separate click events for the button and the arrow.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvArrowButton.AllowAllUp
 Summary
@@ -27,39 +30,44 @@ Description
   state. When set to True, all buttons may be in the up state, otherwise at least one button in a
   group must be pressed.
 See Also
-  Down, GroupIndex
+  TJvArrowButton.Down, TJvArrowButton.GroupIndex
+
 ----------------------------------------------------------------------------------------------------
 @@TJvArrowButton.ArrowWidth
 Summary
   Width of the arrow segment.
 Description
   ArrowWidth indicates the width of the arrow segment of the button.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvArrowButton.Down
 Summary
   Indicates if the button is down.
 Description
-  Down indicates whether or not the button is pressed or in its down state. Setting this property
-  to True will set the Down state of all other buttons with the same GroupIndex to False. If
+  Down indicates whether or not the button is pressed or in its down state. Setting this property to
+  True will set the Down state of all other buttons with the same GroupIndex to False. If
   AllowAllUp = False, you can not set Down to False.
 See Also
-  AllowAllUp, GroupIndex
+  TJvArrowButton.AllowAllUp, TJvArrowButton.GroupIndex
+
 ----------------------------------------------------------------------------------------------------
 @@TJvArrowButton.DropDown
 Summary
   Reference to the popup menu associated with the arrow.
 Description
-  DropDown is a reference to the popup menu to be dropped down when the arrow is clicked. You are
-  not required to provide a drop down menu. When the arrow is clicked the OnDrop event is generated
-  which allows you to perform a different task.
+  DropDown is a reference to the popup menu to be dropped down when the arrow is clicked. You are not
+  required to provide a drop down menu. When the arrow is clicked the OnDrop event is generated which
+  allows you to perform a different task.
 See Also
-  OnDrop
+  TJvArrowButton.OnDrop
+
 ----------------------------------------------------------------------------------------------------
 @@TJvArrowButton.FillFont
 Summary
   Font used when the mouse is over the control.
 Description
   FillFont is the font used to render the caption is while the mouse is over the control.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvArrowButton.Flat
 Summary
@@ -67,6 +75,7 @@ Summary
 Description
   Flat indicates if the button should be rendered in a flat style, much like the Flat property of a
   TSpeedButton.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvArrowButton.Glyph
 Summary
@@ -75,7 +84,8 @@ Description
   Glyph can be set to a bitmap object containing the image to show on the button. The bitmap can
   contain up to 4 images following the same rules as TSpeedButton.Glyph.
 See Also
-  NumGlyphs
+  TJvArrowButton.NumGlyphs
+
 ----------------------------------------------------------------------------------------------------
 @@TJvArrowButton.GroupIndex
 Summary
@@ -83,12 +93,13 @@ Summary
 Description
   GroupIndex holds the index of the group this button is part of. This can be used to simulate radio
   buttons using a group of arrow buttons.
-
-  When the group index of buttons are equal and set to a value <> 0, only 1 button of that group
-  is allowed to be left in the down state. Clicking on another button will set that button to the
-  down state and release any other button that might be in the down state.
+  
+  When the group index of buttons are equal and set to a value <> 0, only 1 button of that group is
+  allowed to be left in the down state. Clicking on another button will set that button to the down
+  state and release any other button that might be in the down state.
 See Also
-  AllowAllUp
+  TJvArrowButton.AllowAllUp
+
 ----------------------------------------------------------------------------------------------------
 @@TJvArrowButton.Layout
 Summary
@@ -96,6 +107,7 @@ Summary
 Description
   Layout specifies where the image and caption are rendered on the button. See TSpeedButton.Layout
   for more information.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvArrowButton.Margin
 Summary
@@ -103,6 +115,7 @@ Summary
 Description
   Margin specifies the number of pixels between the button edge and the image or caption. Margin
   works exactly like TSpeedButton.Margin.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvArrowButton.NumGlyphs
 Summary
@@ -111,7 +124,8 @@ Description
   NumGlyphs indicate the number of images the Glyph property holds. NumGlyphs works just like
   TSpeedButton.NumGlyphs.
 See Also
-  Glyph
+  TJvArrowButton.Glyph
+
 ----------------------------------------------------------------------------------------------------
 @@TJvArrowButton.OnDrop
 Summary
@@ -120,7 +134,8 @@ Description
   Write an OnDrop event to perform special tasks when the user presses the arrow of the button. If a
   DropDown menu is assigned, it will be displayed, regardless if an OnDrop handler is assigned.
 See Also
-  DropDown
+  TJvArrowButton.DropDown
+
 ----------------------------------------------------------------------------------------------------
 @@TJvArrowButton.PressBoth
 Summary
@@ -128,6 +143,7 @@ Summary
 Description
   PressBoth indicates whether or not both the button as well as the arrow should be pressed when one
   of the two is clicked. By default this property is set to True.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvArrowButton.Spacing
 Summary
@@ -135,3 +151,4 @@ Summary
 Description
   Spacing specifies the number of pixels between the caption and the image. It works exactly like
   TSpeedButton.Spacing.
+

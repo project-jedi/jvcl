@@ -7,88 +7,85 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thornqvist
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCursorImage
 Summary
-  Write here a summary (1 line)
+  A TGraphic descendant that can display cursors
 Description
-  Write here a description
+  Use TJvCursorImage when you need to display a cursor image on a Canvas.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCursorImage.Assign
 Summary
-  Write here a summary (1 line)
+  Copies the content of another object into this object.
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  Assign copies the content of another image object into the internal image object. TJvCursorImage
+  supports the following Source parameters:
+  nil - clear the image
+  TJvCursorImage - copies another cursor image into the internal image
+  TIcon - copy the image from a TIcon into the internal image
+  TBitmap - copy the image from a TBitmap into the internal image
 Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Source - The object to copy from.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCursorImage.Handle
 Summary
-  Write here a summary (1 line)
+  Provides access to the cursor handle.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Handle to call Windows API functions that require a cursor handle.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCursorImage.LoadFromClipboardFormat
 Summary
-  Write here a summary (1 line)
+  Unsupported method
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  AFormat  - Description for this parameter
-  AData    - Description for this parameter
-  APalette - Description for this parameter
+  TJvCursorImage does not support this method and raises an Exception if you call it. \"See Also\"
+  lists additional unsupported methods.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SaveToFile
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCursorImage.LoadFromFile
 Summary
-  Write here a summary (1 line)
+  Loads a cursor from a file.
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  Loads a cursor from a cursor file. If the file is not a cursor, an Exception is raised.
 Parameters
-  FileName - Description for this parameter
+  FileName - The file to load the image from.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SaveToFile
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCursorImage.LoadFromStream
 Summary
-  Write here a summary (1 line)
+  Unsupported method.
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Stream - Description for this parameter
+  TJvCursorImage does not support this method and raises an Exception if you call it. \"See Also\"
+  lists additional unsupported methods.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCursorImage.LoadFromClipboardFormat, TJvCursorImage.LoadFromStream,
+  TJvCursorImage.SaveToClipboardFormat, TJvCursorImage.SaveToStream
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCursorImage.SaveToClipboardFormat
 Summary
-  Write here a summary (1 line)
+  Unsupported method
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  AFormat  - Description for this parameter
-  AData    - Description for this parameter
-  APalette - Description for this parameter
+  TJvCursorImage does not support this method and raises an Exception if you call it. \"See Also\"
+  lists additional unsupported methods.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SaveToFile
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCursorImage.SaveToStream
 Summary
-  Write here a summary (1 line)
+  Unsupported method
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Stream - Description for this parameter
+  TJvCursorImage does not support this method and raises an Exception if you call it. \"See Also\"
+  lists additional unsupported methods.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SaveToFile
+

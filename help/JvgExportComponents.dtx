@@ -7,193 +7,33 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Andrey V. Chudin,
+
+
 ----------------------------------------------------------------------------------------------------
 @@EJvgExportException
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
-@@TJvCreateDataset
-<TITLE TJvCreateDataset type>
-Summary
-  Write here a summary (1 line)
-Description
-  This type is used by (for reference):
-    TJvgExportDataset.OnCreateDest
-    TJvgExportDataset.OnSaveDest
-Parameters
-  Sender  - Description for this parameter
-  DataSet - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvExportCaptions
-<TITLE TJvExportCaptions type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-@@TJvExportCaptions.fecDisplayLabels
-  Description for fecDisplayLabels
-@@TJvExportCaptions.fecFieldNames
-  Description for fecFieldNames
-@@TJvExportCaptions.fecNone
-  Description for fecNone
-----------------------------------------------------------------------------------------------------
-@@TJvExportFieldEvent
-<TITLE TJvExportFieldEvent type>
+@@TExportFieldEvent
+<TITLE TExportFieldEvent type>
 <COMBINE TJvgCommonExport.OnExportField>
+
 ----------------------------------------------------------------------------------------------------
-@@TJvExportGetValue
-<TITLE TJvExportGetValue type>
-Summary
-  Write here a summary (1 line)
-Description
-  This type is used by (for reference):
-    TJvgCommonExport.OnGetCaption
-    TJvgCommonExport.OnGetTableName
-Parameters
-  Sender  - Description for this parameter
-  Field   - Description for this parameter
-  Caption - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvExportProgressEvent
-<TITLE TJvExportProgressEvent type>
-<COMBINE TJvgCommonExport.OnProgress>
-----------------------------------------------------------------------------------------------------
-@@TJvExportRecordEvent
-<TITLE TJvExportRecordEvent type>
+@@TExportRecordEvent
+<TITLE TExportRecordEvent type>
 <COMBINE TJvgCommonExport.OnExportRecord>
+
 ----------------------------------------------------------------------------------------------------
-@@TJvgCommonExport
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+@@TGetCaptionEvent
+<TITLE TGetCaptionEvent type>
+<COMBINE TJvgCommonExport.OnGetCaption>
+
 ----------------------------------------------------------------------------------------------------
-@@TJvgCommonExport.Captions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvgCommonExport.DataSet
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvgCommonExport.Execute
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvgCommonExport.MaxFieldSize
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvgCommonExport.OnExportField
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender     - Description for this parameter
-  Field      - Description for this parameter
-  FieldValue - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvgCommonExport.OnExportRecord
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender      - Description for this parameter
-  DataSet     - Description for this parameter
-  AllowExport - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvgCommonExport.OnGetCaption
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvgCommonExport.OnGetTableName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvgCommonExport.OnProgress
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender   - Description for this parameter
-  Min      - Description for this parameter
-  Max      - Description for this parameter
-  Position - Description for this parameter
-  Msg      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvgCommonExport.SaveToFileName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvgCommonExport.TransliterateRusToEng
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvGetLineFontEvent
-<TITLE TJvGetLineFontEvent type>
+@@TGetLineFontEvent
+<TITLE TGetLineFontEvent type>
 Summary
   Write here a summary (1 line)
 Description
@@ -209,9 +49,140 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
-@@TJvgExportDataset
-<TITLEIMG TJvgExportDataset>
+@@TglExportCaptions
+<TITLE TglExportCaptions type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TglExportCaptions.fecDisplayLabels
+Description for fecDisplayLabels
+
+----------------------------------------------------------------------------------------------------
+@@TglExportCaptions.fecFieldNames
+Description for fecFieldNames
+
+----------------------------------------------------------------------------------------------------
+@@TglExportCaptions.fecNone
+Description for fecNone
+
+----------------------------------------------------------------------------------------------------
+@@TJvgCommonExport
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvgCommonExport.Captions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgCommonExport.DataSet
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgCommonExport.Execute
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgCommonExport.MaxFieldSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgCommonExport.OnExportField
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender     - Description for this parameter
+  Field      - Description for this parameter
+  FieldValue - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgCommonExport.OnExportRecord
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender      - Description for this parameter
+  AllowExport - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgCommonExport.OnGetCaption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender  - Description for this parameter
+  Caption - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgCommonExport.SaveToFileName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgCommonExport.TransliterateRusToEng
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgExportDBETable
+<TITLEIMG TJvgExportDBETable>
 JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
@@ -219,26 +190,20 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
-@@TJvgExportDataset.Execute
+@@TJvgExportDBETable.Execute
 Summary
   Write here a summary (1 line)
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  This is an overridden method, you don't have to describe these  if it does the same as the
+  inherited method
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
-@@TJvgExportDataset.OnCreateDest
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvgExportDataset.OnSaveDest
+@@TJvgExportDBETable.TableType
 Summary
   Write here a summary (1 line)
 Description
@@ -246,6 +211,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgExportExcel
 <TITLEIMG TJvgExportExcel>
@@ -256,6 +222,7 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgExportExcel.AutoColumnFit
 Summary
@@ -265,6 +232,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgExportExcel.BackgroundPicture
 Summary
@@ -274,6 +242,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgExportExcel.CloseExcel
 Summary
@@ -283,6 +252,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgExportExcel.ExcelVisible
 Summary
@@ -292,15 +262,18 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgExportExcel.Execute
 Summary
   Write here a summary (1 line)
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  This is an overridden method, you don't have to describe these  if it does the same as the
+  inherited method
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgExportExcel.Footer
 Summary
@@ -310,6 +283,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgExportExcel.FooterFont
 Summary
@@ -319,15 +293,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvgExportExcel.ForceTextFormat
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgExportExcel.Header
 Summary
@@ -337,6 +303,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgExportExcel.HeaderFont
 Summary
@@ -346,6 +313,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgExportExcel.OnGetFooterLineFont
 Summary
@@ -355,6 +323,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgExportExcel.OnGetHeaderLineFont
 Summary
@@ -364,6 +333,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgExportExcel.OnGetSubHeaderLineFont
 Summary
@@ -373,6 +343,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgExportExcel.SubHeader
 Summary
@@ -382,6 +353,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgExportExcel.SubHeaderFont
 Summary
@@ -391,6 +363,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgExportHTML
 <TITLEIMG TJvgExportHTML>
@@ -401,6 +374,7 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgExportHTML.Footer
 Summary
@@ -410,6 +384,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgExportHTML.Header
 Summary
@@ -419,6 +394,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgExportHTML.Styles
 Summary
@@ -428,3 +404,15 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgExportXML
+<TITLEIMG TJvgExportXML>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+

@@ -7,18 +7,21 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
+
+
 ----------------------------------------------------------------------------------------------------
 @@CreateSpellChecker
 <TITLE CreateSpellChecker variable>
 Summary
   Creates and returns an IJvSpellChecker instance if assigned.
 Description
-  Call CreateSpellChecker to create an IJvSpellChecker instance. Spell checkers that implements
-  the IJvSpellChecker, assign their own function to this pointer. If the pointer is nil, no
+  Call CreateSpellChecker to create an IJvSpellChecker instance. Spell checkers that implements the
+  IJvSpellChecker, assign their own function to this pointer. If the pointer is nil, no
   IJvSpellChecker implementor is registered.
 
   Since this function is actually a pointer, you shoud first check if it is nil before using it, i.e
   use a call like if Assigned(CreateSpellChecker).
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker
 Summary
@@ -26,6 +29,7 @@ Summary
 Description
   IJvSpellChecker defines the methods required for a spell checker. Any spell checker implementation
   must implement all the methods of this interface.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.Delimiters
 Summary
@@ -33,7 +37,8 @@ Summary
 Description
   Use Delimiters to set or \read the characters that are used to delimit text.
 See Also
-  Text
+  IJvSpellChecker.Text
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.Dictionary
 Summary
@@ -42,7 +47,8 @@ Description
   Use Dictionary to set and \read the base dictionary used for spell checking. This value should
   point to a file on disk. If no dictionary is set, no spell checking can take place.
 See Also
-  UserDictionary
+  IJvSpellChecker.UserDictionary
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.GetCanIgnore
 Summary
@@ -50,16 +56,18 @@ Summary
 Description
   GetCanIgnore is the get function for the OnCanIgnore event
 See Also
-  OnCanIgnore
+  IJvSpellChecker.OnCanIgnore
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.GetCurrentWord
 Summary
   Returns the currently found misspelled or missing word.
 Description
-  Call GetCurrentWord to retrieve the last found misspelled word. Should return an empty string if there
-  are no misspelled words.
+  Call GetCurrentWord to retrieve the last found misspelled word. Should return an empty string if
+  there are no misspelled words.
 Return value
   The last found misspelled word or an empty string.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.GetDelimiters
 Summary
@@ -69,7 +77,8 @@ Description
 Return value
   The current set of delimiters.
 See Also
-  Delimiters
+  IJvSpellChecker.Delimiters
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.GetDictionary
 Summary
@@ -79,7 +88,8 @@ Description
 Return value
   The currently selected dictionary filename or an empty string.
 See Also
-  Dictionary
+  IJvSpellChecker.Dictionary
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.GetIgnores
 Summary
@@ -89,7 +99,8 @@ Description
 Return value
   A string list with the words to ignore in the text.
 See Also
-  Ignores
+  IJvSpellChecker.Ignores
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.GetSuggestions
 Summary
@@ -99,7 +110,8 @@ Description
 Return value
   A string list of suggested word replacements for the currently misspelled word, one word per line.
 See Also
-  Suggestions, GetCurrentWord
+  IJvSpellChecker.GetCurrentWord, IJvSpellChecker.Suggestions
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.GetText
 Summary
@@ -109,7 +121,8 @@ Description
 Return value
   A string containing the text to spell check.
 See Also
-  Text
+  IJvSpellChecker.Text
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.GetUserDictionary
 Summary
@@ -119,39 +132,44 @@ Description
 Return value
   A string list with the words in the users own dictionary.
 See Also
-  UserDictionary
+  IJvSpellChecker.UserDictionary
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.Ignores
 Summary
   Contains a list of words to ignore.
 Description
   Ignores is used for words that should be ignored in the current session. To make an ignored word
-  persistent, you should call UserDictionary.Add and then save/load the UserDictionary to storage as needed.
+  persistent, you should call UserDictionary.Add and then save/load the UserDictionary to storage as
+  needed.
 
   In a typical spell checking application, Ignores is used to implement "Ignore All" functionality.
 See Also
-  Text, GetCurrentWord
+  IJvSpellChecker.GetCurrentWord, IJvSpellChecker.Text
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.Next
 Summary
   Tries to find a new misspelled word.
 Description
-   Next returns true if a misspelled word was found. If a misspelled word was found, StartIndex is
-   set to the start of the word in Text and WordLength is set to the length of the word. Note
-   that StartIndex is 1-based, i.e the first position in Text is 1. If Next returns false,
-   it means that no more misspelled words can be found (i.e either when at end of Text or everything
-   from the current point and onward is correctly spelled). Next should take Ignores as well as
+   Next returns true if a misspelled word was found. If a misspelled word was found, StartIndex is  set to the s
+  art of the word in Text and WordLength is set to the length of the word. Note  that StartIndex is
+  1-based, i.e the first position in Text is 1. If Next returns false,  it means that no more
+  misspelled words can be found (i.e either when at end of Text or everything  from the current point
+  and onward is correctly spelled). Next should take Ignores as well as
    UserDictionary into account when scanning for misspelled words.
 
    Use GetCurrentWord to access the word that was found by Next. Next is used in a typcial spell
-   checking application to implement "Next" functionality.
+  checking application to implement "Next" functionality.
 Parameters
   StartIndex - The index in Text where the misspelled word starts.
   WordLength - The length of the misspelled word.
 Return value
   True if a misspelled word was found, false otherwise.
 See Also
-  GetCurrentWord, Text, Ignores, UserDictionary
+  IJvSpellChecker.GetCurrentWord, IJvSpellChecker.Ignores, IJvSpellChecker.Text,
+  IJvSpellChecker.UserDictionary
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.OnCanIgnore
 Summary
@@ -165,20 +183,22 @@ Parameters
   Sender    - The IJvSpellChecker implementor
   Value     - The string to check.
   CanIgnore - Set to true to skip the word, false to handle it normally.
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.Seek
 Summary
   Moves to another position in the text.
 Description
-  Seek moves the internal text pointer to the position in Text given by Position. If Position >= Length(Text),
-  calls to Next always returns false.
+  Seek moves the internal text pointer to the position in Text given by Position. If Position >=
+  Length(Text), calls to Next always returns false.
 Note
   Since positioning is 1-based, Seek(0) = Seek(1).
 Parameters
-  Position - The 1-based index to move the internal pointer to. Values < 1 are interpreted as 1, values
-  >= Length(Text) are interpreted as Length(Text) - 1.
+  Position - The 1-based index to move the internal pointer to. Values < 1 are interpreted as 1,
+  values >= Length(Text) are interpreted as Length(Text) - 1.
 See Also
-  Next, Text
+  IJvSpellChecker.Next, IJvSpellChecker.Text
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.SetCanIgnore
 Summary
@@ -188,7 +208,8 @@ Description
 Parameters
   Value - The event handler to assign to OnCanIgnore.
 See Also
-  OnCanIgnore
+  IJvSpellChecker.OnCanIgnore
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.SetDelimiters
 Summary
@@ -198,7 +219,8 @@ Description
 Parameters
   Value - The new value of Delimiters.
 See Also
-  Delimiters
+  IJvSpellChecker.Delimiters
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.SetDictionary
 Summary
@@ -206,9 +228,11 @@ Summary
 Description
   SetDictionary is the set procedure for the Dictionary property.
 Parameters
-  Value - The new value of dictionary. Setting this value copies the content of Value into an internal list.
+  Value - The new value of dictionary. Setting this value copies the content of Value into an
+  internal list.
 See Also
-  Dictionary
+  IJvSpellChecker.Dictionary
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.SetIgnores
 Summary
@@ -216,9 +240,11 @@ Summary
 Description
   SetIgnores is the set procedure for the Ignores property.
 Parameters
-  Value - The new value of Ignores. Setting this value copies the content of Value into an internal list.
+  Value - The new value of Ignores. Setting this value copies the content of Value into an internal
+  list.
 See Also
-  Ignores
+  IJvSpellChecker.Ignores
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.SetText
 Summary
@@ -228,7 +254,8 @@ Description
 Parameters
   Value - The new value of Text.
 See Also
-  Text
+  IJvSpellChecker.Text
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.SetUserDictionary
 Summary
@@ -236,43 +263,50 @@ Summary
 Description
   SetUserDictionary is the set procedure for the UserDictionary property.
 Parameters
-  Value - The new value of UserDictionary. Setting this value copies the content of Value into an internal list.
+  Value - The new value of UserDictionary. Setting this value copies the content of Value into an
+  internal list.
 See Also
-  UserDictionary
+  IJvSpellChecker.UserDictionary
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.Suggestions
 Summary
   A list of possible replacement for the currently misspelled word.
 Description
-  Suggestion returns the suggested replacements for a misspelled word. How the implementation determines
-  valid and/or useful replacement words is defined by the implementation.
+  Suggestion returns the suggested replacements for a misspelled word. How the implementation
+  determines valid and/or useful replacement words is defined by the implementation.
 See Also
-  Text, GetCurrentWord
+  IJvSpellChecker.GetCurrentWord, IJvSpellChecker.Text
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.Text
 Summary
   The Text to spell check.
 Description
-  Use Text to set the text to spell check. When Text is changed, spell checking is reset to the start of the
-  string.
+  Use Text to set the text to spell check. When Text is changed, spell checking is reset to the start
+  of the string.
 See Also
-  Next, Seek, GetCurrentWord
+  IJvSpellChecker.GetCurrentWord, IJvSpellChecker.Next, IJvSpellChecker.Seek
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.UserDictionary
 Summary
   A sorted list of words the user has selected as his own words.
 Description
   UserDictionary is used to manage the users own words. The main difference between a dictionary and a
-  user dictionary is that you cannot change the content of the main dictionary once loaded (without reloading it).
+  user dictionary is that you cannot change the content of the main dictionary once loaded (without
+  reloading it).
 
-  In addition, UserDictionary is presumed to contain a list of sorted words, one per line, whereas the
-  dictionary can be in any format determined by the actual implementation.
+  In addition, UserDictionary is presumed to contain a list of sorted words, one per line, whereas
+  the dictionary can be in any format determined by the actual implementation.
 
-  Use UserDictionary to create a list of words that the user has chosen as his own word. For example, in
-  a typical spell checking application, this property can be used to implement "Add" functionality.
+  Use UserDictionary to create a list of words that the user has chosen as his own word. For example,
+  in a typical spell checking application, this property can be used to implement "Add" functionality.
 See Also
-  Dictionary, Ignores
+  IJvSpellChecker.Dictionary, IJvSpellChecker.Ignores
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpellCheckIgnoreEvent
 <TITLE TJvSpellCheckIgnoreEvent type>
 <COMBINE IJvSpellChecker.OnCanIgnore>
+

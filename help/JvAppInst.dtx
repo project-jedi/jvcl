@@ -4,17 +4,19 @@
 @@JvAppInst.pas
 Summary
   Contains the TJvAppInstances component.
-  <INCLUDE JVCL.UnitText.dtx>
+<INCLUDE JVCL.UnitText.dtx>
 Author
   Andreas Hausladen
 ----------------------------------------------------------------------------------------------------
 @@TCmdLineReceivedEvent
 <TITLE TCmdLineReceivedEvent type>
 <COMBINE TJvAppInstances.OnCmdLineReceived>
+
 ----------------------------------------------------------------------------------------------------
 @@TDataAvailableEvent
 <TITLE TDataAvailableEvent type>
 <COMBINE TJvAppInstances.OnDataAvailable>
+
 ----------------------------------------------------------------------------------------------------
 @@TInstanceChangeEvent
 <TITLE TInstanceChangeEvent type>
@@ -28,7 +30,6 @@ Parameters
   ProcessId - The process id of the created or destroyed application instance.
 See Also
   TJvAppInstances.OnInstanceCreated, TJvAppInstances.OnInstanceDestroyed
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances
@@ -49,14 +50,12 @@ Description
 
   This class is not thread safe.
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.Active
 Summary
   Controls the state of the component.
 Description
   Set Active to False if you want to disable the component.
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.AppInstances
@@ -65,14 +64,12 @@ Summary
 Description
   This property gives you access to the underlying JEDI Code Library TJclAppInstances class.
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.AutoActivate
 Summary
   Controls the activation of the first instance.
 Description
   If AutoActivate is True then the first instance is brought to front by the second process instance.
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.Check
@@ -84,7 +81,6 @@ Description
 
   Check is called by the Loaded method. So there is no need to call it directly.
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.Handle
 Summary
@@ -93,16 +89,14 @@ Description
   Every instance has its own communication window. So you can use SendMessage/PostMessage with this
   handle.
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.MaxInstances
 Summary
   Maximum number of simultaneous running application instances.
 Description
-  MaxInstances specifies the maximum paralel running application instances. If the maximum number
-  is reached and a new instance is started, it will send its commandline to the first instance and
+  MaxInstances specifies the maximum paralel running application instances. If the maximum number is
+  reached and a new instance is started, it will send its commandline to the first instance and
   terminate.
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.OnCmdLineReceived
@@ -114,7 +108,6 @@ Description
 Parameters
   Sender  - Calling TJvAppInstances object.
   CmdLine - Contains the command line arguments (1 to ParamCount).
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.OnDataAvailable
@@ -129,14 +122,12 @@ Parameters
   Data   - Pointer to the message data. (automatically released)
   Size   - Size of the message data.
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.OnInstanceCreated
 Summary
   Occurs after another instances is started.
 Description
   Install an event handler for this event if you want to be notified about new application instances.
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.OnInstanceDestroyed
@@ -146,7 +137,6 @@ Description
   Install an event handler for this event if you want to be notified about terminating application
   instances.
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.OnRejected
 Summary
@@ -154,7 +144,6 @@ Summary
 Description
   OnRejected is raised and handled by the instance that wants to start if another instance does not
   allow further instances.
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.OnUserNotify
@@ -168,7 +157,6 @@ Parameters
 See Also
   TJvAppInstances.UserNotify
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.SendCmdLine
 Summary
@@ -177,8 +165,7 @@ Description
   Messages sent by SendCmdLine are sent to all running instances. Also the calling instance receives
   the command line.
 See Also
-  TJvAppInstances.SendData, TJvAppInstances.OnCmdLineReceived
-
+  TJvAppInstances.OnCmdLineReceived, TJvAppInstances.SendData
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.SendData
@@ -194,8 +181,7 @@ Parameters
 Return value
   Returns False if the function fails.
 See Also
-  TJvAppInstances.SendCmdLine, TJvAppInstances.OnDataAvailable
-
+  TJvAppInstances.OnDataAvailable, TJvAppInstances.SendCmdLine
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.UserNotify
@@ -206,8 +192,7 @@ Description
 Parameters
   Param - A user defined value that is sent to all instances.
 See Also
-  TJvAppInstances.SendData, TJvAppInstances.OnUserNotify
-
+  TJvAppInstances.OnUserNotify, TJvAppInstances.SendData
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstDataKind
@@ -219,11 +204,8 @@ Description
 See Also
   TJvAppInstances.SendData
 
-
 ----------------------------------------------------------------------------------------------------
 @@TUserNotifyEvent
 <TITLE TUserNotifyEvent type>
 <COMBINE TJvAppInstances.OnUserNotify>
-
-
 

@@ -8,15 +8,18 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBright
 <TITLE TJvBright type>
 Summary
   Indicates the level of brightness of a picture.
 Description
-  Use the TJvBright type to indicate the level of brightness of a picture. 
-  
+  Use the TJvBright type to indicate the level of brightness of a picture.
+
   TJvBright ranges from 0 (dimmest) to 200 (brightest).
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialImage
 <TITLEIMG TJvSpecialImage>
@@ -26,38 +29,41 @@ JVCLInfo
 Summary
   Supports extended features such as fade in, fade out and image flipping.
 Description
-  TJvSpecialImage is an image that can be used to create special effects. 
-  
-  For example, you can use the methods FadeIn, and FadeOut to let an image slowly appear and disappear 
-  on the form. The same effect can be accomplished by using the property Brightness, which sets the 
-  brightness of the image. Set Stretch to True to reduce flickering.
-  
+  TJvSpecialImage is an image that can be used to create special effects.
+
+  For example, you can use the methods FadeIn, and FadeOut to let an image slowly appear and
+  disappear on the form. The same effect can be accomplished by using the property Brightness, which
+  sets the brightness of the image. Set Stretch to True to reduce flickering.
+
   Use the Flipped and Mirrored to flip the image vertically or horizontally. Use Inverted to invert
   the image.
-  
-  Call Reset to restore the image to its original state. 
+
+  Call Reset to restore the image to its original state.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialImage.Brightness
 Summary
   Specifies the brightness of the image.
 Description
-  Use Brightness to find or set the brightness of the image. The value for this property must be a 
+  Use Brightness to find or set the brightness of the image. The value for this property must be a
   number from 0 (dimmest) to 200 (brightest).
-  
+
   The default value is 100.
 See Also
-  FadeIn, FadeOut, Reset
+  TJvSpecialImage.FadeIn, TJvSpecialImage.FadeOut, TJvSpecialImage.Reset
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialImage.FadeIn
 Summary
   Fades in the image.
 Description
-  Call FadeIn to fade in the image. FadeIn starts with setting Brightness to 0 and then increases 
+  Call FadeIn to fade in the image. FadeIn starts with setting Brightness to 0 and then increases
   Brightness by 2 until 100.
-  
+
   Set property Stretch to True to reduce flickering.
 See Also
-  Brightness, FadeOut, Reset 
+  TJvSpecialImage.Brightness, TJvSpecialImage.FadeOut, TJvSpecialImage.Reset
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialImage.FadeOut
 Summary
@@ -65,47 +71,53 @@ Summary
 Description
   Call FadeOut to fade out the image. FadeOut starts with setting Brightness to 100 and then decreases
   Brightness by 2 until 0.
-  
+
   Set property Stretch to True to reduce flickering.
 See Also
-  Brightness, FadeIn, Reset 
+  TJvSpecialImage.Brightness, TJvSpecialImage.FadeIn, TJvSpecialImage.Reset
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialImage.Flipped
 Summary
   Indicates whether the image should be flipped vertically.
 Description
-  Set Flipped to True to cause the image to turn upside-down: that is, to swap lines on the top side 
+  Set Flipped to True to cause the image to turn upside-down: that is, to swap lines on the top side
   of the image with lines on the bottom side. The left/right orientation will stay the same.
 See Also
-  Inverted, Mirrored, Reset
+  TJvSpecialImage.Inverted, TJvSpecialImage.Mirrored, TJvSpecialImage.Reset
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialImage.Inverted
 Summary
   Indicates whether the image should be inverted.
 Description
-  Set Inverted to True to cause the image to invert: that is, each pixel is converted to a reversed 
+  Set Inverted to True to cause the image to invert: that is, each pixel is converted to a reversed
   color version of the original. The image becomes the negative of the original image.
 See Also
-  Flipped, Mirrored, Reset
+  TJvSpecialImage.Flipped, TJvSpecialImage.Mirrored, TJvSpecialImage.Reset
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialImage.Mirrored
 Summary
   Indicates whether the image should be mirrored.
 Description
-  Set Mirrored to True to cause the image to flip horizontally: that is, to swap pixels on the left side
-  of the image with pixels on the right side. The image will turn side-to-side, as in a mirror.
+  Set Mirrored to True to cause the image to flip horizontally: that is, to swap pixels on the left
+  side of the image with pixels on the right side. The image will turn side-to-side, as in a mirror.
 See Also
-  Flipped, Inverted, Reset
+  TJvSpecialImage.Flipped, TJvSpecialImage.Inverted, TJvSpecialImage.Reset
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialImage.Reset
 Summary
   Restores the image to its original state.
 Description
-  Call \Reset to restore the image to its original state. 
-  
+  Call \Reset to restore the image to its original state.
+
   * Brightness is set to 100.
   * Inverted is set to False.
   * Flipped is set to False.
   * Mirrored is set to False.
 See Also
-  Brightness, Flipped, Inverted, Mirrored
+  TJvSpecialImage.Brightness, TJvSpecialImage.Flipped, TJvSpecialImage.Inverted,
+  TJvSpecialImage.Mirrored
+

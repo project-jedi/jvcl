@@ -7,189 +7,210 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thornqvist
+
+
 ----------------------------------------------------------------------------------------------------
 @@CreateHandlerForStyle
 <TITLE CreateHandlerForStyle function>
 Summary
-  Write here a summary (1 line)
+  Creates a style handler for the specified desktop alert window.
 Description
-  Write here a description
+  CreateHandlerForStyle is called internally by the TJvDesktopAlert when its <LINK
+  TJvDesktopAlert.AlertStyle, AlertStyle> property changes.
+
+  You should never have to call this function yourself.
 Parameters
-  Style     - Description for this parameter
-  OwnerForm - Description for this parameter
+  Style     - The style to create a handler for.
+  OwnerForm - The alert window that the style applies to.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvAlertStyle, TJvCustomDesktopAlertStyleHandler, TJvDesktopAlert
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAlertStyle
 <TITLE TJvAlertStyle type>
 Summary
-  Write here a summary (1 line)
+  Defines the possible animation styles for the desktop alert window.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvAlertStyle is the type of the <LINK TJvDesktopAlert.AlertStyle, AlertStyle> property of <LINK
+  TJvDesktopAlert> and specifies the available animation styles for the alert window.
+
+----------------------------------------------------------------------------------------------------
 @@TJvAlertStyle.asFade
-  Description for asFade
+Description for asFade
+
+----------------------------------------------------------------------------------------------------
 @@TJvAlertStyle.asCenterGrow
-  Description for asCenterGrow
+Description for asCenterGrow
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCenterGrowAlertStyleHandler
 Summary
-  Write here a summary (1 line)
+  Class that encapsulates the \'grow from center\' animation style for desktop alert windows.
 Description
-  Write here a description
+  TJvCenterGrowAlertStyleHandler implements the functionality to make the alert window of a
+  TJvDesktopAlert grow from the center when it is shown and shrink into the center when hidden. Do
+  not create instances of TJvCenterGrowAlertStyleHandler. An instance is automatically created when
+  you set the <LINK TJvDesktopAlert.AlertStyle, AlertStyle> of a <LINK TJvDesktopAlert> component.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCenterGrowAlertStyleHandler.MaxGrowthPercentage
 Summary
-  Write here a summary (1 line)
+  Specifies the max growth rate of the desktop alert window.
 Description
-  Write here a description
+  Use MaxGrowthPercentage to specify the maximum allowable growth rate in percent of an alert window.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCenterGrowAlertStyleHandler.MinGrowthPercentage
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCenterGrowAlertStyleHandler.MinGrowthPercentage
 Summary
-  Write here a summary (1 line)
+  Specifies the min growth rate of the desktop alert window.
 Description
-  Write here a description
+  Use MinGrowthPercentage to specify the minimum allowable growth rate in percent of an alert window.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCenterGrowAlertStyleHandler.MaxGrowthPercentage
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDesktopAlertStyleHandler
 Summary
-  Write here a summary (1 line)
+  Base class for desktop animation style handlers.
 Description
-  Write here a description
+  To create a new animation style handler for the TJvDesktopAlert class, derive it from
+  TJvCustomDesktopAlertStyleHandler and add code to implement the required functionality.
+  TJvDesktopAlert already has two styles implemented by TJvCenterGrowAlertStyleHandler and
+  TJvFadeAlertStyleHandler.
+See Also
+  TJvCenterGrowAlertStyleHandler, TJvFadeAlertStyleHandler
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDesktopAlertStyleHandler.AbortAnimation
 Summary
-  Write here a summary (1 line)
+  Aborts the current animation, if any.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Will call the proper Finalize function as applicable. The middle wait is NOT aborted by a call to
+  this function
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDesktopAlertStyleHandler.Active
 Summary
-  Write here a summary (1 line)
+  Returns the value of AnimTimer.Enabled
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Call Active to determine whether the animation timer is active or not.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDesktopAlertStyleHandler.AnimTimer
 Summary
-  Write here a summary (1 line)
+  Provides access to the internal animation timer.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use AnimTimer to access the timer used to drive the animation.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDesktopAlertStyleHandler.CurrentStep
 Summary
-  Write here a summary (1 line)
+  Provides access to the current animation step.
 Description
-  Write here a description
+  Use CurrentStep to access the current animation step. The number of animation steps are determined
+  by the values of StartSteps and EndSteps.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomDesktopAlertStyleHandler.EndSteps, TJvCustomDesktopAlertStyleHandler.StartSteps
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDesktopAlertStyleHandler.DisplayDuration
 Summary
-  Write here a summary (1 line)
+  Specifies how long the window is displayed after it is fully visible.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DisplayDuration specifies how long (in milliseconds) the window is displayed after the start
+  animation has finished (the so called \"wait\" stage).
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDesktopAlertStyleHandler.DoDisplay
 Summary
-  Write here a summary (1 line)
+  Called when the alert window is to be displayed.
 Description
-  Write here a description
+  DoDisplay is called by the internal logic when the alert window is to be displayed. The base
+  implementation starts the internal display timer unless DisplayDuration is set to 0.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomDesktopAlertStyleHandler.DisplayDuration,
+  TJvCustomDesktopAlertStyleHandler.DoEndAnimation, TJvCustomDesktopAlertStyleHandler.DoStartAnimation
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDesktopAlertStyleHandler.DoEndAnimation
 Summary
-  Write here a summary (1 line)
+  Initiates the end animation sequence.
 Description
-  Write here a description
+  DoEndAnimation is called by the internal logic to start the end animation sequence. If EndSteps is
+  0 the window is hidden directly.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomDesktopAlertStyleHandler.DoDisplay, TJvCustomDesktopAlertStyleHandler.DoStartAnimation,
+  TJvCustomDesktopAlertStyleHandler.EndSteps, TJvCustomDesktopAlertStyleHandler.StartSteps
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDesktopAlertStyleHandler.DoStartAnimation
 Summary
-  Write here a summary (1 line)
+  Initiates the start animation sequence.
 Description
-  Write here a description
+  DoStartAnimation is called by the internal logic to start the start animation sequence. If
+  StartSteps is 0, the window is displayed directly.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomDesktopAlertStyleHandler.DoDisplay, TJvCustomDesktopAlertStyleHandler.DoEndAnimation,
+  TJvCustomDesktopAlertStyleHandler.EndSteps, TJvCustomDesktopAlertStyleHandler.StartSteps
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDesktopAlertStyleHandler.EndInterval
 Summary
-  Write here a summary (1 line)
+  Specifies the duration between each step of the end animation.
 Description
-  Write here a description
+  Use EndInterval to specify the duration of each step in the end animation sequence. This value is
+  expressed in milliseconds.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomDesktopAlertStyleHandler.EndSteps, TJvCustomDesktopAlertStyleHandler.StartInterval
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDesktopAlertStyleHandler.EndSteps
 Summary
-  Write here a summary (1 line)
+  Specifies the number of steps in the end animation sequence.
 Description
-  Write here a description
+  Use EndSteps to specify the number of steps in the end animation sequence. If EndSteps is 0, no end
+  animation is performed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomDesktopAlertStyleHandler.EndInterval
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDesktopAlertStyleHandler.OwnerForm
 Summary
-  Write here a summary (1 line)
+  Provides access to the form that this animation handler is operating on.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use OwnerForm to access the desktop alert window that this handler is operating on. Note that this
+  value MUST NOT be nil when any of the DoXXXX function is called!
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDesktopAlertStyleHandler.StartInterval
 Summary
-  Write here a summary (1 line)
+  Specifies the number of steps in the start animation.
 Description
-  Write here a description
+  Use StartInterval to specify the duration of each step in the start animation sequence. This value
+  is expressed in milliseconds.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomDesktopAlertStyleHandler.EndInterval, TJvCustomDesktopAlertStyleHandler.StartSteps
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDesktopAlertStyleHandler.StartSteps
 Summary
-  Write here a summary (1 line)
+  Specifies the number of steps in the start animation sequence.
 Description
-  Write here a description
+  Use StartSteps to specify the number of steps in the start animation sequence. If StartSteps is 0,
+  no start animation is performed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomDesktopAlertStyleHandler.StartInterval
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDesktopAlertStyleHandler.Status
 Summary
-  Write here a summary (1 line)
+  Specifies the current animation status of the handler.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Status to access the current animation status of the handler.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert
 <TITLEIMG TJvDesktopAlert>
@@ -204,59 +225,61 @@ Description
   amount of time. The window can, apart from the message, also display a dropdown menu, an icon and
   any number of custom buttons.
 Note
-  TJvDesktopAlert uses alpha blending to perform the fade in and fade out effect. Alpha blending is only
-  available on Windows 2000 and Windows XP and above. For earlier versions of Windows, the window is displayed
-  without fading.
+  TJvDesktopAlert uses alpha blending to perform the fade in and fade out effect. Alpha blending is
+  only available on Windows 2000 and Windows XP and above. For earlier versions of Windows, the
+  window is displayed without fading.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.AlertStack
 Summary
   Points to a component that handles stacking of alerts.
 Description
-  Drop a TJvDesktopAlertStack component on the form and assign it to this property when you want to display
-  several desktop alerts as a group. Each TJvDesktopAlert can only display a single window but if you use
-  several desktop alerts, use a TJvDesktopAlertStack to group them. If you don't assign a TJvDesktopAlertStack,
-  a default stacker is created and used automatically.
+  Drop a TJvDesktopAlertStack component on the form and assign it to this property when you want to
+  display several desktop alerts as a group. Each TJvDesktopAlert can only display a single window
+  but if you use
+  several desktop alerts, use a TJvDesktopAlertStack to group them. If you don't assign a
+  TJvDesktopAlertStack, a default stacker is created and used automatically.
 See Also
   TJvDesktopAlertStack
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.AlertStyle
 Summary
-  Write here a summary (1 line)
+  Specifies the animation style for the alert window.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use AlertStyle to specify how you want the alert window to animate when it is shown and hidden.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.AutoFocus
 Summary
-  Write here a summary (1 line)
+  Specifies whether the alert window automatically recieves focus when shown
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Set AutoFocus to true to move focus to the alert window when it is displayed. Set it to false to
+  not change the focus.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Buttons
 Summary
   Defines the custom buttons to display on the alert window.
 Description
-  Use Buttons to define the custm buttons to display on the desktop alert. Custom buttons are displayed
-  in the lower left corner of the window.
+  Use Buttons to define the custom buttons to display on the desktop alert. Custom buttons are
+  displayed in the lower left corner of the window.
 See Also
   TJvDesktopAlertButtons
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Close
 Summary
   Closes the alert window.
 Description
-  Call Close to manually close the desktop alert form. Calling close also generates an OnClose event. Close
-  only closes the alert form if Showing returns true.
+  Call Close to manually close the desktop alert form. Calling close also generates an OnClose event.
+  Close only closes the alert form if Showing returns true.
 Parameters
-  Immediate - If true, closes the form as if the close button was clicked. If false, fades the form according
-  to the value of FadeOutTime
+  Immediate - If true, closes the form as if the close button was clicked. If false, fades the form
+  according to the value of FadeOutTime
 See Also
-  Execute, Showing, FadeOutTime, OnClose
+  FadeOutTime
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Colors
 Summary
@@ -265,16 +288,18 @@ Description
   Modify the subproperties of Colors to set the colors used in the desktop alert.
 See Also
   TJvDesktopAlertColors
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Data
 Summary
   Provides a storage variable for user data.
 Description
-  Use Data to store arbitrary data with the component. Data is similar to Tag but is defined as a TObject
-  to easily store classes and similar with the component. Note that you are still responsible for handling
-  the memory of the associated object.
+  Use Data to store arbitrary data with the component. Data is similar to Tag but is defined as a
+  TObject to easily store classes and similar with the component. Note that you are still responsible
+  for handling the memory of the associated object.
 See Also
   Tag
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.DropDownMenu
 Summary
@@ -283,13 +308,15 @@ Description
   Assign a popup menu to the DropDownMenu property to display a dropdown button on the desktop alert.
   If no DropDownMenu is assiged, the dropdown button is not shown.
 See Also
-  PopUpMenu
+  TJvDesktopAlert.PopupMenu
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Execute
 Summary
   Shows the desktop alert.
 Description
   Call Execute to show the desktop alert window in your application.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Font
 Summary
@@ -297,7 +324,8 @@ Summary
 Description
   Set the properties of Font to specify how the desktop alert's message text is displayed.
 See Also
-  HeaderFont, ParentFont
+  TJvDesktopAlert.HeaderFont, TJvDesktopAlert.ParentFont
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.HeaderFont
 Summary
@@ -305,7 +333,8 @@ Summary
 Description
   Set the properties of HeaderFont to specify how the desktop alert's header text is displayed.
 See Also
-  Font
+  TJvDesktopAlert.Font
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.HeaderText
 Summary
@@ -314,6 +343,7 @@ Description
   Set HeaderText to the text to display for the header of the window.
 See Also
   Text
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Hint
 Summary
@@ -322,26 +352,31 @@ Description
   Use the Hint property to provide a string of help text as a Help Hint. Set ShowHint to true to
   actually show the hint at run-time.
 See Also
-  ShowHint
+  TJvDesktopAlert.ShowHint
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Image
 Summary
   Specifies the image to display on the desktop alert.
 Description
-  Assign an image to the Image property to display it in the upper left corner of the desktop alert window.
+  Assign an image to the Image property to display it in the upper left corner of the desktop alert
+  window.
 Note
-  Since the size of the desktop alert window is small, you shouldn't use images that are larger than about 48x48 pixels.
+  Since the size of the desktop alert window is small, you shouldn't use images that are larger than
+  about 48x48 pixels.
 See Also
-  Images
+  TJvDesktopAlert.Images
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Images
 Summary
   Specifies the image list used by the custom buttons.
 Description
-  Set Images to an image list to use for the custom buttons on the desktop alert. Custom buttons get their
-  image from this list
+  Set Images to an image list to use for the custom buttons on the desktop alert. Custom buttons get
+  their image from this list
 See Also
-  Buttons
+  TJvDesktopAlert.Buttons
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Location
 Summary
@@ -350,6 +385,7 @@ Description
   Use the subproperties of Location to define where the desktop alert appears at run-time.
 See Also
   TJvDesktopAlertLocation
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.MessageText
 Summary
@@ -357,7 +393,8 @@ Summary
 Description
   Set MessageText to the string to display as the message text of the desktop alert.
 See Also
-  HeaderText
+  TJvDesktopAlert.HeaderText
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.OnClose
 Summary
@@ -365,16 +402,16 @@ Summary
 Description
   Use OnClose to perform special processing when the desktop alert closes.
 See Also
-  OnShow
+  TJvDesktopAlert.OnShow
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.OnCloseButtonClick
 Summary
-  Write here a summary (1 line)
+  Occurs when the users clicks the close button.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  \\Write a handler for this event to take specific action when the user clicks the close button in
+  the alert window.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.OnMessageClick
 Summary
@@ -383,7 +420,8 @@ Description
   Write a handler for the OnMessageClick event to take specific action when the user clicks on the
   message text. This event handler is only called when daoCanClick is included in Options.
 See Also
-  MessageText, Options
+  TJvDesktopAlert.MessageText, TJvDesktopAlert.Options
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.OnMouseEnter
 Summary
@@ -392,17 +430,19 @@ Description
   Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   desktop alert.
 See Also
-  OnMouseLeave
+  TJvDesktopAlert.OnMouseLeave
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.OnMouseLeave
 Summary
   Occurs when the mouse pointer moves off the desktop alert.
 Description
   Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  desktop alert. For example, you can use this event to undo changes that were made in an OnMouseEnter
-  event handler.
+  desktop alert. For example, you can use this event to undo changes that were made in an
+  OnMouseEnter event handler.
 See Also
-  OnMouseEnter
+  TJvDesktopAlert.OnMouseEnter
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.OnShow
 Summary
@@ -412,38 +452,46 @@ Description
   might not be visible when OnShow is called since visibility is controlled by the AlphaBlendValue
   value and the FadeInTime value.
 See Also
-  OnClose, AlphaBlendValue, FadeInTime
+  AlphaBlendValue, FadeInTime
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Options
 Summary
   Controls the behvaior of the desktop alert.
 Description
   Change the settings of Options to modify the behacior of the desktop alert.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.ParentFont
 Summary
   Determines where the desktop alert looks for its font information.
 Description
-  Set ParentFont to true to have the desktop alert window use the same font settings as the form where
-  the TJvDesktopAlert is located. When the font of the form changes, so does the desktop alert window.
+  Set ParentFont to true to have the desktop alert window use the same font settings as the form
+  where the TJvDesktopAlert is located. When the font of the form changes, so does the desktop alert
+  window.
 See Also
-  Font
+  TJvDesktopAlert.Font
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.PopupMenu
 Summary
   Identifies the pop-up menu associated with the desktop alert.
 Description
-  Assign a value to PopupMenu to make a pop-up menu appear when the user selects the desktop alert window
-  and clicks the right mouse button.
+  Assign a value to PopupMenu to make a pop-up menu appear when the user selects the desktop alert
+  window and clicks the right mouse button.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.ShowHint
 Summary
-  Determines whether the desktop alert displays a Help Hint when the mouse pointer rests momentarily on its surface.
+  Determines whether the desktop alert displays a Help Hint when the mouse pointer rests momentarily
+  on its surface.
 Description
-  The Help Hint is the value of the Hint property, which is displayed in a box above the desktop alert.
+  The Help Hint is the value of the Hint property, which is displayed in a box above the desktop
+  alert.
   Use ShowHint to determine whether a Help Hint appears for the desktop alert window.
 See Also
-  Hint
+  TJvDesktopAlert.Hint
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Showing
 Summary
@@ -452,52 +500,64 @@ Description
   Call Showing to determine whether the desktop alert is currently showing on screen.
 Return value
   True if the window is visible, false otherwise.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.StyleHandler
 Summary
-  Write here a summary (1 line)
+  Specifies the currently assigned style handler class.
 Description
-  Write here a description
+  Use StyleHandler to access the currently assigned style handler class. To find out which style is
+  currently used, interogate the AlertStyle property instead.
+
+  This property is equivalent to StyleOptions.
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDesktopAlert.AlertStyle, TJvDesktopAlert.StyleOptions
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.StyleOptions
 Summary
-  Write here a summary (1 line)
+  Specifies the currently assigned style handler class.
 Description
-  Write here a description
+  Use StyleOptions to access the currently assigned style handler class. To find out which style is
+  currently used, interogate the AlertStyle property instead.
+
+  This property is equivalent to StyleHandler.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDesktopAlert.AlertStyle, TJvDesktopAlert.StyleHandler
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertButtonItem
 Summary
   Class that manages the settings of a custom button in a desktop alert window.
 Description
   TJvDesktopAlertButtonItem is the type of the Items property of a TJvDesktopAlertButtons collection.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertButtonItem.ImageIndex
 Summary
   Specifies the image to use on the button.
 Description
   Set ImageIndex to the index of the image to use on the button. The images are taken from the
-  Images property of TJvDesktopAlert. If ImageIndex is invalid (below 0 or above Count-1), no image is drawn
-  on the button.
+  Images property of TJvDesktopAlert. If ImageIndex is invalid (below 0 or above Count-1), no image
+  is drawn on the button.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertButtonItem.OnClick
 Summary
   Occurs when the user clicks the button.
 Description
   Assign a handler to the OnClick event to take specific action when the users clicks the button.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertButtonItem.Tag
 Summary
   Stores an integer value as part of the item.
 Description
   Tag has no predefined meaning. The Tag property is provided for the convenience of developers. It
-  can be used for storing an additional integer value or it can be typecast to any 32-bit value
-  such as a component reference or a pointer.
+  can be used for storing an additional integer value or it can be typecast to any 32-bit value such
+  as a component reference or a pointer.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertButtons
 Summary
@@ -505,6 +565,7 @@ Summary
 Description
   TJvDesktopAlertButtons is a TCollection that handles a list of TJvDesktopAlertButton instances. Each
   TJvDesktopAlertButton is a custom button on a TJvDesktopAlert window.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertButtons.Add
 Summary
@@ -513,39 +574,42 @@ Description
   Call Add to add a new button to the collection.
 Return value
   The newly added button.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertButtons.Items
 Summary
   Provides indexed access to the items in the collection.
 Description
-  Use Items to access the items in the collection based on their index. Index can be in the range
-  0 to Count - 1.
+  Use Items to access the items in the collection based on their index. Index can be in the range 0
+  to Count - 1.
 Parameters
   Index - The 0-based index of the button to access.
 See Also
   Count
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertChangePersistent
 Summary
   Base class for TPersistent classes that can report changes through an event
 Description
   This class is used internally by the tJvDesktopAlert component. It is not for general use.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertChangePersistent.OnChange
 Summary
-  Write here a summary (1 line)
+  Occurs when the properties of the class changes.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Do not assign a handler to this event. It is assigned internally by classes that uses descendants
+  of this class.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertColors
 Summary
   Manages a collection of colors.
 Description
-  TJvDesktopAlertColors is the type of the Colors property of a TJvDesktopAlert component. TJvDesktopAlertColors
-  manages the colors that are user modifiable in a TJvDesktopAlert.
+  TJvDesktopAlertColors is the type of the Colors property of a TJvDesktopAlert component.
+  TJvDesktopAlertColors manages the colors that are user modifiable in a TJvDesktopAlert.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertColors.CaptionFrom
 Summary
@@ -554,47 +618,53 @@ Description
   Set CaptionFrom to the color to use as the start color of the gradient drawn in the caption area of
   a TJvDesktopAlert. The gradient is drawn from top to bottom.
 See Also
-  CaptionTo
+  TJvDesktopAlertColors.CaptionTo
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertColors.CaptionTo
 Summary
   Defines the ending color of the caption area.
 Description
-  Set CaptionTo to the color to use as the end color of the gradient drawn in the caption area of
-  a TJvDesktopAlert. The gradient is drawn from top to bottom.
+  Set CaptionTo to the color to use as the end color of the gradient drawn in the caption area of a
+  TJvDesktopAlert. The gradient is drawn from top to bottom.
 See Also
-  CaptionFrom
+  TJvDesktopAlertColors.CaptionFrom
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertColors.Frame
 Summary
   Defines the color used to draw the frame around the edge.
 Description
   Set Frame to the color to use to draw the frame around the edge of a TJvDesktopAlert window.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertColors.WindowFrom
 Summary
   Defines the starting color of the client area.
 Description
-  Set WindowFrom to the color to use as the start color of the gradient drawn in the client area of
-  a TJvDesktopAlert. The gradient is drawn from top to bottom.
+  Set WindowFrom to the color to use as the start color of the gradient drawn in the client area of a
+  TJvDesktopAlert. The gradient is drawn from top to bottom.
 See Also
-  WindowTo
+  TJvDesktopAlertColors.WindowTo
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertColors.WindowTo
 Summary
   Defines the ending color of the client area.
 Description
-  Set WindowFrom to the color to use as the end color of the gradient drawn in the client area of
-  a TJvDesktopAlert. The gradient is drawn from top to bottom.
+  Set WindowFrom to the color to use as the end color of the gradient drawn in the client area of a
+  TJvDesktopAlert. The gradient is drawn from top to bottom.
 See Also
-  WindowFrom
+  TJvDesktopAlertColors.WindowFrom
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertLocation
 Summary
   Class that manages the location settings of a desktop alert window.
 Description
-  TJvDesktopAlertLocation is the type of the Location property of a TJvDesktopAlert component. It manages
-  the position settings for the desktop alert window.
+  TJvDesktopAlertLocation is the type of the Location property of a TJvDesktopAlert component. It
+  manages the position settings for the desktop alert window.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertLocation.AlwaysResetPosition
 Summary
@@ -603,20 +673,21 @@ Description
   If AlwaysResetPosition is false, Position is set to dapCustom if the user moves the window. If
   AlwaysResetPosition is true, the value of Position is never changed.
 See Also
-  Position
+  TJvDesktopAlertLocation.Position
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertLocation.Height
 Summary
   Specifies the height of the desktop alert window.
 Description
-  Use the Height property to determine the height of the desktop alert window. Set Height to 0 to reset the
-  window to its default height (currently 76 px).
+  Use the Height property to determine the height of the desktop alert window. Set Height to 0 to
+  reset the window to its default height (currently 76 px).
 
-  Height is used for any Position. If you are displaying several desktop alerts at the same time, make sure they
-  have the same width and height.
-
+  Height is used for any Position. If you are displaying several desktop alerts at the same time,
+  make sure they have the same width and height.
 See Also
-  Top, Width, Position
+  TJvDesktopAlertLocation.Position, TJvDesktopAlertLocation.Top, TJvDesktopAlertLocation.Width
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertLocation.Left
 Summary
@@ -625,43 +696,49 @@ Description
   Use the Left property to determine where the left side of the desktop alert window begins or to
   reposition the left side of the window. Left is only used when Position is dapCustom.
 See Also
-  Top, Width, Height, Position
+  TJvDesktopAlertLocation.Height, TJvDesktopAlertLocation.Position, TJvDesktopAlertLocation.Top,
+  TJvDesktopAlertLocation.Width
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertLocation.Position
 Summary
   Specifies where the desktop alert window is located when it is displayed.
 Description
-  Use Position to specify where the TJvDesktopAlert window should appear on screen. This setting
-  also controls the stacking of multiple desktop alert windows.
+  Use Position to specify where the TJvDesktopAlert window should appear on screen. This setting also
+  controls the stacking of multiple desktop alert windows.
 
-  If Position is dapCustom, the placement of the window is determined by the Left and Top
-  properties.
+  If Position is dapCustom, the placement of the window is determined by the Left and Top properties.
 
-  If Position is any of dapDesktopCenter,  dapMainFormCenter, dapOwnerFormCenter or dapActiveFormCenter,
-  the placement of the window is calculated automatically.
+  If Position is any of dapDesktopCenter,  dapMainFormCenter, dapOwnerFormCenter or
+  dapActiveFormCenter, the placement of the window is calculated automatically.
 See Also
-  Left, Top, Width, Height
+  TJvDesktopAlertLocation.Height, TJvDesktopAlertLocation.Left, TJvDesktopAlertLocation.Top,
+  TJvDesktopAlertLocation.Width
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertLocation.Top
 Summary
   Specifies the value of the Top property of the desktop alert window.
 Description
-  Use the Top property to determine where the top of the desktop alert window begins or to
-  reposition the top of the window. Top is only used when Position is dapCustom.
+  Use the Top property to determine where the top of the desktop alert window begins or to reposition
+  the top of the window. Top is only used when Position is dapCustom.
 See Also
-  Top, Position
+  TJvDesktopAlertLocation.Position, TJvDesktopAlertLocation.Top
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertLocation.Width
 Summary
   Specifies the width of the desktop alert window.
 Description
-  Use the Width property to determine the width of the desktop alert window. Set Width to 0 to reset the
-  window to its default width (currently 329 px).
+  Use the Width property to determine the width of the desktop alert window. Set Width to 0 to reset
+  the window to its default width (currently 329 px).
 
-  Width is used for any Position. If you are displaying several desktop alerts at the same time, make sure they
-  have the same width and height.
+  Width is used for any Position. If you are displaying several desktop alerts at the same time, make
+  sure they have the same width and height.
 See Also
-  Top, Left, Height, Position
+  TJvDesktopAlertLocation.Height, TJvDesktopAlertLocation.Left, TJvDesktopAlertLocation.Position,
+  TJvDesktopAlertLocation.Top
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertOption
 <TITLE TJvDesktopAlertOption type>
@@ -670,57 +747,83 @@ Summary
 Description
   TJvDesktopAlertOption is the type of the Options property of a TJvDesktopAlert.
 See Also
-  TJvDeskTopAlert
+  TJvDesktopAlert
+
+----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertOption.daoCanClick
-  Determines whether the user can click the message text or not. If true, the message text in the window
-  is hottracked, like a HTML link.
+Determines whether the user can click the message text or not. If true, the message text in the window is hottracked, like a HTML link.
+
+----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertOption.daoCanMove
-  Determines whether the user is allowed to move the TJvDesktopAlert window.
+Determines whether the user is allowed to move the TJvDesktopAlert window.
+
+----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertOption.daoCanMoveAnywhere
-  Determines whether the user can move the TJvDesktopAlert window by clicking and dragging anywhere. To set
-  this to true, daoCanMove must also be true.
+Determines whether the user can move the TJvDesktopAlert window by clicking and dragging anywhere. To set this to true, daoCanMove must also be true.
+
+----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertOption.daoCanClose
-  Determines whether a close button is displayed on the TJvDesktopAlert and whether pressing Alt+F4 closes it.
+Determines whether a close button is displayed on the TJvDesktopAlert and whether pressing Alt+F4 closes it.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertOptions
 <TITLE TJvDesktopAlertOptions type>
 <COMBINE TJvDesktopAlertOption>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertPosition
 <TITLE TJvDesktopAlertPosition type>
 Summary
   Specifies the possible placements of a desktop alert window.
 Description
-  TJvDesktopAlertPosition is the type of the Position property of the TJvDesktopAlertLocation class. TJvDesktopAlertLocation is
-  the type of the Location property of a TJvDesktopAlert component.
+  TJvDesktopAlertPosition is the type of the Position property of the TJvDesktopAlertLocation class.
+  TJvDesktopAlertLocation is the type of the Location property of a TJvDesktopAlert component.
 See Also
-  TJvDesktopAlertLocation, TJvDesktopAlert
+  TJvDesktopAlert, TJvDesktopAlertLocation
+
+----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertPosition.dapTopLeft
-  The window is displayed in the upper left corner of the screen. If multiple alert windows are displayed,
-  they are stacked such that the oldest window is always at the top.
+The window is displayed in the upper left corner of the screen. If multiple alert windows are displayed,
+they are stacked such that the oldest window is always at the top.
+
+----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertPosition.dapTopRight
-  The window is displayed in the upper right corner of the screen. If multiple alert windows are displayed,
-  they are stacked such that the oldest window is always at the top.
+The window is displayed in the upper right corner of the screen. If multiple alert windows are displayed,
+they are stacked such that the oldest window is always at the top.
+
+----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertPosition.dapBottomLeft
-  The window is displayed in the bottom left corner of the screen. If multiple alert windows are displayed,
-  they are stacked such that oldest window is always at the bottom.
+The window is displayed in the bottom left corner of the screen. If multiple alert windows are displayed,
+they are stacked such that oldest window is always at the bottom.
+
+----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertPosition.dapBottomRight
-  The window is displayed in the bottom right corner of the screen. If multiple alert windows are displayed,
-  they are stacked such that the oldest window is always at the bottom.
+The window is displayed in the bottom right corner of the screen. If multiple alert windows are displayed,
+they are stacked such that the oldest window is always at the bottom.
+
+----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertPosition.dapCustom
-  The location of the window is determined by the Left and Top properties of the
-  <LINK TJvDesktopAlert.Location,TJvDesktopAlert.Location> property. This mode is not stacked.
+The location of the window is determined by the Left and Top properties of the <LINK TJvDesktopAlert.Location,TJvDesktopAlert.Location> property. This mode is not stacked.
+
+----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertPosition.dapDesktopCenter
-  The window is centered on the desktop. No adjustment is done for multiple monitors. This mode is not stacked.
+The window is centered on the desktop. No adjustment is done for multiple monitors. This mode is not stacked.
+
+----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertPosition.dapMainFormCenter
-  The window is centered on the application's mainform. If the application doesn't have a main form,
-  this mode works the same as dapDesktopCenter. This mode is not stacked.
+The window is centered on the application's mainform. If the application doesn't have a main form,
+this mode works the same as dapDesktopCenter. This mode is not stacked.
+
+----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertPosition.dapOwnerFormCenter
-  The window is centered on the owner form if Owner is as TCustomForm. If Owner is not a TCustomForm,
-  this mode works the same as dapDesktopCenter. This mode is not stacked.
+The window is centered on the owner form if Owner is as TCustomForm. If Owner is not a TCustomForm,
+this mode works the same as dapDesktopCenter. This mode is not stacked.
+
+----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertPosition.dapActiveFormCenter
-  The window is centered on the application's active form. If the application doesn't have an active form,
-  this mode works the same as dapDesktopCenter. This mode is not stacked.
+The window is centered on the application's active form. If the application doesn't have an active form,
+this mode works the same as dapDesktopCenter. This mode is not stacked.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertStack
 <TITLEIMG TJvDesktopAlertStack>
@@ -730,18 +833,21 @@ JVCLInfo
 Summary
   Manages a list of TJvDesktopAlert components.
 Description
-  Use TJvDesktopAlertStack to control the behavior of multiple TJvDesktopAlert components. To use, drop a
-  TJvDesktopAlertStack on the form and assign it to the AlertStack property of each of the TJvDesktopAlert
-  components you want to be managed by the TJvDesktopAlertStack instance.
+  Use TJvDesktopAlertStack to control the behavior of multiple TJvDesktopAlert components. To use,
+  drop a
+  TJvDesktopAlertStack on the form and assign it to the AlertStack property of each of the
+  TJvDesktopAlert components you want to be managed by the TJvDesktopAlertStack instance.
 
-  When a TJvDesktopAlert is managed by an explicitly assiged TJvDesktopAlertStack component, the Position property
-  of TJvDesktopAlertStack is used for all the TJvDesktopAlert components.
+  When a TJvDesktopAlert is managed by an explicitly assiged TJvDesktopAlertStack component, the
+  Position property of TJvDesktopAlertStack is used for all the TJvDesktopAlert components.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertStack.Add
 Summary
   Adds a form to the list of managed forms.
 Description
   Do not call this method. It is for intern use only.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertStack.Count
 Summary
@@ -750,7 +856,8 @@ Description
   Read the value of Count to learn the number of forms currently managed by the component. Count
   varies as desktop alert windows are displayed and closed.
 See Also
-  Items
+  TJvDesktopAlertStack.Items
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertStack.Items
 Summary
@@ -758,13 +865,15 @@ Summary
 Description
   Use Items to access the forms managed by the component using its index.
 
-Warning
-    The list of managed forms is highly dynamic and can change while you iterate over them. Accessing a
+  Warning
+    The list of managed forms is highly dynamic and can change while you iterate over them. Accessing
+  a
     non-existent form or a non-existent index will lead to acess violation errors.
 Parameters
   Index - The index of the form in the list.
 See Also
-  Count
+  TJvDesktopAlertStack.Count
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertStack.Position
 Summary
@@ -772,61 +881,87 @@ Summary
 Description
   Use Position to specify where the desktop alert windows managed by this component are displayed.
 Note
-  If Position is any of dapCustom, dapDesktopCenter, dapMainFormCenter,dapOwnerFormCenter or dapActiveFormCenter,
-  they will not be stacked by the component.
+  If Position is any of dapCustom, dapDesktopCenter, dapMainFormCenter,dapOwnerFormCenter or
+  dapActiveFormCenter, they will not be stacked by the component.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertStack.Remove
 Summary
   Removes a form from the internal list of managed forms.
 Description
   Do not call this method. It is for internal use only.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFadeAlertStyleHandler
 Summary
-  Write here a summary (1 line)
+  Class that encapsulates the \"fade in/out\" animation style for desktop alert windows.
 Description
-  Write here a description
+  TJvFadeAlertStyleHandler implements the functionality to make the alert window of a TJvDesktopAlert
+  fade in when it is shown and fade out when hidden. Do not create instances of
+  TJvFadeAlertStyleHandler . An instance is automatically created when you set the AlertStyle of a
+  TJvDesktopAlert component.
+See Also
+  AlertStyle, StyleHandler, StyleOptions
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFadeAlertStyleHandler.CurrentAlphaBlendValue
 Summary
-  Specifies how transparent the desktop alert is when it is fully displayed.
+  Specifies the current transparency of the desktop alert window.
 Description
-  Set AlphaBlendValue to a value between 0 (fully transparent) and 255 (fully opaque) to specify how transparent
-  the desktop alert window is when it is fully visible. If the Windows version your application is running
-  doesn't support alpha blending, this property has no effect and the desktop window is always fully opaque.
+  CurrentAlphaBlendValue specifies the current alpha blend value of the desktop alert window. This
+  value changes when the window is faded in our out.
+See Also
+  TJvFadeAlertStyleHandler.MaxAlphaBlendValue, TJvFadeAlertStyleHandler.MinAlphaBlendValue
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFadeAlertStyleHandler.MaxAlphaBlendValue
 Summary
-  Write here a summary (1 line)
+  Specifies the maximum alpha blend value of the window.
 Description
-  Write here a description
+  Use MaxAlphaBlendValue to set the maximum alpha blend value of the desktop alert window. When the
+  MaxAlphaBlendValue is reached, the window is considered fully showing.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvFadeAlertStyleHandler.CurrentAlphaBlendValue, TJvFadeAlertStyleHandler.MinAlphaBlendValue
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFadeAlertStyleHandler.MinAlphaBlendValue
 Summary
-  Write here a summary (1 line)
+  Specifies the minimum alpha blend value of the window.
 Description
-  Write here a description
+  Use MinAlphaBlendValue to set the minimum alpha blend value of the desktop alert window. When the
+  MinAlphaBlendValue is reached, the window is considered fully hidden.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvFadeAlertStyleHandler.CurrentAlphaBlendValue, TJvFadeAlertStyleHandler.MaxAlphaBlendValue
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStyleHandlerStatus
 <TITLE TJvStyleHandlerStatus type>
 Summary
-  Write here a summary (1 line)
+  Defines the possible animation states of a desktop alert window
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvStyleHandlerStatus is the type of the <LINK TJvDesktopAlert.Status, Status> property of a <LINK
+  TJvDesktopAlert> component and indicates the current animation stage of the alert window.
+
+----------------------------------------------------------------------------------------------------
 @@TJvStyleHandlerStatus.hsIdle
-  Description for hsIdle
+The animation is idle.
+
+----------------------------------------------------------------------------------------------------
 @@TJvStyleHandlerStatus.hsStartAnim
-  Description for hsStartAnim
+The animation is in its start stage.
+
+----------------------------------------------------------------------------------------------------
 @@TJvStyleHandlerStatus.hsEndAnim
-  Description for hsEndAnim
+The animation is in its end stage.
+
+----------------------------------------------------------------------------------------------------
 @@TJvStyleHandlerStatus.hsDisplay
-  Description for hsDisplay
+The animation is in its display stage.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesktopAlert.Status
+Summary
+  Indicates the current animation status of the alert window.
+Description
+  Use Status to interogate the component for the current status of the animation of the alert window.
+

@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringListToHtml
 <TITLEIMG TJvStringListToHtml>
@@ -16,30 +18,20 @@ JVCLInfo
 Summary
   Converts a plain string list to a \HTML formatted equivalent.
 Description
-  Use TJvStringListToHtml to simplify the creation of a \HTML document from a string list. At design-time, 
-  use the property editor from Strings to change the content of the string list. You can then read the formatted strings
-  from the HTML property. At run-time you can call the ConvertToHtml and the ConvertToHTMLStrings methods to perform
-  the conversion on any arbitrary TStrings instance. Use HTMLTitle, HTMLLineBreak and IncludeHeader to modify
+  Use TJvStringListToHtml to simplify the creation of a \HTML document from a string list. At
+  design-time,
+  use the property editor from Strings to change the content of the string list. You can then read
+  the formatted strings from the HTML property. At run-time you can call the ConvertToHtml and the
+  ConvertToHTMLStrings methods to perform the conversion on any arbitrary TStrings instance. Use
+  HTMLTitle, HTMLLineBreak and IncludeHeader to modify
   the \HTML inserted into the string list.
-
+  
   The structure of the generated \HTML looks like this:
-<AUTOLINK OFF>
-<CODE>
-  \<HTML\>
-    \<HEAD\>
-      \<TITLE\>HTMLTitle\</TITLE\>
-    \</HEAD\>
-    \<BODY\>
-     Strings[0] + \HTMLLineBreak
-     Strings[1] + \HTMLLineBreak
-     Strings[2] + \HTMLLineBreak
-     ...
-     Strings[n] + \HTMLLineBreak
-    \</BODY\>
-  \</HTML\>
-</CODE>
-<AUTOLINK ON>
+  <AUTOLINK OFF>
+  <CODE>
+  <AUTOLINK ON>
   If IncludeHeader is false, only the Strings[] + HTMLLineBreak lines are included in the result.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringListToHtml.ConvertToHTML
 Summary
@@ -54,66 +46,81 @@ Parameters
   FileName :  The name of the file to save to. If the file already
               exists, it will be overwritten.
 See Also
-  ConvertToHTMLStrings
+  TJvStringListToHtml.ConvertToHTMLStrings
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringListToHtml.ConvertToHTMLStrings
 Summary
   Converts the strings in one list to \HTML formatted text in another.
 Description
-  Call ConvertToHTMLStrings when you want to convert an arbitrary TStrings instance to HTML and store the result
-  in another string list.
+  Call ConvertToHTMLStrings when you want to convert an arbitrary TStrings instance to HTML and store
+  the result in another string list.
 Parameters
   Source  - The original, unformatted string list.
-  Destination - The string list to put the \HTML formatted strings into. Destination is not cleared before adding the HTML strings.
+  Destination - The string list to put the \HTML formatted strings into. Destination is not cleared
+  before adding the HTML strings.
 See Also
-  ConvertToHtml
+  TJvStringListToHtml.ConvertToHTML
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringListToHtml.HTML
 Summary
   Contains the content of Strings converted to \HTML.
 Description
-  \Read HTML to access the HTML equivalent of Strings. The actual content of HTML is modified by
-  the settings of the HTMLTitle, HTMLLineBreak and IncludeHeader properties.
+  \Read HTML to access the HTML equivalent of Strings. The actual content of HTML is modified by the
+  settings of the HTMLTitle, HTMLLineBreak and IncludeHeader properties.
 See Also
-  Strings, HTMLTitle, HTMLLineBreak, IncludeHeader
+  TJvStringListToHtml.HTMLLineBreak, TJvStringListToHtml.HTMLTitle,
+  TJvStringListToHtml.IncludeHeader, TJvStringListToHtml.Strings
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringListToHtml.HTMLLineBreak
 Summary
   Specifies the string to use for line breaks.
 Description
-  Use HTMLLineBreak to specify the \HTML string to use for line breaks in the \HTML list. This value is '\<BR\>' by default.
+  Use HTMLLineBreak to specify the \HTML string to use for line breaks in the \HTML list. This value
+  is '\<BR\>' by default.
 See Also
-  HTMLTitle
+  TJvStringListToHtml.HTMLTitle
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringListToHtml.HTMLTitle
 Summary
   Specifies the string to put into the title of the \HTML header.
 Description
-  Use HTMLTitle to specify the \HTML string to use for the title string in the \HTML header. This value is
-  'Converted by TJvStringListToHtml' by default.
+  Use HTMLTitle to specify the \HTML string to use for the title string in the \HTML header. This
+  value is 'Converted by TJvStringListToHtml' by default.
 See Also
-  HTMLLineBreak
+  TJvStringListToHtml.HTMLLineBreak
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringListToHtml.IncludeHeader
 Summary
   Determines if the converted string list is to be constructed as a complete document.
 Description
-  Use IncludeHeader to specify if the converted HTML is enclosed in the \HTML, HEAD and BODY tags
-  and comprises a complete document. If IncludeHeader is false, a HTMLLineBreak is appended to each
+  Use IncludeHeader to specify if the converted HTML is enclosed in the \HTML, HEAD and BODY tags and
+  comprises a complete document. If IncludeHeader is false, a HTMLLineBreak is appended to each
   string in Strings. If IncludeHeader is true, a complete \HTML document is constructed.
 Note
-  When calling ConvertToHtml, this property is ignored and the file is always written as a complete \HTML document.
+  When calling ConvertToHtml, this property is ignored and the file is always written as a complete 
+  HTML document.
 See Also
-  ConvertToHtml, ConvertToHTMLStrings, HTMLTitle, HTMLLineBreak
+  TJvStringListToHtml.ConvertToHTML, TJvStringListToHtml.ConvertToHTMLStrings,
+  TJvStringListToHtml.HTMLLineBreak, TJvStringListToHtml.HTMLTitle
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStringListToHtml.Strings
 Summary
   The strings to convert to \HTML.
 Description
-  Strings contains the plain text strings that should be converted to \HTML. Read the \HTML from the HTML property.
-  Assign a TStrings instance to the Strings property or use the methods of the TStrings class to modify the content of Strings.
+  Strings contains the plain text strings that should be converted to \HTML. Read the \HTML from the
+  HTML property.
+  Assign a TStrings instance to the Strings property or use the methods of the TStrings class to
+  modify the content of Strings.
 Note
-  You can use either the Strings and HTML properties or the ConvertToHtml and ConvertToHTMLStrings methods to perform
-  the conversion.
+  You can use either the Strings and HTML properties or the ConvertToHtml and ConvertToHTMLStrings
+  methods to perform the conversion.
 See Also
-  HTML, ConvertToHtml, ConvertToHTMLStrings
+  TJvStringListToHtml.ConvertToHTML, TJvStringListToHtml.ConvertToHTMLStrings,
+  TJvStringListToHtml.HTML
+

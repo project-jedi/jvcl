@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Fedor Koshevnikov, Igor Pavluk and Serge Korolev
+
+
 ----------------------------------------------------------------------------------------------------
 @@TGetImageEvent
 <TITLE TGetImageEvent type>
@@ -25,12 +27,14 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDataSourceLink
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo
 <TITLEIMG TJvDBLookupCombo>
@@ -45,8 +49,9 @@ Description
   users have to remember what they all mean.
 
   Alternatively you could use a TRxDBLookupCombo to display one field from a lookup source, and store
-  a different field, but the TRxDBComboBox's drop-down list comes directly from a string list
-  and not required the lookup source.
+  a different field, but the TRxDBComboBox's drop-down list comes directly from a string list and not
+  required the lookup source.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.CloseUp
 Summary
@@ -60,6 +65,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.DisplayAllFields
 Summary
@@ -69,6 +75,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.DisplayValues
 Summary
@@ -78,6 +85,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.DropDown
 Summary
@@ -88,16 +96,18 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.DropDownAlign
 Summary
   Specifies how the drop-down list is aligned relative to its edit box.
 Description
   Use DropDownAlign to specify the position of the drop-down list relative to the edit region of the
-  lookup combo box. The drop down list can be aligned to the left or right, or centered with the
-  edit box.
+  lookup combo box. The drop down list can be aligned to the left or right, or centered with the edit
+  box.
 See Also
-  DropDownCount, DropDownWidth, OnDropDown
+  TJvDBLookupCombo.DropDownCount, TJvDBLookupCombo.DropDownWidth, TJvDBLookupCombo.OnDropDown
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.DropDownCount
 Summary
@@ -108,19 +118,21 @@ Description
 
   The default value for DropDownRows is 7.
 See Also
-  DropDownAlign, DropDownCount, OnDropDown
+  TJvDBLookupCombo.DropDownAlign, TJvDBLookupCombo.DropDownCount, TJvDBLookupCombo.OnDropDown
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.DropDownWidth
 Summary
   Specifies the width, in pixels, of the drop-down list.
 Description
-  Use DropDownWidth to customize the width of the drop-down list. If DropDownWidth is 0 (the default),
-  the drop-down list is the same width as the combo box.
+  Use DropDownWidth to customize the width of the drop-down list. If DropDownWidth is 0 (the
+  default), the drop-down list is the same width as the combo box.
 
   DropDownWidth is useful when displaying multiple lookup fields, and therefore, multiple columns in
   the database lookup combo box.
 See Also
-  DropDownAlign, DropDownCount, OnDropDown
+  TJvDBLookupCombo.DropDownAlign, TJvDBLookupCombo.DropDownCount, TJvDBLookupCombo.OnDropDown
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.EscapeClear
 Summary
@@ -130,6 +142,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.IsDropDown
 Summary
@@ -139,26 +152,29 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.ListVisible
 Summary
   Specifies whether the lookup list is open or “dropped-down”.
 Description
   Read IsDropDown to determine whether the list of lookup values is currently in the open
-  (dropped-down) position. If IsDropDown is true, the list is open; if IsDropDown is false, the
-  list is closed.
+  (dropped-down) position. If IsDropDown is true, the list is open; if IsDropDown is false, the list
+  is closed.
 See Also
-  OnDropDown
+  TJvDBLookupCombo.OnDropDown
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.OnCloseUp
 Summary
   Occurs immediately after an opened or “dropped-down” list is closed.
 Description
   Write an OnCloseUp event handler to respond when the combo box list is closed. When the list is
-  closed, the value that corresponds to the selected lookup value is assigned to the field. The
-  list can be closed by the user or by calling the CloseUp method.
+  closed, the value that corresponds to the selected lookup value is assigned to the field. The list
+  can be closed by the user or by calling the CloseUp method.
 See Also
-  CloseUp, OnDropDown
+  TJvDBLookupCombo.CloseUp, TJvDBLookupCombo.OnDropDown
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.OnDropDown
 Summary
@@ -167,7 +183,8 @@ Description
   Write an OnDropDown event handler to take specific action before the lookup list is displayed to
   the user. The list can be opened by the user or by calling the DropDown method.
 See Also
-  DropDown, OnCloseUp
+  TJvDBLookupCombo.DropDown, TJvDBLookupCombo.OnCloseUp
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.ResetField
 Summary
@@ -179,6 +196,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupCombo.Text
 Summary
@@ -188,6 +206,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit
 <TITLEIMG TJvDBLookupEdit>
@@ -198,6 +217,7 @@ Summary
   Data aware edit with look up
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.DropDownCount
 Summary
@@ -207,6 +227,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.DropDownWidth
 Summary
@@ -216,6 +237,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.FieldsDelimiter
 Summary
@@ -225,6 +247,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.ListStyle
 Summary
@@ -234,6 +257,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.LookupDisplay
 Summary
@@ -243,6 +267,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.LookupDisplayIndex
 Summary
@@ -252,6 +277,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.LookupField
 Summary
@@ -261,6 +287,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.LookupSource
 Summary
@@ -270,6 +297,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.LookupValue
 Summary
@@ -281,6 +309,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.OnCloseUp
 Summary
@@ -290,6 +319,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.OnDropDown
 Summary
@@ -299,6 +329,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.OnGetImage
 Summary
@@ -308,6 +339,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupEdit.PopupOnlyLocate
 Summary
@@ -318,6 +350,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupList
 <TITLEIMG TJvDBLookupList>
@@ -328,52 +361,68 @@ Summary
   Write here a summary (1 line)
 Description
   Use TRxDBLookupList to provide users with a convenient list of lookup
-items to set a field value using the values of a field in another dataset. Lookup list boxes
-usually display values that are a represent a more meaningful description of the actual
-field value. The relationship between field values and the corresponding values in the
-lookup dataset can be set using the properties LookupSource, LookupField and
-LookupDisplay.
-This component provides the following:
-You can select any number of fields to be displayed in the lookup list.
-End-users can incrementally search through the lookup list by directly typing into
-the control. This is a great advantage when using lookup tables that contain
-hundreds of even thousands of records. You can perform a lookup on a Query or
-QBE result. It even incrementally searches on the query result.
-The component does not have to be bound, or assigned, to a table's field
-(DataField and DataSource properties) which gives you greater flexibility in using
-this lookup list for general tasks where a source table is not involved.
-If DataSource and DataField properties is set, when a user selects a list item, the
-corresponding field value is changed in the underlying dataset.
-If IgnoreCase property is True (default), the incrementally search through the lookup list
-is processed without regard to case in the dataset's data.
-If IndexSwitch property is True (default) and TTable component is linked to the
-LookupSource, the incrementally search will use available indices of lookup table.
-The DisplayEmpty property allows you specify the text value to display when no item is
-selected from the lookup list. If DisplayEmpty set to the non-empty string, this value will
-be show in the top of the list additionaly to the lookup items.
-You can also use an OnGetImage event to specify graphical picture to display in each
-item of lookup list accordingly to the contents of lookup source.
+  items to set a field value using the values of a field in another dataset. Lookup list boxes
+  usually display values that are a represent a more meaningful description of the actual field
+  value. The relationship between field values and the corresponding values in the lookup dataset can
+  be set using the properties LookupSource, LookupField and
+  LookupDisplay.
+  This component provides the following:
+  You can select any number of fields to be displayed in the lookup list.
+  End-users can incrementally search through the lookup list by directly typing into the control.
+  This is a great advantage when using lookup tables that contain hundreds of even thousands of
+  records. You can perform a lookup on a Query or
+  QBE result. It even incrementally searches on the query result.
+  The component does not have to be bound, or assigned, to a table's field (DataField and DataSource
+  properties) which gives you greater flexibility in using this lookup list for general tasks where a
+  source table is not involved.
+  If DataSource and DataField properties is set, when a user selects a list item, the corresponding
+  field value is changed in the underlying dataset.
+  If IgnoreCase property is True (default), the incrementally search through the lookup list is
+  processed without regard to case in the dataset's data.
+  If IndexSwitch property is True (default) and TTable component is linked to the
+  LookupSource, the incrementally search will use available indices of lookup table.
+  The DisplayEmpty property allows you specify the text value to display when no item is selected
+  from the lookup list. If DisplayEmpty set to the non-empty string, this value will be show in the
+  top of the list additionaly to the lookup items.
+  You can also use an OnGetImage event to specify graphical picture to display in each item of lookup
+  list accordingly to the contents of lookup source.
 
-RxDBLookupList provides a list of lookup items for filling in fields that require data from another dataset. Use TRxDBLookupList to provide users with a convenient list of lookup items to set a field value using the values of a field in another dataset. Lookup list boxes usually display values that are a represent a more meaningful description of the actual field value.
+  RxDBLookupList provides a list of lookup items for filling in fields that require data from another
+  dataset. Use TRxDBLookupList to provide users with a convenient list of lookup items to set a field
+  value using the values of a field in another dataset. Lookup list boxes usually display values that
+  are a represent a more meaningful description of the actual field value.
 
-The relationship between field values and the corresponding values in the lookup dataset can be set using the properties LookupSource, LookupField and LookupDisplay.
+  The relationship between field values and the corresponding values in the lookup dataset can be set
+  using the properties LookupSource, LookupField and LookupDisplay.
 
-This component provides the following:
+  This component provides the following:
 
-·       You can select any number of fields to be displayed in the lookup list.
-·       End-users can incrementally search through the lookup list by directly typing into the control. This is a great advantage when using lookup tables that contain hundreds of even thousands of records.
-·       You can perform a lookup on a Query or QBE result. It even incrementally searches on the query result.
-·       The component does not have to be bound, or assigned, to a table's field (DataField and DataSource properties) which gives you greater flexibility in using this lookup list for general tasks where a source table is not involved.
+  ·       You can select any number of fields to be displayed in the lookup list.
+  ·       End-users can incrementally search through the lookup list by directly typing into the
+  control. This is a great advantage when using lookup tables that contain hundreds of even thousands
+  of records.
+  ·       You can perform a lookup on a Query or QBE result. It even incrementally searches on the
+  query result.
+  ·       The component does not have to be bound, or assigned, to a table's field (DataField and
+  DataSource properties) which gives you greater flexibility in using this lookup list for general
+  tasks where a source table is not involved.
 
-If DataSource and DataField properties is set, when a user selects a list item, the corresponding field value is changed in the underlying dataset.
+  If DataSource and DataField properties is set, when a user selects a list item, the corresponding
+  field value is changed in the underlying dataset.
 
-If IgnoreCase property is True (default), the incrementally search through the lookup list is processed without regard to case in the dataset's data.
+  If IgnoreCase property is True (default), the incrementally search through the lookup list is
+  processed without regard to case in the dataset's data.
 
-If IndexSwitch property is True (default) and TTable component is linked to the LookupSource, the incrementally search will use available indices of lookup table.
+  If IndexSwitch property is True (default) and TTable component is linked to the LookupSource, the
+  incrementally search will use available indices of lookup table.
 
-The DisplayEmpty property allows you specify the text value to display when no item is selected from the lookup list. If DisplayEmpty set to the non-empty string, this value will be show in the top of the list additionaly to the lookup items.
+  The DisplayEmpty property allows you specify the text value to display when no item is selected
+  from the lookup list. If DisplayEmpty set to the non-empty string, this value will be show in the
+  top of the list additionaly to the lookup items.
 
-You can also use an OnGetImage event to specify graphical picture to display in each item of lookup list accordingly to the contents of lookup source.
+  You can also use an OnGetImage event to specify graphical picture to display in each item of lookup
+  list accordingly to the contents of lookup source.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupList.BorderStyle
 Summary
@@ -387,6 +436,7 @@ Description
   bsNone     No visible border
   bsSingle   Single-line border
   </TABLE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupList.DrawItemText
 Summary
@@ -401,6 +451,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvDBLookupList.RowCount
 Summary
@@ -412,6 +463,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl
 Summary
@@ -422,11 +474,12 @@ Summary
 Description
   Use TDBLookupControl as a base class when defining controls that permit the user to set a field
   value by selecting a corresponding value from another dataset. The TDBLookupComboBox and
-  TDBLookupListBox controls are both descended from the TDBLookupControl and provide the user
-  with automatic lookup capabilities that are implemented in the TDBLookupControl object.
+  TDBLookupListBox controls are both descended from the TDBLookupControl and provide the user with
+  automatic lookup capabilities that are implemented in the TDBLookupControl object.
 
   Do not create instances of TDBLookupControl. Instead, instantiate a descendant of TDBLookupControl
   to allow the user to set field values from a set of lookup values.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.ClearValue
 Summary
@@ -436,6 +489,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.DataField
 Summary
@@ -449,7 +503,8 @@ Description
   properties, as the field component contains all the information about the relationship between the
   data field value and the lookup value.
 See Also
-  DataSource, KeyValue
+  TJvLookupControl.DataSource, TJvLookupControl.KeyValue
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.DataSource
 Summary
@@ -459,6 +514,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.DisplayEmpty
 Summary
@@ -468,6 +524,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.DisplayValue
 Summary
@@ -477,6 +534,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.EmptyItemColor
 Summary
@@ -487,6 +545,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.EmptyStrIsNull
 Summary
@@ -496,6 +555,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.EmptyValue
 Summary
@@ -505,6 +565,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.Field
 Summary
@@ -514,6 +575,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.FieldsDelimiter
 Summary
@@ -523,6 +585,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.IgnoreCase
 Summary
@@ -532,6 +595,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.IndexSwitch
 Summary
@@ -542,6 +606,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.ItemHeight
 Summary
@@ -551,6 +616,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.KeyValue
 Summary
@@ -560,6 +626,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.ListStyle
 Summary
@@ -570,11 +637,12 @@ Description
   property ListStyle: TLookupListStyleTLookupListStyle;
 
   By default, style is lsFixed, meaning that the each display field always takes up a fixed width
-  accordingly to their DisplayWidth properties. The lsDelimited style meaning that each field takes
-  a variable width, and the fields are separated by a comma (',') character.
+  accordingly to their DisplayWidth properties. The lsDelimited style meaning that each field takes a
+  variable width, and the fields are separated by a comma (',') character.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.Locate
 Summary
@@ -597,6 +665,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.LookupDisplay
 Summary
@@ -606,17 +675,19 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.LookupDisplayIndex
 Summary
   Write here a summary (1 line)
 Description
   When multiple fields specified by the LookupDisplay property, the LookupDisplayIndex specifies
-  index of a field in the LookupDisplay list which will be use in the DisplayValue property and
-  will be display in the editor of the TRxDBLookupCombo component.
+  index of a field in the LookupDisplay list which will be use in the DisplayValue property and will
+  be display in the editor of the TRxDBLookupCombo component.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.LookupField
 Summary
@@ -626,6 +697,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.LookupFormat
 Summary
@@ -635,6 +707,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.LookupSource
 Summary
@@ -644,6 +717,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.OnChange
 Summary
@@ -653,6 +727,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.OnGetImage
 Summary
@@ -662,6 +737,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.ReadOnly
 Summary
@@ -671,6 +747,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.ResetField
 Summary
@@ -680,6 +757,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupControl.Value
 Summary
@@ -689,18 +767,21 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupDataList
 Summary
   Class of the popup data list
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupDataWindow
 Summary
   Class of the popup data list
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupDataWindow.Hide
 Summary
@@ -710,6 +791,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupDataWindow.OnCloseUp
 Summary
@@ -719,6 +801,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupDataWindow.Show
 Summary
@@ -730,6 +813,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TLookupListStyle
 <TITLE TLookupListStyle type>
@@ -737,13 +821,19 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
+----------------------------------------------------------------------------------------------------
 @@TLookupListStyle.lsFixed
-  Description for lsFixed
+Description for lsFixed
+
+----------------------------------------------------------------------------------------------------
 @@TLookupListStyle.lsDelimited
-  Description for lsDelimited
+Description for lsDelimited
+
 ----------------------------------------------------------------------------------------------------
 @@TLookupSourceLink
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+

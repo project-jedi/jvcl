@@ -7,20 +7,26 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Marc Hoffman.
+
+
 ----------------------------------------------------------------------------------------------------
 @@JvXPAdjustBoundRect
 <TITLE JvXPAdjustBoundRect procedure>
 Summary
   Adjust a TRect based on several parameters.
 Description
-  JvXPAdjustBoundRect is used to modify the size of a TRect based on the current value of several properties.
-  When entering the procedure, Rect should be set to the current bounding rect of the control. When returning,
+  JvXPAdjustBoundRect is used to modify the size of a TRect based on the current value of several
+  properties.
+  When entering the procedure, Rect should be set to the current bounding rect of the control. When
+  returning,
   Rect has been modified with the new values.
 Parameters
   BorderWidth    - Width of the controls borders.
   ShowBoundLines - Determines if BoundLines is valid.
   BoundLines     - Contains a set of edges that are showing in the control.
-  Rect           - At entry, contains the bounding rect of the control. At exit, contains the modified values.
+  Rect           - At entry, contains the bounding rect of the control. At exit, contains the
+  modified values.
+
 ----------------------------------------------------------------------------------------------------
 @@JvXPColorizeBitmap
 <TITLE JvXPColorizeBitmap procedure>
@@ -31,6 +37,7 @@ Description
 Parameters
   Bitmap - The bitmap to change.
   AColor - The new background color for the bitmap.
+
 ----------------------------------------------------------------------------------------------------
 @@JvXPConvertToGray2
 <TITLE JvXPConvertToGray2 procedure>
@@ -40,6 +47,7 @@ Description
   Use JvXPConvertToGray2 to convert a bitmap image to a gray scale equivalent.
 Parameters
   Bitmap - The bitmap to convert.
+
 ----------------------------------------------------------------------------------------------------
 @@JvXPCreateGradientRect
 <TITLE JvXPCreateGradientRect procedure>
@@ -56,6 +64,7 @@ Parameters
   Style      - Sets the direction of the gradient.
   Dithered   - Determines if the gradient is dithered or not.
   Bitmap     - The resulting gradient.
+
 ----------------------------------------------------------------------------------------------------
 @@JvXPDrawBoundLines
 <TITLE JvXPDrawBoundLines procedure>
@@ -68,6 +77,7 @@ Parameters
   BoundLines - The bounding lines to draw.
   AColor     - The color to use for the lines.
   Rect       - The bounding rect to draw in.
+
 ----------------------------------------------------------------------------------------------------
 @@JvXPDrawLine
 <TITLE JvXPDrawLine procedure>
@@ -81,6 +91,7 @@ Parameters
   Y1      - The vertical start position of the line.
   X2      - The horizontal end position of the line.
   Y2      - The vertical end position of the line.
+
 ----------------------------------------------------------------------------------------------------
 @@JvXPFrame3D
 <TITLE JvXPFrame3D procedure>
@@ -90,12 +101,14 @@ Description
   Use JvXPFrame3D to draw like Frame3D but using an XP style.
 Parameters
   ACanvas     - The canvas to draw on.
-  Rect        - The rect to draw in. This is adjusted to the dimensions of the rectangle that lies inside the frame.
+  Rect        - The rect to draw in. This is adjusted to the dimensions of the rectangle that lies
+  inside the frame.
   TopColor    - The color for the top and left edges.
   BottomColor - The color for the bottom and right edges.
   Swapped     - Set to true if TopColor and BottomColor should swap places.
 See Also
   Frame3D
+
 ----------------------------------------------------------------------------------------------------
 @@JvXPMethodsEqual
 <TITLE JvXPMethodsEqual function>
@@ -108,6 +121,7 @@ Parameters
   Method2 - The second method to test.
 Return value
   Returns true if the method pointers point to the same method.
+
 ----------------------------------------------------------------------------------------------------
 @@JvXPPlaceText
 <TITLE JvXPPlaceText procedure>
@@ -125,6 +139,7 @@ Parameters
   AAlignment     - Alignment of text.
   AWordWrap      - Wordwrapping on/off.
   Rect           - The rect to draw in.
+
 ----------------------------------------------------------------------------------------------------
 @@JvXPRenderText
 <TITLE JvXPRenderText procedure>
@@ -140,8 +155,10 @@ Parameters
   AEnabled       - Draw text enabled or disabled.
   AShowAccelChar - Draw accelerators or not.
   Rect           - The rect to draw in or adjust according to the parameters.
-  Flags          - Additional flags to use. These are the same flags as used by DrawText. Specifically,
-                   if you include DT_CALCRECT in flags, the Rect is adjusted but nothing is drawn.
+  Flags          - Additional flags to use. These are the same flags as used by DrawText.
+  Specifically,                  if you include DT_CALCRECT in flags, the Rect is adjusted but
+  nothing is drawn.
+
 ----------------------------------------------------------------------------------------------------
 @@JvXPSetDrawFlags
 <TITLE JvXPSetDrawFlags procedure>
@@ -157,3 +174,4 @@ Parameters
   Flags      - Modified to include the values of AAlignment and AWordWrap.
 See Also
   DrawText, <LINK JvXPRenderText>
+

@@ -7,6 +7,8 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Joe Doe.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret
 Summary
@@ -23,13 +25,17 @@ Description
   caret will be created, but the standard Windows caret will be used instead.
 
   A control that wants to use a custom caret should take care of the following:
-  * As soon as your control has focus (and your application is the active application) you may call
+
+  * As soon as your
+    control has focus (and your application is the active application) you may call
     TJvCaret.CreateCaret to create and display the caret (if needed you can use the Windows API call
     for HideCaret to temporarily hide it).
   * If the control loses focus or the application will be deactivated (because another application
     gets focus) you must call TJvCaret.DestroyCaret
-  * Use the Window API calls to hide/show the caret or to get or change its location (HideCaret,
+  * Use the Window API calls to hide/show the caret
+    or to get or change its location (HideCaret,
     ShowCaret, GetCaretPos, SetCaretPos respectively).
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.BeginUpdate
 Summary
@@ -39,7 +45,8 @@ Description
   called. BeginUpdate can be called multiple times but every call should be matched with a call to
   EndUpdate to have the changes take effect.
 See Also
-  Changed, EndUpdate, UpdateCount
+  TJvCaret.Changed, TJvCaret.EndUpdate, TJvCaret.UpdateCount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.Bitmap
 Summary
@@ -49,14 +56,17 @@ Description
 
   Setting Bitmap will result in Width and Height being changed to 0 and Gray being set to false.
 See Also
-  Gray, Height, Width
+  TJvCaret.Gray, TJvCaret.Height, TJvCaret.Width
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.CaretCreated
 Summary
   Indicates whether a caret has been created.
 Description
-  CaretCreated indicates whether a caret has been created. If CaretCreated is true, CreateCaret has created a
+  CaretCreated indicates whether a caret has been created. If CaretCreated is true, CreateCaret has
+  created a
   caret which has not been destroyed yet by a call to DestroyCaret.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.CaretOwner
 Summary
@@ -64,6 +74,7 @@ Summary
 Description
   CaretOwner references the control that owns this caret object. It is set automatically when the
   caret object instance is created.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.Changed
 Summary
@@ -72,7 +83,8 @@ Description
   Changed will generate an OnChange event if a handler is assigned and change notifications are not
   suppressed (every BeginUpdate has been matched with an EndUpdate).
 See Also
-  BeginUpdate, EndUpdate, OnChanged, UpdateCount
+  TJvCaret.BeginUpdate, TJvCaret.EndUpdate, TJvCaret.OnChanged, TJvCaret.UpdateCount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.CreateCaret
 Summary
@@ -80,16 +92,18 @@ Summary
 Description
   CreateCaret will generate and show the caret, provided the <LINK TJvCaret.CaretOwner, caret owner>
   has focus. Raises an EWin32Error exception if the creation failed at the API level.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.DefineProperties
 Summary
   Provides methods to read and write the bitmap.
 Description
   DefineProperties is called automatically by the streaming system that loads and saves VCL
-  components. Because the streaming system does not deal properly with published persistent
-  property on another nested persistent, a pseudoproperty is used to save the Bitmap.
+  components. Because the streaming system does not deal properly with published persistent property
+  on another nested persistent, a pseudoproperty is used to save the Bitmap.
 Parameters
   Filer - The filer component used to for loading and saving the component and its properties.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.DestroyCaret
 Summary
@@ -97,6 +111,7 @@ Summary
 Description
   DestroyCaret will hide and destroy the caret, provided the <LINK TJvCaret.CaretOwner, caret owner>
   has focus and a caret was previously created with a call to CreateCaret.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.EndUpdate
 Summary
@@ -105,7 +120,8 @@ Description
   EndUpdate will re-enable change notifications when the number of calls to BeginUpdate equals the
   number of calls to EndUpdate.
 See Also
-  BeginUpdate, Changed, UpdateCount
+  TJvCaret.BeginUpdate, TJvCaret.Changed, TJvCaret.UpdateCount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.Gray
 Summary
@@ -119,7 +135,8 @@ Note
   Gray carets seem to be unsupported under Windows 95. The Gray property will have no effect on
   Windows 95 operating systems.
 See Also
-  Bitmap, Height, Width
+  TJvCaret.Bitmap, TJvCaret.Height, TJvCaret.Width
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.Height
 Summary
@@ -131,7 +148,8 @@ Description
 
   Setting Height to a non-zero value will result in Bitmap being ignored.
 See Also
-  Bitmap, Gray, Width
+  TJvCaret.Bitmap, TJvCaret.Gray, TJvCaret.Width
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.IsDefaultCaret
 Summary
@@ -140,13 +158,15 @@ Description
   IsDefaultCaret indicates if the caret is the default (Windows) caret. This method is used
   internally by CreateCaret and DestroyCaret.
 See Also
-  UsingBitmap, CreateCaret, DestroyCaret
+  TJvCaret.CreateCaret, TJvCaret.DestroyCaret, TJvCaret.UsingBitmap
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.OnChanged
 Summary
   Responds to changes in the caret settings.
 Description
   \Write an OnChanged handler to respond to changes in the caret settings.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.UpdateCount
 Summary
@@ -155,7 +175,8 @@ Description
   UpdateCount indicates the number of calls to BeginUpdate issued that have not been matched by a
   call to EndUpdate. While UpdateCount > 0, the OnChanged event will never fire.
 See Also
-  BeginUpdate, EndUpdate, OnChanged
+  TJvCaret.BeginUpdate, TJvCaret.EndUpdate, TJvCaret.OnChanged
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.UsingBitmap
 Summary
@@ -164,16 +185,18 @@ Description
   UsingBitmap indicates if the caret is based on the bitmap specified by the Bitmap property. This
   method is used internally by CreateCaret and DestroyCaret.
 See Also
-  IsDefaultCaret, CreateCaret, DestroyCaret
+  TJvCaret.CreateCaret, TJvCaret.DestroyCaret, TJvCaret.IsDefaultCaret
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.Width
 Summary
   Determines the width of the custom cursor.
 Description
-  Width is the width of the custom cursor. If left at 0, the caret will get the default width,
-  unless a Bitmap is specified, Gray is set to false and Height is also set to 0, in which case
+  Width is the width of the custom cursor. If left at 0, the caret will get the default width, unless
+  a Bitmap is specified, Gray is set to false and Height is also set to 0, in which case
   Bitmap is used as a caret.
 
   Setting Width to a non-zero value will result in Bitmap being ignored.
 See Also
-  Bitmap, Gray, Height
+  TJvCaret.Bitmap, TJvCaret.Gray, TJvCaret.Height
+
