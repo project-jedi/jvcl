@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvMM" Design="-1">
   <Description>JVCL Multimedia and Image Components</Description>
+  <ClxDescription>JVCLX Multimedia and Image Components</ClxDescription>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUCJcl</C6PFlags>
   <C5Libs/>

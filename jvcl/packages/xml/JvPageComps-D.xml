@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvPageComps" Design="-1">
   <Description>JVCL Page Style Components</Description>
+  <ClxDescription>JVCLX Page Style Components</ClxDescription>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUdclstd -LUCJcl</C6PFlags>
   <C5Libs/>
@@ -22,8 +23,8 @@
     <File Name="..\..\design\JvPageLinkEditorForm.pas" Targets="all" Formname="frmJvTreeViewLinksEditor" Condition=""/>
     <File Name="..\..\design\JvPageListTreeViewReg.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvTreeItemsEditorForm.pas" Targets="all" Formname="frmTreeViewItems" Condition=""/>
-    <File Name="..\..\design\JvPageListEditorForm.pas"  Targets="all" Formname="frmPageListEditor" Condition=""/>
-    <File Name="..\..\design\JvPageListEditors.pas"  Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvNavPaneEditors.pas"  Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvPageListEditorForm.pas" Targets="all" Formname="frmPageListEditor" Condition=""/>
+    <File Name="..\..\design\JvPageListEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvNavPaneEditors.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvSystem" Design="0">
   <Description>JVCL System Runtime Package</Description>
+  <ClxDescription>JVCLX System Runtime Package</ClxDescription>
   <C5PFlags>-LUvcl50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUCJcl</C6PFlags>
   <C5Libs>wininet.lib</C5Libs>
@@ -24,7 +25,7 @@
   <Contains>
     <File Name="..\..\run\JvXmlDatabase.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppInst.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvChangeNotify.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvChangeNotify.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvClipboardMonitor.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvClipboardViewer.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvCommStatus.pas" Targets="allbutclx" Formname="" Condition=""/>
@@ -58,7 +59,7 @@
     <File Name="..\..\run\JvWndProcHook.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\common\Ras32.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\common\Hid.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\common\ModuleLoader.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\common\ModuleLoader.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\common\DBT.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\common\SetupApi.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppXmlStorage.pas" Targets="all" Formname="" Condition=""/>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvCmp" Design="-1">
   <Description>JVCL Non-Visual Components</Description>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50  -LUCJcl50</C5PFlags>
+  <ClxDescription>JVCLX Non-Visual Components</ClxDescription>
+  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUdclstd -LUCJcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>

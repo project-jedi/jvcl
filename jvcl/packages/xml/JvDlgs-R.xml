@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvDlgs" Design="0">
   <Description>JVCL Dialog Controls Runtime Package</Description>
+  <ClxDescription>JVCLX Dialog Controls Runtime Package</ClxDescription>
   <C5PFlags>-LUvcl50 -LUvclx50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUCJcl</C6PFlags>
   <C5Libs/>

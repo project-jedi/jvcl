@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvCore" Design="-1">
   <Description>JVCL Core Components</Description>
+  <ClxDescription>JVCLX Core Components</ClxDescription>
   <C5PFlags>-LUdsnide50 -LUdclstd50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUdclstd -LUCJcl -LUCJclVcl</C6PFlags>
   <C5Libs/>

@@ -9,7 +9,7 @@
   <Requires>
     <Package Name="JvCore-D" Targets="allbutclx" Condition=""/>
     <Package Name="JvCore-R" Targets="D7,D7p" Condition=""/>
-    <Package Name="JvSystem-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
@@ -29,5 +29,6 @@
     <File Name="..\..\design\JvTimerListEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvChangeNotifyEditor.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\design\JvFormPropertiesForm.pas" Targets="all" Formname="JvFormPropsDlg" Condition=""/>
+    <File Name="..\..\qdesign\JvQMinMaxForm.pas" Targets="allclx" Formname="MinMaxInfoEditDialog" Condition=""/>
   </Contains>
 </Package>
