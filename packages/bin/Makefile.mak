@@ -208,7 +208,7 @@ CompilePackages:
 ################################################################################
 Clean:
 	@echo [Cleaning...]
-	@cd ..
+	@cd $(JVCLROOT)\packages
 	-del /f /q "$(PKGDIR) Packages.mak" 2>NUL
 	-del /f /q "$(PKGDIR)\*.cfg" "$(PKGDIR)\*.mak" 2>NUL
 	-del /f /q tmp.bat 2>NUL
