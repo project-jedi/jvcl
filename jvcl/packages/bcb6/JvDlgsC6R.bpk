@@ -30,7 +30,7 @@
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
     <PACKAGES value="rtl.bpi vcl.bpi CJCL60.bpi JvCoreC6R.bpi JvSystemC6R.bpi JvStdCtrlsC6R.bpi 
-      vclx.bpi bcbsmp.bpi bcbie.bpi"/>
+      vclx.bpi vcljpg.bpi bcbsmp.bpi bcbie.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\run;..\..\common"/>
     <PATHRC value=".;"/>
@@ -97,6 +97,7 @@
       <FILE FILENAME="..\..\run\JvSelectDirectory.pas" FORMNAME="" UNITNAME="JvSelectDirectory" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvTipOfDay.pas" FORMNAME="" UNITNAME="JvTipOfDay" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vcljpg.bpi" FORMNAME="" UNITNAME="vcljpg" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvCoreC6R.bpi" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvSystemC6R.bpi" FORMNAME="" UNITNAME="JvSystemC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>

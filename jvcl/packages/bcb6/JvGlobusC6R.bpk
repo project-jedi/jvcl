@@ -49,7 +49,7 @@
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
-    <PACKAGES value="rtl.bpi vcl.bpi CJCL60.bpi dbrtl.bpi vcldb.bpi vclx.bpi qrpt.bpi vclie.bpi 
+    <PACKAGES value="rtl.bpi vcl.bpi vcljpg.bpi CJCL60.bpi dbrtl.bpi vcldb.bpi vclx.bpi qrpt.bpi vclie.bpi
       bdertl.bpi JvStdCtrlsC6R.bpi JvSystemC6R.bpi JvCoreC6R.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\run"/>
@@ -164,6 +164,7 @@
       <FILE FILENAME="..\..\run\JvgWizardHeader.pas" FORMNAME="" UNITNAME="JvgWizardHeader" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvgXMLSerializer.pas" FORMNAME="" UNITNAME="JvgXMLSerializer" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vcljpg.bpi" FORMNAME="" UNITNAME="vcljpg" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="dbrtl.bpi" FORMNAME="" UNITNAME="dbrtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcldb.bpi" FORMNAME="" UNITNAME="vcldb" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
