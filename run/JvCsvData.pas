@@ -280,10 +280,14 @@ type
     FOpenFileName: string; // This is the Fully Qualified path and filename expanded from the FTableName property when InternalOpen was last called.
     FValidateHeaderRow: Boolean;
     FExtendedHeaderInfo: Boolean;
+    FCreatePaths:Boolean; // When saving, create subdirectories/paths if it doesn't exist?
     procedure SetSeparator(const Value: Char);
     procedure InternalQuickSort(SortList: PPointerList; L, R: Integer;
       SortColumns: TArrayOfPCsvColumn; ACount: Integer; Ascending: Boolean);
     procedure QuickSort(AList: TList; SortColumns: TArrayOfPCsvColumn; ACount: Integer; Ascending: Boolean);
+
+    procedure _AutoCreateDir(const Filename:String);
+
   protected
     // (rom) inacceptable names. Probably most of this should be private.
     FTempBuffer: PChar;
@@ -596,6 +600,9 @@ type
     property OnGetFieldData: TJvCsvOnGetFieldData read FOnGetFieldData write FOnGetFieldData;
     property OnSetFieldData: TJvCsvOnSetFieldData read FOnSetFieldData write FOnSetFieldData;
 
+    {new}
+    property CreatePaths:Boolean read FCreatePaths write FCreatePaths default true; // When saving, create subdirectories/paths if it doesn't exist?
+
    public
     { these MUST be available at runtime even when the object is of the Custom base class type
       This enables interoperability at design time between non-visual helper components
@@ -741,6 +748,7 @@ constructor TJvCustomCsvDataSet.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FSeparator := ',';
+  FCreatePaths := true; // Creates subdirectories automatically when saving.
 
   FInitialWorkingDirectory := GetCurrentDir; // from SysUtils;
 
@@ -3585,9 +3593,30 @@ begin
   FData.AddRow(PNewRow);
 end;
 
+procedure TJvCustomCsvDataSet._AutoCreateDir(const Filename:String);
+var
+   path : String;
+begin
+    if FCreatePaths then begin
+        path := ExtractFilePath(FileName);
+        if Length(path)>0 then begin
+            if not DirectoryExists(path) then begin
+                   // {$IFDEF MSWINDOWS}
+                   // CreateDirectory(PChar(path), nil); /// XXX not equivalent to ForceDirectories!
+                   //{$ENDIF MSWINDOWS}
+                   // {$IFDEF LINUX}
+                    SysUtils.ForceDirectories(path);
+                   // {$ENDIF LINUX}
+            end;
+        end;
+    end;
+end;
+
+
 { This function is handy to save a portion of a csv table that has
 grown too large into a file, and then DeleteRows can be called to remove
 that section of the file. }
+
 
 procedure TJvCustomCsvDataSet.ExportRows(const FileName: string; FromRow, ToRow: Integer);
 var
@@ -3599,6 +3628,7 @@ begin
   try
     for I := FromRow to ToRow do
       StrList.Add(FData.GetRowStr(I));
+    _AutoCreateDir(FileName);
     StrList.SaveToFile(FileName);
   finally
     StrList.Free;
@@ -3636,6 +3666,7 @@ begin
   Strings := TStringList.Create;
   try
     AssignToStrings(Strings);
+    _AutoCreateDir(FileName);
     Strings.SaveToFile(FileName);
   finally
     Strings.Free;
@@ -4142,12 +4173,16 @@ begin
   end;
   BackupFolder := BackupFolder + 'Backup'+ PathDelim;
   if not DirectoryExists(BackupFolder) then
-    {$IFDEF MSWINDOWS}
-    CreateDirectory(PChar(BackupFolder), nil);
-    {$ENDIF MSWINDOWS}
-    {$IFDEF LINUX}
-    ForceDirectories(BackupFolder);
-    {$ENDIF LINUX}
+    // WP notes: According to VCL, FileCtrl.ForceDirectories is
+    // deprecated, thus I qualified ForceDirectories here!
+    // The trouble with CreateDirectory is that if it has to create
+    // more than one level of directory, it fails!
+    //{$IFDEF MSWINDOWS}
+    //CreateDirectory(PChar(BackupFolder), nil); /// XXX not equivalent to ForceDirectories!
+    //{$ENDIF MSWINDOWS}
+    //{$IFDEF LINUX}
+    SysUtils.ForceDirectories(BackupFolder);
+    //{$ENDIF LINUX}
   Found := False;
   for I := 0 to MaxFiles - 1 do
   begin
