@@ -28,6 +28,8 @@ Known Issues:
 
 {$I JVCL.INC}
 
+{$HPPEMIT '#pragma link "wininet.lib"'}
+
 unit JvHTTPGrabber;
 
 interface
