@@ -1,0 +1,479 @@
+object frmValidateEditDemo: TfrmValidateEditDemo
+  Left = 499
+  Top = 161
+  Width = 384
+  Height = 402
+  VertScrollBar.Range = 393
+  HorzScrollBar.Range = 377
+  ActiveControl = cbDisplayFormat
+  BorderStyle = fbsDialog
+  Caption = 'JvValidateEdit Demo'
+  Color = clButton
+  Constraints.MinHeight = 170
+  Constraints.MinWidth = 325
+  Font.Color = clText
+  Font.Height = 11
+  Font.Name = 'MS Shell Dlg 2'
+  Font.Pitch = fpVariable
+  Font.Style = []
+  Font.Weight = 40
+  ParentFont = False
+  Position = poDesktopCenter
+  Scaled = False
+  OnLoaded = FormCreate
+  PixelsPerInch = 96
+  object Label2: TLabel
+    Left = 8
+    Top = 248
+    Width = 64
+    Height = 13
+    Caption = 'Validate Edit:'
+  end
+  object GroupBox1: TGroupBox
+    Left = 8
+    Top = 8
+    Width = 369
+    Height = 233
+    Caption = 'Properties'
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 8
+      Top = 16
+      Width = 75
+      Height = 13
+      Caption = 'Display Format:'
+    end
+    object Label3: TLabel
+      Left = 8
+      Top = 112
+      Width = 64
+      Height = 13
+      Caption = 'Check Chars:'
+    end
+    object Label4: TLabel
+      Left = 232
+      Top = 100
+      Width = 69
+      Height = 13
+      Caption = 'Decimal Places'
+    end
+    object Label6: TLabel
+      Left = 8
+      Top = 64
+      Width = 65
+      Height = 13
+      Caption = 'Display Prefix'
+    end
+    object Label7: TLabel
+      Left = 8
+      Top = 88
+      Width = 65
+      Height = 13
+      Caption = 'Display Suffix'
+    end
+    object cbDisplayFormat: TComboBox
+      Left = 8
+      Top = 32
+      Width = 193
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 15
+      TabOrder = 0
+      OnChange = cbDisplayFormatChange
+      OnKeyPress = cbDisplayFormatKeyPress
+    end
+    object chkHasMaxValue: TCheckBox
+      Left = 216
+      Top = 40
+      Width = 89
+      Height = 17
+      Caption = 'Has Maximum'
+      TabOrder = 1
+      OnClick = chkHasMaxValueClick
+    end
+    object chkHasMinValue: TCheckBox
+      Left = 216
+      Top = 64
+      Width = 89
+      Height = 17
+      Caption = 'Has Minimum'
+      TabOrder = 2
+      OnClick = chkHasMinValueClick
+    end
+    object chkZeroEmpty: TCheckBox
+      Left = 216
+      Top = 16
+      Width = 97
+      Height = 17
+      Caption = 'Empty if Zero?'
+      TabOrder = 3
+      OnClick = chkZeroEmptyClick
+    end
+    object edCheckChars: TEdit
+      Left = 8
+      Top = 128
+      Width = 297
+      Height = 21
+      TabOrder = 4
+    end
+    object btnCheckChars: TButton
+      Left = 312
+      Top = 128
+      Width = 49
+      Height = 21
+      Caption = 'Set'
+      TabOrder = 5
+      OnClick = btnCheckCharsClick
+    end
+    object edDisplayPrefix: TEdit
+      Left = 88
+      Top = 64
+      Width = 57
+      Height = 21
+      TabOrder = 6
+    end
+    object edDisplaySuffix: TEdit
+      Left = 88
+      Top = 88
+      Width = 57
+      Height = 21
+      TabOrder = 7
+    end
+    object btnSetDisplayPrefix: TButton
+      Left = 152
+      Top = 64
+      Width = 47
+      Height = 21
+      Caption = 'Set'
+      TabOrder = 8
+      OnClick = btnSetDisplayPrefixClick
+    end
+    object btnSetDisplaySuffix: TButton
+      Left = 152
+      Top = 88
+      Width = 47
+      Height = 21
+      Caption = 'Set'
+      TabOrder = 9
+      OnClick = btnSetDisplaySuffixClick
+    end
+    object edMaxValue: TEdit
+      Left = 312
+      Top = 40
+      Width = 49
+      Height = 21
+      TabOrder = 10
+      OnExit = edMaxValueExit
+    end
+    object edMinValue: TEdit
+      Left = 312
+      Top = 64
+      Width = 49
+      Height = 21
+      TabOrder = 11
+      OnExit = edMinValueExit
+    end
+    object GroupBox3: TGroupBox
+      Left = 8
+      Top = 152
+      Width = 353
+      Height = 73
+      Caption = 'Critical Points'
+      TabOrder = 12
+      object Label8: TLabel
+        Left = 104
+        Top = 16
+        Width = 31
+        Height = 13
+        Caption = 'Above'
+      end
+      object Label9: TLabel
+        Left = 200
+        Top = 16
+        Width = 31
+        Height = 13
+        Caption = 'Colour'
+      end
+      object Label10: TLabel
+        Left = 104
+        Top = 40
+        Width = 28
+        Height = 13
+        Caption = 'Below'
+      end
+      object Label11: TLabel
+        Left = 200
+        Top = 40
+        Width = 31
+        Height = 13
+        Caption = 'Colour'
+      end
+      object Label12: TLabel
+        Left = 8
+        Top = 24
+        Width = 65
+        Height = 13
+        Caption = 'Check Points:'
+      end
+      object edCPMaxValue: TEdit
+        Left = 144
+        Top = 16
+        Width = 49
+        Height = 21
+        TabOrder = 0
+        OnExit = edCPMaxValueExit
+      end
+      object colCPAbove: TJvColorComboBox
+        Left = 240
+        Top = 16
+        Width = 105
+        Height = 19
+        ColorNameMap.Strings = (
+          'clBlack=Black'
+          'clMaroon=Maroon'
+          'clGreen=Green'
+          'clOlive=Olive'
+          'clNavy=Navy'
+          'clPurple=Purple'
+          'clTeal=Teal'
+          'clGray=Gray'
+          'clSilver=Silver'
+          'clRed=Red'
+          'clLime=Lime'
+          'clYellow=Yellow'
+          'clBlue=Blue'
+          'clFuchsia=Fuchsia'
+          'clAqua=Aqua'
+          'clLtGray=Light Gray'
+          'clDkGray=Dark Gray'
+          'clWhite=White'
+          'clMoneyGreen=Money Green'
+          'clSkyBlue=Sky Blue'
+          'clCream=Cream'
+          'clMedGray=Medium Gray'
+          'clScrollBar=ScrollBar'
+          'clBackground=Background'
+          'clActiveCaption=Active Caption'
+          'clInactiveCaption=Inactive Caption'
+          'clMenu=Menu'
+          'clWindow=Window'
+          'clWindowFrame=Window Frame'
+          'clMenuText=Menu Text'
+          'clWindowText=Window Text'
+          'clCaptionText=Caption Text'
+          'clActiveBorder=Active Border'
+          'clInactiveBorder=Inactive Border'
+          'clAppWorkSpace=Application Workspace'
+          'clHighlight=Highlight'
+          'clHighlightText=Highlight Text'
+          'clBtnFace=Button Face'
+          'clBtnShadow=Button Shadow'
+          'clGrayText=Gray Text'
+          'clBtnText=Button Text'
+          'clInactiveCaptionText=Inactive Caption Text'
+          'clBtnHighlight=Button Highlight'
+          'cl3DDkShadow=3D Dark Shadow'
+          'cl3DLight=3D Light'
+          'clInfoText=Info Text'
+          'clInfoBk=Info Background'
+          'clHotLight=Hot Light'
+          'clGradientActiveCaption=Gradient Active Caption'
+          'clGradientInactiveCaption=Gradient Inactive Caption'
+          'clMenuHighlight=Menu Highlight'
+          'clMenuBar=MenuBar'
+          'clNone=None'
+          'clDefault=Default')
+        ColorDialogText = '(Other...)'
+        HexPrefix = '$'
+        NewColorText = 'Custom'
+        Font.Color = clText
+        Font.Height = 11
+        Font.Name = 'MS Shell Dlg 2'
+        Font.Pitch = fpVariable
+        Font.Style = []
+        Font.Weight = 40
+        ParentFont = False
+        TabOrder = 1
+        OnChange = colCPAboveChange
+      end
+      object edCPMinValue: TEdit
+        Left = 144
+        Top = 40
+        Width = 49
+        Height = 21
+        TabOrder = 2
+        OnExit = edCPMinValueExit
+      end
+      object colCPBelow: TJvColorComboBox
+        Left = 240
+        Top = 40
+        Width = 105
+        Height = 19
+        ColorNameMap.Strings = (
+          'clBlack=Black'
+          'clMaroon=Maroon'
+          'clGreen=Green'
+          'clOlive=Olive'
+          'clNavy=Navy'
+          'clPurple=Purple'
+          'clTeal=Teal'
+          'clGray=Gray'
+          'clSilver=Silver'
+          'clRed=Red'
+          'clLime=Lime'
+          'clYellow=Yellow'
+          'clBlue=Blue'
+          'clFuchsia=Fuchsia'
+          'clAqua=Aqua'
+          'clLtGray=Light Gray'
+          'clDkGray=Dark Gray'
+          'clWhite=White'
+          'clMoneyGreen=Money Green'
+          'clSkyBlue=Sky Blue'
+          'clCream=Cream'
+          'clMedGray=Medium Gray'
+          'clScrollBar=ScrollBar'
+          'clBackground=Background'
+          'clActiveCaption=Active Caption'
+          'clInactiveCaption=Inactive Caption'
+          'clMenu=Menu'
+          'clWindow=Window'
+          'clWindowFrame=Window Frame'
+          'clMenuText=Menu Text'
+          'clWindowText=Window Text'
+          'clCaptionText=Caption Text'
+          'clActiveBorder=Active Border'
+          'clInactiveBorder=Inactive Border'
+          'clAppWorkSpace=Application Workspace'
+          'clHighlight=Highlight'
+          'clHighlightText=Highlight Text'
+          'clBtnFace=Button Face'
+          'clBtnShadow=Button Shadow'
+          'clGrayText=Gray Text'
+          'clBtnText=Button Text'
+          'clInactiveCaptionText=Inactive Caption Text'
+          'clBtnHighlight=Button Highlight'
+          'cl3DDkShadow=3D Dark Shadow'
+          'cl3DLight=3D Light'
+          'clInfoText=Info Text'
+          'clInfoBk=Info Background'
+          'clHotLight=Hot Light'
+          'clGradientActiveCaption=Gradient Active Caption'
+          'clGradientInactiveCaption=Gradient Inactive Caption'
+          'clMenuHighlight=Menu Highlight'
+          'clMenuBar=MenuBar'
+          'clNone=None'
+          'clDefault=Default')
+        ColorDialogText = '(Other...)'
+        HexPrefix = '$'
+        NewColorText = 'Custom'
+        Font.Color = clText
+        Font.Height = 11
+        Font.Name = 'MS Shell Dlg 2'
+        Font.Pitch = fpVariable
+        Font.Style = []
+        Font.Weight = 40
+        ParentFont = False
+        TabOrder = 3
+        OnChange = colCPAboveChange
+      end
+      object cbCPCheckPoints: TComboBox
+        Left = 8
+        Top = 40
+        Width = 89
+        Height = 21
+        Style = csDropDownList
+        ItemHeight = 15
+        TabOrder = 4
+        OnChange = cbCPCheckPointsChange
+      end
+    end
+    object seDecimalPlaces: TSpinEdit
+      Left = 313
+      Top = 96
+      Width = 49
+      Height = 21
+      TabOrder = 18
+      OnChanged = seDecimalPlacesChanged
+    end
+  end
+  object GroupBox2: TGroupBox
+    Left = 8
+    Top = 296
+    Width = 369
+    Height = 97
+    Caption = 'Set To'
+    TabOrder = 1
+    object Label5: TLabel
+      Left = 8
+      Top = 16
+      Width = 27
+      Height = 13
+      Caption = 'Value'
+    end
+    object edSetTo: TEdit
+      Left = 48
+      Top = 16
+      Width = 121
+      Height = 21
+      TabOrder = 0
+    end
+    object rgSetToType: TRadioGroup
+      Left = 8
+      Top = 40
+      Width = 353
+      Height = 49
+      Items.Strings = (
+        'Currency'
+        'Float'
+        'Integer'
+        'Text')
+      Caption = 'as Type'
+      Columns = 4
+      TabOrder = 1
+    end
+    object btnSetTo: TButton
+      Left = 176
+      Top = 16
+      Width = 75
+      Height = 21
+      Caption = 'Set'
+      Default = True
+      TabOrder = 2
+      OnClick = btnSetToClick
+    end
+    object chkAsVariant: TCheckBox
+      Left = 256
+      Top = 16
+      Width = 97
+      Height = 17
+      Caption = 'as Variant'
+      TabOrder = 3
+    end
+  end
+  object chkValueChanged: TCheckBox
+    Left = 216
+    Top = 244
+    Width = 153
+    Height = 17
+    Caption = 'Message on Value Change?'
+    TabOrder = 2
+  end
+  object JvValidateEdit: TJvValidateEdit
+    Left = 8
+    Top = 264
+    Width = 369
+    Height = 21
+    Alignment = taLeftJustify
+    CheckChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    CriticalPoints.CheckPoints = cpNone
+    CriticalPoints.ColorAbove = clRed
+    CriticalPoints.ColorBelow = clBlue
+    CriticalPoints.MaxValue = 100.000000000000000000
+    DisplayFormat = dfAlphaNumeric
+    TabOrder = 3
+    Value = ''
+    OnCustomValidate = JvValidateEditCustomValidate
+    OnValueChanged = JvValidateEditValueChanged
+  end
+end
