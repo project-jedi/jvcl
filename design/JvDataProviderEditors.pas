@@ -18,7 +18,7 @@ All Rights Reserved.
 Contributor(s):
   Peter Thörnqvist
 
-Last Modified: 2003-07-15
+Last Modified: 2003-07-16
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -35,7 +35,7 @@ interface
 uses
   {$IFNDEF COMPILER6_UP}DsgnIntf,{$ELSE}DesignIntf, DesignEditors,{$ENDIF}
   JvDataProvider, JvDataProviderImpl;
-  
+
 type
   TJvDataConsumerExtPropertyEditor = class(TPropertyEditor)
   protected
@@ -49,8 +49,9 @@ procedure Register;
 implementation
 
 uses
-  Classes, {$IFNDEF COMPILER6_UP}Consts,{$ELSE}RTLConsts,{$ENDIF} SysUtils, TypInfo,
-  JvDataConsumerItemSelectForm, JvDataProviderDesignerForm;
+  Classes, {$IFNDEF COMPILER6_UP}Consts,{$ELSE}RTLConsts,{$ENDIF} SysUtils, TypInfo, Menus,
+  JvDataConsumerContextSelectForm, JvDataConsumerItemSelectForm, JvDataProviderDesignerForm,
+  JvDataContextManagerForm;
 
 type
 {$IFDEF COMPILER6_UP}
@@ -90,9 +91,27 @@ type
   public
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
-//    procedure GetValues(Proc: TGetStrProc); override;
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
+  end;
+
+  TJvDataConsumerContextProperty = class(TJvDataConsumerExtPropertyEditor)
+  public
+    procedure Edit; override;
+    function GetAttributes: TPropertyAttributes; override;
+    function GetValue: string; override;
+    procedure SetValue(const Value: string); override;
+  end;
+
+  TJvProviderEditor = class(TDefaultEditor)
+  protected
+    function Provider: IJvDataProvider;
+  public
+    procedure Edit; override;
+    procedure ExecuteVerb(Index: Integer); override;
+    function GetVerb(Index: Integer): string; override;
+    function GetVerbCount: Integer; override;
+    procedure PrepareItem(Index: Integer; const AItem: TMenuItem); override;
   end;
 
   TOpenSvc = class(TJvDataConsumer);
@@ -319,75 +338,14 @@ end;
 
 function TJvDataProviderItemIDProperty.GetAttributes: TPropertyAttributes;
 begin
-//  Result := [paValueList, paRevertable];
   Result := [paDialog, paReadOnly];
 end;
-
-(*procedure TJvDataProviderItemIDProperty.GetValues(Proc: TGetStrProc);
-type
-  TStackItem = record
-    Items: IJvDataItems;
-    Idx: Integer;
-  end;
-var
-  ItemsStack: array of TStackItem;
-  Provider: IJvDataProvider;
-  CurItems: IJvDataItems;
-  CurIdx: Integer;
-  TempItems: IJvDataItems;
-begin
-  SetLength(ItemsStack, 0);
-  Provider := GetConsumerImpl.ProviderIntf;
-  GetConsumerImpl.Enter;
-  try
-    if Supports(Provider, IJvDataItems, CurItems) then
-    begin
-      CurIdx := 0;
-      while CurItems <> nil do
-      begin
-        while CurIdx < CurItems.Count do
-        begin
-          Proc(CurItems.Items[CurIdx].GetID);
-          if Supports(CurItems.Items[CurIdx], IJvDataItems, TempItems) then
-          begin
-            SetLength(ItemsStack, Length(ItemsStack) + 1);
-            with ItemsStack[High(ItemsStack)] do
-            begin
-              Items := CurItems;
-              Idx := CurIdx + 1;
-              CurItems := TempItems;
-              Tempitems := nil;
-              CurIdx := 0;
-            end;
-          end
-          else
-            Inc(CurIdx);
-        end;
-        if Length(ItemsStack) > 0 then
-        begin
-          with ItemsStack[High(ItemsStack)] do
-          begin
-            CurItems := Items;
-            CurIdx := Idx;
-          end;
-          SetLength(ItemsStack, High(ItemsStack));
-        end
-        else
-          CurItems := nil;
-      end;
-    end;
-  finally
-    GetConsumerImpl.Leave;
-  end;
-end;
-*)
 
 function TJvDataProviderItemIDProperty.GetValue: string;
 var
   Item: IJvDataItem;
   Text: IJvDataItemText;
 begin
-//  Result := GetStrValue;
   GetConsumerImpl.Enter;
   try
     Item := TJvDataConsumerItemSelect(GetConsumerExt).GetItemIntf;
@@ -406,35 +364,117 @@ begin
 end;
 
 procedure TJvDataProviderItemIDProperty.SetValue(const Value: string);
-(*var
-  Provider: IJvDataProvider;
-  Item: IJvDataItem;*)
 begin
-(*  GetConsumerImpl.Enter;
-  try
-    Provider := GetConsumerImpl.ProviderIntf;
-    if Value = '' then
-      SetStrValue('')
-    else if (Provider <> nil) then
+end;
+
+//===TJvDataConsumerContextEditor===================================================================
+
+procedure TJvDataConsumerContextProperty.Edit;
+begin
+  if ConsumerSelectContext(GetConsumer) then
+    Designer.Modified;
+end;
+
+function TJvDataConsumerContextProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paDialog];
+end;
+
+function TJvDataConsumerContextProperty.GetValue: string;
+var
+  Ctx: IJvDataContext;
+begin
+  Ctx := TJvDataConsumerContext(GetConsumerExt).ContextIntf;
+  if Ctx <> nil then
+  begin
+    Result := Ctx.Name;
+    repeat
+      Ctx := Ctx.Contexts.Ancestor;
+      if Ctx <> nil then
+        Result := Ctx.Name + '\' + Result;
+    until Ctx = nil;
+  end
+  else
+    Result := '';
+end;
+
+procedure TJvDataConsumerContextProperty.SetValue(const Value: string);
+var
+  CtxList: IJvDataContexts;
+  Ctx: IJvDataContext;
+begin
+  if Supports(GetConsumerImpl.ProviderIntf, IJvDataContexts, CtxList) then
+  begin
+    Ctx := CtxList.GetContextByName(Value);
+    if (Value = '') or (Value = '\') or (Ctx <> nil) then
     begin
-      Item := (Provider.GetItems as IJvDataIDSearch).Find(Value, True);
-      if Item <> nil then
-        SetStrValue(Item.GetID)
-      else
-        raise EPropertyError.CreateRes(@SInvalidPropertyValue);
-    end
+      TJvDataConsumerContext(GetConsumerExt).ContextIntf := Ctx;
+      Designer.Modified;
+    end;
+  end;
+end;
+
+//===TJvProviderEditor==============================================================================
+
+function TJvProviderEditor.Provider: IJvDataProvider;
+begin
+  Supports(Component, IJvDataProvider, Result);
+end;
+
+procedure TJvProviderEditor.Edit;
+begin
+  if Provider.AllowProviderDesigner then
+    ExecuteVerb(0)
+  else if Provider.AllowContextManager then
+    ExecuteVerb(1)
+  else
+    inherited Edit;
+end;
+
+procedure TJvProviderEditor.ExecuteVerb(Index: Integer);
+begin
+  case Index of
+    0:
+      DesignProvider(Provider, Designer, '');
+    1:
+      ManageProviderContexts(Provider, Designer, '');
+  end;
+end;
+
+function TJvProviderEditor.GetVerb(Index: Integer): string;
+begin
+  case Index of
+    0:
+      Result := 'Tree designer...';
+    1:
+      Result := 'Context manager...';
     else
-      raise EPropertyError.CreateRes(@SInvalidPropertyValue);
-  finally
-    GetConsumerImpl.Leave;
-  end;*)
+      Result := 'Invalid verb#: ' + IntToStr(Index);
+  end;
+end;
+
+function TJvProviderEditor.GetVerbCount: Integer;
+begin
+  Result := 2;
+end;
+
+procedure TJvProviderEditor.PrepareItem(Index: Integer; const AItem: TMenuItem);
+begin
+  case Index of
+    0:
+      AItem.Enabled := Provider.AllowProviderDesigner;
+    1:
+      AItem.Enabled := Provider.AllowContextManager;
+  end;
 end;
 
 procedure Register;
 begin
-  RegisterPropertyEditor(TypeInfo(TJvDataConsumer), TComponent, 'Provider', TJvDataConsumerProperty);
+  RegisterPropertyEditor(TypeInfo(TJvDataConsumer), TPersistent, '', TJvDataConsumerProperty);
   RegisterPropertyEditor(TypeInfo(TJvDataItemID), TPersistent, '', TJvDataProviderItemIDProperty);
+  RegisterPropertyEditor(TypeInfo(TJvDataContextID), TPersistent, '', TJvDataConsumerContextProperty);
   RegisterPropertyEditor(TypeInfo(TJvDataProviderTree), TComponent, '', TJvDataProviderTreeProperty);
+  RegisterComponentEditor(TJvCustomDataProvider, TJvProviderEditor);
 end;
 
 end.

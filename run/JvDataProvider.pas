@@ -17,7 +17,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-06-19
+Last Modified: 2003-07-16
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -36,7 +36,8 @@ uses
   JclBase;
 
 type
-  TDataProviderChangeReason = (pcrAdd, pcrDelete, pcrUpdateItem, pcrUpdateItems, pcrDestroy);
+  TDataProviderChangeReason = (pcrAdd, pcrDelete, pcrUpdateItem, pcrUpdateItems, pcrDestroy,
+    pcrContextAdd, pcrContextDelete, pcrContextUpdate);
   TDataItemState = (disFalse, disTrue, disIndeterminate, disNotUsed);
   TProviderDrawState = (pdsSelected, pdsGrayed, pdsDisabled, pdsChecked, pdsFocused, pdsDefault,
     pdsHot);
@@ -61,7 +62,8 @@ type
     procedure RegisterChangeNotify(ANotify: IJvDataProviderNotify);
     { Unregister a notification listener (a client control) }
     procedure UnregisterChangeNotify(ANotify: IJvDataProviderNotify);
-    { Return a reference to the list of items at the root (you also use <ProviderIntf> as IJvDataItems) }
+    { Return a reference to the list of items at the root (you can also use
+      <ProviderIntf> as IJvDataItems). }
     function GetItems: IJvDataItems;
     { Notify clients a change is about to occur. }
     procedure Changing(ChangeReason: TDataProviderChangeReason; Source: IUnknown = nil);
@@ -89,6 +91,10 @@ type
     procedure ContextDestroying(Context: IJvDataContext);
     { Called when a consumer is about to be destroyed. }
     procedure ConsumerDestroying(Consumer: IJvDataConsumer);
+    { Used to determine if the provider allows the use of the item designer. }
+    function AllowProviderDesigner: Boolean;
+    { Used to determine if the provider allows the use of the context manager. }
+    function AllowContextManager: Boolean;
   end;
 
   { Implemented by clients (i.e list/comboboxes, labels, buttons, edits, listviews, treeviews, menus etc)
@@ -241,6 +247,11 @@ type
       not the entire hierarchie is checked. Setting it to True means the the specified item should
       be a direct child, otherwise it may be at deeper levels. }
     function IsParentOf(AnItem: IJvDataItem; DirectParent: Boolean = False): Boolean;
+    { Determines if the item can be deleted. Some providers may generate some fixed items that
+      should never be deleted if the ProviderDesigner is used. This may depend on which context is
+      active (from contexts point-of-view, a deletetion is just removal from view; not a permanent
+      delete) }
+    function IsDeletable: Boolean;
 
     { Reference to the IJvDataItems owner. }
     property Items: IJvDataItems read GetItems;
@@ -353,6 +364,21 @@ type
     function AttributeApplies(Attr: Integer): Boolean;
   end;
 
+  { Consumer support interface to retrieve the selected provider. Used by the various property
+    editors. }
+  IJvDataConsumerProvider = interface
+    ['{1F01D2E5-2ACB-4B84-AFE6-67E563FB470B}']
+    function GetProvider: IJvDataProvider;
+  end;
+
+  { Consumer support interface to retrieve or set the selected context. Used by the various
+    property editors. }
+  IJvDataConsumerContext = interface
+    ['{7AA9F53D-BBD4-4B64-916A-AAF4AB25A496}']
+    function GetContext: IJvDataContext;
+    procedure SetContext(Value: IJvDataContext);
+  end;
+
   { Consumer support interface to retrieve the state of an item as specified by the consumer.
     disNotUsed means the state is not supported by the consumer and should be taken from the
     item instead. }
@@ -463,6 +489,9 @@ type
     function Contexts: IJvDataContexts;
     { Unique name of the context (used at design time and by the streaming system). }
     function Name: string;
+    { Determines if the context can be deleted. Some providers may generate some fixed contexts that
+      should never be deleted if the Context Manager is used. }
+    function IsDeletable: Boolean;
   end;
 
   IJvDataContextManager = interface

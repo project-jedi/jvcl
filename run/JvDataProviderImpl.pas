@@ -19,7 +19,7 @@ Contributor(s):
   Remko Bonte
   Peter Thörnqvist
 
-Last Modified: 2003-06-20
+Last Modified: 2003-07-18
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -124,9 +124,11 @@ type
   // Generic event based provider notification
   TJvProviderNotification = class(TObject, IUnknown, IJvDataProviderNotify)
   private
+    FProvider: IJvDataProvider;
     FOnChanging: TProviderNotifyEvent;
     FOnChanged: TProviderNotifyEvent;
   protected
+    procedure SetProvider(Value: IJvDataProvider);
     { IUnknown }
     function _AddRef: Integer; virtual; stdcall;
     function _Release: Integer; virtual; stdcall;
@@ -137,8 +139,10 @@ type
     procedure DataProviderChanged(const ADataProvider: IJvDataProvider;
       AReason: TDataProviderChangeReason; Source: IUnknown);
   public
+    destructor Destroy; override;
     property OnChanging: TProviderNotifyEvent read FOnChanging write FOnChanging;
     property OnChanged: TProviderNotifyEvent read FOnChanged write FOnChanged;
+    property Provider: IJvDataProvider read FProvider write SetProvider;
   end;
 
   // Item implementation classes
@@ -180,6 +184,7 @@ type
     function GetID: string;
     procedure ContextDestroying(Context: IJvDataContext); dynamic;
     function IsParentOf(AnItem: IJvDataItem; DirectParent: Boolean = False): Boolean; virtual;
+    function IsDeletable: Boolean; dynamic;
     property Items: IJvDataItems read GetItems;
     property Implementer: TObject read GetImplementer;
     { Optional IJvDataContextSensitive interface implementation }
@@ -419,9 +424,8 @@ type
     function GetCount: Integer; override;
     function GetItem(I: Integer): IJvDataItem; override;
   public
-    { TODO: Rewrite as constructor/destructor }
-    procedure AfterConstruction; override;
-    procedure BeforeDestruction; override;
+    constructor Create; override;
+    destructor Destroy; override;
 
     property List: TObjectList read FList;
   end;
@@ -503,6 +507,8 @@ type
     procedure ReleaseContext;
     procedure ContextDestroying(Context: IJvDataContext); dynamic;
     procedure ConsumerDestroying(Consumer: IJvDataConsumer); dynamic;
+    function AllowProviderDesigner: Boolean; dynamic;
+    function AllowContextManager: Boolean; dynamic;
 
     property DataItemsImpl: TJvBaseDataItems read FDataItemsImpl implements IJvDataItems;
     property DataContextsImpl: TJvBaseDataContexts read FDataContextsImpl;
@@ -566,12 +572,19 @@ type
     function ContextsImpl: TJvBaseDataContexts;
     function Contexts: IJvDataContexts;
     function Name: string; virtual; abstract;
+    function IsDeletable: Boolean; dynamic;
   public
     constructor Create(AContexts: TJvBaseDataContexts; AName: string); virtual;
   end;
 
   // Basic managed context
   TJvBaseManagedDataContext = class(TJvBaseDataContext, IJvDataContextManager);
+
+  // Basic fixed context
+  TJvBaseFixedDataContext = class(TJvBaseDataContext)
+  protected
+    function IsDeletable: Boolean; override;
+  end;
 
   // Standard context list
   TJvDataContexts = class(TJvBaseDataContexts)
@@ -595,10 +608,17 @@ type
     FName: string;
   protected
     procedure DoSetName(Value: string); override;
+    function Name: string; override;
   end;
 
   // Standard managed context
   TJvManagedDataContext = class(TJvDataContext, IJvDataContextManager);
+
+  // Standard fixed context
+  TJvFixedDataContext = class(TJvDataContext)
+  protected
+    function IsDeletable: Boolean; override;
+  end;
 
 // Helper routines
 { Locate nearest IJvDataItems* implementation for a specific item. }
@@ -683,7 +703,8 @@ type
     var SubSvcClass: TJvDataConsumerAggregatedObjectClass) of object;
   TAfterCreateSubSvcEvent = procedure(Sender: TJvDataConsumer;
     SubSvc: TJvDataConsumerAggregatedObject) of object;
-  TJvDataConsumer = class(TExtensibleInterfacedPersistent, IJvDataConsumer, IJvDataProviderNotify)
+  TJvDataConsumer = class(TExtensibleInterfacedPersistent, IJvDataConsumer, IJvDataProviderNotify,
+    IJvDataConsumerProvider)
   private
     FOwner: TComponent;
     FAttrList: array of Integer;
@@ -730,6 +751,8 @@ type
     { IJvDataConsumer methods }
     function VCLComponent: TComponent;
     function AttributeApplies(Attr: Integer): Boolean;
+    { IJvDataConsumerProvider methods }
+    function IJvDataConsumerProvider.GetProvider = ProviderIntf;
   public
     constructor Create(AOwner: TComponent; Attributes: array of Integer);
     destructor Destroy; override;
@@ -800,12 +823,16 @@ type
 
   { Consumer sub service to select the context to use for the consumer. Only needed for design time
     purposes; use TJvDataConsumer.Context to change it directly. }
-  TJvDataConsumerContext = class(TJvDataConsumerAggregatedObject)
+  TJvDataConsumerContext = class(TJvDataConsumerAggregatedObject, IJvDataConsumerContext)
   protected
+    function GetContextID: TJvDataContextID;
+    procedure SetContextID(Value: TJvDataContextID);
     function GetContext: IJvDataContext;
     procedure SetContext(Value: IJvDataContext);
+  public
+    property ContextIntf: IJvDataContext read GetContext write SetContext;
   published
-    property Context: IJvDataContext read GetContext write SetContext;
+    property Context: TJvDataContextID read GetContextID write SetContextID;
   end;
 
   { Consumer sub service to select the item to display or item that serves as the root. }
@@ -1302,7 +1329,6 @@ end;
 
 type
   TOpenReader = class(TReader);
-//  TOpenWriter = class(TWriter);
  {$M+}
   TOpenWriter = class(TWriter)
     function GetPropPath: string;
@@ -1314,26 +1340,26 @@ type
   end;
   {$M-}
 
-  function TOpenWriter.GetPropPath: string;
-  begin
-    Result := PropPathField^;
-  end;
+function TOpenWriter.GetPropPath: string;
+begin
+  Result := PropPathField^;
+end;
 
-  function TOpenWriter.PropPathField: PString;
-  var
-    RAPI: PPropInfo;
-  begin
-    RAPI := GetPropInfo(TOpenWriter, 'RootAncestor');
-    if RAPI = nil then
-      raise Exception.Create('Internal error.');
-    Result := Pointer(Cardinal(RAPI.GetProc) and $00FFFFFF + Cardinal(Self) + 4);
-  end;
+function TOpenWriter.PropPathField: PString;
+var
+  RAPI: PPropInfo;
+begin
+  RAPI := GetPropInfo(TOpenWriter, 'RootAncestor');
+  if RAPI = nil then
+    raise Exception.Create('Internal error.');
+  Result := Pointer(Cardinal(RAPI.GetProc) and $00FFFFFF + Cardinal(Self) + 4);
+end;
 
-  procedure TOpenWriter.SetPropPath(const NewPath: string);
-  begin
-    if NewPath <> PropPath then
-      PropPathField^ := NewPath;
-  end;
+procedure TOpenWriter.SetPropPath(const NewPath: string);
+begin
+  if NewPath <> PropPath then
+    PropPathField^ := NewPath;
+end;
 
 type
   TDesignContext = class(TInterfacedObject, IJvDataContext)
@@ -1343,6 +1369,7 @@ type
     function GetImplementer: TObject;
     function Contexts: IJvDataContexts;
     function Name: string;
+    function IsDeletable: Boolean;
   public
     constructor Create(AContexts: IJvDataContexts);
   end;
@@ -1360,6 +1387,11 @@ end;
 function TDesignContext.Name: string;
 begin
   Result := 'Designer context';
+end;
+
+function TDesignContext.IsDeletable: Boolean;
+begin
+  Result := False;
 end;
 
 constructor TDesignContext.Create(AContexts: IJvDataContexts);
@@ -1423,99 +1455,11 @@ procedure TJvCustomDataItemsRenderer.DoDrawItem(ACanvas: TCanvas; var ARect: TRe
   Item: IJvDataItem; State: TProviderDrawStates);
 begin
   TJvDP_ProviderImgAndTextRender.Draw(Item, ACanvas, ARect, State);
-(*  rgn := CreateRectRgn(0,0,0,0);
-  GetClipRgn(ACanvas.handle, rgn);
-  try
-    IntersectClipRect(ACanvas.Handle, ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
-    if Supports(Item, IJvDataItemText, TextIntf) then
-      S := TextIntf.Caption
-    else
-      S := SDataItemRenderHasNoText;
-    if Supports(Item.Items, IJvDataItemsImages, ImgsIntf) then
-    begin
-      if Supports(Item, IJvDataItemImage, ImgIntf) then
-      begin
-        if odSelected in State then
-        begin
-          ImgIdx := ImgIntf.SelectedIndex;
-          if ImgIdx < 0 then
-            ImgIdx := ImgIntf.ImageIndex;
-        end
-        else
-        begin
-          ImgIdx := ImgIntf.ImageIndex;
-          if ImgIdx < 0 then
-            ImgIdx := ImgIntf.SelectedIndex;
-        end;
-        if (ImgIdx > -1) and (TextIntf = nil) then
-          S := '';
-        // Apply alignment rules and render the image
-        case ImgIntf.Alignment of
-          taLeftJustify:
-            begin
-              ImgsIntf.Images.Draw(ACanvas, ARect.Left, ARect.Top, ImgIdx);
-              Inc(ARect.Left, ImgsIntf.Images.Width + 2);
-            end;
-          taRightJustify:
-            begin
-              ImgsIntf.Images.Draw(ACanvas, ARect.Right - ImgsIntf.Images.Width, ARect.Top, ImgIdx);
-              Dec(ARect.Right, ImgsIntf.Images.Width + 2);
-            end;
-          taCenter:
-            begin
-              ImgsIntf.Images.Draw(ACanvas, ARect.Left + ((ARect.Right - ARect.Left -
-                ImgsIntf.Images.Width) div 2), ARect.Top, ImgIdx);
-              Inc(ARect.Top, ImgsIntf.Images.Height + 2);
-              ImgIdx := ACanvas.TextWidth(S);
-              ARect.Left := ARect.Left + ((ARect.Right - ARect.Left - ImgIdx) div 2);
-            end;
-        end;
-      end;
-    end;
-    ACanvas.TextRect(ARect, ARect.Left, ARect.Top, S);
-  finally
-    SelectClipRgn(ACanvas.Handle, rgn);
-    DeleteObject(rgn);
-  end;*)
 end;
 
 function TJvCustomDataItemsRenderer.DoMeasureItem(ACanvas: TCanvas; Item: IJvDataItem): TSize;
 begin
   Result := TJvDP_ProviderImgAndTextRender.Measure(Item, ACanvas, []);
-(*  if Supports(Item, IJvDataItemText, TextIntf) then
-    S := TextIntf.Caption
-  else
-    S := SDataItemRenderHasNoText;
-  Result := ACanvas.TextExtent(S);
-  if Supports(Item.Items, IJvDataItemsImages, ImgsIntf) and (ImgsIntf.Images <> nil) then
-  begin
-    if Supports(Item, IJvDataItemImage, ImgIntf) then
-    begin
-      ImgIdx := ImgIntf.ImageIndex;
-      if ImgIdx < 0 then
-        ImgIdx := ImgIntf.SelectedIndex;
-      if (ImgIdx > -1) and (TextIntf = nil) then
-        S := '';
-      // Apply alignment rules and render the image
-      case ImgIntf.Alignment of
-        taLeftJustify,
-        taRightJustify:
-          begin
-            Result := ACanvas.TextExtent(S);
-            Inc(Result.cx, ImgsIntf.Images.Width + 2);
-            if ImgsIntf.Images.Height > Result.cy then
-              Result.cy := ImgsIntf.Images.Height;
-          end;
-        taCenter:
-          begin
-            Result := ACanvas.TextExtent(S);
-            Inc(Result.cy, ImgsIntf.Images.Height + 2);
-            if ImgsIntf.Images.Width > Result.cx then
-              Result.cx := ImgsIntf.Images.Width;
-          end;
-      end;
-    end;
-  end;*)
 end;
 
 function TJvCustomDataItemsRenderer.AvgItemSize(ACanvas: TCanvas): TSize;
@@ -1753,7 +1697,7 @@ end;
 
 procedure TExtensibleInterfacedPersistent.ReadImplementers(Reader: TReader);
 begin
-  { When loading implementers the interface of this object maybe referenced. We don't want the
+  { When loading implementers the interface of this object may be referenced. We don't want the
     instance destroyed yet, so reference counting will be suspended (by incrementing it) and resumed
     when we're done (by decrementing it without checking if it became zero) }
   SuspendRefCount;
@@ -1929,6 +1873,18 @@ end;
 
 //===TJvProviderNotification========================================================================
 
+procedure TJvProviderNotification.SetProvider(Value: IJvDataProvider);
+begin
+  if Value <> Provider then
+  begin
+    if Provider <> nil then
+      Provider.UnregisterChangeNotify(Self);
+    FProvider := Value;
+    if Provider <> nil then
+      Provider.RegisterChangeNotify(Self);
+  end;
+end;
+
 function TJvProviderNotification._AddRef: Integer;
 begin
   Result := -1;
@@ -1952,6 +1908,11 @@ end;
 procedure TJvProviderNotification.DataProviderChanging(const ADataProvider: IJvDataProvider;
   AReason: TDataProviderChangeReason; Source: IUnknown);
 begin
+  if (AReason = pcrDestroy) and (Provider <> nil) then
+  begin
+    Provider.UnregisterChangeNotify(Self);
+    FProvider := nil;
+  end;
   if @FOnChanging <> nil then
     FOnChanging(ADataProvider, AReason, Source);
 end;
@@ -1961,6 +1922,12 @@ procedure TJvProviderNotification.DataProviderChanged(const ADataProvider: IJvDa
 begin
   if @FOnChanged <> nil then
     FOnChanged(ADataProvider, AReason, Source);
+end;
+
+destructor TJvProviderNotification.Destroy;
+begin
+  Provider := nil;
+  inherited Destroy;
 end;
 
 { TJvBaseDataItems }
@@ -2181,88 +2148,11 @@ end;
 procedure TJvCustomDataItemRenderer.Draw(ACanvas: TCanvas; var ARect: TRect; State: TProviderDrawStates);
 begin
   TJvDP_ProviderImgAndTextRender.Draw(Item, ACanvas, ARect, State);
-(*  rgn := CreateRectRgn(0,0,0,0);
-  GetClipRgn(ACanvas.handle, rgn);
-  try
-    IntersectClipRect(ACanvas.Handle, ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
-    if Supports(Item, IJvDataItemText, TxtIntf) then
-      S := TxtIntf.Caption
-    else
-      S := SDataItemRenderHasNoText;
-    if Supports(Item.Items, IJvDataItemsImages, ImgsIntf) and (ImgsIntf.Images <> nil) and
-      Supports(Item, IJvDataItemImage, ImgIntf) then
-    begin
-      ImgIdx := ImgIntf.ImageIndex;
-      if (ImgIdx < 0) or ((odSelected in State) and (ImgIntf.SelectedIndex >= 0)) then
-        ImgIdx := ImgIntf.SelectedIndex;
-      if (ImgIdx >= 0) and (TxtIntf = nil) then
-        S := '';
-      if ImgIdx >= 0 then
-      begin
-        case ImgIntf.Alignment of
-          taLeftJustify:
-            begin
-              ImgsIntf.Images.Draw(ACanvas, ARect.Left, ARect.Top, ImgIdx);
-              Inc(ARect.Left, 2 + ImgsIntf.Images.Width);
-            end;
-          taRightJustify:
-            begin
-              ImgsIntf.Images.Draw(ACanvas, ARect.Right - ImgsIntf.Images.Width, ARect.Top, ImgIdx);
-              Dec(ARect.Right, 2 + ImgsIntf.Images.Width);
-            end;
-          taCenter:
-            begin
-              ImgsIntf.Images.Draw(ACanvas, ARect.Left + ((ARect.Right - ARect.Left -
-                ImgsIntf.Images.Width) div 2), ARect.Top, ImgIdx);
-              Inc(ARect.Top, ImgsIntf.Images.Height + 2);
-              ImgIdx := ACanvas.TextWidth(S);
-              ARect.Left := ARect.Left + ((ARect.Right - ARect.Left - ImgIdx) div 2);
-            end;
-        end;
-      end;
-    end;
-    ACanvas.TextRect(ARect, ARect.Left, ARect.Top, S);
-  finally
-    SelectClipRgn(ACanvas.Handle, rgn);
-    DeleteObject(rgn);
-  end;*)
 end;
 
 function TJvCustomDataItemRenderer.Measure(ACanvas: TCanvas): TSize;
 begin
   Result := TJvDP_ProviderImgAndTextRender.Measure(Item, ACanvas, []);
-(*  if Supports(Item, IJvDataItemText, TxtIntf) then
-    S := TxtIntf.Caption
-  else
-    S := SDataItemRenderHasNoText;
-  Result := ACanvas.TextExtent(S);
-  if Supports(Item.Items, IJvDataItemsImages, ImgsIntf) and (ImgsIntf.Images <> nil) and
-    Supports(Item, IJvDataItemImage, ImgIntf) then
-  begin
-    ImgIdx := ImgIntf.ImageIndex;
-    if (ImgIdx < 0) then
-      ImgIdx := ImgIntf.SelectedIndex;
-    if (ImgIdx >= 0) and (TxtIntf = nil) then
-      S := '';
-    if ImgIdx >= 0 then
-      case ImgIntf.Alignment of
-        taLeftJustify,
-        taRightJustify:
-          begin
-            Result := ACanvas.TextExtent(S);
-            Inc(Result.cx, ImgsIntf.Images.Width + 2);
-            if ImgsIntf.Images.Height > Result.cy then
-              Result.cy := ImgsIntf.Images.Height;
-          end;
-        taCenter:
-          begin
-            Result := ACanvas.TextExtent(S);
-            Inc(Result.cy, ImgsIntf.Images.Height + 2);
-            if ImgsIntf.Images.Width > Result.cx then
-              Result.cx := ImgsIntf.Images.Width;
-          end;
-      end;
-  end;*)
 end;
 
 { TJvCustomDataItemStates }
@@ -2412,16 +2302,16 @@ begin
   Result := (List[I] as TJvBaseDataItem) as IJvDataItem;
 end;
 
-procedure TJvDataItemsList.AfterConstruction;
+constructor TJvDataItemsList.Create;
 begin
-  inherited AfterConstruction;
+  inherited Create;
   FList := TObjectList.Create;
 end;
 
-procedure TJvDataItemsList.BeforeDestruction;
+destructor TJvDataItemsList.Destroy;
 begin
-  inherited BeforeDestruction;
-  FList.Free;
+  FreeAndNil(FList);
+  inherited Destroy;
 end;
 
 { TJvBaseDataItemsListManagement }
@@ -2443,34 +2333,44 @@ end;
 
 procedure TJvBaseDataItemsListManagement.Delete(Index: Integer);
 begin
-  Items.Provider.Changing(pcrDelete, Items.GetItem(Index));
-  TJvDataItemsList(ItemsImpl).List.Delete(Index);
-  Items.Provider.Changed(pcrDelete, nil);
+  if (Items.GetItem(Index) <> nil) and Items.GetItem(Index).IsDeletable then
+  begin
+    Items.Provider.Changing(pcrDelete, Items.GetItem(Index));
+    TJvDataItemsList(ItemsImpl).List.Delete(Index);
+    Items.Provider.Changed(pcrDelete, nil);
+  end
+  else if Items.GetItem(Index) <> nil then
+    raise EJVCLException.Create('Item can not be deleted.');
 end;
 
 procedure TJvBaseDataItemsListManagement.Remove(var Item: IJvDataItem);
 var
   Impl: TObject;
 begin
-  Impl := Item.GetImplementer;
-  Pointer(Item) := nil;
-  if (Impl is TExtensibleInterfacedPersistent) and
-      (TExtensibleInterfacedPersistent(Impl).RefCount = 0) then
+  if (Item <> nil) and Item.IsDeletable then
   begin
-    TExtensibleInterfacedPersistent(Impl).SuspendRefCount;
-    try
-      Item := TExtensibleInterfacedPersistent(Impl) as IJvDataItem;
+    Impl := Item.GetImplementer;
+    Pointer(Item) := nil;
+    if (Impl is TExtensibleInterfacedPersistent) and
+        (TExtensibleInterfacedPersistent(Impl).RefCount = 0) then
+    begin
+      TExtensibleInterfacedPersistent(Impl).SuspendRefCount;
       try
-        Items.Provider.Changing(pcrDelete, Item);
+        Item := TExtensibleInterfacedPersistent(Impl) as IJvDataItem;
+        try
+          Items.Provider.Changing(pcrDelete, Item);
+        finally
+          Pointer(Item) := nil;
+        end;
       finally
-        Pointer(Item) := nil;
+        TExtensibleInterfacedPersistent(Impl).ResumeRefCount;
       end;
-    finally
-      TExtensibleInterfacedPersistent(Impl).ResumeRefCount;
+      TJvDataItemsList(ItemsImpl).List.Remove(Impl);
+      Items.Provider.Changed(pcrDelete, nil);
     end;
-    TJvDataItemsList(ItemsImpl).List.Remove(Impl);
-    Items.Provider.Changed(pcrDelete, nil);
-  end;
+  end
+  else if Item <> nil then
+    raise EJVCLException.Create('Item can not be deleted.');
 end;
 
 { TJvCustomDataItemsImages }
@@ -2655,8 +2555,6 @@ end;
 
 function TJvBaseDataItem.IsParentOf(AnItem: IJvDataItem; DirectParent: Boolean = False): Boolean;
 begin
-//  Result := False;
-//  exit;
   Result := AnItem.GetItems.Parent = (Self as IJvDataItem);
   if not Result and not DirectParent then
   begin
@@ -2665,6 +2563,11 @@ begin
       AnItem := AnItem.GetItems.Parent;
     Result := AnItem = (Self as IJvDataItem);
   end;
+end;
+
+function TJvBaseDataItem.IsDeletable: Boolean;
+begin
+  Result := True;
 end;
 
 procedure TJvBaseDataItem.RevertToDefault;
@@ -2758,7 +2661,7 @@ begin
   if Reader.ReadValue <> vaCollection then
     raise EReadError.Create(SExtensibleIntObjCollectionExpected);
   Reader.ReadListBegin;
-  // We don''t really have a root item; just stream in the DataItemsImpl instance.
+  // We don't really have a root item; just stream in the DataItemsImpl instance.
   while not Reader.EndOfList do
     TOpenReader(Reader).ReadProperty(DataItemsImpl);
   Reader.ReadListEnd;
@@ -2769,7 +2672,7 @@ procedure TJvCustomDataProvider.WriteRoot(Writer: TWriter);
 begin
   TOpenWriter(Writer).WriteValue(vaCollection);
   Writer.WriteListBegin;
-  // We don''t really have a root item; just stream out the DataItemsImpl instance.
+  // We don't really have a root item; just stream out the DataItemsImpl instance.
   TOpenWriter(Writer).WriteProperties(DataItemsImpl);
   Writer.WriteListEnd;
   Writer.WriteListEnd;
@@ -2976,6 +2879,19 @@ procedure TJvCustomDataProvider.ConsumerDestroying(Consumer: IJvDataConsumer);
 begin
 end;
 
+function TJvCustomDataProvider.AllowProviderDesigner: Boolean;
+begin
+  Result := PersistentDataItems;
+end;
+
+function TJvCustomDataProvider.AllowContextManager: Boolean;
+var
+  CtxMan: IJvDataContextsManager;
+begin
+  Result := (FDataContextsImpl <> nil) and
+    Supports(FDataContextsImpl as IJvDataContexts, IJvDataContextsManager, CtxMan);
+end;
+
 constructor TJvCustomDataProvider.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -3030,13 +2946,37 @@ end;
 
 function TJvBaseDataContexts.GetContextByName(Name: string): IJvDataContext;
 var
+  PathSep: Integer;
+  PathSep2: Integer;
+  ThisPath: string;
   Idx: Integer;
 begin
-  Idx := GetCount - 1;
-  while (Idx >= 0) and not AnsiSameText(GetContext(Idx).Name, Name) do
-    Dec(Idx);
-  if Idx >= 0 then
-    Result := GetContext(Idx);
+  PathSep := Pos('\', Name);
+  PathSep2 := Pos('/', Name);
+  if (PathSep > PathSep2) or (PathSep = 0) then
+    PathSep := PathSep2;
+  if PathSep = 0 then
+    PathSep := Length(Name) + 1;
+  ThisPath := Copy(Name, 1, PathSep - 1);
+  if ThisPath = '..' then
+  begin
+    if Ancestor <> nil then
+      Result := Ancestor.Contexts.GetContextByName(Copy(Name, PathSep + 1, Length(Name) - PathSep));
+  end
+  else if (ThisPath = '') and (Ancestor <> nil) and (PathSep <> 0) then
+    (Provider as IJvDataContexts).GetContextByName(Copy(Name, PathSep + 1, Length(Name) - PathSep))
+  else
+  begin
+    Idx := GetCount - 1;
+    while (Idx >= 0) and not AnsiSameText(GetContext(Idx).Name, ThisPath) do
+      Dec(Idx);
+    if Idx >= 0 then
+    begin
+      Result := GetContext(Idx);
+      if PathSep < Length(Name) then
+        Result := Result.Contexts.GetContextByName(Copy(Name, PathSep + 1, Length(Name) - PathSep));
+    end;
+  end;
 end;
 
 constructor TJvBaseDataContexts.Create(AProvider: IJvDataProvider; AAncestor: IJvDataContext);
@@ -3122,6 +3062,11 @@ begin
   Result := FContexts;
 end;
 
+function TJvBaseDataContext.IsDeletable: Boolean;
+begin
+  Result := True;
+end;
+
 constructor TJvBaseDataContext.Create(AContexts: TJvBaseDataContexts; AName: string);
 begin
   if AContexts <> nil then
@@ -3134,6 +3079,13 @@ begin
     raise EJVCLException.Create('Cannot create a context without a context list owner.');
 end;
 
+//===TJvBaseFixedDataContext========================================================================
+
+function TJvBaseFixedDataContext.IsDeletable: Boolean;
+begin
+  Result := False;
+end;
+
 //===TJvDataContexts================================================================================
 
 procedure TJvDataContexts.DoAddContext(Context: IJvDataContext);
@@ -3142,7 +3094,11 @@ var
 begin
   Tmp := GetContextByName(Context.Name);
   if Tmp = nil then
-    FContexts.Add(Context)
+  begin
+    Provider.Changing(pcrContextAdd, Ancestor);
+    FContexts.Add(Context);
+    Provider.Changed(pcrContextAdd, Context);
+  end
   else
   begin
     if Tmp <> Context then
@@ -3151,8 +3107,19 @@ begin
 end;
 
 procedure TJvDataContexts.DoDeleteContext(Index: Integer);
+var
+  Ctx: IJvDataContext;
+  Anc: IJvDataContext;
 begin
-  FContexts.Delete(Index);
+  Ctx := GetContext(Index);
+  if (Ctx <> nil) and (Ctx.IsDeletable) then
+  begin
+    Anc := Ctx.Contexts.Ancestor;
+    Provider.Changing(pcrContextDelete, Ctx);
+    Ctx := nil;
+    FContexts.Delete(Index);
+    Provider.Changed(pcrContextDelete, Anc);
+  end;
 end;
 
 procedure TJvDataContexts.DoRemoveContext(Context: IJvDataContext);
@@ -3200,7 +3167,19 @@ begin
   FName := Value;
 end;
 
-{ TJvDataConsumer }
+function TJvDataContext.Name: string;
+begin
+  Result := FName;
+end;
+
+//===TJvFixedDataContext============================================================================
+
+function TJvFixedDataContext.IsDeletable: Boolean;
+begin
+  Result := False;
+end;
+
+//===TJvDataConsumer================================================================================
 
 procedure TJvDataConsumer.SetProvider(Value: IJvDataProvider);
 begin
@@ -3684,6 +3663,16 @@ end;
 
 //===TJvDataConsumerContext=========================================================================
 
+function TJvDataConsumerContext.GetContextID: TJvDataContextID;
+begin
+  Result := COnsumerImpl.Context;
+end;
+
+procedure TJvDataConsumerContext.SetContextID(Value: TJvDataContextID);
+begin
+  ConsumerImpl.Context := Value;
+end;
+
 function TJvDataConsumerContext.GetContext: IJvDataContext;
 begin
   Result := ConsumerImpl.ContextIntf;
@@ -3700,20 +3689,18 @@ procedure TJvDataConsumerItemSelect.Fixup;
 begin
   SetItem(FItemID);
   FItemID := '';
-  if ConsumerImpl.ProviderIntf <> nil then
-    ConsumerImpl.ProviderIntf.RegisterChangeNotify(FNotifier);
+  if FNotifier <> nil then
+    FNotifier.Provider := ConsumerImpl.ProviderIntf;
 end;
 
 procedure TJvDataConsumerItemSelect.ProviderChanging;
 begin
-  if ConsumerImpl.ProviderIntf <> nil then
-    ConsumerImpl.ProviderIntf.UnregisterChangeNotify(FNotifier);
 end;
 
 procedure TJvDataConsumerItemSelect.ProviderChanged;
 begin
-  if ConsumerImpl.ProviderIntf <> nil then
-    ConsumerImpl.ProviderIntf.RegisterChangeNotify(FNotifier);
+  if FNotifier <> nil then
+    FNotifier.Provider := ConsumerImpl.ProviderIntf;
 end;
 
 function TJvDataConsumerItemSelect.GetItem: TJvDataItemID;
@@ -3794,18 +3781,12 @@ begin
   FNotifier := TJvProviderNotification.Create;
   FNotifier.OnChanging := DataProviderChanging;
   FNotifier.OnChanged := DataProviderChanged;
-  if ConsumerImpl.ProviderIntf <> nil then
-    ConsumerImpl.ProviderIntf.RegisterChangeNotify(FNotifier);
+  FNotifier.Provider := ConsumerImpl.ProviderIntf;
 end;
 
 destructor TJvDataConsumerItemSelect.Destroy;
 begin
-  if FNotifier <> nil then
-  begin
-    if (ConsumerImpl <> nil) and (ConsumerImpl.ProviderIntf <> nil) then
-      COnsumerImpl.ProviderIntf.UnregisterChangeNotify(FNotifier);
-    FreeAndNil(FNotifier);
-  end;
+  FreeAndNil(FNotifier);
   inherited Destroy;
 end;
 
@@ -3833,15 +3814,13 @@ end;
 
 procedure TJvCustomDataConsumerViewList.ProviderChanging;
 begin
-  if ConsumerImpl.ProviderIntf <> nil then
-    ConsumerImpl.ProviderIntf.UnregisterChangeNotify(FNotifier);
   ClearView;
 end;
 
 procedure TJvCustomDataConsumerViewList.ProviderChanged;
 begin
-  if ConsumerImpl.ProviderIntf <> nil then
-    ConsumerImpl.ProviderIntf.RegisterChangeNotify(FNotifier);
+  if FNotifier <> nil then
+    FNotifier.Provider := ConsumerImpl.ProviderIntf;
   RebuildView;
 end;
 
@@ -3988,21 +3967,14 @@ begin
   FNotifier := TJvProviderNotification.Create;
   FNotifier.OnChanging := DataProviderChanging;
   FNotifier.OnChanged := DataProviderChanged;
+  FNotifier.Provider := ConsumerImpl.ProviderIntf;
   if ConsumerImpl.ProviderIntf <> nil then
-  begin
-    ConsumerImpl.ProviderIntf.RegisterChangeNotify(FNotifier);
     RebuildView;
-  end;
 end;
 
 destructor TJvCustomDataConsumerViewList.Destroy;
 begin
-  if FNotifier <> nil then
-  begin
-    if (ConsumerImpl <> nil) and (ConsumerImpl.ProviderIntf <> nil) then
-      COnsumerImpl.ProviderIntf.UnregisterChangeNotify(FNotifier);
-    FreeAndNil(FNotifier);
-  end;
+  FreeAndNil(FNotifier);
   inherited Destroy;
 end;
 
@@ -4428,7 +4400,16 @@ begin
 end;
 
 initialization
-  RegisterClasses([TJvBaseDataItem, TJvCustomDataItemsTextRenderer, TJvDataItemTextImpl,
-    TJvDataItemImageImpl, TJvDataItemsList, TJvBaseDataItemsListManagement,
-    TJvCustomDataItemsImages, TJvDataConsumer, TJvDataConsumerItemSelect]);
+  RegisterClasses([
+    // Items related
+    TJvDataItemsList, TJvCustomDataItemsImages, TJvCustomDataItemsTextRenderer,
+    TJvBaseDataItemsListManagement,
+    // Item related
+    TJvBaseDataItem, TJvDataItemTextImpl, TJvDataItemImageImpl,
+    // Consumer related
+    TJvDataConsumer, TJvDataConsumerItemSelect,
+    // Context list related
+    TJvDataContexts,
+    // Context related
+    TJvDataContext, TJvManagedDataContext, TJvFixedDataContext]);
 end.

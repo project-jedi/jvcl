@@ -33,6 +33,7 @@ interface
 resourcestring
 //===DataProvider design time constants=============================================================
   SDataProviderDesignerCaption = 'Editing %s%s...';
+  SDataProviderContextManCaption = 'Editing contexts for ''%s''...';
   SDataItemRootID = 'ROOT';
   SDataItemRootCaption = 'Root';
   SDataItemNoTextIntf = 'Item has no text support.';
