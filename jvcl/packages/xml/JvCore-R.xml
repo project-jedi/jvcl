@@ -64,6 +64,7 @@
     <File Name="..\..\run\JvExButtons.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvClipbrd.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\common\JvWStrUtils.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="gnugettext.pas" Targets="allbutclx" Formname="" Condition="USE_DXGETTEXT"/>
     <File Name="..\..\common\JvFinalize.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>
