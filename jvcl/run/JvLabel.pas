@@ -741,7 +741,7 @@ begin
       if RoundedFrame = 0 then
       begin
         Brush.Color := FrameColor;
-        FrameRect({$IFDEF VisualCLX}Canvas, {$ENDIF}ClientRect);
+        FrameRect({$IFDEF VisualCLX} Canvas, {$ENDIF} ClientRect);
       end
       else
       begin

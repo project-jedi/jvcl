@@ -815,6 +815,7 @@ begin
 end;
 
 {$IFDEF JVCLThemesEnabled}
+
 procedure TJvTLScrollBtn.MouseEnter(Control: TControl);
 begin
   if ThemeServices.ThemesEnabled and not (FMouseInControl) and not (csDesigning in ComponentState) then
@@ -827,13 +828,14 @@ end;
 
 procedure TJvTLScrollBtn.MouseLeave(Control: TControl);
 begin
-  inherited;
+  inherited MouseLeave(Control);
   if ThemeServices.ThemesEnabled and FMouseInControl then
   begin
     FMouseInControl := False;
     Invalidate;
   end;
 end;
+
 {$ENDIF JVCLThemesEnabled}
 
 procedure TJvTLScrollBtn.Paint;
@@ -1178,6 +1180,7 @@ begin
   end;
 end;
 {$ENDIF VCL}
+
 {$IFDEF VisualCLX}
 procedure TJvCustomTimeLine.CreateWidget;
 var
@@ -1201,7 +1204,6 @@ begin
   end;
 end;
 {$ENDIF VisualCLX}
-
 
 procedure TJvCustomTimeLine.UpdateOffset;
 begin
@@ -1248,7 +1250,7 @@ begin
   FArrows[scrollUp].Visible :=
     (scrollUp in ScrollArrows) and (FTopLevel > 0);
   FArrows[scrollDown].Visible :=
-    (scrollDown in ScrollArrows) and (FNewHeight >= Height){$IFDEF VCL} and not AutoSize{$ENDIF};
+    (scrollDown in ScrollArrows) and (FNewHeight >= Height) {$IFDEF VCL} and not AutoSize {$ENDIF};
 end;
 
 procedure TJvCustomTimeLine.SetBorderStyle(Value: TBorderStyle);
@@ -2060,7 +2062,8 @@ begin
           R.Top, R.Left + Item.ImageOffset + FImages.Width,
           R.Top + FImages.Height));
         with FImages do
-          Draw(ACanvas, R.Left + Item.ImageOffset, R.Top, Item.ImageIndex, {$IFDEF VisualCLX}itImage, {$ENDIF VisualCLX}Item.Enabled);
+          Draw(ACanvas, R.Left + Item.ImageOffset, R.Top, Item.ImageIndex,
+            {$IFDEF VisualCLX} itImage, {$ENDIF VisualCLX} Item.Enabled);
       end;
       Inc(R.Top, FImages.Height + 4); { adjust top to make room for text drawing }
     end;
@@ -2182,7 +2185,7 @@ begin
   FNewHeight := 0;
   for I := 0 to FTimeItems.Count - 1 do
     UpdateItem(I, Canvas);
-  if {$IFDEF VCL}FAutoSize and {$ENDIF}(Align in [alTop, alBottom, alNone]) and
+  if {$IFDEF VCL} FAutoSize and {$ENDIF} (Align in [alTop, alBottom, alNone]) and
     (Height <> FNewHeight + FScrollHeight + 2) and (Items.Count > 0) then
   begin
     Height := FNewHeight + FScrollHeight + 2;
@@ -2917,16 +2920,16 @@ begin
   FOldHint := Value;
 end;
 
-// initialization
-//  SystemParametersInfo(SPI_GETKEYBOARDDELAY,0,@FInitRepeatPause,0);
-//  SystemParametersInfo(SPI_GETKEYBOARDSPEED,0,@FRepeatPause,0);
-
-
 {$IFDEF VisualCLX}
 procedure TJvCustomTimeLine.RecreateWnd;
 begin
   RecreateWidget;
 end;
 {$ENDIF VisualCLX}
+
+// initialization
+//  SystemParametersInfo(SPI_GETKEYBOARDDELAY, 0, @FInitRepeatPause, 0);
+//  SystemParametersInfo(SPI_GETKEYBOARDSPEED, 0, @FRepeatPause, 0);
+
 end.
 

@@ -114,8 +114,8 @@ type
     procedure CMCursorChanged(var Msg: TMessage); message CM_CURSORCHANGED;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     {$ENDIF VCL}
-    procedure CursorChanged;{$IFDEF VisualCLX} override; {$ENDIF}
-    procedure FontChanged;{$IFDEF VisualCLX} override; {$ENDIF}
+    procedure CursorChanged; {$IFDEF VisualCLX} override; {$ENDIF}
+    procedure FontChanged; {$IFDEF VisualCLX} override; {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -388,7 +388,7 @@ begin
       if (ItemText <> itNone) and ((ARect.Bottom - ARect.Top) > abs(ACanvas.Font.Height)) then
         DrawText(ACanvas.Handle, PChar(S), Length(S), ARect,
           cAlignment[Alignment] or cWordWrap[ItemText = itSubtitle] or DT_VCENTER or DT_EDITCONTROL or
-          {$IFDEF VCL}DT_EXTERNALLEADING or {$ENDIF VCL}DT_END_ELLIPSIS);
+          {$IFDEF VCL} DT_EXTERNALLEADING or {$ENDIF} DT_END_ELLIPSIS);
       if not TextOnly and HotTrack and (HotTrackBorder > 0) and PtInRect(AOrigRect, MousePos) then
       begin
         ACanvas.Brush.Style := bsClear;
@@ -460,6 +460,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvWizardRouteMapList.CMCursorChanged(var Msg: TMessage);
 begin
   inherited;
@@ -471,6 +472,7 @@ begin
   inherited;
   FontChanged;
 end;
+
 {$ENDIF VCL}
 
 procedure TJvWizardRouteMapList.SetAlignment(const Value: TAlignment);

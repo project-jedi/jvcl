@@ -30,16 +30,14 @@ unit JvSlider;
 interface
 
 uses
-  SysUtils, Classes,
-  Windows, Messages,
-  Graphics, Controls, ExtCtrls,
+  SysUtils, Classes, Windows, Messages, Graphics, Controls, ExtCtrls,
   JvComponent;
 
 type
   TJvSlider = class(TJvCustomControl)
   private
     {$IFDEF VisualCLX}
-    FAutoSize: boolean;
+    FAutoSize: Boolean;
     {$ENDIF VisualCLX}
     FImageRuler: TBitmap;
     FImageThumb: TBitmap;
@@ -68,7 +66,7 @@ type
     procedure Loading(Sender: TObject);
   protected
     {$IFDEF VCL}
-    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
@@ -78,7 +76,7 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Paint; override;
-    function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;{$IFDEF VCL} override;{$ENDIF}
+    function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; {$IFDEF VCL} override; {$ENDIF}
   published
     property ImageRuler: TBitmap read FImageRuler write SetImageRuler;
     property ImageThumb: TBitmap read FImageThumb write SetImageThumb;
@@ -99,7 +97,7 @@ type
     property AutoSize default True;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    property AutoSize: boolean read FAutoSize write FAutoSize default True;
+    property AutoSize: Boolean read FAutoSize write FAutoSize default True;
     {$ENDIF VisualCLX}
     property Horizontal: Boolean read FHorizontal write FHorizontal default True;
     property Maximum: Integer read FMaximum write SetMaximum default 100;
@@ -392,11 +390,13 @@ begin
   Calculate;
   FTimer.Free;
 end;
+
 {$IFDEF VCL}
-procedure TJvSlider.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+procedure TJvSlider.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
-  Message.Result := 1;
-end;{$ENDIF VCL}
+  Msg.Result := 1;
+end;
+{$ENDIF VCL}
 
 function TJvSlider.CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;
 begin
