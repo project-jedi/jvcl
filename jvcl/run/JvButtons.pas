@@ -414,12 +414,12 @@ begin
   with Pattern.Canvas do
   begin
     Brush.Style := bsSolid;
-    Brush.Color := FaceColor {clBtnFace};
+    Brush.Color := FaceColor; // clBtnFace
     FillRect(Rect(0, 0, Pattern.Width, Pattern.Height));
     for Y := 0 to 7 do
       for X := 0 to 7 do
         if (Y mod 2) = (X mod 2) then { toggles between even/odd pixels }
-          Pixels[X, Y] := HighLightColor {clBtnHighlight}; { on even/odd rows }
+          Pixels[X, Y] := HighLightColor; {clBtnHighlight}; { on even/odd rows }
   end;
 end;
 

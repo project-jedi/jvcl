@@ -323,7 +323,8 @@ begin
   if DropArrow and Assigned(DropDownMenu) then
   begin
     ArrowRect := Rect(Width - 16, Height div 2, Width - 9, Height div 2 + 9);
-    if bsMouseDown in FStates then OffsetRect(ArrowRect, 1, 1); 
+    if bsMouseDown in FStates then
+      OffsetRect(ArrowRect, 1, 1); 
     DrawDropArrow(Canvas, ArrowRect);
   end;
 //  BitBlt(Canvas.Handle,0,0,Width,Height,FBuffer.Canvas.Handle,0,0,SRCCOPY);
@@ -599,7 +600,8 @@ begin
   if FDropDownMenu <> Value then
   begin
     FDropDownMenu := Value;
-    if DropArrow then Invalidate;
+    if DropArrow then
+      Invalidate;
   end;
 end;
 

@@ -37,15 +37,17 @@ uses
   JvButton;
 
 {$IFDEF VisualCLX}
+
 const
   ODS_DISABLED = 1;
   ODS_SELECTED = 2;
   ODS_FOCUS    = 4;
-  
+
 type
   TDrawItemStruct = record
     itemState: Integer;
   end;
+
 {$ENDIF VisualCLX}
 
 type
@@ -210,11 +212,10 @@ type
 implementation
 
 uses
-  ExtCtrls, 
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Consts, SysUtils, Forms, ActnList,
+  Consts, SysUtils, Forms, ActnList, ExtCtrls,
   JvJCLUtils, JvJVCLUtils, JvThemes;
 
 {$IFDEF MSWINDOWS}
@@ -292,6 +293,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvCustomImageButton.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -305,6 +307,7 @@ begin
   if FAnimate then
     StartAnimate;
 end;
+
 {$ENDIF VCL}
 
 procedure TJvCustomImageButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
@@ -425,7 +428,8 @@ begin
       Repaint
     else
     {$ENDIF JVCLThemesEnabled}
-    if Flat then Invalidate;
+    if Flat then
+      Invalidate;
   end;
 end;
 
@@ -442,11 +446,13 @@ begin
       Repaint
     else
     {$ENDIF JVCLThemesEnabled}
-    if Flat then Invalidate;
+    if Flat then
+      Invalidate;
   end;
 end;
 
 {$IFDEF VCL}
+
 procedure TJvCustomImageButton.CNDrawItem(var Msg: TWMDrawItem);
 begin
   if csDestroying in ComponentState then
@@ -471,7 +477,9 @@ begin
     itemHeight := Height;
   end;
 end;
+
 {$ENDIF VCL}
+
 {$IFDEF VisualCLX}
 procedure TJvCustomImageButton.Paint;
 var
@@ -1013,6 +1021,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvCustomImageButton.WMDestroy(var Msg: TWMDestroy);
 begin
   StopAnimate;
@@ -1023,6 +1032,7 @@ procedure TJvCustomImageButton.WMLButtonDblClk(var Msg: TWMLButtonDblClk);
 begin
   Perform(WM_LBUTTONDOWN, Msg.Keys, Longint(Msg.Pos));
 end;
+
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}

@@ -395,7 +395,8 @@ begin
     if Value <> DBGrid.DataSource then
       Value := DBGrid.DataSource;
   FDataLink.DataSource := Value;
-  if Value <> nil then Value.FreeNotification(Self);
+  if Value <> nil then
+    Value.FreeNotification(Self);
 end;
 
 procedure TJvDBGridFooter.SetDBGrid(Value: TJvDBGrid);

@@ -3984,7 +3984,8 @@ begin
         Form.ActiveOleControl := Self;
         if AllowInPlace and CanFocus then
           SetFocus;
-        if Assigned(FOnInPlaceActivate) then FOnInPlaceActivate(Self); // CCR
+        if Assigned(FOnInPlaceActivate) then
+          FOnInPlaceActivate(Self); // CCR
       end
       else
       begin
@@ -3995,7 +3996,8 @@ begin
           Windows.SetFocus(Handle);
           SelectionChange;
         end;
-        if Assigned(FOnInPlaceDeactivate) then FOnInPlaceDeactivate(Self); //  CCR
+        if Assigned(FOnInPlaceDeactivate) then
+          FOnInPlaceDeactivate(Self); //  CCR
       end;
   except
     Application.HandleException(Self);

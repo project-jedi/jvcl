@@ -409,8 +409,8 @@ procedure TJvDBDateTimePicker.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (FDataLink <> nil) and
-    (AComponent = DataSource) then DataSource := nil;
+  if (Operation = opRemove) and (FDataLink <> nil) and (AComponent = DataSource) then
+     DataSource := nil;
 end;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -520,10 +520,9 @@ begin
   begin
     SendCancelMode(Self);
     SetFocus;
-    Exit;
-  end;
-
-  inherited;
+  end
+  else
+    inherited;
 end;
 
 procedure TJvDBDateTimePicker.CNNotify(var Msg: TWMNotify);

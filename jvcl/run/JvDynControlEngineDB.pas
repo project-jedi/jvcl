@@ -507,7 +507,8 @@ begin
                 TAccessCustomControl(AControl).Canvas.TextWidth('X') * ADataSource.DataSet.Fields[I].Size;
             if (FieldMaxWidth > 0) and (Control.Width > FieldMaxWidth) then
               Control.Width := FieldMaxWidth
-            else if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
+            else
+            if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
               Control.Width := FieldMinWidth
           end;
           LabelControl := GetDynControlEngine.CreateLabelControlPanel(AControl, AControl,

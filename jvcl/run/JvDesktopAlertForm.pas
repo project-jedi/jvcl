@@ -353,7 +353,8 @@ begin
   if tbDropDown.DropDownMenu = nil then
     tbDropDown.Visible := False;
 
-  if not Closeable and (TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0) then // must have either WaitTime or close button
+  // must have either WaitTime or close button
+  if not Closeable and (TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0) then
   begin
     tbClose.Visible := False;
     tbDropDown.Left := tbClose.Left;

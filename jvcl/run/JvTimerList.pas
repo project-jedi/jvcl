@@ -712,7 +712,8 @@ begin
   if FSorted <> Value then
   begin
     FSorted := Value;
-    if FSorted then Events.Sort;
+    if FSorted then
+      Events.Sort;
   end;
 end;
 

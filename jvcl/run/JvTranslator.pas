@@ -240,7 +240,8 @@ var
     // format: <Items>
     //           <Item Index="" Value="" />
     // TODO
-    if InSkipList(Nodes) then Exit;
+    if InSkipList(Nodes) then
+      Exit;
     N := Nodes.GetFirstNode;
     while Assigned(N) do
     begin
@@ -266,7 +267,8 @@ var
     // format: <Items>
     //           <Item Index="" Column="" Value="" />
     // TODO
-    if InSkipList(Items) then Exit;
+    if InSkipList(Items) then
+      Exit;
     for I := 0 to Items.Count - 1 do
     begin
       if not InSkipList(Items[I]) then
@@ -293,7 +295,8 @@ var
   begin
     // format: <Items>
     //           <Item Index="" Value="" />
-    if InSkipList(Strings) then Exit;
+    if InSkipList(Strings) then
+      Exit;
     for I := 0 to Strings.Count - 1 do
     begin
       AElem := Elem.Items.Add(cItem);
@@ -312,7 +315,8 @@ var
     // <Variables>
     //   <Item Name="" Value="" />
     // </Variables>
-    if InSkipList(AStrings) then Exit;
+    if InSkipList(AStrings) then
+      Exit;
     Elem.Name := cVariables;
     for I := 0 to AStrings.Count - 1 do
     begin
