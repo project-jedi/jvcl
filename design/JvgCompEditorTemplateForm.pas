@@ -23,7 +23,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-unit JvCompEditorTemplateForm;
+unit JvgCompEditorTemplateForm;
 
 {$I jvcl.inc}
 
@@ -34,14 +34,13 @@ uses
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   ComCtrls, StdCtrls, Buttons, ExtCtrls,
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, PropertyCategories,
+  DesignIntf, DesignEditors, PropertyCategories;
   {$ELSE}
-  DsgnIntf,
+  DsgnIntf;
   {$ENDIF COMPILER6_UP}
-  JvComponent;
 
 type
-  TJvgCompEditorTemplate = class(TJvForm)
+  TJvgCompEditorTemplate = class(TForm)
     pnMain: TPanel;
     pnBottom: TPanel;
     btnCancel1: TButton;

@@ -32,12 +32,20 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  {$IFDEF USEJVCL}
   StdCtrls, ExtCtrls,
   JvComponent;
+  {$ELSE}
+  StdCtrls, ExtCtrls;
+  {$ENDIF USEJVCL}
 
 type
 
+  {$IFDEF USEJVCL}
   TJvgSysInfo = class(TJvComponent)
+  {$ELSE}
+  TJvgSysInfo = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     FMemoryLoad: Integer;
     FTotalPhys: Integer;

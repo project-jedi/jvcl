@@ -39,8 +39,10 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvgReport, JvgRuler,
-  JvgReportParamEditorForm, JvComponent, JvExControls;
+  {$IFDEF USEJVCL}
+  JvComponent, JvExControls,
+  {$ENDIF USEJVCL}
+  JvgReport, JvgRuler, JvgReportParamEditorForm;
 
 type
   TJvgRepProperty = class(TPropertyEditor)
@@ -57,7 +59,11 @@ type
     function GetVerbCount: Integer; override;
   end;
 
+  {$IFDEF USEJVCL}
   TJvgReportEditor = class(TJvComponent)
+  {$ELSE}
+  TJvgReportEditor = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     FReport: TJvgReport;
   protected
@@ -69,7 +75,7 @@ type
     property Report: TJvgReport read FReport write FReport;
   end;
 
-  TJvgReportEditorForm = class(TJvForm)
+  TJvgReportEditorForm = class(TForm)
     OpenDialog1: TOpenDialog;
     SaveDialog1: TSaveDialog;
     PM_Control: TPopupMenu;
@@ -190,13 +196,12 @@ type
     procedure Memo1Change(Sender: TObject);
     procedure sbFontColorClick(Sender: TObject);
     procedure N_DeleteObjectClick(Sender: TObject);
-    procedure ScrollBox_MouseMove(Sender: TObject; Shift: TShiftState; X,
-      Y: Integer);
+    procedure ScrollBox_MouseMove(Sender: TObject; Shift: TShiftState;
+      X, Y: Integer);
     procedure ScrollBox_MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure FormDestroy(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure sb_FixMovingClick(Sender: TObject);
     procedure N_AutoSizeClick(Sender: TObject);
     procedure sb_SnapToGridClick(Sender: TObject);
@@ -218,7 +223,8 @@ type
     procedure CheckBox1Click(Sender: TObject);
     procedure se_LeftClick(Sender: TObject; Button: TUDBtnType);
   private
-    VRuler, HRuler:TJvgRuler;
+    VRuler: TJvgRuler;
+    HRuler: TJvgRuler;
     FReportParamEditor: TJvgReportParamEditor;
     FMouseDown: Boolean;
     FCanUndo: Boolean;
@@ -271,12 +277,25 @@ implementation
 
 uses
   Math,
-  JvgTypes, JvgUtils, JvgAlignFunction, JvDsgnConsts, JvgAlignForm;
+  {$IFDEF USEJVCL}
+  JvDsgnConsts,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgUtils, JvgAlignFunction, JvgAlignForm;
 
 {$R *.dfm}
 
 const
   IGNORE_VALUE = 65536;
+
+{$IFNDEF USEJVCL}
+resourcestring
+  RsConfirm = 'Confirm?';
+
+  RsEditReport = 'Edit report...';
+  RsPreviewReportEllipsis = 'Preview report...';
+  RsDeleteObject = 'Delete object?';
+  RsPagePreview = 'Page Preview';
+{$ENDIF !USEJVCL}
 
 //=== common proc ============================================================
 

@@ -33,10 +33,17 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls,
-  JvgTypes, JvComponent, JvgCommClasses, JvgUtils;
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgCommClasses, JvgUtils;
 
 type
+  {$IFDEF USEJVCL}
   TJvgStaticText = class(TJvGraphicControl)
+  {$ELSE}
+  TJvgStaticText = class(TGraphicControl)
+  {$ENDIF USEJVCL}
   private
     FActiveColor: TColor;
     FAlignment: TglAlignment;
@@ -52,8 +59,10 @@ type
   protected
     procedure SetAutoSize(Value: Boolean); override; 
     procedure Paint; override;
+    {$IFDEF USEJVCL}
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
+    {$ENDIF USEJVCL}
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -84,8 +93,10 @@ type
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property Transparent: Boolean read FTransparent write SetTransparent default True;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default True;
+    {$IFDEF USEJVCL}
     property OnMouseEnter;
     property OnMouseLeave;
+    {$ENDIF USEJVCL}
   end;
 
 implementation
@@ -105,6 +116,8 @@ begin
   FWordWrap := True;
 end;
 
+{$IFDEF USEJVCL}
+
 procedure TJvgStaticText.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
@@ -122,6 +135,8 @@ begin
   Repaint;
   inherited MouseLeave(Control);
 end;
+
+{$ENDIF USEJVCL}
 
 procedure TJvgStaticText.Paint;
 const

@@ -39,7 +39,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvgMultiResources, JvComponent;
+  JvgMultiResources;
 
 type
   TJvgResourcesProperty = class(TPropertyEditor)
@@ -49,7 +49,7 @@ type
     procedure Edit; override;
   end;
 
-  TJvgMultipleResourceEdit = class(TJvForm)
+  TJvgMultipleResourceEdit = class(TForm)
     sg: TStringGrid;
     procedure FormShow(Sender: TObject);
     procedure sgSetEditText(Sender: TObject; ACol, ARow: Integer;
@@ -69,10 +69,18 @@ var
 
 implementation
 
+{$IFDEF USEJVCL}
 uses
   JvDsgnConsts;
+{$ENDIF USEJVCL}
 
 {$R *.dfm}
+
+{$IFNDEF USEJVCL}
+resourcestring
+  RsCellControlCaption = 'Control';
+  RsCellDefaultCaption = 'Default';
+{$ENDIF !USEJVCL}
 
 function TJvgResourcesProperty.GetAttributes: TPropertyAttributes;
 begin

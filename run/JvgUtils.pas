@@ -146,18 +146,21 @@ function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer;
 function DrawText(Canvas: TCanvas; const Text: string; Len: Integer; var R: TRect;
   WinFlags: Integer): Integer; overload;
 function PtInRectExclusive(R: TRect; Pt: TPoint): Boolean;
-{$ENDIF USEJVCL}
+function CanvasMaxTextHeight(Canvas: TCanvas): Integer;
+{$ENDIF !USEJVCL}
 
 implementation
 
 uses
-  ShlObj, Math,
   {$IFDEF USEJVCL}
-  JvResources,
+  ShlObj, Math,
+  JvResources, JvConsts;
+  {$ELSE}
+  ShlObj, Math;
   {$ENDIF USEJVCL}
-  JvConsts;
 
 {$IFNDEF USEJVCL}
+
 resourcestring
   RsERightBracketsNotFound = 'Right brackets not found';
   RsERightBracketHavntALeftOnePosd = 'Right bracket havn''t a left one. Pos: %d';
@@ -167,7 +170,11 @@ resourcestring
   {$IFDEF glDEBUG}
   RsEObjectMemoryLeak = 'object memory leak';
   {$ENDIF glDEBUG}
-{$ENDIF USEJVCL}
+
+const
+  ROP_DSPDxax = $00E20746;
+
+{$ENDIF !USEJVCL}
 
 { debug func }
 {$IFDEF glDEBUG}
@@ -2137,7 +2144,23 @@ begin
   Result := PtInRect(R, Pt);
 end;
 
-{$ENDIF USEJVCL}
+function CanvasMaxTextHeight(Canvas: TCanvas): Integer;
+var
+  tt: TTextMetric;
+begin
+  // (ahuser) Qt returns different values for TextHeight('Ay') and TextHeigth(#1..#255)
+  {$IFDEF VisualCLX}
+  Canvas.Start;  // if it is called outside a paint event
+  RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]);
+  {$ENDIF VisualCLX}
+  GetTextMetrics(Canvas.Handle, tt);
+  {$IFDEF VisualCLX}
+  Canvas.Stop;
+  {$ENDIF VisualCLX}
+  Result := tt.tmHeight;
+end;
+
+{$ENDIF !USEJVCL}
 
 end.
 

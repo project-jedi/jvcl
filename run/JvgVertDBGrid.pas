@@ -32,7 +32,10 @@ interface
 
 uses
   Windows, Messages, Classes, Controls, Graphics, Grids, DB, SysUtils,
-  JvgTypes, JvgCommClasses, JvgUtils, JVCLVer, JvgStringGrid;
+  {$IFDEF USEJVCL}
+  JVCLVer,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgCommClasses, JvgUtils, JvgStringGrid;
 
 type
   TJvgCustomVertDBSGrid = class(TJvgStringGrid)
@@ -69,9 +72,13 @@ type
 
   TJvgVertDBSGrid = class(TJvgCustomVertDBSGrid)
   private
+    {$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
   published
+    {$IFDEF USEJVCL}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$ENDIF USEJVCL}
     property DataSource;
     property ShowFromFieldNo;
     property NumFieldsToShow;

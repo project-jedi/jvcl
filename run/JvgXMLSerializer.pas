@@ -82,8 +82,12 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  {$IFDEF USEJVCL}
   Dialogs, ComCtrls, TypInfo,
   JvComponent;
+  {$ELSE}
+  Dialogs, ComCtrls, TypInfo;
+  {$ENDIF USEJVCL}
 
 type
   TOnGetXMLHeader = procedure(Sender: TObject; var Value: string) of object;
@@ -97,7 +101,11 @@ type
 
   TJvgXMLSerializerException = class of XMLSerializerException;
 
+  {$IFDEF USEJVCL}
   TJvgXMLSerializer = class(TJvComponent)
+  {$ELSE}
+  TJvgXMLSerializer = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     Buffer: PChar;
     BufferEnd: PChar;

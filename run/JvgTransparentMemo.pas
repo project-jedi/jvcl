@@ -32,19 +32,27 @@ unit JvgTransparentMemo;
 interface
 
 uses
+  {$IFDEF USEJVCL}
   Windows, Messages, SysUtils, Classes, Controls, Forms, StdCtrls,
   JVCLVer;
+  {$ELSE}
+  Windows, Messages, SysUtils, Classes, Controls, Forms, StdCtrls;
+  {$ENDIF USEJVCL}
 
 type
   TJvgTransparentMemo = class(TMemo)
   private
+    {$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
   public
     procedure CreateParams(var Params: TCreateParams); override;
   published
+    {$IFDEF USEJVCL}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$ENDIF USEJVCL}
   end;
 
 implementation

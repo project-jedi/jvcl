@@ -33,18 +33,24 @@ interface
 
 uses
   Classes, TypInfo,
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, PropertyCategories,
+  DesignIntf, DesignEditors, PropertyCategories;
   {$ELSE}
-  DsgnIntf,
+  DsgnIntf;
   {$ENDIF COMPILER6_UP}
-  JVComponent;
 
 type
   TJvgPropInfos = class;
   TJvgPropInform = class;
 
+  {$IFDEF USEJVCL}
   TJvgComponentDescription = class(TJvComponent)
+  {$ELSE}
+  TJvgComponentDescription = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     FPropInfos: TJvgPropInfos;
     FNote: string;
@@ -137,12 +143,10 @@ begin
       PropInfos.AddPropInfo(FPropList^[I], Component);
 
       PropName := FPropList^[I]^.Name;
-
       //      PropTypeInf := FPropList^[I]^.PropType^;
       //      PropInfo := FPropList^[I];
     end;
   finally
-
   end;
 end;
 

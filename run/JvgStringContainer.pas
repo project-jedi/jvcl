@@ -31,13 +31,21 @@ unit JvgStringContainer;
 interface
 
 uses
+  {$IFDEF USEJVCL}
   Windows, Messages, SysUtils, Classes,
   JvComponent;
+  {$ELSE}
+  Windows, Messages, SysUtils, Classes;
+  {$ENDIF USEJVCL}
 
 type
   TOnReadItem = procedure(Sender: TObject; Idx: Integer) of object;
 
+  {$IFDEF USEJVCL}
   TJvgStringContainer = class(TJvComponent)
+  {$ELSE}
+  TJvgStringContainer = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     FItems: TStringList;
     FReadOnly: Boolean;

@@ -39,7 +39,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvgPropertyCenter, JvComponent;
+  JvgPropertyCenter;
 
 type
   TJvgComponentListProperty = class(TPropertyEditor)
@@ -54,7 +54,7 @@ type
     function GetVerbCount: Integer; override;
   end;
 
-  TJvgCompListEditor = class(TJvForm)
+  TJvgCompListEditor = class(TForm)
     lvAll: TListView;
     Label1: TLabel;
     Bevel1: TBevel;
@@ -87,10 +87,28 @@ type
 
 implementation
 
+{$IFDEF USEJVCL}
 uses
   JvDsgnConsts, JvDsgnTypes;
+{$ENDIF USEJVCL}
 
 {$R *.dfm}
+
+{$IFNDEF USEJVCL}
+
+resourcestring
+  RsEditComponentListEllipsis = 'Edit component list...';
+
+type
+  {$IFDEF COMPILER6_UP}
+  IJvDesigner = DesignIntf.IDesigner;
+  IJvFormDesigner = DesignIntf.IDesigner;
+  {$ELSE}
+  IJvDesigner = IFormDesigner;
+  IJvFormDesigner = IFormDesigner;
+  {$ENDIF COMPILER6_UP}
+
+{$ENDIF !USEJVCL}
 
 //=== common proc ============================================================
 

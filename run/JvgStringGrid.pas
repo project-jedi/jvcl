@@ -33,7 +33,10 @@ interface
 uses
   Windows, Messages, Classes, Controls, Graphics, ExtCtrls,
   Grids, StdCtrls, Forms,
-  JvgTypes, JvgCommClasses, JvgUtils, JVCLVer;
+  {$IFDEF USEJVCL}
+  JVCLVer,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgCommClasses, JvgUtils;
 
 const
   JvDefaultEditorColor = $00FEE392;
@@ -65,6 +68,9 @@ type
 
   TJvgStringGrid = class(TStringGrid)
   private
+    {$IFDEF USEJVCL}
+    FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FCaptionTextAlignment: TAlignment;
     FCaptionFont: TFont;
     FBitmap: TBitmap;
@@ -84,7 +90,6 @@ type
     FEditorColor: TColor;
     FEditorFont: TFont;
     MemoUpdateTimer: TTimer;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure SetCaptionTextAlignment(Value: TAlignment);
     procedure SetCaptionFont(Value: TFont);
     function GetBitmap: TBitmap;
@@ -141,7 +146,9 @@ type
     procedure GetNextCell(var X, Y: Longint);
     procedure ClearSelection;
   published
+    {$IFDEF USEJVCL}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$ENDIF USEJVCL}
     property CaptionTextAlignment: TAlignment read FCaptionTextAlignment write
       SetCaptionTextAlignment default taCenter;
     property TextAlignment: TAlignment read FTextAlignment write

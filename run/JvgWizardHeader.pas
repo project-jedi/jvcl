@@ -33,10 +33,17 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics,
   Controls, Forms, Dialogs, ComCtrls,
-  JvgCommClasses, JvComponent;
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvgCommClasses;
 
 type
+  {$IFDEF USEJVCL}
   TJvgWizardHeader = class(TJvGraphicControl)
+  {$ELSE}
+  TJvgWizardHeader = class(TGraphicControl)
+  {$ENDIF USEJVCL}
   private
     FComments: TStringList;
     FCaptions: TStringList;
@@ -87,7 +94,10 @@ implementation
 
 uses
   Math,
-  JvgTypes, JvgUtils, JvJVCLUtils;
+  {$IFDEF USEJVCL}
+  JvJVCLUtils,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgUtils;
 
 constructor TJvgWizardHeader.Create(AOwner: TComponent);
 begin

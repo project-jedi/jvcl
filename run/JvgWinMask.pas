@@ -33,10 +33,17 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, ExtCtrls, CommCtrl, ImgList,
-  JvgTypes, JvComponent, JvgCommClasses;
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgCommClasses;
 
 type
+  {$IFDEF USEJVCL}
   TJvgWinMask = class(TJvCustomPanel)
+  {$ELSE}
+  TJvgWinMask = class(TCustomPanel)
+  {$ENDIF USEJVCL}
   private
     FMask: TBitmap;
     FMaskBuff: TBitmap;

@@ -1101,6 +1101,7 @@ type
   TCustomFormAccessProtected = class(TCustomForm);
   TWinControlAccessProtected = class(TWinControl);
 
+  {$HINTS OFF}
   TCustomMaskEditAccessPrivate = class(TCustomEdit)
   private
     // Do not remove these fields, although they are not used.
@@ -1114,6 +1115,7 @@ type
     FOldValue: string;
     FSettingCursor: Boolean;
   end;
+  {$HINTS ON}
 
 const
   sDirBmp = 'JV_SEDITBMP';  { Directory editor button glyph }

@@ -40,7 +40,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvgLogics, JvComponent, JvgGroupBox;
+  JvgLogics, JvgGroupBox;
 
 type
   TJvgLogicsComponentEditor = class(TComponentEditor)
@@ -70,7 +70,7 @@ type
     procedure Paint; override;
   end;
 
-  TJvgLogicsEditor = class(TJvForm)
+  TJvgLogicsEditor = class(TForm)
     SB: TScrollBox;
     Panel1: TPanel;
     iPKey: TImage;
@@ -171,12 +171,22 @@ implementation
 
 uses
   Clipbrd,
-  JvgTypes, JvgUtils, JvgLogicItemEditorForm, JvDsgnConsts;
+  {$IFDEF USEJVCL}
+  JvDsgnConsts,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgUtils, JvgLogicItemEditorForm;
 
 {$R *.dfm}
 
 var
   JvgLogicItemEditor: TJvgLogicItemEditor;
+
+{$IFNDEF USEJVCL}
+resourcestring
+  RsCaption = 'Caption';
+  RsComments = 'Comments';
+  RsEditComponentEllipsis = 'Edit component...';
+{$ENDIF !USEJVCL}
 
 //=== { TJvgLogicsEditor } ===================================================
 

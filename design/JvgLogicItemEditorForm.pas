@@ -34,10 +34,10 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, Buttons, Menus, ComCtrls, ToolWin,
-  JvgLogics, JvComponent;
+  JvgLogics;
 
 type
-  TJvgLogicItemEditor = class(TJvForm)
+  TJvgLogicItemEditor = class(TForm)
     Label2: TLabel;
     Label3: TLabel;
     Button1: TButton;
@@ -109,10 +109,19 @@ type
 
 implementation
 
+{$IFDEF USEJVCL}
 uses
   JvDsgnConsts;
+{$ENDIF USEJVCL}
 
 {$R *.dfm}
+
+{$IFNDEF USEJVCL}
+resourcestring
+  RsLogicElements = 'Logic Element: %s';
+  RsResult = '[RESULT]';
+  RsNotDefined = '[ not defined ]';
+{$ENDIF !USEJVCL}
 
 const
   cLocalColor = $E0E0E0;
