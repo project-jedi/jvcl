@@ -22,10 +22,10 @@ located at http:(jvcl.sourceforge.net
 Description:
 
 This file contains macro's needed to build the JvExCLX classes.
-You need the Pascal PreProcessor (jpp) from Andreas Hausladen [Andreas dott Hausladen att gmx dott de]
+You need the Pascal PreProcessor (dpp) from Andreas Hausladen [Andreas dott Hausladen att gmx dott de]
 to process these files.
 You can find it here: ......
-A pre-builded Windows version is included with JVCL 3: devtools\JvExVCL\src\jpp.exe
+A pre-builded Windows version is included with JVCL 3: devtools\JvExVCL\src\dpp.exe
 
 Known Issues:
   UNDER CONSTRUCTION !!
@@ -50,10 +50,46 @@ Known Issues:
 {$DEFINE DESTROY_CUSTOMCODE}
 {$DEFINE IFISNOTCUSTOMFORM}
 
+//  Name                  Implements
+//  JV_CONTROL            WndProc, HintColor, Perform, CMFocusChanged,
+//                        ColorToRGB, OnParentColorChange, AboutJVCLX
+//
+//  JV_CUSTOMCONTROL      WMTimer, WMEraseBkGround, CMFontChanged,
+//                        JV_CONTROL
+//
+//  JV_WINCUSTOMCONTROL   Paint,
+//                        JV_CUSTOMCONTROL
+//
+//  JV_WINCONTROL         Canvas,
+//                        JV_WINCUSTOMCONTROL
+//
+//  JV_EDITCONTROL        ClipboardCmds, Clear, CopyToClipboard, CutToClipboard,
+//                        PasteFromClipBoard, Undo, EMSetRect, EMGetRect
+//                        JV_WINCONTROL
+//
+//  JV_CUSTOMFORM         JV_CUSTOMCONTROL
+//
+//
+//  TWidgetControl VCL compatibility methods
+//  protected
+//    procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
+//    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+//    procedure WMEraseBkGround(var Msg: TMessage); message WM_ERASEBKGND;
+//    procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
+//    procedure CreateWnd; virtual;
+//    procedure RecreateWnd;
+//    procedure Paint;
+//    procedure PaintWindow(PaintDevice: QPaintDeviceH);
+//    procedure WndProc(var Message: TMessage); virtual;
+//  public
+//    function IsRightToLeft: Boolean;
+//    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
+//    procedure Perform(var Message);
 
 // *************************************************************************
 // *************************** INTERFACE MACROS ****************************
 // *************************************************************************
+
 
 (*$DEFINE JV_DECL_CONTROL
   { QControl }
@@ -62,7 +98,6 @@ Known Issues:
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FOnParentColorChanged: TNotifyEvent;
-    FVCLMessages: TJvMessages;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -108,32 +143,25 @@ Known Issues:
 (*$DEFINE JV_DECL_WINCUSTOMCONTROL
   { QWinCustomControl }
   private
-    InternalFontChanged: TNotifyEvent;
     procedure OnFontChanged(Sender: TObject);
-    procedure DoFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
     procedure ColorChanged; override;
     procedure CreateWidget; override;
     procedure FontChanged; override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function WidgetFlags: Integer; override;
-
     procedure WMEraseBkGround(var Msg: TMessage); message WM_ERASEBKGND;
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
-
     procedure CreateWnd; virtual;
     procedure RecreateWnd;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
-
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
-    procedure DoSetFocus(FocusedWnd: HWND); dynamic;
-    procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-
+    procedure DoSetFocus(FocusedWnd: QWidgetH); dynamic;
+    procedure DoKillFocus(FocusedWnd: QWidgetH); dynamic;
   public
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
     function ColorToRGB(Value: TColor): TColor;
@@ -271,7 +299,7 @@ Known Issues:
 
 (*$DEFINE JV_EDITCONTROL_BEGIN(ClassName)
   { QEditControl Begin }
-  TJvEx##ClassName = class(T##ClassName, IJvWinControlEvents)
+  TJvEx##ClassName = class(T##ClassName)
   JV_DECL_CONTROL
   JV_DECL_WINCUSTOMCONTROL
   JV_DECL_WINCONTROL_PAINT
@@ -511,7 +539,6 @@ begin
   Canvas.Font.Assign(Font);
 end;
 
-
 procedure TJvEx##ClassName.CreateWidget;
 begin
   CreateWnd;
@@ -525,15 +552,6 @@ end;
 procedure TJvEx##ClassName.RecreateWnd;
 begin
   RecreateWidget;
-end;
-
-
-function TJvEx##ClassName.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-begin
-  Result := false;
-  FVCLMessages.OnEventFilter(Sender, Event, Result);
-  if not Result then
-    Result := inherited EventFilter(Sender, Event);
 end;
 
 procedure TJvEx##ClassName.Painting(Sender: QObjectH; EventRegion: QRegionH);
@@ -577,20 +595,6 @@ begin
     Integer(WidgetFlags_WMouseNoMask);
 end;
 
-procedure TJvExControl.SetText(const Value: TCaption);
-begin
-  if Caption <> Value then
-  begin
-    ControlPatch(Self).FSavedText := Value;
-    { Only TCustomForm.Loaded sets FSavedText. }
-    if not (csLoading in ComponentState) or not (Self is TCustomForm) then
-    begin
-      QWidget_setCaption(Handle, @Value);
-      PostMessage(Handle, CM_TEXTCHANGED, 0, 0);
-    end;
-  end;
-end;
-
 function TJvEx##ClassName.ColorToRGB(Value: TColor): TColor;
 begin
   Result := QWindows.ColorToRGB(Value, self);
@@ -620,9 +624,7 @@ end;
 { QWinCustomControl Create }
 constructor TJvEx##ClassName.Create(AOwner: TComponent);
 begin
-  WindowProc := WndProc;
   inherited Create(AOwner);
-  InternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged;
   FHintColor := clDefault;
   FVCLMessages := TJvVCLMessages.Create(self);
@@ -654,14 +656,11 @@ EMPTYLINE
 { QWinControl Create }
 constructor TJvEx##ClassName.Create(AOwner: TComponent);
 begin
-  WindowProc := WndProc;
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  InternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged;
   FHintColor := clDefault;
-  FVCLMessages := TJvVCLMessages.Create(self);
   CREATE_CUSTOMCODE
 end;
 
@@ -776,11 +775,9 @@ end;
 { QCustomForm }
 constructor TJvEx##ClassName.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin
-  WindowProc := WndProc;
   inherited CreateNew(AOwner, Dummy);
   FHintColor := clDefault;
   Font.OnChange := OnFontChanged;
-  FVCLMessages := TJvVCLMessages.Create(self);
   CREATE_CUSTOMCODE
 end;
   EMPTYLINE
