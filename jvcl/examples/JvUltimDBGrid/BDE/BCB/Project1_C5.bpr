@@ -3,8 +3,8 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.05.03"/>
-    <PROJECT value="..\..\..\..\bin\Project1.exe"/>
-    <OBJFILES value="..\..\..\..\dcu\Project1.obj ..\..\..\..\dcu\Unit2.obj"/>
+    <PROJECT value="..\..\..\..\bin\Project1_C5.exe"/>
+    <OBJFILES value="..\..\..\..\dcu\Project1_C5.obj ..\..\..\..\dcu\Unit2.obj"/>
     <RESFILES value="Project1.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -23,7 +23,7 @@
     <LINKER value="tlink32"/>
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT"/>
-    <MAINSOURCE value="Project1.cpp"/>
+    <MAINSOURCE value="Project1_C5.cpp"/>
     <INCLUDEPATH value="..\..\..\..\..\jcl\source\common;..\..\..\..\common;..\..\..\..\run;$(BCB)\include;$(BCB)\include\vcl"/>
     <LIBPATH value="$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\..\resources;..\..\..\..\run"/>
     <WARNINGS value="-w-par"/>
