@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):            
 
-Last Modified: 2002-05-26
+Last Modified: 2002-06-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -443,7 +443,7 @@ begin
     Sorted := true;
   end
   else
-    Result := inherited AddObject(S,nil);
+       Result := inherited Add(S);
   if (Calendar <> nil) and (Calendar.HandleAllocated) then
     Calendar.DoBoldDays;
 end;
