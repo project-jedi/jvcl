@@ -67,13 +67,14 @@ begin
   {$IFDEF COMPILER7_UP}
   GroupDescendentsWith(TJvDataEmbedded, TControl);
   GroupDescendentsWith(TJvStrHolder, TControl);
+  GroupDescendentsWith(TJvMultiStringHolder, TControl);
   GroupDescendentsWith(TJvPageManager, TControl);
   {$ENDIF COMPILER7_UP}
 
   RegisterComponents(RsPaletteNonVisual, [TJvAlarms, TJvConverter,
     TJvDataEmbedded,
     TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile, TJvProfiler,
-    TJvStrHolder, TJvTimeLimit, TJvTranslator, TJvTranslatorStrings,
+    TJvStrHolder, TJvMultiStringHolder, TJvTimeLimit, TJvTranslator, TJvTranslatorStrings,
     TJvPrint, TJvEasterEgg, TJvMouseGesture, TJvMouseGestureHook, TJvLogFile]);
   {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteNonVisual, [TJvCreateProcess, TJvWinHelp]);
