@@ -1465,7 +1465,7 @@ object Form1: TForm1
       Top = 60
       Width = 119
       Height = 17
-      Caption = 'Load From AppStore'
+      Caption = 'Load From AppStorage'
       TabOrder = 2
     end
     object StoreToCheckBox: TCheckBox
@@ -1473,7 +1473,7 @@ object Form1: TForm1
       Top = 80
       Width = 111
       Height = 17
-      Caption = 'Store To Appstore'
+      Caption = 'Store To AppStorage'
       TabOrder = 3
     end
     object MaxWidthEdit: TMaskEdit
@@ -1922,19 +1922,18 @@ object Form1: TForm1
       OnClick = BitBtn2Click
     end
   end
-  object JvAppRegistryStore: TJvAppRegistryStore
-    StoreOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
-    StoreOptions.BooleanStringFalseValues = 'FALSE, NO, N'
-    StoreOptions.SetAsString = True
-    StoreOptions.DefaultIfReadConvertError = True
+  object JvAppRegistryStorage: TJvAppRegistryStorage
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    StorageOptions.SetAsString = True
+    StorageOptions.DefaultIfReadConvertError = True
     Root = 'Software\JVCL\JvParameterListDemo'
-    RegRoot = hkCurrentUser
-    SubStores = <>
+    SubStorages = <>
     Left = 319
     Top = 3
   end
   object JvFormStorage1: TJvFormStorage
-    AppStorage = JvAppRegistryStore
+    AppStorage = JvAppRegistryStorage
     AppStoragePath = 'Form\'
     StoredProps.Strings = (
       'AutoHeightCheckBox.Checked'
@@ -1953,11 +1952,11 @@ object Form1: TForm1
       'JVCLRadioButton.Checked'
       'VCLRadioButton.Checked')
     StoredValues = <>
-    Left = 359
+    Left = 414
     Top = 3
   end
   object JvFormStorage2: TJvFormStorage
-    AppStorage = JvAppRegistryStore
+    AppStorage = JvAppRegistryStorage
     AppStoragePath = 'Form\'
     StoredProps.Strings = (
       'AutoHeightCheckBox.Checked'

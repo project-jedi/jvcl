@@ -114,17 +114,17 @@ resourcestring
   RsEInvalidPropertyFmt = 'Invalid property: %s';
   RsENoPathSpecified = 'No path specified';
 
-//=== JvAppIniStore.pas ======================================================
+//=== JvAppIniStorage.pas ======================================================
 resourcestring
-  RsEReadValueFailed = 'TJvAppINIFileStore.ReadValue: Section undefined';
-  RsEWriteValueFailed = 'TJvAppINIFileStore.WriteValue: Section undefined';
+  RsEReadValueFailed = 'TJvAppIniFileStorage.ReadValue: Section undefined';
+  RsEWriteValueFailed = 'TJvAppIniFileStorage.WriteValue: Section undefined';
 
-//=== JvAppRegistryStore.pas =================================================
+//=== JvAppRegistryStorage.pas =================================================
 resourcestring
   RsEUnableToCreateKey = 'Unable to create key ''%s''';
   RsEEnumeratingRegistry = 'Error enumerating registry';
 
-//=== JvAppStore.pas =========================================================
+//=== JvAppStorage.pas =========================================================
 resourcestring
   RsEInvalidType = 'Invalid type';
   RsEUnknownBaseType = 'Unknown base type for given set';
@@ -132,7 +132,7 @@ resourcestring
   RsENotAUniqueRootPath = '''%s'' is not a unique root path';
   RsECircularReferenceOfStorages = 'Circular reference of storages';
 
-//=== JvAppStoreSelectList.pas ===============================================
+//=== JvAppStorageSelectList.pas ===============================================
 resourcestring
   RsLoadSettings = 'Load Settings';
   RsSaveSettings = 'Save Settings';
@@ -141,9 +141,9 @@ resourcestring
   RsSaveCaption = '&Save';
   RsDeleteCaption = '&Delete';
 
-  RsEDynControlEngineNotDefined = 'TJvAppStoreSelectList.CreateDialog: DynControlEngine not defined!';
+  RsEDynControlEngineNotDefined = 'TJvAppStorageSelectList.CreateDialog: DynControlEngine not defined!';
 
-//=== JvAppXmlStore.pas ======================================================
+//=== JvAppXMLStorage.pas ======================================================
 resourcestring
   RsENodeCannotBeEmpty = 'The node must be given a name';
 

@@ -66,8 +66,8 @@ type
     property UsersTableName: TFileName read FUsersTableName write SetUsersTableName;
     property Active;
     property AllowEmptyPassword;
-    property AppStore;
-    property AppStorePath;
+    property AppStorage;
+    property AppStoragePath;
     property AttemptNumber;
     property MaxPasswordLen;
     property UpdateCaption;
@@ -168,7 +168,7 @@ begin
     IconClick := DoIconDblClick;
   Result := LoginDialog(Database, AttemptNumber, UsersTableName,
     LoginNameField, MaxPasswordLen, DoCheckUser, IconClick, UserName,
-    AppStore, AppStorePath, SelectAlias);
+    AppStorage, AppStoragePath, SelectAlias);
 end;
 
 function TJvDBSecurity.ChangePassword: Boolean;

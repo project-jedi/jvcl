@@ -1194,7 +1194,7 @@ object ToolsForm: TToolsForm
     Top = 4
   end
   object FormStorage1: TJvFormStorage
-    AppStorage = MainForm.JvAppRegistryStore
+    AppStorage = MainForm.JvAppRegistryStorage
     AppStoragePath = 'Tools\'
     StoredProps.Strings = (
       'TabbedNotebook1.PageIndex')

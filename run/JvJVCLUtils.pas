@@ -51,7 +51,7 @@ uses
   {$ENDIF VisualCLX}
   IniFiles,
   JclBase, JclSysUtils, JclStrings, JvJCLUtils,
-  JvAppStore, JvTypes;
+  JvAppStorage, JvTypes;
 
 {$IFDEF VCL}
 // Transform an icon to a bitmap
@@ -415,17 +415,17 @@ function FindShowForm(FormClass: TFormClass; const Caption: string): TForm;
 function ShowDialog(FormClass: TFormClass): Boolean;
 function InstantiateForm(FormClass: TFormClass; var Reference): TForm;
 
-procedure SaveFormPlacement(Form: TForm; const AppStore: TJvCustomAppStore;
+procedure SaveFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage;
   SaveState: Boolean = True; SavePosition: Boolean = True);
-procedure RestoreFormPlacement(Form: TForm; const AppStore: TJvCustomAppStore;
+procedure RestoreFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage;
   LoadState: Boolean = True; LoadPosition: Boolean = True);
 
-procedure SaveMDIChildren(MainForm: TForm; const AppStore: TJvCustomAppStore);
-procedure RestoreMDIChildren(MainForm: TForm; const AppStore:
-  TJvCustomAppStore);
-procedure RestoreGridLayout(Grid: TCustomGrid; const AppStore:
-  TJvCustomAppStore);
-procedure SaveGridLayout(Grid: TCustomGrid; const AppStore: TJvCustomAppStore);
+procedure SaveMDIChildren(MainForm: TForm; const AppStorage: TJvCustomAppStorage);
+procedure RestoreMDIChildren(MainForm: TForm; const AppStorage:
+  TJvCustomAppStorage);
+procedure RestoreGridLayout(Grid: TCustomGrid; const AppStorage:
+  TJvCustomAppStorage);
+procedure SaveGridLayout(Grid: TCustomGrid; const AppStorage: TJvCustomAppStorage);
 
 function StrToIniStr(const Str: string): string;
 function IniStrToStr(const Str: string): string;
@@ -454,25 +454,25 @@ procedure AppTaskbarIcons(AppOnly: Boolean);
 
 { Internal using utilities }
 
-procedure InternalSaveFormPlacement(Form: TForm; const AppStore:
-  TJvCustomAppStore;
+procedure InternalSaveFormPlacement(Form: TForm; const AppStorage:
+  TJvCustomAppStorage;
   const StorePath: string; SaveState: Boolean = True; SavePosition: Boolean =
     True);
-procedure InternalRestoreFormPlacement(Form: TForm; const AppStore:
-  TJvCustomAppStore;
+procedure InternalRestoreFormPlacement(Form: TForm; const AppStorage:
+  TJvCustomAppStorage;
   const StorePath: string; LoadState: Boolean = True; LoadPosition: Boolean =
     True);
-procedure InternalSaveGridLayout(Grid: TCustomGrid; const AppStore:
-  TJvCustomAppStore;
+procedure InternalSaveGridLayout(Grid: TCustomGrid; const AppStorage:
+  TJvCustomAppStorage;
   const StorePath: string);
-procedure InternalRestoreGridLayout(Grid: TCustomGrid; const AppStore:
-  TJvCustomAppStore;
+procedure InternalRestoreGridLayout(Grid: TCustomGrid; const AppStorage:
+  TJvCustomAppStorage;
   const StorePath: string);
-procedure InternalSaveMDIChildren(MainForm: TForm; const AppStore:
-  TJvCustomAppStore;
+procedure InternalSaveMDIChildren(MainForm: TForm; const AppStorage:
+  TJvCustomAppStorage;
   const StorePath: string);
-procedure InternalRestoreMDIChildren(MainForm: TForm; const AppStore:
-  TJvCustomAppStore;
+procedure InternalRestoreMDIChildren(MainForm: TForm; const AppStorage:
+  TJvCustomAppStorage;
   const StorePath: string);
 
 { end JvAppUtils }
@@ -3806,43 +3806,43 @@ begin
     GetSystemMetrics(SM_CYSCREEN)]);
 end;
 
-function ReadPosStr(AppStore: TJvCustomAppStore; const Path: string): string;
+function ReadPosStr(AppStorage: TJvCustomAppStorage; const Path: string): string;
 begin
-  if AppStore.ValueStored(Path + CrtResString) then
-    Result := AppStore.ReadString(Path + CrtResString)
+  if AppStorage.ValueStored(Path + CrtResString) then
+    Result := AppStorage.ReadString(Path + CrtResString)
   else
-    Result := AppStore.ReadString(Path);
+    Result := AppStorage.ReadString(Path);
 end;
 
-procedure WritePosStr(AppStore: TJvCustomAppStore; const Path, Value: string);
+procedure WritePosStr(AppStorage: TJvCustomAppStorage; const Path, Value: string);
 begin
-  AppStore.WriteString(Path + CrtResString, Value);
-  AppStore.WriteString(Path, Value);
+  AppStorage.WriteString(Path + CrtResString, Value);
+  AppStorage.WriteString(Path, Value);
 end;
 
-procedure InternalSaveMDIChildren(MainForm: TForm; const AppStore:
-  TJvCustomAppStore;
+procedure InternalSaveMDIChildren(MainForm: TForm; const AppStorage:
+  TJvCustomAppStorage;
   const StorePath: string);
 var
   i: Integer;
 begin
   if (MainForm = nil) or (MainForm.FormStyle <> fsMDIForm) then
     raise EInvalidOperation.Create(SNoMDIForm);
-  AppStore.DeleteSubTree(AppStore.ConcatPaths([StorePath, siMDIChild]));
+  AppStorage.DeleteSubTree(AppStorage.ConcatPaths([StorePath, siMDIChild]));
   if MainForm.MDIChildCount > 0 then
   begin
-    AppStore.WriteInteger(AppStore.ConcatPaths([StorePath, siMDIChild,
+    AppStorage.WriteInteger(AppStorage.ConcatPaths([StorePath, siMDIChild,
       siListCount]),
       MainForm.MDIChildCount);
     for i := 0 to MainForm.MDIChildCount - 1 do
-      AppStore.WriteString(AppStore.ConcatPaths([StorePath, siMDIChild,
+      AppStorage.WriteString(AppStorage.ConcatPaths([StorePath, siMDIChild,
         Format(siItem, [i])]),
         MainForm.MDIChildren[i].ClassName);
   end;
 end;
 
-procedure InternalRestoreMDIChildren(MainForm: TForm; const AppStore:
-  TJvCustomAppStore;
+procedure InternalRestoreMDIChildren(MainForm: TForm; const AppStorage:
+  TJvCustomAppStorage;
   const StorePath: string);
 var
   i: Integer;
@@ -3853,14 +3853,14 @@ begin
     raise EInvalidOperation.Create(SNoMDIForm);
   StartWait;
   try
-    Count := AppStore.ReadInteger(AppStore.ConcatPaths([StorePath, siMDIChild,
+    Count := AppStorage.ReadInteger(AppStorage.ConcatPaths([StorePath, siMDIChild,
       siListCount]), 0);
     if Count > 0 then
     begin
       for i := 0 to Count - 1 do
       begin
         FormClass :=
-          TFormClass(GetClass(AppStore.ReadString(AppStore.ConcatPaths([StorePath,
+          TFormClass(GetClass(AppStorage.ReadString(AppStorage.ConcatPaths([StorePath,
           siMDIChild, Format(siItem, [i])]), '')));
         if FormClass <> nil then
           InternalFindShowForm(FormClass, '', False);
@@ -3871,19 +3871,19 @@ begin
   end;
 end;
 
-procedure SaveMDIChildren(MainForm: TForm; const AppStore: TJvCustomAppStore);
+procedure SaveMDIChildren(MainForm: TForm; const AppStorage: TJvCustomAppStorage);
 begin
-  InternalSaveMDIChildren(MainForm, AppStore, '');
+  InternalSaveMDIChildren(MainForm, AppStorage, '');
 end;
 
-procedure RestoreMDIChildren(MainForm: TForm; const AppStore:
-  TJvCustomAppStore);
+procedure RestoreMDIChildren(MainForm: TForm; const AppStorage:
+  TJvCustomAppStorage);
 begin
-  InternalRestoreMDIChildren(MainForm, AppStore, '');
+  InternalRestoreMDIChildren(MainForm, AppStorage, '');
 end;
 
-procedure InternalSaveFormPlacement(Form: TForm; const AppStore:
-  TJvCustomAppStore;
+procedure InternalSaveFormPlacement(Form: TForm; const AppStorage:
+  TJvCustomAppStorage;
   const StorePath: string; SaveState: Boolean = True; SavePosition: Boolean =
     True);
 var
@@ -3902,22 +3902,22 @@ begin
       Flags := Flags or WPF_SETMINPOSITION;
 {$ENDIF}
     if SaveState then
-      AppStore.WriteInteger(StorePath + '\' + siShowCmd, ShowCmd);
+      AppStorage.WriteInteger(StorePath + '\' + siShowCmd, ShowCmd);
     if SavePosition then
     begin
-      AppStore.WriteInteger(StorePath + '\' + siFlags, Flags);
-      AppStore.WriteInteger(StorePath + '\' + siPixels, Screen.PixelsPerInch);
-      WritePosStr(AppStore, StorePath + '\' + siMinMaxPos, Format('%d,%d,%d,%d',
+      AppStorage.WriteInteger(StorePath + '\' + siFlags, Flags);
+      AppStorage.WriteInteger(StorePath + '\' + siPixels, Screen.PixelsPerInch);
+      WritePosStr(AppStorage, StorePath + '\' + siMinMaxPos, Format('%d,%d,%d,%d',
         [ptMinPosition.X, ptMinPosition.Y, ptMaxPosition.X, ptMaxPosition.Y]));
-      WritePosStr(AppStore, StorePath + '\' + siNormPos, Format('%d,%d,%d,%d',
+      WritePosStr(AppStorage, StorePath + '\' + siNormPos, Format('%d,%d,%d,%d',
         [rcNormalPosition.Left, rcNormalPosition.Top, rcNormalPosition.Right,
         rcNormalPosition.Bottom]));
     end;
   end;
 end;
 
-procedure InternalRestoreFormPlacement(Form: TForm; const AppStore:
-  TJvCustomAppStore;
+procedure InternalRestoreFormPlacement(Form: TForm; const AppStorage:
+  TJvCustomAppStorage;
   const StorePath: string; LoadState: Boolean = True; LoadPosition: Boolean =
     True);
 const
@@ -3939,8 +3939,8 @@ begin
     if LoadPosition then
     begin
       DataFound := False;
-      AppStore.ReadInteger(StorePath + '\' + siFlags, Flags);
-      PosStr := ReadPosStr(AppStore, StorePath + '\' + siMinMaxPos);
+      AppStorage.ReadInteger(StorePath + '\' + siFlags, Flags);
+      PosStr := ReadPosStr(AppStorage, StorePath + '\' + siMinMaxPos);
       if PosStr <> '' then
       begin
         DataFound := True;
@@ -3949,7 +3949,7 @@ begin
         ptMaxPosition.X := StrToIntDef(ExtractWord(3, PosStr, Delims), 0);
         ptMaxPosition.Y := StrToIntDef(ExtractWord(4, PosStr, Delims), 0);
       end;
-      PosStr := ReadPosStr(AppStore, StorePath + '\' + siNormPos);
+      PosStr := ReadPosStr(AppStorage, StorePath + '\' + siNormPos);
       if PosStr <> '' then
       begin
         DataFound := True;
@@ -3962,7 +3962,7 @@ begin
         rcNormalPosition.Bottom := StrToIntDef(ExtractWord(4, PosStr, Delims),
           Top + Height);
       end;
-      DataFound := DataFound and (Screen.PixelsPerInch = AppStore.ReadInteger(
+      DataFound := DataFound and (Screen.PixelsPerInch = AppStorage.ReadInteger(
         StorePath + '\' + siPixels, Screen.PixelsPerInch));
       if DataFound then
       begin
@@ -3999,7 +3999,7 @@ begin
         (Application.MainForm = nil)) and ((FormStyle = fsMDIForm) or
         ((FormStyle = fsNormal) and (Position = poDefault))) then
         WinState := wsMaximized;
-      ShowCmd := AppStore.ReadInteger(StorePath + '\' + siShowCmd, SW_HIDE);
+      ShowCmd := AppStorage.ReadInteger(StorePath + '\' + siShowCmd, SW_HIDE);
       case ShowCmd of
         SW_SHOWNORMAL, SW_RESTORE, SW_SHOW:
           WinState := wsNormal;
@@ -4026,54 +4026,54 @@ begin
   end;
 end;
 
-procedure InternalSaveGridLayout(Grid: TCustomGrid; const AppStore:
-  TJvCustomAppStore;
+procedure InternalSaveGridLayout(Grid: TCustomGrid; const AppStorage:
+  TJvCustomAppStorage;
   const StorePath: string);
 var
   i: Longint;
 begin
   for i := 0 to TDrawGrid(Grid).ColCount - 1 do
-    AppStore.WriteInteger(AppStore.ConcatPaths([StorePath, Format(siItem,
+    AppStorage.WriteInteger(AppStorage.ConcatPaths([StorePath, Format(siItem,
       [i])]),
       TDrawGrid(Grid).ColWidths[i]);
 end;
 
-procedure InternalRestoreGridLayout(Grid: TCustomGrid; const AppStore:
-  TJvCustomAppStore;
+procedure InternalRestoreGridLayout(Grid: TCustomGrid; const AppStorage:
+  TJvCustomAppStorage;
   const StorePath: string);
 var
   i: Longint;
 begin
   for i := 0 to TDrawGrid(Grid).ColCount - 1 do
     TDrawGrid(Grid).ColWidths[i] :=
-      AppStore.ReadInteger(AppStore.ConcatPaths([StorePath,
+      AppStorage.ReadInteger(AppStorage.ConcatPaths([StorePath,
       Format(siItem, [i])]), TDrawGrid(Grid).ColWidths[i]);
 end;
 
-procedure RestoreGridLayout(Grid: TCustomGrid; const AppStore:
-  TJvCustomAppStore);
+procedure RestoreGridLayout(Grid: TCustomGrid; const AppStorage:
+  TJvCustomAppStorage);
 begin
-  InternalRestoreGridLayout(Grid, AppStore, GetDefaultSection(Grid));
+  InternalRestoreGridLayout(Grid, AppStorage, GetDefaultSection(Grid));
 end;
 
-procedure SaveGridLayout(Grid: TCustomGrid; const AppStore: TJvCustomAppStore);
+procedure SaveGridLayout(Grid: TCustomGrid; const AppStorage: TJvCustomAppStorage);
 begin
-  InternalSaveGridLayout(Grid, AppStore, GetDefaultSection(Grid));
+  InternalSaveGridLayout(Grid, AppStorage, GetDefaultSection(Grid));
 end;
 
-procedure SaveFormPlacement(Form: TForm; const AppStore: TJvCustomAppStore;
+procedure SaveFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage;
   SaveState,
   SavePosition: Boolean);
 begin
-  InternalSaveFormPlacement(Form, AppStore, GetDefaultSection(Form), SaveState,
+  InternalSaveFormPlacement(Form, AppStorage, GetDefaultSection(Form), SaveState,
     SavePosition);
 end;
 
-procedure RestoreFormPlacement(Form: TForm; const AppStore: TJvCustomAppStore;
+procedure RestoreFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage;
   LoadState,
   LoadPosition: Boolean);
 begin
-  InternalRestoreFormPlacement(Form, AppStore, GetDefaultSection(Form),
+  InternalRestoreFormPlacement(Form, AppStorage, GetDefaultSection(Form),
     LoadState, LoadPosition);
 end;
 

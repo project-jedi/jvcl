@@ -35,7 +35,7 @@ interface
 uses
   SysUtils, Classes, Controls, Forms, StdCtrls, ExtCtrls,
   DB, DBTables,
-  JvBDELists, JvLoginForm, JvAppStore;
+  JvBDELists, JvLoginForm, JvAppStorage;
 
 type
   TCheckUserNameEvent = function(UsersTable: TTable;
@@ -59,8 +59,8 @@ type
     FUserNameField: string;
     FMaxPwdLen: Integer;
     FLoginName: string;
-    FAppStore: TJvCustomAppStore;
-    FAppStorePath : String;
+    FAppStorage: TJvCustomAppStorage;
+    FAppStoragePath : String;
 
     procedure Login(Database: TDatabase; LoginParams: TStrings);
     function GetUserInfo: Boolean;
@@ -83,8 +83,8 @@ type
     property OnCheckUnlock: TCheckUnlockEvent read FCheckUnlock write FCheckUnlock;
     property OnCheckUserEvent: TCheckUserNameEvent read FCheckUserEvent write FCheckUserEvent;
     property OnIconDblClick: TNotifyEvent read FIconDblClick write FIconDblClick;
-    property AppStore: TJvCustomAppStore read FAppStore write FAppStore;
-    property AppStorePath : String read FAppStorePath write FAppStorePath;
+    property AppStorage: TJvCustomAppStorage read FAppStorage write FAppStorage;
+    property AppStoragePath : String read FAppStoragePath write FAppStoragePath;
     property Database: TDatabase read FDatabase write FDatabase;
     property AttemptNumber: Integer read FAttemptNumber write FAttemptNumber;
     property ShowDBName: Boolean read FShowDBName write FShowDBName;
@@ -100,8 +100,8 @@ procedure OnLoginDialog(Database: TDatabase; LoginParams: TStrings;
 function LoginDialog(Database: TDatabase; AttemptNumber: Integer;
   const UsersTableName, UserNameField: string; MaxPwdLen: Integer;
   CheckUserEvent: TCheckUserNameEvent; IconDblClick: TNotifyEvent;
-  var LoginName: string; AppStore : TJvCustomAppStore;
-  AppStorePath : string; SelectDatabase: Boolean): Boolean;
+  var LoginName: string; AppStorage : TJvCustomAppStorage;
+  AppStoragePath : string; SelectDatabase: Boolean): Boolean;
 
 function UnlockDialog(const UserName: string; OnUnlock: TCheckUnlockEvent;
   IconDblClick: TNotifyEvent): Boolean;
@@ -234,11 +234,11 @@ end;
 
 function TJvDBLoginDialog.ExecuteAppLogin: Boolean;
 begin
-  if Assigned(AppStore) then
+  if Assigned(AppStorage) then
   begin
-    FDialog.UserNameEdit.Text := AppStore.ReadString (AppStore.ConcatPaths([AppStorePath, RsLastLoginUserName]), LoginName);
-    FSelectDatabase := AppStore.ReadBoolean (AppStore.ConcatPaths([AppStorePath, RsSelectDatabase]), FSelectDatabase);
-    FIniAliasName := AppStore.ReadString (AppStore.ConcatPaths([AppStorePath, RsLastAliasName]), '');
+    FDialog.UserNameEdit.Text := AppStorage.ReadString (AppStorage.ConcatPaths([AppStoragePath, RsLastLoginUserName]), LoginName);
+    FSelectDatabase := AppStorage.ReadBoolean (AppStorage.ConcatPaths([AppStoragePath, RsSelectDatabase]), FSelectDatabase);
+    FIniAliasName := AppStorage.ReadString (AppStorage.ConcatPaths([AppStoragePath, RsLastAliasName]), '');
   end;
   FDialog.SelectDatabase := SelectDatabase;
   Result := (FDialog.ShowModal = mrOk);
@@ -246,10 +246,10 @@ begin
   if Result then
   begin
     LoginName := GetUserName;
-    if Assigned(AppStore) then
+    if Assigned(AppStorage) then
     begin
-      AppStore.WriteString (AppStore.ConcatPaths([AppStorePath, RsLastLoginUserName]), GetUserName);
-      AppStore.WriteString (AppStore.ConcatPaths([AppStorePath, RsLastAliasName]), Database.AliasName);
+      AppStorage.WriteString (AppStorage.ConcatPaths([AppStoragePath, RsLastLoginUserName]), GetUserName);
+      AppStorage.WriteString (AppStorage.ConcatPaths([AppStoragePath, RsLastAliasName]), Database.AliasName);
     end;
   end;
 end;
@@ -455,8 +455,8 @@ end;
 function LoginDialog(Database: TDatabase; AttemptNumber: Integer;
   const UsersTableName, UserNameField: string; MaxPwdLen: Integer;
   CheckUserEvent: TCheckUserNameEvent; IconDblClick: TNotifyEvent;
-  var LoginName: string; AppStore : TJvCustomAppStore;
-  AppStorePath : string; SelectDatabase: Boolean): Boolean;
+  var LoginName: string; AppStorage : TJvCustomAppStorage;
+  AppStoragePath : string; SelectDatabase: Boolean): Boolean;
 var
   Dlg: TJvDBLoginDialog;
 begin
@@ -470,8 +470,8 @@ begin
     Dlg.AttemptNumber := AttemptNumber;
     Dlg.UsersTableName := UsersTableName;
     Dlg.UserNameField := UserNameField;
-    Dlg.AppStore := AppStore;
-    Dlg.AppStorePath:= AppStorePath;
+    Dlg.AppStorage := AppStorage;
+    Dlg.AppStoragePath:= AppStoragePath;
     Result := Dlg.Execute(nil);
     if Result then
       LoginName := Dlg.LoginName;

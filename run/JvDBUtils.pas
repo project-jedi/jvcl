@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, DB, IniFiles,
-  JvAppStore;
+  JvAppStorage;
 
 type
   TCommit = (ctNone, ctStep, ctAll);
@@ -97,8 +97,8 @@ procedure RefreshQuery(Query: TDataSet);
 function DataSetSortedSearch(DataSet: TDataSet;
   const Value, FieldName: string; CaseInsensitive: Boolean): Boolean;
 function DataSetSectionName(DataSet: TDataSet): string;
-procedure InternalSaveFields(DataSet: TDataSet; AppStorage: TJvCustomAppStore; const Path: string);
-procedure InternalRestoreFields(DataSet: TDataSet; AppStorage: TJvCustomAppStore;
+procedure InternalSaveFields(DataSet: TDataSet; AppStorage: TJvCustomAppStorage; const Path: string);
+procedure InternalRestoreFields(DataSet: TDataSet; AppStorage: TJvCustomAppStorage;
   const Path: string; RestoreVisible: Boolean);
 function DataSetLocateThrough(DataSet: TDataSet; const KeyFields: string;
   const KeyValues: Variant; Options: TLocateOptions): Boolean;
@@ -107,8 +107,8 @@ procedure SaveFieldsReg(DataSet: TDataSet; IniFile: TRegIniFile);
 procedure RestoreFieldsReg(DataSet: TDataSet; IniFile: TRegIniFile;
   RestoreVisible: Boolean);
 *)
-procedure SaveFields(DataSet: TDataSet; AppStorage: TJvCustomAppStore; const Path: string = '');
-procedure RestoreFields(DataSet: TDataSet; AppStorage: TJvCustomAppStore; const Path: string = '';
+procedure SaveFields(DataSet: TDataSet; AppStorage: TJvCustomAppStorage; const Path: string = '');
+procedure RestoreFields(DataSet: TDataSet; AppStorage: TJvCustomAppStorage; const Path: string = '';
   RestoreVisible: Boolean = True);
 procedure AssignRecord(Source, Dest: TDataSet; ByName: Boolean);
 function ConfirmDelete: Boolean;
@@ -607,7 +607,7 @@ begin
     Result := DataSetSectionName(DataSet);
 end;
 
-procedure InternalSaveFields(DataSet: TDataSet; AppStorage: TJvCustomAppStore; const Path: string);
+procedure InternalSaveFields(DataSet: TDataSet; AppStorage: TJvCustomAppStorage; const Path: string);
 var
   I: Integer;
 begin
@@ -623,7 +623,7 @@ begin
   end;
 end;
 
-procedure InternalRestoreFields(DataSet: TDataSet; AppStorage: TJvCustomAppStore;
+procedure InternalRestoreFields(DataSet: TDataSet; AppStorage: TJvCustomAppStorage;
   const Path: string; RestoreVisible: Boolean);
 type
   TFieldInfo = record
@@ -677,12 +677,12 @@ begin
   end;
 end;
 
-procedure SaveFields(DataSet: TDataSet; AppStorage: TJvCustomAppStore; const Path: string);
+procedure SaveFields(DataSet: TDataSet; AppStorage: TJvCustomAppStorage; const Path: string);
 begin
   InternalSaveFields(DataSet, AppStorage, AppStorage.ConcatPaths([Path, DataSetSectionName(DataSet)]));
 end;
 
-procedure RestoreFields(DataSet: TDataSet; AppStorage: TJvCustomAppStore; const Path: string;
+procedure RestoreFields(DataSet: TDataSet; AppStorage: TJvCustomAppStorage; const Path: string;
   RestoreVisible: Boolean);
 begin
   InternalRestoreFields(DataSet, AppStorage, AppStorage.ConcatPaths([DataSetSectionName(DataSet)]),

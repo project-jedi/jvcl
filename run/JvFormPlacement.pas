@@ -34,7 +34,7 @@ uses
   RTLConsts, Variants,
   {$ENDIF}
   Classes, Controls, Forms, Messages, Windows,  
-  JvAppStore, JvComponent, JvWndProcHook, JvTypes;
+  JvAppStorage, JvComponent, JvWndProcHook, JvTypes;
 
 type
   TPlacementOption = (fpState, fpPosition, fpActiveControl);
@@ -68,7 +68,7 @@ type
   TJvFormPlacement = class(TJvComponent)
   private
     FActive: Boolean;
-    FAppStorage: TJvCustomAppStore;
+    FAppStorage: TJvCustomAppStorage;
     FAppStoragePath: string;
     FLinks: TList;
     FOptions: TPlacementOptions;
@@ -128,7 +128,7 @@ type
 
   published
     property Active: Boolean read FActive write FActive default True;
-    property AppStorage: TJvCustomAppStore read FAppStorage write FAppStorage;
+    property AppStorage: TJvCustomAppStorage read FAppStorage write FAppStorage;
     property AppStoragePath: string read FAppStoragePath write SetAppStoragePath;
     property MinMaxInfo: TJvWinMinMaxInfo read FWinMinMaxInfo write SetWinMinMaxInfo;
     property Options: TPlacementOptions read FOptions write FOptions default [fpState, fpPosition];
@@ -244,7 +244,7 @@ implementation
 uses
   SysUtils,
   Consts,
-  JvJVCLUtils, JvJCLUtils, JvPropsStorage;
+  JvJVCLUtils, JvJCLUtils, JvPropertyStorage;
 
 const
   siActiveCtrl = 'ActiveControl'; // do not localize
@@ -860,7 +860,7 @@ end;
 
 procedure TJvFormStorage.SaveProperties;
 begin
-  with TJvPropsStorage.Create do
+  with TJvPropertyStorage.Create do
   try
     Section := '';
     OnWriteString := WriteString;
@@ -873,7 +873,7 @@ end;
 
 procedure TJvFormStorage.RestoreProperties;
 begin
-  with TJvPropsStorage.Create do
+  with TJvPropertyStorage.Create do
   try
     Section := '';
     OnReadString := ReadString;

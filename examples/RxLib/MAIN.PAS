@@ -8,7 +8,7 @@ uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, Gauges, ExtCtrls, Menus, JvSpeedbar,
   JvAppEvent, JvSplit, JvMenus, JvComponent, JvTrayIcon, JvBDEProgress,
-  JvFormPlacement, JvPicClip, JvAppStore, JvAppRegistryStore;
+  JvFormPlacement, JvPicClip, JvAppStorage, JvAppRegistryStorage;
 
 type
   TMainForm = class(TForm)
@@ -62,7 +62,7 @@ type
     Images: TJvPicClip ;
     PopupImg: TJvPicClip ;
     RXWebSite1: TMenuItem;
-    JvAppRegistryStore: TJvAppRegistryStore;
+    JvAppRegistryStorage: TJvAppRegistryStorage;
     JvFormStorage: TJvFormStorage;
     procedure Exit(Sender: TObject);
     procedure FormCreate(Sender: TObject);

@@ -27,17 +27,17 @@ interface
 
 uses
   SysUtils, Classes,
-  JvAppStore, JvFormPlacement, JvAppStoreSelectList;
+  JvAppStorage, JvFormPlacement, JvAppStorageSelectList;
 
 type
-  TJvFormStorageSelectList = class (TJvAppStoreSelectList)
+  TJvFormStorageSelectList = class (TJvAppStorageSelectList)
   private
     FFormStorage: TJvFormStorage;
   protected
     function GetFormStorage: TJvFormStorage; virtual;
     procedure SetFormStorage(Value: TJvFormStorage); virtual;
-    function GetAppStore: TJvCustomAppStore; override;
-    procedure SetAppStore(Value: TJvCustomAppStore); override;
+    function GeTJvAppStorage: TJvCustomAppStorage; override;
+    procedure SeTJvAppStorage(Value: TJvCustomAppStorage); override;
     function GetStoragePath : string; override;
   public
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -62,7 +62,7 @@ begin
   FFormStorage := Value;
 end;
 
-function TJvFormStorageSelectList.GetAppStore: TJvCustomAppStore;
+function TJvFormStorageSelectList.GeTJvAppStorage: TJvCustomAppStorage;
 begin
   if Assigned(FFormStorage) then
     Result := FFormStorage.AppStorage
@@ -70,7 +70,7 @@ begin
     Result := nil;
 end;
 
-procedure TJvFormStorageSelectList.SetAppStore(Value: TJvCustomAppStore);
+procedure TJvFormStorageSelectList.SeTJvAppStorage(Value: TJvCustomAppStorage);
 begin
   if Assigned(FFormStorage) then
     FFormStorage.AppStorage := Value;
@@ -78,8 +78,8 @@ end;
 
 function  TJvFormStorageSelectList.GetStoragePath : string;
 begin
-  if Assigned(AppStore) then
-    Result := AppStore.ConcatPaths([FormStorage.AppStoragePath, SelectPath])
+  if Assigned(AppStorage) then
+    Result := AppStorage.ConcatPaths([FormStorage.AppStoragePath, SelectPath])
   else
     Result := FormStorage.AppStoragePath + PathDelim + SelectPath;
 end;

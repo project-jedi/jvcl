@@ -2998,7 +2998,7 @@ object ControlsForm: TControlsForm
     Top = 1
   end
   object FormStorage1: TJvFormStorage
-    AppStorage = MainForm.JvAppRegistryStore
+    AppStorage = MainForm.JvAppRegistryStorage
     AppStoragePath = 'Controls\'
     StoredProps.Strings = (
       'TabbedNotebook1.PageIndex'

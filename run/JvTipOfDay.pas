@@ -34,20 +34,20 @@ unit JvTipOfDay;
 interface
 
 uses
-  Classes, Graphics, Controls, Messages, Forms, JvAppStore,
+  Classes, Graphics, Controls, Messages, Forms, JvAppStorage,
   JvBaseDlg, JvButtonPersistent, JvSpeedButton, JvTypes, StdCtrls;
 
 type
   TJvCanShowEvent = procedure(Sender: TObject; var CanShow: Boolean) of object;
-  TJvTipOfDayOption = (toShowOnStartUp, toUseAppStore, toShowWhenFormShown);
+  TJvTipOfDayOption = (toShowOnStartUp, toUseAppStorage, toShowWhenFormShown);
   TJvTipOfDayOptions = set of TJvTipOfDayOption;
 
   TJvTipOfDayStyle = (tsVC, tsStandard);
 
   TJvTipOfDay = class(TJvCommonDialogP)
   private
-    FAppStore: TJvCustomAppStore;
-    FAppStorePath: string;
+    FAppStorage: TJvCustomAppStorage;
+    FAppStoragePath: string;
     FTitle: string;
     FCheckBoxText: string;
     FHeaderText: string;
@@ -88,7 +88,7 @@ type
     procedure SetTips(const Value: TStrings);
     procedure SetStyle(const Value: TJvTipOfDayStyle);
   protected
-    procedure SetAppStore(Value: TJvCustomAppStore);
+    procedure SeTJvAppStorage(Value: TJvCustomAppStorage);
     { Called after the dialog has been shown. Fires the OnAfterExecute
       event, thus enabling the user to update the appstorage or other
       persistent data: }
@@ -107,8 +107,8 @@ type
       determines whether the dialog must be shown; if the user wants
       to store this value in another location he must write an OnCanShow
       and an OnAfterExecute event handler: }
-    function ReadFromAppStore: Boolean; virtual;
-    procedure WriteToAppStore(DoShowOnStartUp: Boolean); virtual;
+    function ReadFromAppStorage: Boolean; virtual;
+    procedure WriteToAppStorage(DoShowOnStartUp: Boolean); virtual;
     { Sets the fonts (HeaderFont and TipFont) to the default fonts
       associated with Style: }
     procedure UpdateFonts;
@@ -132,8 +132,8 @@ type
     procedure SaveToFile(const AFileName: string);
     property IsAutoExecute: Boolean read FIsAutoExecute;
   published
-    property AppStore: TJvCustomAppStore read FAppStore write SetAppStore;
-    property AppStorePath: string read FAppStorePath write FAppStorePath;
+    property AppStorage: TJvCustomAppStorage read FAppStorage write SeTJvAppStorage;
+    property AppStoragePath: string read FAppStoragePath write FAppStoragePath;
     property ButtonNext: TJvButtonPersistent read FButtonNext write SetButtonNext;
     property ButtonClose: TJvButtonPersistent read FButtonClose write SetButtonClose;
     property CheckBoxText: string read FCheckBoxText write FCheckBoxText;
@@ -206,9 +206,9 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvTipOfDay.SetAppStore(Value: TJvCustomAppStore);
+procedure TJvTipOfDay.SeTJvAppStorage(Value: TJvCustomAppStorage);
 begin
-  FAppStore := Value;
+  FAppStorage := Value;
 end;
 
 procedure TJvTipOfDay.AutoExecute;
@@ -249,9 +249,9 @@ begin
     Exit;
   FRunning := True;
   try
-    if toUseAppStore in Options then
+    if toUseAppStorage in Options then
     begin
-      if ReadFromAppStore then
+      if ReadFromAppStorage then
         Include(FOptions, toShowOnStartUp)
       else
         Exclude(FOptions, toShowOnStartUp);
@@ -287,8 +287,8 @@ begin
 
     DoAfterExecute;
 
-    if toUseAppStore in Options then
-      WriteToAppStore(toShowOnStartUp in Options);
+    if toUseAppStorage in Options then
+      WriteToAppStorage(toShowOnStartUp in Options);
   finally
     FRunning := False;
   end;
@@ -297,8 +297,8 @@ end;
 procedure TJvTipOfDay.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AComponent = FAppStore) then
-    FAppStore := nil;
+  if (Operation = opRemove) and (AComponent = FAppStorage) then
+    FAppStorage := nil;
 end;
 
 procedure TJvTipOfDay.FontChanged(Sender: TObject);
@@ -615,10 +615,10 @@ begin
     Tips.LoadFromFile(AFileName);
 end;
 
-function TJvTipOfDay.ReadFromAppStore: Boolean;
+function TJvTipOfDay.ReadFromAppStorage: Boolean;
 begin
-  if Assigned(AppStore) then
-    Result := AppStore.ReadBoolean(AppStore.ConcatPaths([AppStorePath,RsStoreShowOnStartUp]), toShowOnStartUp in Options)
+  if Assigned(AppStorage) then
+    Result := AppStorage.ReadBoolean(AppStorage.ConcatPaths([AppStoragePath,RsStoreShowOnStartUp]), toShowOnStartUp in Options)
   else
     Result := False;
 end;
@@ -733,10 +733,10 @@ begin
     TControlAccess(FNextTipButton).Enabled := False;
 end;
 
-procedure TJvTipOfDay.WriteToAppStore(DoShowOnStartUp: Boolean);
+procedure TJvTipOfDay.WriteToAppStorage(DoShowOnStartUp: Boolean);
 begin
-  if Assigned(AppStore) then
-    AppStore.WriteBoolean(AppStore.ConcatPaths([AppStorePath,RsStoreShowOnStartUp]), DoShowOnStartUp);
+  if Assigned(AppStorage) then
+    AppStorage.WriteBoolean(AppStorage.ConcatPaths([AppStoragePath,RsStoreShowOnStartUp]), DoShowOnStartUp);
 end;
 
 end.

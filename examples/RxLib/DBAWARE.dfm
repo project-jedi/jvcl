@@ -969,7 +969,7 @@ object DBAwareForm: TDBAwareForm
     Top = 12
   end
   object FormStorage1: TJvFormStorage
-    AppStorage = MainForm.JvAppRegistryStore
+    AppStorage = MainForm.JvAppRegistryStorage
     AppStoragePath = 'Data Aware Components\'
     Options = [fpPosition]
     StoredProps.Strings = (

@@ -2,8 +2,7 @@ program JvParameterListDemo;
 
 uses
   Forms,
-  JvParameterListMainForm in 'JvParameterListMainForm.pas' {Form1},
-;
+  JvParameterListMainForm in 'JvParameterListMainForm.pas' {Form1};
 
 {$R *.res}
 
