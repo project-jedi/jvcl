@@ -225,7 +225,7 @@ end;
 
 procedure TJvCustomGraphicButton.CMMouseLeave(var Msg: TMessage);
 begin
-  MouseEnter;
+  MouseExit;
   inherited;
 end;
 
