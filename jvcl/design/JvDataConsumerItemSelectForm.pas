@@ -165,6 +165,9 @@ procedure TfrmJvDataConsumerItemSelect.UpdateViewList;
 var
   ViewList: IJvDataConsumerViewList;
   ItemSelect: IJvDataConsumerItemSelect;
+  {$IFDEF VisualCLX}
+  I: Integer;
+  {$ENDIF VisualCLX}
 begin
   if Supports(fmeTreeList.Provider as IJvDataConsumer, IJvDataConsumerViewList, ViewList) then
   begin
@@ -172,7 +175,12 @@ begin
     try
       if ViewList.Count = 0 then
         ViewList.RebuildView;
+      {$IFDEF VCL}
       fmeTreeList.lvProvider.Items.Count := ViewList.Count;
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      {TODO : CLX does not support virtual ListViews}
+      {$ENDIF VisualCLX}
       if Supports(Consumer as IJvDataConsumer, IJvDataConsumerItemSelect, ItemSelect) then
         if ItemSelect.GetItem <> nil then
         begin
