@@ -99,6 +99,13 @@ object fmGridProp: TfmGridProp
       Height = 13
       Caption = 'Edit Control :'
     end
+    object LabelFillCell: TLabel
+      Left = 160
+      Top = 76
+      Width = 68
+      Height = 13
+      Caption = 'Runtime Size :'
+    end
     object lbSelected: TListBox
       Left = 8
       Top = 24
@@ -118,19 +125,19 @@ object fmGridProp: TfmGridProp
       TabOrder = 1
       OnClick = cbControlClick
     end
-    object cbxFillCell: TCheckBox
+    object cbFillCell: TComboBox
       Left = 160
-      Top = 80
-      Width = 97
-      Height = 17
-      Hint = 
-        'If ticked, the control will be resized to fit the current cell, ' +
-        'otherwise it will be displayed at design size.'
-      Caption = 'Fill Cell'
-      ParentShowHint = False
-      ShowHint = True
+      Top = 92
+      Width = 145
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
       TabOrder = 2
-      OnClick = cbxFillCellClick
+      OnClick = cbFillCellClick
+      Items.Strings = (
+        'Cell size'
+        'Design size'
+        'Design/Cell size (biggest)')
     end
   end
   object btnOK: TButton

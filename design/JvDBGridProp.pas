@@ -56,16 +56,17 @@ type
     sbDelete: TSpeedButton;
     LabelControl: TLabel;
     cbControl: TComboBox;
+    LabelFillCell: TLabel;
+    cbFillCell: TComboBox;
     btnOK: TButton;
     btnCancel: TButton;
-    cbxFillCell: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure lbSelectedClick(Sender: TObject);
     procedure cbControlClick(Sender: TObject);
+    procedure cbFillCellClick(Sender: TObject);
     procedure sbAddClick(Sender: TObject);
     procedure sbDeleteClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure cbxFillCellClick(Sender: TObject);
   private
     procedure SetControl(Name: string);
   public
@@ -169,12 +170,16 @@ begin
     cbControl.Enabled := True;
     cbControl.Color := clWindow;
     SetControl(JvDBGridControls.Items[lbSelected.ItemIndex].ControlName);
-    cbxFillCell.Checked := JvDBGridControls.Items[lbSelected.ItemIndex].FitCell;
+    cbFillCell.Enabled := True;
+    cbFillCell.Color := clWindow;
+    cbFillCell.ItemIndex := Ord(JvDBGridControls.Items[lbSelected.ItemIndex].FitCell);
   end
   else
   begin
     cbControl.Enabled := False;
     cbControl.Color := clBtnFace;
+    cbFillCell.Enabled := False;
+    cbFillCell.Color := clBtnFace;
   end;
 end;
 
@@ -184,10 +189,10 @@ begin
     JvDBGridControls.Items[lbSelected.ItemIndex].ControlName := cbControl.Text;
 end;
 
-procedure TfmGridProp.cbxFillCellClick(Sender: TObject);
+procedure TfmGridProp.cbFillCellClick(Sender: TObject);
 begin
   if lbSelected.ItemIndex >= 0 then
-    JvDBGridControls.Items[lbSelected.ItemIndex].FitCell := cbxFillCell.Checked;
+    JvDBGridControls.Items[lbSelected.ItemIndex].FitCell := TJvDBGridControlSize(cbFillCell.ItemIndex);
 end;
 
 procedure TfmGridProp.sbAddClick(Sender: TObject);
@@ -200,7 +205,7 @@ begin
       with JvDBGridControls.Add do
       begin
         FieldName := lbFields.Items[lbFields.ItemIndex];
-        FitCell := True;
+        FitCell := fcCellSize;
       end;
     end
     else
