@@ -30,13 +30,7 @@ unit JvArrayButton;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows, Messages,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QWindows,
-  {$ENDIF VisualCLX}
-  Classes, Graphics, Controls, Forms, 
+  Windows, Messages, Classes, Graphics, Controls, Forms,
   JvComponent, JvTypes;
 
 type

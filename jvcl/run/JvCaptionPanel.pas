@@ -44,11 +44,9 @@ interface
 {$ENDIF VisualCLX}
 
 uses
-  {$IFDEF VCL}
   Windows, Messages,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, Qt, QWindows,
+  Qt,
   {$ENDIF VisualCLX}
   Classes, Graphics, Controls, Forms,
   JvComponent, JvExControls;

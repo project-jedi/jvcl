@@ -32,14 +32,7 @@ unit JvaScrollText;
 interface
 
 uses
-  Classes,
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
-  Controls, ExtCtrls, Graphics,
-  {$IFDEF VisualCLX}
-  Types, QWindows,
-  {$ENDIF VisualCLX}
+  Classes, Windows, Controls, ExtCtrls, Graphics,
   JvComponent;
 
 type

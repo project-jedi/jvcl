@@ -30,12 +30,7 @@ unit JvBitmapButton;
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Messages,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QWindows,
-  {$ENDIF VisualCLX}
   Classes, Graphics, Controls,
   JvComponent, JvTypes;
 
