@@ -49,6 +49,7 @@
     <File Name="..\..\run\JvWaitingProgress.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvWavePlayer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAni.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCursor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAnimate.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAnimatedImage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\common\VFW.pas" Targets="all" Formname="" Condition=""/>
