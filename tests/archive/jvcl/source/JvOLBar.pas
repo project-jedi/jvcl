@@ -260,7 +260,7 @@ type
 
   TJvOutlookBar = class(TJvCustomOutlookBar)
   public
-    property PopupObject;
+    property PopUpObject;
   published
     property Align;
     property Pages;
