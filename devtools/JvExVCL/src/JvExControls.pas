@@ -235,9 +235,14 @@ type
 constructor TFreeNotificationHelper.Create(AInstance: TComponent; AIntfPtr: PInterface);
 begin
   inherited Create(nil);
-  FInstance := AInstance;
   FIntfPtr := AIntfPtr;
-  FInstance.FreeNotification(Self);
+  if csDestroying in AInstance.CompnentState then
+    FInstance := nil
+  else
+  begin
+    FInstance := AInstance;
+    FInstance.FreeNotification(Self);
+  end;
 end;
 
 destructor TFreeNotificationHelper.Destroy;
@@ -256,6 +261,9 @@ procedure TFreeNotificationHelper.Notification(Component: TComponent; Operation:
 begin
   if (Operation = opRemove) and (Component = FInstance) then
   begin
+   // (ahuser) The component destroys the whole list so the following line could
+   //          be removed (but who knowns what the Delphi IDE will do without
+   //          this line.
     FInstance.RemoveFreeNotification(Self);
     FInstance := nil;
     FIntfPtr^ := nil;
