@@ -486,6 +486,10 @@ type
   TLSeekMode = lseek_mode;
 {$ENDIF}
 
+{$IFDEF BCB}
+  PPointer = ^Pointer;
+{$ENDIF}
+
   TBlobGetSegmentFn = function(hnd: Pointer; buffer: PChar; buf_size: ISCUShort;
     var result_len: ISCUShort): Smallint; stdcall;
 
