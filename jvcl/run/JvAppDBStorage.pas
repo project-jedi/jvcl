@@ -30,7 +30,11 @@ unit JvAppDBStorage;
 
 interface
 uses
-  SysUtils, Classes, JvAppStorage, DB{$IFDEF COMPILER6_UP}, Variants{$ENDIF}, DBCtrls;
+  SysUtils, Classes, JvAppStorage, DB,
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF COMPILER6_UP}
+  DBCtrls;
 
 // DB table must contain 3 fields for the storage
 // performance is probably improved if there is an index on the section and key fields (this can be unique)
@@ -42,6 +46,7 @@ type
   TJvDBStorageWriteEvent = procedure(Sender: TObject; const Section, Key, Value: string) of object;
   TJvDBStorageReadEvent = procedure(Sender: TObject; const Section, Key: string; var Value: string) of object;
   EJvAppDBStorageError = class(Exception);
+
   TJvCustomAppDBStorage = class(TJvCustomAppStorage)
   private
     FSectionLink: TFieldDataLink;
@@ -110,6 +115,7 @@ type
   end;
 
 implementation
+
 uses
   JclMime, JvJCLUtils;
 
@@ -134,7 +140,7 @@ begin
   begin
     StoreDataset;
     try
-      while SectionExists(Path, false) do
+      while SectionExists(Path, False) do
         DataSource.DataSet.Delete;
     finally
       RestoreDataset;
@@ -152,7 +158,7 @@ begin
   begin
     StoreDataset;
     try
-      while ValueExists(Section, Key, false) do
+      while ValueExists(Section, Key, False) do
         DataSource.DataSet.Delete;
     finally
       RestoreDataset;
@@ -287,7 +293,7 @@ function TJvCustomAppDBStorage.IsFolderInt(Path: string;
   ListIsValue: Boolean): Boolean;
 begin
   { TODO -oJVCL -cTESTING : Is this correct implementation? }
-  Result := SectionExists(Path, true);
+  Result := SectionExists(Path, True);
 end;
 
 procedure TJvCustomAppDBStorage.Notification(AComponent: TComponent;
@@ -301,13 +307,13 @@ end;
 function TJvCustomAppDBStorage.PathExistsInt(const Path: string): boolean;
 begin
   { TODO -oJVCL -cTESTING : Is this correct implementation? }
-  Result := SectionExists(Path, true);
+  Result := SectionExists(Path, True);
 end;
 
 function TJvCustomAppDBStorage.ReadValue(const Section,
   Key: string): string;
 begin
-  if ValueExists(Section, Key, false) then
+  if ValueExists(Section, Key, False) then
     Result := FValueLink.Field.AsString
   else
     Result := '';
@@ -319,7 +325,7 @@ end;
 procedure TJvCustomAppDBStorage.RemoveValue(const Section, Key: string);
 begin
 { TODO -oJVCL -cTESTING : NOT TESTED!!! }
-  if ValueExists(Section,Key, false) then
+  if ValueExists(Section,Key, False) then
     FValueLink.Field.Clear;
 end;
 
@@ -406,14 +412,14 @@ var
   Key: string;
 begin
   SplitKeyPath(Path, Section, Key);
-  Result := ValueExists(Section, Key, true);
+  Result := ValueExists(Section, Key, True);
 end;
 
 procedure TJvCustomAppDBStorage.WriteValue(const Section, Key, Value: string);
 begin
   if FieldsAssigned then
   begin
-    if ValueExists(Section, Key, false) then
+    if ValueExists(Section, Key, False) then
     begin
       if AnsiSameStr(FValueLink.Field.AsString, Value) then
         Exit; // don't save if it's the same value (NB: this also skips the event)
@@ -428,7 +434,7 @@ begin
   end;
   // always call event
   if Assigned(FOnWrite) then
-    FOnWrite(self, Section, Key, Value);
+    FOnWrite(Self, Section, Key, Value);
 end;
 
 

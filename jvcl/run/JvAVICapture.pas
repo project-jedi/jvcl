@@ -41,7 +41,7 @@ unit JvAVICapture;
 interface
 
 uses
-  Classes, Controls, Windows, VFW, MMSystem, SysUtils, Graphics, Messages,
+  Windows, Messages, VFW, MMSystem, SysUtils, Classes, Graphics, Controls, 
   JvTypes;
 
 type

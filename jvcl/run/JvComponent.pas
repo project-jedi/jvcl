@@ -155,6 +155,7 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF USE_DXGETTEXT}
+
 initialization
   AddDomainForResourceString('jvcl');
 

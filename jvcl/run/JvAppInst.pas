@@ -32,7 +32,7 @@ unit JvAppInst;
 interface
 
 uses
-  Windows, Messages, SysUtils, Forms, Classes, Controls,
+  Windows, Messages, SysUtils, Forms, Classes,
   { Classes must be after Forms for Delphi 5 compatibility. }
   JclAppInst;
 
@@ -342,3 +342,4 @@ begin
 end;
 
 end.
+

@@ -39,12 +39,10 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Menus,
-  Forms, StdCtrls, Mask, Buttons, ImgList,
+  Windows, Messages, Graphics, Controls, ImgList,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QMenus, QForms, QStdCtrls, QMask, QButtons, QImgList,
-  QWindows, QTypes,
+  QTypes, QGraphics, QControls, QImgList, QWindows, Types,
   {$ENDIF VisualCLX}
   JvToolEdit;
 

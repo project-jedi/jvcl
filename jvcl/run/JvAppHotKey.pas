@@ -38,7 +38,7 @@ unit JvAppHotKey;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Forms, Menus,
+  Windows, Messages, SysUtils, Classes, Controls, Menus,
   JvComponent;
 
 type
@@ -161,7 +161,7 @@ begin
     if Value and not FHasRegistered then
     begin
       if IsLibrary then
-        FID := GlobalAddAtom(PChar(Application.Exename))
+        FID := GlobalAddAtom(PChar(ParamStr(0)))
       else
       begin
         FID := HotKeyInstances;

@@ -15,8 +15,9 @@ Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
 Contributor(s):
+    Andreas Hausladen
 
-Last Modified: 2004-01-24
+Last Modified: 2004-02-27
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -69,7 +70,7 @@ uses
   Graphics, Clipbrd,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QStdCtrls, QGraphics, QClipbrd, Types, QWindows, 
+  Qt, QGraphics, QClipbrd, Types, QWindows, 
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   Variants,

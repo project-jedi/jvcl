@@ -34,8 +34,8 @@ unit JvBandObject;
 interface
 
 uses
-  Windows, Forms, Messages, ComObj, ShlObj, ActiveX, Classes,
-  Menus, Dialogs, Controls,
+  Windows, Messages, ComObj, ShlObj, ActiveX, Registry, SysUtils, Classes,
+  Forms, Menus, 
   JvBandForms;
 
 const
@@ -168,8 +168,7 @@ uses
   {$IFDEF DEBUGINFO_ON}
   //zTrace,
   {$ENDIF DEBUGINFO_ON}
-  Registry, SysUtils, Math,
-  JvJVCLUtils;
+  Math, JvJVCLUtils;
 
 const
   cIERegistryBase = 'Software\Microsoft\Internet Explorer\';
@@ -864,7 +863,7 @@ end;
 
 function TzCustomBandObject.MsgHookProc(nCode, wParam, lParam: Integer): Integer;
 var
- lOk: Boolean;
+  lOk: Boolean;
 begin
   try
     if FBandForm <> nil then
@@ -1136,5 +1135,4 @@ begin
 end;
 
 end.
-
 

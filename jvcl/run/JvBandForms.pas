@@ -31,7 +31,7 @@ unit JvBandForms;
 interface
 
 uses
-  Classes, Forms, Controls, Windows, Messages, Menus, ComObj;
+  Windows, Messages, ComObj, Classes, Forms, Controls, Menus;
 
 // (rom) T2H IFDEFs should be removed
 
@@ -300,7 +300,7 @@ type
 implementation
 
 uses
-  JvJVCLUtils, JvJCLUtils;
+  JvJCLUtils;
 
 constructor TJvBandForm.Create(AOwner: TComponent);
 begin

@@ -182,26 +182,27 @@ type
     property OnStop: TNotifyEvent read FOnStop write FOnStop;
   end;
 
-procedure HookBitmap;
+//procedure HookBitmap;
 
 implementation
 
 uses
-  JclSysUtils,
+  //JclSysUtils,
   JvConsts, JvJVCLUtils;
 
 
-//=== TJvHackBitmap ==========================================================
+//=== TJvLockedBitmap ==========================================================
 
 // (rom) do we really need this ugly hack?
+// (ahuser) lets try without the hook by using TJvLockedBitmap directly
 
 type
-  TJvHackBitmap = class(TBitmap)
+  TJvLockedBitmap = class(TBitmap)
   protected
     procedure Draw(ACanvas: TCanvas; const Rect: TRect); override;
   end;
 
-procedure TJvHackBitmap.Draw(ACanvas: TCanvas; const Rect: TRect);
+procedure TJvLockedBitmap.Draw(ACanvas: TCanvas; const Rect: TRect);
 begin
   if not Empty then
     Canvas.Lock;
@@ -213,6 +214,7 @@ begin
   end;
 end;
 
+{
 type
   TJvHack = class(TBitmap);
 
@@ -228,12 +230,12 @@ begin
   for Index := 0 to GetVirtualMethodCount(TJvHack) - 1 do
     if GetVirtualMethod(TJvHack, Index) = @TJvHack.Draw then
     begin
-      SetVirtualMethod(TBitmap, Index, @TJvHackBitmap.Draw);
+      SetVirtualMethod(TBitmap, Index, @TJvLockedBitmap.Draw);
       Hooked := True;
       Break;
     end;
 end;
-
+}
 //=== TJvImageControl ========================================================
 
 constructor TJvImageControl.Create(AOwner: TComponent);
@@ -291,7 +293,7 @@ var
   DC: QPainterH;
   {$ENDIF VisualCLX}
 begin
-  Bmp := TBitmap.Create;
+  Bmp := TJvLockedBitmap.Create;
   try
     Bmp.Width := ClientWidth;
     Bmp.Height := ClientHeight;
@@ -330,7 +332,7 @@ end;
 
 {$IFDEF VisualCLX}
 type
-  TOpenWidgetControl = class(TWidgetControl);
+  TWidgetControlAccess = class(TWidgetControl);
 {$ENDIF VisualCLX}
 
 procedure TJvImageControl.DoPaintControl;
@@ -361,7 +363,7 @@ begin
   {$IFDEF VisualCLX}
   DC := QPainter_create;
   try
-    QPainter_begin(DC, TOpenWidgetControl(Parent).GetPaintDevice);
+    QPainter_begin(DC, TWidgetControlAccess(Parent).GetPaintDevice);
     try
       QPainter_setClipRect(DC, Left, Top, Width, Height);
       QPainter_translate(DC, Left, Top);
@@ -439,7 +441,7 @@ begin
   {$IFDEF VCL}
   AutoSize := True;
   {$ENDIF VCL}
-  FGlyph := TBitmap.Create;
+  FGlyph := TJvLockedBitmap.Create;
   FGraphic := FGlyph;
   FGlyph.OnChange := ImageChanged;
   FNumGlyphs := 1;
@@ -741,7 +743,7 @@ begin
         Bottom - Top, SrcRect, FGlyph, FTransparentColor);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    Bmp := TBitmap.Create;
+    Bmp := THackBitmap.Create;
     try
       Bmp.Width := SrcRect.Right - SrcRect.Left;
       Bmp.Height := SrcRect.Bottom - SrcRect.Top;
@@ -873,8 +875,8 @@ begin
   begin
     Lock;
     try
-      if Value then
-        HookBitmap;
+      {if Value then
+        HookBitmap;}
       if Assigned(FTimer) then
         FTimer.SyncEvent := not Value;
       FAsyncDrawing := Value;

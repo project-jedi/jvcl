@@ -37,7 +37,7 @@ unit JvWndProcHook;
 interface
 
 uses
-  SysUtils, Windows, Messages, Classes, Controls,
+  Windows, Messages, SysUtils, Classes, Controls,
   JvComponent;
 
 type

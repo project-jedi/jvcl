@@ -35,7 +35,7 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
-  Messages, Graphics, Controls, Forms, ComCtrls,
+  Graphics, Controls, Forms, ComCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QComCtrls,
@@ -126,3 +126,4 @@ begin
 end;
 
 end.
+
