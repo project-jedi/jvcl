@@ -59,6 +59,15 @@ DCC = "$(ROOT)\bin\dcc32.exe" $(DCCOPT)
 
 #-------------------------------------------------------------------------------
 
+JCLSOURCEDIRS=$(JCLROOT)\source\common;$(JCLROOT)\source\windows;$(JCLROOT)\source\vcl;$(JCLROOT)\source\visclx
+JCLINCLUDEDIRS=$(JCLROOT)\source;$(JCLROOT)\source\common
+
+JVCLSOURCEDIRS=$(JVCLROOT)\common;(JVCLROOT)\run;$(JVCLROOT)\design;
+JVCLINCLUDEDIRS=$(JVCLROOT)\common
+JVCLRESDIRS=$(JVCLROOT)\Resources
+
+#-------------------------------------------------------------------------------
+
 default: \
   BuildJCLdcpFiles \
   pg.exe \
@@ -109,19 +118,18 @@ Templates:
 -LN"$(DCPDIR)"
 $(PERSONALEDITION_OPTION)
 
--I"$(JCLROOT)\source;$(JCLROOT)\source\common"
--U"$(JCLROOT)\source\common;$(JCLROOT)\source\windows;$(JCLROOT)\source\vcl;$(JCLROOT)\source\visclx"
--U"$(ROOT)\Lib\Obj"
+-I"$(JCLINCLUDEDIRS)"
+-U"$(JCLSOURCEDIRS)"
 
--I"$(JVCLROOT)\common"
--U"$(UNITOUTDIR);$(JVCLROOT)\common;(JVCLROOT)\run;$(JVCLROOT)\design;$(LIBDIR)"
--R"$(JVCLROOT)\Resources"
+-I"$(JVCLINCLUDEDIRS)"
+-U"$(UNITOUTDIR);$(JVCLSOURCEDIRS);$(LIBDIR)"
+-R"$(JVCLRESDIRS)"
 
 -N"$(UNITOUTDIR)"
 -N1"$(HPPDIR)"
 -N2"$(UNITOUTDIR)\obj"
 | > ..\$(PKGDIR)\template.cfg
-        @IF NOT $(MASTEREDITION)! == ! @copy ..\$(PKGDIR)\template.cfg $(PKGDIR_MASTEREDITION)\template.cfg 
+        @IF NOT $(MASTEREDITION)! == ! @copy ..\$(PKGDIR)\template.cfg $(PKGDIR_MASTEREDITION)\template.cfg
 
 ################################################################################
 Compile: Bpg2Make.exe CompilePackages
@@ -142,7 +150,7 @@ SET LIBDIR=$(LIBDIR)
 SET HPPDIR=$(HPPDIR)
 SET DCCOPT=$(DCCOPT)
 SET DCC=$(DCC)
-$(MAKE) -f "$(PKGDIR) Packages.mak" $(TARGETS)
+$(MAKE) -f "$(PKGDIR) Packages.mak" $(MAKEOPTIONS) $(TARGETS)
 | >tmp.bat
         @tmp.bat
         -@del tmp.bat >NUL
@@ -152,4 +160,28 @@ Clean:
         @echo [Cleaning...]
         -del /f /q "$(PKGDIR) Packages.mak" 2>NUL
         -del /f /q "$(PKGDIR)\*.cfg" "$(PKGDIR)\*.mak" 2>NUL
+
+################################################################################
+Installer:
+        @echo [Compiling: Installer]
+        @cd ..\..\install\JVCLInstall
+        @type &&|
+-Q
+-U"$(ROOT)\Lib;$(ROOT)\Lib\Obj"
+-R"$(ROOT)\Lib"
+-I"$(ROOT)\Include;$(ROOT)\Include\Vcl"
+-U"$(DCPDIR);$(LIBDIR);$(BPLDIR)"
+
+-I"$(JCLINCLUDEDIRS)"
+-U"$(JCLSOURCEDIRS)"
+
+-I"$(JVCLINCLUDEDIRS)"
+-U"$(UNITOUTDIR);$(JVCLSOURCEDIRS);$(LIBDIR)"
+-R"$(JVCLRESDIRS)"
+
+-E"$(JVCLROOT)\packages\bin"
+| > JVCLInstall.cfg
+        $(DCC) -DNO_JCL JVCLInstall.dpr
+        start JVCLInstall.exe "--jcl-path=$(JCLROOT)"
+
 
