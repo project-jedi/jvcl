@@ -39,12 +39,14 @@ uses
 type
   TJvFindFiles = class(TJvCommonDialog)
   private
-    FDrive: Char;
+//    FDrive: Char;
+    FDirectory:string;
   public
     constructor Create(AOwner: TComponent); override;
-  published
-    property Drive: Char read FDrive write FDrive default 'A';
     function Execute: Boolean; override;
+  published
+//    property Drive: Char read FDrive write FDrive default 'A';
+    property Directory:string read FDirectory write FDirectory;
   end;
 
 implementation
@@ -54,7 +56,7 @@ implementation
 constructor TJvFindFiles.Create(AOwner: TComponent);
 begin
   inherited;
-  FDrive := 'C';
+//  FDrive := 'C';
 end;
 
 {*****************************************************}
@@ -64,13 +66,16 @@ var
   PMalloc: IMalloc;
   sei: TShellExecuteInfo;
 begin
+
   try
     SHGetMalloc(PMalloc);
     ZeroMemory(@sei, SizeOf(sei));
     with sei do
     begin
       cbSize := SizeOf(sei);
-      lpFile := PChar(FDrive + ':\');
+      // (p3) replaced drive with directory 
+//      lpFile := PChar(FDrive + ':\');
+      lpDirectory := PChar(FDirectory); 
       lpVerb := 'find';
     end;
     ShellExecuteEx(@sei);
