@@ -87,7 +87,7 @@ constructor TJvDBSecurity.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FSelectAlias := False;
-  FLoginNameField := EmptyStr;
+  FLoginNameField := '';
 end;
 
 destructor TJvDBSecurity.Destroy;
