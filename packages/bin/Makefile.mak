@@ -185,7 +185,6 @@ Clean:
 	@echo [Cleaning...]
 	-del /f /q "$(PKGDIR) Packages.mak" 2>NUL
 	-del /f /q "$(PKGDIR)\*.cfg" "$(PKGDIR)\*.mak" 2>NUL
-	-del /f /q "$(PKGDIR_MASTEREDITION)\*.cfg" "$(PKGDIR_MASTEREDITION)\*.mak" 2>NUL
 
 ################################################################################
 Installer:
