@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Forms, TypInfo, ComCtrls, JvSimpleXml,
-  JvComponent, IniFiles;
+  JvComponent, IniFiles, Dialogs;
 
 {.$DEFINE GX_OUTLOOK}
 
@@ -113,6 +113,7 @@ var
  prop: PPropInfo;
  obj: TObject;
  ok: Boolean;
+ st: string;
 
  function AnalyseCRLF(Value: string):string;
  begin
@@ -250,12 +251,15 @@ begin
       begin
         ok := false;
         for j:=0 to ComponentCount-1 do
-          if Components[j].Name=Elem.Items[i].Name then
+        begin
+          st := LowerCase(Elem.Items[i].Name);
+          if LowerCase(Components[j].Name) = st then
           begin
             TranslateComponent(Components[j],Elem.Items[i]);
             ok := true;
             break;
           end;
+        end;
         if not ok then
         begin
           prop := GetPropInfo(Component,Elem.Items[i].Name,[tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat,
