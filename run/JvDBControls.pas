@@ -132,6 +132,7 @@ type
     property Enabled;
     {$IFDEF VCL}
     property Flat;
+    property ParentCtl3D;
     {$ENDIF VCL}
     property Font;
     property ImeMode;
@@ -243,6 +244,7 @@ type
     property Enabled;
     {$IFDEF VCL}
     property Flat;
+    property ParentCtl3D;
     {$ENDIF VCL}
     property Font;
     property ImageIndex;
@@ -370,6 +372,7 @@ type
     property DragKind;
     property Flat;
     property ParentBiDiMode;
+    property ParentCtl3D;
     property ImeMode;
     property ImeName;
     property OnEndDock;

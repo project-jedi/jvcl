@@ -63,7 +63,9 @@ const
 type
   TJvCustomEdit = class(TJvExCustomEdit)
   private
+    {$IFDEF VisualCLX}
     FFlat: Boolean;
+    {$ENDIF VisualCLX}
     FMaxPixel: TJvMaxPixel;
     FGroupIndex: Integer;
     FAlignment: TAlignment;
@@ -100,6 +102,7 @@ type
     {$IFDEF VCL}
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure CMHintShow(var Msg: TMessage); message CM_HINTSHOW;
+    function IsFlatStored: Boolean;
     {$ENDIF VCL}
     procedure SetEmptyValue(const Value: string);
     procedure SetGroupIndex(Value: Integer);
@@ -188,7 +191,7 @@ type
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default -1;
     property OnParentColorChange;
-    property Flat: Boolean read GetFlat write SetFlat default False;
+    property Flat: Boolean read GetFlat write SetFlat {$IFDEF VisualCLX}default False;{$ENDIF VisualCLX}{$IFDEF VCL}stored IsFlatStored;{$ENDIF VCL}
   end;
 
   TJvEdit = class(TJvCustomEdit)
@@ -210,6 +213,7 @@ type
     property ImeName;
     property OEMConvert;
     property ParentBiDiMode;
+    property ParentCtl3D;
     property UseFixedPopup; // asn: clx not implemented yet
     {$ENDIF VCL}
     property Caret;
@@ -612,9 +616,11 @@ end;
 function TJvCustomEdit.GetFlat: Boolean;
 begin
   {$IFDEF VCL}
-  FFlat := not Ctl3D; // update
+  Result := not Ctl3D;
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Result := FFlat;
+  {$ENDIF VisualClx}
 end;
 
 function TJvCustomEdit.GetPasswordChar: Char;
@@ -677,6 +683,14 @@ function TJvCustomEdit.IsEmpty: Boolean;
 begin
   Result := (Length(Text) = 0);
 end;
+
+{$IFDEF VCL}
+function TJvCustomEdit.IsFlatStored: Boolean;
+begin
+  { Same as IsCtl3DStored }
+  Result := not ParentCtl3D;
+end;
+{$ENDIF VCL}
 
 function TJvCustomEdit.IsPasswordCharStored: Boolean;
 begin
@@ -837,21 +851,20 @@ end;
 
 procedure TJvCustomEdit.SetFlat(Value: Boolean);
 begin
+  {$IFDEF VCL}
+  Ctl3D := not Value;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   if Value <> FFlat then
   begin
     FFlat := Value;
-    {$IFDEF VCL}
-    Ctl3D := FFlat;     // Force update to allow to work in a TFrame
-    Ctl3D := not FFlat;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     if FFlat then
       BorderStyle := bsNone
     else
       BorderStyle := bsSingle;
     Invalidate;
-    {$ENDIF VisualCLX}
   end;
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvCustomEdit.SetGroupIndex(Value: Integer);

@@ -153,6 +153,7 @@ type
     property ImeMode;
     property ImeName;
     property ParentBiDiMode;
+    property ParentCtl3D;
     property OnEndDock;
     property OnStartDock;
     {$ENDIF VCL}
@@ -229,6 +230,7 @@ type
     property DragKind;
     property Flat;
     property ParentBiDiMode;
+    property ParentCtl3D;
     property ImeMode;
     property ImeName;
     property OnEndDock;
