@@ -219,7 +219,22 @@ var
 
 procedure AddIconFileToImageList(ImageList: TImageList; const Filename: string);
 
+function LoadLongResString(ResStringRec: PResStringRec): string;
+
 implementation
+
+function LoadLongResString(ResStringRec: PResStringRec): string;
+var
+  Buffer: array [0..4095] of char;
+begin
+  if ResStringRec = nil then Exit;
+  if ResStringRec.Identifier < 64*1024 then
+    SetString(Result, Buffer,
+      LoadString(FindResourceHInstance(ResStringRec.Module^),
+        ResStringRec.Identifier, Buffer, SizeOf(Buffer)))
+  else
+    Result := PChar(ResStringRec.Identifier);
+end;
 
 procedure AddIconFileToImageList(ImageList: TImageList; const Filename: string);
 var
