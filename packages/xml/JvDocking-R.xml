@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvDocking" Design="0">
   <Description>JVCL Docking Components Runtime Package</Description>
-  <C5PFlags/>
-  <C6PFlags/>
+  <C5PFlags>-LUCJcl50(USEJVCL)</C5PFlags>
+  <C6PFlags>-LUCJcl(USEJVCL)</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition="USEJVCL"/>
+    <Package Name="CJCL" Targets="C6,C6p" Condition="USEJVCL"/>
+    <Package Name="CJCL50" Targets="C5" Condition="USEJVCL"/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vclx50" Targets="C5,D5,D5s" Condition=""/>
