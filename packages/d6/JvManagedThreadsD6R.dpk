@@ -34,6 +34,8 @@ package JvManagedThreadsD6R;
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
 
+{$I JVCL.INC}
+
 requires
   rtl,
   vcl

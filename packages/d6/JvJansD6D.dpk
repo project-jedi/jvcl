@@ -34,6 +34,8 @@ package JvJansD6D;
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
+{$I JVCL.INC}
+
 requires
   JvJansD6R,
   designide,

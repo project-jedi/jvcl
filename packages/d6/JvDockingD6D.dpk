@@ -34,9 +34,16 @@ package JvDockingD6D;
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
+{$I JVCL.INC}
+
 requires
+  JvCoreD6D,
+  JvCoreD6R,
+  JvDockingD6R,
   designide,
-  JvDockingD6R
+  rtl,
+  vcl,
+  vclx
   ;
 
 contains
