@@ -319,7 +319,7 @@ type
     property OnEditChange: TNotifyEvent read FOnEditChange write FOnEditChange;
     property OnShowEditor: TJvDBEditShowEvent read FOnShowEditor write FOnShowEditor;
     property OnTitleBtnClick: TTitleClickEvent read FOnTitleBtnClick write FOnTitleBtnClick;
-    { TODO -oJVCL -cJVCL3_POSTBETA : make visible after JVCL3 beta release }
+    { TODO -oJVCL -cPOST_JVCL3 : uncomment }
 //    property OnTitleBtnDblClick: TTitleClickEvent read FOnTitleBtnDblClick write FOnTitleBtnDblClick;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
     property OnTopLeftChanged: TNotifyEvent read FOnTopLeftChanged write FOnTopLeftChanged;
@@ -1094,18 +1094,25 @@ var
   function GetIndexOf(aFieldName: string; var aIndexName: string; var Descending: boolean): boolean;
   var
     i: integer;
+    IsDescending:boolean;
 
   begin
     Result := False;
     for i := 0 to IndexDefs.Count - 1 do
     begin
-      if Pos(aFieldName, IndexDefs[i].Fields) = 1 then
+      if Pos(aFieldName, IndexDefs[i].Fields) >= 1 then
       begin
-        aIndexName := IndexDefs[i].Name;
-        Descending := (ixDescending in IndexDefs[i].Options);
+        aIndexName := IndexDefs[i].Name; // best match so far
+        IsDescending := (ixDescending in IndexDefs[i].Options);
         Result := true;
-        Exit;
+        if Descending <> IsDescending then // we've found an index that is the opposite direction of the previous one, so we return now
+        begin
+          Descending := IsDescending;
+          Exit;
+        end;
       end;
+      // if we get here and Result is true, it means we've found a matching index but it
+      // might be the same as the previous one...
     end;
   end;
 
@@ -1119,20 +1126,21 @@ begin
     IndexDefs := nil;
   if Assigned(IndexDefs) then
   begin
+    Descending := SortMarker = smUp;
     if GetIndexOf(AField.FieldName, lIndexName, Descending) then
     begin
       IndexFound := true;  
       SortedField := AField.FieldName;
       { TODO -oJVCL -cPOST_JVCL3 : Uncomment }
-      // (p3) this should maybe be the other way around?      
+      // (p3) maybe this should be the other way around, i.e cDirection[not Descending]?
 //      SortMarker := cDirection[Descending];
       try
         SetStrProp(DataSource.DataSet, 'IndexName', lIndexName);
       except
       end;
-      
-    end;  // End Lionel
-  end; 
+    end;
+  end;
+  // End Lionel
   //--------------------------------------------------------------------------
   // FBC: 2004-02-18
   // Following code handles the sortmarker if no Index is found.
@@ -1154,8 +1162,6 @@ begin
       self.SortMarker  := smUp;
     end;
   end;
-  // end FBC
-  // end Lionel
   if Assigned(FOnTitleBtnClick) then
     FOnTitleBtnClick(Self, ACol, AField);
 end;
@@ -1938,7 +1944,7 @@ begin
         DoDrawColumnTitle(Canvas, TitleRect, AField, Bmp, Down, Indicator,
           DefaultDrawText, DefaultDrawSortMarker);
         TextRect := TitleRect;
-        if (ASortMarker <> smNone) and ((DrawColumn.Title.Alignment = taRightJustify) or (Canvas.TextWidth(Caption) > (TextRect.Right-TextRect.Left))) then
+        if (ASortMarker <> smNone) and ((DrawColumn.Title.Alignment = taRightJustify) or (Canvas.TextWidth(Caption) >= (TextRect.Right-TextRect.Left))) then
           Dec(TextRect.Right, Bmp.Width + 4);
         if DefaultDrawText then
         begin
