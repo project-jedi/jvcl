@@ -85,6 +85,7 @@ const
   ttLS = 46; { [ }
   ttRS = 47; { ] }
   ttDoublePoint = 48; {..}
+  ttDoubleQuote = 49; {"}
 
   ttFalse = 63; { false }
   ttTrue = 65; { true }
@@ -426,6 +427,9 @@ begin
     else
     if T1 = ']' then
       Result := ttRS
+    else
+    if T1 = '"' then
+      Result := ttDoubleQuote
     else
       goto Any;
   end
