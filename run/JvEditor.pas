@@ -387,7 +387,8 @@ begin
   JvEditor.BeginUpdate;
   try
     inherited Assign(Source);
-    FJvEditor.NotUndoable;
+    JvEditor.NotUndoable;
+    JvEditor.TextAllChanged;
   finally
     JvEditor.EndUpdate;
   end;
@@ -398,7 +399,7 @@ begin
   JvEditor.BeginUpdate;
   try
     inherited AddStrings(Strings);
-    FJvEditor.NotUndoable;
+    JvEditor.NotUndoable;
   finally
     JvEditor.EndUpdate;
   end;
@@ -727,7 +728,6 @@ begin
       Canvas.Brush.Color := LineAttrs[LeftCol + 1].BC;
     Canvas.FillRect(Bounds(EditorClient.Left, (Line - TopRow) *
       CellRect.Height, 1, CellRect.Height));
-
     {optimized, paint group of chars with identical attributes}
     SL := Length(S);
     MX := ColEnd;
@@ -756,13 +756,13 @@ begin
         {bottom line}
         FillRect(Bounds(R.Left, R.Bottom - 1, CellRect.Width * Length(Ch), 1));
 
-        if (ColPainted = ColBeg) and (ColPainted < SL) then
+{        if (ColPainted = ColBeg) and (ColPainted < SL) and (ColPainted > 0) then
         begin
-          R.Right := R.Left + CellRect.Width * Length(Ch);
-          Ch := S[ColPainted] + Ch; // (ahuser) this meight add a #0 - is this correct? 
+          R.Right := R.Left + CellRect.Width * Length(Ch) + 6;
+          Ch := S[ColPainted] + Ch; // (ahuser) this meight add a #0 - is this correct?
           TJvUnicodeCanvas(Canvas).TextRect(R, R.Left - CellRect.Width, R.Top, Ch);
         end
-        else
+        else}
           TJvUnicodeCanvas(Canvas).ExtTextOut(R.Left, R.Top, [etoOpaque, etoClipped], nil, Ch, @FMyDi[0]);
           // Windows.ExtTextOut(Canvas.Handle, R.Left, R.Top, 0, nil, PChar(Ch), Length(Ch), @FMyDi[0]);
         ColPainted := jC - 1;

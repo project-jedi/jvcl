@@ -388,7 +388,8 @@ begin
   JvEditor.BeginUpdate;
   try
     inherited Assign(Source);
-    FJvEditor.NotUndoable;
+    JvEditor.NotUndoable;
+    JvEditor.TextAllChanged;
   finally
     JvEditor.EndUpdate;
   end;
@@ -399,7 +400,7 @@ begin
   JvEditor.BeginUpdate;
   try
     inherited AddStrings(Strings);
-    FJvEditor.NotUndoable;
+    JvEditor.NotUndoable;
   finally
     JvEditor.EndUpdate;
   end;
@@ -757,13 +758,13 @@ begin
         {bottom line}
         FillRect(Bounds(R.Left, R.Bottom - 1, CellRect.Width * Length(Ch), 1));
 
-        if (ColPainted = ColBeg) and (ColPainted < SL) then
+{        if (ColPainted = ColBeg) and (ColPainted < SL) then
         begin
           R.Right := R.Left + CellRect.Width * Length(Ch);
-          Ch := S[ColPainted] + Ch; // (ahuser) this meight add a #0 - is this correct? 
+          Ch := S[ColPainted] + Ch; // (ahuser) this meight add a #0 - is this correct?
           TJvUnicodeCanvas(Canvas).TextRectW(R, R.Left - CellRect.Width, R.Top, Ch);
         end
-        else
+        else}
           TJvUnicodeCanvas(Canvas).ExtTextOutW(R.Left, R.Top, [etoOpaque, etoClipped], nil, Ch, @FMyDi[0]);
           // Windows.ExtTextOutW(Canvas.Handle, R.Left, R.Top, 0, nil, PWideChar(Ch), Length(Ch), @FMyDi[0]);
         ColPainted := jC - 1;
