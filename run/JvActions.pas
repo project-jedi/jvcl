@@ -101,13 +101,13 @@ type
 
   TJvWebAction = class(TAction)
   private
-    FUrl: string;
+    FURL: string;
   public
     function HandlesTarget(Target: TObject): Boolean; override;
     procedure UpdateTarget(Target: TObject); override;
     function Execute: Boolean; override;
   published
-    property URL: string read FUrl write FUrl;
+    property URL: string read FURL write FURL;
   end;
 
 
@@ -245,7 +245,7 @@ end;
 
 function TJvWebAction.Execute: Boolean;
 begin
-  Result := ShellExecute(0, 'open', PChar(Url), nil, nil, SW_SHOWNORMAL) > HINSTANCE_ERROR;
+  Result := ShellExecute(0, 'open', PChar(URL), nil, nil, SW_SHOWNORMAL) > HINSTANCE_ERROR;
 end;
 
 function TJvWebAction.HandlesTarget(Target: TObject): Boolean;
@@ -255,7 +255,7 @@ end;
 
 procedure TJvWebAction.UpdateTarget(Target: TObject);
 begin
-  Enabled := Url <> '';
+  Enabled := URL <> '';
 end;
 
 end.

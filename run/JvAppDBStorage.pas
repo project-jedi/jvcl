@@ -331,19 +331,19 @@ begin
   if FBookmark = '' then
     Exit;
   if FieldsAssigned then
-    DataSource.Dataset.Bookmark := FBookmark;
+    DataSource.DataSet.Bookmark := FBookmark;
   FBookmark := '';
 end;
 
 function TJvCustomAppDBStorage.SectionExists(const Path: string; RestorePosition: Boolean): Boolean;
 begin
-  Result := FieldsAssigned and DataSource.Dataset.Active;
+  Result := FieldsAssigned and DataSource.DataSet.Active;
   if Result then
   begin
     if RestorePosition then
       StoreDataset;
     try
-      Result := DataSource.Dataset.Locate(SectionField, Path, [loCaseInsensitive]);
+      Result := DataSource.DataSet.Locate(SectionField, Path, [loCaseInsensitive]);
     finally
       if RestorePosition then
         RestoreDataset;
@@ -382,22 +382,22 @@ procedure TJvCustomAppDBStorage.StoreDataset;
 begin
   if FBookmark <> '' then
     RestoreDataset;
-  if FieldsAssigned and DataSource.Dataset.Active then
+  if FieldsAssigned and DataSource.DataSet.Active then
   begin
-    FBookmark := DataSource.Dataset.Bookmark;
-    DataSource.Dataset.DisableControls;
+    FBookmark := DataSource.DataSet.Bookmark;
+    DataSource.DataSet.DisableControls;
   end;
 end;
 
 function TJvCustomAppDBStorage.ValueExists(const Section, Key: string; RestorePosition: Boolean): Boolean;
 begin
-  Result := FieldsAssigned and DataSource.Dataset.Active;
+  Result := FieldsAssigned and DataSource.DataSet.Active;
   if Result then
   begin
     if RestorePosition then
       StoreDataset;
     try
-      Result := DataSource.Dataset.Locate(Format('%s;%s', [SectionField, KeyField]), VarArrayOf([Section, Key]),
+      Result := DataSource.DataSet.Locate(Format('%s;%s', [SectionField, KeyField]), VarArrayOf([Section, Key]),
         [loCaseInsensitive]);
     finally
       if RestorePosition then
@@ -423,14 +423,14 @@ begin
     begin
       if AnsiSameStr(FValueLink.Field.AsString, Value) then
         Exit; // don't save if it's the same value (NB: this also skips the event)
-      DataSource.Dataset.Edit
+      DataSource.DataSet.Edit
     end
     else
-      DataSource.Dataset.Append;
+      DataSource.DataSet.Append;
     FSectionLink.Field.AsString := Section;
     FKeyLink.Field.AsString := Key;
     FValueLink.Field.AsString := Value;
-    DataSource.Dataset.Post;
+    DataSource.DataSet.Post;
   end;
   // always call event
   if Assigned(FOnWrite) then

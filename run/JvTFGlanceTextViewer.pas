@@ -97,7 +97,7 @@ type
     procedure MouseLeave(Control: TControl); override;
     {$ENDIF USEJVCL}
 
-    procedure WMEraseBkgnd(var Message: TMessage); message WM_ERASEBKGND;
+    procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
     procedure DoEnter; override;
     procedure DoExit; override;
 
@@ -298,9 +298,9 @@ begin
     DrawArrow(aCanvas, FDDBtnRect, dirDown);
 
     Pen.Color := clBlack;
-    PolyLine([FDDBtnRect.TopLeft, Point(FDDBtnRect.Right, FDDBtnRect.Top),
-             FDDBtnRect.BottomRight, Point(FDDBtnRect.Left, FDDBtnRect.Bottom),
-             FDDBtnRect.TopLeft]);
+    Polyline([FDDBtnRect.TopLeft, Point(FDDBtnRect.Right, FDDBtnRect.Top),
+      FDDBtnRect.BottomRight, Point(FDDBtnRect.Left, FDDBtnRect.Bottom),
+      FDDBtnRect.TopLeft]);
     {
     if Windows.PtInRect(aRect, FMouseLoc) then
       begin
@@ -501,9 +501,9 @@ begin
   end;
 end;
 
-procedure TJvTFGVTextControl.WMEraseBkgnd(var Message: TMessage);
+procedure TJvTFGVTextControl.WMEraseBkgnd(var Msg: TMessage);
 begin
-  Message.Result := LRESULT(False);
+  Msg.Result := LRESULT(False);
 end;
 
 procedure TJvTFGVTextControl.MouseMove(Shift: TShiftState; X, Y: Integer);

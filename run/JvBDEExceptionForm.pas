@@ -135,7 +135,7 @@ end;
 
 procedure TJvBdeErrorDlg.ShowError;
 var
-  BDEError: TDbError;
+  BDEError: TDBError;
   S: string;
   I: Integer;
 begin

@@ -246,7 +246,7 @@ var
   RepCount: Longint;
   Res: string;
 begin
-  Res := Astr;
+  Res := AStr;
   if ReplaceNo > 0 then
     RepCount := 0
   else
@@ -254,9 +254,9 @@ begin
   Count := 1;
   if Length(Res) > 0 then
     repeat
-      if Res[count] = CharToFind then
+      if Res[Count] = CharToFind then
       begin
-        Res[count] := NewChar;
+        Res[Count] := NewChar;
         if RepCount >= 0 then
           Inc(RepCount, 1);
       end;

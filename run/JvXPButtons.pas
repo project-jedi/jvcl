@@ -907,7 +907,7 @@ begin
     {$IFDEF VisualCLX}
     repeat
       Application.ProcessMessages;
-    until not QWidget_isVisible(DropDownMenu.handle);
+    until not QWidget_isVisible(DropDownMenu.Handle);
     {$ENDIF VisualCLX}
 
   end;

@@ -108,7 +108,7 @@ type
   TJvAppStorageCryptEvent = procedure(var Value: string) of object;
   TJvAppStorageGetFileNameEvent = procedure(Sender: TJvCustomAppStorage;
     var FileName: TFileName) of object;
-  TJvAppStorageObjectListItemCreateEvent = function(Sender: TJvCustomAppStorage; const Path: string; Index : Integer): tPersistent  of object;
+  TJvAppStorageObjectListItemCreateEvent = function(Sender: TJvCustomAppStorage; const Path: string; Index: Integer): TPersistent of object;
 
   TJvAppStorageOptionsClass = class of TJvCustomAppStorageOptions;
 
@@ -946,7 +946,7 @@ function TJvCustomAppStorage.GetPropCount(Instance: TPersistent): Integer;
 var
   Data: PTypeData;
 begin
-  Data   := GetTypeData(Instance.Classinfo);
+  Data   := GetTypeData(Instance.ClassInfo);
   Result := Data^.PropCount;
 end;
 
@@ -1407,7 +1407,7 @@ class function TJvCustomAppStorage.NameIsListItem(const Name: string): Boolean;
 var
   NameStart: PChar;
 begin
-  NameStart := AnsiStrRScan(pchar(Name), '\');
+  NameStart := AnsiStrRScan(PChar(Name), '\');
   if NameStart = nil then
     NameStart := PChar(Name);
   Result := (AnsiStrLIComp(NameStart, cItem, 4) = 0) and (NameStart[4] in DigitSymbols);
@@ -2498,7 +2498,7 @@ begin
       RelPathName := FileName;
     case Location of
       flCustom:
-        Result := DoGetFilename;
+        Result := DoGetFileName;
       flExeFile:
         Result := PathAddSeparator(ExtractFilePath(ParamStr(0))) + NameOnly;
       {$IFDEF MSWINDOWS}

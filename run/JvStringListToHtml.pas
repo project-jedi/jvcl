@@ -49,7 +49,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure ConvertToHtml(Source: TStrings; const FileName: string);
+    procedure ConvertToHTML(Source: TStrings; const FileName: string);
     procedure ConvertToHTMLStrings(Source, Destination: TStrings);
   published
     property HTML: TStrings read GetHTML write SetHTML stored False;
@@ -89,7 +89,7 @@ begin
   end;
 end;
 
-procedure TJvStringListToHtml.ConvertToHtml(Source: TStrings; const FileName: string);
+procedure TJvStringListToHtml.ConvertToHTML(Source: TStrings; const FileName: string);
 var
   Dest: TStringList;
 begin
@@ -136,7 +136,7 @@ function TJvStringListToHtml.GetHTML: TStrings;
 begin
   if ComponentState * [csLoading, csDestroying] <> [] then
     if FHTML.Count = 0 then
-      ConvertToHtmlStrings(Strings, FHTML);
+      ConvertToHTMLStrings(Strings, FHTML);
   Result := FHTML;
 end;
 

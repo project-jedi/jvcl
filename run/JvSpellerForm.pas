@@ -234,7 +234,7 @@ begin
   for I := 2 to 26 do
   begin
     if FDicIndex[I - 1] <> 1 then
-      Startpos := FDicIndex[I - 1]
+      StartPos := FDicIndex[I - 1]
     else
       StartPos := 1;
     P := Q_PosStr(Cr + Chr(96 + I), FDict, StartPos);
@@ -253,7 +253,7 @@ begin
   for I := 2 to 26 do
   begin
     if FUserDicIndex[I - 1] <> 1 then
-      Startpos := FUserDicIndex[I - 1]
+      StartPos := FUserDicIndex[I - 1]
     else
       StartPos := 1;
     P := Q_PosStr(Cr + Chr(96 + I), FUserDic, StartPos);

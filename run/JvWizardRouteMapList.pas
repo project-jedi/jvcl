@@ -402,7 +402,7 @@ end;
 
 procedure TJvWizardRouteMapList.SetHorzOffset(const Value: Integer);
 begin
-  if FHorzoffset <> Value then
+  if FHorzOffset <> Value then
   begin
     FHorzOffset := Value;
     Invalidate;

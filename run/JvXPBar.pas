@@ -1276,7 +1276,7 @@ begin
   FWinXPBar := WinXPBar;
   FRollDirection := RollDirection;
   FreeOnTerminate := True;
-  Suspended := false;
+  Suspended := False;
 end;
 
 procedure TJvXPFadeThread.Execute;
@@ -2016,7 +2016,7 @@ begin
 
     { fill non-client area }
     {$IFDEF VisualCLX}
-    Brush.Color := TJvXPWinControl(parent).Color;
+    Brush.Color := TJvXPWinControl(Parent).Color;
     with Rect do
       FillRect(Bounds(Left, Top, Right - Left, FTopSpace));
     {$ENDIF VisualCLX}
@@ -2037,7 +2037,7 @@ begin
     {$ENDIF VisualCLX}
 
     { draw frame... }
-    Brush.Color := FColors.fBorderColor;
+    Brush.Color := FColors.FBorderColor;
     FrameRect({$IFDEF VisualCLX} Canvas, {$ENDIF} Rect);
 
     if FHeaderRounded then
@@ -2046,11 +2046,11 @@ begin
       Pixels[0, Rect.Top] := OwnColor;
       Pixels[0, Rect.Top + 1] := OwnColor;
       Pixels[1, Rect.Top] := OwnColor;
-      Pixels[1, Rect.Top + 1] := FColors.fBorderColor;
+      Pixels[1, Rect.Top + 1] := FColors.FBorderColor;
       Pixels[Width - 1, Rect.Top] := OwnColor;
       Pixels[Width - 2, Rect.Top] := OwnColor;
       Pixels[Width - 1, Rect.Top + 1] := OwnColor;
-      Pixels[Width - 2, Rect.Top + 1] := FColors.fBorderColor;
+      Pixels[Width - 2, Rect.Top + 1] := FColors.FBorderColor;
     end;
 
     { draw Button }
@@ -2117,7 +2117,7 @@ begin
     end;
 
     { draw caption }
-    SetBkMode(Handle, Transparent);
+    SetBkMode(Handle, TRANSPARENT);
     Font.Assign(FHeaderFont);
     if FHotTrack and (dsHighlight in DrawState) and (FHitTest <> htNone) and (FHotTrackColor <> clNone) then
       Font.Color := FHotTrackColor;
@@ -2164,7 +2164,7 @@ begin
   if FRollImages <> Value then
   begin
     if FRollImages <> nil then
-      FRollImages.UnregisterChanges(FRollChangeLink);
+      FRollImages.UnRegisterChanges(FRollChangeLink);
     FRollImages := Value;
     if FRollImages <> nil then
     begin
@@ -2323,7 +2323,7 @@ begin
       FHitTest := htHeader;
       FHoverIndex := -1;
       Click;
-      exit;
+      Exit;
     end
     else
       for I := 0 to VisibleItems.Count - 1 do

@@ -58,7 +58,7 @@ type
       const ReportListAsValue: Boolean = True); override;
     procedure EnumValues(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); override;
-    function PathExistsInt(const Path: string): boolean; override;
+    function PathExistsInt(const Path: string): Boolean; override;
     function ValueExists(const Section, Key: string): Boolean;
     function IsFolderInt(const Path: string; ListIsValue: Boolean = True): Boolean; override;
     function ReadValue(const Section, Key: string): string;
@@ -489,7 +489,7 @@ begin
   end;
 end;
 
-function TJvCustomAppIniStorage.PathExistsInt(const Path: string): boolean;
+function TJvCustomAppIniStorage.PathExistsInt(const Path: string): Boolean;
 var
   Section: string;
   Key: string;

@@ -279,7 +279,7 @@ begin
   if not Assigned(GlobalValidatorsList) then
   begin
     GlobalValidatorsList := TStringList.Create;
-    AddFinalizeObjectNil(sUnitname, TObject(GlobalValidatorsList));
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalValidatorsList));
    // register
     RegisterBaseValidators;
   end;
@@ -844,7 +844,7 @@ end;
 
 function TJvValidators.GetItem(Index: Integer): TJvBaseValidator;
 begin
-  Result := TJvBasevalidator(FItems[Index]);
+  Result := TJvBaseValidator(FItems[Index]);
 end;
 
 procedure TJvValidators.Exchange(Index1, Index2: Integer);
