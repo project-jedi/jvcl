@@ -202,9 +202,9 @@ JvDotNetCtrlsD7R.bpl: d7\JvDotNetCtrlsD7R.dpk
 JvDotNetCtrlsD7D.bpl: d7\JvDotNetCtrlsD7D.dpk
   $(DCC)
 
-JvEDID7R.bpl: d6\JvEDID7R.dpk
+JvEDID7R.bpl: d7\JvEDID7R.dpk
   $(DCC)
 
-JvEDID7D.bpl: d6\JvEDID7D.dpk
+JvEDID7D.bpl: d7\JvEDID7D.dpk
   $(DCC)
 
