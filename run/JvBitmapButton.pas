@@ -85,9 +85,9 @@ type
     property Down: boolean read FDown write SetDown;
     property Latching: boolean read FLatching write SetLatching;
     property HotTrack: boolean read FHotTrack write SetHotTrack;
-    property onclick;
-    property onmousedown;
-    property onmouseup;
+    property OnClick;
+    property OnMouseDown;
+    property OnMouseUp;
     property Hint;
     property ShowHint;
     property Caption: string read FCaption write SetCaption;
