@@ -66,8 +66,8 @@ resourcestring
   RsPaletteBarPanel = 'Jv Bars and Panels';
   RsPaletteLabel = 'Jv Labels';
   RsPaletteListComboTree = 'Jv Lists, Combos and Trees';
-  RsPaletteScrollerTracker = 'Jv Scrollers and Trackers';
-  RsPaletteSliderSplitter = 'Jv Sliders and Splitters';
+  RsPaletteScrollerTracker = 'Jv Scrollers';
+  RsPaletteSliderSplitter = 'Jv Trackers, Sliders and Splitters';
   RsPaletteImageAnimator = 'Jv Images and Animators';
   RsPaletteVisual = 'Jv Visual';
   RsPaletteNonVisual = 'Jv Non-Visual';
