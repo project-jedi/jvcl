@@ -228,7 +228,7 @@ begin
   if Assigned(TargetList[target]) then
     Result := TargetList[target].Dir
   else
-    Result := TargetList[GetNonPersoTarget(target)].Dir;
+    Result := TargetList[GetNonPersoTarget(target)].PDir;
 end;
 
 function ExpandPackageName(Name, target, prefix, format : string) : string;
@@ -512,7 +512,7 @@ begin
   Result := FileTimeToDateTime(fileTime);
 end;
 
-function ApplyTemplateAndSave(path, target, package, extension, prefix, format : string; template : TStrings; xml : TJvSimpleXml; templateDate, xmlDate : TDateTime; xmlName : string) : string;
+function ApplyTemplateAndSave(path, target, package, extension, prefix, format : string; template : TStrings; xml : TJvSimpleXml; templateName, xmlName : string) : string;
 var
   OutFileName : string;
   oneLetterType : string;
@@ -592,14 +592,8 @@ begin
             outFile.Text := outFile.Text +
                             EnsureCondition(tmpStr, packageNode, target);
           end;
-
-          // if this required package is not in the associated 'perso'
-          // target or only in the 'perso' target then return the
-          // 'perso' target name. 'perso' either means PName
-          if IsNotInPerso(packageNode, target) or
-             IsOnlyInPerso(packageNode, target) then
-            Result := GetPersoTarget(target);
         end;
+
         // if the last character in the output file is
         // a comma, then remove it. This possible comma will
         // be followed by a carriage return so we look
@@ -632,15 +626,8 @@ begin
             outFile.Text := outFile.Text +
                             EnsureCondition(tmpStr, fileNode, target);
           end;
-
-          // if this included file is not in the associated 'perso'
-          // target or only in the 'perso' target then return the
-          // 'perso' target name. 'perso' either means 'per' or
-          // 'std'
-          if IsNotInPerso(fileNode, target) or
-             IsOnlyInPerso(fileNode, target) then
-            Result := GetPersoTarget(target);
         end;
+
         // if the last character in the output file is
         // a comma, then remove it. This possible comma will
         // be followed by a carriage return so we look
@@ -740,13 +727,33 @@ begin
       Inc(i);
     end;
 
+    // test if there are required packages and/or contained files
+    // that make the package require a different version for a
+    // perso target. This is determined like that:
+    // if a file is not in the associated 'perso'
+    // target or only in the 'perso' target then return the
+    // 'perso' target name.
+    for j := 0 to requiredNode.Items.Count -1 do
+    begin
+      packageNode := requiredNode.Items[j];
+      if IsNotInPerso(packageNode, target) or
+         IsOnlyInPerso(packageNode, target) then
+        Result := GetPersoTarget(target);
+    end;
+    for j := 0 to containsNode.Items.Count -1 do
+    begin
+      fileNode := containsNode.Items[j];
+      if IsNotInPerso(fileNode, target) or
+         IsOnlyInPerso(fileNode, target) then
+        Result := GetPersoTarget(target);
+    end;
+
+    // if no repeat section was used, we must check manually
+    // that at least one file or package is to be used by
+    // the given target. This will then force the generation
+    // of the output file (Useful for cfg templates for instance).
     if not repeatSectionUsed then
     begin
-      // if no repeat section was used, we must check manually
-      // that at least one file or package is to be used by
-      // the given target. This will then force the generation
-      // of the output file (Useful for cfg templates for instance).
-
       for j := 0 to requiredNode.Items.Count -1 do
         if IsIncluded(requiredNode.Items[j], target) then
           containsSomething := True;
@@ -761,11 +768,18 @@ begin
     // create it too
     if containsSomething and
        (not FileExists(OutFileName) or
-        (FileDateToDateTime(FileAge(OutFileName)) < templateDate) or
-        (FileDateToDateTime(FileAge(OutFileName)) < xmlDate)) then
+        (FileDateToDateTime(FileAge(OutFileName)) < FileDateToDateTime(FileAge(templateName))) or
+        (FileDateToDateTime(FileAge(OutFileName)) < FileDateToDateTime(FileAge(xmlName)))) then
     begin
       SendMsg(#9#9'Writing ' + ExtractFileName(OutFileName) + ' for ' + target);
-      outFile.SaveToFile(OutFileName);
+
+      // if outfile contains line, save it.
+      // else, it's because the template file was a binary file, so simply
+      // copy it to the destination name
+      if outFile.count > 0 then
+        outFile.SaveToFile(OutFileName)
+      else
+        CopyFile(PChar(templateName), PChar(OutFileName), False);
     end;
   finally
     bcblibsList.Free;
@@ -788,11 +802,10 @@ var
   rec : TSearchRec;
   i : Integer;
   j : Integer;
-  templateFileName : string;
+  templateName : string;
   xml : TJvSimpleXml;
   xmlName : string;
   template : TStringList;
-  templateTime : TDateTime;
   persoTarget : string;
   target : string;
 
@@ -846,8 +859,8 @@ begin
           // apply the template for all packages
           for j := 0 to packages.Count-1 do
           begin
-            templateFileName := path+TargetToDir(target)+PathSeparator+rec.Name;
-            template.LoadFromFile(templateFileName);
+            templateName := path+TargetToDir(target)+PathSeparator+rec.Name;
+            template.LoadFromFile(templateName);
             xml := TJvSimpleXml.Create(nil);
             try
               xml.Options := [sxoAutoCreate];
@@ -862,8 +875,7 @@ begin
                                    Format,
                                    template,
                                    xml,
-                                   FileDateToDateTime(rec.Time),
-                                   FileDateToDateTime(FileAge(xmlName)),
+                                   templateName,
                                    xmlName);
 
               // if the generation requested a perso target to be done
@@ -873,12 +885,11 @@ begin
               if (persoTarget <> '') and
                  DirectoryExists(path+TargetToDir(persoTarget)) then
               begin
-                templateTime := FileDateToDateTime(rec.Time);
                 if FileExists(path+TargetToDir(persoTarget)+PathSeparator+rec.Name) then
                 begin
                   SendMsg(#9+persoTarget+ ' template will be used for ' + packages[j]);
-                  template.LoadFromFile(path+TargetToDir(persoTarget)+PathSeparator+rec.Name);
-                  templateTime := FileDateToDateTime(FileAge(path+TargetToDir(persoTarget)+PathSeparator+rec.Name));
+                  templateName := path+TargetToDir(persoTarget)+PathSeparator+rec.Name;
+                  template.LoadFromFile(templateName);
                 end;
 
                 ApplyTemplateAndSave(
@@ -890,8 +901,7 @@ begin
                    Format,
                    template,
                    xml,
-                   templateTime,
-                   FileDateToDateTime(FileAge(xmlName)),
+                   templateName,
                    xmlName);
               end;
             finally
