@@ -73,6 +73,7 @@ contains
   JvUninstallControls in '..\..\run\JvUninstallControls.pas',
   JvHint in '..\..\run\JvHint.pas',
   JvMovableBevel in '..\..\run\JvMovableBevel.pas',
-  JvPlaylist in '..\..\run\JvPlaylist.pas';
+  JvPlaylist in '..\..\run\JvPlaylist.pas',
+  JvComboListBox in '..\..\run\JvComboListBox.pas';
 
 end.
