@@ -263,9 +263,7 @@ begin
 end;
 
 initialization
-
-finalization
-  FreeAndNil(DbEngineErrorDlg);
+  DbEngineErrorDlg := nil;
 
 end.
 
