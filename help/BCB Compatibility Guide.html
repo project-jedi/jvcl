@@ -215,17 +215,29 @@ the bpi files you need to add for different missing obj files<br>
  border="1" cellspacing="1" cellpadding="1">
   <tbody>
     <tr>
-      <td
+      <td colspan="1" rowspan="2"
  style="vertical-align: top; width: 50%; font-weight: bold; text-align: center;">Missing
 file<br>
       </td>
+      <td colspan="2" rowspan="1"
+ style="vertical-align: top; text-align: center;"><span
+ style="font-weight: bold;">Missing
+bpi file</span><br>
+      </td>
+    </tr>
+    <tr>
       <td
- style="vertical-align: top; font-weight: bold; text-align: center;">Missing
-bpi file<br>
+ style="vertical-align: top; text-align: center; font-style: italic;">BCB5,
+D5<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; font-style: italic;">Others<br>
       </td>
     </tr>
     <tr>
       <td style="vertical-align: top; width: 50%;">CHECKLST.OBJ<br>
+      </td>
+      <td style="vertical-align: top;">vclx50.bpi<br>
       </td>
       <td style="vertical-align: top;">vclx.bpi<br>
       </td>
@@ -233,11 +245,15 @@ bpi file<br>
     <tr>
       <td style="vertical-align: top;">SYSTEM.OBJ<br>
       </td>
+      <td style="vertical-align: top;">vcl50.bpi<br>
+      </td>
       <td style="vertical-align: top;">rtl.bpi<br>
       </td>
     </tr>
     <tr>
       <td style="vertical-align: top;">CONTROLS.OBJ<br>
+      </td>
+      <td style="vertical-align: top;">vcl50.bpi<br>
       </td>
       <td style="vertical-align: top;">vcl.bpi<br>
       </td>
@@ -245,15 +261,21 @@ bpi file<br>
     <tr>
       <td style="vertical-align: top;">FILECTRL.OBJ<br>
       </td>
+      <td style="vertical-align: top;">vclx50.bpi<br>
+      </td>
       <td style="vertical-align: top;">vclx.bpi<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">SPIN.OBJ<br>
+      </td>
+      <td style="vertical-align: top;">vclsmp50.bpi<br>
+      </td>
+      <td style="vertical-align: top;">vclsmp.bpi<br>
       </td>
     </tr>
   </tbody>
 </table>
-<br>
-Notes: <br>
-- for BCB5, vcl.bpi and rtl.bpi are merged into vcl50.bpi<br>
-- for BCB5, replace vclx.bpi by vclx50.bpi<br>
 <br>
 <h5>[Linker Fatal Error] Fatal: Cannot find CJCL60.bpl</h5>
 <p>You must add CJCL60.bpi to the requires list of your package. The
