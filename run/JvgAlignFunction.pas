@@ -44,7 +44,7 @@ procedure AlignControlsInWindow(Wnd: TWinControl; NeedAlign: TJvgNeedAlign;
 implementation
 
 uses
-  Windows, Classes,
+  Windows, Classes, Math,
   JvgUtils;
 
 procedure AlignControlsInWindow(Wnd: TWinControl; NeedAlign: TJvgNeedAlign;

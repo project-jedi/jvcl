@@ -28,6 +28,7 @@ Known Issues:
  * drag'n'drop edge scrolling - DONE (almost, needs some tweaks to look good as well)
  * icons don't scale, should be handled differently - DONE (explicitly calls DrawIconEx)
 -----------------------------------------------------------------------------}
+
 {$I jvcl.inc}
 
 unit JvCustomItemViewer;
@@ -36,11 +37,11 @@ interface
 
 uses
   Windows, SysUtils, Forms, Messages, Classes, Controls,
-  Graphics, StdCtrls, ComCtrls, ImgList,
+  Graphics, StdCtrls, ComCtrls, ImgList, ExtCtrls,
   {$IFNDEF COMPILER6_UP}
   JvConsts,  // for clSkyBlue
   {$ENDIF COMPILER6_UP}
-  ExtCtrls, JvExControls, JvExForms;
+  JvExControls, JvExForms;
 
 const
   CM_UNSELECTITEMS = WM_USER + 1;
@@ -322,8 +323,10 @@ function ViewerDrawText(Canvas: TCanvas; S: PChar; aLength: Integer;
 function CenterRect(InnerRect, OuterRect: TRect): TRect;
 
 implementation
+
 uses
-  JvJCLUtils, JvJVCLUtils, Math;
+  Math,
+  JvJCLUtils, JvJVCLUtils;
 
 const
   cScrollDelay = 400;

@@ -264,6 +264,7 @@ type
 implementation
 
 uses
+  Math,
   JvgTypes, JvgUtils, JvgAlignFunction, JvDsgnConsts, JvgAlignForm;
 
 {$R *.dfm}

@@ -122,6 +122,9 @@ type
 
 implementation
 
+uses
+  Math;
+
 const
   FontDirs: array [TglSide] of TglLabelDir =
     (fldDownUp, fldLeftRight, fldUpDown, fldLeftRight);

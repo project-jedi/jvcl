@@ -280,17 +280,13 @@ type
     property OnEndEdit;
   end;
 
-procedure Register;
-
 implementation
+
+uses
+  Math,
+  JvgUtils;
+
 {$R ..\Resources\JvgTreeView.res}
-uses JvgUtils;
-
-procedure Register;
-begin
-end;
-
-//______________________________________________________TglCheckTreeView
 
 constructor TJvgCustomTreeView.Create(AOwner: TComponent);
 begin

@@ -408,6 +408,7 @@ type
 implementation
 
 uses
+  Math,
   JvThemes;
 
 var
@@ -433,24 +434,6 @@ type
   public
     constructor Create(Delay:Integer; HintWindow:THintWindow);
   end;
-
-// returns greater of Val1 and Val2
-
-function Max(Val1, Val2: Integer): Integer;
-begin
-  Result := Val1;
-  if Val2 > Val1 then
-    Result := Val2;
-end;
-
-// returns lesser of Val1 and Val2
-
-function Min(Val1, Val2: Integer): Integer;
-begin
-  Result := Val1;
-  if Val2 < Val1 then
-    Result := Val2;
-end;
 
 // use our own InRange since D5 doesn't have it
 

@@ -72,6 +72,7 @@ type
 implementation
 
 uses
+  Math,
   {$IFDEF USEJVCL}
   JvConsts,
   JvResources,

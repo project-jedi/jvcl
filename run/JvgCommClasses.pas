@@ -504,11 +504,12 @@ type
     property Thickness: Byte read FThickness write SetThickness default 1;
     property IgnoreBorder: Boolean read FIgnoreBorder write SetIgnoreBorder default False;
   end;
-  //*************************************{ .. }
+
 implementation
+
 uses
+  Math,
   JvgUtils;
-//______________________________________{ . TJvgTwainColors methods . }
 
 procedure TJvgTwainColors.Changed;
 begin

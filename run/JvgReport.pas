@@ -218,6 +218,7 @@ type
 implementation
 
 uses
+  Math,
   {$IFDEF USEJVCL}
   JvResources,
   {$ENDIF USEJVCL}

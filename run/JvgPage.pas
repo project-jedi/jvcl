@@ -39,7 +39,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, CommCtrl, Imglist, ExtCtrls,
-  JvgTypes, JVclVer, JvgUtils, JvgDrawTab, JvgTabComm, JvgCommClasses;
+  JvgTypes, JVclVer, JvgDrawTab, JvgTabComm, JvgCommClasses;
 
 const
   TCM_SETTEXTCOLOR = TCM_FIRST + 36;
@@ -126,6 +126,10 @@ type
   end;
 
 implementation
+
+uses
+  Math,
+  JvgUtils;
 
 const
   FontDirs: array [TglSide] of TglLabelDir =

@@ -78,7 +78,7 @@ type
 implementation
 
 uses
-  ExtCtrls,
+  Math, ExtCtrls,
   {$IFDEF USEJVCL}
   JvResources,
   {$ENDIF USEJVCL}

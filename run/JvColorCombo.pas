@@ -271,6 +271,7 @@ type
 implementation
 
 uses
+  Math,
   JvConsts, JvResources, JvTypes;
 
 {$R ..\resources\JvColorCombo.res}
@@ -296,14 +297,6 @@ begin
     ReleaseDC(0, DC);
   end;
   Result := TM.tmHeight + 1;
-end;
-
-function Max(Val1, Val2: Integer): Integer;
-begin
-  if Val2 > Val1 then
-    Result := Val2
-  else
-    Result := Val1;
 end;
 
 function IncludeFont(Options: TJvFontComboOptions; LogFont: TLogFont; FontType: Integer): Boolean;

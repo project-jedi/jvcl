@@ -545,7 +545,7 @@ type
 implementation
 
 uses
-  Math, // for min and max
+  Math, // for Min and Max
   JvResources;
 
 const

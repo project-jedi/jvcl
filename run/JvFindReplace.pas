@@ -49,7 +49,8 @@ uses
 type
   TJvReplaceProgressEvent = procedure(Sender: TObject; Position: Integer;
     var Terminate: Boolean) of object;
-  TJvReplaceAllEvent = procedure (Sender:TObject; ReplaceCount:integer) of object;
+  TJvReplaceAllEvent = procedure (Sender:TObject; ReplaceCount: Integer) of object;
+ 
   TJvFindReplace = class(TJvComponent)
   private
     FOnFind: TNotifyEvent;
@@ -74,7 +75,7 @@ type
     FKeepText: Boolean;
     FFindText: string;
     FReplaceText: string;
-    FNumberReplaced: integer; // only used by Replace All
+    FNumberReplaced: Integer; // only used by Replace All
     procedure SetPosition(Value: TPoint);
     procedure SetDialogTop(Value: Integer);
     procedure SetDialogLeft(Value: Integer);
@@ -134,6 +135,7 @@ type
 implementation
 
 uses
+  Math,
   JvConsts, JvResources, JvTypes;
 
 type
@@ -174,13 +176,6 @@ begin
     Inc(atStart);
     Dec(atEnd);
   end;
-end;
-
-function Max(Val1, Val2: Integer): Integer;
-begin
-  Result := Val1;
-  if Val2 > Val1 then
-    Result := Val2;
 end;
 
 { Pascal adaption of a function originally in C }

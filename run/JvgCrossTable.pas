@@ -397,6 +397,9 @@ type
 
 implementation
 
+uses
+  Math;
+
 const
   MAX_COLS = 1024;
   MAX_ROWS = 1024;
