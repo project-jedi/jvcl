@@ -120,7 +120,8 @@ end;
 
 procedure TJvDBSpinEdit.DoChange(Sender: TObject);
 begin
-  if FFieldDataLink.Edit then
+  if (FFieldDataLink <> nil) and (FFieldDataLink.Field <> nil) and
+    not AnsiSameText(FFieldDataLink.Field.AsString, Self.Text) and FFieldDataLink.Edit then
   begin
     FFieldDataLink.Modified; { Data has changed. }
     if Assigned(FOnChange) then
