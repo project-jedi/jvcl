@@ -237,6 +237,8 @@ type
       const VisibleTime: Integer = CJvBallonHintVisibleTimeDefault; const AIconKind: TJvIconKind = ikInformation;
       const AImageIndex: TImageIndex = -1);
     procedure CancelHint;
+
+    property Active: Boolean read FActive;
   published
     property CustomAnimationStyle: TJvAnimationStyle read FCustomAnimationStyle write
       FCustomAnimationStyle default atBlend;
