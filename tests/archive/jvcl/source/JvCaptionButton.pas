@@ -1700,8 +1700,11 @@ begin
       end;
     {$ENDIF}
     CM_SHOWHINTCHANGED:
+    begin
       if ParentShowHint then
         FShowHint := ParentForm.ShowHint;
+      Result := False;
+    end;
     CM_MOUSELEAVE, CM_MOUSEENTER:
       begin
         if FMouseInControl then
