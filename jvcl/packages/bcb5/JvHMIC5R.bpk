@@ -4,8 +4,8 @@
   <MACROS>
     <VERSION value="BCB.05.03"/>
     <PROJECT value="JvHMIC5R.bpl"/>
-    <OBJFILES value="..\..\dcu\JvSLDMappingEditorDialog.obj ..\..\dcu\JvDialButton.obj 
-      ..\..\dcu\JvLED.obj ..\..\dcu\JvSegmentedLEDDisplay.obj 
+    <OBJFILES value="..\..\dcu\JvSLDMappingEditorDialog.obj ..\..\dcu\JvDialButton.obj
+      ..\..\dcu\JvLED.obj ..\..\dcu\JvSegmentedLEDDisplay.obj
       ..\..\dcu\JvSegmentedLEDDisplayMapperFrame.obj ..\..\dcu\JvHMIC5R.obj"/>
     <RESFILES value="JvHMIC5R.res"/>
     <IDLFILES value=""/>
@@ -27,19 +27,19 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvHMIC5R.cpp"/>
     <INCLUDEPATH value="..\..\run;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\run;..\..\dcu;..\..\resources;..\..\..\JCL\dcu;($BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(PATH)"/>
+    <LIBPATH value="..\..\run;..\..\dcu;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\..\run -I..\..\common -I$(BCB)\include -I$(BCB)\include\vcl 
+    <IDLCFLAGS value="-I..\..\run -I..\..\common -I$(BCB)\include -I$(BCB)\include\vcl
       -src_suffix cpp -D_DEBUG -boa"/>
-    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
+    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c
       -tWM"/>
-    <PFLAGS value="-LUvcl50 -LUdclstd50 -LUdsnide50 -N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- 
+    <PFLAGS value="-LUvcl50 -LUdclstd50 -LUdsnide50 -N2..\..\dcu -N0..\..\dcu -$YD -$W -$O-
       -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\dcu -D&quot;JVCL HMI Controls runtime package&quot; 
+    <LFLAGS value="-I..\..\dcu -D&quot;JVCL HMI Controls runtime package&quot;
       -aa -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
   </OPTIONS>
   <LINKER>
