@@ -94,7 +94,7 @@
     <File Name="..\..\run\JvLinkedControls.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQTimeEdit.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQSpinButton.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQGauges" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQGauges.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQTabControl.pas" Targets="allclx" Formname="" Condition=""/>
   </Contains>
 </Package>
