@@ -1,5 +1,9 @@
 Changelog for JVCL 3.0
 ======================
+2003-11-08:
+- Updated TJvUrlListGrabber and the associated demo. Still the design time bug is not fixed. // olivier
+2003-11-07:
+- Fixed BCB build // olivier
 2003-11-05:
 - WidthOf and HeightOf renamed to RectWidth and RectHeight // peter3
 - Moved lots of procedures from JvJVCLUtils to JvJCLUtils. Basically, anything that doesn't rely on other JVCL units and doesn't use TComponent and above are now in JvJCLUtils. Graphic stuff has been left in JvJVCLUtils even if it doesn't use (J)VCL. // peter3

@@ -106,27 +106,40 @@ object Form1: TForm1
       Lines.Strings = (
         
           'This demo shows how you can use the JvMultiHTTPGrabber component' +
-          ' to download several files "simultaneously". Click "Download" to' +
-          ' download the file specified in the combobox'#39's edit field, click' +
-          ' "Download All" to download from all URL'#39's in the combobox'#39's lis' +
-          't.'
+          ' to '
+        
+          'download several files "simultaneously". Click "Download" to dow' +
+          'nload the '
+        
+          'file specified in the combobox'#39's edit field, click "Download All' +
+          '" to download '
+        'from all URL'#39's in the combobox'#39's list.'
         ''
         
           'Errors and informational messages are reported in the bottom ric' +
-          'h edit and the content of the downloaded file(s) are shown in th' +
-          'is rich edit (unless the "Save To File" option is checked in whi' +
-          'ch case downloads are saved to file).'
+          'h edit and '
+        
+          'the content of the downloaded file(s) are shown in this rich edi' +
+          't (unless the '
+        
+          '"Save To File" option is checked in which case downloads are sav' +
+          'ed to file).'
         ''
         
           'When you click "Download" or "Download All", the current URL is ' +
-          'added to the history list. To remove an item from the list, sele' +
-          'ct it from the list, right-click and select "Remove from history' +
-          '" from the menu. The URL'#39's in the history list are remembered un' +
-          'til the next time you start the program.')
+          'added to '
+        
+          'the history list. To remove an item from the list, select it fro' +
+          'm the list, right-'
+        
+          'click and select "Remove from history" from the menu. The URL'#39's ' +
+          'in the '
+        
+          'history list are remembered until the next time you start the pr' +
+          'ogram.')
       ScrollBars = ssBoth
       TabOrder = 0
       WantReturns = False
-      WordWrap = False
     end
   end
   object gnLog: TGroupBox
