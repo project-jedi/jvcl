@@ -15,7 +15,7 @@ Portions created by Marcel Bestebroer are Copyright (C) 2003 Marcel Bestebroer.
 All Rights Reserved.
 
 Contributor(s):
-Jay Dubal [].
+  Jay Dubal [jaydubal@hotmail.com].
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -31,7 +31,8 @@ interface
 
 uses
   SysUtils, Windows, Classes, Graphics, Messages,
-  JvComponent;
+  JclBase, 
+  JvComponent, JvTypes;
 
 
 (* Comments to be removed later (when the help is done <g>):
@@ -46,6 +47,7 @@ uses
               new: added -
               new: added H, L and P, to display HELP
               new: Made Uppercase C and lowercase c)
+              new: added U, u and y
 
         a
     ---------
@@ -114,14 +116,17 @@ type
   TJvSegmentLEDDigits = class;
   TJvSegmentLEDDigit = class;
 
-  TJvSegmentLEDKind = (slk7, slk14, slk16);
+  TJvSegmentLEDKind = (slk7Segments, slk14Segments, slk16Segments);
+
+  EJvLEDDisplay = class(EJVCLException);
 
   TJvCustomSegmentLEDDisplay = class(TJvGraphicControl)
   private
+    FAutoSize: Boolean;
     FColorOn: TColor;
     FColorOff: TColor;
     FDigitHeight: Integer;
-    FDigits: TList;
+    FDigits: TJvSegmentLEDDigits;
     FDigitWidth: Integer;
     FKind: TJvSegmentLEDKind;
     FSegmentWidth: Integer;
@@ -133,7 +138,7 @@ type
   protected
     function GetDigit(I: Integer): TJvSegmentLEDDigit;
     function GetDigitCount: Integer;
-    function GetDigits: TJvSegmentLEDDigits;
+    procedure SetAutoSize(Value: Boolean);
     procedure SetColorOn(Value: TColor);
     procedure SetColorOff(Value: TColor);
     procedure SetDigitCount(Value: Integer);
@@ -148,14 +153,14 @@ type
     procedure SetText(Value: string);
     procedure Paint; override;
     procedure InvalidatePolygons;
+    procedure InvalidateSize;
     procedure WMEraseBkGnd(var M: TMessage); message WM_ERASEBKGND;
+    property AutoSize: Boolean read FAutoSize write SetAutoSize;
     property ColorOn: TColor read FColorOn write SetColorOn;
     property ColorOff: TColor read FColorOff write SetColorOff;
-    property Digit[I: Integer]: TJvSegmentLEDDigit read GetDigit;
+    property Digits: TJvSegmentLEDDigits read FDigits write SetDigits;
     property DigitCount: Integer read GetDigitCount write SetDigitCount;
     property DigitHeight: Integer read FDigitHeight write SetDigitHeight;
-    { Digits is only used in the IDE to allow setting the individual digits }
-    property Digits: TJvSegmentLEDDigits read GetDigits write SetDigits stored False;
     property DigitWidth: Integer read FDigitWidth write SetDigitWidth;
     property Kind: TJvSegmentLEDKind read FKind write SetKind;
     property Margin: Integer read FMargin write SetMargin;
@@ -167,13 +172,14 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DisplayString(S: string; const ResizeDisplay: Boolean = False);
+    function DigitStringToSegments(S: string): TDynStringArray;
   published
   end;
 
   TJvSegmentLEDDisplay = class(TJvCustomSegmentLEDDisplay)
   public
-    property Digit;
   published
+    property AutoSize;
     property Color;
     property ColorOn;
     property ColorOff;
@@ -189,14 +195,23 @@ type
     property Text;
   end;
 
-  TJvSegmentLEDDigits = class(TPersistent)
+  TJvSegmentLEDDigits = class(TOwnedCollection)
+  protected
+    function GetItem(Index: Integer): TJvSegmentLEDDigit;
+    procedure SetItem(Index: Integer; Value: TJvSegmentLEDDigit);
+    function Display: TJvCustomSegmentLEDDisplay; 
+    procedure Update(Item: TCollectionItem); override;
+  public
+    constructor Create(AOwner: TPersistent);
+    function Add: TJvSegmentLEDDigit;
+    function Insert(Index: Integer): TJvSegmentLEDDigit;
+    property Items[Index: Integer]: TJvSegmentLEDDigit read GetItem write SetItem; default;
   end;
-
-  TJvSegmentLEDDigit = class(TPersistent)
+  
+  TJvSegmentLEDDigit = class(TCollectionItem)
   private
-    FDigitIndex: Integer;
     FDisplay: TJvCustomSegmentLEDDisplay;
-    FSegments: array of Boolean; // On state of each segment (where DP is the last segment in the array if it's used)
+    FSegments: array of Boolean;
     FDPRect: TRect;
     FUseDP: Boolean;
     FPolygons: array of array of TPoint;
@@ -208,22 +223,26 @@ type
     procedure SetUseDP(Value: Boolean);
 
     procedure CalcPolygons;
+    procedure Invalidate;
     procedure Paint(ACanvas: TCanvas);
 
-    procedure SetChar7(Ch: Char);
-    procedure SetChar16(Ch: Char);
-
-    property DigitIndex: Integer read FDigitIndex;
     property Display: TJvCustomSegmentLEDDisplay read FDisplay;
   public
-    constructor Create(ADisplay: TJvCustomSegmentLEDDisplay; ADigitIndex: Integer);
+    constructor Create(Collection: TCollection); override;
     procedure SetChar(const Ch: Char);
 
     property SegmentState[I: Integer]: Boolean read GetSegmentState write SetSegmentState;
   published
-    property Segments: string read GetSegments write SetSegments; // allows a binary string (0 or 1) or a string of segments that are on; always displays the segments that are on
+    property Segments: string read GetSegments write SetSegments;
     property UseDP: Boolean read FUseDP write SetUseDP;
   end;
+
+const
+  { New colors }
+  clOrange = $0000A0FF;
+  clOrangeOff = $0000415A;
+  clLimeOff = $00004F00;
+  clRedOff = $00000064;
 
 implementation
 
@@ -235,7 +254,7 @@ const
     ' =|0=ABCDEF|1=BC|2=ABDEG|3=ABCDG|4=BCFG|5=ACDFG|6=ACDEFG|7=ABC|8=ABCDEFG|9=ABCDFG|' +
     'A=ABCEFG|a=ABCEFG|B=CDEFG|b=CDEFG|C=ADEF|c=DEG|D=BCDEG|d=BCDEG|E=ADEFG|e=ADEFG|' +
     'F=AEFG|f=AEFG|H=BCEFG|h=CEFG|L=DEF|l=DEF|O=CDEG|o=CDEG|P=ABEFG|p=ABEFG|R=EG|r=EG|' +
-    '''=F|"=BF|'#248'=ABFG|-=G';
+    '''=F|"=BF|'#248'=ABFG|-=G|U=BCDEF|u=CDE|y=BCDFG';
 
   MapChToSeg16: string =
     ' =|0=ABCDEF|1=BC|2=ABDEG|3=ABCDG|4=BCFG|5=ACDFG|6=ACDEFG|7=ABC|8=ABCDEFG|9=ABCDFG|' +
@@ -253,7 +272,12 @@ const
     'A1', 'A2', 'B',  'C',  'D1', 'D2', 'E',  'F',
     'G1', 'G2', 'H',  'J',  'K',  'L',  'M',  'N'
   );
-  
+
+resourcestring
+  s_E_ld_InvalidString = 'Invalid string.';
+  s_E_ld_IllegalChar = 'Invalid character ''%s''.';
+  s_E_ld_IllegalSegment = 'Invalid segment ''%s''.';
+
 function TextIndex(const Str: string; const Strings: array of string; const PartialAllowed: Boolean = False): Integer;
 begin
   Result := High(Strings);
@@ -268,16 +292,11 @@ var
 begin
   IStart := Pos(Ch + '=', SegData);
   if IStart = 0 then
-    raise Exception.Create('Invalid character ''' + Ch + '''');
+    raise EJvLEDDisplay.CreateFmt(s_E_ld_IllegalChar, [Ch]);
   IEnd := IStart + 2;
   While (IEnd <= Length(SegData)) and (SegData[IEnd] <> '|') do
     Inc(IEnd);
   Result := Copy(SegData, IStart + 2, IEnd - IStart - 2);
-end;
-
-function SmallPointEqual(const P1, P2: TPoint): Boolean;
-begin
-  Result := (P1.X = P2.X) and (P1.Y = P2.Y);
 end;
 
 function TJvCustomSegmentLEDDisplay.GetDigit(I: Integer): TJvSegmentLEDDigit;
@@ -290,9 +309,14 @@ begin
   Result := FDigits.Count;
 end;
 
-function TJvCustomSegmentLEDDisplay.GetDigits: TJvSegmentLEDDigits;
+procedure TJvCustomSegmentLEDDisplay.SetAutoSize(Value: Boolean);
 begin
-  Result := nil;
+  if Value <> AutoSize then
+  begin
+    FAutoSize := Value;
+    if AutoSize then
+      DisplayString(Text, True);
+  end;
 end;
 
 procedure TJvCustomSegmentLEDDisplay.SetColorOn(Value: TColor);
@@ -300,7 +324,6 @@ begin
   if Value <> ColorOn then
   begin
     FColorOn := Value;
-//    COlorOnChanged;
     Invalidate;
   end;
 end;
@@ -310,7 +333,6 @@ begin
   if Value <> ColorOff then
   begin
     FColorOff := Value;
-//    COlorOffChanged;
     Invalidate;
   end;
 end;
@@ -324,11 +346,8 @@ begin
         FDigits.Delete(DigitCount - 1)
     else
       while Value > DigitCount do
-        FDigits.Add(TJvSegmentLEDDigit.Create(Self, DigitCount));
-//    CountChanged;
-    ClientWidth := DigitCount * DigitWidth;
-    ClientHeight := DigitHeight;
-    Invalidate;
+        FDigits.Add;
+    InvalidateSize;
   end;
 end;
 
@@ -338,13 +357,14 @@ begin
   begin
     FDigitHeight := Value;
     InvalidatePolygons;
-    Invalidate;
+    InvalidateSize;
   end;
 end;
 
 procedure TJvCustomSegmentLEDDisplay.SetDigits(Value: TJvSegmentLEDDigits);
 begin
-  // nothing
+  FDigits.Assign(Value);
+  InvalidateSize;
 end;
 
 procedure TJvCustomSegmentLEDDisplay.SetDigitWidth(Value: Integer);
@@ -353,7 +373,7 @@ begin
   begin
     FDigitWidth := Value;
     InvalidatePolygons;
-    Invalidate;
+    InvalidateSize;;
   end;
 end;
 
@@ -362,7 +382,7 @@ begin
   if Value <> Kind then
   begin
     FKind := Value;
-//    KindChanged;
+    InvalidatePolygons;
     Invalidate;
   end;
 end;
@@ -373,7 +393,7 @@ begin
   begin
     FMargin := Value;
     InvalidatePolygons;
-    Invalidate;
+    InvalidateSize;
   end;
 end;
 
@@ -412,14 +432,18 @@ begin
   FRecalcPolygons := True;
 end;
 
+procedure TJvCustomSegmentLEDDisplay.InvalidateSize;
+begin
+  ClientWidth := DigitCount * DigitWidth;
+  ClientHeight := DigitHeight;
+  Invalidate;
+end;
+
 procedure TJvCustomSegmentLEDDisplay.SetText(Value: string);
 begin
-  Value := Copy(Value, 1, DigitCount);
-  if Length(Value) < DigitCount then
-    Value := Value + StringOfChar(' ', DigitCount - Length(Value));
   if Value <> Text then
   begin
-    DisplayString(Value);
+    DisplayString(Value, AutoSize);
     FText := Value;    
   end;
 end;
@@ -434,7 +458,7 @@ begin
     begin
       FRecalcPolygons := False;
       for I := DigitCount - 1 downto 0 do
-        Digit[I].CalcPolygons;
+        Digits[I].CalcPolygons;
     end;
     with Canvas do
     begin
@@ -443,7 +467,7 @@ begin
       Rectangle(0, 0, ClientWidth + 1, ClientHeight + 1);
     end;
     for I := 0 to DigitCount - 1 do
-      Digit[I].Paint(Canvas);
+      Digits[I].Paint(Canvas);
   end;
 end;
 
@@ -456,12 +480,14 @@ constructor TJvCustomSegmentLEDDisplay.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csOpaque];
-  FDigits := TObjectList.Create(True);
+  FDigits := TJvSegmentLEDDigits.Create(Self);
   FDigitHeight := 40;
   FDigitWidth := 24;
   FMargin := 4;
   FSpacing := 2;
   FSegmentWidth := 2;
+  FColorOn := clRed;
+  FColorOff := clRedOff;
 end;
 
 destructor TJvCustomSegmentLEDDisplay.Destroy;
@@ -473,42 +499,160 @@ end;
 procedure TJvCustomSegmentLEDDisplay.DisplayString(S: string; const ResizeDisplay: Boolean);
 var
   I: Integer;
+  Segs: TDynStringArray;
 begin
+  FText := S;
+  Segs := DigitStringToSegments(S);
   if not ResizeDisplay then
   begin
-    if Length(S) > DigitCount then
-      Delete(S, DigitCount + 1, Length(S) - DigitCount)
+    if Length(Segs) > DigitCount then
+      SetLength(Segs, DigitCount);
   end
   else
-    DigitCount := Length(S);
-  if Length(S) < DigitCount then
-    S := S + StringOfChar(' ', DigitCount - Length(S));
+    DigitCount := Length(Segs);
+  if Length(Segs) < DigitCount then
+    SetLength(Segs, DigitCount);
   for I := 0 to DigitCount - 1 do
-    Digit[I].SetChar(S[I + 1]);
+    Digits[I].Segments := Segs[I];
   Invalidate;
+end;
+
+function TJvCustomSegmentLEDDisplay.DigitStringToSegments(S: string): TDynStringArray;
+var
+  Idx: Integer;
+  IPos: Integer;
+  ChVal: Integer;
+
+  function ParseSpecifierString: string;
+  begin
+    Inc(IPos);
+    Result := '';
+    while (IPos <= Length(S)) and (S[IPos] <> ']') do
+    begin
+      if S[IPos] = '#' then // Following is the ordinal value of a character
+      begin
+        ChVal := 0;
+        Inc(IPos);
+        while (IPos <= Length(S)) and (S[IPos] in ['0' .. '9']) do
+        begin
+          ChVal := ChVal * 10 + StrToInt(S[IPos]);
+          Inc(IPos);
+        end;
+        Dec(IPos);
+        case Kind of
+          slk7Segments:
+            Result := Result + CharToSegString(Chr(ChVal), MapChToSeg7);
+          slk14Segments,
+          slk16Segments:
+            Result := Result + CharToSegString(Chr(ChVal), MapChToSeg16);
+        end;
+      end
+      else
+      if S[IPos] = '&' then // Following is a character
+      begin
+        Inc(IPos);
+        case Kind of
+          slk7Segments:
+            Result := Result + CharToSegString(S[IPos], MapChToSeg7);
+          slk14Segments,
+          slk16Segments:
+            Result := Result + CharToSegString(S[IPos], MapChToSeg16);
+        end;
+      end
+      else  // Most likely a (part of a) segment identifier, copy as is
+        Result := Result + S[IPos];
+      Inc(IPos);
+    end;
+  end;
+
+begin
+  SetLength(Result, Length(S));
+  Idx := 0;
+  IPos := 1;
+  while (IPos <= Length(S)) do
+  begin
+    if Idx = Length(Result) then
+      SetLength(Result, Length(Result) + 16); // should never occur, but better safe than sorry
+    if (S[IPos] = '[') and (IPos < Length(S)) and (S[IPos + 1] <> '[') then
+      Result[Idx] := ParseSpecifierString
+    else // current character is as is; translate to the right segment text and assign to the result
+      case Kind of
+        slk7Segments:
+          Result[Idx] := CharToSegString(S[IPos], MapChToSeg7);
+        slk14Segments,
+        slk16Segments:
+          Result[Idx] := CharToSegString(S[IPos], MapChToSeg16);
+        else
+          Result[Idx] := '';
+      end;
+    Inc(Idx);
+    if S[IPos] = '[' then
+      Inc(IPos);
+    Inc(IPos);
+  end;
+  SetLength(Result, Idx);
+end;
+
+//===TJvSegmentLEDDigits============================================================================
+
+function TJvSegmentLEDDigits.GetItem(Index: Integer): TJvSegmentLEDDigit;
+begin
+  Result := TJvSegmentLEDDigit(inherited Items[Index]);
+end;
+
+procedure TJvSegmentLEDDigits.SetItem(Index: Integer; Value: TJvSegmentLEDDigit);
+begin
+  inherited Items[Index] := Value;
+end;
+
+function TJvSegmentLEDDigits.Display: TJvCustomSegmentLEDDisplay;
+begin
+  Result := TJvCustomSegmentLEDDisplay(GetOwner);
+end;
+
+procedure TJvSegmentLEDDigits.Update(Item: TCollectionItem);
+begin
+  Display.Invalidate;
+end;
+
+constructor TJvSegmentLEDDigits.Create(AOwner: TPersistent);
+begin
+  inherited Create(AOwner, TJvSegmentLEDDigit);
+end;
+
+function TJvSegmentLEDDigits.Add: TJvSegmentLEDDigit;
+begin
+  Result := TJvSegmentLEDDigit(inherited Add);
+end;
+
+function TJvSegmentLEDDigits.Insert(Index: Integer): TJvSegmentLEDDigit;
+begin
+  Result := TJvSegmentLEDDigit(inherited Insert(Index));
 end;
 
 //===TJvSegmentLEDDigit=============================================================================
 
 function TJvSegmentLEDDigit.GetSegments: string;
 var
+  LastI: Integer;
   I: Integer;
 begin
   Result := '';
-  for I := 0 to High(FSegments) do
+  LastI := 7 + 7 * Ord(Display.Kind = slk14Segments) + 9 * Ord(Display.Kind = slk16Segments);
+  for I := 0 to LastI do
   begin
     if FSegments[I] then
     begin
-      if UseDP and (I = High(FSegments)) then
+      if UseDP and (I = LastI) then
         Result := Result + ',DP'
       else
       begin
         case Display.Kind of
-          slk7:
+          slk7Segments:
             Result := Result + ',' + Chr(I + Ord('A'));
-          slk14:
+          slk14Segments:
             Result := Result + ',' + SegNames14[I];
-          slk16:
+          slk16Segments:
             Result := Result + ',' + SegNames16[I];
         end;
       end;
@@ -536,26 +680,32 @@ begin
     I := 1;
     while (I <= Length(Value)) do
     begin
-      if Display.Kind = slk14 then
+      if Display.Kind = slk14Segments then
       begin
-        SegIdx := TextIndex(Value[I], SegNames14, False);
-        if SegIdx < 0 then
-          SegIdx := TextIndex(Copy(Value, I, 2), SegNames14, True);
-        if SegIdx < 0 then
-          SegIdx := TextIndex(Value[I], SegNames14, True);
-        if (SegIdx < 0) and AnsiSameText(Copy(Value, I, 2), 'DP') then
-          SegIdx := 14;
+        if AnsiSameText(Copy(Value, I, 2), 'DP') then
+          SegIdx := 14
+        else
+        begin
+          SegIdx := TextIndex(Value[I], SegNames14, False);
+          if SegIdx < 0 then
+            SegIdx := TextIndex(Copy(Value, I, 2), SegNames14, True);
+          if SegIdx < 0 then
+            SegIdx := TextIndex(Value[I], SegNames14, True);
+        end;
       end
       else
-      if Display.Kind = slk16 then
+      if Display.Kind = slk16Segments then
       begin
-        SegIdx := TextIndex(Value[I], SegNames16, False);
-        if SegIdx < 0 then
-          SegIdx := TextIndex(Copy(Value, I, 2), SegNames16, True);
-        if SegIdx < 0 then
-          SegIdx := TextIndex(Value[I], SegNames16, True);
-        if (SegIdx < 0) and AnsiSameText(Copy(Value, I, 2), 'DP') then
-          SegIdx := 16;
+        if AnsiSameText(Copy(Value, I, 2), 'DP') then
+          SegIdx := 16
+        else
+        begin
+          SegIdx := TextIndex(Value[I], SegNames16, False);
+          if SegIdx < 0 then
+            SegIdx := TextIndex(Copy(Value, I, 2), SegNames16, True);
+          if SegIdx < 0 then
+            SegIdx := TextIndex(Value[I], SegNames16, True);
+        end;
       end
       else
       begin
@@ -565,18 +715,18 @@ begin
           SegIdx := Ord(UpCase(Value[I])) - Ord('A');
       end;
       if SegIdx < 0 then
-        raise Exception.Create('Invalid string');
+        raise EJvLEDDisplay.Create(s_E_ld_InvalidString);
       FSegments[SegIdx] := True;
-      if (Display.Kind = slk14) and ((SegIdx = 7) and not AnsiSameText(Copy(Value, I, 2), SegNames14[SegIdx])) then
+      if (Display.Kind = slk14Segments) and ((SegIdx = 7) and not AnsiSameText(Copy(Value, I, 2), SegNames14[SegIdx])) then
         FSegments[SegIdx - 1] := True;
-      if (Display.Kind = slk16) and ((SegIdx in [1, 5, 9]) and not AnsiSameText(Copy(Value, I, 2), SegNames16[SegIdx])) then
+      if (Display.Kind = slk16Segments) and ((SegIdx in [1, 5, 9]) and not AnsiSameText(Copy(Value, I, 2), SegNames16[SegIdx])) then
         FSegments[SegIdx - 1] := True;
       Inc(I);
       while (I <= Length(Value)) and (Value[I] in ['1', '2', ',', ';', 'P', #0 .. ' ']) do
         Inc(I);
     end;
   end;
-//  Invalidate;
+  Invalidate;
 end;
 
 function TJvSegmentLEDDigit.GetSegmentState(I: Integer): Boolean;
@@ -589,7 +739,7 @@ begin
   if Value <> FSegments[I] then
   begin
     FSegments[I] := Value;
-//    Invalidate;
+    Invalidate;
   end;
 end;
 
@@ -598,10 +748,7 @@ begin
   if Value <> UseDP then
   begin
     FUseDP := Value;
-    if UseDP then
-      SetLength(FSegments, Length(FSegments) + 1)
-    else
-      SetLength(FSegments, High(FSegments));
+    Invalidate;
   end;
 end;
 
@@ -652,9 +799,9 @@ begin
     SegT := SegmentWidth;
     Spc := Spacing;
     DigM := Margin;
-    DigX := DigitIndex * DigitWidth;
+    DigX := Index * DigitWidth;
     DigW := DigitWidth - 2 * DigM - SegT - 2;
-    DigH := DigitHeight - 2 * DigM - SegT - 2;
+    DigH := DigitHeight - 2 * DigM - (SegT div 2);
     SlantDiff := Trunc(Abs(ArcTan(SlantAngle / 180.0 * Pi) * DigH));
     Dec(DigW, SlantDiff);
   end;
@@ -685,7 +832,7 @@ begin
   { J and M segments are special cases. 14 segment displays have them starting just below/above
     the A/D segments, whereas 16 segment displays have them starting at the same height as the
     two A/D segments.}
-  if Display.Kind = slk16 then
+  if Display.Kind = slk16Segments then
     VertOffset := HalfSpc
   else
     VertOffset := SegT + HalfSpc;
@@ -824,7 +971,13 @@ begin
     Point(CenterCenterX - SegT - HalfSpc, CenterCenterY + HalfSegT + HalfSpc),
     Point(BottomLeftX + SegT + HalfSpc, BottomLeftY - SegT - HalfSpc - HalfSegT)
   ]);
-  FDPRect := Rect(BottomRightX + Spc, BottomRightY, BottomRightX + Spc + SegT + HalfSegT + 1, BottomRightY + SegT + HalfSegT + 1);
+  FDPRect := Rect(BottomRightX + Spc, BottomRightY - SegT, BottomRightX + Spc + SegT + HalfSegT + 1, BottomRightY + HalfSegT + 1);
+end;
+
+procedure TJvSegmentLEDDigit.Invalidate;
+begin
+  CalcPolygons;
+  Display.Invalidate;
 end;
 
 procedure TJvSegmentLEDDigit.Paint(ACanvas: TCanvas);
@@ -845,7 +998,7 @@ var
   begin
     SegIdx := Pos(UpperCase(Trim(SegName)), ' A A1A2B C D D1D2E F G G1G2H J K L M N') div 2;
     if SegIdx = 0 then
-      raise Exception.Create('Illegal segment ''' + SegName + '''');
+      raise EJvLEDDisplay.CreateFmt(s_E_ld_IllegalSegment, [SegName]);
     if Length(FPolygons[SegIdx - 1]) > 1 then
     begin
       with ACanvas do
@@ -864,57 +1017,45 @@ var
       Brush.Color := AColor;
       Pen.Color := AColor;
       Ellipse(FDPRect);
-//      Polygon(FPolygons[SegIdx - 1]);
     end;
   end;
 
 begin
   case Display.Kind of
-    slk7:
+    slk7Segments:
       begin
         for I := 6 downto 0 do
           RenderSegment(Chr(Ord('A') + I), ColorForState(FSegments[I]));
       end;
-    slk14:
+    slk14Segments:
       begin
         for I := 13 downto 0 do
           RenderSegment(SegNames14[I], ColorForState(FSegments[I]));
       end;
-    slk16:
+    slk16Segments:
       begin
         for I := 15 downto 0 do
           RenderSegment(SegNames16[I], ColorForState(FSegments[I]));
       end;
   end;
   if UseDP then
-    RenderDP(ColorForState(FSegments[High(FSegments)]));
+    RenderDP(ColorForState(FSegments[7 + 7 * Ord(Display.Kind = slk14Segments) + 9 * Ord(Display.Kind = slk16Segments)]));
 end;
 
-procedure TJvSegmentLEDDigit.SetChar7(Ch: Char);
+constructor TJvSegmentLEDDigit.Create(Collection: TCollection);
 begin
-  Segments := CharToSegString(Ch, MapChToSeg7);
-end;
-
-procedure TJvSegmentLEDDigit.SetChar16(Ch: Char);
-begin
-  Segments := CharToSegString(Ch, MapChToSeg16);
-end;
-
-constructor TJvSegmentLEDDigit.Create(ADisplay: TJvCustomSegmentLEDDisplay; ADigitIndex: Integer);
-begin
-  inherited Create;
-  FDigitIndex := ADigitIndex;
-  FDisplay := ADisplay;
-  SetLength(FSegments, 7 + 8 * Ord(Display.Kind = slk14) + 10 * Ord(Display.Kind = slk16));
+  inherited Create(Collection);
+  FDisplay := (Collection as TJvSegmentLEDDigits).Display;
+  SetLength(FSegments, 17);
   CalcPolygons;
 end;
 
 procedure TJvSegmentLEDDigit.SetChar(const Ch: Char);
 begin
-  if Display.Kind = slk7 then
-    SetChar7(Ch)
+  if Display.Kind = slk7Segments then
+    Segments := CharToSegString(Ch, MapChToSeg7)
   else
-    SetChar16(Ch);
+    Segments := CharToSegString(Ch, MapChToSeg16);
 end;
 
 end.

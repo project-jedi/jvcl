@@ -30,12 +30,6 @@ implementation
 
 {$R *.DFM}
 
-const
-  clOrange = $0000A0FF;
-  clOrangeOff = $0000415A;
-  clLimeOff = $00004F00;
-  clRedOff = $00000064;
-
 procedure TForm4.FormCreate(Sender: TObject);
 var
   I: Integer;
@@ -50,10 +44,9 @@ begin
     ColorOn := clRed;
     ColorOff := clRedOff;
     Parent := Self;
-    DisplayString('-0123456789ABCDEFc HELP'#248'''" Error', True);
+    DisplayString('-0123456789ABCDEFc HELP'#248'''" Erro[#rDP]', True);
     for I := DigitCount - 1 downto 0 do
-      Digit[I].UseDP := True;
-    Digit[DigitCount - 1].SegmentState[7] := True;
+      Digits[I].UseDP := True;
   end;
 
   FLEDDisplay16 := TJvSegmentLEDDisplay.Create(Self);
@@ -62,7 +55,7 @@ begin
     DigitHeight := 64;
     DigitWidth := 40;
     SegmentWidth := 2;
-    Kind := slk16;
+    Kind := slk16Segments;
     Color := clBlack;
     ColorOn := clLime;
     ColorOff := clLimeOff;
@@ -77,7 +70,7 @@ begin
     DigitHeight := 64;
     DigitWidth := 40;
     SegmentWidth := 2;
-    Kind := slk16;
+    Kind := slk16Segments;
     Color := clBlack;
     ColorOn := clLime;
     ColorOff := clLimeOff;
@@ -92,7 +85,7 @@ begin
     DigitHeight := 64;
     DigitWidth := 40;
     SegmentWidth := 2;
-    Kind := slk16;
+    Kind := slk16Segments;
     Color := clBlack;
     ColorOn := clLime;
     ColorOff := clLimeOff;
@@ -107,14 +100,16 @@ begin
     DigitHeight := 88;
     DigitWidth := 64;
     SegmentWidth := 4;
-    Kind := slk14;
+    Kind := slk14Segments;
     Color := clBlack;
     ColorOn := clOrange;
     ColorOff := clOrangeOff;
     Top := FLEDDisplay16_3.Top + FLEDDisplay16_3.Height + 8;
     Parent := Self;
-    DisplayString(' JEDI-VCL ', True);
-    SlantAngle := 10;
+    DisplayString(' [#JDP][#EDP][#DDP][#IDP]-VCL ', True);
+    for I := DigitCount - 1 downto 0 do
+      Digits[I].UseDP := True;
+    SlantAngle := 5;
     JVCLOn := True;
   end;
 end;
@@ -128,7 +123,7 @@ begin
   end
   else
   begin
-    FLEDDisplayJVCL.Text := ' JEDI-VCL';
+    FLEDDisplayJVCL.Text := ' [#JDP][#EDP][#DDP][#IDP]-VCL';
     JVCLOn := True;
   end
 end;
