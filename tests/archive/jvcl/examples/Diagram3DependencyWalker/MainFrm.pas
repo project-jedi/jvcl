@@ -3,7 +3,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  JvDiagramShape, Dialogs, ComCtrls, Menus, ImgList, StdCtrls, ExtCtrls;
+  JvDiagramShape, Dialogs, ComCtrls, Menus, ImgList, StdCtrls, ExtCtrls,
+  ActnList;
 
 type
   TfrmMain = class(TForm)
@@ -30,22 +31,39 @@ type
     Edit1: TMenuItem;
     Arrange1: TMenuItem;
     N2: TMenuItem;
-    byname1: TMenuItem;
+    Skiplist1: TMenuItem;
+    Add2: TMenuItem;
+    Delete2: TMenuItem;
+    alMain: TActionList;
+    acSelectFiles: TAction;
+    acExit: TAction;
+    acSortName: TAction;
+    acSortLinksTo: TAction;
+    acSortLinksFrom: TAction;
+    acInvertSort: TAction;
+    acAdd: TAction;
+    acDelete: TAction;
+    acClear: TAction;
+    acAbout: TAction;
+    byName1: TMenuItem;
     byLinksTo1: TMenuItem;
-    byLinksFrom1: TMenuItem;
-    byLinksToinverted1: TMenuItem;
-    byLinksFrominverted1: TMenuItem;
-    procedure Exit1Click(Sender: TObject);
-    procedure About1Click(Sender: TObject);
-    procedure SelectFiles1Click(Sender: TObject);
+    LinksFrom1: TMenuItem;
+    N3: TMenuItem;
+    InvertSort1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure Clear1Click(Sender: TObject);
-    procedure Add1Click(Sender: TObject);
-    procedure Delete1Click(Sender: TObject);
     procedure SbMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
-    procedure SelectArrangeClick(Sender: TObject);
+    procedure acSelectFilesExecute(Sender: TObject);
+    procedure acExitExecute(Sender: TObject);
+    procedure acSortNameAction(Sender: TObject);
+    procedure acInvertSortExecute(Sender: TObject);
+    procedure acAddExecute(Sender: TObject);
+    procedure acDeleteExecute(Sender: TObject);
+    procedure acAboutExecute(Sender: TObject);
+    procedure acClearExecute(Sender: TObject);
+    procedure alMainUpdate(Action: TBasicAction;
+      var Handled: Boolean);
   private
     { Private declarations }
     FFileShapes: TStringlist;
@@ -63,6 +81,8 @@ type
     procedure Arrange(AList: TList);
     procedure CreateScrollBox(AParent: TWinControl);
     procedure DoShapeClick(Sender: TObject);
+    procedure SortItems(ATag: integer; AList: TList;
+      InvertedSort: boolean);
   public
     { Public declarations }
   end;
@@ -90,7 +110,7 @@ type
     destructor Destroy; override;
   end;
 
-{ TWaitCursor }
+  { TWaitCursor }
 
 constructor TWaitCursor.Create;
 begin
@@ -118,14 +138,16 @@ begin
 end;
 
 procedure CopyObjects(Strings: TStrings; AList: TList);
-var i: integer;
+var
+  i: integer;
 begin
   for i := 0 to Strings.Count - 1 do
     AList.Add(Strings.Objects[i]);
 end;
 
 function GetNumLinksTo(AShape: TJvCustomDiagramShape): integer;
-var i: integer;
+var
+  i: integer;
 begin
   Result := 0;
   for i := 0 to AShape.Parent.ControlCount - 1 do
@@ -135,7 +157,8 @@ begin
 end;
 
 function GetNumLinksFrom(AShape: TJvCustomDiagramShape): integer;
-var i: integer;
+var
+  i: integer;
 begin
   Result := 0;
   for i := 0 to AShape.Parent.ControlCount - 1 do
@@ -151,24 +174,45 @@ begin
     TJvCustomDiagramShape(Item2).Caption.Text);
 end;
 
+function InvertNameCompare(Item1, Item2: Pointer): integer;
+begin
+  Result := -NameCompare(Item1, Item2);
+end;
+
 function MinLinksToCompare(Item1, Item2: Pointer): integer;
 begin
   Result := GetNumLinksTo(Item1) - GetNumLinksTo(Item2);
+  if Result = 0 then
+    Result := GetNumLinksFrom(Item1) - GetNumLinksFrom(Item2);
+  if Result = 0 then
+    NameCompare(Item1, Item2);
 end;
 
 function MinLinksFromCompare(Item1, Item2: Pointer): integer;
 begin
   Result := GetNumLinksFrom(Item1) - GetNumLinksFrom(Item2);
+  if Result = 0 then
+    Result := GetNumLinksTo(Item1) - GetNumLinksTo(Item2);
+  if Result = 0 then
+    NameCompare(Item1, Item2);
 end;
 
 function MaxLinksToCompare(Item1, Item2: Pointer): integer;
 begin
   Result := GetNumLinksTo(Item2) - GetNumLinksTo(Item1);
+  if Result = 0 then
+    Result := GetNumLinksFrom(Item2) - GetNumLinksFrom(Item1);
+  if Result = 0 then
+    NameCompare(Item1, Item2);
 end;
 
 function MaxLinksFromCompare(Item1, Item2: Pointer): integer;
 begin
   Result := GetNumLinksFrom(Item2) - GetNumLinksFrom(Item1);
+  if Result = 0 then
+    Result := GetNumLinksTo(Item2) - GetNumLinksTo(Item1);
+  if Result = 0 then
+    NameCompare(Item1, Item2);
 end;
 
 { TfrmMain }
@@ -188,7 +232,9 @@ begin
 end;
 
 function TfrmMain.GetFileShape(const Filename: string): TJvBitmapShape;
-var i: integer; AFilename: string;
+var
+  i: integer;
+  AFilename: string;
 begin
   AFilename := ChangeFileExt(ExtractFilename(Filename), '');
   i := FFileShapes.IndexOf(AFilename);
@@ -206,7 +252,7 @@ begin
     Result.Caption := TJvTextShape.Create(self);
     Result.Caption.Parent := sb;
     Result.Caption.Enabled := false;
-    Result.Caption.OnClick := DoShapeClick;
+    //    Result.Caption.OnClick := DoShapeClick;
     Result.Caption.Tag := integer(Result);
     Result.Caption.Text := AFilename;
     Result.Caption.AlignCaption(taLeftJustify);
@@ -217,7 +263,8 @@ begin
 end;
 
 procedure TfrmMain.Connect(StartShape, EndShape: TJvCustomDiagramShape);
-var arr: TJvSingleHeadArrow;
+var
+  arr: TJvSingleHeadArrow;
 begin
   arr := TJvSingleHeadArrow.Create(self);
   with arr do
@@ -239,7 +286,10 @@ begin
 end;
 
 function TfrmMain.GetUses(const Filename: string; AUses: TStrings; var ErrorMessage: string): boolean;
-var UL: TUsesList; i: integer; P: PChar;
+var
+  UL: TUsesList;
+  i: integer;
+  P: PChar;
 begin
   Result := true;
   try
@@ -274,7 +324,10 @@ begin
 end;
 
 procedure TfrmMain.ParseUnit(const Filename: string; Errors: TStrings);
-var AUses: TStringlist; FS: TJvBitmapShape; i: integer;
+var
+  AUses: TStringlist;
+  FS: TJvBitmapShape;
+  i: integer;
   AFilename, ErrMsg: string;
 begin
   AFilename := ChangeFileExt(ExtractFileName(Filename), '');
@@ -302,7 +355,8 @@ begin
 end;
 
 procedure TfrmMain.ParseUnits(Files, Errors: TStrings);
-var i: integer;
+var
+  i: integer;
 begin
   WaitCursor;
   SuspendRedraw(sb, true);
@@ -329,43 +383,13 @@ begin
   FFileShapes.Clear;
   // this is faster than freeing explicitly:
   CreateScrollBox(Panel1);
-{  for i := ComponentCount - 1 downto 0 do
-    if Components[i] is TJvBitmapShape then
-      TJvBitmapShape(Components[i]).Free; // this will free both the caption and the connector(s)
-}
+  {  for i := ComponentCount - 1 downto 0 do
+      if Components[i] is TJvBitmapShape then
+        TJvBitmapShape(Components[i]).Free; // this will free both the caption and the connector(s)
+  }
   FLeft := FStartX;
   FTop := FStartY;
   StatusBar1.Panels[0].Text := '  Ready';
-end;
-
-procedure TfrmMain.Exit1Click(Sender: TObject);
-begin
-  Close;
-end;
-
-procedure TfrmMain.About1Click(Sender: TObject);
-begin
-  ShowMessage('Dependency Walker Demo - part of JVCL (http://jvcl.sourceforge.net)');
-end;
-
-procedure TfrmMain.SelectFiles1Click(Sender: TObject);
-var Errors: TStringlist; // S: string;
-begin
-  if dlgSelectFiles.Execute then
-  begin
-    Errors := TStringlist.Create;
-    try
-      ParseUnits(dlgSelectFiles.Files, Errors);
-      if Errors.Count > 0 then
-      begin
-        ShowMessageFmt('Errors were encountered:'#13#10#13#10'%s', [Errors.Text]);
-        // copy to clipboard as well
-        Clipboard.SetTextBuf(PChar(Errors.Text));
-      end;
-    finally
-      Errors.Free;
-    end;
-  end;
 end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
@@ -380,7 +404,8 @@ begin
 end;
 
 procedure TfrmMain.LoadSkipList;
-var i: integer;
+var
+  i: integer;
 begin
   if FileExists(ExtractFilePath(Application.Exename) + 'SkipList.txt') then
   begin
@@ -403,14 +428,9 @@ end;
 
 procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-//  Clear;
+  //  Clear;
   SaveSkipList;
   FFileShapes.Free;
-end;
-
-procedure TfrmMain.Clear1Click(Sender: TObject);
-begin
-  Clear;
 end;
 
 function TfrmMain.InSkipList(const Filename: string): boolean;
@@ -418,25 +438,10 @@ begin
   Result := (lbSkipList.Items.IndexOf(ChangeFileExt(ExtractFileName(Filename), '')) > -1);
 end;
 
-procedure TfrmMain.Add1Click(Sender: TObject);
-var S: string;
-begin
-  S := '';
-  if InputQuery('Add unit', 'Name:', S) and (S <> '') and not InSkipList(S) then
-    lbSkipList.Items.Add(ChangeFileExt(ExtractFilename(S), ''));
-end;
-
-procedure TfrmMain.Delete1Click(Sender: TObject);
-var i: integer;
-begin
-  with lbSkipList do
-    for i := Items.Count - 1 downto 0 do
-      if Selected[i] then
-        Items.Delete(i);
-end;
-
 procedure TfrmMain.Arrange(AList: TList);
-var Cols, i: integer; FS: TJvCustomDiagramShape;
+var
+  Cols, i: integer;
+  FS: TJvCustomDiagramShape;
 begin
   if AList.Count = 0 then
     Exit;
@@ -455,7 +460,6 @@ begin
     Inc(FLeft, FOffsetX);
   end;
 end;
-
 
 procedure TfrmMain.SbMouseWheel(Sender: TObject;
   Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint;
@@ -483,8 +487,58 @@ begin
   sb.Color := clWindow;
 end;
 
-procedure TfrmMain.SelectArrangeClick(Sender: TObject);
-var AList: TList;
+procedure TfrmMain.acSelectFilesExecute(Sender: TObject);
+var
+  Errors: TStringlist; // S: string;
+begin
+  ForceCurrentDirectory := true;
+  if dlgSelectFiles.Execute then
+  begin
+    Errors := TStringlist.Create;
+    try
+      ParseUnits(dlgSelectFiles.Files, Errors);
+      if Errors.Count > 0 then
+      begin
+        ShowMessageFmt('Errors were encountered:'#13#10#13#10'%s', [Errors.Text]);
+        // copy to clipboard as well
+        Clipboard.SetTextBuf(PChar(Errors.Text));
+      end;
+    finally
+      Errors.Free;
+    end;
+  end;
+end;
+
+procedure TfrmMain.acExitExecute(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfrmMain.SortItems(ATag: integer; AList: TList; InvertedSort: boolean);
+begin
+  case ATag of
+    1:
+      if InvertedSort then
+        AList.Sort(MaxLinksToCompare)
+      else
+        AList.Sort(MinLinksToCompare);
+    2:
+      if InvertedSort then
+        AList.Sort(MaxLinksFromCompare)
+      else
+        AList.Sort(MinLinksFromCompare);
+  else
+    if InvertedSort then
+      AList.Sort(InvertNameCompare)
+    else
+      AList.Sort(NameCompare);
+  end;
+  Arrange(AList);
+end;
+
+procedure TfrmMain.acSortNameAction(Sender: TObject);
+var
+  AList: TList;
 begin
   WaitCursor;
   SuspendRedraw(sb, true);
@@ -493,24 +547,53 @@ begin
     sb.HorzScrollBar.Position := 0;
     sb.VertScrollBar.Position := 0;
     CopyObjects(FFileShapes, AList);
-    case TMenuItem(Sender).Tag of
-      1:
-        AList.Sort(MinLinksToCompare);
-      2:
-        AList.Sort(MinLinksFromCompare);
-      3:
-        AList.Sort(MaxLinksToCompare);
-      4:
-        AList.Sort(MaxLinksFromCompare);
-    else
-      AList.Sort(NameCompare);
-    end;
-    Arrange(AList);
+    SortItems((Sender as TAction).Tag,Alist,acInvertSort.Checked);
   finally
     SuspendRedraw(sb, false);
     AList.Free;
   end;
-  TMenuItem(Sender).Checked := true;
+  TAction(Sender).Checked := true;
+end;
+  
+procedure TfrmMain.acInvertSortExecute(Sender: TObject);
+begin
+  acInvertSort.Checked := not acInvertSort.Checked;
+end;
+
+procedure TfrmMain.acAddExecute(Sender: TObject);
+var
+  S: string;
+begin
+  S := '';
+  if InputQuery('Add unit to skiplist', 'Unit name:', S) and (S <> '') and not InSkipList(S) then
+    lbSkipList.Items.Add(ChangeFileExt(ExtractFilename(S), ''));
+end;
+
+procedure TfrmMain.acDeleteExecute(Sender: TObject);
+var
+  i: integer;
+begin
+  with lbSkipList do
+    for i := Items.Count - 1 downto 0 do
+      if Selected[i] then
+        Items.Delete(i);
+end;
+
+procedure TfrmMain.acAboutExecute(Sender: TObject);
+begin
+  ShowMessage('Dependency Walker Demo - part of JVCL (http://jvcl.sourceforge.net)');
+end;
+
+procedure TfrmMain.acClearExecute(Sender: TObject);
+begin
+  Clear;
+end;
+
+procedure TfrmMain.alMainUpdate(Action: TBasicAction;
+  var Handled: Boolean);
+begin
+  acDelete.Enabled := lbSkipList.SelCount > 0;
+  acClear.Enabled := sb.ControlCount > 0;
 end;
 
 end.

@@ -829,102 +829,84 @@ object frmMain: TfrmMain
     end
   end
   object mmMain: TMainMenu
-    Left = 48
+    Left = 24
     Top = 40
     object File1: TMenuItem
       Caption = 'File'
       object SelectFiles1: TMenuItem
-        Caption = 'Select Files...'
-        ShortCut = 16463
-        OnClick = SelectFiles1Click
+        Action = acSelectFiles
       end
       object N1: TMenuItem
         Caption = '-'
       end
       object Exit1: TMenuItem
-        Caption = 'Exit'
-        ShortCut = 32883
-        OnClick = Exit1Click
+        Action = acExit
       end
     end
     object Edit1: TMenuItem
       Caption = 'Edit'
       object Arrange1: TMenuItem
         Caption = 'Arrange'
-        object byname1: TMenuItem
-          Caption = 'by Name'
-          Checked = True
+        object byName1: TMenuItem
+          Action = acSortName
           GroupIndex = 1
           RadioItem = True
-          ShortCut = 16433
-          OnClick = SelectArrangeClick
         end
         object byLinksTo1: TMenuItem
-          Tag = 1
-          Caption = 'by Links To'
+          Action = acSortLinksTo
           GroupIndex = 1
           RadioItem = True
-          ShortCut = 16434
-          OnClick = SelectArrangeClick
         end
-        object byLinksFrom1: TMenuItem
-          Tag = 2
-          Caption = 'by Links From'
+        object LinksFrom1: TMenuItem
+          Action = acSortLinksFrom
           GroupIndex = 1
           RadioItem = True
-          ShortCut = 16435
-          OnClick = SelectArrangeClick
         end
-        object byLinksToinverted1: TMenuItem
-          Tag = 3
-          Caption = 'by Links To (inverted)'
+        object N3: TMenuItem
+          Caption = '-'
           GroupIndex = 1
-          RadioItem = True
-          ShortCut = 16436
-          OnClick = SelectArrangeClick
         end
-        object byLinksFrominverted1: TMenuItem
-          Tag = 4
-          Caption = 'by Links From (inverted)'
+        object InvertSort1: TMenuItem
+          Action = acInvertSort
           GroupIndex = 1
-          RadioItem = True
-          ShortCut = 16437
-          OnClick = SelectArrangeClick
+        end
+      end
+      object Skiplist1: TMenuItem
+        Caption = 'Skiplist'
+        object Add2: TMenuItem
+          Action = acAdd
+        end
+        object Delete2: TMenuItem
+          Action = acDelete
         end
       end
       object N2: TMenuItem
         Caption = '-'
       end
       object Clear1: TMenuItem
-        Caption = 'Clear'
-        ShortCut = 24622
-        OnClick = Clear1Click
+        Action = acClear
       end
     end
     object Help1: TMenuItem
       Caption = 'Help'
       object About1: TMenuItem
-        Caption = 'About...'
-        OnClick = About1Click
+        Action = acAbout
       end
     end
   end
   object dlgSelectFiles: TOpenDialog
     DefaultExt = 'pas'
-    FileName = 
-      'D:\Borland\Add\JEDI200\JVCL\examples\Diagram1WebSiteScanner\Main' +
-      'Form.pas'
     Filter = 'Pascal files (*.pas)|*.pas|All files|*.*'
     Options = [ofHideReadOnly, ofAllowMultiSelect, ofEnableSizing]
     Title = 'Select file(s)'
-    Left = 48
-    Top = 96
+    Left = 232
+    Top = 40
   end
   object il32: TImageList
     Height = 32
     Width = 32
     Left = 120
-    Top = 96
+    Top = 40
     Bitmap = {
       494C010101000400040020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001001000000000000020
@@ -1206,17 +1188,79 @@ object frmMain: TfrmMain
       000000000000}
   end
   object popSkipList: TPopupMenu
-    Left = 184
-    Top = 96
+    Left = 168
+    Top = 40
     object Add1: TMenuItem
-      Caption = 'Add...'
-      ShortCut = 16429
-      OnClick = Add1Click
+      Action = acAdd
     end
     object Delete1: TMenuItem
+      Action = acDelete
+    end
+  end
+  object alMain: TActionList
+    OnUpdate = alMainUpdate
+    Left = 72
+    Top = 40
+    object acSelectFiles: TAction
+      Category = 'File'
+      Caption = 'Select Files...'
+      ShortCut = 16463
+      OnExecute = acSelectFilesExecute
+    end
+    object acExit: TAction
+      Category = 'File'
+      Caption = 'Exit'
+      ShortCut = 32883
+      OnExecute = acExitExecute
+    end
+    object acSortName: TAction
+      Category = 'Arrange'
+      Caption = 'by Name'
+      ShortCut = 16433
+      OnExecute = acSortNameAction
+    end
+    object acSortLinksTo: TAction
+      Tag = 1
+      Category = 'Arrange'
+      Caption = 'by Links To'
+      ShortCut = 16434
+      OnExecute = acSortNameAction
+    end
+    object acSortLinksFrom: TAction
+      Tag = 2
+      Category = 'Arrange'
+      Caption = 'by Links From'
+      ShortCut = 16435
+      OnExecute = acSortNameAction
+    end
+    object acInvertSort: TAction
+      Category = 'Arrange'
+      Caption = 'Inverted Sort'
+      ShortCut = 16457
+      OnExecute = acInvertSortExecute
+    end
+    object acAdd: TAction
+      Category = 'Skiplist'
+      Caption = 'Add...'
+      ShortCut = 16429
+      OnExecute = acAddExecute
+    end
+    object acDelete: TAction
+      Category = 'Skiplist'
       Caption = 'Delete'
       ShortCut = 16430
-      OnClick = Delete1Click
+      OnExecute = acDeleteExecute
+    end
+    object acClear: TAction
+      Category = 'Edit'
+      Caption = 'Clear'
+      ShortCut = 24622
+      OnExecute = acClearExecute
+    end
+    object acAbout: TAction
+      Category = 'Help'
+      Caption = 'About...'
+      OnExecute = acAboutExecute
     end
   end
 end
