@@ -51,7 +51,6 @@ type
     FElementStack: TJvHTMLElementStack;
     FTagStack: TJvHTMLElementStack;
     FText: string;
-    FBackColor: TColor;
     FMarginLeft: Integer;
     FMarginRight: Integer;
     FMarginTop: Integer;
@@ -61,14 +60,17 @@ type
     procedure RenderHTML;
     procedure HTMLClearBreaks;
     procedure HTMLElementDimensions;
-    procedure SetBackColor(const Value: TColor);
+    function GetBackColor: TColor;{$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
+    procedure SetBackColor(const Value: TColor);{$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
     procedure SetText(const Value: string); {$IFDEF VisualCLX} reintroduce; {$ENDIF}
     procedure SetMarginLeft(const Value: Integer);
     procedure SetMarginRight(const Value: Integer);
     procedure SetMarginTop(const Value: Integer);
     procedure SetAlignment(const Value: TAlignment);
   protected
+    {$IFDEF COMPILER7_UP}
     procedure FontChanged; override;
+    {$ENDIF}
     {$IFDEF VCL}
     procedure SetAutoSize(Value: Boolean); override;
     {$ENDIF VCL}
@@ -77,7 +79,7 @@ type
     destructor Destroy; override;
     procedure Paint; override;
   published
-    property BackColor: TColor read FBackColor write SetBackColor default clWhite;
+    property BackColor: TColor read GetBackColor write SetBackColor;
     property Height default 100;
     property Width default 200;
     property MarginLeft: Integer read FMarginLeft write SetMarginLeft default 5;
@@ -93,7 +95,7 @@ type
 
     property Anchors;
     property Enabled;
-//    property Color;   // Replace by BackColor
+    property Color;   // Duplicates BackColor
     property Constraints;
     {$IFDEF VCL}
     property BiDiMode;
@@ -137,7 +139,7 @@ begin
   IncludeThemeStyle(Self, [csParentBackground]);
   FElementStack := TJvHTMLElementStack.Create;
   FTagStack := TJvHTMLElementStack.Create;
-  FBackColor := clWhite;
+  Color := clWhite;
   FAlignment := taLeftJustify;
   Width := 200;
   Height := 100;
@@ -209,12 +211,13 @@ procedure TJvMarkupLabel.Paint;
 begin
   RenderHTML;
 end;
-
+{$IFDEF COMPILER7_UP}
 procedure TJvMarkupLabel.FontChanged;
 begin
   inherited FontChanged;
   Refresh;
 end;
+{$ENDIF}
 
 procedure TJvMarkupLabel.ParseHTML(S: string);
 var
@@ -232,9 +235,15 @@ var
   var
     VV: string;
   begin
-    if Copy(V, 1, 1) <> '#' then
+    Result := false;
+    if Length(V) < 2 then Exit;
+    if not (V[1] in ['#','$']) then
     begin
-      VV := 'cl' + V;
+      // allow the use of both "clBlack" and "Black" 
+      if Pos('cl',AnsiLowerCase(V)) = 1 then
+        VV := V
+      else
+        VV := 'cl' + V;
       try
         Col := StringToColor(VV);
         Result := True;
@@ -243,6 +252,7 @@ var
       end;
     end
     else
+    // this is either #FFFFFF or $FFFFFF - we treat them the same
     begin
       try
         VV := '$' + Copy(V, 6, 2) + Copy(V, 4, 2) + Copy(V, 2, 2);
@@ -455,7 +465,7 @@ var
     SetFont(EE);
     if EE.SolText <> '' then
     begin
-      SS := EE.SolText;
+      SS := trimLeft(EE.SolText);
       WW := Canvas.TextWidth(SS);
       if not Test then
         Canvas.TextOut(X, Y + BaseLine - EE.Ascent, SS);
@@ -597,15 +607,6 @@ begin
   end;
 end;
 
-procedure TJvMarkupLabel.SetBackColor(const Value: TColor);
-begin
-  if Value <> FBackColor then
-  begin
-    FBackColor := Value;
-    Invalidate;
-  end;
-end;
-
 {$IFDEF VCL}
 procedure TJvMarkupLabel.SetAutoSize(Value: Boolean);
 begin
@@ -643,6 +644,16 @@ begin
   S := TrimRight(S);
   FText := S;
   Refresh;
+end;
+
+function TJvMarkupLabel.GetBackColor: TColor;
+begin
+  Result := Color;
+end;
+
+procedure TJvMarkupLabel.SetBackColor(const Value: TColor);
+begin
+  Color := Value;
 end;
 
 end.
