@@ -17,10 +17,20 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+// This inc file depends on jedi.inc which has to
+// be included first (usually indirectly through
+// the inclusion of jvcl.inc).
+
+// Suppress platform warnings which are irrelevant
+// because the including unit can only be compiled
+// with the VCL which implies Windows platform.
+
 {$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$WARN SYMBOL_PLATFORM OFF}
 {$ENDIF COMPILER6_UP}
+
+// Cause a compilation error for any component library except the VCL.
 
 {$IFNDEF VCL}
 {$IFDEF COMPILER6_UP}
@@ -29,6 +39,3 @@ Known Issues:
 This unit is only supported for VCL!
 {$ENDIF COMPILER6_UP}
 {$ENDIF !VCL}
-
-{$I windowsonly.inc}
-
