@@ -723,6 +723,10 @@ function JvMessageBox(const Text: string; Flags: DWORD): Integer; overload;
 { end JvCtrlUtils }
 
 procedure UpdateTrackFont(TrackFont,Font:TFont;TrackOptions:TJvTrackFontOptions);
+// Returns the size of the image
+// used for checkboxes and readiobuttons
+// Originally from Mike Lischke
+function GetDefaultCheckBoxSize:TSize;
 
 implementation
 
@@ -7385,6 +7389,18 @@ begin
 end;
 
 { end JvCtrlUtils }
+
+function GetDefaultCheckBoxSize:TSize;
+begin
+  with TBitmap.Create do
+  try
+    Handle := LoadBitmap(0, PChar(OBM_CHECKBOXES));
+    Result.cx := Width div 4;
+    Result.cy := Height div 3;
+  finally
+    Free;
+  end;
+end;
 
 initialization
   { begin JvGraph }

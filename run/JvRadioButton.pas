@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JVCLVer,JvTypes;
+  JVCLVer, JvTypes;
 
 type
   TJvRadioButton = class(TRadioButton)
@@ -44,10 +44,10 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FHotTrack: Boolean;
+    FHotTrack: boolean;
     FHotFont: TFont;
     FFontSave: TFont;
-    FOver: Boolean;
+    FOver: boolean;
     FAutoSize: boolean;
     FControlCanvas: TControlCanvas;
     FHotTrackFontOptions: TJvTrackFOntOptions;
@@ -57,7 +57,9 @@ type
     procedure SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
     procedure SetWordWrap(const Value: boolean);
   protected
-    procedure SetAutoSize(Value: boolean);{$IFDEF COMPILER6_UP}override;{$ENDIF}
+    procedure SetAutoSize(Value: boolean);
+{$IFDEF COMPILER6_UP} override;
+{$ENDIF}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -66,19 +68,21 @@ type
     property Canvas: TCanvas read GetCanvas;
     procedure CMTextchanged(var Message: TMessage); message CM_TEXTCHANGED;
     procedure CMFontchanged(var Message: TMessage); message CM_FONTCHANGED;
-    procedure CalcAutoSize;virtual;
+    procedure CalcAutoSize; virtual;
+    procedure Loaded;override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property AutoSize:boolean read FAutoSize write SetAutoSize default true;
-    property HotTrack: Boolean read FHotTrack write FHotTrack default False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored false;
+    property AutoSize: boolean read FAutoSize write SetAutoSize default true;
+    property HotTrack: boolean read FHotTrack write FHotTrack default false;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
-    property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
+    property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
+      DefaultTrackFontOptions;
 
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property WordWrap:boolean read FWordWrap write SetWordWrap default true;
+    property WordWrap: boolean read FWordWrap write SetWordWrap default true;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
@@ -92,10 +96,10 @@ uses
 constructor TJvRadioButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FHotTrack := False;
+  FHotTrack := false;
   FHotFont := TFont.Create;
   FFontSave := TFont.Create;
-  FOver := False;
+  FOver := false;
   FHintColor := clInfoBk;
   ControlStyle := ControlStyle + [csAcceptsControls];
   FHotTrackFontOptions := DefaultTrackFontOptions;
@@ -145,7 +149,7 @@ begin
       FFontSave.Assign(Font);
       Font.Assign(FHotFont);
     end;
-    FOver := True;
+    FOver := true;
   end;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
@@ -158,7 +162,7 @@ begin
     Application.HintColor := FSaved;
     if FHotTrack then
       Font.Assign(FFontSave);
-    FOver := False;
+    FOver := false;
   end;
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
@@ -173,58 +177,59 @@ procedure TJvRadioButton.SetAutoSize(Value: boolean);
 begin
   if FAutoSize <> Value then
   begin
-    {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
     inherited SetAutoSize(Value);
-    {$ENDIF}
+{$ENDIF}
     FAutoSize := Value;
     if Value then WordWrap := false;
     CalcAutoSize;
   end;
 end;
 
-
 function TJvRadioButton.GetCanvas: TCanvas;
 begin
   if FControlCanvas = nil then
   begin
     FControlCanvas := TControlCanvas.Create;
-    FControlCanvas.Control := self;
+    FControlCanvas.Control := Self;
   end;
   Result := FControlCanvas;
 end;
 
-function GetDefaultCheckBoxSize:TSize;
-begin
-  with TBitmap.Create do
-  try
-    Handle := LoadBitmap(0, PChar(32759));
-    Result.cx := Width div 4;
-    Result.cy := Height div 3;
-  finally
-    Free;
-  end;
-end;
-
 procedure TJvRadioButton.CalcAutoSize;
-var AWidth,AHeight:integer; ASize:TSize;
+const
+  Flags: array[boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
+var
+  AWidth, AHeight: integer;
+  ASize: TSize;
+  R: TRect;
 begin
-  // (p3) TODO: find the Windows constants for width and height of checkbox and radiobutton icons
   if Parent = nil then Exit;
-  ASize := GetDefaultCheckBoxSize;
   if AutoSize then
   begin
-    with Canvas.TextExtent(Caption) do
+    ASize := GetDefaultCheckBoxSize;
+    // add some spacing
+    Inc(ASize.cy, 4);
+    Canvas.Font := Font;
+    R := Rect(0, 0, ClientWidth, ClientHeight);
+    // This is slower than GetTextExtentPoint but it does consider hotkeys
+    if Caption <> '' then
     begin
-      AWidth := cx + ASize.cx;
-      if AWidth <= 18 then
-        AWidth := ASize.cx;
-      AHeight := cy + 4;
-      if AHeight < ASize.cy then AHeight := ASize.cy;
-      if Caption <> '' then
-        Inc(AWidth, 4);
-      ClientWidth := AWidth;
-      ClientHeight := AHeight;
+      DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
+      AWidth := (R.Right - R.Left) + ASize.cx + 8;
+      AHeight := R.Bottom - R.Top;
+    end
+    else
+    begin
+      AWidth := ASize.cx;
+      AHeight := ASize.cy;
     end;
+    if AWidth < ASize.cx then
+      AWidth := ASize.cx;
+    if AHeight < ASize.cy then
+      AHeight := ASize.cy;
+    ClientWidth := AWidth;
+    ClientHeight := AHeight;
   end;
 end;
 
@@ -246,7 +251,7 @@ begin
   if FHotTrackFontOptions <> Value then
   begin
     FHotTrackFontOptions := Value;
-    UpdateTrackFont(HotTrackFont, Font,FHotTrackFontOptions);
+    UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
   end;
 end;
 
@@ -258,6 +263,12 @@ begin
     if Value then AutoSize := false;
     RecreateWnd;
   end;
+end;
+
+procedure TJvRadioButton.Loaded;
+begin
+  inherited;
+  CalcAutoSize;
 end;
 
 end.
