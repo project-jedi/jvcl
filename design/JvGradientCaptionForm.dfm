@@ -155,9 +155,6 @@ object GradCaptionsEditor: TGradCaptionsEditor
     Height = 157
     Caption = '&Captions'
     TabOrder = 0
-    DesignSize = (
-      137
-      157)
     object NewButton: TButton
       Left = 8
       Top = 124
