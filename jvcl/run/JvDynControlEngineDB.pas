@@ -52,6 +52,30 @@ const
   jctDBNavigator = TJvDynControlType('DBNavigator');
 
 type
+  TJvCreateDBFieldsOnControlOptions = class(TPersistent)
+  private
+    FShowInvisibleFields: Boolean ;
+    FLabelOnTop: Boolean ;
+    FLabelDefaultWidth: Integer ;
+    FFieldDefaultWidth: Integer ;
+    FFieldMinWidth: Integer ;
+    FFieldMaxWidth: Integer ;
+    FFieldWidthStep: Integer;
+  protected
+    procedure SetFieldWidthStep (Value : Integer);
+  public
+    constructor create;
+    procedure Assign (Source: TPersistent); override;
+  published
+    property ShowInvisibleFields: Boolean read FShowInvisibleFields write FShowInvisibleFields default False;
+    property LabelOnTop: Boolean read FLabelOnTop write FLabelOnTop default True;
+    property LabelDefaultWidth: Integer read FLabelDefaultWidth write FLabelDefaultWidth default 0;
+    property FieldDefaultWidth: Integer read FFieldDefaultWidth write FFieldDefaultWidth default 0;
+    property FieldMinWidth: Integer read FFieldMinWidth write FFieldMinWidth default 20;
+    property FieldMaxWidth: Integer read FFieldMaxWidth write FFieldMaxWidth default 300;
+    property FieldWidthStep: Integer read FFieldWidthStep write SetFieldWidthStep default 50;
+  end;
+
   TJvDynControlEngineDB = class(TJvCustomDynControlEngine)
   private
     FDynControlEngine: TJvDynControlEngine;
@@ -107,9 +131,7 @@ type
     function CreateDBNavigatorControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName: string; ADataSource: TDataSource): TWinControl; virtual;
     procedure CreateControlsFromDatasourceOnControl(ADataSource: TDataSource;
-      AControl: TWinControl; AShowInvisibleFields: Boolean = False; ALabelOnTop: Boolean = True;
-      ALabelDefaultWidth: Integer = 0; AFieldDefaultWidth: Integer = 0;
-      AMaxFieldWidth: Integer = 300; AFieldSizeStep: Integer = 250);
+      AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions);
     property DynControlEngine: TJvDynControlEngine read GetDynControlEngine write SetDynControlEngine;
   end;
 
@@ -130,6 +152,46 @@ uses
 
 var
   GlobalDefaultDynControlEngineDB: TJvDynControlEngineDB = nil;
+
+
+//=== { TJvCreateDBFieldsOnControlOptions } ==============================================
+constructor TJvCreateDBFieldsOnControlOptions.create;
+begin
+  inherited create;
+  FShowInvisibleFields:= False;
+  FLabelOnTop:= True;
+  FLabelDefaultWidth:= 0;
+  FFieldDefaultWidth:= 0;
+  FFieldMinWidth:= 20;
+  FFieldMaxWidth:= 300;
+  FFieldWidthStep:= 50;
+end;
+
+procedure TJvCreateDBFieldsOnControlOptions.Assign (Source: TPersistent);
+begin
+  if Assigned(Source) and (Source is TJvCreateDBFieldsOnControlOptions) then
+  begin
+    FShowInvisibleFields:= TJvCreateDBFieldsOnControlOptions(Source).ShowInvisibleFields;
+    FLabelOnTop:= TJvCreateDBFieldsOnControlOptions(Source).LabelOnTop;
+    FLabelDefaultWidth:= TJvCreateDBFieldsOnControlOptions(Source).LabelDefaultWidth;
+    FFieldDefaultWidth:= TJvCreateDBFieldsOnControlOptions(Source).FieldDefaultWidth;
+    FFieldMinWidth:= TJvCreateDBFieldsOnControlOptions(Source).FieldMinWidth;
+    FFieldMaxWidth:= TJvCreateDBFieldsOnControlOptions(Source).FieldMaxWidth;
+    FFieldWidthStep:= TJvCreateDBFieldsOnControlOptions(Source).FieldWidthStep;
+  end
+  else
+    inherited Assign(Source);
+end;
+
+procedure TJvCreateDBFieldsOnControlOptions.SetFieldWidthStep (Value : Integer);
+begin
+  if Value < 1 then
+    FFieldWidthStep := 1
+  else
+    FFieldWidthStep := Value;
+end;
+
+//=== { TJvDynControlEngineDB } ==============================================
 
 procedure TJvDynControlEngineDB.SetDynControlEngine(ADynControlEngine: TJvDynControlEngine);
 begin
@@ -410,38 +472,49 @@ type
   TAccessCustomControl = class(TCustomControl);
 
 procedure TJvDynControlEngineDB.CreateControlsFromDatasourceOnControl(ADataSource: TDataSource;
-  AControl: TWinControl; AShowInvisibleFields: Boolean = False; ALabelOnTop: Boolean = True;
-  ALabelDefaultWidth: Integer = 0; AFieldDefaultWidth: Integer = 0; AMaxFieldWidth: Integer = 300;
-  AFieldSizeStep: Integer = 250);
+  AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions);
 var
   I: Integer;
   Control: TWinControl;
   LabelControl: TWinControl;
+  CreateOptions : TJvCreateDBFieldsOnControlOptions;
 begin
   if not Assigned(ADataSource) or not Assigned(ADataSource.DataSet) or not Assigned(AControl) then
     raise EJVCLException.CreateRes(@RsEUnassignedMultiple);
   if not ADataSource.DataSet.Active then
     raise EJVCLException.CreateRes(@RsEUnassignedDataSet);
-  for I := 0 to ADataSource.DataSet.FieldCount - 1 do
-    if ADataSource.DataSet.Fields[I].Visible or AShowInvisibleFields then
-    begin
-      Control := CreateDBFieldControl(ADataSource.DataSet.Fields[I], AControl, AControl, '', ADataSource);
-      if AFieldDefaultWidth > 0 then
-        Control.Width := AFieldDefaultWidth
-      else
-      begin
-        if ADataSource.DataSet.Fields[I].Size > 0 then
-          Control.Width :=
-            TAccessCustomControl(AControl).Canvas.TextWidth(' ') * ADataSource.DataSet.Fields[I].Size;
-        if (AMaxFieldWidth > 0) and (Control.Width > AMaxFieldWidth) then
-          Control.Width := AMaxFieldWidth;
-      end;
-      LabelControl := GetDynControlEngine.CreateLabelControlPanel(AControl, AControl,
-        '', '&' + ADataSource.DataSet.Fields[I].DisplayLabel, Control, ALabelOnTop, ALabelDefaultWidth);
-      if AFieldSizeStep > 0 then
-        if (LabelControl.Width mod AFieldSizeStep) <> 0 then
-          LabelControl.Width := ((LabelControl.Width div AFieldSizeStep) + 1) * AFieldSizeStep;
-    end;
+  if not Assigned(AOptions) then
+    CreateOptions:= TJvCreateDBFieldsOnControlOptions.Create
+  else
+    CreateOptions := AOptions;
+  try
+    with CreateOptions do
+      for I := 0 to ADataSource.DataSet.FieldCount - 1 do
+        if ADataSource.DataSet.Fields[I].Visible or ShowInvisibleFields then
+        begin
+          Control := CreateDBFieldControl(ADataSource.DataSet.Fields[I], AControl, AControl, '', ADataSource);
+          if FieldDefaultWidth > 0 then
+            Control.Width := FieldDefaultWidth
+          else
+          begin
+            if ADataSource.DataSet.Fields[I].Size > 0 then
+              Control.Width :=
+                TAccessCustomControl(AControl).Canvas.TextWidth(' ') * ADataSource.DataSet.Fields[I].Size;
+            if (FieldMaxWidth > 0) and (Control.Width > FieldMaxWidth) then
+              Control.Width := FieldMaxWidth
+            else if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
+              Control.Width := FieldMinWidth
+          end;
+          LabelControl := GetDynControlEngine.CreateLabelControlPanel(AControl, AControl,
+            '', '&' + ADataSource.DataSet.Fields[I].DisplayLabel, Control, LabelOnTop, LabelDefaultWidth);
+          if FieldWidthStep > 0 then
+            if (LabelControl.Width mod FieldWidthStep) <> 0 then
+              LabelControl.Width := ((LabelControl.Width div FieldWidthStep) + 1) * FieldWidthStep;
+        end;
+  finally
+    if not Assigned(AOptions) then
+      CreateOptions.Free;
+  end;
 end;
 
 procedure SetDefaultDynControlEngineDB(AEngine: TJvDynControlEngineDB);
