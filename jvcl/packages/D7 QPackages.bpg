@@ -10,14 +10,13 @@ DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
 PROJECTS = JvQCoreD7R.bpl JvQCoreD7D.bpl JvQSystemD7R.bpl JvQSystemD7D.bpl \
-  JvQStdCtrlsD7R.bpl JvQStdCtrlsD7D.bpl JvQCmpD7R.bpl JvQCmpD7D.bpl \
-  JvQCtrlsD7R.bpl JvQCtrlsD7D.bpl JvQCustomD7R.bpl JvQCustomD7D.bpl \
-  JvQDlgsD7R.bpl JvQDlgsD7D.bpl JvQCryptD7R.bpl JvQCryptD7D.bpl \
-  JvQValidatorsD7R.bpl JvQValidatorsD7D.bpl JvQManagedThreadsD7R.bpl \
-  JvQManagedThreadsD7D.bpl JvQMMD7R.bpl JvQMMD7D.bpl JvQJansD7R.bpl \
-  JvQJansD7D.bpl JvQNetD7R.bpl JvQNetD7D.bpl JvQUIBD7R.bpl JvQUIBD7D.bpl \
-  JvQWizardD7R.bpl JvQWizardD7D.bpl JvQAppFrmD7R.bpl JvQAppFrmD7D.bpl \
-  JvQHMID7R.bpl JvQHMID7D.bpl
+  JvQCtrlsD7R.bpl JvQCtrlsD7D.bpl JvQStdCtrlsD7R.bpl JvQStdCtrlsD7D.bpl \
+  JvQCmpD7R.bpl JvQCmpD7D.bpl JvQCustomD7R.bpl JvQCustomD7D.bpl JvQDlgsD7R.bpl \
+  JvQDlgsD7D.bpl JvQCryptD7R.bpl JvQCryptD7D.bpl JvQValidatorsD7R.bpl \
+  JvQValidatorsD7D.bpl JvQManagedThreadsD7R.bpl JvQManagedThreadsD7D.bpl \
+  JvQMMD7R.bpl JvQMMD7D.bpl JvQJansD7R.bpl JvQJansD7D.bpl JvQNetD7R.bpl \
+  JvQNetD7D.bpl JvQUIBD7R.bpl JvQUIBD7D.bpl JvQWizardD7R.bpl JvQWizardD7D.bpl \
+  JvQAppFrmD7R.bpl JvQAppFrmD7D.bpl JvQHMID7R.bpl JvQHMID7D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
