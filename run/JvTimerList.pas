@@ -92,6 +92,8 @@ type
     procedure DeleteByHandle(AHandle: THandle); virtual;
     function ItemByHandle(AHandle: THandle): TJvTimerEvent;
     function ItemIndexByHandle(AHandle: THandle): Integer;
+    function IndexOfName(const AName:string):integer;
+    function ItemByName(const AName:string): TJvTimerEvent;
     function NextHandle: THandle;
     procedure Sort;
     procedure Assign(Source: TPersistent); override;
@@ -111,19 +113,25 @@ type
     FParentList: TJvTimerList;
     FRepeatCount: Integer;
     FOnTimer: TNotifyEvent;
+    FName: string;
     function GetAsSeconds: Cardinal;
     procedure SetAsSeconds(Value: Cardinal);
     procedure SetRepeatCount(Value: Integer);
     procedure SetEnabled(Value: Boolean);
     procedure SetInterval(Value: Longint);
+  protected
+    function GetDisplayName: String; override;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
+
     property AsSeconds: Cardinal read GetAsSeconds write SetAsSeconds;
     property Handle: THandle read FHandle;
     property ExecCount: Integer read FExecCount;
     property TimerList: TJvTimerList read FParentList;
+    procedure Assign(Source: TPersistent); override;
   published
+    property Name:string read FName write FName;
     property Cycled: Boolean read FCycled write FCycled default True;
     property RepeatCount: Integer read FRepeatCount write SetRepeatCount default 0;
     property Enabled: Boolean read FEnabled write SetEnabled default True;
@@ -240,6 +248,20 @@ end;
 procedure TJvTimerEvent.SetAsSeconds(Value: Cardinal);
 begin
   Interval := Value * 1000;
+end;
+
+procedure TJvTimerEvent.Assign(Source: TPersistent);
+begin
+  if (Source is TJvTimerEvent) and (Source <> Self) then
+  begin
+    Cycled := TJvTimerEvent(Source).Cycled;
+    Enabled := TJvTimerEvent(Source).Enabled;
+    Interval := TJvTimerEvent(Source).Interval;
+    Name := TJvTimerEvent(Source).Name;
+    RepeatCount := TJvTimerEvent(Source).RepeatCount;
+    Exit;
+  end;
+  inherited;
 end;
 
 //=== TJvTimerList ===========================================================
@@ -624,6 +646,32 @@ begin
   for I := 0 to Count - 1 do
     if Items[I].Enabled then
       Items[I].FLastExecute := StartTicks;
+end;
+
+function TJvTimerEvent.GetDisplayName: String;
+begin
+  Result := Name;
+  if Result = '' then
+    Result := inherited GetDisplayName;
+end;
+
+function TJvTimerEvents.IndexOfName(const AName: string): integer;
+begin
+  for Result := 0 to Count - 1 do
+    if AnsiSameText(AName, Items[i].Name) then
+      Exit;
+  Result := -1;
+end;
+
+function TJvTimerEvents.ItemByName(const AName: string): TJvTimerEvent;
+var
+  I: Integer;
+begin
+  I := IndexOfName(AName);
+  if I >= 0 then
+    Result := Items[I]
+  else
+    Result := nil;
 end;
 
 end.
