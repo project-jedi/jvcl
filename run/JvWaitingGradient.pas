@@ -32,12 +32,11 @@ interface
 
 uses
   Windows, SysUtils, Classes, Graphics, Controls,
-  JvImageDrawThread, JVCLVer;
+  JvImageDrawThread, JvComponent;
 
 type
-  TJvWaitingGradient = class(TGraphicControl)
+  TJvWaitingGradient = class(TJvGraphicControl)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FFromLeftToRight: Boolean; { Indicates direction }
     FBitmap: TBitmap;
     FLeftOffset: Integer;
@@ -46,16 +45,16 @@ type
     FEndColor: TColor;
     FSourceRect: TRect;
     FDestRect: TRect;
-    FInterval: Cardinal;
-    FEnabled: Boolean;
     FScroll: TJvImageDrawThread;
     procedure Deplace(Sender: TObject);
     procedure UpdateBitmap;
+    function GetActive: Boolean;
+    function GetInterval: Cardinal;
     procedure SetGradientWidth(const Value: Integer);
     procedure SetEndColor(const Value: TColor);
     procedure SetStartColor(const Value: TColor);
     procedure SetInterval(const Value: Cardinal);
-    procedure SetEnable(const Value: Boolean);
+    procedure SetActive(const Value: Boolean);
   protected
     procedure Paint; override;
     procedure Resize; override;
@@ -64,17 +63,16 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    // (rom) renamed Active
+    property Active: Boolean read GetActive write SetActive default False;
     property Align;
     property Color;
-    property Height default 10;
-    property Width default 100;
     property EndColor: TColor read FEndColor write SetEndColor default clBlack;
-    {(rb) consistently use Active or Enabled }
-    property Enabled: Boolean read FEnabled write SetEnable default False;
     property GradientWidth: Integer read FGradientWidth write SetGradientWidth;
-    property Interval: Cardinal read FInterval write SetInterval default 50;
+    property Height default 10;
+    property Interval: Cardinal read GetInterval write SetInterval default 50;
     property StartColor: TColor read FStartColor write SetStartColor default clBtnFace;
+    property Width default 100;
     {(rb) ParentColor included }
     property ParentColor;
     property Visible;
@@ -93,9 +91,6 @@ begin
 
   FBitmap := TBitmap.Create;
 
-  FInterval := 50;
-  FEnabled := False;
-
   FStartColor := clBtnFace;
   FEndColor := clBlack;
   FGradientWidth := 50;
@@ -106,7 +101,7 @@ begin
 
   FScroll := TJvImageDrawThread.Create(True);
   FScroll.FreeOnTerminate := False;
-  FScroll.Delay := FInterval;
+  FScroll.Delay := 50;
   FScroll.OnDraw := Deplace;
 
   Color := clBtnFace;
@@ -133,7 +128,7 @@ procedure TJvWaitingGradient.Loaded;
 begin
   inherited Loaded;
   UpdateBitmap;
-  if FEnabled then
+  if Active then
     FScroll.Resume;
 end;
 
@@ -141,7 +136,7 @@ procedure TJvWaitingGradient.UpdateBitmap;
 var
   I: Integer;
   J: Real;
-  Deltas: array [0..2] of Real; //R,G,B
+  Deltas: array [0..2] of Single; //R,G,B
   Rect: TRect;
   Steps: Integer;
   LStartColor, LEndColor: Longint;
@@ -229,7 +224,6 @@ begin
   Canvas.Brush.Color := Color;
   Canvas.FillRect(Rect(0, 0, FLeftOffset, Height));
   Canvas.FillRect(Rect(FLeftOffset + FBitmap.Width, 0, Width, Height));
-
   Canvas.CopyRect(FDestRect, FBitmap.Canvas, FSourceRect);
 end;
 
@@ -241,15 +235,17 @@ begin
   UpdateBitmap;
 end;
 
-procedure TJvWaitingGradient.SetEnable(const Value: Boolean);
+function TJvWaitingGradient.GetActive: Boolean;
 begin
-  {(rb) why keep a copy of enabled in FEnabled (already in FScroll.Suspended)? }
-  FEnabled := Value;
+  Result := FScroll.Suspended;
+end;
 
+procedure TJvWaitingGradient.SetActive(const Value: Boolean);
+begin
   if csLoading in ComponentState then
     Exit;
 
-  if FEnabled then
+  if Active then
     FScroll.Resume
   else
     FScroll.Suspend;
@@ -264,10 +260,13 @@ begin
   end;
 end;
 
+function TJvWaitingGradient.GetInterval: Cardinal;
+begin
+  Result := FScroll.Delay;
+end;
+
 procedure TJvWaitingGradient.SetInterval(const Value: Cardinal);
 begin
-  {(rb) why keep a copy of interval in FInterval (already in FScroll.Delay)? }
-  FInterval := Value;
   FScroll.Delay := Value;
 end;
 

@@ -23,39 +23,37 @@ Last Modified:  2003-01-15
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+eng:
+  Load new string resources from file to components. Uses RTTI
+
+  Replaces the found lines(strings) from one language to another if found in dictionary
+
+  Dictionary is text like:
+    Langauge1_line=Language2_line
+    ..
+    Language1_line=Language2_line
+
+rus:
+  Заменяет по словарю из файла все найденные строки одного языка на другой
+  Словарь в виде текста вида:
+  Строка на языке 1=Строка на языке 2
+  ...
+  Строка на языке 1=Строка на языке 2
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
-{
-eng:
- Load new string resources from file to components. Uses RTTI
-
- Replaces the found lines(strings) from one language to another if found in dictionary
-
- Dictionary is text like:
-   Langauge1_line=Language2_line
-   ..
-   Language1_line=Language2_line
-}
-
-// rus:
-// Заменяет по словарю из файла все найденные строки одного языка на другой
-//  Словарь в виде текста вида:
-//  Строка на языке 1=Строка на языке 2
-//  ...
-//  Строка на языке 1=Строка на языке 2
-// ===================================================================
-//
 
 unit JvgLanguageLoader;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, JVComponent, Graphics, Controls, Forms,
-  Dialogs, ComCtrls, Grids;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  ComCtrls, Grids,
+  JvComponent;
 
 type
   TLanguageLoaderOptions = set of (lofTrimSpaces);
@@ -64,19 +62,19 @@ type
 
   TJvgLanguageLoader = class(TJvComponent)
   private
-    sl: TStringList;
+    FList: TStringList;
     FOptions: TLanguageLoaderOptions;
-    function TranslateString(sString: string): string;
+    function TranslateString(AText: string): string;
   protected
     procedure UpdateComponent(Component: TPersistent); virtual;
   public
-    procedure LoadLanguage(Component: TComponent; FileName: string); {main function}
+    procedure LoadLanguage(Component: TComponent; FileName: string);
   published
     property Options: TLanguageLoaderOptions read FOptions write FOptions;
   end;
 
-procedure LoadLanguage(Component: TComponent; FileName: string; Options:
-  TLanguageLoaderOptions);
+procedure LoadLanguage(Component: TComponent; FileName: string;
+  Options: TLanguageLoaderOptions);
 
 implementation
 
@@ -86,8 +84,8 @@ uses
 //{Ф-ия для загрузки словаря без предварительного создания компонента}
 { Function to load dictionary without previous creation of the component [translated] }
 
-procedure LoadLanguage(Component: TComponent; FileName: string; Options:
-  TLanguageLoaderOptions);
+procedure LoadLanguage(Component: TComponent; FileName: string;
+  Options: TLanguageLoaderOptions);
 var
   LanguageLoader: TJvgLanguageLoader;
 begin
@@ -99,36 +97,36 @@ begin
   end;
 end;
 
-{ TJvgLanguageLoader }
+//=== TJvgLanguageLoader =====================================================
 
 //{  Загрузка словаря, обход указанного компонента и  }
 //{  всех его дочерних компонентов                    }
 { Loading dictionary, passing the given component and all his children components
   [translated] }
 
-procedure TJvgLanguageLoader.LoadLanguage(Component: TComponent; FileName:
-  string);
+procedure TJvgLanguageLoader.LoadLanguage(Component: TComponent; FileName: string);
 
   procedure UpdateAllComponents(Component: TComponent);
   var
-    i: integer;
+    I: Integer;
   begin
     //{ обработка своцств компонента }
     { Processing the component's properties [translated] }
     UpdateComponent(Component);
-    for i := 0 to Component.ComponentCount - 1 do
-      UpdateAllComponents(Component.Components[i]);
+    for I := 0 to Component.ComponentCount - 1 do
+      UpdateAllComponents(Component.Components[I]);
   end;
+
 begin
-  sl := TStringList.Create;
+  FList := TStringList.Create;
   try
     //{ Загрузка словаря из заданного файла }
     { Loading dictionary from given file }
-    sl.LoadFromFile(FileName);
-    sl.Sorted := true;
+    FList.LoadFromFile(FileName);
+    FList.Sorted := True;
     UpdateAllComponents(Component);
   finally
-    sl.Free;
+    FreeAndNil(FList);
   end;
 end;
 
@@ -142,10 +140,10 @@ var
   PropInfo: PPropInfo;
   TypeInf, PropTypeInf: PTypeInfo;
   TypeData: PTypeData;
-  i, j: integer;
+  I, J: Integer;
   AName, PropName, StringPropValue: string;
   PropList: PPropList;
-  NumProps: word;
+  NumProps: Word;
   PropObject: TObject;
 begin
   { Playing with RTTI }
@@ -154,17 +152,17 @@ begin
   TypeData := GetTypeData(TypeInf);
   NumProps := TypeData^.PropCount;
 
-  GetMem(PropList, NumProps * sizeof(pointer));
+  GetMem(PropList, NumProps * SizeOf(Pointer));
 
   try
     GetPropInfos(TypeInf, PropList);
 
-    for i := 0 to NumProps - 1 do
+    for I := 0 to NumProps - 1 do
     begin
-      PropName := PropList^[i]^.Name;
+      PropName := PropList^[I]^.Name;
 
-      PropTypeInf := PropList^[i]^.PropType^;
-      PropInfo := PropList^[i];
+      PropTypeInf := PropList^[I]^.PropType^;
+      PropInfo := PropList^[I];
 
       case PropTypeInf^.Kind of
         tkString, tkLString:
@@ -173,7 +171,7 @@ begin
           if PropName <> 'Name' then
           begin
             //{ Получение значения свойства и поиск перевода в словаре }
-            { Retrieving the property's value and searchin for translation in
+            { Retrieving the property's value and searching for translation in
               dictionary [translated] }
             StringPropValue := GetStrProp(Component, PropInfo);
             SetStrProp(Component, PropInfo,
@@ -181,35 +179,36 @@ begin
           end;
         tkClass:
           begin
-            PropObject := GetObjectProp(Component, PropInfo
-              {, TPersistent});
+            PropObject := GetObjectProp(Component, PropInfo); {, TPersistent}
 
             if Assigned(PropObject) then
             begin
               //{ Для дочерних свойств-классов вызов просмотра свойств }
               { For children properties-classes calling iterate again [translated] }
-              if (PropObject is TPersistent) then
+              if PropObject is TPersistent then
                 UpdateComponent(PropObject as TPersistent);
 
               //{ Индивидуальный подход к некоторым классам }
               { Specific handling of some certain classes [translated] }
-              if (PropObject is TStrings) then
+              if PropObject is TStrings then
               begin
-                for j := 0 to (PropObject as TStrings).Count - 1 do
-                  TStrings(PropObject)[j] :=
-                    TranslateString(TStrings(PropObject)[j]);
-              end;
-              if (PropObject is TTreeNodes) then
+                for J := 0 to (PropObject as TStrings).Count - 1 do
+                  TStrings(PropObject)[J] :=
+                    TranslateString(TStrings(PropObject)[J]);
+              end
+              else
+              if PropObject is TTreeNodes then
               begin
-                for j := 0 to (PropObject as TTreeNodes).Count - 1 do
-                  TTreeNodes(PropObject).Item[j].Text :=
-                    TranslateString(TTreeNodes(PropObject).Item[j].Text);
-              end;
-              if (PropObject is TListItems) then
+                for J := 0 to (PropObject as TTreeNodes).Count - 1 do
+                  TTreeNodes(PropObject).Item[J].Text :=
+                    TranslateString(TTreeNodes(PropObject).Item[J].Text);
+              end
+              else
+              if PropObject is TListItems then
               begin
-                for j := 0 to (PropObject as TListItems).Count - 1 do
-                  TListItems(PropObject).Item[j].Caption :=
-                    TranslateString(TListItems(PropObject).Item[j].Caption);
+                for J := 0 to (PropObject as TListItems).Count - 1 do
+                  TListItems(PropObject).Item[J].Caption :=
+                    TranslateString(TListItems(PropObject).Item[J].Caption);
               end;
               //{ Здесь можно добавить обработку остальных классов }
               { And here may be added more specific handlers for certain other
@@ -219,26 +218,26 @@ begin
       end;
     end;
   finally
-    FreeMem(PropList, NumProps * sizeof(pointer));
+    FreeMem(PropList, NumProps * SizeOf(Pointer));
   end;
 end;
 
 //{ Поиск перевода для заданной строки в словаре }
 { Searching for translation of given line in dictionary [translated] }
 
-function TJvgLanguageLoader.TranslateString(sString: string): string;
+function TJvgLanguageLoader.TranslateString(AText: string): string;
 begin
-  if lofTrimSpaces in Options then
-    sString := trim(sString);
-  if sString = '' then
+  if AText <> '' then
   begin
-    Result := '';
-    exit;
-  end;
-  if sl.IndexOfName(sString) <> -1 then
-    Result := sl.Values[sString]
+    if lofTrimSpaces in Options then
+      AText := Trim(AText);
+    if Assigned(FList) and (FList.IndexOfName(AText) <> -1) then
+      Result := FList.Values[AText]
+    else
+      Result := AText;
+  end
   else
-    Result := sString;
+    Result := '';
 end;
 
 end.

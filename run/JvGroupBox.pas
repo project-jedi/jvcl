@@ -40,25 +40,25 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FOnHotKey: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
-    FHintColor, FSaved: TColor;
+    FHintColor: TColor;
+    FSaved: TColor;
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChange: TNotifyEvent;
     FOver: Boolean;
     FPropagateEnable: Boolean;
     procedure SetPropagateEnable(const Value: Boolean);
-    procedure CMDialogChar(var Msg: TCMDialogChar);
-      message CM_DIALOGCHAR;
+    procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMEnabledChanged(var Msg: TMsg); message CM_ENABLEDCHANGED;
     procedure CMMouseEnter(var Msg: TMsg); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMsg); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMsg); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMsg); message CM_PARENTCOLORCHANGED;
     procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
-{$IFDEF JVCLThemesEnabledD56}
+    {$IFDEF JVCLThemesEnabledD56}
     function GetParentBackground: Boolean;
     procedure SetParentBackground(const Value: Boolean);
-{$ENDIF}
+    {$ENDIF JVCLThemesEnabledD56}
   protected
     procedure DoHotKey; dynamic;
     procedure Paint; override;
@@ -68,21 +68,108 @@ type
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    {$IFDEF JVCLThemesEnabledD56}
+    property ParentBackground: Boolean read GetParentBackground write SetParentBackground default True;
+    {$ENDIF JVCLThemesEnabledD56}
     property PropagateEnable: Boolean read FPropagateEnable write SetPropagateEnable default False;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChange write FOnParentColorChange;
     property OnHotKey: TNotifyEvent read FOnHotKey write FOnHotKey;
-{$IFDEF JVCLThemesEnabledD56}
-    property ParentBackground: Boolean read GetParentBackground write SetParentBackground default True;
-{$ENDIF}
   end;
 
 implementation
 
 uses
   Math;
+
+constructor TJvGroupBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FHintColor := clInfoBk;
+  FOver := False;
+  FPropagateEnable := False;
+  ControlStyle := ControlStyle + [csAcceptsControls];
+  IncludeThemeStyle(Self, [csParentBackground]);
+end;
+
+procedure TJvGroupBox.Paint;
+var
+  H: Integer;
+  R: TRect;
+  Flags: Longint;
+  {$IFDEF JVCLThemesEnabledD56}
+  Details: TThemedElementDetails;
+  CaptionRect: TRect;
+  {$ENDIF}
+begin
+  {$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled then
+  begin
+    {$IFDEF COMPILER7_UP}
+    inherited;
+    {$ELSE}
+    if Enabled then
+      Details := ThemeServices.GetElementDetails(tbGroupBoxNormal)
+    else
+      Details := ThemeServices.GetElementDetails(tbGroupBoxDisabled);
+    R := ClientRect;
+    Inc(R.Top, Canvas.TextHeight('0') div 2);
+    ThemeServices.DrawElement(Canvas.Handle, Details, R);
+
+    CaptionRect := Rect(8, 0, Min(Canvas.TextWidth(Caption) + 8, ClientWidth - 8),
+      Canvas.TextHeight(Caption));
+
+    Canvas.Brush.Color := Self.Color;
+    DrawThemedBackground(Self, Canvas, CaptionRect);
+    ThemeServices.DrawText(Canvas.Handle, Details, Caption, CaptionRect, DT_LEFT, 0);
+    {$ENDIF COMPILER7_UP}
+    Exit;
+  end;
+  {$ENDIF JVCLThemesEnabled}
+  with Canvas do
+  begin
+    Font := Self.Font;
+    H := TextHeight('0');
+    R := Rect(0, H div 2 - 1, Width, Height);
+    if Ctl3D then
+    begin
+      Inc(R.Left);
+      Inc(R.Top);
+      Brush.Color := clBtnHighlight;
+      FrameRect(R);
+      OffsetRect(R, -1, -1);
+      Brush.Color := clBtnShadow;
+    end
+    else
+      Brush.Color := clWindowFrame;
+    FrameRect(R);
+    if Text <> '' then
+    begin
+      if not UseRightToLeftAlignment then
+        R := Rect(8, 0, 0, H)
+      else
+        R := Rect(R.Right - Canvas.TextWidth(Text) - 8, 0, 0, H);
+      Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
+      // calculate text rect
+      DrawText(Handle, PChar(Text), Length(Text), R, Flags or DT_CALCRECT);
+      Brush.Color := Color;
+      if not Enabled then
+      begin
+        OffsetRect(R, 1, 1);
+        Font.Color := clBtnHighlight;
+        DrawText(Handle, PChar(Text), Length(Text), R, Flags);
+        OffsetRect(R, -1, -1);
+        Font.Color := clBtnShadow;
+        SetBkMode(Handle, Windows.TRANSPARENT);
+        DrawText(Handle, PChar(Text), Length(Text), R, Flags);
+      end
+      else
+        DrawText(Handle, PChar(Text), Length(Text), R, Flags);
+    end;
+  end;
+end;
 
 {$IFDEF JVCLThemesEnabledD56}
 
@@ -96,7 +183,7 @@ begin
   JvThemes.SetParentBackground(Self, Value);
 end;
 
-{$ENDIF}
+{$ENDIF JVCLThemesEnabledD56}
 
 procedure TJvGroupBox.CMCtl3DChanged(var Msg: TMsg);
 begin
@@ -161,96 +248,10 @@ begin
   Msg.Result := 1;
 end;
 
-constructor TJvGroupBox.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FHintColor := clInfoBk;
-  FOver := False;
-  FPropagateEnable := False;
-  ControlStyle := ControlStyle + [csAcceptsControls];
-  IncludeThemeStyle(Self, [csParentBackground]);
-end;
-
 procedure TJvGroupBox.DoHotKey;
 begin
   if Assigned(FOnHotKey) then
     FOnHotKey(Self);
-end;
-
-procedure TJvGroupBox.Paint;
-var
-  H: Integer;
-  R: TRect;
-  Flags: Longint;
-{$IFDEF JVCLThemesEnabledD56}
-  Details: TThemedElementDetails;
-  CaptionRect: TRect;
-{$ENDIF}
-begin
-{$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
-  begin
-  {$IFDEF COMPILER7_UP}
-    inherited;
-  {$ELSE}
-    if Enabled then
-      Details := ThemeServices.GetElementDetails(tbGroupBoxNormal)
-    else
-      Details := ThemeServices.GetElementDetails(tbGroupBoxDisabled);
-    R := ClientRect;
-    Inc(R.Top, Canvas.TextHeight('0') div 2);
-    ThemeServices.DrawElement(Canvas.Handle, Details, R);
-
-    CaptionRect := Rect(8, 0, Min(Canvas.TextWidth(Caption) + 8, ClientWidth - 8), Canvas.TextHeight(Caption));
-
-    Canvas.Brush.Color := Self.Color;
-    DrawThemedBackground(Self, Canvas, CaptionRect);
-    ThemeServices.DrawText(Canvas.Handle, Details, Caption, CaptionRect, DT_LEFT, 0);
-  {$ENDIF}
-    Exit;
-  end;
-{$ENDIF}
-  with Canvas do
-  begin
-    Font := Self.Font;
-    H := TextHeight('0');
-    R := Rect(0, H div 2 - 1, Width, Height);
-    if Ctl3D then
-    begin
-      Inc(R.Left);
-      Inc(R.Top);
-      Brush.Color := clBtnHighlight;
-      FrameRect(R);
-      OffsetRect(R, -1, -1);
-      Brush.Color := clBtnShadow;
-    end
-    else
-      Brush.Color := clWindowFrame;
-    FrameRect(R);
-    if Text <> '' then
-    begin
-      if not UseRightToLeftAlignment then
-        R := Rect(8, 0, 0, H)
-      else
-        R := Rect(R.Right - Canvas.TextWidth(Text) - 8, 0, 0, H);
-      Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
-      // calculate text rect
-      DrawText(Handle, PChar(Text), Length(Text), R, Flags or DT_CALCRECT);
-      Brush.Color := Color;
-      if not Enabled then
-      begin
-        OffsetRect(R, 1, 1);
-        Font.Color := clBtnHighlight;
-        DrawText(Handle, PChar(Text), Length(Text), R, Flags);
-        OffsetRect(R, -1, -1);
-        Font.Color := clBtnShadow;
-        SetBkMode(Handle, Windows.TRANSPARENT);
-        DrawText(Handle, PChar(Text), Length(Text), R, Flags);
-      end
-      else
-        DrawText(Handle, PChar(Text), Length(Text), R, Flags);
-    end;
-  end;
 end;
 
 procedure TJvGroupBox.SetPropagateEnable(const Value: Boolean);

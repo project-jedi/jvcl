@@ -23,23 +23,25 @@ located at http://www.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
-{$I JEDI.INC}
+
+{$I JVCL.INC}
+
 unit JvMTSync;
 
 interface
 
 uses
-{$IFDEF MSWINDOWS}
+  SysUtils, Classes, SyncObjs,
+  {$IFDEF MSWINDOWS}
   Windows,
-{$ENDIF}
-{$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   Libc,
-{$ENDIF}
-  SysUtils, Classes, SyncObjs, JvMTConsts;
+  {$ENDIF LINUX}
+  JvMTConsts;
 
 type
-  TMTSynchroObject = class (TSynchroObject)
+  TMTSynchroObject = class(TSynchroObject)
   private
     FHandle: THandle;
     FLastError: Integer;
@@ -64,7 +66,6 @@ type
     function CreateHandle: THandle; override;
   public
     procedure Release; override;
-
     procedure SetEvent;
     procedure ResetEvent;
   end;
@@ -80,14 +81,14 @@ type
     procedure Release; override;
   end;
 
-  TMTMutex = class (TMTSemaphore)
+  TMTMutex = class(TMTSemaphore)
   public
     constructor Create(Name: string = '');
     procedure Enter;
     procedure Leave;
   end;
 
-  TMTCriticalSection = class (TMTMutex)
+  TMTCriticalSection = class(TMTMutex)
   private
     FOwnerThread: TObject;
     FSelfCount: Integer;
@@ -95,17 +96,22 @@ type
     procedure Release; override;
     function WaitFor(Timeout: LongWord): Boolean; override;
   end;
-  
 
 implementation
 
 uses
   JvMTThreading;
 
-{ TMTSemaphore }
+resourcestring
+  SSemaphoreFailure = 'Semaphore failure';
+  SSemaphoreAbandoned = 'Semaphore was abandoned';
+  SThreadAbandoned = 'Thread was abandoned';
 
-constructor TMTSynchroObject.Create(Name: string = '');
+//=== TMTSemaphore ===========================================================
+
+constructor TMTSynchroObject.Create(Name: string);
 begin
+  inherited Create;
   if Name = '' then
     FName := ClassName
   else
@@ -126,11 +132,11 @@ begin
   // first wait for 500 ms
   if not WaitFor(500) then
   begin
-    // still not succeded: change the name of the thread and wait again
+    // still not succeeded: change the name of the thread and wait again
     if CurrentMTThread <> nil then
     begin
       OldName := CurrentMTThread.Name;
-      CurrentMTThread.Name := OldName+'.'+FName+'.Wait';
+      CurrentMTThread.Name := OldName + '.' + FName + '.Wait';
     end;
     try
       WaitFor(INFINITE); // this time, wait forever (ETerminate can be raised though)
@@ -156,13 +162,9 @@ begin
   Acquire;
 end;
 
-function TMTSynchroObject.WaitFor(Timeout: LongWord): Boolean;
-var
-  HandleArray: array[0..1] of THandle;
-
-  {
+{
   WaitFor()
-  
+
   Wait for the semaphore to become signalled or the for the timeout time to pass.
   If the Thread is terminated before or during the waiting, an EMTTerminateError
   exception will be raised.
@@ -170,16 +172,17 @@ var
   during the wait. This will ensure that the caller can take appropriate
   measures to return the semaphore to the appropriate state before terminating
   the thread.
-  
-  }
-  
+}
+
+function TMTSynchroObject.WaitFor(Timeout: LongWord): Boolean;
+var
+  HandleArray: array [0..1] of THandle;
 begin
   Result := False;
   
   if CurrentMTThread <> nil then
   begin {MT thread}
-  
-    // don't wait if we are allready terminated
+    // don't wait if we are already terminated
     //   because we don't want to take the risk of getting the
     //   semaphore in that case.
     CurrentMTThread.CheckTerminate;
@@ -191,38 +194,45 @@ begin
     HandleArray[1] := CurrentMTThread.TerminateSignal;
   
     // perform the wait
-    case WaitForMultipleObjects(2, @HandleArray, False, TimeOut) of
+    case WaitForMultipleObjects(2, @HandleArray[0], False, TimeOut) of
       WAIT_FAILED:
-      begin
-        FLastError := GetLastError;
-        raise EMTThreadError.Create('Semaphore failure ('+IntToStr(FLastError)+')');
-      end;
-      WAIT_TIMEOUT: Result := False;
-      WAIT_OBJECT_0: Result := True;
-      WAIT_OBJECT_0+1: CurrentMTThread.CheckTerminate; // do raise EMTTerminateError
-      WAIT_ABANDONED: raise EMTTerminateError.Create('Semphore was abandoned');
-      WAIT_ABANDONED+1: raise EMTTerminateError.Create('Thread was abandoned');
+        begin
+          FLastError := GetLastError;
+          raise EMTThreadError.Create(SSemaphoreFailure + ' (' + IntToStr(FLastError) + ')');
+        end;
+      WAIT_TIMEOUT:
+        Result := False;
+      WAIT_OBJECT_0:
+        Result := True;
+      WAIT_OBJECT_0 + 1:
+        CurrentMTThread.CheckTerminate; // do raise EMTTerminateError
+      WAIT_ABANDONED:
+        raise EMTTerminateError.Create(SSemaphoreAbandoned);
+      WAIT_ABANDONED + 1:
+        raise EMTTerminateError.Create(SThreadAbandoned);
     end;
-  
   end
-  else begin {main VCL thread}
+  else
+  begin {main VCL thread}
     // perform the wait without checking the TerminateSignal since the
     // main VCL thread does not have such a signal
     case WaitForSingleObject(FHandle, Timeout) of
-      WAIT_OBJECT_0: Result := True;
-      WAIT_ABANDONED: raise EMTTerminateError.Create('Semphore was abandoned');
-      WAIT_TIMEOUT: Result := False;
+      WAIT_OBJECT_0:
+        Result := True;
+      WAIT_ABANDONED:
+        raise EMTTerminateError.Create(SSemaphoreAbandoned);
+      WAIT_TIMEOUT:
+        Result := False;
       WAIT_FAILED:
-      begin
-        FLastError := GetLastError;
-        raise EMTThreadError.Create('Semaphore failure');
-      end;
+        begin
+          FLastError := GetLastError;
+          raise EMTThreadError.Create(SSemaphoreFailure);
+        end;
     end;
   end;
-
 end;
 
-{ TMTSemaphore }
+//=== TMTSemaphore ===========================================================
 
 constructor TMTSemaphore.Create(InitialCount, MaximumCount: Integer;
   Name: string);
@@ -242,7 +252,7 @@ begin
   ReleaseSemaphore(FHandle, 1, nil);
 end;
 
-{ TMTMutex }
+//=== TMTMutex ===============================================================
 
 constructor TMTMutex.Create(Name: string = '');
 begin
@@ -259,7 +269,7 @@ begin
   Release;
 end;
 
-{ TMTCriticalSection }
+//=== TMTCriticalSection =====================================================
 
 procedure TMTCriticalSection.Release;
 begin
@@ -282,14 +292,15 @@ begin
       FSelfCount := 1;
     end;
   end
-  else begin
+  else
+  begin
     Result := True;
     Inc(FSelfCount);
   end;
 end;
 
 
-{ TMTSimpleEvent }
+//=== TMTSimpleEvent =========================================================
 
 function TMTSimpleEvent.CreateHandle: THandle;
 begin
