@@ -37,7 +37,8 @@ interface
 
 uses  
   QActnList, QImgList, QControls, QForms, 
-  SysUtils, Classes, JvQActions, QStdActns;
+  SysUtils, Classes, QStdActns,
+  JvQActions;
 
 type
   TJvStandardActions = class(TDataModule)

@@ -61,10 +61,10 @@ implementation
 
 uses
   SysUtils, TypInfo,
+  QWindows, QImgList, 
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
-  QImgList,
+  {$ENDIF MSWINDOWS} 
   JvQDsgnConsts;
 
 type
@@ -193,17 +193,17 @@ begin
     properties to be appended to the existing property list. }
   // (rom) is there some security so we do not blow up everything by exceeding the 2048 bytes?
   PNewInfo := CloneTypeInfo(Pointer(PInteger(P)^), 2048);
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if VirtualProtect(P, 4, PAGE_WRITECOPY, OldProtect) then
   try
     PInteger(P)^ := Integer(PNewInfo);
   finally
     VirtualProtect(P, 4, OldProtect, OldProtect);
   end;
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   WriteProcessMemory(GetCurrentProcess, P, PNewInfo, 4, OldProtect);  // asn ???
-{$ENDIF LINUX}
+  {$ENDIF LINUX}
 end;
 
 procedure ClearTypeInfo(const AClass: TClass);

@@ -36,11 +36,11 @@ interface
 uses
   SysUtils, Classes,
   QWindows, Types, QGraphics, QControls, QForms, QDialogs,
-  QStdCtrls, QButtons, QGrids, QMenus, QMessages,
+  QStdCtrls, QButtons, QGrids, QMenus, QMessages, 
   DesignIntf, DesignEditors,
-  QDesignWindows, 
+  QDesignWindows,
   {$IFDEF MSWINDOWS}
-  JvAppRegistryStorage,
+  JvQAppRegistryStorage,
   {$ENDIF MSWINDOWS}
   JvQSpeedButton, JvQSpeedBar, JvQFormPlacement,
   JvQConsts, JvQComponent, JvQAppStorage, QTypes;
