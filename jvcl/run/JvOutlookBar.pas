@@ -42,12 +42,12 @@ uses
   Windows, Messages, SysUtils, Classes, Controls,
   Buttons, Graphics, ImgList, Forms, StdCtrls, ExtCtrls,
   JvThemes,
-  {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
   UxTheme,
-  {$IFNDEF COMPILER7_UP}
+{$IFNDEF COMPILER7_UP}
   TmSchema,
-  {$ENDIF COMPILER7_UP}
-  {$ENDIF JVCLThemesEnabled}
+{$ENDIF COMPILER7_UP}
+{$ENDIF JVCLThemesEnabled}
   JvComponent;
 
 const
@@ -90,9 +90,9 @@ type
     function GetItem(Index: Integer): TJvOutlookBarButton;
     procedure SetItem(Index: Integer; const Value: TJvOutlookBarButton);
   protected
-    {$IFDEF COMPILER5}
+{$IFDEF COMPILER5}
     function Owner: TPersistent;
-    {$ENDIF COMPILER5}
+{$ENDIF COMPILER5}
     procedure Update(Item: TCollectionItem); override;
   public
     constructor Create(AOwner: TPersistent);
@@ -171,9 +171,9 @@ type
     procedure SetItem(Index: Integer; const Value: TJvOutlookBarPage);
   protected
     procedure Update(Item: TCollectionItem); override;
-    {$IFDEF COMPILER5}
+{$IFDEF COMPILER5}
     function Owner: TPersistent;
-    {$ENDIF COMPILER5}
+{$ENDIF COMPILER5}
   public
     constructor Create(AOwner: TPersistent);
     function Add: TJvOutlookBarPage;
@@ -187,6 +187,10 @@ type
   TOutlookBarButtonClick = procedure(Sender: TObject; Index: Integer) of object;
   TOutlookBarEditCaption = procedure(Sender: TObject; var NewText: string;
     Index: Integer; var Allow: Boolean) of object;
+
+  TJvOutlookBarCustomDrawStage = (odsBackground, odsPageButton, odsPage, odsButton, odsButtonFrame);
+  TJvOutlookBarCustomDrawEvent = procedure(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
+    AStage: TJvOutlookBarCustomDrawStage; AIndex: integer; ADown, AInside: boolean; var DefaultDraw: boolean) of object;
 
   TJvCustomOutlookBar = class(TJvCustomControl)
   private
@@ -203,10 +207,10 @@ type
     FBorderStyle: TBorderStyle;
     FNextActivePage: Integer;
     FPressedPageBtn: Integer;
-    {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
     FHotPageBtn: Integer;
     FThemedBackGround: Boolean;
-    {$ENDIF JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
     FOnPageChange: TOutlookBarPageChange;
     FOnPageChanging: TOutlookBarPageChanging;
     FButtonRect: TRect;
@@ -217,6 +221,7 @@ type
     FEdit: TCustomEdit;
     FOnEditButton: TOutlookBarEditCaption;
     FOnEditPage: TOutlookBarEditCaption;
+    FOnCustomDraw: TJvOutlookBarCustomDrawEvent;
     procedure SetPages(const Value: TJvOutlookBarPages);
     procedure DoChangeLinkChange(Sender: TObject);
     procedure SetActivePageIndex(const Value: Integer);
@@ -225,9 +230,9 @@ type
     procedure SetSmallImages(const Value: TImageList);
     procedure SetPageButtonHeight(const Value: Integer);
     procedure SetBorderStyle(const Value: TBorderStyle);
-    {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
     procedure SetThemedBackground(const Value: Boolean);
-    {$ENDIF JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
     function DrawTopPages: Integer;
     procedure DrawCurrentPage(PageIndex: Integer);
     procedure DrawPageButton(R: TRect; Pressed: Boolean);
@@ -270,6 +275,12 @@ type
     procedure DoPageChange(Index: Integer); virtual;
     procedure DoButtonClick(Index: Integer); virtual;
     procedure DoContextPopup(MousePos: TPoint; var Handled: Boolean); override;
+    function DoDrawBackGround: boolean;
+    function DoDrawPage(ARect: TRect; Index: integer): boolean;
+    function DoDrawPageButton(ARect: TRect; Index: integer; Down: boolean): boolean;
+    function DoDrawButton(ARect: TRect; Index: integer; Down, Inside: boolean): boolean;
+    function DoDrawButtonFrame(ARect: TRect; Index: integer; Down, Inside: boolean): boolean;
+    function DoCustomDraw(ARect: TRect; Stage: TJvOutlookBarCustomDrawStage; Index: integer; Down, Inside: boolean): boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -290,14 +301,15 @@ type
     property ButtonSize: TJvBarButtonSize read FButtonSize write SetButtonSize default olbsLarge;
     property PageButtonHeight: Integer read FPageButtonHeight write SetPageButtonHeight default 19;
     property ActivePageIndex: Integer read GetActivePageIndex write SetActivePageIndex default 0;
-    {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
     property ThemedBackground: Boolean read FThemedBackGround write SetThemedBackground default True;
-    {$ENDIF JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
     property OnPageChanging: TOutlookBarPageChanging read FOnPageChanging write FOnPageChanging;
     property OnPageChange: TOutlookBarPageChange read FOnPageChange write FOnPageChange;
     property OnButtonClick: TOutlookBarButtonClick read FOnButtonClick write FOnButtonClick;
     property OnEditButton: TOutlookBarEditCaption read FOnEditButton write FOnEditButton;
     property OnEditPage: TOutlookBarEditCaption read FOnEditPage write FOnEditPage;
+    property OnCustomDraw: TJvOutlookBarCustomDrawEvent read FOnCustomDraw write FOnCustomDraw;
   public
     property ActivePage: TJvOutlookBarPage read GetActivePage;
   end;
@@ -313,10 +325,11 @@ type
     property ButtonSize;
     property PageButtonHeight;
     property ActivePageIndex;
-    {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
     property ThemedBackground;
-    {$ENDIF JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
     property OnButtonClick;
+    property OnCustomDraw;
     property OnEditButton;
     property OnPageChange;
     property OnPageChanging;
@@ -336,10 +349,10 @@ type
     property Height;
     property HelpContext;
     //PRY 2002.06.04
-    {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
     property HelpKeyword;
     property HelpType;
-    {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
     // PRY END
     property Hint;
     property ParentFont;
@@ -371,7 +384,7 @@ const
   cButtonLeftOffset = 4;
   cButtonTopOffset = 2;
   cInitRepeatPause = 400;
-  cRepeatPause     = 100;
+  cRepeatPause = 100;
 
 //=== TJvOutlookBarEdit ======================================================
 
@@ -583,7 +596,7 @@ begin
     FRepeatTimer := TTimer.Create(Self);
   FRepeatTimer.OnTimer := TimerExpired;
   FRepeatTimer.Interval := cInitRepeatPause;
-  FRepeatTimer.Enabled  := True;
+  FRepeatTimer.Enabled := True;
 end;
 
 procedure TJvRepeatButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -651,7 +664,7 @@ begin
   if (Collection <> nil) and (TJvOutlookBarButtons(Collection).Owner <> nil) and
     (TCollectionItem(TJvOutlookBarButtons(Collection).Owner).Collection <> nil) and
     (TCustomControl(TJvOutlookBarPages(TCollectionItem(TJvOutlookBarButtons(Collection).Owner).Collection).Owner) <> nil) then
-      TCustomControl(TJvOutlookBarPages(TCollectionItem(TJvOutlookBarButtons(Collection).Owner).Collection).Owner).Invalidate;
+    TCustomControl(TJvOutlookBarPages(TCollectionItem(TJvOutlookBarButtons(Collection).Owner).Collection).Owner).Invalidate;
 end;
 
 procedure TJvOutlookBarButton.EditCaption;
@@ -687,7 +700,8 @@ begin
 end;
 
 procedure TJvOutlookBarButton.SetDown(const Value: Boolean);
-var i: Integer;
+var
+  i: Integer;
 begin
   if Value <> FDown then
   begin
@@ -737,6 +751,7 @@ begin
 end;
 
 {$IFDEF COMPILER5}
+
 function TJvOutlookBarButtons.Owner: TPersistent;
 begin
   Result := GetOwner;
@@ -801,7 +816,8 @@ begin
 end;
 
 procedure TJvOutlookBarPage.Assign(Source: TPersistent);
-var i:integer;
+var
+  i: integer;
 begin
   if Source is TJvOutlookBarPage then
   begin
@@ -996,7 +1012,6 @@ begin
     Buttons[Value].Down := True;
 end;
 
-
 //=== TJvOutlookBarPages =====================================================
 
 constructor TJvOutlookBarPages.Create(AOwner: TPersistent);
@@ -1005,6 +1020,7 @@ begin
 end;
 
 {$IFDEF COMPILER5}
+
 function TJvOutlookBarPages.Owner: TPersistent;
 begin
   Result := GetOwner;
@@ -1081,11 +1097,9 @@ begin
   begin
     if not Enabled then
       Button := tsArrowBtnUpDisabled
-    else
-    if FState in [bsDown, bsExclusive] then
+    else if FState in [bsDown, bsExclusive] then
       Button := tsArrowBtnUpPressed
-    else
-    if MouseInControl then
+    else if MouseInControl then
       Button := tsArrowBtnUpHot
     else
       Button := tsArrowBtnUpNormal;
@@ -1137,12 +1151,12 @@ begin
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
   Bmp := TBitmap.Create;
   try
-    {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
     FTopButton := TJvThemedTopBottomButton.Create(Self);
     TJvThemedTopBottomButton(FTopButton).FIsUpBtn := True;
-    {$ELSE}
+{$ELSE}
     FTopButton := TJvRepeatButton.Create(Self);
-    {$ENDIF JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
     with FTopButton do
     begin
       Parent := Self;
@@ -1155,12 +1169,12 @@ begin
         Top := -1000;
     end;
 
-    {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
     FBtmButton := TJvThemedTopBottomButton.Create(Self);
     TJvThemedTopBottomButton(FBtmButton).FIsUpBtn := False;
-    {$ELSE}
+{$ELSE}
     FBtmButton := TJvRepeatButton.Create(Self);
-    {$ENDIF JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
     with FBtmButton do
     begin
       Parent := Self;
@@ -1195,10 +1209,10 @@ begin
   FNextActivePage := -1;
   FLastButtonIndex := -1;
   FPressedButtonIndex := -1;
-  {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
   FHotPageBtn := -1;
   FThemedBackGround := True;
-  {$ENDIF JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
   ActivePageIndex := 0;
 end;
 
@@ -1213,7 +1227,7 @@ end;
 
 procedure TJvCustomOutlookBar.CreateParams(var Params: TCreateParams);
 const
-  BorderStyles: array [TBorderStyle] of DWORD = (0, WS_BORDER);
+  BorderStyles: array[TBorderStyle] of DWORD = (0, WS_BORDER);
 begin
   inherited CreateParams(Params);
   with Params do
@@ -1277,12 +1291,12 @@ function TJvCustomOutlookBar.DrawTopPages: Integer;
 var
   R: TRect;
   I: Integer;
-  {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
   ToolBar: TThemedToolBar;
   Details: TThemedElementDetails;
   ClipRect: TRect;
   LColor: Cardinal;
-  {$ENDIF JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
 begin
   Result := -1;
   if csDestroying in ComponentState then
@@ -1290,51 +1304,55 @@ begin
   R := GetPageButtonRect(0);
   for I := 0 to Pages.Count - 1 do
   begin
-    {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.ThemesEnabled then
+    if DoDrawPageButton(R, I, FPressedPageBtn = I) then
     begin
-      if (FPressedPageBtn = I) or (FHotPageBtn = I) then
-        ToolBar := ttbButtonPressed
-      else
-        ToolBar := ttbButtonHot;
-      Details := ThemeServices.GetElementDetails(ToolBar);
-
-      if BorderStyle = bsNone then
+{$IFDEF JVCLThemesEnabled}
+      if ThemeServices.ThemesEnabled then
       begin
-        ClipRect := R;
-        InflateRect(R, 1, 1);
-        ThemeServices.DrawElement(Canvas.Handle, Details, R, @ClipRect);
-        InflateRect(R, -1, -1);
-      end
-      else
-        ThemeServices.DrawElement(Canvas.Handle, Details, R);
+        if (FPressedPageBtn = I) or (FHotPageBtn = I) then
+          ToolBar := ttbButtonPressed
+        else
+          ToolBar := ttbButtonHot;
+        Details := ThemeServices.GetElementDetails(ToolBar);
+
+        if BorderStyle = bsNone then
+        begin
+          ClipRect := R;
+          InflateRect(R, 1, 1);
+          ThemeServices.DrawElement(Canvas.Handle, Details, R, @ClipRect);
+          InflateRect(R, -1, -1);
+        end
+        else
+          ThemeServices.DrawElement(Canvas.Handle, Details, R);
 
       { Determine text color }
-      if FPressedPageBtn = I then
-        ToolBar := ttbButtonPressed
-      else if FHotPageBtn = I then
-        ToolBar := ttbButtonHot
-      else
-        ToolBar := ttbButtonNormal;
-      Details := ThemeServices.GetElementDetails(ToolBar);
+        if FPressedPageBtn = I then
+          ToolBar := ttbButtonPressed
+        else if FHotPageBtn = I then
+          ToolBar := ttbButtonHot
+        else
+          ToolBar := ttbButtonNormal;
+        Details := ThemeServices.GetElementDetails(ToolBar);
 
-      with Details do
-        GetThemeColor(ThemeServices.Theme[Element], Part, State, TMT_TEXTCOLOR, LColor);
-      Canvas.Font.Color := LColor;
-    end
-    else
-    {$ENDIF JVCLThemesEnabled}
-    begin
-      Canvas.Brush.Color := clBtnFace;
-      Canvas.FillRect(R);
+        with Details do
+          GetThemeColor(ThemeServices.Theme[Element], Part, State, TMT_TEXTCOLOR, LColor);
+        Canvas.Font.Color := LColor;
+      end
+      else
+{$ENDIF JVCLThemesEnabled}
+      begin
+        Canvas.Brush.Color := clBtnFace;
+        Canvas.FillRect(R);
+      end;
+      DrawPageButton(R, FPressedPageBtn = I);
+      OffsetRect(R, 0, -1);
+      SetBkMode(Canvas.Handle, TRANSPARENT);
+      // TODO: add Pages[I].ImageIndex and Pages[I].Alignment to the equation
+      DrawText(Canvas.Handle, PChar(Pages[I].Caption), -1, R,
+        DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+      OffsetRect(R, 0, 1);
     end;
-    DrawPageButton(R, FPressedPageBtn = I);
-    OffsetRect(R, 0, -1);
-    SetBkMode(Canvas.Handle, TRANSPARENT);
-    // TODO: add Pages[I].ImageIndex and Pages[I].Alignment to the equation
-    DrawText(Canvas.Handle, PChar(Pages[I].Caption), -1, R,
-      DT_CENTER or DT_VCENTER or DT_SINGLELINE);
-    OffsetRect(R, 0, PageButtonHeight + 1);
+    OffsetRect(R, 0, PageButtonHeight);
     if I >= ActivePageIndex then
     begin
       Result := I;
@@ -1349,10 +1367,10 @@ var
   I, H: Integer;
   R, R2, R3: TRect;
   C: TColor;
-  {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
   ThemedColor: Cardinal;
   Details: TThemedElementDetails;
-  {$ENDIF JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -1363,50 +1381,49 @@ begin
   R := GetButtonRect(Index, Pages[Index].TopButtonIndex);
   H := GetButtonHeight(Index);
   C := Canvas.Pen.Color;
-  {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
   begin
     Details := ThemeServices.GetElementDetails(ttbButtonNormal);
     with Details do
       GetThemeColor(ThemeServices.Theme[Element], Part, State, TMT_TEXTCOLOR, ThemedColor);
   end;
-  {$ENDIF JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
   try
     Canvas.Brush.Style := bsClear;
     for I := Pages[Index].TopButtonIndex to Pages[Index].Buttons.Count - 1 do
     begin
       Canvas.Font := Pages[Index].Font;
 //      Canvas.Rectangle(R);  // DEBUG
-      {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
       if ThemeServices.ThemesEnabled then
         Canvas.Font.Color := ThemedColor;
-      {$ENDIF JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
       if Pages[Index].Buttons[I].Down then
       begin
         Canvas.Font := Pages[Index].DownFont;
         DrawButtonFrame(Index, I, I);
       end;
-      case Pages[Index].ButtonSize of
-        olbsLarge:
-          begin
-            if LargeImages <> nil then
-              LargeImages.Draw(Canvas, R.Left + ((R.Right - R.Left) - LargeImages.Width) div 2, R.Top + 4,
-                Pages[Index].Buttons[I].ImageIndex);
-            R3 := GetButtonTextRect(ActivePageIndex, I);
-//          Canvas.Rectangle(R3);  // DEBUG
-            DrawText(Canvas.Handle, PChar(Pages[Index].Buttons[I].Caption), -1, R3,
-              DT_EXPANDTABS or DT_SINGLELINE or DT_CENTER or DT_VCENTER);
-          end;
-        olbsSmall:
-          begin
-            if SmallImages <> nil then
-              SmallImages.Draw(Canvas, R.Left + 2, R.Top + 2, Pages[Index].Buttons[I].ImageIndex);
-            R3 := GetButtonTextRect(ActivePageIndex, I);
-//          Canvas.Rectangle(R3);  // DEBUG
-            DrawText(Canvas.Handle, PChar(Pages[Index].Buttons[I].Caption), -1, R3,
-              DT_EXPANDTABS or DT_SINGLELINE or DT_LEFT or DT_VCENTER or DT_NOCLIP);
-          end;
-      end;
+      if DoDrawButton(R, I, Pages[Index].Buttons[I].Down, I = FLastButtonIndex) then
+        case Pages[Index].ButtonSize of
+          olbsLarge:
+            begin
+              if LargeImages <> nil then
+                LargeImages.Draw(Canvas, R.Left + ((R.Right - R.Left) - LargeImages.Width) div 2, R.Top + 4,
+                  Pages[Index].Buttons[I].ImageIndex);
+              R3 := GetButtonTextRect(ActivePageIndex, I);
+              DrawText(Canvas.Handle, PChar(Pages[Index].Buttons[I].Caption), -1, R3,
+                DT_EXPANDTABS or DT_SINGLELINE or DT_CENTER or DT_VCENTER);
+            end;
+          olbsSmall:
+            begin
+              if SmallImages <> nil then
+                SmallImages.Draw(Canvas, R.Left + 2, R.Top + 2, Pages[Index].Buttons[I].ImageIndex);
+              R3 := GetButtonTextRect(ActivePageIndex, I);
+              DrawText(Canvas.Handle, PChar(Pages[Index].Buttons[I].Caption), -1, R3,
+                DT_EXPANDTABS or DT_SINGLELINE or DT_LEFT or DT_VCENTER or DT_NOCLIP);
+            end;
+        end;
       OffsetRect(R, 0, H);
       if R.Top >= R2.Bottom then
         Break;
@@ -1440,13 +1457,11 @@ begin
   // button when the bottom of the last button is beneath the edge
   if TopButton.Visible then
     TopButton.SetBounds(ClientWidth - 20, R.Top + 4, 16, 16)
-  else
-  if csDesigning in ComponentState then
+  else if csDesigning in ComponentState then
     TopButton.Top := -1000;
   if BtmButton.Visible then
     BtmButton.SetBounds(ClientWidth - 20, R.Bottom - 20, 16, 16)
-  else
-  if csDesigning in ComponentState then
+  else if csDesigning in ComponentState then
     BtmButton.Top := -1000;
 end;
 
@@ -1476,11 +1491,16 @@ begin
   AColor := Canvas.Brush.Color;
   try
     Canvas.Brush.Color := Pages[PageIndex].Color;
-    if not DrawBitmap(R, Pages[PageIndex].Image) then
-      {$IFDEF JVCLThemesEnabled}
-      if not ThemedBackground or not ThemeServices.ThemesEnabled then
-      {$ENDIF JVCLThemesEnabled}
-        Canvas.FillRect(R);
+    if DoDrawPage(R, PageIndex) then
+    begin
+      if not DrawBitmap(R, Pages[PageIndex].Image) then
+      begin
+{$IFDEF JVCLThemesEnabled}
+        if not ThemedBackground or not ThemeServices.ThemesEnabled then
+{$ENDIF JVCLThemesEnabled}
+          Canvas.FillRect(R);
+      end;
+    end;
     DrawButtonFrame(ActivePageIndex, FLastButtonIndex, FPressedButtonIndex);
     DrawButtons(PageIndex);
   finally
@@ -1495,63 +1515,67 @@ procedure TJvCustomOutlookBar.DrawBottomPages(StartIndex: Integer);
 var
   R: TRect;
   I: Integer;
-  {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
   Details: TThemedElementDetails;
   ClipRect: TRect;
   ToolBar: TThemedToolBar;
   LColor: Cardinal;
-  {$ENDIF JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
 begin
   if csDestroying in ComponentState then
     Exit;
   R := GetPageButtonRect(Pages.Count - 1);
   for I := Pages.Count - 1 downto StartIndex do
   begin
-    {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.ThemesEnabled then
+    if DoDrawPageButton(R, I, FPressedPageBtn = I) then
     begin
-      if (FPressedPageBtn = I) or (FHotPageBtn = I) then
-        ToolBar := ttbButtonPressed
-      else
-        ToolBar := ttbButtonHot;
-      Details := ThemeServices.GetElementDetails(ToolBar);
 
-      if BorderStyle = bsNone then
+{$IFDEF JVCLThemesEnabled}
+      if ThemeServices.ThemesEnabled then
       begin
-        ClipRect := R;
-        InflateRect(R, 1, 1);
-        ThemeServices.DrawElement(Canvas.Handle, Details, R, @ClipRect);
-        InflateRect(R, -1, -1);
-      end
-      else
-        ThemeServices.DrawElement(Canvas.Handle, Details, R);
+        if (FPressedPageBtn = I) or (FHotPageBtn = I) then
+          ToolBar := ttbButtonPressed
+        else
+          ToolBar := ttbButtonHot;
+        Details := ThemeServices.GetElementDetails(ToolBar);
+
+        if BorderStyle = bsNone then
+        begin
+          ClipRect := R;
+          InflateRect(R, 1, 1);
+          ThemeServices.DrawElement(Canvas.Handle, Details, R, @ClipRect);
+          InflateRect(R, -1, -1);
+        end
+        else
+          ThemeServices.DrawElement(Canvas.Handle, Details, R);
 
       { Determine text color }
-      if FPressedPageBtn = I then
-        ToolBar := ttbButtonPressed
-      else
-      if FHotPageBtn = I then
-        ToolBar := ttbButtonHot
-      else
-        ToolBar := ttbButtonNormal;
-      Details := ThemeServices.GetElementDetails(ToolBar);
+        if FPressedPageBtn = I then
+          ToolBar := ttbButtonPressed
+        else if FHotPageBtn = I then
+          ToolBar := ttbButtonHot
+        else
+          ToolBar := ttbButtonNormal;
+        Details := ThemeServices.GetElementDetails(ToolBar);
 
-      with Details do
-        GetThemeColor(ThemeServices.Theme[Element], Part, State, TMT_TEXTCOLOR, LColor);
-      Canvas.Font.Color := LColor;
-    end
-    else
-    {$ENDIF JVCLThemesEnabled}
-    begin
-      Canvas.Brush.Color := clBtnFace;
-      Canvas.FillRect(R);
+        with Details do
+          GetThemeColor(ThemeServices.Theme[Element], Part, State, TMT_TEXTCOLOR, LColor);
+        Canvas.Font.Color := LColor;
+      end
+      else
+{$ENDIF JVCLThemesEnabled}
+      begin
+        Canvas.Brush.Color := clBtnFace;
+        Canvas.FillRect(R);
+      end;
+      DrawPageButton(R, FPressedPageBtn = I);
+      OffsetRect(R, 0, -1);
+      SetBkMode(Canvas.Handle, TRANSPARENT);
+      DrawText(Canvas.Handle, PChar(Pages[I].Caption), -1, R,
+        DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+      OffsetRect(R, 0, 1);
     end;
-    DrawPageButton(R, FPressedPageBtn = I);
-    OffsetRect(R, 0, -1);
-    SetBkMode(Canvas.Handle, TRANSPARENT);
-    DrawText(Canvas.Handle, PChar(Pages[I].Caption), -1, R,
-      DT_CENTER or DT_VCENTER or DT_SINGLELINE);
-    OffsetRect(R, 0, -PageButtonHeight + 1);
+    OffsetRect(R, 0, -PageButtonHeight);
   end;
 end;
 
@@ -1726,28 +1750,32 @@ end;
 procedure TJvCustomOutlookBar.Paint;
 var
   I: Integer;
-  {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
   Details: TThemedElementDetails;
   R, ClipRect: TRect;
-  {$ENDIF JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
 begin
   if csDestroying in ComponentState then
     Exit;
-  {$IFDEF JVCLThemesEnabled}
-  if ThemedBackground and ThemeServices.ThemesEnabled then
+  if Pages.Count = 0 then // we only need to draw the background when there are no pages
   begin
-    R := ClientRect;
-    ClipRect := R;
-    InflateRect(R, 1, 0);
-    Details := ThemeServices.GetElementDetails(ttbButtonHot);
-    ThemeServices.DrawElement(Canvas.Handle, Details, R, @ClipRect);
-  end
-  else
-  {$ENDIF JVCLThemesEnabled}
-  begin
-    Canvas.Font := Font;
-    Canvas.Brush.Color := Color;
-    Canvas.FillRect(ClientRect);
+{$IFDEF JVCLThemesEnabled}
+    if ThemedBackground and ThemeServices.ThemesEnabled then
+    begin
+      R := ClientRect;
+      ClipRect := R;
+      InflateRect(R, 1, 0);
+      Details := ThemeServices.GetElementDetails(ttbButtonHot);
+      ThemeServices.DrawElement(Canvas.Handle, Details, R, @ClipRect);
+    end
+    else
+{$ENDIF JVCLThemesEnabled}
+    begin
+      Canvas.Font := Font;
+      Canvas.Brush.Color := Color;
+      if DoDrawBackGround then
+        Canvas.FillRect(ClientRect);
+    end;
   end;
   SetBkMode(Canvas.Handle, TRANSPARENT);
   I := DrawTopPages;
@@ -1865,9 +1893,9 @@ end;
 procedure TJvCustomOutlookBar.DrawButtonFrame(PageIndex, ButtonIndex, PressedIndex: Integer);
 var
   R: TRect;
-  {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
   Details: TThemedElementDetails;
-  {$ENDIF JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -1875,22 +1903,25 @@ begin
     (ButtonIndex < Pages[PageIndex].TopButtonIndex) then
     Exit;
   R := GetButtonFrameRect(PageIndex, ButtonIndex);
-  {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
+  if DoDrawButtonFrame(R, ButtonIndex, PressedIndex = ButtonIndex, True) then
   begin
-    if (PressedIndex = ButtonIndex) or (Pages[PageIndex].Buttons[ButtonIndex].Down) then
-      Details := ThemeServices.GetElementDetails(ttbButtonPressed)
+{$IFDEF JVCLThemesEnabled}
+    if ThemeServices.ThemesEnabled then
+    begin
+      if (PressedIndex = ButtonIndex) or (Pages[PageIndex].Buttons[ButtonIndex].Down) then
+        Details := ThemeServices.GetElementDetails(ttbButtonPressed)
+      else
+        Details := ThemeServices.GetElementDetails(ttbButtonHot);
+      ThemeServices.DrawElement(Canvas.Handle, Details, R);
+    end
     else
-      Details := ThemeServices.GetElementDetails(ttbButtonHot);
-    ThemeServices.DrawElement(Canvas.Handle, Details, R);
-  end
-  else
-  {$ENDIF JVCLThemesEnabled}
-  begin
-    if (PressedIndex = ButtonIndex) or (Pages[PageIndex].Buttons[ButtonIndex].Down) then
-      Frame3D(Canvas, R, clBlack, clWhite, 1)
-    else
-      Frame3D(Canvas, R, clWhite, clBlack, 1);
+{$ENDIF JVCLThemesEnabled}
+    begin
+      if (PressedIndex = ButtonIndex) or (Pages[PageIndex].Buttons[ButtonIndex].Down) then
+        Frame3D(Canvas, R, clBlack, clWhite, 1)
+      else
+        Frame3D(Canvas, R, clWhite, clBlack, 1);
+    end;
   end;
 end;
 
@@ -1942,7 +1973,7 @@ begin
 1. check whether the mouse is down on a page button and whether the mouse has moved from
     the currently pressed page button }
   P := GetPageButtonAtPos(Point(X, Y));
-  {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
   begin
     if ((P = nil) and (FHotPageBtn >= 0)) or (Assigned(P) and (P.Index <> FHotPageBtn)) then
@@ -1963,7 +1994,7 @@ begin
       end;
     end;
   end;
-  {$ENDIF JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
 
   if FPressedPageBtn > -1 then
   begin
@@ -1974,8 +2005,7 @@ begin
       FPressedPageBtn := -1;
     end;
   end
-  else
-  if (P <> nil) and (P.Index <> ActivePageIndex) then
+  else if (P <> nil) and (P.Index <> ActivePageIndex) then
   begin
     if P.Index = FNextActivePage then
     begin
@@ -2061,14 +2091,14 @@ begin
   RedrawRect(FButtonRect);
   FPressedPageBtn := -1;
   FLastButtonIndex := -1;
-  {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled and (FHotPageBtn >= 0) then
   begin
     R := GetPageButtonRect(FHotPageBtn);
     RedrawRect(R);
     FHotPageBtn := -1;
   end;
-  {$ENDIF JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
 end;
 
 function TJvCustomOutlookBar.GetButtonHeight(PageIndex: Integer): Integer;
@@ -2183,8 +2213,7 @@ begin
   begin
     if TObject(LParam) is TJvOutlookBarButton then
       DoButtonEdit(TJvOutlookBarEdit(WParam).Text, TJvOutlookBarButton(LParam))
-    else
-    if TObject(LParam) is TJvOutlookBarPage then
+    else if TObject(LParam) is TJvOutlookBarPage then
       DoPageEdit(TJvOutlookBarEdit(WParam).Text, TJvOutlookBarPage(LParam));
   end;
 end;
@@ -2217,6 +2246,7 @@ begin
 end;
 
 {$IFDEF JVCLThemesEnabled}
+
 procedure TJvCustomOutlookBar.SetThemedBackground(const Value: Boolean);
 begin
   if Value <> FThemedBackGround then
@@ -2270,6 +2300,41 @@ begin
 
   inherited;
 end;
+
+function TJvCustomOutlookBar.DoCustomDraw(ARect: TRect; Stage: TJvOutlookBarCustomDrawStage;
+  Index: integer; Down, Inside: boolean): boolean;
+begin
+  Result := True;
+  if Assigned(FOnCustomDraw) then
+    FOnCustomDraw(Self, Canvas, ARect, Stage, Index, Down, Inside, Result);
+end;
+
+function TJvCustomOutlookBar.DoDrawBackGround: boolean;
+begin
+  Result := DoCustomDraw(ClientRect, odsBackground, -1, False, False);
+end;
+
+function TJvCustomOutlookBar.DoDrawButton(ARect: TRect; Index: integer; Down, Inside: boolean): boolean;
+begin
+  Result := DoCustomDraw(ARect, odsButton, Index, Down, Inside);
+end;
+
+function TJvCustomOutlookBar.DoDrawButtonFrame(ARect: TRect; Index: integer;
+  Down, Inside: boolean): boolean;
+begin
+  Result := DoCustomDraw(ARect, odsButtonFrame, Index, Down, Inside);
+end;
+
+function TJvCustomOutlookBar.DoDrawPage(ARect: TRect; Index: integer): boolean;
+begin
+  Result := DoCustomDraw(ARect, odsPage, Index, False, Index = ActivePageIndex);
+end;
+
+function TJvCustomOutlookBar.DoDrawPageButton(ARect: TRect; Index: integer; Down: boolean): boolean;
+begin
+  Result := DoCustomDraw(ARect, odsPageButton, Index, Down, Index = ActivePageIndex);
+end;
+
 
 end.
 
