@@ -66,8 +66,8 @@ type
   private
     FRegHKEY: HKEY;
     FUseOldDefaultRoot: Boolean;
-    FDefaultCompanyName: string;
-    FDefaultAppName: string;
+    FAppNameErrorHandled: Boolean;
+    FCompanyNameErrorHandled: Boolean;
   protected
     procedure Loaded; override;
 
@@ -109,11 +109,6 @@ type
     property SubStorages;
     property UseOldDefaultRoot: Boolean read FUseOldDefaultRoot write SetUseOldDefaultRoot stored True default False ;
 
-    // Used when no app name can be found in the exe file
-    property DefaultAppName: string read FDefaultAppName write FDefaultAppName;
-
-    // Used when no company name can be found in the exe file
-    property DefaultCompanyName: string read FDefaultCompanyName write FDefaultCompanyName;
     property ReadOnly;
   end;
 
@@ -125,7 +120,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils,
   JclRegistry, JclResources, JclStrings, JclFileUtils,
-  JvConsts, JvResources;
+  JvConsts, JvResources, Dialogs;
 
 const
   cCount = 'Count';
@@ -134,6 +129,8 @@ const
   cAppNameMask = '%APPL_NAME%';
   cCompanyNameMask = '%COMPANY_NAME%';
   cOldDefaultRootMask =  cSoftwareKey + '\' + cCompanyNameMask + '\' + cAppNameMask;
+  cDefaultAppName = 'MyJVCLApplication';
+  cDefaultCompanyName = 'MyCompany';
 
 { (rom) disabled unused
 const
@@ -156,6 +153,8 @@ begin
   inherited Create(AOwner);
   FRegHKEY := HKEY_CURRENT_USER;
   FUseOldDefaultRoot := False;
+  FAppNameErrorHandled := False;
+  FCompanyNameErrorHandled := False;
 end;
 
 procedure TJvAppRegistryStorage.SetRoot(const Value: string);
@@ -175,7 +174,15 @@ var
         VersionInfo.Free;
       end;
     except
-      on EJclFileVersionInfoError do Result := DefaultAppName;
+      on EJclFileVersionInfoError do
+        begin
+          if not FAppNameErrorHandled then
+          begin
+            MessageDlg(Format('The Default Root Value "%s" has been replaced with "%s".'+#13+#10+'Please change the value in the FileVersionInfo Project Properties.', [cAppNameMask, cDefaultAppName]), mtInformation, [mbOK], 0);
+            FAppNameErrorHandled := true;
+          end;
+          Result := cDefaultAppName;
+        end
       else raise;
     end;
   end;
@@ -192,7 +199,15 @@ var
         VersionInfo.Free;
       end;
     except
-      on EJclFileVersionInfoError do Result := DefaultCompanyName;
+      on EJclFileVersionInfoError do
+        begin
+          if not FCompanyNameErrorHandled then
+          begin
+            MessageDlg(Format('The Default Root Value "%s" has been replaced with "%s".'+#13+#10+'Please change the value in the FileVersionInfo Project Properties.', [cCompanyNameMask, cDefaultCompanyName]), mtInformation, [mbOK], 0);
+            FCompanyNameErrorHandled := true;
+          end;
+          Result := cDefaultCompanyName;
+        end
       else raise;
     end;
   end;
