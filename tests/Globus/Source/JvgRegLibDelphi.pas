@@ -265,8 +265,7 @@ begin
 
   RegisterComponentEditor(TJvgReport, TJvgReportCompEditor);
 
-  RegisterPropertyEditor(TypeInfo(TStringList), TJvgReport, 'Report',
-    TJvgRepProperty);
+  RegisterPropertyEditor(TypeInfo(TStringList), TJvgReport, 'Report', TJvgRepProperty);
 
   RegisterComponentEditor(TJvgReportEditor, TJvgReportCompEditor);
 

@@ -81,17 +81,11 @@ type
     property AutoApdate: boolean read FAutoApdate write FAutoApdate;
   end;
 
-procedure Register;
 
 implementation
 uses JvgUtils,
   JvgTypes,
   JvgComponentListEditor;
-
-procedure Register;
-begin
-
-end;
 
 constructor TJvgPropertyCenter.Create(AOwner: TComponent);
 begin

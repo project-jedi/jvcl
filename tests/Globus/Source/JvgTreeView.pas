@@ -300,7 +300,7 @@ type
 procedure Register;
 
 implementation
-{$R JvgTreeView.res}
+{$R ..\Resources\JvgTreeView.res}
 uses JvgUtils;
 
 procedure Register;

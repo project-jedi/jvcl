@@ -244,7 +244,7 @@ type
   end;
 
 implementation
-{$R JvgButton.res}
+{$R ..\Resources\JvgButton.res}
 
 constructor TJvgBtnGlyphs.Create;
 begin

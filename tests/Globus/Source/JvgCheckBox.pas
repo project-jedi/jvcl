@@ -193,7 +193,7 @@ type
   end;
 
 implementation
-{$R JvgCheckBox.res}
+{$R ..\Resources\JvgCheckBox.res}
 
 //________________________________________________________ Methods _
 

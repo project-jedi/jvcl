@@ -136,7 +136,7 @@ type
   {$DEFINE GL_CAPT_BUTTONS}
 implementation
 {$IFDEF GL_CAPT_BUTTONS}
-{$R JvgCaption.res}
+{$R ..\Resources\JvgCaption.res}
 {$ENDIF}
 
 //==============================================================

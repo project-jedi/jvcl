@@ -123,7 +123,7 @@ implementation
 uses JvgTypes,
   JvgUtils,
   ExtCtrls;
-{$R JvgHint.res}
+{$R ..\Resources\JvgHint.res}
 
 constructor TJvgHint.Create(AOwner: TComponent);
 begin
