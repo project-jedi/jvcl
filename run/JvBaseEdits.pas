@@ -841,8 +841,11 @@ var
   S: string;
   IsEmpty: Boolean;
   OldLen, SelStart, SelStop: Integer;
+  WasModified: Boolean;
 begin
   FFormatting := True;
+  { Changing Text sets Modified to false }
+  WasModified := Modified;
   try
     S := inherited Text;
     OldLen := Length(S);
@@ -861,6 +864,7 @@ begin
     end;
   finally
     FFormatting := False;
+    Modified := WasModified;
   end;
 end;
 
