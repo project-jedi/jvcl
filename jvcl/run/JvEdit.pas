@@ -74,7 +74,6 @@ type
     FStreamedSelStart: Integer;
     FUseFixedPopup: Boolean;
     FAutoHint: Boolean;
-    FOldHint: TCaption;
     {$IFDEF VisualCLX}
     FPasswordChar: Char;
     FNullPixmap: QPixmapH;
@@ -83,7 +82,11 @@ type
     FIsEmptyValue: Boolean;
     FEmptyFontColor: TColor;
     FOldFontColor: TColor;
+    {$IFDEF JVCLThemesEnabled}
+    FThemedPassword: Boolean;
+    {$ENDIF JVCLThemesEnabled}
     function GetPasswordChar: Char;
+    function IsPasswordCharStored: Boolean;
     procedure SetAlignment(Value: TAlignment);
     procedure SetCaret(const Value: TJvCaret);
     procedure SetDisabledColor(const Value: TColor); virtual;
@@ -93,17 +96,21 @@ type
     {$IFDEF VCL}
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     {$ENDIF VCL}
+    procedure CMHintShow(var Msg: TMessage); message CM_HINTSHOW;
     procedure SetEmptyValue(const Value: string);
     procedure SetGroupIndex(Value: Integer);
     function GetFlat: Boolean;
-    procedure SetAutoHint(Value: Boolean);
+    {$IFDEF JVCLThemesEnabled}
+    procedure SetThemedPassword(const Value: Boolean);
+    {$ENDIF JVCLThemesEnabled}
   protected
     procedure DoClipboardCut; override;
     procedure DoClipboardPaste; override;
     procedure DoClearText; override;
     procedure DoUndo; override;
 
-    procedure UpdateEdit; virtual;
+    { (rb) renamed from UpdateEdit }
+    procedure UpdateGroup; virtual;
     procedure SetClipboardCommands(const Value: TJvClipboardCommands); override;
     procedure CaretChanged(Sender: TObject); dynamic;
     procedure Change; override;
@@ -133,27 +140,31 @@ type
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure EnabledChanged; override;
     procedure SetFlat(Value: Boolean); virtual;
-    procedure UpdateAutoHint; dynamic;
-    procedure Resize; override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
+
+    procedure Loaded; override;
+    {$IFDEF VCL}
+    procedure CreateParams(var Params: TCreateParams); override;
+    {$ENDIF VCL}
   public
     function IsEmpty: Boolean;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     {$IFDEF VCL}
     procedure DefaultHandler(var Msg); override;
-    procedure CreateParams(var Params: TCreateParams); override;
     {$ENDIF VCL}
-    procedure Loaded; override;
   protected
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
-    property AutoHint: Boolean read FAutoHint write SetAutoHint default False;
+    property AutoHint: Boolean read FAutoHint write FAutoHint default False;
     property Caret: TJvCaret read FCaret write SetCaret;
     property EmptyValue: string read FEmptyValue write SetEmptyValue;
     property EmptyFontColor: TColor read FEmptyFontColor write FEmptyFontColor default clGrayText;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
-    property PasswordChar: Char read GetPasswordChar write SetPasswordChar;
+    property PasswordChar: Char read GetPasswordChar write SetPasswordChar stored IsPasswordCharStored;
+    {$IFDEF JVCLThemesEnabled}
+    property ThemedPassword: Boolean read FThemedPassword write SetThemedPassword default False;
+    {$ENDIF JVCLThemesEnabled}
     // set to True to disable read/write of PasswordChar and read of Text
     property ProtectPassword: Boolean read FProtectPassword write FProtectPassword default False;
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText;
@@ -164,9 +175,9 @@ type
     property UseFixedPopup: Boolean read FUseFixedPopup write FUseFixedPopup default True;
     property HintColor;
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
-    property GroupIndex: Integer read FGroupIndex write SetGroupIndex;
+    property GroupIndex: Integer read FGroupIndex write SetGroupIndex default -1;
     property OnParentColorChange;
-    property Flat: Boolean read GetFlat write SetFlat;
+    property Flat: Boolean read GetFlat write SetFlat default False;
   end;
 
   TJvEdit = class(TJvCustomEdit)
@@ -183,6 +194,7 @@ type
     property DragKind;
     property EmptyValue; // p3: clx not implemented yet
     property EmptyFontColor; // p3: clx not implemented yet
+    property Flat;
     property ImeMode;
     property ImeName;
     property OEMConvert;
@@ -206,7 +218,10 @@ type
     property HintColor;
     property GroupIndex;
     property MaxPixel;
-    property Modified;
+    property Modified; { (rb) why published/stored? }
+    {$IFDEF JVCLThemesEnabled}
+    property ThemedPassword;
+    {$ENDIF JVCLThemesEnabled}
     // property SelStart; (p3) why published?
     // property SelText;
     // property SelLength; (p3) why published?
@@ -261,7 +276,7 @@ type
 implementation
 
 uses
-  SysUtils, Math,
+  SysUtils, Math, Forms,
   {$IFDEF VCL}
   JvFixedEditPopup,
   {$ENDIF VCL}
@@ -274,6 +289,28 @@ begin
   SetLength(Result, Length);
   if Length > 0 then
     FillChar(Result[1], Length, Ch);
+end;
+
+function TextFitsInCtrl(Control: TControl; const Text: string): Boolean;
+var
+  C: TControlCanvas;
+  Size: TSize;
+begin
+  C := TControlCanvas.Create;
+  try
+    C.Control := Control;
+    Result :=
+      {$IFDEF VCL}
+      not GetTextExtentPoint32(C.Handle, PChar(Text), Length(Text), Size) or
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      not GetTextExtentPoint32W(C.Handle, PWideChar(Text), Length(Text), Size) or
+      {$ENDIF VisualCLX}
+      { (rb) ClientWidth is too big, should be EM_GETRECT, don't know the Clx variant }
+      (Control.ClientWidth > Size.cx);
+  finally
+    C.Free;
+  end;
 end;
 
 //=== TJvCustomEdit ==========================================================
@@ -297,7 +334,19 @@ begin
     Text := St;
     SelStart := Min(SelStart, Length(Text));
   end;
-  UpdateAutoHint;
+end;
+
+procedure TJvCustomEdit.CMHintShow(var Msg: TMessage);
+begin
+  if not TextFitsInCtrl(Self, Self.Text) then
+    with TCMHintShow(Msg) do
+    begin
+      HintInfo.HintPos := Self.ClientToScreen(Point(-2, Height - 2));
+      HintInfo.HintStr := Self.Text;
+      Result := 0;
+    end
+  else
+    inherited;
 end;
 
 constructor TJvCustomEdit.Create(AOwner: TComponent);
@@ -341,10 +390,17 @@ end;
 
 procedure TJvCustomEdit.CreateParams(var Params: TCreateParams);
 const
-  Styles: array [TAlignment] of DWORD = (ES_LEFT, ES_RIGHT, ES_CENTER);
+  {$IFDEF JVCLThemesEnabled}
+  Passwords: array[Boolean] of DWORD = (0, ES_PASSWORD);
+  {$ENDIF JVCLThemesEnabled}
+  Styles: array[TAlignment] of DWORD = (ES_LEFT, ES_RIGHT, ES_CENTER);
 begin
   inherited CreateParams(Params);
-  Params.Style := Params.Style or Styles[FAlignment];
+  Params.Style := Params.Style or Styles[FAlignment]
+    {$IFDEF JVCLThemesEnabled}
+    or Passwords[ThemedPassword]
+    {$ENDIF JVCLThemesEnabled}
+    ;
   if (FAlignment <> taLeftJustify) and (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) and
     (Win32MajorVersion = 4) and (Win32MinorVersion = 0) then
     Params.Style := Params.Style or ES_MULTILINE; // needed for Win95
@@ -391,8 +447,10 @@ end;
 procedure TJvCustomEdit.DoClipboardPaste;
 begin
   if not ReadOnly then
+  begin
     inherited DoClipboardPaste;
-  UpdateEdit;
+    UpdateGroup;
+  end;
 end;
 
 procedure TJvCustomEdit.DoEmptyValueEnter;
@@ -486,8 +544,7 @@ end;
 function TJvCustomEdit.GetFlat: Boolean;
 begin
   {$IFDEF VCL}
-  // (rom) Is this correct? I would assume "not Ctl3D" as value.
-  FFlat := Ctl3D; // update
+  FFlat := not Ctl3D; // update
   {$ENDIF VCL}
   Result := FFlat;
 end;
@@ -516,6 +573,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 function TJvCustomEdit.GetText: TCaption;
 var
   Tmp: Boolean;
@@ -533,6 +591,7 @@ begin
     end;
   end;
 end;
+
 {$ENDIF VCL}
 
 function TJvCustomEdit.IsEmpty: Boolean;
@@ -540,19 +599,20 @@ begin
   Result := (Length(Text) = 0);
 end;
 
-procedure TJvCustomEdit.KeyDown(var Key: Word; Shift: TShiftState);
+function TJvCustomEdit.IsPasswordCharStored: Boolean;
 begin
-  UpdateEdit;
-  inherited KeyDown(Key, Shift);
+  Result := (PasswordChar <> #0)
+    {$IFDEF JVCLThemesEnabled}
+    and not ThemedPassword
+    {$ENDIF JVCLThemesEnabled}
+    ;
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvCustomEdit.KeyPress(var Key: Char);
+procedure TJvCustomEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  inherited KeyPress(Key);
-  UpdateAutoHint;
+  UpdateGroup;
+  inherited KeyDown(Key, Shift);
 end;
-{$ENDIF VisualCLX}
 
 procedure TJvCustomEdit.Loaded;
 begin
@@ -614,6 +674,7 @@ begin
 end;
 
 {$IFDEF VisualCLX}
+
 procedure TJvCustomEdit.Paint;
 var
   S: TCaption;
@@ -633,13 +694,8 @@ begin
       inherited Paint;
   end;
 end;
-{$ENDIF VisualCLX}
 
-procedure TJvCustomEdit.Resize;
-begin
-  inherited Resize;
-  UpdateAutoHint;
-end;
+{$ENDIF VisualCLX}
 
 procedure TJvCustomEdit.SetAlignment(Value: TAlignment);
 begin
@@ -653,19 +709,6 @@ begin
     inherited Alignment := FAlignment;
     Invalidate;
     {$ENDIF VisualCLX}
-  end;
-end;
-
-procedure TJvCustomEdit.SetAutoHint(Value: Boolean);
-begin
-  if FAutoHint <> Value then
-  begin
-    if Value then
-      FOldHint := Hint
-    else
-      Hint := FOldHint;
-    FAutoHint := Value;
-    UpdateAutoHint;
   end;
 end;
 
@@ -721,8 +764,7 @@ begin
   begin
     FFlat := Value;
     {$IFDEF VCL}
-    // (rom) Is this correct? I would assume "not FFlat" as value.
-    Ctl3D := FFlat;
+    Ctl3D := not FFlat;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     if FFlat then
@@ -736,8 +778,11 @@ end;
 
 procedure TJvCustomEdit.SetGroupIndex(Value: Integer);
 begin
-  FGroupIndex := Value;
-  UpdateEdit;
+  if Value <> FGroupIndex then
+  begin
+    FGroupIndex := Value;
+    UpdateGroup;
+  end;
 end;
 
 procedure TJvCustomEdit.SetHotTrack(const Value: Boolean);
@@ -790,67 +835,33 @@ end;
 procedure TJvCustomEdit.SetText(const Value: TCaption);
 begin
   inherited Text := Value;
-  UpdateAutoHint;
 end;
 
 {$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TJvCustomEdit.TextChanged;
-begin
-  inherited TextChanged;
-  UpdateAutoHint;
-end;
-{$ENDIF VisualCLX}
+{$IFDEF JVCLThemesEnabled}
 
-procedure TJvCustomEdit.UpdateAutoHint;
-var
-  C: TControlCanvas;
-  Size: TSize;
+procedure TJvCustomEdit.SetThemedPassword(const Value: Boolean);
 begin
-  if AutoHint and HandleAllocated then
+  if FThemedPassword <> Value then
   begin
-    // (p3) empty original Hint indicates that we always want to replace Hint with Text
-    if FOldHint = '' then
-    begin
-      Hint := Text;
-      Exit;
-    end;
-    C := TControlCanvas.Create;
-    try
-      C.Control := Self;
-      {$IFDEF VCL}
-      if GetTextExtentPoint32(C.Handle, PChar(Text), Length(Text), Size) then
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      if GetTextExtentPoint32W(C.Handle, PWideChar(Text), Length(Text), Size) then
-      {$ENDIF VisualCLX}
-      begin
-        if ClientWidth <= Size.cx then
-          Hint := Text
-        else
-          Hint := FOldHint;
-      end
-      else
-        Hint := FOldHint;
-    finally
-      C.Free;
-    end;
+    FThemedPassword := Value;
+    PasswordChar := #0;
+    RecreateWnd;
   end;
 end;
 
-procedure TJvCustomEdit.UpdateEdit;
+{$ENDIF JVCLThemesEnabled}
+
+procedure TJvCustomEdit.UpdateGroup;
 var
   I: Integer;
 begin
-  if Assigned(Owner) then
+  if (FGroupIndex <> -1) and (Owner <> nil) then
     for I := 0 to Owner.ComponentCount - 1 do
-      if Owner.Components[I] is TJvCustomEdit then
-        if ({(Owner.Components[I].Name <> Self.Name)}
-          (Owner.Components[I] <> Self) and // (ahuser) this is better and faster
-          ((Owner.Components[I] as TJvCustomEdit).GroupIndex <> -1) and
-          ((Owner.Components[I] as TJvCustomEdit).GroupIndex = FGroupIndex)) then
-          (Owner.Components[I] as TJvCustomEdit).Caption := '';
+      if (Owner.Components[I] is TJvCustomEdit) and (Owner.Components[I] <> Self) and
+        (TJvCustomEdit(Owner.Components[I]).GroupIndex = Self.GroupIndex) then
+        TJvCustomEdit(Owner.Components[I]).Clear;
 end;
 
 {$IFDEF VCL}
