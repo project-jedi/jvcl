@@ -77,6 +77,11 @@ const
 type
   TJvDBGrid = class;
 
+  // Consts for TJvDBGridLayoutChangeLink
+  JvDBGridLayoutChangeKind = (lcSizeChanged, lcTopLeftChnaged);
+{  FooterMsgSizeChanged = 0;
+  FooterMsgTopLeftChanged = 1;}
+
   TSelectColumn = (scDataBase, scGrid);
   TTitleClickEvent = procedure(Sender: TObject; ACol: Longint;
     Field: TField) of object;
@@ -99,6 +104,17 @@ type
   TJvTitleHintEvent = procedure(Sender: TObject; Field: TField;
     var AHint: string; var ATimeOut: Integer) of object;
   TJvCellHintEvent = TJvTitleHintEvent;
+  
+  TJvDBGridLayoutChangeEvent = procedure(Grid: TJvDBGrid; Kind: TJvDBGridLayoutChangeKind) of object;
+  
+  TJvDBGridLayoutChangeLink = class
+  private
+    FOnChange: TJvDBGridLayoutChangeEvent;
+  public
+    DoChange(Grid: TJvDBGrid; Kind: TJvDBGridLayoutChangeKind);
+  
+    property OnChange: TJvDBGridLayoutChangeEvent read FOnChange write FOnChange;
+  end;
 
   EJVCLDbGridException = Class(EJVCLException);
 
@@ -197,6 +213,7 @@ type
     FShowCellHint: Boolean;
     FOnShowCellHint: TJvCellHintEvent;
     FCharList: TCharList;
+//    FFooterMsgPipe: TFooterMsgPipe;
 
     FControls: TJvDBGridControls;
     FCurrentControl: TWinControl;
@@ -208,6 +225,9 @@ type
     FRowResize: Boolean;
     FRowsHeight: Integer;
     FTitleRowHeight: Integer;
+    
+    FChangeLinks: TObjectList;
+    
     procedure SetAutoSizeRows(Value: Boolean);
     procedure SetRowResize(Value: Boolean);
     procedure SetRowsHeight(Value: Integer);
@@ -258,7 +278,7 @@ type
     procedure ChangeBoolean(const FieldValueChange: Shortint);
     function DoKeyPress(var Msg: TWMChar): Boolean;
     procedure SetWordWrap(Value: Boolean);
-    procedure NotifyLayoutChange();
+    procedure NotifyLayoutChange(const Kind: TJvDBGridLayoutChangeKind);
   protected
     FCurrentDrawRow: Integer;
     procedure MouseLeave(Control: TControl); override;
@@ -350,6 +370,10 @@ type
     procedure CloseControl; // Hide the current edit control and give the focus to the grid 
     procedure InitializeColumnsWidth(const MinWidth, MaxWidth: Integer;
       const DisplayWholeTitle: Boolean; const FixedWidths: array of Integer);
+      
+    procedure RegisterLayoutChangeLink(Link: TJvDBGridLayoutChangeLink);
+    procedure UnregisterLayoutChangeLink(Link: TJvDBGridLayoutChangeLink);
+      
     property SelectedRows;
     property SelCount: Longint read GetSelCount;
     property Canvas;
@@ -362,6 +386,7 @@ type
     property IndicatorOffset;
     property TitleOffset: Byte read GetTitleOffset;
     property CharList: TCharList read FCharList write FCharList;
+//    property FooterMsgPipe: TFooterMsgPipe read FFooterMsgPipe write FFooterMsgPipe;
   published
     property AutoAppend: Boolean read FAutoAppend write FAutoAppend default True; // Polaris
     property SortMarker: TSortMarker read FSortMarker write SetSortMarker default smNone;
@@ -713,6 +738,14 @@ end;
 
 {$ENDIF COMPILER6_UP}
 
+//=== { TJvDBGridLayoutChangeLink } ==========================================
+procedure TJvDBGridLayoutChangeLink.DoChange(Grid: TJvDBGrid; 
+        Kind: TJvDBGridLayoutChangeKind)
+begin
+  if Assigned(OnChange) then
+    OnChange(Grid, Kind);
+end;
+
 //=== { TJvDBGridControls } ==================================================
 
 constructor TJvDBGridControls.Create(ParentDBGrid: TJvDBGrid);
@@ -815,6 +848,8 @@ begin
   FRowResize := False;
   FRowsHeight := DefaultRowHeight;
   FTitleRowHeight := RowHeights[0];
+  
+  FChangeLinks := TObjectList.Create(False);
 end;
 
 destructor TJvDBGrid.Destroy;
@@ -825,9 +860,22 @@ begin
   FIniLink.Free;
   FMsIndicators.Free;
   FSelectColumnsDialogStrings.Free;
+  
+  FChangeLinks.Free;
+  
   inherited Destroy;
 end;
 
+procedure TJvDBGrid.RegisterLayoutChangeLink(Link: TJvDBGridLayoutChangeLink);
+begin
+  FChangeLinks.Add(Link);
+end;
+
+procedure TJvDBGrid.UnregisterLayoutChangeLink(Link: TJvDBGridLayoutChangeLink);
+begin
+  FChangeLinks.Remove(Link);
+end;
+      
 function TJvDBGrid.GetImageIndex(Field: TField): Integer;
 begin
   Result := -1;
@@ -956,8 +1004,16 @@ begin
   DoAutoSizeColumns;
 end;
 
-procedure TJvDBGrid.NotifyLayoutChange();
+procedure TJvDBGrid.NotifyLayoutChange(const Kind: TJvDBGridLayoutChangeKind);
+var
+  I: Integer;
 begin
+  // We cannot trigger DataLink.LayoutChanged nor rely on it, so we notify any linked
+  // control of the layout changes by calling DoChange on the registered 
+  // TJvDBGridLayoutChangeLink objects
+  for I := 0 to FChangeLinks.Count-1 do
+    TJvDBGridLayoutChangeLink(FChangeLinks[I]).DoChange(Self, Kind);
+
   if FCurrentControl <> nil then
     if FCurrentControl.Visible then
       PlaceControl(FCurrentControl, Col, Row);
@@ -1722,7 +1778,7 @@ begin
   if Assigned(FOnTopLeftChanged) then
     FOnTopLeftChanged(Self);
 
-  NotifyLayoutChange();
+  NotifyLayoutChange(lcTopLeftChanged);
 end;
 
 procedure TJvDBGrid.StopTracking;
@@ -3136,7 +3192,7 @@ begin
   inherited Resize;
   DoAutoSizeColumns;
 
-  NotifyLayoutChange();
+  NotifyLayoutChange(lcSizeChanged);
 end;
 
 procedure TJvDBGrid.Loaded;

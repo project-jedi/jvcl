@@ -51,6 +51,7 @@
     <File Name="..\..\run\JvDBUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBGrid.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBGridExport.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBGridFooter.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBGridSelectColumnForm.pas" Targets="allbutclx" Formname="frmSelectColumn" Condition=""/>
     <File Name="..\..\run\JvDBUltimGrid.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvExDBGrids.pas" Targets="all" Formname="" Condition=""/>
