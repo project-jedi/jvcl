@@ -54,7 +54,7 @@ const
   MaxShowXValueInLegends = 10;
 
 type
-  {CHART  TYPES}
+  {CHART TYPES}
   TJvChartKind =
    (ckChartNone, // Blank graph.
     ckChartBar,
@@ -72,24 +72,23 @@ type
     a memory cap, so we don't thrash the system or leak forever.  -WAP.}
   TJvChartData = class(TObject)
   private
-    FData: array of array of Real; // Dynamic array of dynamic array of Real.
-              // Initial length is CHART_DATA_GROWBY elements, each of which
-              // is empty until data is stored in them.
-              // *** Order of indexing: FData[Values,Pen] ***
+    FData: array of array of Double;
+      // Dynamic array of dynamic array of Double.
+      // Initial length is CHART_DATA_GROWBY elements, each of which
+      // is empty until data is stored in them.
+      // *** Order of indexing: FData[Values,Pen] ***
     FDataAlloc: Integer; // Last Allocated Value.
     FValueCount: Integer; // Number of Values used
   protected
     procedure Grow(Pen, Values: Integer);
       //GetValue/SetValue resizer, also throws exception if Pen,Values is negative or just way too big.
-    function GetValue(Pen, Values: Integer): Real;
-    procedure SetValue(Pen, Values: Integer; NewValue: Real);
+    function GetValue(Pen, Values: Integer): Double;
+    procedure SetValue(Pen, Values: Integer; NewValue: Double);
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear; // Resets to zero.
-    // procedure SaveToFile(filename:String); // Save as CSV
-    // procedure LoadFromFile(filename:String); // Load as CSV
-    property Value[Pen, Values: Integer]: Real read GetValue write SetValue; default;
+    property Value[Pen, Values: Integer]: Double read GetValue write SetValue; default;
     property ValueCount: Integer read FValueCount write FValueCount;
   end;
 
@@ -114,7 +113,7 @@ type
     FYValueCount: Integer; // WHAT THE HECK IS IT?
     FPenCount: Integer;
     FPenColors: array of TColor;
-    FAveValue: array of Real;
+    FAverageValue: array of Double;
     FXLegendSkipBy: Integer; //1=print every X axis label, 2=every other, and so on. default=1
     FXLegends: TStringList; //
     FXLegendMaxTextWidth: Integer; // display width (pixels) of widest string in FXLegends[1:x].
@@ -122,10 +121,10 @@ type
     FYLegends: TStringList;
     FPenLegends: TStringList;
     FPenUnit: TStringList;
-    FYMax: Real;
-    FYMin: Real;
-    FXGap: Real;
-    FYGap: Real;
+    FYMax: Double;
+    FYMin: Double;
+    FXGap: Double;
+    FYGap: Double;
     FXOrigin: Integer; {which value corresponds to Origin}
     FYOrigin: Integer;
     FXStartOffset: Longint; {margin}
@@ -148,8 +147,8 @@ type
     FHintColor: TColor;
   protected
     {accessors}
-    function GetAveValue(Index: Integer): Real;
-    procedure SetAveValue(Index: Integer; AValue: Real);
+    function GetAverageValue(Index: Integer): Double;
+    procedure SetAverageValue(Index: Integer; AValue: Double);
     function GetPenColor(Index: Integer): TColor;
     procedure SetPenColor(Index: Integer; AColor: TColor);
     procedure SetXStartOffset(Offset: Integer);
@@ -167,12 +166,12 @@ type
     procedure SetHeaderFont(AFont: TFont);
     procedure SetLegendFont(AFont: TFont);
     procedure SetAxisFont(AFont: TFont);
-    procedure SetYMax(newYmax: Real);
+    procedure SetYMax(newYmax: Double);
   public
     constructor Create(Owner: TJvChart);
     destructor Destroy; override;
     { runtime properties }
-    property AveValue[Index: Integer]: Real read GetAveValue write SetAveValue;
+    property AverageValue[Index: Integer]: Double read GetAverageValue write SetAverageValue;
     property PenColor[Index: Integer]: TColor read GetPenColor write SetPenColor;
     property YLegends: TStrings read GetYLegends write SetYLegends;
     property XLegends: TStrings read GetXLegends write SetXLegends;
@@ -192,15 +191,15 @@ type
     property PenCount: Integer read FPenCount write SetPenCount default 1;
     property PenLegends: TStrings read GetPenLegends write SetPenLegends;
     property PenUnit: TStrings read GetPenUnit write SetPenUnit;
-    property XGap: Real read FXGap write FXGap;
-    property YGap: Real read FYGap write FYGap;
+    property XGap: Double read FXGap write FXGap;
+    property YGap: Double read FYGap write FYGap;
     property XOrigin: Integer read FXOrigin write FXOrigin;
     property YOrigin: Integer read FYOrigin write FYOrigin;
     property XStartOffset: Longint read FXStartOffset write SetXStartOffset default 45;
     property YStartOffset: Longint read FYStartOffset write FYStartOffset default 40;
     { Y Range }
-    property YMax: Real read FYMax write SetYMax;
-    property YMin: Real read FYMin write FYMin;
+    property YMax: Double read FYMax write SetYMax;
+    property YMin: Double read FYMin write FYMin;
     property PointSize: Integer read FPointSize write FPointSize;
     { horizontal label placement }
     property XLegendSkipBy: Integer read FXLegendSkipBy write FXLegendSkipBy default 1;
@@ -247,7 +246,7 @@ type
     bContainsNegative: Boolean;
     { strColorFile: string;}// not used (ahuser)
     nOldYOrigin: Integer;
-    nOldYGap: Real;
+    nOldYGap: Double;
     nMouseDownX: Longint;
     nMouseDownY: Longint;
     nMouseValue: Integer;
@@ -295,7 +294,7 @@ type
     procedure CountGraphAverage;
     procedure DrawPenColorBox(nColor, W, H, X, Y: Integer);
     { function GetDefaultColorString(nIndex: Integer): string;} // (rom) not used 
-    procedure MyPiePercentage(X1, Y1, W: Longint; nPercentage: Real);
+    procedure MyPiePercentage(X1, Y1, W: Longint; nPercentage: Double);
     procedure MyDisplayAsPie(nPen: Integer);
     procedure MyDisplayAsDeltaAverage;
     procedure MyPieLegend(nPen: Integer);
@@ -360,8 +359,8 @@ type
 resourcestring
   sDataIndexCannotBeNegative = 'Data: index cannot be negative';
   sDataIndexTooLargeProbablyAnInternal = 'Data: index too large. probably an internal error.';
-  sGetAveValueIndexNegative = 'GetAveValue: Index negative';
-  sSetAveValueIndexNegative = 'SetAveValue: Index negative';
+  sGetAverageValueIndexNegative = 'GetAverageValue: Index negative';
+  sSetAverageValueIndexNegative = 'SetAverageValue: Index negative';
   sJvChartOptionsPenCountPenCountOutOf = 'JvChart.Options.PenCount - PenCount out of range';
   sJvChartOptionsXStartOffsetValueOutO = 'JvChart.Options.XStartOffset  - value out of range';
   sNoData = 'No data.';
@@ -417,14 +416,14 @@ begin
   inherited Destroy;
 end;
 
-function TJvChartData.GetValue(Pen, Values: Integer): Real;
+function TJvChartData.GetValue(Pen, Values: Integer): Double;
 begin
   // Grow base array
   Grow(Pen, Values);
   Result := FData[Values, Pen];
 end;
 
-procedure TJvChartData.SetValue(Pen, Values: Integer; NewValue: Real);
+procedure TJvChartData.SetValue(Pen, Values: Integer; NewValue: Double);
 begin
   // Grow base array
   Grow(Pen, Values);
@@ -495,7 +494,7 @@ begin
   FPenLegends := TStringList.Create;
   FPenUnit := TStringList.Create;
  // dynamic array setup
-  SetLength(FAveValue, CHART_DATA_GROWBY);
+  SetLength(FAverageValue, CHART_DATA_GROWBY);
 
  // Defaults for Graph Options:
 
@@ -584,23 +583,23 @@ begin
   FPenColors[Index] := AColor;
 end;
 
-function TJvChartOptions.GetAveValue(Index: Integer): Real;
+function TJvChartOptions.GetAverageValue(Index: Integer): Double;
 begin
   if Index < 0 then
-    raise ERangeError.Create(sGetAveValueIndexNegative);
-  if Index >= Length(FAveValue) then
+    raise ERangeError.Create(sGetAverageValueIndexNegative);
+  if Index >= Length(FAverageValue) then
     Result := 0.0
   else
-    Result := FAveValue[Index];
+    Result := FAverageValue[Index];
 end;
 
-procedure TJvChartOptions.SetAveValue(Index: Integer; AValue: Real);
+procedure TJvChartOptions.SetAverageValue(Index: Integer; AValue: Double);
 begin
   if Index < 0 then
-    raise ERangeError.Create(sSetAveValueIndexNegative);
-  if Index >= Length(FAveValue) then
-    SetLength(FAveValue, Index + 1);
-  FAveValue[Index] := AValue;
+    raise ERangeError.Create(sSetAverageValueIndexNegative);
+  if Index >= Length(FAverageValue) then
+    SetLength(FAverageValue, Index + 1);
+  FAverageValue[Index] := AValue;
 end;
 
 procedure TJvChartOptions.SetPenCount(Count: Integer);
@@ -665,7 +664,7 @@ begin
   FAxisFont.Assign(AFont);
 end;
 
-procedure TJvChartOptions.SetYMax(newYmax: Real);
+procedure TJvChartOptions.SetYMax(newYmax: Double);
 begin
   if newYMax = Self.FYMax then
     Exit;
@@ -905,7 +904,7 @@ begin
 
 (*   for I := 0 to MAX_VALUES-1 do
    begin
-      Options.AveValue[I] := 0;
+      Options.AverageValue[I] := 0;
    end; *)
 
   Data.Clear;
@@ -919,11 +918,11 @@ end;
 
 procedure TJvChart.AutoFormatGraph;
 var
-  nYMax, nYMin: Real;
+  nYMax, nYMin: Double;
   nPen: Longint;
   YLegendStr: string; // left hand side, vertically ascending labels for scale of Y values.
   I, J: Integer;
-//   calcYGap  :Real; // not used (ahuser)
+//   calcYGap  :Double; // not used (ahuser)
   aTextWidth, skipby, maxfit: Integer;
 begin
 
@@ -1057,13 +1056,13 @@ begin
 
   for I := 0 to Data.ValueCount - 1 do
   begin
-    Options.AveValue[I] := 0;
+    Options.AverageValue[I] := 0;
     for J := 0 to MAX_PEN - 1 do
-      Options.AveValue[I] := Options.AveValue[I] + FData.Value[J, I];
+      Options.AverageValue[I] := Options.AverageValue[I] + FData.Value[J, I];
     if Options.PenCount = 0 then
-      Options.AveValue[I] := 0
+      Options.AverageValue[I] := 0
     else
-      Options.AveValue[I] := Options.AveValue[I] / Options.PenCount;
+      Options.AverageValue[I] := Options.AverageValue[I] / Options.PenCount;
   end;
 end;
 
@@ -1084,7 +1083,7 @@ var
   J: Integer;
   nStackGap: Integer;
 //   Options3: ^TOptions3;
-  n100Sum: Real;
+  n100Sum: Double;
   nOldY: Longint;
   yTempOrigin: Longint;
    // Rectangle plotting:
@@ -1092,7 +1091,7 @@ var
 
     // Keep Y in visible chart range:
 
-  function GraphConstrainedLineY: Real;
+  function GraphConstrainedLineY: Double;
   begin
     Result := (yOrigin - ((FData.Value[I, J] / Options.YGap) * Options.YPixelGap));
     if Result >= (yOrigin - 1) then
@@ -1281,10 +1280,10 @@ begin
         begin
           SetLineColor(-3);
           ChartCanvas.MoveTo(Round(xOrigin + 1 * Options.XPixelGap),
-            Round(yOrigin - ((Options.AveValue[1] / Options.YGap) * Options.YPixelGap)));
+            Round(yOrigin - ((Options.AverageValue[1] / Options.YGap) * Options.YPixelGap)));
           for J := 2 to Options.XValueCount do
             MyThickLineTo(Round(xOrigin + J * Options.XPixelGap),
-              Round(yOrigin - ((Options.AveValue[J] / Options.YGap) * Options.YPixelGap)));
+              Round(yOrigin - ((Options.AverageValue[J] / Options.YGap) * Options.YPixelGap)));
           SetLineColor(-3);
         end;
       end;
@@ -1825,7 +1824,7 @@ end;
 { MOUSE FUNCTIONS AND PROCEDURES                                            }
 {***************************************************************************}
 {
-function  TJvChart.GetXValue(X,Y:Integer): Real;
+function  TJvChart.GetXValue(X,Y:Integer): Double;
 var
    xOrigin    : Longint;
    XPixelGap: Longint;
@@ -1843,7 +1842,7 @@ begin
    end else GetXValue := 0;
 end;
 
-function  TJvChart.GetYValue(X,Y:Integer): Real;
+function  TJvChart.GetYValue(X,Y:Integer): Double;
 var
    yOrigin    : Longint;
    YPixelGap: Longint;
@@ -2015,7 +2014,7 @@ begin
       bMouseLegend := True;
       exit;
     end;
-   {We will show some Real values...}
+   {We will show some Double values...}
     if nMousePen = 0 then
     begin
       {show all values in the Pen...}
@@ -2077,9 +2076,9 @@ var
   I: Integer;
   nLast: Integer;
   nXExtra: Integer;
-  nSum: Real;
-  n100Sum: Real;
-  nP: Real;
+  nSum: Double;
+  n100Sum: Double;
+  nP: Double;
 begin
   ClearScreen;
 
@@ -2124,13 +2123,13 @@ begin
   end;
 end;
 
-procedure TJvChart.MyPiePercentage(X1, Y1, W: Longint; nPercentage: Real);
+procedure TJvChart.MyPiePercentage(X1, Y1, W: Longint; nPercentage: Double);
 var
   nOriginX, nOriginY: Longint;
-  nGrade: Real;
-  nStartGrade: Real;
-  x, y: Real;
-  nLen: Real;
+  nGrade: Double;
+  nStartGrade: Double;
+  x, y: Double;
+  nLen: Double;
 begin
   nOriginX := Round((W - 1.01) / 2) + X1;
   nOriginY := Round((W - 1.01) / 2) + Y1;
@@ -2324,14 +2323,14 @@ begin
         MyColorRectangle(I,
           yOrigin,
           xOrigin + J * XPixelGap + (I) * Round(XPixelGap / (Options.PenCount + 0.1)) - XPixelGap,
-          yOrigin + Round(((FData.Value[I, J] - Options.AveValue[J]) /
+          yOrigin + Round(((FData.Value[I, J] - Options.AverageValue[J]) /
           Options.YGap) * YPixelGap),
           xOrigin + J * XPixelGap + (I + 1) * Round(XPixelGap / (Options.PenCount + 0.1)) - XPixelGap)
       else
         MyColorRectangle(I,
           yOrigin,
           xOrigin + J * XPixelGap + (I) * Round(XPixelGap / (Options.PenCount + 0.5)) - XPixelGap,
-          yOrigin + Round(((FData.Value[I, J] - Options.AveValue[J]) /
+          yOrigin + Round(((FData.Value[I, J] - Options.AverageValue[J]) /
           Options.YGap) * YPixelGap),
           xOrigin + J * XPixelGap + (I + 1) * Round(XPixelGap / (Options.PenCount + 0.5)) - XPixelGap);
   Options.YOrigin := TempYorigin;
