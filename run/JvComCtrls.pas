@@ -468,8 +468,11 @@ type
     function GetBold: Boolean;
     procedure SetBold(const Value: Boolean);
     procedure SetPopupMenu(const Value: TPopupMenu);
+  protected
+    procedure Reinitialize; virtual;
   public
     class function CreateEnh(AOwner: TTreeNodes): TJvTreeNode;
+    procedure Assign(Source: TPersistent); override;
     property Checked: Boolean read GetChecked write SetChecked;
     property Bold: Boolean read GetBold write SetBold;
     property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
@@ -499,6 +502,7 @@ type
     FMenu: TMenu;
     FOldMenuChange: TMenuChangeEvent;
     FMenuDblClick: Boolean;
+    FReinitializeTreeNode: Boolean;
     procedure InternalCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
     function GetSelectedCount: Integer;
@@ -536,7 +540,8 @@ type
     function CreateNode: TTreeNode; override;
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    procedure WMNotify(var Msg: TWMNotify); message CN_NOTIFY;
+    procedure CreateWnd; override;
+    procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     {$ENDIF VCL}
     procedure Change(Node: TTreeNode); override;
     procedure Delete(Node: TTreeNode); override;
@@ -1988,11 +1993,23 @@ end;
 
 //=== { TJvTreeNode } ========================================================
 
+
 {$IFDEF VCL}
 class function TJvTreeNode.CreateEnh(AOwner: TTreeNodes): TJvTreeNode;
 begin
   Result := Create(AOwner);
   Result.FPopupMenu := TPopupMenu.Create(AOwner.Owner);
+end;
+
+procedure TJvTreeNode.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TJvTreeNode then
+  begin
+    Checked := TJvTreeNode(Source).Checked;
+    Bold := TJvTreeNode(Source).Bold;
+    PopupMenu := TJvTreeNode(Source).PopupMenu;
+  end;
 end;
 
 procedure TJvTreeNode.SetPopupMenu(const Value: TPopupMenu);
@@ -2034,18 +2051,21 @@ procedure TJvTreeNode.SetBold(const Value: Boolean);
 var
   Item: TTVItem;
 begin
-  FBold := Value;
-  FillChar(Item, SizeOf(Item), 0);
-  with Item do
+  if Value <> FBold then
   begin
-    mask := TVIF_STATE;
-    hItem := ItemId;
-    StateMask := TVIS_BOLD;
-    if FBold then
-      Item.State := TVIS_BOLD
-    else
-      Item.State := 0;
-    TreeView_SetItem(Handle, Item);
+    FBold := Value;
+    FillChar(Item, SizeOf(Item), 0);
+    with Item do
+    begin
+      mask := TVIF_STATE;
+      hItem := ItemId;
+      StateMask := TVIS_BOLD;
+      if Value then
+        Item.State := TVIS_BOLD
+      else
+        Item.State := 0;
+      TreeView_SetItem(Handle, Item);
+    end;
   end;
 end;
 
@@ -2053,19 +2073,28 @@ procedure TJvTreeNode.SetChecked(Value: Boolean);
 var
   Item: TTVItem;
 begin
-  FChecked := Value;
-  FillChar(Item, SizeOf(Item), 0);
-  with Item do
+  if Value <> FChecked then
   begin
-    hItem := ItemId;
-    mask := TVIF_STATE;
-    StateMask := TVIS_STATEIMAGEMASK;
-    if FChecked then
-      Item.State := TVIS_CHECKED
-    else
-      Item.State := TVIS_CHECKED shr 1;
-    TreeView_SetItem(Handle, Item);
+    FChecked := Value;
+    FillChar(Item, SizeOf(Item), 0);
+    with Item do
+    begin
+      hItem := ItemId;
+      mask := TVIF_STATE;
+      StateMask := TVIS_STATEIMAGEMASK;
+      if Value then
+        Item.State := TVIS_CHECKED
+      else
+        Item.State := TVIS_CHECKED shr 1;
+      TreeView_SetItem(Handle, Item);
+    end;
   end;
+end;
+
+procedure TJvTreeNode.Reinitialize;
+begin
+  FChecked := not FChecked;
+  SetChecked(not FChecked);
 end;
 
 //=== { TJvTreeView } ========================================================
@@ -2136,6 +2165,12 @@ begin
   inherited CreateParams(Params);
   if FCheckBoxes then
     Params.Style := Params.Style or TVS_CHECKBOXES;
+end;
+
+procedure TJvTreeView.CreateWnd;
+begin
+  FReinitializeTreeNode := True;
+  inherited CreateWnd;
 end;
 
 procedure TJvTreeView.Delete(Node: TTreeNode);
@@ -2401,7 +2436,6 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
-
 procedure TJvTreeView.SetMultiSelect(const Value: Boolean);
 begin
   if FMultiSelect <> Value then
@@ -2458,55 +2492,73 @@ begin
   inherited;
 end;
 
-procedure TJvTreeView.WMNotify(var Msg: TWMNotify);
+procedure TJvTreeView.CNNotify(var Msg: TWMNotify);
 var
   Node: TTreeNode;
   Point: TPoint;
   I, J: Integer;
 begin
-  inherited;
-
-  if not Windows.GetCursorPos(Point) then
-    Exit;
-  Point := ScreenToClient(Point);
-  with Msg, Point do
-    case NMHdr^.code of
-      NM_CLICK, NM_RCLICK:
+  if Assigned(Msg.NMHdr) then
+  begin
+    case Msg.NMHdr^.code of
+      NM_CUSTOMDRAW:
         begin
-          Node := GetNodeAt(X, Y);
-          if Assigned(Node) then
-            Selected := Node
-          else
+          { The tree node's checked property is reset by the first CustomDraw.
+            So we must set it here again, but only at the first time. }
+          if FReinitializeTreeNode then
           begin
-            if FCheckBoxes then
-            begin
-              Node := GetNodeAt(X + 16, Y);
-              if Assigned(Node) then
-                Selected := Node
-            end;
+            FReinitializeTreeNode := False;
+            for I := 0 to Items.Count - 1 do
+              TJvTreeNode(Items[I]).Reinitialize;
           end;
-          if (Selected <> nil) and (NMHdr^.code = NM_RCLICK) then
-            TJvTreeNode(Selected).PopupMenu.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
-        end;
-      TVN_SELCHANGEDA, TVN_SELCHANGEDW:
-        begin
-          if Assigned(FPageControl) then
-            if Selected <> nil then
-            begin
-              //Search for the correct page
-              J := -1;
-              for I := 0 to FPageControl.PageCount - 1 do
-                if DoComparePage(FPageControl.Pages[I], Selected) then
-                  J := I;
-              if J <> -1 then
-              begin
-                FPageControl.ActivePage := FPageControl.Pages[J];
-                if Assigned(FOnPage) then
-                  FOnPage(Self, Selected, FPageControl.Pages[J]);
-              end;
-            end;
         end;
     end;
+  end;
+
+  inherited;
+
+  if Windows.GetCursorPos(Point) then // prevent AV after "computer locked" dialog
+  begin
+    Point := ScreenToClient(Point);
+    with Msg, Point do
+      case NMHdr^.code of
+        NM_CLICK, NM_RCLICK:
+          begin
+            Node := GetNodeAt(X, Y);
+            if Assigned(Node) then
+              Selected := Node
+            else
+            begin
+              if FCheckBoxes then
+              begin
+                Node := GetNodeAt(X + 16, Y);
+                if Assigned(Node) then
+                  Selected := Node
+              end;
+            end;
+            if (Selected <> nil) and (NMHdr^.code = NM_RCLICK) then
+              TJvTreeNode(Selected).PopupMenu.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+          end;
+        TVN_SELCHANGEDA, TVN_SELCHANGEDW:
+          begin
+            if Assigned(FPageControl) then
+              if Selected <> nil then
+              begin
+                //Search for the correct page
+                J := -1;
+                for I := 0 to FPageControl.PageCount - 1 do
+                  if DoComparePage(FPageControl.Pages[I], Selected) then
+                    J := I;
+                if J <> -1 then
+                begin
+                  FPageControl.ActivePage := FPageControl.Pages[J];
+                  if Assigned(FOnPage) then
+                    FOnPage(Self, Selected, FPageControl.Pages[J]);
+                end;
+              end;
+          end;
+      end;
+  end;
 end;
 
 function TJvTreeView.DoComparePage(Page: TTabSheet; Node: TTreeNode): Boolean;
@@ -2838,7 +2890,6 @@ begin
     Change;
   end;
 end;
-
 
 end.
 
