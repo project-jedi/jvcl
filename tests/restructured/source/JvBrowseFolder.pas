@@ -58,7 +58,6 @@ type
     FDisplayName: string;
     FFromDirectory: TFromDirectory;
     FDirectory: string;
-    FDummy: string;
     FOnInit: TNotifyEvent;
     FPosition: TJvFolderPos;
     FOnChange: TJvDirChange;
