@@ -43,6 +43,11 @@ uses
   JvComponent in '..\..\run\JvComponent.pas',
   JvConsts in '..\..\common\JvConsts.pas',
   JvResources in '..\..\run\JvResources.pas',
+  JvExControls in '..\..\run\JvExControls.pas',
+  JvExStdCtrls in '..\..\run\JvExStdCtrls.pas',
+  JvExExtCtrls in '..\..\run\JvExExtCtrls.pas',
+  JvExComCtrls in '..\..\run\JvExComCtrls.pas',
+  JvExForms in '..\..\run\JvExForms.pas',
   JvThemes in '..\..\run\JvThemes.pas',
   JvTypes in '..\..\run\JvTypes.pas',
   JVCLVer in '..\..\run\JVCLVer.pas';
