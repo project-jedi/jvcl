@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2003-02-25
+Last Modified: 2003-09-20
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -27,25 +27,20 @@ Known Issues:
 
 {$I JVCL.INC}
 
-// (rom) switch to make this component independent of JVCL
-{.$DEFINE STANDALONE}
-
 unit JvHidControllerClass;
 
 interface
 
 uses
   Windows, Messages, Classes, Forms, SysUtils,
-  {$IFDEF STANDALONE}
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
   DBT, SetupApi, Hid, ModuleLoader;
-  {$ELSE}
-  DBT, SetupApi, Hid, ModuleLoader,
-  JvComponent;
-  {$ENDIF STANDALONE}
 
 const
   // a version string for the component
-  cHidControllerClassVersion = '1.0.19';
+  cHidControllerClassVersion = '1.0.20';
 
   // strings from the registry for CheckOutByClass
   cHidKeyboardClass = 'Keyboard';
@@ -58,13 +53,15 @@ type
   TJvHidDevice           = class;
 
   // the Event function declarations
-  TJvHidEnumerateEvent  = function (const HidDev: TJvHidDevice;
+  TJvHidEnumerateEvent  = function (HidDev: TJvHidDevice;
                                     const Idx: Integer): Boolean of object;
-  TJvHidUnplugEvent     = procedure(const HidDev: TJvHidDevice) of object;
-  TJvHidDataEvent       = procedure(const HidDev: TJvHidDevice; ReportID: Byte;
+  TJvHidUnplugEvent     = procedure(HidDev: TJvHidDevice) of object;
+  TJvHidDataEvent       = procedure(HidDev: TJvHidDevice; ReportID: Byte;
                                     const Data: Pointer; Size: Word) of object;
-  TJvHidDataErrorEvent  = procedure(const HidDev: TJvHidDevice; Error: DWORD) of object;
+  TJvHidDataErrorEvent  = procedure(HidDev: TJvHidDevice; Error: DWORD) of object;
 
+  // check out test function
+  TJvHidCheckCallback = function(HidDev: TJvHidDevice): Boolean; stdcall;
 
   // open overlapped read or write file handle
   TJvHidOpenExMode = (omhRead, omhWrite);
@@ -335,11 +332,11 @@ type
 
   // controller class to manage all HID devices
 
-  {$IFDEF STANDALONE}
-  TJvHidDeviceController = class(TComponent)
-  {$ELSE}
+  {$IFDEF USEJVCL}
   TJvHidDeviceController = class(TJvComponent)
-  {$ENDIF STANDALONE}
+  {$ELSE}
+  TJvHidDeviceController = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     // internal properties part
     FHidGuid:              TGUID;
@@ -390,11 +387,13 @@ type
     function  CheckOutByIndex      (var HidDev: TJvHidDevice; const Idx:         Integer):    Boolean;
     function  CheckOutByProductName(var HidDev: TJvHidDevice; const ProductName: WideString): Boolean;
     function  CheckOutByVendorName (var HidDev: TJvHidDevice; const VendorName:  WideString): Boolean;
+    function  CheckOutByCallback   (var HidDev: TJvHidDevice; Check: TJvHidCheckCallback):    Boolean;
     // methods to count HID device objects
     function  CountByClass         (const ClassName:   string):     Integer;
     function  CountByID            (const Vid, Pid:    Integer):    Integer;
     function  CountByProductName   (const ProductName: WideString): Integer;
     function  CountByVendorName    (const VendorName:  WideString): Integer;
+    function  CountByCallback      (Check: TJvHidCheckCallback):    Integer;
     // iterate over the HID devices
     function  Enumerate: Integer;
     class function HidVersion: string;
@@ -424,22 +423,16 @@ function HidCheck(const RetVal: LongBool): LongBool; overload;
 function HidError(const RetVal: NTSTATUS): NTSTATUS;
 function HidErrorString(const RetVal: NTSTATUS): string;
 
-{$IFDEF STANDALONE}
+{$IFNDEF USEJVCL}
 
 // to register the component in the palette
 procedure Register;
 
-{$ENDIF}
+{$ENDIF USEJVCL}
 
 implementation
 
-{$IFDEF STANDALONE}
-
-type
-  EControllerError = class(Exception);
-  EHidClientError  = class(Exception);
-
-{$ELSE}
+{$IFDEF USEJVCL}
 
 uses
   JvTypes;
@@ -448,7 +441,13 @@ type
   EControllerError = class(EJVCLException);
   EHidClientError  = class(EJVCLException);
 
-{$ENDIF STANDALONE}
+{$ELSE}
+
+type
+  EControllerError = class(Exception);
+  EHidClientError  = class(Exception);
+
+{$ENDIF USEJVCL}
 
 var
   // counter to prevent a second TJvHidDeviceController instance
@@ -908,7 +907,7 @@ end;
 
 procedure TJvHidDevice.SetNumInputBuffers(const Num: Integer);
 begin
-  if (Num <> FNumInputBuffers) and OpenFileEx(omhRead) then
+  if (Num <> FNumInputBuffers) and OpenFile then
   begin
     HidD_SetNumInputBuffers(HidFileHandle, Num);
     HidD_GetNumInputBuffers(HidFileHandle, FNumInputBuffers);
@@ -1182,7 +1181,8 @@ end;
 
 procedure TJvHidDevice.StartThread;
 begin
-  if Assigned(FData) and IsPluggedIn and IsCheckedOut and not Assigned(FDataThread) then
+  if Assigned(FData) and IsPluggedIn and IsCheckedOut and
+    HasReadWriteAccess and not Assigned(FDataThread) then
   begin
     FDataThread := TJvHidDeviceReadThread.CtlCreate(Self);
     FDataThread.FreeOnTerminate := False;
@@ -1198,7 +1198,8 @@ begin
   begin
     FDataThread.Terminate;
     FDataThread.WaitFor;
-    FreeAndNil(FDataThread);
+    FDataThread.Free;
+    FDataThread := nil;
   end;
 end;
 
@@ -2018,6 +2019,36 @@ end;
 
 //------------------------------------------------------------------------------
 
+// method CheckOutByCallback hands out the first HidDevice which is accepted by the Check function
+// only checked in devices are presented to the Check function
+// the device object is usable like during Enumerate
+
+function TJvHidDeviceController.CheckOutByCallback(var HidDev: TJvHidDevice; Check: TJvHidCheckCallback): Boolean;
+var
+  I: Integer;
+  Dev: TJvHidDevice;
+begin
+  Result := False;
+  HidDev := nil;
+  for I := 0 to FList.Count - 1 do
+  begin
+    Dev := FList[I];
+    if not Dev.IsCheckedOut then
+    begin
+      Dev.FIsEnumerated := True;
+      Result := CheckThisOut(HidDev, I, Check(Dev));
+      Dev.FIsEnumerated := False;
+      Dev.CloseFile;
+      Dev.CloseFileEx(omhRead);
+      Dev.CloseFileEx(omhWrite);
+      if Result then
+        Break;
+    end;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
 // method CheckOutByClass hands out the first HidDevice with a matching Class
 // Class comes from the registry (examples: 'Mouse', 'Keyboard')
 
@@ -2164,6 +2195,33 @@ end;
 
 //------------------------------------------------------------------------------
 
+function TJvHidDeviceController.CountByCallback(Check: TJvHidCheckCallback): Integer;
+var
+  I: Integer;
+  Dev: TJvHidDevice;
+begin
+  Result := 0;
+  for I := 0 to FList.Count - 1 do
+  begin
+    if TJvHidDevice(FList[I]).IsPluggedIn then
+    begin
+      Dev := FList[I];
+      Dev.FIsEnumerated := True;
+      if Check(Dev) then
+        Inc(Result);
+      Dev.FIsEnumerated := False;
+      if not Dev.IsCheckedOut then
+      begin
+        Dev.CloseFile;
+        Dev.CloseFileEx(omhRead);
+        Dev.CloseFileEx(omhWrite);
+      end;
+    end;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
 // a helper function to check the return values just
 // like Win32Check
 // the functions return the parameter to be transparent
@@ -2234,7 +2292,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF STANDALONE}
+{$IFNDEF USEJVCL}
 
 // We place the component on the new 'Project JEDI' palette.
 // This is to encourage you to become a member.
@@ -2245,6 +2303,6 @@ begin
   RegisterComponents('Project JEDI', [TJvHidDeviceController]);
 end;
 
-{$ENDIF STANDALONE}
+{$ENDIF USEJVCL}
 
 end.
