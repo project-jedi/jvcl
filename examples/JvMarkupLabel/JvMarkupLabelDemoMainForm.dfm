@@ -1,4 +1,4 @@
-object Form1: TForm1
+object JvMarkupLabelDemoMainFrm: TJvMarkupLabelDemoMainFrm
   Left = 268
   Top = 150
   Width = 570
@@ -108,15 +108,10 @@ object Form1: TForm1
       Width = 195
       Height = 28
       Max = 300
-      Orientation = trHorizontal
       Frequency = 5
       Position = 300
-      SelEnd = 0
-      SelStart = 0
       TabOrder = 0
       ThumbLength = 14
-      TickMarks = tmBottomRight
-      TickStyle = tsAuto
       OnChange = JvTrackBarChange
       ToolTips = True
     end
@@ -136,15 +131,10 @@ object Form1: TForm1
       Width = 195
       Height = 28
       Max = 150
-      Orientation = trHorizontal
       Frequency = 5
       Position = 150
-      SelEnd = 0
-      SelStart = 0
       TabOrder = 2
       ThumbLength = 14
-      TickMarks = tmBottomRight
-      TickStyle = tsAuto
       OnChange = JvTrackBarChange
       ToolTips = True
     end

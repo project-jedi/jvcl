@@ -24,7 +24,7 @@
 
 ******************************************************************}
 
-unit MainForm;
+unit JvMenusExampleMainForm;
 
 interface
 
@@ -34,7 +34,7 @@ uses
   StdCtrls, JvExComCtrls;
 
 type
-  TfrmMain = class(TForm)
+  TJvMenusExampleMainFrm = class(TForm)
     jmnMain: TJvMainMenu;
     File1: TMenuItem;
     Try1: TMenuItem;
@@ -79,25 +79,21 @@ type
     procedure btnAddItemsClick(Sender: TObject);
     procedure btnChangeCaptionClick(Sender: TObject);
     procedure Try1Click(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 var
-  frmMain: TfrmMain;
+  JvMenusExampleMainFrm: TJvMenusExampleMainFrm;
 
 implementation
 
 {$R *.dfm}
 
-procedure TfrmMain.Exit1Click(Sender: TObject);
+procedure TJvMenusExampleMainFrm.Exit1Click(Sender: TObject);
 begin
   Application.Terminate;
 end;
 
-procedure TfrmMain.btnAddItemsClick(Sender: TObject);
+procedure TJvMenusExampleMainFrm.btnAddItemsClick(Sender: TObject);
 var item : TMenuItem;
 begin
   item := TMenuItem.Create(Self);
@@ -108,13 +104,13 @@ begin
   jmnMain.Items[3].Add(item);
 end;
 
-procedure TfrmMain.btnChangeCaptionClick(Sender: TObject);
+procedure TJvMenusExampleMainFrm.btnChangeCaptionClick(Sender: TObject);
 begin
   // simple test to check tabs are taken into account correctly
   Try1.Caption := '1'#9'ReFile';
 end;
 
-procedure TfrmMain.Try1Click(Sender: TObject);
+procedure TJvMenusExampleMainFrm.Try1Click(Sender: TObject);
 begin
   ShowMessage('Nice try !');
 end;
