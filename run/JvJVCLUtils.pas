@@ -327,8 +327,9 @@ procedure MsgWarn(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
 procedure MsgQuestion(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
 // dialog with error icon
 procedure MsgError(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
-// dialog with custom icon (must be available in the app resource) 
+// dialog with custom icon (must be available in the app resource)
 procedure MsgAbout(Handle:integer;const Msg, Caption, IcoName:string;Flags:DWORD=0);
+
 
 {**** Windows routines }
 
@@ -337,6 +338,13 @@ procedure MsgAbout(Handle:integer;const Msg, Caption, IcoName:string;Flags:DWORD
 procedure LoadIcoToImage(ALarge, ASmall: TCustomImageList;
   const NameRes: string);
 {$ENDIF VCL}
+
+{ Works like InputQuery but displays 2 edits. If PasswordChar <> #0, the second edit's PasswordChar is set }
+function DualInputQuery(const ACaption, Prompt1, Prompt2:string;
+  var AValue1, AValue2:string; PasswordChar:char=#0):boolean;
+
+{ Works like InputQuery but set the edit's PasswordChar to PasswordChar. If PasswordChar = #0, works exactly like InputQuery }
+function InputQueryPassword(const ACaption, APrompt: string; PasswordChar:char; var Value: string): Boolean;
 
 { returns the sum of pc.Left, pc.Width and piSpace}
 function ToRightOf(const pc: TControl; piSpace: Integer = 0): Integer;
@@ -3386,6 +3394,114 @@ begin
   Ico.Free;
 end;
 {$ENDIF VCL}
+
+function DualInputQuery(const ACaption, Prompt1, Prompt2:string;
+  var AValue1, AValue2:string; PasswordChar:char=#0):boolean;
+var
+  AForm:TForm;
+  ALabel1, ALabel2:TLabel;
+  AEdit1, AEdit2:TEdit;
+  ASize, i:integer;
+begin
+  Result := false;
+  AForm := CreateMessageDialog(Prompt1,mtCustom,[mbOK	,mbCancel]);
+  ASize := 0;
+  if AForm <> nil then
+  try
+    AForm.Caption := ACaption;
+    ALabel1 := AForm.FindComponent('Message') as TLabel;
+    for i := 0 to AForm.ControlCount - 1 do
+      if AForm.Controls[i] is TButton then
+        TButton(AForm.Controls[i]).Anchors := [akRight, akBottom];
+    if ALabel1 <> nil then
+    begin
+      AEdit1 := TEdit.Create(AForm);
+      AEdit1.Left := ALabel1.Left;
+      AEdit1.Width := AForm.ClientWidth - AEdit1.Left * 2;
+      AEdit1.Top := ALabel1.Top + ALabel1.Height + 2;
+      AEdit1.Parent := AForm;
+      AEdit1.Anchors := [akLeft, akTop, akRight];
+      AEdit1.Text := AValue1;
+      ALabel1.Caption := Prompt1;
+      ALabel1.FocusControl := AEdit1;
+      Inc(ASize, AEdit1.Height + 2);
+
+      ALabel2 := TLabel.Create(AForm);
+      ALabel2.Left := ALabel1.Left;
+      ALabel2.Top := AEdit1.Top + AEdit1.Height + 7;
+      ALabel2.Caption := Prompt2;
+      ALabel2.Parent := AForm;
+      Inc(ASize, ALabel2.Height + 7);
+
+      AEdit2 := TEdit.Create(AForm);
+      AEdit2.Left := ALabel1.Left;
+      AEdit2.Width := AForm.ClientWidth - AEdit2.Left * 2;
+      AEdit2.Top := ALabel2.Top + ALabel2.Height + 2;
+      AEdit2.Parent := AForm;
+      AEdit2.Anchors := [akLeft, akTop, akRight];
+      AEdit2.Text := AValue1;
+      if PasswordChar <> #0 then
+        AEdit2.PasswordChar := PasswordChar;
+      ALabel2.FocusControl := AEdit2;
+
+      Inc(ASize, AEdit2.Height + 8);
+      AForm.ClientHeight := AForm.ClientHeight + ASize;
+      AForm.ClientWidth := 320;
+      AForm.ActiveControl := AEdit1;
+      Result := AForm.ShowModal = mrOK;
+      if Result then
+      begin
+        AValue1 := AEdit1.Text;
+        AValue2 := AEdit2.Text;
+      end;
+    end;
+  finally
+    AForm.Free;
+  end;
+end;
+
+function InputQueryPassword(const ACaption, APrompt: string; PasswordChar:char; var Value: string): Boolean;
+var
+  AForm:TForm;
+  ALabel:TLabel;
+  AEdit:TEdit;
+  ASize:integer;
+begin
+  Result := false;
+  AForm := CreateMessageDialog(APrompt, mtCustom, [mbOK ,mbCancel]);
+  if AForm <> nil then
+  try
+    AForm.Caption := ACaption;
+    ALabel := AForm.FindComponent('Message') as TLabel;
+    for ASize := 0 to AForm.ControlCount - 1 do
+      if AForm.Controls[ASize] is TButton then
+        TButton(AForm.Controls[ASize]).Anchors := [akRight, akBottom];
+    ASize := 0;
+    if ALabel <> nil then
+    begin
+      AEdit := TEdit.Create(AForm);
+      AEdit.Left := ALabel.Left;
+      AEdit.Width := AForm.ClientWidth - AEdit.Left * 2;
+      AEdit.Top := ALabel.Top + ALabel.Height + 2;
+      AEdit.Parent := AForm;
+      AEdit.Anchors := [akLeft, akTop, akRight];
+      AEdit.Text := Value;
+      AEdit.PasswordChar := PasswordChar;
+      ALabel.Caption := APrompt;
+      ALabel.FocusControl := AEdit;
+      Inc(ASize, AEdit.Height + 2);
+
+      AForm.ClientHeight := AForm.ClientHeight + ASize;
+      AForm.ClientWidth := 320;
+      AForm.ActiveControl := AEdit;
+      Result := AForm.ShowModal = mrOK;
+      if Result then
+        Value := AEdit.Text;
+    end;
+  finally
+    AForm.Free;
+  end;
+end;
 
 procedure CenterHor(Parent: TControl; MinLeft: Integer; Controls: array of
   TControl);
