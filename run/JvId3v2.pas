@@ -265,16 +265,16 @@ type
 
   TJvID3Owner = class(TJvID3Persistent)
   private
-    function GetDatePurchased: TDate;
+    function GetDatePurchased: TDateTime;
     function GetPrice: string;
     function GetSeller: string;
-    procedure SetDatePurchased(const Value: TDate);
+    procedure SetDatePurchased(const Value: TDateTime);
     procedure SetPrice(const Value: string);
     procedure SetSeller(const Value: string);
   published
     { Do not store dummies }
     property Price: string read GetPrice write SetPrice stored False;
-    property DatePurchased: TDate read GetDatePurchased write SetDatePurchased stored False;
+    property DatePurchased: TDateTime read GetDatePurchased write SetDatePurchased stored False;
     property Seller: string read GetSeller write SetSeller stored False;
   end;
 
@@ -459,7 +459,7 @@ end;
 
 //=== TJvID3Owner ============================================================
 
-function TJvID3Owner.GetDatePurchased: TDate;
+function TJvID3Owner.GetDatePurchased: TDateTime;
 var
   Frame: TJvID3OwnershipFrame;
 begin
