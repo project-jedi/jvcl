@@ -63,7 +63,7 @@ type
 
   tagLVTILEINFO = record
     cbSize: UINT;
-    iItem: integer;
+    iItem: Integer;
     cColumns: UINT;
     puColumns: PUINT;
   end;
@@ -76,7 +76,7 @@ type
     dwMask: DWORD; //LVTVIM_*
     dwFlags: DWORD; //LVTVIF_*
     sizeTile: Size;
-    cLines: integer;
+    cLines: Integer;
     rcLabelMargin: TRect;
   end;
   LVTILEVIEWINFO = tagLVTILEVIEWINFO;
@@ -86,7 +86,7 @@ type
   TJvListItem = class(TListItem)
   private
     FPopupMenu: TPopupMenu;
-    FBold: boolean;
+    FBold: Boolean;
   protected
     procedure SetPopupMenu(const Value: TPopupMenu);
   public
@@ -97,23 +97,23 @@ type
   TJvListView = class(TListView)
   private
     FAboutJVCL: TJVCLAboutInfo;
-    FAutoClipboardCopy: boolean;
+    FAutoClipboardCopy: Boolean;
     FHintColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
-    FOver: boolean;
-    FSortOnClick: boolean;
-    FLast: integer;
+    FOver: Boolean;
+    FSortOnClick: Boolean;
+    FLast: Integer;
     FOnSaveProgress: TJvProgressEvent;
     FOnLoadProgress: TJvProgressEvent;
     FOnAutoSort: TJvListViewColumnSortEvent;
     FOnHorizontalScroll: TNotifyEvent;
     FOnVerticalScroll: TNotifyEvent;
-    FTile: boolean;
-    procedure SetTile(const Value: boolean);
+    FTile: Boolean;
+    procedure SetTile(const Value: Boolean);
   protected
     function CreateListItem: TListItem; override;
     procedure ColClick(Column: TListColumn); override;
@@ -132,12 +132,12 @@ type
     procedure SetColumnsOrder(const Order: string);
     procedure SetItemPopup(Item: TListItem; Value: TPopupMenu);
     function GetItemPopup(Item: TListItem): TPopupMenu;
-    procedure SaveToFile(FileName: string; ForceOldStyle: boolean = false);
+    procedure SaveToFile(FileName: string; ForceOldStyle: Boolean = False);
     procedure LoadFromFile(FileName: string);
-    procedure SaveToStream(Stream: TStream; ForceOldStyle: boolean = false);
+    procedure SaveToStream(Stream: TStream; ForceOldStyle: Boolean = False);
     procedure LoadFromStream(Stream: TStream);
-    procedure SaveToCSV(FileName: string; Separator: char = ';');
-    procedure LoadFromCSV(FileName: string; Separator: char = ';');
+    procedure SaveToCSV(FileName: string; Separator: Char = ';');
+    procedure LoadFromCSV(FileName: string; Separator: Char = ';');
 {$IFNDEF COMPILER6_UP}
     procedure SelectAll;
 {$ENDIF}
@@ -148,31 +148,27 @@ type
 {$ENDIF}
     property ItemPopup[Item: TListItem]: TPopupMenu read GetItemPopup write SetItemPopup;
   published
-    property Tile:boolean read FTile write SetTile;
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored false;
+    property Tile: Boolean read FTile write SetTile;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property ColumnsOrder: string read GetColumnsOrder write SetColumnsOrder;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
-    property SortOnClick: boolean read FSortOnClick write FSortOnClick default true;
-    property AutoClipboardCopy: boolean read FAutoClipboardCopy write FAutoClipboardCopy default true;
+    property SortOnClick: Boolean read FSortOnClick write FSortOnClick default True;
+    property AutoClipboardCopy: Boolean read FAutoClipboardCopy write FAutoClipboardCopy default True;
     property OnLoadProgress: TJvProgressEvent read FOnLoadProgress write FOnLoadProgress;
     property OnSaveProgress: TJvProgressEvent read FOnSaveProgress write FOnSaveProgress;
     property OnAutoSort: TJvListViewColumnSortEvent read FOnAutoSort write FOnAutoSort;
     property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
-
   end;
-
-resourcestring
-  sTooManyColumns = 'too many columns';
 
 implementation
 
-uses
-  JvConsts;
+resourcestring
+  sTooManyColumns = 'too many columns';
 
 //=== TJvListItem ============================================================
 
@@ -183,7 +179,7 @@ const
 constructor TJvListItem.CreateEnh(AOwner: TListItems);
 begin
   inherited Create(AOwner);
-  FBold := false;
+  FBold := False;
   FPopupMenu := TPopupMenu.Create(AOwner.Owner);
 end;
 
@@ -198,10 +194,10 @@ constructor TJvListView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHintColor := clInfoBk;
-  FOver := false;
-  FSortOnClick := true;
+  FOver := False;
+  FSortOnClick := True;
   FLast := -1;
-  FAutoClipboardCopy := true;
+  FAutoClipboardCopy := True;
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
@@ -245,7 +241,7 @@ end;
 
 procedure TJvListView.MouseEnter(var Msg: TMessage);
 begin
-  FOver := true;
+  FOver := True;
   FSaved := Application.HintColor;
   // for D7...
   if csDesigning in ComponentState then
@@ -258,7 +254,7 @@ end;
 procedure TJvListView.MouseLeave(var Msg: TMessage);
 begin
   Application.HintColor := FSaved;
-  FOver := false;
+  FOver := False;
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
@@ -280,39 +276,39 @@ end;
 procedure TJvListView.ColClick(Column: TListColumn);
 type
   TParamSort = record
-    Index: integer;
+    Index: Integer;
     Sender: TObject;
   end;
 var
   Parm: TParamSort;
 
-  function CustomCompare1(Item1, Item2, ParamSort: integer): integer stdcall;
+  function CustomCompare1(Item1, Item2, ParamSort: Integer): Integer stdcall;
   var
     Parm: TParamSort;
     i1, i2: TListItem;
     S1, S2: string;
-    I: integer;
+    I: Integer;
     SortKind: TJvSortMethod;
 
-    function IsBigger(First, Second: string; SortType: TJvSortMethod): boolean;
+    function IsBigger(First, Second: string; SortType: TJvSortMethod): Boolean;
     var
       I, J: Real;
       d, e: TDateTime;
       a, b: Currency;
       l, m: Int64;
       st, st2: string;
-      int1, int2: integer;
+      int1, int2: Integer;
 
-      function FirstNonAlpha(Value: string): integer;
+      function FirstNonAlpha(Value: string): Integer;
       var
-        Len: integer;
-        I, J: integer;
-        Comma: boolean;
+        Len: Integer;
+        I, J: Integer;
+        Comma: Boolean;
       begin
         Len := Length(Value);
         I := 1;
         J := 0;
-        Comma := false;
+        Comma := False;
 
         while I <= Len do
         begin
@@ -321,7 +317,7 @@ var
               J := I;
             ',', '.':
               if not Comma then
-                Comma := true
+                Comma := True
               else
               begin
                 J := I - 1;
@@ -340,11 +336,11 @@ var
       end;
 
     begin
-      Result := false;
+      Result := False;
       if Trim(First) = '' then
-        Result := false
+        Result := False
       else if Trim(Second) = '' then
-        Result := true
+        Result := True
       else
       begin
         case SortType of
@@ -468,7 +464,7 @@ var
     end;
   end;
 
-  function CustomCompare2(Item1, Item2, ParamSort: integer): integer; stdcall;
+  function CustomCompare2(Item1, Item2, ParamSort: Integer): Integer; stdcall;
   begin
     Result := -CustomCompare1(Item1, Item2, ParamSort);
   end;
@@ -482,12 +478,12 @@ begin
     if FLast = Column.Index then
     begin
       FLast := -1;
-      CustomSort(TLVCompare(@CustomCompare2), integer(@Parm));
+      CustomSort(TLVCompare(@CustomCompare2), Integer(@Parm));
     end
     else
     begin
       FLast := Column.Index;
-      CustomSort(TLVCompare(@CustomCompare1), integer(@Parm));
+      CustomSort(TLVCompare(@CustomCompare1), Integer(@Parm));
     end;
   end;
 end;
@@ -519,19 +515,19 @@ begin
   end;
 end;
 
-// (rom) a 100 char buffer is silly
+// (rom) a 100 Char buffer is silly
 
 procedure TJvListView.LoadFromStream(Stream: TStream);
 var
-  Buf: array[0..100] of char;
-  Start: integer;
+  Buf: array[0..100] of Char;
+  Start: Integer;
 
   procedure LoadOldStyle(Stream: TStream);
   var
-    I, J, k: integer;
+    I, J, k: Integer;
     Buf: array[0..100] of byte;
     st: string;
-    ch1, checks: boolean;
+    ch1, checks: Boolean;
     t: TListItem;
   begin
     I := Stream.Position;
@@ -540,7 +536,7 @@ var
     Items.Clear;
     if Assigned(FOnLoadProgress) then
       FOnLoadProgress(Self, 0, Stream.Size - Start);
-    checks := false;
+    checks := False;
     ch1 := CheckBoxes;
     while I < Stream.Size do
     begin
@@ -553,7 +549,7 @@ var
       begin
         while (k < J) and (Buf[k] <> 0) and (Buf[k] <> 1) do
         begin
-          st := st + char(Buf[k]);
+          st := st + Char(Buf[k]);
           Inc(k);
         end;
 
@@ -577,7 +573,7 @@ var
       end;
     end;
     if (not ch1) and (not checks) then
-      CheckBoxes := false;
+      CheckBoxes := False;
   end;
 
   procedure LoadNewStyle(Stream: TStream);
@@ -589,20 +585,20 @@ var
     Options: byte;
     st: string;
     t: TListItem;
-    Buf: array[0..2048] of char;
+    Buf: array[0..2048] of Char;
   begin
     try
       Self.Items.BeginUpdate;
       Self.Items.Clear;
       Self.Items.EndUpdate;
 
-      Stream.Read(Options, sizeof(Options));
+      Stream.Read(Options, SizeOf(Options));
       CheckBoxes := (Options and LV_HASCHECKBOXES) = LV_HASCHECKBOXES;
 
       //Read all lines
       while Stream.Position < Stream.Size do
       begin
-        Stream.Read(Count, sizeof(Count));
+        Stream.Read(Count, SizeOf(Count));
 
         //statistics
         if Assigned(FOnLoadProgress) then
@@ -615,19 +611,19 @@ var
           // hs-
           if I = 1 then
           begin
-            Stream.Read(Options, sizeof(Options));
+            Stream.Read(Options, SizeOf(Options));
             if CheckBoxes then
-              t.Checked := boolean(Options and Ord(true));
+              t.Checked := Boolean(Options and Ord(True));
           end;
           // -hs
 
           (* hs-
                     Stream.Read(J, SizeOf(I));
           -hs *)
-          Stream.Read(J, sizeof(J));
+          Stream.Read(J, SizeOf(J));
 
           //Read the string
-          FillChar(Buf, sizeof(Buf), #0);
+          FillChar(Buf, SizeOf(Buf), #0);
           Stream.Read(Buf, J);
           st := Buf;
 
@@ -660,7 +656,7 @@ begin
     LoadNewStyle(Stream);
 end;
 
-procedure TJvListView.SaveToFile(FileName: string; ForceOldStyle: boolean);
+procedure TJvListView.SaveToFile(FileName: string; ForceOldStyle: Boolean);
 var
   Stream: TFileStream;
 begin
@@ -672,11 +668,11 @@ begin
   end;
 end;
 
-procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: boolean);
+procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
 
   procedure SaveOldStyle(Stream: TStream);
   var
-    I, J, k: integer;
+    I, J, k: Integer;
     b, c, d, e: byte;
     st: string;
     Buf: array[0..1000] of byte;
@@ -731,9 +727,9 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: boolean);
     LV_HASCHECKBOXES = $80;
     // hs-    LV_CHECKED = $8000;
   var
-    Buf: array[0..100] of char;
+    Buf: array[0..100] of Char;
     // hs-    I, J: Word;
-    I: integer;
+    I: Integer;
     J: Word;
     // hs    Options : Byte;
     Options, IsChecked: byte;
@@ -741,11 +737,11 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: boolean);
     procedure WriteString(Txt: string);
     var
       I: Word;
-      Buf: array[1..2056] of char;
+      Buf: array[1..2056] of Char;
     begin
       I := Length(Txt);
       Move(Text[1], Buf, I);
-      Stream.Write(I, sizeof(I));
+      Stream.Write(I, SizeOf(I));
       Stream.Write(Buf, I);
     end;
 
@@ -756,15 +752,15 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: boolean);
       Options := LV_HASCHECKBOXES
     else
       Options := 0;
-    Stream.Write(Options, sizeof(Options));
+    Stream.Write(Options, SizeOf(Options));
     for I := 0 to Items.Count - 1 do
       with Items[I] do
       begin
         J := SubItems.Count + 1;
-        Stream.Write(J, sizeof(J));
+        Stream.Write(J, SizeOf(J));
         // hs-
         IsChecked := Options or (byte(Ord(Checked)));
-        Stream.Write(IsChecked, sizeof(IsChecked));
+        Stream.Write(IsChecked, SizeOf(IsChecked));
         // -hs
         WriteString(Caption);
         for J := 0 to SubItems.Count - 1 do
@@ -781,14 +777,14 @@ end;
 
 // (rom) better reimplement with streams or TStringList
 
-procedure TJvListView.LoadFromCSV(FileName: string; Separator: char);
+procedure TJvListView.LoadFromCSV(FileName: string; Separator: Char);
 var
   st, st2: string;
   fich: TextFile;
-  Size, Current: integer;
+  Size, Current: Integer;
   t: TListItem;
   f: file of byte;
-  I, J, k, l: integer;
+  I, J, k, l: Integer;
 begin
   Items.Clear;
 
@@ -879,11 +875,11 @@ begin
   CloseFile(fich);
 end;
 
-procedure TJvListView.SaveToCSV(FileName: string; Separator: char);
+procedure TJvListView.SaveToCSV(FileName: string; Separator: Char);
 var
   st: string;
   fich: TextFile;
-  I, J: integer;
+  I, J: Integer;
 begin
   AssignFile(fich, FileName);
   Rewrite(fich);
@@ -910,7 +906,7 @@ end;
 
 procedure TJvListView.InvertSelection;
 var
-  I: integer;
+  I: Integer;
 begin
   Items.BeginUpdate;
   for I := 0 to Items.Count - 1 do
@@ -922,29 +918,29 @@ end;
 
 procedure TJvListView.SelectAll;
 var
-  I: integer;
+  I: Integer;
 begin
   Items.BeginUpdate;
   for I := 0 to Items.Count - 1 do
-    Items[I].Selected := true;
+    Items[I].Selected := True;
   Items.EndUpdate;
 end;
 {$ENDIF}
 
 procedure TJvListView.UnselectAll;
 var
-  I: integer;
+  I: Integer;
 begin
   Items.BeginUpdate;
   for I := 0 to Items.Count - 1 do
-    Items[I].Selected := false;
+    Items[I].Selected := False;
   Items.EndUpdate;
 end;
 
 procedure TJvListView.KeyUp(var Key: Word; Shift: TShiftState);
 var
   st: string;
-  I, J: integer;
+  I, J: Integer;
 begin
   inherited KeyUp(Key, Shift);
   if AutoClipboardCopy then
@@ -970,7 +966,7 @@ end;
 
 procedure TJvListView.DeleteSelected;
 var
-  I: integer;
+  I: Integer;
 begin
   Items.BeginUpdate;
   if SelCount = 1 then
@@ -994,8 +990,8 @@ end;
 
 function TJvListView.GetColumnsOrder: string;
 var
-  Res: array[0..cColumnsHandled - 1] of integer;
-  I: integer;
+  Res: array[0..cColumnsHandled - 1] of Integer;
+  I: Integer;
 begin
   ListView_GetColumnOrderArray(Columns.Owner.Handle, Columns.Count, @Res[0]);
   Result := '';
@@ -1011,11 +1007,11 @@ end;
 
 procedure TJvListView.SetColumnsOrder(const Order: string);
 var
-  Res: array[0..cColumnsHandled - 1] of integer;
-  I, J: integer;
+  Res: array[0..cColumnsHandled - 1] of Integer;
+  I, J: Integer;
   st: string;
 begin
-  FillChar(Res, sizeof(Res), #0);
+  FillChar(Res, SizeOf(Res), #0);
   with TStringlist.Create do
   try
     CommaText := Order;
@@ -1039,7 +1035,7 @@ begin
   end;
 end;
 
-procedure TJvListView.SetTile(const Value: boolean);
+procedure TJvListView.SetTile(const Value: Boolean);
 var TI:TLvTileViewInfo;
 begin
   if FTile <> Value then
@@ -1050,13 +1046,13 @@ begin
       FTile := SendMessage(Handle, LVM_SETVIEW, LV_VIEW_TILE, 0) >= 0;
       if FTile then
       begin
-        TI.cbSize := sizeof(TI);
+        TI.cbSize := SizeOf(TI);
         TI.dwMask := LVTVIM_TILESIZE;
         TI.dwFlags := LVTVIF_FIXEDSIZE;
         TI.sizeTile.cx := 120;
         TI.sizeTile.cy := 120;
         TI.cLines      := 2;
-        SendMessage(Handle,LVM_SETTILEVIEWINFO, 0, integer(@TI));
+        SendMessage(Handle,LVM_SETTILEVIEWINFO, 0, Integer(@TI));
       end;
     end
     else
