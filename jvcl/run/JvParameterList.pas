@@ -677,7 +677,7 @@ var
 begin
   for I := 0 to Count - 1 do
     Objects[I].Free;
-  // (rom) inherited Clear seems to be missing
+  Inherited Clear;
 end;
 
 procedure TJvParameterPropertyValues.AddValue(const AName: string; AValue: Variant);
