@@ -109,7 +109,9 @@ var
 
 implementation
 
-uses FileUtils, JvSimpleXml, JclFileUtils, JclStrings;
+uses
+  FileUtils, JvSimpleXml, JclFileUtils, JclStrings, TargetDialog,
+  GenerateUtils;
 {$R *.dfm}
 
 procedure TfrmMain.actExitExecute(Sender: TObject);
@@ -134,39 +136,57 @@ begin
   with jsgDependencies do
   begin
     Cells[0, 0] := 'Name';
-    Cells[1, 0] := 'D5';
-    Cells[2, 0] := 'D6';
-    Cells[3, 0] := 'D7';
-    Cells[4, 0] := 'C5';
-    Cells[5, 0] := 'C6';
-    Cells[6, 0] := 'K2';
-    Cells[7, 0] := 'K3';
-    Cells[8, 0] := 'Design';
-    Cells[9, 0] := 'Condition';
+    Cells[1,  0] := 'D5';
+    Cells[2,  0] := 'D5s';
+    Cells[3,  0] := 'D6';
+    Cells[4,  0] := 'D6p';
+    Cells[5,  0] := 'D7';
+    Cells[6,  0] := 'D7p';
+    Cells[7,  0] := 'C5';
+    Cells[8,  0] := 'C6';
+    Cells[9,  0] := 'C6p';
+    Cells[10, 0] := 'K2';
+    Cells[11, 0] := 'K3';
+    Cells[12, 0] := 'Design';
+    Cells[13, 0] := 'Condition';
     ColWidths[0] := 120;
-    for i := 1 to 7 do
-      ColWidths[i] := 24;
-    ColWidths[8] := 40;
-    ColWidths[9] := 146;
+    for i := 1 to 11 do
+    begin
+      if Length(Cells[i,0]) = 2 then
+        ColWidths[i] := 18
+      else
+        ColWidths[i] := 23;
+    end;
+    ColWidths[12] := 40;
+    ColWidths[13] := 146;
   end;
 
   with jsgFiles do
   begin
-    Cells[0, 0] := 'Name';
-    Cells[1, 0] := 'D5';
-    Cells[2, 0] := 'D6';
-    Cells[3, 0] := 'D7';
-    Cells[4, 0] := 'C5';
-    Cells[5, 0] := 'C6';
-    Cells[6, 0] := 'K2';
-    Cells[7, 0] := 'K3';
-    Cells[8, 0] := 'Form name';
-    Cells[9, 0] := 'Condition';
+    Cells[0,  0] := 'Name';
+    Cells[1,  0] := 'D5';
+    Cells[2,  0] := 'D5s';
+    Cells[3,  0] := 'D6';
+    Cells[4,  0] := 'D6p';
+    Cells[5,  0] := 'D7';
+    Cells[6,  0] := 'D7p';
+    Cells[7,  0] := 'C5';
+    Cells[8,  0] := 'C6';
+    Cells[9,  0] := 'C6p';
+    Cells[10, 0] := 'K2';
+    Cells[11, 0] := 'K3';
+    Cells[12, 0] := 'Form name';
+    Cells[13, 0] := 'Condition';
     ColWidths[0] := 120;
-    for i := 1 to 7 do
-      ColWidths[i] := 24;
-    ColWidths[8] := 86;
-    ColWidths[9] := 100;
+    for i := 1 to 11 do
+    begin
+      if Length(Cells[i,0]) = 2 then
+        ColWidths[i] := 18
+      else
+        ColWidths[i] := 23;
+    end;
+    ColWidths[12] := 86;
+    ColWidths[13] := 100;
   end;
 
   // Load the list of packages
@@ -201,7 +221,7 @@ begin
     begin
       Sender.InsertRow(Sender.RowCount);
       row := Sender.Rows[ARow];
-      for ColIndex := 1 to 7 do
+      for ColIndex := 1 to 11 do
         row[ColIndex] := 'y';
       if rbtDesign.Checked and (Sender = jsgDependencies) then
         row[8] := 'y';
@@ -232,7 +252,7 @@ begin
       Name := odlAddFiles.Files[i];
       Dir := GetRelativePath(PackagesDir, ExtractFilePath(Name));
       row[0] := '..\' + StrEnsureSuffix('\', Dir) + ExtractFileName(Name);
-      for ColIndex := 1 to 7 do
+      for ColIndex := 1 to 11 do
         row[ColIndex] := 'y';
 
       // try to find if there is a dfm associated with the file
@@ -299,17 +319,8 @@ begin
 end;
 
 procedure TfrmMain.LoadPackagesList;
-var
-  rec : TSearchRec;
 begin
-  jlbList.Clear;
-  if FindFirst(jdePackagesLocation.Text+'\xml\*.xml', 0, rec) = 0 then
-  begin
-    repeat
-      jlbList.Items.Add(PathExtractFileNameNoExt(rec.Name));
-    until FindNext(rec) <> 0;
-  end;
-  FindClose(rec);
+  EnumeratePackages(jdePackagesLocation.Text, jlbList.Items);
   jlbList.ItemIndex := 0;
   LoadPackage;
 end;
@@ -388,7 +399,10 @@ begin
   end;
 
   // reload package list
-  LoadPackagesList;  
+  i := jlbList.ItemIndex;
+  LoadPackagesList;
+  jlbList.ItemIndex := i;
+  LoadPackage;
 end;
 
 procedure TfrmMain.actPrevPackageUpdate(Sender: TObject);
@@ -451,7 +465,7 @@ begin
       for i := 0 to requiredNode.Items.Count - 1 do
       begin
         row := jsgDependencies.InsertRow(jsgDependencies.RowCount-1);
-        packageNode := requiredNode.Items.ItemNamed['Package'];
+        packageNode := requiredNode.Items[i];
         for j := 0 to row.Count - 1 do
         begin
           row[j] := packageNode.Properties.ItemNamed[jsgDependencies.Rows[0][j]].Value;
@@ -465,7 +479,7 @@ begin
       for i := 0 to filesNode.Items.Count - 1 do
       begin
         row := jsgFiles.InsertRow(jsgFiles.RowCount-1);
-        fileNode := filesNode.Items.ItemNamed['File'];
+        fileNode := filesNode.Items[i];
         for j := 0 to row.Count - 1 do
         begin
           propname := jsgFiles.Rows[0][j];
@@ -486,8 +500,35 @@ begin
 end;
 
 procedure TfrmMain.actGenerateExecute(Sender: TObject);
+var
+  path : string;
+  targets : TStringList;
+  i : Integer;
 begin
-//
+  if PathIsAbsolute(jdePackagesLocation.Text) then
+    path := jdePackagesLocation.Text
+  else
+    path := PathNoInsideRelative(StrEnsureSuffix('\', GetCurrentDir) + jdePackagesLocation.Text);
+
+  frmTargets.Path := path;
+  if frmTargets.ShowModal = mrOk then
+  begin
+    targets := TStringList.Create;
+    try
+      for i := 0 to frmTargets.clbBuilds.Items.Count - 1 do
+      begin
+        with frmTargets.clbBuilds do
+        begin
+          if Checked[i] then
+            targets.Add(Items[i]);
+        end;
+      end;
+
+      Generate(jlbList.Items, targets, path);
+    finally
+      targets.Free;
+    end;
+  end;
 end;
 
 procedure TfrmMain.FormKeyDown(Sender: TObject; var Key: Word;

@@ -18,7 +18,7 @@ object frmMain: TfrmMain
   PixelsPerInch = 96
   TextHeight = 13
   object jspLeft: TJvSplitter
-    Left = 177
+    Left = 137
     Top = 52
     Width = 2
     Height = 502
@@ -38,18 +38,18 @@ object frmMain: TfrmMain
   object pnlList: TPanel
     Left = 0
     Top = 52
-    Width = 177
+    Width = 137
     Height = 502
     Align = alLeft
     BevelOuter = bvLowered
     TabOrder = 1
     DesignSize = (
-      177
+      137
       502)
     object jlbList: TJvListBox
       Left = 8
       Top = 8
-      Width = 161
+      Width = 121
       Height = 486
       Anchors = [akLeft, akTop, akRight, akBottom]
       ItemHeight = 13
@@ -149,6 +149,8 @@ object frmMain: TfrmMain
         Left = 146
         Top = 0
         Action = actGenerate
+        ParentShowHint = False
+        ShowHint = True
       end
     end
     object Panel1: TPanel
@@ -181,15 +183,15 @@ object frmMain: TfrmMain
     end
   end
   object pnlEdit: TPanel
-    Left = 179
+    Left = 139
     Top = 52
-    Width = 613
+    Width = 653
     Height = 502
     Align = alClient
     BevelOuter = bvLowered
     TabOrder = 3
     DesignSize = (
-      613
+      653
       502)
     object lblDependencies: TLabel
       Left = 4
@@ -210,7 +212,7 @@ object frmMain: TfrmMain
     object ledName: TLabeledEdit
       Left = 92
       Top = 8
-      Width = 353
+      Width = 393
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       EditLabel.Width = 28
@@ -222,7 +224,7 @@ object frmMain: TfrmMain
       OnChange = ledNameChange
     end
     object rbtRuntime: TRadioButton
-      Left = 528
+      Left = 568
       Top = 8
       Width = 69
       Height = 17
@@ -234,7 +236,7 @@ object frmMain: TfrmMain
       OnClick = rbtRuntimeClick
     end
     object rbtDesign: TRadioButton
-      Left = 460
+      Left = 500
       Top = 8
       Width = 61
       Height = 17
@@ -247,7 +249,7 @@ object frmMain: TfrmMain
     object ledDescription: TLabeledEdit
       Left = 92
       Top = 32
-      Width = 505
+      Width = 545
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       EditLabel.Width = 53
@@ -261,10 +263,10 @@ object frmMain: TfrmMain
     object jsgDependencies: TJvStringGrid
       Left = 92
       Top = 56
-      Width = 505
+      Width = 545
       Height = 129
       Anchors = [akLeft, akTop, akRight]
-      ColCount = 10
+      ColCount = 14
       DefaultColWidth = 40
       DefaultRowHeight = 18
       FixedCols = 0
@@ -284,10 +286,10 @@ object frmMain: TfrmMain
     object jsgFiles: TJvStringGrid
       Left = 92
       Top = 188
-      Width = 505
+      Width = 545
       Height = 245
       Anchors = [akLeft, akTop, akRight]
-      ColCount = 10
+      ColCount = 14
       DefaultColWidth = 40
       DefaultRowHeight = 18
       FixedCols = 0
@@ -307,7 +309,7 @@ object frmMain: TfrmMain
     object ledC5PFlags: TLabeledEdit
       Left = 92
       Top = 436
-      Width = 505
+      Width = 545
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       EditLabel.Width = 71
@@ -321,7 +323,7 @@ object frmMain: TfrmMain
     object ledC6PFlags: TLabeledEdit
       Left = 92
       Top = 460
-      Width = 505
+      Width = 545
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       EditLabel.Width = 71
