@@ -4145,7 +4145,7 @@ begin
     Result := '';
     if Len = 0 then Exit;
     SetLength(Result, Len);
-    
+
     if SelBlockFormat = bfColumn then
     begin
       if Len > 0 then
@@ -4185,7 +4185,7 @@ begin
         CLen := Length(S) - SelBegX;
         if CLen > 0 then
         begin
-          Move(S[SelBegX], P^, CLen);
+          Move(S[SelBegX + 1], P^, CLen);
           Inc(P, CLen);
         end;
 
