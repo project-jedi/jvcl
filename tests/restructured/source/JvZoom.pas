@@ -36,7 +36,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls, JVCLVer;
 
 type
-  TJvZoom = class(TWinControl)
+  TJvZoom = class(TCustomControl)
   private
     FTimer: TTimer;
     FActive: Boolean;
@@ -51,6 +51,7 @@ type
     procedure SetDelay(const Value: Cardinal);
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
   protected
+    procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -114,6 +115,18 @@ begin
 end;
 
 {**************************************************}
+
+procedure TJvZoom.Paint;
+begin
+  inherited;
+  if csDesigning in ComponentState then
+    with inherited Canvas do
+    begin
+      Pen.Style := psDash;
+      Brush.Style := bsClear;
+      Rectangle(0, 0, Width, Height);
+    end;
+end;
 
 procedure TJvZoom.PaintMe(Sender: TObject);
 var
@@ -186,3 +199,4 @@ begin
 end;
 
 end.
+
