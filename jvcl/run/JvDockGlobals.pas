@@ -44,8 +44,8 @@ resourcestring
   RsDockManagerVersion = '1.0.0.0';
   RsDockStyleVersion = '1.0.0.0';
 
-  RsDockManagerCopyRightBegin = '2002';
-  RsDockManagerCopyRightEnd = '2003';
+  RsDockManagerCopyrightBegin = '2002';
+  RsDockManagerCopyrightEnd = '2003';
   RsDockStyleCopyRightBegin = '2002';
   RsDockStyleCopyRightEnd = '2003';
 

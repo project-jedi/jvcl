@@ -103,8 +103,8 @@ begin
       else
         Exit;
       ShowMessageFmt(RsDockManagerAbout,
-        [ProductStr, RsDockManagerVersion, RsDockManagerCopyRightBegin,
-         RsDockManagerCopyRightEnd, RsDockAuthorName, RsDockCompanyName,
+        [ProductStr, RsDockManagerVersion, RsDockManagerCopyrightBegin,
+         RsDockManagerCopyrightEnd, RsDockAuthorName, RsDockCompanyName,
          RsDockHomePage, RsDockEmail]);
     end;
   end;
@@ -136,8 +136,8 @@ begin
     0:
       ShowMessageFmt(RsDockManagerAbout,
         [TJvDockBasicStyle(Component).GetControlName,
-        RsDockStyleVersion, RsDockStyleCopyRightBegin,
-        RsDockStyleCopyRightEnd, RsDockAuthorName, RsDockCompanyName,
+        RsDockStyleVersion, RsDockStyleCopyrightBegin,
+        RsDockStyleCopyrightEnd, RsDockAuthorName, RsDockCompanyName,
         RsDockHomePage, RsDockEmail]);
   end;
 end;
