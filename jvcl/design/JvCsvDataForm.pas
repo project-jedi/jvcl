@@ -33,14 +33,8 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, Buttons, StdCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms,
-  QDialogs, QExtCtrls, QButtons, QStdCtrls, Types, 
-  {$ENDIF VisualCLX}
   JvTypes, JvComponent;
 
 type
@@ -99,12 +93,7 @@ implementation
 uses
   JvCsvData, JvCsvParse, JvDsgnConsts;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 procedure TJvCsvDefStrDialog.UpdateCsvStr;
 var
