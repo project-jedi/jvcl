@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2002-07-04
+Last Modified: 2003-10-25
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -34,11 +34,12 @@ interface
 
 uses
   {$IFDEF COMPLIB_VCL}
-  Windows, SysUtils, Classes, Graphics;
+  Windows, Graphics,
   {$ENDIF COMPLIB_VCL}
   {$IFDEF COMPLIB_CLX}
-  SysUtils, Types, Classes, QGraphics;
+  Types, QGraphics,
   {$ENDIF COMPLIB_CLX}
+  SysUtils, Classes;
 
 { DrawDesignFrame draws frame on the rect, Rect.
   JVCL uses this function to drawing frame around controls at design-time }
