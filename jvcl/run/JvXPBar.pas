@@ -43,24 +43,24 @@ type
            hardcoded type castes! }
 
   TJvXPBarRollDirection = (
-    rdExpand,           // expand roll
-    rdCollapse          // collapse roll
-  );
+    rdExpand, // expand roll
+    rdCollapse // collapse roll
+    );
 
 { TJvXPBarRollMode }
 
   TJvXPBarRollMode = (
-    rmFixed,            // fixed mode (default)
-    rmShrink            // shrink mode
-  );
+    rmFixed, // fixed mode (default)
+    rmShrink // shrink mode
+    );
 
 { TJvXPBarHitTest }
 
   TJvXPBarHitTest = (
-    htNone,             // mouse is inside non-supported rect
-    htHeader,           // mouse is inside header
-    htRollButton        // mouse is inside rollbutton
-  );
+    htNone, // mouse is inside non-supported rect
+    htHeader, // mouse is inside header
+    htRollButton // mouse is inside rollbutton
+    );
 
 { TJvXPBarRollDelay }
 
@@ -239,23 +239,45 @@ type
     procedure Execute; override;
   end;
 
+  TJvXPBarColors = class(TPersistent)
+  private
+    FBodyColor: TColor;
+    FGradientTo: TColor;
+    FGradientFrom: TColor;
+    FSeperatorColor: TColor;
+    FOnChange: TNotifyEvent;
+    procedure SetBodyColor(const Value: TColor);
+    procedure SetGradientFrom(const Value: TColor);
+    procedure SetGradientTo(const Value: TColor);
+    procedure SetSeperatorColor(const Value: TColor);
+  public
+    constructor Create;
+    procedure Change;
+  published
+
+    property BodyColor: TColor read FBodyColor write SetBodyColor default $00F7DFD6;
+    property GradientFrom: TColor read FGradientFrom write SetGradientFrom default clWhite;
+    property GradientTo: TColor read FGradientTo write SetGradientTo default $00F7D7C6;
+    property SeparatorColor: TColor read FSeperatorColor write SetSeperatorColor default $00F7D7C6;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  end;
+
+  TJvXPBarOptions = class(TPersistent)
+  end;
+
 { TJvXPCustomWinXPBar }
 
   TJvXPCustomWinXPBar = class(TJvXPCustomControl)
   private
-    FBodyColor: TColor;
     FCollapsed: Boolean;
     FFadeThread: TJvXPFadeThread;
     FFont: TFont;
     FFontChanging: Boolean;
     FGradient: TBitmap;
-    FGradientFrom: TColor;
-    FGradientTo: TColor;
     FGradientWidth: Integer;
     FHeaderFont: TFont;
     FHitTest: TJvXPBarHitTest;
     FHotTrack: Boolean;
-    FHotTrackColor: TColor;
     FHoverIndex: Integer;
     FIcon: TIcon;
     FImageList: TCustomImageList;
@@ -266,9 +288,9 @@ type
     FRollMode: TJvXPBarRollMode;
     FRollOffset: Integer;
     FRollStep: TJvXPBarRollStep;
-    FSeperatorLine: TColor;
     FShowLinkCursor: Boolean;
     FShowRollButton: Boolean;
+    FHotTrackColor: TColor;
     FVisibleItems: TJvXPBarVisibleItems;
     FAfterCollapsedChange: TJvXPBarOnCollapsedChangeEvent;
     FBeforeCollapsedChange: TJvXPBarOnCollapsedChangeEvent;
@@ -276,6 +298,7 @@ type
     FOnCanChange: TJvXPBarOnCanChangeEvent;
     FOnDrawItem: TJvXPBarOnDrawItemEvent;
     FOnItemClick: TJvXPBarOnItemClickEvent;
+    FColors: TJvXPBarColors;
     function IsFontStored: Boolean;
     procedure FontChanged(Sender: TObject);
     procedure SetCollapsed(Value: Boolean);
@@ -290,6 +313,7 @@ type
     procedure SetRollOffset(const Value: Integer);
     procedure SetShowRollButton(Value: Boolean);
     procedure ResizeToMaxHeight;
+    procedure SetColors(const Value: TJvXPBarColors);
   protected
     function GetHitTestRect(const HitTest: TJvXPBarHitTest): TRect;
     function GetItemRect(Index: Integer): TRect; virtual;
@@ -300,11 +324,13 @@ type
     procedure HookParentFontChanged; override;
     procedure HookResized; override;
     procedure SortVisibleItems(const Redraw: Boolean);
+    procedure DoColorsChange(Sender: TObject);
     procedure DoDrawItem(const Index: Integer; State: TJvXPDrawState); virtual;
     procedure Paint; override;
     procedure WMAfterXPBarCollapse(var Msg: TMessage);
       message WM_XPBARAFTERCOLLAPSE;
     property Collapsed: Boolean read FCollapsed write SetCollapsed default False;
+    property Colors: TJvXPBarColors read FCOlors write SetColors;
     property Font: TFont read FFont write SetFont stored IsFontStored;
     property HeaderFont: TFont read FHeaderFont write SetHeaderFont stored IsFontStored;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default True;
@@ -344,8 +370,11 @@ type
 
   TJvXPBar = class(TJvXPCustomWinXPBar)
   published
+
     property Caption;
     property Collapsed;
+    property Colors;
+    property Items;
     property Font;
     property HeaderFont;
     property HotTrack;
@@ -353,12 +382,12 @@ type
     property Icon;
     property ImageList;
     property ItemHeight;
-    property Items;
     property RollDelay;
     property RollMode;
     property RollStep;
     property ShowLinkCursor;
     property ShowRollButton;
+
     property AfterCollapsedChange;
     property BeforeCollapsedChange;
     property OnCollapsedChange;
@@ -368,18 +397,15 @@ type
   end;
 
 implementation
+uses
+{$IFDEF JVCLThemesEnabled}
+  UxTheme,
+{$ENDIF}
+  JvThemes;
 
 const
   FC_HEADER_HEIGHT = 34;
-  FC_ITEM_MARGIN   = 8;
-
-{-----------------------------------------------------------------------------
-  Procedure: SortByIndex
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Item1, Item2: Pointer
-  Result:    Integer
------------------------------------------------------------------------------}
+  FC_ITEM_MARGIN = 8;
 
 function SortByIndex(Item1, Item2: Pointer): Integer;
 var
@@ -397,26 +423,10 @@ end;
 
 { TJvXPBarItemActionLink }
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItemActionLink.AssignClient
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: AClient: TObject
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPBarItemActionLink.AssignClient(AClient: TObject);
 begin
   FClient := AClient as TJvXPBarItem;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItemActionLink.IsCaptionLinked
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    Boolean
------------------------------------------------------------------------------}
 
 function TJvXPBarItemActionLink.IsCaptionLinked: Boolean;
 begin
@@ -424,27 +434,11 @@ begin
     (FClient.Caption = (Action as TCustomAction).Caption);
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItemActionLink.IsEnabledLinked
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    Boolean
------------------------------------------------------------------------------}
-
 function TJvXPBarItemActionLink.IsEnabledLinked: Boolean;
 begin
   Result := inherited IsEnabledLinked and
     (FClient.Enabled = (Action as TCustomAction).Enabled);
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItemActionLink.IsHintLinked
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    Boolean
------------------------------------------------------------------------------}
 
 function TJvXPBarItemActionLink.IsHintLinked: Boolean;
 begin
@@ -452,27 +446,11 @@ begin
     (FClient.Hint = (Action as TCustomAction).Hint);
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItemActionLink.IsImageIndexLinked
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    Boolean
------------------------------------------------------------------------------}
-
 function TJvXPBarItemActionLink.IsImageIndexLinked: Boolean;
 begin
   Result := inherited IsImageIndexLinked and
     (FClient.ImageIndex = (Action as TCustomAction).ImageIndex);
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItemActionLink.IsVisibleLinked
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    Boolean
------------------------------------------------------------------------------}
 
 function TJvXPBarItemActionLink.IsVisibleLinked: Boolean;
 begin
@@ -480,27 +458,11 @@ begin
     (FClient.Visible = (Action as TCustomAction).Visible);
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItemActionLink.IsOnExecuteLinked
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    Boolean
------------------------------------------------------------------------------}
-
 function TJvXPBarItemActionLink.IsOnExecuteLinked: Boolean;
 begin
   Result := inherited IsOnExecuteLinked and
     JvXPMethodsEqual(TMethod(FClient.OnClick), TMethod(Action.OnExecute));
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItemActionLink.SetCaption
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: const Value: string
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPBarItemActionLink.SetCaption(const Value: string);
 begin
@@ -508,27 +470,11 @@ begin
     FClient.Caption := Value;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItemActionLink.SetEnabled
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Value: Boolean
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPBarItemActionLink.SetEnabled(Value: Boolean);
 begin
   if IsEnabledLinked then
     FClient.Enabled := Value;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItemActionLink.SetHint
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: const Value: string
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPBarItemActionLink.SetHint(const Value: string);
 begin
@@ -536,41 +482,17 @@ begin
     FClient.Hint := Value;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItemActionLink.SetImageIndex
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Value: Integer
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPBarItemActionLink.SetImageIndex(Value: Integer);
 begin
   if IsImageIndexLinked then
     FClient.ImageIndex := Value;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItemActionLink.SetVisible
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Value: Boolean
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPBarItemActionLink.SetVisible(Value: Boolean);
 begin
   if IsVisibleLinked then
     FClient.Visible := Value;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItemActionLink.SetOnExecute
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Value: TNotifyEvent
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPBarItemActionLink.SetOnExecute(Value: TNotifyEvent);
 begin
@@ -579,14 +501,6 @@ begin
 end;
 
 { TJvXPBarItem }
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.Create
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Collection: TCollection
-  Result:    None
------------------------------------------------------------------------------}
 
 constructor TJvXPBarItem.Create(Collection: TCollection);
 begin
@@ -607,31 +521,15 @@ begin
   FWinXPBar.ResizeToMaxHeight;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.Destroy
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 destructor TJvXPBarItem.Destroy;
 begin
-  FVisible := False;  // required to remove from visible list!
+  FVisible := False; // required to remove from visible list!
   FWinXPBar.ItemVisibilityChanged(Self);
   FActionLink.Free;
   FActionLink := nil;
   inherited;
   FWinXPBar.ResizeToMaxHeight;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.Notification
-  Author:    mh
-  Date:      29-Okt-2002
-  Arguments: AComponent: TComponent; Operation: TOperation
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPBarItem.Notification(AComponent: TComponent);
 begin
@@ -640,14 +538,6 @@ begin
   if AComponent = FImageList then
     FImageList := nil;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.GetDisplayName
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    string
------------------------------------------------------------------------------}
 
 function TJvXPBarItem.GetDisplayName: string;
 var
@@ -664,14 +554,6 @@ begin
   Result := DisplayName;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.GetImages
-  Author:    mh
-  Date:      29-Okt-2002
-  Arguments: None
-  Result:    TCustomImageList
------------------------------------------------------------------------------}
-
 function TJvXPBarItem.GetImages: TCustomImageList;
 begin
   Result := nil;
@@ -682,14 +564,6 @@ begin
   else if Assigned(FWinXPBar.FImageList) then
     Result := FWinXPBar.FImageList;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.ActionChange
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Sender: TObject; CheckDefaults: Boolean
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPBarItem.ActionChange(Sender: TObject;
   CheckDefaults: Boolean);
@@ -712,26 +586,10 @@ begin
     end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.GetActionLinkClass
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    TJvXPBarItemActionLinkClass
------------------------------------------------------------------------------}
-
 function TJvXPBarItem.GetActionLinkClass: TJvXPBarItemActionLinkClass;
 begin
   Result := TJvXPBarItemActionLink;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.Assign
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Source: TPersistent
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPBarItem.Assign(Source: TPersistent);
 begin
@@ -754,105 +612,41 @@ begin
   inherited Assign(Source);
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.IsCaptionStored
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    Boolean
------------------------------------------------------------------------------}
-
 function TJvXPBarItem.IsCaptionStored: Boolean;
 begin
   Result := (ActionLink = nil) or not FActionLink.IsCaptionLinked;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.IsEnabledStored
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    Boolean
------------------------------------------------------------------------------}
 
 function TJvXPBarItem.IsEnabledStored: Boolean;
 begin
   Result := (ActionLink = nil) or not FActionLink.IsEnabledLinked;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.IsHintStored
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    Boolean
------------------------------------------------------------------------------}
-
 function TJvXPBarItem.IsHintStored: Boolean;
 begin
   Result := (ActionLink = nil) or not FActionLink.IsHintLinked;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.IsImageIndexStored
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    Boolean
------------------------------------------------------------------------------}
 
 function TJvXPBarItem.IsImageIndexStored: Boolean;
 begin
   Result := (ActionLink = nil) or not FActionLink.IsImageIndexLinked;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.IsVisibleStored
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    Boolean
------------------------------------------------------------------------------}
-
 function TJvXPBarItem.IsVisibleStored: Boolean;
 begin
   Result := (ActionLink = nil) or not FActionLink.IsVisibleLinked;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.IsOnClickStored
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    Boolean
------------------------------------------------------------------------------}
 
 function TJvXPBarItem.IsOnClickStored: Boolean;
 begin
   Result := (ActionLink = nil) or not FActionLink.IsOnExecuteLinked;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.DoActionChange
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Sender: TObject
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPBarItem.DoActionChange(Sender: TObject);
 begin
   if Sender = Action then
     ActionChange(Sender, False);
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.GetAction
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    TBasicAction
------------------------------------------------------------------------------}
 
 function TJvXPBarItem.GetAction: TBasicAction;
 begin
@@ -862,21 +656,13 @@ begin
     Result := nil;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.SetAction
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Value: TBasicAction
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPBarItem.SetAction(Value: TBasicAction);
 begin
   if Value = nil then
   begin
     FActionLink.Free;
     FActionLink := nil;
-    FWinXPBar.InternalRedraw;  // redraw image
+    FWinXPBar.InternalRedraw; // redraw image
   end else
   begin
     if FActionLink = nil then
@@ -884,17 +670,9 @@ begin
     FActionLink.Action := Value;
     FActionLink.OnChange := DoActionChange;
     ActionChange(Value, csLoading in Value.ComponentState);
-    Value.FreeNotification(FWinXPBar);  // deligates notification to WinXPBar!
+    Value.FreeNotification(FWinXPBar); // deligates notification to WinXPBar!
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.SetCaption
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: const Value: TCaption
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPBarItem.SetCaption(Value: TCaption);
 begin
@@ -905,14 +683,6 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.SetEnabled
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Value: Boolean
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPBarItem.SetEnabled(Value: Boolean);
 begin
   if Value <> FEnabled then
@@ -921,14 +691,6 @@ begin
     FWinXPBar.InternalRedraw;
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.SetImageIndex
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Value: Integer
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPBarItem.SetImageIndex(Value: TImageIndex);
 begin
@@ -939,14 +701,6 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.SetImageList
-  Author:    mh
-  Date:      28-Okt-2002
-  Arguments: Value: TCustomImageList
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPBarItem.SetImageList(Value: TCustomImageList);
 begin
   if Value <> FImageList then
@@ -956,27 +710,11 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.SetName
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Value: string
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPBarItem.SetName(Value: string);
 begin
   if (Value <> FName) and (FCollection.Find(Value) = nil) then
     FName := Value;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItem.SetVisible
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Value: Boolean
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPBarItem.SetVisible(Value: Boolean);
 begin
@@ -990,40 +728,16 @@ end;
 
 { TJvXPBarItems }
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItems.Create
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: WinXPBar: TJvXPCustomWinXPBar
-  Result:    None
------------------------------------------------------------------------------}
-
 constructor TJvXPBarItems.Create(WinXPBar: TJvXPCustomWinXPBar);
 begin
   inherited Create(TJvXPBarItem);
   FWinXPBar := WinXPBar;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItems.Add
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    TJvXPBarItem
------------------------------------------------------------------------------}
-
 function TJvXPBarItems.Add: TJvXPBarItem;
 begin
   Result := TJvXPBarItem(inherited Add);
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItems.Add (Action)
-  Author:    mh
-  Date:      29-Okt-2002
-  Arguments: Action: TBasicAction
-  Result:    TJvXPBarItem
------------------------------------------------------------------------------}
 
 function TJvXPBarItems.Add(Action: TBasicAction): TJvXPBarItem;
 begin
@@ -1031,40 +745,16 @@ begin
   Result.Action := Action;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItems.Add (DataObject)
-  Author:    mh
-  Date:      29-Okt-2002
-  Arguments: DataObject: TObject
-  Result:    TJvXPBarItem
------------------------------------------------------------------------------}
-
 function TJvXPBarItems.Add(DataObject: TObject): TJvXPBarItem;
 begin
   Result := Add;
   Result.DataObject := DataObject;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItems.Insert
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Index: Integer
-  Result:    TJvXPBarItem
------------------------------------------------------------------------------}
-
 function TJvXPBarItems.Insert(Index: Integer): TJvXPBarItem;
 begin
   Result := TJvXPBarItem(inherited Insert(Index));
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItems.Insert (Action)
-  Author:    mh
-  Date:      29-Okt-2002
-  Arguments: Index: Integer; DataObject: TObject
-  Result:    TJvXPBarItem
------------------------------------------------------------------------------}
 
 function TJvXPBarItems.Insert(Index: Integer; Action: TBasicAction): TJvXPBarItem;
 begin
@@ -1072,79 +762,31 @@ begin
   Result.Action := Action;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItems.Insert (DataObject)
-  Author:    mh
-  Date:      29-Okt-2002
-  Arguments: Index: Integer; DataObject: TObject
-  Result:    TJvXPBarItem
------------------------------------------------------------------------------}
-
 function TJvXPBarItems.Insert(Index: Integer; DataObject: TObject): TJvXPBarItem;
 begin
   Result := Insert(Index);
   Result.DataObject := DataObject;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItems.GetOwner
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    TPersistent
------------------------------------------------------------------------------}
-
 function TJvXPBarItems.GetOwner: TPersistent;
 begin
   Result := FWinXPBar;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItems.GetItem
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Index: Integer
-  Result:    TJvXPBarItem
------------------------------------------------------------------------------}
 
 function TJvXPBarItems.GetItem(Index: Integer): TJvXPBarItem;
 begin
   Result := TJvXPBarItem(inherited GetItem(Index));
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItems.SetItem
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Index: Integer; Value: TJvXPBarItem
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPBarItems.SetItem(Index: Integer; Value: TJvXPBarItem);
 begin
   inherited SetItem(Index, Value);
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItems.Update
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Item: TCollectionItem
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPBarItems.Update(Item: TCollectionItem);
 begin
   FWinXPBar.SortVisibleItems(True);
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItems.Find (Name)
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: const AName: string
-  Result:    TJvXPBarItem
------------------------------------------------------------------------------}
 
 function TJvXPBarItems.Find(const AName: string): TJvXPBarItem;
 var
@@ -1152,20 +794,12 @@ var
 begin
   Result := nil;
   for i := 0 to Count - 1 do
-  if Items[i].Name = AName then
-  begin
-    Result := Items[i];
-    Break;
-  end;
+    if Items[i].Name = AName then
+    begin
+      Result := Items[i];
+      Break;
+    end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItems.Find (Action)
-  Author:    mh
-  Date:      30-Okt-2002
-  Arguments: const Action: TBasicAction
-  Result:    TJvXPBarItem
------------------------------------------------------------------------------}
 
 function TJvXPBarItems.Find(const Action: TBasicAction): TJvXPBarItem;
 var
@@ -1173,20 +807,12 @@ var
 begin
   Result := nil;
   for i := 0 to Count - 1 do
-  if Items[i].Action = Action then
-  begin
-    Result := Items[i];
-    Break;
-  end;
+    if Items[i].Action = Action then
+    begin
+      Result := Items[i];
+      Break;
+    end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarItems.Find (ByObject)
-  Author:    mh
-  Date:      29-Okt-2002
-  Arguments: const DataObject: TObject
-  Result:    TJvXPBarItem
------------------------------------------------------------------------------}
 
 function TJvXPBarItems.Find(const DataObject: TObject): TJvXPBarItem;
 var
@@ -1194,22 +820,14 @@ var
 begin
   Result := nil;
   for i := 0 to Count - 1 do
-  if Items[i].DataObject = DataObject then
-  begin
-    Result := Items[i];
-    Break;
-  end;
+    if Items[i].DataObject = DataObject then
+    begin
+      Result := Items[i];
+      Break;
+    end;
 end;
 
 { TJvXPBarVisibleItems }
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarVisibleItems.Create
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: WinXPBar: TJvXPCustomWinXPBar
-  Result:    None
------------------------------------------------------------------------------}
 
 constructor TJvXPBarVisibleItems.Create(WinXPBar: TJvXPCustomWinXPBar);
 begin
@@ -1218,27 +836,11 @@ begin
   FWinXPBar := WinXPBar;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarVisibleItems.Destroy
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 destructor TJvXPBarVisibleItems.Destroy;
 begin
   FItems.Free;
   inherited;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarVisibleItems.GetItem
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Index: Integer
-  Result:    TJvXPBarItem
------------------------------------------------------------------------------}
 
 function TJvXPBarVisibleItems.GetItem(Index: Integer): TJvXPBarItem;
 begin
@@ -1247,26 +849,10 @@ begin
     Result := FItems[Index];
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarVisibleItems.Count
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    Integer
------------------------------------------------------------------------------}
-
 function TJvXPBarVisibleItems.Count: Integer;
 begin
   Result := FItems.Count;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarVisibleItems.Exists
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Item: TJvXPBarItem
-  Result:    Boolean
------------------------------------------------------------------------------}
 
 function TJvXPBarVisibleItems.Exists(Item: TJvXPBarItem): Boolean;
 var
@@ -1274,20 +860,12 @@ var
 begin
   Result := False;
   for i := 0 to Count - 1 do
-  if Items[i] = Item then
-  begin
-    Result := True;
-    Break;
-  end;
+    if Items[i] = Item then
+    begin
+      Result := True;
+      Break;
+    end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarVisibleItems.Add
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Item: TJvXPBarItem
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPBarVisibleItems.Add(Item: TJvXPBarItem);
 begin
@@ -1296,14 +874,6 @@ begin
   FItems.Add(Item);
   FWinXPBar.SortVisibleItems(False);
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPBarVisibleItems.Delete
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Item: TJvXPBarItem
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPBarVisibleItems.Delete(Item: TJvXPBarItem);
 begin
@@ -1314,14 +884,6 @@ end;
 
 { TJvXPFadeThread }
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPFadeThread.Create
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: WinXPBar: TJvXPCustomWinXPBar; FadeDirection: TJvXPBarRollDirection
-  Result:    None
------------------------------------------------------------------------------}
-
 constructor TJvXPFadeThread.Create(WinXPBar: TJvXPCustomWinXPBar;
   RollDirection: TJvXPBarRollDirection);
 begin
@@ -1330,14 +892,6 @@ begin
   FRollDirection := RollDirection;
   FreeOnTerminate := True;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPFadeThread.Execute
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPFadeThread.Execute;
 var
@@ -1362,7 +916,7 @@ begin
 
     { terminate on 'out-of-range' }
     if ((FRollDirection = rdCollapse) and (NewOffset = 0)) or
-       ((FRollDirection = rdExpand) and (NewOffset = FWinXPBar.FItemHeight)) then
+      ((FRollDirection = rdExpand) and (NewOffset = FWinXPBar.FItemHeight)) then
       Terminate;
 
     { idle process }
@@ -1381,18 +935,89 @@ begin
     TCustomForm(FWinXPBar.Owner).Designer.Modified
   else
     PostMessage(FWinXPBar.Handle, WM_XPBARAFTERCOLLAPSE,
-      Integer(FRollDirection=rdCollapse), 0);
+      Integer(FRollDirection = rdCollapse), 0);
+end;
+
+{ TJvXPBarColors }
+
+procedure TJvXPBarColors.Change;
+begin
+  if Assigned(FOnChange) then
+    FOnChange(self);
+end;
+
+constructor TJvXPBarColors.Create;
+{$IFDEF JVCLThemesEnabled}
+var
+  Details: TThemedElementDetails;
+  AColor: COLORREF;
+{$ENDIF}
+begin
+  inherited Create;
+  FBodyColor := $00F7DFD6;
+  FGradientFrom := clWhite;
+  FGradientTo := $00F7D7C6;
+  FSeperatorColor := $00F7D7C6;
+  {$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled then
+  begin
+    Details := ThemeServices.GetElementDetails(tebHeaderBackgroundNormal);
+    with Details do
+    begin
+      if GetThemeColor(ThemeServices.Theme[Element], Part, State,
+        TMT_FILLCOLOR, AColor) = 0 then
+        FBodyColor := AColor;
+      if GetThemeColor(ThemeServices.Theme[Element], Part, State,
+        TMT_GRADIENTCOLOR1, AColor) = 0 then
+        FGradientFrom := AColor;
+      if GetThemeColor(ThemeServices.Theme[Element], Part, State,
+        TMT_GRADIENTCOLOR2, AColor) = 0 then
+        FGradientTo := AColor;
+      if GetThemeColor(ThemeServices.Theme[Element], Part, State,
+        TMT_EDGEFILLCOLOR, AColor) = 0 then
+        FSeparatorColor := AColor;
+    end;
+  end;
+  {$ENDIF JVCLThemesEnabled}
+end;
+
+procedure TJvXPBarColors.SetBodyColor(const Value: TColor);
+begin
+  if FBodyColor <> Value then
+  begin
+    FBodyColor := Value;
+    Change;
+  end;
+end;
+
+procedure TJvXPBarColors.SetGradientFrom(const Value: TColor);
+begin
+  if FGradientFrom <> Value then
+  begin
+    FGradientFrom := Value;
+    Change;
+  end;
+end;
+
+procedure TJvXPBarColors.SetGradientTo(const Value: TColor);
+begin
+  if FGradientTo <> Value then
+  begin
+    FGradientTo := Value;
+    Change;
+  end;
+end;
+
+procedure TJvXPBarColors.SetSeperatorColor(const Value: TColor);
+begin
+  if FSeperatorColor <> Value then
+  begin
+    FSeperatorColor := Value;
+    Change;
+  end;
 end;
 
 { TJvXPCustomWinXPBar }
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.Create
-  Author:    mh
-  Date:      20-Aug-2002
-  Arguments: AOwner: TComponent
-  Result:    None
------------------------------------------------------------------------------}
 
 constructor TJvXPCustomWinXPBar.Create(AOwner: TComponent);
 begin
@@ -1400,25 +1025,28 @@ begin
   ControlStyle := ControlStyle - [csDoubleClicks];
   ExControlStyle := [csRedrawCaptionChanged];
   Height := 46;
-  HotTrack := True;  // initialize mouse events
+  HotTrack := True; // initialize mouse events
   Width := 153;
-  FBodyColor := $00F7DFD6;
+  FColors := TJvXPBarColors.Create;
+  FColors.OnChange := DoColorsChange;
   FCollapsed := False;
   FFadeThread := nil;
+
   FFont := TFont.Create;
   FFont.Color := $00E75100;
   FFont.Size := 10;
   FFont.OnChange := FontChanged;
   FGradient := TBitmap.Create;
-  FGradientFrom := clWhite;
-  FGradientTo := $00F7D7C6;
+
   FGradientWidth := 0;
   FHeaderFont := TFont.Create;
   FHeaderFont.Color := $00E75100;
   FHeaderFont.Size := 10;
   FHeaderFont.Style := [fsBold];
   FHeaderFont.OnChange := FontChanged;
+
   FHitTest := htNone;
+
   FHotTrackColor := $00FF7C35;
   FHoverIndex := -1;
   FIcon := TIcon.Create;
@@ -1429,19 +1057,10 @@ begin
   FRollMode := rmShrink;
   FRollOffset := FItemHeight;
   FRollStep := 3;
-  FSeperatorLine := $00F7D7C6;
   FShowLinkCursor := True;
   FShowRollButton := True;
   FVisibleItems := TJvXPBarVisibleItems.Create(Self);
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.Destroy
-  Author:    mh
-  Date:      20-Aug-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
 
 destructor TJvXPCustomWinXPBar.Destroy;
 begin
@@ -1451,23 +1070,16 @@ begin
   FIcon.Free;
   FItems.Free;
   FVisibleItems.Free;
+  FColors.Free;
   inherited;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.Notification
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: AComponent: TComponent; Operation: TOperation
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomWinXPBar.Notification(AComponent: TComponent;
   Operation: TOperation);
 var
   i: Integer;
 begin
-  if not(csDestroying in ComponentState) and (Operation = opRemove) then
+  if not (csDestroying in ComponentState) and (Operation = opRemove) then
   begin
     if AComponent = FImageList then
       FImageList := nil;
@@ -1477,41 +1089,17 @@ begin
   inherited Notification(AComponent, Operation);
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.IsFontStored
-  Author:    mh
-  Date:      30-Okt-2002
-  Arguments: None
-  Result:    Boolean
------------------------------------------------------------------------------}
-
 function TJvXPCustomWinXPBar.IsFontStored: Boolean;
 begin
   Result := not ParentFont and not DesktopFont;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.FontChanged
-  Author:    mh
-  Date:      30-Okt-2002
-  Arguments: Sender: TObject
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomWinXPBar.FontChanged(Sender: TObject);
 begin
-  if (not FFontChanging) and not(csLoading in ComponentState) then
+  if (not FFontChanging) and not (csLoading in ComponentState) then
     ParentFont := False;
   InternalRedraw;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.ResizeToMaxHeight
-  Author:    mh
-  Date:      29-Okt-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomWinXPBar.ResizeToMaxHeight;
 var
@@ -1530,14 +1118,6 @@ begin
   Height := NewHeight;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.GetHitTestAt
-  Author:    mh
-  Date:      05-Nov-2002
-  Arguments: X, Y: Integer
-  Result:    TJvXPBarHitTest
------------------------------------------------------------------------------}
-
 function TJvXPCustomWinXPBar.GetHitTestAt(X, Y: Integer): TJvXPBarHitTest;
 begin
   Result := htNone;
@@ -1546,14 +1126,6 @@ begin
   if PtInRect(GetHitTestRect(htRollButton), Point(X, Y)) then
     Result := htRollButton;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.GetItemRect
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Index: Integer
-  Result:    TRect
------------------------------------------------------------------------------}
 
 function TJvXPCustomWinXPBar.GetItemRect(Index: Integer): TRect;
 begin
@@ -1566,14 +1138,6 @@ begin
   Result.Bottom := Result.Top + FItemHeight;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.GetHitTestRect
-  Author:    mh
-  Date:      05-Nov-2002
-  Arguments: const HitTest: TJvXPBarHitTest
-  Result:    TRect
------------------------------------------------------------------------------}
-
 function TJvXPCustomWinXPBar.GetHitTestRect(const HitTest: TJvXPBarHitTest): TRect;
 begin
   case HitTest of
@@ -1584,14 +1148,6 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.SortVisibleItems
-  Author:    mh
-  Date:      29-Okt-2002
-  Arguments: const Redraw: Boolean
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomWinXPBar.SortVisibleItems(const Redraw: Boolean);
 begin
   if (csLoading in ComponentState) or (csDestroying in ComponentState) then
@@ -1600,14 +1156,6 @@ begin
   if Redraw then
     InternalRedraw;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.ItemVisibilityChanged
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Item: TJvXPBarItem
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomWinXPBar.ItemVisibilityChanged(Item: TJvXPBarItem);
 begin
@@ -1618,33 +1166,17 @@ begin
     FVisibleItems.Delete(Item);
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.HookMouseDown
-  Author:    mh
-  Date:      30-Okt-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomWinXPBar.HookMouseDown;
 var
   Rect: TRect;
 begin
-  inherited;  // update drawstate
+  inherited; // update drawstate
   if FHitTest = htRollButton then
   begin
     Rect := GetHitTestRect(htRollButton);
     InvalidateRect(Handle, @Rect, False);
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.HookMouseMove
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: X, Y: Integer
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomWinXPBar.HookMouseMove(X, Y: Integer);
 var
@@ -1656,7 +1188,7 @@ begin
   FHitTest := GetHitTestAt(X, Y);
   if FHitTest <> OldHitTest then
   begin
-    Rect := Bounds(0, 5, Width, 28);    // header
+    Rect := Bounds(0, 5, Width, 28); // header
     InvalidateRect(Handle, @Rect, False);
     if FShowLinkCursor then
     begin
@@ -1682,19 +1214,11 @@ begin
       if FShowLinkCursor then
         Cursor := crHandPoint;
     end else
-    if FShowLinkCursor then
-      Cursor := crDefault;
+      if FShowLinkCursor then
+        Cursor := crDefault;
   end;
   inherited;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.HookParentFontChanged
-  Author:    mh
-  Date:      30-Okt-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomWinXPBar.HookParentFontChanged;
 begin
@@ -1717,14 +1241,6 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.HookResized
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomWinXPBar.HookResized;
 begin
   // perform actions only on 'width'-change
@@ -1742,14 +1258,6 @@ begin
   inherited;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.SetCollapsed
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Value: Boolean
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomWinXPBar.SetCollapsed(Value: Boolean);
 begin
   if Value <> FCollapsed then
@@ -1763,7 +1271,7 @@ begin
     end
     else
     begin
-      FCollapsed:=Value;
+      FCollapsed := Value;
       FRolling := True;
       if Value then
         RollOffset := 0
@@ -1773,41 +1281,17 @@ begin
     end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.SetFont
-  Author:    mh
-  Date:      30-Okt-2002
-  Arguments: Value: TFont
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomWinXPBar.SetFont(Value: TFont);
 begin
   FFont.Assign(Value);
   InternalRedraw;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.SetHeaderFont
-  Author:    mh
-  Date:      30-Okt-2002
-  Arguments: Value: TFont
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomWinXPBar.SetHeaderFont(Value: TFont);
 begin
   FHeaderFont.Assign(Value);
   InternalRedraw;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.SetHotTrack
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Value: Boolean
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomWinXPBar.SetHotTrack(Value: Boolean);
 const
@@ -1820,18 +1304,10 @@ begin
       ExControlStyle := ExControlStyle + MouseEvents
     else
       ExControlStyle := ExControlStyle - MouseEvents;
-    if not(csLoading in ComponentState) then
+    if not (csLoading in ComponentState) then
       InternalRedraw;
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.SetHotTrackColor
-  Author:    mh
-  Date:      30-Okt-2002
-  Arguments: Value: TColor
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomWinXPBar.SetHotTrackColor(Value: TColor);
 begin
@@ -1842,14 +1318,6 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.SetIcon
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Value: TIcon
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomWinXPBar.SetIcon(Value: TIcon);
 begin
   if Value <> FIcon then
@@ -1859,14 +1327,6 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.SetImageList
-  Author:    mh
-  Date:      29-Okt-2002
-  Arguments: Value: TCustomImageList
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomWinXPBar.SetImageList(Value: TCustomImageList);
 begin
   if Value <> FImageList then
@@ -1875,14 +1335,6 @@ begin
     InternalRedraw;
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.SetItemHeight
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Value: Integer
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomWinXPBar.SetItemHeight(Value: Integer);
 begin
@@ -1894,26 +1346,10 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.SetItems
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Value: TJvXPBarItem
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomWinXPBar.SetItems(Value: TJvXPBarItems);
 begin
   FItems.Assign(Value);
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.SetRollOffset
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: const Value: Integer
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomWinXPBar.SetRollOffset(const Value: Integer);
 begin
@@ -1924,14 +1360,6 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.SetShowRollButton
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: Value: Boolean
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomWinXPBar.SetShowRollButton(Value: Boolean);
 begin
   if Value <> FShowRollButton then
@@ -1941,27 +1369,11 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.EndUpdate
-  Author:    mh
-  Date:      06-Nov-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomWinXPBar.EndUpdate;
 begin
   inherited;
   ResizeToMaxHeight;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.Click
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomWinXPBar.Click;
 var
@@ -1989,14 +1401,6 @@ begin
   end;
   inherited;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.DoDrawItem
-  Author:    mh
-  Date:      29-Okt-2002
-  Arguments: const Index: Integer
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomWinXPBar.DoDrawItem(const Index: Integer; State: TJvXPDrawState);
 var
@@ -2039,14 +1443,6 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.Paint
-  Author:    mh
-  Date:      29-Okt-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomWinXPBar.Paint;
 var
   Rect: TRect;
@@ -2061,11 +1457,11 @@ begin
 
     { fill non-client area }
     Inc(Rect.Top, 5);
-    Brush.Color := FBodyColor; //$00F7DFD6;
+    Brush.Color := FColors.BodyColor; //$00F7DFD6;
     FillRect(Rect);
 
     { draw header }
-    JvXPCreateGradientRect(Width, 28, FGradientFrom, FGradientTo, 32, gsLeft, True,
+    JvXPCreateGradientRect(Width, 28, FColors.GradientFrom, FColors.GradientTo, 32, gsLeft, True,
       FGradient);
     Draw(0, Rect.Top, FGradient);
 
@@ -2101,6 +1497,7 @@ begin
           Bitmap.Handle := LoadBitmap(hInstance, PChar('EXPAND' + IntToStr(Index)))
         else
           Bitmap.Handle := LoadBitmap(hInstance, PChar('COLLAPSE' + IntToStr(Index)));
+        Bitmap.Transparent := true;
         Draw(Rect.Right - 24, Rect.Top + 5, Bitmap);
       finally
         Bitmap.Free;
@@ -2109,7 +1506,7 @@ begin
     end;
 
     { draw seperator line }
-    Pen.Color := FSeperatorLine;
+    Pen.Color := FColors.SeparatorColor;
     JvXPDrawLine(Canvas, 1, Rect.Top + 28, Width - 1, Rect.Top + 28);
 
     { draw icon }
@@ -2131,30 +1528,34 @@ begin
       DT_END_ELLIPSIS or DT_NOPREFIX);
 
     { draw visible items }
-    Brush.Color := FBodyColor;
+    Brush.Color := FColors.BodyColor;
     if not FCollapsed or FRolling then
-    for i := 0 to FVisibleItems.Count - 1 do
-    begin
-      if (i <> FHoverIndex) or not(dsHighlight in DrawState) then
-        DoDrawItem(i, [])
-      else
-        DoDrawItem(i, [dsHighlight]);
-    end;
+      for i := 0 to FVisibleItems.Count - 1 do
+      begin
+        if (i <> FHoverIndex) or not (dsHighlight in DrawState) then
+          DoDrawItem(i, [])
+        else
+          DoDrawItem(i, [dsHighlight]);
+      end;
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomWinXPBar.WMAfterXPBarCollapse
-  Author:    iv
-  Date:      07-Jan-2004
-  Arguments: Msg: TMessage
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomWinXPBar.WMAfterXPBarCollapse(var Msg: TMessage);
 begin
   if Assigned(FAfterCollapsedChange) then
     FAfterCollapsedChange(Self, Boolean(Msg.WParam));
+end;
+
+procedure TJvXPCustomWinXPBar.DoColorsChange(Sender: TObject);
+begin
+  Invalidate;
+end;
+
+
+
+procedure TJvXPCustomWinXPBar.SetColors(const Value: TJvXPBarColors);
+begin
+//
 end;
 
 end.

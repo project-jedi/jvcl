@@ -34,9 +34,11 @@ type
     FDrawingStyle: TDrawingStyle;
     FSelectedStyle: TDrawingStyle;
     FFillCaption: boolean;
+    FFrameWidth: word;
     procedure SetDrawingStyle(const Value: TDrawingStyle);
     procedure SetSelectedStyle(const Value: TDrawingStyle);
     procedure SetFillCaption(const Value: boolean);
+    procedure SetFrameWidth(const Value: word);
   public
     constructor Create(AOwner: TJvCustomItemViewer); override;
   published
@@ -46,6 +48,7 @@ type
     property DrawingStyle: TDrawingStyle read FDrawingStyle write SetDrawingStyle default dsTransparent;
     property FillCaption: boolean read FFillCaption write SetFillCaption default true;
     property SelectedStyle: TDrawingStyle read FSelectedStyle write SetSelectedStyle default dsSelected;
+    property FrameSize:word read FFrameWidth write SetFrameWidth default 1;
     property Height;
     property Layout;
     property RightClickSelect;
@@ -132,6 +135,7 @@ begin
   FDrawingStyle := dsTransparent;
   FSelectedStyle := dsSelected;
   FFillCaption := true;
+  FFrameWidth := 1;
 end;
 
 procedure TJvImageListViewerOptions.SetDrawingStyle(
@@ -149,6 +153,15 @@ begin
   if FFillCaption <> Value then
   begin
     FFillCaption := Value;
+    Change;
+  end;
+end;
+
+procedure TJvImageListViewerOptions.SetFrameWidth(const Value: word);
+begin
+  if FFrameWidth <> Value then
+  begin
+    FFrameWidth := Value;
     Change;
   end;
 end;
@@ -197,7 +210,7 @@ const
   DrawMask: array[boolean] of Cardinal = (ILD_MASK, ILD_NORMAL);
 var
   X, Y: integer;
-  S: string;
+  S: string;             
   DrawStyle, Flags: Cardinal;
 begin
   Canvas.Brush.Color := Color;
@@ -223,7 +236,13 @@ begin
         Canvas.Pen.Color := Options.BrushPattern.OddColor;
         Canvas.Brush.Color := Options.BrushPattern.OddColor;
       end;
-      Canvas.Rectangle(ItemRect);
+      if Options.FrameSize > 0 then
+      begin
+        Canvas.Pen.Width := Options.FrameSize;
+        Canvas.Rectangle(ItemRect);
+      end
+      else
+        Canvas.FillRect(ItemRect);
     end
     else
     begin
