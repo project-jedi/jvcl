@@ -52,8 +52,8 @@ type
 
 implementation
 
-const
-  ClickToEdit = 'Click to edit...';
+uses
+  JvxDConst;
 
 procedure TJvDataEmbeddedEditor.Edit;
 var
@@ -83,17 +83,17 @@ end;
 
 function TJvDataEmbeddedEditor.GetValue: string;
 begin
-  Result := ClickToEdit;
+  Result := SJvEditorString;
 end;
 
 procedure TJvDataEmbeddedEditor.GetValues(Proc: TGetStrProc);
 begin
-  SetStrValue(ClickToEdit);
+  SetStrValue(SJvEditorString);
 end;
 
 procedure TJvDataEmbeddedEditor.SetValue(const Value: string);
 begin
-  SetStrValue(ClickToEdit);
+  SetStrValue(SJvEditorString);
 end;
 
 end.

@@ -291,6 +291,8 @@ begin
   Result := TForm(Reference);
 end;
 
+// (rom) use StrStringToEscaped, StrEscapedToString from JclStrings.pas
+
 function StrToIniStr(const Str: string): string;
 var
   N: Integer;

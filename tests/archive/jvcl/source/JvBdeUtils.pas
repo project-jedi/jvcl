@@ -204,11 +204,10 @@ uses
   {$IFDEF COMPILER3_UP}
   BDEConst, DBCommon,
   {$ENDIF}
-  JvxConst, JvVCLUtils, JvFileUtil, JvStrUtils,
   {$IFNDEF WIN32}
   JvStr16,
   {$ENDIF}
-  JvDateUtil;
+  JvxRConst, JvVCLUtils, JvFileUtil, JvStrUtils, JvDateUtil;
 
 { Utility routines }
 

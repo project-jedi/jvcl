@@ -21,6 +21,7 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+  (rom) this file should definitely be merged with JclSysUtils.pas
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -41,6 +42,7 @@ uses
 type
   PClass = ^TClass;
 
+function GetVirtualMethodCount(AClass: TClass): Integer;
 function GetVirtualMethodAddress(AClass: TClass; AIndex: Integer): Pointer;
 function SetVirtualMethodAddress(AClass: TClass; AIndex: Integer;
   NewAddress: Pointer): Pointer;
@@ -53,6 +55,36 @@ implementation
 
 type
   PPointer = ^Pointer;
+
+// (rom) copied from JCL
+
+function GetVirtualMethodCount(AClass: TClass): Integer;
+var
+  BeginVMT: Longint;
+  EndVMT: Longint;
+  TablePointer: Longint;
+  I: Integer;
+begin
+  BeginVMT := Longint(AClass);
+
+  // Scan the offset entries in the class table for the various fields,
+  // namely vmtIntfTable, vmtAutoTable, ..., vmtDynamicTable
+  // The last entry is always the vmtClassName, so stop once we got there
+  // After the last virtual method there is one of these entries.
+
+  EndVMT := PLongint(Longint(AClass) + vmtClassName)^;
+  // Set iterator to first item behind VMT table pointer
+  I := vmtSelfPtr + SizeOf(Pointer);
+  repeat
+    TablePointer := PLongint(Longint(AClass) + I)^;
+    if (TablePointer <> 0) and (TablePointer >= BeginVMT) and
+       (TablePointer < EndVMT) then
+      EndVMT := Longint(TablePointer);
+    Inc(I, SizeOf(Pointer));
+  until I >= vmtClassName;
+
+  Result := (EndVMT - BeginVMT) div SizeOf(Pointer);
+end;
 
 function GetVirtualMethodAddress(AClass: TClass; AIndex: Integer): Pointer;
 var
@@ -98,12 +130,19 @@ begin
   {$ENDIF}
 end;
 
+// (rom) reimplemented using GetVirtualMethodCount
+
 function FindVirtualMethodIndex(AClass: TClass; MethodAddr: Pointer): Integer;
+var
+  I: Integer;
 begin
-  Result := 0;
-  repeat
-    Inc(Result);
-  until GetVirtualMethodAddress(AClass, Result) = MethodAddr;
+  Result := -1; // (rom) API change!
+  for I := 0 to GetVirtualMethodCount(AClass)-1 do
+    if GetVirtualMethodAddress(AClass, Result) = MethodAddr then
+    begin
+      Result := I;
+      Break;
+    end;
 end;
 
 end.

@@ -124,7 +124,7 @@ implementation
 
 uses
   Consts, Buttons,
-  JvxCtrls, JvConst, JvxConst;
+  JvxCtrls, JvConst, JvxDConst;
 
 {$R *.DFM}
 

@@ -69,7 +69,7 @@ uses
   JvQBindDlg,
   {$ENDIF}
   {$ENDIF}
-  Consts, LibHelp, JvMemTable, JvxConst;
+  Consts, LibHelp, JvMemTable, JvxDConst;
 
 {$IFDEF WIN32}
 
@@ -311,6 +311,9 @@ end;
 { Designer registration }
 
 procedure Register;
+const
+  cParams = 'Params';
+  cSessionName = 'SessionName';
 begin
   {$IFDEF COMPILER4_UP}
   { Database Components are excluded from the STD SKU }
@@ -359,22 +362,22 @@ begin
   {$ENDIF}
 
   {$IFNDEF COMPILER4_UP}
-  RegisterPropertyEditor(TypeInfo(TParams), TJvQBEQuery, 'Params',
+  RegisterPropertyEditor(TypeInfo(TParams), TJvQBEQuery, cParams,
     TJvParamsProperty);
   RegisterPropertyEditor(TypeInfo(TParams), TJvQuery, 'Macros',
     TJvParamsProperty);
-  RegisterPropertyEditor(TypeInfo(TParams), TJvSQLScript, 'Params',
+  RegisterPropertyEditor(TypeInfo(TParams), TJvSQLScript, cParams,
     TJvParamsProperty);
   {$ENDIF}
 
   RegisterPropertyEditor(TypeInfo(string), TJvSQLScript, 'DatabaseName',
     TJvDatabaseNameProperty);
   {$IFDEF WIN32}
-  RegisterPropertyEditor(TypeInfo(string), TJvCustomBDEItems, 'SessionName',
+  RegisterPropertyEditor(TypeInfo(string), TJvCustomBDEItems, cSessionName,
     TJvSessionNameProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvSQLScript, 'SessionName',
+  RegisterPropertyEditor(TypeInfo(string), TJvSQLScript, cSessionName,
     TJvSessionNameProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBProgress, 'SessionName',
+  RegisterPropertyEditor(TypeInfo(string), TJvDBProgress, cSessionName,
     TJvSessionNameProperty);
   {$ELSE}
   DbErrorIntercept;

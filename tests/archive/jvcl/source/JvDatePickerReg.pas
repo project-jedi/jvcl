@@ -39,7 +39,7 @@ uses
   {$IFNDEF DelphiPersonalEdition}
   JvDBDatePickerEdit,
   {$ENDIF}
-  JvCheckedMaskEdit, JvDatePickerEdit, JvxConst;
+  JvCheckedMaskEdit, JvDatePickerEdit, JvxDConst;
 
 {.$R ..\Resources\JvDatePickerReg.dcr}
 

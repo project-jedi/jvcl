@@ -203,6 +203,8 @@ uses
 
 //=== TJvHackBitmap ==========================================================
 
+// (rom) do we really need this ugly hack?
+
 type
   TJvHackBitmap = class(TBitmap)
   protected
@@ -234,8 +236,12 @@ begin
   if Hooked then
     Exit;
   Index := FindVirtualMethodIndex(TJvHack, @TJvHack.Draw);
-  SetVirtualMethodAddress(TBitmap, Index, @TJvHackBitmap.Draw);
-  Hooked := True;
+  // (rom) using secured FindVirtualMethodIndex result
+  if Index >= 0 then
+  begin
+    SetVirtualMethodAddress(TBitmap, Index, @TJvHackBitmap.Draw);
+    Hooked := True;
+  end;
 end;
 
 {$ENDIF COMPILER3_UP}

@@ -222,7 +222,7 @@ procedure Register;
 implementation
 
 uses
-  JvActnRes, JvxConst;
+  JvActnRes, JvxDConst;
 
 //=== TJvCommonDialogAction ==================================================
 

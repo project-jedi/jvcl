@@ -293,7 +293,7 @@ uses
   {$IFNDEF WIN32}
   JvStr16,
   {$ENDIF}
-  JvVCLUtils, JvAniFile, JvxConst, JvTypes;
+  JvVCLUtils, JvAniFile, JvxRConst, JvTypes;
 
 {$R-}
 

@@ -99,6 +99,9 @@ type
 
 implementation
 
+uses
+  JvFunctions;
+
 //=== TJvSendMail ============================================================
 
 constructor TJvSendMail.Create(AOwner: TComponent);
@@ -227,7 +230,7 @@ end;
 
 function TJvWebAction.Execute: Boolean;
 begin
-  Result := ShellExecute(0, 'open', PChar(FUrl), nil, nil, SW_SHOW) > 32;
+  Result := OpenObject(FUrl);
 end;
 
 function TJvWebAction.HandlesTarget(Target: TObject): Boolean;

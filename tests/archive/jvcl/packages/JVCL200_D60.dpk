@@ -111,6 +111,7 @@ contains
   JvTimLstEd in '..\source\JvTimLstEd.pas' {JvTimerItemsEditor},
   jvBandObjectDLLWizard in '..\source\JvBandObjectDLLWizard.pas',
   jvBandObjectDLLWizardForm in '..\source\JvBandObjectDLLWizardForm.pas' {zWizardForm},
+  JvxDConst in '..\source\JvxDConst.pas',
   JvActions in '..\source\JvActions.pas',
   JvDialogActns in '..\source\JvDialogActns.pas',
   JvPluginWizard in '..\source\JvPluginWizard.pas',

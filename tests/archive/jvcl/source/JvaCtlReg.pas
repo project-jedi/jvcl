@@ -58,7 +58,7 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   Classes,
-  JvRegAuto, JvxConst;
+  JvRegAuto, JvxDConst;
 
 {$R ..\resources\ractl.dcr}
 

@@ -172,7 +172,7 @@ implementation
 
 uses
   TypInfo, Math,
-  JvxConst, JvProps;
+  JvxDConst, JvProps;
 
 {$R *.DFM}
 

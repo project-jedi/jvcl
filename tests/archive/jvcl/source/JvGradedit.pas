@@ -119,7 +119,7 @@ function EditGradientCaption(Component: TJvxGradientCaption;
 implementation
 
 uses
-  JvVCLUtils, JvBoxProcs, JvConst, JvxConst;
+  JvVCLUtils, JvBoxProcs, JvConst, JvxDConst;
 
 {$R *.DFM}
 

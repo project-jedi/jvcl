@@ -298,7 +298,7 @@ const
 function CreateCalcBtn(AParent: TWinControl; AKind: TCalcBtnKind;
   AOnClick: TNotifyEvent; ALayout: TCalcPanelLayout): TJvCalcButton;
 const
-  BtnCaptions: array[cbSgn..cbMC] of PChar =
+  BtnCaptions: array [cbSgn..cbMC] of PChar =
     ('±', ',', '/', '*', '-', '+', 'sqrt', '%', '1/x', '=', '<-', 'C',
      'MP', 'MS', 'MR', 'MC');
 begin
@@ -392,7 +392,7 @@ var
   Bmp: TBitmap;
   I: TCalcBtnKind;
 const
-  BtnGlyphs: array[cbSgn..cbCancel] of Integer = (2 {Sgn}, -1, -1, 3 {Mul},
+  BtnGlyphs: array [cbSgn..cbCancel] of Integer = (2 {Sgn}, -1, -1, 3 {Mul},
     4 {Sub}, 5 {Add}, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1 {Ok}, 0 {Cancel});
 begin
   inherited Create(AOwner);
@@ -1162,7 +1162,7 @@ constructor TJvCalculatorForm.Create(AOwner: TComponent);
 var
   Control: TWinControl;
   Popup: TPopupMenu;
-  Items: array[0..1] of TMenuItem;
+  Items: array [0..1] of TMenuItem;
 begin
   {$IFDEF CBUILDER}
   inherited CreateNew(AOwner, 0);
@@ -1241,7 +1241,7 @@ end;
 
 procedure TJvCalculatorForm.CMCtl3DChanged(var Message: TMessage);
 const
-  Ctl3DBevel: array[Boolean] of TPanelBevel = (bvNone, bvLowered);
+  Ctl3DBevel: array [Boolean] of TPanelBevel = (bvNone, bvLowered);
 begin
   inherited;
   if FDisplayPanel <> nil then

@@ -51,7 +51,7 @@ uses
   {$IFDEF COMPLIB_VCL}
   JvInterpreterFm,
   {$ENDIF COMPLIB_VCL}
-  JvInterpreter, JvxConst;
+  JvInterpreter, JvxDConst;
 
 {$R ..\resources\rai.dcr}
 

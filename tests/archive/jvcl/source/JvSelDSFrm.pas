@@ -88,7 +88,7 @@ uses
   {$ENDIF}
   {$ENDIF}
   DSDesign,
-  JvVCLUtils, JvxConst;
+  JvVCLUtils, JvxDConst;
 
 {$R *.DFM}
 

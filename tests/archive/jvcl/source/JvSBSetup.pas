@@ -95,7 +95,7 @@ implementation
 
 uses
   Consts, Math,
-  JvVCLUtils, JvxConst;
+  JvVCLUtils, JvxRConst;
 
 {$R *.DFM}
 

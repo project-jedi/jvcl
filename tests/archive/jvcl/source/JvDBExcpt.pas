@@ -102,7 +102,7 @@ uses
   WinProcs, WinTypes, DbiErrs,
   JvStr16,
   {$ENDIF}
-  JvxConst;
+  JvxRConst;
 
 {$R *.DFM}
 

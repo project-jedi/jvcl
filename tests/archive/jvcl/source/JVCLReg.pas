@@ -194,7 +194,7 @@ uses
   JvActions,
 
   // palette names
-  JvxConst;
+  JvxDConst;
 
 procedure RegPropEds;
 begin

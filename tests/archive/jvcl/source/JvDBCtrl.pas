@@ -867,7 +867,7 @@ uses
   {$IFNDEF COMPILER3_UP}
   JvBdeUtils,
   {$ENDIF}
-  JvCalc, JvxConst;
+  JvCalc, JvxRConst;
 
 {$IFDEF WIN32}
 {$R *.Res}

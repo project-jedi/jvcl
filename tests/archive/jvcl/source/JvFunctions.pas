@@ -51,8 +51,8 @@ function IconToBitmap2(Ico: HICON; Size: Integer = 32; TransparentColor: TColor 
 function IconToBitmap3(Ico: HICON; Size: Integer = 32; TransparentColor: TColor = clNone): TBitmap;
 
 //Open an object with the shell (url or something like that)
-procedure OpenObject(Value: PChar); overload;
-procedure OpenObject(Value: string); overload;
+function OpenObject(Value: PChar): Boolean; overload;
+function OpenObject(Value: string): Boolean; overload;
 
 //Raise the last Exception
 procedure RaiseLastWin32; overload;
@@ -417,14 +417,14 @@ begin
   end;
 end;
 
-procedure OpenObject(Value: string);
+function OpenObject(Value: string): Boolean;
 begin
-  OpenObject(PChar(Value));
+  Result := OpenObject(PChar(Value));
 end;
 
-procedure OpenObject(Value: PChar);
+function OpenObject(Value: PChar): Boolean;
 begin
-  ShellExecute(0, nil, Value, nil, nil, SW_NORMAL);
+  Result := ShellExecute(0, 'open', Value, nil, nil, SW_SHOWNORMAL) > HINSTANCE_ERROR;
 end;
 
 procedure RaiseLastWin32;

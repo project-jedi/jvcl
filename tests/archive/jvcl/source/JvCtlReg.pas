@@ -63,7 +63,7 @@ uses
   JvRichEd,
   {$ENDIF}
   Menus, FiltEdit, StdCtrls,
-  JvxConst, JvxCtrls, JvGrids, JvCurrEdit, JvToolEdit, JvDateUtil,
+  JvxDConst, JvxCtrls, JvGrids, JvCurrEdit, JvToolEdit, JvDateUtil,
   JvPickDate, JvSplit, JvxSlider, JvxClock, JvxAnimate, JvSpin,
   JvDsgnEditors, JvDice, JvSwitch, JvCheckItm, JvVCLUtils, JvColors, JvAniFile, JvGraph,
   {$IFDEF USE_JV_GIF}
@@ -543,6 +543,10 @@ end;
 
 procedure Register;
 const
+  cText = 'Text';
+  cCaption = 'Caption';
+  cHint = 'Hint';
+const
   {$IFDEF COMPILER3_UP}
   BaseClass: TClass = TPersistent;
   {$ELSE}
@@ -584,19 +588,19 @@ begin
 
   RegisterPropertyEditor(TypeInfo(TDayOfWeekName), nil, '', TJvWeekDayProperty);
   {$IFDEF COMPILER3_UP}
-  RegisterPropertyEditor(TypeInfo(string), TJvCustomNumEdit, 'Text', nil);
+  RegisterPropertyEditor(TypeInfo(string), TJvCustomNumEdit, cText, nil);
   {$ELSE}
-  RegisterPropertyEditor(TypeInfo(string), TJvCustomNumEdit, 'Text', TStringProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCustomNumEdit, cText, TStringProperty);
   {$ENDIF}
-  RegisterPropertyEditor(TypeInfo(string), TJvFileDirEdit, 'Text', TStringProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvCustomDateEdit, 'Text', TStringProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvFileDirEdit, cText, TStringProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCustomDateEdit, cText, TStringProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'Filter', TFilterProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'FileName', TJvFilenameProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDirectoryEdit, 'Text', TJvDirNameProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvDirectoryEdit, cText, TJvDirNameProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirNameProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'DirectoryName', TJvDirNameProperty);
-  RegisterPropertyEditor(TypeInfo(string), TMenuItem, 'Hint', TStringProperty);
-  RegisterPropertyEditor(TypeInfo(string), BaseClass, 'Hint', THintProperty);
+  RegisterPropertyEditor(TypeInfo(string), TMenuItem, cHint, TStringProperty);
+  RegisterPropertyEditor(TypeInfo(string), BaseClass, cHint, THintProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomComboEdit, 'ButtonHint', THintProperty);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvxCheckListBox, 'Items', TJvCheckItemsProperty);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'Gauge', TJvProgressControlProperty);
@@ -608,9 +612,9 @@ begin
   RegisterPropertyEditor(TypeInfo(TModalResult), TPersistent, '', TJvModalResultProperty);
   {$ENDIF}
 
-  RegisterPropertyEditor(TypeInfo(TCaption), TLabel, 'Caption', THintProperty);
-  RegisterPropertyEditor(TypeInfo(TCaption), TJvxLabel, 'Caption', THintProperty);
-  RegisterPropertyEditor(TypeInfo(TCaption), TJvxSpeedButton, 'Caption', THintProperty);
+  RegisterPropertyEditor(TypeInfo(TCaption), TLabel, cCaption, THintProperty);
+  RegisterPropertyEditor(TypeInfo(TCaption), TJvxLabel, cCaption, THintProperty);
+  RegisterPropertyEditor(TypeInfo(TCaption), TJvxSpeedButton, cCaption, THintProperty);
 
   RegisterPropertyEditor(TypeInfo(Integer), BaseClass, '', TJvIntegerProperty);
   RegisterPropertyEditor(TypeInfo(ShortInt), BaseClass, '', TJvIntegerProperty);

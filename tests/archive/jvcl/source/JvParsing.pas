@@ -73,7 +73,7 @@ function Power(Base, Exponent: Extended): Extended;
 implementation
 
 uses
-  JvxConst;
+  JvxRConst;
 
 const
   cSpecialChars = [#0..' ', '+', '-', '/', '*', ')', '^'];

@@ -52,6 +52,9 @@ type
 
 implementation
 
+uses
+  JvxDConst;
+
 function TJvPatcherEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paDialog, paSortList];
@@ -69,7 +72,7 @@ end;
 
 procedure TJvPatcherEditor.GetValues(Proc: TGetStrProc);
 begin
-  SetStrValue('Click to edit...');
+  SetStrValue(SJvEditorString);
 end;
 
 procedure TJvPatcherEditor.Edit;

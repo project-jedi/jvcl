@@ -166,8 +166,7 @@ uses
   Registry,
   {$ENDIF}
   Consts, IniFiles,
-  JvAppUtils, JvxConst,
-  JvVCLUtils, JvConst;
+  JvAppUtils, JvxRConst, JvVCLUtils, JvConst;
 
 {$R *.DFM}
 

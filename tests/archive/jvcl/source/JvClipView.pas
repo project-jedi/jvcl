@@ -107,7 +107,7 @@ implementation
 
 uses
   Grids, Math,
-  JvClipIcon, JvxConst,
+  JvClipIcon, JvxRConst,
   {$IFNDEF WIN32}
   JvStr16,
   {$ENDIF}

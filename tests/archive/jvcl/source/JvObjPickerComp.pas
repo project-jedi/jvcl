@@ -264,17 +264,7 @@ resourcestring
   RsAttributeIndexOutOfBounds = '%d is not a valid attribute index';
   RsSelectionIndexOutOfBounds = '%d is not a valid selection index';
 
-procedure Register;
-
 implementation
-
-uses
-  JvxConst;
-
-procedure Register;
-begin
-  RegisterComponents(srJvDialogsPalette, [TJvObjectPickerDialog]);
-end;
 
 function ScopeTypesToOrdinal(const ScopeTypes: TScopeTypes): Cardinal;
 begin

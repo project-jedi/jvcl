@@ -56,7 +56,7 @@ uses
   JvPictEdit, JvWndProcHook, JvPicClip, JvPlacemnt, JvPresrDsn, JvMinMaxEd, JvDualList,
   JvClipView, JvSpeedbar, JvSbEdit, JvDataConv, JvCalc, JvPageMngr, JvPgMngrEd, JvMrgMngr,
   JvStrHlder, JvAppEvent, JvVCLUtils, JvTimerLst, JvTimLstEd, JvIcoList, JvIcoLEdit,
-  JvDsgnEditors, JvxConst;
+  JvDsgnEditors, JvxDConst;
 
 //=== TJvStringsEditor =======================================================
 

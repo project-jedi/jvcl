@@ -52,8 +52,8 @@ type
 
 implementation
 
-resourcestring
-  RS_JvAlarmsEditorString = 'Click to edit...';
+uses
+  JvxDConst;
 
 function TJvAlarmsEditor.GetAttributes: TPropertyAttributes;
 begin
@@ -72,7 +72,7 @@ end;
 
 procedure TJvAlarmsEditor.GetValues(Proc: TGetStrProc);
 begin
-  SetStrValue(RS_JvAlarmsEditorString);
+  SetStrValue(SJvEditorString);
 end;
 
 procedure TJvAlarmsEditor.Edit;

@@ -158,7 +158,7 @@ uses
   Variants,
   {$ENDIF}
   Forms, Controls, Dialogs, DBConsts, Math,
-  JvxConst, JvVCLUtils, JvAppUtils, JvStrUtils, JvDateUtil;
+  JvxRConst, JvVCLUtils, JvAppUtils, JvStrUtils, JvDateUtil;
 
 { Utility routines }
 

@@ -368,7 +368,7 @@ uses
   {$ELSE}
   JvStr16,
   {$ENDIF}
-  JvConst, JvxConst, JvFunctions;
+  JvConst, JvxRConst, JvFunctions;
 
 { Exceptions }
 

@@ -74,11 +74,25 @@ implementation
 
 uses
   TypInfo, DB, DBTables,
-  JvDBTreeView, JvDBLookupTreeView, JvDBMove, JvSQLS, JvxConst;
+  JvDBTreeView, JvDBLookupTreeView, JvDBMove, JvSQLS, JvxDConst;
 
 {$R ..\resources\radb.dcr}
 
 procedure Register;
+const
+  cKeyField = 'KeyField';
+  cListField = 'ListField';
+  cMasterField = 'MasterField';
+  cDetailField = 'DetailField';
+  cIconField = 'IconField';
+  cItemField = 'ItemField';
+  cStartMasterValue = 'StartMasterValue';
+  {$IFDEF COMPILER6_UP}
+  {$IFDEF COMPLIB_VCL}
+  cDatabase = 'Database';
+  cUseFilter = 'UseFilter';
+  {$ENDIF}
+  {$ENDIF}
 begin
   {RADBCt unit}
   RegisterComponents(srJvBDEPalette, [TJvaSQLScript]);
@@ -89,32 +103,32 @@ begin
 
   {JvDBTreeView unit}
   RegisterComponents(srJvDataControlsPalette, [TJvDBTreeView]);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, 'ItemField', TJvDataFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, 'MasterField', TJvDataFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, 'DetailField', TJvDataFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, 'IconField', TJvDataFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, cItemField, TJvDataFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, cMasterField, TJvDataFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, cDetailField, TJvDataFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, cIconField, TJvDataFieldProperty);
 
- {JvDBLookupTreeView unit}
+  {JvDBLookupTreeView unit}
   RegisterComponents(srJvDataControlsPalette, [TJvDBLookupTreeView, TJvDBLookupTreeViewCombo]);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, 'KeyField', TJvListFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, 'ListField', TJvListFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, 'MasterField', TJvListFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, 'DetailField', TJvListFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, 'IconField', TJvListFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, 'KeyField', TJvListFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, 'ListField', TJvListFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, 'MasterField', TJvListFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, 'DetailField', TJvListFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, 'IconField', TJvListFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, cKeyField, TJvListFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, cListField, TJvListFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, cMasterField, TJvListFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, cDetailField, TJvListFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, cIconField, TJvListFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, cKeyField, TJvListFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, cListField, TJvListFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, cMasterField, TJvListFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, cDetailField, TJvListFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, cIconField, TJvListFieldProperty);
 
   {$IFDEF COMPILER6_UP}
   {$IFDEF COMPLIB_VCL}
-  RegisterPropertiesInCategory('Database', TJvDBTreeView,
-    ['ItemField', 'MasterField', 'DetailField', 'IconField', 'StartMasterValue', 'UseFilter']);
-  RegisterPropertiesInCategory('Database', TJvDBLookupTreeView,
-    ['MasterField', 'DetailField', 'IconField', 'StartMasterValue', 'KeyField', 'ListField', 'UseFilter']);
-  RegisterPropertiesInCategory('Database', TJvDBLookupTreeViewCombo,
-    ['MasterField', 'DetailField', 'IconField', 'StartMasterValue', 'KeyField', 'ListField', 'UseFilter']);
+  RegisterPropertiesInCategory(cDatabase, TJvDBTreeView,
+    [cItemField, cMasterField, cDetailField, cIconField, cStartMasterValue, cUseFilter]);
+  RegisterPropertiesInCategory(cDatabase, TJvDBLookupTreeView,
+    [cMasterField, cDetailField, cIconField, cStartMasterValue, cKeyField, cListField, cUseFilter]);
+  RegisterPropertiesInCategory(cDatabase, TJvDBLookupTreeViewCombo,
+    [cMasterField, cDetailField, cIconField, cStartMasterValue, cKeyField, cListField, cUseFilter]);
   {$ENDIF}
   {$ENDIF}
 end;

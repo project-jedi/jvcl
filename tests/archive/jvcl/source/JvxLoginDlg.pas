@@ -108,7 +108,7 @@ uses
   WinTypes, WinProcs, DbiTypes,
   {$ENDIF}
   IniFiles, Graphics,
-  JvAppUtils, JvxConst, JvConst;
+  JvAppUtils, JvxRConst, JvConst;
 
 const
   keyLastLoginUserName = 'LastUser';

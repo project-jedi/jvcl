@@ -80,7 +80,7 @@ implementation
 
 uses
   Consts, Dialogs,
-  JvxConst, JvFileUtil, JvVCLUtils, JvPrgrss;
+  JvxDConst, JvFileUtil, JvVCLUtils, JvPrgrss;
 
 //=== TJvFilenameProperty ====================================================
 

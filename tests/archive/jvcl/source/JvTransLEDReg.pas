@@ -10,7 +10,7 @@ implementation
 
 uses
   Classes,
-  JvTransLED, JvxConst;
+  JvTransLED, JvxDConst;
   
 {$R ..\resources\JvTransLed.dcr}
 

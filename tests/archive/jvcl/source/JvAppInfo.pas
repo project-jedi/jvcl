@@ -68,6 +68,9 @@ uses
   IniFiles, Registry, TypInfo,
   JvTypes;
 
+const
+  cInvalidPropertyFmt = 'Invalid property: %s';
+
 function TJvAppInfo.LoadRegistry: Boolean;
 var
   I: Integer;
@@ -96,7 +99,7 @@ begin
             tkString, tkLString:
               SetStrProp(Self, PropList[I], Value);
           else
-            raise EJVCLException.CreateFmt('Invalid property: %s', [PropList[I].Name]);
+            raise EJVCLException.CreateFmt(cInvalidPropertyFmt, [PropList[I].Name]);
           end;
         Inc(I);
       end;
@@ -130,7 +133,7 @@ begin
             tkString,tkLString:
               SetStrProp(Self, PropList[I], Value);
           else
-            raise EJVCLException.CreateFmt('Invalid property: %s', [PropList[I].Name]);
+            raise EJVCLException.CreateFmt(cInvalidPropertyFmt, [PropList[I].Name]);
           end;
         Inc(I);
       end;
@@ -163,7 +166,7 @@ begin
           tkString, tkLString:
             Value := GetStrProp(Self, PropList[I]);
         else
-          raise EJVCLException.CreateFmt('Invalid property: %s', [PropList[I].Name]);
+          raise EJVCLException.CreateFmt(cInvalidPropertyFmt, [PropList[I].Name]);
         end;
         Reg.WriteString(Section, PropList[i].Name, Value);
         Inc(I);
@@ -196,7 +199,7 @@ begin
           tkString, tkLString:
             Value := GetStrProp(Self, PropList[I]);
           else
-            raise EJVCLException.CreateFmt('Invalid property: %s', [PropList[I].Name]);
+            raise EJVCLException.CreateFmt(cInvalidPropertyFmt, [PropList[I].Name]);
           end;
           Ini.WriteString(Section, PropList[I].Name, Value);
           Inc(I);

@@ -112,11 +112,11 @@ implementation
 {$IFDEF WIN32}
 uses
   TypInfo,
-  JvBoxProcs, JvxConst;
+  JvBoxProcs, JvxDConst;
 {$ELSE}
 uses
   WinTypes, WinProcs, TypInfo,
-  JvStr16, JvBoxProcs, JvxConst;
+  JvStr16, JvBoxProcs, JvxDConst;
 {$ENDIF}
 
 {$R *.DFM}

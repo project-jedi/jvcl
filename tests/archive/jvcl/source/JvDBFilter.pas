@@ -156,7 +156,7 @@ uses
   {$IFDEF COMPILER3_UP}
   DbCommon,
   {$ENDIF}
-  JvxConst, JvVCLUtils, JvDBUtils, JvBdeUtils;
+  JvxRConst, JvVCLUtils, JvDBUtils, JvBdeUtils;
 
 procedure DropAllFilters(DataSet: TDataSet);
 begin

@@ -81,7 +81,7 @@ implementation
 
 uses
   Consts,
-  JvxConst, JvVCLUtils;
+  JvxRConst, JvVCLUtils;
 
 {$R *.DFM}
 

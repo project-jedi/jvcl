@@ -139,7 +139,7 @@ uses
   {$IFDEF WIN32}
   JvConst,
   {$ENDIF}
-  JvxConst, JvTypes;
+  JvxDConst, JvTypes;
 
 {$R *.DFM}
 

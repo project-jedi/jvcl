@@ -55,10 +55,7 @@ type
 implementation
 
 uses
-  JvFormWallpaperEdit;
-
-const
-  ClickToEdit = 'Click to edit...';
+  JvFormWallpaperEdit, JvxDConst;
 
 procedure TJvFormWallpaperEditor.ApplyImage(Sender: TObject);
 begin
@@ -94,17 +91,17 @@ end;
 
 function TJvFormWallpaperEditor.GetValue: string;
 begin
-  Result := ClickToEdit;
+  Result := SJvEditorString;
 end;
 
 procedure TJvFormWallpaperEditor.GetValues(Proc: TGetStrProc);
 begin
-  SetStrValue(ClickToEdit);
+  SetStrValue(SJvEditorString);
 end;
 
 procedure TJvFormWallpaperEditor.SetValue(const Value: string);
 begin
-  SetStrValue(ClickToEdit);
+  SetStrValue(SJvEditorString);
 end;
 
 end.

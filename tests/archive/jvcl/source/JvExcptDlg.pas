@@ -104,7 +104,7 @@ uses
   JvStr16,
   {$ENDIF WIN32}
   Consts,
-  JvTypes, JvxConst, JvStrUtils, JvVCLUtils;
+  JvTypes, JvxRConst, JvStrUtils, JvVCLUtils;
 
 {$R *.DFM}
 

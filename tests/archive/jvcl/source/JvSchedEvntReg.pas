@@ -41,7 +41,7 @@ uses
   {$ELSE}
   DsgnIntf
   {$ENDIF},
-  JclSchedule, JvxConst;
+  JclSchedule, JvxDConst;
 
 type
   TSchedulePropertyEditor = class(TPropertyEditor)

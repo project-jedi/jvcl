@@ -78,7 +78,7 @@ uses
   {$IFDEF COMPILER7_UP}
   Themes,
   {$ENDIF}
-  JvxCtrls, JvxConst, JvToolEdit, JvVCLUtils, JvStrUtils;
+  JvxCtrls, JvxRConst, JvToolEdit, JvVCLUtils, JvStrUtils;
 
 {$IFDEF WIN32}
 {$R *.Res}

@@ -125,7 +125,7 @@ implementation
 
 uses
   SysUtils, Clipbrd, Consts, Math,
-  JvClipIcon, JvVCLUtils, JvxConst, JvAniFile;
+  JvClipIcon, JvVCLUtils, JvxDConst, JvAniFile;
 
 {$B-}
 {$IFDEF WIN32}

@@ -875,7 +875,7 @@ uses
   {$IFDEF COMPILER3_UP}
   ExtDlgs,
   {$ENDIF}
-  JvxConst, JvVCLUtils, JvStrUtils, JvFileUtil, JvPickDate;
+  JvxRConst, JvVCLUtils, JvStrUtils, JvFileUtil, JvPickDate;
 
 {$IFDEF WIN32}
 {$R *.Res}

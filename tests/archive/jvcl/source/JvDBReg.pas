@@ -64,7 +64,7 @@ uses
   {$IFDEF WIN32}
   JvDBRichEd,
   {$ENDIF}
-  JvDBCtrl, JvLookup, JvxLogin, JvDBComb, JvVCLUtils, JvDsgn, JvxConst;
+  JvDBCtrl, JvLookup, JvxLogin, JvDBComb, JvVCLUtils, JvDsgn, JvxDConst;
 
 //=== TJvFieldProperty =======================================================
 

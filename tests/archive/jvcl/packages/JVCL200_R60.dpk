@@ -470,7 +470,7 @@ contains
   JvScheduledEvents in '..\source\JvScheduledEvents.pas',
   JvSchedEvtStore in '..\source\JvSchedEvtStore.pas',
   JvWndProcHook in '..\source\JvWndProcHook.pas',
-  JvxConst in '..\source\JvxConst.pas',
+  JvxRConst in '..\source\JvxRConst.pas',
   JvTransLED in '..\source\JvTransLED.pas',
   JvJVCLAbout in '..\source\JvJVCLAbout.pas' {JvJVCLAboutForm},
   JvZlibMultiple in '..\source\JvZlibMultiple.pas',

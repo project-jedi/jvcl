@@ -97,6 +97,8 @@ const
   FILEOP_RETRY   = FILEOP_DOIT;
   FILEOP_NEWPATH = 4;
 
+  cSetupIterateCabinet = 'SetupIterateCabinetA';
+
 type
   UINT_PTR = DWORD;
 
@@ -302,7 +304,7 @@ procedure TJvCabFile.RefreshFiles;
 var
   SetupIterateCabinet: TSetupIterateCabinet;
 begin
-  SetupIterateCabinet := GetProcAddress(FDll, 'SetupIterateCabinetA');
+  SetupIterateCabinet := GetProcAddress(FDll, cSetupIterateCabinet);
   FFiles.Clear;
   if SetupIterateCabinet(PChar(FFileName), 0, CBack, @Self) then
     if Assigned(FOnFiles) then
@@ -313,7 +315,7 @@ function TJvCabFile.ExtractAll(DestPath: string): Boolean;
 var
   SetupIterateCabinet: TSetupIterateCabinet;
 begin
-  SetupIterateCabinet := GetProcAddress(FDll, 'SetupIterateCabinetA');
+  SetupIterateCabinet := GetProcAddress(FDll, cSetupIterateCabinet);
   if DestPath[Length(DestPath)] <> '\' then
     DestPath := DestPath + '\';
   FDestPath := DestPath;
@@ -324,7 +326,7 @@ function TJvCabFile.ExtractFile(FileName, DestPath: string): Boolean;
 var
   SetupIterateCabinet: TSetupIterateCabinet;
 begin
-  SetupIterateCabinet := GetProcAddress(FDll, 'SetupIterateCabinetA');
+  SetupIterateCabinet := GetProcAddress(FDll, cSetupIterateCabinet);
   if DestPath[Length(DestPath)] <> '\' then
     DestPath := DestPath + '\';
   FDestPath := DestPath + FileName;
