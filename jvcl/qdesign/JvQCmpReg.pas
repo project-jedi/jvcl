@@ -38,54 +38,59 @@ procedure Register;
 implementation
 
 uses
-  Classes,
-  
-  
-  QControls,
-  
+  Classes, Controls,
   
   DesignEditors, DesignIntf,
   
   JvQDsgnConsts,
-  JvQAlarms, JvQConverter, JvQDataEmbedded, JvQCreateProcess,
-  JvQEnterTab, JvQMergeManager, JvQPageManager, JvQPatchFile, JvQStringHolder,
-  JvQTimeLimit, JvQWinHelp, JvQTranslator, JvQPrint, JvQEasterEgg,
-  JvQMouseGesture, JvQLogFile, JvQDataEmbeddedEditor, JvQPatcherEditor,
-  JvQProfilerForm, JvQPageManagerForm, JvQDsgnEditors;
+  {$IFDEF MSWINDOWS}
+  JvQCreateProcess,
+  {$ENDIF MSWINDOWS}
+  JvQAlarms, JvQConverter, JvQDataEmbedded,
+  JvQEnterTab, JvQMergeManager, {JvQPageManager,} JvQPatchFile, JvQStringHolder,
+  JvQTimeLimit, JvQWinHelp, JvQTranslator, JvQPrint, {JvQEasterEgg,
+  JvQMouseGesture,} JvQLogFile, JvQDataEmbeddedEditor, JvQPatcherEditor,
+  JvQProfilerForm, {JvQPageManagerForm,} JvQDsgnEditors;
 
-
-
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvCmpReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvCmpReg.dcr}
-
+{$ENDIF LINUX}
 
 procedure Register;
 begin
-  
+
   GroupDescendentsWith(TJvDataEmbedded, TControl);
   GroupDescendentsWith(TJvStrHolder, TControl);
-  
+
 
   RegisterComponents(RsPaletteNonVisual,[TJvAlarms, TJvConverter,
-    TJvDataEmbedded, TJvCreateProcess,
-    TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile, TJvProfiler,
+    TJvDataEmbedded,
+    {$IFDEF MSWINDOWS}
+    TJvCreateProcess,
+    {$ENDIF MSWINDOWS}
+    TJvEnterAsTab, TJvMergeManager, TJvPatchFile, TJvProfiler,
     TJvStrHolder, TJvTimeLimit, TJvWinHelp, TJvTranslator, TJvTranslatorStrings,
-    TJvPrint, TJvEasterEgg, TJvMouseGesture, TJvMouseGestureHook, TJvLogFile]);
+    TJvPrint,  TJvLogFile]);
 
+  {$IFDEF MSWINDOS}
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess,
     '', TJvExeNameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess,
     'CurrentDirectory', TJvDirectoryProperty);
+  {$ENDIF MSWINDOWS}
 //  RegisterPropertyEditor(TypeInfo(TStream), TJvDataEmbedded,
 //    'Data', TJvDataEmbeddedEditor);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvPatchFile,
     'Differences', TJvPatcherEditor);
-  
   RegisterPropertyEditor(TypeInfo(TWinControl), TJvMergeManager,
     'MergeFrame', TJvComponentFormProperty);
 
   RegisterComponentEditor(TJvStrHolder, TJvStringsEditor);
   RegisterComponentEditor(TJvDataEmbedded,TJvDataEmbeddedComponentEditor);
-  
+
 end;
 
 end.
