@@ -150,30 +150,48 @@ var
   Valid: Boolean;
 begin
   Valid := inherited IsControlTypeValid(ADynControlType, AControlClass);
-  case ADynControlType of
-//    jctDBText:
-//      Valid := Valid and Supports(AControlClass, IJvDynControlLabel);
-    jctDBButtonEdit:
-      Valid := Valid and
+//  if ADynControlType = jctDBText then
+//      Valid := Valid and Supports(AControlClass, IJvDynControlLabel)
+//  else
+  if ADynControlType = jctDBButtonEdit then
+    Valid := Valid and
         Supports(AControlClass, IJvDynControlButton) and
-        Supports(AControlClass, IJvDynControlData);
-    jctDBMemo:
-      Valid := Valid and
+        Supports(AControlClass, IJvDynControlData)
+  else if ADynControlType = jctDBMemo then
+    Valid := Valid and
         Supports(AControlClass, IJvDynControlItems) and
         Supports(AControlClass, IJvDynControlData) and
-        Supports(AControlClass, IJvDynControlMemo);
-    jctDBRadioGroup, jctDBComboBox:
-      Valid := Valid and
+        Supports(AControlClass, IJvDynControlMemo)
+  else if (ADynControlType = jctDBRadioGroup) or
+          (ADynControlType = jctDBComboBox) then
+    Valid := Valid and
         Supports(AControlClass, IJvDynControlItems) and
-        Supports(AControlClass, IJvDynControlData);
-    jctDBEdit, jctDBCalculateEdit, jctDBSpinEdit,
-      jctDBCheckBox, jctDBDateTimeEdit, jctDBDateEdit, jctDBTimeEdit,
-      jctDBDirectoryEdit, jctDBFileNameEdit :
-      Valid := Valid and Supports(AControlClass, IJvDynControlData);
-  end;
-  if ADynControlType in [jctDBEdit, jctDBText, jctDBListBox, jctDBComboBox, jctDBImage,
-    jctDBRadioGroup, jctDBMemo, jctDBDateTimeEdit, jctDBDateEdit, jctDBTimeEdit,
-    jctDBCalculateEdit, jctDBSpinEdit, jctDBDirectoryEdit, jctDBFileNameEdit, jctDBGrid] then
+        Supports(AControlClass, IJvDynControlData)
+  else if (ADynControlType = jctDBEdit) or
+          (ADynControlType = jctDBCalculateEdit) or
+          (ADynControlType = jctDBSpinEdit) or
+          (ADynControlType = jctDBCheckBox) or
+          (ADynControlType = jctDBDateTimeEdit) or
+          (ADynControlType = jctDBDateEdit) or
+          (ADynControlType = jctDBTimeEdit) or
+          (ADynControlType = jctDBDirectoryEdit) or
+          (ADynControlType = jctDBFileNameEdit) then
+    Valid := Valid and Supports(AControlClass, IJvDynControlData);
+  if (ADynControlType = jctDBEdit) or
+     (ADynControlType = jctDBCalculateEdit) or
+     (ADynControlType = jctDBSpinEdit) or
+     (ADynControlType = jctDBCheckBox) or
+     (ADynControlType = jctDBDateTimeEdit) or
+     (ADynControlType = jctDBDateEdit) or
+     (ADynControlType = jctDBTimeEdit) or
+     (ADynControlType = jctDBDirectoryEdit) or
+     (ADynControlType = jctDBFileNameEdit)  or
+     (ADynControlType = jctDBText) or
+     (ADynControlType = jctDBListBox) or
+     (ADynControlType = jctDBImage) or
+     (ADynControlType = jctDBRadioGroup) or
+     (ADynControlType = jctDBMemo) or
+     (ADynControlType = jctDBGrid) then
     Valid := Valid and Supports(AControlClass, IJvDynControlDataBase);
   Result := Valid;
 end;
