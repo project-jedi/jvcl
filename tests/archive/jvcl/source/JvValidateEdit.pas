@@ -712,8 +712,7 @@ end;
 procedure TJvCustomValidateEdit.WMSetFocus(var Message: TWMSetFocus);
 begin
   EnterText := FEditText;
-  inherited Text := FEditText;
-
+  DisplayText;
   inherited;
 end;
 
@@ -743,11 +742,16 @@ begin
       dfScientific, dfYear]) then
         SetFontColor;
     case FDisplayFormat of
-      dfCurrency: ChangeText(Format('%.' + IntToStr(FDecimalPlaces) + 'm', [AsCurrency]));
-      dfInteger: ChangeText(Format('%d', [AsInteger]));
-      dfFloat: ChangeText(Format('%.' + IntToStr(FDecimalPlaces) + 'n', [AsFloat]));
-      dfScientific: ChangeText(Format('%.' + IntToStr(FDecimalPlaces) + 'e', [AsFloat]));
-      dfPercent: ChangeText(Format('%.' + IntToStr(FDecimalPlaces) + 'n', [AsFloat]) + '%');
+      dfCurrency:
+        ChangeText(Format('%.*m',[FDecimalPlaces,AsCurrency]));
+      dfInteger:
+        ChangeText(Format('%d', [AsInteger]));
+      dfFloat:
+        ChangeText(Format('%.*n',[FDecimalPlaces, AsFloat]));
+      dfScientific:
+        ChangeText(Format('%.*e',[FDecimalPlaces,AsFloat]));
+      dfPercent:
+        ChangeText(Format('%.*n%',[FDecimalPlaces, AsFloat]));
       else
         ChangeText(FEditText);
     end;
