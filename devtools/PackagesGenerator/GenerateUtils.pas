@@ -569,6 +569,105 @@ begin
   Result := FileTimeToDateTime(fileTime);
 end;
 
+function CompareFiles(const FileName1, FileName2: string): Boolean;
+const
+  MaxBufSize = 65356;
+var
+  Stream1, Stream2: TFileStream;
+  Buffer1, Buffer2: array[0..MaxBufSize - 1] of Byte;
+  BufSize: Integer;
+  Size: Integer;
+begin
+  Result := False;
+
+  Stream1 := nil;
+  Stream2 := nil;
+  try
+    Stream1 := TFileStream.Create(FileName1, fmOpenRead or fmShareDenyWrite);
+    Stream2 := TFileStream.Create(FileName2, fmOpenRead or fmShareDenyWrite);
+
+    Size := Stream1.Size;
+    if Size <> Stream2.Size then
+      Exit;
+
+    BufSize := MaxBufSize;
+    while Size > 0 do
+    begin
+      if BufSize > Size then
+        BufSize := Size;
+      Dec(Size, BufSize);
+
+      Stream1.Read(Buffer1[0], BufSize);
+      Stream2.Read(Buffer2[0], BufSize);
+
+      Result := CompareMem(@Buffer1[0], @Buffer2[0], BufSize);
+      if not Result then
+        Exit;
+    end;
+  finally
+    Stream1.Free;
+    Stream2.Free;
+  end;
+  Result := True;
+end;
+
+function StartsWith(const S, SubStr: string): Boolean;
+var
+  Len, i: Integer;
+begin
+  Len := Length(SubStr);
+  Result := False;
+  if (Len > 0) and (Length(S) >= Len) then
+  begin
+    for i := 1 to Len do
+      if S[i] <> SubStr[i] then
+        Exit;
+    Result := True;
+  end;
+end;
+
+function HasFileChanged(const OutFileName, TemplateFileName: string; OutLines: TStrings): Boolean;
+var
+  CurLines: TStrings;
+  i: Integer;
+begin
+  Result := True;
+  if not FileExists(OutFileName) then
+    Exit;
+
+  if OutLines.Count = 0 then
+  begin
+    // binary file -> compare files
+    Result := not CompareFiles(OutFileName, TemplateFileName);
+  end
+  else
+  begin
+    // text file -> compare lines
+    CurLines := TStringList.Create;
+    try
+      CurLines.LoadFromFile(OutFileName);
+
+      if CurLines.Count <> OutLines.Count then
+      begin
+        Result := True;
+        Exit;
+      end;
+
+     // Replace the time stamp line by the new one to ensure that this wont
+     // break the comparison.
+      for i := 0 to CurLines.Count - 1 do
+        if StartsWith(TrimLeft(CurLines[i]), 'Last generated: ') then
+        begin
+          CurLines[i] := OutLines[i];
+          Break;
+        end;
+      Result := not CurLines.Equals(OutLines);
+    finally
+      CurLines.Free;
+    end;
+  end;
+end;
+
 function ApplyTemplateAndSave(path, target, package, extension, prefix, format : string; template : TStrings; xml : TJvSimpleXml; templateName, xmlName : string; mostRecentFileDate : TDateTime) : string;
 var
   OutFileName : string;
@@ -833,8 +932,9 @@ begin
     // Save the file, if it contains something, and it
     // doesn't exist or it's older than the most recent file
     if containsSomething and
-       (not FileExists(OutFileName) or
-        (FileDateToDateTime(FileAge(OutFileName)) < mostRecentFileDate)) then
+       (HasFileChanged(OutFileName, templateName, outFile)) then
+       {(not FileExists(OutFileName) or
+        (FileDateToDateTime(FileAge(OutFileName)) < mostRecentFileDate)) then}
     begin
       SendMsg(#9#9'Writing ' + ExtractFileName(OutFileName) + ' for ' + target);
 
