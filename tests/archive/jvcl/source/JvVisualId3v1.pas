@@ -65,7 +65,6 @@ type
   TJvVisualId3v1 = class(TWinControl)
   private
     FAboutJVCL: TJVCLAboutInfo;
-    FFileName: TFileName;
     FLabelList: array [1..6] of TLabel;
     FEditList: array [1..5] of TEdit;
     FCombo1: TComboBox;
@@ -75,31 +74,36 @@ type
     FId3Tag: TJvId3v1Tag;
     FEditFont: TFont;
     FLabelFont: TFont;
-    procedure SetFileName(const Value: TFileName);
-    procedure SetReadOnly(const Value: Boolean);
     procedure Changed(Sender: TObject);
     procedure UserChanged(Sender: TObject);
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    procedure FontChanged(Sender: TObject);
+
     function GetEditColor: TColor;
+    function GetFileName: TFileName;
     procedure SetEditColor(const Value: TColor);
     procedure SetEditFont(const Value: TFont);
+    procedure SetFileName(const Value: TFileName);
     procedure SetLabelFont(const Value: TFont);
-    procedure FontChanged(Sender: TObject);
+    procedure SetReadOnly(const Value: Boolean);
+
+    procedure UpdateCtrls;
+
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure SaveToFile(FileName: string);
-    procedure LoadFromFile(FileName: string);
-    procedure RemoveTagFromFile(FileName: string);
+    procedure ReadTag;
+    procedure WriteTag;
+    procedure RemoveTag;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
     property Color;
     property EditColor: TColor read GetEditColor write SetEditColor;
     property EditFont: TFont read FEditFont write SetEditFont;
-    property FileName: TFileName read FFileName write SetFileName;
-    property Id3Tag: TJvId3v1Tag read FId3Tag write FId3Tag;
+    property FileName: TFileName read GetFileName write SetFileName;
+    property Id3Tag: TJvId3v1Tag read FId3Tag;
     property LabelFont: TFont read FLabelFont write SetLabelFont;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly default True;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -116,7 +120,7 @@ const
 var
   I: Byte;
   J: Integer;
-  St: string;
+  S: string;
 begin
   inherited Create(AOwner);
   Width := 229;
@@ -149,6 +153,8 @@ begin
   FCombo1.Style := csDropDownList;
   FCombo1.Parent := Self;
   FCombo1.Enabled := False;
+  FCombo1.Sorted := True;
+  FCombo1.OnChange := UserChanged;
 
   // (rom) Huh?
   Self.Parent := TWinControl(AOwner);
@@ -159,9 +165,9 @@ begin
   FId3v1 := TJvId3v1.Create(Self);
   for I := Integer(Low(TGenre)) to Integer(High(TGenre)) do
   begin
-    St := FId3v1.GenreToString(TGenre(I));
-    if St <> '' then
-      FCombo1.Items.Add(St);
+    S := FId3v1.GenreToString(TGenre(I));
+    if S <> '' then
+      FCombo1.Items.AddObject(S, TObject(I));
   end;
   FEditFont.OnChange := FontChanged;
   FLabelFont.OnChange := FontChanged;
@@ -185,7 +191,7 @@ begin
   FEditList[3].Text := FId3Tag.Album;
   FEditList[4].Text := FId3Tag.Year;
   FEditList[5].Text := FId3Tag.Comment;
-  FCombo1.ItemIndex := Byte(FId3Tag.Genre);
+  FCombo1.ItemIndex := FCombo1.Items.IndexOfObject(TObject(FId3Tag.Genre));
 end;
 
 procedure TJvVisualId3v1.FontChanged(Sender: TObject);
@@ -255,27 +261,53 @@ begin
   Result := FEditList[Low(FEditList)].Color;
 end;
 
-procedure TJvVisualId3v1.LoadFromFile(FileName: string);
+procedure TJvVisualId3v1.RemoveTag;
 begin
-  FId3v1.FileName := FileName;
+  FId3v1.RemoveTag;
 
-  FId3Tag.Album := FId3v1.Album;
-  FId3Tag.Artist := FId3v1.Artist;
-  FId3Tag.Comment := FId3v1.Comment;
-  FId3Tag.Year := FId3v1.Year;
-  FId3Tag.SongName := FId3v1.SongName;
+  { Copy FId3v1 data to the edit controls }
+  UpdateCtrls;
+end;
+
+procedure TJvVisualId3v1.ReadTag;
+begin
+  FId3v1.ReadTag;
+
+  { Copy FId3v1 data to the edit controls }
+  UpdateCtrls;
+end;
+
+function TJvVisualId3v1.GetFileName: TFileName;
+begin
+  Result := FId3v1.FileName;
+end;
+
+procedure TJvVisualId3v1.UpdateCtrls;
+begin
+  FId3Tag.Album := Trim(FId3v1.Album);
+  FId3Tag.Artist := Trim(FId3v1.Artist);
+  FId3Tag.Comment := Trim(FId3v1.Comment);
+  FId3Tag.Year := Trim(FId3v1.Year);
+  FId3Tag.SongName := Trim(FId3v1.SongName);
   FId3Tag.Genre := FId3v1.Genre;
 end;
 
-procedure TJvVisualId3v1.RemoveTagFromFile(FileName: string);
+procedure TJvVisualId3v1.WriteTag;
 begin
-  FId3v1.RemoveTag(FileName);
-end;
+  with FId3v1 do
+  begin
+    SongName := FId3Tag.SongName;
+    Artist := FId3Tag.Artist;
+    Album := FId3Tag.Album;
+    Year := FId3Tag.Year;
+    Comment := FId3Tag.Comment;
+    Genre := FId3Tag.Genre;
 
-procedure TJvVisualId3v1.SaveToFile(FileName: string);
-begin
-  with FId3Tag do
-    FId3v1.WriteTag(FileName, SongName, Artist, Album, Year, Comment, Genre);
+    WriteTag;
+  end;
+
+  { Reload to be sure }
+  ReadTag;
 end;
 
 procedure TJvVisualId3v1.SetEditColor(const Value: TColor);
@@ -299,15 +331,8 @@ end;
 
 procedure TJvVisualId3v1.SetFileName(const Value: TFileName);
 begin
-  FFileName := Value;
   FId3v1.FileName := Value;
-
-  FId3Tag.Album := Trim(FId3v1.Album);
-  FId3Tag.Artist := Trim(FId3v1.Artist);
-  FId3Tag.Comment := Trim(FId3v1.Comment);
-  FId3Tag.Year := Trim(FId3v1.Year);
-  FId3Tag.SongName := Trim(FId3v1.SongName);
-  FId3Tag.Genre := FId3v1.Genre;
+  UpdateCtrls;
 end;
 
 procedure TJvVisualId3v1.SetLabelFont(const Value: TFont);
@@ -339,7 +364,10 @@ begin
   FId3Tag.FAlbum := FEditList[3].Text;
   FId3Tag.FYear := FEditList[4].Text;
   FId3Tag.FComment := FEditList[5].Text;
-  FId3Tag.FGenre := TGenre(FCombo1.ItemIndex);
+  if FCombo1.ItemIndex >= 0 then
+    FId3Tag.FGenre := TGenre(FCombo1.Items.Objects[FCombo1.ItemIndex])
+  else
+    FId3Tag.FGenre := grNone;
 end;
 
 procedure TJvVisualId3v1.WMSize(var Msg: TWMSize);

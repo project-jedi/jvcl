@@ -78,25 +78,23 @@ type
     FComment: string;
     FYear: string;
     FGenre: TGenre;
-    FDummyS: string;
-    FDummyG: TGenre;
     FFileName: TFileName;
     procedure SetFileName(const Value: TFileName);
   public
-    function ReadTag(FileName: string): Boolean;
-    function WriteTag(FileName, SongName, Artist, Album, Year, Comment: string; Genre: TGenre): Boolean;
-    procedure RemoveTag(FileName: string);
-    function TagPresent(FileName: string): Boolean;
+    function ReadTag: Boolean;
+    function WriteTag: Boolean;
+    procedure RemoveTag;
+    function TagPresent: Boolean;
     function GenreToString(Genre: TGenre): string;
   published
     property FileName: TFileName read FFileName write SetFileName;
     { Do not store dummies }
-    property SongName: string read FSongName write FDummyS stored False;
-    property Artist: string read FArtist write FDummyS stored False;
-    property Album: string read FAlbum write FDummyS stored False;
-    property Year: string read FYear write FDummyS stored False;
-    property Comment: string read FComment write FDummyS stored False;
-    property Genre: TGenre read FGenre write FDummyG stored False;
+    property SongName: string read FSongName write FSongName stored False;
+    property Artist: string read FArtist write FArtist stored False;
+    property Album: string read FAlbum write FAlbum stored False;
+    property Year: string read FYear write FYear stored False;
+    property Comment: string read FComment write FComment stored False;
+    property Genre: TGenre read FGenre write FGenre stored False;
   end;
 
 function HasID3v1Tag(const AFileName: string): Boolean;
@@ -119,7 +117,7 @@ var
   TagID: array [0..CTagIDSize - 1] of Char;
 begin
   try
-    with TFileStream.Create(AFileName, fmOpenReadWrite or fmShareDenyWrite) do
+    with TFileStream.Create(AFileName, fmOpenRead or fmShareDenyWrite) do
     try
       Result := Size >= CTagSize;
       if not Result then
@@ -172,10 +170,9 @@ begin
   Q := P;
   while (P - Q < MaxLength) and (P^ <> #0) do
     Inc(P);
+
   { [Q..P) is valid }
-  SetLength(Result, P - Q);
-  if P - Q > 0 then
-    Move(Q[0], Result[1], P - Q);
+  SetString(Result, Q, P - Q);
 end;
 
 function WriteID3v1Tag(const AFileName: string; const ATag: TId3v1Tag): Boolean;
@@ -239,7 +236,7 @@ begin
   Result := cGenreTexts[Genre];
 end;
 
-function TJvId3v1.ReadTag(FileName: string): Boolean;
+function TJvId3v1.ReadTag: Boolean;
 var
   Tag: TId3v1Tag;
 begin
@@ -268,23 +265,27 @@ begin
   end;
 end;
 
-procedure TJvId3v1.RemoveTag(FileName: string);
+procedure TJvId3v1.RemoveTag;
 begin
   RemoveID3v1Tag(FileName);
+  ReadTag;
 end;
 
 procedure TJvId3v1.SetFileName(const Value: TFileName);
 begin
-  FFileName := Value;
-  ReadTag(Value);
+  if FFileName <> Value then
+  begin
+    FFileName := Value;
+    ReadTag;
+  end;
 end;
 
-function TJvId3v1.TagPresent(FileName: string): Boolean;
+function TJvId3v1.TagPresent: Boolean;
 begin
   Result := HasID3v1Tag(FileName);
 end;
 
-function TJvId3v1.WriteTag(FileName, SongName, Artist, Album, Year, Comment: string; Genre: TGenre): Boolean;
+function TJvId3v1.WriteTag: Boolean;
 var
   Tag: TId3v1Tag;
 begin
@@ -292,11 +293,11 @@ begin
 
   //Set new Tag
   Tag.Identifier := CID3v1Tag;
-  Move(SongName[1], Tag.SongName[0], Min(30, 1 + Length(SongName)));
-  Move(Artist[1], Tag.Artist[0], Min(30, 1 + Length(Artist)));
-  Move(Album[1], Tag.Album[0], Min(30, 1 + Length(Album)));
-  Move(Year[1], Tag.Year[0], Min(4, 1 + Length(Year)));
-  Move(Comment[1], Tag.Comment[0], Min(30, 1 + Length(Comment)));
+  Move(SongName[1], Tag.SongName[0], Min(30, Length(SongName)));
+  Move(Artist[1], Tag.Artist[0], Min(30, Length(Artist)));
+  Move(Album[1], Tag.Album[0], Min(30, Length(Album)));
+  Move(Year[1], Tag.Year[0], Min(4, Length(Year)));
+  Move(Comment[1], Tag.Comment[0], Min(30, Length(Comment)));
   Tag.Genre := Byte(Genre);
 
   Result := WriteID3v1Tag(FileName, Tag);
