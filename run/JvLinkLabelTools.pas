@@ -22,12 +22,13 @@ Current Version: 2.00
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
-  Please see the accompanying documentation.
 Description:
   Various common utility routines grouped together in groups, represented by
   non-instantiable classes containing class methods. The design of these classes
   has been influenced by Java's class library.
+
+Known Issues:
+  Please see the accompanying documentation.
 -----------------------------------------------------------------------------}
 
 unit JvLinkLabelTools;
@@ -127,7 +128,7 @@ var
 begin
   Result := S;
   for I := Length(Result) downto 1 do
-    if Copy(Result, I, 1) = '\' then
+    if Result[I] = '\' then
       Insert('\', Result, I);
 end;
 
@@ -165,9 +166,9 @@ end;
 class function TConversionTools.BoolToStr(const B: Boolean): string;
 begin
   if B then
-    Result := 'true'
+    Result := 'True'
   else
-    Result := 'false';
+    Result := 'False';
 end;
 
 class function TConversionTools.BoolToYesNo(const B: Boolean): string;

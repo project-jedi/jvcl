@@ -23,18 +23,19 @@ Last Modified:  2003-01-15
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  Итератор для поиска файлов по FindFirst/Next включая поддиректории.
+  Iterator, searching files by FindFirst/Next including subdirs [translated]
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
 
-
-//  Итератор для поиска файлов по FindFirst/Next включая поддиректории.
-{ Iterator, searching files by FindFirst/Next including subdirs [translated] }
-
 unit JvgFileIterator;
 
 interface
+
 uses
   Windows, Classes, SysUtils;
 
@@ -45,67 +46,81 @@ type
     Path: string;
   end;
 
-  TJvgFileIterator = class
+  TJvgFileIterator = class(TObject)
   private
     //    FileExt: string;
     FPath: string;
     FAttr: Integer;
-    FRecurse: boolean;
-    PCurrentItem: PSearchData;
-    lSearchRecs: TList;
-    slFileExt: TStringList;
-
-    FLastSearchResult: integer;
-    FindOpened: boolean;
-
-    function CheckResult(Value: integer): boolean;
-    procedure FindClose(Destroing: boolean = false);
+    FRecurse: Boolean;
+    FPCurrentItem: PSearchData;
+    FLSearchRecs: TList;
+    FSLFileExt: TStringList;
+    FLastSearchResult: Integer;
+    FFindOpened: Boolean;
+    function CheckResult(Value: Integer): Boolean;
+    procedure FindClose(Destroying: Boolean = False);
     function GetCurrentItem: TSearchRec;
     function GetPath: string;
-    function CheckFileExt(const FileName: string): boolean;
+    function CheckFileExt(const FileName: string): Boolean;
   public
+    constructor Create;
+    destructor Destroy; override;
     { Last result of search [translated] }
     property CurrentItem: TSearchRec read GetCurrentItem; // последний результат поиска
     { Path to search in [translated] }
     property Path: string read GetPath; // заданный для поиска путь
     { And attributes [translated] }
     property Attr: Integer read FAttr; // и атрибуты
-    property Recurse: boolean read FRecurse;
+    property Recurse: Boolean read FRecurse;
 
     { Windows Error Code [translated] }
-    property ErrorCode: integer read FLastSearchResult; // код ошибки Windows
-    constructor Create;
-    destructor Destroy; override;
-    procedure First(const FilePath, FileExt: string; FileAttr: Integer; RecurseSearch: boolean);
+    property ErrorCode: Integer read FLastSearchResult; // код ошибки Windows
+    procedure First(const FilePath, FileExt: string; FileAttr: Integer; RecurseSearch: Boolean);
     procedure Next;
-    function IsDone: boolean;
+    function IsDone: Boolean;
   end;
 
 implementation
+
 uses
   JvJCLUtils;
 
-{ TJvgFileIterator }
+constructor TJvgFileIterator.Create;
+begin
+  inherited Create;
+  FLSearchRecs := TList.Create;
+  FSLFileExt := TStringList.Create;
+end;
 
-procedure TJvgFileIterator.First(const FilePath, FileExt: string; FileAttr: Integer; RecurseSearch: boolean);
+destructor TJvgFileIterator.Destroy;
+begin
+  while FLSearchRecs.Count > 0 do
+    FindClose(True);
+  FLSearchRecs.Free;
+  FSLFileExt.Free;
+  inherited Destroy;
+end;
+
+procedure TJvgFileIterator.First(const FilePath, FileExt: string; FileAttr: Integer; RecurseSearch: Boolean);
 begin
   if FileExt <> '' then
-    slFileExt.CommaText := LowerCase(FileExt);
+    FSLFileExt.CommaText := LowerCase(FileExt);
 
   FPath := ExtractFilePath(FilePath);
   FAttr := FileAttr;
   FRecurse := RecurseSearch;
 
-  New(PCurrentItem);
-  lSearchRecs.Add(PCurrentItem);
+  New(FPCurrentItem);
+  FLSearchRecs.Add(FPCurrentItem);
 
-  PCurrentItem^.Path := ExtractFilepath(FilePath);
+  FPCurrentItem^.Path := ExtractFilePath(FilePath);
   try
-    FLastSearchResult := sysUtils.FindFirst(FPath + '*.*', FileAttr, PCurrentItem^.sr);
-    FindOpened := CheckResult(FLastSearchResult);
-    if not FindOpened then
+    FLastSearchResult := sysUtils.FindFirst(FPath + '*.*', FileAttr, FPCurrentItem^.sr);
+    FFindOpened := CheckResult(FLastSearchResult);
+    if not FFindOpened then
       FindClose
-    else if not CheckFileExt(PCurrentItem^.sr.Name) then
+    else
+    if not CheckFileExt(FPCurrentItem^.sr.Name) then
       Next;
   except
     FindClose;
@@ -113,91 +128,80 @@ begin
 
 end;
 
-function TJvgFileIterator.CheckResult(Value: integer): boolean;
+function TJvgFileIterator.CheckResult(Value: Integer): Boolean;
 begin
-  Result := true;
+  Result := True;
   case Value of
-    0: Result := true;
+    0:
+      Result := True;
     ERROR_NO_MORE_FILES:
       begin
         FindClose;
-        Result := false;
+        Result := False;
       end;
   else
     RaiseLastOSError;
   end;
 end;
 
-function TJvgFileIterator.IsDone: boolean;
+function TJvgFileIterator.IsDone: Boolean;
 begin
   Result := FLastSearchResult <> 0;
 end;
 
 procedure TJvgFileIterator.Next;
 begin
-  //if FindOpened then
+  //if FFindOpened then
   begin
-    FLastSearchResult := FindNext(PCurrentItem^.sr);
-    FindOpened := CheckResult(FLastSearchResult);
+    FLastSearchResult := FindNext(FPCurrentItem^.sr);
+    FFindOpened := CheckResult(FLastSearchResult);
 
-    if not FindOpened then exit;
+    if not FFindOpened then
+      Exit;
 
-    if FRecurse and (PCurrentItem^.sr.Attr and faDirectory = faDirectory) and (PCurrentItem^.sr.Name <> '.') and
-      (PCurrentItem^.sr.Name <> '..') then
-      First(ExtractFilePath(PCurrentItem^.Path) + PCurrentItem^.sr.Name + '\', '', FAttr, true)
-    else if not CheckFileExt(PCurrentItem^.sr.Name) then
+    if FRecurse and (FPCurrentItem^.sr.Attr and faDirectory = faDirectory) and
+      (FPCurrentItem^.sr.Name <> '.') and (FPCurrentItem^.sr.Name <> '..') then
+      First(ExtractFilePath(FPCurrentItem^.Path) + FPCurrentItem^.sr.Name + '\', '', FAttr, True)
+    else
+    if not CheckFileExt(FPCurrentItem^.sr.Name) then
       Next;
 
   end; // else
   //    raise Exception.Create('Call Next method after First method');
 end;
 
-function TJvgFileIterator.CheckFileExt(const FileName: string): boolean;
+function TJvgFileIterator.CheckFileExt(const FileName: string): Boolean;
 begin
   Result := not ((FileName = '.') or (FileName = '..'));
-  if not Result then exit;
-  Result := (trim(slFileExt.Text) = '*') or (slFileExt.IndexOf(LowerCase(ExtractFileExt(FileName))) <> -1);
+  if Result then
+    Result := (Trim(FSLFileExt.Text) = '*') or
+      (FSLFileExt.IndexOf(LowerCase(ExtractFileExt(FileName))) <> -1);
 end;
 
-procedure TJvgFileIterator.FindClose(Destroing: boolean = false);
+procedure TJvgFileIterator.FindClose(Destroying: Boolean = False);
 begin
-  if lSearchRecs.Count = 0 then exit;
-  Sysutils.FindClose(PCurrentItem^.sr);
-  Dispose(lSearchRecs[lSearchRecs.Count - 1]);
+  if FLSearchRecs.Count = 0 then
+    Exit;
+  SysUtils.FindClose(FPCurrentItem^.sr);
+  Dispose(FLSearchRecs[FLSearchRecs.Count - 1]);
 
-  lSearchRecs.Count := lSearchRecs.Count - 1;
+  FLSearchRecs.Count := FLSearchRecs.Count - 1;
 
-  if not Destroing and (lSearchRecs.Count > 0) then
+  if not Destroying and (FLSearchRecs.Count > 0) then
   begin
-    PCurrentItem := lSearchRecs[lSearchRecs.Count - 1];
+    FPCurrentItem := FLSearchRecs[FLSearchRecs.Count - 1];
     Next;
   end;
-
-end;
-
-destructor TJvgFileIterator.Destroy;
-begin
-  inherited;
-  while lSearchRecs.Count > 0 do
-    FindClose(true);
-  lSearchRecs.Free;
-  slFileExt.Free;
-end;
-
-constructor TJvgFileIterator.Create;
-begin
-  lSearchRecs := TList.Create;
-  slFileExt := TStringList.Create;
 end;
 
 function TJvgFileIterator.GetCurrentItem: TSearchRec;
 begin
-  Result := PCurrentItem^.sr;
+  Result := FPCurrentItem^.sr;
 end;
 
 function TJvgFileIterator.GetPath: string;
 begin
-  Result := PSearchData(lSearchRecs[lSearchRecs.Count - 1])^.Path;
+  Result := PSearchData(FLSearchRecs[FLSearchRecs.Count - 1])^.Path;
 end;
 
 end.
