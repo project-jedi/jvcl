@@ -53,7 +53,7 @@ type
 implementation
 
 uses
-  JvxDConst;
+  JvConsts;
 
 procedure TJvDataEmbeddedEditor.Edit;
 var

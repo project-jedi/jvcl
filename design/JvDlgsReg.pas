@@ -8,17 +8,24 @@ procedure Register;
 
 implementation
 uses
-  Classes, DesignIntf, ActnList,
-  JvDSADialogs, JvBaseDlg, JvTipOfDay, JvWinDialogs, JvAddPrinter, JvCommonDialogD, JvCommonExecDlg, 
-  JvDialogActns, JvActnRes, JvDialogs, JvProgressForm, JvPageSetupTitled, JvPageSetup, JvConnectNetwork, 
-  JvSelectDirectory, JvCopyError, JvDeleteError, JvRenameError, JvDiskPrompt, JvFindFiles, 
+  Classes, DesignIntf, ActnList, JvBaseDlg, 
+  JvDSADialogs, JvTipOfDay, JvWinDialogs, JvAddPrinter, JvCommonDialogD, JvCommonExecDlg,
+  JvDialogActns, JvActnRes, JvDialogs, JvProgressForm, JvPageSetupTitled, JvPageSetup, JvConnectNetwork,
+  JvSelectDirectory, JvCopyError, JvDeleteError, JvRenameError, JvDiskPrompt, JvFindFiles,
   JvObjectPickerDialog, JvBaseDlgEditor, JvCommonDialogDEditor, JvTipOfDayEditor;
 
 {.$R ..\resources\JvDlgsReg.dcr}
 
 procedure Register;
 begin
-//  RegisterComponents('',[]);
+  RegisterComponents('Jv Dialogs',[
+    TJvDSADialog, TJvTipOfDay,
+    TJvFormatDriveDialog, TJvOrganizeFavoritesDialog, TJvAppletDialog,
+    
+    TJvProgressForm
+
+    ]);
+
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
   {$ENDIF}

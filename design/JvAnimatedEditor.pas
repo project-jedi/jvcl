@@ -4,7 +4,7 @@ unit JvAnimatedEditor;
 
 interface
 uses
-  Windows, Forms, Graphics, ImgList, JvxAnimate, JvAniFile, 
+  Windows, Forms, Graphics, ImgList, JvAnimatedImage, JvAniFile, 
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, DesignMenus, VCLEditors,
   {$ELSE}
@@ -31,7 +31,7 @@ type
 
 implementation
 uses
-  JvxDConst, TypInfo;
+  JvConsts, TypInfo;
 
 //=== TJvAnimatedEditor ======================================================
   

@@ -8,21 +8,28 @@ procedure Register;
 
 implementation
 uses
-  Classes,
-  JvAlarms, JvAni, JvAnimate, JvBmpAnimator, JvConverter, JvDataEmbedded,
-  JvEnterTab, JvMergeManager, JvPageManager, JvPatchFile, JvPicClip,
-  JvStringHolder, JvTimeLimit, JvWinHelp, JvTranslator, JvPrint;
+  Classes, DesignIntf,
+  JvAlarms, JvConverter, JvDataEmbedded, JvCreateProcess,
+  JvEnterTab, JvMergeManager, JvPageManager, JvPatchFile,
+  JvStringHolder, JvTimeLimit, JvWinHelp, JvTranslator, JvPrint, JvEasterEgg,
+  JvDataEmbeddedEditor, JvPatcherEditor, JvAlarmsEditor,
+  JvDsgnEditors;
 
 {.$R ..\resources\JvCmpReg.dcr}
 
 procedure Register;
 begin
   RegisterComponents('Jv Components',[
-    TJvAlarms, TJvAnimate, TJvBmpAnimator, TJvConverter, TJvDataEmbedded,
-    TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile, TJvPicClip,
-    TJvStrHolder, TJvTimeLimit, TJvWinHelp, TJvTranslator, TJvPrint
-
+    TJvAlarms, TJvConverter, TJvDataEmbedded, TJvCreateProcess,
+    TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile,
+    TJvStrHolder, TJvTimeLimit, TJvWinHelp, TJvTranslator, TJvPrint, TJvEasterEgg
     ]);
+
+  RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess, '', TJvExeNameProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess, 'CurrentDirectory', TJvDirectoryProperty);
+  RegisterPropertyEditor(TypeInfo(TStream), TJvDataEmbedded, 'Data', TJvDataEmbeddedEditor);
+  RegisterPropertyEditor(TypeInfo(TStrings), TJvPatchFile, 'Differences', TJvPatcherEditor);
+  RegisterPropertyEditor(TypeInfo(TStrings), TJvAlarms, 'Alarms', TJvAlarmsEditor);
 end;
 
 end.

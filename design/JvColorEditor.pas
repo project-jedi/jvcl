@@ -25,33 +25,39 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvColors;
+unit JvColorEditor;
 
 {$C PRELOAD}
 
 interface
 
 uses
-  Classes, Graphics,
-  JvVCLUtils;
+  Windows, SysUtils, Classes, Graphics,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts, DesignIntf, VCLEditors, DesignEditors,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF}
+  JvJVCLUtils;
+
+// === TJvColorProperty ======================================================
+type
+  TJvColorProperty = class(TColorProperty)
+  public
+    function GetValue: string; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+    procedure SetValue(const Value: string); override;
+    procedure ListDrawValue(const Value: string; ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
+    {$IFDEF COMPILER5} override {$ELSE} virtual {$ENDIF};
+  end;
+
 
 function JvIdentToColor(const Ident: string; var Color: Longint): Boolean;
 function JvColorToString(Color: TColor): string;
 function JvStringToColor(S: string): TColor;
 procedure JvGetColorValues(Proc: TGetStrProc);
 
-procedure RegisterJvColors;
-
 implementation
-
-uses
-  Windows,
-  {$IFDEF COMPILER6_UP}
-  RTLConsts, DesignIntf, VCLEditors, DesignEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF}
-  SysUtils;
 
 type
   TColorEntry = record
@@ -114,18 +120,6 @@ begin
   for I := Low(Colors) to High(Colors) do
     Proc(StrPas(Colors[I].Name));
 end;
-
-// === TJvColorProperty ======================================================
-
-type
-  TJvColorProperty = class(TColorProperty)
-  public
-    function GetValue: string; override;
-    procedure GetValues(Proc: TGetStrProc); override;
-    procedure SetValue(const Value: string); override;
-    procedure ListDrawValue(const Value: string; ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
-    {$IFDEF COMPILER5} override {$ELSE} virtual {$ENDIF};
-  end;
 
 function TJvColorProperty.GetValue: string;
 var
@@ -190,13 +184,6 @@ begin
     ACanvas.TextRect(Rect(Rght, ARect.Top, ARect.Right, ARect.Bottom),
       Rght + 1, ARect.Top + 1, Value);
   end;
-end;
-
-procedure RegisterJvColors;
-begin
-  {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
-  RegisterPropertyEditor(TypeInfo(TColor), TPersistent, '', TJvColorProperty);
-  {$ENDIF}
 end;
 
 end.

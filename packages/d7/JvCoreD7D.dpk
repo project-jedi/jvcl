@@ -29,13 +29,21 @@ package JvCoreD7D;
 requires
   JvCoreD7R,
   designide,
-  dclstd;
+  dclstd,
+  vcl,
+  rtl,
+  vclactnband,
+  vclx;
 
 contains
   JvJVCLAboutEditor in '..\..\design\JvJVCLAboutEditor.pas',
   JvCoreReg in '..\..\design\JvCoreReg.pas',
   JvDsgnEditors in '..\..\design\JvDsgnEditors.pas',
   JvDateTimeForm in '..\..\design\JvDateTimeForm.pas' {frmSelectDateTimeDlg},
-  JvStringsForm in '..\..\design\JvStringsForm.pas' {JvStrEditDlg};
+  JvStringsForm in '..\..\design\JvStringsForm.pas' {JvStrEditDlg},
+  JvColorEditor in '..\..\design\JvColorEditor.pas',
+  JvIDEZoom in '..\..\design\JvIDEZoom.pas',
+  JvPaintBoxEditor in '..\..\design\JvPaintBoxEditor.pas',
+  JvBaseDlgEditor in '..\..\design\JvBaseDlgEditor.pas';
 
 end.

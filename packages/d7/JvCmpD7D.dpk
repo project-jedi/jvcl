@@ -27,9 +27,22 @@ package JvCmpD7D;
 {$IMPLICITBUILD ON}
 
 requires
-  JvCmpD7R;
+  JvCmpD7R,
+  designide,
+  dclstd,
+  JvCoreD7D,
+  vcl,
+  rtl,
+  vclactnband,
+  vclx,
+  JvStdCtrlsD7R;
 
 contains
-  JvCmpReg in '..\..\design\JvCmpReg.pas';
+  JvCmpReg in '..\..\design\JvCmpReg.pas',
+  JvDataEmbeddedEditor in '..\..\design\JvDataEmbeddedEditor.pas',
+  JvAlarmsEditor in '..\..\design\JvAlarmsEditor.pas',
+  JvFormAlarms in '..\..\run\JvFormAlarms.pas' {FormAlarm},
+  JvPatcherEditor in '..\..\design\JvPatcherEditor.pas',
+  JvFormPatch in '..\..\run\JvFormPatch.pas';
 
 end.

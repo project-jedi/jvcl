@@ -29,7 +29,7 @@ Known Issues:
 {$I JVCL.INC}
 {$I WINDOWSONLY.INC}
 
-unit JvSysComp;
+unit JvCreateProcess;
 
 interface
 
@@ -222,7 +222,7 @@ implementation
 uses
   Math,
   JclSysUtils,
-  JvFunctions, JvTypes;
+  JvJVCLUtils, JvTypes;
 
 resourcestring
   RsListIndex = 'Process list index error';

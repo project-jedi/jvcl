@@ -28,7 +28,9 @@ package JvCtrlsD7R;
 
 requires
   JvCoreD7R,
-  JvStdCtrlsD7R;
+  JvStdCtrlsD7R,
+  vcl,
+  rtl;
 
 contains
   JvZoom in '..\..\run\JvZoom.pas',
@@ -63,11 +65,13 @@ contains
   JvTransLED in '..\..\run\JvTransLED.pas',
   JvxClock in '..\..\run\JvxClock.pas',
   JvSpeedbarSetupForm in '..\..\run\JvSpeedbarSetupForm.pas' {JvSpeedbarSetupWindow},
-  JvColorForm in '..\..\run\JvColorform.pas',
+  JvColorForm in '..\..\run\JvColorForm.pas',
   JvImageDrawThread in '..\..\run\JvImageDrawThread.pas',
   JvRegAuto in '..\..\run\JvRegAuto.pas',
   JvWinampLabel in '..\..\run\JvWinampLabel.pas',
   JvButtons in '..\..\run\JvButtons.pas',
-  JvCaptionPanel in '..\..\run\JvCaptionPanel.pas';
+  JvCaptionPanel in '..\..\run\JvCaptionPanel.pas',
+  JvScrollMax in '..\..\run\JvScrollMax.pas',
+  JvGroupHeader in '..\..\run\JvGroupHeader.pas';
 
 end.

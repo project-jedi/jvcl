@@ -32,7 +32,7 @@ object JvRegEditor: TJvRegEditor
   TextHeight = 13
   object panelBottom: TPanel
     Left = 0
-    Top = 295
+    Top = 302
     Width = 452
     Height = 30
     Align = alBottom
@@ -46,6 +46,9 @@ object JvRegEditor: TJvRegEditor
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 0
+      DesignSize = (
+        158
+        30)
       object btnOk: TButton
         Left = 1
         Top = 4
@@ -93,6 +96,9 @@ object JvRegEditor: TJvRegEditor
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 0
+      DesignSize = (
+        28
+        32)
       object btnAddProp: TSpeedButton
         Left = 2
         Top = 3
@@ -171,7 +177,7 @@ object JvRegEditor: TJvRegEditor
     Left = 0
     Top = 36
     Width = 201
-    Height = 259
+    Height = 266
     Hint = 'Accessible properties'
     Align = alLeft
     Ctl3D = True
@@ -195,7 +201,7 @@ object JvRegEditor: TJvRegEditor
     Left = 201
     Top = 36
     Width = 251
-    Height = 259
+    Height = 266
     Hint = 'List of saved properties'
     Align = alClient
     Ctl3D = True

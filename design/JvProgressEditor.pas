@@ -23,7 +23,7 @@ type
 implementation
 uses
   Consts, Dialogs,
-  JvxDConst, JvPrgrss;
+  JvConsts, JvProgressUtils;
 
 //=== TJvProgressControlProperty =============================================
 

@@ -50,30 +50,17 @@ type
     function ImageList: TCustomImageList; override;
   end;
 
-procedure Register;
-  
+
 implementation
 uses
   JvOutlookBarForm;
-  
+
 type
   THackOutlookBar = class(TJvCustomOutlookBar);
 
 resourcestring
   SOLEditor = 'OutlookBar Editor...';
-  
-procedure Register;
-begin
-  RegisterComponentEditor(TJvCustomOutlookBar, TJvOutlookBarComponentEditor);
-  RegisterPropertyEditor(TypeInfo(Integer),
-    TJvCustomOutlookBar, 'ActivePageIndex', TJvOutlookBarActivePageEditor);
-  RegisterPropertyEditor(TypeInfo(TJvOutlookBarPages),
-    TJvCustomOutlookBar, '', TJvOutlookBarPagesPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TJvOutlookBarButtons),
-    TJvOutlookBarPage, '', TJvOutlookBarPagesPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(Integer),
-    TJvOutlookBarButton, 'ImageIndex', TJvOutlookBarButtonImageIndexProperty);
-end;
+
 
 
 procedure ShowEditor(Designer: IDesigner; OutlookBar: TJvCustomOutlookBar);

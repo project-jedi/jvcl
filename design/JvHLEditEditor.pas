@@ -5,7 +5,7 @@ interface
 uses
   Windows,
   SysUtils, Controls,
-  JvEditor, JvHLEditor, JvHLEdPropDlg,
+  JvEditor, JvHLEditor, JvHLEditorPropertyForm,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories,
   {$IFDEF COMPLIB_VCL}
@@ -14,7 +14,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvRegAuto, JvxDConst, Classes;
+  JvRegAuto, JvConsts, Classes;
 
 resourcestring
   RS_JvHLEditorMsg = 'Please select "JvHLEditor" first';

@@ -63,6 +63,9 @@ type
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
+
   public
     procedure Loaded; override;
     procedure Toggle; override;
@@ -101,8 +104,6 @@ begin
   FOver := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
   FAutoSave := TJvAutoSave.Create(Self);
-  if Assigned(FAssociated) then
-    FAssociated.Enabled := Checked;
 end;
 
 destructor TJvCheckBox.Destroy;
@@ -193,6 +194,8 @@ begin
     if Assigned(FOnRestored) then
       FOnRestored(Self);
   end;
+  if Assigned(Associated) then
+    Associated.Enabled := Checked;
 end;
 
 function TJvCheckBox.GetCaption: TCaption;
@@ -234,6 +237,14 @@ begin
   inherited Click;
   if Assigned(FAssociated) then
     FAssociated.Enabled := Checked;
+end;
+
+procedure TJvCheckBox.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited;
+  if (Operation = opRemove) and (AComponent = Associated) then
+    Associated := nil;
 end;
 
 end.

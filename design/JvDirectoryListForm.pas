@@ -60,7 +60,7 @@ function EditFolderList(Folders: TStrings): Boolean;
 implementation
 
 uses
-  JvFileUtil, JvBoxProcs, JvConst;
+  JvJVCLUtils, JvJCLUtils, JvBrowseFolder, JvBoxProcs, JvConsts;
 
 {$R *.DFM}
 

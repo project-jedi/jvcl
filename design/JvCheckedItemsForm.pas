@@ -30,11 +30,7 @@ unit JvCheckedItemsForm;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   SysUtils, Classes, Controls, Forms, Menus, Graphics,
   StdCtrls,
   {$IFDEF COMPILER6_UP}
@@ -42,7 +38,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF}
-  JvPlacemnt, JvxCtrls, JvComponent;
+  JvFormPlacement, JvxCtrls, JvComponent;
 
 type
   TJvCheckItemEditor = class(TForm)
@@ -113,12 +109,8 @@ implementation
 
 uses
   Consts,
-  {$IFDEF COMPILER3_UP}
-  JvStrLEdit,
-  {$ELSE}
-  StrEdit,
-  {$ENDIF}
-  JvConst, JvVCLUtils, JvBoxProcs;
+  JvStringsForm,
+  JvConsts, JvJVCLUtils, JvBoxProcs;
 
 //=== TJvCheckItemsProperty ==================================================
 
