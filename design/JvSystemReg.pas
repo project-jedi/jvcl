@@ -41,15 +41,22 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
-  JvClipboardMonitor, JvClipboardViewer, JvCommStatus, {JvComputerInfo,}
-  JvDdeCmd, JvDeviceChanged, JvDirectories, JvDragDrop, JvHidControllerClass,
-  JvSystemColors, JvJoystick, JvKeyboardStates, JvMRUList, JvMRUManager, JvNTEventLog, JvRas32,
-  JvAppInst, JvScreenSaver, JvShellHook, JvSHFileOperation, JvSoundControl,
-  JvThread, JvThreadTimer, JvTimerList, JvChangeNotify,
-  JvSimpleXml, JvXMLDatabase, JvWndProcHook, JvFormPlacement, JvTimer,
-  JvSearchFiles, JvPerfMon95, JvChangeNotifyEditor, JvMinMaxForm, JvComputerInfoEx, 
-  JvFormPropertiesForm, JvPerfStatEditor, JvTimerListEditor, JvDsgnEditors,
-  JvAppXMLStorage, JvFormPlacementSelectList;
+  {$IFDEF VCL}
+  JvClipboardMonitor, JvClipboardViewer, JvHidControllerClass,
+  JvDragDrop, JvDdeCmd, JvWndProcHook,
+  {$ENDIF VCL}
+  {$IFDEF MSWINDOWS}
+  JvMRUList, JvMRUManager, 
+  JvCommStatus, {JvComputerInfo,}
+  {JvDeviceChanged, JvDirectories, JvSystemColors, JvKeyboardStates,} JvJoystick,
+  JvNTEventLog, JvRas32, JvAppInst, JvScreenSaver,
+  JvShellHook, JvSHFileOperation, JvSoundControl, JvChangeNotify, JvSearchFiles,
+  JvPerfMon95, JvComputerInfoEx,
+  JvChangeNotifyEditor, JvPerfStatEditor,
+  {$ENDIF MSWINDOWS}
+  JvThread, JvThreadTimer, JvTimer, JvTimerList, JvSimpleXml, JvXMLDatabase,
+  JvFormPlacement, JvAppXMLStorage, JvFormPlacementSelectList,
+  JvMinMaxForm, JvFormPropertiesForm, JvTimerListEditor, JvDsgnEditors;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvSystemReg.dcr}
@@ -65,25 +72,38 @@ begin
   GroupDescendentsWith(TJvTimer, TControl);
   {$ENDIF COMPILER7_UP}
 
-  RegisterComponents(RsPaletteSystem, [TJvClipboardMonitor, TJvClipboardViewer,
-    {TJvComputerInfo, // - do not register this component as default}
-    TJvSHFileOperation, TJvChangeNotify, TJvDropTarget, TJvDragDrop, TJvAppInstances,
-      TJvHidDeviceController, TJvNTEventLog, TJvScreenSaver,
-      TJvJoystick, TJvSoundControl, {TJvDeviceChanged, TJvSystemColors, TJvKeyboardStates, TJvDirectories, these are not needed - included in JvComputerInfoEx instead}
-      TJvAppDdeCmd, TJvPerfStat95, TJvComputerInfoEx]);
-  RegisterComponents(RsPaletteInternetWork, [TJvSimpleXML, TJvXMLDatabase,
-    TJvRas32, TJvCommStatus]);
-  RegisterComponents(RsPaletteNonVisual, [TJvSearchFiles, TJvMRUList, TJvMRUManager,
-      TJvShellHook, TJvWindowHook, TJvTimer, TJvThread, TJvThreadTimer, TJvTimerList]);
   RegisterComponents(RsPalettePersistence, [TJvFormStorage, TJvFormStorageSelectList,
       TJvAppXMLFileStorage]);
+  RegisterComponents(RsPaletteInternetWork, [TJvSimpleXML, TJvXMLDatabase]);
+  {$IFDEF VCL}
+  RegisterComponents(RsPaletteSystem, [TJvClipboardMonitor, TJvClipboardViewer,
+    TJvAppDdeCmd, TJvHidDeviceController, TJvDropTarget, TJvDragDrop]);
+  {$ENDIF VCL}
+  {$IFDEF MSWINDOWS}
+  RegisterComponents(RsPaletteSystem, [{TJvComputerInfo, // - do not register this component as default}
+    TJvSHFileOperation, TJvChangeNotify, TJvAppInstances, TJvNTEventLog,
+    TJvScreenSaver, TJvNTEventLog, TJvScreenSaver, TJvJoystick, TJvSoundControl,
+    {TJvDeviceChanged, TJvSystemColors, TJvKeyboardStates, TJvDirectories, these are not needed - included in JvComputerInfoEx instead}
+    TJvPerfStat95, TJvComputerInfoEx]);
+  RegisterComponents(RsPaletteInternetWork, [TJvRas32, TJvCommStatus]);
+  {$ENDIF MSWINDOWS}
+  RegisterComponents(RsPaletteNonVisual, [
+    {$IFDEF MSWINDOWS}
+    TJvSearchFiles, TJvMRUList, TJvMRUManager, TJvShellHook,
+    {$ENDIF MSWINDOWS}
+    {$IFDEF VCL}
+    TJvWindowHook,
+    {$ENDIF VCL}
+    TJvTimer, TJvThread, TJvThreadTimer, TJvTimerList]);
 
   RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,
     'MinMaxInfo', TMinMaxProperty);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvFormStorage,
     'StoredProps', TJvStoredPropsProperty);
+  {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(TWinControl), TJvWindowHook,
     'WinControl', TJvComponentFormProperty);
+  {$ENDIF VCL}
   RegisterPropertyEditor(TypeInfo(string), TJvChangeItem,
     'Directory', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvPerfStatItem,

@@ -30,7 +30,13 @@ unit JvPlaylist;
 interface
 
 uses
-  Messages, SysUtils, Classes, Controls, StdCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Messages, Controls, StdCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QStdCtrls, Types, QWindows,
+  {$ENDIF VisualCLX}
   JvCtrls, JvListBox;
 
 type
@@ -47,7 +53,9 @@ type
     procedure SetShowExtension(const Value: Boolean);
     procedure SetShowDrive(const Value: Boolean);
   protected
+    {$IFDEF VCL}
     procedure LBDeleteString(var Msg: TMessage); message LB_DELETESTRING;
+    {$ENDIF VCL}
     procedure Changed; override;
     function GetPath(Value: string; Position: Integer): string;
     procedure Refresh;
@@ -55,8 +63,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure AddItem(Item: string; AObject: TObject);
-      {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure AddItem(Item: string; AObject: TObject); {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure AddItems(Value: TStrings);
     function GetItem(Index: Integer): string;
     procedure DeleteDeadFiles;
@@ -284,6 +291,7 @@ begin
   Refresh;
 end;
 
+{$IFDEF VCL}
 procedure TJvPlaylist.LBDeleteString(var Msg: TMessage);
 begin
   inherited;
@@ -294,6 +302,7 @@ begin
     FItems.OnChange := ItemsChanged;
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvPlaylist.Changed;
 begin

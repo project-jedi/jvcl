@@ -620,6 +620,9 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvCustomLabel.DrawAngleText(var Rect: TRect; Flags: Word; HasImage: Boolean;
   ShadowSize: Byte; ShadowColor: TColorRef; ShadowPos: TShadowPosition);
+const // (ahuser) no function known for these
+  XOffsetFrame = 0;
+  YOffsetFrame = 0;
 var
   Text: array [0..4096] of Char;
   TextX, TextY: Integer;

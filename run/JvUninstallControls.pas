@@ -24,13 +24,20 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvUninstallControls;
 
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls, StdCtrls,
+  Windows, SysUtils, Classes,
+  {$IFDEF VCL}
+  Graphics, Controls, StdCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QStdCtrls,
+  {$ENDIF VisualCLX}
   JvComponent, JvTypes;
 
 type
@@ -51,11 +58,16 @@ type
     function GetProperties: TStrings;
     function GetHKey: HKEY;
   protected
+    {$IFDEF VCL}
     procedure CreateHandle; override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure CreateWidget; override;
+    {$ENDIF VisualCLX}
   public
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
-    procedure Clear; {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure Clear; {$IFDEF VCL} {$IFDEF COMPILER6_UP} override; {$ENDIF} {$ENDIF}
     property Items: TStrings read GetItems;
     property Section: string read GetSection;
     property HKey: HKEY read GetHKey;
@@ -67,13 +79,20 @@ type
     property DisplayMode: TJvUCBDisplayModes read FDisplayMode write SetDisplayMode
       default [hkCurrentUser, hkLocalMachine];
     property Color;
+    {$IFDEF VCL}
     property DragCursor;
     property DragMode;
+    property ImeMode;
+    property ImeName;
+    property BiDiMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+    property DragKind;
+    {$ENDIF VCL}
     property DropDownCount;
     property Enabled;
     property Font;
-    property ImeMode;
-    property ImeName;
     property ItemHeight;
     property ParentColor;
     property ParentFont;
@@ -101,12 +120,7 @@ type
     property OnMeasureItem;
     property OnStartDrag;
     property Anchors;
-    property BiDiMode;
     property Constraints;
-    property DragKind;
-    property ParentBiDiMode;
-    property OnEndDock;
-    property OnStartDock;
   end;
 
   TJvUninstallListBox = class(TCustomListBox)
@@ -122,11 +136,16 @@ type
     function GetProperties: TStrings;
     function GetHKey: HKEY;
   protected
+    {$IFDEF VCL}
     procedure CreateHandle; override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure CreateWidget; override;
+    {$ENDIF VisualCLX}
   public
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
-    procedure Clear; {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure Clear; {$IFDEF VCL} {$IFDEF COMPILER6_UP} override; {$ENDIF} {$ENDIF}
     procedure Rebuild;
     property Items: TStrings read GetItems;
     property Section: string read GetSection;
@@ -140,12 +159,19 @@ type
     property DisplayMode: TJvUCBDisplayModes read FDisplayMode write SetDisplayMode
       default [hkCurrentUser, hkLocalMachine];
     property Color;
+    {$IFDEF VCL}
     property DragCursor;
     property DragMode;
-    property Enabled;
-    property Font;
     property ImeMode;
     property ImeName;
+    property BiDiMode;
+    property DragKind;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF VCL}
+    property Enabled;
+    property Font;
     property ItemHeight;
     property ParentColor;
     property ParentFont;
@@ -170,12 +196,7 @@ type
     property OnMeasureItem;
     property OnStartDrag;
     property Anchors;
-    property BiDiMode;
     property Constraints;
-    property DragKind;
-    property ParentBiDiMode;
-    property OnEndDock;
-    property OnStartDock;
   end;
 
 implementation
@@ -398,12 +419,22 @@ begin
   inherited Clear;
 end;
 
+{$IFDEF VCL}
 procedure TJvUninstallComboBox.CreateHandle;
 begin
   inherited CreateHandle;
   if ItemIndex < 0 then
     Rebuild;
 end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvUninstallComboBox.CreateWidget;
+begin
+  inherited CreateWidget;
+  if ItemIndex < 0 then
+    Rebuild;
+end;
+{$ENDIF VisualCLX}
 
 function TJvUninstallComboBox.GetProperties: TStrings;
 begin
@@ -506,12 +537,23 @@ begin
     ItemIndex := 0;
 end;
 
+
+{$IFDEF VCL}
 procedure TJvUninstallListBox.CreateHandle;
 begin
   inherited CreateHandle;
   if ItemIndex < 0 then
     Rebuild;
 end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvUninstallListBox.CreateWidget;
+begin
+  inherited CreateWidget;
+  if ItemIndex < 0 then
+    Rebuild;
+end;
+{$ENDIF VisualCLX}
 
 function TJvUninstallListBox.GetProperties: TStrings;
 begin

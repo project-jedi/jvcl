@@ -41,7 +41,10 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
-  JvAlarms, JvConverter, JvDataEmbedded, JvCreateProcess,
+  {$IFDEF MSWINDOWS}
+  JvCreateProcess,
+  {$ENDIF MSWINDOWS}
+  JvAlarms, JvConverter, JvDataEmbedded,
   JvEnterTab, JvMergeManager, JvPageManager, JvPatchFile, JvStringHolder,
   JvTimeLimit, JvWinHelp, JvTranslator, JvPrint, JvEasterEgg,
   JvMouseGesture, JvLogFile, JvDataEmbeddedEditor, JvPatcherEditor,
@@ -62,15 +65,20 @@ begin
   {$ENDIF COMPILER7_UP}
 
   RegisterComponents(RsPaletteNonVisual,[TJvAlarms, TJvConverter,
-    TJvDataEmbedded, TJvCreateProcess,
+    TJvDataEmbedded,
+    {$IFDEF MSWINDOWS}
+    TJvCreateProcess,
+    {$ENDIF MSWINDOWS}
     TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile, TJvProfiler,
     TJvStrHolder, TJvTimeLimit, TJvWinHelp, TJvTranslator, TJvTranslatorStrings,
     TJvPrint, TJvEasterEgg, TJvMouseGesture, TJvMouseGestureHook, TJvLogFile]);
 
+  {$IFDEF MSWINDOS}
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess,
     '', TJvExeNameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess,
     'CurrentDirectory', TJvDirectoryProperty);
+  {$ENDIF MSWINDOWS}
 //  RegisterPropertyEditor(TypeInfo(TStream), TJvDataEmbedded,
 //    'Data', TJvDataEmbeddedEditor);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvPatchFile,

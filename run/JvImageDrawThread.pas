@@ -32,6 +32,12 @@ unit JvImageDrawThread;
 interface
 
 uses
+  {$IFDEF VCL}
+  Windows,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  SysUtils,
+  {$ENDIF VisualCLX}
   Classes;
 
 type
@@ -52,14 +58,6 @@ type
 
 implementation
 
-uses
-  {$IFDEF VCL}
-  Windows;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  SysUtils;
-  {$ENDIF VisualCLX}
-
 procedure TJvImageDrawThread.Draw;
 begin
   if not Terminated and Assigned(FOnDraw) then
@@ -68,7 +66,6 @@ end;
 
 procedure TJvImageDrawThread.Execute;
 begin
-  // (rom) secure thread against exceptions
   try
     while not Terminated do
     begin
@@ -76,6 +73,7 @@ begin
       Synchronize(Draw);
     end;
   except
+    // ignore exception
   end;
 end;
 

@@ -23,12 +23,12 @@
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvCharMap.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCharMap.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvClock.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvColorBox.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvColorButton.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvColorForm.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvComboListBox.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvComboListBox.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvComponentPanel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvContentScroller.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDice.pas" Targets="all" Formname="" Condition=""/>
@@ -38,7 +38,7 @@
     <File Name="..\..\run\JvHint.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvHtControls.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvImageDrawThread.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInstallLabel.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInstallLabel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvItemsPanel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvListComb.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvMovableBevel.pas" Targets="all" Formname="" Condition=""/>
@@ -53,12 +53,12 @@
     <File Name="..\..\run\JvSpeedbar.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSpeedbarSetupForm.pas" Targets="allbutclx" Formname="JvSpeedbarSetupWindow" Condition=""/>
     <File Name="..\..\qrun\JvQSpeedbarSetupForm.pas" Targets="allclx" Formname="JvSpeedbarSetupWindow" Condition=""/>
-    <File Name="..\..\run\JvSplit.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSplit.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSplitter.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSwitch.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSyncSplitter.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSyncSplitter.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTransparentButton.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvUninstallControls.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUninstallControls.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvWinampLabel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvZoom.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvArrowButton.pas" Targets="all" Formname="" Condition=""/>
