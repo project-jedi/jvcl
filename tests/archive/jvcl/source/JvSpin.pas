@@ -17,8 +17,10 @@ All Rights Reserved.
 
 Contributor(s):
   Polaris Software
+  boerema1
+  roko
 
-Last Modified: 2002-07-04
+Last Modified: 2003-03-17
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -183,6 +185,7 @@ type
     FAlignment: TAlignment;
     FMinValue: Extended;
     FMaxValue: Extended;
+    FOldValue:Extended;
     FIncrement: Extended;
     FDecimal: Byte;
     FChanging: Boolean;
@@ -1695,7 +1698,7 @@ end;
 
 procedure TJvCustomSpinEdit.Change;
 var
-  OldText: string;
+//  OldText: string;
   OldSelStart: Integer;
 begin
   { (rb) Maybe move to CMTextChanged }
@@ -1704,7 +1707,7 @@ begin
 
   FChanging := True;
   try
-    OldText := inherited Text;
+//    OldText := inherited Text;
     OldSelStart := SelStart;
     try
       if not (csDesigning in ComponentState) and (coCheckOnChange in CheckOptions) then
@@ -1718,9 +1721,13 @@ begin
   finally
     FChanging := False;
   end;
-
-  if CompareText(inherited Text, OldText) <> 0 then
+  if FOldValue <> Value then
+  begin
     inherited Change;
+    FOldValue := Value;
+  end;
+//  if CompareText(inherited Text, OldText) <> 0 then
+//    inherited Change;
 
   SelStart := OldSelStart;
 end;
