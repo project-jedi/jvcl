@@ -202,6 +202,7 @@ function StrLICompW(S1, S2: PWideChar; MaxLen: Integer): Integer;
 function StrLICompW2(S1, S2: PWideChar; MaxLen: Integer): Integer;
 function StrCompW(S1, S2: PWideChar): Integer;
 function StrLCompW(S1, S2: PWideChar; MaxLen: Integer): Integer;
+function StrIComp(S1, S2: PWideChar; MaxLen: Integer): Integer;
 function StrPosW(S, SubStr: PWideChar): PWideChar;
 function StrLenW(P: PWideChar): Integer;
 function StrScanW(P: PWideChar; Ch: WideChar): PWideChar;
