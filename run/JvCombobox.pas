@@ -1202,32 +1202,45 @@ begin
     FIsDropping := True;
   try
   {$ENDIF COMPILER5}
-    if (Msg.NotifyCode = CBN_SELCHANGE) and IsProviderSelected then
-    begin
-      Provider.Enter;
-      try
-        if Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+    case Msg.NotifyCode of
+      CBN_CLOSEUP:
         begin
-          Item := VL.Item(ItemIndex);
-          if Supports(Item, IJvDataItemText, ItemText) then
-            Text := ItemText.Caption
-          else
-            Text := '';
-        end
-        else
-        begin
-          Item := nil;
-          Text := '';
+          {$IFDEF COMPILER5}
+          CloseUp;       // Delphi 5 does not have the CloseUp function, so we mimic it here
+          {$ENDIF COMPILER5}
         end;
-        Click;
-        Select;
-        Provider.ItemSelected(Item);
-      finally
-        Provider.Leave;
-      end;
-    end
-    else
-      inherited;
+      CBN_SELCHANGE:
+        begin
+          if IsProviderSelected then
+          begin
+            Provider.Enter;
+            try
+              if Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+              begin
+                Item := VL.Item(ItemIndex);
+                if Supports(Item, IJvDataItemText, ItemText) then
+                  Text := ItemText.Caption
+                else
+                  Text := '';
+              end
+              else
+              begin
+                Item := nil;
+                Text := '';
+              end;
+              Click;
+              Select;
+              Provider.ItemSelected(Item);
+            finally
+              Provider.Leave;
+            end;
+          end
+          else
+            inherited;
+        end;
+      else
+        inherited;
+    end;
   {$IFDEF COMPILER5}
   finally
     if Msg.NotifyCode = CBN_DROPDOWN then
