@@ -239,6 +239,7 @@ begin
         with FParentList do
         begin
           CalculateInterval(GetTickCount);
+          Activate;
           UpdateTimer;
         end;
     end;
