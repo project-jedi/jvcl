@@ -127,12 +127,12 @@ begin
     Result := -1;
 end;
 
-{ (rom) see SysUtils
+{$IFNDEF COMPILER6_UP} // (rom) see SysUtils  - (ahuser) Delphi 5 needs this function 
 function IsEqualGUID(const IID1, IID2: TGUID): Boolean;
 begin
   Result := CompareMem(@IID1, @IID2, SizeOf(IID1));
 end;
-}
+{$ENDIF}
 
 //=== TMasterConsumer ========================================================
 
