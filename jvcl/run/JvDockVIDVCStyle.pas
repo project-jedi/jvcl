@@ -575,6 +575,9 @@ procedure PaintGradientBackground(Canvas: TCanvas; ARect: TRect; StartColor, End
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Consts, SysUtils, Math, Forms, ExtCtrls, 
   JvDockSupportProc, JvDockGlobals;
 
@@ -4706,6 +4709,22 @@ begin
   SetNewBounds(Parent);
   ForEachAt(Parent, UpdateZone, tskForward);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -1188,6 +1188,9 @@ procedure DisabledTextRect(ACanvas: TCanvas; var ARect: TRect; Left, Top: Intege
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   ActiveX,
   {$ENDIF MSWINDOWS}
@@ -5497,7 +5500,21 @@ begin
   // Do not allow the consumer view list to be modified this way.
 end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
   {$IFDEF COMPILER7_UP}
   GroupDescendentsWith(TExtensibleInterfacedPersistent, TControl);
   GroupDescendentsWith(TAggregatedPersistent, TControl);
@@ -5514,6 +5531,12 @@ initialization
     TJvDataContexts,
     // Context related
     TJvDataContext, TJvManagedDataContext, TJvFixedDataContext]);
+
+
+{$IFDEF UNITVERSIONING}
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

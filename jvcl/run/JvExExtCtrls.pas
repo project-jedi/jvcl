@@ -2420,12 +2420,18 @@ type
   end;
 {$ENDIF VisualCLX}
 
+
 // SplitterMouseDownFix fixes a bug in the VCL that causes the splitter to no
 // more work with the control in the left/top of it when the control has a size
 // of 0. This is actually a TWinControl.AlignControl bug.
 procedure SplitterMouseDownFix(Splitter: TSplitter);
 
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 {$IFDEF VCL}
 procedure TJvExShape.Dispatch(var Msg);
@@ -7896,5 +7902,21 @@ begin
   SplitterMouseDownFix(Self);
   inherited MouseDown(Button, Shift, X, Y);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

@@ -240,6 +240,9 @@ function LoadImageListFromBitmap(ImgList: TCustomImageList; const Bitmap: TBitma
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Consts, TypInfo,
   {$IFDEF VCL}
   ActiveX,
@@ -1255,14 +1258,29 @@ begin
   raise EJvImageListError.CreateResFmt(@RsEWrongImageListMode, ['imItemList']);
 end;
 
-{$IFDEF VCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
 
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
 
 finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
+  {$IFDEF VCL}
   FinalizeUnit(sUnitName);
-
-{$ENDIF VCL}
+  {$ENDIF VCL}
 
 end.
 

@@ -34,6 +34,9 @@ interface
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvInterpreter_System, JvInterpreter_SysUtils, JvInterpreter_Classes,
   JvInterpreter_Graphics, JvInterpreter_Controls, JvInterpreter_Dialogs,
   {$IFDEF VCL}
@@ -54,7 +57,21 @@ uses
   {$ENDIF VisualCLX}
   JvInterpreter;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
   JvInterpreter_System.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_SysUtils.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_Classes.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
@@ -87,6 +104,12 @@ initialization
 
   JvInterpreterFm.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   {$ENDIF VCL}
+
+
+{$IFDEF UNITVERSIONING}
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

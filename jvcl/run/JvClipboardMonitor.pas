@@ -64,6 +64,9 @@ function LoadClipboardFromStream(Stream: TStream): Word;
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Forms, JvJVCLUtils;
 
 procedure SaveClipboardToStream(Format: Word; Stream: TStream);
@@ -205,5 +208,21 @@ begin
   if Assigned(FOnChange) then
     FOnChange(Self);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

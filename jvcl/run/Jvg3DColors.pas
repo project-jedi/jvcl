@@ -70,6 +70,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Math,
   {$IFDEF USEJVCL}
   JvConsts, JvResources,
@@ -159,6 +162,22 @@ begin
   if (Component <> Self) and (Operation = opInsert) and (Component is TJvg3DLocalColors) then
     raise Exception.CreateRes(@RsEOnlyOneInstanceOfTJvg3DLocalColors);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

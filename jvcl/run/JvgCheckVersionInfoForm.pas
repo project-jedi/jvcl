@@ -66,6 +66,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   ShellAPI,
   {$IFDEF USEJVCL}
   JvResources,
@@ -118,5 +121,21 @@ procedure TJvgfCheckVersionInfo.lURLClick(Sender: TObject);
 begin
   ShellExecute(0, 'open', PChar(lURL.Caption), nil, '', SW_SHOW);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

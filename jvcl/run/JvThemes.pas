@@ -809,6 +809,11 @@ procedure SetParentBackground(Control: TWinControl; Value: Boolean);
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 {$IFDEF JVCLThemesEnabled}
 {$IFNDEF COMPILER7_UP}
 const
@@ -1884,16 +1889,37 @@ begin
   end;
 end;
 
+{$ENDIF JVCLThemesEnabled}
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
+  {$IFDEF JVCLThemesEnabled}
   InitializeWMPrintClientFix;
+  {$ENDIF JVCLThemesEnabled}
 
 finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
+  {$IFDEF JVCLThemesEnabled}
   FinalizeWMPrintClientFix;
   {$IFNDEF COMPILER7_UP}
   FinalizeUnit(sUnitName);
   {$ENDIF !COMPILER7UP}
-
-{$ENDIF JVCLThemesEnabled}
+  {$ENDIF JVCLThemesEnabled}
 
 end.
 

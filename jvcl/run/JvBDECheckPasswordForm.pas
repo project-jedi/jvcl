@@ -45,6 +45,9 @@ function ChangePasswordDialog(Database: TDatabase; AttemptNumber: Integer;
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Consts,
   JvResources, JvJVCLUtils;
 
@@ -208,6 +211,22 @@ procedure TJvChPswdForm.PswdChange(Sender: TObject);
 begin
   OkEnabled;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

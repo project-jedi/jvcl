@@ -298,6 +298,9 @@ function BrowseComputer(var AComputerName: string; const DlgText: string;
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, ActiveX, Controls, Forms, Consts,
   JclShell,
   JvJCLUtils, JvJVCLUtils, JvConsts, JvResources, JvTypes;
@@ -1442,6 +1445,22 @@ begin
       SWP_NOZORDER + SWP_NOACTIVATE);
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

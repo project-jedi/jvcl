@@ -292,10 +292,16 @@ type
 implementation
 {$IFDEF VCL}
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Forms; // for IsAccel()
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QForms; 
 {$ENDIF VisualCLX}
 // (p3) not used
@@ -1270,6 +1276,22 @@ begin
   if LinkCheckedToCollapsed then
     Checked := not (Target as TJvCustomRollOut).Collapsed;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

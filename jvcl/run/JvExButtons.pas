@@ -39,10 +39,11 @@ interface
 
 uses
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, Buttons, StdCtrls,
+  Windows, Messages,
   {$ENDIF VCL}
+  Graphics, Controls, Forms, Buttons, StdCtrls,
   {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms, QButtons, QStdCtrls, QWindows,
+  Qt, QWindows,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer, JvExControls;
@@ -84,6 +85,7 @@ type
     procedure Dispatch(var Msg); override;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  // IJvControlEvents
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -128,6 +130,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+
   TJvExPubSpeedButton = class(TJvExSpeedButton)
   {$IFDEF VCL}
   published
@@ -167,7 +170,7 @@ type
   public
     procedure Dispatch(var Msg); override;
   protected
-   // IJvStdControlEvents
+   // IJvWinControlEvents
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -182,6 +185,7 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  // IJvControlEvents
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -191,22 +195,23 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
+  private
+    InternalFontChanged: TNotifyEvent;
+    procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
+    procedure DoFontChanged(Sender: TObject); dynamic;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
-    procedure RecreateWnd;
-    procedure CreateWnd; dynamic;
-    procedure CreateWidget; override;	
-  private
-    FDoubleBuffered: Boolean;
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
-  protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    procedure ColorChanged; override;
-  published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
+    procedure PaintWindow(PaintDevice: QPaintDeviceH);
+    function WidgetFlags: integer; override;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;
+    procedure RecreateWnd;
+  public
+    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
@@ -254,6 +259,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+
   TJvExPubBitBtn = class(TJvExBitBtn)
   {$IFDEF VCL}
   published
@@ -269,6 +275,11 @@ type
   
 
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 {$IFDEF VCL}
 procedure TJvExSpeedButton.Dispatch(var Msg);
@@ -413,6 +424,7 @@ function TJvExSpeedButton.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
+  
 {$ENDIF VisualCLX}
 procedure TJvExSpeedButton.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -423,17 +435,14 @@ end;
 procedure TJvExSpeedButton.DoFocusChanged(Control: TWinControl);
 begin
 end;
-
+  
 constructor TJvExSpeedButton.Create(AOwner: TComponent);
 begin
   {$IFDEF VisualCLX}
   WindowProc := WndProc;
-  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
-  SetCopyRectMode(Self, cmVCL);
-  {$IFEND}
   {$ENDIF VisualCLX}
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
+  FHintColor := Application.HintColor;
   
 end;
 
@@ -442,6 +451,7 @@ begin
   
   inherited Destroy;
 end;
+ 
 {$IFDEF VCL}
 procedure TJvExBitBtn.Dispatch(var Msg);
 asm
@@ -571,7 +581,7 @@ asm
     JMP   JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
-
+  
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 procedure TJvExBitBtn.MouseEnter(Control: TControl);
@@ -625,11 +635,27 @@ function TJvExBitBtn.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
+  
 function TJvExBitBtn.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
-  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+  Result := WidgetControl_NeedKey(Self, Key, Shift, KeyText,
     inherited NeedKey(Key, Shift, KeyText));
+end;
+
+procedure TJvExBitBtn.OnFontChanged(Sender: TObject);
+var
+  FontChangedEvent: QEventH;
+begin
+  FontChangedEvent := QEvent_create(QEventType_FontChanged);
+  if FontChangedEvent <> nil then
+    QApplication_postEvent(Handle, FontChangedEvent);
+end;
+
+procedure TJvExBitBtn.DoFontChanged(Sender: TObject);
+begin
+  if Assigned(InternalFontChanged) then
+    InternalFontChanged(self);
 end;
 
 procedure TJvExBitBtn.BoundsChanged;
@@ -652,34 +678,30 @@ procedure TJvExBitBtn.CreateWnd;
 begin
   inherited CreateWidget;
 end;
-procedure TJvExBitBtn.Painting(Sender: QObjectH; EventRegion: QRegionH);
+
+function TJvExBitBtn.WidgetFlags: integer;
 begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
+  Result := inherited WidgetFlags or
+    integer(WidgetFlags_WRepaintNoErase) or
+    integer(WidgetFlags_WMouseNoMask);
 end;
 
-procedure TJvExBitBtn.ColorChanged;
+function TJvExBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): boolean;
 begin
-  TWidgetControl_ColorChanged(Self);
+  Result := inherited EventFilter(Sender, Event);
+  Result := Result or WidgetControl_EventFilter(Self, Sender, Event);
 end;
 
-function TJvExBitBtn.GetDoubleBuffered: Boolean;
+procedure TJvExBitBtn.PaintWindow(PaintDevice: QPaintDeviceH);
 begin
-  Result := FDoubleBuffered;
+  WidgetControl_PaintTo(self, PaintDevice, 0, 0);
 end;
 
-procedure TJvExBitBtn.SetDoubleBuffered(Value: Boolean);
+procedure TJvExBitBtn.PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
 begin
-  if Value <> FDoubleBuffered then
-  begin
-    if Value then
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
-    else
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
-    FDoubleBuffered := Value;
-    if not (csCreating in ControlState) then
-      Invalidate;
-  end;
+  WidgetControl_PaintTo(self, PaintDevice, X, Y);
 end;
+  
 {$ENDIF VisualCLX}
 procedure TJvExBitBtn.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -690,6 +712,7 @@ end;
 procedure TJvExBitBtn.DoFocusChanged(Control: TWinControl);
 begin
 end;
+  
 procedure TJvExBitBtn.DoBoundsChanged;
 begin
 end;
@@ -710,51 +733,54 @@ function TJvExBitBtn.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean
 asm
   JMP   DefaultDoPaintBackground
 end;
-{$IFDEF VCL}
+  
 constructor TJvExBitBtn.Create(AOwner: TComponent);
 begin
   {$IFDEF VisualCLX}
   WindowProc := WndProc;
-  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
-  SetCopyRectMode(Self, cmVCL);
-  {$IFEND}
   {$ENDIF VisualCLX}
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
-  
-end;
-
-destructor TJvExBitBtn.Destroy;
-begin
-  
-  inherited Destroy;
-end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-constructor TJvExBitBtn.Create(AOwner: TComponent);
-begin
-  WindowProc := WndProc;
-  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
-  SetCopyRectMode(Self, cmVCL);
-  {$IFEND}
-  inherited Create(AOwner);
+  {$IFDEF VisualCLX}
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  
+  InternalFontChanged := Font.OnChange;
+  Font.OnChange := OnFontChanged;
+  {$ENDIF VisualCLX}
+  FHintColor := Application.HintColor;
 end;
 
-destructor TJvExBitBtn.Destroy;
+{$IFDEF VisualCLX}
+procedure TJvExBitBtn.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  
-  FCanvas.Free;
-  inherited Destroy;
+  WidgetControl_Painting(Self, Canvas, EventRegion);
 end;
 
 procedure TJvExBitBtn.Paint;
 begin
-  WidgetControl_DefaultPaint(Self, Canvas);
+  WidgetControl_DefaultPaint(self, Canvas);
 end;
-
 {$ENDIF VisualCLX}
+
+destructor TJvExBitBtn.Destroy;
+begin
+  inherited Destroy;
+end;
+  
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

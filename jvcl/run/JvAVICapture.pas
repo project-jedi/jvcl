@@ -546,6 +546,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Math, // for Min and Max
   JvResources;
 
@@ -1764,6 +1767,22 @@ constructor EInvalidDriverIndexError.Create(Index: TJvDriverIndex; MaxIndex: TJv
 begin
   inherited CreateFmt(RsEInvalidDriverIndex, [Index, MaxIndex]);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -151,6 +151,9 @@ const
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Math, Consts,
   JvThemes, JvConsts, JvResources, JvJCLUtils, JvToolEdit, JvSpeedButton;
 
@@ -1686,6 +1689,22 @@ begin
   if Result then
     StrDate := FormatDateTime(ShortDateFormat, DateValue);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -63,6 +63,11 @@ procedure JvXPPlaceText(const AParent: TControl; const ACanvas: TCanvas;
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 function JvXPMethodsEqual(const Method1, Method2: TMethod): Boolean;
 begin
   Result := (Method1.Code = Method2.Code) and (Method1.Data = Method2.Data);
@@ -417,6 +422,22 @@ begin
   OffsetRect(Rect, DX, (OH - Rect.Bottom) div 2);
   JvXPRenderText(AParent, ACanvas, AText, AFont, AEnabled, AShowAccelChar, Rect, Flags);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 
