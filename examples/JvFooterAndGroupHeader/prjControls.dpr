@@ -1,10 +1,10 @@
 program prjControls;
 
 uses
-  QForms,
+  Forms,
   uFormMain in 'uFormMain.pas' {Form1};
 
-{$R *.res}
+{$R *.RES}
 
 begin
   Application.Initialize;
