@@ -18,7 +18,7 @@ type
     SearchTypes: TSearchTypes;
   end;
 
-  TSearchOptions = Set of (soStripDirs, soSubDirs);
+  TSearchOptions = Set of (soStripDirs);
   TDirOption = (doIncludeSubDirs);
 
   TJvSearchFiles = class(TComponent)
@@ -51,7 +51,8 @@ constructor TJvSearchFiles.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FFiles := TStringList.Create;
-  FOptions := [soStripDirs, soSubDirs];
+  FOptions := [soStripDirs];
+  FDirOption := doIncludeSubDirs;
 end;
 
 destructor TJvSearchFiles.Destroy;
@@ -78,27 +79,33 @@ var
   sr: TSearchRec;
 begin
   if FindFirst(Dir + PathDelim + FFileParams.FileMask,
-       faAnyFile or faDirectory, sr) = 0 then
+       faAnyFile and not faDirectory, sr) = 0 then
   try
     repeat
       if (sr.Name <> '.') and (sr.Name <> '..') then
       begin
-        if sr.Attr and faDirectory <> 0 then
-        begin
-          if DirOption = doIncludeSubDirs then
-            SearchDirs(Dir + PathDelim + sr.Name)
-        end
+        if soStripDirs in FOptions then
+          FFiles.Add(sr.Name)
         else
-        begin
-          if soStripDirs in FOptions then
-            FFiles.Add(sr.Name)
-          else
-            FFiles.Add(Dir + PathDelim + sr.Name);
-        end;
+          FFiles.Add(Dir + PathDelim + sr.Name);
       end;
     until FindNext(sr) <> 0;
   finally
     FindClose(sr);
+  end;
+
+  if DirOption = doIncludeSubDirs then
+  begin
+    if FindFirst(Dir + PathDelim + '*.*', faDirectory, sr) = 0 then
+    try
+      repeat
+        if sr.Attr and faDirectory <> 0 then
+          if (sr.Name <> '.') and (sr.Name <> '..') then
+            SearchDirs(Dir + PathDelim + sr.Name)
+      until FindNext(sr) <> 0;
+    finally
+      FindClose(sr);
+    end;
   end;
 end;
 
