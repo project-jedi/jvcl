@@ -25,7 +25,7 @@ uses
   JvScrollBar, JvScrollBox, JvShape, JvStaticText, JvStatusBar, JvGrids, JvStringGrid,
   JvSystemPopup, JvTabControl, JvToolBar, JvUpDown, JvBitBtn, JvPanel, JvMonthCalendar,
   JvControlPanelButton, JvStartMenuButton, JvRecentMenuButton, JvFavoritesButton,
-  JvImageList,
+  JvImageList, JvListBox,
   
   JvBrowseFolder, JvTransparentPanel, JvCheckedItemsForm, JvColorCombo,
 

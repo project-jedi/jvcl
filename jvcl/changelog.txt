@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2003-11-12:
+- Move TJvListBox from JvCtrls.pas to JvListBox.pas // marcelb
 2003-11-10:
 - PackageGenerator thought to be complete. Testing starts // olivier
 2003-11-09:
