@@ -401,12 +401,12 @@ end;
 
 function TCompileTarget.IsBCB: Boolean;
 begin
-  Result := CompareText(Name, 'Delphi') <> 0;
+  Result := (CompareText(Name, 'Delphi') <> 0) and not IsBDS;
 end;
 
 function TCompileTarget.IsBDS: Boolean;
 begin
-  Result := CompareText(Name, 'BDS') <> 0;
+  Result := CompareText(Name, 'BDS') = 0;
 end;
 
 function TCompileTarget.IsPersonal: Boolean;
