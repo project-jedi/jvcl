@@ -50,9 +50,11 @@ type
   public
     constructor Create(AOwner: TComponent);
     destructor Destroy; override;
+    function ProviderIntf: IJvDataProvider; override;
+    procedure SetProviderIntf(Value: IJvDataProvider); override;
     function GetInterface(const IID: TGUID; out Obj): Boolean; override;
 
-    property Slave: TJvDataConsumer read FSlave write FSlave;
+    property Slave: TJvDataConsumer read FSlave write SetSlave;
   end;
   
   TfmeJvProviderTreeList = class(TFrame)
@@ -94,6 +96,7 @@ type
     function LocateID(ID: string): Integer; virtual;
     procedure SelectItemID(ID: string);
     function GetSelectedIndex: Integer;
+    procedure UpdateViewList; virtual;
     property OnGetVirtualRoot: TGetVirtualRootEvent read FOnGetVirtualRoot write FOnGetVirtualRoot;
     property OnItemSelect: TNotifyEvent read FOnItemSelect write FOnItemSelect;
     property Provider: TMasterConsumer read FConsumerSvc;
@@ -116,6 +119,8 @@ begin
   begin
     Info.pt := Point(X, Y);
     Result := ListView_HitTest(LV.Handle, Info);
+    if Result >= LV.Items.Count then
+      Result := -1;
   end
   else
     Result := -1;
@@ -129,9 +134,12 @@ end;
 //===TMasterConsumer================================================================================
 
 procedure TMasterConsumer.SetSlave(Value: TJvDataConsumer);
+var
+  CtxList: IJvDataContexts;
 begin
   if Value <> Slave then
   begin
+    ProviderChanging;
     if Slave <> nil then
       Slave.OnChanged := OldOnChanged;
     FSlave := Value;
@@ -140,8 +148,20 @@ begin
       OldOnChanged := Slave.OnChanged;
       Slave.OnChanged := SlaveChanged;
     end;
+    if NeedContextFixup then
+      FixupContext
+    else
+    begin
+      if Supports(ProviderIntf, IJvDataContexts, CtxList) and (CtxList.GetCount >0 ) then
+        SetContextIntf(CtxList.GetContext(0))
+      else
+        SetContextIntf(nil);
+    end;
+    ProviderChanged;
+    if NeedExtensionFixups then
+      FixupExtensions;
     ViewChanged(nil);
-    Changed(ccrViewChanged);
+    Changed(ccrProviderSelected);
   end;
 end;
 
@@ -172,6 +192,19 @@ destructor TMasterConsumer.Destroy;
 begin
   Slave := nil;
   inherited Destroy;
+end;
+
+function TMasterConsumer.ProviderIntf: IJvDataProvider;
+begin
+  if Slave <> nil then
+    Result := Slave.ProviderIntf
+  else
+    Result := nil;
+end;
+
+procedure TMasterConsumer.SetProviderIntf(Value: IJvDataProvider);
+begin
+  // Does absolutely nothing
 end;
 
 function TMasterConsumer.GetInterface(const IID: TGUID; out Obj): Boolean;
@@ -232,18 +265,15 @@ end;
 procedure TfmeJvProviderTreeList.ConsumerChanged(Sender: TJvDataConsumer;
   Reason: TJvDataConsumerChangeReason);
 begin
-  if UseVirtualRoot then
-  begin
+  if csDestroying in ComponentState then
+    Exit;
+  if UseVirtualRoot and not UsingVirtualRoot then
     GenerateVirtualRoot;
-  end;
-  if GetViewList = nil then
-  begin
-    lvProvider.Items.Count := 0;
-  end
-  else
-  begin
-    lvProvider.Items.Count := GetViewList.Count + Ord(UsingVirtualRoot);
-  end;
+  if Reason in [ccrProviderSelected, ccrViewChanged] then
+    UpdateViewList;
+  if (lvProvider.Items.Count > 0) and (Reason = ccrViewChanged) then
+    with lvProvider do
+      UpdateItems(TopItem.Index, TopItem.Index + VisibleRowCount);
   lvProvider.Invalidate;
 end;
 
@@ -271,7 +301,7 @@ begin
   try
     if UsingVirtualRoot and (Index = 0) then
       Result := FVirtualRoot
-    else if (Index >= Ord(UsingVirtualRoot)) then
+    else if (Index >= Ord(UsingVirtualRoot)) and ((Index - Ord(UsingVirtualRoot)) < GetViewList.Count) then
       Result := GetViewList.Item(Index - Ord(UsingVirtualRoot));
   finally
     Provider.Leave;
@@ -311,6 +341,17 @@ begin
     Result := -1
   else
     Result := lvProvider.Selected.Index;
+end;
+
+procedure TfmeJvProviderTreeList.UpdateViewList;
+var
+  ViewList: IJvDataConsumerViewList;
+begin
+  ViewList := GetViewList;
+  if ViewList <> nil then
+    lvProvider.Items.Count := ViewList.Count + Ord(UsingVirtualRoot)
+  else
+    lvProvider.Items.Count := 0;
 end;
 
 procedure TfmeJvProviderTreeList.lvProviderCustomDrawItem(

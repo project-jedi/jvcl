@@ -79,14 +79,14 @@ procedure TfrmDataConsumerContextSelect.btnOkClick(Sender: TObject);
 var
   ConsumerContext: IJvDataConsumerContext;
   CtxItem: IJvDataItem;
-  ContextItemInfo: IContextItem;
+  ContextItemInfo: IJvDataContextItem;
 begin
   if Supports(Consumer, IJvDataConsumerContext, ConsumerContext) then
   begin
     CtxItem := fmeTreeList.GetDataItem(fmeTreeList.GetSelectedIndex);
     if (CtxItem <> nil) then
     begin
-      if Supports(CtxItem, IContextItem, ContextItemInfo) then
+      if Supports(CtxItem, IJvDataContextItem, ContextItemInfo) then
         ConsumerContext.SetContext(ContextItemInfo.GetContext);
     end
     else
