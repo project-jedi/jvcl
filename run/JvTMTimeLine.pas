@@ -1189,12 +1189,8 @@ begin
 end;
 
 function TJvCustomTMTimeline.ReadMagic(Stream: TStream): Boolean;
-var
-  S: string;
 begin
-  S := cMagic;
-  Stream.Read(S[1], Length(cMagic));
-  Result := AnsiSameStr(S, cMagic);
+  Result := AnsiSameStr(ReadStr(Stream),cMagic);
 end;
 
 procedure TJvCustomTMTimeline.LoadFromStream(Stream: TStream);
