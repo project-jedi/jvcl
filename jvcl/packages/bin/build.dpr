@@ -574,7 +574,10 @@ begin
       begin
         Delete(S, 1, 7);
         if S <> '' then
-          MakeOptions := MakeOptions + ' "' + S + '"';
+          if Pos(' ', S) > 0 then
+            MakeOptions := MakeOptions + ' "' + S + '"'
+          else
+            MakeOptions := MakeOptions + ' ' + S;
       end
       else if StartsText('--dcc-opt=', S) then
       begin
@@ -703,6 +706,9 @@ begin
         Continue;
       end;
     end;
+    if (Root <> '') and (Root[Length(Root)] = '\') then
+      Delete(Root, Length(Root), 1);
+
     Version := Edition[2];
     PkgDir := Edition;
     if (UpCase(PkgDir[3]) = 'P') or (UpCase(PkgDir[3]) = 'S') then
@@ -760,11 +766,11 @@ begin
     SetEnvironmentVariable('DXGETTEXTDIR', Pointer(DxgettextDir));
 
 
-    ExitCode := Execute('"' + Root + '\bin\make.exe" -l+ -f makefile.mak' + MakeOptions);
+    ExitCode := Execute('"' + Root + '\bin\make.exe" -l+ ' + MakeOptions);
     if ExitCode <> 0 then
     begin
       if ExitCode < 0 then
-        WriteLn('Failed: ', '"' + Root + '\bin\make.exe" -l+ -f makefile.mak' + MakeOptions);
+        WriteLn('Failed: ', '"' + Root + '\bin\make.exe" -l+ ' + MakeOptions);
       WriteLn('Press ENTER to continue');
       ReadLn;
     end;
