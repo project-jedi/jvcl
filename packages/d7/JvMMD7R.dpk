@@ -1,0 +1,66 @@
+package JvMMD7R;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Multi-media and Image Components'}
+{$RUNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  rtl,
+  vcljpg,
+  vcl,
+  vclx,
+  JvCoreD7R;
+
+contains
+  JvVisualId3v2 in '..\..\run\JvVisualId3v2.pas',
+  JvEasterEgg in '..\..\run\JvEasterEgg.pas',
+  JvGradient in '..\..\run\JvGradient.pas',
+  JvGradientCaption in '..\..\run\JvGradientCaption.pas',
+  JvId3v1 in '..\..\run\JvId3v1.pas',
+  JvId3v2 in '..\..\run\JvId3v2.pas',
+  JvId3v2Types in '..\..\run\JvId3v2Types.pas',
+  JvImageRotate in '..\..\run\JvImageRotate.pas',
+  JvImageTransform in '..\..\run\JvImageTransform.pas',
+  JvImageWindow in '..\..\run\JvImageWindow.pas',
+  JvPcx in '..\..\run\JvPcx.pas',
+  JvSplshWnd in '..\..\run\JvSplshWnd.pas',
+  JvStarfield in '..\..\run\JvStarfield.pas',
+  JvWaitingGradient in '..\..\run\JvWaitingGradient.pas',
+  JvWaitingProgress in '..\..\run\JvWaitingProgress.pas',
+  JvWavePlayer in '..\..\run\JvWavePlayer.pas',
+  JvVisualId3v1 in '..\..\run\JvVisualId3v1.pas',
+  JvSpecialProgress in '..\..\run\JvSpecialProgress.pas',
+  JvSlider in '..\..\run\JvSlider.pas',
+  JvGIF in '..\..\run\JvGIF.pas',
+  JvGIFCtrl in '..\..\run\JvGIFCtrl.pas',
+  JvID3v2Base in '..\..\run\JvID3v2Base.pas',
+  JvAniFile in '..\..\run\JvAniFile.pas',
+  JvIcoList in '..\..\run\JvIcoList.pas',
+  JvGraph in '..\..\run\JvGraph.pas',
+  JvxAnimate in '..\..\run\JvxAnimate.pas',
+  JvRle in '..\..\run\JvRle.pas',
+  JvImageDrawThread in '..\..\run\JvImageDrawThread.pas';
+
+end.
