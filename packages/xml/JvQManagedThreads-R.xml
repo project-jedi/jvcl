@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvQManagedThreads" Design="0">
+  <Description>JVCLX Managed Threads - runtime package</Description>
+  <Requires>
+    <Package Name="JvQCore-R" Targets="D7,K3,K3p" Condition="USEJVCL"/>
+    <Package Name="rtl" Targets="D7,K3,K3p" Condition=""/>
+    <Package Name="visualclx" Targets="D7,K3,K3p" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\qrun\JvQMTComponents.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQMTConsts.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQMTData.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQMTSync.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQMTSyncMon.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQMTThreading.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+  </Contains>
+</Package>
