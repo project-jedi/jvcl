@@ -52,6 +52,7 @@ type
   private
     FEnabled: Boolean;
     FInterval: Cardinal;
+    FKeepAlive: Boolean;
     FOnTimer: TNotifyEvent;
     FPriority: TThreadPriority;
     FStreamedEnabled: Boolean;
@@ -61,7 +62,9 @@ type
     procedure SetInterval(const Value: Cardinal);
     procedure SetOnTimer(const Value: TNotifyEvent);
     procedure SetPriority(const Value: TThreadPriority);
+    procedure SetKeepAlive(const Value: Boolean);
   protected
+    procedure DoOnTimer;
     procedure Loaded; override;
     procedure UpdateTimer;
   public
@@ -72,6 +75,7 @@ type
     // (p3) renamed Active->Enabled, Delay->Interval to make it compatible with TTimer
     property Enabled: Boolean read FEnabled write SetEnabled default False;
     property Interval: Cardinal read FInterval write SetInterval default 1000;
+    property KeepAlive: Boolean read FKeepAlive write SetKeepAlive default False;
     property OnTimer: TNotifyEvent read FOnTimer write SetOnTimer;
     property Priority: TThreadPriority read FPriority write SetPriority default tpNormal;
   end;
@@ -84,35 +88,48 @@ uses
 type
   TJvTimerThread = class(TThread)
   private
-    FEvent:THandle;
-    FException: Exception;
-    FExceptionAddress: Pointer;
+    FEvent: THandle;
+    FHasBeenSuspended: Boolean;
     FInterval: Cardinal;
-    FOnTimer: TNotifyEvent;
     FTimer: TJvThreadTimer;
-    procedure DoHandleException;
-    procedure HandleException;
   protected
-    procedure DoTimer;
+    procedure DoSuspend;
     procedure Execute; override;
   public
     constructor Create(ATimer: TJvThreadTimer);
     destructor Destroy; override;
-    property Interval:Cardinal read FInterval;
-    property OnTimer: TNotifyEvent read FOnTimer;
+
+    procedure Stop;
+
+    property Interval: Cardinal read FInterval;
     property Timer: TJvThreadTimer read FTimer;
   end;
+
+function SubtractMin0(const Big, Small: Cardinal): Cardinal;
+begin
+  if Big <= Small then
+    Result := 0
+  else
+    Result := Big - Small;
+end;
 
 //=== TJvTimerThread ====================================================
 
 constructor TJvTimerThread.Create(ATimer: TJvThreadTimer);
 begin
-  inherited Create(true);
-  FEvent := CreateEvent(nil,false,false,nil);
+  { Create suspended because of priority setting }
+  inherited Create(True);
+
+  FreeOnTerminate := True;
+  { Manually reset = false; Initial State = false }
+  FEvent := CreateEvent(nil, False, False, nil);
   if FEvent = 0 then
-    {$IFDEF COMPILER6_UP} RaiseLastOSError {$ELSE} RaiseLastWin32Error {$ENDIF COMPILER6_UP} ;
+    {$IFDEF COMPILER6_UP}
+    RaiseLastOSError
+    {$ELSE}
+    RaiseLastWin32Error
+    {$ENDIF COMPILER6_UP};
   FInterval := ATimer.FInterval;
-  FOnTimer := ATimer.FOnTimer;
   FTimer := ATimer;
   Priority := ATimer.Priority;
   Resume;
@@ -120,97 +137,96 @@ end;
 
 destructor TJvTimerThread.Destroy;
 begin
-  Terminate;
-  SetEvent(FEvent);
-  sleep(0);
-  inherited;
+  Stop;
+  inherited Destroy;
   if FEvent <> 0 then
     CloseHandle(FEvent);
 end;
 
-procedure TJvTimerThread.DoHandleException;
+procedure TJvTimerThread.DoSuspend;
 begin
-  if GetCapture <> 0 then
-    SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
-  if FException is Exception then
-  begin
-    {$IFDEF COMPILER6_UP}
-    if Assigned(ApplicationShowException) then
-      ApplicationShowException(FException);
-    {$ELSE}
-    Application.ShowException(FException);
-    {$ENDIF COMPILER6_UP}
-  end
-  else
-    SysUtils.ShowException(FException, FExceptionAddress);
-end;
-
-procedure TJvTimerThread.DoTimer;
-begin
-  if not (csDestroying in FTimer.ComponentState) then
-    FOnTimer(FTimer);
+  FHasBeenSuspended := True;
+  Suspend;
 end;
 
 procedure TJvTimerThread.Execute;
 var
   Offset, TickCount: Cardinal;
 begin
-  Offset := 0;
+  if WaitForSingleObject(FEvent, Interval) <> WAIT_TIMEOUT then
+    Exit;
+
   while not Terminated do
   begin
-    // A simple runtime interval correction technique takes the place here.
-    if (WaitForSingleObject(FEvent, FInterval - Offset) = WAIT_TIMEOUT) and not Terminated then
+    FHasBeenSuspended := False;
+
+    TickCount := GetTickCount;
+    if not Terminated then
+      Synchronize(FTimer.DoOnTimer);
+
+    // Determine how much time it took to execute OnTimer event handler. Take a care
+    // of wrapping the value returned by GetTickCount API around zero if Windows is
+    // run continuously for more than 49.7 days.
+    if FHasBeenSuspended then
+      Offset := 0
+    else
     begin
-      TickCount := GetTickCount;
-
-      try
-        Synchronize(DoTimer);
-      except
-        HandleException;
-      end;
-
-      // Determine how much time it took to execute OnTimer event handler. Take a care
-      // of wrapping the value returned by GetTickCount API around zero if Windows is
-      // run continuously for more than 49.7 days.
       Offset := GetTickCount;
       if Offset >= TickCount then
         Dec(Offset, TickCount)
       else
         Inc(Offset, High(Cardinal) - TickCount);
-
-      // Make sure Offset is less than or equal to FInterval.
-      if Offset > FInterval then
-        Offset := FInterval;
     end;
+
+    // Make sure Offset is less than or equal to FInterval.
+    // (rb) Ensure it's atomic, because of KeepAlive
+    if WaitForSingleObject(FEvent, SubtractMin0(Interval, Offset)) <> WAIT_TIMEOUT then
+      Exit;
   end;
 end;
 
-procedure TJvTimerThread.HandleException;
+procedure TJvTimerThread.Stop;
 begin
-  FException := Exception(ExceptObject);
-  FExceptionAddress := ExceptAddr;
-  try
-    // Ignore all silent exceptions.
-    if not (FException is EAbort) then Synchronize(DoHandleException);
-  finally
-    FException := nil;
-    FExceptionAddress := nil;
-  end;
+  Terminate;
+  SetEvent(FEvent);
+  if Suspended then
+    Resume;
+  Sleep(0);
 end;
 
 //=== TJvThreadTimer =========================================================
 
 constructor TJvThreadTimer.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FInterval := 1000;
   FPriority := tpNormal;
 end;
 
 destructor TJvThreadTimer.Destroy;
 begin
-  SetEnabled(False);
-  inherited;
+  if (FThread is TJvTimerThread) then
+    TJvTimerThread(FThread).Stop;
+  FThread := nil;
+  inherited Destroy;
+end;
+
+procedure TJvThreadTimer.DoOnTimer;
+begin
+  if csDestroying in ComponentState then
+    Exit;
+
+  try
+    if Assigned(FOnTimer) then
+      FOnTimer(Self);
+  except
+    {$IFDEF COMPILER6_UP}
+    if Assigned(ApplicationHandleException) then
+      ApplicationHandleException(Self);
+    {$ELSE}
+    Application.HandleException(Self);
+    {$ENDIF}
+  end;
 end;
 
 function TJvThreadTimer.GetThread: TThread;
@@ -220,21 +236,21 @@ end;
 
 procedure TJvThreadTimer.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   SetEnabled(FStreamedEnabled);
 end;
 
 procedure TJvThreadTimer.SetEnabled(const Value: Boolean);
 begin
-  if csReading in ComponentState then
+  if csLoading in ComponentState then
     FStreamedEnabled := Value
   else
-    if FEnabled <> Value then
-    begin
-      FEnabled := Value;
-      if not (csDesigning in ComponentState) then
-        UpdateTimer;
-    end;
+  if FEnabled <> Value then
+  begin
+    FEnabled := Value;
+    if not (csDesigning in ComponentState) then
+      UpdateTimer;
+  end;
 end;
 
 procedure TJvThreadTimer.SetInterval(const Value: Cardinal);
@@ -242,8 +258,21 @@ begin
   if FInterval <> Value then
   begin
     FInterval := Value;
-    if ComponentState * [csDesigning, csReading] = [] then
+    if ComponentState * [csDesigning, csLoading] = [] then
       UpdateTimer;
+  end;
+end;
+
+procedure TJvThreadTimer.SetKeepAlive(const Value: Boolean);
+begin
+  if Value <> KeepAlive then
+  begin
+    if (FThread is TJvTimerThread) then
+      TJvTimerThread(FThread).Stop;
+    FThread := nil;
+
+    FKeepAlive := Value;
+    UpdateTimer;
   end;
 end;
 
@@ -252,7 +281,7 @@ begin
   if @FOnTimer <> @Value then
   begin
     FOnTimer := Value;
-    if ComponentState * [csDesigning, csReading] = [] then
+    if ComponentState * [csDesigning, csLoading] = [] then
       UpdateTimer;
   end;
 end;
@@ -268,11 +297,37 @@ begin
 end;
 
 procedure TJvThreadTimer.UpdateTimer;
+var
+  DoEnable: Boolean;
 begin
-  if FEnabled and Assigned(FOnTimer) and (FInterval > 0) then
-    FThread := TJvTimerThread.Create(Self)
+  DoEnable := FEnabled and Assigned(FOnTimer) and (FInterval > 0);
+
+  if not KeepAlive then
+  begin
+    if FThread is TJvTimerThread then
+      TJvTimerThread(FThread).Stop;
+    FThread := nil;
+  end;
+
+  if DoEnable then
+  begin
+    if FThread is TJvTimerThread then
+      TJvTimerThread(FThread).FInterval := FInterval
+    else
+      FThread := TJvTimerThread.Create(Self);
+
+    if FThread.Suspended then
+      FThread.Resume;
+  end
   else
-    FreeAndNil(FThread);
+  if FThread is TJvTimerThread then
+  begin
+    if not FThread.Suspended then
+      TJvTimerThread(FThread).DoSuspend;
+
+    TJvTimerThread(FThread).FInterval := FInterval;
+  end;
 end;
 
 end.
+
