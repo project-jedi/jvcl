@@ -24,6 +24,7 @@ package JvSIMDViewD7;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL SIMD VIEW'}
+{$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
 requires
@@ -35,9 +36,10 @@ requires
   DJcl;
 
 contains
-  JvSIMDViewForm in 'JvSIMDViewForm.pas' {SSEForm},
+  JvSIMDViewForm in 'JvSIMDViewForm.pas' {JvSIMDViewFrm},
   JvSIMDView in 'JvSIMDView.pas',
   JvSIMDUtils in 'JvSIMDUtils.pas',
-  JvSIMDModifyForm in 'JvSIMDModifyForm.pas' {JvSIMDModifyFrm};
+  JvSIMDModifyForm in 'JvSIMDModifyForm.pas' {JvSIMDModifyFrm},
+  JvSIMDCpuInfo in 'JvSIMDCpuInfo.pas' {FormCpuInfo};
 
 end.

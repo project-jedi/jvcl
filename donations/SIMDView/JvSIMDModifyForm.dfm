@@ -3,8 +3,8 @@ object JvSIMDModifyFrm: TJvSIMDModifyFrm
   Top = 246
   BorderStyle = bsDialog
   Caption = 'JvSIMDModifyFrm'
-  ClientHeight = 441
-  ClientWidth = 449
+  ClientHeight = 385
+  ClientWidth = 481
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,6 +12,9 @@ object JvSIMDModifyFrm: TJvSIMDModifyFrm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object LabelDisplay: TLabel
@@ -44,9 +47,10 @@ object JvSIMDModifyFrm: TJvSIMDModifyFrm
     Height = 21
     Style = csDropDownList
     ItemHeight = 13
-    ItemIndex = 0
+    ItemIndex = 3
     TabOrder = 0
-    Text = 'Bytes'
+    Text = 'QWords'
+    OnChange = ComboBoxDisplayChange
     Items.Strings = (
       'Bytes'
       'Words'
@@ -65,18 +69,37 @@ object JvSIMDModifyFrm: TJvSIMDModifyFrm
     ItemIndex = 0
     TabOrder = 1
     Text = 'Binary'
+    OnChange = ComboBoxFormatChange
     Items.Strings = (
       'Binary'
       'Signed Decimal'
       'Unsigned Decimal'
       'Hexadecimal')
   end
-  object Panel1: TPanel
+  object PanelModify: TPanel
     Left = 8
     Top = 72
-    Width = 433
-    Height = 361
+    Width = 465
+    Height = 265
     BevelInner = bvLowered
     TabOrder = 2
+  end
+  object ButtonOK: TButton
+    Left = 384
+    Top = 352
+    Width = 91
+    Height = 25
+    Caption = '&OK'
+    TabOrder = 3
+    OnClick = ButtonOKClick
+  end
+  object ButtonCancel: TButton
+    Left = 280
+    Top = 352
+    Width = 91
+    Height = 25
+    Caption = '&Cancel'
+    ModalResult = 2
+    TabOrder = 4
   end
 end

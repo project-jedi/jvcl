@@ -233,21 +233,20 @@ const
     );
 
 type
-  TJvSIMDDisplay = ( sdBytes, sdWords, sdDWords, sdQWords, sdSingles, sdDoubles );
-
   TJvSIMDValue = packed record
-    case Display: TJvSIMDDisplay of
-      sdBytes   : (ValueByte: Byte;      );
-      sdWords   : (ValueWord: Word;      );
-      sdDWords  : (ValueDWord: Cardinal; );
-      sdQWords  : (ValueQWord: Int64;    );
-      sdSingles : (ValueSingle: Single;  );
-      sdDoubles : (ValueDouble: Double;  );
+    case Display: TJvXMMContentType of
+      xt16Bytes  : (ValueByte: Byte;      );
+      xt8Words   : (ValueWord: Word;      );
+      xt4DWords  : (ValueDWord: Cardinal; );
+      xt2QWords  : (ValueQWord: Int64;    );
+      xt4Singles : (ValueSingle: Single;  );
+      xt2Doubles : (ValueDouble: Double;  );
   end;
 
   TJvSIMDFormat = ( sfBinary, sfSigned, sfUnsigned, sfHexa );
 
 function FormatValue(Value:TJvSIMDValue; Format: TJvSIMDFormat):string;
+function ParseValue(const StringValue: string; var Value:TJvSIMDValue; Format: TJvSIMDFormat):Boolean;
 
 const
   CONTEXT_EXTENDED_REGISTERS = CONTEXT_i386 or $20;
@@ -271,15 +270,15 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils;
+  SysUtils, Math;
 
 function FormatBinary(Value: TJvSIMDValue): string;
 var
   I:Byte;
 const
-  Width: array [sdBytes..sdQWords] of Byte = (8, 16, 32, 64);
+  Width: array [xt16Bytes..xt2QWords] of Byte = (8, 16, 32, 64);
 begin
-  Assert(Value.Display<sdSingles);
+  Assert(Value.Display<xt4Singles);
   Result:=StringOfChar('0',Width[Value.Display]);
   for I:=1 to Width[Value.Display] do
   begin
@@ -291,55 +290,61 @@ end;
 
 function FormatSigned(Value: TJvSIMDValue): string;
 const
-  Width: array [sdBytes..sdQWords] of Byte = (4, 6, 11, 20);
+  Width: array [xt16Bytes..xt2QWords] of Byte = (4, 6, 11, 20);
 begin
-  Assert(Value.Display<sdSingles);
+  Assert(Value.Display<xt4Singles);
   case Value.Display of
-    sdBytes  : Result:=IntToStr(ShortInt(Value.ValueByte));
-    sdWords  : Result:=IntToStr(SmallInt(Value.ValueWord));
-    sdDWords : Result:=IntToStr(Integer(Value.ValueDWord));
-    sdQWords : Result:=IntToStr(Value.ValueQWord);
-    else       Result := '';
+    xt16Bytes : Result:=IntToStr(ShortInt(Value.ValueByte));
+    xt8Words  : Result:=IntToStr(SmallInt(Value.ValueWord));
+    xt4DWords : Result:=IntToStr(Integer(Value.ValueDWord));
+    xt2QWords : Result:=IntToStr(Value.ValueQWord);
+    else        begin
+                  Result := '';
+                  Exit;
+                end;
   end;
   Result:=StringOfChar(' ',Width[Value.Display]-Length(Result))+Result;
 end;
 
 function FormatUnsigned(Value: TJvSIMDValue): string;
 const
-  Width: array [sdBytes..sdQWords] of Byte = (3, 5, 10, 20);
+  Width: array [xt16Bytes..xt2QWords] of Byte = (3, 5, 10, 20);
 begin
-  Assert(Value.Display<sdSingles);
+  Assert(Value.Display<xt4Singles);
   case Value.Display of
-    sdBytes  : Result:=IntToStr(Byte(Value.ValueByte));
-    sdWords  : Result:=IntToStr(Word(Value.ValueWord));
-    sdDWords : Result:=IntToStr(Cardinal(Value.ValueDWord));
-    sdQWords : Result:=IntToStr(Value.ValueQWord);
-    else       Result := '';
+    xt16Bytes  : Result:=IntToStr(Byte(Value.ValueByte));
+    xt8Words  : Result:=IntToStr(Word(Value.ValueWord));
+    xt4DWords : Result:=IntToStr(Cardinal(Value.ValueDWord));
+    xt2QWords : Result:=IntToStr(Value.ValueQWord);
+    else        begin
+                  Result := '';
+                  Exit;
+                end;
   end;
   Result:=StringOfChar(' ',Width[Value.Display]-Length(Result))+Result;
 end;
 
 function FormatHexa(Value: TJvSIMDValue): string;
 const
-  Width: array [sdBytes..sdQWords] of Byte = (2, 4, 8, 16);
+  Width: array [xt16Bytes..xt2QWords] of Byte = (2, 4, 8, 16);
 begin
-  Assert(Value.Display<sdSingles);
+  Assert(Value.Display<xt4Singles);
   case Value.Display of
-    sdBytes  : Result := IntToHex(Value.ValueByte,Width[sdBytes]);
-    sdWords  : Result := IntToHex(Value.ValueWord,Width[sdWords]);
-    sdDWords : Result := IntToHex(Value.ValueDWord,Width[sdDWords]);
-    sdQWords : Result := IntToHex(Value.ValueQWord,Width[sdQWords]);
-    else       Result := '';
+    xt16Bytes : Result := IntToHex(Value.ValueByte,Width[xt16Bytes]);
+    xt8Words  : Result := IntToHex(Value.ValueWord,Width[xt8Words]);
+    xt4DWords : Result := IntToHex(Value.ValueDWord,Width[xt4DWords]);
+    xt2QWords : Result := IntToHex(Value.ValueQWord,Width[xt2QWords]);
+    else        Result := '';
   end;
 end;
 
 function FormatFloat(Value:TJvSIMDValue): string;
 begin
-  Assert(Value.Display>=sdSingles);
+  Assert(Value.Display>=xt4Singles);
   case Value.Display of
-    sdSingles : Result := FloatToStr(Value.ValueSingle);
-    sdDoubles : Result := FloatToStr(Value.ValueDouble);
-    else        Result := '';
+    xt4Singles : Result := FloatToStr(Value.ValueSingle);
+    xt2Doubles : Result := FloatToStr(Value.ValueDouble);
+    else         Result := '';
   end;
   Result:=StringOfChar(' ',22-Length(Result))+Result;     // 22 = max string length of a double value
 end;
@@ -359,8 +364,157 @@ begin
     else         Exit;
   end;
   case Value.Display of
-    sdBytes..sdQWords    : Result := FormatFunction(Value);
-    sdSingles..sdDoubles : Result := FormatFloat(Value);
+    xt16Bytes..xt2QWords   : Result := FormatFunction(Value);
+    xt4Singles..xt2Doubles : Result := FormatFloat(Value);
+  end;
+end;
+
+function ParseBinary(StringValue: string; var Value:TJvSIMDValue): Boolean;
+var
+  TestValue: Int64;
+  Index: Integer;
+begin
+  TestValue := 0;
+  Result := False;
+  if Length(StringValue)>64 then
+    Exit;
+  for Index := 1 to Length(StringValue) do
+  begin
+    TestValue := TestValue shl 1;
+    case StringValue[Index] of
+      '0' : ;
+      '1' : Inc(TestValue);
+      else  Exit;
+    end;
+  end;
+  Result := True;
+  case Value.Display of
+    xt16Bytes : if (TestValue>=Byte($00)) and (TestValue<=Byte($FF))
+                  then Value.ValueByte := TestValue
+                  else Result := False;
+    xt8Words  : if (TestValue>=Word($0000)) and (TestValue<=Word($FFFF))
+                  then Value.ValueByte := TestValue
+                  else Result := False;
+    xt4DWords : if (TestValue>=Cardinal($00000000)) and (TestValue<=Cardinal($FFFFFFFF))
+                  then Value.ValueByte := TestValue
+                  else Result := False;
+    xt2QWords : Value.ValueQWord := TestValue;
+    else        Result := False;
+  end;
+end;
+
+function ParseSigned(StringValue: string; var Value:TJvSIMDValue): Boolean;
+var
+  TestValue: Int64;
+begin
+  Result := TryStrToInt64(StringValue,TestValue);
+  if Result then
+    case Value.Display of
+      xt16Bytes : if (TestValue>=ShortInt($80)) and (TestValue<=ShortInt($7F))
+                    then Value.ValueByte := TestValue
+                    else Result := False;
+      xt8Words  : if (TestValue>=SmallInt($8000)) and (TestValue<=SmallInt($7FFF))
+                    then Value.ValueByte := TestValue
+                    else Result := False;
+      xt4DWords : if (TestValue>=Integer($80000000)) and (TestValue<=Integer($7FFFFFFF))
+                    then Value.ValueByte := TestValue
+                    else Result := False;
+      xt2QWords : Value.ValueQWord := TestValue;
+      else        Result := False;
+    end;
+end;
+
+function ParseUnsigned(StringValue: string; var Value:TJvSIMDValue): Boolean;
+var
+  TestValue: Int64;
+begin
+  Result := TryStrToInt64(StringValue,TestValue);
+  if Result then
+    case Value.Display of
+      xt16Bytes : if (TestValue>=Byte($00)) and (TestValue<=Byte($FF))
+                    then Value.ValueByte := TestValue
+                    else Result := False;
+      xt8Words  : if (TestValue>=Word($0000)) and (TestValue<=Word($FFFF))
+                    then Value.ValueByte := TestValue
+                    else Result := False;
+      xt4DWords : if (TestValue>=Cardinal($00000000)) and (TestValue<=Cardinal($FFFFFFFF))
+                    then Value.ValueByte := TestValue
+                    else Result := False;
+      xt2QWords : Value.ValueQWord := TestValue;
+      else        Result := False;
+    end;
+end;
+
+function ParseHexa(StringValue: string; var Value:TJvSIMDValue): Boolean;
+var
+  TestValue: Int64;
+  Index: Integer;
+begin
+  TestValue := 0;
+  Result := False;
+  if Length(StringValue)>16 then
+    Exit;
+  for Index := 1 to Length(StringValue) do
+  begin
+    TestValue := TestValue shl 4;
+    case StringValue[Index] of
+      '0'      : ;
+      '1'..'9' : Inc(TestValue,Ord(StringValue[Index])-Ord('0'));
+      'A'..'F' : Inc(TestValue,Ord(StringValue[Index])-Ord('A')+10);
+      'a'..'f' : Inc(TestValue,Ord(StringValue[Index])-Ord('a')+10);
+      else  Exit;
+    end;
+  end;
+  Result := True;
+  case Value.Display of
+    xt16Bytes : if (TestValue>=Byte($00)) and (TestValue<=Byte($FF))
+                  then Value.ValueByte := TestValue
+                  else Result := False;
+    xt8Words  : if (TestValue>=Word($0000)) and (TestValue<=Word($FFFF))
+                  then Value.ValueByte := TestValue
+                  else Result := False;
+    xt4DWords : if (TestValue>=Cardinal($00000000)) and (TestValue<=Cardinal($FFFFFFFF))
+                  then Value.ValueByte := TestValue
+                  else Result := False;
+    xt2QWords : Value.ValueQWord := TestValue;
+    else        Result := False;
+  end;
+end;
+
+function ParseFloat(StringValue: string; var Value:TJvSIMDValue): Boolean;
+var
+  TestValue: Extended;
+begin
+  Result := TryStrToFloat(StringValue,TestValue);
+  if (Result) then
+    case Value.Display of
+      xt4Singles : if (TestValue>=-MaxSingle) and (TestValue<=MaxSingle)
+                     then Value.ValueSingle := TestValue
+                     else Result := False;
+      xt2Doubles : if (TestValue>=MaxDouble) and (TestValue<=MaxDouble)
+                     then Value.ValueDouble := TestValue
+                     else Result := False;
+      else         Result := False;
+    end;
+end;
+
+function ParseValue(const StringValue: string; var Value:TJvSIMDValue; Format: TJvSIMDFormat):Boolean;
+type
+  TParseFunction = function (StringValue: string; var Value:TJvSIMDValue): Boolean;
+var
+  ParseFunction: TParseFunction;
+begin
+  Result := False;
+  case Format of
+    sfBinary   : ParseFunction := ParseBinary;
+    sfSigned   : ParseFunction := ParseSigned;
+    sfUnsigned : ParseFunction := ParseUnsigned;
+    sfHexa     : ParseFunction := ParseHexa;
+    else         Exit;
+  end;
+  case Value.Display of
+    xt16Bytes..xt2QWords   : Result := ParseFunction(StringValue, Value);
+    xt4Singles..xt2Doubles : Result := ParseFloat(StringValue, Value);
   end;
 end;
 

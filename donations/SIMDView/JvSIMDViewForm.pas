@@ -34,7 +34,7 @@ uses
   Dialogs, StdCtrls, ToolsApi, Grids, ExtCtrls, Menus, JclSysInfo, JvSIMDUtils;
 
 type
-  TSSEForm = class(TForm)
+  TJvSIMDViewFrm = class(TForm)
     Splitter: TSplitter;
     ListBoxRegs: TListBox;            // ListBoxRegs.Items.Objetcs         Bit 0 : Changed
     ListBoxMXCSR: TListBox;           // ListBoxMXCSR.Items.Objects        Bits 0 to 7 : BitId (TJvMXCSRBits)
@@ -58,6 +58,7 @@ type
     MenuItemSeparator2: TMenuItem;
     MenuItemStayOnTop: TMenuItem;
     MenuItemModify: TMenuItem;
+    MenuItemCpuInfo: TMenuItem;
     procedure ListBoxMXCSRDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
     procedure ListBoxMXCSRMouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -73,14 +74,16 @@ type
     procedure ListBoxRegsMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure MenuItemModifyClick(Sender: TObject);
+    procedure MenuItemCpuInfoClick(Sender: TObject);
+    procedure PopupMenuRegsPopup(Sender: TObject);
   private
     FServices:IOTADebuggerServices;
     FVectorFrame:TJvVectorFrame;
-    FDisplay:TJvSIMDDisplay;
+    FDisplay:TJvXMMContentType;
     FFormat:TJvSIMDFormat;
     FCpuInfo: TCpuInfo;
     FCpuInfoValid: Boolean;
-    procedure SetDisplay(const Value: TJvSIMDDisplay);
+    procedure SetDisplay(const Value: TJvXMMContentType);
     procedure SetFormat(const Value: TJvSIMDFormat);
   protected
     procedure DoClose(var Action: TCloseAction); override;
@@ -93,23 +96,21 @@ type
     procedure FormatRegs;
     function CpuInfo: TCpuInfo;
     property Format:TJvSIMDFormat read FFormat write SetFormat;
-    property Display:TJvSIMDDisplay read FDisplay write SetDisplay;
+    property Display:TJvXMMContentType read FDisplay write SetDisplay;
   end;
 
 var
-  SSEForm: TSSEForm;
+  JvSIMDViewFrm: TJvSIMDViewFrm;
 
 implementation
 
 uses
-{$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
-  JvSIMDModifyForm;
+  JvSIMDModifyForm,
+  JvSIMDCpuInfo;
 
 {$R *.dfm}
 
-constructor TSSEForm.Create(AOwner: TComponent;
+constructor TJvSIMDViewFrm.Create(AOwner: TComponent;
   AServices: IOTADebuggerServices);
 var
   I:TJvMXCSRBits;
@@ -124,12 +125,9 @@ begin
       if (MXCSRBitsDescription[I].BitCount<>0) then
       ListBoxMXCSR.Items.AddObject('0',TObject(I));
   ListBoxRegs.Items.Clear;
-  with CpuInfo do
-    if (CpuType = CPU_TYPE_AMD) and (HasExtendedInfo)
-      and ((AMDSpecific.ExFeatures and EAMD_LONG_FLAG)<>0) then
-      J := 16
-    else
-      J := 8;
+  if CpuInfo.Is64Bits
+    then J := 16
+    else J := 8;
   while (J>-1) do   // 16 128-bit registers + 1 cardinal (MXCSR)
   begin
     ListBoxRegs.Items.InsertObject(0,'0',nil);
@@ -139,23 +137,23 @@ begin
   MenuItemSigned.Tag:=Integer(sfSigned);
   MenuItemUnsigned.Tag:=Integer(sfUnsigned);
   MenuItemHexa.Tag:=Integer(sfHexa);
-  MenuItemBytes.Tag:=Integer(sdBytes);
-  MenuItemWords.Tag:=Integer(sdWords);
-  MenuItemDWords.Tag:=Integer(sdDWords);
-  MenuItemQWords.Tag:=Integer(sdQWords);
-  MenuItemSingles.Tag:=Integer(sdSingles);
-  MenuItemDoubles.Tag:=Integer(sdDoubles);
+  MenuItemBytes.Tag:=Integer(xt16Bytes);
+  MenuItemWords.Tag:=Integer(xt8Words);
+  MenuItemDWords.Tag:=Integer(xt4DWords);
+  MenuItemQWords.Tag:=Integer(xt2QWords);
+  MenuItemSingles.Tag:=Integer(xt4Singles);
+  MenuItemDoubles.Tag:=Integer(xt2Doubles);
   Format:=sfHexa;
-  Display:=sdWords;
+  Display:=xt8Words;
   GetThreadValues;
 end;
 
-destructor TSSEForm.Destroy;
+destructor TJvSIMDViewFrm.Destroy;
 begin
   inherited Destroy;
 end;
 
-function TSSEForm.CpuInfo: TCpuInfo;
+function TJvSIMDViewFrm.CpuInfo: TCpuInfo;
 begin
   if not FCpuInfoValid then
   begin
@@ -165,7 +163,7 @@ begin
   Result := FCpuInfo;
 end;
 
-procedure TSSEForm.ListBoxMXCSRDrawItem(Control: TWinControl;
+procedure TJvSIMDViewFrm.ListBoxMXCSRDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
   BitId:TJvMXCSRBits;
@@ -188,7 +186,7 @@ begin
   end;
 end;
 
-procedure TSSEForm.ListBoxMXCSRMouseMove(Sender: TObject;
+procedure TJvSIMDViewFrm.ListBoxMXCSRMouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
 var
   AIndex:Integer;
@@ -224,7 +222,7 @@ begin
   end;
 end;
 
-procedure TSSEForm.ListBoxRegsDrawItem(Control: TWinControl; Index: Integer;
+procedure TJvSIMDViewFrm.ListBoxRegsDrawItem(Control: TWinControl; Index: Integer;
   Rect: TRect; State: TOwnerDrawState);
 var
   AText:string;
@@ -250,7 +248,7 @@ begin
   end;
 end;
 
-procedure TSSEForm.ListBoxMXCSRMouseDown(Sender: TObject;
+procedure TJvSIMDViewFrm.ListBoxMXCSRMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   AIndex: Integer;
@@ -268,7 +266,7 @@ begin
   end;
 end;
 
-procedure TSSEForm.ListBoxRegsMouseDown(Sender: TObject;
+procedure TJvSIMDViewFrm.ListBoxRegsMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if (Button=mbRight) then
@@ -280,7 +278,7 @@ begin
   end;
 end;
 
-procedure TSSEForm.MenuItemComplementClick(Sender: TObject);
+procedure TJvSIMDViewFrm.MenuItemComplementClick(Sender: TObject);
 var
   AndMask:Cardinal;
   BitValue:Cardinal;
@@ -301,7 +299,7 @@ begin
   SetThreadValues;
 end;
 
-procedure TSSEForm.GetThreadValues;
+procedure TJvSIMDViewFrm.GetThreadValues;
   function MakeFlag(Value:Boolean):TObject; overload;
   begin
        if (Value)
@@ -341,12 +339,9 @@ begin
   ListBoxMXCSR.Invalidate;
   ListBoxRegs.Items.Objects[0]:=MakeFlag(NewVectorFrame.MXCSR<>FVectorFrame.MXCSR);
   ListBoxRegs.Items.Strings[0]:=IntToHex(Cardinal(NewVectorFrame.MXCSR),8);
-  with CpuInfo do
-    if (CpuType = CPU_TYPE_AMD) and (HasExtendedInfo)
-      and ((AMDSpecific.ExFeatures and EAMD_LONG_FLAG)<>0) then
-      Index:=16
-    else
-      Index:=8;
+  if CpuInfo.Is64Bits
+    then Index:=16
+    else Index:=8;
   while (Index>0) do
   begin
     ListBoxRegs.Items.Objects[Index]:=MakeFlag(NewVectorFrame.XMMRegisters.LongXMM[Index-1],
@@ -357,13 +352,13 @@ begin
   FormatRegs;
 end;
 
-procedure TSSEForm.SetThreadValues;
+procedure TJvSIMDViewFrm.SetThreadValues;
 begin
   SetVectorContext(FServices.CurrentProcess.CurrentThread.Handle,FVectorFrame);
   GetThreadValues;
 end;
 
-procedure TSSEForm.FormatRegs;
+procedure TJvSIMDViewFrm.FormatRegs;
   function FormatReg(AReg:TJvXMMRegister):string;
   var
     I:Integer;
@@ -372,47 +367,44 @@ procedure TSSEForm.FormatRegs;
     Result:='';
     Value.Display := Display;
     case Display of
-      sdBytes   : for I:=High(AReg.Bytes) downto Low(AReg.Bytes) do
-                  begin
-                    Value.ValueByte := AReg.Bytes[I];
-                    Result:=Result+' '+FormatValue(Value,Format);
-                  end;
-      sdWords   : for I:=High(AReg.Words) downto Low(AReg.Words) do
-                  begin
-                    Value.ValueWord := AReg.Words[I];
-                    Result:=Result+' '+FormatValue(Value,Format);
-                  end;
-      sdDWords  : for I:=High(AReg.DWords) downto Low(AReg.DWords) do
-                  begin
-                    Value.ValueDWord := AReg.DWords[I];
-                    Result:=Result+' '+FormatValue(Value,Format);
-                  end;
-      sdQWords  : for I:=High(AReg.QWords) downto Low(AReg.QWords) do
-                  begin
-                    Value.ValueQWord := AReg.QWords[I];
-                    Result:=Result+' '+FormatValue(Value,Format);
-                  end;
-      sdSingles : for I:=High(AReg.Singles) downto Low(AReg.Singles) do
-                  begin
-                    Value.ValueSingle := AReg.Singles[I];
-                    Result:=Result+' '+FormatValue(Value,sfBinary);
-                  end;
-      sdDoubles : for I:=High(AReg.Doubles) downto Low(AReg.Doubles) do
-                  begin
-                    Value.ValueDouble := AReg.Doubles[I];
-                    Result:=Result+' '+FormatValue(Value,sfBinary);
-                  end;
+      xt16Bytes  : for I:=High(AReg.Bytes) downto Low(AReg.Bytes) do
+                   begin
+                     Value.ValueByte := AReg.Bytes[I];
+                     Result:=Result+' '+FormatValue(Value,Format);
+                   end;
+      xt8Words   : for I:=High(AReg.Words) downto Low(AReg.Words) do
+                   begin
+                     Value.ValueWord := AReg.Words[I];
+                     Result:=Result+' '+FormatValue(Value,Format);
+                   end;
+      xt4DWords  : for I:=High(AReg.DWords) downto Low(AReg.DWords) do
+                   begin
+                     Value.ValueDWord := AReg.DWords[I];
+                     Result:=Result+' '+FormatValue(Value,Format);
+                   end;
+      xt2QWords  : for I:=High(AReg.QWords) downto Low(AReg.QWords) do
+                   begin
+                     Value.ValueQWord := AReg.QWords[I];
+                     Result:=Result+' '+FormatValue(Value,Format);
+                   end;
+      xt4Singles : for I:=High(AReg.Singles) downto Low(AReg.Singles) do
+                   begin
+                     Value.ValueSingle := AReg.Singles[I];
+                     Result:=Result+' '+FormatValue(Value,sfBinary);
+                   end;
+      xt2Doubles : for I:=High(AReg.Doubles) downto Low(AReg.Doubles) do
+                   begin
+                     Value.ValueDouble := AReg.Doubles[I];
+                     Result:=Result+' '+FormatValue(Value,sfBinary);
+                   end;
     end;
   end;
 var
   Index:Integer;
 begin
-  with CpuInfo do
-    if (CpuType = CPU_TYPE_AMD) and (HasExtendedInfo)
-      and ((AMDSpecific.ExFeatures and EAMD_LONG_FLAG)<>0) then
-      Index:=16
-    else
-      Index:=8;
+  if CpuInfo.Is64Bits
+    then Index:=16
+    else Index:=8;
   while (Index>0) do
   begin
     ListBoxRegs.Items.Strings[Index]:=FormatReg(FVectorFrame.XMMRegisters.LongXMM[Index-1]);
@@ -421,33 +413,33 @@ begin
   ListBoxMXCSR.Invalidate;
 end;
 
-procedure TSSEForm.MenuItemFormatClick(Sender: TObject);
+procedure TJvSIMDViewFrm.MenuItemFormatClick(Sender: TObject);
 begin
   Format:=TJvSIMDFormat((Sender as TMenuItem).Tag);
 end;
 
-procedure TSSEForm.SetDisplay(const Value: TJvSIMDDisplay);
+procedure TJvSIMDViewFrm.SetDisplay(const Value: TJvXMMContentType);
 var
   AEnabled:Boolean;
 begin
   FDisplay := Value;
-  MenuItemBytes.Checked:=Value=sdBytes;
-  MenuItemWords.Checked:=Value=sdWords;
-  MenuItemDWords.Checked:=Value=sdDWords;
-  MenuItemQWords.Checked:=Value=sdQWords;
-  MenuItemSingles.Checked:=Value=sdSingles;
-  MenuItemDoubles.Checked:=Value=sdDoubles;
+  MenuItemBytes.Checked := Value=xt16Bytes;
+  MenuItemWords.Checked := Value=xt8Words;
+  MenuItemDWords.Checked := Value=xt4DWords;
+  MenuItemQWords.Checked := Value=xt2QWords;
+  MenuItemSingles.Checked := Value=xt4Singles;
+  MenuItemDoubles.Checked := Value=xt2Doubles;
 
-  AEnabled:=not (Value in [sdSingles, sdDoubles]);
-  MenuItemBinary.Enabled:=AEnabled;
-  MenuItemSigned.Enabled:=AEnabled;
-  MenuItemUnsigned.Enabled:=AEnabled;
-  MenuItemHexa.Enabled:=AEnabled;
+  AEnabled:=not (Value in [xt4Singles, xt2Doubles]);
+  MenuItemBinary.Enabled := AEnabled;
+  MenuItemSigned.Enabled := AEnabled;
+  MenuItemUnsigned.Enabled := AEnabled;
+  MenuItemHexa.Enabled := AEnabled;
 
   FormatRegs;
 end;
 
-procedure TSSEForm.SetFormat(const Value: TJvSIMDFormat);
+procedure TJvSIMDViewFrm.SetFormat(const Value: TJvSIMDFormat);
 begin
   FFormat := Value;
   MenuItemBinary.Checked:=Value=sfBinary;
@@ -457,17 +449,17 @@ begin
   FormatRegs;
 end;
 
-procedure TSSEForm.MenuItemDisplayClick(Sender: TObject);
+procedure TJvSIMDViewFrm.MenuItemDisplayClick(Sender: TObject);
 begin
-  Display:=TJvSIMDDisplay((Sender as TMenuItem).Tag);
+  Display:=TJvXMMContentType((Sender as TMenuItem).Tag);
 end;
 
-procedure TSSEForm.DoClose(var Action: TCloseAction);
+procedure TJvSIMDViewFrm.DoClose(var Action: TCloseAction);
 begin
   Action:=caFree;
 end;
 
-procedure TSSEForm.MenuItemStayOnTopClick(Sender: TObject);
+procedure TJvSIMDViewFrm.MenuItemStayOnTopClick(Sender: TObject);
 begin
   with (Sender as TMenuItem) do
   begin
@@ -478,30 +470,33 @@ begin
   end;
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-    );
-
-procedure TSSEForm.MenuItemModifyClick(Sender: TObject);
+procedure TJvSIMDViewFrm.MenuItemModifyClick(Sender: TObject);
 begin
-  with TJvSIMDModifyFrm.Create(Self) do
+  if ListBoxRegs.ItemIndex>0 then
+    with TJvSIMDModifyFrm.Create(Self) do
   begin
     Icon.Assign(Self.Icon);
-    Execute;
+    if (Execute(Display,Format,FVectorFrame.XMMRegisters.LongXMM[ListBoxRegs.ItemIndex-1]))
+      then SetThreadValues;
     Free;
   end;
 end;
 
-initialization
-  RegisterUnitVersion(HInstance, UnitVersioning);
+procedure TJvSIMDViewFrm.MenuItemCpuInfoClick(Sender: TObject);
+var
+  FormCPUInfo: TFormCpuInfo;
+begin
+  FormCPUInfo := TFormCpuInfo.Create(Self);
+  try
+    FormCPUInfo.Execute(CpuInfo);
+  finally
+    FormCPUInfo.Free;
+  end;
+end;
 
-finalization
-  UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+procedure TJvSIMDViewFrm.PopupMenuRegsPopup(Sender: TObject);
+begin
+  MenuItemModify.Enabled := ListBoxRegs.ItemIndex>0;
+end;
 
 end.

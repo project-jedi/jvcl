@@ -59,7 +59,7 @@ type
     FIcon:TIcon;
     FSSEMenuItem:TMenuItem;
     FViewDebugMenu:TMenuItem;
-    FForm:TSSEForm;
+    FForm:TJvSIMDViewFrm;
     FCpuInfo: TCpuInfo;
     FCpuInfoValid: Boolean;
     procedure CheckToolBarButton(AToolBar:TToolBar);
@@ -118,9 +118,6 @@ procedure Register;
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvSIMDUtils;
 
 procedure Register;
@@ -139,7 +136,7 @@ begin
   end;
   if not Assigned(FForm) then
   begin
-    FForm:=TSSEForm.Create(Application,FDebuggerServices);
+    FForm:=TJvSIMDViewFrm.Create(Application,FDebuggerServices);
     FForm.Icon:=FIcon;
     FForm.OnDestroy:=FormDestroy;
     FForm.Caption := GetSSEString;
@@ -330,8 +327,7 @@ begin
       3  : Result := RsSSE1 + ',' + RsSSE2 + ',' + RsSSE3;
       else Result := RsSSE+IntToStr(SSE);
     end;
-    if (CpuType = CPU_TYPE_AMD) and (HasExtendedInfo)
-      and ((AMDSpecific.ExFeatures and EAMD_LONG_FLAG)<>0) then
+    if Is64Bits then
       Result := Result + ',' + RsLong;
   end;
 end;
@@ -518,21 +514,5 @@ procedure TDebuggerNotifier.ThreadNotify(Reason: TOTANotifyReason);
 begin
   if (Reason=nrStopped) then Owner.Refresh;
 end;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-    );
-
-initialization
-  RegisterUnitVersion(HInstance, UnitVersioning);
-
-finalization
-  UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
 
 end.

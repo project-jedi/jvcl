@@ -1,9 +1,9 @@
-object SSEForm: TSSEForm
+object JvSIMDViewFrm: TJvSIMDViewFrm
   Left = 280
   Top = 354
   Width = 850
   Height = 305
-  Caption = 'SSEForm'
+  Caption = 'JvSIMDViewFrm'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -63,6 +63,7 @@ object SSEForm: TSSEForm
   end
   object PopupMenuRegs: TPopupMenu
     AutoPopup = False
+    OnPopup = PopupMenuRegsPopup
     Left = 64
     Top = 48
     object MenuItemDisplay: TMenuItem
@@ -134,6 +135,10 @@ object SSEForm: TSSEForm
     object MenuItemStayOnTop: TMenuItem
       Caption = '&Stay on top'
       OnClick = MenuItemStayOnTopClick
+    end
+    object MenuItemCpuInfo: TMenuItem
+      Caption = 'CPU Informations...'
+      OnClick = MenuItemCpuInfoClick
     end
   end
   object PopupMenuMXCSR: TPopupMenu
