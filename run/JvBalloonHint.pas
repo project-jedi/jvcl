@@ -294,7 +294,6 @@ type
     FSounds: array [TJvIconKind] of string;
     FUseBalloonAsApplicationHint: Boolean;
     FDesigning: Boolean;
-
     function GetMainCtrl: TJvBalloonHint;
     procedure GetDefaultImages;
     procedure GetDefaultSounds;
@@ -407,6 +406,15 @@ end;
 
 //=== { TJvBalloonWindow } ===================================================
 
+constructor TJvBalloonWindow.Create(AOwner: TComponent);
+begin
+  {$IFNDEF COMPILER6_UP}
+  InitD5Controls;
+  {$ENDIF COMPILER6_UP}
+  inherited Create(AOwner);
+  ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks];
+end;
+
 procedure TJvBalloonWindow.ActivateHint(Rect: TRect; const AHint: string);
 begin
   if HandleAllocated and IsWindowVisible(Handle) then
@@ -423,7 +431,7 @@ begin
   with TGlobalCtrl.Instance do
     if ahPlaySound in MainCtrl.ApplicationHintOptions then
       PlaySound(MainCtrl.DefaultIcon);
-  inherited;
+  inherited ActivateHint(Rect, AHint);
 end;
 
 procedure TJvBalloonWindow.CalcAutoPosition(var ARect: TRect);
@@ -432,7 +440,6 @@ var
   ScreenRect: TRect;
   LStemPointPosition: TPoint;
 begin
-
   { bpAuto returns the same value as bpLeftDown; bpLeftDown is choosen
     arbitrary }
   FCurrentPosition := bpLeftDown;
@@ -672,7 +679,8 @@ begin
       OffsetRect(ARect, -X, -Y);
     if FCurrentPosition = bpLeftUp then
       FCurrentPosition := bpRightUp
-    else if FCurrentPosition = bpLeftDown then
+    else
+    if FCurrentPosition = bpLeftDown then
       FCurrentPosition := bpRightDown;
     with CalcOffset(ARect) do
       OffsetRect(ARect, X, Y);
@@ -684,7 +692,8 @@ begin
       OffsetRect(ARect, -X, -Y);
     if FCurrentPosition = bpLeftUp then
       FCurrentPosition := bpLeftDown
-    else if FCurrentPosition = bpRightUp then
+    else
+    if FCurrentPosition = bpRightUp then
       FCurrentPosition := bpRightDown;
     with CalcOffset(ARect) do
       OffsetRect(ARect, X, Y);
@@ -712,15 +721,6 @@ begin
   {inherited;}
 end;
 
-constructor TJvBalloonWindow.Create(AOwner: TComponent);
-begin
-  {$IFNDEF COMPILER6_UP}
-  InitD5Controls;
-  {$ENDIF COMPILER6_UP}
-  inherited Create(AOwner);
-  ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks];
-end;
-
 procedure TJvBalloonWindow.CreateParams(var Params: TCreateParams);
 const
   CS_DROPSHADOW = $00020000;
@@ -737,7 +737,7 @@ function TJvBalloonWindow.CreateRegion: HRGN;
 var
   Rect: TRect;
   RegionRound, RegionTip: HRGN;
-  ptTail: array [0..2] of TPoint;
+  PtTail: array [0..2] of TPoint;
 begin
   SetRect(Rect, 0, 0, Width, Height);
 
@@ -751,9 +751,9 @@ begin
              2----1
         }
 
-        ptTail[0] := Point(Rect.Right - (FTipDelta + 1), 0);
-        ptTail[1] := Point(Rect.Right - (FTipDelta + 1), FTipHeight + 1);
-        ptTail[2] := Point(Rect.Right - (FTipDelta + FTipWidth + 2), FTipHeight + 1);
+        PtTail[0] := Point(Rect.Right - (FTipDelta + 1), 0);
+        PtTail[1] := Point(Rect.Right - (FTipDelta + 1), FTipHeight + 1);
+        PtTail[2] := Point(Rect.Right - (FTipDelta + FTipWidth + 2), FTipHeight + 1);
       end;
     bpRightDown:
       begin
@@ -763,9 +763,9 @@ begin
              |   \
              1----2
         }
-        ptTail[0] := Point(FTipDelta + 1, 0);
-        ptTail[1] := Point(FTipDelta + 1, FTipHeight + 1);
-        ptTail[2] := Point(FTipDelta + FTipWidth + 2, FTipHeight + 1);
+        PtTail[0] := Point(FTipDelta + 1, 0);
+        PtTail[1] := Point(FTipDelta + 1, FTipHeight + 1);
+        PtTail[2] := Point(FTipDelta + FTipWidth + 2, FTipHeight + 1);
       end;
     bpLeftUp:
       begin
@@ -776,9 +776,9 @@ begin
                   0
         }
 
-        ptTail[0] := Point(Rect.Right - (FTipDelta + 1), Rect.Bottom + 1);
-        ptTail[1] := Point(Rect.Right - (FTipDelta + 1), Rect.Bottom - (FTipHeight + 1));
-        ptTail[2] := Point(Rect.Right - (FTipDelta + FTipWidth + 2), Rect.Bottom - (FTipHeight + 1));
+        PtTail[0] := Point(Rect.Right - (FTipDelta + 1), Rect.Bottom + 1);
+        PtTail[1] := Point(Rect.Right - (FTipDelta + 1), Rect.Bottom - (FTipHeight + 1));
+        PtTail[2] := Point(Rect.Right - (FTipDelta + FTipWidth + 2), Rect.Bottom - (FTipHeight + 1));
       end;
     bpRightUp:
       begin
@@ -789,13 +789,13 @@ begin
              0
         }
 
-        ptTail[0] := Point(FTipDelta + 1, Rect.Bottom);
-        ptTail[1] := Point(FTipDelta + 1, Rect.Bottom - (FTipHeight + 1));
-        ptTail[2] := Point(FTipDelta + FTipWidth + 2, Rect.Bottom - (FTipHeight + 1));
+        PtTail[0] := Point(FTipDelta + 1, Rect.Bottom);
+        PtTail[1] := Point(FTipDelta + 1, Rect.Bottom - (FTipHeight + 1));
+        PtTail[2] := Point(FTipDelta + FTipWidth + 2, Rect.Bottom - (FTipHeight + 1));
       end;
   end;
 
-  RegionTip := CreatePolygonRgn(ptTail, 3, WINDING);
+  RegionTip := CreatePolygonRgn(PtTail, 3, WINDING);
   case FCurrentPosition of
     bpLeftDown, bpRightDown:
       RegionRound := CreateRoundRectRgn(1, FTipHeight + 1, Width, Height - 3, 11, 11);
@@ -814,8 +814,7 @@ begin
   Result := GetStemPointPositionInRect(BoundsRect);
 end;
 
-function TJvBalloonWindow.GetStemPointPositionInRect(
-  const ARect: TRect): TPoint;
+function TJvBalloonWindow.GetStemPointPositionInRect(const ARect: TRect): TPoint;
 begin
   { bpAuto returns the same value as bpLeftDown; bpLeftDown is choosen
     arbitrary }
@@ -859,7 +858,6 @@ begin
   { Do nothing, thus prevent TJvHintWindow from drawing }
 end;
 {$ENDIF COMPILER6_UP}
-
 
 procedure TJvBalloonWindow.Paint;
 var
@@ -930,6 +928,42 @@ end;
 
 //=== { TJvBalloonHint } =====================================================
 
+constructor TJvBalloonHint.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FActive := False;
+  FHint := TJvBalloonWindowEx.Create(Self);
+  FHint.FCtrl := Self;
+  FHint.Visible := False;
+  FHint.OnMouseDown := HandleMouseDown;
+  FHint.OnMouseUp := HandleMouseUp;
+  FHint.OnMouseMove := HandleMouseMove;
+  FHint.OnClick := HandleClick;
+  FHint.OnDblClick := HandleDblClick;
+  FOptions := [boShowCloseBtn];
+  FApplicationHintOptions := [ahShowHeaderInHint, ahShowIconInHint];
+  FDefaultIcon := ikInformation;
+  FDefaultBalloonPosition := bpAuto;
+  FDefaultImageIndex := -1;
+  FCustomAnimationTime := 100;
+  FCustomAnimationStyle := atBlend;
+
+  TGlobalCtrl.Instance.Add(Self);
+end;
+
+destructor TJvBalloonHint.Destroy;
+begin
+  CancelHint;
+  StopHintTimer;
+
+  if FHandle <> 0 then
+    DeallocateHWndEx(FHandle);
+
+  TGlobalCtrl.Instance.Remove(Self);
+
+  inherited Destroy;
+end;
+
 procedure TJvBalloonHint.ActivateHint(ACtrl: TControl; const AHint: string;
   const AImageIndex: TImageIndex; const AHeader: string;
   const VisibleTime: Integer);
@@ -951,8 +985,8 @@ begin
   InternalActivateHint(ACtrl);
 end;
 
-procedure TJvBalloonHint.ActivateHint(ACtrl: TControl; const AHint,
-  AHeader: string; const VisibleTime: Integer);
+procedure TJvBalloonHint.ActivateHint(ACtrl: TControl;
+  const AHint, AHeader: string; const VisibleTime: Integer);
 begin
   if not Assigned(ACtrl) then
     Exit;
@@ -971,8 +1005,7 @@ begin
 end;
 
 procedure TJvBalloonHint.ActivateHint(ACtrl: TControl; const AHint: string;
-  const AIconKind: TJvIconKind; const AHeader: string;
-  const VisibleTime: Integer);
+  const AIconKind: TJvIconKind; const AHeader: string; const VisibleTime: Integer);
 begin
   if not Assigned(ACtrl) then
     Exit;
@@ -1056,42 +1089,6 @@ begin
 
   if Assigned(FOnClose) then
     FOnClose(Self);
-end;
-
-constructor TJvBalloonHint.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FActive := False;
-  FHint := TJvBalloonWindowEx.Create(Self);
-  FHint.FCtrl := Self;
-  FHint.Visible := False;
-  FHint.OnMouseDown := HandleMouseDown;
-  FHint.OnMouseUp := HandleMouseUp;
-  FHint.OnMouseMove := HandleMouseMove;
-  FHint.OnClick := HandleClick;
-  FHint.OnDblClick := HandleDblClick;
-  FOptions := [boShowCloseBtn];
-  FApplicationHintOptions := [ahShowHeaderInHint, ahShowIconInHint];
-  FDefaultIcon := ikInformation;
-  FDefaultBalloonPosition := bpAuto;
-  FDefaultImageIndex := -1;
-  FCustomAnimationTime := 100;
-  FCustomAnimationStyle := atBlend;
-
-  TGlobalCtrl.Instance.Add(Self);
-end;
-
-destructor TJvBalloonHint.Destroy;
-begin
-  CancelHint;
-  StopHintTimer;
-
-  if FHandle <> 0 then
-    DeallocateHWndEx(FHandle);
-
-  TGlobalCtrl.Instance.Remove(Self);
-
-  inherited Destroy;
 end;
 
 function TJvBalloonHint.GetHandle: THandle;
@@ -1649,9 +1646,7 @@ begin
       HintWindowClass := TJvBalloonWindow;
     end
     else
-    begin
       HintWindowClass := FOldHintWindowClass;
-    end;
   end;
 end;
 
@@ -1799,7 +1794,7 @@ begin
   if Assigned(FCtrl.FData.RAnchorWindow) then
   begin
     if not IsWindowVisible(FCtrl.FData.RAnchorWindow.Handle) or
-           IsIconic(FCtrl.FData.RAnchorWindow.Handle) then
+      IsIconic(FCtrl.FData.RAnchorWindow.Handle) then
       { Current window is minimized, thus do not show the balloon }
       Exit
     else
@@ -1971,7 +1966,7 @@ end;
 
 procedure TJvBalloonWindowEx.WMNCHitTest(var Msg: TWMNCHitTest);
 begin
-  Msg.Result := HTCLIENT
+  Msg.Result := HTCLIENT;
 end;
 
 {$IFDEF UNITVERSIONING}

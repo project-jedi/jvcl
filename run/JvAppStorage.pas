@@ -352,21 +352,19 @@ type
     procedure ReadEnumerationInt(const Path: string; TypeInfo: PTypeInfo; const Default;
       out Value); virtual;
     { Stores an enumeration (ignores sub stores). }
-    procedure WriteEnumerationInt(const Path: string; TypeInfo: PTypeInfo;
-      const Value); virtual;
+    procedure WriteEnumerationInt(const Path: string; TypeInfo: PTypeInfo; const Value); virtual;
     { Retrieves a set. If the value is not found, the Default will be returned (ignores sub
       stores). }
-    procedure ReadSetInt(const Path: string; ATypeInfo: PTypeInfo; const Default;
-      out Value); virtual;
+    procedure ReadSetInt(const Path: string; ATypeInfo: PTypeInfo; const Default; out Value); virtual;
     { Stores a set (ignores sub stores). }
     procedure WriteSetInt(const Path: string; ATypeInfo: PTypeInfo; const Value); virtual;
 
     function EncryptPropertyValue(Value: string): string;
     function DecryptPropertyValue(Value: string): string;
 
-    procedure SetReadOnly (Value: Boolean);
+    procedure SetReadOnly(Value: Boolean);
     function GetReadOnly: Boolean;
-    function GetPhysicalReadOnly : Boolean; virtual;
+    function GetPhysicalReadOnly: Boolean; virtual;
 
     property SubStorages: TJvAppSubStorages read FSubStorages write SetSubStorages;
     procedure Loaded; override;
@@ -759,7 +757,7 @@ type
       read FOnGetFileName write FOnGetFileName;
       // OnGetFileName triggered on Location = flCustom
 
-    function GetPhysicalReadOnly : Boolean; override;
+    function GetPhysicalReadOnly: Boolean; override;
 
     procedure Loaded; override;
   public
@@ -2251,7 +2249,8 @@ begin
             TJvCustomPropertyStore(SubObj).AppStoragePath := Path;
             TJvCustomPropertyStore(SubObj).LoadProperties;
           end
-          else if SubObj is TCollection then
+          else
+          if SubObj is TCollection then
             ReadCollection(Path, TCollection(SubObj), ClearFirst)
           else
             ReadPersistent(Path, TPersistent(SubObj), True, ClearFirst);
@@ -2314,7 +2313,8 @@ begin
             TJvCustomPropertyStore(SubObj).AppStorage := Self;
             TJvCustomPropertyStore(SubObj).StoreProperties;
           end
-          else if SubObj is TCollection then
+          else
+          if SubObj is TCollection then
             WriteCollection(Path, TCollection(SubObj))
           else
             WritePersistent(Path, TPersistent(SubObj), Recursive, nil);
@@ -2415,20 +2415,20 @@ begin
     DoTranslatePropertyName(Instance, Result, Reading);
 end;
 
-procedure TJvCustomAppStorage.SetReadOnly (Value: Boolean);
+procedure TJvCustomAppStorage.SetReadOnly(Value: Boolean);
 begin
-  fReadOnly := Value;
+  FReadOnly := Value;
 end;
 
 function TJvCustomAppStorage.GetReadOnly: Boolean;
 begin
   if csDesigning in ComponentState then
-    Result := fReadOnly
+    Result := FReadOnly
   else
-    Result := fReadOnly OR GetPhysicalReadOnly;
+    Result := FReadOnly or GetPhysicalReadOnly;
 end;
 
-function TJvCustomAppStorage.GetPhysicalReadOnly : Boolean;
+function TJvCustomAppStorage.GetPhysicalReadOnly: Boolean;
 begin
   Result := False;
 end;
@@ -2457,18 +2457,21 @@ begin
 end;
 
 { Enables the Cryption of Property-Values (Only String-Values) }
+
 procedure TJvCustomAppStorage.EnablePropertyValueCrypt;
 begin
   Inc(FCryptEnabledStatus);
 end;
 
 { Disables the Cryption of Property-Values (Only String-Values) }
+
 procedure TJvCustomAppStorage.DisablePropertyValueCrypt;
 begin
   Dec(FCryptEnabledStatus);
 end;
 
 { Returns the current state if Property-Value Cryption is enabled }
+
 function TJvCustomAppStorage.IsPropertyValueCryptEnabled: Boolean;
 begin
   Result := (FCryptEnabledStatus > 0);
@@ -2809,7 +2812,7 @@ begin
   inherited Reload;
 end;
 
-function TJvCustomAppMemoryFileStorage.GetPhysicalReadOnly : Boolean;
+function TJvCustomAppMemoryFileStorage.GetPhysicalReadOnly: Boolean;
 begin
   Result := FPhysicalReadOnly;
 end;

@@ -51,9 +51,7 @@ uses
   JvDragDrop, JvDdeCmd, JvWndProcHook,
   {$ENDIF VCL}
   {$IFDEF USEWINDOWS}
-  JvMRUList, JvMRUManager,
-  JvCommStatus, {JvComputerInfo,}
-  {JvDeviceChanged, JvDirectories, JvSystemColors, JvKeyboardStates,} JvJoystick,
+  JvMRUList, JvMRUManager, JvCommStatus, JvJoystick,
   JvNTEventLog, JvRas32, JvAppInst, JvScreenSaver,
   JvShellHook, JvSHFileOperation, JvSoundControl, JvChangeNotify, JvSearchFiles,
   JvPerfMon95, JvComputerInfoEx,
@@ -93,7 +91,6 @@ begin
   RegisterComponents(RsPaletteSystem, [{TJvComputerInfo, // - do not register this component as default}
     TJvSHFileOperation, TJvChangeNotify, TJvAppInstances, TJvNTEventLog,
     TJvScreenSaver, TJvNTEventLog, TJvScreenSaver, TJvJoystick, TJvSoundControl,
-    {TJvDeviceChanged, TJvSystemColors, TJvKeyboardStates, TJvDirectories, these are not needed - included in JvComputerInfoEx instead}
     TJvPerfStat95, TJvComputerInfoEx, TJvDebugHandler]);
   RegisterComponents(RsPaletteInternetWork, [TJvRas32, TJvCommStatus]);
   {$ENDIF USEWINDOWS}
@@ -108,7 +105,6 @@ begin
     TJvTimer, TJvShellHook]);
   RegisterComponents(RsPaletteThreading, [
     TJvThread, TJvThreadSimpleDialog, TJvThreadAnimateDialog, TJvThreadTimer]);
-
 
   RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,
     'MinMaxInfo', TMinMaxProperty);
