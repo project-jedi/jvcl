@@ -69,7 +69,7 @@ type
     procedure SetHotFont(const Value: TFont);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
-    procedure ButtonPressed(Sender: TJvCustomGraphicButton; AGroupIndex: Integer);
+    procedure ButtonPressed(Sender: TJvCustomGraphicButton; AGroupIndex: Integer);virtual;
     procedure ForceSize(Sender: TControl; AWidth, AHeight: Integer);
     function DoDropDownMenu(Button: TMouseButton; Shift: TShiftState; X, Y: Integer): Boolean; virtual;
     procedure UpdateExclusive;

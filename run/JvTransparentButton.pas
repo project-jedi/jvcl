@@ -1509,7 +1509,7 @@ begin
     if not Enabled then
       Index := 1
     else
-    if bsMouseDown in MouseStates then
+    if (bsMouseDown in MouseStates) or Down then
       Index := 2
     else
     if (FrameStyle = fsExplorer) and FAutoGray and (MouseStates = []) then
@@ -1518,7 +1518,7 @@ begin
       Index := 0; { active }
 
     { Norris }
-    if (bsMouseInside in MouseStates) and Down then
+    if (bsMouseInside in MouseStates) and ((bsMouseDown in MouseStates) or Down) then
     begin
       HelpRect := ClientRect;
       InflateRect(HelpRect, -BorderWidth - 1, -BorderWidth - 1);
