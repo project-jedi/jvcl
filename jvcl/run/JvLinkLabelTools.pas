@@ -97,7 +97,7 @@ uses
 
 constructor TStaticObject.Create;
 begin
-  raise EGenericToolsError.Create(SCannotBeInstantiated);
+  raise EGenericToolsError.Create(RsECannotBeInstantiated);
 end;
 
 //=== TStringTools ===========================================================

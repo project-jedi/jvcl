@@ -84,7 +84,7 @@ end;
 
 procedure EJvInterpreterError_Read_ErrName(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := EJvInterpreterError(Args.Obj).ErrName;
+  Value := EJvInterpreterError(Args.Obj).ErrName1;
 end;
 
 { property Read ErrName2: string }

@@ -264,7 +264,7 @@ var
 begin
   V2OA(Args.Values[0], OA, OAV, OAS);
   if Odd(OAS) then
-    raise EJVCLException.Create(SSizeMustBeEven);
+    raise EJVCLException.Create(RsESizeMustBeEven);
   SetLength(AI, OAS);
   for i := 0 to OAS -1 do
     AI[i] := OAV[i];
@@ -363,7 +363,7 @@ begin
   if VarIsArray(Args.Values[0]) then
   begin
     if VarArrayDimCount(Args.Values[0]) > 1 then
-      raise EJVCLException.Create(SForOneDimensionOnly);
+      raise EJVCLException.Create(RsESorryForOneDimensionalArraysOnly);
     Value := VarArrayHighBound(Args.Values[0], 1)-VarArrayLowBound(Args.Values[0], 1);
   end
   else
@@ -502,7 +502,7 @@ begin
   if VarIsArray(Args.Values[0]) then
   begin
     if VarArrayDimCount(Args.Values[0]) > 1 then
-      raise EJVCLException.Create(SForOneDimensionOnly);
+      raise EJVCLException.Create(RsESorryForOneDimensionalArraysOnly);
     Value := VarArrayLowBound(Args.Values[0], 1);
   end
   else
@@ -516,7 +516,7 @@ begin
   if VarIsArray(Args.Values[0]) then
   begin
     if VarArrayDimCount(Args.Values[0]) > 1 then
-      raise EJVCLException.Create(SForOneDimensionOnly);
+      raise EJVCLException.Create(RsESorryForOneDimensionalArraysOnly);
     Value := VarArrayLowBound(Args.Values[0], 1);
   end
   else

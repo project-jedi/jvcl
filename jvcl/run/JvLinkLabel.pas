@@ -356,7 +356,7 @@ begin
   if Assigned(Node) then
     Result := Node.Text
   else
-    raise ELinkLabelError.Create(sUnableToLocateMode);
+    raise ELinkLabelError.Create(RsEUnableToLocateMode);
 end;
 
 function TJvCustomLinkLabel.GetLinkColor: TColor;
@@ -704,7 +704,7 @@ begin
     end;
   end;
 
-  raise ELinkLabelError.Create(sTagNotFound);
+  raise ELinkLabelError.Create(RsETagNotFound);
 end;
 
 end.

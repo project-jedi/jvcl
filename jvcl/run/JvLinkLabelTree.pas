@@ -558,7 +558,7 @@ begin
   if IsWordInfoInArray(Pos) then
     Result := FWordInfoArray[Pos]
   else
-    raise ENodeError.Create(sWordInfoIndexOutOfBounds);
+    raise ENodeError.Create(RsEWordInfoIndexOutOfBounds);
 end;
 
 function TStringNode.IsPointInNode(const P: TPoint): Boolean;
@@ -781,7 +781,7 @@ begin
     if NodeClasses[Result] = NodeClass then
       Exit;
 
-  raise ENodeError.Create(sTNodeGetNodeTypeUnknownClass);
+  raise ENodeError.Create(RsETNodeGetNodeTypeUnknownClass);
 end;
 
 //=== TTopLevelNodeEnumerator ================================================
@@ -836,7 +836,7 @@ begin
     Inc(FIndex);
   end
   else
-    raise ENodeError.Create(sNoMoreNodesToReturn);
+    raise ENodeError.Create(RsENoMoreNodesToReturn);
 end;
 
 function TTopLevelNodeEnumerator.HasNext: Boolean;
@@ -872,7 +872,7 @@ begin
     Inc(FIndex);
   end
   else
-    raise ENodeError.Create(sNoMoreRecordsToReturn);
+    raise ENodeError.Create(RsENoMoreRecordsToReturn);
 end;
 
 function TRectEnumerator.HasNext: Boolean;

@@ -5161,7 +5161,7 @@ begin
     Exit;
   end;
   if not (PixelFormat in [pf1bit, pf4bit, pf8bit, pf24bit]) then
-    raise EJVCLException.Create(SPixelFormatNotImplemented)
+    raise EJVCLException.Create(RsEPixelFormatNotImplemented)
   else
     if PixelFormat in [pf1bit, pf4bit] then
     begin
@@ -5185,7 +5185,7 @@ begin
   try
     BI := PBitmapInfoHeader(Longint(InitData) + SizeOf(TBitmapFileHeader));
     if BI^.biBitCount <> 24 then
-      raise EJVCLException.Create(SBitCountNotImplemented);
+      raise EJVCLException.Create(RsEBitCountNotImplemented);
     Bits := Pointer(Longint(BI) + SizeOf(TBitmapInfoHeader));
     InternalGetDIBSizes(Bitmap.Handle, NewHeaderSize, ImageSize, PixelFormat);
     Length := SizeOf(TBitmapFileHeader) + NewHeaderSize;

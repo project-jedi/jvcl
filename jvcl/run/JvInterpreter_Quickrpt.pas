@@ -63,7 +63,7 @@ begin
           Break;
         end;
     if QuickRep1 = nil then
-      raise Exception.Create(SNoQuickReportFound);
+      raise Exception.Create(RsENoQuickReportFound);
     QuickRep1.Preview;
   finally
     Form.Free;
@@ -87,7 +87,7 @@ begin
           Break;
         end;
     if QuickRep1 = nil then
-      raise Exception.Create(SNoQuickReportFound);
+      raise Exception.Create(RsENoQuickReportFound);
     QuickRep1.Preview;
   finally
     Form.Free;

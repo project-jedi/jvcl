@@ -983,7 +983,7 @@ resourcestring
   RsPropertyNotExists  = 'Property "%s" does not exist';
   RsInvalidPropertyType = 'Property "%s" has invalid type';
 
-  SPivotLessThanZero = 'JvFunctions.MakeYear4Digit: Pivot < 0';
+  RsPivotLessThanZero = 'JvFunctions.MakeYear4Digit: Pivot < 0';
 
 function GetLineByPos(const S: string; const Pos: Integer): Integer;
 var
@@ -6896,7 +6896,7 @@ var
   Century: Integer;
 begin
   if Pivot < 0 then
-    raise Exception.Create(SPivotLessThanZero);
+    raise Exception.Create(RsPivotLessThanZero);
 
   { map 100 to zero }
   if Year = 100 then

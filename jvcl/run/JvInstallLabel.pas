@@ -108,11 +108,6 @@ type
     Index: Integer;
   end;
 
-procedure Error(Msg: string; Args: array of const);
-begin
-  raise EJVCLException.CreateFmt(Msg, Args);
-end;
-
 constructor TJvInstallLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -185,7 +180,7 @@ end;
 function TJvInstallLabel.GetStyles(Index: Integer): TFontStyles;
 begin
   if not CheckBounds(Index) then
-    Error(SListOutOfBounds, [Index])
+    raise EJVCLException.CreateFmt(RsEListOutOfBounds, [Index])
   else
     Result := PStyles(FStyles[Index])^.Style;
 end;
@@ -336,7 +331,7 @@ function TJvInstallLabel.CheckBounds(Index: Integer): Boolean;
 begin
   Result := (Index > -1) and (Index < FLines.Count);
   if not Result then
-    Error(SListOutOfBounds, [Index])
+    raise EJVCLException.CreateFmt(RsEListOutOfBounds, [Index]);
 end;
 
 end.
