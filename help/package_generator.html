@@ -970,7 +970,8 @@ package XML source file.<br>
       <td style="vertical-align: top; white-space: nowrap;">%DESCRIPTION%<br>
       </td>
       <td style="vertical-align: top;">Replaced by the description of
-the package.<br>
+the package. If the target for which the generation occurs is marked as
+being CLX, the CLX description is used here.<br>
       </td>
     </tr>
     <tr>
@@ -1024,7 +1025,7 @@ section<br>
       <td style="vertical-align: top;">The name of the package being
 required, taken from the package node in the package XML source
 file. As explained before, the name may be modified according to the
-format for the current model.<br>
+format for the current model and the current target.<br>
       </td>
     </tr>
     <tr>
@@ -1048,7 +1049,10 @@ Forms section<br>
       </td>
       <td style="vertical-align: top;">%FILENAME% </td>
       <td style="vertical-align: top;">The name of the source file as
-taken from the 'file' node in the package XML source file.<br>
+taken from the 'file' node in the package XML source file. If the
+target for which the generation occurs is marked as CLX, then the CLX
+replacements will occur on this value, as well as on all the others
+applicable in this state.<br>
       </td>
     </tr>
     <tr>
