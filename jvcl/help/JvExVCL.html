@@ -110,11 +110,6 @@ classes.<blockquote>
    &nbsp;&nbsp;const KeyText: WideString): Boolean;</td>
 </tr>
 <tr>
- <td style="vertical-align: top;">WM_ERASEBKGND</td>
- <td style="vertical-align: top;"></td>
- <td style="vertical-align: top;">function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;</td>
-</tr>
-<tr>
  <td style="vertical-align: top;">CM_FOCUSCHANGED</td>
  <td style="vertical-align: top;"></td>
  <td style="vertical-align: top;">procedure DoFocusChanged(Sender: TWinControl);<br />
@@ -197,6 +192,12 @@ procedure ControlsListChanged(Control: TControl; Inserting: Boolean);<br />
 procedure ControlsListChanged(Control: TControl; Inserting: Boolean);<br />
   <i style="color: navy;">(ControlsListChanging is called before the actual change, 
   ControlListChanged is called after the change)</i></td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">WM_ERASEBKGND</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;<br />
+   <i style="color: navy;">(DoPaintBackground is protected by SaveDC/RestoreDC, Param is the LParam from the message)</i></td>
 </tr>
 <tr>
  <td style="vertical-align: top;">WM_GETDLGCODE</td>
@@ -301,7 +302,7 @@ classes.<blockquote>
   <li>Introduces public method Clear() that called DoClearText.</li>
   <li>Introcudes message handlers for EM_GETRECT and EM_SETRECT. The edit rect is saved but not 
     used by the class. If you want real edit rect support please have a look at
-    <a target="_blank" href="../common/QComboEdits.pas">QComboEdits.pas</a>.</li>
+    <a target="_blank" href="../qcommon/QComboEdits.pas">QComboEdits.pas</a>.</li>
  </ul>
 </blockquote>
 
