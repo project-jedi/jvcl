@@ -1428,22 +1428,22 @@ begin
     Exit;
   if not MouseOver then
   begin
-    inherited MouseEnter(Control);
     if FFillColor = clNone then
       PaintFrame
     else
       Invalidate;
   end;
+  inherited MouseEnter(Control);
 end;
 
 procedure TJvCustomLookOutButton.MouseLeave(Control: TControl);
 begin
   if MouseOver then
   begin
-    inherited MouseLeave(Control);
     if not FStayDown then
       Invalidate;
   end;
+  inherited MouseLeave(Control);
 end;
 
 procedure TJvCustomLookOutButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
