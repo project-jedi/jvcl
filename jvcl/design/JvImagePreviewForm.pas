@@ -115,16 +115,13 @@ begin
   try
     FileListBox.Mask := Extensions;
     FilterCombo.Filter := Filter;
-    { TODO 3 -oJVCL -cCOMPILER5 : Delimiter and DelimitedText are not available in D5 }
     Filters := TStringlist.Create;
     try
-      Filters.Delimiter := '|';
-      Filters.DelimitedText := Filter;
+      ExtractStrings(['|'], [], PChar(Filter), Filters);
       if Filters.IndexOf(AllFilePattern) < 0 then
-      begin
-        Filters.Add(AllFilePattern);
-      end;
-      FilterCombo.Filter := Filters.DelimitedText;
+        FilterCombo.Filter := Filter + '|' + AllFilePattern
+      else
+        FilterCombo.Filter := Filter;
     finally
       Filters.Free;
     end;
