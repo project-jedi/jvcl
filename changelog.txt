@@ -1,5 +1,13 @@
 Changelog for JVCL 3.0
 ======================
+2004-09-14
+- JvFormStorage now has two new properties: StoredValuesPath and StoredPropsPath controling
+  the path prefix to add for StoredProps and StoredValues. These should not be left empty
+  if there is a risk to have duplicates names between StoredProps and StoredValues // obones
+- For some unknown reason, JvDBGridFooter MUST come after any other JvDBGrid related 
+  unit or dcc32 from BCB6 crashes  // obones
+2004-09-13
+- Introduced TJvDBGridFooter, the last part of the Ultim components donation // obones
 2004-09-05
 - Added FloatValue to TJvSimpleXML, defaults to 0.0 if Value is not a floating point number // obones
 2004-09-04

@@ -163,6 +163,8 @@ type
   private
     FStoredProps: TStringList;
     FStoredValues: TJvStoredValues;
+    FStoredPropsPath: string;
+
     function GetStoredProps: TStrings;
     procedure SetStoredProps(Value: TStrings);
     procedure SetStoredValues(Value: TJvStoredValues);
@@ -170,6 +172,8 @@ type
     procedure SetStoredValue(const Name: string; Value: Variant);
     function GetDefaultStoredValue(const Name: string; DefValue: Variant): Variant;
     procedure SetDefaultStoredValue(const Name: string; DefValue: Variant; const Value: Variant);
+    function GetStoredValuesPath: string;
+    procedure SetStoredValuesPath(const Value: string);
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -187,6 +191,8 @@ type
   published
     property StoredProps: TStrings read GetStoredProps write SetStoredProps;
     property StoredValues: TJvStoredValues read FStoredValues write SetStoredValues;
+    property StoredPropsPath: string read FStoredPropsPath write FStoredPropsPath;
+    property StoredValuesPath: string read GetStoredValuesPath write SetStoredValuesPath;
   end;
 
   TJvIniLink = class(TPersistent)
@@ -237,6 +243,8 @@ type
   TJvStoredValues = class(TOwnedCollection)
   private
     FStorage: TJvFormPlacement;
+    FPath: string;
+    
     function GetValue(const Name: string): TJvStoredValue;
     procedure SetValue(const Name: string; StoredValue: TJvStoredValue);
     function GetStoredValue(const Name: string): Variant;
@@ -248,6 +256,8 @@ type
     function IndexOf(const Name: string): Integer;
     procedure SaveValues; virtual;
     procedure RestoreValues; virtual;
+
+    property Path: string read FPath write FPath;
     property Storage: TJvFormPlacement read FStorage write FStorage;
     property Items[Index: Integer]: TJvStoredValue read GetItem write SetItem; default;
     property Values[const Name: string]: TJvStoredValue read GetValue write SetValue;
@@ -266,8 +276,8 @@ uses
 const
   siActiveCtrl = 'ActiveControl'; // do not localize
   siVersion = 'FormVersion'; // do not localize
-  siStoredValues = 'StoredValues'; // do not localize
-  siStoredProps = 'StoredProps'; // do not localize
+//  siStoredValues = 'StoredValues'; // do not localize
+//  siStoredProps = 'StoredProps'; // do not localize
 
 //=== { TJvFormPlacement } ===================================================
 
@@ -1002,7 +1012,7 @@ procedure TJvFormStorage.SaveProperties;
 begin
   with TJvPropertyStorage.Create do
   try
-    AppStoragePath := ConcatPaths ([Self.AppStoragePath, siStoredProps]);
+    AppStoragePath := ConcatPaths ([Self.AppStoragePath, StoredPropsPath]);
     AppStorage := Self.AppStorage;
     StoreObjectsProps(Owner, FStoredProps);
   finally
@@ -1014,7 +1024,7 @@ procedure TJvFormStorage.RestoreProperties;
 begin
   with TJvPropertyStorage.Create do
   try
-    AppStoragePath := ConcatPaths ([Self.AppStoragePath, siStoredProps]);
+    AppStoragePath := ConcatPaths ([Self.AppStoragePath, StoredPropsPath]);
     AppStorage := Self.AppStorage;
     try
       LoadObjectsProps(Owner, FStoredProps);
@@ -1146,7 +1156,7 @@ var
   SaveStrValue: string;
   PathName: string;
 begin
-  PathName := StoredValues.Storage.ConcatPaths([siStoredValues, Name]);
+  PathName := StoredValues.Storage.ConcatPaths([StoredValues.Path, Name]);
   SaveValue := Value;
   if Assigned(FOnSave) then
     FOnSave(Self, SaveValue);
@@ -1178,7 +1188,7 @@ var
   RestoreStrValue, DefaultStrValue: string;
   PathName: string;
 begin
-  PathName := StoredValues.Storage.ConcatPaths([siStoredValues, Name]);
+  PathName := StoredValues.Storage.ConcatPaths([StoredValues.Path, Name]);
   if KeyString <> '' then
   begin
     DefaultStrValue := VarToStr(Value);
@@ -1307,6 +1317,16 @@ begin
     StoredValue[Name] := DefValue
   else
     StoredValue[Name] := Value;
+end;
+
+function TJvFormStorage.GetStoredValuesPath: string;
+begin
+  Result := FStoredValues.Path;
+end;
+
+procedure TJvFormStorage.SetStoredValuesPath(const Value: string);
+begin
+  FStoredValues.Path := Value;
 end;
 
 {$IFDEF UNITVERSIONING}
