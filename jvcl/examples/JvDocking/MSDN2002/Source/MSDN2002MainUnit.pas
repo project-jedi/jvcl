@@ -241,9 +241,11 @@ var
   MSDN2002: TMSDN2002;
 
 implementation
+
 uses
   XPMenu, ContentsFormUnit, FavoritesFormUnit, IndexFormUnit,
-  IndexResultFormUnit, SearchFormUnit, SearchResultFormUnit;
+  IndexResultFormUnit, SearchFormUnit, SearchResultFormUnit,
+  JvDockGlobals;
 const
   cStorageFilename = 'DockLayout.ini';
 type

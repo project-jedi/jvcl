@@ -100,7 +100,7 @@ type
     FNeedUpdateOnlyMainText: Boolean;
     fNeedRemakeTextureMask: Boolean;
     Img: TBitmap;
-    TextureMask: TBitmap;
+    FTextureMask: TBitmap;
     BackgroundBmp: TBitmap;
     TextureBmp: TBitmap;
     TargetCanvas: TCanvas;
@@ -461,12 +461,9 @@ begin
   Colors.Free;
   Gradient.Free;
   FIllumination.Free;
-  if Assigned(FTexture) then
-    FTexture.Free;
-  if Assigned(FBackground) then
-    FBackground.Free;
-  if Assigned(TextureMask) then
-    TextureMask.Free;
+  FTexture.Free;
+  FBackground.Free;
+  FTextureMask.Free;
   Img.Free;
   inherited Destroy;
   DeleteObject(FreeFont.Handle);
@@ -809,9 +806,9 @@ begin
   if {fNeedRemakeTextureMask and}  fUseTextureBmp or (floTransparentFont in
     Options) then
   begin
-    if not Assigned(TextureMask) then
-      TextureMask := TBitmap.Create;
-    with TextureMask do
+    if not Assigned(FTextureMask) then
+      FTextureMask := TBitmap.Create;
+    with FTextureMask do
     begin
       Width := Self.Width;
       Height := Self.Height;
@@ -832,9 +829,9 @@ begin
         BitBlt(Canvas.Handle, Tx, Ty, Width, Height, TargetCanvas.Handle, 0,
           0, SRCAND);
         if FActiveNow then
-          ChangeBitmapColor(TextureMask, clBlack, Colors.BackgroundActive)
+          ChangeBitmapColor(FTextureMask, clBlack, Colors.BackgroundActive)
         else
-          ChangeBitmapColor(TextureMask, clBlack, Colors.Background);
+          ChangeBitmapColor(FTextureMask, clBlack, Colors.Background);
         BitBlt(Self.Canvas.Handle, 0, 0, Width, Height, Canvas.Handle, 0, 0,
           SRCCOPY);
         exit;
@@ -850,7 +847,7 @@ begin
           while Ty < Height do
           begin
             BitBlt(Canvas.Handle, Tx, Ty, TextureBmp.Width,
-              TextureBmp.Height, TextureBmp.canvas.Handle, 0, 0, SRCAND);
+              TextureBmp.Height, TextureBmp.Canvas.Handle, 0, 0, SRCAND);
             Inc(Ty, TextureBmp.Height);
           end;
           Inc(Tx, TextureBmp.Width);
@@ -873,8 +870,8 @@ begin
 
   if (Assigned(TextureBmp) or (floTransparentFont in Options)) and
     (CurrTextStyle <> fstPushed) then
-    BitBlt(TargetCanvas.Handle, 0, 0, TextureMask.Width, TextureMask.Height,
-      TextureMask.canvas.Handle, 0, 0, SRCPAINT);
+    BitBlt(TargetCanvas.Handle, 0, 0, FTextureMask.Width, FTextureMask.Height,
+      FTextureMask.Canvas.Handle, 0, 0, SRCPAINT);
 
   if Img.Canvas = TargetCanvas then
     BitBlt(Canvas.Handle, 0, 0, Img.Width, Img.Height,

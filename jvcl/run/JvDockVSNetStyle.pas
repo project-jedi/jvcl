@@ -381,7 +381,7 @@ type
     FNewSize: Integer;
     FOldKeyDown: TKeyEvent;
     FOldSize: Integer;
-    FPrevBrush: HBrush;
+    FPrevBrush: HBRUSH;
     FResizeStyle: TResizeStyle;
     FSplit: Integer;
     FOnCanResize: TCanResizeEvent;
@@ -1107,14 +1107,14 @@ begin
       begin
         ColorArr[1] := clBlack;
         if GetActiveControl = AZone.ChildControl then
-          ColorArr[2] := clBtnface
+          ColorArr[2] := clBtnFace
         else
           ColorArr[2] := clWhite;
       end
       else
       if AZone.AutoHideBtnState = bsDown then
       begin
-        ColorArr[1] := clBtnface;
+        ColorArr[1] := clBtnFace;
         ColorArr[2] := clBlack;
       end;
       Canvas.Pen.Color := ColorArr[1];
@@ -1203,14 +1203,14 @@ begin
       begin
         ColorArr[1] := clBlack;
         if GetActiveControl = AZone.ChildControl then
-          ColorArr[2] := clBtnface
+          ColorArr[2] := clBtnFace
         else
           ColorArr[2] := clWhite;
       end
       else
       if AZone.CloseBtnState = bsDown then
       begin
-        ColorArr[1] := clBtnface;
+        ColorArr[1] := clBtnFace;
         ColorArr[2] := clBlack;
       end;
       Canvas.Pen.Color := ColorArr[1];
@@ -1530,7 +1530,7 @@ begin
     FVSPopupPanelSplitter.Parent := Parent;
     FVSPopupPanelSplitter.Align := alNone;
     FVSPopupPanelSplitter.VSPopupPanel := VSPopupPanel;
-    FVSPopupPanelSplitter.Color := clBtnface;
+    FVSPopupPanelSplitter.Color := clBtnFace;
     FVSPopupPanelSplitter.Visible := False;
   end;
 end;
@@ -1776,7 +1776,7 @@ var
 
       GetBlockRect(Block, I, DrawRect);
 
-      Canvas.Brush.Color := (DockServer.DockStyle as TJvDockVSNETStyle).ChannelOption.TabColor;
+      Canvas.Brush.Color := (DockServer.DockStyle as TJvDockVSNetStyle).ChannelOption.TabColor;
       Canvas.FillRect(DrawRect);
       Canvas.Brush.Color := clGray;
       Canvas.FrameRect(DrawRect);
@@ -1798,7 +1798,7 @@ var
             DrawRect.Left := 20;
           DrawRect.Right := DrawRect.Left + (DrawRect.Bottom - DrawRect.Top);
         end;
-        Canvas.Brush.Color := (DockServer.DockStyle as TJvDockVSNETStyle).ChannelOption.TabColor;
+        Canvas.Brush.Color := (DockServer.DockStyle as TJvDockVSNetStyle).ChannelOption.TabColor;
         Canvas.Pen.Color := clBlack;
 
         Dec(DrawRect.Right, 3);
@@ -2831,7 +2831,7 @@ procedure TPopupPanelAnimate.Timer;
 var
   SuitableWidth: Integer;
 
-  procedure SetControlBringToFront(Control: TWincontrol; Align: TAlign);
+  procedure SetControlBringToFront(Control: TWinControl; Align: TAlign);
   var
     I: Integer;
   begin
@@ -2847,7 +2847,7 @@ begin
   inherited Timer;
   if FVSChannel <> nil then
   begin
-    SuitableWidth := min(FCurrentWidth, FMaxwidth);
+    SuitableWidth := min(FCurrentWidth, FMaxWidth);
     with FVSChannel do
     begin
       if FCurrentWidth = 0 then
@@ -2960,10 +2960,10 @@ begin
       end;
       FVSChannel := nil;
       FCurrentWidth := 0;
-      FMaxwidth := 0;
+      FMaxWidth := 0;
     end
     else
-      Inc(FCurrentWidth, TJvDockVSNETStyle.GetAnimationMoveWidth);
+      Inc(FCurrentWidth, TJvDockVSNetStyle.GetAnimationMoveWidth);
   end;
 end;
 
@@ -3130,7 +3130,7 @@ begin
 end;
 }
 
-class function TJvDockVSNetStyle.GetAnimationStartInterval: integer;
+class function TJvDockVSNetStyle.GetAnimationStartInterval: Integer;
 begin
   Result := GlobalPopupPanelStartAnimateInterval;
 end;

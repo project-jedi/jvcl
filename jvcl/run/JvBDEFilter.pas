@@ -29,7 +29,7 @@ unit JvBDEFilter;
 interface
 
 uses
-  Classes, Bde, DB,
+  Classes, BDE, DB,
   JvTypes, JvComponent;
 
 type
@@ -87,7 +87,7 @@ type
     function CreateExprFilter: hDBIFilter;
     function CreateFuncFilter: hDBIFilter;
     procedure DropFilters;
-    procedure SetFilterHandle(var Filter: HDBIFilter; Value: HDBIFilter);
+    procedure SetFilterHandle(var Filter: hDBIFilter; Value: hDBIFilter);
     procedure RecreateExprFilter;
     procedure RecreateFuncFilter;
     procedure ActivateFilters;
@@ -169,7 +169,7 @@ type
 {                                                       }
 { These class definitions were copied from TDataSet     }
 { (DB.PAS) and TBDEDataSet (DBTABLES.PAS).              }
-{ It is needed to access FState, FBOF, FEOF, FBuffers,  }
+{ It is needed to access FState, FBof, FEof, FBuffers,  }
 { FRecordCount, FActiveRecord, FCanModify private       }
 { fields of TDataSet.                                   }
 {                                                       }
@@ -213,18 +213,18 @@ type
     FState: TDataSetState;
     FEnableEvent: TDataEvent;
     FDisableState: TDataSetState;
-    FBOF: Boolean;
-    FEOF: Boolean;
+    FBof: Boolean;
+    FEof: Boolean;
   end;
 
   TBDENastyDataSet = class(TDataSet)
   private
-    FHandle: HDBICur;
-    FStmtHandle: HDBIStmt;
+    FHandle: hDBICur;
+    FStmtHandle: hDBIStmt;
     FRecProps: RecProps;
     FLocale: TLocale;
-    FExprFilter: HDBIFilter;
-    FFuncFilter: HDBIFilter;
+    FExprFilter: hDBIFilter;
+    FFuncFilter: hDBIFilter;
     FFilterBuffer: PChar;
     FIndexFieldMap: DBIKey;
     FExpIndex: Boolean;
@@ -243,12 +243,12 @@ end;
 
 procedure DsSetBOF(DataSet: TDataSet; Value: Boolean);
 begin
-  TNastyDataSet(DataSet).FBOF := Value;
+  TNastyDataSet(DataSet).FBof := Value;
 end;
 
 procedure DsSetEOF(DataSet: TDataSet; Value: Boolean);
 begin
-  TNastyDataSet(DataSet).FEOF := Value;
+  TNastyDataSet(DataSet).FEof := Value;
 end;
 
 procedure AssignBuffers(const Source: TBufferList; var Dest: TBufferList);
@@ -406,10 +406,10 @@ begin
   if FFilter.Count > 0 then
     if BuildTree then
       try
-        Check(DbiAddFilter((FDatalink.DataSet as TBDEDataSet).Handle,
+        Check(DbiAddFilter((FDataLink.DataSet as TBDEDataSet).Handle,
           Longint(Self), FPriority, False,
             pCANExpr(TExprParser(FParser).FilterData), nil, Result));
-        FDataHandle := TBDEDataSet(FDatalink.DataSet).Handle;
+        FDataHandle := TBDEDataSet(FDataLink.DataSet).Handle;
       finally
         DestroyTree;
       end;
@@ -426,11 +426,11 @@ begin
   Check(DbiAddFilter((FDataLink.DataSet as TBDEDataSet).Handle, Longint(Self),
     FuncPriority, False, nil, PFGENFilter(@TJvDBFilter.RecordFilter),
     Result));
-  FDataHandle := TBDEDataSet(FDatalink.DataSet).Handle;
+  FDataHandle := TBDEDataSet(FDataLink.DataSet).Handle;
 end;
 
-procedure TJvDBFilter.SetFilterHandle(var Filter: HDBIFilter;
-  Value: HDBIFilter);
+procedure TJvDBFilter.SetFilterHandle(var Filter: hDBIFilter;
+  Value: hDBIFilter);
 var
   Info: FilterInfo;
 begin
@@ -475,9 +475,9 @@ end;
 procedure TJvDBFilter.DeactivateFilters;
 begin
   if FFuncHandle <> nil then
-    DbiDeactivateFilter(TBDEDataSet(FDatalink.DataSet).Handle, FFuncHandle);
+    DbiDeactivateFilter(TBDEDataSet(FDataLink.DataSet).Handle, FFuncHandle);
   if FExprHandle <> nil then
-    DbiDeactivateFilter(TBDEDataSet(FDatalink.DataSet).Handle, FExprHandle);
+    DbiDeactivateFilter(TBDEDataSet(FDataLink.DataSet).Handle, FExprHandle);
 end;
 
 function TJvDBFilter.RecordFilter(RecBuf: Pointer; RecNo: Longint): Smallint;
@@ -492,7 +492,7 @@ begin
   Result := Ord(True);
   if Assigned(FOnFiltering) and (FFuncHandle <> nil) then
   try
-    DS := FDatalink.DataSet as TBDEDataSet;
+    DS := FDataLink.DataSet as TBDEDataSet;
     { save current DataSet's private fields values }
     DsGetBuffers(DS, Buffers);
     ActiveRecord := DsGetActiveRecord(DS);
@@ -537,7 +537,7 @@ end;
 
 procedure TJvDBFilter.RecreateFuncFilter;
 var
-  Filter: HDBIFilter;
+  Filter: hDBIFilter;
 begin
   if FDataLink.Active and not (csReading in ComponentState) then
   begin
@@ -555,7 +555,7 @@ end;
 
 procedure TJvDBFilter.RecreateExprFilter;
 var
-  Filter: HDBIFilter;
+  Filter: hDBIFilter;
 begin
   if FDataLink.Active and not (csReading in ComponentState) then
   begin
@@ -702,9 +702,9 @@ begin
   if csReading in ComponentState then
     FStreamedActive := Value
   else
-  if FDatalink.Active then
+  if FDataLink.Active then
   begin
-    FDatalink.DataSet.CheckBrowseMode;
+    FDataLink.DataSet.CheckBrowseMode;
     if FActive <> Value then
     begin
       if Value then
@@ -713,13 +713,13 @@ begin
         try
           if FCaptured then
             raise EJVCLFilterError.CreateRes(@RsECaptureFilter);
-          DbiSetToBegin((FDatalink.DataSet as TBDEDataSet).Handle);
+          DbiSetToBegin((FDataLink.DataSet as TBDEDataSet).Handle);
           if FExprHandle = nil then
             RecreateExprFilter;
           if FFuncHandle = nil then
             RecreateFuncFilter;
           ActivateFilters;
-          FDatalink.DataSet.First;
+          FDataLink.DataSet.First;
           FActive := Value;
           DoActivate;
         finally
@@ -728,17 +728,17 @@ begin
       end
       else
       begin
-        if not IsDataSetEmpty(FDatalink.DataSet) then
-          Bookmark := FDatalink.DataSet.GetBookmark
+        if not IsDataSetEmpty(FDataLink.DataSet) then
+          Bookmark := FDataLink.DataSet.GetBookmark
         else
           Bookmark := nil;
         try
-          DbiSetToBegin((FDatalink.DataSet as TBDEDataSet).Handle);
+          DbiSetToBegin((FDataLink.DataSet as TBDEDataSet).Handle);
           DeactivateFilters;
-          if not SetToBookmark(FDatalink.DataSet, Bookmark) then
-            FDatalink.DataSet.First;
+          if not SetToBookmark(FDataLink.DataSet, Bookmark) then
+            FDataLink.DataSet.First;
         finally
-          FDatalink.DataSet.FreeBookmark(Bookmark);
+          FDataLink.DataSet.FreeBookmark(Bookmark);
         end;
         FActive := Value;
         DoDeactivate;
@@ -775,7 +775,7 @@ begin
       FBof := DataSource.DataSet.Bof;
       FEof := DataSource.DataSet.Eof;
       State := DataSource.DataSet.State;
-      CanModify := DsGetCanModify(FDatalink.DataSet as TBDEDataSet);
+      CanModify := DsGetCanModify(FDataLink.DataSet as TBDEDataSet);
       BeforePost := DataSource.DataSet.BeforePost;
       BeforeCancel := DataSource.DataSet.BeforeCancel;
       BeforeInsert := DataSource.DataSet.BeforeInsert;
@@ -841,7 +841,7 @@ begin
     FFilter.BeginUpdate;
     try
       FFilter.Clear;
-      with FDatalink.DataSet do
+      with FDataLink.DataSet do
       begin
         UpdateRecord;
         for I := 0 to FieldCount - 1 do
@@ -868,7 +868,7 @@ end;
 procedure TJvDBFilter.UpdateFuncFilter;
 begin
   if FDataLink.Active and Active and (FFuncHandle <> nil) then
-    with FDatalink.DataSet as TBDEDataSet do
+    with FDataLink.DataSet as TBDEDataSet do
     begin
       DisableControls;
       try
@@ -886,13 +886,13 @@ procedure TJvDBFilter.Update;
 begin
   if FDataLink.Active and Active then
   begin
-    FDatalink.DataSet.DisableControls;
+    FDataLink.DataSet.DisableControls;
     try
       RecreateExprFilter;
       RecreateFuncFilter;
       {DeactivateFilters; ActivateFilters;}
     finally
-      FDatalink.DataSet.EnableControls;
+      FDataLink.DataSet.EnableControls;
     end;
   end
   else

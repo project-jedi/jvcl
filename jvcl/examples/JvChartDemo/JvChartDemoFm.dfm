@@ -22,7 +22,7 @@ object JvChartDemoForm: TJvChartDemoForm
     Left = 124
     Top = 35
     Width = 597
-    Height = 400
+    Height = 405
     Align = alClient
     Options.XAxisValuesPerDivision = 10
     Options.XAxisDateTimeMode = False
@@ -31,10 +31,10 @@ object JvChartDemoForm: TJvChartDemoForm
     Options.XOrigin = 0
     Options.YOrigin = 0
     Options.YStartOffset = 42
-    Options.PrimaryYAxis.YMax = 20.000000000000000000
+    Options.PrimaryYAxis.YMax = 20
     Options.PrimaryYAxis.YDivisions = 20
     Options.PrimaryYAxis.YLegendDecimalPlaces = 1
-    Options.SecondaryYAxis.YMax = 140.000000000000000000
+    Options.SecondaryYAxis.YMax = 140
     Options.SecondaryYAxis.YLegendDecimalPlaces = 0
     Options.SecondaryYAxis.DefaultYLegends = 60
     Options.Legend = clChartLegendBelow
@@ -65,7 +65,9 @@ object JvChartDemoForm: TJvChartDemoForm
   object Splitter1: TSplitter
     Left = 121
     Top = 35
-    Height = 400
+    Width = 3
+    Height = 405
+    Cursor = crHSplit
   end
   object PanelTop: TPanel
     Left = 0
@@ -332,7 +334,7 @@ object JvChartDemoForm: TJvChartDemoForm
     Left = 0
     Top = 35
     Width = 121
-    Height = 400
+    Height = 405
     Align = alLeft
     Color = clBtnFace
     Font.Charset = OEM_CHARSET
@@ -350,6 +352,7 @@ object JvChartDemoForm: TJvChartDemoForm
     OnDblClick = ListBox1DblClick
   end
   object ColorDialog1: TColorDialog
+    Ctl3D = True
     Options = [cdFullOpen]
     Left = 625
     Top = 4
@@ -360,6 +363,8 @@ object JvChartDemoForm: TJvChartDemoForm
     Font.Height = -13
     Font.Name = 'System'
     Font.Style = []
+    MinFontSize = 0
+    MaxFontSize = 0
     Options = []
     Left = 656
     Top = 5

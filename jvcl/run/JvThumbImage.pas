@@ -808,7 +808,7 @@ begin
       try
         MemBmp.Assign(Picture.Graphic);
         MemBmp.HandleType := bmDIB;
-        MemBmp.PixelFormat := PF24Bit;
+        MemBmp.PixelFormat := pf24bit;
         RotateBmp.PixelFormat := MemBmp.PixelFormat;
         RotateBmp.HandleType := MemBmp.HandleType;
         RotateBmp.Width := MemBmp.Height;

@@ -225,7 +225,7 @@ end;
 
 function TJvOpenDialog.DoActiveSetting: Boolean;
 var
-  DefViewWnd, ListViewWnd: HWnd;
+  DefViewWnd, ListViewWnd: HWND;
 begin
   Result := False;
   if not FActiveSettingDone then
@@ -363,8 +363,8 @@ begin
       WM_GETMINMAXINFO:
         with PMinMaxInfo(LParam)^ do
         begin
-          ptMinTrackSize.x := FInitialSize.cx;
-          ptMinTrackSize.y := FInitialSize.cy;
+          ptMinTrackSize.X := FInitialSize.cx;
+          ptMinTrackSize.Y := FInitialSize.cy;
         end;
       WM_PAINT:
         PaintSizeGrip;
@@ -439,9 +439,9 @@ end;
 procedure TJvOpenDialog.UpdateCaptions;
 begin
   if Length(FDefBtnCaption) > 0 then
-    SendMessage(ParentWnd, CDM_SETCONTROLTEXT, btnOk, LongInt(PChar(DefBtnCaption)));
+    SendMessage(ParentWnd, CDM_SETCONTROLTEXT, btnOk, Longint(PChar(DefBtnCaption)));
   if Length(FFilterLabelCaption) > 0 then
-    SendMessage(ParentWnd, CDM_SETCONTROLTEXT, stc2, LongInt(PChar(FilterLabelCaption)));
+    SendMessage(ParentWnd, CDM_SETCONTROLTEXT, stc2, Longint(PChar(FilterLabelCaption)));
 end;
 
 procedure TJvOpenDialog.UpdateControlPos;
@@ -599,7 +599,7 @@ var
   GlobalColorDialog: TJvColorDialog = nil;
   OldColorDialogHookProc: Pointer = nil;
 
-function ColorDialogHook(Wnd: HWnd; Msg: UINT; WParam: WPARAM; LParam: LPARAM): UINT; stdcall;
+function ColorDialogHook(Wnd: HWND; Msg: UINT; WParam: WPARAM; LParam: LPARAM): UINT; stdcall;
 begin
   if Assigned(GlobalColorDialog) and (Msg = GlobalColorDialog.FColorOkMessage) then
     Result := Integer(not GlobalColorDialog.DoQueryColor(TColor(PChooseColor(LParam)^.rgbResult)))

@@ -487,7 +487,7 @@ begin
       L := 0;
       Add('');
     end;
-    s := Strings[JvEditor.CaretY];
+    S := Strings[JvEditor.CaretY];
     if JvEditor.CaretX > Length(S) then
     begin
       L := JvEditor.CaretX - Length(S);
@@ -515,20 +515,22 @@ procedure TJvEditorWideStrings.DeleteText(BegX, BegY, EndX, EndY: Integer);
   BegX,EndX: [0..Max_X] }
 var
   BegLine, EndLine: WideString;
-  i, L: Integer;
+  I, L: Integer;
 begin
   if BegY < 0 then
   begin
     BegY := 0;
     BegX := 0;
   end;
-  if BegY >= Count then Exit; // nothing to delete
+  if BegY >= Count then
+    Exit; // nothing to delete
   if EndY >= Count then
   begin
     EndY := Count - 1;
     EndX := MaxInt - 1;
   end;
-  if BegX < 0 then BegX := 0;
+  if BegX < 0 then
+    BegX := 0;
 
   JvEditor.LockUpdate;
   BeginUpdate;
@@ -536,13 +538,14 @@ begin
     BegLine := Strings[BegY];
    // expand BegLine if necessary
     L := (BegX + 1) - Length(BegLine) - 1;
-    if L > 0 then BegLine := BegLine + SpacesW(L);
+    if L > 0 then
+      BegLine := BegLine + SpacesW(L);
 
     EndLine := Strings[EndY];
 
    // delete lines between and end line
-    for i := EndY downto BegY + 1 do
-      Delete(i);
+    for I := EndY downto BegY + 1 do
+      Delete(I);
 
     System.Delete(BegLine, BegX + 1, MaxInt);
     System.Delete(EndLine, 1, EndX + 1);
@@ -564,8 +567,10 @@ var
   Len: Integer;
 begin
   Inc(X); // increment for WideString functions
-  if Y < 0 then Y := 0;
-  while Y >= Count do Add('');
+  if Y < 0 then
+    Y := 0;
+  while Y >= Count do
+    Add('');
 
   BegLine := Strings[Y];
   EndLine := System.Copy(BegLine, X, MaxInt);
@@ -587,10 +592,10 @@ begin
     while (P[0] <> #0) and (P[0] <> Lf) and (P[0] <> Cr) do
       Inc(P);
 
-    SetString(s, F, P - F);
+    SetString(S, F, P - F);
 
     YStart := Y;
-    FirstLine := BegLine + s; // set Internal[YStart] later so we keep the trailing spaces for concat EndLine
+    FirstLine := BegLine + S; // set Internal[YStart] later so we keep the trailing spaces for concat EndLine
 
     while P[0] <> #0 do
     begin
@@ -625,29 +630,31 @@ procedure TJvEditorWideStrings.DeleteColumnText(BegX, BegY, EndX, EndY: Integer)
   BegX,EndX: [0..Max_X] }
 var
   S: WideString;
-  i: Integer;
+  I: Integer;
 begin
   if BegY < 0 then
   begin
     BegY := 0;
     BegX := 0;
   end;
-  if BegY >= Count then Exit; // nothing to delete
+  if BegY >= Count then
+    Exit; // nothing to delete
   if EndY >= Count then
   begin
     EndY := Count - 1;
     EndX := MaxInt - 1;
   end;
-  if BegX < 0 then BegX := 0;
+  if BegX < 0 then
+    BegX := 0;
 
   JvEditor.LockUpdate;
   BeginUpdate;
   try
-    for i := BegY to EndY do
+    for I := BegY to EndY do
     begin
-      S := JvEditor.FLines[i];
+      S := JvEditor.FLines[I];
       System.Delete(S, BegX + 1, EndX - BegX + 1);
-      JvEditor.FLines.Internal[i] := S;
+      JvEditor.FLines.Internal[I] := S;
     end;
   finally
     EndUpdate;
@@ -663,7 +670,8 @@ var
   L: Integer;
 begin
   Inc(X); // increment for WideString functions
-  if Y < 0 then Y := 0;
+  if Y < 0 then
+    Y := 0;
 
   JvEditor.LockUpdate;
   BeginUpdate;
@@ -676,10 +684,12 @@ begin
          Inc(P);
       SetString(S, F, P - F);
 
-      while Y >= Count do Add('');
+      while Y >= Count do
+        Add('');
       Line := Strings[Y];
       L := (X - 1) - Length(Line);
-      if L > 0 then Line := Line + SpacesW(L);
+      if L > 0 then
+        Line := Line + SpacesW(L);
       System.Insert(S, Line, X);
       Internal[Y] := Line;
 
@@ -721,7 +731,7 @@ var
   R: TRect;
   S: WideString;
   LA: TLineAttr;
-  jCStart: integer;
+  jCStart: Integer;
 begin
   with EditorClient do
   begin
@@ -750,9 +760,11 @@ begin
           Ch := ' ';
         jCStart := jC;
         while (jC <= MX + 1) and
-          CompareMem(@LA, @LineAttrs[jC], SizeOf(LineAttrs[1])) do Inc(jC);
+          CompareMem(@LA, @LineAttrs[jC], SizeOf(LineAttrs[1])) do
+            Inc(jC);
         Ch := Copy(S, jCStart - 1, jC - jCStart + 1);
-        if jC > SL then Ch := Ch + SpacesW(jC - SL);
+        if jC > SL then
+          Ch := Ch + SpacesW(jC - SL);
 
         if Brush.Color <> LA.BC then // change GDI object only if necessary
           Brush.Color := LA.BC;
@@ -789,7 +801,7 @@ var
       I: Integer;
       Color: TColor;
     begin
-      if LineStyle = lssUnselected then           
+      if LineStyle = lssUnselected then          
       begin
         for I := iBeg to iEnd do
         begin
@@ -835,8 +847,10 @@ var
   end;
 
 begin
-  if ColBeg < 0 then ColBeg := 0;
-  if ColEnd > Max_X then ColEnd := Max_X;
+  if ColBeg < 0 then
+    ColBeg := 0;
+  if ColEnd > Max_X then
+    ColEnd := Max_X;
   LineAttrs[ColBeg].Style := Font.Style;
   LineAttrs[ColBeg].FC := Font.Color;
   LineAttrs[ColBeg].BC := Color;
@@ -868,7 +882,8 @@ begin
   if LineStyle <> lssUnselected then
   begin
     TmpI := ColEnd;
-    if TmpI < Max_X then Inc(TmpI);
+    if TmpI < Max_X then
+      Inc(TmpI);
     for I := ColBeg + 1 to TmpI do
     begin
       LineAttrs[I].FC := LineAttrs[ColBeg].FC;
@@ -1024,7 +1039,8 @@ begin
               if Length(S) > 0 then
               begin
                 iBeg := FindNotBlankCharPos(S) - 1;
-                if iBeg < X then X := iBeg;
+                if iBeg < X then
+                  X := iBeg;
               end;
             end;
           finally
@@ -1345,7 +1361,7 @@ begin
           end;
         end;
         { else }
-        { move cursor - oh yes!, it's allready moved: X := GetTabStop(..); }
+        { move cursor - oh yes!, it's already moved: X := GetTabStop(..); }
       end;
     ecDeleteLine:
       if not ReadOnly then
@@ -1385,7 +1401,7 @@ end;
 function TJvCustomWideEditor.GetSelText: WideString;
 var
   S: WideString;
-  i: Integer;
+  I: Integer;
   Len, CLen: Integer;
   P: PWideChar;
 begin
@@ -1393,7 +1409,8 @@ begin
   begin
     Len := GetSelLength; // memory size to allocate
     Result := '';
-    if Len = 0 then Exit;
+    if Len = 0 then
+      Exit;
     SetLength(Result, Len);
 
     if SelBlockFormat = bfColumn then
@@ -1401,11 +1418,12 @@ begin
       if Len > 0 then
       begin
         P := Pointer(Result);
-        for i := SelBegY to SelEndY do
+        for I := SelBegY to SelEndY do
         begin
-          S := FLines[i];
+          S := FLines[I];
           CLen := Length(S) - SelBegX;
-          if CLen < 0 then CLen := 0;
+          if CLen < 0 then
+            CLen := 0;
           if CLen > SelEndX - SelBegX + 1 then
             CLen := SelEndX - SelBegX + 1;
           if CLen <> 0 then
@@ -1414,7 +1432,7 @@ begin
             Inc(P, CLen);
           end;
 
-          if i < SelEndY then
+          if I < SelEndY then
           begin
             MoveWideChar(sLineBreak[1], P^, sLineBreakLen);
             Inc(P, sLineBreakLen);
@@ -1444,10 +1462,10 @@ begin
         Inc(P, sLineBreakLen);
 
        // lines between
-        for i := SelBegY + 1 to SelEndY - 1 do
+        for I := SelBegY + 1 to SelEndY - 1 do
         begin
          // line
-          S := FLines[i];
+          S := FLines[I];
           MoveWideChar(S[1], P^, Length(S));
           Inc(P, Length(S));
 
@@ -1459,7 +1477,8 @@ begin
        // last line
         S := FLines[SelEndY];
         CLen := SelEndX + Ord(SelBlockFormat = bfInclusive);
-        if CLen > Length(S) then CLen := Length(S);
+        if CLen > Length(S) then
+          CLen := Length(S);
         if CLen > 0 then
           MoveWideChar(S[1], P^, CLen);
       end;
@@ -1489,7 +1508,8 @@ begin
       IsSelected := Length(AValue) > 0;
       Selecting := False;
       GetEndPosCaretW(AValue, SelBegX, SelBegY, SelEndX, SelEndY);
-      if IsSelected then Inc(SelEndX);
+      if IsSelected then
+        Inc(SelEndX);
       SetSelUpdateRegion(SelBegY, SelEndY);
     end; // with
   finally
@@ -1530,8 +1550,10 @@ end;
 
 procedure TJvCustomWideEditor.InsertColumnText(X, Y: Integer; const Text: WideString);
 begin
-  if X < 0 then X := 0;
-  if Y < 0 then Y := 0;
+  if X < 0 then
+    X := 0;
+  if Y < 0 then
+    Y := 0;
   { --- UNDO --- }
   TJvInsertColumnUndo.Create(Self, X, Y, Text);
   { --- /UNDO --- }
@@ -1629,12 +1651,18 @@ var
   Y: Integer;
   S: WideString;
 begin
-  if BegY < 0 then BegY := 0;
-  if BegY >= FLines.Count then BegY := FLines.Count - 1;
-  if EndY < 0 then EndY := 0;
-  if EndY >= FLines.Count then EndY := FLines.Count - 1;
-  if EndY < BegY then Exit;
-  if X < 0 then X := 0;
+  if BegY < 0 then
+    BegY := 0;
+  if BegY >= FLines.Count then
+    BegY := FLines.Count - 1;
+  if EndY < 0 then
+    EndY := 0;
+  if EndY >= FLines.Count then
+    EndY := FLines.Count - 1;
+  if EndY < BegY then
+    Exit;
+  if X < 0 then
+    X := 0;
 
   S := SpacesW(2);
   for Y := BegY to EndY - 1 do
@@ -1653,12 +1681,18 @@ var
   Y: Integer;
   Len, L: Integer;
 begin
-  if BegY < 0 then BegY := 0;
-  if BegY >= FLines.Count then BegY := FLines.Count - 1;
-  if EndY < 0 then EndY := 0;
-  if EndY >= FLines.Count then EndY := FLines.Count - 1;
-  if EndY < BegY then Exit;
-  if X < 0 then X := 0;
+  if BegY < 0 then
+    BegY := 0;
+  if BegY >= FLines.Count then
+    BegY := FLines.Count - 1;
+  if EndY < 0 then
+    EndY := 0;
+  if EndY >= FLines.Count then
+    EndY := FLines.Count - 1;
+  if EndY < BegY then
+    Exit;
+  if X < 0 then
+    X := 0;
 
   Inc(X); // for WideString operations
 
@@ -1672,7 +1706,8 @@ begin
 
      // how many spaces to delete
       L := 0;
-      while (X + L <= Len) and (L < 2) and (S[X + L] = ' ') do Inc(L);
+      while (X + L <= Len) and (L < 2) and (S[X + L] = ' ') do
+        Inc(L);
 
       if L > 0 then
       begin
@@ -1749,8 +1784,8 @@ begin
           if SelBlockFormat = bfLine then
           begin
             X := 0;
-            if (Clips = '') or (Clips[Length(Clips)] <> Lf) then
-              Clips := Clips + sLineBreak;
+            if (ClipS = '') or (ClipS[Length(ClipS)] <> Lf) then
+              ClipS := ClipS + sLineBreak;
           end;
 
           { --- UNDO --- }
@@ -1873,7 +1908,7 @@ end;
 
 function TJvCustomWideEditor.ExpandTabs(const S: WideString): WideString;
 var
-  ps, i: Integer;
+  ps, I: Integer;
   Sp: WideString;
   Tabs, LenSp: Integer;
   P: PWideChar;
@@ -1883,8 +1918,8 @@ begin
   begin
    // How may Tab chars?
     Tabs := 1;
-    for i := ps + 1 to Length(S) do
-      if S[i] = Tab then
+    for I := ps + 1 to Length(S) do
+      if S[I] = Tab then
         Inc(Tabs);
 
     Sp := SpacesW(GetDefTabStop(0, True));
@@ -1901,11 +1936,11 @@ begin
       Inc(P, ps - 1);
     end;
 
-    for i := ps to Length(S) do
+    for I := ps to Length(S) do
     begin
-      if S[i] <> Tab then
+      if S[I] <> Tab then
       begin
-        P[0] := S[i];
+        P[0] := S[I];
         Inc(P);
       end
       else
@@ -1954,7 +1989,7 @@ end;
 
 function TJvCustomWideEditor.GetAutoIndentStop(Y: Integer): Integer;
 var
-  i, Len: Integer;
+  I, Len: Integer;
   S: WideString;
 begin
   Result := 0;
@@ -1964,52 +1999,55 @@ begin
   while (Y > 0) do
   begin
     S := FLines[Y];
-    if Length(TrimW(S)) > 0 then Break;
+    if Length(TrimW(S)) > 0 then
+      Break;
     Dec(Y);
   end;
-  if Y < 0 then Exit;
+  if Y < 0 then
+    Exit;
 
   Len := Length(S);
-  i := 1;
-  while (i <= Len) and (S[i] = ' ') do Inc(i);
-  Result := i - 1;
+  I := 1;
+  while (I <= Len) and (S[I] = ' ') do
+    Inc(I);
+  Result := I - 1;
 end;
 
 function TJvCustomWideEditor.GetTabStop(X, Y: Integer; Next: Boolean): Integer;
 var
-  i: Integer;
+  I: Integer;
 
   procedure UpdateTabStops;
   var
     S: WideString;
-    j, i: Integer;
+    J, I: Integer;
   begin
     FillChar(FTabPos, SizeOf(FTabPos), False);
     if SmartTab then
     begin
-      j := 1;
-      i := 1;
-      while Y - j >= 0 do
+      J := 1;
+      I := 1;
+      while Y - J >= 0 do
       begin
-        S := TrimRightW(FLines[Y - j]);
-        if Length(S) > i then
+        S := TrimRightW(FLines[Y - J]);
+        if Length(S) > I then
           FTabPos[Length(S)] := True;
-        while i <= Length(S) do { Iterate }
+        while I <= Length(S) do
         begin
-          if CharInSetW(S[i], IdentifierSymbols) then
+          if CharInSetW(S[I], IdentifierSymbols) then
           begin
-            FTabPos[i - 1] := True;
-            while (i <= Length(S)) and CharInSetW(S[i], IdentifierSymbols) do
-              Inc(i);
+            FTabPos[I - 1] := True;
+            while (I <= Length(S)) and CharInSetW(S[I], IdentifierSymbols) do
+              Inc(I);
           end;
-          Inc(i);
+          Inc(I);
         end; { for }
 
-        if i >= Max_X_Scroll then
+        if I >= Max_X_Scroll then
           Break;
-        if j >= VisibleRowCount * 2 then
+        if J >= VisibleRowCount * 2 then
           Break;
-        Inc(j);
+        Inc(J);
       end;
     end;
   end;
@@ -2019,10 +2057,10 @@ begin
   Result := X;
   if Next then
   begin
-    for i := X + 1 to High(FTabPos) do
-      if FTabPos[i] then
+    for I := X + 1 to High(FTabPos) do
+      if FTabPos[I] then
       begin
-        Result := i;
+        Result := I;
         Exit;
       end;
     if (Result = X) then
@@ -2037,33 +2075,33 @@ end;
 
 function TJvCustomWideEditor.GetBackStop(X, Y: Integer): Integer;
 var
-  i: Integer;
+  I: Integer;
   S: WideString;
 
   procedure UpdateBackStops;
   var
     S: WideString;
-    j, i, k: Integer;
+    J, I, k: Integer;
   begin
-    j := 1;
-    i := X - 1;
+    J := 1;
+    I := X - 1;
     FillChar(FTabPos, SizeOf(FTabPos), False);
     FTabPos[0] := True;
-    while Y - j >= 0 do
+    while Y - J >= 0 do
     begin
-      S := FLines[Y - j];
-      for k := 1 to Min(Length(S), i) do { Iterate }
+      S := FLines[Y - J];
+      for k := 1 to Min(Length(S), I) do
         if S[k] <> ' ' then
         begin
-          i := k;
-          FTabPos[i - 1] := True;
+          I := k;
+          FTabPos[I - 1] := True;
           Break;
         end;
-      if i = 1 then
+      if I = 1 then
         Break;
-      if j >= VisibleRowCount * 2 then
+      if J >= VisibleRowCount * 2 then
         Break;
-      Inc(j);
+      Inc(J);
     end;
   end;
 
@@ -2074,10 +2112,10 @@ begin
     ((X + 1 > Length(S)) or (S[X + 1] <> ' ')) then
   begin
     UpdateBackStops;
-    for i := X downto 0 do
-      if FTabPos[i] then
+    for I := X downto 0 do
+      if FTabPos[I] then
       begin
-        Result := i;
+        Result := I;
         Exit;
       end;
   end;
@@ -2193,7 +2231,7 @@ end;
 
 procedure TJvInsertColumnUndo.Undo;
 var
-  i: Integer;
+  I: Integer;
   SS: TWStringList;
   S: WideString;
 begin
@@ -2204,11 +2242,11 @@ begin
   SS := TWStringList.Create;
   try
     SS.Text := FText;
-    for i := 0 to SS.Count - 1 do
+    for I := 0 to SS.Count - 1 do
     begin
-      S := GetEditor.FLines[CaretY + i];
-      Delete(S, CaretX + 1, Length(SS[i]));
-      GetEditor.FLines.Internal[CaretY + i] := S;
+      S := GetEditor.FLines[CaretY + I];
+      Delete(S, CaretX + 1, Length(SS[I]));
+      GetEditor.FLines.Internal[CaretY + I] := S;
     end;
   finally
     SS.Free;
@@ -2242,8 +2280,10 @@ begin
       with TJvUnindentColumnUndo(LastUndo) do
       begin
         GetEditor.FLines.InsertColumnText(FBegX, FBegY, FText);
-        if BegX > FBegX then BegX := FBegX;
-        if BegY > FBegY then BegY := FBegY;
+        if BegX > FBegX then
+          BegX := FBegX;
+        if BegY > FBegY then
+          BegY := FBegY;
       end;
       Dec(FPtr);
       if not GetEditor.GroupUndo then
@@ -2410,7 +2450,7 @@ end;
 procedure TJvDeleteSelectedUndo.Undo;
 var
   S: WideString;
-  i: Integer;
+  I: Integer;
 begin
   with FSelection^ do
   begin
@@ -2422,11 +2462,11 @@ begin
     else
     if SelBlockFormat = bfColumn then
     begin
-      for i := SelBegY to SelEndY do
+      for I := SelBegY to SelEndY do
       begin
-        S := GetEditor.FLines[i];
-        Insert(SubStrW(FText, i - SelBegY, sLineBreak), S, SelBegX + 1);
-        GetEditor.FLines.Internal[i] := S;
+        S := GetEditor.FLines[I];
+        Insert(SubStrW(FText, I - SelBegY, sLineBreak), S, SelBegX + 1);
+        GetEditor.FLines.Internal[I] := S;
       end;
       GetEditor.TextModified(SelBegX, SelBegY, maInsertColumn, FText);
     end;
@@ -2477,7 +2517,7 @@ begin
         BeginCompound;
         try
           ClearSelection;
-          Reline;
+          ReLine;
 
           if Length(W) = 0 then
           begin
@@ -2529,14 +2569,14 @@ end;
 
 procedure TJvWideCompletion.MakeItems;
 var
-  i: Integer;
+  I: Integer;
   S: WideString;
 begin
   Items.Clear;
   case Mode of
     cmIdentifiers:
-      for i := 0 to FIdentifiers.Count - 1 do
-        Items.Add(FIdentifiers[i]);
+      for I := 0 to FIdentifiers.Count - 1 do
+        Items.Add(FIdentifiers[I]);
     cmTemplates:
       begin
         with TJvCustomWideEditor(JvEditor) do
@@ -2544,9 +2584,9 @@ begin
             S := GetWordOnPosW(FLines[CaretY], CaretX)
           else
             S := '';
-        for i := 0 to FTemplates.Count - 1 do
-          if StrLICompW(PWideChar(FTemplates[i]), PWideChar(S), Length(S)) = 0 then
-            Items.Add(FTemplates[i]);
+        for I := 0 to FTemplates.Count - 1 do
+          if StrLICompW(PWideChar(FTemplates[I]), PWideChar(S), Length(S)) = 0 then
+            Items.Add(FTemplates[I]);
         if Items.Count = 0 then
           Items.Assign(FTemplates);
       end;
@@ -2557,14 +2597,14 @@ procedure TJvWideCompletion.FindSelItem(var Eq: Boolean);
 var
   S: WideString;
 
-  function FindFirst(Ss: TStrings; S: AnsiString): Integer;
+  function FindFirst(SS: TStrings; S: AnsiString): Integer;
   var
-    i: Integer;
+    I: Integer;
   begin
-    for i := 0 to Ss.Count - 1 do
-      if StrLIComp(PAnsiChar(Ss[i]), PAnsiChar(S), Length(S)) = 0 then
+    for I := 0 to SS.Count - 1 do
+      if StrLIComp(PAnsiChar(SS[I]), PAnsiChar(S), Length(S)) = 0 then
       begin
-        Result := i;
+        Result := I;
         Exit;
       end;
     Result := -1;

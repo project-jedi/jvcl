@@ -606,7 +606,7 @@ begin
     end
     else if Cmp(Identifer, 'HighlighterName') then
     begin
-      Value := Highlighters[RAHLEditor1.Highlighter];
+      Value := string(Highlighters[RAHLEditor1.Highlighter]);
       Done := True;
     end
     else if Cmp(Identifer, 'LoadColors') then

@@ -88,7 +88,7 @@ object MainForm: TMainForm
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 276
+    Top = 273
     Width = 578
     Height = 19
     Panels = <>
@@ -98,7 +98,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 26
     Width = 578
-    Height = 250
+    Height = 247
     Align = alClient
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText

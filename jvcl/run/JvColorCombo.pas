@@ -313,14 +313,14 @@ end;
 function GetItemHeight(Font: TFont): Integer;
 var
   DC: HDC;
-  aFont: HFont;
+  AFont: HFONT;
   TM: TTextMetric;
 begin
   DC := GetDC(0);
   try
-    aFont := SelectObject(DC, Font.Handle);
+    AFont := SelectObject(DC, Font.Handle);
     GetTextMetrics(DC, TM);
-    SelectObject(DC, aFont);
+    SelectObject(DC, AFont);
   finally
     ReleaseDC(0, DC);
   end;
@@ -542,7 +542,7 @@ procedure TJvColorComboBox.DrawItem(Index: Integer; R: TRect;
   State: TOwnerDrawState);
 var
   aRect: TRect;
-  aColor: TColor;
+  AColor: TColor;
   S: string;
 begin
   aRect := R;
@@ -558,7 +558,7 @@ begin
 
   with Canvas do
   begin
-    aColor := Brush.Color;
+    AColor := Brush.Color;
     Brush.Color := Color;
     FillRect(R);
     Brush.Color := clGray;
@@ -569,7 +569,7 @@ begin
     try
       Rectangle(aRect);
     finally
-      Brush.Color := aColor;
+      Brush.Color := AColor;
     end;
     if (coCustomColors in FOptions) and (Index = Items.Count - 1) then
     begin
@@ -579,7 +579,7 @@ begin
       FillRect(R);
       R.Left := R.Left + 2;
       R.Right := R.Left + TextWidth(S) + 2;
-      Brush.Color := aColor;
+      Brush.Color := AColor;
       FillRect(R);
       SetBkMode(Canvas.Handle, TRANSPARENT);
       DrawText(Canvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
@@ -594,7 +594,7 @@ begin
         if coHex in FOptions then
           S := Format('0x%.6x', [ColorToRGB(TColor(Items.Objects[Index]))])
         else
-        if coRGB in Foptions then
+        if coRGB in FOptions then
           S := Format('(%d,%d,%d)', [GetRValue(TColor(Items.Objects[Index])), GetGValue(TColor(Items.Objects[Index])),
             GetBValue(TColor(Items.Objects[Index]))]);
       end;
@@ -616,7 +616,7 @@ end;
 
 procedure TJvColorComboBox.Click;
 var
-  S, tmp: string;
+  S, Tmp: string;
   CD: TColorDialog;
 begin
   if FExecutingDialog then
@@ -634,12 +634,12 @@ begin
         begin
           if DoNewColor(CD.Color, S) then
             Inc(FCustomColorCount);
-          tmp := FNewColorText;
+          Tmp := FNewColorText;
           try
             FNewColorText := S;
             ColorValue := CD.Color;
           finally
-            FNewColorText := tmp;
+            FNewColorText := Tmp;
           end;
           Change;
         end
@@ -863,13 +863,13 @@ end;
 procedure TJvFontComboBox.GetFonts;
 var
   DC: HDC;
-  MRUItems: TStringlist;
+  MRUItems: TStringList;
   I: Integer;
 begin
   HandleNeeded;
   if not HandleAllocated then
     Exit;
-  MRUItems := TStringlist.Create;
+  MRUItems := TStringList.Create;
   try
     if FShowMRU then
       for I := 0 to MRUCount - 1 do
@@ -904,7 +904,7 @@ begin
   begin
     FOptions := Value;
     if (foPreviewFont in FOptions) then
-      Exclude(FOptions, foWysiwyg);
+      Exclude(FOptions, foWysiWyg);
     SetShowMRU(foMRU in FOptions);
     Reset;
   end;
@@ -962,41 +962,41 @@ end;
 procedure TJvFontComboBox.DrawItem(Index: Integer; R: TRect;
   State: TOwnerDrawState);
 var
-  aBmp: TBitmap;
-  aColor: TColor;
-  aWidth: Integer;
-  tmpRect: TRect;
-  S, aName: string;
+  ABmp: TBitmap;
+  AColor: TColor;
+  AWidth: Integer;
+  TmpRect: TRect;
+  S, AName: string;
 begin
   with Canvas do
   begin
-    aColor := Brush.Color;
+    AColor := Brush.Color;
     Brush.Color := Color;
     Pen.Color := Font.Color;
     FillRect(R);
     Inc(R.Top);
-    //    aWidth  := 20;
+    //    AWidth  := 20;
     if (Integer(Items.Objects[Index]) and TRUETYPE_FONTTYPE) <> 0 then
-      aBmp := FTrueTypeBmp
+      ABmp := FTrueTypeBmp
     else
     if (Integer(Items.Objects[Index]) and DEVICE_FONTTYPE) <> 0 then
-      aBmp := FDeviceBmp
+      ABmp := FDeviceBmp
     else
-      aBmp := FFixBmp;
+      ABmp := FFixBmp;
     if not FUseImages then
-      aBmp := nil;
+      ABmp := nil;
 
-    if aBmp <> nil then
+    if ABmp <> nil then
     begin
-      aWidth := aBmp.Width;
-      BrushCopy(Bounds(R.Left + 2, (R.Top + R.Bottom - aBmp.Height) div 2,
-        aBmp.Width, aBmp.Height), aBmp, Bounds(0, 0, aBmp.Width, aBmp.Height), clFuchsia);
-      R.Left := R.Left + aWidth + 6;
+      AWidth := ABmp.Width;
+      BrushCopy(Bounds(R.Left + 2, (R.Top + R.Bottom - ABmp.Height) div 2,
+        ABmp.Width, ABmp.Height), ABmp, Bounds(0, 0, ABmp.Width, ABmp.Height), clFuchsia);
+      R.Left := R.Left + AWidth + 6;
     end
     else
-      aWidth := 4;
-    Brush.Color := aColor;
-    aName := Canvas.Font.Name;
+      AWidth := 4;
+    Brush.Color := AColor;
+    AName := Canvas.Font.Name;
     if foWysiWyg in FOptions then
     begin
       if (foPreviewFont in Options) then
@@ -1011,20 +1011,20 @@ begin
     DrawText(Canvas.Handle, PChar(Items[Index]), -1, R, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
     if (foPreviewFont in Options) then
     begin
-      Inc(aWidth, TextWidth(Items[Index]) + 36);
+      Inc(AWidth, TextWidth(Items[Index]) + 36);
       Canvas.Font.Name := Items[Index];
       S := 'AbCdEfGhIj';
-      Inc(aWidth, TextWidth(S));
-      if DoDrawPreview(Items[Index], S, aWidth) then
+      Inc(AWidth, TextWidth(S));
+      if DoDrawPreview(Items[Index], S, AWidth) then
       begin
-        tmpRect := R;
-        tmpRect.Left := 0;
-        tmpRect.Right := ClientWidth - (GetSystemMetrics(SM_CXVSCROLL) + 8);
+        TmpRect := R;
+        TmpRect.Left := 0;
+        TmpRect.Right := ClientWidth - (GetSystemMetrics(SM_CXVSCROLL) + 8);
         R.Right := ClientWidth;
-        DrawText(Canvas.Handle, PChar(S), -1, tmpRect, DT_SINGLELINE or DT_VCENTER or DT_RIGHT or DT_NOPREFIX);
+        DrawText(Canvas.Handle, PChar(S), -1, TmpRect, DT_SINGLELINE or DT_VCENTER or DT_RIGHT or DT_NOPREFIX);
       end;
     end;
-    Canvas.Font.Name := aName;
+    Canvas.Font.Name := AName;
     OffsetRect(R, -2, 0);
     if odSelected in State then
       DrawFocusRect(R);
@@ -1163,7 +1163,7 @@ begin
         Result := AFontName;
     end;
   finally
-    RegCloseKey(AKEy);
+    RegCloseKey(AKey);
   end
   else
     Result := AFontName;

@@ -27,9 +27,10 @@ unit JvUtilsU;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvComponent, StdCtrls, JvDirectories, JvKeyboardStates,
-  MPlayer, JvButton, JvScreenSaver, JvControlPanelButton, JvFavoritesButton, JvExStdCtrls;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  Forms, Dialogs, StdCtrls, MPlayer,
+  JvComponent, JvButton, JvScreenSaver, JvControlPanelButton,
+  JvFavoritesButton, JvExStdCtrls;
 
 type
   TJvUtilsFrm = class(TForm)
@@ -55,6 +56,7 @@ type
   end;
 
 implementation
+
 uses
   JvJCLUtils, JvJVCLUtils;
 

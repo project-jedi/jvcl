@@ -72,7 +72,7 @@ unit JvgXMLSerializer;
 // Предусловия:
 //   Объект для (де)сериализации должен быть создан до вызова процедуры.
 //
-//   При StrongConformity == true необходимо присутствие в загружаемом XML тегов
+//   При StrongConformity == True необходимо присутствие в загружаемом XML тегов
 //   для всех классовых типов. Присутствие остальных тегов не проверяется.
 //
 // Дополнительно:
@@ -163,16 +163,15 @@ type
     OutStream: TStream;
 
     FOnGetXMLHeader: TOnGetXMLHeader;
-    FGenerateFormattedXML: boolean;
-    FExcludeEmptyValues: boolean;
-    FExcludeDefaultValues: boolean;
-    FReplaceReservedSymbols: boolean;
-    FStrongConformity: boolean;
+    FGenerateFormattedXML: Boolean;
+    FExcludeEmptyValues: Boolean;
+    FExcludeDefaultValues: Boolean;
+    FReplaceReservedSymbols: Boolean;
+    FStrongConformity: Boolean;
     FBeforeParsing: TBeforeParsingEvent;
-    FWrapCollections: boolean;
-    FIgnoreUnknownTags: boolean;
-    procedure check(Expr: boolean; const Message: string; E:
-      TJvgXMLSerializerException);
+    FWrapCollections: Boolean;
+    FIgnoreUnknownTags: Boolean;
+    procedure check(Expr: Boolean; const Message: string; E: TJvgXMLSerializerException);
 
     procedure WriteOutStream(const Value: string);
     { Private declarations }
@@ -186,7 +185,8 @@ type
       ValueEnd: PChar; ParentBlockEnd: PChar);
   public
     DefaultXMLHeader: string;
-    tickCounter, tickCount: DWORD;
+    tickCounter: DWORD;
+    tickCount: DWORD;
     constructor Create(AOwner: TComponent); override;
     //{ Сериализация объекта в XML }
     { Serialization of object to XML [translated] }
@@ -198,21 +198,21 @@ type
     { Genereating DTD [translated] }
     procedure GenerateDTD(Component: TObject; Stream: TStream);
   published
-    property GenerateFormattedXML: boolean
-      read FGenerateFormattedXML write FGenerateFormattedXML default true;
-    property ExcludeEmptyValues: boolean
+    property GenerateFormattedXML: Boolean
+      read FGenerateFormattedXML write FGenerateFormattedXML default True;
+    property ExcludeEmptyValues: Boolean
       read FExcludeEmptyValues write FExcludeEmptyValues;
-    property ExcludeDefaultValues: boolean
+    property ExcludeDefaultValues: Boolean
       read FExcludeDefaultValues write FExcludeDefaultValues;
-    property ReplaceReservedSymbols: boolean
+    property ReplaceReservedSymbols: Boolean
       read FReplaceReservedSymbols write FReplaceReservedSymbols;
-    property StrongConformity: boolean
-      read FStrongConformity write FStrongConformity default true;
-    property IgnoreUnknownTags: boolean
+    property StrongConformity: Boolean
+      read FStrongConformity write FStrongConformity default True;
+    property IgnoreUnknownTags: Boolean
       read FIgnoreUnknownTags write FIgnoreUnknownTags;
 
-    property WrapCollections: boolean
-      read FWrapCollections write FWrapCollections default true;
+    property WrapCollections: Boolean
+      read FWrapCollections write FWrapCollections default True;
 
     property OnGetXMLHeader: TOnGetXMLHeader
       read FOnGetXMLHeader write FOnGetXMLHeader;
@@ -251,9 +251,9 @@ constructor TJvgXMLSerializer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   //...defaults
-  FGenerateFormattedXML := true;
-  FStrongConformity := true;
-  FWrapCollections := true;
+  FGenerateFormattedXML := True;
+  FStrongConformity := True;
+  FWrapCollections := True;
 end;
 
 //{ пишет строку в выходящий поток. Исп-ся при сериализации }
@@ -348,10 +348,10 @@ var
   //{ Добавляет закрывающий тег с заданным именем }
   { Adds closing tag with given name  [translated] }
 
-  procedure addCloseTag(const Value: string; addBreak: boolean = false);
+  procedure addCloseTag(const Value: string; AddBreak: Boolean = False);
   begin
     Dec(Level);
-    if addBreak then
+    if AddBreak then
       WriteOutStream(CR + DupStr(TAB, Level));
     WriteOutStream('</' + Value + '>');
   end;
@@ -396,7 +396,7 @@ begin
           begin
             //{ Получение значения свойства }
             { Getting property's value  [translated] }
-            sPropValue := GetPropValue(Component, PropName, true);
+            sPropValue := GetPropValue(Component, PropName, True);
 
             //{ Проверяем на пустое значение и значение по умолчанию }
             { Checking if value is empty or is default  [translated] }
@@ -444,7 +444,7 @@ begin
               begin
                 addOpenTag(PropName);
                 WriteOutStream(TStrings(PropObject).CommaText);
-                addCloseTag(PropName, true);
+                addCloseTag(PropName, True);
               end
               else
               if PropObject is TCollection then
@@ -462,18 +462,18 @@ begin
                   addOpenTag(TCollection(PropObject).Items[j].ClassName);
                   SerializeInternal(TCollection(PropObject).Items[j],
                     Level);
-                  addCloseTag(TCollection(PropObject).Items[j].ClassName, true);
+                  addCloseTag(TCollection(PropObject).Items[j].ClassName, True);
                 end;
 
                 if WrapCollections then
-                  addCloseTag(PropName, true);
+                  addCloseTag(PropName, True);
               end
               else
               if PropObject is TPersistent then
               begin
                 addOpenTag(PropName);
                 SerializeInternal(PropObject, Level);
-                addCloseTag(PropName, true);
+                addCloseTag(PropName, True);
               end;
 
               //{ Здесь можно добавить обработку остальных классов: TTreeNodes, TListItems }
@@ -849,7 +849,7 @@ begin
           //{ Коллекции }
           { collections  [translated] }
           begin
-            while true do
+            while True do
             //{ Заранее не известно число элементов в коллекции }
             { we can't foretell number of element in TCollection  [translated] }
             begin
@@ -1043,7 +1043,7 @@ begin
   end;
 end;
 
-procedure TJvgXMLSerializer.check(Expr: boolean; const Message: string;
+procedure TJvgXMLSerializer.check(Expr: Boolean; const Message: string;
   E: TJvgXMLSerializerException);
 begin
   if not Expr then
