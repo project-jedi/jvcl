@@ -717,6 +717,7 @@ begin
   try
     with Result do
     begin
+      Position := poDesigned; // Delphi 2005 has a new default
       {$IFDEF VCL}
       BiDiMode := Application.BiDiMode;
       BorderStyle := bsDialog;
