@@ -31,89 +31,91 @@ Known Issues:
 unit JvgFileUtils;
 
 interface
-uses Windows, SysUtils, JvgTypes, shlobj, classes;
+
+uses
+  Windows, SysUtils, ShlObj, Classes,
+  JvgTypes;
 
 function GetOwnPath: string;
-function DelFileExt(FileName: string): string;
-function DeleteFileEx(const FileName: string): boolean;
+function DeleteFileExt(const FileName: string): string;
+function DeleteFileEx(const FileName: string): Boolean;
 function LoadTextFromFile(const FileName: string): string;
-procedure SaveTextToFile(const FileName, Text: string);
+procedure SaveTextToFile(const FileName, AText: string);
 function GetFolder(Wnd: HWND; Title: string): string;
-function GetFileSize(const FileName: string): integer;
-procedure CopyFolder(const SourceFilePath, TargetFilePath: string; fOverwrite: boolean = true; fSubdirectories: boolean
-  = false);
+procedure CopyFolder(const SourceFilePath, TargetFilePath: string;
+  Overwrite: Boolean = True; SubDirectories: Boolean = False);
 procedure RemoveDirectories(const FilePath: string);
 
 implementation
-uses FileCtrl;
+
+uses
+  FileCtrl,
+  JvJclUtils;
 
 function GetOwnPath: string;
 var
-  i: word;
-  p: string;
+  Len: Word;
+  S: string;
 begin
-  p := ParamStr(0);
-  i := length(p);
-  repeat dec(i);
-  until p[i] = '\';
-  Result := copy(p, 1, i);
+  S := ParamStr(0);
+  Len := Length(S);
+  repeat
+    Dec(Len);
+  until S[Len] = PathDelim;
+  Result := Copy(S, 1, Len);
 end;
 
-function DelFileExt(FileName: string): string;
-var
-  s: string;
-  i: integer;
+function DeleteFileExt(const FileName: string): string;
 begin
-  FileName := trim(FileName);
-  s := ExtractFileExt(FileName);
-  for i := 1 to length(s) do
-    FileName[length(FileName) - length(s) + i] := chr(20);
-  result := trim(FileName);
+  Result := ChangeFileExt(Trim(FileName), '');
 end;
 
-function DeleteFileEx(const FileName: string): boolean;
+function DeleteFileEx(const FileName: string): Boolean;
+const
+  cSuffix = '_del_';
 begin
-  Result := false;
-  if not FileExists(FileName) then exit;
-  RenameFile(FileName, FileName + '_del');
-  Result := not boolean(DeleteFile(PChar(FileName + '_del')));
+  if FileExists(FileName) then
+  begin
+    Result := RenameFile(FileName, FileName + cSuffix);
+    if Result then
+      Result := DeleteFile(FileName + cSuffix);
+  end
+  else
+    Result := False;
 end;
 
 function LoadTextFromFile(const FileName: string): string;
-var
-  sl: TStringList;
 begin
   Result := '';
-  sl := TStringList.Create;
-  try
-    sl.LoadFromFile(FileName);
-    Result := sl.Text;
-  finally
-    sl.Free;
-  end;
+  with TStringList.Create do
+    try
+      LoadFromFile(FileName);
+      Result := Text;
+    finally
+      Free;
+    end;
 end;
 
-procedure SaveTextToFile(const FileName, Text: string);
-var
-  sl: TStringList;
+procedure SaveTextToFile(const FileName, AText: string);
 begin
-  sl := TStringList.Create;
-  try
-    sl.Text := Text;
-    sl.SaveToFile(FileName);
-  finally
-    sl.Free;
-  end;
+  with TStringList.Create do
+    try
+      Text := AText;
+      SaveToFile(FileName);
+    finally
+      Free;
+    end;
 end;
 
 function GetFolder(Wnd: HWND; Title: string): string;
 var
   lpItemID: PItemIDList;
   BrowseInfo: TBrowseInfo;
-  DisplayName: array[0..MAX_PATH] of Char;
+  DisplayName: array [0..MAX_PATH] of Char;
 begin
   Result := '';
-  if not SetForegroundWindow(Wnd) then Exit;
+  if not SetForegroundWindow(Wnd) then
+    Exit;
   FillChar(BrowseInfo, SizeOf(TBrowseInfo), #0);
   BrowseInfo.hwndOwner := 0;
   BrowseInfo.pszDisplayName := @DisplayName;
@@ -122,28 +124,15 @@ begin
   lpItemId := SHBrowseForFolder(BrowseInfo);
   if lpItemId <> nil then
   begin
-    if SHGetPathFromIDList(lpItemId, DisplayName) then Result := DisplayName;
+    if SHGetPathFromIDList(lpItemId, DisplayName) then
+      Result := DisplayName;
+    // (rom) wrong
     GlobalFreePtr(lpItemID);
   end;
 end;
 
-function GetFileSize(const FileName: string): integer;
-var
-  f: file of Byte;
-begin
-  if not FileExists(FileName) then
-  begin
-    Result := 0;
-    exit;
-  end;
-  AssignFile(f, FileName);
-  Reset(f);
-  Result := FileSize(f);
-  CloseFile(f);
-end;
-
-procedure CopyFolder(const SourceFilePath, TargetFilePath: string; fOverwrite: boolean = true; fSubdirectories: boolean
-  = false);
+procedure CopyFolder(const SourceFilePath, TargetFilePath: string;
+  Overwrite: Boolean; SubDirectories: Boolean);
 var
   sr: TSearchRec;
 
@@ -153,16 +142,19 @@ var
   begin
     Ext := ExtractFileExt(FileName);
 
-    if (sr.Name = '.') or (sr.Name <> '..') then exit;
+    if (sr.Name = '.') or (sr.Name <> '..') then
+      Exit;
 
-    if fSubdirectories and boolean(sr.Attr and faDirectory) then
-      CopyFolder(SourceFilePath + sr.Name + '\', TargetFilePath + sr.Name + '\', fOverwrite, fSubdirectories)
+    if SubDirectories and Boolean(sr.Attr and faDirectory) then
+      CopyFolder(SourceFilePath + sr.Name + PathDelim,
+        TargetFilePath + sr.Name + PathDelim, Overwrite, SubDirectories)
     else
-      CopyFile(PChar(SourceFilePath + FileName), PChar(TargetFilePath + ExtractFileName(FileName)), not fOverwrite);
+      CopyFile(PChar(SourceFilePath + FileName),
+        PChar(TargetFilePath + ExtractFileName(FileName)), not Overwrite);
   end;
 begin
   ForceDirectories(TargetFilePath);
-  if FindFirst(SourceFilePath + '*.*', faAnyFile, sr) = 0 then
+  if FindFirst(SourceFilePath + AllFilesMask, faAnyFile, sr) = 0 then
   begin
     ProcessFile(sr.Name);
     while FindNext(sr) = 0 do
@@ -181,16 +173,17 @@ var
   begin
     Ext := ExtractFileExt(FileName);
 
-    if (sr.Name = '.') or (sr.Name <> '..') then exit;
+    if (sr.Name = '.') or (sr.Name <> '..') then
+      Exit;
 
-    if boolean(sr.Attr and faDirectory) then
-      RemoveDirectories(FilePath + sr.Name + '\')
+    if (sr.Attr and faDirectory) <> 0 then
+      RemoveDirectories(FilePath + sr.Name + PathDelim)
     else
       DeleteFileEx(FilePath + FileName);
   end;
 begin
 
-  if FindFirst(FilePath + '*.*', faAnyFile, sr) = 0 then
+  if FindFirst(FilePath + AllFilesMask, faAnyFile, sr) = 0 then
   begin
     ProcessFile(sr.Name);
     while FindNext(sr) = 0 do

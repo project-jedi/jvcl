@@ -275,8 +275,8 @@ begin
     Jpeg.Assign(BackImage);
 
     LogPath := ExtractFilePath(ParamStr(0)) +
-      DelFileExt(ExtractFileName(ParamStr(0))) + '\';
-    ScreenShotName := DelFileExt(ExtractFileName(ParamStr(0)) + ' ' +
+      DeleteFileExt(ExtractFileName(ParamStr(0))) + '\';
+    ScreenShotName := DeleteFileExt(ExtractFileName(ParamStr(0)) + ' ' +
       StringReplace(StringReplace(ID, '{', '', [rfReplaceAll]), '}', '',
       [rfReplaceAll]))
       + Format('  %2d-%2d-%4d %2d-%2d-%2d', [SysTime.wDay, SysTime.wMonth,
