@@ -89,9 +89,12 @@ type
     procedure SetOnTerminating(Value: TJvMtThreadEvent);
     procedure UnHookThread;
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation); 
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
     procedure SetManager(Value: TJvMtManager); override;
+    procedure DoExecute(MTThread: TJvMtSingleThread); dynamic;
+    procedure DoFinished(MTThread: TJvMtSingleThread); dynamic;
+    procedure DoTerminating(MTThread: TJvMtSingleThread); dynamic;
   public
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
@@ -175,29 +178,31 @@ type
     function Read: TObject;
     procedure Write(AObject: TObject);
   published
-    property MaxBufferSize: Integer read FMaxBufferSize write SetMaxBufferSize 
+    property MaxBufferSize: Integer read FMaxBufferSize write SetMaxBufferSize
       default MTDefaultBufferSize;
   end;
-  
+
   TJvMtThreadToVCL = class (TJvMtAsyncBufferBase)
   private
     FOnCanRead: TNotifyEvent;
   protected
+    procedure DoCanRead(Sender: TObject); dynamic;
     procedure CreateBuffer; override;
   published
     property OnCanRead: TNotifyEvent read FOnCanRead write FOnCanRead;
   end;
-  
+
   TJvMtVCLToThread = class (TJvMtAsyncBufferBase)
   private
     FOnCanWrite: TNotifyEvent;
   protected
+    procedure DoCanWrite(Sender: TObject); dynamic;
     procedure CreateBuffer; override;
     procedure Loaded; override;
   published
     property OnCanWrite: TNotifyEvent read FOnCanWrite write FOnCanWrite;
   end;
-  
+
   TJvMtThreadToThread = class (TJvMtComponent)
   private
     FHooking: TCriticalSection;
@@ -211,10 +216,10 @@ type
     function Read: TObject;
     procedure Write(AObject: TObject);
   published
-    property MaxBufferSize: Integer read FMaxBufferSize write SetMaxBufferSize 
+    property MaxBufferSize: Integer read FMaxBufferSize write SetMaxBufferSize
       default MTDefaultBufferSize;
   end;
-  
+
   TJvMtMonitorSection = class (TJvMtComponent)
   private
     FMonitor: TMTMonitor;
@@ -226,7 +231,7 @@ type
     procedure Leave;
     property Condition[ID: Integer]: TMTCondition read GetCondition; default;
   end;
-  
+
 implementation
 
 
@@ -235,7 +240,7 @@ implementation
 constructor TJvMtManager.Create(aOwner: TComponent);
 begin
   inherited Create(AOwner);
-  
+
   // We want to know about the form going down
   if AOwner <> nil then
     AOwner.FreeNotification(Self);
@@ -382,27 +387,24 @@ procedure TJvMtThread.Notification(AComponent: TComponent; Operation:
 begin
   if (Operation = opRemove) and (AComponent = FManager) then
     ReleaseThread;      // important during runtime
-  
+
   // now can inherited (this wil invalidate FManager)
   inherited Notification(AComponent, Operation);
 end;
 
 procedure TJvMtThread.OnIntExecute(Thread: TMTThread);
 begin
-  if Assigned(FOnExecute) then
-    FOnExecute(Self, TJvMtSingleThread(Thread));
+  DoExecute(TJvMtSingleThread(Thread));
 end;
 
 procedure TJvMtThread.OnIntFinished(Thread: TMTThread);
 begin
-  if Assigned(FOnFinished) then
-    FOnFinished(Self, TJvMtSingleThread(Thread));
+  DoFinished(TJvMtSingleThread(Thread));
 end;
 
 procedure TJvMtThread.OnIntTerminating(Thread: TMTThread);
 begin
-  if Assigned(FOnTerminating) then
-    FOnTerminating(Self,TJvMtSingleThread(Thread));
+  DoTerminating(TJvMtSingleThread(Thread));
 end;
 
 procedure TJvMtThread.ReleaseThread;
@@ -483,6 +485,21 @@ procedure TJvMtThread.Wait;
 begin
   HookThread;
   FThread.Wait;
+end;
+    
+procedure TJvMtThread.DoExecute(MTThread: TJvMtSingleThread);
+begin
+  if Assigned(FOnExecute) then FOnExecute(Self, MTThread);
+end;
+
+procedure TJvMtThread.DoFinished(MTThread: TJvMtSingleThread);
+begin
+  if Assigned(FOnFinished) then FOnFinished(Self, MTThread);
+end;
+
+procedure TJvMtThread.DoTerminating(MTThread: TJvMtSingleThread);
+begin
+  if Assigned(FOnTerminating) then FOnTerminating(Self, MTThread);
 end;
 
 { TJvMtSectionBase }
@@ -651,7 +668,13 @@ end;
 procedure TJvMtThreadToVCL.CreateBuffer;
 begin
   FBuffer := TMTBufferToVCL.Create(FMaxBufferSize, Name);
-  TMTBufferToVCL(FBuffer).OnCanRead := OnCanRead;
+  TMTBufferToVCL(FBuffer).OnCanRead := DoCanRead;
+end;
+
+procedure TJvMtThreadToVCL.DoCanRead(Sender: TObject);
+begin
+  // call the OnCanRead event with this object as the sender
+  if Assigned(FOnCanRead) then FOnCanRead(Self);
 end;
 
 { TJvMtVCLToThread }
@@ -659,7 +682,13 @@ end;
 procedure TJvMtVCLToThread.CreateBuffer;
 begin
   FBuffer := TMTVCLToBuffer.Create(FMaxBufferSize, Name);
-  TMTVCLToBuffer(FBuffer).OnCanWrite := OnCanWrite;
+  TMTVCLToBuffer(FBuffer).OnCanWrite := DoCanWrite;
+end;
+
+procedure TJvMtVCLToThread.DoCanWrite(Sender: TObject);
+begin
+  // call the OnCanWrite event with this object as the sender
+  if Assigned(FOnCanWrite) then FOnCanWrite(Self);
 end;
 
 procedure TJvMtVCLToThread.Loaded;
