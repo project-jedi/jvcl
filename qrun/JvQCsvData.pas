@@ -261,6 +261,12 @@ type
     function GetUserData(Index: Integer): Pointer;
     procedure SetUserData(Index: Integer; Value: Pointer);
 
+    // Get internal value, return as Variant.
+
+
+
+
+
   public
     procedure AddRow( Item: PCsvRow);
     procedure InsertRow(const position: Integer;  Item: PCsvRow);
@@ -285,6 +291,7 @@ type
   TJvCustomCsvDataSet = class(TDataSet)
   private
     FSeparator: char;
+    FOpenFileName:String; // This is the Fully Qualified path and filename expanded from the FTableName property when InternalOpen was last called.
     FValidateHeaderRow: Boolean;
     FExtendedHeaderInfo: boolean;
     procedure SetSeparator(const Value: char);
@@ -347,6 +354,10 @@ type
     function GetActiveRecordBuffer: PChar; virtual;
     procedure CsvRowInit(RowPtr: PCsvRow);
 
+    //NEW and very handy dandy!
+    function GetFieldValueAsVariant(CsvColumnData: PCsvColumn; Field:TField; recordIndex:Integer) : Variant;
+
+
     // New filtering on cursor (GetRecord advances the cursor past
     // any hidden rows using InternalSkipForward).
     function InternalSkipFiltered(defaultResult: TGetResult; ForwardBackwardMode: Boolean): TGetResult;
@@ -406,6 +417,7 @@ type
     procedure InternalDelete; override;
     procedure InternalPost; override;
 {    procedure InternalInsert; override; }{not needed.}
+
 
     // Misc methods:
     procedure InternalClose; override;
@@ -470,6 +482,11 @@ type
       // Tells controls to redraw.
     procedure Refresh;
 
+    // Clone current row/record from one CsvDataSet to another (primitive synchronization/copying ability).
+    procedure CloneRow( dataset : TJvCustomCsvDataSet);
+
+    // TODO: Implement row/record copy from ANY dataset.
+    
     // A fast row lookup function specific to this CSV table object.
     function FindByCsvKey(key: string): Boolean;
 
@@ -587,6 +604,7 @@ type
     { these MUST be available at runtime even when the object is of the Custom base class type
       This enables interoperability at design time between non-visual helper components
       and user-derived CsvDataSet descendants }
+    property OpenFileName:String read FOpenFileName; // Set in InternalOpen, used elsewhere.
     property FieldDefs stored FieldDefsStored;
     property TableName: string read FTableName; // Another name, albeit read only, for the FileName property!
     property HasHeaderRow: Boolean read FHasHeaderRow write FHasHeaderRow default True;
@@ -1174,7 +1192,7 @@ procedure TJvCustomCsvDataSet.SetCsvFieldDef(const Value: string);
 begin
   if FCsvFieldDef <> Value then
   begin
-    CheckInActive;
+    CheckInactive;
     FCsvFieldDef := Value;
     FHeaderRow := '';
     FieldDefs.Clear; // Clear VCL Database field definitions
@@ -1250,6 +1268,88 @@ begin
   Result := False; // not yet implemented! XXX
 end;
 
+
+function TJvCustomCsvDataSet.GetFieldValueAsVariant(CsvColumnData: PCsvColumn; Field:TField; recordIndex:Integer) : Variant;
+var
+  RowPtr: PCsvRow;
+  {ActiveRowPtr:PCsvRow;}
+  pSource: PChar;
+  UserString, TempString: string;
+  PhysicalLocation: Integer;
+
+  aDateTime: TDateTime;
+  l: Integer;
+  ts: TTimeStamp;
+
+begin
+  Assert(Assigned(FCsvColumns));
+
+  if not Assigned(CsvColumnData) then
+  begin
+    JvCsvDatabaseError(FTableName, Format(RsEUnableToLocateCSVFileInfo, [Field.Name]));
+    Exit;
+  end;
+
+  PhysicalLocation := CsvColumnData^.FPhysical;
+
+  if (PhysicalLocation<0) and FPendingCsvHeaderParse then begin
+        FPendingCsvHeaderParse := false;
+        ProcessCsvHeaderRow;
+        PhysicalLocation := CsvColumnData^.FPhysical;
+  end;
+
+  if PhysicalLocation < 0 then
+  begin 
+    JvCsvDatabaseError(FTableName, Format(RsEPhysicalLocationOfCSVField, [Field.FieldName]));
+    Exit;
+  end;
+
+  RowPtr := FData[recordIndex];
+
+  TempString := GetCsvRowItem(RowPtr, PhysicalLocation);
+
+  // Strip quotes first!
+  if Field.DataType = ftString then
+  begin
+    l := Length(TempString);
+    if l >= 2 then
+      if (TempString[1] = '"') and (TempString[l] = '"') then
+      begin // quoted string!
+        TempString := _Dequote(TempString);
+      end;
+  end;
+
+  try
+    case Field.DataType of
+      ftString:     result := TempString;
+      ftInteger:    result  := StrToInt(TempString);
+      ftFloat:      result  := StrToFloatUS(TempString);
+      ftBoolean:
+        begin
+          if StrToIntDef(TempString, 0) <> 0 then
+              result := True
+          else
+              result := False;
+        end;
+      ftDateTime:
+           { one of three different datetime formats}
+           if Length(TempString)>0 then 
+           case CsvColumnData^.FFlag of
+             jcsvAsciiDateTime:
+                  result := TimeTAsciiToDateTime(TempString);
+             jcsvGMTDateTime:
+                  result := TimeTHexToDateTime(TempString,0);
+             jcsvTZDateTime:
+                  result := TimeTHexToDateTime(TempString, FTimeZoneCorrection);
+           end; {end case of jcsv various datetime encodings}
+  end; {case}
+  except
+    result := Unassigned; // No value.
+  end;
+end;
+
+
+// XXX TODO: REMOVE HARD CODED LIMIT OF 20 FIELDS SEARCHABLE!!!
 function TJvCustomCsvDataSet.Locate(const KeyFields: string; const KeyValues: Variant;
   Options: TLocateOptions): Boolean; // override;
   // Options is    [loCaseInsensitive]
@@ -1257,11 +1357,13 @@ function TJvCustomCsvDataSet.Locate(const KeyFields: string; const KeyValues: Va
   //              or [loPartialKey,loCaseInsensitive]
   //              or [] {none}
 var
+
   KeyFieldArray: array[0..20] of string;
   FieldLookup: array[0..20] of TField;
+  CsvColumnData :array[0..20] of PCsvColumn;
   FieldIndex: array[0..20] of Integer;
 
-  t, lo, hi, Count, VarCount: Integer;
+  recindex, t, lo, hi, Count, VarCount: Integer;
   Value: Variant;
   MatchCount: Integer;
   StrValueA, StrValueB: string;
@@ -1273,7 +1375,7 @@ begin
     Count := StrSplit(KeyFields, ',', Chr(0), KeyFieldArray, 20)
   else
     Count := StrSplit(KeyFields, ';', Chr(0), KeyFieldArray, 20);
-    
+
   if not ((VarType(KeyValues) and varArray) > 0) then
     Exit;
   lo := VarArrayLowBound(KeyValues, 1);
@@ -1290,6 +1392,7 @@ begin
     if t < Count then
     begin
       FieldLookup[t] := FieldByName(KeyFieldArray[t]);
+      CsvColumnData[t] := FCsvColumns.FindByFieldNo(FieldLookup[t].FieldNo);
       if not Assigned(FieldLookup[t]) then
         Exit;
       FieldIndex[t] := FieldLookup[t].Index;
@@ -1302,13 +1405,13 @@ begin
   end;
 
    // Now search
-  First;
-  while not Eof do
+  //First;
+  for recindex := 0 to Self.FData.Count-1 do
   begin
     MatchCount := 0;
     for t := 0 to Count - 1 do
     begin
-      Value := FieldLookup[t].Value;
+      Value := GetFieldValueAsVariant( CsvColumnData[t], FieldLookup[t], recindex);
       if Value = KeyValues[t + lo] then
         Inc(MatchCount)
       else
@@ -1338,10 +1441,11 @@ begin
     end;
     if MatchCount = Count then
     begin
+      RecNo := recindex;//Move cursor position.
       result := True;
       Exit;
     end;
-    Next;
+   // Next;
   end;
 
 end;
@@ -1493,7 +1597,12 @@ begin
       GetCalcFields(Buffer);
 
     except
-      JvCsvDatabaseError(FTableName, Format(RsEProblemReadingRow, [FRecordPos]));
+      on E:EJvCsvDataSetError do begin
+          raise; // pass our error through.
+      end;
+      on E:Exception do begin
+        JvCsvDatabaseError(FTableName, Format(RsEProblemReadingRow, [FRecordPos])+' '+E.Message);
+      end;
     end;
   end
   else
@@ -2369,11 +2478,10 @@ begin
     begin
       if FAutoBackupCount < 10 then
         FAutoBackupCount := 10; // can't be between 1 and 9, must be at least 10.
-      JvCsvBackupPreviousFiles(GetFileName, FAutoBackupCount);
+      JvCsvBackupPreviousFiles(FOpenFileName, FAutoBackupCount);
     end;
     // Now write new file.
-    filename := GetFilename;
-    ExportCsvFile(filename);
+    ExportCsvFile(FOpenFilename);
     FFileDirty := False;
   end;
 end;
@@ -2399,6 +2507,7 @@ begin
   FData.Clear;
   FCursorOpen := False;
   FRecordPos := ON_BOF_CRACK;
+  FOpenFileName:='';
 end;
 
 procedure TJvCustomCsvDataSet.InternalHandleException;
@@ -2582,7 +2691,7 @@ begin
     FCsvFileAsStrings := TStringlist.Create;
 
     if FLoadsFromFile then // The IF condition here is NEW!
-       FCsvFileAsStrings.LoadFromFile(GetFilename);
+       FCsvFileAsStrings.LoadFromFile(FOpenFilename);
 
     if FCsvFileAsStrings.Count > 0 then
       Result := True; // it worked!
@@ -2631,6 +2740,8 @@ var
 begin
   if FCursorOpen then
     InternalClose; // close first!
+
+  FOpenFileName := GetFileName; // Always use the same file name to save as you did to load!!! MARCH 2004.WP
 
   FFileDirty := False;
   if (Length(FTableName) = 0) and FLoadsFromFile then
@@ -2804,7 +2915,8 @@ end;
 
 procedure TJvCustomCsvDataSet.SetTableName(const Value: string);
 begin
-  CheckInActive;
+  CheckInactive;   // NOTE: TABLE MUST BE *CLOSED* TO CHANGE THE NAME! WE RAISE EXCEPTION HERE IF OPEN.
+
   FTableName := Value;
 //  if (ExtractFileExt(FTableName) = '') and (FTableName <> '') then
 //    FTableName := ChangeFileExt(FTableName,'.csv');
@@ -2831,7 +2943,7 @@ begin
    // Refresh controls.
   First;
   if FSavesChanges then
-    DeleteFile(GetFileName);
+    DeleteFile(FOpenFileName);
 end;
 
 // InternalCompare of two records, of a specific field index.
@@ -3250,7 +3362,7 @@ var
   I: Integer;
   startIndex, indexCounter: Integer;
 begin
-  // CheckInactive;
+  // CheckInactive; // NO! DON'T DO THIS!
   // if NOT FFieldsInitialized then
   // InternalInitFieldDefs; // must know about field definitions first.
   if Strings = nil then
@@ -4106,6 +4218,31 @@ end;
 procedure TJvCustomCsvDataSet.SaveToFile(const Filename: string);
 begin
   ExportCsvFile(Filename);
+end;
+
+{ Extremely ugly hack to copy a JvCsvRow binary record from
+  one dataset to another }
+procedure TJvCustomCsvDataSet.CloneRow( dataset : TJvCustomCsvDataSet);
+begin
+  if not FCursorOpen then
+    Exit;
+  {basic sanity checks}
+  
+  { make sure the range is valid and that the csv schema is the same } 
+  if (RecNo<0) or (RecNo>=FData.Count) then
+      raise EJvCsvDataSetError.CreateFmt(RsEProblemReadingRow,[RecNo]);
+  if FCsvFieldDef<>dataset.FCsvFieldDef then
+      raise EJvCsvDataSetError.CreateFmt(RsEProblemReadingRow,[RecNo]);
+      
+  {the ugly hack:}
+  CopyMemory( FData[ RecNo ], dataset.FData[dataset.RecNo], SizeOf(TJvCsvRow));
+
+  PCsvRow(FData[ RecNo ])^.fdirty := true;
+  FFileDirty := true;
+
+//  dataset.Last; // Force update of screen.
+
+  Resync([]); // Update data aware controls.
 end;
 
 end.

@@ -31,7 +31,7 @@ Known Issues:
 
 { Description. }
 
-unit JvQColorTrackbar;
+unit JvQColorTrackBar;
 
 interface
 
@@ -44,6 +44,7 @@ uses
   JvQComponent;
 
 type
+  
   TJvColorTrackBarIndicator = (tbiArrow, tbiLine);
   TJvColorTrackBarIndicators = set of TJvColorTrackBarIndicator;
   TJvColorTrackBar = class(TJvGraphicControl)
@@ -58,7 +59,7 @@ type
     FArrowColor: TColor;
     FOnMaxChange: TNotifyEvent;
     FOnMinChange: TNotifyEvent;
-    FBorderStyle: TBorderStyle;
+    FBorderStyle: TControlBorderStyle;
     FReadOnly: boolean;
     FIndicators: TJvColorTrackBarIndicators;
     procedure SetPosition(const Value: integer);
@@ -67,7 +68,7 @@ type
     procedure SetColorFrom(const Value: TColor);
     procedure SetColorTo(const Value: TColor);
     procedure SetArrowColor(const Value: TColor);
-    procedure SetBorderStyle(const Value: TBorderStyle);
+    procedure SetBorderStyle(const Value: TControlBorderStyle);
     procedure SetIndicators(const Value: TJvColorTrackBarIndicators);
   protected
     procedure Changed; virtual;
@@ -87,7 +88,9 @@ type
   published
     property Indicators:TJvColorTrackBarIndicators read FIndicators write SetIndicators default [tbiArrow, tbiLine];
     property ArrowColor: TColor read FArrowColor write SetArrowColor default clBlack;
-    property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle;
+
+    property BorderStyle: TControlBorderStyle read FBorderStyle write SetBorderStyle;
+
     property ColorFrom: TColor read FColorFrom write SetColorFrom default clBlack;
     property ColorTo: TColor read FColorTo write SetColorTo default clBlue;
     property Min: integer read FMin write SetMin default 0;
@@ -146,9 +149,17 @@ begin
   BmpImage.Width := Width - WidthOffset;
   BmpImage.Height := Height - TopOffset;
   R := Rect(0, 0, BmpImage.Width, BmpImage.Height);
+
+  
+  BmpImage.Canvas.Start;
+  
   GradientFillRect(BmpImage.Canvas, R, ColorFrom, ColorTo, fdLeftToRight, 255);
   if BorderStyle = bsSingle then
     DrawEdge(BmpImage.Canvas.Handle, R, EDGE_SUNKEN, BF_TOP or BF_RIGHT or BF_BOTTOM or BF_LEFT);
+  
+  BmpImage.Canvas.Stop;
+  
+
 end;
 
 constructor TJvColorTrackBar.Create(AOwner: TComponent);
@@ -210,8 +221,8 @@ begin
   Canvas.Pen.Color := Color;
   Canvas.Brush.Color := Color;
   
+  Canvas.Draw(WidthOffset div 2, TopOffset, BmpImage);
   
-  Canvas.Draw(WidthOffset div 2, TopOffset, BmpImage); 
   
   R := Rect(0, 0, Width, TopOffset);
   Canvas.FillRect(R);
@@ -345,7 +356,7 @@ begin
     FOnMinChange(Self);
 end;
 
-procedure TJvColorTrackBar.SetBorderStyle(const Value: TBorderStyle);
+procedure TJvColorTrackBar.SetBorderStyle(const Value: TControlBorderStyle);
 begin
   if FBorderStyle <> Value then
   begin

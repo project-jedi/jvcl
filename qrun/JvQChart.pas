@@ -55,6 +55,7 @@ Known Issues:
 
 unit JvQChart;
 
+
 interface
 
 uses
@@ -462,11 +463,12 @@ type
 
   end;
 
-  TJvChart = class(TJvGraphicControl) // formerly was a child of TImage
+  TJvChart = class(TJvGraphicControl ) 
   private
     FUpdating :Boolean; // PREVENT ENDLES EVENT LOOPING.
     FAutoPlotDone:Boolean; // If Options.AutoUpdateGraph is set, then has paint method called PlotGraph already?
-    FPlotGraphCalled :Boolean;
+    FPlotGraphCalled :Boolean; // Has bitmap ever been painted?
+    FInPlotGraph :Boolean; // recursion blocker.
 
     FOnChartClick:TJvChartClickEvent; // mouse click event
     FMouseDownShowHint:Boolean; // True=showing hint.
@@ -656,6 +658,9 @@ type
     
   end;
 
+//var
+// JvChart_PaintCounter : Integer;
+
 implementation
 
 uses
@@ -694,6 +699,7 @@ constructor TJvChartData.Create;
 var
  t:Integer;
 begin
+
   inherited Create;
   for t := 0 to DEFAULT_PEN_COUNT do begin
     Grow( t, DEFAULT_VALUE_COUNT );
@@ -1316,12 +1322,12 @@ end;
 {**************************************************************************}
 
 constructor TJvChart.Create(AOwner: TComponent);
-{var
-   I                      : Integer;
-   nXScreenResolution     : Longint;}// not used (ahuser)
 begin
   inherited Create(AOwner); {by TImage...}
-//   Color := clWindow;
+
+   ControlStyle := ControlStyle + [csOpaque];	 
+ // XXX FLICKER REDUCTION: Set ControlStyle properly. -WP. APRIL 2004.
+
   FPicture := TPicture.Create;
 
   FCursorPosition := -1; // Invisible until CursorPosition is set >=0 to make it visible. 
@@ -1331,15 +1337,13 @@ begin
 
    { logical font used for rotating text to show vertical labels }
 
-       { NEW:Data }
   FData := TJvChartData.Create;
   FAverageData := TJvChartData.Create;
 
-   //New(Options);
   FOptions := TJvChartOptions.Create(Self);
   CalcYEnd;
 
-//   New(Options2);
+
 
   PrintInSession := False;
 
@@ -1351,8 +1355,6 @@ begin
   FMouseValue := 0;
   FMousePen := 0;
 
-   //Width  :=  200; {VCL component initial size, IMPORTANT keep small default!}
-   //Height :=  200; {VCL component initial size, IMPORTANT keep small default!}
    {Set default values for component fields...}
 
   if csDesigning in ComponentState then begin
@@ -1498,6 +1500,10 @@ end;
 
 procedure TJvChart.Paint; { based on TImage.Paint }
 begin
+  // April 2004 - Flicker Reduction!
+//  Inc(JvChart_PaintCounter);
+//  OutputDebugString(PChar('JvChart_PaintCounter='+IntToStr(JvChart_PaintCounter)));
+
   if (csDesigning in ComponentState) then// or (Options.ChartKind = ckChartNone) then // Blank.
   begin
     DesignModePaint;
@@ -1508,13 +1514,14 @@ begin
         PlotGraph; // Makes sure something is visible in the TPicture.
     end;
 
-    with inherited Canvas do
-      StretchDraw(DestRect, Picture.Graphic);
-
-      if (FCursorPosition >= 0 ) and (FCursorPosition <= Options.XValueCount) then begin
+    //inherited Canvas.Lock;
+    inherited Canvas.StretchDraw(DestRect, Picture.Graphic);
+    if (FCursorPosition >= 0 ) and (FCursorPosition <= Options.XValueCount) then begin
             PaintCursor;
-      end;
+    end;
+    //inherited Canvas.Unlock;
   end;
+
 end;
 
 // Draw an oscilliscope-like cursor over the place where the current sample is in the chart.
@@ -1525,7 +1532,7 @@ var
  X : Integer;
  XPixelGap   : Double;
 begin
-  with inherited Canvas do begin 
+  with inherited Canvas do begin
             Pen.Color := Options.CursorColor;
             Pen.Style := Options.CursorStyle;
 
@@ -2201,7 +2208,9 @@ var
             Y2 := Round(yOrigin - ((V / Options.GetPenAxis(I).YGap) * Options.PrimaryYAxis.YPixelGap));
 
             Assert(Y2<Height);
-            Assert(Y2>0);
+            if (Y2<0) then
+                Y2 := -1;//clip extreme negatives.
+                
             if (Y2>=Y) then
                 Y2 := Y-1;
             Assert(Y2<Y);
@@ -2396,6 +2405,7 @@ var
 begin { ------------------- PlotGraph begins... Enough local functions for ya? -WP }
    FPlotGraphCalled := true;
 
+
   // refuse to refresh under these conditions:
   if not (Enabled and Visible) then
     exit;
@@ -2418,7 +2428,9 @@ begin { ------------------- PlotGraph begins... Enough local functions for ya? -
       or (Options.YEnd > Height)
       or (Options.XEnd > Width) then
   begin
+    FInPlotGraph := true; // recursion blocker.
     ResizeChartCanvas;  // Recovery. This shouldn't happen.
+    FInPlotGraph := false;
   end;
 
   // NEW: Primary Y axis is always shown, but secondary is only shown
@@ -2934,6 +2946,7 @@ end;
 {  b) at program startup before drawing the first graph                    }
 {**************************************************************************}
 
+// ResizeChartCanvas/PlotGraph endless recursion loop fixed. --WP
 procedure TJvChart.ResizeChartCanvas;
 begin
   {Add code for my own data...here}
@@ -2973,8 +2986,10 @@ begin
   Options.PrimaryYAxis.Normalize;
   Options.SecondaryYAxis.Normalize;
 
-  if Options.AutoUpdateGraph or  FPlotGraphCalled  then 
-      PlotGraph;
+  if not FInPlotGraph then begin // endless recursion protection.
+    if (Options.AutoUpdateGraph or FPlotGraphCalled) then
+        PlotGraph;
+  end;
 end;
 
 {This procedure is called when user clicks on the main header}
@@ -3916,6 +3931,9 @@ begin
     TempData.Free;
   end;
 end;
+
+//initialization {debug code}
+// JvChart_PaintCounter := 0;
 
 end.
 
