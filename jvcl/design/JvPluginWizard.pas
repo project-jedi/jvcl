@@ -320,6 +320,8 @@ begin
       'uses' + CrLf +
       '  ShareMem,' + cPluginPrefix + PlugName + ';' + CrLf +
       CrLf +
+      '{$R *.res}' + CrLf +
+      CrLf +
       'exports' + CrLf +
       '  RegisterPlugin;' + CrLf +
       CrLf +
@@ -342,6 +344,9 @@ begin
       {$IFDEF COMPILER7}
       '  vcl,' + CrLf + '  JvCoreD7R;' + CrLf2 +
       {$ENDIF COMPILER7}
+      {$IFDEF COMPILER9}
+      '  vcl,' + CrLf + '  JvCoreD9R;' + CrLf2 +
+      {$ENDIF COMPILER9}
       'end.';
 
   Result := TJvOTAFile.Create(S);
