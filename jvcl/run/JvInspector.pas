@@ -851,12 +851,10 @@ type
     procedure EditChange(Sender: TObject); virtual;
     procedure EditFocusLost(Sender: TObject); dynamic;
     procedure EditKillFocus(Sender: TObject);
-    procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-      virtual;
+    procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState); virtual;
     procedure EditMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer); virtual;
-    procedure EditMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-      virtual;
+    procedure EditMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); virtual;
     procedure EditMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer); virtual;
     {$IFDEF VCL}
@@ -910,8 +908,8 @@ type
     procedure InvalidateValue; virtual;
     function IsCategory: Boolean; virtual;
     procedure ListExit(Sender: TObject); virtual;
-    procedure ListMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer); virtual;
+    {procedure ListMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer); virtual;}
     procedure ListValueSelect(Sender: TObject); virtual;
     procedure ListDeactivate(Sender: TObject); virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -3493,7 +3491,9 @@ begin
   end;
   if (Item <> nil) and (PtInRect(Item.Rects[iprNameArea], Point(X, Y)) or
     PtInRect(Item.Rects[iprValueArea], Point(X, Y))) then
-    Item.MouseUp(Button, Shift, X, Y);
+    Item.MouseUp(Button, Shift, X, Y)
+  else if (Selected <> nil) and Selected.Tracking and (not PtInRect(ClientRect, Point(X, Y))) then
+    Selected.StopTracking;
 end;
 
 procedure TJvCustomInspector.Notification(AComponent: TComponent; Operation: TOperation);
@@ -5809,13 +5809,7 @@ begin
     {$ENDIF VisualCLX}
     FDroppedDown := True;
     InvalidateItem;
-    {$IFDEF VCL}
-    Windows.SetFocus(EditCtrl.Handle);
-    SetCaptureControl(ListBox);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     EditCtrl.SetFocus;
-    {$ENDIF VisualCLX}
     Inspector.Selecting := False;
   end;
 end;
@@ -6008,8 +6002,8 @@ begin
   case Msg.Msg of
     WM_GETDLGCODE:
       begin
-      if Inspector.WantTabs then
-        Msg.Result := Msg.Result or DLGC_WANTTAB;
+        if Inspector.WantTabs then
+          Msg.Result := Msg.Result or DLGC_WANTTAB;
       end;
   end;
 end;
@@ -6345,12 +6339,12 @@ begin
     CloseUp(False);
 end;
 
-procedure TJvCustomInspectorItem.ListMouseUp(Sender: TObject;
+{procedure TJvCustomInspectorItem.ListMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if Button = mbLeft then
     CloseUp(PtInRect(ListBox.ClientRect, Point(X, Y)));
-end;
+end;}
 
 procedure TJvCustomInspectorItem.ListValueSelect(Sender: TObject);
 begin
@@ -7274,7 +7268,7 @@ begin
       ListBox.Visible := False;
       ListBox.Parent := EditCtrl.Parent;
       {$ENDIF VisualCLX}
-//      TListBox(ListBox).OnMouseUp := ListMouseUp;
+      //TJvInspectorListBox(ListBox).OnMouseUp := ListMouseUp;
       TJvInspectorListBox(ListBox).OnValueSelect := ListValueSelect;
       TJvInspectorListBox(ListBox).OnDeactivate := ListDeactivate;
       TJvInspectorListBox(ListBox).Item := Self;
