@@ -43,10 +43,11 @@ unit JvComCtrls;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, Menus, ComCtrls, CommCtrl, StdActns,
-  Contnrs,
-  JclBase, JvComponent, JvExControls, JvExComCtrls;
+  Windows, Messages, SysUtils, Contnrs, Graphics, Controls, Forms, Dialogs, 
+  Classes, // (ahuser) "Classes" after "Forms" due to D5 warnings
+  Menus, ComCtrls, CommCtrl, StdActns,
+  JclBase,
+  JvComponent, JvExControls, JvExComCtrls;
 
 const
   JvDefPageControlBorder = 4;
@@ -63,6 +64,23 @@ type
   TJvIPAddressMinMax = record
     Min: Byte;
     Max: Byte;
+  end;
+
+  TJvIPEditControlHelper = class(TObject)
+  private
+    FHandle: THandle;
+    FInstance: Pointer;
+    FIPAddress: TJvIPAddress;
+    FOrgWndProc: Pointer;
+    procedure SetHandle(const Value: THandle);
+  protected
+    procedure WndProc(var Msg: TMessage); virtual;
+    property Handle: THandle read FHandle write SetHandle;
+  public
+    constructor Create(AIPAddress: TJvIPAddress);
+    destructor Destroy; override;
+
+    procedure DefaultHandler(var Msg); override;
   end;
 
   TJvIPAddressRange = class(TPersistent)
@@ -118,8 +136,8 @@ type
 
   TJvIPAddress = class(TJvWinControl)
   private
-    {    FEditControls: array [0..3] of HWND;
-        FEditControlCount: Integer;}
+    FEditControls: array[0..3] of TJvIPEditControlHelper;
+    FEditControlCount: Integer;
     FAddress: LongWord;
     FChanging: Boolean;
     FRange: TJvIPAddressRange;
@@ -128,7 +146,7 @@ type
     FOnFieldChange: TJvIpAddrFieldChangeEvent;
     LocalFont: HFONT;
     FOnChange: TNotifyEvent;
-    //    procedure ClearEditControls;
+    procedure ClearEditControls;
     procedure DestroyLocalFont;
     procedure SetAddress(const Value: LongWord);
     procedure CNCommand(var Msg: TWMCommand); message CN_COMMAND;
@@ -212,8 +230,6 @@ type
     FHideAllTabs: Boolean;
     FColor: TColor;
     FSaved: TColor;
-//    FOnMouseEnter: TNotifyEvent;
-//    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FDrawTabShadow: Boolean;
     FHandleGlobalTab: Boolean;
@@ -268,8 +284,6 @@ type
     FOnToolTip: TJvTrackToolTipEvent;
     FColor: TColor;
     FSaved: TColor;
-//    FOnMouseEnter: TNotifyEvent;
-//    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOnChanged: TNotifyEvent;
     FShowRange: Boolean;
@@ -339,8 +353,6 @@ type
     FOnSelectionChange: TNotifyEvent;
     FColor: TColor;
     FSaved: TColor;
-//    FOnMouseEnter: TNotifyEvent;
-//    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
     FCheckBoxes: Boolean;
@@ -521,9 +533,87 @@ begin
   Change(Index);
 end;
 
+// === TJvIPEditControlHelper ==================================================
+
+constructor TJvIPEditControlHelper.Create(AIPAddress: TJvIPAddress);
+begin
+  inherited Create;
+  FHandle := 0;
+  FIPAddress := AIPAddress;
+  FInstance := MakeObjectInstance(WndProc);
+end;
+
+procedure TJvIPEditControlHelper.DefaultHandler(var Msg);
+begin
+  with TMessage(Msg) do
+    Result := CallWindowProc(FOrgWndProc, FHandle, Msg, WParam, LParam);
+end;
+
+destructor TJvIPEditControlHelper.Destroy;
+begin
+  Handle := 0;
+  if Assigned(FInstance) then
+    FreeObjectInstance(FInstance);
+  inherited Destroy;
+end;
+
+procedure TJvIPEditControlHelper.SetHandle(const Value: THandle);
+begin
+  if Value <> FHandle then
+  begin
+    if FHandle <> 0 then
+      SetWindowLong(FHandle, GWL_WNDPROC, Integer(FOrgWndProc));
+
+    FHandle := Value;
+
+    if FHandle <> 0 then
+    begin
+      FOrgWndProc := Pointer(GetWindowLong(FHandle, GWL_WNDPROC));
+      SetWindowLong(FHandle, GWL_WNDPROC, Integer(FInstance));
+    end;
+  end;
+end;
+
+procedure TJvIPEditControlHelper.WndProc(var Msg: TMessage);
+var
+  R: TRect;
+begin
+  case Msg.Msg of
+    WM_KEYFIRST..WM_KEYLAST:
+      begin
+        FIPAddress.Dispatch(Msg);
+        if csDesigning in FIPAddress.ComponentState then
+          Exit;
+      end;
+
+    WM_SETFOCUS, WM_ACTIVATE, WM_MOUSEACTIVATE:
+      if csDesigning in FIPAddress.ComponentState then
+      begin
+        FIPAddress.Dispatch(Msg);
+        Exit;
+      end;
+
+    CM_DESIGNHITTEST, WM_MOUSEFIRST..WM_MOUSELAST, WM_NCHITTEST:
+      if (Msg.Msg = CM_DESIGNHITTEST) or
+         (csDesigning in FIPAddress.ComponentState) then
+      begin
+        GetWindowRect(FHandle, R);
+        Inc(TWMMouse(Msg).XPos, R.Left);
+        Inc(TWMMouse(Msg).YPos, R.Top);
+        FIPAddress.Dispatch(Msg);
+        Exit;
+      end;
+
+    // mouse messages are sent through TJvIPAddress.WMParentNotify
+  end;
+  Dispatch(Msg);
+end;
+
 // === TJvIPAddress ==========================================================
 
 constructor TJvIPAddress.Create(AOwner: TComponent);
+var
+  I: Integer;
 begin
   CheckCommonControl(ICC_INTERNET_CLASSES);
   inherited Create(AOwner);
@@ -538,10 +628,17 @@ begin
   TabStop := True;
   Width := 150;
   AdjustHeight;
+
+  for I := 0 to High(FEditControls) do
+    FEditControls[I] := TJvIPEditControlHelper.Create(Self);
 end;
 
 destructor TJvIPAddress.Destroy;
+var
+  I: Integer;
 begin
+  for I := 0 to High(FEditControls) do
+    FEditControls[I].Free;
   FreeAndNil(FRange);
   FreeAndNil(FAddressValues);
   inherited Destroy;
@@ -560,7 +657,7 @@ end;
 
 procedure TJvIPAddress.CreateWnd;
 begin
-  //  ClearEditControls;
+  ClearEditControls;
   FChanging := True;
   try
     inherited CreateWnd;
@@ -631,11 +728,14 @@ begin
   FAddressValues.Address := 0;
 end;
 
-{procedure TJvIPAddress.ClearEditControls;
+procedure TJvIPAddress.ClearEditControls;
+var
+  i: Integer;
 begin
-  FillChar(FEditControls, SizeOf(FEditControls), #0);
+  for i := 0 to High(FEditControls) do
+    FEditControls[i].Handle := 0;
   FEditControlCount := 0;
-end;}
+end;
 
 procedure TJvIPAddress.ColorChanged;
 begin
@@ -750,15 +850,14 @@ procedure TJvIPAddress.WMParentNotify(var Msg: TWMParentNotify);
 begin
   with Msg do
     case Event of
-      {      WM_CREATE:
-              begin
-                FEditControls[FEditControlCount] := ChildWnd;
-                Inc(FEditControlCount);
-              end;
-            WM_DESTROY:
-                ClearEditControls;}
+      WM_CREATE:
+        begin
+          FEditControls[FEditControlCount].Handle := ChildWnd;
+          Inc(FEditControlCount);
+        end;
+      WM_DESTROY:
+        ClearEditControls;
       WM_LBUTTONDOWN, WM_MBUTTONDOWN, WM_RBUTTONDOWN:
-        //        if not (csDesigning in ComponentState) then
         Perform(Event, Value, Integer(SmallPoint(XPos, YPos)));
     end;
   inherited;
@@ -1925,6 +2024,7 @@ procedure TJvPageControl.SetReduceMemoryUse(const Value: Boolean);
 begin
   FReduceMemoryUse := Value;
 end;
+
 
 end.
 
