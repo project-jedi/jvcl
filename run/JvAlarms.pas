@@ -78,6 +78,7 @@ type
     procedure SetAlarms(const Value: TJvAlarmItems);
   protected
     procedure DoAlarm(const Alarm: TJvAlarmItem; const TriggerTime: TDateTime);
+    procedure ResetAlarms;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -173,7 +174,7 @@ begin
       if Alarms.Count >= 0 then
       begin
         Current := Now;
-        Stamp := DateTimeToTimeStamp(Now);
+        Stamp := DateTimeToTimeStamp(Current);
         // sort out delayed Timer events which may arrive in bunches
         if ((Stamp.Time - FLast.Time) >= 1000) or (Stamp.Date > FLast.Date) then
         begin
@@ -216,7 +217,7 @@ begin
               end;
               if Alarm.Kind <> tkOneShot then
                 Alarm.Time := TimeStampToDateTime(Stamp)
-                // hs a better place for 'Delete(i)'
+                  // hs a better place for 'Delete(i)'
               else
                 Delete(I);
             end;
@@ -233,12 +234,33 @@ procedure TJvAlarms.SetActive(const Value: Boolean);
 begin
   FActive := Value;
   FRunning := FActive and (Alarms.Count > 0);
+  FLast := DateTimeToTimeStamp(Now);
+  if FRunning then
+    ResetAlarms;
   FTimer.Enabled := Running;
 end;
 
 procedure TJvAlarms.SetAlarms(const Value: TJvAlarmItems);
 begin
   FAlarms.Assign(Value);
+end;
+
+procedure TJvAlarms.ResetAlarms;
+var
+  Current: TDateTime;
+  i: integer;
+
+  function MaxDate(Val1, Val2: TDateTime): TDateTime;
+  begin
+    Result := Val1;
+    if Val2 > Val1 then
+      Result := Val2;
+  end;
+begin
+  // make sure no alarm item is in past time (this will trigger the OnAlaram event every second until the alarm catches up) 
+  Current := Now;
+  for i := 0 to Alarms.Count - 1 do
+    Alarms[i].Time := MaxDate(Current, Alarms[i].Time);
 end;
 
 //=== { TJvAlarmItems } ======================================================
@@ -291,6 +313,7 @@ begin
     inherited Assign(Source);
 end;
 
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -298,14 +321,15 @@ const
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
-  );
+    );
+
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 end.
 
