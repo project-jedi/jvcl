@@ -1688,7 +1688,7 @@ begin
   Hdr.Flags := MaxSegments;
   MapSize := (Hdr.Flags div 8) + Ord((Hdr.Flags mod 8) <> 0);
   Hdr.Flags := MapSize;
-  Hdr.Flags := Hdr.Flags or 16 * Ord(MapToSeparators);
+  Hdr.Flags := Hdr.Flags or (16 * Ord(MapToSeparators));
   Hdr.MappedChars := [];
   TmpDot := FActiveMapping['.'];
   TmpComma := FActiveMapping[','];
