@@ -37,63 +37,21 @@ uses
 
 type
   TJvCoolBar = class(TJvExCoolBar)
-  private
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOver: Boolean;
-    FOnParentColorChanged: TNotifyEvent;
-  protected
-    procedure MouseEnter(AControl: TControl); override;
-    procedure MouseLeave(AControl: TControl); override;
-    procedure ParentColorChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
   end;
 
 implementation
 
 constructor TJvCoolBar.Create(AOwner: TComponent);
 begin
-  // (rom) inherited moved up
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
-  FOver := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
-end;
-
-procedure TJvCoolBar.MouseEnter(AControl: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if not FOver then
-  begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
-    FOver := True;
-    inherited MouseEnter(AControl);
-  end;
-end;
-
-procedure TJvCoolBar.MouseLeave(AControl: TControl);
-begin
-  if FOver then
-  begin
-    FOver := False;
-    Application.HintColor := FSaved;
-    inherited MouseLeave(AControl);
-  end;
-end;
-
-procedure TJvCoolBar.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 end.

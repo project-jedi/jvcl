@@ -3555,7 +3555,7 @@ begin
       if FState in [rbsDown, rbsExclusive] then
         ThemedState := tcDropDownButtonPressed
       else
-      if MouseInControl or IsDragging then
+      if MouseOver or IsDragging then
         ThemedState := tcDropDownButtonHot
       else
         ThemedState := tcDropDownButtonNormal;

@@ -37,11 +37,7 @@ uses
 type
   TJvScrollBox = class(TJvExScrollBox)
   private
-    FHintColor: TColor;
-    FSaved: TColor;
     FHotTrack: Boolean;
-    FOnParentColorChanged: TNotifyEvent;
-    FOver: Boolean;
     FOnHorizontalScroll: TNotifyEvent;
     FOnVerticalScroll: TNotifyEvent;
     procedure SetHotTrack(const Value: Boolean);
@@ -51,17 +47,16 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    procedure ParentColorChanged; override;
     procedure WndProc(var Msg: TMessage); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   public
     constructor Create(AOwner: TComponent); override;
   published
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
     property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
     property OnKeyDown;
@@ -78,18 +73,9 @@ uses
 constructor TJvScrollBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
   FHotTrack := False;
-  FOver := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
-end;
-
-procedure TJvScrollBox.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 procedure TJvScrollBox.WMHScroll(var Msg: TWMHScroll);
@@ -110,25 +96,20 @@ procedure TJvScrollBox.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  if not FOver then
+  if not MouseOver then
   begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
     if FHotTrack then
       Ctl3D := True;
-    FOver := True;
     inherited MouseEnter(Control);
   end;
 end;
 
 procedure TJvScrollBox.MouseLeave(Control: TControl);
 begin
-  if FOver then
+  if MouseOver then
   begin
-    Application.HintColor := FSaved;
     if FHotTrack then
       Ctl3D := False;
-    FOver := False;
     inherited MouseLeave(Control);
   end;
 end;

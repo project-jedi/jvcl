@@ -32,28 +32,15 @@ unit JvHotKey;
 interface
 
 uses
-  SysUtils, Classes,
-  Windows, Messages, Graphics, Controls, Forms, ComCtrls,
   JvExComCtrls;
 
 type
   TJvHotKey = class(TJvExHotKey)
-  private
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOver: Boolean;
-    FOnParentColorChanged: TNotifyEvent;
-  protected
-    procedure MouseEnter(AControl: TControl); override;
-    procedure MouseLeave(AControl: TControl); override;
-    procedure ParentColorChanged; override;
-  public
-    constructor Create(AOwner: TComponent); override;
   published
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
     property Color;
     property Font;
     property ParentFont;
@@ -71,43 +58,6 @@ type
   end;
 
 implementation
-
-constructor TJvHotKey.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FHintColor := clInfoBk;
-  FOver := False;
-end;
-
-procedure TJvHotKey.MouseEnter(AControl: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if not FOver then
-  begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
-    FOver := True;
-    inherited MouseEnter(AControl);
-  end;
-end;
-
-procedure TJvHotKey.MouseLeave(AControl: TControl);
-begin
-  if FOver then
-  begin
-    FOver := False;
-    Application.HintColor := FSaved;
-    inherited MouseLeave(AControl);
-  end;
-end;
-
-procedure TJvHotKey.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
 
 end.
 

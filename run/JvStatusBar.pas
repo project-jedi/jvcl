@@ -72,19 +72,12 @@ type
 
   TJvStatusBar = class(TJvExStatusBar)
   private
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOver: Boolean;
-    FOnParentColorChanged: TNotifyEvent;
     FAutoHintShown: Boolean;
     FHiddenControls: array of TControl;
     {$IFDEF VCL}
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     {$ENDIF VCL}
   protected
-    procedure MouseEnter(AControl: TControl); override;
-    procedure MouseLeave(AControl: TControl); override;
-    procedure ParentColorChanged; override;
     procedure DoBoundsChanged; override;
     {$IFDEF VisualCLX}
     procedure Paint; override;
@@ -102,10 +95,10 @@ type
   published
     property Color;
     property Font;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
   end;
 
 implementation
@@ -119,7 +112,6 @@ uses
 constructor TJvStatusBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
@@ -163,36 +155,6 @@ begin
 end;
 
 {$ENDIF VisualCLX}
-
-procedure TJvStatusBar.MouseEnter(AControl: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if not FOver then
-  begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
-    FOver := True;
-    inherited MouseEnter(AControl);
-  end;
-end;
-
-procedure TJvStatusBar.MouseLeave(AControl: TControl);
-begin
-  if FOver then
-  begin
-    FOver := False;
-    Application.HintColor := FSaved;
-    inherited MouseLeave(AControl);
-  end;
-end;
-
-procedure TJvStatusBar.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
 
 function TJvStatusBar.ExecuteAction(Action: TBasicAction): Boolean;
 var

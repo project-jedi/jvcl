@@ -42,26 +42,18 @@ uses
 
 type
   TJvSplitter = class(TJvExSplitter)
-  private
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOnParentColorChanged: TNotifyEvent;
-    FOver: Boolean;
+  {$IFDEF JVCLThemesEnabled}
   protected
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
-    procedure ParentColorChanged; override;
-    {$IFDEF JVCLThemesEnabled}
     procedure Paint; override;
-    {$ENDIF JVCLThemesEnabled}
+  {$ENDIF JVCLThemesEnabled}
   public
     constructor Create(AOwner: TComponent); override;
   published
     property ShowHint;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
   end;
 
 implementation
@@ -73,38 +65,6 @@ constructor TJvSplitter.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   IncludeThemeStyle(Self, [csParentBackground]);
-  FHintColor := clInfoBk;
-  FOver := False;
-end;
-
-procedure TJvSplitter.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-procedure TJvSplitter.MouseEnter(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if not FOver then
-  begin
-    FOver := True;
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
-    inherited MouseEnter(Control);
-  end;
-end;
-
-procedure TJvSplitter.MouseLeave(Control: TControl);
-begin
-  if FOver then
-  begin
-    Application.HintColor := FSaved;
-    FOver := False;
-    inherited MouseLeave(Control);
-  end;
 end;
 
 {$IFDEF JVCLThemesEnabled}

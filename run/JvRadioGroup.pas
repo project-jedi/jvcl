@@ -43,15 +43,8 @@ uses
 type
   TJvRadioGroup = class(TJvExRadioGroup, IJvDenySubClassing)
   private
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOver: Boolean;
-    FOnParentColorChanged: TNotifyEvent;
     FReadOnly: Boolean;
   protected
-    procedure MouseEnter(AControl: TControl); override;
-    procedure MouseLeave(AControl: TControl); override;
-    procedure ParentColorChanged; override;
     {$IFDEF JVCLThemesEnabledD56}
     procedure Paint; override;
     {$ENDIF JVCLThemesEnabledD56}
@@ -59,14 +52,14 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     {$IFDEF JVCLThemesEnabledD56}
     property ParentBackground default True;
     {$ENDIF JVCLThemesEnabledD56}
     property ReadOnly: Boolean read FReadOnly write FReadOnly default False;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
   end;
 
 implementation
@@ -77,8 +70,6 @@ uses
 constructor TJvRadioGroup.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
-  FOver := False;
   FReadOnly := False;
   {$IFDEF JVCLThemesEnabledD56}
   IncludeThemeStyle(Self, [csParentBackground]);
@@ -118,38 +109,6 @@ begin
     Result := False
   else
     Result := inherited CanModify;
-end;
-
-procedure TJvRadioGroup.MouseEnter(AControl: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if not FOver then
-  begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
-    FOver := True;
-    inherited MouseEnter(AControl);
-  end;
-end;
-
-procedure TJvRadioGroup.MouseLeave(AControl: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if FOver then
-  begin
-    FOver := False;
-    Application.HintColor := FSaved;
-    inherited MouseLeave(AControl);
-  end;
-end;
-
-procedure TJvRadioGroup.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 end.

@@ -58,10 +58,6 @@ type
   private
     FMaxLines: Integer;
     FHotTrack: Boolean;
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOnParentColorChanged: TNotifyEvent;
-    FOver: Boolean;
     FOnHorizontalScroll: TNotifyEvent;
     FOnVerticalScroll: TNotifyEvent;
     FCaret: TJvCaret;
@@ -89,7 +85,6 @@ type
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    procedure ParentColorChanged; override;
     procedure WndProc(var Msg: TMessage); override;
     procedure KeyPress(var Key: Char); override;
     procedure Change; override;
@@ -109,12 +104,8 @@ type
     property HideCaret: Boolean read FHideCaret write SetHideCaret;
     property MaxLines: Integer read FMaxLines write SetMaxLines;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Lines: TStrings read GetLines write SetLines;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
-    property OnMouseEnter;
-    property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
   end;
@@ -198,9 +189,7 @@ constructor TJvCustomMemo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FOrigLines := TStringlist.Create;
-  FHintColor := clInfoBk;
   FHotTrack := False;
-  FOver := False;
   // ControlStyle := ControlStyle + [csAcceptsControls];
   FCaret := TJvCaret.Create(Self);
   FCaret.OnChanged := CaretChange;
@@ -214,13 +203,6 @@ begin
   FOrigLines.Free;
   FCaret.Free;
   inherited Destroy;
-end;
-
-procedure TJvCustomMemo.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 procedure TJvCustomMemo.WMHScroll(var Msg: TWMHScroll);
@@ -241,29 +223,22 @@ procedure TJvCustomMemo.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  if not FOver then
+  if not MouseOver then
   begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
     if FHotTrack then
       Ctl3D := True;
-    FOver := True;
+    inherited MouseEnter(Control);
   end;
-  inherited MouseEnter(Control);
 end;
 
 procedure TJvCustomMemo.MouseLeave(Control: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
-  if FOver then
+  if MouseOver then
   begin
-    Application.HintColor := FSaved;
     if FHotTrack then
       Ctl3D := False;
-    FOver := False;
+    inherited MouseLeave(Control);
   end;
-  inherited MouseLeave(Control);
 end;
 
 procedure TJvCustomMemo.SetHotTrack(Value: Boolean);

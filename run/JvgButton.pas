@@ -136,10 +136,6 @@ type
     MShift: TPoint;
     FTestMode: Boolean;
 
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOnParentColorChanged: TNotifyEvent;
-    FOver: Boolean;
     procedure SetGlyph(Value: TBitmap);
     procedure SetDrawMode(Value: TDrawMode);
     procedure SetGlyphsList(Value: TImageList);
@@ -171,8 +167,6 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure ParentColorChanged; override;
-    procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -184,7 +178,7 @@ type
     property DrawMode: TDrawMode read FDrawMode write SetDrawMode;
     property GlyphsList: TImageList read FGlyphsList write SetGlyphsList;
     property Glyph: TBitmap read FGlyph write SetGlyph;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     property NumGlyphs: Integer read FNumGlyphs write SetNumGlyphs;
     property TransparentColor: TColor read FTransparentColor write SetTransparentColor default clOlive;
     property ShiftMaskWhenPushed: TJvgPointClass read FShiftMaskWhenPushed write FShiftMaskWhenPushed;
@@ -201,7 +195,7 @@ type
     property AutoTransparentColor: TglAutoTransparentColor read FAutoTrColor write SetAutoTrColor default ftcUser;
     property BlinkTimer: TTimer read GetBlinkTimer write SetBlinkTimer;
     property TestMode: Boolean read FTestMode write SetTestMode default False;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
     property OnMouseEnter;
     property OnMouseLeave;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
@@ -651,38 +645,14 @@ begin
   end;
 end;
 
-procedure TJvgButton.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-procedure TJvgButton.MouseEnter(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if not FOver then
-  begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
-    FOver := True;
-  end;
-  inherited MouseEnter(Control);
-end;
-
 procedure TJvgButton.MouseLeave(Control: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
-  if FOver then
+  if MouseOver then
   begin
-    Application.HintColor := FSaved;
-    FOver := False;
+    inherited MouseLeave(Control);
+    FMouseInControl := False;
+    Paint_;
   end;
-  inherited MouseLeave(Control);
-  FMouseInControl := False;
-  Paint_;
 end;
 
 procedure TJvgButton.MouseDown(Button: TMouseButton; Shift: TShiftState;

@@ -70,7 +70,6 @@ type
 
   TJvScrollButton = class(TJvCustomControl)
   private
-    FOver: Boolean;
     FDown: Boolean;
     FRepeat: Boolean;
     FFlat: Boolean;
@@ -186,7 +185,7 @@ type
 implementation
 
 uses
-  Math, JvThemes;
+  Math, JvThemes, JvExControls;
 
 const
   cInitTime = 360;
@@ -300,7 +299,6 @@ begin
   ControlStyle := ControlStyle - [csDoubleClicks, csSetCaption];
   FDown := False;
   FScrollAmount := 16;
-  FOver := False;
   FAutoRepeat := False;
   Width := 16;
   Height := 16;
@@ -326,19 +324,25 @@ end;
 
 procedure TJvScrollButton.MouseEnter(Control: TControl);
 begin
-  FOver := True;
-  inherited;
-  if FFlat then
-    Invalidate;
+  if csDesigning in ComponentState then
+    Exit;
+  if not MouseOver then
+  begin
+    inherited MouseEnter(Control);
+    if FFlat then
+      Invalidate;
+  end;
 end;
 
 procedure TJvScrollButton.MouseLeave(Control: TControl);
 begin
-  FOver := False;
-  FDown := False;
-  inherited;
-  if FFlat then
-    Invalidate;
+  if MouseOver then
+  begin
+    FDown := False;
+    inherited MouseLeave(Control);
+    if FFlat then
+      Invalidate;
+  end;
 end;
 
 procedure TJvScrollButton.Paint;
@@ -357,17 +361,17 @@ begin
   if not Enabled then
   begin
     FDown := False;
-    FOver := False;
+    MouseOver := False;
     Flags := Flags or DFCS_INACTIVE or DFCS_FLAT;
   end;
 
   if FDown then
     Flags := Flags or DFCS_PUSHED;
 
-  if FFlat and not FOver then
+  if FFlat and not MouseOver then
     Flags := Flags or DFCS_FLAT;
 
-  if FOver then
+  if MouseOver then
   begin
     if FKind in [sbUp, sbDown] then
       OffsetRect(R, 0, 1)

@@ -46,10 +46,6 @@ uses
 type
   TJvBitBtn = class(TJvExBitBtn)
   private
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOver: Boolean;
-    FOnParentColorChanged: TNotifyEvent;
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
     FFontSave: TFont;
@@ -65,7 +61,6 @@ type
   protected
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
-    procedure ParentColorChanged; override;
     procedure FontChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -74,14 +69,14 @@ type
     property Canvas: TCanvas read GetCanvas;
   published
     property DropDownMenu: TPopupMenu read FDropDown write FDropDown;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
     property HotGlyph: TBitmap read FHotGlyph write SetHotGlyph;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
   end;
 
 implementation
@@ -93,12 +88,10 @@ constructor TJvBitBtn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
-  FCanvas.Control := Self; //...i can draw now! :)
+  FCanvas.Control := Self;
   FHotTrack := False;
   FHotTrackFont := TFont.Create;
   FFontSave := TFont.Create;
-  FHintColor := clInfoBk;
-  FOver := False;
   FHotGlyph := TBitmap.Create;
   FOldGlyph := TBitmap.Create;
   FHotTrackFontOptions := DefaultTrackFontOptions;
@@ -153,10 +146,8 @@ procedure TJvBitBtn.MouseEnter(AControl: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  if not FOver then
+  if not MouseOver then
   begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
     if not FHotGlyph.Empty then
     begin
       FOldGlyph.Assign(Glyph);
@@ -167,30 +158,20 @@ begin
       FFontSave.Assign(Font);
       Font.Assign(FHotTrackFont);
     end;
-    FOver := True;
     inherited MouseEnter(AControl);
   end;
 end;
 
 procedure TJvBitBtn.MouseLeave(AControl: TControl);
 begin
-  if FOver then
+  if MouseOver then
   begin
-    FOver := False;
-    Application.HintColor := FSaved;
     if not FHotGlyph.Empty then
       Glyph.Assign(FOldGlyph);
     if FHotTrack then
       Font.Assign(FFontSave);
     inherited MouseLeave(AControl);
   end;
-end;
-
-procedure TJvBitBtn.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 procedure TJvBitBtn.FontChanged;

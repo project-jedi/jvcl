@@ -50,7 +50,6 @@ type
     FAutoRepeat: Boolean;
     FDown: Boolean;
     FFlat: Boolean;
-    FOver: Boolean;
     procedure SetFlat(Value: Boolean);
     procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
   protected
@@ -87,7 +86,6 @@ type
     FEdit: TEdit;
     FData: Pointer;
     FParentImageSize: Boolean;
-    FOver: Boolean;
     FDown: Boolean;
     FStayDown: Boolean;
     FCentered: Boolean;
@@ -278,7 +276,6 @@ type
     FAutoRepeat: Boolean;
     FAutoCenter: Boolean;
     FParentImageSize: Boolean;
-    FOver: Boolean;
     FDown: Boolean;
     FShowPressed: Boolean;
     FMargin: Integer;
@@ -604,7 +601,6 @@ begin
   ControlStyle := [csCaptureMouse, csClickEvents, csSetCaption];
   ParentColor := True;
   FDown := False;
-  FOver := False;
   FAutoRepeat := False;
   FFlat := False;
   FSize := GetSystemMetrics(SM_CXVSCROLL);
@@ -624,19 +620,23 @@ procedure TJvUpArrowBtn.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  FOver := True;
-  if FFlat {$IFDEF JVCLThemesEnabled} or ThemeServices.ThemesEnabled {$ENDIF} then
-    Invalidate;
+  if not MouseOver then
+  begin
+    inherited MouseEnter(Control);
+    if FFlat {$IFDEF JVCLThemesEnabled} or ThemeServices.ThemesEnabled {$ENDIF} then
+      Invalidate;
+  end;
 end;
 
 procedure TJvUpArrowBtn.MouseLeave(Control: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
-  FOver := False;
-  //  FDown := False;
-  if FFlat {$IFDEF JVCLThemesEnabled} or ThemeServices.ThemesEnabled {$ENDIF} then
-    Invalidate;
+  if MouseOver then
+  begin
+    inherited MouseLeave(Control);
+    //  FDown := False;
+    if FFlat {$IFDEF JVCLThemesEnabled} or ThemeServices.ThemesEnabled {$ENDIF} then
+      Invalidate;
+  end;
 end;
 
 procedure TJvUpArrowBtn.CMDesignHitTest(var Msg: TCMDesignHitTest);
@@ -659,7 +659,7 @@ begin
   if not Enabled then
     Flags := Flags or DFCS_INACTIVE;
 
-  if FFlat and not FOver then
+  if FFlat and not MouseOver then
   begin
     Flags := Flags or DFCS_FLAT;
     OffsetRect(R, 0, -2);
@@ -667,13 +667,13 @@ begin
 
   if FFlat then
     InflateRect(R, 1, 1);
-  if FOver then
+  if MouseOver then
     Flags := Flags or DFCS_HOT;
   Canvas.Brush.Color := Color;
   Canvas.Pen.Color := Color;
   DrawThemedFrameControl(Self, Canvas.Handle, R, DFC_SCROLL, DFCS_SCROLLUP or Flags);
 
-  if FFlat and FOver then
+  if FFlat and MouseOver then
   begin
     R := GetClientRect;
 
@@ -751,7 +751,6 @@ begin
   ControlStyle := [csCaptureMouse, csClickEvents, csSetCaption];
   ParentColor := True;
   FDown := False;
-  FOver := False;
   FFlat := False;
   FSize := GetSystemMetrics(SM_CXVSCROLL);
   SetBounds(0, 0, FSize, FSize);
@@ -770,7 +769,7 @@ begin
     Flags := 0;
   if not Enabled then
     Flags := Flags or DFCS_INACTIVE;
-  if FFlat and not FOver then
+  if FFlat and not MouseOver then
   begin
     Flags := Flags or DFCS_FLAT;
     OffsetRect(R, 0, 2);
@@ -778,13 +777,13 @@ begin
 
   if FFlat then
     InflateRect(R, 1, 1);
-  if FOver then
+  if MouseOver then
     Flags := Flags or DFCS_HOT;
   Canvas.Brush.Color := Color;
   Canvas.Pen.Color := Color;
   DrawThemedFrameControl(Self, Canvas.Handle, R, DFC_SCROLL, DFCS_SCROLLDOWN or Flags);
 
-  if FFlat and FOver then
+  if FFlat and MouseOver then
   begin
     R := GetClientRect;
     if FDown then
@@ -1067,7 +1066,7 @@ begin
     FStayDown := Value;
     if FStayDown then
     begin
-      FOver := True;
+      MouseOver := True;
       FDown := True;
     end
     else
@@ -1229,7 +1228,7 @@ begin
   { draw text }
   if Length(Caption) > 0 then
   begin
-    if FOver then
+    if MouseOver then
       Canvas.Font := FHighlightFont
     else
       Canvas.Font := Font;
@@ -1298,7 +1297,7 @@ begin
 
   if not Enabled then
     Exit;
-  if FOver or (csDesigning in ComponentState) then
+  if MouseOver or (csDesigning in ComponentState) then
   begin
     if (csDesigning in ComponentState) and not Visible then
     begin
@@ -1370,7 +1369,7 @@ begin
       begin
         FStayDown := False;
         FDown := False;
-        FOver := False;
+        MouseOver := False;
         Invalidate;
       end;
     end;
@@ -1381,23 +1380,23 @@ procedure TJvCustomLookOutButton.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  inherited MouseEnter(Control);
-  FOver := True;
-  if FFillColor = clNone then
-    PaintFrame
-  else
-    Invalidate;
+  if not MouseOver then
+  begin
+    inherited MouseEnter(Control);
+    if FFillColor = clNone then
+      PaintFrame
+    else
+      Invalidate;
+  end;
 end;
 
 procedure TJvCustomLookOutButton.MouseLeave(Control: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
-  inherited MouseLeave(Control);
-  if FOver and not FStayDown then
+  if MouseOver then
   begin
-    FOver := False;
-    Invalidate;
+    inherited MouseLeave(Control);
+    if not FStayDown then
+      Invalidate;
   end;
 end;
 
@@ -1427,7 +1426,7 @@ begin
       FDown := False;
   end
   else
-  if FOver and (Button = mbLeft) then
+  if MouseOver and (Button = mbLeft) then
     FDown := True
   else
   if not FStayDown then
@@ -1450,9 +1449,9 @@ begin
 
   if PtInRect(GetClientRect, Point(X, Y)) then { entire button }
   begin
-    if not FOver then
+    if not MouseOver then
     begin
-      FOver := True;
+      MouseOver := True;
       { notify others }
       Msg.Msg := CM_LEAVEBUTTON;
       Msg.WParam := 0;
@@ -1463,9 +1462,9 @@ begin
     end;
   end
   else
-  if FOver then
+  if MouseOver then
   begin
-    FOver := False;
+    MouseOver := False;
     Invalidate;
   end;
 end;
@@ -1487,9 +1486,9 @@ end;
 
 procedure TJvCustomLookOutButton.CMLeaveButton(var Msg: TMessage);
 begin
-  if (Msg.LParam <> Longint(Self)) and FOver and not FStayDown then
+  if (Msg.LParam <> Longint(Self)) and MouseOver and not FStayDown then
   begin
-    FOver := False;
+    MouseOver := False;
     //    FDown := False;
     Invalidate;
   end;
@@ -1574,7 +1573,6 @@ begin
   Width := 92;
   Height := 100;
   //  SetBounds(0, 0, 92, 100);
-  FOver := False;
   FHighlightFont := TFont.Create;
   FHighlightFont.Assign(Font);
   FMargin := 0;
@@ -2174,7 +2172,7 @@ var
   DC: hDC;
   FFlat, FPush: Boolean;
 begin
-  if FOver then
+  if MouseOver then
     Canvas.Font := FHighlightFont
   else
     Canvas.Font := Self.Font;
@@ -2200,7 +2198,7 @@ begin
     if FPush then
       Frame3D(Canvas, R, clBtnShadow, clBtnHighlight, 1)
     else
-    if FOver then
+    if MouseOver then
     begin
       Frame3D(Canvas, R, clBtnHighLight, cl3DDkShadow, 1);
       Frame3D(Canvas, R, clBtnFace, clBtnShadow, 1);
@@ -2319,16 +2317,16 @@ begin
   R.Bottom := cHeight;
   if PtInRect(R, Point(X, Y)) then
   begin
-    if not FOver then
+    if not MouseOver then
     begin
-      FOver := True;
+      MouseOver := True;
       DrawTopButton;
     end
   end
   else
-  if FOver or FDown then
+  if MouseOver or FDown then
   begin
-    FOver := False;
+    MouseOver := False;
     //    FDown := False;
     DrawTopButton;
   end;
@@ -2358,10 +2356,9 @@ end;
 
 procedure TJvLookOutPage.MouseLeave(Control: TControl);
 begin
-  inherited MouseLeave(Control);
-  if FOver then
+  if MouseOver then
   begin
-    FOver := False;
+    inherited MouseLeave(Control);
     // FDown := False;
     DrawTopButton;
   end;

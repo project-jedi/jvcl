@@ -304,7 +304,6 @@ type
   private
     FBehavior: TJvLabelBehaviorName;
     FOptions: TJvLabelBehavior;
-    FOnParentColorChanged: TNotifyEvent;
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
     FUseEffectText: Boolean;
@@ -316,7 +315,6 @@ type
     procedure SetOptions(const Value: TJvLabelBehavior);
     procedure SetUseEffectText(const Value: Boolean);
   protected
-    procedure ParentColorChanged; override;
     procedure Resize; override;
     procedure DoStart; dynamic;
     procedure DoStop; dynamic;
@@ -329,7 +327,6 @@ type
     property Behavior: TJvLabelBehaviorName read FBehavior write SetBehavior stored BehaviorStored;
     property Caption;
     property BehaviorOptions: TJvLabelBehavior read GetOptions write SetOptions;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnStart: TNotifyEvent read FOnStart write FOnStart;
     property OnStop: TNotifyEvent read FOnStop write FOnStop;
   public
@@ -549,13 +546,6 @@ destructor TJvCustomBehaviorLabel.Destroy;
 begin
   FreeAndNil(FOptions);
   inherited Destroy;
-end;
-
-procedure TJvCustomBehaviorLabel.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 procedure TJvCustomBehaviorLabel.DoStart;

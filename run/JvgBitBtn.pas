@@ -41,16 +41,9 @@ type
   private
     FAboutJVCL: TJVCLAboutInfo;
     FCanvas: TControlCanvas;
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOnParentColorChanged: TNotifyEvent;
-    FOver: Boolean;
     function GetCanvas: TCanvas;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
   protected
-    procedure ParentColorChanged; override;
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
     procedure DrawItem(const DrawItemStruct: TDrawItemStruct);
   public
     constructor Create(AOwner: TComponent); override;
@@ -58,8 +51,8 @@ type
     property Canvas: TCanvas read GetCanvas;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property HintColor;
+    property OnParentColorChange;
     property OnMouseEnter;
     property OnMouseLeave;
   end;
@@ -71,8 +64,6 @@ begin
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   FCanvas.Control := Self; //...i can draw now! :)
-  FHintColor := clInfoBk;
-  FOver := False;
 end;
 
 destructor TJvgBitBtn.Destroy;
@@ -103,7 +94,7 @@ begin
   FCanvas.Handle := DrawItemStruct.hDC;
   R := ClientRect;
   IsDown := DrawItemStruct.itemState and ODS_SELECTED <> 0;
-  if (not FOver) and (not IsDown) then
+  if (not MouseOver) and (not IsDown) then
     with FCanvas do
       if not Focused and not Default then
       begin
@@ -131,38 +122,6 @@ begin
         FrameRect(Rect(R.Left + 2, R.Top + 2, R.Right - 2, R.Bottom - 2));
       end;
   FCanvas.Handle := 0;
-end;
-
-procedure TJvgBitBtn.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-procedure TJvgBitBtn.MouseEnter(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if not FOver then
-  begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
-    FOver := True;
-  end;
-  inherited MouseEnter(Control);
-end;
-
-procedure TJvgBitBtn.MouseLeave(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if FOver then
-  begin
-    Application.HintColor := FSaved;
-    FOver := False;
-  end;
-  inherited MouseLeave(Control);
 end;
 
 end.

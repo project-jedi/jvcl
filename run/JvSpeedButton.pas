@@ -73,7 +73,6 @@ type
     FFontSave: TFont;
     FGlyph: Pointer;
     FGroupIndex: Integer;
-    FHintColor: TColor;
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
     FHotTrackFontOptions: TJvTrackFontOptions;
@@ -85,11 +84,8 @@ type
     FMenuPosition: TJvDropDownMenuPos;
     FMenuTracking: Boolean;
     FModalResult: TModalResult;
-    FMouseInControl: Boolean;
-    FOnParentColorChanged: TNotifyEvent;
     FRepeatPause: Word;
     FRepeatTimer: TTimer;
-    FSaved: TColor;
     FSpacing: Integer;
     FStyle: TButtonStyle;
     FTransparent: Boolean;
@@ -135,7 +131,6 @@ type
       const KeyText: WideString): Boolean; override;
     procedure EnabledChanged; override;
     procedure FontChanged; override;
-    procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure VisibleChanged; override;
     {$IFDEF VisualCLX}
@@ -161,7 +156,6 @@ type
     function CheckBtnMenuDropDown: Boolean;
     procedure Click; override;
     procedure UpdateTracking;
-    property MouseInControl: Boolean read FMouseInControl;
   protected
     property Alignment: TAlignment read GetAlignment write SetAlignment default taCenter;
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default False;
@@ -175,7 +169,6 @@ type
     { If True, Image is grayed (when enables=False) like the imagelist does, otherwise like the speedbutton does }
     property GrayNewStyle: Boolean read GetGrayNewStyle write SetGrayNewStyle default True;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
@@ -196,7 +189,6 @@ type
 
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
   TJvImageSpeedButton = class;
@@ -811,7 +803,7 @@ procedure TJvCustomSpeedButton.EnabledChanged;
 var
   State: TJvButtonState;
 begin
-  inherited;
+  inherited EnabledChanged;
   if Enabled then
   begin
     if Flat then
@@ -822,7 +814,7 @@ begin
   else
     State := rbsDisabled;
   TJvxButtonGlyph(FGlyph).CreateButtonGlyph(State);
-  { Resync FMouseInControl }
+  { Resync MouseOver }
   UpdateTracking;
   Repaint;
 end;
@@ -839,7 +831,7 @@ var
 begin
   if csDesigning in ComponentState then
     Exit;
-  if not MouseInControl and Enabled then
+  if not MouseOver and Enabled then
   begin
     { Don't draw a border if DragMode <> dmAutomatic since this button is meant to
       be used as a dock client. }
@@ -847,19 +839,13 @@ begin
       {$IFDEF JVCLThemesEnabled}
       ThemeServices.ThemesEnabled or
       {$ENDIF JVCLThemesEnabled}
-      FHotTrack or
-      (FFlat and not FMouseInControl and Enabled and (DragMode <> dmAutomatic) and (GetCapture = 0));
+      FHotTrack or (FFlat and Enabled and (DragMode <> dmAutomatic) and (GetCapture = 0));
 
-    FMouseInControl := True;
-
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
+    inherited MouseEnter(Control); // set MouseOver
 
     { Windows XP introduced hot states also for non-flat buttons. }
     if NeedRepaint then
       Repaint;
-
-    inherited MouseEnter(Control); // tigger event
   end;
 end;
 
@@ -867,34 +853,20 @@ procedure TJvCustomSpeedButton.MouseLeave(Control: TControl);
 var
   NeedRepaint: Boolean;
 begin
-  if csDesigning in ComponentState then
-    Exit;
-  if MouseInControl and Enabled then
+  if MouseOver and Enabled then
   begin
     NeedRepaint :=
       {$IFDEF JVCLThemesEnabled}
       { Windows XP introduced hot states also for non-flat buttons. }
       ThemeServices.ThemesEnabled or
       {$ENDIF JVCLThemesEnabled}
-      HotTrack or
-      (FFlat and FMouseInControl and Enabled and not FDragging);
+      HotTrack or (FFlat and Enabled and not FDragging);
 
-    FMouseInControl := False;
-
-    Application.HintColor := FSaved;
+    inherited MouseLeave(Control); // set MouseOver
 
     if NeedRepaint then
       Repaint;
-
-    inherited MouseLeave(Control); // trigger event
   end;
-end;
-
-procedure TJvCustomSpeedButton.ParentColorChanged;
-begin
-  inherited;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 {$IFDEF VCL}
@@ -912,7 +884,7 @@ end;
 
 procedure TJvCustomSpeedButton.VisibleChanged;
 begin
-  inherited;
+  inherited VisibleChanged;
   if Visible then
     UpdateTracking;
 end;
@@ -923,7 +895,6 @@ begin
   FHotTrack := False;
   FHotTrackFont := TFont.Create;
   FFontSave := TFont.Create;
-  FHintColor := clInfoBk;
   SetBounds(0, 0, 25, 25);
   ControlStyle := [csCaptureMouse, csOpaque, csDoubleClicks];
   ControlStyle := ControlStyle + [csReplicatable];
@@ -1081,9 +1052,9 @@ begin
     if FMenuTracking then
       Exit;
     inherited MouseDown(Button, Shift, X, Y);
-    if not FMouseInControl and Enabled then
+    if not MouseOver and Enabled then
     begin
-      FMouseInControl := True;
+      MouseOver := True;
       Invalidate {Repaint};
     end;
     if (Button = mbLeft) and Enabled {and not (ssDouble in Shift)} then
@@ -1202,7 +1173,7 @@ begin
     else
       FState := rbsUp;
 
-  if FFlat and not FMouseInControl and not (csDesigning in ComponentState) then
+  if FFlat and not MouseOver and not (csDesigning in ComponentState) then
     { rbsInactive : flat and not 'mouse in control', thus
         - picture might be painted gray
         - no border, unless button is exclusive
@@ -1221,7 +1192,7 @@ begin
     else
       PerformEraseBackground(Self, Canvas.Handle);
 
-    if (MouseInControl or FDragging) and HotTrack then
+    if (MouseOver or FDragging) and HotTrack then
       Canvas.Font := Self.HotTrackFont
     else
       Canvas.Font := Self.Font;
@@ -1243,7 +1214,7 @@ begin
     if FState in [rbsDown, rbsExclusive] then
       Button := tbPushButtonPressed
     else
-    if FMouseInControl or FDragging then
+    if MouseOver or FDragging then
       Button := tbPushButtonHot
     else
       Button := tbPushButtonNormal;
@@ -1330,7 +1301,7 @@ begin
       { .. do not paint gray image }
       LState := FState;
 
-    if (MouseInControl or FDragging) and HotTrack then
+    if (MouseOver or FDragging) and HotTrack then
       Canvas.Font := Self.HotTrackFont
     else
       Canvas.Font := Self.Font;
@@ -1550,7 +1521,7 @@ var
 begin
   GetCursorPos(P);
   NewValue := Enabled and (FindDragTarget(P, True) = Self) and IsForegroundTask;
-  if FMouseInControl <> NewValue then
+  if MouseOver <> NewValue then
     {$IFDEF VCL}
     if NewValue then
       Perform(CM_MOUSEENTER, 0, 0)
@@ -1785,7 +1756,7 @@ procedure TJvImageSpeedButton.PaintImage(Canvas: TCanvas; ARect: TRect;
 var
   LImageIndex: TImageIndex;
 begin
-  if (MouseInControl or FDragging) and HotTrack and (HotTrackImageIndex <> -1) then
+  if (MouseOver or FDragging) and HotTrack and (HotTrackImageIndex <> -1) then
     LImageIndex := HotTrackImageIndex
   else
     LImageIndex := ImageIndex;
@@ -1800,7 +1771,7 @@ begin
   begin
     FHotTrackImageIndex := Value;
     { Only invalidate when hot }
-    if (MouseInControl or FDragging) and HotTrack then
+    if (MouseOver or FDragging) and HotTrack then
       InvalidateImage;
   end;
 end;
@@ -1811,7 +1782,7 @@ begin
   begin
     FImageIndex := Value;
     { Only invalidate when not hot }
-    if not (MouseInControl or FDragging) or not HotTrack then
+    if not (MouseOver or FDragging) or not HotTrack then
       InvalidateImage;
   end;
 end;
@@ -1965,7 +1936,7 @@ end;
 procedure TJvSpeedButton.PaintImage(Canvas: TCanvas; ARect: TRect; const Offset: TPoint;
   AState: TJvButtonState; DrawMark: Boolean);
 begin
-  if (MouseInControl or FDragging) and HotTrack and not HotTrackGlyph.Empty then
+  if (MouseOver or FDragging) and HotTrack and not HotTrackGlyph.Empty then
   begin
     SyncHotGlyph;
     TJvxButtonGlyph(FHotTrackGlyph).Draw(Canvas, ARect, Offset, Caption, FLayout,

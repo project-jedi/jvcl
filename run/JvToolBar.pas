@@ -41,10 +41,6 @@ type
   TJvToolBar = class(TJvExToolBar)
   private
     FChangeLink: TJvMenuChangeLink;
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOnParentColorChanged: TNotifyEvent;
-    FOver: Boolean;
     {$IFNDEF COMPILER6_UP}
     FMenu: TMainMenu;
     {$ENDIF COMPILER6_UP}
@@ -61,19 +57,16 @@ type
     procedure BuildButtons(AMenu: TMainMenu);
     {$ENDIF COMPILER6_UP}
   protected
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
-    procedure ParentColorChanged; override;
     procedure AdjustSize; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     property Menu: TMainMenu read GetMenu write SetMenu;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
   end;
 
 implementation
@@ -81,8 +74,6 @@ implementation
 constructor TJvToolBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
-  FOver := False;
   FChangeLink := TJvMenuChangeLink.Create;
   FChangeLink.OnChange := MenuChange;
   ControlStyle := ControlStyle + [csAcceptsControls];
@@ -97,36 +88,6 @@ begin
   end;
   FChangeLink.Free;
   inherited Destroy;
-end;
-
-procedure TJvToolBar.MouseEnter(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if not FOver then
-  begin
-    FOver := True;
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
-    inherited MouseEnter(Control);
-  end;
-end;
-
-procedure TJvToolBar.MouseLeave(Control: TControl);
-begin
-  if FOver then
-  begin
-    Application.HintColor := FSaved;
-    FOver := False;
-    inherited MouseLeave(Control);
-  end;
-end;
-
-procedure TJvToolBar.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 function TJvToolBar.GetMenu: TMainMenu;

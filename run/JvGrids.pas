@@ -81,10 +81,6 @@ type
     FOnFixedCellClick: TFixedCellClickEvent;
     FOnCheckButton: TFixedCellCheckEvent;
     FOnChangeFocus: TNotifyEvent;
-    FColor: TColor;
-    FSaved: TColor;
-    FOnParentColorChanged: TNotifyEvent;
-    FOver: Boolean;
     FOnHScroll: TNotifyEvent;
     FOnVScroll: TNotifyEvent;
     FOnGetEditAlign: TEditAlignEvent;
@@ -110,9 +106,6 @@ type
     procedure SetDrawButtons(const Value: boolean);
   protected
     function SelectCell(ACol, ARow: Longint): Boolean; override;
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
-    procedure ParentColorChanged; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
 
@@ -195,7 +188,7 @@ type
 
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
     property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHScroll write FOnHScroll;
   end;
@@ -669,8 +662,6 @@ begin
   FPressedCell.Y := -1;
   FCellDown.X := -1;
   FCellDown.Y := -1;
-  FColor := clInfoBk;
-  FOver := False;
   FBeepOnError := True;
 end;
 
@@ -1332,13 +1323,6 @@ begin
     FOnEditButtonClick(Self);
 end;
 
-procedure TJvDrawGrid.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
 procedure TJvDrawGrid.WMHScroll(var Msg: TWMHScroll);
 begin
   inherited;
@@ -1351,31 +1335,6 @@ begin
   inherited;
   if Assigned(FOnVScroll) then
     FOnVScroll(Self);
-end;
-
-procedure TJvDrawGrid.MouseEnter(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if not FOver then
-  begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FColor;
-    FOver := True;
-  end;
-  inherited MouseEnter(Control);
-end;
-
-procedure TJvDrawGrid.MouseLeave(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if FOver then
-  begin
-    Application.HintColor := FSaved;
-    FOver := False;
-  end;
-  inherited MouseLeave(Control);
 end;
 
 procedure TJvDrawGrid.SetDrawButtons(const Value: boolean);

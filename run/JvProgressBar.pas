@@ -43,21 +43,12 @@ uses
 type
   TJvProgressBar = class(TJvExProgressBar)
   private
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOver: Boolean;
-    FOnParentColorChanged: TNotifyEvent;
-    {$IFDEF VCL}
+  {$IFDEF VCL}
     FFillColor: TColor;
     procedure SetFillColor(const Value: TColor);
-    {$ENDIF VCL}
   protected
-    procedure MouseEnter(AControl: TControl); override;
-    procedure MouseLeave(AControl: TControl); override;
-    procedure ParentColorChanged; override;
-    {$IFDEF VCL}
     procedure CreateWnd; override;
-    {$ENDIF VCL}    
+  {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -65,12 +56,12 @@ type
     property FillColor: TColor read FFillColor write SetFillColor default clHighlight;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    property FillColor;
+    property FillColor default clHighlight;
     {$ENDIF VisualCLX}
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
     property Color;
     property OnMouseDown;
     property OnMouseMove;
@@ -83,38 +74,6 @@ constructor TJvProgressBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FillColor := clHighlight;
-  FHintColor := clInfoBk;
-  FOver := False;
-end;
-
-procedure TJvProgressBar.MouseEnter(AControl: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if not FOver then
-  begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
-    FOver := True;
-    inherited MouseEnter(AControl);
-  end;
-end;
-
-procedure TJvProgressBar.MouseLeave(AControl: TControl);
-begin
-  if FOver then
-  begin
-    FOver := False;
-    Application.HintColor := FSaved;
-    inherited MouseLeave(AControl);
-  end;
-end;
-
-procedure TJvProgressBar.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 {$IFDEF VCL}

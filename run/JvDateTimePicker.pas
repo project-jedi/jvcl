@@ -53,19 +53,12 @@ type
 
   TJvDateTimePicker = class(TJvExDateTimePicker)
   private
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOnParentColorChanged: TNotifyEvent;
     FNullText: string;
     FNullDate: TDateTime;
     FDropDownDate: TDate;
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure SetNullDate(const Value: TDateTime);
   protected
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
-    procedure ParentColorChanged; override;
-
     function WithinDelta(Val1, Val2: TDateTime): Boolean; virtual;
     // returns True if NullDate matches Date or Frac(NullDate) matches Frac(Time) depending on Kind
     function CheckNullValue: Boolean; virtual;
@@ -80,10 +73,10 @@ type
     property NullDate: TDateTime read FNullDate write SetNullDate;
     // The text to display when NullDate = Date/Time
     property NullText: string read FNullText write FNullText;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
   end;
 
 implementation
@@ -94,33 +87,8 @@ uses
 constructor TJvDateTimePicker.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
   FNullText := RsNoneCaption;
   FDropDownDate := SysUtils.Date;
-end;
-
-procedure TJvDateTimePicker.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-procedure TJvDateTimePicker.MouseEnter(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  FSaved := Application.HintColor;
-  Application.HintColor := FHintColor;
-  inherited MouseEnter(Control);
-end;
-
-procedure TJvDateTimePicker.MouseLeave(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  Application.HintColor := FSaved;
-  inherited MouseLeave(Control);
 end;
 
 function TJvDateTimePicker.WithinDelta(Val1, Val2: TDateTime): Boolean;

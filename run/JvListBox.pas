@@ -136,16 +136,12 @@ type
 
   TJvCustomListBox = class(TJvExCustomListBox)
   private
-    FAlignment: TAlignment;
     FHotTrack: Boolean;
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOver: Boolean;
+    FAlignment: TAlignment;
     FMaxWidth: Integer;
     FScrollBars: TScrollStyle;
     FSorted: Boolean;
     FOnGetText: TJvListBoxDataEvent;
-    FOnParentColorChanged: TNotifyEvent;
     FOnSelectCancel: TNotifyEvent;
     FOnDeleteString: TJvListboxChange;
     FOnAddString: TJvListboxChange;
@@ -222,7 +218,6 @@ type
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    procedure ParentColorChanged; override;
     procedure SelectCancel(var Msg: TMessage); message LBN_SELCANCEL;
     procedure Changed; virtual;
     procedure DrawItem(Index: Integer; Rect: TRect;
@@ -243,8 +238,6 @@ type
     property Alignment: TAlignment read FAlignment write SetAlignment
       default taLeftJustify;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnSelectCancel: TNotifyEvent read FOnSelectCancel write FOnSelectCancel;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnDeleteString: TJvListboxChange read FOnDeleteString write FOnDeleteString;
@@ -738,36 +731,22 @@ procedure TJvCustomListBox.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  if not FOver then
+  if not MouseOver then
   begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
     if FHotTrack then
       Ctl3D := True;
-    FOver := True;
+    inherited MouseEnter(Control);
   end;
-  inherited MouseEnter(Control);
 end;
 
 procedure TJvCustomListBox.MouseLeave(Control: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
-  if FOver then
+  if MouseOver then
   begin
-    Application.HintColor := FSaved;
     if FHotTrack then
       Ctl3D := False;
-    FOver := False;
+    inherited MouseLeave(Control);
   end;
-  inherited MouseLeave(Control);
-end;
-
-procedure TJvCustomListBox.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 { This routine is copied mostly from TCustomListbox.CNDRawItem.
@@ -871,8 +850,6 @@ begin
 
   FMaxWidth := 0;
   FHotTrack := False;
-  FHintColor := clInfoBk;
-  FOver := False;
   // ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 

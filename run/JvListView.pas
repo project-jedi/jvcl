@@ -56,10 +56,6 @@ type
   TJvListView = class(TJvExListView)
   private
     FAutoClipboardCopy: Boolean;
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOnParentColorChanged: TNotifyEvent;
-    FOver: Boolean;
     FSortOnClick: Boolean;
     FLast: Integer;
     FOnSaveProgress: TJvOnProgress;
@@ -76,9 +72,6 @@ type
     function CreateListItem: TListItem; override;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
-    procedure ParentColorChanged; override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function GetColumnsOrder: string;
@@ -111,7 +104,7 @@ type
       AHeight: Integer); override;
   published
     property ColumnsOrder: string read GetColumnsOrder write SetColumnsOrder;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     property HeaderImages: TCustomImageList read FHeaderImages write SetHeaderImages;
     property SortMethod: TJvSortMethod read FSortMethod write FSortMethod default smAutomatic;
     property SortOnClick: Boolean read FSortOnClick write FSortOnClick default True;
@@ -124,7 +117,7 @@ type
     property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
   end;
 
 implementation
@@ -159,8 +152,6 @@ const
 constructor TJvListView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
-  FOver := False;
   FSortOnClick := True;
   FSortMethod := smAutomatic;
   FLast := -1;
@@ -216,32 +207,6 @@ begin
   UpdateHeaderImages(ListView_GetHeader(Handle));
   if Assigned(FOnVerticalScroll) then
     FOnVerticalScroll(Self);
-end;
-
-procedure TJvListView.MouseEnter(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  FOver := True;
-  FSaved := Application.HintColor;
-  Application.HintColor := FHintColor;
-  inherited MouseEnter(Control);
-end;
-
-procedure TJvListView.MouseLeave(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  Application.HintColor := FSaved;
-  FOver := False;
-  inherited MouseLeave(Control);
-end;
-
-procedure TJvListView.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 procedure TJvListView.ColClick(Column: TListColumn);

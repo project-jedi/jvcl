@@ -44,10 +44,6 @@ uses
 type
   TJvgBevel = class(TJvGraphicControl)
   private
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOver: Boolean;
-    FOnParentColorChanged: TNotifyEvent;
     FBevelInner: TPanelBevel;
     FBevelOuter: TPanelBevel;
     FBevelSides: TglSides;
@@ -67,10 +63,6 @@ type
     procedure SetBevelPenStyle(Value: TPenStyle);
     procedure SetBevelPenWidth(Value: Word);
     procedure SetInteriorOffset(Value: Word);
-  protected
-    procedure MouseEnter(AControl: TControl); override;
-    procedure MouseLeave(AControl: TControl); override;
-    procedure ParentColorChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -105,12 +97,12 @@ type
     property BevelPenWidth: Word read FBevelPenWidth write SetBevelPenWidth default 1;
     property InteriorOffset: Word read FInteriorOffset write SetInteriorOffset default 0;
     property Gradient: TJvgGradient read FGradient write FGradient;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     property VertLines: TJvgBevelLines read FVertLines write FVertLines;
     property HorLines: TJvgBevelLines read FHorLines write FHorLines;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
   end;
 
 implementation
@@ -125,7 +117,6 @@ begin
   Width := 50;
   Height := 50;
   FBevelInner := bvLowered;
-  FHintColor := clInfoBk;
   FBevelOuter := bvNone;
   FBevelSides := [fsdLeft, fsdTop, fsdRight, fsdBottom];
   FBevelPenStyle := psSolid;
@@ -133,7 +124,6 @@ begin
   FGradient.OnChanged := SomethingChanged;
   FVertLines.OnChanged := SomethingChanged;
   FHorLines.OnChanged := SomethingChanged;
-  FOver := False;
 end;
 
 destructor TJvgBevel.Destroy;
@@ -224,38 +214,6 @@ begin
 
   DrawLines(R_, fldHorizontal, HorLines);
   DrawLines(R_, fldVertical, VertLines);
-end;
-
-procedure TJvgBevel.MouseEnter(AControl: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if not FOver then
-  begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
-    FOver := True;
-  end;
-  inherited MouseEnter(AControl);
-end;
-
-procedure TJvgBevel.MouseLeave(AControl: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if FOver then
-  begin
-    FOver := False;
-    Application.HintColor := FSaved;
-  end;
-  inherited MouseLeave(AControl);
-end;
-
-procedure TJvgBevel.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 procedure TJvgBevel.SomethingChanged(Sender: TObject);

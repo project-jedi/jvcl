@@ -69,12 +69,9 @@ type
 
   TJvImage = class(TJvExImage)
   private
-    FHintColor: TColor;
-    FSaved: TColor;
     FOnStateChanged: TNotifyEvent;
     FPictures: TJvPictures;
     FState: TPicState;
-    FOver: Boolean;
     FPicture: TPicture;
     FClickCount: Integer;
     FPictureChange:TNotifyEvent;
@@ -98,7 +95,7 @@ type
     destructor Destroy; override;
     procedure Loaded; override;
   published
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     property Pictures: TJvPictures read FPictures write FPictures;
     property Picture: TPicture read FPicture write SetPicture;
     property State: TPicState read FState write SetState default stDefault;
@@ -114,9 +111,7 @@ implementation
 constructor TJvImage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
   FState := stDefault;
-  FOver := False;
   FPictures := TJvPictures.Create;
   FPictures.OnChanged := PicturesChanged;
   FPicture := TPicture.Create;
@@ -207,25 +202,20 @@ procedure TJvImage.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  if not FOver then
+  if not MouseOver then
   begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
     if UsesPictures then
       State := stEntered;
-    FOver := True;
     inherited MouseEnter(Control);
   end;
 end;
 
 procedure TJvImage.MouseLeave(Control: TControl);
 begin
-  if FOver then
+  if MouseOver then
   begin
-    Application.HintColor := FSaved;
     if UsesPictures then
       ApplyClick;
-    FOver := False;
     inherited MouseLeave(Control);
   end;
 end;

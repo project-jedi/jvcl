@@ -43,24 +43,19 @@ uses
 type
   TJvScrollBar = class(TJvExScrollBar)
   private
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOnParentColorChanged: TNotifyEvent;
     FHotTrack: Boolean;
-    FOver: Boolean;
     procedure SetHotTrack(Value: Boolean);
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    procedure ParentColorChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
   end;
 
 implementation
@@ -68,46 +63,32 @@ implementation
 constructor TJvScrollBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
-  FOver := False;
   FHotTrack := False;
   // ControlStyle := ControlStyle + [csAcceptsControls];
-end;
-
-procedure TJvScrollBar.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 procedure TJvScrollBar.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  if not FOver then
+  if not MouseOver then
   begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
     {$IFDEF VCL}
     if HotTrack then
       Ctl3D := True;
     {$ENDIF VCL}
-    FOver := True;
     inherited MouseEnter(Control);
   end;
 end;
 
 procedure TJvScrollBar.MouseLeave(Control: TControl);
 begin
-  if FOver then
+  if MouseOver then
   begin
-    Application.HintColor := FSaved;
     {$IFDEF VCL}
     if HotTrack then
       Ctl3D := False;
     {$ENDIF VCL}
-    FOver := False;
     inherited MouseLeave(Control);
   end;
 end;
