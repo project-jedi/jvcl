@@ -2,6 +2,13 @@
 @@$TJvScrollEvStringGrid
 <TITLE TJvScrollEvStringGrid overview>
 <GROUP JVCL.Miscel>
+  TJvScrollEvStringGrid is a string grid that adds events to TStringGrid, that allow you to respond
+  when the user scrolls the scroll bars of the grid.
+  
+  * You can use the OnBeforeHScroll and OnBeforeVScroll to prevent the user from scrolling the grid,
+    by setting allowScroll to False.
+  * Use OnAfterHScroll and OnAfterVScroll to respond when the user stops scrolling the scroll bars of
+    the grid.
 ----------------------------------------------------------------------------------------------------
 @@JvScrollEvStringGrid.pas
 Summary
@@ -21,10 +28,10 @@ Author
 @@TJvScrollEvStringGrid
 <GROUP TJvScrollEvStringGrid>
 Summary
-  TJvScrollEvStringGrid represents a string grid that can respond to scroll events.
+  String grid that can respond to scroll events.
 Description
   Use TJvScrollEvStringGrid if you want a string grid that can respond when the user scrolls the
-  scrolls bars of the string grid.
+  scroll bars of the string grid.
   
   Check scrollcode in the scroll events to take specific actions depending on the type of scroll 
   request.

@@ -1,6 +1,18 @@
 @@$TJvScrollBox
 <TITLE TJvScrollBox overview>
 <GROUP JVCL.Miscel>
+  TJvScrollBox is a scroll box that supports extended features such as hot tracking. 
+  
+  You can use OnMouseEnter and OnMouseLeave to alter the controls look or behavoir, when the user 
+  moves the mouse pointer over the control.
+  
+  Alternatively, you can use property HotTrack to highlight the scroll box automatically when the
+  mouse passes over it.
+
+  Use OnHorizontalScroll and OnVerticalScroll to take action when the user scrolls the specified
+  scroll bar.
+  
+  Property HintColor can be used to set a different color of the Help hint boxes for the scroll box.
 ----------------------------------------------------------------------------------------------------
 @@JvScrollBox.pas
 <GROUP JVCL.FileRef>
@@ -13,7 +25,7 @@ Author
 @@TJvScrollBox
 <GROUP TJvScrollBox>
 Summary
-  TJvScrollBox represents a scroll box that supports extended features such as hot tracking.
+  Supports extended features such as hot tracking.
 Description
   Use property HotTrack to highlight the scroll box when mouse passes over it. Use property HintColor 
   to change the color of the hint boxes for the scroll box.
@@ -102,7 +114,7 @@ Summary
   Specifies whether the scroll box is highlighted when the mouse passes over it.
 Description
   Set HotTrack to True to provide visual feedback about which item is under the mouse. When HotTrack
-  is True. When HotTrack is False, there is no visual feedback when the mouse passes over items.
+  is True. When HotTrack is False, there is no visual feedback when the mouse passes over this control.
 See Also 
   OnMouseEnter, OnMouseLeave
 ----------------------------------------------------------------------------------------------------

@@ -2,6 +2,15 @@
 @@$TJvSearchFile
 <TITLE TJvSearchFile overview>
 <GROUP JVCL.Miscel>
+  Use TJvSearchFile to search for files.
+  
+  * Write an OnFound event to take action when a file is found.
+  * Set Mask to limit which files are found by the component.
+  * Use Recursive to specify if the component should also search in subdirectories.
+  * Call Execute with a parameter specifying the directory where the search starts.
+  * Use the events OnStart, OnEnded and OnChangedDir to take action during the search, when the search
+    starts, ends, or starts in another directory. For example, you could use these events to notify
+    the user in which directory the component is searching.
 ----------------------------------------------------------------------------------------------------
 @@JvSearchFile.pas
 Summary
@@ -13,7 +22,7 @@ Author
 @@TJvSearchFile
 <GROUP TJvSearchFile>
 Summary
-  TJvSearchFile enables you to search for files.
+  Enables you to search for files.
 Description
   Use a TJvSearchFile component to search for files whose name matches the pattern specified by 
   property Mask. Call Execute by passing it a directory, to start the search in that directory.

@@ -1,8 +1,16 @@
 ----------------------------------------------------------------------------------------------------
 @@$TJvScrollingLabel
 <TITLE TJvScrollingLabel overview>
-<GROUP JVCL.Miscel>
-----------------------------------------------------------------------------------------------------
+<GROUP JVCL.Labels>
+  TJvScrollingLabel is a label that can scroll it's text.
+  
+  * Specify the scroll text by setting the property Text.
+  * Use ScrollInterval to specify the amount of time in milliseconds between scroll events.
+  * Set Scrolling to True at design-time, or set this property at run-time to start the scrolling.
+  * Use ScrollDirection to change the default scroll direction.
+  * Use OnMouseEnter and OnMouseLeave to alter the controls look or behavoir, when the user moves the
+    mouse pointer over the control.
+---------------------------------------------------------------------------------------------------
 @@JvScrollingLabel.pas
 Summary
   Contains the TJvScrollingLabel component.
@@ -13,7 +21,7 @@ Author
 @@TJvScrollingLabel
 <GROUP TJvScrollingLabel>
 Summary
-  TJvScrollingLabel is a label that can scroll it's text.
+  Label that can scroll it's text.
 Description
   The TJvScrollingLabel component functions like TLabel, except that it can scroll it's text.
   
@@ -121,7 +129,7 @@ See Also
 Summary
   Indicates whether the label is scrolling the text.
 Description
-  Set Scrolling to True to scroll the text of the control. Set Active to False to interrupt 
+  Set Scrolling to True to scroll the text of the control. Set Scrolling to False to interrupt 
   the control when it is scrolling it's text.
 
   The text of the control will only scroll runtime.

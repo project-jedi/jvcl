@@ -1,6 +1,16 @@
 @@$TJvScrollBar
 <TITLE TJvScrollBar overview>
 <GROUP JVCL.Miscel>
+  TJvScrollBar is a scroll bar that supports extended features such as hot tracking. It adds
+  four events to TScrollBar: OnCtl3DChanged, OnParentColorChange, OnMouseEnter and OnMouseLeave.
+  
+  Use OnMouseEnter and OnMouseLeave to alter the controls look or behavoir, when the user moves the
+  mouse pointer over the control.
+  
+  Alternatively, you could use property HotTrack to highlight the scroll bar automatically when the
+  mouse passes over it.
+  
+  Property HintColor can be used to set a different color of the Help hint boxes for the scroll bar.
 ----------------------------------------------------------------------------------------------------
 @@JvScrollBar.pas
 <GROUP JVCL.FileRef>
@@ -13,7 +23,7 @@ Author
 @@TJvScrollBar
 <GROUP TJvScrollBar>
 Summary
-  TJvScrollBar represents a scroll bar that supports extended features such as hot tracking.
+  Supports extended features such as hot tracking.
 Description
   Use property HotTrack to highlight the scroll bar when mouse passes over it. Use property HintColor 
   to change the color of the hint boxes for the scroll bar.
