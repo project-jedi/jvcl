@@ -364,7 +364,9 @@ implementation
 {$IFDEF JVCLThemesEnabled}
 uses
   UxTheme,
+  {$IFNDEF COMPILER7_UP}
   TmSchema,
+  {$ENDIF COMPILER7_UP}
   JvThemes;
 {$ENDIF JVCLThemesEnabled}
 
