@@ -32,11 +32,10 @@ interface
 
 uses
   SysUtils, Classes, Controls, Forms, Dialogs,
-  ComCtrls, ActnList, ImgList,
-  JvListView, JvPrint, JvComponent, ToolWin;
+  ComCtrls, ActnList, ImgList, ToolWin;
 
 type
-  TFoLog = class(TJvForm)
+  TFoLog = class(TForm)
     ToolBar1: TToolBar;
     ToolButton1: TToolButton;
     ToolButton2: TToolButton;
@@ -44,42 +43,59 @@ type
     ActionList1: TActionList;
     Save: TAction;
     Print: TAction;
-    ListView1: TJvListView;
+    ListView1: TListView;
     SaveDialog1: TSaveDialog;
-    Print1: TJvPrint;
     procedure SaveExecute(Sender: TObject);
     procedure PrintExecute(Sender: TObject);
+  private
+    procedure MakeLogLines(S: TStrings);
   end;
 
 implementation
+uses
+  Printers;
 
 {$R *.DFM}
 
 procedure TFoLog.SaveExecute(Sender: TObject);
+var S:TStringlist;
 begin
-  if not SaveDialog1.Execute then
-    Exit;
-  if SaveDialog1.FilterIndex = 1 then
-    ListView1.SaveToCSV(SaveDialog1.FileName)
-  else
-    ListView1.SaveToFile(SaveDialog1.FileName)
+  if SaveDialog1.Execute then
+  begin
+    S := TStringlist.Create;
+    try
+      MakeLogLines(S);
+      S.SaveToFile(SaveDialog1.Filename);
+    finally
+      S.Free;
+    end;
+  end;
+end;
+
+procedure TFoLog.MakeLogLines(S:TStrings);
+var i:integer;
+begin
+  for i := 0 to ListView1.Items.Count -1 do
+    S.Add(Format('[%s] %s > %s',[]));
 end;
 
 procedure TFoLog.PrintExecute(Sender: TObject);
 var
- I: Integer;
- Ts: TStringList;
+  I: Integer;
+  S: TStringList;
+  F: TextFile;
 begin
-  Ts := TStringList.Create;
-  with Ts do
-    try
-      for I := 0 to ListView1.Items.Count-1 do
-        with ListView1.Items[I] do
-         Add('[' + Caption + ']' + SubItems[0] + ' > ' + SubItems[1]);
-      Print1.Print(Ts);
-    finally
-      Free;
-    end;
+  S := TStringList.Create;
+  try
+    MakeLogLines(S);
+    AssignPrn(F);
+    Rewrite(F);
+    for i := 0 to S.Count -1  do
+      WriteLn(F,S[i]);
+    CloseFile(F);
+  finally
+    S.Free;
+  end;
 end;
 
 end.
