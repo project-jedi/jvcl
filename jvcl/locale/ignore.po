@@ -708,3 +708,183 @@ msgstr ""
 msgid "2.0.1"
 msgstr ""
 
+#    --- This is because of UIB resources. Must discuss the issue with UIB's author.
+
+msgid "Vrai"
+msgstr ""
+
+msgid "Faux"
+msgstr ""
+
+msgid "Impossible de charger la DLL: %s."
+msgstr ""
+
+msgid "Transtypage incorrect."
+msgstr ""
+
+msgid "Erreur innatendue."
+msgstr ""
+
+msgid "Le champ \"%s\" n'existe pas."
+msgstr ""
+
+msgid "Le Parametre \"%s\" n'existe pas."
+msgstr ""
+
+msgid "Indice de liste hors limites (%d)"
+msgstr ""
+
+msgid "La taille du nom est trop grande (%s)"
+msgstr ""
+
+msgid "L'exception %s, n'existe pas."
+msgstr ""
+
+msgid "Impossible de se connecter au serveur."
+msgstr ""
+
+msgid "Ano"
+msgstr ""
+
+msgid "Ne"
+msgstr ""
+
+msgid "Parametr \"%s\" neexistuje."
+msgstr ""
+
+msgid "Index je mimo rozsah (%d)"
+msgstr ""
+
+msgid "Exception: %d already registered"
+msgstr ""
+
+msgid "Wahr"
+msgstr ""
+
+msgid "Falsch"
+msgstr ""
+
+msgid "Kann Bibliothek %s nicht laden."
+msgstr ""
+
+msgid ""
+"Datenbank-Handle bereits zugewiesen. Bitte erst Verbindung zur Datenbank "
+"trennen."
+msgstr ""
+
+msgid "Transaktion nicht zugewiesen."
+msgstr ""
+
+msgid "Datenbank nicht zugewiesen."
+msgstr ""
+
+msgid "Fehler bei Typumwandlung."
+msgstr ""
+
+msgid "Unerwarteter Fehler."
+msgstr ""
+
+msgid "Feld Nummer %d nicht gefunden."
+msgstr ""
+
+msgid "Feld \"%s\" nicht gefunden."
+msgstr ""
+
+msgid "Parameter \"%s\" nicht gefunden."
+msgstr ""
+
+msgid "Blob-Feld Nummer: %d nicht gefunden."
+msgstr ""
+
+msgid "Die Eigenschaft FetchBlob muss gesetzt sein um diese Methode zu nutzen."
+msgstr ""
+
+msgid "Name ist zu lang (%s)."
+msgstr ""
+
+msgid "Die Abfrage muss erst vorbereitet werden."
+msgstr ""
+
+msgid "Die Transaktion muss explizit gestartet werden."
+msgstr ""
+
+msgid "Ausnahme \"%s\" nicht gefunden."
+msgstr ""
+
+msgid "Ausnahme %d bereits registriert."
+msgstr ""
+
+msgid "Die Transaktion muss explizit beendet werden."
+msgstr ""
+
+msgid "Generator %s nicht gefunden."
+msgstr ""
+
+msgid "Feld nicht gefunden."
+msgstr ""
+
+msgid "Tabelle \"%s\" nicht gefunden."
+msgstr ""
+
+msgid "Prozedur %s nicht gefunden."
+msgstr ""
+
+msgid "Verbindung zum Server kann nicht aufgebaut werden."
+msgstr ""
+
+msgid "Klasse nicht gefunden."
+msgstr ""
+
+msgid "Datentypfehler."
+msgstr ""
+
+msgid "Si"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "Imposible cargar la DLL: %s."
+msgstr ""
+
+msgid "Error inesperado."
+msgstr ""
+
+msgid "Campo \"%s\" no encontrado."
+msgstr ""
+
+msgid "Parametro \"%s\" no  encontrado."
+msgstr ""
+
+msgid "Nombre demasiado largo (%s)"
+msgstr ""
+
+msgid "El query debe prepararse primero."
+msgstr ""
+
+msgid "El query debe ser abierto primero."
+msgstr ""
+
+msgid "La transaccisn debe ser iniciada explmcitamente."
+msgstr ""
+
+msgid "Excepcion con nombre %s, no fue encontrada."
+msgstr ""
+
+msgid "Excepcion: %d ya esta registrada."
+msgstr ""
+
+msgid "La transaccisn debe ser cerrada explmcitamente."
+msgstr ""
+
+msgid "Imposible conectar con el servidor."
+msgstr ""
+
+msgid "Clase no encontrada."
+msgstr ""
+
+msgid "Error de tipo de dato."
+msgstr ""
+
+#   --- End of UIB resources. Must discuss the issue with UIB's author.
+
