@@ -1,5 +1,9 @@
 Changelog for JVCL 3.0
 ======================
+2003-09-25:
+- Added JvThemes.pas unit for theme aware components
+2003-09-24:
+- Added updated Unicode JvEditor
 2003-09-23:
 - Added updates to JvHTControls from Maciej Kaczkowski // peter3
 - NB! BCB packages not updated!
