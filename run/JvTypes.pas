@@ -20,7 +20,7 @@ Peter Thornqvist
 Oliver Giesen
 Gustavo Bianconi
 
-Last Modified: 2000-02-28
+Last Modified: 2003-10-10
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -38,18 +38,96 @@ unit JvTypes;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls;
+{$IFDEF COMPLIB_VCL}
+  Windows, Messages, Graphics, Controls,
+{$ENDIF}
+{$IFDEF COMPLIB_CLX}
+  Qt, QTypes, Types, QControls, QForms, QGraphics,
+{$ENDIF}
+  SysUtils, Classes;
 
 const
   MaxPixelCount = 32767;
   // (rom) unused
   {$IFDEF COMPILER7_UP}
-  // (rom) is this correct?
-  // (p3) yes
   DEFAULT_SYSCOLOR_MASK = $000000FF;
   {$ELSE}
   DEFAULT_SYSCOLOR_MASK = $80000000;
   {$ENDIF}
+
+{$IFDEF COMPLIB_CLX}
+// constants for Canvas.TextRect
+  AlignLeft = 1 { $1 };
+  AlignRight = 2 { $2 };
+  AlignHCenter = 4 { $4 };
+  AlignTop = 8 { $8 };
+  AlignBottom = 16 { $10 };
+  AlignVCenter = 32 { $20 };
+  AlignCenter = 36 { $24 };
+  SingleLine = 64 { $40 };
+  DontClip = 128 { $80 };
+  ExpandTabs = 256 { $100 };
+  ShowPrefix = 512 { $200 };
+  WordBreak = 1024 { $400 };
+  ModifyString = 2048 { $800 };
+  DontPrint = 4096 { $1000 };
+  ClipPath = 8192 { $2000 };
+  ClipName = 16382 { $4000 );
+  CalcRect =  32764 { $8000 } ;
+  pf24bit = pf32bit;
+
+const
+  { DrawTextEx() Format Flags }
+  {$EXTERNALSYM DT_TOP}
+  DT_TOP = 0;          // default
+  {$EXTERNALSYM DT_LEFT}
+  DT_LEFT = 0;         // default
+  {$EXTERNALSYM DT_CENTER}
+  DT_CENTER = 1;
+  {$EXTERNALSYM DT_RIGHT}
+  DT_RIGHT = 2;
+  {$EXTERNALSYM DT_VCENTER}
+  DT_VCENTER = 4;
+  {$EXTERNALSYM DT_BOTTOM}
+  DT_BOTTOM = 8;
+  {$EXTERNALSYM DT_WORDBREAK}
+  DT_WORDBREAK = $10;
+  {$EXTERNALSYM DT_SINGLELINE}
+  DT_SINGLELINE = $20;
+  {$EXTERNALSYM DT_EXPANDTABS}
+  DT_EXPANDTABS = $40;
+//  {$EXTERNALSYM DT_TABSTOP}
+//  DT_TABSTOP = $80;
+  {$EXTERNALSYM DT_NOCLIP}
+  DT_NOCLIP = $100;
+//  {$EXTERNALSYM DT_EXTERNALLEADING}
+//  DT_EXTERNALLEADING = $200;
+  {$EXTERNALSYM DT_CALCRECT}
+  DT_CALCRECT = $400;
+  {$EXTERNALSYM DT_NOPREFIX}
+  DT_NOPREFIX = $800;
+//  {$EXTERNALSYM DT_INTERNAL}
+//  DT_INTERNAL = $1000;
+//  {$EXTERNALSYM DT_HIDEPREFIX}
+//  DT_HIDEPREFIX = $00100000;
+//  {$EXTERNALSYM DT_PREFIXONLY}
+//  DT_PREFIXONLY = $00200000;
+
+//  {$EXTERNALSYM DT_EDITCONTROL}
+//  DT_EDITCONTROL = $2000;
+  {$EXTERNALSYM DT_PATH_ELLIPSIS}
+  DT_PATH_ELLIPSIS = $4000;
+  {$EXTERNALSYM DT_END_ELLIPSIS}
+  DT_END_ELLIPSIS = $8000;
+  DT_ELLIPSIS = DT_END_ELLIPSIS;
+  {$EXTERNALSYM DT_MODIFYSTRING}
+  DT_MODIFYSTRING = $10000;
+//  {$EXTERNALSYM DT_RTLREADING}
+//  DT_RTLREADING = $20000;
+//  {$EXTERNALSYM DT_WORD_ELLIPSIS}
+//  DT_WORD_ELLIPSIS = $40000;
+{$ENDIF COMPLIB_CLX}
+
 
 type
   TJvRegKey = (hkClassesRoot, hkCurrentUser, hkLocalMachine, hkUsers, hkPerformanceData,
@@ -70,6 +148,40 @@ type
   TJvHTTPProgressEvent = procedure(Sender: TObject; UserData, Position: Integer; TotalSize: Integer; Url: string; var Continue: Boolean) of object;
   TJvFTPProgressEvent = procedure(Sender: TObject; Position: Integer; Url: string) of object;
 
+{$IFDEF COMPLIB_CLX}
+  HWnd = QWidgetH;
+  HCursor = QCursorH;
+  TControlClass = class of TControl;
+  TMinMaxInfo = packed record
+    ptReserved: TPoint;
+    ptMaxSize: TPoint;
+    ptMaxPosition: TPoint;
+    ptMinTrackSize: TPoint;
+    ptMaxTrackSize: TPoint;
+  end;
+  TWindowPlacement = packed record
+    length: Cardinal;
+    flags: Integer;
+    showCmd: TWindowState;
+    ptMinPosition: TPoint;
+    ptMaxPosition: TPoint;
+    rcNormalPosition: TRect;
+  end;
+  PWindowPlacement = ^TWindowPlacement;
+  TTime = TDateTime;
+  TDate = TDateTime;
+
+  TRGBQuad = packed record
+    rgbtReserved: Byte;
+    rgbtBlue: Byte;
+    rgbtGreen: Byte;
+    rgbtRed: Byte;
+  end;
+
+  TRGBTriple = TRGBQuad;
+//  TRGBArray = array[0..MaxPixelCount - 1] of TRGBQuad;
+{$ENDIF}
+
   PRGBArray = ^TRGBArray; // JvThumbImage, JvImageSplit, JvRegion
   TRGBArray = array [0..MaxPixelCount - 1] of TRGBTriple;
   TBalance = 0..100;
@@ -79,24 +191,16 @@ type
       (LongVolume: Longint);
       1:
       (LeftVolume,
-        RightVolume: Word);
+       RightVolume: Word);
   end;
-  { (rom) unused
-  TPeaks = record
-    Left: Integer;
-    Right: Integer;
-    LeftShifted: Integer;
-    RightShifted: Integer;
-  end;
-  }
-  
+
   TJvPoint = class(TPersistent)
   protected
-    Fx : Integer;
-    Fy : Integer;
+    Fx: Integer;
+    Fy: Integer;
   published
-    property x : Integer read Fx write Fx;
-    property y : Integer read Fy write Fy;
+    property x: Integer read Fx write Fx;
+    property y: Integer read Fy write Fy;
   end;
 
   TJvErrorEvent = procedure(Sender: TObject; ErrorMsg: string) of object;
@@ -112,8 +216,8 @@ type
 //  EJvDirectoryError = class(EJVCLException); // JvDirectorySpy
 //  TListEvent = procedure(Sender: TObject; Title: string; Handle: THandle) of object; // JvWindowsTitle
 
-  TJvProgressEvent = procedure (Sender: TObject; Current, Total: Integer) of object;
-  TJvNextPageEvent = procedure (Sender: TObject; PageNumber: Integer) of object;
+  TJvProgressEvent = procedure(Sender: TObject; Current, Total: Integer) of object;
+  TJvNextPageEvent = procedure(Sender: TObject; PageNumber: Integer) of object;
   TJvBitmapStyle = (bsNormal, bsCentered, bsStretched);
 
 //  TOnOpened = procedure(Sender: TObject; Value: string) of object; // archive
@@ -132,6 +236,7 @@ type
     CrLf = #13#10;
     Cr = #13;
     Lf = #10;
+    Tab = #9;
 {$IFNDEF COMPILER6_UP}
     SLineBreak = #13#10;
 {$ENDIF}    
@@ -168,6 +273,7 @@ type
 
 //  TCoordChanged = procedure(Sender: TObject; Coord: string) of object;
   TJvNotifyParamsEvent = procedure(Sender: TObject; Params: Pointer) of object;
+{$IFDEF COMPLIB_VCL}
   TJvFileInfoRec = record
     Attributes: DWORD;
     DisplayName: string;
@@ -177,6 +283,7 @@ type
     TypeName: string;
     SysIconIndex: Integer;
   end;
+{$ENDIF COMPLIB_VCL}  
   TJvAnimation = (anLeftRight, anRightLeft, anRightAndLeft, anLeftVumeter, anRightVumeter);
   TJvAnimations = set of TJvAnimation;
   TJvDropEvent = procedure(Sender: TObject; Pos: TPoint; Value: TStringList) of object;
@@ -222,6 +329,7 @@ type
    receives focus while for OnGetFocus it is the control that lost the focus}
   TJvFocusChangeEvent = procedure(const ASender: TObject;
     const AFocusControl: TWinControl) of object;
+
 // JvJCLUtils
 type
   TTickCount = Cardinal;
@@ -230,11 +338,12 @@ type
 
 type
   TSetOfChar = TSysCharSet;
+  TCharSet = TSysCharSet;
 
  {const Separators is used in GetWordOnPos, JvUtils.ReplaceStrings and SubWord}
 const
   Separators: TSysCharSet = [#00, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',
-  ':', '+', '%', '*', '(', ')', ';', '=', '{', '}', '[', ']', '{', '}', '<', '>'];
+    ':', '+', '%', '*', '(', ')', ';', '=', '{', '}', '[', ']', '{', '}', '<', '>'];
 
 type
   TDateOrder = (doMDY, doDMY, doYMD);
@@ -255,8 +364,6 @@ const
   CenturyOffset: Byte = 60;
   NullDate: TDateTime = {-693594} 0;
 
-type
-  TCharSet = TSysCharSet;
 const
   DigitChars = ['0'..'9'];
   Brackets = ['(', ')', '[', ']', '{', '}'];
@@ -286,11 +393,9 @@ const
 // from JvListView.pas
 type
   TJvSortMethod = (smAutomatic, smAlphabetic, smNonCaseSensitive, smNumeric, smDate, smTime, smDateTime, smCurrency);
-  TJvListViewColumnSortEvent = procedure (Sender: TObject; Column: integer; var AMethod:TJvSortMethod) of object;
+  TJvListViewColumnSortEvent = procedure(Sender: TObject; Column: Integer; var AMethod:TJvSortMethod) of object;
 
 implementation
 
 end.
-
-
 
