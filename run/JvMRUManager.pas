@@ -33,8 +33,14 @@ unit JvMRUManager;
 interface
 
 uses
-  Windows, SysUtils, Classes, Menus, Graphics,
-  JvAppStorage, JvComponent, JvFormPlacement;
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Menus, Graphics, Controls, Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Qt, QMenus, QGraphics, QControls, QForms, Types, QWindows,
+  {$ENDIF VisualCLX}
+  JvFormPlacement, JvAppStorage, JvComponent;
 
 type
   TJvRecentStrings = class;
@@ -187,8 +193,9 @@ type
 implementation
 
 uses
-  Forms, Controls, Math,
-  JvJVCLUtils, JvTypes, JvResources, JclFileUtils;
+  Math,
+  JclFileUtils,
+  JvJVCLUtils, JvTypes, JvResources;
 
 const
   siRecentItem = 'Item_%d';
@@ -788,7 +795,14 @@ begin
   if MaxLength > 0 then
   begin
     if not StartEllipsis then
-      Result := PathCompactPath(GetCanvas.Handle, S, GetCanvas.TextWidth('n') * MaxLength, cpCenter)
+      Result := PathCompactPath(
+        {$IFDEF VCL}
+        GetCanvas.Handle,
+        {$ENDIF VCL}
+        {$IFDEF VisualCLX}
+        QPainter_handle(GetCanvas.Handle),
+        {$ENDIF VisualCLX}
+        S, GetCanvas.TextWidth('n') * MaxLength, cpCenter)
     else if Length(S) > MaxLength then
       Result := '...' + Copy(S, Length(S) - MaxLength + 1, MaxInt);
   end;

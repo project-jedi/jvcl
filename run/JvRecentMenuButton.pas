@@ -31,9 +31,9 @@ unit JvRecentMenuButton;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls,
-  StdCtrls, Menus, ShellApi,
-  JvButton, JvDirectories, JvTypes, JvJVCLUtils;
+  Windows, ShellApi, SysUtils, Classes,
+  Graphics, Controls, StdCtrls, Menus,
+  JvButton, JvComputerInfoEx, JvTypes, JvJVCLUtils;
 
 // (rom) best separate out a TJvRecentPopupMenu
 
@@ -41,7 +41,7 @@ type
   TJvRecentMenuButton = class(TJvCustomButton)
   private
     FPopup: TPopupMenu;
-    FDirs: TJvDirectories;
+    FDirs: TJvSystemFolders;
     FOnLinkClick: TJvLinkClickEvent;
     FOnPopup: TNotifyEvent;
     procedure UrlClick(Sender: TObject);
@@ -73,7 +73,7 @@ var
   It: TMenuItem;
 begin
   inherited Create(AOwner);
-  FDirs := TJvDirectories.Create(Self);
+  FDirs := TJvSystemFolders.Create;
 
   //Create Popup
   FPopup := TPopupMenu.Create(Self);

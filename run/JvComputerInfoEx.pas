@@ -34,6 +34,7 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvComputerInfoEx;
 
@@ -42,7 +43,14 @@ unit JvComputerInfoEx;
 interface
 
 uses
-  Windows, Messages, Classes, SysUtils, Controls, Graphics, ShlObj,
+  Classes, SysUtils,
+  {$IFDEF VCL}
+  Controls, Graphics,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Qt, QControls, QGraphics,
+  {$ENDIF VisualCLX}
+  Windows, Messages, ShlObj, 
   JclWin32, JclSysInfo,
   JvJCLUtils, JvDataProvider, JvTypes, JvComponent;
 
@@ -1397,7 +1405,10 @@ begin
 end;
 
 procedure UpdateToLogFont(AFont: TFont; var LogFont: TLogFont);
+{$IFDEF VisualCLX}
+{$ENDIF VisualCLX}
 begin
+  {$IFDEF VCL}
   with LogFont do
   begin
     StrCopy(lfFaceName, PChar(AFont.Name));
@@ -1411,6 +1422,10 @@ begin
     lfUnderline := Ord(fsUnderline in AFont.Style);
     lfStrikeOut := Ord(fsStrikeOut in AFont.Style);
   end;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  GetObject(QFont_handle(AFont.Handle), SizeOf(LogFont), @LogFont);
+  {$ENDIF VisualCLX}
 end;
 
 procedure RaiseReadOnly(AlwaysRaise: Boolean = False);

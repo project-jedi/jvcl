@@ -54,8 +54,8 @@ unit JvComputerInfo;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Registry, MMSystem,
-  JvComponent;
+  Windows, SysUtils, Classes, Registry, MMSystem,
+  JvComponent, JvTypes;
 
 type
   TJvComputerInfo = class(TObject)

@@ -33,13 +33,13 @@ interface
 uses
   Windows, SysUtils, Classes, Graphics, Controls,
   StdCtrls, Menus, ShellAPI, ImgList,
-  JvTypes, JvButton, JvDirectories, JvJVCLUtils;
+  JvTypes, JvButton, JvComputerInfoEx, JvJVCLUtils;
 
 type
   TJvFavoritesButton = class(TJvCustomButton)
   private
     FPopup: TPopupMenu;
-    FDirs: TJvDirectories;
+    FDirs: TJvSystemFolders;
     FImages: TImageList;
     FOnUrlClick: TJvLinkClickEvent;
     FOnPopup: TNotifyEvent;
@@ -69,7 +69,7 @@ var
   It: TMenuItem;
 begin
   inherited Create(AOwner);
-  FDirs := TJvDirectories.Create(Self);
+  FDirs := TJvSystemFolders.Create;
 
   //Create Popup
   FPopup := TPopupMenu.Create(Self);
@@ -90,7 +90,7 @@ begin
   FImages.DrawingStyle := dsTransparent;
   FImages.Masked := True;
   FPopup.Images := FImages;
-  AddIconFrom(FDirs.WindowsDirectory);
+  AddIconFrom(FDirs.Windows);
 end;
 
 destructor TJvFavoritesButton.Destroy;

@@ -32,16 +32,20 @@ interface
 
 uses
   Windows, SysUtils, Classes, Graphics, Controls, Menus, ImgList,
-  JvTypes, JvButton, JvDirectories;
+  JvTypes, JvButton, JvComputerInfoEx;
 
 type
-  TJvStartMenuOption = (smCurrentUser, smCommon, smAllUsers);
+  TJvStartMenuOption = (smCurrentUser, smCommon);
   TJvStartMenuOptions = set of TJvStartMenuOption;
 
+const
+  smAllUsers = smCommon;
+
+type
   TJvStartMenuButton = class(TJvCustomButton)
   private
     FPopup: TPopupMenu;
-    FDirs: TJvDirectories;
+    FDirs: TJvSystemFolders;
     FOnLinkClick: TJvLinkClickEvent;
     FOnPopup: TNotifyEvent;
     FImages: TImageList;
@@ -74,7 +78,7 @@ var
   It: TMenuItem;
 begin
   inherited Create(AOwner);
-  FDirs := TJvDirectories.Create(Self);
+  FDirs := TJvSystemFolders.Create;
   FOptions := [smCurrentUser..smAllUsers];
   //Create Popup
   FPopup := TPopupMenu.Create(Self);
@@ -94,7 +98,7 @@ begin
   FImages.Height := 16;
   FImages.DrawingStyle := dsTransparent;
   FPopup.Images := FImages;
-  AddIconFrom(FDirs.WindowsDirectory);
+  AddIconFrom(FDirs.Windows);
 end;
 
 destructor TJvStartMenuButton.Destroy;
@@ -161,8 +165,6 @@ begin
     DynBuild(FPopup.Items, FDirs.StartMenu);
   if smCommon in Options then
     DynBuild(FPopup.Items, FDirs.CommonStartMenu);
-  if smAllUsers in Options then
-    DynBuild(FPopup.Items, FDirs.AllUsersStartMenu);
 end;
 
 procedure TJvStartMenuButton.DynBuild(Item: TMenuItem; Directory: string);

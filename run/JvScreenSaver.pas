@@ -52,8 +52,6 @@ type
 
 implementation
 
-// (rom) moved from Create to Loaded. None of the events can be assigned otherwise.
-
 procedure TJvScreenSaver.Loaded;
 var
   S: string;

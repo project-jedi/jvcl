@@ -19,11 +19,12 @@
     <Package Name="vclx" Targets="C6,C6p,D7,D7p" Condition=""/>
     <Package Name="vcljpg" Targets="D7,D7p" Condition=""/>
     <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
-    <Package Name="dclstd" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="dclstd" Targets="C6,C6p,D6,D6p,D7,D7p,d7clx" Condition=""/>
+    <Package Name="clxdesigner" Targets="allclx" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvMinMaxForm.pas" Targets="allbutclx" Formname="MinMaxInfoEditDialog" Condition=""/>
-    <File Name="..\..\design\JvPerfStatEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvPerfStatEditor.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\design\JvSystemReg.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\qdesign\JvQSystemReg.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvTimerListEditor.pas" Targets="all" Formname="" Condition=""/>
