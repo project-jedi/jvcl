@@ -118,7 +118,7 @@ type
     procedure PopupMenuGetItemParams(Sender: TMenu; Item: TMenuItem;
       State: TMenuOwnerDrawState; AFont: TFont; var Color: TColor;
       var Graphic: TGraphic; var NumGlyphs: Integer);
-    procedure PopupMenuDrawMargin(Sender: TMenu; Rect: TRect);
+//    procedure PopupMenuDrawMargin(Sender: TMenu; Rect: TRect);
     procedure RXWebSite1Click(Sender: TObject);
   private
     { Private declarations }
@@ -380,7 +380,7 @@ begin
   end;
 end;
 
-procedure TMainForm.PopupMenuDrawMargin(Sender: TMenu; Rect: TRect);
+{procedure TMainForm.PopupMenuDrawMargin(Sender: TMenu; Rect: TRect);
 const
   Txt = 'RXLib';
 begin
@@ -396,6 +396,6 @@ begin
   SetBkMode(PopupMenu.Canvas.Handle, TRANSPARENT);
   ExtTextOut(PopupMenu.Canvas.Handle, Rect.Left, Rect.Bottom - 5, ETO_CLIPPED,
     @Rect, Txt, Length(Txt), nil);
-end;
+end;}
 
 end.

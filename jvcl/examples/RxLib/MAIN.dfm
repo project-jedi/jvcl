@@ -46,7 +46,7 @@ object MainForm: TMainForm
   TextHeight = 13
   object StatusPanel: TPanel
     Left = 0
-    Top = 207
+    Top = 210
     Width = 432
     Height = 20
     Align = alBottom
@@ -543,9 +543,7 @@ object MainForm: TMainForm
     ImageMargin.Bottom = 0
     ImageSize.Height = 0
     ImageSize.Width = 0
-    LeftMargin = 30
     Style = msOwnerDraw
-    OnDrawMargin = PopupMenuDrawMargin
     OnGetItemParams = PopupMenuGetItemParams
     Left = 60
     Top = 88
