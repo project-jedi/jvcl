@@ -31,7 +31,7 @@ Contributor(s):
     To disable GroupIndex, set it to -1)
   André Snepvangers [asn@xs4all.nl] ( clx compatible version )
 
-Last Modified: 2003-10-28
+Last Modified: 2004-01-29
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -81,8 +81,8 @@ type
     FStreamedSelLength: Integer;
     FStreamedSelStart: Integer;
     FUseFixedPopup: Boolean;
-    FAutoHint: boolean;
-    FOldHint:string;
+    FAutoHint: Boolean;
+    FOldHint: TCaption;
     {$IFDEF VisualCLX}
     FPasswordChar: Char;
     FNullPixmap: QPixmapH;
@@ -101,7 +101,7 @@ type
     {$ENDIF VCL}
     procedure SetGroupIndex(const Value: Integer);
     function GetFlat: Boolean;
-    procedure SetAutoHint(const Value: boolean);
+    procedure SetAutoHint(const Value: Boolean);
   protected
     procedure DoClipboardCut; override;
     procedure DoClipboardPaste; override;
@@ -121,7 +121,7 @@ type
     {$IFDEF VisualCLX}
     procedure Paint; override;
     procedure TextChanged; override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure KeyPress(var Key: Char); override;
     {$ENDIF VisualCLX}
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
@@ -131,7 +131,7 @@ type
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure SetFlat(Value: Boolean); virtual;
-    procedure UpdateAutoHint;dynamic;
+    procedure UpdateAutoHint; dynamic;
     procedure Resize; override;
   public
     function IsEmpty: Boolean;
@@ -144,7 +144,7 @@ type
     procedure Loaded; override;
   protected
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
-    property AutoHint:boolean read FAutoHint write SetAutoHint default false; 
+    property AutoHint: Boolean read FAutoHint write SetAutoHint default False; 
     property Caret: TJvCaret read FCaret write SetCaret;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property PasswordChar: Char read GetPasswordChar write SetPasswordChar;
@@ -522,15 +522,16 @@ end;
 
 procedure TJvCustomEdit.TextChanged;
 begin
-  //Update;
   inherited TextChanged;
   UpdateAutoHint;
 end;
 
-procedure TJvCustomEdit.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TJvCustomEdit.KeyPress(var Key: Char);
 begin
-  inherited MouseDown(Button, Shift, X, Y);
+  inherited KeyPress(Key);
+  UpdateAutoHint;
 end;
+
 {$ENDIF VisualCLX}
 
 procedure TJvCustomEdit.CaretChanged(Sender: TObject);
@@ -745,8 +746,8 @@ end;
 
 procedure TJvCustomEdit.UpdateAutoHint;
 var
-  C:TControlCanvas;
-  Size:TSize;
+  C: TControlCanvas;
+  Size: TSize;
 begin
   if AutoHint and HandleAllocated then
   begin
@@ -759,11 +760,16 @@ begin
     C := TControlCanvas.Create;
     try
       C.Control := self;
-      if GetTextExtentPoint32(C.Handle, PChar(Text), Length(Text),Size) then
+      {$IFDEF VCL}
+      if GetTextExtentPoint32(C.Handle, PChar(Text), Length(Text), Size) then
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      if GetTextExtentPoint32W(C.Handle, PWideChar(Text), Length(Text), Size) then
+      {$ENDIF VisualCLX}
       begin
         if (ClientWidth <= Size.cx) then
           Hint := Text
-        else 
+        else
           Hint := FOldHint;
       end
       else
@@ -774,7 +780,7 @@ begin
   end;
 end;
 
-procedure TJvCustomEdit.SetAutoHint(const Value: boolean);
+procedure TJvCustomEdit.SetAutoHint(const Value: Boolean);
 begin
   if FAutoHint <> Value then
   begin
@@ -789,7 +795,7 @@ end;
 
 procedure TJvCustomEdit.Resize;
 begin
-  inherited;
+  inherited Resize;
   UpdateAutoHint;
 end;
 
