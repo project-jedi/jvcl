@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-  <link type="text/css" href="styles/default.css" rel="STYLESHEET">
+  <link rel="STYLESHEET" href="styles/default.css" type="text/css">
   <title>Installation Notes for JVCL</title>
 </head>
 <body>
@@ -46,7 +46,7 @@ you have installed</li>
 C++ Builder). Delete all of the files related to JVCL and JCL</li>
   <li>Delete or rename the top folder where JCL and JVCL is installed</li>
   <li>Start regedit (click <b>Start - Run</b>, type "regedit.exe" and
-hit <b> Enter</b>). Open the key <font face="Courier New" size="2">HKEY_CURRENT_USER\Software\Borland\&lt;compiler&gt;\&lt;version&gt;\Palette</font>
+hit <b> Enter</b>). Open the key <font size="2" face="Courier New">HKEY_CURRENT_USER\Software\Borland\&lt;compiler&gt;\&lt;version&gt;\Palette</font>
 and delete all name/value items in the list related to JVCL.
 (&lt;compiler&gt; is either "Delphi" or "C++Builder", &lt;version&gt;
 is the IDE version you have installed)</li>
@@ -111,7 +111,7 @@ and try running install.bat again. </p>
 automatically and it should look something like this: </p>
 <p align="left">&nbsp;</p>
 <p align="left">
-<img height="561" width="729" src="images/installer_main.jpg" border="0"></p>
+<img border="0" src="images/installer_main.jpg" width="729" height="561"></p>
 <p align="left">&nbsp;</p>
 <p align="left">At the top left is a list of all installed and
 supported Delphi and C++Builder editions. Check the ones for which you
@@ -150,7 +150,7 @@ components are located on their default palette after installation.
 Recommended. </p>
   </li>
   <li dir="ltr">
-    <p dir="ltr" align="left"><b>Compile only (error check)</b> -
+    <p align="left" dir="ltr"><b>Compile only (error check)</b> -
 builds everything as specified but does not install anything into
 Delphi/BCB. Good for checking for errors before doing a real install. </p>
   </li>
@@ -171,8 +171,7 @@ disabled to make it work with these editions. </p>
   <li>
     <p align="left"><b>JCL</b> - displays the path to the JCL folder.
 If the displayed folder is wrong, click the ellipsis button to select
-another folder.
-    </p>
+another folder. </p>
   </li>
 </ul>
 <p align="left">&nbsp;</p>
@@ -184,12 +183,12 @@ file (in the \common folder) and displayed in the list, so they might
 differ from what is shown below if options have been added or removed
 since this dcument was written. Select an item to see it's explanation.
 Check an item to enable it, uncheck to disable it. </p>
-<p dir="ltr" align="left">&nbsp;</p>
-<p dir="ltr" align="left">
-<img height="422" width="750" src="images/installer_config_editor.jpg"
- border="0"></p>
-<p dir="ltr" align="left">&nbsp;</p>
-<p dir="ltr" align="left">These are the currently available options:</p>
+<p align="left" dir="ltr">&nbsp;</p>
+<p align="left" dir="ltr">
+<img border="0" src="images/installer_config_editor.jpg" width="750"
+ height="422"></p>
+<p align="left" dir="ltr">&nbsp;</p>
+<p align="left" dir="ltr">These are the currently available options:</p>
 <ul>
   <li>
     <p align="left"><b>JVCL_REGISTER_GLOBAL_DESIGNEDITORS </b>- if
@@ -197,7 +196,7 @@ enabled, registers property editors for common types so the property
 editor can be used with any component, not only those in JVCL. </p>
   </li>
   <li dir="ltr">
-    <p dir="ltr" align="left"><b>USEJVCL </b>- some packages
+    <p align="left" dir="ltr"><b>USEJVCL </b>- some packages
 (JvGlobus, JvUIB, JvTimeFramework, JvDocking, JvDotNet, JvXPCtrls,
 JvWizard) can be installed as "stand-alone" as well as a part of JVCL.
 If you only need a single package from the JVCL (like JvWizard),
@@ -212,14 +211,14 @@ with the JVCL strings is located in \devtools\po (\devtools is only
 included in the full JVCL install). </p>
   </li>
   <li dir="ltr">
-    <p dir="ltr" align="left"><b>DelphiPersonalEdition </b>- enable
+    <p align="left" dir="ltr"><b>DelphiPersonalEdition </b>- enable
 this define if you are using Delphi 5 Standard or one of the Delphi/BCB
 Personal Editions. The Standard and Personal Editions doesn't support
 all components included in JVCL (mostly database realted) and enabling
 this define will remove these components from the JVCL palettes. </p>
   </li>
   <li dir="ltr">
-    <p dir="ltr" align="left"><b>JVCLThemesEnabled </b>- enable this
+    <p align="left" dir="ltr"><b>JVCLThemesEnabled </b>- enable this
 define if you have Delphi 7 or want to use Mike Lischke's ThemeManager (<a
  href="http://www.lischke-online.de">http://www.lischke-online.de</a>).
 Note that even if you enable theme support, you still need a manifest
@@ -227,34 +226,33 @@ for your application and you will only see the effects of theming when
 running on Windows XP. </p>
   </li>
   <li dir="ltr">
-    <p dir="ltr" align="left"><b>USE_JV_GIF </b>- enable this define
+    <p align="left" dir="ltr"><b>USE_JV_GIF </b>- enable this define
 if you want to enable JVCL's GIF support. Disable if want to use
 another GIF library or don't want GIF support. </p>
   </li>
   <li dir="ltr">
-    <p dir="ltr" align="left"><b>USE_PROGESSBAR </b>- enable to use a
+    <p align="left" dir="ltr"><b>USE_PROGESSBAR </b>- enable to use a
 standard TProgressbar instead of a TGauge (from the Sample palette) in
 some components. </p>
   </li>
   <li dir="ltr">
-    <p dir="ltr" align="left"><b>USE_FOUR_DIGIT_YEAR </b>- controls
+    <p align="left" dir="ltr"><b>USE_FOUR_DIGIT_YEAR </b>- controls
 whether TDateEdit and descendants are forced to use four digit years in
 their display. When disabled, the ShortDateFormat is used to determine
 the number of year digits. </p>
   </li>
   <li dir="ltr">
-    <p dir="ltr" align="left"><b>DEFAULT_POPUP_CALENDAR </b>- enable
+    <p align="left" dir="ltr"><b>DEFAULT_POPUP_CALENDAR </b>- enable
 to use a popup calendar in TDateEdit and descendants. If disabled, uses
 a modal dialog instead. </p>
   </li>
   <li dir="ltr">
-    <p dir="ltr" align="left"><b>TIMEBLOCKS </b>- used by the
+    <p align="left" dir="ltr"><b>TIMEBLOCKS </b>- used by the
 JvTimeFramework components and should be enabled unless you have very
-specific reason not to (see JvTFDays.pas for more info).
-    </p>
+specific reason not to (see JvTFDays.pas for more info). </p>
   </li>
 </ul>
-<p dir="ltr" align="left">&nbsp;</p>
+<p align="left" dir="ltr">&nbsp;</p>
 <p align="left">Fillling up most of the installer window is a list of
 all available design packages. To see the run-time packages as well,
 check the "<b>Show runtime packages</b>" at the top right. Note that
@@ -297,7 +295,7 @@ what
 you want!). We recommend but do not require that the JCL and JVCL
 folders should be created as siblings, i.e the
 folder structure looks like this:</p>
-<p><font size="2" face="Courier New">JEDI<br>
+<p><font face="Courier New" size="2">JEDI<br>
 &nbsp; JCL<br>
 &nbsp;&nbsp;&nbsp; &lt;JCL subfolders&gt;<br>
 &nbsp; JVCL<br>
@@ -353,7 +351,8 @@ JVCL\common to the Library path.</p>
 the DCU's unless you recompile the packages, so compiling your
 application should be faster. To add the DCU folder location, select <b>Tools-Environment
 Options-Library</b> and add JVCL\lib\XX (where XX is your version
-of Delphi or BCB, i.e for Delphi 6, it's "d6", for BCB 5 it's "c5") and JVCL\common (for the INC
+of Delphi or BCB, i.e for Delphi 6, it's "d6", for BCB 5 it's "c5") and
+JVCL\common (for the INC
 files) to the Library path. If you still want to be able to open the
 JVCL source files in the IDE, add JVCL\run (and maybe even JVCL\design)
 to the Browsing Path list.</p>
@@ -391,7 +390,7 @@ you want!). </p>
 the same base folder as JVCL, but we do recommend that the JCL and JVCL
 folders are created as siblings, i.e the folder structure should look
 like this:</p>
-<p><font size="2" face="Courier New">JEDI<br>
+<p><font face="Courier New" size="2">JEDI<br>
 &nbsp; JCL<br>
 &nbsp;&nbsp;&nbsp; &lt;JCL subfolders&gt;<br>
 &nbsp; JVCL<br>
@@ -574,14 +573,15 @@ are in JVCL\run)</li>
 2) You don't want to copy all the header and resource files in your
 installation directory. Then you need to add the JVCL paths to
 C++&nbsp;Builder's
-environment paths but this has an big drawback: You won't be able to
-easily share your project(s) with people who installed the JVCL in a
-different directory. <br>
+environment paths but this has a big drawback: You will have to ask
+people using your sources to setup their installation of C++ Builder so
+that it defines the environment variables mentionned hereafter. <br>
 </p>
 <p>All you need to do is start C++&nbsp;Builder and select <span
  style="font-weight: bold;">File-Close All</span>. <br>
 </p>
-Then in the <span style="font-weight: bold;">Environment Variables</span>
+Select <span style="font-weight: bold;">Tools-Environment Options</span>,
+then in the <span style="font-weight: bold;">Environment Variables</span>
 tab, in the <span style="font-weight: bold;">User overrides</span>
 section, click <span style="font-weight: bold;">New...</span> , set
 the variable name to INCLUDEPATH and its value to
@@ -603,7 +603,7 @@ packages, not resource or include files.<br>
 Unfortunately, the concept of Environment variables overrides doesn't
 exists under C++ Builder 5. You will then have to create two
 environment
-variables, called INCLUDEPATH and RESPATH, and set thel to the same
+variables, called INCLUDEPATH and RESPATH, and set them to the same
 value as mentionned
 before. Under Windows 2000 and XP, this is done
 by opening the 'System properties' applet from the 'Control panel'. You
@@ -616,10 +616,11 @@ to
 apply to yourself or all users, create the INCLUDEPATH variable for in
 of the
 two list and click the related 'New' button. Enter INCLUDEPATH as the
-name and use the value mentionned earlier. Click Ok once and repeat to
+name and use the value mentionned earlier. Click Ok once and repeat the
+previous steps to
 create the RESPATH environment variable. Click
 on Ok buttons until the 'System properties' applet is closed.
-C++&nbsp;Builder 5 will only take this change into account once
+C++&nbsp;Builder 5 will only take these changes into account once
 restarted.
 <p>Finally,
 and whatever version of C++ Builder you are using, ensure you have
@@ -637,7 +638,7 @@ and this path to the Library paths:<br>
 </ul>
 <br>
 Any new project you create will work directly. However, if you want to
-share a project, then all you have to do is ask your users to define
+share a project, then you have to ask your users to define
 the INCLUDEPATH and RESPATH Environment variable overrides and set them
 to the correct
 values.
@@ -649,8 +650,10 @@ link the project.<br>
 <br>
 <p>In both cases, if you want to be able to open the JVCL source files
 in the IDE by
-using the navigation shorctuts, add those paths to the Browsing Path
-list in the Library tab of Tools-Environment Options:<br>
+using the navigation shorctuts, add those paths to the <span
+ style="font-weight: bold;">Browsing Path</span>
+list in the <span style="font-weight: bold;">Library</span> tab of <span
+ style="font-weight: bold;">Tools-Environment Options</span>:<br>
 </p>
 <ul>
   <li>JCL\source\common</li>
