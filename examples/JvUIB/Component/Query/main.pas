@@ -33,7 +33,7 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  Query.Params.AsInteger[0] := 623;
+  Query.Params.ByNameAsInteger['Dept'] := 623;
   Query.Open;
   memo.Clear;
   while not Query.EOF do
@@ -45,6 +45,7 @@ begin
          ByNameAsCurrency['SALARY']]));
       Next;
     end;
+  memo.Lines.Add(Query.Plan);  
   Query.Close(etmCommit);
 
 end;

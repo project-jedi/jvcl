@@ -48,9 +48,10 @@ object MainForm: TMainForm
       'user_name=SYSDBA'
       'sql_dialect=3'
       'lc_ctype=NONE')
-    DatabaseName = 'd:\employee.gdb'
+    DatabaseName = 'd:\employee.db'
     UserName = 'SYSDBA'
     PassWord = 'masterkey'
+    LibraryName = 'gds32.dll'
     Left = 16
     Top = 8
   end

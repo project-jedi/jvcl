@@ -59,6 +59,7 @@ begin
   WriteString(SQL);
   EndWrite;
   ReadStream(Stream, True);
+  Stream.Seek(0, soFromBeginning);
   Result := ReadInteger;
 end;
 

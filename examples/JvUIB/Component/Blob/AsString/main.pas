@@ -57,7 +57,7 @@ procedure TForm1.Button2Click(Sender: TObject);
 var Str: String;
 begin
   Str := Description.Text;
-  UpdateQuery.ParamsSetBlob(0, Str);
+  UpdateQuery.ParamsSetBlob('description', Str);
   UpdateQuery.ExecSQL;
   UpdateQuery.Close(etmCommit);
 

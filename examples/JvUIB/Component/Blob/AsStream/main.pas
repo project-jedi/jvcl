@@ -59,8 +59,8 @@ begin
   begin
     Stream := TFileStream.Create(OpenDialog.FileName, fmOpenRead);
     try
-      Query.SQL.Text := 'UPDATE TBLOB SET STREAM = ?';
-      Query.ParamsSetBlob(0, Stream);
+      Query.SQL.Text := 'UPDATE TBLOB SET STREAM = :blob';
+      Query.ParamsSetBlob('blob', Stream);
       Query.ExecSQL;
     finally
       Stream.Free;

@@ -52,6 +52,7 @@ object Form1: TForm1
     DatabaseName = 'd:\employee.db'
     UserName = 'SYSDBA'
     PassWord = 'masterkey'
+    LibraryName = 'gds32.dll'
     Left = 104
   end
   object Transaction: TJvUIBTransaction
@@ -60,11 +61,11 @@ object Form1: TForm1
   end
   object Query: TJvUIBQuery
     Transaction = Transaction
+    CachedFetch = False
     SQL.Strings = (
       
         'SELECT FIRST_NAME, LAST_NAME, SALARY FROM EMPLOYEE WHERE DEPT_NO' +
-        ' = ?')
-    CachedFetch = False
+        ' = :dept')
     Left = 168
   end
 end
