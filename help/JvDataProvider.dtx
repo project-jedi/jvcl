@@ -1,95 +1,314 @@
+##Locked by: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@JvDataProvider.pas
 <GROUP JVCL.FileRef>
 Summary
-  Contains the TJvDataProvider component.
+  Contains the interface declarations of the DataProvider mechanism.
 <INCLUDE JVCL.UnitText.dtx>
 Author
-  
+  Marcel BEstebroer, Remko Bonter, Peter Th'"ornqvist
 ----------------------------------------------------------------------------------------------------
 @@TClassArray
 <TITLE TClassArray type>
 Summary
-  Write here a summary (1 line)
+  Dynamic TClass array.
 Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = array of TClass ; - for reference)
+  TClassArray is a dynamic array of TClass pointers (class references). It's used primarily for the
+  IJvDataProvider.ConsumerClasses method to retrieve a list of consumer services to instantiate.
+See Also
+  IJvDataProvider.ConsumerClasses
 ----------------------------------------------------------------------------------------------------
 @@TDataItemState
 <TITLE TDataItemState type>
 Summary
-  Write here a summary (1 line)
+  Type used to specify the state of a Data Item.
 Description
-  Write here a description
+  The TDataItemState type ise used to specify a specific state for a Data Item. For each setting
+  (Enabled, Visible and Checked) this type specifies if that settings is off, on, indetermined or
+  not used.
 @@TDataItemState.disFalse
-  Description for disFalse
+  Specifies the setting is False or 'off'.
 @@TDataItemState.disTrue
-  Description for disTrue
+  Specifies the setting is True or 'on'.
 @@TDataItemState.disIndeterminate
-  Description for disIndeterminate
+  Specifies the setting is 'indetermined' (neither False/off nor True/on).
 @@TDataItemState.disNotUsed
-  Description for disNotUsed
+  Specifies the setting is not used by this item.
 ----------------------------------------------------------------------------------------------------
 @@TDataProviderChangeReason
 <TITLE TDataProviderChangeReason type>
 Summary
-  Write here a summary (1 line)
+  Type used to specify the change reason.
 Description
-  Write here a description
+  The TDataProviderChangeReason type is used to specify the reason why the
+  ProviderChanging/ProviderChanged methods are called.
 @@TDataProviderChangeReason.pcrAdd
-  Description for pcrAdd
+  An item is about to be added or has just been added. The Source parameter will refer to the
+  IJvDataItems where the item is about to be added to (DataProviderChanging) or refers to the
+  IJvDataItem that has just been added (DataProviderChanged).
 @@TDataProviderChangeReason.pcrDelete
-  Description for pcrDelete
+  An item is about to be deleted or has just been deleted. The Source parameter will refer to the
+  IJvDataItem that is about to be deleted (DataProviderChanging) or refers to the IJvDataItems where
+  the item has been just removed from (DataProviderChanging). Note that any sub items are implicitly
+  also deleted, but there will be no additional calls to DataProviderChanging/DataProviderChanged
+  for them.
 @@TDataProviderChangeReason.pcrUpdateItem
-  Description for pcrUpdateItem
+  An item is about to be changed or has just been changed. The Source parameter will refer to the
+  IJvDataItem that is about to change or has just changed. In general this change reason means that
+  one of the item's properties is changing, which also includes the properties of support
+  interfaces.
 @@TDataProviderChangeReason.pcrUpdateItems
-  Description for pcrUpdateItems
+  An item list is about to be changed or has just been changed. The Source parameter will refer to
+  the IJvDataItems that is about to change or has just changed. In general this change reason means
+  that either the items list is about to be cleared (or has been cleared) or any of the items list
+  support interface's properties is changing (or has changed).
 @@TDataProviderChangeReason.pcrDestroy
-  Description for pcrDestroy
+  The IJvDataProvider is destroying. This reason will only occur in the DataProviderChanging
+  notification.
+@@TDataProviderChangeReason.pcrContextAdd
+  A context is about to be added or has just been added. Source refers to the context the new
+  context is added to (or nil if the context is added at the root) or the context that has just been
+  added.
+@@TDataProviderChangeReason.pcrContextDelete
+  A context is about to be deleted or has just been deleted. Source refers to the context about to
+  be deleted or the context where a context has just been removed from (or nil if a context at the
+  root was deleted).
+@@TDataProviderChangeReason.pcrContextUpdate
+  A context is about to be changed or has just been changed. Source refers to the context changing
+  or changed. It usually signals the context name is changing or has changed.
 ----------------------------------------------------------------------------------------------------
 @@TJvDataContextID
 <TITLE TJvDataContextID type>
 Summary
-  Write here a summary (1 line)
+  Type used to link the context selection editor to.
 Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = type string ; - for reference)
+  The TJvDataContextID type is used in the consumer services to allow linking a design time editor
+  to the Context property.
 ----------------------------------------------------------------------------------------------------
 @@TJvDataItemID
 <TITLE TJvDataItemID type>
 Summary
-  Write here a summary (1 line)
+  Type used to link the item selection editor to.
 Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = type string ; - for reference)
+  The TJvDataItemID type is used in the consumer services to allow linking a design time editor to
+  the Item property.
 ----------------------------------------------------------------------------------------------------
 @@TProviderDrawState
 <TITLE TProviderDrawState type>
 Summary
-  Write here a summary (1 line)
+  Type used to specify the draw state for the provider based rendering mechanism.
 Description
-  Write here a description
+  The TProviderDrawState type is used to specify the draw state for the provider based rendering
+  mechanism. It mostly follows the TOwnerDrawState type but adds a 'hot' state to the values.
 @@TProviderDrawState.pdsSelected
-  Description for pdsSelected
+  The item is currently selected.
 @@TProviderDrawState.pdsGrayed
-  Description for pdsGrayed
+  The item is grayed out.
 @@TProviderDrawState.pdsDisabled
-  Description for pdsDisabled
+  The item is disabled.
 @@TProviderDrawState.pdsChecked
-  Description for pdsChecked
+  The item is checked.
 @@TProviderDrawState.pdsFocused
-  Description for pdsFocused
+  The item has the focus.
 @@TProviderDrawState.pdsDefault
-  Description for pdsDefault
+  The item is the default item.
 @@TProviderDrawState.pdsHot
-  Description for pdsHot
+  The item is hot (i.e. the mouse is hovering over it).
 ----------------------------------------------------------------------------------------------------
 @@TProviderDrawStates
 <TITLE TProviderDrawStates type>
 <COMBINE TProviderDrawState>
+----------------------------------------------------------------------------------------------------
+@@IJvDataProvider
+Summary
+  Main Data Provider interface.
+Description
+  IJvDataProvider is the main Data Provider interface. A component that is to function as a Data
+  Provider should always support this interface.
+  The interface provides methods that:
+  * allows registration/unregistration of change notifications
+  * allows retrieval of the root items list.
+  * allows change notification (both before and after changing)
+  * selection of current consumer/context
+  * various administrative tasks (destruction of consumer, specification of consumer service
+    extensions, allow provider designer and/or context manager).
+  Although any component could function as a Data Provider, it's often wise to use the JVCL provided
+  base classes (in the JvDataProviderImpl unit) to write new Data Providers as these classes deal
+  with most of the basics of the Data Provider mechanism so you can focus on writing the actual
+  provider.
+----------------------------------------------------------------------------------------------------
+@@IJvDataProvider.RegisterChangeNotify
+Summary
+  Register a change notification callback interface.
+Description
+  RegisterChangeNotify is used to register a IJvDataProviderNotify interface. The methods of this
+  interface are called in response to changes at the provider. Usually the IJvDataProviderNotify
+  interface is handled by the consumer to update it's control as needed.
+Parameters
+  ANotify - Notification interface to register. If the specified reference is already registered,
+            nothing will happen.
+See Also
+  UnregisterChangeNotify, IJvDataProviderNotify
+----------------------------------------------------------------------------------------------------
+@@IJvDataProvider.UnregisterChangeNotify
+Summary
+  Unregister a change notification callback interface.
+Description
+  UnregisterChangeNotify is used to unregister a IJvDataProviderNotify interface.
+Parameters
+  ANotify - Notification interface to unregister. If the specified reference is not registered,
+            nothing will happen.
+See Also
+  RegisterChangeNotify, IJvDataProviderNotify
+----------------------------------------------------------------------------------------------------
+@@IJvDataProvider.GetItems
+Summary
+  Retrieves the list of root items.
+Description
+  GetItems retrieves the IJvDataItems instance containing the list of root items. Each Data Provider
+  has to have an IJvDataItems instance so you can safely assume that GetItems will never return a
+  nil reference.
+
+  Note that it's common for the IJvDataProvider instance to support the IJvDataItems interface as
+  well. This means that if dpvMe contains a reference to IJvDataProvider that:
+<CODE>
+  dpvMe.QueryInterface(IJvDataItems, disRoot)
+</CODE>
+  will be the same as:
+<CODE>
+  disRoot := dpvMe.GetItems
+</CODE>
+See Also
+  IJvDataItems
+----------------------------------------------------------------------------------------------------
+@@IJvDataProvider.Changing
+Summary
+  Will notify all registered notifiers a change is about to occur.
+Description
+  Call Changing to notify all registered change notifiers (IvDataProviderNotify instances registered
+  by a call to RegisterChangeNotify) a change is about to occur.
+Parameters
+  ChangeReason  - Reason why the change notification is used.
+  Source  -       Reference to an interface instance linked to the change. See the description of
+                  TDataProviderChangeReason to see the expected interface instances in each case.
+See Also
+  Changed, RegisterChangeNotify, IJvDataProviderNotify
+----------------------------------------------------------------------------------------------------
+@@IJvDataProvider.Changed
+Summary
+  Will notify all registered notifiers a change has occured.
+Description
+  Call Changed to notify all registered change notifiers (IvDataProviderNotify instances registered
+  by a call to RegisterChangeNotify) a change has occured.
+Parameters
+  ChangeReason  - Reason why the change notification is used.
+  Source  -       Reference to an interface instance linked to the change. See the description of
+                  TDataProviderChangeReason to see the expected interface instances in each case.
+See Also
+  Changing, RegisterChangeNotify, IJvDataProviderNotify
+----------------------------------------------------------------------------------------------------
+@@IJvDataProvider.ConsumerClasses
+Summary
+  Retrieves a list of consumer service extension classes needed by the provider.
+Description
+  ConsumerClasses will retrieve a list of consumer service extension classes the provider needs to
+  be used properly.
+  
+  The list may be depending on the currently selected consumer and/or context, e.g. a consumer that
+  can only handle a single item at a time will require a consumer service extension that allows the
+  application developer to select the item to use.
+----------------------------------------------------------------------------------------------------
+@@IJvDataProvider.SelectConsumer
+Summary
+  Selects a new consumer.
+Description
+  SelectConsumer selects a new consumer as the active consumer. The current consumer is pushed onto
+  a stack. Use ReleaseConsumer to return to it. When the provider is created no consumer is
+  selected.
+See Also
+  SelectedConsumer, ReleaseConsumer, SelectContext
+----------------------------------------------------------------------------------------------------
+@@IJvDataProvider.SelectedConsumer
+Summary
+  Returns the last selected (currently active) consumer.
+Description
+  SelectedConsumer returns the currently active consumer. If no consumer is active it will return
+  nil.
+See Also
+  SelectConsumer, ReleaseConsumer, SelectedContext
+----------------------------------------------------------------------------------------------------
+@@IJvDataProvider.ReleaseConsumer
+Summary
+  Deselects the current consumer, reselecting any previous selected consumer.
+Description
+  ReleaseConsumer deselects the currently active consumer, reactivating the consumer that was active
+  before it.
+See Also
+  SelectConsumer, SelectedConsumer, ReleaseContext
+----------------------------------------------------------------------------------------------------
+@@IJvDataProvider.SelectContext
+Summary
+  Selects a new context.
+Description
+  SelectContext selects a new context as the active context. The current context is pushed onto
+  a stack. Use ReleaseContext to return to it. When the provider is created no context is
+  selected.
+See Also
+  SelectedContext, ReleaseContext, SelectConsumer
+----------------------------------------------------------------------------------------------------
+@@IJvDataProvider.SelectedContext
+Summary
+  Returns the last selected (currently active) context.
+Description
+  SelectedContext returns the currently active context. If no context is active it will return
+  nil.
+See Also
+  SelectContext, ReleaseContext, SelectedConsumer
+----------------------------------------------------------------------------------------------------
+@@IJvDataProvider.ReleaseContext
+Summary
+  Deselects the current context, reselecting any previous selected context.
+Description
+  ReleaseContext deselects the currently active context, reactivating the context that was active
+  before it.
+See Also
+  SelectContext, SelectedContext, ReleaseConsumer
+----------------------------------------------------------------------------------------------------
+@@IJvDataProvider.ContextDestroying
+Summary
+  Called when a context is about to be destroyed.
+Description
+  ContextDestroying is called whenever a context is about to be destroyed. It's generally used to
+  notify all items a specific context (and all of it's child contexts) will be no longer available
+  so context specific data for these items can be destroyed. Usually this will be done by
+  redirecting the call to the root items list (GetItems). In addition ContextDestroying will clean
+  up the selected context stack and nilling any reference to the context and/or any of it's child
+  contexts (they are not removed from the stack as a ReleaseContext may follow later).
+----------------------------------------------------------------------------------------------------
+@@IJvDataProvider.ConsumerDestroying
+Summary
+  Called when a consumer is about to be destroyed.
+Description
+  ConsumerDestroying is called whenever a consumer that used this provider is about to be destroyed.
+  It's generally used to clean-up the selected consumer stack and making any reference to that
+  consumer nil (it will not remove the references from the stack, as it might be possible a
+  ReleaseConsumer call will follow it later).
+----------------------------------------------------------------------------------------------------
+@@IJvDataProvider.AllowProviderDesigner
+Summary
+  Specifies if the provider allows it's tree to be designed at design time.
+Description
+  AllowProviderDesigner signals if the provider allows it's tree to be designed at design time. It's
+  used by the component editor to enable/disable the 'Tree designer...' menu item.
+See Also
+  AllowContextManager
+----------------------------------------------------------------------------------------------------
+@@IJvDataProvider.AllowContextManager
+Summary
+  Specifies if the provider allows it's contexts to be managed at design time.
+Description
+  AllowContextManager signals if the provider allows it's context tree to be designed at design
+  time. It's used by the component editor to enable/disable the 'Context manager...' menu item.
+See Also
+  AllowProviderDesigner
+
