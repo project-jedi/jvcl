@@ -41,6 +41,7 @@ type
     FSelected: Boolean;
     FWasCovered: Boolean;
     FAlignment: TAlignment;
+    FRightClickSelect: boolean;
     function GetCanProcessMouseMsg: Boolean;
   protected
     procedure SetCaption(Value: TJvTextShape); virtual;
@@ -74,9 +75,13 @@ type
     property Selected: Boolean read FSelected write SetSelected;
   published
     property Caption: TJvTextShape read FCaption write SetCaption;
+    property RightClickSelect:boolean read FRightClickSelect write FRightClickSelect default true;
 
     // Make these properties available
     property PopupMenu;
+    property OnMouseDown;
+    property OnMouseUp;
+    property OnMouseMove;
     property OnClick;
     property OnDblClick;
   end;
@@ -409,6 +414,8 @@ var
 begin {Create}
   inherited Create(AOwner);
   FCanProcessMouseMsg := True;
+  FRightClickSelect := true;
+
   FCaption := nil;
   FSelected := False;
   FWasCovered := False;
@@ -552,6 +559,8 @@ begin {MouseDown}
   if CanProcessMouseMsg then
   begin
     BringToFront;
+    if RightClickSelect then
+      Selected := true;
     MouseCapture := True;
     inherited MouseDown(Button, Shift, X, Y);
     Exit;
