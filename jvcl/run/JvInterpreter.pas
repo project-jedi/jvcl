@@ -198,6 +198,9 @@ const
   // (rom) added
   cJvInterpreterStackMax = 199;
 
+  {Max avalaible dimension for arrays}
+  JvInterpreter_MAX_ARRAY_DIMENSION = 10;
+
 type
   { argument definition }
   PValueArray = ^TValueArray;
@@ -383,19 +386,119 @@ type
 
   //dejoy change begin
   //move from implementation section to  interface section
+  TParamCount = -1..cJvInterpreterMaxArgs;
+
+  TCallConvention = set of (ccFastCall, ccStdCall, ccCDecl, ccDynamic,
+    ccVirtual, ccClass);
+
+  { Adapter classes - translates data from JvInterpreter calls to Delphi functions }
+  TJvInterpreterSrcUnit = class(TJvInterpreterIdentifier)
+  private
+    FSource: string;
+    FUsesList: TNameArray;
+  public
+    property Source: string read FSource;
+    property UsesList: TNameArray read FUsesList;
+  end;
+
+  TJvInterpreterMethod = class(TJvInterpreterIdentifier)
+  protected
+    FClassType: TClass;
+    ParamCount: TParamCount;
+    ParamTypes: TTypeArray; { varInteger, varString, .. }
+    ResTyp: Word; { varInteger, varString, .. }
+    Func: Pointer; { TJvInterpreterAdapterGetValue or TJvInterpreterAdapterSetValue }
+  end;
+
+  TJvInterpreterIntfMethod = class(TJvInterpreterIdentifier)
+  protected
+    IID: TGUID;
+    ParamCount: TParamCount;
+    ParamTypes: TTypeArray; { varInteger, varString, .. }
+    ResTyp: Word; { varInteger, varString, .. }
+    Func: Pointer; { TJvInterpreterAdapterGetValue or TJvInterpreterAdapterSetValue }
+  end;
+
+  TJvInterpreterDMethod = class(TJvInterpreterMethod)
+  protected
+    ResTyp: Word;
+    CallConvention: TCallConvention;
+  end;
+
+  TJvInterpreterClass = class(TJvInterpreterIdentifier)
+  protected
+    FClassType: TClass;
+  end;
+
+  TJvInterpreterConst = class(TJvInterpreterIdentifier)
+  protected
+    Value: Variant;
+  end;
+
+  TJvInterpreterRecFields = array [0..cJvInterpreterMaxRecFields] of TJvInterpreterRecField;
+
+  TJvInterpreterRecord = class(TJvInterpreterIdentifier)
+  protected
+    RecordSize: Integer; { SizeOf(Rec^) }
+    FieldCount: Integer;
+    Fields: TJvInterpreterRecFields;
+    CreateFunc: TJvInterpreterAdapterNewRecord;
+    DestroyFunc: TJvInterpreterAdapterDisposeRecord;
+    CopyFunc: TJvInterpreterAdapterCopyRecord;
+
+    procedure AddField(UnitName, Identifier, Typ: string; VTyp: Word;
+      const Value: Variant; DataType: IJvInterpreterDataType);
+    procedure NewRecord(var Value: Variant);
+  end;
+
+  TJvInterpreterRecMethod = class(TJvInterpreterIdentifier)
+  protected
+    JvInterpreterRecord: TJvInterpreterRecord;
+    ParamCount: TParamCount;
+    ParamTypes: TTypeArray; { varInteger, varString and so one .. }
+    ResTyp: Word; { varInteger, varString, .. }
+    Func: Pointer; { TJvInterpreterAdapterGetValue or TJvInterpreterAdapterSetValue }
+  end;
+
+  TJvInterpreterRecHolder = class(TJvInterpreterIdentifier)
+  private
+    FRecordType: string;
+    JvInterpreterRecord: TJvInterpreterRecord;
+    Rec: Pointer; { data }
+  public
+    constructor Create(ARecordType: string; ARec: Pointer);
+    destructor Destroy; override;
+
+    property RecordType: string read FRecordType;
+  end;
+
+  TJvInterpreterArrayValues = array [0..JvInterpreter_MAX_ARRAY_DIMENSION - 1] of Integer;
+
+  PJvInterpreterArrayRec = ^TJvInterpreterArrayRec;
+  TJvInterpreterArrayRec = packed record
+    Dimension: Integer; {number of dimensions}
+    BeginPos: TJvInterpreterArrayValues; {starting range for all dimensions}
+    EndPos: TJvInterpreterArrayValues; {ending range for all dimensions}
+    ItemType: Integer; {array type}
+    DT : IJvInterpreterDataType;
+    ElementSize: Integer; {size of element in bytes}
+    Size: Integer; {number of elements in array}
+    Memory: Pointer; {pointer to memory representation of array}
+  end;
 
   { interpreter function }
   TJvInterpreterSrcFunction = class(TJvInterpreterIdentifier)
   private
+    FFunctionDesc: TJvInterpreterFunctionDesc;
   public
-    FunctionDesc: TJvInterpreterFunctionDesc; //Move From Private section
     constructor Create;
     destructor Destroy; override;
+    property FunctionDesc: TJvInterpreterFunctionDesc read FFunctionDesc; //Move From Private section
   end;
 
   { external function }
   TJvInterpreterExtFunction = class(TJvInterpreterSrcFunction)
-  private
+  protected
     DllInstance: HINST;
     DllName: string;
     FunctionName: string;
@@ -404,10 +507,13 @@ type
     function CallDll(Args: TJvInterpreterArgs): Variant;
   end;
 
-  //dejoy change end
+  TJvInterpreterEventDesc = class(TJvInterpreterIdentifier)
+  protected
+    EventClass: TJvInterpreterEventClass;
+    Code: Pointer;
+  end;
 
-  TCallConvention = set of (ccFastCall, ccStdCall, ccCDecl, ccDynamic,
-    ccVirtual, ccClass);
+  //dejoy change end
 
   { TJvInterpreterAdapter - route JvInterpreter calls to Delphi functions }
   TJvInterpreterAdapter = class(TObject)
@@ -566,7 +672,7 @@ type
     procedure AddRecSetEx(UnitName: string; RecordType: string; Identifier: string;
       SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer;
       ParamTypes: array of Word; Data: Pointer); dynamic;
-    procedure AddConst(UnitName: string; Identifier: string; Value: Integer); dynamic;
+    procedure AddConst(UnitName: string; Identifier: string; Value: Variant); dynamic;
     procedure AddConstEx(AUnitName: string; AIdentifier: string; AValue: Variant;
       AData: Pointer); dynamic;
     procedure AddExtFun(UnitName: string; Identifier: string; DllInstance: HINST;
@@ -613,7 +719,6 @@ type
     property EventList: TJvInterpreterIdentifierList read FEventList;
     property SrcVarList: TJvInterpreterVarList read FSrcVarList ;
     property SrcClassList: TJvInterpreterIdentifierList read FSrcClassList;
-
 //dejoy added end
   end;
 
@@ -711,7 +816,6 @@ type
     Backed: Boolean;
     AllowAssignment: Boolean;
   end;
-
 
   TJvInterpreterAddVarFunc = procedure(UnitName: string;
     Identifier, Typ: string; VTyp: Word; const Value: Variant;
@@ -1081,106 +1185,6 @@ uses
 
 { internal structures }
 type
-  { Adapter classes - translates data from JvInterpreter calls to Delphi functions }
-  TJvInterpreterSrcUnit = class(TJvInterpreterIdentifier)
-  private
-    FSource: string;
-    FUsesList: TNameArray;
-  end;
-
-  TParamCount = -1..cJvInterpreterMaxArgs;
-
-  TJvInterpreterMethod = class(TJvInterpreterIdentifier)
-  private
-    FClassType: TClass;
-    ParamCount: TParamCount;
-    ParamTypes: TTypeArray; { varInteger, varString, .. }
-    ResTyp: Word; { varInteger, varString, .. }
-    Func: Pointer; { TJvInterpreterAdapterGetValue or TJvInterpreterAdapterSetValue }
-  end;
-
-  TJvInterpreterIntfMethod = class(TJvInterpreterIdentifier)
-  private
-    IID: TGUID;
-    ParamCount: TParamCount;
-    ParamTypes: TTypeArray; { varInteger, varString, .. }
-    ResTyp: Word; { varInteger, varString, .. }
-    Func: Pointer; { TJvInterpreterAdapterGetValue or TJvInterpreterAdapterSetValue }
-  end;
-
-  TJvInterpreterDMethod = class(TJvInterpreterMethod)
-  private
-    ResTyp: Word;
-    CallConvention: TCallConvention;
-  end;
-
-  TJvInterpreterClass = class(TJvInterpreterIdentifier)
-  private
-    FClassType: TClass;
-  end;
-
-  TJvInterpreterConst = class(TJvInterpreterIdentifier)
-  private
-    Value: Variant;
-  end;
-
-  TJvInterpreterRecFields = array [0..cJvInterpreterMaxRecFields] of TJvInterpreterRecField;
-
-  TJvInterpreterRecord = class(TJvInterpreterIdentifier)
-  private
-    RecordSize: Integer; { SizeOf(Rec^) }
-    FieldCount: Integer;
-    Fields: TJvInterpreterRecFields;
-    CreateFunc: TJvInterpreterAdapterNewRecord;
-    DestroyFunc: TJvInterpreterAdapterDisposeRecord;
-    CopyFunc: TJvInterpreterAdapterCopyRecord;
-
-    procedure AddField(UnitName, Identifier, Typ: string; VTyp: Word;
-      const Value: Variant; DataType: IJvInterpreterDataType);
-    procedure NewRecord(var Value: Variant);
-  end;
-
-  TJvInterpreterRecMethod = class(TJvInterpreterIdentifier)
-  private
-    JvInterpreterRecord: TJvInterpreterRecord;
-    ParamCount: TParamCount;
-    ParamTypes: TTypeArray; { varInteger, varString and so one .. }
-    ResTyp: Word; { varInteger, varString, .. }
-    Func: Pointer; { TJvInterpreterAdapterGetValue or TJvInterpreterAdapterSetValue }
-  end;
-
-  TJvInterpreterRecHolder = class(TJvInterpreterIdentifier)
-  private
-    FRecordType: string;
-    JvInterpreterRecord: TJvInterpreterRecord;
-    Rec: Pointer; { data }
-  public
-    constructor Create(ARecordType: string; ARec: Pointer);
-    destructor Destroy; override;
-
-    property RecordType: string read FRecordType;
-  end;
-
-const
-  {Max avalaible dimension for arrays}
-  JvInterpreter_MAX_ARRAY_DIMENSION = 10;
-
-type
-  TJvInterpreterArrayValues = array [0..JvInterpreter_MAX_ARRAY_DIMENSION - 1] of Integer;
-
-  PJvInterpreterArrayRec = ^TJvInterpreterArrayRec;
-  TJvInterpreterArrayRec = packed record
-    Dimension: Integer; {number of dimensions}
-    BeginPos: TJvInterpreterArrayValues; {starting range for all dimensions}
-    EndPos: TJvInterpreterArrayValues; {ending range for all dimensions}
-    ItemType: Integer; {array type}
-    DT : IJvInterpreterDataType;
-    ElementSize: Integer; {size of element in bytes}
-    Size: Integer; {number of elements in array}
-    Memory: Pointer; {pointer to memory representation of array}
-  end;
-
-
   TJvInterpreterRecordDataType = class(TInterfacedObject, IJvInterpreterDataType)
   private
     FRecordDesc: TJvInterpreterRecord;
@@ -1220,12 +1224,6 @@ type
     PrevFunContext: PFunctionContext;
     LocalVars: TJvInterpreterVarList;
     Fun: TJvInterpreterSrcFunction;
-  end;
-
-  TJvInterpreterEventDesc = class(TJvInterpreterIdentifier)
-  private
-    EventClass: TJvInterpreterEventClass;
-    Code: Pointer;
   end;
 
 {$IFDEF VisualCLX}
@@ -1729,7 +1727,8 @@ begin
             varInteger, { ttByte,} varBoolean:
               begin
                 Aint := Args.Values[I];
-                asm push Aint
+                asm
+                  push Aint
                 end;
               end;
             varSmallInt:
@@ -1742,7 +1741,8 @@ begin
             varString:
               begin
                 Apointer := PChar(string(Args.Values[I]));
-                asm push Apointer
+                asm
+                  push Apointer
                 end;
               end;
           else
@@ -1753,13 +1753,15 @@ begin
             varInteger, { ttByte,} varBoolean:
               begin
                 Apointer := @TVarData(Args.Values[I]).vInteger;
-                asm push Apointer
+                asm
+                  push Apointer
                 end;
               end;
             varSmallInt:
               begin
                 Apointer := @TVarData(Args.Values[I]).vSmallInt;
-                asm push Apointer
+                asm
+                  push Apointer
                 end;
               end;
           else
@@ -2571,12 +2573,12 @@ end;
 constructor TJvInterpreterSrcFunction.Create;
 begin
   inherited Create;
-  FunctionDesc := TJvInterpreterFunctionDesc.Create;
+  FFunctionDesc := TJvInterpreterFunctionDesc.Create;
 end;
 
 destructor TJvInterpreterSrcFunction.Destroy;
 begin
-  FunctionDesc.Free;
+  FFunctionDesc.Free;
   inherited Destroy;
 end;
 
@@ -3263,7 +3265,7 @@ begin
 end;
 
 procedure TJvInterpreterAdapter.AddConst(UnitName: string; Identifier: string;
-  Value: Integer);
+  Value: Variant);
 begin
   AddConstEx(UnitName, Identifier, Value, nil);
 end;
@@ -3626,7 +3628,7 @@ var
           { !!! Delphi fast-call !!! }
           { push parameters to stack }
           for J := 2 to JvInterpreterMethod.ParamCount - 1 do
-            if (JvInterpreterMethod.ParamTypes[J] = varInteger)or
+            if (JvInterpreterMethod.ParamTypes[J] = varInteger) or
               (JvInterpreterMethod.ParamTypes[J] = varObject) or
               (JvInterpreterMethod.ParamTypes[J] = varPointer) or
               (JvInterpreterMethod.ParamTypes[J] = varBoolean){?} then
