@@ -259,7 +259,12 @@ begin
   if ThemeServices.ThemesEnabled then
     SetBkMode(Canvas.Handle, TRANSPARENT);
   {$ENDIF JVCLThemesEnabled}
+  {$IFDEF VCL}
   DrawText(Canvas.Handle, PChar(Items[Index]), -1, R, Flags);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  DrawText(Canvas, Items[Index], -1, R, Flags);
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvItemsPanel.SetAutoGrow(const Value: Boolean);

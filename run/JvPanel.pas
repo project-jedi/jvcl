@@ -108,8 +108,8 @@ type
     FWasMoved: Boolean;
     FOnAfterMove: TNotifyEvent;
     FOnBeforeMove: TJvPanelMoveEvent;
-    FOnPaint: TNotifyEvent;
     {$ENDIF VCL}
+    FOnPaint: TNotifyEvent;
     function GetHeight: Integer;
     procedure SetHeight(Value: Integer);
     function GetWidth: Integer;
@@ -562,7 +562,7 @@ begin
       DrawText(Canvas.Handle, PChar(Caption), -1, ATextRect, Flags or DT_CALCRECT);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      DrawTextW(Canvas.Handle, PWideChar(Caption), -1, ATextRect, Flags or DT_CALCRECT);
+      DrawText(Canvas, Caption, -1, ATextRect, Flags or DT_CALCRECT);
       {$ENDIF VisualCLX}
       // adjust the rectangle placement
       OffsetRect(ATextRect, 0, -ATextRect.Top + (Height - (ATextRect.Bottom - ATextRect.Top)) div 2);
@@ -582,7 +582,7 @@ begin
       DrawText(Canvas.Handle, PChar(Caption), -1, ATextRect, Flags);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      DrawTextW(Canvas.Handle, PWideChar(Caption), -1, ATextRect, Flags);
+      DrawText(Canvas, Caption, -1, ATextRect, Flags);
       {$ENDIF VisualCLX}
     end;
   end;

@@ -303,7 +303,7 @@ var
       DT_NOPREFIX or DT_WORDBREAK or Flag[HintAlignment] or DrawTextBiDiModeFlagsReadingOnly);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    DrawTextW(FImage.Canvas.Handle, PWideChar(Caption), -1, R,
+    DrawText(FImage.Canvas, Caption, -1, R,
       DT_NOPREFIX or DT_WORDBREAK or Flag[HintAlignment]);
     {$ENDIF VisualCLX}
   end;
@@ -450,8 +450,8 @@ begin
     DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment] or DrawTextBiDiModeFlagsReadingOnly);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  DrawTextW(Canvas.Handle, PwWideChar(AHint), -1, Result,
-    DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment] or DrawTextBiDiModeFlagsReadingOnly);
+  DrawText(Canvas, AHint, -1, Result,
+    DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment];
   {$ENDIF VisualCLX}
   Inc(Result.Right, 8);
   Inc(Result.Bottom, 4);

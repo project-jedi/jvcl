@@ -1731,7 +1731,12 @@ begin
         S := 'NOT'; // do not localize
     end;
     Brush.Style := bsClear;
+    {$IFDEF VCL}
     DrawText(Canvas.handle, PChar(S), -1, R, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    DrawText(Canvas, S, -1, R, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
+    {$ENDIF VisualCLX}
   end;
 end;
 

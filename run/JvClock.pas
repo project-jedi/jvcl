@@ -998,12 +998,14 @@ var
       DrawThemedBackground(Self, Canvas, Rect);
       {$IFDEF VCL}
       SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
+      DrawText(Canvas.Handle, @Sym, 1, Rect, DT_EXPANDTABS or
+        DT_VCENTER or DT_CENTER or DT_NOCLIP or DT_SINGLELINE);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
       SetBkMode(Canvas.Handle, QWindows.TRANSPARENT);
-      {$ENDIF VisualCLX}
-      DrawText(Canvas.Handle, @Sym, 1, Rect, DT_EXPANDTABS or
+      DrawText(Canvas, Sym, 1, Rect, DT_EXPANDTABS or
         DT_VCENTER or DT_CENTER or DT_NOCLIP or DT_SINGLELINE);
+      {$ENDIF VisualCLX}
     end;
   end;
 

@@ -231,11 +231,8 @@ begin
       Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    FCanvas.start;
-    RequiredState(FCanvas, [csHandleValid, csFontValid]);
-    DrawTextW(FCanvas.Handle, PWideChar(Caption), Length(Caption), R,
+    DrawText(FCanvas, Caption, Length(Caption), R,
       Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
-    FCanvas.stop;
     {$ENDIF VisualCLX}
     AWidth := (R.Right - R.Left) + ASize.cx + 8;
     AHeight := R.Bottom - R.Top;

@@ -744,7 +744,6 @@ begin
   else
     Canvas.Font := Self.Font;
   DC := Canvas.Handle; { reduce calls to GetHandle }
-  {$IFDEF VCL}
 
   if FWordWrap then
     Flags := DT_WORDBREAK
@@ -754,14 +753,17 @@ begin
   TmpRect := Rect(0, 0, Width, Height);
 
   { calculate width and height of text: }
-
+  {$IFDEF VCL}
   DrawText(DC, PChar(Caption), Length(Caption), TmpRect, Flags or DT_CALCRECT);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  DrawText(Cnvas, Caption, Length(Caption), TmpRect, Flags or DT_CALCRECT);
+{
   if FWordWrap then
     Canvas.TextExtent(Caption, TmpRect, WordBreak)
   else
     Canvas.TextExtent(Caption, TmpRect, 0);
+}
   {$ENDIF VisualCLX}
   MidY := TmpRect.Bottom - TmpRect.Top;
   MidX := TmpRect.Right - TmpRect.Left;
@@ -817,7 +819,7 @@ begin
       SetTextColor(DC, ColorToRGB(HotTrackFont.Color))
     else
       SetTextColor(DC, ColorToRGB(Self.Font.Color));
-    DrawTextW(DC, PWideChar(Caption), -1, TmpRect, Flags);
+    DrawText(Canvas, Caption, -1, TmpRect, Flags);
   end;
   {$ENDIF VisualCLX}
 
@@ -1449,8 +1451,7 @@ begin
   DrawText(DC, PChar(Caption), Length(Caption), TmpRect, Flags or DT_CALCRECT);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  RequiredState(Canvas, [csHandleValid, csFontValid]);
-  DrawTextW(DC, PWideChar(Caption), Length(Caption), TmpRect, Flags or DT_CALCRECT);
+  DrawText(Canvas, Caption, Length(Caption), TmpRect, Flags or DT_CALCRECT);
   {$ENDIF VisualCLX}
   MidY := TmpRect.Bottom - TmpRect.Top;
   MidX := TmpRect.Right - TmpRect.Left;
@@ -1500,7 +1501,7 @@ begin
     DrawText(DC, PChar(Caption), Length(Caption), TmpRect, Flags);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    DrawTextW(DC, PWideChar(Caption), Length(Caption), TmpRect, Flags);
+    DrawText(Canvas, Caption, Length(Caption), TmpRect, Flags);
     {$ENDIF VisualCLX}
     OffsetRect(TmpRect, -1, -1);
     SetTextColor(DC, ColorToRGB(clBtnShadow));
@@ -1514,7 +1515,7 @@ begin
   DrawText(DC, PChar(Caption), Length(Caption), TmpRect, Flags);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  DrawTextW(DC, PWideChar(Caption), Length(Caption), TmpRect, Flags);
+  DrawText(Canvas, Caption, Length(Caption), TmpRect, Flags);
   {$ENDIF VisualCLX}
 end;
 

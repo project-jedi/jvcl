@@ -169,10 +169,10 @@ begin
       DrawText(Handle, PChar(Text), Length(Text), R, Flags);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      DrawTextW(Handle, PWideChar(Text), Length(Text), R, Flags or DT_CALCRECT);
+      DrawText(Canvas, Text, Length(Text), R, Flags or DT_CALCRECT);
       Brush.Color := Color;
       SetBkMode(Handle, OPAQUE);
-      DrawTextW(Handle, PWideChar(Text), Length(Text), R, Flags);
+      DrawText(Canvas, Text, Length(Text), R, Flags);
       {$ENDIF VisualCLX}
     end;
   end;

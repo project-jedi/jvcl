@@ -887,7 +887,7 @@ begin
     {$ENDIF VCL}
 
     {$IFDEF VisualCLX}
-    DrawTextW(ACanvas, PWideChar(ItemCaption), -1, Rect, DT_SINGLELINE or
+    DrawText(ACanvas, ItemCaption, -1, Rect, DT_SINGLELINE or
       DT_VCENTER or DT_END_ELLIPSIS);
     {$ENDIF VisualCLX}
   end;
@@ -2100,8 +2100,7 @@ begin
       DT_END_ELLIPSIS);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    SetPainterFont(Handle, Font);
-    DrawTextW(Handle, PWideChar(Caption), -1, Rect, DT_SINGLELINE or DT_VCENTER or
+    DrawText(Canvas, Caption, -1, Rect, DT_SINGLELINE or DT_VCENTER or
       DT_END_ELLIPSIS or DT_NOPREFIX);
     {$ENDIF VisualCLX}
     { draw visible items }

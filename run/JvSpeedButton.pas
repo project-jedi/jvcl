@@ -2077,8 +2077,14 @@ begin
   if Length(Caption) > 0 then
   begin
     TextBounds := Rect(0, 0, MaxSize.X, 0);
+    {$IFDEF VCL}
     DrawText(Canvas.Handle, CString, -1, TextBounds, DT_CALCRECT or DT_CENTER or
       DT_VCENTER or WordWraps[FWordWrap] or Flags);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    DrawText(Canvas, CString, -1, TextBounds, DT_CALCRECT or DT_CENTER or
+      DT_VCENTER or WordWraps[FWordWrap] or Flags);
+    {$ENDIF VisualCLX}
   end
   else
     TextBounds := Rect(0, 0, 0, 0);
@@ -2479,32 +2485,36 @@ var
     ANSI function it is a BYTE count }
   CString: array [0..255] of Char;
 begin
-  {$IFDEF VisualCLX}
-  Canvas.Start;
-  try
-  {$ENDIF VisualCLX}
-    Canvas.Brush.Style := bsClear;
-    StrPLCopy(CString, Caption, SizeOf(CString) - 1);
-    Flags := DT_VCENTER or WordWraps[FWordWrap] or Flags;
-    if State = rbsDisabled then
+  Canvas.Brush.Style := bsClear;
+  StrPLCopy(CString, Caption, SizeOf(CString) - 1);
+  Flags := DT_VCENTER or WordWraps[FWordWrap] or Flags;
+  if State = rbsDisabled then
+  begin
+    with Canvas do
     begin
-      with Canvas do
-      begin
-        OffsetRect(TextBounds, 1, 1);
-        Font.Color := clBtnHighlight;
-        DrawText(Handle, CString, Length(Caption), TextBounds, Flags);
-        OffsetRect(TextBounds, -1, -1);
-        Font.Color := clBtnShadow;
-        DrawText(Handle, CString, Length(Caption), TextBounds, Flags);
-      end;
-    end
-    else
-      DrawText(Canvas.Handle, CString, -1, TextBounds, Flags);
-  {$IFDEF VisualCLX}
-  finally
-    Canvas.Stop;
-  end;
-  {$ENDIF VisualCLX}
+      OffsetRect(TextBounds, 1, 1);
+      Font.Color := clBtnHighlight;
+      {$IFDEF VCL}
+      DrawText(Handle, CString, Length(Caption), TextBounds, Flags);
+      OffsetRect(TextBounds, -1, -1);
+      Font.Color := clBtnShadow;
+      DrawText(Handle, CString, Length(Caption), TextBounds, Flags);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      DrawText(Canvas, CString, Length(Caption), TextBounds, Flags);
+      OffsetRect(TextBounds, -1, -1);
+      Font.Color := clBtnShadow;
+      DrawText(Canvas, CString, Length(Caption), TextBounds, Flags);
+      {$ENDIF VisualCLX}
+    end;
+  end
+  else
+    {$IFDEF VCL}
+    DrawText(Canvas.Handle, CString, -1, TextBounds, Flags);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    DrawText(Canvas, CString, -1, TextBounds, Flags);
+    {$ENDIF VisualCLX}
 end;
 
 function TJvxButtonGlyph.DrawEx(Canvas: TCanvas; const Client: TRect;

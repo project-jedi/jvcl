@@ -1104,8 +1104,14 @@ begin
     R := ClientRect;
     Canvas.Font.Color := clAppWorkSpace;
     S1 := RsRightClickAndChooseAddBand;
+    {$IFDEF VCL}
     DrawText(Canvas.Handle, PChar(S1),
       -1, R, DT_WORDBREAK {or DT_CENTER or DT_VCENTER});
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    DrawText(Canvas, S1,
+      -1, R, DT_WORDBREAK {or DT_CENTER or DT_VCENTER});
+    {$ENDIF VisualCLX}
   end;
 end;
 

@@ -1657,8 +1657,7 @@ begin
     DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_EDITCONTROL);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    DrawTextW(Canvas.Handle, PWideChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER);
-//    Canvas.TextRect(R, R.Left, R.Top, Caption, AlignVCenter + SingleLine);
+    DrawText(Canvas, Caption, Length(Caption), R, DT_SINGLELINE or DT_VCENTER);
     {$ENDIF VisualCLX}
   end;
   Canvas.Pen.Color := clGray;
@@ -2393,7 +2392,7 @@ begin
       DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX or DT_EDITCONTROL);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    DrawTextW(Canvas.Handle, PWideChar(Caption), Length(Caption), R,
+    DrawText(Canvas, Caption, Length(Caption), R,
       DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
     {$ENDIF VisualCLX}
   end;
@@ -2564,7 +2563,7 @@ begin
       DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX or DT_EDITCONTROL);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    DrawTextW(Canvas, PWideChar(Caption), Length(Caption), R,
+    DrawText(Canvas, Caption, Length(Caption), R,
       DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
     {$ENDIF VisualCLX}
   end;
@@ -3082,7 +3081,7 @@ begin
     DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_LEFT);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    DrawTextW(Canvas, PWideChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_LEFT);
+    DrawText(Canvas, Caption, Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_LEFT);
     {$ENDIF VisualCLX}
     // draw the client areas top rounding
     R := ClientRect;
