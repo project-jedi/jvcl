@@ -1,3 +1,29 @@
+{******************************************************************
+
+                       JEDI-VCL Demo
+
+ Copyright (C) 2004 Project JEDI
+
+ Original author: Florent Ouchet [ouchet dott florent att laposte dott net]
+
+ Contributor(s):
+
+ You may retrieve the latest version of this file at the JEDI-JVCL
+ home page, located at http://jvcl.sourceforge.net
+
+ The contents of this file are used with permission, subject to
+ the Mozilla Public License Version 1.1 (the "License"); you may
+ not use this file except in compliance with the License. You may
+ obtain a copy of the License at
+ http://www.mozilla.org/MPL/MPL-1_1Final.html
+
+ Software distributed under the License is distributed on an
+ "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+ implied. See the License for the specific language governing
+ rights and limitations under the License.
+
+******************************************************************}
+
 unit JvFullColorCircleDialogMainForm;
 
 interface
@@ -38,6 +64,27 @@ implementation
 resourcestring
   RsCustomize = 'Dbl-click to customize';
 
+var
+  ColorDeltas: array [0..5] of TJvColorDelta =
+  ( (ColorID: csRGB; AxisRed:  ((Value:100; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange), (Value: 0; SaturationMethod:smRange));
+                     AxisGreen:((Value:  0; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange), (Value: 0; SaturationMethod:smRange));
+                     AxisBlue: ((Value:  0; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange), (Value:50; SaturationMethod:smRange)) ),
+    (ColorID: csHLS; AxisRed:  ((Value:  0; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange), (Value: 0; SaturationMethod:smRange));
+                     AxisGreen:((Value: 40; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange), (Value: 0; SaturationMethod:smRange));
+                     AxisBlue: ((Value:  0; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange), (Value: 0; SaturationMethod:smRange)) ),
+    (ColorID: csHSV; AxisRed:  ((Value:  0; SaturationMethod:smRange), (Value:-176; SaturationMethod:smRange), (Value:-180; SaturationMethod:smRange));
+                     AxisGreen:((Value:  0; SaturationMethod:smRange), (Value:   0; SaturationMethod:smRange), (Value:   0; SaturationMethod:smRange));
+                     AxisBlue: ((Value:  0; SaturationMethod:smRange), (Value:   0; SaturationMethod:smRange), (Value:   0; SaturationMethod:smRange)) ),
+    (ColorID: csYUV; AxisRed:  ((Value:0; SaturationMethod:smRange), (Value: 38; SaturationMethod:smRange), (Value:-100; SaturationMethod:smRange));
+                     AxisGreen:((Value:0; SaturationMethod:smRange), (Value:168; SaturationMethod:smLoop),  (Value:   0; SaturationMethod:smRange));
+                     AxisBlue: ((Value:0; SaturationMethod:smRange), (Value:  0; SaturationMethod:smRange), (Value:   0; SaturationMethod:smRange)) ),
+    (ColorID: csHLS; AxisRed:  ((Value:0; SaturationMethod:smRange), (Value:-30; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange));
+                     AxisGreen:((Value:0; SaturationMethod:smRange), (Value:-30; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange));
+                     AxisBlue: ((Value:0; SaturationMethod:smRange), (Value:-30; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange)) ),
+    (ColorID: csXYZ; AxisRed:  ((Value: 0; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange));
+                     AxisGreen:((Value: 0; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange));
+                     AxisBlue: ((Value:80; SaturationMethod:smLoop),  (Value:0; SaturationMethod:smLoop),  (Value:0; SaturationMethod:smLoop)) ) );
+
 procedure TFormMain.FormCreate(Sender: TObject);
 var
   X, Y: Integer;
@@ -48,7 +95,7 @@ var
   Index: Integer;
   LSearchRec: TSearchRec;
 begin
-  if FindFirst(IncludeTrailingBackslash(GetCurrentDir)+'*.bmp',faAnyFile,LSearchRec) = 0 then
+  if FindFirst(IncludeTrailingPathDelimiter(GetCurrentDir)+'*.bmp',faAnyFile,LSearchRec) = 0 then
     repeat
       ComboBoxFileName.Items.Add(LSearchRec.Name);
     until FindNext(LSearchRec) <> 0;
@@ -103,35 +150,13 @@ end;
 procedure TFormMain.MemoKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  Key := 0;
+  Key := 0;          // discard any key but Enabled=False affects the text rendering
 end;
 
 procedure TFormMain.MemoKeyPress(Sender: TObject; var Key: Char);
 begin
-  Key := #0;
+  Key := #0;         // discard any key but Enabled=False affects the text rendering
 end;
-
-var
-  ColorDeltas: array [0..5] of TJvColorDelta =
-  ( (ColorID: csRGB; AxisRed:  ((Value:100; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange), (Value: 0; SaturationMethod:smRange));
-                     AxisGreen:((Value:  0; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange), (Value: 0; SaturationMethod:smRange));
-                     AxisBlue: ((Value:  0; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange), (Value:50; SaturationMethod:smRange)) ),
-    (ColorID: csHLS; AxisRed:  ((Value:  0; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange), (Value: 0; SaturationMethod:smRange));
-                     AxisGreen:((Value: 40; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange), (Value: 0; SaturationMethod:smRange));
-                     AxisBlue: ((Value:  0; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange), (Value: 0; SaturationMethod:smRange)) ),
-    (ColorID: csHSV; AxisRed:  ((Value:  0; SaturationMethod:smRange), (Value:-176; SaturationMethod:smRange), (Value:-180; SaturationMethod:smRange));
-                     AxisGreen:((Value:  0; SaturationMethod:smRange), (Value:   0; SaturationMethod:smRange), (Value:   0; SaturationMethod:smRange));
-                     AxisBlue: ((Value:  0; SaturationMethod:smRange), (Value:   0; SaturationMethod:smRange), (Value:   0; SaturationMethod:smRange)) ),
-    (ColorID: csYUV; AxisRed:  ((Value:0; SaturationMethod:smRange), (Value: 38; SaturationMethod:smRange), (Value:-100; SaturationMethod:smRange));
-                     AxisGreen:((Value:0; SaturationMethod:smRange), (Value:168; SaturationMethod:smLoop),  (Value:   0; SaturationMethod:smRange));
-                     AxisBlue: ((Value:0; SaturationMethod:smRange), (Value:  0; SaturationMethod:smRange), (Value:   0; SaturationMethod:smRange)) ),
-    (ColorID: csHLS; AxisRed:  ((Value:0; SaturationMethod:smRange), (Value:-30; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange));
-                     AxisGreen:((Value:0; SaturationMethod:smRange), (Value:-30; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange));
-                     AxisBlue: ((Value:0; SaturationMethod:smRange), (Value:-30; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange)) ),
-    (ColorID: csXYZ; AxisRed:  ((Value: 0; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange));
-                     AxisGreen:((Value: 0; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange), (Value:0; SaturationMethod:smRange));
-                     AxisBlue: ((Value:80; SaturationMethod:smLoop),  (Value:0; SaturationMethod:smLoop),  (Value:0; SaturationMethod:smLoop)) )
-  );
 
 procedure TFormMain.ComboBoxFileNameSelect(Sender: TObject);
 var
@@ -171,7 +196,7 @@ begin
     Add(Format('%s (%s)',[Name, ShortName]));
     for Index := Low(TJvAxisIndex) to High(TJvAxisIndex) do
       Add(Format('%s : %d, %d, %d',[AxisName[Index],Delta.AxisRed[Index].Value,
-                                    Delta.AxisGreen[Index].Value,Delta.AxisBlue[Index].Value]));
+                 Delta.AxisGreen[Index].Value,Delta.AxisBlue[Index].Value]));
     if AMemo = Memos[6] then
       Add(RsCustomize);
   end;
