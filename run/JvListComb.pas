@@ -130,7 +130,7 @@ type
     FImageList: TCustomImageList;
     FDefaultIndent: Integer;
     FChangeLink: TChangeLink;
-    FCanvas: TCanvas;
+    FCanvas: TControlCanvas;
     MouseInControl: Boolean;
     FImageWidth: Integer;
     FImageHeight: Integer;
@@ -141,6 +141,7 @@ type
     FDroppedWidth: Integer;
     FButtonStyle: TJvButtonColors;
     FIndentSelected: boolean;
+    function GetCanvas: TCanvas;
     procedure SetColorHighlight(Value: TColor);
     procedure SetColorHighlightText(Value: TColor);
     procedure SetImageList(Value: TCustomImageList);
@@ -170,7 +171,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Canvas: TCanvas read FCanvas;
+    property Canvas: TCanvas read GetCanvas;
     property Text;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
@@ -225,13 +226,14 @@ type
     FImageList: TCustomImageList;
     FItems: TJvImageItems;
     FChangeLink: TChangeLink;
-    FCanvas: TCanvas;
+    FCanvas: TControlCanvas;
     FImageWidth: Integer;
     FImageHeight: Integer;
     FAlignment: TAlignment;
     FColorHighlight, FColorHighlightText: TColor;
     FButtonFrame: Boolean;
     FButtonStyle: TJvButtonColors;
+    function GetCanvas: TCanvas;
     procedure SetColorHighlight(Value: TColor);
     procedure SetColorHighlightText(Value: TColor);
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
@@ -257,7 +259,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Canvas: TCanvas read FCanvas;
+    property Canvas: TCanvas read GetCanvas;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
 {$IFDEF COMPILER6_UP}
@@ -570,6 +572,7 @@ begin
   FColorHighlight := clHighlight;
   FColorHighlightText := clHighlightText;
   FCanvas := TControlCanvas.Create;
+  FCanvas.Control := Self;
   ResetItemHeight;
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := ImageListChange;
@@ -578,9 +581,15 @@ end;
 destructor TJvImageComboBox.Destroy;
 begin
   FItems.Free;
-  FCanvas.Free;
   FChangeLink.Free;
   inherited Destroy;
+  // (rom) destroy Canvas AFTER inherited Destroy
+  FCanvas.Free;
+end;
+
+function TJvImageComboBox.GetCanvas: TCanvas;
+begin
+  Result := FCanvas;
 end;
 
 procedure TJvImageComboBox.ImageListChange(Sender: TObject);
@@ -678,10 +687,10 @@ var
   TmpR, OrigR: TRect;
   SavedColor : TColor;
 begin
-  SavedColor := Canvas.Font.Color;
-  Canvas.Font.Assign(Items[Index].Font);
+  SavedColor := FCanvas.Font.Color;
+  FCanvas.Font.Assign(Items[Index].Font);
   if State <> [] then
-    Canvas.Font.Color := SavedColor;
+    FCanvas.Font.Color := SavedColor;
   OrigR := R;
   with FCanvas do
   begin
@@ -697,12 +706,12 @@ begin
     begin
       Offset := ((R.Bottom - R.Top) - GetImageWidth(Index)) div 2;
 
-      Canvas.Draw(R.Left + 2, R.Top + Offset, Items[Index].Glyph);
+      FCanvas.Draw(R.Left + 2, R.Top + Offset, Items[Index].Glyph);
 
       if FButtonFrame then
       begin
         TmpR := Rect(R.Left, R.Top, R.Left + FImageList.Width + 4, R.Top + FImageList.Height + 4);
-        DrawBtnFrame(Canvas, FButtonStyle, Color, not ((odFocused in State) and
+        DrawBtnFrame(FCanvas, FButtonStyle, Color, not ((odFocused in State) and
           not (odComboBoxEdit in State)), TmpR);
       end;
 
@@ -715,17 +724,17 @@ begin
       //      R.Left := R.Left + Items[Index].Indent;
       Offset := ((R.Bottom - R.Top) - GetImageWidth(Index)) div 2;
       // PRY 2002.06.04
-      //FImageList.Draw(Canvas, R.Left + 2, R.Top + Offset, Tmp, dsTransparent, itImage);
+      //FImageList.Draw(FCanvas, R.Left + 2, R.Top + Offset, Tmp, dsTransparent, itImage);
       {$IFDEF COMPILER6_UP}
-      FImageList.Draw(Canvas, R.Left + 2, R.Top + Offset, Tmp, dsTransparent, itImage);
+      FImageList.Draw(FCanvas, R.Left + 2, R.Top + Offset, Tmp, dsTransparent, itImage);
       {$ELSE}
-      FImageList.Draw(Canvas, R.Left + 2, R.Top + Offset, Tmp);
+      FImageList.Draw(FCanvas, R.Left + 2, R.Top + Offset, Tmp);
       {$ENDIF COMPILER6_UP}
       // PRY END
       if FButtonFrame then
       begin
         TmpR := Rect(R.Left, R.Top, R.Left + FImageList.Width + 4, R.Top + FImageList.Height + 4);
-        DrawBtnFrame(Canvas, FButtonStyle, Color, not ((Tmp in [0..FImageList.Count - 1]) and (odFocused in State) and
+        DrawBtnFrame(FCanvas, FButtonStyle, Color, not ((Tmp in [0..FImageList.Count - 1]) and (odFocused in State) and
           not (odComboBoxEdit in State)), TmpR);
       end;
       Inc(R.Left, GetImageWidth(Index) + 8);
@@ -739,7 +748,7 @@ begin
       Inc(R.Right,2);
       FillRect(R);
       Inc(R.Left, 2);
-      DrawText(Canvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R, DT_SINGLELINE or DT_NOPREFIX
+      DrawText(FCanvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R, DT_SINGLELINE or DT_NOPREFIX
         or DT_VCENTER);
       Dec(R.Left, 2);
       if (odSelected in State) and (Color <> FColorHighlight) then
@@ -911,7 +920,7 @@ begin
   FButtonFrame := False;
   Style := lbOwnerDrawFixed;
   FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;
+  FCanvas.Control := Self;
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := ImageListChange;
   ResetItemHeight;
@@ -919,10 +928,16 @@ end;
 
 destructor TJvImageListBox.Destroy;
 begin
-  FCanvas.Free;
   FItems.Free;
   FChangeLink.Free;
   inherited Destroy;
+  // (rom) destroy Canvas AFTER inherited Destroy
+  FCanvas.Free;
+end;
+
+function TJvImageListBox.GetCanvas: TCanvas;
+begin
+  Result := FCanvas;
 end;
 
 procedure TJvImageListBox.ImageListChange;
@@ -968,7 +983,7 @@ end;
 procedure TJvImageListBox.CreateWnd;
 begin
   inherited CreateWnd;
-  SetBkMode(Canvas.Handle, TRANSPARENT);
+  SetBkMode(FCanvas.Handle, TRANSPARENT);
 end;
 
 procedure TJvImageListBox.Notification(AComponent: TComponent; Operation: TOperation);
@@ -1039,10 +1054,10 @@ procedure TJvImageListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDra
 var
   SavedColor : TColor;
 begin
-  SavedColor := Canvas.Font.Color;
-  Canvas.Font.Assign(Items[Index].Font);
+  SavedColor := FCanvas.Font.Color;
+  FCanvas.Font.Assign(Items[Index].Font);
   if State <> [] then
-    Canvas.Font.Color := SavedColor;
+    FCanvas.Font.Color := SavedColor;
   case FAlignment of
     taLeftJustify:
       DrawLeftGlyph(Index, Rect, State);
@@ -1060,7 +1075,7 @@ var
   TmpR, OrigR: TRect;
 begin
   OrigR := R;
-  with Canvas do
+  with FCanvas do
   begin
     TmpCol := Brush.Color;
     Brush.Color := Color;
@@ -1071,12 +1086,12 @@ begin
     begin
       Tmp := ((R.Right - R.Left) - GetImageWidth(Index)) div 2;
 
-      Canvas.Draw(R.Left + Tmp, R.Top + 2, Items[Index].Glyph);
+      Draw(R.Left + Tmp, R.Top + 2, Items[Index].Glyph);
 
       if FButtonFrame then
       begin
         TmpR := Rect(R.Left + Tmp - 2, R.Top + 2, R.Left + Tmp + FImageList.Width + 2, R.Top + FImageList.Height + 2);
-        DrawBtnFrame(Canvas, FButtonStyle, Color, not (odSelected in State),
+        DrawBtnFrame(FCanvas, FButtonStyle, Color, not (odSelected in State),
           TmpR);
       end;
       InflateRect(R, 1, -4);
@@ -1086,17 +1101,17 @@ begin
       Tmp := ((R.Right - R.Left) - GetImageWidth(Index)) div 2;
       Tmp2 := Items[Index].ImageIndex;
       // PRY 2002.06.04
-      //FImageList.Draw(Canvas, R.Left + Tmp, R.Top + 2, Tmp2, dsTransparent, itImage);
+      //FImageList.Draw(FCanvas, R.Left + Tmp, R.Top + 2, Tmp2, dsTransparent, itImage);
       {$IFDEF COMPILER6_UP}
-      FImageList.Draw(Canvas, R.Left + Tmp, R.Top + 2, Tmp2, dsTransparent, itImage);
+      FImageList.Draw(FCanvas, R.Left + Tmp, R.Top + 2, Tmp2, dsTransparent, itImage);
       {$ELSE}
-      FImageList.Draw(Canvas, R.Left + Tmp, R.Top + 2, Tmp2);
+      FImageList.Draw(FCanvas, R.Left + Tmp, R.Top + 2, Tmp2);
       {$ENDIF COMPILER6_UP}
       // PRY END
       if FButtonFrame then
       begin
         TmpR := Rect(R.Left + Tmp - 2, R.Top + 2, R.Left + Tmp + FImageList.Width + 2, R.Top + FImageList.Height + 2);
-        DrawBtnFrame(Canvas, FButtonStyle, Color, not ((Tmp2 in [0..FImageList.Count - 1]) and (odSelected in State)),
+        DrawBtnFrame(FCanvas, FButtonStyle, Color, not ((Tmp2 in [0..FImageList.Count - 1]) and (odSelected in State)),
           TmpR);
       end;
       InflateRect(R, 1, -4);
@@ -1107,7 +1122,7 @@ begin
     if Length(Items[Index].Text) > 0 then
     begin
       FillRect(R);
-      DrawText(Canvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R,
+      DrawText(FCanvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R,
         DT_SINGLELINE or DT_NOPREFIX or DT_CENTER or DT_BOTTOM);
       if (odSelected in State) and (Color <> FColorHighlight) then
         DrawFocusRect(R);
@@ -1128,7 +1143,7 @@ var
   TmpR, OrigR: TRect;
 begin
   OrigR := R;
-  with Canvas do
+  with FCanvas do
   begin
     TmpCol := Brush.Color;
     Brush.Color := Color;
@@ -1139,12 +1154,12 @@ begin
     begin
       Offset := ((R.Bottom - R.Top) - GetImageHeight(Index)) div 2;
 
-      Canvas.Draw(R.Left + 2, R.Top + Offset, Items[Index].Glyph);
+      Draw(R.Left + 2, R.Top + Offset, Items[Index].Glyph);
 
       if FButtonFrame then
       begin
         TmpR := Rect(R.Left, R.Top, R.Left + FImageList.Width + 4, R.Top + FImageList.Height + 4);
-        DrawBtnFrame(Canvas, FButtonStyle, Color, not (odSelected in State),
+        DrawBtnFrame(FCanvas, FButtonStyle, Color, not (odSelected in State),
           TmpR);
       end;
 
@@ -1156,17 +1171,17 @@ begin
       Offset := ((R.Bottom - R.Top) - GetImageHeight(Index)) div 2;
       Tmp := Items[Index].ImageIndex;
       // PRY 2002.06.04
-      //FImageList.Draw(Canvas, R.Left + 2, R.Top + Offset, Tmp, dsTransparent, itImage);
+      //FImageList.Draw(FCanvas, R.Left + 2, R.Top + Offset, Tmp, dsTransparent, itImage);
       {$IFDEF COMPILER6_UP}
-      FImageList.Draw(Canvas, R.Left + 2, R.Top + Offset, Tmp, dsTransparent, itImage);
+      FImageList.Draw(FCanvas, R.Left + 2, R.Top + Offset, Tmp, dsTransparent, itImage);
       {$ELSE}
-      FImageList.Draw(Canvas, R.Left + 2, R.Top + Offset, Tmp);
+      FImageList.Draw(FCanvas, R.Left + 2, R.Top + Offset, Tmp);
       {$ENDIF COMPILER6_UP}
       // PRY END
       if FButtonFrame then
       begin
         TmpR := Rect(R.Left, R.Top, R.Left + FImageList.Width + 4, R.Top + FImageList.Height + 4);
-        DrawBtnFrame(Canvas, FButtonStyle, Color, not ((Tmp in [0..FImageList.Count - 1]) and (odSelected in State)),
+        DrawBtnFrame(FCanvas, FButtonStyle, Color, not ((Tmp in [0..FImageList.Count - 1]) and (odSelected in State)),
           TmpR);
       end;
       Inc(R.Left, GetImageWidth(Index) + 8);
@@ -1180,7 +1195,7 @@ begin
       Inc(R.Right, 2);
       FillRect(R);
       Inc(R.Left, 2);
-      DrawText(Canvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R, DT_SINGLELINE or DT_NOPREFIX
+      DrawText(FCanvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R, DT_SINGLELINE or DT_NOPREFIX
         or DT_VCENTER);
       Dec(R.Left, 2);
       if (odSelected in State) and (Color <> FColorHighlight) then
@@ -1202,7 +1217,7 @@ var
   TmpR, OrigR: TRect;
 begin
   OrigR := R;
-  with Canvas do
+  with FCanvas do
   begin
     TmpCol := Brush.Color;
     Brush.Color := Color;
@@ -1213,13 +1228,13 @@ begin
     begin
       Offset := ((R.Bottom - R.Top) - GetImageWidth(Index)) div 2;
 
-      Canvas.Draw(R.Right - (GetImageWidth(Index) + 2), R.Top + Offset, Items[Index].Glyph);
+      Draw(R.Right - (GetImageWidth(Index) + 2), R.Top + Offset, Items[Index].Glyph);
 
       if FButtonFrame then
       begin
         TmpR := Rect(R.Right - (FImageList.Width + 2) - 2, R.Top + Offset - 2, R.Right - 2, R.Top + Offset + FImageList.Height
           + 2);
-        DrawBtnFrame(Canvas, FButtonStyle, Color, not (odSelected in State),
+        DrawBtnFrame(FCanvas, FButtonStyle, Color, not (odSelected in State),
           TmpR);
       end;
 
@@ -1232,18 +1247,18 @@ begin
 
       Offset := ((R.Bottom - R.Top) - GetImageWidth(Index)) div 2;
       // PRY 2002.06.04
-      //FImageList.Draw(Canvas, R.Right - (FWidth + 2), R.Top + Offset, Tmp, dsTransparent, itImage);
+      //FImageList.Draw(FCanvas, R.Right - (FWidth + 2), R.Top + Offset, Tmp, dsTransparent, itImage);
       {$IFDEF COMPILER6_UP}
-      FImageList.Draw(Canvas, R.Right - (GetImageWidth(Index) + 2), R.Top + Offset, Tmp, dsTransparent, itImage);
+      FImageList.Draw(FCanvas, R.Right - (GetImageWidth(Index) + 2), R.Top + Offset, Tmp, dsTransparent, itImage);
       {$ELSE}
-      FImageList.Draw(Canvas, R.Right - (GetImageWidth(Index) + 2), R.Top + Offset, Tmp);
+      FImageList.Draw(FCanvas, R.Right - (GetImageWidth(Index) + 2), R.Top + Offset, Tmp);
       {$ENDIF COMPILER6_UP}
       // PRY END
       if FButtonFrame then
       begin
         TmpR := Rect(R.Right - (FImageList.Width + 2) - 2, R.Top + Offset - 2, R.Right - 2, R.Top + Offset + FImageList.Height
           + 2);
-        DrawBtnFrame(Canvas, FButtonStyle, Color, not ((Tmp in [0..FImageList.Count - 1]) and (odSelected in State)),
+        DrawBtnFrame(FCanvas, FButtonStyle, Color, not ((Tmp in [0..FImageList.Count - 1]) and (odSelected in State)),
           TmpR);
       end;
       Dec(R.Right, FImageList.Width + 4);
@@ -1257,7 +1272,7 @@ begin
     begin
       Dec(R.Right, 2);
       FillRect(R);
-      DrawText(Canvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R, DT_SINGLELINE or DT_NOPREFIX
+      DrawText(FCanvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R, DT_SINGLELINE or DT_NOPREFIX
         or DT_VCENTER or DT_RIGHT);
       Inc(R.Right, 2);
       if (odSelected in State) and (Color <> FColorHighlight) then

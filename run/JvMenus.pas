@@ -163,6 +163,8 @@ type
 
   // the main menu class
   TJvMainMenu = class(TMainMenu)
+  private
+    function GetCanvas: TCanvas;
   protected
     FAboutJVCL      : TJVCLAboutInfo;
     FCursor         : TCursor;
@@ -190,7 +192,7 @@ type
     FOnGetHotImageIndex: TItemImageEvent;
 
     FChangeLinks : TObjectList;
-    FCanvas: TCanvas;
+    FCanvas: TControlCanvas;
     FJvMenuItemPainter : TJvCustomMenuItemPainter;
 
     procedure SetImages(Value: TImageList);
@@ -240,7 +242,7 @@ type
     procedure UnregisterChanges(ChangeLink : TJvMenuChangeLink);
 
     // get the canvas of the menu
-    property Canvas: TCanvas read FCanvas;
+    property Canvas: TCanvas read GetCanvas;
   published
     property AboutJVCL      : TJVCLAboutInfo           read FAboutJVCL          write FAboutJVCL         stored False;
     property Cursor         : TCursor                  read FCursor             write FCursor            default crDefault;
@@ -269,6 +271,8 @@ type
   // The Popup counterpart of TJvMainMenu
   // does basically the same thing, but in a popup menu
   TJvPopupMenu = class(TPopupMenu)
+  private
+    function GetCanvas: TCanvas;
   protected
     FAboutJVCL      : TJVCLAboutInfo;
     FCursor         : TCursor;
@@ -299,7 +303,7 @@ type
 
     FPopupPoint: TPoint;
     FParentBiDiMode: Boolean;
-    FCanvas: TCanvas;
+    FCanvas: TControlCanvas;
     FJvMenuItemPainter : TJvCustomMenuItemPainter;
 
     procedure SetImages(Value: TImageList);
@@ -341,7 +345,7 @@ type
     procedure DefaultDrawItem(Item: TMenuItem; Rect: TRect;
       State: TMenuOwnerDrawState);
     procedure DefaultDrawMargin(ARect: TRect; StartColor, EndColor: TColor);
-    property Canvas: TCanvas read FCanvas;
+    property Canvas: TCanvas read GetCanvas;
   published
     property AboutJVCL      : TJVCLAboutInfo           read FAboutJVCL          write FAboutJVCL         stored False;
     property Cursor         : TCursor                  read FCursor             write FCursor            default crDefault;
@@ -787,10 +791,11 @@ begin
   FDisabledImageChangeLink.Free;
   FJvMenuItemPainter.Free;
   FChangeLinks.Free;
-  FCanvas.Free;
   FImageMargin.Free;
   FImageSize.Free;
   inherited Destroy;
+  // (rom) destroy Canvas AFTER inherited Destroy
+  FCanvas.Free;
 end;
 
 procedure TJvMainMenu.Loaded;
@@ -798,6 +803,11 @@ begin
   inherited Loaded;
   if IsOwnerDrawMenu then
     RefreshMenu(True);
+end;
+
+function TJvMainMenu.GetCanvas: TCanvas;
+begin
+  Result := FCanvas;
 end;
 
 function TJvMainMenu.IsOwnerDrawMenu: Boolean;
@@ -1026,22 +1036,22 @@ begin
     begin
       SaveIndex := SaveDC(hDC);
       try
-        FCanvas.Handle := hDC;
-        SetDefaultMenuFont(FCanvas.Font);
-        FCanvas.Font.Color := clMenuText;
-        FCanvas.Brush.Color := clMenu;
+        Canvas.Handle := hDC;
+        SetDefaultMenuFont(Canvas.Font);
+        Canvas.Font.Color := clMenuText;
+        Canvas.Brush.Color := clMenu;
         if mdDefault in State then
-          FCanvas.Font.Style := FCanvas.Font.Style + [fsBold];
+          Canvas.Font.Style := Canvas.Font.Style + [fsBold];
         if (mdSelected in State) and not
         (Style in [msBtnLowered, msBtnRaised]) then
         begin
-          FCanvas.Brush.Color := clHighlight;
-          FCanvas.Font.Color := clHighlightText;
+          Canvas.Brush.Color := clHighlight;
+          Canvas.Font.Color := clHighlightText;
         end;
         with rcItem do
-          IntersectClipRect(FCanvas.Handle, Left, Top, Right, Bottom);
+          IntersectClipRect(Canvas.Handle, Left, Top, Right, Bottom);
         DrawItem(Item, rcItem, State);
-        FCanvas.Handle := 0;
+        Canvas.Handle := 0;
       finally
         RestoreDC(hDC, SaveIndex);
       end;
@@ -1064,24 +1074,24 @@ begin
     begin
       DC := GetDC(0);
       try
-        FCanvas.Handle := DC;
-        SetDefaultMenuFont(FCanvas.Font);
+        Canvas.Handle := DC;
+        SetDefaultMenuFont(Canvas.Font);
         if Item.Default then
-          FCanvas.Font.Style := FCanvas.Font.Style + [fsBold];
+          Canvas.Font.Style := Canvas.Font.Style + [fsBold];
 {        Graphic := nil;
-        BackColor := FCanvas.Brush.Color;
+        BackColor := Canvas.Brush.Color;
         NumGlyphs := 1;
-        GetItemParams(Item, [], FCanvas.Font, BackColor, Graphic, NumGlyphs);
+        GetItemParams(Item, [], Canvas.Font, BackColor, Graphic, NumGlyphs);
         ImageIndex := Item.ImageIndex;
         GetImageIndex(Item, [], ImageIndex);}
 
         FJvMenuItemPainter.Measure(Item, Integer(itemWidth), Integer(itemHeight));
-{        MenuMeasureItem(Self, Item, FCanvas, FShowCheckMarks, Graphic,
+{        MenuMeasureItem(Self, Item, Canvas, FShowCheckMarks, Graphic,
           NumGlyphs, Integer(itemWidth), Integer(itemHeight), FMinTextOffset,
             FImages, ImageIndex);}
         MeasureItem(Item, Integer(itemWidth), Integer(itemHeight));
       finally
-        FCanvas.Handle := 0;
+        Canvas.Handle := 0;
         ReleaseDC(0, DC);
       end;
     end;
@@ -1268,14 +1278,21 @@ begin
   FImageSize.Free;
   FJvMenuItemPainter.Free;
   PopupList.Remove(Self);
-  FCanvas.Free;
   inherited Destroy;
+  // (rom) destroy Canvas AFTER inherited Destroy
+  FCanvas.Free;
 end;
 
 procedure TJvPopupMenu.Loaded;
 begin
   inherited Loaded;
-  if IsOwnerDrawMenu then RefreshMenu(True);
+  if IsOwnerDrawMenu then
+    RefreshMenu(True);
+end;
+
+function TJvPopupMenu.GetCanvas: TCanvas;
+begin
+  Result := FCanvas;
 end;
 
 procedure TJvPopupMenu.Notification(AComponent: TComponent; Operation: TOperation);
@@ -1551,32 +1568,32 @@ begin
     begin
       SaveIndex := SaveDC(hDC);
       try
-        FCanvas.Handle := hDC;
+        Canvas.Handle := hDC;
         if (Item.Parent = Self.Items) and (FLeftMargin > 0) then
           if (itemAction = ODA_DRAWENTIRE) then
           begin
-            MarginRect := FCanvas.ClipRect;
+            MarginRect := Canvas.ClipRect;
             MarginRect.Left := 0;
             MarginRect.Right := FLeftMargin;
             DrawMargin(MarginRect);
           end;
-        SetDefaultMenuFont(FCanvas.Font);
-        FCanvas.Font.Color := clMenuText;
-        FCanvas.Brush.Color := clMenu;
+        SetDefaultMenuFont(Canvas.Font);
+        Canvas.Font.Color := clMenuText;
+        Canvas.Brush.Color := clMenu;
         if mdDefault in State then
-          FCanvas.Font.Style := FCanvas.Font.Style + [fsBold];
+          Canvas.Font.Style := Canvas.Font.Style + [fsBold];
         if (mdSelected in State) and
         not (Style in [msBtnLowered, msBtnRaised]) then
         begin
-          FCanvas.Brush.Color := clHighlight;
-          FCanvas.Font.Color := clHighlightText;
+          Canvas.Brush.Color := clHighlight;
+          Canvas.Font.Color := clHighlightText;
         end;
         if (Item.Parent = Self.Items) then
           Inc(rcItem.Left, LeftMargin + 1);
         with rcItem do
-          IntersectClipRect(FCanvas.Handle, Left, Top, Right, Bottom);
+          IntersectClipRect(Canvas.Handle, Left, Top, Right, Bottom);
         DrawItem(Item, rcItem, State);
-        FCanvas.Handle := 0;
+        Canvas.Handle := 0;
       finally
         RestoreDC(hDC, SaveIndex);
       end;
@@ -1593,19 +1610,19 @@ begin
     Item := TMenuItem(Pointer(itemData));
     if Assigned(Item) and (FindItem(Item.Command, fkCommand) = Item) then
     begin
-      FCanvas.Handle := GetDC(0);
+      Canvas.Handle := GetDC(0);
       try
-        SetDefaultMenuFont(FCanvas.Font);
+        SetDefaultMenuFont(Canvas.Font);
         if Item.Default then
-          FCanvas.Font.Style := FCanvas.Font.Style + [fsBold];
+          Canvas.Font.Style := Canvas.Font.Style + [fsBold];
 
         FJvMenuItemPainter.Measure(Item, Integer(itemWidth), Integer(itemHeight));
         MeasureItem(Item, Integer(itemWidth), Integer(itemHeight));
         if (Item.Parent = Self.Items) then
           Inc(itemWidth, LeftMargin + 1);
       finally
-        ReleaseDC(0, FCanvas.Handle);
-        FCanvas.Handle := 0;
+        ReleaseDC(0, Canvas.Handle);
+        Canvas.Handle := 0;
       end;
     end;
   end;
@@ -2658,9 +2675,9 @@ end;
 procedure TJvXPMenuItemPainter.Paint(Item: TMenuItem; ItemRect: TRect;
   State: TMenuOwnerDrawState);
 var
-  DesktopCanvas : TCanvas;
-  CanvasWindow : HWND;
-  WRect : TRect;
+  DesktopCanvas: TJvDesktopCanvas;
+  CanvasWindow: HWND;
+  WRect: TRect;
 begin
   FItem := Item;
 
@@ -2676,14 +2693,13 @@ begin
       (FMainMenu.GetOwner is TForm) and
       (TForm(FMainMenu.GetOwner).Handle = CanvasWindow)) then
     begin
-      DesktopCanvas := TCanvas.Create;
-      DesktopCanvas.Handle := GetWindowDC(GetDesktopWindow);
+      DesktopCanvas := TJvDesktopCanvas.Create;
       GetWindowRect(CanvasWindow, WRect);
 
       with DesktopCanvas do
       begin
         Brush.Style := bsClear;
-        Pen.Color := RGB(102,102,102);
+        Pen.Color := RGB(102, 102, 102);
         Pen.Style := psSolid;
 
         // dark contour
@@ -2801,7 +2817,6 @@ begin
           end;
         end;
       end;
-      ReleaseDC(GetDesktopWindow, DesktopCanvas.Handle);
       DesktopCanvas.Free;
     end;
   end;

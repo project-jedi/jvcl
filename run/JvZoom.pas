@@ -43,7 +43,6 @@ type
     FActive: Boolean;
     FZoomLevel: Integer;
     FDelay: Cardinal;
-    FDesktopCanvas: TCanvas;
     FLastPoint: TPoint;
     FCrosshair: Boolean;
     FCrosshairColor: TColor;
@@ -64,7 +63,6 @@ type
     procedure FlushCache;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Active: Boolean read FActive write SetActive default True;
@@ -90,6 +88,9 @@ type
 
 implementation
 
+uses
+  JvJVCLUtils;
+
 constructor TJvZoom.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -102,20 +103,9 @@ begin
   FCacheOnDeactivate := True;
   FActive := True;
 
-  //Create the canvas to retrieve informations
-  FDesktopCanvas := TCanvas.Create;
-  FDesktopCanvas.Handle := GetDC(HWND_DESKTOP);
-
   FTimer := TTimer.Create(Self);
   FTimer.OnTimer := PaintMe;
   FTimer.Interval := 100;
-end;
-
-destructor TJvZoom.Destroy;
-begin
-  ReleaseDC(HWND_DESKTOP, FDesktopCanvas.Handle);
-  FDesktopCanvas.Free;
-  inherited Destroy;
 end;
 
 procedure TJvZoom.Cache;
@@ -176,6 +166,7 @@ var
   P: TPoint;
   X, Y, Dx, Dy: Integer;
   SourceRect: TRect;
+  DesktopCanvas: TJvDesktopCanvas;
 begin
   GetCursorPos(P);
 
@@ -222,7 +213,9 @@ begin
   SourceRect.Bottom := P.Y + Y;
 
   //Draw the area around the mouse
-  Canvas.CopyRect(Rect(0, 0, Width, Height), FDesktopCanvas, SourceRect);
+  DesktopCanvas := TJvDesktopCanvas.Create;
+  Canvas.CopyRect(Rect(0, 0, Width, Height), DesktopCanvas, SourceRect);
+  DesktopCanvas.Free;
 
   if FCrosshair then
     with Canvas do

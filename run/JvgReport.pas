@@ -133,8 +133,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     //    property OnResize;
-    property ExternalCanvas: TCanvas read FExternalCanvas write
-      FExternalCanvas;
+    property ExternalCanvas: TCanvas read FExternalCanvas write FExternalCanvas;
     //    procedure RepaintBorder;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -254,16 +253,17 @@ end;
 procedure TJvgReportScrollBox.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   with TCanvas.Create do
-  begin
-    Handle := Msg.DC;
-    //    Pen.Color := clWindow;
-    //    Brush.Color := clWindow;
-    //    Brush.Style := bsCross;
-    Brush.Bitmap := FGridImage;
-    FillRect(ClientRect);
-    Handle := 0;
-    Free;
-  end;
+    try
+      Handle := Msg.DC;
+      //    Pen.Color := clWindow;
+      //    Brush.Color := clWindow;
+      //    Brush.Style := bsCross;
+      Brush.Bitmap := FGridImage;
+      FillRect(ClientRect);
+      Handle := 0;
+    finally
+      Free;
+    end;
   Msg.Result := 1;
   if Assigned(FOnDraw) then
     FOnDraw(Self);

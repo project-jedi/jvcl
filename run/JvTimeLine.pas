@@ -240,6 +240,7 @@ type
     FStates: TJvTimeLineStates;
     FRangeAnchor: TJvTimeItem;
     FDragItem: TJvTimeItem;
+    function GetCanvas: TCanvas;
     procedure SetHelperYears(Value: Boolean);
     procedure SetFlat(Value: Boolean);
     procedure SetScrollArrows(Value: TJvScrollArrows);
@@ -346,6 +347,7 @@ type
     property Align default alTop;
     property Color default clWindow;
     { new properties }
+    property Canvas: TCanvas read GetCanvas;
     property Year: Word read GetYear write SetYear;
     property Month: Word read GetMonth write SetMonth;
     property Selected: TJvTimeItem read FSelectedItem write SetSelectedItem;
@@ -362,7 +364,7 @@ type
     property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default
       False;
     property Flat: Boolean read FFlat write SetFlat default False;
-    property Hint:string read GetHint write SetHint; 
+    property Hint: string read GetHint write SetHint;
     property YearFont: TFont read FYearFont write SetYearFont;
     property YearWidth: TJvYearWidth read FYearWidth write SetYearWidth default
       140;
@@ -1076,9 +1078,6 @@ begin
 
   FCanvas := TControlCanvas.Create;
   FCanvas.Control := Self;
-  FCanvas.Pen.Color := clBlack;
-  FCanvas.Pen.Mode := pmNotXor;
-  FCanvas.Pen.Style := psDot;
 
   Bmp := TBitmap.Create;
   FItemHintImageList := TImageList.CreateSize(14, 6);
@@ -1130,6 +1129,26 @@ begin
   SetFirstDate(Date);
 end;
 
+destructor TJvCustomTimeLine.Destroy;
+begin
+  FDragImages.Free;
+  FYearList.Free;
+  FBmp.Free;
+  FList.Free;
+  FTimeItems.Free;
+  FImageChangeLink.Free;
+  FYearFont.Free;
+  FItemHintImageList.Free;
+  inherited Destroy;
+  // (rom) destroy Canvas AFTER inherited Destroy
+  FCanvas.Free;
+end;
+
+function TJvCustomTimeLine.GetCanvas: TCanvas;
+begin
+  Result := FCanvas;
+end;
+
 procedure TJvCustomTimeLine.DoYearFontChange(Sender: TObject);
 begin
   Invalidate;
@@ -1155,20 +1174,6 @@ begin
     else
       FArrows[I].UpdatePlacement;
   end;
-end;
-
-destructor TJvCustomTimeLine.Destroy;
-begin
-  FDragImages.Free;
-  FCanvas.Free;
-  FYearList.Free;
-  FBmp.Free;
-  FList.Free;
-  FTimeItems.Free;
-  FImageChangeLink.Free;
-  FYearFont.Free;
-  FItemHintImageList.Free;
-  inherited Destroy;
 end;
 
 procedure TJvCustomTimeLine.UpdateOffset;
@@ -1544,8 +1549,14 @@ procedure TJvCustomTimeLine.DrawDragLine(X: Integer);
 begin
   if not DragLine then
     Exit;
-  FCanvas.MoveTo(X, 0);
-  FCanvas.LineTo(X, ClientHeight);
+  with FCanvas do
+  begin
+    Pen.Color := clBlack;
+    Pen.Mode := pmNotXor;
+    Pen.Style := psDot;
+    MoveTo(X, 0);
+    LineTo(X, ClientHeight);
+  end;
 end;
 
 procedure TJvCustomTimeLine.MoveDragLine(ANewX: Integer);
@@ -1590,7 +1601,7 @@ begin
       if ResetLevels then
       begin
         Items[I].Level := 0;
-        UpdateItem(Items[I].Index, Canvas);
+        UpdateItem(Items[I].Index, FCanvas);
       end;
       FList.Add(Items[I]);
     end;
@@ -1609,7 +1620,7 @@ begin
           (FList[I] <> FList[J]) then
         begin
           TJvTimeItem(FList[J]).Level := TJvTimeItem(FList[J]).Level + 1;
-          UpdateItem(TJvTimeItem(FList[J]).Index, Canvas);
+          UpdateItem(TJvTimeItem(FList[J]).Index, FCanvas);
         end;
     end;
   finally
@@ -1622,7 +1633,7 @@ begin
   if Assigned(Item) then
   begin
     Item.Selected := True;
-    UpdateItem(Item.Index, Canvas);
+    UpdateItem(Item.Index, FCanvas);
   end;
 end;
 
@@ -1832,7 +1843,7 @@ begin
   FYearList.Clear;
   UpdateOffset;
   { draw the top horizontal line }
-  with Canvas do
+  with FCanvas do
   begin
     Font := Self.Font;
     Brush.Color := Color;
@@ -1851,7 +1862,7 @@ begin
   fYr := Y;
   DecodeDate(GetLastDate, Y, M, D);
   aShadowRight := IntToStr(Y);
-  SetBkMode(Canvas.Handle, Windows.Transparent);
+  SetBkMode(FCanvas.Handle, Windows.Transparent);
   LastDate := FFirstDate;
   FirstYear := True;
   while LastDate <= (GetLastDate + 5) do
@@ -1859,13 +1870,13 @@ begin
     DecodeDate(LastDate, Y, M, D);
     if M <> 1 then
     begin { not a new year, so it's a month }
-      DrawMonth(Canvas, I, M);
+      DrawMonth(FCanvas, I, M);
       if FSupportLines and ((FYearWidth >= 140) or (M mod 3 = 1)) then
-        DrawVertSupport(Canvas, I);
+        DrawVertSupport(FCanvas, I);
       if FShowMonths and (FYearWidth >= 140) then
-        DrawMonthName(Canvas, M, I);
+        DrawMonthName(FCanvas, M, I);
       if FShowDays and (FYearWidth >= 1200) then
-        DrawDays(Canvas, MonthDays[IsLeapYear(Y), M], I);
+        DrawDays(FCanvas, MonthDays[IsLeapYear(Y), M], I);
     end
     else
     begin { this is a new year }
@@ -1876,12 +1887,12 @@ begin
         FirstYear := False;
       end;
       if FSupportLines then
-        DrawVertSupport(Canvas, I);
+        DrawVertSupport(FCanvas, I);
       { draw text for january here }
       if FShowMonths and (FYearWidth >= 144) then
-        DrawMonthName(Canvas, M, I);
+        DrawMonthName(FCanvas, M, I);
       if FShowDays and (FYearWidth >= 1200) then
-        DrawDays(Canvas, MonthDays[IsLeapYear(Y), M], I);
+        DrawDays(FCanvas, MonthDays[IsLeapYear(Y), M], I);
     end;
     Inc(I, Trunc(FMonthWidth));
 
@@ -1905,17 +1916,17 @@ begin
   end;
   for I := 0 to FYearList.Count - 1 do
   begin
-    DrawYear(Canvas, Integer(FYearList[I]), IntToStr(fYr));
+    DrawYear(FCanvas, Integer(FYearList[I]), IntToStr(fYr));
     Inc(fYr);
   end;
   if HorzSupports then
-    DrawHorzSupports(Canvas);
+    DrawHorzSupports(FCanvas);
   UpdateItems;
   DrawScrollButtons;
   if FShowHiddenItemHints then
   begin
-    DrawLeftItemHint(Canvas);
-    DrawRightItemHint(Canvas);
+    DrawLeftItemHint(FCanvas);
+    DrawRightItemHint(FCanvas);
   end;
 end;
 
@@ -1960,7 +1971,7 @@ var
   Tmp: TColor;
   // R:TRect;
 begin
-  with Canvas do
+  with FCanvas do
   begin
     Tmp := Pen.Color;
     Pen.Color := clNavy;
@@ -1976,7 +1987,7 @@ procedure TJvCustomTimeLine.Paint;
 begin
   if FUpdate <> 0 then
     Exit;
-  DrawTimeLine(Canvas);
+  DrawTimeLine(FCanvas);
   if Focused then
     DrawFocus;
 end;
@@ -2127,7 +2138,7 @@ var
 begin
   FNewHeight := 0;
   for I := 0 to FTimeItems.Count - 1 do
-    UpdateItem(I, Canvas);
+    UpdateItem(I, FCanvas);
   if FAutoSize and (Align in [alTop, alBottom, alNone]) and
     (Height <> FNewHeight + FScrollHeight + 2) and (Items.Count > 0) then
   begin

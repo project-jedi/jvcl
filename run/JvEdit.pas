@@ -492,7 +492,7 @@ begin
         RestoreDC(Msg.DC, -1);
       end;
     finally
-      Canvas.Free
+      Canvas.Free;
     end;
   end;
 end;

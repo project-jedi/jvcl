@@ -47,6 +47,7 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
+    function GetCanvas: TCanvas;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
@@ -56,6 +57,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property Canvas: TCanvas read GetCanvas;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
@@ -77,8 +79,14 @@ end;
 
 destructor TJvgBitBtn.Destroy;
 begin
-  FCanvas.Free;
   inherited Destroy;
+  // (rom) destroy Canvas AFTER inherited Destroy
+  FCanvas.Free;
+end;
+
+function TJvgBitBtn.GetCanvas: TCanvas;
+begin
+  Result := FCanvas;
 end;
 
 procedure TJvgBitBtn.CNDrawItem(var Msg: TWMDrawItem);
@@ -96,7 +104,6 @@ begin
   R := ClientRect;
   IsDown := DrawItemStruct.itemState and ODS_SELECTED <> 0;
   if (not FOver) and (not IsDown) then
-    // (rom) using FCanvas now
     with FCanvas do
       if not Focused and not Default then
       begin

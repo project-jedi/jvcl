@@ -1206,7 +1206,7 @@ end;
 procedure TJvCustomListBox.DrawBackGround(ADC: HDC; const DoOffSet: Boolean);
 var
   ImageRect, ClipBox, ClientRect, Temp: TRect;
-  Cv: TCanvas;
+  Canvas: TCanvas;
   ClipComplexity: Integer;
 begin
   if (ADC = 0) or not Background.DoDraw then
@@ -1221,13 +1221,13 @@ begin
   if DoOffSet then
     OffsetRect(ClientRect, FLeftPosition, 0);
 
-  Cv := TCanvas.Create;
+  Canvas := TCanvas.Create;
   try
-    Cv.Handle := ADC;
-    if Cv.Handle = 0 then
+    Canvas.Handle := ADC;
+    if Canvas.Handle = 0 then
       Exit;
     if Background.Fillmode = bfmStretch then
-      Cv.StretchDraw(ClientRect, Background.Image)
+      Canvas.StretchDraw(ClientRect, Background.Image)
     else
     begin
       ImageRect := Background.Image.Canvas.ClipRect;
@@ -1236,7 +1236,7 @@ begin
         while ImageRect.Left < ClientRect.Right do
         begin
           if IntersectRect(Temp, ClipBox, ImageRect) then
-            Cv.Draw(ImageRect.Left, ImageRect.Top, Background.Image);
+            Canvas.Draw(ImageRect.Left, ImageRect.Top, Background.Image);
           OffsetRect(ImageRect, ImageRect.Right - ImageRect.Left, 0);
         end;
         OffsetRect(ImageRect, -ImageRect.Left,
@@ -1244,8 +1244,8 @@ begin
       end;
     end;
   finally
-    Cv.Handle := 0;
-    Cv.Free;
+    Canvas.Handle := 0;
+    Canvas.Free;
   end;
 end;
 

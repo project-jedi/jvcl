@@ -194,6 +194,26 @@ begin
   end;
 end;
 
+function InternalGetTextWidth(Font: TFont; Caption: string): Integer;
+var
+  Canvas: TCanvas;
+  PS: TPaintStruct;
+begin
+  BeginPaint(Application.Handle, PS);
+  try
+    Canvas := TCanvas.Create;
+    try
+      Canvas.Handle := PS.hDC;
+      Canvas.Font := Font;
+      Result := Canvas.TextWidth(Caption);
+    finally
+      Canvas.Free;
+    end;
+  finally
+    EndPaint(Application.Handle, PS);
+  end;
+end;
+
 //=== TJvCaptionList =========================================================
 
 constructor TJvCaptionList.Create(AParent: TJvGradientCaption);
@@ -353,27 +373,12 @@ end;
 
 function TJvCaption.IsFontStored: Boolean;
 begin
-  Result := not FParentFont;
+  Result := not ParentFont;
 end;
 
 function TJvCaption.GetTextWidth: Integer;
-var
-  Canvas: TCanvas;
-  PS: TPaintStruct;
 begin
-  BeginPaint(Application.Handle, PS);
-  try
-    Canvas := TCanvas.Create;
-    try
-      Canvas.Handle := PS.hDC;
-      Canvas.Font := FFont;
-      Result := Canvas.TextWidth(FCaption);
-    finally
-      Canvas.Free;
-    end;
-  finally
-    EndPaint(Application.Handle, PS);
-  end;
+  Result := InternalGetTextWidth(Font, Caption);
 end;
 
 procedure TJvCaption.SetVisible(Value: Boolean);
@@ -1094,23 +1099,8 @@ begin
 end;
 
 function TJvGradientCaption.GetTextWidth: Integer;
-var
-  Canvas: TCanvas;
-  PS: TPaintStruct;
 begin
-  BeginPaint(Application.Handle, PS);
-  try
-    Canvas := TCanvas.Create;
-    try
-      Canvas.Handle := PS.hDC;
-      Canvas.Font := FFont;
-      Result := Canvas.TextWidth(FFormCaption);
-    finally
-      Canvas.Free;
-    end;
-  finally
-    EndPaint(Application.Handle, PS);
-  end;
+  Result := InternalGetTextWidth(Font, FormCaption);
 end;
 
 procedure TJvGradientCaption.SetGradientSteps(Value: Integer);

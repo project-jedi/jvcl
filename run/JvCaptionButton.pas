@@ -640,7 +640,7 @@ end;
 
 procedure TJvCaptionButton.DrawButton(DC: HDC);
 var
-  Canvas: TCanvas;
+  Canvas: TControlCanvas;
 begin
   if not Visible or not FHasCaption then
     Exit;
