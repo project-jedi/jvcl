@@ -44,7 +44,7 @@ uses
   
   QControls, QImgList, QActnList, QTypes,
   
-  
+
   DesignEditors, DesignIntf,
 
   JvQBehaviorLabelEditor, JvQHTHintForm, JvQFooterEditor,
@@ -55,6 +55,9 @@ uses
   JvQZoom, JvQBehaviorLabel, JvQArrowButton,
   JvQaScrollText,
 
+  {$IFDEF LINUX}
+  JvQSpeedBar, JvQSpeedbarSetupForm,
+  {$ENDIF LINUX}
   JvQClock, JvQContentScroller, JvQColorBox,
   JvQColorButton,
   JvQDice,
@@ -63,19 +66,15 @@ uses
   JvQItemsPanel,
   JvQRollOut, JvQRollOutEditor,
   JvQScrollText, JvQSpacer, JvQSplitter, JvQNetscapeSplitter,
+
   JvQSwitch,
-  JvQTransparentButton, 
+  JvQTransparentButton,
   JvQColorForm, JvQDsgnIntf,
   JvQImageDrawThread, JvQWinampLabel, JvQComponentPanel,
   JvQButtons, JvQCaptionPanel, JvQMovableBevel
   ;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvCtrlsReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
 {$R ../Resources/JvCtrlsReg.dcr}
-{$ENDIF LINUX}
 
 procedure Register;
 begin
@@ -83,9 +82,9 @@ begin
     TJvTransparentButton2, TJvArrowButton, TJvColorButton,
     TJvHTButton, TJvSpacer, TJvSwitch, TJvColorBox, TJvColorSquare,
     TJvDropButton, TJvOfficeColorButton, TJvOfficeColorPanel]);
-  RegisterComponents(RsPaletteBarPanel, [TJvCaptionPanel,
-    TJvItemsPanel, TJvMovableBevel, TJvRollOut, TJvFooter, TJvGroupHeader,
-    TJvComponentPanel]);
+  RegisterComponents(RsPaletteBarPanel, [{$IFDEF LINUX}TJvSpeedBar,{$ENDIF}
+    TJvCaptionPanel, TJvItemsPanel, TJvMovableBevel, TJvRollOut,
+    TJvFooter, TJvGroupHeader, TJvComponentPanel]);
   RegisterComponents(RsPaletteLabel, [TJvBehaviorLabel,
     TJvHTLabel, TJvWinampLabel]);
   RegisterComponents(RsPaletteListComboTree, [TJvHTListBox, TJvHTComboBox]);
@@ -100,13 +99,16 @@ begin
 //  RegisterPropertyEditor(TypeInfo(TCursor), TJvxSplitter, 'Cursor', nil);
   //RegisterPropertyEditor(TypeInfo(TDateTime), TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
   //RegisterPropertyEditor(TypeInfo(TDateTime), TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
-//  RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedItem, 'BtnCaption', TStringProperty);
-
 //  RegisterPropertyEditor(TypeInfo(integer), TJvTransparentButton2, 'ActiveIndex', TJvTBImagesProperty);
 //  RegisterPropertyEditor(TypeInfo(integer), TJvTransparentButton2, 'DisabledIndex', TJvTBImagesProperty);
 //  RegisterPropertyEditor(TypeInfo(integer), TJvTransparentButton2, 'DownIndex', TJvTBImagesProperty);
 //  RegisterPropertyEditor(TypeInfo(integer), TJvTransparentButton2, 'GrayIndex', TJvTBImagesProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvRollOutImageOptions, '', TJvRollOutOptionsImagesProperty);
+  {$IFDEF LINUX}
+  RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedItem, 'BtnCaption', TStringProperty);
+  RegisterComponentEditor(TJvSpeedBar, TJvSpeedbarCompEditor);
+  RegisterNoIcon([TJvSpeedItem, TJvSpeedbarSection]);
+  {$ENDIF LINUX}
 
 //  RegisterComponentEditor(TJvScrollMax, TJvScrollMaxEditor);
   RegisterComponentEditor(TJvRollOut, TJvRollOutDefaultEditor);
@@ -114,10 +116,8 @@ begin
   RegisterComponentEditor(TJvFooter, TJvFooterEditor);
 //  RegisterComponentEditor(TJvImageListBox, TJvStringsEditor);
 //  RegisterComponentEditor(TJvImageComboBox, TJvStringsEditor);
-//  RegisterComponentEditor(TJvSpeedBar, TJvSpeedbarCompEditor);
 //  RegisterComponentEditor(TJvRegAuto, TJvRegAutoEditor);
 
-//  RegisterNoIcon([TJvSpeedItem, TJvSpeedbarSection]);
 //  RegisterClass(TJvScrollMaxBand);
   RegisterClass(TJvFooterBtn);
   RegisterActions(RsJVCLActionsCategory, [TJvRollOutAction], nil);

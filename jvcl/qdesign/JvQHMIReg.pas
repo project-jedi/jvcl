@@ -39,7 +39,7 @@ procedure Register;
 implementation
 
 // (rom) is this needed?
-{$R ..\..\Resources\JvHMIReg.dcr}
+{$R ../../Resources/JvHMIReg.dcr}
 
 uses
   Classes,

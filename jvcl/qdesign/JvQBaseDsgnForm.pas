@@ -40,7 +40,7 @@ uses
   
   
   QGraphics, QControls, QForms, QDialogs,
-  
+
   JvQComponent;
 
 type
@@ -89,7 +89,7 @@ uses
   Registry,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  IniFiles,
+  JvQRegistryIniFile,
   {$ENDIF LINUX}
   JvQBaseDsgnFrame, JvQConsts, JvQDsgnConsts;
 
@@ -159,7 +159,7 @@ var
   I: Integer;
 begin
   {$IFDEF LINUX}
-  with TIniFile.Create(GetEnvironmentVariable('HOME')+ PathDelim + SDelphiKey) do
+  with TJvRegistryIniFile.Create(GetEnvironmentVariable('HOME')+ PathDelim + SDelphiKey) do
   {$ENDIF LINUX}
   {$IFDEF MSWINDOWS}
   with TRegistry.Create do
@@ -190,7 +190,7 @@ var
   I: Integer;
 begin
   {$IFDEF LINUX}
-  with TIniFile.Create(GetEnvironmentVariable('HOME')+ PathDelim + SDelphiKey) do
+  with TJvRegistryIniFile.Create(GetEnvironmentVariable('HOME')+ PathDelim + SDelphiKey) do
   {$ENDIF LINUX}
   {$IFDEF MSWINDOWS}
   with TRegistry.Create do

@@ -57,9 +57,8 @@ uses
   QActnList, QImgList, QComCtrls, QStdCtrls, QToolWin, QMenus, QWindows,
   
 
-  DesignIntf, DesignEditors,
+  DesignIntf, DesignEditors, ClxDesignWindows,
 
-  ClxDesignWindows,
 
   JvQWizard;
 

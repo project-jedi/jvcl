@@ -1,7 +1,3 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
-
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -59,14 +55,13 @@ uses
   {$ELSE}
   JvQWizardAboutInfoForm,
   {$ENDIF USEJVCL}
-  JvQWizard, JvQWizardRouteMapNodes, JvQWizardRouteMapSteps{, JvQWizardEditorForm};
+  JvQWizard, JvQWizardRouteMapNodes, JvQWizardRouteMapSteps
+  {$IFDEF LINUX}
+  , JvQWizardEditorForm
+  {$ENDIF LINUX}
+  ;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvWizardReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
 {$R ../Resources/JvWizardReg.dcr}
-{$ENDIF LINUX}
 
 {$IFNDEF USEJVCL}
 resourcestring

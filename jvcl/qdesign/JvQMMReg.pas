@@ -61,7 +61,7 @@ begin
     TJvAnimatedImage, TJvSpecialImage]);
   RegisterComponents(RsPaletteBarPanel, [TJvGradientHeaderPanel, TJvGradient,
     TJvWaitingGradient, TJvSpecialProgress, TJvWaitingProgress]);
-  {$IFDEF WINDOWS}
+  {$IFDEF MSWINDOWS}
   RegisterComponents(RsPaletteNonVisual, [TJvID3v1, TJvID3v2, TJvWavePlayer]);
   {$ENDIF MSWINDOWS}
   RegisterComponents(RsPaletteSliderSplitter, [TJvSlider]);
