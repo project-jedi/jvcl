@@ -46,7 +46,7 @@ uses
 
 
  {$IF not declared(TJvExAnimate)}
-  This unit needs at least Delphi 7 or Kylix 3.
+   This unit needs at least Delphi 7 or Kylix 3.
  {$IFEND}
 
 

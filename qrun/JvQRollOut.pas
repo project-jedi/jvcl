@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -261,9 +261,9 @@ type
     property ButtonHeight;
     property Caption;
     property ChildOffset;
+    property Placement;     // should preceed collapsed
     property Collapsed;
     property Colors;
-//    property DragCursor;
     property DragMode;
     property Enabled;
     property Font;
@@ -272,7 +272,6 @@ type
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
-    property Placement;
     property PopupMenu;
     property ShowFocus;
     property ShowHint;
@@ -938,6 +937,7 @@ begin
     
     
     ws := Caption;
+    SetPenColor(Canvas.Handle, Font.Color);
     if Placement = plLeft then
       DrawText(Canvas.Handle, ws , -1, FButtonHeight , BevelWidth + 2, Canvas.Textwidth(ws), FButtonHeight, DT_VCENTER, 270)
     else

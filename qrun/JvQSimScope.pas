@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -453,7 +453,10 @@ begin
   Rect.Left := 0;
   Rect.Right := Width;
   Rect.Bottom := Height;
-  Canvas.CopyRect(Rect, FDrawBuffer.Canvas, Rect);
+  
+  
+  Canvas.CopyRect(Bounds(Left, Top, Width, Height), FDrawBuffer.Canvas, Rect);
+  
   FAllowed := True;
 end;
 

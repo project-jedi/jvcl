@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -338,7 +338,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+
   end;
   TJvExPubCustomForm = class(TJvExCustomForm)
   
@@ -378,6 +378,8 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
+    constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0);override;
+
     destructor Destroy; override;
   private
   
@@ -392,7 +394,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+
   end;
   TJvExPubForm = class(TJvExForm)
   
@@ -1105,7 +1107,12 @@ constructor TJvExForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHintColor := clInfoBk;
-  
+end;
+
+constructor TJvExForm.CreateNew(AOwner: TComponent; Dummy: Integer);
+begin
+  inherited CreateNew(AOwner, Dummy);
+  FHintColor := clInfoBk;
 end;
 
 destructor TJvExForm.Destroy;
@@ -1224,6 +1231,7 @@ procedure TJvExToolWindow.Paint;
 begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
+
 
 
 end.

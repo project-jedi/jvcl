@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -120,11 +120,11 @@ type
 
     procedure AdjustColorForm();
 
-
-
+    
+    
     function WidgetFlags: Integer; override;
     procedure Paint; override;
-
+    
 
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure ShowingChanged; override;
@@ -155,23 +155,24 @@ var
   ParentControl: TWinControl;
 begin
   inherited CreateNew(AOwner, Dummy);
+  HintColor := Application.HintColor;
   FInited := False;
   FShowDragBar := True;
-  FDragBarHint := 'Drag to floating';
 
   AutoScroll := False;
-
+  
   
   BorderIcons := [];
   BorderStyle := fbsDialog;
   {$IFDEF MSWINDOWS}
-  Font.Name := 'MS Shell Dlg 2';
+//  Font.Name := 'MS Shell Dlg 2';
   {$ENDIF MSWINDOWS}
   
   FormStyle := fsStayOnTop;
   Caption := 'Color Window';
 
   FToolWindowStyle := False;
+  FDragBarHint := 'Drag to float';
 
   ParentControl := Self;
 
@@ -187,8 +188,8 @@ begin
     Color := $999999;
     
     Height := MinDragBarHeight;
-    Hint := FDragBarHint;
     ShowHint := True;
+    Hint := FDragBarHint;
   end;
 
   FColorPanel := TJvOfficeColorPanel.Create(self);

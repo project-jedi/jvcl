@@ -46,8 +46,6 @@ type
   TJvListBox = TListBox;
   
   TJvDualListForm = class(TJvForm)
-    SrcList: TJvListBox;
-    DstList: TJvListBox;
     SrcLabel: TLabel;
     DstLabel: TLabel;
     IncBtn: TButton;
@@ -58,6 +56,8 @@ type
     CancelBtn: TButton;
     HelpBtn: TButton;
     Bevel1: TBevel;
+    SrcList: TListBox;
+    DstList: TListBox;
     procedure IncBtnClick(Sender: TObject);
     procedure IncAllBtnClick(Sender: TObject);
     procedure ExclBtnClick(Sender: TObject);

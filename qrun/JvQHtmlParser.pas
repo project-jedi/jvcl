@@ -31,7 +31,7 @@ Known Issues:
 
 {$I jvcl.inc}
 
-unit JvQHTMLParser;
+unit JvQHtmlParser;
 
 interface
 

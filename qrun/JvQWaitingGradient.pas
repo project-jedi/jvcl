@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -80,6 +80,7 @@ type
     property Constraints;
     property Color;
     property Cursor;
+    
     property DragMode;
     property GradientWidth: Integer read FGradientWidth write SetGradientWidth;
     property Enabled;
@@ -91,7 +92,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
-    property AlwaysRestart:boolean read FAlwaysRestart write FAlwaysRestart default False; 
+    property AlwaysRestart:boolean read FAlwaysRestart write FAlwaysRestart default False;
     property StartColor: TColor read FStartColor write SetStartColor default clBtnFace;
     property Visible;
     property Width default 100;
@@ -278,11 +279,13 @@ begin
 //  if csLoading in ComponentState then
 //    Exit;
   if FScroll = nil then Exit;
-  if FScroll.Suspended then
-    FScroll.Resume
-  else
+  if Value and FScroll.Suspended then
+  begin
+    FScroll.Resume;
+    if AlwaysRestart then Restart;
+  end
+  else if not Value and not FScroll.Suspended then
     FScroll.Suspend;
-  if AlwaysRestart then Restart;
 end;
 
 procedure TJvWaitingGradient.SetEndColor(const Value: TColor);

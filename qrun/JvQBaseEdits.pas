@@ -289,7 +289,7 @@ uses
   
   Math, JvQJCLUtils, JvQCalc, JvQConsts, JvQResources;
 
-{$R ../Resources/JvBaseEdits.res}
+{$R ../Resources/JvBaseEdits.Res}
 
 const
   sCalcBmp = 'JV_CEDITBMP'; { Numeric editor button glyph }

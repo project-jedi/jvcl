@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -124,7 +124,12 @@ implementation
 uses
   SysUtils;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvLED.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvLED.res}
+{$ENDIF LINUX}
 
 const
   cMaskLEDName = 'JVTR_MASK_LED';
@@ -174,7 +179,10 @@ begin
     Canvas.Rectangle(ClientRect);
   end;
   SrcRect := Rect(0, 0, FImgPict.Width, FImgPict.Height);
-  DestRect := Bounds(Left,Top,Width,Height);
+  
+  
+  DestRect := Bounds(Left, Top, Width, Height);
+  
   OffsetRect(DestRect, (ClientWidth - FImgPict.Width) div 2, (ClientHeight - FImgPict.Height) div 2);
   Canvas.CopyMode := cmSrcAnd;
   Canvas.CopyRect(DestRect, FImgMask.Canvas, SrcRect);

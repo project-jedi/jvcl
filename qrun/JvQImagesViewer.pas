@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -150,6 +150,13 @@ type
     property OnLoadEnd: TNotifyEvent read FOnLoadEnd write FOnLoadEnd;
     property OnLoadError: TJvImageLoadErrorEvent read FOnLoadError write FOnLoadError;
     property OnLoadProgress: TJvImageViewerLoadProgress read FOnLoadProgress write FOnLoadProgress;
+    property OnDrawItem;
+    property OnOptionsChanged;
+    property OnItemChanging;
+    property OnItemChanged;
+    property OnItemHint;
+    property OnInsertion;
+    property OnDeletion;
 
     property Align;
     property Anchors;

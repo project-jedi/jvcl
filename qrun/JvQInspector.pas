@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -29,6 +29,9 @@
  page, located at http://www.delphi-jedi.org
 
  RECENT CHANGES:
+   Mar 16, 2004, anonymous:
+    - (Line 7976) do not show own class for TControl selection in property.
+                  make sure that you set ComponentIndex to DisplayIndex
 
     Feb 8, 2004, Olivier Sannier obones@meloo.com
       - Introduced the TJvTypeInfoHelper class to help C++ Builder
@@ -199,7 +202,7 @@ type
 //  TJvInspConfKeyEvent = procedure(const SectionName: string; var ItemName: string; var ATypeInfo: PTypeInfo; var Allow:
 //    Boolean) of object;
   TJvInspConfKeyEvent = procedure(const SectionName: string; var ItemName: string; var ATypeInfo: PTypeInfo; var Allow:
-    Boolean; var Flags:TInspectorItemFlags) of object;
+    Boolean {; var Flags:TInspectorItemFlags}) of object;
 
   EJvInspector = class(EJVCLException);
   EJvInspectorItem = class(EJvInspector);
@@ -259,7 +262,7 @@ type
     FVertScrollBar: TScrollBar;
     
     { Standard TCustomControl events -WAP}
-    FOnEnter: TNotifyEvent;
+    //FOnEnter: TNotifyEvent;
     FOnContextPopup: TContextPopupEvent;
     FOnKeyDown: TKeyEvent;
     FOnKeyPress: TKeyPressEvent;
@@ -417,7 +420,7 @@ type
 
     { Standard TCustomControl events - these are really events fired by
       the TEdit control used when editing in a cell! -WAP}
-    property OnEnter: TNotifyEvent read FOnEnter write FOnEnter;
+    //property OnEnter: TNotifyEvent read FOnEnter write FOnEnter;
     property OnContextPopup: TContextPopupEvent read FOnContextPopup write FOnContextPopup;
     property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
@@ -478,7 +481,7 @@ type
     property OnItemValueChanged;
     property OnItemEdit; // NEW!       
 
-    property OnEnter;
+    //property OnEnter;
     property OnContextPopup;
     property OnKeyDown;
     property OnKeyPress;
@@ -1841,7 +1844,7 @@ uses
   
   
   QDialogs, QForms, QButtons, QConsts,
-
+  
   JclRTTI, JclLogic,
   JvQJCLUtils, JvQJVCLUtils, JvQThemes, JvQResources, JclStrings;
 
@@ -6214,7 +6217,7 @@ begin
       Memo.ScrollBars := ssVertical;
 
       //NEW: prevent lost data entry if focus shifts away, and that change of focus causes a refresh of the inspector!
-      
+
       //SetEditCtrl(Memo);
     end
     else
@@ -6297,7 +6300,7 @@ begin
     FreeAndNil(FListBox);
 
     SetEditCtrl(nil);
-//    FEditChanged := false;
+    //FEditChanged := false;
     
     if HadFocus then
       SetFocus;
@@ -7722,7 +7725,8 @@ begin
         else
           PrefixWithOwner := '';
         for J := 0 to CurOwner.ComponentCount - 1 do
-          if CurOwner.Components[J] is MinClass then
+          // don't allow setting self as property
+          if (CurOwner.Components[J] is MinClass) and (CurOwner.Components[J].ComponentIndex <> self.Parent.DisplayIndex) then
             SL.AddObject(PrefixWithOwner + CurOwner.Components[J].Name, CurOwner.Components[J]);
         if SL.Count > 0 then
         begin
@@ -10751,16 +10755,16 @@ var
   KeyName: string;
   KeyTypeInfo: PTypeInfo;
   TmpItem: TJvCustomInspectorItem;
-  NewFlags : TInspectorItemFlags;
+  //NewFlags : TInspectorItemFlags;
 
   function AllowAddKey: Boolean;
   begin
     KeyName := SL[I];
     KeyTypeInfo := System.TypeInfo(string);
     Result := True;
-    NewFlags := [iifVisible];    
+    //NewFlags := [iifVisible];
     if Assigned(AOnAddKey) then
-      AOnAddKey(ASection, KeyName, KeyTypeInfo, Result, NewFlags);
+      AOnAddKey(ASection, KeyName, KeyTypeInfo, Result {, NewFlags} );
   end;
 
 begin
@@ -10776,7 +10780,7 @@ begin
       begin
         TmpItem := TJvInspectorINIFileData.New(AParent, KeyName, ASection, SL[I], KeyTypeInfo,
           AINIFile);
-        TmpItem.FFlags := NewFlags;
+        //TmpItem.FFlags := NewFlags;
         // XXX Warren's first attempt to make inspector items know their data's names:
         //if (TmpItem.Parent.Name <> ASection) then
         //  TmpItem.Parent.Name := ASection;

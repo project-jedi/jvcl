@@ -2301,6 +2301,7 @@ begin
     case Location of
       flCustom:
         Result := DoGetFilename;
+      {$IFDEF MSWINDOWS}
       flTemp:
         Result := PathAddSeparator(GetWindowsTempFolder) + NameOnly;
       flWindows:
@@ -2309,6 +2310,15 @@ begin
         Result := PathAddSeparator(ExtractFilePath(ParamStr(0))) + NameOnly;
       flUserFolder:
         Result := PathAddSeparator(GetAppdataFolder) + RelPathName;
+      {$ENDIF MSWINDOWS}
+      {$IFDEF LINUX}
+      flTemp:
+        Result := '/tmp/' + NameOnly;
+      flExeFile:
+        Result := PathAddSeparator(ExtractFilePath(ParamStr(0))) + NameOnly;
+      flUserFolder:
+        Result := PathAddSeparator(GetEnvironmentVariable('HOME')) + RelPathName;
+      {$ENDIF LINUX}
     end;
   end;
 end;

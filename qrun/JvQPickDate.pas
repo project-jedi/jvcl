@@ -161,7 +161,7 @@ uses
   Math,
   JvQThemes, JvQConsts, JvQResources, JvQToolEdit, JvQJVCLUtils;
 
-{$R ../Resources/JvPickDate.res}
+{$R ../Resources/JvPickDate.Res}
 
 const
   SBtnGlyphs: array [0..3] of PChar =

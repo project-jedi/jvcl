@@ -33,7 +33,7 @@ Known Issues:
 
 {$HPPEMIT '#pragma link "wininet.lib"'}
 
-unit JvQFTPGrabber;
+unit JvQFtpGrabber;
 
 interface
 
