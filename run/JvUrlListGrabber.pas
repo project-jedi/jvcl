@@ -126,7 +126,7 @@ type
 implementation
 
 uses
-  JvConsts;
+  JvResources;
 
 constructor TJvUrlListGrabber.Create(AOwner: TComponent);
 begin
@@ -219,7 +219,7 @@ begin
       if DefaultGrabberIndex > -1 then
         FUrls.Objects[I] := JvUrlGrabberClassList[DefaultGrabberIndex].Create(FUrls[I], FDefaultGrabbersProperties.Items[DefaultGrabberIndex])
       else
-        raise ENoGrabberForUrl.CreateFmt(sENoGrabberForUrl, [FUrls[I]]);
+        raise ENoGrabberForUrl.CreateFmt(RsENoGrabberForUrl, [FUrls[I]]);
 
       // add in the list of owned objects
       FGrabbers.Add(TJvUrlGrabber(FUrls.Objects[I]));

@@ -332,7 +332,7 @@ var
   StartPos, Index: Integer;
 begin
   if FDict = '' then
-    raise EJVCLException.Create(SNoDictionaryLoaded);
+    raise EJVCLException.Create(RsENoDictionaryLoaded);
 
   FSourceText := SourceText;
   FWordEnd := 1;

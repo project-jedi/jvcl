@@ -147,7 +147,7 @@ begin
     if (ClassType <> TJvPlugIn) and not (csDesigning in ComponentState) then
     begin
       if not InitInheritedComponent(Self, TJvPlugIn) then
-        raise EResNotFound.CreateFmt(SFmtResNotFound, [ClassName]);
+        raise EResNotFound.CreateFmt(RsEFmtResNotFound, [ClassName]);
 
       // (rom) why this ?
       if Assigned(OnCreate) then

@@ -39,82 +39,82 @@ Known Issues:
  +---------------------------------------------------------------------------+
  | 02/18/2002   OnStartButtonClick, OnLastButtonClick, OnNextButtonClick,    |
  |              OnBackButtonClick, OnFinishButtonClick, OnCancelButtonClick, |
- |              is added for TJvWizardCustomPage with a Stop parameter.       |
+ |              is added for TJvWizardCustomPage with a Stop parameter.      |
  |                                                                           |
  |              Note: these page click events is called before the wizard    |
  |                    button click events.                                   |
  |                                                                           |
  | 02/16/2002   Suggested by <Theodore>:                                     |
- |                1) ModalResult property is added for TJvWizardButton        |
- |                2) Width property is added for TJvWizardButton              |
+ |                1) ModalResult property is added for TJvWizardButton       |
+ |                2) Width property is added for TJvWizardButton             |
  |                                                                           |
  | 02/12/2002   1) Suggested by <Max Evans>:                                 |
  |                  Having the next/finish buttons to be the default         |
  |                  button when a page shows.                                |
  |              2) Having the cancel button to be the default cancel button. |
  |                                                                           |
- | 02/11/2002   1) CanDisplay function is added for TJvWizardRouteMapControl. |
- |              2) OnDisplaying event is added for TJvWizardRouteMapControl,  |
+ | 02/11/2002   1) CanDisplay function is added for TJvWizardRouteMapControl.|
+ |              2) OnDisplaying event is added for TJvWizardRouteMapControl, |
  |                 so the route map can decide if it could display the page  |
  |                item or not.                                               |
  |                                                                           |
- | 02/10/2002   1) Introduce TJvWizardImage class.                            |
- |              2) Clean up the code (TJvWizardGraphicObject,                 |
- |                   TJvWizardPageObject, ..., etc)                           |
- |              3) Now the TJvWizardPageTitle is inherited from               |
- |                 TJvWizardGraphicObject(known as TJvWizardPersistent         |
+ | 02/10/2002   1) Introduce TJvWizardImage class.                           |
+ |              2) Clean up the code (TJvWizardGraphicObject,                |
+ |                   TJvWizardPageObject, ..., etc)                          |
+ |              3) Now the TJvWizardPageTitle is inherited from              |
+ |                 TJvWizardGraphicObject(known as TJvWizardPersistent       |
  |                 in former).                                               |
  |              4) Suggested by <Tim Schneider>:                             |
  |                  Controls in the wizard page with aligned set to          |
  |                  something should be aligned properly without covering    |
  |                  the page header as well as the watermark. Hint:          |
  |                    overrided AdjustClientRect method is added for         |
- |                    both TJvWizardCustomPage and TJvWizardWelcomePage.       |
+ |                    both TJvWizardCustomPage and TJvWizardWelcomePage.     |
  |                                                                           |
  | 02/09/2002   1) Finish button can be displayed separatly.                 |
  |              2) Bug fixed: Changing the value of EnabledButtons property  |
- |                 of TJvWizardCustomPage at run time doesn't refresh the     |
+ |                 of TJvWizardCustomPage at run time doesn't refresh the    |
  |                 buttons' status on the screen.                            |
  |                                                                           |
  | 02/08/2002   Bug fixed: the OnEnterPage event is not triggled properly,   |
  |                they would be called at the time the wizard is loading     |
  |                them. 'not (csLoading in ComponentState)' added as the     |
  |                part of checking condition in SetActivePage method         |
- |                of TJvWizard.                                               |
+ |                of TJvWizard.                                              |
  |                                                                           |
  | 02/07/2002   VERSION 1.6 RELEASED                                         |
  |                                                                           |
  |              1) New property EnabledButtons and VisibleButtons added for  |
- |                 TJvWizardCustomPage, so the developers can customize       |
+ |                 TJvWizardCustomPage, so the developers can customize      |
  |                 buttons for each page at design time and run time.        |
  |              2) Remove Enabled and Visible properties from                |
- |                 TJvWizardButton of TJvWizard.                               |
+ |                 TJvWizardButton of TJvWizard.                             |
  |                                                                           |
- | 02/06/2002   1) Bug fixed: change TJvWizardWelcomePage's color from        |
+ | 02/06/2002   1) Bug fixed: change TJvWizardWelcomePage's color from       |
  |                 clWindow to other colors or change                        |
- |                 TJvWizardInteriorPage's color from other colors to         |
+ |                 TJvWizardInteriorPage's color from other colors to        |
  |                 clWindow, the pages won't display in correct color.       |
  |                 Hint:                                                     |
  |                   By assigning default value of Color property in         |
- |                   published section of TJvWizardCustomPage and             |
- |                   TJvWizardWelcomePage class.                              |
+ |                   published section of TJvWizardCustomPage and            |
+ |                   TJvWizardWelcomePage class.                             |
  |              2) Suggested by <Steve Forbes>:                              |
- |                   ShowDivider added for TJvWizardPageHeader to enable      |
+ |                   ShowDivider added for TJvWizardPageHeader to enable     |
  |                   or disable drawing the page header divider.             |
  |              3) Use Object.Free instead of FreeAndNil,                    |
  |                 Rectangle(ARect.Left, ...) instead of Rectangle(ARect),   |
  |                 so we can support Delphi 4.                               |
  |                                                                           |
  | 02/05/2002   1) Added by <Theodore>:                                      |
- |                  ButtonHelp added for TJvWizard.                           |
- |              2) RepositionButtons method of TJvWizard is improved.         |
+ |                  ButtonHelp added for TJvWizard.                          |
+ |              2) RepositionButtons method of TJvWizard is improved.        |
  |                                                                           |
  | 02/04/2002   function IsForward added, return true if FromPage is         |
  |              forward to ToPage, return false if FromPage is backward      |
  |              to ToPage.                                                   |
  |                                                                           |
  | 02/03/2002   1) Bug fixed by <Theodore>: SelectPriorPage calls            |
- |                   OnSelectFirstPage event rather the OnSelectPriorPage.               |
+ |                   OnSelectFirstPage event rather the OnSelectPriorPage.   |
  |              2) Suggested by <Theodore>:                                  |
  |                   FromPage parameters added for OnEnterPage event,        |
  |                   so the developers can detect from where it enters.      |
@@ -130,35 +130,35 @@ Known Issues:
  | 02/02/2002   VERSION 1.5 RELEASED                                         |
  |                                                                           |
  |              1) DoAddPage, DoDeletePage, DoUpdatePage, DoMovePage added   |
- |                 for TJvWizardRouteMapControl                               |
- |              2) Overrided SetParent added for TJvWizardRouteMapControl     |
- |                   to detect if the parent is TJvWizard or its descentants. |
- | 01/31/2002   1) Improved the RepositionButtons method of TJvWizard,        |
+ |                 for TJvWizardRouteMapControl                              |
+ |              2) Overrided SetParent added for TJvWizardRouteMapControl    |
+ |                   to detect if the parent is TJvWizard or its descentants.|
+ | 01/31/2002   1) Improved the RepositionButtons method of TJvWizard,       |
  |                 so all the buttons can be positioned properly regardless  |
  |                 how their neighbors are.                                  |
  |              2) CM_VisibleChanged message handler added for               |
- |                 TJvWizardButtonControl, so when the button is visible or   |
+ |                 TJvWizardButtonControl, so when the button is visible or  |
  |                 invisible, it can make the rest buttons in proper         |
  |                 position.                                                 |
  |                                                                           |
- | 01/30/2002   1) Rename the methods of TJvWizardRouteMapControl             |
- |              2) WizardPageMoved method added for TJvWizardRouteMapControl  |
+ | 01/30/2002   1) Rename the methods of TJvWizardRouteMapControl            |
+ |              2) WizardPageMoved method added for TJvWizardRouteMapControl |
  |                 which fired after the order of the page changed.          |
- |              3) OnPaintPage event added for TJvWizardCustomPage, so        |
+ |              3) OnPaintPage event added for TJvWizardCustomPage, so       |
  |                 the developers can custom draw the page.                  |
- |              4) A TJvWizardCustomPage parameter added for IsFirstPage,     |
- |                 IsLastPage of TJvWizard to test if the specific page is    |
+ |              4) A TJvWizardCustomPage parameter added for IsFirstPage,    |
+ |                 IsLastPage of TJvWizard to test if the specific page is   |
  |                 the first page or the last page.                          |
- |              5) Buttons property added for TJvWizardCustomPage, it can     |
- |                 easily access all navigation buttons of TJvWizard.         |
+ |              5) Buttons property added for TJvWizardCustomPage, it can    |
+ |                 easily access all navigation buttons of TJvWizard.        |
  |              6) Improved the process to handle the button visible         |
  |                 property in more efficent way.                            |
- |                   see UpdateButtonsStatus method of TJvWizard              |
+ |                   see UpdateButtonsStatus method of TJvWizard             |
  |                                                                           |
- | 01/29/2002   1) Pages property added for TJvWizard.                        |
- |              2) PageCount property added for TJvWizard.                    |
+ | 01/29/2002   1) Pages property added for TJvWizard.                       |
+ |              2) PageCount property added for TJvWizard.                   |
  |              3) Page List Property Editor added for Pages property        |
- |                of TJvWizard. From this property editor, we can             |
+ |                of TJvWizard. From this property editor, we can            |
  |                                                                           |
  |                  a) Add new wizard pages.                                 |
  |                  b) Remove selected pages.                                |
@@ -167,91 +167,91 @@ Known Issues:
  | 01/28/2002   1) Bug fixed: if the current active page set to disabled,    |
  |                            the wizard would not go to next page.          |
  |              2) Page screen flicker problem solved by setting             |
- |                 the DoubleBuffered property of TJvWizardCustomPage         |
+ |                 the DoubleBuffered property of TJvWizardCustomPage        |
  |                 to True.                                                  |
- |              3) ParentFont property added for TJvWizardPageHeader.         |
+ |              3) ParentFont property added for TJvWizardPageHeader.        |
  |                                                                           |
  | 01/27/2002   VERSION 1.5 BETA RELEASED                                    |
  |                                                                           |
- |              1) JvWizard About form added by <Steve Forbes>                |
+ |              1) JvWizard About form added by <Steve Forbes>               |
  |                   Thanks for his great job !!!!                           |
  |              2) Improve the design time button function, press Back       |
  |                 button at first page will forward to the last page.       |
  |                 While press Next button at last page will forward to      |
- |                 the first page. (See FindNextPage method in TJvWizard)     |
+ |                 the first page. (See FindNextPage method in TJvWizard)    |
  |              3) Fixed AV when delete only one page in the wizard at       |
- |                 design time. (see RemovePage method in TJvWizard)          |
- |              4) NumGlyphs property added for TJvWizardNavigateButton by    |
+ |                 design time. (see RemovePage method in TJvWizard)         |
+ |              4) NumGlyphs property added for TJvWizardNavigateButton by   |
  |                 <Steve Forbes>, to solve the problem where the            |
  |                 NumGlyphs property of the actual button always reset      |
  |                 to 1 when it is created dynamically.                      |
- |              5) Layout property added for TJvWizardNavigateButton.         |
+ |              5) Layout property added for TJvWizardNavigateButton.        |
  |              6) Set ImageAlign property's default value of                |
- |                 TJvWizardPageHeader to waRight.                            |
+ |                 TJvWizardPageHeader to waRight.                           |
  |                                                                           |
  | 01/26/2002   1) Suggested by <Steve Forbes>:                              |
  |                   Anchors, AnchorPlacement, Indent property added for     |
- |                   the text in TJvWizardPageTitle. Remove Left, Top,        |
- |                   Width, Height properties from TJvWizardPageTitle. so     |
+ |                   the text in TJvWizardPageTitle. Remove Left, Top,       |
+ |                   Width, Height properties from TJvWizardPageTitle. so    |
  |                   it is much easiler to operate the title and subtitle.   |
- |              2) Image property added for TJvWizardCustomPage,              |
+ |              2) Image property added for TJvWizardCustomPage,             |
  |                 both Welcome page and Interior page can display a         |
  |                 background image.                                         |
- |              3) Image property added for the TJvWizardWaterMark.           |
+ |              3) Image property added for the TJvWizardWaterMark.          |
  |              4) ImageIndex, ImageAlign, ImageOffset property added for    |
- |                 TJvWizardPageHeader. the PageHeader use ImageIndex         |
+ |                 TJvWizardPageHeader. the PageHeader use ImageIndex        |
  |                 to retreive image from the header image list of           |
- |                 TJvWizard.                                                 |
+ |                 TJvWizard.                                                |
  |                                                                           |
  | 01/25/2002   VERSION 1.2 RELEASED                                         |
  |                                                                           |
- |                Finally, JvWizard has its offical icon!!! It is very cool!  |
+ |                Finally, JvWizard has its offical icon!!! It is very cool! |
  |                Thanks <Steve Forbes> for his great job !!!!               |
  |                                                                           |
- |              1) Move OnEnterPage, OnPage, OnExitPage event from TJvWizard  |
- |                 into TJvWizardCustomPage.                                  |
- |              2) TJvWizardPagePanel added, suggested by <Steve Forbes>.     |
- |              3) Glyph property added for TJvWizardNavigateButton.          |
- |              4) HeaderImages property added for TJvWizard, it is an        |
+ |              1) Move OnEnterPage, OnPage, OnExitPage event from TJvWizard |
+ |                 into TJvWizardCustomPage.                                 |
+ |              2) TJvWizardPagePanel added, suggested by <Steve Forbes>.    |
+ |              3) Glyph property added for TJvWizardNavigateButton.         |
+ |              4) HeaderImages property added for TJvWizard, it is an       |
  |                 image list, which stores all the page header images.      |
  |                                                                           |
- | 01/24/2002   1) Rename TJvWizardTitle to TJvWizardPageTitle.                |
- |              2) PaintTo method added for TJvWizardWaterMark.               |
- |                 PaintTo method added for TJvWizardPageHeader.              |
- |                 PainTo method added for TJvWizardPageTitle.                |
+ | 01/24/2002   1) Rename TJvWizardTitle to TJvWizardPageTitle.              |
+ |              2) PaintTo method added for TJvWizardWaterMark.              |
+ |                 PaintTo method added for TJvWizardPageHeader.             |
+ |                 PainTo method added for TJvWizardPageTitle.               |
  |              3) Remove the DisplayPageHeader method from                  |
- |                 TJvWizardCustomPage.                                       |
- |              4) OnPage event added for TJvWizard, fired after the page     |
+ |                 TJvWizardCustomPage.                                      |
+ |              4) OnPage event added for TJvWizard, fired after the page    |
  |                 shows up.                                                 |
  |              5) Pages, PageCount, PageIndex property, and default code    |
- |                 added for all virtual method for TJvWizardRouteMapControl. |
+ |                 added for all virtual method for TJvWizardRouteMapControl.|
  |              6) Compiler directive added, suggested                       |
  |                 by <Raymond J. Schappe>.                                  |
  |              7) Handle Design time package and Run time package,          |
  |                 package file name convenstion suggested by                |
  |                 <Steve Forbes>:                                           |
- |                   Design time package: JvWizardD?.dpk (bpl, dcp, ...)      |
- |                   Run time package: JvWizardD?R.dbp (bpl, dcp, ...)        |
+ |                   Design time package: JvWizardD?.dpk (bpl, dcp, ...)     |
+ |                   Run time package: JvWizardD?R.dbp (bpl, dcp, ...)       |
  |                   here the ? = Delphi Version (5, 6, ..., etc)            |
  |                                                                           |
- | 01/23/2002   1) Start Page, Last Page buttons added for TJvWizard,         |
+ | 01/23/2002   1) Start Page, Last Page buttons added for TJvWizard,        |
  |                 default they are invisible.                               |
- |              2) Visible property added for TJvWizardNavigateButton.        |
+ |              2) Visible property added for TJvWizardNavigateButton.       |
  |                                                                           |
- | 01/22/2002   BorderWidth property added for TJvWizardWaterMark, suggested  |
+ | 01/22/2002   BorderWidth property added for TJvWizardWaterMark, suggested |
  |              by <Steve Forbes>                                            |
  |                                                                           |
- |              1) Remove the TJvWizardButtonBar, now all the navigate        |
+ |              1) Remove the TJvWizardButtonBar, now all the navigate       |
  |                 buttons are located in the Wizard. Hint:                  |
- |                   Add overrided AdjustClientRect for TJvWizard.            |
+ |                   Add overrided AdjustClientRect for TJvWizard.           |
  |              2) Bug fixed: Add csAcceptsControls control style into       |
- |                   TJvWizard, otherwise it won't accept other controls      |
- |                   like JvWizardRouteMap.                                   |
- |              3) Bug fixed: TJvWizard.GetChildren procedure, it won't       |
- |                   display another controls (include JvWizardRouteMap       |
+ |                   TJvWizard, otherwise it won't accept other controls     |
+ |                   like JvWizardRouteMap.                                  |
+ |              3) Bug fixed: TJvWizard.GetChildren procedure, it won't      |
+ |                   display another controls (include JvWizardRouteMap      |
  |                   Control) even if the control is in the wizard.          |
- |              4) Align property added for TJvWizardRouteMap, so the         |
- |                 JvWizardRouteMap can display at either left or right       |
+ |              4) Align property added for TJvWizardRouteMap, so the        |
+ |                 JvWizardRouteMap can display at either left or right      |
  |                 side of the Wizard.                                       |
  |              5) Align property added for TKWaterMark, so it can be        |
  |                 displayed at either left or right side of Welcome Page.   |
@@ -266,22 +266,22 @@ Known Issues:
  |              2) Add OnEnterPage, triggled before the page shows up.       |
  |                 Add OnExitPage, triggled after the page is hidded.        |
  |                                                                           |
- | 01/14/2002   1) Add ShowRouteMap property for the TJvWizard.               |
- |              2) Add destructor in the TJvWizardRouteMap class to fix       |
- |                 AV when browse pages after destroy the TJvWizardRouteMap   |
+ | 01/14/2002   1) Add ShowRouteMap property for the TJvWizard.              |
+ |              2) Add destructor in the TJvWizardRouteMap class to fix      |
+ |                 AV when browse pages after destroy the TJvWizardRouteMap  |
  |                 component.                                                |
  |                                                                           |
- | 01/13/2002   Make the TJvWizardRouteMap as a separat new component         |
+ | 01/13/2002   Make the TJvWizardRouteMap as a separat new component        |
  |              so the user can design its own routemap and communicate      |
- |              with TJvWizard smoothly.                                      |
+ |              with TJvWizard smoothly.                                     |
  |                                                                           |
  | 01/12/2002   VERSION 1.0 RELEASED                                         |
  |                                                                           |
  |              1) Fixed by <Wayne Niddery> :                                |
  |                   Under certain circumstance, the Wizard did not always   |
  |                   default to the first page. Add overrided                |
- |                   Loaded method in the TJvWizard class.                    |
- |              2) Restructure: add TJvWizardHeader and TJvWizardWaterMark,    |
+ |                   Loaded method in the TJvWizard class.                   |
+ |              2) Restructure: add TJvWizardHeader and TJvWizardWaterMark,  |
  |                 I hate to list all properites like: HeaderColor,          |
  |                 HeaderWidth, HeaderVisible, ... etc. Instead, I group     |
  |                 them together into particular class, and it can make      |
@@ -298,26 +298,26 @@ Known Issues:
  |                                                                           |
  |              1) Delete BackButton, NextButton, FinishButton,              |
  |                 CancelButton property, instead of a Button array.         |
- |              2) Introduce TJvWizardBackButton, TJvWizardNextButton,         |
- |                 TJvWizardFinishButton and TJvWizardCancelButton Control     |
- |              3) Add TJvWizardTitle class, HeaderColor, HeaderHeight,       |
- |                 HeaderVisible property for TJvWizardCustomPage.            |
+ |              2) Introduce TJvWizardBackButton, TJvWizardNextButton,       |
+ |                 TJvWizardFinishButton and TJvWizardCancelButton Control   |
+ |              3) Add TJvWizardTitle class, HeaderColor, HeaderHeight,      |
+ |                 HeaderVisible property for TJvWizardCustomPage.           |
  |              4) Add WaterMarkColor, WaterMarkWidth, WaterMarkVisible      |
- |                 property for TJvWizardWelcomePage.                         |
- |              5) Paint method of TJvWizardWelcomPage improved,              |
- |                 TJvWizardInteriorPage, so they can display header          |
+ |                 property for TJvWizardWelcomePage.                        |
+ |              5) Paint method of TJvWizardWelcomPage improved,             |
+ |                 TJvWizardInteriorPage, so they can display header         |
  |                 as well as title and subtitle.                            |
  |                                                                           |
- | 01/06/2002   1) Add TJvWizardRouteMap, Improve all existing functions      |
+ | 01/06/2002   1) Add TJvWizardRouteMap, Improve all existing functions     |
  |                 and class.                                                |
- |              2) Add TJvWizardCustomPage.                                   |
+ |              2) Add TJvWizardCustomPage.                                  |
  |                                                                           |
- | 01/05/2002   1) Add TJvWizardNavigateButton class.                         |
+ | 01/05/2002   1) Add TJvWizardNavigateButton class.                        |
  |              2) Add BackButton, NextButton, FinishButton,                 |
- |                 CancelButton property for TJvWizard.                       |
+ |                 CancelButton property for TJvWizard.                      |
  |                                                                           |
- | 01/04/2002   1) Add ShowDivider property for TJvWizard.                    |
- |              2) Add GetButtonClick, SetButtonClick for TJvWizardButtonBar. |
+ | 01/04/2002   1) Add ShowDivider property for TJvWizard.                   |
+ |              2) Add GetButtonClick, SetButtonClick for TJvWizardButtonBar.|
  |              3) Draw divider in fsGroove frame style.                     |
  |                                                                           |
  | 12/30/2001   Initial create.                                              |
@@ -1005,7 +1005,7 @@ end;
 constructor TJvWizardStartButton.Create(AOwner: TComponent);
 begin
   inherited;
-  Caption := rsFirstButtonCaption;
+  Caption := RsFirstButtonCaption;
   Visible := False;
   Anchors := [akLeft, akBottom];
   Width := ciButtonWidth + 10;
@@ -1039,7 +1039,7 @@ end;
 constructor TJvWizardLastButton.Create(AOwner: TComponent);
 begin
   inherited;
-  Caption := rsLastButtonCaption;
+  Caption := RsLastButtonCaption;
   Visible := False;
   Anchors := [akLeft, akBottom];
   Width := ciButtonWidth + 10;
@@ -1073,7 +1073,7 @@ end;
 constructor TJvWizardBackButton.Create(AOwner: TComponent);
 begin
   inherited;
-  Caption := rsBackButtonCaption;
+  Caption := RsBackButtonCaption;
   Enabled := False;
   Visible := True;
   Width := ciButtonWidth;
@@ -1107,7 +1107,7 @@ end;
 constructor TJvWizardNextButton.Create(AOwner: TComponent);
 begin
   inherited;
-  Caption := rsNextButtonCaption;
+  Caption := RsNextButtonCaption;
   Enabled := False;
   Visible := True;
   Width := ciButtonWidth;
@@ -1141,7 +1141,7 @@ end;
 constructor TJvWizardFinishButton.Create(AOwner: TComponent);
 begin
   inherited;
-  Caption := rsFinishButtonCaption;
+  Caption := RsFinishButtonCaption;
   Visible := False;
   Width := ciButtonWidth;
   Alignment := alRight;
@@ -1496,7 +1496,7 @@ begin
   begin
     if not ((AParent is TJvWizard) or (AParent is TJvWizardCustomPage)) then
     begin
-      raise EJvWizardError.Create(rsInvalidParentControl);
+      raise EJvWizardError.Create(RsEInvalidParentControl);
     end;
     if AParent is TJvWizardCustomPage then
     begin
@@ -1902,14 +1902,14 @@ begin
   FParentFont := True;
   { Set up Title }
   FTitle := TJvWizardPageTitle.Create;
-  FTitle.FText := rsTitle;
+  FTitle.FText := RsTitle;
   FTitle.FAnchors := [akLeft, akTop, akRight];
   FTitle.FFont.Size := 12;
   FTitle.FFont.Style := [fsBold];
   { Set up Subtitle }
   FSubtitle := TJvWizardPageTitle.Create;
   FSubtitle.FAnchors := [akLeft, akTop, akRight, akBottom];
-  FSubtitle.FText := rsSubtitle;
+  FSubtitle.FText := RsSubtitle;
   FImageAlignment := iaRight;
   FImageOffset := 0;
   FImageIndex := -1;
@@ -2501,7 +2501,7 @@ begin
   inherited;
   FWaterMark := TJvWizardWaterMark.Create;
   FWaterMark.WizardPage := Self;
-  FHeader.FTitle.FText := rsWelcome;
+  FHeader.FTitle.FText := RsWelcome;
   FHeader.FShowDivider := False;
   Color := clWindow;
 end;
@@ -3188,7 +3188,7 @@ function TJvWizard.IsForward(const FromPage, ToPage: TJvWizardCustomPage): Boole
 begin
   if Assigned(FromPage) and Assigned(ToPage) and
     (FromPage.Wizard <> ToPage.Wizard) then
-    raise EJvWizardError.Create(rsInvalidWizardPage);
+    raise EJvWizardError.Create(RsEInvalidWizardPage);
   Result := not Assigned(FromPage) or (Assigned(ToPage) and
     (FromPage.PageIndex < ToPage.PageIndex));
 end;

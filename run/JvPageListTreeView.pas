@@ -888,7 +888,6 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
-
 procedure TJvCustomPageListTreeView.SetPageListComponent(const Value: TComponent);
 var obj: IPageList;
 begin
@@ -903,7 +902,7 @@ begin
       Exit;
     end;
     if not Supports(Value, IPageList, obj) then
-      raise EPageListError.CreateFmt(SInterfaceNotSupported, [Value.Name, 'IPageList']);
+      raise EPageListError.CreateFmt(RsEInterfaceNotSupported, [Value.Name, 'IPageList']);
     SetPageList(obj);
     FPageListComponent := Value;
     FPageListComponent.FreeNotification(self);

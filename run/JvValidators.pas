@@ -231,7 +231,7 @@ uses
   TypInfo,
   Forms,
   JclUnicode, // for reg exp support
-  JvConsts, JvResources;
+  JvTypes, JvResources;
 
 var
   FValidatorsList: TStringList = nil;
@@ -315,7 +315,7 @@ end;
 class procedure TJvBaseValidator.GetBaseValidatorInfo(Index:integer;var DisplayName:string;var ABaseValidatorClass:TJvBaseValidatorClass);
 begin
   if (FValidatorsList = nil) or (Index < 0) or (Index >= FValidatorsList.Count) then
-    raise Exception.CreateFmt(sInvalidIndexd,[Index]);
+    raise EJVCLException.CreateFmt(RsEInvalidIndexd, [Index]);
   DisplayName := FValidatorsList[Index];
   ABaseValidatorClass := TJvBaseValidatorClass(FValidatorsList.Objects[Index]);
 end;
@@ -652,9 +652,9 @@ begin
       Exit;
     end;
     if not Supports(Value, IJvValidationSummary, obj) then
-      raise EValidatorError.CreateFmt(SInterfaceNotSupported, [Value.Name, 'IJvValidationSummary']);
+      raise EValidatorError.CreateFmt(RsEInterfaceNotSupported, [Value.Name, 'IJvValidationSummary']);
     if Value = self then
-      raise EValidatorError.Create(SCircularReference);
+      raise EValidatorError.Create(RsECircularReference);
     SetValidationSummary(obj);
     FValidationSummaryComponent := Value;
     FValidationSummaryComponent.FreeNotification(self);
@@ -675,9 +675,9 @@ begin
       Exit;
     end;
     if not Supports(Value, IJvErrorIndicator, obj) then
-      raise EValidatorError.CreateFmt(SInterfaceNotSupported, [Value.Name, 'IJvErrorIndicator']);
+      raise EValidatorError.CreateFmt(RsEInterfaceNotSupported, [Value.Name, 'IJvErrorIndicator']);
     if Value = self then
-      raise EValidatorError.Create(SCircularReference);
+      raise EValidatorError.Create(RsECircularReference);
     SetErrorIndicator(obj);
     FErrorIndicatorComponent := Value;
     FErrorIndicatorComponent.FreeNotification(self);
@@ -689,7 +689,7 @@ end;
 procedure TJvValidators.Insert(AValidator: TJvBaseValidator);
 begin
   Debug('TJvValidators.Insert: inserting %s', [ComponentName(AValidator)]);
-  Assert(AValidator <> nil, SInsertNilValidator);
+  Assert(AValidator <> nil, RsEInsertNilValidator);
   AValidator.FValidator := self;
   if FItems.IndexOf(AValidator) < 0 then
     FItems.Add(AValidator);
@@ -698,8 +698,8 @@ end;
 procedure TJvValidators.Remove(AValidator: TJvBaseValidator);
 begin
   Debug('TJvValidators.Remove: removing %s', [ComponentName(AValidator)]);
-  Assert(AValidator <> nil, SRemoveNilValidator);
-  Assert(AValidator.FValidator = self, SValidatorNotChild);
+  Assert(AValidator <> nil, RsERemoveNilValidator);
+  Assert(AValidator.FValidator = self, RsEValidatorNotChild);
   AValidator.FValidator := nil;
   FItems.Remove(AValidator);
 end;

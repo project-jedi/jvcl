@@ -765,7 +765,7 @@ begin
     lpfnDoOrganizeFavDlg := LPFNORGFAV(GetProcAddress(SHModule,
       'DoOrganizeFavDlg'));
     if not Assigned(lpfnDoOrganizeFavDlg) then
-      raise EWinDialogError.Create(SNotSupported);
+      raise EWinDialogError.Create(RsENotSupported);
     lpfnDoOrganizeFavDlg(Application.Handle, PChar(Path));
   finally
     FreeLibrary(SHModule);
@@ -1181,7 +1181,7 @@ begin
     Result := Boolean(SHOutOfMemoryMessageBox(Application.Handle, CaptionBuffer,
       MB_OK or MB_ICONHAND))
   else
-    raise EWinDialogError.Create(sNotSupported);
+    raise EWinDialogError.Create(RsENotSupported);
 end;
 
 //=== TJvShellAboutDialog ====================================================
@@ -1277,7 +1277,7 @@ begin
     SHRunDialog(Application.Handle, FIcon.Handle, nil, CaptionBuffer,
       DescriptionBuffer, 0)
   else
-    raise EWinDialogError.Create(sNotSupported);
+    raise EWinDialogError.Create(RsENotSupported);
 end;
 
 procedure TJvRunDialog.SetIcon(const Value: TIcon);
@@ -1528,13 +1528,13 @@ end;
 function TJvDiskFullDialog.Execute: Boolean;
 begin
   if not Assigned(SHHandleDiskFull) then
-    raise EWinDialogError.Create(SNotSupported);
+    raise EWinDialogError.Create(RsENotSupported);
   Result := GetDriveType(PChar(DriveChar + ':\')) = 3;
   if Result then
     SHHandleDiskFull(GetFocus, GetDrive);
   // (rom) disabled to make Result work
   //else
-  //  raise EWinDialogError.CreateFmt(SUnSupportedDisk, [DriveChar]);
+  //  raise EWinDialogError.CreateFmt(RsEUnSupportedDisk, [DriveChar]);
 end;
 
 procedure TJvDiskFullDialog.SetDriveChar(Value: Char);
@@ -1542,7 +1542,7 @@ begin
   if Value in ['a'..'z'] then
     Value := Char(Ord(Value) - $20);
   if not (Value in ['A'..'Z']) then
-    raise EWinDialogError.CreateFmt(SInvalidDriveChar, [Value]);
+    raise EWinDialogError.CreateFmt(RsEInvalidDriveChar, [Value]);
   FDriveChar := Value;
 end;
 
@@ -1575,7 +1575,7 @@ begin
       FileName := Buf;
   end
   else
-    raise EWinDialogError.Create(SNotSupported);
+    raise EWinDialogError.Create(RsENotSupported);
 end;
 
 function OpenInterceptor(var DialogData: TOpenFileName): BOOL; stdcall;

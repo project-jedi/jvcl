@@ -222,7 +222,7 @@ begin
   if WrongOSWarningShown or (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
     Exit;
   with Application do
-    MessageBox(PChar(sWrongOS), PChar(Title), MB_ICONWARNING);
+    MessageBox(PChar(RsWrongOS), PChar(Title), MB_ICONWARNING);
   WrongOSWarningShown := True;
 end;
 
@@ -323,9 +323,7 @@ begin
   if not NoCheckState and FStarted then
     Exit;
   if not InternalStartStop(True) then
-    {$TYPEDADDRESS OFF}
-    raise EJvPerfStatException.CreateResRecFmt(@sCantStart, [Key]);
-    {$TYPEDADDRESS ON}
+    raise EJvPerfStatException.CreateFmt(RsECantStart, [Key]);
   FStarted := True;
 end;
 
@@ -334,9 +332,7 @@ begin
   if not NoCheckState and not FStarted then
     Exit;
   if not InternalStartStop(False) then
-    {$TYPEDADDRESS OFF}
-    raise EJvPerfStatException.CreateResRecFmt(@sCantStop, [Key]);
-    {$TYPEDADDRESS ON}
+    raise EJvPerfStatException.CreateFmt(RsECantStop, [Key]);
   FStarted := False;
 end;
 
@@ -346,9 +342,7 @@ function TJvPerfStatItem.GetActiveItem: TJvPerfStatActiveItem;
 begin
   Result := FActiveItem;
   if Result = nil then
-    {$TYPEDADDRESS OFF}
-    raise EJvPerfStatException.CreateResRecFmt(@sKeyNotExist, [FPerfStatKey]);
-    {$TYPEDADDRESS ON}
+    raise EJvPerfStatException.CreateFmt(RsEKeyNotExist, [FPerfStatKey]);
   Result.Start;
 end;
 
@@ -461,9 +455,7 @@ end;
 function TJvPerfStat95.GetCategories(Index: Integer): TJvPerfStatCategory;
 begin
   if (Index < 0) or (Index > GetCategoryCount - 1) then
-    {$TYPEDADDRESS OFF}
-    raise EJvPerfStatException.CreateResRecFmt(@SListIndexError, [Index]);
-    {$TYPEDADDRESS ON}
+    raise EJvPerfStatException.CreateFmt(SListIndexError, [Index]);
   Result := FCategories[Index];
   with Result do
   begin
@@ -528,9 +520,7 @@ begin
         end;
     end
     else
-      {$TYPEDADDRESS OFF}
-      raise EJvPerfStatException.CreateResRec(@sCantOpenPerfKey);
-      {$TYPEDADDRESS ON}
+      raise EJvPerfStatException.Create(RsECantOpenPerfKey);
   finally
     List2.Free;
     List1.Free;

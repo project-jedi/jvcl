@@ -66,7 +66,7 @@ begin
   if Value <> Self then
     FPartner := Value
   else
-    raise EJVCLException.Create(SInvalidPartner);
+    raise EJVCLException.Create(RsEInvalidPartner);
 end;
 
 procedure TJvSyncSplitter.WndProc(var Msg: TMessage);

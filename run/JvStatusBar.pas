@@ -32,7 +32,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, ComCtrls, Forms,
-  JvTypes, StdActns, CommCtrl, JVCLVer, Contnrs;
+  StdActns, CommCtrl, Contnrs,
+  JVCLVer;
 
 type
   TJvStatusPanel = class(TStatusPanel)
@@ -102,7 +103,7 @@ implementation
 
 uses
   Math,
-  JvConsts, JvResources;
+  JvTypes, JvResources;
   
 constructor TJvStatusBar.Create(AOwner: TComponent);
 begin
@@ -294,7 +295,7 @@ begin
     if FControl <> nil then
     begin
       if FControl = S then
-        raise Exception.Create(sInvalidControlSelection);
+        raise EJVCLException.Create(RsEInvalidControlSelection);
       FControl.Parent := S;
       FControl.Height := S.ClientHeight - 4;
       FControl.FreeNotification(S);

@@ -139,7 +139,7 @@ uses
 
 procedure TJvMarginSize.AssignError;
 begin
-  raise ERangeError.Create(SInvalidValue);
+  raise ERangeError.Create(RsEInvalidValue);
 end;
 
 procedure TJvMarginSize.AssignTo(Dest: TPersistent);

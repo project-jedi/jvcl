@@ -258,7 +258,7 @@ end;
 function TMTBufferToVCL.Read: TObject;
 begin
   if CurrentMTThread <> nil then
-    raise EThread.CreateFmt(sMethodOnlyForMainThread, [cRead]);
+    raise EThread.CreateFmt(RsEMethodOnlyForMainThread, [cRead]);
 
   // Check if data ready
   FDataReady.Wait;
@@ -274,7 +274,7 @@ procedure TMTBufferToVCL.Write(AObject: TObject; FreeOnFail: Boolean = True);
 begin
   try
     if CurrentMTThread = nil then
-      raise EThread.CreateFmt(sMethodOnlyForMainThread, [cWrite]);
+      raise EThread.CreateFmt(RsEMethodOnlyForMainThread, [cWrite]);
 
     // Perform blocking write to buffer
     FBuffer.Push(AObject);
@@ -314,7 +314,7 @@ end;
 function TMTVCLToBuffer.Read: TObject;
 begin
   if CurrentMTThread = nil then
-    raise EThread.CreateFmt(sMethodOnlyForMainThread, [cRead]);
+    raise EThread.CreateFmt(RsEMethodOnlyForMainThread, [cRead]);
 
   Result := FBuffer.Pop;
 end;
@@ -323,7 +323,7 @@ procedure TMTVCLToBuffer.Write(AObject: TObject; FreeOnFail: Boolean = True);
 begin
   try
     if CurrentMTThread <> nil then
-      raise EThread.CreateFmt(sMethodOnlyForMainThread, [cWrite]);
+      raise EThread.CreateFmt(RsEMethodOnlyForMainThread, [cWrite]);
 
     // Check if data ready
     FDataReady.Wait;

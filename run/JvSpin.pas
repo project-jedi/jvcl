@@ -1447,7 +1447,7 @@ begin
   Result := CheckValue(NewValue);
   if (FCheckMinValue or FCheckMaxValue) and
     RaiseOnError and (Result <> NewValue) then
-    raise ERangeError.CreateFmt(SOutOfRangeFloat, [FMinValue, FMaxValue]);
+    raise ERangeError.CreateFmt(RsEOutOfRangeFloat, [FMinValue, FMaxValue]);
 end;
 
 procedure TJvCustomSpinEdit.CMBiDiModeChanged(var Msg: TMessage);

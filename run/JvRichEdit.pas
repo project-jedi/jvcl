@@ -1776,20 +1776,20 @@ end;
 function FCEToString(AErrorCode: FCE): string;
 begin
   case AErrorCode of
-    fceOpenInFileErr: Result := SErr_OpenInFileErr;
-    fceReadErr: Result := SErr_ReadErr;
-    fceOpenConvErr: Result := SErr_OpenConvErr;
-    fceWriteErr: Result := SErr_WriteErr;
-    fceInvalidFile: Result := SErr_InvalidFile;
-    fceOpenExceptErr: Result := SErr_OpenExceptErr;
-    fceWriteExceptErr: Result := SErr_WriteExceptErr;
-    fceNoMemory: Result := SErr_NoMemory;
-    fceInvalidDoc: Result := SErr_InvalidDoc;
-    fceDiskFull: Result := SErr_DiskFull;
-    fceDocTooLarge: Result := SErr_DocTooLarge;
-    fceOpenOutFileErr: Result := SErr_OpenOutFileErr;
-    fceUserCancel: Result := SErr_UserCancel;
-    fceWrongFileType: Result := SErr_WrongFileType;
+    fceOpenInFileErr: Result := RsEOpenInFileErr;
+    fceReadErr: Result := RsEReadErr;
+    fceOpenConvErr: Result := RsEOpenConvErr;
+    fceWriteErr: Result := RsEWriteErr;
+    fceInvalidFile: Result := RsEInvalidFile;
+    fceOpenExceptErr: Result := RsEOpenExceptErr;
+    fceWriteExceptErr: Result := RsEWriteExceptErr;
+    fceNoMemory: Result := RsENoMemory;
+    fceInvalidDoc: Result := RsEInvalidDoc;
+    fceDiskFull: Result := RsEDiskFull;
+    fceDocTooLarge: Result := RsEDocTooLarge;
+    fceOpenOutFileErr: Result := RsEOpenOutFileErr;
+    fceUserCancel: Result := RsEUserCancel;
+    fceWrongFileType: Result := RsEWrongFileType;
   else
     Result := '';
   end;
@@ -1937,7 +1937,7 @@ begin
   begin
     S := FCEToString(AErrorCode);
     if S = '' then
-      S := Format(SConversionError, [AErrorCode]);
+      S := Format(RsEConversionError, [AErrorCode]);
   end;
   inherited Create(S);
   FErrorCode := AErrorCode;
@@ -4410,7 +4410,7 @@ begin
   begin
     Result := FCEToString(FConversionError);
     if Result = '' then
-      Result := Format(SConversionError, [FConversionError]);
+      Result := Format(RsEConversionError, [FConversionError]);
   end;
 end;
 
@@ -4526,7 +4526,7 @@ begin
   if not Assigned(FInitConverter32) or
      not FInitConverter32(ParentWindow, PChar(AnsiUpperCaseFileName(Application.ExeName))) then
 
-    raise EMSTextConversionError.Create(SErr_CouldNotInitConverter);
+    raise EMSTextConversionError.Create(RsECouldNotInitConverter);
 end;
 
 function TJvMSTextConversion.IsFormatCorrect(
@@ -4590,7 +4590,7 @@ begin
     Exit;
 
   if GCurrentConverter <> nil then
-    raise EMSTextConversionError.Create(SErr_ConversionBusy);
+    raise EMSTextConversionError.Create(RsEConversionBusy);
   GCurrentConverter := Self;
 
   InitConverter;
@@ -5830,7 +5830,7 @@ end;
 
 function TJvRTFConversion.Filter: string;
 begin
-  Result := SRTFFilter;
+  Result := RsRTFFilter;
 end;
 
 function TJvRTFConversion.IsFormatCorrect(AStream: TStream): Boolean;
@@ -6608,7 +6608,7 @@ end;
 
 function TJvTextConversion.Filter: string;
 begin
-  Result := STextFilter;
+  Result := RsTextFilter;
 end;
 
 function TJvTextConversion.TextKind: TJvConversionTextKind;

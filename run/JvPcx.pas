@@ -323,10 +323,10 @@ begin
                 FBitmap.Palette := 0;
               end;
           else
-            raise EPcxError.Create(RC_PcxUnknownFormat);
+            raise EPcxError.Create(RsEPcxUnknownFormat);
           end;
       else
-        raise EPcxError.Create(RC_PcxUnknownFormat);
+        raise EPcxError.Create(RsEPcxUnknownFormat);
       end;
 
       Decompressed := TMemoryStream.Create;
@@ -350,7 +350,7 @@ begin
         //palette
         Stream.Position := 16;
         if Stream.Read(IBuf, 48) <> 48 then
-          raise EPcxError.Create(RC_PcxPaletteProblem)
+          raise EPcxError.Create(RsEPcxPaletteProblem)
         else
         begin
           RPal.palVersion := $300;
@@ -459,10 +459,10 @@ begin
       Decompressed.Free;
     end
     else
-      raise EPcxError.Create(RC_PcxInvalid);
+      raise EPcxError.Create(RsEPcxInvalid);
   end
   else
-    raise EPcxError.Create(RC_PcxInvalid);
+    raise EPcxError.Create(RsEPcxInvalid);
 
   PaletteModified := True;
   Changed(Self);
@@ -731,7 +731,7 @@ end;
 
 initialization
   RegisterClass(TJvPcx);
-  TPicture.RegisterFileFormat(RC_PcxExtension, RC_PcxFilterName, TJvPcx);
+  TPicture.RegisterFileFormat(RsPcxExtension, RsPcxFilterName, TJvPcx);
 
 finalization
   TPicture.UnRegisterGraphicClass(TJvPcx);

@@ -248,10 +248,6 @@ const
   DPA_RendersSingleItem      = 2;
   DPA_ConsumerDisplaysList   = 3;
 
-resourcestring
-  { JvUrlListGrabber }
-  sENoGrabberForUrl = 'There is no grabber capable of handling URL: %s';
-
 implementation
 
 end.

@@ -1010,41 +1010,41 @@ resourcestring
 
 //=== JvMouseGesture.pas =====================================================
 resourcestring
-  sCannotHookTwice = 'JvMouseGesture Fatal: You cannot hook this event twice';
+  RsECannotHookTwice = 'JvMouseGesture Fatal: You cannot hook this event twice';
 
 //=== JvMRUList.pas ==========================================================
 resourcestring
-  RC_ErrorMRU_Creating = 'Unable to create MRU';
-  RC_ErrorMRU_Unicode = 'Windows NT required for Unicode in MRU';
+  RsEErrorMRUCreating = 'Unable to create MRU';
+  RsEErrorMRUUnicode = 'Windows NT required for Unicode in MRU';
 
 //=== JvMRUManager.pas =======================================================
 resourcestring
-  sDuplicatesNotAllowedInMRUList = 'Duplicates not allowed in MRU list.';
+  RsEDuplicatesNotAllowedInMRUList = 'Duplicates not allowed in MRU list';
 
 //=== JvMTComponents.pas =====================================================
 resourcestring
-  sNoThreadManager = 'No ThreadManager specified';
-  sOperatorNotAvailable = 'Operation not available while thread is active';
-  sCannotChangePropertySection = 'Can not change property of active section';
-  sCannotChangePropertyBuffer = 'Can''t change property of active buffer';
+  RsENoThreadManager = 'No ThreadManager specified';
+  RsEOperatorNotAvailable = 'Operation not available while thread is active';
+  RsECannotChangePropertySection = 'Cannot change property of active section';
+  RsECannotChangePropertyBuffer = 'Cannot change property of active buffer';
 
 //=== JvMTData.pas ===========================================================
 resourcestring
-  sMethodOnlyForMainThread = '%s method can only be used by the main VCL thread.';
+  RsEMethodOnlyForMainThread = '%s method can only be used by the main VCL thread.';
 
 //=== JvMTSync.pas ===========================================================
 resourcestring
-  SSemaphoreFailure = 'Semaphore failure';
-  SSemaphoreAbandoned = 'Semaphore was abandoned';
-  SThreadAbandoned = 'Thread was abandoned';
+  RsESemaphoreFailure = 'Semaphore failure (%d)';
+  RsESemaphoreAbandoned = 'Semaphore was abandoned';
+  RsEThreadAbandoned = 'Thread was abandoned';
 
 //=== JvMTThreading.pas ======================================================
 resourcestring
-  sCurThreadIsPartOfManager = 'Current MTThread is part of the MTManager';
-  sCheckTerminateCalledByWrongThread = 'CheckTerminate can only be called by the same thread';
-  sThreadNotInitializedOrWaiting = 'Can''t run: thread is not Initializing or Waiting.';
-  sCannotChangeNameOfOtherActiveThread = 'Cannot change name of other active thread.';
-  sReleaseOfUnusedTicket = 'Release of unused ticket';
+  RsECurThreadIsPartOfManager = 'Current MTThread is part of the MTManager';
+  RsECheckTerminateCalledByWrongThread = 'CheckTerminate can only be called by the same thread';
+  RsEThreadNotInitializedOrWaiting = 'Cannot run: thread is not Initializing or Waiting.';
+  RsECannotChangeNameOfOtherActiveThread = 'Cannot change name of other active thread.';
+  RsEReleaseOfUnusedTicket = 'Release of unused ticket';
 
 //=== JvMultiHttpGrabber.pas =================================================
 resourcestring
@@ -1057,14 +1057,14 @@ resourcestring
   RsSelectionIndexOutOfBounds = '%d is not a valid selection index';
 
 //=== JvPageListTreeView.pas =================================================
-  {$IFNDEF COMPILER6_UP}
+{$IFNDEF COMPILER6_UP}
 resourcestring
-  SInterfaceNotSupported = '%s does not support the %s interface';
-  {$ENDIF COMPILER6_UP}
+  RsEInterfaceNotSupported = '%s does not support the %s interface';
+{$ENDIF COMPILER6_UP}
 
 //=== JvPageSetup.pas ========================================================
 resourcestring
-  SInvalidValue = 'Value must be greater then zero';
+  RsEInvalidValue = 'Value must be greater than zero';
 
 //=== JvPainterQBForm.pas ====================================================
 resourcestring
@@ -1080,51 +1080,53 @@ resourcestring
 
 //=== JvPcx.pas ==============================================================
 resourcestring
-  RC_PcxUnknownFormat = 'PCX: Unknown format';
-  RC_PcxPaletteProblem = 'PCX: Unable to retrieve palette';
-  RC_PcxInvalid = 'PCX: Invalid PCX file';
+  RsEPcxUnknownFormat = 'PCX: Unknown format';
+  RsEPcxPaletteProblem = 'PCX: Unable to retrieve palette';
+  RsEPcxInvalid = 'PCX: Invalid PCX file';
 
-  RC_PcxExtension = 'pcx';
-  RC_PcxFilterName = 'PCX Image';
+  RsPcxExtension = 'pcx';
+  RsPcxFilterName = 'PCX Image';
 
 //=== JvPerfMon95.pas ========================================================
 resourcestring
-  sCantOpenPerfKey = 'Performance registry key not found';
-  sCantStart = 'Can''t start performance statistics (%s)';
-  sCantStop = 'Can''t stop performance statistics (%s)';
-  sKeyNotExist = 'Specified key "%s" does not exist';
-  sWrongOS = 'TJvPerfMon95 component is intended for Win95/98 only';
+  RsECantOpenPerfKey = 'Performance registry key not found';
+  RsECantStart = 'Can''t start performance statistics (%s)';
+  RsECantStop = 'Can''t stop performance statistics (%s)';
+  RsEKeyNotExist = 'Specified key "%s" does not exist';
+  RsWrongOS = 'TJvPerfMon95 component is intended for Win95/98 only';
 
 //=== JvPlugin.pas ===========================================================
 resourcestring
-  SFmtResNotFound = 'Resource not found: %s';
+  RsEFmtResNotFound = 'Resource not found: %s';
 
 //=== JvPluginManager.pas ====================================================
 resourcestring
-  SErrEmptyExt = 'Extension may not be empty';
+  RsEErrEmptyExt = 'Extension may not be empty';
+  RsEPluginPackageNotFound = 'Plugin package not found: %s';
+  RsERegisterPluginNotFound = 'Plugin function %s not found in %s';
+  RsERegisterPluginFailed = 'Calling %s in %s failed';
 
 //=== JvProfilerForm.pas =====================================================
 resourcestring
-  sMaxNumberOfIDsExceededd = 'Max number of ID''s exceeded (%d)';
-  sMaxStackSizeExceededd = 'Max stack size exceeded (%d)';
-  ssTotalElapsedTimedms = '%s -  total elapsed time: %d (ms)';
-  sTextFormatsasctxtinfdocAllFiles = 'Text formats|*.asc;*.txt;*.inf;*.doc|All files|*.*';
-
-  sDefCaption = 'Profiler 32 Report';
-  sDefHeader = 'Profiler 32 run %s by "%s" (machine %s).';
+  RsEMaxNumberOfIDsExceededd = 'Max number of ID''s exceeded (%d)';
+  RsEMaxStackSizeExceededd = 'Max stack size exceeded (%d)';
+  RsTotalElapsedTimedms = '%s -  total elapsed time: %d (ms)';
+  RsTextFormatsasctxtinfdocAllFiles = 'Text formats|*.asc;*.txt;*.inf;*.doc|All files|*.*';
+  RsDefCaption = 'Profiler 32 Report';
+  RsDefHeader = 'Profiler 32 run %s by "%s" (machine %s).';
 
 //=== JvPrvwRender.pas =======================================================
 resourcestring
-  sAPrintPreviewComponentMustBeAssigne = 'A PrintPreview component must be assigned in CreatePreview!';
-  sARichEditComponentMustBeAssignedInC = 'A RichEdit component must be assigned in CreatePreview!';
-  sCannotPerfromThisOperationWhilePrin = 'Cannot perfrom this operation while printing!';
-  sPrinterNotAssigned = 'Printer not assigned!';
-  sNoPrintPreviewAssigned = 'No PrintPreview assigned!';
+  RsEAPrintPreviewComponentMustBeAssigne = 'A PrintPreview component must be assigned in CreatePreview!';
+  RsEARichEditComponentMustBeAssignedInC = 'A RichEdit component must be assigned in CreatePreview!';
+  RsECannotPerfromThisOperationWhilePrin = 'Cannot perfrom this operation while printing!';
+  RsEPrinterNotAssigned = 'Printer not assigned!';
+  RsENoPrintPreviewAssigned = 'No PrintPreview assigned!';
 
 //=== JvRas32.pas ============================================================
 resourcestring
-  RC_RasError = 'RAS: Unable to find RasApi32.dll';
-  RC_RasDllName = 'RASAPI32.DLL';
+  RsERasError = 'RAS: Unable to find RasApi32.dll';
+  RsRasDllName = 'RASAPI32.DLL';
 
 //=== JvRegistryTreeview.pas =================================================
 resourcestring
@@ -1135,79 +1137,79 @@ resourcestring
 
 //=== JvResample.pas =========================================================
 resourcestring
-  sSourceBitmapTooSmall = 'Source bitmap too small';
+  RsESourceBitmapTooSmall = 'Source bitmap too small';
 
 //=== JvRichEdit.pas =========================================================
 resourcestring
-  SRTFFilter = 'Rich Text Format (*.rtf)|*.RTF';
-  STextFilter = 'Plain text (*.txt)|*.TXT';
+  RsRTFFilter = 'Rich Text Format (*.rtf)|*.RTF';
+  RsTextFilter = 'Plain text (*.txt)|*.TXT';
 
-  SConversionError = 'Conversion error %.8x';
-  SErr_ConversionBusy = 'Cannot execute multiple conversions';
-  SErr_CouldNotInitConverter = 'Could not initialize converter';
-  SErr_DiskFull = 'Out of space on output';
-  SErr_DocTooLarge = 'Conversion document too large for target';
-  SErr_InvalidDoc = 'Invalid document';
-  SErr_InvalidFile = 'Invalid data in conversion file';
-  SErr_NoMemory = 'Out of memory';
-  SErr_OpenConvErr = 'Error opening conversion file';
-  SErr_OpenExceptErr = 'Error opening exception file';
-  SErr_OpenInFileErr = 'Could not open input file';
-  SErr_OpenOutFileErr = 'Could not open output file';
-  SErr_ReadErr = 'Error during read';
-  SErr_UserCancel = 'Conversion cancelled by user';
-  SErr_WriteErr = 'Error during write';
-  SErr_WriteExceptErr = 'Error writing exception file';
-  SErr_WrongFileType = 'Wrong file type for this converter';
+  RsEConversionError = 'Conversion error %.8x';
+  RsEConversionBusy = 'Cannot execute multiple conversions';
+  RsECouldNotInitConverter = 'Could not initialize converter';
+  RsEDiskFull = 'Out of space on output';
+  RsEDocTooLarge = 'Conversion document too large for target';
+  RsEInvalidDoc = 'Invalid document';
+  RsEInvalidFile = 'Invalid data in conversion file';
+  RsENoMemory = 'Out of memory';
+  RsEOpenConvErr = 'Error opening conversion file';
+  RsEOpenExceptErr = 'Error opening exception file';
+  RsEOpenInFileErr = 'Could not open input file';
+  RsEOpenOutFileErr = 'Could not open output file';
+  RsEReadErr = 'Error during read';
+  RsEUserCancel = 'Conversion cancelled by user';
+  RsEWriteErr = 'Error during write';
+  RsEWriteExceptErr = 'Error writing exception file';
+  RsEWrongFileType = 'Wrong file type for this converter';
 
 //=== JvSAL.pas ==============================================================
 resourcestring
-  sBooleanStackOverflow = 'boolean stack overflow';
-  sBooleanStackUnderflow = 'boolean stack underflow';
-  sProgramStopped = 'program stopped';
-  sUnterminatedIncludeDirectiveNears = 'unterminated include directive near %s';
-  sOngetUnitEventHandlerIsNotAssigned = 'ongetUnit event handler is not assigned';
-  sCouldNotIncludeUnits = 'could not include unit %s';
-  sUnterminatedCommentNears = 'unterminated comment near %s';
-  sUnterminatedProcedureNears = 'unterminated procedure near %s';
-  sVariablesAllreadyDefineds = 'variable %s allready defined;%s';
-  sVariablesIsNotYetDefineds = 'variable %s is not yet defined;%s';
-  sProceduresNears = 'procedure %s near %s';
-  sUndefinedProcedures = 'undefined procedure %s';
-  sCouldNotFindEndOfProcedure = 'could not find end of procedure';
+  RsEBooleanStackOverflow = 'boolean stack overflow';
+  RsEBooleanStackUnderflow = 'boolean stack underflow';
+  RsEProgramStopped = 'program stopped';
+  RsEUnterminatedIncludeDirectiveNears = 'unterminated include directive near %s';
+  RsEOngetUnitEventHandlerIsNotAssigned = 'ongetUnit event handler is not assigned';
+  RsECouldNotIncludeUnits = 'could not include unit %s';
+  RsEUnterminatedCommentNears = 'unterminated comment near %s';
+  RsEUnterminatedProcedureNears = 'unterminated procedure near %s';
+  RsEVariablesAllreadyDefineds = 'variable %s allready defined;%s';
+  RsEVariablesIsNotYetDefineds = 'variable %s is not yet defined;%s';
+  RsEProceduresNears = 'procedure %s near %s';
+  RsEUndefinedProcedures = 'undefined procedure %s';
+  RsECouldNotFindEndOfProcedure = 'could not find end of procedure';
 
 //=== JvSALCore.pas ==========================================================
 resourcestring
-  sVariablesIsNotInitialized = 'variable %s is not initialized';
-  sDivisionByZeroError = 'division by zero error';
-  sMissingendselect = 'missing "endselect"';
+  RsEVariablesIsNotInitialized = 'variable %s is not initialized';
+  RsEDivisionByZeroError = 'division by zero error';
+  RsEMissingendselect = 'missing "endselect"';
 
 //=== JvSchedEvtStore.pas ====================================================
 resourcestring
-  sStructureStackIsEmpty = 'Structure stack is empty.';
-  sScheduleIsActiveReadingANewSchedule =
-    'Schedule is active. Reading a new schedule can only be done on inactive schedules.';
-  sScheduleIsActiveStoringOfAScheduleC =
-    'Schedule is active. Storing of a schedule can only be done on inactive schedules.';
-  sNotImplemented_ = 'not implemented.';
-  sNotASchedule = 'Not a schedule.';
-  sUnknownScheduleVersions = 'Unknown schedule version ($%s)';
-  sUnexpectedStructure = 'Unexpected structure.';
-  sIncorrectIdentifierFound = 'Incorrect identifier found.';
-  sIncorrectStructure = 'Incorrect structure found.';
+  RsEStructureStackIsEmpty = 'Structure stack is empty.';
+  RsEScheduleIsActiveReadingANewSchedule =
+   'Schedule is active. Reading a new schedule can only be done on inactive schedules.';
+  RsEScheduleIsActiveStoringOfAScheduleC =
+   'Schedule is active. Storing of a schedule can only be done on inactive schedules.';
+  RsENotImplemented_ = 'not implemented.';
+  RsENotASchedule = 'Not a schedule.';
+  RsEUnknownScheduleVersions = 'Unknown schedule version ($%s)';
+  RsEUnexpectedStructure = 'Unexpected structure.';
+  RsEIncorrectIdentifierFound = 'Incorrect identifier found.';
+  RsEIncorrectStructure = 'Incorrect structure found.';
 
 //=== JvScheduledEvents.pas ==================================================
 resourcestring
-  sCannotRestart = 'Can''t restart: Event is being triggered or is executing.';
+  RsECannotRestart = 'Cannot restart: Event is being triggered or is executing.';
 
 //=== JvScrollMax.pas ========================================================
 resourcestring
-  sCannotLoadCursorResource = 'Cannot load cursor resource';
-  sTooManyUserdefinedCursors = 'Too many user-defined cursors';
-  sTJvScrollMaxBandCanBePutOnlyIntoTJv = 'TJvScrollMaxBand can be put only into TJvScrollMax component';
-  sTJvScrollMaxCanContainOnlyTJvScroll = 'TJvScrollMax can contain only TJvScrollMaxBand components';
-  sRightClickAndChooseAddBand = 'Right click and choose "Add band"';
-  sControlsNotAChildOfs = 'Control %s not a child of %s';
+  RsECannotLoadCursorResource = 'Cannot load cursor resource';
+  RsETooManyUserdefinedCursors = 'Too many user-defined cursors';
+  RsETJvScrollMaxBandCanBePutOnlyIntoTJv = 'TJvScrollMaxBand can be put only into TJvScrollMax component';
+  RsETJvScrollMaxCanContainOnlyTJvScroll = 'TJvScrollMax can contain only TJvScrollMaxBand components';
+  RsEControlsNotAChildOfs = 'Control %s not a child of %s';
+  RsRightClickAndChooseAddBand = 'Right click and choose "Add band"';
 
 //=== JvScrollText.pas =======================================================
 resourcestring
@@ -1215,9 +1217,9 @@ resourcestring
 
 //=== JvSegmentedLEDDisplay.pas ==============================================
 resourcestring
-  sInvalidClass = 'Invalid class.';
-  sInvalidMappingFile = 'Invalid mapping file.';
-  sDuplicateDigitClass = 'Duplicate DigitClass registered.';
+  RsEInvalidClass = 'Invalid class.';
+  RsEInvalidMappingFile = 'Invalid mapping file.';
+  RsEDuplicateDigitClass = 'Duplicate DigitClass registered.';
 
 //=== JvSegmentedLEDDisplayMapperFrame.pas ===================================
 resourcestring
@@ -1234,46 +1236,46 @@ resourcestring
 //=== JvSimpleXml.pas ========================================================
 resourcestring
   {$IFNDEF COMPILER6_UP}
-//  SInvalidBoolean = '''%s'' is not a valid Boolean value'; make Delphi 5 compiler happy // andreas
+//  RsEInvalidBoolean = '''%s'' is not a valid Boolean value'; make Delphi 5 compiler happy // andreas
   {$ENDIF COMPILER6_UP}
-  sInvalidXMLElementUnexpectedCharacte =
-    'Invalid XML Element: Unexpected character in properties declaration ("%s" found).';
-  sInvalidXMLElementUnexpectedCharacte_ =
-    'Invalid XML Element: Unexpected character in property declaration. Expecting " or '' but "%s"  found.';
-  sUnexpectedValueForLPos = 'Unexpected value for lPos';
-  sInvalidXMLElementExpectedBeginningO = 'Invalid XML Element: Expected beginning of tag but "%s" found.';
-  sInvalidXMLElementExpectedEndOfTagBu = 'Invalid XML Element: Expected end of tag but "%s" found.';
-  sInvalidXMLElementMalformedTagFoundn = 'Invalid XML Element: malformed tag found (no valid name)';
-  sInvalidXMLElementErroneousEndOfTagE = 'Invalid XML Element: Erroneous end of tag, expecting </%s> but </%s> found.';
-  sInvalidCommentExpectedsButFounds = 'Invalid Comment: expected "%s" but found "%s"';
-  sInvalidCommentNotAllowedInsideComme = 'Invalid Comment: "--" not allowed inside comments';
-  sInvalidCommentUnexpectedEndOfData = 'Invalid Comment: Unexpected end of data';
-  sInvalidCDATAExpectedsButFounds = 'Invalid CDATA: expected "%s" but found "%s"';
-  sInvalidCDATAUnexpectedEndOfData = 'Invalid CDATA: Unexpected end of data';
-  sInvalidHeaderExpectedsButFounds = 'Invalid Header: expected "%s" but found "%s"';
-  sInvalidStylesheetExpectedsButFounds = 'Invalid Stylesheet: expected "%s" but found "%s"';
-  sInvalidStylesheetUnexpectedEndOfDat = 'Invalid Stylesheet: Unexpected end of data';
-  sInvalidDocumentUnexpectedTextInFile = 'Invalid Document: Unexpected text in file prolog.';
+  RsEInvalidXMLElementUnexpectedCharacte =
+   'Invalid XML Element: Unexpected character in properties declaration ("%s" found).';
+  RsEInvalidXMLElementUnexpectedCharacte_ =
+   'Invalid XML Element: Unexpected character in property declaration. Expecting " or '' but "%s"  found.';
+  RsEUnexpectedValueForLPos = 'Unexpected value for lPos';
+  RsEInvalidXMLElementExpectedBeginningO = 'Invalid XML Element: Expected beginning of tag but "%s" found.';
+  RsEInvalidXMLElementExpectedEndOfTagBu = 'Invalid XML Element: Expected end of tag but "%s" found.';
+  RsEInvalidXMLElementMalformedTagFoundn = 'Invalid XML Element: malformed tag found (no valid name)';
+  RsEInvalidXMLElementErroneousEndOfTagE = 'Invalid XML Element: Erroneous end of tag, expecting </%s> but </%s> found.';
+  RsEInvalidCommentExpectedsButFounds = 'Invalid Comment: expected "%s" but found "%s"';
+  RsEInvalidCommentNotAllowedInsideComme = 'Invalid Comment: "--" not allowed inside comments';
+  RsEInvalidCommentUnexpectedEndOfData = 'Invalid Comment: Unexpected end of data';
+  RsEInvalidCDATAExpectedsButFounds = 'Invalid CDATA: expected "%s" but found "%s"';
+  RsEInvalidCDATAUnexpectedEndOfData = 'Invalid CDATA: Unexpected end of data';
+  RsEInvalidHeaderExpectedsButFounds = 'Invalid Header: expected "%s" but found "%s"';
+  RsEInvalidStylesheetExpectedsButFounds = 'Invalid Stylesheet: expected "%s" but found "%s"';
+  RsEInvalidStylesheetUnexpectedEndOfDat = 'Invalid Stylesheet: Unexpected end of data';
+  RsEInvalidDocumentUnexpectedTextInFile = 'Invalid Document: Unexpected text in file prolog.';
 
 //=== JvSpeedbar.pas =========================================================
 resourcestring
-  SAutoSpeedbarMode = 'Cannot set this property value while Position is bpAuto';
+  RsEAutoSpeedbarMode = 'Cannot set this property value while Position is bpAuto';
 
 //=== JvSpellChecker.pas =====================================================
 resourcestring
-  SNoSpellCheckerAvailable = 'No IJvSpellChecker implementation available!';
+  RsENoSpellCheckerAvailable = 'No IJvSpellChecker implementation available!';
 
 //=== JvSpellerForm.pas ======================================================
 resourcestring
-  SNoDictionaryLoaded = 'No dictionary loaded';
+  RsENoDictionaryLoaded = 'No dictionary loaded';
 
 //=== JvSpin.pas =============================================================
 resourcestring
-  SOutOfRangeFloat = 'Value must be between %g and %g';
+  RsEOutOfRangeFloat = 'Value must be between %g and %g';
 
 //=== JvStatusBar.pas ========================================================
 resourcestring
-  sInvalidControlSelection = 'Invalid control selection.';
+  RsEInvalidControlSelection = 'Invalid control selection.';
 
 //=== JvSticker.pas ==========================================================
 resourcestring
@@ -1281,37 +1283,41 @@ resourcestring
 
 //=== JvStrings.pas ==========================================================
 resourcestring
-  sCannotLoadResource = 'Can''t load resource: %s';
-  sIncorrectStringFormat = 'Base64: Incorrect string format';
+  RsECannotLoadResource = 'Can''t load resource: %s';
+  RsEIncorrectStringFormat = 'Base64: Incorrect string format';
 
 //=== JvSyncSplitter.pas =====================================================
 resourcestring
-  SInvalidPartner = 'TJvSyncSplitter.SetPartner: cannot set Partner to Self!';
+  RsEInvalidPartner = 'TJvSyncSplitter.SetPartner: cannot set Partner to Self!';
+
+//=== JvSystemPopup.pas ======================================================
+resourcestring
+  RsEAlreadyHooked = 'TJvSystemPopup.Hook: already hooked';
 
 //=== JvTFDays.pas ===========================================================
 resourcestring
-  sInvalidPrimeTimeStartTime = 'Invalid PrimeTime StartTime';
-  sInvalidPrimeTimeEndTime = 'Invalid PrimeTime EndTime';
-  sColumnIndexOutOfBounds = 'Column index out of bounds';
-  sRowIndexOutOfBounds = 'Row index out of bounds';
-  sMapColNotFoundForAppointment = 'Map col not found for appointment';
-  sCorruptAppointmentMap = 'Corrupt appointment map';
-  sGridGranularityCannotBeGreater = 'Grid granularity cannot be greater ' +
-    'then the time block granularity';
-  sTimeBlockGranularityMustBeEvenly = 'Time block granularity must be evenly ' +
-    'divisible by the grid granularity';
-  sTimeBlocksMustBeginExactlyOn = 'Time blocks must begin exactly on ' +
-    'a grid time division';
-  sGridEndTimeCannotBePriorToGridStart = 'GridEndTime cannot be prior to GridStartTime';
-  sGridStartTimeCannotBeAfterGridEndTi = 'GridStartTime cannot be after GridEndTime';
-  sInvalidRowd = 'Invalid row (%d)';
-  sThereIsNoDataToPrint = 'There is no data to print';
-  sNoPageInfoExists = 'No page info exists.  ' +
-    'Document must be prepared';
-  sATimeBlockNameCannotBeNull = 'A time block name cannot be null';
-  sAnotherTimeBlockWithTheName = 'Another time block with the name ' +
-    '"%s" already exists';
-  sATimeBlockWithTheNamesDoesNotExist = 'A time block with the name "%s" does not exist';
+  RsEInvalidPrimeTimeStartTime = 'Invalid PrimeTime StartTime';
+  RsEInvalidPrimeTimeEndTime = 'Invalid PrimeTime EndTime';
+  RsEColumnIndexOutOfBounds = 'Column index out of bounds';
+  RsERowIndexOutOfBounds = 'Row index out of bounds';
+  RsEMapColNotFoundForAppointment = 'Map col not found for appointment';
+  RsECorruptAppointmentMap = 'Corrupt appointment map';
+  RsEGridGranularityCannotBeGreater = 'Grid granularity cannot be greater ' +
+   'then the time block granularity';
+  RsETimeBlockGranularityMustBeEvenly = 'Time block granularity must be evenly ' +
+   'divisible by the grid granularity';
+  RsETimeBlocksMustBeginExactlyOn = 'Time blocks must begin exactly on ' +
+   'a grid time division';
+  RsEGridEndTimeCannotBePriorToGridStart = 'GridEndTime cannot be prior to GridStartTime';
+  RsEGridStartTimeCannotBeAfterGridEndTi = 'GridStartTime cannot be after GridEndTime';
+  RsEInvalidRowd = 'Invalid row (%d)';
+  RsEThereIsNoDataToPrint = 'There is no data to print';
+  RsENoPageInfoExists = 'No page info exists.  ' +
+   'Document must be prepared';
+  RsEATimeBlockNameCannotBeNull = 'A time block name cannot be null';
+  RsEAnotherTimeBlockWithTheName = 'Another time block with the name ' +
+   '"%s" already exists';
+  RsEATimeBlockWithTheNamesDoesNotExist = 'A time block with the name "%s" does not exist';
 
 //=== JvTFGantt.pas ==========================================================
 resourcestring
@@ -1335,49 +1341,49 @@ resourcestring
 
 //=== JvTFManager.pas ========================================================
 resourcestring
-  sCouldNotCreateCustomImageMap = 'Could not create CustomImageMap.  ' +
-    'Appointment not assigned';
-  sCouldNotCreateAppointmentObject = 'Could not create Appointment object.  ' +
-    'ScheduleManager not assigned';
-  sScheduleManagerNotificationFailedSc = 'ScheduleManager notification failed.  ScheduleManager not assigned';
-  sScheduleNotificationFailed = 'Schedule notification failed.  ' +
-    'Schedule not assigned';
-  sInvalidStartAndEndTimes = 'Invalid start and end times';
-  sInvalidStartAndEndDates = 'Invalid start and end dates';
-  sAppointmentNotificationFailed = 'Appointment notification failed.  ' +
-    'Appointment not assigned';
-  sCouldNotCreateNewAppointment = 'Could not create new appointment. ' +
-    'Appointment with given ID already exists';
-  sInvalidTriggerForRefreshControls = 'Invalid Trigger for RefreshControls';
-  sInvalidScopeInReconcileRefresh = 'Invalid Scope in ReconcileRefresh';
-  sCouldNotRetrieveSchedule = 'Could not retrieve schedule.  ' +
-    'ScheduleManager not assigned';
-  sCouldNotReleaseSchedule = 'Could not release schedule.  ' +
-    'ScheduleManager not assigned';
-  sCouldNotCreateADocumentBecauseA = 'Could not create a document because a ' +
-    'document already exists';
-  sCouldNotFinishDocumentBecauseNo = 'Could not finish document because no ' +
-    'document has been created';
-  sDocumentDoesNotExist = 'Document does not exist';
-  sDocumentPagesCannotBeAccessedIf = 'Document pages cannot be accessed if ' +
-    'printing directly to the printer';
-  sDocumentPagesAreInaccessibleUntil = 'Document pages are inaccessible until ' +
-    'the document has been finished';
-  sCouldNotRetrievePageCount = 'Could not retrieve page count ' +
-    'because document does not exist';
-  sOnlyAFinishedDocumentCanBePrinted = 'Only a finished document can be printed';
-  sThereAreNoPagesToPrint = 'There are no pages to print';
-  sDocumentMustBeFinishedToSaveToFile = 'Document must be Finished to save to file';
-  sThisPropertyCannotBeChangedIfA = 'This property cannot be changed if a ' +
-    'document exists';
-  sCouldNotCreateTJvTFPrinterPageLayou = 'Could not create TJvTFPrinterPageLayout ' +
-    'because aPrinter must be assigned';
-  sInvalidFooterHeightd = 'Invalid Footer Height (%d)';
-  sInvalidHeaderHeightd = 'Invalid Header Height (%d)';
+  RsECouldNotCreateCustomImageMap = 'Could not create CustomImageMap.  ' +
+   'Appointment not assigned';
+  RsECouldNotCreateAppointmentObject = 'Could not create Appointment object.  ' +
+   'ScheduleManager not assigned';
+  RsEScheduleManagerNotificationFailedSc = 'ScheduleManager notification failed.  ScheduleManager not assigned';
+  RsEScheduleNotificationFailed = 'Schedule notification failed.  ' +
+   'Schedule not assigned';
+  RsEInvalidStartAndEndTimes = 'Invalid start and end times';
+  RsEInvalidStartAndEndDates = 'Invalid start and end dates';
+  RsEAppointmentNotificationFailed = 'Appointment notification failed.  ' +
+   'Appointment not assigned';
+  RsECouldNotCreateNewAppointment = 'Could not create new appointment. ' +
+   'Appointment with given ID already exists';
+  RsEInvalidTriggerForRefreshControls = 'Invalid Trigger for RefreshControls';
+  RsEInvalidScopeInReconcileRefresh = 'Invalid Scope in ReconcileRefresh';
+  RsECouldNotRetrieveSchedule = 'Could not retrieve schedule.  ' +
+   'ScheduleManager not assigned';
+  RsECouldNotReleaseSchedule = 'Could not release schedule.  ' +
+   'ScheduleManager not assigned';
+  RsECouldNotCreateADocumentBecauseA = 'Could not create a document because a ' +
+   'document already exists';
+  RsECouldNotFinishDocumentBecauseNo = 'Could not finish document because no ' +
+   'document has been created';
+  RsEDocumentDoesNotExist = 'Document does not exist';
+  RsEDocumentPagesCannotBeAccessedIf = 'Document pages cannot be accessed if ' +
+   'printing directly to the printer';
+  RsEDocumentPagesAreInaccessibleUntil = 'Document pages are inaccessible until ' +
+   'the document has been finished';
+  RsECouldNotRetrievePageCount = 'Could not retrieve page count ' +
+   'because document does not exist';
+  RsEOnlyAFinishedDocumentCanBePrinted = 'Only a finished document can be printed';
+  RsEThereAreNoPagesToPrint = 'There are no pages to print';
+  RsEDocumentMustBeFinishedToSaveToFile = 'Document must be Finished to save to file';
+  RsEThisPropertyCannotBeChangedIfA = 'This property cannot be changed if a ' +
+   'document exists';
+  RsECouldNotCreateTJvTFPrinterPageLayou = 'Could not create TJvTFPrinterPageLayout ' +
+   'because aPrinter must be assigned';
+  RsEInvalidFooterHeightd = 'Invalid Footer Height (%d)';
+  RsEInvalidHeaderHeightd = 'Invalid Header Height (%d)';
 
 //=== JvTFSparseMatrix.pas ===================================================
 resourcestring
-  sMatrixMustBeEmpty = 'Matrix must be empty before setting null value';
+  RsEMatrixMustBeEmpty = 'Matrix must be empty before setting null value';
 
 //=== JvTFUtils.pas ==========================================================
 resourcestring
@@ -1391,8 +1397,9 @@ resourcestring
 
 //=== JvThumbImage.pas =======================================================
 resourcestring
-  sUnknownFileExtension = 'Unknown file extension %s';
-  sFileFilters = '|PCX Files(*.pcx)|*.pcx|Targa Files(*.tga)|*.tga';
+  RsEUnknownFileExtension = 'Unknown file extension %s';
+  RsFileFilters = '|PCX Files(*.pcx)|*.pcx|Targa Files(*.tga)|*.tga';
+  RsPcxTga = '*.pcx;*.tga;';
 
 //=== JvThumbnails.pas =======================================================
 resourcestring
@@ -1404,7 +1411,7 @@ resourcestring
 
 //=== JvTimeList.pas =========================================================
 resourcestring
-  sOwnerMustBeTJvTimerList = 'Owner of TJvTimerEvents must be a TJvTimerList';
+  RsEOwnerMustBeTJvTimerList = 'Owner of TJvTimerEvents must be a TJvTimerList';
 
 //=== JvTipOfDay.pas =========================================================
 resourcestring
@@ -1458,14 +1465,18 @@ resourcestring
   RsStackOverflow = 'stack overflow';
   RsStackUnderflow = 'stack underflow';
 
+//=== JvUrlListGrabber.pas ===================================================
+resourcestring
+  RsENoGrabberForUrl = 'There is no grabber capable of handling URL: %s';
+
 //=== JvValidators.pas =======================================================
 resourcestring
-  SInterfaceNotSupported = '%s does not support the %s interface';
-  SCircularReference = 'Circular reference not allowed';
-  SInsertNilValidator = 'Cannot insert nil validator';
-  SRemoveNilValidator = 'Cannot remove nil validator';
-  SValidatorNotChild = 'Validator is not owned by this component';
-  sInvalidIndexd = 'Invalid index (%d)';
+  RsEInterfaceNotSupported = '%s does not support the %s interface';
+  RsECircularReference = 'Circular reference not allowed';
+  RsEInsertNilValidator = 'Cannot insert nil validator';
+  RsERemoveNilValidator = 'Cannot remove nil validator';
+  RsEValidatorNotChild = 'Validator is not owned by this component';
+  RsEInvalidIndexd = 'Invalid index (%d)';
 
 //=== JvVirtualKeySelectionFrame.pas =========================================
 resourcestring
@@ -1474,38 +1485,38 @@ resourcestring
 
 //=== JvWinampLabel.pas ======================================================
 resourcestring
-  RC_InvalidSkin = 'Invalid skin';
-  RC_WinampRC = 'WINAMP1';
+  RsEInvalidSkin = 'Invalid skin';
+  RsWinampRC = 'WINAMP1';
 
 //=== JvWinDialogs.pas =======================================================
 resourcestring
   //SDiskFullError =
   //  'TJvDiskFullDialog does not support removable media or network drives.';
-  SNotSupported = 'This function is not supported by your version of Windows';
-  SInvalidDriveChar = 'Invalid drive (%s)';
+  RsENotSupported = 'This function is not supported by your version of Windows';
+  RsEInvalidDriveChar = 'Invalid drive (%s)';
   { make Delphi 5 compiler happy // andreas
-    SUnsupportedDisk = 'Unsupported drive (%s): JvDiskFullDialog only supports fixed drives.';}
+    RsEUnsupportedDisk = 'Unsupported drive (%s): JvDiskFullDialog only supports fixed drives.';}
 
 //=== JvWinHelp.pas ==========================================================
 resourcestring
-  RC_OwnerForm = 'Owner must be of type TCustomForm';
+  RsEOwnerForm = 'Owner must be of type TCustomForm';
 
 //=== JvWizard.pas ===========================================================
 resourcestring
-  rsFirstButtonCaption = 'To &Start Page';
-  rsLastButtonCaption = 'To &Last Page';
-  rsBackButtonCaption = '< &Back';
-  rsNextButtonCaption = '&Next >';
-  rsFinishButtonCaption = '&Finish';
-  rsWelcome = 'Welcome';
-  rsTitle = 'Title';
-  rsSubtitle = 'Subtitle';
-  rsInvalidParentControl = 'The Parent should be TJvWizard or a descendant.';
-  rsInvalidWizardPage = 'The pages belong to another wizard.';
+  RsFirstButtonCaption = 'To &Start Page';
+  RsLastButtonCaption = 'To &Last Page';
+  RsBackButtonCaption = '< &Back';
+  RsNextButtonCaption = '&Next >';
+  RsFinishButtonCaption = '&Finish';
+  RsWelcome = 'Welcome';
+  RsTitle = 'Title';
+  RsSubtitle = 'Subtitle';
+  RsEInvalidParentControl = 'The Parent should be TJvWizard or a descendant.';
+  RsEInvalidWizardPage = 'The pages belong to another wizard.';
 
 //=== JvWizardCommon.pas =====================================================
 resourcestring
-  STilingError = 'Tiling only works on images with dimensions > 0';
+  RsETilingError = 'Tiling only works on images with dimensions > 0';
 
 //=== JvWizardRouteMapSteps.pas ==============================================
 resourcestring
@@ -1515,9 +1526,9 @@ resourcestring
 
 //=== JvXmlDatabase.pas ======================================================
 resourcestring
-  RS_UNKNOWNINST = 'Unknown Instruction %s';
-  RS_UNEXPECTEDEND = 'Unexpected end of query';
-  RS_UNEXPECTEDINST = 'Unexpected statement %s';
+  RsEUnknownInstruction = 'Unknown Instruction %s';
+  RsEUnexpectedEndOfQuery = 'Unexpected end of query';
+  RsEUnexpectedStatement = 'Unexpected statement %s';
 
 //=== JvYearGrid.pas =========================================================
 resourcestring

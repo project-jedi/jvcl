@@ -829,7 +829,7 @@ procedure TJvMouseGestureHook.CreateForThreadOrSystem(aOwner: TComponent; aDwThr
 begin
   if JvMouseGestureHookAlreadyInstalled then
   begin
-    raise Exception.Create(sCannotHookTwice);
+    raise Exception.Create(RsECannotHookTwice);
     halt;
   end;
 

@@ -405,7 +405,7 @@ function ReturnAddr: Pointer;
           MOV     EAX,[EBP+4]
   end;
 begin
-  raise EStringListError.CreateFmt(SListIndexError, [Index])at ReturnAddr;
+  raise EStringListError.CreateFmt(SListIndexError, [Index]) at ReturnAddr;
 end;
 
 constructor TJvxCustomListBox.Create(AOwner: TComponent);
