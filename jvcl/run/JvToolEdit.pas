@@ -3963,12 +3963,8 @@ end;
 
 constructor TJvPopupWindow.Create(AOwner: TComponent);
 begin
-  {$IFDEF VCL}
-  inherited Create(AOwner);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
+  // (p3) have to use CreateNew for VCL as well since there is no dfm
   inherited CreateNew(AOwner);
-  {$ENDIF VisualCLX}
   FEditor := TWinControl(AOwner);
   //ControlStyle := ControlStyle + [csNoDesignVisible, csReplicatable, csAcceptsControls];
   Visible := False;
