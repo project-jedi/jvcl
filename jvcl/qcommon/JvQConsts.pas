@@ -78,9 +78,9 @@ const
   SDelphiKey = 'Software\Borland\BDS\3.0';
   {$ENDIF DELPHI9}
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   SDelphiKey = '.borland/.jvclx1';
-  {$ENDIF}
+  {$ENDIF UNIX}
   { JvDataProvider constants }
   { Consumer attributes }
   DPA_RenderDisabledAsGrayed = 1;
@@ -121,6 +121,7 @@ const
   Backspace = #8;
   Tab = #9;
   Esc = #27;
+  Del = #127;
   CtrlC = ^C;
   CtrlH = ^H;
   CtrlI = ^I;
@@ -135,11 +136,11 @@ const
   PathSep = ';';
   AllFilePattern = '*.*';
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   RegPathDelim = '_';
   PathDelim = '/';
   AllFilePattern = '*';
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 
   {const Separators is used in GetWordOnPos, JvUtils.ReplaceStrings and SubWord}
   Separators: TSysCharSet = [#00, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',

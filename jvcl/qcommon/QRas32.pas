@@ -23,11 +23,10 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id$
-
-{$I jvcl.inc}
 
 unit QRas32;
+
+{$I jvcl.inc}
 
 {*******************************************************}
 {   This unit is an interface to the RAS (RASAPI32)     }
@@ -39,7 +38,7 @@ unit QRas32;
 interface
 
 uses
-  Windows; 
+  Windows;
 
 {$HPPEMIT '#include "ras.h"'}
 
