@@ -37,7 +37,9 @@ MakePNG.exe \
 Res2BMP.exe \
 ErrLook.exe \
 stripCmtPO.exe \
-dxgettextResstr \
+dxgettextResstr.exe \
+pg.exe \
+pgEdit.exe \
 
 #---------------------------------------------------------------------------------------------------
 
@@ -95,6 +97,11 @@ dc.exe: DFMCleaner\dc.dpr
   cd DFMCleaner
   $(DCC) $&.dpr
   cd ..
+  
+pg.exe: PackageGenerator\pg.dpr
+  cd PackageGenerator
+  $(DCC) $&.dpr
+  cd..
 
 # these are put last because they are most likely to fail (needs additional units from other libraries)
 MakePNG.exe: MakePNG\MakePNG.dpr
@@ -111,3 +118,9 @@ ErrLook.exe: ErrLook\src\ErrLook.dpr
   cd ErrLook\src
   $(DCCH) $&.dpr
   cd ..\..
+  
+pgEdit.exe: PackageGenerator\pgEdit.dpr
+  cd PackageGenerator
+  $(DCC) $&.dpr
+  cd..
+  

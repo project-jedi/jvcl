@@ -56,4 +56,11 @@ stripCmtPO.exe: stripCmtPO\stripCmtPO.dpr
 
 dxgettextResstr.exe: dxgettextResstr\dxgettextResstr.dpr
   $(DCC)
+  
+pg.exe: PackageGenerator\pg.dpr
+  $(DCC)
+
+pgEdit.exe: PackageGenerator\pgEdit.dpr
+  $(DCC)
+
 
