@@ -1,5 +1,5 @@
 ##Package: Core
-##Status: Locked (marcelb)
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvAppRegistryStore.pas
 Summary
@@ -11,197 +11,24 @@ Author
 @@TJvAppRegistryStore
 <TITLEIMG TJvAppRegistryStore>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.System
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Registry based application data storage.
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvAppRegistryStore.DeleteSubTree
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Path - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvAppRegistryStore.DeleteValue
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Path - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvAppRegistryStore.IsFolder
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Path        - Description for this parameter
-  ListIsValue - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvAppRegistryStore.ReadBinary
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Path    - Description for this parameter
-  Buf     - Description for this parameter
-  BufSize - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvAppRegistryStore.ReadFloat
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Path    - Description for this parameter
-  Default - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvAppRegistryStore.ReadInteger
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Path    - Description for this parameter
-  Default - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvAppRegistryStore.ReadString
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Path    - Description for this parameter
-  Default - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvAppRegistryStore is a data storage backend that stores the data in the registry.
+
+  As a descendant of TJvCustomAppStore, it provides in the standard interface for storing data (such
+  as settings, form positions and sizes, etc). This data will be stored in the registry.
+
+  The component publishes the <LINK TJvCustomAppStore.Root, Root> property and introduces a new
+  property RegRoot to specify which registry root key should be used (HKEY_CURRENT_USER,
+  HKEY_LOCAL_MACHINE, etc).
+
+  All the abstract access methods are implemented.
 ----------------------------------------------------------------------------------------------------
 @@TJvAppRegistryStore.RegRoot
 Summary
-  Write here a summary (1 line)
+  Specifies the registry root HKEY to use.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvAppRegistryStore.ValueStored
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Path - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvAppRegistryStore.WriteBinary
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Path    - Description for this parameter
-  Buf     - Description for this parameter
-  BufSize - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvAppRegistryStore.WriteFloat
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Path  - Description for this parameter
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvAppRegistryStore.WriteInteger
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Path  - Description for this parameter
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvAppRegistryStore.WriteString
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Path  - Description for this parameter
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RegRoot specifies the registry root HKEY to use. It defaults to HKEY_CURRENT_USER.
