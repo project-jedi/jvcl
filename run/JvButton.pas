@@ -36,12 +36,13 @@ uses
   {$ENDIF MSWINDOWS}
   SysUtils, Classes,
   {$IFDEF VCL}
-  Graphics, Controls, Forms, StdCtrls, Menus,
+  Graphics, Controls, Forms, StdCtrls, Menus, Buttons,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms, QStdCtrls, QMenus, Types, QWindows,
+  Qt, QGraphics, QControls, QForms, QStdCtrls, QMenus, QButtons, Types,
+  QWindows,
   {$ENDIF VisualCLX}
-  JvComponent, JvConsts, JvTypes, JvExStdCtrls;
+  JvComponent, JvConsts, JvTypes, JvExStdCtrls, JvThemes;
 
 type
   TJvButtonMouseState = (bsMouseInside, bsMouseDown);
@@ -161,6 +162,14 @@ type
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
       AHeight: Integer); override;
     procedure Click; override;
+  end;
+
+  // TJvDropDownButton draws a DropDown button with the DropDown glyph (also themed)
+  TJvDropDownButton = class(TSpeedButton)
+  protected
+    procedure Paint; override;
+  public
+    constructor Create(AOwner: TComponent); override;
   end;
 
 implementation
@@ -723,6 +732,58 @@ begin
   end;
   Repaint;
 end;
+
+// == TJvDropDownButton ===================================================
+
+constructor TJvDropDownButton.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Glyph.Handle := LoadBitmap(0, PChar(OBM_COMBO));
+end;
+
+procedure TJvDropDownButton.Paint;
+{$IFDEF JVCLThemesEnabled}
+const
+  DownStyles: array[Boolean] of Integer = (BDR_RAISEDINNER, BDR_SUNKENOUTER);
+  FillStyles: array[Boolean] of Integer = (BF_MIDDLE, 0);
+var
+  PaintRect: TRect;
+  DrawFlags: Integer;
+  Offset: TPoint;
+  h: THandle;
+  Bmp: TBitmap;
+{$ENDIF JVCLThemesEnabled}
+begin
+  {$IFDEF JVCLThemesEnabled}
+  if not Flat and ThemeServices.ThemesEnabled then
+  begin
+    // adjust FState and FDragging
+    h := Canvas.Handle;
+    Bmp := TBitmap.Create;
+    try
+      Bmp.Width := 1;
+      Bmp.Height := 1;
+      Canvas.Handle := Bmp.Canvas.Handle;
+      try
+        inherited Paint;
+      finally
+        Canvas.Handle := h;
+      end;
+    finally
+      Bmp.Free;
+    end;
+
+    PaintRect := Rect(0, 0, Width, Height);
+    DrawFlags := DFCS_SCROLLCOMBOBOX or DFCS_ADJUSTRECT;
+    if FState in [bsDown, bsExclusive] then
+      DrawFlags := DrawFlags or DFCS_PUSHED;
+    DrawThemedFrameControl(Self, Canvas.Handle, PaintRect, DFC_SCROLL, DrawFlags);
+  end
+  else
+  {$ENDIF JVCLThemesEnabled}
+    inherited Paint;
+end;
+
 
 initialization
 
