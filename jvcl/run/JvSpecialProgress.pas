@@ -18,7 +18,7 @@ Contributor(s):
   Michael Beck [mbeck@bigfoot.com].
   [eldorado]
 
-Last Modified: 2000-02-28
+Last Modified: 2004-02-09
 
 You may retrieve the latest version of this file at the Project JEDI home page,
 located at http://www.delphi-jedi.org
@@ -244,6 +244,8 @@ end;
 
 procedure TJvSpecialProgress.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   FSavedHintColor := Application.HintColor;
   Application.HintColor := FHintColor;
   inherited MouseEnter(Control);
@@ -251,6 +253,8 @@ end;
 
 procedure TJvSpecialProgress.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   Application.HintColor := FSavedHintColor;
   inherited MouseLeave(Control);
 end;
