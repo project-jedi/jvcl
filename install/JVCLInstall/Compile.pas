@@ -907,7 +907,7 @@ begin
     SearchPaths := '';
     for i := 0 to TargetConfig.Target.SearchPaths.Count - 1 do
     begin
-      S := ExcludeTrailingPathDelimiter(TargetConfig.Target.ExpandDirMacros(TargetConfig.Target.SearchPaths[i]));
+      S := ExtractShortPathName(ExcludeTrailingPathDelimiter(TargetConfig.Target.ExpandDirMacros(TargetConfig.Target.SearchPaths[i])));
       if SearchPaths <> '' then
         SearchPaths := SearchPaths + ';' + S
       else
