@@ -9,8 +9,8 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = JVCLConvert.exe MakePNG.exe MakeRC.exe Res2Bmp.exe jconvert.exe \
-  MakeDOF.exe jtouch.exe isu.exe ErrLook.exe
+PROJECTS = MakePNG.exe MakeRC.exe Res2Bmp.exe jconvert.exe MakeDOF.exe \
+  jtouch.exe isu.exe ErrLook.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -26,9 +26,6 @@ Res2Bmp.exe: Res2Bmp\Res2Bmp.dpr
   $(DCC)
 
 jconvert.exe: JConvert\jconvert.dpr
-  $(DCC)
-
-JVCLConvert.exe: ..\Convert\JVCLConvert.dpr
   $(DCC)
 
 MakeDOF.exe: MakeDOF\MakeDOF.dpr

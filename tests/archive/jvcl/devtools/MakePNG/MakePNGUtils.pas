@@ -6,7 +6,8 @@ procedure Run;
 
 implementation
 uses
-  Windows, SysUtils, Classes, Graphics, JTools, pngImage;
+  Windows, SysUtils, Classes, Graphics, JTools,
+  pngImage; // download from http://pngdelphi.sourceforge.net/ 
 
 procedure ShowHelp;
 begin

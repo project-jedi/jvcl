@@ -1,3 +1,4 @@
+{$I JVCL.INC}
 unit JTools;
 
 interface
@@ -100,7 +101,9 @@ end;
 
 procedure ShowError(const S:string;const Args:array of const);
 begin
-  writeln(ErrOutput,Format(S,Args));
+
+  writeln({$IFDEF COMPILER6_UP}ErrOutput,{$ENDIF}Format(S,Args));
+
 end;
 
 end.

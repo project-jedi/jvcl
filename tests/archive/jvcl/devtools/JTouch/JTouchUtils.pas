@@ -1,3 +1,4 @@
+{$I JVCL.INC}
 unit JTouchUtils;
 
 interface
@@ -145,6 +146,26 @@ begin
   writeln('');
   writeln(#9'<filemask> - the files to find');
 end;
+
+{$IFNDEF COMPILER6_UP}
+function StrToDateDef(const S:string;Default:TdateTime):TDateTime;
+begin
+  try
+    Result := StrToDate(S);
+  except
+    Result := Default;
+  end;
+end;
+
+function StrToTimeDef(const S:string;Default:TdateTime):TDateTime;
+begin
+  try
+    Result := StrToTime(S);
+  except
+    Result := Default;
+  end;
+end;
+{$ENDIF}
 
 procedure Run;
 var

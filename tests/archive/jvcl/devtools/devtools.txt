@@ -73,7 +73,7 @@ Removes unused entries from dfn files (used in translations). Operates on the cu
 
 ErrLook:
 =======
-A Delphi clone of Visual Studio's ErrLook utility (to look up error codes) with some enhancements. See the supplied help file for more info
+A Delphi clone of Visual Studio's ErrLook utility (to look up error codes) with some enhancements. See the supplied help file for more info. NOTE: needs the HTMLHlp.pas from http://delphi-jedi.org (API Library Files)
 
 
 

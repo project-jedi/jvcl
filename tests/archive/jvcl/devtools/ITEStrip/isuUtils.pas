@@ -3,10 +3,18 @@ unit isuUtils;
 interface
 
 procedure Run;
+{$I JVCL.INC}
 
 implementation
 uses
-  Forms, Classes, StrUtils, SysUtils, JvSearchFiles;
+  Forms, Classes, {$IFDEF COMPILER6_UP}StrUtils, {$ENDIF}SysUtils, JvSearchFiles;
+
+{$IFNDEF COMPILER6_UP}
+function AnsiContainsText(const S,SubString:string):boolean;
+begin
+  Result := Pos(AnsiLowerCase(SubString),AnsiLowerCase(S)) > 0;
+end;
+{$ENDIF}
 
 procedure StripUnused(const Filename: string);
 var S: TStringlist;
@@ -53,7 +61,7 @@ begin
     end;
   except
     on E: Exception do
-      writeln(ERROUTPUT, 'ERROR:', E.Message);
+      writeln({$IFDEF COMPILER6_UP}ErrOutput,{$ENDIF} 'ERROR:', E.Message);
   end;
 end;
 end.

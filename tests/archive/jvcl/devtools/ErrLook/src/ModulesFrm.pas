@@ -47,7 +47,7 @@ procedure ShowHelp(const HelpFile:string;ActiveControl:TWinControl);
 
 implementation
 uses
-  HtmlHlp; 
+  HtmlHlp; // download from http://delphi-jedi.org (API Library Files) 
 
 {$R *.dfm}
 {$I popups.inc}
