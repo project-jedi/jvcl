@@ -265,10 +265,19 @@ begin
     Filename := IniDirectory + PathDelim + 'ignorevcl.ini';
     if FileExists(Filename) then
     begin
-      Lines.LoadFromFile(IniDirectory + PathDelim + 'ignorevcl.ini');
+      Lines.LoadFromFile(Filename);
       for i := 0 to Lines.Count - 1 do
         if not IsEmptyStr(Lines[i]) then
           FIgnoreUnits.Add(Lines[i]);
+    end;
+
+    Filename := IniDirectory + PathDelim + 'nointextreplace.ini';
+    if FileExists(Filename) then
+    begin
+      Lines.LoadFromFile(Filename);
+      for i := 0 to Lines.Count - 1 do
+        if not IsEmptyStr(Lines[i]) then
+          FLockedUsesUnits.Add(Lines[i]);
     end;
   finally
     Lines.Free;
