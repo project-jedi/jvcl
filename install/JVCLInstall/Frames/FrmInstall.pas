@@ -163,55 +163,22 @@ var
     RichEditLog.SelLength := 0;
   end;
 
-  function PosLast(Ch: Char; const S: string): Integer;
-  begin
-    for Result := Length(S) downto 1 do
-      if S[Result] = Ch then
-        Exit;
-    Result := 0;
-  end;
-
-  function IsCompileFileLine(const Line: string): Boolean;
-  var
-    ps, psEnd, LineNum, Err: Integer;
-    Filename: string;
-  begin
-    Result := False;
-    ps := PosLast('(', Line);
-    if (ps > 0) and (Pos(': ', Line) = 0) and (Pos('.', Line) > 0) then
-    begin
-      psEnd := PosLast(')', Line);
-      if psEnd < ps then
-        Exit;
-
-      Filename := Copy(Line, 1, ps - 1);
-      if (Filename <> '') and (Filename[Length(Filename)] > #32) then
-      begin
-        Val(Copy(Line, ps + 1, psEnd - ps - 1), LineNum, Err);
-        if Err = 0 then
-        begin
-          FormCompile.Compiling(Filename);
-          FormCompile.CurrentLine := LineNum;
-          Result := True;
-        end;
-      end;
-    end;
-  end;
-
 var
   LText: string;
+  CompileLine: TCompileLineType;
 begin
   Aborted := FAborted;
   Line := Text;
   if (Text <> '') and (Text[1] = #1) then
     Delete(Line, 1, 1);
 
-  if not IsCompileFileLine(Line) then
+  CompileLine := FormCompile.HandleLine(Line);
+  if CompileLine <> clFileProgress then
   begin
-    if (Line = '') and (FLastCapLine = '') then
+    if (Line = '') and (FLastCapLine = '') then // reduce empty lines
       Exit;
     FLastCapLine := Line;
-    
+
     RichEditLog.Lines.Add(Line);
     if Text <> '' then
     begin
@@ -224,39 +191,27 @@ begin
         SetFont([fsBold])
       else if Text = RsPackagesAreUpToDate then
         SetFont([], clTeal)
-      else if HasText(Text, ['hint: ', 'hinweis: ', 'suggestion: ']) then // do not localize
-      begin
-        SetFont([], clGreen);
-        FormCompile.IncHint;
-        FormCompileMessages.AddHint(Text);
-      end
-      else if HasText(Text, ['warning: ', 'warnung: ', 'avertissement: ']) then // do not localize
-      begin
-        SetFont([], clMaroon);
-        FormCompile.IncWarning;
-        FormCompileMessages.AddWarning(Text);
-      end
-      else if HasText(Text, ['error: ', 'fehler: ', 'erreur: ']) then // do not localize
-      begin
-        SetFont([], clRed);
-        FormCompile.IncError;
-        FormCompileMessages.AddError(Text);
-      end
-      else if HasText(Text, ['fatal: ']) then // do not localize
-      begin
-        SetFont([fsBold], clRed);
-        FormCompile.IncError;
-        FormCompileMessages.AddFatal(Text);
-      end
       else
       begin
-        LText := TrimLeft(Text);
-        if StartsWith(LText, 'MAKE version', True) or // do not localize
-           StartsWith(LText, 'Borland ', True) or // do not localize
-           StartsWith(LText, 'Copyright ', True) then // do not localize
-        begin
-          SetFont([fsItalic], clGray);
-        end
+        case CompileLine of
+          clHint:
+            SetFont([], clGreen);
+          clWarning:
+            SetFont([], clMaroon);
+          clError:
+            SetFont([], clRed);
+          clFatal:
+            SetFont([fsBold], clRed);
+        else
+          LText := TrimLeft(Text);
+          if StartsWith(LText, 'MAKE version', True) or // do not localize
+             StartsWith(LText, 'Borland ', True) or // do not localize
+             StartsWith(LText, 'Copyright ', True) then // do not localize
+          begin
+            SetFont([fsItalic], clGray);
+          end
+        end;
+
       end;
     end;
   end;
@@ -366,6 +321,8 @@ begin
     FormCompileMessages.Top := ParentForm.BoundsRect.Bottom;
     FormCompileMessages.Left := ParentForm.Left + (ParentForm.Width - FormCompileMessages.Width) div 2;
 
+    FormCompile.CompileMessages := FormCompileMessages;
+
     {$IFDEF USE_DXGETTEXT}
     TranslateComponent(FormCompile, 'JVCLInstall');
     TranslateComponent(FormCompileMessages, 'JVCLInstall');
@@ -387,7 +344,8 @@ begin
       LblTarget.Caption := Format(RsError, [LblTarget.Hint]);
       BtnDetails.Visible := False;
       RichEditLog.Visible := True;
-      FormCompileMessages.Show;
+      if FormCompileMessages.Count > 0 then
+        FormCompileMessages.Show;
       FormCompile.Done(AbortReason);
       {if AbortReason <> '' then
         AbortReason := RsInstallError + #10#10 + AbortReason
