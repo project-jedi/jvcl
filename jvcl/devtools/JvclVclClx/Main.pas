@@ -77,7 +77,7 @@ var
 begin
   if RBtnSingleFile.Checked then
   begin
-    JVCLConverter := TJVCLConverter.Create(ExtractFilePath(ParamStr(0)) + 'data');
+    JVCLConverter := TJVCLConverter.Create(ExtractFilePath(ParamStr(0)) + 'VclClxData');
     try
       JVCLConverter.OutDirectory := EditOutDir.Text;
       JVCLConverter.ReduceConditions := CheckBoxReduceConditions.Checked;
