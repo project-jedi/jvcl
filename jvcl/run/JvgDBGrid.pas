@@ -25,9 +25,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgDBGrid;
+
+{$I jvcl.inc}
 
 interface
 
@@ -37,7 +37,6 @@ uses
   JVCLVer;
 
 type
-
   TJvgDBGrid = class(TDBGrid)
   private
     FAboutJVCL: TJVCLAboutInfo;

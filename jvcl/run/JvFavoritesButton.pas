@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvFavoritesButton;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvFavoritesButton;
 
 interface
 

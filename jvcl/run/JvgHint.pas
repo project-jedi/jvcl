@@ -25,9 +25,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgHint;
+
+{$I jvcl.inc}
 
 interface
 

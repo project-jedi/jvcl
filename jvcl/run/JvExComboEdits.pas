@@ -23,6 +23,8 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvExComboEdits;
+
 {$I jvcl.inc}
 {MACROINCLUDE JvExControls.macros}
 
@@ -36,8 +38,6 @@ Known Issues:
 {$IFDEF VCL}
 Sorry this file is for VCLX only
 {$ENDIF VCL}
-
-unit JvExComboEdits;
 
 interface
 

@@ -21,66 +21,7 @@ Burov Dmitry, translation of russian text.
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
------------------------------------------------------------------------------}
-// $Id$
-
-{$I jvcl.inc}
-
-unit JvgXMLSerializer;
-
-// Компонент конвертирует компонент в XML и обратно в соответствии
-// с published-интерфейсом класса компонента.
-//
-// XML формируется в виде пар тегов с вложенными в них значениями.
-// Атрибуты у тегов отсутствуют.
-//
-// Тег верхнего уровня соответствует классу объекта.
-// Вложенные теги соответствуют именам свойств.
-// Для элементов коллекций контейнерный тег соответствует имени класса.
-//
-// Вложенность тегов не ограничена и полностью повторяет
-// published интерфейс класса заданного объекта.
-//
-// Поддерживаются целые типы, типы с плавающей точкой, перечисления,
-// наборы, строки, символы. вариантные типы,
-// классовые типы, стоковые списки и коллекции.
-//
-// Интерфейс:
-//   procedure Serialize(Component: TObject; Stream: TStream);
-//    - Сериализация объекта в XML
-//   procedure DeSerialize(Component: TObject; Stream: TStream);
-//    - Загрузка XML в объект
-//
-//   property GenerateFormattedXML       - создавать форматированный XML код
-//   property ExcludeEmptyValues         - пропускать пустые значения свойств
-//   property ExcludeDefaultValues       - пропускать значения по умолчанию
-//   property StrongConformity           - необходимо наличие в XML соотв. тегов для всех классовых типов
-//   property IgnoreUnknownTags          - игнорировать неизвестные теги при загрузке
-//   property OnGetXMLHeader             - позволяет указать свой XML заголовок
-//
-//   WrapCollections - оборачивать коллекции в отдельные теги
-//  Ограничения:
-//   В в каждом объекте допустимо использовать только одну коллекцию каждого типа.
-//    Наследники класса TStrings не могут иметь published свойств.
-//
-//   Процедурные типы не обрабатываются.
-//
-//   Для генерации DTD у объекта все свойства классовых типов, одноименные со
-//   свойствами агрегированных объектов, должны быть одного класса.
-//
-// Предусловия:
-//   Объект для (де)сериализации должен быть создан до вызова процедуры.
-//
-//   При StrongConformity == True необходимо присутствие в загружаемом XML тегов
-//   для всех классовых типов. Присутствие остальных тегов не проверяется.
-//
-// Дополнительно:
-//   При загрузке из XML содержимое коллекций в объекте не очищается,
-//   что позволяет дозагружать данные из множества источников в один объект.
-
-{ Translation :
-
+Description:
   The component converts given component to XML and back according to
   published interface of its class.
 
@@ -128,29 +69,31 @@ unit JvgXMLSerializer;
   Extra:
     When loading TCollection from XML, it is not voided (?) so you can load
     TCollection as a merge of different XML sources.
-}
+
+Known Issues:
+-----------------------------------------------------------------------------}
+// $Id$
+
+unit JvgXMLSerializer;
+
+{$I jvcl.inc}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ComCtrls, JvComponent, TypInfo;
+  Dialogs, ComCtrls, TypInfo,
+  JvComponent;
 
 type
   TOnGetXMLHeader = procedure(Sender: TObject; var Value: string) of object;
   TBeforeParsingEvent = procedure(Sender: TObject; Buffer: PChar) of object;
 
-  EJvgXMLSerializerException = class(Exception)
-  end;
-
-  XMLSerializerException = class(Exception)
-  end;
-  EJvgXMLOpenTagNotFoundException = class(XMLSerializerException)
-  end;
-  EJvgXMLCloseTagNotFoundException = class(XMLSerializerException)
-  end;
-  EJvgXMLUncknownPropertyException = class(XMLSerializerException)
-  end;
+  EJvgXMLSerializerException = class(Exception);
+  XMLSerializerException = class(Exception);
+  EJvgXMLOpenTagNotFoundException = class(XMLSerializerException);
+  EJvgXMLCloseTagNotFoundException = class(XMLSerializerException);
+  EJvgXMLUncknownPropertyException = class(XMLSerializerException);
 
   TJvgXMLSerializerException = class of XMLSerializerException;
 
@@ -161,7 +104,6 @@ type
     BufferLength: DWORD;
     TokenPtr {, MaxTokenPtr}: PChar;
     OutStream: TStream;
-
     FOnGetXMLHeader: TOnGetXMLHeader;
     FGenerateFormattedXML: Boolean;
     FExcludeEmptyValues: Boolean;
@@ -174,7 +116,6 @@ type
     procedure check(Expr: Boolean; const Message: string; E: TJvgXMLSerializerException);
 
     procedure WriteOutStream(const Value: string);
-    { Private declarations }
   protected
     procedure SerializeInternal(Component: TObject; Level: integer = 1);
     procedure DeSerializeInternal(Component: TObject; {const}
@@ -198,26 +139,15 @@ type
     { Genereating DTD [translated] }
     procedure GenerateDTD(Component: TObject; Stream: TStream);
   published
-    property GenerateFormattedXML: Boolean
-      read FGenerateFormattedXML write FGenerateFormattedXML default True;
-    property ExcludeEmptyValues: Boolean
-      read FExcludeEmptyValues write FExcludeEmptyValues;
-    property ExcludeDefaultValues: Boolean
-      read FExcludeDefaultValues write FExcludeDefaultValues;
-    property ReplaceReservedSymbols: Boolean
-      read FReplaceReservedSymbols write FReplaceReservedSymbols;
-    property StrongConformity: Boolean
-      read FStrongConformity write FStrongConformity default True;
-    property IgnoreUnknownTags: Boolean
-      read FIgnoreUnknownTags write FIgnoreUnknownTags;
-
-    property WrapCollections: Boolean
-      read FWrapCollections write FWrapCollections default True;
-
-    property OnGetXMLHeader: TOnGetXMLHeader
-      read FOnGetXMLHeader write FOnGetXMLHeader;
-    property BeforeParsing: TBeforeParsingEvent
-      read FBeforeParsing write FBeforeParsing;
+    property GenerateFormattedXML: Boolean read FGenerateFormattedXML write FGenerateFormattedXML default True;
+    property ExcludeEmptyValues: Boolean read FExcludeEmptyValues write FExcludeEmptyValues;
+    property ExcludeDefaultValues: Boolean read FExcludeDefaultValues write FExcludeDefaultValues;
+    property ReplaceReservedSymbols: Boolean read FReplaceReservedSymbols write FReplaceReservedSymbols;
+    property StrongConformity: Boolean read FStrongConformity write FStrongConformity default True;
+    property IgnoreUnknownTags: Boolean read FIgnoreUnknownTags write FIgnoreUnknownTags;
+    property WrapCollections: Boolean read FWrapCollections write FWrapCollections default True;
+    property OnGetXMLHeader: TOnGetXMLHeader read FOnGetXMLHeader write FOnGetXMLHeader;
+    property BeforeParsing: TBeforeParsingEvent read FBeforeParsing write FBeforeParsing;
   end;
 
 implementation
@@ -245,7 +175,7 @@ resourcestring
   RsOpenXMLTagNotFound = 'Open tag not found: <%s>';
   RsCloseXMLTagNotFound = 'Close tag not found: </%s>';
   RsUnknownProperty = 'Unknown property: %s';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 constructor TJvgXMLSerializer.Create(AOwner: TComponent);
 begin

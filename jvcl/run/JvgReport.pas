@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgReport;
+
+{$I jvcl.inc}
 
 interface
 
@@ -79,14 +79,13 @@ type
     FOLESizeMode: Word;
     //    fRepaintOnlyBorder,
     fSizing: Boolean;
-    R: array[1..8] of TRect;
+    R: array [1..8] of TRect;
     DownPos: TPoint;
     SizeDirection: Integer;
     FExternalCanvas: TCanvas;
-    Cursors: array[1..8] of TCursor;
+    Cursors: array [1..8] of TCursor;
     Bmp: TBitmap;
     Report: TJvgReport;
-
     procedure SetSelected(Value: Boolean);
     procedure SetBkColor(Value: Integer);
     procedure SetBvColor(Value: Integer);
@@ -108,7 +107,6 @@ type
     procedure SetOLESizeMode(Value: Word);
     procedure SetFixed(Value: Word);
     function IsContainOLE: Boolean;
-
     procedure WMMouseMove(var Msg: TWMMouse); message WM_MOUSEMOVE;
     procedure WMLMouseDown(var Msg: TWMMouse); message WM_LBUTTONDOWN;
     procedure WMLMouseUp(var Msg: TWMMouse); message WM_LBUTTONUP;
@@ -232,7 +230,7 @@ resourcestring
   RsOLELinkedObjectNotFound = 'OLE: Linked object not found.';
   RsErrorText = 'Error';
   RsErrorReadingComponent = 'Error reading component.';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 //=== { TJvgReportScrollBox } ================================================
 

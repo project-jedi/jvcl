@@ -24,10 +24,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvgFileUtils;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvgFileUtils;
 
 interface
 
@@ -49,7 +49,7 @@ implementation
 
 uses
   FileCtrl,
-  JvJclUtils;
+  JvJCLUtils;
 
 function GetOwnPath: string;
 var

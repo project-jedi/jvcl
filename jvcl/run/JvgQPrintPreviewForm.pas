@@ -25,9 +25,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgQPrintPreviewForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -35,8 +35,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls,
   QuickRpt, QRCtrls, QRPrntr,
-  ComCtrls, ToolWin,
-  ImgList, ShellAPI, StdCtrls,
+  ComCtrls, ToolWin, ImgList, ShellAPI, StdCtrls,
   JvgQRLabel, 
   JvComponent, JvExControls;
 
@@ -163,7 +162,7 @@ end;
 procedure TJvgfPrintPreview.glLabel1MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   // (rom) should be removed
-  ShellExecute(0, nil, 'http://shop.biblio-globus.ru/cpr/', nil, nil, SW_SHOW);
+  //ShellExecute(0, nil, 'http://shop.biblio-globus.ru/cpr/', nil, nil, SW_SHOW);
 end;
 
 procedure TJvgfPrintPreview.ToolButton4Click(Sender: TObject);

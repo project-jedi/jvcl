@@ -18,9 +18,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvFormPlacementSelectList;
+
+{$I jvcl.inc}
 
 interface
 

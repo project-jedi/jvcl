@@ -30,9 +30,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgTab;
+
+{$I jvcl.inc}
 
 interface
 

@@ -76,9 +76,9 @@ History:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvFixedEditPopUp;
+
+{$I jvcl.inc}
 
 interface
 

@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgImage;
+
+{$I jvcl.inc}
 
 interface
 

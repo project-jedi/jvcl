@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgGraph;
+
+{$I jvcl.inc}
 
 interface
 
@@ -39,7 +39,6 @@ const
 
 type
   TJvgGraph = class(TJvGraphicControl)
-  private
   protected
     procedure Paint; override;
   public

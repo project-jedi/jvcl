@@ -190,12 +190,12 @@ located at http://jvcl.sourceforge.net
     - fixed a bug in InsertText
     - optimized ExpandTabs
 
-  2004-01-25: file splitted into JvEditor and JvEditorCommon
+  2004-01-25: file split into JvEditor and JvEditorCommon
 }
 
-{$I jvcl.inc}
-
 unit JvEditorCommon;
+
+{$I jvcl.inc}
 
 interface
 

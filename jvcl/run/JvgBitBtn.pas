@@ -24,16 +24,15 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgBitBtn;
+
+{$I jvcl.inc}
 
 interface
 
 uses
   Windows, Messages, Classes, Controls, Graphics, ExtCtrls, Buttons, Forms,
-  JVCLVer,
-  JvgTypes, JvgCommClasses, JvgUtils, JvExButtons;
+  JVCLVer, JvgTypes, JvgCommClasses, JvgUtils, JvExButtons;
 
 type
   TJvgBitBtn = class(TJvExBitBtn)

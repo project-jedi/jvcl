@@ -23,15 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvGIF;
+
 {$I jvcl.inc}
 {$I vclonly.inc}
-
-{$IFDEF COMPILER6_UP}
-// for HeapAllocFlags
-{$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF COMPILER6_UP}
-
-unit JvGIF;
 
 interface
 

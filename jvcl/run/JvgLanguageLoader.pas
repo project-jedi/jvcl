@@ -43,9 +43,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgLanguageLoader;
+
+{$I jvcl.inc}
 
 interface
 

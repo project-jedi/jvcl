@@ -24,10 +24,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvgCheckBox;
+
 {$I jvcl.inc}
 {$I windowsonly.inc} // (ahuser) uses WndProc and Wnd hooks
-
-unit JvgCheckBox;
 
 interface
 

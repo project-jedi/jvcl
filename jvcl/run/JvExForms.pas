@@ -23,6 +23,8 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvExForms;
+
 {$I jvcl.inc}
 {MACROINCLUDE JvExControls.macros}
 
@@ -32,8 +34,6 @@ Known Issues:
  * If you do it despite this warning your changes will be discarded by the next
  * update of this file. Do your changes in the template files.
  ****************************************************************************}
-
-unit JvExForms;
 
 interface
 

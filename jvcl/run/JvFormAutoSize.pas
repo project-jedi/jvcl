@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvFormAutoSize;
+
+{$I jvcl.inc}
 
 interface
 

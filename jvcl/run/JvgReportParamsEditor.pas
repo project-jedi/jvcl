@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgReportParamsEditor;
+
+{$I jvcl.inc}
 
 interface
 

@@ -24,14 +24,19 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgTagParser;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  Classes, SysUtils, HTTPApp{$IFDEF COMPILER6_UP}, HTTPProd{$ENDIF COMPILER6_UP};
+  Classes, SysUtils,
+  {$IFDEF COMPILER6_UP}
+  HTTPApp, HTTPProd;
+  {$ELSE}
+  HTTPApp;
+  {$ENDIF COMPILER6_UP}
 
 type
   TJvgTagParser = class(TObject)

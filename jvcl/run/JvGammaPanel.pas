@@ -27,9 +27,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvGammaPanel;
+
+{$I jvcl.inc}
 
 interface
 

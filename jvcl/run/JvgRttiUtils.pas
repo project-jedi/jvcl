@@ -25,14 +25,13 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
-//{ Процедуры для удобной работы со свойствами объектов через RTTI }
-{ Procedures for comfort working with objects' properties via RTTI [translated] }
-
 unit JvgRttiUtils;
 
+{$I jvcl.inc}
+
 interface
+
+{ Procedures for comfort working with objects' properties via RTTI }
 
 function GetValueFromPropertyName(Component: TObject; const PropertyName: string): string;
 procedure SetValueByPropertyName(Component: TObject; const PropertyName, PropertyValue: string);

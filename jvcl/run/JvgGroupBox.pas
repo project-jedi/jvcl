@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgGroupBox;
+
+{$I jvcl.inc}
 
 // Illumination - fake :)
 interface

@@ -23,11 +23,11 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvExControls;
+
 {$I jvcl.inc}
 
 WARNINGHEADER
-
-unit JvExControls;
 
 interface
 
