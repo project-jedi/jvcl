@@ -1,8 +1,9 @@
+##Package: ??
+##Status: Generated
 ----------------------------------------------------------------------------------------------------
-@@JvDBCtrl.pas
-<GROUP JVCL.FileRef>
+@@JvDBControls.pas
 Summary
-  Contains the TJvDBCtrl component.
+  Contains the TJvDBControls component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Fedor Koshevnikov, Igor Pavluk and Serge Korolev
@@ -67,6 +68,10 @@ Description
   You don't have to document already described items such as sets,
   pointers to records etc.
 (Value = dsInactive . . dsCalcFields ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@TDrawColumnTitleEvent
+<TITLE TDrawColumnTitleEvent type>
+<COMBINE TJvDBGrid.OnDrawColumnTitle>
 ----------------------------------------------------------------------------------------------------
 @@TGetBtnParamsEvent
 <TITLE TGetBtnParamsEvent type>
@@ -538,6 +543,25 @@ Parameters
   ACol    - Description for this parameter
   Field   - Description for this parameter
   Enabled - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.OnDrawColumnTitle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender                - Description for this parameter
+  ACanvas               - Description for this parameter
+  ARect                 - Description for this parameter
+  Field                 - Description for this parameter
+  ASortMarker           - Description for this parameter
+  IsDown                - Description for this parameter
+  Offset                - Description for this parameter
+  DeafaultDrawText      - Description for this parameter
+  DefaultDrawSortMarker - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
