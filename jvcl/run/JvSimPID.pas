@@ -77,10 +77,8 @@ type
     procedure SetActive(const Value: Boolean);
     procedure SetSymFunc(const Value: TJvSymFunc);
   protected
-
     procedure Paint; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Execute;

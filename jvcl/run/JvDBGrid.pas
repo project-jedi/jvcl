@@ -35,9 +35,9 @@ interface
 
 uses
   Windows,
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Variants,
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
   Messages, Classes, Controls, Forms, Grids, Graphics, Buttons, Menus,
   StdCtrls, ExtCtrls, Mask, IniFiles, DB, DBGrids, DBCtrls,
   JvAppStorage, JvSecretPanel, JvLabel, JvToolEdit, JvFormPlacement,
@@ -238,9 +238,9 @@ type
     procedure EditButtonClick; override;
     procedure CellClick(Column: TColumn); override;
     // End Lionel
-{$IFNDEF COMPILER6_UP}
+    {$IFNDEF COMPILER6_UP}
     procedure FocusCell(ACol, ARow: Longint; MoveAnchor: Boolean);
-{$ENDIF !COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
     procedure DefineProperties(Filer: TFiler); override;
     procedure DoMinColWidth; virtual;
     procedure DoMaxColWidth; virtual;
@@ -351,7 +351,6 @@ uses
   JvDBGridSelectColumnForm;
 
 {$R ..\Resources\JvDBGrid.res}
-
 
 type
   TBookmarks = class(TBookmarkList);
@@ -639,14 +638,14 @@ end;
 function TJvDBGrid.CreateEditor: TInplaceEdit;
 begin
   // Lionel
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Result := TMyInplaceEdit.Create(Self);
   // replace the call to default constructor :
   //  Result := inherited CreateEditor;
   TEdit(Result).OnChange := EditChanged;
-{$ELSE}
+  {$ELSE}
   Result := inherited CreateEditor;
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 end;
 
 function TJvDBGrid.GetTitleOffset: Byte;
@@ -2205,7 +2204,6 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
-
 procedure TJvDBGrid.FocusCell(ACol, ARow: Longint; MoveAnchor: Boolean);
 begin
   MoveColRow(ACol, ARow, MoveAnchor, True);
