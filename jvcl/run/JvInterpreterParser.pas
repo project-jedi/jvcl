@@ -228,6 +228,11 @@ const
   kwIN = 'in';
   kwRECORD = 'record';
   kwDOWNTO = 'downto';
+  kwNIL = 'nil';
+
+  { directives }
+  drNAME = 'name';
+  drINDEX = 'index';
 
 implementation
 
