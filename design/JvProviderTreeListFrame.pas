@@ -37,7 +37,7 @@ uses
   Windows, Messages, Graphics, Controls, Forms, Dialogs, ComCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs, QComCtrls, Types,
+  Qt, QGraphics, QControls, QForms, QDialogs, QComCtrls, Types, QWindows,
   {$ENDIF VisualCLX}
   JvDataProvider, JvDataProviderIntf;
 
@@ -126,18 +126,48 @@ uses
 
 function GetItemIndexAt(LV: TListView; X, Y: Integer): Integer;
 var
+  {$IFDEF VCL}
   Info: TLVHitTestInfo;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Item: TListItem;
+  {$ENDIF VisualCLX}
 begin
   if LV.HandleAllocated then
   begin
+    {$IFDEF VCL}
     Info.pt := Point(X, Y);
     Result := ListView_HitTest(LV.Handle, Info);
     if Result >= LV.Items.Count then
       Result := -1;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Item := LV.GetItemAt(X, Y);
+    if Item <> nil then
+      Result := Item.Index
+    else
+      Result := -1;
+    {$ENDIF VisualCLX}
   end
   else
     Result := -1;
 end;
+
+{$IFDEF VisualCLX}
+function GetVisibleRowCount(LV: TListView): Integer;
+var
+  Item1, Item2: TListItem;
+begin
+  Result := LV.Items.Count;
+  Item1 := LV.TopItem;
+  if Item1 <> nil then
+  begin
+    Item2 := LV.GetItemAt(LV.Width div 2, LV.ClientHeight - 1);
+    if Item2 <> nil then
+      Result := Item2.Index - Item1.Index + 1;
+  end;
+end;
+{$ENDIF VisualCLX}
 
 {$IFNDEF COMPILER6_UP} // (rom) see SysUtils  - (ahuser) Delphi 5 needs this function 
 function IsEqualGUID(const IID1, IID2: TGUID): Boolean;
@@ -333,8 +363,14 @@ begin
   if Reason in [ccrProviderSelect, ccrViewChange] then
     UpdateViewList;
   if (lvProvider.Items.Count > 0) and (Reason = ccrViewChange) then
+    {$IFDEF VCL}
     with lvProvider do
       UpdateItems(TopItem.Index, TopItem.Index + VisibleRowCount);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    with lvProvider do
+      UpdateItems(TopItem.Index, TopItem.Index + GetVisibleRowCount(lvProvider));
+    {$ENDIF VisualCLX}
   lvProvider.Invalidate;
 end;
 
@@ -383,8 +419,16 @@ begin
   else
     I := LocateID(ID);
   if I > -1 then
+  {$IFDEF VCL}
     ListView_SetItemState(lvProvider.Handle, I, LVIS_SELECTED or LVIS_FOCUSED,
       LVIS_SELECTED or LVIS_FOCUSED)
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  begin
+    lvProvider.Items[I].Selected := True;
+    lvProvider.Items[I].Focused := True;
+  end
+  {$ENDIF VisualCLX}
   else
     lvProvider.Selected := nil;
   UpdateSelectedItem;
@@ -399,14 +443,18 @@ begin
 end;
 
 procedure TfmeJvProviderTreeList.UpdateViewList;
+{$IFDEF VCL}
 var
   ViewList: IJvDataConsumerViewList;
+{$ENDIF VCL}
 begin
+  {$IFDEF VCL}
   ViewList := GetViewList;
   if ViewList <> nil then
     lvProvider.Items.Count := ViewList.Count + Ord(UsingVirtualRoot)
   else
     lvProvider.Items.Count := 0;
+  {$ENDIF VCL}
 end;
 
 procedure TfmeJvProviderTreeList.lvProviderCustomDrawItem(
@@ -418,10 +466,22 @@ var
   BtnWdth: Integer;
   MidX, MidY: Integer;
 begin
-  ACanvas := Sender.Canvas;
-  DefaultDraw := False;
+  {$IFDEF VCL}
   ARect := Item.DisplayRect(drBounds);
   ARect.Right := Sender.ClientRect.Right;
+
+  ACanvas := Sender.Canvas;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  ARect := Item.DisplayRect;
+  ARect.Right := Sender.ClientRect.Right;
+
+  ACanvas := TControlCanvas.Create;
+  TControlCanvas(ACanvas).Control := Sender;
+  try
+  ACanvas.Start;
+  {$ENDIF VisualCLX}
+  DefaultDraw := False;
   if Item.Selected then
   begin
     ACanvas.Brush.Color := clHighlight;
@@ -437,7 +497,12 @@ begin
     ACanvas.FillRect(ARect);
   end;
   BtnWdth := Succ(ARect.Bottom - ARect.Top) + 2;
+  {$IFDEF VCL}
   ARect.Left := ARect.Left + (BtnWdth * Item.Indent);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  ARect.Left := ARect.Left + (BtnWdth * 1);
+  {$ENDIF VisualCLX}
   if (UsingVirtualRoot and (Item.Index = 0)) or
     GetViewList.ItemHasChildren(Item.Index - Ord(UsingVirtualRoot)) then
   begin
@@ -466,7 +531,18 @@ begin
     end;
   end;
   ARect.Left := ARect.Left + BtnWdth;
-  DrawText(ACanvas.Handle, PChar(Item.Caption), Length(Item.Caption), ARect, DT_SINGLELINE + DT_LEFT + DT_END_ELLIPSIS);
+  {$IFDEF VCL}
+  DrawText(ACanvas.Handle, PChar(Item.Caption), Length(Item.Caption), ARect,
+    DT_SINGLELINE + DT_LEFT + DT_END_ELLIPSIS);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+    DrawTextW(ACanvas.Handle, PWideChar(Item.Caption), Length(Item.Caption), ARect,
+      DT_SINGLELINE + DT_LEFT + DT_END_ELLIPSIS);
+    ACanvas.Stop;
+  finally
+    ACanvas.Free;
+  end;
+  {$ENDIF VisualCLX}
 end;
 
 procedure TfmeJvProviderTreeList.lvProviderData(Sender: TObject;
@@ -483,12 +559,16 @@ begin
     if UsingVirtualRoot and (Item.Index = 0) then
     begin
       DataItem := FVirtualRoot;
+      {$IFDEF VCL}
       Item.Indent := 0;
+      {$ENDIF VCL}
     end
     else
     begin
       DataItem := GetViewList.Item(Item.Index - Ord(UsingVirtualRoot));
+      {$IFDEF VCL}
       Item.Indent := GetViewList.ItemLevel(Item.Index - Ord(UsingVirtualRoot)) + Ord(UsingVirtualRoot);
+      {$ENDIF VCL}
     end;
     if DataItem <> nil then
     begin
@@ -535,7 +615,12 @@ begin
         ItemLevel := 0
       else
         ItemLevel := GetViewList.ItemLevel(Item - Ord(UsingVirtualRoot)) + Ord(UsingVirtualRoot);
+      {$IFDEF VCL}
       ListView_GetItemRect(lvProvider.Handle, Item, TmpRect, LVIR_BOUNDS);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      TmpRect := lvProvider.Items[Item].DisplayRect;
+      {$ENDIF VisualCLX}
       TmpRect.Right := TmpRect.Left + (Succ((TmpRect.Bottom - TmpRect.Top) + 2) * Succ(ItemLevel));
       if (X < TmpRect.Right) and (X > TmpRect.Right - ((TmpRect.Bottom - TmpRect.Top) + 2)) then
         if Item >= Ord(UsingVirtualRoot) then

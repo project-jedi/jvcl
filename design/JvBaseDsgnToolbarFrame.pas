@@ -228,12 +228,12 @@ end;
 procedure TfmeJvBaseToolbarDesign.spToolbarCanResize(Sender: TObject;
   var NewSize: Integer; var Accept: Boolean);
 begin
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Accept := tbrToolbar.RowCount = 1;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Accept := GetToolBarRowCount(tbrToolbar) = 1;
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
   if Accept then
   begin
     if NewSize > 36 then
