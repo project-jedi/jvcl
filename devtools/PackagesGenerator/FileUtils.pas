@@ -20,6 +20,11 @@ function GetRelativePath(Origin, Destination : string) : string;
 // is undefined (most likely an exception will be triggered)
 function PathNoInsideRelative(Path : string) : string;
 
+// Sets the date and time of the indicated file
+// This function with this signature doesn't exists in D5 so
+// we had to declare it here
+function FileSetDate(const FileName: string; Age: Integer): Integer;
+
 implementation
 
 uses Classes, JclStrings, JclFileUtils, SysUtils;
@@ -145,5 +150,33 @@ begin
     PathList.Free;
   end;
 end;
+
+function FileSetDate(const FileName: string; Age: Integer): Integer;
+{$IFDEF MSWINDOWS}
+var
+  f: THandle;
+begin
+  f := FileOpen(FileName, fmOpenWrite);
+  if f = THandle(-1) then
+    Result := GetLastError
+  else
+  begin
+    Result := SysUtils.FileSetDate(f, Age);
+    FileClose(f);
+  end;
+end;
+{$ENDIF}
+{$IFDEF LINUX}
+var
+  ut: TUTimeBuffer;
+begin
+  Result := 0;
+  ut.actime := Age;
+  ut.modtime := Age;
+  if utime(PChar(FileName), @ut) = -1 then
+    Result := GetLastError;
+end;
+{$ENDIF}
+
 
 end.

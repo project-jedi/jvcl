@@ -8,7 +8,8 @@ uses
   JvStatusBar, ExtCtrls, JvSplitter, StdCtrls, JvListBox, JvCtrls,
   JvControlBar, ImgList, ActnList, JvComponent, JvBaseDlg, JvBrowseFolder,
   Mask, JvToolEdit, AppEvnts, Grids, JvGrids, JvFormPlacement, JvAppStorage,
-  JvStringGrid, JvAppXMLStorage;
+  JvStringGrid, JvAppXMLStorage, JvExGrids, JvExComCtrls, JvExExtCtrls,
+  JvExStdCtrls;
 
 type
   TfrmMain = class(TForm)
@@ -199,11 +200,11 @@ constructor TfrmMain.Create(AOwner: TComponent);
 begin
   inherited;
 
-  jaxStore.FileName := StrEnsureSuffix(PathSeparator, ExtractFilePath(Application.exename)) + 'pgEdit.xml';
+  jaxStore.FileName.FileName := StrEnsureSuffix(PathSeparator, ExtractFilePath(Application.exename)) + 'pgEdit.xml';
   if cmbModel.ItemIndex >-1 then
-    LoadConfig(jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex])
+    LoadConfig(jaxStore.FileName.FileName, cmbModel.Items[cmbModel.ItemIndex])
   else
-    LoadConfig(jaxStore.FileName, '');
+    LoadConfig(jaxStore.FileName.FileName, '');
 
   with jsgDependencies do
   begin
@@ -611,7 +612,7 @@ begin
         end;
 
         frmGenMessages.Show;
-        Generate(jlbList.Items, targets, AddMessage, jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], frmTargets.chkGenDof.Checked);
+        Generate(jlbList.Items, targets, AddMessage, jaxStore.FileName.FileName, cmbModel.Items[cmbModel.ItemIndex], frmTargets.chkGenDof.Checked);
       finally
         targets.Free;
       end;
@@ -751,7 +752,7 @@ begin
 
   // force the models to be loaded in appropriate form and
   // load the names in the combo box
-  frmModels.LoadModels(jaxStore.FileName);
+  frmModels.LoadModels(jaxStore.FileName.FileName);
   cmbModel.Items.Assign(frmModels.cmbModels.Items);
 
   jfsStore.RestoreFormPlacement;
@@ -895,7 +896,7 @@ end;
 
 procedure TfrmMain.cmbModelClick(Sender: TObject);
 begin
-  LoadConfig(jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex]);
+  LoadConfig(jaxStore.FileName.FileName, cmbModel.Items[cmbModel.ItemIndex]);
 end;
 
 end.
