@@ -21,9 +21,8 @@
     <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvSegmentedLEDDisplayMappingForm.pas" Targets="allbutclx" Formname="frmJvSLDMappingEditor" Condition=""/>
-    <File Name="..\..\design\JvHMIReg.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQHMIReg.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvSegmentedLEDDisplayEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvSegmentedLEDDisplayMappingForm.pas" Targets="all" Formname="frmJvSLDMappingEditor" Condition=""/>
+    <File Name="..\..\design\JvHMIReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvSegmentedLEDDisplayEditors.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

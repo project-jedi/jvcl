@@ -45,7 +45,7 @@
     <File Name="..\..\run\JvSecretPanel.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvShape.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSpeedButton.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSpin.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSpin.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvStartMenuButton.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvStaticText.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvStatusBar.pas" Targets="all" Formname="" Condition=""/>
@@ -68,7 +68,7 @@
     <File Name="..\..\run\JvCalc.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCalendar.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvCheckBox.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvCheckedMaskEdit.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCheckedMaskEdit.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCheckListBox.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvCheckTreeView.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvColorCombo.pas" Targets="allbutclx" Formname="" Condition=""/>
@@ -93,8 +93,6 @@
     <File Name="..\..\run\JvRadioGroup.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvLinkedControls.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQTimeEdit.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQSpinButton.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQGauges.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQTabControl.pas" Targets="allclx" Formname="" Condition=""/>
   </Contains>
 </Package>

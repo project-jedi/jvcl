@@ -21,7 +21,7 @@
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
     <Package Name="DJclVClx" Targets="allclx" Condition=""/>
-    <Package Name="clxdesigner" Targets="d7clx" Condition=""/>
+    <Package Name="clxdesigner" Targets="D7clx" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvProviderTreeListDsgnFrame.pas" Targets="all" Formname="fmeJvProviderTreeListDsgn: TFrame" Condition=""/>
@@ -46,7 +46,8 @@
     <File Name="..\..\design\JvDesignerUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvDsgnConsts.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvDsgnEditors.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvIDEZoom.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvIDEZoom.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQIDEZoom.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvJVCLAboutEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvPaintBoxEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvProviderToolbarFrame.pas" Targets="all" Formname="fmeJvProviderToolbar: TFrame" Condition=""/>

@@ -9,7 +9,7 @@
   <Requires>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
-    <Package Name="JvCtrls-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-D" Targets="C5,C6,C6p" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="dclstd50" Targets="C5,D5,D5s" Condition=""/>
@@ -25,8 +25,7 @@
   <Contains>
     <File Name="..\..\design\JvCheckedItemsForm.pas" Targets="all" Formname="JvCheckItemsEditor" Condition=""/>
     <File Name="..\..\design\JvProgressEditor.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvStdCtrlsReg.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQStdCtrlsReg.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvStdCtrlsReg.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\qdesign\JvQStdDsgnEditors.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qdesign\JvQDateTimeForm.pas" Targets="allclx" Formname="frmSelectDateTimeDlg" Condition=""/>
   </Contains>

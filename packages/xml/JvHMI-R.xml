@@ -17,12 +17,13 @@
     <Package Name="CJCLVCL" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx50" Targets="D5,D5s" Condition=""/>
+    <Package Name="DJclVclx" Targets="allclx" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvSLDMappingEditorDialog.pas" Targets="allbutclx" Formname="frmSLDMappingEditorDialog" Condition=""/>
+    <File Name="..\..\run\JvSLDMappingEditorDialog.pas" Targets="all" Formname="frmSLDMappingEditorDialog" Condition=""/>
     <File Name="..\..\run\JvDialButton.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvLED.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSegmentedLEDDisplay.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSegmentedLEDDisplayMapperFrame.pas" Targets="allbutclx" Formname="fmeJvSegmentedLEDDisplayMapper: TFrame" Condition=""/>
+    <File Name="..\..\run\JvSegmentedLEDDisplay.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSegmentedLEDDisplayMapperFrame.pas" Targets="all" Formname="fmeJvSegmentedLEDDisplayMapper: TFrame" Condition=""/>
   </Contains>
 </Package>

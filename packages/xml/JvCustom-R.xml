@@ -9,7 +9,7 @@
   <Requires>
     <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
     <Package Name="JvCtrls-R" Targets="C5,C6,C6p,D5,D5s,D6,D6p" Condition=""/>
-    <Package Name="JvStdCtrls-R" Targets="C5,C6,C6p,D7,D7p,D7clx,K3,K3p" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="C5,C6,C6p,D7,D7p,allclx" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="vcljpg50" Targets="C5" Condition=""/>
@@ -35,7 +35,7 @@
     <File Name="..\..\run\JvEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvHLEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvHLEditorPropertyForm.pas" Targets="allbutclx" Formname="JvHLEditorParamsForm" Condition=""/>
-    <File Name="..\..\run\JvHLParser.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvHLParser.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvLinkLabel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvLinkLabelDebug.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvLinkLabelParser.pas" Targets="all" Formname="" Condition=""/>
@@ -45,8 +45,8 @@
     <File Name="..\..\run\JvLinkLabelTree.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvLookOut.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvOutlookBar.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSchedEvtStore.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvScheduledEvents.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSchedEvtStore.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvScheduledEvents.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvThumbImage.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvThumbnails.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvThumbViews.pas" Targets="allbutclx" Formname="" Condition=""/>

@@ -19,8 +19,8 @@
     <Package Name="vclx" Targets="C6,C6p,D7,D7p" Condition=""/>
     <Package Name="vcljpg" Targets="D7,D7p" Condition=""/>
     <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
-    <Package Name="dclstd" Targets="C6,C6p,D6,D6p,D7,D7p,d7clx" Condition=""/>
-    <Package Name="clxdesigner" Targets="allclx" Condition=""/>
+    <Package Name="dclstd" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="clxdesigner" Targets="D7clx" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvMinMaxForm.pas" Targets="allbutclx" Formname="MinMaxInfoEditDialog" Condition=""/>

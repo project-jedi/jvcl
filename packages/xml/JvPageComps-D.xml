@@ -22,9 +22,9 @@
   <Contains>
     <File Name="..\..\design\JvPageLinkEditorForm.pas" Targets="all" Formname="frmJvTreeViewLinksEditor" Condition=""/>
     <File Name="..\..\design\JvPageListTreeViewReg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvTreeItemsEditorForm.pas" Targets="all" Formname="frmTreeViewItems" Condition=""/>
+    <File Name="..\..\design\JvTreeItemsEditorForm.pas" Targets="allbutclx" Formname="frmTreeViewItems" Condition=""/>
     <File Name="..\..\design\JvPageListEditorForm.pas" Targets="all" Formname="frmPageListEditor" Condition=""/>
-    <File Name="..\..\design\JvPageListEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvPageListEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvNavPaneEditors.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
