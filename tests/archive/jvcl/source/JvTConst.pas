@@ -28,7 +28,7 @@ Known Issues:
 
 unit JvTConst;
 
-{ RX tools components constants }
+{ Jv tools components constants }
 {
   Reserved diapasone
   from MaxExtStrID - 136

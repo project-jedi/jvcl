@@ -27,7 +27,7 @@ Known Issues:
 
 unit JvLConst;
 
-{ RX Library constants }
+{ Jv Library constants }
 {
   Reserved diapasone
   from MaxExtStrID + 10
@@ -45,9 +45,9 @@ const
 
 { Component pages }
 
-  srRXControls         = MaxExtStrID;
-  srRXDBAware          = MaxExtStrID - 1;
-  srRXTools            = MaxExtStrID - 2;
+  srJvControls         = MaxExtStrID;
+  srJvDBAware          = MaxExtStrID - 1;
+  srJvTools            = MaxExtStrID - 2;
 
 { TImageList component editor }
 

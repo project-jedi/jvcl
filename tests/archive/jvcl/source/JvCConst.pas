@@ -27,7 +27,7 @@ Known Issues:
 
 unit JvCConst;
 
-{ RX controls and components constants }
+{ Jv controls and components constants }
 {
   Reserved diapasone
   from MaxExtStrID - 36

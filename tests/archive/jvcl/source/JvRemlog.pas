@@ -30,7 +30,7 @@ unit JvRemLog;
 interface
 
 {$IFDEF COMPILER3_UP}
-{$IFDEF RX_MIDAS}
+{$IFDEF Jv_MIDAS}
 
 uses SysUtils, Windows, Messages, Classes, Graphics, Controls, Forms,
   Dialogs, JvxLogin, DBClient;
@@ -79,13 +79,13 @@ type
     property OnIconDblClick;
   end;
 
-{$ENDIF RX_MIDAS}
+{$ENDIF Jv_MIDAS}
 {$ENDIF COMPILER3_UP}
 
 implementation
 
 {$IFDEF COMPILER3_UP}
-{$IFDEF RX_MIDAS}
+{$IFDEF Jv_MIDAS}
 
 uses IniFiles, Registry, JvAppUtils, JvVCLUtils {$IFDEF COMPILER4_UP}, MConnect {$ENDIF};
 
@@ -316,7 +316,7 @@ begin
     FSaveAfterConnect(FRemoteServer);
 end;
 
-{$ENDIF RX_MIDAS}
+{$ENDIF Jv_MIDAS}
 {$ENDIF COMPILER3_UP}
 
 end.

@@ -397,7 +397,7 @@ begin
   SetDBFlag(dbfTable, True);
   try
     if TableName = '' then
-      AnsiToNative(Locale, '$RxInMem$', szTblName, SizeOf(szTblName) - 1)
+      AnsiToNative(Locale, '$JvInMem$', szTblName, SizeOf(szTblName) - 1)
     else
       AnsiToNative(Locale, TableName, szTblName, SizeOf(szTblName) - 1);
 {$IFDEF COMPILER4_UP}

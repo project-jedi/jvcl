@@ -25,6 +25,13 @@ Known Issues:
   {$ObjExportAll ON}
 {$ENDIF}
 
+{.$DEFINE DCS}
+{ Client/Server or Enterprise version. Deactivate this define if you
+  have Delphi Desktop, Standard or Professional Edition }
+
+{.$DEFINE Jv_MIDAS}
+{ Jv MIDAS components }
+
 {$DEFINE USE_Jv_GIF}
 { This define enables GIF image support. Deactivate this define
   if you are using another GIF image support library. See README.TXT

@@ -136,7 +136,7 @@ end;
 procedure Register;
 begin
   { Components }
-  RegisterComponents({LoadStr(srRXTools)}'JvX Tools', [TJvPicClip, TJvFormStorage,
+  RegisterComponents('JvX Tools', [TJvPicClip, TJvFormStorage,
     TJvFormPlacement, TJvWindowHook, TJvAppEvents, TJvSpeedBar, TJvCalculator,
       TJvTimerList, TJvPageManager, TJvMergeManager, TJvMRUManager, TJvSecretPanel,
       TJvStrHolder, TJvMainMenu, TJvPopupMenu,

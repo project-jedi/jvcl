@@ -43,12 +43,12 @@ uses
 { TJvDBGrid }
 
 const
-  DefRxGridOptions = [dgEditing, dgTitles, dgIndicator, dgColumnResize,
+  DefJvGridOptions = [dgEditing, dgTitles, dgIndicator, dgColumnResize,
     dgColLines, dgRowLines, dgConfirmDelete, dgCancelOnExit];
 
 {$IFDEF COMPILER35_UP}
  {$IFDEF CBUILDER}
-  {$NODEFINE DefRxGridOptions}
+  {$NODEFINE DefJvGridOptions}
  {$ENDIF}
 {$ENDIF}
 
@@ -248,11 +248,11 @@ type
   published
 {$IFDEF WIN32}
     property Options: TDBGridOptions read GetOptions write SetOptions
-      default DefRxGridOptions;
+      default DefJvGridOptions;
 {$ELSE}
     property FixedColor: TColor read GetFixedColor write SetFixedColor
       default clBtnFace; { fix Delphi 1.0 bug }
-    property Options default DefRxGridOptions;
+    property Options default DefJvGridOptions;
 {$ENDIF}
     property FixedCols: Integer read GetFixedCols write SetFixedCols default 0;
     property ClearSelection: Boolean read FClearSelection write FClearSelection
@@ -1049,7 +1049,7 @@ var
 begin
   inherited Create(AOwner);
   inherited DefaultDrawing := False;
-  Options := DefRxGridOptions;
+  Options := DefJvGridOptions;
   Bmp := TBitmap.Create;
   try
     Bmp.Handle := LoadBitmap(hInstance, bmMultiDot);

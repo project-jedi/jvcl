@@ -748,7 +748,7 @@ type
       Manual: Boolean): Boolean;
     procedure DoMouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer);
-    procedure CMButtonPressed(var Message: TMessage); message CM_RXBUTTONPRESSED;
+    procedure CMButtonPressed(var Message: TMessage); message CM_JVBUTTONPRESSED;
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
@@ -4847,7 +4847,7 @@ var
   Msg: TMessage;
 begin
   if (FGroupIndex <> 0) and (Parent <> nil) then begin
-    Msg.Msg := CM_RXBUTTONPRESSED;
+    Msg.Msg := CM_JVBUTTONPRESSED;
     Msg.WParam := FGroupIndex;
     Msg.LParam := Longint(Self);
     Msg.Result := 0;

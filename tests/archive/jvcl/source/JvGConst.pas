@@ -28,7 +28,7 @@ Known Issues:
 
 unit JvGConst;
 
-{ RX graphic support constants }
+{ Jv graphic support constants }
 {
   Reserved diapasone
   from MaxExtStrID - 200

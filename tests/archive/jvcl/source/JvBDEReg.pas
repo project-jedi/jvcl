@@ -52,7 +52,7 @@ implementation
 
 uses TypInfo, JvDBLists, JvLConst, JvDBQBE, JvDBFilter, JvDBIndex, JvDBPrgrss,
   JvxLogin, JvDBSecur, JvQuery, JvVCLUtils, JvDbExcpt, JvDsgn,
-{$IFDEF DCS}JvSelDSFrm, {$ENDIF}{$IFDEF RX_MIDAS}JvRemLog, {$ENDIF}
+{$IFDEF DCS}JvSelDSFrm, {$ENDIF}{$IFDEF Jv_MIDAS}JvRemLog, {$ENDIF}
 {$IFDEF COMPILER3_UP}JvQBndDlg, {$ELSE}
 {$IFNDEF WIN32}JvQBndDlg, {$ELSE}JvQBindDlg, {$ENDIF}{$ENDIF}
   Consts, LibHelp, JvMemTable;
@@ -307,7 +307,7 @@ begin
       TJvDBSecurity]);
       
    RegisterComponents('Jv Data Controls', [TJvDBIndexCombo, TJvDBProgress]);
-{$IFDEF RX_MIDAS}
+{$IFDEF Jv_MIDAS}
   { MIDAS components }
   RegisterComponents('Jv Data Access', [TJvRemoteLogin]);
   RegisterNonActiveX([TJvRemoteLogin], axrComponentOnly);

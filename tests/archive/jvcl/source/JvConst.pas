@@ -33,14 +33,14 @@ interface
 
 uses Controls;
 
-const
-  RX_VERSION = $0002004B;  { 2.75 }
+//const
+//  RX_VERSION = $0002004B;  { 2.75 }
 
 const
 { Command message for JvSpeedbar editor }
   CM_SPEEDBARCHANGED = CM_BASE + 80;
 { Command message for TJvxSpeedButton }
-  CM_RXBUTTONPRESSED = CM_BASE + 81;
+  CM_JVBUTTONPRESSED = CM_BASE + 81;
 { Command messages for TJvWindowHook }
   CM_RECREATEWINDOW  = CM_BASE + 82;
   CM_DESTROYHOOK     = CM_BASE + 83;

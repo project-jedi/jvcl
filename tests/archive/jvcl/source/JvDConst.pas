@@ -28,7 +28,7 @@ Known Issues:
 
 unit JvDConst;
 
-{ RX Data aware controls constants }
+{ Jv Data aware controls constants }
 {
   Reserved range
   from MaxExtStrID - 86
@@ -60,7 +60,7 @@ const
   SCaptureFilter          = MaxExtStrID - 91;
   SNotCaptureFilter       = MaxExtStrID - 92;
 
-{ RxDBCtrl }
+{ JvDBCtrl }
 
   SInactiveData           = MaxExtStrID - 93;
   SBrowseData             = MaxExtStrID - 94;
@@ -111,14 +111,14 @@ const
 { JvDBUtils }
 
   SConfirmSave            = MaxExtStrID - 126;
-  SDatabaseName           = MaxExtStrID - 127;  
+  SDatabaseName           = MaxExtStrID - 127;
 
 { LoginDlg }
   
   SUnlockCaption          = MaxExtStrID - 128;
   SUnlockHint             = MaxExtStrID - 129;
 
-{ RxDBCtrl }
+{ JvDBCtrl }
 
   SDeleteMultipleRecords  = MaxExtStrID - 130;
 

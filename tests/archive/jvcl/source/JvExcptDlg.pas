@@ -92,9 +92,9 @@ const
   ErrorDlgHelpCtx: THelpContext = 0;
 
 var
-  RxErrorDialog: TJvErrorDialog;
+  JvErrorDialog: TJvErrorDialog;
 
-procedure RxErrorIntercept;
+procedure JvErrorIntercept;
 
 implementation
 
@@ -119,10 +119,10 @@ const
 const
   CRLF = #13#10;
 
-procedure RxErrorIntercept;
+procedure JvErrorIntercept;
 begin
-  if RxErrorDialog <> nil then RxErrorDialog.Free;
-  RxErrorDialog := TJvErrorDialog.Create(Application);
+  if JvErrorDialog <> nil then JvErrorDialog.Free;
+  JvErrorDialog := TJvErrorDialog.Create(Application);
 end;
 
 { TJvErrorDialog }
@@ -394,5 +394,5 @@ begin
 end;
 
 initialization
-  RxErrorDialog := nil;
+  JvErrorDialog := nil;
 end.

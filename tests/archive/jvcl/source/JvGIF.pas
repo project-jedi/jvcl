@@ -287,7 +287,7 @@ const
   GIFLoadCorrupted: Boolean = True;
 
 function GIFVersionName(Version: TGIFVersion): string;
-procedure rxgif_dummy;
+procedure Jvgif_dummy;
 
 implementation
 
@@ -296,7 +296,7 @@ uses Consts, {$IFNDEF WIN32} JvStr16, {$ENDIF} JvVCLUtils, JvAniFile, JvConst,
 
 {$R-}
 
-procedure rxgif_dummy;
+procedure Jvgif_dummy;
 begin
 end;
 
