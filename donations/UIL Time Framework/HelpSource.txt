@@ -1,3 +1,36 @@
+Welcome
+
+Description
+Welcome to the JVCL Time Framework 2.0. We hope that you find it a valuable addition to your toolbox.
+
+The JTF is a powerful suite of components that allow you to quickly and easily add PIM functionality into your software.
+It includes a powerful Schedule Manager component that handles all data access, a full-featured Day View, Week View and
+Month View, as well as an architecture that can support new functionality very easily.
+
+You should begin by viewing the demo application. It provides a very solid overview of what the system is capable of, as
+well as what the components look like. After that, you should read up on the TJvTFScheduleManager component. It is the heart
+of the JTF product.
+----------------------------------------------------------------------------------------------------
+Using TJvTFPrinter
+
+Description
+Printer uses one of two different printing models, based upon the value of DirectPrint.
+
+If DirectPrint is TRUE:
+Create a new document via .
+Call to get a new page canvas. (, , and are fired at this time. Each subsequent call to sends the previous page directly to the printer.)
+Call to send the last page to the printer and close the print job.
+Clean up used resources by calling .
+
+If DirectPrint is FALSE:
+Create a new document via .
+Call to get a new page canvas. ( is fired for each new page. Each page is stored in memory and is NOT sent to the printer at this time.)
+Call to complete rendering the document. ( and is fired for each page at this time. After FinishDoc executes, each page image is accessible via the property.)
+Call to send the document to the printer.
+Clean up used resources by calling .
+
+
+----------------------------------------------------------------------------------------------------
 Batch Loading
 
 Description
@@ -56,6 +89,7 @@ operartion in ONE retrieval. Note that loading is NOT limited to SQL. You can us
 
 If you are manually loading schedules you can use Batch Loading by setting SchedLoadMode to slmBatch, request the schedules
 as you do now, and then call ProcessBatches to fire the batch events.
+
 ----------------------------------------------------------------------------------------------------
 BorlToDOW
 See also
@@ -560,7 +594,8 @@ After the Refresh events have been fired, TJvTFScheduleManager will automaticall
 Note: If TJvTFScheduleManager.RefreshAutoReconcile is set to False, the TJvTFAppt.Refreshed property is ignored and the no appointments will be automatically cached during the refresh process.
 
 ----------------------------------------------------------------------------------------------------
-JvTFDays Keyboard Assignments
+JvTFDays
+Keyboard Assignments
 
 Description
 The JvTFDays control natively handles the following key combinations:
@@ -7235,7 +7270,7 @@ TJvTFHintProps
 Unit
 JvTFServer
 Description
-T he TJvTFHintProps object allows you to control certain properties of a TJvTFHint window. These properties include HintColor, HintPause, and HintHidePause.
+The TJvTFHintProps object allows you to control certain properties of a TJvTFHint window. These properties include HintColor, HintPause, and HintHidePause.
 
 
 
@@ -7663,6 +7698,7 @@ property DirectPrint: Boolean;
 Description
 Use this property to control the printing model that the Printer uses. See Using TJvTFPrinter for more info.
 
+----------------------------------------------------------------------------------------------------
 TJvTFPrinter.DocDateTime
 TJvTFPrinter
 property DocDateTime: TDateTime;
@@ -8008,17 +8044,13 @@ TJvTFSched	See also
 property Appts [ Index: Integer ]: TJvTFAppt;
 Description
 Use the Appts property to retrieve each appointment object that is a member of the schedule.
-
-
-
+----------------------------------------------------------------------------------------------------
 TJvTFSched.Cached
 TJvTFSched
 property Cached: Boolean;
 Description
 Cached will be true if the schedule object is no longer used by any of the controls that are connected to the server, false otherwise. A cached schedule object is queued to be flushed from memory by the caching system.
-
-
-
+----------------------------------------------------------------------------------------------------
 TJvTFSched.CachedTime
 TJvTFSched
 property CachedTime: DWORD;
@@ -8485,6 +8517,7 @@ function GetApptDisplayText(aComponent: TComponent; Appt: TJvTFAppt ): String;
 Description
 This method is for internal use. It will set the default display text and then call OnGetApptDisplayText.
 
+----------------------------------------------------------------------------------------------------
 TJvTFScheduleManager.GetSchedClass
 TJvTFScheduleManager
 function GetSchedClass: TJvTFSchedClass;
@@ -9264,38 +9297,6 @@ This type is used to specify which scrollbars are visible.
 
 
 ----------------------------------------------------------------------------------------------------
-Using TJvTFPrinter
-
-Description
-Printer uses one of two different printing models, based upon the value of DirectPrint.
-
-If DirectPrint is TRUE:
-Create a new document via .
-Call to get a new page canvas. (, , and are fired at this time. Each subsequent call to sends the previous page directly to the printer.)
-Call to send the last page to the printer and close the print job.
-Clean up used resources by calling .
-
-If DirectPrint is FALSE:
-Create a new document via .
-Call to get a new page canvas. ( is fired for each new page. Each page is stored in memory and is NOT sent to the printer at this time.)
-Call to complete rendering the document. ( and is fired for each page at this time. After FinishDoc executes, each page image is accessible via the property.)
-Call to send the document to the printer.
-Clean up used resources by calling .
-
-
-----------------------------------------------------------------------------------------------------
-Welcome
-
-Description
-Welcome to the JVCL Time Framework 2.0. We hope that you find it a valuable addition to your toolbox.
-
-The JTF is a powerful suite of components that allow you to quickly and easily add PIM functionality into your software.
-It includes a powerful Schedule Manager component that handles all data access, a full-featured Day View, Week View and
-Month View, as well as an architecture that can support new functionality very easily.
-
-You should begin by viewing the demo application. It provides a very solid overview of what the system is capable of, as
-well as what the components look like. After that, you should read up on the TJvTFScheduleManager component. It is the heart
-of the JTF product.
 
 
 

@@ -1,4 +1,4 @@
-##Package: ??
+##Package: TimeFramework
 ##Status: Locked by peter3
 ----------------------------------------------------------------------------------------------------
 @@JvTFManager.pas
@@ -24,12 +24,16 @@ Description
 ---------------------------------------------------------------------------------------------------
 @@TCNRequestRefresh
 <TITLE TCNRequestRefresh type>
+
 Summary
-  Message type used to request a schedule refresh.
+Message type used to request a schedule refresh.
+
 Description
-  A CN_REQUESTREFRESH is sent by the TJvTFScheduleManager when it needs to refresh a schedule.
-  The message is sent in a TCNRequestRefresh record.
-  This message has been superseeded by the NotifyApptCtrl method.
+A CN_REQUESTREFRESH is sent by the TJvTFScheduleManager when
+it needs to refresh a schedule. The message is sent in a
+TCNRequestRefresh record. This message has been superseded by
+the NotifyApptCtrl method.
+
 @@TCNRequestRefresh.Msg
   The message, should be CN_REQUESTREFRESH
 @@TCNRequestRefresh.Schedule
@@ -91,13 +95,16 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.Assign
 Summary
-  Copys one object to antoher.
+Copies one object to another.
+
 Description
-  Use the Assign method to assign one appointment object to another.
+Use the Assign method to assign one appointment object to
+another.
+
 Parameters
-  Source - Description for this parameter
+Source :  \Description for this parameter
 See Also
-----------------------------------------------------------------------------------------------------
+
 @@TJvTFAppt.AssignSchedules
 Summary
   Adds the appointment to multiple schedules.
@@ -324,7 +331,7 @@ See Also
 Summary
   Determines whether the object has been refreshed.
 Description
-  This property specifies whether or not the appt object has been refreshed. Please see !!!Refresh Reconciliation!!!
+  This property specifies whether or not the appt object has been refreshed. Please see "Refresh Reconciliation"
   for more information.
 
   Note: This property is ignored if TJvTFScheduleManager.RefreshAutoReconcile is set to False.
@@ -722,27 +729,35 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFControlEvent
 <TITLE TJvTFControlEvent type>
+
 Summary
-  Not currently used.
+Not currently used.
+
 Description
-  This event type is not currently in use.
+This event type is not currently in use.
+
 Parameters
-  Sender   - The object taht called the event.
-  aControl - unknown
+Sender :    The object that called the event.
+aControl :  unknown
 See Also
-----------------------------------------------------------------------------------------------------
+
 @@TJvTFCustomImageMap
 Summary
-  Provides support for custm images in appointments.
+Provides support for custom images in appointments.
+
 Description
-  The TJvTFCustomImageMap is part of the system that allows you to attach custom images to specific
-  appointments. Specifically, the TJvTFCustomImageMap is part of a TJvTFAppt object and allows you to
-  assign a name to an image from a TImageList. You can then reference the image by name or by its
-  index in the map (which is different than the index in the ImageList).
+The TJvTFCustomImageMap is part of the system that allows you
+to attach custom images to specific appointments.
+Specifically, the TJvTFCustomImageMap is part of a TJvTFAppt
+\object and allows you to assign a name to an image from a
+TImageList. You can then reference the image by name or by
+its index in the map (which is different than the index in
+the ImageList).
 
 Note
-  The TJvTFScheduleManager.CustomImages is the TImageList that is referenced.
-----------------------------------------------------------------------------------------------------
+The TJvTFScheduleManager.CustomImages is the TImageList that
+is referenced.
+
 @@TJvTFCustomImageMap.Add
 Summary
   Adds a named imagelist reference to the class.
@@ -774,7 +789,7 @@ See Also
 Summary
   Returns the number of entries in the map.
 Description
-  Write here a description
+  Use Count to determine how many entries is in the map list.
 See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFCustomImageMap.Delete
@@ -832,11 +847,12 @@ See Also
 @@TJvTFCustomImageMap.Move
 Summary
   Moves an entry.
+
 Description
-  Moves the image (entry) found at SrcMapIndex to DestMapIndex .
+  Moves the image (entry) found at SrcMapIndex to DestMapIndex.
 Parameters
-  SrcMapIndex  - Index of the entry to move.
-  DestMapIndex - Ondex of the new location.
+  SrcMapIndex :   Index of the entry to move.
+  DestMapIndex :  Index of the new location.
 See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDateList
@@ -847,12 +863,13 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDateList.Add
 Summary
-  Ads a date to the list.
+  Adds a date to the list.
+
 Description
-  CAll Add to add a new date to the list.
+  Call Add to add a new date to the list.
 Parameters
-  ADate - The date to add.
-Return value
+  ADate :  The date to add.
+Returns
   Index in Dates where the new date was added.
 See Also
   Dates, Clear, Delete
@@ -910,11 +927,14 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDateList.OnChange
 Summary
-  Occurs when the lsit changes.
+Occurs when the list changes.
+
 Description
-  Dont' assign a handler to this event. It is for internal use pnly.
+Don't' assign a handler to this event. It is for internal use
+\only.
+
 See Also
-----------------------------------------------------------------------------------------------------
+
 @@TJvTFDragInfo
 Summary
   Represents drag and drop information.
@@ -959,7 +979,7 @@ See Also
 @@TJvTFDrawDWTitleEvent
 <TITLE TJvTFDrawDWTitleEvent type>
 Summary
-  Write here a summary (1 line)
+  Event used to retrieve week titles.
 Description
   Used for a OnDrawDWTitle event, which is fired when day of week title is being drawn. aCanvas provides
   a canvas for custom drawing. aRect specifies the bounding rect of the DW title. DOW specifies for
@@ -978,116 +998,101 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDWNames
 Summary
-  Write here a summary (1 line)
+  Stores display names for days.
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvTFDWNames.Assign
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This class provides the mechanism to store and retrieve the display names of the days of the week.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDWNames.DWN_Friday
 Summary
-  Write here a summary (1 line)
+  Stores a week day name.
 Description
-  Write here a description
+  Specify a custom day of week display name in this property. This property will be ignored unless
+  Source is set to dwnsCustom.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DWN_Monday, DWN_Tuesday, DWN_Wednesday, DWN_Thursday, DWN_Saturday, DWN_Sunday
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDWNames.DWN_Monday
 Summary
-  Write here a summary (1 line)
+  Stores a week day name.
 Description
-  Write here a description
+  Specify a custom day of week display name in this property. This property will be ignored unless
+  Source is set to dwnsCustom.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DWN_Tuesday, DWN_Wednesday, DWN_Thursday, DWN_Friday, DWN_Saturday, DWN_Sunday
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDWNames.DWN_Saturday
 Summary
-  Write here a summary (1 line)
+  Stores a week day name.
 Description
-  Write here a description
+  Specify a custom day of week display name in this property. This property will be ignored unless
+  Source is set to dwnsCustom.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DWN_Monday, DWN_Tuesday, DWN_Wednesday, DWN_Thursday, DWN_Friday, DWN_Sunday
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDWNames.DWN_Sunday
 Summary
-  Write here a summary (1 line)
+  Stores a week day name.
 Description
-  Write here a description
+  Specify a custom day of week display name in this property. This property will be ignored unless
+  Source is set to dwnsCustom.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DWN_Monday, DWN_Tuesday, DWN_Wednesday, DWN_Thursday, DWN_Friday, DWN_Saturday
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDWNames.DWN_Thursday
 Summary
-  Write here a summary (1 line)
+  Stores a week day name.
 Description
-  Write here a description
+  Specify a custom day of week display name in this property. This property will be ignored unless
+  Source is set to dwnsCustom.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DWN_Monday, DWN_Tuesday, DWN_Wednesday, DWN_Friday, DWN_Saturday, DWN_Sunday
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDWNames.DWN_Tuesday
 Summary
-  Write here a summary (1 line)
+  Stores a week day name.
 Description
-  Write here a description
+  Specify a custom day of week display name in this property. This property will be ignored unless
+  Source is set to dwnsCustom.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DWN_Monday, DWN_Wednesday, DWN_Thursday, DWN_Friday, DWN_Saturday, DWN_Sunday
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDWNames.DWN_Wednesday
 Summary
-  Write here a summary (1 line)
+  Stores a week day name.
 Description
-  Write here a description
+  Specify a custom day of week display name in this property. This property will be ignored unless
+  Source is set to dwnsCustom.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DWN_Monday, DWN_Tuesday, DWN_Thursday, DWN_Friday, DWN_Saturday, DWN_Sunday
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDWNames.GetDWName
 Summary
-  Write here a summary (1 line)
+  Retrieves the week day name using an index.
 Description
-  Write here a description
+  Call GetDWName to retrieve the week day display name using an index. Index must be between 1 (DWN_Monday)
+  and 7 (DWN_Sunday). Depending on the settings of Source, this function returns the long or short week day
+  name or a custom week day display name.
 Parameters
-  DWIndex - Description for this parameter
-Return value
-  Describe here what the function returns
+  DWIndex :  The week day display name to retrieve. This value must be between 1 and 7.
+Returns
+  The week day display name. If Index is less than 1 or greater than 7, am empty string is returned.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Source
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDWNames.OnChange
 Summary
-  Write here a summary (1 line)
+  Occurs when any property of the class changes.
 Description
-  Write here a description
+  Do not write a handler for this event. One is assigned internally.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDWNames.Source
 Summary
-  Write here a summary (1 line)
+  Determines the format of week day display names.
 Description
-  Write here a description
+  Specifies where the display names of the days of the week are retrieved from. See TJvTFDWNameSource
+  for more info.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDWNameSource
 <TITLE TJvTFDWNameSource type>
@@ -1112,243 +1117,231 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHint
 Summary
-  Write here a summary (1 line)
+  Class that rovides hints for JTF controls.
 Description
-  Write here a description
+  The TJvTFHint component provides hint functionality to JvTFControls. It is used internally and under
+  normal circumstances you should never have to work with this component.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHint.ActivateHint
 Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
+  Displays the hint window.
 Description
-  Write here a description
+  Call ActivateHint to display the hint window at the coordinates provided by the Rect parameter. If
+  the Rect parameter appears off screen, ActivateHint moves the hint window to the closest approximation
+  to the coordinates supplied by Rect that appears entirely on screen. ActivateHint sets the Caption property
+  to the AHint parameter before showing the window, so that the AHint string appears to the user.
+
+  After an application displays a hint window, it automatically deactivates it after a time period has elapsed,
+  or when it receives a message that requires hiding the hint message. To hide the hint window that is brought
+  up automatically by the application, use the HideHint method of the global Application object. To hide a hint
+  window that is activated directly by calling ActivateHint, use the ReleaseHandle method.
 Parameters
-  Rect  - Description for this parameter
-  AHint - Description for this parameter
+  Rect :   Window coordinates of the hint window.
+  AHint :  The hint string to display.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  HideHint
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHint.ApptHint
 Summary
-  Write here a summary (1 line)
+  Displays the hint window.
 Description
-  Write here a description
+  This method will cause a specially formatted hint to show. The hint will display the appointment's
+  description and start/end info according to the values of the ShowDatesTimes and ShowDesc properties.
+  If FormattedDesc is True, CRs and LFs (linebreaks) will be preserved, otherwise they will be removed
+  to minimize the size of the hint window.
+
+  The hint will appear at location (X, Y) (relative to the control).
 Parameters
-  Appt           - Description for this parameter
-  X              - Description for this parameter
-  Y              - Description for this parameter
-  ShowDatesTimes - Description for this parameter
-  ShowDesc       - Description for this parameter
-  FormattedDesc  - Description for this parameter
+  Appt :            The appointment whose hint is to be displayed.
+  X :               Coordinate of the left edged of the hint window
+  Y :               Coordinate of the top edged of the hint window
+  ShowDatesTimes :  Specifies if the appointment's date and time settings are displayed in the hint.
+  ShowDesc :        Specifies if the appointment's description is displayed in the hint.
+  FormattedDesc :   Specifies if CRLF's are preserved.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHint.CellHint
 Summary
-  Write here a summary (1 line)
+  Displays the hint window.
 Description
-  Write here a description
+  The CellHint method will display a hint window specific to the cell given by Row and Col. HintText is
+  the text that will be displayed and the hint window will appear center in the rect given by
+  CellRect (control coordinates).
 Parameters
-  Row      - Description for this parameter
-  Col      - Description for this parameter
-  HintText - Description for this parameter
-  CellRect - Description for this parameter
+  Row :       The row of the cell.
+  Col :       The column of the cell.
+  HintText :  The hint text.
+  CellRect :  Coordinates for the hint window.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHint.HintType
 Summary
-  Write here a summary (1 line)
+  Retrieves the hint type.
 Description
-  Write here a description
+  Returns the type of hint that is showing. See TJvTFHintType for more information.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvTFHintType
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHint.MultiLineObjHint
 Summary
-  Write here a summary (1 line)
+  Displays a hint window.
 Description
-  Write here a description
+  This method will show a hint window given multiple lines of text (Hints).
+
 Parameters
-  Obj   - Description for this parameter
-  X     - Description for this parameter
-  Y     - Description for this parameter
-  Hints - Description for this parameter
+  Obj :    The object that the hint is displayed for.
+  X :      Left edged of hint window.
+  Y :      Top edge of hint indow
+  Hints :  List of hints to display.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHint.OnShowHint
 Summary
-  Write here a summary (1 line)
+  Occurs when a hint window becomes visible.
 Description
-  Write here a description
+  Write a handler for this event to take specific actions bfefore the hint window becomes visible. For example,
+  you can customize the location and content of the hint window.
 Parameters
-  Sender   - Description for this parameter
-  HintType - Description for this parameter
-  Ref      - Description for this parameter
-  HintRect - Description for this parameter
-  HintText - Description for this parameter
+  Sender :    The object that called the event.
+  HintType :  The hint type.
+  Ref :       May contain a reference to the object that is displayed.
+  HintRect :  Bounding rect of hint window. Can be modified.
+  HintText :  Text to display in the hint window. Can be modified.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHint.Pause
 Summary
-  Write here a summary (1 line)
+  Specifies the time interval to wait before hiding the hint if the mouse has not moved from
+  the control or menu item.
 Description
-  Write here a description
+  Use Pause to specify a wait time in milliseconds, which is different from the default value of
+  2500 ms or 2 1/2 seconds that is set in the constructor. The hint for the control is specified in
+  the Hint property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHint.RefProps
 Summary
-  Write here a summary (1 line)
+  Stores additional hint window information.
 Description
-  Write here a description
+  This property holds a pointer to an instance of a TJvTFHintProps object. If this property is not nil,
+  TJvTFHint will reference the TJvTFHintProps object in order to set specific properties of the
+  hint window. These properties include HintColor, HintPause, and HintHidePause.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHint.ReleaseHandle
 Summary
-  Write here a summary (1 line)
+  Hides a hint window.
 Description
-  Write here a description
+  Call ReleaseHandle to destroy a hint window that was activated by directly calling the ActivateHint
+  method. Hint windows activated automatically by the application object are deactivated by the
+  application as well.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ActivateHint
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHint.ShortPause
 Summary
-  Write here a summary (1 line)
+  Specifies the time interval that passes before the control's hint appears when the user places
+  the mouse pointer on a control.
 Description
-  Write here a description
+  Use ShortPause to change the default pause time of 500 ms or 1/2 second that is set in the
+  constructor. When assigning a value to ShortPause, specify the interval in milliseconds. The
+  hint displayed at the end of the pause is specified in the Hint property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHint.StartEndHint
 Summary
-  Write here a summary (1 line)
+  Displays a hint window.
 Description
-  Write here a description
+  Call the StartEndHint method to display start/end information. The window will appear at control
+  position (X, Y). The StartDate and EndDate will only be shown if ShowDates is true. The hint
+  will appear immediately on the screen, ignoring the ShortPause property.
 Parameters
-  StartDate - Description for this parameter
-  EndDate   - Description for this parameter
-  StartTime - Description for this parameter
-  EndTime   - Description for this parameter
-  X         - Description for this parameter
-  Y         - Description for this parameter
-  ShowDates - Description for this parameter
+  StartDate :  Date to display as the start date.
+  EndDate :    Date to display as the end date.
+  StartTime :  Time to display as the start time.
+  EndTime :    Time to display as the end time.
+  X :          Left edge of hint window.
+  Y :          Top edge of hint window.
+  ShowDates :  Set to true to display the dates. Times are always displayed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHintClass
 Summary
-  Write here a summary (1 line)
+  Specifies the exact class of TJvTFHint.
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHintProps
 Summary
-  Write here a summary (1 line)
+  manages hint window settings.
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvTFHintProps.Assign
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The TJvTFHintProps class allows you to control certain properties of a TJvTFHint window. These properties
+  include HintColor, HintPause, and HintHidePause.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHintProps.HintColor
 Summary
-  Determines the color of the hint boxes for the Help Hints for the <xxx>.
+  Determines the color of the hint boxes for the Help Hints for the controls.
 Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
 See Also
-  HotTrack
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHintProps.HintHidePause
 Summary
-  Write here a summary (1 line)
+  Specifies the time interval to wait before hiding the Help Hint if the mouse has not moved from
+  the control.
 Description
-  Write here a description
+  This property specifies the amount of time, in milliseconds, that the Hint window will be visible
+  on the screen. If this property is set to -1, the Hint window will refer to the application's
+  HintHidePause property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHintProps.HintPause
 Summary
-  Write here a summary (1 line)
+  Specifies the time interval that passes before the control's Help Hint appears when the
+  user places the mouse pointer on a control.
 Description
-  Write here a description
+  This property specifies the amount of time, in milliseconds, that will elapse before the Hint
+  window is shown. If this property is set to -1, the Hint window will refer to the application's
+  HintPause property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHintType
 <TITLE TJvTFHintType type>
 Summary
-  Write here a summary (1 line)
+  Represents the different types of hints used in JTF.
 Description
-  Write here a description
+  TJvTFHintType is used by the TJvTFHint class's HintType property to specify what type of hint is currently
+  used by a JTF control.
 @@TJvTFHintType.shtAppt
-  Description for shtAppt
+  The hint is for an appointment.
 @@TJvTFHintType.shtStartEnd
-  Description for shtStartEnd
+  The hint is for a start/end value
 @@TJvTFHintType.shtCell
-  Description for shtCell
+  The hint is for a cell.
 @@TJvTFHintType.shtObj
-  Description for shtObj
+  The hint is for any object.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFLoadBatchEvent
 <TITLE TJvTFLoadBatchEvent type>
 <COMBINE TJvTFScheduleManager.OnLoadBatch>
 ----------------------------------------------------------------------------------------------------
-@@TJvTFMargins
-<TITLE TJvTFMargins type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = TRect ; - for reference)
-----------------------------------------------------------------------------------------------------
 @@TJvTFNavEvent
 <TITLE TJvTFNavEvent type>
 Summary
-  Write here a summary (1 line)
+  Occurs when a JTF control recieves a navigation command from its Navigator.
 Description
-  Write here a description
-  This type is used by (for reference):
-    Nothing in this unit.
+  Write a handler for this event to take specific actions when a navigation request is recieved by a
+  JTF control.
+
+  This event is not currently used.
 Parameters
-  Sender     - Description for this parameter
-  aControl   - Description for this parameter
-  SchedNames - Description for this parameter
-  Dates      - Description for this parameter
+  Sender :      The object that called the event.
+  aControl :    The control that recieved the request.
+  SchedNames :  Names of affected schedules
+  Dates :       List of affected days.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPostApptQueryEvent
 <TITLE TJvTFPostApptQueryEvent type>
@@ -1356,1303 +1349,1335 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter
 Summary
-  Write here a summary (1 line)
+  Base class for printing components.
 Description
-  Write here a description
+  The TJvTFPrinter class is the base case for all printing components in the JTF system.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.Aborted
 Summary
-  Write here a summary (1 line)
+  Determines if the user aborted the print job.
 Description
-  Write here a description
+  If Aborted is True, the print job was aborted. If it is False, the user did not abort the print job.
+
+  The AbortPrint method sets the Aborted property to True.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.AbortPrint
 Summary
-  Write here a summary (1 line)
+  Terminates the printing of a print job, dropping all unprinted data.
 Description
-  Write here a description
+  Use AbortPrint to terminate the print job before it completes.
+
+  When AbortPrint is called, the device is then set for the next print job.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Aborted
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.BodyHeight
 Summary
-  Write here a summary (1 line)
+  Retrieves the height of the printable page.
 Description
-  Write here a description
+  \Read BodyHeight to determine the height of the printable page. BodyHeight is in pixels.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  BodyWidth, BodyLeft, BodyTop
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.BodyLeft
 Summary
-  Write here a summary (1 line)
+  Retrieves the left side of the printable page.
 Description
-  Write here a description
+  \Read BodyLeft to determine the left of the printable page. BodyLeft is in pixels.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  BodyHeight, BodyWidth, BodyTop
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.BodyTop
 Summary
-  Write here a summary (1 line)
+  Retrieves the top of the printable page.
 Description
-  Write here a description
+  \Read BodyTop to determine the top of the printable page. BodyTop is in pixels.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  BodyHeight, BodyWidth, BodyLeft
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.BodyWidth
 Summary
-  Write here a summary (1 line)
+  Retrieves the width of the printable page.
 Description
-  Write here a description
+  \Read BodyWidth to determine the width of the printable page. BodyWidth is in pixels.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  BodyHeight, BodyLeft, BodyTop
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.ConvertingProps
 Summary
-  Write here a summary (1 line)
+  True when a unit conversion is in progress.
 Description
-  Write here a description
+  This property will be true if the component is in the process of converting the units of
+  measure of various properties due to a change in the Measure property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ConvertMeasure, Measure
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.ConvertMeasure
 Summary
-  Write here a summary (1 line)
+  Converts a value from one unit to another.
 Description
-  Write here a description
+  Use this method to convert a value (Value) from one unit of measure (FromMeasure) to
+  another (ToMeasure). Set Horizontal to true if Value is some horizontal measurement.
 Parameters
-  Value       - Description for this parameter
-  FromMeasure - Description for this parameter
-  ToMeasure   - Description for this parameter
-  Horizontal  - Description for this parameter
-Return value
-  Describe here what the function returns
+  Value :        The value to convert.
+  FromMeasure :  The measure to convert from.
+  ToMeasure :    The measure to convert to.
+  Horizontal :   True if the measure is a horizontal measure.
+Returns
+  The converted value.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Measure
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.DirectPrint
 Summary
-  Write here a summary (1 line)
+  Determines printing mode.
 Description
-  Write here a description
+  Use this property to control the printing model that the Printer uses. See
+  "Using TJvTFPrinter" for more info.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Using TJvTFPrinter
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.DocDateTime
 Summary
-  Write here a summary (1 line)
+  Holds information on the documents creation date.
 Description
-  Write here a description
+  This property will hold the date and time when the document was composed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.FreeDoc
 Summary
-  Write here a summary (1 line)
+  Releases resources allocated for printing.
 Description
-  Write here a description
+  When you are finished with a document, call FreeDoc to remove the document from memory and release
+  any resources allocated by the document. Printer will take care of this for you if you forget to
+  call FreeDoc, so you don't have to worry about resource leaks. A successful call to FreeDoc changes
+  State to spsNoDoc.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  State
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.Measure
 Summary
-  Write here a summary (1 line)
+  Determines the units used in calculations.
 Description
-  Write here a description
+  Use this property to specify which unit of measure you want to work with. You can change this property
+  at any time and all measurement related properties will be automatically converted to the new unit
+  of measure.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.OnAssembleProgress
 Summary
-  Write here a summary (1 line)
+  Occur while the document is being prepared for printing.
 Description
-  Write here a description
+  This event will fire after each page has been assembled. (The assemble process takes the header,
+  body, and footer as separate images and combines them into one page image.) Use this event to update
+  a progress window or something of that sort. See TJvTFProgressEvent for more details.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvTFProgressEvent, OnPrintProgress
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.OnDrawBody
 Summary
-  Write here a summary (1 line)
+  Occurs when a page body has been drawn.
 Description
-  Write here a description
+  This event fires after the Printer has drawn the body of a page. This event allows you do to any
+  custom drawing on the body that you might need to do. See TJvTFPrinterDrawEvent for complete
+  descriptions of the parameters.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvTFPrinterDrawEvent, OnAssembleProgress, OnDrawFooter, OnDrawHeader, OnPrintProgress
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.OnDrawFooter
 Summary
-  Write here a summary (1 line)
+  Occurs when a page footer has been drawn.
 Description
-  Write here a description
+  This event fires after Printer has drawn the footer. This event allows you to do any custom drawing
+  on the footer that you might need to do. See TJvTFPrinterDrawEvent for a complete description of
+  the parameters.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvTFPrinterDrawEvent, OnAssembleProgress, OnDrawBody, OnDrawHeader, OnPrintProgress
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.OnDrawHeader
 Summary
-  Write here a summary (1 line)
+  Occurs when a page header has been drawn.
 Description
-  Write here a description
+  This event fires after Printer has drawn the page header. Use this event to do any custom drawing
+  on the header that you might need to do. See TJvTFPrinterDrawEvent for complete descriptions of the
+  parameters.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvTFPrinterDrawEvent, OnAssembleProgress, OnDrawBody, OnDrawFooter, OnPrintProgress
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.OnMarginError
 Summary
-  Write here a summary (1 line)
+  Occurs when margins are incorrectly set.
 Description
-  Write here a description
+  This event fires if the MarginLeft, MarginRight, MarginTop, or MarginBottom property specifies a value
+  that causes the margin to fall in the unprintable area of the page. The unprintable area is hardware
+  dependent and varies from printer to printer.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MarginLeft, MarginRight, MarginTop, MarginBottom
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.OnPrintProgress
 Summary
-  Write here a summary (1 line)
+  Occurs when a page is printed.
 Description
-  Write here a description
+  This event fires after each page has been sent to Windows to print. You can use this event to update
+  a progress window or status bar. See TJvTFProgressEvent for more details.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvTFProgressEvent
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.PageCount
 Summary
-  Write here a summary (1 line)
+  Returns the page count of the document.
 Description
-  Write here a description
+  An EJvTFPrinterError exception will be raised if you attempt to read this property when the State = spsNoDoc.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Pages, State
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.PageLayout
 Summary
-  Write here a summary (1 line)
+  Maintains page layout properties.
 Description
-  Write here a description
+  Use this property to specify various aspects of how the pages are laid out on paper, such as margins.
+  See TJvTFPrinterPageLayout for more details.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvTFPrinterPageLayout
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.Pages
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to the pages that are about to be printed.
 Description
-  Write here a description
+  You can access each page in the document through the pages property. Each page is stored internally
+  as a TMetafile that you can have direct access to.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  PageCount
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.Print
 Summary
-  Write here a summary (1 line)
+  Sends the document to the printer.
 Description
-  Write here a description
+  If DirectPrint is False, you can call the Print method to send a finished document to Windows to print.
+  An EJvTFPrinterError will be raised if the component is in any State other than spsFinished.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DirectPrint
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.PrinterToScreen
 Summary
-  Write here a summary (1 line)
+  Converts a value from printer units to screen units.
 Description
-  Write here a description
+  Use this method to change a value (Value) from printer measurement to screen measurement. For example,
+  a one-inch line may be 300 pixels (printer resolution = 300 dpi), but a 300 pixel line on the screen
+  probably would be much longer than one inch. Set Horizontal to True if Value is a horizontal measurement.
 Parameters
-  Value      - Description for this parameter
-  Horizontal - Description for this parameter
-Return value
-  Describe here what the function returns
+  Value :       Value to convert.
+  Horizontal :  True if Value is a horizontal measurement.
+Returns
+  The converted value.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ScreenToPrinter
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.SaveDocToFiles
 Summary
-  Write here a summary (1 line)
+  Save the document's pages to file.
 Description
-  Write here a description
+  Use this method to save each of the page images as seperate emf files. Printer will append an
+  underscore "_" and the page number, along with the emf extension to each file it saves.
+  For example, if there are three pages and you set BaseFileName to "c:\simpl\schedule" the
+  following files will be produced:
+  <CODE>
+	c:\simpl\schedule_1.emf
+	c:\simpl\schedule_2.emf
+	c:\simpl\schedule_3.emf
+  </CODE>
+
+  You can access each page as a TMetafile via the Pages property.
 Parameters
-  BaseFileName - Description for this parameter
+  BaseFileName - The base filename for the files to create.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Pages, Print
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.ScreenToPrinter
 Summary
-  Write here a summary (1 line)
+  Converts a value from screen units to printer units.
 Description
-  Write here a description
+  Use this method to change a value (Value) from screen measurement to printer measurement. For
+  example, a one-inch line may be 300 pixels (printer resolution = 300 dpi), but a 300 pixel line on
+  the screen probably would be much longer than one inch. Set Horizontal to True if Value is a horizontal
+  measurement.
 Parameters
-  Value      - Description for this parameter
-  Horizontal - Description for this parameter
-Return value
-  Describe here what the function returns
+  Value :       Value to convert.
+  Horizontal :  True if Value is a horizontal measurement.
+Returns
+  The converted value.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  PrinterToScreen
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.State
 Summary
-  Write here a summary (1 line)
+  Describes the current state of the printer component.
 Description
-  Write here a description
+  See TJvTFPrinterState for more information.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvTFPrinterState
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.Title
 Summary
-  Write here a summary (1 line)
+  Specifies the title of the document.
 Description
-  Write here a description
+  This string will be sent to Windows as the title of the document when it is sent to a printer.
+  (This is what will display in Print Manager.)
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvTFPrinter.Ver
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Major   - Description for this parameter
-  Minor   - Description for this parameter
-  Control - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvTFPrinter.VerStr
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinterDrawEvent
 <TITLE TJvTFPrinterDrawEvent type>
 Summary
-  Write here a summary (1 line)
+  Event type used in various pre-print drawing events.
 Description
-  Write here a description
-  This type is used by (for reference):
-    TJvTFPrinter.OnDrawBody
-    TJvTFPrinter.OnDrawFooter
-    TJvTFPrinter.OnDrawHeader
+  TJvTFPrinterDrawEvent is the event type for TJvTFPrinter's <LINK TJvTFPrinter.OnDrawFooter, OnDrawFooter>,
+  <LINK TJvTFPrinter.OnDrawHeader, OnDrawHeader> and <LINK TJvTFPrinter.OnDrawBody, OnDrawBody> events.
 Parameters
-  Sender  - Description for this parameter
-  aCanvas - Description for this parameter
-  ARect   - Description for this parameter
-  PageNum - Description for this parameter
+  Sender  - The object that fired the event.
+  aCanvas - Provides a canvas for you to do any custom drawing on.
+  ARect   - Provides a bounding rectangle for your drawing.
+  PageNum - The page that the event is being fired for
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinterMeasure
 <TITLE TJvTFPrinterMeasure type>
 Summary
-  Write here a summary (1 line)
+  Specifies the available units of measure: pixels, inches, or milimeters.
 Description
-  Write here a description
+  TJvTFPrinterMeasure is used by the TJvTFPrinter.Measure property to determine the current
+  measurements used when printing.
 @@TJvTFPrinterMeasure.pmPixels
-  Description for pmPixels
+  Measurements are in pixels.
 @@TJvTFPrinterMeasure.pmInches
-  Description for pmInches
+  Measurements are in inches.
 @@TJvTFPrinterMeasure.pmMM
-  Description for pmMM
+  Measurements are in millimeters.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinterPageLayout
 Summary
-  Write here a summary (1 line)
+  Maintains page layout settings.
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvTFPrinterPageLayout.Assign
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You use the TJvTFPrinterPageLayout class to access specific properties (i.e. margins) related to
+  the layout of a printed page. Normally you will access this property through the TJvTFPrinter.PageLayout
+  property.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinterPageLayout.FooterHeight
 Summary
-  Write here a summary (1 line)
+  Specifies the height of the page footer.
 Description
-  Write here a description
+  This value is in units specified by the TJvTFPrinter.Measure property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  HeaderHeight, MarginBottom, MarginLeft, MarginRight, MarginTop
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinterPageLayout.HeaderHeight
 Summary
-  Write here a summary (1 line)
+  Specifies the height of the page header.
 Description
-  Write here a description
+  This value is in units specified by the TJvTFPrinter.Measure property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FooterHeight, MarginBottom, MarginLeft, MarginRight, MarginTop
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinterPageLayout.MarginBottom
 Summary
-  Write here a summary (1 line)
+  Specifies the height of the bottom margin.
 Description
-  Write here a description
+  This value is in units specified by the TJvTFPrinter.Measure property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  HeaderHeight, FooterHeight, MarginLeft, MarginRight, MarginTop
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinterPageLayout.MarginLeft
 Summary
-  Write here a summary (1 line)
+  Specifies the width of the left margin.
 Description
-  Write here a description
+  This value is in units specified by the TJvTFPrinter.Measure property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  HeaderHeight, FooterHeight, MarginBottom, MarginRight, MarginTop
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinterPageLayout.MarginRight
 Summary
-  Write here a summary (1 line)
+  Specifies the width of the right margin.
 Description
-  Write here a description
+  This value is in units specified by the TJvTFPrinter.Measure property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  HeaderHeight, FooterHeight, MarginBottom, MarginLeft, MarginTop
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinterPageLayout.MarginTop
 Summary
-  Write here a summary (1 line)
+  Specifies the height of the top margin.
 Description
-  Write here a description
+  This value is in units specified by the TJvTFPrinter.Measure property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvTFPrinterPageLayout.utfPrinter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  HeaderHeight, FooterHeight, MarginBottom, MarginLeft, MarginRight
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinterState
 <TITLE TJvTFPrinterState type>
 Summary
-  Write here a summary (1 line)
+  Defines the possible states of a printing component.
 Description
-  Write here a description
+  The TJvTFPrinterState enumeration is used by the TJvTFPrinter component to describe the current state
+  of the component.
 @@TJvTFPrinterState.spsNoDoc
-  Description for spsNoDoc
+  No document exists.
 @@TJvTFPrinterState.spsCreating
-  Description for spsCreating
+  A document is being created. This is the state of the printer when NewPage can be called and page bodies can be drawn.
 @@TJvTFPrinterState.spsAssembling
-  Description for spsAssembling
+  The component is firing the OnDrawHeader and OnDrawFooter events for each body and placing the header, body, and footer onto a finished page. The assembling process is started by a call to FinishDoc.
 @@TJvTFPrinterState.spsFinished
-  Description for spsFinished
+  A complete document exists and is now ready to be sent to a printer or saved to a file.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFProgressEvent
 <TITLE TJvTFProgressEvent type>
 Summary
-  Write here a summary (1 line)
+  Event type used to report the progress of lengthy operations.
 Description
-  Write here a description
-  This type is used by (for reference):
-    TJvTFPrinter.OnAssembleProgress
-    TJvTFPrinter.OnPrintProgress
+  This event type is used for events that fire to inform you that a process has incrementally progressed.
+  This type is used by <LINK TJvTFPrinter.OnAssembleProgress, OnAssembleProgress> and
+  <LINK TJvTFPrinter.OnPrintProgress, OnPrintProgress>.
 Parameters
-  Sender  - Description for this parameter
-  Current - Description for this parameter
-  Total   - Description for this parameter
+  Sender  - The object that fired the event.
+  Current - The current iteration of the process
+  Total   - The total numbers of iterations the process is expected to complete.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched
 Summary
-  Write here a summary (1 line)
+  Class that represents a schedule.
 Description
-  Write here a description
+  A TJvTFSched object represents a schedule (a schedule name and date). The server completely maintains
+  its schedule objects so you shouldn't have to worry about their creation, destruction, or the
+  relationships with other objects.
+
+  Although a schedule object does not physically contain appointments (that's the server's job),
+  it does logically group the appointments. That is its main function. Because of this, you can use
+  a schedule object to retrieve a list of the appointments that are logically "contained" by the schedule,
+  operate on the appointments, and add or remove appointments at the schedule level. You can also
+  retrieve basic information about the schedule, such as its name and date.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.AddAppt
 Summary
-  Write here a summary (1 line)
+  Adds an existing appointment.
 Description
-  Write here a description
+  This method will add the given appointment to the schedule.
 Parameters
   Appt - Description for this parameter
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RemoveAppt
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.ApptByID
 Summary
-  Write here a summary (1 line)
+  Searches for an appointment.
 Description
-  Write here a description
+  This will return an appointment object with the given ID. If an appointment with the given ID is not
+  found in the schedule, it will return nil.
 Parameters
-  ID - Description for this parameter
+  ID - Identifier of the appointment to find.
 Return value
-  Describe here what the function returns
+  Returns an appointment object or nil if an appointment could not be found.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.ApptCount
 Summary
-  Write here a summary (1 line)
+  Returns the number of appointments that fall in the schedule.
 Description
-  Write here a description
-Return value
-  Describe here what the function returns
+  Call ApptCount to learn the number of appointments that fall in the schedule. Use ApptCount-1 as the
+  upper bound when accessing appointments using the Appts property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Appts
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.ApptHasConflicts
 Summary
-  Write here a summary (1 line)
+  Searches for appointment conflicts.
 Description
-  Write here a description
+  This method will return True if any other appointments conflict with anAppt, False otherwise. This method
+  only checks for conflicts in the schedule from which it is invoked.
 Parameters
-  anAppt - Description for this parameter
+  anAppt - The appointment to check for conflicts.
 Return value
-  Describe here what the function returns
+  True if conflicts were found, false otherwise.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.Appts
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to the appointments that fall in the schedule.
 Description
-  Write here a description
+  Use the Appts property to retrieve each appointment object that is a member of the schedule.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ApptCount
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.Cached
 Summary
-  Write here a summary (1 line)
+  Determines if the schedule is in use.
 Description
-  Write here a description
+  Cached will be true if the schedule object is no longer used by any of the controls that are connected
+  to the server, false otherwise. A cached schedule object is queued to be flushed from memory by
+  the caching system.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CachedTime
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.CachedTime
 Summary
-  Write here a summary (1 line)
+  Determines when the schedule was cached.
 Description
-  Write here a description
+  This property returns the Windows tick count when the object was initially queued to be flushed
+  from memory. (The value of this property should be ignored if Cached = False.)
+
+  Use this property along with the Windows API function GetTickCount to determine how long the
+  schedule has been cached, i.e the following code:
+  <CODE>
+    Interval := GetTickCount - CachedTime;
+  </CODE>
+  would set Interval to the number of milliseconds since the schedula was put in the cache.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Cached, GetTickCount
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.ConComponentCount
 Summary
-  Write here a summary (1 line)
+  Returns the number of JvTFComponents that are connected to the schedule object.
 Description
-  Write here a description
-Return value
-  Describe here what the function returns
+  Use the ConControlCount method to get the number of JvTFControls that are connected to the schedule object.
+Note
+  This method supersedes the ControlCount method as of version 1.1 of the server.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ConComponents, ConControls, ConControlCount
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.ConComponents
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to connected JvTFComponents.
 Description
-  Write here a description
+  This property provides access to each of the JvTFComponents that are connected to the schedule object.
+
+  Use the ConControls property to access the JvTFControls that are connected to the schedule object.
+Note
+  This property supersedes the Controls property as of version 1.1 of the server.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ConComponentCount, ConControls, ConControlCount
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.ConControlCount
 Summary
-  Write here a summary (1 line)
+  Returns the number of JvTFControls that are connected to the object.
 Description
-  Write here a description
-Return value
-  Describe here what the function returns
+  Use the ConComponentCount method to get the number of JvTFComponents that are connected to the
+  schedule object.
+Note
+  This method supersedes the ControlCount method as of version 1.1 of the server.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ConControls, ConComponents, ConComponentCount
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.ConControls
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to connected JvTFControls.
 Description
-  Write here a description
+  Provides access to each of the JvTFControls that are connected to the schedule object.
+
+  The ConComponents property holds a reference to each of the JvTFComponents that are connected to
+  the schedule object.
+Note
+  This property supersedes the Controls property as of version 1.1 of the server.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ConControlCount, ConComponents, ConComponentCount
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.Data
 Summary
-  Write here a summary (1 line)
+  Provides storage space for custom data.
 Description
-  Write here a description
+  Use the Data property to attach custom data to the schedule object.
+
+  You will most likely create a TObject to store extra information, in which case you would need to
+  typecast this property into a TObject. It has been implemented as an integer for additional flexibility.
+  If you do use a TObject to store custom data, you probably will want to use the
+  TJvTFScheduleManager.OnCreateSchedule and TJvTFScheduleManager.OnDestroySchedule events to create
+  and destroy your custom object.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.Destroying
 Summary
-  Write here a summary (1 line)
+  Determines if th eobject is being destroyed.
 Description
-  Write here a description
+  This property will return True if the schedule object is in the process of being destroyed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.EnumConflicts@TJvTFAppt
 Summary
-  Write here a summary (1 line)
+  Enumerates appointment conflicts.
 Description
-  Write here a description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  EnumConflicts will return a dynamic array populated with all the TJvTFAppt's that
+  conflict with the time range given or the appointment given. It is not advised to
+  retain the array for use at a later time due to the fact that the caching system
+  may destroy one or more of the appt objects contained in the result (thus leaving one
+  or more dangling pointers).
+
+  These methods only check for conflicts in the schedule from which they are invoked.
+Note
+  These methods are NOT available in the Delphi 3 version of JTF.
 Parameters
-  anAppt - Description for this parameter
+  anAppt - The appointment to check conflicts against.
+  TimeRange - The range within which conflicts should be checked.
+  RangeStart - Start of the range to check.
+  RangeEnd   - End of the range to check.
 Return value
-  Describe here what the function returns
+  A dynamic array of conflicting appointments.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.EnumConflicts@TJvTFTimeRange
 Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
-Parameters
-  TimeRange - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.EnumConflicts@TTime@TTime
 Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
-Parameters
-  RangeStart - Description for this parameter
-  RangeEnd   - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.GetFirstAppt
 Summary
-  Write here a summary (1 line)
+  Returns the appointment with the earliest start date and time.
 Description
-  Write here a description
+  This method will return the earliest appointment in the schedule. (End times are ignored.)
 Return value
-  Describe here what the function returns
+  The first appointment or nil if there are no appointments in the schedule.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  GetLastAppt
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.GetFreeTime
 Summary
-  Write here a summary (1 line)
+  Returns available free time.
 Description
-  Write here a description
+  This method will return a dynamic array that contains zero or more TJvTFTimeRange's that represent
+  the free time available in the schedule.
+
+  This method only checks the time in the schedule from which it is invoked.
+Note
+   This method is NOT available in the Delphi 3 version of JTF.
 Return value
-  Describe here what the function returns
+  A dynamic array of TJvTFTimeRange objects.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  GetUsedTime
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.GetLastAppt
 Summary
-  Write here a summary (1 line)
+  Returns the appointment with the latest end date and time.
 Description
-  Write here a description
+  This method will return the latest appointment in the schedule. (Start times are ignored.)
 Return value
-  Describe here what the function returns
+  The last appointment or nil if there are no appointments in the schedule.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  GetFirstAppt
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.GetUsedTime
 Summary
-  Write here a summary (1 line)
+  Returns used time.
 Description
-  Write here a description
+  This method will return a dynamic array that contains zero or more TJvTFTimeRange's that represent
+  the time that is used in the schedule.
 Return value
-  Describe here what the function returns
+  A dynamic array of TJvTFTimeRange objects.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  GetFreeTime
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.Persistent
 Summary
-  Write here a summary (1 line)
+  Determines if the cache system handles this object.
 Description
-  Write here a description
+  If Persistent is set to True, the caching system will not flush the object from memory.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Cached
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.PostAppts
 Summary
-  Write here a summary (1 line)
+  Saves all changes.
 Description
-  Write here a description
+  Call this method to post all of the appointments contained in the schedule.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Refresh
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.Refresh
 Summary
-  Write here a summary (1 line)
+  Rereads appointment data from storage.
 Description
-  Write here a description
+  Call this method to refresh all of the appointments linked to the schedule. This method simply
+  calls TJvTFScheduleManager.dbRefreshSched and is provided in this form as a convenience when
+  working with schedule objects.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  PostAppts
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.RemoveAppt
 Summary
-  Write here a summary (1 line)
+  Removes an appointment.
 Description
-  Write here a description
+  Use this method to remove the given appointment from the schedule.
 Parameters
-  Appt - Description for this parameter
+  Appt - The appointment to remove.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AddAppt
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.SchedDate
 Summary
-  Write here a summary (1 line)
+  Returns the date of the schedule.
 Description
-  Write here a description
+  \Read SchedDate to determine the date of the schedule.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.SchedDisplayName
 Summary
-  Write here a summary (1 line)
+  Specifies the schedule name to show to users.
 Description
-  Write here a description
+  Use this property to specify a friendly name for the schedule. If this property is null,
+  JTF will use the value of the SchedName property as the display name for the schedule.
+  (This property comes in handy if you wish to use the SchedName property for a unique identifier
+  and yet display a user-friendly name.)
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SchedName
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.SchedName
 Summary
-  Write here a summary (1 line)
+  Returns the name of the schedule. (Also known as the resource name.)
 Description
-  Write here a description
+  If you wish to use the SchedName property to hold a unique identifier you should use the
+  SchedDisplayName property to specify a user-friendly display name.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SchedDisplayName
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.ScheduleManager
 Summary
-  Write here a summary (1 line)
+  References the manager responsible for this schedule.
 Description
-  Write here a description
+  Use ScheduleManager to access the manager responsible for this schedule. The manager handles most
+  background chores associated with a schedule, like caching.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvTFScheduleManager
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.TimeIsFree@TJvTFTimeRange
 Summary
-  Write here a summary (1 line)
+  Determines if a time range is unused.
 Description
-  Write here a description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  TimeIsFree will return True if there are not any appointments that fall in the given
+  time range, False otherwise.
+
+  This method only checks the time in the schedule from which it is invoked.
+Note
+  This method is NOT available in the Delphi 3 version of JTF.
 Parameters
-  TimeRange - Description for this parameter
+  TimeRange - The start and end time of the range to check.
+  RangeStart - The start of the time range to check.
+  RangeEnd   - The end of the time range to check.
 Return value
-  Describe here what the function returns
+  True if the time is free, false otherwise.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.TimeIsFree@TTime@TTime
 Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
-Parameters
-  RangeStart - Description for this parameter
-  RangeEnd   - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSchedClass
 Summary
-  Write here a summary (1 line)
+  Specifies an exact class of TJvTFSched.
 Description
-  Write here a description
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSchedEvent
 <TITLE TJvTFSchedEvent type>
 Summary
-  Write here a summary (1 line)
+  Event type for schedule events.
 Description
-  Write here a description
-  This type is used by (for reference):
-    TJvTFScheduleManager.OnCreateSchedule
-    TJvTFScheduleManager.OnDestroySchedule
-    TJvTFScheduleManager.OnNeedAppts
-    TJvTFScheduleManager.OnRefreshSched
+  The TJvTFSchedEvent type is used for schedule related events, like
+    <LINK TJvTFScheduleManager.OnCreateSchedule, OnCreateSchedule>,
+    <LINK TJvTFScheduleManager.OnDestroySchedule, OnDestroySchedule>,
+    <LINK TJvTFScheduleManager.OnNeedAppts,OnNeedAppts> and
+    <LINK TJvTFScheduleManager.OnRefreshSched,OnRefreshSched>.
 Parameters
-  Sender   - Description for this parameter
-  Schedule - Description for this parameter
+  Sender   - The object that fired the event, which is most likely to be a TJvTFScheduleManager.
+  Schedule - Contains the schedule object that is being affected.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSchedLoadMode
 <TITLE TJvTFSchedLoadMode type>
 Summary
-  Write here a summary (1 line)
+  Type describing load modes.
 Description
-  Write here a description
+  Specifies the different methods that TJvTFScheduleManager can use to load schedules. Please see
+  TJvTFScheduleManager.SchedLoadMode and "Batch Loading" for more information.
 @@TJvTFSchedLoadMode.slmOnDemand
-  Description for slmOnDemand
+  Requests data when necessary by calling the OnNeedAppts event.
 @@TJvTFSchedLoadMode.slmBatch
-  Description for slmBatch
+  Load data in batches. A call to ProcessBatches is required to load the data.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager
 Summary
-  Write here a summary (1 line)
+  Manages multiple schedules, appointments and assoicated controls and components.
 Description
-  Write here a description
+  The TJvTFScheduleManager component is the heart of the JTF suite. It provides a centralized source
+  of data for multiple JTF Controls. It stores schedule and appointment objects and manages all relationships
+  between them. The server provides many methods and events to its connected controls, embedded schedule
+  and appointment objects, and you that allow objects, relationships, and communication to take place
+  without the caller needing to worry about the low-level details and implications of the action.
+
+  You use the server to implement several things. These include reading/writing data to/from disk,
+  adding new appointments, setting caching options, and so on.
+
+  All JTF Controls will communicate with the server. The controls tell the server when to load, unload,
+  and change schedule and appointment data and the server executes those commands.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.AlwaysPost
 Summary
-  Write here a summary (1 line)
+  Determines how posts are handled.
 Description
-  Write here a description
+  If this property is True, the Modified property will be ignored and the OnPostAppt event will be fired
+  even if Modified is False. If AlwaysPost is False the OnPostAppt event will be fired only if Modified
+  is True.
+
+  Setting AlwaysPost to False increases performance since only modified appointments will be written to disk.
+
+  You should be warned though that if AlwaysPost is false, a call to dbPostAppt,
+  PostAppts, TJvTFSched.PostAppts, or TJvTFAppt.Post only actually fires the OnPostAppt
+  event if TJvTFAppt.Modified = True.
+Note
+  You must implement a handler for the OnPostAppt event which will write the appointment to some
+  physical storage backend.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnPostAppt, dbPostAppt, PostAppts
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.ApptCount
 Summary
-  Write here a summary (1 line)
+  Returns the number of appointment objects contained in the server.
 Description
-  Write here a description
-Return value
-  Describe here what the function returns
+  \Read ApptCount to determine the number of appointments managed by the server. Use ApptCount-1 as the
+  upper bound when accessing the Appts array.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Apps
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.Appts
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to appointments.
 Description
-  Write here a description
+  The Appts property contains the "master" list of appointments that reside in server. All appointments
+  that are present in the server, regardless of what schedule(s) the belong to and regardless of whether
+  they are cached or not, can be retrieved through this property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ApptCount
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.Cache
 Summary
-  Write here a summary (1 line)
+  Provides access to the caching mechanism.
 Description
-  Write here a description
+  See TJvTFScheduleManagerCache for more information.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvTFScheduleManagerCache
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.ConComponentCount
 Summary
-  Write here a summary (1 line)
+  Returns the number of TJvTFComponents that are connected to the server.
 Description
-  Write here a description
-Return value
-  Describe here what the function returns
+  Use the ConComponentCount method to find the number of TJvTFComponents that are connected to the server. To
+  find the number of TJvTFControls, use ConControlCount instead.
+Note
+  This method supersedes the ComponentCount method as of version 1.1 of the server.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ConComponents, ConComponentCount, ConControls, ConControlCount
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.ConComponents
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to the JTF components connected to the server.
 Description
-  Write here a description
+  Use this property to access any of the TJvTFComponents that are connected to the server. To
+  access the TJvTFControls, use the ConControls property instead.
+Note
+  This property supersedes the Connections property as of version 1.1 of the server.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ConComponents, ConComponentCount, ConControls, ConControlCount
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.ConControlCount
 Summary
-  Write here a summary (1 line)
+  Returns the number of JTF controls connected to the server.
 Description
-  Write here a description
-Return value
-  Describe here what the function returns
+   Use the ConControlCount to get the number of TJvTFControls that are connected to the server. To get the number
+   of TJvTFComponents isntead, use the ConComponentCount.
+Note
+  This method supersedes ConnectionCount as of version 1.1 of the server.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ConComponents, ConComponentCount, ConControls, ConControlCount
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.ConControls
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to each of the JTF controls that is connected to the server.
 Description
-  Write here a description
+   Use this property to access any of the TJvTFControls that are connected to the server. To access the
+   TJvTFComponents, use the ConComponents property instead.
+Note
+  This property supersedes the Connections property as of version 1.1 of the server.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ConComponents, ConComponentCount, ConControls, ConControlCount
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.CustomImages
 Summary
-  Write here a summary (1 line)
+  Points to an imagelist with appointment images.
 Description
-  Write here a description
+  Use this property to specify a TImageList that contains the images you want to embed into specific
+  appointments.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.dbDeleteAppt
 Summary
-  Write here a summary (1 line)
+  Deletes an appointment from the server.
 Description
-  Write here a description
+  Use the dbDeleteAppt to remove an appointment from the system. dbDeleteAppt will fire the OnDeleteAppt
+  event where you will have code that will delete the appointment from physical storage. As a
+  convenience, you may also call TJvTFAppt.Delete since that method simply calls the dbDeleteAppt method.
 Parameters
-  Appt - Description for this parameter
+  Appt - The appointment to delete.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnDeleteAppt
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.dbNewAppt
 Summary
-  Write here a summary (1 line)
+  Adds a new appointment to the server.
 Description
-  Write here a description
+  Use the method to create a new appointment in the system. If you do not specify an ID, the server will
+  create one for you. If you do specify an ID, you are responsible to ensure that the ID will be unique
+  among all appointments.
+
+  The server uses the GenerateApptID method to generate a unique ID.
 Parameters
-  ID - Description for this parameter
+  ID - The new ID. Leave empty to have an ID created for you.
 Return value
-  Describe here what the function returns
+  The new appointment object.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  GenerateApptID
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.dbPostAppt
 Summary
-  Write here a summary (1 line)
+  Saves changes to storage.
 Description
-  Write here a description
+  Calling this method will cause the OnPostAppt event to fired. You will have code behind the OnPostAppt
+  event that will save the appointment's data to physical storage.
+
+  Note that if AlwaysPost is False and Appt.Modified is False then OnPostAppt will not be fired.
 Parameters
-  Appt - Description for this parameter
+  Appt - The appointment to save.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AlwaysPost, OnPostAppt
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.dbRefreshAll
 Summary
-  Write here a summary (1 line)
+  Reloads all data from storage.
 Description
-  Write here a description
+  Use this method to refresh all of the server's appointment and schedule data. Calling this method
+  will first clear the Modified property for each of the appointment objects in the server. It will
+  then fire the OnRefreshAll event.
+
+  After the OnRefreshAll event finishes dbRefreshAll will call RefreshConnections to update all of the
+  JvTFComponents and JvTFControls that are connected to the server.
+Note
+  It is your responsibility to provide a handler for the OnRefreshAll event that will actually update
+  the schedule and appontment data.
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnRefreshAll,RefreshConnections
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.dbRefreshAppt
 Summary
-  Write here a summary (1 line)
+  Reloads data from storage.
 Description
-  Write here a description
+  Use this method to refresh a single appointment object. Calling this method will first clear the
+  Modified property of the given appointment. It will then fire the OnRefreshAppt event.
+
+  After the OnRefreshAppt event finishes dbRefreshAppt will call RefreshConnections to update all of
+  the JvTFComponents and JvTFControls that are accessing the appointment.
+Note
+  It is your responsibility to provide a handler for the OnRefreshAppt event that will actually
+  update the appointment data.
 Parameters
-  Appt - Description for this parameter
+  Appt - The appointment to refresh.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnRefreshAppt, RefreshConnections
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.dbRefreshOrphans
 Summary
-  Write here a summary (1 line)
+  Reloads data from storage.
 Description
-  Write here a description
+  Use this method to refresh all appointments that are not linked to any schedules. This method call
+  the dbRefreshAppt method for each appointment that is not connected to at least one schedule object.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  dbRefreshAppt
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.dbRefreshSched
 Summary
-  Write here a summary (1 line)
+  Reloads data from storage.
 Description
-  Write here a description
+  Use this method to refresh all of the appointments linked to the schedule specified by the
+  Sched parameter. Calling this method will first clear the Modified property for each of the
+  appointment objects linked to the schedule. It will then fire the OnRefreshSched event.
+
+  After the OnRefreshSched event finishes dbRefreshSched will call RefreshConnections to update all
+  of the JvTFComponents and JvTFControls that are connected to the schedule.
+Note
+  It is your responsibility to provide a handler for the OnRefreshSched event that will
+  actually update the appointment data.
 Parameters
-  Sched - Description for this parameter
+  Sched - The schedule to update.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnRefreshSched, RefreshConnections
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.FindAppt
 Summary
-  Write here a summary (1 line)
+  Searches for an appointment.
 Description
-  Write here a description
+  FindAppt searches the Appts array and return the appointment object that has the given ID.
+  If no appointment is found for the given ID, FindAppt will return nil.
 Parameters
-  ID - Description for this parameter
+  ID - The ID to search for.
 Return value
-  Describe here what the function returns
+  The found appointment or nil if not found.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Appts
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.FindSchedule
 Summary
-  Write here a summary (1 line)
+  Searches for a schedule.
 Description
-  Write here a description
+  FindSchedule searches the Schedules list and return a schedule object that has the given
+  SchedName and SchedDate. If a match is not found, FindSchedule will return nil.
 Parameters
-  SchedName - Description for this parameter
-  SchedDate - Description for this parameter
+  SchedName - Name of schedule to find.
+  SchedDate - Date of schedule to find.
 Return value
-  Describe here what the function returns
+  The found schedule or nil if not found.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Schedules
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.Flush
 Summary
-  Write here a summary (1 line)
+  Removes cached objects.
 Description
-  Write here a description
-Parameters
-  All - Description for this parameter
+  Use this method to manually flush cached objects from memory. If All is True, all cached objects
+  will be flushed from memory. If All is False, cached objects are flushed according to the rules
+  of the Cache.CacheType property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Cache
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.Flushing
 Summary
-  Write here a summary (1 line)
+  Determines if a flush is in progress.
 Description
-  Write here a description
+  This property will be True when the caching system is in the process of flushing
+  cached objects from memory.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Flush
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.GenerateApptID
 Summary
-  Write here a summary (1 line)
+  Generates a unique identifier for appointment objects.
 Description
-  Write here a description
+  The implementation uses a concatenation of the system date/time and five random alpha chars and is
+  as follows:
+  <CODE>
+  <AUTOLINK OFF>
+	class function TJvTFScheduleManager.GenerateApptID: String;
+	Var
+ 	 I : Integer;
+	begin
+	 Result := FloatToStr(Now);
+	 For I := 1 to 5 do
+	 Result := Result + Chr(Random(25) + 65);
+	end;
+  </CODE>
+  <AUTOLINK ON>
+  You may override this method in a decendant class if you need to change this algorithm, otherwise
+  you can just supply an ID to the RequestAppt or dbNewAppt
+  methods.
 Return value
-  Describe here what the function returns
+  A unique appointment ID.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RequestAppt, dbNewAppt
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.GetApptClass
 Summary
-  Write here a summary (1 line)
+  Returns the actual appointment class in use.
 Description
-  Write here a description
-Return value
-  Describe here what the function returns
+  Returns a specific TJvTFAppt class. You can override this method if you would like JTF to use a custom subclass of TJvTFAppt.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.GetApptDisplayText
 Summary
-  Write here a summary (1 line)
+  Sets the default display text and then call OnGetApptDisplayText.
 Description
-  Write here a description
-Parameters
-  AComponent - Description for this parameter
-  Appt       - Description for this parameter
-Return value
-  Describe here what the function returns
+  This method is for internal use.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnGetApptDisplayText
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.GetSchedClass
 Summary
-  Write here a summary (1 line)
+  Returns the actual schedule class in use.
 Description
-  Write here a description
-Return value
-  Describe here what the function returns
+  Returns a specific TJvTFSched class. You can override this method if you would like JTF to use a custom subclass of TJvTFSched.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.GetScheduleID
 Summary
-  Write here a summary (1 line)
+  Returns an ID based on the input parameters.
 Description
-  Write here a description
+  Call GetScheduleID to construct an ID from the \SchedName and \SchedDate parameters. Currently, this method
+  is implemented as:
+  <CODE>
+    Result := \SchedName + IntToStr(trunc(\SchedDate));
+  </CODE>
 Parameters
-  SchedName - Description for this parameter
-  SchedDate - Description for this parameter
+  \SchedName - Name of the schedule.
+  \SchedDate - Date of the schedule.
 Return value
-  Describe here what the function returns
+  A string ID built from the input.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.LoadingAppts
 Summary
-  Write here a summary (1 line)
+  Returns whether data loading is in progress.
 Description
-  Write here a description
+  LoadingAppts will be True when appointments are being loaded for a schedule. It is set to True
+  immediately before firing the OnNeedAppts event and set to False immediately after the OnNeedAppts event has been fired.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnNeedAppts
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnBatchesProcessed
 Summary
-  Write here a summary (1 line)
+  Occurs after batches have been processed.
 Description
-  Write here a description
+  This event will fire after OnLoadBatch has been called for each batch that must be loaded. Please see
+  "Batch Loading" for more information.
+Note
+  This event will not fire unless SchedLoadMode is set to slmBatch.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SchedLoadMode
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnCreateAppt
 Summary
-  Write here a summary (1 line)
+  Occurs when a new appointment object is created.
 Description
-  Write here a description
+  This event is fired when the server creates an appointment object. This is especially handy if you
+  will be attaching custom data to the appointment via a custom object. It provides a place for you
+  to create your custom object.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnDestroyAppt
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnCreateSchedule
 Summary
-  Write here a summary (1 line)
+  Occurs when a new schedule is created.
 Description
-  Write here a description
+  This event is fired when the server creates a schedule object. This is especially handy if you will be
+  attaching custom data to the schedule via a custom object. It provides a place for you to create
+  your custom object.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnDestroySchedule
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnDeleteAppt
 Summary
-  Write here a summary (1 line)
+  Occurs when an appointment is deleted.
 Description
-  Write here a description
+  This event is fired when an appointment is being removed from the system. You need to provide code
+  behind this event that will remove the appointment data from your physical storage implementation.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnDestroyAppt
 Summary
-  Write here a summary (1 line)
+  Occurs when an appointment is freed.
 Description
-  Write here a description
+  This event is fired when the server destroys an appointment object. This is especially handy if you
+  will be attaching custom data to the appointment via a custom object. It provides a place for you
+  to destroy your custom object.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnCreateAppt
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnDestroySchedule
 Summary
-  Write here a summary (1 line)
+  Occurs when a schedule is freed.
 Description
-  Write here a description
+  This event is fired when the server destroys a schedule object. This is especially handy if you will
+  be attaching custom data to the schedule via a custom object. It provides a place for you to destroy
+  your custom object.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnCreateSchedule
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnFlush
 Summary
-  Write here a summary (1 line)
+  Occurs when the cache is flushed.
 Description
+  The OnFlush event is fired when the caching system is about to remove an object from memory. You could use this event
+  to "filter" which objects are actually removed from memory.
+
   The TJvTFFlushEvent type is used for the OnFlush event. Sender will be the object that has fired the
   event and most likely will be a TJvTFScheduleManager. FlushObj will contain the object that is about
   to be removed from memory and will be either a TJvTFSched or a TJvTFAppt. If you set FlushIt to False,
   the FlushObj will not be removed from memory.
 See Also
-  TJvTFFlushEvent
+  TJvTFFlushEvent, Flush, FLushing
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnGetApptDescription
 Summary
-  Write here a summary (1 line)
+  Occurs when an appointments description is accessed.
 Description
-  Write here a description
+  This event is fired anytime an appointment's Description property is read. You can modify the description
+  as it is read without modifying the actual description that is stored in memory. This may come in handy
+  for such things as encrypting/decrypting the description.
+
+  Caution: This event is every time an appt's description is read, internally or externally. Be wary of
+  the performance of the code you call in this event.
+
+  Since this event is fired every time an appt's description is read (regardless of the purpose of the read),
+  it is recommended that you use the OnGetApptDisplayText event if you only want to change how JTF displays
+  the appt text, such as adding a Location and/or phone number that is not stored in the Description
+  property of the appt. OnGetApptDisplayText is only called when JTF needs to display text for the appointment.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnGetApptDisplayText, OnSetApptDescription
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnGetApptDisplayText
 Summary
-  Write here a summary (1 line)
+  Occurs when an appointment's text needs to be displayed.
 Description
-  Write here a description
-Parameters
-  Sender      - Description for this parameter
-  Source      - Description for this parameter
-  Appt        - Description for this parameter
-  DisplayText - Description for this parameter
+  This event is fired whenever a JvTFComponent or Control needs to display text for an appointment. Source
+  will reference the component that is requesting the display text. Appt references the appointment object
+  in question. DisplayText specifies the text that will be display, and is modifiable by you.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnGetApptDescription, OnSetApptDescription
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnLoadBatch
 Summary
-  Write here a summary (1 line)
+  Occurs when a batch needs to be laoded.
 Description
-  Write here a description
-Parameters
-  Sender         - Description for this parameter
-  BatchName      - Description for this parameter
-  BatchStartDate - Description for this parameter
-  BatchEndDate   - Description for this parameter
+  This event will fire once for each batch that must be loaded. BatchName will give you the schedule
+  (resource) name and BatchStartDate and BatchEndDate will give the starting and ending dates of the
+  schedule(s) to be loaded.
+
+  Note that BatchStartDate and BatchEndDate define a contiguous set of dates that must be loaded. Therefore,
+  if BatchName is Mike, BatchStartDate is 1/1/2000, and BatchEndDate is 1/3/2000 you should load the following
+  schedules:
+    Mike - 1/1/2000
+    Mike - 1/2/2000
+    Mike - 1/3/2000
+
+  Please see Batch Loading for more information.
+Note
+  This event will not fire unless SchedLoadMode is set to slmBatch.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnNeedAppts
 Summary
-  Write here a summary (1 line)
+  Occurs when appointments needs to be loaded.
 Description
-  Write here a description
+  This event is fired when a schedule needs to be loaded into the server. You need to provide code behind
+  this event that will read the appropriate appointment data from your physical storage implementation, request
+  an appointment object from the server, set its properties, and then add it to the given schedule.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnPostAppt
 Summary
-  Write here a summary (1 line)
+  Occurs when an appointment needs to be saved.
 Description
-  Write here a description
+  The event is fired when an appointment's data needs to be saved to your physical storage implementation.
+  You need to provide code behind this event that will accomplish this task. You can prevent this event
+  from being fired by handling the OnPostApptQuery event.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnPostApptQuery
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnPostApptQuery
 Summary
-  Write here a summary (1 line)
+  Occurs before an appointment is saved.
 Description
-  Write here a description
-Parameters
-  Sender  - Description for this parameter
-  Appt    - Description for this parameter
-  CanPost - Description for this parameter
+  This event is fired before an appointment object is posted. By default, CanPost is True which allows
+  TJvTFScheduleManager to fire the OnPostAppt event. You can set CanPost to false to prevent TJvTFScheduleManager
+  from firing the OnPostAppt.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnPostAppt
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnRefreshAll
 Summary
-  Write here a summary (1 line)
+  Occurs when data needs to be refreshed.
 Description
-  Write here a description
+  This event will be fired when the server needs to refresh all of its schedule and appointment data. You
+  will need to provide code in this event that will actually update the schedule and appointment data.
+
+  The Modified property for each of the appointment objects in the server will set to False before the event
+  is fired. If, for some reason, the Modified property needs to be set to true simply call TJvTFAppt.SetModified
+  for the specific appointment.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnRefreshAppt
 Summary
-  Write here a summary (1 line)
+  Occurs when an appointment needs to be reloaded.
 Description
-  Write here a description
+  This event will be fired when the appointment object in memory needs to have its data updated to
+  reflect the data on disk. You need to provide the code that will retrieve the data from physical storage
+  and set the appointment object's properties appropriately.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnRefreshSched
 Summary
-  Write here a summary (1 line)
+  Occurs when a schedule needs to be reloaded.
 Description
-  Write here a description
+  This event fires when the server needs to refresh the data for each appointment that is linked to a
+  specific schedule object, given by the Sched parameter. It is your responsibility to provide code in the
+  event that will actually update the appointment data.
+
+  The Modified property for each appointment linked to the schedule will be set to False before the event
+  is fired. If, for some reason, the Modified property for a particular appointment needs to be set to True,
+  simply call the TJvTFAppt.SetModified method.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnSetApptDescription
 Summary
-  Write here a summary (1 line)
+  Occurs when an appointment's description is changed.
 Description
-  Write here a description
+  This event is fired when an appointment's Description property is being written. Appt references the
+  appointment whose description is being modified. Description specifies the appt's description, which is
+  modifiable by you. This event may come in handy for things such as encrypting/decrypting the
+  appt's description.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnGetApptDescription
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.PostAppts
 Summary
-  Write here a summary (1 line)
+  Saves all appointments to storage.
 Description
-  Write here a description
+  Use this method to post all of the appointment objects in the server at once.
+
+  This method is equivalent to:
+  <CODE>
+  <AUTOLINK OFF>
+   for I := 0 to ApptCount - 1 do
+     dbPostAppt(Appts[I]);
+  </CODE>
+  <AUTOLINK ON>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  dbPostAppt
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.ProcessBatches
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Call this event to trigger the loading of all of the schedules that have been batched since the last
+  call to ProcessBatches. Under normal circumstances you will not have to call this method. Please see
+  "Batch Loading" for more information.
+Note
+  This method will ALWAYS trigger the batch loading process regarding of the setting of SchedLoadMode,
+  as long as there are schedules that have been previously batched to be loaded. (Schedules will not
+  be batched for loading unless SchedLoadMode is set to slmBatch.)
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SchedLoadMode
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.ReconcileRefresh
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-Parameters
-  Scope - Description for this parameter
+  This procedure will cache all affected appointments whose Refreshed property is set to False. Which
+  appointments that are affected is controlled by Scope.
+
+  If Scope is a TJvTFAppt then only the appt specified by Scope is reconciled.
+  If Scope is a TJvTFSched then all appointments that belong to that schedule are reconciled.
+  If Scope is a TJvTFScheduleManager then all appointments that reside in the server are reconciled.
+
+  Under normal circumstances you will not have to call this method. Please see "Refresh Reconciliation" for more information.
+
+Warning
+  This method ignores the value of the RefreshAutoReconcile property. Use extreme caution in calling this method,
+  especially if RefreshAutoReconcile is set to False!
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RefreshAutoReconcile
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.RefreshAppts
 Summary
