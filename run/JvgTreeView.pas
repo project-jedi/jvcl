@@ -45,8 +45,13 @@ const
   ncsPartChecked = 3;
 
   TVS_NOTOOLTIPS = $0080;
+{$EXTERNALSYM TVS_NOTOOLTIPS}
+
   TVS_CHECKBOXES = $0100;
+{$EXTERNALSYM TVS_CHECKBOXES}
+
   TVS_TRACKSELECT = $0200;
+{$EXTERNALSYM TVS_TRACKSELECT}
 
 type
   FOnTNDrawEvent = procedure(Sender: TObject; Message: TWMPaint) of object;
