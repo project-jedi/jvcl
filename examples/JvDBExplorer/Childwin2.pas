@@ -33,11 +33,11 @@ uses WinTypes, WinProcs, Messages, Classes, Graphics, Forms, Controls, DB,
   Tabs, ExtCtrls, JvSplit, DBTables, Grids, DBGrids, 
   StdCtrls, Buttons, Menus, Dialogs,
   ComCtrls, JvComponent, JvFormPlacement, JvBDEQuery,
+  {$IFDEF USE_QR2}
+  QuickRpt, QRPrntr, QRExtra, QRPrev, Printers, QRCtrls,
+  {$ENDIF USE_QR2}
   JvBDEProgress, JvPicClip, JvBDELists, JvAnimatedImage, JvSpeedButton,
-  JvBDEIndex, JvDBControls
-  {$IFDEF USE_QR2}, QuickRpt, QRPrntr, QRExtra, QRPrev, Printers,
-  QRCtrls, JvComponent, JvFormPlacement, JvBDEQuery, JvBDEProgress,
-  JvBDELists, JvAnimatedImage, JvSpeedButton, JvBDEIndex, JvDBControls {$ENDIF USE_QR2};
+  JvBDEIndex, JvDBControls;
 
 type
   TTransOperation = (teStart, teCommit, teRollback);
@@ -678,7 +678,7 @@ begin
     end;
   end;
 {$ELSE}
-  NotImplemented;
+//  NotImplemented;
 {$ENDIF USE_QR2}
 end;
 
@@ -1039,7 +1039,7 @@ begin
 {$IFDEF USE_VQB}
   if not VQBLoadAttempted and not VQBLoaded then begin
     StartWait;
-    try
+    try             
       InitVQB;
     finally
       StopWait;
@@ -1053,7 +1053,7 @@ begin
   end
   else DatabaseError(SVqbNotLoaded);
 {$ELSE}
-  NotImplemented;
+//  NotImplemented;
 {$ENDIF}
 end;
 

@@ -44,7 +44,7 @@ const
 implementation
 
 uses
-  JvVersionInfo, JvConsts, JvJVCLUtils;
+  JvVersionInfo, JvConsts, JvJCLUtils;
 
 {$R *.DFM}
 

@@ -66,7 +66,7 @@ function FieldSubtypeName(ASubtype: Word): string;
 
 implementation
 
-uses JvJVCLUtils;
+uses JvJCLUtils;
 
 { TBdeInfo }
 

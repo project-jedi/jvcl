@@ -59,7 +59,7 @@ procedure CustomizeHelp(UserHelpList: TStrings);
 
 implementation
 
-uses JvJVCLUtils;
+uses JvJCLUtils;
 
 {$R *.DFM}
 
