@@ -20,9 +20,10 @@ Peter Below [100113.1101@compuserve.com] - alternate TJvPageControl.OwnerDraw ro
 Peter Thörnqvist [peter3@peter3.com] added TJvIPAddress.AddressValues and TJvPageControl.ReduceMemoryUse
 Alfi [alioscia_alessi@onde.net] alternate TJvPageControl.OwnerDraw routine
 Rudy Velthuis - ShowRange in TJvTrackBar
-Andreas Hausladen - TJvIPAddress designtime bug, components changed to JvExVCL 
+Andreas Hausladen - TJvIPAddress designtime bug, components changed to JvExVCL
+Kai Gossens - TJvIPAddress: changing Color, drawing bug on XP (fat frame on edits removed)
 
-Last Modified: 2004-02-28
+Last Modified: 2004-03-07
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -32,7 +33,8 @@ Known Issues:
     When dragging an item and MultiSelect is True droptarget node is not painted
     correctly.
   TJvIpAddress:
-    Can't focus next control by TAB key on D4.
+    Can't focus next internal edit by TAB key.
+    Changing the color only changes the color of the child edits, not the control background
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
@@ -43,7 +45,7 @@ unit JvComCtrls;
 interface
 
 uses
-  Windows, Messages, SysUtils, Contnrs, Graphics, Controls, Forms, Dialogs, 
+  Windows, Messages, SysUtils, Contnrs, Graphics, Controls, Forms, Dialogs,
   Classes, // (ahuser) "Classes" after "Forms" (D5 warning)
   Menus, ComCtrls, CommCtrl, StdActns,
   JclBase,
@@ -53,10 +55,10 @@ const
   JvDefPageControlBorder = 4;
   TVM_SETLINECOLOR = TV_FIRST + 40;
   TVM_GETLINECOLOR = TV_FIRST + 41;
-  {$IFDEF BCB6}
-  {$EXTERNALSYM TVM_SETLINECOLOR}
-  {$EXTERNALSYM TVM_GETLINECOLOR}
-  {$ENDIF BCB6}
+{$IFDEF BCB6}
+{$EXTERNALSYM TVM_SETLINECOLOR}
+{$EXTERNALSYM TVM_GETLINECOLOR}
+{$ENDIF BCB6}
 
 type
   TJvIPAddress = class;
@@ -149,12 +151,14 @@ type
     procedure ClearEditControls;
     procedure DestroyLocalFont;
     procedure SetAddress(const Value: LongWord);
+    procedure SetAddressValues(const Value: TJvIPAddressValues);
     procedure CNCommand(var Msg: TWMCommand); message CN_COMMAND;
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure WMDestroy(var Msg: TWMNCDestroy); message WM_DESTROY;
     procedure WMParentNotify(var Msg: TWMParentNotify); message WM_PARENTNOTIFY;
     procedure WMSetFont(var Msg: TWMSetFont); message WM_SETFONT;
-    procedure SetAddressValues(const Value: TJvIPAddressValues);
+    procedure WMSetText(var Message: TWMSetText); message WM_SETTEXT;
+    procedure WMCtlColorEdit(var Msg: TWMCtlColorEdit); message WM_CTLCOLOREDIT;
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure EnabledChanged; override;
@@ -172,23 +176,23 @@ type
     procedure DoAddressChanging(Sender: TObject; Index: Integer;
       Value: Byte; var AllowChange: Boolean); virtual;
     procedure DoFieldChange(FieldIndex: Integer; var FieldValue: Integer); dynamic;
-    procedure TextChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ClearAddress;
     function IsBlank: Boolean;
-    property Text;
   published
     property Address: LongWord read FAddress write SetAddress default 0;
     property AddressValues: TJvIPAddressValues read FAddressValues write SetAddressValues;
     property Anchors;
+    property Color;
     property Constraints;
     property DragCursor;
     property DragKind;
     property DragMode;
     property Enabled;
     property Font;
+    property ParentColor;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -196,6 +200,7 @@ type
     property ShowHint;
     property TabOrder;
     property TabStop default True;
+    property Text;
     property Visible;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnContextPopup;
@@ -219,13 +224,13 @@ type
   // for it's subitems (like a PageControl)
   // TODO: (p3) this should really be moved to JvTypes or something...
   TJvHintSource =
-   (
+    (
     hsDefault, // use default hint behaviour (i.e as regular control)
     hsForceMain, // use the main hint even if subitems have hints
     hsForceChildren, // always use subitems hints even if empty
     hsPreferMain, // use main control hint unless empty then use subitems hints
     hsPreferChildren // use subitems hints unless empty then use main control hint
-   );
+    );
 
   TJvPageControl = class(TJvExPageControl)
   private
@@ -352,9 +357,9 @@ type
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
     function GetSelectedCount: Integer;
     function GetSelectedItem(Index: Integer): TTreeNode;
-    {$IFNDEF COMPILER6_UP}
+{$IFNDEF COMPILER6_UP}
     procedure SetMultiSelect(const Value: Boolean);
-    {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
     procedure SetScrollDirection(const Value: Integer);
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
@@ -428,9 +433,9 @@ type
     property OnPageChanged: TPageChangedEvent read FOnPage write FOnPage;
 
     property AutoDragScroll: Boolean read FAutoDragScroll write FAutoDragScroll default False;
-    {$IFNDEF COMPILER6_UP}
+{$IFNDEF COMPILER6_UP}
     property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;
-    {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
     property OnComparePage: TJvTreeViewComparePageEvent read FOnComparePage write FOnComparePage;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -448,7 +453,7 @@ uses
 const
   TVIS_CHECKED = $2000;
 
-// === TJvIPAddressRange =====================================================
+  // === TJvIPAddressRange =====================================================
 
 constructor TJvIPAddressRange.Create(Control: TWinControl);
 var
@@ -615,6 +620,7 @@ end;
 
 procedure TJvIPAddress.CreateParams(var Params: TCreateParams);
 begin
+  InitCommonControl(ICC_INTERNET_CLASSES);
   inherited CreateParams(Params);
   CreateSubClass(Params, WC_IPADDRESS);
   with Params do
@@ -746,7 +752,7 @@ var
   I: Integer;
 begin
   inherited EnabledChanged;
- for i := 0 to High(FEditControls) do
+  for i := 0 to High(FEditControls) do
     if (FEditControls[I] <> nil) and (FEditControls[I].Handle <> 0) then
       EnableWindow(FEditControls[I].Handle, Enabled and not (csDesigning in ComponentState));
 end;
@@ -830,6 +836,28 @@ begin
   //  (p3) do nothing
 end;
 
+{ Added 03/05/2004 by Kai Gossens }
+
+procedure TJvIPAddress.WMCtlColorEdit(var Msg: TWMCtlColorEdit);
+var
+  DC: HDC;
+begin
+  inherited;
+  DC := GetDC(Handle);
+  try
+    Brush.Color := ColorToRGB(Color);
+    Brush.Style := bsSolid;
+    SetTextColor(DC, ColorToRGB(Font.Color));
+    SetBkColor(DC, ColorToRGB(Brush.Color));
+    SetTextColor(Msg.ChildDC, ColorToRGB(Font.Color));
+    SetBkColor(Msg.ChildDC, ColorToRGB(Brush.Color));
+    SetBkMode(Msg.ChildDC, TRANSPARENT);
+  finally
+    ReleaseDC(Handle, DC);
+  end;
+  Msg.Result := Brush.Handle;
+end;
+
 procedure TJvIPAddress.WMDestroy(var Msg: TWMNCDestroy);
 begin
   DestroyLocalFont;
@@ -847,18 +875,21 @@ begin
   Exclude(Code, dcNative); // prevent inherited call
 end;
 
-procedure TJvIPAddress.TextChanged;
-var S: string;
+procedure TJvIPAddress.WMSetText(var Message: TWMSetText);
+var
+  S: string;
 begin
-  inherited TextChanged;
-  S := Text;
+  // really long values for the text crashes the program (try: 127.0.0.8787787878787878), so we limit it here before it is set
+  S := Message.Text;
   with AddressValues do
   begin
     Value1 := StrToIntDef(StrToken(S, '.'), 0);
     Value2 := StrToIntDef(StrToken(S, '.'), 0);
     Value3 := StrToIntDef(StrToken(S, '.'), 0);
     Value4 := StrToIntDef(S, 0);
+    Message.Text := PChar(Format('%d.%d.%d.%d', [Value1, Value2, Value3, Value4]));
   end;
+  inherited;
 end;
 
 procedure TJvIPAddress.WMParentNotify(var Msg: TWMParentNotify);
@@ -868,7 +899,7 @@ begin
       WM_CREATE:
         begin
           if (FEditControlCount <= Length(FEditControls)) and
-             (FEditControls[FEditControlCount] <> nil) then
+            (FEditControls[FEditControlCount] <> nil) then
           begin
             FEditControls[FEditControlCount].Handle := ChildWnd;
             EnableWindow(ChildWnd, Enabled and not (csDesigning in ComponentState));
@@ -877,9 +908,11 @@ begin
         end;
       WM_DESTROY:
         ClearEditControls;
-
-      WM_LBUTTONDOWN, WM_MBUTTONDOWN, WM_RBUTTONDOWN:
-        Perform(Event, Value, Integer(SmallPoint(XPos, YPos)));
+      // (p3) this code prevents the user from dblclicking on any edit field
+      // to select it (the first edit is always selected). I don't know if removing
+      // it has any side-effects but I haven't noticed anything
+//      WM_LBUTTONDOWN, WM_MBUTTONDOWN, WM_RBUTTONDOWN:
+//        Perform(Event, Value, Integer(SmallPoint(XPos, YPos)));
     end;
   inherited;
 end;
@@ -1162,8 +1195,8 @@ end;
 
 procedure TJvTrackBar.InternalSetToolTipSide;
 const
-  ToolTipSides: array [TJvTrackToolTipSide] of DWORD =
-    (TBTS_LEFT, TBTS_TOP, TBTS_RIGHT, TBTS_BOTTOM);
+  ToolTipSides: array[TJvTrackToolTipSide] of DWORD =
+  (TBTS_LEFT, TBTS_TOP, TBTS_RIGHT, TBTS_BOTTOM);
 begin
   if HandleAllocated and (GetComCtlVersion >= ComCtlVersionIE3) then
     SendMessage(Handle, TBM_SETTIPSIDE, ToolTipSides[FToolTipSide], 0);
@@ -1418,8 +1451,7 @@ begin
     Exit;
   if Y < AutoScrollMargin then
     ScrollDirection := -1
-  else
-  if Y > ClientHeight - AutoScrollMargin then
+  else if Y > ClientHeight - AutoScrollMargin then
     ScrollDirection := 1
   else
     ScrollDirection := 0;
@@ -1484,8 +1516,7 @@ begin
         Canvas.Font.Color := clHighlightText;
         Canvas.Brush.Color := clHighlight;
       end
-      else
-      if not HideSelection then
+      else if not HideSelection then
       begin
         Canvas.Font.Color := Font.Color;
         Canvas.Brush.Color := clInactiveBorder;
@@ -1577,8 +1608,7 @@ procedure TJvTreeView.SelectItem(Node: TTreeNode; Unselect: Boolean);
 begin
   if Unselect then
     FSelectedList.Remove(Node)
-  else
-  if not IsNodeSelected(Node) then
+  else if not IsNodeSelected(Node) then
     FSelectedList.Add(Node);
   if HandleAllocated then
     InvalidateNode(Node);
@@ -1602,6 +1632,7 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
+
 procedure TJvTreeView.SetMultiSelect(const Value: Boolean);
 begin
   if FMultiSelect <> Value then
@@ -1624,8 +1655,7 @@ begin
   begin
     if Value = 0 then
       KillTimer(Handle, AutoScrollTimerID)
-    else
-    if (Value <> 0) and (FScrollDirection = 0) then
+    else if (Value <> 0) and (FScrollDirection = 0) then
       SetTimer(Handle, AutoScrollTimerID, 200, nil);
     FScrollDirection := Value;
   end;
@@ -1923,14 +1953,14 @@ begin
 
   if Result then
     Exit;
-(*
-    hsDefault,    // use default hint behaviour (i.e as regular control)
-    hsForceMain,  // use the main controls hint even if subitems have hints
-    hsForceChildren, // always use subitems hints even if empty and main control has hint
-    hsPreferMain, // use main control hint unless empty then use subitems hints
-    hsPreferChildren // use subitems hints unless empty then use main control hint
-    );
-*)
+  (*
+      hsDefault,    // use default hint behaviour (i.e as regular control)
+      hsForceMain,  // use the main controls hint even if subitems have hints
+      hsForceChildren, // always use subitems hints even if empty and main control has hint
+      hsPreferMain, // use main control hint unless empty then use subitems hints
+      hsPreferChildren // use subitems hints unless empty then use main control hint
+      );
+  *)
 
   if Result or (Self <> HintInfo.HintControl) then
     Exit; // strange, hint requested by other component. Why should we deal with it?
@@ -1943,8 +1973,7 @@ begin
     Tab := nil;
   if (FHintSource = hsForceMain) or ((FHintSource = hsPreferMain) and (GetShortHint(Hint) <> '')) then
     HintInfo.HintStr := GetShortHint(Hint)
-  else
-  if (Tab <> nil) and ((FHintSource = hsForceChildren) or ((FHintSource = hsPreferChildren) and
+  else if (Tab <> nil) and ((FHintSource = hsForceChildren) or ((FHintSource = hsPreferChildren) and
     (GetShortHint(Tab.Hint) <> ''))) then
     HintInfo.HintStr := GetShortHint(Tab.Hint)
 end;
