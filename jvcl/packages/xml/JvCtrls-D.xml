@@ -31,5 +31,6 @@
     <File Name="..\..\design\JvFooterEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvGroupHeaderEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvTransparentButtonEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvRollOutEditor.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
