@@ -28,7 +28,8 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, JvExExtCtrls, JvComponent, JvRollOut, StdCtrls,
-  JvExStdCtrls, JvRichEdit, Mask, JvExMask, JvToolEdit, ComCtrls;
+  JvExStdCtrls, JvRichEdit, Mask, JvExMask, JvToolEdit, ComCtrls, JvEdit,
+  JvDotNetControls;
 
 type
   TfrmOptions = class(TForm)
@@ -38,23 +39,23 @@ type
     tabGeneral: TTabSheet;
     tabTemplates: TTabSheet;
     Label1: TLabel;
-    edQImage: TJvFilenameEdit;
+    edQImage: TJvDotNetFilenameEdit;
     Label2: TLabel;
-    edAImage: TJvFilenameEdit;
+    edAImage: TJvDotNetFilenameEdit;
     Label3: TLabel;
-    edStyleSheet: TJvFilenameEdit;
+    edStyleSheet: TJvDotNetFilenameEdit;
     Label4: TLabel;
-    edImagePath: TEdit;
+    edImagePath: TJvDotNetEdit;
     Label5: TLabel;
-    edStyleSheetPath: TEdit;
+    edStyleSheetPath: TJvDotNetEdit;
     roFooter: TJvRollOut;
     roHeader: TJvRollOut;
-    reHeader: TJvRichEdit;
-    reFooter: TJvRichEdit;
+    reHeader: TJvDotNetRichEdit;
+    reFooter: TJvDotNetRichEdit;
     roItem: TJvRollOut;
-    reItem: TJvRichEdit;
+    reItem: TJvDotNetRichEdit;
     Label6: TLabel;
-    edTitle: TEdit;
+    edTitle: TJvDotNetEdit;
     procedure StripPathFromFilename(Sender: TObject; var Name: String;
       var Action: Boolean);
     procedure FormResize(Sender: TObject);

@@ -60,7 +60,7 @@ object frmMain: TfrmMain
       FocusControl = lvItems
       Layout = tlCenter
     end
-    object lvItems: TJvListView
+    object lvItems: TJvDotNetListView
       Left = 4
       Top = 19
       Width = 184
@@ -81,7 +81,6 @@ object frmMain: TfrmMain
       ViewStyle = vsReport
       OnDeletion = lvItemsDeletion
       OnSelectItem = lvItemsSelectItem
-      ColumnsOrder = '0=180'
     end
   end
   object pnlRight: TPanel
@@ -128,34 +127,26 @@ object frmMain: TfrmMain
       Minimized = False
       ButtonCursor = crDefault
     end
-    object reAnswer: TJvRichEdit
+    object reAnswer: TJvDotNetRichEdit
       Left = 3
       Top = 196
       Width = 484
       Height = 179
       Align = alClient
-      AutoURLDetect = False
-      AllowObjects = False
-      AllowInPlace = False
       PlainText = True
       TabOrder = 1
       WordWrap = False
-      Zoom = 100
       OnEnter = reAnswerEnter
     end
-    object reQuestion: TJvRichEdit
+    object reQuestion: TJvDotNetRichEdit
       Left = 3
       Top = 19
       Width = 484
       Height = 149
       Align = alTop
-      AutoURLDetect = False
-      AllowObjects = False
-      AllowInPlace = False
       PlainText = True
       TabOrder = 0
       WordWrap = False
-      Zoom = 100
       OnEnter = reQuestionEnter
     end
   end
@@ -344,8 +335,8 @@ object frmMain: TfrmMain
     Top = 90
   end
   object popItems: TPopupMenu
-    Left = 96
-    Top = 222
+    Left = 24
+    Top = 72
     object Previous1: TMenuItem
       Action = acPrevItem
     end

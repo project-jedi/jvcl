@@ -56,6 +56,9 @@ begin
     TJvDotNetEdit, TJvDotNetHotKey, TJvDotNetListBox,
     TJvDotNetListView, TJvDotNetMaskEdit, TJvDotNetMemo,
     TJvDotNetRichEdit, TJvDotNetScrollBox, TJvDotNetTreeView]);
+  {$IFDEF USEJVCL}
+  RegisterComponents(RsPaletteDotNet, [TJvDotNetFilenameEdit,TJvDotNetDirectoryEdit]);
+  {$ENDIF USEJVCL}
   {$IFNDEF DelphiPersonalEdition}
   RegisterComponents(RsPaletteDotNetDB, [TJvDotNetDBEdit, TJvDotNetDBListBox,
     TJvDotNetDBLookupListBox, TJvDotNetDBMemo, TJvDotNetDBRichEdit]);
