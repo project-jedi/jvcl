@@ -701,7 +701,7 @@ begin
       Parser := CreateParser;
       CurrentNode.DestroyChildren;
       Parser.AddSourceTreeToDynamicNode(CurrentNode, Source);
-      Paint;
+      Repaint;
       Exit;
     end;
   end;

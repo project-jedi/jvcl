@@ -447,7 +447,7 @@ begin
   if Enabled then
   begin
     FMouseEnter := True;
-    Paint;
+    Repaint;
   end;
 end;
 
@@ -459,7 +459,7 @@ begin
   if Enabled then
   begin
     FMouseEnter := False;
-    Paint;
+    Repaint;
   end;
 end;
 

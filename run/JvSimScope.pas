@@ -429,7 +429,7 @@ begin
       FLines[I].FPrevPos := A;
     end;
   end;
-  Paint;
+  Repaint;
   if Assigned(FOnUpdate) then
     FOnUpdate(Self);
 end;

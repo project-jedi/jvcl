@@ -250,7 +250,7 @@ begin
     Canvas.Brush.Color := Color;
     Canvas.Brush.Style := bsSolid;
     Canvas.FillRect(Rec);
-    Paint;
+    Repaint;
   end;
   if not FStretch then
     FScale := 1;
@@ -294,7 +294,7 @@ begin
     FWaiting := False;
   end;
   UpdatePos;
-  Paint;
+  Repaint;
 end;
 
 function TJvWinampLabel.GetCol(Ch: Char): Word;

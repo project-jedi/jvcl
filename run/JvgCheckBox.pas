@@ -246,16 +246,16 @@ begin
   FActiveNow := True;
   with TextStyles, Colors do
     if (Passive <> Active) or (fcoUnderlinedActive in Options) then
-      Paint
+      Repaint
     else if (fcoDelineatedText in Options) and (DelineateActive <> Delineate) then
-      Paint
+      Repaint
     else if (not Transparent) and (Colors.Background <>
       Colors.BackgroundActive) then
-      Paint
+      Repaint
     else if (TextActive <> Text) or (fcoUnderlinedActive in Options) then
     begin
       FNeedUpdateOnlyMainText := True;
-      Paint;
+      Repaint;
     end;
   inherited MouseEnter(Control);
 end;
@@ -272,16 +272,16 @@ begin
   FActiveNow := False;
   with TextStyles, Colors do
     if (Passive <> Active) or (fcoUnderlinedActive in Options) then
-      Paint
+      Repaint
     else if (fcoDelineatedText in Options) and (DelineateActive <> Delineate) then
-      Paint
+      Repaint
     else if (not Transparent) and (Colors.Background <>
       Colors.BackgroundActive) then
-      Paint
+      Repaint
     else if TextActive <> Text then
     begin
       FNeedUpdateOnlyMainText := True;
-      Paint;
+      Repaint;
     end;
   inherited MouseLeave(Control);
 end;

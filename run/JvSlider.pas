@@ -220,7 +220,7 @@ begin
   if not FTracking then
   begin
     Calculate;
-    Paint;
+    Repaint;
   end;
 end;
 
@@ -258,7 +258,7 @@ begin
           FPosition := I;
           if Assigned(FOnChanged) then
             FOnChanged(Self);
-          Paint;
+          Repaint;
         end;
       end;
     end
@@ -276,11 +276,11 @@ begin
           FPosition := I;
           if Assigned(FOnChanged) then
             FOnChanged(Self);
-          Paint;
+          Repaint;
         end;
       end;
     end;
-    Paint;
+    Repaint;
   end;
 end;
 
@@ -300,7 +300,7 @@ begin
     Tmp.Free;
     FChanged := True;
   end;
-  Paint;
+  Repaint;
 end;
 
 procedure TJvSlider.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -318,7 +318,7 @@ begin
     Tmp.Free;
     FChanged := False;
   end;
-  Paint;
+  Repaint;
   if Assigned(FOnStopChanged) then
     FOnStopChanged(Self);
 end;
@@ -345,7 +345,7 @@ begin
   Src.Right := Dest.Left;
   Src.Bottom := FImageThumb.Height;
   FThumb2.Canvas.CopyRect(Src, FImageThumb.Canvas, Dest);
-  Paint;
+  Repaint;
   Calculate;
 end;
 
@@ -363,7 +363,7 @@ begin
     Height := Value.Height;
     Width := Value.Width;
   end;
-  Paint;
+  Repaint;
   Calculate;
 end;
 

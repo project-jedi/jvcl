@@ -506,16 +506,16 @@ begin
       Transparent) then
     begin
       if floBufferedDraw in Options then
-        Paint
+        Repaint
       else
         InvalidateLabel(True);
     end
     else if (floDelineatedText in Options) and (DelineateActive <> Delineate) then
-      Paint
+      Repaint
     else if TextActive <> Text then
     begin
       FNeedUpdateOnlyMainText := True;
-      Paint;
+      Repaint;
     end;
   inherited MouseEnter(Control);
 end;
@@ -535,16 +535,16 @@ begin
       Transparent) then
     begin
       if floBufferedDraw in Options then
-        Paint
+        Repaint
       else
         InvalidateLabel(True);
     end
     else if (floDelineatedText in Options) and (DelineateActive <> Delineate) then
-      Paint
+      Repaint
     else if TextActive <> Text then
     begin
       FNeedUpdateOnlyMainText := True;
-      Paint;
+      Repaint;
     end;
   inherited MouseLeave(Control);
 end;
@@ -897,7 +897,7 @@ end;
 procedure TJvgLabel.OnGradientChanged(Sender: TObject);
 begin
   FNeedUpdateOnlyMainText := True;
-  Paint;
+  Repaint;
   //InvalidateLabel(False);
 end;
 //______
@@ -1051,7 +1051,7 @@ begin
   if (ftoIgnoreMouse in Options) or FShowAsActiveWhileControlFocused then
     Exit;
   FActiveNow := True;
-  Paint;
+  Repaint;
   inherited;
 end;
 //______
@@ -1064,7 +1064,7 @@ begin
   if ftoUnderlinedActive in Options then
     Invalidate
   else
-    Paint;
+    Repaint;
   inherited;
 end;
 
