@@ -2358,6 +2358,7 @@ begin
   begin
     if GetCapture <> 0 then
       SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
+    SetFocus;
     ListValue := FDataList.Value;
     SetWindowPos(FDataList.Handle, 0, 0, 0, 0, 0, SWP_NOZORDER or
       SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_HIDEWINDOW);
@@ -2372,8 +2373,9 @@ begin
            Not checking whether the parent form is visible typically gives errors
            when closing forms with non-focusable buttons (eg speed/toolbuttons)
     }
-    if ParentFormVisible(Self) and CanFocus then
-      SetFocus;
+    // (p3) SetFocus already called, so not needed
+//    if ParentFormVisible(Self) and CanFocus then
+//      SetFocus;
     if Assigned(FOnCloseUp) then
       FOnCloseUp(Self);
   end;
