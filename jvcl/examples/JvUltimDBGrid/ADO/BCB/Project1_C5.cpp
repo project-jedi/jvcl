@@ -2,7 +2,7 @@
 #include <vcl.h>
 #pragma hdrstop
 USERES("Project1.res");
-USEFORM("Unit2.cpp", MainForm);
+USEFORM("Unit1.cpp", MainForm);
 //---------------------------------------------------------------------------
 WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {

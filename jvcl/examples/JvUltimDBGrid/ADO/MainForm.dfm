@@ -18,7 +18,7 @@ object frmMain: TfrmMain
     Left = 0
     Top = 0
     Width = 797
-    Height = 561
+    Height = 542
     Align = alClient
     DataSource = DataSource1
     Font.Charset = DEFAULT_CHARSET
@@ -48,14 +48,17 @@ object frmMain: TfrmMain
       item
         ControlName = 'DBMemo1'
         FieldName = 'Comment'
+        FitCell = False
       end
       item
         ControlName = 'DBLookupComboBox1'
         FieldName = 'Category'
+        FitCell = False
       end
       item
         ControlName = 'JvDBComboBox1'
         FieldName = 'Licenses'
+        FitCell = False
       end>
     AutoSizeRows = False
     RowResize = True
@@ -191,7 +194,7 @@ object frmMain: TfrmMain
       'Eight'
       'Nine')
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 3
     Values.Strings = (
       '0'
       '1'
@@ -223,7 +226,7 @@ object frmMain: TfrmMain
     ListField = 'LibelleLog'
     ListSource = DataSource2
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 2
     Visible = False
     OnKeyPress = DBLookupComboBox1KeyPress
   end
@@ -261,14 +264,14 @@ object frmMain: TfrmMain
       TabOrder = 3
       OnClick = B_WordWrapClick
     end
-    object B_RowHeight: TButton
+    object B_ModFooter: TButton
       Left = 528
       Top = 8
-      Width = 113
+      Width = 105
       Height = 25
-      Caption = 'Change RowHeight'
+      Caption = 'Modify Grid Footer'
       TabOrder = 4
-      OnClick = B_RowHeightClick
+      OnClick = B_ModFooterClick
     end
     object B_ShowEdit: TButton
       Left = 128
@@ -280,14 +283,37 @@ object frmMain: TfrmMain
       OnClick = B_ShowEditClick
     end
     object B_Search: TButton
-      Left = 648
+      Left = 640
       Top = 8
-      Width = 141
+      Width = 149
       Height = 25
-      Caption = 'Search W and License = 1'
+      Caption = 'Search '#39'W'#39' and License = 1'
       TabOrder = 5
       OnClick = B_SearchClick
     end
+  end
+  object JvDBGridFooter1: TJvDBGridFooter
+    Left = 0
+    Top = 542
+    Width = 797
+    Height = 19
+    Color = 15663086
+    SimplePanel = False
+    Columns = <
+      item
+        Alignment = taLeftJustify
+        DisplayMask = '%d softwares'
+        FieldName = 'Software'
+        WidthIfIgnore = 80
+      end
+      item
+        DisplayMask = '%d licenses'
+        FieldName = 'Licenses'
+        WidthIfIgnore = 220
+      end>
+    DataSource = DataSource1
+    DBGrid = JvDBGrid1
+    OnCalculate = JvDBGridFooter1Calculate
   end
   object ADOConnection1: TADOConnection
     Connected = True
@@ -351,6 +377,14 @@ object frmMain: TfrmMain
     CursorType = ctStatic
     TableName = 'CategLogiciels'
     Left = 500
+    Top = 404
+  end
+  object CountQuery: TADOQuery
+    Connection = ADOConnection1
+    Parameters = <>
+    SQL.Strings = (
+      'SELECT SUM(Licenses) AS Total FROM Logiciels;')
+    Left = 536
     Top = 404
   end
 end

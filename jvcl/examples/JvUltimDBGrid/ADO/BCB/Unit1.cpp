@@ -9,6 +9,7 @@
 #pragma link "JvDBUltimGrid"
 #pragma link "JvExDBGrids"
 #pragma link "JvExStdCtrls"
+#pragma link "JvDBGridFooter"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 //---------------------------------------------------------------------------
@@ -66,13 +67,17 @@ void __fastcall TForm1::MainTableCategoryGetText(TField *Sender, AnsiString &Tex
    Text = DisplayList->Values[Sender->AsString];
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm1::B_RowHeightClick(TObject *Sender)
+void __fastcall TForm1::B_ModFooterClick(TObject *Sender)
 {
-   if (OldRowsHeight == JvDBGrid1->RowsHeight)
-      JvDBGrid1->RowsHeight = OldRowsHeight * 1.5;
-   else
-      JvDBGrid1->RowsHeight = OldRowsHeight;
-   JvDBGrid1->RowResize = !JvDBGrid1->RowResize;
+   //
+   JvDBGridFooter1->Columns->Items[0]->Alignment = taCenter;
+   JvDBGridFooter1->Columns->Items[0]->Bevel = pbRaised;
+   JvDBGridFooter1->Columns->Items[1]->FieldName = "Category";
+   JvDBGridFooter1->Columns->Items[1]->DisplayMask = "";
+   JvDBGridFooter1->IgnoreHorzScrolling = True;
+   JvDBGridFooter1->IgnoreResizing = True;
+   JvDBGrid1->FixedCols = 1;
+   B_ModFooter->Enabled = False;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::B_ConnectClick(TObject *Sender)
@@ -173,5 +178,40 @@ void __fastcall TForm1::B_SearchClick(TObject *Sender)
       JvDBGrid1->RestoreGridPosition();
       ShowMessage("Not found");
    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::JvDBGridFooter1Calculate(TJvDBGridFooter *Sender,
+      const AnsiString FieldName, Variant &CalcValue)
+{
+   if (MainTable->Active)
+   {
+      if (AnsiSameText(FieldName, "Licenses"))
+      {
+         CountQuery->Open();
+         if (CountQuery->Eof)
+            CalcValue = "ERROR";
+         else
+            CalcValue = CountQuery->FieldByName("Total")->AsInteger;
+         CountQuery->Close();
+      }
+      else
+      if (AnsiSameText(FieldName, "Category"))
+      {
+         CalcValue = AnsiString("");
+         for (int C = 0; C < JvDBGrid1->Columns->Count; C++)
+         {
+            if (JvDBGrid1->Columns->Items[C]->Visible)
+            {
+               if (CalcValue != AnsiString("")) CalcValue += AnsiString(",");
+               CalcValue += IntToStr(JvDBGrid1->Columns->Items[C]->Width);
+            }
+         }
+         CalcValue = "Widths = " + CalcValue;
+      }
+      else
+         CalcValue = MainTable->RecordCount;
+   }
+   else
+      CalcValue = FieldName;
 }
 //---------------------------------------------------------------------------
