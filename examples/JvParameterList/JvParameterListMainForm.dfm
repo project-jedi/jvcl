@@ -18,8 +18,8 @@ object Form1: TForm1
   PixelsPerInch = 96
   TextHeight = 13
   object Image1: TImage
-    Left = 240
-    Top = 225
+    Left = 305
+    Top = 210
     Width = 85
     Height = 76
     Picture.Data = {
@@ -2003,14 +2003,38 @@ object Form1: TForm1
     Height = 146
     Caption = 'Different Dialogs'
     TabOrder = 5
-    object Button15: TButton
-      Left = 5
+    object JvPanel2: TJvPanel
+      Left = 2
       Top = 15
-      Width = 126
-      Height = 25
-      Caption = 'Analyze Table Sample'
+      Width = 272
+      Height = 129
+      MultiLine = False
+      ArrangeSettings.BorderLeft = 5
+      ArrangeSettings.BorderTop = 5
+      ArrangeSettings.DistanceVertical = 3
+      ArrangeSettings.DistanceHorizontal = 3
+      ArrangeSettings.AutoArrange = True
+      Align = alClient
+      BevelOuter = bvNone
       TabOrder = 0
-      OnClick = Button15Click
+      object Button16: TButton
+        Left = 128
+        Top = 5
+        Width = 120
+        Height = 25
+        Caption = 'Simple Memo'
+        TabOrder = 1
+        OnClick = Button16Click
+      end
+      object Button15: TButton
+        Left = 5
+        Top = 5
+        Width = 120
+        Height = 25
+        Caption = 'Analyze Table Sample'
+        TabOrder = 0
+        OnClick = Button15Click
+      end
     end
   end
   object JvAppRegistryStorage: TJvAppRegistryStorage
@@ -2026,7 +2050,7 @@ object Form1: TForm1
     Top = 63
   end
   object JvFormStorage1: TJvFormStorage
-    AppStorage = JvAppRegistryStorage
+    AppStorage = JvAppXMLStorage
     AppStoragePath = 'Form\'
     StoredProps.Strings = (
       'AutoHeightCheckBox.Checked'
@@ -2047,12 +2071,20 @@ object Form1: TForm1
       'DefaultParameterLabelWidthEdit.Text'
       'DefaultParameterWidthEdit.Text'
       'AssignWidthHeightCheckBox.Checked')
-    StoredValues = <>
+    StoredValues = <
+      item
+        Name = 'Stored Value 1'
+        Value = '1'
+      end
+      item
+        Name = 'Stored Value 2'
+        Value = '2'
+      end>
     Left = 414
     Top = 3
   end
   object JvFormStorage2: TJvFormStorage
-    AppStorage = JvAppRegistryStorage
+    AppStorage = JvAppXMLStorage
     AppStoragePath = 'Form\'
     StoredProps.Strings = (
       'AutoHeightCheckBox.Checked'
