@@ -1270,14 +1270,35 @@ function QtStdAlign(Flags: Integer): Word;
 function IsCharAlpha(Ch: Char): LongBool;
 function IsCharAlphaNumeric(Ch: Char): LongBool;
 
-{ Message }
-function Perform(Control: TControl; Msg: Cardinal; WParam, LParam: Longint): Longint;
- { Limitation: Handle must be a TWidgetControl derived class handle }
-function PostMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): LongBool;
- { SendMsg synchronizes with the main thread }
-function SendMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer; overload;
-function SendMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer; overload;
+type
+  TSystemTime = record
+    wYear: Word;
+    wMonth: Word;
+    wDayOfWeek: Word;
+    wDay: Word;
+    wHour: Word;
+    wMinute: Word;
+    wSecond: Word;
+    wMilliseconds: Word;
+  end;
 
+procedure GetLocalTime(var st: TSystemTime);
+
+{ Message }
+
+{ AllocateMessageWidget allocates a new QObjectH that redirects any
+  Send/PostMessage command to the assigned object via Dispatch(). }
+function AllocateMessageObject(Obj: TObject): QObjectH;
+procedure DeallocateMessageObject(Handle: QObjectH);
+
+function Perform(Control: TControl; Msg: Cardinal; WParam, LParam: Longint): Longint;
+ { Limitation: Handle must be a TWidgetControl derived class handle or a
+   MessageObject handle. }
+function PostMessage(Handle: QObjectH; Msg: Integer; WParam, LParam: Longint): LongBool; overload;
+function PostMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): LongBool; overload;
+ { SendMessage synchronizes with the main (event handling) thread. }
+function SendMessage(Handle: QObjectH; Msg: Integer; WParam, LParam: Longint): Integer; overload;
+function SendMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer; overload;
 
 type
   TApplicationHook = function(Sender: QObjectH; Event: QEventH): Boolean of object;
@@ -1529,7 +1550,7 @@ implementation
 
 {$IFDEF MSWINDOWS}
 uses
-  Windows, ShellAPI;
+  Windows, ShellAPI, DateUtils;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 uses
@@ -6221,6 +6242,16 @@ begin
 end;
 
 
+procedure GetLocalTime(var st: TSystemTime);
+var
+  dt: TDateTime;
+begin
+  dt := Now;
+  DecodeDateTime(dt, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute,
+    st.wSecond, st.wMilliseconds);
+  st.wDayOfWeek := DayOfTheWeek(dt);
+end;
+
 {$IFDEF LINUX}
 
 function FileGetAttr(const FileName: string): Integer;
@@ -7729,7 +7760,7 @@ const
 type
   PMessageData = ^TMessageData;
   TMessageData = record
-    Control: TWidgetControl;
+    Obj: TObject;
     Event: TEvent;
     Msg: TMessage;
   end;
@@ -7739,9 +7770,101 @@ type
     Proc: TApplicationHook;
   end;
 
+  PMessageObjectItem = ^TMessageObjectItem;
+  TMessageObjectItem = record
+    p: QObjectH;
+    Obj: TObject;
+  end;
+
 var
   AppHookList: TList = nil;
   AppEventFilterHook: QObject_hookH = nil;
+  MessageObjectList: TThreadList = nil;
+
+function FindMessageObject(p: QObjectH): TObject;
+var
+  i: Integer;
+  List: TList;
+begin
+  Result := nil;
+  List := MessageObjectList.LockList;
+  try
+    for i := 0 to List.Count - 1 do
+      if PMessageObjectItem(List[i]).p = p then
+      begin
+        Result := PMessageObjectItem(List[i]).Obj;
+        Exit;
+      end;
+  finally
+    MessageObjectList.UnlockList;
+  end;
+end;
+
+function AllocateMessageObject(Obj: TObject): QObjectH;
+var
+  List: TList;
+  Item: PMessageObjectItem;
+begin
+  List := MessageObjectList.LockList;
+  try
+    New(Item);
+    try
+      Item.Obj := Obj;
+      Item.p := QObject_create(nil, PChar('MessageObject_' + Obj.ClassName));;
+      Result := Item.p;
+      List.Add(Item);
+    except
+      Dispose(Item);
+      Result := nil;
+    end;
+  finally
+    MessageObjectList.UnlockList;
+  end;
+end;
+
+procedure DeallocateMessageObject(Handle: QObjectH);
+var
+  List: TList;
+  i: Integer;
+  Item: PMessageObjectItem;
+begin
+  List := MessageObjectList.LockList;
+  try
+    for i := List.Count - 1 downto 0 do
+    begin
+      Item := List[i];
+      if Item.p = Handle then
+      begin
+        Dispose(Item);
+        List.Delete(i);
+        Exit;
+      end;
+    end;
+  finally
+    MessageObjectList.UnlockList;
+  end;
+end;
+
+procedure FinalizeMessageObjectList;
+var
+  i: Integer;
+  Item: PMessageObjectItem;
+  List: TList;
+begin
+  List := MessageObjectList.LockList;
+  try
+    for i := 0 to List.Count - 1 do
+    begin
+      Item := List[i];
+      Dispose(Item);
+    end;
+  finally
+    MessageObjectList.UnlockList;
+  end;
+  FreeAndNil(MessageObjectList);
+end;
+
+{---------------------------------------}
 
 function AppEventFilter(App: TApplication; Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
@@ -7759,7 +7882,7 @@ begin
             Result := True;
             if Msg <> nil then
               try
-                Msg^.Control.Dispatch(Msg^.Msg);
+                Msg^.Obj.Dispatch(Msg^.Msg);
               finally
                 Dispose(Msg);
               end;
@@ -7770,7 +7893,7 @@ begin
             Result := True;
             try
               if Msg <> nil then
-                Msg^.Control.Dispatch(Msg^.Msg);
+                Msg^.Obj.Dispatch(Msg^.Msg);
             finally
               if Msg^.Event <> nil then
                 Msg^.Event.SetEvent;
@@ -7829,20 +7952,24 @@ begin
   end;
 end;
 
-function PostMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): LongBool;
+function PostMessage(Handle: QObjectH; Msg: Integer; WParam, LParam: Longint): LongBool;
 var
   M: PMessageData;
-  Control: TWidgetControl;
+  Obj: TObject;
 begin
   Result := False;
   if Handle = nil then
     Exit;
-  Control := FindControl(Handle);
-  if Control = nil then
+  Obj := nil;
+  if QObject_isWidgetType(Handle) then
+    Obj := FindControl(QWidgetH(Handle));
+  if Obj= nil then
+    Obj := FindMessageObject(Handle);
+  if Obj = nil then
     Exit;
   try
     New(M);
-    M^.Control := Control;
+    M^.Obj := Obj;
     M.Event := nil;
     M^.Msg.Msg := Msg;
     M^.Msg.WParam := WParam;
@@ -7857,25 +7984,29 @@ begin
   end;
 end;
 
-function SendMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer;
+function PostMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): LongBool;
 begin
-  Result := SendMessage(AControl.Handle, Msg, WParam, LParam);
+  Result := PostMessage(AControl.Handle, Msg, WParam, LParam);
 end;
 
-function SendMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer;
+function SendMessage(Handle: QObjectH; Msg: Integer; WParam, LParam: Longint): Integer;
 var
   Event: QCustomEventH;
   M: TMessageData;
-  Control: TWidgetControl;
+  Obj: TObject;
 begin
   Result := 0;
   if Handle = nil then
     Exit;
-  Control := FindControl(Handle);
-  if Control = nil then
+  Obj := nil;
+  if QObject_isWidgetType(Handle) then
+    Obj := FindControl(QWidgetH(Handle));
+  if Obj= nil then
+    Obj := FindMessageObject(Handle);
+  if Obj = nil then
     Exit;
   try
-    M.Control := Control;
+    M.Obj := Obj;
     M.Event := nil;
     M.Msg.Msg := Msg;
     M.Msg.WParam := WParam;
@@ -7906,6 +8037,11 @@ begin
     end;
   except
   end;
+end;
+
+function SendMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer;
+begin
+  Result := SendMessage(AControl.Handle, Msg, WParam, LParam);
 end;
 
 procedure InstallApplicationHook(Hook: TApplicationHook);
@@ -8505,16 +8641,18 @@ initialization
   GlobalCaret := TEmulatedCaret.Create;
   InitializeCriticalSection(StockObjectListCritSect);
   InitializeCriticalSection(TimerCritSect);
+  MessageObjectList := TThreadList.Create;
 
 finalization
   GlobalCaret.Free;
   StockObjectList.Free;
   TimerList.Free;
-  
+
   if Assigned(AppEventFilterHook) then
     QObject_hook_destroy(AppEventFilterHook);
   if Assigned(AppHookList) then
     FinalizeAppHookList;
+  FinalizeMessageObjectList;
 
   FreePainterInfos;
   DeleteCriticalSection(StockObjectListCritSect);
