@@ -198,7 +198,7 @@ end;
 
 function TJvPluginWizard.GetMenuText: string;
 begin
-  Result := RsJediPuginWizard;
+  Result := RsJediPluginWizard;
 end;
 
 function TJvPluginWizard.GetName: string;
