@@ -4,19 +4,6 @@
   <pgEdit>
     <odlAddFiles_InitialDir>..\..\run</odlAddFiles_InitialDir>
     <cmbModel_ItemIndex>0</cmbModel_ItemIndex>
-    <FormVersion>0</FormVersion>
-    <ShowCmd>1</ShowCmd>
-    <Flags>0</Flags>
-    <PixelsPerInch>96</PixelsPerInch>
-    <MinMaxPos(1152x864)>-1,-1,-1,-1</MinMaxPos(1152x864)>
-    <MinMaxPos>-1,-1,-1,-1</MinMaxPos>
-    <NormPos(1152x864)>292,133,1099,733</NormPos(1152x864)>
-    <NormPos>292,133,1099,733</NormPos>
-    <Visible>0</Visible>
-    <pnlList_Width>137</pnlList_Width>
-    <jsgDependencies_Height>218</jsgDependencies_Height>
-    <pnlEdit_Width>660</pnlEdit_Width>
-    <jsgFiles_Height>167</jsgFiles_Height>
   </pgEdit>
   <!--
     The nodes below are read by the generation process.
