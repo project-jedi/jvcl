@@ -1874,6 +1874,7 @@ begin
         if AnsiSameText(AField.FieldName, SortedField) then
           ASortMarker := self.Sortmarker;
         DoGetBtnParams(AField, Canvas.Font, BackColor, ASortMarker, Down);
+        self.Sortmarker := ASortMarker;
         Canvas.Brush.Color := BackColor;
       end;
       if Down then
