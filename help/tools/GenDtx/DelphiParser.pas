@@ -145,7 +145,7 @@ type
   end;
 
   TDtxCompareErrorFlag = (defNoPackageTag, defPackageTagNotFilled,
-    defNoStatusTag, defEmptySeeAlso, defNoAuthor, defHasTocEntryError);
+    defNoStatusTag, defEmptySeeAlso, defNoAuthor, defHasTocEntryError, defUnknownTag);
   TDtxCompareErrorFlags = set of TDtxCompareErrorFlag;
 
   TPasCheckErrorFlag = (pefNoLicense, pefUnitCase);
@@ -195,6 +195,7 @@ type
     FErrors: TDtxCompareErrorFlags;
     FDefaultTexts: TDefaultTexts;
     FPasFileNameWithoutPath: string;
+    FTags:TStrings;
     function GetDtxCompareTokenType: TDtxCompareTokenType;
   protected
     function ReadNextToken: Char; override;
@@ -214,6 +215,7 @@ type
     procedure ReadSeeAlso;
     procedure ReadStartBlock;
     procedure ReadStatus;
+    procedure ReadOther;
     procedure ReadTitleImg(Item: TDtxItem);
 
     property CompareTokenType: TDtxCompareTokenType read GetDtxCompareTokenType;
@@ -223,6 +225,7 @@ type
 
     function Execute(const AFileName: string): Boolean;
     property List: TList read FList;
+    property Tags:TStrings read FTags;
     property Errors: TDtxCompareErrorFlags read FErrors;
     property DefaultTexts: TDefaultTexts read FDefaultTexts;
   end;
@@ -2538,11 +2541,13 @@ constructor TDtxCompareParser.Create;
 begin
   inherited;
   FList := TObjectList.Create;
+  FTags := TStringlist.Create;
 end;
 
 destructor TDtxCompareParser.Destroy;
 begin
   FList.Free;
+  FTags.Free;
   inherited;
 end;
 
@@ -2550,6 +2555,7 @@ function TDtxCompareParser.Execute(const AFileName: string): Boolean;
 begin
   FErrors := [];
   FDefaultTexts := [];
+  FTags.Clear;
 
   Result := FileExists(AFileName);
   if not Result then
@@ -2902,6 +2908,13 @@ begin
   FToken := Result;
 end;
 
+procedure TDtxCompareParser.ReadOther;
+begin
+  Include(FErrors, defUnknownTag);
+  FTags.Add(TokenString);
+  NextToken;
+end;
+
 procedure TDtxCompareParser.ReadPackage;
 begin
   Exclude(FErrors, defNoPackageTag);
@@ -2990,6 +3003,8 @@ begin
       else
       if TokenSymbolIs('##status:') then
         ReadStatus
+      else
+        ReadOther;
     end
     else
       NextToken;

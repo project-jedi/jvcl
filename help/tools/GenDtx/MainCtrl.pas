@@ -137,7 +137,7 @@ const
   CDtxErrorNice: array[TDtxCompareErrorFlag] of string = (
     'No ##Package tag', '##Package tag not filled', 'No ##Status tag',
     'Has empty ''See Also'' section(s)', 'No author specified',
-    'HASTOCENTRY error');
+    'HASTOCENTRY error', 'Unknown Tags: ');
 
   { jieGroupNotFilled, jieFlagNotFilled, jieOtherNotFilled, jieNoGroup, jieDoubles }
   CJVCLInfoErrorNice: array[TJVCLInfoError] of string = (
@@ -951,7 +951,12 @@ begin
         StartErrorGroup('Errors');
         for Error := Low(TDtxCompareErrorFlag) to High(TDtxCompareErrorFlag) do
           if Error in DtxParser.Errors then
-            DoError(CDtxErrorNice[Error]);
+          begin
+            if Error = defUnknownTag then
+              DoError(CDtxErrorNice[Error] + DtxParser.Tags.CommaText)
+            else
+              DoError(CDtxErrorNice[Error]);
+          end;
       end;
       if DtxParser.DefaultTexts <> [] then
       begin
