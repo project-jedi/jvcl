@@ -117,7 +117,7 @@ void __fastcall TMainForm::MyUltimGridDrawColumnCell(TObject *Sender, const TRec
 void __fastcall TMainForm::B_ResizeColsClick(TObject *Sender)
 {
    MyUltimGrid->RowsHeight = 129;
-   MyUltimGrid->InitializeColumnsWidth(70, false, false);
+   MyUltimGrid->InitializeColumnsWidth(70, false, OPENARRAY(int, (36, 76)));
    MyUltimGrid->AutoSizeColumnIndex = JvGridResizeLastVisibleCol;
    MyUltimGrid->AutoSizeColumns = true;
 }
