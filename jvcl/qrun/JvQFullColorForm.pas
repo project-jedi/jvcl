@@ -38,8 +38,8 @@ uses
   QWindows, QMessages, SysUtils, Classes, QControls, QForms, QGraphics,
   QDialogs, QStdCtrls, QExtCtrls, QMask,
   JvQFullColorCtrls, JvQFullColorSpaces, JvQFullColorDialogs, JvQExMask,
-  JvQSpin, JvQExStdCtrls, JvQCombobox, JvQColorCombo, JvQExMaskEdit,
-  JvQExControls, JvQComponent, JvQExExtCtrls;
+  JvQSpin, JvQExStdCtrls, JvQCombobox, JvQColorCombo, 
+  JvQExControls, JvQComponent, JvQExExtCtrls, QComboEdits, JvQExComboEdits;
 
 type
   TJvFullColorFrm = class(TForm)
