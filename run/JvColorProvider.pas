@@ -3335,8 +3335,8 @@ end;
 
 procedure TJvColorProviderSettings.MappingAdding;
 begin
-  if @FOnMappingAdding <> nil then
-    OnMappingAdding(Self);
+  if Assigned(FOnMappingAdding) then
+    FOnMappingAdding(Self);
 end;
 
 procedure TJvColorProviderSettings.MappingAdded(Index: Integer; Mapping: TJvColorProviderNameMapping);
@@ -3346,15 +3346,15 @@ begin
     Inc(FMapping);
     Changed(ccrOther);
   end;
-  if @FOnMappingAdded <> nil then
-    OnMappingAdded(Self, Index, Mapping);
+  if Assigned(FOnMappingAdded) then
+    FOnMappingAdded(Self, Index, Mapping);
 end;
 
 procedure TJvColorProviderSettings.MappingDestroying(Index: Integer;
   Mapping: TJvColorProviderNameMapping);
 begin
-  if @FOnMappingDestroying <> nil then
-    OnMappingDestroying(Self, Index, Mapping);
+  if Assigned(FOnMappingDestroying) then
+    FOnMappingDestroying(Self, Index, Mapping);
   if FMapping = Index then
   begin
     FMapping := -1;
@@ -3370,8 +3370,8 @@ end;
 
 procedure TJvColorProviderSettings.MappingDestroyed;
 begin
-  if @FOnMappingDestroyed <> nil then
-    OnMappingDestroyed(Self);
+  if Assigned(FOnMappingDestroyed) then
+    FOnMappingDestroyed(Self);
 end;
 
 function TJvColorProviderSettings.GetNameMappingIndex: TJvColorProviderMapping;

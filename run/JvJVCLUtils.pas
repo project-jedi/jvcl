@@ -1164,7 +1164,7 @@ begin
   Strings.BeginUpdate;
   try
     @CplCall := GetProcAddress(hLib, PChar(cCplAddress));
-    if @CplCall = nil then
+    if not Assigned(CplCall) then
       Exit;
     CplCall(HWND, CPL_INIT, 0, 0); // Init the *.cpl file
     try

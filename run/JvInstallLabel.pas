@@ -21,14 +21,15 @@ Last Modified: 2002-05-26
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A component that makes it dead easy to have those nifty installation screens
+  with a list of tasks to perform and some formatting and icons to make sure the
+  user don't get lost when the big software company is stuffing his PC with rubbish.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
-
-{ A component that makes it dead easy to have those nifty installation screens
-  with a list of tasks to perform and some formatting and icons to make sure the
-  user don't get lost when the big software company is stuffing his PC with rubbish. }
 
 unit JvInstallLabel;
 
@@ -41,7 +42,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QImgList, Types, Qt, QWindows,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type

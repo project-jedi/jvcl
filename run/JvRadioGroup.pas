@@ -86,7 +86,6 @@ begin
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
-
 procedure TJvRadioGroup.Paint;
 var
   Details: TThemedElementDetails;
@@ -111,7 +110,6 @@ begin
   else
     inherited Paint;
 end;
-
 {$ENDIF JVCLThemesEnabledD56}
 
 function TJvRadioGroup.CanModify: Boolean;

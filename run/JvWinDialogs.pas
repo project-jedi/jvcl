@@ -1687,7 +1687,7 @@ var
 begin
   Result := false;
   FReturnValue := S_FALSE;
-  if @MIMEAssociationDialogA <> nil then
+  if Assigned(MIMEAssociationDialogA) then
   begin
     FillChar(buf[0], SizeOf(buf), 0);
     FAssociatedApp := '';
@@ -1739,7 +1739,7 @@ var
 begin
   Result := false;
   FReturnValue := IDCANCEL;
-  if @SoftwareUpdateMessageBox <> nil then
+  if Assigned(SoftwareUpdateMessageBox) then
   begin
     psdi := FDistInfo.SoftDistInfo;
     FReturnValue := SoftwareUpdateMessageBox(GetDesktopWindow, '', 0, psdi);

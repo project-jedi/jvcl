@@ -88,18 +88,18 @@ uses
   JvConsts, JvResources;
 
 const
-{$IFDEF VCL}
+  {$IFDEF VCL}
   NilHandle = 0;
-{$ENDIF}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   NilHandle = nil;
-{$ENDIF}
+  {$ENDIF VisualCLX}
 
 function IsChildWindow(const AChild, AParent: HWND): Boolean;
 var
   LParent: HWND;
 begin
- {determines whether a window is the child (or grand^x-child) of another}
+  {determines whether a window is the child (or grand^x-child) of another}
   LParent := AChild;
   // (rom) changed to while loop
   if LParent = AParent then
@@ -148,7 +148,7 @@ begin
   inherited CreateParams(AParams);
   AParams.Style := AParams.Style or WS_BORDER;
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
 {$IFDEF VisualCLX}
 function TJvCustomDropDownForm.WidgetFlags: Integer;
@@ -170,7 +170,7 @@ var
 begin
   inherited DoShow;
   {$IFDEF VCL}
-  if (not SystemParametersInfo(SPI_GETWORKAREA, 0, @lScreenRect, 0)) then
+  if not SystemParametersInfo(SPI_GETWORKAREA, 0, @lScreenRect, 0) then
   {$ENDIF VCL}
     LScreenRect := Rect(0, 0, Screen.Width, Screen.Height);
   if (Left + Width > LScreenRect.Right) then

@@ -1719,7 +1719,7 @@ begin
   iFunc := @Func;
   fFunc := @Func;
   wFunc := @Func;
-  if @Func <> nil then
+  if Assigned(Func) then
   begin
     try
       for I := Args.Count - 1 downto 0 do { 'stdcall' call conversion }
