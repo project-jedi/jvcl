@@ -147,6 +147,7 @@ type
   TJvCustomSpinEdit = class(TJvExCustomComboMaskEdit)
   {$ENDIF VisualCLX}
   private
+    FShowButton : Boolean;
     FCheckMaxValue: Boolean;
     FCheckMinValue: Boolean;
     FCheckOptions: TJvCheckOptions;
@@ -205,6 +206,7 @@ type
     procedure SetEditRect;
     procedure SetThousands(Value: Boolean);
     procedure UpDownClick(Sender: TObject; Button: TUDBtnType);
+    procedure SetShowButton(Value: Boolean);
     {$IFDEF VCL}
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
@@ -269,6 +271,8 @@ type
     property Thousands: Boolean read FThousands write SetThousands default False;
     property OnBottomClick: TNotifyEvent read FOnBottomClick write FOnBottomClick;
     property OnTopClick: TNotifyEvent read FOnTopClick write FOnTopClick;
+
+    property ShowButton : Boolean read FShowButton write SetShowButton default True;
   end;
 
   TJvSpinEdit = class(TJvCustomSpinEdit)
@@ -359,6 +363,8 @@ type
     {$ENDIF COMPILER6_UP}
     {$ENDIF VCL}
     property ClipboardCommands;
+
+    property ShowButton;
   end;
 
 implementation
@@ -738,6 +744,7 @@ begin
   FEditorEnabled := True;
   FButtonKind := bkDiagonal;
   FArrowKeys := True;
+  FShowButton := True;
   RecreateButton;
 end;
 
@@ -979,13 +986,21 @@ end;
 
 function TJvCustomSpinEdit.GetButtonWidth: Integer;
 begin
-  if FUpDown <> nil then
-    Result := FUpDown.Width
+
+  if ShowButton then
+  begin
+    if FUpDown <> nil then
+      Result := FUpDown.Width
+    else
+    if FButton <> nil then
+      Result := FButton.Width
+    else
+      Result := DefBtnWidth;
+  end
   else
-  if FButton <> nil then
-    Result := FButton.Width
-  else
-    Result := DefBtnWidth;
+  begin
+    Result := 0;
+  end;
 end;
 
 function TJvCustomSpinEdit.GetMinHeight: Integer;
@@ -1144,6 +1159,8 @@ begin
   FBtnWindow := nil;
   FUpDown.Free;
   FUpDown := nil;
+  if ShowButton then
+  begin
   if GetButtonKind = bkStandard then
   begin
     FUpDown := TJvUpDown.Create(Self);
@@ -1192,6 +1209,7 @@ begin
     FButton.OnBottomClick := DownClick;
     //Polaris
     FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
+  end;
   end;
 end;
 
@@ -1303,6 +1321,17 @@ begin
   if csLoading in ComponentState then
     FLCheckMinValue := False;
   SetValue(Value);
+end;
+
+procedure TJvCustomSpinEdit.SetShowButton(Value : Boolean);
+begin
+  if FShowButton <> Value then
+  begin
+    FShowButton := Value;
+    RecreateButton;
+    ResizeButton;
+    SetEditRect;
+  end;
 end;
 
 procedure TJvCustomSpinEdit.SetDecimal(NewValue: Byte);
