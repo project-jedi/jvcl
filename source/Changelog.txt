@@ -1,4 +1,10 @@
 Changelog for JVCL 3.0
 ======================
+2003-06-17:
+- Changed folder structure:
+  * Each Delphi/BCB package collection has it's own subfolder in \packages
+  * Sources split into a \design folder and a \run folder. Some items are probably incorrectly located at the moment, but this will change as I build the packages
+  * All resources (.res and .dcr) are now located in \resources folder
+  * All INC and common files are now located in \common
 2003-06-12:
 - Created new dev subfolder on SF for the files (jvcl/dev/JVCL3)
