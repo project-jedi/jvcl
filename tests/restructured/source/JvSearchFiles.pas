@@ -23,6 +23,9 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
+unit JvSearchFiles;
+
 {$I JEDI.INC}
 {$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
@@ -31,9 +34,6 @@ Known Issues:
 {$IFDEF LINUX}
 This unit is only supported on Windows!
 {$ENDIF}
-
-{ Wrapper for a file search engine. }
-unit JvSearchFiles;
 
 interface
 
@@ -226,8 +226,6 @@ type
     property OnError: TJvSearchFilesError read FOnError write FOnError;
     property OnCheck: TJvCheckEvent read FOnCheck write FOnCheck;
   end;
-
-procedure Register;
 
 implementation
 
@@ -536,11 +534,6 @@ end;
 procedure TJvSearchFiles.SetSearchParams(const Value: TJvSearchParams);
 begin
   FSearchParams.Assign(Value);
-end;
-
-procedure Register;
-begin
-  RegisterComponents('Remko', [TJvSearchFiles]);
 end;
 
 { TJvSearchAttributes }
