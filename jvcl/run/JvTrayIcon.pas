@@ -44,9 +44,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
   Menus, ShellApi,
-  {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
   DateUtils,
-  {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
   JvConsts, JvTypes, JvComponent;
 
 type
@@ -58,19 +58,19 @@ type
     uFlags: UINT;
     uCallbackMessage: UINT;
     hIcon: HICON;
-    szTip: array [0..127] of AnsiChar;
+    szTip: array[0..127] of AnsiChar;
     dwState: DWORD;
     dwStateMask: DWORD;
-    szInfo: array [0..255] of AnsiChar;
+    szInfo: array[0..255] of AnsiChar;
     uTimeOut: DWORD;
-    szInfoTitle: array [0..63] of AnsiChar;
+    szInfoTitle: array[0..63] of AnsiChar;
     dwInfoFlags: DWORD;
   end;
 
   TAnimateEvent = procedure(Sender: TObject; const ImageIndex: Integer) of object;
   TRegisterServiceProcess = function(dwProcessID, dwType: Integer): Integer; stdcall;
 
-  TTrayVisibility = (tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide, tvVisibleDesign,
+  TTrayVisibility = (tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide, tvAutoHideIcon, tvVisibleDesign,
     tvRestoreClick, tvRestoreDbClick, tvMinimizeClick, tvMinimizeDbClick);
   TTrayVisibilities = set of TTrayVisibility;
 
@@ -80,10 +80,10 @@ type
   protected
     FActive: Boolean;
     FIcon: TIcon;
-    FIc: TNotifyIconDataXP;
+    FIconData: TNotifyIconDataXP;
     FHandle: THandle;
     FHint: string;
-    FBalloonCloser : TTimer;
+    FBalloonCloser: TTimer;
     FPopupMenu: TPopupMenu;
     FOnClick: TMouseEvent;
     FOnDblClick: TMouseEvent;
@@ -112,7 +112,7 @@ type
     FSnap: Boolean;
     FHooked: Boolean;
 
-    function  GetSystemMinimumBalloonDelay : integer;
+    function GetSystemMinimumBalloonDelay: integer;
     procedure OnAnimateTimer(Sender: TObject);
     procedure OnBalloonCloserTimer(Sender: TObject);
     procedure IconChanged(Sender: TObject);
@@ -134,8 +134,11 @@ type
     procedure DoMouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure DoDoubleClick(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     function ApplicationHook(var Msg: TMessage): Boolean;
+    function NotifyIcon(dwMessage: DWORD): boolean;
+
     property ApplicationVisible: Boolean read FApplicationVisible write SetApplicationVisible default True;
     property VisibleInTaskList: Boolean read FTask write SetTask default True;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -143,7 +146,7 @@ type
     procedure HideApplication;
     procedure ShowApplication;
     procedure BalloonHint(Title, Value: string; BalloonType:
-      TBalloonType = btNone; Delay: Integer = 5000; CancelPrevious :boolean=false);
+      TBalloonType = btNone; Delay: Integer = 5000; CancelPrevious: boolean = false);
     function AcceptBalloons: Boolean;
   published
     { (rb) Active should be set in Loaded; Icon isn't set when Active is now
@@ -209,6 +212,7 @@ const
   NIN_BALLOONUSERCLICK = WM_USER + 5;
 
 {$IFNDEF COMPILER6_UP}
+
 function SecondsBetween(const Now: TDateTime; const FTime: TDateTime): Integer;
 begin
   Result := Trunc(86400 * (FTime - Now));
@@ -300,12 +304,12 @@ begin
           begin
             GetCursorPos(Pt);
             ShState := [];
-            if GetKeyState(VK_SHIFT  ) < 0 then Include(ShState, ssShift);
+            if GetKeyState(VK_SHIFT) < 0 then Include(ShState, ssShift);
             if GetKeyState(VK_CONTROL) < 0 then Include(ShState, ssCtrl);
             if GetKeyState(VK_LBUTTON) < 0 then Include(ShState, ssLeft);
             if GetKeyState(VK_RBUTTON) < 0 then Include(ShState, ssRight);
             if GetKeyState(VK_MBUTTON) < 0 then Include(ShState, ssMiddle);
-            if GetKeyState(VK_MENU   ) < 0 then Include(ShState, ssAlt);
+            if GetKeyState(VK_MENU) < 0 then Include(ShState, ssAlt);
             case LParam of
               WM_MOUSEMOVE:
                 DoMouseMove(shState, Pt.X, Pt.Y);
@@ -390,10 +394,10 @@ end;
 procedure TJvTrayIcon.IconChanged(Sender: TObject);
 begin
   //DoCheckCrash;
-  with FIc do
+  with FIconData do
     hIcon := FIcon.Handle;
   if FActive then
-    Shell_NotifyIcon(NIM_MODIFY, PNotifyIconData(@FIc));
+    NotifyIcon(NIM_MODIFY);
 end;
 
 procedure TJvTrayIcon.SetHint(Value: string);
@@ -409,11 +413,11 @@ end;
 procedure TJvTrayIcon.SetIcon(Icon: TIcon);
 begin
   //DoCheckCrash;
-  FIcon.Assign(ICon);
-  with FIc do
+  FIcon.Assign(Icon);
+  with FIconData do
     hIcon := FIcon.Handle;
   if FActive then
-    Shell_NotifyIcon(NIM_MODIFY, PNotifyIconData(@FIc));
+    NotifyIcon(NIM_MODIFY);
 end;
 
 procedure TJvTrayIcon.SetActive(Value: Boolean);
@@ -428,17 +432,17 @@ begin
   begin
     FOldTray := FindWindow('Shell_TrayWnd', nil);
 
-  if (FIcon = nil) or FIcon.Empty then
+    if (FIcon = nil) or FIcon.Empty then
     { (rb) This triggers the IconChanged event, note that Active is loaded
     before Icon from the stream, thus FIcon is always empty at this
     point when loaded from the dfm stream }
-    FIcon.Assign(Application.Icon);
-    with FIc do
+      FIcon.Assign(Application.Icon);
+    with FIconData do
     begin
       if AcceptBalloons then
       begin
-        cbSize := SizeOf(FIc);
-        FIc.uTimeOut := NOTIFYICON_VERSION;
+        cbSize := SizeOf(FIconData);
+        FIconData.uTimeOut := NOTIFYICON_VERSION;
       end
       else
         cbSize := SizeOf(TNotifyIconData);
@@ -452,12 +456,13 @@ begin
       StrPLCopy(szTip, GetShortHint(FHint), SizeOf(szTip) - 1);
       uFlags := NIF_MESSAGE or NIF_ICON or NIF_INFO or NIF_TIP;
     end;
-    Shell_NotifyIcon(NIM_ADD, PNotifyIconData(@FIc));
+    if not ((tvAutoHideIcon in Visibility) and (Application.MainForm <> nil) and Application.MainForm.Visible) then
+      NotifyIcon(NIM_ADD);
     if AcceptBalloons then
-      Shell_NotifyIcon(NIM_SETVERSION, PNotifyIconData(@FIc));
+      NotifyIcon(NIM_SETVERSION);
   end
   else
-    Shell_NotifyIcon(NIM_DELETE, PNotifyIconData(@FIc));
+    NotifyIcon(NIM_DELETE);
 
   FActive := Value;
 end;
@@ -487,6 +492,8 @@ begin
   end;
   ShowWindow(Application.Handle, SW_HIDE);
   FApplicationVisible := False;
+  if (tvAutoHideIcon in Visibility) then
+    NotifyIcon(NIM_ADD);
 end;
 
 procedure TJvTrayIcon.ShowApplication;
@@ -495,6 +502,8 @@ begin
   Application.Restore;
   if Application.MainForm <> nil then
     Application.MainForm.Visible := True;
+  if tvAutoHideIcon in Visibility then
+    NotifyIcon(NIM_DELETE);
 end;
 
 procedure TJvTrayIcon.OnAnimateTimer(Sender: TObject);
@@ -525,8 +534,7 @@ begin
       end;
       FTimer.Enabled := True;
     end
-    else
-      if FTimer <> nil then
+    else if FTimer <> nil then
     begin
       FTimer.Free;
       FTimer := nil;
@@ -563,18 +571,18 @@ begin
   // balloon for the icon. This is clearly not documented by
   // microsoft and may not work in later releases of Windows
   // it has been tested on XP Home French
-  BalloonHint('','');
+  BalloonHint('', '');
 end;
 
 procedure TJvTrayIcon.BalloonHint(Title, Value: string;
-  BalloonType: TBalloonType; Delay: Integer; CancelPrevious : boolean);
+  BalloonType: TBalloonType; Delay: Integer; CancelPrevious: boolean);
 //http://msdn.microsoft.com/library/default.asp?url=/library/en-us/shellcc/platform/Shell/reference/functions/shell_notifyicon.asp
 begin
   if AcceptBalloons then
   begin
     FTime := Now;
     FTimeDelay := Delay div 1000;
-    FIc.uFlags := NIF_INFO;
+    FIconData.uFlags := NIF_INFO;
 
     // if we must cancel an existing balloon
     if CancelPrevious then
@@ -584,32 +592,32 @@ begin
       // balloon for the icon. This is clearly not documented by
       // microsoft and may not work in later releases of Windows
       // it has been tested on XP Home French
-      BalloonHint('','');
+      BalloonHint('', '');
     end;
 
-    with FIc do
+    with FIconData do
       StrPLCopy(szInfoTitle, Title, SizeOf(szInfoTitle) - 1);
-    with FIc do
+    with FIconData do
       StrPLCopy(szInfo, Value, SizeOf(szInfo) - 1);
-    FIc.uFlags := NIF_MESSAGE or NIF_ICON or NIF_INFO or NIF_TIP;
-    FIc.uTimeOut := Delay;
+    FIconData.uFlags := NIF_MESSAGE or NIF_ICON or NIF_INFO or NIF_TIP;
+    FIconData.uTimeOut := Delay;
     case BalloonType of
       btError:
-        FIc.dwInfoFlags := NIIF_ERROR;
+        FIconData.dwInfoFlags := NIIF_ERROR;
       btInfo:
-        FIc.dwInfoFlags := NIIF_INFO;
+        FIconData.dwInfoFlags := NIIF_INFO;
       btNone:
-        FIc.dwInfoFlags := NIIF_NONE;
+        FIconData.dwInfoFlags := NIIF_NONE;
       btWarning:
-        FIc.dwInfoFlags := NIIF_WARNING;
+        FIconData.dwInfoFlags := NIIF_WARNING;
     end;
-    Shell_NotifyIcon(NIM_MODIFY, PNotifyIconData(@FIc));
+    NotifyIcon(NIM_MODIFY);
 
     // if the delay is less than the system's minimum and the balloon
     // was really shown (title and value are not empty)
     if (Delay < GetSystemMinimumBalloonDelay) and
-        (Title <> '') and
-        (Value <> '') then
+      (Title <> '') and
+      (Value <> '') then
     begin
       // then we enable the ballon closer timer which will cancel
       // the balloon when the delay is elapsed
@@ -643,11 +651,11 @@ begin
   if FOldHint <> FHint then
   begin
     FOldHint := FHint;
-    with FIc do
+    with FIconData do
       StrPLCopy(szTip, GetShortHint(FHint), SizeOf(szTip) - 1);
-    FIc.uFlags := NIF_MESSAGE or NIF_ICON or NIF_TIP;
+    FIconData.uFlags := NIF_MESSAGE or NIF_ICON or NIF_TIP;
     if FActive then
-      Shell_NotifyIcon(NIM_MODIFY, PNotifyIconData(@FIc));
+      NotifyIcon(NIM_MODIFY);
   end;
   if Assigned(FOnMouseMove) then
     FOnMouseMove(Self, Shift, X, Y);
@@ -675,8 +683,7 @@ begin
     FPopupMenu.Popup(X, Y);
     PostMessage(FHandle, WM_NULL, 0, 0);
   end
-  else
-  if Button = mbLeft then
+  else if Button = mbLeft then
     if not ApplicationVisible then
     begin
       if tvRestoreClick in Visibility then
@@ -701,8 +708,7 @@ var
 begin
   if Assigned(FOnDblClick) then
     FOnDblClick(Self, Button, Shift, X, Y)
-  else
-  if Button = mbLeft then
+  else if Button = mbLeft then
   begin
     if FPopupMenu <> nil then
       for I := 0 to FPopupMenu.Items.Count - 1 do
@@ -733,7 +739,7 @@ begin
   begin
     Ico := TIcon.Create;
     try
-      FIc.uFlags := NIF_MESSAGE or NIF_ICON or NIF_TIP;
+      FIconData.uFlags := NIF_MESSAGE or NIF_ICON or NIF_TIP;
       FImgList.GetIcon(FNumber, Ico);
       SetIcon(Ico);
     finally
@@ -779,6 +785,20 @@ begin
   FHooked := False;
 
   Application.UnHookMainWindow(ApplicationHook);
+end;
+
+function TJvTrayIcon.NotifyIcon(dwMessage: DWORD): boolean;
+begin
+  Result := Shell_NotifyIcon(dwMessage, @FIconData);
+
+{  if FActive and (tvAutoHideIcon in Visibility) then
+  begin
+    if Application.MainForm.Visible then
+      Result := Shell_NotifyIcon(NIM_DELETE,@FIconData)
+    else
+      Result := Shell_NotifyIcon(NIM_ADD,@FIconData);
+  end;
+  }
 end;
 
 end.
