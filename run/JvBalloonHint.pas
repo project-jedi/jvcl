@@ -1947,10 +1947,7 @@ end;
 
 procedure TJvBalloonWindowEx.WMNCHitTest(var Msg: TWMNCHitTest);
 begin
-  if FShowCloseBtn then
-    Msg.Result := HTCLIENT
-  else
-    inherited;
+  Msg.Result := HTCLIENT
 end;
 
 initialization
