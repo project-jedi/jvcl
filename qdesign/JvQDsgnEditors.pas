@@ -40,7 +40,7 @@ interface
 uses
   
   
-  QWindows, QForms, QControls, QGraphics, QExtCtrls, QDialogs,
+  QWindows, QForms, QControls, QGraphics, QExtCtrls, Tabs, QDialogs,
   QExtDlgs, QMenus, QStdCtrls, QImgList, Types,
   
   DsnConst,
@@ -276,7 +276,7 @@ uses
   TypInfo, Math,
   
   
-  QFileCtrls, QConsts, Registry,
+  QFileCtrls, QConsts, JvQRegistryIniFile,
   
   JvQTypes, JvQStringsForm, JvQDsgnConsts;
 
@@ -968,7 +968,7 @@ begin
     (CompareText(Form.Name, Value) = 0) then
   begin
     if not (Form is GetTypeData(GetPropType)^.ClassType) then
-      raise EPropertyError.Create(SInvalidPropertyValue);
+      raise EPropertyError.CreateRes(@SInvalidPropertyValue);
     SetOrdValue(Longint(Form));
   end
   else
@@ -986,14 +986,14 @@ end;
 const
   { context ids for the Color Editor, from VCLEditors }
   hcDColorEditor      = 25010;
-  BaseRegistryKey:string = '';  // TODO
 
 procedure TJvQColorProperty.Edit;
 var
   ColorDialog: TColorDialog;
-  IniFile: TRegIniFile;
+//  IniFile: TRegIniFile;
+//  BaseRegistryKey: string;
 
-  procedure GetCustomColors;
+(*  procedure GetCustomColors;
   begin
     if BaseRegistryKey = '' then
       Exit;
@@ -1024,9 +1024,11 @@ var
           end;
         end;
   end;
+*)
 
 begin
-  IniFile := nil;
+//  BaseRegistryKey := HKEY_CURRENT_USER + '/.borland/jvcl.ini';
+//  IniFile := nil;
   ColorDialog := TColorDialog.Create(Application);
   try
 //    GetCustomColors;
@@ -1037,7 +1039,7 @@ begin
       SetOrdValue(ColorDialog.Color);
 //    SaveCustomColors;
   finally
-    IniFile.Free;
+//    IniFile.Free;
     ColorDialog.Free;
   end;
 end;

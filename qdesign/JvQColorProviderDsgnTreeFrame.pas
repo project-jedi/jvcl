@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -21,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-02-01
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -41,7 +40,7 @@ uses
   
   QGraphics, QControls, QForms, QDialogs, QImgList, QMenus, QActnList, QComCtrls,
   
-  JvQProviderTreeListDsgnFrame, QTypes;
+  JvQProviderTreeListDsgnFrame;
 
 type
   TfmeJvColorProviderDsgnTree = class(TfmeJvProviderTreeListDsgn)

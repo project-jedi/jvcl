@@ -38,17 +38,23 @@ procedure Register;
 implementation
 
 uses
-  Classes, QImgList,
-
+  Classes,
+  
+  
+  QImgList,
+  
+  
   DesignEditors, DesignIntf,
+  
 
   ToolsAPI,
-  JclSchedule,
   JvQDsgnConsts,
-  JvQGammaPanel, JvQLinkLabel,
-  JvQTMTimeLine, JvQLookOut, JvQOutlookBar,
-  JvQValidateEdit, JvQHLParser,
-  JvQOutlookBarEditors, JvQLookoutEditor, JvQChart;
+  JclSchedule,
+  
+  JvQGammaPanel, JvQLinkLabel, JvQLookOut, JvQOutlookBar, JvQScheduledEvents,
+  JvQTimeLine, JvQTMTimeLine, JvQValidateEdit, JvQChart,
+  JvQTimeLineEditor,
+  JvQOutlookBarEditors, JvQLookoutEditor;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCustomReg.dcr}
@@ -68,9 +74,12 @@ begin
   RegisterComponents(RsPaletteButton, [TJvLookOutButton, TJvExpressButton]);
   RegisterComponents(RsPaletteEdit, [TJvValidateEdit]);
   RegisterComponents(RsPaletteBarPanel, [TJvGammaPanel, TJvOutlookBar,
-    TJvLookout, {TJvLookOutPage,}  TJvExpress]);
+    TJvLookout, {TJvLookOutPage, } TJvExpress]);
   RegisterComponents(RsPaletteLabel, [TJvLinkLabel]);
-  RegisterComponents(RsPaletteVisual, [TJvTMTimeLine, TJvChart]);
+  RegisterComponents(RsPaletteVisual, [TJvTimeLine, TJvTMTimeLine, TJvChart]);
+  RegisterComponents(RsPaletteNonVisual, [TJvScheduledEvents]);
+  
+
 
   RegisterPropertyEditor(TypeInfo(Integer), TJvCustomOutlookBar,
     cActivePageIndex, TJvOutlookBarActivePageEditor);
@@ -82,15 +91,20 @@ begin
     cImageIndex, TJvOutlookBarButtonImageIndexProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvOutlookBarPage,
     cImageIndex, TJvOutlookBarPageImageIndexProperty);
-
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvLookoutButton,
     cImageIndex, TJvLookOutImageIndexProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvExpressButton,
     cImageIndex, TJvLookOutImageIndexProperty);
 
+  
+  
+
+  RegisterComponentEditor(TJvCustomOutlookBar, TJvOutlookBarComponentEditor);
+  RegisterComponentEditor(TJvCustomTimeLine, TJvTimeLineEditor);
   RegisterComponentEditor(TJvLookOut, TJvLookOutEditor);
   RegisterComponentEditor(TJvLookOutPage, TJvLookOutPageEditor);
   RegisterComponentEditor(TJvExpress, TJvExpressEditor);
+//  RegisterComponentEditor(TJvCustomScheduledEvents, TJvSchedEventComponentEditor);
   RegisterClass(TJvLookoutPage);
 end;
 
