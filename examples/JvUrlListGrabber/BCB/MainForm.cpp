@@ -40,22 +40,6 @@ __fastcall TfrmMain::TfrmMain(TComponent* Owner)
 {
 }
 //---------------------------------------------------------------------------
-void __fastcall TfrmMain::DoProgressEvent(TObject* Sender, __int64 Position, __int64 TotalSize, AnsiString Url, bool& Continue)
-{
-  memExplanation->Lines->Add(Format("Url: %s, Position: %d", ARRAYOFCONST((Url, static_cast<int>(Position)))));
-}
-
-void __fastcall TfrmMain::DoHandleError(TObject* Sender, AnsiString ErrorMsg)
-{
-  memExplanation->Lines->Add(Format("Error: %s", ARRAYOFCONST((ErrorMsg))));
-}
-
-void __fastcall TfrmMain::grabberConnectionClosed(TJvUrlListGrabber* Sender, TJvCustomUrlGrabber* Grabber)
-{
-  Application->MessageBox("Finished", "", 0);
-  delete grabber;
-}
-
 void __fastcall TfrmMain::btnClearClick(TObject *Sender)
 {
   memUrls->Lines->Clear();
@@ -69,23 +53,6 @@ void __fastcall TfrmMain::btnStopClick(TObject *Sender)
 void __fastcall TfrmMain::FormCreate(TObject *Sender)
 {
   memExplanation->WordWrap = true;
-}
-//---------------------------------------------------------------------------
-void __fastcall TfrmMain::btnGoDynamicClick(TObject *Sender)
-{
-  grabber = new TJvUrlListGrabber(this);
-  grabber->URLs->Add(InputBox("Url to grab", "Please give a url to grab", "http://jvcl.sf.net/"));
-  memExplanation->Lines->Clear();
-
-  TJvCustomUrlGrabber* urlGrabber = grabber->Grabbers[0];
-
-  urlGrabber->OutputMode = omFile;
-  urlGrabber->OnError = DoHandleError;
-  urlGrabber->OnProgress = DoProgressEvent;
-  urlGrabber->FileName = ExtractFilePath(Application->ExeName)+"\test.txt";
-  urlGrabber->Start();
-
-  grabber->OnConnectionClosed = grabberConnectionClosed;
 }
 //---------------------------------------------------------------------------
 void __fastcall TfrmMain::btnGoDesignClick(TObject *Sender)
@@ -109,13 +76,69 @@ void __fastcall TfrmMain::btnGoDesignClick(TObject *Sender)
     for (i = 0; i < julGrabber->URLs->Count; i++)
     {
       TJvCustomUrlGrabber* urlGrabber = julGrabber->Grabbers[i];
-      urlGrabber->OnError = DoHandleError;
-      urlGrabber->OnProgress = DoProgressEvent;
       urlGrabber->OutputMode = omFile;
-      urlGrabber->FileName = ExtractFilePath(Application->ExeName) + "\result" + IntToStr(i) + ".txt";
+      urlGrabber->FileName = ExtractFilePath(Application->ExeName) + "\\result" + IntToStr(i) + ".txt";
     }
     julGrabber->StartAll();
   }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TfrmMain::julGrabberProgress(TJvUrlListGrabber *Sender,
+      TJvCustomUrlGrabber *Grabber, __int64 Position, __int64 TotalSize,
+      AnsiString Url, bool &Continue)
+{
+  memExplanation->Lines->Add(Format("Grabber %d: Url: %s, Position: %d of %d", ARRAYOFCONST((static_cast<int>(Grabber->Id), Url, static_cast<int>(Position), static_cast<int>(TotalSize)))));
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TfrmMain::julGrabberError(TJvUrlListGrabber *Sender,
+      TJvCustomUrlGrabber *Grabber, AnsiString ErrorMsg)
+{
+  memExplanation->Lines->Add(Format("Grabber %d: Error: %s", ARRAYOFCONST((static_cast<int>(Grabber->Id), ErrorMsg))));
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TfrmMain::julGrabberConnectedToServer(
+      TJvUrlListGrabber *Sender, TJvCustomUrlGrabber *Grabber)
+{
+  memExplanation->Lines->Add(Format("Grabber %d: Connected to server", ARRAYOFCONST((static_cast<int>(Grabber->Id)))));
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TfrmMain::julGrabberConnectionClosed(
+      TJvUrlListGrabber *Sender, TJvCustomUrlGrabber *Grabber)
+{
+  memExplanation->Lines->Add(Format("Grabber %d: Connection closed", ARRAYOFCONST((static_cast<int>(Grabber->Id)))));
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TfrmMain::julGrabberDoneFile(TJvUrlListGrabber *Sender,
+      TJvCustomUrlGrabber *Grabber, AnsiString FileName, int FileSize,
+      AnsiString Url)
+{
+  memExplanation->Lines->Add(Format("Grabber %d: Done file %s of size %d from Url %s", ARRAYOFCONST((static_cast<int>(Grabber->Id), FileName, static_cast<int>(FileSize), Url))));
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TfrmMain::julGrabberRequestSent(TJvUrlListGrabber *Sender,
+      TJvCustomUrlGrabber *Grabber)
+{
+  memExplanation->Lines->Add(Format("Grabber %d: Request sent", ARRAYOFCONST((static_cast<int>(Grabber->Id)))));
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TfrmMain::julGrabberSendingRequest(
+      TJvUrlListGrabber *Sender, TJvCustomUrlGrabber *Grabber)
+{
+  memExplanation->Lines->Add(Format("Grabber %d: Sending request", ARRAYOFCONST((static_cast<int>(Grabber->Id)))));
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TfrmMain::julGrabberStatusChange(TJvUrlListGrabber *Sender,
+      TJvCustomUrlGrabber *Grabber)
+{
+  memExplanation->Lines->Add(Format("Grabber %d: Status change", ARRAYOFCONST((static_cast<int>(Grabber->Id)))));
 }
 //---------------------------------------------------------------------------
 

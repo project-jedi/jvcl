@@ -40,8 +40,6 @@ class TfrmMain : public TForm
 __published:	// IDE-managed Components
   TLabel *lblExpl;
   TMemo *memExplanation;
-  TGroupBox *grbDynamic;
-  TButton *btnGoDynamic;
   TGroupBox *grbDesign;
   TButton *btnGoDesign;
   TButton *btnClear;
@@ -52,16 +50,28 @@ __published:	// IDE-managed Components
   void __fastcall btnClearClick(TObject *Sender);
   void __fastcall btnStopClick(TObject *Sender);
   void __fastcall FormCreate(TObject *Sender);
-  void __fastcall btnGoDynamicClick(TObject *Sender);
   void __fastcall btnGoDesignClick(TObject *Sender);
+  void __fastcall julGrabberProgress(TJvUrlListGrabber *Sender,
+          TJvCustomUrlGrabber *Grabber, __int64 Position,
+          __int64 TotalSize, AnsiString Url, bool &Continue);
+  void __fastcall julGrabberError(TJvUrlListGrabber *Sender,
+          TJvCustomUrlGrabber *Grabber, AnsiString ErrorMsg);
+  void __fastcall julGrabberConnectedToServer(TJvUrlListGrabber *Sender,
+          TJvCustomUrlGrabber *Grabber);
+  void __fastcall julGrabberConnectionClosed(TJvUrlListGrabber *Sender,
+          TJvCustomUrlGrabber *Grabber);
+  void __fastcall julGrabberDoneFile(TJvUrlListGrabber *Sender,
+          TJvCustomUrlGrabber *Grabber, AnsiString FileName, int FileSize,
+          AnsiString Url);
+  void __fastcall julGrabberRequestSent(TJvUrlListGrabber *Sender,
+          TJvCustomUrlGrabber *Grabber);
+  void __fastcall julGrabberSendingRequest(TJvUrlListGrabber *Sender,
+          TJvCustomUrlGrabber *Grabber);
+  void __fastcall julGrabberStatusChange(TJvUrlListGrabber *Sender,
+          TJvCustomUrlGrabber *Grabber);
 private:	// User declarations
-  TJvUrlListGrabber* grabber;
-  void _fastcall DoHandleError(TObject* Sender, AnsiString ErrorMsg);
-  void _fastcall DoProgressEvent(TObject* Sender, __int64 Position, __int64 TotalSize,
-    AnsiString Url, bool& Continue);
 public:		// User declarations
   __fastcall TfrmMain(TComponent* Owner);
-  void __fastcall grabberConnectionClosed(TJvUrlListGrabber* Sender, TJvCustomUrlGrabber* Grabber);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TfrmMain *frmMain;

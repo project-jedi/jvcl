@@ -50,6 +50,13 @@ type
   // has triggered its own event to indicate a change in its state
   TJvGrabberNotifyEvent = procedure(Sender: TJvUrlListGrabber; Grabber: TJvCustomUrlGrabber) of object;
 
+  // Set of type of events triggered by TJvUrlListGrabber to indicate that
+  // one of its grabbers has triggered the corresponding event
+  TJvGrabberDoneFileEvent = procedure(Sender: TJvUrlListGrabber; Grabber: TJvCustomUrlGrabber; FileName: string; FileSize: Integer; Url: string) of object;
+  TJvGrabberDoneStreamEvent = procedure(Sender: TJvUrlListGrabber; Grabber: TJvCustomUrlGrabber; Stream: TStream; StreamSize: Integer; Url: string) of object;
+  TJvGrabberProgressEvent = procedure(Sender: TJvUrlListGrabber; Grabber: TJvCustomUrlGrabber; Position, TotalSize: Int64; Url: string; var Continue: Boolean) of object;
+  TJvGrabberErrorEvent = procedure(Sender: TJvUrlListGrabber; Grabber: TJvCustomUrlGrabber; ErrorMsg: string) of object;
+
   // The exception raised by TJvUrlListGrabber when no grabber claimed it was capable
   // of handling a given URL. This is only raised if DefaultGrabberIndex is -1
   ENoGrabberForUrl = class(Exception);
@@ -59,23 +66,32 @@ type
   // in parallel in the background, leaving the user's application free
   // to continue its operations
   TJvUrlListGrabber = class(TJvComponent)
+  private
   protected
-    FOnClosed: TJvGrabberNotifyEvent;
-    FOnReceiving: TJvGrabberNotifyEvent;
-    FOnResolving: TJvGrabberNotifyEvent;
-    FOnReceived: TJvGrabberNotifyEvent;
-    FOnConnecting: TJvGrabberNotifyEvent;
-    FOnRequest: TJvGrabberNotifyEvent;
-    FOnConnected: TJvGrabberNotifyEvent;
-    FOnResolved: TJvGrabberNotifyEvent;
-    FOnSent: TJvGrabberNotifyEvent;
-    FOnClosing: TJvGrabberNotifyEvent;
-    FOnSending: TJvGrabberNotifyEvent;
+    FOnDoneFile          : TJvGrabberDoneFileEvent;
+    FOnDoneStream        : TJvGrabberDoneStreamEvent;
+    FOnError             : TJvGrabberErrorEvent;
+    FOnProgress          : TJvGrabberProgressEvent;
+    FOnConnectionClosed  : TJvGrabberNotifyEvent;
+    FOnReceivingResponse : TJvGrabberNotifyEvent;
+    FOnRequestComplete   : TJvGrabberNotifyEvent;
+    FOnResponseReceived  : TJvGrabberNotifyEvent;
+    FOnConnectingToServer: TJvGrabberNotifyEvent;
+    FOnResolvingName     : TJvGrabberNotifyEvent;
+    FOnClosingConnection : TJvGrabberNotifyEvent;
+    FOnConnectedToServer : TJvGrabberNotifyEvent;
+    FOnRedirect          : TJvGrabberNotifyEvent;
+    FOnNameResolved      : TJvGrabberNotifyEvent;
+    FOnSendingRequest    : TJvGrabberNotifyEvent;
+    FOnRequestSent       : TJvGrabberNotifyEvent;
+    FOnStatusChange      : TJvGrabberNotifyEvent;
+
     FCleanupThreshold: Cardinal;
     FGrabbers : TJvUrlGrabberList;
     FURLs: TStringList;
     FDefaultGrabberIndex: TJvUrlGrabberIndex;
     FDefaultGrabbersProperties: TJvUrlGrabberDefaultPropertiesList;
+
     // gets/sets the URLs property, assigning the given strings
     // to the internal FURLs field
     function GetURLs: TStrings;
@@ -90,11 +106,36 @@ type
 
     // returns the grabber associated with the given index
     function GetGrabbers(const Index: Integer): TJvCustomUrlGrabber;
-    
+
     // Called whenever the list of Urls has changed
     procedure URLsChange(Sender : TObject);
 
     procedure DefineProperties(Filer: TFiler); override;
+
+    // Sets the events of the given grabber to call the internal
+    // event handlers indicated below. This way, the events of
+    // TJvUrlListGrabber will be triggered properly
+    procedure SetGrabberEvents(Grabber: TJvCustomUrlGrabber);
+
+    // The event handlers for the grabbers, to propagate them to the
+    // user through the events of this class
+    procedure GrabberDoneFile(Grabber: TObject; FileName: string; FileSize: Integer; Url: string);
+    procedure GrabberDoneStream(Grabber: TObject; Stream: TStream; StreamSize: Integer; Url: string);
+    procedure GrabberProgress(Grabber: TObject; Position, TotalSize: Int64; Url: string; var Continue: Boolean);
+    procedure GrabberError(Grabber: TObject; ErrorMsg: string);
+    procedure GrabberConnectionClosed(Grabber: TObject);
+    procedure GrabberReceivingResponse(Grabber: TObject);
+    procedure GrabberRequestComplete(Grabber: TObject);
+    procedure GrabberResponseReceived(Grabber: TObject);
+    procedure GrabberConnectingToServer(Grabber: TObject);
+    procedure GrabberResolvingName(Grabber: TObject);
+    procedure GrabberClosingConnection(Grabber: TObject);
+    procedure GrabberConnectedToServer(Grabber: TObject);
+    procedure GrabberRedirect(Grabber: TObject);
+    procedure GrabberNameResolved(Grabber: TObject);
+    procedure GrabberSendingRequest(Grabber: TObject);
+    procedure GrabberRequestSent(Grabber: TObject);
+    procedure GrabberStatusChange(Grabber: TObject);
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
@@ -124,20 +165,25 @@ type
     property URLs: TStrings read GetURLs write SetURLs;
     // The default properties for each family of grabber
     property DefaultGrabbersProperties : TJvUrlGrabberDefaultPropertiesList read FDefaultGrabbersProperties;
+
     // Events
-    property OnResolvingName: TJvGrabberNotifyEvent read FOnResolving write FOnResolving;
-    property OnNameResolved: TJvGrabberNotifyEvent read FOnResolved write FOnResolved;
-    property OnConnectingToServer: TJvGrabberNotifyEvent read FOnConnecting write FOnConnecting;
-    property OnConnectedToServer: TJvGrabberNotifyEvent read FOnConnected write FOnConnected;
-    property OnSendingRequest: TJvGrabberNotifyEvent read FOnSending write FOnSending;
-    property OnRequestSent: TJvGrabberNotifyEvent read FOnSent write FOnSent;
-    property OnRequestComplete: TJvGrabberNotifyEvent read FOnRequest write FOnRequest;
-    property OnReceivingResponse: TJvGrabberNotifyEvent read FOnReceiving write FOnReceiving;
-    property OnResponseReceived: TJvGrabberNotifyEvent read FOnReceived write FOnReceived;
-    property OnClosingConnection: TJvGrabberNotifyEvent read FOnClosing write FOnClosing;
-    property OnConnectionClosed   : TJvGrabberNotifyEvent read FOnClosed write FOnClosed;
-//    property OnRedirect: TGrabberNotifyEvent read FOnRedirect write FOnRedirect;
-//    property OnStateChange: TGrabberNotifyEvent read FOnStateChange write FOnStateChange;
+    property OnDoneFile          : TJvGrabberDoneFileEvent   read FOnDoneFile           write FOnDoneFile;
+    property OnDoneStream        : TJvGrabberDoneStreamEvent read FOnDoneStream         write FOnDoneStream;
+    property OnError             : TJvGrabberErrorEvent      read FOnError              write FOnError;
+    property OnProgress          : TJvGrabberProgressEvent   read FOnProgress           write FOnProgress;
+    property OnResolvingName     : TJvGrabberNotifyEvent     read FOnResolvingName      write FOnResolvingName;
+    property OnNameResolved      : TJvGrabberNotifyEvent     read FOnNameResolved       write FOnNameResolved;
+    property OnConnectingToServer: TJvGrabberNotifyEvent     read FOnConnectingToServer write FOnConnectingToServer;
+    property OnConnectedToServer : TJvGrabberNotifyEvent     read FOnConnectedToServer  write FOnConnectedToServer;
+    property OnSendingRequest    : TJvGrabberNotifyEvent     read FOnSendingRequest     write FOnSendingRequest;
+    property OnRequestSent       : TJvGrabberNotifyEvent     read FOnRequestSent        write FOnRequestSent;
+    property OnRequestComplete   : TJvGrabberNotifyEvent     read FOnRequestComplete    write FOnRequestComplete;
+    property OnReceivingResponse : TJvGrabberNotifyEvent     read FOnReceivingResponse  write FOnReceivingResponse;
+    property OnResponseReceived  : TJvGrabberNotifyEvent     read FOnResponseReceived   write FOnResponseReceived;
+    property OnClosingConnection : TJvGrabberNotifyEvent     read FOnClosingConnection  write FOnClosingConnection;
+    property OnConnectionClosed  : TJvGrabberNotifyEvent     read FOnConnectionClosed   write FOnConnectionClosed;
+    property OnRedirect          : TJvGrabberNotifyEvent     read FOnRedirect           write FOnRedirect;
+    property OnStatusChange      : TJvGrabberNotifyEvent     read FOnStatusChange       write FOnStatusChange;
   end;
 
   // forward declarations
@@ -175,6 +221,8 @@ type
   protected
     // agent to impersonate
     FAgent: string;
+    // Port to connect to
+    FPort: Cardinal;
     // user information
     FUserName: string;
     FPassword: string;
@@ -186,6 +234,8 @@ type
     function GetSupportedURLName: string; virtual; abstract;
     // The agent to impersonate
     property Agent: string read FAgent write FAgent;
+    // The port to connect to
+    property Port: Cardinal read FPort write FPort;
     // the user name and password to use for authentication
     property UserName: string read FUserName write FUserName;
     property Password: string read FPassword write FPassword;
@@ -246,27 +296,31 @@ type
   // TJvUrlListGrabber to allow downloading a list of URLs but can
   // also be used on their own to grad one URL of a given type.
   TJvCustomUrlGrabber = class(TJvComponent)
+  private
+    FId: Integer;
   protected
     // the thread that will grab for us
     FUrlGrabberThread: TJvCustomUrlGrabberThread;
+    
     // events
-    FOnDoneFile   : TJvDoneFileEvent;           // file is done
-    FOnDoneStream : TJvDoneStreamEvent;         // stream is done
-    FOnError      : TJvErrorEvent;              // error occured
-    FOnProgress   : TJvUrlGrabberProgressEvent; // download progressed a bit
-    FOnClosed     : TNotifyEvent;               // connection is closed
-    FOnReceiving  : TNotifyEvent;               // beginning to receive
-    FOnReceived   : TNotifyEvent;               // end of reception
-    FOnConnecting : TNotifyEvent;               // beginning of connection
-    FOnResolving  : TNotifyEvent;               // beginning of resolving URL
-    FOnRedirect   : TNotifyEvent;               // redirection happened
-    FOnConnected  : TNotifyEvent;               // now connected to host
-    FOnStateChange: TNotifyEvent;               // state of connection changed
-    FOnResolved   : TNotifyEvent;               // name has been resolved
-    FOnClosing    : TNotifyEvent;               // beginning of close of connection
-    FOnRequest    : TNotifyEvent;               // sending a request
-    FOnSent       : TNotifyEvent;               // data sent
-    FOnSending    : TNotifyEvent;               // beginning to send data
+    FOnDoneFile    : TJvDoneFileEvent;           // file is done
+    FOnDoneStream  : TJvDoneStreamEvent;         // stream is done
+    FOnError       : TJvErrorEvent;              // error occured
+    FOnProgress    : TJvUrlGrabberProgressEvent; // download progressed a bit
+    FOnClosed      : TNotifyEvent;               // connection is closed
+    FOnReceiving   : TNotifyEvent;               // beginning to receive
+    FOnReceived    : TNotifyEvent;               // end of reception
+    FOnConnecting  : TNotifyEvent;               // beginning of connection
+    FOnResolving   : TNotifyEvent;               // beginning of resolving URL
+    FOnRedirect    : TNotifyEvent;               // redirection happened
+    FOnConnected   : TNotifyEvent;               // now connected to host
+    FOnStateChange : TNotifyEvent;               // state of connection changed
+    FOnResolved    : TNotifyEvent;               // name has been resolved
+    FOnClosing     : TNotifyEvent;               // beginning of close of connection
+    FOnRequest     : TNotifyEvent;               // sending a request
+    FOnSent        : TNotifyEvent;               // data sent
+    FOnSending     : TNotifyEvent;               // beginning to send data
+    FOnStatusChange: TNotifyEvent;               // Status changed
 
     // current status of the grabber
     FStatus: TJvGrabberStatus;
@@ -279,6 +333,9 @@ type
 
     // agent to impersonate
     FAgent: string;
+    
+    // port to connect to
+    FPort: Cardinal;
 
     // user information
     FUserName: string;
@@ -299,21 +356,23 @@ type
     // Event callers
     procedure DoError(ErrorMsg: string);
     procedure DoProgress(Position: Integer; var Continue: Boolean);
+    procedure DoStatus; virtual;
     procedure DoEnded;
     procedure DoClosed;
     
     function GetGrabberThreadClass: TJvCustomUrlGrabberThreadClass; virtual; abstract;
 
-    procedure SetUrl(Value: string);
+    procedure SetUrl(Value: string); virtual;
   public
     constructor Create(AOwner: TComponent); overload; override;
-    constructor Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties); reintroduce; overload; virtual;
+    constructor Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties); reintroduce; overload;
     destructor Destroy; override;
 
     // this function must return True if the given URL can be grabbed
     // by the class being asked. It returns False otherwise
     // It MUST be overriden in the derived classes but cannot be abstract
-    // because of BCB compatibility issues
+    // because of BCB compatibility issues (no support for abstract 
+    // - pure virtual - class functions in the C++ language)
     class function CanGrab(const Url: string): Boolean; virtual;
     
     // This function returns the class of a property holder to
@@ -322,14 +381,31 @@ type
     // properties and will be passed to this class when created to
     // handle a specific URL.
     // It MUST be overriden in the derived classes but cannot be abstract
-    // because of BCB compatibility issues
+    // because of BCB compatibility issues (no support for abstract 
+    // - pure virtual - class functions in the C++ language)
     class function GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass; virtual;
 
+    // This function returns the marker that indicates the protocol in a URL.
+    // For instance, for an HTTP grabber, this would return 'http://'
+    // It MUST be overriden in the derived classes but cannot be abstract
+    // because of BCB compatibility issues (no support for abstract 
+    // - pure virtual - class functions in the C++ language)
+    class function GetSupportedProtocolMarker: string; virtual;
+    
     // this function must return a user displayable string indicating
     // the type of URL that class of grabber supports.
     // It MUST be overriden in the derived classes but cannot be abstract
-    // because of BCB compatibility issues
+    // because of BCB compatibility issues (no support for abstract 
+    // - pure virtual - class functions in the C++ language)
     class function GetSupportedURLName: string; virtual;
+
+    // Splits the given URL into its various parts, if indicated
+    // A URL respects this format:
+    // protocol [username[:password]@] host [:port] [/filename]
+    // When a non compulsory part is missing the exit value of the
+    // associated parameter will be an empty string or 0
+    procedure ParseUrl(URL: string; Protocol: string; var Host: string; var FileName: string;
+                       var UserName: string; var Password: string; var Port: Cardinal); virtual;
 
     // Asks to Start to grab the URL
     procedure Start; virtual;
@@ -348,6 +424,9 @@ type
 
     // the Url being grabbed
     property Url: string read FUrl write SetUrl;
+    
+    // The port to connect to
+    property Port: Cardinal read FPort write FPort;
 
     // the user name and password to use for authentication
     property UserName: string read FUserName write FUserName;
@@ -361,6 +440,9 @@ type
 
     // The agent to impersonate
     property Agent: string read FAgent write FAgent;
+
+    // A numerical Id, to be freely used by the user of the component
+    property Id: Integer read FId write FId;
 
     // Events
     property OnDoneFile: TJvDoneFileEvent read FOnDoneFile write FOnDoneFile;
@@ -379,7 +461,7 @@ type
     property OnClosingConnection: TNotifyEvent read FOnClosing write FOnClosing;
     property OnConnectionClosed: TNotifyEvent read FOnClosed write FOnClosed;
     property OnRedirect: TNotifyEvent read FOnRedirect write FOnRedirect;
-    property OnStateChange: TNotifyEvent read FOnStateChange write FOnStateChange;
+    property OnStatusChange: TNotifyEvent read FOnStatusChange write FOnStatusChange;
   end;
 
   // A thread that will grab the given URL in the background
@@ -392,14 +474,15 @@ type
     FGrabber: TJvCustomUrlGrabber;
     FStatus: DWORD;
     FContinue: Boolean;
-    
+
     procedure Error;
     procedure Ended;
-    procedure Progress;
-    procedure ParseUrl(Value: string; Protocol: string; var Host: string; var FileName: string);
+    procedure UpdateGrabberProgress;
+    procedure UpdateGrabberStatus;
   public
     constructor Create(Grabber: TJvCustomUrlGrabber); virtual;
     procedure DoProgress;
+    procedure DoStatus;
 
     property Status: DWORD read FStatus write FStatus;
   end;
@@ -563,6 +646,7 @@ begin
 
       // add in the list of owned objects
       FGrabbers.Add(TJvCustomUrlGrabber(FURLs.Objects[I]));
+      SetGrabberEvents(TJvCustomUrlGrabber(FURLs.Objects[I]));
       if Cardinal(FGrabbers.Count - FURLs.Count) > FCleanupThreshold then
         Cleanup;
     end;
@@ -575,12 +659,137 @@ begin
   Filer.DefineProperty('DefaultGrabbersPropertiesList', DefaultGrabbersProperties.Read, DefaultGrabbersProperties.Write, True);
 end;
 
+procedure TJvUrlListGrabber.SetGrabberEvents(Grabber: TJvCustomUrlGrabber);
+begin
+  Grabber.OnClosingConnection := GrabberClosingConnection;
+  Grabber.OnConnectedToServer := GrabberConnectedToServer;
+  Grabber.OnConnectingToServer := GrabberConnectingToServer;
+  Grabber.OnConnectionClosed := GrabberConnectionClosed;
+  Grabber.OnNameResolved := GrabberNameResolved;
+  Grabber.OnReceivingResponse := GrabberReceivingResponse;
+  Grabber.OnRedirect := GrabberRedirect;
+  Grabber.OnRequestComplete := GrabberRequestComplete;
+  Grabber.OnRequestSent := GrabberRequestSent;
+  Grabber.OnResolvingName := GrabberResolvingName;
+  Grabber.OnResponseReceived := GrabberResponseReceived;
+  Grabber.OnSendingRequest := GrabberSendingRequest;
+  Grabber.OnStatusChange := GrabberStatusChange;
+  Grabber.OnError := GrabberError;
+  Grabber.OnProgress := GrabberProgress;
+  Grabber.OnDoneFile := GrabberDoneFile;
+  Grabber.OnDoneStream := GrabberDoneStream;
+end;
+
+procedure TJvUrlListGrabber.GrabberClosingConnection(Grabber: TObject);
+begin
+  if Assigned(OnClosingConnection) then
+    OnClosingConnection(Self, TJvCustomUrlGrabber(Grabber));
+end;
+
+procedure TJvUrlListGrabber.GrabberConnectedToServer(Grabber: TObject);
+begin
+  if Assigned(OnConnectedToServer) then
+    OnConnectedToServer(Self, TJvCustomUrlGrabber(Grabber));
+end;
+
+procedure TJvUrlListGrabber.GrabberConnectingToServer(Grabber: TObject);
+begin
+  if Assigned(OnConnectingToServer) then
+    OnConnectingToServer(Self, TJvCustomUrlGrabber(Grabber));
+end;
+
+procedure TJvUrlListGrabber.GrabberConnectionClosed(Grabber: TObject);
+begin
+  if Assigned(OnConnectionClosed) then
+    OnConnectionClosed(Self, TJvCustomUrlGrabber(Grabber));
+end;
+
+procedure TJvUrlListGrabber.GrabberNameResolved(Grabber: TObject);
+begin
+  if Assigned(OnNameResolved) then
+    OnNameResolved(Self, TJvCustomUrlGrabber(Grabber));
+end;
+
+procedure TJvUrlListGrabber.GrabberReceivingResponse(Grabber: TObject);
+begin
+  if Assigned(OnReceivingResponse) then
+    OnReceivingResponse(Self, TJvCustomUrlGrabber(Grabber));
+end;
+
+procedure TJvUrlListGrabber.GrabberRedirect(Grabber: TObject);
+begin
+  if Assigned(OnRedirect) then
+    OnRedirect(Self, TJvCustomUrlGrabber(Grabber));
+end;
+
+procedure TJvUrlListGrabber.GrabberRequestComplete(Grabber: TObject);
+begin
+  if Assigned(OnRequestComplete) then
+    OnRequestComplete(Self, TJvCustomUrlGrabber(Grabber));
+end;
+
+procedure TJvUrlListGrabber.GrabberRequestSent(Grabber: TObject);
+begin
+  if Assigned(OnRequestSent) then
+    OnRequestSent(Self, TJvCustomUrlGrabber(Grabber));
+end;
+
+procedure TJvUrlListGrabber.GrabberResolvingName(Grabber: TObject);
+begin
+  if Assigned(OnResolvingName) then
+    OnResolvingName(Self, TJvCustomUrlGrabber(Grabber));
+end;
+
+procedure TJvUrlListGrabber.GrabberResponseReceived(Grabber: TObject);
+begin
+  if Assigned(OnResponseReceived) then
+    OnResponseReceived(Self, TJvCustomUrlGrabber(Grabber));
+end;
+
+procedure TJvUrlListGrabber.GrabberSendingRequest(Grabber: TObject);
+begin
+  if Assigned(OnSendingRequest) then
+    OnSendingRequest(Self, TJvCustomUrlGrabber(Grabber));
+end;
+
+procedure TJvUrlListGrabber.GrabberStatusChange(Grabber: TObject);
+begin
+  if Assigned(OnStatusChange) then
+    OnStatusChange(Self, TJvCustomUrlGrabber(Grabber));
+end;
+
+procedure TJvUrlListGrabber.GrabberDoneFile(Grabber: TObject; FileName: string; FileSize: Integer;
+  Url: string);
+begin
+  if Assigned(OnDoneFile) then
+    OnDoneFile(Self, TJvCustomUrlGrabber(Grabber), FileName, FileSize, Url);
+end;
+
+procedure TJvUrlListGrabber.GrabberDoneStream(Grabber: TObject; Stream: TStream;
+  StreamSize: Integer; Url: string);
+begin
+  if Assigned(OnDoneStream) then
+    OnDoneStream(Self, TJvCustomUrlGrabber(Grabber), Stream, StreamSize, Url);
+end;
+
+procedure TJvUrlListGrabber.GrabberError(Grabber: TObject; ErrorMsg: string);
+begin
+  if Assigned(OnError) then
+    OnError(Self, TJvCustomUrlGrabber(Grabber), ErrorMsg);
+end;
+
+procedure TJvUrlListGrabber.GrabberProgress(Grabber: TObject; Position, TotalSize: Int64; Url: string;
+  var Continue: Boolean);
+begin
+  if Assigned(OnProgress) then
+    OnProgress(Self, TJvCustomUrlGrabber(Grabber), Position, TotalSize, Url, Continue);
+end;
+
 //=== { TJvCustomUrlGrabber } ======================================================
 
 constructor TJvCustomUrlGrabber.Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
 begin
   inherited Create(AOwner);
-  FUrl := AUrl;
   FUrlGrabberThread := nil;
 
   // get values from the default properties
@@ -589,6 +798,11 @@ begin
   Password := DefaultProperties.Password;
   FileName := DefaultProperties.FileName;
   OutputMode := DefaultProperties.OutputMode;
+  Port := DefaultProperties.Port;
+
+  // Set the URL at the end so that the SetUrl method is called
+  // and might setup the various other properties automatically
+  Url := AUrl;
 end;
 
 constructor TJvCustomUrlGrabber.Create(AOwner: TComponent);
@@ -597,6 +811,7 @@ begin
 
   // Set default properties
   Agent := JediAgent;
+  Port := 0;
   UserName := '';
   Password := '';
   FileName := DefaultOutputFileName;
@@ -617,9 +832,33 @@ begin
 end;
 
 procedure TJvCustomUrlGrabber.SetUrl(Value: string);
+var
+  ProtocolMarker : string;
+  tmpHostName : string;
+  tmpFileName : string;
+  tmpUserName : string;
+  tmpPassword : string;
+  tmpPort : Cardinal;
 begin
   if Status = gsStopped then
-    FUrl := Value
+  begin
+    // if the given URL contains Port, Username and Password informations, we set the
+    // different properties of the grabber automatically
+    ProtocolMarker := GetSupportedProtocolMarker;
+    ParseUrl(Value, ProtocolMarker, tmpHostName, tmpFileName, tmpUserName, tmpPassword, tmpPort);
+    if tmpUserName <> '' then
+      UserName := tmpUserName;
+    if tmpPassword <> '' then
+      Password := tmpPassword;
+    if tmpPort <> 0 then
+      Port := tmpPort;
+      
+    FUrl := ProtocolMarker;
+    if tmpHostName <> '' then
+      FUrl := FUrl + tmpHostName + '/';
+    if tmpFileName <> '' then
+      FUrl := FUrl + tmpFileName;
+  end
   else
     raise EGrabberNotStopped.CreateRes(@RsEGrabberNotStopped);
 end;
@@ -658,6 +897,12 @@ begin
     FOnProgress(Self, Position, FSize, Url, Continue);
 end;
 
+procedure TJvCustomUrlGrabber.DoStatus;
+begin
+  if Assigned(FOnStatusChange) then
+    FOnStatusChange(Self);
+end;
+
 class function TJvCustomUrlGrabber.GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass;
 begin
   // useless implementation for BCB Compatibility
@@ -679,10 +924,61 @@ begin
   FUrlGrabberThread.Terminate;
 end;
 
+class function TJvCustomUrlGrabber.GetSupportedProtocolMarker: string;
+begin
+  // Useless implementation for BCB compatibility
+  Result := '';
+end;
+
 class function TJvCustomUrlGrabber.GetSupportedURLName: string;
 begin
-  // Useless implementation for BCB
+  // Useless implementation for BCB compatibility
   Result := '';
+end;
+
+procedure TJvCustomUrlGrabber.ParseUrl(URL: string; Protocol: string;
+  var Host: string; var FileName: string; var UserName: string; 
+  var Password: string; var Port: Cardinal);
+begin
+  // Default return values
+  Host := '';
+  FileName := '';
+  UserName := '';
+  Password := '';
+  Port := 0;
+  
+  // Remove the protocol part from the given Value
+  if Pos(UpperCase(Protocol), UpperCase(URL)) <> 0 then
+    URL := Copy(URL, Length(Protocol)+1, Length(URL));
+    
+  // Get the filename, if any
+  if Pos('/', URL) <> 0 then
+  begin
+    Host := Copy(URL, 1, Pos('/', URL) - 1);
+    FileName := Copy(URL, Pos('/', URL) + 1, Length(URL));
+  end
+  else
+    Host := URL;
+    
+  // Get the username password couple
+  if Pos('@', Host) <> 0 then
+  begin
+    UserName := Copy(Host, 1, Pos('@', Host) - 1);
+    Host := Copy(Host, Pos('@', Host) + 1, Length(Host));
+    // now, figure out if there is a password
+    if Pos(':', Username) <> 0 then
+    begin
+      UserName := Copy(Username, 1, Pos(':', Username) - 1);
+      Password := Copy(Username, Pos(':', Username) + 1, Length(Username));
+    end;
+  end;
+  
+  // Get the port
+  if Pos(':', Host) <> 0 then
+  begin
+    Host := Copy(Host, 1, Pos(':', Host) - 1);
+    Port := StrToIntDef(Copy(Host, Pos(':', Host) + 1, Length(Host)), 0);
+  end;  
 end;
 
 //=== { TJvUrlGrabberList } ==================================================
@@ -766,7 +1062,12 @@ end;
 
 procedure TJvCustomUrlGrabberThread.DoProgress;
 begin
-  Synchronize(Progress);
+  Synchronize(UpdateGrabberProgress);
+end;
+
+procedure TJvCustomUrlGrabberThread.DoStatus;
+begin
+  Synchronize(UpdateGrabberStatus);
 end;
 
 procedure TJvCustomUrlGrabberThread.Ended;
@@ -779,25 +1080,14 @@ begin
   FGrabber.DoError(FErrorText);
 end;
 
-procedure TJvCustomUrlGrabberThread.Progress;
+procedure TJvCustomUrlGrabberThread.UpdateGrabberProgress;
 begin
   FGrabber.DoProgress(FGrabber.BytesRead, FContinue);
 end;
 
-procedure TJvCustomUrlGrabberThread.ParseUrl(Value: string; Protocol: string;
-  var Host: string; var FileName: string);
+procedure TJvCustomUrlGrabberThread.UpdateGrabberStatus;
 begin
-  Host := '';
-  FileName := '';
-  if Pos(UpperCase(Protocol), UpperCase(Value)) <> 0 then
-    Value := Copy(Value, 8, Length(Value));
-  if Pos('/', Value) <> 0 then
-  begin
-    Host := Copy(Value, 1, Pos('/', Value) - 1);
-    FileName := Copy(Value, Pos('/', Value) + 1, Length(Value));
-  end
-  else
-    Host := Value;
+  FGrabber.DoStatus;
 end;
 
 //=== { TJvUrlGrabberDefaultPropertiesList } ===========================
@@ -871,6 +1161,7 @@ begin
     with Source as TJvCustomUrlGrabberDefaultProperties do
     begin
       Self.Agent := Agent;
+      Self.Port := Port;
       Self.Password := Password;
       Self.UserName := UserName;
       Self.FileName := FileName;

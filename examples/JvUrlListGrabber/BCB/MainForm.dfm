@@ -39,50 +39,22 @@ object frmMain: TfrmMain
       
         'This component takes a list of strings through its Urls property' +
         ', each representing a URL to grab. At present it only supports H' +
-        'TTP and FTP URLs.'
+        'TTP, FTP and Local Files URLs.'
       
         'This component is intended to replace TJvHttpGrabber, TJvFtpGrab' +
-        'ber and TJvMultiHttpGrabber. '
-      
-        'As it is still in the early stages of development and may lack s' +
-        'ome methods and/or properties. '
-      'It is already able to grab files though.'
-      
-        'The dynamic creation group allows to work with a component creat' +
-        'ed dynamically at runtime as opposed to using the one available ' +
-        'on the form at design time. This has been done to test both usag' +
-        'es as there may be errors that only show up by using a design cr' +
-        'eated component.')
+        'ber and TJvMultiHttpGrabber. ')
     ScrollBars = ssVertical
     TabOrder = 0
     WordWrap = False
   end
-  object grbDynamic: TGroupBox
-    Left = 415
-    Top = 176
-    Width = 113
-    Height = 65
-    Anchors = [akTop, akRight]
-    Caption = ' Dynamic creation '
-    TabOrder = 1
-    object btnGoDynamic: TButton
-      Left = 18
-      Top = 24
-      Width = 71
-      Height = 25
-      Caption = 'Go'
-      TabOrder = 0
-      OnClick = btnGoDynamicClick
-    end
-  end
   object grbDesign: TGroupBox
     Left = 415
-    Top = 248
+    Top = 236
     Width = 113
     Height = 129
     Anchors = [akTop, akRight, akBottom]
-    Caption = ' Design time use '
-    TabOrder = 2
+    Caption = ' Commands '
+    TabOrder = 1
     object btnGoDesign: TButton
       Left = 20
       Top = 56
@@ -122,7 +94,7 @@ object frmMain: TfrmMain
       'ftp://homepages.borland.com/home/jedi/jvcl/Licensing.html'
       'file://C:/log2.txt'
       'C:\log2.txt')
-    TabOrder = 3
+    TabOrder = 2
   end
   object StatusBar1: TStatusBar
     Left = 0
@@ -136,6 +108,14 @@ object frmMain: TfrmMain
     SimplePanel = False
   end
   object julGrabber: TJvUrlListGrabber
+    OnDoneFile = julGrabberDoneFile
+    OnError = julGrabberError
+    OnProgress = julGrabberProgress
+    OnConnectedToServer = julGrabberConnectedToServer
+    OnSendingRequest = julGrabberSendingRequest
+    OnRequestSent = julGrabberRequestSent
+    OnConnectionClosed = julGrabberConnectionClosed
+    OnStatusChange = julGrabberStatusChange
     Left = 384
     Top = 192
     DefaultGrabbersPropertiesList = <
@@ -144,12 +124,14 @@ object frmMain: TfrmMain
         Value.FileName = 'output.txt'
         Value.OutputMode = omFile
         Value.Agent = 'JEDI-VCL'
+        Value.Port = 21
       end
       item
         UrlType = 'HTTP'
         Value.FileName = 'output.txt'
         Value.OutputMode = omFile
         Value.Agent = 'JEDI-VCL'
+        Value.Port = 80
       end
       item
         UrlType = 'LocalFile'
