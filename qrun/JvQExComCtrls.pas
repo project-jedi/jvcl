@@ -43,6 +43,7 @@ uses
   JvQTypes, JvQThemes, JVQCLVer, JvQExControls;
 
 
+
  {$IF not declared(PatchedVCLX)}
   
  {$IFEND}
@@ -56,6 +57,7 @@ uses
 
 
 type
+
 
   TJvExProgressBar = class(TProgressBar, IJvControlEvents)
   
@@ -904,6 +906,7 @@ type
   
 {$IFDEF ANIMATE}
   
+  
   TJvExAnimate = class(TAnimate,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents)
   
   
@@ -963,6 +966,7 @@ type
 
 
 implementation
+
 
 
 
@@ -2571,6 +2575,7 @@ begin
 end;
 
 {$IFDEF ANIMATE}
+  
   
 
 

@@ -116,6 +116,7 @@ type
     procedure AdjustColorForm(X: Integer = 0; Y: Integer = 0); //Screen postion
     procedure ShowColorForm(X: Integer = 0; Y: Integer = 0); virtual; //Screen postion
     
+    
     procedure InitWidget; override;
     
     procedure SetEnabled( const  Value: Boolean); override;

@@ -43,6 +43,7 @@ uses
   JvQTypes, JvQThemes, JVQCLVer, JvQExControls;
 
 
+
  {$IF not declared(PatchedVCLX)}
   
  {$IFEND}
