@@ -1049,7 +1049,10 @@ end;
 
 function TTargetInfo.GetLibDir: string;
 begin
-  Result := 'lib' + IntToStr(MajorVersion);
+  if IsDelphi then
+    Result := 'lib\d' + IntToStr(MajorVersion)
+  else
+    Result := 'lib\c' + IntToStr(MajorVersion);
 end;
 
 procedure TTargetInfo.ReadData;
