@@ -40,6 +40,10 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
   {$ENDIF MSWINDOWS}
+  {$IFDEF VCL}
+  // Autocompletion only for VCL
+  ShlObj,
+  {$ENDIF VCL}
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus,
   Buttons, FileCtrl, Mask, ImgList, ActnList, ExtDlgs,
   {$IFDEF VisualCLX}
@@ -142,6 +146,14 @@ type
   TJvCustomComboEditActionLinkClass = class of TJvCustomComboEditActionLink;
 
   {$IFDEF VCL}
+  TJvAutoCompleteOption = (acoAutoSuggest, acoAutoAppend, acoSearch,
+    acoFilterPrefixes, acoUseTab, acoUpDownKeyDropsList, acoRTLReading);
+  TJvAutoCompleteOptions = set of TJvAutoCompleteOption;
+  TJvAutoCompleteFileOption = (acfFileSystem, acfFileSysDirs, acfURLHistory, acfURLMRU);
+  TJvAutoCompleteFileOptions = set of TJvAutoCompleteFileOption;
+  {$ENDIF VCL}
+
+  {$IFDEF VCL}
   TJvCustomComboEdit = class(TJvExCustomMaskEdit)
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
@@ -170,10 +182,16 @@ type
     FSavedButtonWidth: Integer;
     {$IFDEF VCL}
     FAlignment: TAlignment;
-    procedure SetAlignment(Value: TAlignment);
+    FAutoCompleteIntf: IAutoComplete;
+    FAutoCompleteItems: TStrings;
+    FAutoCompleteOptions: TJvAutoCompleteOptions;
+    FAutoCompleteSource: IUnknown;
     function GetFlat: Boolean;
-    procedure SetFlat(const Value: Boolean);
     procedure ReadCtl3D(Reader: TReader);
+    procedure SetAlignment(Value: TAlignment);
+    procedure SetAutoCompleteItems(Strings: TStrings);
+    procedure SetAutoCompleteOptions(const Value: TJvAutoCompleteOptions);
+    procedure SetFlat(const Value: Boolean);
     {$ENDIF VCL}
     function BtnWidthStored: Boolean;
     function GetButtonFlat: Boolean;
@@ -273,6 +291,9 @@ type
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
+    procedure CreateAutoComplete; virtual;
+    procedure UpdateAutoComplete; virtual;
+    function GetAutoCompleteSource: IUnknown; virtual;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure CreateWidget; override;
@@ -304,6 +325,10 @@ type
     property Alignment;
     {$ENDIF VisualCLX}
     property AlwaysEnableButton: Boolean read FAlwaysEnableButton write FAlwaysEnableButton default False;
+    {$IFDEF VCL}
+    property AutoCompleteItems: TStrings read FAutoCompleteItems write SetAutoCompleteItems;
+    property AutoCompleteOptions: TJvAutoCompleteOptions read FAutoCompleteOptions write SetAutoCompleteOptions;
+    {$ENDIF VCL}
     property Button: TJvEditButton read FButton;
     property ButtonFlat: Boolean read GetButtonFlat write SetButtonFlat;
     property ButtonHint: string read GetButtonHint write SetButtonHint;
@@ -358,6 +383,8 @@ type
     property AutoSelect;
     property AutoSize;
     {$IFDEF VCL}
+    property AutoCompleteItems;
+    property AutoCompleteOptions;
     property BiDiMode;
     property DragCursor;
     property DragKind;
@@ -432,13 +459,6 @@ type
   TExecOpenDialogEvent = procedure(Sender: TObject; var Name: string;
     var Action: Boolean) of object;
 
-  {$IFDEF VCL}
-  TJvAutoCompleteOption = (acoAutoappendForceOff, acoAutoappendForceOn,
-    acoAutosuggestForceOff, acoAutosuggestForceOn, acoDefault, acoFileSystem,
-    acoFileSysDirs, acoURLAll, acoURLHistory, acoURLMRU, acoUseTab);
-  TJvAutoCompleteOptions = set of TJvAutoCompleteOption;
-  {$ENDIF VCL}
-
   TJvFileDirEdit = class(TJvCustomComboEdit)
   private
     FErrMode: Cardinal;
@@ -448,13 +468,14 @@ type
     FOnAfterDialog: TExecOpenDialogEvent;
     {$IFDEF VCL}
     FAcceptFiles: Boolean;
-    FAutoComplete: Boolean;
-    FAutoCompleteOptions: TJvAutoCompleteOptions;
+    FAutoCompleteFileOptions: TJvAutoCompleteFileOptions;
+    FMRUList: IUnknown;
+    FHistoryList: IUnknown;
+    FFileSystemList: IUnknown;
+    FAutoCompleteSourceIntf: IUnknown;
     procedure SetDragAccept(Value: Boolean);
-    procedure SetAutoComplete(Value: Boolean);
     procedure SetAcceptFiles(Value: Boolean);
-    procedure SetAutoCompleteOptions(const Value: TJvAutoCompleteOptions);
-    procedure UpdateAutoComplete;
+    procedure SetAutoCompleteFileOptions(const Value: TJvAutoCompleteFileOptions);
     procedure WMDropFiles(var Msg: TWMDropFiles); message WM_DROPFILES;
     {$IFDEF JVCLThemesEnabled}
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
@@ -464,6 +485,8 @@ type
     {$IFDEF VCL}
     procedure CreateHandle; override;
     procedure DestroyWindowHandle; override;
+    procedure UpdateAutoComplete; override;
+    function GetAutoCompleteSource: IUnknown; override;
     {$ENDIF VCL}
     function GetLongName: string; virtual; abstract;
     function GetShortName: string; virtual; abstract;
@@ -474,8 +497,9 @@ type
     procedure DisableSysErrors;
     procedure EnableSysErrors;
     {$IFDEF VCL}
-    property AutoComplete: Boolean read FAutoComplete write SetAutoComplete default True;
-    property AutoCompleteOptions: TJvAutoCompleteOptions read FAutoCompleteOptions write SetAutoCompleteOptions;
+    property AutoCompleteFileOptions: TJvAutoCompleteFileOptions read FAutoCompleteFileOptions write
+      SetAutoCompleteFileOptions;
+    property AutoCompleteOptions default [acoAutoSuggest];
     {$ENDIF VCL}
     property ImageKind default ikDefault;
     property MaxLength;
@@ -553,8 +577,8 @@ type
       default dkOpen;
     property DefaultExt: TFileExt read GetDefaultExt write SetDefaultExt;
     {$IFDEF VCL}
-    property AutoComplete;
-    property AutoCompleteOptions default [acoAutosuggestForceOn, acoFileSystem];
+    property AutoCompleteOptions;
+    property AutoCompleteFileOptions default [acfFileSystem];
     property Flat;
     { (rb) Obsolete; added 'stored False', eventually remove }
     property FileEditStyle: TFileEditStyle read GetFileEditStyle write SetFileEditStyle stored False;
@@ -659,8 +683,7 @@ type
     property DialogKind: TDirDialogKind read FDialogKind write FDialogKind default dkVCL;
     property DialogText: string read FDialogText write FDialogText;
     {$IFDEF VCL}
-    property AutoComplete;
-    property AutoCompleteOptions default [acoAutosuggestForceOn, acoFileSystem, acoFileSysDirs];
+    property AutoCompleteFileOptions default [acfFileSystem, acfFileSysDirs];
     property Flat;
     property DialogOptions: TSelectDirOpts read FOptions write FOptions default [];
     {$ENDIF VCL}
@@ -774,6 +797,7 @@ type
     function GetDialogTitle: string;
     procedure SetDialogTitle(const Value: string);
     function IsCustomTitle: Boolean;
+    function IsDateStored: Boolean;
     function GetCalendarStyle: TCalendarStyle;
     procedure SetCalendarStyle(Value: TCalendarStyle);
     function GetCalendarHints: TStrings;
@@ -836,7 +860,8 @@ type
     property OnAcceptDate: TExecDateDialog read FOnAcceptDate write FOnAcceptDate;
     property OnInvalidDate: TJvInvalidDateEvent read FOnInvalidDate write FOnInvalidDate;
     property MaxLength stored False;
-    property Text stored TextStored;
+    { Text is already stored via Date property }
+    property Text stored False;
   public
     // Polaris
     property DateAutoBetween: Boolean read FDateAutoBetween write SetDateAutoBetween default True;
@@ -850,7 +875,7 @@ type
     procedure CheckValidDate;
     function GetDateMask: string;
     procedure UpdateMask; virtual;
-    property Date: TDateTime read GetDate write SetDate;
+    property Date: TDateTime read GetDate write SetDate stored IsDateStored;
     property PopupVisible;
   end;
 
@@ -1031,6 +1056,71 @@ const
   sFileXPBmp = 'JV_FEDITXPBMP';
   {$ENDIF JVCLThemesEnabled}
 
+{$IFDEF VCL}
+
+const
+  ACLO_NONE            = 0;  // don't enumerate anything
+  ACLO_CURRENTDIR      = 1;  // enumerate current directory
+  ACLO_MYCOMPUTER      = 2;  // enumerate MyComputer
+  ACLO_DESKTOP         = 4;  // enumerate Desktop Folder
+  ACLO_FAVORITES       = 8;  // enumerate Favorites Folder
+  ACLO_FILESYSONLY     = 16;  // enumerate only the file system
+  ACLO_FILESYSDIRS     = 32;  // enumerate only the file system dirs, UNC shares, and UNC servers.
+
+  IID_IAutoCompList: TGUID = (D1:$00BB2760; D2:$6A77; D3:$11D0; D4:($A5, $35, $00, $C0, $4F, $D7, $D0, $62));
+  IID_IObjMgr: TGUID = (D1:$00BB2761; D2:$6A77; D3:$11D0; D4:($A5, $35, $00, $C0, $4F, $D7, $D0, $62));
+  IID_IACList: TGUID = (D1:$77A130B0; D2:$94FD; D3:$11D0; D4:($A5, $44, $00, $C0, $4F, $D7, $d0, $62));
+  IID_IACList2: TGUID = (D1:$470141a0; D2:$5186; D3:$11d2; D4:($bb, $b6, $00, $60, $97, $7b, $46, $4c));
+  IID_ICurrentWorkingDirectory: TGUID = (D1:$91956d21; D2:$9276; D3:$11d1; D4:($92, $1a, $00, $60, $97, $df, $5b, $d4));  // {91956D21-9276-11d1-921A-006097DF5BD));
+
+  CLSID_AutoComplete: TGUID = (D1:$00BB2763; D2:$6A77; D3:$11D0; D4:($A5, $35, $00, $C0, $4F, $D7, $D0, $62));
+  CLSID_ACLHistory: TGUID = (D1:$00BB2764; D2:$6A77; D3:$11D0; D4:($A5, $35, $00, $C0, $4F, $D7, $D0, $62));
+  CLSID_ACListISF: TGUID = (D1:$03C036F1; D2:$A186; D3:$11D0; D4:($82, $4A, $00, $AA, $00, $5B, $43, $83));
+  CLSID_ACLMRU: TGUID = (D1:$6756a641; D2:$de71; D3:$11d0; D4:($83, $1b, $0, $aa, $0, $5b, $43, $83));  // {6756A641-DE71-11d0-831B-00AA005B438));
+  CLSID_ACLMulti: TGUID = (D1:$00BB2765; D2:$6A77; D3:$11D0; D4:($A5, $35, $00, $C0, $4F, $D7, $D0, $62));
+
+  //#if (_WIN32_IE >= 0x0600)
+  CLSID_ACLCustomMRU: TGUID = (D1:$6935db93; D2:$21e8; D3:$4ccc; D4:($be, $b9, $9f, $e3, $c7, $7a, $29, $7a));
+  //#endif
+
+  IID_IAutoComplete: TGUID = (D1:$00BB2762; D2:$6A77; D3:$11D0; D4:($A5, $35, $00, $C0, $4F, $D7, $D0, $62));
+  IID_IAutoComplete2: TGUID = (D1:$EAC04BC0; D2:$3791; D3:$11D2; D4:($BB, $95, $00, $60, $97, $7B, $46, $4C));
+  IID_IUnknown: TGUID = (D1:$00000000; D2:$0000; D3:$0000; D4:($C0, $00, $00, $00, $00, $00, $00, $46));
+
+type
+  IACList = interface(IUnknown)
+    ['{77A130B0-94FD-11D0-A544-00C04FD7d062}']
+    function Expand(pszExpand: POleStr): HRESULT; stdcall;
+  end;
+
+  IACList2 = interface(IACList)
+    ['{470141a0-5186-11d2-bbb6-0060977b464c}']
+    function SetOptions(dwFlag: DWORD): HRESULT; stdcall;
+    function GetOptions(var pdwFlag: DWORD): HRESULT; stdcall;
+  end;
+
+  IObjMgr = interface(IUnknown)
+    ['{00BB2761-6A77-11D0-a535-00c04fd7d062}']
+    function Append(punk: IUnknown): HRESULT; stdcall;
+    function Remove(punk: IUnknown): HRESULT; stdcall;
+  end;
+
+  TAutoCompleteSource = class(TInterfacedObject, IEnumString)
+  private
+    FComboEdit: TJvCustomComboEdit;
+    FCurrentIndex: Integer;
+  protected
+    { IEnumString }
+    function Next(celt: Longint; out elt;
+      pceltFetched: PLongint): HRESULT; stdcall;
+    function Skip(celt: Longint): HRESULT; stdcall;
+    function Reset: HRESULT; stdcall;
+    function Clone(out enm: IEnumString): HRESULT; stdcall;
+  public
+    constructor Create(AComboEdit: TJvCustomComboEdit; const StartIndex: Integer); virtual;
+  end;
+
+type
   { TDateHook is used to only have 1 hook per application for monitoring
     date changes;
 
@@ -1040,9 +1130,6 @@ const
     later than the forms, controls etc.
   }
 
-{$IFDEF VCL}
-
-type
   TDateHook = class(TObject)
   private
     FCount: Integer;
@@ -1059,35 +1146,6 @@ type
 
 var
   GDateHook: TDateHook = nil;
-
-type
-  TSHAutoComplete = function (hwndEdit: HWND; dwFlags: DWORD): HResult; stdcall;
-
-const
-  SHACF_DEFAULT                  = $00000000;  // Currently (SHACF_FILESYSTEM | SHACF_URLALL)
-  SHACF_FILESYSTEM               = $00000001;  // This includes the File System as well as the rest of the shell (Desktop\My Computer\Control Panel\)
-  SHACF_URLHISTORY               = $00000002;  // URLs in the User's History
-  SHACF_URLMRU                   = $00000004;  // URLs in the User's Recently Used list.
-  SHACF_URLALL                   = (SHACF_URLHISTORY or SHACF_URLMRU);
-  SHACF_USETAB                   = $00000008;  // Use the tab to move thru the autocomplete possibilities instead of to the next dialog/window control.
-  SHACF_FILESYS_ONLY             = $00000010;  // This includes the File System
-
-  // WIN32_IE >= 0x0600)
-
-  SHACF_FILESYS_DIRS             = $00000020;  // Same as SHACF_FILESYS_ONLY except it only includes directories, UNC servers, and UNC server shares.
-  SHACF_AUTOSUGGEST_FORCE_ON     = $10000000;  // Ignore the registry default and force the feature on.
-  SHACF_AUTOSUGGEST_FORCE_OFF    = $20000000;  // Ignore the registry default and force the feature off.
-  SHACF_AUTOAPPEND_FORCE_ON      = $40000000;  // Ignore the registry default and force the feature on. (Also know as AutoComplete)
-  SHACF_AUTOAPPEND_FORCE_OFF     = $80000000;  // Ignore the registry default and force the feature off. (Also know as AutoComplete)
-
-  ShlwapiDLLName  = 'Shlwapi.dll';
-  SHAutoCompleteName = 'SHAutoComplete';
-
-var
-  GNeedToUninitialize: Boolean = False;
-  GShlwapiHandle: THandle = 0;
-  GTriedLoadShlwapiDll: Boolean = False;
-  SHAutoComplete: TSHAutoComplete = nil;
 
 {$ENDIF VCL}
 
@@ -1199,38 +1257,13 @@ end;
 
 {$ENDIF VisualCLX}
 
-{$IFDEF VCL}
-
-procedure UnloadShlwapiDll;
+function ParentFormVisible(AControl: TControl): Boolean;
+var
+  Form: TCustomForm;
 begin
-  SHAutoComplete := nil;
-  if GShlwapiHandle > 0 then
-    FreeLibrary(GShlwapiHandle);
-  GShlwapiHandle := 0;
-  if GNeedToUninitialize then
-    CoUninitialize;
+  Form := GetParentForm(AControl);
+  Result := Assigned(Form) and Form.Visible;
 end;
-
-procedure LoadShlwapiDll;
-begin
-  if not GTriedLoadShlwapiDll then
-  begin
-    GTriedLoadShlwapiDll := True;
-
-    GShlwapiHandle := Windows.LoadLibrary(ShlwapiDLLName);
-    if GShlwapiHandle > 0 then
-    begin
-      AddFinalizeProc(sUnitName, UnloadShlwapiDll);
-
-      SHAutoComplete := GetProcAddress(GShlwapiHandle, SHAutoCompleteName);
-
-      if Assigned(SHAutoComplete) then
-        GNeedToUninitialize := Succeeded(CoInitialize(nil));
-    end;
-  end;
-end;
-
-{$ENDIF VCL}
 
 //=== Global procedures ======================================================
 
@@ -1636,6 +1669,86 @@ end;
 {$ENDIF VisualCLX}
 
 {$IFDEF VCL}
+
+//=== TAutoCompleteSource ====================================================
+
+function TAutoCompleteSource.Clone(out enm: IEnumString): HRESULT;
+begin
+  { Save state }
+  enm := TAutoCompleteSource.Create(FComboEdit, FCurrentIndex);
+  Result := S_OK;
+end;
+
+constructor TAutoCompleteSource.Create(AComboEdit: TJvCustomComboEdit; const StartIndex: Integer);
+begin
+  inherited Create;
+  FComboEdit := AComboEdit;
+  FCurrentIndex := StartIndex;
+end;
+
+function TAutoCompleteSource.Next(celt: Integer; out elt;
+  pceltFetched: PLongint): HRESULT;
+var
+  Fetched: Integer;
+  S: string;
+  Ptr: POleStr;
+  Size: Integer;
+begin
+  if Pointer(elt) = nil then
+  begin
+    Result := E_FAIL;
+    Exit;
+  end;
+
+  Fetched := 0;
+
+  while (Fetched < celt) and (FCurrentIndex < FComboEdit.AutoCompleteItems.Count) do
+  begin
+    S := FComboEdit.AutoCompleteItems[FCurrentIndex];
+    Size := (Length(S) + 1) * SizeOf(WideChar);
+    Ptr := CoTaskMemAlloc(Size);
+    if Ptr = nil then
+    begin
+      Result := E_OUTOFMEMORY;
+      Exit;
+    end;
+    // StringToWideChar() available in D5..D7?
+    StringToWideChar(S, Ptr, Size);
+    //lstrcpyW(Ptr, PWideChar(@W[1]));
+
+    TOleStrList(elt)[Fetched] := Ptr;
+
+    Inc(FCurrentIndex);
+    Inc(Fetched);
+  end;
+
+  if Assigned(pceltFetched) then
+    pceltFetched^ := Fetched;
+
+  if Fetched = celt then
+    Result := S_OK
+  else
+    Result := S_FALSE;
+end;
+
+function TAutoCompleteSource.Reset: HRESULT;
+begin
+  FCurrentIndex := 0;
+  Result := S_OK;
+end;
+
+function TAutoCompleteSource.Skip(celt: Integer): HRESULT;
+begin
+  Inc(FCurrentIndex, celt);
+  if FCurrentIndex < FComboEdit.AutoCompleteItems.Count then
+    Result := S_OK
+  else
+  begin
+    Result := S_FALSE;
+    FCurrentIndex := FComboEdit.AutoCompleteItems.Count;
+  end;
+end;
+
 //=== { TDateHook } ==========================================================
 
 procedure TDateHook.Add;
@@ -1770,15 +1883,6 @@ begin
   if Height < Metrics.tmHeight + I then
     Height := Metrics.tmHeight + I;
 end;
-
-{$IFDEF VisualCLX}
-procedure TJvCustomComboEdit.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
-begin
-  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
-  UpdateControls;
-  UpdateMargins;
-end;
-{$ENDIF VisualCLX}
 
 procedure TJvCustomComboEdit.AdjustSize;
 var
@@ -1917,11 +2021,33 @@ begin
   FImageKind := ikCustom;
   FImageIndex := -1;
   FNumGlyphs := 1;
+  {$IFDEF VCL}
+  FAutoCompleteItems := TStringList.Create;
+  FAutoCompleteOptions := [];
+  CoInitialize(nil);
+  {$ENDIF VCL}
   inherited OnKeyDown := LocalKeyDown;
   (* -- RDB -- *)
 end;
 
 {$IFDEF VCL}
+
+procedure TJvCustomComboEdit.CreateAutoComplete;
+begin
+  if HandleAllocated and not (csDesigning in ComponentState) and
+    {not Assigned(FAutoCompleteIntf) and} (AutoCompleteOptions <> []) then
+  begin
+    { Create the autocomplete object. }
+    if Succeeded(CoCreateInstance(CLSID_AutoComplete, nil, CLSCTX_INPROC_SERVER,
+      IID_IAutoComplete, FAutoCompleteIntf)) then
+    begin
+      { Initialize the autocomplete object. } 
+      FAutoCompleteIntf.Init(Self.Handle, GetAutoCompleteSource, nil, nil);
+    end
+    else
+      FAutoCompleteIntf := nil;
+  end;
+end;
 
 procedure TJvCustomComboEdit.CreateParams(var Params: TCreateParams);
 const
@@ -1952,6 +2078,11 @@ begin
   inherited CreateWnd;
   UpdateControls;
   UpdateMargins;
+  if AutoCompleteOptions <> [] then
+  begin
+    CreateAutoComplete;
+    UpdateAutoComplete;
+  end;
 end;
 {$ENDIF VCL}
 
@@ -1996,7 +2127,16 @@ destructor TJvCustomComboEdit.Destroy;
 begin
   PopupCloseUp(Self, False);
   FButton.OnClick := nil;
+  {$IFDEF VCL}
+  FAutoCompleteSource := nil;
+  FAutoCompleteItems.Free;
+  FAutoCompleteIntf := nil;
+  {$ENDIF VCL}
   inherited Destroy;
+  {$IFDEF VCL}
+  // call after WM_DESTROY
+  CoUninitialize;
+  {$ENDIF VCL}
 end;
 
 procedure TJvCustomComboEdit.DoChange;
@@ -2110,6 +2250,13 @@ function TJvCustomComboEdit.GetActionLinkClass: TControlActionLinkClass;
 begin
   Result := TJvCustomComboEditActionLink;
 end;
+
+{$IFDEF VCL}
+function TJvCustomComboEdit.GetAutoCompleteSource: IUnknown;
+begin
+  Result := TAutoCompleteSource.Create(Self, 0);
+end;
+{$ENDIF VCL}
 
 function TJvCustomComboEdit.GetButtonFlat: Boolean;
 begin
@@ -2383,14 +2530,6 @@ procedure TJvCustomComboEdit.PopupChange;
 begin
 end;
 
-function ParentFormVisible(AControl: TControl): Boolean;
-var
-  Form: TCustomForm;
-begin
-  Form := GetParentForm(AControl);
-  Result := Assigned(Form) and Form.Visible;
-end;
-
 procedure TJvCustomComboEdit.PopupCloseUp(Sender: TObject; Accept: Boolean);
 var
   AValue: Variant;
@@ -2610,7 +2749,33 @@ begin
     RecreateWnd;
   end;
 end;
+
+procedure TJvCustomComboEdit.SetAutoCompleteItems(Strings: TStrings);
+begin
+  FAutoCompleteItems.Assign(Strings);
+end;
+
+procedure TJvCustomComboEdit.SetAutoCompleteOptions(const Value: TJvAutoCompleteOptions);
+begin
+  if Value <> FAutoCompleteOptions then
+  begin
+    FAutoCompleteOptions := Value;
+
+    if not Assigned(FAutoCompleteIntf) then
+      CreateAutoComplete;
+    UpdateAutoComplete;
+  end;
+end;
 {$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvCustomComboEdit.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
+begin
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
+  UpdateControls;
+  UpdateMargins;
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvCustomComboEdit.SetButtonFlat(const Value: Boolean);
 begin
@@ -2871,6 +3036,34 @@ begin
   if FPopup is TJvPopupWindow then
     TJvPopupWindow(FPopup).Show(Origin);
 end;
+
+{$IFDEF VCL}
+procedure TJvCustomComboEdit.UpdateAutoComplete;
+const
+  cAutoCompleteOptionValues: array [TJvAutoCompleteOption] of DWORD =
+    (ACO_AUTOSUGGEST, ACO_AUTOAPPEND,
+     ACO_SEARCH, ACO_FILTERPREFIXES, ACO_USETAB, ACO_UPDOWNKEYDROPSLIST,
+     ACO_RTLREADING);
+var
+  Flags: DWORD;
+  Option: TJvAutoCompleteOption;
+  AutoComplete2: IAutoComplete2;
+begin
+  if HandleAllocated and not (csDesigning in ComponentState) then
+  begin
+    if Supports(FAutoCompleteIntf, IID_IAutoComplete2, AutoComplete2) then
+    begin
+      { Set the options of the autocomplete object. }
+      Flags := 0;
+      for Option := Low(TJvAutoCompleteOption) to High(TJvAutoCompleteOption) do
+        if Option in AutoCompleteOptions then
+          Inc(Flags, cAutoCompleteOptionValues[Option]);
+
+      AutoComplete2.SetOptions(Flags);
+    end;
+  end;
+end;
+{$ENDIF VCL}
 
 {$IFDEF COMPILER6_UP}
 procedure TJvCustomComboEdit.UpdateBtnBounds(var NewLeft, NewTop, NewWidth, NewHeight: Integer);
@@ -3407,6 +3600,11 @@ begin
     (DialogTitle <> ''); // Polaris
 end;
 
+function TJvCustomDateEdit.IsDateStored: Boolean;
+begin
+  Result := not DefaultToday;
+end;
+
 procedure TJvCustomDateEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if IsInWordArray(Key, [VK_PRIOR, VK_NEXT, VK_LEFT, VK_UP, VK_RIGHT, VK_DOWN,
@@ -3774,7 +3972,7 @@ begin
   inherited Create(AOwner);
   {$IFDEF VCL}
   FOptions := [];
-  FAutoCompleteOptions := [acoAutosuggestForceOn, acoFileSystem, acoFileSysDirs];
+  FAutoCompleteFileOptions := [acfFileSystem, acfFileSysDirs];
   {$ENDIF VCL}
 end;
 
@@ -4090,7 +4288,7 @@ begin
   {$IFDEF VCL}
   OEMConvert := True;
   FAcceptFiles := True;
-  FAutoComplete := True;
+  FAutoCompleteOptions := [acoAutoSuggest];
   {$ENDIF VCL}
   ControlState := ControlState + [csCreating];
   try
@@ -4108,8 +4306,6 @@ begin
 
   if FAcceptFiles then
     SetDragAccept(True);
-  if FAutoComplete then
-    UpdateAutoComplete;
 end;
 
 procedure TJvFileDirEdit.DestroyWindowHandle;
@@ -4151,6 +4347,14 @@ end;
 
 {$IFDEF VCL}
 
+function TJvFileDirEdit.GetAutoCompleteSource: IUnknown;
+begin
+  if Failed(CoCreateInstance(CLSID_ACLMulti, nil, CLSCTX_INPROC_SERVER, IID_IUnknown, FAutoCompleteSourceIntf)) then
+    FAutoCompleteSourceIntf := nil;
+
+  Result := FAutoCompleteSourceIntf;
+end;
+
 procedure TJvFileDirEdit.SetAcceptFiles(Value: Boolean);
 begin
   if FAcceptFiles <> Value then
@@ -4160,62 +4364,15 @@ begin
   end;
 end;
 
-procedure TJvFileDirEdit.SetAutoComplete(Value: Boolean);
+procedure TJvFileDirEdit.SetAutoCompleteFileOptions(
+  const Value: TJvAutoCompleteFileOptions);
 begin
-  if Value <> FAutoComplete then
+  if FAutoCompleteFileOptions <> Value then
   begin
-    FAutoComplete := Value;
-    if HandleAllocated and not (csDesigning in ComponentState) then
-      if AutoComplete then
-        UpdateAutoComplete
-      else
-        RecreateWnd;
-  end;
-end;
+    FAutoCompleteFileOptions := Value;
 
-procedure TJvFileDirEdit.SetAutoCompleteOptions(
-  const Value: TJvAutoCompleteOptions);
-const
-  cListFillMethods = [acoFileSystem, acoFileSysDirs, acoURLAll, acoURLHistory, acoURLMRU];
-  cOptions = [acoAutoappendForceOff, acoAutoappendForceOn, acoAutosuggestForceOff,
-    acoAutosuggestForceOn, acoUseTab];
-var
-  AddedOptions, RemovedOptions: TJvAutoCompleteOptions;
-begin
-  if FAutoCompleteOptions <> Value then
-  begin
-    AddedOptions := Value - (FAutoCompleteOptions * Value);
-    RemovedOptions := FAutoCompleteOptions - (FAutoCompleteOptions * Value);
-
-    FAutoCompleteOptions := Value;
-
-    { Force correct options }
-    if acoAutoappendForceOff in AddedOptions then
-      Exclude(FAutoCompleteOptions, acoAutoappendForceOn)
-    else
-    if acoAutoappendForceOn in AddedOptions then
-      Exclude(FAutoCompleteOptions, acoAutoappendForceOff);
-    if acoAutosuggestForceOff in AddedOptions then
-      Exclude(FAutoCompleteOptions, acoAutosuggestForceOn)
-    else
-    if acoAutosuggestForceOn in AddedOptions then
-      Exclude(FAutoCompleteOptions, acoAutosuggestForceOff);
-    if acoDefault in AddedOptions then
-      FAutoCompleteOptions := [acoDefault]
-    else
-    if AddedOptions <> [] then
-      Exclude(FAutoCompleteOptions, acoDefault);
-    if (cListFillMethods * FAutoCompleteOptions = []) and
-       (cListFillMethods * RemovedOptions <> []) then
-       FAutoCompleteOptions := FAutoCompleteOptions - cOptions;
-
-    { Last check }
-    if (cOptions * FAutoCompleteOptions <> []) and
-       (cListFillMethods * FAutoCompleteOptions = []) then
-      FAutoCompleteOptions := FAutoCompleteOptions + [acoFileSystem];
-
-    if HandleAllocated and AutoComplete and not (csDesigning in ComponentState) then
-      RecreateWnd;
+    if not (csDesigning in ComponentState) then
+      UpdateAutoComplete;
   end;
 end;
 
@@ -4226,29 +4383,67 @@ begin
 end;
 
 procedure TJvFileDirEdit.UpdateAutoComplete;
-const
-  cAutoCompleteOptionValues: array [TJvAutoCompleteOption] of DWORD =
-    (SHACF_AUTOAPPEND_FORCE_OFF, SHACF_AUTOAPPEND_FORCE_ON,
-     SHACF_AUTOSUGGEST_FORCE_OFF, SHACF_AUTOSUGGEST_FORCE_ON, SHACF_DEFAULT, SHACF_FILESYSTEM,
-     SHACF_FILESYS_DIRS, SHACF_URLALL, SHACF_URLHISTORY, SHACF_URLMRU, SHACF_USETAB);
 var
-  Flags: DWORD;
-  AutoCompleteOption: TJvAutoCompleteOption;
+  ObjMgr: IObjMgr;
+  List2: IACList2;
+  Options: DWORD;
 begin
-  if HandleAllocated and AutoComplete and not (csDesigning in ComponentState) then
+  if Supports(FAutoCompleteSourceIntf, IID_IObjMgr, ObjMgr) then
   begin
-    LoadShlwapiDll;
-
-    if Assigned(SHAutoComplete) then
+    if acfURLMRU in AutoCompleteFileOptions then
     begin
-      Flags := 0;
-      for AutoCompleteOption := Low(TJvAutoCompleteOption) to High(TJvAutoCompleteOption) do
-        if AutoCompleteOption in AutoCompleteOptions then
-          Inc(Flags, cAutoCompleteOptionValues[AutoCompleteOption]);
+      if not Assigned(FMRUList) and
+        Succeeded(CoCreateInstance(CLSID_ACLMRU, nil, CLSCTX_INPROC_SERVER, IID_IUnknown, FMRUList)) then
+      begin
+        ObjMgr.Append(FMRUList);
+      end
+    end
+    else
+    if Assigned(FMRUList) then
+    begin
+      ObjMgr.Remove(FMRUList);
+      FMRUList := nil;
+    end;
 
-      SHAutoComplete(Handle, Flags);
+    if acfURLHistory in AutoCompleteFileOptions then
+    begin
+      if not Assigned(FHistoryList) and
+        Succeeded(CoCreateInstance(CLSID_ACLHistory, nil, CLSCTX_INPROC_SERVER, IID_IUnknown, FHistoryList)) then
+      begin
+        ObjMgr.Append(FHistoryList);
+      end;
+    end
+    else
+    if Assigned(FHistoryList) then
+    begin
+      ObjMgr.Remove(FHistoryList);
+      FHistoryList := nil;
+    end;
+
+    if [acfFileSystem, acfFileSysDirs] * AutoCompleteFileOptions <> [] then
+    begin
+      if not Assigned(FFileSystemList) and
+        Succeeded(CoCreateInstance(CLSID_ACListISF, nil, CLSCTX_INPROC_SERVER, IID_IUnknown, FFileSystemList)) then
+      begin
+        ObjMgr.Append(FFileSystemList);
+      end;
+
+      Options := ACLO_FILESYSONLY;
+      if acfFileSysDirs in AutoCompleteFileOptions then
+        Options := Options or ACLO_FILESYSDIRS;
+
+      if Supports(FFileSystemList, IID_IACList2, List2) then
+        List2.SetOptions(Options);
+    end
+    else
+    if Assigned(FFileSystemList) then
+    begin
+      ObjMgr.Remove(FFileSystemList);
+      FFileSystemList := nil;
     end;
   end;
+
+  inherited UpdateAutoComplete;
 end;
 
 procedure TJvFileDirEdit.WMDropFiles(var Msg: TWMDropFiles);
@@ -4291,7 +4486,7 @@ begin
   inherited Create(AOwner);
   FAddQuotes := True;
   {$IFDEF VCL}
-  FAutoCompleteOptions := [acoAutosuggestForceOn, acoFileSystem];
+  FAutoCompleteFileOptions := [acfFileSystem];
   {$ENDIF VCL}
   CreateEditDialog;
 end;
