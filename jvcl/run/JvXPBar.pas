@@ -52,6 +52,16 @@ unit JvXPBar;
 {$UNDEF JVCLThemesEnabledD56}
 {$ENDIF !USEJVCL}
 
+// XP_TRANSPARENCY_FIX:
+//  WinXPSP2/WinServer2003 transparency workaround:
+//  Define to add calls to BitmapBgPaint to pre-paint
+//  bitmap using XPBar.Colors.BodyColor, to fix
+//  transparency issues.  Note that this is a real
+//  bug in Windows XP and 2003 and once all machines
+//  "OUT THERE" have been updated, this should be removed
+//  from the code.
+{$define XP_TRANSPARENCY_FIX}
+
 interface
 
 uses
@@ -636,6 +646,32 @@ begin
   else
     Result := 1;
 end;
+
+{$ifdef XP_TRANSPARENCY_FIX}
+{ BitmapBgPaint:
+
+  This fixes a bug in the Delphi 7 VCL on systems
+  running Windows XP SP2 or Windows Server 2003,
+  where transparency in the VCL TImageList.Draw
+  function is broken.
+
+  -WPostma. }
+
+procedure BitmapBgPaint( Bitmap:TBitmap;bgColor:TColor);
+var
+ r:TRect;
+begin
+  r.Left := 0;
+  r.Top := 0;
+  r.Right := Bitmap.Width;
+  r.Bottom := Bitmap.Height;
+  Bitmap.Canvas.Brush.Color := bgColor;
+  Bitmap.Canvas.FillRect( r );
+end;
+
+{$endif}
+
+
 
 //=== { TJvXPBarItemActionLink } =============================================
 
@@ -2031,8 +2067,12 @@ begin
     Bitmap.Assign(nil);
     ItemRect := GetItemRect(Index);
     HasImages := FVisibleItems[Index].Images <> nil;
-    if HasImages then
+    if HasImages then begin
+{$ifdef XP_TRANSPARENCY_FIX}
+      BitmapBgPaint( Bitmap, {WinXPBar.}Colors.BodyColor);
+{$endif}
       FVisibleItems[Index].Images.GetBitmap(FVisibleItems[Index].ImageIndex, Bitmap);
+    end;
     Bitmap.Transparent := True;
     if OwnerDraw then
     begin
@@ -2162,6 +2202,9 @@ var
               Bitmap.LoadFromResourceName(HInstance, 'JvXPCustomWinXPBarCOLLAPSE' + IntToStr(Index));
           end;
           Bitmap.Transparent := True;
+{$ifdef XP_TRANSPARENCY_FIX}
+          BitmapBgPaint( Bitmap, {WinXPBar.}Colors.BodyColor);
+{$endif}
           ACanvas.Draw(R.Right - 24, R.Top + (HeaderHeight - GetRollHeight) div 2, Bitmap);
         finally
           Bitmap.Free;
