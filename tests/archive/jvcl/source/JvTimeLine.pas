@@ -160,7 +160,6 @@ type
   TJvCustomTimeLine = class(TJvCustomControl)
   private
     { Private declarations }
-
     FItemHintImageList: TCustomImageList;
     FArrows: array[TJvScrollArrow] of TJvTLScrollBtn;
     FList: TList;
@@ -184,9 +183,8 @@ type
     FHelperYears: boolean;
     FDragLine: boolean;
     FLineVisible: boolean;
-    FMouseDown: boolean;
     FNewHeight: integer;
-    OldX, FItemMoveLeft: integer;
+    OldX: integer;
     FOldHint: string;
     FStyle: TJvTimeLineStyle;
     FScrollArrows: TJvScrollArrows;
@@ -215,6 +213,8 @@ type
     FShowHiddenItemHints: boolean;
     FOnItemDblClick: TJvTimeItemClickEvent;
     FCanvas: TControlCanvas;
+    FDragImages: TDragImageList;
+    FStartPos:TPoint;
     procedure SetHelperYears(Value: boolean);
     procedure SetFlat(Value: boolean);
     procedure SetScrollArrows(Value: TJvScrollArrows);
@@ -267,6 +267,7 @@ type
     procedure SetMonth(const Value: word);
     procedure SetYear(const Value: word);
     procedure SetShowHiddenItemHints(const Value: boolean);
+    function HasMoved(P: TPoint): boolean;
   protected
     { Protected declarations }
 
@@ -298,11 +299,19 @@ type
     procedure SaveItem(Item: TJvTimeItem; Stream: TStream); virtual;
     procedure LoadItem(Item: TJvTimeItem; Stream: TStream); virtual;
     procedure MeasureItem(Item: TJvTimeItem; var ItemHeight: integer); virtual;
-    procedure DrawItem(Item: TJvTimeItem; var R: TRect); virtual;
-    procedure UpdateItem(Index: integer); virtual;
+    procedure DrawItem(Item: TJvTimeItem; ACanvas: TCanvas; var R: TRect); virtual;
+    procedure UpdateItem(Index: integer; ACanvas: TCanvas); virtual;
     procedure UpdateItems; virtual;
     procedure CreateWnd; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    function GetDragImages: TDragImageList; override;
+    procedure DoStartDrag(var DragObject: TDragObject); override;
+    procedure DoEndDrag(Target: TObject; X: Integer; Y: Integer); override;
+    
+    
+    
+
+
     property Align default alTop;
     property Color default clWindow;
     { new properties }
@@ -347,6 +356,8 @@ type
     property OnLoadItem: TJvStreamItemEvent read FOnLoadItem write FOnLoadItem;
     property OnItemMoved: TJvItemMovedEvent read FOnItemMoved write FOnItemMoved;
     property OnItemMoving: TJvItemMovingEvent read FOnItemMoving write FOnItemMoving;
+    procedure DragOver(Source: TObject; X: Integer; Y: Integer;
+      State: TDragState; var Accept: Boolean); override;
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
@@ -368,6 +379,7 @@ type
     procedure EndUpdate; virtual;
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
       AHeight: Integer); override;
+    procedure DragDrop(Source: TObject; X: Integer; Y: Integer); override;
   end;
 
   { TJvTimeLine }
@@ -530,7 +542,9 @@ end;
 procedure TJvTimeItem.Remove;
 begin
   InvalidateRect(FParent.FTimeLine.Handle, @FRect, true);
-  inherited Free;
+  if FParent.FTimeLine.Selected = self then
+    FParent.FTimeLine.Selected := nil;
+  Free;
 end;
 
 procedure TJvTimeItem.Assign(Source: TPersistent);
@@ -553,7 +567,7 @@ end;
 procedure TJvTimeItem.Update;
 begin
   InvalidateRect(FParent.FTimeLine.Handle, @FRect, true);
-  FParent.FTimeLine.UpdateItem(Index);
+  FParent.FTimeLine.UpdateItem(Index, FParent.FTimeLine.Canvas);
   InvalidateRect(FParent.FTimeLine.Handle, @FRect, true);
 end;
 
@@ -734,7 +748,7 @@ end;
 procedure TJvTimeItems.Update(Item: TCollectionItem);
 begin
   if Item <> nil then
-    FTimeLine.UpdateItem(Item.Index)
+    FTimeLine.UpdateItem(Item.Index, FTimeLine.Canvas)
   else
     FTimeLine.UpdateItems;
 end;
@@ -987,7 +1001,7 @@ begin
   FBmp := TBitmap.Create;
   FList := TList.Create;
   FHelperYears := true;
-  ControlStyle := [csReflector, csOpaque, csClickEvents, csDoubleClicks, csCaptureMouse];
+  ControlStyle := [csReflector, csOpaque, csClickEvents, csDoubleClicks, csCaptureMouse, csDisplayDragImage];
   FBorderStyle := bsSingle;
   Color := clWhite;
   FYearList := TList.Create;
@@ -1057,6 +1071,7 @@ begin
   FImageChangeLink.Free;
   FYearFont.Free;
   FItemHintImageList.Free;
+  FDragImages.Free;
   inherited Destroy;
 end;
 
@@ -1284,13 +1299,11 @@ procedure TJvCustomTimeLine.MouseDown(Button: TMouseButton; Shift: TShiftState; 
 var i: integer;
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  if (ssDouble in Shift) then
-    Exit;
-  if (Button = mbLeft) then
-    FMouseDown := true;
+  if Button <> mbLeft then Exit;
   FSelectedItem := ItemAtPos(X, Y);
   if Assigned(FSelectedItem) then
   begin
+    FStartPos := Point(X,Y);
     if not FMultiSelect or not (ssCtrl in Shift) then
     begin
       for i := 0 to FTimeItems.Count - 1 do
@@ -1300,7 +1313,7 @@ begin
     else if (ssCtrl in Shift) and (Button = mbLeft) then
     begin
       FSelectedItem.Selected := not FSelectedItem.Selected; { toggle last selection }
-      UpdateItem(FSelectedItem.Index);
+      UpdateItem(FSelectedItem.Index, Canvas);
     end;
     if FShowItemHint and (Length(FSelectedItem.Hint) > 0) then
     begin
@@ -1309,48 +1322,42 @@ begin
     end
     else
       Hint := FOldHint;
-    if ItemMoving(FSelectedItem) then
-    begin
-      FItemMoveLeft := X;
-      FLineVisible := true;
-    end
-    else
+    if not ItemMoving(FSelectedItem) then
       FSelectedItem := nil;
+    if not FLineVisible then
+    begin
+      Repaint; // don't ask me why: it just works (tm)!
+      DrawDragLine(X);
+    end;
+    OldX := X;
   end;
   if CanFocus and not Focused then
   begin
     SetFocus;
     Invalidate;
   end;
-  if FMouseDown and FLineVisible then
-  begin
-    Repaint; // don't ask me why: it just works (tm)!
-    DrawDragLine(X);
-  end;
-  OldX := X;
+end;
+
+function TJvCustomTimeLine.HasMoved(P:TPoint):boolean;
+begin
+  Result := (abs(FStartPos.X - P.X) > 10) or (abs(FStartPos.Y - P.Y) > ItemHeight);
 end;
 
 procedure TJvCustomTimeLine.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if FMouseDown and FLineVisible then
+  inherited MouseUp(Button, Shift, X, Y);
+  if FLineVisible then
     DrawDragLine(OldX);
-  FLineVisible := false;
-  if not Dragging then
-    FMouseDown := false;
-  if (FSelectedItem <> nil) and (X <> FItemMoveLeft) then
+  if (FSelectedItem <> nil) and HasMoved(Point(X,Y)) then
   begin
-    if (X > FItemMoveLeft + 10) or (X < FItemMoveLeft - 10) then
-      ItemMoved(FSelectedItem, DateAtPos(X))
-    else
-      ItemMoved(FSelectedItem, DateAtPos(FSelectedItem.Left + (X - FItemMoveLeft)));
+    ItemMoved(FSelectedItem, DateAtPos(X));
     Invalidate;
   end;
-  inherited MouseUp(Button, Shift, X, Y);
 end;
 
 procedure TJvCustomTimeLine.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
-  if FMouseDown and FLineVisible then
+  if FLineVisible then
     MoveDragLine(OldX, X);
   OldX := X;
   inherited MouseMove(Shift, X, Y);
@@ -1358,6 +1365,7 @@ end;
 
 procedure TJvCustomTimeLine.DrawDragLine(X: integer);
 begin
+  FLineVisible := not FLineVisible;
   if not DragLine then
     Exit;
   FCanvas.MoveTo(X, 0);
@@ -1366,7 +1374,7 @@ end;
 
 procedure TJvCustomTimeLine.MoveDragLine(OldX, NewX: integer);
 begin
-  if OldX <> NewX then
+  if (OldX <> NewX) and FLineVisible then
   begin
     DrawDragLine(NewX);
     DrawDragLine(OldX);
@@ -1386,7 +1394,7 @@ begin
       if ResetLevels then
       begin
         Items[i].Level := 0;
-        UpdateItem(Items[i].Index);
+        UpdateItem(Items[i].Index, Canvas);
       end;
       FList.Add(Items[i]);
     end;
@@ -1404,7 +1412,7 @@ begin
           (FList[i] <> FList[j]) then
         begin
           TJvTimeItem(FList[j]).Level := TJvTimeItem(FList[j]).Level + 1;
-          UpdateItem(TJvTimeItem(FList[j]).Index);
+          UpdateItem(TJvTimeItem(FList[j]).Index, Canvas);
         end;
     end;
   finally
@@ -1417,7 +1425,7 @@ begin
   if Assigned(Item) then
   begin
     Item.Selected := true;
-    UpdateItem(Item.Index);
+    UpdateItem(Item.Index, Canvas);
   end;
 end;
 
@@ -1694,18 +1702,6 @@ begin
     R := FArrows[scrollLeft].BoundsRect;
     OffsetRect(R, 0, -FItemHintImageList.Height - 2);
     FItemHintImageList.Draw(ACanvas, R.Left, R.Top, 0);
-    //    R := Rect(FScrollEdgeOffset,Height - FScrollEdgeOffset - FScrollHeight * 2,Width,
-    //      Height);
-    //    SetBkMode(ACanvas.Handle,TRANSPARENT);
-    //    ACanvas.Font.Style := [fsBold];
-    //    DrawText(ACanvas.Handle,PChar('...'),-1,R,DT_SINGLELINE or DT_NOCLIP or DT_NOPREFIX);
-    //    ACanvas.TextRect(R,R.Left,R.Top,'...');
-    (*    // this should be 32 pixels high:
-        UpdateOffset;
-        R := Rect(4, FItemOffset div 2 - 8, 8, FItemOffset div 2 + 8);
-        //    R := Rect(2,FItemOffset * 2,6,ClientHeight - FItemOffset * 2);
-        ACanvas.Brush.Color := clNavy;
-        ACanvas.FillRect(R); *)
   end;
 end;
 
@@ -1722,7 +1718,6 @@ end;
 
 procedure TJvCustomTimeLine.DrawFocus;
 var tmp: TColor;
-  // R:TRect;
 begin
   tmp := Canvas.Pen.Color;
   Canvas.Pen.Color := clNavy;
@@ -1750,10 +1745,67 @@ begin
     ItemHeight := FItemHeight;
 end;
 
-procedure TJvCustomTimeLine.DrawItem(Item: TJvTimeItem; var R: TRect);
+procedure TJvCustomTimeLine.DrawItem(Item: TJvTimeItem; ACanvas: TCanvas; var R: TRect);
 begin
-  if Assigned(FOnDrawItem) then
-    FOnDrawItem(self, Canvas, Item, R);
+  if Assigned(FOnDrawItem) and (FStyle in [tlOwnerDrawVariable, tlOwnerDrawFixed]) then
+    FOnDrawItem(self, ACanvas, Item, R)
+  else
+  begin
+    ACanvas.Brush.Color := Item.Color;
+    ACanvas.Font.Color := Item.TextColor;
+
+    if Assigned(FImages) and (Item.ImageIndex > -1) then
+    begin
+      if FUpdate = 0 then
+      begin
+        ACanvas.Brush.Color := Color;
+        ACanvas.FillRect(Rect(R.Left + Item.ImageOffset,
+          R.Top, R.Left + Item.ImageOffset + FImages.Width,
+          R.Top + FImages.Height));
+        with FImages do
+          Draw(ACanvas, R.Left + Item.ImageOffset, R.Top, Item.ImageIndex, Item.Enabled);
+      end;
+      Inc(R.Top, FImages.Height + 4); { adjust top to make room for text drawing }
+    end;
+
+    if (FUpdate = 0) then
+    begin
+      if Item.Selected and Item.Enabled then
+      begin
+        ACanvas.Brush.Color := clHighLight;
+        ACanvas.Font.Color := clHighLightText;
+      end
+      else if not Item.Enabled then
+      begin
+        ACanvas.Brush.Color := Color;
+        ACanvas.Font.Color := Color xor clWhite;
+      end
+      else
+      begin
+        ACanvas.Brush.Color := Item.Color;
+        ACanvas.Font.Color := Item.TextColor;
+      end;
+
+      ACanvas.Pen.Color := Item.TextColor;
+      if (Length(Item.Caption) > 0) then
+      begin
+        R.Bottom := Min(R.Top + ACanvas.TextHeight(Item.Caption), R.Bottom);
+
+        ACanvas.Rectangle(R);
+        R.Left := R.Left + 2;
+        SetBkMode(ACanvas.Handle, TRANSPARENT);
+        DrawTextEx(ACanvas.Handle, PChar(Item.Caption), Length(Item.Caption), R,
+          DT_LEFT or DT_NOPREFIX or DT_SINGLELINE or DT_END_ELLIPSIS, nil);
+      end
+      else
+      begin
+        R.Bottom := Min(R.Top + ACanvas.TextHeight('Wq'), R.Bottom);
+        ACanvas.Rectangle(R);
+        if Item.Selected and Item.Enabled then
+          ACanvas.DrawFocusRect(R);
+      end;
+    end;
+  end;
 end;
 
 procedure TJvCustomTimeLine.VertScroll(ScrollCode: TScrollCode; var ScrollPos: integer);
@@ -1792,7 +1844,7 @@ begin
     FOnLoadItem(self, Item, Stream);
 end;
 
-procedure TJvCustomTimeLine.UpdateItem(Index: integer);
+procedure TJvCustomTimeLine.UpdateItem(Index: integer; ACanvas: TCanvas);
 var
   aHeight: integer;
   aItem: TJvTimeItem;
@@ -1800,11 +1852,10 @@ var
 begin
   UpdateOffset;
   aItem := FTimeItems[Index];
-  Canvas.Font := Font;
+  ACanvas.Font := Font;
   aHeight := FItemHeight;
 
-  if (FStyle = tlOwnerDrawVariable) then
-    MeasureItem(aItem, aHeight);
+  MeasureItem(aItem, aHeight);
 
   aRect.Left := PosAtDate(aItem.Date);
   aRect.Top := FItemOffset + (aHeight * (aItem.Level - FTopLevel));
@@ -1814,77 +1865,12 @@ begin
   else
     aRect.Right := PosAtDate(aItem.Date + aItem.Width);
 
-  aItem.FRect := aRect;
   FNewHeight := Max(aRect.Bottom + FTopOffset, FNewHeight);
-  if (aItem.Level < FTopLevel) or not RectInRect(aItem.FRect, ClientRect) or (FUpdate <> 0) then
+  if (aItem.Level < FTopLevel) or not RectInRect(aRect, ClientRect) or (FUpdate <> 0) then
     Exit;
-
-  {  if (aItem.Level < FTopLevel)
-      or (aItem.Top > FNewHeight)
-         or (aItem.Date < FFirstDate - 5)
-           or (aItem.Date > GetLastDate + 5)
-             or (FUpdate <> 0 ) then
-               Exit;}
-
-  if (FStyle in [tlOwnerDrawVariable, tlOwnerDrawFixed]) then
-  begin
-    Canvas.Brush.Color := aItem.Color;
-    Canvas.Font.Color := aItem.TextColor;
-    DrawItem(aItem, aRect);
-    Exit;
-  end;
-
-  if Assigned(FImages) and (aItem.ImageIndex > -1) then
-  begin
-    if FUpdate = 0 then
-    begin
-      Canvas.Brush.Color := Color;
-      Canvas.FillRect(Rect(aRect.Left + aItem.ImageOffset,
-        aRect.Top, aRect.Left + aItem.ImageOffset + FImages.Width,
-        aRect.Top + FImages.Height));
-      with FImages do
-        Draw(Canvas, aRect.Left + aItem.ImageOffset, aRect.Top, aItem.ImageIndex, aItem.Enabled);
-    end;
-    Inc(aRect.Top, FImages.Height + 4); { adjust top to make room for text drawing }
-  end;
-
-  if (FUpdate = 0) then
-  begin
-    if aItem.Selected and aItem.Enabled then
-    begin
-      Canvas.Brush.Color := clHighLight;
-      Canvas.Font.Color := clHighLightText;
-    end
-    else if not aItem.Enabled then
-    begin
-      Canvas.Brush.Color := Color;
-      Canvas.Font.Color := Color xor clWhite;
-    end
-    else
-    begin
-      Canvas.Brush.Color := aItem.Color;
-      Canvas.Font.Color := aItem.TextColor;
-    end;
-
-    Canvas.Pen.Color := aItem.TextColor;
-    if (Length(aItem.Caption) > 0) then
-    begin
-      aRect.Bottom := Min(aRect.Top + Canvas.TextHeight(aItem.Caption), aRect.Bottom);
-
-      Canvas.Rectangle(aRect);
-      aRect.Left := aRect.Left + 2;
-      SetBkMode(Canvas.Handle, TRANSPARENT);
-      DrawTextEx(Canvas.Handle, PChar(aItem.Caption), Length(aItem.Caption), aRect,
-        DT_LEFT or DT_NOPREFIX or DT_SINGLELINE or DT_END_ELLIPSIS, nil);
-    end
-    else
-    begin
-      aRect.Bottom := Min(aRect.Top + Canvas.TextHeight('Wq'), aRect.Bottom);
-      Canvas.Rectangle(aRect);
-      if aItem.Selected and aItem.Enabled then
-        Canvas.DrawFocusRect(aRect);
-    end;
-  end;
+  aItem.FRect := aRect;
+  DrawItem(aItem, ACanvas, aRect);
+  aItem.FRect := aRect;
 end;
 
 procedure TJvCustomTimeLine.UpdateItems;
@@ -1892,7 +1878,7 @@ var i: integer;
 begin
   FNewHeight := 0;
   for i := 0 to FTimeItems.Count - 1 do
-    UpdateItem(i);
+    UpdateItem(i, Canvas);
   if FAutoSize and (Align in [alTop, alBottom, alNone])
     and (Height <> FNewHeight + FScrollHeight + 2) and (Items.Count > 0) then
   begin
@@ -2267,14 +2253,12 @@ end;
 procedure TJvCustomTimeLine.NextMonth;
 begin
   //PRY 2002.06.04
-  //SetFirstDate(IncMonth(FFirstDate));
   SetFirstDate(IncMonth(FFirstDate, 1));
 end;
 
 procedure TJvCustomTimeLine.NextYear;
 begin
   //PRY 2002.06.04
-  //SetFirstDate(IncYear(FFirstDate));
   SetFirstDate(IncYear(FFirstDate, 1));
 end;
 
@@ -2286,7 +2270,6 @@ end;
 procedure TJvCustomTimeLine.PrevYear;
 begin
   //PRY 2002.06.04
-  //SetFirstDate(IncYear(FFirstDate, -1));
   SetFirstDate(IncYear(FFirstDate, -1));
 end;
 
@@ -2313,10 +2296,7 @@ begin
     DragLine := false;
     inherited;
     if Assigned(FSelectedItem) then
-    begin
-      FLineVisible := false;
       ItemDblClick(FSelectedItem);
-    end;
   finally
     DragLine := tmp;
   end;
@@ -2326,11 +2306,71 @@ procedure TJvCustomTimeLine.Click;
 begin
   inherited;
   if Assigned(FSelectedItem) then
-  begin
     ItemClick(FSelectedItem);
-    FLineVisible := false;
-  end;
   Invalidate;
+end;
+
+function TJvCustomTimeLine.GetDragImages: TDragImageList;
+begin
+  Result := FDragImages;
+end;
+
+procedure TJvCustomTimeLine.DoEndDrag(Target: TObject; X, Y: Integer);
+begin
+  if FSelectedItem <> nil then FSelectedItem.Update;
+  FreeAndNil(FDragImages);
+  inherited;
+end;
+
+procedure TJvCustomTimeLine.DoStartDrag(var DragObject: TDragObject);
+var bmp: TBitmap; P: TPoint; R: TRect;H:integer;
+begin
+  inherited;
+  GetCursorPos(P);
+  P := ScreenToClient(P);
+
+  FSelectedItem := ItemAtPos(P.X, P.Y);
+  FreeAndNil(FDragImages);
+  if (FSelectedItem <> nil) then
+  begin
+    bmp := TBitmap.Create;
+    try
+      bmp.PixelFormat := pf24bit;
+      MeasureItem(FSelectedItem,H);
+      with FSelectedItem.FRect do
+        bmp.Width := Right - Left;
+      bmp.Height := H;
+      FDragImages := TImageList.CreateSize(bmp.Width, H);
+      R := Rect(0, 0, bmp.Width, H);
+      DrawItem(FSelectedItem, bmp.Canvas, R);
+      FDragImages.AddMasked(bmp, bmp.TransparentColor);
+      FDragImages.DragCursor := DragCursor;
+      with FSelectedItem.FRect do
+        FDragImages.SetDragImage(0, P.X-Left, P.Y-Top);
+    finally
+      bmp.Free;
+    end;
+  end;
+  if not FLineVisible then
+    DrawDragLine(P.X);
+  OldX := P.X;
+end;
+
+procedure TJvCustomTimeLine.DragDrop(Source: TObject; X, Y: Integer);
+begin
+  inherited;
+  if FLineVisible then
+    DrawDragLine(OldX);
+  OldX := 0;
+  if FSelectedItem <> nil then Invalidate;
+end;
+
+procedure TJvCustomTimeLine.DragOver(Source: TObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+begin
+  inherited;
+  MoveDragLine(OldX,X);
+  OldX := X;
 end;
 
 initialization
