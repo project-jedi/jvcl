@@ -191,10 +191,13 @@ object GradCaptionsEditor: TGradCaptionsEditor
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
+    MinFontSize = 0
+    MaxFontSize = 0
     Left = 24
     Top = 76
   end
   object ColorDialog: TColorDialog
+    Ctl3D = True
     Left = 84
     Top = 76
   end
@@ -205,13 +208,16 @@ object GradCaptionsEditor: TGradCaptionsEditor
     Top = 24
   end
   object FormStorage: TJvFormStorage
-    Active = False
-    RegistryRoot = hkClassesRoot
-    UseRegistry = True
+    AppStorage = AppStore
     StoredValues = <
       item
       end>
     Left = 80
+    Top = 24
+  end
+  object AppStore: TJvAppRegistryStore
+    RegRoot = hkCurrentUser
+    Left = 133
     Top = 24
   end
 end

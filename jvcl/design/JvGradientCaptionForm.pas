@@ -38,7 +38,7 @@ uses
   LibIntf, DsgnIntf,
   {$ENDIF}
   JvFormPlacement, JvGradientCaption, JvListBox, JvCtrls,
-  JvComponent, JvToolEdit;
+  JvComponent, JvToolEdit, JvAppStore, JvAppRegistryStore;
 
 type
   TGradCaptionsEditor = class(TForm)
@@ -63,6 +63,7 @@ type
     FormStorage: TJvFormStorage;
     CaptionList: TListBox;
     CaptionFont: TJvComboEdit;
+    AppStore: TJvAppRegistryStore;
     procedure FormCreate(Sender: TObject);
     procedure CaptionListClick(Sender: TObject);
     procedure CaptionListDragDrop(Sender, Source: TObject; X, Y: Integer);
@@ -308,7 +309,7 @@ end;
 
 procedure TGradCaptionsEditor.FormCreate(Sender: TObject);
 begin
-  FormStorage.IniFileName := SDelphiKey;
+  AppStore.Root := SDelphiKey;
   CaptionInactiveColor.Items.BeginUpdate;
   try
     GetColorValues(AddColorItem);
