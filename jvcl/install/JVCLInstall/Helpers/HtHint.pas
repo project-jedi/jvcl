@@ -282,11 +282,21 @@ var
   R: TRect;
 begin
   R := ClientRect;
+  {$IFDEF VisualCLX}
+  Canvas.Brush.Color := Color;
+  Canvas.Brush.Style := bsSolid;
+  {$ENDIF VisualCLX}
   Inc(R.Left, 2);
   Inc(R.Top, 2);
   Canvas.Font.Color := Screen.HintFont.Color;
 
   ItemHtDraw(Canvas, R, [odDefault], Text, False);
+  {$IFDEF VisualCLX}
+  Canvas.Brush.Style := bsClear;
+  Dec(R.Left, 2);
+  Dec(R.Top, 2);
+  DrawShadeRect(Canvas, R, False, 1, 0);
+  {$ENDIF VisualCLX}
 end;
 
 end.
