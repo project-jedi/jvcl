@@ -15,7 +15,7 @@ uses
 // is not verified by the function.
 // If Origin and Destination are on different partitions,
 // the function returns Destination
-function GetRelativePath(Origin, Destination : string) : string;
+function GetRelativePath(const Origin, Destination : string) : string;
 
 // returns the given path without any relative instructions inside
 // for instance, if you pass c:\a\b\..\c\.\d, it returns c:\a\c\d
@@ -23,7 +23,7 @@ function GetRelativePath(Origin, Destination : string) : string;
 // relative paths instructions.
 // If there are more ..\ than paths in front of it, the result
 // is undefined (most likely an exception will be triggered)
-function PathNoInsideRelative(Path : string) : string;
+function PathNoInsideRelative(const Path : string) : string;
 
 // Sets the date and time of the indicated file
 // This function with this signature doesn't exists in D5 so
@@ -34,6 +34,9 @@ implementation
 
 uses
   Classes,
+  {$IFDEF COMPILER6_UP}
+  StrUtils,
+  {$ENDIF COMPILER6_UP}
   {$IFDEF NO_JCL}
   UtilsJcl,
   {$ELSE}
@@ -41,31 +44,35 @@ uses
   {$ENDIF NO_JCL}
   SysUtils;
 
-function StrEnsureNoPrefix(prefix : string; str : string) : string;
-var
-  prefixLength : Integer;
+{$IFDEF COMPILER5}
+function AnsiStartsStr(const SubStr, S: string): Boolean;
 begin
-  prefixLength := Length(prefix);
-  if Copy(str, 1, prefixLength) = prefix then
-    Result := Copy(str, prefixLength+1, Length(str))
+  Result := StrLComp(PChar(S), PChar(SubStr), Length(SubStr)) = 0;
+end;
+
+function AnsiEndsStr(const SubStr, S: string): Boolean;
+begin
+  Result := StrLComp(PChar(S) + Length(S) - Length(SubStr), PChar(SubStr), Length(SubStr)) = 0;
+end;
+{$ENDIF COMPILER5}
+
+function StrEnsureNoPrefix(const prefix, str : string) : string;
+begin
+  if AnsiStartsStr(prefix, str) then
+    Result := Copy(str, Length(prefix)+1, MaxInt)
   else
     Result := str;
 end;
 
-function StrEnsureNoSuffix(suffix : string; str : string) : string;
-var
-  suffixLength : Integer;
-  strLength : Integer;
+function StrEnsureNoSuffix(const suffix, str : string) : string;
 begin
-  suffixLength := Length(suffix);
-  strLength := Length(str);
-  if Copy(str, strLength-suffixLength+1, suffixLength) = suffix then
-    Result := Copy(str, 1, strLength-suffixLength)
+  if AnsiEndsStr(suffix, str) then
+    Result := Copy(str, 1, Length(str)-Length(suffix))
   else
     Result := str;
 end;
 
-function GetRelativePath(Origin, Destination : string) : string;
+function GetRelativePath(const Origin, Destination : string) : string;
 var
   OrigList : TStringList;
   DestList : TStringList;
@@ -127,7 +134,7 @@ begin
   end;
 end;
 
-function PathNoInsideRelative(Path : string) : string;
+function PathNoInsideRelative(const Path : string) : string;
 var
   PathList : TStringList;
   i : Integer;
