@@ -354,37 +354,35 @@ begin
   FReg.OpenKeyReadOnly(AKey);
 end;
 
-function RegDataTypeToString(Value: TRegDataType): string;
+function RegTypes(AType : Integer) : String;
+const
+  StrTypes : Array[0..10] of String = ('REG_NONE', 'REG_SZ','REG_EXPAND_SZ',
+    'REG_BINARY','REG_DWORD','REG_DWORD_BIG_ENDIAN','REG_LINK','REG_MULTI_SZ',
+    'REG_RESOURCE_LIST','REG_FULL_RESOURCE_DESCRIPTOR','REG_RESOURCE_REQUIREMENTS_LIST');
 begin
-  case Value of
-    rdString:
-      Result := 'REG_SZ';
-    rdExpandString:
-      Result := 'REG_EXPAND_SZ';
-    rdInteger:
-      Result := 'REG_DWORD';
-    rdBinary:
-      Result := 'REG_BINARY';
+  if (AType >= 0) and (AType <= High(StrTypes)) then
+    Result := StrTypes[AType]
   else
-    Result := 'REG_NONE';
-  end;
+    Result := 'UNKNOWN';
 end;
 
 function TJvRegistryTreeView.FillListView(Node: TTreeNode): Boolean;
 var
-  Strings: TStringList;
-  I: Integer;
+  I,J: Integer;
   TmpItem: TListItem;
-  Buffer: array [0..4095] of Byte;
-  S: string;
+  S, T: string;
   DefaultSet: Boolean;
-  AListView: TListViewAccessProtected;
+  Info: TRegKeyInfo;
+  D : Array of Byte;
+  DataType : Cardinal;
+  Len, Len1 : Cardinal;
+  AListView:TListViewAccessProtected;
 begin
   Result := False;
   if not Assigned(FListView) then
     Exit;
-  AListView := TListViewAccessProtected(FListView);
   OpenRegistry(Node);
+  AListView := TListViewAccessProtected(FListView);
   AListView.Items.BeginUpdate;
   try
     AListView.Items.Clear;
@@ -396,54 +394,61 @@ begin
     DefaultSet := False;
     if FReg.OpenKeyReadOnly(GetKeyPath(Node)) then
     begin
-      Strings := TStringList.Create;
-      FReg.GetValueNames(Strings);
-
-      for I := 0 to Strings.Count - 1 do
+      if FReg.GetKeyInfo(Info) then
       begin
+        for I := 0 to Info.NumValues - 1 do
+        begin
+          Len := Info.MaxValueLen + 1;
+          Len1 := Info.MaxDataLen + 1;
+          SetLength(S, Len);
+          SetLength(D, Len1);
+          DataType := 0;
+          RegEnumValue(FReg.CurrentKey, I, PChar(S), Len, nil, @DataType, @D[0], @Len1);
+          SetLength(S,Len);
         { set default item }
-        if (Strings[I] = '') and not DefaultSet then
-        begin
-          TmpItem := AListView.Items.Insert(0);
-          TmpItem.Caption := FDefaultCaption;
-          DefaultSet := True;
-        end
-        else
-        begin
-          TmpItem := AListView.Items.Add;
-          TmpItem.Caption := Strings[I];
-        end;
-
-        case FReg.GetDataType(Strings[I]) of
-          rdUnknown:
-            begin
-              TmpItem.ImageIndex := imText;
-              TmpItem.SubItems.Add(RsUnknownCaption);
-            end;
-          rdString, rdExpandString:
-            begin
-              S := FReg.ReadString(Strings[I]);
-              if (S = '') and AnsiSameText(TmpItem.Caption, FDefaultCaption) then
-                S := FDefaultNoValue
-              else
-                S := Format('"%s"', [S]);
-              TmpItem.ImageIndex := imText;
-              TmpItem.SubItems.Add(S);
-            end;
-          rdInteger:
+          if (S = '') and not DefaultSet then
+          begin
+            TmpItem := AListView.Items.Insert(0);
+            TmpItem.Caption := FDefaultCaption;
+            DefaultSet := True;
+          end
+          else
+          begin
+            TmpItem := AListView.Items.Add;
+            TmpItem.Caption := S;
+          end;
+          case DataType of
+            REG_SZ, REG_EXPAND_SZ,REG_MULTI_SZ :
+              begin
+                if DataType = REG_MULTI_SZ then
+                  for J := 0 to Pred(Len1) do
+                    if D[J] = 0 then
+                      D[J] := Ord(' ');
+                T := String(PChar(D));
+                if (T = '') and AnsiSameText(TmpItem.Caption, FDefaultCaption) then
+                  T := FDefaultNoValue;
+                TmpItem.ImageIndex := imText;
+                TmpItem.SubItems.Add(T);
+              end;
+            REG_DWORD :
+              begin
+                TmpItem.ImageIndex := imBin;
+                TmpItem.SubItems.Add(Format('0x%.8x (%d)', [Cardinal(D),
+                  Cardinal(D)]));
+              end;
+            REG_NONE:
+              begin
+                TmpItem.ImageIndex := imText;
+                TmpItem.SubItems.Add(RsUnknownCaption);
+              end;
+            else
             begin
               TmpItem.ImageIndex := imBin;
-              TmpItem.SubItems.Add(Format('0x%.8x (%d)', [FReg.ReadInteger(Strings[I]),
-                FReg.ReadInteger(Strings[I])]));
+              TmpItem.SubItems.Add(BufToStr(D, Len1));
             end;
-          rdBinary:
-            begin
-              TmpItem.ImageIndex := imBin;
-              FReg.ReadBinaryData(Strings[I], Buffer, SizeOf(Buffer));
-              TmpItem.SubItems.Add(BufToStr(Buffer, FReg.GetDataSize(Strings[I])));
-            end;
+          end;
+          TmpItem.SubItems.Add(RegTypes(DataType));
         end;
-        TmpItem.SubItems.Add(RegDataTypeToString(FReg.GetDataType(Strings[I])));
       end;
       Result := True;
     end;
