@@ -190,6 +190,17 @@ type
     property OnStartDock;
     property OnStartDrag;
   end;
+  // TJvHintSource is a hint enumeration type to describe how to display hints for
+  // controls that have hint properties both for the main control as well as
+  // for it's subitems (like a PageControl)
+  // TODO: (p3) this should really be moved to JvTypes or something...
+  TJvHintSource = (
+    hsDefault,       // use default hint behaviour (i.e as regular control)
+    hsForceMain,     // use the main hint even if subitems have hints
+    hsForceChildren, // always use subitems hints even if empty
+    hsPreferMain,    // use main control hint unless empty then use subitems hints
+    hsPreferChildren // use subitems hints unless empty then use main control hint
+    );
 
   TJvPageControl = class(TPageControl)
   private
@@ -203,6 +214,7 @@ type
     FOnParentColorChanged: TNotifyEvent;
     FDrawTabShadow: Boolean;
     FHandleGlobalTab: Boolean;
+    FHintSource: TJvHintSource;
     procedure SetClientBorderWidth(const Value: TBorderWidth);
     procedure TCMAdjustRect(var Msg: TMessage); message TCM_ADJUSTRECT;
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
@@ -210,9 +222,11 @@ type
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure CMDialogKey(var Msg: TWMKey); message CM_DIALOGKEY;
+    procedure CMHintShow(var Message: TMessage); message CM_HINTSHOW;
     procedure SetDrawTabShadow(const Value: Boolean);
     procedure SetHideAllTabs(const Value: Boolean);
     function FormKeyPreview: Boolean;
+
   protected
     procedure Loaded; override;
     procedure DrawDefaultTab(TabIndex: Integer; const Rect: TRect; Active: Boolean; DefaultDraw: Boolean);
@@ -223,6 +237,7 @@ type
     procedure UpdateTabImages;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property HintSource:TJvHintSource read FHintSource write FHintSource default hsDefault;
     property HandleGlobalTab: Boolean read FHandleGlobalTab write FHandleGlobalTab default False;
     property ClientBorderWidth: TBorderWidth read FClientBorderWidth write SetClientBorderWidth default
       JvDefPageControlBorder;
@@ -771,6 +786,7 @@ begin
   inherited Create(AOwner);
   FColor := clInfoBk;
   FClientBorderWidth := JvDefPageControlBorder;
+  FHintSource := hsDefault;
 end;
 
 function TJvPageControl.FormKeyPreview: Boolean;
@@ -1845,6 +1861,42 @@ begin
   // (see MSDN: CCM_SETUNICODEFORMAT explanation for details)
   if HandleAllocated and (Win32Platform <> VER_PLATFORM_WIN32_NT) then
     SendMessage(Handle, TVM_SETUNICODEFORMAT, integer(Value), 0);
+end;
+
+procedure TJvPageControl.CMHintShow(var Message: TMessage);
+var
+  TabNo:integer;
+  Tab:TTabsheet;
+begin
+  inherited;
+
+  if FHintSource = hsDefault then Exit;
+
+  if TCMHintShow(Message).Result = 1 then Exit;
+(*
+    hsDefault,    // use default hint behaviour (i.e as regular control)
+    hsForceMain,  // use the main controls hint even if subitems have hints
+    hsForceChildren, // always use subitems hints even if empty and main control has hint
+    hsPreferMain, // use main control hint unless empty then use subitems hints
+    hsPreferChildren // use subitems hints unless empty then use main control hint
+    );
+*)
+
+  with TCMHintShow(Message) do
+  begin
+    if (Result = 1) or (Self <> HintInfo^.HintControl) then Exit; // strange, hint requested by other component. Why should we deal with it?
+    with HintInfo^.CursorPos do
+      TabNo := IndexOfTabAt(X, Y); // X&Y are expected in Client coordinates
+
+    if (TabNo >= 0) and (TabNo < PageCount) then
+       Tab := Pages[TabNo]
+    else
+      Tab := nil;
+    if (FHintSource = hsForceMain) or ((FHintSource = hsPreferMain) and (GetShortHint(Hint) <> '')) then
+      HintInfo^.HintStr := GetShortHint(Hint)
+    else if (Tab <> nil) and ((FHintSource = hsForceChildren) or ((FHintSource = hsPreferChildren) and (GetShortHint(Tab.Hint) <> ''))) then
+      HintInfo^.HintStr := GetShortHint(Tab.Hint)
+  end;
 end;
 
 end.
