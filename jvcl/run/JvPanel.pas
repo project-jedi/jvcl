@@ -349,7 +349,9 @@ end;
 constructor TJvPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csNeedsBorderPaint, csParentBackground]);
+  {$ENDIF VCL}
   FHintColor := clInfoBk;
   FOver := False;
   FTransparent := False;
@@ -723,6 +725,9 @@ end;
 
 procedure TJvPanel.Resize;
 begin
+  {$IFDEF VisualCLX}
+  if Assigned(FArrangeSettings) then
+  {$ENDIF VisualCLX}
   if FArrangeSettings.AutoArrange then
     ArrangeControls;
   inherited Resize;
