@@ -350,8 +350,16 @@ begin
         SortField := DSet.FieldByName(FieldsToSort[FTS].Name);
         if (SortField is TBlobField) or (SortField is TBytesField) or
           ((SortField.FieldKind <> fkData) and (SortField.FieldKind <> fkInternalCalc)) then
+        begin
           // No sorting of binary or special fields
-          raise EJVCLDbGridException.CreateRes(@RsEJvDBGridBadFieldKind)
+          if BeepOnError then
+          begin
+            SysUtils.Beep;
+            continue;
+          end
+          else
+            raise EJVCLDbGridException.CreateRes(@RsEJvDBGridBadFieldKind);
+        end
         else
         if SortWith = swIndex then
         begin
