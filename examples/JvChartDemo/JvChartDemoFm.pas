@@ -76,6 +76,7 @@ type
     PrintOptions1: TMenuItem;
     PrinterSetupDialog1: TPrinterSetupDialog;
     PrintDialog1: TPrintDialog;
+    MenuSecondaryAxisMode: TMenuItem;
     procedure FormResize(Sender: TObject);
     procedure ButtonLineClick(Sender: TObject);
     procedure ButtonBarChartClick(Sender: TObject);
@@ -106,6 +107,9 @@ type
     procedure DateTimeAxisModeClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure PrintOptions1Click(Sender: TObject);
+    procedure MenuSecondaryAxisModeClick(Sender: TObject);
+    procedure ListBox1DblClick(Sender: TObject);
+    procedure ListBox1Click(Sender: TObject);
   private
 
       // Our waveform generator uses the following as state-variables:
@@ -174,6 +178,11 @@ begin
         // This would be redundant, and would be a waste of memory
         // if Chart.Options.XAxisDateTimeMode was also set.
         Chart.Options.XLegends.Add(FormatDateTime('hh:nn:ss', Fds) );
+
+   if MenuSecondaryAxisMode.Checked then begin
+      Chart.Data.Value[3,I] :=  Random(120); // scatter
+   end;
+
 
 
 end;
@@ -264,17 +273,39 @@ begin
     Title := 'Chart Title';
     XAxisHeader := 'Date/Time';
     YAxisHeader := 'Readings (ng/m3)';
-    PenCount := 3;
+
+    // Try out the pen styles:
+    PenStyle[0] := psSolid;
+    PenStyle[1] := psDash;
+    PenStyle[2] := psDot;
+
+    if MenuSecondaryAxisMode.Checked then begin
+        PenCount := 4; // Add a pen for right side demo.
+        SecondaryYAxis.YMax := 120; // Example shows Q/A percentage. Experimental results
+                                    // results are compared to expected results, and the
+                                    // response percentage, is plotted from 0% to 120%
+                                    // of expected value.
+        SecondaryYAxis.YMin := 0;
+        SecondaryYAxis.YLegendDecimalPlaces := 2;
+        PenSecondaryAxisFlag[3] := True; // Move pen index 3 (Fourth pen) to secondary axis.
+        PenMarkerKind[3] := pmkDiamond;
+        PenStyle[3]      := psClear; // Markers only, no lines.
+    end else
+        PenCount := 3;
 
     PenLegends.Clear;
     PenLegends.Add('HgT');
     PenLegends.Add('Hg0');
     PenLegends.Add('Hg2+');
+    if MenuSecondaryAxisMode.Checked then
+        PenLegends.Add('Quality%');
 
     PenUnit.Clear;
     PenUnit.Add('ug/m3');
     PenUnit.Add('ug/m3');
     PenUnit.Add('ug/m3');
+    if MenuSecondaryAxisMode.Checked then
+        PenUnit.Add('%'); // Optional Pen in percentage scale.
 
     //ShowLegend := TRUE;
     Legend := clChartLegendBelow;
@@ -481,6 +512,10 @@ procedure TJvChartDemoForm.ShowDataInListbox1Click(Sender: TObject);
 begin
   ShowDataInListbox1.Checked := not ShowDataInListbox1.Checked;
   ListBox1.Visible := ShowDataInListbox1.Checked;
+
+  if not ShowDataInListbox1.Checked then begin
+      Chart.CursorPosition := -1; // Invisible.
+  end;
 end;
 
 procedure TJvChartDemoForm.LargeDataset576samples1Click(Sender: TObject);
@@ -505,6 +540,27 @@ end;
 procedure TJvChartDemoForm.PrintOptions1Click(Sender: TObject);
 begin
     PrinterSetupDialog1.Execute;
+end;
+
+procedure TJvChartDemoForm.MenuSecondaryAxisModeClick(Sender: TObject);
+begin
+   MenuSecondaryAxisMode.Checked := not MenuSecondaryAxisMode.Checked;
+
+   NewValues;
+
+
+
+end;
+
+procedure TJvChartDemoForm.ListBox1DblClick(Sender: TObject);
+begin
+Chart.CursorPosition := ListBox1.ItemIndex; // Highlight one sample.
+end;
+
+procedure TJvChartDemoForm.ListBox1Click(Sender: TObject);
+begin
+Chart.CursorPosition := ListBox1.ItemIndex; // Highlight one sample.
+
 end;
 
 end.

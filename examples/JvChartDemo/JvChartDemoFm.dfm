@@ -63,6 +63,8 @@ object JvChartDemoForm: TJvChartDemoForm
     Options.AxisFont.Style = []
     Options.PaperColor = clWhite
     Options.AxisLineColor = clBlack
+    Options.CursorColor = clBlack
+    Options.CursorStyle = psDot
   end
   object Splitter1: TSplitter
     Left = 121
@@ -348,6 +350,8 @@ object JvChartDemoForm: TJvChartDemoForm
     ParentFont = False
     TabOrder = 1
     Visible = False
+    OnClick = ListBox1Click
+    OnDblClick = ListBox1DblClick
   end
   object ColorDialog1: TColorDialog
     Options = [cdFullOpen]
@@ -365,7 +369,7 @@ object JvChartDemoForm: TJvChartDemoForm
     Top = 5
   end
   object MainMenu1: TMainMenu
-    Left = 202
+    Left = 204
     Top = 8
     object Demo1: TMenuItem
       Caption = '&Demo'
@@ -412,6 +416,10 @@ object JvChartDemoForm: TJvChartDemoForm
       object DateTimeAxisMode: TMenuItem
         Caption = 'Date/Time Axis Mode'
         OnClick = DateTimeAxisModeClick
+      end
+      object MenuSecondaryAxisMode: TMenuItem
+        Caption = '&Secondary (Right-Side) Y Axis '
+        OnClick = MenuSecondaryAxisModeClick
       end
       object N4: TMenuItem
         Caption = '-'
