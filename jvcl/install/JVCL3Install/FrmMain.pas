@@ -75,7 +75,7 @@ type
     CheckBoxOptDxgettext: TCheckBox;
     CheckBoxOptJvGIF: TCheckBox;
     CheckBoxShowRuntimePackages: TCheckBox;
-    Panel1: TPanel;
+    PanelTargetOptions: TPanel;
     Bevel1: TBevel;
     Bevel2: TBevel;
     Bevel3: TBevel;
@@ -94,6 +94,9 @@ type
     Bevel7: TBevel;
     CheckBoxPersonalEdition: TCheckBox;
     Bevel8: TBevel;
+    Label1: TLabel;
+    BtnBrowseJCLDir: TButton;
+    EditJCLDir: TEdit;
     procedure BtnQuitClick(Sender: TObject);
     procedure BtnAdvancedOptionsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -218,6 +221,9 @@ begin
       end;
 
       ListItem.Data := TargetList[i];
+
+      if (xJCLDir = '') and (TargetList[i].JCLDir <> '') then
+        SetxJCLDir(TargetList[i].JCLDir);
     end;
     UpdateTargetList;
   finally
@@ -475,7 +481,9 @@ begin
   TargetList.LoadFromFile(ChangeFileExt(ParamStr(0), '.ini'));
 
   FXPThemeSupportFirstClick := True;
-  FillTargetList;
+  FillTargetList; // may change xJCLDir
+
+  EditJCLDir.Text := xJCLDir;
 end;
 
 procedure TFormMain.FormShow(Sender: TObject);
@@ -562,7 +570,6 @@ procedure TFormMain.ListViewTargetsChange(Sender: TObject; Item: TListItem;
   Change: TItemChange);
 var
   Target: TTargetInfo;
-  Dir: string;
 begin
   if Change = ctState then
   begin
@@ -581,28 +588,7 @@ begin
         begin
           Item.Checked := False;
           if not FInFillingList then // set in FillTargetList()
-          begin
-           // ask user for JCL root directory
-            Dir := Target.RootDir;
-            if SelectDirectory('Select JCL root directory', '', Dir) then
-            begin
-              if DirectoryExists(Dir + '\source\common') then
-              begin
-                Target.SetJCLDir(Dir);
-                Item.Checked := True;
-              end
-              else
-              begin
-                Dir := '';
-                MessageDlg('No \source\common directory found.', mtError, [mbOk], 0);
-              end;
-            end
-            else
-              Dir := '';
-            if Dir = '' then
-              MessageDlg('JCL is not installed for this target and no JCL directory available.'#10 +
-                         'Please install the newest JCL or download it to $(JVCL)\..\JCL', mtWarning, [mbOk], 0);
-          end;
+            BtnBrowseJCLDir.Click;
         end;
       end;
       Target.CompileFor := Item.Checked;
@@ -781,11 +767,37 @@ procedure TFormMain.BtnHppFilesBrowseClick(Sender: TObject);
 var
   Dir: string;
 begin
-  Dir := SelTarget.HppFilesDir;
-  if BrowseDirectory(Dir, 'Select the directory where the .hpp files should go.', 0) then
+  if Sender = BtnHppFilesBrowse then
   begin
-    SelTarget.HppFilesDir := Dir;
-    EditHppFilesDir.Text := SelTarget.InsertDirMacros(SelTarget.HppFilesDir);
+    Dir := SelTarget.HppFilesDir;
+    if BrowseDirectory(Dir, 'Select the directory where the .hpp files should go.', 0) then
+    begin
+      SelTarget.HppFilesDir := Dir;
+      EditHppFilesDir.Text := SelTarget.InsertDirMacros(SelTarget.HppFilesDir);
+    end;
+  end
+  else
+  if Sender = BtnBrowseJCLDir then
+  begin
+   // ask user for JCL root directory
+    Dir := xJCLDir;
+    if Dir = '' then
+      Dir := SelTarget.RootDir;
+    if BrowseDirectory(Dir, 'Select JCL root directory', 0) then
+    begin
+      if DirectoryExists(Dir + '\source\common') then
+      begin
+        SelTarget.SetJCLDir(Dir);
+        SetxJCLDir(Dir);
+        EditJCLDir.Text := xJCLDir;
+      end
+      else
+        MessageDlg('No \source\common directory found.', mtError, [mbOk], 0);
+    end;
+
+    if Dir = '' then
+      MessageDlg('JCL is not installed or no JCL directory is available.'#10 +
+                 'Please install the newest JCL or download it to $(JVCL)\..\JCL', mtWarning, [mbOk], 0);
   end;
 end;
 

@@ -297,6 +297,7 @@ begin
  // Add source paths to "Options" but not to "DcpOptions"
   if SourcePaths <> '' then Options := Options + Format('-U"%s" ', [SourcePaths]);
 
+  SetEnvironmentVariable('JCLDIR', Pointer(FTarget.JCLDir));
   SetEnvironmentVariable('DCCOPT', nil); // used by Delphi
   SetEnvironmentVariable('DCC32', nil); // used by BCB
   SetEnvironmentVariable('ROOT', PChar(FTarget.RootDir));
@@ -321,13 +322,10 @@ begin
   end;
 
   // generate resources if necessary
-  {if not FileExists(JVCLDir + '\Resources\JvCoreReg.dcr') then
-  begin}
-    b := False;
-    CaptureLine('** Generating resources...', b);
-    CaptureExecute('"' + FTarget.RootDir + '\Bin\make.exe"',
-      '-f makefile.mak', JVCLDir + '\images', CaptureLine);
-  {end;}
+  b := False;
+  CaptureLine('** Generating resources...', b);
+  CaptureExecute('"' + FTarget.RootDir + '\Bin\make.exe"',
+    '-f makefile.mak', JVCLDir + '\images', CaptureLine);
 
   if (not IsJCL) or (FTarget.InstallJcl and FTarget.IsBCB) then
   begin
@@ -352,6 +350,7 @@ begin
     finally
       SetEnvironmentVariable('DCCOPT', nil);
       SetEnvironmentVariable('DCC32', nil);
+      SetEnvironmentVariable('JCLDIR', nil);
 
       PrepareBpgData.Cleaning := Result;
       PrepareBpgData.Free;

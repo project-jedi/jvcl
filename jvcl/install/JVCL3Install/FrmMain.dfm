@@ -35,7 +35,7 @@ object FormMain: TFormMain
     OnClick = LblPackagesClick
   end
   object ImageOpen: TImage
-    Left = 152
+    Left = 200
     Top = 4
     Width = 16
     Height = 16
@@ -245,6 +245,14 @@ object FormMain: TFormMain
     OnClick = imgProjectJEDIClick
     OnMouseDown = imgProjectJEDIMouseDown
   end
+  object Label1: TLabel
+    Left = 8
+    Top = 288
+    Width = 21
+    Height = 13
+    Caption = '&JCL:'
+    FocusControl = EditJCLDir
+  end
   object PanelBottom: TPanel
     Left = 0
     Top = 495
@@ -252,7 +260,7 @@ object FormMain: TFormMain
     Height = 41
     Align = alBottom
     BevelOuter = bvNone
-    TabOrder = 3
+    TabOrder = 6
     object BevelTop: TBevel
       Left = 0
       Top = 0
@@ -459,7 +467,7 @@ object FormMain: TFormMain
     Left = 8
     Top = 24
     Width = 209
-    Height = 105
+    Height = 97
     Checkboxes = True
     Columns = <
       item
@@ -486,18 +494,18 @@ object FormMain: TFormMain
   end
   object GroupBoxOptions: TGroupBox
     Left = 8
-    Top = 304
+    Top = 312
     Width = 209
-    Height = 153
+    Height = 145
     Caption = ' JVCL.INC - Options (global) '
     TabOrder = 2
     object BtnAdvancedOptions: TBitBtn
       Left = 104
-      Top = 120
+      Top = 112
       Width = 99
       Height = 25
       Caption = '&Advanced...'
-      TabOrder = 0
+      TabOrder = 4
       OnClick = BtnAdvancedOptionsClick
       Glyph.Data = {
         36030000424D3603000000000000360000002800000010000000100000000100
@@ -541,7 +549,7 @@ object FormMain: TFormMain
       Caption = '&XP Theme Support'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 1
+      TabOrder = 0
       OnClick = CheckBoxOptThemingClick
     end
     object CheckBoxOptRegGlobalDsgnEditor: TCheckBox
@@ -555,7 +563,7 @@ object FormMain: TFormMain
       Caption = '&Register global design editors'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 2
+      TabOrder = 1
       OnClick = CheckBoxOptThemingClick
     end
     object CheckBoxOptDxgettext: TCheckBox
@@ -569,7 +577,7 @@ object FormMain: TFormMain
       Caption = 'Dxge&ttext is installed'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 3
+      TabOrder = 2
       OnClick = CheckBoxOptThemingClick
     end
     object CheckBoxOptJvGIF: TCheckBox
@@ -583,7 +591,7 @@ object FormMain: TFormMain
       Caption = 'Use Jv&GIF'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 4
+      TabOrder = 3
       OnClick = CheckBoxOptThemingClick
     end
   end
@@ -594,16 +602,16 @@ object FormMain: TFormMain
     Height = 17
     Alignment = taLeftJustify
     Caption = 'Show runtime packages'
-    TabOrder = 4
+    TabOrder = 7
     OnClick = CheckBoxShowRuntimePackagesClick
   end
-  object Panel1: TPanel
+  object PanelTargetOptions: TPanel
     Left = 8
-    Top = 128
+    Top = 120
     Width = 214
-    Height = 169
+    Height = 163
     BevelOuter = bvNone
-    TabOrder = 5
+    TabOrder = 3
     object Bevel1: TBevel
       Left = 0
       Top = 0
@@ -686,7 +694,7 @@ object FormMain: TFormMain
       Caption = 'Clean JVCL component palettes'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 0
+      TabOrder = 3
       OnClick = CheckBoxClearJVCLPaletteClick
     end
     object CheckBoxBuild: TCheckBox
@@ -700,7 +708,7 @@ object FormMain: TFormMain
       Caption = 'Build package'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 1
+      TabOrder = 0
       OnClick = CheckBoxClearJVCLPaletteClick
     end
     object CheckBoxDeveloperInstall: TCheckBox
@@ -732,7 +740,7 @@ object FormMain: TFormMain
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 3
+      TabOrder = 1
       OnClick = CheckBoxClearJVCLPaletteClick
     end
     object CheckBoxCompileOnly: TCheckBox
@@ -754,6 +762,7 @@ object FormMain: TFormMain
       Top = 106
       Width = 113
       Height = 21
+      Hint = 'Choose the directory where the .hpp files should go.'
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clGray
@@ -761,16 +770,21 @@ object FormMain: TFormMain
       Font.Name = 'MS Sans Serif'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
       ReadOnly = True
-      TabOrder = 5
+      ShowHint = True
+      TabOrder = 6
     end
     object BtnHppFilesBrowse: TButton
       Left = 184
       Top = 105
       Width = 22
       Height = 22
+      Hint = 'Browse...'
       Caption = '...'
-      TabOrder = 6
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 7
       OnClick = BtnHppFilesBrowseClick
     end
     object CheckBoxHppFilesDir: TCheckBox
@@ -784,7 +798,7 @@ object FormMain: TFormMain
       Caption = 'Hpp files:'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 7
+      TabOrder = 5
       OnClick = CheckBoxClearJVCLPaletteClick
     end
     object CheckBoxPersonalEdition: TCheckBox
@@ -801,6 +815,36 @@ object FormMain: TFormMain
       ShowHint = True
       TabOrder = 8
     end
+  end
+  object BtnBrowseJCLDir: TButton
+    Left = 192
+    Top = 283
+    Width = 22
+    Height = 22
+    Hint = 'Browse...'
+    Caption = '...'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 5
+    OnClick = BtnHppFilesBrowseClick
+  end
+  object EditJCLDir: TEdit
+    Left = 32
+    Top = 284
+    Width = 160
+    Height = 21
+    Hint = 'Choose the JCL root directory.'
+    Color = clBtnFace
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    ParentShowHint = False
+    ReadOnly = True
+    ShowHint = True
+    TabOrder = 4
   end
   object ImageListPackages: TImageList
     Left = 216
