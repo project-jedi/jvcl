@@ -255,6 +255,7 @@ type
 implementation
 
 uses
+  Masks,
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
@@ -527,6 +528,8 @@ var
   URE: TURESearch;
   SL: TWideStringList;
 begin
+  Result := Masks.MatchesMask(Filename,Mask);
+  (*
   // use the regexp engine in JclUnicode
   SL := TWideStringList.Create;
   try
@@ -542,6 +545,7 @@ begin
   finally
     SL.Free;
   end;
+  *)
 end;
 
 procedure TJvRegularExpressionValidator.Validate;
@@ -691,19 +695,22 @@ begin
   try
     for i := 0 to Count - 1 do
     begin
-      Items[i].Validate;
-      if not Items[i].Valid then
+      if Items[i].Enabled then
       begin
-        if (Items[i].ErrorMessage <> '') and (Items[i].ControlToValidate <> nil) then
+        Items[i].Validate;
+        if not Items[i].Valid then
         begin
-          if ValidationSummary <> nil then
-            FValidationSummary.AddError(Items[i].ErrorMessage);
-          if ErrorIndicator <> nil then
-            FErrorIndicator.SetError(Items[i].ControlToValidate,Items[i].ErrorMessage);
+          if (Items[i].ErrorMessage <> '') and (Items[i].ControlToValidate <> nil) then
+          begin
+            if ValidationSummary <> nil then
+              FValidationSummary.AddError(Items[i].ErrorMessage);
+            if ErrorIndicator <> nil then
+              FErrorIndicator.SetError(Items[i].ControlToValidate,Items[i].ErrorMessage);
+          end;
+          Result := false;
+          if not DoValidateFailed(Items[i]) then
+            Exit;
         end;
-        Result := false;
-        if not DoValidateFailed(Items[i]) then
-          Exit;
       end;
     end;
   finally
