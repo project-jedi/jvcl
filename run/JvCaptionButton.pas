@@ -37,6 +37,8 @@ Modified 2003-06-13 (p3):
 
 Known Issues:
 
+  * Msimg32.dll code should be moved to seperate import unit. Code is partly
+    copied from JwaWinGDI.pas.
   * Button can disappear at design-time when switching themes.
   * With more buttons, button can appear hot while mouse is over another caption
     button.
@@ -44,7 +46,6 @@ Known Issues:
     at HandleNCPaintBefore.
   * Buttons on small caption (BorderStyle in [bsSizeToolWin, bsToolWin]) looks
     ugly.
-  * Only tested on XP.
 
 -----------------------------------------------------------------------------}
 // $Id$
@@ -290,56 +291,123 @@ type
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
   end;
 
+function TransparentBlt(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, hHeightDest: Integer;
+  hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer;
+  crTransparent: UINT): BOOL; stdcall;
+function AlphaBlend(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest,
+  nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc,
+  nHeightSrc: Integer; blendFunction: BLENDFUNCTION): BOOL; stdcall;
+
 implementation
 
 uses
   CommCtrl, Buttons, SysUtils,
-  JvThemes,
+  JvThemes, JvFinalize,
   {$IFDEF JVCLThemesEnabled}
   UxTheme,
   {$IFNDEF COMPILER7_UP}
   TmSchema,
   {$ENDIF COMPILER7_UP}
-  JvJVCLUtils, 
+  JvJVCLUtils,
   {$ENDIF JVCLThemesEnabled}
   JvDsgnIntf, JvTypes, JvJCLUtils, JvResources;
 
-{$IFDEF JVCLThemesEnabled}
-
-{ TransparentBlt is included in Windows 98 and later }
+const
+  sUnitName = 'JvCaptionButton';
 
 const
+  { Msimg32.dll is included in Windows 98 and later }
   Msimg32DLLName = 'Msimg32.dll';
-  TransparentBltName = 'TransparentBlt';
 
-type
-  TTransparentBlt = function(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, hHeightDest: Integer;
-    hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; crTransparent: UINT): BOOL; stdcall;
+  TransparentBltName = 'TransparentBlt';
+  AlphaBlendName = 'AlphaBlend';
+
+  htCaptionButton = HTSIZELAST + 1;
+  Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
 
 var
-  _TransparentBlt: TTransparentBlt = nil;
+  GMsimg32Handle: THandle = 0;
+  GTriedLoadMsimg32Dll: Boolean = False;
+
+  _AlphaBlend: Pointer;
+  _TransparentBlt: Pointer;
+
+{$IFDEF JVCLThemesEnabled}
 
 type
+  { (rb) I couldn't get the alpha channel to work with the normal TBitmap so
+         introduced TAlphaBitmap. TBitmapAdapter hides the implementation details
+         of the TBitmap/TAlphaBitmap }
+
+  TAlphaBitmap = class
+  private
+    FHandle: HDC;
+    FBitmapInfo: TBitmapInfo;
+    FDIBHandle: HBitmap;
+    FOldBitmap: HBitmap;
+    FBitsMem: Pointer;
+    FBitCount: Byte;
+    FHasAlphaChannel: Boolean;
+
+    function GetWidth: Integer;
+    function GetHeight: Integer;
+  protected
+    procedure CreateHandle(AWidth, AHeight: Integer);
+    function CreateDIB(ADC: HDC; AWidth, AHeight: Integer): HBitmap;
+    procedure Duplicate(Src: HBitmap);
+    procedure FreeHandle;
+    procedure InitAlpha;
+  public
+    destructor Destroy; override;
+
+    procedure LoadFromResourceID(Instance: THandle; ResID: Integer);
+    procedure LoadFromResourceName(Instance: THandle; const ResName: string);
+
+    property Handle: HDC read FHandle;
+    property Width: Integer read GetWidth;
+    property Height: Integer read GetHeight;
+    property Data: Pointer read FBitsMem;
+    property BitCount: Byte read FBitCount;
+    property HasAlphaChannel: Boolean read FHasAlphaChannel;
+  end;
+
+  TBitmapAdapter = class
+  private
+    FBitmap: TObject;
+    FMargins: TMargins;
+    FTransparentColor: TColorRef;
+    function GetHeight: Integer;
+    function GetWidth: Integer;
+    function GetIsValid: Boolean;
+  public
+    constructor Create; virtual;
+    destructor Destroy; override;
+    procedure Clear;
+
+    procedure LoadFromResourceName(Instance: THandle; const ResName: string);
+    procedure LoadFromResourceID(Instance: THandle; ResID: Integer);
+
+    function Draw(ACanvas: TCanvas; const Rect: TRect; AMargins: PMargins): Boolean;
+    function DrawFixed(ACanvas: TCanvas; const X, Y: Integer): Boolean;
+    function DrawFixedPart(ACanvas: TCanvas; const DestRect: TRect; const SrcX, SrcY: Integer): Boolean;
+    function DrawPart(ACanvas: TCanvas; const SrcRect, DestRect: TRect; AMargins: PMargins): Boolean;
+
+    property Margins: TMargins read FMargins write FMargins;
+    property Width: Integer read GetWidth;
+    property Height: Integer read GetHeight;
+    property IsValid: Boolean read GetIsValid;
+    property TransparentColor: TColorRef read FTransparentColor write FTransparentColor;
+  end;
+
   TGlobalXPData = class
   private
-    FButtons: TBitmap;
-    FButtonWidth: Integer;
-    FButtonHeight: Integer;
-    FButtonCount: Integer;
+    FCaptionButtonHeight: Integer;
+    FCaptionButtonCount: Integer;
+    FCaptionButtons: TBitmapAdapter;
+
     FIsThemed: Boolean;
     FBitmapValid: Boolean;
     FClientCount: Integer;
-    FMsimg32Handle: THandle;
-    FTriedLoadMsimg32Dll: Boolean;
-
-    { See http://www.truelaunchbar.com/spec/skins.html }
-    FSizingMargins: TMargins;
-    //    FContentMargins: TMargins;
-  protected
-    procedure LoadMsimg32Dll;
-    procedure UnloadMsimg32Dll;
-
-    function CanDrawTransparent: Boolean;
   public
     constructor Create; virtual;
     destructor Destroy; override;
@@ -348,19 +416,10 @@ type
     procedure RemoveClient;
 
     procedure Update;
-    procedure DrawSimple(HDC: HDC; State: Integer; const DrawRect: TRect);
-    procedure Draw(HDC: HDC; State: Integer; const DrawRect: TRect);
+    procedure DrawSimple(ACanvas: TCanvas; State: Integer; const DrawRect: TRect);
+    function Draw(ACanvas: TCanvas; State: Integer; const DrawRect: TRect): Boolean;
     property IsThemed: Boolean read FIsThemed;
   end;
-
-{$ENDIF JVCLThemesEnabled}
-
-const
-  htCaptionButton = HTSIZELAST + 1;
-
-  Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
-
-{$IFDEF JVCLThemesEnabled}
 
 var
   GGlobalXPData: TGlobalXPData;
@@ -373,15 +432,6 @@ begin
     GGlobalXPData := TGlobalXPData.Create;
 
   Result := GGlobalXPData;
-end;
-
-function StrArrayIndex(const S: string; const SS: array of string): Integer;
-begin
-  Result := Low(SS);
-  while (Result <= High(SS)) and not SameText(S, SS[Result]) do
-    Inc(Result);
-  if Result > High(SS) then
-    Result := -1;
 end;
 
 function TranslateBitmapFileName(const S: string): string;
@@ -398,52 +448,80 @@ begin
     end;
 end;
 
-function GetXPCaptionButtonBitmap(ABitmap: TBitmap; out BitmapCount: Integer): Boolean;
+procedure DupBits(Src, Dst: HBitmap; Size: TPoint);
 var
-  Handle: THandle;
-  ThemeFileNameW, BitmapFileNameW: array [0..MAX_PATH] of WideChar;
-  OldError: Longint;
-  Details: TThemedElementDetails;
+  MemDC: HDC;
+  DesktopDC: HDC;
+  OldBitmap: HBitmap;
 begin
-  ThemeFileNameW[MAX_PATH] := #0;
-  BitmapFileNameW[MAX_PATH] := #0;
-
-  Result := UxTheme.GetCurrentThemeName(ThemeFileNameW, MAX_PATH, nil, 0, nil, 0) = S_OK;
-  if not Result then
-    Exit;
-
-  Details := ThemeServices.GetElementDetails(twMinButtonNormal);
-  with Details do
-    Result := GetThemeFilename(ThemeServices.Theme[Element], Part, State,
-      TMT_IMAGEFILE, BitmapFileNameW, MAX_PATH) = S_OK;
-  if not Result then
-    Exit;
-
-  with Details do
-    Result := GetThemeInt(ThemeServices.Theme[Element], Part, State,
-      TMT_IMAGECOUNT, BitmapCount) = S_OK;
-  if not Result then
-    Exit;
-
-  Result := BitmapCount > 0;
-  if not Result then
-    Exit;
-
-  OldError := SetErrorMode(SEM_NOOPENFILEERRORBOX);
+  OldBitmap := 0;
+  DesktopDC := GetDC(GetDesktopWindow);
+  MemDC := CreateCompatibleDC(DesktopDC);
   try
-    Handle := LoadLibraryW(ThemeFileNameW);
-    Result := Handle <> 0;
-    if Result then
-    try
-      ABitmap.LoadFromResourceName(Handle, TranslateBitmapFileName(BitmapFileNameW));
-      Result := (ABitmap.Width > 0) and (ABitmap.Height > 0);
-    finally
-      FreeLibrary(Handle);
-    end;
+    OldBitmap := SelectObject(MemDC, Src);
+
+    BitBlt(Dst, 0, 0, Size.X, Size.Y, MemDC, 0, 0, SRCCOPY);
   finally
-    SetErrorMode(OldError);
+    SelectObject(MemDC, OldBitmap);
+    ReleaseDC(GetDesktopWindow, DesktopDC);
+    DeleteDC(MemDC);
   end;
 end;
+
+function GetHasAlphaChannel(Data: PChar; Count: Integer): Boolean;
+begin
+  Result := False;
+
+  while Count > 0 do
+  begin
+    Result := PRGBQuad(Data).rgbReserved <> 0;
+    if Result then
+      Exit;
+    Inc(Data, 4);
+    Dec(Count);
+  end;
+end;
+
+procedure PreMultiplyAlphaChannel(Data: PChar; Count: Integer);
+begin
+  while Count > 0 do
+  begin
+    with PRGBQuad(Data)^ do
+    begin
+      rgbBlue := (rgbBlue * rgbReserved + 128) div 255;
+      rgbGreen := (rgbGreen * rgbReserved + 128) div 255;
+      rgbRed := (rgbRed * rgbReserved + 128) div 255;
+    end;
+    Inc(Data, 4);
+    Dec(Count);
+  end;
+end;
+
+{$ENDIF JVCLThemesEnabled}
+
+procedure UnloadMsimg32Dll;
+begin
+  _TransparentBlt := nil;
+  _AlphaBlend := nil;
+  if GMsimg32Handle > 0 then
+    FreeLibrary(GMsimg32Handle);
+  GMsimg32Handle := 0;
+end;
+
+procedure LoadMsimg32Dll;
+begin
+  GTriedLoadMsimg32Dll := True;
+  GMsimg32Handle := Windows.LoadLibrary(Msimg32DLLName);
+  if GMsimg32Handle > 0 then
+  begin
+    _TransparentBlt := GetProcAddress(GMsimg32Handle, TransparentBltName);
+    _AlphaBlend := GetProcAddress(GMsimg32Handle, AlphaBlendName);
+
+    AddFinalizeProc(sUnitName, UnloadMsimg32Dll);
+  end;
+end;
+
+{$IFDEF JVCLThemesEnabled}
 
 function TransparentBltStretch(DestDC: HDC; const DestRect: TRect;
   SourceDC: HDC; const SourceRect: TRect; const SizingMargins: TMargins;
@@ -478,86 +556,87 @@ begin
   GetWindowOrgEx(DestDC, LastOriginDest);
   SetWindowOrgEx(DestDC, LastOriginDest.X - DestRect.Left, LastOriginDest.Y - DestRect.Top, nil);
 
-  { A }
-  _TransparentBlt(
+  Result :=
+    { A }
+  TransparentBlt(
     DestDC,
     0, 0, SizingMargins.cxLeftWidth, SizingMargins.cyTopHeight,
     SourceDC,
     0, 0, SizingMargins.cxLeftWidth, SizingMargins.cyTopHeight,
     TransparentColor
-    );
+    ) and
 
   { B }
-  _TransparentBlt(
+  TransparentBlt(
     DestDC,
     SizingMargins.cxLeftWidth, 0, EDestWidth, SizingMargins.cyTopHeight,
     SourceDC,
     SizingMargins.cxLeftWidth, 0, ESourceWidth, SizingMargins.cyTopHeight,
     TransparentColor
-    );
+    ) and
 
   { C }
-  _TransparentBlt(
+  TransparentBlt(
     DestDC,
     EDestWidth + SizingMargins.cxLeftWidth, 0, SizingMargins.cxRightWidth, SizingMargins.cyTopHeight,
     SourceDC,
     ESourceWidth + SizingMargins.cxLeftWidth, 0, SizingMargins.cxRightWidth, SizingMargins.cyTopHeight,
     TransparentColor
-    );
+    ) and
 
   { D }
-  _TransparentBlt(
+  TransparentBlt(
     DestDC,
     0, SizingMargins.cyTopHeight, SizingMargins.cxLeftWidth, EDestHeight,
     SourceDC,
     0, SizingMargins.cyTopHeight, SizingMargins.cxLeftWidth, ESourceHeight,
     TransparentColor
-    );
+    ) and
 
   { E }
-  _TransparentBlt(
+  TransparentBlt(
     DestDC,
     SizingMargins.cxLeftWidth, SizingMargins.cyTopHeight, EDestWidth, EDestHeight,
     SourceDC,
     SizingMargins.cxLeftWidth, SizingMargins.cyTopHeight, ESourceWidth, ESourceHeight,
     TransparentColor
-    );
+    ) and
 
   { F }
-  _TransparentBlt(
+  TransparentBlt(
     DestDC,
     EDestWidth + SizingMargins.cxLeftWidth, SizingMargins.cyTopHeight, SizingMargins.cxRightWidth, EDestHeight,
     SourceDC,
     ESourceWidth + SizingMargins.cxLeftWidth, SizingMargins.cyTopHeight, SizingMargins.cxRightWidth, ESourceHeight,
     TransparentColor
-    );
+    ) and
 
   { G }
-  _TransparentBlt(
+  TransparentBlt(
     DestDC,
     0, EDestHeight + SizingMargins.cyTopHeight, SizingMargins.cxLeftWidth, SizingMargins.cyBottomHeight,
     SourceDC,
     0, ESourceHeight + SizingMargins.cyTopHeight, SizingMargins.cxLeftWidth, SizingMargins.cyBottomHeight,
     TransparentColor
-    );
+    ) and
 
   { H }
-  _TransparentBlt(
+  TransparentBlt(
     DestDC,
     SizingMargins.cxLeftWidth, EDestHeight + SizingMargins.cyTopHeight, EDestWidth, SizingMargins.cyBottomHeight,
     SourceDC,
     SizingMargins.cxLeftWidth, ESourceHeight + SizingMargins.cyTopHeight, ESourceWidth, SizingMargins.cyBottomHeight,
     TransparentColor
-    );
+    ) and
 
   { I }
-  _TransparentBlt(
+  TransparentBlt(
     DestDC,
     EDestWidth + SizingMargins.cxLeftWidth, EDestHeight + SizingMargins.cyTopHeight,
-    SizingMargins.cxRightWidth, SizingMargins.cyTopHeight,
+    SizingMargins.cxRightWidth, SizingMargins.cyBottomHeight,
     SourceDC,
     ESourceWidth + SizingMargins.cxLeftWidth, ESourceHeight + SizingMargins.cyTopHeight,
-    SizingMargins.cxRightWidth, SizingMargins.cyTopHeight,
+    SizingMargins.cxRightWidth, SizingMargins.cyBottomHeight,
     TransparentColor
     );
 
@@ -565,65 +644,469 @@ begin
   SetWindowOrgEx(DestDC, LastOriginDest.X, LastOriginDest.Y, nil);
 end;
 
-//=== TGlobalXPData ==========================================================
-
-constructor TGlobalXPData.Create;
+function GetXPCaptionButtonBitmap(ABitmap: TBitmapAdapter; out BitmapCount: Integer): Boolean;
+var
+  Handle: THandle;
+  ThemeFileNameW, BitmapFileNameW: array [0..MAX_PATH] of WideChar;
+  OldError: Longint;
+  Details: TThemedElementDetails;
+  Margins: TMargins;
 begin
-  inherited Create;
-  FButtons := TBitmap.Create;
-  Update;
+  ThemeFileNameW[MAX_PATH] := #0;
+  BitmapFileNameW[MAX_PATH] := #0;
+
+  Result := UxTheme.GetCurrentThemeName(ThemeFileNameW, MAX_PATH, nil, 0, nil, 0) = S_OK;
+  if not Result then
+    Exit;
+
+  Details := ThemeServices.GetElementDetails(twMinButtonNormal);
+  with Details do
+    Result := GetThemeFilename(ThemeServices.Theme[Element], Part, State,
+      TMT_IMAGEFILE, BitmapFileNameW, MAX_PATH) = S_OK;
+  if not Result then
+    Exit;
+
+  with Details do
+    Result := GetThemeInt(ThemeServices.Theme[Element], Part, State,
+      TMT_IMAGECOUNT, BitmapCount) = S_OK;
+  if not Result then
+    Exit;
+
+  Result := BitmapCount > 0;
+  if not Result then
+    Exit;
+
+  with Details do
+    if GetThemeMargins(ThemeServices.Theme[Element], 0, Part, State,
+      TMT_SIZINGMARGINS, nil, Margins) <> S_OK then
+      FillChar(Margins, SizeOf(Margins), 0);
+  ABitmap.Margins := Margins;
+
+  OldError := SetErrorMode(SEM_NOOPENFILEERRORBOX or SEM_FAILCRITICALERRORS);
+  try
+    Handle := LoadLibraryW(ThemeFileNameW);
+    if Handle > 0 then
+    try
+      ABitmap.LoadFromResourceName(Handle, TranslateBitmapFileName(BitmapFileNameW));
+      { (rb) can't determine actual transparent color? }
+      ABitmap.TransparentColor := clFuchsia;
+
+      Result := (ABitmap.Width > 0) and (ABitmap.Height > 0);
+    finally
+      FreeLibrary(Handle);
+    end;
+  finally
+    SetErrorMode(OldError);
+  end;
 end;
 
-destructor TGlobalXPData.Destroy;
+{$ENDIF JVCLThemesEnabled}
+
+//=== Global procedures ======================================================
+
+function AlphaBlend;
 begin
-  UnloadMsimg32Dll;
-  FButtons.Free;
+  if not GTriedLoadMsimg32Dll then
+    LoadMsimg32Dll;
+  Result := Assigned(_AlphaBlend);
+  if Result then
+    asm
+      mov esp, ebp
+      pop ebp
+      jmp [_AlphaBlend]
+    end;
+end;
+
+function TransparentBlt;
+begin
+  if not GTriedLoadMsimg32Dll then
+    LoadMsimg32Dll;
+  Result := Assigned(_TransparentBlt);
+  if Result then
+    asm
+      mov esp, ebp
+      pop ebp
+      jmp [_TransparentBlt]
+    end;
+end;
+
+{$IFDEF JVCLThemesEnabled}
+
+//=== TAlphaBitmap ===========================================================
+
+function TAlphaBitmap.CreateDIB(ADC: HDC; AWidth, AHeight: Integer): HBitmap;
+begin
+  with FBitmapInfo.bmiHeader do
+  begin
+    biSize := SizeOf(FBitmapInfo.bmiHeader);
+    biWidth := AWidth;
+    biHeight := AHeight;
+    biPlanes := 1;
+    biBitCount := 32;
+    biCompression := BI_RGB;
+    biSizeImage := AWidth * AHeight * 4;
+  end;
+  // Create the DIB
+  Result := CreateDIBSection(ADC, FBitmapInfo, DIB_RGB_COLORS, FBitsMem, 0, 0);
+end;
+
+procedure TAlphaBitmap.CreateHandle(AWidth, AHeight: Integer);
+var
+  H: HBitmap;
+begin
+  FreeHandle;
+
+  H := CreateCompatibleDC(0);
+  FDIBHandle := CreateDIB(H, AWidth, AHeight);
+  if FDIBHandle <> 0 then
+    FOldBitmap := SelectObject(H, FDIBHandle)
+  else
+    FOldBitmap := 0;
+  FHandle := H;
+end;
+
+destructor TAlphaBitmap.Destroy;
+begin
+  FreeHandle;
   inherited Destroy;
 end;
+
+procedure TAlphaBitmap.Duplicate(Src: HBitmap);
+var
+  Bitmap: Windows.TBitmap;
+begin
+  GetObject(Src, SizeOf(Bitmap), @Bitmap);
+  CreateHandle(Bitmap.bmWidth, Bitmap.bmHeight);
+
+  DupBits(Src, FHandle, Point(Bitmap.bmWidth, Bitmap.bmHeight));
+end;
+
+procedure TAlphaBitmap.FreeHandle;
+begin
+  if FHandle <> 0 then
+  begin
+    if FDIBHandle <> 0 then
+    begin
+      if FOldBitmap <> 0 then
+        SelectObject(FHandle, FOldBitmap);
+      DeleteObject(FDIBHandle);
+    end;
+    DeleteDC(FHandle);
+  end;
+end;
+
+function TAlphaBitmap.GetHeight: Integer;
+begin
+  Result := FBitmapInfo.bmiHeader.biHeight;
+end;
+
+function TAlphaBitmap.GetWidth: Integer;
+begin
+  Result := FBitmapInfo.bmiHeader.biWidth;
+end;
+
+procedure TAlphaBitmap.InitAlpha;
+var
+  Count: Integer;
+begin
+  Count := Width * Height;
+  if BitCount < 32 then
+    FHasAlphaChannel := False
+  else
+  begin
+    FHasAlphaChannel := GetHasAlphaChannel(Data, Count);
+
+    if HasAlphaChannel then
+      PreMultiplyAlphaChannel(Data, Count);
+  end;
+end;
+
+procedure TAlphaBitmap.LoadFromResourceID(Instance: THandle; ResID: Integer);
+var
+  Stream: TCustomMemoryStream;
+  BitmapInfoHeader: TBitmapInfoHeader;
+  BitmapHandle: HBitmap;
+begin
+  Stream := TResourceStream.CreateFromID(Instance, ResID, RT_BITMAP);
+  try
+    Stream.read(BitmapInfoHeader, SizeOf(TBitmapInfoHeader));
+    FBitCount := BitmapInfoHeader.biBitCount;
+  finally
+    Stream.Free;
+  end;
+
+  if FBitCount = 32 then
+  begin
+    BitmapHandle := LoadImage(Instance, PChar(ResID), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+    if BitmapHandle = 0 then
+      Exit;
+
+    Duplicate(BitmapHandle);
+    DeleteObject(BitmapHandle);
+
+    InitAlpha;
+  end;
+end;
+
+procedure TAlphaBitmap.LoadFromResourceName(Instance: THandle;
+  const ResName: string);
+var
+  Stream: TCustomMemoryStream;
+  BitmapInfoHeader: TBitmapInfoHeader;
+  BitmapHandle: HBitmap;
+begin
+  Stream := TResourceStream.Create(Instance, ResName, RT_BITMAP);
+  try
+    Stream.read(BitmapInfoHeader, SizeOf(TBitmapInfoHeader));
+    FBitCount := BitmapInfoHeader.biBitCount;
+  finally
+    Stream.Free;
+  end;
+
+  if FBitCount = 32 then
+  begin
+    BitmapHandle := LoadImage(Instance, PChar(ResName), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+    if BitmapHandle = 0 then
+      Exit;
+
+    Duplicate(BitmapHandle);
+    DeleteObject(BitmapHandle);
+
+    InitAlpha;
+  end;
+end;
+
+//=== TBitmapAdapter =========================================================
+
+procedure TBitmapAdapter.Clear;
+begin
+  FreeAndNil(FBitmap);
+end;
+
+constructor TBitmapAdapter.Create;
+begin
+  inherited Create;
+
+  FTransparentColor := clFuchsia;
+end;
+
+destructor TBitmapAdapter.Destroy;
+begin
+  FBitmap.Free;
+  inherited Destroy;
+end;
+
+function TBitmapAdapter.Draw(ACanvas: TCanvas; const Rect: TRect;
+  AMargins: PMargins): Boolean;
+begin
+  if (Rect.Right - Rect.Left = Width) and (Rect.Bottom - Rect.Top = Height) then
+    Result := DrawFixedPart(ACanvas, Rect, 0, 0)
+  else
+  begin
+    if AMargins = nil then
+      AMargins := @FMargins;
+
+    if FBitmap is TAlphaBitmap then
+      with TAlphaBitmap(FBitmap) do
+        Result := TransparentBltStretch(ACanvas.Handle, Rect, Handle,
+          Bounds(0, 0, Width, Height), AMargins^, FTransparentColor)
+    else
+    if FBitmap is TBitmap then
+      with TBitmap(FBitmap) do
+        Result := TransparentBltStretch(ACanvas.Handle, Rect, Canvas.Handle,
+          Bounds(0, 0, Width, Height), AMargins^, FTransparentColor)
+    else
+      Result := False;
+  end;
+end;
+
+function TBitmapAdapter.DrawFixed(ACanvas: TCanvas; const X, Y: Integer): Boolean;
+begin
+  Result := DrawFixedPart(ACanvas, Bounds(X, Y, Width, Height), 0, 0);
+end;
+
+function TBitmapAdapter.DrawFixedPart(ACanvas: TCanvas;
+  const DestRect: TRect; const SrcX, SrcY: Integer): Boolean;
+var
+  BlendFunction: TBlendFunction;
+  W, H: Integer;
+begin
+  W := DestRect.Right - DestRect.Left;
+  H := DestRect.Bottom - DestRect.Top;
+
+  if FBitmap is TAlphaBitmap then
+  begin
+    with TAlphaBitmap(FBitmap) do
+    begin
+      BlendFunction.BlendOp := AC_SRC_OVER;
+      BlendFunction.BlendFlags := 0;
+      BlendFunction.SourceConstantAlpha := $FF;
+      BlendFunction.AlphaFormat := AC_SRC_ALPHA;
+
+      Result := AlphaBlend(
+        ACanvas.Handle, DestRect.Left, DestRect.Top, W, H,
+        Handle, SrcX, SrcY, W, H,
+        BlendFunction);
+    end;
+  end
+  else
+  if FBitmap is TBitmap then
+    with TBitmap(FBitmap) do
+      Result := TransparentBlt(
+        ACanvas.Handle, DestRect.Left, DestRect.Top, W, H,
+        Canvas.Handle, SrcX, SrcY, W, H, Self.TransparentColor)
+  else
+    Result := False;
+end;
+
+function TBitmapAdapter.DrawPart(ACanvas: TCanvas; const SrcRect,
+  DestRect: TRect; AMargins: PMargins): Boolean;
+begin
+  // Same width/height?
+  if (SrcRect.Right - SrcRect.Left = DestRect.Right - DestRect.Left) and
+     (SrcRect.Bottom - SrcRect.Top = DestRect.Bottom - DestRect.Top) then
+
+    Result := DrawFixedPart(ACanvas, DestRect, SrcRect.Left, SrcRect.Top)
+  else
+  begin
+    if AMargins = nil then
+      AMargins := @FMargins;
+
+    if FBitmap is TAlphaBitmap then
+      with TAlphaBitmap(FBitmap) do
+        Result := TransparentBltStretch(
+          ACanvas.Handle, DestRect, Handle, SrcRect,
+          AMargins^, Self.TransparentColor)
+    else
+    if FBitmap is TBitmap then
+      with TBitmap(FBitmap) do
+        Result := TransparentBltStretch(
+          ACanvas.Handle, DestRect, Canvas.Handle, SrcRect,
+          AMargins^, Self.TransparentColor)
+    else
+      Result := False;
+  end;
+end;
+
+function TBitmapAdapter.GetHeight: Integer;
+begin
+  if FBitmap is TAlphaBitmap then
+    Result := TAlphaBitmap(FBitmap).Height
+  else
+  if FBitmap is TBitmap then
+    Result := TBitmap(FBitmap).Height
+  else
+    Result := 0;
+end;
+
+function TBitmapAdapter.GetIsValid: Boolean;
+begin
+  Result := Assigned(FBitmap);
+end;
+
+function TBitmapAdapter.GetWidth: Integer;
+begin
+  if FBitmap is TAlphaBitmap then
+    Result := TAlphaBitmap(FBitmap).Width
+  else
+  if FBitmap is TBitmap then
+    Result := TBitmap(FBitmap).Width
+  else
+    Result := 0;
+end;
+
+procedure TBitmapAdapter.LoadFromResourceID(Instance: THandle;
+  ResID: Integer);
+var
+  AlphaBitmap: TAlphaBitmap;
+begin
+  Clear;
+
+  AlphaBitmap := TAlphaBitmap.Create;
+  try
+    AlphaBitmap.LoadFromResourceID(Instance, ResID);
+    if AlphaBitmap.BitCount < 32 then
+    begin
+      FBitmap := TBitmap.Create;
+      TBitmap(FBitmap).LoadFromResourceID(Instance, ResID);
+    end
+    else
+    begin
+      FBitmap := AlphaBitmap;
+      AlphaBitmap := nil;
+    end;
+  finally
+    AlphaBitmap.Free;
+  end;
+end;
+
+procedure TBitmapAdapter.LoadFromResourceName(Instance: THandle;
+  const ResName: string);
+var
+  AlphaBitmap: TAlphaBitmap;
+begin
+  Clear;
+
+  AlphaBitmap := TAlphaBitmap.Create;
+  try
+    AlphaBitmap.LoadFromResourceName(Instance, ResName);
+    if AlphaBitmap.BitCount < 32 then
+    begin
+      FBitmap := TBitmap.Create;
+      TBitmap(FBitmap).LoadFromResourceName(Instance, ResName);
+    end
+    else
+    begin
+      FBitmap := AlphaBitmap;
+      AlphaBitmap := nil;
+    end;
+  finally
+    AlphaBitmap.Free;
+  end;
+end;
+
+//=== TGlobalXPData ==========================================================
 
 procedure TGlobalXPData.AddClient;
 begin
   Inc(FClientCount);
 end;
 
-function TGlobalXPData.CanDrawTransparent: Boolean;
+constructor TGlobalXPData.Create;
 begin
-  if not FTriedLoadMsimg32Dll then
-    LoadMsimg32Dll;
-  Result := Assigned(_TransparentBlt);
+  inherited Create;
+  Update;
 end;
 
-procedure TGlobalXPData.Draw(HDC: HDC; State: Integer;
-  const DrawRect: TRect);
+destructor TGlobalXPData.Destroy;
 begin
-  if FBitmapValid and CanDrawTransparent then
-  begin
-    if (State >= FButtonCount) and (State >= 4) then
-      State := State mod 4;
-    if State >= FButtonCount then
-      State := FButtonCount - 1;
-
-    // Same Rect?
-    if (DrawRect.Right - DrawRect.Left = FButtonWidth) and
-      (DrawRect.Bottom - DrawRect.Top = FButtonHeight) then
-    begin
-      _TransparentBlt(HDC, DrawRect.Left, DrawRect.Top,
-        DrawRect.Right - DrawRect.Left, DrawRect.Bottom - DrawRect.Top,
-        FButtons.Canvas.Handle, 0, FButtonHeight * (State - 1),
-        FButtonWidth, FButtonHeight, clFuchsia)
-    end
-    else
-    begin
-      TransparentBltStretch(HDC, DrawRect,
-        FButtons.Canvas.Handle, Bounds(0, FButtonHeight * (State - 1),
-        FButtonWidth, FButtonHeight), FSizingMargins, clFuchsia)
-    end
-  end
-  else
-    DrawSimple(HDC, State, DrawRect);
+  UnloadMsimg32Dll;
+  FCaptionButtons.Free;
+  inherited Destroy;
 end;
 
-procedure TGlobalXPData.DrawSimple(HDC: HDC; State: Integer;
+function TGlobalXPData.Draw(ACanvas: TCanvas; State: Integer;
+  const DrawRect: TRect): Boolean;
+var
+  SrcRect: TRect;
+begin
+  Result := FBitmapValid;
+  if not Result then
+    Exit;
+
+  { State is 1-based }
+  if (State >= FCaptionButtonCount) and (State > 4) then
+    State := ((State - 1) mod 4) + 1;
+  if State > FCaptionButtonCount then
+    State := FCaptionButtonCount;
+
+  SrcRect := Bounds(0, FCaptionButtonHeight * (State - 1),
+    FCaptionButtons.Width, FCaptionButtonHeight);
+
+  Result := FCaptionButtons.DrawPart(ACanvas, SrcRect, DrawRect, nil);
+end;
+
+procedure TGlobalXPData.DrawSimple(ACanvas: TCanvas; State: Integer;
   const DrawRect: TRect);
 const
   // Normal, Hot, Pushed, Disabled,
@@ -643,27 +1126,19 @@ begin
 
   { 1a. Draw the outer bit as a caption button }
   Details := ThemeServices.GetElementDetails(cCaptionButton[State]);
-  ThemeServices.DrawElement(HDC, Details, DrawRect);
+  ThemeServices.DrawElement(ACanvas.Handle, Details, DrawRect);
 
   { 1b. Draw the inner bit as a normal button }
   with DrawRect do
     DrawRgn := CreateRectRgn(Left + 1, Top + 1, Right - 1, Bottom - 1);
   try
     Details := ThemeServices.GetElementDetails(cNormalButton[State]);
-    SelectClipRgn(HDC, DrawRgn);
-    ThemeServices.DrawElement(HDC, Details, DrawRect);
-    SelectClipRgn(HDC, 0);
+    SelectClipRgn(ACanvas.Handle, DrawRgn);
+    ThemeServices.DrawElement(ACanvas.Handle, Details, DrawRect);
+    SelectClipRgn(ACanvas.Handle, 0);
   finally
     DeleteObject(DrawRgn);
   end;
-end;
-
-procedure TGlobalXPData.LoadMsimg32Dll;
-begin
-  FTriedLoadMsimg32Dll := True;
-  FMsimg32Handle := Windows.LoadLibrary(Msimg32DLLName);
-  if FMsimg32Handle > 0 then
-    _TransparentBlt := GetProcAddress(FMsimg32Handle, TransparentBltName);
 end;
 
 procedure TGlobalXPData.RemoveClient;
@@ -677,39 +1152,20 @@ begin
   end;
 end;
 
-procedure TGlobalXPData.UnloadMsimg32Dll;
-begin
-  _TransparentBlt := nil;
-  if FMsimg32Handle > 0 then
-    FreeLibrary(FMsimg32Handle);
-  FMsimg32Handle := 0;
-end;
-
 procedure TGlobalXPData.Update;
-var
-  Details: TThemedElementDetails;
 begin
   FIsThemed := ThemeServices.ThemesAvailable and IsThemeActive and IsAppThemed;
   if not FIsThemed then
     Exit;
 
-  FBitmapValid := GetXPCaptionButtonBitmap(FButtons, FButtonCount);
+  if FCaptionButtons = nil then
+    FCaptionButtons := TBitmapAdapter.Create;
 
+  FBitmapValid := GetXPCaptionButtonBitmap(FCaptionButtons, FCaptionButtonCount);
   if FBitmapValid then
-  begin
-    FButtonWidth := FButtons.Width;
-    FButtonHeight := FButtons.Height div FButtonCount;
-
-    Details := ThemeServices.GetElementDetails(twMinButtonNormal);
-    //    with Details do
-    //      if GetThemeMargins(ThemeServices.Theme[Element], 0, Part, State,
-    //        TMT_CONTENTMARGINS, nil, FContentMargins) <> S_OK then
-    //        FillChar(FContentMargins, SizeOf(FContentMargins), 0);
-    with Details do
-      if GetThemeMargins(ThemeServices.Theme[Element], 0, Part, State,
-        TMT_SIZINGMARGINS, nil, FSizingMargins) <> S_OK then
-        FillChar(FSizingMargins, SizeOf(FSizingMargins), 0);
-  end;
+    FCaptionButtonHeight := FCaptionButtons.Height div FCaptionButtonCount
+  else
+    FreeAndNil(FCaptionButtons);
 end;
 
 {$ENDIF JVCLThemesEnabled}
@@ -1207,10 +1663,8 @@ begin
     if not FCaptionActive then
       Inc(State, 4);
 
-    if ForceDrawSimple then
-      GlobalXPData.DrawSimple(ACanvas.Handle, State, DrawRect)
-    else
-      GlobalXPData.Draw(ACanvas.Handle, State, DrawRect);
+    if ForceDrawSimple or not GlobalXPData.Draw(ACanvas, State, DrawRect) then
+      GlobalXPData.DrawSimple(ACanvas, State, DrawRect)
   end
   else
   {$ENDIF JVCLThemesEnabled}
@@ -1876,7 +2330,7 @@ end;
 
 procedure TJvCaptionButton.SetHeight(Value: Integer);
 begin
-  if FHeight <> Value then
+  if (FHeight <> Value) and (Value >= 0) then
   begin
     FHeight := Value;
     Redraw(rkTotalCaptionBar);
@@ -2050,7 +2504,7 @@ end;
 
 procedure TJvCaptionButton.SetWidth(Value: Integer);
 begin
-  if FWidth <> Value then
+  if (FWidth <> Value) and (Value >= 0) then
   begin
     FWidth := Value;
     Redraw(rkTotalCaptionBar);
@@ -2065,8 +2519,8 @@ begin
   if Assigned(P) then
   begin
     DestroyToolTip;
-    UnregisterWndProcHook(P, WndProcAfter, hoAfterMsg);
-    UnregisterWndProcHook(P, WndProcBefore, hoBeforeMsg);
+    UnRegisterWndProcHook(P, WndProcAfter, hoAfterMsg);
+    UnRegisterWndProcHook(P, WndProcBefore, hoBeforeMsg);
   end;
 end;
 
@@ -2305,5 +2759,8 @@ begin
     FClient.Visible := Value;
 end;
 
+initialization
+finalization
+  FinalizeUnit(sUnitName);
 end.
 
