@@ -885,6 +885,10 @@ resourcestring
   RsEHLEdPropDlg_RegAutoNotAssigned = 'RegAuto property is not assigned';
   RsEHLEdPropDlg_GridCellNotFound = 'Grid cell not found';
 
+//=== JvHTTPGrabber.pas ======================================================
+resourcestring
+  RsAgent = 'TJvHTTPGrabber Delphi Component';
+
 //=== JvId3v1.pas ============================================================
 resourcestring
   RsENotActive = 'Not active';
@@ -1156,7 +1160,7 @@ resourcestring
 //=== JvMultiHttpGrabber.pas =================================================
 resourcestring
   RsErrorConnection = 'Unable to connect';
-  RsAgent = 'TJvMultiHTTPGrabber Delphi Component';
+  RsMultiAgent = 'TJvMultiHTTPGrabber Delphi Component';
 
 //=== JvNTEventLog.pas =======================================================
 resourcestring

@@ -454,15 +454,12 @@ procedure TJvSystemPopup.SetPopup(const Value: TPopupMenu);
 begin
   if Assigned(FPopup) then
     FPopup.OnChange := nil;
-
   FPopup := Value;
-
   if Assigned(FPopup) then
   begin
     //FPopup.OnChange := MenuChanged;
     FPopup.FreeNotification(Self);
   end;
-
   //if not (csLoading in ComponentState) then
   //  Refresh;
 end;
@@ -479,11 +476,8 @@ begin
   end;
 
   UnHook;
-
   ResetSystemMenu;
-
   FPosition := Value;
-
   Hook;
   //PopulateMenu;
 end;

@@ -33,9 +33,13 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvTFGlance, JvTFUtils, JvTFManager{$IFDEF USEJVCL}, JvTypes{$ENDIF};
+  {$IFDEF USEJVCL}
+  JvTypes,
+  {$ENDIF USEJVCL}
+  JvTFGlance, JvTFUtils, JvTFManager;
 
 {$HPPEMIT '#define TDate Controls::TDate'}
+
 type
   TJvTFMonthsScrollSize = (mssMonth, mssWeek);
 
@@ -67,53 +71,39 @@ type
     procedure SetColCount(Value: Integer); override;
     procedure ConfigCells; override;
     procedure DWNamesChange(Sender: TObject);
-    procedure Navigate(aControl: TJvTFControl; SchedNames: TStringList;
+    procedure Navigate(AControl: TJvTFControl; SchedNames: TStringList;
       Dates: TJvTFDateList); override;
-
     // draws the DWTitles
-    procedure DrawTitle(aCanvas: TCanvas); override;
-
+    procedure DrawTitle(ACanvas: TCanvas); override;
     procedure UpdateTitle;
-
     procedure NextMonth;
     procedure PrevMonth;
     procedure NextWeek;
     procedure PrevWeek;
-
     function GetCellTitleText(Cell: TJvTFGlanceCell): string; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetDataTop: Integer; override;
-    function GetCellAttr(aCell: TJvTFGlanceCell): TJvTFGlanceCellAttr; override;
-
-    function CellIsExtraDay(aCell: TJvTFGlanceCell): Boolean;
-    function CellIsOffDay(aCell: TJvTFGlanceCell): Boolean;
+    function GetCellAttr(ACell: TJvTFGlanceCell): TJvTFGlanceCellAttr; override;
+    function CellIsExtraDay(ACell: TJvTFGlanceCell): Boolean;
+    function CellIsOffDay(ACell: TJvTFGlanceCell): Boolean;
     function DOWShowing(DOW: TTFDayOfWeek): Boolean;
-
     procedure ScrollPrev;
     procedure ScrollNext;
   published
-    property ScrollSize: TJvTFMonthsScrollSize read FScrollSize
-      write FScrollSize default mssMonth;
+    property ScrollSize: TJvTFMonthsScrollSize read FScrollSize write FScrollSize default mssMonth;
     property Month: Word read GetMonth write SetMonth;
     property Year: Word read GetYear write SetYear;
     property DisplayDate: TDate read FDisplayDate write SetDisplayDate;
     property DWNames: TJvTFDWNames read FDWNames write SetDWNames;
     property DWTitleAttr: TJvTFGlanceTitle read FDWTitleAttr write SetDWTitleAttr;
-    property OffDays: TTFDaysOfWeek read FOffDays write SetOffDays
-      default [dowSunday, dowSaturday];
-    property ExtraDayCellAttr: TJvTFGlanceCellAttr read FExtraDayCellAttr
-      write SetExtraDayCellAttr;
-    property OffDayCellAttr: TJvTFGlanceCellAttr read FOffDayCellAttr
-      write SetOffDayCellAttr;
-    property SplitSatSun: Boolean read FSplitSatSun write SetSplitSatSun
-      default False;
-    property OnDrawDWTitle: TJvTFDrawDWTitleEvent read FOnDrawDWTitle
-      write FOnDrawDWTitle;
-    property OnUpdateTitle: TJvTFUpdateTitleEvent read FOnUpdateTitle
-      write FOnUpdateTitle;
-
+    property OffDays: TTFDaysOfWeek read FOffDays write SetOffDays default [dowSunday, dowSaturday];
+    property ExtraDayCellAttr: TJvTFGlanceCellAttr read FExtraDayCellAttr write SetExtraDayCellAttr;
+    property OffDayCellAttr: TJvTFGlanceCellAttr read FOffDayCellAttr write SetOffDayCellAttr;
+    property SplitSatSun: Boolean read FSplitSatSun write SetSplitSatSun default False;
+    property OnDrawDWTitle: TJvTFDrawDWTitleEvent read FOnDrawDWTitle write FOnDrawDWTitle;
+    property OnUpdateTitle: TJvTFUpdateTitleEvent read FOnUpdateTitle write FOnUpdateTitle;
     property StartOfWeek;
     property ColCount;
 //    property Navigator;
@@ -124,26 +114,64 @@ type
 
 implementation
 
-{ TJvTFMonths }
+constructor TJvTFMonths.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  DisplayDate := Date;
 
-function TJvTFMonths.CellIsExtraDay(aCell: TJvTFGlanceCell): Boolean;
+  FOffDays := [dowSunday, dowSaturday];
+  FScrollSize := mssMonth;
+
+  FDWNames := TJvTFDWNames.Create;
+  FDWNames.OnChange := DWNamesChange;
+
+  FExtraDayCellAttr := TJvTFGlanceCellAttr.Create(Self);
+  FOffDayCellAttr := TJvTFGlanceCellAttr.Create(Self);
+
+  CellAttr.TitleAttr.Color := clWhite;
+  FExtraDayCellAttr.TitleAttr.Color := clWhite;
+  FOffDayCellAttr.TitleAttr.Color := clWhite;
+
+  FDWTitleAttr := TJvTFGlanceTitle.Create(Self);
+  with FDWTitleAttr do
+  begin
+//      Assign(TitleAttr);
+    TxtAttr.Font.Size := 8;
+    TxtAttr.Font.Style := [];
+    Height := 20;
+    Visible := True;
+    FrameAttr.Style := fs3DRaised;
+    OnChange := GlanceTitleChange;
+  end;
+end;
+
+destructor TJvTFMonths.Destroy;
+begin
+  FDWNames.OnChange := nil;
+  FDWNames.Free;
+  FDWTitleAttr.Free;
+  FExtraDayCellAttr.Free;
+  FOffDayCellAttr.Free;
+
+  inherited Destroy;
+end;
+
+function TJvTFMonths.CellIsExtraDay(ACell: TJvTFGlanceCell): Boolean;
 var
   Y, M, D: Word;
 begin
-  DecodeDate(aCell.CellDate, Y, M, D);
+  DecodeDate(ACell.CellDate, Y, M, D);
   Result := (Y <> Self.Year) or (M <> Self.Month);
 end;
 
-function TJvTFMonths.CellIsOffDay(aCell: TJvTFGlanceCell): Boolean;
+function TJvTFMonths.CellIsOffDay(ACell: TJvTFGlanceCell): Boolean;
 begin
-  Result := DateToDOW(aCell.CellDate) in OffDays
+  Result := DateToDOW(ACell.CellDate) in OffDays
 end;
 
 procedure TJvTFMonths.ConfigCells;
 var
-  Row,
-  Col,
-  SplitCount: Integer;
+  Row, Col, SplitCount: Integer;
   Cell: TJvTFGlanceCell;
 begin
 {
@@ -174,71 +202,29 @@ begin
         Cells.Cells[Col, Row].Combine;
 }
 
-  For Row := 0 to RowCount - 1 do
+  for Row := 0 to RowCount - 1 do
+  begin
+    SplitCount := 0;
+
+    for Col := 0 to ColCount - 1 do
     begin
-      SplitCount := 0;
+      Cell := Cells.Cells[Col, Row];
+      SetCellDate(Cell, OriginDate + Row * 7 + Col + SplitCount);
 
-      For Col := 0 to ColCount - 1 do
-        begin
-          Cell := Cells.Cells[Col, Row];
-          SetCellDate(Cell, OriginDate + Row * 7 + Col + SplitCount);
+      if SplitSatSun and (DateToDOW(Cell.CellDate) = dowSaturday) then
+        SplitCell(Cell)
+      else
+        CombineCell(Cell);
 
-          if SplitSatSun and (DateToDOW(Cell.CellDate) = dowSaturday) Then
-            SplitCell(Cell)
-          else
-            CombineCell(Cell);
-
-          if Cell.IsSplit Then
-            begin
-              Inc(SplitCount);
-              SetCellDate(Cell.SubCell, OriginDate + Row * 7 + Col + SplitCount);
-            end;
-        end;
+      if Cell.IsSplit then
+      begin
+        Inc(SplitCount);
+        SetCellDate(Cell.SubCell, OriginDate + Row * 7 + Col + SplitCount);
+      end;
     end;
+  end;
 
-  inherited;
-end;
-
-constructor TJvTFMonths.Create(AOwner: TComponent);
-begin
-  inherited;
-  DisplayDate := Date;
-
-  FOffDays := [dowSunday, dowSaturday];
-  FScrollSize := mssMonth;
-
-  FDWNames := TJvTFDWNames.Create;
-  FDWNames.OnChange := DWNamesChange;
-
-  FExtraDayCellAttr := TJvTFGlanceCellAttr.Create(Self);
-  FOffDayCellAttr := TJvTFGlanceCellAttr.Create(Self);
-
-  CellAttr.TitleAttr.Color := clWhite;
-  FExtraDayCellAttr.TitleAttr.Color := clWhite;
-  FOffDayCellAttr.TitleAttr.Color := clWhite;
-
-  FDWTitleAttr := TJvTFGlanceTitle.Create(Self);
-  With FDWTitleAttr do
-    begin
-//      Assign(TitleAttr);
-      TxtAttr.Font.Size := 8;
-      TxtAttr.Font.Style := [];
-      Height := 20;
-      Visible := True;
-      FrameAttr.Style := fs3DRaised;
-      OnChange := GlanceTitleChange;
-    end;
-end;
-
-destructor TJvTFMonths.Destroy;
-begin
-  FDWNames.OnChange := nil;
-  FDWNames.Free;
-  FDWTitleAttr.Free;
-  FExtraDayCellAttr.Free;
-  FOffDayCellAttr.Free;
-
-  inherited;
+  inherited ConfigCells;
 end;
 
 function TJvTFMonths.DOWShowing(DOW: TTFDayOfWeek): Boolean;
@@ -247,131 +233,125 @@ var
   TestDOW: TTFDayOfWeek;
 begin
   // THIS ROUTINE SUPPORTS ONLY SAT/SUN SPLITS
-  if (DOW = dowSunday) and SplitSatSun Then
+  if (DOW = dowSunday) and SplitSatSun then
     Result := DOWShowing(dowSaturday)
   else
-    begin
-      I := 0;
-      Result := False;
-      TestDOW := StartOfWeek;
-      While (I < ColCount) and not Result do
-        if TestDOW = DOW Then
-          Result := True
-        else
-          IncDOW(TestDOW, 1);
-    end;
+  begin
+    I := 0;
+    Result := False;
+    TestDOW := StartOfWeek;
+    while (I < ColCount) and not Result do
+      if TestDOW = DOW then
+        Result := True
+      else
+        IncDOW(TestDOW, 1);
+  end;
 end;
 
-procedure TJvTFMonths.DrawTitle(aCanvas: TCanvas);
+procedure TJvTFMonths.DrawTitle(ACanvas: TCanvas);
 var
-  I,
-  Col,
-  LineBottom: Integer;
+  I, Col, LineBottom: Integer;
   CurrDOW: TTFDayOfWeek;
-  aRect,
-  TempRect,
-  TxtRect,
-  TextBounds: TRect;
+  R, TempRect, TxtRect, TextBounds: TRect;
   OldPen: TPen;
   OldBrush: TBrush;
   OldFont: TFont;
   Txt: string;
 begin
-  inherited;
-
-  if not DWTitleAttr.Visible Then
+  inherited DrawTitle(ACanvas);
+  if not DWTitleAttr.Visible then
     Exit;
 
-  With aCanvas do
-    begin
-      OldPen := TPen.Create;
-      OldPen.Assign(Pen);
-      OldBrush := TBrush.Create;
-      OldBrush.Assign(Brush);
-      OldFont := TFont.Create;
-      OldFont.Assign(Font);
-    end;
+  with ACanvas do
+  begin
+    OldPen := TPen.Create;
+    OldPen.Assign(Pen);
+    OldBrush := TBrush.Create;
+    OldBrush.Assign(Brush);
+    OldFont := TFont.Create;
+    OldFont.Assign(Font);
+  end;
 
   // draw the DWTitles
-  aRect.Top := inherited GetDataTop;
-  aRect.Bottom := GetDataTop;
+  R.Top := inherited GetDataTop;
+  R.Bottom := GetDataTop;
 
   CurrDOW := StartOfWeek;
 
-  For Col := 0 to ColCount - 1 do
+  for Col := 0 to ColCount - 1 do
+  begin
+    TempRect := WholeCellRect(Col, 0);
+    R.Left := TempRect.Left;
+    R.Right := TempRect.Right;
+    TxtRect := R;
+    Windows.InflateRect(TxtRect, -1, -1);
+
+    with ACanvas do
     begin
-      TempRect := WholeCellRect(Col, 0);
-      aRect.Left := TempRect.Left;
-      aRect.Right := TempRect.Right;
-      TxtRect := aRect;
-      Windows.InflateRect(TxtRect, -1, -1);
+      Brush.Color := DWTitleAttr.Color;
+      FillRect(R);
 
-      With aCanvas do
-        begin
-          Brush.Color := DWTitleAttr.Color;
-          FillRect(aRect);
-
-          Case DWTitleAttr.FrameAttr.Style of
-            fs3DRaised :
-              Draw3DFrame(aCanvas, aRect, clBtnHighlight, clBtnShadow);
-            fs3DLowered :
-              Draw3DFrame(aCanvas, aRect, clBtnShadow, clBtnHighlight);
-            fsFlat :
-              begin
-                Pen.Color := DWTitleAttr.FrameAttr.Color;
-                Pen.Width := DWTitleAttr.FrameAttr.Width;
-                if Col = 0 Then
-                  begin
-                    MoveTo(aRect.Left, aRect.Top);
-                    LineTo(aRect.Left, aRect.Bottom);
-                  end;
-                PolyLine([Point(aRect.Right - 1, aRect.Top),
-                          Point(aRect.Right - 1, aRect.Bottom - 1),
-                          Point(aRect.Left - 1, aRect.Bottom - 1)]);
-              end;
-            fsNone :
-              begin
-                Pen.Color := DWTitleAttr.FrameAttr.Color;
-                Pen.Width := 1;
-                LineBottom := aRect.Bottom - 1;
-                For I := 1 to DWTitleAttr.FrameAttr.Width do
-                  begin
-                    MoveTo(aRect.Left, LineBottom);
-                    LineTo(aRect.Right, LineBottom);
-                    Dec(LineBottom);
-                  end;
-              end;
-          end;
-
-          Txt := DWNames.GetDWName(DOWToBorl(CurrDOW));
-          if SplitSatSun and (CurrDow = dowSaturday) Then
+      case DWTitleAttr.FrameAttr.Style of
+        fs3DRaised:
+          Draw3DFrame(ACanvas, R, clBtnHighlight, clBtnShadow);
+        fs3DLowered:
+          Draw3DFrame(ACanvas, R, clBtnShadow, clBtnHighlight);
+        fsFlat:
+          begin
+            Pen.Color := DWTitleAttr.FrameAttr.Color;
+            Pen.Width := DWTitleAttr.FrameAttr.Width;
+            if Col = 0 then
             begin
-              IncDOW(CurrDOW, 1);
-              Txt := Txt + '/' + DWNames.GetDWName(DOWToBorl(CurrDOW));
+              MoveTo(R.Left, R.Top);
+              LineTo(R.Left, R.Bottom);
             end;
-            
-          Font := DWTitleAttr.TxtAttr.Font;
-          DrawAngleText(aCanvas, TxtRect, TextBounds,
-                        DWTitleAttr.TxtAttr.Rotation,
-                        DWTitleAttr.TxtAttr.AlignH,
-                        DWTitleAttr.TxtAttr.AlignV, Txt);
-        end;
+            PolyLine([Point(R.Right - 1, R.Top),
+              Point(R.Right - 1, R.Bottom - 1),
+                Point(R.Left - 1, R.Bottom - 1)]);
+          end;
+        fsNone:
+          begin
+            Pen.Color := DWTitleAttr.FrameAttr.Color;
+            Pen.Width := 1;
+            LineBottom := R.Bottom - 1;
+            for I := 1 to DWTitleAttr.FrameAttr.Width do
+            begin
+              MoveTo(R.Left, LineBottom);
+              LineTo(R.Right, LineBottom);
+              Dec(LineBottom);
+            end;
+          end;
+      end;
 
-      if Assigned(FOnDrawDWTitle) Then
-        FOnDrawDWTitle(Self, aCanvas, aRect, CurrDOW, Txt);
+      Txt := DWNames.GetDWName(DOWToBorl(CurrDOW));
+      if SplitSatSun and (CurrDow = dowSaturday) then
+      begin
+        IncDOW(CurrDOW, 1);
+        Txt := Txt + '/' + DWNames.GetDWName(DOWToBorl(CurrDOW));
+      end;
 
-      IncDOW(CurrDOW, 1);
+      Font := DWTitleAttr.TxtAttr.Font;
+      DrawAngleText(ACanvas, TxtRect, TextBounds,
+        DWTitleAttr.TxtAttr.Rotation,
+        DWTitleAttr.TxtAttr.AlignH,
+        DWTitleAttr.TxtAttr.AlignV, Txt);
     end;
 
-  With aCanvas do
-    begin
-      Pen.Assign(OldPen);
-      Brush.Assign(OldBrush);
-      Font.Assign(OldFont);
-      OldPen.Free;
-      OldBrush.Free;
-      OldFont.Free;
-    end;
+    if Assigned(FOnDrawDWTitle) then
+      FOnDrawDWTitle(Self, ACanvas, R, CurrDOW, Txt);
+
+    IncDOW(CurrDOW, 1);
+  end;
+
+  with ACanvas do
+  begin
+    Pen.Assign(OldPen);
+    Brush.Assign(OldBrush);
+    Font.Assign(OldFont);
+    OldPen.Free;
+    OldBrush.Free;
+    OldFont.Free;
+  end;
 end;
 
 procedure TJvTFMonths.DWNamesChange(Sender: TObject);
@@ -379,13 +359,15 @@ begin
   Invalidate;
 end;
 
-function TJvTFMonths.GetCellAttr(aCell: TJvTFGlanceCell): TJvTFGlanceCellAttr;
+function TJvTFMonths.GetCellAttr(ACell: TJvTFGlanceCell): TJvTFGlanceCellAttr;
 begin
-  if CellIsSelected(aCell) Then
+  if CellIsSelected(ACell) then
     Result := SelCellAttr
-  else if CellIsExtraDay(aCell) Then
+  else
+  if CellIsExtraDay(ACell) then
     Result := ExtraDayCellAttr
-  else if CellIsOffDay(aCell) Then
+  else
+  if CellIsOffDay(ACell) then
     Result := OffDayCellAttr
   else
     Result := CellAttr;
@@ -394,7 +376,7 @@ end;
 function TJvTFMonths.GetCellTitleText(Cell: TJvTFGlanceCell): string;
 begin
   if CellIsExtraDay(Cell) and (IsFirstOfMonth(Cell.CellDate) or
-     EqualDates(Cell.CellDate, OriginDate)) Then
+    EqualDates(Cell.CellDate, OriginDate)) then
     Result := FormatDateTime('mmm d', Cell.CellDate)
   else
     Result := FormatDateTime('d', Cell.CellDate);
@@ -403,7 +385,7 @@ end;
 function TJvTFMonths.GetDataTop: Integer;
 begin
   Result := inherited GetDataTop;
-  if DWTitleAttr.Visible Then
+  if DWTitleAttr.Visible then
     Inc(Result, DWTitleAttr.Height);
 end;
 
@@ -417,11 +399,11 @@ begin
   Result := ExtractYear(DisplayDate);
 end;
 
-procedure TJvTFMonths.Navigate(aControl: TJvTFControl;
+procedure TJvTFMonths.Navigate(AControl: TJvTFControl;
   SchedNames: TStringList; Dates: TJvTFDateList);
 begin
-  inherited;
-  if Dates.Count > 0 Then
+  inherited Navigate(AControl, SchedNames, Dates);
+  if Dates.Count > 0 then
     DisplayDate := Dates[0];
 end;
 
@@ -463,7 +445,7 @@ end;
 
 procedure TJvTFMonths.ScrollNext;
 begin
-  if ScrollSize = mssMonth Then
+  if ScrollSize = mssMonth then
     NextMonth
   else
     NextWeek;
@@ -471,7 +453,7 @@ end;
 
 procedure TJvTFMonths.ScrollPrev;
 begin
-  if ScrollSize = mssMonth Then
+  if ScrollSize = mssMonth then
     PrevMonth
   else
     PrevWeek;
@@ -486,7 +468,7 @@ end;
 procedure TJvTFMonths.SetDisplayDate(Value: TDate);
 begin
   FDisplayDate := Value;
-  if ScrollSize = mssMonth Then
+  if ScrollSize = mssMonth then
     StartDate := FirstOfMonth(Value)
   else
     StartDate := Value;
@@ -515,7 +497,7 @@ begin
   EnsureMonth(Value);
 
   DecodeDate(DisplayDate, Y, M, D);
-  if Value <> M Then
+  if Value <> M then
     DisplayDate := EncodeDate(Y, Value, D);
 end;
 
@@ -526,40 +508,37 @@ end;
 
 procedure TJvTFMonths.SetOffDays(Value: TTFDaysOfWeek);
 begin
-  if Value <> FOffDays Then
-    begin
-      FOffDays := Value;
-      Invalidate;
-    end;
+  if Value <> FOffDays then
+  begin
+    FOffDays := Value;
+    Invalidate;
+  end;
 end;
 
 procedure TJvTFMonths.SetSplitSatSun(Value: Boolean);
 begin
-  if Value <> FSplitSatSun Then
-    begin
-      if DOWShowing(dowSunday) or DOWShowing(dowSaturday) Then
-        if Value Then
-          begin
-            if StartOfWeek = dowSunday Then
-              StartOfWeek := dowMonday;
-            ColCount := ColCount - 1;
-          end
-        else
-          begin
-            ColCount := ColCount + 1;
-          end;
+  if Value <> FSplitSatSun then
+  begin
+    if DOWShowing(dowSunday) or DOWShowing(dowSaturday) then
+      if Value then
+      begin
+        if StartOfWeek = dowSunday then
+          StartOfWeek := dowMonday;
+        ColCount := ColCount - 1;
+      end
+      else
+        ColCount := ColCount + 1;
 
-      FSplitSatSun := Value;
-      Cells.ReconfigCells;
-    end;
+    FSplitSatSun := Value;
+    Cells.ReconfigCells;
+  end;
 end;
 
 procedure TJvTFMonths.SetStartOfWeek(Value: TTFDayOfWeek);
 begin
-  if SplitSatSun and (Value = dowSunday) Then
+  if SplitSatSun and (Value = dowSunday) then
     Value := dowSaturday;
-
-  inherited;
+  inherited SetStartOfWeek(Value);
 end;
 
 procedure TJvTFMonths.SetYear(Value: Word);
@@ -567,7 +546,7 @@ var
   Y, M, D: Word;
 begin
   DecodeDate(DisplayDate, Y, M, D);
-  if Value <> Y Then
+  if Value <> Y then
     DisplayDate := EncodeDate(Value, M, D);
 end;
 
@@ -576,13 +555,13 @@ var
   NewTitle: string;
 begin
   NewTitle := FormatDateTime('mmmm yyyy', DisplayDate);
-  if NewTitle <> TitleAttr.Title Then
-    begin
-      if Assigned(FOnUpdateTitle) Then
-        FOnUpdateTitle(Self, NewTitle);
-      TitleAttr.Title := NewTitle;
-    end;
+  if NewTitle <> TitleAttr.Title then
+  begin
+    if Assigned(FOnUpdateTitle) then
+      FOnUpdateTitle(Self, NewTitle);
+    TitleAttr.Title := NewTitle;
+  end;
 end;
 
-
 end.
+

@@ -45,15 +45,17 @@ unit JvDBLookupComboEdit;
 
 interface
 
-uses Windows, SysUtils, Messages, Classes, Controls, Forms, Graphics, {Menus,}
-     StdCtrls, {ExtCtrls, Mask,} Buttons, {ComCtrls,} Db, DBCtrls, JvDBLookup;
+uses
+  Windows, SysUtils, Messages, Classes, Controls, Forms, Graphics,
+  StdCtrls, Buttons, Db, DBCtrls,
+  JvDBLookup;
 
 type
   TJvDBLookupComboEdit = class(TJvDBLookupEdit)
   private
     FDataLink: TFieldDataLink;
     FCanvas: TControlCanvas;
-//    FAlignment: TAlignment;
+    // FAlignment: TAlignment;
     FFocused: Boolean;
     FBeepOnError: Boolean;
     procedure ActiveChange(Sender: TObject);
@@ -69,30 +71,29 @@ type
     procedure SetDataSource(Value: TDataSource);
     procedure SetFocused(Value: Boolean);
     procedure UpdateData(Sender: TObject);
-    procedure WMCut(var Message: TMessage); message WM_CUT;
-    procedure WMPaste(var Message: TMessage); message WM_PASTE;
-    procedure WMUndo(var Message: TMessage); message WM_UNDO;
-    procedure CMEnter(var Message: TCMEnter); message CM_ENTER;
-    procedure CMExit(var Message: TCMExit); message CM_EXIT;
-    procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
-    procedure CMGetDataLink(var Message: TMessage); message CM_GETDATALINK;
+    procedure WMCut(var Msg: TMessage); message WM_CUT;
+    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
+    procedure WMUndo(var Msg: TMessage); message WM_UNDO;
+    procedure CMEnter(var Msg: TCMEnter); message CM_ENTER;
+    procedure CMExit(var Msg: TCMExit); message CM_EXIT;
+    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
+    procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
   protected
-    function GetReadOnly: Boolean;override;  // suppress the warning
-    procedure SetReadOnly(Value: Boolean);override;
+    function GetReadOnly: Boolean; override; // suppress the warning
+    procedure SetReadOnly(Value: Boolean); override;
     procedure Change; override;
     function EditCanModify: Boolean; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure Loaded; override;
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Reset; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function ExecuteAction(Action: TBasicAction): Boolean; override;
     function UpdateAction(Action: TBasicAction): Boolean; override;
-//    function UseRightToLeftAlignment: Boolean; override;
+    // function UseRightToLeftAlignment: Boolean; override;
     property Field: TField read GetField;
     property Canvas: TCanvas read GetCanvas;
   published
@@ -151,7 +152,7 @@ implementation
 constructor TJvDBLookupComboEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-//  inherited ReadOnly := True;
+  // inherited ReadOnly := True;
   ControlStyle := ControlStyle + [csReplicatable];
   FCanvas := TControlCanvas.Create;
   FCanvas.Control := Self;
@@ -189,15 +190,16 @@ procedure TJvDBLookupComboEdit.Loaded;
 begin
   inherited Loaded;
   ResetMaxLength;
-  if (csDesigning in ComponentState) then DataChange(Self);
+  if csDesigning in ComponentState then
+    DataChange(Self);
 end;
 
 procedure TJvDBLookupComboEdit.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (FDataLink <> nil) and
-    (AComponent = DataSource) then DataSource := nil;
+  if (Operation = opRemove) and (FDataLink <> nil) and (AComponent = DataSource) then
+    DataSource := nil;
 end;
 
 //function TJvDBLookupComboEdit.UseRightToLeftAlignment: Boolean;
@@ -256,7 +258,7 @@ begin
   if FFocused <> Value then
   begin
     FFocused := Value;
-//    if (FAlignment <> taLeftJustify) and not IsMasked then Invalidate;
+    // if (FAlignment <> taLeftJustify) and not IsMasked then Invalidate;
     FDataLink.Reset;
   end;
 end;
@@ -276,7 +278,8 @@ procedure TJvDBLookupComboEdit.SetDataSource(Value: TDataSource);
 begin
   if not (FDataLink.DataSourceFixed and (csLoading in ComponentState)) then
     FDataLink.DataSource := Value;
-  if Value <> nil then Value.FreeNotification(Self);
+  if Value <> nil then
+    Value.FreeNotification(Self);
 end;
 
 function TJvDBLookupComboEdit.GetDataField: string;
@@ -321,39 +324,38 @@ procedure TJvDBLookupComboEdit.DataChange(Sender: TObject);
 begin
   if FDataLink.Field <> nil then
   begin
-//    if FAlignment <> FDataLink.Field.Alignment then
-//    begin
-//      EditText := '';  {forces update}
-//      FAlignment := FDataLink.Field.Alignment;
-//    end;
+    //if FAlignment <> FDataLink.Field.Alignment then
+    //begin
+    //  EditText := '';  {forces update}
+    //  FAlignment := FDataLink.Field.Alignment;
+    //end;
     EditMask := FDataLink.Field.EditMask;
     if not (csDesigning in ComponentState) then
-    begin
       if (FDataLink.Field.DataType in [ftString, ftWideString]) and (MaxLength = 0) then
         MaxLength := FDataLink.Field.Size;
-    end;
     if FFocused and FDataLink.CanModify then
       Text := FDataLink.Field.Text
     else
     begin
       EditText := FDataLink.Field.DisplayText;
-      if FDataLink.Editing //and FDataLink.FModified || fmodified is private in parent of fdatalink
-      then
+      if FDataLink.Editing then //and FDataLink.FModified || fmodified is private in parent of fdatalink
         Modified := True;
     end;
-  end else
+  end
+  else
   begin
-//    FAlignment := taLeftJustify;
+    //FAlignment := taLeftJustify;
     EditMask := '';
     if csDesigning in ComponentState then
-      EditText := Name else
+      EditText := Name
+    else
       EditText := '';
   end;
 end;
 
 procedure TJvDBLookupComboEdit.EditingChange(Sender: TObject);
 begin
-  inherited //ReadOnly := not FDataLink.Editing;
+  //ReadOnly := not FDataLink.Editing;
 end;
 
 procedure TJvDBLookupComboEdit.UpdateData(Sender: TObject);
@@ -362,25 +364,25 @@ begin
   FDataLink.Field.Text := Text;
 end;
 
-procedure TJvDBLookupComboEdit.WMUndo(var Message: TMessage);
+procedure TJvDBLookupComboEdit.WMUndo(var Msg: TMessage);
 begin
   FDataLink.Edit;
   inherited;
 end;
 
-procedure TJvDBLookupComboEdit.WMPaste(var Message: TMessage);
+procedure TJvDBLookupComboEdit.WMPaste(var Msg: TMessage);
 begin
   FDataLink.Edit;
   inherited;
 end;
 
-procedure TJvDBLookupComboEdit.WMCut(var Message: TMessage);
+procedure TJvDBLookupComboEdit.WMCut(var Msg: TMessage);
 begin
   FDataLink.Edit;
   inherited;
 end;
 
-procedure TJvDBLookupComboEdit.CMEnter(var Message: TCMEnter);
+procedure TJvDBLookupComboEdit.CMEnter(var Msg: TCMEnter);
 begin
   SetFocused(True);
   inherited;
@@ -388,7 +390,7 @@ begin
     inherited ReadOnly := False;
 end;
 
-procedure TJvDBLookupComboEdit.CMExit(var Message: TCMExit);
+procedure TJvDBLookupComboEdit.CMExit(var Msg: TCMExit);
 begin
   try
     FDataLink.UpdateRecord;
@@ -402,9 +404,9 @@ begin
   DoExit;
 end;
 
-procedure TJvDBLookupComboEdit.WMPaint(var Message: TWMPaint);
+procedure TJvDBLookupComboEdit.WMPaint(var Msg: TWMPaint);
 const
-  AlignStyle : array[Boolean, TAlignment] of DWORD =
+  AlignStyle: array [Boolean, TAlignment] of DWORD =
    ((WS_EX_LEFT, WS_EX_RIGHT, WS_EX_LEFT),
     (WS_EX_RIGHT, WS_EX_LEFT, WS_EX_LEFT));
 var
@@ -419,8 +421,9 @@ var
 begin
   if csDestroying in ComponentState then
     Exit;
-  AAlignment := Alignment;//FAlignment;
-  if UseRightToLeftAlignment then ChangeBiDiModeAlignment(AAlignment);
+  AAlignment := Alignment; //FAlignment;
+  if UseRightToLeftAlignment then
+    ChangeBiDiModeAlignment(AAlignment);
   if ((AAlignment = taLeftJustify) or FFocused) and
     not (csPaintCopy in ControlState) then
   begin
@@ -428,8 +431,10 @@ begin
     begin { This keeps the right aligned text, right aligned }
       ExStyle := DWORD(GetWindowLong(Handle, GWL_EXSTYLE)) and (not WS_EX_RIGHT) and
         (not WS_EX_RTLREADING) and (not WS_EX_LEFTSCROLLBAR);
-      if UseRightToLeftReading then ExStyle := ExStyle or WS_EX_RTLREADING;
-      if UseRightToLeftScrollbar then ExStyle := ExStyle or WS_EX_LEFTSCROLLBAR;
+      if UseRightToLeftReading then
+        ExStyle := ExStyle or WS_EX_RTLREADING;
+      if UseRightToLeftScrollbar then
+        ExStyle := ExStyle or WS_EX_LEFTSCROLLBAR;
       ExStyle := ExStyle or
         AlignStyle[UseRightToLeftAlignment, AAlignment];
       if DWORD(GetWindowLong(Handle, GWL_EXSTYLE)) <> ExStyle then
@@ -438,11 +443,13 @@ begin
     inherited;
     Exit;
   end;
+
 { Since edit controls do not handle justification unless multi-line (and
   then only poorly) we will draw right and center justify manually unless
   the edit has the focus. }
-  DC := Message.DC;
-  if DC = 0 then DC := BeginPaint(Handle, PS);
+  DC := Msg.DC;
+  if DC = 0 then
+    DC := BeginPaint(Handle, PS);
   FCanvas.Handle := DC;
   try
     FCanvas.Font := Font;
@@ -462,16 +469,22 @@ begin
       begin
         S := FDataLink.Field.DisplayText;
         case CharCase of
-          ecUpperCase: S := AnsiUpperCase(S);
-          ecLowerCase: S := AnsiLowerCase(S);
+          ecUpperCase:
+            S := AnsiUpperCase(S);
+          ecLowerCase:
+            S := AnsiLowerCase(S);
         end;
-      end else
+      end
+      else
         S := EditText;
-      if PasswordChar <> #0 then FillChar(S[1], Length(S), PasswordChar);
+      if PasswordChar <> #0 then
+        FillChar(S[1], Length(S), PasswordChar);
       Margins := GetTextMargins;
       case AAlignment of
-        taLeftJustify: Left := Margins.X;
-        taRightJustify: Left := ClientWidth - TextWidth(S) - Margins.X - 1;
+        taLeftJustify:
+          Left := Margins.X;
+        taRightJustify:
+          Left := ClientWidth - TextWidth(S) - Margins.X - 1;
       else
         Left := (ClientWidth - TextWidth(S)) div 2;
       end;
@@ -481,13 +494,14 @@ begin
     end;
   finally
     FCanvas.Handle := 0;
-    if Message.DC = 0 then EndPaint(Handle, PS);
+    if Msg.DC = 0 then
+      EndPaint(Handle, PS);
   end;
 end;
 
-procedure TJvDBLookupComboEdit.CMGetDataLink(var Message: TMessage);
+procedure TJvDBLookupComboEdit.CMGetDataLink(var Msg: TMessage);
 begin
-  Message.Result := Integer(FDataLink);
+  Msg.Result := Integer(FDataLink);
 end;
 
 function TJvDBLookupComboEdit.GetTextMargins: TPoint;
@@ -499,13 +513,21 @@ var
 begin
   if NewStyleControls then
   begin
-    if BorderStyle = bsNone then I := 0 else
-      if Ctl3D then I := 1 else I := 2;
+    if BorderStyle = bsNone then
+      I := 0
+    else
+    if Ctl3D then
+      I := 1
+    else
+      I := 2;
     Result.X := SendMessage(Handle, EM_GETMARGINS, 0, 0) and $0000FFFF + I;
     Result.Y := I;
-  end else
+  end
+  else
   begin
-    if BorderStyle = bsNone then I := 0 else
+    if BorderStyle = bsNone then
+      I := 0
+    else
     begin
       DC := GetDC(0);
       GetTextMetrics(DC, SysMetrics);
@@ -514,7 +536,8 @@ begin
       SelectObject(DC, SaveFont);
       ReleaseDC(0, DC);
       I := SysMetrics.tmHeight;
-      if I > Metrics.tmHeight then I := Metrics.tmHeight;
+      if I > Metrics.tmHeight then
+        I := Metrics.tmHeight;
       I := I div 4;
     end;
     Result.X := I;
@@ -535,3 +558,4 @@ begin
 end;
 
 end.
+

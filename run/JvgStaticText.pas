@@ -34,7 +34,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls,
-  JvgTypes, JVComponent, JvgCommClasses, JvgUtils;
+  JvgTypes, JvComponent, JvgCommClasses, JvgUtils;
 
 type
   TJvgStaticText = class(TJvGraphicControl)

@@ -45,38 +45,30 @@ type
   protected
     FFileName: TFileName;
     FXml: TJvSimpleXml;
-
-    FCurrentNode : TJvSimpleXmlElem;
-
+    FCurrentNode: TJvSimpleXmlElem;
     function GetFileName: TFileName;
     procedure SetFileName(const Value: TFileName);
-
     function GetRootNodeName: string;
     procedure SetRootNodeName(const Value: string);
-
     // Returns the last node in path, if it exists.
     // Returns nil in all other cases
     // If StartNode is nil, then FCurrentNode is used as a
     // starting point for Path
-    function GetNodeFromPath(Path : string; StartNode : TJvSimpleXmlElem = nil) : TJvSimpleXmlElem;
-
+    function GetNodeFromPath(Path: string; StartNode: TJvSimpleXmlElem = nil): TJvSimpleXmlElem;
     // Reads the \ separated Key string and sets FCurrentNode to
     // the last one, having created all the required XML nodes
     // including the last one
-    procedure CreateAndSetNode(Key : string);
-
+    procedure CreateAndSetNode(Key: string);
     procedure EnumFolders(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); override;
     procedure EnumValues(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); override;
-
     function IsFolderInt(Path: string; ListIsValue: Boolean = True): Boolean; override;
     procedure SplitKeyPath(const Path: string; out Key, ValueName: string); override;
     function PathExistsInt(const Path: string): boolean; override;
     function ValueStoredInt(const Path: string): Boolean; override;
     procedure DeleteValueInt(const Path: string); override;
     procedure DeleteSubTreeInt(const Path: string); override;
-
     function DoReadBoolean(const Path: string; Default: Boolean): Boolean; override;
     procedure DoWriteBoolean(const Path: string; Value: Boolean); override;
     function DoReadInteger(const Path: string; Default: Integer): Integer; override;
@@ -92,8 +84,7 @@ type
     destructor Destroy; override;
     procedure Flush;
     procedure Reload;
-
-    property Xml : TJvSimpleXml read FXml;
+    property Xml: TJvSimpleXml read FXml;
   published
     property FileName: TFileName read GetFileName write SetFileName;
     property RootNodeName: string read GetRootNodeName write SetRootNodeName;
@@ -103,7 +94,8 @@ implementation
 
 uses
   TypInfo,
-  JvTypes, JvConsts, JvResources, JclStrings;
+  JclStrings,
+  JvTypes, JvConsts, JvResources;
 
 const
   cNullDigit = '0';
@@ -147,7 +139,7 @@ begin
   end;
 end;
 
-//=== TJvAppXMLStorage =========================================================
+//=== TJvAppXMLStorage =======================================================
 
 constructor TJvAppXMLStorage.Create(AOwner: TComponent);
 begin
@@ -252,10 +244,10 @@ begin
     end;
   end
   else
-    if StorageOptions.DefaultIfValueNotExists then
-      Result := Default
-    else
-      raise EJVCLException.CreateFmt(RsEPathDoesntExists, [Path]);
+  if StorageOptions.DefaultIfValueNotExists then
+    Result := Default
+  else
+    raise EJVCLException.CreateFmt(RsEPathDoesntExists, [Path]);
 end;
 
 procedure TJvAppXMLStorage.DoWriteInteger(const Path: string; Value: Integer);
@@ -294,10 +286,10 @@ begin
     end;
   end
   else
-    if StorageOptions.DefaultIfValueNotExists then
-      Result := Default
-    else
-      raise EJVCLException.CreateFmt(RsEPathDoesntExists, [Path]);
+  if StorageOptions.DefaultIfValueNotExists then
+    Result := Default
+  else
+    raise EJVCLException.CreateFmt(RsEPathDoesntExists, [Path]);
 end;
 
 procedure TJvAppXMLStorage.DoWriteFloat(const Path: string; Value: Extended);
@@ -334,10 +326,10 @@ begin
     end;
   end
   else
-    if StorageOptions.DefaultIfValueNotExists then
-      Result := Default
-    else
-      raise EJVCLException.CreateFmt(RsEPathDoesntExists, [Path]);
+  if StorageOptions.DefaultIfValueNotExists then
+    Result := Default
+  else
+    raise EJVCLException.CreateFmt(RsEPathDoesntExists, [Path]);
 end;
 
 procedure TJvAppXMLStorage.DoWriteString(const Path: string; Value: string);
@@ -387,7 +379,7 @@ procedure TJvAppXMLStorage.EnumFolders(const Path: string;
 var
   RefPath: string;
   I: Integer;
-  Node : TJvSimpleXmlElem;
+  Node: TJvSimpleXmlElem;
 begin
   RefPath := GetAbsPath(Path);
   if RefPath = '' then
@@ -428,7 +420,7 @@ begin
     begin
       Name := Node.Items[I].Name;
       if (not PathIsList or (not AnsiSameText(cCount, Name) and
-          not NameIsListItem(Name))) then
+        not NameIsListItem(Name))) then
         Strings.Add(Name);
     end;
   end
@@ -487,22 +479,22 @@ begin
   FXml.Options := [sxoAutoIndent];
 end;
 
-function TJvAppXMLStorage.GetNodeFromPath(Path: string; StartNode : TJvSimpleXmlElem = nil): TJvSimpleXmlElem;
+function TJvAppXMLStorage.GetNodeFromPath(Path: string; StartNode: TJvSimpleXmlElem = nil): TJvSimpleXmlElem;
 var
   NodeList: TStringList;
   I: Integer;
-  Node : TJvSimpleXmlElem;
+  Node: TJvSimpleXmlElem;
 begin
   NodeList := TStringList.Create;
   if StartNode <> nil then
     Node := StartNode
   else
     Node := FCurrentNode;
-    
+
   try
     try
       StrToStrings(Path, '\', NodeList, false);
-      for I := 0 to NodeList.Count-1 do
+      for I := 0 to NodeList.Count - 1 do
       begin
         if Assigned(Node.Items.ItemNamed[NodeList[i]]) then
           Node := Node.Items.ItemNamed[NodeList[i]]
@@ -557,10 +549,10 @@ begin
     end;
   end
   else
-    if StorageOptions.DefaultIfValueNotExists then
-      Result := Default
-    else
-      raise EJVCLException.CreateFmt(RsEPathDoesntExists, [Path]);
+  if StorageOptions.DefaultIfValueNotExists then
+    Result := Default
+  else
+    raise EJVCLException.CreateFmt(RsEPathDoesntExists, [Path]);
 end;
 
 procedure TJvAppXMLStorage.DoWriteBoolean(const Path: string;
@@ -577,3 +569,4 @@ begin
 end;
 
 end.
+

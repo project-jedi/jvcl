@@ -30,16 +30,17 @@ Known Issues:
 
 unit JvMarkupLabel;
 
+// (rom) is this needed?
 {$OBJEXPORTALL On}
 
 interface
 
 uses
-  {$IFdEF VCL}
+  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QWindows, 
+  Types, QGraphics, QControls, QWindows,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvComponent, JvMarkupCommon;
@@ -47,8 +48,8 @@ uses
 type
   TJvMarkupLabel = class(TJvGraphicControl)
   private
-    ElementStack: TJvHTMLElementStack;
-    TagStack: TJvHTMLElementStack;
+    FElementStack: TJvHTMLElementStack;
+    FTagStack: TJvHTMLElementStack;
     FText: string;
     FBackColor: TColor;
     FMarginLeft: Integer;
@@ -72,7 +73,6 @@ type
     procedure SetAutoSize(Value: Boolean); override;
     {$ENDIF VCL}
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
@@ -131,14 +131,12 @@ implementation
 uses
   JvConsts, JvThemes;
 
-{ TJvMarkupLabel }
-
 constructor TJvMarkupLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   IncludeThemeStyle(Self, [csParentBackground]);
-  ElementStack := TJvHTMLElementStack.Create;
-  TagStack := TJvHTMLElementStack.Create;
+  FElementStack := TJvHTMLElementStack.Create;
+  FTagStack := TJvHTMLElementStack.Create;
   FBackColor := clWhite;
   FAlignment := taLeftJustify;
   Width := 200;
@@ -150,8 +148,8 @@ end;
 
 destructor TJvMarkupLabel.Destroy;
 begin
-  ElementStack.Free;
-  TagStack.Free;
+  FElementStack.Free;
+  FTagStack.Free;
   inherited Destroy;
 end;
 
@@ -160,11 +158,12 @@ var
   I, C: Integer;
   El: TJvHTMLElement;
 begin
-  C := ElementStack.Count;
-  if C = 0 then Exit;
+  C := FElementStack.Count;
+  if C = 0 then
+    Exit;
   for I := 0 to C - 1 do
   begin
-    El := TJvHTMLElement(ElementStack.Items[I]);
+    El := TJvHTMLElement(FElementStack.Items[I]);
     El.SolText := '';
     El.EolText := '';
   end;
@@ -175,14 +174,15 @@ var
   I, C: Integer;
   El: TJvHTMLElement;
   H, A, W: Integer;
-  Tm: TTextMetric;  
+  Tm: TTextMetric;
   S: string;
 begin
-  C := ElementStack.Count;
-  if C = 0 then Exit;
+  C := FElementStack.Count;
+  if C = 0 then
+    Exit;
   for I := 0 to C - 1 do
   begin
-    El := TJvHTMLElement(ElementStack.Items[I]);
+    El := TJvHTMLElement(FElementStack.Items[I]);
     S := El.Text;
     Canvas.Font.Name := El.FontName;
     Canvas.Font.Size := El.FontSize;
@@ -261,12 +261,12 @@ var
     Element.FontSize := FSize;
     Element.FontStyle := FStyle;
     Element.FontColor := FColor;
-    TagStack.Push(Element);
+    FTagStack.Push(Element);
   end;
 
   procedure PopTag;
   begin
-    Element := TagStack.Pop;
+    Element := FTagStack.Pop;
     if Element <> nil then
     begin
       FName := Element.FontName;
@@ -287,7 +287,7 @@ var
     Element.FontColor := FColor;
     Element.BreakLine := FBreakLine;
     FBreakLine := False;
-    ElementStack.Push(Element);
+    FElementStack.Push(Element);
   end;
 
   procedure ParseTag(SS: string);
@@ -300,9 +300,7 @@ var
     HaveParams := False;
     PP := Pos(' ', SS);
     if PP = 0 then
-    begin // tag only
-      ATag := SS;
-    end
+      ATag := SS // tag only
     else
     begin // tag + attributes
       ATag := Copy(SS, 1, PP - 1);
@@ -313,44 +311,48 @@ var
     ATag := LowerCase(ATag);
     if ATag = 'br' then
       FBreakLine := True
-    else if ATag = 'b' then
+    else
+    if ATag = 'b' then
     begin // bold
       PushTag;
       FStyle := FStyle + [fsBold];
     end
-    else if ATag = '/b' then
+    else
+    if ATag = '/b' then
     begin // cancel bold
       FStyle := FStyle - [fsBold];
       PopTag;
     end
-    else if ATag = 'i' then
+    else
+    if ATag = 'i' then
     begin // italic
       PushTag;
       FStyle := FStyle + [fsItalic];
     end
-    else if ATag = '/i' then
+    else
+    if ATag = '/i' then
     begin // cancel italic
       FStyle := FStyle - [fsItalic];
       PopTag;
     end
-    else if ATag = 'u' then
+    else
+    if ATag = 'u' then
     begin // underline
       PushTag;
       FStyle := FStyle + [fsUnderline];
     end
-    else if ATag = '/u' then
+    else
+    if ATag = '/u' then
     begin // cancel underline
       FStyle := FStyle - [fsUnderline];
       PopTag;
     end
-    else if ATag = 'font' then
-    begin
-      PushTag;
-    end
-    else if ATag = '/font' then
-    begin
+    else
+    if ATag = 'font' then
+      PushTag
+    else
+    if ATag = '/font' then
       PopTag;
-    end;
     if HaveParams then
     begin
       repeat
@@ -365,28 +367,29 @@ var
             AVal := Copy(SS, 1, PP - 1);
             Delete(SS, 1, PP);
             if APar = 'face' then
-            begin
-              FName := AVal;
-            end
-            else if APar = 'size' then
-            try
-              FSize := StrToInt(AVal);
-            except
-            end
-            else if APar = 'color' then
-            try
-              if HTMLStringToColor(AVal, AColor) then
-                FColor := AColor;
-            except
-            end
+              FName := AVal
+            else
+            if APar = 'size' then
+              try
+                FSize := StrToInt(AVal);
+              except
+              end
+            else
+            if APar = 'color' then
+              try
+                if HTMLStringToColor(AVal, AColor) then
+                  FColor := AColor;
+              except
+              end;
           end;
         end;
       until PP = 0;
     end;
   end;
+
 begin
-  ElementStack.Clear;
-  TagStack.Clear;
+  FElementStack.Clear;
+  FTagStack.Clear;
   FStyle := Font.Style;
   FName := Font.Name;
   FSize := Font.Size;
@@ -422,15 +425,16 @@ end;
 procedure TJvMarkupLabel.RenderHTML;
 var
   R: TRect;
-  I, C, X, Y,
-  ATotalWidth, AClientWidth, ATextWidth,
-  BaseLine,
-  iSol, iEol, PendingCount,
-  MaxHeight, {$IFDEF VCL} MaxWidth, {$ENDIF} MaxAscent: Integer;
+  I, C, X, Y: Integer;
+  ATotalWidth, AClientWidth, ATextWidth, BaseLine: Integer;
+  iSol, iEol, PendingCount, MaxHeight, MaxAscent: Integer;
+  {$IFDEF VCL}
+  MaxWidth: Integer;
+  {$ENDIF VCL}
   El: TJvHTMLElement;
   Eol: Boolean;
   PendingBreak: Boolean;
-  lSolText:string;
+  lSolText: string;
 
   procedure SetFont(EE: TJvHTMLElement);
   begin
@@ -464,8 +468,9 @@ begin
   R := ClientRect;
   Canvas.Brush.Color := BackColor;
   DrawThemedBackground(Self, Canvas, R);
-  C := ElementStack.Count;
-  if C = 0 then Exit;
+  C := FElementStack.Count;
+  if C = 0 then
+    Exit;
   HTMLClearBreaks;
   {$IFDEF VCL}
   if AutoSize then
@@ -490,7 +495,7 @@ begin
     MaxAscent := 0;
     Eol := False;
     repeat // scan line
-      El := TJvHTMLElement(ElementStack.Items[I]);
+      El := TJvHTMLElement(FElementStack.Items[I]);
       if El.BreakLine then
       begin
         if not PendingBreak and (PendingCount <> i) then
@@ -503,8 +508,10 @@ begin
         else
           PendingBreak := False;
       end;
-      if El.Height > MaxHeight then MaxHeight := El.Height;
-      if El.Ascent > MaxAscent then MaxAscent := El.Ascent;
+      if El.Height > MaxHeight then
+        MaxHeight := El.Height;
+      if El.Ascent > MaxAscent then
+        MaxAscent := El.Ascent;
       if El.Text <> '' then
       begin
         lSolText := El.SolText;
@@ -512,8 +519,8 @@ begin
         // it can do the break ...
         repeat
           El.Breakup(Canvas, ATotalWidth);
-          Inc(ATotalWidth,5);
-        until (lSolText <> El.Soltext);
+          Inc(ATotalWidth, 5);
+        until lSolText <> El.Soltext;
       end;
       if El.SolText <> '' then
       begin
@@ -527,9 +534,7 @@ begin
             iEol := I;
           end
           else
-          begin
             Inc(I);
-          end
         end
         else
         begin
@@ -556,16 +561,19 @@ begin
     end
     else
     {$ENDIF VCL}
-    case Alignment of
-      taLeftJustify  : X := MarginLeft;
-      taRightJustify : X := Width - MarginRight - ATextWidth;
-      taCenter       : X := MarginLeft + (Width - MarginLeft - MarginRight - ATextWidth) div 2;
-    end;
+      case Alignment of
+        taLeftJustify:
+          X := MarginLeft;
+        taRightJustify:
+          X := Width - MarginRight - ATextWidth;
+        taCenter:
+          X := MarginLeft + (Width - MarginLeft - MarginRight - ATextWidth) div 2;
+      end;
 
     for I := iSol to iEol do
     begin
-      El := TJvHTMLElement(ElementStack.Items[I]);
-      RenderString(El,False);
+      El := TJvHTMLElement(FElementStack.Items[I]);
+      RenderString(El, False);
     end;
 
     Y := Y + MaxHeight;
@@ -628,7 +636,8 @@ procedure TJvMarkupLabel.SetText(const Value: string);
 var
   S: string;
 begin
-  if Value = FText then Exit;
+  if Value = FText then
+    Exit;
   S := Value;
   S := StringReplace(S, SLineBreak, ' ', [rfReplaceAll]);
   S := TrimRight(S);
@@ -637,3 +646,4 @@ begin
 end;
 
 end.
+
