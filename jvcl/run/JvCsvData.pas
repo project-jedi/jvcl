@@ -681,7 +681,12 @@ function JvCsvWildcardMatch(data, pattern: string): Boolean;
 implementation
 
 uses
+  {$IFDEF VCL}
   Forms, Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QForms, QControls,
+  {$ENDIF VisualCLX}
   {$IFNDEF COMPILER6_UP}
   JvJVCLUtils,
   {$ENDIF COMPILER6_UP}
