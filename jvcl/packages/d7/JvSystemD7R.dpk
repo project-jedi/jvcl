@@ -29,7 +29,11 @@ requires
   rtl,
   vcl,
   vclx,
-  vcljpg;
+  vcljpg,
+  JvCoreD7R,
+  DJCL70,
+  vclactnband,
+  designide;
 
 contains
   JvClipMon in '..\..\run\JvClipmon.pas',
@@ -62,6 +66,10 @@ contains
   JvTimerLst in '..\..\run\JvTimerLst.pas',
   JvChangeNotify in '..\..\run\JvChangeNotify.pas',
   JvObjPickerComp in '..\..\run\JvObjPickerComp.pas',
-  JvSimpleXml in '..\..\run\JvSimpleXML.pas';
+  JvSimpleXml in '..\..\run\JvSimpleXML.pas',
+  Ras32 in '..\..\common\Ras32.pas',
+  JvStartMenuBtn in '..\..\run\JvStartMenuBtn.pas',
+  JvRecentMenuBtn in '..\..\run\JvRecentMenuBtn.pas',
+  JvWinSysList in '..\..\run\JvWinSysList.pas';
 
 end.

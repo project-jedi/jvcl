@@ -40,8 +40,9 @@ TODO:
 * Merge/remove remaining duplicates
 * Change palette layout
 * Create one DCR file for each design package
-* Implement IFiller
-* Implement XP theming
+* Implement IFiller (Marcel?)
+* Implement XP theming (Remko?)
+* Remove unnecessary IFDEF's (WIN32, COMPILER3, COMPILER4 etc). We don't support 16-bit and we don't support compilers before COMPILER5.
 * Add remaining donations:
 
   Globus (Andrey Chudin)
