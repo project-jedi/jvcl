@@ -38,10 +38,6 @@ default: \
   Compile \
   Clean
 
-CleanJcl: \
-  ChangeDirPackageDir \
-  Clean
-
 Bpg2Make.exe:
 	@echo [Compiling: Bpg2Make.exe]
 	cd $(DEVTOOLS)
@@ -69,16 +65,18 @@ Templates:
 	@echo -N"$(JCLROOT)\lib\c$(VERSION)" >> "$(PACKAGEDIR)\template.cfg"
 	@echo -O"$(JCLROOT)\lib\c$(VERSION)\obj" >> "$(PACKAGEDIR)\template.cfg"
 
-ChangeDirPackageDir:
-	@cd $(PACKAGEDIR)
+CompileJclDcpPackage:
+	echo [Compiling: $(FILE)]
+	$(DCC) -B "$(FILE)"
 
-Compile: ChangeDirPackageDir
+Compile:
 	@echo [Compiling: Packages]
-	for %f in ("C*.dpk") do $(DCC) -B "%f"
-# -U"..\..\source\common;..\..\source\windows;..\..\source\vcl;..\..\source\visclx;$(ROOT)\lib\obj" -I"..\..\source;..\..\source\common"
+	@cd $(PACKAGEDIR)
+	for %f in ("C*.dpk") do $(MAKE) -f "$(JVCLROOT)\packages\bin\MakeJCLDcp4BCB.mak" $(QUIET) "-DFILE=%f" CompileJclDcpPackage
 
 Clean:
 	@echo [Cleaning...]
+	@cd $(PACKAGEDIR)
 	#-del /q C*.dcp >NUL
 	#-del /q C*.bpl >NUL
 	-del /q *.lsp >NUL

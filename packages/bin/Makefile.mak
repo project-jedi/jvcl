@@ -43,7 +43,9 @@ LIBDIR = $(ROOT)\Projects\lib
 #-------------------------------------------------------------------------------
 
 JVCLPACKAGEDIR = ..
+!ifndef JVCLROOT
 JVCLROOT = $(JVCLPACKAGEDIR)\..
+!endif
 DEVTOOLS = $(JVCLROOT)\devtools
 DEVTOOLS_BACK = ..\packages\bin
 
