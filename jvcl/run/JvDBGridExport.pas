@@ -32,7 +32,7 @@ interface
 uses
   Windows, Classes, SysUtils, DB, DBGrids,
 //  Word2000,
-  JvComponent, JvTypes;
+  JvComponent, JvTypes, JvSimpleXml;
 
 type
   TExportDestination = (edFile, edClipboard);
@@ -42,7 +42,17 @@ type
 type
   EJvExportDBGridException = class(EJVCLException);
   TWordGridFormat = $10..$17;
+
   TOleServerClose = (scNever, scNewInstance, scAlways);
+type
+  TRecordColumn = record
+    Visible: boolean;
+    Exportable: boolean;
+    ColumnName: string;
+    Column: TColumn;
+    Field: TField;
+  end;
+  TRecordColumns = array of TRecordColumn;
 
 { avoid Office TLB imports }
 const
@@ -65,12 +75,15 @@ type
   TJvCustomDBGridExport = class(TJvComponent)
   private
     FGrid: TDBGrid;
+    FColumnCount: integer;
+    FRecordColumns: TRecordColumns;
     FCaption: string;
     FFilename: TFilename;
     FOnProgress: TJvExportProgressEvent;
     FLastExceptionMessage: string;
     FSilent: boolean;
     FOnException: TNotifyEvent;
+    procedure CheckVisibleColumn;
   protected
     procedure HandleException;
     function ExportField(aField: TField): boolean;
@@ -81,6 +94,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     function ExportGrid: boolean;
     property LastExceptionMessage: string read FLastExceptionMessage;
   published
@@ -201,6 +215,23 @@ type
     property ExportSeparator: TExportSeparator read FExportSeparator write SetExportSeparator default esTab;
   end;
 
+  TJvDBGridXMLExport = class(TJvCustomDBGridExport)
+  private
+    FXML: TJvSimpleXML;
+    function ClassNameNoT(aField: TField): string;
+  protected
+    function DoExport: boolean; override;
+    procedure DoSave; override;
+    procedure DoClose; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property Filename;
+    property Caption;
+    property Grid;
+    property OnProgress;
+  end;
 function WordGridFormatIdentToInt(const Ident: string; var Value: Longint): Boolean;
 function IntToWordGridFormatIdent(Value: Longint; var Ident: string): Boolean;
 procedure GetWordGridFormatValues(Proc: TGetStrProc);
@@ -236,6 +267,12 @@ begin
   FSilent := true;
 end;
 
+destructor TJvCustomDBGridExport.Destroy;
+begin
+  SetLength(FRecordColumns,0);
+  inherited;
+end;
+
 function TJvCustomDBGridExport.DoProgress(Min, Max, Position: Cardinal;
   const AText: string): boolean;
 begin
@@ -257,6 +294,25 @@ begin
       ftInterface, ftIDispatch, ftGuid]);
 end;
 
+procedure TJvCustomDBGridExport.CheckVisibleColumn;
+var
+  i: integer;
+begin
+  FColumnCount := Grid.Columns.Count;
+  SetLength(FRecordColumns,FColumnCount);
+  for i := 0 to FColumnCount - 1 do
+  begin
+    FRecordColumns[i].Column := Grid.Columns[i];
+    FRecordColumns[i].Visible := Grid.Columns[i].Visible;
+    FRecordColumns[i].ColumnName := Grid.Columns[i].Title.Caption;
+    FRecordColumns[i].Field := Grid.Columns[i].Field;
+    if FRecordColumns[i].Visible and (FRecordColumns[i].Field <> nil) then
+      FRecordColumns[i].Exportable := ExportField(FRecordColumns[i].Field)
+    else
+      FRecordColumns[i].Exportable := false;
+  end;
+end;
+
 function TJvCustomDBGridExport.ExportGrid: boolean;
 begin
   if not Assigned(Grid) then
@@ -265,6 +321,7 @@ begin
     raise EJvExportDBGridException.Create(RsDataSetIsUnassigned);
 //  if Filename = '' then
 //    raise EJvExportDBGridException.Create(RsFilenameEmpty);
+  CheckVisibleColumn;
   Result := DoExport;
   if Result then
     DoSave;
@@ -317,7 +374,7 @@ function TJvDBGridWordExport.DoExport: boolean;
 var
   i, j, k: integer;
   lTable: OleVariant;
-  ARecNo, lRecCount, lColCount: integer;
+  ARecNo, lRecCount: integer;
   lColVisible: integer;
   lRowCount: integer;
   lBookmark: TBookmark;
@@ -345,9 +402,8 @@ begin
     FWord.Visible := FVisible;
     FWord.Documents.Add;
 
-    lColCount := Grid.Columns.Count;
     lColVisible := 0;
-    for i := 1 to lColCount do
+    for i := 1 to FColumnCount do
       if Grid.Columns[i - 1].Visible then Inc(lColVisible);
 
     lRowCount := Grid.DataSource.DataSet.RecordCount;
@@ -362,10 +418,10 @@ begin
     lTable.AutoFormat(Format := WordFormat); // FormatNum, 1, 1, 1, 1, 1, 0, 0, 0, 1
 
     k := 1;
-    for i := 1 to lColCount do
-      if Grid.Columns[i - 1].Visible then
+    for i := 0 to FColumnCount - 1 do
+      if FRecordColumns[i].Visible then
       begin
-        lTable.Cell(1, k).Range.InsertAfter(Grid.Columns[i - 1].Title.Caption);
+        lTable.Cell(1, k).Range.InsertAfter(FRecordColumns[i].ColumnName);
         Inc(k);
       end;
 
@@ -382,16 +438,18 @@ begin
         while not Eof do
         begin
           k := 1;
-          for i := 1 to lColCount do
-            if (Grid.Columns[i - 1].Visible and not Fields[i - 1].IsNull and ExportField(Fields[i - 1])) then
+          for i := 0 to FColumnCount - 1 do
+          begin
+            if FRecordColumns[i].Exportable and not FRecordColumns[i].Field.IsNull then
             try
-              lTable.Cell(j, k).Range.InsertAfter(string(Fields[i - 1].Value));
-              Inc(k);
+              lTable.Cell(j, k).Range.InsertAfter(string(FRecordColumns[i].Field.Value));
             except
               Result := false;
               HandleException;
               // Remember problem but continue
             end;
+            if FRecordColumns[i].Visible then Inc(k);
+          end;
           Next;
           Inc(j);
           Inc(ARecNo);
@@ -478,7 +536,7 @@ var
   i, j, k: integer;
   lTable: OleVariant;
   lCell: OleVariant;
-  ARecNo, lRecCount, lColCount: integer;
+  ARecNo, lRecCount: integer;
   lBookmark: TBookmark;
 begin
   Result := true;
@@ -502,19 +560,17 @@ begin
     FExcel.WorkBooks.Add;
     FExcel.Visible := Visible;
 
-    lColCount := Grid.Columns.Count;
-
     lTable := FExcel.ActiveWorkbook.ActiveSheet;
     if Orientation = woPortrait then
       lTable.PageSetup.Orientation := xlPortrait
     else lTable.PageSetup.Orientation := xlLandscape;
 
     k := 1;
-    for i := 1 to lColCount do
-      if Grid.Columns[i - 1].Visible then
+    for i := 0 to FColumnCount - 1 do
+      if FRecordColumns[i].Visible then
       begin
         lCell := lTable.Range[IndexFieldToExcel(k) + '1'];
-        lCell.Value := Grid.Columns[i - 1].Title.Caption;
+        lCell.Value := FRecordColumns[i].ColumnName;
         Inc(k);
       end;
 
@@ -532,18 +588,21 @@ begin
         begin
           Inc(j);
           k := 1;
-          for i := 1 to lColCount do
-            if (Grid.Columns[i - 1].Visible and ExportField(Fields[i - 1])) then
+          for i := 0 to FColumnCount - 1 do
+          begin
+            if FRecordColumns[i].Exportable then
             begin
               lCell := lTable.Range[IndexFieldToExcel(k) + IntToStr(j)];
-              Inc(k);
               try
-                lCell.Value := string(Fields[i - 1].Value);
+                // Do not cast with string !
+                lCell.Value := FRecordColumns[i].Field.Value;
               except
                 Result := false;
                 HandleException;
               end;
             end;
+            if FRecordColumns[i].Visible then Inc(k);
+          end;
           Next;
           Inc(ARecNo);
           if not DoProgress(0, lRecCount, ARecNo, Caption) then Last;
@@ -614,8 +673,31 @@ end;
 
 destructor TJvDBGridHTMLExport.Destroy;
 begin
+  FFooter.Free;
+  FHeader.Free;
   FDocument.Free;
   inherited;
+end;
+
+procedure TJvDBGridHTMLExport.SetDefaultData;
+begin
+  FHeader.Add('<html><head><title><#TITLE></title>');
+  FHeader.Add('<style type=text/css>');
+  FHeader.Add('#STYLE');
+  FHeader.Add('</style>');
+  FHeader.Add('</head><body>');
+
+  FFooter.Add('</body></html>');
+end;
+
+procedure TJvDBGridHTMLExport.SetFooter(const Value: TStrings);
+begin
+  FFooter.Assign(Value);
+end;
+
+procedure TJvDBGridHTMLExport.SetHeader(const Value: TStrings);
+begin
+  FHeader.Assign(Value);
 end;
 
 procedure TJvDBGridHTMLExport.DoClose;
@@ -626,9 +708,10 @@ end;
 function TJvDBGridHTMLExport.DoExport: boolean;
 var
   i: integer;
-  ARecNo, lRecCount, lColCount: integer;
+  ARecNo, lRecCount: integer;
   lBookmark: TBookmark;
-  lString, lText: string;
+  lString, lText, lHeader, lStyle: string;
+
   function AlignmentToHTML(AAlign: TAlignment): string;
   begin
     case AAlign of
@@ -640,6 +723,7 @@ var
         Result := 'center';
     end;
   end;
+
   function ColorToHTML(AColor: TColor): string;
   var r, g, b: byte;
   begin
@@ -649,12 +733,14 @@ var
     b := GetBValue(AColor);
     Result := Format('%.2x%.2x%.2x', [r, g, b]);
   end;
+
   function FontSubstitute(const Name: string): string;
   const
     cIsNT: array[boolean] of PChar = ('SOFTWARE\Microsoft\Windows\CurrentVersion\FontSubstitutes', 'SOFTWARE\Microsoft\Windows NT\CurrentVersion\FontSubstitutes');
   begin
     Result := RegReadStringDef(HKEY_LOCAL_MACHINE, cIsNT[Win32Platform = VER_PLATFORM_WIN32_NT], Name, Name);
   end;
+
   function FontSizeToHTML(PtSize: integer): integer;
   begin
     case abs(PtSize) of
@@ -674,6 +760,7 @@ var
       Result := 7;
     end;
   end;
+
   function FontToHTML(AFont: TFont; EncloseText: string): string;
   begin
     if fsBold in AFont.Style then
@@ -687,27 +774,53 @@ var
     Result := Format('<font face="%s" color="#%s" size="%d">%s</font>',
       [FontSubstitute(AFont.Name), ColorToHTML(AFont.Color), FontSizeToHTML(AFont.Size), EncloseText]);
   end;
+
+  function FontStyleToHTML(AFont: TFont): string;
+  begin
+    result := '';
+    if fsBold in AFont.Style then
+      result := 'FONT-WEIGHT: bold; ';
+    if fsItalic in AFont.Style then
+      result := result + 'FONT-STYLE: italic; ';
+    if fsUnderline in AFont.Style then
+      if fsStrikeout in AFont.Style then
+        result := result + 'TEXT-DECORATION: underline line-through; '
+      else
+        result := result + 'TEXT-DECORATION: underline; '
+    else
+      if fsStrikeout in AFont.Style then
+        result := result + 'TEXT-DECORATION: line-through; ';
+  end;
+
 begin
   FDocument.Clear;
-  lColCount := Grid.Columns.Count;
+
   Result := true;
   try
-    lString := StringReplace(Header.Text,'<#TITLE>',DocTitle,[rfReplaceAll, rfIgnoreCase]);
-    FDocument.Add(lString);
+    // Create Style like :
+    //.Column0 {FONT-FAMILY: Arial; FONT-SIZE: 12px; FONT-WEIGHT: bold; FONT-STYLE: italic
+    //      TEXT-ALIGN: right; COLOR: #FFFFFF; BACKGROUND: #9924A7}
+
+    lStyle := '';
+    lString := '<tr>';
+    for i := 0 to FColumnCount - 1 do
+      if FRecordColumns[i].Visible then
+        with FRecordColumns[i].Column do
+        begin
+          lString := lString + Format('<th bgcolor="#%s" align="%s">%s</th>',
+            [ColorToHTML(Title.Color), AlignmentToHTML(Alignment), FontToHTML(Title.Font, Title.Caption)]);
+          lStyle := lStyle + Format('.Column%d {FONT-FAMILY: %s; FONT-SIZE: %dpt; %s TEXT-ALIGN: %s; COLOR: #%s; BACKGROUND: #%s;}'#13#10,
+            [i,FontSubstitute(Font.Name),Font.Size,FontStyleToHTML(Font),
+             AlignmentToHTML(Alignment),ColorToHTML(Font.Color),ColorToHTML(Color)]);
+        end;
+    lString := lString + '</tr>';
+    lHeader := StringReplace(Header.Text,'<#TITLE>',DocTitle,[rfReplaceAll, rfIgnoreCase]);
+    lHeader := StringReplace(lHeader,'#STYLE',lStyle,[rfReplaceAll, rfIgnoreCase]);
+
+    FDocument.Add(lHeader);
     FDocument.Add('<table width="90%" border="1" cellspacing="0" cellpadding="0">');
     if IncludeColumnHeader then
-    begin
-      lString := '<tr>';
-      for i := 1 to lColCount do
-        with Grid.Columns[i - 1] do
-          if Visible then
-          begin
-            lString := lString + Format('<th bgcolor="#%s" align="%s">%s</th>',
-              [ColorToHTML(Title.Color), AlignmentToHTML(Alignment), FontToHTML(Title.Font, Title.Caption)]);
-          end;
-      lString := lString + '</tr>';
-    end;
-    FDocument.Add(lString);
+      FDocument.Add(lString);
 
     with Grid.DataSource.DataSet do
     begin
@@ -721,20 +834,22 @@ begin
         while not Eof do
         begin
           lString := '<tr>';
-          for i := 1 to lColCount do
-            if (Grid.Columns[i - 1].Visible and ExportField(Fields[i - 1])) then
-            try
-              if Fields[i - 1].IsNull then
-                lText := '&nbsp;'
-              else
-                lText := Fields[i - 1].AsString;
-              lString := lString + Format('<td bgcolor="#%s" align="%s">%s</td>',
-                [ColorToHTML(Grid.Columns[i - 1].Color),
-                AlignmentToHTML(Grid.Columns[i - 1].Alignment),
-                  FontToHTML(Grid.Columns[i - 1].Font, lText)]);
-            except
-              Result := false;
-              HandleException;
+          for i := 0 to FColumnCount - 1 do
+            with FRecordColumns[i] do
+            if Visible then
+            begin
+              if Exportable and not Field.IsNull then
+              try
+                lText := Field.AsString;
+                if lText = '' then lText := '&nbsp;';
+              except
+                Result := false;
+                HandleException;
+              end
+              else lText := '&nbsp;';
+
+              lString := lString + Format('<td class="column%d">%s</td>',
+                   [i,lText]);
             end;
           lString := lString + '</tr>';
           FDocument.Add(lString);
@@ -815,12 +930,11 @@ end;
 function TJvDBGridCSVExport.DoExport: boolean;
 var
   i: integer;
-  ARecNo, lRecCount, lColCount: integer;
+  ARecNo, lRecCount: integer;
   lBookmark: TBookmark;
   lString, lField: string;
 begin
   FDocument.Clear;
-  lColCount := Grid.Columns.Count;
   Result := true;
   try
     with Grid.DataSource.DataSet do
@@ -835,12 +949,12 @@ begin
         while not Eof do
         begin
           lString := '';
-          for i := 1 to lColCount do
-            if (Grid.Columns[i - 1].Visible and ExportField(Fields[i - 1])) then
+          for i := 0 to FColumnCount - 1 do
+            if FRecordColumns[i].Exportable then
             try
-              if not Fields[i - 1].IsNull then
+              if not FRecordColumns[i].Field.IsNull then
               begin
-                lField := Fields[i - 1].AsString;
+                lField := FRecordColumns[i].Field.AsString;
                 if Pos(Separator, lField) <> 0 then
                   lString := lString + '"' + lField + '"'
                 else lString := lString + lField;
@@ -882,27 +996,135 @@ begin
     Clipboard.AsText := FDocument.Text;
 end;
 
-
 procedure TJvDBGridCSVExport.DoClose;
 begin
   // do nothing
 end;
 
-procedure TJvDBGridHTMLExport.SetDefaultData;
+// ***********************************************************************
+// TJvDBGridXMLExport
+// ***********************************************************************
+
+constructor TJvDBGridXMLExport.Create(AOwner: TComponent);
 begin
-  FHeader.Add('<html><head><title><#TITLE></title></head><body>');
-  FFooter.Add('</body></html>');
+  inherited;
+  FXML := TJvSimpleXML.Create(nil);
+  FXML.Options := [sxoAutoCreate, sxoAutoIndent];
 end;
 
-procedure TJvDBGridHTMLExport.SetFooter(const Value: TStrings);
+destructor TJvDBGridXMLExport.Destroy;
 begin
-  FFooter.Assign(Value);
+  FXML.Free;
+  inherited;
 end;
 
-procedure TJvDBGridHTMLExport.SetHeader(const Value: TStrings);
+// From DSDEfine of Delphi designer
+function TJvDBGridXMLExport.ClassNameNoT(aField: TField): string;
 begin
-  FHeader.Assign(Value);
+  Result := aField.ClassName;
+  if Result[1] = 'T' then Delete(Result, 1, 1);
+  if CompareText('Field', Copy(Result, Length(Result) - 4, 5)) = 0 then { do not localize }
+    Delete(Result, Length(Result) - 4, 5);
 end;
+
+// The structure of the xml file is inspired of the xml export
+// create by Delphi with TClientDataSet
+function TJvDBGridXMLExport.DoExport: boolean;
+var
+  i: integer;
+  ARecNo, lRecCount: integer;
+  lBookmark: TBookmark;
+  lRootNode: TJvSimpleXmlElemClassic;
+  lDataNode: TJvSimpleXmlElem;
+  lFieldsNode: TJvSimpleXmlElem;
+  lRecordNode: TJvSimpleXmlElem;
+begin
+  Result := true;
+  FXML.Root.Clear;
+
+  // create root node
+  FXML.Root.Name := 'DATAPACKET';
+  lRootNode := FXML.Root;
+  lRootNode.Properties.Add('Version', '1.0'); // This is the first implementation !
+
+  // add column header and his property
+  lDataNode := lRootNode.Items.Add('METADATA');
+  lFieldsNode := lDataNode.Items.Add('FIELDS');
+  for i := 0 to FColumnCount - 1 do
+    with FRecordColumns[i] do
+      if Visible and (Field <> nil) then
+      begin
+        with lFieldsNode.Items.Add('FIELD') do
+        begin
+          Properties.Add('ATTRNAME', ColumnName);
+          Properties.Add('FIELDTYPE', ClassNameNoT(Field));
+          Properties.Add('WIDTH', Column.Width);
+        end;
+      end;
+
+  // now add all the record
+  lRecordNode := lRootNode.Items.Add('ROWDATA');
+  try
+    with Grid.DataSource.DataSet do
+    begin
+      ARecNo := 0;
+      lRecCount := RecordCount;
+      DoProgress(0, lRecCount, ARecNo, Caption);
+      DisableControls;
+      lBookmark := GetBookmark;
+      First;
+      try
+        while not Eof do
+        begin
+          with lRecordNode.Items.Add('ROW') do
+          begin
+            for i := 0 to FColumnCount - 1 do
+              if FRecordColumns[i].Exportable then
+              try
+                with FRecordColumns[i] do
+                  Properties.Add(ColumnName, Field.AsString);
+              except
+                Result := false;
+                HandleException;
+              end;
+          end;
+
+          Next;
+          Inc(ARecNo);
+          if not DoProgress(0, lRecCount, ARecNo, Caption) then Last;
+        end;
+        DoProgress(0, lRecCount, lRecCount, Caption);
+      finally
+        try
+          if BookmarkValid(lBookMark) then
+            GotoBookmark(lBookmark);
+        except
+          HandleException;
+        end;
+        if lBookMark <> nil then
+          FreeBookmark(lBookmark);
+        EnableControls;
+      end;
+    end;
+  except
+    HandleException;
+  end;
+end;
+
+procedure TJvDBGridXMLExport.DoSave;
+begin
+  inherited;
+  FXML.SaveToFile(FileName);
+end;
+
+procedure TJvDBGridXMLExport.DoClose;
+begin
+  // do nothing
+end;
+
+// ***********************************************************************
+// End
+// ***********************************************************************
 
 type
   TGridValue = packed record
@@ -951,9 +1173,9 @@ procedure GetWordGridFormatValues(Proc: TGetStrProc);
 var
   I: Integer;
 begin
-  for I := Low(GridFormats) to High(GridFormats) do Proc(GridFormats[I].Name);
+  for I := Low(GridFormats) to High(GridFormats) do
+    Proc(GridFormats[I].Name);
 end;
-
 
 initialization
   RegisterIntegerConsts(TypeInfo(TWordGridFormat),WordGridFormatIdentToInt, IntToWordGridFormatIdent);
