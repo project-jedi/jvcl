@@ -56,7 +56,7 @@ type
     FCanvas: TCanvas;
     FWallpaper: TBitmap;
     FBoldSelection: boolean;
-    FBevel: TJvgBevel;
+    FBevel: TJvgBevelOptions;
     FHotTrack: Boolean;
     FCheckboxes: Boolean;
     FToolTips: Boolean;
@@ -94,7 +94,7 @@ type
     property Options: TglTreeViewOptions read FOptions write FOptions;
     property BoldSelection: boolean read FBoldSelection write
       SetBoldSelection;
-    property BevelSelection: TJvgBevel read FBevel write FBevel;
+    property BevelSelection: TJvgBevelOptions read FBevel write FBevel;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property CheckBoxes: Boolean read FCheckboxes write SetCheckboxes default
       False;
@@ -298,7 +298,7 @@ begin
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self; //...i can draw now! :)
-  FBevel := TJvgBevel.Create;
+  FBevel := TJvgBevelOptions.Create;
   FHotTrack := False;
   FCheckboxes := False;
   FToolTips := True;

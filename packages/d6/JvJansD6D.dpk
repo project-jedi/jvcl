@@ -22,7 +22,7 @@ package JvJansD6D;
 {$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Jans Designtime Components'}
+{$DESCRIPTION 'JVCL Jans Components'}
 {$IMPLICITBUILD OFF}
 
 requires

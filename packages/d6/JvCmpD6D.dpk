@@ -22,7 +22,7 @@ package JvCmpD6D;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Components Designtime Package'}
+{$DESCRIPTION 'JVCL Non-Visual Components'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 

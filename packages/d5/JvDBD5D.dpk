@@ -22,7 +22,7 @@ package JvDBD5D;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Database Components Designtime Package'}
+{$DESCRIPTION 'JVCL Database Components'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 

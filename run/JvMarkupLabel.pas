@@ -32,63 +32,9 @@ unit JvMarkupLabel;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, JvComponent;
+  Windows, SysUtils, Classes, Graphics, JvComponent, JvMarkupCommon;
 
 type
-  TJvHTMLElement = class(TObject)
-  private
-    FFontSize: integer;
-    FText: string;
-    FFontName: string;
-    FFontStyle: TFontStyles;
-    FFontColor: TColor;
-    FAscent: integer;
-    FHeight: integer;
-    FWidth: integer;
-    FSolText: string;
-    FEolText: string;
-    FBreakLine: boolean;
-    procedure SetFontName(const Value: string);
-    procedure SetFontSize(const Value: integer);
-    procedure SetFontStyle(const Value: TFontStyles);
-    procedure SetText(const Value: string);
-    procedure SetFontColor(const Value: TColor);
-    procedure SetAscent(const Value: integer);
-    procedure SetHeight(const Value: integer);
-    procedure SetWidth(const Value: integer);
-    procedure SetEolText(const Value: string);
-    procedure SetSolText(const Value: string);
-    procedure SetBreakLine(const Value: boolean);
-  protected
-  public
-    procedure Break(ACanvas: TCanvas; available: integer);
-    property Text: string read FText write SetText;
-    property SolText: string read FSolText write SetSolText;
-    property EolText: string read FEolText write SetEolText;
-    property FontName: string read FFontName write SetFontName;
-    property FontSize: integer read FFontSize write SetFontSize;
-    property FontStyle: TFontStyles read FFontStyle write SetFontStyle;
-    property FontColor: TColor read FFontColor write SetFontColor;
-    property Height: integer read FHeight write SetHeight;
-    property Width: integer read FWidth write SetWidth;
-    property Ascent: integer read FAscent write SetAscent;
-    property BreakLine: boolean read FBreakLine write SetBreakLine;
-  end;
-
-  TJvHTMLElementStack = class(TList)
-  private
-  protected
-  public
-    destructor Destroy; override;
-    procedure Clear; override;
-    // will free ALL elements in the stack
-    procedure push(Element: TJvHTMLElement);
-    function pop: TJvHTMLElement;
-    // calling routine is responsible for freeing the element.
-    function peek: TJvHTMLElement;
-    // calling routine must NOT free the element
-  end;
-
   TJvMarkupLabel = class(TJvGraphicControl)
   private
     { Private declarations }
@@ -112,9 +58,9 @@ type
     { Protected declarations }
   public
     { Public declarations }
-    constructor create(AOwner: TComponent); override;
-    destructor destroy; override;
-    procedure paint; override;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Paint; override;
   published
     { Published declarations }
     property Text: string read FText write SetText;
@@ -126,151 +72,10 @@ type
 
 implementation
 
-{ TJvHTMLElement }
-
-procedure TJvHTMLElement.Break(ACanvas: TCanvas; available: integer);
-var
-  s: string;
-  i, w: integer;
-begin
-  Acanvas.font.name := fontname;
-  Acanvas.font.size := fontsize;
-  Acanvas.font.style := fontstyle;
-  Acanvas.font.color := fontcolor;
-  if solText = '' then
-    s := Text
-  else
-    s := Eoltext;
-  if acanvas.TextWidth(s) <= available then
-  begin
-    soltext := s;
-    eoltext := '';
-    exit;
-  end;
-  for i := length(s) downto 1 do
-  begin
-    if s[i] = ' ' then
-    begin
-      w := acanvas.TextWidth(copy(s, 1, i));
-      if w <= available then
-      begin
-        soltext := copy(s, 1, i);
-        eoltext := copy(s, i + 1, length(s));
-        exit;
-      end;
-    end;
-  end;
-end;
-
-procedure TJvHTMLElement.SetAscent(const Value: integer);
-begin
-  FAscent := Value;
-end;
-
-procedure TJvHTMLElement.SetBreakLine(const Value: boolean);
-begin
-  FBreakLine := Value;
-end;
-
-procedure TJvHTMLElement.SetEolText(const Value: string);
-begin
-  FEolText := Value;
-end;
-
-procedure TJvHTMLElement.SetFontColor(const Value: TColor);
-begin
-  FFontColor := Value;
-end;
-
-procedure TJvHTMLElement.SetFontName(const Value: string);
-begin
-  FFontName := Value;
-end;
-
-procedure TJvHTMLElement.SetFontSize(const Value: integer);
-begin
-  FFontSize := Value;
-end;
-
-procedure TJvHTMLElement.SetFontStyle(const Value: TFontStyles);
-begin
-  FFontStyle := Value;
-end;
-
-procedure TJvHTMLElement.SetHeight(const Value: integer);
-begin
-  FHeight := Value;
-end;
-
-procedure TJvHTMLElement.SetSolText(const Value: string);
-begin
-  FSolText := Value;
-end;
-
-procedure TJvHTMLElement.SetText(const Value: string);
-begin
-  FText := Value;
-end;
-
-procedure TJvHTMLElement.SetWidth(const Value: integer);
-begin
-  FWidth := Value;
-end;
-
-{ TJvHTMLElementStack }
-
-procedure TJvHTMLElementStack.Clear;
-var
-  i, c: integer;
-begin
-  c := count;
-  if c > 0 then
-    for i := 0 to c - 1 do
-      TJvHTMLElement(items[i]).free;
-  inherited;
-end;
-
-destructor TJvHTMLElementStack.Destroy;
-begin
-  clear;
-  inherited;
-end;
-
-function TJvHTMLElementStack.peek: TJvHTMLElement;
-var
-  c: integer;
-begin
-  c := count;
-  if c = 0 then
-    result := nil
-  else
-  begin
-    result := TJvHTMLElement(items[c - 1]);
-  end;
-end;
-
-function TJvHTMLElementStack.pop: TJvHTMLElement;
-var
-  c: integer;
-begin
-  c := count;
-  if c = 0 then
-    result := nil
-  else
-  begin
-    result := TJvHTMLElement(items[c - 1]);
-    delete(c - 1);
-  end;
-end;
-
-procedure TJvHTMLElementStack.push(Element: TJvHTMLElement);
-begin
-  add(Element);
-end;
 
 { TJvMarkupLabel }
 
-constructor TJvMarkupLabel.create(AOwner: TComponent);
+constructor TJvMarkupLabel.Create(AOwner: TComponent);
 begin
   inherited;
   Elementstack := TJvHTMLElementStack.Create;
@@ -283,7 +88,7 @@ begin
   FMargintop := 5;
 end;
 
-destructor TJvMarkupLabel.destroy;
+destructor TJvMarkupLabel.Destroy;
 begin
   ElementStack.free;
   TagStack.free;
@@ -333,7 +138,7 @@ begin
   end;
 end;
 
-procedure TJvMarkupLabel.paint;
+procedure TJvMarkupLabel.Paint;
 begin
   RenderHTML;
 

@@ -49,7 +49,7 @@ type
   // If not redeclared here, Delphi complains of 'unknown type' because it
   // will not automatically bring in 'JvTFUtils' into the uses clause when
   // a TJvTFDrawDWTitleEvent prototype is created.
-  TDayOfWeek = JvTFUtils.TDayOfWeek;
+  TTFDayOfWeek = JvTFUtils.TTFDayOfWeek;
 
   EJvTFScheduleManagerError = class(Exception);
 
@@ -571,8 +571,6 @@ type
     procedure SetApptDescription(Appt: TJvTFAppt; var Value: string); virtual;
     procedure GetApptDescription(Appt: TJvTFAppt; var Value: string); virtual;
   public
-    class procedure Ver(var Major, Minor, Control: Word);
-    class function VerStr: string;
     class function GetScheduleID(SchedName: string; SchedDate: TDate): string;
     class function GenerateApptID: string; virtual;
 
@@ -986,8 +984,6 @@ type
     property DirectPrint: boolean read FDirectPrint write SetDirectPrint
       default false;
   public
-    class procedure Ver(var Major, Minor, Control: Word);
-    class function VerStr: string;
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1041,7 +1037,7 @@ type
   TJvTFDWNameSource = (dwnsSysLong, dwnsSysShort, dwnsCustom);
 
   TJvTFDrawDWTitleEvent = procedure(Sender: TObject; aCanvas: TCanvas;
-    ARect: TRect; DOW: TDayOfWeek; DWName: string) of object;
+    ARect: TRect; DOW: TTFDayOfWeek; DWName: string) of object;
 
   TJvTFDWNames = class(TPersistent)
   private
@@ -2613,29 +2609,6 @@ begin
 end;
 
 { TJvTFScheduleManager }
-
-class procedure TJvTFScheduleManager.Ver(var Major, Minor, Control: Word);
-begin
-  // utf can be purchased piece-meal or as a suite.  If purchased
-  // (or upgraded) piece-by-piece the possibility of componet version
-  // conflicts arises.  This internal versioning system will be used
-  // to combat that problem.
-
-  // ** PLEASE DO NOT CHANGE THE NUMBERS BELOW !!
-  Major := 1;
-  Minor := 4;
-  Control := 1;
-end;
-
-class function TJvTFScheduleManager.VerStr: string;
-var
-  Major,
-    Minor,
-    Control: Word;
-begin
-  Ver(Major, Minor, Control);
-  Result := IntToStr(Major) + '.' + IntToStr(Minor) + '.' + IntToStr(Control);
-end;
 
 class function TJvTFScheduleManager.GetScheduleID(SchedName: string;
   SchedDate: TDate): string;
@@ -5067,29 +5040,6 @@ end;
 procedure TJvTFPrinter.SetTitle(Value: string);
 begin
   FTitle := Value;
-end;
-
-class procedure TJvTFPrinter.Ver(var Major, Minor, Control: Word);
-begin
-  // utf can be purchased piece-meal or as a suite.  If purchased
-  // (or upgraded) piece-by-piece the possibility of componet version
-  // conflicts arises.  This internal versioning system will be used
-  // to combat that problem.
-
-  // ** PLEASE DO NOT CHANGE THE NUMBERS BELOW !!
-  Major := 1;
-  Minor := 4;
-  Control := 1;
-end;
-
-class function TJvTFPrinter.VerStr: string;
-var
-  Major,
-    Minor,
-    Control: Word;
-begin
-  Ver(Major, Minor, Control);
-  Result := IntToStr(Major) + '.' + IntToStr(Minor) + '.' + IntToStr(Control);
 end;
 
 { TJvTFPrinterPageLayout }

@@ -40,9 +40,9 @@ type
   private
     FExcludeButtons: boolean;
     FExcludeIcon: boolean;
-    FCaptBox: TJvgBevel;
-    FTextBox: TJvgBevel;
-    FIconBox: TJvgBevel;
+    FCaptBox: TJvgBevelOptions;
+    FTextBox: TJvgBevelOptions;
+    FIconBox: TJvgBevelOptions;
     FPrevWndProc: Pointer;
     FNewWndProc: Pointer;
     //    FParent		  : TForm;
@@ -106,9 +106,9 @@ type
     property TextStyle: TglTextStyle
       read FTextStyle write SetTextStyle default fstRaised;
     property Font: TFont read FFont write SetFont;
-    property CaptBox: TJvgBevel read FCaptBox write FCaptBox;
-    property TextBox: TJvgBevel read FTextBox write FTextBox;
-    property IconBox: TJvgBevel read FIconBox write FIconBox;
+    property CaptBox: TJvgBevelOptions read FCaptBox write FCaptBox;
+    property TextBox: TJvgBevelOptions read FTextBox write FTextBox;
+    property IconBox: TJvgBevelOptions read FIconBox write FIconBox;
     property Texture: TBitmap read GetTexture write SetTexture;
     property Image: TImage read FImage write SetImage;
     property TextureTransparent: boolean read FTextureTransparent write
@@ -132,9 +132,9 @@ implementation
 constructor TJvgCaption.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FCaptBox := TJvgBevel.Create;
-  FTextBox := TJvgBevel.Create;
-  FIconBox := TJvgBevel.Create;
+  FCaptBox := TJvgBevelOptions.Create;
+  FTextBox := TJvgBevelOptions.Create;
+  FIconBox := TJvgBevelOptions.Create;
   FFont := TFont.Create;
   FExcludeButtons := true;
   FExcludeIcon := false;

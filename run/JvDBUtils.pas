@@ -162,7 +162,7 @@ uses
   Variants,
   {$ENDIF}
   Forms, Controls, Dialogs, DBConsts, Math,
-  JvConsts, JvJVCLUtils, JvJCLUtils;
+  JvConsts, JvTypes, JvJVCLUtils, JvJCLUtils;
 
 { Utility routines }
 

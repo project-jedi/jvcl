@@ -10,31 +10,13 @@ interface
 {$DEFINE INCLUDE_RAUTILSW}
 
 uses
-  Windows, Graphics, SysUtils, Classes, Clipbrd, ShlObj, ActiveX, 
+  Windows, Graphics, SysUtils, Classes, Clipbrd, ShlObj, ActiveX,
+  JvTypes,
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF}
   TypInfo;
 
-type
-  TTickCount = Cardinal;
-
-{**** string handling routines}
-
-const
-  Separators: set of Char = [#00, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',
-  ':', '+', '%', '*', '(', ')', ';', '=', '{', '}', '[', ']', '{', '}', '<', '>'];
-
- {const Separators is used in GetWordOnPos, JvUtils.ReplaceStrings and SubWord}
-
-{$IFDEF DELPHI}
-type
-  TSetOfChar = set of Char;
-{$ENDIF DELPHI}
-{$IFDEF CBUILDER}
-type
-  TSetOfChar = string;
-{$ENDIF CBUILDER}
 
 { GetWordOnPos returns Word from string, S, on the cursor position, P}
 function GetWordOnPos(const S: string; const P: Integer): string;
@@ -297,7 +279,6 @@ function iif(const Test: Boolean; const ATrue, AFalse: Variant): Variant;
 { begin JvIconClipboardUtils }
 
 { Icon clipboard routines }
-
 var
   CF_ICON: Word;
 
@@ -349,10 +330,6 @@ function IncSecond(ATime: TDateTime; Delta: Integer): TDateTime;
 function IncMSec(ATime: TDateTime; Delta: Integer): TDateTime;
 function CutTime(ADate: TDateTime): TDateTime; { Set time to 00:00:00:00 }
 
-type
-  TDateOrder = (doMDY, doDMY, doYMD);
-  TDayOfWeekName = (Sun, Mon, Tue, Wed, Thu, Fri, Sat);
-  TDaysOfWeek = set of TDayOfWeekName;
 
 { String to date conversions }
 function GetDateOrder(const DateFormat: string): TDateOrder;
@@ -366,25 +343,9 @@ function DefDateMask(BlanksChar: Char; FourDigitYear: Boolean): string;
 function FormatLongDate(Value: TDateTime): string;
 function FormatLongDateTime(Value: TDateTime): string;
 
-const
-  DefaultDateOrder = doDMY;
-
-{$IFDEF USE_FOUR_DIGIT_YEAR}
-var
-  FourDigitYear: Boolean;
-{$ELSE}
-function FourDigitYear: Boolean;
-{$ENDIF USE_FOUR_DIGIT_YEAR}
-
-const
-  CenturyOffset: Byte = 60;
-  NullDate: TDateTime = {-693594} 0;
 { end JvDateUtil }
 
 { begin JvStrUtils }
-
-type
-  TCharSet = TSysCharSet;
 
   { ** Common string handling routines ** }
 
@@ -520,13 +481,6 @@ function IntToRoman(Value: Longint): string;
 function RomanToInt(const S: string): Longint;
 { RomanToInt converts the given string to an integer value. If the string
   doesn't contain a valid roman numeric value, the 0 value is returned. }
-
-const
-  DigitChars = ['0'..'9'];
-  {$IFNDEF CBUILDER}
-  Brackets = ['(', ')', '[', ']', '{', '}'];
-  StdWordDelims = [#0..' ', ',', '.', ';', '/', '\', ':', '''', '"', '`'] + Brackets;
-  {$ENDIF}
 
 function FindNotBlankCharPos(const S: string): Integer;
 function AnsiChangeCase(const S: string): string;

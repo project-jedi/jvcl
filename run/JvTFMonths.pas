@@ -32,7 +32,7 @@ unit JvTFMonths;
 interface
 
 uses Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvTFGlance, JvTFUtils, JvTFManager;
+  JvTFGlance, JvTFUtils, JvTFManager{$IFDEF UseJVCL}, JvTypes{$ENDIF};
 
 type
   TJvTFMonthsScrollSize = (mssMonth, mssWeek);
@@ -44,7 +44,7 @@ type
     FDWTitleAttr : TJvTFGlanceTitle;
     FOnDrawDWTitle : TJvTFDrawDWTitleEvent;
     FOnUpdateTitle : TJvTFUpdateTitleEvent;
-    FOffDays : TDaysOfWeek;
+    FOffDays : TTFDaysOfWeek;
     FExtraDayCellAttr : TJvTFGlanceCellAttr;
     FOffDayCellAttr : TJvTFGlanceCellAttr;
     FScrollSize : TJvTFMonthsScrollSize;
@@ -56,12 +56,12 @@ type
     procedure SetDisplayDate(Value: TDate);
     procedure SetDWNames(Value : TJvTFDWNames);
     procedure SetDWTitleAttr(Value: TJvTFGlanceTitle);
-    procedure SetOffDays(Value : TDaysOfWeek);
+    procedure SetOffDays(Value : TTFDaysOfWeek);
     procedure SetExtraDayCellAttr(Value : TJvTFGlanceCellAttr);
     procedure SetOffDayCellAttr(Value : TJvTFGlanceCellAttr);
     procedure SetSplitSatSun(Value: Boolean);
   protected
-    procedure SetStartOfWeek(Value: TDayOfWeek); override;
+    procedure SetStartOfWeek(Value: TTFDayOfWeek); override;
     procedure SetColCount(Value: Integer); override;
     procedure ConfigCells; override;
     procedure DWNamesChange(Sender: TObject);
@@ -87,7 +87,7 @@ type
 
     function CellIsExtraDay(aCell: TJvTFGlanceCell) : Boolean;
     function CellIsOffDay(aCell: TJvTFGlanceCell) : Boolean;
-    function DOWShowing(DOW: TDayOfWeek) : Boolean;
+    function DOWShowing(DOW: TTFDayOfWeek) : Boolean;
 
     procedure ScrollPrev;
     procedure ScrollNext;
@@ -99,7 +99,7 @@ type
     property DisplayDate : TDate read FDisplayDate write SetDisplayDate;
     property DWNames : TJvTFDWNames read FDWNames write SetDWNames;
     property DWTitleAttr : TJvTFGlanceTitle read FDWTitleAttr write SetDWTitleAttr;
-    property OffDays : TDaysOfWeek read FOffDays write SetOffDays
+    property OffDays : TTFDaysOfWeek read FOffDays write SetOffDays
       default [dowSunday, dowSaturday];
     property ExtraDayCellAttr : TJvTFGlanceCellAttr read FExtraDayCellAttr
       write SetExtraDayCellAttr;
@@ -237,10 +237,10 @@ begin
   inherited;
 end;
 
-function TJvTFMonths.DOWShowing(DOW: TDayOfWeek): Boolean;
+function TJvTFMonths.DOWShowing(DOW: TTFDayOfWeek): Boolean;
 var
   I : Integer;
-  TestDOW : TDayOfWeek;
+  TestDOW : TTFDayOfWeek;
 begin
   // THIS ROUTINE SUPPORTS ONLY SAT/SUN SPLITS
   If (DOW = dowSunday) and SplitSatSun Then
@@ -263,7 +263,7 @@ var
   I,
   Col,
   LineBottom : Integer;
-  CurrDOW : TDayOfWeek;
+  CurrDOW : TTFDayOfWeek;
   aRect,
   TempRect,
   TxtRect,
@@ -520,7 +520,7 @@ begin
   FOffDayCellAttr.Assign(Value);
 end;
 
-procedure TJvTFMonths.SetOffDays(Value: TDaysOfWeek);
+procedure TJvTFMonths.SetOffDays(Value: TTFDaysOfWeek);
 begin
   If Value <> FOffDays Then
     Begin
@@ -550,7 +550,7 @@ begin
     End;
 end;
 
-procedure TJvTFMonths.SetStartOfWeek(Value: TDayOfWeek);
+procedure TJvTFMonths.SetStartOfWeek(Value: TTFDayOfWeek);
 begin
   If SplitSatSun and (Value = dowSunday) Then
     Value := dowSaturday;

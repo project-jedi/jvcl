@@ -22,7 +22,7 @@ package JvWizardD5D;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'Jv Wizard Design Time Package'}
+{$DESCRIPTION 'JVCL Wizard Design Time Package'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 

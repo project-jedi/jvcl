@@ -46,15 +46,6 @@ type
   TJvImageSize = (isSmall, isLarge);
   TJvButtonBorder = (bbDark, bbLight, bbMono);
 
-  TJvSpacer = class(TGraphicControl)
-  protected
-    procedure Paint; override;
-  public
-    constructor Create(AOwner: TComponent); override;
-  published
-    property Align;
-  end;
-
   TJvUpArrowBtn = class(TSpeedButton)
   private
     FTimer: TTimer;
@@ -587,26 +578,6 @@ procedure TJvLookOutButtonActionLink.SetChecked(Value: Boolean);
 begin
   if IsCheckedLinked then
     FClient.Down := Value;
-end;
-
-//=== TJvSpacer ==============================================================
-
-constructor TJvSpacer.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  SetBounds(0, 0, 80, 10);
-end;
-
-procedure TJvSpacer.Paint;
-begin
-  if csDesigning in ComponentState then
-  begin
-    with Canvas do
-    begin
-      Brush.Color := clBlack;
-      FrameRect(GetClientRect);
-    end;
-  end;
 end;
 
 //=== TJvUpArrowBtn ==========================================================

@@ -31,7 +31,7 @@ interface
 
 uses
   SysUtils, Classes,
-  JvJCLUtils {, JvComponent};
+  JvTypes {, JvComponent};
 
 type
 

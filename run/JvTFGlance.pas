@@ -437,7 +437,7 @@ type
     FGapSize: Integer;
     FBorderStyle : TBorderStyle;
     //FStartOfWeek : Word;
-    FStartOfWeek : TDayOfWeek;
+    FStartOfWeek : TTFDayOfWeek;
 
     FRowCount : Integer;
     FColCount : Integer;
@@ -505,7 +505,7 @@ type
     FHint : TJvTFHint;
 
     procedure SetColCount(Value: Integer); virtual;
-    procedure SetStartOfWeek(Value: TDayOfWeek); virtual;
+    procedure SetStartOfWeek(Value: TTFDayOfWeek); virtual;
 
     procedure EnsureCol(Col : Integer);
     procedure EnsureRow(Row : Integer);
@@ -591,7 +591,7 @@ type
     property OriginDate: TDate read FOriginDate write SetOriginDate;
     property OnConfigCells : TNotifyEvent read FOnConfigCells
       write FOnConfigCells;
-    property StartOfWeek : TDayOfWeek read FStartOfWeek write SetStartOfWeek
+    property StartOfWeek : TTFDayOfWeek read FStartOfWeek write SetStartOfWeek
       default dowSunday;
 
   public
@@ -2160,7 +2160,7 @@ begin
     End;
 end;
 
-procedure TJvTFCustomGlance.SetStartOfWeek(Value: TDayOfWeek);
+procedure TJvTFCustomGlance.SetStartOfWeek(Value: TTFDayOfWeek);
 var
   WorkDate : TDate;
 begin

@@ -161,7 +161,7 @@ type
     procedure Paint; override;
   end;
 
-  TJvScrollBar = class(TCustomPanel)
+  TJvPanelScrollBar = class(TCustomPanel)
   private
     FMin: Integer;
     FMax: Integer;
@@ -200,7 +200,7 @@ type
   TJvScrollMax = class(TJvCustomPanel)
   private
     FPnlEdit: TJvScrollMaxBands;
-    FScrollBar: TJvScrollBar;
+    FScrollBar: TJvPanelScrollBar;
     FScrollPos: Integer;
     Yy: Integer;
     FButtonFont: TFont;
@@ -375,7 +375,7 @@ begin
     T := Top;
     if Sm <> 0 then
     begin
-      with Parent as TJvScrollBar do
+      with Parent as TJvPanelScrollBar do
       begin
         OldPos := Pos;
         Pos := Pos - Round(Sm * (FMax - FMin + 1) / ClientHeight);
@@ -389,13 +389,13 @@ end;
 
 procedure TJvScroller.CMDesignHitTest(var Msg: TCMDesignHitTest);
 begin
-  with (Owner as TJvScrollBar) do
+  with (Owner as TJvPanelScrollBar) do
     Msg.Result := Integer(FDesignInteractive and (FPage <> FMax - FMin + 1));
 end;
 
-//=== TJvScrollBar ===========================================================
+//=== TJvPanelScrollBar ===========================================================
 
-constructor TJvScrollBar.Create(AOwner: TComponent);
+constructor TJvPanelScrollBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   BevelOuter := bvLowered;
@@ -412,13 +412,13 @@ begin
   Height := 100;
 end;
 
-procedure TJvScrollBar.Loaded;
+procedure TJvPanelScrollBar.Loaded;
 begin
   inherited Loaded;
   Resize;
 end;
 
-procedure TJvScrollBar.Resize;
+procedure TJvPanelScrollBar.Resize;
 begin
   inherited Resize;
   with Scroll do
@@ -430,7 +430,7 @@ begin
   SetTrackBar;
 end;
 
-procedure TJvScrollBar.SetTrackBar;
+procedure TJvPanelScrollBar.SetTrackBar;
 var
   CH, H, T: Integer;
   L, FP, P, P1: Integer;
@@ -469,7 +469,7 @@ begin
     SetBounds(Left, T, Width, H);
 end;
 
-procedure TJvScrollBar.SetParam(Index, Value: Integer);
+procedure TJvPanelScrollBar.SetParam(Index, Value: Integer);
 begin
   case Index of
     0:
@@ -484,7 +484,7 @@ begin
   SetParams(FMin, FMax, FPage, FPos);
 end;
 
-procedure TJvScrollBar.SetParams(const AMin, AMax, APage, APos: Integer);
+procedure TJvPanelScrollBar.SetParams(const AMin, AMax, APage, APos: Integer);
 begin
   FMin := AMin;
   FMax := AMax;
@@ -495,13 +495,13 @@ begin
   SetTrackBar;
 end;
 
-procedure TJvScrollBar.SetInclusive(Value: Boolean);
+procedure TJvPanelScrollBar.SetInclusive(Value: Boolean);
 begin
   FInclusive := Value;
   SetTrackBar;
 end;
 
-procedure TJvScrollBar.CreateWnd;
+procedure TJvPanelScrollBar.CreateWnd;
 begin
   inherited CreateWnd;
   SetTrackBar;
@@ -1071,7 +1071,7 @@ begin
     ControlStyle := ControlStyle + [csAcceptsControls];
     ParentColor := True;
   end;
-  FScrollBar := TJvScrollBar.Create(Self);
+  FScrollBar := TJvPanelScrollBar.Create(Self);
   with FScrollBar do
   begin
     Inclusive := True;

@@ -60,6 +60,7 @@ uses
    StdCtrls,
    JvTFManager,
    JvTFSparseMatrix,
+   {$IFDEF UseJVCL}JvTypes, {$ENDIF}
    JvTFUtils;
 {$ELSE}
 uses
@@ -75,6 +76,7 @@ uses
    JvTFManager,
    JvTFSparseMatrix,
    ImgList,
+   {$IFDEF UseJVCL}JvTypes, {$ENDIF}
    JvTFUtils;
 {$ENDIF}
 
@@ -89,10 +91,10 @@ type
    EJvTFDaysError = class(Exception);
 
 {$IFDEF TIMEBLOCKS}
-  // remove TDayOfWeek and TDaysOfWeek, they are found in JvTFUtils
-  //TDayOfWeek = (dowSunday, dowMonday, dowTuesday, dowWednesday,
+  // remove TTFDayOfWeek and TTFDaysOfWeek, they are found in JvTFUtils
+  //TTFDayOfWeek = (dowSunday, dowMonday, dowTuesday, dowWednesday,
     //            dowThursday, dowFriday, dowSaturday);
-  //TDaysOfWeek = set of TDayOfWeek;
+  //TTFDaysOfWeek = set of TTFDayOfWeek;
 
    EJvTFBlockGranError = class(EJvTFDaysError);
 {$ENDIF}
@@ -311,8 +313,6 @@ type
       function HasAppt(Appt : TJvTFAppt) : Boolean;
       procedure Dump(fname : TFileName); // used for debugging only
    end;
-
-   TJvTFVisibleScrollBars = set of (vsbHorz, vsbVert);
 
    TJvTFDaysOption = (agoSizeCols, agoSizeRows, agoSizeColHdr, agoSizeRowHdr,
       agoMoveCols, agoSizeAppt, agoMoveAppt, agoSnapMove,
@@ -784,7 +784,7 @@ type
       property Visible : Boolean read FVisible write SetVisible;
    end;
 
-   TGetJvTFDaysApptDrawInfoEvent = procedure(Sender : TObject; Appt : TJvTFAppt;
+   TJvTFGetDaysApptDrawInfoEvent = procedure(Sender : TObject; Appt : TJvTFAppt;
       DrawInfo : TJvTFDaysApptDrawInfo) of object;
 
 {$IFNDEF COMPILER3}
@@ -858,7 +858,7 @@ type
 
 {$IFDEF TIMEBLOCKS}
     // ok
-      FWeekend : TDaysOfWeek;
+      FWeekend : TTFDaysOfWeek;
       FWeekendColor : TColor;
 {$ENDIF}
 
@@ -890,7 +890,7 @@ type
       FOnUpdateColTitles : TJvTFUpdateTitlesEvent;
       FOnDrawGroupHdr : TJvTFDrawHdrEvent;
       FOnShadeCell : TJvTFShadeCellEvent;
-      FOnGetApptDrawInfo : TGetJvTFDaysApptDrawInfoEvent;
+      FOnGetApptDrawInfo : TJvTFGetDaysApptDrawInfoEvent;
 
     // editor events
       FOnFailEditor : TJvTFFailEditorEvent;
@@ -977,7 +977,7 @@ type
 
 {$IFDEF TIMEBLOCKS}
     // ok
-      procedure SetWeekend(Value : TDaysOfWeek);
+      procedure SetWeekend(Value : TTFDaysOfWeek);
     // ok
       procedure SetWeekendColor(Value : TColor);
     procedure SetDitheredBackground(const Value: boolean);
@@ -1187,8 +1187,6 @@ type
          DayStart : TTime) : Boolean;
 {$ENDIF}
    public
-      class procedure Ver(var Major, Minor, Control : Word);
-      class function VerStr : string;
 
       function GeTJvTFHintClass : TJvTFHintClass; dynamic;
 
@@ -1388,7 +1386,7 @@ type
 
 {$IFDEF TIMEBLOCKS}
     // ok
-      property Weekend : TDaysOfWeek read FWeekend write SetWeekend
+      property Weekend : TTFDaysOfWeek read FWeekend write SetWeekend
          default [dowSunday, dowSaturday];
       property WeekendColor : TColor read FWeekendColor write SetWeekendColor
          default clSilver;
@@ -1436,7 +1434,7 @@ type
       property OnDrawGroupHdr : TJvTFDrawHdrEvent read FOnDrawGroupHdr
          write FOnDrawGroupHdr;
       property OnShadeCell : TJvTFShadeCellEvent read FOnShadeCell write FOnShadeCell;
-      property OnGetApptDrawInfo : TGetJvTFDaysApptDrawInfoEvent read FOnGetApptDrawInfo
+      property OnGetApptDrawInfo : TJvTFGetDaysApptDrawInfoEvent read FOnGetApptDrawInfo
          write FOnGetApptDrawInfo;
 
     // Input events
@@ -1604,7 +1602,7 @@ type
       FOnDrawDataCell : TJvTFDrawDataCellEvent;
       FOnDrawAppt : TJvTFDrawApptEvent;
       FOnDrawApptBar : TJvTFDrawApptBarEvent;
-      FOnGetApptDrawInfo : TGetJvTFDaysApptDrawInfoEvent;
+      FOnGetApptDrawInfo : TJvTFGetDaysApptDrawInfoEvent;
       FOnShadeCell : TJvTFShadeCellEvent;
       FOnApptProgress : TJvTFProgressEvent;
       FGridStartTime : TTime;
@@ -1704,8 +1702,6 @@ type
       procedure CreateDoc; override;
       function GetPageInfo(PageNum : Integer) : TJvTFDaysPageInfo;
    public
-      class procedure Ver(var Major, Minor, Control : Word); // override;
-      class function VerStr : string; // override;
 
       constructor Create(AOwner : TComponent); override;
       destructor Destroy; override;
@@ -1790,7 +1786,7 @@ type
       property OnDrawAppt : TJvTFDrawApptEvent read FOnDrawAppt write FOnDrawAppt;
       property OnDrawApptBar : TJvTFDrawApptBarEvent read FOnDrawApptBar
          write FOnDrawApptBar;
-      property OnGetApptDrawInfo : TGetJvTFDaysApptDrawInfoEvent read FOnGetApptDrawInfo
+      property OnGetApptDrawInfo : TJvTFGetDaysApptDrawInfoEvent read FOnGetApptDrawInfo
          write FOnGetApptDrawInfo;
       property OnShadeCell : TJvTFShadeCellEvent read FOnShadeCell write FOnShadeCell;
       property OnApptProgress : TJvTFProgressEvent read FOnApptProgress
@@ -1801,9 +1797,9 @@ type
 
 {$IFDEF TIMEBLOCKS}
 // REMOVE, replaced by DOWToBorl in JvTFUtils
-//function DOWToBorl(aDOW : TDayOfWeek) : Integer;
+//function DOWToBorl(aDOW : TTFDayOfWeek) : Integer;
 // REMOVE, replaced by BorlToDOW in JvTFUtils
-//function BorlToDOW(BorlDOW : Integer) : TDayOfWeek;
+//function BorlToDOW(BorlDOW : Integer) : TTFDayOfWeek;
 {$ENDIF}
 
 implementation
@@ -1897,15 +1893,15 @@ end;
 {$IFDEF TIMEBLOCKS}
 {
 // remove
-function DOWToBorl(aDOW : TDayOfWeek) : Integer;
+function DOWToBorl(aDOW : TTFDayOfWeek) : Integer;
 begin
   Result := Ord(aDOW) + 1;
 end;
 
 // remove
-function BorlToDOW(BorlDOW : Integer) : TDayOfWeek;
+function BorlToDOW(BorlDOW : Integer) : TTFDayOfWeek;
 begin
-  Result := TDayOfWeek(BorlDOW - 1);
+  Result := TTFDayOfWeek(BorlDOW - 1);
 end;
 }
 {$ENDIF}
@@ -4173,29 +4169,6 @@ begin
 end;
 
 { TJvTFDays }
-
-class procedure TJvTFDays.Ver(var Major, Minor, Control : Word);
-begin
-  // utf can be purchased piece-meal or as a suite.  If purchased
-  // (or upgraded) piece-by-piece the possibility of componet version
-  // conflicts arises.  This internal versioning system will be used
-  // to combat that problem.
-
-  // ** PLEASE DO NOT CHANGE THE NUMBERS BELOW !!
-   Major := 2;
-   Minor := 0;
-   Control := 1;
-end;
-
-class function TJvTFDays.VerStr : string;
-var
-   Major,
-      Minor,
-      Control : Word;
-begin
-   Ver(Major, Minor, Control);
-   Result := IntToStr(Major) + '.' + IntToStr(Minor) + '.' + IntToStr(Control);
-end;
 
 constructor TJvTFDays.Create(AOwner : TComponent);
 begin
@@ -11219,7 +11192,7 @@ begin
    FTimeBlockProps.Assign(Value);
 end;
 
-procedure TJvTFDays.SetWeekend(Value : TDaysOfWeek);
+procedure TJvTFDays.SetWeekend(Value : TTFDaysOfWeek);
 begin
    if Value <> FWeekend then
    begin
@@ -14322,29 +14295,6 @@ begin
    end
    else
       Result := FApptCount;
-end;
-
-class procedure TJvTFDaysPrinter.Ver(var Major, Minor, Control : Word);
-begin
-  // utf can be purchased piece-meal or as a suite.  If purchased
-  // (or upgraded) piece-by-piece the possibility of componet version
-  // conflicts arises.  This internal versioning system will be used
-  // to combat that problem.
-
-  // ** PLEASE DO NOT CHANGE THE NUMBERS BELOW !!
-   Major := 2;
-   Minor := 0;
-   Control := 1;
-end;
-
-class function TJvTFDaysPrinter.VerStr : string;
-var
-   Major,
-      Minor,
-      Control : Word;
-begin
-   Ver(Major, Minor, Control);
-   Result := IntToStr(Major) + '.' + IntToStr(Minor) + '.' + IntToStr(Control);
 end;
 
 function TJvTFDaysPrinter.GetPageInfo(PageNum : Integer) : TJvTFDaysPageInfo;

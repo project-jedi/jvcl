@@ -22,7 +22,7 @@ package JvPluginD6D;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Plugin Components Designtime Package'}
+{$DESCRIPTION 'JVCL Plugin Components'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 

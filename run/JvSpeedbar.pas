@@ -846,7 +846,7 @@ end;
 
 procedure TJvSpeedBarButton.InvalidateGlyph;
 begin
-  TJvButtonGlyph(ButtonGlyph).Invalidate;
+  TJvxButtonGlyph(ButtonGlyph).Invalidate;
 end;
 
 procedure TJvSpeedBarButton.PaintGlyph(Canvas: TCanvas; ARect: TRect;
@@ -854,7 +854,7 @@ procedure TJvSpeedBarButton.PaintGlyph(Canvas: TCanvas; ARect: TRect;
 begin
   if FItem.SpeedBar <> nil then
   begin
-    TJvButtonGlyph(ButtonGlyph).DrawEx(Canvas, ARect, Caption, Layout,
+    TJvxButtonGlyph(ButtonGlyph).DrawEx(Canvas, ARect, Caption, Layout,
       Margin, Spacing, DrawMark, FItem.SpeedBar.Images, FItem.FImageIndex,
       AState, DrawTextBiDiModeFlags(Alignments[Alignment]));
   end
