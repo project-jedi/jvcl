@@ -492,7 +492,9 @@ type
   private
     FAutoDragScroll: Boolean;
     FClearBeforeSelect: Boolean;
+    {$IFDEF COMPILER5}
     FMultiSelect: Boolean;
+    {$ENDIF COMPILER5}
     FScrollDirection: Integer;
     FSelectedList: TObjectList;
     FSelectThisNode: Boolean;
@@ -513,9 +515,9 @@ type
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
     function GetSelectedCount: Integer;
     function GetSelectedItem(Index: Integer): TTreeNode;
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     procedure SetMultiSelect(const Value: Boolean);
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF COMPILER5}
     procedure SetScrollDirection(const Value: Integer);
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
@@ -598,9 +600,9 @@ type
     property Checkboxes: Boolean read FCheckBoxes write SetCheckBoxes default False;
     property PageControl: TPageControl read FPageControl write SetPageControl;
     property AutoDragScroll: Boolean read FAutoDragScroll write FAutoDragScroll default False;
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF COMPILER5}
     property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHScroll write FOnHScroll;
     property OnPageChanged: TPageChangedEvent read FOnPage write FOnPage;
@@ -2296,7 +2298,7 @@ end;
 
 procedure TJvTreeView.Delete(Node: TTreeNode);
 begin
-  if FMultiSelect then
+  if MultiSelect then
     FSelectedList.Remove(Node);
   inherited Delete(Node);
 end;
@@ -2370,7 +2372,7 @@ end;
 
 function TJvTreeView.GetSelectedCount: Integer;
 begin
-  if FMultiSelect then
+  if MultiSelect then
     Result := FSelectedList.Count
   else
     Result := -1;
@@ -2395,7 +2397,7 @@ end;
 procedure TJvTreeView.InternalCustomDrawItem(Sender: TCustomTreeView;
   Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
 begin
-  if FMultiSelect then
+  if MultiSelect then
   begin
     with Canvas.Font do
     begin // fix HotTrack bug in custom drawing
@@ -2473,10 +2475,10 @@ end;
 
 procedure TJvTreeView.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  if FMultiSelect then
+  if MultiSelect then
   begin
     ResetPostOperationFlags;
-    if not (ssAlt in Shift) then
+    if not (ssAlt in Shift) and not IsEditing then
     begin
       if Key = VK_SPACE then
         SelectItem(Selected, IsNodeSelected(Selected))
@@ -2495,7 +2497,7 @@ end;
 
 procedure TJvTreeView.KeyPress(var Key: Char);
 begin
-  if FMultiSelect and (Key = ' ') then
+  if MultiSelect and (Key = ' ') and not IsEditing then
     Key := #0
   else
     inherited KeyPress(Key);
@@ -2599,7 +2601,7 @@ var
 begin
   ResetPostOperationFlags;
   with Msg do
-    if FMultiSelect and (htOnItem in GetHitTestInfoAt(XPos, YPos)) then
+    if MultiSelect and (htOnItem in GetHitTestInfoAt(XPos, YPos)) then
     begin
       Node := GetNodeAt(XPos, YPos);
       if Assigned(Node) and (ssCtrl in KeysToShiftState(Keys)) then
