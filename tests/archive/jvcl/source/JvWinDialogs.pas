@@ -59,7 +59,7 @@ type
 const
   OFN_EX_NOPLACESBAR = 1; // for new style of standard Windows dialogs
 
-  SpecialFolders: array [0..29] of TSpecialFolderInfo = (
+  SpecialFolders: array[0..29] of TSpecialFolderInfo = (
     (Name: 'Alt Startup'; ID: CSIDL_ALTSTARTUP),
     (Name: 'Application Data'; ID: CSIDL_APPDATA),
     (Name: 'Recycle Bin'; ID: CSIDL_BITBUCKET),
@@ -97,31 +97,31 @@ const
 
 type
   TOpenFileNameEx = packed record
-    lStructSize: DWORD;            // Size of the structure in bytes.
-    hWndOwner: HWND;               // Handle that is the parent of the dialog.
-    hInstance: HINST;              // Application instance handle.
-    lpstrFilter: PAnsiChar;        // String containing filter information.
-    lpstrCustomFilter: PAnsiChar;  // Will hold the filter chosen by the user.
-    nMaxCustFilter: DWORD;         // Size of lpstrCustomFilter, in bytes.
-    nFilterIndex: DWORD;           // Index of the filter to be shown.
-    lpstrFile: PAnsiChar;          // File name to start with (and retrieve).
-    nMaxFile: DWORD;               // Size of lpstrFile, in bytes.
-    lpstrFileTitle: PAnsiChar;     // File name without path will be returned.
-    nMaxFileTitle: DWORD;          // Size of lpstrFileTitle, in bytes.
-    lpstrInitialDir: PAnsiChar;    // Starting directory.
-    lpstrTitle: PAnsiChar;         // Title of the open dialog.
-    Flags: DWORD;                  // Controls user selection Options.
-    nFileOffset: Word;             // Offset of file name in filepath=lpstrFile.
-    nFileExtension: Word;          // Offset of extension in filepath=lpstrFile.
-    lpstrDefExt: PAnsiChar;        // Default extension if no extension typed.
-    lCustData: LPARAM;             // Custom data to be passed to hook.
+    lStructSize: DWORD; // Size of the structure in bytes.
+    hWndOwner: HWND; // Handle that is the parent of the dialog.
+    hInstance: HINST; // Application instance handle.
+    lpstrFilter: PAnsiChar; // String containing filter information.
+    lpstrCustomFilter: PAnsiChar; // Will hold the filter chosen by the user.
+    nMaxCustFilter: DWORD; // Size of lpstrCustomFilter, in bytes.
+    nFilterIndex: DWORD; // Index of the filter to be shown.
+    lpstrFile: PAnsiChar; // File name to start with (and retrieve).
+    nMaxFile: DWORD; // Size of lpstrFile, in bytes.
+    lpstrFileTitle: PAnsiChar; // File name without path will be returned.
+    nMaxFileTitle: DWORD; // Size of lpstrFileTitle, in bytes.
+    lpstrInitialDir: PAnsiChar; // Starting directory.
+    lpstrTitle: PAnsiChar; // Title of the open dialog.
+    Flags: DWORD; // Controls user selection Options.
+    nFileOffset: Word; // Offset of file name in filepath=lpstrFile.
+    nFileExtension: Word; // Offset of extension in filepath=lpstrFile.
+    lpstrDefExt: PAnsiChar; // Default extension if no extension typed.
+    lCustData: LPARAM; // Custom data to be passed to hook.
     lpfnHook: function(Wnd: HWND; Msg: UINT; wParam: WPARAM;
       lParam: LPARAM): UINT stdcall; // Hook.
-    lpTemplateName: PAnsiChar;     // Template dialog, if applicable.
+    lpTemplateName: PAnsiChar; // Template dialog, if applicable.
     // Extended structure starts here.
-    pvReserved: Pointer;           // Reserved, use nil.
-    dwReserved: DWORD;             // Reserved, use 0.
-    FlagsEx: DWORD;                // Extended Flags.
+    pvReserved: Pointer; // Reserved, use nil.
+    dwReserved: DWORD; // Reserved, use 0.
+    FlagsEx: DWORD; // Extended Flags.
   end;
 
   TShellObjectType = (sdPathObject, sdPrinterObject);
@@ -157,17 +157,16 @@ type
     function Execute: Boolean; override;
   end;
 
-
   TJvCplInfo = record
-     Icon: TIcon;
-     Name: string;
-     Info: string;
-     lData: Longint;
+    Icon: TIcon;
+    Name: string;
+    Info: string;
+    lData: Longint;
   end;
 
   // the signature of procedures in CPL's that implements Control Panel functionality
   TCplApplet = function(hwndCPl: HWND; uMsg: DWORD; lParam1, lParam2: Longint): Longint; stdcall;
-  
+
   // (rom) largely reimplemented
   TJvAppletDialog = class(TJvCommonDialogF)
   private
@@ -184,7 +183,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function ValidApplet:boolean;
+    function ValidApplet: boolean;
     // (p3) NOTE: if AppletName or AppletIndex is invalid, shows the control
     // panel explorer window instead and returns FALSE
     function Execute: Boolean; override;
@@ -345,7 +344,160 @@ type
     function Execute: Boolean; override;
   end;
 
-// Tools routines
+  TJvURLAssociationDialogOption = (uaDefaultName, uaRegisterAssoc);
+  TJvURLAssociationDialogOptions = set of TJvURLAssociationDialogOption;
+
+  TJvURLAssociationDialog = class(TJvCommonDialogF)
+  private
+    FURL: string;
+    FAssociatedApp: string;
+    FFilename: string;
+    FOptions: TJvURLAssociationDialogOptions;
+    FDefaultProtocol: string;
+    FReturnValue: HResult;
+    function GetParentHandle: THandle;
+  public
+    // Returns false if user cancelled or if the user
+    // elected not to register the association. To find out if the user made
+    // a one-time choice, check the AssociatedApp property: if it is empty,
+    // the user cancelled
+    function Execute: boolean; override;
+    constructor Create(AOwner: TComponent); override;
+    // After Execute, contains the path and filename to the associated application (if user didn't cancel)
+    property AssociatedApp: string read FAssociatedApp;
+    // Value returned by the function called by Execute.
+    // Possible return values:
+    // S_OK -  content type succesfully associated with the extnesion
+    // S_FALSE - nothing was registered (f ex a one time registration)
+    property ReturnValue: HResult read FReturnValue;
+  published
+    // The file (type) to associate with the Protocol
+    // NB! Filename *must* contain an extension!
+    property Filename: string read FFilename write FFilename;
+    // The URL with the protocol to assoiacte with Filename
+    // NB! if URL has no protocol (i.e "http://", "mailto:", "home-made:", etc),
+    // the function fails even before the dialog is displayed!
+    property URL: string read FURL write FURL;
+    // DefaultProtocol to prepend to URL if it doesn't have a protocol
+    property DefaultProtocol: string read FDefaultProtocol write FDefaultProtocol;
+    // Options for the dialog
+    property Options: TJvURLAssociationDialogOptions read FOptions write FOptions default [];
+  end;
+
+  TJvMIMEAssociationOption = (maRegisterAssoc);
+  TJvMIMEAssociationOptions = set of TJvMIMEAssociationOption;
+
+  TJvMIMEAssociationDialog = class(TJvCommonDialogF)
+  private
+    FContentType: string;
+    FAssociatedApp: string;
+    FFilename: string;
+    FOptions: TJvMIMEAssociationOptions;
+    FReturnValue: HResult;
+    function GetParentHandle: THandle;
+  public
+    function Execute: boolean; override;
+    // After Execute, contains the path and filename to the associated application (if user didn't cancel)
+    property AssociatedApp: string read FAssociatedApp;
+    // Value returned by the function called by Execute.
+    // Possible return values:
+    // S_OK -  content type succesfully associated with the extnesion
+    // S_FALSE - nothing was registered
+    // E_ABORT - user cancelled
+    // E_FLAGS - invalid flag combination
+    // E_OUTOFMEMORY - out of memory
+    // E_POINTER - one of the input pointers are invalid
+    property ReturnValue: HResult read FReturnValue;
+  published
+    // The file (type) to associate with the Protocol
+    // NB! Filename *must* contain an extension!
+    property Filename: string read FFilename write FFilename;
+    // The MIME contentype of Filename
+    property ContentType: string read FContentType write FContentType;
+    property Options: TJvMIMEAssociationOptions read FOptions write FOptions default [];
+  end;
+
+const
+  SOFTDIST_FLAG_USAGE_EMAIL = $0001;
+  SOFTDIST_FLAG_USAGE_PRECACHE = $0002;
+  SOFTDIST_FLAG_USAGE_AUTOINSTALL = $0003;
+  SOFTDIST_FLAG_DELETE_SUBSCRIPTION = $0004;
+
+type
+  _tagSOFTDISTINFO = packed record
+    cbSize: ULONG;
+    dwFlags: DWORD;
+    dwAdState: DWORD;
+    lpszTitle: LPWSTR;
+    lpszAbstract: LPWSTR;
+    lpszHREF: LPWSTR;
+    dwInstalledVersionMS: DWORD;
+    dwInstalledVersionLS: DWORD;
+    dwUpdateVersionMS: DWORD;
+    dwUpdateVersionLS: DWORD;
+    dwAdvertisedVersionMS: DWORD;
+    dwAdvertisedVersionLS: DWORD;
+    cbReserved: DWORD;
+  end;
+  {$EXTERNALSYM _tagSOFTDISTINFO}
+  {$EXTERNALSYM SOFTDISTINFO}
+  SOFTDISTINFO = _tagSOFTDISTINFO;
+  {$EXTERNALSYM SOFTDISTINFO}
+  LPSOFTDISTINFO = ^_tagSOFTDISTINFO;
+  {$EXTERNALSYM LPSOFTDISTINFO}
+  TSoftDistInfo = SOFTDISTINFO;
+
+  TJvSoftwareUpdateAdState = (asNone, asAvailable, asDownloaded, asInstalled);
+  TJvSoftwareUpdateFlags = (ufEmail, ufPreCache, ufAutoInstall, ufDeleteSubscription);
+
+  TJvSoftwareUpdateInfo = class(TPersistent)
+  private
+    FInstalledVersionMS: DWORD;
+    FUpdateVersionLS: DWORD;
+    FUpdateVersionMS: DWORD;
+    FAdvertisedVersionMS: DWORD;
+    FAdvertisedVersionLS: DWORD;
+    FInstalledVersionLS: DWORD;
+    FDescription: string;
+    FTitle: string;
+    FHREF: string;
+    FAdState: TJvSoftwareUpdateAdState;
+    FFlags: TJvSoftwareUpdateFlags;
+    function GetSoftDistInfo: TSoftDistInfo;
+    procedure SetSoftDistInfo(const Value: TSoftDistInfo);
+  public
+    property SoftDistInfo: TSoftDistInfo read GetSoftDistInfo write SetSoftDistInfo;
+  published
+    property AdState: TJvSoftwareUpdateAdState read FAdState write FAdState;
+    property Flags: TJvSoftwareUpdateFlags read FFlags write FFlags;
+    property Title: string read FTitle write FTitle;
+    property HREF: string read FHREF write FHREF;
+    property Description: string read FDescription write FDescription;
+    property InstalledVersionMS: DWORD read FInstalledVersionMS write FInstalledVersionMS;
+    property InstalledVersionLS: DWORD read FInstalledVersionLS write FInstalledVersionLS;
+    property UpdateVersionMS: DWORD read FUpdateVersionMS write FUpdateVersionMS;
+    property UpdateVersionLS: DWORD read FUpdateVersionLS write FUpdateVersionLS;
+    property AdvertisedVersionMS: DWORD read FAdvertisedVersionMS write FAdvertisedVersionMS;
+    property AdvertisedVersionLS: DWORD read FAdvertisedVersionLS write FAdvertisedVersionLS;
+  end;
+
+  // (p3) encapsulation of the SoftwareUpdateMessageBox ( for CDF file updating)
+  TJvSoftwareUpdateDialog = class(TJvCommonDialogF)
+  private
+    FReturnValue: Cardinal;
+    FDistributionUnit: string;
+    FDistInfo: TJvSoftwareUpdateInfo;
+  public
+    function Execute: boolean; override;
+    property ReturnValue: Cardinal read FReturnValue;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property DistributionUnit: string read FDistributionUnit write FDistributionUnit;
+    property DistInfo: TJvSoftwareUpdateInfo read FDistInfo write FDistInfo;
+  end;
+
+  // Tools routines
 function GetSpecialFolderPath(const FolderName: string; CanCreate: Boolean): string;
 procedure AddToRecentDocs(const Filename: string);
 procedure ClearRecentDocs;
@@ -389,8 +541,22 @@ type
     cmdShow: Integer); stdcall;
   GetOpenFileNameExProc = function(var OpenFile: TOpenFilenameEx): BOOL; stdcall;
   GetSaveFileNameExProc = function(var SaveFile: TOpenFileNameEx): BOOL; stdcall;
+  URLAssociationDialogProcA = function(hwndParent: HWND; dwInFlags: DWORD; const pcszFile: PChar; const pcszURL: PChar;
+    pszBuff: PChar; ucAppBufLen: UINT): HRESULT; stdcall;
+  URLAssociationDialogProcW = function(hwndParent: HWND; dwInFlags: DWORD; const pcszFile: PWideChar; const pcszURL:
+    PWideChar; pszBuff: PWideChar; ucAppBufLen: UINT): HRESULT; stdcall;
+
+  MIMEAssociationDialogProcA = function(hwndParent: HWND; dwInFlags: DWORD;
+    const pcszFile: PChar; const pcszMIMEContentType: PChar; pszAppBuf: PChar; ucAppBufLen: UINT): HRESULT; stdcall;
+  MIMEAssociationDialogProcW = function(hwndParent: HWND; dwInFlags: DWORD;
+    const pcszFile: PWideChar; const pcszMIMEContentType: PWideChar; pszAppBuf: PWideChar; ucAppBufLen: UINT): HRESULT;
+  stdcall;
+  SoftwareUpdateMessageBoxProc = function(hWnd: HWND; szDistUnit: LPCWSTR; dwFlags: DWORD; var psdi: TSoftDistInfo):
+    DWORD; stdcall;
 
 implementation
+uses
+  urlmon;
 
 var
   FreePIDL: FreePIDLProc = nil;
@@ -410,6 +576,11 @@ var
   SHOpenWith: SHOpenWithProc = nil;
   SHChangeIcon: SHChangeIconProc = nil;
   SHChangeIconW: SHChangeIconProcW = nil;
+  URLAssociationDialogA: URLAssociationDialogProcA = nil;
+  URLAssociationDialogW: URLAssociationDialogProcW = nil;
+  MIMEAssociationDialogA: MIMEAssociationDialogProcA = nil;
+  MIMEAssociationDialogW: MIMEAssociationDialogProcW = nil;
+  SoftwareUpdateMessageBox: SoftwareUpdateMessageBoxProc = nil;
 
 resourcestring
   //SDiskFullError =
@@ -421,11 +592,16 @@ resourcestring
 
 const
   Shell32 = 'shell32.dll';
+  URLASSOCDLG_FL_USE_DEFAULT_NAME = $0001;
+  URLASSOCDLG_FL_REGISTER_ASSOC = $0002;
+  MIMEASSOCDLG_FL_REGISTER_ASSOC = $0001;
 
 var
   ShellHandle: THandle = 0;
   CommHandle: THandle = 0;
   AppWizHandle: THandle = 0;
+  URLHandle: THandle = 0;
+  SHDocvwHandle: THandle = 0;
 
 procedure LoadJvDialogs;
 begin
@@ -460,6 +636,18 @@ begin
   AppWizHandle := Windows.LoadLibrary('appwiz.cpl');
   if AppWizHandle <> 0 then
     NewLinkHere := GetProcAddress(AppWizHandle, PChar('NewLinkHereA'));
+  URLHandle := Windows.LoadLibrary('url.dll');
+  if URLHandle <> 0 then
+  begin
+    @URLAssociationDialogA := GetProcAddress(URLHandle, 'URLAssociationDialogA');
+    @MIMEAssociationDialogA := GetProcAddress(URLHandle, 'MIMEAssociationDialogA');
+    // the ANSI versions works on NT too, so don't load Unicode alternative
+//    @URLAssociationDialogW  := GetProcAddress(URLHandle,'URLAssociationDialogW');
+//    @MIMEAssociationDialogW := GetProcAddress(URLHandle,'MIMEAssociationDialogW');
+  end;
+  SHDocvwHandle := Windows.LoadLibrary('shdocvw.dll');
+  if SHDocvwHandle <> 0 then
+    SoftwareUpdateMessageBox := GetProcAddress(SHDocvwHandle, 'SoftwareUpdateMessageBox');
 end;
 
 procedure UnloadJvDialogs;
@@ -470,6 +658,10 @@ begin
     FreeLibrary(CommHandle);
   if AppWizHandle <> 0 then
     FreeLibrary(AppWizHandle);
+  if URLHandle <> 0 then
+    FreeLibrary(URLHandle);
+  if SHDocvwHandle <> 0 then
+    FreeLibrary(SHDocvwHandle);
 end;
 
 {  Although most Win32 applications do not need to be able
@@ -566,7 +758,7 @@ var
   Path: string;
   lpfnDoOrganizeFavDlg: LPFNORGFAV;
 begin
-//  lpfnDoOrganizeFavDlg := nil;
+  //  lpfnDoOrganizeFavDlg := nil;
   ShModule := SafeLoadLibrary('shdocvw.dll');
   try
     if ShModule <= HINSTANCE_ERROR then
@@ -585,7 +777,6 @@ begin
   end;
   Result := True;
 end;
-
 
 //=== TJvAppletDialog ========================================================
 
@@ -634,7 +825,7 @@ begin
     FAppletFunc(Application.Handle, CPL_EXIT, AppletIndex, AppletInfo[AppletIndex].lData);
     FreeLibrary(FModule);
   end;
-  for I := 0 to Count-1 do
+  for I := 0 to Count - 1 do
   begin
     FAppletInfo[I].Icon.Free;
     FAppletInfo[I].Name := '';
@@ -650,7 +841,7 @@ procedure TJvAppletDialog.Load;
 var
   I: Integer;
   AplInfo: TCplInfo;
-  Buffer: array [0..1023] of Char;
+  Buffer: array[0..1023] of Char;
 begin
   Unload;
   if AppletName <> '' then
@@ -663,7 +854,7 @@ begin
     begin
       FCount := FAppletFunc(Application.Handle, CPL_GETCOUNT, 0, 0);
       SetLength(FAppletInfo, FCount);
-      for I := 0 to Count-1 do
+      for I := 0 to Count - 1 do
       begin
         FAppletFunc(Application.Handle, CPL_INQUIRE, I, Longint(@AplInfo));
         with FAppletInfo[I] do
@@ -722,7 +913,7 @@ function TJvComputerNameDialog.Execute: Boolean;
 var
   BrowseInfo: TBrowseInfo;
   ItemIDList: PItemIDList;
-  NameBuffer: array [0..MAX_PATH] of Char;
+  NameBuffer: array[0..MAX_PATH] of Char;
   WindowList: Pointer;
 begin
   Result := False;
@@ -761,7 +952,7 @@ var
   BrowseInfo: TBrowseInfo;
   ItemIDList: PItemIDList;
   ItemSelected: PItemIDList;
-  NameBuffer: array [0..MAX_PATH] of Char;
+  NameBuffer: array[0..MAX_PATH] of Char;
   WindowList: Pointer;
 begin
   ItemIDList := nil;
@@ -873,7 +1064,7 @@ var
   Found: Boolean;
   I: Integer;
   PIDL: PItemIDList;
-  Buf: array [0..MAX_PATH] of Char;
+  Buf: array[0..MAX_PATH] of Char;
 begin
   Found := False;
   Folder := 0;
@@ -897,7 +1088,7 @@ begin
       Result := Buf;
     CoTaskMemFree(PIDL);
   end;
- {JPR}
+  {JPR}
 end;
 
 procedure AddToRecentDocs(const Filename: string);
@@ -953,7 +1144,7 @@ begin
 end;
 
 function ShellMessageBox(Instance: THandle; Owner: HWND; Text: PChar;
-  Caption: PChar;  Style: UINT; Parameters: array of Pointer): Integer;
+  Caption: PChar; Style: UINT; Parameters: array of Pointer): Integer;
 var
   MethodPtr: Pointer;
   ShellDLL: HMODULE;
@@ -1218,7 +1409,7 @@ var
   SL: IShellLink;
   PF: IPersistFile;
   FindData: TWin32FindData;
-  AStr: array [0..MAX_PATH] of Char;
+  AStr: array[0..MAX_PATH] of Char;
 begin
   OleCheck(CoCreateInstance(CLSID_ShellLink, nil, CLSCTX_INPROC_SERVER,
     IShellLink, SL));
@@ -1371,8 +1562,8 @@ end;
 
 function TJvChangeIconDialog.Execute: Boolean;
 var
-  Buf: array [0..MAX_PATH] of Char;
-  BufW: array [0..MAX_PATH] of WideChar;
+  Buf: array[0..MAX_PATH] of Char;
+  BufW: array[0..MAX_PATH] of WideChar;
 begin
   if Assigned(SHChangeIconW) then
   begin
@@ -1381,8 +1572,7 @@ begin
     if Result then
       FileName := BufW;
   end
-  else
-  if Assigned(SHChangeIcon) then
+  else if Assigned(SHChangeIcon) then
   begin
     StrPCopy(Buf, FileName);
     Result := SHChangeIcon(Application.Handle, Buf, SizeOf(Buf), FIconIndex) = 1;
@@ -1436,6 +1626,183 @@ end;
 function TJvAppletDialog.ValidApplet: boolean;
 begin
   Result := Assigned(FAppletFunc) and (AppletIndex >= 0) and (AppletIndex < Count)
+end;
+
+{ TJvURLAssociationDialog }
+
+constructor TJvURLAssociationDialog.Create(AOwner: TComponent);
+begin
+  inherited;
+  FOptions := [];
+  FDefaultProtocol := 'http://'; // the URL property needs a protocol or the function call fails
+end;
+
+function TJvURLAssociationDialog.Execute: boolean;
+var
+  dwFlags: DWORD;
+  buf: array[0..MAX_PATH] of char;
+begin
+  Result := false;
+  FReturnValue := S_FALSE;
+  FAssociatedApp := '';
+  if Pos(':', URL) < 1 then
+    FURL := FDefaultProtocol + FURL;
+  if Assigned(URLAssociationDialogA) then
+  begin
+    dwFlags := 0;
+    FillChar(buf[0], sizeof(buf), 0);
+    if uaDefaultName in Options then
+      dwFlags := dwFlags or URLASSOCDLG_FL_USE_DEFAULT_NAME;
+    if uaRegisterAssoc in Options then
+      dwFlags := dwFlags or URLASSOCDLG_FL_REGISTER_ASSOC;
+    FReturnValue := URLAssociationDialogA(GetParentHandle, dwFlags, PChar(Filename), PChar(URL), buf, sizeof(buf));
+    Result := ReturnValue = S_OK;
+    FAssociatedApp := string(buf);
+  end;
+end;
+
+function TJvURLAssociationDialog.GetParentHandle: THandle;
+var
+  F: TCustomForm;
+begin
+  Result := 0;
+  if Owner is TControl then
+  begin
+    F := GetParentForm(TControl(Owner));
+    if F <> nil then
+      Result := F.Handle;
+  end;
+  if Result = 0 then
+    Result := GetFocus;
+  if Result = 0 then
+    Result := GetDesktopWindow;
+end;
+
+{ TJvMIMEAssociationDialog }
+
+function TJvMIMEAssociationDialog.Execute: boolean;
+var
+  dwFlags: Cardinal;
+  buf: array[0..MAX_PATH] of char;
+begin
+  Result := false;
+  FReturnValue := S_FALSE;
+  if @MIMEAssociationDialogA <> nil then
+  begin
+    FillChar(buf[0], sizeof(buf), 0);
+    FAssociatedApp := '';
+    if maRegisterAssoc in Options then
+      dwFlags := MIMEASSOCDLG_FL_REGISTER_ASSOC
+    else
+      dwFlags := 0;
+    FReturnValue := MIMEAssociationDialogA(GetParentHandle, dwFlags, PChar(Filename), PChar(ContentType), buf,
+      sizeof(buf));
+    Result := ReturnValue = 0;
+    FAssociatedApp := string(buf);
+  end;
+end;
+
+function TJvMIMEAssociationDialog.GetParentHandle: THandle;
+var
+  F: TCustomForm;
+begin
+  Result := 0;
+  if Owner is TControl then
+  begin
+    F := GetParentForm(TControl(Owner));
+    if F <> nil then
+      Result := F.Handle;
+  end;
+  if Result = 0 then
+    Result := GetFocus;
+  if Result = 0 then
+    Result := GetDesktopWindow;
+end;
+
+{ TJvSoftwareUpdateDialog }
+
+constructor TJvSoftwareUpdateDialog.Create(AOwner: TComponent);
+begin
+  inherited;
+  FDistInfo := TJvSoftwareUpdateInfo.Create;
+end;
+
+destructor TJvSoftwareUpdateDialog.Destroy;
+begin
+  FDistInfo.Free;
+  inherited;
+end;
+
+function TJvSoftwareUpdateDialog.Execute: boolean;
+var
+  psdi: TSoftDistInfo;
+begin
+  Result := false;
+  FReturnValue := IDCANCEL;
+  if @SoftwareUpdateMessageBox <> nil then
+  begin
+    psdi := FDistInfo.SoftDistInfo;
+    FReturnValue := SoftwareUpdateMessageBox(GetDesktopWindow, '', 0, psdi);
+    Result := ReturnValue = IDYES;
+    if ReturnValue <> IDABORT then
+      FDistInfo.SoftDistInfo := psdi;
+  end;
+end;
+
+{ TJvSoftwareUpdateInfo }
+
+function TJvSoftwareUpdateInfo.GetSoftDistInfo: TSoftDistInfo;
+const
+  cAdState: array[TJvSoftwareUpdateAdState] of DWORD = (SOFTDIST_ADSTATE_NONE, SOFTDIST_ADSTATE_AVAILABLE,
+    SOFTDIST_ADSTATE_DOWNLOADED, SOFTDIST_ADSTATE_INSTALLED);
+  cFlags: array[TJvSoftwareUpdateFlags] of DWORD = (SOFTDIST_FLAG_USAGE_EMAIL, SOFTDIST_FLAG_USAGE_PRECACHE,
+    SOFTDIST_FLAG_USAGE_AUTOINSTALL, SOFTDIST_FLAG_DELETE_SUBSCRIPTION);
+begin
+  FillChar(Result, sizeof(Result), 0);
+  Result.cbSize := sizeof(Result);
+  with Result do
+  begin
+    dwAdState := cAdState[AdState];
+    dwFlags := cFlags[Flags];
+    lpszTitle := PWideChar(Title);
+    lpszAbstract := PWideChar(Description);
+    lpszHREF := PWideChar(HREF);
+    dwInstalledVersionMS := InstalledVersionMS;
+    dwInstalledVersionLS := InstalledVersionLS;
+    dwUpdateVersionMS := UpdateVersionMS;
+    dwUpdateVersionLS := UpdateVersionLS;
+    dwAdvertisedVersionMS := AdvertisedVersionMS;
+    dwAdvertisedVersionLS := AdvertisedVersionLS;
+  end;
+end;
+
+procedure TJvSoftwareUpdateInfo.SetSoftDistInfo(const Value: TSoftDistInfo);
+begin
+  with Value do
+  begin
+    case dwAdState of
+      SOFTDIST_ADSTATE_NONE: AdState := asNone;
+      SOFTDIST_ADSTATE_AVAILABLE: AdState := asAvailable;
+      SOFTDIST_ADSTATE_DOWNLOADED: AdState := asDownloaded;
+      SOFTDIST_ADSTATE_INSTALLED: AdState := asInstalled;
+    end;
+    case dwFlags of
+      SOFTDIST_FLAG_USAGE_EMAIL: Flags := ufEMail;
+      SOFTDIST_FLAG_USAGE_PRECACHE: Flags := ufPreCache;
+      SOFTDIST_FLAG_USAGE_AUTOINSTALL: Flags := ufAutoInstall;
+      SOFTDIST_FLAG_DELETE_SUBSCRIPTION: Flags := ufDeleteSubscription;
+    end;
+
+    Title := lpszTitle;
+    Description := lpszAbstract;
+    HREF := lpszHREF;
+    InstalledVersionMS := dwInstalledVersionMS;
+    InstalledVersionLS := dwInstalledVersionLS;
+    UpdateVersionMS := dwUpdateVersionMS;
+    UpdateVersionLS := dwUpdateVersionLS;
+    AdvertisedVersionMS := dwAdvertisedVersionMS;
+    AdvertisedVersionLS := dwAdvertisedVersionLS;
+  end;
 end;
 
 initialization
