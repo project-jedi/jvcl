@@ -57,6 +57,8 @@ type
     procedure acHelpExecute(Sender: TObject);
     function FormHelp(Command: Word; Data: Integer;
       var CallHelp: Boolean): Boolean;
+    procedure lblHexClick(Sender: TObject);
+    procedure lblIntClick(Sender: TObject);
   private
     { Private declarations }
     FModules,FFoundInis: TStringlist;
@@ -438,6 +440,16 @@ begin
   reErrMsg.HelpContext := IDH_ERRORMESSAGE;
   btnModules.HelpContext := IDH_MODULES;
   btnLookUp.HelpContext := IDH_LOOKUP;
+end;
+
+procedure TfrmMain.lblHexClick(Sender: TObject);
+begin
+  edValue.Text := lblHex.Caption;
+end;
+
+procedure TfrmMain.lblIntClick(Sender: TObject);
+begin
+  edValue.Text := lblInt.Caption;
 end;
 
 end.

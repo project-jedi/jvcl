@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 201
-  Top = 107
+  Left = 367
+  Top = 150
   ActiveControl = edValue
   AutoScroll = False
   BorderIcons = [biSystemMenu, biMinimize]
@@ -35,6 +35,7 @@ object frmMain: TfrmMain
     Top = 8
     Width = 3
     Height = 13
+    Cursor = crHandPoint
     Alignment = taRightJustify
     Anchors = [akTop, akRight]
     Font.Charset = DEFAULT_CHARSET
@@ -43,12 +44,14 @@ object frmMain: TfrmMain
     Font.Name = 'MS Shell Dlg 2'
     Font.Style = [fsBold]
     ParentFont = False
+    OnClick = lblHexClick
   end
   object lblInt: TLabel
     Left = 268
     Top = 24
     Width = 3
     Height = 13
+    Cursor = crHandPoint
     Alignment = taRightJustify
     Anchors = [akTop, akRight]
     Font.Charset = DEFAULT_CHARSET
@@ -57,6 +60,7 @@ object frmMain: TfrmMain
     Font.Name = 'MS Shell Dlg 2'
     Font.Style = [fsBold]
     ParentFont = False
+    OnClick = lblIntClick
   end
   object Label2: TLabel
     Left = 16
