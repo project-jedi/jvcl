@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2002-07-04
+Last Modified: 2002-09-29
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -58,7 +58,7 @@ type
 
   TJvScrollMax = class;
 
-  TJvScrollMaxBand = class(TCustomControl)
+  TJvScrollMaxBand = class(TJvCustomControl)
   private
     FData: Pointer;
     FExpandedHeight: Integer;
@@ -151,7 +151,7 @@ type
     property ParentBiDiMode;
   end;
 
-  TJvScrollMaxBands = class(TCustomControl)
+  TJvScrollMaxBands = class(TJvCustomControl)
   private
     FScrolling: Boolean;
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
@@ -161,7 +161,7 @@ type
     procedure Paint; override;
   end;
 
-  TJvPanelScrollBar = class(TCustomPanel)
+  TJvPanelScrollBar = class(TJvCustomPanel)
   private
     FMin: Integer;
     FMax: Integer;
@@ -236,6 +236,10 @@ type
     function GetChildParent: TComponent; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Resize; override;
+  {$IFDEF JVCLThemesEnabled}
+    function GetParentBackground: Boolean;
+    procedure SetParentBackground(Value: Boolean);
+  {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -303,6 +307,9 @@ type
     property OnGetSiteInfo;
     property OnStartDock;
     property OnUnDock;
+  {$IFDEF JVCLThemesEnabled}
+    property ParentBackground read GetParentBackground write SetParentBackground default True;
+  {$ENDIF}
   end;
 
   EJvScrollMaxError = class(Exception);
@@ -859,12 +866,11 @@ begin
 end;
 
 procedure TJvScrollMaxBand.Paint;
-var
-  R: TRect;
 const
   Ex: array [Boolean] of Integer = (BF_TOP, BF_RECT);
+var
+  R: TRect;
 begin
-  inherited Paint;
   if Canvas.Handle <> 0 then
   begin
     if csDesigning in ComponentState then
@@ -1034,7 +1040,6 @@ procedure TJvScrollMaxBands.Paint;
 var
   R: TRect;
 begin
-  inherited Paint;
   if (csDesigning in ComponentState) and
     (ControlCount = 0) and
     (Canvas.Handle <> 0) then
@@ -1052,7 +1057,6 @@ constructor TJvScrollMax.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle - [csSetCaption, csAcceptsControls];
-  IncludeThemeStyle(Self, [csParentBackground]);
   Caption := '';
   Width := 250;
   Height := 150;
@@ -1071,7 +1075,6 @@ begin
     Align := alClient;
     Parent := Self;
     ControlStyle := ControlStyle + [csAcceptsControls];
-    IncludeThemeStyle(FPnlEdit, [csParentBackground]);
     ParentColor := True;
   end;
   FScrollBar := TJvPanelScrollBar.Create(Self);
@@ -1088,12 +1091,28 @@ begin
     Visible := True;
     DesignInteractive := True;
   end;
+{$IFDEF JVCLThemesEnabled}
+ // FPnlEdit and FScrollBar must be created
+  ParentBackground := True;
+{$ENDIF}  
 end;
 
 destructor TJvScrollMax.Destroy;
 begin
   FButtonFont.Free;
   inherited Destroy;
+end;
+
+function TJvScrollMax.GetParentBackground: Boolean;
+begin
+  Result := inherited ParentBackground;
+end;
+
+procedure TJvScrollMax.SetParentBackground(Value: Boolean);
+begin
+  inherited ParentBackground := Value;
+  FPnlEdit.ParentBackground := Value;
+  FScrollBar.ParentBackground := Value;
 end;
 
 procedure TJvScrollMax.CreateParams(var Params: TCreateParams);
