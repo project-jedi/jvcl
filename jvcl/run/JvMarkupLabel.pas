@@ -14,9 +14,11 @@ The Initial Developer of the Original Code is Jan Verhoeven [jan1.verhoeven@wxs.
 Portions created by Jan Verhoeven are Copyright (C) 2002 Jan Verhoeven.
 All Rights Reserved.
 
-Contributor(s): Robert Love [rlove@slcdug.org].
+Contributor(s):
+Robert Love [rlove@slcdug.org].
+Lionel Renaud
 
-Last Modified: 2000-06-15
+Last Modified: 2004-01-10
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -240,7 +242,7 @@ var
       except
         Result := False;
       end
-    end
+    end;
   end;
 
   procedure PushTag;
@@ -283,20 +285,20 @@ var
   var
     PP: integer;
     ATag, APar, AVal: string;
-    HavePar: boolean;
+    HaveParams: boolean;
   begin
     SS := Trim(SS);
-    HavePar := False;
+    HaveParams := False;
     PP := Pos(' ', SS);
     if PP = 0 then
     begin // tag only
       ATag := SS;
     end
     else
-    begin // tag + atrributes
+    begin // tag + attributes
       ATag := Copy(SS, 1, PP - 1);
       SS := Trim(Copy(SS, PP + 1, Length(SS)));
-      HavePar := True;
+      HaveParams := True;
     end;
     // handle ATag
     ATag := LowerCase(ATag);
@@ -312,12 +314,12 @@ var
       FStyle := FStyle - [fsBold];
       PopTag;
     end
-    else if ATag = 'I' then
+    else if ATag = 'i' then
     begin // italic
       PushTag;
       FStyle := FStyle + [fsItalic];
     end
-    else if ATag = '/I' then
+    else if ATag = '/i' then
     begin // cancel italic
       FStyle := FStyle - [fsItalic];
       PopTag;
@@ -340,7 +342,7 @@ var
     begin
       PopTag;
     end;
-    if HavePar then
+    if HaveParams then
     begin
       repeat
         PP := Pos('="', SS);
@@ -414,11 +416,12 @@ var
   I, C, X, Y,
   ATotalWidth, AClientWidth, ATextWidth,
   BaseLine,
-  iSol, iEol,
+  iSol, iEol, PendingCount, 
   MaxHeight, MaxWidth, MaxAscent : integer;
   El: TJvHTMLElement;
   Eol: boolean;
   PendingBreak: boolean;
+  lSolText:string;
 
   procedure SetFont(EE: TJvHTMLElement);
   begin
@@ -455,11 +458,16 @@ begin
   C := ElementStack.Count;
   if C = 0 then Exit;
   HTMLClearBreaks;
-  AClientWidth := ClientWidth - MarginLeft - MarginRight;
+  if AutoSize then
+    AClientWidth := 10000  // On se donne de la marge !
+  else
+    AClientWidth := ClientWidth - MarginLeft - MarginRight;
+
   Canvas.Brush.Style := bsClear;
   Y := MarginTop;
   iSol := 0;
   PendingBreak := False;
+  PendingCount := -1;
   MaxWidth := 0;
   repeat
     I := iSol;
@@ -472,9 +480,10 @@ begin
       El := TJvHTMLElement(ElementStack.Items[I]);
       if El.BreakLine then
       begin
-        if not PendingBreak then
+        if not PendingBreak and (PendingCount <> i) then
         begin
           PendingBreak := True;
+          pendingCount := i;
           iEol := I;
           Break;
         end
@@ -483,10 +492,19 @@ begin
       end;
       if El.Height > MaxHeight then MaxHeight := El.Height;
       if El.Ascent > MaxAscent then MaxAscent := El.Ascent;
-      El.Breakup(Canvas, ATotalWidth);
+      if El.Text <> '' then
+      begin
+        lSolText := El.SolText;
+        // (Lionel) If Breakup can do something, I increase a bit the space until
+        // it can do the break ...
+        repeat
+          El.Breakup(Canvas, ATotalWidth);
+          Inc(ATotalWidth,5);
+        until (lSolText <> El.Soltext);
+      end;
       if El.SolText <> '' then
       begin
-        ATotalWidth := ATotalWidth - Canvas.TextWidth(El.SolText);
+        ATotalWidth := ATotalWidth - Canvas.TextWidth(El.SolText) - 5;
         ATextWidth := ATextWidth + Canvas.TextWidth(El.SolText);
         if El.EolText = '' then
         begin
