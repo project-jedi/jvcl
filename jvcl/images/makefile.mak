@@ -6,13 +6,13 @@
 #----------------------------------------------#
 
 !ifndef ROOT
-ROOT = $(MAKEDIR)
+ROOT = $(MAKEDIR)\..
 !endif
 #----------------------------------------
 RSRC = ..\Resources
 #-----------------------------------------------
-MAKE = $(ROOT)\make.exe -$(MAKEFLAGS) -f$**
-BRC = $(ROOT)\brc32.exe -r
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+BRC = $(ROOT)\bin\brc32.exe -r
 #-----------------------------------------------
 default: ResGenerate DcrGenerate
 
@@ -284,8 +284,8 @@ JvTimeFrameWorkReg.dcr: JvTimeFrameWorkReg.rc
 JvManagedThreadsReg.dcr: JvManagedThreadsReg.rc
 	$(BRC) -fo$(RSRC)\$&.dcr $&.rc
 
-JvXPCtrlsReg.drc: JvXPCtrlsReg.rc \
+JvXPCtrlsReg.drc: JvXPCtrlsReg.rc
 	$(BRC) -fo$(RSRC)\$&.dcr $&.rc
 
-JvDotNetCtrlsReg.dcr: JvDotNetCtrlsReg.rc \
+JvDotNetCtrlsReg.dcr: JvDotNetCtrlsReg.rc
 	$(BRC) -fo$(RSRC)\$&.dcr $&.rc
