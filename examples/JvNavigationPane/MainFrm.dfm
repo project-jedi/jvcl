@@ -3,8 +3,8 @@ object Form1: TForm1
   Top = 113
   AutoScroll = False
   Caption = 'JvNavigationPane Demo'
-  ClientHeight = 560
-  ClientWidth = 343
+  ClientHeight = 434
+  ClientWidth = 217
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -16,7 +16,8 @@ object Form1: TForm1
   PixelsPerInch = 96
   TextHeight = 13
   object PopupMenu1: TPopupMenu
-    Left = 120
+    Left = 84
+    Top = 48
     object HideAll1: TMenuItem
       Caption = 'Hide All'
       OnClick = HideAll1Click
@@ -71,7 +72,7 @@ object Form1: TForm1
   object LargeImages: TImageList
     Height = 20
     Width = 24
-    Left = 168
+    Left = 84
     Bitmap = {
       494C010106000900040018001400FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000600000003C0000000100100000000000002D
@@ -690,7 +691,7 @@ object Form1: TForm1
     Colors.ButtonSelectedColorFrom = 5496319
     Colors.ButtonSelectedColorTo = 883654
     Colors.FrameColor = 9711616
-    Left = 224
-    Top = 8
+    Left = 32
+    Top = 50
   end
 end
