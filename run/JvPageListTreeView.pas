@@ -1294,7 +1294,7 @@ var
 begin
   if (csLoading in ComponentState) or ((Page <> nil) and (Page.PageList <> Self)) then
     Exit;
-  if FActivePage <> Page then
+  if (FActivePage <> Page) then
   begin
     ParentForm := GetParentForm(Self);
     if (ParentForm <> nil) and (FActivePage <> nil) and
@@ -1320,13 +1320,18 @@ begin
       end;
       Page.Refresh;
     end;
-    if FActivePage <> nil then
-      FActivePage.Visible := False;
-    FActivePage := Page;
-    if (ParentForm <> nil) and (FActivePage <> nil) and
-      (ParentForm.ActiveControl = FActivePage) then
+
+    if ((Page <> nil) and CanChange(FPages.IndexOf(Page))) then
     begin
-      FActivePage.SelectFirst;
+      if FActivePage <> nil then
+        FActivePage.Visible := False;
+      FActivePage := Page;
+      Change;
+      if (ParentForm <> nil) and (FActivePage <> nil) and
+        (ParentForm.ActiveControl = FActivePage) then
+      begin
+        FActivePage.SelectFirst;
+      end;
     end;
   end;
 end;
