@@ -4110,9 +4110,6 @@ end;
 
 
 
-{$UNDEF CONSTRUCTOR_CODE}
-{$DEFINE CONSTRUCTOR_CODE}
-
 {$IFDEF VCL}
 procedure TJvExCustomMemo.Dispatch(var Msg);
 begin
@@ -4720,6 +4717,9 @@ end;
 {$ENDIF VisualCLX}
 
 
+
+{$UNDEF CONSTRUCTOR_CODE}
+{$DEFINE CONSTRUCTOR_CODE}
 
 {$IFDEF VCL}
  {$IFDEF COMPILER6_UP}
