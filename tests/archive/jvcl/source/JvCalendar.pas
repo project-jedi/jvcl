@@ -55,18 +55,18 @@ type
     FMonthBackColor: TColor;
     FTrailingTextColor: TColor;
     procedure SetColor(Index: Integer; Value: TColor);
+    function GetColor(Index:integer):TColor;
     procedure SetAllColors;
   public
     constructor Create(AOwner: TJvCustomMonthCalendar);
     procedure Assign(Source: TPersistent); override;
   published
-    property BackColor: TColor index 0 read FBackColor write SetColor default clWindow;
-    property TextColor: TColor index 1 read FTextColor write SetColor default clWindowText;
-    property TitleBackColor: TColor index 2 read FTitleBackColor write SetColor default clActiveCaption;
-    property TitleTextColor: TColor index 3 read FTitleTextColor write SetColor default clWhite;
-    property MonthBackColor: TColor index 4 read FMonthBackColor write SetColor default clWhite;
-    property TrailingTextColor: TColor index 5 read FTrailingTextColor
-      write SetColor default clInactiveCaptionText;
+    property BackColor: TColor index 0 read GetColor write SetColor default clWindow;
+    property TextColor: TColor index 1 read GetColor write SetColor default clWindowText;
+    property TitleBackColor: TColor index 2 read GetColor write SetColor default clActiveCaption;
+    property TitleTextColor: TColor index 3 read GetColor write SetColor default clWhite;
+    property MonthBackColor: TColor index 4 read GetColor write SetColor default clWhite;
+    property TrailingTextColor: TColor index 5 read GetColor write SetColor default clInactiveCaptionText;
   end;
 
   TJvCustomMonthCalendar = class(TJvWinControl)
@@ -119,8 +119,12 @@ type
     procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
     procedure CNNotify(var Message: TWMNotify); message CN_NOTIFY;
+    procedure WMGetDlgCode(var Message: TMessage);message WM_GETDLGCODE;
+    procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
+
   protected
     { Protected declarations }
+    
     procedure ConstrainedResize(var MinWidth: Integer;
       var MinHeight: Integer; var MaxWidth: Integer;
       var MaxHeight: Integer); override;
@@ -172,7 +176,10 @@ type
     property Days;
   published
     { inherited properties }
+    property Action;
     property Align;
+    property Anchors;
+    property Constraints;
     property Height default 160;
     property Width default 190;
     property Enabled;
@@ -376,19 +383,32 @@ end;
 
 procedure TJvMonthCalColors.SetColor(Index: Integer; Value: TColor);
 begin
-  if (Calendar = nil) or not Calendar.HandleAllocated then Exit;
-  MonthCal_SetColor(Calendar.Handle, ColorIndex[Index], ColorToRGB(Value));
+  if (Calendar <> nil) and Calendar.HandleAllocated then
+    MonthCal_SetColor(Calendar.Handle, ColorIndex[Index], ColorToRGB(Value));
   case Index of
     0:
       begin
         FBackColor := Value;
-        Calendar.Color := FBackColor;
+        if Calendar <> nil then
+          Calendar.Color := FBackColor;
       end;
     1: FTextColor := Value;
     2: FTitleBackColor := Value;
     3: FTitleTextColor := Value;
     4: FMonthBackColor := Value;
     5: FTrailingTextColor := Value;
+  end;
+end;
+
+function TJvMonthCalColors.GetColor(Index: integer): TColor;
+begin
+  case Index of
+    0: Result := FBackColor;
+    1: Result := FTextColor;
+    2: Result := FTitleBackColor;
+    3: Result := FTitleTextColor;
+    4: Result := FMonthBackColor;
+    5: Result := FTrailingTextColor;
   end;
 end;
 
@@ -527,13 +547,14 @@ begin
   Result := Values[S];
 end;
 
+
 { TJvCustomMonthCalendar }
 
 constructor TJvCustomMonthCalendar.Create(AOwner: TComponent);
 begin
   CheckCommonControl(ICC_DATE_CLASSES);
   inherited Create(AOwner);
-  ControlStyle := ControlStyle + [csOpaque, csClickEvents, csDoubleClicks, csReflector];
+  ControlStyle := ControlStyle + [csOpaque, csCaptureMouse, csClickEvents, csDoubleClicks, csReflector];
   FColors := TJvMonthCalColors.Create(self);
 
   FBoldDays := TMonthCalStrings.Create;
@@ -1004,9 +1025,12 @@ end;
 function TJvCustomMonthCalendar.GetMinSize: TRect;
 begin
   if HandleAllocated then
-    SendMessage(Handle, MCM_GETMINREQRECT, 0, Longint(@Result))
+  begin
+    SendMessage(Handle, MCM_GETMINREQRECT, 0, Longint(@Result));
+    OffSetRect(Result,-Result.Left,-Result.Top);
+  end
   else
-    Result := Rect(0,0,190,160);
+    Result := Rect(0,0,191,154);
 end;
 
 procedure TJvCustomMonthCalendar.CNNotify(var Message: TWMNotify);
@@ -1081,6 +1105,17 @@ begin
     end;
   end
   else Result := False;
+end;
+
+procedure TJvCustomMonthCalendar.WMGetDlgCode(var Message: TMessage);
+begin
+  Message.Result := DLGC_WANTARROWS;
+end;
+
+procedure TJvCustomMonthCalendar.WMLButtonDown(var Message: TWMLButtonDown);
+begin
+  SetFocus;
+  inherited;
 end;
 
 end.
