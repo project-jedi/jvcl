@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-11-05
+Last Modified: 2004-01-24
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -70,7 +70,7 @@ uses
   Graphics, Clipbrd,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QStdCtrls, QGraphics, QClipbrd, Types, QWindows,
+  Qt, QStdCtrls, QGraphics, QClipbrd, Types, QWindows, 
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   Variants,
@@ -79,7 +79,7 @@ uses
 
 const
   {$IFDEF MSWINDOWS}
-  PathDelim = '\';
+  PathDelim = '\';     
   DriveDelim = ':';
   PathSep = ';';
   AllFilesMask = '*.*';
@@ -289,9 +289,6 @@ function KeyPressed(VK: Integer): Boolean;
 {$ENDIF VCL}
 { TrueInflateRect inflates rect in other method, than InflateRect API function }
 function TrueInflateRect(const R: TRect; const I: Integer): TRect;
-{$IFDEF LINUX}
-procedure SetRect(out R: TRect; Left, Top, Right, Bottom: Integer);
-{$ENDIF LINUX}
 
 {**** other routines }
 procedure SwapInt(var Int1, Int2: Integer);
@@ -391,6 +388,8 @@ procedure Roughed(ACanvas: TCanvas; const ARect: TRect; const AVert: Boolean);
 function BitmapFromBitmap(SrcBitmap: TBitmap; const AWidth, AHeight, Index: Integer): TBitmap;
 { TextWidth calculate text with for writing using standard desktop font }
 function TextWidth(const AStr: string): Integer;
+{ TextHeight calculate text height for writing using standard desktop font }
+function TextHeight(const AStr: string): Integer;
 
 procedure SetChildPropOrd(Owner: TComponent; const PropName: string; Value: Longint);
 procedure Error(const Msg: string);
@@ -708,11 +707,11 @@ function FourDigitYear: Boolean;
 
 { moved from JvJVCLUTils }
 
-{$IFDEF MSWINDOWS}
 //Open an object with the shell (url or something like that)
 function OpenObject(Value: PChar): Boolean; overload;
 function OpenObject(const Value: string): Boolean; overload;
 
+{$IFDEF MSWINDOWS}
 //Raise the last Exception
 procedure RaiseLastWin32; overload;
 procedure RaiseLastWin32(const Text: string); overload;
@@ -1555,16 +1554,6 @@ begin
   with R do
     SetRect(Result, Left - I, Top - I, Right + I, Bottom + I);
 end;
-
-{$IFDEF LINUX}
-procedure SetRect(out R: TRect; Left, Top, Right, Bottom: Integer);
-begin
-  R.Left := Left;
-  R.Top := Top;
-  R.Right := Right;
-  R.Bottom := Bottom;
-end;
-{$ENDIF LINUX}
 
 function FileGetInfo(FileName: TFileName; var SearchRec: TSearchRec): Boolean;
 var
@@ -3041,6 +3030,27 @@ begin
   SetString(S, PChar(RAddr), RLen);
 end;
 {$ENDIF MSWINDOWS}
+
+function TextHeight(const AStr: string): Integer;
+var
+  Canvas: TCanvas;
+  DC: HDC;
+begin
+  DC := GetDC(HWND_DESKTOP);
+  Canvas := TCanvas.Create;
+  try
+    Canvas.Handle := DC;
+    Result := Canvas.TextHeight(AStr);
+    {$IFDEF VCL}
+    Canvas.Handle := 0;
+    {$ELSE}
+    Canvas.Handle := nil;
+    {$ENDIF VCL}
+  finally
+    ReleaseDC(HWND_DESKTOP, DC);
+    Canvas.Free;
+  end;
+end;
 
 
 function TextWidth(const AStr: string): Integer;
@@ -6371,7 +6381,6 @@ begin
   Result := PtInRect(R, Pt);
 end;
 
-{$IFDEF MSWINDOWS}
 function OpenObject(const Value: string): Boolean; overload;
 begin
   Result := OpenObject(PChar(Value));
@@ -6383,6 +6392,8 @@ function OpenObject(Value: PChar): Boolean; overload;
 begin
   Result := ShellExecute(0, 'open', Value, nil, nil, SW_SHOWNORMAL) > HINSTANCE_ERROR;
 end;
+
+{$IFDEF MSWINDOWS}
 
 procedure RaiseLastWin32; overload;
 begin
@@ -6477,9 +6488,15 @@ begin
   end;
 end;
 
+{$IFDEF LINUX}
+// for Exec function
+function GetForegroundWindow: QWidgetH;
+begin
+  Result := nil;    // QWindows ShellExececute ignores handle under linux
+end;
+{$ENDIF LINUX}
 
 procedure Exec(FileName, Parameters, Directory: string);
-{$IFDEF MSWINDOWS}
 var
   Operation: string;
 begin
@@ -6487,12 +6504,11 @@ begin
   ShellExecute(GetForegroundWindow, PChar(Operation), PChar(FileName), PChar(Parameters), PChar(Directory),
     SW_SHOWNORMAL);
 end;
-{$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-begin
-  if Directory = '' then Directory := GetCurrentDir;
-  Libc.system(PChar(Format('cd "%s" ; "%s" %s &', [Directory, FileName, Parameters])));
-end;
+// begin
+//  if Directory = '' then Directory := GetCurrentDir;
+//  Libc.system(PChar(Format('cd "%s" ; "%s" %s &', [Directory, FileName, Parameters])));
+// end;
 {$ENDIF LINUX}
 
 { (rb) Duplicate of JclMiscel.WinExec32AndWait }
@@ -6521,7 +6537,8 @@ end;
 {$IFDEF LINUX}
 begin
  // ignore Visibility
-  Libc.system(PChar(FileName));
+  Libc.system(PChar(Format('kfmclient exec "%s"', [FileName]));
+//  Libc.system(PChar(FileName));
 end;
 {$ENDIF LINUX}
 
