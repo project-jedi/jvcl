@@ -336,10 +336,10 @@ type
   { The common parent of TJvFilenameEdit and TJvDirectoryEdit          }
   { For internal use only; it's not intended to be used separately }
 
-{$IFNDEF WIN32}
+  {$IFNDEF WIN32}
 const
   MaxFileLength = SizeOf(TFileName) - 1;
-{$ENDIF}
+  {$ENDIF}
 
 type
   TExecOpenDialogEvent = procedure(Sender: TObject; var Name: string;
@@ -396,7 +396,7 @@ type
   end;
 
   TFileDialogKind =
-    (dkOpen, dkSave {$IFDEF COMPILER3_UP}, dkOpenPicture, dkSavePicture {$ENDIF});
+    (dkOpen, dkSave{$IFDEF COMPILER3_UP}, dkOpenPicture, dkSavePicture{$ENDIF});
 
   TJvFilenameEdit = class(TJvFileDirEdit)
   private
@@ -856,7 +856,7 @@ type
 
   EComboEditError = class(EJVCLException);
 
-{ Utility routines }
+  { Utility routines }
 
 procedure DateFormatChanged;
 
@@ -887,7 +887,7 @@ const
   sFileBmp = 'JV_FEDITBMP'; { Filename and directory editor button glyph }
   sDateBmp = 'JV_DEDITBMP'; { Date editor button glyph }
 
-{ Utility routines }
+  { Utility routines }
 
 function EditorTextMargins(Editor: TJvCustomComboEdit): TPoint;
 var
@@ -903,8 +903,7 @@ begin
     begin
       if BorderStyle = bsNone then
         I := 0
-      else
-      if Ctl3D then
+      else if Ctl3D then
         I := 1
       else
         I := 2;
@@ -912,7 +911,7 @@ begin
       Result.Y := I;
     end
     else
-    {$ENDIF}
+      {$ENDIF}
     begin
       if BorderStyle = bsNone then
         I := 0
@@ -945,13 +944,13 @@ var
   DC: HDC;
   PS: TPaintStruct;
   S: string;
-{$IFDEF COMPILER4_UP}
+  {$IFDEF COMPILER4_UP}
   ExStyle: DWORD;
 const
-  AlignStyle: array [Boolean, TAlignment] of DWORD =
-    ((WS_EX_LEFT, WS_EX_RIGHT, WS_EX_LEFT),
-     (WS_EX_RIGHT, WS_EX_LEFT, WS_EX_LEFT));
-{$ENDIF}
+  AlignStyle: array[Boolean, TAlignment] of DWORD =
+  ((WS_EX_LEFT, WS_EX_RIGHT, WS_EX_LEFT),
+    (WS_EX_RIGHT, WS_EX_LEFT, WS_EX_LEFT));
+  {$ENDIF}
 begin
   Result := True;
   with Editor do
@@ -960,7 +959,7 @@ begin
     if UseRightToLeftAlignment then
       ChangeBiDiModeAlignment(AAlignment);
     {$ENDIF}
-    if StandardPaint {$IFDEF WIN32} and not (csPaintCopy in ControlState) {$ENDIF} then
+    if StandardPaint{$IFDEF WIN32} and not (csPaintCopy in ControlState){$ENDIF} then
     begin
       {$IFDEF COMPILER4_UP}
       if SysLocale.MiddleEast and HandleAllocated and (IsRightToLeft) then
@@ -1056,6 +1055,7 @@ begin
 end;
 
 {$IFDEF WIN32}
+
 procedure TJvEditButton.Paint;
 begin
   inherited Paint;
@@ -1135,6 +1135,7 @@ begin
 end;
 
 {$IFNDEF WIN32}
+
 procedure TJvPopupWindow.CreateWnd;
 begin
   inherited CreateWnd;
@@ -1382,7 +1383,7 @@ end;
 
 procedure TJvCustomComboEdit.CreateParams(var Params: TCreateParams);
 const
-  Alignments: array [TAlignment] of Longword = (ES_LEFT, ES_RIGHT, ES_CENTER);
+  Alignments: array[TAlignment] of Longword = (ES_LEFT, ES_RIGHT, ES_CENTER);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or ES_MULTILINE or WS_CLIPCHILDREN
@@ -1431,8 +1432,7 @@ begin
     end;
     if P.X < 0 then
       P.X := 0
-    else
-    if P.X + FPopup.Width > Screen.Width then
+    else if P.X + FPopup.Width > Screen.Width then
       P.X := Screen.Width - FPopup.Width;
     {$IFDEF WIN32}
     if Text <> '' then
@@ -1499,8 +1499,10 @@ begin
 end;
 
 {$IFDEF WIN32}
+
 function TJvCustomComboEdit.GetPopupValue: Variant;
 {$ELSE}
+
 function TJvCustomComboEdit.GetPopupValue: string;
 {$ENDIF}
 begin
@@ -1511,8 +1513,10 @@ begin
 end;
 
 {$IFDEF WIN32}
+
 procedure TJvCustomComboEdit.SetPopupValue(const Value: Variant);
 {$ELSE}
+
 procedure TJvCustomComboEdit.SetPopupValue(const Value: string);
 {$ENDIF}
 begin
@@ -1521,17 +1525,18 @@ begin
 end;
 
 {$IFDEF WIN32}
+
 procedure TJvCustomComboEdit.AcceptValue(const Value: Variant);
 begin
   if Text <> VarToStr(Value) then
   begin
-{$ELSE}
+    {$ELSE}
 
 procedure TJvCustomComboEdit.AcceptValue(const Value: string);
 begin
   if Text <> Value then
   begin
-{$ENDIF}
+    {$ENDIF}
     Text := Value;
     Modified := True;
     UpdatePopupVisible;
@@ -1540,8 +1545,10 @@ begin
 end;
 
 {$IFDEF WIN32}
+
 function TJvCustomComboEdit.AcceptPopup(var Value: Variant): Boolean;
 {$ELSE}
+
 function TJvCustomComboEdit.AcceptPopup(var Value: string): Boolean;
 {$ENDIF}
 begin
@@ -1674,8 +1681,7 @@ begin
     end
       //    else if (Value <> ButtonWidth) and (Value < ClientWidth) then begin
       //Polaris
-    else
-    if (Value <> ButtonWidth) and
+    else if (Value <> ButtonWidth) and
       ((Assigned(Parent) and (Value < ClientWidth)) or
       (not Assigned(Parent) and (Value < Width))) then
     begin
@@ -1729,8 +1735,7 @@ procedure TJvCustomComboEdit.SetNumGlyphs(Value: TNumGlyphs);
 begin
   if FGlyphKind in [gkDropDown, gkEllipsis] then
     FButton.NumGlyphs := 1
-  else
-  if FGlyphKind = gkDefault then
+  else if FGlyphKind = gkDefault then
     FButton.NumGlyphs := FDefNumGlyphs
   else
     FButton.NumGlyphs := Value;
@@ -1748,7 +1753,7 @@ begin
   if not Ctl3D and (BorderStyle = bsSingle) and ThemeServices.ThemesEnabled then
     LLeft := 3
   else
-  {$ENDIF}
+    {$ENDIF}
     LLeft := 0;
   SetRect(Loc, LLeft, 0, ClientWidth - FBtnControl.Width {Polaris - 2}, ClientHeight + 1);
   SendMessage(Handle, EM_SETRECTNP, 0, Longint(@Loc));
@@ -1774,7 +1779,7 @@ begin
           FButton.Width, Height - 2)
     end
     else
-    {$ENDIF}
+      {$ENDIF}
     begin
       if Ctl3D and (BorderStyle = bsSingle) then
         BtnRect := Bounds(Width - FButton.Width - 4, 0,
@@ -1801,6 +1806,7 @@ begin
 end;
 
 {$IFDEF WIN32}
+
 procedure TJvCustomComboEdit.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
@@ -1887,10 +1893,9 @@ var
   I: Integer;
 begin
   I := GetTextHeight;
-  Result := I + GetSystemMetrics(SM_CYBORDER) * 4 + 1;
-  {$IFNDEF WIN32}
-  Result := Result + (I div 4);
-  {$ENDIF}
+  if BorderStyle = bsSingle then
+    I := I + GetSystemMetrics(SM_CYBORDER) * 4 + 1 {$IFNDEF WIN32} + (I div 4){$ENDIF};
+  Result := I;
 end;
 
 procedure TJvCustomComboEdit.UpdatePopupVisible;
@@ -1963,6 +1968,7 @@ begin
 end;
 
 {$IFDEF COMPILER4_UP}
+
 procedure TJvCustomComboEdit.CMBiDiModeChanged(var Msg: TMessage);
 begin
   inherited;
@@ -1973,7 +1979,7 @@ end;
 
 procedure TJvCustomComboEdit.SetShowCaret;
 const
-  CaretWidth: array [Boolean] of Byte = (1, 2);
+  CaretWidth: array[Boolean] of Byte = (1, 2);
 begin
   CreateCaret(Handle, 0, CaretWidth[fsBold in Font.Style], GetTextHeight);
   ShowCaret(Handle);
@@ -2063,8 +2069,7 @@ begin
   if (FGlyphKind = gkDefault) and (Glyph <> nil) then
     Result := ButtonWidth <> Max(Glyph.Width div FButton.NumGlyphs + 6,
       DefEditBtnWidth)
-  else
-  if FGlyphKind = gkDropDown then
+  else if FGlyphKind = gkDropDown then
     Result := ButtonWidth <> GetSystemMetrics(SM_CXVSCROLL){$IFNDEF WIN32} + 1{$ENDIF}
   else
     Result := ButtonWidth <> DefEditBtnWidth;
@@ -2087,8 +2092,7 @@ begin
     RecreateGlyph;
     if (FGlyphKind = gkDefault) and (Glyph <> nil) then
       ButtonWidth := Max(Glyph.Width div FButton.NumGlyphs + 6, FButton.Width)
-    else
-    if FGlyphKind = gkDropDown then
+    else if FGlyphKind = gkDropDown then
     begin
       ButtonWidth := GetSystemMetrics(SM_CXVSCROLL){$IFNDEF WIN32} + 1{$ENDIF};
       with FButton do
@@ -2703,7 +2707,7 @@ begin
     UpdateFormat;
     {$IFDEF DEFAULT_POPUP_CALENDAR}
     FPopup := TJvPopupWindow(CreatePopupCalendar(Self,
-      {$IFDEF COMPILER4_UP} BiDiMode, {$ENDIF}
+      {$IFDEF COMPILER4_UP}BiDiMode, {$ENDIF}
       // Polaris
       FMinDate, FMaxDate));
     TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
@@ -2859,9 +2863,9 @@ begin
   Result := False;
   {$IFDEF WIN32}
   if (Msg.Msg = WM_WININICHANGE) and Application.UpdateFormatSettings then
-  {$ELSE}
+    {$ELSE}
   if Msg.Msg = WM_WININICHANGE then
-  {$ENDIF}
+    {$ENDIF}
     UpdateMask;
 end;
 
@@ -2924,6 +2928,7 @@ begin
 end;
 
 {$IFDEF COMPILER4_UP}
+
 procedure TJvCustomDateEdit.ValidateEdit;
 begin
   if TextStored then
@@ -3055,7 +3060,7 @@ begin
         begin
           if FPopup = nil then
             FPopup := TJvPopupWindow(CreatePopupCalendar(Self
-              {$IFDEF COMPILER4_UP}, BiDiMode {$ENDIF},
+              {$IFDEF COMPILER4_UP}, BiDiMode{$ENDIF},
               FMinDate, FMaxDate)); // Polaris
           TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
           TJvPopupWindow(FPopup).Color := FPopupColor;
@@ -3123,8 +3128,7 @@ begin
     TJvPopupWindow(FPopup).KeyDown(Key, Shift);
     Key := 0;
   end
-  else
-  if (Shift = []) and DirectInput then
+  else if (Shift = []) and DirectInput then
   begin
     case Key of
       VK_ADD:
@@ -3149,8 +3153,7 @@ begin
     TJvPopupWindow(FPopup).KeyPress(Key);
     Key := #0;
   end
-  else
-  if DirectInput then
+  else if DirectInput then
     case Key of
       'T', 't':
         begin
@@ -3192,8 +3195,10 @@ begin
 end;
 
 {$IFDEF WIN32}
+
 function TJvCustomDateEdit.AcceptPopup(var Value: Variant): Boolean;
 {$ELSE}
+
 function TJvCustomDateEdit.AcceptPopup(var Value: string): Boolean;
 {$ENDIF}
 var
@@ -3206,14 +3211,14 @@ begin
     if VarIsNull(Value) or VarIsEmpty(Value) then
       D := NullDate
     else
-      try
-        D := VarToDateTime(Value);
-      except
-        if DefaultToday then
-          D := SysUtils.Date
-        else
-          D := NullDate;
-      end;
+    try
+      D := VarToDateTime(Value);
+    except
+      if DefaultToday then
+        D := SysUtils.Date
+      else
+        D := NullDate;
+    end;
     {$ELSE}
     if DefaultToday then
       D := SysUtils.Date
@@ -3271,12 +3276,10 @@ begin
         ((Value < FMinDate) or (Value > FMaxDate))) then
         raise Exception.CreateFmt(SDateOutOfRange, [FormatDateTime(FDateFormat, Value),
           FormatDateTime(FDateFormat, FMinDate), FormatDateTime(FDateFormat, FMaxDate)])
-      else
-      if (FMinDate <> NullDate) and (Value < FMinDate) then
+      else if (FMinDate <> NullDate) and (Value < FMinDate) then
         raise Exception.CreateFmt(SDateOutOfMin, [FormatDateTime(FDateFormat, Value),
           FormatDateTime(FDateFormat, FMinDate)])
-      else
-      if (FMaxDate <> NullDate) and (Value > FMaxDate) then
+      else if (FMaxDate <> NullDate) and (Value > FMaxDate) then
         raise Exception.CreateFmt(SDateOutOfMax, [FormatDateTime(FDateFormat, Value),
           FormatDateTime(FDateFormat, FMaxDate)]);
     end;
@@ -3299,8 +3302,7 @@ var
       begin
         if Controls[I] is TJvCustomDateEdit then
           TJvCustomDateEdit(Controls[I]).UpdateMask
-        else
-        if Controls[I] is TWinControl then
+        else if Controls[I] is TWinControl then
           IterateControls(TWinControl(Controls[I]));
       end;
   end;
@@ -3325,10 +3327,10 @@ initialization
 finalization
   DestroyLocals;
 
-{$ELSE}
+  {$ELSE}
 initialization
   AddExitProc(DestroyLocals);
-{$ENDIF}
+  {$ENDIF}
 
 end.
 
