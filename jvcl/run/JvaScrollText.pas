@@ -11,18 +11,15 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvaScrollText.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
-Copyright (c) 1999, 2002 Andrei Prygounkov   
+Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s): 
+Contributor(s):
 
-Last Modified: 2002-07-04
+Last Modified: 2003-10-25
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
-
-Component   : TJvEditor
-Description : 'Delphi IDE'-like Editor
 
 Known Issues:
   Some russian comments were translated to english; these comments are marked
@@ -36,11 +33,16 @@ unit JvaScrollText;
 interface
 
 uses
-  Windows, Classes, Controls, ExtCtrls, Forms, Graphics, SysUtils,
-  JvComponent;
+  {$IFDEF COMPLIB_VCL}
+  Windows, Controls, ExtCtrls, Forms, Graphics,
+  {$ENDIF}
+  {$IFDEF COMPLIB_CLX}
+  Types, QControls, QExtCtrls, QForms, QGraphics,
+  {$ENDIF}
+  SysUtils, Classes,
+  JvComponent, JvClxUtils;
 
 type
-
   TJvaScrollText = class(TJvCustomControl)
   private
     FForeImage: TImage;

@@ -44,7 +44,13 @@ uses
   SysUtils, Classes,
   JvTypes;
 
+{$IFDEF LINUX}
+type
+  TColorRef = Integer;
+{$ENDIF}
+
 {$IFDEF COMPLIB_CLX}
+
 function GetSysColor(Color: Integer): TColorRef;
 
 procedure SetWindowPlacement(Handle: QWidgetH; W: PWindowPlacement);
@@ -54,9 +60,6 @@ function IsWindowEnabled(Handle: QWidgetH): Boolean;
 procedure EnableWindow(Handle: QWidgetH; Value: Boolean);
 procedure SwitchToThisWindow(Handle: QWidgetH; Restore: Boolean);
 procedure SetFocus(Handle: QWidgetH);
-
-type
-  TColorRef = Integer;
 
 function RGB(Red, Green, Blue: Integer): TColorRef;
 function GetBValue(Col: TColorRef): Integer;
@@ -494,7 +497,7 @@ begin
     else if Flags and DT_CALCRECT <> 0 then
     begin
       TextExtent(Caption, R, flgs);
-      Result := 1 ; //????
+      Result := R.Bottom - R.Top;
       Exit;
     end;
     Canvas.TextRect(R, R.Left, R.Top, Text, Flgs);
