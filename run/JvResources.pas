@@ -325,7 +325,8 @@ resourcestring
   RsEProviderIsNoIJvDataConsumer = 'Provider property of ''%s'' does not point to a IJvDataConsumer.';
   RsEComponentIsNotDataConsumer = 'Component ''%s'' is not a data consumer.';
   RsECannotAddNil = 'Cannot add a nil pointer.';
-  RsEConsumerNoSupportIJvDataConsumerClientNotify = 'Consumer does not support the ''IJvDataConsumerClientNotify'' interface.';
+  RsEConsumerNoSupportIJvDataConsumerClientNotify =
+    'Consumer does not support the ''IJvDataConsumerClientNotify'' interface.';
   RsENotifierNoSupprtIJvDataConsumer = 'Notifier does not support the ''IJvDataConsumer'' interface.';
 
   RsEExtensibleIntObjDuplicateClass = 'Implementation of that class already exists.';
@@ -353,16 +354,16 @@ resourcestring
 
 //=== JvDBLookup.pas =========================================================
 resourcestring
-  sInvalidFormatNotAllowed = 'Invalid format: % not allowed';
-  sInvalidFormatsNotAllowed = 'Invalid format: %s not allowed';
+  RsEInvalidFormatNotAllowed = 'Invalid format: % not allowed';
+  RsEInvalidFormatsNotAllowed = 'Invalid format: %s not allowed';
 
 //=== JvDBQueryParamsForm.pas ================================================
 resourcestring
   // (p3) copied from bdeconst so we don't have to include the entire BDE for three strings...
-  SDataTypes =
+  RsDataTypes =
     ';String;SmallInt;Integer;Word;Boolean;Float;Currency;BCD;Date;Time;DateTime;;;;Blob;Memo;Graphic;;;;;Cursor;';
-  SParamEditor = '%s%s%s Parameters';
-  SInvalidParamFieldType = 'Must have a valid field type selected';
+  RsParamEditor = '%s%s%s Parameters';
+  RsEInvalidParamFieldType = 'Must have a valid field type selected';
 
 //=== JvDBRemoteLogin.pas ====================================================
 resourcestring
@@ -371,76 +372,86 @@ resourcestring
 
 //=== JvDBTreeView.pas =======================================================
 resourcestring
-  sErrorValueForDetailValue = 'error value for DetailValue';
+  RsDeleteNode = 'Delete %s ?';
+  RsDeleteNode2 = 'Delete %s (with all children) ?';
+  RsMasterFieldError = '"MasterField" must be integer type';
+  RsDetailFieldError = '"DetailField" must be integer type';
+  RsItemFieldError = '"ItemField" must be string, date or integer type';
+  RsIconFieldError = '"IconField" must be integer type';
+  RsMasterFieldEmpty = '"MasterField" property must be filled';
+  RsDetailFieldEmpty = '"DetailField" property must be filled';
+  RsItemFieldEmpty = '"ItemField" property must be filled';
+  RsEMoveToModeError = 'Invalid move mode for JvDBTreeNode';
+  RsMasterDetailFieldError = '"MasterField" and "DetailField" must be of same type';
+  RsEDataSetNotActive = 'DataSet not active';
+  RsEErrorValueForDetailValue = 'error value for DetailValue';
 
 //=== JvDdeCmd.pas ===========================================================
 resourcestring
-  SErrorCommandStart = 'Invalid command start format';
-  SErrorCommandFormat = 'Invalid command format: %s';
+  RsEErrorCommandStart = 'Invalid command start format';
+  RsEErrorCommandFormat = 'Invalid command format: %s';
 
 //=== JvDrawImage.pas ========================================================
 resourcestring
   sImageMustBeSquare = 'image must be square for Spirographs';
-  sSumOfRadiTolarge = 'sum of radi to large';
+  sSumOfRadiTolarge = 'sum of radi too large';
   sBothRadiMustBeGr = 'both radi must be >%d';
 
 //=== JvDropDownForm.pas =====================================================
 resourcestring
-  sTJvCustomDropDownFormCreateOwnerMus = 'TJvCustomDropDownForm.Create: Owner must be a TCustomEdit';
+  RsETJvCustomDropDownFormCreateOwnerMus = 'TJvCustomDropDownForm.Create: Owner must be a TCustomEdit';
 
 //=== JvDSADialogs.pas =======================================================
 resourcestring
-  sCannotEndCustomReadIfNotInCustomRea = 'Cannot end custom read if not in custom read mode.';
-  sCannotEndCustomWriteIfNotInCustomWr = 'Cannot end custom write if not in custom write mode.';
-  sCannotEndReadIfNotInReadMode = 'Cannot end read if not in read mode.';
-  sCannotEndWriteIfNotInWriteMode = 'Cannot end write if not in write mode.';
-  sInTheCurrentQueue = 'in the current queue';
-  sJvDSADialogPatchErrorJvDSADialogCom = 'JvDSADialog patch error: JvDSADialog component not found.';
+  RsECannotEndCustomReadIfNotInCustomRea = 'Cannot end custom read if not in custom read mode.';
+  RsECannotEndCustomWriteIfNotInCustomWr = 'Cannot end custom write if not in custom write mode.';
+  RsECannotEndReadIfNotInReadMode = 'Cannot end read if not in read mode.';
+  RsECannotEndWriteIfNotInWriteMode = 'Cannot end write if not in write mode.';
+  RsEJvDSADialogPatchErrorJvDSADialogCom = 'JvDSADialog patch error: JvDSADialog component not found.';
 
-  sDSARegKeyCreateError = 'Unable to create key %s';
-  sDSADuplicateID = 'DSA dialog with ID ''%d'' is already assigned to another dialog name.';
-  sDSADuplicateName = 'DSA dialog named ''%s'' is already assigned to another dialog ID.';
-  sDSADialogIDNotFound = 'DSA dialog %d does not exist.';
-  sDSADuplicateCTK_ID = 'CheckMarkText ID %d already registered.';
-  sDSADialogIDNotStored = 'DSA dialog %d has not been stored.';
-  sDSAKeyNotFound = 'Key %s does not exist.';
-  sDSAKeyNoAccessAs = 'Key %s cannot be accessed as %s.';
+  RsEDSARegKeyCreateError = 'Unable to create key %s';
+  RsEDSADuplicateID = 'DSA dialog with ID ''%d'' is already assigned to another dialog name.';
+  RsEDSADuplicateName = 'DSA dialog named ''%s'' is already assigned to another dialog ID.';
+  RsEDSADialogIDNotFound = 'DSA dialog %d does not exist.';
+  RsEDSADuplicateCTK_ID = 'CheckMarkText ID %d already registered.';
+  RsEDSADialogIDNotStored = 'DSA dialog %d has not been stored.';
+  RsEDSAKeyNotFound = 'Key %s does not exist.';
+  RsEDSAKeyNoAccessAs = 'Key %s cannot be accessed as %s.';
 
-  sDSAAccessBool = 'Boolean';
-  sDSAAccessFloat = 'Float';
-  sDSAAccessInt64 = 'Int64';
-  sDSAAccessInt = 'Integer';
-  sDSAAccessString = 'string';
+  RsInTheCurrentQueue = 'in the current queue';
+  RsDSAAccessBool = 'Boolean';
+  RsDSAAccessFloat = 'Float';
+  RsDSAAccessInt64 = 'Int64';
+  RsDSAAccessInt = 'Integer';
+  RsDSAAccessString = 'string';
 
-  sDSActkShowText = 'Don''t show this dialog again';
-  sDSActkAskText = 'Don''t ask me again';
-  sDSActkWarnText = 'Don''t warn me again';
+  RsDSActkShowText = 'Don''t show this dialog again';
+  RsDSActkAskText = 'Don''t ask me again';
+  RsDSActkWarnText = 'Don''t warn me again';
 
-  sDSAStateValueName = 'DSA_State'; // do not localize
-  sDSAStateLastResultName = 'LastResult'; // do not localize
+  RsCntdownText = 'This dialog is closing in %d %s.';
+  RsCntdownSecText = 'second';
+  RsCntdownSecsText = 'seconds';
 
-  sCtrlHasNoCheckedProp = 'The specified control has no "Checked" property.';
-  sCtrlHasNoCaptionProp = 'The specified control has no "Caption" property.';
-  sDialogIDChangeOnlyInDesign = 'The dialog ID can only be changed at design time.';
-  sOnlyAllowedOnForms = 'TJvDSADialog is only allowed on forms.';
-  sAlreadyDSADialog = 'The form already has a TJvDSADialog component.';
-  sCntdwnText = 'This dialog is closing in %d %s.';
-  sCntdwnSecText = 'second';
-  sCntdwnSecsText = 'seconds';
+  RsECtrlHasNoCheckedProp = 'The specified control has no "Checked" property.';
+  RsECtrlHasNoCaptionProp = 'The specified control has no "Caption" property.';
+  RsEDialogIDChangeOnlyInDesign = 'The dialog ID can only be changed at design time.';
+  RsEOnlyAllowedOnForms = 'TJvDSADialog is only allowed on forms.';
+  RsEAlreadyDSADialog = 'The form already has a TJvDSADialog component.';
 
 //=== JvEditor.pas, JvUnicodeEditor.pas ======================================
 resourcestring
-  SRedoNotYetImplemented = 'Redo not yet implemented';
-  sInvalidCompletionMode = 'Invalid JvEditor Completion Mode';
+  RsERedoNotYetImplemented = 'Redo not yet implemented';
+  RsEInvalidCompletionMode = 'Invalid JvEditor Completion Mode';
 
 //=== JvErrorIndicator.pas ===================================================
 resourcestring
-  sControlNotFoundInGetError = 'Control not found in GetError';
-  sControlNotFoundInGetImageAlignment = 'Control not found in GetImageAlignment';
-  sControlNotFoundInGetImagePadding = 'Control not found in GetImagePadding';
-  sUnableToAddControlInSetError = 'Unable to add control in SetError';
-  sUnableToAddControlInSetImageAlignme = 'Unable to add control in SetImageAlignment';
-  sUnableToAddControlInSetImagePadding = 'Unable to add control in SetImagePadding';
+  RsEControlNotFoundInGetError = 'Control not found in GetError';
+  RsEControlNotFoundInGetImageAlignment = 'Control not found in GetImageAlignment';
+  RsEControlNotFoundInGetImagePadding = 'Control not found in GetImagePadding';
+  RsEUnableToAddControlInSetError = 'Unable to add control in SetError';
+  RsEUnableToAddControlInSetImageAlignme = 'Unable to add control in SetImageAlignment';
+  RsEUnableToAddControlInSetImagePadding = 'Unable to add control in SetImagePadding';
 
 //=== JvExceptionForm.pas ====================================================
 resourcestring
@@ -788,66 +799,67 @@ resourcestring
 
 //=== JvInspector.pas ========================================================
 resourcestring
-  sJvInspItemHasParent = 'Item already assigned to another parent.';
-  sJvInspItemValueException = 'Exception ';
-  sJvInspItemUnInitialized = '(uninitialized)';
-  sJvInspItemUnassigned = '(unassigned)';
-  sJvInspItemNoValue = '(no value)';
-  sJvInspItemNotAChild = 'Specified Item is not a child of this item.';
-  sJvInspItemColNotFound = 'Specified column does not belong to this compound item.';
-  sJvInspItemItemIsNotCol = 'Specified item is not a column of this compound item.';
-  sJvInspItemInvalidPropValue = 'Invalid property value %s.';
-  sJvInspDataNoAccessAs = 'Data cannot be accessed as %s.';
-  sJvInspDataNotInit = 'Data not initialized.';
-  sJvInspDataNotAssigned = 'Data not assigned.';
-  sJvInspDataNoValue = 'Data has no value.';
-  sJvInspDataStrTooLong = 'String too long.';
-  sJvInspRegNoCompare = 'Cannot compare %s to %s.';
-  sJvInspNoGenReg = 'Unable to create generic item registration list.';
-  sJvInspPaintNotActive = 'Painter is not the active painter of the specified inspector.';
-  sJvInspPaintOnlyUsedOnce = 'Inspector painter can only be linked to one inspector.';
+  RsEJvInspItemHasParent = 'Item already assigned to another parent.';
+  RsEJvInspItemNotAChild = 'Specified Item is not a child of this item.';
+  RsEJvInspItemColNotFound = 'Specified column does not belong to this compound item.';
+  RsEJvInspItemItemIsNotCol = 'Specified item is not a column of this compound item.';
+  RsEJvInspItemInvalidPropValue = 'Invalid property value %s.';
+  RsEJvInspDataNoAccessAs = 'Data cannot be accessed as %s.';
+  RsEJvInspDataNotInit = 'Data not initialized.';
+  RsEJvInspDataNotAssigned = 'Data not assigned.';
+  RsEJvInspDataNoValue = 'Data has no value.';
+  RsEJvInspDataStrTooLong = 'String too long.';
+  RsEJvInspRegNoCompare = 'Cannot compare %s to %s.';
+  RsEJvInspNoGenReg = 'Unable to create generic item registration list.';
+  RsEJvInspPaintNotActive = 'Painter is not the active painter of the specified inspector.';
+  RsEJvInspPaintOnlyUsedOnce = 'Inspector painter can only be linked to one inspector.';
 
-  sInspectorInternalError = 'Internal error: two data instances pointing to the same data are registered.';
-  sSpecifierBeforeSeparator = 'A specifier should be placed before and after a separator.';
-  sDOrDDOnlyOnce = '''d'' or ''dd'' should appear only once.';
-  sMOrMMOnlyOnce = '''m'' or ''mm'' should appear only once.';
-  sYYOrYYYYOnlyOnce = '''yy'' or ''yyyy'' should appear only once.';
-  sOnlyDOrDDAllowed = 'Only ''d'' or ''dd'' are allowed.';
-  sOnlyMOrMMAllowed = 'Only ''m'' or ''mm'' are allowed.';
-  sOnlyYYOrYYYYAllowed = 'Only ''yy'' or ''yyyy'' are allowed.';
-  sOnlyTwoSeparators = 'Only two separators are allowed.';
-  sOnlyDMYSAllowed = 'Only ''d'', ''m'', ''y'' and ''%s'' are allowed';
-  sDOrDDRequired = '''d'' or ''dd'' are required.';
-  sMOrMMRequired = '''m'' or ''mm'' are required.';
-  sYYOrYYYYRequired = '''yy'' or ''yyyy'' are required.';
-  sInstanceAlreadyExists = 'Instance already exists with another name.';
-  sNameAlreadyExistsForInstance = 'Name already exists for another instance.';
-  sInstanceNonexistent = 'Instance does not exist.';
-  sMethodAlreadyExists = 'Method already exists with another name.';
-  sNameAlreadyExistsForMethod = 'Name already exists for another method.';
-  sNamedInstanceNonexistent = 'Instance named ''%s'' does not exist.';
-  sMethodNonexistent = 'Method does not exist.';
-  sNamedMethodNonexistent = 'Method named ''%s'' does not exist.';
-  sNotSeparately = '%s cannot be created separately.';
-  sNoNewInstance = '%s does not allow a new instance to be created.';
+  RsEInspectorInternalError = 'Internal error: two data instances pointing to the same data are registered.';
+  RsESpecifierBeforeSeparator = 'A specifier should be placed before and after a separator.';
+  RsEDOrDDOnlyOnce = '''d'' or ''dd'' should appear only once.';
+  RsEMOrMMOnlyOnce = '''m'' or ''mm'' should appear only once.';
+  RsEYYOrYYYYOnlyOnce = '''yy'' or ''yyyy'' should appear only once.';
+  RsEOnlyDOrDDAllowed = 'Only ''d'' or ''dd'' are allowed.';
+  RsEOnlyMOrMMAllowed = 'Only ''m'' or ''mm'' are allowed.';
+  RsEOnlyYYOrYYYYAllowed = 'Only ''yy'' or ''yyyy'' are allowed.';
+  RsEOnlyTwoSeparators = 'Only two separators are allowed.';
+  RsEOnlyDMYSAllowed = 'Only ''d'', ''m'', ''y'' and ''%s'' are allowed';
+  RsEDOrDDRequired = '''d'' or ''dd'' are required.';
+  RsEMOrMMRequired = '''m'' or ''mm'' are required.';
+  RsEYYOrYYYYRequired = '''yy'' or ''yyyy'' are required.';
+  RsEInstanceAlreadyExists = 'Instance already exists with another name.';
+  RsENameAlreadyExistsForInstance = 'Name already exists for another instance.';
+  RsEInstanceNonexistent = 'Instance does not exist.';
+  RsEMethodAlreadyExists = 'Method already exists with another name.';
+  RsENameAlreadyExistsForMethod = 'Name already exists for another method.';
+  RsENamedInstanceNonexistent = 'Instance named ''%s'' does not exist.';
+  RsEMethodNonexistent = 'Method does not exist.';
+  RsENamedMethodNonexistent = 'Method named ''%s'' does not exist.';
+  RsENotSeparately = '%s cannot be created separately.';
+  RsENoNewInstance = '%s does not allow a new instance to be created.';
 
-  sStringListEditorCaption = 'String list editor';
-  sButtonOKCaption = '&OK';
-  sButtonCancelCaption = 'Cancel';
-  sXLinesCaption = ' lines';
-  sOneLineCaption = '1 line';
+  RsJvInspItemValueException = 'Exception ';
+  RsJvInspItemUnInitialized = '(uninitialized)';
+  RsJvInspItemUnassigned = '(unassigned)';
+  RsJvInspItemNoValue = '(no value)';
+
+  RsStringListEditorCaption = 'String list editor';
+  RsButtonOKCaption = '&OK';
+  RsButtonCancelCaption = 'Cancel';
+  RsXLinesCaption = ' lines';
+  RsOneLineCaption = '1 line';
 
   // (rom) converted assertions
-  sJvAssertSetTopIndex = 'TJvCustomInspector.SetTopIndex: unexpected MaxIdx <= -1';
-  sJvAssertInspectorPainter = 'TJvInspectorCustomCompoundItem.DivideRect: unexpected Inspector.Painter = nil';
-  sJvAssertDataParent = 'TJvInspectorSetMemberData.New: unexpected ADataParent = nil';
-  sJvAssertParent = 'TJvInspectorSetMemberData.New: unexpected AParent = nil';
-  sJvAssertPropInfo = 'TJvInspectorPropData.New: unexpected PropInfo = nil';
-  sJvAssertINIFile = 'TJvInspectorINIFileData.New: unexpected AINIFile = nil';
+  RsEJvAssertSetTopIndex = 'TJvCustomInspector.SetTopIndex: unexpected MaxIdx <= -1';
+  RsEJvAssertInspectorPainter = 'TJvInspectorCustomCompoundItem.DivideRect: unexpected Inspector.Painter = nil';
+  RsEJvAssertDataParent = 'TJvInspectorSetMemberData.New: unexpected ADataParent = nil';
+  RsEJvAssertParent = 'TJvInspectorSetMemberData.New: unexpected AParent = nil';
+  RsEJvAssertPropInfo = 'TJvInspectorPropData.New: unexpected PropInfo = nil';
+  RsEJvAssertINIFile = 'TJvInspectorINIFileData.New: unexpected AINIFile = nil';
 
 //=== JvInspXVCL.pas =========================================================
 resourcestring
-  SNoNodeSpecified = 'TJvInspectorxNodeData.New: No node specified';
+  RsENoNodeSpecified = 'TJvInspectorxNodeData.New: No node specified';
 
 //=== JvInstallLabel.pas =====================================================
 resourcestring

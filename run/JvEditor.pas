@@ -5810,7 +5810,7 @@ end;
 
 procedure RedoNotImplemented;
 begin
-  raise EJvEditorError.Create(SRedoNotYetImplemented);
+  raise EJvEditorError.Create(RsERedoNotYetImplemented);
 end;
 
 procedure TUndoBuffer.Add(AUndo: TUndo);
@@ -6572,7 +6572,7 @@ begin
                 NewCaret := Pos(FCaretChar, NewString) - 1;
               end;
           else
-            raise EJvEditorError.Create(sInvalidCompletionMode);
+            raise EJvEditorError.Create(RsEInvalidCompletionMode);
           end;
           {--- UNDO ---}
           TJvReplaceUndo.Create(FJvEditor, FCaretX, FCaretY, iBegSX - 1, FCaretY, W, S);

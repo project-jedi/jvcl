@@ -2086,7 +2086,7 @@ begin
   if I > -1 then
   begin
     if Items[I] <> Instance then
-      raise EJvInspectorData.Create(sInspectorInternalError);
+      raise EJvInspectorData.Create(RsEInspectorInternalError);
     if I < High(FInstanceList) then
       Move(FInstanceList[I + 1], FInstanceList[I], (Length(FInstanceList) - I) * SizeOf(TJvCustomInspectorData));
     SetLength(FInstanceList, High(FInstanceList));
@@ -3168,7 +3168,7 @@ begin
     if Value <> nil then
     begin
       if (Value.Inspector <> nil) and (Value.Inspector <> Self) then
-        raise EJvInspector.Create(sJvInspPaintOnlyUsedOnce);
+        raise EJvInspector.Create(RsEJvInspPaintOnlyUsedOnce);
     end;
     if Painter <> nil then
     begin
@@ -3270,7 +3270,7 @@ begin
     while (MaxIdx > -1) and (Integer(BandStarts[MaxIdx]) > Value) do
       Dec(MaxIdx);
     if MaxIdx <= -1 then
-      raise EJvInspector.Create(sJvAssertSetTopIndex);
+      raise EJvInspector.Create(RsEJvAssertSetTopIndex);
     Value := Integer(BandStarts[MaxIdx]);
   end;
   if TopIndex <> Value then
@@ -4137,11 +4137,11 @@ end;
 procedure TJvInspectorPainter.SetInspector(const AInspector: TJvCustomInspector);
 begin
   if (AInspector <> nil) and (AInspector.Painter <> Self) then
-    raise EJvInspector.Create(sJvInspPaintNotActive);
+    raise EJvInspector.Create(RsEJvInspPaintNotActive);
   if AInspector <> Inspector then
   begin
     if (Inspector <> nil) and (AInspector <> nil) then
-      raise EJvInspector.Create(sJvInspPaintOnlyUsedOnce);
+      raise EJvInspector.Create(RsEJvInspPaintOnlyUsedOnce);
     FInspector := AInspector;
   end;
 end;
@@ -5734,7 +5734,7 @@ begin
     if Parent = nil then
       FParent := Value
     else
-      raise EJvInspectorItem.Create(sJvInspItemHasParent);
+      raise EJvInspectorItem.Create(RsEJvInspItemHasParent);
 end;
 
 procedure TJvCustomInspectorItem.SetQualifiedNames(const Value: Boolean);
@@ -6068,21 +6068,21 @@ var
   SafeColor: TColor;
 begin
   if Data = nil then
-    S := sJvInspItemUnInitialized
+    S := RsJvInspItemUnInitialized
   else
   try
     if not Data.IsInitialized then
-      S := sJvInspItemUnInitialized
+      S := RsJvInspItemUnInitialized
     else
     if not Data.HasValue then
-      S := sJvInspItemNoValue
+      S := RsJvInspItemNoValue
     else
     if not Data.IsAssigned then
-      S := sJvInspItemUnassigned
+      S := RsJvInspItemUnassigned
     else
       S := DisplayValue;
   except
-    S := sJvInspItemValueException + ExceptObject.ClassName + ': ' +
+    S := RsJvInspItemValueException + ExceptObject.ClassName + ': ' +
       Exception(ExceptObject).Message;
   end;
   ARect := Rects[iprValue];
@@ -6416,7 +6416,7 @@ begin
   if Item <> Value then
   begin
     if (Value <> nil) and (Value.Parent <> Parent) then
-      raise EJvInspectorItem.Create(sJvInspItemNotAChild);
+      raise EJvInspectorItem.Create(RsEJvInspItemNotAChild);
     if Item <> nil then
       Parent.Add(Item);
     FItem := Value;
@@ -6480,7 +6480,7 @@ begin
   if Idx > -1 then
     DeleteColumnPrim(Idx)
   else
-    raise EJvInspectorItem.Create(sJvInspItemColNotFound);
+    raise EJvInspectorItem.Create(RsEJvInspItemColNotFound);
 end;
 
 procedure TJvInspectorCustomCompoundItem.DeleteColumnPrim(const Index: Integer);
@@ -6498,7 +6498,7 @@ begin
   if Idx > -1 then
     DeleteColumnPrim(Idx)
   else
-    raise EJvInspectorItem.Create(sJvInspItemItemIsNotCol);
+    raise EJvInspectorItem.Create(RsEJvInspItemItemIsNotCol);
 end;
 
 procedure TJvInspectorCustomCompoundItem.DivideRect(const RectKind: TInspectorPaintRect; const Value: TRect);
@@ -6513,7 +6513,7 @@ var
   SaveItem: TJvCustomInspectorItem;
 begin
   if Inspector.Painter = nil then
-    raise EJvInspectorItem.Create(sJvAssertInspectorPainter);
+    raise EJvInspectorItem.Create(RsEJvAssertInspectorPainter);
   VisibleColCount := 0;
   for I := 0 to ColumnCount - 1 do
     if Columns[I].Width > 0 then
@@ -7055,7 +7055,7 @@ begin
     if (OrdVal >= 0) and (Length(GetEnumName(Data.TypeInfo, OrdVal)) > 0) then
       Data.AsOrdinal := OrdVal
     else
-      raise EJvInspectorItem.CreateFmt(sJvInspItemInvalidPropValue, [AnsiQuotedStr(Value, '''')]);
+      raise EJvInspectorItem.CreateFmt(RsEJvInspItemInvalidPropValue, [AnsiQuotedStr(Value, '''')]);
   end;
 end;
 
@@ -7111,19 +7111,19 @@ end;
 function TJvInspectorSetMemberData.GetAsFloat: Extended;
 begin
   CheckReadAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorFloat]);
+  raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorFloat]);
 end;
 
 function TJvInspectorSetMemberData.GetAsInt64: Int64;
 begin
   CheckReadAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorInt64]);
+  raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorInt64]);
 end;
 
 function TJvInspectorSetMemberData.GetAsMethod: TMethod;
 begin
   CheckReadAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorTMethod]);
+  raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorTMethod]);
 end;
 
 function TJvInspectorSetMemberData.GetAsOrdinal: Int64;
@@ -7138,7 +7138,7 @@ end;
 function TJvInspectorSetMemberData.GetAsString: string;
 begin
   CheckReadAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorString]);
+  raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorString]);
 end;
 
 function TJvInspectorSetMemberData.IsEqualReference(const Ref: TJvCustomInspectorData): Boolean;
@@ -7157,19 +7157,19 @@ end;
 procedure TJvInspectorSetMemberData.SetAsFloat(const Value: Extended);
 begin
   CheckWriteAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorFloat]);
+  raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorFloat]);
 end;
 
 procedure TJvInspectorSetMemberData.SetAsInt64(const Value: Int64);
 begin
   CheckWriteAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorInt64]);
+  raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorInt64]);
 end;
 
 procedure TJvInspectorSetMemberData.SetAsMethod(const Value: TMethod);
 begin
   CheckWriteAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorTMethod]);
+  raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorTMethod]);
 end;
 
 procedure TJvInspectorSetMemberData.SetAsOrdinal(const Value: Int64);
@@ -7188,13 +7188,13 @@ end;
 procedure TJvInspectorSetMemberData.SetAsString(const Value: string);
 begin
   CheckWriteAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorString]);
+  raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorString]);
 end;
 
 procedure TJvInspectorSetMemberData.GetAsSet(var Buf);
 begin
   CheckReadAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorSet]);
+  raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorSet]);
 end;
 
 function TJvInspectorSetMemberData.HasValue: Boolean;
@@ -7219,9 +7219,9 @@ var
   Data: TJvInspectorSetMemberData;
 begin
   if ADataParent = nil then
-    raise EJvInspectorData.Create(sJvAssertDataParent);
+    raise EJvInspectorData.Create(RsEJvAssertDataParent);
   if AParent = nil then
-    raise EJvInspectorData.Create(sJvAssertParent);
+    raise EJvInspectorData.Create(RsEJvAssertParent);
   BaseInfo := ((JclTypeInfo(ADataParent.TypeInfo) as IJclSetTypeInfo).
     BaseType as IJclOrdinalRangeTypeInfo);
   if BaseInfo.TypeKind = tkEnumeration then
@@ -7240,7 +7240,7 @@ end;
 procedure TJvInspectorSetMemberData.SetAsSet(const Buf);
 begin
   CheckWriteAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorSet]);
+  raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorSet]);
 end;
 
 //=== TJvInspectorSetItem ====================================================
@@ -7574,7 +7574,7 @@ begin
       if I > -1 then
         Data.AsOrdinal := Integer(SL.Objects[I])
       else
-        raise EJvInspectorItem.CreateFmt(sJvInspItemInvalidPropValue,
+        raise EJvInspectorItem.CreateFmt(RsEJvInspItemInvalidPropValue,
           [AnsiQuotedStr(Value, '''')]);
     finally
       SL.Free;
@@ -8107,31 +8107,31 @@ begin
       'd':
         begin
           if (DCount = 0) and (I > 1) and (Value[I - 1] <> DateSeparator) then
-            raise EJvInspectorData.Create(sSpecifierBeforeSeparator);
+            raise EJvInspectorData.Create(RsESpecifierBeforeSeparator);
           if (DCount = 1) and (Value[I - 1] <> 'd') then
-            raise EJvInspectorData.Create(sDOrDDOnlyOnce);
+            raise EJvInspectorData.Create(RsEDOrDDOnlyOnce);
           if (DCount = 2) then
-            raise EJvInspectorData.Create(sOnlyDOrDDAllowed);
+            raise EJvInspectorData.Create(RsEOnlyDOrDDAllowed);
           Inc(DCount);
         end;
       'm':
         begin
           if (MCount = 0) and (I > 1) and (Value[I - 1] <> DateSeparator) then
-            raise EJvInspectorData.Create(sSpecifierBeforeSeparator);
+            raise EJvInspectorData.Create(RsESpecifierBeforeSeparator);
           if (MCount = 1) and (Value[I - 1] <> 'm') then
-            raise EJvInspectorData.Create(sMOrMMOnlyOnce);
+            raise EJvInspectorData.Create(RsEMOrMMOnlyOnce);
           if (MCount = 2) then
-            raise EJvInspectorData.Create(sOnlyMOrMMAllowed);
+            raise EJvInspectorData.Create(RsEOnlyMOrMMAllowed);
           Inc(MCount);
         end;
       'y':
         begin
           if (MCount = 0) and (I > 1) and (Value[I - 1] <> DateSeparator) then
-            raise EJvInspectorData.Create(sSpecifierBeforeSeparator);
+            raise EJvInspectorData.Create(RsESpecifierBeforeSeparator);
           if (YCount > 1) and (YCount < 4) and (Value[I - 1] <> 'y') then
-            raise EJvInspectorData.Create(sYYOrYYYYOnlyOnce);
+            raise EJvInspectorData.Create(RsEYYOrYYYYOnlyOnce);
           if (YCount = 4) then
-            raise EJvInspectorData.Create(sOnlyYYOrYYYYAllowed);
+            raise EJvInspectorData.Create(RsEOnlyYYOrYYYYAllowed);
           Inc(YCount);
         end;
     else
@@ -8139,24 +8139,24 @@ begin
       begin
         if ((SepCount = 0) and (I = 1)) or
           ((SepCount = 1) and ((Value[I - 1]) = DateSeparator) or (I = Length(Value))) then
-          raise EJvInspectorData.Create(sSpecifierBeforeSeparator);
+          raise EJvInspectorData.Create(RsESpecifierBeforeSeparator);
         if SepCount = 2 then
-          raise EJvInspectorData.Create(sOnlyTwoSeparators);
+          raise EJvInspectorData.Create(RsEOnlyTwoSeparators);
         Inc(SepCount);
       end
       else
-        raise EJvInspectorData.CreateFmt(sOnlyDMYSAllowed, [DateSeparator]);
+        raise EJvInspectorData.CreateFmt(RsEOnlyDMYSAllowed, [DateSeparator]);
     end;
     Inc(I);
   end;
   if DCount = 0 then
-    raise EJvInspectorData.Create(sDOrDDRequired);
+    raise EJvInspectorData.Create(RsEDOrDDRequired);
   if MCount = 0 then
-    raise EJvInspectorData.Create(sMOrMMRequired);
+    raise EJvInspectorData.Create(RsEMOrMMRequired);
   if YCount = 0 then
-    raise EJvInspectorData.Create(sYYOrYYYYRequired);
+    raise EJvInspectorData.Create(RsEYYOrYYYYRequired);
   if (YCount = 1) or (YCount = 3) then
-    raise EJvInspectorData.Create(sOnlyYYOrYYYYAllowed);
+    raise EJvInspectorData.Create(RsEOnlyYYOrYYYYAllowed);
   if Value <> FFormat then
   begin
     WasEditing := Editing;
@@ -8292,7 +8292,7 @@ type
 constructor TSLEditorForm.CreateNew(AOwner: TComponent);
 begin
   inherited CreateNew(AOwner);
-  Caption := sStringListEditorCaption;
+  Caption := RsStringListEditorCaption;
   Width := 435;
   Height := 305;
   BorderIcons := [biSystemMenu];
@@ -8327,7 +8327,7 @@ begin
   btnOK.Parent := Self;
   btnOK.ModalResult := mrOK;
   btnOK.Default := True;
-  btnOK.Caption := sButtonOKCaption;
+  btnOK.Caption := RsButtonOKCaption;
   btnOK.Left := ClientWidth - 15 - 2 * btnOK.Width;
   btnOK.Top := ClientHeight - 5 - btnOK.Height;
   btnOK.Anchors := [akRight, akBottom];
@@ -8335,7 +8335,7 @@ begin
   btnCancel.Parent := Self;
   btnCancel.ModalResult := mrCancel;
   btnCancel.Cancel := True;
-  btnCancel.Caption := sButtonCancelCaption;
+  btnCancel.Caption := RsButtonCancelCaption;
   btnCancel.Left := ClientWidth - 10 - btnCancel.Width;
   btnCancel.Top := ClientHeight - 5 - btnCancel.Height;
   btnCancel.Anchors := [akRight, akBottom];
@@ -8349,9 +8349,9 @@ var
 begin
   I := mm.Lines.Count;
   if I <> 1 then
-    lbl.Caption := IntToStr(I) + sXLinesCaption
+    lbl.Caption := IntToStr(I) + RsXLinesCaption
   else
-    lbl.Caption := sOneLineCaption;
+    lbl.Caption := RsOneLineCaption;
   if Assigned(OnContentsChanged) then
     OnContentsChanged(Sender);
 end;
@@ -8680,9 +8680,9 @@ begin
   IdxInst := IndexOfInstance(Instance);
   IdxName := IndexOfInstance(InstanceName);
   if (IdxInst <> -1) and (IdxInst <> IdxName) then
-    raise EJvInspectorItem.Create(sInstanceAlreadyExists);
+    raise EJvInspectorItem.Create(RsEInstanceAlreadyExists);
   if (IdxName <> -1) and (IdxInst <> IdxName) then
-    raise EJvInspectorItem.Create(sNameAlreadyExistsForInstance);
+    raise EJvInspectorItem.Create(RsENameAlreadyExistsForInstance);
   if IdxInst = -1 then
   begin
     IdxInst := FList.AddObject(InstanceName, TInstanceItem.Create);
@@ -8701,14 +8701,14 @@ var
 begin
   InstIdx := IndexOfInstance(Instance);
   if InstIdx = -1 then
-    raise EJvInspectorItem.Create(sInstanceNonexistent);
+    raise EJvInspectorItem.Create(RsEInstanceNonexistent);
   InstItem := TInstanceItem(FList.Objects[InstIdx]);
   MethodIdx := InstItem.IndexOf(MethodAddr);
   MethodNameIdx := InstItem.IndexOf(MethodName);
   if (MethodIdx <> -1) and (MethodNameIdx <> MethodIdx) then
-    raise EJvInspectorItem.Create(sMethodAlreadyExists);
+    raise EJvInspectorItem.Create(RsEMethodAlreadyExists);
   if (MethodNameIdx <> -1) and (MethodNameIdx <> MethodIdx) then
-    raise EJvInspectorItem.Create(sNameAlreadyExistsForMethod);
+    raise EJvInspectorItem.Create(RsENameAlreadyExistsForMethod);
   if MethodIdx = -1 then
     InstItem.AddMethod(MethodName, MethodAddr);
 end;
@@ -8927,7 +8927,7 @@ begin
   if Idx > -1 then
     DeleteInstance(Idx)
   else
-    raise EJvInspectorItem.Create(sInstanceNonexistent);
+    raise EJvInspectorItem.Create(RsEInstanceNonexistent);
 end;
 
 procedure TJvInspectorTMethodItem.DeleteInstance(const InstanceName: string);
@@ -8938,7 +8938,7 @@ begin
   if Idx > -1 then
     DeleteInstance(Idx)
   else
-    raise EJvInspectorItem.CreateFmt(sNamedInstanceNonexistent, [InstanceName]);
+    raise EJvInspectorItem.CreateFmt(RsENamedInstanceNonexistent, [InstanceName]);
 end;
 
 procedure TJvInspectorTMethodItem.DeleteMethod(const Method: TMethod);
@@ -8955,10 +8955,10 @@ begin
     if MethodIdx > -1 then
       InstItem.DeleteMethod(MethodIdx)
     else
-      raise EJvInspectorItem.Create(sMethodNonexistent);
+      raise EJvInspectorItem.Create(RsEMethodNonexistent);
   end
   else
-    raise EJvInspectorItem.Create(sInstanceNonexistent);
+    raise EJvInspectorItem.Create(RsEInstanceNonexistent);
 end;
 
 procedure TJvInspectorTMethodItem.DeleteMethod(const InstanceIndex: Integer; const Index: Integer);
@@ -8974,7 +8974,7 @@ begin
   if InstIdx > -1 then
     DeleteMethod(InstIdx, Index)
   else
-    raise EJvInspectorItem.Create(sInstanceNonexistent);
+    raise EJvInspectorItem.Create(RsEInstanceNonexistent);
 end;
 
 procedure TJvInspectorTMethodItem.DeleteMethod(const InstanceName: string; const Index: Integer);
@@ -8985,7 +8985,7 @@ begin
   if InstIdx > -1 then
     DeleteMethod(InstIdx, Index)
   else
-    raise EJvInspectorItem.CreateFmt(sNamedInstanceNonexistent, [InstanceName]);
+    raise EJvInspectorItem.CreateFmt(RsENamedInstanceNonexistent, [InstanceName]);
 end;
 
 procedure TJvInspectorTMethodItem.DeleteMethod(const InstanceIndex: Integer; const MethodName: string);
@@ -8996,7 +8996,7 @@ begin
   if MethodIdx > -1 then
     DeleteMethod(InstanceIndex, MethodIdx)
   else
-    raise EJvInspectorItem.CreateFmt(sNamedMethodNonexistent, [MethodName]);
+    raise EJvInspectorItem.CreateFmt(RsENamedMethodNonexistent, [MethodName]);
 end;
 
 procedure TJvInspectorTMethodItem.DeleteMethod(const Instance: TObject; const MethodName: string);
@@ -9007,7 +9007,7 @@ begin
   if InstIdx > -1 then
     DeleteMethod(InstIdx, MethodName)
   else
-    raise EJvInspectorItem.Create(sInstanceNonexistent);
+    raise EJvInspectorItem.Create(RsEInstanceNonexistent);
 end;
 
 procedure TJvInspectorTMethodItem.DeleteMethod(const InstanceName: string; const MethodName: string);
@@ -9018,7 +9018,7 @@ begin
   if InstIdx > -1 then
     DeleteMethod(InstIdx, MethodName)
   else
-    raise EJvInspectorItem.CreateFmt(sNamedInstanceNonexistent, [InstanceName]);
+    raise EJvInspectorItem.CreateFmt(RsENamedInstanceNonexistent, [InstanceName]);
 end;
 
 procedure TJvInspectorTMethodItem.ClearInstances;
@@ -9042,7 +9042,7 @@ begin
   if InstIdx > -1 then
     ClearMethods(InstIdx)
   else
-    raise EJvInspectorItem.Create(sInstanceNonexistent);
+    raise EJvInspectorItem.Create(RsEInstanceNonexistent);
 end;
 
 procedure TJvInspectorTMethodItem.ClearMethods(const InstanceName: string);
@@ -9053,7 +9053,7 @@ begin
   if InstIdx > -1 then
     ClearMethods(InstIdx)
   else
-    raise EJvInspectorItem.CreateFmt(sNamedInstanceNonexistent, [InstanceName]);
+    raise EJvInspectorItem.CreateFmt(RsENamedInstanceNonexistent, [InstanceName]);
 end;
 
 function TJvInspectorTMethodItem.IndexOfInstance(const Instance: TObject): Integer;
@@ -9109,19 +9109,19 @@ end;
 procedure TJvCustomInspectorData.CheckReadAccess;
 begin
   if not IsInitialized then
-    raise EJvInspectorData.Create(sJvInspDataNotInit);
+    raise EJvInspectorData.Create(RsEJvInspDataNotInit);
   if not IsAssigned then
-    raise EJvInspectorData.Create(sJvInspDataNotAssigned);
+    raise EJvInspectorData.Create(RsEJvInspDataNotAssigned);
   if not HasValue then
-    raise EJvInspectorData.Create(sJvInspDataNoValue);
+    raise EJvInspectorData.Create(RsEJvInspDataNoValue);
 end;
 
 procedure TJvCustomInspectorData.CheckWriteAccess;
 begin
   if not IsInitialized then
-    raise EJvInspectorData.Create(sJvInspDataNotInit);
+    raise EJvInspectorData.Create(RsEJvInspDataNotInit);
   if not HasValue then
-    raise EJvInspectorData.Create(sJvInspDataNoValue);
+    raise EJvInspectorData.Create(RsEJvInspDataNoValue);
 end;
 
 procedure TJvCustomInspectorData.DoDataChanged;
@@ -9275,7 +9275,7 @@ end;
 
 constructor TJvCustomInspectorData.Create;
 begin
-  raise EJvInspectorData.CreateFmt(sNotSeparately, [ClassName]);
+  raise EJvInspectorData.CreateFmt(RsENotSeparately, [ClassName]);
 end;
 
 procedure TJvCustomInspectorData.BeforeDestruction;
@@ -9298,7 +9298,7 @@ end;
 
 class function TJvCustomInspectorData.New: TJvCustomInspectorData;
 begin
-  raise EJvInspectorData.CreateFmt(sNoNewInstance, [ClassName]);
+  raise EJvInspectorData.CreateFmt(RsENoNewInstance, [ClassName]);
 end;
 
 function TJvCustomInspectorData.NewItem(
@@ -9354,7 +9354,7 @@ begin
       Result := 0;
     end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorFloat]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorFloat]);
 end;
 
 function TJvInspectorVarData.GetAsInt64: Int64;
@@ -9363,7 +9363,7 @@ begin
   if TypeInfo.Kind = tkInt64 then
     Result := PInt64(Address)^
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorInt64]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorInt64]);
 end;
 
 function TJvInspectorVarData.GetAsMethod: TMethod;
@@ -9372,7 +9372,7 @@ begin
   if TypeInfo.Kind = tkMethod then
     Result := PMethod(Address)^
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorTMethod]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorTMethod]);
 end;
 
 function TJvInspectorVarData.GetAsOrdinal: Int64;
@@ -9401,7 +9401,7 @@ begin
   if TypeInfo.Kind = tkClass then
     Result := PLongword(Address)^
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
 end;
 
 function TJvInspectorVarData.GetAsString: string;
@@ -9421,7 +9421,7 @@ begin
     end;
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorString]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorString]);
 end;
 
 function TJvInspectorVarData.IsEqualReference(const Ref: TJvCustomInspectorData): Boolean;
@@ -9459,7 +9459,7 @@ begin
     Invalidate;
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorFloat]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorFloat]);
 end;
 
 procedure TJvInspectorVarData.SetAsInt64(const Value: Int64);
@@ -9476,7 +9476,7 @@ begin
     Invalidate;
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorInt64]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorInt64]);
 end;
 
 procedure TJvInspectorVarData.SetAsMethod(const Value: TMethod);
@@ -9485,7 +9485,7 @@ begin
   if TypeInfo.Kind = tkMethod then
     PMethod(Address)^ := Value
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorTMethod]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorTMethod]);
   InvalidateData;
   Invalidate;
 end;
@@ -9553,7 +9553,7 @@ begin
   if TypeInfo.Kind = tkClass then
     PLongword(Address)^ := Value
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
   InvalidateData;
   Invalidate;
 end;
@@ -9572,13 +9572,13 @@ begin
         if Length(Value) < GetTypeData(TypeInfo).MaxLength then
           PShortString(Address)^ := Value
         else
-          raise EJvInspectorData.Create(sJVInspDataStrTooLong);
+          raise EJvInspectorData.Create(RsEJVInspDataStrTooLong);
     end;
     InvalidateData;
     Invalidate;
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorString]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorString]);
 end;
 
 function TJvInspectorVarData.SupportsMethodPointers: Boolean;
@@ -9603,7 +9603,7 @@ begin
     Move(PChar(Address)[0], Buf, ResBytes);
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorSet]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorSet]);
 end;
 
 function TJvInspectorVarData.HasValue: Boolean;
@@ -9669,7 +9669,7 @@ begin
     Invalidate;
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorSet]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorSet]);
 end;
 
 //=== TJvInspectorPropData ===================================================
@@ -9680,7 +9680,7 @@ begin
   if Prop.PropType^.Kind = tkFloat then
     Result := GetFloatProp(Instance, Prop)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorFloat]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorFloat]);
 end;
 
 function TJvInspectorPropData.GetAsInt64: Int64;
@@ -9689,7 +9689,7 @@ begin
   if Prop.PropType^.Kind = tkInt64 then
     Result := GetInt64Prop(Instance, Prop)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorInt64]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorInt64]);
 end;
 
 function TJvInspectorPropData.GetAsMethod: TMethod;
@@ -9698,7 +9698,7 @@ begin
   if Prop.PropType^.Kind = tkMethod then
     Result := GetMethodProp(Instance, Prop)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorTMethod]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorTMethod]);
 end;
 
 function TJvInspectorPropData.GetAsOrdinal: Int64;
@@ -9713,7 +9713,7 @@ begin
       Result := GetOrdProp(Instance, Prop);
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
 end;
 
 function TJvInspectorPropData.GetAsString: string;
@@ -9722,7 +9722,7 @@ begin
   if Prop.PropType^.Kind in [tkString, tkLString, tkWString] then
     Result := GetStrProp(Instance, Prop)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorString]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorString]);
 end;
 
 function TJvInspectorPropData.GetInstance: TObject;
@@ -9754,7 +9754,7 @@ begin
   if Prop.PropType^.Kind = tkFloat then
     SetFloatProp(Instance, Prop, Value)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorFloat]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorFloat]);
   InvalidateData;
   Invalidate;
 end;
@@ -9765,7 +9765,7 @@ begin
   if Prop.PropType^.Kind = tkInt64 then
     SetInt64Prop(Instance, Prop, Value)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorInt64]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorInt64]);
   InvalidateData;
   Invalidate;
 end;
@@ -9776,7 +9776,7 @@ begin
   if Prop.PropType^.Kind = tkMethod then
     SetMethodProp(Instance, Prop, Value)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorTMethod]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorTMethod]);
   InvalidateData;
   Invalidate;
 end;
@@ -9793,7 +9793,7 @@ begin
       SetOrdProp(Instance, Prop, Value);
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
   InvalidateData;
   Invalidate;
 end;
@@ -9804,7 +9804,7 @@ begin
   if Prop.PropType^.Kind in [tkString, tkLString, tkWString] then
     SetStrProp(Instance, Prop, Value)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorString]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorString]);
   InvalidateData;
   Invalidate;
 end;
@@ -9877,7 +9877,7 @@ var
   Data: TJvInspectorPropData;
 begin
   if PropInfo = nil then
-    raise EJvInspectorData.Create(sJvAssertPropInfo);
+    raise EJvInspectorData.Create(RsEJvAssertPropInfo);
   Data := CreatePrim(PropInfo.Name, PropInfo.PropType^);
   Data.Instance := AInstance;
   Data.Prop := PropInfo;
@@ -9972,7 +9972,7 @@ begin
   if Assigned(FOnGetAsFloat) then
     OnGetAsFloat(Self, Result)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorFloat]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorFloat]);
 end;
 
 function TJvInspectorEventData.DoGetAsInt64: Int64;
@@ -9980,7 +9980,7 @@ begin
   if Assigned(FOnGetAsInt64) then
     OnGetAsInt64(Self, Result)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorInt64]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorInt64]);
 end;
 
 function TJvInspectorEventData.DoGetAsMethod: TMethod;
@@ -9988,7 +9988,7 @@ begin
   if Assigned(FOnGetAsMethod) then
     OnGetAsMethod(Self, Result)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorTMethod]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorTMethod]);
 end;
 
 function TJvInspectorEventData.DoGetAsOrdinal: Int64;
@@ -9996,7 +9996,7 @@ begin
   if Assigned(FOnGetAsOrdinal) then
     OnGetAsOrdinal(Self, Result)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
 end;
 
 function TJvInspectorEventData.DoGetAsString: string;
@@ -10004,7 +10004,7 @@ begin
   if Assigned(FOnGetAsString) then
     OnGetAsString(Self, Result)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorString]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorString]);
 end;
 
 procedure TJvInspectorEventData.DoGetAsSet(out Buf; var BufSize: Integer);
@@ -10012,7 +10012,7 @@ begin
   if Assigned(FOnGetAsSet) then
     OnGetAsSet(Self, Buf, BufSize)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorSet]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorSet]);
 end;
 
 procedure TJvInspectorEventData.DoSetAsFloat(Value: Extended);
@@ -10020,7 +10020,7 @@ begin
   if Assigned(FOnSetAsFloat) then
     OnSetAsFloat(Self, Value)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorFloat]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorFloat]);
 end;
 
 procedure TJvInspectorEventData.DoSetAsInt64(Value: Int64);
@@ -10028,7 +10028,7 @@ begin
   if Assigned(FOnSetAsInt64) then
     OnSetAsInt64(Self, Value)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorInt64]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorInt64]);
 end;
 
 procedure TJvInspectorEventData.DoSetAsMethod(Value: TMethod);
@@ -10036,7 +10036,7 @@ begin
   if Assigned(FOnSetAsMethod) then
     OnSetAsMethod(Self, Value)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorTMethod]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorTMethod]);
 end;
 
 procedure TJvInspectorEventData.DoSetAsOrdinal(Value: Int64);
@@ -10044,7 +10044,7 @@ begin
   if Assigned(FOnSetAsOrdinal) then
     OnSetAsOrdinal(Self, Value)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
 end;
 
 procedure TJvInspectorEventData.DoSetAsString(Value: string);
@@ -10052,7 +10052,7 @@ begin
   if Assigned(FOnSetAsString) then
     OnSetAsString(Self, Value)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorString]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorString]);
 end;
 
 function TJvInspectorEventData.DoSupportsMethodPointers: Boolean;
@@ -10070,7 +10070,7 @@ begin
   if Assigned(FOnSetAsSet) then
     OnSetAsSet(Self, TmpBuf[0], BufSize)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorSet]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorSet]);
 end;
 
 function TJvInspectorEventData.GetAsFloat: Extended;
@@ -10079,7 +10079,7 @@ begin
   if TypeInfo.Kind = tkFloat then
     Result := DoGetAsFloat
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorFloat]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorFloat]);
 end;
 
 function TJvInspectorEventData.GetAsInt64: Int64;
@@ -10088,7 +10088,7 @@ begin
   if TypeInfo.Kind = tkInt64 then
     Result := DoGetAsInt64
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorInt64]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorInt64]);
 end;
 
 function TJvInspectorEventData.GetAsMethod: TMethod;
@@ -10097,7 +10097,7 @@ begin
   if TypeInfo.Kind = tkMethod then
     Result := DoGetAsMethod
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorTMethod]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorTMethod]);
 end;
 
 function TJvInspectorEventData.GetAsOrdinal: Int64;
@@ -10126,7 +10126,7 @@ begin
   if TypeInfo.Kind = tkClass then
     Result := Longword(DoGetAsOrdinal)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
 end;
 
 function TJvInspectorEventData.GetAsString: string;
@@ -10135,7 +10135,7 @@ begin
   if TypeInfo.Kind in [tkString, tkLString, tkWString] then
     Result := DoGetAsString
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorString]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorString]);
 end;
 
 function TJvInspectorEventData.IsEqualReference(const Ref: TJvCustomInspectorData): Boolean;
@@ -10150,7 +10150,7 @@ begin
   if TypeInfo.Kind = tkFloat then
     DoSetAsFloat(Value)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorFloat]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorFloat]);
   InvalidateData;
   Invalidate;
 end;
@@ -10167,7 +10167,7 @@ begin
     DoSetAsInt64(Value);
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorInt64]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorInt64]);
   InvalidateData;
   Invalidate;
 end;
@@ -10178,7 +10178,7 @@ begin
   if TypeInfo.Kind = tkMethod then
     DoSetAsMethod(Value)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorTMethod]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorTMethod]);
   InvalidateData;
   Invalidate;
 end;
@@ -10222,7 +10222,7 @@ begin
   if TypeInfo.Kind = tkClass then
     DoSetAsOrdinal(Longword(Value))
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
   InvalidateData;
   Invalidate;
 end;
@@ -10241,11 +10241,11 @@ begin
         if Length(Value) < GetTypeData(TypeInfo).MaxLength then
           DoSetAsString(Value)
         else
-          raise EJvInspectorData.Create(sJVInspDataStrTooLong);
+          raise EJvInspectorData.Create(RsEJVInspDataStrTooLong);
     end;
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorString]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorString]);
   InvalidateData;
   Invalidate;
 end;
@@ -10389,7 +10389,7 @@ begin
     DoGetAsSet(Buf, ResBytes);
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorSet]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorSet]);
 end;
 
 function TJvInspectorEventData.HasValue: Boolean;
@@ -10438,7 +10438,7 @@ begin
     DoSetAsSet(Buf, ResBytes);
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorSet]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorSet]);
   InvalidateData;
   Invalidate;
 end;
@@ -10460,7 +10460,7 @@ begin
     Result := StrToFloat(Trim(StringReplace(ReadValue, ThousandSeparator, DecimalSeparator, [rfReplaceAll,
       rfIgnoreCase])))
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorFloat]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorFloat]);
 end;
 
 function TJvInspectorCustomConfData.GetAsInt64: Int64;
@@ -10469,13 +10469,13 @@ begin
   if TypeInfo.Kind = tkInt64 then
     Result := StrToInt64(ReadValue)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorInt64]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorInt64]);
 end;
 
 function TJvInspectorCustomConfData.GetAsMethod: TMethod;
 begin
   CheckReadAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorTMethod]);
+  raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorTMethod]);
 end;
 
 function TJvInspectorCustomConfData.GetAsOrdinal: Int64;
@@ -10519,7 +10519,7 @@ begin
     tkSet:
       GetAsSet(Result);
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
   end;
 end;
 
@@ -10535,7 +10535,7 @@ begin
   if TypeInfo.Kind in [tkString, tkWString, tkLString] then
     Result := ReadValue
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorString]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorString]);
 end;
 
 function TJvInspectorCustomConfData.IsEqualReference(const Ref: TJvCustomInspectorData): Boolean;
@@ -10551,7 +10551,7 @@ begin
   if TypeInfo.Kind = tkFloat then
     WriteValue(FloatToStr(Value))
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorFloat]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorFloat]);
   InvalidateData;
   Invalidate;
 end;
@@ -10562,7 +10562,7 @@ begin
   if TypeInfo.Kind = tkInt64 then
     WriteValue(IntToStr(Value))
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorInt64]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorInt64]);
   InvalidateData;
   Invalidate;
 end;
@@ -10570,7 +10570,7 @@ end;
 procedure TJvInspectorCustomConfData.SetAsMethod(const Value: TMethod);
 begin
   CheckWriteAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorTMethod]);
+  raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorTMethod]);
 end;
 
 procedure TJvInspectorCustomConfData.SetAsOrdinal(const Value: Int64);
@@ -10591,7 +10591,7 @@ begin
     tkSet:
       SetAsSet(Value);
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
   end;
   InvalidateData;
   Invalidate;
@@ -10606,12 +10606,12 @@ begin
         if Length(Value) < GetTypeData(TypeInfo).MaxLength then
           WriteValue(Value)
         else
-          raise EJvInspectorData.Create(sJVInspDataStrTooLong);
+          raise EJvInspectorData.Create(RsEJVInspDataStrTooLong);
       end;
     tkLString, tkWString:
       WriteValue(Value)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorString]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorString]);
   end;
   InvalidateData;
   Invalidate;
@@ -10641,7 +10641,7 @@ begin
   if TypeInfo.Kind = tkSet then
     JclStrToSet(TypeInfo, Buf, ReadValue)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorSet]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorSet]);
 end;
 
 function TJvInspectorCustomConfData.HasValue: Boolean;
@@ -10665,7 +10665,7 @@ begin
   if TypeInfo.Kind = tkSet then
     WriteValue(JclSetToStr(TypeInfo, Buf, True, False))
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorSet]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorSet]);
   InvalidateData;
   Invalidate;
 end;
@@ -10700,7 +10700,7 @@ var
   Data: TJvInspectorINIFileData;
 begin
   if AINIFile = nil then
-    raise EJvInspectorData.Create(sJvAssertINIFile);
+    raise EJvInspectorData.Create(RsEJvAssertINIFile);
   Data := CreatePrim(AName, ASection, AKey, ATypeInfo);
   Data.FINIFile := AINIFile;
   Data := TJvInspectorINIFileData(DataRegister.Add(Data));
@@ -10731,7 +10731,7 @@ var
 
 begin
   if AINIFile = nil then
-    raise EJvInspectorData.Create(sJvAssertINIFile);
+    raise EJvInspectorData.Create(RsEJvAssertINIFile);
   SetLength(Result, 0);
   SL := TStringList.Create;
   try
@@ -10779,7 +10779,7 @@ var
 begin
   SetLength(TmpLst, 0);
   if AINIFile = nil then
-    raise EJvInspectorData.Create(sJvAssertINIFile);
+    raise EJvInspectorData.Create(RsEJvAssertINIFile);
   SL := TStringList.Create;
   try
     AINIFile.ReadSections(SL);
@@ -11199,7 +11199,7 @@ end;
 procedure RegisterTypeKinds;
 begin
   if TJvCustomInspectorData.ItemRegister = nil then
-    raise EJvInspectorReg.Create(sJvInspNoGenReg);
+    raise EJvInspectorReg.Create(RsEJvInspNoGenReg);
   with TJvCustomInspectorData.ItemRegister do
   begin
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorStringItem, tkLString));

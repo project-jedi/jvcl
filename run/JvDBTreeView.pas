@@ -266,7 +266,7 @@ type
 implementation
 
 uses
-  JvConsts, JvDBConsts, JvResources;
+  JvResources;
 
 // (rom) moved to implementation and removed type
 // (rom) never rely on assignable consts
@@ -395,7 +395,7 @@ end;
 procedure TCustomJvDBTreeView.CheckDataSet;
 begin
   if not ValidDataSet then
-    raise EJvDBTreeViewError.Create(SDataSetNotActive);
+    raise EJvDBTreeViewError.Create(RsEDataSetNotActive);
 end;
 
 procedure TCustomJvDBTreeView.Warning(Msg: string);
@@ -424,7 +424,7 @@ begin
     RefreshChild(nil);
   end
   else
-    Warning(SMasterFieldError);
+    Warning(RsMasterFieldError);
 end;
 
 procedure TCustomJvDBTreeView.SetDetailField(Value: string);
@@ -435,7 +435,7 @@ begin
     RefreshChild(nil);
   end
   else
-    Warning(SDetailFieldError);
+    Warning(RsDetailFieldError);
 end;
 
 procedure TCustomJvDBTreeView.SetItemField(Value: string);
@@ -446,7 +446,7 @@ begin
     RefreshChild(nil);
   end
   else
-    Warning(SItemFieldError);
+    Warning(RsItemFieldError);
 end;
 
 procedure TCustomJvDBTreeView.SetIconField(Value: string);
@@ -457,7 +457,7 @@ begin
     RefreshChild(nil);
   end
   else
-    Warning(SIconFieldError);
+    Warning(RsIconFieldError);
 end;
 
 function TCustomJvDBTreeView.GetStartMasterValue: string;
@@ -528,33 +528,33 @@ procedure TCustomJvDBTreeView.LinkActive(Value: Boolean);
     begin
       if (FMasterField = '') or (FDataLink.DataSet.FindField(FMasterField) = nil) then
       begin
-        Warning(SMasterFieldEmpty);
+        Warning(RsMasterFieldEmpty);
         Exit;
       end;
       if (FDetailField = '') or (FDataLink.DataSet.FindField(FDetailField) = nil) then
       begin
-        Warning(SDetailFieldEmpty);
+        Warning(RsDetailFieldEmpty);
         Exit;
       end;
       if (FItemField = '') or (FDataLink.DataSet.FindField(FItemField) = nil) then
       begin
-        Warning(SItemFieldEmpty);
+        Warning(RsItemFieldEmpty);
         Exit;
       end;
      { if (FDataLink.DataSet.FindField(FMasterField).DataType <> FDataLink.DataSet.FindField(FDetailField).DataType) then begin
-        Warning(SMasterDetailFieldError);
+        Warning(RsMasterDetailFieldError);
         Exit;
       end; }
       if (FDataLink.DataSet.FindField(FItemField).DataType in
         [ftBytes, ftVarBytes, ftBlob, ftGraphic, ftFmtMemo, ftParadoxOle, ftDBaseOle, ftTypedBinary]) then
       begin
-        Warning(SItemFieldError);
+        Warning(RsItemFieldError);
         Exit;
       end;
       if (FIconField <> '') and not (FDataLink.DataSet.FindField(FIconField).DataType in
         [ftSmallInt, ftInteger, ftWord]) then
       begin
-        Warning(SIconFieldError);
+        Warning(RsIconFieldError);
         Exit;
       end;
     end;
@@ -766,7 +766,7 @@ var
     begin
       Result := FGetDetailValue(AMasterValue, DetailValue);
       if DetailValue = FStartMasterValue then
-        raise EJvDBTreeViewError.Create(sErrorValueForDetailValue);
+        raise EJvDBTreeViewError.Create(RsEErrorValueForDetailValue);
     end
     else
     begin
@@ -1171,7 +1171,7 @@ begin
           naAddChild:
             V := Destination.FMasterValue;
         else
-          raise EJvDBTreeViewError.Create(SMoveToModeError);
+          raise EJvDBTreeViewError.Create(RsEMoveToModeError);
         end;
         FDataLink.DataSet[FDetailField] := V;
       end;
@@ -1264,9 +1264,9 @@ procedure TCustomJvDBTreeView.KeyDown(var Key: Word; Shift: TShiftState);
     M: string;
   begin
     if Selected.HasChildren then
-      M := SDeleteNode2
+      M := RsDeleteNode2
     else
-      M := SDeleteNode;
+      M := RsDeleteNode;
     if MessageDlg(Format(M, [Selected.Text]), mtConfirmation, [mbYes, mbNo], 0) = mrYes then
       DeleteNode(Selected);
   end;

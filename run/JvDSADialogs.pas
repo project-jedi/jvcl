@@ -444,12 +444,16 @@ implementation
 uses
   Consts, Math, TypInfo,
   JclRegistry, JclSysUtils,
-  JvConsts, JvResources;
+  JvResources;
 
 {$IFNDEF DELPHI6_UP}
 type
   PBoolean = ^Boolean;
 {$ENDIF DELPHI6_UP}
+
+const
+  cDSAStateValueName = 'DSA_State'; // do not localize
+  cDSAStateLastResultName = 'LastResult'; // do not localize
 
 //--------------------------------------------------------------------------------------------------
 //  CheckMarkTexts
@@ -552,7 +556,7 @@ begin
     end
     else
     if FCountdown <> nil then
-      FCountdown.Caption := Format(sCntdwnText, [Timeout, TimeoutUnit(Timeout)]);
+      FCountdown.Caption := Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)]);
   end;
 end;
 
@@ -579,11 +583,11 @@ begin
         raise;
       end;
     finally
-      CloseClipBoard;
+      CloseClipboard;
     end;
   end
   else
-    raise Exception.Create(SCannotOpenClipboard);
+    raise EJVCLException.Create(SCannotOpenClipboard);
 end;
 
 function TDSAMessageForm.GetFormText: String;
@@ -608,9 +612,9 @@ end;
 function TDSAMessageForm.TimeoutUnit(Secs: Integer): string;
 begin
   if Secs <> 1 then
-    Result := sCntdwnSecsText
+    Result := RsCntdownSecsText
   else
-    Result := sCntdwnSecText;
+    Result := RsCntdownSecText;
 end;
 
 procedure TDSAMessageForm.CancelAutoClose;
@@ -753,8 +757,8 @@ begin
       if ATimeout > 0 then
       begin
         SetRect(TempRect, 0, 0, Screen.Width div 2, 0);
-        DrawText(Canvas.Handle, PChar(Format(sCntdwnText, [Timeout, TimeoutUnit(Timeout)])),
-          Length(Format(sCntdwnText, [Timeout, TimeoutUnit(Timeout)])) + 1, TempRect,
+        DrawText(Canvas.Handle, PChar(Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)])),
+          Length(Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)])) + 1, TempRect,
           DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or
           DrawTextBiDiModeFlagsReadingOnly);
         TimeoutTextWidth := TempRect.Right;
@@ -838,7 +842,7 @@ begin
           Name := 'Countdown';
           Parent := Result;
           BiDiMode := Result.BiDiMode;
-          Caption := Format(sCntdwnText, [Timeout, TimeoutUnit(Timeout)]);
+          Caption := Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)]);
           if CheckCaption = '' then
             SetBounds(HorzMargin, IconTextHeight + VertMargin + VertSpacing * 2 + ButtonHeight,
               Result.ClientWidth - 2 * HorzMargin, Height)
@@ -1074,34 +1078,34 @@ end;
 procedure TDSAStorage.EndCustomRead(const DSAInfo: TDSARegItem);
 begin
   if FStates.Peek <> ssCustomRead then
-    raise EJvDSADialog.Create(sCannotEndCustomReadIfNotInCustomRea);
+    raise EJvDSADialog.Create(RsECannotEndCustomReadIfNotInCustomRea);
   FStates.Pop;
 end;
 
 procedure TDSAStorage.EndCustomWrite(const DSAInfo: TDSARegItem);
 begin
   if FStates.Peek <> ssCustomWrite then
-    raise EJvDSADialog.Create(sCannotEndCustomWriteIfNotInCustomWr);
+    raise EJvDSADialog.Create(RsECannotEndCustomWriteIfNotInCustomWr);
   FStates.Pop;
 end;
 
 procedure TDSAStorage.EndRead(const DSAInfo: TDSARegItem);
 begin
   if FStates.Peek <> ssRead then
-    raise EJvDSADialog.Create(sCannotEndReadIfNotInReadMode);
+    raise EJvDSADialog.Create(RsECannotEndReadIfNotInReadMode);
   FStates.Pop;
 end;
 
 procedure TDSAStorage.EndWrite(const DSAInfo: TDSARegItem);
 begin
   if FStates.Peek <> ssWrite then
-    raise EJvDSADialog.Create(sCannotEndWriteIfNotInWriteMode);
+    raise EJvDSADialog.Create(RsECannotEndWriteIfNotInWriteMode);
   FStates.Pop;
 end;
 
 function TDSAStorage.IsKeyNameAllowed(const Key: string): Boolean;
 begin
-  if AnsiSameText(Key, sDSAStateValueName) or AnsiSameText(Key, sDSAStateLastResultName) then
+  if AnsiSameText(Key, cDSAStateValueName) or AnsiSameText(Key, cDSAStateLastResultName) then
     Result := Integer(FStates.Peek) in [Integer(ssRead), Integer(ssWrite)]
   else
     Result := Integer(FStates.Peek) in [Integer(ssCustomRead), Integer(ssCustomWrite)];
@@ -1113,10 +1117,10 @@ begin
   BeginRead(DSAInfo);
   try
     LastResult := 0;
-    Result := ReadBoolDef(DSAInfo, sDSAStateValueName, False);
+    Result := ReadBoolDef(DSAInfo, cDSAStateValueName, False);
     if Result then
     begin
-      LastResult := ReadIntegerDef(DSAInfo, sDSAStateLastResultName, 0);
+      LastResult := ReadIntegerDef(DSAInfo, cDSAStateLastResultName, 0);
       if Assigned(OnCustomData) then
       begin
         BeginCustomRead(DSAInfo);
@@ -1137,10 +1141,10 @@ procedure TDSAStorage.SetState(const DSAInfo: TDSARegItem; const DontShowAgain: 
 begin
   BeginWrite(DSAInfo);
   try
-    WriteBool(DSAInfo, sDSAStateValueName, DontShowAgain);
+    WriteBool(DSAInfo, cDSAStateValueName, DontShowAgain);
     if DontShowAgain then
     begin
-      WriteInteger(DSAInfo, sDSAStateLastResultName, LastResult);
+      WriteInteger(DSAInfo, cDSAStateLastResultName, LastResult);
       if Assigned(OnCustomData) then
       begin
         BeginCustomWrite(DSAInfo);
@@ -1169,7 +1173,7 @@ procedure TDSARegStorage.CreateKey(const DSAInfo: TDSARegItem);
 begin
   if not (RegKeyExists(RootKey, Key + '\' + DSAInfo.Name) or (RegCreateKey(RootKey, Key + '\' +
       DSAInfo.Name, '') = ERROR_SUCCESS)) then
-    raise EJvDSADialog.CreateFmt(sDSARegKeyCreateError, [Key + '\' + DSAInfo.Name]);
+    raise EJvDSADialog.CreateFmt(RsEDSARegKeyCreateError, [Key + '\' + DSAInfo.Name]);
 end;
 
 function TDSARegStorage.GetCheckMarkTextSuffix: string;
@@ -1285,7 +1289,7 @@ const
   DSAString = 5;
 
   DSAKindTexts: array [DSABool..DSAString] of string = (
-    sDSAAccessBool, sDSAAccessFloat, sDSAAccessInt64, sDSAAccessInt, sDSAAccessString);
+    RsDSAAccessBool, RsDSAAccessFloat, RsDSAAccessInt64, RsDSAAccessInt, RsDSAAccessString);
 
 type
   TDSAValues = class(TStringList)
@@ -1305,7 +1309,7 @@ begin
   inherited Create;
   FList := TStringList.Create;
   TStringList(FList).Sorted := True;
-  FCheckMarkSuffix := sInTheCurrentQueue;
+  FCheckMarkSuffix := RsInTheCurrentQueue;
 end;
 
 destructor TDSAQueueStorage.Destroy;
@@ -1345,13 +1349,13 @@ var
 begin
   I := FindDSA(DSAInfo);
   if I < 0 then
-    raise EJvDSADialog.CreateFmt(sDSADialogIDNotStored, [DSAInfo.ID]);
+    raise EJvDSADialog.CreateFmt(RsEDSADialogIDNotStored, [DSAInfo.ID]);
   DSAKeys := TStrings(FList.Objects[I]);
   I := DSAKeys.IndexOfName(Key);
   if I < 0 then
-    raise EJvDSADialog.CreateFmt(sDSAKeyNotFound, [Key]);
+    raise EJvDSADialog.CreateFmt(RsEDSAKeyNotFound, [Key]);
   if Integer(DSAKeys.Objects[I]) <> Kind then
-    raise EJvDSADialog.CreateFmt(sDSAKeyNoAccessAs, [Key, DSAKindTexts[Kind]]);
+    raise EJvDSADialog.CreateFmt(RsEDSAKeyNoAccessAs, [Key, DSAKindTexts[Kind]]);
   Result := DSAKeys.Values[Key];
 end;
 
@@ -1384,7 +1388,7 @@ begin
   AddDSA(DSAInfo);
   I := FindDSA(DSAInfo);
   if I < 0 then
-    raise EJvDSADialog.CreateFmt(sDSADialogIDNotStored, [DSAInfo.ID]);
+    raise EJvDSADialog.CreateFmt(RsEDSADialogIDNotStored, [DSAInfo.ID]);
   DSAKeys := TStrings(FList.Objects[I]);
   I := DSAKeys.IndexOfName(Key);
   if I < 0 then
@@ -1392,7 +1396,7 @@ begin
   else
   begin
     if Integer(DSAKeys.Objects[I]) <> Kind then
-      raise EJvDSADialog.CreateFmt(sDSAKeyNoAccessAs, [Key, DSAKindTexts[Kind]]);
+      raise EJvDSADialog.CreateFmt(RsEDSAKeyNoAccessAs, [Key, DSAKindTexts[Kind]]);
     DSAKeys.Values[Key] := Value;
   end;
 end;
@@ -1886,9 +1890,9 @@ procedure RegisterDSA(const DlgID: Integer; const Name, Description: string;
 begin
   case DSARegister.Add(DlgID, Name, Description, Storage, CheckTextKind) of
     arDuplicateID:
-      raise EJvDSADialog.CreateFmt(sDSADuplicateID, [DlgID]);
+      raise EJvDSADialog.CreateFmt(RsEDSADuplicateID, [DlgID]);
     arDuplicateName:
-      raise EJvDSADialog.CreateFmt(sDSADuplicateName, [Name]);
+      raise EJvDSADialog.CreateFmt(RsEDSADuplicateName, [Name]);
   end;
 end;
 
@@ -1922,7 +1926,7 @@ begin
   if RegItem.ID <> EmptyItem.ID then
     Result := Regitem.Storage.GetState(RegItem, ResCode, OnCustomData)
   else
-    raise EJvDSADialog.CreateFmt(sDSADialogIDNotFound, [DlgID]);
+    raise EJvDSADialog.CreateFmt(RsEDSADialogIDNotFound, [DlgID]);
 end;
 
 procedure SetDSAState(const DlgID: Integer; const DontShowAgain: Boolean;
@@ -1934,7 +1938,7 @@ begin
   if RegItem.ID <> EmptyItem.ID then
     RegItem.Storage.SetState(RegItem, DontShowAgain, LastResult, OnCustomData)
   else
-    raise EJvDSADialog.CreateFmt(sDSADialogIDNotFound, [DlgID]);
+    raise EJvDSADialog.CreateFmt(RsEDSADialogIDNotFound, [DlgID]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1960,7 +1964,7 @@ begin
   if CheckMarkTexts.IndexOfObject(TObject(ID)) < 0 then
     CheckMarkTexts.AddObject(Text, TObject(ID))
   else
-    raise EJvDSADialog.CreateFmt(sDSADuplicateCTK_ID, [ID]);
+    raise EJvDSADialog.CreateFmt(RsEDSADuplicateCTK_ID, [ID]);
 end;
 
 procedure UnregisterDSACheckMarkText(const ID: TDSACheckTextKind);
@@ -2062,7 +2066,7 @@ begin
   while (I > -1) and not (Components[I] is TJvDSADialog) do
     Dec(I);
   if I = -1 then
-    raise EJvDSADialog.Create(sJvDSADialogPatchErrorJvDSADialogCom);
+    raise EJvDSADialog.Create(RsEJvDSADialogPatchErrorJvDSADialogCom);
   JvDSADialog := Components[I] as TJvDSADialog;
 
   // Check the DSA state
@@ -2114,11 +2118,11 @@ begin
     while (I > -1) and not (AOwner.Components[I] is TJvDSADialog) do
       Dec(I);
     if I > -1 then
-      raise EJvDSADialog.Create(sAlreadyDSADialog);
+      raise EJvDSADialog.Create(RsEAlreadyDSADialog);
     inherited Create(AOwner);
   end
   else
-    raise EJvDSADialog.Create(sOnlyAllowedOnForms);
+    raise EJvDSADialog.Create(RsEOnlyAllowedOnForms);
 end;
 
 destructor TJvDSADialog.Destroy;
@@ -2241,9 +2245,9 @@ begin
     if Value <> nil then
     begin
       if GetPropInfo(Value, 'Checked') = nil then
-        raise EJvDSADialog.Create(sCtrlHasNoCheckedProp);
+        raise EJvDSADialog.Create(RsECtrlHasNoCheckedProp);
       if GetPropInfo(Value, 'Caption') = nil then
-        raise EJvDSADialog.Create(sCtrlHasNoCaptionProp);
+        raise EJvDSADialog.Create(RsECtrlHasNoCaptionProp);
     end;
     FCheckControl := Value;
   end;
@@ -2254,7 +2258,7 @@ begin
   if Value <> DialogID then
   begin
     if not (csDesigning in ComponentState) and not (csLoading in Owner.ComponentState) then
-      raise EJvDSADialog.Create(sDialogIDChangeOnlyInDesign);
+      raise EJvDSADialog.Create(RsEDialogIDChangeOnlyInDesign);
     FDialogID := Value;
   end;
 end;
@@ -2322,9 +2326,9 @@ end;
 
 initialization
   DSARegister := TDSARegister.Create;
-  RegisterDSACheckMarkText(ctkShow, sDSActkShowText);
-  RegisterDSACheckMarkText(ctkAsk, sDSActkAskText);
-  RegisterDSACheckMarkText(ctkWarn, sDSActkWarnText);
+  RegisterDSACheckMarkText(ctkShow, RsDSActkShowText);
+  RegisterDSACheckMarkText(ctkAsk, RsDSActkAskText);
+  RegisterDSACheckMarkText(ctkWarn, RsDSActkWarnText);
 
 finalization
   DSARegister.Free;

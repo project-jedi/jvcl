@@ -394,7 +394,7 @@ begin
 
   // Ensure minimum and maximum in right order.
   if AMax < AMin then
-    raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [Self.ClassName]);
+    raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [ClassName]);
 
   // Limit Position to Min and Max.
   if APosition < AMin then
@@ -448,7 +448,7 @@ var
 begin
   // Error if AMax < AMin
   if AMax < AMin then
-    raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [Self.Classname]);
+    raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [ClassName]);
 
   // Confine AnAngle to limits.
   if AnAngle < AMin then

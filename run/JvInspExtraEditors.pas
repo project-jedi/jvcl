@@ -551,24 +551,24 @@ var
 begin
   Color := clNone;
   if Data = nil then
-    S := sJvInspItemUnInitialized
+    S := RsJvInspItemUnInitialized
   else
   try
     if not Data.IsInitialized then
-      S := sJvInspItemUnInitialized
+      S := RsJvInspItemUnInitialized
     else
     if not Data.HasValue then
-      S := sJvInspItemNoValue
+      S := RsJvInspItemNoValue
     else
     if not Data.IsAssigned then
-      S := sJvInspItemUnassigned
+      S := RsJvInspItemUnassigned
     else
     begin
       S := DisplayValue;
       Color := Data.AsOrdinal;
     end;
   except
-    S := sJvInspItemValueException + ExceptObject.ClassName + ': ' +
+    S := RsJvInspItemValueException + ExceptObject.ClassName + ': ' +
       Exception(ExceptObject).Message;
   end;
   ARect := Rects[iprValueArea];
@@ -892,24 +892,24 @@ var
 begin
   Idx := -1;
   if Data = nil then
-    S := sJvInspItemUnInitialized
+    S := RsJvInspItemUnInitialized
   else
   try
     if not Data.IsInitialized then
-      S := sJvInspItemUnInitialized
+      S := RsJvInspItemUnInitialized
     else
     if not Data.HasValue then
-      S := sJvInspItemNoValue
+      S := RsJvInspItemNoValue
     else
     if not Data.IsAssigned then
-      S := sJvInspItemUnassigned
+      S := RsJvInspItemUnassigned
     else
     begin
       S := DisplayValue;
       Idx := Data.AsOrdinal;
     end;
   except
-      S := sJvInspItemValueException + ExceptObject.ClassName + ': ' +
+      S := RsJvInspItemValueException + ExceptObject.ClassName + ': ' +
         Exception(ExceptObject).Message;
   end;
   ARect := Rects[iprValueArea];

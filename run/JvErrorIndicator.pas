@@ -201,7 +201,7 @@ implementation
 
 uses
   CommCtrl,
-  JvConsts, JvResources;
+  JvTypes, JvResources;
 
 const
   cDefBlinkCount = 5;
@@ -274,7 +274,7 @@ begin
   if (i > -1) then
     Result := Controls[i].Error
   else
-    raise Exception.Create(sControlNotFoundInGetError);
+    raise EJVCLException.Create(RsEControlNotFoundInGetError);
 end;
 
 function TJvErrorIndicator.GetImageAlignment(
@@ -285,7 +285,7 @@ begin
   if (i > -1) then
     Result := Controls[i].ImageAlignment
   else
-    raise Exception.Create(sControlNotFoundInGetImageAlignment);
+    raise EJVCLException.Create(RsEControlNotFoundInGetImageAlignment);
 end;
 
 function TJvErrorIndicator.GetImagePadding(AControl: TControl): integer;
@@ -295,7 +295,7 @@ begin
   if (i > -1) then
     Result := Controls[i].ImagePadding
   else
-    raise Exception.Create(sControlNotFoundInGetImagePadding);
+    raise EJVCLException.Create(RsEControlNotFoundInGetImagePadding);
 end;
 
 function TJvErrorIndicator.IndexOf(AControl: TControl): integer;
@@ -399,7 +399,7 @@ begin
       UpdateControls;
     end
     else
-      raise Exception.Create(sUnableToAddControlInSetError);
+      raise EJVCLException.Create(RsEUnableToAddControlInSetError);
   end;
 end;
 
@@ -416,7 +416,7 @@ begin
     if i > -1 then
       Controls[i].ImageAlignment := Value
     else
-      raise Exception.Create(sUnableToAddControlInSetImageAlignme);
+      raise EJVCLException.Create(RsEUnableToAddControlInSetImageAlignme);
   end;
 end;
 
@@ -433,7 +433,7 @@ begin
     if i > 1 then
       Controls[i].ImagePadding := Value
     else
-      raise Exception.Create(sUnableToAddControlInSetImagePadding);
+      raise EJVCLException.Create(RsEUnableToAddControlInSetImagePadding);
   end;
 end;
 
