@@ -3015,8 +3015,5 @@ begin
   end;
 end;
 
-initialization
-  AllocConsole;
-
 end.
 
