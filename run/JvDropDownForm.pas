@@ -85,8 +85,22 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF COMPILER5}
+  MultiMon,
+  {$ENDIF COMPILER5}
   SysUtils,
   JvConsts, JvResources;
+
+{$IFDEF COMPILER5}
+function GetMonitorWorkareaRect(Monitor: TMonitor): TRect;
+var
+  MonInfo: TMonitorInfo;
+begin
+  MonInfo.cbSize := SizeOf(MonInfo);
+  GetMonitorInfo(Monitor.Handle, @MonInfo);
+  Result := MonInfo.rcWork;
+end;
+{$ENDIF COMPILER5}
 
 function IsChildWindow(const AChild, AParent: HWND): Boolean;
 var
@@ -165,7 +179,11 @@ begin
   {$IFDEF VCL}
   if Screen.MonitorCount > 0 then
   begin
+    {$IFDEF COMPILER6_UP}
     LScreenRect := Monitor.WorkareaRect;
+    {$ELSE}
+    LScreenRect := GetMonitorWorkareaRect(Monitor);
+    {$ENDIF COMPILER6_UP}
     if (Left + Width > LScreenRect.Right) then
       Left := LScreenRect.Right - Width;
     if (Top + Height > LScreenRect.Bottom) then
