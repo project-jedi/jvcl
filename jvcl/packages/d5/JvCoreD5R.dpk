@@ -49,6 +49,7 @@ contains
   JvDataProviderImpl in '..\..\run\JvDataProviderImpl.pas',
   JvDataProvider in '..\..\run\JvDataProvider.pas',
   JvContextProvider in '..\..\run\JvContextProvider.pas',
+  JvCaret in '..\..\run\JvCaret.pas',
   JvAppStore in '..\..\run\JvAppStore.pas',
   JvAppRegistryStore in '..\..\run\JvAppRegistryStore.pas',
   JvAppIniStore in '..\..\run\JvAppIniStore.pas',

@@ -5,7 +5,7 @@
     <VERSION value="BCB.06.00"/>
     <PROJECT value="JvSystemC6R.bpl"/>
     <OBJFILES value="..\..\dcu\JvSystemC6R.obj ..\..\dcu\JvXmlDatabase.obj 
-      ..\..\dcu\JvCaret.obj ..\..\dcu\JvChangeNotify.obj
+      ..\..\dcu\JvChangeNotify.obj
       ..\..\dcu\JvClipboardMonitor.obj ..\..\dcu\JvClipboardViewer.obj 
       ..\..\dcu\JvCommStatus.obj ..\..\dcu\JvComputerInfo.obj 
       ..\..\dcu\JvDdeCmd.obj ..\..\dcu\JvDeviceChanged.obj 
@@ -78,7 +78,6 @@
       <FILE FILENAME="..\..\common\Hid.pas" FORMNAME="" UNITNAME="Hid" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\common\SetupApi.pas" FORMNAME="" UNITNAME="SetupApi" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvXmlDatabase.pas" FORMNAME="" UNITNAME="JvXMLDatabase" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvCaret.pas" FORMNAME="" UNITNAME="JvCaret" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvChangeNotify.pas" FORMNAME="" UNITNAME="JvChangeNotify" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvClipboardMonitor.pas" FORMNAME="" UNITNAME="JvClipboardMonitor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvClipboardViewer.pas" FORMNAME="" UNITNAME="JvClipboardViewer" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

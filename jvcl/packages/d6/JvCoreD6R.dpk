@@ -43,6 +43,7 @@ contains
   JvBaseDlg in '..\..\run\JvBaseDlg.pas',
   JvJVCLAboutForm in '..\..\run\JvJVCLAboutForm.pas' {JvJVCLAboutForm},
   JvActions in '..\..\run\JvActions.pas',
+  JvCaret in '..\..\run\JvCaret.pas',
   JvMouseTimer in '..\..\run\JvMouseTimer.pas',
   JvDsgnIntf in '..\..\run\JvDsgnIntf.pas',
   JvActnResForm in '..\..\design\JvActnResForm.pas' {JvStandardActions: TDataModule},

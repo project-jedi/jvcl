@@ -60,7 +60,6 @@ contains
   JvFormPlacement in '..\..\run\JvFormPlacement.pas',
   JvPropsStorage in '..\..\run\JvPropsStorage.pas',
   JvTimer in '..\..\run\JvTimer.pas',
-  JvCaret in '..\..\run\JvCaret.pas',
   JvSearchFiles in '..\..\run\JvSearchFiles.pas',
   JvMRUManager in '..\..\run\JvMRUManager.pas',
   JvDirectories in '..\..\run\JvDirectories.pas',
