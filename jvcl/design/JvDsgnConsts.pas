@@ -30,6 +30,12 @@ unit JvDsgnConsts;
 
 interface
 
+{$IFNDEF COMPILER6_UP}
+uses
+  JvTypes;
+{$ENDIF COMPILER6_UP}
+
+
 resourcestring
   //=== strings used by several editors ======================================
   SPreview = 'Preview...';
