@@ -58,7 +58,7 @@ type
 implementation
 
 uses
-  JvResources;
+  JvResources, JvExForms;
 
 constructor TJvImageDialog.Create(AOwner: TComponent);
 begin
@@ -80,7 +80,7 @@ var
 begin
   if (FPicture.Height <> 0) and (FPicture.Width <> 0) then
   begin
-    Form := TJvForm.Create(Self);
+    Form := TJvForm.CreateNew(Self);
     try
       {$IFDEF VCL}
       Form.BorderStyle := bsDialog;
