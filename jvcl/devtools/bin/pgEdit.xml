@@ -50,20 +50,19 @@
   <models>
     <model name="JVCL" prefix="Jv" format="%p%n%e%v%t" packages="..\..\packages" incfile="..\..\common\jvcl.inc">
       <targets>
-        <target name="c5" dir="bcb5"/>
-        <target name="c6" dir="bcb6" pname="c6p" pdir="bcb6per"/>
+        <target name="c5"/>
+        <target name="c6" pname="c6p" pdir="c6per"/>
         <target name="d5" pname="d5s" pdir="d5std"/>
         <target name="d6" pname="d6p" pdir="d6per"/>
         <target name="d7" pname="d7p" pdir="d7per"/>
-        <target name="k2"/>
         <target name="k3"/>
       </targets>
       <aliases>
         <alias name="Delphi" value="d5,d5s,d6,d6p,d7,d7p"/>
         <alias name="Bcb" value="c5,c6,c6p"/>
-        <alias name="Kylix" value="k2,k3"/>
+        <alias name="Kylix" value="k3"/>
         <alias name="Windows" value="c5,c6,c6p,d5,d5s,d6,d6p,d7,d7p"/>
-        <alias name="Linux" value="k2,k3"/>
+        <alias name="Linux" value="k3"/>
       </aliases>
     </model>
     <Model Name="JCL" format="%e%p%n,%e%p%n%v0" prefix="Jcl" packages="" incfile="">

@@ -1,0 +1,261 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = JvCoreC6R.bpl JvCoreC6D.bpl JvSystemC6R.bpl JvSystemC6D.bpl \
+  JvStdCtrlsC6R.bpl JvStdCtrlsC6D.bpl JvCtrlsC6R.bpl JvCtrlsC6D.bpl JvCmpC6R.bpl \
+  JvCmpC6D.bpl JvCustomC6R.bpl JvCustomC6D.bpl JvDlgsC6R.bpl JvDlgsC6D.bpl \
+  JvCryptC6R.bpl JvCryptC6D.bpl JvMMC6R.bpl JvMMC6D.bpl JvNetC6R.bpl JvNetC6D.bpl \
+  JvAppFrmC6R.bpl JvAppFrmC6D.bpl JvDBC6R.bpl JvDBC6D.bpl JvBDEC6R.bpl \
+  JvBDEC6D.bpl JvInterpreterC6R.bpl JvInterpreterC6D.bpl JvBandsC6R.bpl \
+  JvBandsC6D.bpl JvPluginC6R.bpl JvPluginC6D.bpl JvJansC6R.bpl JvJansC6D.bpl \
+  JvGlobusC6R.bpl JvGlobusC6D.bpl JvPrintPreviewC6R.bpl JvPrintPreviewC6D.bpl \
+  JvPageCompsC6R.bpl JvPageCompsC6D.bpl JvValidatorsC6R.bpl JvValidatorsC6D.bpl \
+  JvUIBC6R.bpl JvUIBC6D.bpl JvWizardC6R.bpl JvWizardC6D.bpl \
+  JvTimeFrameworkC6R.bpl JvTimeFrameworkC6D.bpl JvHMIC6R.bpl JvHMIC6D.bpl \
+  JvManagedThreadsC6R.bpl JvManagedThreadsC6D.bpl JvXPCtrlsC6R.bpl \
+  JvXPCtrlsC6D.bpl JvDockingC6R.bpl JvDockingC6D.bpl JvDotNetCtrlsC6R.bpl \
+  JvDotNetCtrlsC6D.bpl
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+JvCoreC6R.bpl: c6\JvCoreC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvCoreC6D.bpl: c6\JvCoreC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvSystemC6R.bpl: c6\JvSystemC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvSystemC6D.bpl: c6\JvSystemC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvStdCtrlsC6R.bpl: c6\JvStdCtrlsC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvStdCtrlsC6D.bpl: c6\JvStdCtrlsC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvCtrlsC6R.bpl: c6\JvCtrlsC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvCtrlsC6D.bpl: c6\JvCtrlsC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvCmpC6R.bpl: c6\JvCmpC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvCmpC6D.bpl: c6\JvCmpC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvCustomC6R.bpl: c6\JvCustomC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvCustomC6D.bpl: c6\JvCustomC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvDlgsC6R.bpl: c6\JvDlgsC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvDlgsC6D.bpl: c6\JvDlgsC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvCryptC6R.bpl: c6\JvCryptC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvCryptC6D.bpl: c6\JvCryptC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvMMC6R.bpl: c6\JvMMC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvMMC6D.bpl: c6\JvMMC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvNetC6R.bpl: c6\JvNetC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvNetC6D.bpl: c6\JvNetC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvAppFrmC6R.bpl: c6\JvAppFrmC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvAppFrmC6D.bpl: c6\JvAppFrmC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvDBC6R.bpl: c6\JvDBC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvDBC6D.bpl: c6\JvDBC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvBDEC6R.bpl: c6\JvBDEC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvBDEC6D.bpl: c6\JvBDEC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvInterpreterC6R.bpl: c6\JvInterpreterC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvInterpreterC6D.bpl: c6\JvInterpreterC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvBandsC6R.bpl: c6\JvBandsC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvBandsC6D.bpl: c6\JvBandsC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvPluginC6R.bpl: c6\JvPluginC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvPluginC6D.bpl: c6\JvPluginC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvJansC6R.bpl: c6\JvJansC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvJansC6D.bpl: c6\JvJansC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvGlobusC6R.bpl: c6\JvGlobusC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvGlobusC6D.bpl: c6\JvGlobusC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvPrintPreviewC6R.bpl: c6\JvPrintPreviewC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvPrintPreviewC6D.bpl: c6\JvPrintPreviewC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvPageCompsC6R.bpl: c6\JvPageCompsC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvPageCompsC6D.bpl: c6\JvPageCompsC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvValidatorsC6R.bpl: c6\JvValidatorsC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvValidatorsC6D.bpl: c6\JvValidatorsC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvUIBC6R.bpl: c6\JvUIBC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvUIBC6D.bpl: c6\JvUIBC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvWizardC6R.bpl: c6\JvWizardC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvWizardC6D.bpl: c6\JvWizardC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvTimeFrameworkC6R.bpl: c6\JvTimeFrameworkC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvTimeFrameworkC6D.bpl: c6\JvTimeFrameworkC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvHMIC6R.bpl: c6\JvHMIC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvHMIC6D.bpl: c6\JvHMIC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvManagedThreadsC6R.bpl: c6\JvManagedThreadsC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvManagedThreadsC6D.bpl: c6\JvManagedThreadsC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvXPCtrlsC6R.bpl: c6\JvXPCtrlsC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvXPCtrlsC6D.bpl: c6\JvXPCtrlsC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvDockingC6R.bpl: c6\JvDockingC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvDockingC6D.bpl: c6\JvDockingC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvDotNetCtrlsC6R.bpl: c6\JvDotNetCtrlsC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvDotNetCtrlsC6D.bpl: c6\JvDotNetCtrlsC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
