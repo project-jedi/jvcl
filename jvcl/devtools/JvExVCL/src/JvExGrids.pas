@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2004-01-12
+Last Modified: 2004-01-13
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -48,12 +48,12 @@ uses
 type
   JV_WINCONTROL_EVENTS(InplaceEdit)
   JV_CUSTOMCONTROL_EVENTS(CustomGrid)
-{$IFDEF COMPILER6_UP}
- {$IFDEF VCL}
+{$IFDEF VCL}
+ {$IFDEF COMPILER6_UP}
   JV_CUSTOMCONTROL_EVENTS(CustomDrawGrid)
   JV_WINCONTROL_EVENTS(InplaceEditList)
- {$ENDIF VCL}
-{$ENDIF COMPILER6_UP}
+ {$ENDIF COMPILER6_UP}
+{$ENDIF VCL}
   JV_CUSTOMCONTROL_EVENTS(DrawGrid)
   JV_CUSTOMCONTROL_EVENTS(StringGrid)
 
@@ -61,12 +61,12 @@ implementation
 
 JV_WINCONTROL_EVENTS_IMPL(InplaceEdit)
 JV_CUSTOMCONTROL_EVENTS_IMPL(CustomGrid)
-{$IFDEF COMPILER6_UP}
- {$IFDEF VCL}
+{$IFDEF VCL}
+ {$IFDEF COMPILER6_UP}
 JV_CUSTOMCONTROL_EVENTS_IMPL(CustomDrawGrid)
 JV_WINCONTROL_EVENTS_IMPL(InplaceEditList)
- {$ENDIF VCL}
-{$ENDIF COMPILER6_UP}
+ {$ENDIF COMPILER6_UP}
+{$ENDIF VCL}
 JV_CUSTOMCONTROL_EVENTS_IMPL(DrawGrid)
 JV_CUSTOMCONTROL_EVENTS_IMPL(StringGrid)
 

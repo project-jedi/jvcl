@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2004-01-12
+Last Modified: 2004-01-13
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -46,31 +46,33 @@ uses
 {$ENDIF VCL}
 
 type
-  JV_WINCONTROL_EVENTS_FEATURE_BEGIN(CustomMaskEdit)
+  JV_WINCONTROL_EVENTS_BEGIN(CustomMaskEdit)
   private
     FBeepOnError: Boolean;
   protected
     procedure DoBeepOnError; dynamic;
     procedure SetBeepOnError(Value: Boolean); virtual;
     property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
-  JV_WINCONTROL_EVENTS_FEATURE_END(CustomMaskEdit)
+  JV_WINCONTROL_EVENTS_END(CustomMaskEdit)
 
-  JV_WINCONTROL_EVENTS_FEATURE_BEGIN(MaskEdit)
+  JV_WINCONTROL_EVENTS_BEGIN(MaskEdit)
   private
     FBeepOnError: Boolean;
   protected
     procedure DoBeepOnError; dynamic;
     procedure SetBeepOnError(Value: Boolean); virtual;
     property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
-  JV_WINCONTROL_EVENTS_FEATURE_END(CustomMaskEdit)
+  JV_WINCONTROL_EVENTS_END(CustomMaskEdit)
 
 implementation
 
+{ The CONSTRUCTOR_CODE macro is used to extend the constructor by the macro
+  content. }
 {$UNDEF CONSTRUCTOR_CODE}
 {$DEFINE CONSTRUCTOR_CODE
   FBeepOnError := True;
 }
-JV_WINCONTROL_EVENTS_IMPL_FEATURE_BEGIN(CustomMaskEdit)
+JV_WINCONTROL_EVENTS_IMPL_BEGIN(CustomMaskEdit)
 procedure TJvExCustomMaskEdit.DoBeepOnError;
 begin
   if BeepOnError then
@@ -81,10 +83,10 @@ procedure TJvExCustomMaskEdit.SetBeepOnError(Value: Boolean);
 begin
   FBeepOnError := Value;
 end;
-JV_WINCONTROL_EVENTS_IMPL_FEATURE_END(CustomMaskEdit)
+JV_WINCONTROL_EVENTS_IMPL_END(CustomMaskEdit)
 
 
-JV_WINCONTROL_EVENTS_IMPL_FEATURE_BEGIN(MaskEdit)
+JV_WINCONTROL_EVENTS_IMPL_BEGIN(MaskEdit)
 procedure TJvExMaskEdit.DoBeepOnError;
 begin
   if BeepOnError then
@@ -95,7 +97,7 @@ procedure TJvExMaskEdit.SetBeepOnError(Value: Boolean);
 begin
   FBeepOnError := Value;
 end;
-JV_WINCONTROL_EVENTS_IMPL_FEATURE_END(MaskEdit)
+JV_WINCONTROL_EVENTS_IMPL_END(MaskEdit)
 
 {$UNDEF CONSTRUCTOR_CODE} // undefine at file end
 end.
