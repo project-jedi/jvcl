@@ -188,7 +188,6 @@ type
     property BorderStyle;
     property ButtonEdge;
     property Color;
-    property Ctl3D;
     property Cursor;
     property DefaultPos;
     property DragCursor;
@@ -201,7 +200,6 @@ type
     property Min;
     property MinAngle;
     property ParentColor;
-    property ParentCtl3D;
     property ParentShowHint;
     property PointerColorOn;
     property PointerColorOff;

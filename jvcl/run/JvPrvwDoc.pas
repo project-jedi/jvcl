@@ -373,11 +373,9 @@ type
     property DragKind;
     property DragMode;
     property Enabled;
-    property Ctl3D;
     property Font;
     property ParentBiDiMode;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

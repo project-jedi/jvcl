@@ -116,7 +116,6 @@ type
     property Style { must be published before Items }
       default csDropDownList; // Polaris
     property Color;
-    property Ctl3D;
     property DataField;
     property DataSource;
     property DragMode;
@@ -136,7 +135,6 @@ type
     property ItemHeight;
     property Items;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

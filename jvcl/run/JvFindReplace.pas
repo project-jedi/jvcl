@@ -60,7 +60,6 @@ type
     FPosition: TPoint;
     FLeft: Integer;
     FTop: Integer;
-    FCtl3D: Boolean;
     FFast: Boolean;
     FHelpContext: THelpContext;
     FShowDialogs: Boolean;
@@ -72,7 +71,6 @@ type
     procedure SetDialogLeft(Value: Integer);
     procedure SetOptions(Value: TFindOptions);
     procedure SetEditControl(Value: TCustomEdit);
-    procedure SetCtl3D(Value: Boolean);
     procedure SetHelpContext(Value: THelpContext);
     procedure SetFindText(Value: string);
     procedure SetReplaceText(Value: string);
@@ -81,7 +79,6 @@ type
     function GetTop: Integer;
     function GetLeft: Integer;
     function GetOptions: TFindOptions;
-    function GetCtl3D: Boolean;
     function GetHelpContext: THelpContext;
     function GetFindText: string;
     function GetReplaceText: string;
@@ -116,7 +113,6 @@ type
     property KeepText: Boolean read FKeepText write FKeepText default False;
     property ReplaceText: string read GetReplaceText write SetReplaceText;
     property ShowDialogs: Boolean read FShowDialogs write SetShowDialogs default True;
-    property Ctl3D: Boolean read GetCtl3D write SetCtl3D default True;
     property HelpContext: THelpContext read GetHelpContext write SetHelpContext default 0;
     property OnFind: TNotifyEvent read FOnFind write FOnFind;
     property OnReplace: TNotifyEvent read FOnReplace write FOnReplace;
@@ -288,7 +284,6 @@ begin
   FOwner := AOwner;
   FHelpContext := 0;
   FKeepText := False;
-  FCtl3D := True;
   FShowDialogs := True;
   FPosition := Point(-1, -1);
 end;
@@ -428,7 +423,6 @@ begin
   FFindDialog.Top := GetTop;
   FFindDialog.Left := GetLeft;
   FFindDialog.Options := FOptions;
-  FFindDialog.Ctl3D := GetCtl3D;
   FFindDialog.HelpContext := GetHelpContext;
   FFindDialog.FindText := GetFindText;
   FReplaceDialog.Position := GetPosition;
@@ -436,7 +430,6 @@ begin
   FReplaceDialog.Top := GetTop;
   FReplaceDialog.Left := GetLeft;
   FReplaceDialog.Options := FOptions;
-  FReplaceDialog.Ctl3D := GetCtl3D;
   FReplaceDialog.HelpContext := GetHelpContext;
   FReplaceDialog.FindText := GetFindText;
   FReplaceDialog.ReplaceText := GetReplaceText;
@@ -597,12 +590,6 @@ begin
     Value.FreeNotification(Self);
 end;
 
-procedure TJvFindReplace.SetCtl3D(Value: Boolean);
-begin
-  FCtl3D := Value;
-  UpdateDialogs;
-end;
-
 procedure TJvFindReplace.SetFindText(Value: string);
 begin
   FFindText := Value;
@@ -669,14 +656,6 @@ begin
     Result := FOptions
   else
     Result := FFindDialog.Options;
-end;
-
-function TJvFindReplace.GetCtl3D: Boolean;
-begin
-  if (csDesigning in ComponentState) or not Assigned(FFindDialog) then
-    Result := FCtl3D
-  else
-    Result := FFindDialog.Ctl3D;
 end;
 
 function TJvFindReplace.GetHelpContext: THelpContext;

@@ -114,7 +114,6 @@ type
     property Color;
     property Columns: Integer read FColumns write SetColumns default 1;
     property Constraints;
-    property Ctl3D;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property DragCursor;
@@ -125,7 +124,6 @@ type
     property Items: TStrings read FItems write SetItems;
     property ParentBiDiMode;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

@@ -269,7 +269,6 @@ type
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property Align;
     property Color;
-    property Ctl3D;
     property DataField;
     property DataSource;
     property DisplayEmpty;
@@ -298,7 +297,6 @@ type
     property LookupFormat;
     property LookupSource;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -433,7 +431,6 @@ type
     property EscapeClear: Boolean read FEscapeClear write FEscapeClear default True;
     property DisplayAllFields: Boolean read GetDisplayAllFields write SetDisplayAllFields default False;
     property Color;
-    property Ctl3D;
     property DataField;
     property DataSource;
     property DisplayEmpty;
@@ -462,7 +459,6 @@ type
     property LookupFormat;
     property LookupSource;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -573,7 +569,6 @@ type
     property CharCase;
     property ClickKey;
     property Color;
-    property Ctl3D;
     property DirectInput;
     property DragCursor;
     property DragMode;
@@ -591,7 +586,6 @@ type
     property MaxLength;
     property OEMConvert;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupAlign;

@@ -195,7 +195,6 @@ type
     property Color;
     property Constraints;
     property CriticalPoints;
-    property Ctl3D;
     property DecimalPlaces default 0;
     property DisabledColor;
     property DisabledTextColor;
@@ -219,7 +218,6 @@ type
     property OEMConvert;
     property ParentBiDiMode;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;

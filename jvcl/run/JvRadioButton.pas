@@ -46,9 +46,6 @@ type
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    {$IFDEF VCL}
-    FOnCtl3DChanged: TNotifyEvent;
-    {$ENDIF VCL}
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
     FFontSave: TFont;
@@ -74,7 +71,6 @@ type
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     {$ENDIF VCL}
   protected
     {$IFDEF VCL}
@@ -83,7 +79,6 @@ type
     procedure ParentColorChanged; dynamic;
     procedure TextChanged; dynamic;
     procedure FontChanged; dynamic;
-    procedure Ctl3DChanged; dynamic;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure MouseEnter(AControl: TControl); override;
@@ -114,9 +109,6 @@ type
     property LeftText: Boolean read FLeftText write SetLeftText default False;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
-    {$IFDEF VCL}
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
-    {$ENDIF VCL}
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -172,22 +164,6 @@ begin
     Style := Style or cAlign[Alignment] or cLayout[Layout] or
       cLeftText[LeftText] or cWordWrap[WordWrap];
 end;
-
-{$IFDEF VCL}
-
-procedure TJvRadioButton.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  Ctl3DChanged;
-end;
-
-procedure TJvRadioButton.Ctl3DChanged;
-begin
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
-end;
-
-{$ENDIF VCL}
 
 {$IFDEF VCL}
 procedure TJvRadioButton.CMMouseEnter(var Msg: TMessage);

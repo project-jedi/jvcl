@@ -92,7 +92,6 @@ type
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FOnCtl3DChanged: TNotifyEvent;
     {$IFNDEF COMPILER6_UP}
     FAutoComplete: Boolean;
     FLastTime: Cardinal;      // SPM - Ported backward from Delphi 7
@@ -120,12 +119,10 @@ type
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
   protected
     procedure MouseEnter(AControl: TControl); dynamic;
     procedure MouseLeave(AControl: TControl); dynamic;
     procedure ParentColorChanged; dynamic;
-    procedure Ctl3DChanged; dynamic;
     procedure CreateWnd; override; // ain
     {$IFDEF COMPILER6_UP}
     function GetItemsClass: TCustomComboBoxStringsClass; override;
@@ -166,7 +163,6 @@ type
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly default False; // ain
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -204,7 +200,6 @@ type
     property CharCase;
     property Color;
     property Constraints;
-    property Ctl3D;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -219,7 +214,6 @@ type
     property MeasureStyle;
     property ParentBiDiMode;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property Provider;
@@ -258,7 +252,6 @@ type
     property Items; { Must be published after OnMeasureItem }
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnCtl3DChanged;
     property OnParentColorChange;
   end;
 
@@ -1070,18 +1063,6 @@ begin
   end
   else
     Result := Items[Index];
-end;
-
-procedure TJvCustomComboBox.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  Ctl3DChanged;
-end;
-
-procedure TJvCustomComboBox.Ctl3DChanged;
-begin
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
 end;
 
 procedure TJvCustomComboBox.CMParentColorChanged(var Msg: TMessage);

@@ -143,7 +143,6 @@ type
     property BorderStyle;
     property CheckOnExit;
     property Color;
-    property Ctl3D;
     property DecimalPlaces;
     property DisplayFormat;
     property DragCursor;
@@ -163,7 +162,6 @@ type
     property MaxValue;
     property MinValue;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -222,7 +220,6 @@ type
     property CheckOnExit;
     property ClickKey;
     property Color;
-    property Ctl3D;
     property DecimalPlaceRound; //Polaris
     property DecimalPlaces;
     property DirectInput;
@@ -249,7 +246,6 @@ type
     property MinValue;
     property NumGlyphs;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupAlign;

@@ -154,7 +154,6 @@ type
     property Color;
     property Columns;
 {$IFDEF VCL}
-    property Ctl3D;
     property DragCursor;
 {$ENDIF VCL}
     property DragMode;
@@ -166,9 +165,6 @@ type
     property Items;
     property MultiSelect;
     property ParentColor;
-{$IFDEF VCL}
-    property ParentCtl3D;
-{$ENDIF VCL}
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -255,11 +251,9 @@ type
 //    property Style;
 {$IFDEF VCL}
     property AutoSize;
-    property Ctl3D;
     property DragCursor;
     property ImeMode;
     property ImeName;
-    property ParentCtl3D;
     property BiDiMode;
     property DragKind;
     property ParentBiDiMode;

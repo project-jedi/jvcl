@@ -60,7 +60,6 @@ type
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FOnCtl3DChanged: TNotifyEvent;
     FOver: Boolean;
     FSortOnClick: Boolean;
     FLast: Integer;
@@ -76,7 +75,6 @@ type
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure WMNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
@@ -108,7 +106,6 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property SortOnClick: Boolean read FSortOnClick write FSortOnClick default True;
     property AutoClipboardCopy: Boolean read FAutoClipboardCopy write FAutoClipboardCopy default True;
     property OnLoadProgress: TJvProgressEvent read FOnLoadProgress write FOnLoadProgress;
@@ -210,13 +207,6 @@ begin
   FOver := False;
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
-end;
-
-procedure TJvListView.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
 end;
 
 procedure TJvListView.CMParentColorChanged(var Msg: TMessage);

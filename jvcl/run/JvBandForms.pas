@@ -231,7 +231,6 @@ type
     //  property BorderIcons;
     //  property BorderStyle;
     //  property BorderWidth;
-    property Ctl3D;
     property UseDockManager;
     property DefaultMonitor;
     property DockSite;

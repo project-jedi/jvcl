@@ -245,7 +245,6 @@ type
     property BorderStyle;
     property Color;
     property Columns;
-    property Ctl3D;
     property DragCursor;
     property DragMode;
     property Enabled;
@@ -264,7 +263,6 @@ type
     property Items stored False;
     property MultiSelect;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

@@ -48,7 +48,6 @@ type
     FColor: TColor;
     FSaved: TColor;
     FOnMouseLeave: TNotifyEvent;
-    FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOnSelectCancel: TNotifyEvent;
     FOver: Boolean;
@@ -65,7 +64,6 @@ type
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure SelectCancel(var Msg: TMessage); message LBN_SELCANCEL;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -101,7 +99,6 @@ type
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnSelectCancel: TNotifyEvent read FOnSelectCancel write FOnSelectCancel;
     property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
@@ -203,13 +200,6 @@ begin
   FScroll := Value;
   if FScroll then
     SendMessage(Handle, LB_SETHORIZONTALEXTENT, FMaxWidth, 0);
-end;
-
-procedure TJvCheckListBox.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
 end;
 
 procedure TJvCheckListBox.CMParentColorChanged(var Msg: TMessage);

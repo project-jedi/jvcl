@@ -102,7 +102,6 @@ type
     property Color;
     property Constraints;
     property Cursor;
-    property Ctl3D;
     property DataField;
     property DataSource;
     property DateFormat;
@@ -134,7 +133,6 @@ type
     property OnChange;
     property OnClick;
     property OnCheckClick;
-    property OnCtl3DChanged;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;

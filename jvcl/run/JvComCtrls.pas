@@ -267,14 +267,12 @@ type
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOnChanged: TNotifyEvent;
     FAboutJVCL: TJVCLAboutInfo;
     FShowRange: Boolean;
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure SetToolTips(const Value: Boolean);
     procedure SetToolTipSide(const Value: TJvTrackToolTipSide);
@@ -297,7 +295,6 @@ type
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
     property Color;
@@ -343,7 +340,6 @@ type
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FOnCtl3DChanged: TNotifyEvent;
     FOver: Boolean;
     FCheckBoxes: Boolean;
     FOnHScroll: TNotifyEvent;
@@ -365,7 +361,6 @@ type
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure SetCheckBoxes(const Value: Boolean);
     function GetItemHeight: integer;
@@ -443,7 +438,6 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnCustomDrawItem: TTVCustomDrawItemEvent read FOnCustomDrawItem write FOnCustomDrawItem;
     property OnEditCancelled: TNotifyEvent read FOnEditCancelled write FOnEditCancelled;
     property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
@@ -1032,13 +1026,6 @@ begin
   FShowRange := True;
 end;
 
-procedure TJvTrackBar.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
-end;
-
 procedure TJvTrackBar.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
@@ -1296,13 +1283,6 @@ begin
   FSelectedList.Clear;
   for I := 0 to Length(NeedInvalidate) - 1 do
     InvalidateNode(NeedInvalidate[I]);
-end;
-
-procedure TJvTreeView.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
 end;
 
 procedure TJvTreeView.CMParentColorChanged(var Msg: TMessage);

@@ -755,7 +755,6 @@ type
     property Align;
     property Enabled;
     property Color;
-    property Ctl3D;
     property Font;
     property ParentColor;
     property ParentFont;

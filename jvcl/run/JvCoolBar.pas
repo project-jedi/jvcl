@@ -44,22 +44,18 @@ type
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FOnCtl3DChanged: TNotifyEvent;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
   protected
     procedure MouseEnter(AControl: TControl); dynamic;
     procedure MouseLeave(AControl: TControl); dynamic;
     procedure ParentColorChanged; dynamic;
-    procedure Ctl3DChanged; dynamic;
   public
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -74,18 +70,6 @@ begin
   FHintColor := clInfoBk;
   FOver := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
-end;
-
-procedure TJvCoolBar.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  Ctl3DChanged;
-end;
-
-procedure TJvCoolBar.Ctl3DChanged;
-begin
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
 end;
 
 procedure TJvCoolBar.CMMouseEnter(var Msg: TMessage);

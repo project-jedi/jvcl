@@ -43,7 +43,6 @@ type
     FHintColor: TColor;
     FSaved: TColor;
     FOnMouseLeave: TNotifyEvent;
-    FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChange: TNotifyEvent;
     FOver: Boolean;
     FPropagateEnable: Boolean;
@@ -52,7 +51,6 @@ type
     procedure CMEnabledChanged(var Msg: TMsg); message CM_ENABLEDCHANGED;
     procedure CMMouseEnter(var Msg: TMsg); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMsg); message CM_MOUSELEAVE;
-    procedure CMCtl3DChanged(var Msg: TMsg); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMsg); message CM_PARENTCOLORCHANGED;
     procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   {$IFDEF JVCLThemesEnabledD56}
@@ -75,7 +73,6 @@ type
     property PropagateEnable: Boolean read FPropagateEnable write SetPropagateEnable default False;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChange write FOnParentColorChange;
     property OnHotKey: TNotifyEvent read FOnHotKey write FOnHotKey;
   end;
@@ -185,13 +182,6 @@ begin
 end;
 
 {$ENDIF JVCLThemesEnabledD56}
-
-procedure TJvGroupBox.CMCtl3DChanged(var Msg: TMsg);
-begin
-  inherited;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
-end;
 
 procedure TJvGroupBox.CMDialogChar(var Msg: TCMDialogChar);
 begin

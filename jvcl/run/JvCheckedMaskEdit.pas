@@ -49,7 +49,7 @@ type
     function GetShowCheckBox: Boolean;
   protected
     procedure DoCheckClick; dynamic;
-    procedure DoCtl3DChanged; override;
+    procedure DoCtl3DChanged; dynamic;
     procedure EnabledChanged; override;
     procedure DoKillFocus(const ANextControl: TWinControl); override;
 
@@ -91,7 +91,6 @@ type
     property Color;
     property Constraints;
     property Cursor;
-    property Ctl3D;
     property DisabledColor;
     property DisabledTextColor;
     property DragCursor;
@@ -105,7 +104,6 @@ type
     property HotTrack;
     property MaxLength;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;
@@ -121,7 +119,6 @@ type
     property OnChange;
     property OnClick;
     property OnCheckClick;
-    property OnCtl3DChanged;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -313,7 +310,6 @@ end;
 
 procedure TJvCustomCheckedMaskEdit.DoCtl3DChanged;
 begin
-  inherited DoCtl3DChanged;
   { propagate to child controls: }
   if ShowCheckBox then
   begin

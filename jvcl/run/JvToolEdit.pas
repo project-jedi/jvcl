@@ -254,7 +254,6 @@ type
     property CharCase;
     property ClickKey;
     property Color;
-    property Ctl3D;
     property DirectInput;
     property DragCursor;
     property DragMode;
@@ -276,7 +275,6 @@ type
     property NumGlyphs;
     property OEMConvert;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -436,7 +434,6 @@ type
     property CharCase;
     property ClickKey;
     property Color;
-    property Ctl3D;
     property DirectInput;
     property DragCursor;
     property DragMode;
@@ -456,7 +453,6 @@ type
     property ImeName;
     property NumGlyphs;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -518,7 +514,6 @@ type
     property CharCase;
     property ClickKey;
     property Color;
-    property Ctl3D;
     property DirectInput;
     property DragCursor;
     property DragMode;
@@ -538,7 +533,6 @@ type
     property ImeMode;
     property ImeName;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -712,7 +706,6 @@ type
     property CheckOnExit;
     property ClickKey;
     property Color;
-    property Ctl3D;
     property DefaultToday;
     property DialogTitle;
     property DirectInput;
@@ -734,7 +727,6 @@ type
     property MaxLength;
     property NumGlyphs;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupAlign;

@@ -78,7 +78,6 @@ type
     FImageIndex: TImageIndex;
     FImages: TCustomImageList;
     FChangeLink:TChangeLink;
-    FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
@@ -114,7 +113,6 @@ type
     procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CMVisibleChanged(var Msg: TMessage); message CM_VISIBLECHANGED;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure WMRButtonDown(var Msg: TWMRButtonDown); message WM_RBUTTONDOWN;
     procedure WMRButtonUp(var Msg: TWMRButtonUp); message WM_RBUTTONUP;
@@ -177,7 +175,6 @@ type
     property URL: string read FURL write FURL;
     property Provider: TJvDataConsumer read FConsumerSvc write SetConsumerService;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
@@ -246,7 +243,6 @@ type
     property Provider;
     property Spacing;
     property URL;
-    property OnCtl3DChanged;
     property OnParentColorChange;
   end;
 
@@ -935,13 +931,6 @@ begin
   Result := 0;
   if not ProviderActive and (Images <> nil) then
     Result := Images.Width;
-end;
-
-procedure TJvCustomLabel.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
 end;
 
 procedure TJvCustomLabel.CMParentColorChanged(var Msg: TMessage);

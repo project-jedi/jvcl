@@ -148,7 +148,6 @@ type
     FOnGetText: TJvListBoxDataEvent;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOnSelectCancel: TNotifyEvent;
     FOnDeleteString: TJvListboxChange;
@@ -227,7 +226,6 @@ type
       var Accept: Boolean); override;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure SelectCancel(var Msg: TMessage); message LBN_SELCANCEL;
     procedure Changed; virtual;
@@ -252,7 +250,6 @@ type
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnSelectCancel: TNotifyEvent read FOnSelectCancel write FOnSelectCancel;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -326,7 +323,6 @@ type
     property Color;
     property Columns;
     property Constraints;
-    property Ctl3D;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -349,7 +345,6 @@ type
     property MultiSelect;
     property ParentBiDiMode;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -388,7 +383,6 @@ type
 
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnCtl3DChanged;
     property OnParentColorChange;
     property OnSelectCancel;
     property OnChange;
@@ -727,13 +721,6 @@ procedure TJvCustomListBox.Changed;
 begin
   // (rom) TODO?
   inherited Changed; // (marcelb): I added this, 'caus I assume it needs to be called.
-end;
-
-procedure TJvCustomListBox.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
 end;
 
 procedure TJvCustomListBox.CMFontChanged(var Msg: TMessage);

@@ -109,8 +109,6 @@ type
     property ParentBiDiMode;
     property UseDockManager;
     property DragCursor;
-    property Ctl3D;
-    property ParentCtl3D;
     property OnCanResize;
     property OnDockDrop;
     property OnDockOver;
@@ -118,7 +116,7 @@ type
     property OnGetSiteInfo;
     property OnStartDock;
     property OnUnDock;
-    {$ENDIF}
+    {$ENDIF VCL}
     property Action;
     property Anchors;
     property Constraints;

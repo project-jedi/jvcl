@@ -50,18 +50,15 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     {$IFDEF VCL}
-    FOnCtl3DChanged: TNotifyEvent;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     {$ENDIF VCL}
   protected
     {$IFDEF VCL}
     procedure MouseEnter(AControl: TControl); dynamic;
     procedure MouseLeave(AControl: TControl); dynamic;
     procedure ParentColorChanged; dynamic;
-    procedure Ctl3DChanged; dynamic;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure MouseEnter(AControl: TControl); override;
@@ -73,9 +70,6 @@ type
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    {$IFDEF VCL}
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
-    {$ENDIF VCL}
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -89,22 +83,6 @@ begin
   FHintColor := clInfoBk;
   FOver := False;
 end;
-
-{$IFDEF VCL}
-
-procedure TJvHeaderControl.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  Ctl3DChanged;
-end;
-
-procedure TJvHeaderControl.Ctl3DChanged;
-begin
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
-end;
-
-{$ENDIF VCL}
 
 {$IFDEF VCL}
 procedure TJvHeaderControl.CMMouseEnter(var Msg: TMessage);

@@ -46,7 +46,6 @@ type
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FOnCtl3DChanged: TNotifyEvent;
     FOver: Boolean;
     {$IFNDEF COMPILER6_UP}
     FMenu: TMainMenu;
@@ -60,7 +59,6 @@ type
     procedure MenuChange(Sender: TJvMainMenu; Source: TMenuItem; Rebuild: Boolean);
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure CNDropDownClosed(var Msg: TMessage); message CN_DROPDOWNCLOSED;
@@ -76,7 +74,6 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
   end;
 
 implementation
@@ -123,13 +120,6 @@ begin
   FOver := False;
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
-end;
-
-procedure TJvToolBar.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
 end;
 
 procedure TJvToolBar.CMParentColorChanged(var Msg: TMessage);

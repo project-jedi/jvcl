@@ -71,7 +71,6 @@ type
     property DragMode;
     property Enabled;
     property Color;
-    property Ctl3D;
     property DropDownCount;
     property Font;
     property Anchors;
@@ -82,7 +81,6 @@ type
     property ImeMode;
     property ImeName;
     property ItemHeight;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

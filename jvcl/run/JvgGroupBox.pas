@@ -118,7 +118,6 @@ type
     property DragMode;
     property Font;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

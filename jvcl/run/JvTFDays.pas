@@ -1440,8 +1440,6 @@ type
       property Align;
       property Color default clSilver;
       property ParentColor default False;
-      property Ctl3D;
-      property ParentCtl3D;
       property Font;
       property ParentFont;
       property TabStop;

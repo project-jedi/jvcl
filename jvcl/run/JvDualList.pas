@@ -36,7 +36,6 @@ type
 
   TJvDualListDialog = class(TJvComponent)
   private
-    FCtl3D: Boolean;
     FSorted: Boolean;
     FTitle: string;
     FLabel1Caption: TCaption;
@@ -62,7 +61,6 @@ type
     destructor Destroy; override;
     function Execute: Boolean;
   published
-    property Ctl3D: Boolean read FCtl3D write FCtl3D default True;
     property Sorted: Boolean read FSorted write FSorted;
     property Title: string read GetTitle write SetTitle;
     property Label1Caption: TCaption read FLabel1Caption write FLabel1Caption
@@ -90,7 +88,6 @@ uses
 constructor TJvDualListDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FCtl3D := True;
   FShowHelp := True;
   FTitle := EmptyStr;
   FList1 := TStringList.Create;
@@ -162,7 +159,6 @@ begin
   try
     with Form do
     begin
-      Ctl3D := Self.Ctl3D;
       if NewStyleControls then
         Font.Style := [];
       ShowHelp := Self.ShowHelp;

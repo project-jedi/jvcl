@@ -42,7 +42,6 @@ type
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FHotTrack: Boolean;
     FOver: Boolean;
@@ -50,7 +49,6 @@ type
   protected
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
   public
     constructor Create(AOwner: TComponent); override;
@@ -60,7 +58,6 @@ type
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
@@ -73,13 +70,6 @@ begin
   FOver := False;
   FHotTrack := False;
   // ControlStyle := ControlStyle + [csAcceptsControls];
-end;
-
-procedure TJvScrollBar.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
 end;
 
 procedure TJvScrollBar.CMParentColorChanged(var Msg: TMessage);

@@ -130,10 +130,8 @@ type
     property DragCursor;
     property DragMode;
     property Color;
-    property Ctl3D;
     property Font;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

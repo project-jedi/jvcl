@@ -177,7 +177,6 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
     property Color;
-    property Ctl3D;
     property DragMode;
     property DragCursor;
     property DropDownCount;
@@ -196,7 +195,6 @@ type
     property Font;
     property Images: TCustomImageList read FImageList write SetImageList;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -269,7 +267,6 @@ type
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property BorderStyle;
     property Color;
-    property Ctl3D;
     property DragMode;
     property DragCursor;
     property Enabled;
@@ -286,7 +283,6 @@ type
     property IntegralHeight;
     property ItemHeight;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

@@ -58,7 +58,6 @@ type
     property Align;
     property BorderStyle;
     property Color;
-    property Ctl3D;
     property DragCursor;
     property DragMode;
     property Enabled;
@@ -76,7 +75,6 @@ type
     property Items;
     property MultiSelect;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

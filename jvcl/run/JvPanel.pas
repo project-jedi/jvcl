@@ -85,7 +85,6 @@ type
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
     FTransparent: Boolean;
@@ -125,7 +124,6 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -163,7 +161,6 @@ type
     property FlatBorderColor: TColor read FFlatBorderColor write SetFlatBorderColor default clBtnShadow;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
 
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
@@ -184,7 +181,6 @@ type
     property Caption;
     property Color;
     property Constraints;
-    property Ctl3D;
     property UseDockManager default True;
     property DockSite;
     property DragCursor;
@@ -199,7 +195,6 @@ type
     property ParentBackground;
     {$ENDIF}
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -513,14 +508,6 @@ begin
       DrawText(Canvas.Handle, PChar(Caption), -1, ATextRect, Flags);
     end;
   end;
-end;
-
-procedure TJvPanel.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  Invalidate;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
 end;
 
 procedure TJvPanel.CMParentColorChanged(var Msg: TMessage);

@@ -63,7 +63,6 @@ type
 
   TJvCustomStaticText = class(TJvWinControl)
   private
-    FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FHintColor: TColor;
     FSaved: TColor;
@@ -91,7 +90,6 @@ type
     procedure SetHotTrackFont(const Value: TFont);
     procedure SetLayout(const Value: TTextLayout);
 
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure SetTextMargins(const Value: TJvTextMargins);
@@ -122,7 +120,6 @@ type
     property WordWrap: Boolean read FWordWrap write SetWordWrap;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
@@ -170,7 +167,6 @@ type
     property WordWrap;
     property OnClick;
     property OnContextPopup;
-    property OnCtl3DChanged;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -221,13 +217,6 @@ begin
   FFontSave.Free;
   FTextMargins.Free;
   inherited Destroy;
-end;
-
-procedure TJvCustomStaticText.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
 end;
 
 procedure TJvCustomStaticText.CMParentColorChanged(var Msg: TMessage);
