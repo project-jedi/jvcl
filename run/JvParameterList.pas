@@ -119,7 +119,7 @@ type
     FSearchName: string;
     FRequired: Boolean;
     FReadOnly: Boolean;
-    FReloadValueFromRegistry: Boolean;
+    FReloadValueFromAppStore: Boolean;
     FParentParameterName: string;
     FTabOrder: Integer;
     FParameterList: TJvParameterList;
@@ -193,8 +193,8 @@ type
     {this name is used to identify the parameter in the parameterlist,
      this value must be defined before inserting into the parameterlist }
     property SearchName: string read FSearchName write FSearchName;
-    {should this value be saved in the registry by the parameterlist }
-    property ReloadValueFromRegistry: Boolean read FReloadValueFromRegistry write FReloadValueFromRegistry;
+    {should this value be saved by the parameterlist }
+    property ReloadValueFromAppStore: Boolean read FReloadValueFromAppStore write FReloadValueFromAppStore;
     {the searchname of the parentparameter. The parameter must be a
      descent of TJvPanelParameter or TTabControlParamter. If the
      parent parameter is a TJvTabControlParameter, then the ParentParameterName must be
@@ -306,9 +306,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    { Saves the data of all allowed parameters to the registry }
+    { Saves the data of all allowed parameters to the appstore }
     procedure StoreData;
-    { load the data of all allowed parameters from the registry }
+    { load the data of all allowed parameters from the appstore }
     procedure LoadData;
     {Adds a new Parameter to the parameterlist }
     procedure AddParameter(AParameter: TJvBaseParameter);
@@ -655,7 +655,7 @@ end;
 constructor TJvBaseParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
-  FReloadValueFromRegistry := True;
+  FReloadValueFromAppStore := True;
   FTabOrder := -1;
   FParameterList := AParameterList;
   FWinControl := nil;
@@ -905,7 +905,7 @@ begin
   Height := TJvBaseParameter(Source).Height;
   Required := TJvBaseParameter(Source).Required;
   ParentParameterName := TJvBaseParameter(Source).ParentParameterName;
-  ReloadValueFromRegistry := TJvBaseParameter(Source).ReloadValueFromRegistry;
+  ReloadValueFromAppStore := TJvBaseParameter(Source).ReloadValueFromAppStore;
   TabOrder := TJvBaseParameter(Source).TabOrder;
   FParameterList := TJvBaseParameter(Source).ParameterList;
   Color := TJvBaseParameter(Source).Color;
@@ -1684,7 +1684,7 @@ begin
     for I := 0 to ParameterList.Count - 1 do
       if not (Parameters[I] is TJvNoDataParameter) then
         with Parameters[I] do
-          if ReloadValueFromRegistry then
+          if ReloadValueFromAppStore then
             if Parameters[I] is TJvListParameter then
               with TJvListParameter(Parameters[I]) do
                 ItemIndex := AppStore.ReadInteger(AppStore.ConcatPaths([Path, SearchName]), ItemIndex)
@@ -1700,7 +1700,7 @@ begin
     for I := 0 to ParameterList.Count - 1 do
       if not (Parameters[I] is TJvNoDataParameter) then
         with Parameters[I] do
-          if ReloadValueFromRegistry then
+          if ReloadValueFromAppStore then
             if Parameters[I] is TJvListParameter then
               with TJvListParameter(Parameters[I]) do
                 AppStore.WriteInteger(AppStore.ConcatPaths([Path, SearchName]), ItemIndex)
