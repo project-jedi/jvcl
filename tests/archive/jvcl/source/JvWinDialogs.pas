@@ -164,9 +164,10 @@ type
   TCplApplet = function(hwndCPl: HWND; uMsg: DWORD; lParam1, lParam2: Longint): Longint; stdcall;
   
   // (rom) largely reimplemented
-  TJvAppletDialog = class(TJvComponent)
+  TJvAppletDialog = class(TJvCommonDialogF)
   private
     FAppletName: string;
+    FAppletIndex: Integer;
     FModule: HMODULE;
     FCount: Integer;
     FAppletFunc: TCplApplet;
@@ -177,11 +178,12 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function Execute(AppletIndex: Integer): Boolean;
+    function Execute: Boolean; override;
     property Count: Integer read FCount;
     property AppletInfo[Index: Integer]: TJvCplInfo read GetAppletInfo;
   published
     property AppletName: string read FAppletName write FAppletName;
+    property AppletIndex: Integer read FAppletIndex write FAppletIndex default 0;
   end;
 
   TJvComputerNameDialog = class(TJvCommonDialog)
@@ -605,6 +607,7 @@ begin
   inherited Create(AOwner);
   FModule := HINSTANCE_ERROR;
   FCount := 0;
+  FAppletIndex := 0;
 end;
 
 destructor TJvAppletDialog.Destroy;
@@ -672,7 +675,7 @@ begin
     Result := FAppletInfo[Index];
 end;
 
-function TJvAppletDialog.Execute(AppletIndex: Integer): Boolean;
+function TJvAppletDialog.Execute: Boolean;
 begin
   Result := False;
   if Assigned(FAppletFunc) and (AppletIndex >= 0) and (AppletIndex < Count) then

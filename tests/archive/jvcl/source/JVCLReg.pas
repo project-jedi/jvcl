@@ -229,6 +229,7 @@ begin
   RegisterComponentEditor(TCommonDialog, TJvOpenDialogEditor);
   RegisterComponentEditor(TJvCommonDialog, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogP, TJvBaseDlgEditor);
+  RegisterComponentEditor(TJvCommonDialogF, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogD, TJvCommonDialogDEditor);
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);

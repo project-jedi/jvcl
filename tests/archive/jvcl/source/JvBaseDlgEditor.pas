@@ -71,7 +71,11 @@ begin
     THackCommonDialog(Component).Execute
   else
   if Component is TJvCommonDialogP then
-    TJvCommonDialogP(Component).Execute;
+    TJvCommonDialogP(Component).Execute
+  else
+  // (rom) to accompany TJvCommonDialogP
+  if Component is TJvCommonDialogF then
+    TJvCommonDialogF(Component).Execute;
 end;
 
 function TJvBaseDlgEditor.GetVerb(Index: Integer): string;
