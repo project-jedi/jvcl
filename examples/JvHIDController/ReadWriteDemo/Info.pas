@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls;
+  StdCtrls, JvHidControllerClass;
 
 type
   TInfoForm = class(TForm)
@@ -31,11 +31,9 @@ type
     SerialNo: TLabel;
     LangStrings: TListBox;
     Label12: TLabel;
-    procedure FormCreate(Sender: TObject);
-  private
-    { Private declarations }
+    procedure FormShow(Sender: TObject);
   public
-    { Public declarations }
+    Dev: TJvHidDevice;
   end;
 
 var
@@ -43,35 +41,29 @@ var
 
 implementation
 
-uses
-  DevReader;
-
 {$R *.DFM}
 
-procedure TInfoForm.FormCreate(Sender: TObject);
+procedure TInfoForm.FormShow(Sender: TObject);
 var
   I: Integer;
 begin
-  with Form1 do
-  begin
-    VendorName.Caption := TheDev.VendorName;
-    ProductName.Caption := TheDev.ProductName;
-    SerialNo.Caption := TheDev.SerialNumber;
-    Vid.Caption  := IntToHex(TheDev.Attributes.VendorID, 4);
-    Pid.Caption  := IntToHex(TheDev.Attributes.ProductID, 4);
-    Vers.Caption := IntToHex(TheDev.Attributes.VersionNumber, 4);
-    if TheDev.Caps.InputReportByteLength > 0 then
-      InputLen.Caption   := IntToHex(TheDev.Caps.InputReportByteLength-1, 1);
-    if TheDev.Caps.OutputReportByteLength > 0 then
-      OutputLen.Caption  := IntToHex(TheDev.Caps.OutputReportByteLength-1, 1);
-    if TheDev.Caps.FeatureReportByteLength > 0 then
-      FeatureLen.Caption := IntToHex(TheDev.Caps.FeatureReportByteLength-1, 1);
-    for I := 1 to 255 do
-      if TheDev.DeviceStrings[I] <> '' then
-        DevStrings.Items.Add(Format('%3d) %s',[I+1,TheDev.DeviceStrings[I]]));
-    for I := 0 to TheDev.LanguageStrings.Count - 1 do
-      LangStrings.Items.Add(TheDev.LanguageStrings[I]);
-  end;
+  VendorName.Caption := Dev.VendorName;
+  ProductName.Caption := Dev.ProductName;
+  SerialNo.Caption := Dev.SerialNumber;
+  Vid.Caption  := IntToHex(Dev.Attributes.VendorID, 4);
+  Pid.Caption  := IntToHex(Dev.Attributes.ProductID, 4);
+  Vers.Caption := IntToHex(Dev.Attributes.VersionNumber, 4);
+  if Dev.Caps.InputReportByteLength > 0 then
+    InputLen.Caption   := IntToHex(Dev.Caps.InputReportByteLength-1, 1);
+  if Dev.Caps.OutputReportByteLength > 0 then
+    OutputLen.Caption  := IntToHex(Dev.Caps.OutputReportByteLength-1, 1);
+  if Dev.Caps.FeatureReportByteLength > 0 then
+    FeatureLen.Caption := IntToHex(Dev.Caps.FeatureReportByteLength-1, 1);
+  for I := 1 to 255 do
+    if Dev.DeviceStrings[I] <> '' then
+      DevStrings.Items.Add(Format('%3d) %s',[I, Dev.DeviceStrings[I]]));
+  for I := 0 to Dev.LanguageStrings.Count - 1 do
+    LangStrings.Items.Add(Dev.LanguageStrings[I]);
 end;
 
 end.

@@ -2,12 +2,12 @@ program BasicDemo;
 
 uses
   Forms,
-  Unit1 in 'Unit1.pas' {Form1};
+  BasicMain in 'BasicMain.pas' {MainForm};
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TMainForm, MainForm);
   Application.Run;
 end.
