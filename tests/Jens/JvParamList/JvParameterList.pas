@@ -28,251 +28,234 @@ unit JvParameterList;
 
 interface
 
-
-uses Classes, SysUtils, StdCtrls, ExtCtrls, Graphics, Forms, Controls,
+uses
+  Classes, SysUtils, StdCtrls, ExtCtrls, Graphics, Forms, Controls,
+  Dialogs, ComCtrls,
   {$IFDEF COMPILER6_UP}
   Variants,
-  {$ENDIF}
-  Dialogs, ComCtrls,
-  JvDynControlEngine, JvDynControlEngine_Interface,
+  {$ENDIF COMPILER6_UP}
+  JvTypes, JvDynControlEngine, JvDynControlEngine_Interface,
   JvComponent, JvPanel, JvPropertyStore, JvAppStore, JvAppStoreSelectList;
 
 type
-  TJvParameterList = class
-    ;
-  TJvParameterListPropertyStore = class
-    ;
-  TJvParameterPropertyValues = class
-    ;
-  TJvParameterListSelectList = class
-    ;
+  TJvParameterList = class;
+  TJvParameterListPropertyStore = class;
+  TJvParameterPropertyValues = class;
+  TJvParameterListSelectList = class;
 
-  tJvParameterListEnableDisableReason = class (TPersistent)
+  TJvParameterListEnableDisableReason = class(TPersistent)
   private
-    fRemoteParameterName: string;
-    fValue: variant;
-    fIsEmpty: boolean;
-    fIsNotEmpty: boolean;
+    FRemoteParameterName: string;
+    FValue: Variant;
+    FIsEmpty: Boolean;
+    FIsNotEmpty: Boolean;
   protected
     procedure SetAsString(Value: string);
     function GetAsString: string;
-    procedure SetAsDouble(Value: double);
-    function GetAsDouble: double;
-    procedure SetAsInteger(Value: integer);
-    function GetAsInteger: integer;
-    procedure SetAsBoolean(Value: boolean);
-    function GetAsBoolean: boolean;
-    procedure SetAsDate(Value: tDateTime);
-    function GetAsDate: tDateTime;
-    procedure SetAsVariant(Value: variant);
-    function GetAsVariant: variant;
-    procedure SetIsEmpty(Value: boolean);
-    procedure SetIsNotEmpty(Value: boolean);
+    procedure SetAsDouble(Value: Double);
+    function GetAsDouble: Double;
+    procedure SetAsInteger(Value: Integer);
+    function GetAsInteger: Integer;
+    procedure SetAsBoolean(Value: Boolean);
+    function GetAsBoolean: Boolean;
+    procedure SetAsDate(Value: TDateTime);
+    function GetAsDate: TDateTime;
+    procedure SetAsVariant(Value: Variant);
+    function GetAsVariant: Variant;
+    procedure SetIsEmpty(Value: Boolean);
+    procedure SetIsNotEmpty(Value: Boolean);
   public
     procedure Assign(Source: TPersistent); override;
-
-    property AsString: string Read GetAsString Write SetAsString;
-    property AsDouble: double Read GetAsDouble Write SetAsDouble;
-    property AsInteger: integer Read GetAsInteger Write SetAsInteger;
-    property AsBoolean: boolean Read GetAsBoolean Write SetAsBoolean;
-    property AsDate: tDateTime Read GetAsDate Write SetAsDate;
-    property AsVariant: variant Read GetAsVariant Write SetAsVariant;
-
-    property IsEmpty: boolean Read fIsEmpty Write SetIsEmpty;
-    property IsNotEmpty: boolean Read fIsNotEmpty Write SetIsNotEmpty;
-
-    property RemoteParameterName: string Read fRemoteParameterName Write fRemoteParameterName;
+    property AsString: string read GetAsString write SetAsString;
+    property AsDouble: Double read GetAsDouble write SetAsDouble;
+    property AsInteger: Integer read GetAsInteger write SetAsInteger;
+    property AsBoolean: Boolean read GetAsBoolean write SetAsBoolean;
+    property AsDate: TDateTime read GetAsDate write SetAsDate;
+    property AsVariant: Variant read GetAsVariant write SetAsVariant;
+    property IsEmpty: Boolean read FIsEmpty write SetIsEmpty;
+    property IsNotEmpty: Boolean read FIsNotEmpty write SetIsNotEmpty;
+    property RemoteParameterName: string read FRemoteParameterName write FRemoteParameterName;
   end;
 
-  tJvParameterListEnableDisableReasonList = class (TStringList)
+  TJvParameterListEnableDisableReasonList = class(TStringList)
   public
     procedure Clear; override;
-    procedure AddReasonVariant(RemoteParameterName: string; Value: variant);
-    procedure AddReason(RemoteParameterName: string; Value: boolean); overload;
-    procedure AddReason(RemoteParameterName: string; Value: integer); overload;
-    procedure AddReason(RemoteParameterName: string; Value: double); overload;
+    procedure AddReasonVariant(RemoteParameterName: string; Value: Variant);
+    procedure AddReason(RemoteParameterName: string; Value: Boolean); overload;
+    procedure AddReason(RemoteParameterName: string; Value: Integer); overload;
+    procedure AddReason(RemoteParameterName: string; Value: Double); overload;
     procedure AddReason(RemoteParameterName: string; Value: string); overload;
-    procedure AddReason(RemoteParameterName: string; Value: tDateTime); overload;
+    procedure AddReason(RemoteParameterName: string; Value: TDateTime); overload;
     procedure AddReasonIsEmpty(RemoteParameterName: string);
     procedure AddReasonIsNotEmpty(RemoteParameterName: string);
   end;
 
-  tJvParameterPropertyValue = class (TPersistent)
+  TJvParameterPropertyValue = class(TPersistent)
   private
-    fPropertyName: string;
-    fPropertyValue: variant;
+    FPropertyName: string;
+    FPropertyValue: Variant;
   public
-    property PropertyName: string Read fPropertyName Write fPropertyName;
-    property PropertyValue: variant Read fPropertyValue Write fPropertyValue;
+    property PropertyName: string read FPropertyName write FPropertyName;
+    property PropertyValue: Variant read FPropertyValue write FPropertyValue;
   end;
 
-  TJvParameterPropertyValues = class (TStringList)
-  private
-  protected
+  TJvParameterPropertyValues = class(TStringList)
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear; override;
-    procedure AddValue(aName: string; aValue: variant);
-  published
+    procedure AddValue(AName: string; AValue: Variant);
   end;
 
-//     TNotifyEvent = procedure (Sender: TObject) ofobject;
-
-  tJvBaseParameter = class (TComponent)
+  TJvBaseParameter = class(TComponent)
   private
-    fCaption: string;
-    fValue: variant;
-    fWidth: integer;
-    fHeight: integer;
-    fSearchName: string;
-    fRequired: boolean;
-    fReadOnly: boolean;
-    fReloadValuefromRegistry: boolean;
-    fParentParameterName: string;
-    fTabOrder: integer;
-    fParameterList: TJvParameterList;
-    fWinControl: TWinControl;
-    fJvDynControl: IJvDynControl;
-    fJvDynControlData: IJvDynControlData;
-    fHint: string;
-    fColor: TColor;
-    fEnabled: boolean;
-    fHelpContext: tHelpContext;
-    fDisableReasons: tJvParameterListEnableDisableReasonList;
-    fEnableReasons: tJvParameterListEnableDisableReasonList;
-    fVisible: boolean;
+    FCaption: string;
+    FValue: Variant;
+    FWidth: Integer;
+    FHeight: Integer;
+    FSearchName: string;
+    FRequired: Boolean;
+    FReadOnly: Boolean;
+    FReloadValueFromRegistry: Boolean;
+    FParentParameterName: string;
+    FTabOrder: Integer;
+    FParameterList: TJvParameterList;
+    FWinControl: TWinControl;
+    FJvDynControl: IJvDynControl;
+    FJvDynControlData: IJvDynControlData;
+    FHint: string;
+    FColor: TColor;
+    FEnabled: Boolean;
+    FHelpContext: THelpContext;
+    FDisableReasons: TJvParameterListEnableDisableReasonList;
+    FEnableReasons: TJvParameterListEnableDisableReasonList;
+    FVisible: Boolean;
   protected
     procedure SetAsString(Value: string); virtual;
     function GetAsString: string; virtual;
-    procedure SetAsDouble(Value: double); virtual;
-    function GetAsDouble: double; virtual;
-    procedure SetAsInteger(Value: integer); virtual;
-    function GetAsInteger: integer; virtual;
-    procedure SetAsBoolean(Value: boolean); virtual;
-    function GetAsBoolean: boolean; virtual;
-    procedure SetAsDate(Value: tDateTime); virtual;
-    function GetAsDate: tDateTime; virtual;
-    procedure SetAsVariant(Value: variant); virtual;
-    function GetAsVariant: variant; virtual;
+    procedure SetAsDouble(Value: Double); virtual;
+    function GetAsDouble: Double; virtual;
+    procedure SetAsInteger(Value: Integer); virtual;
+    function GetAsInteger: Integer; virtual;
+    procedure SetAsBoolean(Value: Boolean); virtual;
+    function GetAsBoolean: Boolean; virtual;
+    procedure SetAsDate(Value: TDateTime); virtual;
+    function GetAsDate: TDateTime; virtual;
+    procedure SetAsVariant(Value: Variant); virtual;
+    function GetAsVariant: Variant; virtual;
     function GetParameterNameExt: string; virtual;
     function GetParameterNameBase: string;
     function GetParameterName: string;
     procedure SetWinControl(Value: TWinControl);
     function GetWinControl: TWinControl;
-    property WinControl: TWinControl Read GetWinControl Write SetWinControl;
-    property JvDynControl: IJvDynControl Read fJvDynControl;
-    property JvDynControlData: IJvDynControlData Read fJvDynControlData;
-    property Color: TColor Read fColor Write fColor;
+    function GetWinControlData: Variant; virtual;
+    procedure SetWinControlData(Value: Variant); virtual;
 
-    function GetWinControlData: variant; virtual;
-    procedure SetWinControlData(Value: variant); virtual;
-
-    procedure SetEnabled(Value: boolean); virtual;
+    procedure SetEnabled(Value: Boolean); virtual;
 
     procedure HandleEnableDisable(Sender: TObject);
 
-    property Value: variant Read fValue Write fValue;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
-    function GetDynControlEngine: tJvDynControlEngine;
-
+    function GetDynControlEngine: TJvDynControlEngine;
+    property Color: TColor read FColor write FColor;
+    property JvDynControl: IJvDynControl read FJvDynControl;
+    property JvDynControlData: IJvDynControlData read FJvDynControlData;
+    property Value: Variant read FValue write FValue;
+    property WinControl: TWinControl read GetWinControl write SetWinControl;
   public
     constructor Create(AParameterList: TJvParameterList); virtual;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    function Validate(var fData: variant): boolean; virtual;
+    function Validate(var AData: Variant): Boolean; virtual;
     procedure CreateWinControlOnParent(ParameterParent: TWinControl); virtual; abstract;
-    property WinControlData: variant Read GetWinControlData Write SetWinControlData;
+    property WinControlData: Variant read GetWinControlData write SetWinControlData;
     procedure GetData; virtual;
     procedure SetData; virtual;
-    property ParameterList: TJvParameterList Read fParameterList Write fParameterList;
-    property DynControlEngine: tJvDynControlEngine Read GetDynControlEngine;
+    property ParameterList: TJvParameterList read FParameterList write FParameterList;
+    property DynControlEngine: TJvDynControlEngine read GetDynControlEngine;
   published
-       {the next properties implements the possibilities to read and write the data }
-    property AsString: string Read GetAsString Write SetAsString;
-    property AsDouble: double Read GetAsDouble Write SetAsDouble;
-    property AsInteger: integer Read GetAsInteger Write SetAsInteger;
-    property AsBoolean: boolean Read GetAsBoolean Write SetAsBoolean;
-    property AsDate: tDateTime Read GetAsDate Write SetAsDate;
-    property AsVariant: variant Read GetAsVariant Write SetAsVariant;
-       {this name is used to identify the parameter in the parameterlist,
-        this value must be defined before inserting into the parameterlist }
-    property SearchName: string Read fSearchName Write fSearchName;
-       {should this value be saved in the registry by the parameterlist }
-    property ReloadValuefromRegistry: boolean Read fReloadValuefromRegistry Write fReloadValuefromRegistry;
-       {the searchname of the parentparameter. The parameter must be a
-        descent of TJvPanelParameter or TTabControlParamter. If the
-        parentparameter is a TJvTabControlParameter, than the ParentParameterName must be
-        "searchname.tabname" of the TJvTabControlParameter}
-    property ParentParameterName: string Read fParentParameterName Write fParentParameterName;
-       {Is the value required, will be checked in the validate function}
-    property Required: boolean Read fRequired Write fRequired;
-    property ReadOnly: boolean Read fReadOnly Write fReadOnly;
-    property Enabled: boolean Read fEnabled Write SetEnabled;
-    property Visible: boolean Read fVisible Write fVisible;
-       {the next properties find their expressions in the same properties of tWinControl }
-    property Caption: string Read fCaption Write fCaption;
-    property Width: integer Read fWidth Write fWidth;
-    property Height: integer Read fHeight Write fHeight;
-    property Hint: string Read fHint Write fHint;
-    property HelpContext: tHelpContext Read fHelpContext Write fHelpContext;
-    property TabOrder: integer Read fTabOrder Write fTabOrder;
-
-
-    property DisableReasons: tJvParameterListEnableDisableReasonList Read fDisableReasons;
-    property EnableReasons: tJvParameterListEnableDisableReasonList Read fEnableReasons;
-
+    {the next properties implements the possibilities to read and write the data }
+    property AsString: string read GetAsString write SetAsString;
+    property AsDouble: Double read GetAsDouble write SetAsDouble;
+    property AsInteger: Integer read GetAsInteger write SetAsInteger;
+    property AsBoolean: Boolean read GetAsBoolean write SetAsBoolean;
+    property AsDate: TDateTime read GetAsDate write SetAsDate;
+    property AsVariant: Variant read GetAsVariant write SetAsVariant;
+    {this name is used to identify the parameter in the parameterlist,
+     this value must be defined before inserting into the parameterlist }
+    property SearchName: string read FSearchName write FSearchName;
+    {should this value be saved in the registry by the parameterlist }
+    property ReloadValueFromRegistry: Boolean read FReloadValueFromRegistry write FReloadValueFromRegistry;
+    {the searchname of the parentparameter. The parameter must be a
+     descent of TJvPanelParameter or TTabControlParamter. If the
+     parent parameter is a TJvTabControlParameter, then the ParentParameterName must be
+     "searchname.tabname" of the TJvTabControlParameter}
+    property ParentParameterName: string read FParentParameterName write FParentParameterName;
+    {Is the value required, will be checked in the validate function}
+    property Required: Boolean read FRequired write FRequired;
+    property ReadOnly: Boolean read FReadOnly write FReadOnly;
+    property Enabled: Boolean read FEnabled write SetEnabled;
+    property Visible: Boolean read FVisible write FVisible;
+    {the next properties find their expressions in the same properties of TWinControl }
+    property Caption: string read FCaption write FCaption;
+    property Width: Integer read FWidth write FWidth;
+    property Height: Integer read FHeight write FHeight;
+    property Hint: string read FHint write FHint;
+    property HelpContext: THelpContext read FHelpContext write FHelpContext;
+    property TabOrder: Integer read FTabOrder write FTabOrder;
+    property DisableReasons: TJvParameterListEnableDisableReasonList read FDisableReasons;
+    property EnableReasons: TJvParameterListEnableDisableReasonList read FEnableReasons;
   end;
 
-  TJvParameterListMessages = class (TPersistent)
+  TJvParameterListMessages = class(TPersistent)
   private
-    fCaption: string;
-    fOkButton: string;
-    fCancelButton: string;
-    fHistoryLoadButton: string;
-    fHistorySaveButton: string;
-    fHistoryClearButton: string;
-    fHistoryLoadCaption: string;
-    fHistorySaveCaption: string;
-    fHistoryClearCaption: string;
+    FCaption: string;
+    FOkButton: string;
+    FCancelButton: string;
+    FHistoryLoadButton: string;
+    FHistorySaveButton: string;
+    FHistoryClearButton: string;
+    FHistoryLoadCaption: string;
+    FHistorySaveCaption: string;
+    FHistoryClearCaption: string;
   public
     constructor Create;
   published
-    property Caption: string Read fCaption Write fCaption;
-    property OkButton: string Read fOkButton Write fOkButton;
-    property CancelButton: string Read fCancelButton Write fCancelButton;
-    property HistoryLoadButton: string Read fHistoryLoadButton Write fHistoryLoadButton;
-    property HistorySaveButton: string Read fHistorySaveButton Write fHistorySaveButton;
-    property HistoryClearButton: string Read fHistoryClearButton Write fHistoryClearButton;
-    property HistoryLoadCaption: string Read fHistoryLoadCaption Write fHistoryLoadCaption;
-    property HistorySaveCaption: string Read fHistorySaveCaption Write fHistorySaveCaption;
-    property HistoryClearCaption: string Read fHistoryClearCaption Write fHistoryClearCaption;
+    property Caption: string read FCaption write FCaption;
+    property OkButton: string read FOkButton write FOkButton;
+    property CancelButton: string read FCancelButton write FCancelButton;
+    property HistoryLoadButton: string read FHistoryLoadButton write FHistoryLoadButton;
+    property HistorySaveButton: string read FHistorySaveButton write FHistorySaveButton;
+    property HistoryClearButton: string read FHistoryClearButton write FHistoryClearButton;
+    property HistoryLoadCaption: string read FHistoryLoadCaption write FHistoryLoadCaption;
+    property HistorySaveCaption: string read FHistorySaveCaption write FHistorySaveCaption;
+    property HistoryClearCaption: string read FHistoryClearCaption write FHistoryClearCaption;
   end;
 
-  TJvParameterList = class (TJvComponent)
+  TJvParameterList = class(TJvComponent)
+  private
+    FMessages: TJvParameterListMessages;
+    FIntParameterList: TStringList;
+    FArrangeSettings: TJvArrangeSettings;
+    FDynControlEngine: TJvDynControlEngine;
+    FParameterDialog: TCustomForm;
+    FWidth: Integer;
+    FHeight: Integer;
+    FAutoWidth: Boolean;
+    FAutoHeight: Boolean;
+    FMaxWidth: Integer;
+    FMaxHeight: Integer;
+    FOkButtonVisible: Boolean;
+    FCancelButtonVisible: Boolean;
+    FParameterListPropertyStore: TJvParameterListPropertyStore;
+    FHistoryEnabled: Boolean;
+    FLastHistoryName: string;
+    FParameterListSelectList: TJvParameterListSelectList;
+    function AddObject(const S: string; AObject: TObject): Integer;
+    procedure InsertObject(Index: Integer; const S: string; AObject: TObject);
     procedure OnOkButtonClick(Sender: TObject);
     procedure OnCancelButtonClick(Sender: TObject);
-  private
-    fMessages: TJvParameterListMessages;
-    fintParameterList: TStringList;
-    FArrangeSettings: TJvArrangeSettings;
-    fDynControlEngine: tJvDynControlEngine;
-    fParameterDialog: tCustomForm;
-    fWidth: integer;
-    fHeight: integer;
-    fAutoWidth: boolean;
-    fAutoHeight: boolean;
-    fMaxWidth: integer;
-    fMaxHeight: integer;
-    fOkButtonVisible: boolean;
-    fCancelButtonVisible: boolean;
-    fParameterListPropertyStore: TJvParameterListPropertyStore;
-    fHistoryEnabled: boolean;
-    fLastHistoryName: string;
-    fParameterListSelectList: TJvParameterListSelectList;
-    function AddObject(const S: string; AObject: TObject): integer;
-    procedure InsertObject(Index: integer; const S: string; AObject: TObject);
   protected
     ArrangePanel: TJvPanel;
     ScrollBox: TScrollBox;
@@ -283,365 +266,362 @@ type
     function GetAppStore: TJvCustomAppStore;
     procedure SetAppStore(Value: TJvCustomAppStore);
 
-    procedure SetDynControlEngine(Value: tJvDynControlEngine);
+    procedure SetDynControlEngine(Value: TJvDynControlEngine);
 
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
     function GetParentByName(MainParent: TWinControl; SearchName: string): TWinControl;
-    function GetCount: integer;
+    function GetCount: Integer;
 
+    procedure SetParameters(Index: Integer; Value: TJvBaseParameter);
+    function GetParameters(Index: Integer): TJvBaseParameter;
 
-    procedure SetParameters(Index: integer; Value: tJvBaseParameter);
-    function GetParameters(Index: integer): tJvBaseParameter;
-
-    function GetCurrentWidth: integer;
-    function GetCurrentHeight: integer;
+    function GetCurrentWidth: Integer;
+    function GetCurrentHeight: Integer;
 
     procedure HistoryLoadClick(Sender: TObject);
     procedure HistorySaveClick(Sender: TObject);
     procedure HistoryClearClick(Sender: TObject);
 
-    property intParameterList: TStringList Read fintParameterList;
+    property IntParameterList: TStringList read FIntParameterList;
 
-    property ParameterDialog: tCustomForm Read fParameterDialog;
-    property ParameterListSelectList: TJvParameterListSelectList Read fParameterListSelectList;
-
-
+    property ParameterDialog: TCustomForm read FParameterDialog;
+    property ParameterListSelectList: TJvParameterListSelectList read FParameterListSelectList;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-       { Saves the data of all allowed parameters to the registry }
+    { Saves the data of all allowed parameters to the registry }
     procedure StoreData;
-       { load the data of all allowed parameters from the registry }
+    { load the data of all allowed parameters from the registry }
     procedure LoadData;
-       {Adds a new Parameter to the parameterlist }
-    procedure AddParameter(aParameter: tJvBaseParameter);
-       {returns the parameter identified by the Searchname}
-    function ParameterByName(iSearchName: string): tJvBaseParameter;
-       {returns true id the parameter identified by the Searchname exists}
-    function ExistsParameter(iSearchName: string): boolean;
-       {returns the parameter identified by index-position}
-    function ParamByIndex(iIndex: integer): tJvBaseParameter;
-       {executes a dialog to enter all Parameter-Data,
-        returns true when ok-button pressed}
-    function ShowParameterDialog: boolean;
-
-       { Creates the ParameterDialog }
+    {Adds a new Parameter to the parameterlist }
+    procedure AddParameter(AParameter: TJvBaseParameter);
+    {returns the parameter identified by the Searchname}
+    function ParameterByName(ASearchName: string): TJvBaseParameter;
+    {returns True id the parameter identified by the Searchname exists}
+    function ExistsParameter(ASearchName: string): Boolean;
+    {returns the parameter identified by index-position}
+    function ParamByIndex(AIndex: Integer): TJvBaseParameter;
+    {executes a dialog to enter all Parameter-Data,
+     returns True when ok-button pressed}
+    function ShowParameterDialog: Boolean;
+    { Creates the ParameterDialog }
     procedure CreateParameterDialog;
-
-       {  count of parameters}
-    property Count: integer Read getcount;
-
-       {creates the components of all parameters on any WinControl}
+    {creates the components of all parameters on any WinControl}
     procedure CreateWinControlsOnParent(ParameterParent: TWinControl);
-       {Destroy the WinControls of all parameters}
+    {Destroy the WinControls of all parameters}
     procedure DestroyWinControls;
-
-       {returns the current height of the created main-parameter-panel}
-    property CurrentWidth: integer Read GetCurrentWidth;
-       {returns the current height of the created main-parameter-panel}
-    property CurrentHeight: integer Read GetCurrentHeight;
-
-       { reads the data of all parameters from the WinControls}
+    { reads the data of all parameters from the WinControls}
     procedure GetDataFromWinControls;
     procedure SetDataToWinControls;
-       { validates the data of all parameters without filling the data into
-       the parameters }
-    function ValidateDataAtWinControls: boolean;
-       {deletes alll Parameters from the Parameterlist}
+    { validates the data of all parameters without filling the data into
+     the parameters }
+    function ValidateDataAtWinControls: Boolean;
+    {deletes alll Parameters from the Parameterlist}
     procedure Clear;
-
-       {this procedure checks the autoscroll-property of the internal
-        scrollbox. This funtion should only be called, after the size of
-        the parent-panel has changed}
-    procedure CheckScrollboxAutoScroll;
-       { Property to get access to the parameters }
-    property Parameters[Index: integer]: tJvBaseParameter Read GetParameters Write SetParameters;
-
-    property DynControlEngine: tJvDynControlEngine Read fDynControlEngine Write SetDynControlEngine;
-
+    {this procedure checks the autoscroll-property of the internal
+     scrollbox. This function should only be called, after the size of
+     the parent-panel has changed}
+    procedure CheckScrollBoxAutoScroll;
+    { count of parameters }
+    property Count: Integer read GetCount;
+    {returns the current height of the created main-parameter-panel}
+    property CurrentWidth: Integer read GetCurrentWidth;
+    {returns the current height of the created main-parameter-panel}
+    property CurrentHeight: Integer read GetCurrentHeight;
+    property DynControlEngine: TJvDynControlEngine read FDynControlEngine write SetDynControlEngine;
+    { Property to get access to the parameters }
+    property Parameters[Index: Integer]: TJvBaseParameter read GetParameters write SetParameters;
   published
-    property ArrangeSettings: TJvArrangeSettings Read FArrangeSettings Write SetArrangeSettings;
-    property Messages: TJvParameterListMessages Read fMessages;
-    property Path: string Read GetPath Write SetPath;
-       {Width of the dialog. When width = 0, then the width will be calculated }
-    property Width: integer Read fWidth Write fWidth;
-       {Height of the dialog. When height = 0, then the Height will be calculated }
-    property Height: integer Read fHeight Write fHeight;
-       {Property to define that the dialog height should be calculated automaticly }
-    property AutoWidth: boolean Read fAutoWidth Write fAutoWidth;
-       {Property to define that the dialog height should be calculated automaticly }
-    property AutoHeight: boolean Read fAutoHeight Write fAutoHeight;
-       {Maximum ClientWidth of the Dialog}
-    property MaxWidth: integer Read fMaxWidth Write fMaxWidth default 400;
-       {Maximum ClientHeight of the Dialog}
-    property MaxHeight: integer Read fMaxHeight Write fMaxHeight default 600;
-    property OkButtonVisible: boolean Read fOkButtonVisible Write fOkButtonVisible;
-    property CancelButtonVisible: boolean Read fCancelButtonVisible Write fCancelButtonVisible;
-    property HistoryEnabled: boolean Read fHistoryEnabled Write fHistoryEnabled;
-    property LastHistoryName: string Read fLastHistoryName Write fLastHistoryName;
-
-    property AppStore: TJvCustomAppStore Read GetAppStore Write SetAppStore;
+    property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
+    property Messages: TJvParameterListMessages read FMessages;
+    property Path: string read GetPath write SetPath;
+    {Width of the dialog. When width = 0, then the width will be calculated }
+    property Width: Integer read FWidth write FWidth;
+    {Height of the dialog. When height = 0, then the Height will be calculated }
+    property Height: Integer read FHeight write FHeight;
+    {Property to define that the dialog height should be calculated automaticly }
+    property AutoWidth: Boolean read FAutoWidth write FAutoWidth;
+    {Property to define that the dialog height should be calculated automaticly }
+    property AutoHeight: Boolean read FAutoHeight write FAutoHeight;
+    {Maximum ClientWidth of the Dialog}
+    property MaxWidth: Integer read FMaxWidth write FMaxWidth default 400;
+    {Maximum ClientHeight of the Dialog}
+    property MaxHeight: Integer read FMaxHeight write FMaxHeight default 600;
+    property OkButtonVisible: Boolean read FOkButtonVisible write FOkButtonVisible;
+    property CancelButtonVisible: Boolean read FCancelButtonVisible write FCancelButtonVisible;
+    property HistoryEnabled: Boolean read FHistoryEnabled write FHistoryEnabled;
+    property LastHistoryName: string read FLastHistoryName write FLastHistoryName;
+    property AppStore: TJvCustomAppStore read GetAppStore write SetAppStore;
   end;
 
-  TJvParameterListSelectList = class (tJvAppStoreSelectList)
+  TJvParameterListSelectList = class(TJvAppStoreSelectList)
   private
-    fParameterList: TJvParameterList;
+    FParameterList: TJvParameterList;
   protected
-    function GetDynControlEngine: tJvDynControlEngine; override;
+    function GetDynControlEngine: TJvDynControlEngine; override;
     function GetParameterList: TJvParameterList; virtual;
     procedure SetParameterList(Value: TJvParameterList); virtual;
     function GetAppStore: TJvCustomAppStore; override;
     procedure SetAppStore(Value: TJvCustomAppStore); override;
   public
- //        constructor create (aOwner : TComponent); override;
- //        destructor destroy; override;
+    // constructor Create(AOwner: TComponent); override;
+    // destructor Destroy; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure RestoreParameterList(aCaption: string = '');
-    procedure SaveParameterList(aCaption: string = '');
+    procedure RestoreParameterList(ACaption: string = '');
+    procedure SaveParameterList(ACaption: string = '');
   published
-    property ParameterList: TJvParameterList Read GetParameterList Write SetParameterList;
+    property ParameterList: TJvParameterList read GetParameterList write SetParameterList;
   end;
 
-
-  TJvParameterListPropertyStore = class (tJvCustomPropertyStore)
+  TJvParameterListPropertyStore = class(TJvCustomPropertyStore)
   private
-    fParameterList: TJvParameterList;
+    FParameterList: TJvParameterList;
   protected
     procedure LoadData; override;
     procedure StoreData; override;
   public
-    property ParameterList: TJvParameterList Read fParameterList Write fParameterList;
+    property ParameterList: TJvParameterList read FParameterList write FParameterList;
   end;
-
-{.$ENDIF}
 
 implementation
 
-
-{.$IFDEF COMPILER6_UP}
-
-uses JvParameterList_Parameter;
+uses
+  JvParameterList_Parameter;
 
 resourcestring
-  ErrParameterMustBeEntered = 'Parameter %s must be entered!';
-  HistorySelectPath = 'History';
+  SErrParameterMustBeEntered = 'Parameter %s must be entered!';
+  SHistorySelectPath = 'History';
 
+  SCaption = '';
+  SOkButton = '&Ok';
+  SCancelButton = '&Cancel';
+  SHistoryLoadButton = '&Load';
+  SHistorySaveButton = '&Save';
+  SHistoryClearButton = 'Cl&ear';
+  SHistoryLoadCaption = 'Load Parameter Settings';
+  SHistorySaveCaption = 'Save Parameter Settings';
+  SHistoryClearCaption = 'Manage Parameter Settings';
 
-{*****************************************************************************}
-{* tJvParameterListMessages
-{*****************************************************************************}
-constructor tJvParameterListMessages.Create;
+  SNoParametersDefined = 'TJvParameterList.ShowParameterDialog: No Parameters defined';
+  SAddObjectWrongObjectType = 'TJvParameterList.AddObject: Wrong object type';
+  SAddObjectSearchNameNotDefined = 'TJvParameterList.AddObject: SearchName not defined';
+  SInsertObjectWrongObjectType = 'TJvParameterList.InsertObject: Wrong object type';
+  SInsertObjectSearchNameNotDefined = 'TJvParameterList.InsertObject: SearchName not defined';
+
+//=== TJvParameterListMessages ===============================================
+
+constructor TJvParameterListMessages.Create;
 begin
-  inherited;
-  Caption      := '';
-  OkButton     := '&Ok';
-  CancelButton := '&Cancel';
-  HistoryLoadButton := '&Load';
-  HistorySaveButton := '&Save';
-  HistoryClearButton := 'Cl&ear';
-  HistoryLoadCaption := 'Load Parameter Settings';
-  HistorySaveCaption := 'Save Parameter Settings';
-  HistoryClearCaption := 'Manage Parameter Settings';
+  inherited Create;
+  Caption := SCaption;
+  OkButton := SOkButton;
+  CancelButton := SCancelButton;
+  HistoryLoadButton := SHistoryLoadButton;
+  HistorySaveButton := SHistorySaveButton;
+  HistoryClearButton := SHistoryClearButton;
+  HistoryLoadCaption := SHistoryLoadCaption;
+  HistorySaveCaption := SHistorySaveCaption;
+  HistoryClearCaption := SHistoryClearCaption;
 end;
 
-{*****************************************************************************}
-{* tJvParameterListEnableDisableReason                                                           *}
-{*****************************************************************************}
+//=== TJvParameterListEnableDisableReason ====================================
 
-procedure tJvParameterListEnableDisableReason.SetAsString(Value: string);
+procedure TJvParameterListEnableDisableReason.SetAsString(Value: string);
 begin
-  fValue := Value;
-end;   {*** Procedure tJvParameterListEnableDisableReason.SetAsString ***}
+  FValue := Value;
+end;
 
-function tJvParameterListEnableDisableReason.GetAsString: string;
+function TJvParameterListEnableDisableReason.GetAsString: string;
 begin
-  Result := fValue;
-end;   {*** Function tJvParameterListEnableDisableReason.GetAsString ***}
+  Result := FValue;
+end;
 
-procedure tJvParameterListEnableDisableReason.SetAsDouble(Value: double);
+procedure TJvParameterListEnableDisableReason.SetAsDouble(Value: Double);
 begin
-  fValue := Value;
-end;   {*** Procedure tJvParameterListEnableDisableReason.SetAsDouble ***}
+  FValue := Value;
+end;
 
-function tJvParameterListEnableDisableReason.GetAsDouble: double;
+function TJvParameterListEnableDisableReason.GetAsDouble: Double;
 begin
-  Result := fValue;
-end;   {*** Function tJvParameterListEnableDisableReason.GetAsDouble ***}
+  Result := FValue;
+end;
 
-procedure tJvParameterListEnableDisableReason.SetAsInteger(Value: integer);
+procedure TJvParameterListEnableDisableReason.SetAsInteger(Value: Integer);
 begin
-  fValue := Value;
-end;   {*** Procedure tJvParameterListEnableDisableReason.SetAsInteger ***}
+  FValue := Value;
+end;
 
-function tJvParameterListEnableDisableReason.GetAsInteger: integer;
+function TJvParameterListEnableDisableReason.GetAsInteger: Integer;
 begin
-  Result := fValue;
-end;   {*** Function tJvParameterListEnableDisableReason.GetAsInteger ***}
+  Result := FValue;
+end;
 
-procedure tJvParameterListEnableDisableReason.SetAsBoolean(Value: boolean);
+procedure TJvParameterListEnableDisableReason.SetAsBoolean(Value: Boolean);
 begin
   if Value then
-    fValue := 'TRUE'
+    FValue := 'TRUE'
   else
-    fValue := 'FALSE';
-end;   {*** Procedure tJvParameterListEnableDisableReason.SetAsBoolean ***}
+    FValue := 'FALSE';
+end;
 
-function tJvParameterListEnableDisableReason.GetAsBoolean: boolean;
+function TJvParameterListEnableDisableReason.GetAsBoolean: Boolean;
 var
-  s: string;
+  S: string;
 begin
-  s      := fValue;
-  Result := s = 'TRUE';
-end;   {*** Function tJvParameterListEnableDisableReason.GetAsBoolean ***}
+  S := FValue;
+  Result := S = 'TRUE';
+end;
 
-procedure tJvParameterListEnableDisableReason.SetAsDate(Value: tDateTime);
+procedure TJvParameterListEnableDisableReason.SetAsDate(Value: TDateTime);
 begin
-  fValue := Value;
-end;   {*** Procedure tJvParameterListEnableDisableReason.SetAsDate ***}
+  FValue := Value;
+end;
 
-function tJvParameterListEnableDisableReason.GetAsDate: tDateTime;
+function TJvParameterListEnableDisableReason.GetAsDate: TDateTime;
 begin
-  Result := fValue;
-end;   {*** Function tJvParameterListEnableDisableReason.GetAsDate ***}
+  Result := FValue;
+end;
 
-procedure tJvParameterListEnableDisableReason.SetAsVariant(Value: variant);
+procedure TJvParameterListEnableDisableReason.SetAsVariant(Value: Variant);
 begin
-  fValue := Value;
-end;   {*** Procedure tJvParameterListEnableDisableReason.SetAsVariant ***}
+  FValue := Value;
+end;
 
-function tJvParameterListEnableDisableReason.GetAsVariant: variant;
+function TJvParameterListEnableDisableReason.GetAsVariant: Variant;
 begin
-  Result := fValue;
-end;   {*** Function tJvParameterListEnableDisableReason.GetAsVariant ***}
+  Result := FValue;
+end;
 
-procedure tJvParameterListEnableDisableReason.SetIsEmpty(Value: boolean);
+procedure TJvParameterListEnableDisableReason.SetIsEmpty(Value: Boolean);
 begin
-  fIsEmpty := Value;
+  // (rom) is it intended to allow IsEmpty and NotIsEmtpy to be both False?
+  FIsEmpty := Value;
   if Value then
-    IsNotEmpty := false;
-end;   {*** Function tJvParameterListEnableDisableReason.SetIsEmpty ***}
+    IsNotEmpty := False;
+end;
 
-procedure tJvParameterListEnableDisableReason.SetIsNotEmpty(Value: boolean);
+procedure TJvParameterListEnableDisableReason.SetIsNotEmpty(Value: Boolean);
 begin
-  fIsNotEmpty := Value;
+  // (rom) is it intended to allow IsEmpty and NotIsEmtpy to be both False?
+  FIsNotEmpty := Value;
   if Value then
-    IsEmpty := false;
-end;   {*** Function tJvParameterListEnableDisableReason.SetIsNotEmpty ***}
+    IsEmpty := False;
+end;
 
-procedure tJvParameterListEnableDisableReason.Assign(Source: TPersistent);
+procedure TJvParameterListEnableDisableReason.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  AsVariant  := tJvParameterListEnableDisableReason(Source).AsVariant;
-  IsEmpty    := tJvParameterListEnableDisableReason(Source).IsEmpty;
-  IsNotEmpty := tJvParameterListEnableDisableReason(Source).IsNotEmpty;
-  RemoteParameterName := tJvParameterListEnableDisableReason(Source).RemoteParameterName;
-end;   {*** Procedure tJvParameterListEnableDisableReason.Assign ***}
+  AsVariant := TJvParameterListEnableDisableReason(Source).AsVariant;
+  IsEmpty := TJvParameterListEnableDisableReason(Source).IsEmpty;
+  IsNotEmpty := TJvParameterListEnableDisableReason(Source).IsNotEmpty;
+  RemoteParameterName := TJvParameterListEnableDisableReason(Source).RemoteParameterName;
+end;
 
+//=== TJvParameterListEnableDisableReasonList ================================
 
-{*****************************************************************************}
-{* tJvParameterListEnableDisableReasonList                                                  *}
-{*****************************************************************************}
-
-procedure tJvParameterListEnableDisableReasonList.Clear;
+procedure TJvParameterListEnableDisableReasonList.Clear;
 var
-  i: integer;
+  I: Integer;
 begin
-  for i := 0 to Count - 1 do
-    if Assigned(Objects[i]) then
-      Objects[i].Free;
+  for I := 0 to Count - 1 do
+    Objects[I].Free;
   inherited Clear;
 end;
 
-procedure tJvParameterListEnableDisableReasonList.AddReasonVariant(RemoteParameterName: string; Value: variant);
+procedure TJvParameterListEnableDisableReasonList.AddReasonVariant(RemoteParameterName: string;
+  Value: Variant);
 var
-  Reason: tJvParameterListEnableDisableReason;
+  Reason: TJvParameterListEnableDisableReason;
 begin
-  Reason := tJvParameterListEnableDisableReason.Create;
+  Reason := TJvParameterListEnableDisableReason.Create;
   Reason.RemoteParameterName := RemoteParameterName;
   Reason.AsVariant := Value;
   AddObject(RemoteParameterName, Reason);
-end;   {*** procedure tJvParameterListEnableDisableReasonList.AddReason ***}
+end;
 
-procedure tJvParameterListEnableDisableReasonList.AddReason(RemoteParameterName: string; Value: boolean);
+procedure TJvParameterListEnableDisableReasonList.AddReason(RemoteParameterName: string;
+  Value: Boolean);
 var
-  Reason: tJvParameterListEnableDisableReason;
+  Reason: TJvParameterListEnableDisableReason;
 begin
-  Reason := tJvParameterListEnableDisableReason.Create;
+  Reason := TJvParameterListEnableDisableReason.Create;
   Reason.RemoteParameterName := RemoteParameterName;
   Reason.AsBoolean := Value;
   AddObject(RemoteParameterName, Reason);
-end;   {*** procedure tJvParameterListEnableDisableReasonList.AddReason ***}
+end;
 
-procedure tJvParameterListEnableDisableReasonList.AddReason(RemoteParameterName: string; Value: integer);
+procedure TJvParameterListEnableDisableReasonList.AddReason(RemoteParameterName: string;
+  Value: Integer);
 var
-  Reason: tJvParameterListEnableDisableReason;
+  Reason: TJvParameterListEnableDisableReason;
 begin
-  Reason := tJvParameterListEnableDisableReason.Create;
+  Reason := TJvParameterListEnableDisableReason.Create;
   Reason.RemoteParameterName := RemoteParameterName;
   Reason.AsInteger := Value;
   AddObject(RemoteParameterName, Reason);
-end;   {*** procedure tJvParameterListEnableDisableReasonList.AddReason ***}
+end;
 
-procedure tJvParameterListEnableDisableReasonList.AddReason(RemoteParameterName: string; Value: double);
+procedure TJvParameterListEnableDisableReasonList.AddReason(RemoteParameterName: string;
+  Value: Double);
 var
-  Reason: tJvParameterListEnableDisableReason;
+  Reason: TJvParameterListEnableDisableReason;
 begin
-  Reason := tJvParameterListEnableDisableReason.Create;
+  Reason := TJvParameterListEnableDisableReason.Create;
   Reason.RemoteParameterName := RemoteParameterName;
   Reason.AsDouble := Value;
   AddObject(RemoteParameterName, Reason);
-end;   {*** procedure tJvParameterListEnableDisableReasonList.AddReason ***}
+end;
 
-procedure tJvParameterListEnableDisableReasonList.AddReason(RemoteParameterName: string; Value: string);
+procedure TJvParameterListEnableDisableReasonList.AddReason(RemoteParameterName: string;
+  Value: string);
 var
-  Reason: tJvParameterListEnableDisableReason;
+  Reason: TJvParameterListEnableDisableReason;
 begin
-  Reason := tJvParameterListEnableDisableReason.Create;
+  Reason := TJvParameterListEnableDisableReason.Create;
   Reason.RemoteParameterName := RemoteParameterName;
   Reason.AsString := Value;
   AddObject(RemoteParameterName, Reason);
-end;   {*** procedure tJvParameterListEnableDisableReasonList.AddReason ***}
+end;
 
-procedure tJvParameterListEnableDisableReasonList.AddReason(RemoteParameterName: string; Value: tDateTime);
+procedure TJvParameterListEnableDisableReasonList.AddReason(RemoteParameterName: string;
+  Value: TDateTime);
 var
-  Reason: tJvParameterListEnableDisableReason;
+  Reason: TJvParameterListEnableDisableReason;
 begin
-  Reason := tJvParameterListEnableDisableReason.Create;
+  Reason := TJvParameterListEnableDisableReason.Create;
   Reason.RemoteParameterName := RemoteParameterName;
   Reason.AsDate := Value;
   AddObject(RemoteParameterName, Reason);
-end;   {*** procedure tJvParameterListEnableDisableReasonList.AddReason ***}
+end;
 
-procedure tJvParameterListEnableDisableReasonList.AddReasonIsEmpty(RemoteParameterName: string);
+procedure TJvParameterListEnableDisableReasonList.AddReasonIsEmpty(RemoteParameterName: string);
 var
-  Reason: tJvParameterListEnableDisableReason;
+  Reason: TJvParameterListEnableDisableReason;
 begin
-  Reason := tJvParameterListEnableDisableReason.Create;
+  Reason := TJvParameterListEnableDisableReason.Create;
   Reason.RemoteParameterName := RemoteParameterName;
-  Reason.IsEmpty := true;
+  Reason.IsEmpty := True;
   AddObject(RemoteParameterName, Reason);
-end;   {*** procedure tJvParameterListEnableDisableReasonList.AddReasonIsEmpty ***}
+end;
 
-procedure tJvParameterListEnableDisableReasonList.AddReasonIsNotEmpty(RemoteParameterName: string);
+procedure TJvParameterListEnableDisableReasonList.AddReasonIsNotEmpty(RemoteParameterName: string);
 var
-  Reason: tJvParameterListEnableDisableReason;
+  Reason: TJvParameterListEnableDisableReason;
 begin
-  Reason := tJvParameterListEnableDisableReason.Create;
+  Reason := TJvParameterListEnableDisableReason.Create;
   Reason.RemoteParameterName := RemoteParameterName;
-  Reason.IsNotEmpty := true;
+  Reason.IsNotEmpty := True;
   AddObject(RemoteParameterName, Reason);
-end;   {*** procedure tJvParameterListEnableDisableReasonList.AddReasonIsNotEmpty ***}
+end;
 
- {*****************************************************************************}
- {* TJvParameterPropertyValues                                                *}
- {*****************************************************************************}
+//=== TJvParameterPropertyValues =============================================
 
 constructor TJvParameterPropertyValues.Create;
 begin
   inherited Create;
-  Sorted     := true;
+  Sorted := True;
   Duplicates := dupIgnore;
 end;
 
@@ -653,160 +633,155 @@ end;
 
 procedure TJvParameterPropertyValues.Clear;
 var
-  i: integer;
+  I: Integer;
 begin
-  for i := 0 to Count - 1 do
-    if Assigned(Objects[i]) then
-      Objects[i].Free;
+  for I := 0 to Count - 1 do
+    Objects[I].Free;
 end;
 
-procedure TJvParameterPropertyValues.AddValue(aName: string; aValue: variant);
+procedure TJvParameterPropertyValues.AddValue(AName: string; AValue: Variant);
 var
-  Value: tJvParameterPropertyValue;
+  Value: TJvParameterPropertyValue;
 begin
-  Value := tJvParameterPropertyValue.Create;
-  Value.PropertyName := aName;
-  Value.PropertyValue := aValue;
-  AddObject(aName, Value)
+  Value := TJvParameterPropertyValue.Create;
+  Value.PropertyName := AName;
+  Value.PropertyValue := AValue;
+  AddObject(AName, Value)
 end;
 
+//=== TJvBaseParameter =======================================================
 
- {*****************************************************************************}
- {* tJvBaseParameter                                                           *}
- {*****************************************************************************}
-
-constructor tJvBaseParameter.Create(AParameterList: TJvParameterList);
+constructor TJvBaseParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
-  fReloadValuefromRegistry := true;
-  fTabOrder := -1;
-  fParameterList := AParameterList;
-  fWinControl := nil;
-  fJvDynControl := nil;
-  fJvDynControlData := nil;
-  Color    := clBtnFace;
-  fEnabled := true;
-  fVisible := true;
-  fEnableReasons := tJvParameterListEnableDisableReasonList.Create;
-  fDisableReasons := tJvParameterListEnableDisableReasonList.Create;
-end;   {*** Constructor tJvBaseParameter.Create ***}
+  FReloadValueFromRegistry := True;
+  FTabOrder := -1;
+  FParameterList := AParameterList;
+  FWinControl := nil;
+  FJvDynControl := nil;
+  FJvDynControlData := nil;
+  Color := clBtnFace;
+  FEnabled := True;
+  FVisible := True;
+  FEnableReasons := TJvParameterListEnableDisableReasonList.Create;
+  FDisableReasons := TJvParameterListEnableDisableReasonList.Create;
+end;
 
-destructor tJvBaseParameter.Destroy;
+destructor TJvBaseParameter.Destroy;
 begin
-  FreeAndNil(fEnableReasons);
-  FreeAndNil(fDisableReasons);
+  FreeAndNil(FEnableReasons);
+  FreeAndNil(FDisableReasons);
   inherited Destroy;
-end;   {*** Constructor tJvBaseParameter.Create ***}
+end;
 
-procedure tJvBaseParameter.SetAsString(Value: string);
+procedure TJvBaseParameter.SetAsString(Value: string);
 begin
-  fValue := Value;
-end;   {*** Procedure tJvBaseParameter.SetAsString ***}
+  FValue := Value;
+end;
 
-function tJvBaseParameter.GetAsString: string;
+function TJvBaseParameter.GetAsString: string;
 begin
-  if VarIsNull(fValue) then
+  if VarIsNull(FValue) then
     Result := ''
   else
-    Result := fValue;
-end;   {*** Function tJvBaseParameter.GetAsString ***}
+    Result := FValue;
+end;
 
-procedure tJvBaseParameter.SetAsDouble(Value: double);
+procedure TJvBaseParameter.SetAsDouble(Value: Double);
 begin
-  fValue := Value;
-end;   {*** Procedure tJvBaseParameter.SetAsDouble ***}
+  FValue := Value;
+end;
 
-function tJvBaseParameter.GetAsDouble: double;
+function TJvBaseParameter.GetAsDouble: Double;
 begin
   if AsString = '' then
     Result := 0
   else
-    Result := fValue;
-end;   {*** Function tJvBaseParameter.GetAsDouble ***}
+    Result := FValue;
+end;
 
-procedure tJvBaseParameter.SetAsInteger(Value: integer);
+procedure TJvBaseParameter.SetAsInteger(Value: Integer);
 begin
-  fValue := Value;
-end;   {*** Procedure tJvBaseParameter.SetAsInteger ***}
+  FValue := Value;
+end;
 
-function tJvBaseParameter.GetAsInteger: integer;
+function TJvBaseParameter.GetAsInteger: Integer;
 begin
-  if VarIsNull(fValue) then
+  if VarIsNull(FValue) then
     Result := 0
   else
-    Result := fValue;
-end;   {*** Function tJvBaseParameter.GetAsInteger ***}
+    Result := FValue;
+end;
 
-procedure tJvBaseParameter.SetAsBoolean(Value: boolean);
+procedure TJvBaseParameter.SetAsBoolean(Value: Boolean);
 begin
   if Value then
-    fValue := 'TRUE'
+    FValue := 'TRUE'
   else
-    fValue := 'FALSE';
-end;   {*** Procedure tJvBaseParameter.SetAsBoolean ***}
+    FValue := 'FALSE';
+end;
 
-function tJvBaseParameter.GetAsBoolean: boolean;
+function TJvBaseParameter.GetAsBoolean: Boolean;
 var
-  s: string;
+  S: string;
 begin
-  if VarIsNull(fValue) then
-    Result := false
+  if VarIsNull(FValue) then
+    Result := False
   else
   begin
-    s      := fValue;
-    Result := Uppercase(s) = 'TRUE';
+    S := FValue;
+    Result := UpperCase(s) = 'TRUE';
   end;
-end;   {*** Function tJvBaseParameter.GetAsBoolean ***}
+end;
 
-procedure tJvBaseParameter.SetAsDate(Value: tDateTime);
+procedure TJvBaseParameter.SetAsDate(Value: TDateTime);
 begin
-  fValue := VarFromDateTime(Value);
-end;   {*** Procedure tJvBaseParameter.SetAsDate ***}
+  FValue := VarFromDateTime(Value);
+end;
 
-function tJvBaseParameter.GetAsDate: tDateTime;
+function TJvBaseParameter.GetAsDate: TDateTime;
 begin
-  if VarIsNull(fValue) then
+  if VarIsNull(FValue) then
     Result := 0
   else
-    Result := VarToDateTime(fValue);
-end;   {*** Function tJvBaseParameter.GetAsDate ***}
+    Result := VarToDateTime(FValue);
+end;
 
-procedure tJvBaseParameter.SetAsVariant(Value: variant);
+procedure TJvBaseParameter.SetAsVariant(Value: Variant);
 begin
-  fValue := Value;
-end;   {*** Procedure tJvBaseParameter.SetAsVariant ***}
+  FValue := Value;
+end;
 
-function tJvBaseParameter.GetAsVariant: variant;
+function TJvBaseParameter.GetAsVariant: Variant;
 begin
-  Result := fValue;
-end;   {*** Function tJvBaseParameter.GetAsVariant ***}
+  Result := FValue;
+end;
 
-procedure tJvBaseParameter.Notification(AComponent: TComponent; Operation: TOperation);
+procedure TJvBaseParameter.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (AComponent = fWinControl) and (Operation = opRemove) then
+  if (AComponent = FWinControl) and (Operation = opRemove) then
   begin
-    fWinControl   := nil;
-    fJvDynControl := nil;
-    fJvDynControlData := nil;
+    FWinControl := nil;
+    FJvDynControl := nil;
+    FJvDynControlData := nil;
   end;
-end;   {*** procedure tBaseOraToolForm.Notification ***}
+end;
 
-
-function tJvBaseParameter.GetWinControlData: variant;
+function TJvBaseParameter.GetWinControlData: Variant;
 begin
-  Result := NULL;
+  Result := Null;
   if Assigned(JvDynControlData) then
     Result := JvDynControlData.Value;
 end;
 
-procedure tJvBaseParameter.SetWinControlData(Value: variant);
+procedure TJvBaseParameter.SetWinControlData(Value: Variant);
 begin
   if Assigned(JvDynControlData) then
     JvDynControlData.Value := Value;
 end;
 
-function tJvBaseParameter.GetDynControlEngine: tJvDynControlEngine;
+function TJvBaseParameter.GetDynControlEngine: TJvDynControlEngine;
 begin
   Result := nil;
   if Assigned(ParameterList) then
@@ -814,335 +789,327 @@ begin
 end;
 
 type
-  tHackWinControl = class (tWinControl)
+  THackWinControl = class(TWinControl)
   public
     property OnExit;
   end;
 
-procedure tJvBaseParameter.SetWinControl(Value: TWinControl);
+procedure TJvBaseParameter.SetWinControl(Value: TWinControl);
 
 begin
-  fJvDynControl := nil;
-  fWinControl   := Value;
+  FJvDynControl := nil;
+  FWinControl := Value;
   if not Assigned(Value) then
     Exit;
-  Supports(fWinControl, IJvDynControl, fJvDynControl);
-  Supports(fWinControl, IJvDynControlData, fJvDynControlData);
+  Supports(FWinControl, IJvDynControl, FJvDynControl);
+  Supports(FWinControl, IJvDynControlData, FJvDynControlData);
 
   JvDynControl.ControlSetCaption(Caption);
   if Assigned(JvDynControlData) then
     JvDynControlData.ControlSetReadOnly(ReadOnly);
   WinControl.Visible := Visible;
   WinControl.Enabled := Enabled;
-  WinControl.Hint    := Hint;
+  WinControl.Hint := Hint;
   WinControl.HelpContext := HelpContext;
   JvDynControl.ControlSetOnExit(HandleEnableDisable);
 end;
 
-function tJvBaseParameter.GetWinControl: TWinControl;
+function TJvBaseParameter.GetWinControl: TWinControl;
 begin
-  Result := fWinControl
+  Result := FWinControl
 end;
 
-procedure tJvBaseParameter.SetEnabled(Value: boolean);
+procedure TJvBaseParameter.SetEnabled(Value: Boolean);
 begin
-  fEnabled := Value;
+  FEnabled := Value;
   if Assigned(WinControl) then
     WinControl.Enabled := Value;
 end;
 
-
-procedure tJvBaseParameter.GetData;
+procedure TJvBaseParameter.GetData;
 begin
-  fValue := NULL;
+  FValue := Null;
   if Assigned(WinControl) then
-    fValue := WinControlData;
+    FValue := WinControlData;
 end;
 
-procedure tJvBaseParameter.SetData;
+procedure TJvBaseParameter.SetData;
 begin
   if Assigned(WinControl) then
-    WinControlData := fValue;
+    WinControlData := FValue;
 end;
 
-procedure tJvBaseParameter.Assign(Source: TPersistent);
+procedure TJvBaseParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  AsVariant  := tJvBaseParameter(Source).AsVariant;
-  Caption    := tJvBaseParameter(Source).Caption;
-  SearchName := tJvBaseParameter(Source).SearchName;
-  Width      := tJvBaseParameter(Source).Width;
-  Height     := tJvBaseParameter(Source).Height;
-  Required   := tJvBaseParameter(Source).Required;
-  ParentParameterName := tJvBaseParameter(Source).ParentParameterName;
-  ReloadValueFromRegistry := tJvBaseParameter(Source).ReloadValueFromRegistry;
-  TabOrder   := tJvBaseParameter(Source).TabOrder;
-  fParameterList := tJvBaseParameter(Source).ParameterList;
-  Color      := tJvBaseParameter(Source).Color;
-  ReadOnly   := tJvBaseParameter(Source).ReadOnly;
-  Enabled    := tJvBaseParameter(Source).Enabled;
-  fEnableReasons.Assign(tJvBaseParameter(Source).fEnableReasons);
-  fDisableReasons.Assign(tJvBaseParameter(Source).fDisableReasons);
-end;   {*** Procedure tJvBaseParameter.Assign ***}
+  AsVariant := TJvBaseParameter(Source).AsVariant;
+  Caption := TJvBaseParameter(Source).Caption;
+  SearchName := TJvBaseParameter(Source).SearchName;
+  Width := TJvBaseParameter(Source).Width;
+  Height := TJvBaseParameter(Source).Height;
+  Required := TJvBaseParameter(Source).Required;
+  ParentParameterName := TJvBaseParameter(Source).ParentParameterName;
+  ReloadValueFromRegistry := TJvBaseParameter(Source).ReloadValueFromRegistry;
+  TabOrder := TJvBaseParameter(Source).TabOrder;
+  FParameterList := TJvBaseParameter(Source).ParameterList;
+  Color := TJvBaseParameter(Source).Color;
+  ReadOnly := TJvBaseParameter(Source).ReadOnly;
+  Enabled := TJvBaseParameter(Source).Enabled;
+  FEnableReasons.Assign(TJvBaseParameter(Source).FEnableReasons);
+  FDisableReasons.Assign(TJvBaseParameter(Source).FDisableReasons);
+end;
 
-function tJvBaseParameter.Validate(var fData: variant): boolean;
+function TJvBaseParameter.Validate(var AData: Variant): Boolean;
 begin
   if not Required or not Enabled then
-    Result := true
+    Result := True
   else
-    Result := not VarIsNull(fData);
+    Result := not VarIsNull(AData);
   if not Result then
-    MessageDlg(Format(ErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
-end;   {*** Function tJvBaseParameter.Validate ***}
+    MessageDlg(Format(SErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
+end;
 
-function tJvBaseParameter.GetParameterNameExt: string;
+function TJvBaseParameter.GetParameterNameExt: string;
 begin
   Result := '';
-end;   {*** function tJvBaseParameter.GetParameterNameExt ***}
+end;
 
-function tJvBaseParameter.GetParameterNameBase: string;
+function TJvBaseParameter.GetParameterNameBase: string;
 begin
   Result := 'ParameterItem' + SearchName;
-end;   {*** function tJvBaseParameter.GetParameterNameExt ***}
+end;
 
-function tJvBaseParameter.GetParameterName: string;
+function TJvBaseParameter.GetParameterName: string;
 begin
   Result := GetParameterNameBase + GetParameterNameExt;
-end;   {*** function tJvBaseParameter.GetParameterName ***}
+end;
 
-procedure tJvBaseParameter.HandleEnableDisable(Sender: TObject);
+procedure TJvBaseParameter.HandleEnableDisable(Sender: TObject);
 var
-  iEnable:   integer;
-  Reason:    tJvParameterListEnableDisableReason;
-  i, j:      integer;
-  Parameter: tJvBaseParameter;
-  HandleParameter: tJvBaseParameter;
-  Data:      variant;
+  IEnable: Integer;
+  Reason: TJvParameterListEnableDisableReason;
+  I, J: Integer;
+  Parameter: TJvBaseParameter;
+  HandleParameter: TJvBaseParameter;
+  Data: Variant;
 begin
-  if not (Sender is tWinControl) then
+  if not (Sender is TWinControl) then
     Exit;
   if not Assigned(ParameterList) then
     Exit;
   HandleParameter := nil;
-  for i := 0 to ParameterList.Count - 1 do
-    if Assigned(ParameterList.ParambyIndex(i).WinControl) then
-      if Sender = ParameterList.ParambyIndex(i).WinControl then
+  for I := 0 to ParameterList.Count - 1 do
+    if Assigned(ParameterList.ParamByIndex(I).WinControl) then
+      if Sender = ParameterList.ParamByIndex(I).WinControl then
       begin
-        HandleParameter := ParameterList.ParambyIndex(i);
-        break;
-      end;  {*** IF Sender = ParameterList.ParambyIndex(i).WinControl ***}
+        HandleParameter := ParameterList.ParamByIndex(I);
+        Break;
+      end; {*** IF Sender = ParameterList.ParamByIndex(I).WinControl ***}
   if not Assigned(HandleParameter) then
     Exit;
   Data := HandleParameter.GetWinControlData;
   if VarIsNull(Data) then
     Exit;
-  for i := 0 to ParameterList.Count - 1 do
+  for I := 0 to ParameterList.Count - 1 do
   begin
-    Parameter := ParameterList.ParamByIndex(i);
+    Parameter := ParameterList.ParamByIndex(I);
     if not Assigned(Parameter) then
       Continue;
-    iEnable := 0;
+    IEnable := 0;
     if Parameter.EnableReasons.Count > 0 then
     begin
-      iEnable := -1;
-      for j := 0 to Parameter.EnableReasons.Count - 1 do
+      IEnable := -1;
+      for J := 0 to Parameter.EnableReasons.Count - 1 do
       begin
-        Reason := tJvParameterListEnableDisableReason(Parameter.EnableReasons.Objects[j]);
+        Reason := TJvParameterListEnableDisableReason(Parameter.EnableReasons.Objects[J]);
         if not Assigned(Reason) then
           Continue;
         if Reason.RemoteParameterName <> HandleParameter.SearchName then
           Continue;
         if VarIsNull(Reason.AsVariant) then
           Continue;
-        if iEnable = 0 then
-          iEnable := -1;
+        if IEnable = 0 then
+          IEnable := -1;
         if (Reason.AsVariant = Data) then
-          iEnable := 1;
-      end;   {*** FOR i := 0 TO EnableReasons.Count-1 DO **}
-    end;   {*** IF Parameter.EnableReasons.Count > 0 THEN ***}
+          IEnable := 1;
+      end;
+    end;
     if Parameter.DisableReasons.Count > 0 then
     begin
-      for j := 0 to Parameter.DisableReasons.Count - 1 do
+      for J := 0 to Parameter.DisableReasons.Count - 1 do
       begin
-        Reason := tJvParameterListEnableDisableReason(Parameter.DisableReasons.Objects[j]);
+        Reason := TJvParameterListEnableDisableReason(Parameter.DisableReasons.Objects[J]);
         if not Assigned(Reason) then
           Continue;
         if Reason.RemoteParameterName <> HandleParameter.SearchName then
           Continue;
         if VarIsNull(Reason.AsVariant) then
           Continue;
-        if iEnable = 0 then
-          iEnable := 1;
-        if (Reason.AsVariant = Data) then
-          iEnable := -1;
-      end;   {*** FOR i := 0 TO DisableReasons.Count-1 DO **}
-    end;     {*** IF Parameter.DisableReasons.Count > 0 THEN ***}
-    case iEnable of
-      -1: Parameter.Enabled := false;
-      1: Parameter.Enabled  := true;
-    end;  {*** CASE iEnable OF ***}
-  end;   {*** FOR i := 0 TO ParameterList.Count-1 DO **}
-end;   {*** procedure tJvBaseParameter.HandleEnableDisable ***}
-
-
- {*****************************************************************************}
- {* TJvParameterList                                                            *}
- {*****************************************************************************}
-
-procedure TJvParameterList.AddParameter(aParameter: tJvBaseParameter);
-begin
-  AddObject(aParameter.SearchName, aParameter);
-end;   {*** procedure TJvParameterList.AddParam ***}
-
-function TJvParameterList.ExistsParameter(iSearchName: string): boolean;
-begin
-  Result := Assigned(ParameterByName(iSearchName));
-end;   {*** function TJvParameterList.ParameterByName ***}
-
-function TJvParameterList.ParameterByName(iSearchName: string): tJvBaseParameter;
-var
-  i: integer;
-begin
-  Result := nil;
-  for i := 0 to Count - 1 do
-    if Uppercase(Parameters[i].SearchName) = Uppercase(iSearchName) then
-    begin
-      Result := (Parameters[i]);
-      break;
+        if IEnable = 0 then
+          IEnable := 1;
+        if Reason.AsVariant = Data then
+          IEnable := -1;
+      end;
     end;
-end;   {*** function TJvParameterList.ParameterByName ***}
-
-function TJvParameterList.ParamByIndex(iIndex: integer): tJvBaseParameter;
-begin
-  Result := (Parameters[iIndex]);
-end;   {*** function TJvParameterList.ParameterByName ***}
-
-procedure TJvParameterList.Assign(Source: TPersistent);
-begin
-  Messages.Assign(TJvParameterList(Source).Messages);
-  ArrangeSettings := TJvParameterList(Source).ArrangeSettings;
-  AppStore   := TJvParameterList(Source).AppStore;
-  Width      := TJvParameterList(Source).Width;
-  Height     := TJvParameterList(Source).Height;
-  MaxWidth   := TJvParameterList(Source).MaxWidth;
-  MaxHeight  := TJvParameterList(Source).MaxHeight;
-  AutoWidth  := TJvParameterList(Source).AutoWidth;
-  AutoHeight := TJvParameterList(Source).AutoHeight;
-  OkButtonVisible := TJvParameterList(Source).OkButtonVisible;
-  CancelButtonVisible := TJvParameterList(Source).CancelButtonVisible;
-  fintParameterList.Assign(TJvParameterList(Source).fintParameterList);
-  HistoryEnabled := TJvParameterList(Source).HistoryEnabled;
-  Path := TJvParameterList(Source).Path;
-end;   {*** Procedure TJvParameterList.SetAsDate ***}
-
-
-procedure TJvParameterList.SetPath(Value: string);
-begin
-  fParameterListPropertyStore.Path    := Value;
-  fParameterListSelectList.SelectPath := Value + '\' + HistorySelectPath;
-end;   {*** procedure TJvParameterList.SetPath ***}
-
-function TJvParameterList.GetPath: string;
-begin
-  Result := fParameterListPropertyStore.Path;
-end;   {*** function TJvParameterList.GetPath ***}
-
-
-function TJvParameterList.GetAppStore: TJvCustomAppStore;
-begin
-  Result := fParameterListPropertyStore.AppStore;
+    case IEnable of
+      -1:
+        Parameter.Enabled := False;
+      1:
+        Parameter.Enabled := True;
+    end;
+  end;
 end;
 
-procedure TJvParameterList.SetAppStore(Value: TJvCustomAppStore);
-begin
-  fParameterListPropertyStore.AppStore := Value;
-end;
+//=== TJvParameterList =======================================================
 
 constructor TJvParameterList.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  fMessages := TJvParameterListMessages.Create;
-  fParameterListPropertyStore := TJvParameterListPropertyStore.Create(nil);
-  fParameterListPropertyStore.Parameterlist := Self;
-  fintParameterList := TStringList.Create;
-  fDynControlEngine := DefaultDynControlEngine;
+  FMessages := TJvParameterListMessages.Create;
+  FParameterListPropertyStore := TJvParameterListPropertyStore.Create(nil);
+  FParameterListPropertyStore.Parameterlist := Self;
+  FIntParameterList := TStringList.Create;
+  FDynControlEngine := DefaultDynControlEngine;
   FArrangeSettings := TJvArrangeSettings.Create(nil);
   with FArrangeSettings do
   begin
-    AutoArrange  := true;
-    WrapControls := true;
-    AutoSize     := asBoth;
+    AutoArrange := True;
+    WrapControls := True;
+    AutoSize := asBoth;
     DistanceVertical := 3;
     DistanceHorizontal := 3;
-    BorderLeft   := 5;
-    BorderTop    := 5;
+    BorderLeft := 5;
+    BorderTop := 5;
   end;
-  ScrollBox    := nil;
-  RightPanel   := nil;
+  ScrollBox := nil;
+  RightPanel := nil;
   ArrangePanel := nil;
-  fMaxWidth    := 600;
-  fMaxHeight   := 400;
-  fOkbuttonVisible := true;
-  fCancelButtonVisible := true;
-  fHistoryEnabled := false;
-  fLastHistoryName := '';
-  fParameterListSelectList := TJvParameterListSelectList.Create(self);
-  fParameterListSelectList.ParameterList := Self;
-end;   {*** constructor TJvParameterList.create; ***}
+  FMaxWidth := 600;
+  FMaxHeight := 400;
+  fOkbuttonVisible := True;
+  FCancelButtonVisible := True;
+  FHistoryEnabled := False;
+  FLastHistoryName := '';
+  FParameterListSelectList := TJvParameterListSelectList.Create(Self);
+  FParameterListSelectList.ParameterList := Self;
+end;
 
 destructor TJvParameterList.Destroy;
 begin
   DestroyWinControls;
-  FreeAndNil(fParameterListSelectList);
-  if Assigned(fintParameterList) then
-    FreeAndNil(fintParameterList);
-  if Assigned(fParameterListPropertyStore) then
-    FreeAndNil(fParameterListPropertyStore);
+  FreeAndNil(FParameterListSelectList);
+  FreeAndNil(FIntParameterList);
+  FreeAndNil(FParameterListPropertyStore);
   FreeAndNil(FArrangeSettings);
-  FreeAndNil(fMessages);
+  FreeAndNil(FMessages);
   inherited Destroy;
-end;  {*** destructor TJvParameterList.destroy; ***}
+end;
+
+procedure TJvParameterList.AddParameter(AParameter: TJvBaseParameter);
+begin
+  AddObject(AParameter.SearchName, AParameter);
+end;
+
+function TJvParameterList.ExistsParameter(ASearchName: string): Boolean;
+begin
+  Result := Assigned(ParameterByName(ASearchName));
+end;
+
+function TJvParameterList.ParameterByName(ASearchName: string): TJvBaseParameter;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := 0 to Count - 1 do
+    if UpperCase(Parameters[I].SearchName) = UpperCase(ASearchName) then
+    begin
+      Result := Parameters[I];
+      Break;
+    end;
+end;
+
+function TJvParameterList.ParamByIndex(AIndex: Integer): TJvBaseParameter;
+begin
+  Result := Parameters[AIndex];
+end;
+
+procedure TJvParameterList.Assign(Source: TPersistent);
+begin
+  // (rom) no inherited Assign?
+  Messages.Assign(TJvParameterList(Source).Messages);
+  ArrangeSettings := TJvParameterList(Source).ArrangeSettings;
+  AppStore := TJvParameterList(Source).AppStore;
+  Width := TJvParameterList(Source).Width;
+  Height := TJvParameterList(Source).Height;
+  MaxWidth := TJvParameterList(Source).MaxWidth;
+  MaxHeight := TJvParameterList(Source).MaxHeight;
+  AutoWidth := TJvParameterList(Source).AutoWidth;
+  AutoHeight := TJvParameterList(Source).AutoHeight;
+  OkButtonVisible := TJvParameterList(Source).OkButtonVisible;
+  CancelButtonVisible := TJvParameterList(Source).CancelButtonVisible;
+  FIntParameterList.Assign(TJvParameterList(Source).FIntParameterList);
+  HistoryEnabled := TJvParameterList(Source).HistoryEnabled;
+  Path := TJvParameterList(Source).Path;
+end;
+
+procedure TJvParameterList.SetPath(Value: string);
+begin
+  FParameterListPropertyStore.Path := Value;
+  FParameterListSelectList.SelectPath := Value + PathDelimiter + SHistorySelectPath;
+end;
+
+function TJvParameterList.GetPath: string;
+begin
+  Result := FParameterListPropertyStore.Path;
+end;
+
+function TJvParameterList.GetAppStore: TJvCustomAppStore;
+begin
+  Result := FParameterListPropertyStore.AppStore;
+end;
+
+procedure TJvParameterList.SetAppStore(Value: TJvCustomAppStore);
+begin
+  FParameterListPropertyStore.AppStore := Value;
+end;
 
 procedure TJvParameterList.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) then
+  if Operation = opRemove then
   begin
-    if (AComponent = ScrollBox) then
-      Scrollbox := nil;
-    if (AComponent = RightPanel) then
+    if AComponent = ScrollBox then
+      ScrollBox := nil;
+    if AComponent = RightPanel then
       RightPanel := nil;
-    if (AComponent = ArrangePanel) then
+    if AComponent = ArrangePanel then
       ArrangePanel := nil;
-    if (AComponent = fParameterListPropertyStore) then
-      fParameterListPropertyStore := nil;
+    if AComponent = FParameterListPropertyStore then
+      FParameterListPropertyStore := nil;
   end;
-end;   {*** procedure TJvParameterList.Notification ***}
+end;
 
-procedure TJvParameterList.SetDynControlEngine(Value: tJvDynControlEngine);
+procedure TJvParameterList.SetDynControlEngine(Value: TJvDynControlEngine);
 begin
-  fDynControlEngine := Value;
+  FDynControlEngine := Value;
 end;
 
 procedure TJvParameterList.StoreData;
 begin
-  if Path = '' then
-    Exit;
-  fParameterListPropertyStore.StoreData;
-end;   {*** procedure TJvParameterList.StoreData; ***}
+  if Path <> '' then
+    FParameterListPropertyStore.StoreData;
+end;
 
 procedure TJvParameterList.LoadData;
 begin
-  if Path = '' then
-    Exit;
-  fParameterListPropertyStore.LoadData;
-end;   {*** procedure TJvParameterList.LoadData ***}
+  if Path <> '' then
+    FParameterListPropertyStore.LoadData;
+end;
 
 procedure TJvParameterList.OnOkButtonClick(Sender: TObject);
 begin
-  if not ValidateDataAtWinControls then
-    Exit;
-  ParameterDialog.ModalResult := mrOk;
+  if ValidateDataAtWinControls then
+    ParameterDialog.ModalResult := mrOk;
 end;
 
 procedure TJvParameterList.OnCancelButtonClick(Sender: TObject);
@@ -1151,25 +1118,22 @@ begin
 end;
 
 type
-  tHackPanel = class (tCustomControl)
+  THackPanel = class(TCustomControl)
   public
-    property canvas;
+    property Canvas;
   end;
 
-
-{ Creates the ParameterDialog }
 procedure TJvParameterList.CreateParameterDialog;
 var
-  MainPanel, BottomPanel, HistoryPanel, ButtonPanel: tWinControl;
-  OkButton, CancelButton: tWinControl;
-  LoadButton, SaveButton, ClearButton: tWinControl;
-  ButtonLeft: integer;
-  ITmpPanel:  IJVDynControlPanel;
+  MainPanel, BottomPanel, HistoryPanel, ButtonPanel: TWinControl;
+  OkButton, CancelButton: TWinControl;
+  LoadButton, SaveButton, ClearButton: TWinControl;
+  ButtonLeft: Integer;
+  ITmpPanel: IJvDynControlPanel;
 begin
-  if Assigned(fParameterDialog) then
-    FreeAndNil(fParameterDialog);
+  FreeAndNil(FParameterDialog);
 
-  fParameterDialog := DynControlEngine.CreateForm('', '');
+  FParameterDialog := DynControlEngine.CreateForm('', '');
 
   with TForm(ParameterDialog) do
   begin
@@ -1185,32 +1149,33 @@ begin
   if Width > 0 then
     ParameterDialog.Width := Width;
 
-
   BottomPanel := DynControlEngine.CreatePanelControl(Self, ParameterDialog, 'BottomPanel', '', alBottom);
-  if not Supports(BottomPanel, IJVDynControlPanel, ITmpPanel) then
-    raise EIntfCastError.Create('SIntfCastError');
+  if not Supports(BottomPanel, IJvDynControlPanel, ITmpPanel) then
+    raise EIntfCastError.Create(SIntfCastError);
   with ITmpPanel do
     ControlSetBorder(bvNone, bvRaised, 1, bsNone, 0);
 
   MainPanel := DynControlEngine.CreatePanelControl(Self, ParameterDialog, 'MainPanel', '', alClient);
-  if not Supports(MainPanel, IJVDynControlPanel, ITmpPanel) then
-    raise EIntfCastError.Create('SIntfCastError');
+  if not Supports(MainPanel, IJvDynControlPanel, ITmpPanel) then
+    raise EIntfCastError.Create(SIntfCastError);
   with ITmpPanel do
     ControlSetBorder(bvNone, bvRaised, 1, bsNone, 3);
 
   ButtonPanel := DynControlEngine.CreatePanelControl(Self, BottomPanel, 'BottonPanel', '', alRight);
-  if not Supports(ButtonPanel, IJVDynControlPanel, ITmpPanel) then
-    raise EIntfCastError.Create('SIntfCastError');
+  if not Supports(ButtonPanel, IJvDynControlPanel, ITmpPanel) then
+    raise EIntfCastError.Create(SIntfCastError);
   with ITmpPanel do
     ControlSetBorder(bvNone, bvNone, 0, bsNone, 0);
 
-  OkButton     := DynControlEngine.CreateButton(Self, ButtonPanel, 'OkButton', Messages.OkButton, '', OnOkButtonClick, true, false);
-  CancelButton := DynControlEngine.CreateButton(Self, ButtonPanel, 'CancelButton', Messages.CancelButton, '', OnCancelButtonClick, false, true);
+  OkButton := DynControlEngine.CreateButton(Self, ButtonPanel, 'OkButton', Messages.OkButton, '', OnOkButtonClick, True,
+    False);
+  CancelButton := DynControlEngine.CreateButton(Self, ButtonPanel, 'CancelButton', Messages.CancelButton, '',
+    OnCancelButtonClick, False, True);
 
   BottomPanel.Height := OkButton.Height + 6 + 2;
 
-  OkButton.Top     := 3;
-  OkButton.Left    := 3;
+  OkButton.Top := 3;
+  OkButton.Left := 3;
   OkButton.Visible := OkButtonVisible;
   OkButton.Enabled := OkButtonVisible;
   if OkButton.Visible then
@@ -1218,8 +1183,8 @@ begin
   else
     ButtonLeft := 0;
 
-  CancelButton.Top     := 3;
-  CancelButton.Left    := ButtonLeft + 3;
+  CancelButton.Top := 3;
+  CancelButton.Left := ButtonLeft + 3;
   CancelButton.Visible := CancelButtonVisible;
   CancelButton.Enabled := CancelButtonVisible;
   if CancelButton.Visible then
@@ -1227,48 +1192,51 @@ begin
 
   ButtonPanel.Width := ButtonLeft + 3;
 
-  OkButton.Anchors     := [akTop, akRight];
+  OkButton.Anchors := [akTop, akRight];
   CancelButton.Anchors := [akTop, akRight];
 
   if HistoryEnabled and (Path <> '') then
   begin
-    ButtonLeft   := 0;
+    ButtonLeft := 0;
     HistoryPanel := DynControlEngine.CreatePanelControl(Self, BottomPanel, 'HistoryPanel', '', alLeft);
-    if not Supports(HistoryPanel, IJVDynControlPanel, ITmpPanel) then
-      raise EIntfCastError.Create('SIntfCastError');
+    if not Supports(HistoryPanel, IJvDynControlPanel, ITmpPanel) then
+      raise EIntfCastError.Create(SIntfCastError);
     with ITmpPanel do
       ControlSetBorder(bvNone, bvNone, 0, bsNone, 0);
     with HistoryPanel do
       Height := 25;
-    LoadButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'LoadButton', Messages.HistoryLoadButton, '', HistoryLoadClick, false, false);
+    LoadButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'LoadButton', Messages.HistoryLoadButton, '',
+      HistoryLoadClick, False, False);
     with LoadButton do
     begin
-      Left   := 6;
-      Top    := 5;
+      Left := 6;
+      Top := 5;
       Height := 20;
-      Width  := thackPanel(HistoryPanel).Canvas.TextWidth(Messages.HistoryLoadButton) + 5;
+      Width := THackPanel(HistoryPanel).Canvas.TextWidth(Messages.HistoryLoadButton) + 5;
       ButtonLeft := Left + Width + 5;
     end;
-    SaveButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'SaveButton', Messages.HistorySaveButton, '', HistorySaveClick, false, false);
+    SaveButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'SaveButton', Messages.HistorySaveButton, '',
+      HistorySaveClick, False, False);
     with SaveButton do
     begin
-      Left   := ButtonLeft;
-      Top    := 5;
+      Left := ButtonLeft;
+      Top := 5;
       Height := 20;
-      Width  := thackPanel(HistoryPanel).Canvas.TextWidth(Messages.HistorySaveButton) + 5;
+      Width := THackPanel(HistoryPanel).Canvas.TextWidth(Messages.HistorySaveButton) + 5;
       ButtonLeft := Left + Width + 5;
     end;
-    ClearButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'ClearButton', Messages.HistoryClearButton, '', HistoryClearClick, false, false);
+    ClearButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'ClearButton', Messages.HistoryClearButton, '',
+      HistoryClearClick, False, False);
     with ClearButton do
     begin
-      Left   := ButtonLeft;
-      Top    := 5;
+      Left := ButtonLeft;
+      Top := 5;
       Height := 20;
-      Width  := thackPanel(HistoryPanel).Canvas.TextWidth(Messages.HistoryClearButton) + 5;
+      Width := THackPanel(HistoryPanel).Canvas.TextWidth(Messages.HistoryClearButton) + 5;
       ButtonLeft := Left + Width + 5;
     end;
     HistoryPanel.Width := ButtonLeft;
-  end;   {*** IF HistoryEnabled THEN ***}
+  end;
 
   CreateWinControlsOnParent(MainPanel);
 
@@ -1287,20 +1255,18 @@ begin
 
   if (ButtonPanel.Width + HistoryPanel.Width) > BottomPanel.Width then
   begin
-    ButtonPanel.Align  := alBottom;
+    ButtonPanel.Align := alBottom;
     ButtonPanel.Height := BottomPanel.Height;
     BottomPanel.Height := BottomPanel.Height * 2 + 1;
     HistoryPanel.Align := alClient;
   end;
-  CheckScrollboxAutoScroll;
-
+  CheckScrollBoxAutoScroll;
 end;
 
-
-function TJvParameterList.ShowParameterDialog: boolean;
+function TJvParameterList.ShowParameterDialog: Boolean;
 begin
   if Count = 0 then
-    Exception.Create('TJvParameterList.ShowParameterDialog - No Parameters defined');
+    EJVCLException.Create(SNoParametersDefined);
   CreateParameterDialog;
   try
     SetDataToWinControls;
@@ -1309,39 +1275,39 @@ begin
     if Result then
       GetDataFromWinControls;
   finally
-    FreeAndNil(fParameterDialog);
+    FreeAndNil(FParameterDialog);
   end;
-end;   {*** Function TJvParameterList.ShowParameterDialog ***}
+end;
 
 function TJvParameterList.GetParentByName(MainParent: TWinControl; SearchName: string): TWinControl;
 var
-  Parameter: tJvBaseParameter;
-  i, j:      integer;
+  Parameter: TJvBaseParameter;
+  I, J: Integer;
 begin
   Result := MainParent;
   if (SearchName = '') or not Assigned(MainParent) then
     Exit;
-  for i := 0 to Count - 1 do
-    if Parameters[i].Visible then
- //      if Parameters[i] is TJvTabControlParameter then
- //        for j := 0 to TJvTabControlParameter(Parameters[i]).Tabs.Count - 1 do
-//          if Uppercase(Parameters[i].SearchName + '.' + TJvTabControlParameter(Parameters[i]).Tabs[j]) = Uppercase(SearchName) then
+  for I := 0 to Count - 1 do
+    if Parameters[I].Visible then
+ //      if Parameters[I] is TJvTabControlParameter then
+ //        for J := 0 to TJvTabControlParameter(Parameters[I]).Tabs.Count - 1 do
+//          if Uppercase(Parameters[I].SearchName + '.' + TJvTabControlParameter(Parameters[I]).Tabs[J]) = Uppercase(SearchName) then
 //          begin
-//            Result := TWinControl(TJvTabControlParameter(Parameters[i]).TabWinControls.Objects[j]);
+//            Result := TWinControl(TJvTabControlParameter(Parameters[I]).TabWinControls.Objects[J]);
 //            break;
-//          end   {*** IF Uppercase(tJvBaseParameter(Objects[i]).SearchName) = Uppercase(iSearchName) THEN ***}
+//          end   {*** IF Uppercase(TJvBaseParameter(Objects[I]).SearchName) = Uppercase(ASearchName) THEN ***}
 //          else
-    else if Uppercase(Parameters[i].SearchName) = Uppercase(SearchName) then
+    else
+    if UpperCase(Parameters[I].SearchName) = UpperCase(SearchName) then
     begin
-      Parameter := (Parameters[i]);
-      if (Parameter is TJvArrangeParameter) then
+      Parameter := Parameters[I];
+      if Parameter is TJvArrangeParameter then
       begin
         Result := TWinControl(Parameter.WinControl);
-        break;
-      end;  {*** IF (Parameter IS TJvArrangeParameter) THEN ***}
-    end;   {*** IF Uppercase(tJvBaseParameter(Objects[i]).SearchName) = Uppercase(iSearchName) THEN ***}
-end;   {*** function TJvParameterList.GetParentByName ***}
-
+        Break;
+      end;
+    end;
+end;
 
 procedure TJvParameterList.HistoryLoadClick(Sender: TObject);
 begin
@@ -1351,7 +1317,6 @@ end;
 procedure TJvParameterList.HistorySaveClick(Sender: TObject);
 begin
   ParameterListSelectList.SaveParameterList(Messages.HistorySaveCaption);
-  ;
 end;
 
 procedure TJvParameterList.HistoryClearClick(Sender: TObject);
@@ -1359,38 +1324,35 @@ begin
   ParameterListSelectList.ManageSelectList(Messages.HistoryClearCaption);
 end;
 
-
 procedure TJvParameterList.CreateWinControlsOnParent(ParameterParent: TWinControl);
 var
-  i: integer;
+  I: Integer;
 begin
-  if Assigned(Scrollbox) then
-    Scrollbox.Free;
-  if Assigned(ArrangePanel) then
-    ArrangePanel.Free;
-  Scrollbox := TScrollBox.Create(Self);
+  FreeAndNil(ScrollBox);
+  ScrollBox := TScrollBox.Create(Self);
   ScrollBox.Parent := ParameterParent;
   with ScrollBox do
   begin
-    AutoScroll := false;
+    AutoScroll := False;
     BorderStyle := bsNone;
     Align := alClient;
-  end;   {*** WITH ScrollBox DO ***}
+  end;
   RightPanel := TJvPanel.Create(Self);
   RightPanel.Parent := ScrollBox;
   with RightPanel do
   begin
     //Align := alNone;
-    Align   := alRight;
+    Align := alRight;
     BorderStyle := bsNone;
     BevelInner := bvNone;
     BevelOuter := bvNone;
-    Left    := 0;
-    Top     := 0;
-    Width   := 20;
-    Visible := false;
-  end;   {*** WITH MainArrangePanel DO ***}
-  ArrangePanel      := TJvPanel.Create(Self);
+    Left := 0;
+    Top := 0;
+    Width := 20;
+    Visible := False;
+  end;
+  FreeAndNil(ArrangePanel);
+  ArrangePanel := TJvPanel.Create(Self);
   ArrangePanel.Parent := ScrollBox;
   ArrangePanel.Name := 'MainArrangePanel';
   with ArrangePanel do
@@ -1402,150 +1364,146 @@ begin
     BevelOuter := bvNone;
     Caption := '';
     Left := 0;
-    Top  := 0;
-  end;   {*** WITH MainArrangePanel DO ***}
+    Top := 0;
+  end;
   ArrangePanel.ArrangeSettings := ArrangeSettings;
   try
     ArrangePanel.DisableArrange;
-    for i := 0 to Count - 1 do
-      if Parameters[i].Visible then
+    for I := 0 to Count - 1 do
+      if Parameters[I].Visible then
       begin
-        Parameters[i].CreateWinControlOnParent(
-          GetParentByName(ArrangePanel, Parameters[i].ParentParameterName));
-        Parameters[i].WinControlData := Parameters[i].AsVariant;
-      end;   {*** FOR i := 0 TO Count-1 DO ***}
-    for i := 0 to Count - 1 do
-      if Parameters[i].Visible then
-        if Assigned(Parameters[i].WinControl) then
-          if Assigned(tHackWincontrol(Parameters[i].WinControl).OnExit) then
-            tHackWincontrol(Parameters[i].WinControl).OnExit(Parameters[i].WinControl);
+        Parameters[I].CreateWinControlOnParent(
+          GetParentByName(ArrangePanel, Parameters[I].ParentParameterName));
+        Parameters[I].WinControlData := Parameters[I].AsVariant;
+      end;
+    for I := 0 to Count - 1 do
+      if Parameters[I].Visible then
+        if Assigned(Parameters[I].WinControl) then
+          if Assigned(THackWinControl(Parameters[I].WinControl).OnExit) then
+            THackWinControl(Parameters[I].WinControl).OnExit(Parameters[I].WinControl);
   finally
     ArrangePanel.EnableArrange;
   end;
   ArrangePanel.ArrangeControls;
-  CheckScrollboxAutoScroll;
-end;   {*** procedure TJvParameterList.CreateWinControlsOnParent ***}
+  CheckScrollBoxAutoScroll;
+end;
 
-
-procedure TJvParameterList.CheckScrollboxAutoScroll;
+procedure TJvParameterList.CheckScrollBoxAutoScroll;
 begin
-  if not Assigned(Scrollbox) then
+  if not Assigned(ScrollBox) then
     Exit;
   if not Assigned(ArrangePanel) then
     Exit;
-  RightPanel.Visible   := false;
-  ScrollBox.AutoScroll := false;
-  if (ArrangePanel.Width > Scrollbox.Width) {OR
+  RightPanel.Visible := False;
+  ScrollBox.AutoScroll := False;
+  if (ArrangePanel.Width > ScrollBox.Width) {OR
      (ArrangePanel.Width > MaxWidth) }then
   begin
-    RightPanel.Visible   := true;
-    ScrollBox.AutoScroll := true;
+    RightPanel.Visible := True;
+    ScrollBox.AutoScroll := True;
   end;
-  if (ArrangePanel.Height > Scrollbox.Height) {OR
+  if (ArrangePanel.Height > ScrollBox.Height) {OR
      (ArrangePanel.Height > MaxHeight) }then
-    ScrollBox.AutoScroll := true;
+    ScrollBox.AutoScroll := True;
 end;
 
 procedure TJvParameterList.DestroyWinControls;
 var
-  i: integer;
+  I: Integer;
 begin
-  if Assigned(ArrangePanel) then
-    FreeAndNil(ArrangePanel);
-  if Assigned(ScrollBox) then
-    FreeAndNil(scrollbox);
-end;  {*** procedure TJvParameterList.DestroyWinControls; ***}
+  FreeAndNil(ArrangePanel);
+  FreeAndNil(ScrollBox);
+end;
 
 procedure TJvParameterList.GetDataFromWinControls;
 var
-  i: integer;
+  I: Integer;
 begin
-  for i := 0 to Count - 1 do
-    if Parameters[i].Visible then
-      Parameters[i].GetData;
-end;   {*** procedure TJvParameterList.GetDataFromWinControls ***}
+  for I := 0 to Count - 1 do
+    if Parameters[I].Visible then
+      Parameters[I].GetData;
+end;
 
 procedure TJvParameterList.SetDataToWinControls;
 var
-  i: integer;
+  I: Integer;
 begin
-  for i := 0 to Count - 1 do
-    if Parameters[i].Visible then
-      Parameters[i].SetData;
-end;   {*** procedure TJvParameterList.GetDataFromWinControls ***}
+  for I := 0 to Count - 1 do
+    if Parameters[I].Visible then
+      Parameters[I].SetData;
+end;
 
-function TJvParameterList.ValidateDataAtWinControls: boolean;
+function TJvParameterList.ValidateDataAtWinControls: Boolean;
 var
-  i: integer;
-  v: variant;
-  b: boolean;
+  I: Integer;
+  V: Variant;
+  B: Boolean;
 begin
-  Result := false;
-  for i := 0 to Count - 1 do
-    if Parameters[i].Visible then
+  Result := False;
+  for I := 0 to Count - 1 do
+    if Parameters[I].Visible then
     begin
-      v := parameters[i].WinControlData;
-      b := Parameters[i].Validate(v);
-      parameters[i].WinControlData := v;
-      if not b then
+      V := Parameters[I].WinControlData;
+      B := Parameters[I].Validate(V);
+      Parameters[I].WinControlData := V;
+      if not B then
         Exit;
     end;
-  Result := true;
-end;   {*** function TJvParameterList.ValidateDataAtWinControls ***}
+  Result := True;
+end;
 
-function TJvParameterList.GetCount: integer;
+function TJvParameterList.GetCount: Integer;
 begin
-  Result := fintParameterList.Count;
-end;   {*** function TJvParameterList.GetCount ***}
+  Result := FIntParameterList.Count;
+end;
 
-function TJvParameterList.AddObject(const S: string; AObject: TObject): integer;
+function TJvParameterList.AddObject(const S: string; AObject: TObject): Integer;
 begin
-  if not (AObject is tJvBaseParameter) then
-    raise Exception.Create('TJvParameterList.AddObject : Wrong Object-Type');
-  if tJvBaseParameter(AOBject).SearchName = '' then
-    raise Exception.Create('TJvParameterList.AddObject : Searchname NOT defined');
-  tJvBaseParameter(AObject).ParameterList := Self;
-  Result := fintParameterList.AddObject(s, AObject);
-end;  {*** function TJvParameterList.AddObject ***}
+  if not (AObject is TJvBaseParameter) then
+    raise EJVCLException.Create(SAddObjectWrongObjectType);
+  if TJvBaseParameter(AOBject).SearchName = '' then
+    raise EJVCLException.Create(SAddObjectSearchNameNotDefined);
+  TJvBaseParameter(AObject).ParameterList := Self;
+  Result := FIntParameterList.AddObject(S, AObject);
+end;
 
-procedure TJvParameterList.InsertObject(Index: integer; const S: string; AObject: TObject);
+procedure TJvParameterList.InsertObject(Index: Integer; const S: string; AObject: TObject);
 begin
-  if not (AObject is tJvBaseParameter) then
-    raise Exception.Create('TJvParameterList.InsertObject : Wrong Object-Type');
-  if tJvBaseParameter(AOBject).SearchName = '' then
-    raise Exception.Create('TJvParameterList.InsertObject : Searchname NOT defined');
-  tJvBaseParameter(AObject).ParameterList := Self;
-  fintParameterList.InsertObject(Index, s, AObject);
-end;  {*** procedure TJvParameterList.InsertObject ***}
+  if not (AObject is TJvBaseParameter) then
+    raise EJVCLException.Create(SInsertObjectWrongObjectType);
+  if TJvBaseParameter(AOBject).SearchName = '' then
+    raise EJVCLException.Create(SInsertObjectSearchNameNotDefined);
+  TJvBaseParameter(AObject).ParameterList := Self;
+  FIntParameterList.InsertObject(Index, S, AObject);
+end;
 
 procedure TJvParameterList.SetArrangeSettings(Value: TJvArrangeSettings);
 begin
-  fArrangeSettings.Assign(Value);
+  FArrangeSettings.Assign(Value);
   if Assigned(ArrangePanel) then
     ArrangePanel.ArrangeSettings := ArrangeSettings;
-end;  {*** procedure TJvParameterList.SetArrangeSettings ***}
+end;
 
-procedure TJvParameterList.SetParameters(Index: integer; Value: tJvBaseParameter);
+procedure TJvParameterList.SetParameters(Index: Integer; Value: TJvBaseParameter);
 begin
-  if (Index >= 0) and (Index < fintParameterList.Count) then
-    fintParameterList.Objects[Index] := Value;
-end;  {*** procedure TJvParameterList.SetParameters ***}
+  if (Index >= 0) and (Index < FIntParameterList.Count) then
+    FIntParameterList.Objects[Index] := Value;
+end;
 
-
-
-function TJvParameterList.GetParameters(Index: integer): tJvBaseParameter;
+function TJvParameterList.GetParameters(Index: Integer): TJvBaseParameter;
 begin
-  if (Index >= 0) and (Index < fintParameterList.Count) then
-    Result := tJvBaseParameter(fintParameterList.Objects[Index])
+  if (Index >= 0) and (Index < FIntParameterList.Count) then
+    Result := TJvBaseParameter(FIntParameterList.Objects[Index])
   else
     Result := nil;
-end;  {*** function TJvParameterList.GetParameters ***}
+end;
 
-function TJvParameterList.GetCurrentWidth: integer;
+function TJvParameterList.GetCurrentWidth: Integer;
 begin
   if Width > 0 then
     Result := Width
-  else if Assigned(ArrangePanel) then
+  else
+  if Assigned(ArrangePanel) then
     if ArrangePanel.Align in [alTop, alBottom, alClient] then
       Result := ArrangePanel.ArrangeWidth
     else
@@ -1554,13 +1512,14 @@ begin
     Result := 0;
   if Result > MaxWidth then
     Result := MaxWidth;
-end;   {*** function TJvParameterList.GetCurrentWidth  ***}
+end;
 
-function TJvParameterList.GetCurrentHeight: integer;
+function TJvParameterList.GetCurrentHeight: Integer;
 begin
   if Height > 0 then
     Result := Height
-  else if Assigned(ArrangePanel) then
+  else
+  if Assigned(ArrangePanel) then
   begin
     if ArrangePanel.Align in [alleft, alRight, alClient] then
       Result := ArrangePanel.ArrangeHeight
@@ -1571,99 +1530,92 @@ begin
     Result := 0;
   if Result > MaxHeight then
     Result := MaxHeight;
-end;   {*** function TJvParameterList.GetCurrentHeight  ***}
+end;
 
 procedure TJvParameterList.Clear;
 begin
-  fintParameterList.Clear;
-end;   {*** procedure TJvParameterList.clear; ***}
+  FIntParameterList.Clear;
+end;
 
-
- {*****************************************************************************}
- {* TJvParameterListPropertyStore                                                     *}
- {*****************************************************************************}
+//=== TJvParameterListPropertyStore ==========================================
 
 procedure TJvParameterListPropertyStore.LoadData;
 var
-  i: integer;
+  I: Integer;
 begin
-  with Parameterlist do
-    for i := 0 to ParameterList.Count - 1 do
-      if not (Parameters[i] is tJvNoDataParameter) then
-        with Parameters[i] do
-          if ReloadValuefromRegistry then
-            if Parameters[i] is tJvListParameter then
-              with tJvListParameter(Parameters[i]) do
-                ItemIndex := AppStore.ReadInteger(Path + '\' + SearchName, ItemIndex)
+  with ParameterList do
+    for I := 0 to ParameterList.Count - 1 do
+      if not (Parameters[I] is tJvNoDataParameter) then
+        with Parameters[I] do
+          if ReloadValueFromRegistry then
+            if Parameters[I] is TJvListParameter then
+              with TJvListParameter(Parameters[I]) do
+                ItemIndex := AppStore.ReadInteger(Path + PathDelimiter + SearchName, ItemIndex)
             else
-              AsString := AppStore.ReadString(Path + '\' + SearchName, AsString);
-end;   {*** procedure TJvParameterListPropertyStore.LoadData; ***}
+              AsString := AppStore.ReadString(Path + PathDelimiter + SearchName, AsString);
+end;
 
 procedure TJvParameterListPropertyStore.StoreData;
 var
-  i: integer;
+  I: Integer;
 begin
-  with Parameterlist do
-    for i := 0 to ParameterList.Count - 1 do
-      if not (Parameters[i] is tJvNoDataParameter) then
-        with Parameters[i] do
-          if ReloadValuefromRegistry then
-            if Parameters[i] is tJvListParameter then
-              with tJvListParameter(Parameters[i]) do
-                AppStore.WriteInteger(Path + '\' + SearchName, ItemIndex)
+  with ParameterList do
+    for I := 0 to ParameterList.Count - 1 do
+      if not (Parameters[I] is tJvNoDataParameter) then
+        with Parameters[I] do
+          if ReloadValueFromRegistry then
+            if Parameters[I] is TJvListParameter then
+              with TJvListParameter(Parameters[I]) do
+                AppStore.WriteInteger(Path + PathDelimiter + SearchName, ItemIndex)
             else
-              AppStore.WriteString(Path + '\' + SearchName, AsString);
-end;   {*** procedure TJvParameterListPropertyStore.StoreData; ***}
-
-
- {*****************************************************************************}
- {* TJvParameterListPropertyStore                                                     *}
- {*****************************************************************************}
-
-function tJvParameterListSelectList.GetDynControlEngine: tJvDynControlEngine;
-begin
-  Result := fParameterList.DynControlEngine;
+              AppStore.WriteString(Path + PathDelimiter + SearchName, AsString);
 end;
 
-function tJvParameterListSelectList.GetParameterList: TJvParameterList;
+//=== TJvParameterListPropertyStore ==========================================
+
+function TJvParameterListSelectList.GetDynControlEngine: TJvDynControlEngine;
 begin
-  Result := fParameterList;
+  Result := FParameterList.DynControlEngine;
 end;
 
-procedure tJvParameterListSelectList.SetParameterList(Value: TJvParameterList);
+function TJvParameterListSelectList.GetParameterList: TJvParameterList;
 begin
-  fParameterList := Value;
+  Result := FParameterList;
 end;
 
-function tJvParameterListSelectList.GetAppStore: TJvCustomAppStore;
+procedure TJvParameterListSelectList.SetParameterList(Value: TJvParameterList);
 begin
-  if Assigned(fParameterList) then
-    Result := fParameterList.AppStore;
+  FParameterList := Value;
 end;
 
-procedure tJvParameterListSelectList.SetAppStore(Value: TJvCustomAppStore);
+function TJvParameterListSelectList.GetAppStore: TJvCustomAppStore;
 begin
-  if Assigned(fParameterList) then
-    fParameterList.AppStore := Value;
+  if Assigned(FParameterList) then
+    Result := FParameterList.AppStore;
 end;
 
-procedure tJvParameterListSelectList.Notification(AComponent: TComponent; Operation: TOperation);
+procedure TJvParameterListSelectList.SetAppStore(Value: TJvCustomAppStore);
 begin
-  inherited;
-  if (Operation = opRemove) and (AComponent = fParameterList) then
-    fParameterList := nil;
+  if Assigned(FParameterList) then
+    FParameterList.AppStore := Value;
 end;
 
+procedure TJvParameterListSelectList.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FParameterList) then
+    FParameterList := nil;
+end;
 
-procedure tJvParameterListSelectList.RestoreParameterList(aCaption: string = '');
+procedure TJvParameterListSelectList.RestoreParameterList(ACaption: string = '');
 var
   SavePath: string;
 begin
   if not Assigned(ParameterList) then
     Exit;
-  Savepath := ParameterList.Path;
+  SavePath := ParameterList.Path;
   try
-    ParameterList.Path := GetSelectPath(sloLoad, aCaption);
+    ParameterList.Path := GetSelectPath(sloLoad, ACaption);
     if ParameterList.Path <> '' then
     begin
       ParameterList.LoadData;
@@ -1674,15 +1626,15 @@ begin
   end;
 end;
 
-procedure tJvParameterListSelectList.SaveParameterList(aCaption: string = '');
+procedure TJvParameterListSelectList.SaveParameterList(ACaption: string = '');
 var
   SavePath: string;
 begin
   if not Assigned(ParameterList) then
     Exit;
-  Savepath := ParameterList.Path;
+  SavePath := ParameterList.Path;
   try
-    ParameterList.Path := GetSelectPath(sloStore, aCaption);
+    ParameterList.Path := GetSelectPath(sloStore, ACaption);
     if ParameterList.Path <> '' then
     begin
       ParameterList.GetDataFromWinControls;
@@ -1693,7 +1645,5 @@ begin
   end;
 end;
 
-
-
-
 end.
+
