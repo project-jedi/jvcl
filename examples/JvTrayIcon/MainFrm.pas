@@ -77,6 +77,7 @@ type
     procedure btnBalloonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure chkActiveClick(Sender: TObject);
+    procedure chkAnimatedClick(Sender: TObject);
   end;
 
 var
@@ -178,7 +179,13 @@ end;
 
 procedure TfrmMain.chkActiveClick(Sender: TObject);
 begin
+  JvTrayIcon1.Active := chkActive.Checked;
   btnBalloon.Enabled := JvTrayIcon1.Active;
+end;
+
+procedure TfrmMain.chkAnimatedClick(Sender: TObject);
+begin
+  JvTrayIcon1.Animated := chkAnimated.Checked;
 end;
 
 end.
