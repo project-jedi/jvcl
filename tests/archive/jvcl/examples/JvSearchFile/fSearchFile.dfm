@@ -1,10 +1,13 @@
 object MainFrm: TMainFrm
   Left = 372
   Top = 182
-  Width = 329
-  Height = 351
+  AutoScroll = False
   Caption = 'JvSearchFiles Demo'
+  ClientHeight = 318
+  ClientWidth = 362
   Color = clBtnFace
+  Constraints.MinHeight = 345
+  Constraints.MinWidth = 370
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -14,21 +17,15 @@ object MainFrm: TMainFrm
   Position = poScreenCenter
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
-  DesignSize = (
-    321
-    324)
   PixelsPerInch = 96
   TextHeight = 13
   object GroupBox1: TGroupBox
     Left = 4
     Top = 6
-    Width = 306
+    Width = 353
     Height = 139
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 0
-    DesignSize = (
-      306
-      139)
     object Label1: TLabel
       Left = 10
       Top = 16
@@ -48,7 +45,7 @@ object MainFrm: TMainFrm
     object JvDirectoryBox1: TJvDirectoryEdit
       Left = 62
       Top = 14
-      Width = 234
+      Width = 281
       Height = 21
       ButtonFlat = False
       NumGlyphs = 1
@@ -71,82 +68,68 @@ object MainFrm: TMainFrm
     object edFileMask: TEdit
       Left = 62
       Top = 40
-      Width = 234
+      Width = 281
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 1
       Text = '*.*'
       OnChange = OptionsChange
     end
-    object chkContains: TCheckBox
-      Left = 12
-      Top = 90
-      Width = 133
-      Height = 17
-      Caption = 'Containing the &text:'
-      TabOrder = 4
-      OnClick = chkContainsClick
-    end
-    object edContainText: TJvEdit
-      Left = 30
+    object cbContainText: TComboBox
+      Left = 24
       Top = 108
-      Width = 265
+      Width = 319
       Height = 21
-      DisabledColor = clBtnFace
-      GroupIndex = -1
-      MaxPixel.Font.Charset = DEFAULT_CHARSET
-      MaxPixel.Font.Color = clWindowText
-      MaxPixel.Font.Height = -11
-      MaxPixel.Font.Name = 'MS Sans Serif'
-      MaxPixel.Font.Style = []
-      Modified = False
-      SelStart = 0
-      SelLength = 0
       Anchors = [akLeft, akTop, akRight]
-      Enabled = False
-      PasswordChar = #0
-      ReadOnly = False
+      ItemHeight = 13
       TabOrder = 5
       OnChange = OptionsChange
     end
-    object chkVirtual: TCheckBox
-      Left = 193
-      Top = 64
-      Width = 97
+    object rbInclude: TRadioButton
+      Left = 6
+      Top = 87
+      Width = 79
       Height = 17
-      Caption = '&Virtual'
+      Caption = '&With text:'
       Checked = True
-      State = cbChecked
       TabOrder = 3
+      TabStop = True
+      OnClick = OptionsChange
+    end
+    object rbExclude: TRadioButton
+      Left = 132
+      Top = 87
+      Width = 113
+      Height = 17
+      Caption = 'With&out text:'
+      TabOrder = 4
       OnClick = OptionsChange
     end
   end
   object btnSearch: TButton
-    Left = 10
-    Top = 154
+    Left = 190
+    Top = 160
     Width = 75
     Height = 25
+    Anchors = [akTop, akRight]
     Caption = '&Search'
     Default = True
     ModalResult = 1
-    TabOrder = 1
+    TabOrder = 3
     OnClick = btnSearchClick
   end
   object GroupBox2: TGroupBox
-    Left = 7
-    Top = 182
-    Width = 306
-    Height = 116
+    Left = 4
+    Top = 190
+    Width = 353
+    Height = 105
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabOrder = 3
-    DesignSize = (
-      306
-      116)
+    TabOrder = 5
     object reFoundFiles: TRichEdit
-      Left = 12
-      Top = 18
-      Width = 283
-      Height = 88
+      Left = 6
+      Top = 12
+      Width = 341
+      Height = 87
       Anchors = [akLeft, akTop, akRight, akBottom]
       PlainText = True
       ScrollBars = ssBoth
@@ -155,21 +138,22 @@ object MainFrm: TMainFrm
     end
   end
   object btnCancel: TButton
-    Left = 96
-    Top = 154
+    Left = 276
+    Top = 160
     Width = 75
     Height = 25
+    Anchors = [akTop, akRight]
     Cancel = True
     Caption = '&Cancel'
     Enabled = False
     ModalResult = 2
-    TabOrder = 2
+    TabOrder = 4
     OnClick = btnCancelClick
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 305
-    Width = 321
+    Top = 299
+    Width = 362
     Height = 19
     Panels = <
       item
@@ -177,6 +161,26 @@ object MainFrm: TMainFrm
         Width = 50
       end>
     SimplePanel = False
+  end
+  object chkClearList: TCheckBox
+    Left = 24
+    Top = 152
+    Width = 134
+    Height = 17
+    Caption = 'C&lear list before search'
+    Checked = True
+    State = cbChecked
+    TabOrder = 1
+  end
+  object chkNoDupes: TCheckBox
+    Left = 24
+    Top = 171
+    Width = 134
+    Height = 17
+    Caption = 'Skip d&uplicates'
+    Checked = True
+    State = cbChecked
+    TabOrder = 2
   end
   object JvSearchFile1: TJvSearchFiles
     DirOption = doExcludeInvalidDirs
@@ -193,12 +197,15 @@ object MainFrm: TMainFrm
   object JvFormStorage1: TJvFormStorage
     IniSection = 'Settings'
     StoredProps.Strings = (
-      'edContainText.Text'
       'edFileMask.Text'
-      'chkVirtual.Checked'
       'chkRecursive.Checked'
-      'chkContains.Checked'
-      'JvDirectoryBox1.Text')
+      'JvDirectoryBox1.Text'
+      'cbContainText.Items'
+      'cbContainText.Text'
+      'chkClearList.Checked'
+      'chkNoDupes.Checked'
+      'rbInclude.Checked'
+      'rbExclude.Checked')
     StoredValues = <>
     Left = 186
     Top = 72

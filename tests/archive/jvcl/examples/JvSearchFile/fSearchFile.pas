@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, JvListbox, JvComponent, JvCtrls, JvSearchFiles, Mask, JvToolEdit,
-  ComCtrls, JvEdit, JvPlacemnt;
+  ComCtrls, JvEdit, JvPlacemnt, Menus;
 
 type
   TMainFrm = class(TForm)
@@ -19,23 +19,25 @@ type
     edFileMask: TEdit;
     GroupBox2: TGroupBox;
     btnCancel: TButton;
-    chkContains: TCheckBox;
     reFoundFiles: TRichEdit;
-    edContainText: TJvEdit;
-    chkVirtual: TCheckBox;
     JvFormStorage1: TJvFormStorage;
     StatusBar1: TStatusBar;
+    chkClearList: TCheckBox;
+    chkNoDupes: TCheckBox;
+    cbContainText: TComboBox;
+    rbInclude: TRadioButton;
+    rbExclude: TRadioButton;
     procedure btnSearchClick(Sender: TObject);
     procedure JvSearchFile1FindFile(Sender: TObject; const AName: string);
     procedure btnCancelClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure chkContainsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure JvSearchFile1BeginScanDir(Sender: TObject;
       const AName: String);
     procedure OptionsChange(Sender: TObject);
   private
     { Private declarations }
+    procedure AddSearchTextToComboBox;
   public
     { Public declarations }
   end;
@@ -55,16 +57,19 @@ begin
   btnCancel.Enabled := true;
   Screen.Cursor := crHourGlass;
   try
-    reFoundFiles.Lines.Clear;
+    if chkClearList.Checked then
+      reFoundFiles.Lines.Clear;
+    AddSearchTextToComboBox;
+    JvSearchFile1.Files.Clear;
+    JvSearchFile1.Directories.Clear;
+
     JvSearchFile1.FileParams.FileMasks.Text := edFileMask.Text;
     if chkRecursive.Checked then
       JvSearchFile1.DirOption := doIncludeSubDirs
     else
       JvSearchFile1.DirOption := doExcludeSubDirs;
-    if chkVirtual.Checked then
-      JvSearchFile1.Options := JvSearchFile1.Options + [soOwnerData]
-    else
-      JvSearchFile1.Options := JvSearchFile1.Options - [soOwnerData];
+    // don't store file and folder names - we do that in the memo
+    JvSearchFile1.Options := JvSearchFile1.Options + [soOwnerData];
     JvSearchFile1.RootDirectory := JvDirectoryBox1.EditText;
     JvSearchFile1.Search;
   finally
@@ -98,9 +103,11 @@ procedure TMainFrm.JvSearchFile1FindFile(Sender: TObject;
 begin
   StatusBar1.Panels[0].Text := Format('Searching in %s...',[AName]);
   StatusBar1.Update;
-  if chkContains.Checked and (edContainText.Text <> '') then
-    if not ContainsText(AName,edContainText.Text) then Exit;
-  reFoundFiles.Lines.Add(AName);
+  if (cbContainText.Text <> '') then
+    if rbInclude.Checked <> ContainsText(AName,cbContainText.Text) then
+      Exit;
+  if not chkNoDupes.Checked or (reFoundFiles.Lines.IndexOf(AName) < 0) then
+    reFoundFiles.Lines.Add(AName);
 end;
 
 procedure TMainFrm.btnCancelClick(Sender: TObject);
@@ -112,12 +119,6 @@ end;
 procedure TMainFrm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   btnCancel.Click;
-end;
-
-procedure TMainFrm.chkContainsClick(Sender: TObject);
-begin
-  edContainText.Enabled := chkContains.Checked;
-  OptionsChange(Sender);
 end;
 
 procedure TMainFrm.FormCreate(Sender: TObject);
@@ -134,8 +135,17 @@ end;
 
 procedure TMainFrm.OptionsChange(Sender: TObject);
 begin
+  rbInclude.Enabled := cbContainText.Text <> '';
+  rbExclude.Enabled := rbInclude.Enabled;
   StatusBar1.Panels[0].Text := 'Ready';
   StatusBar1.Update;
+end;
+
+procedure TMainFrm.AddSearchTextToComboBox;
+begin
+  with cbContainText do
+    if (Text <> '') and (Items.IndexOf(Text) < 0) then
+        Items.Add(Text);
 end;
 
 end.
