@@ -41,9 +41,14 @@ type
   TJvRotateValueType = -255..255;
 
   TJvRotateValue = class(TPersistent)
+  private
+    FValue: TJvRotateValueType;
+    FSaturationMethod: TJvSaturationMethod;
   public
-    Value: TJvRotateValueType;
-    SaturationMethod: TJvSaturationMethod;
+    property Value: TJvRotateValueType read FValue write FValue;
+    property SaturationMethod: TJvSaturationMethod read FSaturationMethod write FSaturationMethod;
+
+    procedure Assign(Value: TJvRotateValue); reintroduce;
   end;
 
   TJvAxisDelta = class(TPersistent)
@@ -68,6 +73,9 @@ type
     FAxisRed: TJvAxisDelta;
     FAxisGreen: TJvAxisDelta;
     FAxisBlue: TJvAxisDelta;
+    procedure SetAxisBlue(const Value: TJvAxisDelta);
+    procedure SetAxisGreen(const Value: TJvAxisDelta);
+    procedure SetAxisRed(const Value: TJvAxisDelta);
   public
     constructor Create;
     destructor Destroy; override;
@@ -75,9 +83,9 @@ type
     procedure Assign(Value: TJvColorDelta); reintroduce;
 
     property ColorID: TJvFullColorSpaceID read FColorID write FColorID;
-    property AxisRed: TJvAxisDelta read FAxisRed write FAxisRed;
-    property AxisGreen: TJvAxisDelta read FAxisGreen write FAxisGreen;
-    property AxisBlue: TJvAxisDelta read FAxisBlue write FAxisBlue;
+    property AxisRed: TJvAxisDelta read FAxisRed write SetAxisRed;
+    property AxisGreen: TJvAxisDelta read FAxisGreen write SetAxisGreen;
+    property AxisBlue: TJvAxisDelta read FAxisBlue write SetAxisBlue;
   end;
 
 //function ChangeColorDeltaSpace(ColorDelta: TJvColorDelta;
@@ -292,7 +300,7 @@ var
   Index: TJvAxisIndex;
 begin
   for Index := Low(TJvAxisIndex) to High(TJvAxisIndex) do
-    FConstituents[Index] := Value[Index];
+    FConstituents[Index].Assign(Value[Index]);
 end;
 
 constructor TJvAxisDelta.Create;
@@ -323,7 +331,7 @@ end;
 procedure TJvAxisDelta.SetConstituents(Index: TJvAxisIndex;
   const Value: TJvRotateValue);
 begin
-  FConstituents[Index] := Value;
+  FConstituents[Index].Assign(Value);
 end;
 
 { TJvColorDelta }
@@ -353,6 +361,29 @@ begin
   FAxisBlue.Free;
 
   inherited Destroy;
+end;
+
+procedure TJvColorDelta.SetAxisBlue(const Value: TJvAxisDelta);
+begin
+  FAxisBlue.Assign(Value);
+end;
+
+procedure TJvColorDelta.SetAxisGreen(const Value: TJvAxisDelta);
+begin
+  FAxisGreen.Assign(Value);
+end;
+
+procedure TJvColorDelta.SetAxisRed(const Value: TJvAxisDelta);
+begin
+  FAxisRed.Assign(Value);
+end;
+
+{ TJvRotateValue }
+
+procedure TJvRotateValue.Assign(Value: TJvRotateValue);
+begin
+  FValue := Value.Value;
+  FSaturationMethod := Value.SaturationMethod;
 end;
 
 {$IFDEF UNITVERSIONING}
