@@ -1,0 +1,5 @@
+[Directories]
+OutputDir=..\..\packages
+UnitOutputDir=
+[Parameters]
+RunParams=-IgnoreDelphi -NoUpdateCheck
