@@ -567,7 +567,6 @@ type
 
   TJvDBStatusLabel = class(TJvCustomLabel)
   private
-    FDataLink: TDataLink;
     FDataSetName: string;
     FStyle: TDBLabelStyle;
     FEditColor: TColor;
@@ -576,9 +575,6 @@ type
     FGlyph: TBitmap;
     FCell: TBitmap;
     FGlyphAlign: TGlyphAlign;
-    FRecordCount: Longint;
-    FRecordNo: Longint;
-    FShowOptions: TDBLabelOptions;
     FOnGetDataName: TGetStringEvent;
     FOnGetRecNo: TDataValueEvent;
     FOnGetRecordCount: TDataValueEvent;
@@ -597,6 +593,10 @@ type
     procedure SetCaptions(Value: TStrings);
     procedure SetCalcCount(Value: Boolean);
   protected
+    FDataLink: TDataLink;
+    FRecordCount: Longint;
+    FRecordNo: Longint;
+    FShowOptions: TDBLabelOptions;
     procedure Loaded; override;
     function GetDefaultFontColor: TColor; override;
     function GetLabelCaption: string; override;
