@@ -1719,125 +1719,143 @@ object Form1: TForm1
     Height = 191
     Caption = 'Parameterlist Test'
     TabOrder = 5
-    object JvPanel2: TJvPanel
-      Left = 2
-      Top = 15
-      Width = 362
-      Height = 174
-      MultiLine = False
-      ArrangeSettings.BorderLeft = 5
-      ArrangeSettings.BorderTop = 5
-      ArrangeSettings.DistanceVertical = 5
-      ArrangeSettings.DistanceHorizontal = 5
-      ArrangeSettings.AutoArrange = True
-      Align = alClient
-      BevelOuter = bvNone
+    object JvGroupBox2: TJvGroupBox
+      Left = 180
+      Top = 75
+      Width = 170
+      Height = 56
+      Caption = 'ButtonTests'
       TabOrder = 0
-      object JvGroupBoxAllControls: TJvGroupBox
-        Left = 5
-        Top = 5
-        Width = 171
-        Height = 166
-        Caption = 'All Controls'
+      object JvPanel3: TJvPanel
+        Left = 2
+        Top = 15
+        Width = 166
+        Height = 39
+        MultiLine = False
+        ArrangeSettings.BorderLeft = 5
+        ArrangeSettings.BorderTop = 5
+        ArrangeSettings.DistanceVertical = 3
+        ArrangeSettings.DistanceHorizontal = 3
+        ArrangeSettings.AutoArrange = True
+        Align = alClient
+        BevelOuter = bvNone
         TabOrder = 0
-        object JvPanelAllControls: TJvPanel
-          Left = 2
-          Top = 15
-          Width = 167
-          Height = 149
-          MultiLine = False
-          ArrangeSettings.BorderLeft = 5
-          ArrangeSettings.BorderTop = 5
-          ArrangeSettings.DistanceVertical = 3
-          ArrangeSettings.DistanceHorizontal = 3
-          ArrangeSettings.AutoArrange = True
-          Align = alClient
-          BevelOuter = bvNone
+        object Button13: TButton
+          Left = 5
+          Top = 5
+          Width = 156
+          Height = 25
+          Caption = 'Test Buttons Default Engine'
+          Default = True
           TabOrder = 0
-          OnResize = JvPanelAllControlsResize
-          object Button1: TButton
-            Left = 5
-            Top = 5
-            Width = 156
-            Height = 25
-            Caption = 'Test &1 Default Engine'
-            Default = True
-            TabOrder = 0
-            OnClick = Button1Click
-          end
-          object Button2: TButton
-            Left = 5
-            Top = 33
-            Width = 156
-            Height = 25
-            Caption = 'Test &2 Vcl Engine'
-            Default = True
-            TabOrder = 1
-            OnClick = Button2Click
-          end
-          object Button3: TButton
-            Left = 5
-            Top = 61
-            Width = 156
-            Height = 25
-            Caption = 'Test &3 Jvcl Engine'
-            Default = True
-            TabOrder = 2
-            OnClick = Button3Click
-          end
-          object Button4: TButton
-            Left = 5
-            Top = 89
-            Width = 156
-            Height = 25
-            Caption = 'Test &4 DevExp Cx Engine'
-            Default = True
-            TabOrder = 3
-            OnClick = Button4Click
-          end
-          object Button11: TButton
-            Left = 5
-            Top = 117
-            Width = 156
-            Height = 25
-            Caption = 'Test &5 Vcl-Red Engine'
-            Default = True
-            TabOrder = 4
-            OnClick = Button11Click
-          end
+          OnClick = Button13Click
         end
       end
-      object JvGroupBox3: TJvGroupBox
-        Left = 181
-        Top = 5
-        Width = 170
-        Height = 56
-        Caption = 'Disable / Enable Tests'
-        TabOrder = 1
-        object JvPanel4: TJvPanel
-          Left = 2
-          Top = 15
-          Width = 166
-          Height = 39
-          MultiLine = False
-          ArrangeSettings.BorderLeft = 5
-          ArrangeSettings.BorderTop = 5
-          ArrangeSettings.DistanceVertical = 3
-          ArrangeSettings.DistanceHorizontal = 3
-          ArrangeSettings.AutoArrange = True
-          Align = alClient
-          BevelOuter = bvNone
+    end
+    object JvGroupBox3: TJvGroupBox
+      Left = 181
+      Top = 15
+      Width = 170
+      Height = 56
+      Caption = 'Disable / Enable Tests'
+      TabOrder = 1
+      object JvPanel4: TJvPanel
+        Left = 2
+        Top = 15
+        Width = 166
+        Height = 39
+        MultiLine = False
+        ArrangeSettings.BorderLeft = 5
+        ArrangeSettings.BorderTop = 5
+        ArrangeSettings.DistanceVertical = 3
+        ArrangeSettings.DistanceHorizontal = 3
+        ArrangeSettings.AutoArrange = True
+        Align = alClient
+        BevelOuter = bvNone
+        TabOrder = 0
+        object Button12: TButton
+          Left = 5
+          Top = 5
+          Width = 156
+          Height = 25
+          Caption = 'Disable/Enable Default Engine'
+          Default = True
           TabOrder = 0
-          object Button12: TButton
-            Left = 5
-            Top = 5
-            Width = 156
-            Height = 25
-            Caption = 'Test 2 Default Engine'
-            Default = True
-            TabOrder = 0
-            OnClick = Button12Click
-          end
+          OnClick = Button12Click
+        end
+      end
+    end
+    object JvGroupBoxAllControls: TJvGroupBox
+      Left = 5
+      Top = 15
+      Width = 171
+      Height = 166
+      Caption = 'All Controls'
+      TabOrder = 2
+      object JvPanelAllControls: TJvPanel
+        Left = 2
+        Top = 15
+        Width = 167
+        Height = 149
+        MultiLine = False
+        ArrangeSettings.BorderLeft = 5
+        ArrangeSettings.BorderTop = 5
+        ArrangeSettings.DistanceVertical = 3
+        ArrangeSettings.DistanceHorizontal = 3
+        ArrangeSettings.AutoArrange = True
+        Align = alClient
+        BevelOuter = bvNone
+        TabOrder = 0
+        OnResize = JvPanelAllControlsResize
+        object Button1: TButton
+          Left = 5
+          Top = 5
+          Width = 156
+          Height = 25
+          Caption = 'Test &1 Default Engine'
+          Default = True
+          TabOrder = 0
+          OnClick = Button1Click
+        end
+        object Button2: TButton
+          Left = 5
+          Top = 33
+          Width = 156
+          Height = 25
+          Caption = 'Test &2 Vcl Engine'
+          Default = True
+          TabOrder = 1
+          OnClick = Button2Click
+        end
+        object Button3: TButton
+          Left = 5
+          Top = 61
+          Width = 156
+          Height = 25
+          Caption = 'Test &3 Jvcl Engine'
+          Default = True
+          TabOrder = 2
+          OnClick = Button3Click
+        end
+        object Button4: TButton
+          Left = 5
+          Top = 89
+          Width = 156
+          Height = 25
+          Caption = 'Test &4 DevExp Cx Engine'
+          Default = True
+          TabOrder = 3
+          OnClick = Button4Click
+        end
+        object Button11: TButton
+          Left = 5
+          Top = 117
+          Width = 156
+          Height = 25
+          Caption = 'Test &5 Vcl-Red Engine'
+          Default = True
+          TabOrder = 4
+          OnClick = Button11Click
         end
       end
     end

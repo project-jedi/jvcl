@@ -2,7 +2,7 @@ unit JvParameterListMainForm;
 
 interface
 
-{$DEFINE INCLUDE_DEVEXP_CX}
+{.$DEFINE INCLUDE_DEVEXP_CX}
 
 uses
   Windows, Messages, SysUtils, {Variants, }Classes, Graphics, Controls, Forms,
@@ -61,17 +61,19 @@ type
     Button9: TButton;
     Button10: TButton;
     JvGroupBox1: TJvGroupBox;
-    JvPanel2: TJvPanel;
-    JvGroupBoxAllControls: TJvGroupBox;
+    JvGroupBox2: TJvGroupBox;
+    JvPanel3: TJvPanel;
+    Button13: TButton;
     JvGroupBox3: TJvGroupBox;
-    JvPanelAllControls: TJvPanel;
     JvPanel4: TJvPanel;
+    Button12: TButton;
+    JvGroupBoxAllControls: TJvGroupBox;
+    JvPanelAllControls: TJvPanel;
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
     Button11: TButton;
-    Button12: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -88,12 +90,15 @@ type
     procedure Button11Click(Sender: TObject);
     procedure Button12Click(Sender: TObject);
     procedure JvPanelAllControlsResize(Sender: TObject);
+    procedure Button13Click(Sender: TObject);
   private
     { Private-Deklarationen }
+    procedure ShowTest3ButttonClick(const ParameterList: TJvParameterList; const Parameter: TJvBaseParameter);
   public
     { Public-Deklarationen }
     procedure ShowTest1(const aDynControlEngine: tJvDynControlEngine);
     procedure ShowTest2(const aDynControlEngine: tJvDynControlEngine);
+    procedure ShowTest3(const aDynControlEngine: tJvDynControlEngine);
   end;
 
 var
@@ -234,7 +239,6 @@ begin
     begin
       SearchName := 'FileNameTest';
       Caption    := 'FileNameTest';
-      ReadOnly   := true;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvDirectoryParameter.Create(ParameterList);
@@ -242,7 +246,6 @@ begin
     begin
       SearchName := 'DirectoryTest';
       Caption    := 'DirectoryTest';
-      ReadOnly   := true;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvMemoParameter.Create(ParameterList);
@@ -288,8 +291,8 @@ begin
       SearchName := 'PictureTest';
       Caption    := 'PictureTest';
 //      AutoSize := True;
-      Height     := 180;
-      Width      := 240;
+      Height     := 280;
+      Width      := 340;
     end;
     ParameterList.AddParameter(Parameter);
     if AutoHeightCheckBox.Checked then
@@ -416,6 +419,123 @@ begin
     ParameterList.Free;
   end;
 end;
+
+procedure TForm1.ShowTest3ButttonClick(const ParameterList: TJvParameterList; const Parameter: TJvBaseParameter);
+begin
+  if Assigned(Parameter) then
+    if Parameter.SearchName = 'ButtonA' then
+      Button5Click(nil)
+    else if Parameter.SearchName = 'ButtonB' then
+      Button6Click(nil)
+    else if Parameter.SearchName = 'ButtonC' then
+      Button7Click(nil)
+    else if Parameter.SearchName = 'ButtonD' then
+      Button8Click(nil)
+    else if Parameter.SearchName = 'ButtonE' then
+      if Assigned(ParameterList) then
+        MessageDlg('Edit 1 : ', ParameterList.ParameterByName('Edit1').WinControlData, mtWarning, [mbOK], 0);
+  ;
+end;
+
+procedure TForm1.ShowTest3(const aDynControlEngine: tJvDynControlEngine);
+var
+  ParameterList: TJvParameterList;
+  Parameter:     TJvBaseParameter;
+begin
+  ParameterList := TJvParameterList.Create(self);
+  try
+    if Assigned(aDynControlEngine) then
+      ParameterList.DynControlEngine := aDynControlEngine;
+    {$IFDEF INCLUDE_DEVEXP_CX}
+    if ParameterList.DynControlEngine is tJvDynControlEngine_DevExpCx then
+      with tJvDynControlEngine_DevExpCx(ParameterList.DynControlEngine) do
+      begin
+        case DevExpCxLookAndFeelRadioGroup.ItemIndex of
+          1: cxProperties.LookAndFeel.Kind := lfFlat;
+          2: cxProperties.LookAndFeel.Kind := lfUltraFlat;
+          else
+            cxProperties.LookAndFeel.Kind := lfStandard;
+        end;
+        CxProperties.StyleController.Style.Shadow := ShadowCheckBox.Checked;
+        if ThickLinesCheckBox.Checked then
+          CxProperties.StyleController.Style.BorderStyle := ebsThick
+        else
+          CxProperties.StyleController.Style.BorderStyle := ebsNone;
+      end;
+    {$ENDIF}
+    Parameter := tjvButtonParameter.Create(ParameterList);
+    with tjvButtonParameter(Parameter) do
+    begin
+      SearchName := 'ButtonA';
+      Caption    := 'Message Dlg &A';
+      OnButtonClick := ShowTest3ButttonClick;
+      Width      := 90;
+    end;
+    ParameterList.AddParameter(Parameter);
+    Parameter := tjvButtonParameter.Create(ParameterList);
+    with tjvButtonParameter(Parameter) do
+    begin
+      SearchName := 'ButtonB';
+      Caption    := 'Message Dlg &B';
+      OnButtonClick := ShowTest3ButttonClick;
+      Width      := 90;
+    end;
+    ParameterList.AddParameter(Parameter);
+    Parameter := tjvButtonParameter.Create(ParameterList);
+    with tjvButtonParameter(Parameter) do
+    begin
+      SearchName := 'ButtonC';
+      Caption    := 'Message Dlg &C';
+      OnButtonClick := ShowTest3ButttonClick;
+      Width      := 90;
+    end;
+    ParameterList.AddParameter(Parameter);
+    Parameter := tjvButtonParameter.Create(ParameterList);
+    with tjvButtonParameter(Parameter) do
+    begin
+      SearchName := 'ButtonD';
+      Caption    := 'Message Dlg &D';
+      OnButtonClick := ShowTest3ButttonClick;
+      Width      := 90;
+    end;
+    ParameterList.AddParameter(Parameter);
+    Parameter := tjvEditParameter.Create(ParameterList);
+    with Parameter do
+    begin
+      SearchName := 'Edit1';
+      Caption    := 'Edit Test 1';
+      Width      := 150;
+    end;
+    ParameterList.AddParameter(Parameter);
+    Parameter := tjvButtonParameter.Create(ParameterList);
+    with tjvButtonParameter(Parameter) do
+    begin
+      SearchName := 'ButtonE';
+      Caption    := 'Message Dlg &E';
+      OnButtonClick := ShowTest3ButttonClick;
+      Width      := 90;
+      DisableReasons.AddReasonIsEmpty('Edit1');
+    end;
+    ParameterList.AddParameter(Parameter);
+    ParameterList.ArrangeSettings.AutoSize := asHeight;
+ //  ParameterList.MaxHeight := StrToInt(MaxHeightEdit.Text);
+ //  ParameterList.MaxWidth  := StrToInt(MaxWidthEdit.Text);
+ //  ParameterList.Height    := StrToInt(HeightEdit.Text);
+    ParameterList.Width    := 240;
+    ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
+    ParameterList.AppStore := JvAppRegistryStore;
+    ParameterList.Path     := 'Dialog 3';
+    if LoadFromCheckBox.Checked then
+      ParameterList.LoadData;
+    if ParameterList.ShowParameterDialog then
+      if StoreToCheckBox.Checked then
+        ParameterList.storeData;
+//    Edit1.text := ParameterList.parameterByName('RadioGroupTest').AsString;
+  finally
+    ParameterList.Free;
+  end;
+end;
+
 
 
 
@@ -561,6 +681,11 @@ procedure TForm1.JvPanelAllControlsResize(Sender: TObject);
 begin
  //  JvGroupBoxAllControls.Width := JvPanelAllControls.Width+2;
  //  JvGroupBoxAllControls.Height := JvPanelAllControls.Height+20;
+end;
+
+procedure TForm1.Button13Click(Sender: TObject);
+begin
+  ShowTest3(nil);
 end;
 
 end.
