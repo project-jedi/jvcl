@@ -87,6 +87,9 @@ type
     {$ENDIF VisualCLX}
 //    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure DoLabelFontChange(Sender: TObject);
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X: Integer; Y: Integer); override;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -166,15 +169,26 @@ implementation
 uses
   JvResources;
 
+type
+  TNoEventLabel = class(TLabel)
+  public
+    procedure Dispatch(var Message); override;
+  end;
+
+  TNoEventGradient = class(TJvGradient)
+  public
+    procedure Dispatch(var Message); override;
+  end;
+
 constructor TJvGradientHeaderPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csOpaque, csAcceptsControls];
   Self.Width := 285;
   Self.Height := 30;
-  FGradient := TJvGradient.Create(Self);
+  FGradient := TNoEventGradient.Create(Self);
   FGradient.Parent := Self;
-  FLabel := TLabel.Create(Self);
+  FLabel := TNoEventLabel.Create(Self);
   FLabel.AutoSize := False;
   FLabel.Parent := Self;
   FGradient.Left := 0;
@@ -408,6 +422,14 @@ begin
   AdjustLabelWidth;
 end;
 
+procedure TJvGradientHeaderPanel.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  inherited;
+  if CanFocus then SetFocus;
+end;
+
+
 (*
 function TJvGradientHeaderPanel.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
@@ -415,6 +437,32 @@ begin
   Result := True;
 end;
 *)
+
+{ TNoEventLabel }
+
+procedure TNoEventLabel.Dispatch(var Message);
+begin
+  with TMessage(Message) do
+    if (Parent <> nil) and
+    (((Msg >= WM_MOUSEFIRST) and (Msg <= WM_MOUSELAST)) or
+    ((Msg >= WM_KEYFIRST) and (Msg <= WM_KEYLAST))) then
+    Parent.Dispatch(Message)
+  else
+    inherited;
+end;
+
+{ TNoEventGradient }
+
+procedure TNoEventGradient.Dispatch(var Message);
+begin
+  with TMessage(Message) do
+    if (Parent <> nil) and
+    (((Msg >= WM_MOUSEFIRST) and (Msg <= WM_MOUSELAST)) or
+    ((Msg >= WM_KEYFIRST) and (Msg <= WM_KEYLAST))) then
+    Parent.Dispatch(Message)
+  else
+    inherited;
+end;
 
 end.
 
