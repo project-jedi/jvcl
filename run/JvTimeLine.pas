@@ -51,6 +51,10 @@ type
   TJvTimeLineState = (tlDragPending, tlDragging, tlMouseDown, tlClearPending);
   TJvTimeLineStates = set of TJvTimeLineState;
 
+{$IFDEF BCB}
+  TDate = TDateTime;
+{$ENDIF}
+
   TJvTimeItem = class(TCollectionItem)
   private
     FRect: TRect;
