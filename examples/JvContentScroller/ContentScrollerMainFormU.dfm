@@ -11,26 +11,26 @@ object ContentScrollerMainForm: TContentScrollerMainForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object ContentScroller1: TJvContentScroller
+  object JvContentScroller1: TJvContentScroller
     Left = 16
     Top = 16
     Width = 225
     Height = 353
-    Anchors = [akLeft, akTop, akBottom]
-    UseDockManager = True
-    BorderStyle = bsSingle
-    BorderWidth = 9
-    ParentColor = True
-    TabOrder = 0
     Active = False
     ScrollAmount = 2
     ScrollIntervall = 10
     ScrollLength = 350
-    MediaFile = 'C:\WIN98\MEDIA\The Microsoft Sound.wav'
     LoopMedia = False
     LoopCount = 2
+    UseDockManager = True
+    Anchors = [akLeft, akTop, akBottom]
+    BorderStyle = bsSingle
+    BorderWidth = 9
+    ParentColor = True
+    TabOrder = 0
     object Label1: TLabel
       Left = 4
       Top = 120

@@ -50,7 +50,7 @@ type
     procedure JvCreateProcess1Terminate(Sender: TObject; ExitCode: Cardinal);
     procedure StopBtnClick(Sender: TObject);
   public
-    procedure AddLogMsg(const Text: String);
+    procedure AddLogMsg(const Text: string);
     procedure UpdateButtons;
   end;
 
@@ -65,7 +65,7 @@ resourcestring
   sProcessStarted = 'Process "%s" started...';
   sProcessTerminated = 'Process "%s" terminated, ExitCode: %.8x';
 
-procedure TCreateProcessExampleMainForm.AddLogMsg(const Text: String);
+procedure TCreateProcessExampleMainForm.AddLogMsg(const Text: string);
 begin
   RichEdit1.Lines.Add(FormatDateTime('DD.MM.YYYY HH:NN:SS  ', Now) + Text);
 end;
@@ -119,3 +119,4 @@ begin
 end;
 
 end.
+

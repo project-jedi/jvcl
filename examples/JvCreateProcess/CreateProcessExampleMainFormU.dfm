@@ -5,11 +5,14 @@ object CreateProcessExampleMainForm: TCreateProcessExampleMainForm
   Height = 375
   Caption = 'TJvCreateProcess example (with notepad.exe)'
   Color = clBtnFace
+  Constraints.MinHeight = 100
+  Constraints.MinWidth = 505
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  FormStyle = fsStayOnTop
   OldCreateOrder = False
   OnCreate = FormCreate
   PixelsPerInch = 96
@@ -71,7 +74,7 @@ object CreateProcessExampleMainForm: TCreateProcessExampleMainForm
     Left = 0
     Top = 41
     Width = 536
-    Height = 309
+    Height = 304
     Align = alClient
     Font.Charset = EASTEUROPE_CHARSET
     Font.Color = clWindowText
