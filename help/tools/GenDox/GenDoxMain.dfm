@@ -12,6 +12,9 @@ object frmMain: TfrmMain
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  DesignSize = (
+    542
+    470)
   PixelsPerInch = 96
   TextHeight = 13
   object pnlSettings: TPanel
@@ -21,6 +24,9 @@ object frmMain: TfrmMain
     Height = 106
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 0
+    DesignSize = (
+      532
+      106)
     object lblJVCLDir: TLabel
       Left = 10
       Top = 10
@@ -90,6 +96,9 @@ object frmMain: TfrmMain
       Height = 19
       BevelOuter = bvLowered
       TabOrder = 0
+      DesignSize = (
+        520
+        19)
       object lblActionCaption: TLabel
         Left = 3
         Top = 3
@@ -113,6 +122,9 @@ object frmMain: TfrmMain
       Height = 19
       BevelOuter = bvLowered
       TabOrder = 1
+      DesignSize = (
+        520
+        19)
       object lblActionInfoCaption: TLabel
         Left = 3
         Top = 3
@@ -148,14 +160,8 @@ object frmMain: TfrmMain
       OnClick = btnCloseClick
     end
   end
-  object AppStore: TJvAppRegistryStore
-    Root = 'Software\Project JEDI\GenDox'
-    RegRoot = hkCurrentUser
-    Left = 15
-    Top = 35
-  end
   object StorageLinks: TJvFormStorage
-    AppStorage = AppStore
+    AppStorage = JvAppRegistryStorage
     StoredProps.Strings = (
       'cxGenFullHelp.Checked'
       'cxGenPackagesHelp.Checked'
@@ -164,5 +170,13 @@ object frmMain: TfrmMain
     StoredValues = <>
     Left = 60
     Top = 35
+  end
+  object JvAppRegistryStorage: TJvAppRegistryStorage
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    Root = 'Software\Project JEDI\GenDox'
+    SubStorages = <>
+    Left = 50
+    Top = 90
   end
 end

@@ -4,12 +4,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvComponent, JvAppStore, JvAppRegistryStore, StdCtrls, ExtCtrls,
-  JvFormPlacement;
+  JvComponent, StdCtrls, ExtCtrls,
+  JvFormPlacement, JvAppStorage, JvAppRegistryStorage;
 
 type
   TfrmMain = class(TForm)
-    AppStore: TJvAppRegistryStore;
     pnlSettings: TPanel;
     lblJVCLDir: TLabel;
     edJVCLBaseFolder: TEdit;
@@ -27,6 +26,7 @@ type
     btnGenerate: TButton;
     btnClose: TButton;
     StorageLinks: TJvFormStorage;
+    JvAppRegistryStorage: TJvAppRegistryStorage;
     procedure btnBrowseClick(Sender: TObject);
     procedure btnGenerateClick(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
