@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2004-09-15
+- Added FitCell property to JvDBGrid (Pete Stove and Fred) // obones
 2004-09-14
 - JvFormStorage now has two new properties: StoredValuesPath and StoredPropsPath controling
   the path prefix to add for StoredProps and StoredValues. These should not be left empty
