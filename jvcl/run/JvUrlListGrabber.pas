@@ -29,6 +29,8 @@ unit JvUrlListGrabber;
 
 interface
 
+{$HPPEMIT '#pragma link "wininet.lib"'}
+
 uses
   Windows, Classes, SysUtils, Contnrs,
   JvComponent, JvTypes;
