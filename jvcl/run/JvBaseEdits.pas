@@ -74,7 +74,6 @@ type
     procedure SetZeroEmpty(Value: Boolean);
     procedure SetFormatOnEditing(Value: Boolean);
     function GetText: string; {$IFDEF VisualCLX} reintroduce; {$ENDIF}
-    procedure SetText(const AValue: string); {$IFDEF VisualCLX} reintroduce; {$ENDIF}
 //    function TextToValText(const AValue: string): string;
     //Polaris    function CheckValue(NewValue: Extended; RaiseOnError: Boolean): Extended;
     function IsFormatStored: Boolean;
@@ -87,6 +86,8 @@ type
     {$ENDIF VisualCLX}
     procedure DoClipboardPaste; override;
     procedure SetBeepOnError(Value: Boolean); override;
+
+    procedure SetText(const AValue: string); {$IFDEF VisualCLX} reintroduce; {$ENDIF} virtual; 
 
     procedure EnabledChanged; override;
     procedure DoEnter; override;
