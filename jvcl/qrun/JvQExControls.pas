@@ -121,7 +121,7 @@ type
   end;
 
 const
-  CM_DENYSUBCLASSING = JvThemes.CM_DENYSUBCLASSING;
+  CM_DENYSUBCLASSING = JvQThemes.CM_DENYSUBCLASSING;
 
 type
   { Add IJvDenySubClassing to the base class list if the control should not
@@ -596,7 +596,7 @@ end;
 
 procedure TCustomEdit_Copy(Instance: TWinControl);
 begin
-  
+
   
   if Instance is TCustomMemo then
     QMultiLineEdit_copy(QMultiLineEditH(Instance.Handle))
