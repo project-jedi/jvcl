@@ -32,29 +32,12 @@ interface
 
 uses
   Windows, Messages, SysUtils,
-  {$IFDEF COMPILER6_UP}
-  Variants,
-  {$ENDIF}
   Classes, Graphics, Controls, Forms, Buttons, IniFiles,
   Dialogs, StdCtrls, ExtCtrls, jpeg,
-  {$IFDEF COMPILER5}
-  DsgnIntf,
-  {$ENDIF}
-  {$IFDEF COMPILER6_UP}
-  DesignEditors, DesignIntf,
-  {$ENDIF}
-  JclSysInfo, JclWin32,
+  JvBaseDlg, JclSysInfo, JclWin32,
   JVCLVer, JvComponent, JvLabel, JvHotLink;
 
 type
-  TJVCLAboutDialogProperty = class(TPropertyEditor)
-  private
-  public
-    procedure Edit; override;
-    function GetAttributes: TPropertyAttributes; override;
-    function GetValue: string; override;
-  end;
-
   TJvJVCLAboutForm = class(TForm)
     Bevel1: TBevel;
     lblVersion: TLabel;
@@ -94,46 +77,27 @@ type
   private
     FHelpFile: string;
     FHelpDirectory: string;
+  public
     procedure LoadOptions;
     procedure SaveOptions;
+    class procedure Execute(StoreSettings:boolean);
+  end;
+  
+  TJvJVCLAboutComponent = class(TJvCommonDialogP)
+  private
+    FStoreSettings: boolean;
+  public
+    procedure Execute;override;
+  published
+    property StoreSettings:boolean read FStoreSettings write FStoreSettings default false;
   end;
 
 implementation
-
 uses
   JvFunctions;
 
 {$R *.dfm}
 
-{ TJVCLAboutDialogProperty }
-
-procedure TJVCLAboutDialogProperty.Edit;
-var
-  Dialog: TJvJVCLAboutForm;
-begin
-  Dialog := TJvJVCLAboutForm.Create(nil);
-  try
-    Dialog.ShowModal;
-  finally
-    Dialog.Free;
-  end;
-
-end;
-
-function TJVCLAboutDialogProperty.GetAttributes: TPropertyAttributes;
-begin
-  Result := [paDialog, paReadOnly];
-end;
-
-function TJVCLAboutDialogProperty.GetValue: string;
-begin
-  Result := 'Version ' + JVCL_VERSIONSTRING;
-end;
-
-procedure TJvJVCLAboutForm.btnOKClick(Sender: TObject);
-begin
-  Close;
-end;
 
 procedure TJvJVCLAboutForm.FormShow(Sender: TObject);
 var
@@ -151,7 +115,7 @@ begin
       [GetWindowsVersionString, VersionInfo.dwBuildNumber, GetWindowsServicePackVersionString]);
   lblMemory.Caption := Format('%u KB', [GetTotalPhysicalMemory div 1024]);
   lblCopyRight.Caption := 'Copyright © Project JEDI, 1999 - ' + FormatDateTime('yyyy', Now);
-  LoadOptions;
+//  LoadOptions;
   btnHelp.Enabled := FHelpFile <> '';
 end;
 
@@ -174,7 +138,7 @@ begin
   begin
     FHelpFile := ExtractFileName(OpenDialog1.FileName);
     FHelpDirectory := ExtractFileDir(OpenDialog1.FileName);
-    SaveOptions;
+//    SaveOptions;
     btnHelp.Enabled := FHelpFile <> '';
   end;
 end;
@@ -222,7 +186,31 @@ end;
 
 procedure TJvJVCLAboutForm.FormDestroy(Sender: TObject);
 begin
-  SaveOptions;
+//  SaveOptions;
+end;
+
+procedure TJvJVCLAboutForm.btnOKClick(Sender: TObject);
+begin
+  Close;
+end;
+
+{ TJvJVCLAboutComponent }
+
+procedure TJvJVCLAboutComponent.Execute;
+begin
+  TJvJVCLAboutForm.Execute(StoreSettings);
+end;
+
+class procedure TJvJVCLAboutForm.Execute(StoreSettings: boolean);
+begin
+  with self.Create(Application) do
+  try
+    if StoreSettings then LoadOptions;
+    ShowModal;
+    if StoreSettings then SaveOptions;
+  finally
+    Free;
+  end;
 end;
 
 end.

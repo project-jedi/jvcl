@@ -42,7 +42,7 @@ uses
 
   JvDSADialogs,JvComponent,
   // About JVCL
-  JvJVCLAbout, JVCLVer,
+  JvJVCLAbout, JvJVCLAboutProperty, JVCLVer,
 
   // Additional
   JvImage, JvBitBtn, JvSpeedButton, JvMaskEdit, JvStaticText, JvCheckListBox,
@@ -251,7 +251,7 @@ begin
   RegisterComponents('Jv Standard',
     [TJvLabel, TJvEdit, TJvMemo, TJvButton, TJvCheckBox, TJvRadioButton,
      TJvListBox, TJvCombobox, TJvScrollBar, TJvGroupBox, TJvRadioGroup,
-     TJvPanel]);
+     TJvPanel, TJvJVCLAboutComponent]);
 
   // Jv Additional
   RegisterComponents('Jv Additional',
