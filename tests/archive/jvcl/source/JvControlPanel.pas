@@ -37,7 +37,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, Menus, JvTypes, JvButton, JvDirectories, JvFunctions;
+  StdCtrls, Menus, JvTypes, JvButton, JvDirectories, JvCPLFunctions;
 
 type
   TJvControlPanel = class(TJvButton)
