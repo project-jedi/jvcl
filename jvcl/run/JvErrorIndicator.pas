@@ -250,11 +250,11 @@ begin
   FDefaultImage := TImageList.CreateSize(16, 16);
   {$IFDEF VCL}
   ImageList_AddIcon(FDefaultImage.Handle,
-    LoadImage(hInstance, PChar('JVERRORINDICATORICON'), IMAGE_ICON, 16, 16, 0));
+    LoadImage(hInstance, PChar('TJVERRORINDICATORICON'), IMAGE_ICON, 16, 16, 0));
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Ico := TIcon.Create;
-  Ico.LoadFromResourceName(hInstance, 'JVERRORINDICATORICON');
+  Ico.LoadFromResourceName(hInstance, 'TJVERRORINDICATORICON');
   FDefaultImage.Assign(Ico);
   Ico.Free;
   {$ENDIF VisualCLX}
