@@ -35,6 +35,9 @@ uses
   JvTypes, JvComponent;
 
 type
+  {$IFNDEF COMPILER6_UP}
+  PByte = ^Byte;
+  {$ENDIF  COMPILER6_UP}
   TJvTestMember = function(Sender: TObject; Index: Integer; Member: PByte): Byte of object;
 
   TJvGenetic = class(TJvComponent)
