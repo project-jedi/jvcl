@@ -23,10 +23,8 @@
 { Last modified: September 21, 2003                                            }
 {                                                                              }
 {******************************************************************************}
-
 {$I JVCL.INC}
 {$I JvUIB.inc}
-
 unit JvUIBConst;
 
 interface
@@ -45,7 +43,8 @@ type
   TServerCommand = (scGetClassObject, scInvokeMethod);
 
 resourceString
-  {$IFDEF UIBLANG_EN}
+
+{$IFDEF UIBLANG_EN}
   sUIBTrue  = 'True';
   sUIBFalse = 'False';
 
@@ -66,14 +65,19 @@ resourceString
   EUIB_INDEXERROR          = 'Index out of bound (%d)';
   EUIB_SIZENAME            = 'Size name too big (%s)';
   EUIB_MUSTBEPREPARED      = 'The query must be prepared first.';
+  EUIB_MUSTBEOPEN          = 'The query must be opened first.';
+  EUIB_EXPLICITTRANS       = 'Transaction must be started explicitly.';
+  EUIB_EXCEPTIONNOTFOUND   = 'Exception name %s, not found.';
+  EUIB_EXPTIONREGISTERED   = 'Exception: %d allready registered';
+  EUIB_NOAUTOSTOP          = 'Transaction must be closed explicitly.';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Can''t connect to server.';
   EJvUIB_ClassNotFound = 'Class not found.';
   EJvUIB_DataType      = 'Data type error.';
-  {$ENDIF UIBLANG_EN}
+{$ENDIF UIBLANG_EN}
 
-  {$IFDEF UIBLANG_FR}
+{$IFDEF UIBLANG_FR}
   sUIBTrue  = 'Vrai';
   sUIBFalse = 'Faux';
 
@@ -93,15 +97,20 @@ resourceString
   EUIB_FETCHBLOBNOTSET     = 'La propriйtй FetchBlob doit кtre activйe pour utiliser cette mйthode.';
   EUIB_INDEXERROR          = 'Indice de liste hors limites (%d)';
   EUIB_SIZENAME            = 'La taille du nom est trop grande (%s)';
-  EUIB_MUSTBEPREPARED      = 'La requete doit d''abord etre prйparйe.';
+  EUIB_MUSTBEPREPARED      = 'La requиte doit d''abord кtre prйparйe.';
+  EUIB_MUSTBEOPEN          = 'La requиte doit d''abord кtre ouverte.';
+  EUIB_EXPLICITTRANS       = 'La transaction doit кtre dйmarrйe explicitement.';
+  EUIB_EXCEPTIONNOTFOUND   = 'L''exception %s, n''existe pas.';
+  EUIB_EXPTIONREGISTERED   = 'L''exception %d a dйjа йtй enregistrйe.';
+  EUIB_NOAUTOSTOP          = 'La transaction doit кtre fermйe explicitement.';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Impossible de se connecter au serveur.';
   EJvUIB_ClassNotFound = 'La Classe n''a pas йtй trouvйe.';
   EJvUIB_DataType      = 'Erreur de type de donnйe.';
-  {$ENDIF UIBLANG_FR}
+{$ENDIF UIBLANG_FR}
 
-  {$IFDEF UIBLANG_CZ}
+{$IFDEF UIBLANG_CZ}
   sUIBTrue  = 'Ano';
   sUIBFalse = 'Ne';
 
@@ -122,14 +131,19 @@ resourceString
   EUIB_INDEXERROR          = 'Index je mimo rozsah (%d)';
   EUIB_SIZENAME            = 'Velikost nбzvu je pшнliљ velkб (%s)';
   EUIB_MUSTBEPREPARED      = 'Dotaz musн bэt nejdшнve pшipraven (prepared).';
+  EUIB_MUSTBEOPEN          = 'The query must be opened first.';
+  EUIB_EXPLICITTRANS       = 'Transaction must be started explicitly.';
+  EUIB_EXCEPTIONNOTFOUND   = 'Exception name %s, not found.';
+  EUIB_EXPTIONREGISTERED   = 'Exception: %d allready registered';
+  EUIB_NOAUTOSTOP          = 'Transaction must be closed explicitly.';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Nelze pшipojit server.';
   EJvUIB_ClassNotFound = 'Tшнda neexistuje.';
   EJvUIB_DataType      = 'Chybnэ typ dat.';
-  {$ENDIF UIBLANG_CZ}
+{$ENDIF UIBLANG_CZ}
 
-  {$IFDEF UIBLANG_DE}
+{$IFDEF UIBLANG_DE}
   sUIBTrue  = 'Wahr';
   sUIBFalse = 'Falsch';
 
@@ -150,12 +164,85 @@ resourceString
   EUIB_INDEXERROR          = 'Index ausserhalb des gueltigen Bereichs. (%d)';
   EUIB_SIZENAME            = 'Name ist zu lang. (%s)';
   EUIB_MUSTBEPREPARED      = 'Die Abfrage muss erst vorbereitet werden.';
+  EUIB_MUSTBEOPEN          = 'The query must be opened first.';
+  EUIB_EXPLICITTRANS       = 'Transaction must be started explicitly.';
+  EUIB_EXCEPTIONNOTFOUND   = 'Exception name %s, not found.';
+  EUIB_EXPTIONREGISTERED   = 'Exception: %d allready registered';
+  EUIB_NOAUTOSTOP          = 'Transaction must be closed explicitly.';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Verbindung zum Server kann nicht aufgebaut werden.';
   EJvUIB_ClassNotFound = 'Klasse nicht gefunden.';
   EJvUIB_DataType      = 'Datentypfehler.';
-  {$ENDIF UIBLANG_DE}
+{$ENDIF UIBLANG_DE}
+
+{$IFDEF UIBLANG_RU}
+  sUIBTrue  = 'Да';
+  sUIBFalse = 'Нет';
+
+  // UIB Errors
+  EUIB_INVALIDEIBVERSION   = 'Некорректная версия сервера БД, проверьте опции компилятора.';
+  EUIB_CANTLOADLIB         = 'Не могу загрузить библиотеку DLL: %s.';
+  EUIB_DBHANDLEALLREADYSET = 'Дескриптор базы данных уже установлен, сначала разорвите текущее соединение с базой данных.';
+  EUIB_TRANSACTIONNOTDEF   = 'Свойство Transaction не установлено.';
+  EUIB_DATABASENOTDEF      = 'Свойство Database не установлено.';
+  EUIB_QUERYNOTOPEN        = 'Запрос не открыт.';
+  EUIB_CASTERROR           = 'Ошибка приведения типа.';
+  EUIB_UNEXPECTEDERROR     = 'Неизвестная ошибка.';
+  EUIB_FIELDNUMNOTFOUND    = 'Поле номер: %d не найдено.';
+  EUIB_FIELDSTRNOTFOUND    = 'Поле "%s" не найдено.';
+  EUIB_PARAMSTRNOTFOUND    = 'Параметр "%s" не найден.';
+  EUIB_BLOBFIELDNOTFOUND   = 'Blob поле номер: %d не найдено.';
+  EUIB_FETCHBLOBNOTSET     = 'Свойство FetchBlob должно быть установлено для выполнения этого метода.';
+  EUIB_INDEXERROR          = 'Index за пределами допустимых значений (%d)';
+  EUIB_SIZENAME            = 'Слишком длинное название (%s)';
+  EUIB_MUSTBEPREPARED      = 'Необходимо сначала подготовить (prepare) запрос.';
+  EUIB_MUSTBEOPEN          = 'Необходимо сначала открыть запрос.';
+  EUIB_EXPLICITTRANS       = 'Не выполнен старт транзакции.';
+  EUIB_EXCEPTIONNOTFOUND   = 'Исключение %s не найдено.';
+  EUIB_EXPTIONREGISTERED   = 'Исключение: %d уже зарегистрировано';
+  EUIB_NOAUTOSTOP          = 'Transaction must be closed explicitly.';
+
+  // ORB Errors
+  EJvUIB_CantConnect   = 'Не могу установить соединение с сервером.';
+  EJvUIB_ClassNotFound = 'Класс не найден.';
+  EJvUIB_DataType      = 'Ошибка типа данных.';
+{$ENDIF UIBLANG_RU}
+
+{$IFDEF UIBLANG_ES}
+
+  sUIBTrue             = 'Si';
+  sUIBFalse            = 'No';
+
+  // UIB Errors
+  EUIB_INVALIDEIBVERSION   = 'Versiуn incorrecta del Servidor de Base de Datos, verifica las opciones del compilador.';
+  EUIB_CANTLOADLIB         = 'Imposible cargar la DLL: %s.';
+  EUIB_DBHANDLEALLREADYSET = 'El handle de la base de datos estб asignado, primero desconecte la base de datos.';
+  EUIB_TRANSACTIONNOTDEF   = 'La transacciуn no estб asignada.';
+  EUIB_DATABASENOTDEF      = 'La Base de Datos no estб asignada.';
+  EUIB_QUERYNOTOPEN        = 'El query estб cerrado.';
+  EUIB_CASTERROR           = 'Error en conversiуn.';
+  EUIB_UNEXPECTEDERROR     = 'Error inesperado.';
+  EUIB_FIELDNUMNOTFOUND    = 'Campo nъmero: %d no encontrado.';
+  EUIB_FIELDSTRNOTFOUND    = 'Campo "%s" no encontrado.';
+  EUIB_PARAMSTRNOTFOUND    = 'Parametro "%s" no  encontrado.';
+  EUIB_BLOBFIELDNOTFOUND   = 'Campo Blob nъmero: %d no  encontrado.';
+  EUIB_FETCHBLOBNOTSET     = 'La propiedad FetchBlob debe habilitarse para usar estй mйtodo';
+  EUIB_INDEXERROR          = 'Нndice fuera de lнmite (%d)';
+  EUIB_SIZENAME            = 'Nombre demasiado largo (%s)';
+  EUIB_MUSTBEPREPARED      = 'El query debe prepararse primero.';
+  EUIB_MUSTBEOPEN          = 'El query debe ser abierto primero.;
+  EUIB_EXPLICITTRANS       = 'La transaccisn debe ser iniciada explmcitamente.';
+  EUIB_EXCEPTIONNOTFOUND   = 'Excepcion con nombre %s, no fue encontrada.';
+  EUIB_EXPTIONREGISTERED   = 'Excepcion: %d ya esta registrada.';
+  EUIB_NOAUTOSTOP          = 'La transaccisn debe ser cerrada explmcitamente.';
+
+  // ORB Errors
+  EJvUIB_CantConnect   = 'Imposible conectar con el servidor.';
+  EJvUIB_ClassNotFound = 'Clase no encontrada.';
+  EJvUIB_DataType      = 'Error de tipo de dato.';
+{$ENDIF UIBLANG_ES}
+
 
 implementation
 

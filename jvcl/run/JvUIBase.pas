@@ -44,7 +44,13 @@ unit JvUIBase;
 interface
 uses
 {$IFDEF MSWINDOWS} Windows, {$ENDIF}
-{$IFDEF LINUX}{$IFDEF FPC}DL,{$ELSE} libc,{$ENDIF}{$ENDIF}
+{$IFDEF LINUX}
+  {$IFDEF FPC}
+    DL,
+  {$ELSE}
+    libc,
+  {$ENDIF}
+{$ENDIF}
 SysUtils, SyncObjs;
 
 (* Basic data types *)
@@ -68,14 +74,14 @@ type
   {$ENDIF}
 {$ENDIF}
 
-
+{$IFNDEF FPC}
   UCHAR  = {$IFDEF TYPE_IDENTITY}type {$ENDIF}char;
   {$IFNDEF FPC}{$NODEFINE UCHAR}{$ENDIF}
   USHORT = {$IFDEF TYPE_IDENTITY}type {$ENDIF}Word;
   {$IFNDEF FPC}{$NODEFINE USHORT}{$ENDIF}
   ULONG = {$IFDEF TYPE_IDENTITY}type {$ENDIF}Cardinal;
   {$IFNDEF FPC}{$NODEFINE ULONG}{$ENDIF}
-
+{$ENDIF}
   SCHAR  = {$IFDEF TYPE_IDENTITY}type {$ENDIF}char;
   {$IFNDEF FPC}{$NODEFINE SCHAR}{$ENDIF}
   SSHORT = {$IFDEF TYPE_IDENTITY}type {$ENDIF}Smallint;
@@ -3588,12 +3594,12 @@ const
 {$IFDEF LINUX}
   {$IFDEF FB15_UP}
     {$IFDEF FBEMBED}
-      GDS32DLL = 'libfbembed.so.1.5.0';
+      GDS32DLL = 'libfbembed.so';
     {$ELSE}
-      GDS32DLL = 'libgds.so.0';
+      GDS32DLL = 'libfbclient.so';
     {$ENDIF}
   {$ELSE}
-    GDS32DLL = 'libgds.so.0';
+    GDS32DLL = 'libfbclient.so';
   {$ENDIF}
 {$ENDIF}
 
