@@ -763,14 +763,12 @@ var
   Path: string;
   lpfnDoOrganizeFavDlg: LPFNORGFAV;
 begin
+  Result := False;
   //  lpfnDoOrganizeFavDlg := nil;
   ShModule := SafeLoadLibrary('shdocvw.dll');
   try
     if ShModule <= HINSTANCE_ERROR then
-    begin
-      Result := False;
       Exit;
-    end;
     Path := GetSpecialFolderPath('Favorites', True) + #0#0;
     lpfnDoOrganizeFavDlg := LPFNORGFAV(GetProcAddress(SHModule,
       'DoOrganizeFavDlg'));
