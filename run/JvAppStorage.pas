@@ -108,6 +108,7 @@ type
   TJvAppStorageCryptEvent = procedure(var Value: string) of object;
   TJvAppStorageGetFileNameEvent = procedure(Sender: TJvCustomAppStorage;
     var FileName: TFileName) of object;
+  TJvAppStorageObjectListItemCreateEvent = function(Sender: TJvCustomAppStorage; const Path: string; Index : Integer): tPersistent  of object;
 
   TJvAppStorageOptionsClass = class of TJvCustomAppStorageOptions;
 
@@ -141,9 +142,11 @@ type
     FAutoFlush: Boolean;
     FUpdateCount: Integer;
     FAutoReload: Boolean;
+    FCurrentInstanceCreateEvent: TJvAppStorageObjectListItemCreateEvent;
     function GetUpdating: Boolean;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+
     //Returns the property count of an instance
     function GetPropCount(Instance: TPersistent): Integer;
     //Returns the property name of an instance at a certain index
@@ -168,14 +171,37 @@ type
       parent folders. }
     function GetAbsPath(const Path: string): string;
     { StringList item reader used by ReadStringList in the call to ReadList. }
-    procedure ReadSLItem(Sender: TJvCustomAppStorage; const Path: string;
+    procedure ReadStringListItem(Sender: TJvCustomAppStorage; const Path: string;
       const List: TObject; const Index: Integer);
     { StringList item writer used by WriteStringList in the call to WriteList. }
-    procedure WriteSLItem(Sender: TJvCustomAppStorage; const Path: string;
+    procedure WriteStringListItem(Sender: TJvCustomAppStorage; const Path: string;
       const List: TObject; const Index: Integer);
     { StringList item deleter used by WriteStringList in the call to WriteList. }
-    procedure DeleteSLItems(Sender: TJvCustomAppStorage; const Path: string;
+    procedure DeleteStringListItem(Sender: TJvCustomAppStorage; const Path: string;
       const List: TObject; const First, Last: Integer);
+
+    { Default Function for creating a new Object. The classname could be received from the AppStorage using the Path "Classname" }
+    function DefaultObjectListItemCreateEvent(Sender: TJvCustomAppStorage; const Path: string; Index : Integer): TPersistent;
+    { ObjectList item reader used by ReadObjectList in the call to ReadList. }
+    procedure ReadObjectListItem(Sender: TJvCustomAppStorage; const Path: string;
+      const List: TObject; const Index: Integer);
+    { ObjectList item writer used by WriteObjectList in the call to WriteList. }
+    procedure WriteObjectListItem(Sender: TJvCustomAppStorage; const Path: string;
+      const List: TObject; const Index: Integer);
+    { ObjectList item deleter used by WriteObjectList in the call to WriteList. }
+    procedure DeleteObjectListItem(Sender: TJvCustomAppStorage; const Path: string;
+      const List: TObject; const First, Last: Integer);
+
+    { Collection item reader used by ReadCollection in the call to ReadList. }
+    procedure ReadCollectionItem(Sender: TJvCustomAppStorage; const Path: string;
+      const List: TObject; const Index: Integer);
+    { Collection item writer used by WriteCollection in the call to WriteList. }
+    procedure WriteCollectionItem(Sender: TJvCustomAppStorage; const Path: string;
+      const List: TObject; const Index: Integer);
+    { Collection item deleter used by WriteCollection in the call to WriteList. }
+    procedure DeleteCollectionItem(Sender: TJvCustomAppStorage; const Path: string;
+      const List: TObject; const First, Last: Integer);
+
     { Enum all folders in the specified folder. }
     procedure EnumFolders(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); virtual; abstract;
@@ -377,6 +403,32 @@ type
     procedure WriteList(const Path: string; const List: TObject; const ItemCount: Integer;
       const OnWriteItem: TJvAppStorageListItemEvent;
       const OnDeleteItems: TJvAppStorageListDeleteEvent = nil);
+
+    { Retrieves a list of objects. The list is optionally cleared before before reading starts.
+      The ObjectType of the Object is defined by the ItemCreator-Event.
+      The result value is the number of items read. Uses ReadList with internally provided methods to
+      do the actual reading. }
+    function ReadObjectList(const Path: string; List: TList;
+      const ClearFirst: Boolean = True) : Integer; overload;
+    { Retrieves a list of objects. The list is optionally cleared before before reading starts.
+      The ObjectType of the Object is retrieved from the stored "Classname" value.
+      The result value is the number of items read. Uses ReadList with internally provided methods to
+      do the actual reading. }
+    function ReadObjectList(const Path: string; List: TList;
+      ItemCreator: TJvAppStorageObjectListItemCreateEvent; const ClearFirst: Boolean = True) : Integer; overload;
+    { Stores a list of objects. Uses WriteList with internally provided methods to do the actual
+      storing. }
+    procedure WriteObjectList(const Path: string; List: TList);
+
+    { Retrieves a list of collection items . The list is optionally cleared before before reading starts.
+      The result value is the number of items read. Uses ReadList with internally provided methods to
+      do the actual reading. }
+    function ReadCollection(const Path: string; List: TCollection;
+      const ClearFirst: Boolean = True) : Integer;
+    { Stores all items of a collection. Uses WriteList with internally provided methods to do the actual
+      storing. }
+    procedure WriteCollection(const Path: string; List: TCollection);
+
     { Retrieves a string list. The string list is optionally cleared before reading starts. The
       result value is the number of items read. Uses ReadList with internally provided methods to
       do the actual reading. }
@@ -656,6 +708,7 @@ const
   // (rom) this name is shared in several units and should be made global
   cCount = 'Count';
   cItem = 'Item';
+  cClassName = 'Classname';
   cInvalidIdentifier = ' #!@not known@!# ';
 
 procedure UpdateGlobalPath(GlobalPaths, NewPaths: TStrings);
@@ -702,7 +755,6 @@ begin
         UpdateGlobalPath(GlobalPaths, CurPaths);
         Inc(Index);
       until Index > High(Paths);
-//      Result := StringReplace(StringsToStr(GlobalPaths, '\', False),'\.','.',[rfReplaceAll]);
       Result := StringsToStr(GlobalPaths, '\', False);
     finally
       CurPaths.Free;
@@ -958,28 +1010,109 @@ begin
     Delete(Result, 1, 1);
 end;
 
-procedure TJvCustomAppStorage.ReadSLItem(Sender: TJvCustomAppStorage;
+procedure TJvCustomAppStorage.ReadStringListItem(Sender: TJvCustomAppStorage;
   const Path: string; const List: TObject; const Index: Integer);
 begin
   if List is TStrings then
     TStrings(List).Add(Sender.ReadString(Path + '\' + cItem + IntToStr(Index)));
 end;
 
-procedure TJvCustomAppStorage.WriteSLItem(Sender: TJvCustomAppStorage;
+procedure TJvCustomAppStorage.WriteStringListItem(Sender: TJvCustomAppStorage;
   const Path: string; const List: TObject; const Index: Integer);
 begin
   if List is TStrings then
     Sender.WriteString(Path + '\' + cItem + IntToStr(Index), TStrings(List)[Index]);
 end;
 
-procedure TJvCustomAppStorage.DeleteSLItems(Sender: TJvCustomAppStorage;
+procedure TJvCustomAppStorage.DeleteStringListItem(Sender: TJvCustomAppStorage;
   const Path: string; const List: TObject; const First, Last: Integer);
 var
   I: Integer;
 begin
-  for I := First to Last do
-    Sender.DeleteValue(Path + '\' + cItem + IntToStr(I));
+  if List is TStrings then
+    for I := First to Last do
+      Sender.DeleteValue(Path + '\' + cItem + IntToStr(I));
 end;
+
+function TJvCustomAppStorage.DefaultObjectListItemCreateEvent(Sender: TJvCustomAppStorage; const Path: string; Index : Integer): TPersistent;
+var
+  NewClassName : String;
+begin
+  NewClassName := Sender.ReadString(Path + '\' + cClassName);
+  Result := TPersistent(GetClass(NewClassName).Create);
+end;
+
+procedure TJvCustomAppStorage.ReadObjectListItem(Sender: TJvCustomAppStorage;
+  const Path: string; const List: TObject; const Index: Integer);
+var
+  NewItem: TPersistent;
+  NewPath: string;
+begin
+  if List is TList then
+  begin
+    try
+      NewPath := Path + '\' + cItem + IntToStr(Index);
+      NewItem := FCurrentInstanceCreateEvent(Sender, NewPath, Index);
+      TList(List).Add(NewItem);
+      Sender.ReadPersistent(NewPath, NewItem);
+    except
+    end;
+  end;
+end;
+
+procedure TJvCustomAppStorage.WriteObjectListItem(Sender: TJvCustomAppStorage;
+  const Path: string; const List: TObject; const Index: Integer);
+begin
+  if List is TList then
+    if Assigned(TList(List)[Index]) then
+      Sender.WritePersistent(Path + '\' + cItem + IntToStr(Index), TPersistent(TList(List)[Index]));
+end;
+
+procedure TJvCustomAppStorage.DeleteObjectListItem(Sender: TJvCustomAppStorage;
+  const Path: string; const List: TObject; const First, Last: Integer);
+var
+  I: Integer;
+begin
+  if List is TList then
+    for I := First to Last do
+      Sender.DeleteValue(Path + '\' + cItem + IntToStr(I));
+end;
+
+procedure TJvCustomAppStorage.ReadCollectionItem(Sender: TJvCustomAppStorage;
+  const Path: string; const List: TObject; const Index: Integer);
+var
+  NewItem: TPersistent;
+  NewPath: string;
+begin
+  if List is TCollection then
+  begin
+    try
+      NewPath := Path + '\' + cItem + IntToStr(Index);
+      NewItem := TCollection(List).Add;
+      Sender.ReadPersistent(NewPath, NewItem);
+    except
+    end;
+  end;
+end;
+
+procedure TJvCustomAppStorage.WriteCollectionItem(Sender: TJvCustomAppStorage;
+  const Path: string; const List: TObject; const Index: Integer);
+begin
+  if List is TCollection then
+    if Assigned(TCollection(List).Items[Index]) then
+      Sender.WritePersistent(Path + '\' + cItem + IntToStr(Index), TPersistent(TCollection(List).Items[Index]));
+end;
+
+procedure TJvCustomAppStorage.DeleteCollectionItem(Sender: TJvCustomAppStorage;
+  const Path: string; const List: TObject; const First, Last: Integer);
+var
+  I: Integer;
+begin
+  if List is TCollection then
+    for I := First to Last do
+      Sender.DeleteValue(Path + '\' + cItem + IntToStr(I));
+end;
+
 
 procedure TJvCustomAppStorage.InternalGetStoredValues(const PrefixPath, SearchPath: string;
   const Strings: TStrings; const Options: TJvAppStorageEnumOptions);
@@ -1497,6 +1630,60 @@ begin
     OnDeleteItems(TgtStore, TgtPath, List, ItemCount, PrevListCount - 1);
 end;
 
+function TJvCustomAppStorage.ReadObjectList(const Path: string; List: TList;
+      const ClearFirst: Boolean = True) : Integer;
+begin
+  Result := ReadObjectList (Path, List, DefaultObjectListItemCreateEvent, ClearFirst);
+end;
+
+function TJvCustomAppStorage.ReadObjectList(const Path: string; List: TList;
+      ItemCreator: TJvAppStorageObjectListItemCreateEvent; const ClearFirst: Boolean = True) : Integer;
+var
+  TgtStore: TJvCustomAppStorage;
+  TgtPath: string;
+begin
+  ResolvePath(Path + '\*', TgtStore, TgtPath);
+  Delete(TgtPath, Length(TgtPath) - 1, 2);
+  if ClearFirst then
+    List.Clear;
+  TgtStore.FCurrentInstanceCreateEvent := ItemCreator;
+  Result := TgtStore.ReadList(TgtPath, List, TgtStore.ReadObjectListItem);
+  TgtStore.FCurrentInstanceCreateEvent := Nil;
+end;
+
+procedure TJvCustomAppStorage.WriteObjectList(const Path: string; List: TList);
+var
+  TgtStore: TJvCustomAppStorage;
+  TgtPath: string;
+begin
+  ResolvePath(Path + '\*', TgtStore, TgtPath);
+  Delete(TgtPath, Length(TgtPath) - 1, 2);
+  TgtStore.WriteList(TgtPath, List, List.Count, TgtStore.WriteObjectListItem, TgtStore.DeleteObjectListItem);
+end;
+
+function TJvCustomAppStorage.ReadCollection(const Path: string; List: TCollection;
+      const ClearFirst: Boolean = True) : Integer;
+var
+  TgtStore: TJvCustomAppStorage;
+  TgtPath: string;
+begin
+  ResolvePath(Path + '\*', TgtStore, TgtPath);
+  Delete(TgtPath, Length(TgtPath) - 1, 2);
+  if ClearFirst then
+    List.Clear;
+  Result := TgtStore.ReadList(TgtPath, List, TgtStore.ReadCollectionItem);
+end;
+
+procedure TJvCustomAppStorage.WriteCollection(const Path: string; List: TCollection);
+var
+  TgtStore: TJvCustomAppStorage;
+  TgtPath: string;
+begin
+  ResolvePath(Path + '\*', TgtStore, TgtPath);
+  Delete(TgtPath, Length(TgtPath) - 1, 2);
+  TgtStore.WriteList(TgtPath, List, List.Count, TgtStore.WriteCollectionItem, TgtStore.DeleteCollectionItem);
+end;
+
 function TJvCustomAppStorage.ReadStringList(const Path: string; const SL: TStrings;
   const ClearFirst: Boolean): Integer;
 var
@@ -1509,7 +1696,7 @@ begin
     Delete(TgtPath, Length(TgtPath) - 1, 2);
     if ClearFirst then
       SL.Clear;
-    Result := TgtStore.ReadList(TgtPath, SL, TgtStore.ReadSLItem);
+    Result := TgtStore.ReadList(TgtPath, SL, TgtStore.ReadStringListItem);
   finally
     SL.EndUpdate;
   end;
@@ -1522,7 +1709,7 @@ var
 begin
   ResolvePath(Path + '\*', TgtStore, TgtPath);
   Delete(TgtPath, Length(TgtPath) - 1, 2);
-  TgtStore.WriteList(TgtPath, SL, SL.Count, TgtStore.WriteSLItem, TgtStore.DeleteSLItems);
+  TgtStore.WriteList(TgtPath, SL, SL.Count, TgtStore.WriteStringListItem, TgtStore.DeleteStringListItem);
 end;
 
 procedure TJvCustomAppStorage.ReadEnumerationInt(const Path: string;  TypeInfo: PTypeInfo;
