@@ -558,7 +558,7 @@ end;
 
 function TJvCustomAppIniStorage.DefaultExtension : string;
 begin
-  Result := 'xml';
+  Result := 'ini';
 end;
 
 
