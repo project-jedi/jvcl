@@ -26,7 +26,6 @@
     <File Name="..\..\qrun\JvQSimPIDLinker.pas" Targets="D7,K3" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQSimScope.pas" Targets="D7,K3" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQSpellerForm.pas" Targets="D7,K3" Formname="JvSpellerForm" Condition=""/>
-    <File Name="..\..\qrun\JvQSticker.pas" Targets="D7,K3" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQStrings.pas" Targets="D7,K3" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQTracker.pas" Targets="D7,K3" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQTurtle.pas" Targets="D7,K3" Formname="" Condition=""/>

@@ -7,10 +7,9 @@
     <Package Name="JvQStdCtrls-R" Targets="D7,K3" Condition=""/>
     <Package Name="rtl" Targets="D7,K3" Condition=""/>
     <Package Name="visualclx" Targets="D7,K3" Condition=""/>
-    <Package Name="vclx" Targets="D7,K3" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="../../qrun\JvQMouseGesture.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="../../qrun\JvQMouseGesture.pas" Targets="" Formname="" Condition=""/>
     <File Name="../../qrun\JvQPatchFile.pas" Targets="D7,K3" Formname="" Condition=""/>
     <File Name="../../qrun\JvQPrint.pas" Targets="D7,K3" Formname="" Condition=""/>
     <File Name="../../qrun\JvQProfilerForm.pas" Targets="D7,K3" Formname="ProfReport" Condition=""/>
@@ -21,7 +20,7 @@
     <File Name="../../qrun\JvQAlarms.pas" Targets="D7,K3" Formname="" Condition=""/>
     <File Name="../../qrun\JvQConverter.pas" Targets="D7,K3" Formname="" Condition=""/>
     <File Name="../../qrun\JvQDataEmbedded.pas" Targets="D7,K3" Formname="" Condition=""/>
-    <File Name="../../qrun\JvQEnterTab.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="../../qrun\JvQEnterTab.pas" Targets="" Formname="" Condition=""/>
     <File Name="../../qrun\JvQLogFile.pas" Targets="D7,K3" Formname="" Condition=""/>
     <File Name="../../qrun\JvQLogForm.pas" Targets="D7,K3" Formname="FoLog" Condition=""/>
     <File Name="../../qrun\JvQMergeManager.pas" Targets="D7,K3" Formname="" Condition=""/>

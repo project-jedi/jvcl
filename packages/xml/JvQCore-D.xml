@@ -1,46 +1,40 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvQCore" Design="-1">
   <Description>JVCLX Core Components</Description>
-  <C5PFlags>-LUdsnide50.dcp -LUdclstd50.dcp -LUCJcl50</C5PFlags>
-  <C6PFlags>-LUDesignIde -LUdclstd -LUCJcl</C6PFlags>
-  <C5Libs/>
-  <C6Libs/>
   <Requires>
-    <Package Name="JvQCore-R" Targets="D7,K3" Condition=""/>
-    <Package Name="designide" Targets="D7,K3" Condition=""/>
-    <Package Name="rtl" Targets="D7,K3" Condition=""/>
-    <Package Name="visualclx" Targets="D7,K3" Condition=""/>
+    <Package Name="JvQCore-R" Targets="D7,K3,K3p" Condition=""/>
+    <Package Name="rtl" Targets="D7,K3,K3p" Condition=""/>
+    <Package Name="visualclx" Targets="D7,K3,K3p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\qdesign\JvQProviderTreeListDsgnFrame.pas" Targets="D7,K3" Formname="fmeJvProviderTreeListDsgn: TFrame" Condition=""/>
-    <File Name="..\..\qdesign\JvQProviderTreeListFrame.pas" Targets="D7,K3" Formname="fmeJvProviderTreeList: TFrame" Condition=""/>
-    <File Name="..\..\qdesign\JvQStdToolbarDsgnFrame.pas" Targets="D7,K3" Formname="fmeJvStdToolbarDesign: TFrame" Condition=""/>
-    <File Name="..\..\qdesign\JvQStringsForm.pas" Targets="D7,K3" Formname="JvStrEditDlg" Condition=""/>
-    <File Name="..\..\qdesign\JvQBaseDlgEditor.pas" Targets="D7,K3" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQBaseDsgnForm.pas" Targets="D7,K3" Formname="JvBaseDesign" Condition=""/>
-    <File Name="..\..\qdesign\JvQBaseDsgnFrame.pas" Targets="D7,K3" Formname="fmeJvBaseDesign: TFrame" Condition=""/>
-    <File Name="..\..\qdesign\JvQBaseDsgnToolbarFrame.pas" Targets="D7,K3" Formname="fmeJvBaseToolbarDesign: TFrame" Condition=""/>
-    <File Name="..\..\qdesign\JvQColorEditor.pas" Targets="D7,K3" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQColorProviderDesignerForm.pas" Targets="D7,K3" Formname="frmJvColorProviderDesigner" Condition=""/>
-    <File Name="..\..\qdesign\JvQColorProviderEditors.pas" Targets="D7,K3" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQCoreReg.pas" Targets="D7,K3" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQDataConsumerContextSelectForm.pas" Targets="D7,K3" Formname="frmDataConsumerContextSelect" Condition=""/>
-    <File Name="..\..\qdesign\JvQDataConsumerItemSelectForm.pas" Targets="D7,K3" Formname="frmJvDataConsumerItemSelect" Condition=""/>
-    <File Name="..\..\qdesign\JvQDataContextManagerForm.pas" Targets="D7,K3" Formname="frmJvDataContextManager" Condition=""/>
-    <File Name="..\..\qdesign\JvQDataProviderDesignerForm.pas" Targets="D7,K3" Formname="frmDataProviderDesigner" Condition=""/>
-    <File Name="..\..\qdesign\JvQDataProviderEditors.pas" Targets="D7,K3" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQDataProviderItemDesign.pas" Targets="D7,K3" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQDateTimeForm.pas" Targets="D7,K3" Formname="frmSelectDateTimeDlg" Condition=""/>
-    <File Name="..\..\qdesign\JvQDesignerUtils.pas" Targets="D7,K3" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQDsgnConsts.pas" Targets="D7,K3" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQDsgnEditors.pas" Targets="D7,K3" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQIDEZoom.pas" Targets="D7,K3" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQJVCLAboutEditor.pas" Targets="D7,K3" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQPaintBoxEditor.pas" Targets="D7,K3" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQProviderToolbarFrame.pas" Targets="D7,K3" Formname="fmeJvProviderToolbar: TFrame" Condition=""/>
-    <File Name="..\..\qdesign\JvQDsgnTypes.pas" Targets="D7,K3" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQColorProviderDsgnTreeFrame.pas" Targets="D7,K3" Formname="fmeJvColorProviderDsgnTree: TFrame" Condition=""/>
-    <File Name="..\..\qdesign\JvQColorProviderAddDialogForm.pas" Targets="D7,K3" Formname="frmAddColor" Condition=""/>
-    <File Name="..\..\qdesign\JvQActnResForm.pas" Targets="D7,K3" Formname="JvStandardActions: TDataModule" Condition=""/>
+    <File Name="..\..\qdesign\JvQProviderTreeListDsgnFrame.pas" Targets="D7,K3,K3p" Formname="fmeJvProviderTreeListDsgn: TFrame" Condition=""/>
+    <File Name="..\..\qdesign\JvQProviderTreeListFrame.pas" Targets="D7,K3,K3p" Formname="fmeJvProviderTreeList: TFrame" Condition=""/>
+    <File Name="..\..\qdesign\JvQStdToolbarDsgnFrame.pas" Targets="D7,K3,K3p" Formname="fmeJvStdToolbarDesign: TFrame" Condition=""/>
+    <File Name="..\..\qdesign\JvQStringsForm.pas" Targets="D7,K3,K3p" Formname="JvStrEditDlg" Condition=""/>
+    <File Name="..\..\qdesign\JvQBaseDlgEditor.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQBaseDsgnForm.pas" Targets="D7,K3,K3p" Formname="JvBaseDesign" Condition=""/>
+    <File Name="..\..\qdesign\JvQBaseDsgnFrame.pas" Targets="D7,K3,K3p" Formname="fmeJvBaseDesign: TFrame" Condition=""/>
+    <File Name="..\..\qdesign\JvQBaseDsgnToolbarFrame.pas" Targets="D7,K3,K3p" Formname="fmeJvBaseToolbarDesign: TFrame" Condition=""/>
+    <File Name="..\..\qdesign\JvQColorProviderDesignerForm.pas" Targets="D7,K3,K3p" Formname="frmJvColorProviderDesigner" Condition=""/>
+    <File Name="..\..\qdesign\JvQColorProviderEditors.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQCoreReg.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQDataConsumerContextSelectForm.pas" Targets="D7,K3,K3p" Formname="frmDataConsumerContextSelect" Condition=""/>
+    <File Name="..\..\qdesign\JvQDataConsumerItemSelectForm.pas" Targets="D7,K3,K3p" Formname="frmJvDataConsumerItemSelect" Condition=""/>
+    <File Name="..\..\qdesign\JvQDataContextManagerForm.pas" Targets="D7,K3,K3p" Formname="frmJvDataContextManager" Condition=""/>
+    <File Name="..\..\qdesign\JvQDataProviderDesignerForm.pas" Targets="D7,K3,K3p" Formname="frmDataProviderDesigner" Condition=""/>
+    <File Name="..\..\qdesign\JvQDataProviderEditors.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQDataProviderItemDesign.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQDateTimeForm.pas" Targets="D7,K3,K3p" Formname="frmSelectDateTimeDlg" Condition=""/>
+    <File Name="..\..\qdesign\JvQDesignerUtils.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQDsgnConsts.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQDsgnEditors.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQIDEZoom.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQJVCLAboutEditor.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQPaintBoxEditor.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQProviderToolbarFrame.pas" Targets="D7,K3,K3p" Formname="fmeJvProviderToolbar: TFrame" Condition=""/>
+    <File Name="..\..\qdesign\JvQDsgnTypes.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQColorProviderDsgnTreeFrame.pas" Targets="D7,K3,K3p" Formname="fmeJvColorProviderDsgnTree: TFrame" Condition=""/>
+    <File Name="..\..\qdesign\JvQColorProviderAddDialogForm.pas" Targets="D7,K3,K3p" Formname="frmAddColor" Condition=""/>
+    <File Name="..\..\qdesign\JvQActnResForm.pas" Targets="D7,K3,K3p" Formname="JvStandardActions: TDataModule" Condition=""/>
   </Contains>
 </Package>

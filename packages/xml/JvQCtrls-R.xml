@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvQCtrls" Design="0">
+  <Description>JVCLX Controls Runtime Package</Description>
+  <Requires>
+    <Package Name="JvQCore-R" Targets="D7,K3,K3p" Condition=""/>
+    <Package Name="JvQStdCtrls-R" Targets="D7,K3,K3p" Condition=""/>
+    <Package Name="JvQSystem-R" Targets="D7,K3,K3p" Condition=""/>
+    <Package Name="rtl" Targets="C6,C6p" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\qrun\JvQCharMap.pas" Targets="" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQClock.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQColorBox.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQColorButton.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQColorForm.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQComboListBox.pas" Targets="" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQComponentPanel.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQContentScroller.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQDice.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQDriveCtrls.pas" Targets="" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQFooter.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQGroupHeader.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQHint.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQHtControls.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQImageDrawThread.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQInstallLabel.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQItemsPanel.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQListComb.pas" Targets="" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQMovableBevel.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQPageScroller.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQPlaylist.pas" Targets="" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQRegistryTreeview.pas" Targets="" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQRollOut.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQScrollMax.pas" Targets="" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQScrollPanel.pas" Targets="" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQScrollText.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSpacer.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSpeedbar.pas" Targets="" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSpeedbarSetupForm.pas" Targets="" Formname="JvSpeedbarSetupWindow" Condition=""/>
+    <File Name="..\..\qrun\JvQSplit.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSplitter.pas" Targets="" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSwitch.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSyncSplitter.pas" Targets="" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQTransparentButton.pas" Targets="" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQUninstallControls.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQWinampLabel.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQZoom.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQArrowButton.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvaQScrollText.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQBehaviorLabel.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQButtons.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQCaptionButton.pas" Targets="" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQCaptionPanel.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+  </Contains>
+</Package>
