@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvQAppFrm" Design="-1">
+  <Description>JVCLX Application and Form Components</Description>
+  <Requires>
+    <Package Name="JvQAppFrm-R" Targets="D7,K3,K3p" Condition=""/>
+    <Package Name="JvQStdCtrls-R" Targets="D7,K3,K3p" Condition=""/>
+    <Package Name="designide" Targets="D7,K3,K3p" Condition=""/>
+    <Package Name="JvQCore-D" Targets="D7,K3,K3p" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\qdesign\JvQAppFrmReg.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQFormWallpaperEditor.pas" Targets="K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQWallpaperEditForm.pas" Targets="K3,K3p" Formname="FoWallpaperChooser" Condition=""/>
+  </Contains>
+</Package>
