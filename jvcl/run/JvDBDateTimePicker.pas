@@ -64,6 +64,7 @@ type
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
+    procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
   protected
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
@@ -191,7 +192,7 @@ begin
   // call method modified
   FDataLink.Edit;
 //  FDataLink.Modified;
-  // we still need parent code
+  // we still need base class code
   inherited Change;
   UpdateData(Self);
 end;
@@ -233,9 +234,7 @@ begin
   end
   else
   if csDesigning in ComponentState then
-  begin
     DateTime := Now;
-  end;
   CheckNullValue;
 end;
 
@@ -489,7 +488,9 @@ var
   D: TDateTime;
   ST: TSystemTime;
 begin
-  if not (csPaintCopy in ControlState) then inherited else
+  if not (csPaintCopy in ControlState) then
+    inherited
+  else
   begin
     if Kind = dtkDate then
     begin
@@ -522,6 +523,15 @@ begin
     Exit;
   end;
 
+  inherited;
+end;
+
+procedure TJvDBDateTimePicker.CNNotify(var Msg: TWMNotify);
+begin
+  case Msg.NMHdr^.code of
+    MCN_LAST:
+      FDataLink.Edit;
+  end;
   inherited;
 end;
 
