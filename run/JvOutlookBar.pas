@@ -591,9 +591,6 @@ end;
 
 {$IFDEF VCL}
 procedure TJvOutlookBarEdit.WMNCPaint(var Msg: TMessage);
-//var
-//  DC: HDC;
-//  RC, RW: TRect;
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -1806,15 +1803,17 @@ begin
   begin
     TopButton.Visible := False;
     BtmButton.Visible := False;
-    Exit;
-  end;
-  R := GetPageRect(Index);
-  H := GetButtonHeight(Index);
-  TopButton.Visible := (Pages.Count > 0) and (R.Top < R.Bottom - 20) and (Pages[Index].TopButtonIndex > 0);
-  BtmButton.Visible := (Pages.Count > 0) and (R.Top < R.Bottom - 20) and
-    (R.Bottom - R.Top < (Pages[Index].Buttons.Count - Pages[Index].TopButtonIndex) * H);
+  end
+  else
+  begin
+    R := GetPageRect(Index);
+    H := GetButtonHeight(Index);
+    TopButton.Visible := (Pages.Count > 0) and (R.Top < R.Bottom - 20) and (Pages[Index].TopButtonIndex > 0);
+    BtmButton.Visible := (Pages.Count > 0) and (R.Top < R.Bottom - 20) and
+      (R.Bottom - R.Top < (Pages[Index].Buttons.Count - Pages[Index].TopButtonIndex) * H);
   // remove the last - H to show arrow
   // button when the bottom of the last button is beneath the edge
+  end;
   if TopButton.Visible then
     TopButton.SetBounds(ClientWidth - 20, R.Top + 4, 16, 16)
   else
@@ -2664,8 +2663,8 @@ begin
     end;
 end;
 
-
 {$IFDEF VCL}
+
 procedure TJvCustomOutlookBar.CMDialogChar(var Msg: TCMDialogChar);
 var
   I: Integer;
