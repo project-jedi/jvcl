@@ -112,6 +112,7 @@ begin
   TStringlist(FStrings).OnChange := DoStringsChange;
   FHTMLLineBreak := '<BR>';
   FHTMLTitle := 'Converted by TJvStringListToHtml';
+  FIncludeHeader := true;
 end;
 
 destructor TJvStringListToHtml.Destroy;

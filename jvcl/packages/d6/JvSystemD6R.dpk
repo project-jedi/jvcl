@@ -46,7 +46,6 @@ contains
   JvMRUList in '..\..\run\JvMRUList.pas',
   JvNTEventLog in '..\..\run\JvNTEventLog.pas',
   JvRas32 in '..\..\run\JvRas32.pas',
-  JvScreenCanvas in '..\..\run\JvScreenCanvas.pas',
   JvScreenResolution in '..\..\run\JvScreenResolution.pas',
   JvScreenSaver in '..\..\run\JvScreenSaver.pas',
   JvShellHook in '..\..\run\JvShellHook.pas',

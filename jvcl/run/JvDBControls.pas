@@ -721,7 +721,7 @@ implementation
 
 uses
   SysUtils, Dialogs, DbConsts, Math,
-  JvDBUtils, JvJVCLUtils, JvCalc, JvConsts;
+  JvDBUtils, JvTypes, JvJVCLUtils, JvCalc, JvConsts;
 
 {$R ..\resources\JvDBCtrl.res}
 

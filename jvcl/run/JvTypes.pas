@@ -207,7 +207,55 @@ type
    receives focus while for OnGetFocus it is the control that lost the focus}
   TJvFocusChangeEvent = procedure(const ASender: TObject;
     const AFocusControl: TWinControl) of object;
+// JvJCLUtils
+type
+  TTickCount = Cardinal;
 
+{**** string handling routines}
+
+const
+  Separators: set of Char = [#00, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',
+  ':', '+', '%', '*', '(', ')', ';', '=', '{', '}', '[', ']', '{', '}', '<', '>'];
+
+ {const Separators is used in GetWordOnPos, JvUtils.ReplaceStrings and SubWord}
+
+{$IFDEF DELPHI}
+type
+  TSetOfChar = set of Char;
+{$ENDIF DELPHI}
+{$IFDEF CBUILDER}
+type
+  TSetOfChar = string;
+{$ENDIF CBUILDER}
+
+type
+  TDateOrder = (doMDY, doDMY, doYMD);
+  TDayOfWeekName = (Sun, Mon, Tue, Wed, Thu, Fri, Sat);
+  TDaysOfWeek = set of TDayOfWeekName;
+
+const
+  DefaultDateOrder = doDMY;
+
+{$IFDEF USE_FOUR_DIGIT_YEAR}
+var
+  FourDigitYear: Boolean;
+{$ELSE}
+function FourDigitYear: Boolean;
+{$ENDIF USE_FOUR_DIGIT_YEAR}
+
+const
+  CenturyOffset: Byte = 60;
+  NullDate: TDateTime = {-693594} 0;
+
+type
+  TCharSet = TSysCharSet;
+const
+  DigitChars = ['0'..'9'];
+  {$IFNDEF CBUILDER}
+  Brackets = ['(', ')', '[', ']', '{', '}'];
+  StdWordDelims = [#0..' ', ',', '.', ';', '/', '\', ':', '''', '"', '`'] + Brackets;
+  {$ENDIF}
+  
 implementation
 
 end.

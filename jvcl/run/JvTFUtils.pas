@@ -34,20 +34,21 @@ interface
 uses Windows, Classes, SysUtils, Graphics;
 
 Type
+  TJvTFVisibleScrollBars  = set of (vsbHorz, vsbVert);
   EJvTFDateError = class(Exception);
 
-  TDayOfWeek = (dowSunday, dowMonday, dowTuesday, dowWednesday,
+  TTFDayOfWeek = (dowSunday, dowMonday, dowTuesday, dowWednesday,
                 dowThursday, dowFriday, dowSaturday);
-  TDaysOfWeek = set of TDayOfWeek;
+  TTFDaysOfWeek = set of TTFDayOfWeek;
 
   TJvTFVAlignment = (vaTop, vaCenter, vaBottom);
 
   TJvTFDirection = (dirUp, dirDown, dirLeft, dirRight);
 
 const
-  DOW_WEEK : TDaysOfWeek = [dowSunday..dowSaturday];
-  DOW_WEEKEND : TDaysOfWeek = [dowSunday, dowSaturday];
-  DOW_WORKWEEK : TDaysOfWeek = [dowMonday..dowFriday];
+  DOW_WEEK : TTFDaysOfWeek = [dowSunday..dowSaturday];
+  DOW_WEEKEND : TTFDaysOfWeek = [dowSunday, dowSaturday];
+  DOW_WORKWEEK : TTFDaysOfWeek = [dowMonday..dowFriday];
 
   ONE_HOUR = 1 / 24;
   ONE_MINUTE = ONE_HOUR / 60;
@@ -67,14 +68,14 @@ function GetWeeksInMonth(Year, Month: Word; StartOfWeek: Integer): Word;
 
 {$IFDEF COMPILER3}
 procedure IncBorlDOW(var BorlDOW: Integer; N: Integer);
-procedure IncDOW(var DOW: TDayOfWeek; N: Integer);
+procedure IncDOW(var DOW: TTFDayOfWeek; N: Integer);
 procedure IncDays(var aDate : TDateTime; N: Integer);
 procedure IncWeeks(var aDate: TDateTime; N: Integer);
 procedure IncMonths(var aDate: TDateTime; N: Integer);
 procedure IncYears(var aDate: TDateTime; N: Integer);
 {$ELSE}
 procedure IncBorlDOW(var BorlDOW: Integer; N: Integer = 1);
-procedure IncDOW(var DOW: TDayOfWeek; N: Integer = 1);
+procedure IncDOW(var DOW: TTFDayOfWeek; N: Integer = 1);
 procedure IncDays(var aDate : TDateTime; N: Integer = 1);
 procedure IncWeeks(var aDate: TDateTime; N: Integer = 1);
 procedure IncMonths(var aDate: TDateTime; N: Integer = 1);
@@ -92,9 +93,9 @@ function Greater(N1, N2 : Integer) : Integer;
 function GetDivLength(TotalLength, DivCount, DivNum : Integer) : Integer;
 function GetDivNum(TotalLength, DivCount, X : Integer) : Integer;
 function GetDivStart(TotalLength, DivCount, DivNum : Integer) : Integer;
-function DOWToBorl(aDOW : TDayOfWeek) : Integer;
-function BorlToDOW(BorlDOW : Integer) : TDayOfWeek;
-function DateToDOW(aDate : TDateTime) : TDayOfWeek;
+function DOWToBorl(aDOW : TTFDayOfWeek) : Integer;
+function BorlToDOW(BorlDOW : Integer) : TTFDayOfWeek;
+function DateToDOW(aDate : TDateTime) : TTFDayOfWeek;
 
 procedure CalcTextPos(HostRect: TRect; var TextLeft, TextTop: Integer;
   var TextBounds: TRect; aFont: TFont; aAngle: Integer;
@@ -207,7 +208,7 @@ begin
   BorlDOW := Abs(BorlDOW);
 end;
 
-procedure IncDOW(var DOW: TDayOfWeek; N: Integer);
+procedure IncDOW(var DOW: TTFDayOfWeek; N: Integer);
                                   // N defaults to 1
 var
   BorlDOW : Integer;
@@ -413,17 +414,17 @@ begin
     End;
 end;
 
-function DOWToBorl(aDOW : TDayOfWeek) : Integer;
+function DOWToBorl(aDOW : TTFDayOfWeek) : Integer;
 begin
   Result := Ord(aDOW) + 1;
 end;
 
-function BorlToDOW(BorlDOW : Integer) : TDayOfWeek;
+function BorlToDOW(BorlDOW : Integer) : TTFDayOfWeek;
 begin
-  Result := TDayOfWeek(BorlDOW - 1);
+  Result := TTFDayOfWeek(BorlDOW - 1);
 end;
 
-function DateToDOW(aDate : TDateTime) : TDayOfWeek;
+function DateToDOW(aDate : TDateTime) : TTFDayOfWeek;
 var
   BorlDOW : Integer;
 begin

@@ -22,7 +22,7 @@ package JvAppFrmD7D;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Application and Form Components Designtime Package'}
+{$DESCRIPTION 'JVCL Application and Form Components'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 

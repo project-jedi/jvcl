@@ -22,7 +22,7 @@ package JvCustomD7D;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Custom Controls Designtime Package'}
+{$DESCRIPTION 'JVCL Custom Controls'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 

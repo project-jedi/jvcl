@@ -61,7 +61,7 @@ type
     FInteriorOffset: word;
     FPenStyle: TPenStyle;
     FSpecialSymbol: TSpSymbol;
-    FBevel: TJvgExtBevel;
+    FBevel: TJvgExtBevelOptions;
     FGradient: TJvgGradient;
     FDigitCount: integer;
 
@@ -131,7 +131,7 @@ type
       default psSolid;
     property SpecialSymbol: TSpSymbol
       read FSpecialSymbol write SetSpecialSymbol default _none_;
-    property Bevel: TJvgExtBevel read FBevel write FBevel;
+    property Bevel: TJvgExtBevelOptions read FBevel write FBevel;
     property Gradient: TJvgGradient read FGradient write FGradient;
     property DigitCount: integer read FDigitCount write SetDigitCount
       default -1;
@@ -184,7 +184,7 @@ begin
   Color := FBackgrColor;
   FAlignment := taCenter;
   FSpecialSymbol := _none_;
-  FBevel := TJvgExtBevel.Create;
+  FBevel := TJvgExtBevelOptions.Create;
   FBevel.OnChanged := SmthChanged;
   FGradient := TJvgGradient.Create;
   FGradient.OnChanged := SmthChanged;

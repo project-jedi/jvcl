@@ -638,7 +638,7 @@ var
   DefaultMappingMethod: TMappingMethod = mmHistogram;
 
 type
-  TJvGradient = class(TPersistent)
+  TJvGradientOptions = class(TPersistent)
   private
     FStartColor: TColor;
     FEndColor: TColor;
@@ -6772,9 +6772,9 @@ begin
   end;
 end;
 
-//=== TJvGradient ============================================================
+//=== TJvGradientOptions ============================================================
 
-constructor TJvGradient.Create;
+constructor TJvGradientOptions.Create;
 begin
   inherited Create;
   FStartColor := clSilver;
@@ -6783,11 +6783,11 @@ begin
   FDirection := fdTopToBottom;
 end;
 
-procedure TJvGradient.Assign(Source: TPersistent);
+procedure TJvGradientOptions.Assign(Source: TPersistent);
 begin
-  if Source is TJvGradient then
+  if Source is TJvGradientOptions then
   begin
-    with TJvGradient(Source) do
+    with TJvGradientOptions(Source) do
     begin
       Self.FStartColor := StartColor;
       Self.FEndColor := EndColor;
@@ -6801,19 +6801,19 @@ begin
     inherited Assign(Source);
 end;
 
-procedure TJvGradient.Changed;
+procedure TJvGradientOptions.Changed;
 begin
   if Assigned(FOnChange) then
     FOnChange(Self);
 end;
 
-procedure TJvGradient.Draw(Canvas: TCanvas; Rect: TRect);
+procedure TJvGradientOptions.Draw(Canvas: TCanvas; Rect: TRect);
 begin
   GradientFillRect(Canvas, Rect, FStartColor, FEndColor, FDirection,
     FStepCount);
 end;
 
-procedure TJvGradient.SetStartColor(Value: TColor);
+procedure TJvGradientOptions.SetStartColor(Value: TColor);
 begin
   if Value <> FStartColor then
   begin
@@ -6822,7 +6822,7 @@ begin
   end;
 end;
 
-procedure TJvGradient.SetEndColor(Value: TColor);
+procedure TJvGradientOptions.SetEndColor(Value: TColor);
 begin
   if Value <> FEndColor then
   begin
@@ -6831,7 +6831,7 @@ begin
   end;
 end;
 
-procedure TJvGradient.SetDirection(Value: TFillDirection);
+procedure TJvGradientOptions.SetDirection(Value: TFillDirection);
 begin
   if Value <> FDirection then
   begin
@@ -6840,7 +6840,7 @@ begin
   end;
 end;
 
-procedure TJvGradient.SetStepCount(Value: Byte);
+procedure TJvGradientOptions.SetStepCount(Value: Byte);
 begin
   if Value <> FStepCount then
   begin
@@ -6849,7 +6849,7 @@ begin
   end;
 end;
 
-procedure TJvGradient.SetVisible(Value: Boolean);
+procedure TJvGradientOptions.SetVisible(Value: Boolean);
 begin
   if FVisible <> Value then
   begin

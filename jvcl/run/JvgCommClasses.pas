@@ -41,8 +41,8 @@ type
   TJvg3DGradient = class;
   TJvg2DAlign = class;
   TJvgPointClass = class;
-  TJvgBevel = class;
-  TJvgExtBevel = class;
+  TJvgBeveloptions = class;
+  TJvgExtBevelOptions = class;
   TJvgIllumination = class;
   TJvgLabelTextStyles = class;
   TJvgCustomTextColors = class;
@@ -164,7 +164,7 @@ type
     property Y: integer read FY write SetY;
   end;
   //*************************************{ . TJvgBevel . }
-  TJvgBevel = class(TPersistent)
+  TJvgBevelOptions = class(TPersistent)
   private
     FInner: TPanelBevel;
     FOuter: TPanelBevel;
@@ -186,7 +186,7 @@ type
     property Bold: boolean read FBold write SetBold stored true; //  default false;
   end;
   //*************************************{ . TJvgExtBevel . }
-  TJvgExtBevel = class(TJvgBevel)
+  TJvgExtBevelOptions = class(TJvgBevelOptions)
   private
     FActive: boolean;
     FBevelPenStyle: TPenStyle;
@@ -377,7 +377,7 @@ type
     FColor: TColor;
     FDelineateColor: TColor;
     FFont: TFont;
-    FBevel: TJvgBevel;
+    FBevel: TJvgBevelOptions;
     FTextStyle: TglTextStyle;
     FOnChanged: TNotifyEvent;
     procedure SetColor(Value: TColor);
@@ -396,7 +396,7 @@ type
     property Color: TColor read FColor write SetColor;
     property DelineateColor: TColor read FDelineateColor write SetDelineateColor;
     property Font: TFont read FFont write SetFont;
-    property Bevel: TJvgBevel read FBevel write FBevel;
+    property Bevel: TJvgBevelOptions read FBevel write FBevel;
     property TextStyle: TglTextStyle read FTextStyle write SetTextStyle;
   end;
   //*************************************{ . TglListItemStyle . }
@@ -439,7 +439,7 @@ published
     property BtnTextStyle: TglTextStyle read FBtnTextStyle write SetBtnTextStyle;
   end;
   //*************************************{ . TJvgCustomBoxStyle . }
-  TJvgCustomBoxStyle = class(TJvgBevel)
+  TJvgCustomBoxStyle = class(TJvgBevelOptions)
   private
     FPenStyle: TPenStyle;
     FHighlightColor: TColor;
@@ -486,7 +486,7 @@ published
     property HighlightColor;
     property ShadowColor;
   end;
-  //*************************************{ .TJvgBevelLines. }
+  //*************************************{ .TJvgBevelOptionsLines. }
   TJvgBevelLines = class(TPersistent)
   private
     FCount: cardinal;
@@ -755,37 +755,37 @@ begin
   FY := Value;
   if Assigned(OnChanged) then OnChanged(self);
 end;
-//______________________________________{ . TJvgBevel methods . }
+//______________________________________{ . TJvgBevelOptions methods . }
 
-constructor TJvgBevel.Create;
+constructor TJvgBevelOptions.Create;
 begin
   inherited;
   //..defaults
   FSides := ALLGLSIDES;
 end;
 
-procedure TJvgBevel.SetOuter(Value: TPanelBevel);
+procedure TJvgBevelOptions.SetOuter(Value: TPanelBevel);
 begin
   if FOuter = Value then exit;
   FOuter := Value;
   if Assigned(OnChanged) then OnChanged(self);
 end;
 
-procedure TJvgBevel.SetInner(Value: TPanelBevel);
+procedure TJvgBevelOptions.SetInner(Value: TPanelBevel);
 begin
   if FInner = Value then exit;
   FInner := Value;
   if Assigned(OnChanged) then OnChanged(self);
 end;
 
-procedure TJvgBevel.SetSides(Value: TglSides);
+procedure TJvgBevelOptions.SetSides(Value: TglSides);
 begin
   if FSides = Value then exit;
   FSides := Value;
   if Assigned(OnChanged) then OnChanged(self);
 end;
 
-procedure TJvgBevel.SetBold(Value: boolean);
+procedure TJvgBevelOptions.SetBold(Value: boolean);
 begin
   if FBold = Value then exit;
   FBold := Value;
@@ -992,9 +992,9 @@ begin
   FClientActive := Value;
   if Assigned(OnChanged) then OnChanged(self);
 end;
-//______________________________________{ . TJvgExtBevel . }
+//______________________________________{ . TJvgExtBevelOptions . }
 
-constructor TJvgExtBevel.Create;
+constructor TJvgExtBevelOptions.Create;
 begin
   inherited;
   //..defaults
@@ -1003,28 +1003,28 @@ begin
   FBevelPenWidth := 1;
 end;
 
-procedure TJvgExtBevel.SetActive(Value: boolean);
+procedure TJvgExtBevelOptions.SetActive(Value: boolean);
 begin
   if FActive = Value then exit;
   FActive := Value;
   if Assigned(OnChanged) then OnChanged(self);
 end;
 
-procedure TJvgExtBevel.SetBevelPenStyle(Value: TPenStyle);
+procedure TJvgExtBevelOptions.SetBevelPenStyle(Value: TPenStyle);
 begin
   if FBevelPenStyle = Value then exit;
   FBevelPenStyle := Value;
   if Assigned(OnChanged) then OnChanged(self);
 end;
 
-procedure TJvgExtBevel.SetBevelPenWidth(Value: word);
+procedure TJvgExtBevelOptions.SetBevelPenWidth(Value: word);
 begin
   if FBevelPenWidth = Value then exit;
   FBevelPenWidth := Value;
   if Assigned(OnChanged) then OnChanged(self);
 end;
 
-procedure TJvgExtBevel.SetInteriorOffset(Value: word);
+procedure TJvgExtBevelOptions.SetInteriorOffset(Value: word);
 begin
   if FInteriorOffset = Value then exit;
   FInteriorOffset := Value;
@@ -1036,7 +1036,7 @@ end;
 constructor TJvgCustomListBoxItemStyle.Create;
 begin
   inherited Create;
-  FBevel := TJvgBevel.Create;
+  FBevel := TJvgBevelOptions.Create;
   FFont := TFont.Create;
 end;
 
@@ -1470,7 +1470,7 @@ begin
 
 end;
 
-function TJvgBevel.BordersHeight: integer;
+function TJvgBevelOptions.BordersHeight: integer;
 begin
   Result := 0;
   if Inner <> bvNone then
@@ -1487,7 +1487,7 @@ begin
   end;
 end;
 
-function TJvgBevel.BordersWidth: integer;
+function TJvgBevelOptions.BordersWidth: integer;
 begin
   Result := 0;
   if Inner <> bvNone then

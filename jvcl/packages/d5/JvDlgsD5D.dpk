@@ -22,7 +22,7 @@ package JvDlgsD5D;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Dialog Controls Designtime Package'}
+{$DESCRIPTION 'JVCL Dialog Components'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 

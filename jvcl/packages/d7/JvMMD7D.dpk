@@ -22,7 +22,7 @@ package JvMMD7D;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Multimedia and Image Components Designtime Package'}
+{$DESCRIPTION 'JVCL Multimedia and Image Components'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 

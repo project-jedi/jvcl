@@ -22,7 +22,7 @@ package JvGlobusD5D;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL - Globus Extension Library'}
+{$DESCRIPTION 'JVCL Globus Components'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 

@@ -22,7 +22,7 @@ package JvTimeFrameworkD5R;
 {$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'Runtime support for JvTimeFramework'}
+{$DESCRIPTION 'JVCL Time Framework'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
 

@@ -132,7 +132,7 @@ implementation
 
 uses
   SysUtils,
-  JvJVCLUtils, JvJCLUtils;
+  JvJVCLUtils, JvJCLUtils, JvTypes;
 
 function MemAlloc(Size: Longint): Pointer;
 begin

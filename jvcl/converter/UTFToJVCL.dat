@@ -186,3 +186,8 @@ utfHintProps=HintProps
 utfHint=Hint
 utfControl=Control
 utfPrinter=Printer
+utfComp=Comp
+TStateImageMap=TJvTFStateImageMap
+TDayOfWeek = TTFDayOfWeek
+TDaysOfWeek = TTFDaysOfWeek
+

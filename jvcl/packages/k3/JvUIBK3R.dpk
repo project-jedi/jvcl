@@ -22,7 +22,6 @@ package JvUIBK3R;
 {$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'UIB - Unified Interbase Components'}
 {$IMPLICITBUILD OFF}
 
 requires

@@ -1,209 +1,209 @@
-unit JvTFGantt;  { TJvTFGantt component. }
-{.CDK.REGLINK=JvTFGanttComponentsReg.pas}  { Registration file is JvTFGanttComponentsReg.pas. }
+unit JvTFGantt; { TJvTFGantt component. }
+ {.CDK.REGLINK=JvTFGanttComponentsReg.pas}{ Registration file is JvTFGanttComponentsReg.pas. }
 { Created 10/6/2001 6:14:06 PM }
 { Eagle Software CDK, Version 5.13 Rev. B }
 
 interface
 
 uses
-   Windows,
-   SysUtils,
-   Messages,
-   Classes,
-   Graphics,
-   Controls,
-   Forms,
-   Dialogs,
-   Menus,
-   StdCtrls,
-   ExtCtrls,
-   JvTFManager;
+  Windows,
+  SysUtils,
+  Messages,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  Menus,
+  StdCtrls,
+  ExtCtrls,
+  JvTFUtils,
+  JvTFManager;
 
 type
-   TJvTFVisibleScrollBars  = set of (vsbHorz, vsbVert);
-   TJvTFGanttScrollBar = class(TScrollBar)
-   protected
-      procedure CMDesignHitTest(var Message : TCMDesignHitTest); message CM_DESIGNHITTEST;
-      procedure CreateWnd; override;
-      function GetLargeChange : Integer; virtual;
-      procedure SetLargeChange(Value : Integer); virtual;
-      procedure UpdateRange; virtual;
-   public
-      constructor Create(AOwner : TComponent); override;
-   published
-      property LargeChange : Integer read GetLargeChange write SetLargeChange default 1;
-   end;
+  TJvTFGanttScrollBar = class(TScrollBar)
+  protected
+    procedure CMDesignHitTest(var Message: TCMDesignHitTest); message CM_DESIGNHITTEST;
+    procedure CreateWnd; override;
+    function GetLargeChange: Integer; virtual;
+    procedure SetLargeChange(Value: Integer); virtual;
+    procedure UpdateRange; virtual;
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property LargeChange: Integer read GetLargeChange write SetLargeChange default 1;
+  end;
 
-   TJvTFGanttScale = (ugsYear, ugsQuarter, ugsMonth, ugsWeek, ugsDay, ugsHour, ugsHalfHour, ugsQuarterHour, ugsMinute);
-   TJvTFGanttScaleFormat = class(TPersistent)
-   private
-      FScale  : TJvTFGanttScale;
-      FFont   : TFont;
-      FFormat : string;
-      FWidth  : integer;
-   protected
-      function GetFont: TFont;
-      procedure SetFont(const Value: TFont);
-   public
-      constructor Create;
-      destructor Destroy; override;
-   published
-      property Format : string read FFormat write FFormat;
-      property Font : TFont read GetFont write SetFont;
-      property Scale : TJvTFGanttScale read FScale write FScale;
-      property Width : integer read FWidth write FWidth;
-   end;
+  TJvTFGanttScale = (ugsYear, ugsQuarter, ugsMonth, ugsWeek, ugsDay, ugsHour, ugsHalfHour, ugsQuarterHour, ugsMinute);
+  TJvTFGanttScaleFormat = class(TPersistent)
+  private
+    FScale: TJvTFGanttScale;
+    FFont: TFont;
+    FFormat: string;
+    FWidth: integer;
+  protected
+    function GetFont: TFont;
+    procedure SetFont(const Value: TFont);
+  public
+    constructor Create;
+    destructor Destroy; override;
+  published
+    property Format: string read FFormat write FFormat;
+    property Font: TFont read GetFont write SetFont;
+    property Scale: TJvTFGanttScale read FScale write FScale;
+    property Width: integer read FWidth write FWidth;
+  end;
 
-   TJvTFGantt = class(TJvTFControl)
-   private
+  TJvTFGantt = class(TJvTFControl)
+  private
       // property fields
-      FMajorScale : TJvTFGanttScaleFormat;
-      FMinorScale : TJvTFGanttScaleFormat;
+    FMajorScale: TJvTFGanttScaleFormat;
+    FMinorScale: TJvTFGanttScaleFormat;
 
-      FHScrollBar : TJvTFGanttScrollBar;
-      FVScrollBar : TJvTFGanttScrollBar;
-      FVisibleScrollBars : TJvTFVisibleScrollBars;
+    FHScrollBar: TJvTFGanttScrollBar;
+    FVScrollBar: TJvTFGanttScrollBar;
+    FVisibleScrollBars: TJvTFVisibleScrollBars;
 
       // Other class variables
-      PaintBuffer : TBitmap;
+    PaintBuffer: TBitmap;
 
-      procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
-      procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DesignHitTest;
-   protected
+    procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
+    procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DesignHitTest;
+  protected
       { Protected declarations }
-      FCustomGlyphs: TBitmap;
+    FCustomGlyphs: TBitmap;
 
-      procedure DrawMajor(ACanvas: TCanvas); virtual;
-      procedure DrawMinor(ACanvas: TCanvas); virtual;
-      procedure SeTJvTFVisibleScrollBars(Value: TJvTFVisibleScrollBars); virtual;
-      function CalcHeaderHeight: integer;
-      procedure AlignScrollBars; virtual;
-      function GetMinorScale : TJvTFGanttScaleFormat; virtual;
-      procedure SetMinorScale(const Value : TJvTFGanttScaleFormat); virtual;
-      function GetMajorScale : TJvTFGanttScaleFormat; virtual;
-      procedure SetMajorScale(const Value : TJvTFGanttScaleFormat); virtual;
+    procedure DrawMajor(ACanvas: TCanvas); virtual;
+    procedure DrawMinor(ACanvas: TCanvas); virtual;
+    procedure SeTJvTFVisibleScrollBars(Value: TJvTFVisibleScrollBars); virtual;
+    function CalcHeaderHeight: integer;
+    procedure AlignScrollBars; virtual;
+    function GetMinorScale: TJvTFGanttScaleFormat; virtual;
+    procedure SetMinorScale(const Value: TJvTFGanttScaleFormat); virtual;
+    function GetMajorScale: TJvTFGanttScaleFormat; virtual;
+    procedure SetMajorScale(const Value: TJvTFGanttScaleFormat); virtual;
 
-      procedure DrawClientArea; virtual;
-      procedure DrawHeader(ACanvas : TCanvas); virtual;
-      procedure Loaded; override;
-      procedure Resize; override;
-      procedure DrawCustomGlyph(someBitmap: TBitmap; targetLeft, targetTop, imageIndex, numGlyphsPerBitmap: integer); dynamic;
-      function ClientCursorPos: TPoint;
-      function ValidMouseAtDesignTime: boolean;
-      procedure CMFontChanged(var Message: TMessage); message CM_FontChanged;
-      procedure AdjustComponentHeightBasedOnFontChange; virtual;
-   public
+    procedure DrawClientArea; virtual;
+    procedure DrawHeader(ACanvas: TCanvas); virtual;
+    procedure Loaded; override;
+    procedure Resize; override;
+    procedure DrawCustomGlyph(someBitmap: TBitmap; targetLeft, targetTop, imageIndex, numGlyphsPerBitmap: integer); dynamic;
+    function ClientCursorPos: TPoint;
+    function ValidMouseAtDesignTime: boolean;
+    procedure CMFontChanged(var Message: TMessage); message CM_FontChanged;
+    procedure AdjustComponentHeightBasedOnFontChange; virtual;
+  public
       { Public declarations }
-      constructor Create(AOwner : TComponent); override;
-      destructor Destroy; override;
-      procedure PrepareAllBitmaps;
-      procedure PrepareBitmaps(someGlyph: TBitmap; resourceName: PChar); dynamic;
-      procedure Paint; override;
-   published
-      property MajorScale : TJvTFGanttScaleFormat read GetMajorScale write SetMajorScale;
-      property MinorScale : TJvTFGanttScaleFormat read GetMinorScale write SetMinorScale;
-      property VisibleScrollBars: TJvTFVisibleScrollBars read FVisibleScrollBars write SeTJvTFVisibleScrollBars;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure PrepareAllBitmaps;
+    procedure PrepareBitmaps(someGlyph: TBitmap; resourceName: PChar); dynamic;
+    procedure Paint; override;
+  published
+    property MajorScale: TJvTFGanttScaleFormat read GetMajorScale write SetMajorScale;
+    property MinorScale: TJvTFGanttScaleFormat read GetMinorScale write SetMinorScale;
+    property VisibleScrollBars: TJvTFVisibleScrollBars read FVisibleScrollBars write SeTJvTFVisibleScrollBars;
 
       // inherited
-      property Align;
-      property Anchors;
-   end;  { TJvTFGantt }
+    property Align;
+    property Anchors;
+  end; { TJvTFGantt }
 
 implementation
 
 
 procedure TJvTFGantt.DrawMajor(ACanvas: TCanvas);
 var
-   ACaption: string;
+  ACaption: string;
 begin
-   ACanvas.Font.Assign(FMajorScale.Font);
-   ACaption := 'This is the Major Scale';
-   ACanvas.TextOut((Width div 2) - (ACanvas.TextWidth(ACaption) div 2), 2, ACaption);
+  ACanvas.Font.Assign(FMajorScale.Font);
+  ACaption := 'This is the Major Scale';
+  ACanvas.TextOut((Width div 2) - (ACanvas.TextWidth(ACaption) div 2), 2, ACaption);
 end;
 
 procedure TJvTFGantt.DrawMinor(ACanvas: TCanvas);
 var
-   ACaption: string;
+  ACaption: string;
 begin
-   ACanvas.Font.Assign(FMinorScale.Font);
-   ACaption := 'This is the Minor Scale';
-   ACanvas.TextOut((Width div 2) - (ACanvas.TextWidth(ACaption) div 2), (CalcHeaderHeight div 2) + 2, ACaption);
+  ACanvas.Font.Assign(FMinorScale.Font);
+  ACaption := 'This is the Minor Scale';
+  ACanvas.TextOut((Width div 2) - (ACanvas.TextWidth(ACaption) div 2), (CalcHeaderHeight div 2) + 2, ACaption);
 end;
 
 function TJvTFGantt.CalcHeaderHeight: integer;
 begin
-   result := 0;
-   Canvas.Font.Assign(FMajorScale.Font);
-   result := result + Canvas.TextHeight('Yy');
-   Canvas.Font.Assign(FMinorScale.Font);
-   result := result + Canvas.TextHeight('Yy');
-   result := result + 4;
+  result := 0;
+  Canvas.Font.Assign(FMajorScale.Font);
+  result := result + Canvas.TextHeight('Yy');
+  Canvas.Font.Assign(FMinorScale.Font);
+  result := result + Canvas.TextHeight('Yy');
+  result := result + 4;
 end;
 
 procedure TJvTFGantt.Resize;
 begin
-   inherited Resize;
-   AlignScrollBars;
+  inherited Resize;
+  AlignScrollBars;
 end;
 
 procedure TJvTFGantt.SetMajorScale(const Value: TJvTFGanttScaleFormat);
 begin
-   FMajorScale.Assign(Value);
+  FMajorScale.Assign(Value);
 end;
 
 function TJvTFGantt.GetMajorScale: TJvTFGanttScaleFormat;
 begin
-   result := FMajorScale;
+  result := FMajorScale;
 end;
 
 procedure TJvTFGantt.SetMinorScale(const Value: TJvTFGanttScaleFormat);
 begin
-   FMinorScale.Assign(Value);
+  FMinorScale.Assign(Value);
 end;
 
 function TJvTFGantt.GetMinorScale: TJvTFGanttScaleFormat;
 begin
-   result := FMinorScale;
+  result := FMinorScale;
 end;
 
 procedure TJvTFGantt.SeTJvTFVisibleScrollBars(Value: TJvTFVisibleScrollBars);
 begin
-  If Value <> FVisibleScrollBars Then
-    Begin
-      FVisibleScrollBars := Value;
-      AlignScrollBars;
-      FVScrollBar.Visible := vsbVert in FVisibleScrollBars;
-      FHScrollBar.Visible := vsbHorz in FVisibleScrollBars;
-    End;
+  if Value <> FVisibleScrollBars then
+  begin
+    FVisibleScrollBars := Value;
+    AlignScrollBars;
+    FVScrollBar.Visible := vsbVert in FVisibleScrollBars;
+    FHScrollBar.Visible := vsbHorz in FVisibleScrollBars;
+  end;
 end;
 
 procedure TJvTFGantt.AlignScrollBars;
 begin
    // DO NOT INVALIDATE GRID IN THIS METHOD
 
-   FVScrollBar.Left := ClientWidth - FVScrollBar.Width;
-   FVScrollBar.Top := CalcHeaderHeight;
-   FVScrollBar.Height := FHScrollBar.Top - FVScrollBar.Top;
+  FVScrollBar.Left := ClientWidth - FVScrollBar.Width;
+  FVScrollBar.Top := CalcHeaderHeight;
+  FVScrollBar.Height := FHScrollBar.Top - FVScrollBar.Top;
 
-   FHScrollBar.Top := ClientHeight - FHScrollBar.Height;
-   FHScrollBar.Left := 0;
-   FHScrollBar.Width := FVScrollBar.Left - FHScrollBar.Left;
+  FHScrollBar.Top := ClientHeight - FHScrollBar.Height;
+  FHScrollBar.Left := 0;
+  FHScrollBar.Width := FVScrollBar.Left - FHScrollBar.Left;
 
-   With FVScrollBar do
-   Begin
-      If vsbHorz in VisibleScrollBars Then
-        Height := FHScrollBar.Top - Top
-      Else
-        Height := Self.ClientHeight - Top;
-    End;
+  with FVScrollBar do
+  begin
+    if vsbHorz in VisibleScrollBars then
+      Height := FHScrollBar.Top - Top
+    else
+      Height := Self.ClientHeight - Top;
+  end;
 
-  With FHScrollBar do
-    Begin
-      If vsbVert in VisibleScrollBars Then
-        Width := FVScrollBar.Left - Left
-      Else
-        Width := Self.ClientWidth - Left;
-    End;
+  with FHScrollBar do
+  begin
+    if vsbVert in VisibleScrollBars then
+      Width := FVScrollBar.Left - Left
+    else
+      Width := Self.ClientWidth - Left;
+  end;
 end;
 
 procedure TJvTFGantt.DrawClientArea;
@@ -211,33 +211,33 @@ begin
    // Draw the client area
 end;
 
-procedure TJvTFGantt.DrawHeader(ACanvas : TCanvas);
+procedure TJvTFGantt.DrawHeader(ACanvas: TCanvas);
 begin
-   DrawMajor(ACanvas);
-   DrawMinor(ACanvas);
+  DrawMajor(ACanvas);
+  DrawMinor(ACanvas);
 end;
 
 procedure TJvTFGantt.Paint;
 begin
-   inherited Paint;
-   with PaintBuffer do
-   begin
-      Width := ClientWidth;
-      Height := ClientHeight;
+  inherited Paint;
+  with PaintBuffer do
+  begin
+    Width := ClientWidth;
+    Height := ClientHeight;
 
-      with Canvas do
-      begin
-         Brush.Color := Self.Color;
-         FillRect(Rect(0, 0, Width, Height));
-      end;
+    with Canvas do
+    begin
+      Brush.Color := Self.Color;
+      FillRect(Rect(0, 0, Width, Height));
+    end;
 
-      DrawHeader(Canvas);
-      DrawClientArea;
-   end;
-   if Enabled then
-      Windows.BitBlt(Canvas.Handle, 0, 0, ClientWidth, ClientHeight, PaintBuffer.Canvas.Handle, 0, 0, SRCCOPY)
-   else
-      Windows.DrawState(Canvas.Handle, 0, nil, PaintBuffer.Handle, 0, 0, 0, 0, 0, DST_BITMAP or DSS_UNION or DSS_DISABLED);
+    DrawHeader(Canvas);
+    DrawClientArea;
+  end;
+  if Enabled then
+    Windows.BitBlt(Canvas.Handle, 0, 0, ClientWidth, ClientHeight, PaintBuffer.Canvas.Handle, 0, 0, SRCCOPY)
+  else
+    Windows.DrawState(Canvas.Handle, 0, nil, PaintBuffer.Handle, 0, 0, 0, 0, 0, DST_BITMAP or DSS_UNION or DSS_DISABLED);
 
 end;
 
@@ -260,34 +260,34 @@ procedure TJvTFGantt.DrawCustomGlyph(someBitmap: TBitmap; targetLeft, targetTop,
       DrawCustomGlyph(FCustomGlyphs, 0, 0, 3, 4);
 }
 var
-   localImageWidth: integer;
-   SourceRect,
-   DestRect: TRect;
+  localImageWidth: integer;
+  SourceRect,
+    DestRect: TRect;
 begin
-   with Canvas do
-      begin
-         with SourceRect do
-            begin
-               if numGlyphsPerBitmap = 0 then
-                  numGlyphsPerBitmap := 1;
-               localImageWidth := someBitmap.Width div numGlyphsPerBitmap;
-               Left := imageIndex * localImageWidth;
-               Top := 0;
-               Right := Left + localImageWidth;
-               Bottom := Top + someBitmap.Height;
-            end;      { with }
-         with DestRect do
-            begin
-               Left := targetLeft;
-               Top := targetTop;
-               Right := Left + localImageWidth;
-               Bottom := Top + someBitmap.Height;
-            end;      { with }
-         CopyRect(DestRect, someBitmap.Canvas, SourceRect);
-      end;      { with }
-end;		{ DrawCustomGlyph }
+  with Canvas do
+  begin
+    with SourceRect do
+    begin
+      if numGlyphsPerBitmap = 0 then
+        numGlyphsPerBitmap := 1;
+      localImageWidth := someBitmap.Width div numGlyphsPerBitmap;
+      Left := imageIndex * localImageWidth;
+      Top := 0;
+      Right := Left + localImageWidth;
+      Bottom := Top + someBitmap.Height;
+    end; { with }
+    with DestRect do
+    begin
+      Left := targetLeft;
+      Top := targetTop;
+      Right := Left + localImageWidth;
+      Bottom := Top + someBitmap.Height;
+    end; { with }
+    CopyRect(DestRect, someBitmap.Canvas, SourceRect);
+  end; { with }
+end; { DrawCustomGlyph }
 
-procedure TJvTFGantt.PrepareBitmaps(someGlyph: TBitmap; resourceName: PChar);  { public }
+procedure TJvTFGantt.PrepareBitmaps(someGlyph: TBitmap; resourceName: PChar); { public }
 { Prepares glyphs for display.
    The following colors in your glyphs will be replaced:
 
@@ -301,20 +301,20 @@ procedure TJvTFGantt.PrepareBitmaps(someGlyph: TBitmap; resourceName: PChar);  {
    modify the colors referenced in the code below.
 }
 var
-   localBitmap: TBitmap;
+  localBitmap: TBitmap;
 
-   procedure ReplaceColors(SourceBmp, TargetBMP: TBitmap; sourceColor, targetColor: TColor);
-   begin
-      TargetBMP.Canvas.Brush.Color := targetColor;
-      TargetBMP.Canvas.BrushCopy(SourceBmp.Canvas.ClipRect, SourceBmp, SourceBmp.Canvas.ClipRect, sourceColor);
-   end;      { ReplaceColors }
+  procedure ReplaceColors(SourceBmp, TargetBMP: TBitmap; sourceColor, targetColor: TColor);
+  begin
+    TargetBMP.Canvas.Brush.Color := targetColor;
+    TargetBMP.Canvas.BrushCopy(SourceBmp.Canvas.ClipRect, SourceBmp, SourceBmp.Canvas.ClipRect, sourceColor);
+  end; { ReplaceColors }
 
 begin
-   localBitmap := TBitmap.Create;
-   try
-      localBitmap.LoadFromResourceName(HInstance, resourceName);
-      someGlyph.Width := localBitmap.Width;
-      someGlyph.Height := localBitmap.Height;
+  localBitmap := TBitmap.Create;
+  try
+    localBitmap.LoadFromResourceName(HInstance, resourceName);
+    someGlyph.Width := localBitmap.Width;
+    someGlyph.Height := localBitmap.Height;
 
       { Replace the following colors after loading bitmap:
 
@@ -330,16 +330,16 @@ begin
          ReplaceColors switches the order of parameters localBitmap and someGlyph. This is because
          we are copying the image back and forth, replacing individual colors with each copy. }
 
-      ReplaceColors(localBitmap, someGlyph, clYellow, clBtnHighlight);
-      ReplaceColors(someGlyph, localBitmap, clSilver, clBtnFace);
-      ReplaceColors(localBitmap, someGlyph, clGray, clBtnShadow);
-      ReplaceColors(someGlyph, localBitmap, clWhite, clWindow);
-      ReplaceColors(localBitmap, someGlyph, clRed, clWindowText);
-   finally { wrap up }
-      if assigned(localBitmap) then
-         localBitmap.Free;
-   end;      { try/finally }
-end;  { PrepareBitmaps }
+    ReplaceColors(localBitmap, someGlyph, clYellow, clBtnHighlight);
+    ReplaceColors(someGlyph, localBitmap, clSilver, clBtnFace);
+    ReplaceColors(localBitmap, someGlyph, clGray, clBtnShadow);
+    ReplaceColors(someGlyph, localBitmap, clWhite, clWindow);
+    ReplaceColors(localBitmap, someGlyph, clRed, clWindowText);
+  finally { wrap up }
+    if assigned(localBitmap) then
+      localBitmap.Free;
+  end; { try/finally }
+end; { PrepareBitmaps }
 
 procedure TJvTFGantt.PrepareAllBitmaps;
 begin
@@ -347,38 +347,38 @@ begin
 //   PrepareBitmaps(FCustomGlyphs, 'BITMAP_RESOURCE_NAME');
    { CDK: If you have other Glyphs that need loading/preparing, place additional
       calls to PrepareBitmaps here. }
-end;  { PrepareAllBitmaps }
+end; { PrepareAllBitmaps }
 
-procedure TJvTFGantt.CMSysColorChange(var Msg: TMessage);  { private }
+procedure TJvTFGantt.CMSysColorChange(var Msg: TMessage); { private }
 begin
-   inherited;
-   PrepareAllBitmaps;
-end;  { CMSysColorChange }
+  inherited;
+  PrepareAllBitmaps;
+end; { CMSysColorChange }
 
 function TJvTFGantt.ClientCursorPos: TPoint;
 begin
   GetCursorPos(result);
   result := ScreenToClient(result);
-end;		{ ClientCursorPos }
+end; { ClientCursorPos }
 
 function TJvTFGantt.ValidMouseAtDesignTime: boolean;
 begin
   result := False;
-end;		{ ValidMouseAtDesignTime }
+end; { ValidMouseAtDesignTime }
 
 procedure TJvTFGantt.CMDesignHitTest(var Msg: TCMDesignHitTest);
 begin
-   if ValidMouseAtDesignTime then
-      Msg.Result := 1  { Allow design-time mouse hits to get through if Alt key is down. }
-   else
-      Msg.Result := 0;
-end;		{ CMDesignHitTest }
+  if ValidMouseAtDesignTime then
+    Msg.Result := 1 { Allow design-time mouse hits to get through if Alt key is down. }
+  else
+    Msg.Result := 0;
+end; { CMDesignHitTest }
 
 procedure TJvTFGantt.CMFontChanged(var Message: TMessage);
 begin
   inherited;
   AdjustComponentHeightBasedOnFontChange;
-end;    { CMFontChanged }
+end; { CMFontChanged }
 
 procedure TJvTFGantt.AdjustComponentHeightBasedOnFontChange;
 begin
@@ -394,70 +394,70 @@ begin
   Button1.Height := Height;
   LockHeight := True;
 }
-end;    { AdjustComponentHeightBasedOnFontChange }
+end; { AdjustComponentHeightBasedOnFontChange }
 
 procedure TJvTFGantt.Loaded;
 begin
-   inherited Loaded;
-   AlignScrollBars;
-end;  { Loaded }
+  inherited Loaded;
+  AlignScrollBars;
+end; { Loaded }
 
 destructor TJvTFGantt.Destroy;
 begin
-   PaintBuffer.Free;
-   FMajorScale.Free;
-   FMinorScale.Free;
-   FVScrollBar.Free;
-   FHScrollBar.Free;
+  PaintBuffer.Free;
+  FMajorScale.Free;
+  FMinorScale.Free;
+  FVScrollBar.Free;
+  FHScrollBar.Free;
 
-   if assigned(FCustomGlyphs) then
-   begin
-      FCustomGlyphs.Free;
-      FCustomGlyphs := nil;
-   end;
-   inherited Destroy;
-end;  { Destroy }
+  if assigned(FCustomGlyphs) then
+  begin
+    FCustomGlyphs.Free;
+    FCustomGlyphs := nil;
+  end;
+  inherited Destroy;
+end; { Destroy }
 
-constructor TJvTFGantt.Create(AOwner : TComponent);
+constructor TJvTFGantt.Create(AOwner: TComponent);
 { Creates an object of type TJvTFGantt, and initializes properties. }
 begin
-   inherited Create(AOwner);
-   PaintBuffer := TBitmap.Create;
-   FCustomGlyphs := TBitmap.Create;
-   FVisibleScrollBars := [vsbHorz, vsbVert];
+  inherited Create(AOwner);
+  PaintBuffer := TBitmap.Create;
+  FCustomGlyphs := TBitmap.Create;
+  FVisibleScrollBars := [vsbHorz, vsbVert];
 
-   FVScrollBar := TJvTFGanttScrollBar.Create(Self);
-   with FVScrollBar do
-   begin
-      Kind := sbVertical;
-      TabStop := False;
-      Anchors := [];
-      Parent := Self;
-      Visible := true;
+  FVScrollBar := TJvTFGanttScrollBar.Create(Self);
+  with FVScrollBar do
+  begin
+    Kind := sbVertical;
+    TabStop := False;
+    Anchors := [];
+    Parent := Self;
+    Visible := true;
 //      OnScroll := ScrollBarScroll;
-   end;
+  end;
 
-   FHScrollBar := TJvTFGanttScrollBar.Create(Self);
-   with FHScrollBar do
-   begin
-      Kind := sbHorizontal;
-      TabStop := False;
-      Anchors := [];
-      Parent := Self;
-      Visible := true;
+  FHScrollBar := TJvTFGanttScrollBar.Create(Self);
+  with FHScrollBar do
+  begin
+    Kind := sbHorizontal;
+    TabStop := False;
+    Anchors := [];
+    Parent := Self;
+    Visible := true;
 //      OnScroll := ScrollBarScroll;
-   end;
+  end;
 
 
-   FMajorScale := TJvTFGanttScaleFormat.Create;
-   FMajorScale.Scale := ugsMonth;
-   FMajorScale.Format := 'mmmm';
-   FMinorScale := TJvTFGanttScaleFormat.Create;
-   FMinorScale.Scale := ugsDay;
-   FMinorScale.Format := 'dd';
+  FMajorScale := TJvTFGanttScaleFormat.Create;
+  FMajorScale.Scale := ugsMonth;
+  FMajorScale.Format := 'mmmm';
+  FMinorScale := TJvTFGanttScaleFormat.Create;
+  FMinorScale.Scale := ugsDay;
+  FMinorScale.Format := 'dd';
 
-   PrepareAllBitmaps;
-end;  { Create }
+  PrepareAllBitmaps;
+end; { Create }
 
 
 
@@ -465,30 +465,31 @@ end;  { Create }
 
 destructor TJvTFGanttScaleFormat.Destroy;
 begin
-   FFont.Free;
-   inherited Destroy;
+  FFont.Free;
+  inherited Destroy;
 end;
 
 constructor TJvTFGanttScaleFormat.Create;
 begin
-   FFont := TFont.Create;
+  FFont := TFont.Create;
 end;
 
 function TJvTFGanttScaleFormat.GetFont: TFont;
 begin
-   result := FFont;
+  result := FFont;
 end;
 
 procedure TJvTFGanttScaleFormat.SetFont(const Value: TFont);
 begin
-   FFont.Assign(Value);
+  FFont.Assign(Value);
 end;
 
 
 { TJvTFGanttScrollBar }
+
 constructor TJvTFGanttScrollBar.Create(AOwner: TComponent);
 begin
-  Inherited;
+  inherited;
   // If we set the csNoDesignVisible flag then visibility at design time
   //  is controled by the Visible property, which is exactly what we want.
   ControlStyle := ControlStyle + [csNoDesignVisible];
@@ -503,32 +504,32 @@ end;
 
 procedure TJvTFGanttScrollBar.CreateWnd;
 begin
-  Inherited;
+  inherited;
   UpdateRange;
 end;
 
 function TJvTFGanttScrollBar.GetLargeChange: Integer;
 begin
-  Result := Inherited LargeChange;
+  Result := inherited LargeChange;
 end;
 
 procedure TJvTFGanttScrollBar.SetLargeChange(Value: Integer);
 begin
-  Inherited LargeChange := Value;
+  inherited LargeChange := Value;
   UpdateRange;
 end;
 
 procedure TJvTFGanttScrollBar.UpdateRange;
-Var
-  Info : TScrollInfo;
+var
+  Info: TScrollInfo;
 begin
   FillChar(Info, SizeOf(Info), 0);
-  With Info do
-    Begin
-      cbsize := SizeOf(Info);
-      fmask := SIF_PAGE;
-      nPage := LargeChange;
-    End;
+  with Info do
+  begin
+    cbsize := SizeOf(Info);
+    fmask := SIF_PAGE;
+    nPage := LargeChange;
+  end;
   SetScrollInfo(Handle, SB_CTL, Info, True);
 end;
 
@@ -536,3 +537,4 @@ end;
 initialization
 finalization
 end.
+

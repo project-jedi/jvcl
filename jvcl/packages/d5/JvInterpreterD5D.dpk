@@ -22,7 +22,7 @@ package JvInterpreterD5D;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Interpreter Components Designtime Package'}
+{$DESCRIPTION 'JVCL Interpreter Components'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 

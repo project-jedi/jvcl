@@ -33,7 +33,7 @@ unit JvPickDate;
 interface
 
 uses
-  Windows, Classes,
+  Windows, Classes, JvTypes,
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF}

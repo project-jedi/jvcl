@@ -62,7 +62,7 @@ uses
 type
   TJvDBLookupControl = class;
 
-  TJvDataSourceLink = class(TDataLink)
+  TJvLookupDataSourceLink = class(TDataLink)
   private
     FDBLookupControl: TJvDBLookupControl;
   protected
@@ -71,7 +71,7 @@ type
     procedure RecordChanged(Field: TField); override;
   end;
 
-  TJvListSourceLink = class(TDataLink)
+  TJvLookupListSourceLink = class(TDataLink)
   private
     FDBLookupControl: TJvDBLookupControl;
   protected
@@ -82,8 +82,8 @@ type
   TJvDBLookupControl = class(TCustomControl)
   private
     FLookupSource: TDataSource;
-    FDataLink: TJvDataSourceLink;
-    FListLink: TJvListSourceLink;
+    FDataLink: TJvLookupDataSourceLink;
+    FListLink: TJvLookupListSourceLink;
     FDataFieldName: string;
     FKeyFieldName: string;
     FListFieldName: string;
@@ -148,13 +148,13 @@ type
     property Field: TField read FDataField;
   end;
 
-  TJvPopupDataList = class;
+  TJvTreePopupDataList = class;
 
   TDropDownAlign = (daLeft, daRight, daCenter);
 
   TJvDBLookupTreeViewCombo = class(TJvDBLookupControl)
   private
-    FDataList: TJvPopupDataList;
+    FDataList: TJvTreePopupDataList;
     FButtonWidth: Integer;
     FText: string;
 //    FDropDownRows: Integer;
@@ -292,7 +292,7 @@ type
     procedure DblClick; override;
   end;
 
-  TJvPopupDataList = class(TWinControl)
+  TJvTreePopupDataList = class(TWinControl)
   private
     FTree: TJvPopupTree;
     function GetKeyValue: Variant;
@@ -433,21 +433,21 @@ implementation
 
 uses DBConsts;
 
-//=== TJvDataSourceLink ======================================================
+//=== TJvLookupDataSourceLink ======================================================
 
-procedure TJvDataSourceLink.ActiveChanged;
+procedure TJvLookupDataSourceLink.ActiveChanged;
 begin
   if FDBLookupControl <> nil then
     FDBLookupControl.DataLinkActiveChanged;
 end;
 
-procedure TJvDataSourceLink.RecordChanged(Field: TField);
+procedure TJvLookupDataSourceLink.RecordChanged(Field: TField);
 begin
   if FDBLookupControl <> nil then
     FDBLookupControl.DataLinkRecordChanged(Field);
 end;
 
-procedure TJvDataSourceLink.FocusControl(Field: TFieldRef);
+procedure TJvLookupDataSourceLink.FocusControl(Field: TFieldRef);
 begin
   if (Field^ <> nil) and (Field^ = FDBLookupControl.Field) and
     (FDBLookupControl <> nil) and FDBLookupControl.CanFocus then
@@ -457,13 +457,13 @@ begin
   end;
 end;
 
-procedure TJvListSourceLink.ActiveChanged;
+procedure TJvLookupListSourceLink.ActiveChanged;
 begin
   if FDBLookupControl <> nil then
     FDBLookupControl.ListLinkActiveChanged;
 end;
 
-procedure TJvListSourceLink.DataSetChanged;
+procedure TJvLookupListSourceLink.DataSetChanged;
 begin
   if FDBLookupControl <> nil then
     FDBLookupControl.ListLinkDataChanged;
@@ -495,9 +495,9 @@ begin
   ParentColor := False;
   TabStop := True;
   FLookupSource := TDataSource.Create(Self);
-  FDataLink := TJvDataSourceLink.Create;
+  FDataLink := TJvLookupDataSourceLink.Create;
   FDataLink.FDBLookupControl := Self;
-  FListLink := TJvListSourceLink.Create;
+  FListLink := TJvLookupListSourceLink.Create;
   FListLink.FDBLookupControl := Self;
   FListFields := TList.Create;
   FKeyValue := Null;
@@ -833,7 +833,7 @@ begin
   ControlStyle := ControlStyle + [csReplicatable];
   Width := 145;
   Height := 0;
-  FDataList := TJvPopupDataList.Create(Self);
+  FDataList := TJvTreePopupDataList.Create(Self);
   FDataList.Visible := False;
   FDataList.Parent := Self;
   FButtonWidth := GetSystemMetrics(SM_CXVSCROLL);
@@ -1200,9 +1200,9 @@ begin
 //  if Msg.FocusedWnd = FDataList.Handle then SetFocus {else CloseUp(False);}
 end;
 
-//=== TJvPopupDataList =======================================================
+//=== TJvTreePopupDataList =======================================================
 
-constructor TJvPopupDataList.Create(AOwner: TComponent);
+constructor TJvTreePopupDataList.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csNoDesignVisible, csReplicatable];
@@ -1217,13 +1217,13 @@ begin
 //  FTree.OnDblClick := OnDblClick2;
 end;
 
-destructor TJvPopupDataList.Destroy;
+destructor TJvTreePopupDataList.Destroy;
 begin
   FTree.Free;
   inherited Destroy;
 end;
 
-procedure TJvPopupDataList.CreateParams(var Params: TCreateParams);
+procedure TJvTreePopupDataList.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   with Params do
@@ -1234,7 +1234,7 @@ begin
   end;
 end;
 
-function TJvPopupDataList.GetKeyValue: Variant;
+function TJvTreePopupDataList.GetKeyValue: Variant;
 begin
   if FTree.Selected <> nil then
 //    Result := (FTree.Selected as TJvDBTreeNode).MasterValue

@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvTFManager, JvTFGlance, JvTFUtils;
+  JvTFManager, JvTFGlance, JvTFUtils{$IFDEF UseJVCL}, JvTypes{$ENDIF};
 
 type
   TJvTFDispOrder = (doLeftRight, doTopBottom);
@@ -41,8 +41,8 @@ type
   TJvTFWeeks = class(TJvTFCustomGlance)
   private
     FWeekCount : Integer;
-    FDisplayDays : TDaysOfWeek;
-    FSplitDay : TDayOfWeek;
+    FDisplayDays : TTFDaysOfWeek;
+    FSplitDay : TTFDayOfWeek;
     FIgnoreSplit : Boolean;
     FDisplayOrder : TJvTFDispOrder;
     FDWNames : TJvTFDWNames;
@@ -52,20 +52,20 @@ type
     function GetDisplayDate : TDate;
     procedure SetDisplayDate(Value: TDate);
     procedure SetWeekCount(Value: Integer);
-    procedure SetDisplayDays(Value: TDaysOfWeek);
-    procedure SetSplitDay(Value: TDayOfWeek);
+    procedure SetDisplayDays(Value: TTFDaysOfWeek);
+    procedure SetSplitDay(Value: TTFDayOfWeek);
     procedure SetIgnoreSplit(Value: Boolean);
     procedure SetDisplayOrder(Value: TJvTFDispOrder);
     procedure SetDWNames(Value: TJvTFDWNames);
     procedure SetDWTitleAttr(Value: TJvTFGlanceTitle);
   protected
     procedure ConfigCells; override;
-    procedure SetStartOfWeek(Value: TDayOfWeek); override;
+    procedure SetStartOfWeek(Value: TTFDayOfWeek); override;
     procedure DWNamesChange(Sender: TObject);
     procedure Navigate(aControl: TJvTFControl; SchedNames: TStringList;
       Dates: TJvTFDateList); override;
 
-    function GetSplitParentDay : TDayOfWeek;
+    function GetSplitParentDay : TTFDayOfWeek;
     function GetCellTitleText(Cell : TJvTFGlanceCell) : String; override;
 
     // draws the DW Titles
@@ -80,7 +80,7 @@ type
     procedure NextWeek;
   published
     property DisplayDate : TDate read GetDisplayDate write SetDisplayDate;
-    property DisplayDays : TDaysOfWeek read FDisplayDays write SetDisplayDays
+    property DisplayDays : TTFDaysOfWeek read FDisplayDays write SetDisplayDays
       default [dowSunday..dowSaturday];
     property DisplayOrder : TJvTFDispOrder read FDisplayOrder
       write SetDisplayOrder;
@@ -89,7 +89,7 @@ type
       write SetDWTitleAttr;
     property IgnoreSplit : Boolean read FIgnoreSplit write SetIgnoreSplit
       default False;
-    property SplitDay : TDayOfWeek read FSplitDay write SetSplitDay
+    property SplitDay : TTFDayOfWeek read FSplitDay write SetSplitDay
       default dowSunday;
     property WeekCount : Integer read FWeekCount write SetWeekCount default 1;
 
@@ -113,7 +113,7 @@ var
   Col,
   CalcRowCount : Integer;
   CurrDate : TDateTime;
-  DayToSplit : TDayOfWeek;
+  DayToSplit : TTFDayOfWeek;
   CanSplit : Boolean;
 
                     /////////////////////////////////////////////
@@ -127,7 +127,7 @@ var
 
                     procedure ConfigCell(aCell: TJvTFGlanceCell);
                     var
-                      TestDay : TDayOfWeek;
+                      TestDay : TTFDayOfWeek;
                     begin
                       DisplayDateCheck;
                       SetCellDate(aCell, CurrDate);
@@ -227,10 +227,10 @@ end;
 
 function TJvTFWeeks.DisplayDayCount: Integer;
 var
-  DOW : TDayOfWeek;
+  DOW : TTFDayOfWeek;
 begin
   Result := 0;
-  For DOW := Low(TDayOfWeek) to High(TDayOfWeek) do
+  For DOW := Low(TTFDayOfWeek) to High(TTFDayOfWeek) do
     If (DOW in DisplayDays) Then
       Inc(Result);
 end;
@@ -241,7 +241,7 @@ var
   Col,
   LineBottom : Integer;
   SplitParentDay,
-  CurrDOW : TDayOfWeek;
+  CurrDOW : TTFDayOfWeek;
   aRect,
   TempRect,
   TxtRect,
@@ -399,7 +399,7 @@ begin
   Result := StartDate;
 end;
 
-function TJvTFWeeks.GetSplitParentDay: TDayOfWeek;
+function TJvTFWeeks.GetSplitParentDay: TTFDayOfWeek;
 begin
   Result := SplitDay;
   IncDOW(Result, -1);
@@ -431,7 +431,7 @@ begin
   UpdateTitle;
 end;
 
-procedure TJvTFWeeks.SetDisplayDays(Value: TDaysOfWeek);
+procedure TJvTFWeeks.SetDisplayDays(Value: TTFDaysOfWeek);
 begin
   If Value = [] Then
     Exit;
@@ -474,7 +474,7 @@ begin
     End;
 end;
 
-procedure TJvTFWeeks.SetSplitDay(Value: TDayOfWeek);
+procedure TJvTFWeeks.SetSplitDay(Value: TTFDayOfWeek);
 begin
   If Value <> FSplitDay Then
     Begin
@@ -483,7 +483,7 @@ begin
     End;
 end;
 
-procedure TJvTFWeeks.SetStartOfWeek(Value: TDayOfWeek);
+procedure TJvTFWeeks.SetStartOfWeek(Value: TTFDayOfWeek);
 begin
   If not IgnoreSplit and (Value = SplitDay) Then
     IncDOW(Value, -1);

@@ -1,5 +1,21 @@
 Changelog for JVCL 3.0
 ======================
+2003-08-17:
+- Renamed/Moved duplicate identifiers:
+  * TDaysOfWeek -> moved to JvTypes
+  * JvxCtrls.TJvButtonGlyph -> JvxCtrls.TJvxButtonGlyph
+  * JvDBLookupTreeView.TJvDataSourceLink -> JvDBLookupTreeView.TJvLookupDataSourceLink
+  * JvgCommClasses.TJvgBevel -> JvgCommClasses.TJvgBevelOptions
+  * JvJVCLUtils.TJvGradient -> JvJVCLUtils.TJvGradientOptions
+  * TJvHTMLElement(Stack) -> moved to new unit JvMarkupCommon.pas
+  * JvListComb.TJvListItem -> JvListComb.TJvImageItem
+  * JvDBLookupTreeView.TJvPopupDataList -> JvDBLookupTreeView.TJvTreePopupDataList
+  * JvScreenCanvas.pas moved to \archive (not used)
+  * JvScrollMax.TJvScrollBar -> JvScrollMax.TJvPanelScrollBar
+  * JvLookout.TJvSpacer -> removed (not used)
+  * TJvTFVisibleScrollBars  -> moved to JvTFUtilspas
+  // peter3
+  
 2003-07-29:
 - Renamed properties and events in TJvImageSquare:
     BackColor -> Color

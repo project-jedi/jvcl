@@ -44,11 +44,11 @@ uses
 
 type
   TJvButtonColors = (fsLighter, fsLight, fsMedium, fsDark, fsDarker);
-  TJvListItems = class;
-  
-  TJvListItem = class(TCollectionItem)
+  TJvImageItems = class;
+
+  TJvImageItem = class(TCollectionItem)
   private
-    FOwner: TJvListItems;
+    FOwner: TJvImageItems;
     FImageIndex: Integer;
     FIndent: Integer;
     procedure SetImageIndex(const Value: Integer);
@@ -70,24 +70,24 @@ type
     property Indent: Integer read FIndent write SetIndent default 2;
   end;
 
-  TJvListItems = class(TOwnedCollection)
+  TJvImageItems = class(TOwnedCollection)
   private
     FStrings: TStrings;
-    function GetItems(Index: Integer): TJvListItem;
-    procedure SetItems(Index: Integer; const Value: TJvListItem);
+    function GetItems(Index: Integer): TJvImageItem;
+    procedure SetItems(Index: Integer; const Value: TJvImageItem);
   protected
     procedure Update(Item: TCollectionItem); override;
   public
-    function Add: TJvListItem;
+    function Add: TJvImageItem;
     procedure Assign(Source: TPersistent); override;
     constructor Create(AOwner: TPersistent);
-    property Items[Index: Integer]: TJvListItem read GetItems write SetItems; default;
+    property Items[Index: Integer]: TJvImageItem read GetItems write SetItems; default;
   end;
 
   TJvImageComboBox = class(TCustomComboBox)
   private
     FAboutJVCL: TJVCLAboutInfo;
-    FItems: TJvListItems;
+    FItems: TJvImageItems;
     FImageList: TImageList;
     FDefaultIndent: Integer;
     FChangeLink: TChangeLink;
@@ -114,7 +114,7 @@ type
     function GetDroppedWidth: Integer;
     procedure SetDroppedWidth(Value: Integer);
     procedure SetDefaultIndent(const Value: Integer);
-    procedure SetItems(const Value: TJvListItems); reintroduce;
+    procedure SetItems(const Value: TJvImageItems); reintroduce;
     procedure SetIndentSelected(const Value: boolean);
   protected
     procedure CreateWnd; override;
@@ -138,7 +138,7 @@ type
     property DragMode;
     property DragCursor;
     property DropDownCount;
-    property Items: TJvListItems read FItems write SetItems;
+    property Items: TJvImageItems read FItems write SetItems;
     property IndentSelected:boolean read FIndentSelected write SetIndentSelected default false;
     property ItemIndex;
     property DefaultIndent: Integer read FDefaultIndent write SetDefaultIndent default 0;
@@ -179,7 +179,7 @@ type
   private
     FAboutJVCL: TJVCLAboutInfo;
     FImageList: TImageList;
-    FItems: TJvListItems;
+    FItems: TJvImageItems;
     FChangeLink: TChangeLink;
     FCanvas: TCanvas;
     FWidth: Integer;
@@ -197,7 +197,7 @@ type
     procedure DrawLeftGlyph(Index: Integer; R: TRect; State: TOwnerDrawState);
     procedure DrawRightGlyph(Index: Integer; R: TRect; State: TOwnerDrawState);
     procedure DrawCenteredGlyph(Index: Integer; R: TRect; State: TOwnerDrawState);
-    procedure SetItems(const Value: TJvListItems);
+    procedure SetItems(const Value: TJvImageItems);
   protected
     procedure ImageListChange(Sender: TObject);
     procedure CreateWnd; override;
@@ -222,7 +222,7 @@ type
     property DragCursor;
     property Enabled;
     property Font;
-    property Items: TJvListItems read FItems write SetItems;
+    property Items: TJvImageItems read FItems write SetItems;
     property ButtonFrame: Boolean read FButtonFrame write FButtonFrame default False;
     property ButtonStyle: TJvButtonColors read FButtonStyle write FButtonStyle;
     property ColorHighlight: TColor read FColorHighlight write SetColorHighlight default clHighlight;
@@ -298,40 +298,40 @@ begin
     Frame3d(Canvas, R, TopStyles[ButtonStyle], BottomStyles[ButtonStyle], 1);
 end;
 
-procedure TJvListItem.Assign(Source: TPersistent);
+procedure TJvImageItem.Assign(Source: TPersistent);
 begin
-  if Source is TJvListItem then
+  if Source is TJvImageItem then
   begin
-    Text := TJvListItem(Source).Text;
-    FImageIndex := TJvListItem(Source).ImageIndex;
-    FIndent := TJvListItem(Source).Indent;
+    Text := TJvImageItem(Source).Text;
+    FImageIndex := TJvImageItem(Source).ImageIndex;
+    FIndent := TJvImageItem(Source).Indent;
     Change;
   end
   else
     inherited Assign(Source);
 end;
 
-//=== TJvListItem ============================================================
+//=== TJvImageItem ============================================================
 
-constructor TJvListItem.Create(Collection: TCollection);
+constructor TJvImageItem.Create(Collection: TCollection);
 begin
   inherited Create(Collection);
-  FOwner := Collection as TJvListItems;
+  FOwner := Collection as TJvImageItems;
 end;
 
-destructor TJvListItem.Destroy;
+destructor TJvImageItem.Destroy;
 var
   S: TStrings;
 begin
   S := GetOwnerStrings;
   // PRY 2002.06.04
   //if (S <> nil) and not (csDestroying in TComponent(FOwner.GetOwner).ComponentState) then
-  if (S <> nil) and not (csDestroying in TComponent(TJvListItems(FOwner).GetOwner).ComponentState) then
+  if (S <> nil) and not (csDestroying in TComponent(TJvImageItems(FOwner).GetOwner).ComponentState) then
     S.Delete(Index);
   inherited Destroy;
 end;
 
-function TJvListItem.GetDisplayName: string;
+function TJvImageItem.GetDisplayName: string;
 begin
   if Text = '' then
     Result := inherited GetDisplayName
@@ -339,13 +339,13 @@ begin
     Result := Text;
 end;
 
-procedure TJvListItem.Change;
+procedure TJvImageItem.Change;
 begin
   if Assigned(FOwner) then
     FOwner.Update(Self);
 end;
 
-procedure TJvListItem.SetImageIndex(const Value: Integer);
+procedure TJvImageItem.SetImageIndex(const Value: Integer);
 begin
   if FImageIndex <> Value then
   begin
@@ -354,7 +354,7 @@ begin
   end;
 end;
 
-procedure TJvListItem.SetIndent(const Value: Integer);
+procedure TJvImageItem.SetIndent(const Value: Integer);
 begin
   if FIndent <> Value then
   begin
@@ -363,14 +363,14 @@ begin
   end;
 end;
 
-function TJvListItem.GetOwnerStrings: TStrings;
+function TJvImageItem.GetOwnerStrings: TStrings;
 begin
   Result := nil;
   if Assigned(FOwner) then
     Result := FOwner.FStrings;
 end;
 
-procedure TJvListItem.SetText(const Value: string);
+procedure TJvImageItem.SetText(const Value: string);
 var
   S: TStrings;
 begin
@@ -387,7 +387,7 @@ begin
   end;
 end;
 
-function TJvListItem.GetText: string;
+function TJvImageItem.GetText: string;
 var
   S: TStrings;
 begin
@@ -401,7 +401,7 @@ begin
   end;
 end;
 
-procedure TJvListItem.SetIndex(Value: Integer);
+procedure TJvImageItem.SetIndex(Value: Integer);
 var
   I: Integer;
   S: TStrings;
@@ -413,27 +413,27 @@ begin
     S.Exchange(I, Value);
 end;
 
-//=== TJvListItems ===========================================================
+//=== TJvImageItems ===========================================================
 
-constructor TJvListItems.Create(AOwner: TPersistent);
+constructor TJvImageItems.Create(AOwner: TPersistent);
 begin
-  inherited Create(AOwner, TJvListItem);
+  inherited Create(AOwner, TJvImageItem);
 end;
 
-function TJvListItems.Add: TJvListItem;
+function TJvImageItems.Add: TJvImageItem;
 begin
-  Result := TJvListItem(inherited Add);
+  Result := TJvImageItem(inherited Add);
 end;
 
-procedure TJvListItems.Assign(Source: TPersistent);
+procedure TJvImageItems.Assign(Source: TPersistent);
 var
   I: Integer;
 begin
-  if Source is TJvListItems then
+  if Source is TJvImageItems then
   begin
     Clear;
-    for I := 0 to TJvListItems(Source).Count - 1 do
-      Add.Assign(TJvListItems(Source)[I]);
+    for I := 0 to TJvImageItems(Source).Count - 1 do
+      Add.Assign(TJvImageItems(Source)[I]);
   end
   else
   if Source is TStrings then
@@ -448,18 +448,18 @@ begin
     inherited Assign(Source);
 end;
 
-function TJvListItems.GetItems(Index: Integer): TJvListItem;
+function TJvImageItems.GetItems(Index: Integer): TJvImageItem;
 begin
-  Result := TJvListItem(inherited Items[Index])
+  Result := TJvImageItem(inherited Items[Index])
 end;
 
-procedure TJvListItems.SetItems(Index: Integer;
-  const Value: TJvListItem);
+procedure TJvImageItems.SetItems(Index: Integer;
+  const Value: TJvImageItem);
 begin
   inherited Items[Index] := Value;
 end;
 
-procedure TJvListItems.Update(Item: TCollectionItem);
+procedure TJvImageItems.Update(Item: TCollectionItem);
 begin
   inherited Update(Item);
   // PRY 2002.06.04
@@ -482,7 +482,7 @@ end;
 constructor TJvImageComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FItems := TJvListItems.Create(Self);
+  FItems := TJvImageItems.Create(Self);
   FItems.FStrings := inherited Items;
   FWidth := 0;
   FHeight := 0;
@@ -749,7 +749,7 @@ begin
   end;
 end;
 
-procedure TJvImageComboBox.SetItems(const Value: TJvListItems);
+procedure TJvImageComboBox.SetItems(const Value: TJvImageItems);
 begin
   FItems.Assign(Value);
   FItems.Update(nil);
@@ -771,7 +771,7 @@ begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csAcceptsControls];
   SetBounds(0, 0, 121, 97);
-  FItems := TJvListItems.Create(Self);
+  FItems := TJvImageItems.Create(Self);
   FItems.FStrings := inherited Items;
   Color := clWindow;
   FColorHighlight := clHighlight;
@@ -1132,7 +1132,7 @@ begin
   Invalidate;
 end;
 
-procedure TJvImageListBox.SetItems(const Value: TJvListItems);
+procedure TJvImageListBox.SetItems(const Value: TJvImageItems);
 begin
   FItems.Assign(Value);
   FItems.Update(nil);

@@ -42,8 +42,8 @@ type
   TJvgGroupBox = class(TCustomGroupBox)
   private
     FEnabled: boolean;
-    FBorder: TJvgBevel;
-    FCaptionBorder: TJvgBevel;
+    FBorder: TJvgBevelOptions;
+    FCaptionBorder: TJvgBevelOptions;
     FGradient: TJvgGradient;
     FCaptionGradient: TJvgGradient;
     FCaptionShift: TJvgPointClass;
@@ -132,10 +132,10 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property Enabled: boolean read FEnabled write SetEnabled default true;
-    property Border: TJvgBevel read FBorder write FBorder;
+    property Border: TJvgBevelOptions read FBorder write FBorder;
     property CaptionAlignment: TCaptionAlignment
       read FCaptionAlignment write SetCaptionAlignment default fcaNone;
-    property CaptionBorder: TJvgBevel read FCaptionBorder write
+    property CaptionBorder: TJvgBevelOptions read FCaptionBorder write
       FCaptionBorder;
     property CaptionGradient: TJvgGradient read FCaptionGradient write
       FCaptionGradient;
@@ -165,13 +165,9 @@ type
     property OnExpanded: TNotifyEvent read FOnExpanded write FOnExpanded;
   end;
 
-procedure Register;
 
 implementation
 
-procedure Register;
-begin
-end;
 //____________________________________________________ Methods _
 
 constructor TJvgGroupBox.Create(AOwner: TComponent);
@@ -179,8 +175,8 @@ begin
   inherited;
   //  ControlStyle := ControlStyle + [csOpaque];
   FEnabled := true;
-  FBorder := TJvgBevel.Create;
-  FCaptionBorder := TJvgBevel.Create;
+  FBorder := TJvgBevelOptions.Create;
+  FCaptionBorder := TJvgBevelOptions.Create;
   FGradient := TJvgGradient.Create;
   FCaptionGradient := TJvgGradient.Create;
   FColors := TJvgGroupBoxColors.Create;

@@ -22,7 +22,7 @@ package JvStdCtrlsD6D;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Standard Controls Designtime Package'}
+{$DESCRIPTION 'JVCL Standard Controls'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 

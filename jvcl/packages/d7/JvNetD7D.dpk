@@ -22,7 +22,7 @@ package JvNetD7D;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Network Components Designtime Package'}
+{$DESCRIPTION 'JVCL Network Components'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 

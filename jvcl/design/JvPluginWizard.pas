@@ -159,7 +159,7 @@ uses
   Controls, SysUtils, Dialogs, Classes, actnList, Menus,
   JvPlugin, JvPluginParamsForm;//, JvTypes;
 
-{$R JvPluginWiz.res}
+{$R ..\resources\JvPluginWiz.res}
 
 const
   CrLf = #13#10;

@@ -22,7 +22,7 @@ package JvJansD6R;
 {$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Jans Runtime Components'}
+{$DESCRIPTION 'JVCL Jans Components'}
 {$IMPLICITBUILD OFF}
 
 requires
@@ -68,7 +68,8 @@ contains
   JvQuickPreviewForm in '..\..\run\JvQuickPreviewForm.pas',
   JvResample in '..\..\run\JvResample.pas',
   JvDrawImage in '..\..\run\JvDrawImage.pas',
-  JvCSVBaseControls in '..\..\run\JvCSVBaseControls.pas';
+  JvCSVBaseControls in '..\..\run\JvCSVBaseControls.pas',
+  JvMarkupCommon in '..\..\run\JvMarkupCommon.pas';
 
 end.
 

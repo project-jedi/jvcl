@@ -35,7 +35,7 @@ uses
   RTLConsts,
   {$ENDIF}
   Classes, SysUtils, DB, DBTables,
-  JvJCLUtils, JvBdeUtils {, JvComponent};
+  JvTypes, JvJCLUtils, JvBdeUtils {, JvComponent};
 
 {.$DEFINE DEBUG}
 
