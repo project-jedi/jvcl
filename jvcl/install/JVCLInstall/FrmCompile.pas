@@ -26,8 +26,7 @@ Known Issues:
 
 unit FrmCompile;
 
-{$I jvcl.inc}
-{$I windowsonly.inc}
+{$I jedi.inc}
 
 interface
 
@@ -115,8 +114,11 @@ var
 
 implementation
 
+{$IFDEF MSWINDOWS}
+{$I windowsonly.inc}
 uses
   FileCtrl;
+{$ENDIF MSWINDOWS}
 
 {$R *.dfm}
 
@@ -266,6 +268,8 @@ begin
     FCurFilename := Filename;
     FTotalLines := FTotalLines + FCurrentLine;
     CurrentLine := 0; // updates total lines and current lines
+    LblStatusCaption.Font.Style := [];
+    LblStatus.Font.Style := [];
     LblStatusCaption.Caption := RsCompiling + ':';
     LblStatus.Caption := ExtractFileName(Filename);
     Application.ProcessMessages;
@@ -277,6 +281,8 @@ begin
   FTotalLines := FTotalLines + FCurrentLine;
   CurrentLine := 0;
 
+  LblStatusCaption.Font.Style := [];
+  LblStatus.Font.Style := [];
   LblStatusCaption.Caption := RsLinking + ':';
   LblStatus.Caption := ExtractFileName(Filename);
   Application.ProcessMessages;
