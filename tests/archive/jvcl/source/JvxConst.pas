@@ -32,7 +32,7 @@ unit JvxConst;
 
 interface
 
-const
+resourcestring
   // JvLConst
 { Component pages }
   srJvControls         = 'Jv Controls';
