@@ -49,16 +49,14 @@ package JVCL200_D70;
 {$IMPLICITBUILD ON}
 
 requires
-  vcl,
   rtl,
-  vcldb,
   dcldb,
-  dclsmp,
-  VclSmp,
   dclstd,
-  dbrtl,
-  bdertl,
   designide,
+  vcl,
+  dbrtl,
+  vcldb,
+  bdertl,
   vcljpg,
   inet,
   qrpt,
@@ -118,15 +116,16 @@ contains
   JvTimLstEd in '..\source\JvTimLstEd.pas' {JvTimerItemsEditor},
   jvBandObjectDLLWizard in '..\source\JvBandObjectDLLWizard.pas',
   jvBandObjectDLLWizardForm in '..\source\JvBandObjectDLLWizardForm.pas' {zWizardForm},
+  JvxDConst in '..\source\JvxDConst.pas',
+  JvActions in '..\source\JvActions.pas',
+  JvDialogActns in '..\source\JvDialogActns.pas',
   JvPluginWizard in '..\source\JvPluginWizard.pas',
   JvPluginParams in '..\source\JvPluginParams.pas' {frmPluginParams},
+  JvActnRes in '..\source\JvActnRes.pas' {JvStandardActions: TDataModule},
+  JvDatePickerReg in '..\source\JvDatePickerReg.pas',
   JvSchedEvntReg in '..\source\JvSchedEvntReg.pas',
   ScheduleEditor in '..\source\ScheduleEditor.pas' {frmScheduleEditor},
-  JvActions in '..\source\JvActions.pas',
-  JvActnRes in '..\source\JvActnRes.pas' {JvStandardActions: TDataModule},
-  JvDialogActns in '..\source\JvDialogActns.pas',
   JvTransLedReg in '..\source\JvTransLEDReg.pas',
-  JvDatePickerReg in '..\source\JvDatePickerReg.pas',
   JvJVCLAboutProperty in '..\source\JvJVCLAboutProperty.pas';
 
 end.
