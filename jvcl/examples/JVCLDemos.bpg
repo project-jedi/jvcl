@@ -79,7 +79,6 @@ InspExample.exe \
 InspectorDBExample.exe \
 Install2LabelDemo.exe \
 JvItemViewerDemo.exe \
-ViewerDemo2.exe \
 JvLinkLabelDemo.exe \
 ListCombDemo.exe \
 JvLogFileDemo.exe \
@@ -409,9 +408,6 @@ Install2LabelDemo.exe: JvInstallLabel\Install2LabelDemo.dpr
 $(DCC)
 
 JvItemViewerDemo.exe: JvItemViewer\JvItemViewerDemo.dpr
-$(DCC)
-
-ViewerDemo2.exe: JvItemViewer\ViewerDemo2.dpr
 $(DCC)
 
 JvLinkLabelDemo.exe: JvLinkLabel\JvLinkLabelDemo.dpr
