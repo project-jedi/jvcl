@@ -72,7 +72,7 @@ type
     function GetItemNamed(const Name: string): TJvSimpleXmlProp;
   protected
     function GetItem(const Index: Integer): TJvSimpleXmlProp;
-    procedure Analyse(Value: string);
+    procedure Analyse(const Value: string);
     procedure DoItemRename(var Value: TJvSimpleXmlProp; const Name: string);
   public
     constructor Create;
@@ -139,7 +139,7 @@ type
     procedure SetBoolValue(const Value: Boolean);
     procedure SetName(const Value: string);
   protected
-    procedure Analyse(Value: string);
+    procedure Analyse(const Value: string);
   public
     constructor Create(const AOwner: TJvSimpleXmlElem);
     destructor Destroy; override;
@@ -475,26 +475,26 @@ var
 
   function ReadTag: string;
   var
-    buf: array[0..100] of char;
+    buf: array[0..1024] of char;
     i, count, k, l: Integer;
+    ch: char;
   begin
     result := '';
     k := Stream.Position;
     l := 0;
-    count := 1;
-    while (l <> 2) and (count <> 0) do
-    begin
+    repeat
       count := Stream.Read(buf, SizeOf(buf));
       i := 0;
       while i < count do
       begin
-        if buf[i] = '<' then
+        ch := buf[i];
+        if ch = '<' then
         begin
           if l = 0 then
             inc(l);
           inc(i);
         end
-        else if buf[i] = '>' then
+        else if ch = '>' then
         begin
           if l = 1 then
           begin
@@ -504,22 +504,22 @@ var
         end
         else
         begin
-          result := result + buf[i];
+          result := result + ch;
           inc(i);
         end;
         inc(k);
       end;
-    end;
+    until (l = 2) or (count <> 0);
     if count = 0 then
       raise EJVCLException.Create(RS_INVALID_SimpleXml)
     else
-      Stream.Position := k;
+      Stream.Seek(k,soFromBeginning);
     result := Trim(Result);
   end;
 
   function ReadValue: string;
   var
-    buf: array[0..100] of char;
+    buf: array[0..1024] of char;
     i, count, k: Integer;
     ok: Boolean;
   begin
@@ -549,7 +549,7 @@ var
     if count = 0 then
       raise EJVCLException.Create(RS_INVALID_SimpleXml)
     else
-      Stream.Position := k;
+      Stream.Seek(k,soFromBeginning);
   end;
 
   procedure Analyse(var Element: TJvSimpleXmlElem);
@@ -694,30 +694,24 @@ end;
 
 {*************************************************}
 
-procedure TJvSimpleXmlElem.Analyse(Value: string);
+procedure TJvSimpleXmlElem.Analyse(const Value: string);
 var
   i, j: Integer;
 begin
   i := 0;
-  j := 1;
-  while (j <= Length(Value)) do
-  begin
+  for j:=1 to Length(Value) do
     if (Value[j] in [' ', #10, #13]) then
     begin
       i := j;
-      j := MAXINT;
-    end
-    else
-      inc(j);
-  end;
+      Break;
+    end;
 
   if i = 0 then
     Name := Value
   else
   begin
     Name := Copy(Value, 1, i - 1);
-    Value := Trim(Copy(Value, i + 1, MAXINT));
-    Properties.Analyse(Value);
+    Properties.Analyse(Trim(Copy(Value, i + 1, MAXINT)));
   end;
   if Parent <> nil then
     Parent.Items.AddChild(self);
@@ -1045,6 +1039,7 @@ function TJvSimpleXmlElems.Value(const Name: string; Default: string): string;
 var
   elem: TJvSimpleXmlElem;
 begin
+  result := '';
   elem := GetItemNamed(Name);
   if elem = nil then
     result := Default
@@ -1081,7 +1076,7 @@ begin
 end;
 {*************************************************}
 
-procedure TJvSimpleXmlProps.Analyse(Value: string);
+procedure TJvSimpleXmlProps.Analyse(const Value: string);
 var
   st: string;
   i: Integer;
@@ -1093,18 +1088,14 @@ var
     st, st2: string;
   begin
     j := 0;
-    i := 1;
-    while i < Length(Value) do
+    for i:=1 to Length(Value) do
       if Value[i] = '=' then
       begin
         j := i;
-        i := MAXINT;
+        Break;
       end
       else
-      begin
         st := st + Value[i];
-        inc(i);
-      end;
     if j <> 0 then
     begin
       st2 := Copy(Value, j + 1, MAXINT);
@@ -1250,6 +1241,7 @@ function TJvSimpleXmlProps.Value(const Name: string; Default: string): string;
 var
   prop: TJvSimpleXmlProp;
 begin
+  result := '';
   prop := GetItemNamed(Name);
   if prop = nil then
     result := Default
