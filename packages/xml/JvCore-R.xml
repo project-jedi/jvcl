@@ -1,18 +1,49 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvCore" Design="0">
-  <Description>hello</Description>
+  <Description>JVCL Core Runtime Package</Description>
   <C5PFlags/>
   <C6PFlags/>
   <Requires>
-    <Package Name="JvConditionned" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Design="y" Condition="THEMES"/>
-    <Package Name="CJCL60" D5="" D5s="" D6="" D6p="" D7="" D7p="" C5="" C6="y" C6p="y" K2="" K3="" Design="" Condition=""/>
     <Package Name="CJCL50" D5="" D5s="" D6="" D6p="" D7="" D7p="" C5="y" C6="" C6p="" K2="" K3="" Design="" Condition=""/>
-    <Package Name="JvTruc" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Design="" Condition=""/>
+    <Package Name="CJCL60" D5="" D5s="" D6="" D6p="" D7="" D7p="" C5="" C6="y" C6p="y" K2="" K3="" Design="" Condition=""/>
+    <Package Name="DJCL50" D5="y" D5s="y" D6="" D6p="" D7="" D7p="" C5="" C6="" C6p="" K2="" K3="" Design="" Condition=""/>
+    <Package Name="DJCL60" D5="" D5s="" D6="y" D6p="y" D7="" D7p="" C5="" C6="" C6p="" K2="" K3="" Design="" Condition=""/>
+    <Package Name="DJCL70" D5="" D5s="" D6="" D6p="" D7="y" D7p="y" C5="" C6="" C6p="" K2="" K3="" Design="" Condition=""/>
+    <Package Name="vclx" D5="" D5s="" D6="y" D6p="y" D7="y" D7p="y" C5="" C6="y" C6p="y" K2="y" K3="y" Design="" Condition=""/>
+    <Package Name="vcl" D5="" D5s="" D6="" D6p="" D7="y" D7p="y" C5="" C6="y" C6p="y" K2="y" K3="y" Design="" Condition=""/>
+    <Package Name="rtl" D5="" D5s="" D6="" D6p="" D7="y" D7p="y" C5="" C6="y" C6p="y" K2="y" K3="y" Design="" Condition=""/>
+    <Package Name="bcbsmp" D5="" D5s="" D6="" D6p="" D7="" D7p="" C5="" C6="y" C6p="y" K2="" K3="" Design="" Condition=""/>
+    <Package Name="vcljpg" D5="" D5s="" D6="" D6p="" D7="" D7p="" C5="" C6="y" C6p="y" K2="" K3="" Design="" Condition=""/>
+    <Package Name="vcl50" D5="" D5s="" D6="" D6p="" D7="" D7p="" C5="y" C6="" C6p="" K2="" K3="" Design="" Condition=""/>
+    <Package Name="vcljpg50" D5="" D5s="" D6="" D6p="" D7="" D7p="" C5="y" C6="" C6p="" K2="" K3="" Design="" Condition=""/>
+    <Package Name="vclx50" D5="y" D5s="y" D6="" D6p="" D7="" D7p="" C5="y" C6="" C6p="" K2="" K3="" Design="" Condition=""/>
+    <Package Name="bcbsmp50" D5="" D5s="" D6="" D6p="" D7="" D7p="" C5="y" C6="" C6p="" K2="" K3="" Design="" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvAnimate.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
-    <File Name="..\..\run\JvAnalogClock.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
-    <File Name="..\..\run\JvAni.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBaseThumbnail.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\common\JvConsts.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvColorProvider.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvComponent.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvContextProvider.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDataProvider.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDataProviderImpl.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDsgnIntf.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvJCLUtils.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvJVCLAboutForm.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="JvJVCLAboutForm" Condition=""/>
+    <File Name="..\..\run\JvJVCLUtils.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMaxPixel.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMouseTimer.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvProgressUtils.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvThemes.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTypes.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvVersionInfo.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvActions.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppIniStore.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppRegistryStore.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppStore.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBaseDlg.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCaret.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JVCLVer.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\run\JvClxUtils.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\design\JvActnResForm.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="JvStandardActions: TDataModule" Condition=""/>
   </Contains>
 </Package>
