@@ -58,6 +58,14 @@ resourcestring
   sJvInspPaintNotActive = 'Painter is not the active painter of the specified inspector.';
   sJvInspPaintOnlyUsedOnce = 'Inspector painter can only be linked to one inspector.';
 
+  // (rom) converted assertions
+  sJvAssertSetTopIndex = 'TJvCustomInspector.SetTopIndex: unexpected MaxIdx <= -1';
+  sJvAssertInspectorPainter = 'TJvInspectorCustomCompoundItem.DivideRect: unexpected Inspector.Painter = nil';
+  sJvAssertDataParent = 'TJvInspectorSetMemberData.New: unexpected ADataParent = nil';
+  sJvAssertParent = 'TJvInspectorSetMemberData.New: unexpected AParent = nil';
+  sJvAssertPropInfo = 'TJvInspectorPropData.New: unexpected PropInfo = nil';
+  sJvAssertINIFile = 'TJvInspectorINIFileData.New: unexpected AINIFile = nil';
+
 const
   { Inspector Row Size constants }
   irsNoReSize =     $00000000;
@@ -2977,7 +2985,8 @@ begin
     MaxIdx := Pred(BandStarts.Count);
     while (MaxIdx > -1) and (Integer(BandStarts[MaxIdx]) > Value) do
       Dec(MaxIdx);
-    Assert(MaxIdx > -1);
+    if MaxIdx <= -1 then
+      raise EJvInspector.Create(sJvAssertSetTopIndex);
     Value := Integer(BandStarts[MaxIdx]);
   end;
   if TopIndex <> Value then
@@ -4591,8 +4600,8 @@ begin
                 ExecInherited := False;
             end;
           end;
-          if (Message.Msg = WM_KEYDOWN) and (KeyDataToShiftState(Message.LParam) = []) and (
-            Message.WParam in [VK_DOWN, VK_UP, VK_NEXT, VK_PRIOR]) then
+          if (Message.Msg = WM_KEYDOWN) and (KeyDataToShiftState(Message.LParam) = []) and
+            (Message.WParam in [VK_DOWN, VK_UP, VK_NEXT, VK_PRIOR]) then
           begin
             PostMessage(Inspector.Handle, Message.Msg, Message.WParam, Message.LParam);
             Message.Result := 1;
@@ -5893,7 +5902,8 @@ var
   ColWidth: Double;
   SaveItem: TJvCustomInspectorItem;
 begin
-  Assert(Inspector.Painter <> nil);
+  if Inspector.Painter = nil then
+    raise EJvInspectorItem.Create(sJvAssertInspectorPainter);
   VisibleColCount := 0;
   for I := 0 to ColumnCount - 1 do
     if Columns[I].Width > 0 then
@@ -6545,8 +6555,10 @@ var
   BaseInfo: IJclOrdinalRangeTypeInfo;
   Data: TJvInspectorSetMemberData;
 begin
-  Assert(ADataParent <> nil);
-  Assert(AParent <> nil);
+  if ADataParent = nil then
+    raise EJvInspectorData.Create(sJvAssertDataParent);
+  if AParent = nil then
+    raise EJvInspectorData.Create(sJvAssertParent);
   BaseInfo := ((JclTypeInfo(ADataParent.TypeInfo) as IJclSetTypeInfo).
     BaseType as IJclOrdinalRangeTypeInfo);
   if BaseInfo.TypeKind = tkEnumeration then
@@ -9161,7 +9173,8 @@ class function TJvInspectorPropData.New(const AParent: TJvCustomInspectorItem;
 var
   Data: TJvInspectorPropData;
 begin
-  Assert(PropInfo <> nil, 'PropInfo nil in TJvInspectorPropData.New');
+  if PropInfo = nil then
+    raise EJvInspectorData.Create(sJvAssertPropInfo);
   Data := CreatePrim(PropInfo.Name, PropInfo.PropType^);
   Data.Instance := AInstance;
   Data.Prop := PropInfo;
@@ -9976,7 +9989,8 @@ class function TJvInspectorINIFileData.New(const AParent: TJvCustomInspectorItem
 var
   Data: TJvInspectorINIFileData;
 begin
-  Assert(AINIFile <> nil);
+  if AINIFile = nil then
+    raise EJvInspectorData.Create(sJvAssertINIFile);
   Data := CreatePrim(AName, ASection, AKey, ATypeInfo);
   Data.FINIFile := AINIFile;
   Data := TJvInspectorINIFileData(DataRegister.Add(Data));
@@ -10006,7 +10020,8 @@ var
   end;
 
 begin
-  Assert(AINIFile <> nil);
+  if AINIFile = nil then
+    raise EJvInspectorData.Create(sJvAssertINIFile);
   SetLength(Result, 0);
   SL := TStringList.Create;
   try
@@ -10049,7 +10064,8 @@ var
 
 begin
   SetLength(TmpLst, 0);
-  Assert(AINIFile <> nil);
+  if AINIFile = nil then
+    raise EJvInspectorData.Create(sJvAssertINIFile);
   SL := TStringList.Create;
   try
     AINIFile.ReadSections(SL);

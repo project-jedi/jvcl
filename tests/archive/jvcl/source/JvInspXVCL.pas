@@ -26,9 +26,6 @@ located at http://jvcl.sourceforge.net
  XVCL can be onbtained from the XVCL home page, located at
  http://xvcl.sourceforge.net
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
-
 Known Issues:
 -----------------------------------------------------------------------------}
 
@@ -71,7 +68,17 @@ type
 implementation
 
 uses
-  Consts, SysUtils, TypInfo;
+  Consts, SysUtils, TypInfo,
+  JvTypes;
+
+// (rom) centralized the string literals
+const
+  cFloat = 'Float';
+  cInt64 = 'Int64';
+  cTMethod = 'TMethod';
+  cOrdinal = 'Ordinal';
+  cString = 'String';
+  cSet = 'set';
 
 function TJvInspectorxNodeData.GetAsFloat: Extended;
 begin
@@ -79,19 +86,19 @@ begin
   if JvxNode.TypeInfo^.Kind = tkFloat then
     Result := JvxNode.AsFloat
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Float']);
+    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cFloat]);
 end;
 
 function TJvInspectorxNodeData.GetAsInt64: Int64;
 begin
   CheckReadAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Int64']);
+  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cInt64]);
 end;
 
 function TJvInspectorxNodeData.GetAsMethod: TMethod;
 begin
   CheckReadAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['TMethod']);
+  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cTMethod]);
 end;
 
 function TJvInspectorxNodeData.GetAsOrdinal: Int64;
@@ -106,7 +113,7 @@ begin
       Result := JvxNode.AsInteger;
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Ordinal']);
+    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cOrdinal]);
 end;
 
 function TJvInspectorxNodeData.GetAsString: string;
@@ -115,7 +122,7 @@ begin
   if JvxNode.TypeInfo^.Kind in [tkString, tkLString, tkWString] then
     Result := JvxNode.AsString
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['String']);
+    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cString]);
 end;
 
 function TJvInspectorxNodeData.GetJvxNode: TJvxNode;
@@ -144,19 +151,19 @@ begin
   if JvxNode.TypeInfo^.Kind = tkFloat then
     JvxNode.AsFloat := Value
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Float']);
+    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cFloat]);
 end;
 
 procedure TJvInspectorxNodeData.SetAsInt64(const Value: Int64);
 begin
   CheckWriteAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Int64']);
+  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cInt64]);
 end;
 
 procedure TJvInspectorxNodeData.SetAsMethod(const Value: TMethod);
 begin
   CheckWriteAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['TMethod']);
+  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cTMethod]);
 end;
 
 procedure TJvInspectorxNodeData.SetAsOrdinal(const Value: Int64);
@@ -224,7 +231,7 @@ begin
   if TypeInfo.Kind = tkClass then
     JvxNode.AsInteger := Integer(Value)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Ordinal']);
+    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cOrdinal]);
 end;
 
 procedure TJvInspectorxNodeData.SetAsString(const Value: string);
@@ -233,7 +240,7 @@ begin
   if JvxNode.TypeInfo.Kind in [tkString, tkLString, tkWString] then
     JvxNode.AsString := Value
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['String']);
+    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cString]);
 end;
 
 procedure TJvInspectorxNodeData.SetJvxNode(Value: TJvxNode);
@@ -261,7 +268,7 @@ var
 begin
   CheckReadAccess;
   if JvxNode.TypeInfo.Kind <> tkSet then
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['set']);
+    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cSet]);
   CompType := GetTypeData(TypeInfo).CompType^;
   EnumMin := GetTypeData(CompType).MinValue;
   EnumMax := GetTypeData(CompType).MaxValue;
@@ -292,7 +299,8 @@ class function TJvInspectorxNodeData.New(const AParent: TJvCustomInspectorItem; 
 var
   Data: TJvInspectorxNodeData;
 begin
-  Assert(AJvxNode <> nil, 'No node specified');
+  if AJvxNode = nil then
+    raise EJVCLException.Create('TJvInspectorxNodeData.New: No node specified');
   if AJvxNode.NodeName <> '' then
     Data := TJvInspectorxNodeData.CreatePrim(AJvxNode.NodeName, AJvxNode.TypeInfo))
   else
@@ -315,7 +323,7 @@ var
 begin
   CheckWriteAccess;
   if JvxNode.TypeInfo.Kind <> tkSet then
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['set']);
+    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cSet]);
   CompType := GetTypeData(TypeInfo).CompType^;
   EnumMin := GetTypeData(CompType).MinValue;
   EnumMax := GetTypeData(CompType).MaxValue;

@@ -92,8 +92,8 @@ type
 
 constructor TJvCustomDropDownForm.Create(AOwner: TComponent);
 begin
-  Assert(AOwner is TCustomEdit,
-    Format('Owner of %s must be a TCustomEdit!', [ClassName]));
+  if not (AOwner is TCustomEdit) then
+    raise EJVCLException.Create('TJvCustomDropDownForm.Create: Owner must be a TCustomEdit');
 
   inherited CreateNew(AOwner);
 

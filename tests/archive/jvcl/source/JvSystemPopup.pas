@@ -214,6 +214,8 @@ begin
 end;
 
 procedure TJvSystemPopup.Hook;
+const
+  cExceptionMessage = 'TJvSystemPopup.Hook: already hooked';
 begin
   { Hook the application's window or the owner window of TJvSystemPopup }
   case FPosition of
@@ -223,13 +225,15 @@ begin
       begin
         if not Assigned(FOwnerForm) then
           Exit;
-        Assert(not FIsHooked, 'Already hooked');
+        if FIsHooked then
+          raise EJVCLException.Create(cExceptionMessage);
         RegisterWndProcHook(FOwnerForm, HandleWndProc, hoBeforeMsg);
         FIsHooked := True;
       end;
     ppApplication:
       begin
-        Assert(not FIsHooked, 'Already hooked');
+        if FIsHooked then
+          raise EJVCLException.Create(cExceptionMessage);
         Application.HookMainWindow(HandleWndProc);
         FIsHooked := True;
       end;

@@ -1413,7 +1413,8 @@ function MakeYear4Digit(Year, Pivot: Integer): Integer;
 var
   Century: Integer;
 begin
-  Assert(Pivot >= 0);
+  if Pivot < 0 then
+    raise EJVCLException.Create('JvFunctions.MakeYear4Digit: Pivot < 0');
 
   { map 100 to zero }
   if Year = 100 then

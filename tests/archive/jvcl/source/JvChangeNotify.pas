@@ -423,7 +423,10 @@ begin
       try
         Change(I);
       finally
-        Assert(FindNextChangeNotification(FNotifyArray[I]));
+        // (rom) raising an exception in a thread is not a good idea
+        // (rom) Assert removed
+        //Assert(FindNextChangeNotification(FNotifyArray[I]));
+        FindNextChangeNotification(FNotifyArray[I]);
       end;
     end;
   end;

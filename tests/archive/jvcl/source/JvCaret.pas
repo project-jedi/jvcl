@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, SysUtils, Classes, Graphics, StdCtrls,
-  JVCLVer;
+  JVCLVer, JvTypes;
 
 type
   { A caret can be specified either by giving a bitmap that defines its shape
@@ -87,7 +87,8 @@ uses
 
 constructor TJvCaret.Create(Owner: TCustomEdit);
 begin
-  Assert(Assigned(Owner));
+  if not Assigned(Owner) then
+    raise EJVCLException.Create('TJvCaret.Create: cannot be created without valid Owner');
   inherited Create;
   FCaretOwner := Owner;
   FCaretBitmap := TBitmap.Create;
