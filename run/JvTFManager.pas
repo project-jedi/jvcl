@@ -38,17 +38,14 @@ uses Windows, Classes, Controls, SysUtils, Messages, Graphics, ImgList,
 const
   CN_REQUESTREFRESH = $BD01;
 
+{$HPPEMIT '#define TDate Controls::TDate'}
+{$HPPEMIT '#define TTime Controls::TTime'}
 type
   // Redeclaration of this type.  It is used in JvTFMonths.TJvTFDrawDWTitleEvent.
   // If not redeclared here, Delphi complains of 'unknown type' because it
   // will not automatically bring in 'JvTFUtils' into the uses clause when
   // a TJvTFDrawDWTitleEvent prototype is created.
   TTFDayOfWeek = JvTFUtils.TTFDayOfWeek;
-{$IFDEF BCB}
-  TDate = TDateTime;
-  TTime = TDateTime;
-{$ENDIF}
-
   EJvTFScheduleManagerError = class(Exception);
 
   TJvTFTimeRange = record
@@ -1039,6 +1036,9 @@ type
 //    property AfterNavigate : TJvTFNavEvent read FAfterNavigate
 //      write FAfterNavigate;
 //  end;
+
+{$HPPEMIT '#undef TDate'}
+{$HPPEMIT '#undef TTime'}
 
 
 resourcestring

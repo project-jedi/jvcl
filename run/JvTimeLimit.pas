@@ -34,11 +34,8 @@ uses
   SysUtils, Classes, Controls, Dialogs, Forms,
   JvComponent;
 
+{$HPPEMIT '#define TDate Controls::TDate'}
 type
-{$IFDEF BCB}
-  TDate = TDateTime;
-{$ENDIF}
-
   TJvTimeLimit = class(TJvComponent)
   private
     FDate: TDate;
@@ -50,6 +47,7 @@ type
     property OnExpire: TNotifyEvent read FOnExpire write FOnExpire;
   end;
 
+{$HPPEMIT '#undef TDate'}
 implementation
 
 resourcestring

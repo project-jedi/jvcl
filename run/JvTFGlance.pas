@@ -38,11 +38,8 @@ uses
 
 {$I JVCL.INC}
 
+{$HPPEMIT '#define TDate Controls::TDate'}
 type
-{$IFDEF BCB}
-  TDate = TDateTime;
-{$ENDIF}
-
   EJvTFGlanceError = class(Exception);
   EGlanceViewerError = class(EJvTFGlanceError);
 
@@ -765,8 +762,7 @@ type
     property OnConfigCells;
   end;
 
-
-
+{$HPPEMIT '#undef TDate'}
 
 resourcestring
   sCellDatesCannotBeChanged = 'Cell Dates cannot be changed';

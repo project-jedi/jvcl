@@ -61,12 +61,9 @@ const
    gcGroupHdr = -2;
    gcHdr = -1;
 
+{$HPPEMIT '#define TDate Controls::TDate'}
+{$HPPEMIT '#define TTime Controls::TTime'}
 type
-{$IFDEF BCB}
-  TDate = TDateTime;
-  TTime = TDateTime;
-{$ENDIF}
-
    EJvTFDaysError = class(Exception);
 
 {$IFDEF TIMEBLOCKS}
@@ -1761,6 +1758,9 @@ type
 // REMOVE, replaced by BorlToDOW in JvTFUtils
 //function BorlToDOW(BorlDOW : Integer) : TTFDayOfWeek;
 {$ENDIF}
+
+{$HPPEMIT '#undef TDate'}
+{$HPPEMIT '#undef TTime'}
 
 
 resourcestring

@@ -36,12 +36,9 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Menus, StdCtrls, ExtCtrls, JvTFManager;
 
+{$HPPEMIT '#define TDate Controls::TDate'}
+{$HPPEMIT '#define TTime Controls::TTime'}
 type
-{$IFDEF BCB}
-  TDate = TDateTime;
-  TTime = TDateTime;
-{$ENDIF}
-
   TJvTFAlarm = class;
 
   TJvTFAlarmInfo = class
@@ -106,6 +103,9 @@ type
     property DefaultSnoozeMins : Integer read FDefaultSnoozeMins write FDefaultSnoozeMins default 5;
     property OnAlarm : TJvTFAlarmEvent read FOnAlarm write FOnAlarm;
   end;
+
+{$HPPEMIT '#undef TDate'}
+{$HPPEMIT '#undef TTime'}
 
 implementation
 
