@@ -36,19 +36,19 @@ type
   // (rom) made them all class functions
   TJvItemsSearchs = class(TObject)
   public
-    class function SearchExactString(Items: TStrings; Value: string;
+    class function SearchExactString(Items: TStrings; const Value: string;
       CaseSensitive: Boolean = True; StartIndex: Integer = -1): Integer;
     class function SearchPrefix(Items: TStrings; Value: string;
       CaseSensitive: Boolean = True; StartIndex: Integer = -1): Integer;
     class function SearchSubString(Items: TStrings; Value: string;
       CaseSensitive: Boolean = True; StartIndex: Integer = -1): Integer;
-    class function DeleteExactString(Items: TStrings; Value: string; All: Boolean;
+    class function DeleteExactString(Items: TStrings; const Value: string; All: Boolean;
       CaseSensitive: Boolean = True): Integer;
   end;
 
 implementation
 
-class function TJvItemsSearchs.DeleteExactString(Items: TStrings; Value: string;
+class function TJvItemsSearchs.DeleteExactString(Items: TStrings; const Value: string;
   All: Boolean; CaseSensitive: Boolean): Integer;
 var
   I: Integer;
@@ -71,7 +71,7 @@ begin
   end;
 end;
 
-class function TJvItemsSearchs.SearchExactString(Items: TStrings; Value: string;
+class function TJvItemsSearchs.SearchExactString(Items: TStrings; const Value: string;
   CaseSensitive: Boolean; StartIndex: Integer): Integer;
 var
   I: Integer;

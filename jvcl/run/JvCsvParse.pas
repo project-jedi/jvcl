@@ -60,20 +60,20 @@ function StrSplitStrings(const inString: string; const splitChar, quoteChar: Cha
 
 { circa 1998-2001 classic functions }
 function StrStrip(S: string): string; // Strip whitespace, carriage returns, linefeeds.
-function GetString(var Source: string; Separator: string): string;
+function GetString(var Source: string; const Separator: string): string;
 // Iteratively split off a piece of a string. Modifies original string.
-function PadString(S: string; Len: Integer; PadChar: Char): string;
+function PadString(const S: string; Len: Integer; PadChar: Char): string;
 //procedure Gibble(var S: string); // Deprecated. With a name like Gibble, are you surprised?
-function BuildPathName(PathName, FileName: string): string;
-function StrEatWhiteSpace(S: string): string;
-function HexToAscii(S: string): string;
-function AsciiToHex(S: string): string;
-function StripQuotes(S1: string): string;
+function BuildPathName(const PathName, FileName: string): string;
+function StrEatWhiteSpace(const S: string): string;
+function HexToAscii(const S: string): string;
+function AsciiToHex(const S: string): string;
+function StripQuotes(const S1: string): string;
 
 { TStrings helper functions }
-function GetIntValueFromResultString(VarName: string; ResultStrings: TStrings;
+function GetIntValueFromResultString(const VarName: string; ResultStrings: TStrings;
   DefVal: Integer): Integer;
-function GetValueFromResultString(VarName: string; ResultStrings: TStrings): string;
+function GetValueFromResultString(const VarName: string; ResultStrings: TStrings): string;
 
 { Pascal Low Level PChar Functions }
 function ValidNumericLiteral(S1: PChar): Boolean;
@@ -238,7 +238,7 @@ end;
 
 { Strip quotes and return as a real Delphi String }
 
-function StripQuotes(S1: string): string;
+function StripQuotes(const S1: string): string;
 begin
   if ValidStringLiteral(PChar(S1)) then
     Result := Copy(S1, 2, Length(S1) - 2)
@@ -437,7 +437,7 @@ begin
   Inc(TokenCount);
 end;
 
-function StrEatWhiteSpace(S: string): string;
+function StrEatWhiteSpace(const S: string): string;
 var
   Buf: array [0..1024] of Char;
 begin
@@ -580,7 +580,7 @@ begin
   TokenCount := 0;
 end;
 
-function PadString(S: string; Len: Integer; PadChar: Char): string;
+function PadString(const S: string; Len: Integer; PadChar: Char): string;
 begin
   Result := S;
   while Length(Result) < Len do
@@ -615,7 +615,7 @@ begin
 end;
  }
 
-function BuildPathName(PathName, FileName: string): string;
+function BuildPathName(const PathName, FileName: string): string;
 var
   l: Integer;
 begin
@@ -643,7 +643,7 @@ begin
     Result := 0;
 end;
 
-function HexToAscii(S: string): string;
+function HexToAscii(const S: string): string;
 var
   t, y, L: Integer;
   c: array [0..256] of Char;
@@ -658,7 +658,7 @@ begin
   Result := string(c);
 end;
 
-function AsciiToHex(S: string): string;
+function AsciiToHex(const S: string): string;
 var
   t: Integer;
   S2: string;
@@ -679,7 +679,7 @@ end;
 // Label Name = Value    - labels names can contain spaces.
 //-----------------------------------------------------------------------------
 
-function GetIntValueFromResultString(VarName: string; ResultStrings: TStrings;
+function GetIntValueFromResultString(const VarName: string; ResultStrings: TStrings;
   DefVal: Integer): Integer;
 var
   S: string;
@@ -697,7 +697,7 @@ end;
 // Label Name = Value    - labels names can contain spaces.
 //-----------------------------------------------------------------------------
 
-function GetValueFromResultString(VarName: string; ResultStrings: TStrings): string;
+function GetValueFromResultString(const VarName: string; ResultStrings: TStrings): string;
 var
   label1, value1: string;
   len1, pos1, t, Count: Integer;
@@ -751,7 +751,7 @@ begin
   Result := Copy(S, 1, I);
 end;
 
-function GetString(var Source: string; Separator: string): string;
+function GetString(var Source: string; const Separator: string): string;
 var
   I, J, Len: Integer;
 begin

@@ -327,7 +327,7 @@ type
     function GetArgs: TJvInterpreterArgs;
   protected
     constructor Create(AOwner: TJvInterpreterExpression; AInstance: TObject;
-      AUnitName, AFunctionName, APropName: string); virtual;
+      const AUnitName, AFunctionName, APropName: string); virtual;
     function CallFunction(Args: TJvInterpreterArgs; Params: array of Variant): Variant;
     property Args: TJvInterpreterArgs read GetArgs;
     property Owner: TJvInterpreterExpression read FOwner;
@@ -358,12 +358,12 @@ type
   public
     destructor Destroy; override;
     procedure Clear;override;
-    procedure AddVar(UnitName, Identifier, Typ: string; VTyp: Word;
+    procedure AddVar(const UnitName, Identifier, Typ: string; VTyp: Word;
       const Value: Variant; DataType: IJvInterpreterDataType);
     function FindVar(const UnitName, Identifier: string): TJvInterpreterVar;
     procedure DeleteVar(const UnitName, Identifier: string);
-    function GetValue(Identifier: string; var Value: Variant; Args: TJvInterpreterArgs): Boolean;
-    function SetValue(Identifier: string; const Value: Variant; Args: TJvInterpreterArgs): Boolean;
+    function GetValue(const Identifier: string; var Value: Variant; Args: TJvInterpreterArgs): Boolean;
+    function SetValue(const Identifier: string; const Value: Variant; Args: TJvInterpreterArgs): Boolean;
   end;
  { notes about TJvInterpreterVarList implementation:
    - list must allow to contain more than one Var with same name;
@@ -461,7 +461,7 @@ type
     CreateFunc: TJvInterpreterAdapterNewRecord;
     DestroyFunc: TJvInterpreterAdapterDisposeRecord;
     CopyFunc: TJvInterpreterAdapterCopyRecord;
-    procedure AddField(UnitName, Identifier, Typ: string; VTyp: Word;
+    procedure AddField(const UnitName, Identifier, Typ: string; VTyp: Word;
       const Value: Variant; DataType: IJvInterpreterDataType);
     procedure NewRecord(var Value: Variant);
   end;
@@ -481,7 +481,7 @@ type
     JvInterpreterRecord: TJvInterpreterRecord;
     Rec: Pointer; { data }
   public
-    constructor Create(ARecordType: string; ARec: Pointer);
+    constructor Create(const ARecordType: string; ARec: Pointer);
     destructor Destroy; override;
     property RecordType: string read FRecordType;
   end;
@@ -601,32 +601,32 @@ type
     FSorted: Boolean;
     procedure CheckArgs(var Args: TJvInterpreterArgs; ParamCount: Integer;
       var ParamTypes: TTypeArray);
-    function GetRec(RecordType: string): TObject;
+    function GetRec(const RecordType: string): TObject;
     {$IFDEF JvInterpreter_OLEAUTO}
-    function DispatchCall(Identifier: string; var Value: Variant;
+    function DispatchCall(const Identifier: string; var Value: Variant;
       Args: TJvInterpreterArgs; Get: Boolean): Boolean; stdcall;
     {$ENDIF JvInterpreter_OLEAUTO}
-    function GetValueRTTI(Identifier: string; var Value: Variant;
+    function GetValueRTTI(const Identifier: string; var Value: Variant;
       Args: TJvInterpreterArgs): Boolean;
-    function SetValueRTTI(Identifier: string; const Value: Variant;
+    function SetValueRTTI(const Identifier: string; const Value: Variant;
       Args: TJvInterpreterArgs): Boolean;
   protected
     procedure CheckAction(Expression: TJvInterpreterExpression; Args: TJvInterpreterArgs;
       Data: Pointer); virtual;
-    function GetValue(Expression: TJvInterpreterExpression; Identifier: string;
+    function GetValue(Expression: TJvInterpreterExpression; const Identifier: string;
       var Value: Variant; Args: TJvInterpreterArgs): Boolean; virtual;
-    function SetValue(Expression: TJvInterpreterExpression; Identifier: string;
+    function SetValue(Expression: TJvInterpreterExpression; const Identifier: string;
       const Value: Variant; Args: TJvInterpreterArgs): Boolean; virtual;
     function GetElement(Expression: TJvInterpreterExpression; const Variable: Variant;
       var Value: Variant; var Args: TJvInterpreterArgs): Boolean; virtual;
     function SetElement(Expression: TJvInterpreterExpression; var Variable: Variant;
       const Value: Variant; var Args: TJvInterpreterArgs): Boolean; virtual;
     function NewRecord(const RecordType: string; var Value: Variant): Boolean; virtual;
-    function FindFunDesc(const UnitName: string; const Identifier: string): TJvInterpreterFunctionDesc; virtual;
-    procedure CurUnitChanged(NewUnitName: string; var Source: string); virtual;
+    function FindFunDesc(const UnitName, Identifier: string): TJvInterpreterFunctionDesc; virtual;
+    procedure CurUnitChanged(const NewUnitName: string; var Source: string); virtual;
     function UnitExists(const Identifier: string): Boolean; virtual;
     function IsEvent(Obj: TObject; const Identifier: string): Boolean; virtual;
-    function NewEvent(const UnitName: string; const FunctionName, EventType: string;
+    function NewEvent(const UnitName, FunctionName, EventType: string;
       AOwner: TJvInterpreterExpression; AObject: TObject;
       const APropName: string): TSimpleEvent; virtual;
     procedure ClearSource; dynamic;
@@ -635,49 +635,49 @@ type
   protected
     { for internal use }
     procedure AddSrcClass(JvInterpreterSrcClass: TJvInterpreterIdentifier); virtual;
-    function GetSrcClass(Identifier: string): TJvInterpreterIdentifier; virtual;
+    function GetSrcClass(const Identifier: string): TJvInterpreterIdentifier; virtual;
   public
     constructor Create(AOwner: TJvInterpreterExpression);
     destructor Destroy; override;
     function SetRecord(var Value: Variant): Boolean; virtual;
     procedure Clear; dynamic;
     procedure Assign(Source: TJvInterpreterAdapter); dynamic;
-    procedure AddSrcUnit(Identifier: string; Source: string; UsesList: string); dynamic;
-    procedure AddSrcUnitEx(Identifier: string; Source: string; UsesList: string;
+    procedure AddSrcUnit(const Identifier, Source, UsesList: string); dynamic;
+    procedure AddSrcUnitEx(const Identifier, Source, UsesList: string;
       Data: Pointer); dynamic;
-    procedure AddExtUnit(Identifier: string); dynamic;
-    procedure AddExtUnitEx(Identifier: string; Data: Pointer); dynamic;
-    procedure AddClass(UnitName: string; AClassType: TClass; Identifier: string); dynamic;
-    procedure AddClassEx(UnitName: string; AClassType: TClass; Identifier: string;
+    procedure AddExtUnit(const Identifier: string); dynamic;
+    procedure AddExtUnitEx(const Identifier: string; Data: Pointer); dynamic;
+    procedure AddClass(const UnitName: string; AClassType: TClass; const Identifier: string); dynamic;
+    procedure AddClassEx(const UnitName: string; AClassType: TClass; const Identifier: string;
       Data: Pointer); dynamic;
-    procedure AddIntfGet(IID: TGUID; Identifier: string;
+    procedure AddIntfGet(IID: TGUID; const Identifier: string;
       GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
       ParamTypes: array of Word; ResTyp: Word);
-    procedure AddIntfGetEx(IID: TGUID; Identifier: string;
+    procedure AddIntfGetEx(IID: TGUID; const Identifier: string;
       GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
       ParamTypes: array of Word; ResTyp: Word; Data: Pointer);
-    procedure AddGet(AClassType: TClass; Identifier: string;
+    procedure AddGet(AClassType: TClass; const Identifier: string;
       GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
       ParamTypes: array of Word; ResTyp: Word); dynamic;
-    procedure AddGetEx(AClassType: TClass; Identifier: string;
+    procedure AddGetEx(AClassType: TClass; const Identifier: string;
       GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
       ParamTypes: array of Word; ResTyp: Word; Data: Pointer); dynamic;
-    procedure AddSet(AClassType: TClass; Identifier: string;
+    procedure AddSet(AClassType: TClass; const Identifier: string;
       SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer;
       ParamTypes: array of Word); dynamic;
-    procedure AddSetEx(AClassType: TClass; Identifier: string;
+    procedure AddSetEx(AClassType: TClass; const Identifier: string;
       SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer;
       ParamTypes: array of Word; Data: Pointer); dynamic;
-    procedure AddIGet(AClassType: TClass; Identifier: string;
+    procedure AddIGet(AClassType: TClass; const Identifier: string;
       GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
       ParamTypes: array of Word; ResTyp: Word); dynamic;
-    procedure AddIGetEx(AClassType: TClass; Identifier: string;
+    procedure AddIGetEx(AClassType: TClass; const Identifier: string;
       GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
       ParamTypes: array of Word; ResTyp: Word; Data: Pointer); dynamic;
-    procedure AddISet(AClassType: TClass; Identifier: string;
+    procedure AddISet(AClassType: TClass; const Identifier: string;
       SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer;
       ParamTypes: array of Word); dynamic;
-    procedure AddISetEx(AClassType: TClass; Identifier: string;
+    procedure AddISetEx(AClassType: TClass; const Identifier: string;
       SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer;
       ParamTypes: array of Word; Data: Pointer); dynamic;
     procedure AddIDGet(AClassType: TClass;
@@ -692,99 +692,97 @@ type
     procedure AddIDSetEx(AClassType: TClass;
       SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer;
       ParamTypes: array of Word; Data: Pointer); dynamic;
-    procedure AddFunction(UnitName: string; Identifier: string;
+    procedure AddFunction(const UnitName, Identifier: string;
       GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
       ParamTypes: array of Word; ResTyp: Word); dynamic;
-    procedure AddFunctionEx(UnitName: string; Identifier: string;
+    procedure AddFunctionEx(const UnitName, Identifier: string;
       GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
       ParamTypes: array of Word; ResTyp: Word; Data: Pointer); dynamic;
     { function AddDGet under construction - don't use it }
-    procedure AddDGet(AClassType: TClass; Identifier: string;
+    procedure AddDGet(AClassType: TClass; const Identifier: string;
       GetFunc: Pointer; ParamCount: Integer; ParamTypes: array of Word;
       ResTyp: Word; CallConvention: TCallConvention); dynamic;
-    procedure AddDGetEx(AClassType: TClass; Identifier: string;
+    procedure AddDGetEx(AClassType: TClass; const Identifier: string;
       GetFunc: Pointer; ParamCount: Integer; ParamTypes: array of Word;
       ResTyp: Word; CallConvention: TCallConvention; Data: Pointer); dynamic;
-    procedure AddRec(UnitName: string; Identifier: string; RecordSize: Integer;
+    procedure AddRec(const UnitName, Identifier: string; RecordSize: Integer;
       Fields: array of TJvInterpreterRecField; CreateFunc: TJvInterpreterAdapterNewRecord;
       DestroyFunc: TJvInterpreterAdapterDisposeRecord;
       CopyFunc: TJvInterpreterAdapterCopyRecord); dynamic;
-    procedure AddRecEx(UnitName: string; Identifier: string; RecordSize: Integer;
+    procedure AddRecEx(const UnitName, Identifier: string; RecordSize: Integer;
       Fields: array of TJvInterpreterRecField; CreateFunc: TJvInterpreterAdapterNewRecord;
       DestroyFunc: TJvInterpreterAdapterDisposeRecord; CopyFunc: TJvInterpreterAdapterCopyRecord;
       Data: Pointer); dynamic;
-    procedure AddRecGet(UnitName: string; RecordType: string; Identifier: string;
+    procedure AddRecGet(const UnitName, RecordType, Identifier: string;
       GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
       ParamTypes: array of Word; ResTyp: Word); dynamic;
-    procedure AddRecGetEx(UnitName: string; RecordType: string; Identifier: string;
+    procedure AddRecGetEx(const UnitName, RecordType, Identifier: string;
       GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
       ParamTypes: array of Word; ResTyp: Word; Data: Pointer); dynamic;
-    procedure AddRecSet(UnitName: string; RecordType: string; Identifier: string;
+    procedure AddRecSet(const UnitName, RecordType, Identifier: string;
       SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer;
       ParamTypes: array of Word); dynamic;
-    procedure AddRecSetEx(UnitName: string; RecordType: string; Identifier: string;
+    procedure AddRecSetEx(const UnitName, RecordType, Identifier: string;
       SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer;
       ParamTypes: array of Word; Data: Pointer); dynamic;
-    procedure AddConst(UnitName: string; Identifier: string; Value: Variant); dynamic;
-    procedure AddConstEx(AUnitName: string; AIdentifier: string; AValue: Variant;
+    procedure AddConst(const UnitName, Identifier: string; Value: Variant); dynamic;
+    procedure AddConstEx(const AUnitName, AIdentifier: string; AValue: Variant;
       AData: Pointer); dynamic;
-    procedure AddExtFun(UnitName: string; Identifier: string; DllInstance: HINST;
-      DllName: string; FunctionName: string; FunctionIndex: Integer; ParamCount: Integer;
+    procedure AddExtFun(const UnitName, Identifier: string; DllInstance: HINST;
+      const DllName, FunctionName: string; FunctionIndex: Integer; ParamCount: Integer;
       ParamTypes: array of Word; ResTyp: Word); dynamic;
-    procedure AddExtFunEx(AUnitName: string; AIdentifier: string; ADllInstance: HINST;
-      ADllName: string; AFunctionName: string; AFunIndex: Integer; AParamCount: Integer;
+    procedure AddExtFunEx(const AUnitName, AIdentifier: string; ADllInstance: HINST;
+      const ADllName, AFunctionName: string; AFunIndex: Integer; AParamCount: Integer;
       AParamTypes: array of Word; AResTyp: Word; AData: Pointer); dynamic;
-    procedure AddSrcFun(UnitName: string; Identifier: string;
+    procedure AddSrcFun(const UnitName, Identifier: string;
       PosBeg, PosEnd: Integer; ParamCount: Integer; ParamTypes: array of Word;
       ParamTypeNames: array of string; //dejoy added
-      ParamNames: array of string;ResTyp: Word;AResTypName: string;
-      AResDataType: IJvInterpreterDataType;
-      Data: Pointer); dynamic;
-    procedure AddSrcFunEx(AUnitName: string; AIdentifier: string;
+      ParamNames: array of string; ResTyp: Word; const AResTypName: string;
+      AResDataType: IJvInterpreterDataType; Data: Pointer); dynamic;
+    procedure AddSrcFunEx(const AUnitName, AIdentifier: string;
       APosBeg, APosEnd: Integer; AParamCount: Integer; AParamTypes: array of Word;
       AParamTypeNames: array of string; //dejoy added
-      AParamNames: array of string; AResTyp: Word;AResTypName: string;
-      AResDataType: IJvInterpreterDataType;
-      AData: Pointer); dynamic;
-    procedure AddHandler(UnitName: string; Identifier: string;
+      AParamNames: array of string; AResTyp: Word; const AResTypName: string;
+      AResDataType: IJvInterpreterDataType; AData: Pointer); dynamic;
+    procedure AddHandler(const UnitName, Identifier: string;
       EventClass: TJvInterpreterEventClass; Code: Pointer); dynamic;
-    procedure AddHandlerEx(AUnitName: string; AIdentifier: string;
+    procedure AddHandlerEx(const AUnitName, AIdentifier: string;
       AEventClass: TJvInterpreterEventClass; ACode: Pointer; AData: Pointer); dynamic;
-    procedure AddEvent(UnitName: string; AClassType: TClass;
-      Identifier: string); dynamic;
-    procedure AddEventEx(AUnitName: string; AClassType: TClass;
-      AIdentifier: string; AData: Pointer); dynamic;
-    procedure AddSrcVar(UnitName: string; Identifier, Typ: string; VTyp: Word;
+    procedure AddEvent(const UnitName: string; AClassType: TClass;
+      const Identifier: string); dynamic;
+    procedure AddEventEx(const AUnitName: string; AClassType: TClass;
+      const AIdentifier: string; AData: Pointer); dynamic;
+    procedure AddSrcVar(const UnitName, Identifier, Typ: string; VTyp: Word;
       const Value: Variant; DataType: IJvInterpreterDataType); dynamic;
     procedure AddOnGet(Method: TJvInterpreterGetValue); dynamic;
     procedure AddOnSet(Method: TJvInterpreterSetValue); dynamic;
   public
     property DisableExternalFunctions: Boolean read FDisableExternalFunctions write FDisableExternalFunctions;
   //dejoy added begin
-    property  SrcUnitList: TJvInterpreterIdentifierList Read FSrcUnitList;
-    property  ExtUnitList: TJvInterpreterIdentifierList Read FExtUnitList;
-    property  GetList: TJvInterpreterIdentifierList Read FGetList;
-    property  SetList: TJvInterpreterIdentifierList Read FSetList;
-    property  IGetList: TJvInterpreterIdentifierList Read FIGetList;
-    property  ISetList: TJvInterpreterIdentifierList Read FISetList;
-    property  IDGetList: TJvInterpreterIdentifierList Read FIDGetList;
-    property  IDSetList: TJvInterpreterIdentifierList Read FIDSetList;
-    property  IntfGetList: TJvInterpreterIdentifierList Read FIntfGetList;
-    property  DirectGetList: TJvInterpreterIdentifierList Read FDirectGetList;
-    property  ClassList: TJvInterpreterIdentifierList Read FClassList;
-    property  ConstList: TJvInterpreterIdentifierList Read FConstList;
-    property  FunctionList: TJvInterpreterIdentifierList Read FFunctionList;
-    property  RecordList: TJvInterpreterIdentifierList Read FRecordList;
-    property  RecordGetList: TJvInterpreterIdentifierList Read FRecordGetList;
-    property  RecordSetList: TJvInterpreterIdentifierList Read FRecordSetList;
-    property  OnGetList: TJvInterpreterIdentifierList Read FOnGetList;
-    property  OnSetList: TJvInterpreterIdentifierList Read FOnSetList;
-    property  SrcFunctionList: TJvInterpreterIdentifierList Read FSrcFunctionList;
-    property  ExtFunctionList: TJvInterpreterIdentifierList Read FExtFunctionList;
-    property  EventHandlerList: TJvInterpreterIdentifierList Read FEventHandlerList;
-    property  EventList: TJvInterpreterIdentifierList Read FEventList;
-    property  SrcVarList: TJvInterpreterVarList Read FSrcVarList;
-    property  SrcClassList: TJvInterpreterIdentifierList Read FSrcClassList;
+    property SrcUnitList: TJvInterpreterIdentifierList Read FSrcUnitList;
+    property ExtUnitList: TJvInterpreterIdentifierList Read FExtUnitList;
+    property GetList: TJvInterpreterIdentifierList Read FGetList;
+    property SetList: TJvInterpreterIdentifierList Read FSetList;
+    property IGetList: TJvInterpreterIdentifierList Read FIGetList;
+    property ISetList: TJvInterpreterIdentifierList Read FISetList;
+    property IDGetList: TJvInterpreterIdentifierList Read FIDGetList;
+    property IDSetList: TJvInterpreterIdentifierList Read FIDSetList;
+    property IntfGetList: TJvInterpreterIdentifierList Read FIntfGetList;
+    property DirectGetList: TJvInterpreterIdentifierList Read FDirectGetList;
+    property ClassList: TJvInterpreterIdentifierList Read FClassList;
+    property ConstList: TJvInterpreterIdentifierList Read FConstList;
+    property FunctionList: TJvInterpreterIdentifierList Read FFunctionList;
+    property RecordList: TJvInterpreterIdentifierList Read FRecordList;
+    property RecordGetList: TJvInterpreterIdentifierList Read FRecordGetList;
+    property RecordSetList: TJvInterpreterIdentifierList Read FRecordSetList;
+    property OnGetList: TJvInterpreterIdentifierList Read FOnGetList;
+    property OnSetList: TJvInterpreterIdentifierList Read FOnSetList;
+    property SrcFunctionList: TJvInterpreterIdentifierList Read FSrcFunctionList;
+    property ExtFunctionList: TJvInterpreterIdentifierList Read FExtFunctionList;
+    property EventHandlerList: TJvInterpreterIdentifierList Read FEventHandlerList;
+    property EventList: TJvInterpreterIdentifierList Read FEventList;
+    property SrcVarList: TJvInterpreterVarList Read FSrcVarList;
+    property SrcClassList: TJvInterpreterIdentifierList Read FSrcClassList;
   //dejoy added end
   end;
 
@@ -816,7 +814,7 @@ type
     FLastError: EJvInterpreterError;
     FDisableExternalFunctions: Boolean;
     function GetSource: string;
-    procedure SetSource(Value: string);
+    procedure SetSource(const Value: string);
     procedure SetCurPos(Value: Integer);
     function GetCurPos: Integer;
     function GetTokenStr: string;
@@ -830,8 +828,8 @@ type
   protected
     procedure UpdateExceptionPos(E: Exception; const UnitName: string);
     procedure Init; dynamic;
-    procedure ErrorExpected(Exp: string);
-    procedure ErrorNotImplemented(Msg: string);
+    procedure ErrorExpected(const Exp: string);
+    procedure ErrorNotImplemented(const Msg: string);
     function PosBeg: Integer;
     function PosEnd: Integer;
     procedure Back;
@@ -845,9 +843,9 @@ type
     function Expression2(const ExpType: Word): Variant;
     function SetExpression1: Variant;
     procedure NextToken;
-    function GetValue(Identifier: string; var Value: Variant;
+    function GetValue(const Identifier: string; var Value: Variant;
       var Args: TJvInterpreterArgs): Boolean; virtual;
-    function SetValue(Identifier: string; const Value: Variant;
+    function SetValue(const Identifier: string; const Value: Variant;
       var Args: TJvInterpreterArgs): Boolean; virtual;
     function GetElement(const Variable: Variant; var Value: Variant;
       var Args: TJvInterpreterArgs): Boolean; virtual;
@@ -885,7 +883,7 @@ type
     AllowAssignment: Boolean;
   end;
 
-  TJvInterpreterAddVarFunc = procedure(UnitName: string;
+  TJvInterpreterAddVarFunc = procedure(const UnitName,
     Identifier, Typ: string; VTyp: Word; const Value: Variant;
     ADataType: IJvInterpreterDataType) of object;
 
@@ -932,14 +930,14 @@ type
     procedure InterpretTry;
     procedure InterpretRaise;
     function ParseDataType: IJvInterpreterDataType;
-    function NewEvent(const UnitName: string; const FunctionName, EventType: string;
+    function NewEvent(const UnitName, FunctionName, EventType: string;
       Instance: TObject; const APropName:string): TSimpleEvent;
     function FindEvent(const UnitName: string;Instance: TObject;
       const PropName: string ): TJvInterpreterEvent;
     procedure InternalSetValue(const Identifier: string);
-    function GetValue(Identifier: string; var Value: Variant;
+    function GetValue(const Identifier: string; var Value: Variant;
       var Args: TJvInterpreterArgs): Boolean; override;
-    function SetValue(Identifier: string; const Value: Variant;
+    function SetValue(const Identifier: string; const Value: Variant;
       var Args: TJvInterpreterArgs): Boolean; override;
     property LocalVars: TJvInterpreterVarList read GetLocalVars;
     property EventList: TList read FEventList;
@@ -973,11 +971,11 @@ type
     procedure InterpretUnit;
     procedure InterpretType;
     procedure InterpretClass(const Identifier: string);
-    function GetValue(Identifier: string; var Value: Variant;
+    function GetValue(const Identifier: string; var Value: Variant;
       var Args: TJvInterpreterArgs): Boolean; override;
-    function SetValue(Identifier: string; const Value: Variant;
+    function SetValue(const Identifier: string; const Value: Variant;
       var Args: TJvInterpreterArgs): Boolean; override;
-    function GetUnitSource(UnitName: string; var Source: string): Boolean; dynamic;
+    function GetUnitSource(const UnitName: string; var Source: string): Boolean; dynamic;
     procedure ExecFunction(Fun: TJvInterpreterFunctionDesc);
     procedure SourceChanged; override;
     procedure InterpretRecord(const Identifier: string);
@@ -1073,10 +1071,10 @@ procedure JvInterpreterErrorN2(const AErrCode: Integer; const AErrPos: Integer;
 
 { RFD - RecordFieldDefinition - return record needed for TJvInterpreterAdapter.AddRec
   Fields parameter }
-function RFD(Identifier: string; Offset: Integer; Typ: Word): TJvInterpreterRecField;
+function RFD(const Identifier: string; Offset: Integer; Typ: Word): TJvInterpreterRecField;
 
 { raise error ieNotImplemented }
-procedure NotImplemented(Msg: string);
+procedure NotImplemented(const Msg: string);
 
 { clear list of TObject }
 procedure ClearList(List: TList);
@@ -1119,7 +1117,7 @@ function V2P(const V: Variant): Pointer;
 function P2V(P: Pointer): Variant;
 
 { R2V - create record holder and put it into variant }
-function R2V(ARecordType: string; ARec: Pointer): Variant;
+function R2V(const ARecordType: string; ARec: Pointer): Variant;
 
 { V2R - returns pointer to record from variant, containing record holder }
 function V2R(const V: Variant): Pointer;
@@ -1136,7 +1134,7 @@ function V2S(V: Variant): Integer;
 procedure V2OA(V: Variant; var OA: TOpenArray; var OAValues: TValueArray;
   var Size: Integer);
 
-function TypeName2VarTyp(TypeName: string): Word;
+function TypeName2VarTyp(const TypeName: string): Word;
 
 { copy variant variable with all JvInterpreter variant extension }
 procedure JvInterpreterVarCopy(var Dest: Variant; const Source: Variant);
@@ -1500,7 +1498,7 @@ begin
   TVarData(Result).vPointer := P;
 end;
 
-function R2V(ARecordType: string; ARec: Pointer): Variant;
+function R2V(const ARecordType: string; ARec: Pointer): Variant;
 begin
   TVarData(Result).vPointer := TJvInterpreterRecHolder.Create(ARecordType, ARec);
   TVarData(Result).VType := varRecord;
@@ -1544,14 +1542,14 @@ begin
   end;
 end;
 
-function RFD(Identifier: string; Offset: Integer; Typ: Word): TJvInterpreterRecField;
+function RFD(const Identifier: string; Offset: Integer; Typ: Word): TJvInterpreterRecField;
 begin
   Result.Identifier := Identifier;
   Result.Offset := Offset;
   Result.Typ := Typ;
 end;
 
-procedure NotImplemented(Msg: string);
+procedure NotImplemented(const Msg: string);
 begin
   JvInterpreterErrorN(ieInternal, -1, Msg + RsENotImplemented);
 end;
@@ -1581,7 +1579,7 @@ begin
   end;
 end;
 
-function TypeName2VarTyp(TypeName: string): Word;
+function TypeName2VarTyp(const TypeName: string): Word;
 begin
   // (rom) reimplemented for speed
   // (rom) LongBool added (untested)
@@ -1676,7 +1674,7 @@ end;
 
 {************* Some code from RAStream unit **************}
 
-procedure StringSaveToStream(Stream: TStream; S: string);
+procedure StringSaveToStream(Stream: TStream; const S: string);
 var
   L: Integer;
   P: PChar;
@@ -1819,7 +1817,7 @@ type
   TfFunc = function: Boolean;
   TwFunc = function: Word;
 
-function CallDllIns(Ins: HINST; FuncName: string; Args: TJvInterpreterArgs;
+function CallDllIns(Ins: HINST; const FuncName: string; Args: TJvInterpreterArgs;
   ParamDesc: TTypeArray; ResTyp: Word): Variant;
 var
   Func: TFunc;
@@ -1917,7 +1915,7 @@ begin
     JvInterpreterError(ieDllFunctionNotFound, -1);
 end;
 
-function CallDll(DllName, FuncName: string; Args: TJvInterpreterArgs;
+function CallDll(const DllName, FuncName: string; Args: TJvInterpreterArgs;
   ParamDesc: TTypeArray; ResTyp: Word): Variant;
 var
   Ins: HMODULE;
@@ -2520,7 +2518,7 @@ begin
   inherited Clear;
 end;
 
-procedure TJvInterpreterVarList.AddVar(UnitName, Identifier, Typ: string; VTyp: Word;
+procedure TJvInterpreterVarList.AddVar(const UnitName, Identifier, Typ: string; VTyp: Word;
   const Value: Variant; DataType: IJvInterpreterDataType);
 var
   VarRec: TJvInterpreterVar;
@@ -2570,7 +2568,7 @@ begin
   end;
 end;
 
-function TJvInterpreterVarList.GetValue(Identifier: string; var Value: Variant;
+function TJvInterpreterVarList.GetValue(const Identifier: string; var Value: Variant;
   Args: TJvInterpreterArgs): Boolean;
 var
   V: TJvInterpreterVar;
@@ -2600,7 +2598,7 @@ begin
 end; { SetValue }
 *)
 
-function TJvInterpreterVarList.SetValue(Identifier: string; const Value: Variant;
+function TJvInterpreterVarList.SetValue(const Identifier: string; const Value: Variant;
   Args: TJvInterpreterArgs): Boolean;
 var
   V: TJvInterpreterVar;
@@ -2688,7 +2686,7 @@ end;
 
 //=== TJvInterpreterRecHolder ================================================
 
-constructor TJvInterpreterRecHolder.Create(ARecordType: string; ARec: Pointer);
+constructor TJvInterpreterRecHolder.Create(const ARecordType: string; ARec: Pointer);
 begin
   // (rom) added inherited Create
   inherited Create;
@@ -2755,7 +2753,7 @@ end;
 //=== TJvInterpreterEvent ====================================================
 
 constructor TJvInterpreterEvent.Create(AOwner: TJvInterpreterExpression;
-  AInstance: TObject; AUnitName, AFunctionName,APropName: string);
+  AInstance: TObject; const AUnitName, AFunctionName, APropName: string);
 begin
   // (rom) added inherited Create
   inherited Create;
@@ -3045,16 +3043,15 @@ begin
     AddOnSet(TJvInterpreterSetValue(PMethod(Source.FOnSetList[I])^));
 end;
 
-procedure TJvInterpreterAdapter.AddSrcUnit(Identifier: string; Source: string;
-  UsesList: string);
+procedure TJvInterpreterAdapter.AddSrcUnit(const Identifier, Source, UsesList: string);
 begin
   AddSrcUnitEx(Identifier, Source, UsesList, nil);
 end;
 
 { if unit with name 'Identifier' already exists its source will be replaced }
 
-procedure TJvInterpreterAdapter.AddSrcUnitEx(Identifier: string; Source: string;
-  UsesList: string; Data: Pointer);
+procedure TJvInterpreterAdapter.AddSrcUnitEx(const Identifier, Source, UsesList: string;
+  Data: Pointer);
 var
   JvInterpreterUnit: TJvInterpreterSrcUnit;
   S: string;
@@ -3093,12 +3090,12 @@ begin
   end;
 end;
 
-procedure TJvInterpreterAdapter.AddExtUnit(Identifier: string);
+procedure TJvInterpreterAdapter.AddExtUnit(const Identifier: string);
 begin
   AddExtUnitEx(Identifier, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddExtUnitEx(Identifier: string; Data: Pointer);
+procedure TJvInterpreterAdapter.AddExtUnitEx(const Identifier: string; Data: Pointer);
 var
   JvInterpreterUnit: TJvInterpreterIdentifier;
 begin
@@ -3108,14 +3105,14 @@ begin
   FExtUnitList.Add(JvInterpreterUnit);
 end;
 
-procedure TJvInterpreterAdapter.AddClass(UnitName: string; AClassType: TClass;
-  Identifier: string);
+procedure TJvInterpreterAdapter.AddClass(const UnitName: string; AClassType: TClass;
+  const Identifier: string);
 begin
   AddClassEx(UnitName, AClassType, Identifier, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddClassEx(UnitName: string; AClassType: TClass;
-  Identifier: string; Data: Pointer);
+procedure TJvInterpreterAdapter.AddClassEx(const UnitName: string; AClassType: TClass;
+  const Identifier: string; Data: Pointer);
 var
   JvInterpreterClass: TJvInterpreterClass;
 begin
@@ -3127,14 +3124,14 @@ begin
   FSorted := False; // Ivan_ra
 end;
 
-procedure TJvInterpreterAdapter.AddGet(AClassType: TClass; Identifier: string;
+procedure TJvInterpreterAdapter.AddGet(AClassType: TClass; const Identifier: string;
   GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer; ParamTypes: array of Word;
   ResTyp: Word);
 begin
   AddGetEx(AClassType, Identifier, GetFunc, ParamCount, ParamTypes, ResTyp, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddGetEx(AClassType: TClass; Identifier: string;
+procedure TJvInterpreterAdapter.AddGetEx(AClassType: TClass; const Identifier: string;
   GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer; ParamTypes: array of Word;
   ResTyp: Word; Data: Pointer);
 var
@@ -3152,14 +3149,14 @@ begin
   FSorted := False; // Ivan_ra
 end;
 
-procedure TJvInterpreterAdapter.AddIGet(AClassType: TClass; Identifier: string;
+procedure TJvInterpreterAdapter.AddIGet(AClassType: TClass; const Identifier: string;
   GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer; ParamTypes: array of Word;
   ResTyp: Word);
 begin
   AddIGetEx(AClassType, Identifier, GetFunc, ParamCount, ParamTypes, ResTyp, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddIGetEx(AClassType: TClass; Identifier: string;
+procedure TJvInterpreterAdapter.AddIGetEx(AClassType: TClass; const Identifier: string;
   GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer; ParamTypes: array of Word;
   ResTyp: Word; Data: Pointer);
 var
@@ -3200,14 +3197,14 @@ begin
   FIDGetList.Add(JvInterpreterMethod);
 end;
 
-procedure TJvInterpreterAdapter.AddIntfGet(IID: TGUID; Identifier: string;
+procedure TJvInterpreterAdapter.AddIntfGet(IID: TGUID; const Identifier: string;
   GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
   ParamTypes: array of Word; ResTyp: Word);
 begin
   AddIntfGetEx(IID, Identifier, GetFunc, ParamCount, ParamTypes, ResTyp, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddIntfGetEx(IID: TGUID; Identifier: string;
+procedure TJvInterpreterAdapter.AddIntfGetEx(IID: TGUID; const Identifier: string;
   GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
   ParamTypes: array of Word; ResTyp: Word; Data: Pointer);
 var
@@ -3225,7 +3222,7 @@ begin
   FSorted := False;  // Ivan_ra
 end;
 
-procedure TJvInterpreterAdapter.AddDGet(AClassType: TClass; Identifier: string;
+procedure TJvInterpreterAdapter.AddDGet(AClassType: TClass; const Identifier: string;
   GetFunc: Pointer; ParamCount: Integer; ParamTypes: array of Word;
   ResTyp: Word; CallConvention: TCallConvention);
 begin
@@ -3233,7 +3230,7 @@ begin
     CallConvention, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddDGetEx(AClassType: TClass; Identifier: string;
+procedure TJvInterpreterAdapter.AddDGetEx(AClassType: TClass; const Identifier: string;
   GetFunc: Pointer; ParamCount: Integer; ParamTypes: array of Word;
   ResTyp: Word; CallConvention: TCallConvention; Data: Pointer);
 var
@@ -3251,13 +3248,13 @@ begin
   FDirectGetList.Add(JvInterpreterMethod);
 end;
 
-procedure TJvInterpreterAdapter.AddSet(AClassType: TClass; Identifier: string;
+procedure TJvInterpreterAdapter.AddSet(AClassType: TClass; const Identifier: string;
   SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer; ParamTypes: array of Word);
 begin
   AddSetEx(AClassType, Identifier, SetFunc, ParamCount, ParamTypes, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddSetEx(AClassType: TClass; Identifier: string;
+procedure TJvInterpreterAdapter.AddSetEx(AClassType: TClass; const Identifier: string;
   SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer; ParamTypes: array of Word;
   Data: Pointer);
 var
@@ -3274,13 +3271,13 @@ begin
   FSorted := False; // Ivan_ra
 end;
 
-procedure TJvInterpreterAdapter.AddISet(AClassType: TClass; Identifier: string;
+procedure TJvInterpreterAdapter.AddISet(AClassType: TClass; const Identifier: string;
   SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer; ParamTypes: array of Word);
 begin
   AddISetEx(AClassType, Identifier, SetFunc, ParamCount, ParamTypes, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddISetEx(AClassType: TClass; Identifier: string;
+procedure TJvInterpreterAdapter.AddISetEx(AClassType: TClass; const Identifier: string;
   SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer; ParamTypes: array of Word;
   Data: Pointer);
 var
@@ -3318,14 +3315,14 @@ begin
   FIDSetList.Add(JvInterpreterMethod);
 end;
 
-procedure TJvInterpreterAdapter.AddFunction(UnitName: string; Identifier: string;
+procedure TJvInterpreterAdapter.AddFunction(const UnitName, Identifier: string;
   GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer; ParamTypes: array of Word;
   ResTyp: Word);
 begin
   AddFunctionEx(UnitName, Identifier, GetFunc, ParamCount, ParamTypes, ResTyp, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddFunctionEx(UnitName: string; Identifier: string;
+procedure TJvInterpreterAdapter.AddFunctionEx(const UnitName, Identifier: string;
   GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer; ParamTypes: array of Word;
   ResTyp: Word; Data: Pointer);
 var
@@ -3342,7 +3339,7 @@ begin
   FSorted := False; // Ivan_ra
 end;
 
-procedure TJvInterpreterAdapter.AddRec(UnitName: string; Identifier: string;
+procedure TJvInterpreterAdapter.AddRec(const UnitName, Identifier: string;
   RecordSize: Integer; Fields: array of TJvInterpreterRecField;
   CreateFunc: TJvInterpreterAdapterNewRecord;
   DestroyFunc: TJvInterpreterAdapterDisposeRecord;
@@ -3351,7 +3348,7 @@ begin
   AddRecEx(UnitName, Identifier, RecordSize, Fields, CreateFunc, DestroyFunc, CopyFunc, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddRecEx(UnitName: string; Identifier: string;
+procedure TJvInterpreterAdapter.AddRecEx(const UnitName, Identifier: string;
   RecordSize: Integer; Fields: array of TJvInterpreterRecField;
   CreateFunc: TJvInterpreterAdapterNewRecord;
   DestroyFunc: TJvInterpreterAdapterDisposeRecord;
@@ -3377,17 +3374,17 @@ begin
   FRecordList.Add(JvInterpreterRecord);
 end;
 
-procedure TJvInterpreterAdapter.AddRecGet(UnitName: string; RecordType: string;
-  Identifier: string; GetFunc: TJvInterpreterAdapterGetValue;
-  ParamCount: Integer; ParamTypes: array of Word; ResTyp: Word);
+procedure TJvInterpreterAdapter.AddRecGet(const UnitName, RecordType, Identifier: string;
+  GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
+  ParamTypes: array of Word; ResTyp: Word);
 begin
   AddRecGetEx(UnitName, RecordType, Identifier, GetFunc, ParamCount,
     ParamTypes, ResTyp, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddRecGetEx(UnitName: string; RecordType: string;
-  Identifier: string; GetFunc: TJvInterpreterAdapterGetValue;
-  ParamCount: Integer; ParamTypes: array of Word; ResTyp: Word; Data: Pointer);
+procedure TJvInterpreterAdapter.AddRecGetEx(const UnitName, RecordType, Identifier: string;
+  GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
+  ParamTypes: array of Word; ResTyp: Word; Data: Pointer);
 var
   RecMethod: TJvInterpreterRecMethod;
 begin
@@ -3402,17 +3399,16 @@ begin
   FRecordGetList.Add(RecMethod);
 end;
 
-procedure TJvInterpreterAdapter.AddRecSet(UnitName: string; RecordType: string;
-  Identifier: string; SetFunc: TJvInterpreterAdapterSetValue;
-  ParamCount: Integer; ParamTypes: array of Word);
+procedure TJvInterpreterAdapter.AddRecSet(const UnitName, RecordType, Identifier: string;
+  SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer; ParamTypes: array of Word);
 begin
   AddRecSetEx(UnitName, RecordType, Identifier, SetFunc,
     ParamCount, ParamTypes, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddRecSetEx(UnitName: string; RecordType: string;
-  Identifier: string; SetFunc: TJvInterpreterAdapterSetValue;
-  ParamCount: Integer; ParamTypes: array of Word; Data: Pointer);
+procedure TJvInterpreterAdapter.AddRecSetEx(const UnitName, RecordType, Identifier: string;
+  SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer;
+  ParamTypes: array of Word; Data: Pointer);
 var
   RecMethod: TJvInterpreterRecMethod;
 begin
@@ -3426,13 +3422,13 @@ begin
   FRecordSetList.Add(RecMethod);
 end;
 
-procedure TJvInterpreterAdapter.AddConst(UnitName: string; Identifier: string;
+procedure TJvInterpreterAdapter.AddConst(const UnitName, Identifier: string;
   Value: Variant);
 begin
   AddConstEx(UnitName, Identifier, Value, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddConstEx(AUnitName: string; AIdentifier: string;
+procedure TJvInterpreterAdapter.AddConstEx(const AUnitName, AIdentifier: string;
   AValue: Variant; AData: Pointer);
 var
   JvInterpreterConst: TJvInterpreterConst;
@@ -3445,16 +3441,16 @@ begin
   FSorted := False; // Ivan_ra
 end;
 
-procedure TJvInterpreterAdapter.AddExtFun(UnitName: string; Identifier: string;
-  DllInstance: HINST; DllName: string; FunctionName: string; FunctionIndex: Integer;
+procedure TJvInterpreterAdapter.AddExtFun(const UnitName, Identifier: string;
+  DllInstance: HINST; const DllName, FunctionName: string; FunctionIndex: Integer;
   ParamCount: Integer; ParamTypes: array of Word; ResTyp: Word);
 begin
   AddExtFunEx(UnitName, Identifier, DllInstance, DllName, FunctionName, FunctionIndex,
     ParamCount, ParamTypes, ResTyp, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddExtFunEx(AUnitName: string; AIdentifier: string;
-  ADllInstance: HINST; ADllName: string; AFunctionName: string; AFunIndex: Integer;
+procedure TJvInterpreterAdapter.AddExtFunEx(const AUnitName, AIdentifier: string;
+  ADllInstance: HINST; const ADllName, AFunctionName: string; AFunIndex: Integer;
   AParamCount: Integer; AParamTypes: array of Word; AResTyp: Word; AData: Pointer);
 var
   JvInterpreterExtFun: TJvInterpreterExtFunction;
@@ -3476,10 +3472,10 @@ begin
   FExtFunctionList.Add(JvInterpreterExtFun);
 end;
 
-procedure TJvInterpreterAdapter.AddSrcFun(UnitName: string; Identifier: string;
+procedure TJvInterpreterAdapter.AddSrcFun(const UnitName, Identifier: string;
   PosBeg, PosEnd: Integer; ParamCount: Integer; ParamTypes: array of Word;
   ParamTypeNames: array of string; //dejoy added
-  ParamNames: array of string; ResTyp: Word;AResTypName: string;
+  ParamNames: array of string; ResTyp: Word; const AResTypName: string;
   AResDataType: IJvInterpreterDataType;
   Data: Pointer);
 begin
@@ -3488,10 +3484,10 @@ begin
     ParamNames,ResTyp,AResTypName, AResDataType, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddSrcFunEx(AUnitName: string; AIdentifier: string;
+procedure TJvInterpreterAdapter.AddSrcFunEx(const AUnitName, AIdentifier: string;
   APosBeg, APosEnd: Integer; AParamCount: Integer; AParamTypes: array of Word;
   AParamTypeNames: array of string; //dejoy added
-  AParamNames: array of string; AResTyp: Word;AResTypName: string;
+  AParamNames: array of string; AResTyp: Word; const AResTypName: string;
   AResDataType: IJvInterpreterDataType;
   AData: Pointer);
 var
@@ -3518,13 +3514,13 @@ begin
   FSrcFunctionList.Add(JvInterpreterSrcFun);
 end;
 
-procedure TJvInterpreterAdapter.AddHandler(UnitName: string; Identifier: string;
+procedure TJvInterpreterAdapter.AddHandler(const UnitName, Identifier: string;
   EventClass: TJvInterpreterEventClass; Code: Pointer);
 begin
   AddHandlerEx(UnitName, Identifier, EventClass, Code, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddHandlerEx(AUnitName: string; AIdentifier: string;
+procedure TJvInterpreterAdapter.AddHandlerEx(const AUnitName, AIdentifier: string;
   AEventClass: TJvInterpreterEventClass; ACode: Pointer; AData: Pointer);
 var
   JvInterpreterEventDesc: TJvInterpreterEventDesc;
@@ -3541,14 +3537,14 @@ begin
   FEventHandlerList.Add(JvInterpreterEventDesc);
 end;
 
-procedure TJvInterpreterAdapter.AddEvent(UnitName: string; AClassType: TClass;
-  Identifier: string);
+procedure TJvInterpreterAdapter.AddEvent(const UnitName: string; AClassType: TClass;
+  const Identifier: string);
 begin
   AddEventEx(UnitName, AClassType, Identifier, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddEventEx(AUnitName: string; AClassType: TClass;
-  AIdentifier: string; AData: Pointer);
+procedure TJvInterpreterAdapter.AddEventEx(const AUnitName: string; AClassType: TClass;
+  const AIdentifier: string; AData: Pointer);
 var
   JvInterpreterEvent: TJvInterpreterClass;
 begin
@@ -3563,7 +3559,7 @@ begin
   FEventList.Add(JvInterpreterEvent);
 end;
 
-procedure TJvInterpreterAdapter.AddSrcVar(UnitName: string; Identifier, Typ: string;
+procedure TJvInterpreterAdapter.AddSrcVar(const UnitName, Identifier, Typ: string;
   VTyp: Word; const Value: Variant; DataType: IJvInterpreterDataType);
 begin
   FSrcVarList.AddVar(UnitName, Identifier, Typ, VTyp, Value, DataType);
@@ -3574,7 +3570,7 @@ begin
   FSrcClassList.Add(JvInterpreterSrcClass);
 end;
 
-function TJvInterpreterAdapter.GetSrcClass(Identifier: string): TJvInterpreterIdentifier;
+function TJvInterpreterAdapter.GetSrcClass(const Identifier: string): TJvInterpreterIdentifier;
 begin
   Result := FSrcClassList.IndexOf('', Identifier);
 end;
@@ -3597,7 +3593,7 @@ begin
   FOnSetList.Add(PM);
 end;
 
-function TJvInterpreterAdapter.GetRec(RecordType: string): TObject;
+function TJvInterpreterAdapter.GetRec(const RecordType: string): TObject;
 var
   I: Integer;
 begin
@@ -3656,7 +3652,7 @@ begin
     Result := nil;
 end;
 
-function TJvInterpreterAdapter.GetValue(Expression: TJvInterpreterExpression; Identifier: string;
+function TJvInterpreterAdapter.GetValue(Expression: TJvInterpreterExpression; const Identifier: string;
   var Value: Variant; Args: TJvInterpreterArgs): Boolean;
 var
   I: Integer;
@@ -4191,7 +4187,7 @@ begin
   Result := False;
 end;
 
-function TJvInterpreterAdapter.SetValue(Expression: TJvInterpreterExpression; Identifier: string;
+function TJvInterpreterAdapter.SetValue(Expression: TJvInterpreterExpression; const Identifier: string;
   const Value: Variant; Args: TJvInterpreterArgs): Boolean;
 var
   I: Integer;
@@ -4462,7 +4458,7 @@ begin
 end;
 
 {$IFDEF JvInterpreter_OLEAUTO}
-function TJvInterpreterAdapter.DispatchCall(Identifier: string; var Value: Variant;
+function TJvInterpreterAdapter.DispatchCall(const Identifier: string; var Value: Variant;
   Args: TJvInterpreterArgs; Get: Boolean): Boolean; stdcall;
 var
   CallDesc: TCallDesc;
@@ -4564,7 +4560,7 @@ begin
 end;
 {$ENDIF JvInterpreter_OLEAUTO}
 
-function TJvInterpreterAdapter.GetValueRTTI(Identifier: string; var Value: Variant;
+function TJvInterpreterAdapter.GetValueRTTI(const Identifier: string; var Value: Variant;
   Args: TJvInterpreterArgs): Boolean;
 var
   TypeInf: PTypeInfo;
@@ -4606,7 +4602,7 @@ begin
   Result := True;
 end;
 
-function TJvInterpreterAdapter.SetValueRTTI(Identifier: string; const Value: Variant;
+function TJvInterpreterAdapter.SetValueRTTI(const Identifier: string; const Value: Variant;
   Args: TJvInterpreterArgs): Boolean;
 var
   TypeInf: PTypeInfo;
@@ -4648,7 +4644,7 @@ begin
   Result := True;
 end;
 
-procedure TJvInterpreterAdapter.CurUnitChanged(NewUnitName: string; var Source: string);
+procedure TJvInterpreterAdapter.CurUnitChanged(const NewUnitName: string; var Source: string);
 var
   I: Integer;
   JvInterpreterUnitSource: TJvInterpreterSrcUnit;
@@ -4864,7 +4860,7 @@ begin
   Result := FParser.Source;
 end;
 
-procedure TJvInterpreterExpression.SetSource(Value: string);
+procedure TJvInterpreterExpression.SetSource(const Value: string);
 begin
   FParser.Source := Value;
   SourceChanged;
@@ -4896,7 +4892,7 @@ begin
     Result := FParser.Pos;
 end;
 
-procedure TJvInterpreterExpression.ErrorExpected(Exp: string);
+procedure TJvInterpreterExpression.ErrorExpected(const Exp: string);
 begin
   if TokenStr <> '' then
     JvInterpreterErrorN2(ieExpected, PosBeg, Exp, '''' + TokenStr + '''')
@@ -4904,7 +4900,7 @@ begin
     JvInterpreterErrorN2(ieExpected, PosBeg, Exp, LoadStr2(irEndOfFile));
 end;
 
-procedure TJvInterpreterExpression.ErrorNotImplemented(Msg: string);
+procedure TJvInterpreterExpression.ErrorNotImplemented(const Msg: string);
 begin
   JvInterpreterErrorN(ieInternal, PosBeg, Msg + RsENotImplemented);
 end;
@@ -5705,7 +5701,7 @@ begin
   end;
 end;
 
-function TJvInterpreterExpression.GetValue(Identifier: string; var Value: Variant;
+function TJvInterpreterExpression.GetValue(const Identifier: string; var Value: Variant;
   var Args: TJvInterpreterArgs): Boolean;
 begin
   try
@@ -5723,7 +5719,7 @@ begin
     FOnGetValue(Self, Identifier, Value, Args, Result);
 end;
 
-function TJvInterpreterExpression.SetValue(Identifier: string; const Value: Variant;
+function TJvInterpreterExpression.SetValue(const Identifier: string; const Value: Variant;
   var Args: TJvInterpreterArgs): Boolean;
 begin
   try
@@ -5975,7 +5971,7 @@ begin
   end;
 end;
 
-function TJvInterpreterFunction.GetValue(Identifier: string; var Value: Variant;
+function TJvInterpreterFunction.GetValue(const Identifier: string; var Value: Variant;
   var Args: TJvInterpreterArgs): Boolean;
 begin
   Result := False;
@@ -5997,7 +5993,7 @@ begin
     Result := inherited GetValue(Identifier, Value, Args);
 end;
 
-function TJvInterpreterFunction.SetValue(Identifier: string; const Value: Variant;
+function TJvInterpreterFunction.SetValue(const Identifier: string; const Value: Variant;
   var Args: TJvInterpreterArgs): Boolean;
 begin
   Result := False;
@@ -7630,7 +7626,7 @@ begin
   inherited SourceChanged;
 end;
 
-function TJvInterpreterUnit.GetValue(Identifier: string; var Value: Variant;
+function TJvInterpreterUnit.GetValue(const Identifier: string; var Value: Variant;
   var Args: TJvInterpreterArgs): Boolean;
 var
   FunctionDesc: TJvInterpreterFunctionDesc;
@@ -7663,13 +7659,13 @@ begin
   end;
 end;
 
-function TJvInterpreterUnit.SetValue(Identifier: string; const Value: Variant;
+function TJvInterpreterUnit.SetValue(const Identifier: string; const Value: Variant;
   var Args: TJvInterpreterArgs): Boolean;
 begin
   Result := inherited SetValue(Identifier, Value, Args);
 end;
 
-function TJvInterpreterUnit.GetUnitSource(UnitName: string; var Source: string): Boolean;
+function TJvInterpreterUnit.GetUnitSource(const UnitName: string; var Source: string): Boolean;
 begin
   Result := False;
   if Assigned(FOnGetUnitSource) then
@@ -7952,7 +7948,7 @@ end;
 
 //=== TJvInterpreterRecord ===================================================
 
-procedure TJvInterpreterRecord.AddField(UnitName, Identifier, Typ: string;
+procedure TJvInterpreterRecord.AddField(const UnitName, Identifier, Typ: string;
   VTyp: Word; const Value: Variant; DataType: IJvInterpreterDataType);
 begin
   Fields[FieldCount].Identifier := Identifier;
@@ -8056,7 +8052,7 @@ procedure TJvInterpreterSimpleDataType.Init(var V: Variant);
 begin
   V := Null;
   TVarData(V).VType := varEmpty;
-  if (FTyp <> 0) and (FTyp<>varObject) then //dejoy fixed: can't define tobject up d6
+  if (FTyp <> 0) and (FTyp <> varObject) then //dejoy fixed: can't define TObject up d6
     V := Var2Type(V, FTyp);
 end;
 

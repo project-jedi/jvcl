@@ -160,13 +160,13 @@ type
     function GetRoot: string;
     { Set application specific root. Path is prepended to any path specified and serves as an
       absolute root for any storage method. }
-    procedure SetRoot(Value: string);
+    procedure SetRoot(const Value: string);
     { Retrieves currently set path (including the Root path). }
     function GetCurrentPath: string;
     { Returns the path as an absolute path (including the Root path). If the given path does not
       start with a backslash (\) the path is appended to the Root path, resolving any references to
       parent folders. }
-    function GetAbsPath(Path: string): string;
+    function GetAbsPath(const Path: string): string;
     { StringList item reader used by ReadStringList in the call to ReadList. }
     procedure ReadSLItem(Sender: TJvCustomAppStorage; const Path: string;
       const List: TObject; const Index: Integer);
@@ -190,7 +190,7 @@ type
     { Specify a new root. Given path is relative to the current path. Se remarks above }
     procedure SetPath(const Path: string);
     { Determines if the specified name belongs to a list value. }
-    class function NameIsListItem(Name: string): Boolean;
+    class function NameIsListItem(const Name: string): Boolean;
     { Application specific root. Path is prepended to any specified path and serves as an absolute
       root for any reading/writing. Not all implementation will use it. Generally it's used for
       storages not specific to an application (such as the registry). }
@@ -205,7 +205,7 @@ type
     function HasSubStorage(AStore: TJvCustomAppStorage): Boolean;
 
     { Determines if the path represents a folder (ignores sub stores) }
-    function IsFolderInt(Path: string; ListIsValue: Boolean = True): Boolean; virtual; abstract;
+    function IsFolderInt(const Path: string; ListIsValue: Boolean = True): Boolean; virtual; abstract;
     { Determines if the specified path exists (ignores sub stores) }
     function PathExistsInt(const Path: string): Boolean; virtual; abstract;
     { Determines if the specified value is stored (ignores sub stores) }
@@ -233,9 +233,9 @@ type
     { Retrieves the specified string value. If the value is not found, the Default will be
       returned. If the value is not a string (or can't be converted to a string an EConvertError
       exception will be raised. }
-    function DoReadString(const Path: string; Default: string): string; virtual; abstract;
+    function DoReadString(const Path: string; const Default: string): string; virtual; abstract;
     { Stores an string value. }
-    procedure DoWriteString(const Path: string; Value: string); virtual; abstract;
+    procedure DoWriteString(const Path: string; const Value: string); virtual; abstract;
     { Retrieves the specified value into a buffer. The result holds the number of bytes actually
       retrieved. }
     function DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer; virtual; abstract;
@@ -269,9 +269,9 @@ type
     { Retrieves the specified string value. If the value is not found, the Default will be
       returned. If the value is not a string (or can't be converted to a string an EConvertError
       exception will be raised (ignores sub stores). }
-    function ReadStringInt(const Path: string; Default: string): string; virtual;
+    function ReadStringInt(const Path: string; const Default: string): string; virtual;
     { Stores an string value (ignores sub stores). }
-    procedure WriteStringInt(const Path: string; Value: string); virtual;
+    procedure WriteStringInt(const Path: string; const Value: string); virtual;
     { Retrieves the specified value into a buffer. The result holds the number of bytes actually
       retrieved (ignores sub stores). }
     function ReadBinaryInt(const Path: string; var Buf; BufSize: Integer): Integer; virtual;
@@ -324,9 +324,9 @@ type
     property AutoReload: Boolean read FAutoReload write FAutoReload default False;
     class function ConcatPaths(const Paths: array of string): string;
     { Resolve a path to it's actual used storage backend and root path. }
-    procedure ResolvePath(InPath: string; out TgtStore: TJvCustomAppStorage; out TgtPath: string);
+    procedure ResolvePath(const InPath: string; out TgtStore: TJvCustomAppStorage; out TgtPath: string);
     { Determines if the path represents a folder }
-    function IsFolder(Path: string; ListIsValue: Boolean = True): Boolean;
+    function IsFolder(const Path: string; ListIsValue: Boolean = True): Boolean;
     { Determines if the specified path exists }
     function PathExists(const Path: string): Boolean;
     { Determines if the specified value is stored }
@@ -352,9 +352,9 @@ type
     { Retrieves the specified string value. If the value is not found, the Default will be
       returned. If the value is not a string (or can't be converted to a string an EConvertError
       exception will be raised. }
-    function ReadString(const Path: string; Default: string = ''): string;
+    function ReadString(const Path: string; const Default: string = ''): string;
     { Stores an string value. }
-    procedure WriteString(const Path: string; Value: string);
+    procedure WriteString(const Path: string; const Value: string);
     { Retrieves the specified TDateTime value. If the value is not found, the Default will be
       returned. If the value is not a TDateTime (or can't be converted to an TDateTime an
       EConvertError exception will be raised. }
@@ -463,7 +463,7 @@ type
     asRegStoreHKCU, ie. HKCU and HKEY_CURRENT_USER are aliases of each other. }
   TJvAppStorage = class(TJvCustomAppStorage)
   protected
-    function IsFolderInt(Path: string; ListIsValue: Boolean = True): Boolean; override;
+    function IsFolderInt(const Path: string; ListIsValue: Boolean = True): Boolean; override;
     function PathExistsInt(const Path: string): Boolean; override;
     function ValueStoredInt(const Path: string): Boolean; override;
     procedure DeleteValueInt(const Path: string); override;
@@ -472,21 +472,18 @@ type
     procedure WriteIntegerInt(const Path: string; Value: Integer); override;
     function ReadFloatInt(const Path: string; Default: Extended = 0): Extended; override;
     procedure WriteFloatInt(const Path: string; Value: Extended); override;
-    function ReadStringInt(const Path: string; Default: string = ''): string; override;
-    procedure WriteStringInt(const Path: string; Value: string); override;
+    function ReadStringInt(const Path: string; const Default: string = ''): string; override;
+    procedure WriteStringInt(const Path: string; const Value: string); override;
     function ReadBinaryInt(const Path: string; var Buf; BufSize: Integer): Integer; override;
     procedure WriteBinaryInt(const Path: string; const Buf; BufSize: Integer); override;
     function ReadDateTimeInt(const Path: string; Default: TDateTime): TDateTime; override;
     procedure WriteDateTimeInt(const Path: string; Value: TDateTime); override;
     function ReadBooleanInt(const Path: string; Default: Boolean): Boolean; override;
     procedure WriteBooleanInt(const Path: string; Value: Boolean); override;
-    procedure ReadEnumerationInt(const Path: string;  TypeInfo: PTypeInfo; const Default;
-      out Value); override;
-    procedure WriteEnumerationInt(const Path: string;  TypeInfo: PTypeInfo;
-      const Value); override;
-    procedure ReadSetInt(const Path: string;  ATypeInfo: PTypeInfo; const Default;
-      out Value); override;
-    procedure WriteSetInt(const Path: string;  ATypeInfo: PTypeInfo; const Value); override;
+    procedure ReadEnumerationInt(const Path: string;  TypeInfo: PTypeInfo; const Default; out Value); override;
+    procedure WriteEnumerationInt(const Path: string; TypeInfo: PTypeInfo; const Value); override;
+    procedure ReadSetInt(const Path: string; ATypeInfo: PTypeInfo; const Default; out Value); override;
+    procedure WriteSetInt(const Path: string; ATypeInfo: PTypeInfo; const Value); override;
   published
     property SubStorages;
   end;
@@ -514,7 +511,7 @@ type
     procedure SetFloatAsStr(Value: Boolean); virtual;
     procedure SetDefaultIfReadConvertError(Value: Boolean); virtual;
     procedure SetDefaultIfValueNotExists(Value: Boolean); virtual;
-    function IsValueListString(AValue, AList: string): Boolean; virtual;
+    function IsValueListString(const AValue, AList: string): Boolean; virtual;
   public
     constructor Create;
     function DefaultTrueString: string;
@@ -564,7 +561,7 @@ type
     { Check if the given root path is unique, optionally ignoring a specific sub storage (eg. when
       modifying the root path of a storage, that storage's RootPath is irrelavant in determining
       if the new name will be unique). }
-    function CheckUniqueBase(APath: string; IgnoreIndex: Integer): Boolean;
+    function CheckUniqueBase(const APath: string; IgnoreIndex: Integer): Boolean;
     { Retrieves the sub storage for the given root path, optionally ignoring a specific sub storage.
       The specified path is assumed to be at root level (regardless whether the paths starts with
       a backslash (\) or not) and leading and trailing backslashes are removed automatically.
@@ -762,7 +759,7 @@ begin
   DefaultIfValueNotExists := True;
 end;
 
-function TJvCustomAppStorageOptions.IsValueListString(AValue, AList: string): Boolean;
+function TJvCustomAppStorageOptions.IsValueListString(const AValue, AList: string): Boolean;
 begin
   with TStringList.Create do
     try
@@ -944,7 +941,7 @@ begin
   Result := FRoot;
 end;
 
-procedure TJvCustomAppStorage.SetRoot(Value: string);
+procedure TJvCustomAppStorage.SetRoot(const Value: string);
 begin
   FRoot := OptimizePaths([Value]);
 end;
@@ -954,7 +951,7 @@ begin
   Result := GetAbsPath('');
 end;
 
-function TJvCustomAppStorage.GetAbsPath(Path: string): string;
+function TJvCustomAppStorage.GetAbsPath(const Path: string): string;
 begin
   Result := GetRoot + '\' + OptimizePaths([GetPath, Path]);
   while (Result <> '') and (Result[1] = '\') do
@@ -1161,7 +1158,7 @@ begin
     DoWriteFloat(Path, Value);
 end;
 
-function TJvCustomAppStorage.ReadStringInt(const Path: string; Default: string): string;
+function TJvCustomAppStorage.ReadStringInt(const Path: string; const Default: string): string;
 begin
   if not ValueStoredInt(Path) and StorageOptions.DefaultIfValueNotExists then
     Result := Default
@@ -1177,7 +1174,7 @@ begin
     end;
 end;
 
-procedure TJvCustomAppStorage.WriteStringInt(const Path: string; Value: string);
+procedure TJvCustomAppStorage.WriteStringInt(const Path: string; const Value: string);
 begin
   DoWriteString(Path, EncryptPropertyValue(Value));
 end;
@@ -1273,7 +1270,7 @@ begin
     DoWriteBoolean(Path, Value);
 end;
 
-class function TJvCustomAppStorage.NameIsListItem(Name: string): Boolean;
+class function TJvCustomAppStorage.NameIsListItem(const Name: string): Boolean;
 var
   NameStart: PChar;
 begin
@@ -1288,7 +1285,7 @@ begin
   Result := OptimizePaths(Paths);
 end;
 
-procedure TJvCustomAppStorage.ResolvePath(InPath: string; out TgtStore: TJvCustomAppStorage;
+procedure TJvCustomAppStorage.ResolvePath(const InPath: string; out TgtStore: TJvCustomAppStorage;
   out TgtPath: string);
 var
   SubStorageItem: TJvAppSubStorage;
@@ -1306,7 +1303,7 @@ begin
   end;
 end;
 
-function TJvCustomAppStorage.IsFolder(Path: string; ListIsValue: Boolean): Boolean;
+function TJvCustomAppStorage.IsFolder(const Path: string; ListIsValue: Boolean): Boolean;
 var
   TgtStore: TJvCustomAppStorage;
   TgtPath: string;
@@ -1396,7 +1393,7 @@ begin
   TgtStore.WriteFloatInt(TgtPath, Value);
 end;
 
-function TJvCustomAppStorage.ReadString(const Path: string; Default: string): string;
+function TJvCustomAppStorage.ReadString(const Path: string; const Default: string): string;
 var
   TgtStore: TJvCustomAppStorage;
   TgtPath: string;
@@ -1405,7 +1402,7 @@ begin
   Result := TgtStore.ReadStringInt(TgtPath, Default);
 end;
 
-procedure TJvCustomAppStorage.WriteString(const Path: string; Value: string);
+procedure TJvCustomAppStorage.WriteString(const Path: string; const Value: string);
 var
   TgtStore: TJvCustomAppStorage;
   TgtPath: string;
@@ -1967,7 +1964,7 @@ end;
 
 //=== TJvAppStorage ============================================================
 
-function TJvAppStorage.IsFolderInt(Path: string; ListIsValue: Boolean): Boolean;
+function TJvAppStorage.IsFolderInt(const Path: string; ListIsValue: Boolean): Boolean;
 begin
   raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
@@ -2012,12 +2009,12 @@ begin
   raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
-function TJvAppStorage.ReadStringInt(const Path: string; Default: string): string;
+function TJvAppStorage.ReadStringInt(const Path: string; const Default: string): string;
 begin
   raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
-procedure TJvAppStorage.WriteStringInt(const Path: string; Value: string);
+procedure TJvAppStorage.WriteStringInt(const Path: string; const Value: string);
 begin
   raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
@@ -2098,7 +2095,7 @@ procedure TJvAppSubStorages.RootOptionsChanged;
 begin
 end;
 
-function TJvAppSubStorages.CheckUniqueBase(APath: string; IgnoreIndex: Integer): Boolean;
+function TJvAppSubStorages.CheckUniqueBase(const APath: string; IgnoreIndex: Integer): Boolean;
 begin
   Result := MatchFor(OptimizePaths([APath]) + '\*', IgnoreIndex) = nil;
 end;

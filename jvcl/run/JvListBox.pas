@@ -267,13 +267,13 @@ type
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
     procedure UpdateHorizontalExtent;
-    function SearchExactString(Value: string; CaseSensitive: Boolean = True;
+    function SearchExactString(const Value: string; CaseSensitive: Boolean = True;
       StartIndex: Integer = -1): Integer;
-    function SearchPrefix(Value: string; CaseSensitive: Boolean = True;
+    function SearchPrefix(const Value: string; CaseSensitive: Boolean = True;
       StartIndex: Integer = -1): Integer;
-    function SearchSubString(Value: string; CaseSensitive: Boolean = True;
+    function SearchSubString(const Value: string; CaseSensitive: Boolean = True;
       StartIndex: Integer = -1): Integer;
-    function DeleteExactString(Value: string; All: Boolean;
+    function DeleteExactString(const Value: string; All: Boolean;
       CaseSensitive: Boolean = True): Integer;
     procedure SelectAll; {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure UnselectAll;
@@ -1118,7 +1118,7 @@ begin
   end;
 end;
 
-function TJvCustomListBox.DeleteExactString(Value: string; All: Boolean;
+function TJvCustomListBox.DeleteExactString(const Value: string; All: Boolean;
   CaseSensitive: Boolean): Integer;
 begin
   if not IsProviderSelected then
@@ -1757,19 +1757,19 @@ begin
     MaxWidth := LMaxWidth;
 end;
 
-function TJvCustomListBox.SearchExactString(Value: string;
+function TJvCustomListBox.SearchExactString(const Value: string;
   CaseSensitive: Boolean; StartIndex: Integer): Integer;
 begin
   Result := TJvItemsSearchs.SearchExactString(ItemsShowing, Value, CaseSensitive, StartIndex);
 end;
 
-function TJvCustomListBox.SearchPrefix(Value: string;
+function TJvCustomListBox.SearchPrefix(const Value: string;
   CaseSensitive: Boolean; StartIndex: Integer): Integer;
 begin
   Result := TJvItemsSearchs.SearchPrefix(ItemsShowing, Value, CaseSensitive, StartIndex);
 end;
 
-function TJvCustomListBox.SearchSubString(Value: string;
+function TJvCustomListBox.SearchSubString(const Value: string;
   CaseSensitive: Boolean; StartIndex: Integer): Integer;
 begin
   Result := TJvItemsSearchs.SearchSubString(ItemsShowing, Value, CaseSensitive, StartIndex);

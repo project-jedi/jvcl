@@ -41,7 +41,7 @@ type
   private
     FSource: string;
     FPCPos: PChar; { current parse position }
-    procedure SetSource(Value: string);
+    procedure SetSource(const Value: string);
     function GetPos: Integer;
     procedure SetPos(Value: Integer);
   public
@@ -536,7 +536,7 @@ end;
 
 //=== TJvInterpreterParser ===================================================
 
-procedure TJvInterpreterParser.SetSource(Value: string);
+procedure TJvInterpreterParser.SetSource(const Value: string);
 begin
   FSource := Value;
   Init;

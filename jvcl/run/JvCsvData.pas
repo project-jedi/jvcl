@@ -291,7 +291,7 @@ type
   TJvCustomCsvDataSet = class(TDataSet)
   private
     FSeparator: Char;
-    FOpenFileName:String; // This is the Fully Qualified path and filename expanded from the FTableName property when InternalOpen was last called.
+    FOpenFileName: string; // This is the Fully Qualified path and filename expanded from the FTableName property when InternalOpen was last called.
     FValidateHeaderRow: Boolean;
     FExtendedHeaderInfo: Boolean;
     procedure SetSeparator(const Value: Char);
@@ -444,9 +444,9 @@ type
     // handles using the default Excel method which is to double the quotes inside
     // quotes.
 
-    function _Enquote(strVal: string): string; virtual;
+    function _Enquote(const strVal: string): string; virtual;
       // puts whole string in quotes, escapes embedded separators and quote characters!
-    function _Dequote(strValue: string): string; virtual; // removes quotes
+    function _Dequote(const strValue: string): string; virtual; // removes quotes
 
     property Separator: Char read FSeparator write SetSeparator default ',';
 
@@ -457,16 +457,16 @@ type
     function GetFieldData(Field: TField; Buffer: Pointer): Boolean; override;
 
     // Autoincrement feature: Get next available auto-incremented value for numbered/indexed autoincrementing fields.
-    function GetAutoincrement(FieldName: string): Integer;
+    function GetAutoincrement(const FieldName: string): Integer;
 
     // NEW: COPY FROM ANOTHER TDATASET (TTable, TADOTable, TQuery, or whatever)
     function CopyFromDataset(DataSet: TDataset): Integer;
 
     // SELECT * FROM TABLE WHERE <fieldname> LIKE <pattern>:
-    procedure SetFilter(FieldName, pattern: string); // Make Rows Visible Only if they match filterString
+    procedure SetFilter(const FieldName: string; pattern: string); // Make Rows Visible Only if they match filterString
 
     // SELECT * FROM TABLE WHERE <fieldname> IS <NULL|NOT NULL>:
-    procedure SetFilterOnNull(FieldName:String; NullFlag:Boolean);
+    procedure SetFilterOnNull(const FieldName: string; NullFlag: Boolean);
 
 
     procedure ClearFilter; // Clear all previous SetFilters, shows All Rows. Refresh screen.
@@ -474,7 +474,7 @@ type
     procedure _ClearFilter; // Clear Previous Filtering. DOES NOT REFRESH SCREEN.
 
 
-    procedure CustomFilter( FilterCallback : TJvCustomCsvDataSetFilterFunction  ); {NEW:APRIL 2004-WP}
+    procedure CustomFilter(FilterCallback: TJvCustomCsvDataSetFilterFunction); {NEW:APRIL 2004-WP}
 
     // ----------- THIS IS A DUMMY FUNCTION, DON'T USE IT!:
     function Locate(const KeyFields: string; const KeyValues: Variant;
@@ -501,10 +501,10 @@ type
     // TODO: Implement row/record copy from ANY dataset.
     
     // A fast row lookup function specific to this CSV table object.
-    function FindByCsvKey(key: string): Boolean;
+    function FindByCsvKey(const key: string): Boolean;
 
     // Sort the table:
-    procedure Sort(SortFields: string; Ascending: Boolean);
+    procedure Sort(const SortFields: string; Ascending: Boolean);
 
     // All rows have a UserData and UserTag property, these
     // next two functions quickly set all the userdata and usertag
@@ -535,7 +535,7 @@ type
     procedure AssignToStrings(Strings: TStrings); virtual;
 
     procedure DeleteRows(FromRow, ToRow: Integer); // NEW: Quickly zap a bunch of rows:
-    procedure ExportRows(FileName: string; FromRow, ToRow: Integer); // NEW: Quickly save a bunch of rows:
+    procedure ExportRows(const FileName: string; FromRow, ToRow: Integer); // NEW: Quickly save a bunch of rows:
 
     procedure ExportCsvFile(const FileName: string); virtual;
       // save out to a file. does NOT keep backups! If file exists, it will be
@@ -554,7 +554,7 @@ type
       // Return any row by index, special: -1 means last row
     function GetColumnsAsString: string; virtual;
     { Row Append one String }
-    procedure AppendRowString(RowAsString: string);
+    procedure AppendRowString(const RowAsString: string);
       // Along with GetRowAsString, easy way to copy a dataset to another dataset!
 
     function IsKeyUnique: Boolean; // Checks current row's key uniqueness. Note that FCsvKeyDef MUST be set!
@@ -616,11 +616,11 @@ type
     { these MUST be available at runtime even when the object is of the Custom base class type
       This enables interoperability at design time between non-visual helper components
       and user-derived CsvDataSet descendants }
-    property OpenFileName:String read FOpenFileName; // Set in InternalOpen, used elsewhere.
+    property OpenFileName: string read FOpenFileName; // Set in InternalOpen, used elsewhere.
     property FieldDefs stored FieldDefsStored;
     property TableName: string read FTableName; // Another name, albeit read only, for the FileName property!
     property HasHeaderRow: Boolean read FHasHeaderRow write FHasHeaderRow default True;
-    property HeaderRow:String read FHeaderRow; // first row of CSV file.
+    property HeaderRow: string read FHeaderRow; // first row of CSV file.
     property SavesChanges: Boolean read FSavesChanges write FSavesChanges default True;
   end;
 
@@ -686,7 +686,7 @@ procedure CsvRowToString(RowItem: PCsvRow; var RowString: string);
 procedure StringToCsvRow(const RowString: string; Separator:Char; RowItem: PCsvRow; permitEscapeSequences, EnquoteBackslash: Boolean);
 
 function CsvRowItemCopy(Source, Dest: PCsvRow; FieldIndex, FieldSize: Integer): Boolean;
-procedure SetCsvRowItem(pItem: PCsvRow; ColumnIndex: Integer; newValue: string);
+procedure SetCsvRowItem(pItem: PCsvRow; ColumnIndex: Integer; const newValue: string);
 function GetCsvRowItem(pItem: PCsvRow; ColumnIndex: Integer): string;
 procedure CsvRowSetDirtyBit(row: PCsvRow; ColumnIndex: Integer);
 procedure CsvRowClearDirtyBit(row: PCsvRow; ColumnIndex: Integer);
@@ -695,8 +695,8 @@ procedure CsvRowSetColumnMarker(row: PCsvRow; ColumnIndex: Integer; ColumnMarker
 function CsvRowGetColumnMarker(row: PCsvRow; ColumnIndex: Integer): Integer;
 
 { Date/Time String decoding functions }
-function TimeTHexToDateTime(HexStr: string; TimeZoneCorrection: Integer): TDateTime;
-function TimeTAsciiToDateTime(AsciiDateStr: string): TDateTime;
+function TimeTHexToDateTime(const HexStr: string; TimeZoneCorrection: Integer): TDateTime;
+function TimeTAsciiToDateTime(const AsciiDateStr: string): TDateTime;
 
 { Date/Time string encoding functions }
 function DateTimeToTimeToIsoAscii(aDateTime: TDateTime): string;
@@ -845,7 +845,7 @@ begin
   FData.SetUserTag(recno, tagValue);
 end;
 
-function _WildcardsMatchBoolOp(data, pattern: string; boolOp: Char): Boolean;
+function _WildcardsMatchBoolOp(const data, pattern: string; boolOp: Char): Boolean;
 var
   subPattern: array[0..20] of string;
   t, Count: Integer;
@@ -1050,7 +1050,7 @@ end;
 // XXX
 
 { New: Custom Filtering }
-procedure TJvCustomCsvDataSet.CustomFilter( FilterCallback : TJvCustomCsvDataSetFilterFunction  );
+procedure TJvCustomCsvDataSet.CustomFilter(FilterCallback: TJvCustomCsvDataSetFilterFunction);
 var
   t: Integer;
   pRow: PCsvRow;
@@ -1059,10 +1059,10 @@ begin
   // Now check if field value matches given pattern for this row.
   for t := 0 to FData.Count - 1 do
   begin
-      pRow := PCsvRow(FData[t]);
-      Assert(Assigned(pRow));
-      // if custom function returns False, hide the row.
-      pRow^.filtered  := not FilterCallback(t);
+    pRow := PCsvRow(FData[t]);
+    Assert(Assigned(pRow));
+    // if custom function returns False, hide the row.
+    pRow^.filtered  := not FilterCallback(t);
   end;
   FIsFiltered := True;
   if Active then
@@ -1070,7 +1070,7 @@ begin
 end;
 
 
-procedure TJvCustomCsvDataSet.SetFilterOnNull(FieldName:String; NullFlag:Boolean);
+procedure TJvCustomCsvDataSet.SetFilterOnNull(const FieldName: string; NullFlag: Boolean);
 var
   t: Integer;
   pRow: PCsvRow;
@@ -1091,8 +1091,9 @@ begin
     if not pRow^.filtered then
     begin
       fieldValue := FData.GetARowItem(t, FieldIndex);
-      if (Length(fieldValue) > 0)=NullFlag then begin
-          pRow^.filtered := True;
+      if (Length(fieldValue) > 0)=NullFlag then
+      begin
+        pRow^.filtered := True;
       end;
     end
   end;
@@ -1103,7 +1104,7 @@ begin
   end;
 end;
 
-procedure TJvCustomCsvDataSet.SetFilter(FieldName, pattern: string);
+procedure TJvCustomCsvDataSet.SetFilter(const FieldName: string; pattern: string);
   // Make Rows Visible Only if they match filterString
 var
   valueLen, t: Integer;
@@ -1393,7 +1394,7 @@ begin
 end;
 
 // Auto-increment
-function TJvCustomCsvDataSet.GetAutoincrement(FieldName: string): Integer;
+function TJvCustomCsvDataSet.GetAutoincrement(const FieldName: string): Integer;
 var
   recindex: Integer;
   FieldLookup: TField;
@@ -1710,7 +1711,7 @@ begin
 
 end;
 
-function TJvCustomCsvDataSet._Enquote(strVal: string): string;
+function TJvCustomCsvDataSet._Enquote(const strVal: string): string;
   // puts whole string in quotes, escapes embedded commas and quote characters!
   // Can optionally deal with newlines also.
 var
@@ -1913,7 +1914,7 @@ end;
 // Removes first and last character of the string (assumes they are quotes,
 // to be called byGetFieldData only!)
 
-function TJvCustomCsvDataSet._Dequote(strValue: string): string;
+function TJvCustomCsvDataSet._Dequote(const strValue: string): string;
 var
   s: string;
   t, l: Integer;
@@ -2617,7 +2618,7 @@ begin
   end;
 end;
 
-function TJvCustomCsvDataSet.FindByCsvKey(key: string): Boolean;
+function TJvCustomCsvDataSet.FindByCsvKey(const key: string): Boolean;
 var
   logical_row, physical_row: TJvCsvRow;
   t, recno: Integer;
@@ -3141,7 +3142,7 @@ begin
     InternalQuickSort(AList.List, 0, AList.Count - 1, SortColumns, ACount, Ascending);
 end;
 
-procedure TJvCustomCsvDataSet.Sort(SortFields: string; Ascending: Boolean);
+procedure TJvCustomCsvDataSet.Sort(const SortFields: string; Ascending: Boolean);
 var
 //  Index: array of Pointer;
 //  swap: Pointer;
@@ -3501,7 +3502,7 @@ begin
   end;
 end;
 
-procedure TJvCustomCsvDataSet.AppendRowString(RowAsString: string);
+procedure TJvCustomCsvDataSet.AppendRowString(const RowAsString: string);
 begin
   if not Active then
     JvCsvDatabaseError(FTableName, RsEDataSetNotOpen);
@@ -3672,7 +3673,7 @@ end;
 grown too large into a file, and then DeleteRows can be called to remove
 that section of the file. }
 
-procedure TJvCustomCsvDataSet.ExportRows(FileName: string; FromRow, ToRow: Integer);
+procedure TJvCustomCsvDataSet.ExportRows(const FileName: string; FromRow, ToRow: Integer);
 var
   t: Integer;
   StrList: TStringlist;
@@ -3866,7 +3867,7 @@ end;
 
 // Copy an item into a csv row buffer:
 
-procedure SetCsvRowItem(pItem: PCsvRow; ColumnIndex: Integer; newValue: string);
+procedure SetCsvRowItem(pItem: PCsvRow; ColumnIndex: Integer; const newValue: string);
 var
   TempBuf: array[0..MAXLINELENGTH] of Char;
   Copy1, Copy2: Integer;
@@ -4049,11 +4050,11 @@ end;
  // an Error code.
  //------------------------------------------------------------------------------
 
-function TimeTHexToDateTime(HexStr: string; TimeZoneCorrection: Integer): TDateTime;
+function TimeTHexToDateTime(const HexStr: string; TimeZoneCorrection: Integer): TDateTime;
 var
   SecondsSince1970: Double;
   Base: TDateTime;
-{ DateTimeAsStr:String; //debug Code.}
+{ DateTimeAsStr: string; //debug Code.}
 begin
   Result := 0.0;
   SecondsSince1970 := StrToIntDef('$' + HexStr, 0) + TimeZoneCorrection;
@@ -4066,7 +4067,7 @@ begin
   Result := Base;
 end;
 
-function TimeTAsciiToDateTime(AsciiDateStr: string): TDateTime;
+function TimeTAsciiToDateTime(const AsciiDateStr: string): TDateTime;
 const
   Separators = '// ::'; // separators in yyyy/mm/dd hh:mm:ss
   Separators2 = '-- --'; // separators in yyyy/mm/dd hh:mm:ss
@@ -4080,9 +4081,7 @@ begin
 
  // validate ranges:
   for t := 1 to 6 do
-  begin
     Values[t] := 0;
-  end;
 
  // T loops through each value we are looking for (1..6):
   Index := 1; // what character in AsciiDateStr are we looking at?
@@ -4142,13 +4141,11 @@ begin
   // such as trying to encode February 29 on a non-leap year, or the 31st
   // day of a month with only 30 days, etc.
   try
-    Result := EncodeDate({year}Values[1], {month} Values[2], {day} Values[3])
-      + EncodeTime({hour}Values[4], {minute} Values[5], {second} Values[6], {msec} 0);
+    Result := EncodeDate({year}Values[1], {month} Values[2], {day} Values[3]) +
+      EncodeTime({hour}Values[4], {minute} Values[5], {second} Values[6], {msec} 0);
   except
     on E: EConvertError do
-    begin
       Result := 0.0; // catch any other conversion errors and just return 0.
-    end;
   end;
 end;
 
