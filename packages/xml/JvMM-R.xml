@@ -24,8 +24,6 @@
     <Package Name="vclx50" Targets="C5,C5s" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
-    <Package Name="vclsmp" Targets="D6,D6p,C6,C6p" Condition=""/>
-    <Package Name="vclsmp50" Targets="C5,C5s" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvAVICapture.pas" Targets="allbutclx" Formname="" Condition=""/>
