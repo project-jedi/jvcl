@@ -162,7 +162,7 @@ const
 {$HINTS OFF}
 
 type
-  THackDataSet = class(TDataSet);
+  TDataSetAccessProtected = class(TDataSet);
 
 {*******************************************************}
 { !! ATTENTION Nasty implementation                     }
@@ -792,8 +792,8 @@ begin
     DataSource.DataSet.BeforePost := BeforeDataPost;
     DataSource.DataSet.BeforeInsert := BeforeDataChange;
     DataSource.DataSet.BeforeEdit := BeforeDataChange;
-    THackDataSet(DataSource.DataSet).DataEvent(deUpdateState, 0);
-    THackDataSet(DataSource.DataSet).DataEvent(deDataSetChange, 0);
+    TDataSetAccessProtected(DataSource.DataSet).DataEvent(deUpdateState, 0);
+    TDataSetAccessProtected(DataSource.DataSet).DataEvent(deDataSetChange, 0);
     {DataSource.DataSet := DataSource.DataSet;}
     FCaptured := True;
     if Assigned(FOnSetCapture) then
@@ -820,8 +820,8 @@ begin
     FCaptured := False;
     FIgnoreDataEvents := False;
     DataSource.DataSet.Resync([]);
-    THackDataSet(DataSource.DataSet).DataEvent(deUpdateState, 0);
-    THackDataSet(DataSource.DataSet).DataEvent(deDataSetChange, 0);
+    TDataSetAccessProtected(DataSource.DataSet).DataEvent(deUpdateState, 0);
+    TDataSetAccessProtected(DataSource.DataSet).DataEvent(deDataSetChange, 0);
     {DataSource.DataSet := DataSource.DataSet;}
     if Assigned(FOnReleaseCapture) then
       FOnReleaseCapture(Self);

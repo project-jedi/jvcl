@@ -471,7 +471,7 @@ type
     constructor Create(AOwner: TComponent); override;
   end;}
 
-  TOpenWinControl = class(TWinControl);
+  TWinControlAccessProtected = class(TWinControl);
 
 var
   GlobalPopupPanelAnimate: TPopupPanelAnimate = nil;
@@ -2601,8 +2601,8 @@ begin
         if ActiveControl <> nil then
         begin
           FActiveControl := ActiveControl;
-          FOldKeyDown := TOpenWinControl(FActiveControl).OnKeyDown;
-          TOpenWinControl(FActiveControl).OnKeyDown := FocusKeyDown;
+          FOldKeyDown := TWinControlAccessProtected(FActiveControl).OnKeyDown;
+          TWinControlAccessProtected(FActiveControl).OnKeyDown := FocusKeyDown;
         end;
       if ResizeStyle in [rsLine, rsPattern] then
         DrawLine;
@@ -2756,7 +2756,7 @@ begin
     ReleaseLineDC;
     if Assigned(FActiveControl) then
     begin
-      TOpenWinControl(FActiveControl).OnKeyDown := FOldKeyDown;
+      TWinControlAccessProtected(FActiveControl).OnKeyDown := FOldKeyDown;
       FActiveControl := nil;
     end;
   end;

@@ -31,7 +31,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JvDataProvider, JvDataProviderIntf, JvMaxPixel, JvItemsSearchs, 
+  JvDataProvider, JvDataProviderIntf, JvMaxPixel, JvItemsSearchs,
   JvExStdCtrls;
 
 type

@@ -313,7 +313,7 @@ uses
   Math;
 
 type
-  TWinControlAccess = class(TWinControl);
+  TWinControlAccessProtected = class(TWinControl);
 
 { utility }
 
@@ -1365,7 +1365,6 @@ begin
     Result := FImageHeight;
 end;
 
-
 procedure TJvImageItem.SetFont(const Value: TFont);
 begin
   if not (puFont in FListPropertiesUsed) then
@@ -1376,7 +1375,7 @@ function TJvImageItem.GetFont: TFont;
 begin
   if puFont in FListPropertiesUsed then
   begin
-    Result := TWinControlAccess(GetWinControl).Font
+    Result := TWinControlAccessProtected(GetWinControl).Font
   end
   else
   begin
@@ -1384,7 +1383,7 @@ begin
     begin
       FFont := TFont.Create;
       FFont.OnChange := FontChange;
-      FFont.Assign(TWinControlAccess(GetWinControl).Font);
+      FFont.Assign(TWinControlAccessProtected(GetWinControl).Font);
     end;
     Result := FFont;
   end;

@@ -398,20 +398,20 @@ begin
   Result := GScheduleThread;
 end;
 
-//=== TOpenWriter ============================================================
+//=== THackWriter ============================================================
 
 type
-  TOpenReader = class(TReader);
+  TReaderAccessProtected = class(TReader);
 
 type
-  TOpenWriter = class(TWriter)
+  THackWriter = class(TWriter)
   protected
     procedure WriteSet(SetType: Pointer; Value: Integer);
   end;
 
 // Copied from D5 Classes.pas and modified a bit.
 
-procedure TOpenWriter.WriteSet(SetType: Pointer; Value: Integer);
+procedure THackWriter.WriteSet(SetType: Pointer; Value: Integer);
 var
   I: Integer;
   BaseType: PTypeInfo;
@@ -1060,7 +1060,7 @@ var
   TempVal: TScheduleWeekDays;
 begin
   JclIntToSet(TypeInfo(TScheduleWeekDays), TempVal,
-    TOpenReader(Reader).ReadSet(TypeInfo(TScheduleWeekDays)));
+    TReaderAccessProtected(Reader).ReadSet(TypeInfo(TScheduleWeekDays)));
   (Schedule as IJclWeeklySchedule).DaysOfWeek := TempVal;
 end;
 
@@ -1069,7 +1069,7 @@ var
   TempVar: TScheduleWeekDays;
 begin
   TempVar := (Schedule as IJclWeeklySchedule).DaysOfWeek;
-  TOpenWriter(Writer).WriteSet(TypeInfo(TScheduleWeekDays),
+  THackWriter(Writer).WriteSet(TypeInfo(TScheduleWeekDays),
     JclSetToInt(TypeInfo(TScheduleWeekDays), TempVar));
 end;
 

@@ -160,7 +160,7 @@ const
   imBin = 4;
 
 type
-  THackRegistry = class(TRegistry);
+  TRegistryAccessProtected = class(TRegistry);
 
 function SetRootKey(Reg: TRegistry; Node: TTreeNode): Boolean;
 var
@@ -281,7 +281,7 @@ end;
 function TJvRegistryTreeView.GetCurrentKey: HKEY;
 begin
   OpenRegistry(Selected);
-  Result := THackRegistry(FReg).GetKey(ShortPath);
+  Result := TRegistryAccessProtected(FReg).GetKey(ShortPath);
   CloseRegistry;
 end;
 

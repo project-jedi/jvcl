@@ -92,7 +92,7 @@ begin
 end;
 
 type
-  TDBGridAccess = class(TJvDBGrid);
+  TJvDBGridAccessProtected = class(TJvDBGrid);
 
 procedure TfrmSelectColumn.FormClose(Sender: TObject;
   var Action: TCloseAction);
@@ -101,7 +101,7 @@ var
 begin
   if (ModalResult = mrOk) and FColumnUpdate and FCanHide and Assigned(FJvDBGrid) then
   begin
-    TDBGridAccess(FJvDBGrid).BeginLayout;
+    TJvDBGridAccessProtected(FJvDBGrid).BeginLayout;
     try
       for I := 0 to clbList.Items.Count - 1 do
       begin
@@ -110,7 +110,7 @@ begin
           FJvDBGrid.Columns[J].Visible := clbList.Checked[I];
       end;
     finally
-      TDBGridAccess(FJvDBGrid).EndLayout;
+      TJvDBGridAccessProtected(FJvDBGrid).EndLayout;
     end;
   end;
 end;

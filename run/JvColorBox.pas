@@ -467,7 +467,7 @@ end;
 
 procedure TJvCustomDropButton.Resize;
 begin
-  inherited Resize; 
+  inherited Resize;
   Invalidate;
 end;
 

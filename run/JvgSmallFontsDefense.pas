@@ -94,7 +94,7 @@ begin
 end;
 
 type
-  THackControl = class(TControl);
+  TControlAccessProtected = class(TControl);
 
 procedure TJvgSmallFontsDefense.UpdateFonts(Control: TWinControl);
 var
@@ -111,11 +111,11 @@ begin
     Exit;
   if (fdoExcludeGrids in Options) and (Control is TCustomGrid) then
     Exit;
-  UpdateFont(THackControl(Control).Font);
+  UpdateFont(TControlAccessProtected(Control).Font);
   with Control do
     for I := 0 to ControlCount - 1 do
     begin
-      UpdateFont(THackControl(Controls[I]).Font);
+      UpdateFont(TControlAccessProtected(Controls[I]).Font);
       if Controls[I] is TWinControl then
         UpdateFonts(Controls[I] as TWinControl);
     end;

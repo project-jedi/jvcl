@@ -162,7 +162,7 @@ end;
 
 {$IFDEF VisualCLX}
 type
-  TOpenScrollingWidget = class(TScrollingWidget);
+  TScrollingWidgetAccessProtected = class(TScrollingWidget);
 {$ENDIF VisualCLX}
 
 procedure TJvCaret.CreateCaret;
@@ -189,7 +189,7 @@ begin
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
       if FCaretOwner is TScrollingWidget then
-        Handle := TOpenScrollingWidget(FCaretOwner).ViewportHandle
+        Handle := TScrollingWidgetAccessProtected(FCaretOwner).ViewportHandle
       else
         Handle := FCaretOwner.Handle;
 

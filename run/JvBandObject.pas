@@ -35,7 +35,7 @@ interface
 
 uses
   Windows, Messages, ComObj, ShlObj, ActiveX, Registry, SysUtils, Classes,
-  Controls, Forms, Menus, 
+  Controls, Forms, Menus,
   JvBandForms;
 
 const
@@ -618,7 +618,7 @@ begin
       if not Assigned(FBandForm) then
         Exit;
       ShowDW(False);
-      FBandForm.Free;  
+      FBandForm.Free;
       if FHook <> 0 then
       begin
         UnhookWindowsHookEx(FHook);
@@ -1021,7 +1021,7 @@ function TzContextMenuBandObject.QueryContextMenu(AMenu: HMENU; IndexMenu,
       InsertIndex := InsertIndex+1;
     end;
   end;
-    
+
 begin
   {$IFDEF DEBUGINFO_ON}
   zTraceLog(ClassName + '.QueryContextMenu()');
@@ -1091,7 +1091,7 @@ begin
       Exit;
     FindItem(BandContextMenu.Items, idCmd, ci);
     //if BandContextMenu.DispatchCommand(idCmd) then
-    //   Result := NOERROR; 
+    //   Result := NOERROR;
   end;
 end;
 

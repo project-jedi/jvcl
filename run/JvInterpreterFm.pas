@@ -188,7 +188,7 @@ type
       override;
   end;
 
-  THackAdapter = class(TJvInterpreterAdapter);
+  TJvInterpreterAdapterAccessProtected = class(TJvInterpreterAdapter);
 
 function TJvInterpreterReader.FindMethod(Root: TComponent;
   const MethodName: string): Pointer;
@@ -445,7 +445,7 @@ begin
     { run-time form creation }
     if Cmp(Identifier, 'Create') then
     begin
-      JvInterpreterSrcClass := THackAdapter(Adapter).GetSrcClass(
+      JvInterpreterSrcClass := TJvInterpreterAdapterAccessProtected(Adapter).GetSrcClass(
         (Args.Obj as TJvInterpreterForm).FClassIdentifier);
       (Args.Obj as TJvInterpreterForm).FUnitName := JvInterpreterSrcClass.UnitName;
       LoadForm(Args.Obj as TJvInterpreterForm);
@@ -463,7 +463,7 @@ begin
     Exit;
 
   { run-time form creation }
-  JvInterpreterSrcClass := THackAdapter(Adapter).GetSrcClass(Identifier);
+  JvInterpreterSrcClass := TJvInterpreterAdapterAccessProtected(Adapter).GetSrcClass(Identifier);
   if JvInterpreterSrcClass <> nil then
   begin
     JvInterpreterForm := TJvInterpreterForm.CreateNew(Application);

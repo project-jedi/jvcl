@@ -496,7 +496,7 @@ uses
   JvDockControlForm, JvDockSupportProc, JvDockGlobals, JvDockVSNetStyle;
 
 type
-  THackWinControl = class(TWinControl);
+  TWinControlAccessProtected = class(TWinControl);
 
 //=== TJvDockZone ============================================================
 
@@ -575,7 +575,7 @@ begin
       Zone := Zone.ParentZone;
   end;
   R := FTree.FDockSite.ClientRect;
-  THackWinControl(FTree.FDockSite).AdjustClientRect(R);
+  TWinControlAccessProtected(FTree.FDockSite).AdjustClientRect(R);
   case TDockOrientation(Orient) of
     doVertical:
       Result := R.Left;
@@ -595,7 +595,7 @@ begin
     (ChildControl <> nil) and (FTree.FTopZone.ChildCount = 1)) then
   begin
     R := FTree.FDockSite.ClientRect;
-    THackWinControl(FTree.FDockSite).AdjustClientRect(R);
+    TWinControlAccessProtected(FTree.FDockSite).AdjustClientRect(R);
     if TDockOrientation(Orient) = doHorizontal then
       Result := R.Bottom - R.Top
     else
@@ -719,7 +719,7 @@ begin
   Client := nil;
   with FTree do
   begin
-    THackWinControl(FDockSite).ReloadDockedControl(Value, Client);
+    TWinControlAccessProtected(FDockSite).ReloadDockedControl(Value, Client);
     Result := Client <> nil;
     if Result then
     begin
@@ -1419,10 +1419,10 @@ begin
     if FTopZone.ChildZones = nil then
     begin
       R := FDockSite.ClientRect;
-      THackWinControl(FDockSite).AdjustClientRect(R);
+      TWinControlAccessProtected(FDockSite).AdjustClientRect(R);
       NewWidth := R.Right - R.Left;
       NewHeight := R.Bottom - R.Top;
-      if THackWinControl(FDockSite).AutoSize then
+      if TWinControlAccessProtected(FDockSite).AutoSize then
       begin
         if NewWidth = 0 then
           NewWidth := Control.UndockWidth;
@@ -1984,7 +1984,7 @@ begin
     (FTopZone <> nil) and (FDockSite.DockClientCount > 0) then
   begin
     R := FDockSite.ClientRect;
-    THackWinControl(FDockSite).AdjustClientRect(R);
+    TWinControlAccessProtected(FDockSite).AdjustClientRect(R);
     if Force or (not CompareMem(@R, @FPreviousRect, SizeOf(TRect))) then
     begin
       FPreviousRect := R;
@@ -2455,8 +2455,8 @@ begin
         (Zone.ChildControl is TWinControl) then
         if (GetActiveControl <> Zone.ChildControl) and Zone.ChildControl.CanFocus then
           Zone.ChildControl.SetFocus;
-      if (THackWinControl(Zone.ChildControl).DragKind = dkDock) and
-        (THackWinControl(Zone.ChildControl).DragMode = dmAutomatic) then
+      if (TWinControlAccessProtected(Zone.ChildControl).DragKind = dkDock) and
+        (TWinControlAccessProtected(Zone.ChildControl).DragMode = dmAutomatic) then
         BeginDrag(Zone.ChildControl, True);
       Result := True;
     end;
@@ -2563,7 +2563,7 @@ begin
       begin
         R := GetFrameRect(Control);
         if HTFlag = HTCAPTION then
-          HintInfo^.HintStr := THackWinControl(Control).Caption
+          HintInfo^.HintStr := TWinControlAccessProtected(Control).Caption
         else
         if HTFlag = HTCLOSE then
           HintInfo^.HintStr := RsDockJvDockTreeCloseBtnHint
@@ -3453,7 +3453,7 @@ end;
 
 procedure TJvDockTree.DrawSplitterRect(const ARect: TRect);
 begin
-  Canvas.Brush.Color := THackWinControl(DockSite).Color;
+  Canvas.Brush.Color := TWinControlAccessProtected(DockSite).Color;
   Canvas.FillRect(ARect);
 end;
 

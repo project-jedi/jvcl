@@ -782,7 +782,7 @@ begin
 end;
 
 type
-  TJvHack = class(TWinControl);
+  TWinControlAccessProtected = class(TWinControl);
 
 procedure TJvPageManager.DormantPages;
 var
@@ -793,7 +793,7 @@ begin
     begin
       for I := 0 to Pages.Count - 1 do
         if PageIndex <> I then
-          TJvHack(Pages.Objects[I]).DestroyHandle;
+          TWinControlAccessProtected(Pages.Objects[I]).DestroyHandle;
     end;
 end;
 

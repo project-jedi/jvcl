@@ -31,7 +31,7 @@ interface
 
 uses
   {$IFDEF VCL}
-  Windows, Controls, 
+  Windows, Controls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls, Types, QWindows,

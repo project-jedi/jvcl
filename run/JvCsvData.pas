@@ -4127,12 +4127,12 @@ begin
   end;
   BackupFolder := BackupFolder + 'Backup'+ PathDelim;
   if not DirectoryExists(BackupFolder) then
-		{$IFDEF MSWINDOWS}
+    {$IFDEF MSWINDOWS}
     CreateDirectory(PChar(BackupFolder), nil);
     {$ENDIF MSWINDOWS}
     {$IFDEF LINUX}
-		ForceDirectories(BackupFolder}
-		{$ENDIF LINUX}
+    ForceDirectories(BackupFolder}
+    {$ENDIF LINUX}
   Found := False;
   for I := 0 to MaxFiles - 1 do
   begin

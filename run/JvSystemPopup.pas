@@ -80,7 +80,7 @@ uses
   JvWndProcHook, JvConsts, JvResources;
 
 type
-  TMenuItemProtectedAccess = class(TMenuItem);
+  TMenuItemAccessProtected = class(TMenuItem);
 
 constructor TJvSystemPopup.Create(AOwner: TComponent);
 begin
@@ -195,7 +195,7 @@ begin
                 try
                   Handle := DC;
                   Font := Screen.MenuFont;
-                  TMenuItemProtectedAccess(MenuItem).MeasureItem(Canvas,
+                  TMenuItemAccessProtected(MenuItem).MeasureItem(Canvas,
                     Integer(itemWidth), Integer(itemHeight));
                 finally
                   Handle := 0;

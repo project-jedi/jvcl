@@ -57,7 +57,7 @@ function IsValidMouseTimer: Boolean;
 implementation
 
 type
-  TOpenControl = class(TControl);
+  TControlAccessProtected = class(TControl);
 
   TJvMouseTimerNotify = class(TComponent)
   protected
@@ -67,8 +67,7 @@ type
   TJvMouseTimer = class(TInterfacedObject, IMouseTimer)
   private
     FTimer: TTimer;
-
-    FCurrentControl: TOpenControl;
+    FCurrentControl: TControlAccessProtected;
     FNotify: TJvMouseTimerNotify;
     procedure TimerTick(Sender: TObject);
   protected
@@ -135,7 +134,7 @@ begin
   except
     { Ignore exception in case control has been destroyed already }
   end;
-  FCurrentControl := TOpenControl(AControl);
+  FCurrentControl := TControlAccessProtected(AControl);
   if FCurrentControl <> nil then
   begin
     if not Assigned(FNotify) then

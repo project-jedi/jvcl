@@ -1092,7 +1092,6 @@ begin
       FontName := S
     else
       FontName := Font.Name;
-      
   end;
 end;
 

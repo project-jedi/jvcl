@@ -411,9 +411,6 @@ uses
   {$ENDIF COMPLER6_UP}
   Forms;
 
-type
-  THackTab = class(TCustomTabControl);
-
 (* (ahuser) make Delphi 5 compiler happy
 procedure ResetAllNonParentNodes(Items: TTreeNodes; ImageIndex, SelectedIndex: Integer);
 var

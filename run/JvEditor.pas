@@ -359,7 +359,7 @@ type
     procedure Undo; override;
   end;
 
-  TJvOpenUndoBuffer = class(TJvUndoBuffer);
+  TJvUndoBufferAccessProtected = class(TJvUndoBuffer);
 
 //=== TJvEditorStrings =======================================================
 
@@ -2152,7 +2152,7 @@ var
   du: TJvInsertUndo;
 begin
   Text := '';
-  with TJvOpenUndoBuffer(UndoBuffer) do
+  with TJvUndoBufferAccessProtected(UndoBuffer) do
   begin
     while (FPtr >= 0) and not IsNewGroup(Self) do
     begin
@@ -2196,7 +2196,7 @@ var
 begin
   OldText := '';
   NewText := '';
-  with TJvOpenUndoBuffer(UndoBuffer) do
+  with TJvUndoBufferAccessProtected(UndoBuffer) do
   begin
     while (FPtr >= 0) and not IsNewGroup(Self) do
     begin
@@ -2266,7 +2266,7 @@ var
 begin
   BegX := FBegX;
   BegY := FBegY;
-  with TJvOpenUndoBuffer(UndoBuffer) do
+  with TJvUndoBufferAccessProtected(UndoBuffer) do
   begin
     while (FPtr >= 0) and not IsNewGroup(Self) do
     begin
@@ -2287,7 +2287,7 @@ begin
   GetEditor.TextModified(BegX, BegY, maInsert, GetEditor.FLines[BegY]);
 
   RestoreSelection;
-  with TJvUnindentColumnUndo(TJvOpenUndoBuffer(UndoBuffer).LastUndo) do
+  with TJvUnindentColumnUndo(TJvUndoBufferAccessProtected(UndoBuffer).LastUndo) do
     GetEditor.SetCaretInternal(CaretX, CaretY);
 end;
 
@@ -2298,7 +2298,7 @@ var
   Text: string;
 begin
   Text := '';
-  with TJvOpenUndoBuffer(UndoBuffer) do
+  with TJvUndoBufferAccessProtected(UndoBuffer) do
   begin
     while (FPtr >= 0) and not IsNewGroup(Self) do
     begin
@@ -2347,7 +2347,7 @@ var
   StartPtr: Integer;
 begin
   Text := '';
-  with TJvOpenUndoBuffer(UndoBuffer) do
+  with TJvUndoBufferAccessProtected(UndoBuffer) do
   begin
     StartPtr := FPtr;
     while (FPtr >= 0) and not IsNewGroup(Self) do
@@ -2367,7 +2367,7 @@ begin
   end;
 
   // set caret on last backspace undo's position
-  with TJvDeleteUndo(UndoBuffer.Items[TJvOpenUndoBuffer(UndoBuffer).FPtr]) do
+  with TJvDeleteUndo(UndoBuffer.Items[TJvUndoBufferAccessProtected(UndoBuffer).FPtr]) do
     if (FText = Lf) or (FText = Cr) then // a line was removed by backspace
       GetEditor.SetCaretInternal(0, CaretY + 1)
     else
@@ -2379,7 +2379,7 @@ var
   Text: string;
 begin
   Text := '';
-  with TJvOpenUndoBuffer(UndoBuffer) do
+  with TJvUndoBufferAccessProtected(UndoBuffer) do
   begin
     while (FPtr >= 0) and not IsNewGroup(Self) do
     begin

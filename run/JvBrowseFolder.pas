@@ -291,7 +291,7 @@ function BrowseDirectory(var AFolderName: string; const DlgText: string;
   AHelpContext: THelpContext): Boolean;
 // (p3) moved from JvFileUtil, deprecated removed
 function BrowseComputer(var AComputerName: string; const DlgText: string;
-  AHelpContext: THelpContext): Boolean;   
+  AHelpContext: THelpContext): Boolean;
 
 implementation
 

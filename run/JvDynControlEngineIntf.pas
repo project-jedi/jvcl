@@ -31,7 +31,7 @@ interface
 uses
   Classes, Controls, Forms, StdCtrls, ExtCtrls, Graphics, Buttons, Dialogs,
   {$IFDEF VCL}
-	FileCtrl,  
+  FileCtrl,  
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   {$IFDEF COMPILER7_UP}

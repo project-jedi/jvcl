@@ -112,7 +112,7 @@ begin
 end;
 
 type
-  TCustomEditHack = class(TCustomEdit);
+  TCustomEditAccessProtected = class(TCustomEdit);
 
 constructor TJvCustomDropDownForm.Create(AOwner: TComponent);
 begin
@@ -128,7 +128,7 @@ begin
   {$IFDEF VisualCLX}
   BorderStyle := fbsNone;
   {$ENDIF VisualCLX}
-  Font := TCustomEditHack(AOwner).Font;
+  Font := TCustomEditAccessProtected(AOwner).Font;
 
   FEntering := True;
   FLeaving := False;

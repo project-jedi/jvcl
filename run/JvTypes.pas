@@ -37,7 +37,8 @@ uses
   SysUtils, Classes,
   Windows, Messages, Controls, Forms, Graphics,
   {$IFDEF VisualCLX}
-  Qt, QTypes, JvQWStrUtils,
+  Qt, QTypes,
+  JvQWStrUtils,
   {$ENDIF VisualCLX}
   JvConsts, JvResources;
 

@@ -31,7 +31,7 @@ unit JvCommStatus;
 interface
 
 uses
-  Windows, SysUtils, Classes, 
+  Windows, SysUtils, Classes,
   JvTypes, JvComponent;
 
 type

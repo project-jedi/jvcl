@@ -1169,9 +1169,6 @@ begin
   Change;
 end;
 
-type
-  TWinControlAccess = class(TWinControl);
-
 procedure TJvTabDefaultPainter.DrawTab(AControl: TCustomTabControl;
   Canvas: TCanvas; Images: TCustomImageList; ImageIndex: Integer;
   const Caption: string; const Rect: TRect; Active, Enabled: Boolean);
@@ -1736,13 +1733,13 @@ begin
 end;
 
 type
-  THackTabSheet = class(TTabSheet);
+  TTabSheetAccessProtected = class(TTabSheet);
 
 function TJvPageControl.CanChange: Boolean;
 begin
   Result := inherited CanChange;
   if Result and (ActivePage <> nil) and ReduceMemoryUse then
-    THackTabSheet(ActivePage).DestroyHandle;
+    TTabSheetAccessProtected(ActivePage).DestroyHandle;
 end;
 
 procedure TJvPageControl.SetReduceMemoryUse(const Value: Boolean);
@@ -2554,22 +2551,22 @@ begin
 end;
 
 type
-  TMenuAccess = class(TMenu);
+  TMenuAccessProtected = class(TMenu);
 
 procedure TJvTreeView.SetMenu(const Value: TMenu);
 begin
   if FMenu <> Value then
   begin
     if (FMenu <> nil) and not (csDesigning in ComponentState) then
-      TMenuAccess(FMenu).OnChange := FOldMenuChange;
+      TMenuAccessProtected(FMenu).OnChange := FOldMenuChange;
     FMenu := Value;
     if FMenu <> nil then
     begin
       FMenu.FreeNotification(Self);
       if not (csDesigning in ComponentState) then
       begin
-        FOldMenuChange := TMenuAccess(Fmenu).OnChange;
-        TMenuAccess(FMenu).OnChange := DoMenuChange;
+        FOldMenuChange := TMenuAccessProtected(FMenu).OnChange;
+        TMenuAccessProtected(FMenu).OnChange := DoMenuChange;
       end;
     end;
     RebuildFromMenu;

@@ -265,7 +265,7 @@ type
     function GetOSVersion: TWindowsVersion;
     procedure SetOSVersion(const Value: TWindowsVersion);
   published
-    property OSVersion:TWindowsVersion read GetOSVersion write SetOSVersion stored False; 
+    property OSVersion: TWindowsVersion read GetOSVersion write SetOSVersion stored False;
     property ProductType: TNtProductType read GetProductType write SetProductType stored False;
     property ProductID: string read GetWinProductID write SetWinProductID stored False;
     property ProductName: string read GetWinProductName write SetWinProductName stored False;

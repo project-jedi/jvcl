@@ -117,9 +117,8 @@ const
   AI_GETACTIVE = $0004;
   AI_SETACTIVE = $0005;
 
+{$IFDEF VisualCLX}
 type
-  TOpenJclAppInstances = class(TJclAppInstances);
-  {$IFDEF VisualCLX}
   TPrivateComponent = class(TPersistent, IInterface, IInterfaceComponentReference)
   protected
     FOwner: TComponent;
@@ -132,7 +131,7 @@ type
     function GetComponent: TComponent; virtual; abstract;
     function QueryInterface(const IID: TGUID; out Obj): HRESULT; virtual; stdcall; abstract;
   end;
-  {$ENDIF VisualCLX}
+{$ENDIF VisualCLX}
 
 var
   FirstJvAppInstance: Boolean = True;

@@ -2208,7 +2208,7 @@ type
   PComp = ^Comp;
   PPointer = ^Pointer;
   {$IFDEF VCL}
-  TOpenEdit = class(TCustomEdit);
+  TCustomEditAccessProtected = class(TCustomEdit);
   {$ENDIF VCL}
 var
   GlobalGenItemReg: TJvInspectorRegister = nil;
@@ -5484,15 +5484,15 @@ begin
     InvalidateItem;
     if EditCtrl <> nil then
     begin
-      TmpOnChange := TOpenEdit(EditCtrl).OnChange;
-      TOpenEdit(EditCtrl).OnChange := nil;
+      TmpOnChange := TCustomEditAccessProtected(EditCtrl).OnChange;
+      TCustomEditAccessProtected(EditCtrl).OnChange := nil;
       try
         if Data.IsAssigned then
           EditCtrl.Text := DisplayValue
         else
           EditCtrl.Text := '';
       finally
-        TOpenEdit(EditCtrl).OnChange := TmpOnChange;
+        TCustomEditAccessProtected(EditCtrl).OnChange := TmpOnChange;
       end;
     end;
   end;
@@ -5717,7 +5717,7 @@ begin
   if not DroppedDown then
   begin
     ListBox.Width := RectWidth(Rects[iprValueArea]);
-    TListBox(ListBox).Font := TOpenEdit(EditCtrl).Font;
+    TListBox(ListBox).Font := TCustomEditAccessProtected(EditCtrl).Font;
     ListBox.Items.Clear;
     GetValueList(ListBox.Items);
     if [iifOwnerDrawListFixed, iifOwnerDrawListVariable, iifOwnerDrawListMaxHeight] * Flags <> [] then
@@ -6532,7 +6532,7 @@ begin
     FEditCtrl := Value;
 
     if EditCtrl <> nil then
-      with TOpenEdit(EditCtrl) do
+      with TCustomEditAccessProtected(EditCtrl) do
       begin
         {$IFDEF VCL}
         Ctl3D := False;
@@ -7240,16 +7240,16 @@ begin
     end;
     if iifEditFixed in Flags then
     begin
-      TOpenEdit(EditCtrl).ReadOnly := True;
-      TOpenEdit(EditCtrl).TabStop := False;
-      TOpenEdit(EditCtrl).Color := Inspector.Canvas.Brush.Color;
+      TCustomEditAccessProtected(EditCtrl).ReadOnly := True;
+      TCustomEditAccessProtected(EditCtrl).TabStop := False;
+      TCustomEditAccessProtected(EditCtrl).Color := Inspector.Canvas.Brush.Color;
     end
     else
-      TOpenEdit(EditCtrl).Color := clWindow;
+      TCustomEditAccessProtected(EditCtrl).Color := clWindow;
     {$IFDEF VCL}
     FEditWndPrc := EditCtrl.WindowProc;
     EditCtrl.WindowProc := Edit_WndProc;
-    TOpenEdit(EditCtrl).AutoSize := False;
+    TCustomEditAccessProtected(EditCtrl).AutoSize := False;
     {$ENDIF VCL}
     if iifValueList in Flags then
     begin
@@ -7280,13 +7280,13 @@ begin
       TListBox(ListBox).OnMeasureItem := DoMeasureListItem;
       TListBox(ListBox).OnExit := ListExit;
     end;
-    TOpenEdit(EditCtrl).Font.Assign(Inspector.Font);
+    TCustomEditAccessProtected(EditCtrl).Font.Assign(Inspector.Font);
     EditCtrl.BoundsRect := Rects[iprEditValue];
-    TOpenEdit(EditCtrl).OnKeyDown := EditKeyDown;
-    TOpenEdit(EditCtrl).OnMouseDown := EditMouseDown;
-    TOpenEdit(EditCtrl).OnMouseMove := EditMouseMove;
-    TOpenEdit(EditCtrl).OnMouseUp := EditMouseUp;
-    TOpenEdit(EditCtrl).OnChange := EditChange;
+    TCustomEditAccessProtected(EditCtrl).OnKeyDown := EditKeyDown;
+    TCustomEditAccessProtected(EditCtrl).OnMouseDown := EditMouseDown;
+    TCustomEditAccessProtected(EditCtrl).OnMouseMove := EditMouseMove;
+    TCustomEditAccessProtected(EditCtrl).OnMouseUp := EditMouseUp;
+    TCustomEditAccessProtected(EditCtrl).OnChange := EditChange;
     EditCtrl.Visible := True;
     if Data.IsAssigned then
       EditCtrl.Text := DisplayValue

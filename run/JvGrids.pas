@@ -467,7 +467,7 @@ end;
 
 {$IFDEF VisualCLX}
 type
-  TOpenWidgetControl = class(TWidgetControl);
+  TWidgetControlAccessProtected = class(TWidgetControl);
 {$ENDIF VisualCLX}
 
 procedure TJvInplaceEdit.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -489,7 +489,7 @@ begin
         SendMessage(FActiveList.Handle, WM_LBUTTONDOWN, 0, Integer(MousePos));
         {$ENDIF VCL}
         {$IFDEF VisualCLX}
-        TOpenWidgetControl(FActiveList).MouseDown(mbLeft, Shift, MousePos.X , MousePos.Y);
+        TWidgetControlAccessProtected(FActiveList).MouseDown(mbLeft, Shift, MousePos.X , MousePos.Y);
         {$ENDIF VisualCLX}
         Exit;
       end;

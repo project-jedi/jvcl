@@ -43,7 +43,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Qt, QTypes, QGraphics, QControls, QForms, QStdCtrls, QMask, QClipbrd,
-  Types, QWindows, 
+  Types, QWindows,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer;
@@ -674,12 +674,12 @@ begin
 end;
 
 type
-  TOpenControl = class(TControl);
+  TControlAccessProtected = class(TControl);
 {$IFDEF VisualCLX}
-  TOpenWidgetControl = class(TWidgetControl);
-  TOpenCustomControl = class(TCustomControl);
-  TOpenCustomEdit = class(TCustomEdit);
-  TOpenCustomMaskEdit = class(TCustomMaskEdit);
+  TWidgetControlAccessProtected = class(TWidgetControl);
+  TCustomControlAccessProtected = class(TCustomControl);
+  TCustomEditAccessProtected = class(TCustomEdit);
+  TCustomMaskEditAccessProtected = class(TCustomMaskEdit);
 
 procedure WidgetControl_Painting(Instance: TWidgetControl; Canvas: TCanvas;
   EventRegion: QRegionH);
@@ -700,7 +700,7 @@ begin
   Pixmap := nil;
   OriginalPainter := nil;
 
-  with TOpenWidgetControl(Instance) do
+  with TWidgetControlAccessProtected(Instance) do
   begin
     TControlCanvas(Canvas).StartPaint;
     if IsDoubleBuffered then
@@ -768,7 +768,7 @@ begin
         // TCustomForm calls Paint in it's EventFilter
       else
       if Instance is TCustomControl then
-        TOpenCustomControl(Instance).Paint
+        TCustomControlAccessProtected(Instance).Paint
       else
         Intf.Paint;
 
@@ -814,7 +814,7 @@ begin
       QPainter_end(Painter);
     end;
     try
-      Painting := @TOpenWidgetControl.Painting;
+      Painting := @TWidgetControlAccessProtected.Painting;
      // default painting
       Painting(Instance, Instance.Handle, QPainter_clipRegion(Painter));
     finally
@@ -843,7 +843,7 @@ var
   Value: TInputKeys;
 begin
   Result := InheritedValue;
-  Value := TOpenWidgetControl(Instance).InputKeys;
+  Value := TWidgetControlAccessProtected(Instance).InputKeys;
 
   DlgCodes := [dcNative];
   if ikAll in Value then
@@ -877,7 +877,7 @@ procedure TWidgetControl_ColorChanged(Instance: TWidgetControl);
 var
   TC: QColorH;
 begin
-  with TOpenWidgetControl(Instance) do
+  with TWidgetControlAccessProtected(Instance) do
   begin
     HandleNeeded;
     if Bitmap.Empty then
@@ -887,7 +887,7 @@ begin
       TC := QColor(Color);
       QWidget_setBackgroundColor(Handle, TC);
       QColor_destroy(TC);
-    end; 
+    end;
     NotifyControls(CM_PARENTCOLORCHANGED);
     Invalidate;
   end;
@@ -981,7 +981,7 @@ procedure TCustomEdit_Paste(Instance: TWinControl);
     WValue: WideString;
   begin
     WValue := Clipboard.AsText;
-    case TOpenCustomEdit(Instance).CharCase of
+    case TCustomEditAccessProtected(Instance).CharCase of
       ecUpperCase:
         WValue := WideUpperCase(WValue);
       ecLowerCase:
@@ -1002,7 +1002,7 @@ begin
   if Instance is TCustomMaskEdit then
   begin
     if not TCustomMaskEdit(Instance).IsMasked or
-       TOpenCustomMaskEdit(Instance).ReadOnly then  // PasteFromClipboard would call "inherited"
+       TCustomMaskEditAccessProtected(Instance).ReadOnly then  // PasteFromClipboard would call "inherited"
       QClxLineEdit_cut(QClxLineEditH(Instance.Handle))
     else
       TCustomMaskEdit(Instance).CutToClipboard;
@@ -1187,7 +1187,7 @@ end;
 
 procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
 begin
-  with TOpenControl(Instance) do
+  with TControlAccessProtected(Instance) do
   begin
     if AutoSize <> Value then
     begin
@@ -1210,7 +1210,7 @@ begin
 end;
 
 {$OPTIMIZATION ON} // be sure to have optimization activated
-function GetCode(Instance: TOpenControl): Boolean; register;
+function GetCode(Instance: TControlAccessProtected): Boolean; register;
 begin
   { generated code:
       8A40xx       mov al,[eax+Byte(Offset)]
@@ -1218,7 +1218,7 @@ begin
   Result := Instance.AutoSize;
 end;
 
-procedure SetCode(Instance: TOpenControl); register;
+procedure SetCode(Instance: TControlAccessProtected); register;
 begin
   { generated code:
       B201         mov dl,$01
