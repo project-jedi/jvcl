@@ -66,6 +66,7 @@ uses
 procedure Register;
 begin 
   GroupDescendentsWith(TJvDataEmbedded, TControl);
+  GroupDescendentsWith(TJvComponentEmbedded, TControl);
   GroupDescendentsWith(TJvStrHolder, TControl);
   GroupDescendentsWith(TJvPageManager, TControl); 
 

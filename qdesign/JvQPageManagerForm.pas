@@ -34,10 +34,8 @@ unit JvQPageManagerForm;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QGrids, Types, QWindows,  
-  RTLConsts, DesignIntf, DesignEditors,  
-  ClxEditors, QDesignWindows,  
+  SysUtils, Classes, QWindows, QGraphics, QControls, QForms, QGrids, QStdCtrls, QExtCtrls, 
+  RTLConsts, DesignIntf, DesignEditors, CLXEditors, QDesignWindows, 
   JvQSpeedButton, JvQPageManager, JvQJVCLUtils, JvQComponent;
 
 type

@@ -35,11 +35,10 @@ unit JvQValidatorsEditorForm;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QTypes, QExtCtrls, QDialogs, QComCtrls,
-  QToolWin, QStdCtrls, QMenus, QActnList, QImgList, ClxDesignWindows,  
-  DesignEditors, DesignIntf,  
-  QDesignWindows,  
+  SysUtils, Classes,
+  QWindows, QMessages, QGraphics, QControls, QForms,
+  QDialogs, QComCtrls, QToolWin, QStdCtrls, QMenus, QActnList, QImgList, 
+  DesignEditors, DesignIntf, QDesignWindows, 
   JvQValidators;
 
 type

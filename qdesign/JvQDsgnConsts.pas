@@ -202,7 +202,10 @@ resourcestring
 
 //=== JvDataEmbeddedEditor.pas ===============================================
 resourcestring
-   RsLoadFromFileEllipsis = 'Load from File...';
+   RsLoadFromFileEllipsis = 'Load From File...';
+   RsClearEmbeddedData = 'Clear data';
+   RsViewEmbeddedDataAsText = 'View As Text...';
+   
 
 //=== JvDataProviderDesignerForm.pas =========================================
 resourcestring
@@ -266,6 +269,7 @@ resourcestring
   RsExecutableFilesExeExeAllFiles = 'Executable files (*)|*';
   {$ENDIF LINUX}
   RsItems = 'Items';
+  RsStrings = 'Strings';
   RsFmtEditEllipsis = '%s Editor...';
   RsSaveImageList = 'Save to bitmap...';
 

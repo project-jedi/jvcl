@@ -35,7 +35,7 @@ unit JvQSegmentedLEDDisplayEditors;
 interface
 
 uses
-  Classes, QGraphics, QMenus, Types, QWindows, 
+  Classes, QGraphics, QMenus, QWindows, 
   DesignEditors, DesignIntf, DesignMenus, CLXEditors,   
   JvQDsgnEditors, 
   JvQColorEditor, JvQSegmentedLEDDisplay;

@@ -35,8 +35,7 @@ unit JvQPatcherEditor;
 interface
 
 uses
-  SysUtils, Classes,  
-  QControls, QForms,  
+  SysUtils, Classes, QControls, QForms, 
   DesignEditors, DesignIntf, 
   JvQPatchForm;
 

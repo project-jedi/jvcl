@@ -36,8 +36,9 @@ unit JvQColorProviderDsgnTreeFrame;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QDialogs, QImgList, QMenus, QActnList, QComCtrls, 
+  SysUtils, Classes,
+  QWindows, QMessages, QGraphics, QControls, QForms, QDialogs,
+  QImgList, QMenus, QActnList, QComCtrls,
   JvQProviderTreeListDsgnFrame;
 
 type
@@ -60,8 +61,6 @@ implementation
 uses
   JclStrings,
   JvQColorProvider, JvQDataProviderIntf, JvQColorProviderAddDialogForm, JvQTypes;
-
-//=== { TfmeJvColorProviderDsgnTree } =========================================
 
 procedure TfmeJvColorProviderDsgnTree.UpdateActionStates;
 var

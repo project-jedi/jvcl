@@ -48,16 +48,16 @@ uses
   QImgList, 
   DesignEditors, DesignIntf, 
   JvQDsgnConsts, JvQTypes,  
-  JvQGauges, JvQStdDsgnEditors, QComCtrlsEx,
+  JvQGauges, JvQStdDsgnEditors, QComCtrlsEx, 
   {$IFDEF USEWINDOWS}
   JvQBrowseFolder,
   {$ENDIF USEWINDOWS}
-  JvQComboBox, JvQColorCombo, JvQComCtrls,
+  JvQCombobox, JvQColorCombo, JvQComCtrls,
   JvQSpin, JvQEdit, JvQProgressBar, JvQMaskEdit, JvQBaseEdits, JvQCalc,
   JvQToolEdit, JvQBevel, JvQCheckBox, JvQSpeedButton, JvQSecretPanel,
   JvQCheckListBox, JvQControlBar, JvQCtrls, JvQGroupBox, JvQHeaderControl,
   JvQImage, JvQLabel, JvQRadioButton, JvQRadioGroup, JvQScrollBar, JvQShape,
-  JvQStatusBar, JvQGrids, JvQStringGrid, JvQBitBtn, JvQPanel, JvQImageList,
+  JvQStaticText, JvQStatusBar, JvQGrids, JvQStringGrid, JvQBitBtn, JvQPanel, JvQImageList,
   JvQTransparentPanel, JvQCheckedItemsForm, JvQProgressEditor, JvQDsgnEditors,
   JvQCheckedMaskEdit;
 
@@ -75,7 +75,7 @@ const
   cOwnerDraw = 'OwnerDraw';
 begin
   RegisterComponents(RsPaletteVisual, [TJvShape]);
-  RegisterComponents(RsPaletteNonVisual, [
+  RegisterComponents(RsPaletteNonVisual, [ 
     TJvCalculator]);
   {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteDialog, [TJvBrowseForFolderDialog]);
@@ -96,15 +96,14 @@ begin
     TJvControlBar,
     TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
     TJvSecretPanel {, TJvTransparentPanel}]);
-  RegisterComponents(RsPaletteLabel, [
-    TJvLabel]);
+  RegisterComponents(RsPaletteLabel, [TJvStaticText, TJvLabel]);
   RegisterComponents(RsPaletteListComboTree, [TJvComboBox, TJvCheckedComboBox,
     TJvCheckListBox,
     TJvColorComboBox,
     TJvDrawGrid, TJvStringGrid]);
-  RegisterComponents(RsPaletteScrollerTracker, [
+  RegisterComponents(RsPaletteScrollerTracker, [ 
     TJvScrollBar]);
-  RegisterComponents(RsPaletteSliderSplitter, [TJvTrackBar]);
+  RegisterComponents(RsPaletteSliderSplitter, [TJvTrackBar]); 
 
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'Gauge', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);

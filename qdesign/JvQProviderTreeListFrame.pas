@@ -36,8 +36,8 @@ unit JvQProviderTreeListFrame;
 interface
 
 uses
-  SysUtils, Classes,  
-  Qt, QGraphics, QControls, QForms, QDialogs, QComCtrls, Types, QWindows, 
+  SysUtils, Classes,
+  QWindows, QMessages, QGraphics, QControls, QForms, QDialogs, QComCtrls,
   JvQDataProvider, JvQDataProviderIntf;
 
 type
@@ -113,10 +113,7 @@ implementation
 uses 
   JvQDsgnConsts, JvQConsts;
 
-
-
 {$R *.xfm}
-
 
 function GetItemIndexAt(LV: TListView; X, Y: Integer): Integer;
 var  

@@ -36,8 +36,7 @@ unit JvQBaseDlgEditor;
 interface
 
 uses
-  SysUtils, Classes,  
-  QWindows, Types, QGraphics, QControls, QForms, QDialogs, 
+  SysUtils, Classes, QWindows, QMessages, QGraphics, QControls, QForms, QDialogs,
   TypInfo, 
   DesignEditors, DesignIntf,  
   JvQBaseDlg;

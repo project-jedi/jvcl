@@ -98,7 +98,7 @@ const
   cLookOutPage = 'LookOutPage';
   cExpressButton = 'ExpressButton';
 
-//=== { TJvLookOutPageEditor } =================================================
+//=== { TJvLookOutPageEditor } ===============================================
 
 constructor TJvLookOutPageEditor.Create(AComponent: TComponent; ADesigner: IJvFormDesigner);
 begin
@@ -275,7 +275,7 @@ begin
   Result := 3;
 end;
 
-//=== { TJvExpressEditor } =====================================================
+//=== { TJvExpressEditor } ===================================================
 
 constructor TJvExpressEditor.Create(AComponent: TComponent; ADesigner: IJvFormDesigner);
 begin
@@ -330,7 +330,7 @@ begin
   Result := 1;
 end;
 
-//=== { TJvLookOutImageIndexProperty } =========================================
+//=== { TJvLookOutImageIndexProperty } =======================================
 
 function TJvLookOutImageIndexProperty.GetButton: TJvCustomLookOutButton;
 begin

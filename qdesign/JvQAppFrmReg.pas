@@ -40,14 +40,9 @@ implementation
 
 uses
   Classes,
-
-
   QGraphics, Types,
-
-
   DesignIntf,
-
-  JvQDsgnConsts,
+  JvQDsgnConsts, JvQFormColors,
   JvQAppAnimatedIcon, JvQAppEvent, JvQFormAutoSize,
   JvQFormAnimatedIcon, JvQFormAnimation, JvQFormWallpaper,
   JvQAnimTitle;
@@ -63,7 +58,7 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteAppForm,
     [TJvAppEvents, TJvAppAnimatedIcon, TJvFormAnimatedIcon, TJvFormAutoSize,
-     TJvFormAnimation, TJvFormWallpaper]);
+     TJvFormAnimation, TJvFormWallpaper, TJvFormColors]);
 
 //  RegisterComponentEditor(TJvGradientCaption, TGradientCaptionEditor);
 //  RegisterPropertyEditor(TypeInfo(TPicture), TJvFormWallpaper, 'Image', TJvFormWallpaperEditor);

@@ -36,8 +36,7 @@ unit JvQBaseDsgnFrame;
 interface
 
 uses
-  SysUtils,  
-  QGraphics, QControls, QForms, QDialogs,  
+  SysUtils, QWindows, QMessages, QGraphics, QControls, QForms, QDialogs,
   Classes;
 
 type

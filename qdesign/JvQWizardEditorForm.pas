@@ -50,11 +50,11 @@ unit JvQWizardEditorForm;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QDialogs, Types, QTypes,
-  QActnList, QImgList, QComCtrls, QStdCtrls, QToolWin, QMenus,  
-  DesignIntf, DesignEditors,  
-  ClxDesignWindows,  
+  SysUtils, Classes,
+  QWindows, QMessages, QGraphics, QControls, QForms, QDialogs,
+  QActnList, QImgList, QComCtrls, QStdCtrls, QToolWin, QMenus, 
+  DesignIntf, DesignEditors,
+  QDesignWindows, 
   JvQWizard;
 
 type
@@ -84,8 +84,8 @@ type
     function GetValue: string; override;
     procedure Edit; override;
   end;
-  
-  TJvWizardPageListEditor = class(TClxDesignWindow) 
+
+  TJvWizardPageListEditor = class(TDesignWindow)
     tbrWizardPages: TToolBar;
     lbxWizardPages: TListBox;
     btnAddWelcomePage: TToolButton;
@@ -135,7 +135,6 @@ type
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     procedure DesignerClosed(const Designer: IDesigner; AGoingDormant: Boolean); override;
     procedure ItemsModified(const Designer: IDesigner); override; 
-    function UniqueName(Component: TComponent): string; override;  
     function GetEditState: TEditState; override;
   end;
 
@@ -146,10 +145,7 @@ uses
   JvQDsgnConsts;
 
 
-
-
 {$R *.xfm}
-
 
 
 
@@ -412,13 +408,6 @@ begin
   if not (csDestroying in ComponentState) then
     UpdatePageList(lbxWizardPages.ItemIndex);
 end;
-
-
-function TJvWizardPageListEditor.UniqueName(Component: TComponent): string;
-begin
-  Result := Designer.UniqueName(Component.ClassName);
-end;
-
 
 
 

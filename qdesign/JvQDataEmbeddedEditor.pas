@@ -36,23 +36,27 @@ interface
 
 uses
   SysUtils, Classes, QDialogs, 
-  DesignEditors, DesignIntf, 
+  DesignEditors, DesignIntf, DesignMenus,   
+  QWindows, 
   JvQDataEmbedded;
 
 type
   TJvDataEmbeddedComponentEditor = class(TComponentEditor)
   private
     procedure LoadDataFromFile(Comp: TJvDataEmbedded);
+    procedure ViewAsText;
   public
     function GetVerbCount: Integer; override;
     function GetVerb(Index: Integer): string; override;
-    procedure ExecuteVerb(Index: Integer); override;
+    procedure ExecuteVerb(Index: Integer); override; 
+    procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override; 
   end;
 
 implementation
 
 uses
-  JvQDsgnConsts;
+  JvQDsgnConsts, 
+  JclFileUtils;
 
 procedure TJvDataEmbeddedComponentEditor.LoadDataFromFile(Comp: TJvDataEmbedded);
 var
@@ -82,19 +86,72 @@ end;
 
 procedure TJvDataEmbeddedComponentEditor.ExecuteVerb(Index: Integer);
 begin
-  if Index = 0 then
+  case Index of
+  0:
     LoadDataFromFile(Component as TJvDataEmbedded);
+  1:
+    (Component as TJvDataEmbedded).Size := 0;
+  2:
+    ViewAsText;
+  end;
 end;
 
 function TJvDataEmbeddedComponentEditor.GetVerb(Index: Integer): string;
 begin
-  if Index = 0 then
+  case Index of
+  0:
     Result := RsLoadFromFileEllipsis;
+  1:
+    Result := RsClearEmbeddedData;
+  2:
+    Result := RsViewEmbeddedDataAsText;
+  end;
 end;
 
 function TJvDataEmbeddedComponentEditor.GetVerbCount: Integer;
 begin
-  Result := 1;
+  Result := 3;
+end;
+
+
+procedure TJvDataEmbeddedComponentEditor.PrepareItem(Index: Integer;
+  const AItem: IMenuItem);
+begin
+  inherited;
+  case Index of
+  1,2:
+    AItem.Enabled := (Component as TJvDataEmbedded).Data.Size > 0;
+  end;
+end;
+
+
+procedure TJvDataEmbeddedComponentEditor.ViewAsText;
+var
+  F:TFileStream;
+  S:string;
+begin
+
+  S := 'JvClx.txt'; //FileGetTempName('JVCL');
+  F := TFileStream.Create(S,fmCreate);
+  try
+    (Component as TJvDataEmbedded).DataSaveToStream(F);
+  finally
+    F.Free;
+  end;
+  {$IFDEF MSWINDOWS}
+  ShellExecute(GetActiveWindow, 'open','notepad.exe',PChar(S),PChar(ExtractFilePath(S)),SW_SHOWNORMAL);
+  // (p3) not 100% kosher, but seems to work most of the time
+  // if anyone knows a better way to delete the temp file, please fix
+  sleep(300);
+  DeleteFile(PChar(S));
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  ShellExecute(GetActiveWindow, 'open', PChar(S), nil, PChar(ExtractFilePath(S)),SW_SHOWNORMAL);
+  // (p3) not 100% kosher, but seems to work most of the time
+  // if anyone knows a better way to delete the temp file, please fix
+  sleep(300);
+  DeleteFile(PChar(S));
+  {$ENDIF LINUX}
 end;
 
 end.

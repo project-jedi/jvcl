@@ -51,7 +51,7 @@ uses
   {$IFDEF USEWINDOWS}
   JvQMRUList, JvQMRUManager,
   JvQCommStatus, {JvComputerInfo,}
-  {JvDeviceChanged, JvDirectories, JvSystemColors, JvKeyboardStates,} JvQJoystick,
+  {JvDeviceChanged, JvDirectories, JvSystemColors, JvKeyboardStates, JvQJoystick,}
   JvQNTEventLog, JvQRas32, JvQAppInst, JvQScreenSaver,
   JvQShellHook, JvQSHFileOperation, JvQSoundControl, JvQChangeNotify, JvQSearchFiles,
   JvQPerfMon95, JvQComputerInfoEx,
@@ -85,7 +85,7 @@ begin
   {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteSystem, [{TJvComputerInfo, // - do not register this component as default}
     TJvSHFileOperation, TJvChangeNotify, TJvAppInstances, TJvNTEventLog,
-    TJvScreenSaver, TJvNTEventLog, TJvScreenSaver, TJvJoystick, TJvSoundControl,
+    TJvScreenSaver, TJvNTEventLog, TJvScreenSaver, {TJvJoystick,} TJvSoundControl,
     {TJvDeviceChanged,  TJvKeyboardStates, TJvDirectories, these are not needed - included in JvComputerInfoEx instead}
     TJvPerfStat95, TJvComputerInfoEx, TJvSystemColors]);
   RegisterComponents(RsPaletteInternetWork, [TJvRas32, TJvCommStatus]);
