@@ -312,6 +312,8 @@ end;
 
 destructor TJvgCustomTreeView.Destroy;
 begin
+ // (ahuser) moved inherted to top otherwise it raises an AV
+  inherited Destroy;
   FCanvas.Free;
   FBevel.Free;
   if Assigned(FWallpaper) then
@@ -320,7 +322,6 @@ begin
     FMask.Free;
   if Assigned(FGradient) then
     FGradient.Free;
-  inherited Destroy;
 end;
 
 procedure TJvgCustomTreeView.Assign(Source: TPersistent);
