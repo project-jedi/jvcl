@@ -800,6 +800,7 @@ procedure TJvAppXMLFileStorage.Reload;
 begin
   if not IsUpdating and not (csDesigning in ComponentState) then
   begin
+    inherited Reload;
     if FileExists(FullFileName) then
       Xml.LoadFromFile(FullFileName)
     else // file may have disappeared. If so, clear the root element
