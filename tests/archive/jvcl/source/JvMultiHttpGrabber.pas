@@ -251,6 +251,7 @@ begin
     with TJvMultiHttpThread.Create(Infos) do
     begin
       OnTerminate := ThreadTerminated;
+      FreeOnTerminate := true;
       Resume;
       Inc(FCount);
     end;
@@ -422,7 +423,6 @@ begin
 
     StopConnection(FInfos);
     Dispose(FInfos);
-    Free;
   end;
   Dec(FCount);
 end;
