@@ -25,6 +25,7 @@ __published:	// IDE-managed Components
   void __fastcall MemoKeyDown(TObject *Sender, WORD &Key,
           TShiftState Shift);
   void __fastcall MemoKeyPress(TObject *Sender, char &Key);
+  void __fastcall JvFullColorCircleDialogApply(TObject *Sender);
 private:	// User declarations
   TImage* Images[7];
   TMemo* Memos[7];

@@ -167,7 +167,11 @@ void __fastcall TfrmMain::MemoKeyPress(TObject *Sender, char &Key)
   Key = 0; // discard any key because Enabled=False affects the text rendering
 }
 //---------------------------------------------------------------------------
-
+void __fastcall TfrmMain::JvFullColorCircleDialogApply(TObject *Sender)
+{
+  RotateCustomValues();
+}
+//---------------------------------------------------------------------------
 ColorDeltaVector::ColorDeltaVector()
 {
   TJvColorDelta* Delta;
@@ -312,3 +316,6 @@ ColorDeltaVector::~ColorDeltaVector()
   for(it=begin(); it!=end(); it++)
     delete *it;
 }
+
+//---------------------------------------------------------------------------
+

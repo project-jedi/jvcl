@@ -61,6 +61,7 @@ object frmMain: TfrmMain
   end
   object JvFullColorCircleDialog: TJvFullColorCircleDialog
     HelpContext = 0
+    OnApply = JvFullColorCircleDialogApply
     Left = 184
     Top = 80
   end
