@@ -47,12 +47,6 @@ uses
 const
   DefButtonWidth = 24;
   DefButtonHeight = 23;
-  {$IFDEF VCL}
-  NullHandle = 0;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  NullHandle = nil;
-  {$ENDIF VisualCLX}
 
 type
   TJvSpeedItem = class;
@@ -1519,10 +1513,10 @@ begin
   FImageChangeLink.OnChange := ImageListChange;
   if not Registered then
   begin
-    {$IFDEF VisualCLX}
+    {$IFDEF COMPILER7_UP}
     GroupDescendentsWith(TJvSpeedItem, TControl);
     GroupDescendentsWith(TJvSpeedBarSection, TControl);
-    {$ENDIF VisualCLX}
+    {$ENDIF COMPILER7_UP}
     RegisterClasses([TJvSpeedItem, TJvSpeedBarSection, TJvSpeedBarButton]);
     Registered := True;
   end;

@@ -7,7 +7,7 @@ unit JvJansReg;
 interface
 
 uses
-  Classes,
+  Classes, Controls,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, VCLEditors,
   {$ELSE}
@@ -35,6 +35,17 @@ const
   cCSVField = 'CSVField';
   cCSVFieldName = 'CSVFieldName';
 begin
+  {$IFDEF COMPILER7_UP}
+  GroupDescendentsWith(TJvSALCore, TControl);
+  GroupDescendentsWith(TJvSALMath, TControl);
+  GroupDescendentsWith(TJvGridFilter, TControl);
+  GroupDescendentsWith(TJvGridPrinter, TControl);
+  GroupDescendentsWith(TJvPaintFX, TControl);
+  GroupDescendentsWith(TJvForthScript, TControl);
+  GroupDescendentsWith(TJvTurtle, TControl);
+  GroupDescendentsWith(TJvSimPIDLinker, TControl);
+  {$ENDIF COMPILER7_UP}
+
   //TODO: Register a TShortCut Property Editor on TTreeKeyMappings class in TJvJanTreeView
   RegisterComponents('Jv Jans', [TJvMarkupLabel, TJvMarkupViewer, TJvSAL,
     TJvSticker, TJvSALCore, TJvSALMath, TJvYearGrid, TJvAirBrush, TJvTracker,

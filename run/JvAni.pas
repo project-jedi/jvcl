@@ -42,7 +42,7 @@ uses
   RTLConsts,
   {$ENDIF COMPILER6_UP}
   {$IFDEF VCL}
-  Windows, Graphics, ExtCtrls, Dialogs,
+  Windows, Graphics, Controls, ExtCtrls, Dialogs, 
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QExtCtrls, QDialogs, Types, QTypes, QWindows,
@@ -1097,10 +1097,12 @@ end;
 {$ENDIF VisualCLX}
 
 initialization
-  {$IFDEF VisualCLX}
+  {$IFDEF VCL}
+  {$IFDEF COMPILER7_UP}
   GroupDescendentsWith(TJvAni, TControl);
-  {$ENDIF VisualCLX}
+  {$ENDIF COMPILER7_UP}
   Classes.RegisterClass(TJvAni);
+  {$ENDIF VCL}
   TPicture.RegisterFileFormat(RsAniExtension, RsAniFilterName, TJvAni);
 
 finalization

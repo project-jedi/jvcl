@@ -56,6 +56,11 @@ uses
 
 procedure Register;
 begin
+  {$IFDEF COMPILER7_UP}
+  GroupDescendentsWith(TJvDataEmbedded, TControl);
+  GroupDescendentsWith(TJvStrHolder, TControl);
+  {$ENDIF COMPILER7_UP}
+
   RegisterComponents(RsPaletteNonVisual,[TJvAlarms, TJvConverter,
     TJvDataEmbedded, TJvCreateProcess,
     TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile, TJvProfiler,
