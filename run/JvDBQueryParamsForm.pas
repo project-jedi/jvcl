@@ -93,7 +93,7 @@ var
   J: TFieldType;
 begin
   for J := Low(TFieldType) to High(TFieldType) do
-    FieldTypes[J] := EmptyStr;
+    FieldTypes[J] := '';
   ParamString := RsDataTypes;
   J := Low(TFieldType);
   I := 1;
@@ -118,7 +118,7 @@ var
 begin
   for I := Low(TFieldType) to High(TFieldType) do
     //DisposeStr(FieldTypes[I]);
-    FieldTypes[I] := EmptyStr;
+    FieldTypes[I] := '';
 end;
 
 procedure DoneQBind;

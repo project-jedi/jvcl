@@ -3183,7 +3183,7 @@ end;
 function TJvCustomDateEdit.IsCustomTitle: Boolean;
 begin
   Result := (CompareStr(RsDateDlgCaption, DialogTitle) <> 0) and
-    (DialogTitle <> EmptyStr); // Polaris
+    (DialogTitle <> ''); // Polaris
 end;
 
 procedure TJvCustomDateEdit.KeyDown(var Key: Word; Shift: TShiftState);

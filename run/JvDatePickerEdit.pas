@@ -476,7 +476,7 @@ end;
 
 function TJvCustomDatePickerEdit.IsNoDateTextStored: Boolean;
 begin
-  Result := (NoDateText <> EmptyStr);
+  Result := (NoDateText <> '');
 end;
 
 procedure TJvCustomDatePickerEdit.RaiseNoDate;
@@ -698,13 +698,13 @@ begin
   begin
     FMask := EditMask;
     if not (csDesigning in ComponentState) then
-      EditMask := EmptyStr;
+      EditMask := '';
   end;
 end;
 
 procedure TJvCustomDatePickerEdit.RestoreMask;
 begin
-  if EditMask = EmptyStr then
+  if EditMask = '' then
     EditMask := FMask;
 end;
 
@@ -712,7 +712,7 @@ procedure TJvCustomDatePickerEdit.KeyDown(var AKey: Word; AShift: TShiftState);
 begin
   if Text = NoDateText then
   begin
-    Text := EmptyStr;
+    Text := '';
     RestoreMask;
   end;
 
@@ -790,7 +790,7 @@ end;
 procedure TJvCustomDatePickerEdit.SetDateFormat(const AValue: string);
 begin
   FDateFormat := AValue;
-  if FDateFormat = EmptyStr then
+  if FDateFormat = '' then
     FDateFormat := ShortDateFormat;
   DateSeparator := DetermineDateSeparator(FDateFormat); //calls ResetDateFormat implicitly
   if FDateFormat <> ShortDateFormat then
@@ -810,8 +810,8 @@ begin
   ParseFigures(FDateFigures, FInternalDateFormat, FMask);
   BeginInternalChange;
   try
-    EditMask := EmptyStr;
-    Text := EmptyStr;
+    EditMask := '';
+    Text := '';
     EditMask := FMask;
     FEmptyMaskText := Text;
   finally

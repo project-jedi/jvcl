@@ -769,7 +769,7 @@ var
   EditFormat: string;
   WasModified: Boolean;
 begin
-  if (ValueType = vtFloat) and FFocused and (FDisplayFormat <> EmptyStr) then
+  if (ValueType = vtFloat) and FFocused and (FDisplayFormat <> '') then
   begin
     EditFormat := '0';
     if FDecimal > 0 then
@@ -1823,7 +1823,7 @@ begin
     case ValueType of
       vtFloat:
         begin
-          if FDisplayFormat <> EmptyStr then
+          if FDisplayFormat <> '' then
           try
             Result := StrToFloat(TextToValText(Text));
           except
@@ -1861,8 +1861,7 @@ begin
   try
     case ValueType of
       vtFloat:
-        { (rb) EmptyStr is for backwards compatibility, remove }
-        if FDisplayFormat <> EmptyStr then
+        if FDisplayFormat <> '' then
           Text := FormatFloat(FDisplayFormat, CheckValue(NewValue))
         else
           Text := FloatToStrF(CheckValue(NewValue), FloatFormat, 15, FDecimal);

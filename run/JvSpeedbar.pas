@@ -549,7 +549,7 @@ constructor TJvSpeedBarSection.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FList := TList.Create;
-  FTitle := EmptyStr;
+  FTitle := '';
 end;
 
 destructor TJvSpeedBarSection.Destroy;
@@ -557,8 +557,6 @@ begin
   Clear;
   if FParent <> nil then
     FParent.DeleteSection(Index);
-  //if (FTitle <> nil) and (FTitle^ <> '') then Dispose(FTitle);
-  FTitle := SysUtils.EmptyStr;
   FList.Free;
   inherited Destroy;
 end;
@@ -908,7 +906,7 @@ begin
   FButton := TJvSpeedBarButton.Create(Self);
   FButton.Visible := False;
   FButton.SetBounds(0, 0, DefaultButtonSize.X, DefaultButtonSize.Y);
-  FCaption := EmptyStr;
+  FCaption := '';
   ShowHint := True;
   ParentShowHint := True;
   FVisible := False;
@@ -925,8 +923,6 @@ begin
   if FParent <> nil then
     FParent.RemoveItem(Self);
   FButton.Free;
-  //if (FCaption <> nil) and (FCaption^ <> '') then Dispose(FCaption);
-  FCaption := EmptyStr;
   inherited Destroy;
 end;
 
