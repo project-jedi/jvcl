@@ -73,7 +73,7 @@ type
     FAutoSave: TJvAutoSave;
     FMaxPixel: TJvMaxPixel;
     FCaret: TJvCaret;
-    FClipBoardCommands: TJvClipboardCommands;
+    FClipBoardCommands, FOldCommands: TJvClipboardCommands;
     FGroupIndex: Integer;
     FOnKeyDown: TKeyEvent;
     procedure SetCaret(const Value: TJvCaret);
@@ -101,6 +101,7 @@ type
     procedure UpdateEdit;
     procedure LocalKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure SetClipBoardCommands(const Value: TJvClipboardCommands);
   protected
     procedure Change; override;
     procedure MaxPixelChanged(Sender: TObject);
@@ -115,7 +116,7 @@ type
     property AutoSave: TJvAutoSave read FAutoSave write FAutoSave;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Caret: TJvCaret read FCaret write SetCaret;
-    property ClipBoardCommands: TJvClipboardCommands read FClipBoardCommands write FClipBoardCommands default [caCopy..caUndo];
+    property ClipBoardCommands: TJvClipboardCommands read FClipBoardCommands write SetClipBoardCommands default [caCopy..caUndo];
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText;
     property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow;
 
@@ -224,8 +225,6 @@ uses
 constructor TJvCustomEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-   // (p3) this is a hack to avoid (Control "" has no parent window) - fixed by checking for Parent in Change
- //  Parent := TWinControl(AOwner);
   FColor := clInfoBk;
   FHotTrack := False;
   FOver := False;
@@ -233,7 +232,7 @@ begin
   ControlStyle := ControlStyle + [csAcceptsControls];
   FDisabledColor := clWindow;
   FDisabledTextColor := clGrayText;
-  FClipBoardCommands := [caCopy..caUndo];
+  ClipBoardCommands := [caCopy..caUndo];
   FCaret := TJvCaret.Create(self);
   FCaret.OnChanged := CaretChanged;
   FAutoSave := TJvAutoSave.Create(Self);
@@ -243,12 +242,12 @@ begin
   inherited OnKeyDown := LocalKeyDown;
 end;
 
-
 procedure TJvCustomEdit.LocalKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   UpdateEdit;
-  if Assigned(fOnkeyDown) then fOnkeyDown(Sender, Key, Shift);
+  if Assigned(fOnkeyDown) then
+    fOnkeyDown(Sender, Key, Shift);
 end;
 
 procedure TJvCustomEdit.Loaded;
@@ -304,7 +303,8 @@ procedure TJvCustomEdit.CMMouseEnter(var Msg: TMessage);
 var i, j: integer;
 begin
   // for D7...
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
@@ -328,7 +328,8 @@ var
   i, j: integer;
 begin
   // for D7...
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
@@ -541,13 +542,14 @@ begin
   inherited ReadOnly := Value;
   if Value then
   begin
-    if caCopy in ClipBoardCommands then
+    if caCopy in FClipBoardCommands then
       FClipBoardCommands := [caCopy]
     else
       FClipBoardCommands := [];
-  end;
+  end
+  else
+    FClipBoardCommands := FOldCommands;
 end;
-
 
 procedure TJvCustomEdit.SetGroupIndex(const Value: Integer);
 begin
@@ -573,6 +575,16 @@ begin
         then
         (Self.Owner.Components[i] as TJvCustomEdit).Caption := '';
     end;
+  end;
+end;
+
+procedure TJvCustomEdit.SetClipBoardCommands(
+  const Value: TJvClipboardCommands);
+begin
+  if FClipboardCommands <> Value then
+  begin
+    FClipBoardCommands := Value;
+    FOldCommands := Value;
   end;
 end;
 
