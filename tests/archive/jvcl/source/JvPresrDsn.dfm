@@ -134,6 +134,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
       Height = 17
       Caption = ' Acti&ve Control'
       TabOrder = 0
+      OnClick = ListClick
     end
     object PositionBox: TCheckBox
       Left = 124
@@ -144,6 +145,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
       Checked = True
       State = cbChecked
       TabOrder = 1
+      OnClick = ListClick
     end
     object StateBox: TCheckBox
       Left = 236
@@ -154,6 +156,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
       Checked = True
       State = cbChecked
       TabOrder = 2
+      OnClick = ListClick
     end
   end
   object AddButton: TButton
@@ -162,7 +165,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
     Width = 77
     Height = 25
     Caption = '&Add'
-    TabOrder = 3
+    TabOrder = 2
     OnClick = AddButtonClick
   end
   object DeleteButton: TButton
@@ -180,7 +183,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
     Width = 77
     Height = 25
     Caption = 'Cl&ear'
-    TabOrder = 1
+    TabOrder = 6
     OnClick = ClearButtonClick
   end
   object OkBtn: TButton
@@ -191,7 +194,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
     Caption = 'OK'
     Default = True
     ModalResult = 1
-    TabOrder = 2
+    TabOrder = 7
   end
   object CancelBtn: TButton
     Left = 268
@@ -201,7 +204,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 4
+    TabOrder = 8
   end
   object ComponentsList: TJvTextListBox
     Left = 16
@@ -209,7 +212,8 @@ object JvFormPropsDlg: TJvFormPropsDlg
     Width = 105
     Height = 89
     ItemHeight = 13
-    TabOrder = 6
+    TabOrder = 1
+    OnClick = ListClick
   end
   object PropertiesList: TJvTextListBox
     Left = 224
@@ -217,7 +221,8 @@ object JvFormPropsDlg: TJvFormPropsDlg
     Width = 113
     Height = 97
     ItemHeight = 13
-    TabOrder = 7
+    TabOrder = 3
+    OnDblClick = PropertiesListDblClick
   end
   object StoredList: TJvTextListBox
     Left = 16
@@ -225,6 +230,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
     Width = 241
     Height = 97
     ItemHeight = 13
-    TabOrder = 8
+    TabOrder = 4
+    OnClick = StoredListClick
   end
 end
