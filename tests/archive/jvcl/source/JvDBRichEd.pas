@@ -12,7 +12,7 @@ The Original Code is: JvDBRichEd.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -31,10 +31,9 @@ interface
 
 {$IFDEF WIN32}
 
-
 uses
   Windows, Messages, ComCtrls, CommCtrl, RichEdit, SysUtils, Classes,
-  Graphics, Controls, Menus, StdCtrls, DB, {$IFNDEF COMPILER3_UP} DBTables, {$ENDIF}
+  Graphics, Controls, Menus, StdCtrls, DB, {$IFNDEF COMPILER3_UP}DBTables, {$ENDIF}
   JvRichEd, DBCtrls;
 
 type
@@ -209,17 +208,20 @@ end;
 procedure TJvDBRichEdit.Loaded;
 begin
   inherited Loaded;
-  if (csDesigning in ComponentState) then DataChange(Self);
+  if (csDesigning in ComponentState) then
+    DataChange(Self);
 end;
 
 procedure TJvDBRichEdit.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (FDataLink <> nil) and
-    (AComponent = DataSource) then DataSource := nil;
+    (AComponent = DataSource) then
+    DataSource := nil;
 end;
 
 {$IFDEF COMPILER4_UP}
+
 function TJvDBRichEdit.UseRightToLeftAlignment: Boolean;
 begin
   Result := DBUseRightToLeftAlignment(Self, Field);
@@ -251,19 +253,22 @@ end;
 procedure TJvDBRichEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
-  if FMemoLoaded then begin
+  if FMemoLoaded then
+  begin
     if (Key in [VK_DELETE, VK_BACK, VK_CLEAR]) or
       ((Key = VK_INSERT) and (ssShift in Shift)) or
       (((Key = Ord('V')) or (Key = Ord('X'))) and (ssCtrl in Shift)) then
       EditCanModify;
   end
-  else Key := 0;
+  else
+    Key := 0;
 end;
 
 procedure TJvDBRichEdit.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
-  if FMemoLoaded then begin
+  if FMemoLoaded then
+  begin
     if (Key in [#32..#255]) and (FDataLink.Field <> nil) and
       not FDataLink.Field.IsValidChar(Key) then
     begin
@@ -275,15 +280,19 @@ begin
       #27: FDataLink.Reset;
     end;
   end
-  else begin
-    if Key = Chr(VK_RETURN) then LoadMemo;
-    if FMemoLoaded then Key := #0;
+  else
+  begin
+    if Key = Chr(VK_RETURN) then
+      LoadMemo;
+    if FMemoLoaded then
+      Key := #0;
   end;
 end;
 
 procedure TJvDBRichEdit.Change;
 begin
-  if FMemoLoaded then FDataLink.Modified;
+  if FMemoLoaded then
+    FDataLink.Modified;
   FMemoLoaded := True;
   inherited Change;
 end;
@@ -296,7 +305,8 @@ end;
 procedure TJvDBRichEdit.SetDataSource(Value: TDataSource);
 begin
   FDataLink.DataSource := Value;
-  if Value <> nil then Value.FreeNotification(Self);
+  if Value <> nil then
+    Value.FreeNotification(Self);
 end;
 
 function TJvDBRichEdit.GetDataField: string;
@@ -328,7 +338,8 @@ procedure TJvDBRichEdit.LoadMemo;
 {$IFDEF COMPILER3_UP}
 begin
   if FMemoLoaded or (FDataLink.Field = nil) or not
-    FDataLink.Field.IsBlob then Exit;
+    FDataLink.Field.IsBlob then
+    Exit;
   FUpdating := True;
   try
     try
@@ -347,7 +358,8 @@ var
   Stream: TBlobStream;
 begin
   if FMemoLoaded or (FDataLink.Field = nil) or not
-    (FDataLink.Field is TBlobField) then Exit;
+    (FDataLink.Field is TBlobField) then
+    Exit;
   FUpdating := True;
   try
     Stream := TBlobStream.Create(TBlobField(FDataLink.Field), bmRead);
@@ -371,38 +383,50 @@ end;
 
 procedure TJvDBRichEdit.DataChange(Sender: TObject);
 begin
-  if FDataLink.Field = nil then begin
-    if (csDesigning in ComponentState) then Text := Name
-    else Text := '';
+  if FDataLink.Field = nil then
+  begin
+    if (csDesigning in ComponentState) then
+      Text := Name
+    else
+      Text := '';
     FMemoLoaded := False;
   end
 {$IFDEF COMPILER3_UP}
-  else if FDataLink.Field.IsBlob then begin
+  else if FDataLink.Field.IsBlob then
+  begin
 {$ELSE}
-  else if FDataLink.Field is TBlobField then begin
+  else if FDataLink.Field is TBlobField then
+  begin
 {$ENDIF}
     if AutoDisplay or (FDataLink.Editing and FMemoLoaded) then
     begin
       { Check if the data has changed since we read it the first time }
       if FStateChanging and (FDataSave <> '') and
-        (FDataSave = FDataLink.Field.AsString) then Exit;
+        (FDataSave = FDataLink.Field.AsString) then
+        Exit;
       FMemoLoaded := False;
       LoadMemo;
     end
-    else begin
+    else
+    begin
       Text := Format('(%s)', [FDataLink.Field.DisplayLabel]);
       FMemoLoaded := False;
     end;
   end
-  else if FDataLink.CanModify then begin
-    if not FStateChanging then begin
+  else if FDataLink.CanModify then
+  begin
+    if not FStateChanging then
+    begin
       inherited SetPlainText(True);
-      if FFocused then Text := FDataLink.Field.Text
-      else Text := FDataLink.Field.DisplayText;
+      if FFocused then
+        Text := FDataLink.Field.Text
+      else
+        Text := FDataLink.Field.DisplayText;
       FMemoLoaded := True;
     end;
   end
-  else begin
+  else
+  begin
     inherited SetPlainText(True);
     Text := FDataLink.Field.DisplayText;
     FMemoLoaded := True;
@@ -419,35 +443,45 @@ end;
 procedure TJvDBRichEdit.UpdateData(Sender: TObject);
 {$IFDEF COMPILER3_UP}
 begin
-  if (FDataLink.Field <> nil) then begin
-    if FDataLink.Field.IsBlob then FDataLink.Field.Assign(Lines)
-    else FDataLink.Field.AsString := Text;
+  if (FDataLink.Field <> nil) and FDataLink.Field.CanModify and not ReadOnly then
+  begin
+    if FDataLink.Field.IsBlob then
+      FDataLink.Field.Assign(Lines)
+    else
+      FDataLink.Field.AsString := Text;
   end;
 {$ELSE}
 var
   Stream: TBlobStream;
 begin
-  if FDataLink.Field is TBlobField then begin
-    Stream := TBlobStream.Create(TBlobField(FDataLink.Field), bmWrite);
-    try
-      if Lines.Count > 0 then Lines.SaveToStream(Stream);
-    finally
-      Stream.Free;
-    end;
-  end
-  else FDataLink.Field.AsString := Text;
+  if (FDataLink.Field <> nil) and FDataLink.Field.CanModify and not ReadOnly then
+  begin
+    if (FDataLink.Field is TBlobField) then
+    begin
+      Stream := TBlobStream.Create(TBlobField(FDataLink.Field), bmWrite);
+      try
+        if Lines.Count > 0 then
+          Lines.SaveToStream(Stream);
+      finally
+        Stream.Free;
+      end;
+    end
+    else
+      FDataLink.Field.AsString := Text;
+  end;
 {$ENDIF}
 end;
 
 procedure TJvDBRichEdit.SetFocused(Value: Boolean);
 begin
-  if FFocused <> Value then begin
+  if FFocused <> Value then
+  begin
     FFocused := Value;
     if not Assigned(FDataLink.Field) or not
 {$IFDEF COMPILER3_UP}
-      FDataLink.Field.IsBlob then
+    FDataLink.Field.IsBlob then
 {$ELSE}
-      (FDataLink.Field is TBlobField) then
+    (FDataLink.Field is TBlobField) then
 {$ENDIF}
       FDataLink.Reset;
   end;
@@ -468,7 +502,8 @@ begin
   try
     FDataLink.UpdateRecord;
   except
-    if CanFocus then SetFocus;
+    if CanFocus then
+      SetFocus;
     raise;
   end;
   SetFocused(False);
@@ -477,24 +512,30 @@ end;
 
 procedure TJvDBRichEdit.SetAutoDisplay(Value: Boolean);
 begin
-  if Value <> FAutoDisplay then begin
+  if Value <> FAutoDisplay then
+  begin
     FAutoDisplay := Value;
-    if FAutoDisplay then LoadMemo;
+    if FAutoDisplay then
+      LoadMemo;
   end;
 end;
 
 procedure TJvDBRichEdit.SetPlainText(Value: Boolean);
 begin
-  if PlainText <> Value then begin
+  if PlainText <> Value then
+  begin
     inherited SetPlainText(Value);
-    if FMemoLoaded then FDataLink.Reset;
+    if FMemoLoaded then
+      FDataLink.Reset;
   end;
 end;
 
 procedure TJvDBRichEdit.WMLButtonDblClk(var Message: TWMLButtonDblClk);
 begin
-  if not FMemoLoaded then LoadMemo
-  else inherited;
+  if not FMemoLoaded then
+    LoadMemo
+  else
+    inherited;
 end;
 
 procedure TJvDBRichEdit.WMCut(var Message: TMessage);
@@ -516,10 +557,12 @@ end;
 
 procedure TJvDBRichEdit.UpdateMemo;
 begin
-  if FDataLink.Editing and FMemoLoaded then UpdateData(Self);
+  if FDataLink.Editing and FMemoLoaded then
+    UpdateData(Self);
 end;
 
 {$IFDEF COMPILER4_UP}
+
 function TJvDBRichEdit.ExecuteAction(Action: TBasicAction): Boolean;
 begin
   Result := inherited ExecuteAction(Action) or (FDataLink <> nil) and
@@ -535,9 +578,12 @@ end;
 
 procedure TJvDBRichEdit.EMSetCharFormat(var Message: TMessage);
 begin
-  if FMemoLoaded then begin
-    if not FUpdating then begin
-      if EditCanModify then Change;
+  if FMemoLoaded then
+  begin
+    if not FUpdating then
+    begin
+      if EditCanModify then
+        Change;
     end;
   end;
   inherited;
@@ -545,9 +591,12 @@ end;
 
 procedure TJvDBRichEdit.EMSetParaFormat(var Message: TMessage);
 begin
-  if FMemoLoaded then begin
-    if not FUpdating then begin
-      if EditCanModify then Change;
+  if FMemoLoaded then
+  begin
+    if not FUpdating then
+    begin
+      if EditCanModify then
+        Change;
     end;
   end;
   inherited;
@@ -556,3 +605,4 @@ end;
 {$ENDIF WIN32}
 
 end.
+
