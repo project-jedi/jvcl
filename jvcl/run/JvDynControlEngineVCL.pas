@@ -33,13 +33,13 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
-  ActnList, Graphics,
+  ActnList, Graphics, ComCtrls, ImgList,
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
-  QActnList, QGraphics,
+  QActnList, QGraphics, QComCtrls, QImgList,
   {$ENDIF UNIX}
   Classes,
-  Controls, StdCtrls, ExtCtrls, ComCtrls, Mask, Forms,
+  Controls, StdCtrls, ExtCtrls, Mask, Forms,
   Buttons, Dialogs, FileCtrl, ExtDlgs, CheckLst,
   JvDynControlEngine, JvDynControlEngineIntf;
 
@@ -585,6 +585,32 @@ type
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
+  end;
+
+  TJvDynControlVCLTreeView= class(TTreeView, IUnknown,
+    IJvDynControl, IJvDynControlTreeView)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+
+    // IJvDynControlTreeView
+    procedure ControlSetAutoExpand(Value: Boolean);
+    procedure ControlSetHotTrack(Value: Boolean);
+    procedure ControlSetShowHint(Value: Boolean);
+    procedure ControlSetShowLines(Value: Boolean);
+    procedure ControlSetShowRoot(Value: Boolean);
+    procedure ControlSetToolTips(Value: Boolean);
+    procedure ControlSetItems(Value: TTreeNodes);
+    function ControlGetItems: TTreeNodes;
+    procedure ControlSetImages(Value: TCustomImageList);
+    procedure ControlSetStateImages(Value: TCustomImageList);
+
   end;
 
 function DynControlEngineVCL: TJvDynControlEngine;
@@ -2383,6 +2409,93 @@ begin
   Result := Checked;
 end;
 
+//=== { TJvDynControlVCLTreeView } =========================================
+
+procedure TJvDynControlVCLTreeView.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetCaption(const Value: string);
+begin
+  Caption := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetAutoExpand(Value: Boolean);
+begin
+  AutoExpand := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetHotTrack(Value: Boolean);
+begin
+  HotTrack := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetShowHint(Value: Boolean);
+begin
+  ShowHint := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetShowLines(Value: Boolean);
+begin
+  ShowLines := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetShowRoot(Value: Boolean);
+begin
+  ShowRoot := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetToolTips(Value: Boolean);
+begin
+  ToolTips := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetItems(Value: TTreeNodes);
+begin
+  Items.Assign(Value);
+end;
+
+function TJvDynControlVCLTreeView.ControlGetItems: TTreeNodes;
+begin
+  Result := Items;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetImages(Value: TCustomImageList);
+begin
+  Images.Assign(Value);
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetStateImages(Value: TCustomImageList);
+begin
+  StateImages.Assign(Value);
+end;
+
+
 //=== { TJvDynControlEngineVCL } =============================================
 
 function DynControlEngineVCL: TJvDynControlEngine;
@@ -2424,6 +2537,7 @@ begin
   RegisterControlType(jctMemo, TJvDynControlVCLMemo);
   RegisterControlType(jctRichEdit, TJvDynControlVCLRichEdit);
   RegisterControlType(jctButtonEdit, TJvDynControlVCLButtonEdit);
+  RegisterControlType(jctTreeView, TJvDynControlVCLTreeView);
 end;
 
 initialization

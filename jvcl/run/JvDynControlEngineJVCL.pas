@@ -33,18 +33,18 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
-  ActnList, Graphics,
+  ActnList, Graphics, ComCtrls, ImgList,
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
-  QActnList, QGraphics,
+  QActnList, QGraphics, QComCtrls, QImgList,
   {$ENDIF UNIX}
   Classes,
-  Controls, StdCtrls, ExtCtrls, ComCtrls, Mask, Forms, 
+  Controls, StdCtrls, ExtCtrls, Mask, Forms,
   Buttons, Dialogs, FileCtrl,
   JvMaskEdit, JvDateTimePicker, JvBitBtn, JvCheckBox, JvBaseEdits,
   JvLabel, JvListBox, JvMemo, JvRichEdit, JvPanel, JvRadioGroup, JvToolEdit,
   JvScrollBox, JvStaticText, JvComboBox, JvImage, JvSpin, JvCheckListBox,
-  JvDynControlEngine, JvDynControlEngineIntf, JvGroupBox;
+  JvDynControlEngine, JvDynControlEngineIntf, JvGroupBox, JvComCtrls;
 
 type
   TJvDynControlJVCLMaskEdit = class(TJvMaskEdit, IUnknown,
@@ -595,6 +595,32 @@ type
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
+  end;
+
+  TJvDynControlJVCLTreeView= class(TJvTreeView, IUnknown,
+    IJvDynControl, IJvDynControlTreeView)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+
+    // IJvDynControlTreeView
+    procedure ControlSetAutoExpand(Value: Boolean);
+    procedure ControlSetHotTrack(Value: Boolean);
+    procedure ControlSetShowHint(Value: Boolean);
+    procedure ControlSetShowLines(Value: Boolean);
+    procedure ControlSetShowRoot(Value: Boolean);
+    procedure ControlSetToolTips(Value: Boolean);
+    procedure ControlSetItems(Value: TTreeNodes);
+    function ControlGetItems: TTreeNodes;
+    procedure ControlSetImages(Value: TCustomImageList);
+    procedure ControlSetStateImages(Value: TCustomImageList);
+
   end;
 
 function DynControlEngineJVCL: TJvDynControlEngine;
@@ -2372,6 +2398,92 @@ begin
   Result := Checked;
 end;
 
+//=== { TJvDynControlJVCLTreeView } =========================================
+
+procedure TJvDynControlJVCLTreeView.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlJVCLTreeView.ControlSetCaption(const Value: string);
+begin
+  Caption := Value;
+end;
+
+procedure TJvDynControlJVCLTreeView.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlJVCLTreeView.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlJVCLTreeView.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlJVCLTreeView.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlJVCLTreeView.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlJVCLTreeView.ControlSetAutoExpand(Value: Boolean);
+begin
+  AutoExpand := Value;
+end;
+
+procedure TJvDynControlJVCLTreeView.ControlSetHotTrack(Value: Boolean);
+begin
+  HotTrack := Value;
+end;
+
+procedure TJvDynControlJVCLTreeView.ControlSetShowHint(Value: Boolean);
+begin
+  ShowHint := Value;
+end;
+
+procedure TJvDynControlJVCLTreeView.ControlSetShowLines(Value: Boolean);
+begin
+  ShowLines := Value;
+end;
+
+procedure TJvDynControlJVCLTreeView.ControlSetShowRoot(Value: Boolean);
+begin
+  ShowRoot := Value;
+end;
+
+procedure TJvDynControlJVCLTreeView.ControlSetToolTips(Value: Boolean);
+begin
+  ToolTips := Value;
+end;
+
+procedure TJvDynControlJVCLTreeView.ControlSetItems(Value: TTreeNodes);
+begin
+  Items.Assign(Value);
+end;
+
+function TJvDynControlJVCLTreeView.ControlGetItems: TTreeNodes;
+begin
+  Result := Items;
+end;
+
+procedure TJvDynControlJVCLTreeView.ControlSetImages(Value: TCustomImageList);
+begin
+  Images.Assign(Value);
+end;
+
+procedure TJvDynControlJVCLTreeView.ControlSetStateImages(Value: TCustomImageList);
+begin
+  StateImages.Assign(Value);
+end;
+
 //=== { TJvDynControlEngineJVCL } ============================================
 
 type
@@ -2411,6 +2523,7 @@ begin
   RegisterControlType(jctMemo, TJvDynControlJVCLMemo);
   RegisterControlType(jctRichEdit, TJvDynControlJVCLRichEdit);
   RegisterControlType(jctButtonEdit, TJvDynControlJVCLButtonEdit);
+  RegisterControlType(jctTreeView, TJvDynControlJVCLTreeView);
 end;
 
 initialization

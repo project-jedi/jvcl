@@ -34,9 +34,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, Controls, StdCtrls, ExtCtrls, ComCtrls, Mask, Forms, Graphics,
-  Buttons, Dialogs, FileCtrl, ActnList, 
+  Buttons, Dialogs, FileCtrl, ActnList, ImgList,
   cxLookAndFeels, cxMaskEdit, cxLabel, cxButtons, cxListBox, cxDropDownEdit,
-  cxButtonEdit, cxCalendar, cxCheckBox, cxMemo, cxRadioGroup, cxImage,
+  cxButtonEdit, cxCalendar, cxCheckBox, cxMemo, cxRadioGroup, cxImage, cxTreeView,
   cxEdit, cxCalc, cxSpinEdit, cxTimeEdit, cxCheckListBox, cxGroupBox, cxRichEdit,
   JvDynControlEngine, JvDynControlEngineIntf;
 
@@ -656,6 +656,35 @@ type
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
 
+  TJvDynControlCxTreeView= class(TcxTreeView, IUnknown,
+    IJvDynControl, IJvDynControlTreeView,
+    IJvDynControlDevExpCx)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+
+    // IJvDynControlTreeView
+    procedure ControlSetAutoExpand(Value: Boolean);
+    procedure ControlSetHotTrack(Value: Boolean);
+    procedure ControlSetShowHint(Value: Boolean);
+    procedure ControlSetShowLines(Value: Boolean);
+    procedure ControlSetShowRoot(Value: Boolean);
+    procedure ControlSetToolTips(Value: Boolean);
+    procedure ControlSetItems(Value: TTreeNodes);
+    function ControlGetItems: TTreeNodes;
+    procedure ControlSetImages(Value: TCustomImageList);
+    procedure ControlSetStateImages(Value: TCustomImageList);
+
+    // IJvDynControlDevExpCx
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+  end;
+
   TJvDynControlEngineDevExpCx = class(TJvDynControlEngine)
   private
     FCxProperties: TCxDynControlWrapper;
@@ -708,12 +737,12 @@ constructor TCxDynControlWrapper.Create;
 begin
   inherited Create;
   FLookAndFeel := TcxLookAndFeel.Create(nil);
-//  FStyleController := TcxEditStyleController.Create(nil);
+  FStyleController := TcxEditStyleController.Create(nil);
 end;
 
 destructor TCxDynControlWrapper.Destroy;
 begin
-//  FreeAndNil(FStyleController);
+  FreeAndNil(FStyleController);
   FreeAndNil(FLookAndFeel);
   inherited Destroy;
 end;
@@ -2619,6 +2648,97 @@ begin
   LookAndFeel.Assign(Value.LookAndFeel);
 end;
 
+//=== { TJvDynControlCxTreeView } =========================================
+
+procedure TJvDynControlCxTreeView.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetCaption(const Value: string);
+begin
+  Caption := Value;
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetAutoExpand(Value: Boolean);
+begin
+  AutoExpand := Value;
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetHotTrack(Value: Boolean);
+begin
+  HotTrack := Value;
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetShowHint(Value: Boolean);
+begin
+  ShowHint := Value;
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetShowLines(Value: Boolean);
+begin
+  ShowLines := Value;
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetShowRoot(Value: Boolean);
+begin
+  ShowRoot := Value;
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetToolTips(Value: Boolean);
+begin
+  ToolTips := Value;
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetItems(Value: TTreeNodes);
+begin
+  Items.Assign(Value);
+end;
+
+function TJvDynControlCxTreeView.ControlGetItems: TTreeNodes;
+begin
+  Result := Items;
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetImages(Value: TCustomImageList);
+begin
+  Images.Assign(Value);
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetStateImages(Value: TCustomImageList);
+begin
+  StateImages.Assign(Value);
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetCxProperties(Value: TCxDynControlWrapper);
+begin
+  LookAndFeel.Assign(Value.LookAndFeel);
+end;
+
 //=== { TJvDynControlCxRadioButton } =========================================
 
 procedure TJvDynControlCxRadioButton.ControlSetDefaultProperties;
@@ -2724,7 +2844,9 @@ begin
   RegisterControlType(jctDirectoryEdit, TJvDynControlCxDirectoryEdit);
   RegisterControlType(jctFileNameEdit, TJvDynControlCxFileNameEdit);
   RegisterControlType(jctMemo, TJvDynControlCxMemo);
+  RegisterControlType(jctRichEdit, TJvDynControlCxRichEdit);
   RegisterControlType(jctButtonEdit, TJvDynControlCxButtonEdit);
+  RegisterControlType(jctTreeVIew, TJvDynControlCxTreeView);
 end;
 
 function TJvDynControlEngineDevExpCx.CreateControlClass(AControlClass: TControlClass; AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl;
