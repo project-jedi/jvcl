@@ -477,9 +477,9 @@ begin
       Caption := Title;
     Options := Self.Options;
     ColorID := Self.ColorID;
-    RedDelta := Self.RedDelta;
-    GreenDelta := Self.GreenDelta;
-    BlueDelta := Self.BlueDelta;
+    RedDelta.Assign(Self.RedDelta);
+    GreenDelta.Assign(Self.GreenDelta);
+    BlueDelta.Assign(Self.BlueDelta);
     OnApply := FormApply;
     OnClose := FormClose;
     OnShow := FormShow;
@@ -487,9 +487,9 @@ begin
 
     Result := (ShowModal = mrOk);
 
-    Self.FDelta.AxisRed := RedDelta;
-    Self.FDelta.AxisGreen := GreenDelta;
-    Self.FDelta.AxisBlue := BlueDelta;
+    Self.FDelta.AxisRed.Assign(RedDelta);
+    Self.FDelta.AxisGreen.Assign(GreenDelta);
+    Self.FDelta.AxisBlue.Assign(BlueDelta);
     Self.FDelta.ColorID := ColorID;
   end;
   FreeAndNil(FForm);
