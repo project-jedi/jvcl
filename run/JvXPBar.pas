@@ -56,13 +56,9 @@ interface
 
 uses
   Classes, SysUtils,
-  {$IFDEF VCL}
   Windows, Messages, Controls, Graphics, Forms, ImgList, ActnList, ExtCtrls,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, Qt, QControls, QGraphics, QForms, QImgList, QActnList,
-  QWindows, QTypes, QExtCtrls,
-  JvTypes,
+  Qt, JvQTypes,
   {$ENDIF VisualCLX}
   JvConsts, JvXPCore, JvXPCoreUtils;
 
@@ -564,7 +560,6 @@ procedure RoundedFrame(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer
 
 implementation
 
-{$IFDEF VCL}
 uses
   {$IFDEF JVCLThemesEnabled}
   UxTheme,
@@ -577,13 +572,6 @@ uses
   JvResources,
   {$ENDIF USEJVCL}
   Menus;
-{$ENDIF VCL}
-
-{$IFDEF VisualCLX}
-uses
-  QMenus,
-  JvResources;
-{$ENDIF VisualCLX}
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvXPBar.res}
@@ -1534,11 +1522,6 @@ begin
   FShowLinkCursor := True;
   FShowRollButton := True;
   FVisibleItems := TJvXPBarVisibleItems.Create(Self);
-  {$IFDEF VisualCLX}
-  // asn: TODO: implement doublebuffering
-  //      For now prevent background drawing, to reduce flickering
-  QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground);
-  {$ENDIF VisualCLX}
 end;
 
 destructor TJvXPCustomWinXPBar.Destroy;

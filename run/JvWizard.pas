@@ -336,9 +336,11 @@ interface
 uses
   SysUtils, Classes,
   Windows, Messages, Controls, Forms, Graphics, Buttons, ImgList,
+  {$IFDEF VCL}
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF COMPILER6_UP}
+  {$ENDIF VCL}
   {$IFDEF USEJVCL}
   JvComponent,
   {$ENDIF USEJVCL}
