@@ -121,6 +121,7 @@ type
     FProperties: THashedStringList;
     FParent: TJvSimpleXMLElem;
     function GetCount: Integer;
+    function GetItemNamedDefault(const Name: string): TJvSimpleXMLProp;
     function GetItemNamed(const Name: string): TJvSimpleXMLProp;
   protected
     function GetSimpleXML: TJvSimpleXML;
@@ -180,6 +181,7 @@ type
   private
     FParent: TJvSimpleXMLElem;
     function GetCount: Integer;
+    function GetItemNamedDefault(const Name, Default: string): TJvSimpleXMLElem;
     function GetItemNamed(const Name: string): TJvSimpleXMLElem;
   protected
     FElems: THashedStringList;
@@ -1425,13 +1427,12 @@ begin
     Elem.GetBinaryValue(Stream);
 end;
 
-function TJvSimpleXMLElems.BoolValue(const Name: string;
-  Default: Boolean): Boolean;
+function TJvSimpleXMLElems.BoolValue(const Name: string; Default: Boolean): Boolean;
 var
   Elem: TJvSimpleXMLElem;
 begin
   try
-    Elem := GetItemNamed(Name);
+    Elem := GetItemNamedDefault(Name, BoolToStr(Default));
     if (Elem = nil) or (Elem.Value = '') then
       Result := Default
     else
@@ -1518,7 +1519,7 @@ begin
     Result := TJvSimpleXMLElem(FElems.Objects[Index]);
 end;
 
-function TJvSimpleXMLElems.GetItemNamed(const Name: string): TJvSimpleXMLElem;
+function TJvSimpleXMLElems.GetItemNamedDefault(const Name, Default: string): TJvSimpleXMLElem;
 var
   I: Integer;
 begin
@@ -1529,23 +1530,24 @@ begin
     if I <> -1 then
       Result := TJvSimpleXMLElem(FElems.Objects[I])
     else
-    if Assigned(Parent) and
-      Assigned(Parent.SimpleXML) and
-      (sxoAutoCreate in Parent.SimpleXML.Options) then
-      Result := Add(Name);
+    if Assigned(Parent) and Assigned(Parent.SimpleXML) and (sxoAutoCreate in Parent.SimpleXML.Options) then
+      Result := Add(Name, Default);
   end
   else
-  if Assigned(Parent) and
-    Assigned(Parent.SimpleXML) and
-    (sxoAutoCreate in Parent.SimpleXML.Options) then
-    Result := Add(Name);
+  if Assigned(Parent) and Assigned(Parent.SimpleXML) and (sxoAutoCreate in Parent.SimpleXML.Options) then
+    Result := Add(Name, Default);
+end;
+
+function TJvSimpleXMLElems.GetItemNamed(const Name: string): TJvSimpleXMLElem;
+begin
+  Result := GetItemNamedDefault(Name, '');
 end;
 
 function TJvSimpleXMLElems.IntValue(const Name: string; Default: Int64): Int64;
 var
   Elem: TJvSimpleXMLElem;
 begin
-  Elem := GetItemNamed(Name);
+  Elem := GetItemNamedDefault(Name, IntToStr(Default));
   if Elem = nil then
     Result := Default
   else
@@ -1690,7 +1692,7 @@ var
   Elem: TJvSimpleXMLElem;
 begin
   Result := '';
-  Elem := GetItemNamed(Name);
+  Elem := GetItemNamedDefault(Name, Default);
   if Elem = nil then
     Result := Default
   else
@@ -1759,7 +1761,7 @@ var
   Prop: TJvSimpleXMLProp;
 begin
   try
-    Prop := GetItemNamed(Name);
+    Prop := GetItemNamedDefault(Name, BoolToStr(Default));
     if (Prop = nil) or (Prop.Value = '') then
       Result := Default
     else
@@ -1852,7 +1854,8 @@ begin
     Result := nil;
 end;
 
-function TJvSimpleXMLProps.GetItemNamed(const Name: string): TJvSimpleXMLProp;
+function TJvSimpleXMLProps.GetItemNamedDefault(
+  const Name: string): TJvSimpleXMLProp;
 var
   I: Integer;
 begin
@@ -1863,18 +1866,19 @@ begin
     if I <> -1 then
       Result := TJvSimpleXMLProp(FProperties.Objects[I])
     else
-    if Assigned(FParent) and
-      Assigned(FParent.SimpleXML) and
-      (sxoAutoCreate in FParent.SimpleXML.Options) then
-      Result := Add(Name, '');
+    if Assigned(FParent) and Assigned(FParent.SimpleXML) and (sxoAutoCreate in FParent.SimpleXML.Options) then
+      Result := Add(Name, Default);
   end
   else
-  if Assigned(FParent) and
-    Assigned(FParent.SimpleXML) and
-    (sxoAutoCreate in FParent.SimpleXML.Options) then
+  if Assigned(FParent) and Assigned(FParent.SimpleXML) and (sxoAutoCreate in FParent.SimpleXML.Options) then
   begin
-    Result := Add(Name, '');
+    Result := Add(Name, Default);
   end;
+end;
+
+function TJvSimpleXMLProps.GetItemNamed(const Name: string): TJvSimpleXMLProp;
+begin
+  Result := GetItemNamedDefault(Name, '');
 end;
 
 function TJvSimpleXMLProps.GetSimpleXML: TJvSimpleXML;
@@ -1889,7 +1893,7 @@ function TJvSimpleXMLProps.IntValue(const Name: string; Default: Int64): Int64;
 var
   Prop: TJvSimpleXMLProp;
 begin
-  Prop := GetItemNamed(Name);
+  Prop := GetItemNamedDefault(Name, IntToStr(Default));
   if Prop = nil then
     Result := Default
   else
@@ -2031,7 +2035,7 @@ var
   Prop: TJvSimpleXMLProp;
 begin
   Result := '';
-  Prop := GetItemNamed(Name);
+  Prop := GetItemNamedDefault(Name, Default);
   if Prop = nil then
     Result := Default
   else
@@ -3266,6 +3270,8 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
+
+
 
 initialization
   {$IFDEF UNITVERSIONING}
