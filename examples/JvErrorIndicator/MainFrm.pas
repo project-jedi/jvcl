@@ -101,19 +101,18 @@ type
     procedure chkAutoScrollClick(Sender: TObject);
     procedure chkLargeClick(Sender: TObject);
   private
-    { Private declarations }
     jep: TJvErrorIndicator;
     edClient: TJvErrorClientEdit;
     procedure DoClientKey(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   public
-    { Public declarations }
   end;
 
 var
-  frmErrIndicatorDemo: TfrmErrIndicatorDemo ;
+  frmErrIndicatorDemo: TfrmErrIndicatorDemo;
 
 implementation
+
 uses
   JvEdit;
 

@@ -684,6 +684,7 @@ begin
   FDrives := TStringList.Create;
   FDriveTypes := dtStandard;
   FImageAlign := iaCentered;
+  ScrollBars := ssNone;
 
   if FImageSize = isSmall then
     FImages := TImageList.CreateSize(FSmall, FSmall)
@@ -801,7 +802,7 @@ begin
     if (Integer(itemID) >= 0) and (odSelected in State) then
     begin
       Canvas.Brush.Color := clHighlight;
-      Canvas.Font.Color := clHighlightText
+      Canvas.Font.Color := clHighlightText;
     end;
     if Integer(itemID) >= 0 then
       DrawItem(itemID, rcItem, State)
@@ -1026,6 +1027,7 @@ begin
   Width := 145;
   Style := lbOwnerDrawFixed;
   Sorted := False;
+  ScrollBars := ssNone;
   FAutoExpand := True;
   FImages := TImageList.Create(Self);
   FImages.ShareImages := True;

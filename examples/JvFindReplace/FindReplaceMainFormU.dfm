@@ -5,6 +5,9 @@ object FindReplaceMainForm: TFindReplaceMainForm
   Height = 363
   Caption = 'FindReplace test/demo program'
   Color = clBtnFace
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 450
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -12,7 +15,8 @@ object FindReplaceMainForm: TFindReplaceMainForm
   Font.Style = []
   Menu = MainMenu1
   OldCreateOrder = True
-  Position = poScreenCenter
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -20,91 +24,48 @@ object FindReplaceMainForm: TFindReplaceMainForm
     Left = 0
     Top = 81
     Width = 465
-    Height = 236
+    Height = 233
     Align = alClient
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Courier New'
+    Font.Style = []
     Lines.Strings = (
-      'LICENSE AGREEMENT'
+      
+        '{***************************************************************' +
+        '***'
+      ''
+      '                       JEDI-VCL Demo'
+      ''
+      ' Copyright (C) 2002 Project JEDI'
+      ''
+      ' Original author:'
+      ''
+      ' Contributor(s):'
       ''
       
-        'This product is provided to you free of charge. Should you accep' +
-        't the terms of this '
-      
-        'agreement, [Company XXX] will grant you the personal and non-exc' +
-        'lusive right to '
-      
-        'install and use the software. [Software XXX] or any other materi' +
-        'als provided in this '
-      
-        'package may not be modified in any way. This evaluation version ' +
-        'of [Software XXX] '
-      
-        'may be freely redistributed with all supplied files in its origi' +
-        'nal executable archive '
-      'format.'
+        ' You may retrieve the latest version of this file at the JEDI-JV' +
+        'CL'
+      ' home page, located at http://jvcl.sourceforge.net'
       ''
+      ' The contents of this file are used with permission, subject to'
+      ' the Mozilla Public License Version 1.1 (the "License"); you may'
+      
+        ' not use this file except in compliance with the License. You ma' +
+        'y'
+      ' obtain a copy of the License at'
+      ' http://www.mozilla.org/MPL/MPL-1_1Final.html'
       ''
-      'COPYRIGHT NOTICE'
+      ' Software distributed under the License is distributed on an'
+      ' "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or'
+      ' implied. See the License for the specific language governing'
+      ' rights and limitations under the License.'
       ''
       
-        '[Software XXX] and all other materials distributed with this pac' +
-        'kage are Copyright (c) '
-      '1997 by [Company XXX].'
-      ''
-      
-        'No parts of [Software XXX] or other files provided in this packa' +
-        'ge may be reproduced '
-      
-        'in part or in whole, except as provided in the License Agreement' +
-        '. You may not remove '
-      
-        'any copyright or other proprietary notice from the software. You' +
-        ' may not reverse '
-      'engineer, decompile, or disassemble the software.'
-      ''
-      ''
-      'DISCLAIMER'
-      ''
-      
-        'This software is provided "AS IS". You agree that by accepting t' +
-        'his license, you are '
-      
-        'expressly acknowledging that the use of this software is AT YOUR' +
-        ' OWN RISK.'
-      ''
-      '[Company XXX] MAKES NO WARRANTY OF ANY KIND, EITHER EXPRESS OR '
-      'IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF '
-      'MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, WITH '
-      'RESPECT TO THIS SOFTWARE AND ACCOMPANYING DOCUMENTATION.'
-      ''
-      'IN NO EVENT SHALL [Company XXX] BE LIABLE FOR ANY DAMAGES '
-      '(INCLUDING DAMAGES FOR LOSS OF BUSINESS PROFITS, BUSINESS '
-      'INTERRUPTION, LOSS OF BUSINESS INFORMATION, OR OTHER PECUNIARY '
-      
-        'LOSS) ARISING OUT OF THE USE OF OR INABILITY TO USE THIS PROGRAM' +
-        ', '
-      
-        'EVEN IF [Company XXX] HAS BEEN ADVISED OF THE POSSIBILITY OF SUC' +
-        'H '
-      'DAMAGES.'
-      ''
-      ''
-      'TRADEMARKS'
-      ''
-      
-        'Any product or brand names mentioned in this software and associ' +
-        'ated manuals and '
-      
-        'files are trademarks or registered trademarks of their respectiv' +
-        'e owners.'
-      ''
-      ''
-      'YOU ACKNOWLEDGE THAT YOU HAVE READ THIS AGREEMENT, '
-      'UNDERSTAND IT, AND AGREE TO BE BOUND BY ITS TERMS AND '
-      'CONDITIONS. YOU FURTHER AGREE THAT IT IS THE COMPLETE AND '
-      'EXCLUSIVE STATEMENT OF THE AGREEMENT BETWEEN US THAT '
-      'SUPERSEDES ANY PROPOSAL OR PRIOR AGREEMENT, ORAL OR WRITTEN, '
-      'AND ANY OTHER COMMUNICATIONS BETWEEN US RELATING TO THE '
-      'SUBJECT MATTER OF THIS AGREEMENT.')
+        '****************************************************************' +
+        '**}')
+    ParentFont = False
     ScrollBars = ssBoth
     TabOrder = 0
   end
@@ -128,10 +89,10 @@ object FindReplaceMainForm: TFindReplaceMainForm
       Width = 388
       Height = 64
       Caption = 
-        'Test program for the FindReplace unit.'#13#10'Has two different Find s' +
-        'ystems: one using the built in dialogs;'#13#10'one using InputQuery to' +
-        ' handle user selection.'#13#10'See FindReplace.pas / readme.txt for mo' +
-        're details'
+        'Test program for the JvFindReplace unit.'#13#10'Has two different Find' +
+        ' systems: one using the built in dialogs;'#13#10'one using InputQuery ' +
+        'to handle user selection.'#13#10'See JvFindReplace.pas for more detail' +
+        's.'
     end
   end
   object FindReplace1: TJvFindReplace
