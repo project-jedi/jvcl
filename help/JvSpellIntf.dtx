@@ -1,5 +1,5 @@
 ##Package: Cmp
-##Status: Locked by peter3
+##Status: Completed by peter3, needs review
 ----------------------------------------------------------------------------------------------------
 @@JvSpellIntf.pas
 Summary
@@ -11,261 +11,268 @@ Author
 @@CreateSpellChecker
 <TITLE CreateSpellChecker variable>
 Summary
-  Write here a summary (1 line)
+  Creates and returns an IJvSpellChecker instance if assigned.
 Description
-  Write here a description
+  Call CreateSpellChecker to create an IJvSpellChecker instance. Spell checkers that implements
+  the IJvSpellChecker, assign their own function to this pointer. If the pointer is nil, no
+  IJvSpellChecker implementor is registered.
+
+  Since this function is actually a pointer, you shoud first check if it is nil before using it, i.e
+  use a call like if Assigned(CreateSpellChecker).
+
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker
 Summary
-  Write here a summary (1 line)
+  Interface that describes the functionality of a spell checker.
 Description
-  Write here a description
+  IJvSpellChecker defines the methods required for a spell checker. Any spell checker implementation
+  must implement all the methods of this interface.
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.Delimiters
 Summary
-  Write here a summary (1 line)
+  Specifies the characters that are used to break the text into words.
 Description
-  Write here a description
+  Use Delimiters to set or \read the characters that are used to delimit text.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Text
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.Dictionary
 Summary
-  Write here a summary (1 line)
+  Defines the basic dictionary used to check spelling against.
 Description
-  Write here a description
+  Use Dictionary to set and \read the base dictionary used for spell checking. This value should
+  point to a file on disk. If no dictionary is set, no spell checking can take place.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  UserDictionary
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.GetCanIgnore
 Summary
-  Write here a summary (1 line)
+  Getter for the OnCanIgnore event.
 Description
-  Write here a description
-Return value
-  Describe here what the function returns
+  GetCanIgnore is the get function for the OnCanIgnore event
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnCanIgnore
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.GetCurrentWord
 Summary
-  Write here a summary (1 line)
+  Returns the currently found misspelled or missing word.
 Description
-  Write here a description
+  Call GetCurrentWord to retrieve the last found misspelled word. Should return an empty string if there
+  are no misspelled words.
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The last found misspelled word or an empty string.
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.GetDelimiters
 Summary
-  Write here a summary (1 line)
+  Getter for the Delimiters property.
 Description
-  Write here a description
+  GetDelimiters is the get function for the Delimiters property.
 Return value
-  Describe here what the function returns
+  The current set of delimiters.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Delimiters
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.GetDictionary
 Summary
-  Write here a summary (1 line)
+  Getter for the Dictionary property.
 Description
-  Write here a description
+  GetDictionary is the get function for the Dictionary property.
 Return value
-  Describe here what the function returns
+  The currently selected dictionary filename or an empty string.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Dictionary
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.GetIgnores
 Summary
-  Write here a summary (1 line)
+  Getter for the Ignores property.
 Description
-  Write here a description
+  GetIgnores is the get function for the Ignores property.
 Return value
-  Describe here what the function returns
+  A string list with the words to ignore in the text.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Ignores
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.GetSuggestions
 Summary
-  Write here a summary (1 line)
+  Geter for the Suggestions property.
 Description
-  Write here a description
+  GetSuggestions is the get function for the Suggestions property.
 Return value
-  Describe here what the function returns
+  A string list of suggested word replacements for the currently misspelled word, one word per line.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Suggestions, GetCurrentWord
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.GetText
 Summary
-  Write here a summary (1 line)
+  Getter for the Text property.
 Description
-  Write here a description
+  GetText is the get function for the Text property.
 Return value
-  Describe here what the function returns
+  A string containing the text to spell check.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Text
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.GetUserDictionary
 Summary
-  Write here a summary (1 line)
+  Getter for the UserDictionary property.
 Description
-  Write here a description
+  GetUserDictionary is the get function for the UserDictionary property.
 Return value
-  Describe here what the function returns
+  A string list with the words in the users own dictionary.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  UserDictionary
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.Ignores
 Summary
-  Write here a summary (1 line)
+  Contains a list of words to ignore.
 Description
-  Write here a description
+  Ignores is used for words that should be ignored in the current session. To make an ignored word
+  persistent, you should call UserDictionary.Add and then save/load the UserDictionary to storage as needed.
+
+  In a typical spell checking application, Ignores is used to implement "Ignore All" functionality.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Text, GetCurrentWord
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.Next
 Summary
-  Write here a summary (1 line)
+  Tries to find a new misspelled word.
 Description
-  Write here a description
+   Next returns true if a misspelled word was found. If a misspelled word was found, StartIndex is
+   set to the start of the word in Text and WordLength is set to the length of the word. Note
+   that StartIndex is 1-based, i.e the first position in Text is 1. If Next returns false,
+   it means that no more misspelled words can be found (i.e either when at end of Text or everything
+   from the current point and onward is correctly spelled). Next should take Ignores as well as
+   UserDictionary into account when scanning for misspelled words.
+
+   Use GetCurrentWord to access the word that was found by Next. Next is used in a typcial spell
+   checking application to implement "Next" functionality.
 Parameters
-  StartIndex - Description for this parameter
-  WordLength - Description for this parameter
+  StartIndex - The index in Text where the misspelled word starts.
+  WordLength - The length of the misspelled word.
 Return value
-  Describe here what the function returns
+  True if a misspelled word was found, false otherwise.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  GeCurrentWord, Text, Ignores, UserDictionary
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.OnCanIgnore
 Summary
-  Write here a summary (1 line)
+  Event handler that is called for every word in the text.
 Description
-  Write here a description
+  Write a handler for the OnCanIgnore event when you need to set up ignores for words that can't be
+  easily captured using a simple table driven spell checker. For example, to ignore upper case words,
+  you could write an event handler that compares the current word with its upper cased variant and
+  set CanIgnore to true if they match.
 Parameters
-  Sender    - Description for this parameter
-  Value     - Description for this parameter
-  CanIgnore - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Sender    - The IJvSpellChecker implementor
+  Value     - The string to check.
+  CanIgnore - Set to true to skip the word, false to handle it normally.
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.Seek
 Summary
-  Write here a summary (1 line)
+  Moves to another position in the text.
 Description
-  Write here a description
+  Seek moves the internal text pointer to the position in Text given by Position. If Position >= Length(Text),
+  calls to Next always returns false.
+Note
+  Since positioning is 1-based, Seek(0) = Seek(1).
 Parameters
-  Position - Description for this parameter
+  Position - The 1-based index to move the internal pointer to. Values < 1 are interpreted as 1, values
+  >= Length(Text) are interpreted as Length(Text) - 1.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Next, Text
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.SetCanIgnore
 Summary
-  Write here a summary (1 line)
+  Setter for the OnCanIgnore event.
 Description
-  Write here a description
+  SetCanIgnore is the set procedure for the OnCanIgnore event.
 Parameters
-  Value - Description for this parameter
+  Value - The event handler to assign to OnCanIgnore.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnCanIgnore
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.SetDelimiters
 Summary
-  Write here a summary (1 line)
+  Setter for the Delimiters property.
 Description
-  Write here a description
+  SetDelimiters is the set procedure for the Delimiters property.
 Parameters
-  Value - Description for this parameter
+  Value - The new value of Delimiters.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Delimiters
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.SetDictionary
 Summary
-  Write here a summary (1 line)
+  Setter for the Dictionary property.
 Description
-  Write here a description
+  SetDictionary is the set procedure for the Dictionary property.
 Parameters
-  Value - Description for this parameter
+  Value - The new value of dictionary. Setting this value copies the content of Value into an internal list.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Dictionary
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.SetIgnores
 Summary
-  Write here a summary (1 line)
+  Setter for the Ignores property.
 Description
-  Write here a description
+  SetIgnores is the set procedure for the Ignores property.
 Parameters
-  Value - Description for this parameter
+  Value - The new value of Ignores. Setting this value copies the content of Value into an internal list.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Ignores
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.SetText
 Summary
-  Write here a summary (1 line)
+  Setter for the Text property.
 Description
-  Write here a description
+  SetText is the set procedure for the Text property.
 Parameters
-  Value - Description for this parameter
+  Value - The new value of Text.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Text
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.SetUserDictionary
 Summary
-  Write here a summary (1 line)
+  Setter for the UserDictionary property.
 Description
-  Write here a description
+  SetUserDictionary is the set procedure for the UserDictionary property.
 Parameters
-  Value - Description for this parameter
+  Value - The new value of UserDictionary. Setting this value copies the content of Value into an internal list.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  UserDictionary
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.Suggestions
 Summary
-  Write here a summary (1 line)
+  A list of possible replacement for the currently misspelled word.
 Description
-  Write here a description
+  Suggestion returns the suggested replacements for a misspelled word. How the implementation determines
+  valid and/or useful replacement words is defined by the implementation.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Text, GetCurrentWord
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.Text
 Summary
-  Write here a summary (1 line)
+  The Text to spell check.
 Description
-  Write here a description
+  Use Text to set the text to spell check. When Text is changed, spell checking is reset to the start of the
+  string.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Next, Seek, GetCurrentWord
 ----------------------------------------------------------------------------------------------------
 @@IJvSpellChecker.UserDictionary
 Summary
-  Write here a summary (1 line)
+  A sorted list of words the user has selected as his own words.
 Description
-  Write here a description
+  UserDictionary is used to manage the users own words. The main difference between a dictionary and a
+  user dictionary is that you cannot change the content of the main dictionary once loaded (without reloading it).
+
+  In addition, UserDictionary is presumed to contain a list of sorted words, one per line, whereas the
+  dictionary can be in any format determined by the actual implementation.
+
+  Use UserDictionary to create a list of words that the user has chosen as his own word. For example, in
+  a typical spell checking application, this property can be used to implement "Add" functionality.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Dictionary, Ignores
 ----------------------------------------------------------------------------------------------------
 @@TJvSpellCheckIgnoreEvent
 <TITLE TJvSpellCheckIgnoreEvent type>
