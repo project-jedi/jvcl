@@ -4500,7 +4500,7 @@ procedure TJvCustomInspectorItem.EditMouseUp(Sender: TObject;
 var
   InspCoord: TPoint;
 begin
-  InspCoord := Inspector.ScreenToClient(ListBox.ClientToScreen(Point(X, Y)));
+  InspCoord := Inspector.ScreenToClient(EditCtrl.ClientToScreen(Point(X, Y)));
   Inspector.MouseUp(Button, Shift, InspCoord.X, InspCoord.Y);
 end;
 
@@ -10392,7 +10392,6 @@ begin
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorCharItem, tkWChar));
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorInt64Item, tkInt64));
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorClassItem, tkClass));
-    // TMethodEditor is disabled because it doesn't work
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorTMethodItem, tkMethod));
     Add(TJvInspectorTCaptionRegItem.Create(TJvInspectorStringItem, TypeInfo(TCaption)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorFontItem, TypeInfo(TFont)));
