@@ -281,29 +281,6 @@ Description
   the system for drives and fills the Items array again, finally resetting the selected item to be the
   previously selected item.
 ----------------------------------------------------------------------------------------------------
-@@TJvDriveType
-<TITLE TJvDriveType type>
-Summary
-  The type of available drives.
-Description
-  TJvDriveType describes all possible drive types on a computer.
-@@TJvDriveType.dtUnknown
-  The type of the drive could not be determined.
-@@TJvDriveType.dtRemovable
-  The drive is a removable drive. This can be a floppy, a tape drive, a zip disk or similar.
-@@TJvDriveType.dtFixed
-  The drive is a fixed drive.
-@@TJvDriveType.dtRemote
-  The drive is a networked drive on a LAN or WAN.
-@@TJvDriveType.dtCDROM
-  The drive is a CD-ROM or DVD or similar.
-@@TJvDriveType.dtRamDisk
-  The drive is a reserved memory space and not a real, persistent drive.
-----------------------------------------------------------------------------------------------------
-@@TJvDriveTypes
-<TITLE TJvDriveTypes type>
-<COMBINE TJvDriveType>
-----------------------------------------------------------------------------------------------------
 @@TJvFileListBox
 <TITLEIMG TJvFileListBox>
 JVCLInfo
@@ -345,27 +322,4 @@ Description
   Use ForceFileExtensions to specify how file extensions are displayed. If ForceFileExtensions is true,
   file extensions are always displayed. If ForceFileExtensions is false, file extensions are displayed
   according to the user's settings in Windows Explorer.
-----------------------------------------------------------------------------------------------------
-@@TJvImageAlign
-<TITLE TJvImageAlign type>
-Summary
-  Type used to specify the alignment of images in relation to other objects, like text.
-Description
-  Use tJvImageAlign to specify where an image is drawn in a control in relation to other items, like text.
-@@TJvImageAlign.iaLeft
-  Images are aligned to the left of other items.
-@@TJvImageAlign.iaCentered
-  Images are centered in the control and aligned above other items.
-----------------------------------------------------------------------------------------------------
-@@TJvImageSize
-<TITLE TJvImageSize type>
-Summary
-  Type used to set the size of images.
-Description
-  TJvImageSize is the type of the TJvDriveCombo.ImageSize and TJvDriveList.ImageSize properties and
-  is used to specify the size of the displayed icons in the list.
-@@TJvImageSize.isSmall
-  The images should be small (typically 16x16 px).
-@@TJvImageSize.isLarge
-  The images should be large (typically 32x32 px).
 
