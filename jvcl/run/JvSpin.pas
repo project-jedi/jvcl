@@ -214,8 +214,10 @@ type
     {$ENDIF VCL}
   protected
     FButtonKind: TSpinButtonKind;
+    {$IFDEF VCL}
     procedure DoClipboardPaste; override;
     procedure DoClipboardCut; override;
+    {$ENDIF VCL}
     procedure DoKillFocus(FocusedWnd: HWND); override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
       {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
@@ -830,6 +832,7 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomSpinEdit.DoClipboardCut;
 begin
   if FEditorEnabled and not ReadOnly then
@@ -853,6 +856,7 @@ begin
   end;
   }
 end;
+{$ENDIF VCL}
 
 procedure TJvCustomSpinEdit.DoEnter;
 begin
