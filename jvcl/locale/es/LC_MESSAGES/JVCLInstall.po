@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL\n"
-"POT-Creation-Date: 2004-12-18 17:51\n"
+"POT-Creation-Date: 2004-12-18 18:02\n"
 "PO-Revision-Date: 2004-12-17 22:12+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
@@ -1191,9 +1191,6 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Sitio web oficial de Libreria de Componentes Visual JEDI"
 
-#~ msgid "..."
-#~ msgstr "..."
-
 #~ msgid "-"
 #~ msgstr "-"
 
@@ -1217,6 +1214,9 @@ msgstr "Sitio web oficial de Libreria de Componentes Visual JEDI"
 
 #~ msgid "TJv"
 #~ msgstr "TJv"
+
+#~ msgid "..."
+#~ msgstr "..."
 
 #~ msgid "http://projectjedi.sourceforge.net"
 #~ msgstr "http://projectjedi.sourceforge.net"

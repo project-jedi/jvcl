@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL\n"
-"POT-Creation-Date: 2004-12-18 17:51\n"
+"POT-Creation-Date: 2004-12-18 18:02\n"
 "PO-Revision-Date: 2004-12-18 13:16+0100\n"
 "Last-Translator: Peter Thörnqvist <peter3@peter3.com>\n"
 "Language-Team: JVCL Localization\n"
@@ -1426,51 +1426,51 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Hemsida för Jedi Visual Component Library"
 
-#~ msgid "MS Sans Serif"
-#~ msgstr "MS Sans Serif"
+#  FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
+#~ msgid "http://projectjedi.sourceforge.net"
+#~ msgstr "http://projectjedi.sourceforge.net"
+
+#~ msgid "TJv"
+#~ msgstr "TJv"
+
+#~ msgid "LblTarget"
+#~ msgstr "LblTarget"
+
+#~ msgid "LblOpenFile"
+#~ msgstr "LblOpenFile"
+
+#~ msgid "LblInfo"
+#~ msgstr "LblInfo"
+
+#~ msgid "LblFilename"
+#~ msgstr "LblFilename"
+
+#~ msgid "LblComment"
+#~ msgstr "LblComment"
+
+#~ msgid "LblCaption"
+#~ msgstr "LblCaption"
+
+#~ msgid "-"
+#~ msgstr "-"
+
+#  FrameDirEditBrowse..BtnJCLDirBrowse..Caption
+#~ msgid "..."
+#~ msgstr "..."
+
+#~ msgid "Arial"
+#~ msgstr "Arial"
+
+#~ msgid "LblErrorReason"
+#~ msgstr "LblErrorReason"
+
+#~ msgid "Verdana"
+#~ msgstr "Verdana"
 
 #  FormMain..JvWizard..ButtonHelp.Caption
 #  FormMain..JvWizard..ButtonHelp.Caption
 #~ msgid "&Hilfe"
 #~ msgstr "&Hjälp"
 
-#~ msgid "Verdana"
-#~ msgstr "Verdana"
-
-#~ msgid "LblErrorReason"
-#~ msgstr "LblErrorReason"
-
-#~ msgid "Arial"
-#~ msgstr "Arial"
-
-#  FrameDirEditBrowse..BtnJCLDirBrowse..Caption
-#~ msgid "..."
-#~ msgstr "..."
-
-#~ msgid "-"
-#~ msgstr "-"
-
-#~ msgid "LblCaption"
-#~ msgstr "LblCaption"
-
-#~ msgid "LblComment"
-#~ msgstr "LblComment"
-
-#~ msgid "LblFilename"
-#~ msgstr "LblFilename"
-
-#~ msgid "LblInfo"
-#~ msgstr "LblInfo"
-
-#~ msgid "LblOpenFile"
-#~ msgstr "LblOpenFile"
-
-#~ msgid "LblTarget"
-#~ msgstr "LblTarget"
-
-#~ msgid "TJv"
-#~ msgstr "TJv"
-
-#  FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
-#~ msgid "http://projectjedi.sourceforge.net"
-#~ msgstr "http://projectjedi.sourceforge.net"
+#~ msgid "MS Sans Serif"
+#~ msgstr "MS Sans Serif"
