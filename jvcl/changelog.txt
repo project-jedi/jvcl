@@ -2,8 +2,12 @@ Changelog for JVCL 3.0
 ======================
 2003-06-23:
 - Readded old TJvGradientCaption as TJvGradientHeaderPanel. Unit renamed from JvGradientCaption.pas to JvGradientHeaderPanel.pas
+- Added JvDBGroupPanel.pas from Steve Paris
+- Removed unnecessary IFDEF's (WIN32, COMPILER3_UP, COMPILER4_UP etc)
+- Removed the JvJCLUtils.ResStr function since it was now a noop (returns input)
+
 2003-06-22:
-- Renamed TJvxGradienCaption to TJvGradienCaption. Renamed JvGrdcpt.pas to JvGradientCpaton
+- Renamed TJvxGradienCaption to TJvGradientCaption. Renamed JvGrdcpt.pas to JvGradientCaption.pas
 - Added missing units. 
 - Copied needed images from old jvcl to new jvcl3 images folder
 - Moved obsolete or plain useless stuff to \archive

@@ -34,7 +34,8 @@ uses
 
 type
   TJvSpeller = class;
-  TJvSpellerF = class(TForm)
+
+  TJvSpellerFrm = class(TForm)
     Panel1: TPanel;
     lblcontext: TLabel;
     txtspell: TEdit;
@@ -61,7 +62,7 @@ type
     UserDicChanged: boolean;
     DicIndex: array[1..26] of integer;
     UserDicIndex: array[1..26] of integer;
-    SpellerDlg: TJvSpellerF;
+    SpellerDlg: TJvSpellerFrm;
     FWordBegin: integer;
     FWordEnd: integer;
     function WordBegin: boolean;
@@ -86,7 +87,7 @@ type
   end;
 
 var
-  JvSpellerF: TJvSpellerF;
+  JvSpellerFrm: TJvSpellerFrm;
 
 implementation
 
@@ -312,7 +313,7 @@ begin
             StartPos := 1;
           if Q_PosStr(s + cr, UserDic, StartPos) = 0 then
           begin
-            SpellerDlg := TJvSpellerF.Create(application);
+            SpellerDlg := TJvSpellerFrm.Create(application);
             SpellerDlg.FSpeller := self;
             SpellerDlg.btnSkip.OnClick := Skip;
             SpellerDlg.btnchange.OnClick := Change;
@@ -337,7 +338,7 @@ begin
         end
         else
         begin
-          SpellerDlg := TJvSpellerF.Create(application);
+          SpellerDlg := TJvSpellerFrm.Create(application);
           SpellerDlg.FSpeller := self;
           SpellerDlg.btnSkip.OnClick := Skip;
           SpellerDlg.btnchange.OnClick := Change;

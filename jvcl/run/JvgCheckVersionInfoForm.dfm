@@ -3,7 +3,6 @@ object JvgfCheckVersionInfo: TJvgfCheckVersionInfo
   Top = 175
   ActiveControl = reComments
   BorderStyle = bsDialog
-  Caption = #207#240#238#226#229#240#234#224' '#237#238#226#238#233' '#226#229#240#241#232#232
   ClientHeight = 298
   ClientWidth = 428
   Color = clBtnFace
@@ -112,7 +111,7 @@ object JvgfCheckVersionInfo: TJvgfCheckVersionInfo
     Width = 80
     Height = 25
     Anchors = [akLeft, akBottom]
-    Caption = 'Ok'
+    Caption = 'OK'
     Enabled = True
     OnClick = sbNextClick
     Color = 15134450
@@ -134,35 +133,30 @@ object JvgfCheckVersionInfo: TJvgfCheckVersionInfo
     Top = 74
     Width = 73
     Height = 13
-    Caption = #196#224#237#237#224#255' '#226#229#240#241#232#255':'
   end
   object Label2: TLabel
     Left = 16
     Top = 98
     Width = 65
     Height = 13
-    Caption = #196#224#242#224' '#226#251#245#238#228#224':'
   end
   object Label3: TLabel
     Left = 216
     Top = 74
     Width = 86
     Height = 13
-    Caption = #207#238#241#235#229#228#237#255#255' '#226#229#240#241#232#255':'
   end
   object Label4: TLabel
     Left = 216
     Top = 98
     Width = 65
     Height = 13
-    Caption = #196#224#242#224' '#226#251#245#238#228#224':'
   end
   object Label5: TLabel
     Left = 16
     Top = 136
     Width = 168
     Height = 13
-    Caption = #209#242#240#224#237#232#246#224' '#231#224#227#240#243#231#234#232' '#237#238#226#238#233' '#226#229#240#241#232#232':'
   end
   object Shape1: TShape
     Left = 11
@@ -192,7 +186,6 @@ object JvgfCheckVersionInfo: TJvgfCheckVersionInfo
     Top = 180
     Width = 131
     Height = 13
-    Caption = #196#238#239#238#235#237#232#242#229#235#252#237#224#255' '#232#237#244#238#240#236#224#246#232#255':'
   end
   object glShadow1: TJvgShadow
     Left = 12

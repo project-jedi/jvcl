@@ -345,26 +345,16 @@ end;
 
 procedure JvInterpreter_ItemHtDraw(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF COMPILER5_UP}
   Value := ItemHtDraw(V2O(Args.Values[0]) as TCanvas, Var2Rect(Args.Values[1]),
     TOwnerDrawState(Word(V2S(Args.Values[2]))), Args.Values[3], Args.Values[4]);
-  {$ELSE}
-  Value := ItemHtDraw(V2O(Args.Values[0]) as TCanvas, Var2Rect(Args.Values[1]),
-    TOwnerDrawState(Byte(V2S(Args.Values[2]))), Args.Values[3], Args.Values[4]);
-  {$ENDIF}
 end;
 
 { function ItemHtWidth(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState; const Text: string; const HideSelColor: Boolean): Integer; }
 
 procedure JvInterpreter_ItemHtWidth(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF COMPILER5_UP}
   Value := ItemHtWidth(V2O(Args.Values[0]) as TCanvas, Var2Rect(Args.Values[1]),
     TOwnerDrawState(Word(V2S(Args.Values[2]))), Args.Values[3], Args.Values[4]);
-  {$ELSE}
-  Value := ItemHtWidth(V2O(Args.Values[0]) as TCanvas, Var2Rect(Args.Values[1]),
-    TOwnerDrawState(Byte(V2S(Args.Values[2]))), Args.Values[3], Args.Values[4]);
-  {$ENDIF}
 end;
 
 { function ItemHtPlain(const Text: string): string; }

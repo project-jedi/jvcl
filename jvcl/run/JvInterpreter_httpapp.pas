@@ -1097,10 +1097,8 @@ begin
     AddSet(TWebActionItem, 'Name', TWebActionItem_Write_Name, 0, [0]);
     AddGet(TWebActionItem, 'PathInfo', TWebActionItem_Read_PathInfo, 0, [0], varEmpty);
     AddSet(TWebActionItem, 'PathInfo', TWebActionItem_Write_PathInfo, 0, [0]);
-    {$IFDEF COMPILER5_UP}
     AddGet(TWebActionItem, 'Producer', TWebActionItem_Read_Producer, 0, [0], varEmpty);
     AddSet(TWebActionItem, 'Producer', TWebActionItem_Write_Producer, 0, [0]);
-    {$ENDIF COMPILER5_UP}
     { TWebDispatcher }
     AddClass(cHTTPApp, TWebDispatcher, 'TWebDispatcher');
     AddFun(cHTTPApp, 'DosPathToUnixPath', JvInterpreter_DosPathToUnixPath, 1, [varString], varEmpty);

@@ -2785,7 +2785,9 @@ end;
 
 procedure TJvCustomLabel.SetAutoSize(Value: Boolean);
 begin
+  {$IFDEF COMPILER6_UP}
   inherited SetAutoSize(Value);
+  {$ENDIF}
   FAutoSize := Value;
   AdjustBounds;
 end;
