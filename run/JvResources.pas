@@ -186,17 +186,17 @@ resourcestring
   RsPasswordNotChanged = 'Password has not been changed';
   RsPasswordsMismatch = 'The new and confirmed passwords do not match';
 
-//=== JvBDEFilter.pas ========================================================
-resourcestring
-  RsECaptureFilter = 'Cannot perform this operation when controls are captured';
-  RsENotCaptureFilter = 'Cannot perform this operation when controls are not captured';
-
 //=== JvBDEExceptionForm.pas =================================================
 resourcestring
   RsDBExceptCaption = 'Database Engine Error';
   RsBDEErrorLabel = 'BDE Error';
   RsServerErrorLabel = 'Server Error';
   RsErrorMsgLabel = 'Error message';
+
+//=== JvBDEFilter.pas ========================================================
+resourcestring
+  RsECaptureFilter = 'Cannot perform this operation when controls are captured';
+  RsENotCaptureFilter = 'Cannot perform this operation when controls are not captured';
 
 //=== JvBDELoginDialog.pas ===================================================
 resourcestring
@@ -880,10 +880,6 @@ resourcestring
   RsUnknownProperty = 'Unknown property: %s';
 {$ENDIF USEJVCL}
 
-//=== JvHint.pas =============================================================
-resourcestring
-  RsHintCaption = 'Hint';
-
 //=== JvHidControllerClass.pas ===============================================
 {$IFDEF USEJVCL}
 resourcestring
@@ -916,6 +912,10 @@ resourcestring
   RsEOnlyOneControllerPerProgram = 'Only one TJvHidDeviceController allowed per program';
   RsEHIDBooleanError = 'HID Error: a boolean function failed';
 {$ENDIF USEJVCL}
+
+//=== JvHint.pas =============================================================
+resourcestring
+  RsHintCaption = 'Hint';
 
 //=== JvHLEditorPropertyForm.pas =============================================
 resourcestring
