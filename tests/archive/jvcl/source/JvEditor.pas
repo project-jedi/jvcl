@@ -1001,7 +1001,7 @@ const
 
 implementation
 
-uses Consts, JvCtlConst, JvStrUtil;
+uses Consts, JvCtlConst, JvStrUtil, JvMaxMin;
 
 {$IFDEF RAEDITOR_UNDO}
 
@@ -1131,16 +1131,6 @@ end;
 function KeyPressed(VK : integer) : boolean;
 begin
   Result := GetKeyState(VK) and $8000 = $8000;
-end;
-
-function Max(x,y:integer):integer;
-begin
-  if x > y then Result := x else Result := y;
-end;
-
-function Min(x,y:integer):integer;
-begin
-  if x < y then Result := x else Result := y;
 end;
 
 {$IFDEF COMPILER2}

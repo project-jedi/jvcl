@@ -183,28 +183,8 @@ type
 
 implementation
 uses
-  JvTypes;
+  JvTypes, JvMaxMin;
 
-function Max(Val1, Val2: integer): integer;
-begin
-  Result := Val1;
-  if Val2 > Val1 then
-    Result := Val2;
-end;
-
-function Min(Val1, Val2: integer): integer;
-begin
-  Result := Val1;
-  if Val2 < Val1 then
-    Result := Val2;
-end;
-
-function Ceil(X: Extended): Integer;
-begin
-  Result := Trunc(X);
-  if Frac(X) > 0 then
-    Inc(Result);
-end;
 
 { TJvImageWindow }
 

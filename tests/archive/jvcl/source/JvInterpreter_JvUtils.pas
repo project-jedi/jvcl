@@ -39,7 +39,7 @@ uses JvInterpreter;
 implementation
 
 uses Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls, ExtCtrls,
-  Dialogs, Menus, JvUtils, JvInterpreter_Windows, JvInterpreter_SysUtils;
+  Dialogs, Menus, JvUtils, JvInterpreter_Windows, JvInterpreter_SysUtils, JvMaxMin;
 
 
 { function ReplaceAllSokr(S: string; Words, Frases: TStrings): string; }

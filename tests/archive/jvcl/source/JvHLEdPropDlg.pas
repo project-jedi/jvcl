@@ -36,7 +36,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, JvRegAuto, StdCtrls, JvEditor, JvHLEditor, ExtCtrls;
+  ComCtrls, JvRegAuto, StdCtrls, JvEditor, JvHLEditor, ExtCtrls,
+  JvComponent;
 
 type
   TJvHLEdPropDlg = class;
@@ -177,19 +178,10 @@ const
 
 implementation
 
-uses {Consts,} JvCtlConst, JvStrUtil;
+uses {Consts,} JvCtlConst, JvStrUtil, JvMaxMin;
 
 {$R *.DFM}
 
-function Max(x,y:integer):integer;
-begin
-  if x > y then Result := x else Result := y;
-end;
-
-function Min(x,y:integer):integer;
-begin
-  if x < y then Result := x else Result := y;
-end;
 
 function Pixels(Control : TControl; APixels : integer) : integer;
 var

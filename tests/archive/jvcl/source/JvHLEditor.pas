@@ -176,13 +176,9 @@ type
 
 implementation
 
-uses JvStrUtil, JvCtlConst;
+uses JvStrUtil, JvCtlConst, JvMaxMin;
 
 
-function Min(x,y:integer):integer;
-begin
-  if x < y then Result := x else Result := y;
-end;
 
 procedure TJvSymbolColor .SetColor(const ForeColor, BackColor: TColor; const Style:
   TFontStyles);

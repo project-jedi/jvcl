@@ -444,8 +444,9 @@ implementation
 //PRY 2002.06.04
 {$IFDEF COMPILER6_UP}
 uses
-  DateUtils;
+  DateUtils,
 {$ENDIF COMPILER6_UP}
+  JvMaxMin;
 // PRY END
 
 {$R JvTIMELINEBITMAPS.RES}
@@ -461,22 +462,6 @@ const
 var
   FInitRepeatPause: Cardinal = 400;
   FRepeatPause: Cardinal = 100;
-
-{ utility }
-
-function Min(Val1, Val2: integer): integer;
-begin
-  Result := Val1;
-  if Val2 < Val1 then
-    Result := Val2;
-end;
-
-function Max(Val1, Val2: integer): integer;
-begin
-  Result := Val1;
-  if Val2 > Val1 then
-    Result := Val2;
-end;
 
 function MonthCount(Date1, Date2: TDateTime): integer;
 var y1, m1, d1, y2, m2, d2: word;

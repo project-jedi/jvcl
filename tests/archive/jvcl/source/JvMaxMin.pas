@@ -29,8 +29,10 @@ unit JvMaxMin;
 
 interface
 
-function Max(A, B: Longint): Longint;
-function Min(A, B: Longint): Longint;
+function Ceil(X: Extended): integer;
+function Floor(X:Extended):integer;
+function Max(Val1, Val2: Longint): Longint;
+function Min(Val1, Val2: Longint): Longint;
 function MaxInteger(const Values: array of Longint): Longint;
 function MinInteger(const Values: array of Longint): Longint;
 {$IFDEF COMPILER4_UP}
@@ -89,24 +91,42 @@ begin
   I := Int1; Int1 := Int2; Int2 := I;
 end;
 
-function Max(A, B: Longint): Longint;
+{ utility }
+
+function Ceil(X: Extended): Integer;
 begin
-  if A > B then Result := A
-  else Result := B;
+  Result := Trunc(X);
+  if frac(X) > 0 then
+    Inc(Result);
 end;
 
-function Min(A, B: Longint): Longint;
+function Floor(X:Extended):integer;
 begin
-  if A < B then Result := A
-  else Result := B;
+  Result := trunc(X);
+  if frac(X) < 0 then
+    Dec(Result);
+end;
+
+function Min(Val1, Val2: integer): integer;
+begin
+  Result := Val1;
+  if Val2 < Val1 then
+    Result := Val2;
+end;
+
+function Max(Val1, Val2: integer): integer;
+begin
+  Result := Val1;
+  if Val2 > Val1 then
+    Result := Val2;
 end;
 
 function MaxInteger(const Values: array of Longint): Longint;
 var
   I: Cardinal;
 begin
-  Result := Values[0];
-  for I := 0 to High(Values) do
+  Result := Values[Low(Values)];
+  for I := Succ(Low(Values)) to High(Values) do
     if Values[I] > Result then Result := Values[I];
 end;
 
@@ -114,8 +134,8 @@ function MinInteger(const Values: array of Longint): Longint;
 var
   I: Cardinal;
 begin
-  Result := Values[0];
-  for I := 0 to High(Values) do
+  Result := Values[Low(Values)];
+  for I := Succ(Low(Values)) to High(Values) do
     if Values[I] < Result then Result := Values[I];
 end;
 
@@ -125,8 +145,8 @@ function MaxInt64(const Values: array of int64): int64;
 var
   I: Cardinal;
 begin
-  Result := Values[0];
-  for I := 0 to High(Values) do
+  Result := Values[Low(Values)];
+  for I := Succ(Low(Values)) to High(Values) do
     if Values[I] > Result then Result := Values[I];
 end;
 
@@ -134,8 +154,8 @@ function MinInt64(const Values: array of int64): int64;
 var
   I: Cardinal;
 begin
-  Result := Values[0];
-  for I := 0 to High(Values) do
+  Result := Values[Low(Values)];
+  for I := Succ(Low(Values)) to High(Values) do
     if Values[I] < Result then Result := Values[I];
 end;
 
@@ -145,8 +165,8 @@ function MaxFloat(const Values: array of Extended): Extended;
 var
   I: Cardinal;
 begin
-  Result := Values[0];
-  for I := 0 to High(Values) do
+  Result := Values[Low(Values)];
+  for I := Succ(Low(Values)) to High(Values) do
     if Values[I] > Result then Result := Values[I];
 end;
 
@@ -154,8 +174,8 @@ function MinFloat(const Values: array of Extended): Extended;
 var
   I: Cardinal;
 begin
-  Result := Values[0];
-  for I := 0 to High(Values) do
+  Result := Values[Low(Values)];
+  for I := Succ(Low(Values)) to High(Values) do
     if Values[I] < Result then Result := Values[I];
 end;
 
@@ -163,8 +183,8 @@ function MaxDateTime(const Values: array of TDateTime): TDateTime;
 var
   I: Cardinal;
 begin
-  Result := Values[0];
-  for I := 0 to High(Values) do
+  Result := Values[Low(Values)];
+  for I := Succ(Low(Values)) to High(Values) do
     if Values[I] < Result then Result := Values[I];
 end;
 
@@ -172,8 +192,8 @@ function MinDateTime(const Values: array of TDateTime): TDateTime;
 var
   I: Cardinal;
 begin
-  Result := Values[0];
-  for I := 0 to High(Values) do
+  Result := Values[Low(Values)];
+  for I := Succ(Low(Values)) to High(Values) do
     if Values[I] < Result then Result := Values[I];
 end;
 
@@ -182,8 +202,8 @@ function MaxOf(const Values: array of Variant): Variant;
 var
   I: Cardinal;
 begin
-  Result := Values[0];
-  for I := 0 to High(Values) do
+  Result := Values[Low(Values)];
+  for I := Succ(Low(Values)) to High(Values) do
     if Values[I] > Result then Result := Values[I];
 end;
 
@@ -191,8 +211,8 @@ function MinOf(const Values: array of Variant): Variant;
 var
   I: Cardinal;
 begin
-  Result := Values[0];
-  for I := 0 to High(Values) do
+  Result := Values[Low(Values)];
+  for I := Succ(Low(Values)) to High(Values) do
     if Values[I] < Result then Result := Values[I];
 end;
 {$ENDIF WIN32}

@@ -237,18 +237,7 @@ type
 
 implementation
 
-uses JvHtControls, JvDsgnIntf;
-
-
-function Max(x,y:integer):integer;
-begin
-  if x > y then Result := x else Result := y;
-end;
-
-function Min(x,y:integer):integer;
-begin
-  if x < y then Result := x else Result := y;
-end;
+uses JvHtControls, JvDsgnIntf, JvMaxMin;
 
 
 {*********************************************************************

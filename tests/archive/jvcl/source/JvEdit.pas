@@ -207,6 +207,8 @@ type
   end;
 
 implementation
+uses
+  JvMaxMin;
 
 { TJvCustomEdit }
 
@@ -261,8 +263,10 @@ begin
   st := Text;
   FMaxPixel.Test(st, Font);
   if st <> Text then
+  begin
     Text := st;
-  SelStart := Length(Text);
+    SelStart := Min(SelStart,Length(Text));
+  end;
   FAutoSave.SaveValue(Text);
 end;
 
@@ -359,8 +363,10 @@ begin
   st := Text;
   FMaxPixel.Test(st, Font);
   if st <> Text then
+  begin
     Text := st;
-  SelStart := Length(Text);
+    SelStart := Min(SelStart,Length(Text));
+  end;
 end;
 
 procedure TJvCustomEdit.SetDisabledColor(const Value: TColor);

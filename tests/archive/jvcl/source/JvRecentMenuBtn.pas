@@ -69,7 +69,7 @@ type
 
 implementation
 uses
-  ShlObj, ActiveX;
+  JvMaxMin, ShlObj, ActiveX;
 
 resourcestring
   RC_EmptyItem = '<Empty>';
@@ -236,13 +236,6 @@ begin
   finally
     Strings.EndUpdate;
   end;
-end;
-
-function Min(Val1, Val2: integer): integer;
-begin
-  Result := Val1;
-  if Val2 < Val1 then
-    Result := Val2;
 end;
 
 procedure TJvRecentMenuBtn.DynBuild(Item: TMenuItem; Directory: string);

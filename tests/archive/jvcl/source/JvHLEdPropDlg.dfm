@@ -1,4 +1,4 @@
-object RAHLEditorParamsForm: TJvHLEditorParamsForm
+object JvHLEditorParamsForm: TJvHLEditorParamsForm
   Left = 147
   Top = 108
   BorderIcons = [biSystemMenu]
@@ -23,6 +23,7 @@ object RAHLEditorParamsForm: TJvHLEditorParamsForm
     Width = 419
     Height = 321
     ActivePage = tsEditor
+    TabIndex = 0
     TabOrder = 0
     object tsEditor: TTabSheet
       Caption = 'Editor'
@@ -217,6 +218,7 @@ object RAHLEditorParamsForm: TJvHLEditorParamsForm
         Top = 48
         Width = 153
         Height = 121
+        Style = lbOwnerDrawFixed
         ExtendedSelect = False
         ItemHeight = 13
         Items.Strings = (
@@ -234,7 +236,6 @@ object RAHLEditorParamsForm: TJvHLEditorParamsForm
           'Plain text'
           'Marked block'
           'Right margin')
-        Style = lbOwnerDrawFixed
         TabOrder = 1
         OnClick = lbElementsClick
         OnDrawItem = lbElementsDrawItem
@@ -760,8 +761,8 @@ object RAHLEditorParamsForm: TJvHLEditorParamsForm
       'alink="#FFFF00">'
       ''
       
-        '<p align="left">Download last JVCLmp;A Library version now - <fon' +
-        't face="Arial"'
+        '<p align="left">Download last JVCLmp;A Library version now - <fo' +
+        'nt face="Arial"'
       
         'color="#00FFFF"><a href="http://www.torry.ru/vcl/packs/ralib.zip' +
         '"><small>ralib110.zip</small></a>'

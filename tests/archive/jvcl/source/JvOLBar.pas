@@ -310,7 +310,7 @@ type
 
 implementation
 uses
-  ExtCtrls;
+  ExtCtrls, JvMaxMin;
 
 {$R JvOUTLOOKBARRES.RES}
 
@@ -1507,12 +1507,6 @@ begin
     Result := Val2;
 end;
 
-function Min(Val1,Val2:integer):integer;
-begin
-  Result := Val1;
-  if Val2 < Val1 then
-    Result := Val2;
-end;
 var R:TRect;B:TJvOutlookbarButton;P:TJvOutlookBarPage;
 begin
   TJvOutlookBarEdit(FEdit).Tag := Message.wParam;

@@ -331,12 +331,6 @@ type
 
   function KeyPressed(VK : integer) : boolean;
 
-  { functions Max and Min not need comments }
-
-  function Max(x, y :integer):integer;
-
-  function Min(x, y :integer):integer;
-
   procedure SwapInt(var Int1, Int2: Integer);
 
   function IntPower(Base, Exponent : integer) : integer;
@@ -650,7 +644,8 @@ const
 
 implementation
 
-uses JvCtlConst;
+uses
+  JvCtlConst, JvMaxMin;
 
 
 function GetLineByPos(const S : string; const Pos : integer) : integer;
@@ -1563,16 +1558,6 @@ begin
   for i := 1 to Length(S) do
     if S[i] = Ch then
       inc(Result);
-end;
-
-function Max(x,y:integer):integer;
-begin
-  if x > y then Result := x else Result := y;
-end;
-
-function Min(x,y:integer):integer;
-begin
-  if x < y then Result := x else Result := y;
 end;
 
 procedure SwapInt(var Int1, Int2: Integer);

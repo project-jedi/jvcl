@@ -253,7 +253,8 @@ type
   end;
 
 implementation
-uses Consts;
+uses
+  Consts, JvMaxMin;
 
 { utility }
 
@@ -274,22 +275,6 @@ begin
   ReleaseDC(0, DC);
   Result := Metrics.tmHeight;
 end;
-
-function IMax(i, j: integer): integer;
-begin
-  if j > i then
-    Result := j
-  else
-    Result := i;
-end;
-{
-function Min(i,j:Integer):integer;
-begin
-  Result := i;
-  if j < i then
-    Result := j;
-end;
-}
 
 procedure DrawBtnFrame(Canvas: TCanvas; ButtonStyle: TJvButtonColors; DefColor: TColor; Default: boolean; R: TRect);
 var FTop, FBtm: TColor;
@@ -680,7 +665,7 @@ end;
 
 procedure TJvImageComboBox.MeasureItem(Index: Integer; var Height: Integer);
 begin
-  Height := IMax(GetItemHeight(Font) + 2, FHeight);
+  Height := Max(GetItemHeight(Font) + 2, FHeight);
 end;
 
 procedure TJvImageComboBox.SetColHi(Value: TColor);
@@ -722,7 +707,7 @@ end;
 
 procedure TJvImageComboBox.ResetItemHeight;
 begin
-  ItemHeight := IMax(GetItemHeight(Font) + 4, FHeight + 4);
+  ItemHeight := Max(GetItemHeight(Font) + 4, FHeight + 4);
 end;
 
 procedure TJvImageComboBox.Change;
@@ -1087,7 +1072,7 @@ end;
 
 procedure TJvImageListBox.MeasureItem(Index: Integer; var Height: Integer);
 begin
-  Height := IMax(GetItemHeight(Font) + 4, FHeight + 4);
+  Height := Max(GetItemHeight(Font) + 4, FHeight + 4);
 end;
 
 procedure TJvImageListBox.CMFontChanged(var Message: TMessage);
@@ -1100,7 +1085,7 @@ end;
 procedure TJvImageListBox.ResetItemHeight;
 begin
   case FAlignment of
-    taLeftJustify, taRightJustify: ItemHeight := IMax(GetItemHeight(Font) + 4, FHeight + 4);
+    taLeftJustify, taRightJustify: ItemHeight := Max(GetItemHeight(Font) + 4, FHeight + 4);
     taCenter: ItemHeight := GetItemHeight(Font) + FHeight + 8;
   end;
   Invalidate;

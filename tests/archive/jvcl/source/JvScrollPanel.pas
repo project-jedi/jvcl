@@ -183,28 +183,12 @@ type
   end;
 
 implementation
+uses
+  JvMaxMin;
 
 const
   cInitTime = 360;
   cTimeDelay = 100;
-
-  { utility }
-
-function Min(X, Y: integer): integer;
-begin
-  if X > Y then
-    Result := Y
-  else
-    Result := X;
-end;
-
-function Max(X, Y: integer): integer;
-begin
-  if X > Y then
-    Result := X
-  else
-    Result := Y
-end;
 
 {
 procedure TileBitmap(Dest:TControl;Source:TBitmap);

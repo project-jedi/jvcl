@@ -245,7 +245,8 @@ procedure Register;
 
 implementation
 
-uses Consts;
+uses
+  Consts, JvMaxMin;
 
 const
   MinBorder = 1;
@@ -684,16 +685,6 @@ var
   Region: HRgn;
   SmallRadius: Integer;
 
-  function Min(A, B: Integer): Integer;
-  begin
-    if A < B then Result := A else Result := B;
-  end;
-
-  function Max(A, B: Integer): Integer;
-  begin
-    if A > B then Result := A else Result := B;
-  end;
-
   function Lowest(A, B, C: Integer): Integer;
   begin
     if A < B then
@@ -731,10 +722,10 @@ begin
         Canvas.MoveTo(Outer.X, Outer.Y);
         Inner := AngleToPoint(Angle, Center, (101 - FPointerSize) * InnerRadius div 100);
         Canvas.LineTo(Inner.X, Inner.Y);
-        FPointerRect := Rect(Min(Inner.X, Outer.X),
-                             Min(Inner.Y, Outer.Y),
-                             Max(Inner.X, Outer.X),
-                             Max(Inner.Y, Outer.Y));
+        FPointerRect := Rect(JvMaxMin.Min(Inner.X, Outer.X),
+                             JvMaxMin.Min(Inner.Y, Outer.Y),
+                             JvMaxMin.Max(Inner.X, Outer.X),
+                             JvMaxMin.Max(Inner.Y, Outer.Y));
       end;
     psTriangle:
       begin
