@@ -327,34 +327,52 @@ begin
   CaptureExecute('"' + FTarget.RootDir + '\Bin\make.exe"',
     '-f makefile.mak', JVCLDir + '\images', CaptureLine);
 
-  if (not IsJCL) or (FTarget.InstallJcl {or FTarget.IsBCB}) then
+  if not FTarget.IsBCB then
   begin
-   // create make file
-    PrepareBpgData := PrepareBpg(BpgFilename, FTarget, IsJCL);
-    try
-      FMaxPackages := PrepareBpgData.Make.Projects.Count;
-      if (FTarget.IsBCB) and (IsJcl) then
-        FMaxPackages := FMaxPackages * 2; // include DCP creation steps
-      Synchronize(InitPkgProgressBar);
+    if (not IsJCL) or (FTarget.InstallJcl {or FTarget.IsBCB}) then
+    begin
+     // create make file
+      PrepareBpgData := PrepareBpg(BpgFilename, FTarget, IsJCL);
+      try
+        FMaxPackages := PrepareBpgData.Make.Projects.Count;
+        if (FTarget.IsBCB) and (IsJcl) then
+          FMaxPackages := FMaxPackages * 2; // include DCP creation steps
+        Synchronize(InitPkgProgressBar);
 
-     // compile
-      Result := CaptureExecute('"' + FTarget.RootDir + '\Bin\make.exe"',
-        '-B -f"' + ChangeFileExt(BpgFilename, '.mak') + '"', StartDir,
-        CaptureLine) = 0;
-      if FTarget.IsBCB then
-      begin
-        MoveBCBFiles(LibOutDir, FTarget); // move .lib, .bpi to DcpDir, .bpl to BplDir and deletes .tds
-        if FTarget.MoveHppFiles then
-          MoveHPPFiles(SourcePaths, StartDir + '\xyz', FTarget);
+       // compile
+        Result := CaptureExecute('"' + FTarget.RootDir + '\Bin\make.exe"',
+          '-B -f"' + ChangeFileExt(BpgFilename, '.mak') + '"', StartDir,
+          CaptureLine) = 0;
+        if FTarget.IsBCB then
+        begin
+          MoveBCBFiles(LibOutDir, FTarget); // move .lib, .bpi to DcpDir, .bpl to BplDir and deletes .tds
+          if FTarget.MoveHppFiles then
+            MoveHPPFiles(SourcePaths, StartDir + '\xyz', FTarget);
+        end;
+      finally
+        SetEnvironmentVariable('DCCOPT', nil);
+        SetEnvironmentVariable('DCC32', nil);
+        SetEnvironmentVariable('JCLROOT', nil);
+
+        PrepareBpgData.Cleaning := Result;
+        PrepareBpgData.Free;
       end;
-    finally
-      SetEnvironmentVariable('DCCOPT', nil);
-      SetEnvironmentVariable('DCC32', nil);
-      SetEnvironmentVariable('JCLROOT', nil);
-
-      PrepareBpgData.Cleaning := Result;
-      PrepareBpgData.Free;
     end;
+  end
+  else
+  begin
+    // Call the batch file if the target is BCB because it's easier
+    // to maintain.
+    {i := }CaptureExecute(
+                'makebcb.bat',
+                '"' + ChangeFileExt(BpgFileName, '') + '" '+
+                '"' + FTarget.JVCLDirName + '" ' +
+                '"' + FTarget.RootDir + '" ',
+                JVCLPackageDir,
+                CaptureLine);
+    //Result := i=1;     // Note: the batch file returns 1...
+    // But if everything went ok, the makefile shouldn't be there
+    Result := not FileExists(JVCLPackageDir + ChangeFileExt(BpgFilename, '.mak'));
   end;
 
   if Result and FTarget.IsBCB and IsJcl then
