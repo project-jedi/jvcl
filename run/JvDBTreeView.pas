@@ -45,17 +45,11 @@ unit JvDBTreeView;
 interface
 
 uses
-  SysUtils, Classes, DB,
-  {$IFDEF COMPILER6_UP}
-  Variants,
-  {$ENDIF COMPILER6_UP}
+  Windows,
   {$IFDEF VCL}
-  Windows, Messages, Controls, Dialogs, Graphics,
-  CommCtrl, ComCtrls, ExtCtrls,
+  Messages, CommCtrl,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QDialogs, QGraphics, QComCtrls, QExtCtrls, QWindows,
-  {$ENDIF VisualCLX}
+  Classes, Controls, ExtCtrls, ComCtrls, DB,
   JvComponent;
 
 type
@@ -269,6 +263,10 @@ type
 implementation
 
 uses
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF COMPILER6_UP}
+  SysUtils, Dialogs, 
   JvResources;
 
 // (rom) moved to implementation and removed type

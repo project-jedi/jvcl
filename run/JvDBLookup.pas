@@ -36,17 +36,10 @@ unit JvDBLookup;
 interface
 
 uses
-  SysUtils, Classes, DB,
-  {$IFDEF COMPILER6_UP}
-  Variants, VDBConsts,
-  {$ENDIF COMPILER6_UP}
   {$IFDEF VCL}
-  Windows, DBCtrls,
-  Messages, Controls, Forms, Graphics, Menus, Mask, StdCtrls,
+  Windows, Messages,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QDBCtrls, QControls, QForms, QGraphics, QMenus, QMask, QStdCtrls,
-  {$ENDIF VisualCLX}
+  Classes, Graphics, Controls, Forms, DB, DBCtrls,
   JvDBUtils, JvToolEdit, JvComponent, JvExControls;
 
 const
@@ -626,8 +619,11 @@ type
 implementation
 
 uses
-  DBConsts, Dialogs, Math,
-  JvThemes, JvJVCLUtils, JvJCLUtils, JvConsts, JvResources, JvTypes;
+  {$IFDEF COMPILER6_UP}
+  Variants, VDBConsts,
+  {$ENDIF COMPILER6_UP}
+  DBConsts, SysUtils, Math,
+  JvJCLUtils, JvJVCLUtils, JvThemes, JvTypes, JvConsts, JvResources;
 
 procedure CheckLookupFormat(const AFormat: string);
 var

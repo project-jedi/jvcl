@@ -41,20 +41,12 @@ unit JvDBControls;
 interface
 
 uses
-  Classes, DB, IniFiles,
-  {$IFDEF COMPILER6_UP}
-  Variants,
-  {$ENDIF COMPILER6_UP}
+  Windows,
   {$IFDEF VCL}
-  Windows, Messages, Controls, Forms, Grids, Graphics, Buttons, Menus,
-  StdCtrls, Mask, DBGrids, DBCtrls,
+  Messages,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QForms, QGrids, QGraphics, QButtons, QMenus,
-  QStdCtrls, QMask, QDBGrids, QDBCtrls, QWindows,
-  {$ENDIF VisualCLX}
-  JvAppStorage, JvSecretPanel, JvLabel, JvToolEdit, JvFormPlacement,
-  JvJCLUtils, JvMaskEdit, JvBaseEdits;
+  Classes, Graphics, Controls, StdCtrls, DBCtrls, DB,
+  JvSecretPanel, JvLabel, JvToolEdit, JvMaskEdit, JvBaseEdits;
 
 
 type
@@ -661,8 +653,11 @@ type
 implementation
 
 uses
-  SysUtils, Dialogs, DbConsts, Math,
-  JvDBUtils, JvJVCLUtils, JvCalc, JvConsts, JvResources, JvTypes;
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF COMPILER6_UP}
+  SysUtils, Math, Forms,
+  JvJCLUtils, JvJVCLUtils, JvCalc, JvTypes, JvConsts, JvResources;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDBControls.res}

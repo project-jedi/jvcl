@@ -45,14 +45,11 @@ unit JvDBLookupComboEdit;
 interface
 
 uses
-  SysUtils, Classes, Db,
+  Windows,
   {$IFDEF VCL}
-  Windows, Messages, Controls, Forms, Graphics,
-  StdCtrls, Buttons, DBCtrls,
+  Messages,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QForms, QGraphics, QStdCtrls, QButtons, QDBCtrls,
-  {$ENDIF VisualCLX}
+  Classes, Controls, Graphics, DB, DBCtrls,
   JvDBLookup;
 
 type
@@ -156,6 +153,7 @@ type
 implementation
 
 uses
+  SysUtils, Forms, StdCtrls,
   JvConsts;
 
 constructor TJvDBLookupComboEdit.Create(AOwner: TComponent);

@@ -29,13 +29,7 @@ unit JvDBQueryParamsForm;
 interface
 
 uses
-  SysUtils, Classes,  DB,
-  {$IFDEF VCL}
-  Controls, Forms, StdCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QForms, QStdCtrls,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Controls, Forms, StdCtrls, DB,
   JvComponent;
 
 type
@@ -74,7 +68,7 @@ implementation
 
 uses
   DbConsts,
-  JvJVCLUtils, JvTypes, JvResources;
+  JvTypes, JvResources;
 
 {$IFDEF VCL}
 {$R *.dfm}

@@ -34,13 +34,7 @@ unit JvDBHTLabel;
 interface
 
 uses
-  SysUtils, Classes, DB,
-  {$IFDEF VCL}
-  DBCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QDBCtrls,
-  {$ENDIF VisualCLX}
+  Classes, DB, DBCtrls,
   JvHTControls;
 
 type
@@ -101,6 +95,9 @@ type
   end;
 
 implementation
+
+uses
+  SysUtils;
 
 function ReplaceFieldNameTag(Str: string; DataSet: TDataSet): string;
 var

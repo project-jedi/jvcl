@@ -31,14 +31,9 @@ Known Issues:
 unit JvDBProgressBar;
 
 interface
+
 uses
-  SysUtils, Classes, DB,
-  {$IFDEF VCL}
-  Controls, ComCtrls, DBCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QComCtrls, QDBCtrls,
-  {$ENDIF VisualCLX}
+  Classes, DB, DBCtrls,
   JvProgressBar;
 
 type
@@ -61,6 +56,9 @@ type
   end;
 
 implementation
+
+uses
+  SysUtils;
 
 constructor TJvDBProgressBar.Create(AOwner: TComponent);
 begin

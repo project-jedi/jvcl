@@ -29,8 +29,7 @@ unit JvDBRichEdit;
 interface
 
 uses
-  Windows, Messages, ComCtrls, RichEdit, SysUtils, Classes,
-  Graphics, Controls, Menus, StdCtrls, DB, DBCtrls,
+  Windows, Messages, RichEdit, Classes, Controls, DB, DBCtrls,
   JvRichEdit;
 
 type
@@ -167,6 +166,7 @@ type
 implementation
 
 uses
+  SysUtils, 
   JvConsts;
 
 constructor TJvDBRichEdit.Create(AOwner: TComponent);

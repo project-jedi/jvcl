@@ -47,17 +47,10 @@ unit JvDBLookupTreeView;
 interface
 
 uses
-  SysUtils, Classes, Db,
-  {$IFDEF COMPILER6_UP}
-  Variants, VDBConsts,
-  {$ENDIF COMPILER6_UP}
   {$IFDEF VCL}
-  Windows, Messages, Controls, Forms, Graphics,
-  CommCtrl, ComCtrls,
+  Windows, Messages,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QForms, QGraphics, QComCtrls,
-  {$ENDIF VisualCLX}
+  Classes, Controls, Forms, ComCtrls, DB,
   JvDBTreeView, JvToolEdit, JvComponent, JvExControls;
 
 {********************** Borland **********************}
@@ -445,7 +438,12 @@ type
 
 implementation
 
-uses JvThemes, JvJCLUtils, Math, DBConsts;
+uses
+  {$IFDEF COMPILER6_UP}
+  Variants, VDBConsts,
+  {$ENDIF COMPILER6_UP}
+  CommCtrl, Graphics, DBConsts,
+  JvThemes;
 
 //=== { TJvLookupDataSourceLink } ==================================================
 
@@ -887,11 +885,6 @@ begin
   begin
     Canvas.Font.Color := clHighlightText;
     Canvas.Brush.Color := clHighlight;
-
-
-
-
-
   end
   {added by zelen}
   else

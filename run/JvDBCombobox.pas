@@ -32,16 +32,13 @@ unit JvDBCombobox;
 interface
 
 uses
-  Classes, DB, DBConsts,
-  {$IFDEF COMPILER6_UP}
-  VDBConsts,
-  {$ENDIF COMPILER6_UP}
   {$IFDEF VCL}
-  Windows, DbCtrls, Messages, Menus, Graphics, Controls, StdCtrls,
+  Windows, Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QDbCtrls, QMenus, QGraphics, QControls, QStdCtrls, QWindows,
+  QWindows,
   {$ENDIF VisualCLX}
+  Classes, Graphics, Controls, StdCtrls, DB, DBCtrls,
   JvExStdCtrls;
 
 type
@@ -176,6 +173,11 @@ type
 implementation
 
 uses
+  {$IFDEF COMPILER6_UP}
+  VDBConsts,
+  {$ELSE}
+  DBConsts,
+  {$ENDIF COMPILER6_UP}
   SysUtils,
   JvConsts, JvDBUtils;
 

@@ -34,18 +34,7 @@ unit JvDBSearchComboBox;
 interface
 
 uses
-  SysUtils, Classes, DB,
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls,
-  Forms, Menus, Dialogs, StdCtrls, DBCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls,
-  QForms, QMenus, QDialogs, QStdCtrls, QDBCtrls,
-  {$ENDIF VisualCLX}
-  {$IFDEF COMPILER6_UP}
-  Variants,
-  {$ENDIF COMPILER6_UP}
+  Windows, Classes, Controls, DB,
   JvComboBox;
 
 type
@@ -160,6 +149,12 @@ type
   end;
 
 implementation
+
+uses
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF COMPILER6_UP}
+  SysUtils;
 
 //=== { TJvSearchComboBoxLink } ==============================================
 
