@@ -187,7 +187,7 @@ type
   published
     { Published declarations }
     property MultiSelect;
-    property ScrollBars;
+    property ScrollBars default ssNone;
     property ImageAlign: TJvImageAlign read FImageAlign write SetJvImageAlign default iaCentered;
     property Drive: char read FDrive write SetDrive stored false;
     property DriveTypes: TJvDriveTypes read FDriveTypes write SetJvDriveTypes;
@@ -273,7 +273,7 @@ type
 
   { TJvDirectoryListBox }
 
-  TJvDirectoryListBox = class(TCustomListBox)
+  TJvDirectoryListBox = class(TJvCustomListBox)
   private
     FFileList: TJvFileListBox;
     FDriveCombo: TJvDriveCombo;
@@ -350,7 +350,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
-    property ScrollBars;
+    property ScrollBars default ssNone;
     property TabOrder;
     property TabStop;
     property Visible;
