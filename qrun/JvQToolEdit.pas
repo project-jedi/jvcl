@@ -35,11 +35,7 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-
-
-{$WARN UNIT_PLATFORM OFF}
-{$WARN SYMBOL_PLATFORM OFF}
-
+{$I crossplatform.inc}
 
 unit JvQToolEdit;
 
@@ -790,7 +786,7 @@ uses
   Math, QConsts,
   {$IFDEF MSWINDOWS}
   ShellAPI,
-  {$ENDIF WINDOWS}
+  {$ENDIF WINDOWS} 
   JvQFinalize, JvQThemes, JvQResources, JvQConsts, JvQJCLUtils, JvQExControls,
   JvQPickDate, JvQJVCLUtils;
 

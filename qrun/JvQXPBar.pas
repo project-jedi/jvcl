@@ -62,7 +62,7 @@ uses
   Classes, SysUtils,  
   Types, Qt, QControls, QGraphics, QForms, QImgList, QActnList,
   QWindows, QTypes, QExtCtrls,
-  JvTypes, 
+  JvQTypes, 
   JvQConsts, JvQXPCore, JvQXPCoreUtils;
 
 type

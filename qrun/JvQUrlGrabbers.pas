@@ -27,6 +27,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
+{$I windowsonly.inc}
 
 {$I jvcl.inc}
 
@@ -37,7 +38,7 @@ unit JvQUrlGrabbers;
 interface
 
 uses
-  QWindows, Contnrs, Classes, SysUtils,
+  Windows, Contnrs, Classes, SysUtils,
   JvQUrlListGrabber, JvQTypes, JvQFinalize;
 
 type

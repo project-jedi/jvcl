@@ -36,7 +36,7 @@ unit JvQCopyError;
 interface
 
 uses
-  QWindows, SysUtils, Classes,
+  Windows, SysUtils, Classes,
   JvQCommonDialogD, JvQTypes;
 
 type

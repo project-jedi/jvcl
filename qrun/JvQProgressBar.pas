@@ -42,50 +42,50 @@ uses
 type
   TJvBaseProgressBar = class(TGraphicControl)
   private
-    FBlockSize: integer;
-    FSmooth: boolean;
-    FPosition: integer;
-    FMin: integer;
-    FMax: integer;
+    FBlockSize: Integer;
+    FSmooth: Boolean;
+    FPosition: Integer;
+    FMin: Integer;
+    FMax: Integer;
     FOrientation: TProgressBarOrientation;
     FBarColor: TColor;
-    FSteps: integer;
+    FSteps: Integer;
     FOnChange: TNotifyEvent;
-    procedure SetMax(Value: integer);
-    procedure SetMin(Value: integer);
+    procedure SetMax(Value: Integer);
+    procedure SetMin(Value: Integer);
     procedure SetOrientation(Value: TProgressBarOrientation);
-    procedure SetPosition(Value: integer);
-    procedure SetSmooth(const Value: boolean);
-    procedure SetBlockSize(const Value: integer);
+    procedure SetPosition(Value: Integer);
+    procedure SetSmooth(const Value: Boolean);
+    procedure SetBlockSize(const Value: Integer);
     procedure SetBarColor(const Value: TColor);
-    procedure SetSteps(const Value: integer);
+    procedure SetSteps(const Value: Integer);
   protected
     // BarSize is the upper limit of the area covered by the progress bar
     // Derived classes should override this method to provide their own drawing
     // routine. The base class enmulates the look of the standard TProgressBar
-    procedure DrawBar(ACanvas: TCanvas; BarSize: integer); virtual;
+    procedure DrawBar(ACanvas: TCanvas; BarSize: Integer); virtual;
     // GetMaxBarSize returns the maximum size of the bar in pixels.
     // For example, if the control has a 2 pixel border, when at Max,
     // GetMaxBarSize should return Self.Width - 4 when horizontal
     // and Self.Height - 4 when vertical. The default implementation returns
     // Self.Width when horizontal and Self.Height when vertical.
-    function GetMaxBarSize:integer;virtual;
+    function GetMaxBarSize: Integer; virtual;
     procedure Paint; override;
-    procedure Change;virtual;
+    procedure Change; virtual;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure StepIt;virtual;
-    procedure StepBy(Delta: Integer);virtual;
+    procedure StepIt; virtual;
+    procedure StepBy(Delta: Integer); virtual;
   public
-    property Steps:integer read FSteps write SetSteps default 10;
+    property Steps: Integer read FSteps write SetSteps default 10;
     property BarColor: TColor read FBarColor write SetBarColor default clHighlight;
-    property BlockSize: integer read FBlockSize write SetBlockSize default 10;
-    property Max: integer read FMax write SetMax default 100;
-    property Min: integer read FMin write SetMin default 0;
+    property BlockSize: Integer read FBlockSize write SetBlockSize default 10;
+    property Max: Integer read FMax write SetMax default 100;
+    property Min: Integer read FMin write SetMin default 0;
     property Orientation: TProgressBarOrientation read FOrientation write SetOrientation default pbHorizontal;
-    property Position: integer read FPosition write SetPosition default 0;
-    property Smooth: boolean read FSmooth write SetSmooth default False;
-    property OnChange:TNotifyEvent read FOnChange write FOnChange;
+    property Position: Integer read FPosition write SetPosition default 0;
+    property Smooth: Boolean read FSmooth write SetSmooth default False;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
     property Width default 150;
   end;
@@ -107,15 +107,15 @@ type
   end;
 
 implementation
+
 uses
   JvQJCLUtils;
 
-
-{ TJvBaseProgressBar }
+//=== TJvBaseProgressBar =====================================================
 
 constructor TJvBaseProgressBar.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   ControlStyle := ControlStyle + [csOpaque];
   FMin := 0;
   FMax := 100;
@@ -127,12 +127,12 @@ begin
   Height := GetSystemMetrics(SM_CYVSCROLL);
 end;
 
-
 procedure TJvBaseProgressBar.Paint;
 var
-  ASize, APos: integer;
+  ASize, APos: Integer;
 begin
-  if (Max - Min <= 0) or (Width <= 0) or (Height <= 0) then Exit;
+  if (Max - Min <= 0) or (Width <= 0) or (Height <= 0) then
+    Exit;
   // calculate the size of the bar based on Min, Max, Position and Width or Height
   APos := Position;
   if not Smooth then
@@ -141,7 +141,7 @@ begin
   DrawBar(Canvas, ASize);
 end;
 
-procedure TJvBaseProgressBar.SetMax(Value: integer);
+procedure TJvBaseProgressBar.SetMax(Value: Integer);
 begin
   if Value < FMin then
     Value := FMin;
@@ -155,7 +155,7 @@ begin
   end;
 end;
 
-procedure TJvBaseProgressBar.SetMin(Value: integer);
+procedure TJvBaseProgressBar.SetMin(Value: Integer);
 begin
   if Value > FMax then
     Value := FMax;
@@ -178,7 +178,7 @@ begin
   end;
 end;
 
-procedure TJvBaseProgressBar.SetPosition(Value: integer);
+procedure TJvBaseProgressBar.SetPosition(Value: Integer);
 begin
   if Value > FMax then
     Value := FMax;
@@ -192,7 +192,7 @@ begin
   end;
 end;
 
-procedure TJvBaseProgressBar.SetSmooth(const Value: boolean);
+procedure TJvBaseProgressBar.SetSmooth(const Value: Boolean);
 begin
   if FSmooth <> Value then
   begin
@@ -201,7 +201,7 @@ begin
   end;
 end;
 
-procedure TJvBaseProgressBar.DrawBar(ACanvas: TCanvas; BarSize: integer);
+procedure TJvBaseProgressBar.DrawBar(ACanvas: TCanvas; BarSize: Integer);
 var
   R: TRect;
 begin
@@ -209,7 +209,8 @@ begin
   ACanvas.Brush.Color := Color;
   ACanvas.FillRect(R);
   DrawEdge(ACanvas.Handle, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT);
-  if BarSize = 0 then Exit;
+  if BarSize = 0 then
+    Exit;
   ACanvas.Brush.Color := BarColor;
   if Orientation = pbHorizontal then
   begin
@@ -243,7 +244,8 @@ begin
     if Smooth then
     begin
       R.Top := R.Bottom - BarSize;
-      if R.Top < 2 then R.Top := 2;
+      if R.Top < 2 then
+        R.Top := 2;
       InflateRect(R, -1, -1);
       ACanvas.FillRect(R);
     end
@@ -254,7 +256,8 @@ begin
       InflateRect(R, -1, -1);
       while BarSize > 0 do
       begin
-        if R.Top < 3 then R.Top := 3;
+        if R.Top < 3 then
+          R.Top := 3;
         ACanvas.FillRect(R);
         OffsetRect(R, 0, -Steps);
         Dec(BarSize, Steps);
@@ -263,7 +266,7 @@ begin
   end;
 end;
 
-function TJvBaseProgressBar.GetMaxBarSize: integer;
+function TJvBaseProgressBar.GetMaxBarSize: Integer;
 begin
   if Orientation = pbHorizontal then
     Result := Width
@@ -271,12 +274,13 @@ begin
     Result := Height;
 end;
 
-procedure TJvBaseProgressBar.SetSteps(const Value: integer);
+procedure TJvBaseProgressBar.SetSteps(const Value: Integer);
 begin
   if FSteps <> Value then
   begin
     FSteps := Value;
-    if FSteps < 1 then FSteps := 1;
+    if FSteps < 1 then
+      FSteps := 1;
   end;
 end;
 
@@ -302,7 +306,7 @@ begin
     Position := Position + Delta;
 end;
 
-procedure TJvBaseProgressBar.SetBlockSize(const Value: integer);
+procedure TJvBaseProgressBar.SetBlockSize(const Value: Integer);
 begin
   if FBlockSize <> Value then
   begin
@@ -322,7 +326,8 @@ begin
   end;
 end;
 
-{ TJvProgressBar }
+//=== TJvProgressBar =========================================================
+
 constructor TJvProgressBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);

@@ -98,8 +98,8 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvProgressList.Add(AClass: TControlClass; const MaxPropName,
-  MinPropName, ProgressPropName: string);
+procedure TJvProgressList.Add(AClass: TControlClass;
+  const MaxPropName, MinPropName, ProgressPropName: string);
 var
   NewRec: PProgressData;
 begin

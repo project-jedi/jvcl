@@ -68,7 +68,7 @@ type
     property EdgeBorders: TEdgeBorders read FEdgeBorders write SetEdgeBorders default [ebLeft, ebTop, ebRight, ebBottom];
     property EdgeInner: TEdgeStyle read FEdgeInner write SetEdgeInner default esRaised;
     property EdgeOuter: TEdgeStyle read FEdgeOuter write SetEdgeOuter default esLowered;
-    property HintColor;
+    property HintColor; 
     property ReadOnly: Boolean read FReadOnly write FReadOnly default False;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -87,7 +87,7 @@ begin
   FEdgeBorders := [ebLeft, ebTop, ebRight, ebBottom];
   FEdgeInner := esRaised;
   FEdgeOuter := esLowered;
-  FCaptionVisible := True;
+  FCaptionVisible := True; 
 end;
 
 procedure TJvRadioGroup.Paint;
@@ -101,14 +101,15 @@ const
 var
   H: Integer;
   R: TRect;
-  Flags: Longint;
-begin
+  Flags: Longint; 
+begin 
   with Canvas do
   begin
     Font := Self.Font;
     H := TextHeight('0');
-    R := Rect(0, H div 2 - 1, Width, Height);
-    QWindows.DrawEdge(Handle, R, InnerStyles[FEdgeInner] or OuterStyles[FEdgeOuter],
+    R := Rect(0, H div 2 - 1, Width, Height); 
+    QWindows. 
+    DrawEdge(Handle, R, InnerStyles[FEdgeInner] or OuterStyles[FEdgeOuter],
       Byte(FEdgeBorders)  or BF_ADJUST);
     if (Text <> '') and CaptionVisible then
     begin

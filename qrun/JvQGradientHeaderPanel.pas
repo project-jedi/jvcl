@@ -411,16 +411,15 @@ end;
 
 procedure TNoEventLabel.Dispatch(var Message);
 begin
-(*)
+  (*)
   with TMessage(Message) do
     if (Parent <> nil) and
     (((Msg >= WM_MOUSEFIRST) and (Msg <= WM_MOUSELAST)) or
     ((Msg >= WM_KEYFIRST) and (Msg <= WM_KEYLAST))) then
     Parent.Dispatch(Message)
   else
-(*)
+  (*)
     inherited;
-
 end;
 
 { TNoEventGradient }

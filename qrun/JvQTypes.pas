@@ -39,8 +39,9 @@ unit JvQTypes;
 interface
 
 uses
-  SysUtils, Classes,  
-  Qt, QTypes, Types, QControls, QForms, QGraphics, QWindows, JvWStrUtils, 
+  SysUtils, Classes,
+  QWindows, QMessages, QControls, QForms, Types, QGraphics, 
+  Qt, QTypes, JvQWStrUtils, 
   JvQConsts, JvQResources;
 
 const

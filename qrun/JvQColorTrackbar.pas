@@ -42,6 +42,7 @@ uses
 type 
   TJvColorTrackBarIndicator = (tbiArrow, tbiLine);
   TJvColorTrackBarIndicators = set of TJvColorTrackBarIndicator;
+
   TJvColorTrackBar = class(TJvGraphicControl)
   private
     //FShowValue: Boolean;
@@ -81,7 +82,7 @@ type
     function XToPos(X: Integer): Integer;
     function PosToX(APos: Integer): Integer;
   published
-    property Indicators:TJvColorTrackBarIndicators read FIndicators write SetIndicators default [tbiArrow, tbiLine];
+    property Indicators: TJvColorTrackBarIndicators read FIndicators write SetIndicators default [tbiArrow, tbiLine];
     property ArrowColor: TColor read FArrowColor write SetArrowColor default clBlack;
 
     property BorderStyle: TControlBorderStyle read FBorderStyle write SetBorderStyle;
@@ -201,6 +202,7 @@ end;
 procedure TJvColorTrackBar.Paint;
 var
   X: Integer;
+  N: Integer;
   R: TRect;
   P: array of TPoint;
 begin
@@ -230,15 +232,17 @@ begin
     Canvas.Polygon(P);
   end;
   if tbiLine in Indicators then
-  begin
-    Canvas.Pen.Color := Canvas.Pixels[X, TopOffset + 4] xor clWhite;
-    Canvas.MoveTo(X - 1, TopOffset + Ord(BorderStyle = bsSingle) * 2);
-    Canvas.LineTo(X - 1, Height - Ord(BorderStyle = bsSingle) * 2);
-    Canvas.MoveTo(X, TopOffset + Ord(BorderStyle = bsSingle) * 2);
-    Canvas.LineTo(X, Height - Ord(BorderStyle = bsSingle) * 2);
-    Canvas.MoveTo(X + 1, TopOffset + Ord(BorderStyle = bsSingle) * 2);
-    Canvas.LineTo(X + 1, Height - Ord(BorderStyle = bsSingle) * 2);
-  end;
+    with Canvas do
+    begin
+      N := Ord(BorderStyle = bsSingle) * 2;
+      Pen.Color := Pixels[X, TopOffset + 4] xor clWhite;
+      MoveTo(X - 1, TopOffset + N);
+      LineTo(X - 1, Height - N);
+      MoveTo(X, TopOffset + N);
+      LineTo(X, Height - N);
+      MoveTo(X + 1, TopOffset + N);
+      LineTo(X + 1, Height - N);
+    end;
 end;
 
 procedure TJvColorTrackBar.Resize;
@@ -313,8 +317,10 @@ begin
     Result := X * (Max - Min) div (Width - WidthOffset) + Min
   else
     Result := Min;
-  if Result < Min then Result := Min;
-  if Result > Max then Result := Max;
+  if Result < Min then
+    Result := Min;
+  if Result > Max then
+    Result := Max;
 end;
 
 function TJvColorTrackBar.PosToX(APos: Integer): Integer;

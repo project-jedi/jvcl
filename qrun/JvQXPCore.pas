@@ -39,8 +39,7 @@ uses
   QWindows, QMessages, QControls, Types, QGraphics, QForms,
   {$IFDEF USEJVCL}
   JvQComponent,
-  {$ENDIF USEJVCL} 
-  Qt,
+  {$ENDIF USEJVCL}
   Classes;
 
 const
@@ -455,13 +454,6 @@ begin
     Result := inherited WantKey(Key, Shift, KeyText);
 end;
 
-(*
-function TJvXPCustomControl.WidgetFlags: integer;
-begin
-  Result := Inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
-end;
-*)
-
 procedure TJvXPCustomControl.Loaded;
 begin
   inherited Loaded;
@@ -471,7 +463,7 @@ end;
 procedure TJvXPCustomControl.BorderChanged;
 begin
   // delegate message "BorderChanged" to hook.
-  //inherited BorderChanged;
+  // inherited BorderChanged;
   HookBorderChanged;
 end;
 
@@ -485,7 +477,7 @@ end;
 procedure TJvXPCustomControl.FocusChanged;
 begin
   // delegate message "FocusChanged" to hook.
-//  inherited FocusChanged;
+  //inherited FocusChanged;
   HookFocusedChanged;
 end;
 
@@ -537,6 +529,7 @@ begin
   inherited AdjustSize;
   HookResized;
 end;
+
 (*
 procedure TJvXPCustomControl.WMWindowPosChanged(var Msg: TWMWindowPosChanged);
 begin

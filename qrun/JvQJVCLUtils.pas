@@ -41,9 +41,10 @@ uses
   {$IFDEF LINUX}
   Libc,
   {$ENDIF LINUX}
-  SysUtils, Classes,  
-  Qt, QTypes, Types, QForms, QGraphics, QControls, QStdCtrls, QExtCtrls, QMenus,
-  QDialogs, QComCtrls, QImgList, QGrids, QWinCursors, QWindows, 
+  SysUtils, Classes,
+  QForms, Types, QGraphics, QControls, QStdCtrls, QExtCtrls, QMenus, QDialogs,
+  QComCtrls, QImgList, QGrids, 
+  Qt, QTypes, QWinCursors, QWindows, 
   IniFiles,
   {$IFNDEF NO_JCL}
   JclBase,
@@ -121,7 +122,7 @@ function CreateDisabledBitmap(FOriginal: TBitmap; OutlineColor: TColor):
   TBitmap;
 procedure AssignBitmapCell(Source: TGraphic; Dest: TBitmap; Cols, Rows,
   Index: Integer);
-
+function ChangeBitmapColor(Bitmap: TBitmap; Color, NewColor: TColor): TBitmap;
 procedure ImageListDrawDisabled(Images: TCustomImageList; Canvas: TCanvas;
   X, Y, Index: Integer; HighLightColor, GrayColor: TColor;
   DrawHighlight: Boolean);
@@ -1348,7 +1349,29 @@ begin
     clBtnFace, clBtnHighlight, clBtnShadow, True);
 end;
 
+{ ChangeBitmapColor. This function create new TBitmap object.
+  You must destroy it outside by calling TBitmap.Free method. }
 
+function ChangeBitmapColor(Bitmap: TBitmap; Color, NewColor: TColor): TBitmap;
+var
+  r: TRect;
+begin
+  Result := TBitmap.Create;
+  try
+    with Result do
+    begin
+      Height := Bitmap.Height;
+      Width := Bitmap.Width;
+      r := Bounds(0, 0, Width, Height);
+      Canvas.Brush.Color := NewColor;
+      Canvas.FillRect(r);  
+      DrawBitmapTransparent(Canvas, 0, 0, Bitmap, Color); 
+    end;
+  except
+    Result.Free;
+    raise;
+  end;
+end;
 
 procedure ImageListDrawDisabled(Images: TCustomImageList; Canvas: TCanvas;
   X, Y, Index: Integer; HighLightColor, GrayColor: TColor;

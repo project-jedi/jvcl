@@ -286,10 +286,9 @@ begin
     Name := TJvAlarmItem(Source).Name;
     Time := TJvAlarmItem(Source).Time;
     Kind := TJvAlarmItem(Source).Kind;
-    Exit;
-  end;
-  // (rom) is this correct or should there be an else here?
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 end.

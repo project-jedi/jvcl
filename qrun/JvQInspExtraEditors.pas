@@ -38,8 +38,8 @@ interface
 { Additional editors for JvInspector. }
 
 uses
-  SysUtils, Classes,  
-  QWindows, Types, QGraphics, QControls, QStdCtrls, QImgList, 
+  SysUtils, Classes,
+  QWindows, Types, QGraphics, QControls, QStdCtrls, QImgList,
   JvQInspector;
 
 type
