@@ -284,3 +284,10 @@ JvEDIC5D.bpl: c5\JvEDIC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
+JvInspectorC5R.bpl: c5\JvInspectorC5R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvInspectorC6D.bpl: c5\JvInspectorC5D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
