@@ -1169,6 +1169,12 @@ function GetItemIDPath(Item: IJvDataItem): string;
 function GetItemIndexPath(Item: IJvDataItem): TDynIntegerArray;
 { Determine a unique context name for the given prefix in the given context list. }
 function GetUniqueCtxName(Contexts: IJvDataContexts; Prefix: string): string;
+{ Determine checked state for an item, combining both consumer and provider info. }
+function GetItemCheckedState(Item: IJvDataItem): TDataItemState;
+{ Determine enabled state for an item, combining both consumer and provider info. }
+function GetItemEnabledState(Item: IJvDataItem): TDataItemState;
+{ Determine visible state for an item, combining both consumer and provider info. }
+function GetItemVisibleState(Item: IJvDataItem): TDataItemState;
 
 // Rename and move to JvFunctions? Converts a buffer into a string of hex digits.
 function HexBytes(const Buf; Length: Integer): string;
@@ -1407,6 +1413,58 @@ begin
         end;
       end;
   Result := Prefix + IntToStr(SuffixNum);
+end;
+
+function GetItemCheckedState(Item: IJvDataItem): TDataItemState;
+var
+  Provider: IJvDataProvider;
+  ConsState: IJvDataConsumerItemState;
+  ItemState: IJvDataItemStates;
+begin
+  Result := disNotUsed;
+  if Item <> nil then
+  begin
+    Provider := Item.Items.Provider;
+    if Supports(Provider.SelectedConsumer, IJvDataConsumerItemState, ConsState) then
+      Result := ConsState.Checked(Item);
+    if (Result = disNotUsed) and Supports(Item, IJvDataItemStates, ItemState) then
+      Result := ItemState.Checked;
+  end;
+end;
+
+function GetItemEnabledState(Item: IJvDataItem): TDataItemState;
+var
+  Provider: IJvDataProvider;
+  ConsState: IJvDataConsumerItemState;
+  ItemState: IJvDataItemStates;
+begin
+  Result := disNotUsed;
+  if Item <> nil then
+  begin
+    Provider := Item.Items.Provider;
+    if Supports(Provider.SelectedConsumer, IJvDataConsumerItemState, ConsState) then
+      Result := ConsState.Checked(Item);
+    if (Result <> disFalse) and Supports(Item, IJvDataItemStates, ItemState) then
+      Result := ItemState.Checked;
+  end;
+end;
+
+function GetItemVisibleState(Item: IJvDataItem): TDataItemState;
+var
+  Provider: IJvDataProvider;
+  ConsState: IJvDataConsumerItemState;
+  ItemState: IJvDataItemStates;
+begin
+  Result := disNotUsed;
+  if Item <> nil then
+  begin
+    Provider := Item.Items.Provider;
+    if Supports(Provider.SelectedConsumer, IJvDataConsumerItemState, ConsState) then
+      Result := ConsState.Checked(Item);
+    if (Result in [disIndetermined, disNotUsed]) and Supports(Item, IJvDataItemStates,
+        ItemState) then
+      Result := ItemState.Checked;
+  end;
 end;
 
 
@@ -4605,7 +4663,7 @@ procedure TJvCustomDataConsumerViewList.ExpandTreeTo(Item: IJvDataItem);
 var
   ParIdx: Integer;
 begin
-  if Item <> nil then
+  if (Item <> nil) and (GetItemVisibleState(Item) = disTrue) then
   begin
     if (IndexOfID(Item.GetID) >= 0) and (Item.Items.GetParent <> nil) then
     begin
@@ -4637,7 +4695,7 @@ var
   LastScanIndex: Integer;
 begin
   LvlIdx := ItemLevel(Index) - 1;
-  SetLength(Result, LvlIdx div 32 + LvlIdx mod 32);
+  SetLength(Result, LvlIdx div 32 + Ord((LvlIdx mod 32) > 0));
   LastScanIndex := Index;
   { Keep using the last scanned item as a start point to find a sibling for the next parent. Reduces
     the number of compares to make. }
@@ -4658,49 +4716,52 @@ var
   Idx: Integer;
   SubItems: IJvDataItems;
 begin
-  if Index < 0 then
+  if GetItemVisibleState(Item) = disTrue then
   begin
-    Lvl := 0;
-    Idx := Count;
-  end
-  else
-  begin
-    Lvl := Succ(ItemLevel(Index));
-    Idx := Index + 1;
-    if FViewItems[Index].Flags and (vifHasChildren + vifExpanded) = vifHasChildren then
+    if Index < 0 then
     begin
-      ToggleItem(Index);
-      Exit;
-    end;
-  end;
-  while (Idx < Count) and (ItemLevel(Idx) >= Lvl) do
-    Inc(Idx);
-  SetLength(FViewItems, Length(FViewItems) + 1);
-  if Idx < High(FViewItems) then
-  begin
-    Move(FViewItems[Idx], FViewItems[Idx + 1], (High(FViewItems) - Idx) * SizeOf(FViewItems[0]));
-    FillChar(FViewItems[Idx], SizeOf(FViewItems[0]), 0);
-  end;
-  with FViewItems[Idx] do
-  begin
-    ItemID := Item.GetID;
-    if Supports(Item, IJvDataItems, SubItems) then
-    begin
-      if SubItems.Count > 0 then
-        Flags := Lvl + vifHasChildren + vifCanHaveChildren
-      else
-        Flags := Lvl + vifCanHaveChildren
+      Lvl := 0;
+      Idx := Count;
     end
     else
-      Flags := Lvl;
-  end;
-  if Index > -1 then
-    with FViewItems[Index] do
-      Flags := Flags or vifHasChildren or vifCanHaveChildren or vifExpanded;
-  if (ExpandToLevel <> 0) and (SubItems <> nil) and (SubItems.Count > 0) then
-  begin
-    Inc(Index);
-    AddItems(Index, SubItems, ExpandToLevel - 1);
+    begin
+      Lvl := Succ(ItemLevel(Index));
+      Idx := Index + 1;
+      if FViewItems[Index].Flags and (vifHasChildren + vifExpanded) = vifHasChildren then
+      begin
+        ToggleItem(Index);
+        Exit;
+      end;
+    end;
+    while (Idx < Count) and (ItemLevel(Idx) >= Lvl) do
+      Inc(Idx);
+    SetLength(FViewItems, Length(FViewItems) + 1);
+    if Idx < High(FViewItems) then
+    begin
+      Move(FViewItems[Idx], FViewItems[Idx + 1], (High(FViewItems) - Idx) * SizeOf(FViewItems[0]));
+      FillChar(FViewItems[Idx], SizeOf(FViewItems[0]), 0);
+    end;
+    with FViewItems[Idx] do
+    begin
+      ItemID := Item.GetID;
+      if Supports(Item, IJvDataItems, SubItems) then
+      begin
+        if SubItems.Count > 0 then
+          Flags := Lvl + vifHasChildren + vifCanHaveChildren
+        else
+          Flags := Lvl + vifCanHaveChildren
+      end
+      else
+        Flags := Lvl;
+    end;
+    if Index > -1 then
+      with FViewItems[Index] do
+        Flags := Flags or vifHasChildren or vifCanHaveChildren or vifExpanded;
+    if (ExpandToLevel <> 0) and (SubItems <> nil) and (SubItems.Count > 0) then
+    begin
+      Inc(Index);
+      AddItems(Index, SubItems, ExpandToLevel - 1);
+    end;
   end;
 end;
 
@@ -4708,24 +4769,26 @@ procedure TJvDataConsumerViewList.AddChildItem(ParentIndex: Integer; Item: IJvDa
 var
   InsertIndex: Integer;
 begin
-  InsertIndex := -1;
-  if ParentIndex > -1 then
+  if GetItemVisibleState(Item) = disTrue then
   begin
-    if not ItemIsExpanded(ParentIndex) then
+    InsertIndex := -1;
+    if ParentIndex > -1 then
     begin
-      if not ItemHasChildren(ParentIndex) then
-        UpdateItemFlags(ParentIndex, vifHasChildren + vifCanHaveChildren, vifHasChildren + vifCanHaveChildren);
-      ToggleItem(ParentIndex);
-    end;
-    if IndexOfItem(Item) < 0 then
-    begin
-      InternalItemSibling(ParentIndex, InsertIndex);
-    end;
-  end
-  else
-    InsertIndex := Count;
-  if InsertIndex > -1 then
-    InsertItem(InsertIndex, ParentIndex, Item);
+      if not ItemIsExpanded(ParentIndex) then
+      begin
+        if not ItemHasChildren(ParentIndex) then
+          UpdateItemFlags(ParentIndex, vifHasChildren + vifCanHaveChildren, vifHasChildren +
+            vifCanHaveChildren);
+        ToggleItem(ParentIndex);
+      end;
+      if IndexOfItem(Item) < 0 then
+        InternalItemSibling(ParentIndex, InsertIndex);
+    end
+    else
+      InsertIndex := Count;
+    if InsertIndex > -1 then
+      InsertItem(InsertIndex, ParentIndex, Item);
+  end;
 end;
 
 procedure TJvDataConsumerViewList.AddItems(var Index: Integer; Items: IJvDataItems; ExpandToLevel: Integer);
@@ -4749,26 +4812,29 @@ begin
   end;
   for I  := 0 to Items.Count - 1 do
   begin
-    with FViewItems[Index] do
+    if GetItemVisibleState(Items.Items[I]) = disTrue then
     begin
-      ItemID := Items.Items[I].GetID;
-      Flags := J;
-      if Supports(Items.Items[I], IJvDataItems, SubItems) then
+      with FViewItems[Index] do
       begin
-        Flags := Flags + vifCanHaveChildren;
-        if SubItems.Count > 0 then
+        ItemID := Items.Items[I].GetID;
+        Flags := J;
+        if Supports(Items.Items[I], IJvDataItems, SubItems) then
         begin
-          Flags := Flags + vifHasChildren;
-          if ExpandToLevel <> 0 then
+          Flags := Flags + vifCanHaveChildren;
+          if SubItems.Count > 0 then
           begin
-            Inc(Index);
-            AddItems(Index, SubItems, ExpandToLevel - 1);
-            Dec(Index);
+            Flags := Flags + vifHasChildren;
+            if ExpandToLevel <> 0 then
+            begin
+              Inc(Index);
+              AddItems(Index, SubItems, ExpandToLevel - 1);
+              Dec(Index);
+            end;
           end;
         end;
       end;
+      Inc(Index);
     end;
-    Inc(Index);
   end;
 end;
 
@@ -4777,30 +4843,33 @@ var
   Level: Integer;
   SubItems: IJvDataItems;
 begin
-  if ParentIndex < 0 then
-    Level := 0
-  else
-    Level := Succ(ItemLevel(ParentIndex));
-  SetLength(FViewItems, Count + 1);
-  if InsertIndex < High(FViewItems) then
+  if GetItemVisibleState(Item) = disTrue then
   begin
-    Move(FViewItems[InsertIndex], FViewItems[InsertIndex + 1], (High(FViewItems) - InsertIndex) * SizeOf(FViewItems[0]));
-    FillChar(FViewItems[InsertIndex], SizeOf(FViewItems[0]), 0);
-  end;
-  with FViewItems[InsertIndex] do
-  begin
-    ItemID := Item.GetID;
-    if Supports(Item, IJvDataItems, SubItems) then
+    if ParentIndex < 0 then
+      Level := 0
+    else
+      Level := Succ(ItemLevel(ParentIndex));
+    SetLength(FViewItems, Count + 1);
+    if InsertIndex < High(FViewItems) then
     begin
-      Level := Level + vifCanHaveChildren;
-      if SubItems.Count > 0 then
-        Level := Level + vifHasChildren;
+      Move(FViewItems[InsertIndex], FViewItems[InsertIndex + 1], (High(FViewItems) - InsertIndex) * SizeOf(FViewItems[0]));
+      FillChar(FViewItems[InsertIndex], SizeOf(FViewItems[0]), 0);
     end;
-    Flags := Level;
+    with FViewItems[InsertIndex] do
+    begin
+      ItemID := Item.GetID;
+      if Supports(Item, IJvDataItems, SubItems) then
+      begin
+        Level := Level + vifCanHaveChildren;
+        if SubItems.Count > 0 then
+          Level := Level + vifHasChildren;
+      end;
+      Flags := Level;
+    end;
+    if ParentIndex >= 0 then
+      FViewItems[ParentIndex].Flags := FViewItems[ParentIndex].Flags or (vifCanHaveChildren +
+        vifHasChildren + vifExpanded);
   end;
-  if ParentIndex >= 0 then
-    FViewItems[ParentIndex].Flags := FViewItems[ParentIndex].Flags or (vifCanHaveChildren +
-      vifHasChildren + vifExpanded);
 end;
 
 procedure TJvDataConsumerViewList.DeleteItem(Index: Integer);
