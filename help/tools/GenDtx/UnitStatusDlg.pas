@@ -17,10 +17,12 @@ type
     procedure ListView1Compare(Sender: TObject; Item1, Item2: TListItem;
       Data: Integer; var Compare: Integer);
     procedure Button1Click(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
   private
     FCtrl: TMainCtrl;
     FBuffer: array[0..511] of Char;
     FColumnToSort: Integer;
+    FInitialized: Boolean;
     procedure Init;
     procedure AddItem(const AFileName, SecondString: string);
     procedure AddIgnoredItem(const AFileName: string);
@@ -106,7 +108,6 @@ begin
   with TfrmUnitStatus.Create(Application) do
   try
     FCtrl := ACtrl;
-    Init;
     ShowModal;
   finally
     Free;
@@ -117,6 +118,10 @@ procedure TfrmUnitStatus.Init;
 var
   Cursor: TCursor;
 begin
+  if FInitialized then
+    Exit;
+  FInitialized := True;
+  
   JvSearchFiles1.RootDirectory := TSettings.Instance.RealDtxDir;
 
   Cursor := Screen.Cursor;
@@ -251,6 +256,11 @@ begin
       end;
   end;
 end;}
+
+procedure TfrmUnitStatus.FormActivate(Sender: TObject);
+begin
+  Init;
+end;
 
 end.
 

@@ -14,19 +14,20 @@ type
 
   TDelphiType = (dtClass, dtConst, dtDispInterface, dtFunction, dtFunctionType,
     dtInterface, dtMethodFunc, dtMethodProc, dtProcedure, dtProcedureType,
-    dtProperty, dtRecord, dtResourceString, dtEnum, dtType, dtVar);
+    dtProperty, dtRecord, dtResourceString, dtEnum, dtType, dtVar, dtClassField);
+  TDelphiTypes = set of TDelphiType;
 
   TMethodType = (mtNormal, mtConstructor, mtDestructor);
   TDirective = (diAbstract, diCdecl, diDynamic, diObject, diOf, diOverload,
     diOverride, diPascal, diRegister, diReintroduce, diSafecall, diStdcall,
-    diVirtual, diAssembler);
+    diVirtual, diAssembler, diDeprecated, diPlatform, diForward);
   TDirectives = set of TDirective;
 
 const
   CDirectives: array[TDirective] of string =
   ('abstract', 'cdecl', 'dynamic', 'object', 'of', 'overload', 'override',
     'pascal', 'register', 'reintroduce', 'safecall', 'stdcall', 'virtual',
-    'assembler');
+    'assembler', 'deprecated', 'platform', 'forward');
 
 type
   TAbstractItem = class;
@@ -123,8 +124,11 @@ type
   private
     FValue: string;
     function GetValueString: string; override;
+    procedure SetValue(const AValue: string);
+  protected
+    function FormatValue(const S: string): string;
   public
-    property Value: string read FValue write FValue;
+    property Value: string read FValue write SetValue;
   end;
 
   TListItem = class(TAbstractItem)
@@ -159,10 +163,11 @@ type
 
   TClassItem = class;
 
-  TClassMethod = class(TAbstractItem)
+  TClassMemberOrField = class(TAbstractItem)
   private
     FOwnerClass: TClassItem;
     FPosition: TClassVisibility;
+    function GetAddDescriptionString: string; override;
     function GetReferenceName: string; override;
     function GetClassString: string; override;
   public
@@ -170,11 +175,12 @@ type
     property Position: TClassVisibility read FPosition write FPosition;
   end;
 
-  TParamClassMethod = class(TClassMethod)
+  TParamClassMethod = class(TClassMemberOrField)
   private
     FParams: TStringList;
     FParamTypes: TStringList;
     FDirectives: TDirectives;
+    FIsClassMethod: Boolean;
     function GetRealParamString: string; override;
     function GetReferenceName: string; override;
     function GetAddDescriptionString: string; override;
@@ -185,6 +191,7 @@ type
     property Params: TStringList read FParams;
     property ParamTypes: TStringList read FParamTypes;
     property Directives: TDirectives read FDirectives write FDirectives;
+    property IsClassMethod: Boolean read FIsClassMethod write FIsClassMethod;
   end;
 
   TClassItem = class(TAbstractItem)
@@ -197,11 +204,10 @@ type
     constructor Create(const AName: string); override;
     destructor Destroy; override;
 
-    procedure AddProcedure(AItem: TClassMethod);
-    procedure AddFunction(AItem: TClassMethod);
-    procedure AddProperty(AItem: TClassMethod);
-    property Items[Index: Integer]: TAbstractItem read GetItem write SetItem;
-    default;
+    procedure AddProcedure(AItem: TClassMemberOrField);
+    procedure AddFunction(AItem: TClassMemberOrField);
+    procedure AddProperty(AItem: TClassMemberOrField);
+    property Items[Index: Integer]: TAbstractItem read GetItem write SetItem; default;
   end;
 
   TInterfaceItem = class(TClassItem)
@@ -241,7 +247,7 @@ type
     property MethodType: TMethodType read FMethodType write FMethodType;
   end;
 
-  TMethodProp = class(TClassMethod)
+  TClassProperty = class(TClassMemberOrField)
   private
     FInheritedProp: Boolean;
     FTypeStr: string;
@@ -249,6 +255,14 @@ type
     function GetDelphiType: TDelphiType; override;
   public
     property InheritedProp: Boolean read FInheritedProp write FInheritedProp;
+    property TypeStr: string read FTypeStr write FTypeStr;
+  end;
+
+  TClassField = class(TClassMemberOrField)
+  private
+    FTypeStr: string;
+    function GetDelphiType: TDelphiType; override;
+  public
     property TypeStr: string read FTypeStr write FTypeStr;
   end;
 
@@ -536,19 +550,19 @@ end;
 
 { TClassItem }
 
-procedure TClassItem.AddFunction(AItem: TClassMethod);
+procedure TClassItem.AddFunction(AItem: TClassMemberOrField);
 begin
   AItem.FOwnerClass := Self;
   FList.Add(AItem);
 end;
 
-procedure TClassItem.AddProcedure(AItem: TClassMethod);
+procedure TClassItem.AddProcedure(AItem: TClassMemberOrField);
 begin
   AItem.FOwnerClass := Self;
   FList.Add(AItem);
 end;
 
-procedure TClassItem.AddProperty(AItem: TClassMethod);
+procedure TClassItem.AddProperty(AItem: TClassMemberOrField);
 begin
   AItem.FOwnerClass := Self;
   FList.Add(AItem);
@@ -615,7 +629,7 @@ var
     Indx := 0;
     while Indx < Count do
     begin
-      if (Items[Indx] is TMethodProp) and SameText(TMethodProp(Items[Indx]).TypeStr, S) then
+      if (Items[Indx] is TClassProperty) and SameText(TClassProperty(Items[Indx]).TypeStr, S) then
       begin
         Items[I].AddCombine(Items[Indx]);
         Items[Indx].AddCombineWith(Items[I]);
@@ -753,6 +767,8 @@ begin
       '  other overloaded functions with the same name.'#13#10
   else
     Result := '';
+
+  Result := Result + inherited GetAddDescriptionString;
 end;
 
 { TVarItem }
@@ -856,14 +872,14 @@ begin
   Result := Format(CTitleProcedure, [SimpleName]);
 end;
 
-{ TMethodProp }
+{ TClassProperty }
 
-function TMethodProp.GetDelphiType: TDelphiType;
+function TClassProperty.GetDelphiType: TDelphiType;
 begin
   Result := dtProperty;
 end;
 
-function TMethodProp.GetParamString: string;
+function TClassProperty.GetParamString: string;
 begin
   if (CombineWithCount = 1) and (TAbstractItem(FCombineWithList[0]).CombineCount = 1) then
     Result := TAbstractItem(FCombineWithList[0]).RealParamString
@@ -945,23 +961,75 @@ begin
   Result := dtConst;
 end;
 
-{ TClassMethod }
+{ TClassMemberOrField }
 
-function TClassMethod.GetClassString: string;
+function TClassMemberOrField.GetAddDescriptionString: string;
+const
+  CPosition: array[TClassVisibility] of string = (
+    'private', 'protected', 'public', 'published');
+begin
+  if Position in [inPrivate, inProtected] then
+    Result := Format('  This is a %s member, you don''t have to describe these'#13#10,
+      [CPosition[Position]])
+  else
+    Result := inherited GetAddDescriptionString;
+end;
+
+function TClassMemberOrField.GetClassString: string;
 begin
   Result := OwnerClass.SimpleName;
 end;
 
-function TClassMethod.GetReferenceName: string;
+function TClassMemberOrField.GetReferenceName: string;
 begin
   Result := OwnerClass.ReferenceName + '.' + inherited GetReferenceName;
 end;
 
 { TValueItem }
 
+function TValueItem.FormatValue(const S: string): string;
+
+  procedure StrReplace(const OldPattern, NewPattern: string);
+  var
+    Tmp: string;
+  begin
+    Tmp := Result;
+    Result := StringReplace(Tmp, OldPattern, NewPattern, [rfReplaceAll, rfIgnoreCase]);
+  end;
+begin
+  Result := S;
+  StrReplace('^ ', '^');
+  StrReplace('^', '^');
+  StrReplace('. ', '.');
+  StrReplace(' .', '.');
+  StrReplace('[ ', '[');
+  StrReplace('] ', ']');
+  StrReplace(' [', '[');
+  StrReplace(' ]', ']');
+  StrReplace('( ', '(');
+  StrReplace(') ', ')');
+  StrReplace(' (', '(');
+  StrReplace(' )', ')');
+  StrReplace('array[', 'array [');
+  StrReplace(']of', '] of');
+  StrReplace('of(', 'of (');
+  StrReplace('; ', ';');
+  StrReplace(' ;', ';');
+  StrReplace(' :', ':');
+  StrReplace(',', ', ');
+  StrReplace(' ,', ',');
+  StrReplace('=', ' = ');
+  StrReplace('  ', ' ');
+end;
+
 function TValueItem.GetValueString: string;
 begin
   Result := FValue;
+end;
+
+procedure TValueItem.SetValue(const AValue: string);
+begin
+  FValue := FormatValue(AValue);
 end;
 
 { TInterfaceItem }
@@ -969,6 +1037,13 @@ end;
 function TInterfaceItem.GetDelphiType: TDelphiType;
 begin
   Result := dtInterface;
+end;
+
+{ TClassField }
+
+function TClassField.GetDelphiType: TDelphiType;
+begin
+  Result := dtClassField;
 end;
 
 end.

@@ -3,7 +3,7 @@ object frmUnitStatus: TfrmUnitStatus
   Top = 153
   Width = 534
   Height = 422
-  Caption = 'frmUnitStatus'
+  Caption = 'Unit Status'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,6 +12,7 @@ object frmUnitStatus: TfrmUnitStatus
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
+  OnActivate = FormActivate
   DesignSize = (
     526
     388)

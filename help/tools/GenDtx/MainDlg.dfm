@@ -2,7 +2,7 @@ object frmMain: TfrmMain
   Left = 353
   Top = 154
   Width = 517
-  Height = 497
+  Height = 494
   Caption = 'GenDtx'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -172,14 +172,14 @@ object frmMain: TfrmMain
     Left = 0
     Top = 273
     Width = 509
-    Height = 170
+    Height = 167
     Align = alClient
     BevelOuter = bvLowered
     Caption = 'Panel2'
     TabOrder = 1
     DesignSize = (
       509
-      170)
+      167)
     object Label3: TLabel
       Left = 8
       Top = 8
@@ -192,14 +192,14 @@ object frmMain: TfrmMain
       Left = 1
       Top = 24
       Width = 507
-      Height = 104
+      Height = 101
       Anchors = [akLeft, akTop, akRight, akBottom]
       ItemHeight = 13
       TabOrder = 0
     end
     object Button4: TButton
       Left = 8
-      Top = 138
+      Top = 135
       Width = 75
       Height = 25
       Action = actClearMessages
@@ -210,7 +210,7 @@ object frmMain: TfrmMain
     end
     object Button5: TButton
       Left = 96
-      Top = 138
+      Top = 135
       Width = 75
       Height = 25
       Action = actSaveMessages
@@ -218,6 +218,15 @@ object frmMain: TfrmMain
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
+    end
+    object Button1: TButton
+      Left = 184
+      Top = 135
+      Width = 105
+      Height = 25
+      Action = actCopyToClipboard
+      Anchors = [akLeft, akBottom]
+      TabOrder = 3
     end
   end
   object ActionList1: TActionList
@@ -388,8 +397,27 @@ object frmMain: TfrmMain
     object actCheckCasePasFilesAll: TAction
       Category = 'Check'
       Caption = 'Check &Casing in Pas Files (All)'
+      ShortCut = 8306
       OnExecute = actCheckCasePasFilesAllExecute
       OnUpdate = actCheckCasePasFilesUpdate
+    end
+    object actCheckDuplicateTypes: TAction
+      Category = 'Check'
+      Caption = 'Check Duplicate Types'
+      ShortCut = 115
+      OnExecute = actCheckDuplicateTypesExecute
+      OnUpdate = actCheckDuplicateTypesUpdate
+    end
+    object actGenerateList: TAction
+      Category = 'Generate'
+      Caption = 'Generate List'
+      OnExecute = actGenerateListExecute
+      OnUpdate = actGenerateListUpdate
+    end
+    object actCopyToClipboard: TAction
+      Category = 'Messages'
+      Caption = 'Copy to Clipboard'
+      OnExecute = actCopyToClipboardExecute
     end
   end
   object MainMenu1: TMainMenu
@@ -435,7 +463,9 @@ object frmMain: TfrmMain
       end
       object CheckCasinginPasFilesAll1: TMenuItem
         Action = actCheckCasePasFilesAll
-        ShortCut = 115
+      end
+      object CheckDuplicateTypes1: TMenuItem
+        Action = actCheckDuplicateTypes
       end
     end
     object Generate1: TMenuItem
@@ -448,6 +478,9 @@ object frmMain: TfrmMain
       end
       object GenerateRegisteredClasses1: TMenuItem
         Action = actGenerateRegisteredClasses
+      end
+      object GenerateList1: TMenuItem
+        Action = actGenerateList
       end
       object N3: TMenuItem
         Caption = '-'

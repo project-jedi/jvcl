@@ -7,7 +7,7 @@ uses
   Dialogs, StdCtrls, ActnList,
 
   ParserTypes, MainCtrl, Settings, JvComponent, JvProgressComponent,
-  ComCtrls, ToolWin, ExtCtrls, Menus;
+  ComCtrls, ToolWin, ExtCtrls, Menus, Buttons;
 
 const
   CM_CheckDirectories = WM_APP + 1;
@@ -86,6 +86,12 @@ type
     ClearGenerateddtxDir1: TMenuItem;
     actCheckCasePasFilesAll: TAction;
     CheckCasinginPasFilesAll1: TMenuItem;
+    actCheckDuplicateTypes: TAction;
+    CheckDuplicateTypes1: TMenuItem;
+    actGenerateList: TAction;
+    GenerateList1: TMenuItem;
+    Button1: TButton;
+    actCopyToClipboard: TAction;
     procedure actAddToCompletedListExecute(Sender: TObject);
     procedure actAddToIgnoreListExecute(Sender: TObject);
     procedure actCheckCasePasFilesExecute(Sender: TObject);
@@ -128,6 +134,11 @@ type
     procedure FormShow(Sender: TObject);
     procedure SelectedProcessFilesAvailable(Sender: TObject);
     procedure actCheckCasePasFilesAllExecute(Sender: TObject);
+    procedure actCheckDuplicateTypesUpdate(Sender: TObject);
+    procedure actCheckDuplicateTypesExecute(Sender: TObject);
+    procedure actGenerateListExecute(Sender: TObject);
+    procedure actGenerateListUpdate(Sender: TObject);
+    procedure actCopyToClipboardExecute(Sender: TObject);
   private
     FMainCtrl: TMainCtrl;
     function ProcessFilesAvailable: Boolean;
@@ -150,7 +161,7 @@ implementation
 
 uses
   JclFileUtils, JvDSADialogs,
-  SettingsDlg, DirectoriesDlg, DelphiParser, UnitStatusDlg;
+  SettingsDlg, DirectoriesDlg, DelphiParser, UnitStatusDlg, ClipBrd;
 
 {$R *.dfm}
 
@@ -603,6 +614,35 @@ end;
 procedure TfrmMain.actCheckCasePasFilesAllExecute(Sender: TObject);
 begin
   FMainCtrl.CheckCasingPasFiles(True);
+end;
+
+procedure TfrmMain.actCheckDuplicateTypesUpdate(Sender: TObject);
+begin
+  { RunTimePasDir }
+  if Sender is TAction then
+    TAction(Sender).Enabled := ProcessFilesAvailable and (TSettings.Instance.RunTimePasDir > '');
+end;
+
+procedure TfrmMain.actCheckDuplicateTypesExecute(Sender: TObject);
+begin
+  FMainCtrl.CheckDuplicateTypes;
+end;
+
+procedure TfrmMain.actGenerateListExecute(Sender: TObject);
+begin
+  FMainCtrl.GenerateList;
+end;
+
+procedure TfrmMain.actGenerateListUpdate(Sender: TObject);
+begin
+  { RunTimePasDir }
+  if Sender is TAction then
+    TAction(Sender).Enabled := ProcessFilesAvailable and (TSettings.Instance.RunTimePasDir > '');
+end;
+
+procedure TfrmMain.actCopyToClipboardExecute(Sender: TObject);
+begin
+  Clipboard.AsText := lsbMessages.Items.Text;
 end;
 
 end.

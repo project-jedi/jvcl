@@ -3,7 +3,7 @@ unit MainCtrl;
 interface
 
 uses
-  Classes, ParserTypes, Settings;
+  Classes, ParserTypes, Settings, FilterDlg;
 
 const
   CSummaryDescription = 'Summary'#13#10'  Write here a summary (1 line)';
@@ -34,6 +34,10 @@ type
 
     FAllFiles: TStringList;
     FAllFilteredFiles: TStringList;
+
+    FFilter: TFilterData;
+
+    FGenerateDtxVisibilities: TClassVisibilities;
 
     procedure SetShowCompletedFiles(const Value: Boolean);
     procedure SetShowIgnoredFiles(const Value: Boolean);
@@ -72,8 +76,15 @@ type
     procedure GenerateListInPackage(const AFileName: string; List, AllList: TStrings);
     procedure GeneratePackageList;
 
+    procedure GenerateListFor(const AFileName: string; List: TStrings; const AID: Integer);
+    procedure GenerateList;
+
     procedure GenerateRegisteredClassesListInFile(const AFileName: string; List: TStrings);
     procedure GenerateRegisteredClassesList;
+
+    procedure CheckDuplicateTypesInFile(const AFileName: string; List: TStrings;
+      const AID: Integer);
+    procedure CheckDuplicateTypes;
 
     procedure RefreshFiles;
 
@@ -94,7 +105,7 @@ implementation
 
 uses
   Windows, SysUtils,
-  JclFileUtils, JvProgressDialog, JvSearchFiles,
+  JclFileUtils, JvProgressDialog, JvSearchFiles, VisibilityDlg,
   DelphiParser;
 
 const
@@ -108,7 +119,7 @@ const
   CConvert: array[TDelphiType] of TOutputType =
   (otClass, otConst, otType, otFunction, otFunctionType,
     otInterface, otFunction, otProcedure, otProcedure, otProcedureType,
-    otProperty, otRecord, otResourcestring, otSet, otType, otVar);
+    otProperty, otRecord, otResourcestring, otSet, otType, otVar, otField);
 
   { efJVCLInfoGroup, efJVCLInfoFlag, efNoPackageTag, efPackageTagNotFilled,
     efNoStatusTag, efEmptySeeAlso, efNoAuthor }
@@ -155,6 +166,35 @@ const
         Result := 1;
     end;
   end;*)
+
+procedure RemoveSingles(AStrings: TStrings);
+var
+  I: Integer;
+begin
+  I := AStrings.Count - 2;
+  while I >= 1 do
+  begin
+    if SameText(AStrings[I - 1], AStrings[I]) then
+      Dec(I, 2)
+    else
+      if SameText(AStrings[I], AStrings[I + 1]) then
+      Dec(I)
+    else
+    begin
+      AStrings.Delete(I);
+      Dec(I);
+    end;
+  end;
+
+  if AStrings.Count > 1 then
+    if not SameText(AStrings[0], AStrings[1]) then
+      AStrings.Delete(0);
+  if AStrings.Count > 1 then
+    if not SameText(AStrings[AStrings.Count - 1], AStrings[AStrings.Count - 2]) then
+      AStrings.Delete(AStrings.Count - 1);
+  if AStrings.Count = 1 then
+    AStrings.Delete(0);
+end;
 
 function GetRealFileName(const ADir, AFileName: string): string;
 var
@@ -411,6 +451,7 @@ begin
   FShowOtherFiles := False;
   FShowIgnoredFiles := False;
   FShowCompletedFiles := False;
+  FGenerateDtxVisibilities := [inPublic, inPublished];
 end;
 
 destructor TMainCtrl.Destroy;
@@ -485,6 +526,9 @@ begin
   FParsedOK := 0;
   FParsedError := 0;
 
+  if not TfrmVisibility.Execute(FGenerateDtxVisibilities) then
+    Exit;
+
   ProgressDlg := TJvProgressDialog.Create(nil);
   try
     ProgressDlg.Min := 0;
@@ -514,7 +558,8 @@ begin
   Parser := TDelphiParser.Create;
   try
     Parser.AcceptCompilerDirectives := TSettings.Instance.AcceptCompilerDirectives;
-    if Parser.Execute(ChangeFileExt(AFileName, '.pas')) then
+    Parser.AcceptVisibilities := FGenerateDtxVisibilities;
+    if Parser.ExecuteFile(ChangeFileExt(AFileName, '.pas')) then
     begin
       Inc(FParsedOK);
       WriteDtx(Parser.TypeList);
@@ -699,7 +744,7 @@ var
     S: string;
   begin
     { Inherited properties [property X;] niet toevoegen }
-    if (ATypeItem is TMethodProp) and (TMethodProp(ATypeItem).InheritedProp) then
+    if (ATypeItem is TClassProperty) and (TClassProperty(ATypeItem).InheritedProp) then
       Exit;
 
     { Create, Destroy ook niet }
@@ -803,7 +848,7 @@ begin
     DelphiParser.AcceptCompilerDirectives := TSettings.Instance.AcceptCompilerDirectives;
     DelphiParser.AcceptVisibilities := [inProtected, inPublic, inPublished];
 
-    if not DelphiParser.Execute(IncludeTrailingPathDelimiter(TSettings.Instance.RunTimePasDir) +
+    if not DelphiParser.ExecuteFile(IncludeTrailingPathDelimiter(TSettings.Instance.RunTimePasDir) +
       ChangeFileExt(AFileName, '.pas')) then
     begin
       Inc(FParsedError);
@@ -1081,8 +1126,12 @@ begin
     if TSettings.Instance.OutputTypeEnabled[CConvert[ATypeItem.DelphiType]] then
     begin
       IsOptional :=
-        { private,protected members are optional }
-      ((ATypeItem is TClassMethod) and (TClassMethod(ATypeItem).Position in [inPrivate, inProtected]))
+        { private,protected members are optional; protected properties not }
+      (
+        ((ATypeItem is TClassMemberOrField) and (TClassMemberOrField(ATypeItem).Position in [inPrivate, inProtected]))
+        and
+        not ((ATypeItem.DelphiType = dtProperty) and (TClassMemberOrField(ATypeItem).Position = inProtected))
+        )
 
       or
 
@@ -1092,7 +1141,7 @@ begin
       or
 
       { inherited properties are optional }
-      ((ATypeItem is TMethodProp) and (TMethodProp(ATypeItem).InheritedProp))
+      ((ATypeItem is TClassProperty) and (TClassProperty(ATypeItem).InheritedProp))
 
       or
 
@@ -1242,7 +1291,7 @@ var
 begin
   DpkParser := TDpkParser.Create;
   try
-    DpkParser.Execute(AFileName);
+    DpkParser.ExecuteFile(AFileName);
     for I := 0 to DpkParser.List.Count - 1 do
       List.Add(Format('%s=%s', [DpkParser.List[I], NiceName(ExtractFileName(AFileName))]));
     AllList.AddStrings(DpkParser.List);
@@ -1327,7 +1376,7 @@ begin
   RegisteredClassesParser := TRegisteredClassesParser.Create;
   try
     RegisteredClassesParser.AcceptCompilerDirectives := TSettings.Instance.AcceptCompilerDirectives;
-    RegisteredClassesParser.Execute(AFileName);
+    RegisteredClassesParser.ExecuteFile(AFileName);
     List.AddStrings(RegisteredClassesParser.List);
   finally
     RegisteredClassesParser.Free;
@@ -1344,7 +1393,7 @@ begin
     PasParser.AcceptCompilerDirectives := TSettings.Instance.AcceptCompilerDirectives;
     //PasParser.AcceptVisibilities := [inProtected, inPublic, inPublished];
 
-    if not PasParser.Execute(IncludeTrailingPathDelimiter(TSettings.Instance.RunTimePasDir) +
+    if not PasParser.ExecuteFile(IncludeTrailingPathDelimiter(TSettings.Instance.RunTimePasDir) +
       ChangeFileExt(AFileName, '.pas')) then
     begin
       Inc(FParsedError);
@@ -1414,7 +1463,7 @@ begin
     ID := AID;
     AllSymbols := CheckAllSymbols;
 
-    if Execute(IncludeTrailingPathDelimiter(TSettings.Instance.RunTimePasDir)
+    if ExecuteFile(IncludeTrailingPathDelimiter(TSettings.Instance.RunTimePasDir)
       + ChangeFileExt(AFileName, '.pas')) then
     begin
       Inc(FParsedOK);
@@ -1467,29 +1516,7 @@ begin
       AllTokens.CaseSensitive := False;
       AllTokens.Sorted := True;
 
-      I := AllTokens.Count - 2;
-      while I >= 1 do
-      begin
-        if SameText(AllTokens[I - 1], AllTokens[I]) then
-          Dec(I, 2)
-        else
-          if SameText(AllTokens[I], AllTokens[I + 1]) then
-          Dec(I)
-        else
-        begin
-          AllTokens.Delete(I);
-          Dec(I);
-        end;
-      end;
-
-      if AllTokens.Count > 1 then
-        if not SameText(AllTokens[0], AllTokens[1]) then
-          AllTokens.Delete(0);
-      if AllTokens.Count > 1 then
-        if not SameText(AllTokens[AllTokens.Count - 1], AllTokens[AllTokens.Count - 2]) then
-          AllTokens.Delete(AllTokens.Count - 1);
-      if AllTokens.Count = 1 then
-        AllTokens.Delete(0);
+      RemoveSingles(AllTokens);
 
       for I := 0 to AllTokens.Count - 1 do
         DoMessage(Format('%s       -- %s', [AllTokens[I], ProcessList[Integer(AllTokens.Objects[I])]]));
@@ -1510,6 +1537,196 @@ procedure TMainCtrl.CheckDir(const ADir: string);
 begin
   if not DirectoryExists(ADir) then
     raise Exception.CreateFmt('Dir ''%s'' does not exists', [ADir]);
+end;
+
+procedure TMainCtrl.CheckDuplicateTypes;
+var
+  I: Integer;
+  ProgressDlg: TJvProgressDialog;
+  AllTokens: TStringList;
+begin
+  CheckDir(TSettings.Instance.RunTimePasDir);
+
+  if not Assigned(ProcessList) then
+    Exit;
+
+  FParsedOK := 0;
+  FParsedError := 0;
+  ProgressDlg := TJvProgressDialog.Create(nil);
+  try
+    ProgressDlg.Min := 0;
+    ProgressDlg.Max := ProcessList.Count;
+    ProgressDlg.Caption := 'Progress';
+    ProgressDlg.Show;
+
+    AllTokens := TStringList.Create;
+    try
+      AllTokens.Duplicates := dupAccept;
+      AllTokens.Sorted := True;
+
+      for I := 0 to ProcessList.Count - 1 do
+      begin
+        ProgressDlg.Text := ProcessList[I];
+        ProgressDlg.Position := I;
+        CheckDuplicateTypesInFile(ProcessList[I], AllTokens, I);
+      end;
+
+      //AllTokens.SaveToFile('C:\temp\alltokens.txt');
+
+      RemoveSingles(AllTokens);
+
+      for I := 0 to AllTokens.Count - 1 do
+        DoMessage(Format('%s       -- %s', [AllTokens[I], ProcessList[Integer(AllTokens.Objects[I])]]));
+      DoMessage('Done');
+      DoMessage('--');
+      DoMessage(Format('Errors %d OK %d Total %d',
+        [FParsedError, FParsedOK, FParsedError + FParsedOK]));
+    finally
+      AllTokens.Free;
+    end;
+  finally
+    ProgressDlg.Hide;
+    ProgressDlg.Free;
+  end;
+end;
+
+procedure TMainCtrl.CheckDuplicateTypesInFile(const AFileName: string;
+  List: TStrings; const AID: Integer);
+var
+  I: Integer;
+  Item: TAbstractItem;
+begin
+  with TDelphiParser.Create do
+  try
+    AcceptCompilerDirectives := TSettings.Instance.AcceptCompilerDirectives;
+
+    if ExecuteFile(IncludeTrailingPathDelimiter(TSettings.Instance.RunTimePasDir)
+      + ChangeFileExt(AFileName, '.pas')) then
+    begin
+      Inc(FParsedOK);
+      for I := 0 to TypeList.Count - 1 do
+      begin
+        Item := TAbstractItem(TypeList[I]);
+        if Item.DelphiType in [dtClass, dtType, dtVar] then
+          List.AddObject(Item.SimpleName, TObject(AID));
+      end;
+    end
+    else
+    begin
+      Inc(FParsedError);
+      DoMessage(Format('[Error] %s - %s', [AFileName, ErrorMsg]));
+    end;
+  finally
+    Free;
+  end;
+end;
+
+procedure TMainCtrl.GenerateList;
+var
+  List: TStringList;
+  I: Integer;
+  ProgressDlg: TJvProgressDialog;
+begin
+  CheckDir(TSettings.Instance.RunTimePasDir);
+
+  if not Assigned(ProcessList) then
+    Exit;
+
+  if not TfrmFilter.Execute(FFilter) then
+    Exit;
+
+  FParsedOK := 0;
+  FParsedError := 0;
+  ProgressDlg := TJvProgressDialog.Create(nil);
+  try
+    ProgressDlg.Min := 0;
+    ProgressDlg.Max := ProcessList.Count;
+    ProgressDlg.Caption := 'Progress';
+    ProgressDlg.Show;
+
+    List := TStringList.Create;
+    try
+      case FFilter.RDuplicates of
+        dtHide, dtHideCaseSensitive, dtOnlyCaseSensitiveDuplicates:
+          begin
+            List.Duplicates := dupIgnore;
+            List.CaseSensitive := ffilter.RDuplicates in [dtHideCaseSensitive, dtOnlyCaseSensitiveDuplicates];
+            List.Sorted := True;
+          end;
+        dtOnlyDuplicates, dtAll:
+          begin
+            List.Duplicates := dupAccept;
+            List.Sorted := True;
+          end;
+      else
+        raise Exception.Create('Unknown');
+      end;
+
+      for I := 0 to ProcessList.Count - 1 do
+      begin
+        ProgressDlg.Text := ProcessList[I];
+        ProgressDlg.Position := I;
+        GenerateListFor(ProcessList[I], List, I);
+      end;
+
+      case FFilter.RDuplicates of
+        dtOnlyCaseSensitiveDuplicates:
+          begin
+            List.Sorted := False;
+            List.CaseSensitive := False;
+            List.Sorted := True;
+            RemoveSingles(List);
+          end;
+        dtOnlyDuplicates:
+          RemoveSingles(List);
+      end;
+
+      for I := 0 to List.Count - 1 do
+        DoMessage(Format('%s       -- %s', [List[I], ProcessList[Integer(List.Objects[I])]]));
+
+      DoMessage('Done');
+      DoMessage('--');
+      DoMessage(Format('Errors %d OK %d Total %d',
+        [FParsedError, FParsedOK, FParsedError + FParsedOK]));
+    finally
+      List.Free;
+    end;
+  finally
+    ProgressDlg.Hide;
+    ProgressDlg.Free;
+  end;
+end;
+
+procedure TMainCtrl.GenerateListFor(const AFileName: string;
+  List: TStrings; const AID: Integer);
+var
+  I: Integer;
+  Item: TAbstractItem;
+begin
+  with TDelphiParser.Create do
+  try
+    AcceptCompilerDirectives := TSettings.Instance.AcceptCompilerDirectives;
+    AcceptVisibilities := [inPrivate, inProtected, inPublic, inPublished];
+
+    if ExecuteFile(IncludeTrailingPathDelimiter(TSettings.Instance.RunTimePasDir)
+      + ChangeFileExt(AFileName, '.pas')) then
+    begin
+      Inc(FParsedOK);
+      for I := 0 to TypeList.Count - 1 do
+      begin
+        Item := TAbstractItem(TypeList[I]);
+        if Item.DelphiType in FFilter.RShow then
+          List.AddObject(Item.SimpleName, TObject(AID));
+      end;
+    end
+    else
+    begin
+      Inc(FParsedError);
+      DoMessage(Format('[Error] %s - %s', [AFileName, ErrorMsg]));
+    end;
+  finally
+    Free;
+  end;
 end;
 
 end.

@@ -22,7 +22,7 @@ object frmSettings: TfrmSettings
     Top = 8
     Width = 534
     Height = 277
-    ActivePage = tshRegisteredClasses
+    ActivePage = tshOutput
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 0
     object tshOutput: TTabSheet
@@ -41,6 +41,7 @@ object frmSettings: TfrmSettings
           'Class Header'
           'Const'
           'DispInterface'
+          'Field'
           'Function'
           'FunctionType'
           'Header'

@@ -6,8 +6,8 @@ uses
   Classes;
 
 type
-  TOutputType = (otClass, otClassHeader, otConst, otDispInterface, otFunction,
-    otFunctionType,
+  TOutputType = (otClass, otClassHeader, otConst, otDispInterface,
+    otField, otFunction, otFunctionType,
     otHeader, otInterface, otProcedure, otProcedureType, otProperty, otRecord,
     otResourceString, otSet, otType, otVar);
 
@@ -162,6 +162,7 @@ const
     'ClassHeader', {otClassHeader}
     'Const', {otConst}
     'DispInterface', {otDispInterface}
+    'Field', {otField}
     'Function', {otFunction}
     'FunctionType', {otFunctionType}
     'Header', {otHeader}
