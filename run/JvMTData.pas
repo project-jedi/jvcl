@@ -99,8 +99,11 @@ type
   published
     property OnCanWrite: TNotifyEvent read FOnCanWrite write FOnCanWrite;
   end;
-  
+
 implementation
+
+resourcestring
+  sMethodOnlyForMainThread = '%s method can only be used by the main VCL thread.';
 
 var
   DataThreadsMan: TMTManager;
@@ -116,8 +119,8 @@ begin
     FName := Name;
   
   FMutex := TMTMutex.Create;
-  FEmpty := TMTSemaphore.Create(Size,Size+1,FName+'.Space');
-  FFull := TMTSemaphore.Create(0,Size+1,FName+'.Data');
+  FEmpty := TMTSemaphore.Create(Size, Size + 1, FName + '.Space'); // do not localize
+  FFull := TMTSemaphore.Create(0, Size + 1, FName + '.Data'); // do not localize
 end;
 
 destructor TMTBoundedQueue.Destroy;
@@ -177,15 +180,15 @@ begin
   else
     FName := Name;
   
-  FBuffer := TMTBoundedQueue.Create(Size,'Queue');
-  FDataReady := TMTMutex.Create('DataReady');
-  FVCLReady  := TMTMutex.Create('VCLReady');
-  
+  FBuffer := TMTBoundedQueue.Create(Size, 'Queue'); // do not localize
+  FDataReady := TMTMutex.Create('DataReady'); // do not localize
+  FVCLReady  := TMTMutex.Create('VCLReady'); // do not localize
+
   InitMutex;
-  
+
   FWorkerThread := DataThreadsMan.AcquireNewThread;
   FWorkerThread.OnExecute := WorkerExecute;
-  FWorkerThread.Name := Name+'.WorkerThread';
+  FWorkerThread.Name := Name + '.WorkerThread'; // do not localize
   FWorkerThread.Run;
 end;
 
@@ -194,7 +197,7 @@ begin
   FWorkerThread.Terminate;
   FWorkerThread.Wait;
   FWorkerThread.Release;
-  
+
   FBuffer.Free;
   FData.Free;
   FDataReady.Free;
@@ -208,17 +211,16 @@ begin
   begin
     // wait until the data has been read (can be outside OnCanRead event)
     FVCLReady.Wait;
-  
+
     // perform blocking read or write from the buffer
     PerformDataXChg;
-  
+
     // set data is ready flag
     FDataReady.Signal;
-  
+
     // Perform OnCanRead event in VCL thread context
     Thread.Synchronize(DoDataEvent);
   end;
-  
 end;
 
 
@@ -249,17 +251,17 @@ end;
 function TMTBufferToVCL.Read: TObject;
 begin
   if CurrentMTThread <> nil then
-    raise EThread.Create('Read method can only be used by the main VCL thread.');
-  
+    raise EThread.CreateFmt(sMethodOnlyForMainThread, ['Read']);
+
   // Check if data ready
   FDataReady.Wait;
-  
+
   // get data
   Result := FData;
-  
+
   // make sure it we dont own it anymore
   FData := nil;
-  
+
   // signal worker to continue
   FVCLReady.Signal;
 end;
@@ -268,8 +270,8 @@ procedure TMTBufferToVCL.Write(AObject: TObject; FreeOnFail: Boolean = True);
 begin
   try
     if CurrentMTThread = nil then
-      raise EThread.Create('Write method can not be used by main VCL thread');
-  
+      raise EThread.CreateFmt(sMethodOnlyForMainThread, ['Write']);
+
     // Perform blocking write to buffer
     FBuffer.Push(AObject);
   except
@@ -307,8 +309,8 @@ end;
 function TMTVCLToBuffer.Read: TObject;
 begin
   if CurrentMTThread = nil then
-    raise EThread.Create('Read method can not be used by main VCL thread');
-  
+    raise EThread.CreateFmt(sMethodOnlyForMainThread, ['Read']);
+
   Result := FBuffer.Pop;
 end;
 
@@ -316,8 +318,8 @@ procedure TMTVCLToBuffer.Write(AObject: TObject; FreeOnFail: Boolean = True);
 begin
   try
     if CurrentMTThread <> nil then
-      raise EThread.Create('Write method can only be used by the main VCL thread.');
-  
+      raise EThread.CreateFmt(sMethodOnlyForMainThread, ['Write']);
+
     // Check if data ready
     FDataReady.Wait;
   except
@@ -341,7 +343,7 @@ finalization
 {$IFDEF MSWINDOWS}
   if DataThreadsMan.ActiveThreads then
     OutputDebugString(
-      'Memory leak detected: free MTData objects before application shutdown');
+      'Memory leak detected: free MTData objects before application shutdown'); // do not localize
 {$ENDIF}
 
   DataThreadsMan.Free;

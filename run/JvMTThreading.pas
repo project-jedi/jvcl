@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: 2002-09-29
+Last Modified: 2002-10-24
 
 You may retrieve the latest version of this file at the Project JEDI home page,
 located at http://www.delphi-jedi.org
@@ -30,22 +30,33 @@ unit JvMTThreading;
 interface
 
 uses
-  SyncObjs, SysUtils, Windows, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, Contnrs, JvMTConsts, JvMTSync;
+{$IFDEF MSWINDOWS}
+  Windows,
+{$ENDIF}
+{$IFDEF LINUX}
+  Libc,
+{$ENDIF}
+  SysUtils, Classes, SyncObjs, Contnrs, JvMTConsts, JvMTSync;
 
 type
   TMTManager = class;
   TMTThread = class;
 
-  TMTEvent = procedure (Thread: TMTThread) of object;
+  TMTEvent = procedure(Thread: TMTThread) of object;
 
 {$IFDEF COMPILER5}
   TIntThread = class(Classes.TThread)
   public
     procedure Synchronize(Method: TThreadMethod);
   end;
+{$ENDIF}
+{$IFDEF COMPILER7}
+  TIntThread = class(Classes.TThread)
+  protected
+    procedure DoTerminate; override;
+  end;
 {$ELSE}
-  TIntThread = TThread;  
+  TIntThread = TThread;
 {$ENDIF}
 
   TMTInternalThread = class (TIntThread)
@@ -75,7 +86,7 @@ type
     FTicket: TMTTicket;
     procedure CreateAndRun;
     function GetStatus: TMTThreadStatus;
-    procedure Log(Msg: string);
+    procedure Log(const Msg: string);
     procedure OnIntThreadExecute(Sender: TObject);
     procedure OnIntThreadTerminate(Sender: TObject);
     procedure SetName(const Value: string);
@@ -101,7 +112,7 @@ type
     property ThreadManager: TMTManager read FManager;
     property Ticket: TMTTicket read FTicket;
   end;
-  
+
   TMTManager = class (TObject)
   private
     FGenTicket: TCriticalSection;
@@ -110,8 +121,9 @@ type
     FThreadsChange: TCriticalSection;
     function FindThread(Ticket: TMTTicket; var Thread: TMTThread): Boolean;
     function GenerateTicket: TMTTicket;
-    procedure Log(Msg: string);
+    procedure Log(const Msg: string);
     procedure TryRemoveThread(Thread: TMTThread);
+    function InternalActiveThreads(RaiseID: LongWord): Integer;
   protected
     procedure OnThreadFinished(Thread: TMTThread);
   public
@@ -124,11 +136,18 @@ type
     procedure TerminateThreads;
     procedure WaitThreads;
   end;
-  
+
 
 function  CurrentMTThread: TMTThread;
 
 implementation
+
+resourcestring
+  sCurThreadIsPartOfManager = 'Current MTThread is part of the MTManager';
+  sCheckTerminateCalledByWrongThread = 'CheckTerminate can only be called by the same thread';
+  sThreadNotInitializedOrWaiting = 'Can''t run: thread is not Initializing or Waiting.';
+  sCannotChangeNameOfOtherActiveThread = 'Can not change name of other active thread.';
+  sReleaseOfUnusedTicket = 'Release of unused ticket';
 
 threadvar
   _CurrentMTThread: TMTThread;
@@ -222,7 +241,38 @@ begin
   end;
 end;
 
+{$ENDIF COMPILER5}
+
+{$IFDEF COMPILER7}
+ { Delphi 7's ThreadProc sets FFinished after calling DoTerminate. This may
+   cause a deadlock because DoTerminate calls Synchronize and if the thread is
+   released in OnTerminate the WaitFor method that is called by Destroy will
+   wait for ever. }
+  TOpenClassesThread = class
+  protected // private
+{$IFDEF MSWINDOWS}
+    FHandle: THandle;
+    FThreadID: THandle;
 {$ENDIF}
+{$IFDEF LINUX}
+    FThreadID: Cardinal;
+    FCreateSuspendedSem: TSemaphore;
+    FInitialSuspendDone: Boolean;
+{$ENDIF}
+    FCreateSuspended: Boolean;
+    FTerminated: Boolean;
+    FSuspended: Boolean;
+    FFreeOnTerminate: Boolean;
+    FFinished: Boolean;
+  end;
+
+procedure TIntThread.DoTerminate;
+begin
+  TOpenClassesThread(Self).FFinished := True;
+  inherited DoTerminate;
+end;
+{$ENDIF COMPILER7}
+
 
 { TMTInternalThread }
 
@@ -233,14 +283,12 @@ begin
 end;
 
 procedure TMTInternalThread.RaiseName;
-
-  {$IFDEF DELPHI7_UP}
-  var
-    ThreadNameInfo: TThreadNameInfo;
-  {$ENDIF}
-
+{$IFDEF COMPILER7_UP}
+var
+  ThreadNameInfo: TThreadNameInfo;
+{$ENDIF}
 begin
-  {$IFDEF DELPHI7_UP}
+{$IFDEF COMPILER7_UP}
   ThreadNameInfo.FType := $1000;
   ThreadNameInfo.FName := PChar(FName);
   ThreadNameInfo.FThreadID := $FFFFFFFF;
@@ -250,7 +298,7 @@ begin
       @ThreadNameInfo );
   except
   end;
-  {$ENDIF}
+{$ENDIF}
 end;
 
 { TMTThread }
@@ -261,7 +309,7 @@ begin
   FStatusChange := TCriticalSection.Create;
   FManager := Manager;
   FTicket := Ticket;
-  FName := 'MT'+IntToStr(Ticket);
+  FName := 'MT' + IntToStr(Ticket); // do not localize
   FTerminateSignal := CreateSemaphore(nil, 0, 1, '');
 end;
 
@@ -275,8 +323,8 @@ end;
 procedure TMTThread.CheckTerminate;
 begin
   if CurrentMTThread <> Self then
-    raise EMTThread.Create('CheckTerminate can only be called by the same thread');
-  
+    raise EMTThread.Create(sCheckTerminateCalledByWrongThread);
+
   if GetStatus = tsTerminating then
     raise EMTTerminate.Create('');
 end;
@@ -320,9 +368,9 @@ begin
   InterlockedIncrement(FReferenceCount);
 end;
 
-procedure TMTThread.Log(Msg: string);
+procedure TMTThread.Log(const Msg: string);
 begin
-  OutputDebugString(PChar('['+ClassName+'] '+Msg));
+  OutputDebugString(PChar('[' + ClassName + '] ' + Msg));
 end;
 
 procedure TMTThread.OnIntThreadExecute(Sender: TObject);
@@ -330,23 +378,23 @@ begin
   // set the CurrentMTThread variable.
   //  this variable is global, but only to this thread.
   _CurrentMTThread := Self;
-  
+
   // run OnExecute event
   try
     if Assigned(FOnExecute) then FOnExecute(Self);
   except
     on E: EMTTerminate do {nothing};
-    on E: Exception do Log('OnExecute Exception: "'+E.Message+'"');
+    on E: Exception do Log('OnExecute Exception: "' + E.Message+'"'); // do not localize
   end;
-  
+
   // make sure terminate flag is set
   FIntThread.Terminate;
-  
+
   // run OnTerminating event
   try
     if Assigned(FOnTerminating) then FOnTerminating(Self);
   except
-    on E: Exception do Log('OnTerminate Exception: "'+E.Message+'"');
+    on E: Exception do Log('OnTerminate Exception: "' + E.Message+'"'); // do not localize
   end;
 end;
 
@@ -358,16 +406,16 @@ begin
   finally
     FStatusChange.Release;
   end;
-  
+
   if Assigned(FOnFinished) then FOnFinished(Self);
-  
+
   FStatusChange.Acquire;
   try
     FIntThread := nil;
   finally
     FStatusChange.Release;
   end;
-  
+
   // After a call to OnThreadFinished, this object might be destroyed.
   // So don't access any fields after this call.
   FManager.OnThreadFinished(Self);
@@ -387,7 +435,7 @@ begin
     else if GetStatus = tsWaiting then
       FIntThread.Resume
     else
-      raise EMTThread.Create('Can''t run: thread is not Initializing or Waiting.');
+      raise EMTThread.Create(sThreadNotInitializedOrWaiting);
   finally
     FStatusChange.Release;
   end;
@@ -403,7 +451,7 @@ begin
     else
     begin
       if CurrentMTThread <> Self then
-        raise EMTThread.Create('Can not change name of other active thread.');
+        raise EMTThread.Create(sCannotChangeNameOfOtherActiveThread);
   
       FName := Value;
       if FIntThread <> nil then
@@ -429,7 +477,7 @@ end;
 
 procedure TMTThread.Terminate;
 begin
-  if (GetStatus in [tsTerminating,tsFinished]) then exit;
+  if (GetStatus in [tsTerminating, tsFinished]) then exit;
   
   FStatusChange.Acquire;
   try
@@ -490,11 +538,11 @@ begin
   FThreadsChange.Acquire;
   try
     for I := 0 to FThreads.Count-1 do
-      Log('Unreleased thread: "'+TMTThread(FThreads[I]).Name+'"');
+      Log('Unreleased thread: "' + TMTThread(FThreads[I]).Name + '"'); // do not localize
   finally
     FThreadsChange.Release;
   end;
-  
+
   FThreads.Free;
   FThreadsChange.Free;
   FGenTicket.Free;
@@ -518,7 +566,7 @@ begin
   end;
 end;
 
-function TMTManager.AcquireThread(Ticket: TMTTicket; var Thread: TMTThread): 
+function TMTManager.AcquireThread(Ticket: TMTTicket; var Thread: TMTThread):
   Boolean;
 begin
   FThreadsChange.Acquire;
@@ -531,22 +579,40 @@ begin
   end;
 end;
 
-function TMTManager.ActiveThreads: Boolean;
+function TMTManager.InternalActiveThreads(RaiseID: LongWord): Integer;
+// returns 0 = False
+//         1 = True
+//        -1 = RaiseID found and active
 var
   I: Integer;
 begin
-  Result := False;
+  Result := 0;
   FThreadsChange.Acquire;
   try
     for I := 0 to FThreads.Count-1 do
-     if TMTThread(FThreads[I]).Status <> tsFinished then
-       Result := True;
+      if TMTThread(FThreads[I]).Status <> tsFinished then
+      begin
+        if (RaiseID <> 0) and
+           (TMTThread(FThreads[I]).FIntThread.ThreadID = RaiseID) then
+          Result := -1
+          // no Break; here: Return -1 only when RaiseID is the last active thread 
+        else
+        begin
+          Result := 1;
+          Break;
+        end;
+      end;
   finally
     FThreadsChange.Release;
   end;
 end;
 
-function TMTManager.FindThread(Ticket: TMTTicket; var Thread: TMTThread): 
+function TMTManager.ActiveThreads: Boolean;
+begin
+  Result := InternalActiveThreads(0) <> 0;
+end;
+
+function TMTManager.FindThread(Ticket: TMTTicket; var Thread: TMTThread):
   Boolean;
 var
   I: Integer;
@@ -562,7 +628,7 @@ begin
       Thread := TMTThread(FThreads[I])
     else
       Thread := nil;
-  
+
   finally
     FThreadsChange.Release;
   end;
@@ -579,9 +645,9 @@ begin
   end;
 end;
 
-procedure TMTManager.Log(Msg: string);
+procedure TMTManager.Log(const Msg: string);
 begin
-  OutputDebugString(PChar('['+ClassName+'] '+Msg));
+  OutputDebugString(PChar('[' + ClassName + '] ' + Msg));
 end;
 
 procedure TMTManager.OnThreadFinished(Thread: TMTThread);
@@ -598,8 +664,8 @@ begin
     if FindThread(Ticket, Thread) then
       Thread.DecRef
     else
-      raise EMTThread.Create('Release of unused ticket');
-  
+      raise EMTThread.Create(sReleaseOfUnusedTicket);
+
     // if this was the last reference then the thread must be removed
     TryRemoveThread(Thread);
   finally
@@ -632,9 +698,7 @@ begin
 end;
 
 procedure TMTManager.WaitThreads;
-  
   // wait until the threads are all finished
-  
 begin
   // running from inside the main VCL thread?
   if GetCurrentThreadID = MainThreadID then
@@ -647,12 +711,16 @@ begin
     end;
   end
   else begin
-    {TODO: If current thread is part of this manager then deadlock
-           will occur. Detect and raise exception.}
-  
     //running in a MTThread, just wait for all threads to finish
-    while ActiveThreads do
-        Sleep(0);
+    while True do
+    begin
+      case InternalActiveThreads(GetCurrentThreadID) of
+        0: Break;
+        1: ;
+       -1: raise EMTThread.Create(sCurThreadIsPartOfManager);
+      end;
+      Sleep(0);
+    end;
   end;
 end;
 
@@ -663,7 +731,7 @@ initialization
 
 finalization
   DeleteCriticalSection(ThreadSyncLock);
- // if the list is not empty there are still waiting threads 
+ // if the list is not empty there are still waiting threads
   if SyncRequestList <> nil then
   begin
     CheckSynchronize;

@@ -38,8 +38,6 @@ uses
 {$ENDIF}
   SysUtils, Classes, SyncObjs, JvMTConsts;
 
-{ TODO -oAndreas : Linux support } 
-
 type
   TMTSynchroObject = class (TSynchroObject)
   private
