@@ -213,7 +213,12 @@ begin
     UpdateGradient;
   Canvas.Pen.Color := Color;
   Canvas.Brush.Color := Color;
+  {$IFDEF VCL}
   BitBlt(Canvas.Handle, WidthOffset div 2, TopOffset, Width, Height, BmpImage.Canvas.Handle, 0, 0, SrcCopy);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Canvas.Draw(WidthOffset div 2, TopOffset, BmpImage); 
+  {$ENDIF VisualCLX}
   R := Rect(0, 0, Width, TopOffset);
   Canvas.FillRect(R);
   X := PosToX(Position);

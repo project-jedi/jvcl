@@ -38,8 +38,8 @@ uses
   Classes, TypInfo,
   
   
-  Types, QGraphics, QControls, QForms, QActnList, QImgList, QWindows, QMenus,
-  JvQExControls,
+  Types, QGraphics, QControls, QForms, QActnList, QImgList, QMenus,
+  QWindows, JvQExControls,
   
   JvQXPCore, JvQXPCoreUtils;
 
@@ -594,7 +594,10 @@ begin
           Bitmap.Assign(FHlGradient)
         else
           Bitmap.Assign(FFcGradient);
-        BitBlt(Handle, 1, 1, Width, Height, Bitmap.Canvas.Handle, 0, 0, SRCCOPY);
+        
+        
+        Draw(1, 1, Bitmap);
+        
       finally
         Bitmap.Free;
       end;
@@ -604,21 +607,27 @@ begin
     if not ((dsHighlight in DrawState) and (dsClicked in DrawState)) then
     begin
       Offset := 2 * Integer(IsSpecialDrawState);
-      BitBlt(Handle, 1 + Offset, 1 + Offset, Width - 3 * Offset, Height - 3 * Offset,
-        FBgGradient.Canvas.Handle, 0, 0, SRCCOPY);
+      
+      
+      Draw(1 + Offset, 1 + Offset, FBgGradient);
+      
     end
     // ...or click gradient.
     else
-      BitBlt(Handle, 1, 1, Width, Height, FCkGradient.Canvas.Handle, 0, 0, SRCCOPY);
-
+      
+      
+       Draw(1, 1, FCkGradient);
+      
     // draw border lines.
     if Enabled then
       Pen.Color := dxColor_Btn_Enb_Border_WXP
     else
       Pen.Color := dxColor_Btn_Dis_Border_WXP;
     Brush.Style := bsClear;
-    RoundRect(0, 0, Width, Height, 5, 5);
-
+    
+    
+    RoundRect(0, 0, Width, Height, 10, 10);
+    
     // draw border edges.
     if FSmoothEdges then
     begin
@@ -706,6 +715,9 @@ begin
       end;
 
       // draw caption.
+      
+      SetPenColor(Handle, Font.Color);
+      
       SetBkMode(Handle, Transparent);
       JvXPRenderText(Self, Canvas, Caption, Font, Enabled, FShowAccelChar, Rect, Flags);
     finally
@@ -761,7 +773,9 @@ begin
   with Canvas do
   begin
     Rect := GetClientRect;
+//    InflateRect(Rect, -1, -1);
     Brush.Color := TJvXPWinControl(Parent).Color;
+    Brush.Style := bsSolid;
     FillRect(Rect);
     if csDesigning in ComponentState then
       DrawFocusRect(Rect);
@@ -795,7 +809,7 @@ begin
         (Height - Images.Height) div 2 + Integer(Shifted),
         ImageIndex,
         
-//        dsTransparent,
+        
         itImage,
         
         Enabled);
@@ -804,8 +818,8 @@ begin
     begin
       Bitmap := TBitmap.Create;
       try
-        Bitmap.LoadFromResourceName(hInstance, Copy(GetEnumName(TypeInfo(TJvXPToolType),
-          Ord(FToolType)), 3, MAXINT));
+        Bitmap.LoadFromResourceName(hInstance, PChar(Copy(GetEnumName(TypeInfo(TJvXPToolType),
+          Ord(FToolType)), 3, MAXINT)));
         if (dsClicked in DrawState) and (dsHighlight in DrawState) then
           JvXPColorizeBitmap(Bitmap, clWhite)
         else if not Enabled then
@@ -839,18 +853,18 @@ procedure TJvXPCustomToolButton.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   P: TPoint;
-//  Msg: TMsg;
+  
 begin
   inherited;
   if Assigned(DropDownMenu) then
   begin
     P := ClientToScreen(Point(0, Height));
     DropDownMenu.Popup(P.X, P.Y);
-//    while PeekMessage(Msg, HWND_DESKTOP, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
- //     {nothing};
-//    while DropDownMenu.
-//    if GetCapture <> 0 then
-//      SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
+    
+    
+    // TODO
+    
+
   end;
 end;
 

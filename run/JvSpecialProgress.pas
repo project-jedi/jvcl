@@ -236,8 +236,13 @@ begin
     UpdateBuffer;
   end;
   if (ClientWidth > 2) and (ClientHeight > 2) then
+    {$IFDEF VCL}
     BitBlt(Canvas.Handle, 0, 0, ClientWidth, ClientHeight,
       FBuffer.Canvas.Handle, 0, 0, SRCCOPY);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Canvas.draw(0,0, FBuffer);
+    {$ENDIF VisualCLX}
 end;
 
 procedure TJvSpecialProgress.PaintBackground;

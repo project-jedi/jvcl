@@ -71,9 +71,11 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteXPControls, [TJvXPStyleManager, TJvXPBar, TJvXPContainer,
     TJvXPButton, TJvXPToolButton, TJvXPCheckBox]);
+    (*)
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvXPBarItem, 'ImageIndex',
     TJvXPItemImageIndexPropertyEditor);
   RegisterComponentEditor(TJvXPBar, TJvXPBarItemEditor);
+    (*)
 end;
 
 end.

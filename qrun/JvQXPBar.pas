@@ -37,15 +37,12 @@ interface
 
 uses
   Classes,  SysUtils,
-
-
+  
+  
   Types, QControls, QGraphics, QForms, QImgList, QActnList, QWindows,
   QTypes, JvQTypes,
-
+  
   JvQXPCore, JvQXPCoreUtils;
-
-resourcestring
-  RsUntitled = 'untitled';
 
 type
   { Warning: Never change order of enumeration because of
@@ -96,13 +93,16 @@ type
     function IsImageIndexLinked: Boolean; override;
     function IsVisibleLinked: Boolean; override;
     function IsOnExecuteLinked: Boolean; override;
+    
+    
     procedure SetCaption(const Value: TCaption); override;
-    procedure SetEnabled(Value: Boolean); override;
     procedure SetHint(const Value: widestring); override;
+    function DoShowHint(var HintStr: widestring): Boolean; virtual;
+    
+    procedure SetEnabled(Value: Boolean); override;
     procedure SetImageIndex(Value: Integer); override;
     procedure SetVisible(Value: Boolean); override;
     procedure SetOnExecute(Value: TNotifyEvent); override;
-    function DoShowHint(var HintStr: WideString): Boolean; virtual;
     property Client: TJvXPBarItem read FClient write FClient;
   end;
 
@@ -408,8 +408,7 @@ type
     property Anchors;
     //property AutoSize;
     property Constraints;
-//    property DragCursor;
-//    property DragKind;
+    
     property DragMode;
     //property Enabled;
     property ParentFont;
@@ -423,7 +422,6 @@ type
     //property OnGetSiteInfo;
     //property OnStartDock;
     //property OnUnDock;
-    // property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
 
@@ -450,7 +448,7 @@ implementation
 
 
 uses
-  QMenus;
+  QMenus, JvQResources;
 
 {$R ../Resources/JvXPBar.res}
 
@@ -518,7 +516,10 @@ begin
     JvXPMethodsEqual(TMethod(Client.OnClick), TMethod(Action.OnExecute));
 end;
 
+
+
 procedure TJvXPBarItemActionLink.SetCaption(const Value: TCaption);
+
 begin
   if IsCaptionLinked then
     Client.Caption := Value;
@@ -530,7 +531,10 @@ begin
     Client.Enabled := Value;
 end;
 
+
+
 procedure TJvXPBarItemActionLink.SetHint(const Value: widestring);
+
 begin
   if IsHintLinked then
     Client.Hint := Value;
@@ -987,7 +991,10 @@ begin
 
   { update inspector }
   if csDesigning in FWinXPBar.ComponentState then
+    
+    
     TCustomForm(FWinXPBar.Owner).DesignerHook.Modified
+    
   else
     PostMessage(FWinXPBar.Handle, WM_XPBARAFTERCOLLAPSE,
       Ord(FRollDirection = rdCollapse), 0);
@@ -1131,7 +1138,7 @@ end;
 
 function TJvXPCustomWinXPBar.IsFontStored: Boolean;
 begin
-  Result := not ParentFont ; //and not DesktopFont;
+  Result := not ParentFont ;
 end;
 
 procedure TJvXPCustomWinXPBar.FontChange(Sender: TObject);
@@ -1230,7 +1237,10 @@ begin
   if FHitTest = htRollButton then
   begin
     Rect := GetHitTestRect(htRollButton);
-    InvalidateRect(Rect, False);
+    
+    QWindows.
+    
+    InvalidateRect(Handle, @Rect, False);
   end;
 end;
 
@@ -1245,7 +1255,10 @@ begin
   if FHitTest <> OldHitTest then
   begin
     Rect := Bounds(0, 5, Width, FHeaderHeight); // header
-    InvalidateRect(Rect, False);
+    
+    QWindows.
+    
+    InvalidateRect(Handle, @Rect, False);
     if FShowLinkCursor then
     begin
       if FHitTest <> htNone then
@@ -1498,7 +1511,10 @@ end;
 procedure TJvXPCustomWinXPBar.DoDrawItem(const Index: Integer; State: TJvXPDrawState);
 var
   Bitmap: TBitmap;
-  ItemCaption: string;
+  
+  
+  ItemCaption: TCaption;
+  
   ItemRect: TRect;
   HasImages: Boolean;
 begin
@@ -1530,8 +1546,12 @@ begin
       if (ItemCaption = '') and ((csDesigning in ComponentState) or (ControlCount = 0)) then
         ItemCaption := Format('(%s %d)', [RsUntitled, Index]);
       Inc(ItemRect.Left, 20);
-      DrawText(Handle, PChar(ItemCaption), -1, ItemRect, DT_SINGLELINE or
+      
+      
+      SetPenColor(Handle, Canvas.Font.Color);
+      DrawTextW(Handle, PWideChar(ItemCaption), -1, ItemRect, DT_SINGLELINE or
         DT_VCENTER or DT_END_ELLIPSIS);
+      
     end;
   finally
     Bitmap.Free;
@@ -1556,9 +1576,11 @@ begin
     FillRect(Rect);
 
     { draw header }
-    JvXPCreateGradientRect(Width, FHeaderHeight, FColors.GradientFrom,
-      FColors.GradientTo, 32, gsLeft, True, FGradient);
-    Draw(0, Rect.Top, FGradient);
+    
+    
+    FillGradient(Handle, Bounds(0, Rect.Top, Width, FHeaderHeight),
+      32, FColors.GradientFrom, FColors.GradientTo, gdHorizontal);
+    
 
     { draw frame... }
     Brush.Color := clWhite;
@@ -1616,7 +1638,8 @@ begin
           if FCollapsed then
             Bitmap.LoadFromResourceName(hInstance, 'EXPAND' + IntToStr(Index))
           else
-            Bitmap.LoadFromResourceName(hInstance, 'COLLAPSE' + IntToStr(Index));        end;
+            Bitmap.LoadFromResourceName(hInstance, 'COLLAPSE' + IntToStr(Index));
+        end;
         Bitmap.Transparent := True;
         Draw(Rect.Right - 24, Rect.Top + (HeaderHeight - GetRollHeight) div 2, Bitmap);
       finally
@@ -1644,9 +1667,12 @@ begin
       Font.Color := FHotTrackColor;
     Rect.Bottom := Rect.Top + FHeaderHeight;
     Dec(Rect.Right, 3);
-    SetTextColor(Handle, Font.Color);
+    
+    
+    SetPenColor(Handle, Font.Color);
     DrawTextW(Handle, PWideChar(Caption), -1, Rect, DT_SINGLELINE or DT_VCENTER or
       DT_END_ELLIPSIS or DT_NOPREFIX);
+    
     { draw visible items }
     Brush.Color := FColors.BodyColor;
     if not FCollapsed or FRolling then
@@ -1765,7 +1791,10 @@ end;
 
 
 
+
+
 function TJvXPBarItemActionLink.DoShowHint(var HintStr: widestring): Boolean;
+
 begin
   Result := True;
   if Action is TCustomAction then
@@ -1793,8 +1822,8 @@ end;
 function TJvXPCustomWinXPBar.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 var
-  i: integer;
-begin
+  i: integer;  
+begin  
   if CanFocus then
   begin
     if IsAccel(Key, Caption) then

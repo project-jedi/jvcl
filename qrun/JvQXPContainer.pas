@@ -78,7 +78,7 @@ type
     procedure SetSpacing(Value: Byte);
     procedure SetWordWrap(Value: Boolean);
   protected
-//    procedure CreateParams(var Params: TCreateParams); override;
+    
     procedure AdjustClientRect(var Rect: TRect); override;
     procedure HookEnabledChanged; override;
     procedure HookMouseDown; override;
@@ -112,7 +112,7 @@ type
   TJvXPContainer = class(TJvXPCustomContainer)
   published
     property Alignment;
-//    property AutoSize;
+    
     property BorderWidth;
     property BoundColor;
     property BoundLines;
@@ -164,7 +164,6 @@ type
     //property OnGetSiteInfo;
     //property OnStartDock;
     //property OnUnDock;
-    //property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
     property OnContextPopup;

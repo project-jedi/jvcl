@@ -38,9 +38,9 @@ uses
   SysUtils, Classes,
   
   
-  Qt, Types, QGraphics, QWindows,
-  
-  JvQJCLUtils;
+  Types, QGraphics, QWindows
+
+  ;
 
 type
   TJvExtTextOutOptionsKind = (etoClipped, etoOpaque);

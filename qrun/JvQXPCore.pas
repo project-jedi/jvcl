@@ -34,13 +34,12 @@ unit JvQXPCore;
 
 interface
 
+
+
+
 uses
-  
-  
-  QControls, Types, QGraphics, QForms, QWindows,
-  
-  JvQComponent,
-  Classes;
+  Classes, QControls, Types, QGraphics, QForms, Qt, QWindows, JvQComponent;
+
 
 const
   { color constants.
@@ -178,7 +177,7 @@ type
     procedure AdjustSize; override;
     procedure BorderChanged; dynamic;
     procedure EnabledChanged; override;
-    procedure FocusChanged; //override;
+    procedure FocusChanged; // override;  TODO
     procedure TextChanged; override;
     procedure ParentColorChanged; override;
     procedure ParentFontChanged; override;
@@ -186,7 +185,9 @@ type
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
-    
+    function WidgetFlags: integer; override;
+    procedure Loaded; override;
+
     procedure MouseDown(Button:TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button:TMouseButton; Shift:TShiftState; X, Y: Integer); override;
     procedure Click; override;
@@ -406,7 +407,6 @@ end;
 
 
 
-
 function TJvXPCustomControl.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
@@ -415,6 +415,17 @@ begin
     Click
   else
     Result := inherited WantKey(Key, Shift, KeyText);
+end;
+
+function TJvXPCustomControl.WidgetFlags: integer;
+begin
+  Result := Inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
+end;
+
+procedure TJvXPCustomControl.Loaded;
+begin
+  inherited;
+  AdjustSize;
 end;
 
 procedure TJvXPCustomControl.BorderChanged;

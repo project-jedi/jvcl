@@ -819,8 +819,7 @@ function IsInWordArray(Value: Word; const A: array of Word): Boolean;
 implementation
 
 uses
-//  ShellAPI,
-  Math,
+  ShellAPI, Math,
   
   QConsts,
   
@@ -838,13 +837,16 @@ const
 
 type
   TCustomEditHack = class(TCustomEdit);
-  TCustomFormHack = class(TCustomForm);
+  TCustomFormHack = class(TCustomForm);    
   TWinControlHack = class(TWinControl);
 
 const
   sDirBmp = 'JV_SEDITBMP';  { Directory editor button glyph }
   sFileBmp = 'JV_FEDITBMP';  { Filename editor button glyph }
   sDateBmp = 'JV_DEDITBMP';  { Date editor button glyph }
+
+  sDirXPBmp = 'JV_SEDITXPBMP';
+  sFileXPBmp = 'JV_FEDITXPBMP';
 
 
   { TDateHook is used to only have 1 hook per application for monitoring
@@ -1016,11 +1018,11 @@ function IsInWordArray(Value: Word; const A: array of Word): Boolean;
 var
   I: Integer;
 begin
-  Result := False;
+  Result := True;
   for I := 0 to High(A) do
     if A[I] = Value then
       Exit;
-  Result := True;
+  Result := False;
 end;
 
 function LoadDefaultBitmap(Bmp: TBitmap; Item: Integer): Boolean;
@@ -1835,7 +1837,7 @@ var
     Result := TBitmap.Create;
     with Result do
     try
-      //Monochrome := True;
+      Monochrome := True;
       Width := Max(1, FButton.Width - 6);
       Height := 4;
       W := 2;
@@ -2891,13 +2893,15 @@ end;
 class function TJvDirectoryEdit.DefaultImageIndex: TImageIndex;
 var
   Bmp: TBitmap;
+  ResName: string;
 begin
   if GDirImageIndex < 0 then
   begin
     Bmp := TBitmap.Create;
     try
-      //Bmp.Handle := LoadBitmap(HInstance, sFileBmp);
-      Bmp.LoadFromResourceName(HInstance, sDirBmp);
+      
+        ResName := sDirBmp;
+      Bmp.LoadFromResourceName(HInstance, ResName);
       GDirImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
     finally
       Bmp.Free;
@@ -3224,13 +3228,15 @@ end;
 class function TJvFilenameEdit.DefaultImageIndex: TImageIndex;
 var
   Bmp: TBitmap;
+  ResName: string;
 begin
   if GFileImageIndex < 0 then
   begin
     Bmp := TBitmap.Create;
     try
-      //Bmp.Handle := LoadBitmap(HInstance, sFileBmp);
-      Bmp.LoadFromResourceName(HInstance, sFileBmp);
+      
+        ResName := sFileBmp;
+      Bmp.LoadFromResourceName(HInstance, ResName);
       GFileImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
     finally
       Bmp.Free;

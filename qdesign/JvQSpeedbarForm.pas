@@ -261,7 +261,7 @@ begin
     Temp := TJvSpeedItem.ClassName;
   if (UpCase(Temp[1]) = 'T') and (Length(Temp) > 1) then
     System.Delete(Temp, 1, 1);
-  Result := Designer.UniqueName(Temp);
+  Result := Designer.UniqueName(Component.ClassName);
 end;
 
 function TJvSpeedbarEditor.GetEditState: TEditState;

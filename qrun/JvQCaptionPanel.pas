@@ -515,8 +515,8 @@ begin
   
   if BorderStyle = bsSingle then
   begin
-    DrawShadePanel(Canvas, R, false, 2, nil);
-    InflateRect(R, -2, -2);
+    DrawShadePanel(Canvas, R, false, 1, nil);
+    InflateRect(R, -1, -1);
   end;
   
   with Canvas do

@@ -679,7 +679,7 @@ begin
       Dest.Left := (Width - TmpWidth) div 2;
     Dest.Bottom := Dest.Top + FImList.Height;
     Dest.Right := Dest.Left + TmpWidth;
-
+    Canvas.start;
     if not FGlyph.Empty then
     begin
       DrawTheBitmap(Dest, Canvas);
@@ -688,29 +688,30 @@ begin
     { finally, do the caption }
     if Length(Caption) > 0 then
       DrawTheText(Dest, Canvas);
+    Canvas.stop;  
   end;
 end;
 
 { just like DrawText, but draws disabled instead }
 
-function DrawDisabledText(DC: HDC; lpString: PWideChar; nCount: Integer; var lpRect: TRect; uFormat: Integer):
+function DrawDisabledText(ACanvas: TCanvas; lpString: PWideChar; nCount: Integer; var lpRect: TRect; uFormat: Integer):
   Integer;
 var
   OldCol: Integer;
 begin
-  OldCol := SetTextColor(DC, ColorToRGB(clBtnHighlight));
+  OldCol := SetTextColor(ACanvas.Handle, ColorToRGB(clBtnHighlight));
   OffsetRect(lpRect, 1, 1);
 
 
-  DrawTextW(DC, lpString, nCount, lpRect, uFormat);
+  DrawTextW(ACanvas.Handle, lpString, nCount, lpRect, uFormat);
 
   OffsetRect(lpRect, -1, -1);
-  SetTextColor(DC, ColorToRGB(clBtnShadow));
+  SetTextColor(ACanvas.Handle, ColorToRGB(clBtnShadow));
 
 
-  Result := DrawTextW(DC, lpString, nCount, lpRect, uFormat);
+  Result := DrawTextW(ACanvas.Handle, lpString, nCount, lpRect, uFormat);
 
-  SetTextColor(DC, OldCol);
+  SetTextColor(ACanvas.Handle, OldCol);
 end;
 
 { ARect contains the bitmap bounds }
@@ -727,18 +728,19 @@ begin
     aCanvas.Font := Self.Font;
 
   { calculate width and height of text: }
-
+  TmpRect := Bounds(0,0, Width, Height);
   if FWordWrap then
     aCanvas.TextExtent(Caption, TmpRect, WordBreak)
   else
     aCanvas.TextExtent(Caption, TmpRect, 0);
 
+  aCanvas.start;
   DC := aCanvas.Handle; { reduce calls to GetHandle }
 
 
   MidY := TmpRect.Bottom - TmpRect.Top;
   MidX := TmpRect.Right - TmpRect.Left;
-  Flags := DT_CENTER;
+  Flags := AlignCenter;
   { div 2 and shr 1 generates the exact same Asm code... }
   case self.TextAlign of
     ttaTop:
@@ -761,27 +763,27 @@ begin
       OffsetRect(TmpRect, Spacing, Height div 2 - MidY div 2);
   end;
   if FWordWrap then
-    Flags := Flags or DT_WORDBREAK or DT_NOCLIP
+    Flags := Flags or WordBreak // or DT_NOCLIP
   else
-    Flags := Flags or DT_SINGLELINE or DT_NOCLIP;
+    Flags := Flags or SingleLine; // or DT_NOCLIP;
 
   if ((bsMouseDown in MouseStates) or Down) and FShowPressed then
     OffsetRect(TmpRect, FOffset, FOffset);
 
 
 
-  SetBkMode(DC, QWindows.TRANSPARENT);
+//  SetBkMode(DC, QWindows.TRANSPARENT);
   if not Enabled then
-    DrawDisabledText(DC, PWideChar(Caption), -1, TmpRect, Flags)
+    DrawDisabledText(Canvas, PWideChar(Caption), -1, TmpRect, Flags)
   else
   begin
     if (bsMouseInside in MouseStates) and HotTrack then
-      SetTextColor(DC, ColorToRGB(HotTrackFont.Color))
+      aCanvas.Font.Color := HotTrackFont.Color
     else
-      SetTextColor(DC, ColorToRGB(Self.Font.Color));
-    QWindows.DrawTextW(DC, PWideChar(Caption), -1, TmpRect, Flags);
+      aCanvas.Font.Color := Self.Font.Color;
+    aCanvas.TextRect(TmpRect, TmpRect.left, TmpRect.Top, Caption, Flags);
   end;
-
+  acanvas.stop;
 
 end;
 
@@ -1369,6 +1371,7 @@ begin
     ACanvas.Font := HotTrackFont
   else
     ACanvas.Font := Self.Font;
+  aCanvas.Start;
   DC := ACanvas.Handle; { reduce calls to GetHandle }
 
   if FWordWrap then
@@ -1418,7 +1421,7 @@ begin
 
 
 
-  SetBkMode(DC, QWindows.TRANSPARENT);
+//  SetBkMode(DC, QWindows.TRANSPARENT);
 
   if not Enabled then
   begin
@@ -1440,7 +1443,7 @@ begin
 
 
   DrawTextW(DC, PWideChar(Caption), Length(Caption), TmpRect, Flags);
-
+  aCanvas.stop;
 end;
 
 procedure TJvTransparentButton2.DrawTheBitmap(ARect: TRect; ACanvas: TCanvas);

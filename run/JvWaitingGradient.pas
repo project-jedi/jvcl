@@ -254,11 +254,11 @@ end;
 
 procedure TJvWaitingGradient.Paint;
 begin
-  if not Assigned(FBitmap) then
-    Exit;
   Canvas.Brush.Style := bsSolid;
   Canvas.Brush.Color := Color;
   Canvas.FillRect(Rect(0, 0, FLeftOffset, Height));
+  if not Assigned(FBitmap) then
+    Exit;
   Canvas.FillRect(Rect(FLeftOffset + FBitmap.Width, 0, Width, Height));
   Canvas.CopyRect(FDestRect, FBitmap.Canvas, FSourceRect);
 end;
