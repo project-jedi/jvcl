@@ -23,7 +23,6 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-{$I WINDOWSONLY.INC}
 
 unit JvParameterListParameter;
 
@@ -466,13 +465,7 @@ type
 
 implementation
 
-resourcestring
-  SErrParameterMustBeEntered      = 'Parameter %s must be entered!';
-  SErrParameterIsNotAValidNumber  = 'Parameter %s: %s is not a valid number value!';
-  SErrParameterMustBeBetween      = 'Parameter %s: %s must be between %s and %s!';
-  SErrParameterFileDoesNotExist   = 'Parameter %s: The file "%s" does not exist!';
-  SErrParameterFileExistOverwrite = 'Parameter %s: The file "%s" exists! Overwrite?';
-  SErrParameterDirectoryNotExist  = 'Parameter %s: The directory "%s" does not exist!';
+Uses JvResources;
 
 //=== TJvNoDataParameter =====================================================
 
@@ -775,14 +768,8 @@ begin
 end;
 
 procedure TJvImageParameter.SetPicture(Value: TPicture);
-//var
-//  ITmpImage: IJvDynControlImage;
 begin
   FPicture.Assign(Value);
- //  if Assigned(WinControl) then
- //    if Supports(WinControl, IJvDynControlImage, ITmpImage) then
- //      with ITmpImage do
- //        ControlSetPicture(Value);
 end;
 
 procedure TJvImageParameter.SetAutosize(Value: boolean);
@@ -1001,7 +988,8 @@ end;
 procedure TJvListParameter.SetAsVariant(Value: variant);
 begin
   if VariantAsItemIndex then
-    if VarType(Value) in [varSmallInt, varInteger, varByte {$IFDEF COMPILER6_UP}, varShortInt, varWord, varLongWord{$ENDIF}] then
+    if VarType(Value) in [varSmallInt, varInteger, varByte
+                          {$IFDEF COMPILER6_UP}, varShortInt, varWord, varLongWord{$ENDIF}] then
       ItemIndex := Value
     else
       inherited SetAsString(Value)
@@ -1439,7 +1427,7 @@ begin
   if VarIsNull(AData) or (AData = '') then
     if Required then
     begin
-      JvDSADialogs.MessageDlg(Format(SErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
+      JvDSADialogs.MessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
       Exit;
     end
     else
@@ -1450,11 +1438,11 @@ begin
   try
     I := AData;
   except
-    JvDSADialogs.MessageDlg(Format(SErrParameterIsNotAValidNumber, [Caption, AData]), mtError, [mbOK], 0);
+    JvDSADialogs.MessageDlg(Format(RsErrParameterIsNotAValidNumber, [Caption, AData]), mtError, [mbOK], 0);
     Exit;
   end;
   if (I < MinValue) or (I > MaxValue) then
-    JvDSADialogs.MessageDlg(Format(SErrParameterMustBeBetween, [Caption, AData, IntToStr(MinValue), IntToStr(MaxValue)]), mtError,
+    JvDSADialogs.MessageDlg(Format(RsErrParameterMustBeBetween, [Caption, AData, IntToStr(MinValue), IntToStr(MaxValue)]), mtError,
       [mbOK], 0)
   else
     Result := true;
@@ -1520,7 +1508,7 @@ begin
   if VarIsNull(AData) then
   begin
     if Required then
-      JvDSADialogs.MessageDlg(Format(SErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0)
+      JvDSADialogs.MessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0)
     else
       Result := true;
     Exit;
@@ -1528,11 +1516,11 @@ begin
   try
     D := AData;
   except
-    JvDSADialogs.MessageDlg(Format(SErrParameterIsNotAValidNumber, [Caption, AData]), mtError, [mbOK], 0);
+    JvDSADialogs.MessageDlg(Format(RsErrParameterIsNotAValidNumber, [Caption, AData]), mtError, [mbOK], 0);
     Exit;
   end;
   if (D < MinValue) or (D > MaxValue) then
-    JvDSADialogs.MessageDlg(Format(SErrParameterMustBeBetween, [Caption, AData, FloatToStr(MinValue), FloatToStr(MaxValue)]), mtError,
+    JvDSADialogs.MessageDlg(Format(RsErrParameterMustBeBetween, [Caption, AData, FloatToStr(MinValue), FloatToStr(MaxValue)]), mtError,
       [mbOK], 0)
   else
     Result := true;
@@ -1592,7 +1580,7 @@ begin
   if Required then
     if AData = '' then
     begin
-      JvDSADialogs.MessageDlg(Format(SErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
+      JvDSADialogs.MessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
       Exit;
     end;
   if AData <> '' then
@@ -1605,18 +1593,18 @@ begin
   if ofFileMustExist in DialogOptions then
     if not FileExists(AData) then
     begin
-      JvDSADialogs.MessageDlg(Format(SErrParameterFileDoesNotExist, [Caption, AData]), mtError, [mbOK], 0);
+      JvDSADialogs.MessageDlg(Format(RsErrParameterFileDoesNotExist, [Caption, AData]), mtError, [mbOK], 0);
       Exit;
     end;
   if ofOverwritePrompt in DialogOptions then
     if FileExists(AData) then
-      if JvDSADialogs.MessageDlg(Format(SErrParameterFileExistOverwrite, [Caption, AData]), mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+      if JvDSADialogs.MessageDlg(Format(RsErrParameterFileExistOverwrite, [Caption, AData]), mtConfirmation, [mbYes, mbNo], 0) = mrNo then
         Exit;
   if ofPathMustExist in DialogOptions then
     if ExtractFilePath(AData) <> '' then
       if not DirectoryExists(ExtractFilePath(AData)) then
       begin
-        JvDSADialogs.MessageDlg(Format(SErrParameterDirectoryNotExist, [Caption, ExtractFilePath(AData)]), mtError, [mbOK], 0);
+        JvDSADialogs.MessageDlg(Format(RsErrParameterDirectoryNotExist, [Caption, ExtractFilePath(AData)]), mtError, [mbOK], 0);
         Exit;
       end;
   Result := true;
@@ -1666,13 +1654,13 @@ begin
   if Required then
     if AData = '' then
     begin
-      JvDSADialogs.MessageDlg(Format(SErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
+      JvDSADialogs.MessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
       Exit;
     end;
   if not DirectoryExists(AData) then
     if not (sdAllowCreate in DialogOptions) then
     begin
-      JvDSADialogs.MessageDlg(Format(SErrParameterDirectoryNotExist, [Caption, AData]), mtError, [mbOK], 0);
+      JvDSADialogs.MessageDlg(Format(RsErrParameterDirectoryNotExist, [Caption, AData]), mtError, [mbOK], 0);
       Exit;
     end;
   Result := true;

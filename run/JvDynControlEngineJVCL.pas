@@ -412,7 +412,7 @@ type
     procedure ControlSetLayout(Value: TButtonLayout);
   end;
 
-function DynControlEngine_JVCL: TJvDynControlEngine;
+function DynControlEngineJVCL: TJvDynControlEngine;
 
 implementation
 
@@ -423,7 +423,7 @@ uses
   JvDynControlEngineVCL, SysUtils;
 
 var
-  IntDynControlEngine_JVCL: TJvDynControlEngine;
+  IntDynControlEngineJVCL: TJvDynControlEngine;
 
 //=== TJvDynControlJVCLMaskEdit ==============================================
 
@@ -871,8 +871,10 @@ end;
 
 procedure TJvDynControlJVCLDateTimeEdit.ControlSetFormat(Value: string);
 begin
+  {$IFDEF COMPILER6_UP}
   FDatePicker.Format := Value;
   FTimePicker.Format := Value;
+  {$ENDIF COMPILER6_UP}
 end;
 
 
@@ -936,7 +938,9 @@ end;
 
 procedure TJvDynControlJVCLDateEdit.ControlSetFormat(Value: string);
 begin
+  {$IFDEF COMPILER6_UP}
   Format := Value;
+  {$ENDIF COMPILER6_UP}
 end;
 
 //=== TJvDynControlJVCLTimeEdit ==============================================
@@ -988,7 +992,9 @@ end;
 
 procedure TJvDynControlJVCLTimeEdit.ControlSetFormat(Value: string);
 begin
+  {$IFDEF COMPILER6_UP}
   Format := Value;
+  {$ENDIF COMPILER6_UP}
 end;
 
 
@@ -1444,7 +1450,9 @@ end;
 
 procedure TJvDynControlJVCLImage.ControlSetProportional(Value: boolean);
 begin
+  {$IFDEF COMPILER6_UP}
   Proportional := Value;
+  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvDynControlJVCLImage.ControlSetStretch(Value: boolean);
@@ -1609,35 +1617,35 @@ begin
   Layout := Value;
 end;
 
-function DynControlEngine_JVCL: TJvDynControlEngine;
+function DynControlEngineJVCL: TJvDynControlEngine;
 begin
-  Result := IntDynControlEngine_JVCL;
+  Result := IntDynControlEngineJVCL;
 end;
 
 initialization
-  IntDynControlEngine_JVCL := TJvDynControlEngine.Create;
-  IntDynControlEngine_JVCL.RegisterControl(jctLabel, TJvDynControlJVCLLabel);
-  IntDynControlEngine_JVCL.RegisterControl(jctStaticText, TJvDynControlJVCLStaticText);
-  IntDynControlEngine_JVCL.RegisterControl(jctButton, TJvDynControlJVCLButton);
-  IntDynControlEngine_JVCL.RegisterControl(jctScrollBox, TJvDynControlJVCLScrollBox);
-  IntDynControlEngine_JVCL.RegisterControl(jctPanel, TJvDynControlJVCLPanel);
-  IntDynControlEngine_JVCL.RegisterControl(jctImage, TJvDynControlVCLImage);
-  IntDynControlEngine_JVCL.RegisterControl(jctCheckBox, TJvDynControlJVCLCheckBox);
-  IntDynControlEngine_JVCL.RegisterControl(jctComboBox, TJvDynControlJVCLComboBox);
-  IntDynControlEngine_JVCL.RegisterControl(jctListBox, TJvDynControlJVCLListBox);
-  IntDynControlEngine_JVCL.RegisterControl(jctRadioGroup, TJvDynControlJVCLRadioGroup);
-  IntDynControlEngine_JVCL.RegisterControl(jctDateTimeEdit, TJvDynControlJVCLDateTimeEdit);
-  IntDynControlEngine_JVCL.RegisterControl(jctTimeEdit, TJvDynControlJVCLTimeEdit);
-  IntDynControlEngine_JVCL.RegisterControl(jctDateEdit, TJvDynControlJVCLDateEdit);
-  IntDynControlEngine_JVCL.RegisterControl(jctEdit, TJvDynControlJVCLMaskEdit);
-  IntDynControlEngine_JVCL.RegisterControl(jctCalculateEdit, TJvDynControlJVCLCalcEdit);
-  IntDynControlEngine_JVCL.RegisterControl(jctSpinEdit, TJvDynControlJVCLSpinEdit);
-  IntDynControlEngine_JVCL.RegisterControl(jctDirectoryEdit, TJvDynControlJVCLDirectoryEdit);
-  IntDynControlEngine_JVCL.RegisterControl(jctFileNameEdit, TJvDynControlJVCLFileNameEdit);
-  IntDynControlEngine_JVCL.RegisterControl(jctMemo, TJvDynControlJVCLMemo);
-  SetDefaultDynControlEngine(IntDynControlEngine_JVCL);
+  IntDynControlEngineJVCL := TJvDynControlEngine.Create;
+  IntDynControlEngineJVCL.RegisterControl(jctLabel, TJvDynControlJVCLLabel);
+  IntDynControlEngineJVCL.RegisterControl(jctStaticText, TJvDynControlJVCLStaticText);
+  IntDynControlEngineJVCL.RegisterControl(jctButton, TJvDynControlJVCLButton);
+  IntDynControlEngineJVCL.RegisterControl(jctScrollBox, TJvDynControlJVCLScrollBox);
+  IntDynControlEngineJVCL.RegisterControl(jctPanel, TJvDynControlJVCLPanel);
+  IntDynControlEngineJVCL.RegisterControl(jctImage, TJvDynControlVCLImage);
+  IntDynControlEngineJVCL.RegisterControl(jctCheckBox, TJvDynControlJVCLCheckBox);
+  IntDynControlEngineJVCL.RegisterControl(jctComboBox, TJvDynControlJVCLComboBox);
+  IntDynControlEngineJVCL.RegisterControl(jctListBox, TJvDynControlJVCLListBox);
+  IntDynControlEngineJVCL.RegisterControl(jctRadioGroup, TJvDynControlJVCLRadioGroup);
+  IntDynControlEngineJVCL.RegisterControl(jctDateTimeEdit, TJvDynControlJVCLDateTimeEdit);
+  IntDynControlEngineJVCL.RegisterControl(jctTimeEdit, TJvDynControlJVCLTimeEdit);
+  IntDynControlEngineJVCL.RegisterControl(jctDateEdit, TJvDynControlJVCLDateEdit);
+  IntDynControlEngineJVCL.RegisterControl(jctEdit, TJvDynControlJVCLMaskEdit);
+  IntDynControlEngineJVCL.RegisterControl(jctCalculateEdit, TJvDynControlJVCLCalcEdit);
+  IntDynControlEngineJVCL.RegisterControl(jctSpinEdit, TJvDynControlJVCLSpinEdit);
+  IntDynControlEngineJVCL.RegisterControl(jctDirectoryEdit, TJvDynControlJVCLDirectoryEdit);
+  IntDynControlEngineJVCL.RegisterControl(jctFileNameEdit, TJvDynControlJVCLFileNameEdit);
+  IntDynControlEngineJVCL.RegisterControl(jctMemo, TJvDynControlJVCLMemo);
+  SetDefaultDynControlEngine(IntDynControlEngineJVCL);
 
 finalization
-  FreeAndNil(IntDynControlEngine_JVCL);
+  FreeAndNil(IntDynControlEngineJVCL);
 
 end.
