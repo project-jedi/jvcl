@@ -1310,14 +1310,14 @@ end;
 function TJvImageItem.GetFont: TFont;
 begin
   if FUseListFont then
-    Result := (Collection.Owner as TJvImageListBox).Font
+    Result := (TJvImageItems(Collection).GetOwner as TJvImageListBox).Font
   else
   begin
     if not Assigned(FFont) then
     begin
       FFont := TFont.Create;
       FFont.OnChange := FontChanged;
-      FFont.Assign((Collection.Owner as TJvImageListBox).Font);
+      FFont.Assign((TJvImageItems(Collection).GetOwner as TJvImageListBox).Font);
     end;
     Result := FFont;
   end;
@@ -1334,13 +1334,13 @@ begin
     FGlyph := TBitmap.Create;
     
   FGlyph.Assign(Value);
-  (Collection.Owner as TJvImageListBox).Invalidate;
+  (TJvImageItems(Collection).GetOwner as TJvImageListBox).Invalidate;
 end;
 
 procedure TJvImageItem.FontChanged(Sender: TObject);
 begin
   if not FUseListFont then
-    (Collection.Owner as TJvImageListBox).Invalidate;
+    (TJvImageItems(Collection).GetOwner as TJvImageListBox).Invalidate;
 end;
 
 end.
