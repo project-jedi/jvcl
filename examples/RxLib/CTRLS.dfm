@@ -28,7 +28,7 @@ object ControlsForm: TControlsForm
     Width = 504
     Height = 313
     Align = alClient
-    PageIndex = 1
+    PageIndex = 3
     TabsPerRow = 4
     TabFont.Charset = DEFAULT_CHARSET
     TabFont.Color = clBtnText
@@ -213,7 +213,7 @@ object ControlsForm: TControlsForm
           Width = 145
           Height = 22
           DroppedDownWidth = 145
-          FontName = 'Roman'
+          FontName = 'Courier (W1)'
           Device = fdPrinter
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
@@ -973,6 +973,7 @@ object ControlsForm: TControlsForm
           Top = 33
           Width = 225
           Height = 21
+          AddQuotes = False
           Filter = 'Pascal sources (*.pas)|*.pas|All files (*.*)|*.*'
           ButtonHint = 'Browse...|'
           ButtonFlat = False
@@ -2697,7 +2698,7 @@ object ControlsForm: TControlsForm
         Top = 128
         Width = 233
         Height = 149
-        Caption = 'JvxClock'
+        Caption = 'JvClock'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlue
         Font.Height = -11
@@ -2747,7 +2748,7 @@ object ControlsForm: TControlsForm
           Font.Style = []
           ParentFont = False
         end
-        object rxClock1: TJvClock
+        object JvClock: TJvClock
           Left = 6
           Top = 32
           Width = 115
@@ -2762,7 +2763,7 @@ object ControlsForm: TControlsForm
           Font.Name = 'MS Sans Serif'
           Font.Style = []
           ParentFont = False
-          OnAlarm = rxClock1Alarm
+          OnAlarm = JvClockAlarm
         end
         object ComboBox8: TComboBox
           Left = 128
@@ -2776,12 +2777,14 @@ object ControlsForm: TControlsForm
           Font.Name = 'MS Sans Serif'
           Font.Style = []
           ItemHeight = 13
+          ItemIndex = 0
           ParentFont = False
           TabOrder = 1
+          Text = 'Analog'
           OnChange = ComboBox8Change
           Items.Strings = (
-            'Digital'
-            'Analog')
+            'Analog'
+            'Digital')
         end
         object Button3: TButton
           Left = 128
@@ -2920,7 +2923,7 @@ object ControlsForm: TControlsForm
           Font.Style = []
           ParentFont = False
         end
-        object rxDice1: TJvDice
+        object JvDice: TJvDice
           Left = 12
           Top = 72
           Width = 66
@@ -2928,7 +2931,7 @@ object ControlsForm: TControlsForm
           Rotate = False
           ShowFocus = False
           TabOrder = 0
-          OnChange = rxDice1Change
+          OnChange = JvDiceChange
         end
         object Button4: TButton
           Left = 12
@@ -2995,6 +2998,8 @@ object ControlsForm: TControlsForm
     Top = 1
   end
   object FormStorage1: TJvFormStorage
+    AppStorage = MainForm.JvAppRegistryStore
+    AppStoragePath = 'Controls\'
     StoredProps.Strings = (
       'TabbedNotebook1.PageIndex'
       'rxLabel1.Font'
@@ -3002,7 +3007,7 @@ object ControlsForm: TControlsForm
       'CheckBox4.Checked'
       'CheckBox7.Checked'
       'Edit1.Text'
-      'rxClock1.Font'
+      'JvClock.Font'
       'Panel2.Width'
       'DirectoryListBox1.Height'
       'OpenDialog.InitialDir')

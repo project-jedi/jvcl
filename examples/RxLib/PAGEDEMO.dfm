@@ -1,6 +1,6 @@
 object ClientAssistant: TClientAssistant
-  Left = 253
-  Top = 180
+  Left = 322
+  Top = 178
   BorderStyle = bsDialog
   Caption = 'TJvPageManager  Demo'
   ClientHeight = 335
@@ -597,6 +597,13 @@ object ClientAssistant: TClientAssistant
         Font.Style = [fsBold]
         ParentFont = False
         ShadowPos = spRightBottom
+        AutoOpenURL = False
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -16
+        HotTrackFont.Name = 'Arial'
+        HotTrackFont.Style = []
+        ImageIndex = 0
       end
       object EditACCT_NBR: TDBEdit
         Left = 142
@@ -775,10 +782,8 @@ object ClientAssistant: TClientAssistant
         Width = 87
         Height = 21
         Hint = 'TJvDBComboBox|'
-        Style = csDropDownList
         DataField = 'RISK_LEVEL'
         DataSource = ClientsDS
-        EnableValues = True
         ItemHeight = 13
         Items.Strings = (
           'Low'
@@ -926,6 +931,8 @@ object ClientAssistant: TClientAssistant
     Top = 296
   end
   object FormStorage: TJvFormStorage
+    AppStorage = MainForm.JvAppRegistryStore
+    AppStoragePath = 'Page Manager\'
     StoredProps.Strings = (
       'DoSearchBtn.Checked'
       'SkipSearchBtn.Checked'

@@ -902,7 +902,7 @@ object ToolsForm: TToolsForm
             ''
             'Moscow'
             ''
-            '© 1995,1997'
+            #169' 1995,1997'
             ''
             'Click twice here to stop'
             '')
@@ -1194,6 +1194,8 @@ object ToolsForm: TToolsForm
     Top = 4
   end
   object FormStorage1: TJvFormStorage
+    AppStorage = MainForm.JvAppRegistryStore
+    AppStoragePath = 'Tools\'
     StoredProps.Strings = (
       'TabbedNotebook1.PageIndex')
     StoredValues = <>

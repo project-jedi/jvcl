@@ -1,9 +1,9 @@
 object MainForm: TMainForm
-  Left = 301
-  Top = 156
+  Left = 303
+  Top = 254
   Width = 440
-  Height = 243
-  Caption = 'RX Library Demo Program'
+  Height = 276
+  Caption = 'JVCL RX Library Demo Program'
   Color = clAppWorkSpace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -46,7 +46,7 @@ object MainForm: TMainForm
   TextHeight = 13
   object StatusPanel: TPanel
     Left = 0
-    Top = 177
+    Top = 210
     Width = 432
     Height = 20
     Align = alBottom
@@ -622,5 +622,20 @@ object MainForm: TMainForm
       DDDD}
     Left = 88
     Top = 88
+  end
+  object JvAppRegistryStore: TJvAppRegistryStore
+    StoreOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StoreOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    Root = 'Software\JVCL\Examples\JVCL Rx Library Demo'
+    SubStores = <>
+    Left = 10
+    Top = 150
+  end
+  object JvFormStorage: TJvFormStorage
+    AppStorage = JvAppRegistryStore
+    AppStoragePath = 'MainForm\'
+    StoredValues = <>
+    Left = 90
+    Top = 150
   end
 end
