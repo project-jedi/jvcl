@@ -31,7 +31,13 @@ unit JvEnterTab;
 interface
 
 uses
-  Windows, SysUtils, Messages, Classes, Graphics, Controls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, StdCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QWindows,
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type
@@ -41,7 +47,12 @@ type
     FAllowDefault: Boolean;
     FBmp: TBitmap;
   protected
+    {$IFDEF VCL}
     procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DIALOGKEY;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    function TabKeyHook(Sender: QObjectH; Event: QEventH): Boolean; virtual;
+    {$ENDIF VisualCLX}
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -55,9 +66,6 @@ type
 
 implementation
 
-uses
-  Forms, StdCtrls;
-  
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvEnterTab.res}
 {$ENDIF MSWINDOWS}
@@ -78,14 +86,21 @@ begin
   end
   else
     Visible := False;
+  {$IFDEF VisualCLX}
+  InstallApplicationHook(TabKeyHook);
+  {$ENDIF VisualCLX}
 end;
 
 destructor TJvEnterAsTab.Destroy;
 begin
+  {$IFDEF VisualCLX}
+  UninstallApplicationHook(TabKeyHook);
+  {$ENDIF VisualCLX}
   FBmp.Free;
   inherited Destroy;
 end;
 
+{$IFDEF VCL}
 procedure TJvEnterAsTab.CMDialogKey(var Msg: TCMDialogKey);
 begin
   if (GetParentForm(Self).ActiveControl is TButtonControl) and AllowDefault then
@@ -99,13 +114,47 @@ begin
   else
     inherited;
 end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+function TJvEnterAsTab.TabKeyHook(Sender: QObjectH; Event: QEventH): Boolean;
+var
+  ws: WideString;
+begin
+  Result := False;
+  if QEvent_type(Event) = QEventType_KeyPress then
+  begin
+    if QObject_inherits(Sender, 'QButton') and AllowDefault then
+      Exit;
+
+    if ((QKeyEvent_key(QKeyEventH(Event)) = Key_Enter) or
+        (QKeyEvent_key(QKeyEventH(Event)) = Key_Return) ) and EnterAsTab then
+    begin
+      ws := #9;
+
+      QApplication_postEvent(GetParentForm(Self).Handle,
+        QKeyEvent_create(QEventType_KeyPress, Key_Tab, 9, 0, @ws, False, 1));
+      QApplication_postEvent(GetParentForm(Self).Handle,
+        QKeyEvent_create(QEventType_KeyRelease, Key_Tab, 9, 0, @ws, False, 1));
+
+      Result := True;
+    end;
+  end;
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvEnterAsTab.Paint;
 begin
   if not (csDesigning in ComponentState) then
     Exit;
   Canvas.Brush.Color := clBtnFace;
-  inherited Canvas.BrushCopy(ClientRect, FBmp, ClientRect, clFuchsia);
+  {$IFDEF VCL}
+  Canvas.BrushCopy(ClientRect, FBmp, ClientRect, clFuchsia);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  FBmp.Transparent := True;
+  FBmp.TransparentColor := clFuchsia;
+  Canvas.StretchDraw(ClientRect, FBmp);
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvEnterAsTab.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);

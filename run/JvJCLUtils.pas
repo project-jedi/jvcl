@@ -1032,7 +1032,7 @@ const
   RasterOp_NandROP = 14;
   RasterOp_NorROP = 15;
   RasterOp_LastROP = 15;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 
 function BitBlt(DestCanvas: TCanvas; X, Y, Width, Height: Integer; SrcCanvas: TCanvas;
   XSrc, YSrc: Integer; WinRop: Cardinal; IgnoreMask: Boolean = True): LongBool;overload;
@@ -1043,7 +1043,7 @@ function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC;
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC;
   XSrc, YSrc: Integer; WinRop: Cardinal): LongBool; overload;
 
-{$ENDIF}
+{$ENDIF VCL}
 
 implementation
 
@@ -7446,7 +7446,9 @@ begin
   b := Filename;
   UniqueString(b);
   R := Rect(0, 0, MaxLen, Canvas.TextHeight('Wq'));
-  if Windows.DrawText(Canvas.Handle, PChar(b), Length(b), R, DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or DT_CALCRECT or DT_NOPREFIX) > 0 then
+  if DrawText(Canvas, PChar(b), Length(b), R,
+       DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or DT_CALCRECT or
+       DT_NOPREFIX) > 0 then
     Result := string(PChar(b))
   else
     Result := Filename;
@@ -8499,7 +8501,7 @@ function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSr
 begin
   Result := Windows.BitBlt(DestDC, X, Y, Width, Height, DestDC, XSrc, YSrc, WinRop);
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
 end.
 
