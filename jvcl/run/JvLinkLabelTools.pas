@@ -38,8 +38,10 @@ unit JvLinkLabelTools;
 interface
 
 uses
-  SysUtils, Classes,
-  Windows,
+  SysUtils, Classes, Windows,
+  {$IFDEF VCL}
+  ShellAPI,
+  {$ENDIF VCL}
   JvTypes;
 
 type
@@ -96,10 +98,10 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
-  ShellAPI,
+//  ShellAPI,
   {$ENDIF MSWINDOWS}
   {$IFDEF HAS_UNIT_LIBC}
-  Libc,
+//  Libc,
   {$ENDIF HAS_UNIT_LIBC}
   JvConsts, JvResources;
 

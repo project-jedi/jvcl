@@ -168,7 +168,7 @@ uses
   SysUtils, Classes, Contnrs, TypInfo, IniFiles,
   Windows, Messages, Graphics, Controls, StdCtrls, ExtCtrls,
   {$IFDEF VisualCLX}
-  Qt, QTypes, JvQExExtCtrls,
+  Qt, JvQExExtCtrls,
   {$ENDIF VisualCLX}
   JvAutoComplete, JvJVCLUtils, JvComponent, JvTypes, JvExControls, JvFinalize;
 
@@ -6995,9 +6995,6 @@ begin
         DrawThemedButtonFace(Inspector, ACanvas, R, 0, bsNew, False, Pressed, False, False)
       else
       {$ENDIF JVCLThemesEnabled}
-        {$IFDEF VisualCLX}
-        QWindows.
-        {$ENDIF VisualCLX}
         DrawEdge(ACanvas.Handle, R, EDGE_RAISED, BF_RECT or BF_MIDDLE or BFlags);
       W := 2;
       G := (RectWidth(R) - 2 * Ord(Pressed) - (3 * W)) div 4;

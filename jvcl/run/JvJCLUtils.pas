@@ -53,16 +53,16 @@ uses
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF UNIX}
-  Xlib, QStdCtrls, StrUtils,
+  Xlib,
   {$ENDIF UNIX}
-  SysUtils, Classes, Graphics, Clipbrd, Controls,
-  {$IFDEF VisualCLX}
-  Qt, QWindows,
-  {$ENDIF VisualCLX}
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  TypInfo;
+  SysUtils, Classes, Graphics, Clipbrd, Controls,
+  {$IFDEF VisualCLX}
+  Qt, QWindows, QStdCtrls, 
+  {$ENDIF VisualCLX}
+  StrUtils, TypInfo;
 
 const
   {$IFDEF MSWINDOWS}
@@ -512,6 +512,8 @@ function DefDateMask(BlanksChar: Char; AFourDigitYear: Boolean): string;
 function FormatLongDate(Value: TDateTime): string;
 function FormatLongDateTime(Value: TDateTime): string;
 { end JvDateUtil }
+function BufToBinStr(Buf: Pointer; BufSize: Integer): string;
+
 
 { begin JvStrUtils }
 
@@ -1094,15 +1096,7 @@ uses
   {$IFDEF MSWINDOWS}
   ComObj, ShellAPI, MMSystem, Registry,
   {$ENDIF MSWINDOWS}
-  {$IFDEF HAS_UNIT_STRUTILS}
-  StrUtils,
-  {$ENDIF HAS_UNIT_STRUTILS}
-  {$IFDEF VCL}
   Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
   {$IFNDEF NO_JCL}
   JclStrings, JclSysInfo,
   {$ENDIF !NO_JCL}
@@ -4948,6 +4942,35 @@ begin
   Result := Pos('YYYY', AnsiUpperCase(ShortDateFormat)) > 0;
 end;
 { end JvDateUtil }
+
+function BufToBinStr(Buf: Pointer; BufSize: Integer): string;
+var
+  I: Integer;
+  P: PByteArray;
+begin
+  P := Buf;
+  for I := 0 to pred(BufSize) do
+  begin
+    Result := Result + IntToHex(P[I] , 2);
+  end;
+end;
+
+function BinStrToBuf(Value: string; Buf: Pointer; BufSize: Integer): Integer;
+var
+  I: Integer;
+  P: PByteArray;
+begin
+  if Odd(Length(Value)) then
+    Value := '0' + Value;      // should not occur, might indicate corrupted Value
+  if (Length(Value) div 2) < BufSize then
+    BufSize := Length(Value) div 2;
+  P := Buf;
+  For I := 0 to pred(BufSize) do
+  begin
+    P[I] := StrToInt('$' + Value[2 * I + 1] + Value[2 * I + 2]);
+  end;
+  Result := BufSize;
+end;
 
 { begin JvStrUtils }
 {$IFDEF UNIX}
