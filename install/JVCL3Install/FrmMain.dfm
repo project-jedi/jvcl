@@ -247,48 +247,6 @@ object FormMain: TFormMain
     OnClick = imgProjectJEDIClick
     OnMouseDown = imgProjectJEDIMouseDown
   end
-  object Bevel1: TBevel
-    Left = 8
-    Top = 168
-    Width = 5
-    Height = 97
-    Shape = bsRightLine
-  end
-  object Bevel2: TBevel
-    Left = 12
-    Top = 184
-    Width = 17
-    Height = 9
-    Shape = bsTopLine
-  end
-  object Bevel3: TBevel
-    Left = 12
-    Top = 204
-    Width = 17
-    Height = 9
-    Shape = bsTopLine
-  end
-  object Bevel4: TBevel
-    Left = 12
-    Top = 224
-    Width = 17
-    Height = 9
-    Shape = bsTopLine
-  end
-  object Bevel5: TBevel
-    Left = 12
-    Top = 244
-    Width = 17
-    Height = 9
-    Shape = bsTopLine
-  end
-  object Bevel6: TBevel
-    Left = 12
-    Top = 264
-    Width = 17
-    Height = 9
-    Shape = bsTopLine
-  end
   object PanelBottom: TPanel
     Left = 0
     Top = 495
@@ -296,7 +254,7 @@ object FormMain: TFormMain
     Height = 41
     Align = alBottom
     BevelOuter = bvNone
-    TabOrder = 7
+    TabOrder = 3
     object BevelTop: TBevel
       Left = 0
       Top = 0
@@ -503,7 +461,7 @@ object FormMain: TFormMain
     Left = 8
     Top = 24
     Width = 193
-    Height = 145
+    Height = 121
     Checkboxes = True
     Columns = <
       item
@@ -528,41 +486,13 @@ object FormMain: TFormMain
     OnChange = ListViewTargetsChange
     OnSelectItem = ListViewTargetsSelectItem
   end
-  object CheckBoxClearJVCLPalette: TCheckBox
-    Left = 16
-    Top = 236
-    Width = 185
-    Height = 17
-    Hint = 
-      'Remove all JVCL components from the component palettes in'#13#10'order' +
-      ' to reinstall in a proper order.'
-    Caption = 'Clean JVCL component palettes'
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 5
-    OnClick = CheckBoxClearJVCLPaletteClick
-  end
-  object CheckBoxBuild: TCheckBox
-    Left = 16
-    Top = 176
-    Width = 185
-    Height = 17
-    Hint = 
-      'Check this option if you want to build the packages instead'#13#10'of ' +
-      'compiling the modified files'
-    Caption = 'Build package'
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 2
-    OnClick = CheckBoxClearJVCLPaletteClick
-  end
   object GroupBoxOptions: TGroupBox
     Left = 8
     Top = 296
     Width = 193
     Height = 161
     Caption = ' JVCL.INC - Options (global) '
-    TabOrder = 6
+    TabOrder = 2
     object BtnAdvancedOptions: TBitBtn
       Left = 88
       Top = 128
@@ -659,38 +589,6 @@ object FormMain: TFormMain
       OnClick = CheckBoxOptThemingClick
     end
   end
-  object CheckBoxDeveloperInstall: TCheckBox
-    Left = 16
-    Top = 216
-    Width = 185
-    Height = 17
-    Hint = 
-      'Activate this option if you are a JVCL developer.'#13#10'This adds the' +
-      ' \run and \design directory to the library paths.'
-    Caption = 'JVCL Developer installation'
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 4
-    OnClick = CheckBoxClearJVCLPaletteClick
-  end
-  object CheckBoxInstallJcl: TCheckBox
-    Left = 16
-    Top = 196
-    Width = 185
-    Height = 17
-    Hint = 'Install the JCL packages that are needed by the JVCL 3.'
-    Caption = 'Install JCL'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = [fsBold]
-    ParentFont = False
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 3
-    OnClick = CheckBoxClearJVCLPaletteClick
-  end
   object CheckBoxShowRuntimePackages: TCheckBox
     Left = 579
     Top = 5
@@ -698,22 +596,185 @@ object FormMain: TFormMain
     Height = 17
     Alignment = taLeftJustify
     Caption = 'Show runtime packages'
-    TabOrder = 8
+    TabOrder = 4
     OnClick = CheckBoxShowRuntimePackagesClick
   end
-  object CheckBoxCompileOnly: TCheckBox
-    Left = 16
-    Top = 256
-    Width = 185
-    Height = 17
-    Hint = 
-      'Activate this option if you do not want the installer to'#13#10'change' +
-      ' the IDE'#39's settings but compile the packages.'
-    Caption = 'Compile only (error check)'
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 9
-    OnClick = CheckBoxClearJVCLPaletteClick
+  object Panel1: TPanel
+    Left = 8
+    Top = 144
+    Width = 198
+    Height = 145
+    BevelOuter = bvNone
+    TabOrder = 5
+    object Bevel1: TBevel
+      Left = 0
+      Top = 0
+      Width = 5
+      Height = 113
+      Shape = bsRightLine
+    end
+    object Bevel2: TBevel
+      Left = 4
+      Top = 16
+      Width = 17
+      Height = 9
+      Shape = bsTopLine
+    end
+    object Bevel3: TBevel
+      Left = 4
+      Top = 36
+      Width = 17
+      Height = 9
+      Shape = bsTopLine
+    end
+    object Bevel4: TBevel
+      Left = 4
+      Top = 56
+      Width = 17
+      Height = 9
+      Shape = bsTopLine
+    end
+    object Bevel5: TBevel
+      Left = 4
+      Top = 76
+      Width = 17
+      Height = 9
+      Shape = bsTopLine
+    end
+    object Bevel6: TBevel
+      Left = 4
+      Top = 96
+      Width = 17
+      Height = 9
+      Shape = bsTopLine
+    end
+    object Bevel7: TBevel
+      Left = 4
+      Top = 112
+      Width = 17
+      Height = 9
+      Shape = bsTopLine
+    end
+    object LblHppFilesDir: TLabel
+      Left = 8
+      Top = 106
+      Width = 46
+      Height = 13
+      Caption = 'HPP files:'
+    end
+    object LblBCBInstallation: TLabel
+      Left = 56
+      Top = 124
+      Width = 102
+      Height = 13
+      Cursor = crHandPoint
+      Caption = 'BCB installation guide'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlue
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsUnderline]
+      ParentFont = False
+      OnClick = LblBCBInstallationClick
+    end
+    object CheckBoxClearJVCLPalette: TCheckBox
+      Left = 8
+      Top = 68
+      Width = 185
+      Height = 17
+      Hint = 
+        'Remove all JVCL components from the component palettes in'#13#10'order' +
+        ' to reinstall in a proper order.'
+      Caption = 'Clean JVCL component palettes'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+      OnClick = CheckBoxClearJVCLPaletteClick
+    end
+    object CheckBoxBuild: TCheckBox
+      Left = 8
+      Top = 8
+      Width = 185
+      Height = 17
+      Hint = 
+        'Check this option if you want to build the packages instead'#13#10'of ' +
+        'compiling the modified files'
+      Caption = 'Build package'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+      OnClick = CheckBoxClearJVCLPaletteClick
+    end
+    object CheckBoxDeveloperInstall: TCheckBox
+      Left = 8
+      Top = 48
+      Width = 185
+      Height = 17
+      Hint = 
+        'Activate this option if you are a JVCL developer.'#13#10'This adds the' +
+        ' \run and \design directory to the library paths.'
+      Caption = 'JVCL Developer installation'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
+      OnClick = CheckBoxClearJVCLPaletteClick
+    end
+    object CheckBoxInstallJcl: TCheckBox
+      Left = 8
+      Top = 28
+      Width = 185
+      Height = 17
+      Hint = 'Install the JCL packages that are needed by the JVCL 3.'
+      Caption = 'Install JCL'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 3
+      OnClick = CheckBoxClearJVCLPaletteClick
+    end
+    object CheckBoxCompileOnly: TCheckBox
+      Left = 8
+      Top = 88
+      Width = 185
+      Height = 17
+      Hint = 
+        'Activate this option if you do not want the installer to'#13#10'change' +
+        ' the IDE'#39's settings but compile the packages.'
+      Caption = 'Compile only (error check)'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 4
+      OnClick = CheckBoxClearJVCLPaletteClick
+    end
+    object EditHppFilesDir: TEdit
+      Left = 56
+      Top = 103
+      Width = 121
+      Height = 21
+      Color = clBtnFace
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clGray
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      ReadOnly = True
+      TabOrder = 5
+    end
+    object BtnHppFilesBrowse: TButton
+      Left = 176
+      Top = 103
+      Width = 22
+      Height = 22
+      Caption = '...'
+      TabOrder = 6
+      OnClick = BtnHppFilesBrowseClick
+    end
   end
   object ImageListPackages: TImageList
     Left = 216

@@ -602,7 +602,7 @@ var
   List: TStrings;
   i: Integer;
 begin
-  DestDir := Target.RootDir + '\Include\Vcl';
+  DestDir := Target.HppFilesDir;
   if not DirectoryExists(DestDir) then
     Exit;
 
