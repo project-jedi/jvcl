@@ -33,8 +33,13 @@ unit JvColorTrackBar;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Graphics, Forms;
-
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Controls, Graphics, Forms;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QControls, QGraphics, QForms, QWindows;
+  {$ENDIF VisualCLX}
 type
   TJvColorTrackBarIndicator = (tbiArrow, tbiLine);
   TJvColorTrackBarIndicators = set of TJvColorTrackBarIndicator;
@@ -94,8 +99,13 @@ type
     property Anchors;
     property Color;
     property Constraints;
+    {$IFDEF VCL}
     property DragKind;
     property DragCursor;
+    property OnCanResize;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF VCL}
     property DragMode;
     property Hint;
     property ParentColor;
@@ -104,15 +114,12 @@ type
     property ShowHint;
     property Height default 24;
     property Width default 120;
-
-    property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
     property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
@@ -120,7 +127,6 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
-    property OnStartDock;
     property OnStartDrag;
   end;
 
