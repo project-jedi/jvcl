@@ -310,6 +310,15 @@ type
     Description: string;
   end;
 
+type
+  {$IFDEF VCL}
+  THintString = string;
+  THintStringList = TStringList;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  THintString = WideString;
+  THintStringList = TWideStringList;
+  {$ENDIF VisualCLX}
 const
   ColCount = 20;
   {$IFDEF VCL}

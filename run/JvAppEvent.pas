@@ -232,19 +232,17 @@ type
     function DoHelp(Command: Word; Data: Longint;
       var CallHelp: Boolean): Boolean;
     procedure DoMessage(var Msg: TMsg; var Handled: Boolean);
-    procedure DoShowHint(var HintStr: string; var CanShow: Boolean;
-      var HintInfo: THintInfo);
     procedure DoShortCut(var Msg: TWMKey; var Handled: Boolean);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     function DoHelp(HelpType: THelpType; HelpContext: THelpContext;
       const HelpKeyword: String; const HelpFile: String;
       var Handled: Boolean): Boolean;
-    procedure DoShowHint(var HintStr: WideString; var CanShow: Boolean;
-      var HintInfo: THintInfo);
     procedure DoShortCut(Key: Integer; Shift: TShiftState; var Handled: Boolean);
     procedure DoEvent(Sender: QObjectH; Event: QEventH; var Handled: Boolean);
     {$ENDIF VisualCLX}
+    procedure DoShowHint(var HintStr: THintString; var CanShow: Boolean;
+      var HintInfo: THintInfo);
     procedure DoActiveControlChange(Sender: TObject);
     procedure DoActiveFormChange(Sender: TObject);
     procedure DoActionExecute(Action: TBasicAction; var Handled: Boolean);
@@ -554,14 +552,8 @@ begin
     FOnRestore(Sender);
 end;
 
-{$IFDEF VCL}
-procedure TJvAppEventList.DoShowHint(var HintStr: string; var CanShow: Boolean;
+procedure TJvAppEventList.DoShowHint(var HintStr: THintString; var CanShow: Boolean;
   var HintInfo: THintInfo);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvAppEventList.DoShowHint(var HintStr: widestring; var CanShow: Boolean;
-  var HintInfo: THintInfo);
-{$ENDIF VisualCLX}
 var
   I: Integer;
 begin

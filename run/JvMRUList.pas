@@ -147,9 +147,9 @@ type
     function DeleteKey: Boolean;
 
     // Arioch: the following are function for Unicode Enabling
-    function AddUnicodeString(Value: widestring): Boolean;
+    function AddUnicodeString(Value: WideString): Boolean;
     function AddUnicodePChar(Value: PWideChar): Boolean;
-    function FindUnicodeString(Value: widestring): Integer;
+    function FindUnicodeString(Value: WideString): Integer;
   published
     property DelayedWrite: Boolean read FDelayedWrite write FDelayedWrite default False;
     property WantUnicode: Boolean read FWantUnicode write SetWantUnicode default False;
@@ -311,7 +311,7 @@ begin
   Result := AddPchar(PChar(Value));
 end;
 
-function TJvMRUList.AddUnicodeString(Value: widestring): Boolean;
+function TJvMRUList.AddUnicodeString(Value: WideString): Boolean;
 begin
   Result := AddUnicodePChar(PWideChar(Value));
 end;
@@ -355,7 +355,7 @@ begin
     Result := FindMruString(FList, PChar(Value), nil);
 end;
 
-function TJvMRUList.FindUnicodeString(Value: widestring): Integer;
+function TJvMRUList.FindUnicodeString(Value: WideString): Integer;
 begin
   NeedUnicode;
   Result := -1;
