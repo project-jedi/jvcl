@@ -27,13 +27,16 @@ var
   CustomModuleList: TStringList;
   NoIconList: TStringList;
   ActionsList: TStringList;
+  PackageWizardList: TStringList;
+  RegisterClassList: TStringList;
 
   OldSpyRegisterPropertyEditor: TRegisterPropertyEditorProc;
   OldSpyRegisterComponentEditor: TRegisterComponentEditorProc;
   OldSpyRegisterCustomModule: TRegisterCustomModuleProc;
   OldSpyRegisterNoIcon: procedure(ComponentClasses: array of TComponentClass);
-  OldSpyRegisterActions: procedure (const CategoryName: string;
-    const AClasses: array of TBasicActionClass; Resource: TComponentClass) = nil;
+  OldSpyRegisterActions: procedure(const CategoryName: string;
+    const AClasses: array of TBasicActionClass; Resource: TComponentClass);
+  OldSpyRegisterPackageWizard: TWizardRegisterProc;
 
 procedure SaveFile(AFileName: string; List: TStringList);
 begin
@@ -57,6 +60,36 @@ begin
     List[I] := Format('%u;%s', [I, List[I]]);
 end;
 
+procedure AddPackageNames(List: TStringList);
+var
+  I, J, N: Integer;
+  ModSvc: IOTAModuleServices;
+  Module: IOTAModule;
+  FileSys: IOTAFileSystem;
+  UnitName, Line: string;
+begin
+  ModSvc := (BorlandIDEServices as IOTAModuleServices);
+  for I := 0 to List.Count - 1 do
+  begin
+    UnitName := List[I];
+    N := Pos(';', UnitName);
+    while N > 0 do
+    begin
+      UnitName := Copy(UnitName, N + 1, Length(UnitName));
+      Line := Copy(List[I], 1, N - 1);
+      N := Pos(';', UnitName);
+    end;
+    UnitName := Copy(UnitName, 2, Length(UnitName) - 2);
+    for J := 0 to ModSvc.ModuleCount - 1 do
+    begin
+      Module := ModSvc.Modules[J];
+      FileSys := ModSvc.FindFileSystem(Module.FileSystem);
+      if Assigned(FileSys) and FileSys.FileExists(UnitName) then
+        List[I] := Line + ';"' + Module.FileName + '.' + UnitName + '"';
+    end;
+  end;
+end;
+
 procedure ReadRegisterComponents;
 var
   AppBuilder: TForm;
@@ -67,7 +100,7 @@ var
   PalToolCount: Integer;
   OldPaletteIndex, OldToolIndex: Integer;
   SelectedToolName: string;
-  AClass: TPersistentClass;
+  LClass: TPersistentClass;
   UnitName: string;
 begin
   AppBuilder := TForm(Application.FindComponent('AppBuilder'));
@@ -94,14 +127,14 @@ begin
       SetOrdProp(Palette, PropInfo, J);
       PropInfo := GetPropInfo(Palette.ClassInfo, 'SelectedToolName');
       SelectedToolName := GetStrProp(Palette, PropInfo);
-      AClass := GetClass(SelectedToolName);
-      if (AClass = nil) or (AClass.ClassInfo = nil) then
-        UnitName := 'Unable to get RTTI'
+      LClass := GetClass(SelectedToolName);
+      if (LClass = nil) or (LClass.ClassInfo = nil) then
+        UnitName := ''
       else
-        UnitName := GetTypeData(AClass.ClassInfo).UnitName;
-      if (Pos('JV', PaletteTab.Tabs[I]) = 1) or (Pos('Jv', PaletteTab.Tabs[I]) = 1) then
+        UnitName := GetTypeData(LClass.ClassInfo).UnitName + '.pas';
+      if Pos('Jv', PaletteTab.Tabs[I]) = 1 then
       begin
-        VisibleComponentList.Add(Format('%u;"%s";"%s";"%s.pas"', [N, PaletteTab.Tabs[I], SelectedToolName, UnitName]));
+        VisibleComponentList.Add(Format('%u;"%s";"%s";"%s"', [N, PaletteTab.Tabs[I], SelectedToolName, UnitName]));
         Inc(N);
       end;
     end;
@@ -111,6 +144,31 @@ begin
   PropInfo := GetPropInfo(Palette.ClassInfo, 'SelectedIndex');
   SetOrdProp(Palette, PropInfo, OldToolIndex);
   PaletteTab.Visible := True;
+end;
+
+type
+  TCarrier = class(TObject)
+  public
+    procedure GetClassCallback(AClass: TPersistentClass);
+  end;
+
+procedure TCarrier.GetClassCallback(AClass: TPersistentClass);
+begin
+  if Pos('TJv', AClass.ClassName) = 1 then
+    RegisterClassList.Add(Format('"%s"', [AClass.ClassName]));
+end;
+
+procedure ReadRegisterClass;
+var
+  Carrier: TCarrier;
+begin
+  Carrier := TCarrier.Create;
+  with TClassFinder.Create(nil, True) do
+  begin
+    GetClasses(Carrier.GetClassCallback);
+    Free;
+  end;
+  Carrier.Free;
 end;
 
 procedure SpyRegisterComponentEditor(ComponentClass: TComponentClass; ComponentEditor: TComponentEditorClass);
@@ -137,94 +195,126 @@ end;
 
 procedure SpyRegisterCustomModule(Group: Integer;
   ComponentBaseClass: TComponentClass; CustomModuleClass: TCustomModuleClass);
+var
+  UnitName: string;
 begin
-  if Assigned(ComponentBaseClass) and Assigned(CustomModuleClass) then
-    //if (Pos('TJv', ComponentBaseClass.ClassName) = 1) or (Pos('TJv', CustomModuleClass.ClassName) = 1) then
-      CustomModuleList.Add(Format('%u;"%s";"%s"',
-        [Group, ComponentBaseClass.ClassName, CustomModuleClass.ClassName]));
   if Assigned(OldSpyRegisterCustomModule) then
     OldSpyRegisterCustomModule(Group, ComponentBaseClass, CustomModuleClass);
+  if Assigned(ComponentBaseClass) and Assigned(CustomModuleClass) then
+  begin
+    if ComponentBaseClass.ClassInfo = nil then
+      UnitName := ''
+    else
+      UnitName := GetTypeData(ComponentBaseClass.ClassInfo).UnitName + '.pas';
+    CustomModuleList.Add(Format('%u;"%s";"%s";"%s"',
+      [Group, ComponentBaseClass.ClassName, CustomModuleClass.ClassName, UnitName]));
+  end;
 end;
 
 procedure SpyRegisterNoIcon(ComponentClasses: array of TComponentClass);
 var
   I: Integer;
+  UnitName: string;
 begin
-  for I := Low(ComponentClasses) to High(ComponentClasses) do
-    NoIconList.Add(Format('"%s"', [ComponentClasses[I].ClassName]));
   if Assigned(OldSpyRegisterNoIcon) then
     OldSpyRegisterNoIcon(ComponentClasses);
+  for I := Low(ComponentClasses) to High(ComponentClasses) do
+  begin
+    if ComponentClasses[I].ClassInfo = nil then
+      UnitName := ''
+    else
+      UnitName := GetTypeData(ComponentClasses[I].ClassInfo).UnitName + '.pas';
+    NoIconList.Add(Format('"%s";"%s"', [ComponentClasses[I].ClassName, UnitName]));
+  end;
 end;
 
 procedure SpyRegisterActions(const CategoryName: string;
   const AClasses: array of TBasicActionClass; Resource: TComponentClass);
 var
   I: Integer;
+  UnitName: string;
 begin
-  for I := Low(AClasses) to High(AClasses) do
-    if Assigned(Resource) then
-      ActionsList.Add(Format('"%s";"%s";"%s"', [CategoryName, AClasses[I].ClassName, Resource.ClassName]))
-    else
-      ActionsList.Add(Format('"%s";"%s";""', [CategoryName, AClasses[I].ClassName]));
   if Assigned(OldSpyRegisterActions) then
     OldSpyRegisterActions(CategoryName, AClasses, Resource);
+  for I := Low(AClasses) to High(AClasses) do
+  begin
+    if AClasses[I].ClassInfo = nil then
+      UnitName := ''
+    else
+      UnitName := GetTypeData(AClasses[I].ClassInfo).UnitName + '.pas';
+    if Assigned(Resource) then
+      ActionsList.Add(Format('"%s";"%s";"%s";"%s"', [CategoryName, AClasses[I].ClassName, Resource.ClassName, UnitName]))
+    else
+      ActionsList.Add(Format('"%s";"%s";"";"%s"', [CategoryName, AClasses[I].ClassName, UnitName]));
+  end;
 end;
 
 procedure CleanNoIconList;
 var
   I, N: Integer;
-  S: string;
+  F, S: string;
 begin
   for I := 0 to ActionsList.Count - 1 do
   begin
     N := Pos(';', ActionsList[I]);
     S := Copy(ActionsList[I], N + 1, Length(ActionsList[I]));
     N := Pos(';', S);
-    S := Copy(S, 1, N - 1);
-    if NoIconList.Find(S, N) then
+    F := Copy(S, 1, N - 1);
+    S := Copy(S, N + 1, Length(S));
+    N := Pos(';', S);
+    S := Copy(S, N + 1, Length(S));
+    N := Pos(';', S);
+    S := Copy(S, N + 1, Length(S));
+    F := F + ';' + S;
+    if NoIconList.Find(F, N) then
       NoIconList.Delete(N);
   end;
 end;
 
-procedure ReadRegisterPackageWizard;
+function SpyRegisterPackageWizard(const Wizard: IOTAWizard): Boolean;
 begin
+  Result := False;
+  if Assigned(OldSpyRegisterPackageWizard) then
+    Result := OldSpyRegisterPackageWizard(Wizard);
+  if Pos('JVCL.', Wizard.GetIDString) = 1 then
+    PackageWizardList.Add(Format('"%s";"%s"', [Wizard.GetName, Wizard.GetIDString]));
 end;
 
-procedure ReadRegisterClass;
-begin
-end;
-
-{$IFDEF COMPILER7_UP}
-procedure ReadGroupDescendentsWith;
-begin
-end;
-{$ENDIF COMPILER7_UP}
-
-procedure ReadReadRegisterComponentsByToolsAPI;
+procedure ReadReadRegisterComponentsByOTA;
 var
-  PackageTest: IOTAPackageServices;
+  Pkg: IOTAPackageServices;
   I, J, N: Integer;
 begin
-  PackageTest := (BorlandIDEServices as IOTAPackageServices);
+  Pkg := (BorlandIDEServices as IOTAPackageServices);
   N := 1;
-  for I := 0 to PackageTest.PackageCount - 1 do
-    if (Pos('jv', PackageTest.PackageNames[I]) = 1) or (Pos('Jv', PackageTest.PackageNames[I]) = 1) then
-      for J := 0 to PackageTest.ComponentCount[I] - 1 do
+  for I := 0 to Pkg.PackageCount - 1 do
+    if (Pos('jv', Pkg.PackageNames[I]) = 1) or (Pos('Jv', Pkg.PackageNames[I]) = 1) then
+      for J := 0 to Pkg.ComponentCount[I] - 1 do
       begin
-        AllComponentList.Add(Format('%u;"%s";"%s"', [N, PackageTest.PackageNames[I], PackageTest.ComponentNames[I, J]]));
+        AllComponentList.Add(Format('%u;"%s";"%s"', [N, Pkg.PackageNames[I], Pkg.ComponentNames[I, J]]));
         Inc(N);
       end;
   SaveFile('All JVCL components.csv', AllComponentList);
 end;
 
+procedure ReadModulesByOTA;
+var
+  I: Integer;
+  ModSvc: IOTAModuleServices;
+  List: TStringList;
+begin
+  List := TStringList.Create;
+  ModSvc := (BorlandIDEServices as IOTAModuleServices);
+  for I := 0 to ModSvc.ModuleCount - 1 do
+    List.Add(ModSvc.Modules[I].FileName + ' ' + ModSvc.Modules[I].FileSystem);
+
+  SaveFile('modules.csv', List);
+  List.Free;
+end;
+
 procedure Register;
 begin
   ReadRegisterComponents;
-  ReadRegisterPackageWizard;
-  ReadRegisterClass;
-  {$IFDEF COMPILER7_UP}
-  ReadGroupDescendentsWith;
-  {$ENDIF COMPILER7_UP}
 end;
 
 initialization
@@ -245,6 +335,10 @@ initialization
   ActionsList := TStringList.Create;
   ActionsList.Duplicates := dupIgnore;
   ActionsList.Sorted := True;
+  PackageWizardList := TStringList.Create;
+  PackageWizardList.Duplicates := dupIgnore;
+  PackageWizardList.Sorted := True;
+  RegisterClassList := TStringList.Create;
 
   OldSpyRegisterPropertyEditor := RegisterPropertyEditorProc;
   RegisterPropertyEditorProc := SpyRegisterPropertyEditor;
@@ -256,6 +350,8 @@ initialization
   RegisterNoIconProc := SpyRegisterNoIcon;
   OldSpyRegisterActions := RegisterActionsProc;
   RegisterActionsProc := SpyRegisterActions;
+  OldSpyRegisterPackageWizard := LibraryWizardProc;
+  LibraryWizardProc := SpyRegisterPackageWizard;
 
 finalization
   RegisterPropertyEditorProc := OldSpyRegisterPropertyEditor;
@@ -263,26 +359,41 @@ finalization
   RegisterCustomModuleProc := OldSpyRegisterCustomModule;
   RegisterNoIconProc := OldSpyRegisterNoIcon;
   RegisterActionsProc := OldSpyRegisterActions;
+  LibraryWizardProc := OldSpyRegisterPackageWizard;
 
   CleanNoIconList;
+  ReadRegisterClass;
 
   AddIDs(PropertyEditorList);
   AddIDs(ComponentEditorList);
   AddIDs(CustomModuleList);
   AddIDs(NoIconList);
   AddIDs(ActionsList);
+  AddIDs(PackageWizardList);
+  AddIDs(RegisterClassList);
+
+  {
+  AddPackageNames(CustomModuleList);
+  AddPackageNames(NoIconList);
+  AddPackageNames(ActionsList);
+  AddPackageNames(VisibleComponentList);
+  }
 
   PropertyEditorList.Insert(0, '"ID";"PropertyType_Name";"ComponentClass_ClassName";"PropertyName";"EditorClass_ClassName"');
   ComponentEditorList.Insert(0, '"ID";"ComponentClass_ClassName";"ComponentEditor_ClassName"');
-  CustomModuleList.Insert(0, '"ID";"Group";"ComponentBaseClass_ClassName";"CustomModuleClass_ClassName"');
-  NoIconList.Insert(0, '"ID";"ClassName"');
-  ActionsList.Insert(0, '"ID";"CategoryName";"ClassName";"Resource_ClassName"');
+  CustomModuleList.Insert(0, '"ID";"Group";"ComponentBaseClass_ClassName";"CustomModuleClass_ClassName";"FileName"');
+  NoIconList.Insert(0, '"ID";"ClassName";"FileName"');
+  ActionsList.Insert(0, '"ID";"CategoryName";"ClassName";"Resource_ClassName";"FileName"');
+  PackageWizardList.Insert(0, '"ID";"WizardName";"WizardIDString"');
+  RegisterClassList.Insert(0, '"ID";"ClassName"');
   SaveFile('JVCL Visible Components.csv', VisibleComponentList);
   SaveFile('JVCL Property Editors.csv', PropertyEditorList);
   SaveFile('JVCL Component Editors.csv', ComponentEditorList);
   SaveFile('JVCL Custom Modules.csv', CustomModuleList);
   SaveFile('JVCL No Icon Components.csv', NoIconList);
   SaveFile('JVCL Actions.csv', ActionsList);
+  SaveFile('JVCL Package Wizards.csv', PackageWizardList);
+  SaveFile('JVCL Registered Classes.csv', RegisterClassList);
   FreeAndNil(VisibleComponentList);
   FreeAndNil(AllComponentList);
   FreeAndNil(PropertyEditorList);
@@ -290,5 +401,7 @@ finalization
   FreeAndNil(CustomModuleList);
   FreeAndNil(NoIconList);
   FreeAndNil(ActionsList);
+  FreeAndNil(PackageWizardList);
+  FreeAndNil(RegisterClassList);
 
 end.
