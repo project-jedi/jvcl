@@ -321,13 +321,13 @@ begin
   end;
 
   // generate resources if necessary
-  if not FileExists(JVCLDir + '\Resources\JvCoreReg.dcr') then
-  begin
+  {if not FileExists(JVCLDir + '\Resources\JvCoreReg.dcr') then
+  begin}
     b := False;
     CaptureLine('** Generating resources...', b);
     CaptureExecute('"' + FTarget.RootDir + '\Bin\make.exe"',
       '-f makefile.mak', JVCLDir + '\images', CaptureLine);
-  end;
+  {end;}
 
   if (not IsJCL) or (FTarget.InstallJcl and FTarget.IsBCB) then
   begin
