@@ -46,7 +46,9 @@ type
 
   TJvCommonDialogAction = class(TCustomAction)
   private
+    {$IFDEF COMPILER6_UP}
     FExecuteResult: Boolean;
+    {$ENDIF}
     FOnAccept: TNotifyEvent;
     FOnCancel: TNotifyEvent;
     FBeforeExecute: TNotifyEvent;

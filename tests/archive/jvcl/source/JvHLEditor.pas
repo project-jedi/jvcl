@@ -15,9 +15,8 @@ Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
 Contributor(s):
-Andreas Hausladen [Andreas.Hausladen@gmx.de]
 
-Last Modified: 2003-03-23
+Last Modified: 2002-07-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -66,11 +65,24 @@ Known Issues:
     - new: in html-highlighter unknown (not html) tag highlighted with
       "statement" color. This allows to use html-highlighter to display
       xml-files.
+  2.05: (changes by Andreas Hausladen)
+    - C/C++ line continuation symbol '\' extends the highlight colors to the
+      next line (LongToken=True)
+    - "Not Quite C" highlighter (C similar, for programming LEGO MindStorm(R) robots)
+    - fixed bug: SetBlockColor raise an exception (AV) if iEnd becomes greater than
+      MAX_X
+    - in TRAHLEditor.GetAttr all IsXxxKeyWord get a CONST string, so no compiler
+      magic LStrAddRef is needed.
+    - some speed optimations
+    - new property DelphiColors: Boolean
+    - renamed all "Identifer" to "Identifier". published property "Identifer"
+      still exists but uses "FIdentifier"
+    - added some new DelphiKeyWord
+    - fixed bug: RescanLong() may exceed FLongDesc[] dimension
+
 }
 
 unit JvHLEditor;
-{$DEFINE HL_NOT_QUITE_C} { enable Not Quite C (LEGO MindStorm(R)) highlighter }
-{$DEFINE BUGFIX} { bugfixes }
 
 interface
 
@@ -84,11 +96,7 @@ const
 
 type
   THighLighter = (hlNone, hlPascal, hlCBuilder, hlSql, hlPython, hlJava, hlVB,
-    hlHtml, hlPerl, hlIni, hlCocoR, hlPhp
-{$IFDEF HL_NOT_QUITE_C}
-    , hlNQC
-{$ENDIF HL_NOT_QUITE_C}
-  );
+    hlHtml, hlPerl, hlIni, hlCocoR, hlPhp, hlNQC);
 
   TJvSymbolColor = class(TPersistent)
   private
@@ -113,12 +121,14 @@ type
     FString: TJvSymbolColor;
     FSymbol: TJvSymbolColor;
     FReserved: TJvSymbolColor;
-    FIdentifer: TJvSymbolColor;
+    FIdentifier: TJvSymbolColor;
     FPreproc: TJvSymbolColor;
     FFunctionCall: TJvSymbolColor;
     FDeclaration: TJvSymbolColor;
     FStatement: TJvSymbolColor;
     FPlainText: TJvSymbolColor;
+    function GetIdentifer: TJvSymbolColor; {deprecated;}
+    procedure SetIdentifer(const Value: TJvSymbolColor); {deprecated;}
   public
     constructor Create;
     destructor Destroy; override;
@@ -129,7 +139,8 @@ type
     property Strings: TJvSymbolColor read FString write FString;
     property Symbol: TJvSymbolColor read FSymbol write FSymbol;
     property Reserved: TJvSymbolColor read FReserved write FReserved;
-    property Identifer: TJvSymbolColor read FIdentifer write FIdentifer;
+    property Identifier: TJvSymbolColor read FIdentifier write FIdentifier;
+    property Identifer: TJvSymbolColor read GetIdentifer write SetIdentifer stored False; {deprecated;}
     property Preproc: TJvSymbolColor read FPreproc write FPreproc;
     property FunctionCall: TJvSymbolColor read FFunctionCall write FFunctionCall;
     property Declaration: TJvSymbolColor read FDeclaration write FDeclaration;
@@ -151,16 +162,15 @@ type
     FLongTokens: Boolean;
     FLongDesc: array [0..Max_Line] of Byte;
     FSyntaxHighlighting: Boolean;
-{$IFDEF BUGFIX}
-    FRescanLongChanged: Boolean;
-{$ENDIF BUGFIX}
     FOnReservedWord: TOnReservedWord;
     // Coco/R
     ProductionsLine: Integer;
-    procedure RescanLong;
+    function RescanLong: Boolean;
     procedure CheckInLong;
     function FindLongEnd: Integer;
     procedure SetHighLighter(Value: THighLighter);
+    function GetDelphiColors: Boolean;
+    procedure SetDelphiColors(Value: Boolean);
   protected
     procedure Loaded; override;
     procedure GetAttr(Line, ColBeg, ColEnd: Integer); override;
@@ -175,9 +185,10 @@ type
   published
     property HighLighter: THighLighter read FHighLighter write SetHighLighter default hlPascal;
     property Colors: TJvColors read FColors write FColors;
+    property DelphiColors: Boolean read GetDelphiColors write SetDelphiColors;
     property LongTokens: Boolean read FLongTokens write FLongTokens default True;
     property OnReservedWord: TOnReservedWord read FOnReservedWord write FOnReservedWord;
-    property SyntaxHighlighting: Boolean read FSyntaxHighlighting write FSyntaxHighlighting default True;
+    property SyntaxHighlighting: Boolean read FSyntaxHighlighting write FSyntaxHighlighting stored False;
   end;
 
 implementation
@@ -186,7 +197,6 @@ uses
   Math,
   JvStrUtil;
 
-{$IFDEF BUGFIX}
 const
   lgNone            = 0;
   lgComment1        = 1;
@@ -194,6 +204,18 @@ const
   lgString          = 4;
   lgTag             = 5;
   lgPreproc         = 6;
+
+function StrScan(const Str: PChar; Chr: Char): PChar;
+{ faster than the SysUtils.StrScan function on Pentium CPUs }
+begin
+  Result := Str;
+  while (Result[0] <> #0) do
+  begin
+    if Result[0] = Chr then Exit;
+    Inc(Result);
+  end;
+  Result := nil;
+end;
 
 function LastNoSpaceChar(const S: String): Char;
 var i: integer;
@@ -256,7 +278,6 @@ begin
   until P = nil;
   Result := IsOpen;
 end;
-{$ENDIF BUGFIX}
 
 //=== TJvSymbolColor =========================================================
 
@@ -298,7 +319,7 @@ begin
   FSymbol := TJvSymbolColor.Create;
   FReserved := TJvSymbolColor.Create;
   FStatement := TJvSymbolColor.Create;
-  FIdentifer := TJvSymbolColor.Create;
+  FIdentifier := TJvSymbolColor.Create;
   FPreproc := TJvSymbolColor.Create;
   FFunctionCall := TJvSymbolColor.Create;
   FDeclaration := TJvSymbolColor.Create;
@@ -309,7 +330,7 @@ begin
   FSymbol.SetColor(clBlue, clWindow, []);
   FReserved.SetColor(clWindowText, clWindow, [fsBold]);
   FStatement.SetColor(clWindowText, clWindow, [fsBold]);
-  FIdentifer.SetColor(clWindowText, clWindow, []);
+  FIdentifier.SetColor(clWindowText, clWindow, []);
   FPreproc.SetColor(clGreen, clWindow, []);
   FFunctionCall.SetColor(clWindowText, clWindow, []);
   FDeclaration.SetColor(clWindowText, clWindow, []);
@@ -324,7 +345,7 @@ begin
   FSymbol.Free;
   FReserved.Free;
   FStatement.Free;
-  FIdentifer.Free;
+  FIdentifier.Free;
   FPreproc.Free;
   FFunctionCall.Free;
   FDeclaration.Free;
@@ -342,7 +363,7 @@ begin
     FSymbol.Assign(TJvColors(Source).FSymbol);
     FReserved.Assign(TJvColors(Source).FReserved);
     FStatement.Assign(TJvColors(Source).FStatement);
-    FIdentifer.Assign(TJvColors(Source).FIdentifer);
+    FIdentifier.Assign(TJvColors(Source).FIdentifier);
     FPreproc.Assign(TJvColors(Source).FPreproc);
     FFunctionCall.Assign(TJvColors(Source).FFunctionCall);
     FDeclaration.Assign(TJvColors(Source).FDeclaration);
@@ -350,6 +371,16 @@ begin
   end
   else
     inherited Assign(Source);
+end;
+
+function TJvColors.GetIdentifer: TJvSymbolColor; {$IFDEF COMPILER6_UP}deprecated;{$ENDIF}
+begin
+  Result := Identifier;
+end;
+
+procedure TJvColors.SetIdentifer(const Value: TJvSymbolColor); {$IFDEF COMPILER6_UP}deprecated;{$ENDIF}
+begin
+  Identifier := Value;
 end;
 
 //=== TJvHLEditor ============================================================
@@ -387,7 +418,7 @@ begin
     case FHighLighter of
       hlPascal:
         Parser.Style := psPascal;
-      hlCBuilder, hlSql, hlJava{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}:
+      hlCBuilder, hlSql, hlJava, hlNQC:
         Parser.Style := psCpp;
       hlPython:
         Parser.Style := psPython;
@@ -419,16 +450,17 @@ const
     '#', '|', '&'];
 const
   DelphiKeyWords =
-    '  constructor  destructor  record  procedure  with  of  ' +
+    '  constructor  destructor  string  record  procedure  with  of  ' +
     'repeat  until  try  finally  except  for  to  downto  case  ' +
     'type  interface  implementation  initialization  finalization  ' +
     'default  private  public  protected  published   automated  property  ' +
     'program  read  write  override  object  nil  raise  ' +
     'on  set  xor  shr  shl  begin  end  args  if  then  else  ' +
     'endif  goto  while  do  var  or  and  not  mod  div  unit  ' +
-    'function  uses  external  const  class  inherited ' +
+    'function  uses  external  const  class  inherited  ' +
     'register  stdcall  cdecl  safecall  pascal  is  as  package  program ' +
-    'external overload ';
+    'external  overload  platform  deprecated  implements  export  contains  ' +
+    'requires  resourcestring';
 
   BuilderKeyWords =
     ' __asm  _asm  asm  auto  __automated  break  bool  case  catch  __cdecl  ' +
@@ -443,14 +475,12 @@ const
     'try  typedef  typename  typeid  union  using  unsigned  virtual  void  volatile  ' +
     'wchar_t  while  ';
 
-{$IFDEF HL_NOT_QUITE_C}
   NQCKeyWords: string = {Not Quite C - a C similar language for programming LEGO MindStorm(R) robots }
     ' __event_src  __type  acquire  break  __sensor  abs  asm  case  catch  const  ' +
     'continue  default  do  else  false  for  if  inline  ' +
     'int  monitor  repeat  return  signed  start  stop  sub  switch  task  true  ' +
     'until  void  while  '
     ;
-{$ENDIF HL_NOT_QUITE_C}
 
   SQLKeyWords: string =
   '  active  as  add  asc  after  ascending  all  at  alter  auto  ' +
@@ -581,12 +611,10 @@ const
     Result := Pos(' ' + St + ' ', BuilderKeyWords) <> 0;
   end;
 
-{$IFDEF HL_NOT_QUITE_C}
   function IsNQCKeyWord(const St: string): Boolean;
   begin
     Result := Pos(' ' + St + ' ', NQCKeyWords) <> 0;
   end;
-{$ENDIF HL_NOT_QUITE_C}
 
   function IsJavaKeyWord(const St: string): Boolean;
   begin
@@ -653,7 +681,7 @@ const
         Result := ((LS > 0) and (St[1] = '{')) or
           ((LS > 1) and (((St[1] = '(') and (St[2] = '*')) or
           ((St[1] = '/') and (St[2] = '/'))));
-      hlCBuilder, hlSQL, hlJava, hlPhp{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}:
+      hlCBuilder, hlSQL, hlJava, hlPhp, hlNQC:
         Result := (LS > 1) and (St[1] = '/') and
           ((St[2] = '*') or (St[2] = '/'));
       hlVB:
@@ -678,7 +706,7 @@ const
   begin
     LS := Length(St);
     case FHighLighter of
-      hlPascal, hlCBuilder, hlSql, hlPython, hlJava, hlPerl, hlCocoR, hlPhp{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}:
+      hlPascal, hlCBuilder, hlSql, hlPython, hlJava, hlPerl, hlCocoR, hlPhp, hlNQC:
         Result := (LS > 0) and ((St[1] = '''') or (St[1] = '"'));
       hlVB:
         Result := (LS > 0) and (St[1] = '"');
@@ -693,9 +721,7 @@ const
   var
     I: Integer;
   begin
-{$IFDEF BUGFIX}
     iEnd := Min(iEnd, Max_X);
-{$ENDIF BUGFIX}
     for I := iBeg to iEnd do
       with LineAttrs[I] do
       begin
@@ -776,7 +802,7 @@ var
       EquPos := Pos('=', S);
       if EquPos > 0 then
       begin
-        SetBlockColor(0, EquPos, FColors.FIdentifer);
+        SetBlockColor(0, EquPos, FColors.FIdentifier);
         SetBlockColor(EquPos, EquPos, FColors.FSymbol);
         SetBlockColor(EquPos + 1, LS, FColors.FString);
       end;
@@ -805,9 +831,7 @@ var
   InTag: Boolean;
   N: Integer;
 begin
-{$IFDEF BUGFIX}
-  if not FSyntaxHighlighting then Exit; 
-{$ENDIF}
+  if not FSyntaxHighlighting then Exit;
   S := Lines[Line];
   if (FHighLighter = hlNone) and not UserReservedWords then
     C := Colors.PlainText
@@ -819,12 +843,8 @@ begin
     Parser.pcPos := Parser.pcProgram;
     CheckInLong;
     LS := Length(S);
-    if (FHighLighter in [hlCBuilder{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}]) and (LS > 0) and
-{$IFDEF BUGFIX} { this is also a bug fix }
+    if (FHighLighter in [hlCBuilder, hlNQC]) and (LS > 0) and
       (((GetTrimChar(S, 1) = '#') and (FLong = 0)) or (FLong = lgPreproc)) then
-{$ELSE}
-      (S[1] = '#') and (FLong = 0) then
-{$ENDIF BUGFIX}
       C := FColors.FPreproc
     else
     if ((FHighLighter in [hlPython, hlPerl]) and (LS > 0) and
@@ -836,8 +856,7 @@ begin
     if (FLong <> 0) and (FHighLighter <> hlHtml) then
     begin
       Parser.pcPos := Parser.pcProgram + FindLongEnd + 1;
-{$IFDEF BUGFIX}
-      if (FHighLighter in [hlCBuilder, hlPython, hlPerl{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}]) then
+      if (FHighLighter in [hlCBuilder, hlPython, hlPerl, hlNQC]) then
         case FLong of
           lgString:
             C := FColors.FString;
@@ -848,12 +867,6 @@ begin
         end
       else
         C := FColors.FComment;
-{$ELSE}
-      if (FHighLighter in [hlPython, hlPerl]) and (FLong = 4) then
-        C := FColors.FString
-      else
-        C := FColors.FComment;
-{$ENDIF BUGFIX}
     end;
   end;
 
@@ -874,27 +887,16 @@ begin
 
   if (FHighLighter = hlNone) and not UserReservedWords then
     Exit;
-{$IFDEF BUGFIX}
   if (Length(S) > 0) and (((GetTrimChar(S, 1) = '#') and
-    (FHighLighter in [hlCBuilder, hlPython, hlPerl{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}])) or
+    (FHighLighter in [hlCBuilder, hlPython, hlPerl, hlNQC])) or
     ((GetTrimChar(S, 1) in ['#', ';']) and (FHighLighter = hlIni))) then
     Exit;
-{$ELSE}
-  if (Length(S) > 0) and (((S[1] = '#') and
-    (FHighLighter in [hlCBuilder, hlPython, hlPerl])) or
-    ((S[1] in ['#', ';']) and (FHighLighter = hlIni))) then
-    Exit;
-{$ENDIF BUGFIX}
 
   if FHighLighter = hlIni then
     SetIniColors
   else
   try
-{$IFDEF BUGFIX}
     InTag := FLong = lgTag;
-{$ELSE}
-    InTag := FLong = 5;
-{$ENDIF BUGFIX}
     PrevToken := '';
     PrevToken2 := '';
     Token := Parser.Token;
@@ -920,13 +922,11 @@ begin
               SetColor(FColors.FReserved)
             else
               F := False;
-{$IFDEF HL_NOT_QUITE_C}
           hlNQC:
             if IsNQCKeyWord(Token) then
               SetColor(FColors.FReserved)
             else
               F := False;
-{$ENDIF HL_NOT_QUITE_C}
           hlSql:
             if IsSQLKeyWord(Token) then
               SetColor(FColors.FReserved)
@@ -942,7 +942,7 @@ begin
             if (PrevToken = 'def') or (PrevToken = 'class') then
               SetColor(FColors.FDeclaration)
             else
-            if (NextSymbol = '(') and IsIdentifer(Token) then
+            if (NextSymbol = '(') and IsIdentifier(Token) then
               SetColor(FColors.FFunctionCall)
             else
               F := False;
@@ -987,8 +987,8 @@ begin
               if (Token = '/') and (PrevToken = '<') then
                 SetColor(FColors.FReserved)
               else
-              if (NextSymbol = '=') and IsIdentifer(Token) then
-                SetColor(FColors.FIdentifer)
+              if (NextSymbol = '=') and IsIdentifier(Token) then
+                SetColor(FColors.FIdentifier)
               else
               if PrevToken = '=' then
                 SetColor(FColors.FString)
@@ -1017,7 +1017,7 @@ begin
               SetColor(FColors.FReserved)
             else
             if (Parser.PosBeg[0] = 0) and (Line > ProductionsLine) and
-              IsIdentifer(Token) then
+              IsIdentifier(Token) then
             begin
               NextToken := Parser.Token;
               Parser.RollBack(1);
@@ -1048,14 +1048,14 @@ begin
       if IsIntConstant(Token) or IsRealConstant(Token) then
         SetColor(FColors.FNumber)
       else
-      if (FHighLighter in [hlCBuilder, hlJava, hlPython, hlPhp{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}]) and
+      if (FHighLighter in [hlCBuilder, hlJava, hlPython, hlPhp, hlNQC]) and
         (PrevToken = '0') and (Token[1] in ['x', 'X']) then
         SetColor(FColors.FNumber)
       else
       if FHighLighter = hlHtml then
         SetColor(FColors.FPlainText)
       else
-        SetColor(FColors.FIdentifer);
+        SetColor(FColors.FIdentifier);
       if FHighLighter = hlHtml then
         { found special chars starting with '&' and ending with ';' }
         TestHtmlSpecChars;
@@ -1074,41 +1074,40 @@ procedure TJvHLEditor.CheckInLong;
 begin
   if not FLongTokens then
   begin
-    FLong := 0;
+    FLong := lgNone;
     Exit;
   end;
-  if FLineNum <= High(FLongDesc) then
+  if FLineNum < Length(FLongDesc) then
     FLong := FLongDesc[FLineNum]
   else
     { oh my god!, it's very big text }
-    FLong := 0;
+    FLong := lgNone;
 end;
 
-procedure TJvHLEditor.RescanLong;
+function TJvHLEditor.RescanLong: Boolean;
 var
-  iLine: Integer;
   P, F: PChar;
+  iLine, MaxLines: Integer;
   S: string;
   i, i1, L1: Integer;
 begin
-{$IFDEF BUGFIX}
-  FRescanLongChanged := False;
-{$ENDIF BUGFIX}
+  Result := False;
+  if not FSyntaxHighlighting then Exit;
   if not FLongTokens or (FHighLighter in [hlNone, hlIni]) then
   begin
-    FLong := 0;
+    FLong := lgNone;
     Exit;
   end;
   if Lines.Count = 0 then
     Exit;
-  FLong := 0;
+  FLong := lgNone;
   iLine := 0;
   ProductionsLine := High(Integer);
-{$IFDEF BUGFIX}
-{$ELSE}
-  FillChar(FLongDesc, sizeof(FLongDesc), 0);
-{$ENDIF BUGFIX}
-  while iLine < Lines.Count - 1 do
+  MaxLines := Lines.Count - 1;
+  if MaxLines > High(FLongDesc) then
+    MaxLines := High(FLongDesc);
+
+  while iLine < MaxLines do
   begin
     { only real programmer can write loop on 5 pages }
     // (rom) real programmers do not add comments to end ;-)
@@ -1116,27 +1115,21 @@ begin
     P := PChar(S);
     F := P;
     L1 := Length(S);
-{$IFDEF BUGFIX}
-    if (L1 = 0) and (FLong in [lgPreproc, lgString]) then FLong := 0;
-{$ENDIF BUGFIX}
+    if (L1 = 0) and (FLong in [lgPreproc, lgString]) then FLong := lgNone;
     i := 1;
     while i <= L1 do
     begin
       case FHighLighter of
         hlPascal:
           case FLong of
-            0: //  not in comment
+            lgNone: //  not in comment
               case S[i] of
                 '{':
                   begin
                     P := StrScan(F + i, '}');
                     if P = nil then
                     begin
-{$IFDEF BUGFIX}
                       FLong := lgComment1;
-{$ELSE}
-                      FLong := 1;
-{$ENDIF BUGFIX}
                       Break;
                     end
                     else
@@ -1145,18 +1138,14 @@ begin
                 '(':
                   if {S[i + 1]} F[i] = '*' then
                   begin
-{$IFDEF BUGFIX}
                     FLong := lgComment2;
-{$ELSE}
-                    FLong := 2;
-{$ENDIF BUGFIX}
                     P := StrScan(F + i + 2, ')');
                     if P = nil then
                       Break
                     else
                     begin
                       if P[-1] = '*' then
-                        FLong := 0;
+                        FLong := lgNone;
                       i := P - F + 1;
                     end;
                   end;
@@ -1175,26 +1164,18 @@ begin
                       i := L1 + 1;
                   end;
               end;
-{$IFDEF BUGFIX}
             lgComment1:
-{$ELSE}
-            1:
-{$ENDIF BUGFIX}
               begin //  {
                 P := StrScan(F + i - 1, '}');
                 if P <> nil then
                 begin
-                  FLong := 0;
+                  FLong := lgNone;
                   i := P - F + 1;
                 end
                 else
                   i := L1 + 1;
               end;
-{$IFDEF BUGFIX}
             lgComment2:
-{$ELSE}
-            2:
-{$ENDIF BUGFIX}
               begin //  (*
                 P := StrScan(F + i, ')');
                 if P = nil then
@@ -1202,30 +1183,26 @@ begin
                 else
                 begin
                   if P[-1] = '*' then
-                    FLong := 0;
+                    FLong := lgNone;
                   i := P - F + 1;
                 end;
               end;
           end;
-        hlCBuilder, hlSql, hlJava, hlPhp{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}:
+        hlCBuilder, hlSql, hlJava, hlPhp, hlNQC:
           case FLong of
-            0: //  not in comment
+            lgNone: //  not in comment
               case S[i] of
                 '/':
                   if {S[i + 1]} F[i] = '*' then
                   begin
-{$IFDEF BUGFIX}
                     FLong := lgComment2;
-{$ELSE}
-                    FLong := 2;
-{$ENDIF BUGFIX}
                     P := StrScan(F + i + 2, '/');
                     if P = nil then
                       Break
                     else
                     begin
                       if P[-1] = '*' then
-                        FLong := 0;
+                        FLong := lgNone;
                       i := P - F + 1;
                     end;
                   end;
@@ -1241,18 +1218,15 @@ begin
                         { ?? }
                     end
                     else
-{$IFDEF BUGFIX}
-                    if FHighlighter in [hlCBuilder, hlJava{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}] then
+                    if FHighlighter in [hlCBuilder, hlJava, hlNQC] then
                     begin
                       if (LastNoSpaceChar(S) = '\') and (HasStringOpenEnd(Lines, iLine)) then
                         FLong := lgString;
                       i := L1 + 1;
                     end
                     else
-{$ENDIF BUGFIX}
                       i := L1 + 1;
                   end;
-{$IFDEF BUGFIX}
                 '#':
                   begin
                     if (GetTrimChar(S, 1) = '#') and (LastNoSpaceChar(S) = '\') then
@@ -1261,13 +1235,8 @@ begin
                       Break;
                     end;
                   end;
-{$ENDIF BUGFIX}
               end;
-{$IFDEF BUGFIX}
             lgComment2:
-{$ELSE}
-            2:
-{$ENDIF BUGFIX}
               begin //  /*
                 P := StrScan(F + i, '/');
                 if P = nil then
@@ -1275,11 +1244,10 @@ begin
                 else
                 begin
                   if P[-1] = '*' then
-                    FLong := 0;
+                    FLong := lgNone;
                   i := P - F + 1;
                 end;
               end;
-{$IFDEF BUGFIX}
             lgString:
               begin
                 P := StrScan(F + i + 1, '"');
@@ -1306,11 +1274,10 @@ begin
                 if LastNoSpaceChar(S) <> '\' then
                   FLong := lgNone;
               end;
-{$ENDIF BUGFIX}
           end;
         hlPython, hlPerl:
           case FLong of
-            0: //  not in comment
+            lgNone: //  not in comment
               case S[i] of
                 '#':
                   i := L1;
@@ -1319,23 +1286,19 @@ begin
                     P := StrScan(F + i, '"');
                     if P = nil then
                     begin
-                      FLong := 4;
+                      FLong := lgString;
                       Break;
                     end
                     else
                       i := P - F + 1;
                   end;
               end;
-{$IFDEF BUGFIX}
             lgString: // python and perl long string
-{$ELSE}
-            4: // python and perl long string
-{$ENDIF}
               begin
                 P := StrScan(F + i - 1, '"');
                 if P <> nil then
                 begin
-                  FLong := 0;
+                  FLong := lgNone;
                   i := P - F + 1;
                 end
                 else
@@ -1344,34 +1307,26 @@ begin
           end;
         hlHtml:
           case FLong of
-            0: //  not in comment
+            lgNone: //  not in comment
               case S[i] of
                 '<':
                   begin
                     P := StrScan(F + i, '>');
                     if P = nil then
                     begin
-{$IFDEF BUGFIX}
                       FLong := lgTag;
-{$ELSE}
-                      FLong := 5;
-{$ENDIF BUGFIX}
                       Break;
                     end
                     else
                       i := P - F + 1;
                   end;
               end;
-{$IFDEF BUGFIX}
             lgTag: // html tag
-{$ELSE}
-            5: // html tag
-{$ENDIF BUGFIX}
               begin
                 P := StrScan(F + i - 1, '>');
                 if P <> nil then
                 begin
-                  FLong := 0;
+                  FLong := lgNone;
                   i := P - F + 1;
                 end
                 else
@@ -1380,23 +1335,19 @@ begin
           end;
         hlCocoR:
           case FLong of
-            0: //  not in comment
+            lgNone: //  not in comment
               case S[i] of
                 '(':
                   if {S[i + 1]} F[i] = '*' then
                   begin
-{$IFDEF BUGFIX}
                     FLong := lgComment2;
-{$ELSE}
-                    FLong := 2;
-{$ENDIF}
                     P := StrScan(F + i + 2, ')');
                     if P = nil then
                       Break
                     else
                     begin
                       if P[-1] = '*' then
-                        FLong := 0;
+                        FLong := lgNone;
                       i := P - F + 1;
                     end;
                   end;
@@ -1431,23 +1382,19 @@ begin
                 '/':
                   if {S[i + 1]} F[i] = '*' then
                   begin
-                    FLong := 2;
+                    FLong := lgComment2;
                     P := StrScan(F + i + 2, '/');
                     if P = nil then
                       Break
                     else
                     begin
                       if P[-1] = '*' then
-                        FLong := 0;
+                        FLong := lgNone;
                       i := P - F + 1;
                     end;
                   end;
               end;
-{$IFDEF BUGFIX}
             lgComment2:
-{$ELSE}
-            2:
-{$ENDIF BUGFIX}
               begin //  (*
                 P := StrScan(F + i, ')');
                 if P = nil then
@@ -1455,7 +1402,7 @@ begin
                 else
                 begin
                   if P[-1] = '*' then
-                    FLong := 0;
+                    FLong := lgNone;
                   i := P - F + 1;
                 end;
               end;
@@ -1471,41 +1418,31 @@ begin
     end;
 
     Inc(iLine);
-{$IFDEF BUGFIX}
     if FLongDesc[iLine] <> FLong then
-      FRescanLongChanged := True; // don't invalidate() if there was no change
-{$ENDIF BUGFIX}
-    FLongDesc[iLine] := FLong;
+    begin
+      Result := True; // don't invalidate() if there was no change
+      FLongDesc[iLine] := FLong;
+    end;
   end;
 end;
 
 function TJvHLEditor.FindLongEnd: Integer;
 var
   P, F: PChar;
-{$IFDEF BUGFIX}
   i: integer;
-{$ENDIF BUGFIX}
 begin
   P := PChar(FLine);
   Result := Length(FLine);
   case FHighLighter of
     hlPascal:
       case FLong of
-{$IFDEF BUGFIX}
         lgComment1:
-{$ELSE}
-        1:
-{$ENDIF BUGFIX}
           begin
             P := StrScan(P, '}');
             if P <> nil then
               Result := P - PChar(FLine);
           end;
-{$IFDEF BUGFIX}
         lgComment2:
-{$ELSE}
-        2:
-{$ENDIF BUGFIX}
           begin
             F := P;
             while True do
@@ -1521,9 +1458,8 @@ begin
             Result := P - PChar(FLine);
           end;
       end;
-    hlCBuilder, hlSql, hlJava, hlPhp{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}:
+    hlCBuilder, hlSql, hlJava, hlPhp, hlNQC:
       begin
-{$IFDEF BUGFIX}
         case FLong of
           lgComment2:
             begin
@@ -1568,28 +1504,10 @@ begin
               until P = nil;
             end;
           end;  // case
-{$ELSE}
-        F := P;
-        while True do
-        begin
-          F := StrScan(F, '*');
-          if F = nil then
-            Exit;
-          if F[1] = '/' then
-            Break;
-          Inc(F);
-        end;
-        P := F + 1;
-        Result := P - PChar(FLine);
-{$ENDIF BUGFIX}
       end;
     hlPython, hlPerl:
       case FLong of
-{$IFDEF BUGFIX}
         lgString:
-{$ELSE}
-        4:
-{$ENDIF BUGFIX}
           begin
             P := StrScan(P, '"');
             if P <> nil then
@@ -1598,11 +1516,7 @@ begin
       end;
     hlHtml:
       case FLong of
-{$IFDEF BUGFIX}
         lgTag:
-{$ELSE}
-        5:
-{$ENDIF BUGFIX}
           begin
             P := StrScan(P, '>');
             if P <> nil then
@@ -1625,12 +1539,8 @@ begin
   case FHighLighter of
     hlPascal:
       S := '{}*()/'#13;
-    hlCBuilder, hlJava, hlSql, hlPhp{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}:
-{$IFDEF BUGFIX}
+    hlCBuilder, hlJava, hlSql, hlPhp, hlNQC:
       S := '*/'#13'\';
-{$ELSE}
-      S := '*/'#13;
-{$ENDIF BUGFIX}
     hlVB:
       S := '''' + #13;
     hlPython, hlPerl:
@@ -1642,15 +1552,10 @@ begin
   else
     S := #13; { unknown highlighter ? }
   end;
-  if HasAnyChar(S, Text) then
+  if (Action = maAll) or HasAnyChar(S, Text) then
   begin
-    RescanLong;
-{$IFDEF BUGFIX}
-    if FRescanLongChanged then
+    if RescanLong then
       Invalidate;
-{$ELSE}
-    Invalidate;
-{$ENDIF BUGFIX}
   end;
  {
   if (FHighLighter = hlCocoR) and (HasAnyChar('productions'#13, Text)) then
@@ -1702,6 +1607,60 @@ begin
   end
   else
     inherited Assign(Source);
+end;
+
+
+type
+  TDelphiColor = record
+    ForeColor, BackColor: TColor;
+    Style: TFontStyles;
+  end;
+
+const
+  DelphiColor_Comment: TDelphiColor = (ForeColor: clNavy; BackColor: clWindow; Style: [fsItalic]);
+  DelphiColor_Number: TDelphiColor = (ForeColor: clNavy; BackColor: clWindow; Style: []);
+  DelphiColor_Strings: TDelphiColor = (ForeColor: clBlue; BackColor: clWindow; Style: []);
+  DelphiColor_Symbol: TDelphiColor = (ForeColor: clBlack; BackColor: clWindow; Style: []);
+  DelphiColor_Reserved: TDelphiColor = (ForeColor: clBlack; BackColor: clWindow; Style: [fsBold]);
+  DelphiColor_Identifier: TDelphiColor = (ForeColor: clBlack; BackColor: clWindow; Style: []);
+  DelphiColor_PlainText: TDelphiColor = (ForeColor: clWindowText; BackColor: clWindow; Style: []);
+
+function TJvHLEditor.GetDelphiColors: Boolean; {$IFDEF COMPILER6_UP}deprecated;{$ENDIF}
+  function CompareColor(Symbol: TJvSymbolColor; const DelphiColor: TDelphiColor): Boolean;
+  begin
+    Result := (Symbol.ForeColor = DelphiColor.ForeColor) and
+              (Symbol.BackColor = DelphiColor.BackColor) and
+              (Symbol.Style = DelphiColor.Style);
+  end;
+begin
+  Result := False;
+  if not CompareColor(FColors.Comment, DelphiColor_Comment) then Exit;
+  if not CompareColor(FColors.Number, DelphiColor_Number) then Exit;
+  if not CompareColor(FColors.Strings, DelphiColor_Strings) then Exit;
+  if not CompareColor(FColors.Symbol, DelphiColor_Symbol) then Exit;
+  if not CompareColor(FColors.Reserved, DelphiColor_Reserved) then Exit;
+  if not CompareColor(FColors.Identifier, DelphiColor_Identifier) then Exit;
+  if not CompareColor(FColors.PlainText, DelphiColor_PlainText) then Exit;
+  Result := True;
+end;
+
+procedure TJvHLEditor.SetDelphiColors(Value: Boolean); {$IFDEF COMPILER6_UP}deprecated;{$ENDIF}
+  procedure SetColor(Symbol: TJvSymbolColor; const DelphiColor: TDelphiColor);
+  begin
+    with DelphiColor do
+      Symbol.SetColor(ForeColor, BackColor, Style);
+  end;
+begin
+  if Value then
+  begin
+    SetColor(FColors.FComment, DelphiColor_Comment);
+    SetColor(FColors.FNumber, DelphiColor_Number);
+    SetColor(FColors.Strings, DelphiColor_Strings);
+    SetColor(FColors.Symbol, DelphiColor_Symbol);
+    SetColor(FColors.Reserved, DelphiColor_Reserved);
+    SetColor(FColors.Identifier, DelphiColor_Identifier);
+    SetColor(FColors.PlainText, DelphiColor_PlainText);
+  end;
 end;
 
 end.

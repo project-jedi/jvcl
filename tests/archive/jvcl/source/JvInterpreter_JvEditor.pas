@@ -574,7 +574,7 @@ begin
     AddISet(TJvCustomEditor, 'BookMarkValid', TRACustomEditor_Write_BookMarkValid, 1, [varInteger]);
 
     { TCompletionList }
-    AddConst(cJvEditor, 'cmIdentifers', cmIdentifers);
+//    AddConst(cJvEditor, 'cmIdentifers', cmIdentifers);
     AddConst(cJvEditor, 'cmTemplates', cmTemplates);
 
     AddConst(cJvEditor, 'ecCharFirst', ecCharFirst);
@@ -654,7 +654,7 @@ begin
     AddConst(cJvEditor, 'ecGotoBookmark7', ecGotoBookmark7);
     AddConst(cJvEditor, 'ecGotoBookmark8', ecGotoBookmark8);
     AddConst(cJvEditor, 'ecGotoBookmark9', ecGotoBookmark9);
-    AddConst(cJvEditor, 'ecCompletionIdentifers', ecCompletionIdentifers);
+//    AddConst(cJvEditor, 'ecCompletionIdentifers', ecCompletionIdentifers);
     AddConst(cJvEditor, 'ecCompletionTemplates', ecCompletionTemplates);
     AddConst(cJvEditor, 'ecRecordMacro', ecRecordMacro);
     AddConst(cJvEditor, 'ecPlayMacro', ecPlayMacro);

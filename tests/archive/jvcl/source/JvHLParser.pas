@@ -7,7 +7,7 @@ http://www.mozilla.org/MPL/MPL-1.1.html
 Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
-                  
+
 The Original Code is: JvHLParser.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
@@ -15,9 +15,8 @@ Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
 Contributor(s):
-Andreas Hausladen [Andreas.Hausladen@gmx.de]
 
-Last Modified: 2003-03-23
+Last Modified: 2002-07-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -31,7 +30,6 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.Inc}
-{$DEFINE BUGFIX}
 unit JvHLParser;
 
 interface
@@ -92,7 +90,8 @@ type
 function IsStringConstant(const St: string): Boolean;
 function IsIntConstant(const St: string): Boolean;
 function IsRealConstant(const St: string): Boolean;
-function IsIdentifer(const ID: string): Boolean;
+function IsIdentifier(const ID: string): Boolean;
+function IsIdentifer(const ID: string): Boolean; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
 function GetStringValue(const St: string): string;
 procedure ParseString(const S: string; Ss: TStrings);
 
@@ -317,7 +316,7 @@ begin
     end
     else
     if (Style = psPerl) and (P[0] in ['$', '@', '%', '&']) then
-    { perl identifer }
+    { perl identifier }
     begin
       Inc(P);
       while CharInSet(P[0], StIdSymbols) do
@@ -358,7 +357,6 @@ begin
       begin
         if (P[0] = '"') and (P[-1] <> '\') then
           Break;
-{$IFDEF BUGFIX}
         if (P[0] = '"') and (P[-1] = '\') then
         begin
          // count the backslashes, on even backslahses it is a string end
@@ -366,7 +364,6 @@ begin
           while (P - 1 - i > F) and (P[-1 - i] = '\') do inc(i);
           if i and $01 = 0 then Break;  { same but faster than: if i mod 2 = 0 then Break; }
         end;
-{$ENDIF}
         Inc(P);
       end;
       if P[0] <> #0 then
@@ -585,7 +582,7 @@ begin
   Result := True;
 end;
 
-function IsIdentifer(const ID: string): Boolean;
+function IsIdentifier(const ID: string): Boolean;
 var
   i, L: Integer;
 begin
@@ -601,6 +598,11 @@ begin
       Exit;
   end;
   Result := True;
+end;
+
+function IsIdentifer(const ID: string): Boolean; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
+begin
+  Result := IsIdentifier(ID);
 end;
 
 function GetStringValue(const St: string): string;
