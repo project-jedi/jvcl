@@ -46,7 +46,7 @@ Changes 2003-03-23:
 
 unit JvRollOut;
 
-{ TJvRollout is an autoexpanding / collapsing panel. }
+{ TJvRollOut is an autoexpanding / collapsing panel. }
 
 interface
 
@@ -59,7 +59,7 @@ const
 
 type
   TJvPlacement = (plTop, plLeft);
-  TJvRolloutColors = class(TPersistent)
+  TJvRollOutColors = class(TPersistent)
   private
     FFrameBottom: TColor;
     FHotTrackText: TColor;
@@ -184,7 +184,7 @@ type
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
     property Placement: TJvPlacement read FPlacement write SetPlacement default plTop;
     property Colors: TJvRollOutColors read FColors write FColors;
-    property ImageOptions: TJvRolloutImageOptions read FImageOptions write FImageOptions;
+    property ImageOptions: TJvRollOutImageOptions read FImageOptions write FImageOptions;
 
     property OnCollapse: TNotifyEvent read FOnCollapse write FOnCollapse;
     property OnExpand: TNotifyEvent read FOnExpand write FOnExpand;
@@ -198,7 +198,7 @@ type
     procedure Expand; virtual;
   end;
 
-  TJvRollout = class(TJvCustomRollOut)
+  TJvRollOut = class(TJvCustomRollOut)
   published
     property Align;
     property BevelWidth;
@@ -375,14 +375,14 @@ begin
   end;
 end;
 
-{ TJvRolloutColors }
+{ TJvRollOutColors }
 
-procedure TJvRolloutColors.Change;
+procedure TJvRollOutColors.Change;
 begin
   if Assigned(FOnChange) then FOnChange(self);
 end;
 
-constructor TJvRolloutColors.Create;
+constructor TJvRollOutColors.Create;
 begin
   inherited Create;
   FButtonBottom := clBtnShadow;
@@ -394,7 +394,7 @@ begin
   FFrameTop := clBtnShadow;
 end;
 
-procedure TJvRolloutColors.SetButtonBottom(const Value: TColor);
+procedure TJvRollOutColors.SetButtonBottom(const Value: TColor);
 begin
   if FButtonBottom <> Value then
   begin
@@ -403,12 +403,12 @@ begin
   end;
 end;
 
-procedure TJvRolloutColors.SetButtonColor(const Value: TColor);
+procedure TJvRollOutColors.SetButtonColor(const Value: TColor);
 begin
   FButtonColor := Value;
 end;
 
-procedure TJvRolloutColors.SetButtonTop(const Value: TColor);
+procedure TJvRollOutColors.SetButtonTop(const Value: TColor);
 begin
   if FButtonTop <> Value then
   begin
@@ -417,7 +417,7 @@ begin
   end;
 end;
 
-procedure TJvRolloutColors.SetColor(const Value: TColor);
+procedure TJvRollOutColors.SetColor(const Value: TColor);
 begin
   if FColor <> Value then
   begin
@@ -426,7 +426,7 @@ begin
   end;
 end;
 
-procedure TJvRolloutColors.SetFrameBottom(const Value: TColor);
+procedure TJvRollOutColors.SetFrameBottom(const Value: TColor);
 begin
   if FFrameBottom <> Value then
   begin
@@ -435,7 +435,7 @@ begin
   end;
 end;
 
-procedure TJvRolloutColors.SetFrameTop(const Value: TColor);
+procedure TJvRollOutColors.SetFrameTop(const Value: TColor);
 begin
   if FFrameTop <> Value then
   begin
@@ -444,7 +444,7 @@ begin
   end;
 end;
 
-procedure TJvRolloutColors.SetHotTrackText(const Value: TColor);
+procedure TJvRollOutColors.SetHotTrackText(const Value: TColor);
 begin
   if FHotTrackText <> Value then
   begin
@@ -458,11 +458,11 @@ end;
 constructor TJvCustomRollOut.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FImageOptions := TJvRolloutImageOptions.Create;
+  FImageOptions := TJvRollOutImageOptions.Create;
   FImageOptions.FOwner := self;
   FImageOptions.OnChange := DoImageOptionsChange;
 
-  FColors := TJvRolloutColors.Create;
+  FColors := TJvRollOutColors.Create;
   FColors.OnChange := DoColorsChange;
 
   FGroupIndex := 0;
