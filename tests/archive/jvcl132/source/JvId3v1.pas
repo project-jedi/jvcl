@@ -322,7 +322,7 @@ end;
 function TJvId3v1.WriteTag(FileName, SongName, Artist, Album, Year, Comment: string; Genre: TGenre): Boolean;
 var
   fich: TFileStream;
-  tag: TId3v1Tag;
+  tag, tag1: TId3v1Tag;
 begin
   try
     ZeroMemory(@tag, SizeOf(tag));
@@ -334,18 +334,23 @@ begin
       if fich.Size > 128 then
       begin
         fich.Position := fich.Size - 128;
-        fich.Read(tag, SizeOf(tag));
-        if tag.Identifier = 'TAG' then
+        fich.Read(tag1, SizeOf(tag1));
+        if tag1.Identifier = 'TAG' then
           fich.Position := fich.Size - 128;
       end;
 
       //Set new tag
       tag.Identifier := 'TAG';
-      CopyMemory(@tag.SongName, @SongName[1], 30);
-      CopyMemory(@tag.Artist, @Artist[1], 30);
-      CopyMemory(@tag.Album, @Album[1], 30);
-      CopyMemory(@tag.Year, @Year[1], 4);
-      CopyMemory(@tag.Comment, @Comment[1], 30);
+      if SongName <> '' then
+        CopyMemory(@tag.SongName, @SongName[1], 30);
+      if Artist <> '' then
+        CopyMemory(@tag.Artist, @Artist[1], 30);
+      if Album <> '' then
+        CopyMemory(@tag.Album, @Album[1], 30);
+      if Year <> '' then
+        CopyMemory(@tag.Year, @Year[1], 4);
+      if Comment <> '' then
+        CopyMemory(@tag.Comment, @Comment[1], 30);
       tag.Genre := Genre;
 
       //Write it

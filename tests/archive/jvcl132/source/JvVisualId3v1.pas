@@ -97,6 +97,7 @@ type
     procedure SetLabelFont(const Value: TFont);
     procedure FontChanged(Sender: TObject);
   protected
+    procedure CreateWnd; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -138,10 +139,7 @@ end;
 
 constructor TJvVisualId3v1.Create(AOwner: TComponent);
 const
-  CaptionLabels: array[1..6] of string = ('Artist', 'SongName', 'Album', 'Year', 'Comment', 'Genre');
-var
-  i: Byte;
-  st: string;
+ CaptionLabels: array[1..6] of string = ('Artist', 'SongName', 'Album', 'Year', 'Comment', 'Genre');
 begin
   inherited;
   Width := 229;
@@ -208,18 +206,11 @@ begin
   FCombo1.Parent := Self;
   FCombo1.Enabled := False;
 
-  Self.Parent := TWinControl(AOwner);
-
   FId3Tag := TJvId3v1Tag.Create(Self);
   FId3Tag.OnChange := Changed;
 
   FId3v1 := TJvId3v1.Create(Self);
-  for i := 0 to 255 do
-  begin
-    st := FId3v1.GenreToString(TGenre(i));
-    if st <> '' then
-      FCombo1.Items.Add(st);
-  end;
+
   FEditFont.OnChange := FontChanged;
   FLabelFont.OnChange := FontChanged;
   FontChanged(Self);
@@ -230,6 +221,15 @@ begin
   FEdit4.OnChange := UserChanged;
   FEdit5.OnChange := UserChanged;
   FCombo1.OnChange := UserChanged;
+end;
+
+procedure TJvVisualId3v1.CreateWnd;
+var
+  i: Byte;
+begin
+  inherited CreateWnd;
+  for i := 0 to ord(High(TGenre)) do
+    FCombo1.Items.Add(FId3v1.GenreToString(TGenre(i)));
 end;
 
 {******************************************************************************}
@@ -504,7 +504,7 @@ begin
   FArtist := '';
   FSongName := '';
   FYear := '';
-  FGenre := grBlues;
+  FGenre := grNone;
 end;
 
 {******************************************************************************}
