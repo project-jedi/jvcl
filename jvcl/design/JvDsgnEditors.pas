@@ -44,9 +44,9 @@ uses
   {$ENDIF VisualCLX}
   DsnConst,
   {$IFDEF COMPILER6_UP}
-  FiltEdit, RTLConsts, DesignIntf, DesignEditors, DesignMenus,
+  RTLConsts, DesignIntf, DesignEditors, DesignMenus,
   {$IFDEF VCL}
-  VCLEditors,
+  FiltEdit, VCLEditors,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   ClxEditors, ClxImgEdit,
