@@ -32,8 +32,13 @@ unit JvSimpleXml;
 
 interface
 
+
 uses
   SysUtils, Classes, IniFiles, JvComponent;
+
+{$IFNDEF Compiler6_UP}
+type THashedStringList=TStringList;
+{$EndIf}
 
 type
   TJvSimpleXmlElem = class;
@@ -89,7 +94,8 @@ type
 
   TJvSimpleXmlElems = class(TObject)
   private
-    FElems: THashedStringList;
+  FElems: THashedStringList;
+
     function GetCount: Integer;
     function GetItemNamed(const Name: string): TJvSimpleXmlElem;
   protected

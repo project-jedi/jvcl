@@ -114,6 +114,7 @@ uses
   JvRegion, JvCaesarCipher, JvVigenereCipher, JvXorCipher, JvGenetic,
   JvTranslator,
 
+
   //Dialogs
   JvCommonDialogD, JvBaseDlg, JvFindFiles,
   JvSelectDirectory, JvInputBox, JvPasswordForm, JvMessageBox, JvMessageBeep,
@@ -225,8 +226,7 @@ begin
 
   //Registering Utils2 components - 7
   RegisterComponents('Jv Utils 3', [TJvRegion, TJvCaesarCipher, TJvVigenereCipher,
-    TJvXorCipher, TJvGenetic,
-    TJvTranslator, TJvTranslatorStrings]);
+    TJvXorCipher, TJvGenetic ,TJvTranslator, TJvTranslatorStrings]);
 
   //Registering Dialogs components - 20
   RegisterComponents('Jv Dialogs', [TJvFindFiles,TJvInputBox,  TJvPasswordForm, TJvMessageBox,
@@ -254,7 +254,7 @@ begin
 
   //Register Net components - 8
   RegisterComponents('Jv Net', [TJvHtmlParser, TJvSurfTo, TJvImageSurfTo, TJvImageMailTo,
-    TJvHttpGrabber, TJvMultiHttpGrabber, TJvFtpGrabber, TJvSimpleXml]);
+    TJvHttpGrabber, TJvMultiHttpGrabber, TJvFtpGrabber{, TJvSimpleXml}]);
 
   //Register Edits Components - 12
   RegisterComponents('Jv Edits', [TJvFileNameBox, TJvDirectoryBox, TJvImageBox,

@@ -142,7 +142,7 @@ begin
   if (Owner is TWinControl) and (FHandle = 0) then
   begin
     FHandle := TWinControl(Owner).Handle;
-    FWndProc := Classes.MakeObjectInstance(WndProc);
+    FWndProc :=  {$IFDEF DELPHI6_UP}Classes.{$ENDIF}MakeObjectInstance(WndProc);
     FDefProc := Pointer(GetWindowLong(FHandle,GWL_WNDPROC ));
     SetWindowLong(FHandle,GWL_WNDPROC,longint(FWndProc));
   end
@@ -155,7 +155,7 @@ begin
   if FHandle <> 0 then
   begin
     SetWindowLong(FHandle,GWL_WNDPROC,longint(FDefProc));
-    Classes.FreeObjectInstance(FWndProc);
+     {$IFDEF DELPHI6_UP}Classes.{$ENDIF}FreeObjectInstance(FWndProc);
     FHandle := 0;
   end
 end;

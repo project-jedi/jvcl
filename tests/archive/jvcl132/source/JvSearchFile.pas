@@ -40,7 +40,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  JvTypes, JvComponent;
+  JvTypes, JvComponent, FileCtrl;
 
 type
   TJvSearchFile = class(TJvComponent)

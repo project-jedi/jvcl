@@ -46,7 +46,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, ShlObj, ActiveX, ComObj,
-  Registry, JvTypes, JvComponent;
+  Registry, JvTypes, JvComponent, FileCtrl ;
 
 type
   TJvCreateShortcut = class(TJvComponent)

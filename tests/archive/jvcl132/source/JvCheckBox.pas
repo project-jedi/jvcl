@@ -59,7 +59,9 @@ type
     procedure SetCaption(const Value: TCaption);
     procedure SetAssociated(const Value: TControl);
   protected
-    procedure SetAutoSize(Value: Boolean);override;
+
+    procedure SetAutoSize(Value: Boolean);  {$IFDEF Delphi6_Up} override;    {$ENDIF}
+ 
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -216,13 +218,11 @@ begin
 end;
 
 {**************************************************}
-
 procedure TJvCheckBox.SetAutoSize(Value: Boolean);
 begin
   FAutoSize := Value;
   SetCaption(Caption);
 end;
-
 {**************************************************}
 
 procedure TJvCheckBox.SetCaption(const Value: TCaption);

@@ -41,7 +41,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Dialogs,
-  ZLib, JvComponent;
+  ZLib, JvComponent, FileCtrl;
 
 type
   TFileEvent = procedure(Sender: TObject; FileName: string) of object;

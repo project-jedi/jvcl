@@ -43,7 +43,7 @@ Comments:
 interface
 
 uses
-  Windows, Graphics, ComCtrls, Controls;
+  Windows, Graphics, ComCtrls, Controls, JvFunctions;
 
 function CharIsMoney(const ch: char): boolean;
 

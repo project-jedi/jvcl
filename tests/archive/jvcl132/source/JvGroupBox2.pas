@@ -59,7 +59,7 @@ type
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FColor write FColor default clInfoBk;
-    property PropageEnable: Boolean read FPropage write SetPropage default False;
+    property PropagateEnabled: Boolean read FPropage write SetPropage default False;
 
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -132,7 +132,7 @@ var
   i: Integer;
 begin
   inherited;
-  if PropageEnabled then
+  if PropagateEnabled then
     for i := 0 to ControlCount - 1 do
       Controls[i].Enabled := Enabled;
 end;

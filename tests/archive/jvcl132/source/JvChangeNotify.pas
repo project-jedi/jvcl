@@ -39,7 +39,7 @@ unit JvChangeNotify;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, FileCtrl, JvComponent;
 
 type
   TJvNotifyArray = array [0..MAXIMUM_WAIT_OBJECTS - 1] of integer;

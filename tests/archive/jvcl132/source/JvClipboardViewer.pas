@@ -61,7 +61,7 @@ implementation
 constructor TJvClipboardViewer.Create(AOwner: TComponent);
 begin
   inherited;
-  FHandle := Classes.AllocateHWND(WndProc);
+  FHandle :=  {$IFDEF Delphi6_Up}Classes.{$ENDIF}AllocateHWND(WndProc);
   FNextCB := SetClipboardViewer(FHandle);
   // (rom) removed a SetClipboardViewer line her
 end;
@@ -70,7 +70,7 @@ end;
 
 destructor TJvClipboardViewer.Destroy;
 begin
-  Classes.DeallocateHWnd(FHandle);
+   {$IFDEF Delphi6_Up}Classes. {$ENDIF}DeallocateHWnd(FHandle);
   ChangeClipboardChain(FHandle, FNextCB);
   inherited;
 end;

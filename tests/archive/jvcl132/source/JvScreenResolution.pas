@@ -51,7 +51,13 @@ type
 
 implementation
 uses
-  RTLConsts;
+  Jvtypes,
+{$IFDEF DELPHI6_UP}
+  RTLConsts
+{$ELSE}
+  Consts
+{$ENDIF}
+;
 
 {************************************************************}
 

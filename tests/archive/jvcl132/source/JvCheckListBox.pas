@@ -76,8 +76,7 @@ type
     function SearchSubString(Value: string; CaseSensitive: Boolean = True): Integer;
     function DeleteExactString(Value: string; All: Boolean;
       CaseSensitive: Boolean = True): Integer;
-
-    procedure SelectAll;override;
+    procedure SelectAll; {$IFDEF Delphi6_Up} override; {$ENDIF}
     procedure UnselectAll;
     procedure InvertSelection;
     procedure CheckAll;
@@ -85,7 +84,7 @@ type
     procedure InvertCheck;
     function GetChecked: TStringList;
     function GetUnChecked: TStringList;
-    procedure DeleteSelected;override;
+    procedure DeleteSelected;{$IFDEF Delphi6_Up} override;{$ENDIF}
     procedure SaveToFile(FileName: TFileName);
     procedure LoadFromFile(FileName: TFileName);
     procedure LoadFromStream(Stream: TStream);

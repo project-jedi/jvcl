@@ -33,6 +33,11 @@ interface
 uses
   Windows, Graphics, Messages, SysUtils, ShellApi;
 
+{$IFNDEF DELPHI6_UP}
+type
+  EOSError = class(EWin32Error);
+{$ENDIF}
+
 //Transform an icon to a bitmap
 function IconToBitmap(ico: HIcon): TBitmap;
 {$EXTERNALSYM IconToBitmap}
@@ -69,6 +74,12 @@ procedure RgbToHSV(r, g, b: Integer; var h, s, v: Integer);
 function GetShellVersion: Integer;
 {$EXTERNALSYM GetShellVersion}
 
+{$IFNDEF DELPHI6_UP}
+{ D5 compatibility functions }
+procedure RaiseLastOSError;
+function IncludeTrailingPathDelimiter(const APath: string): string;
+{$ENDIF}
+
 implementation
 
 resourcestring
@@ -76,6 +87,22 @@ resourcestring
 
 var
   ShellVersion: Integer;
+
+{$IFNDEF DELPHI6_UP}
+
+procedure RaiseLastOSError;
+begin
+  RaiseLastWin32Error;
+end;
+
+function IncludeTrailingPathDelimiter(const APath: string): string;
+begin
+  if (Length(APath) > 0) and (APath[Length(APath)] <> '\') then
+    Result := APath + '\'
+  else
+    Result := APath;
+end;
+{$ENDIF}
 
   {*****************************************************}
 
@@ -133,6 +160,7 @@ begin
     st := Format(SWin32Error, [LastError, SysErrorMessage(LastError)]);
     if (Text <> '') then
       st := Text + ':' + st;
+
     raise EOSError.Create(st);
   end;
 end;
