@@ -31,7 +31,7 @@ unit JvExComboEdits;
 WARNINGHEADER
 
 {$IFDEF VCL}
-Sorry this file is for VCLX only
+Sorry this file is for VisualCLX only
 {$ENDIF VCL}
 
 interface

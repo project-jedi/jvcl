@@ -55,6 +55,7 @@
 *)
 
 (*$DEFINE JV_CONTROL_EVENTS_DECL_VISUALCLX
+  // IJvControlEvents
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -114,11 +115,13 @@
     property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
   {$ENDIF VisualCLX}
 *)
-// ****************** Standard Control *************************************
 
-(*$DEFINE JV_STDCONTROL_EVENTS_DECL_VCL
+// ****************** Win Control **********************
+// used in all TWinControl derived classes (excluding TWidgetControl)
+
+(*$DEFINE JV_WINCONTROL_EVENTS_DECL_VCL
   protected
-   // IJvStdControlEvents
+   // IJvWinControlEvents
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -133,47 +136,33 @@
   {$ENDIF JVCLThemesEnabledD56}
 *)
 
-(*$DEFINE JV_STDCONTROL_EVENTS_DECL_VISUALCLX
+(*$DEFINE JV_WINCONTROL_EVENTS_DECL_VISUALCLX
+  private
+    InternalFontChanged: TNotifyEvent;
+    procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
+    procedure DoFontChanged(Sender: TObject); dynamic;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
-    procedure RecreateWnd;
+    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
+    procedure PaintWindow(PaintDevice: QPaintDeviceH);
+    function WidgetFlags: integer; override;
     procedure CreateWnd; dynamic;
     procedure CreateWidget; override;
+    procedure RecreateWnd;
+  public
+    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
 *)
 
-(*$DEFINE JV_STDCONTROL_EVENTS_DECL_COMMON
+(*$DEFINE JV_WINCONTROL_EVENTS_DECL_COMMON
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-*)
-
-// ****************** Win Control **********************
-// used in all TWinControl derived classes
-
-(*$DEFINE JV_WINCONTROL_EVENTS_DECL_VCL
-JV_STDCONTROL_EVENTS_DECL_VCL
-*)
-
-(*$DEFINE JV_WINCONTROL_EVENTS_DECL_VISUALCLX
-JV_STDCONTROL_EVENTS_DECL_VISUALCLX	
-  private
-    FDoubleBuffered: Boolean;
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
-  protected
-    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    procedure ColorChanged; override;
-  published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-*)
-
-(*$DEFINE JV_WINCONTROL_EVENTS_DECL_COMMON
-JV_STDCONTROL_EVENTS_DECL_COMMON
 *)
 
 // ********************************************************
@@ -193,10 +182,18 @@ JV_STDCONTROL_EVENTS_DECL_COMMON
   {$ENDIF VisualCLX}
 *)
 
-(*$DEFINE JV_DIFF_EVENTS_DECL_STDCONTROL
-*)
 
 (*$DEFINE JV_DIFF_EVENTS_DECL_CUSTOMCONTROL
+{$IFDEF VisualCLX}
+  private
+    FDoubleBuffered: Boolean;
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
+  protected
+    procedure ColorChanged; override;
+  published // asn: change to public in final
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
+{$ENDIF VisualCLX}
 *)
 // ************************************************
 
@@ -240,7 +237,7 @@ JV_STDCONTROL_EVENTS_DECL_COMMON
   JV_WINCONTROL_EVENTS_DECL_VISUALCLX
   {$ENDIF VisualCLX}
   JV_CONTROL_EVENTS_DECL_COMMON
-  JV_STDCONTROL_EVENTS_DECL_COMMON
+  JV_WINCONTROL_EVENTS_DECL_COMMON
   JV_DIFF_EVENTS_DECL_WINCONTROL
 *)
 
@@ -258,20 +255,20 @@ JV_STDCONTROL_EVENTS_DECL_COMMON
   JV_DIFF_EVENTS_DECL_CUSTOMCONTROL
 *)
 
-(*$DEFINE JV_STDCONTROL_EVENTS_DECL
+(*$DEFINE JV_WIDGETCONTROL_EVENTS_DECL
   {$IFDEF VCL}
   JV_CONTROL_EVENTS_DECL_VCL
-  JV_STDCONTROL_EVENTS_DECL_VCL
+  JV_WINCONTROL_EVENTS_DECL_VCL
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
+  {$IFDEF VISUALCLX}
   JV_CONTROL_EVENTS_DECL_VISUALCLX
-  JV_STDCONTROL_EVENTS_DECL_VISUALCLX
-  {$ENDIF VisualCLX}
+  JV_WINCONTROL_EVENTS_DECL_VISUALCLX
+  {$ENDIF VISUALCLX}
   JV_CONTROL_EVENTS_DECL_COMMON
-  JV_STDCONTROL_EVENTS_DECL_COMMON
-  JV_DIFF_EVENTS_DECL_STDCONTROL
+  JV_WINCONTROL_EVENTS_DECL_COMMON
+  JV_DIFF_EVENTS_DECL_CUSTOMCONTROL
+  JV_DIFF_EVENTS_DECL_WINCONTROL
 *)
-
 
 // ****************** Control **********************
 (*$DEFINE JV_CONTROL_EVENTS_BEGIN(ClassName)
@@ -294,24 +291,8 @@ JV_STDCONTROL_EVENTS_DECL_COMMON
   JV_CONTROL_EVENTS_DECL
 *)
 
-// ****************** StdControl **********************
-(*$DEFINE JV_STDCONTROL_EVENTS_BEGIN(ClassName)
-  JV_EVENTS_CLASS1(ClassName, IJvStdControlEvents)
-  JV_STDCONTROL_EVENTS_DECL
-*)
-
-(*$DEFINE JV_STDCONTROL_EVENTS_BEGIN1(ClassName, Intf1)
-  JV_EVENTS_CLASS2(ClassName, Intf1, IJvStdControlEvents)
-  JV_STDCONTROL_EVENTS_DECL
-*)
-
-(*$DEFINE JV_STDCONTROL_EVENTS_BEGIN2(ClassName, Intf2, Intf1)
-  JV_EVENTS_CLASS3(ClassName, Intf2, Intf1, IJvStdControlEvents)
-  JV_STDCONTROL_EVENTS_DECL
-
-*)
-
 // ****************** WinControl **********************
+
 (*$DEFINE JV_WINCONTROL_EVENTS_BEGIN(ClassName)
   JV_EVENTS_CLASS1(ClassName, IJvWinControlEvents)
   JV_WINCONTROL_EVENTS_DECL
@@ -328,8 +309,9 @@ JV_STDCONTROL_EVENTS_DECL_COMMON
 *)
 
 // ****************** CustomControl **********************
+
 (*$DEFINE JV_CUSTOMCONTROL_EVENTS_BEGIN(ClassName)
-  JV_EVENTS_CLASS2(ClassName,  IJvWinControlEvents, IJvCustomControlEvents)
+  JV_EVENTS_CLASS2(ClassName, IJvWinControlEvents, IJvCustomControlEvents)
   JV_CUSTOMCONTROL_EVENTS_DECL
 *)
 
@@ -343,10 +325,28 @@ JV_STDCONTROL_EVENTS_DECL_COMMON
   JV_CUSTOMCONTROL_EVENTS_DECL
 *)
 
+// ****************** JvExWidgetControl **********************
+
+(*$DEFINE JV_WIDGETCONTROL_EVENTS_BEGIN(ClassName)
+  JV_EVENTS_CLASS2(ClassName, IJvWinControlEvents, IJvCustomControlEvents)
+  JV_WIDGETCONTROL_EVENTS_DECL
+*)
+
+(*$DEFINE JV_WIDGETCONTROL_EVENTS_BEGIN1(ClassName, Intf1)
+  JV_EVENTS_CLASS3(ClassName, Intf1, IJvWinControlEvents, IJvCustomControlEvents)
+  JV_WIDGETCONTROL_EVENTS_DECL
+*)
+
+(*$DEFINE JV_WIDGETCONTROL_EVENTS_BEGIN2(ClassName, Intf2, Intf1)
+  JV_EVENTS_CLASS4(ClassName, Intf2, Intf1, IJvWinControlEvents, IJvCustomControlEvents)
+  JV_WIDGETCONTROL_EVENTS_DECL
+*)
+
 
 ********************** Interface end macros *********************
 (*$DEFINE JV_CONTROL_EVENTS_END(ClassName)
   end;
+
   TJvExPub##ClassName = class(TJvEx##ClassName)
   {$IFDEF VCL}
   published
@@ -363,18 +363,12 @@ JV_STDCONTROL_EVENTS_DECL_COMMON
 *)
 {$DEFINE JV_WINCONTROL_EVENTS_END(ClassName) JV_CONTROL_EVENTS_END(ClassName)}
 {$DEFINE JV_CUSTOMCONTROL_EVENTS_END(ClassName) JV_CONTROL_EVENTS_END(ClassName)}
-{$DEFINE JV_STDCONTROL_EVENTS_END(ClassName) JV_CONTROL_EVENTS_END(ClassName)}
+{$DEFINE JV_WIDGETCONTROL_EVENTS_END(ClassName) JV_CONTROL_EVENTS_END(ClassName)}
 
 (*$DEFINE JV_CONTROL_EVENTS(ClassName)
   JV_CONTROL_EVENTS_BEGIN(ClassName)
   JV_CONSTRUCTOR
   JV_CONTROL_EVENTS_END(ClassName)
-*)
-
-(*$DEFINE JV_STDCONTROL_EVENTS(ClassName)
-  JV_STDCONTROL_EVENTS_BEGIN(ClassName)
-  JV_CONSTRUCTOR
-  JV_STDCONTROL_EVENTS_END(ClassName)
 *)
 
 (*$DEFINE JV_WINCONTROL_EVENTS(ClassName)
@@ -389,8 +383,16 @@ JV_STDCONTROL_EVENTS_DECL_COMMON
   JV_CUSTOMCONTROL_EVENTS_END(ClassName)
 *)
 
-
-
+(*$DEFINE JV_WIDGETCONTROL_EVENTS(ClassName)
+  {$IFDEF VCL}
+  JV_WINCONTROL_EVENTS(ClassName)
+  {$ENDIF VCL}
+  {$IFDEF VISUALCLX}
+  JV_WIDGETCONTROL_EVENTS_BEGIN(ClassName)
+  JV_CONSTRUCTOR
+  JV_WIDGETCONTROL_EVENTS_END(ClassName)
+  {$ENDIF VISUALCLX}
+*)
 
 (*$DEFINE JV_CUSTOMFORM_EVENTS(ClassName)
   JV_CUSTOMCONTROL_EVENTS_BEGIN(ClassName)
@@ -547,6 +549,7 @@ function TJvEx##ClassName.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
+  EMPTYLINE
 *) // MACRO END CONTROL_VISUALCLX
 
 
@@ -560,10 +563,11 @@ end;
 procedure TJvEx##ClassName.DoFocusChanged(Control: TWinControl);
 begin
 end;
+  EMPTYLINE
 *) // MACRO END CONTROL_COMMON
 
 
-(*$DEFINE JV_STDCONTROL_EVENTS_IMPL_VCL(ClassName)
+(*$DEFINE JV_WINCONTROL_EVENTS_IMPL_VCL(ClassName)
 procedure TJvEx##ClassName.CursorChanged;
 asm
     MOV  EDX, CM_CURSORCHANGED
@@ -603,14 +607,30 @@ asm
     JMP   JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
-*) // MACRO END STDCONTROL_VCL
+  EMPTYLINE
+*) // MACRO END WINCONTROL_VCL
 
-(*$DEFINE JV_STDCONTROL_EVENTS_IMPL_VISUALCLX(ClassName)
+(*$DEFINE JV_WINCONTROL_EVENTS_IMPL_VISUALCLX(ClassName)
 function TJvEx##ClassName.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
-  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+  Result := WidgetControl_NeedKey(Self, Key, Shift, KeyText,
     inherited NeedKey(Key, Shift, KeyText));
+end;
+
+procedure TJvEx##ClassName.OnFontChanged(Sender: TObject);
+var
+  FontChangedEvent: QEventH;
+begin
+  FontChangedEvent := QEvent_create(QEventType_FontChanged);
+  if FontChangedEvent <> nil then
+    QApplication_postEvent(Handle, FontChangedEvent);
+end;
+
+procedure TJvEx##ClassName.DoFontChanged(Sender: TObject);
+begin
+  if Assigned(InternalFontChanged) then
+    InternalFontChanged(self);
 end;
 
 procedure TJvEx##ClassName.BoundsChanged;
@@ -633,9 +653,33 @@ procedure TJvEx##ClassName.CreateWnd;
 begin
   inherited CreateWidget;
 end;
-*) // MACRO END STDCONTROL_VISUALCLX
 
-(*$DEFINE JV_STDCONTROL_EVENTS_IMPL_COMMON(ClassName)
+function TJvEx##ClassName.WidgetFlags: integer;
+begin
+  Result := inherited WidgetFlags or
+    integer(WidgetFlags_WRepaintNoErase) or
+    integer(WidgetFlags_WMouseNoMask);
+end;
+
+function TJvEx##ClassName.EventFilter(Sender: QObjectH; Event: QEventH): boolean;
+begin
+  Result := inherited EventFilter(Sender, Event);
+  Result := Result or WidgetControl_EventFilter(Self, Sender, Event);
+end;
+
+procedure TJvEx##ClassName.PaintWindow(PaintDevice: QPaintDeviceH);
+begin
+  WidgetControl_PaintTo(self, PaintDevice, 0, 0);
+end;
+
+procedure TJvEx##ClassName.PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
+begin
+  WidgetControl_PaintTo(self, PaintDevice, X, Y);
+end;
+  EMPTYLINE
+*) // MACRO END WINCONTROL_VISUALCLX
+
+(*$DEFINE JV_WINCONTROL_EVENTS_IMPL_COMMON(ClassName)
 procedure TJvEx##ClassName.DoBoundsChanged;
 begin
 end;
@@ -656,25 +700,71 @@ function TJvEx##ClassName.DoPaintBackground(Canvas: TCanvas; Param: Integer): Bo
 asm
   JMP   DefaultDoPaintBackground
 end;
-
-*) // MACRO END STDCONTROL_COMMON
-
-
-************ WinControl **********
-
-(*$DEFINE JV_WINCONTROL_EVENTS_IMPL_VCL(ClassName)
-*) // MACRO END JV_WINCONTROL_EVENTS_IMPL_VCL
+  EMPTYLINE
+*) // MACRO END WINCONTROL_COMMON
 
 
-(*$DEFINE JV_WINCONTROL_EVENTS_IMPL_VISUALCLX(ClassName)
+// ********************************************************
+// * differences in Control, WinControl and CustomControl *
+// ********************************************************
+(*$DEFINE JV_DIFF_EVENTS_IMPL_CONTROL(ClassName)
+constructor TJvEx##ClassName.Create(AOwner: TComponent);
+begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$ENDIF VisualCLX}
+  inherited Create(AOwner);
+  FHintColor := Application.HintColor;
+  CONSTRUCTOR_CODE
+end;
+
+destructor TJvEx##ClassName.Destroy;
+begin
+  DESTRUCTOR_CODE
+  inherited Destroy;
+end;
+ EMPTYLINE
+*)
+
+(*$DEFINE JV_DIFF_EVENTS_IMPL_WINCONTROL(ClassName)
+constructor TJvEx##ClassName.Create(AOwner: TComponent);
+begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$ENDIF VisualCLX}
+  inherited Create(AOwner);
+  {$IFDEF VisualCLX}
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
+  InternalFontChanged := Font.OnChange;
+  Font.OnChange := OnFontChanged;
+  {$ENDIF VisualCLX}
+  FHintColor := Application.HintColor;
+end;
+
+{$IFDEF VisualCLX}
 procedure TJvEx##ClassName.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   WidgetControl_Painting(Self, Canvas, EventRegion);
 end;
 
+procedure TJvEx##ClassName.Paint;
+begin
+  WidgetControl_DefaultPaint(self, Canvas);
+end;
+{$ENDIF VisualCLX}
+
+destructor TJvEx##ClassName.Destroy;
+begin
+  inherited Destroy;
+end;
+  EMPTYLINE
+*) // end macro JV_DIFF_EVENTS_IMPL_WINCONTROL
+
+(*$DEFINE JV_EVENTS_IMPL_DOUBLEBUFFERED(ClassName)
 procedure TJvEx##ClassName.ColorChanged;
 begin
-  TWidgetControl_ColorChanged(Self);
+  WidgetControl_ColorChanged(Self);
 end;
 
 function TJvEx##ClassName.GetDoubleBuffered: Boolean;
@@ -691,62 +781,17 @@ begin
     else
       QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
     FDoubleBuffered := Value;
-    if not (csCreating in ControlState) then
-      Invalidate;
   end;
 end;
-*) // MACRO END WINCONTROL_VISUALCLX
 
-
-(*$DEFINE JV_WINCONTROL_EVENTS_IMPL_COMMON(ClassName)
-  JV_STDCONTROL_EVENTS_IMPL_COMMON(ClassName)
-*)
-
-// ********************************************************
-// * differences in Control, WinControl and CustomControl *
-// ********************************************************
-(*$DEFINE JV_DIFF_EVENTS_IMPL_CONTROL(ClassName)
-constructor TJvEx##ClassName.Create(AOwner: TComponent);
+procedure TJvEx##ClassName.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  {$IFDEF VisualCLX}
-  WindowProc := WndProc;
-  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
-  SetCopyRectMode(Self, cmVCL);
-  {$IFEND}
-  {$ENDIF VisualCLX}
-  inherited Create(AOwner);
-  FHintColor := clInfoBk;
-  CONSTRUCTOR_CODE
+  CustomControl_Painting(Self, Canvas, EventRegion);
 end;
+ EMPTYLINE
+*) // end of macro JV_EVENTS_IMPL_DOUBLEBUFFERED
 
-destructor TJvEx##ClassName.Destroy;
-begin
-  DESTRUCTOR_CODE
-  inherited Destroy;
-end;
-*)
-
-(*$DEFINE JV_DIFF_EVENTS_IMPL_STDCONTROL(ClassName)
-constructor TJvEx##ClassName.Create(AOwner: TComponent);
-begin
-  {$IFDEF VisualCLX}
-  WindowProc := WndProc;
-  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
-  SetCopyRectMode(Self, cmVCL);
-  {$IFEND}
-  {$ENDIF VisualCLX}
-  inherited Create(AOwner);
-  FHintColor := clInfoBk;
-end;
-
-destructor TJvEx##ClassName.Destroy;
-begin
-  inherited Destroy;
-end;
-
-*)
-
-(*$DEFINE JV_DIFF_EVENTS_IMPL_WINCONTROL(ClassName)
+(*$DEFINE JV_DIFF_EVENTS_IMPL_CUSTOMCONTROL(ClassName)
 {$IFDEF VCL}
 JV_DIFF_EVENTS_IMPL_CONTROL(ClassName)
 {$ENDIF VCL}
@@ -754,13 +799,41 @@ JV_DIFF_EVENTS_IMPL_CONTROL(ClassName)
 constructor TJvEx##ClassName.Create(AOwner: TComponent);
 begin
   WindowProc := WndProc;
-  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
-  SetCopyRectMode(Self, cmVCL);
-  {$IFEND}
+  inherited Create(AOwner);
+  InternalFontChanged := Font.OnChange;
+  Font.OnChange := OnFontChanged;
+  CONSTRUCTOR_CODE
+  DoubleBuffered := True;
+  FHintColor := Application.HintColor;
+end;
+
+destructor TJvEx##ClassName.Destroy;
+begin
+  DESTRUCTOR_CODE
+  inherited Destroy;
+end;
+  EMPTYLINE
+JV_EVENTS_IMPL_DOUBLEBUFFERED(ClassName)
+  EMPTYLINE
+{$ENDIF VisualCLX}
+*)
+
+(*$DEFINE JV_DIFF_EVENTS_IMPL_WIDGETCONTROL(ClassName)
+{$IFDEF VCL}
+JV_DIFF_EVENTS_IMPL_WINCONTROL(ClassName)
+{$ENDIF VCL}
+{$IFDEF VISUALCLX}
+constructor TJvEx##ClassName.Create(AOwner: TComponent);
+begin
+  WindowProc := WndProc;
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
+  InternalFontChanged := Font.OnChange;
+  Font.OnChange := OnFontChanged;
   CONSTRUCTOR_CODE
+  DoubleBuffered := True;
+  FHintColor := Application.HintColor;
 end;
 
 destructor TJvEx##ClassName.Destroy;
@@ -772,47 +845,27 @@ end;
 
 procedure TJvEx##ClassName.Paint;
 begin
-  WidgetControl_DefaultPaint(Self, Canvas);
+  WidgetControl_DefaultPaint(self, Canvas);
 end;
-
+  EMPTYLINE
+JV_EVENTS_IMPL_DOUBLEBUFFERED(ClassName)
+  EMPTYLINE
 {$ENDIF VisualCLX}
-*)
+*) // MACRO END JV_DIFF_EVENTS_IMPL_WIDGETCONTROL
 
-(*$DEFINE JV_DIFF_EVENTS_IMPL_CUSTOMCONTROL(ClassName)
-{$IFDEF VCL}
-JV_DIFF_EVENTS_IMPL_CONTROL(ClassName)
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-constructor TJvEx##ClassName.Create(AOwner: TComponent);
-begin
-  WindowProc := WndProc;
-  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
-  SetCopyRectMode(Self, cmVCL);
-  {$IFEND}
-  inherited Create(AOwner);
-  CONSTRUCTOR_CODE
-  DoubleBuffered := True;
-end;
-
-destructor TJvEx##ClassName.Destroy;
-begin
-  DESTRUCTOR_CODE
-  inherited Destroy;
-end;
-{$ENDIF VisualCLX}
-*) // MACRO END JV_DIFF_EVENTS_IMPL_CUSTOMCONTROL
 
 (*$DEFINE JV_DIFF_EVENTS_IMPL_CUSTOMFORM(ClassName)
 constructor TJvEx##ClassName.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin
   {$IFDEF VisualCLX}
   WindowProc := WndProc;
-  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
-  SetCopyRectMode(Self, cmVCL);
-  {$IFEND}
   {$ENDIF VisualCLX}
   inherited CreateNew(AOwner, Dummy);
-  FHintColor := clInfoBk;
+  FHintColor := Application.HintColor;
+  {$IFDEF VisualCLX}
+  InternalFontChanged := Font.OnChange;
+  Font.OnChange := OnFontChanged;
+  {$ENDIF VisualCLX}
   CONSTRUCTOR_CODE
 end;
 
@@ -822,6 +875,10 @@ begin
   inherited Destroy;
 end;
 
+{$IFDEF VisualCLX}
+  EMPTYLINE
+JV_EVENTS_IMPL_DOUBLEBUFFERED(ClassName)
+{$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvEx##ClassName.CMShowingChanged(var Msg: TMessage);
 begin
@@ -841,11 +898,10 @@ begin
   inherited;
 end;
 {$ENDIF VCL}
+  EMPTYLINE
 *) // MACRO END JV_DIFF_EVENTS_IMPL_CUSTOMFORM
 
 // ************************************************
-
-
 
 (*$DEFINE JV_CONTROL_EVENTS_IMPL(ClassName)
 {$IFDEF VCL}
@@ -855,42 +911,22 @@ JV_CONTROL_EVENTS_IMPL_VCL(ClassName)
 JV_CONTROL_EVENTS_IMPL_VISUALCLX(ClassName)
 {$ENDIF VisualCLX}
 JV_CONTROL_EVENTS_IMPL_COMMON(ClassName)
-
 JV_DIFF_EVENTS_IMPL_CONTROL(ClassName)
 *)
 
-// StdControl is the same as WinControl except for Paint, double buffering
-
-(*$DEFINE JV_STDCONTROL_EVENTS_IMPL(ClassName)
-{$IFDEF VCL}
-JV_CONTROL_EVENTS_IMPL_VCL(ClassName)
-JV_STDCONTROL_EVENTS_IMPL_VCL(ClassName)
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-JV_CONTROL_EVENTS_IMPL_VISUALCLX(ClassName)
-JV_STDCONTROL_EVENTS_IMPL_VISUALCLX(ClassName)
-{$ENDIF VisualCLX}
-JV_CONTROL_EVENTS_IMPL_COMMON(ClassName)
-JV_STDCONTROL_EVENTS_IMPL_COMMON(ClassName)
-JV_DIFF_EVENTS_IMPL_STDCONTROL(ClassName)
-*)
-
-
-
-// common part for the following 3 macros
+// common part for the following 4 macros
 (*$DEFINE JV_WINCUSTOMCONTROL_EVENTS_IMPL(ClassName)
+
 {$IFDEF VCL}
 JV_CONTROL_EVENTS_IMPL_VCL(ClassName)
-JV_STDCONTROL_EVENTS_IMPL_VCL(ClassName)
 JV_WINCONTROL_EVENTS_IMPL_VCL(ClassName)
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 JV_CONTROL_EVENTS_IMPL_VISUALCLX(ClassName)
-JV_STDCONTROL_EVENTS_IMPL_VISUALCLX(ClassName)
 JV_WINCONTROL_EVENTS_IMPL_VISUALCLX(ClassName)
 {$ENDIF VisualCLX}
 JV_CONTROL_EVENTS_IMPL_COMMON(ClassName)
-JV_STDCONTROL_EVENTS_IMPL_COMMON(ClassName)
+JV_WINCONTROL_EVENTS_IMPL_COMMON(ClassName)
 *)
 
 // WinControl has different constructors/destructor for VCL and VisualCLX
@@ -899,12 +935,16 @@ JV_WINCUSTOMCONTROL_EVENTS_IMPL(ClassName)
 JV_DIFF_EVENTS_IMPL_WINCONTROL(ClassName)
 *)
 
-
-
 // CustomControl is the same as WinControl except the last macro line: JV_DIFF_EVENTS_IMPL_CUS...
 (*$DEFINE JV_CUSTOMCONTROL_EVENTS_IMPL(ClassName)
 JV_WINCUSTOMCONTROL_EVENTS_IMPL(ClassName)
 JV_DIFF_EVENTS_IMPL_CUSTOMCONTROL(ClassName)
+*)
+
+// WidgetControl is the same as WinControl except the last macro line: JV_DIFF_EVENTS_IMPL_CUS...
+(*$DEFINE JV_WIDGETCONTROL_EVENTS_IMPL(ClassName)
+JV_WINCUSTOMCONTROL_EVENTS_IMPL(ClassName)
+JV_DIFF_EVENTS_IMPL_WIDGETCONTROL(ClassName)
 *)
 
 // CustomForm is the same as CustomControl except the last macro line
@@ -915,12 +955,10 @@ JV_DIFF_EVENTS_IMPL_CUSTOMFORM(ClassName)
 
 {$DEFINE JV_CONTROL_EVENTS_IMPL_BEGIN(ClassName) JV_CONTROL_EVENTS_IMPL(ClassName)}
 {$DEFINE JV_WINCONTROL_EVENTS_IMPL_BEGIN(ClassName) JV_WINCONTROL_EVENTS_IMPL(ClassName)}
-{$DEFINE JV_STDCONTROL_EVENTS_IMPL_BEGIN(ClassName) JV_STDCONTROL_EVENTS_IMPL(ClassName)}
 {$DEFINE JV_CUSTOMCONTROL_EVENTS_IMPL_BEGIN(ClassName) JV_CUSTOMCONTROL_EVENTS_IMPL(ClassName)}
 
 {$DEFINE JV_CONTROL_EVENTS_IMPL_END(ClassName) }
 {$DEFINE JV_WINCONTROL_EVENTS_IMPL_END(ClassName) }
-{$DEFINE JV_STDCONTROL_EVENTS_IMPL_END(ClassName) }
 {$DEFINE JV_CUSTOMCONTROL_EVENTS_IMPL_END(ClassName) }
 
 
@@ -1061,44 +1099,4 @@ JV_EDITCONTROL_EVENTS_IMPL_END(ClassName)
 *)
 // ***********************************************************************
 // * END - MACROS for the EDIT controls
-// ***********************************************************************
-
-// ***********************************************************************
-// * BEGIN - MACROS for the STDEDIT controls
-// * No Paint, No DoubleBuffering & Painting
-// * controls with drawitem events:
-// * T(Custom)ComboBox
-// ***********************************************************************
-
-(*$DEFINE JV_STDEDITCONTROL_EVENTS_BEGIN(ClassName)
-  JV_STDCONTROL_EVENTS_BEGIN1(ClassName,IJvEditControlEvents)
-  JV_EDITCONTROL_EVENTS_COMMON_BEGIN(ClassName)
-*)
-
-(*$DEFINE JV_STDEDITCONTROL_EVENTS_END(ClassName)
-  JV_STDCONTROL_EVENTS_END(ClassName)
-*)
-
-(*$DEFINE JV_STDEDITCONTROL_EVENTS(ClassName)
-  JV_STDEDITCONTROL_EVENTS_BEGIN(ClassName)
-  JV_STDEDITCONTROL_EVENTS_END(ClassName)
-*)
-
-(*$DEFINE JV_STDEDITCONTROL_EVENTS_IMPL_BEGIN(ClassName)
-JV_STDCONTROL_EVENTS_IMPL_BEGIN(ClassName)
-JV_EDITCONTROL_EVENTS_COMMON_IMPL_BEGIN(ClassName)
-JV_STDCONTROL_EVENTS_IMPL_END(ClassName)
-*)
-
-
-(*$DEFINE JV_STDEDITCONTROL_EVENTS_IMPL_END(ClassName)
-*)
-
-(*$DEFINE JV_STDEDITCONTROL_EVENTS_IMPL(ClassName)
-JV_STDEDITCONTROL_EVENTS_IMPL_BEGIN(ClassName)
-JV_STDEDITCONTROL_EVENTS_IMPL_END(ClassName)
-*)
-
-// ***********************************************************************
-// * END - MACROS for the STDEDIT controls
 // ***********************************************************************

@@ -34,10 +34,11 @@ interface
 
 uses
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, Buttons, StdCtrls,
+  Windows, Messages,
   {$ENDIF VCL}
+  Graphics, Controls, Forms, Buttons, StdCtrls,
   {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms, QButtons, QStdCtrls, QWindows,
+  Qt, QWindows,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer, JvExControls;

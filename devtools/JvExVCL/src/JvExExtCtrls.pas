@@ -34,10 +34,11 @@ interface
 
 uses
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, ExtCtrls,
+  Windows, Messages,
   {$ENDIF VCL}
+  Graphics, Controls, Forms, ExtCtrls,
   {$IFDEF VisualCLX}
-  Qt, QTypes, QGraphics, QControls, QForms, QExtCtrls, Types, QWindows,
+  Qt, QTypes, Types, QWindows,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer, JvExControls;
@@ -57,9 +58,8 @@ type
   JV_CONTROL_EVENTS(Image)
   JV_CONTROL_EVENTS(Bevel)
   JV_CUSTOMCONTROL_EVENTS(CustomPanel)
-  JV_CUSTOMCONTROL_EVENTS(Panel)
   JV_WINCONTROL_EVENTS(CustomRadioGroup)
-  JV_WINCONTROL_EVENTS(RadioGroup)
+
   JV_CONTROL_EVENTS_BEGIN(Splitter)
   JV_CONSTRUCTOR
   {$IFDEF VisualCLX}
@@ -79,15 +79,10 @@ type
   {$ENDIF VisualCLX}
   JV_CUSTOMCONTROL_EVENTS_END(CustomControlBar)
 
-  JV_CUSTOMCONTROL_EVENTS_BEGIN(ControlBar)
-  JV_CONSTRUCTOR
-  {$IFDEF VisualCLX}
-  protected
-    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
-  {$ENDIF VisualCLX}
-  JV_CUSTOMCONTROL_EVENTS_END(ControlBar)
-
   {$IFDEF VCL}
+  JV_CUSTOMCONTROL_EVENTS(ControlBar)
+  JV_CUSTOMCONTROL_EVENTS(Panel)
+  JV_WINCONTROL_EVENTS(RadioGroup)
   JV_CUSTOMCONTROL_EVENTS(Page)
   JV_CUSTOMCONTROL_EVENTS(Notebook)
   JV_CUSTOMCONTROL_EVENTS(Header)
@@ -100,6 +95,133 @@ type
   {$ENDIF COMPILER6_UP}
   {$ENDIF VCL}
 
+  {$IFDEF VisualCLX}
+  TJvExControlBar = class(TJvExCustomControlBar)
+  public
+    property Canvas;
+  published
+    property Align;
+    property Anchors;
+    property AutoSize;
+    property Color;
+    property Constraints;
+    property DragMode;
+    property BevelEdges;
+    property BevelInner;
+    property BevelOuter;
+    property Enabled;
+    property GrabCursor;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property Picture;
+    property PopupMenu;
+    property RowSize;
+    property RowSnap;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+    property OnBandDrag;
+    property OnBandInfo;
+    property OnBandMove;
+    property OnBandPaint;
+    property OnClick;
+    property OnContextPopup;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnPaint;
+    property OnResize;
+    property OnStartDrag;
+  end;
+
+  TJvExPanel = class(TJvExCustomPanel)
+  published
+    property Align default alNone;
+    property Alignment;
+    property Anchors;
+    property BevelInner;
+    property BevelOuter;
+    property BevelWidth;
+    property Bitmap;
+    property BorderWidth;
+    property BorderStyle;
+    property Caption;
+    property Color default clBackground;
+    property Constraints;
+    property DragMode;
+    property Enabled;
+    property Font;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop default False;
+    property Visible;
+    property OnClick;
+    property OnContextPopup;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property OnStartDrag;
+  end;
+
+  TJvExRadioGroup = class(TJvExCustomRadioGroup)
+  published
+    property Items;
+    property Align default alNone;
+    property Alignment default taLeftJustify;
+    property Bitmap;
+    property Anchors;
+    property Caption;
+    property Color;
+    property ColumnLayout;
+    property Columns;
+    property Constraints;
+    property DragMode;
+    property Enabled;
+    property Font;
+    property ItemIndex;
+    property Masked default False;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint default False;
+    property TabOrder;
+    property TabStop default True;
+    property Visible;
+    property OnClick;
+    property OnContextPopup;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnStartDrag;
+  end;
+{$ENDIF VisualCLX}
+
 implementation
 
 JV_CONTROL_EVENTS_IMPL(Shape)
@@ -107,9 +229,7 @@ JV_CONTROL_EVENTS_IMPL(PaintBox)
 JV_CONTROL_EVENTS_IMPL(Image)
 JV_CONTROL_EVENTS_IMPL(Bevel)
 JV_CUSTOMCONTROL_EVENTS_IMPL(CustomPanel)
-JV_CUSTOMCONTROL_EVENTS_IMPL(Panel)
 JV_WINCONTROL_EVENTS_IMPL(CustomRadioGroup)
-JV_WINCONTROL_EVENTS_IMPL(RadioGroup)
 
 {$UNDEF CONSTRUCTORCODE}
 {$DEFINE CONSTRUCTORCODE ControlStyle := ControlStyle + [csSetCaption];}
@@ -142,16 +262,11 @@ end;
 {$ENDIF VisualCLX}
 JV_CUSTOMCONTROL_EVENTS_IMPL_END(CustomControlBar)
 
-JV_CUSTOMCONTROL_EVENTS_IMPL_BEGIN(ControlBar)
-{$IFDEF VisualCLX}
-function TJvExControlBar.HitTest(X, Y: Integer): Boolean;
-begin
-  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-end;
-{$ENDIF VisualCLX}
-JV_CUSTOMCONTROL_EVENTS_IMPL_END(ControlBar)
 
 {$IFDEF VCL}
+JV_CUSTOMCONTROL_EVENTS_IMPL(ControlBar)
+JV_CUSTOMCONTROL_EVENTS_IMPL(Panel)
+JV_WINCONTROL_EVENTS_IMPL(RadioGroup)
 JV_CUSTOMCONTROL_EVENTS_IMPL(Page)
 JV_CUSTOMCONTROL_EVENTS_IMPL(Notebook)
 JV_CUSTOMCONTROL_EVENTS_IMPL(Header)

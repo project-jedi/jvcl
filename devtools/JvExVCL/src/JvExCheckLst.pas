@@ -34,10 +34,11 @@ interface
 
 uses
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, CheckLst,
+  Windows, Messages,
   {$ENDIF VCL}
+  Graphics, Controls, Forms, CheckLst,
   {$IFDEF VisualCLX}
-  Types, Qt, QGraphics, QControls, QForms, QCheckLst, QWindows,
+  Types, Qt, QWindows,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer, JvExControls;
@@ -52,10 +53,10 @@ uses
 {$ENDIF VisualCLX}
 
 type
-  JV_STDCONTROL_EVENTS(CheckListBox)
+  JV_WINCONTROL_EVENTS(CheckListBox)
 
 implementation
 
-JV_STDCONTROL_EVENTS_IMPL(CheckListBox)
+JV_WINCONTROL_EVENTS_IMPL(CheckListBox)
 
 end.
