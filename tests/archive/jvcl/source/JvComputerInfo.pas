@@ -90,11 +90,22 @@ type
 
 implementation
 
-resourcestring
+const
   RC_VnetKey = 'System\CurrentControlSet\Services\Vxd\VNETSUP';
+  RC_VnetKeyNT = '';
   RC_CurrentKey = 'Software\Microsoft\Windows\CurrentVersion';
+  RC_CurrentKeyNT = 'Software\Microsoft\Windows NT\CurrentVersion';
 
   {**************************************************}
+const
+  cOSCurrentKey:array[boolean] of string =
+  (RC_CurrentKey,RC_CurrentKeyNT);
+
+
+function IsNT:boolean;
+begin
+  Result := Win32Platform = VER_PLATFORM_WIN32_NT;
+end;
 
 function TJvComputerInfo.GetComment: string;
 begin
@@ -105,14 +116,22 @@ end;
 
 function TJvComputerInfo.GetCompany: string;
 begin
-  Result := ReadReg(HKEY_LOCAL_MACHINE, RC_CurrentKey, 'RegisteredOrganization');
+  Result := ReadReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[isNT], 'RegisteredOrganization');
 end;
 
 {**************************************************}
 
 function TJvComputerInfo.GetComputerName: string;
+var buf:array[0..31] of char;nSize:Cardinal;
 begin
-  Result := ReadReg(HKEY_LOCAL_MACHINE, RC_VnetKey, 'ComputerName');
+  if isNT then
+  begin
+    nSize := sizeof(buf);
+    GetComputerName(buf,nSize);
+    Result := buf;
+  end
+  else
+    Result := ReadReg(HKEY_LOCAL_MACHINE, RC_VnetKey, 'ComputerName');
 end;
 
 {**************************************************}
@@ -129,7 +148,7 @@ begin
   with TRegistry.Create do
   begin
     RootKey := HKEY_LOCAL_MACHINE;
-    OpenKey(RC_CurrentKey, False);
+    OpenKey(cOSCurrentKey[isNT], False);
     try
       if ValueExists('DVD_Region') then
         Result := ReadInteger('DVD_Region')
@@ -146,21 +165,21 @@ end;
 
 function TJvComputerInfo.GetProductID: string;
 begin
-  Result := ReadReg(HKEY_LOCAL_MACHINE, RC_CurrentKey, 'ProductID');
+  Result := ReadReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[isNT], 'ProductID');
 end;
 
 {**************************************************}
 
 function TJvComputerInfo.GetProductKey: string;
 begin
-  Result := ReadReg(HKEY_LOCAL_MACHINE, RC_CurrentKey, 'ProductKey');
+  Result := ReadReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[isNT], 'ProductKey');
 end;
 
 {**************************************************}
 
 function TJvComputerInfo.GetProductName: string;
 begin
-  Result := ReadReg(HKEY_LOCAL_MACHINE, RC_CurrentKey, 'ProductName');
+  Result := ReadReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[isNT], 'ProductName');
 end;
 
 {**************************************************}
@@ -189,21 +208,21 @@ end;
 
 function TJvComputerInfo.GetUsername: string;
 begin
-  Result := ReadReg(HKEY_LOCAL_MACHINE, RC_CurrentKey, 'RegisteredOwner');
+  Result := ReadReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[isNT], 'RegisteredOwner');
 end;
 
 {**************************************************}
 
 function TJvComputerInfo.GetVersion: string;
 begin
-  Result := ReadReg(HKEY_LOCAL_MACHINE, RC_CurrentKey, 'Version');
+  Result := ReadReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[isNT], 'Version');
 end;
 
 {**************************************************}
 
 function TJvComputerInfo.GetVersionNumber: string;
 begin
-  Result := ReadReg(HKEY_LOCAL_MACHINE, RC_CurrentKey, 'VersionNumber');
+  Result := ReadReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[isNT], 'VersionNumber');
 end;
 
 {**************************************************}
@@ -244,14 +263,15 @@ end;
 
 procedure TJvComputerInfo.SetCompany(const Value: string);
 begin
-  WriteReg(HKEY_LOCAL_MACHINE, RC_CurrentKey, 'RegisteredOrganization', Value);
+  WriteReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[isNT], 'RegisteredOrganization', Value);
 end;
 
 {**************************************************}
 
 procedure TJvComputerInfo.SetComputerName(const Value: string);
 begin
-  WriteReg(HKEY_LOCAL_MACHINE, RC_VnetKey, 'ComputerName', Value);
+  if not isNT then
+    WriteReg(HKEY_LOCAL_MACHINE, RC_VnetKey, 'ComputerName', Value);
 end;
 
 {**************************************************}
@@ -261,8 +281,8 @@ begin
   with TRegistry.Create do
   begin
     RootKey := HKEY_LOCAL_MACHINE;
-    OpenKey(RC_CurrentKey, False);
-    WriteInteger('DVD_Region', Value);
+    if OpenKey(cOSCurrentKey[isNT], False) then
+      WriteInteger('DVD_Region', Value);
     Free;
   end;
 end;
@@ -271,42 +291,42 @@ end;
 
 procedure TJvComputerInfo.SetProductID(const Value: string);
 begin
-  WriteReg(HKEY_LOCAL_MACHINE, RC_CurrentKey, 'ProductId', Value);
+  WriteReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[isNT], 'ProductId', Value);
 end;
 
 {**************************************************}
 
 procedure TJvComputerInfo.SetProductKey(const Value: string);
 begin
-  WriteReg(HKEY_LOCAL_MACHINE, RC_CurrentKey, 'ProductKey', Value);
+  WriteReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[isNT], 'ProductKey', Value);
 end;
 
 {**************************************************}
 
 procedure TJvComputerInfo.SetProductName(const Value: string);
 begin
-  WriteReg(HKEY_LOCAL_MACHINE, RC_CurrentKey, 'ProductName', Value);
+  WriteReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[isNT], 'ProductName', Value);
 end;
 
 {**************************************************}
 
 procedure TJvComputerInfo.SetUsername(const Value: string);
 begin
-  WriteReg(HKEY_LOCAL_MACHINE, RC_CurrentKey, 'RegisteredOwner', Value);
+  WriteReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[isNT], 'RegisteredOwner', Value);
 end;
 
 {**************************************************}
 
 procedure TJvComputerInfo.SetVersion(const Value: string);
 begin
-  WriteReg(HKEY_LOCAL_MACHINE, RC_CurrentKey, 'Version', Value);
+  WriteReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[isNT], 'Version', Value);
 end;
 
 {**************************************************}
 
 procedure TJvComputerInfo.SetVersionNumber(const Value: string);
 begin
-  WriteReg(HKEY_LOCAL_MACHINE, RC_CurrentKey, 'VersionNumber', Value);
+  WriteReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[isNT], 'VersionNumber', Value);
 end;
 
 {**************************************************}
@@ -316,8 +336,8 @@ begin
   with TRegistry.Create do
   begin
     RootKey := Base;
-    OpenKey(KeyName, False);
-    WriteString(ValueName, Value);
+    if OpenKey(KeyName, False) then
+      WriteString(ValueName, Value);
     Free;
   end;
 end;
