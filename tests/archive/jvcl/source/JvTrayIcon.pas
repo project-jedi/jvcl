@@ -97,6 +97,7 @@ type
     FOnAnimate: TAnimateEvent;
     FVisibility: TTrayVisibilities;
     FOldHint: string;
+    FSnap: Boolean;
     procedure OnAnimateTimer(Sender: TObject);
     procedure IconChanged(Sender: TObject);
     procedure SetActive(Value: Boolean);
@@ -139,6 +140,7 @@ type
     property DropDownMenu: TPopupMenu read FDropDown write FDropDown;
     property PopupMenu: TPopupMenu read FPopupMenu write FPopupMenu;
     property Delay: Cardinal read FDelay write SetDelay default 100;
+    property Snap: Boolean read FSnap write FSnap default false;
     property Visibility: TTrayVisibilities read FVisibility write SetVisibility
       default [tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide];
 
@@ -240,6 +242,7 @@ begin
   FIcon := TIcon.Create;
   FIcon.OnChange := IconChanged;
   FVisible := True;
+  FSnap := false;
   {$IFDEF COMPILER6_UP}
   FHandle := Classes.AllocateHWnd(WndProc);
   {$ELSE}
@@ -487,7 +490,11 @@ end;
 procedure TJvTrayIcon.HideApplication;
 begin
   if (Application.MainForm<>nil) and (Application.MainForm.WindowState<>wsMinimized) then
+  begin
+    if Snap then
+      Application.MainForm.Visible := false;
     Application.Minimize;
+  end;
   ShowWindow(Application.Handle, SW_HIDE);
 end;
 
@@ -497,7 +504,8 @@ procedure TJvTrayIcon.ShowApplication;
 begin
   ShowWindow(Application.Handle, SW_SHOW);
   Application.Restore;
-  Application.MainForm.Visible := true;
+  if Application.MainForm<>nil then
+    Application.MainForm.Visible := true;
 end;
 
 {**************************************************}
