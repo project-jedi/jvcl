@@ -654,6 +654,10 @@ type
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
     procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
     procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
+    function GetSubtitle: TJvWizardPageTitle;
+    function GetTitle: TJvWizardPageTitle;
+    procedure SetSubtitle(const Value: TJvWizardPageTitle);
+    procedure SetTitle(const Value: TJvWizardPageTitle);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure ReadState(Reader: TReader); override;
@@ -677,6 +681,8 @@ type
       read GetPageIndex write SetPageIndex stored False;
   published
     property Header: TJvWizardPageHeader read FHeader write FHeader;
+    property Subtitle:TJvWizardPageTitle read GetSubtitle write SetSubtitle stored false;
+    property Title:TJvWizardPageTitle read GetTitle write SetTitle stored false;
     property Image: TJvWizardImage read FImage write FImage;
     property Panel: TJvWizardPagePanel read FPanel write FPanel;
     property EnabledButtons: TJvWizardButtonSet
@@ -876,9 +882,21 @@ type
     property Enabled;
     property Visible;
   end;
+resourcestring
+  rsFirstButtonCaption = 'To &Start Page';
+  rsLastButtonCaption = 'To &Last Page';
+  rsBackButtonCaption = '< &Back';
+  rsNextButtonCaption = '&Next >';
+  rsFinishButtonCaption = '&Finish';
+  rsWelcome = 'Welcome';
+  rsTitle = 'Title';
+  rsSubtitle = 'Subtitle';
+  rsInvalidParentControl = 'The Parent should be TJvWizard or a descendants.';
+  rsInvalidWizardPage = 'The pages belong to another wizard.';
 
 implementation
-
+uses
+  Consts;
 const
 
   ciButtonWidth = 75;
@@ -886,20 +904,6 @@ const
   ciButtonBarHeight = 42;
   ciButtonPlacement = (ciButtonBarHeight - ciButtonHeight) div 2;
 
-resourcestring
-
-  rsFirstButtonCaption = 'To &Start Page';
-  rsLastButtonCaption = 'To &Last Page';
-  rsBackButtonCaption = '< &Back';
-  rsNextButtonCaption = '&Next >';
-  rsCancelButtonCaption = 'Cancel';
-  rsFinishButtonCaption = '&Finish';
-  rsHelpButtonCaption = '&Help';
-  rsWelcome = 'Welcome';
-  rsTitle = 'Title';
-  rsSubtitle = 'Subtitle';
-  rsInvalidParentControl = 'The Parent should be TJvWizard or its descendants.';
-  rsInvalidWizardPage = 'Pages are belong to different wizard.';
 
 type
   EJvWizard = class(Exception);
@@ -1160,7 +1164,7 @@ end;
 constructor TJvWizardCancelButton.Create(AOwner: TComponent);
 begin
   inherited;
-  Caption := rsCancelButtonCaption;
+  Caption := SCancelButton;
   Visible := True;
   Cancel := True;
   Width := ciButtonWidth;
@@ -1191,7 +1195,7 @@ end;
 constructor TJvWizardHelpButton.Create(AOwner: TComponent); // Added by Theodore
 begin
   inherited;
-  Caption := rsHelpButtonCaption;
+  Caption := SHelpButton;
   Visible := False;
   Anchors := [akLeft, akBottom];
   Width := ciButtonWidth;
@@ -2445,6 +2449,26 @@ begin
       Invalidate;
     end;
   end;
+end;
+
+function TJvWizardCustomPage.GetSubtitle: TJvWizardPageTitle;
+begin
+  Result := Header.Subtitle;
+end;
+
+function TJvWizardCustomPage.GetTitle: TJvWizardPageTitle;
+begin
+  Result := Header.Title;
+end;
+
+procedure TJvWizardCustomPage.SetSubtitle(const Value: TJvWizardPageTitle);
+begin
+  Header.Subtitle := Value;
+end;
+
+procedure TJvWizardCustomPage.SetTitle(const Value: TJvWizardPageTitle);
+begin
+  Header.Title := Value;
 end;
 
 { TJvWizardWelcomePage }
