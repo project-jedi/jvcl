@@ -55,7 +55,7 @@
     <File Name="..\..\run\JvInterpreter_JvInterpreter.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_JvUtils.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_Menus.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_Quickrpt.pas" Targets="allbutperso" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Quickrpt.pas" Targets="allbutperso" Formname="" Condition="JVCL_UseQuickReport"/>
     <File Name="..\..\run\JvInterpreter_StdCtrls.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_System.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_SysUtils.pas" Targets="allbutclx" Formname="" Condition=""/>

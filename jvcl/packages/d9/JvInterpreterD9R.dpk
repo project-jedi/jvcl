@@ -72,7 +72,6 @@ contains
   JvInterpreter_JvInterpreter in '..\..\run\JvInterpreter_JvInterpreter.pas' ,
   JvInterpreter_JvUtils in '..\..\run\JvInterpreter_JvUtils.pas' ,
   JvInterpreter_Menus in '..\..\run\JvInterpreter_Menus.pas' ,
-  JvInterpreter_Quickrpt in '..\..\run\JvInterpreter_Quickrpt.pas' ,
   JvInterpreter_StdCtrls in '..\..\run\JvInterpreter_StdCtrls.pas' ,
   JvInterpreter_System in '..\..\run\JvInterpreter_System.pas' ,
   JvInterpreter_SysUtils in '..\..\run\JvInterpreter_SysUtils.pas' ,
