@@ -98,7 +98,7 @@ type
     property Align;
     property Visible;
     property ShowHint;
-    property Popupmenu;
+    property PopupMenu;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
