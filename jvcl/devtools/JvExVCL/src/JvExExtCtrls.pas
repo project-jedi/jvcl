@@ -69,6 +69,8 @@ type
     function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override;
   {$ENDIF VisualCLX}
+  protected
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
   JV_CONTROL_EVENTS_END(Splitter)
 
   JV_CUSTOMCONTROL_EVENTS_BEGIN(CustomControlBar)
@@ -278,5 +280,100 @@ JV_WINCONTROL_EVENTS_IMPL(CustomColorBox)
 JV_WINCONTROL_EVENTS_IMPL(ColorBox)
 {$ENDIF COMPILER6_UP}
 {$ENDIF VCL}
+
+// SplitterMouseDownFix fixes a bug in the VCL that causes the splitter to no
+// more work with the control in the left/top of it when the control has a size
+// of 0. This is actually a TWinControl.AlignControl bug.
+procedure SplitterMouseDownFix(Splitter: TSplitter);
+var
+  Control: TControl;
+  Pt: TPoint;
+  R: TRect;
+  I, Size: Integer;
+begin
+  with Splitter do
+  begin
+    if Align in [alLeft, alTop] then
+    begin
+      Control := nil;
+      Pt := Point(Left, Top);
+      if Align = alLeft then
+        Dec(Pt.X)
+      else //if Align = alTop then
+        Dec(Pt.Y);
+
+      for I := 0 to Parent.ControlCount - 1 do
+      begin
+        Control := Parent.Controls[I];
+        R := Control.BoundsRect;
+        if Align = alLeft then
+          Size := R.Right - R.Left
+        else //if Align = alTop then
+          Size := R.Bottom - R.Top;
+
+        if Control.Visible and Control.Enabled and (Size = 0) then
+        begin
+          if Align = alLeft then
+            Dec(R.Left)
+          else // Align = alTop then
+            Dec(R.Top);
+
+          if PtInRect(R, Pt) then
+            Break;
+        end;
+        Control := nil;
+      end;
+
+      if Control = nil then
+      begin
+        // Check for the control that is zero-sized but after the splitter.
+        // TWinControl.AlignControls does not work properly with alLeft/alTop.
+        if Align = alLeft then
+          Pt := Point(Left + Width - 1, Top)
+        else // if Align = alTop then
+          Pt := Point(Left, Top + Height - 1);
+
+        for I := 0 to Parent.ControlCount - 1 do
+        begin
+          Control := Parent.Controls[I];
+          R := Control.BoundsRect;
+          if Align = alLeft then
+            Size := R.Right - R.Left
+          else //if Align = alTop then
+            Size := R.Bottom - R.Top;
+
+          if Control.Visible and Control.Enabled and (Size = 0) then
+          begin
+            if Align = alLeft then
+              Dec(R.Left)
+            else // Align = alTop then
+              Dec(R.Top);
+
+            if PtInRect(R, Pt) then
+              Break;
+          end;
+          Control := nil;
+        end;
+
+        if Control <> nil then
+        begin
+          // realign left/top control
+          if Align = alLeft then
+            Control.Left := -1
+          else // if Align = alTop then
+            Control.Top := -1;
+        end;
+      end;
+
+    end;
+  end;
+end;
+
+procedure TJvExSplitter.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  SplitterMouseDownFix(Self);
+  inherited MouseDown(Button, Shift, X, Y);
+end;
 
 end.
