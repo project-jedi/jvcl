@@ -468,7 +468,7 @@ var
   PageClient: TPanel;
   ListView: TListView;
   Actions, Comments: TStrings;
-  I, MaxWidth, TextWidth, Count: Integer;
+  I, MaxWidth, TextWidth, Count, ActionsWidth: Integer;
   ListItem: TListItem;
 begin
   PageClient := TPanel(Page.FindComponent('piPageClient')); // do not localize
@@ -484,6 +484,7 @@ begin
   ListView.SmallImages := FormMain.ImageList;
 
   MaxWidth := 150;
+  ActionsWidth := 0;
   Actions := TStringList.Create;
   Comments := TStringList.Create;
   ListView.Items.BeginUpdate;
@@ -497,9 +498,16 @@ begin
     begin
       ListItem := ListView.Items.Add;
       if I >= Actions.Count then
-        ListItem.Caption := ''
+      begin
+        ListItem.Caption := '';
+      end
       else
+      begin
         ListItem.Caption := Actions[I];
+        TextWidth := ListView.Canvas.TextWidth(Actions[I]);
+        if TextWidth > ActionsWidth then
+          ActionsWidth := TextWidth;
+      end;
 
       if ListItem.Caption = '' then
         ListItem.ImageIndex := -1
@@ -518,7 +526,7 @@ begin
       end;
     end;
 
-    ListView.Columns.Add.Width := 150;
+    ListView.Columns.Add.Width := ActionsWidth+30; // +30 to cope for the bullet width
     if ListView.ClientWidth < MaxWidth + 50 then
       ListView.Columns.Add.Width := MaxWidth + 50
     else
