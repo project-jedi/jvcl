@@ -49,7 +49,7 @@ uses
   JvQWaitingGradient, JvQWaitingProgress, JvQSpecialProgress,
   JvQSlider, JvQAnimatedImage, JvQSpecialImage, JvQAnimatedEditor,
   JvQIconListForm, JvQColorTrackBar
-  {$IFDEF LINUX}, JvQPictureEditors,  JvQPictureEditForm {$ENDIF}
+  {$IFDEF _LINUX}, JvQPictureEditors,  JvQPictureEditForm {$ENDIF}
   ;
 
 
@@ -74,7 +74,7 @@ begin
 //  RegisterPropertyEditor(TypeInfo(TJvID3FileInfo), nil, '', TJvID3FileInfoEditor);
 
   RegisterComponentEditor(TJvAnimatedImage, TJvAnimatedEditor);
-  {$IFDEF LINUX}
+  {$IFDEF _LINUX}
   RegisterComponentEditor(TJvPicClip, TJvGraphicsEditor);
   {$ENDIF LINUX}
 //  RegisterComponentEditor(TJvID3Controller, TJvID3ControllerEditor);

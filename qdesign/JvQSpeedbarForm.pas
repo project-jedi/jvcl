@@ -77,8 +77,6 @@ type
     CopyMenu: TMenuItem;
     PasteMenu: TMenuItem;
     CutMenu: TMenuItem;
-    FormPlacement1: TJvFormStorage;
-    AppStorage: TJvAppRegistryStorage;
     procedure DelSectionClick(Sender: TObject);
     procedure AddButtonClick(Sender: TObject);
     procedure RemoveButtonClick(Sender: TObject);
@@ -1015,7 +1013,7 @@ begin
   FDrag := False;
   if NewStyleControls then
     Font.Style := [];
-  AppStorage.Root := SDelphiKey;
+//  AppStorage.Root := SDelphiKey;
 end;
 
 procedure TJvSpeedbarEditor.FormDestroy(Sender: TObject);
