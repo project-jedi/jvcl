@@ -80,7 +80,7 @@ end;
 procedure TJvAppStoragePropertyDBGridColumnsEngine.WriteProperty(AStorage: TJvCustomAppStorage;
   const APath: string; AObject: TObject; AProperty: TObject; const Recursive: Boolean);
 begin
-  if Assigned(AProperty) and (AProperty is TCustomDBGrid) then
+  if Assigned(AProperty) and (AProperty is TDBGridColumns) then
     AStorage.WriteCollection(APath, TCollection(AProperty));
 end;
 
