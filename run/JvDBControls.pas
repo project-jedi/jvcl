@@ -75,8 +75,6 @@ type
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
-    function GetReadOnly: Boolean; reintroduce;
-    procedure SetReadOnly(Value: Boolean); reintroduce;
     function GetTextMargins: TPoint;
     procedure ResetMaxLength;
     procedure SetDataField(const Value: string);
@@ -93,6 +91,8 @@ type
     procedure DoUndo; override;
     procedure Change; override;
     function EditCanModify: Boolean; override;
+    function GetReadOnly: Boolean; override;   
+    procedure SetReadOnly(Value: Boolean); override;   
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure Loaded; override;
@@ -187,8 +187,6 @@ type
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
-    function GetReadOnly: Boolean; reintroduce;
-    procedure SetReadOnly(Value: Boolean); reintroduce;
     procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure SetFocused(Value: Boolean);
@@ -202,6 +200,8 @@ type
     procedure DoClipboardPaste; override;
     procedure Change; override;
     function EditCanModify: Boolean; override;
+    function GetReadOnly: Boolean; override;
+    procedure SetReadOnly(Value: Boolean); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure Loaded; override;
@@ -299,8 +299,6 @@ type
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
-    function GetReadOnly: Boolean; reintroduce;
-    procedure SetReadOnly(Value: Boolean); reintroduce;
     procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure UpdateData(Sender: TObject);
@@ -315,6 +313,8 @@ type
     procedure ApplyDate(Value: TDateTime); override;
     procedure Change; override;
     function EditCanModify: Boolean; override;
+    function GetReadOnly: Boolean; override;
+    procedure SetReadOnly(Value: Boolean); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -434,8 +434,6 @@ type
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
-    function GetReadOnly: Boolean; reintroduce;
-    procedure SetReadOnly(Value: Boolean); reintroduce;
     procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure SetDefaultParams(Value: Boolean);
@@ -452,6 +450,8 @@ type
     procedure DataChanged; override; //Polaris
 
     function EditCanModify: Boolean; override;
+    function GetReadOnly: Boolean; override;
+    procedure SetReadOnly(Value: Boolean); override;
     function IsValidChar(Key: Char): Boolean; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
@@ -690,7 +690,7 @@ begin
   FDataLink.OnUpdateData := UpdateData;
   FDataLink.OnActiveChange := ActiveChange;
   // new stuff that isn't in the VCL version.
-  inherited ReadOnly := True;
+  inherited SetReadOnly(True);
 end;
 
 destructor TJvDBMaskEdit.Destroy;
@@ -878,7 +878,7 @@ end;
 
 procedure TJvDBMaskEdit.EditingChange(Sender: TObject);
 begin
-  inherited ReadOnly := not FDataLink.Editing;
+  inherited SetReadOnly(not FDataLink.Editing);
 end;
 
 procedure TJvDBMaskEdit.UpdateData(Sender: TObject);
@@ -911,7 +911,7 @@ begin
   SetFocused(True);
   inherited DoEnter;
   if SysLocale.FarEast and FDataLink.CanModify then
-    inherited ReadOnly := False;
+    inherited SetReadOnly(False);
 end;
 
 procedure TJvDBMaskEdit.DoExit;
