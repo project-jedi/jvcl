@@ -98,6 +98,14 @@ type
   // and publishes a few properties for them to be
   // used by the user in the IDE
   TJvAppXMLFileStorage = class (TJvCustomAppXMLStorage)
+  protected
+    procedure DeleteValueInt(const Path: string); override;
+    procedure DeleteSubTreeInt(const Path: string); override;
+    procedure DoWriteBoolean(const Path: string; Value: Boolean); override;
+    procedure DoWriteInteger(const Path: string; Value: Integer); override;
+    procedure DoWriteFloat(const Path: string; Value: Extended); override;
+    procedure DoWriteString(const Path: string; Value: string); override;
+    procedure DoWriteBinary(const Path: string; const Buf; BufSize: Integer); override;
   public
     property Xml;
 
@@ -106,6 +114,7 @@ type
     
     property AsString;
   published
+    property AutoFlush;
     property FileName;
     property Location;
     property RootNodeName;
@@ -590,6 +599,53 @@ begin
 end;
 
 { TJvAppXMLFileStorage }
+
+procedure TJvAppXMLFileStorage.DeleteSubTreeInt(const Path: string);
+begin
+  inherited;
+  if AutoFlush then Flush;
+end;
+
+procedure TJvAppXMLFileStorage.DeleteValueInt(const Path: string);
+begin
+  inherited;
+  if AutoFlush then Flush;
+end;
+
+procedure TJvAppXMLFileStorage.DoWriteBinary(const Path: string; const Buf;
+  BufSize: Integer);
+begin
+  inherited;
+  if AutoFlush then Flush;
+end;
+
+procedure TJvAppXMLFileStorage.DoWriteBoolean(const Path: string;
+  Value: Boolean);
+begin
+  inherited;
+  if AutoFlush then Flush;
+end;
+
+procedure TJvAppXMLFileStorage.DoWriteFloat(const Path: string;
+  Value: Extended);
+begin
+  inherited;
+  if AutoFlush then Flush;
+end;
+
+procedure TJvAppXMLFileStorage.DoWriteInteger(const Path: string;
+  Value: Integer);
+begin
+  inherited;
+  if AutoFlush then Flush;
+end;
+
+procedure TJvAppXMLFileStorage.DoWriteString(const Path: string;
+  Value: string);
+begin
+  inherited;
+  if AutoFlush then Flush;
+end;
 
 procedure TJvAppXMLFileStorage.Flush;
 begin

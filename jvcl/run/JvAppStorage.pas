@@ -593,6 +593,7 @@ type
   // derived class or Flush would access a deleted object
   TJvCustomAppMemoryFileStorage = class(TJvCustomAppStorage)
   protected
+    FAutoFlush: Boolean;
     FFileName: TFileName;
     FLocation: TFileLocation;
     FOnGetFileName: TJvAppStorageGetFileNameEvent;
@@ -609,6 +610,8 @@ type
     property AsString: string read GetAsString write SetAsString;
     property FileName: TFileName read FFileName write SetFileName;
     property Location: TFileLocation read FLocation write SetLocation default flExeFile;
+
+    property AutoFlush : Boolean read FAutoFlush write FAutoFlush default False;
 
     property OnGetFileName: TJvAppStorageGetFileNameEvent
       read FOnGetFileName write FOnGetFileName;
@@ -2243,6 +2246,7 @@ constructor TJvCustomAppMemoryFileStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FLocation := flExeFile;
+  FAutoFlush := False;
 end;
 
 destructor TJvCustomAppMemoryFileStorage.Destroy;
