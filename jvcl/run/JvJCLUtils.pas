@@ -478,8 +478,8 @@ function TryStrToDateTime(const S: string; out Date: TDateTime): Boolean;
 function StrToDateDef(const S: string; Default: TDateTime): TDateTime;
 function StrToDateFmt(const DateFormat, S: string): TDateTime;
 function StrToDateFmtDef(const DateFormat, S: string; Default: TDateTime): TDateTime;
-function DefDateFormat(FourDigitYear: Boolean): string;
-function DefDateMask(BlanksChar: Char; FourDigitYear: Boolean): string;
+function DefDateFormat(AFourDigitYear: Boolean): string;
+function DefDateMask(BlanksChar: Char; AFourDigitYear: Boolean): string;
 
 function FormatLongDate(Value: TDateTime): string;
 function FormatLongDateTime(Value: TDateTime): string;
@@ -694,12 +694,7 @@ function PtInRectInclusive(R:TRect;Pt:TPoint):boolean;
 // Works like PtInRect but excludes all edges from comparision
 function PtInRectExclusive(R:TRect;Pt:TPoint):boolean;
 
-{$IFDEF USE_FOUR_DIGIT_YEAR}
-var
-  FourDigitYear: Boolean = true;
-{$ELSE}
 function FourDigitYear: Boolean;
-{$ENDIF USE_FOUR_DIGIT_YEAR}
 
 { moved from JvJVCLUTils }
 
@@ -4594,9 +4589,9 @@ begin
     Result := Trunc(Default);
 end;
 
-function DefDateFormat(FourDigitYear: Boolean): string;
+function DefDateFormat(AFourDigitYear: Boolean): string;
 begin
-  if FourDigitYear then
+  if AFourDigitYear then
   begin
     case GetDateOrder(ShortDateFormat) of
       doMDY:
@@ -4620,9 +4615,9 @@ begin
   end;
 end;
 
-function DefDateMask(BlanksChar: Char; FourDigitYear: Boolean): string;
+function DefDateMask(BlanksChar: Char; AFourDigitYear: Boolean): string;
 begin
-  if FourDigitYear then
+  if AFourDigitYear then
   begin
     case GetDateOrder(ShortDateFormat) of
       doMDY, doDMY:
@@ -4663,13 +4658,10 @@ begin
     Result := '';
 end;
 
-{$IFNDEF USE_FOUR_DIGIT_YEAR}
-
 function FourDigitYear: Boolean;
 begin
   Result := Pos('YYYY', AnsiUpperCase(ShortDateFormat)) > 0;
 end;
-{$ENDIF}
 { end JvDateUtil }
 
 { begin JvStrUtils }
@@ -8067,12 +8059,5 @@ begin
   end;
   Clip.PixelFormat := OPF;
 end;
-
-initialization
-  { begin JvDateUtil }
-  {$IFDEF USE_FOUR_DIGIT_YEAR}
-  FourDigitYear := Pos('YYYY', AnsiUpperCase(ShortDateFormat)) > 0;
-  {$ENDIF}
-  { end JvDateUtil }
 
 end.

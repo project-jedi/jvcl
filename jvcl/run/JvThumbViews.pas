@@ -120,9 +120,6 @@ type
     procedure DoInvalidImage(Sender: TObject; const FileName: string);
     //    Procedure WMLoadWhenReady(var Msg:TMessage); message WM_LoadWhenReady;
   protected
-//  {$IFDEF DEBUG}
-//    procedure WndProc(var Msg: TMessage); Override;
-//  {$ENDIF}
     procedure SetScrollMode(AMode: TscrollMode);
     procedure SetSelected(Number: Longint);
     //    Procedure SetBufferFile(NewName:String);
@@ -954,23 +951,6 @@ begin
       ScrollTo(Selected);
   end
 end;
-
-//{$IFDEF DEBUG}
-//procedure TJvThumbView.WndProc(var Msg: TMessage);
-//Var
-//  Test : TStringList;
-//begin
-//    Test:= TStringList.Create;
-//    try
-//      Test.LoadFromFile('c:\Log.Tx');
-//      Test.Add(IntTostr(Msg.Msg) +','+IntToStr(Msg.LParam)+','+IntToStr(Msg.WParam));
-//      Test.SaveToFile('C:]Log.txt');
-//    Finally
-//      Test.free;
-//    end;
-//  Inherited
-//end;
-//{$ENDIF}
 
 procedure TJvThumbView.KeyUp(var Key: Word; Shift: TShiftState);
 begin

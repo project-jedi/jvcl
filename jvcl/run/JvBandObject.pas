@@ -29,8 +29,6 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{.$DEFINE DEBUG}
-
 unit JvBandObject;
 
 interface
@@ -94,7 +92,7 @@ type
 
   TzCustomBandObject = class(TComObject, IDeskBand, IObjectWithSite, IPersist, IPersistStream, IInputObject)
   private
-    FBandForm: TjvBandForm;
+    FBandForm: TJvBandForm;
     FBandID: DWORD;
     FViewMode: DWORD;
     FSite: IInputObjectSite;
@@ -167,15 +165,21 @@ type
 implementation
 
 uses
-  // (rom) debugging deactivated
-  {$IFDEF Debug}
-  //zTrace, JclStrings,
+  {$IFDEF DEBUGINFO_ON}
+  //zTrace,
   {$ENDIF}
   Registry, SysUtils, Math, JvJVCLUtils;
 
 const
   cIERegistryBase = 'Software\Microsoft\Internet Explorer\';
   cCLSID = 'CLSID\';
+
+{$IFDEF DEBUGINFO_ON}
+// (rom) debugging deactivated
+procedure zTraceLog(const LogText: string);
+begin
+end;
+{$ENDIF DEBUGINFO_ON}
 
 function MakeHResult(Sev, Fac, Code: LongWord): HRESULT;
 begin
@@ -374,9 +378,9 @@ end;
 
 procedure TzCustomBandObject.AfterConstruction;
 begin
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.AfterConstruction()');
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.AfterConstruction()');
+  {$ENDIF DEBUGINFO_ON}
   inherited AfterConstruction;
   FBandForm := nil;
   FSite := nil;
@@ -385,18 +389,18 @@ end;
 
 procedure TzCustomBandObject.BeforeDestruction;
 begin
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.BeforeDestruction()');
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.BeforeDestruction()');
+  {$ENDIF DEBUGINFO_ON}
   if Assigned(FSite) then
     FSite := nil; // implicit Release
   if Assigned(FOleCommandTarget) then
     FOleCommandTarget := nil; // implicit Release
   if Assigned(FBandForm) then
     FreeAndNil(FBandForm);
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.BeforeDestruction End()');
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.BeforeDestruction End()');
+  {$ENDIF DEBUGINFO_ON}
   inherited BeforeDestruction;
 end;
 
@@ -495,13 +499,13 @@ end;
 function TzCustomBandObject.GetBandInfo(BandID, ViewMode: DWORD;
   var Dbi: TDeskBandInfo): HRESULT;
 begin
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.GetBandInfo()');
-  //zTraceLog('  BandID=' + Format('0x%x', [BandID]));
-  //zTraceLog('  ViewMode=' + Format('0x%x', [ViewMode]));
-  //zTraceLog('  Dbi=' + Format('0x%p', [@Dbi]));
-  //zTraceLog('    dwMask=' + Format('0x%x', [Dbi.dwMask]));
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.GetBandInfo()');
+  zTraceLog('  BandID=' + Format('0x%x', [BandID]));
+  zTraceLog('  ViewMode=' + Format('0x%x', [ViewMode]));
+  zTraceLog('  Dbi=' + Format('0x%p', [@Dbi]));
+  zTraceLog('    dwMask=' + Format('0x%x', [Dbi.dwMask]));
+  {$ENDIF DEBUGINFO_ON}
   FBandID := BandID;
   FViewMode := ViewMode;
   if not Assigned(FBandForm) then
@@ -514,37 +518,37 @@ begin
     if (dwMask and DBIM_MINSIZE) <> 0 then
     begin
       ptMinSize := BandMinSize;
-      {$IFDEF Debug}
-      //zTraceLog('  Dbi.ptMinSize=' + Format('(%d,%d)', [ptMinSize.x, ptMinSize.y]));
-      {$ENDIF}
+      {$IFDEF DEBUGINFO_ON}
+      zTraceLog('  Dbi.ptMinSize=' + Format('(%d,%d)', [ptMinSize.x, ptMinSize.y]));
+      {$ENDIF DEBUGINFO_ON}
     end;
     if (dwMask and DBIM_MAXSIZE) <> 0 then
     begin
       ptMaxSize := BandMaxSize;
-      {$IFDEF Debug}
-      //zTraceLog('  Dbi.ptMaxSize=' + Format('(%d,%d)', [ptMaxSize.x, ptMaxSize.y]));
-      {$ENDIF}
+      {$IFDEF DEBUGINFO_ON}
+      zTraceLog('  Dbi.ptMaxSize=' + Format('(%d,%d)', [ptMaxSize.x, ptMaxSize.y]));
+      {$ENDIF DEBUGINFO_ON}
     end;
     if (dwMask and DBIM_INTEGRAL) <> 0 then
     begin
       ptIntegral := BandIntegral;
-      {$IFDEF Debug}
-      //zTraceLog('  Dbi.ptIntegral=' + Format('(%d,%d)', [ptIntegral.x, ptIntegral.y]));
-      {$ENDIF}
+      {$IFDEF DEBUGINFO_ON}
+      zTraceLog('  Dbi.ptIntegral=' + Format('(%d,%d)', [ptIntegral.x, ptIntegral.y]));
+      {$ENDIF DEBUGINFO_ON}
     end;
     if (dwMask and DBIM_ACTUAL) <> 0 then
     begin
       ptActual := BandActualSize;
-      {$IFDEF Debug}
-      //zTraceLog('  Dbi.ptActual=' + Format('(%d,%d)', [ptActual.x, ptActual.y]));
-      {$ENDIF}
+      {$IFDEF DEBUGINFO_ON}
+      zTraceLog('  Dbi.ptActual=' + Format('(%d,%d)', [ptActual.x, ptActual.y]));
+      {$ENDIF DEBUGINFO_ON}
     end;
     if (dwMask and DBIM_TITLE) <> 0 then
     begin
       StringToWideChar(Caption, @wszTitle[0], Length(wszTitle));
-      {$IFDEF Debug}
-      //zTraceLog('  Dbi.wszTitle=' + Format('%s', [Caption]));
-      {$ENDIF}
+      {$IFDEF DEBUGINFO_ON}
+      zTraceLog('  Dbi.wszTitle=' + Format('%s', [Caption]));
+      {$ENDIF DEBUGINFO_ON}
     end;
     if (dwMask and DBIM_MODEFLAGS) <> 0 then
     begin
@@ -555,16 +559,16 @@ begin
         dwModeFlags := dwModeFlags or DBIMF_DEBOSSED;
       if bmfBkColor in BandModeFlags then
         dwModeFlags := dwModeFlags or DBIMF_BKCOLOR;
-      {$IFDEF Debug}
-      //zTraceLog('  Dbi.dwModeFlags=' + Format('0x%x', [dwModeFlags]));
-      {$ENDIF}
+      {$IFDEF DEBUGINFO_ON}
+      zTraceLog('  Dbi.dwModeFlags=' + Format('0x%x', [dwModeFlags]));
+      {$ENDIF DEBUGINFO_ON}
     end;
     if (dwMask and DBIM_BKCOLOR) <> 0 then
     begin
       crBkgnd := Color;
-      {$IFDEF Debug}
-      //zTraceLog('  Dbi.crBkgnd=' + Format('0x%x', [crBkgnd]));
-      {$ENDIF}
+      {$IFDEF DEBUGINFO_ON}
+      zTraceLog('  Dbi.crBkgnd=' + Format('0x%x', [crBkgnd]));
+      {$ENDIF DEBUGINFO_ON}
     end;
   end;
   Result := NOERROR;
@@ -574,10 +578,13 @@ end;
 
 function TzCustomBandObject.ShowDW(AShow: BOOL): HRESULT;
 begin
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.ShowDW()');
-  //zTraceLog('  Show=' + BooleanToStr(Show));
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.ShowDW()');
+  if AShow then
+    zTraceLog('  Show=True')
+  else
+    zTraceLog('  Show=False');
+  {$ENDIF DEBUGINFO_ON}
   Result := NOERROR;
   if not Assigned(FBandForm) then
     Exit;
@@ -590,16 +597,16 @@ begin
     end
     else
       Hide;
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.ShowDW() End');
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.ShowDW() End');
+  {$ENDIF DEBUGINFO_ON}
 end;
 
 function TzCustomBandObject.CloseDW(dwReserved: DWORD): HRESULT;
 begin
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.CloseDW()');
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.CloseDW()');
+  {$ENDIF DEBUGINFO_ON}
   Result := NOERROR;
   try
     try
@@ -622,9 +629,9 @@ end;
 function TzCustomBandObject.ResizeBorderDW(var Border: TRect;
   ToolbarSite: IUnknown; Reserved: BOOL): HRESULT;
 begin
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.ResizeBorderDW()');
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.ResizeBorderDW()');
+  {$ENDIF DEBUGINFO_ON}
   // Never called for band objects.
   Result := E_NOTIMPL;
 end;
@@ -633,24 +640,24 @@ end;
 
 function TzCustomBandObject.GetWindow(out Wnd: HWND): HRESULT;
 begin
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.GetWindow()');
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.GetWindow()');
+  {$ENDIF DEBUGINFO_ON}
   if Assigned(FBandForm) then
     Wnd := FBandForm.Handle
   else
     Wnd := 0;
-  {$IFDEF Debug}
-  //zTraceLog('  Wnd=' + Format('0x%x', [Wnd]));
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog('  Wnd=' + Format('0x%x', [Wnd]));
+  {$ENDIF DEBUGINFO_ON}
   Result := S_OK;
 end;
 
 function TzCustomBandObject.ContextSensitiveHelp(EnterMode: BOOL): HRESULT;
 begin
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.ContextSensitiveHelp()');
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.ContextSensitiveHelp()');
+  {$ENDIF DEBUGINFO_ON}
   Result := E_NOTIMPL;
 end;
 
@@ -661,10 +668,13 @@ var
   OleWindow: IOleWindow;
   ParentWnd: HWND;
 begin
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.SetSite()');
-  //zTraceLog('  Site=' + iif(Assigned(Site), 'not nil', 'nil'));
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.SetSite()');
+  if Assigned(Site) then
+    zTraceLog('  Site=not nil')
+  else
+    zTraceLog('  Site=nil');
+  {$ENDIF DEBUGINFO_ON}
   if Assigned(FSite) then
     FSite := nil; // implicit Release
   if Assigned(FOleCommandTarget) then
@@ -683,9 +693,9 @@ begin
       finally
         OleWindow := nil;
       end;
-      {$IFDEF Debug}
-      //zTraceLog('  ParentWnd=' + Format('0x%x', [ParentWnd]));
-      {$ENDIF}
+      {$IFDEF DEBUGINFO_ON}
+      zTraceLog('  ParentWnd=' + Format('0x%x', [ParentWnd]));
+      {$ENDIF DEBUGINFO_ON}
       if ParentWnd = 0 then
       begin
         Result := E_FAIL;
@@ -704,9 +714,9 @@ begin
       Result := E_FAIL;
       Exit;
     end;
-    {$IFDEF Debug}
-    //zTraceLog('  FSite assigned.');
-    {$ENDIF}
+    {$IFDEF DEBUGINFO_ON}
+    zTraceLog('  FSite assigned.');
+    {$ENDIF DEBUGINFO_ON}
     if FSite.QueryInterface(IOleCommandTarget, FOleCommandTarget) <> S_OK then
       FOleCommandTarget := nil;
   end;
@@ -716,10 +726,10 @@ end;
 function TzCustomBandObject.GetSite(const Riid: TIID;
   out Site: IUnknown): HRESULT;
 begin
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.GetSite()');
-  //zTraceLog('  Riid=' + GUIDToString(Riid));
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.GetSite()');
+  zTraceLog('  Riid=' + GUIDToString(Riid));
+  {$ENDIF DEBUGINFO_ON}
   if not Assigned(FSite) then
   begin
     Site := nil;
@@ -727,42 +737,42 @@ begin
     Exit;
   end;
   Result := FSite.QueryInterface(Riid, Site);
-  {$IFDEF Debug}
-  //zTraceLog('  Result=' + IntToStr(Result));
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog('  Result=' + IntToStr(Result));
+  {$ENDIF DEBUGINFO_ON}
 end;
 
 // IPersistStream
 
 function TzCustomBandObject.IsDirty: HRESULT;
 begin
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.IsDirty()');
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.IsDirty()');
+  {$ENDIF DEBUGINFO_ON}
   Result := S_FALSE;
 end;
 
 function TzCustomBandObject.Load(const Strm: IStream): HRESULT;
 begin
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.Load()');
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.Load()');
+  {$ENDIF DEBUGINFO_ON}
   Result := S_OK;
 end;
 
 function TzCustomBandObject.Save(const Strm: IStream; ClearDirty: BOOL): HRESULT;
 begin
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.Save()');
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.Save()');
+  {$ENDIF DEBUGINFO_ON}
   Result := S_OK;
 end;
 
 function TzCustomBandObject.GetSizeMax(out Size: Largeint): HRESULT;
 begin
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.GetSizeMax()');
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.GetSizeMax()');
+  {$ENDIF DEBUGINFO_ON}
   Size := 0;
   Result := S_OK;
 end;
@@ -771,13 +781,13 @@ end;
 
 function TzCustomBandObject.GetClassID(out ClassID: TCLSID): HRESULT;
 begin
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.GetClassID()');
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.GetClassID()');
+  {$ENDIF DEBUGINFO_ON}
   ClassID := Factory.ClassID;
-  {$IFDEF Debug}
-  //zTraceLog('  ClassID=' + GUIDToString(ClassID));
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog('  ClassID=' + GUIDToString(ClassID));
+  {$ENDIF DEBUGINFO_ON}
   Result := S_OK;
 end;
 
@@ -786,10 +796,13 @@ end;
 function TzCustomBandObject.UIActivateIO(Activate: BOOL;
   var Msg: TMsg): HRESULT;
 begin
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.UIActivateIO()');
-  //zTraceLog('  Activate=' + BooleanToStr(Activate));
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.UIActivateIO()');
+  if Activate then
+    zTraceLog('  Activate=True')
+  else
+    zTraceLog('  Activate=False');
+  {$ENDIF DEBUGINFO_ON}
   Result := S_OK;
   FHasFocus := Activate;
   if not Assigned(FBandForm) then
@@ -800,22 +813,22 @@ end;
 
 function TzCustomBandObject.HasFocusIO: HRESULT;
 begin
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.HasFocusIO()');
-  {$ENDIF}
-  Result := Integer(not FHasFocus);
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.HasFocusIO()');
+  {$ENDIF DEBUGINFO_ON}
+  Result := Ord(not FHasFocus);
 //  Result := iif(Assigned(FBandForm) and FBandForm.Focused,
 //    S_OK, S_FALSE);
-  {$IFDEF Debug}
-  //zTraceLog('  Result=' + IntToStr(Result));
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog('  Result=' + IntToStr(Result));
+  {$ENDIF DEBUGINFO_ON}
 end;
 
 function TzCustomBandObject.TranslateAcceleratorIO(var Msg: TMsg): HRESULT;
 begin
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.TranslateAcceleratorIO()');
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.TranslateAcceleratorIO()');
+  {$ENDIF DEBUGINFO_ON}
   Result := S_FALSE;
 end;
 
@@ -934,13 +947,13 @@ begin
         idCmd := Max(idCmd, MenuItem[Count].Command);
   end;
   Result := InsertMenuItem(AMenu, DWORD(-1), True, MenuItemInfo);
-  {$IFDEF Debug}
-  //if not Result then
-  //  Exit;
-  //zTraceLog('  Menu item added, MenuItem.Command=' + IntToStr(MenuItem.Command));
-  //zTraceLog('    Count=' + IntToStr(MenuItem.Count));
-  //zTraceLog('    Handle=' + Format('0x%x', [MenuItemInfo.hSubMenu]));
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  if not Result then
+    Exit;
+  zTraceLog('  Menu item added, MenuItem.Command=' + IntToStr(MenuItem.Command));
+  zTraceLog('    Count=' + IntToStr(MenuItem.Count));
+  zTraceLog('    Handle=' + Format('0x%x', [MenuItemInfo.hSubMenu]));
+  {$ENDIF DEBUGINFO_ON}
 end;
 *)
 
@@ -1005,13 +1018,13 @@ function TzContextMenuBandObject.QueryContextMenu(AMenu: HMENU; IndexMenu,
   end;
     
 begin
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.QueryContextMenu()');
-  //zTraceLog('  IndexMenu: ' + IntToStr(IndexMenu));
-  //zTraceLog('  idCmdFirst: ' + IntToStr(idCmdFirst));
-  //zTraceLog('  idCmdLast: ' + IntToStr(idCmdLast));
-  //zTraceLog('  uFlags: ' + Format('0x%x', [uFlags]));
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.QueryContextMenu()');
+  zTraceLog('  IndexMenu: ' + IntToStr(IndexMenu));
+  zTraceLog('  idCmdFirst: ' + IntToStr(idCmdFirst));
+  zTraceLog('  idCmdLast: ' + IntToStr(idCmdLast));
+  zTraceLog('  uFlags: ' + Format('0x%x', [uFlags]));
+  {$ENDIF DEBUGINFO_ON}
 
   if not Assigned(FMenuItemLink) then
     FMenuItemLink := TList.Create;
@@ -1057,13 +1070,13 @@ var
   idCmd: UINT;
   ci: Integer;
 begin
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.InvokeCommand()');
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.InvokeCommand()');
+  {$ENDIF DEBUGINFO_ON}
   idCmd := LoWord(Ici.lpVerb);
-  {$IFDEF Debug}
-  //zTraceLog('  idCmd=' + IntToStr(idCmd));
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog('  idCmd=' + IntToStr(idCmd));
+  {$ENDIF DEBUGINFO_ON}
   Result := E_INVALIDARG;
   if not Assigned(FBandForm) then
     Exit;
@@ -1082,11 +1095,11 @@ function TzContextMenuBandObject.GetCommandString(idCmd, uType: UINT;
 var
   MenuItem: TMenuItem;
 begin
-  {$IFDEF Debug}
-  //zTraceLog(ClassName + '.GetCommandString()');
-  //zTraceLog('  idCmd=' + IntToStr(idCmd));
-  //zTraceLog('  uType=' + Format('0x%x', [uType]));
-  {$ENDIF}
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.GetCommandString()');
+  zTraceLog('  idCmd=' + IntToStr(idCmd));
+  zTraceLog('  uType=' + Format('0x%x', [uType]));
+  {$ENDIF DEBUGINFO_ON}
   Result := E_INVALIDARG;
   if not Assigned(FBandForm) then
     Exit;
