@@ -151,10 +151,6 @@ type
   TValueType = (vtInteger, vtFloat, vtHex);
   {$ENDIF}
 
-  //>Polaris
-  {.$IFDEF WIN32
-    TSpinButtonKind = (bkStandard, bkDiagonal);
-  $ENDIF}
   TSpinButtonKind = (bkStandard, bkDiagonal, bkClassic);
 
   TJvCheckOption = (coCheckOnChange, coCheckOnExit, coCropBeyondLimit);

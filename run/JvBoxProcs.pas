@@ -92,19 +92,6 @@ begin
     Result := LB_ERR;
 end;
 
-{$IFNDEF WIN32}
-function BoxGetCanvas(List: TWinControl): TCanvas;
-begin
-  if List is TCustomListBox then
-    Result := TCustomListBox(List).Canvas
-  else
-  if List is TJvxCustomListBox then
-    Result := TJvxCustomListBox(List).Canvas
-  else
-    Result := nil;
-end;
-{$ENDIF}
-
 procedure BoxSetItemIndex(List: TWinControl; Index: Integer);
 begin
   if List is TCustomListBox then
