@@ -10,7 +10,7 @@ object AboutForm: TAboutForm
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = True
   Position = poScreenCenter
@@ -159,7 +159,7 @@ object AboutForm: TAboutForm
       'Igor V.Pavluk'
       'Serge V.Korolev'
       ''
-      '© 1995,1998'
+      #169' 1995,1998'
       '')
     Align = alClient
     BevelOuter = bvNone
@@ -174,26 +174,26 @@ object AboutForm: TAboutForm
     object Label2: TLabel
       Left = 13
       Top = 63
-      Width = 182
+      Width = 184
       Height = 13
-      Caption = ' Copyright © AO ROSNO 1995, 1996  '
+      Caption = ' Copyright '#169' AO ROSNO 1995, 1996  '
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
-      Font.Name = 'MS Sans Serif'
+      Font.Name = 'MS Shell Dlg 2'
       Font.Style = []
       ParentFont = False
     end
     object Label1: TLabel
       Left = 13
       Top = 47
-      Width = 65
+      Width = 66
       Height = 13
       Caption = ' Version 2.50 '
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
-      Font.Name = 'MS Sans Serif'
+      Font.Name = 'MS Shell Dlg 2'
       Font.Style = []
       ParentFont = False
     end
@@ -213,14 +213,14 @@ object AboutForm: TAboutForm
       Top = 10
       Width = 145
       Height = 29
-      Hint = 'RX Library Web Site|'
+      Hint = 'JVCL Web Site'
       Alignment = taCenter
       AutoSize = False
       Caption = 'Delphi VCL Extensions Library (RX) Demo'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
-      Font.Name = 'MS Sans Serif'
+      Font.Name = 'MS Shell Dlg 2'
       Font.Style = [fsBold]
       ParentFont = False
       ParentShowHint = False
@@ -228,26 +228,25 @@ object AboutForm: TAboutForm
       ShowHint = True
       WordWrap = True
       OnClick = LabelClick
-      OnMouseEnter = LabelMouseEnter
-      OnMouseLeave = LabelMouseEnter
       AutoOpenURL = False
+      HotTrack = True
       HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
+      HotTrackFont.Color = clHighlight
       HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Sans Serif'
-      HotTrackFont.Style = []
+      HotTrackFont.Name = 'MS Shell Dlg 2'
+      HotTrackFont.Style = [fsBold, fsUnderline]
       ImageIndex = 0
     end
     object Label3: TLabel
       Left = 13
       Top = 79
-      Width = 185
+      Width = 190
       Height = 13
-      Caption = ' Copyright © Master-Bank 1997, 1998  '
+      Caption = ' Copyright '#169' Master-Bank 1997, 1998  '
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
-      Font.Name = 'MS Sans Serif'
+      Font.Name = 'MS Shell Dlg 2'
       Font.Style = []
       ParentFont = False
     end
@@ -269,7 +268,7 @@ object AboutForm: TAboutForm
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
-      Font.Name = 'MS Sans Serif'
+      Font.Name = 'MS Shell Dlg 2'
       Font.Style = []
       ParentFont = False
     end
@@ -284,7 +283,7 @@ object AboutForm: TAboutForm
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
-      Font.Name = 'MS Sans Serif'
+      Font.Name = 'MS Shell Dlg 2'
       Font.Style = []
       ParentFont = False
     end
@@ -299,7 +298,7 @@ object AboutForm: TAboutForm
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
-      Font.Name = 'MS Sans Serif'
+      Font.Name = 'MS Shell Dlg 2'
       Font.Style = []
       ParentFont = False
       WordWrap = True
@@ -315,7 +314,7 @@ object AboutForm: TAboutForm
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
-      Font.Name = 'MS Sans Serif'
+      Font.Name = 'MS Shell Dlg 2'
       Font.Style = []
       ModalResult = 1
       ParentFont = False
