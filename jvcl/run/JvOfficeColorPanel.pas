@@ -297,6 +297,8 @@ type
 
     property Properties;
     property OnColorChange;
+    property OnColorButtonClick;
+    property OnClick;
   end;
 
 implementation
