@@ -89,6 +89,7 @@ type
     FInited: Boolean;
     FOnColorChange: TNotifyEvent;
     FOnDropDown: TNotifyEvent;
+    FOnColorButtonClick: TNotifyEvent;
     procedure SetFlat(const Value: Boolean);
     procedure SetColor(const Value: TColor);
     function GetCustomColors: TStrings;
@@ -112,26 +113,31 @@ type
     procedure OnFormWindowStyleChanged(Sender: TObject);
     procedure OnButtonMouseEnter(Sender: TObject);
     procedure OnButtonMouseLeave(Sender: TObject);
-    procedure ColorButtonClick(Sender: TObject);
+    procedure OnButtonClick(Sender: TObject);
+    procedure OnColorButtonsClick(Sender: TObject);
   protected
     procedure AdjustColorForm(X: Integer = 0; Y: Integer = 0); //Screen postion
     procedure ShowColorForm(X: Integer = 0; Y: Integer = 0); virtual; //Screen postion
     {$IFDEF VCL}
     procedure CreateWnd; override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
+
+    {$ELSE}
     procedure InitWidget; override;
-    {$ENDIF VisualCLX}
+    {$ENDIF VCL}
     procedure SetEnabled({$IFDEF VisualCLX} const {$ENDIF} Value: Boolean); override;
     procedure FontChanged; override;
     procedure DefineProperties(Filer: TFiler); override;
     procedure PropertiesChanged(Sender: TObject; PropName: string); virtual;
+
+    property ColorsForm :TJvOfficeColorForm read FColorsForm;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure AdjustSize; override;
     property Flat: Boolean read FFlat write SetFlat default True;
     property Color: TColor read GetColor write SetColor default clBlack;
+    property SeletedColor: TColor read GetColor write SetColor default clBlack;
+
     property CustomColors: TStrings read GetCustomColors write SetCustomColors;
     property Properties: TJvOfficeColorButtonProperties read GetProperties write SetProperties;
     {$IFDEF VCL}
@@ -140,6 +146,7 @@ type
     property Glyph: TBitmap read GetGlyph write SetGlyph;
     property OnDropDown: TNotifyEvent read FOnDropDown write FOnDropDown;
     property OnColorChange: TNotifyEvent read FOnColorChange write FOnColorChange;
+    property OnColorButtonClick: TNotifyEvent read FOnColorButtonClick write FOnColorButtonClick;
   end;
 
   TJvOfficeColorButton = class(TJvCustomOfficeColorButton)
@@ -323,7 +330,7 @@ begin
     GroupIndex := 2;
     AllowAllUp := True;
     Tag := MaxColorButtonNumber + 4;
-    OnClick := ColorButtonClick;
+    OnClick := OnButtonClick;
   end;
 
   FColorsForm := TJvOfficeColorForm.CreateNew(Self);
@@ -337,6 +344,7 @@ begin
     OnWindowStyleChanged := OnFormWindowStyleChanged;
 
     ColorPanel.OnColorChange := DoOnColorChange;
+    ColorPanel.OnColorButtonClick := OnColorButtonsClick;
   end;
 
   FProperties := TJvOfficeColorButtonProperties.Create;
@@ -362,7 +370,19 @@ end;
 destructor TJvCustomOfficeColorButton.Destroy;
 begin
   if FColorsForm.Visible then
-    FColorsForm.Hide; //because we replaced message handler, we have to hide the form at here.
+  begin
+    with THackJvColorForm(FColorsForm) do
+    begin
+      OnShowingChanged := nil;
+      OnKillFocus := nil;
+      OnClose := nil;
+      OnWindowStyleChanged := nil;
+
+      ColorPanel.OnColorChange := nil;
+      ColorPanel.OnColorButtonClick := nil;
+      Hide;
+    end;
+  end;
   Action.Free;
   FProperties.Free;
   inherited Destroy;
@@ -417,7 +437,7 @@ begin
   FColorsForm.Font.Assign(Font);
 end;
 
-procedure TJvCustomOfficeColorButton.ColorButtonClick(Sender: TObject);
+procedure TJvCustomOfficeColorButton.OnButtonClick(Sender: TObject);
 begin
   if TJvColorSpeedButton(Sender).Tag = FArrowButton.Tag then
   begin
@@ -430,7 +450,7 @@ begin
     else
     begin
       if Assigned(FOnDropDown) then
-        FOnDropDown(FArrowButton);
+        FOnDropDown(Self);
       ShowColorForm;
       FColorFormDropDown := True;
     end
@@ -440,6 +460,26 @@ begin
     TJvSubColorButton(Sender).Down := True;
     SetColor(TJvSubColorButton(Sender).Color);
   end;
+end;
+
+procedure TJvCustomOfficeColorButton.OnColorButtonsClick(Sender: TObject);
+begin
+  if  not FColorsForm.ToolWindowStyle then
+  begin
+    FColorsForm.Hide;
+    FColorsForm.ToolWindowStyle := False;
+    if FArrowButton.Down then
+      FArrowButton.Down := False;
+    FColorFormDropDown := False;
+  end else
+  begin
+    if FColorsForm.ColorPanel.ClickColorButton = cbctOtherButton then
+      FColorsForm.FormStyle := fsNormal;
+  end;
+
+  if Assigned(FOnColorButtonClick) then
+    FOnColorButtonClick(Sender);
+
 end;
 
 function TJvCustomOfficeColorButton.GetCustomColors: TStrings;
@@ -455,10 +495,12 @@ end;
 procedure TJvCustomOfficeColorButton.DoOnColorChange(Sender: Tobject);
 begin
   FMainButton.Color := FColorsForm.ColorPanel.SelectedColor;
-  if not THackJvColorForm(FColorsForm).DropDownMoved then
-    FColorsForm.Hide;
+  if FColorsForm.ToolWindowStyle and (FColorsForm.FormStyle<>fsStayOnTop) then
+  begin
+    FColorsForm.FormStyle := fsStayOnTop;
+  end;
   if Assigned(FOnColorChange) then
-    FOnColorChange(Sender);
+    FOnColorChange(self);
 end;
 
 procedure TJvCustomOfficeColorButton.SetCustomColors(const Value: TStrings);
@@ -542,7 +584,10 @@ procedure TJvCustomOfficeColorButton.OnFormClose(Sender: TObject; var Action: TC
 begin
   if FColorsForm.ToolWindowStyle then
     FColorFormDropDown := False;
-  Action := caHide;
+  if csDestroying	in ComponentState then
+    Action := caFree
+  else
+    Action := caHide;
 end;
 
 procedure TJvCustomOfficeColorButton.OnFormWindowStyleChanged(Sender: TObject);

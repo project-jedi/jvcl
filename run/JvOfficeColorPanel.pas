@@ -91,6 +91,7 @@ const
 {------------------------------------------------------------------------------}
 
 type
+  TJvClickColorButtonType = (cbctColorsButton,cbctAutoButton,cbctOtherButton,cbctNone);
 
   TJvPropertiesChangedEvent = procedure(Sender: TObject; PropName: string) of object;
 
@@ -137,11 +138,13 @@ type
     FOtherHint: string;
 
     FOnPropertiesChanged: TJvPropertiesChangedEvent;
+    FAutoColor: TColor;
     procedure SetShowAutoButton(const Value: Boolean);
     procedure SetShowOtherButton(const Value: Boolean);
     procedure SetMeasure(const Index, Value: integer);
     function GetStringValue(const Index: Integer): string;
     procedure SetStringValue(const Index: Integer; const Value: string);
+    procedure SetAutoColor(const Value: TColor);
   protected
     procedure Changed(PropName: string); virtual;
     procedure CreateDefaultText; virtual;
@@ -149,6 +152,7 @@ type
     constructor Create(); virtual;
     procedure Assign(Source: TPersistent); override;
     property OnPropertiesChanged: TJvPropertiesChangedEvent read FOnPropertiesChanged write FOnPropertiesChanged;
+    property AutoColor:TColor read FAutoColor write SetAutoColor default clDefault;
   published
     property ShowAutoButton: Boolean read FShowAutoButton write SetShowAutoButton default True;
     property ShowOtherButton: Boolean read FShowOtherButton write SetShowOtherButton default True;
@@ -185,9 +189,11 @@ type
     FFlat: boolean;
     Inited: boolean;
     FOnColorChange: TNotifyEvent;
+    FClickColorButton:TJvClickColorButtonType;
 
     {$IFDEF VCL}
     FColorDialogOptions: TColorDialogOptions;
+    FOnColorButtonClick: TNotifyEvent;
     procedure SetColorDialogOptions(const Value: TColorDialogOptions);
     {$ENDIF VCL}
 
@@ -225,6 +231,9 @@ type
     destructor Destroy; override;
 
     procedure SetButton(Button: TControl);
+
+    property ClickColorButton:TJvClickColorButtonType read FClickColorButton;
+
     property ColorDialog: TJvOfficeColorDialog read FColorDialog write FColorDialog;
     property SelectedColor: TColor read FSelectedColor write SetSelectedColor default clBlack;
 
@@ -237,6 +246,7 @@ type
     property Options: TColorDialogOptions read FColorDialogOptions write SetColorDialogOptions default [];
     {$ENDIF VCL}
 
+    property OnColorButtonClick: TNotifyEvent read FOnColorButtonClick write FOnColorButtonClick;
     property OnColorChange: TNotifyEvent read FOnColorChange write FOnColorChange;
   end;
 
@@ -298,22 +308,22 @@ begin
   if Source is TJvOfficeColorPanelProperties then
     with TJvOfficeColorPanelProperties(Source) do
     begin
-      self.ShowAutoButton := ShowAutoButton;
-      self.ShowOtherButton := ShowOtherButton;
-      Self.TopMargin := TopMargin;
-      Self.ColorSpaceBottom := ColorSpaceBottom;
-      Self.HoriMargin := HoriMargin;
-      Self.ColorSpace := ColorSpace;
-      Self.ColorSpaceTop := ColorSpaceTop;
-      Self.ButtonHeight := ButtonHeight;
-      Self.ColorSize := ColorSize;
-      Self.BottomMargin := BottomMargin;
+      self.FShowAutoButton := ShowAutoButton;
+      self.FShowOtherButton := ShowOtherButton;
+      Self.FTopMargin := TopMargin;
+      Self.FColorSpaceBottom := ColorSpaceBottom;
+      Self.FHoriMargin := HoriMargin;
+      Self.FColorSpace := ColorSpace;
+      Self.FColorSpaceTop := ColorSpaceTop;
+      Self.FButtonHeight := ButtonHeight;
+      Self.FColorSize := ColorSize;
+      Self.FBottomMargin := BottomMargin;
 
-      Self.AutoCaption := AutoCaption;
-      Self.OtherCaption := OtherCaption;
-      Self.AutoHint := AutoHint;
-      Self.OtherHint := OtherHint;
-
+      Self.FAutoCaption := AutoCaption;
+      Self.FOtherCaption := OtherCaption;
+      Self.FAutoHint := AutoHint;
+      Self.FOtherHint := OtherHint;
+      self.FAutoColor := AutoColor;
     end;
 end;
 
@@ -337,7 +347,8 @@ begin
   FButtonHeight := MinButtonHeight;
   FColorSpaceBottom := MinColorSpaceBottom;
   FBottomMargin := MinBottomMargin;
-
+  FAutoColor := clDefault;
+  
   CreateDefaultText;
 end;
 
@@ -361,6 +372,12 @@ begin
       Result := FOtherHint;
   end;
 
+end;
+
+procedure TJvOfficeColorPanelProperties.SetAutoColor(const Value: TColor);
+begin
+  FAutoColor := Value;
+  Changed('AutoColor');
 end;
 
 procedure TJvOfficeColorPanelProperties.SetMeasure(const Index, Value: integer);
@@ -559,7 +576,12 @@ begin
   FSelectedColor := clBlack;
   {$IFDEF VCL}
   FColorDialogOptions := [];
+<<<<<<< JvOfficeColorPanel.pas
+{$ENDIF VCL}
+  FClickColorButton := cbctNone;
+=======
   {$ENDIF VCL}
+>>>>>>> 1.4
 
   FProperties := TJvOfficeColorPanelProperties.Create;
   FProperties.OnPropertiesChanged := PropertiesChanged;
@@ -573,7 +595,7 @@ begin
     Tag := MaxColorButtonNumber + 1;
     Down := true;
     AllowAllUp := true;
-    Color := clDefault;
+    Color := FProperties.AutoColor;
     Visible := False;
     OnClick := ColorButtonClick;
   end;
@@ -709,6 +731,21 @@ var
   i: integer;
 {$ENDIF VisualCLX}
 begin
+  if Sender is TJvColorSpeedButton then
+  begin
+    if TComponent(Sender).Tag = FAutoButton.Tag then
+       FClickColorButton := cbctAutoButton
+    else if TComponent(Sender).Tag = FOtherButton.Tag then
+       FClickColorButton := cbctOtherButton
+    else
+         FClickColorButton := cbctColorsButton;
+  end
+  else
+    FClickColorButton := cbctNone;
+
+  if Assigned(FOnColorButtonClick) then
+     FOnColorButtonClick(Sender);
+
   if TComponent(Sender).Tag = FOtherButton.Tag then
   begin
     {$IFDEF VCL}
@@ -725,6 +762,7 @@ begin
   end
   else
   begin
+
     TJvSubColorButton(Sender).Down := true;
     {$IFDEF VisualCLX}
    //in clx have bug
@@ -931,6 +969,8 @@ begin
   begin
     FOtherButton.Hint := Properties.OtherHint;
   end
+  else if cmp(PropName, 'AutoColor') then
+    FAutoButton.Color := Properties.AutoColor
   else
     LFlag := True
       ;
