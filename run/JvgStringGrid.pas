@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgStringGrid;
+
+{$I jvcl.inc}
 
 interface
 
@@ -39,9 +39,9 @@ const
   JvDefaultEditorColor = $00FEE392;
 
 type
-  TglStringGridExtOptions_ = (fsgVertCaptions, fsgHottrack, fsgMemoEditor,
+  TglStringGridExtOption = (fsgVertCaptions, fsgHottrack, fsgMemoEditor,
     fsgWordWrap, fsgCellHeightAutoSize, fsgTabThroughCells);
-  TglStringGridExtOptions = set of TglStringGridExtOptions_;
+  TglStringGridExtOptions = set of TglStringGridExtOption;
 
   TglGridCellStyle = record
     Hottracking: Boolean;

@@ -178,9 +178,9 @@ Known Issues:
     conventional) table in pixels.
 }
 
-{$I jvcl.inc}
-
 unit JvgCrossTable;
+
+{$I jvcl.inc}
 
 interface
 

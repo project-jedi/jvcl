@@ -25,10 +25,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvgExceptionHandler;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvgExceptionHandler;
 
 interface
 

@@ -14,22 +14,23 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at source
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
+
+Description:
+  A function and a component to wrap access to the FindFiles Dialog
+  (accessible from the Explorer by hitting F3)
 
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvFindFiles;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-{A function and a component to wrap access to the FindFiles Dialog
-(accessible from the Explorer by hitting F3) }
-
-unit JvFindFiles;
 
 interface
 

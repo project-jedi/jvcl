@@ -23,12 +23,12 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvExGrids;
+
 {$I jvcl.inc}
 {MACROINCLUDE JvExControls.macros}
 
 WARNINGHEADER
-
-unit JvExGrids;
 
 interface
 

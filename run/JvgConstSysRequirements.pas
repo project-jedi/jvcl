@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgConstSysRequirements;
+
+{$I jvcl.inc}
 
 interface
 
@@ -46,7 +46,7 @@ resourcestring
   RsColorDepth = 'The number of colors of the screen should be equal to %s colors or higher. Change screen colors in Monitor Control Panel.';
   RsSystemFont = 'In system the small font should be established. Change to small fonts in Monitor Control Panel.';
   RsOSPlatform = 'The program requires %s or better.';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 implementation
 

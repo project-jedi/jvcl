@@ -20,18 +20,13 @@ Michael Beck [mbeck att bigfoot dott com].
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Description:
-  This unit implements the TJvgBevel component which is an extended
-  TBevel Delphi component with gradient filling and advanced borders
-  drawing.
-
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgDBNav;
+
+{$I jvcl.inc}
 
 interface
 
@@ -44,8 +39,8 @@ type
   private
     FAboutJVCL: TJVCLAboutInfo;
     //      FNewWndProc: Pointer;
-          //    procedure CMMouseMove(var Message: TMessage); message CM_MOUSEMOVE;
-          //    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+    //    procedure CMMouseMove(var Message: TMessage); message CM_MOUSEMOVE;
+    //    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     //      procedure PaintControls(DC: HDC; First: TControl);
     //      procedure HookFocusControlWndProc;

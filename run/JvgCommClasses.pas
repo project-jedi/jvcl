@@ -25,9 +25,10 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
-{$I jvcl.inc}
 
 unit JvgCommClasses;
+
+{$I jvcl.inc}
 
 interface
 
@@ -56,7 +57,7 @@ type
   TJvgCustomTextBoxStyle = class;
   TJvgTextBoxStyle = class;
   TJvgBevelLines = class;
-  //*************************************{ . TJvgTwainColors . }
+
   TJvgTwainColors = class(TPersistent)
   private
     FFromColor: TColor;
@@ -70,7 +71,6 @@ type
     procedure Changed; virtual;
   public
     constructor Create; virtual;
-
     property RGBFromColor: Longint read FRGBFromColor write FRGBFromColor;
     property RGBToColor: Longint read FRGBToColor write FRGBToColor;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
@@ -78,14 +78,13 @@ type
     property FromColor: TColor read FFromColor write SetFromColor default clGray;
     property ToColor: TColor read FToColor write SetToColor default 0;
   end;
-  //*************************************{ . TJvgCustomGradient . }
+
   TJvgCustomGradient = class(TJvgTwainColors)
   private
     FBufferedDraw: Boolean;
     FSteps: Integer;
     FPercentFilling: TPercentRange;
     FBrushStyle: TBrushStyle;
-
     FOrientation: TglGradientDir; //...public!
     FActive: Boolean;
     FReverse: Boolean;
@@ -118,7 +117,7 @@ type
     property PercentFilling;
     property BrushStyle;
   end;
-  //*************************************{ . TJvg3DGradient . }
+
   TJvg3DGradient = class(TJvgCustomGradient)
   private
     FDepth: Word;
@@ -131,7 +130,7 @@ type
     property Depth: Word read FDepth write SetDepth default 16;
     property GType: TThreeDGradientType read FGType write SetGType default fgtFlat;
   end;
-  //*************************************{ . TJvg2DAlign . }
+
   TJvg2DAlign = class(TPersistent)
   private
     FHorizontal: TglHorAlign;
@@ -150,7 +149,7 @@ type
     property Vertical: TglVertAlign read FVertical write SetVertical
       default fvaTop;
   end;
-  //*************************************{ . TJvgPointClass . }
+
   TJvgPointClass = class(TPersistent)
   private
     FX: Integer;
@@ -166,7 +165,7 @@ type
     property X: Integer read FX write SetX;
     property Y: Integer read FY write SetY;
   end;
-  //*************************************{ . TJvgBevel . }
+
   TJvgBevelOptions = class(TPersistent)
   private
     FInner: TPanelBevel;
@@ -191,7 +190,7 @@ type
     property Sides: TglSides read FSides write SetSides stored True default ALLGLSIDES;
     property Bold: Boolean read FBold write SetBold stored True; //  default False;
   end;
-  //*************************************{ . TJvgExtBevel . }
+
   TJvgExtBevelOptions = class(TJvgBevelOptions)
   private
     FActive: Boolean;
@@ -210,7 +209,7 @@ type
     property BevelPenWidth: Word read FBevelPenWidth write SetBevelPenWidth default 1;
     property InteriorOffset: Word read FInteriorOffset write SetInteriorOffset default 0;
   end;
-  //*************************************{ . TJvgIllumination . }
+
   TJvgIllumination = class(TJvg2DAlign)
   private
     FShadowDepth: Integer;
@@ -220,7 +219,7 @@ type
   published
     property ShadowDepth: Integer read FShadowDepth write SetShadowDepth default 2;
   end;
-  //*************************************{ . TJvgLabelTextStyles . }
+
   TJvgLabelTextStyles = class(TPersistent)
   private
     FPassive: TglTextStyle;
@@ -240,7 +239,7 @@ type
     property Active: TglTextStyle read FActive write SetActive default fstRaised;
     property Disabled: TglTextStyle read FDisabled write SetDisabled default fstPushed;
   end;
-  //*************************************{ . TJvgCustomTextColors . }
+
   TJvgCustomTextColors = class(TPersistent)
   private
     FOnChanged: TNotifyEvent;
@@ -248,7 +247,6 @@ type
     FTextDisabled: TColor;
     FDelineate: TColor;
     FBackground: TColor;
-  {public}
     FHighlight: TColor;
     FShadow: TColor;
   private
@@ -271,7 +269,7 @@ type
     property Highlight: TColor read FHighlight write SetHighlight default clBtnHighlight;
     property Background: TColor read FBackground write SetBackground default clBtnFace;
   end;
-  //*************************************{ . TJvgCustomLabelColors . }
+
   TJvgSimleLabelColors = class(TJvgCustomTextColors)
   published
     //  property Text stored True;
@@ -281,7 +279,6 @@ type
     property Background stored True;
   end;
 
-  //*************************************{ . TJvgCustomLabelColors . }
   TJvgCustomLabelColors = class(TJvgCustomTextColors)
   private
     FTextActive: TColor;
@@ -289,7 +286,6 @@ type
     FAutoHighlight: Boolean;
     FAutoShadow: Boolean;
     FBackgroundActive: TColor;
-  {public}
     FColorHighlightShift: Integer;
     FColorShadowShift: Integer;
   private
@@ -311,7 +307,7 @@ type
     property ColorShadowShift: Integer read FColorShadowShift write SetColorShadowShift default 60;
     property BackgroundActive: TColor read FBackgroundActive write SetBackgroundActive default clBtnFace;
   end;
-  //*************************************{ . TJvgLabelColors . }
+
   TJvgLabelColors = class(TJvgCustomLabelColors)
   published
     property Text;
@@ -328,7 +324,7 @@ type
     property ColorShadowShift;
     property BackgroundActive;
   end;
-  //*************************************{ . TJvgGroupBoxColors . }
+
   TJvgGroupBoxColors = class(TJvgCustomLabelColors)
   private
     FCaption: TColor;
@@ -359,7 +355,7 @@ type
     property Client: TColor read FClient write SetClient;
     property ClientActive: TColor read FClientActive write SetClientActive;
   end;
-  //*************************************{ . TglListItemStyle . }
+
   TJvgCustomListBoxItemStyle = class(TPersistent)
   private
     FColor: TColor;
@@ -387,7 +383,7 @@ type
     property Bevel: TJvgBevelOptions read FBevel write FBevel;
     property TextStyle: TglTextStyle read FTextStyle write SetTextStyle;
   end;
-  //*************************************{ . TglListItemStyle . }
+
   TJvgListBoxItemStyle = class(TJvgCustomListBoxItemStyle)
   private
     FGradient: TJvgGradient;
@@ -407,14 +403,13 @@ type
     property TextStyle;
   end;
 
-  TJvgHintStyle = class(TJvgListBoxItemStyle)
-  end;
+  TJvgHintStyle = class(TJvgListBoxItemStyle);
 
   TJvgSpeedButtonStyle = class(TJvgListBoxItemStyle)
   published
     property TextGradient;
   end;
-  //*************************************{ . TglListItemStyle . }
+
   TJvgAskListBoxItemStyle = class(TJvgCustomListBoxItemStyle)
   private
     FBtnColor: TColor;
@@ -436,7 +431,7 @@ type
     property Bevel;
     property TextStyle;
   end;
-  //*************************************{ . TJvgCustomBoxStyle . }
+
   TJvgCustomBoxStyle = class(TJvgBevelOptions)
   private
     FPenStyle: TPenStyle;
@@ -452,7 +447,7 @@ type
   public
     constructor Create; override;
   end;
-  //*************************************{ . TJvgTextBoxStyle . }
+
   TJvgCustomTextBoxStyle = class(TJvgCustomBoxStyle)
   private
     FTextColor: TColor;
@@ -465,7 +460,7 @@ type
   public
     constructor Create; override;
   end;
-  //*************************************{ . TJvgCustomBoxStyle . }
+
   TJvgTextBoxStyle = class(TJvgCustomTextBoxStyle)
   published
     property Inner;
@@ -478,7 +473,7 @@ type
     property HighlightColor;
     property ShadowColor;
   end;
-  //*************************************{ .TJvgBevelOptionsLines. }
+
   TJvgBevelLines = class(TPersistent)
   private
     FCount: cardinal;
@@ -489,7 +484,6 @@ type
     FThickness: Byte;
     FIgnoreBorder: Boolean;
     FOnChanged: TNotifyEvent;
-
     procedure SetCount(Value: cardinal);
     procedure SetStep(Value: cardinal);
     procedure SetOrigin(Value: TglOrigin);

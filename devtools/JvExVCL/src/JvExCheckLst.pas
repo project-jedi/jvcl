@@ -23,12 +23,12 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvExCheckLst;
+
 {$I jvcl.inc}
 {MACROINCLUDE JvExControls.macros}
 
 WARNINGHEADER
-
-unit JvExCheckLst;
 
 interface
 

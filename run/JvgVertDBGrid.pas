@@ -24,17 +24,17 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgVertDBGrid;
 
+{$I jvcl.inc}
+
 interface
+
 uses
   Windows, Messages, Classes, Controls, Graphics, Grids, DB, SysUtils,
   JvgTypes, JvgCommClasses, JvgUtils, JVCLVer, JvgStringGrid;
 
 type
-
   TJvgCustomVertDBSGrid = class(TJvgStringGrid)
   private
     FDataSource: TDataSource;

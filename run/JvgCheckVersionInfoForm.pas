@@ -25,9 +25,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgCheckVersionInfoForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -60,7 +60,6 @@ type
     Bevel2: TBevel;
     procedure sbNextClick(Sender: TObject);
     procedure lURLClick(Sender: TObject);
-  private
   public
     procedure Execute(WinControl: TWinControl);
   end;

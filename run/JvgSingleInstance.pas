@@ -25,9 +25,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgSingleInstance;
+
+{$I jvcl.inc}
 
 interface
 
@@ -56,7 +56,7 @@ uses
 resourcestring
   RsOneInstanceOfThisProgramIsAlreadyRu = 'One instance of this program is already running. A second instance launch is not allowed.';
   RsSecondInstanceLaunchOfs = 'Second instance launch of %s';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 { semaphore
 

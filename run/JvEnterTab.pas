@@ -18,15 +18,16 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A unit that converts all Enter keypresses to Tab keypresses.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
-{ A unit that converts all Enter keypresses to Tab keypresses. }
-
 unit JvEnterTab;
+
+{$I jvcl.inc}
 
 interface
 

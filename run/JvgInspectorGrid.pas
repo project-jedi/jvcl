@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgInspectorGrid;
+
+{$I jvcl.inc}
 
 interface
 
@@ -200,7 +200,7 @@ var
 begin
   Result := False;
   for I := 0 to FValues.Count - 1 do
-    Result := Result or bool(FValues.Objects[I]);
+    Result := Result or (FValues.Objects[I] <> nil);
 end;
 
 function TJvgGridItem.GetValue: string;
@@ -237,7 +237,7 @@ begin
       FOriginalValues.Add(FValues[I])
     else
     if FOriginalValues.Objects[I] = nil then
-      FOriginalValues.Objects[I] := Pointer(1);
+      FOriginalValues.Objects[I] := Pointer(Ord(True));
 
   (Collection as TJvgGridItems).Update(Self);
 end;
@@ -255,9 +255,9 @@ procedure TJvgGridItem.SetChanged(Value: Boolean);
 begin
   Values.OnChange := nil;
   if Sequence > 0 then
-    Values.Objects[Sequence - 1] := Pointer(1)
+    Values.Objects[Sequence - 1] := Pointer(Ord(True))
   else
-    Values.Objects[Sequence] := Pointer(1);
+    Values.Objects[Sequence] := Pointer(Ord(True));
   Values.OnChange := OnValuesChange;
 end;
 

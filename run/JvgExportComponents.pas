@@ -24,10 +24,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvgExportComponents;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvgExportComponents;
 
 interface
 

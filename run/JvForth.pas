@@ -23,13 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$ENDIF COMPILER6_UP}
-
 unit JvForth;
+
+{$I jvcl.inc}
+{$I crossplatform.inc}
 
 interface
 

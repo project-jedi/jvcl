@@ -30,11 +30,12 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgPage;
 
+{$I jvcl.inc}
+
 interface
+
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, CommCtrl, ImgList, ExtCtrls,

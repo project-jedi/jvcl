@@ -24,10 +24,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvgTransparentMemo;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvgTransparentMemo;
 
 interface
 

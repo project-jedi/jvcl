@@ -24,10 +24,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvgLabel;
+
 {$I jvcl.inc}
 {$I windowsonly.inc} // (ahuser) uses WndProc and Wnd hooks
-
-unit JvgLabel;
 
 interface
 

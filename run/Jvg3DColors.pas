@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit Jvg3DColors;
+
+{$I jvcl.inc}
 
 interface
 

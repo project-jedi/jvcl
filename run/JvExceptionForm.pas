@@ -22,10 +22,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvExceptionForm;
+
 {$I jvcl.inc}
 {$I crossplatform.inc}
-
-unit JvExceptionForm;
 
 interface
 

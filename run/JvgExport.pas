@@ -25,23 +25,26 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvgExport;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvgExport;
 
 interface
 
 uses
   Windows, Messages, Graphics, ExtCtrls, SysUtils, Classes, Controls, Forms,
-  {$IFDEF JVCL_USEQuickReport}QuickRpt, QRExport, {$ENDIF}
-  DB,  JclUnitConv,  JvgTypes;
+  DB, JvgTypes,
+  {$IFDEF JVCL_USEQuickReport}
+  QuickRpt, QRExport,
+  {$ENDIF JVCL_USEQuickReport}
+  JclUnitConv;
 
 type
   TOnExportProgress = procedure(Progress: Integer) of object;
 {$IFDEF JVCL_UseQuickReport}
 procedure ExportToExcel(QuickRep: TCustomQuickRep);
-{$ENDIF}
+{$ENDIF JVCL_USEQuickReport}
 procedure ExportDataSetToExcel(DataSet: TDataSet; OnExportProgress: TOnExportProgress);
 
 implementation
@@ -67,17 +70,17 @@ var
   TempFileName: string;
   Buffer: array [0..MAX_PATH] of Char;
 
-  function DeleteEOLs(str: string): string;
+  function DeleteEOLs(Str: string): string;
   var
     I: Integer;
   begin
-    for I := 1 to Length(str) do
-      if (str[I] = Cr) then
-        str[I] := ' ';
-    Result := str;
+    for I := 1 to Length(Str) do
+      if Str[I] = Cr then
+        Str[I] := ' ';
+    Result := Str;
   end;
-begin
 
+begin
   try
     XL := GetActiveOleObject(cExcelApplication);
   except
@@ -143,7 +146,7 @@ begin
       DeleteFile(TempFileName);
   end;
 end;
-{$ENDIF}
+{$ENDIF JVCL_UseQuickReport}
 
 procedure ExportDataSetToExcel(DataSet: TDataSet; OnExportProgress: TOnExportProgress);
 var

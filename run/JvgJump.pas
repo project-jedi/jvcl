@@ -27,10 +27,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
-
 unit JvgJump;
+
+{$I jvcl.inc}
 
 interface
 
