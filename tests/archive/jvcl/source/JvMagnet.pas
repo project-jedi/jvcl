@@ -332,6 +332,8 @@ procedure TJvFormMagnet.GlueForms(var FormRect: TRect);
 var
   i: Integer;
 begin
+  if FForm=nil then
+    Exit;
   for i := 0 to Application.ComponentCount - 1 do
     if Application.Components[i] is TForm then
       with Application.Components[i] as TForm do
