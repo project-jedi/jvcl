@@ -27,7 +27,10 @@ package JvQSystemD7R;
 
 requires
   JvQCoreD7R,
-  DJclVClx;
+  DJclVClx,
+  rtl,
+  visualclx,
+  DJcl;
 
 contains
   JvQXmlDatabase in '..\..\qrun\JvQXmlDatabase.pas',
@@ -43,6 +46,19 @@ contains
   JvQTimer in '..\..\qrun\JvQTimer.pas',
   JvQAppXmlStorage in '..\..\qrun\JvQAppXMLStorage.pas',
   JvQFormPlacement in '..\..\qrun\JvQFormPlacement.pas',
-  JvQFormPlacementSelectList in '..\..\qrun\JvQFormPlacementSelectList.pas';
+  JvQFormPlacementSelectList in '..\..\qrun\JvQFormPlacementSelectList.pas',
+  JvQNTEventLog in '..\..\qrun\JvQNTEventLog.pas',
+  JvQShellHook in '..\..\qrun\JvQShellHook.pas',
+  JvQPerfMon95 in '..\..\qrun\JvQPerfMon95.pas',
+  JvQSearchFiles in '..\..\qrun\JvQSearchFiles.pas',
+  JvQComputerInfoEx in '..\..\qrun\JvQComputerInfoEx.pas',
+  JvQSHFileOperation in '..\..\qrun\JvQSHFileOperation.pas',
+  JvQAppInst in '..\..\qrun\JvQAppInst.pas',
+  JvQTimerList in '..\..\qrun\JvQTimerList.pas',
+  JvQRas32 in '..\..\qrun\JvQRas32.pas',
+  JvQCommStatus in '..\..\qrun\JvQCommStatus.pas',
+  Ras32 in '..\..\common\Ras32.pas',
+  JvQMRUManager in '..\..\qrun\JvQMRUManager.pas',
+  JvQMRUList in '..\..\qrun\JvQMRUList.pas';
 
 end.

@@ -27,7 +27,10 @@ package JvQCustomD7R;
 {$DEFINE VisualCLX}
 
 requires
-  JvQStdCtrlsD7R;
+  JvQStdCtrlsD7R,
+  rtl,
+  visualclx,
+  DJcl;
 
 contains
   JvQChart in '..\..\qrun\JvQChart.pas',
@@ -45,6 +48,8 @@ contains
   JvQValidateEdit in '..\..\qrun\JvQValidateEdit.pas',
   JvQLookOut in '..\..\qrun\JvQLookOut.pas',
   JvQOutlookBar in '..\..\qrun\JvQOutlookBar.pas',
-  JvQHLParser in '..\..\qrun\JvQHLParser.pas';
+  JvQHLParser in '..\..\qrun\JvQHLParser.pas',
+  JvQTimeLine in '..\..\qrun\JvQTimeLine.pas',
+  JvQScheduledEvents in '..\..\qrun\JvQScheduledEvents.pas';
 
 end.

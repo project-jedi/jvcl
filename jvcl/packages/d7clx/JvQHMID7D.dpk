@@ -31,6 +31,8 @@ requires
   JvQCoreD7D;
 
 contains
-  JvQHMIReg in '..\..\qdesign\JvQHMIReg.pas';
+  JvQHMIReg in '..\..\qdesign\JvQHMIReg.pas',
+  JvQSegmentedLEDDisplayMappingForm in '..\..\qdesign\JvQSegmentedLEDDisplayMappingForm.pas' {frmJvSLDMappingEditor},
+  JvQSegmentedLEDDisplayEditors in '..\..\qdesign\JvQSegmentedLEDDisplayEditors.pas';
 
 end.

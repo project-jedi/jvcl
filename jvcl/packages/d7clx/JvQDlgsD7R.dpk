@@ -29,11 +29,7 @@ package JvQDlgsD7R;
 requires
   JvQCoreD7R,
   JvQStdCtrlsD7R,
-  JvQSystemD7R,
-  rtl,
-  visualclx,
-  DJcl,
-  DJclVClx;
+  JvQSystemD7R;
 
 contains
   JvQDualListForm in '..\..\qrun\JvQDualListForm.pas' {JvDualListForm},
@@ -45,6 +41,11 @@ contains
   JvQCommonExecDlg in '..\..\qrun\JvQCommonExecDlg.pas',
   JvQTipOfDay in '..\..\qrun\JvQTipOfDay.pas',
   JvQDSADialogs in '..\..\qrun\JvQDSADialogs.pas',
-  JvQFindReplace in '..\..\qrun\JvQFindReplace.pas';
+  JvQFindReplace in '..\..\qrun\JvQFindReplace.pas',
+  JvQConnectNetwork in '..\..\qrun\JvQConnectNetwork.pas',
+  JvQCommonDialogD in '..\..\qrun\JvQCommonDialogD.pas',
+  JvQDesktopAlert in '..\..\qrun\JvQDesktopAlert.pas',
+  JvQDesktopAlertForm in '..\..\qrun\JvQDesktopAlertForm.pas',
+  JvQSelectDirectory in '..\..\qrun\JvQSelectDirectory.pas';
 
 end.

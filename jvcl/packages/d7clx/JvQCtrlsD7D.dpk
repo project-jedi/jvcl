@@ -29,18 +29,7 @@ package JvQCtrlsD7D;
 requires
   JvQCoreD7D,
   JvQCtrlsD7R,
-  designide,
-  rtl,
-  JvQCoreD7R,
-  JvQSystemD7R,
-  JvQStdCtrlsD7R,
-  visualclx,
-  clxdesigner,
-  DJclVClx,
-  DJcl,
-  vclactnband,
-  vclx,
-  vcl;
+  JvQStdCtrlsD7R;
 
 contains
   JvQHTHintForm in '..\..\qdesign\JvQHTHintForm.pas' {JvHintEditor},
@@ -50,6 +39,7 @@ contains
   JvQGroupHeaderEditor in '..\..\qdesign\JvQGroupHeaderEditor.pas',
   JvQRollOutEditor in '..\..\qdesign\JvQRollOutEditor.pas',
   JvQSpeedbarForm in '..\..\qdesign\JvQSpeedbarForm.pas' {JvSpeedbarEditor},
-  JvQScrollMaxEditor in '..\..\qdesign\JvQScrollMaxEditor.pas';
+  JvQScrollMaxEditor in '..\..\qdesign\JvQScrollMaxEditor.pas',
+  JvQTransparentButtonEditors in '..\..\qdesign\JvQTransparentButtonEditors.pas';
 
 end.

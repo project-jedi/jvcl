@@ -26,11 +26,7 @@ package JvQCmpD7R;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvQCoreD7R,
-  JvQSystemD7R,
-  JvQStdCtrlsD7R,
-  rtl,
-  visualclx;
+  JvQStdCtrlsD7R;
 
 contains
   JvQPatchFile in '..\..\qrun\JvQPatchFile.pas',
@@ -45,6 +41,12 @@ contains
   JvQDataEmbedded in '..\..\qrun\JvQDataEmbedded.pas',
   JvQLogFile in '..\..\qrun\JvQLogFile.pas',
   JvQLogForm in '..\..\qrun\JvQLogForm.pas' {FoLog},
-  JvQMergeManager in '..\..\qrun\JvQMergeManager.pas';
+  JvQMergeManager in '..\..\qrun\JvQMergeManager.pas',
+  JvQCreateProcess in '..\..\qrun\JvQCreateProcess.pas',
+  JvQEasterEgg in '..\..\qrun\JvQEasterEgg.pas',
+  JvQEnterTab in '..\..\qrun\JvQEnterTab.pas',
+  JvQMouseGesture in '..\..\qrun\JvQMouseGesture.pas',
+  JvQPageManager in '..\..\qrun\JvQPageManager.pas',
+  QNotebook in '..\..\qcommon\QNotebook.pas';
 
 end.
