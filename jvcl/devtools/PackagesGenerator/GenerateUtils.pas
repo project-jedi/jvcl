@@ -449,6 +449,7 @@ var
   bcblibsList : TStringList;
   containsSomething : Boolean; // true if package will contain something
   repeatSectionUsed : Boolean; // true if at least one repeat section was used
+  outputDate : TDateTime;
 begin
   packSuffix := targetToSuffix(target);
   outFile := TStringList.Create;
@@ -479,9 +480,10 @@ begin
     // Process the file, only if the template or the xml are newer
     // than the output file. If that output file doesn't exist,
     // create it too
+    outputDate := FileDateToDateTime(FileAge(OutFileName));
     if not FileExists(OutFileName) or
-      (FileDateToDateTime(FileAge(OutFileName)) < templateDate) or
-      (FileDateToDateTime(FileAge(OutFileName)) < xmlDate) then
+      (outputDate < templateDate) or
+      (outputDate < xmlDate) then
     begin
       SendMsg(#9#9'Applying to ' + package);
 
