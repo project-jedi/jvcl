@@ -40,43 +40,33 @@ object MainForm: TMainForm
     object btnDelphi: TToolButton
       Left = 0
       Top = 0
+      Action = actNewWindowDelphiStyle
       AllowAllUp = True
       AutoSize = True
-      Caption = 'Delphi Style'
-      ImageIndex = 0
-      OnClick = DelphiStyleClick
     end
     object btnVC: TToolButton
       Left = 75
       Top = 0
+      Action = actNewWindowVCStyle
       AllowAllUp = True
       AutoSize = True
-      Caption = 'VC++ Style'
-      ImageIndex = 1
-      OnClick = VCStyleClick
     end
     object btnVID: TToolButton
       Left = 148
       Top = 0
+      Action = actNewWindowVIDStyle
       AllowAllUp = True
       AutoSize = True
-      Caption = 'VID Style'
-      ImageIndex = 2
-      OnClick = VIDStyleClick
     end
     object btnVSNet: TToolButton
       Left = 210
       Top = 0
-      Caption = 'VS.NET Style'
-      ImageIndex = 3
-      OnClick = DockForm4Click
+      Action = actNewWindowVSNetStyle
     end
     object ToolButton2: TToolButton
       Left = 290
       Top = 0
-      Caption = 'VIDVC Style'
-      ImageIndex = 5
-      OnClick = ToolButton2Click
+      Action = actNewWindowVIDVCStyle
     end
     object ToolButton1: TToolButton
       Left = 370
@@ -158,19 +148,19 @@ object MainForm: TMainForm
     object DockForm_Menu: TMenuItem
       Caption = 'Dockable Window'
       object DelphiStyle: TMenuItem
-        Caption = 'Delphi Style'
-        OnClick = DelphiStyleClick
+        Action = actNewWindowDelphiStyle
       end
       object VCStyle: TMenuItem
-        Caption = 'Visual C++ Style'
-        OnClick = VCStyleClick
+        Action = actNewWindowVCStyle
       end
       object VIDStyle: TMenuItem
-        Caption = 'Visual InterDev Style'
-        OnClick = VIDStyleClick
+        Action = actNewWindowVIDStyle
       end
       object VSNETStyle: TMenuItem
-        Caption = 'Visual Studio.net Style'
+        Action = actNewWindowVSNetStyle
+      end
+      object VIDVCStyle1: TMenuItem
+        Action = actNewWindowVIDVCStyle
       end
     end
     object ShowWindow_Menu: TMenuItem
@@ -233,6 +223,24 @@ object MainForm: TMainForm
       object AllDocked: TMenuItem
         Caption = 'All Dockable'
         OnClick = AllDockedClick
+      end
+    end
+    object ServerStyle_Menu: TMenuItem
+      Caption = 'Server Style'
+      object ServerDelphiStyle: TMenuItem
+        Action = actServerStyleDelphi
+      end
+      object ServerVisualCStyle: TMenuItem
+        Action = actServerStyleVC
+      end
+      object ServerVisualInterDevStyle: TMenuItem
+        Action = actServerStyleVID
+      end
+      object ServerVisualStudionetStyle: TMenuItem
+        Action = actServerStyleVSNet
+      end
+      object VisualInterDevCStyle1: TMenuItem
+        Action = actServerStyleVIDVC
       end
     end
   end
@@ -431,5 +439,72 @@ object MainForm: TMainForm
     TabServerOption.ShowTabImages = True
     Left = 216
     Top = 112
+  end
+  object ActionList1: TActionList
+    Left = 192
+    Top = 48
+    object actServerStyleDelphi: TAction
+      Category = 'ServerStyle'
+      Caption = 'Delphi Style'
+      OnExecute = actServerStyleExecute
+      OnUpdate = actServerStyleUpdate
+    end
+    object actServerStyleVC: TAction
+      Tag = 1
+      Category = 'ServerStyle'
+      Caption = 'Visual C++ Style'
+      OnExecute = actServerStyleExecute
+      OnUpdate = actServerStyleUpdate
+    end
+    object actServerStyleVID: TAction
+      Tag = 2
+      Category = 'ServerStyle'
+      Caption = 'Visual InterDev Style'
+      OnExecute = actServerStyleExecute
+      OnUpdate = actServerStyleUpdate
+    end
+    object actServerStyleVSNet: TAction
+      Tag = 3
+      Category = 'ServerStyle'
+      Caption = 'Visual Studio.net Style'
+      OnExecute = actServerStyleExecute
+      OnUpdate = actServerStyleUpdate
+    end
+    object actServerStyleVIDVC: TAction
+      Tag = 4
+      Category = 'ServerStyle'
+      Caption = 'Visual InterDev C++ Style'
+      OnExecute = actServerStyleExecute
+      OnUpdate = actServerStyleUpdate
+    end
+    object actNewWindowDelphiStyle: TAction
+      Category = 'New Window'
+      Caption = 'Delphi Style'
+      OnExecute = NewWindowExecute
+    end
+    object actNewWindowVCStyle: TAction
+      Tag = 1
+      Category = 'New Window'
+      Caption = 'VC++ Style'
+      OnExecute = NewWindowExecute
+    end
+    object actNewWindowVIDStyle: TAction
+      Tag = 2
+      Category = 'New Window'
+      Caption = 'VID Style'
+      OnExecute = NewWindowExecute
+    end
+    object actNewWindowVSNetStyle: TAction
+      Tag = 3
+      Category = 'New Window'
+      Caption = 'VS.NET Style'
+      OnExecute = NewWindowExecute
+    end
+    object actNewWindowVIDVCStyle: TAction
+      Tag = 4
+      Category = 'New Window'
+      Caption = 'VIDVC Style'
+      OnExecute = NewWindowExecute
+    end
   end
 end
