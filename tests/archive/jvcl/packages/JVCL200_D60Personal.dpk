@@ -76,9 +76,7 @@ contains
   JvPgMngrEd in '..\source\JvPgMngrEd.pas' {JvProxyEditor},
   JvPictEdit in '..\source\JvPictEdit.pas' {PictureEditDialog},
   JvPresrDsn in '..\source\JvPresrDsn.pas' {JvFormPropsDlg},
-  JvQBndDlg in '..\source\JvQBndDlg.pas' {JvQueryParamsDialog},
   JvSbEdit in '..\source\JvSbEdit.pas' {JvSpeedbarEditor},
-  JvSelDSFrm in '..\source\JvSelDSFrm.pas' {JvSelectDataSetForm},
   JvTimLstEd in '..\source\JvTimLstEd.pas' {JvTimerItemsEditor};
 
 end.
