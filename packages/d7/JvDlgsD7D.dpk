@@ -30,11 +30,14 @@ requires
   JvCoreD7R,
   JvCoreD7D,
   JvDlgsD7R,
-  designide;
+  designide,
+  vcl,
+  rtl;
 
 contains
   JvDlgsReg in '..\..\design\JvDlgsReg.pas',
   JvTipOfDayEditor in '..\..\design\JvTipOfDayEditor.pas',
-  JvCommonDialogDEditor in '..\..\design\JvCommonDialogDEditor.pas';
+  JvCommonDialogDEditor in '..\..\design\JvCommonDialogDEditor.pas',
+  JvAppletEditor in '..\..\design\JvAppletEditor.pas';
 
 end.

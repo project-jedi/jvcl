@@ -33,7 +33,8 @@ requires
   vcl,
   rtl,
   vclactnband,
-  vclx;
+  vclx,
+  dclstd;
 
 contains
   JvCustomReg in '..\..\design\JvCustomReg.pas',
@@ -46,6 +47,7 @@ contains
   JvPluginParamsForm in '..\..\design\JvPLuginParamsForm.pas' {frmPluginParams},
   JVHLEditEditor in '..\..\design\JvHLEditEditor.pas',
   JvScheduleEditors in '..\..\design\JvScheduleEditors.pas',
-  JvScheduleEditorForm in '..\..\design\JvScheduleEditorForm.pas' {FrmScheduleEditor};
+  JvScheduleEditorForm in '..\..\design\JvScheduleEditorForm.pas' {FrmScheduleEditor},
+  JvLookoutEditor in '..\..\design\JvLookoutEditor.pas';
 
 end.

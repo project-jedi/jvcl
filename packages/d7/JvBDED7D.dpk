@@ -28,9 +28,24 @@ package JvBDED7D;
 
 requires
   JvBDED7R,
-  designide;
+  designide,
+  rtl,
+  dbrtl,
+  bdertl,
+  vclactnband,
+  vclx,
+  vcl,
+  dcldb,
+  vcldesigner,
+  designdgm,
+  dclstd,
+  vcldb,
+  JvDBD7D;
 
 contains
-  JvBDEReg in '..\..\design\JvBDEReg.pas';
+  JvBDEReg in '..\..\design\JvBDEReg.pas',
+  JvBDEEditors in '..\..\design\JvBDEEditors.pas',
+  JvBDEMemTableEditor in '..\..\design\JvBDEMemTableEditor.pas',
+  JvBDESecurityEditor in '..\..\design\JvBDESecurityEditor.pas';
 
 end.

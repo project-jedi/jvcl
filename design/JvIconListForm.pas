@@ -30,11 +30,7 @@ unit JvIconListForm;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   Messages, Classes, Graphics, Forms, Controls, Dialogs,
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
@@ -42,12 +38,8 @@ uses
   LibIntf, DsgnIntf,
   {$ENDIF}
   StdCtrls, ExtCtrls,
-  {$IFDEF COMPILER3_UP}
   ExtDlgs,
-  {$ELSE}
-  ImagPrvw,
-  {$ENDIF}
-  JvIcoList, JvSpeedbar, JvComponent;
+  JvIconList, JvSpeedbar, JvComponent;
 
 type
   TIconListDialog = class(TForm)
@@ -125,7 +117,7 @@ implementation
 
 uses
   SysUtils, Clipbrd, Consts, Math,
-  JvClipIcon, JvVCLUtils, JvxDConst, JvAniFile;
+  JvJVCLUtils, JvJCLUtils, JvConsts, JvAniFile;
 
 {$B-}
 {$IFDEF WIN32}

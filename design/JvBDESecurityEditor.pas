@@ -9,7 +9,7 @@ uses
   {$ELSE}
   LibIntf, DsgnIntf,
   {$ENDIF}
-  SysUtils, DB, DBTables, JvDBEditors, JvDBSecur;
+  SysUtils, DB, DBTables, JvDBEditors, JvBDESecurity;
 
 
 type

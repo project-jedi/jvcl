@@ -28,7 +28,9 @@ package JvSystemD7R;
 
 requires
   JvCoreD7R,
-  DJCL70;
+  DJCL70,
+  vcl,
+  rtl;
 
 contains
   JvClipboardMonitor in '..\..\run\JvClipboardMonitor.pas',
@@ -67,6 +69,7 @@ contains
   JvCaret in '..\..\run\JvCaret.pas',
   JvSearchFiles in '..\..\run\JvSearchFiles.pas',
   JvMRUManager in '..\..\run\JvMRUManager.pas',
-  JvDirectories in '..\..\run\JvDirectories.pas';
+  JvDirectories in '..\..\run\JvDirectories.pas',
+  JvPerfMon95 in '..\..\run\JvPerfMon95.pas';
 
 end.

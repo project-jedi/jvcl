@@ -27,9 +27,15 @@ package JvAppFrmD7D;
 {$IMPLICITBUILD ON}
 
 requires
-  JvAppFrmD7R;
+  JvAppFrmD7R,
+  designide,
+  vcl,
+  rtl,
+  vclactnband,
+  vclx;
 
 contains
-  JvAppFrmReg in '..\..\design\JvAppFrmReg.pas';
+  JvAppFrmReg in '..\..\design\JvAppFrmReg.pas',
+  JvFormWallpaperEditor in '..\..\design\JvFormWallpaperEditor.pas';
 
 end.

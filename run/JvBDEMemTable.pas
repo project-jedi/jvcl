@@ -35,7 +35,7 @@ uses
   DB, DBTables;
 
 type
-  TJvMemoryTable = class(TDBDataSet)
+  TJvBDEMemoryTable = class(TDBDataSet)
   private
     FTableName: TFileName;
     FMoveHandle: HDBICur;
@@ -117,15 +117,15 @@ uses
   deleting records, referntial integrity, indexes, autoincrement fields
   and BLOBs) }
 
-{ TJvMemoryTable }
+{ TJvBDEMemoryTable }
 
-constructor TJvMemoryTable.Create(AOwner: TComponent);
+constructor TJvBDEMemoryTable.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FEnableDelete := True;
 end;
 
-function TJvMemoryTable.BatchMove(ASource: TDataSet; AMode: TBatchMode;
+function TJvBDEMemoryTable.BatchMove(ASource: TDataSet; AMode: TBatchMode;
   ARecordCount: Longint): Longint;
 var
   SourceActive: Boolean;
@@ -182,7 +182,7 @@ begin
   end;
 end;
 
-procedure TJvMemoryTable.CopyStructure(ASource: TDataSet);
+procedure TJvBDEMemoryTable.CopyStructure(ASource: TDataSet);
 var
   I: Integer;
 
@@ -215,7 +215,7 @@ begin
   end;
 end;
 
-procedure TJvMemoryTable.DeleteCurrentRecord;
+procedure TJvBDEMemoryTable.DeleteCurrentRecord;
 var
   CurRecNo, CurRec: Longint;
   Buffer: Pointer;
@@ -273,7 +273,7 @@ end;
 
 {$IFDEF COMPILER3_UP}
 
-function TJvMemoryTable.GetFieldData(Field: TField; Buffer: Pointer): Boolean;
+function TJvBDEMemoryTable.GetFieldData(Field: TField; Buffer: Pointer): Boolean;
 var
   IsBlank: LongBool;
   RecBuf: PChar;
@@ -302,7 +302,7 @@ begin
   end;
 end;
 
-procedure TJvMemoryTable.InternalDelete;
+procedure TJvBDEMemoryTable.InternalDelete;
 begin
   if EnableDelete then
     DeleteCurrentRecord
@@ -310,7 +310,7 @@ begin
     inherited InternalDelete;
 end;
 
-function TJvMemoryTable.Locate(const KeyFields: string;
+function TJvBDEMemoryTable.Locate(const KeyFields: string;
   const KeyValues: Variant; Options: TLocateOptions): Boolean;
 begin
   DoBeforeScroll;
@@ -322,7 +322,7 @@ begin
   end;
 end;
 
-function TJvMemoryTable.Lookup(const KeyFields: string; const KeyValues: Variant;
+function TJvBDEMemoryTable.Lookup(const KeyFields: string; const KeyValues: Variant;
   const ResultFields: string): Variant;
 begin
   Result := False;
@@ -330,7 +330,7 @@ end;
 
 {$ELSE}
 
-procedure TJvMemoryTable.DoBeforeDelete;
+procedure TJvBDEMemoryTable.DoBeforeDelete;
 begin
   inherited DoBeforeDelete;
   if EnableDelete then
@@ -343,25 +343,25 @@ end;
 
 {$ENDIF}
 
-procedure TJvMemoryTable.DoAfterClose;
+procedure TJvBDEMemoryTable.DoAfterClose;
 begin
   if not FDisableEvents then
     inherited DoAfterClose;
 end;
 
-procedure TJvMemoryTable.DoAfterOpen;
+procedure TJvBDEMemoryTable.DoAfterOpen;
 begin
   if not FDisableEvents then
     inherited DoAfterOpen;
 end;
 
-procedure TJvMemoryTable.DoBeforeClose;
+procedure TJvBDEMemoryTable.DoBeforeClose;
 begin
   if not FDisableEvents then
     inherited DoBeforeClose;
 end;
 
-procedure TJvMemoryTable.DoBeforeOpen;
+procedure TJvBDEMemoryTable.DoBeforeOpen;
 begin
   if not FDisableEvents then
     inherited DoBeforeOpen;
@@ -369,13 +369,13 @@ end;
 
 {$IFDEF COMPILER3_UP}
 
-procedure TJvMemoryTable.DoBeforeScroll;
+procedure TJvBDEMemoryTable.DoBeforeScroll;
 begin
   if not FDisableEvents then
     inherited DoBeforeScroll;
 end;
 
-procedure TJvMemoryTable.DoAfterScroll;
+procedure TJvBDEMemoryTable.DoAfterScroll;
 begin
   if not FDisableEvents then
     inherited DoAfterScroll;
@@ -383,14 +383,14 @@ end;
 
 {$ENDIF}
 
-function TJvMemoryTable.SupportedFieldType(AType: TFieldType): Boolean;
+function TJvBDEMemoryTable.SupportedFieldType(AType: TFieldType): Boolean;
 begin
   Result := not (AType in [ftUnknown {$IFDEF COMPILER4_UP}, ftWideString {$ENDIF}
     {$IFDEF COMPILER5_UP}, ftOraBlob, ftOraClob, ftVariant, ftInterface,
     ftIDispatch, ftGuid {$ENDIF}] + ftNonTextTypes);
 end;
 
-function TJvMemoryTable.CreateHandle: HDBICur;
+function TJvBDEMemoryTable.CreateHandle: HDBICur;
 var
   I: Integer;
   {$IFDEF COMPILER4_UP}
@@ -464,19 +464,19 @@ begin
   end;
 end;
 
-procedure TJvMemoryTable.CreateTable;
+procedure TJvBDEMemoryTable.CreateTable;
 begin
   CheckInactive;
   Open;
 end;
 
-procedure TJvMemoryTable.DeleteTable;
+procedure TJvBDEMemoryTable.DeleteTable;
 begin
   CheckBrowseMode;
   Close;
 end;
 
-procedure TJvMemoryTable.EmptyTable;
+procedure TJvBDEMemoryTable.EmptyTable;
 begin
   if Active then
   begin
@@ -493,7 +493,7 @@ begin
   end;
 end;
 
-procedure TJvMemoryTable.EncodeFieldDesc(var FieldDesc: FLDDesc;
+procedure TJvBDEMemoryTable.EncodeFieldDesc(var FieldDesc: FLDDesc;
   const Name: string; DataType: TFieldType; Size
   {$IFDEF COMPILER4_UP}, Precision {$ENDIF}: Word);
 begin
@@ -534,7 +534,7 @@ begin
 end;
 
 {$IFDEF WIN32}
-function TJvMemoryTable.GetRecordCount: {$IFNDEF COMPILER3_UP} Longint {$ELSE} Integer {$ENDIF};
+function TJvBDEMemoryTable.GetRecordCount: {$IFNDEF COMPILER3_UP} Longint {$ELSE} Integer {$ENDIF};
 begin
   if State = dsInactive then
     _DBError(SDataSetClosed);
@@ -542,7 +542,7 @@ begin
 end;
 {$ENDIF WIN32}
 
-procedure TJvMemoryTable.SetRecNo(Value: {$IFDEF COMPILER3_UP} Integer {$ELSE} Longint {$ENDIF});
+procedure TJvBDEMemoryTable.SetRecNo(Value: {$IFDEF COMPILER3_UP} Integer {$ELSE} Longint {$ENDIF});
 var
   Rslt: DBIResult;
 begin
@@ -562,9 +562,9 @@ begin
 end;
 
 {$IFDEF COMPILER3_UP}
-function TJvMemoryTable.GetRecNo: Integer;
+function TJvBDEMemoryTable.GetRecNo: Integer;
 {$ELSE}
-function TJvMemoryTable.GetRecordNumber: Longint;
+function TJvBDEMemoryTable.GetRecordNumber: Longint;
 {$ENDIF}
 var
   Rslt: DBIResult;
@@ -581,19 +581,19 @@ begin
   end;
 end;
 
-procedure TJvMemoryTable.GotoRecord(RecordNo: Longint);
+procedure TJvBDEMemoryTable.GotoRecord(RecordNo: Longint);
 begin
   RecNo := RecordNo;
 end;
 
 {$IFDEF COMPILER3_UP}
-function TJvMemoryTable.IsSequenced: Boolean;
+function TJvBDEMemoryTable.IsSequenced: Boolean;
 begin
   Result := not Filtered;
 end;
 {$ENDIF COMPILER3_UP}
 
-procedure TJvMemoryTable.SetFieldValues(const FieldNames: array of string;
+procedure TJvBDEMemoryTable.SetFieldValues(const FieldNames: array of string;
   const Values: array of const);
 var
   I: Integer;
@@ -617,7 +617,7 @@ begin
   end;
 end;
 
-procedure TJvMemoryTable.SetTableName(const Value: TFileName);
+procedure TJvBDEMemoryTable.SetTableName(const Value: TFileName);
 begin
   CheckInactive;
   FTableName := Value;

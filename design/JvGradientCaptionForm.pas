@@ -37,7 +37,7 @@ uses
   {$ELSE}
   LibIntf, DsgnIntf,
   {$ENDIF}
-  JvxCtrls, JvPlacemnt, JvToolEdit, JvGrdCpt, JvListBox, JvCtrls,
+  JvxCtrls, JvFormPlacement, JvToolEdit, JvGradientCaption, JvListBox, JvCtrls,
   JvComponent;
 
 {$IFNDEF COMPILER4_UP}
@@ -64,7 +64,7 @@ type
     Label2: TLabel;
     FontDialog: TFontDialog;
     ColorDialog: TColorDialog;
-    GradientCaption: TJvxGradientCaption;
+    GradientCaption: TJvGradientCaption;
     FormStorage: TJvFormStorage;
     CaptionList: TJvListBox;
     CaptionFont: TJvComboEdit;
@@ -83,7 +83,7 @@ type
     procedure CaptionFontButtonClick(Sender: TObject);
     procedure CheckBoxClick(Sender: TObject);
   private
-    FComponent: TJvxGradientCaption;
+    FComponent: TJvGradientCaption;
     FDesigner: IDesigner;
     FUpdating: Boolean;
     procedure AddColorItem(const ColorName: string);
@@ -95,7 +95,7 @@ type
     function GetActiveCaption: TJvCaption;
     procedure ApplyChanges;
   public
-    procedure SetGradientCaption(Component: TJvxGradientCaption;
+    procedure SetGradientCaption(Component: TJvGradientCaption;
       Designer: IDesigner);
     property ActiveCaption: TJvCaption read GetActiveCaption;
   end;
@@ -114,17 +114,17 @@ type
   end;
   {$ENDIF}
 
-function EditGradientCaption(Component: TJvxGradientCaption;
+function EditGradientCaption(Component: TJvGradientCaption;
   ADesigner: IDesigner): Boolean;
 
 implementation
 
 uses
-  JvVCLUtils, JvBoxProcs, JvConst, JvxDConst;
+  JvJVCLUtils, JvBoxProcs, JvConsts;
 
 {$R *.DFM}
 
-function EditGradientCaption(Component: TJvxGradientCaption; ADesigner: IDesigner): Boolean;
+function EditGradientCaption(Component: TJvGradientCaption; ADesigner: IDesigner): Boolean;
 begin
   with TGradCaptionsEditor.Create(Application) do
     try
@@ -139,7 +139,7 @@ end;
 
 procedure TGradientCaptionEditor.Edit;
 begin
-  EditGradientCaption(TJvxGradientCaption(Component), Designer);
+  EditGradientCaption(TJvGradientCaption(Component), Designer);
 end;
 
 procedure TGradientCaptionEditor.ExecuteVerb(Index: Integer);
@@ -172,7 +172,7 @@ end;
 
 procedure TGradientCaptionsProperty.Edit;
 begin
-  if EditGradientCaption(TJvxGradientCaption(GetComponent(0)), Designer) then
+  if EditGradientCaption(TJvGradientCaption(GetComponent(0)), Designer) then
     Modified;
 end;
 
@@ -213,7 +213,7 @@ begin
     Result := GradientCaption.Captions[I];
 end;
 
-procedure TGradCaptionsEditor.SetGradientCaption(Component: TJvxGradientCaption;
+procedure TGradCaptionsEditor.SetGradientCaption(Component: TJvGradientCaption;
   Designer: IDesigner);
 begin
   FComponent := Component;

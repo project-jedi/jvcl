@@ -25,7 +25,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvDBLoginForm;
+unit JvLoginForm;
 
 interface
 

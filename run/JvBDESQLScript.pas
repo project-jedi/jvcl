@@ -38,10 +38,10 @@ uses
   JvBDEUtils, JvDBUtils, JvComponent;
 
 type
-  TJvaSQLScript = class;
-  TOnScriptProgress = procedure(Sender: TJvaSQLScript; var Cancel: Boolean; Line: Integer) of object;
+  TJvBDESQLScript = class;
+  TOnScriptProgress = procedure(Sender: TJvBDESQLScript; var Cancel: Boolean; Line: Integer) of object;
 
-  TJvaSQLScript = class(TJvComponent)
+  TJvBDESQLScript = class(TJvComponent)
   private
     FOnProgress: TOnScriptProgress;
     FScript: TStrings;
@@ -62,29 +62,29 @@ type
 
 implementation
 
-constructor TJvaSQLScript.Create(AOwner: TComponent);
+constructor TJvBDESQLScript.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FScript := TStringList.Create;
 end;
 
-destructor TJvaSQLScript.Destroy;
+destructor TJvBDESQLScript.Destroy;
 begin
   FScript.Free;
   inherited Destroy;
 end;
 
-procedure TJvaSQLScript.SetScript(AValue: TStrings);
+procedure TJvBDESQLScript.SetScript(AValue: TStrings);
 begin
   FScript.Assign(AValue);
 end;
 
-procedure TJvaSQLScript.Execute;
+procedure TJvBDESQLScript.Execute;
 begin
   ExecuteSQLScript(FDatabase, FScript.Text, FCommit, Progress, 0);
 end;
 
-procedure TJvaSQLScript.Progress(UserData: Integer; var Cancel: Boolean; Line: Integer);
+procedure TJvBDESQLScript.Progress(UserData: Integer; var Cancel: Boolean; Line: Integer);
 begin
   if Assigned(FOnProgress) then
     FOnProgress(Self, Cancel, Line);

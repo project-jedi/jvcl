@@ -31,11 +31,7 @@ interface
 
 uses
   SysUtils, Classes, DB, DBTables,
-  {$IFDEF WIN32}
   Bde,
-  {$ELSE}
-  WinTypes, WinProcs, DbiTypes, DbiProcs, DbiErrs,
-  {$ENDIF}
   JvDBUtils;
 
 type

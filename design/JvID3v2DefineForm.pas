@@ -73,7 +73,7 @@ implementation
 {$R *.dfm}
 
 uses
-  JvID3v2Editor;
+  JvID3v2EditorForm;
 
 procedure TJvID3DefineDlg.OkBtnClick(Sender: TObject);
 begin

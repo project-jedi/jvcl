@@ -31,7 +31,7 @@ interface
 
 uses
   SysUtils, Classes, DBTables,
-  JvDBLoginForm, JvBDELoginDialog, JvBDECheckPasswordForm;
+  JvLoginForm, JvBDELoginDialog, JvBDECheckPasswordForm;
 
 type
   TCheckUserEvent = function(UsersTable: TTable;

@@ -198,7 +198,7 @@ object GradCaptionsEditor: TGradCaptionsEditor
     Left = 84
     Top = 76
   end
-  object GradientCaption: TJvxGradientCaption
+  object GradientCaption: TJvGradientCaption
     Captions = <>
     FormCaption = 'Caption Editor'
     Left = 24

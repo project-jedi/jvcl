@@ -8,9 +8,9 @@ procedure Register;
 
 implementation
 uses
-  Classes,
+  Classes, ImgList,
   {$IFDEF COMPILER6_UP}
-  DesignEditors, DesignIntf,
+  FiltEdit, DesignEditors, DesignIntf,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
@@ -21,9 +21,9 @@ uses
   JvBandForms, JvBandObjectDLLWizard, JvBandObjectDLLWizardForm, 
   JvLookOut, JvOutlookBar, JvRadioControl, JvScheduledEvents, JvThumbImage,
   JvThumbnails, JvThumbviews, JvTimeLine, JvTMTimeLine, JvBalloonHint,
-  JvPluginManager, JvPLuginWizard,
+  JvPlugin, JvPluginManager, JvPluginWizard,
   JvValidateEdit, JvEditor, JvHLEditor, JvHLEditorPropertyForm, JvHLParser,
-  JvTimeLineEditor, JvHLEditEditor, JvScheduleEditors, JvOutlookBarEditors;
+  JvTimeLineEditor, JvHLEditEditor, JvScheduleEditors, JvOutlookBarEditors, JvLookoutEditor;
 
 
 {.$R ..\resources\JvCustomReg.dcr}
@@ -40,12 +40,6 @@ begin
     TJvPluginManager, TJvValidateEdit,
     TJvEditor, TJvHLEditor, TJvHLEdPropDlg
     ]);
-  RegisterCustomModule(TJvBandForm, TCustomModule);
-  RegisterPackageWizard(TJvBandObjectDLLWizard.Create);
-
-  RegisterComponentEditor(TJvHLEdPropDlg, TJvHLEdPropDlgEditor);
-  RegisterComponentEditor(TJvCustomOutlookBar, TJvOutlookBarComponentEditor);
-  RegisterComponentEditor(TJvCustomTimeLine, TJvTimeLineEditor);
 
   RegisterPropertyEditor(TypeInfo(Integer),
     TJvCustomOutlookBar, 'ActivePageIndex', TJvOutlookBarActivePageEditor);
@@ -58,8 +52,23 @@ begin
   RegisterPropertyEditor(TypeInfo(TJvColors),
     TJvHLEditor, 'Colors', TJvHLEditorColorProperty);
   RegisterPropertyEditor(TypeInfo(IJclSchedule), TJvEventCollectionItem, 'Schedule', TJvSchedulePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvLookoutButton,
+    'ImageIndex', TJvLookOutImageIndexProperty);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvExpressButton,
+    'ImageIndex', TJvLookOutImageIndexProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvThumbView,
+    'Filter', TFilterProperty);
 
+  RegisterComponentEditor(TJvHLEdPropDlg, TJvHLEdPropDlgEditor);
+  RegisterComponentEditor(TJvCustomOutlookBar, TJvOutlookBarComponentEditor);
+  RegisterComponentEditor(TJvCustomTimeLine, TJvTimeLineEditor);
+  RegisterComponentEditor(TJvLookOut, TJvLookOutEditor);
+  RegisterComponentEditor(TJvLookOutPage, TJvLookOutPageEditor);
+  RegisterComponentEditor(TJvExpress, TJvExpressEditor);
   RegisterComponentEditor(TJvCustomScheduledEvents, TJvSchedEventComponentEditor);
+
+  RegisterCustomModule(TJvBandForm, TCustomModule);
+  RegisterPackageWizard(TJvBandObjectDLLWizard.Create);
   RegisterLibraryExpert(TJvPluginWizard.Create)
 end;
 

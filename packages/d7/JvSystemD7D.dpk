@@ -28,10 +28,22 @@ package JvSystemD7D;
 
 requires
   JvSystemD7R,
-  designide;
+  designide,
+  vcl,
+  rtl,
+  vclactnband,
+  vclx,
+  JvStdCtrlsD7R,
+  dclstd,
+  JvCoreD7D,
+  JvCustomD7D;
 
 contains
   JvSystemReg in '..\..\design\JvSystemReg.pas',
-  JvChangeNotifyEditor in '..\..\design\JvChangeNotifyEditor.pas';
+  JvChangeNotifyEditor in '..\..\design\JvChangeNotifyEditor.pas',
+  JvTimerListForm in '..\..\design\JvTimerListForm.pas',
+  JvMinMaxForm in '..\..\design\JvMinMaxForm.pas',
+  JvFormPropertiesForm in '..\..\design\JvFormPropertiesForm.pas',
+  JvPerfStatEditor in '..\..\design\JvPerfStatEditor.pas';
 
 end.

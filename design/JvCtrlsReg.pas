@@ -8,7 +8,7 @@ procedure Register;
 
 implementation
 uses
-  Classes, Controls, DesignIntf,
+  Classes, Controls, DesignIntf, DesignEditors, 
   JvZoom, JvAnalogClock, JvBehaviorLabel, JvArrowButton, JvaScrollText, JvCaptionButton,
   JvClock, JvContentScroller, JvColorBox, JvColorButton, JvDice,
   JvDriveCtrls, JvFooter, JvGroupHeader, JvHtControls, JvInstallLabel, JvItemsPanel,
@@ -18,6 +18,7 @@ uses
   JvColorForm, JvDsgnIntf, JvImageDrawThread, JvRegAuto, JvWinampLabel,
   JvButtons, JvCaptionPanel, JvScrollMax,
   JvRegAutoEditor, JvScrollMaxEditor, JvBehaviorLabelEditor, JvGroupHeaderEditor, JvFooterEditor,
+  JvSpeedbarForm,
   JvDsgnEditors;
 
 {.$R ..\resources\JvCtrlsReg.dcr}
@@ -41,13 +42,19 @@ begin
   RegisterPropertyEditor(typeinfo(TJvLabelBehaviorName),TJvBehaviorLabel,'Behavior',TJvLabelBehaviorProperty);
   RegisterPropertyEditor(TypeInfo(TCursor), TJvxSplitter, 'Cursor', nil);
   RegisterPropertyEditor(TypeInfo(TDateTime),TJvAlarmInfo,'Date',TJvDateTimeExProperty);
-  
+  RegisterPropertyEditor(TypeInfo(TDateTime),TJvAlarmInfo,'Date',TJvDateTimeExProperty);
+  RegisterPropertyEditor(TypeInfo(TDateTime),TJvAnalogClock,'Time',TJvTimeExProperty);
+  RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedItem, 'BtnCaption', TStringProperty);
+
   RegisterComponentEditor(TJvScrollMax, TJvScrollMaxEditor);
   RegisterComponentEditor(TJvGroupHeader, TJvGroupHeaderEditor);
   RegisterComponentEditor(TJvFooter, TJvFooterEditor);
-
+  RegisterComponentEditor(TJvImageListBox, TJvStringsEditor);
+  RegisterComponentEditor(TJvImageComboBox, TJvStringsEditor);
+  RegisterComponentEditor(TJvSpeedBar, TJvSpeedbarCompEditor);
   RegisterComponentEditor(TJvRegAuto, TJvRegAutoEditor);
 
+  RegisterNoIcon([TJvSpeedItem, TJvSpeedbarSection]);
   RegisterClass(TJvScrollMaxBand);
 
 end;

@@ -35,7 +35,7 @@ interface
 uses
   SysUtils, Classes, Controls, Forms, StdCtrls,
   ExtCtrls, DB, DBTables,
-  JvBDELists, JvDBLoginForm;
+  JvBDELists, JvLoginForm;
 
 type
   TCheckUserNameEvent = function(UsersTable: TTable;

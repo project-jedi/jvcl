@@ -35,7 +35,7 @@ uses
   JvComponent;
 
 type
-  TJvAutoSizeCompo = class(TJvComponent)
+  TJvFormAutoSize = class(TJvComponent)
   private
     FForm: TForm;
     FActive: Boolean;
@@ -53,7 +53,7 @@ type
 
 implementation
 
-constructor TJvAutoSizeCompo.Create(AOwner: TComponent);
+constructor TJvFormAutoSize.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   // (p3) dangerous: True can create problems without user being aware
@@ -68,7 +68,7 @@ begin
   end;
 end;
 
-destructor TJvAutoSizeCompo.Destroy;
+destructor TJvFormAutoSize.Destroy;
 begin
   if FForm <> nil then
     FForm.OnResize := nil;
@@ -76,7 +76,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvAutoSizeCompo.Resize(Sender: TObject);
+procedure TJvFormAutoSize.Resize(Sender: TObject);
 var
   WidthRatio, HeightRatio: Double;
   CompIndex: Integer;

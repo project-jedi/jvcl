@@ -44,7 +44,7 @@ uses
   DsgnIntf,
   {$ENDIF}
   Consts,
-  JvCurrEdit, JvVCLUtils, JvPlacemnt, JvToolEdit, JvValidateEdit, JvEdit;
+  JvJVCLUtils, JvFormPlacement, JvValidateEdit, JvEdit;
 
 type
   TMinMaxInfoEditDialog = class(TForm)
