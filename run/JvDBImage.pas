@@ -593,6 +593,12 @@ begin
   end;
 end;
 
+function ControlCursorPos(Control:TControl):TPoint;
+begin
+  GetCursorPos(Result);
+  Result := Control.ScreenToClient(Result);
+end;
+
 procedure TJvDBImage.WMLButtonDblClk(var Message: TWMLButtonDblClk);
 begin
   // we can't call inherited because TDBImage loads the image there as well
@@ -605,7 +611,7 @@ begin
   if not (csNoStdEvents in ControlStyle) then
     with Message do
       if (Width > 32768) or (Height > 32768) then
-        with CalcCursorPos do
+        with ControlCursorPos(Self) do
           MouseDown(mbLeft, KeysToShiftState(Keys), X, Y)
       else
         MouseDown(mbLeft, KeysToShiftState(Keys), Message.XPos, Message.YPos);
