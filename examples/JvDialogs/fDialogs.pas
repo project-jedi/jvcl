@@ -237,7 +237,6 @@ end;
 procedure TForm1.Button38Click(Sender: TObject);
 var
   WinDir: array[0..255] of char;
-  FileToFind: string;
 begin
   GetWindowsDirectory(WinDir, SizeOf(WinDir));
 
