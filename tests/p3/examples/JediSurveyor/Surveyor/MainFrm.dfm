@@ -52,10 +52,14 @@ object frmMain: TfrmMain
       Width = 53
       Height = 48
       Cursor = crHandPoint
+      Hint = 'Go to the JVCL home page (http://jvcl.sourceforge.net)'
       HiColor = clWindow
       BorderStyle = bsNone
       ImageList = il48
+      Anchors = [akTop, akRight]
       Text = 'JediLogo'
+      ParentShowHint = False
+      ShowHint = True
     end
     object lblProgress: TLabel
       Left = 587
@@ -904,6 +908,15 @@ object frmMain: TfrmMain
       Caption = '&Comment...'
       OnExecute = acCommentExecute
     end
+    object acAbout: TAction
+      Caption = 'About...'
+      OnExecute = acAboutExecute
+    end
+    object acSaveSurvey: TAction
+      Caption = 'Save...'
+      ShortCut = 16467
+      OnExecute = acSaveSurveyExecute
+    end
   end
   object popMultiple: TPopupMenu
     Left = 300
@@ -912,5 +925,24 @@ object frmMain: TfrmMain
   object popExclusive: TPopupMenu
     Left = 390
     Top = 102
+  end
+  object popSend: TPopupMenu
+    Left = 414
+    Top = 174
+    object Save1: TMenuItem
+      Action = acSaveSurvey
+    end
+  end
+  object SaveSurveyDialog: TJvSaveDialog
+    DefaultExt = 'jrf'
+    Filter = 
+      'Survey response files (binary)|*.jrf|Survey response files (xml)' +
+      '|*.jrf|All files|*.*'
+    InitialDir = '.'
+    Options = [ofOverwritePrompt, ofHideReadOnly, ofEnableSizing]
+    Height = 0
+    Width = 0
+    Left = 252
+    Top = 198
   end
 end

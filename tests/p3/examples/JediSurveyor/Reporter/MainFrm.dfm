@@ -846,6 +846,7 @@ object frmMain: TfrmMain
       000000000000}
   end
   object OpenSurveyDialog: TJvOpenDialog
+    DefaultExt = 'jsf'
     Filter = 'Survey files|*.jsf|All files|*.*'
     InitialDir = '.'
     Height = 0

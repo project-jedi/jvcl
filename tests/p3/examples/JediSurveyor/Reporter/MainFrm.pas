@@ -115,7 +115,7 @@ resourcestring
   SFmtComment = '%0:s\nComments from %1:s:\n%0:s\n\n%2:s\n\n';
   SFmtTemplateNotFound = 'Unable to find print template (%s)';
   SAboutText = 'JEDI Surveyor Reporter, version 1.0';
-  SAboutTitle = 'About...';
+  SAboutTitle = 'About Reporter...';
 
   SFmtHTMLTableSurveySummary =
     '<table class="TableSurveySummary">' +
@@ -138,7 +138,7 @@ resourcestring
     '<table class="TableSurveyItemDetail">' +
     '<tr class="TRSurveyItemDetail"><th  class="THSurveyItemDetail">Responses</th></tr>' +
     '<tr class="TRSurveyItemDetail"><td class="TDSurveyItemDetail">%s&nbsp;</td></tr></table>';
-  SFmtHTMLTableSurveyItemFooter = '</tr></td></table>';
+  SFmtHTMLTableSurveyItemFooter = '</td></tr></table>';
   STableSurveyItemDetail =
     '<table class="TableSurveyItemDetail"><tr class="TRSurveyItemDetail">' +
     '<th class="THSurveyItemDetail">Choices</th><th class="THSurveyItemDetail">Responses</th></tr>';
@@ -146,6 +146,9 @@ resourcestring
     '<td  class="TDSurveyItemDetail">%s&nbsp;</td></tr>';
   SHTMLSpacer = '&nbsp;';
   SHTMLTableEnd = '</table>';
+  STableCommentHeader = '<table class="TableSurveyItemDetail"><tr colspan="3" class="TRSurveyItemDetail"><th class="THSurveyItemDetail">Comments</th></tr>';
+  SFmtTableCommentDetail = '<tr colspan="3" class="TRSurveyItemDetail"><td class="TDSurveyItemDetail">%s</td></tr>';
+
 const
   cSurveyItemImageIndex = 22;
   cDelimChar = '=';
@@ -502,8 +505,7 @@ begin
     begin
       FSurvey.Items[i].SortResponses;
       // TODO: add comments
-      Result := Result + Format(
-        SFmtHTMLTableSurveyItemHeader,
+      Result := Result + Format(SFmtHTMLTableSurveyItemHeader,
         [i + 1, FSurvey.Items[i].Title, FSurvey.Items[i].Description, EncodeType(FSurvey.Items[i].SurveyType)]);
       C.Text := DecodeChoice(FSurvey.Items[i].Choices, FSurvey.Items[i].SurveyType);
       R.Text := DecodeResponse(FSurvey.Items[i].Responses, FSurvey.Items[i].SurveyType);
@@ -515,7 +517,15 @@ begin
           R.Add(SHTMLSpacer);
         Result := Result + STableSurveyItemDetail;
         for j := 0 to C.Count - 1 do
-          Result := Result + Format(SFmtHTMLTRSurveyItemDetail, [C[j], R[j]]);
+          Result := Result + Format(SFmtHTMLTRSurveyItemDetail, [ConvertCRLFToBR(C[j]), ConvertCRLFToBR(R[j])]);
+        Result := Result + SHTMLTableEnd;
+      end;
+      C.Text := ConvertCRLFToBR(FSurvey.Items[i].Comments);
+      if C.Count > 0 then
+      begin
+        Result := Result + STableCommentHeader;
+        for j := 0 to C.Count - 1 do
+          Result := Result + Format(SFmtTableCommentDetail,[ConvertCRLFToBR(C[j])]);
         Result := Result + SHTMLTableEnd;
       end;
       Result := Result + SFmtHTMLTableSurveyItemFooter;

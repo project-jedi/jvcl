@@ -175,7 +175,7 @@ resourcestring
   SItemCopy     = ' (copy)';
   SSurveyorNotFoundFmt = 'Unable to find JEDI Surveyor (%s). Please fix and try again.';
   SAboutText = 'JEDI Surveyor Builder, version 1.0';
-  SAboutTitle = 'About...';
+  SAboutTitle = 'About Builder...';
 
 const
   cSurveyItemImageIndex = 22;

@@ -1,17 +1,23 @@
+{$I JVCL.INC}
 unit JvSurveyIntf;
 
 interface
-uses
-  StdVCL;
 
 type
+{$IFNDEF COMPILER6_UP}
+{$M+}
+  IInvokable = interface(IUnknown)
+  end;
+{$M-}
+{$ENDIF}
+
   TJvSurveyType = (
     stExclusive,  // single choice
     stMultiple,   // multiple choice
     stFreeForm);  // type free-form text
   TJvSurveyFileFormat = (ffText,ffBinary);
   // one item in a survey
-  IJvSurveyItem = interface
+  IJvSurveyItem = interface(IInvokable)
   ['{D94E8215-2B22-44AE-9BE5-2B3784FAC7D9}']
     function GetID:integer;
     procedure SetID(const Value:integer);
@@ -43,7 +49,7 @@ type
   end;
 
   // a list of survey items
-  IJvSurveyItems = interface
+  IJvSurveyItems = interface(IInvokable)
   ['{B059D82D-0575-4E40-BAC2-38117CEAAC2C}']
     function GetItem(Index:integer):IJvSurveyItem;
     function GetCount:integer;
@@ -58,7 +64,7 @@ type
   end;
 
   // info about person taking survey
-  IJvSurveyTaker = interface
+  IJvSurveyTaker = interface(IInvokable)
   ['{FB6704CD-B5BE-4C43-9B91-429FA8B9968B}']
     function GetUserName:WideString;
     procedure SetUserName(const Value:WideString);
@@ -75,7 +81,7 @@ type
   end;
 
   // the survey itself
-  IJvSurvey = interface
+  IJvSurvey = interface(IInvokable)
   ['{487E8927-AAC7-45BD-BCF3-26CDFB549676}']
     function GetID:integer;
     procedure SetID(const Value:integer);

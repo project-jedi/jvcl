@@ -44,6 +44,11 @@ type
     popExclusive: TPopupMenu;
     btnComment: TButton;
     acComment: TAction;
+    acAbout: TAction;
+    popSend: TPopupMenu;
+    acSaveSurvey: TAction;
+    SaveSurveyDialog: TJvSaveDialog;
+    Save1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure acStartPageExecute(Sender: TObject);
@@ -65,6 +70,8 @@ type
       var Handled: Boolean);
     procedure FormContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
+    procedure acAboutExecute(Sender: TObject);
+    procedure acSaveSurveyExecute(Sender: TObject);
   private
     FFilename,FTempSurveyFilename: string;
     FCompletedSurvey:boolean;
@@ -112,7 +119,8 @@ resourcestring
     ' Currently no survey is loaded. To load a survey, click the "Open" button and select a survey file from the dialog.';
   SEndPageTitle = 'Survey completed';
   SEndPageDescriptionFmt =
-    'Click the "Send" button below to send an e-mail to %s with your answers. The results of the survey will be made available at the following location: <link>%s</link>. Enter a username and and e-mail address to help us keep track of participants (optional).';
+    'Click the "Send" button below to send an e-mail to %s (<link>mailto:%s</link>) with your answers. ' +
+    'The results of the survey will be made available at the following location: <link>%s</link>. Enter a username and and e-mail address to help us keep track of participants (optional).';
   SExpiredSurveyCaption = 'Survey expired!';
   SExpiredSurveyTextFmt = 'This survey expired on %s, would you like to view it anyway?';
   SErrSurveyImplementationNotFound = 'Fatal Error: No IJvSurvey implementation found, cannot continue!';
@@ -124,6 +132,8 @@ resourcestring
   SPageOfPageFmt = 'Page %d of %d';
   SDeleteResponseCaption = 'Delete response file';
   SFmtDeleteResponsePrompt = 'Do you want to delete the response file (%s)?';
+  SAboutText = 'JEDI Surveyor version 1.0';
+  SAboutTitle = 'About Surveyor...';
 
 const
   cStartOffset = 24;
@@ -293,6 +303,7 @@ begin
     sbSurvey.Controls[0].Free;
   edUserName := nil;
   edUserEMail := nil;
+  PopupMenu := nil;
 end;
 
 procedure TfrmMain.EndPage;
@@ -301,8 +312,7 @@ begin
   ClearScrollBox;
   FPageIndex := FSurvey.Items.Count;
   lblTitle.Caption := SEndPageTitle;
-  lblDescription.Caption := Format(SEndPageDescriptionFmt, [FSurvey.Recipient, FSurvey.ResultHRef]);
-  // TODO: enable mail button
+  lblDescription.Caption := Format(SEndPageDescriptionFmt, [FSurvey.Recipient, FSurvey.RecipientMail, FSurvey.ResultHRef]);
   edUserName := TEdit.Create(self);
   with edUserName do
   begin
@@ -337,12 +347,27 @@ begin
   with TButton.Create(self) do
   begin
     Parent := sbSurvey;
-    SetBounds(sbSurvey.ClientWidth - 25 - Width, 126, Width, Height);
-    Caption := SSend;
-    OnClick := DoSendMail;
+    SetBounds(sbSurvey.ClientWidth - 105 - Width, 126, Width, Height);
+//    Caption := SSend;
+    Action := acSaveSurvey;
+    Anchors := [akRight,akTop];
+//    OnClick := DoSendMail;
     TabOrder := 2;
     Enabled := FSurvey.ExpiryDate >= Date;
   end;
+  with TButton.Create(self) do
+  begin
+    Parent := sbSurvey;
+    SetBounds(sbSurvey.ClientWidth - 25 - Width, 126, Width, Height);
+//    Caption := SSend;
+    Action := acSendMail;
+    Anchors := [akRight,akTop];
+//    OnClick := DoSendMail;
+    TabOrder := 3;
+    Enabled := FSurvey.ExpiryDate >= Date;
+  end;
+
+  PopUpMenu := popSend;
   UpdateProgress;
 end;
 
@@ -388,6 +413,7 @@ begin
   acLoadSurvey.Visible := FPageIndex = -1;
   acComment.Visible := (FPageIndex >= 0) and (FPageIndex < FSurvey.Items.Count);
   acLoadSurvey.Enabled := acLoadSurvey.Visible;
+  acSaveSurvey.Enabled := FPageIndex = FSurvey.Items.Count;
   lblSurveyTitle.Visible := not acLoadSurvey.Visible;
 end;
 
@@ -448,8 +474,8 @@ begin
         Inc(X, AWidth + cStartOffset);
       end;
       RB.Parent := sbSurvey;
-      if i = 0 then
-        ActiveControl := RB;
+//      if i = 0 then
+//        ActiveControl := RB;
       Inc(j);
     end;
   finally
@@ -765,12 +791,35 @@ begin
   if (PopupMenu <> nil) then
   begin
     if (MousePos.X < 0) or (MousePos.Y < 0) then
+    begin
       GetCursorPos(MousePos);
-    if (MousePos.X < Left) or (MousePos.X > Left + Width) or
-      (MousePos.Y < Top) or (MousePos.Y > Top + Height) then
-        MousePos := Point(Left + Width div 2, Top + Height div 2);
-    PopupMenu.Popup(MousePos.X,MousePos.Y);
-    Handled := true;
+//      MousePos := ScreenToClient(MousePos);
+      if (MousePos.X < Left) or (MousePos.X > Left + Width) or
+        (MousePos.Y < Top) or (MousePos.Y > Top + Height) then
+          MousePos := Point(Left + Width div 2, Top + Height div 2);
+      PopupMenu.Popup(MousePos.X,MousePos.Y);
+      Handled := true;
+    end;
+  end;
+end;
+
+procedure TfrmMain.acAboutExecute(Sender: TObject);
+begin
+  MessageBox(GetFocus,PChar(SAboutText),PChar(SAboutTitle),MB_OK or MB_ICONINFORMATION);
+end;
+
+procedure TfrmMain.acSaveSurveyExecute(Sender: TObject);
+const
+  cSurveyFormat:array[boolean] of TJvSurveyFileFormat = (ffText,ffBinary);
+begin
+  if FTempSurveyFilename = '' then
+    FTempSurveyFilename := GetTempSurveyFileName;
+  SaveSurveyDialog.FileName := FTempSurveyFilename;
+  if SaveSurveyDialog.Execute then
+  begin
+    FTempSurveyFilename := SaveSurveyDialog.Filename;
+    FSurvey.SaveToFile(FTempSurveyFilename,cSurveyFormat[SaveSurveyDialog.FilterIndex = 1]);
+    FCompletedSurvey := true;
   end;
 end;
 
