@@ -416,9 +416,12 @@ var
   Stream: TMemoryStream;
 begin
   Stream := TMemoryStream.Create;
-  Stream.LoadFromFile(FileName);
-  LoadFromStream(Stream);
-  Stream.Free;
+  try
+    Stream.LoadFromFile(FileName);
+    LoadFromStream(Stream);
+  finally
+    Stream.Free;
+  end;
 end;
 {*************************************************}
 
@@ -812,14 +815,13 @@ begin
 end;
 {*************************************************}
 
-
 { TJvSimpleXmlElems }
 
 {*************************************************}
 
 function TJvSimpleXmlElems.Add(const Name: string): TJvSimpleXmlElem;
 begin
-  result := TJvSimpleXmlElem.Create(nil);
+  result := TJvSimpleXmlElem.Create(self);
   result.Name := Name;
   AddChild(result);
 end;
@@ -827,7 +829,7 @@ end;
 
 function TJvSimpleXmlElems.Add(const Name, Value: string): TJvSimpleXmlElem;
 begin
-  result := TJvSimpleXmlElem.Create(nil);
+  result := TJvSimpleXmlElem.Create(self);
   result.Name := Name;
   result.Value := Value;
   AddChild(result);
@@ -842,7 +844,8 @@ end;
 
 function TJvSimpleXmlElems.Add(Value: TJvSimpleXmlElem): TJvSimpleXmlElem;
 begin
-  AddChild(Value);
+  if Value<>nil then
+    AddChild(Value);
   result := @Value;
 end;
 {*************************************************}
