@@ -38,7 +38,7 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QButtons, QStdCtrls, QMask, Types,
   {$ENDIF VisualCLX}
-  JvToolEdit, JvComponent, JvSearchFiles, JvButton;
+  JvToolEdit, JvComponent, JvSearchFiles, JvButton, JvExMask;
 
 type
   TFoWallpaperChooser = class(TJvForm)
@@ -94,6 +94,7 @@ var
 begin
   Btn := TSpeedButton.Create(ScrollBox1);
   Btn.Parent := ScrollBox1;
+  Btn.Flat := true;
   Btn.ShowHint := True;
   Btn.Hint := ChangeFileExt(ExtractFileName(Path), '');
   try
