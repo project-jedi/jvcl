@@ -4,7 +4,7 @@ unit GenerateUtils;
 interface
 
 uses
-  Classes, StrUtils;
+  Classes;
 
 type
   TGenerateCallback = procedure (const msg : string);
