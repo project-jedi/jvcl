@@ -708,6 +708,7 @@ begin
   if FButtonHeight <> Value then
   begin
     FButtonHeight := Value;
+    FCHeight := Value + 2;
     if FPlacement = plTop then
       FButtonRect := Rect(BevelWidth, BevelWidth, Width - BevelWidth, FButtonHeight + BevelWidth)
     else
