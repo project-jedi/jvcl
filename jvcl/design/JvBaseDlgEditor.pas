@@ -15,7 +15,7 @@ Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
-                Serhiy Perevoznyk [serge_perevoznyk@hotmail.com]
+                Serhiy Perevoznyk [serge_perevoznyk att hotmail dott com]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
