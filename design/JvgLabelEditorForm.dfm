@@ -1486,8 +1486,8 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Left = 80
             Top = 168
             Width = 105
-            Height = 21
-            ItemHeight = 13
+            Height = 22
+            ItemHeight = 14
             TabOrder = 0
             Text = 'Horizontal'
             OnChange = cbxGradientOrientationChange
@@ -1522,7 +1522,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
             Left = 80
             Top = 77
             Width = 121
-            Height = 22
+            Height = 24
             Items = <
               item
                 Text = 'Solid'
