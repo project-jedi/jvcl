@@ -51,7 +51,7 @@ function ItemIDListCreate(const Allocator: IMalloc; const Size: Integer): PItemI
 begin
   Result := Allocator.Alloc(Size);
   if Result <> nil then
-    FillChar(Result, Size, 0);
+    FillChar(Result^, Size, 0);
 end;
 
 {**************************************************}
