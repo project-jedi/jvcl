@@ -716,6 +716,10 @@ const
 const
   Separator = '-';
 
+  // The space between a menu item text and its shortcut
+  ShortcutSpacing = '        ';
+
+
 function CreateMenuItemPainterFromStyle(Style: TJvMenuStyle; Menu: TMenu): TJvCustomMenuItemPainter;
 begin
   case Style of
@@ -830,7 +834,6 @@ end;
 constructor TJvMainMenu.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FCanvas := TControlCanvas.Create;
   RegisterWndProcHook(FindForm, NewWndProc, hoAfterMsg);
   FStyle := msStandard;
   FStyleItemPainter := CreateMenuItemPainterFromStyle(FStyle, Self);
@@ -859,8 +862,6 @@ begin
   FImageSize.Free;
   UnregisterWndProcHook(FindForm, NewWndProc, hoAfterMsg);
   inherited Destroy;
-  // (rom) destroy Canvas AFTER inherited Destroy
-  FCanvas.Free;
 end;
 
 procedure TJvMainMenu.Loaded;
@@ -1091,26 +1092,31 @@ begin
     if Assigned(Item) and
       (FindItem(Item.Command, fkCommand) = Item) then
     begin
-      SaveIndex := SaveDC(hDC);
+      FCanvas := TControlCanvas.Create;
       try
-        Canvas.Handle := hDC;
-        SetDefaultMenuFont(Canvas.Font);
-        Canvas.Font.Color := clMenuText;
-        Canvas.Brush.Color := clMenu;
-        if mdDefault in State then
-          Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-        if (mdSelected in State) and not
-          (Style in [msBtnLowered, msBtnRaised]) then
-        begin
-          Canvas.Brush.Color := clHighlight;
-          Canvas.Font.Color := clHighlightText;
+        SaveIndex := SaveDC(hDC);
+        try
+          Canvas.Handle := hDC;
+          SetDefaultMenuFont(Canvas.Font);
+          Canvas.Font.Color := clMenuText;
+          Canvas.Brush.Color := clMenu;
+          if mdDefault in State then
+            Canvas.Font.Style := Canvas.Font.Style + [fsBold];
+          if (mdSelected in State) and not
+            (Style in [msBtnLowered, msBtnRaised]) then
+          begin
+            Canvas.Brush.Color := clHighlight;
+            Canvas.Font.Color := clHighlightText;
+          end;
+          with rcItem do
+            IntersectClipRect(Canvas.Handle, Left, Top, Right, Bottom);
+          DrawItem(Item, rcItem, State);
+          Canvas.Handle := 0;
+        finally
+          RestoreDC(hDC, SaveIndex);
         end;
-        with rcItem do
-          IntersectClipRect(Canvas.Handle, Left, Top, Right, Bottom);
-        DrawItem(Item, rcItem, State);
-        Canvas.Handle := 0;
       finally
-        RestoreDC(hDC, SaveIndex);
+        Canvas.Free;
       end;
     end;
   end;
@@ -1119,25 +1125,36 @@ end;
 procedure TJvMainMenu.WMMeasureItem(var Message: TWMMeasureItem);
 var
   Item: TMenuItem;
+  SaveIndex: Integer;
   DC: HDC;
 begin
   with Message.MeasureItemStruct^ do
   begin
-    Item := TMenuItem(Pointer(itemData));
-    if Assigned(Item) and (FindItem(Item.Command, fkCommand) = Item) then
+    Item := FindItem(itemID, fkCommand);
+    if Assigned(Item) then
     begin
-      DC := GetDC(0);
+      DC := GetWindowDC(0);
       try
-        Canvas.Handle := DC;
-        SetDefaultMenuFont(Canvas.Font);
-        if Item.Default then
-          Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-        GetActiveItemPainter.Menu := Self;
-        GetActiveItemPainter.Measure(Item, Integer(itemWidth), Integer(itemHeight));
-        MeasureItem(Item, Integer(itemWidth), Integer(itemHeight));
+        FCanvas := TControlCanvas.Create;
+        try
+          SaveIndex := SaveDC(DC);
+          try
+            FCanvas.Handle := DC;
+            FCanvas.Font := Screen.MenuFont; 
+            if Item.Default then
+              Canvas.Font.Style := Canvas.Font.Style + [fsBold];
+            GetActiveItemPainter.Menu := Self;
+            GetActiveItemPainter.Measure(Item, Integer(itemWidth), Integer(itemHeight));
+            //MeasureItem(Item, Integer(itemWidth), Integer(itemHeight));
+          finally
+            FCanvas.Handle := 0;
+            RestoreDC(DC, SaveIndex);
+          end;
+        finally
+          Canvas.Free;
+        end;
       finally
-        Canvas.Handle := 0;
-        ReleaseDC(0, DC);
+        ReleaseDC(DC, 0);
       end;
     end;
   end;
@@ -1168,11 +1185,6 @@ begin
         SetCursor(Screen.Cursors[crDefault]);
     end;
 end;
-
-{function  TJvMainMenu.GetItems : TJvMenuItem;
-begin
-  Result := TJvMenuItem(TMainMenu(Self).Items);
-end;}
 
 { TJvPopupList }
 
@@ -1333,7 +1345,6 @@ begin
   end;
   FStyle := msStandard;
   FStyleItemPainter := CreateMenuItemPainterFromStyle(FStyle, Self);
-  FCanvas := TControlCanvas.Create;
   FCursor := crDefault;
   FImageMargin := TJvImageMargin.Create;
   FImageSize := TJvMenuImageSize.Create;
@@ -1360,8 +1371,6 @@ begin
   FStyleItemPainter.Free;
   PopupList.Remove(Self);
   inherited Destroy;
-  // (rom) destroy Canvas AFTER inherited Destroy
-  FCanvas.Free;
 end;
 
 procedure TJvPopupMenu.Loaded;
@@ -1617,26 +1626,31 @@ begin
     if Assigned(Item) and
       (FindItem(Item.Command, fkCommand) = Item) then
     begin
-      SaveIndex := SaveDC(hDC);
+      FCanvas := TControlCanvas.Create;
       try
-        Canvas.Handle := hDC;
-        SetDefaultMenuFont(Canvas.Font);
-        Canvas.Font.Color := clMenuText;
-        Canvas.Brush.Color := clMenu;
-        if mdDefault in State then
-          Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-        if (mdSelected in State) and
-          not (Style in [msBtnLowered, msBtnRaised]) then
-        begin
-          Canvas.Brush.Color := clHighlight;
-          Canvas.Font.Color := clHighlightText;
+        SaveIndex := SaveDC(hDC);
+        try
+          Canvas.Handle := hDC;
+          SetDefaultMenuFont(Canvas.Font);
+          Canvas.Font.Color := clMenuText;
+          Canvas.Brush.Color := clMenu;
+          if mdDefault in State then
+            Canvas.Font.Style := Canvas.Font.Style + [fsBold];
+          if (mdSelected in State) and
+            not (Style in [msBtnLowered, msBtnRaised]) then
+          begin
+            Canvas.Brush.Color := clHighlight;
+            Canvas.Font.Color := clHighlightText;
+          end;
+          with rcItem do
+            IntersectClipRect(Canvas.Handle, Left, Top, Right, Bottom);
+          DrawItem(Item, rcItem, State);
+          Canvas.Handle := 0;
+        finally
+          RestoreDC(hDC, SaveIndex);
         end;
-        with rcItem do
-          IntersectClipRect(Canvas.Handle, Left, Top, Right, Bottom);
-        DrawItem(Item, rcItem, State);
-        Canvas.Handle := 0;
       finally
-        RestoreDC(hDC, SaveIndex);
+        Canvas.Free;
       end;
     end;
   end;
@@ -1645,23 +1659,36 @@ end;
 procedure TJvPopupMenu.WMMeasureItem(var Message: TWMMeasureItem);
 var
   Item: TMenuItem;
+  SaveIndex: Integer;
+  DC: HDC;
 begin
   with Message.MeasureItemStruct^ do
   begin
-    Item := TMenuItem(Pointer(itemData));
-    if Assigned(Item) and (FindItem(Item.Command, fkCommand) = Item) then
+    Item := FindItem(itemID, fkCommand);
+    if Assigned(Item) then
     begin
-      Canvas.Handle := GetDC(0);
+      DC := GetWindowDC(0);
       try
-        SetDefaultMenuFont(Canvas.Font);
-        if Item.Default then
-          Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-        GetActiveItemPainter.Menu := Self;
-        GetActiveItemPainter.Measure(Item, Integer(itemWidth), Integer(itemHeight));
-        MeasureItem(Item, Integer(itemWidth), Integer(itemHeight));
+        FCanvas := TControlCanvas.Create;
+        try
+          SaveIndex := SaveDC(DC);
+          try
+            FCanvas.Handle := DC;
+            FCanvas.Font := Screen.MenuFont; 
+            if Item.Default then
+              Canvas.Font.Style := Canvas.Font.Style + [fsBold];
+            GetActiveItemPainter.Menu := Self;
+            GetActiveItemPainter.Measure(Item, Integer(itemWidth), Integer(itemHeight));
+            //MeasureItem(Item, Integer(itemWidth), Integer(itemHeight));
+          finally
+            FCanvas.Handle := 0;
+            RestoreDC(DC, SaveIndex);
+          end;
+        finally
+          Canvas.Free;
+        end;
       finally
-        ReleaseDC(0, Canvas.Handle);
-        Canvas.Handle := 0;
+        ReleaseDC(DC, 0);
       end;
     end;
   end;
@@ -2076,17 +2103,17 @@ begin
     if Item.Checked and ShowCheckMarks and IsPopup then
       DrawCheckImage(CheckMarkRect);
 
-    // if we have a valid image to use for this item
+    // if we have a valid image from the list to use for this item
     if UseImages then
     begin
-      // then draw the corresponding back of an item
+      // Draw the corresponding back of an item
       // if the item is to be drawn checked or not
       if Item.Checked and not ShowCheckMarks then
         DrawCheckedImageBack(ImageAndMarginRect)
       else
         DrawNotCheckedImageBack(ImageAndMarginRect);
 
-      // finally, draw the correct image, according to the state
+      // then, draw the correct image, according to the state
       // of the item
       if (mdDisabled in State) then
         DrawDisabledImage(ImageRect.Left,
@@ -2101,6 +2128,13 @@ begin
       not FGlyph.Empty and
       (Item.Caption <> Separator) then
     begin
+      // Draw the corresponding back of an item
+      // if the item is to be drawn checked or not
+      if Item.Checked and not ShowCheckMarks then
+        DrawCheckedImageBack(ImageAndMarginRect)
+      else
+        DrawNotCheckedImageBack(ImageAndMarginRect);
+
       if FGlyph is TBitmap then
       begin
         // in the case of a bitmap, we may have more than one glyph
@@ -2150,12 +2184,12 @@ begin
     else
     begin
       // find the largest text element
-      MaxWidth := Canvas.TextWidth(DelChars(Item.Caption, '&') + Tab + Tab);
+      MaxWidth := Canvas.TextWidth(DelChars(Item.Caption, '&') + ShortcutSpacing{Tab + Tab});
       if (Item.Parent <> nil) and (Item.ShortCut <> scNone) then
       begin
         for I := 0 to Item.Parent.Count - 1 do
           MaxWidth := Max(Canvas.TextWidth(DelChars(Item.Parent.Items[I].Caption,
-            '&') + Tab + Tab), MaxWidth);
+            '&') + ShortcutSpacing { Tab + Tab}), MaxWidth);
       end;
 
       // draw the text
@@ -2225,6 +2259,8 @@ var
   I: Integer;
   MaxWidth: Integer;
   tmpWidth: Integer;
+  ShortcutWidth: Integer;
+  OneItemHasChildren: Boolean;
 begin
   if IsPopup then
   begin
@@ -2234,30 +2270,53 @@ begin
 
     MaxWidth := Canvas.TextWidth(DelChars(Item.Caption, '&'));
 
+    ShortcutWidth := 0;
+    OneItemHasChildren := False;
     // Find the widest item in the menu being displayed
     if Item.Parent <> nil then
+
+      // If the current item is the first one and it's not
+      // alone, then discard its width because for some reason
+      // the canvas is never correct.
+      if Item = Item.Parent.Items[0] then
+      begin
+        if Item.Parent.Count > 1 then
+          Result := 0
+        else
+          Result := MaxWidth;
+        exit;
+      end;
+
       for I := 0 to Item.Parent.Count - 1 do
       begin
-        tmpWidth := Canvas.TextWidth(Item.Parent.Items[I].Caption);
+        tmpWidth := Canvas.TextWidth(DelChars(Item.Parent.Items[I].Caption, '&'));
         if tmpWidth > MaxWidth then
           MaxWidth := tmpWidth;
 
-        // if the item has childs, then add then we add the required
+        // if the item has childs, then add the required
         // width for an arrow. It is considered to be the width of
         // two spaces.
         if Item.Parent.Items[I].Count > 0 then
-          Inc(MaxWidth, Canvas.TextWidth('  '));
+          OneItemHasChildren := True;
+
+        if Item.Parent.Items[I].ShortCut <> scNone then
+        begin
+          tmpWidth := Canvas.TextWidth(ShortcutToText(Item.Parent.Items[I].ShortCut));
+          if tmpWidth > ShortcutWidth then
+            ShortcutWidth := tmpWidth;
+        end;
       end;
     Result := MaxWidth;
 
-    // If there is a shortcut, add its width to the current width
-    if Item.ShortCut <> scNone then
+    // If there was a shortcut in any of the items,
+    if ShortcutWidth <> 0 then
     begin
-      // It has been found that there are always one tab
-      // in front of the text for the shortcut.
-      Inc(Result, Canvas.TextWidth(ShortcutToText(Item.ShortCut)));
-      Inc(Result, Canvas.TextWidth(Tab));
-    end;
+      // add its width to the current width, plus the spacing
+      Inc(Result, ShortcutWidth);
+      Inc(Result, Canvas.TextWidth(ShortcutSpacing));
+    end
+    else if OneItemHasChildren then
+      Inc(Result, Canvas.TextWidth('  '));
   end
   else
     Result := Canvas.TextWidth(DelChars(Item.Caption, '&'));
@@ -2379,6 +2438,8 @@ function TJvCustomMenuItemPainter.GetImageHeight: Integer;
 begin
   if Assigned(Images) then
     Result := Images.Height
+  else if Assigned(FGlyph) then
+    Result := FGlyph.Height
   else
     Result := ImageSize.Height;
 end;
@@ -2387,6 +2448,8 @@ function TJvCustomMenuItemPainter.GetImageWidth: Integer;
 begin
   if Assigned(Images) then
     Result := Images.Width
+  else if Assigned(FGlyph) then
+    Result := FGlyph.Width
   else
     Result := ImageSize.Width;
 end;
