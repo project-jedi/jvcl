@@ -1679,7 +1679,6 @@ var
   R, ClipRect: TRect;
   {$ENDIF}
 begin
-  inherited Paint;
   {$IFDEF JVCLThemesEnabled}
   if ThemedBackground and ThemeServices.ThemesEnabled then
   begin

@@ -35,7 +35,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, ExtCtrls, Buttons, Menus, ImgList,
-  JvTypes, JvComponent;
+  JvTypes, JvComponent, JvThemes;
 
 const
   CM_IMAGESIZECHANGED = CM_BASE + 100;
@@ -56,6 +56,7 @@ type
     procedure CmDesignHitTest(var Msg: TCmDesignHitTest); message Cm_DesignHitTest;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   protected
     procedure OnTime(Sender: TObject); virtual;
     procedure Paint; override;
@@ -135,7 +136,6 @@ type
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentImageSizeChanged(var Msg: TMessage); message CM_IMAGESIZECHANGED;
     procedure CMLeaveButton(var Msg: TMessage); message CM_LEAVEBUTTON;
-    procedure WMEraseBkgnd(var M: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure CmVisibleChanged(var M: TMessage); message CM_VISIBLECHANGED;
     function ParentVisible: Boolean;
   protected
@@ -298,7 +298,6 @@ type
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CMParentImageSizeChanged(var Msg: TMessage); message CM_IMAGESIZECHANGED;
     procedure TileBitmap;
-    procedure WMEraseBkgnd(var M: TWMEraseBkgnd); message WM_ERASEBKGND;
   protected
     procedure DoOnEdited(var Caption: string); virtual;
     procedure UpArrowClick(Sender: TObject); virtual;
@@ -452,6 +451,7 @@ type
     procedure CreateWnd; override;
     procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
+    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   public
     constructor Create(AOwner: TComponent); override;
     function AddButton: TJvExpressButton;
@@ -608,7 +608,7 @@ end;
 procedure TJvUpArrowBtn.CMMouseEnter(var Msg: TMessage);
 begin
   FOver := True;
-  if FFlat then
+  if FFlat {$IFDEF JVCLThemesEnabled}or ThemeServices.ThemesEnabled{$ENDIF} then
     Invalidate;
 end;
 
@@ -616,8 +616,13 @@ procedure TJvUpArrowBtn.CMMouseLeave(var Msg: TMessage);
 begin
   FOver := False;
   //  FDown := False;
-  if FFlat then
+  if FFlat {$IFDEF JVCLThemesEnabled}or ThemeServices.ThemesEnabled{$ENDIF} then
     Invalidate;
+end;
+
+procedure TJvUpArrowBtn.CMDenySubClassing(var Msg: TMessage);
+begin
+  Msg.Result := 1;
 end;
 
 procedure TJvUpArrowBtn.CmDesignHitTest(var Msg: TCmDesignHitTest);
@@ -648,9 +653,11 @@ begin
 
   if FFlat then
     InflateRect(R, 1, 1);
+  if FOver then
+    Flags := Flags or DFCS_HOT;
   Canvas.Brush.Color := Color;
   Canvas.Pen.Color := Color;
-  DrawFrameControl(Canvas.Handle, R, DFC_SCROLL, DFCS_SCROLLUP or Flags);
+  DrawThemedFrameControl(Self, Canvas.Handle, R, DFC_SCROLL, DFCS_SCROLLUP or Flags);
 
   if FFlat and FOver then
   begin
@@ -757,10 +764,11 @@ begin
 
   if FFlat then
     InflateRect(R, 1, 1);
+  if FOver then
+    Flags := Flags or DFCS_HOT;
   Canvas.Brush.Color := Color;
   Canvas.Pen.Color := Color;
-
-  DrawFrameControl(Canvas.Handle, R, DFC_SCROLL, DFCS_SCROLLDOWN or Flags);
+  DrawThemedFrameControl(Self, Canvas.Handle, R, DFC_SCROLL, DFCS_SCROLLDOWN or Flags);
 
   if FFlat and FOver then
   begin
@@ -1322,11 +1330,6 @@ end;
 procedure TJvCustomLookOutButton.ImageListChange(Sender: TObject);
 begin
   Invalidate;
-end;
-
-procedure TJvCustomLookOutButton.WMEraseBkgnd(var M: TWMEraseBkgnd);
-begin
-  inherited;
 end;
 
 procedure TJvCustomLookOutButton.CMParentImageSizeChanged(var Msg: TMessage);
@@ -2151,7 +2154,6 @@ end;
 
 procedure TJvLookOutPage.Paint;
 begin
-  inherited Paint;
   if not FBitmap.Empty then
   begin
     ControlStyle := ControlStyle + [csOpaque];
@@ -2362,11 +2364,6 @@ begin
     //    FDown := False;
     DrawTopButton;
   end;
-end;
-
-procedure TJvLookOutPage.WMEraseBkgnd(var M: TWMEraseBkgnd);
-begin
-  inherited;
 end;
 
 procedure TJvLookOut.SetFlatButtons(Value: Boolean);
@@ -2638,7 +2635,14 @@ begin
     ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
     OffsetRect(RW, -RW.Left, -RW.Top);
     if FBorderStyle = bsSingle then
+    begin
+{$IFDEF JVCLThemesEnabled}
+      if ThemeServices.ThemesEnabled then
+        DrawThemedBorder(Self)
+      else
+{$ENDIF}
       DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT)
+    end
     else
     begin
       Canvas.Brush.Color := Color;
@@ -2804,6 +2808,11 @@ begin
   inherited;
 end;
 
+procedure TJvExpress.CMDenySubClassing(var Msg: TMessage);
+begin
+  Msg.Result := 1;
+end;
+
 procedure TJvExpress.CreateWnd;
 begin
   inherited CreateWnd;
@@ -2845,7 +2854,14 @@ begin
     ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
     OffsetRect(RW, -RW.Left, -RW.Top);
     if FBorderStyle = bsSingle then
+    begin
+{$IFDEF JVCLThemesEnabled}
+      if ThemeServices.ThemesEnabled then
+        DrawThemedBorder(Self)
+      else
+{$ENDIF}
       DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT)
+    end
     else
     begin
       if csDesigning in ComponentState then
