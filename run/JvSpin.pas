@@ -44,7 +44,7 @@ uses
   QComCtrls, QControls, QExtCtrls, QGraphics, QForms, Types, QWindows,
   QComCtrlsEx,
   {$ENDIF VisualCLX}
-  JvEdit, JvMaskEdit, JvComponent;
+  JvEdit, JvExMask, JvMaskEdit, JvComponent;
 
 type
   TSpinButtonState = (sbNotDown, sbTopDown, sbBottomDown);
@@ -140,7 +140,7 @@ type
   TJvCheckOption = (coCheckOnChange, coCheckOnExit, coCropBeyondLimit);
   TJvCheckOptions = set of TJvCheckOption;
 
-  TJvCustomSpinEdit = class(TJvCustomMaskEdit)
+  TJvCustomSpinEdit = class(TJvExCustomMaskEdit)
   private
     FCheckMaxValue: Boolean;
     FCheckMinValue: Boolean;
@@ -224,7 +224,6 @@ type
     procedure SetValue(NewValue: Extended); virtual; abstract;
     procedure SetValueType(NewType: TValueType); virtual;
 
-    procedure Loaded; override;
     function DefaultDisplayFormat: string; virtual;
     property DisplayFormat: string read FDisplayFormat write SetDisplayFormat stored IsFormatStored;
     //    procedure DefinePropertyes(Filer: TFiler); override;
@@ -241,6 +240,7 @@ type
     procedure UpClick(Sender: TObject); virtual;
     property ButtonWidth: Integer read GetButtonWidth;
   public
+    procedure Loaded; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
@@ -345,7 +345,7 @@ type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property HideSelection;
-    property HotTrack;
+//    property HotTrack;
     {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     property BevelEdges;
@@ -355,8 +355,8 @@ type
     {$ENDIF COMPILER6_UP}
     {$ENDIF VCL}
     property ClipboardCommands;
-    property DisabledTextColor;
-    property DisabledColor;
+//    property DisabledTextColor;
+//    property DisabledColor;
   end;
 
 implementation
@@ -375,7 +375,7 @@ uses
   TmSchema,
   {$ENDIF !COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
-  JvJCLUtils, JvJVCLUtils, JvConsts, JvResources;
+  JvJCLUtils, JvJVCLUtils, JvConsts, JvResources, JvToolEdit;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvSpin.Res}
@@ -777,7 +777,7 @@ begin
     { Changing EditText sets Modified to false }
     WasModified := Modified;
     try
-      EditText := FormatFloat(EditFormat, Value);
+      Text := FormatFloat(EditFormat, Value);
     finally
       Modified := WasModified;
     end;
