@@ -90,7 +90,7 @@ var
   W: Integer;
 begin
   Changing;
-  W := TextWidth(Text);
+  W := TextWidthW(Text);
   if CanvasOrientation = coRightToLeft then
     Inc(X, W + 1);
   Windows.ExtTextOutW(Handle, X, Y, TextFlags, nil, PWideChar(Text), Length(Text), nil);
@@ -107,19 +107,19 @@ begin
   if Brush.Style <> bsClear then
     Options := Options or ETO_OPAQUE;
   if ((TextFlags and ETO_RTLREADING) <> 0) and (CanvasOrientation = coRightToLeft) then
-    Inc(X, TextWidth(Text) + 1);
+    Inc(X, TextWidthW(Text) + 1);
   Windows.ExtTextOutW(Handle, X, Y, Options, @Rect, PWideChar(Text), Length(Text), nil);
   Changed;
 end;
 
 function TJvUnicodeCanvas.TextWidthW(const Text: WideString): Integer;
 begin
-  Result := TextExtent(Text).cx;
+  Result := TextExtentW(Text).cx;
 end;
 
 function TJvUnicodeCanvas.TextHeightW(const Text: WideString): Integer;
 begin
-  Result := TextExtent(Text).cy;
+  Result := TextExtentW(Text).cy;
 end;
 
 {$ENDIF VCL}
