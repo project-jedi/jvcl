@@ -5,61 +5,53 @@
     <VERSION value="BCB.06.00"/>
     <PROJECT value="JVCL200_R60C.bpl"/>
     <OBJFILES value="..\lib6\JVCL200_R60C.obj ..\lib6\JvAddPrinter.obj ..\lib6\JvAlarms.obj 
-      ..\lib6\JvAni.obj ..\lib6\JvAnimate.obj
-      ..\lib6\JvAnimTitle.obj ..\lib6\JvAppAnimatedIcon.obj 
-      ..\lib6\JvAutoSizeCompo.obj ..\lib6\JvBalloonHint.obj
-      ..\lib6\JvBaseDlg.obj ..\lib6\JvBevel.obj ..\lib6\JvBitBtn.obj 
-      ..\lib6\JvBreatheSkin.obj ..\lib6\JvBrowseFolder.obj ..\lib6\JvButton.obj
-      ..\lib6\JvButtonPersistent.obj
-      ..\lib6\JvCabFile.obj ..\lib6\JvCaesarCipher.obj ..\lib6\JvCheckBox.obj 
-      ..\lib6\JvCheckListBox.obj ..\lib6\JvChrono.obj 
-      ..\lib6\JvClock.obj ..\lib6\JvCombobox.obj
-      ..\lib6\JvCommonDialogD.obj ..\lib6\JvCommonExecDlg.obj 
-      ..\lib6\JvCommStatus.obj ..\lib6\JvComplex.obj ..\lib6\JvComputerInfo.obj 
-      ..\lib6\JvConnectNetwork.obj ..\lib6\JvControlBar.obj 
-      ..\lib6\JvControlPanel.obj ..\lib6\JvCoolBar.obj ..\lib6\JvCopyError.obj 
-      ..\lib6\JvCpuUsage.obj ..\lib6\JvDataEmbedded.obj 
+      ..\lib6\JvAni.obj ..\lib6\JvAnimate.obj ..\lib6\JvAnimTitle.obj 
+      ..\lib6\JvAppAnimatedIcon.obj ..\lib6\JvAutoSizeCompo.obj 
+      ..\lib6\JvBalloonHint.obj ..\lib6\JvBaseDlg.obj ..\lib6\JvBevel.obj 
+      ..\lib6\JvBitBtn.obj ..\lib6\JvBreatheSkin.obj ..\lib6\JvBrowseFolder.obj 
+      ..\lib6\JvButton.obj ..\lib6\JvButtonPersistent.obj ..\lib6\JvCabFile.obj 
+      ..\lib6\JvCaesarCipher.obj ..\lib6\JvCheckBox.obj 
+      ..\lib6\JvCheckListBox.obj ..\lib6\JvChrono.obj ..\lib6\JvClock.obj 
+      ..\lib6\JvCombobox.obj ..\lib6\JvCommonDialogD.obj 
+      ..\lib6\JvCommonExecDlg.obj ..\lib6\JvCommStatus.obj ..\lib6\JvComplex.obj 
+      ..\lib6\JvComputerInfo.obj ..\lib6\JvConnectNetwork.obj 
+      ..\lib6\JvControlBar.obj ..\lib6\JvControlPanel.obj ..\lib6\JvCoolBar.obj 
+      ..\lib6\JvCopyError.obj ..\lib6\JvCpuUsage.obj ..\lib6\JvDataEmbedded.obj 
       ..\lib6\JvDateTimePicker.obj ..\lib6\JvDBDateTimePicker.obj 
       ..\lib6\JvDeleteError.obj ..\lib6\JvDeviceChanged.obj 
       ..\lib6\JvDirectories.obj ..\lib6\JvDiskPrompt.obj ..\lib6\JvDragDrop.obj 
-      ..\lib6\JvEasterEgg.obj ..\lib6\JvEdit.obj
-      ..\lib6\JvFavoritesButton.obj ..\lib6\JvValidateEdit.obj
+      ..\lib6\JvEasterEgg.obj ..\lib6\JvEdit.obj ..\lib6\JvFavoritesButton.obj 
       ..\lib6\JvFormAlarms.obj ..\lib6\JvFormAnimatedIcon.obj 
       ..\lib6\JvFormAnimation.obj ..\lib6\JvFormImage.obj 
-      ..\lib6\JvFormParser.obj ..\lib6\JvFormPatch.obj ..\lib6\JvFormPlace.obj
+      ..\lib6\JvFormParser.obj ..\lib6\JvFormPatch.obj ..\lib6\JvFormPlace.obj 
       ..\lib6\JvFormToHtml.obj ..\lib6\JvFormWallpaper.obj 
       ..\lib6\JvFormWallpaperEdit.obj ..\lib6\JvFtpGrabber.obj 
       ..\lib6\JvFunctions.obj ..\lib6\JvGammaPanel.obj ..\lib6\JvGenetic.obj 
       ..\lib6\JvGradient.obj ..\lib6\JvGradientCaption.obj 
-      ..\lib6\JvHeaderControl.obj ..\lib6\JvHotKey.obj
-      ..\lib6\JvHtmlParser.obj ..\lib6\JvHttpGrabber.obj ..\lib6\JvId3v1.obj 
-      ..\lib6\JvId3v2.obj ..\lib6\JvId3v2Types.obj ..\lib6\JvImage.obj 
-      ..\lib6\JvImageDlg.obj ..\lib6\JvImageRotate.obj 
-      ..\lib6\JvImageTransform.obj ..\lib6\JvItemsSearchs.obj 
-      ..\lib6\JvJoystick.obj ..\lib6\JvKeyboardStates.obj ..\lib6\JvLabel.obj 
-      ..\lib6\JvListBox.obj ..\lib6\JvListView.obj ..\lib6\JvMagnet.obj 
-      ..\lib6\JvMaskEdit.obj ..\lib6\JvMaxPixel.obj ..\lib6\JvMemo.obj 
-      ..\lib6\JvMemoryInfos.obj ..\lib6\JvMonthCalendar.obj 
-      ..\lib6\JvMousePositionner.obj ..\lib6\JvMru.obj 
-      ..\lib6\JvMultiHttpGrabber.obj ..\lib6\JvNagScreen.obj 
-      ..\lib6\JvPageScroller.obj ..\lib6\JvPanel.obj
-      ..\lib6\JvPatchFile.obj ..\lib6\JvPcx.obj ..\lib6\JvPerforated.obj 
-      ..\lib6\JvPlaylist.obj ..\lib6\JvPrint.obj ..\lib6\JvProgressBar.obj 
-      ..\lib6\JvDBProgressBar.obj ..\lib6\JvPropAutoSave.obj ..\lib6\JvRadioButton.obj
-      ..\lib6\JvRadioGroup.obj ..\lib6\JvRas32.obj
-      ..\lib6\JvRecentMenuBtn.obj ..\lib6\JvRegistry.obj 
-      ..\lib6\JvRenameError.obj
-      ..\lib6\JvRgbToHtml.obj
+      ..\lib6\JvHeaderControl.obj ..\lib6\JvHotKey.obj ..\lib6\JvHtmlParser.obj 
+      ..\lib6\JvHttpGrabber.obj ..\lib6\JvId3v1.obj ..\lib6\JvId3v2.obj 
+      ..\lib6\JvId3v2Types.obj ..\lib6\JvImage.obj ..\lib6\JvImageDlg.obj 
+      ..\lib6\JvImageRotate.obj ..\lib6\JvImageTransform.obj 
+      ..\lib6\JvItemsSearchs.obj ..\lib6\JvJoystick.obj 
+      ..\lib6\JvKeyboardStates.obj ..\lib6\JvLabel.obj ..\lib6\JvListBox.obj 
+      ..\lib6\JvListView.obj ..\lib6\JvMagnet.obj ..\lib6\JvMaskEdit.obj 
+      ..\lib6\JvMaxPixel.obj ..\lib6\JvMemo.obj ..\lib6\JvMemoryInfos.obj 
+      ..\lib6\JvMonthCalendar.obj ..\lib6\JvMousePositionner.obj 
+      ..\lib6\JvMru.obj ..\lib6\JvMultiHttpGrabber.obj ..\lib6\JvNagScreen.obj 
+      ..\lib6\JvPageScroller.obj ..\lib6\JvPanel.obj ..\lib6\JvPatchFile.obj 
+      ..\lib6\JvPcx.obj ..\lib6\JvPerforated.obj ..\lib6\JvPlaylist.obj 
+      ..\lib6\JvPrint.obj ..\lib6\JvProgressBar.obj ..\lib6\JvDBProgressBar.obj 
+      ..\lib6\JvPropAutoSave.obj ..\lib6\JvRadioButton.obj 
+      ..\lib6\JvRadioGroup.obj ..\lib6\JvRas32.obj ..\lib6\JvRecentMenuBtn.obj 
+      ..\lib6\JvRegistry.obj ..\lib6\JvRenameError.obj ..\lib6\JvRgbToHtml.obj 
       ..\lib6\JvRichEditToHtml.obj ..\lib6\JvRle.obj ..\lib6\JvScreenCanvas.obj 
       ..\lib6\JvScreenResolution.obj ..\lib6\JvScreenSaver.obj 
-      ..\lib6\JvScrollBar.obj ..\lib6\JvScrollBox.obj 
-      ..\lib6\JvScrollText.obj
-      ..\lib6\JvSelectDirectory.obj
-      ..\lib6\JvSerialMaker.obj ..\lib6\JvShape.obj ..\lib6\JvSlider.obj 
-      ..\lib6\JvSoundControl.obj ..\lib6\JvSpecialImage.obj 
-      ..\lib6\JvSpecialProgress.obj ..\lib6\JvSplitter.obj ..\lib6\JvStarfield.obj
-      ..\lib6\JvStartMenuBtn.obj ..\lib6\JvStaticText.obj 
-      ..\lib6\JvStatusBar.obj ..\lib6\JvStringGrid.obj 
+      ..\lib6\JvScrollBar.obj ..\lib6\JvScrollBox.obj ..\lib6\JvScrollText.obj 
+      ..\lib6\JvSelectDirectory.obj ..\lib6\JvSerialMaker.obj 
+      ..\lib6\JvShape.obj ..\lib6\JvSlider.obj ..\lib6\JvSoundControl.obj 
+      ..\lib6\JvSpecialImage.obj ..\lib6\JvSpecialProgress.obj 
+      ..\lib6\JvSplitter.obj ..\lib6\JvStarfield.obj ..\lib6\JvStartMenuBtn.obj 
+      ..\lib6\JvStaticText.obj ..\lib6\JvStatusBar.obj ..\lib6\JvStringGrid.obj 
       ..\lib6\JvStringListToHtml.obj ..\lib6\JvStrToHtml.obj 
       ..\lib6\JvSystemColors.obj ..\lib6\JvSystemPopup.obj 
       ..\lib6\JvTabControl.obj ..\lib6\JvThread.obj ..\lib6\JvThreadTimer.obj 
@@ -70,10 +62,10 @@
       ..\lib6\JvWaitingGradient.obj ..\lib6\JvWaitingProgress.obj 
       ..\lib6\JvWavePlayer.obj ..\lib6\JvWinampApi.obj ..\lib6\JvWinampLabel.obj 
       ..\lib6\JvWinHelp.obj ..\lib6\JvXorCipher.obj ..\lib6\JvZoom.obj 
-      ..\lib6\JvCoupler.obj ..\lib6\JvHighlighter.obj
-      ..\lib6\JvGroupBox.obj ..\lib6\JvSyncSplitter.obj ..\lib6\JvPopupMemo.obj
-      ..\lib6\JvSpacer.obj ..\lib6\JvTransparentPanel.obj
-      ..\lib6\JvMouseTimerU.obj ..\lib6\JvSysComp.obj ..\lib6\JvCtrls.obj ..\lib6\JvDdeCmd.obj
+      ..\lib6\JvCoupler.obj ..\lib6\JvHighlighter.obj ..\lib6\JvGroupBox.obj 
+      ..\lib6\JvSyncSplitter.obj ..\lib6\JvPopupMemo.obj ..\lib6\JvSpacer.obj 
+      ..\lib6\JvTransparentPanel.obj ..\lib6\JvMouseTimerU.obj 
+      ..\lib6\JvSysComp.obj ..\lib6\JvCtrls.obj ..\lib6\JvDdeCmd.obj 
       ..\lib6\JvDialogs.obj ..\lib6\JvPerfMon95.obj ..\lib6\JvComCtrls.obj 
       ..\lib6\JvMail.obj ..\lib6\JvPageSetupTitled.obj ..\lib6\JvPageSetup.obj 
       ..\lib6\JVCLVer.obj ..\lib6\JvComponent.obj ..\lib6\JvLinkLabel.obj 
@@ -91,10 +83,9 @@
       ..\lib6\JvLookOut.obj ..\lib6\JvProfiler32.obj ..\lib6\JvRegTV.obj 
       ..\lib6\JvRollOut.obj ..\lib6\JvScrollPanel.obj ..\lib6\JvSearchFiles.obj 
       ..\lib6\JvSHFileOp.obj ..\lib6\JvTimeLine.obj ..\lib6\JvTransBtn.obj 
-      ..\lib6\JvDriveCtrls.obj ..\lib6\JvOLBar.obj
-      ..\lib6\JvTMTL.obj ..\lib6\JvColorForm.obj ..\lib6\JvArrow.obj 
-      ..\lib6\JvTranslator.obj ..\lib6\JvSimpleXml.obj
-      ..\lib6\JvObjPickerComp.obj
+      ..\lib6\JvDriveCtrls.obj ..\lib6\JvOLBar.obj ..\lib6\JvTMTL.obj 
+      ..\lib6\JvColorForm.obj ..\lib6\JvArrow.obj ..\lib6\JvTranslator.obj 
+      ..\lib6\JvSimpleXml.obj ..\lib6\JvObjPickerComp.obj 
       ..\lib6\JvImageDrawThread.obj ..\lib6\JvInspector.obj ..\lib6\JvInspDB.obj 
       ..\lib6\JvHidControllerClass.obj ..\lib6\JvAnalogClock.obj 
       ..\lib6\JvxCtrls.obj ..\lib6\JvGrids.obj ..\lib6\JvCurrEdit.obj 
@@ -114,26 +105,25 @@
       ..\lib6\JvSbSetup.obj ..\lib6\JvPageMngr.obj ..\lib6\JvMrgMngr.obj 
       ..\lib6\JvStrHlder.obj ..\lib6\JvAppEvent.obj ..\lib6\JvTimerLst.obj 
       ..\lib6\JvMRUList.obj ..\lib6\JvIni.obj ..\lib6\JvMenus.obj 
-      ..\lib6\JvGrdCpt.obj ..\lib6\JvSplshWnd.obj
-      ..\lib6\JvDataConv.obj ..\lib6\JvOle2Auto.obj ..\lib6\JvVerInf.obj 
-      ..\lib6\JvDBCtrl.obj ..\lib6\JvLookup.obj ..\lib6\JvxLogin.obj 
-      ..\lib6\JvDBUtils.obj ..\lib6\JvDBComb.obj ..\lib6\JvDBRichEd.obj 
-      ..\lib6\JvMemDS.obj ..\lib6\JvDBQBE.obj ..\lib6\JvDBFilter.obj 
-      ..\lib6\JvDBLists.obj ..\lib6\JvDBIndex.obj ..\lib6\JvDBPrgrss.obj 
-      ..\lib6\JvxLoginDlg.obj ..\lib6\JvDBSecur.obj ..\lib6\JvRemLog.obj 
-      ..\lib6\JvChPswDlg.obj ..\lib6\JvBdeUtils.obj ..\lib6\JvQuery.obj 
-      ..\lib6\JvMemTable.obj ..\lib6\JvDBExcpt.obj ..\lib6\JvFormProgress.obj 
-      ..\lib6\JvRadioCtl.obj ..\lib6\JvThumbImage.obj 
-      ..\lib6\JvBaseThumbnail.obj ..\lib6\JvThumbnails.obj 
-      ..\lib6\JvThumbViews.obj ..\lib6\JvMovableBevel.obj 
-      ..\lib6\JvDBSpinEdit.obj ..\lib6\JvDSADialogs.obj ..\lib6\JvBandForms.obj 
-      ..\lib6\JvBandObject.obj ..\lib6\JvComponentPanel.obj ..\lib6\JvDlg.obj 
-      ..\lib6\JvDsgnIntf.obj ..\lib6\JvEditor.obj ..\lib6\JvHint.obj 
-      ..\lib6\JvHLEditor.obj ..\lib6\JvRegAuto.obj ..\lib6\JvScrollMax.obj 
-      ..\lib6\JvaScrollText.obj ..\lib6\JvHLEdPropDlg.obj 
-      ..\lib6\JvHtControls.obj ..\lib6\JvButtons.obj ..\lib6\JvStrUtil.obj 
-      ..\lib6\JvCtlConst.obj ..\lib6\JvHLParser.obj ..\lib6\JvDBUtil.obj 
-      ..\lib6\JvDBLookupTreeView.obj ..\lib6\JvDBMove.obj 
+      ..\lib6\JvGrdCpt.obj ..\lib6\JvSplshWnd.obj ..\lib6\JvDataConv.obj 
+      ..\lib6\JvOle2Auto.obj ..\lib6\JvVerInf.obj ..\lib6\JvDBCtrl.obj 
+      ..\lib6\JvLookup.obj ..\lib6\JvxLogin.obj ..\lib6\JvDBUtils.obj 
+      ..\lib6\JvDBComb.obj ..\lib6\JvDBRichEd.obj ..\lib6\JvMemDS.obj 
+      ..\lib6\JvDBQBE.obj ..\lib6\JvDBFilter.obj ..\lib6\JvDBLists.obj 
+      ..\lib6\JvDBIndex.obj ..\lib6\JvDBPrgrss.obj ..\lib6\JvxLoginDlg.obj 
+      ..\lib6\JvDBSecur.obj ..\lib6\JvRemLog.obj ..\lib6\JvChPswDlg.obj 
+      ..\lib6\JvBdeUtils.obj ..\lib6\JvQuery.obj ..\lib6\JvMemTable.obj 
+      ..\lib6\JvDBExcpt.obj ..\lib6\JvFormProgress.obj ..\lib6\JvRadioCtl.obj 
+      ..\lib6\JvThumbImage.obj ..\lib6\JvBaseThumbnail.obj 
+      ..\lib6\JvThumbnails.obj ..\lib6\JvThumbViews.obj 
+      ..\lib6\JvMovableBevel.obj ..\lib6\JvDBSpinEdit.obj 
+      ..\lib6\JvDSADialogs.obj ..\lib6\JvBandForms.obj ..\lib6\JvBandObject.obj 
+      ..\lib6\JvComponentPanel.obj ..\lib6\JvDlg.obj ..\lib6\JvDsgnIntf.obj 
+      ..\lib6\JvEditor.obj ..\lib6\JvHint.obj ..\lib6\JvHLEditor.obj 
+      ..\lib6\JvRegAuto.obj ..\lib6\JvScrollMax.obj ..\lib6\JvaScrollText.obj 
+      ..\lib6\JvHLEdPropDlg.obj ..\lib6\JvHtControls.obj ..\lib6\JvButtons.obj 
+      ..\lib6\JvStrUtil.obj ..\lib6\JvCtlConst.obj ..\lib6\JvHLParser.obj 
+      ..\lib6\JvDBUtil.obj ..\lib6\JvDBLookupTreeView.obj ..\lib6\JvDBMove.obj 
       ..\lib6\JvDBTreeView.obj ..\lib6\JvSQLS.obj ..\lib6\JvDBConst.obj 
       ..\lib6\JvInterpreterParser.obj ..\lib6\JvInterpreterFm.obj 
       ..\lib6\JvInterpreterConst.obj ..\lib6\JvInterpreter.obj 
@@ -157,18 +147,21 @@
       ..\lib6\JvSchedEvtStore.obj ..\lib6\JvShellHook.obj 
       ..\lib6\JvWndProcHook.obj ..\lib6\JvxRConst.obj ..\lib6\JvTransLED.obj 
       ..\lib6\JvJVCLAbout.obj ..\lib6\JvCaret.obj ..\lib6\ObjSel.obj 
-      ..\lib6\Ras32.obj ..\lib6\Winamp.obj"/>
+      ..\lib6\Ras32.obj ..\lib6\Winamp.obj ..\lib6\JvValidateEdit.obj 
+      ..\lib6\JvBehaviorLabel.obj ..\lib6\JvProgressDialog.obj 
+      ..\lib6\JvProgressFrm.obj"/>
     <RESFILES value="jvcl200_R60C.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) ..\source\JvFormAlarms.dfm ..\source\JvFormImage.dfm 
-      ..\source\JvFormParser.dfm ..\source\JvFormPatch.dfm ..\source\JvFormWallpaperEdit.dfm
-      ..\source\JvProfiler32.dfm ..\source\JvColorForm.dfm 
-      ..\source\JvExcptDlg.dfm ..\source\JvFDualLst.dfm ..\source\JvSbSetup.dfm 
-      ..\source\JvxLogin.dfm ..\source\JvChPswDlg.dfm ..\source\JvDBExcpt.dfm 
+      ..\source\JvFormParser.dfm ..\source\JvFormPatch.dfm 
+      ..\source\JvFormWallpaperEdit.dfm ..\source\JvProfiler32.dfm 
+      ..\source\JvColorForm.dfm ..\source\JvExcptDlg.dfm 
+      ..\source\JvFDualLst.dfm ..\source\JvSbSetup.dfm ..\source\JvxLogin.dfm 
+      ..\source\JvChPswDlg.dfm ..\source\JvDBExcpt.dfm 
       ..\source\JvFormProgress.dfm ..\Source\JvHLEdPropDlg.dfm 
-      ..\source\JvJVCLAbout.dfm"/>
+      ..\source\JvJVCLAbout.dfm ..\source\JvProgressFrm.dfm"/>
     <LIBFILES value=""/>
     <LIBRARIES value="bcb2kaxserver.lib indy.lib dbxcds.lib dclocx.lib soaprtl.lib nmfast.lib 
       dbexpress.lib inetdbxpress.lib inetdbbde.lib dsnapcon.lib dsnapcrba.lib 
@@ -261,7 +254,6 @@
       <FILE FILENAME="..\source\JvEasterEgg.pas" FORMNAME="" UNITNAME="JvEasterEgg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvEdit.pas" FORMNAME="" UNITNAME="JvEdit" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvFavoritesButton.pas" FORMNAME="" UNITNAME="JvFavoritesButton" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvValidateEdit.pas" FORMNAME="" UNITNAME="JvValidateEdit" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvFormAlarms.pas" FORMNAME="FormAlarm" UNITNAME="JvFormAlarms" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvFormAnimatedIcon.pas" FORMNAME="" UNITNAME="JvFormAnimatedIcon" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvFormAnimation.pas" FORMNAME="" UNITNAME="JvFormAnimation" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -604,11 +596,15 @@
       <FILE FILENAME="c:\program files\borland\cbuilder6\lib\release\vclsmp.bpi" FORMNAME="" UNITNAME="vclsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="c:\program files\borland\cbuilder6\lib\release\dbrtl.bpi" FORMNAME="" UNITNAME="dbrtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\common\bcbsmp.bpi" FORMNAME="" UNITNAME="bcbsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\common\bcbie.bpi" FORMNAME="" UNITNAME="bcbie" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvCaret.pas" FORMNAME="" UNITNAME="JvCaret" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\common\ObjSel.pas" FORMNAME="" UNITNAME="ObjSel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\common\Ras32.pas" FORMNAME="" UNITNAME="Ras32" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\common\Winamp.pas" FORMNAME="" UNITNAME="Winamp" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvValidateEdit.pas" FORMNAME="" UNITNAME="JvValidateEdit" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvBehaviorLabel.pas" FORMNAME="" UNITNAME="JvBehaviorLabel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvProgressDialog.pas" FORMNAME="" UNITNAME="JvProgressDialog" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvProgressFrm.pas" FORMNAME="frmProgress" UNITNAME="JvProgressFrm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="bcbie.bpi" FORMNAME="" UNITNAME="bcbie" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>

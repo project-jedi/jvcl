@@ -8,41 +8,46 @@
       ..\lib6\JvIDEZoom.obj ..\lib6\JvaDsgn.obj ..\lib6\JvRegAutoEditor.obj 
       ..\lib6\JvHTHintEditor.obj ..\lib6\JvIReg.obj ..\lib6\JVCLReg.obj 
       ..\lib6\JvAlarmsEditor.obj ..\lib6\JvBaseDlgEditor.obj 
-      ..\lib6\JvCommonDialogDEditor.obj ..\lib6\JvDataEmbeddedEditor.obj ..\lib6\JvFormLog.obj
-      ..\lib6\JvHtmlParserEditor.obj ..\lib6\JvLogFile.obj 
-      ..\lib6\JvLoginDlg.obj ..\lib6\JvPatcherEditor.obj
-      ..\lib6\JvDateTimeDlg.obj ..\lib6\JvDsgnEditors.obj 
-      ..\lib6\JvTimeLineEdit.obj ..\lib6\JvOutEdit.obj ..\lib6\JvStrLEdit.obj 
-      ..\lib6\JvOLBEditor.obj ..\lib6\JvChNtfyProperty.obj 
-      ..\lib6\JvTipOfDayProp.obj  ..\lib6\JvAppletProperty.obj ..\lib6\JvColors.obj
-      ..\lib6\JvCtlReg.obj ..\lib6\JvToolReg.obj ..\lib6\JvDBReg.obj 
-      ..\lib6\JvBDEReg.obj ..\lib6\JvImagPrvw.obj ..\lib6\JvCheckItm.obj 
-      ..\lib6\JvDirFrm.obj ..\lib6\JvFormWallpaperEditor.obj 
-      ..\lib6\JvIColEdit.obj ..\lib6\JvGradedit.obj ..\lib6\JvMinMaxEd.obj 
-      ..\lib6\JvBehaviorLabelProperty.obj
-      ..\lib6\JvPgMngrEd.obj ..\lib6\JvPictEdit.obj ..\lib6\JvPresrDsn.obj 
-      ..\lib6\JvQBndDlg.obj ..\lib6\JvSbEdit.obj ..\lib6\JvSelDSFrm.obj 
-      ..\lib6\JvTimLstEd.obj ..\lib6\JvBandObjectDLLWizard.obj 
-      ..\lib6\JvBandObjectDLLWizardForm.obj ..\lib6\JvActions.obj 
-      ..\lib6\JvDialogActns.obj ..\lib6\JvPluginWizard.obj 
+      ..\lib6\JvCommonDialogDEditor.obj ..\lib6\JvDataEmbeddedEditor.obj 
+      ..\lib6\JvFormLog.obj ..\lib6\JvHtmlParserEditor.obj ..\lib6\JvLogFile.obj 
+      ..\lib6\JvPatcherEditor.obj ..\lib6\JvDateTimeDlg.obj 
+      ..\lib6\JvDsgnEditors.obj ..\lib6\JvTimeLineEdit.obj ..\lib6\JvOutEdit.obj 
+      ..\lib6\JvStrLEdit.obj ..\lib6\JvOLBEditor.obj 
+      ..\lib6\JvChNtfyProperty.obj ..\lib6\JvTipOfDayProp.obj 
+      ..\lib6\JvAppletProperty.obj ..\lib6\JvColors.obj ..\lib6\JvCtlReg.obj 
+      ..\lib6\JvToolReg.obj ..\lib6\JvDBReg.obj ..\lib6\JvBDEReg.obj 
+      ..\lib6\JvImagPrvw.obj ..\lib6\JvCheckItm.obj ..\lib6\JvDirFrm.obj 
+      ..\lib6\JvFormWallpaperEditor.obj ..\lib6\JvIColEdit.obj 
+      ..\lib6\JvGradedit.obj ..\lib6\JvMinMaxEd.obj ..\lib6\JvPgMngrEd.obj 
+      ..\lib6\JvPictEdit.obj ..\lib6\JvPresrDsn.obj ..\lib6\JvQBndDlg.obj 
+      ..\lib6\JvSbEdit.obj ..\lib6\JvSelDSFrm.obj ..\lib6\JvTimLstEd.obj 
+      ..\lib6\JvBandObjectDLLWizard.obj ..\lib6\JvBandObjectDLLWizardForm.obj 
+      ..\lib6\JvActions.obj ..\lib6\JvDialogActns.obj ..\lib6\JvPluginWizard.obj 
       ..\lib6\JvPluginParams.obj ..\lib6\JvActnRes.obj 
       ..\lib6\JvDatePickerReg.obj ..\lib6\JvSchedEvntReg.obj 
-      ..\lib6\JvScheduleEditor.obj ..\lib6\JvTransLEDReg.obj 
-      ..\lib6\JvJVCLAboutProperty.obj ..\lib6\JvxDConst.obj"/>
+      ..\lib6\JvTransLEDReg.obj ..\lib6\JvJVCLAboutProperty.obj 
+      ..\lib6\JvxDConst.obj ..\lib6\JvBehaviorLabelProperty.obj 
+      ..\lib6\JvScheduleEditor.obj ..\lib6\JvScrollMaxEditor.obj 
+      ..\lib6\JVHLEditEditor.obj ..\lib6\JvBDEEditors.obj 
+      ..\lib6\JvDBSecurityEditor.obj ..\lib6\JvMemTableEditor.obj 
+      ..\lib6\JvPerfStatEditor.obj ..\lib6\JvMailEditor.obj 
+      ..\lib6\JvGroupHeaderEditor.obj ..\lib6\JvFooterEditor.obj 
+      ..\lib6\JvPaintBoxEditor.obj ..\lib6\JvAnimatedEditor.obj 
+      ..\lib6\JvProgressEditor.obj ..\lib6\JVDBEditors.obj"/>
     <RESFILES value="jvcl200_D60C.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) ..\Source\JvRegAutoEditor.dfm ..\Source\JvHTHintEditor.dfm 
-      ..\Source\JvFormLists.dfm ..\Source\JvFormLog.dfm 
-      ..\Source\JvDateTimeDlg.dfm ..\Source\JvStrLEdit.dfm 
-      ..\source\JvOLBEditor.dfm ..\source\JvImagPrvw.dfm 
-      ..\source\JvCheckItm.dfm ..\source\JvDirFrm.dfm ..\source\JvIColEdit.dfm 
-      ..\source\JvGradedit.dfm ..\source\JvMinMaxEd.dfm ..\source\JvPgMngrEd.dfm 
-      ..\source\JvPictEdit.dfm ..\source\JvPresrDsn.dfm ..\source\JvQBndDlg.dfm 
-      ..\source\JvSbEdit.dfm ..\source\JvSelDSFrm.dfm ..\source\JvTimLstEd.dfm 
-      ..\source\JvBandObjectDLLWizardForm.dfm ..\source\JvPluginParams.dfm 
-      ..\source\JvActnRes.dfm ..\source\JvScheduleEditor.dfm"/>
+      ..\Source\JvFormLog.dfm ..\Source\JvDateTimeDlg.dfm 
+      ..\Source\JvStrLEdit.dfm ..\source\JvOLBEditor.dfm 
+      ..\source\JvImagPrvw.dfm ..\source\JvCheckItm.dfm ..\source\JvDirFrm.dfm 
+      ..\source\JvIColEdit.dfm ..\source\JvGradedit.dfm ..\source\JvMinMaxEd.dfm 
+      ..\source\JvPgMngrEd.dfm ..\source\JvPictEdit.dfm ..\source\JvPresrDsn.dfm 
+      ..\source\JvQBndDlg.dfm ..\source\JvSbEdit.dfm ..\source\JvSelDSFrm.dfm 
+      ..\source\JvTimLstEd.dfm ..\source\JvBandObjectDLLWizardForm.dfm 
+      ..\source\JvPluginParams.dfm ..\source\JvActnRes.dfm 
+      ..\source\JvScheduleEditor.dfm"/>
     <LIBFILES value=""/>
     <LIBRARIES value="bcb2kaxserver.lib indy.lib dbxcds.lib dclocx.lib soaprtl.lib nmfast.lib 
       dbexpress.lib inetdbxpress.lib inetdbbde.lib dsnapcon.lib dsnapcrba.lib 
@@ -52,10 +57,10 @@
       ibxpress.lib cds.lib bdecds.lib qrpt.lib teeui.lib teedb.lib tee.lib 
       dss.lib teeqr.lib visualdbclx.lib dsnapcrba.lib dsnapcon.lib bcbsmp.lib 
       inetdbbde.lib inetdbxpress.lib dbexpress.lib nmfast.lib bcbie.lib 
-      soaprtl.lib dclocx.lib dbxcds.lib indy.lib bcb2kaxserver.lib CJCL60.lib"/>
-    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi vclx.bpi visualclx.bpi dbrtl.bpi dcldb.bpi 
-      designdgm.bpi dclstd.bpi vcldb.bpi bdertl.bpi CJCL60.bpi vcljpg.bpi 
-      bcbsmp.bpi bcbie.bpi"/>
+      soaprtl.lib dclocx.lib dbxcds.lib indy.lib bcb2kaxserver.lib"/>
+    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi vclx.bpi dbrtl.bpi dcldb.bpi designdgm.bpi 
+      dclstd.bpi vcldb.bpi bdertl.bpi vcljpg.bpi bcbsmp.bpi JVCL200_R60C.bpi 
+      bcbie.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\Source"/>
     <PATHRC value=".;"/>
@@ -91,7 +96,7 @@
   <FILELIST>
       <FILE FILENAME="jvcl200_D60C.res" FORMNAME="" UNITNAME="jvcl200_D60C.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JVCL200_D60C.cpp" FORMNAME="" UNITNAME="jvcl200_D60C" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvaDBReg.pas" FORMNAME="" UNITNAME="JvaDBReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvaCtlReg.pas" FORMNAME="" UNITNAME="JvaCtlReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvIDEZoom.pas" FORMNAME="" UNITNAME="JvIDEZoom" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -145,24 +150,37 @@
       <FILE FILENAME="..\source\JvActnRes.pas" FORMNAME="JvStandardActions" UNITNAME="JvActnRes" CONTAINERID="PascalCompiler" DESIGNCLASS="TDataModule" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvDatePickerReg.pas" FORMNAME="" UNITNAME="JvDatePickerReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSchedEvntReg.pas" FORMNAME="" UNITNAME="JvSchedEvntReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvScheduleEditor.pas" FORMNAME="frmScheduleEditor" UNITNAME="JvScheduleEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvTransLEDReg.pas" FORMNAME="" UNITNAME="JvTransLedReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvJVCLAboutProperty.pas" FORMNAME="" UNITNAME="JvJVCLAboutProperty" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\visualclx.bpi" FORMNAME="" UNITNAME="visualclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\dbrtl.bpi" FORMNAME="" UNITNAME="dbrtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\dcldb.bpi" FORMNAME="" UNITNAME="dcldb" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\designdgm.bpi" FORMNAME="" UNITNAME="designdgm" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\dclstd.bpi" FORMNAME="" UNITNAME="dclstd" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\vcldb.bpi" FORMNAME="" UNITNAME="vcldb" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\bdertl.bpi" FORMNAME="" UNITNAME="bdertl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\vcljpg.bpi" FORMNAME="" UNITNAME="vcljpg" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\bcbsmp.bpi" FORMNAME="" UNITNAME="bcbsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\bcbie.bpi" FORMNAME="" UNITNAME="bcbie" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\dbrtl.bpi" FORMNAME="" UNITNAME="dbrtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\dcldb.bpi" FORMNAME="" UNITNAME="dcldb" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\designdgm.bpi" FORMNAME="" UNITNAME="designdgm" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\dclstd.bpi" FORMNAME="" UNITNAME="dclstd" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\vcldb.bpi" FORMNAME="" UNITNAME="vcldb" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\bdertl.bpi" FORMNAME="" UNITNAME="bdertl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\vcljpg.bpi" FORMNAME="" UNITNAME="vcljpg" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\source\bcbsmp.bpi" FORMNAME="" UNITNAME="bcbsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvxDConst.pas" FORMNAME="" UNITNAME="JvxDConst" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvBehaviorLabelProperty.pas" FORMNAME="" UNITNAME="JvBehaviorLabelProperty" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvScheduleEditor.pas" FORMNAME="FrmScheduleEditor" UNITNAME="JvScheduleEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvScrollMaxEditor.pas" FORMNAME="" UNITNAME="JvScrollMaxEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JVHLEditEditor.pas" FORMNAME="" UNITNAME="JVHLEditEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvBDEEditors.pas" FORMNAME="" UNITNAME="JvBDEEditors" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvDBSecurityEditor.pas" FORMNAME="" UNITNAME="JvDBSecurityEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvMemTableEditor.pas" FORMNAME="" UNITNAME="JvMemTableEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvPerfStatEditor.pas" FORMNAME="" UNITNAME="JvPerfStatEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvMailEditor.pas" FORMNAME="" UNITNAME="JvMailEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvGroupHeaderEditor.pas" FORMNAME="" UNITNAME="JvGroupHeaderEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvFooterEditor.pas" FORMNAME="" UNITNAME="JvFooterEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvPaintBoxEditor.pas" FORMNAME="" UNITNAME="JvPaintBoxEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvAnimatedEditor.pas" FORMNAME="" UNITNAME="JvAnimatedEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvProgressEditor.pas" FORMNAME="" UNITNAME="JvProgressEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JVDBEditors.pas" FORMNAME="" UNITNAME="JVDBEditors" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\Lib\JVCL200_R60C.bpi" FORMNAME="" UNITNAME="JVCL200_R60C" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="bcbie.bpi" FORMNAME="" UNITNAME="bcbie" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>

@@ -18,6 +18,7 @@ USEFORMNS("..\source\JvDBExcpt.pas", Jvdbexcpt, JvBdeErrorDlg);
 USEFORMNS("..\source\JvFormProgress.pas", Jvformprogress, FormProg);
 USEFORMNS("..\Source\JvHLEdPropDlg.pas", Jvhledpropdlg, JvHLEditorParamsForm);
 USEFORMNS("..\source\JvJVCLAbout.pas", Jvjvclabout, JvJVCLAboutForm);
+USEFORMNS("..\source\JvProgressFrm.pas", Jvprogressfrm, frmProgress);
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
