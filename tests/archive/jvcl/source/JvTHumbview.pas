@@ -54,7 +54,7 @@ type
   published
   end;
 
-  TJVTHumbview = class(TJvBaseThumbView)
+  TJvThumbView = class(TJvBaseThumbView)
   private
     { Private declarations }
     Maxsize: TPoint;
