@@ -65,7 +65,7 @@ begin
 
 //  RegisterPropertyEditor(TypeInfo(TJvIconList), nil, '', TIconListProperty);
 //  RegisterPropertyEditor(TypeInfo(TJvDriverIndex), nil, '', TJvDriverIndexEditor);
-  RegisterPropertyEditor(TypeInfo(TJvQtKey), nil, '', TJvQtKeyEditor);
+//  RegisterPropertyEditor(TypeInfo(TJvQtKey), nil, '', TJvQtKeyEditor);
 //  RegisterPropertyEditor(TypeInfo(TJvID3FileInfo), nil, '', TJvID3FileInfoEditor);
 
 //  RegisterComponentEditor(TJvAnimatedImage, TJvAnimatedEditor);
