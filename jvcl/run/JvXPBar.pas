@@ -50,11 +50,11 @@ type
   TJvXPBarRollMode = (rmFixed, rmShrink); // rmFixed is default
 
   TJvXPBarHitTest =
-   (
+    (
     htNone, // mouse is inside non-supported rect
     htHeader, // mouse is inside header
     htRollButton // mouse is inside rollbutton
-   );
+    );
 
   TJvXPBarRollDelay = 1..200;
   TJvXPBarRollStep = 1..50;
@@ -326,26 +326,30 @@ type
     property RollStep: TJvXPBarRollStep read FRollStep write FRollStep default 3;
     property ShowLinkCursor: Boolean read FShowLinkCursor write FShowLinkCursor default True;
     property ShowRollButton: Boolean read FShowRollButton write SetShowRollButton default True;
-    property AfterCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FAfterCollapsedChange write FAfterCollapsedChange;
-    property BeforeCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FBeforeCollapsedChange write FBeforeCollapsedChange;
+    property AfterCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FAfterCollapsedChange write
+      FAfterCollapsedChange;
+    property BeforeCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FBeforeCollapsedChange write
+      FBeforeCollapsedChange;
     property OnCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FOnCollapsedChange write FOnCollapsedChange;
     property OnCanChange: TJvXPBarOnCanChangeEvent read FOnCanChange write FOnCanChange;
     property OnDrawItem: TJvXPBarOnDrawItemEvent read FOnDrawItem write FOnDrawItem;
     property OnItemClick: TJvXPBarOnItemClickEvent read FOnItemClick write FOnItemClick;
     procedure AdjustClientRect(var Rect: TRect); override;
     // show hints for individual items in the list
-    function HintShow(var HintInfo: THintInfo): Boolean; {$IFDEF USEJVCL} override; {$ELSE} dynamic; {$ENDIF}
-    {$IFNDEF USEJVCL}
+    function HintShow(var HintInfo: THintInfo): Boolean;{$IFDEF USEJVCL} override;{$ELSE} dynamic;{$ENDIF}
+{$IFNDEF USEJVCL}
     procedure CMHintShow(var Msg: TCMHintShow); message CM_HINTSHOW;
-    {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
     function GetHitTestAt(X, Y: Integer): TJvXPBarHitTest;
     procedure Click; override;
     property Height default 46;
     property VisibleItems: TJvXPBarVisibleItems read FVisibleItems;
     property Width default 153;
+    procedure InitiateAction; override;
   end;
 
   TJvXPBar = class(TJvXPCustomWinXPBar)
@@ -410,9 +414,9 @@ type
     property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
-    {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
     property OnContextPopup;
-    {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -432,16 +436,16 @@ type
 implementation
 
 uses
-  {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
   UxTheme,
-  {$IFNDEF COMPILER7_UP}
+{$IFNDEF COMPILER7_UP}
   TmSchema,
-  {$ENDIF COMPILER7_UP}
+{$ENDIF COMPILER7_UP}
   JvThemes,
-  {$ENDIF JVCLThemesEnabled}
-  {$IFDEF USEJVCL}
+{$ENDIF JVCLThemesEnabled}
+{$IFDEF USEJVCL}
   JvResources,
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
   Menus;
 
 {$IFDEF MSWINDOWS}
@@ -468,8 +472,7 @@ begin
   Idx2 := TCollectionItem(Item2).Index;
   if Idx1 < Idx2 then
     Result := -1
-  else
-  if Idx1 = Idx2 then
+  else if Idx1 = Idx2 then
     Result := 0
   else
     Result := 1;
@@ -614,11 +617,9 @@ begin
   Result := nil;
   if Assigned(FImageList) then
     Result := FImageList
-  else
-  if Assigned(Action) and Assigned(TAction(Action).ActionList.Images) then
+  else if Assigned(Action) and Assigned(TAction(Action).ActionList.Images) then
     Result := TAction(Action).ActionList.Images
-  else
-  if Assigned(FWinXPBar.FImageList) then
+  else if Assigned(FWinXPBar.FImageList) then
     Result := FWinXPBar.FImageList;
 end;
 
@@ -628,18 +629,21 @@ begin
   if Action is TCustomAction then
     with TCustomAction(Sender) do
     begin
-      if not CheckDefaults or (Self.Caption = '') then
-        Self.Caption := Caption;
-      if not CheckDefaults or Self.Enabled then
-        Self.Enabled := Enabled;
-      if not CheckDefaults or (Self.Hint = '') then
-        Self.Hint := Hint;
-      if not CheckDefaults or (Self.ImageIndex = -1) then
-        Self.ImageIndex := ImageIndex;
-      if not CheckDefaults or Self.Visible then
-        Self.Visible := Visible;
-      if not CheckDefaults or not Assigned(Self.OnClick) then
-        Self.OnClick := OnExecute;
+      if (CheckDefaults or Update()) then // mw added to update action
+      begin
+        if not CheckDefaults or (Self.Caption = '') then
+          Self.Caption := Caption;
+        if not CheckDefaults or Self.Enabled then
+          Self.Enabled := Enabled;
+        if not CheckDefaults or (Self.Hint = '') then
+          Self.Hint := Hint;
+        if not CheckDefaults or (Self.ImageIndex = -1) then
+          Self.ImageIndex := ImageIndex;
+        if not CheckDefaults or Self.Visible then
+          Self.Visible := Visible;
+        if not CheckDefaults or not Assigned(Self.OnClick) then
+          Self.OnClick := OnExecute;
+      end;
     end;
 end;
 
@@ -1010,7 +1014,7 @@ begin
   FGradientFrom := clWhite;
   FGradientTo := $00F7D7C6;
   FSeparatorColor := $00F7D7C6;
-  {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
   begin
     Details := ThemeServices.GetElementDetails(tebHeaderBackgroundNormal);
@@ -1030,7 +1034,7 @@ begin
         FSeparatorColor := AColor;
     end;
   end;
-  {$ENDIF JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
 end;
 
 procedure TJvXPBarColors.Change;
@@ -1095,15 +1099,15 @@ begin
   FRollChangeLink.OnChange := DoColorsChange;
 
   FFont := TFont.Create;
-  FFont.Color := $00E75100;
-  FFont.Size := 10;
+  FFont.Color := $00840000;
+  FFont.Size := 8;
   FFont.OnChange := FontChange;
   FGradient := TBitmap.Create;
   FHeaderHeight := 28;
   FGradientWidth := 0;
   FHeaderFont := TFont.Create;
-  FHeaderFont.Color := $00E75100;
-  FHeaderFont.Size := 10;
+  FHeaderFont.Color := $00840000;
+  FHeaderFont.Size := 8;
   FHeaderFont.Style := [fsBold];
   FHeaderFont.OnChange := FontChange;
 
@@ -1296,8 +1300,7 @@ begin
       if FShowLinkCursor then
         Cursor := crHandPoint;
     end
-    else
-    if FShowLinkCursor then
+    else if FShowLinkCursor then
       Cursor := crDefault;
   end;
   inherited HookMouseMove(X, Y);
@@ -1513,8 +1516,7 @@ begin
     Font.Assign(Self.Font);
     if not FVisibleItems[Index].Enabled then
       Font.Color := clGray
-    else
-    if dsHighlight in State then
+    else if dsHighlight in State then
     begin
       if FHotTrackColor <> clNone then
         Font.Color := FHotTrackColor;
@@ -1755,22 +1757,22 @@ begin
     HintInfo.CursorRect := GetItemRect(FHoverIndex);
     with VisibleItems[FHoverIndex] do
     begin
-       if Action is TCustomAction then
-         HintInfo.HintStr := TCustomAction(Action).Hint
-       else
-         HintInfo.HintStr := VisibleItems[FHoverIndex].Hint;
+      if Action is TCustomAction then
+        HintInfo.HintStr := TCustomAction(Action).Hint
+      else
+        HintInfo.HintStr := VisibleItems[FHoverIndex].Hint;
     end;
   end
-  else
-  if (VisibleItems.Count > 0) and not Collapsed then
+  else if (VisibleItems.Count > 0) and not Collapsed then
     HintInfo.CursorRect := GetHitTestRect(htHeader);
 
   if HintInfo.HintStr = '' then
     HintInfo.HintStr := Hint;
-  Result := False;  // use default hint window
+  Result := False; // use default hint window
 end;
 
 {$IFNDEF USEJVCL}
+
 procedure TJvXPCustomWinXPBar.CMHintShow(var Msg: TCMHintShow);
 begin
   Msg.Result := Ord(HintShow(@Msg.HintInfo));
@@ -1787,6 +1789,16 @@ begin
       if HintStr <> '' then
         HintStr := Format('%s (%s)', [HintStr, ShortCutToText(TCustomAction(Action).ShortCut)]);
   end;
+end;
+
+procedure TJvXPCustomWinXPBar.InitiateAction;
+var
+  i: Integer;
+begin
+  inherited InitiateAction;
+  // go through each item and update
+  for i:= 0 to Items.Count - 1 do
+    Items[i].ActionChange(Items[i].Action, csLoading in ComponentState);
 end;
 
 end.
