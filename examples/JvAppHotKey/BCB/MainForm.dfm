@@ -11,9 +11,6 @@ object frmMain: TfrmMain
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  DesignSize = (
-    356
-    306)
   PixelsPerInch = 96
   TextHeight = 13
   object Label2: TLabel

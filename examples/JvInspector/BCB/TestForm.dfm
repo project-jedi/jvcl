@@ -21,9 +21,6 @@ object frmTest: TfrmTest
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    DesignSize = (
-      615
-      141)
     object lblTest: TLabel
       Left = 4
       Top = 4
