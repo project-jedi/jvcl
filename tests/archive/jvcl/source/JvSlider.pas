@@ -103,8 +103,8 @@ type
     property OnDragDrop;
     property OnEndDrag;
     property OnStartDrag;
-    property OnBeginChange: TnotifyEvent read FOnBegin write FOnBegin;
-    property OnChanged: TnotifyEvent read FOnChanged write FOnChanged;
+    property OnBeginChange: TNotifyEvent read FOnBegin write FOnBegin;
+    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
     property OnStopChanged: TNotifyEvent read FOnStop write FOnStop;
   end;
 
