@@ -149,7 +149,7 @@ begin
   case AAngle of
     AT90:
       Rotate90;
-    At180:
+    AT180:
       Mirror(mtBoth);
     AT270:
       Rotate270;
@@ -164,9 +164,9 @@ begin
   Result := Graphics.GraphicFilter(TGraphic);
   // (rom) better clean that up
   P := Pos('(', Result);
-  InsertStr(Result, RsPcxTga, p);
+  InsertStr(Result, RsPcxTga, P);
   P := Pos('|', Result);
-  InsertStr(Result, RsPcxTga, p);
+  InsertStr(Result, RsPcxTga, P);
   Result := Result + RsFileFilters;
     //Graphics.GraphicFilter(TGraphic)+'|PCX File|*.PCX|Targa File|*.TGA';
   { TODO : Add in the filter the rest of the images we support but are not registered to the Graphics unit }
@@ -328,7 +328,7 @@ begin
       end
       else
         JpegImage.Scale := jsFullSize;
-      JPegImage.LoadFromFile(AFile);
+      JpegImage.LoadFromFile(AFile);
       // Picture.Bitmap := Graphics.TBitmap.Create;
       with Picture.Bitmap do
       begin
@@ -675,7 +675,7 @@ begin
     InBmp.Height := Picture.Height;
     InBmp.Assign(Picture.Graphic);
     InBmp.HandleType := bmDIB;
-    InBmp.PixelFormat := Pf24bit;
+    InBmp.PixelFormat := pf24bit;
     for Row := 0 to InBmp.Height - 1 do
     begin
       Line := InBmp.ScanLine[Row];
@@ -738,7 +738,7 @@ begin
             //rotate180;
             Mirror(mtBoth);
           end;
-          if AAngle = at0 then
+          if AAngle = AT0 then
           begin
             Rotate270;
             if Parent is TJvThumbnail then
@@ -919,12 +919,12 @@ begin
           pf32bit         : Stp := 4;
           pfDevice,
           pfCustom        : begin
-                              MemBmp.PixelFormat := PF24bit;
+                              MemBmp.PixelFormat := pf24bit;
                               Stp:=3;
                             end;
         else Exit;
         end;{}
-        MemBmp.PixelFormat := PF24bit;
+        MemBmp.PixelFormat := pf24bit;
         //      Stp := 3;
         RotateBmp.FreeImage;
         RotateBmp.PixelFormat := MemBmp.PixelFormat;

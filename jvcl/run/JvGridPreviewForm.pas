@@ -88,7 +88,7 @@ type
     procedure FullSize;
     procedure Zoom(Factor: Extended);
     procedure SetGrid(const Value: TStringGrid);
-    procedure UpdaterowHeights;
+    procedure UpdateRowHeights;
     function PageCount: Integer;
     procedure UpdatePreview(ACanvas: TCanvas);
   public
@@ -221,7 +221,7 @@ begin
   {$ENDIF VisualCLX}
   GridPrinter.PrintOptions.PreviewPage := 1;
   PreviewPage.Position := 1;
-  ckBorders.Checked := (GridPrinter.PrintOptions.BorderStyle = bsSingle);
+  ckborders.Checked := (GridPrinter.PrintOptions.BorderStyle = bsSingle);
   Header.Text := GridPrinter.PrintOptions.PageTitle;
   Headers.ItemIndex := 0;
   btnshow.Click;
@@ -272,13 +272,13 @@ end;
 procedure TJvGridPreviewForm.FullSize;
 var
   Bmp: TBitmap;
-  w, h: Integer;
+  W, H: Integer;
 begin
-  w := FPrintImage.Width;
-  h := FPrintImage.Height;
+  W := FPrintImage.Width;
+  H := FPrintImage.Height;
   Bmp := TBitmap.Create;
   Bmp.Width := ScrollBox1.ClientWidth;
-  Bmp.Height := Round(h / w * Bmp.Width);
+  Bmp.Height := Round(H / W * Bmp.Width);
   FPrintImage.PixelFormat := pf24bit;
   Bmp.PixelFormat := pf24bit;
   TJvPaintFX.SmoothResize(FPrintImage, Bmp);
@@ -303,26 +303,26 @@ end;
 
 procedure TJvGridPreviewForm.PreviewImageClick(Sender: TObject);
 var
-  w, w1: Integer;
+  W, W1: Integer;
 begin
-  w1 := PreviewImage.Picture.Bitmap.Width;
-  w := FPrintImage.Width;
-  if Round(w * 0.8) < w1 then
+  W1 := PreviewImage.Picture.Bitmap.Width;
+  W := FPrintImage.Width;
+  if Round(W * 0.8) < W1 then
     PreviewImage.Picture.Bitmap.Assign(FPrintImage)
   else
-    Zoom(w1 / w / 0.8);
+    Zoom(W1 / W / 0.8);
 end;
 
 procedure TJvGridPreviewForm.Zoom(Factor: Extended);
 var
   Bmp: TBitmap;
-  w, h: Integer;
+  W, H: Integer;
 begin
-  w := FPrintImage.Width;
-  h := FPrintImage.Height;
+  W := FPrintImage.Width;
+  H := FPrintImage.Height;
   Bmp := TBitmap.Create;
-  Bmp.Width := Round(Factor * w);
-  Bmp.Height := Round(h / w * Bmp.Width);
+  Bmp.Width := Round(Factor * W);
+  Bmp.Height := Round(H / W * Bmp.Width);
   FPrintImage.PixelFormat := pf24bit;
   Bmp.PixelFormat := pf24bit;
   TJvPaintFX.SmoothResize(FPrintImage, Bmp);
@@ -394,7 +394,7 @@ var
           ACanvas.Font.Style := ACanvas.Font.Style + [fsBold]
         else
           ACanvas.Font.Style := ACanvas.Font.Style - [fsBold];
-        R.Left := R.Left + ScaleX(GridPrinter.PrintOptions.Leftpadding);
+        R.Left := R.Left + ScaleX(GridPrinter.PrintOptions.LeftPadding);
         if GridPrinter.WordWrap and (ICol <> 0) and (IRow <> 0) then
         begin
           if GridPrinter.NumbersalRight and (not nr) then
@@ -447,7 +447,7 @@ var
     //Title
     Y := ScaleY(GridPrinter.PrintOptions.MarginTop);
     S := GridPrinter.PrintOptions.PageTitle;
-    HHeader := Grid.Canvas.TextHeight(s);
+    HHeader := Grid.Canvas.TextHeight(S);
     if HasLogo then
       if LogoPic.Height > HHeader then
         HHeader := LogoPic.Height;
@@ -474,13 +474,13 @@ var
         HFooter := Grid.Canvas.TextHeight(fstr);
         List := TStringList.Create;
         List.Text := StringReplace(fstr, '|', cr, [rfreplaceall]);
-        while List.count < 3 do
+        while List.Count < 3 do
           List.Append('');
         for I := 0 to 2 do
         begin
           List[I] := StringReplace(List[I], 'date', FormatDateTime(GridPrinter.PrintOptions.DateFormat, Now), []);
           List[I] := StringReplace(List[I], 'time', FormatDateTime(GridPrinter.PrintOptions.TimeFormat, Now), []);
-          List[I] := StringReplace(List[I], 'page', s, []);
+          List[I] := StringReplace(List[I], 'page', S, []);
         end;
         //paint Left footer
         if List[0] <> '' then
@@ -614,25 +614,25 @@ begin
   FGrid := Value;
 end;
 
-procedure TJvGridPreviewForm.UpdaterowHeights;
+procedure TJvGridPreviewForm.UpdateRowHeights;
 var
-  c, MaxH, h, ARow: Integer;
+  C, MaxH, H, ARow: Integer;
   R: TRect;
-  s: string;
+  S: string;
 begin
   SetLength(RowHeights, Grid.RowCount);
   RowHeights[0] := Grid.RowHeights[0];
   MaxH := Grid.DefaultRowHeight;
   for ARow := 1 to Grid.RowCount - 1 do
   begin
-    for c := 0 to Grid.ColCount - 1 do
+    for C := 0 to Grid.ColCount - 1 do
     begin
-      s := Grid.Cells[c, ARow];
-      R := Grid.CellRect(c, ARow);
-      DrawText(Grid.Canvas.Handle, PChar(s), -1, R, DT_CALCRECT or DT_WORDBREAK);
-      h := R.Bottom - R.Top + 1;
-      if h > MaxH then
-        MaxH := h;
+      S := Grid.Cells[C, ARow];
+      R := Grid.CellRect(C, ARow);
+      DrawText(Grid.Canvas.Handle, PChar(S), -1, R, DT_CALCRECT or DT_WORDBREAK);
+      H := R.Bottom - R.Top + 1;
+      if H > MaxH then
+        MaxH := H;
     end;
     if GridPrinter.WordWrap then
       RowHeights[ARow] := MaxH
@@ -692,7 +692,7 @@ begin
     4:
       GridPrinter.PrintOptions.MarginBottom := Margin.Position;
     5:
-      GridPrinter.PrintOptions.Leftpadding := Margin.Position;
+      GridPrinter.PrintOptions.LeftPadding := Margin.Position;
     6:
       GridPrinter.PrintOptions.HeaderSize := Margin.Position;
     7:

@@ -104,8 +104,8 @@ type
     FSlant: TSlantAngle;
     FText: string;
     {$IFDEF VisualCLX}
-    FAutoSize: boolean;
-    procedure SetAutoSize(Value: boolean);
+    FAutoSize: Boolean;
+    procedure SetAutoSize(Value: Boolean);
     {$ENDIF VisualCLX}
   protected
     procedure DefineProperties(Filer: TFiler); override;
@@ -141,7 +141,7 @@ type
     property AutoSize default True;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    property AutoSize: boolean read FAutoSize write SetAutoSize default True;
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     {$ENDIF VisualCLX}
     property CharacterMapper: TJvSegmentedLEDCharacterMapper read FCharacterMapper;
     property DigitClass: TJvSegmentedLEDDigitClass read FDigitClass write SetDigitClass;
@@ -337,7 +337,7 @@ type
     procedure ControlItemToSegments(var ControlItem: PChar; var Segments: Int64); virtual;
     procedure MapControlItems(var Text: PChar; var Segments: Int64); virtual;
     procedure MapSimpleText(var Text: PChar; var Segments: Int64); virtual;
-    procedure MapSegNamesToSegments(var Text: Pchar; var Segments: Int64); virtual;
+    procedure MapSegNamesToSegments(var Text: PChar; var Segments: Int64); virtual;
     procedure PrimMapText(var Text: PChar; var Segments: Int64); virtual;
     procedure Modified;
 
@@ -690,9 +690,9 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-procedure TJvCustomSegmentedLEDDisplay.SetAutoSize(Value: boolean);
+procedure TJvCustomSegmentedLEDDisplay.SetAutoSize(Value: Boolean);
 begin
-  FAutoSize := value;
+  FAutoSize := Value;
   if Value then
     UpdateBounds;
 end;
@@ -1342,7 +1342,7 @@ begin
   SetSegmentRenderInfo(Index, srtPolygon, [
     AngleAdjustPoint(FRefRight, FRefCenterY + Spacing div 2, SlantAngle),
     AngleAdjustPoint(FRefRight, FRefBottom - Spacing div 2, SlantAngle),
-    AngleAdjustPoint(FRefRight - SegmentWidth, FrefBottom - Spacing div 2 - SegmentWidth, SlantAngle),
+    AngleAdjustPoint(FRefRight - SegmentWidth, FRefBottom - Spacing div 2 - SegmentWidth, SlantAngle),
     AngleAdjustPoint(FRefRight - SegmentWidth, FRefCenterY + Spacing div 2 + SegmentWidth, SlantAngle)
   ]);
 end;
@@ -1645,7 +1645,7 @@ begin
     HandleDecimalSeparator(Text, Segments);
 end;
 
-procedure TJvSegmentedLEDCharacterMapper.MapSegNamesToSegments(var Text: Pchar;
+procedure TJvSegmentedLEDCharacterMapper.MapSegNamesToSegments(var Text: PChar;
   var Segments: Int64);
 var
   SortedSegNames: TStringList;
@@ -1943,7 +1943,7 @@ end;
 
 function StringToUnlitColor(const S: string): TUnlitColor;
 begin
-  if not IdentToUnlitColor(S, LongInt(Result)) then
+  if not IdentToUnlitColor(S, Longint(Result)) then
     Result := StrToInt(S);
 end;
 

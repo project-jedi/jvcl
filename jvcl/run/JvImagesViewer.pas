@@ -219,7 +219,7 @@ begin
   ShowCaptions := True;
 end;
 
-procedure TJvImageViewerOptions.SetFrameColor(const Value: TCOlor);
+procedure TJvImageViewerOptions.SetFrameColor(const Value: TColor);
 begin
   if FFrameColor <> Value then
   begin
@@ -273,7 +273,7 @@ begin
     FPicture := TPicture.Create;
     FPicture.OnChange := DoPictureChange;
     FPicture.OnProgress := DoLoadProgress;
-    S := ExpandUNCFilename(FileName);
+    S := ExpandUNCFileName(FileName);
     if (S <> '') and FileExists(S) then
     try
       FPicture.LoadFromFile(S);
@@ -544,7 +544,7 @@ begin
     FileMasks := TStringList.Create;
     try
       FileMasks.Sorted := True; // make sure no duplicates are added
-      ExpandFileMask(Filemask, FileMasks);
+      ExpandFileMask(FileMask, FileMasks);
       if TmpDir <> '' then
         TmpDir := IncludeTrailingPathDelimiter(TmpDir);
       DoLoadBegin;
@@ -644,7 +644,7 @@ procedure TJvImagesViewer.DoLoadProgress(Item: TJvImageItem;
   const R: TRect; const Msg: string);
 begin
   if Assigned(FOnLoadProgress) then
-    FOnLoadProgress(Self, Item, Stage, PercentDone, ReDrawNow, R, Msg);
+    FOnLoadProgress(Self, Item, Stage, PercentDone, RedrawNow, R, Msg);
 end;
 
 procedure TJvImagesViewer.DoLoadEnd;

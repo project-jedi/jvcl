@@ -347,9 +347,9 @@ procedure TJvCustomPreviewRenderer.InternalDoAddPage(Sender: TObject;
   PageIndex: Integer; Canvas: TCanvas; PageRect, PrintRect: TRect;
   var NeedMorePages: Boolean);
 begin
-  DoAddPage(Sender, PageIndex, Canvas, PageRect, PrintRect, NeedMOrePages);
+  DoAddPage(Sender, PageIndex, Canvas, PageRect, PrintRect, NeedMorePages);
   if Assigned(FOldAddPage) then
-    FOldAddPage(Sender, PageIndex, Canvas, PageRect, PrintRect, NeedMOrePages);
+    FOldAddPage(Sender, PageIndex, Canvas, PageRect, PrintRect, NeedMorePages);
 end;
 
 procedure TJvCustomPreviewRenderer.Notification(AComponent: TComponent;
@@ -363,7 +363,7 @@ end;
 procedure TJvCustomPreviewRenderer.SetPrintPreview(
   const Value: TJvCustomPreviewControl);
 begin
-  if FPrintPreview <> value then
+  if FPrintPreview <> Value then
   begin
     if FPrintPreview <> nil then
       FPrintPreview.RemoveFreeNotification(Self);
@@ -405,8 +405,8 @@ begin
     LogY := GetDeviceCaps(OutDC, LOGPIXELSY);
     if IsRectEmpty(RichEdit.PageRect) then
     begin
-      Range.rc.right := (PrintRect.Right - PrintRect.Left) * cTwipsPerInch div LogX;
-      Range.rc.bottom := (PrintRect.Bottom - PrintRect.Top) * cTwipsPerInch div LogY;
+      Range.rc.Right := (PrintRect.Right - PrintRect.Left) * cTwipsPerInch div LogX;
+      Range.rc.Bottom := (PrintRect.Bottom - PrintRect.Top) * cTwipsPerInch div LogY;
     end
     else
     begin
@@ -490,8 +490,8 @@ begin
     LogY := GetDeviceCaps(OutDC, LOGPIXELSY);
     if IsRectEmpty(RichEdit.PageRect) then
     begin
-      Range.rc.right := (PrintRect.Right - PrintRect.Left) * cTwipsPerInch div LogX;
-      Range.rc.bottom := (PrintRect.Bottom - PrintRect.Top) * cTwipsPerInch div LogY;
+      Range.rc.Right := (PrintRect.Right - PrintRect.Left) * cTwipsPerInch div LogX;
+      Range.rc.Bottom := (PrintRect.Bottom - PrintRect.Top) * cTwipsPerInch div LogY;
     end
     else
     begin

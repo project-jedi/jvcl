@@ -153,11 +153,11 @@ const
   // (rom) increased from 100
   cColumnsHandled = 1024;
 
-constructor TJvListItem.CreateEnh(AOwner: TListItems; const PopUp: TPopupmenu);
+constructor TJvListItem.CreateEnh(AOwner: TListItems; const Popup: TPopupMenu);
 begin
   inherited Create(AOwner);
   FBold := False;
-  FPopupMenu := PopUp; // (Salvatore) Get it from the JvListView
+  FPopupMenu := Popup; // (Salvatore) Get it from the JvListView
 end;
 
 procedure TJvListItem.SetPopupMenu(const Value: TPopupMenu);
@@ -213,7 +213,7 @@ type
 var
   Parm: TParamSort;
 
-  function CustomCompare1(Item1, Item2, Paramsort: Integer): Integer stdcall;
+  function CustomCompare1(Item1, Item2, ParamSort: Integer): Integer stdcall;
   var
     Parm: TParamSort;
     i1, i2: TListItem;
@@ -616,7 +616,7 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
     b := 0;
     c := 1;
     d := Ord('T'); //checked
-    E := Ord('F'); //not checked
+    e := Ord('F'); //not checked
     if Assigned(FOnSaveProgress) then
       FOnSaveProgress(Self, 0, Self.Items.Count);
     for I := 0 to Self.Items.Count - 1 do
