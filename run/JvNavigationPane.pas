@@ -992,6 +992,19 @@ type
     property OnThemeChange: TNotifyEvent read FOnThemeChange write FOnThemeChange;
   end;
 
+{$IFDEF COMPILER5}
+type
+  TCustomImageListEx = class(TCustomImageList)
+  public
+    procedure Draw(Canvas: TCanvas; X, Y, Index: Integer;
+      ADrawingStyle: TDrawingStyle; AImageType: TImageType;
+      Enabled: Boolean); overload;
+  end;
+{$ELSE}
+type
+  TCustomImageListEx = TCustomImageList;
+{$ENDIF COMPILER5}
+
 implementation
 uses
   {$IFDEF COMPILER5}
@@ -1028,14 +1041,6 @@ begin
 end;
 
 {$IFDEF COMPILER5}
-type
-  TCustomImageListEx = class(TCustomImageList)
-  public
-    procedure Draw(Canvas: TCanvas; X, Y, Index: Integer;
-      ADrawingStyle: TDrawingStyle; AImageType: TImageType;
-      Enabled: Boolean); overload;
-  end;
-
 procedure TCustomImageListEx.Draw(Canvas: TCanvas; X, Y, Index: Integer;
   ADrawingStyle: TDrawingStyle; AImageType: TImageType; Enabled: Boolean);
 const
@@ -1047,10 +1052,6 @@ begin
     DoDraw(Index, Canvas, X, Y, DrawingStyles[ADrawingStyle] or
       Images[AImageType], Enabled);
 end;
-
-{$ELSE}
-type
-  TCustomImageListEx = TCustomImageList;
 {$ENDIF COMPILER5}
 
 type
