@@ -31,7 +31,7 @@ unit JvRenameError;
 interface
 
 uses
-  Windows, SetupApi, SysUtils, Classes,
+  Windows, SysUtils, Classes,
   JvCommonDialogD, JvTypes;
 
 type
@@ -57,6 +57,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  SetupApi,
   JclSysUtils;
 
 constructor TJvRenameError.Create(AOwner: TComponent);
