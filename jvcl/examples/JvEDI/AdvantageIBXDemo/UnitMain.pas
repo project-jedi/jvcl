@@ -35,7 +35,7 @@ uses
 
 type
   TFormMain = class(TForm)
-    JvEDIDBSpecProfilier: TJvEDIDBSpecProfilier;
+    JvEDIDBSpecProfiler: TJvEDIDBSpecProfiler;
     pcMain: TPageControl;
     TabSheet1: TTabSheet;
     PageControl2: TPageControl;
@@ -46,7 +46,7 @@ type
     dbgS: TDBGrid;
     dbgE: TDBGrid;
     odOpenEDIFile: TOpenDialog;
-    JvEDIDBSEFProfilier: TJvEDIDBSEFProfilier;
+    JvEDIDBSEFProfiler: TJvEDIDBSEFProfiler;
     TabSheet6: TTabSheet;
     rgDemoDatabaseOption: TRadioGroup;
     Button1: TButton;
@@ -59,13 +59,13 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
-    procedure JvEDIDBSpecProfilier1AfterProfiledSegmentSpec(
+    procedure JvEDIDBSpecProfiler1AfterProfiledSegmentSpec(
       EDISegmentSpec: TEDISegmentSpec);
-    procedure JvEDIDBSpecProfilier1AfterProfiledTransactionSetSpec(
+    procedure JvEDIDBSpecProfiler1AfterProfiledTransactionSetSpec(
       EDITransactionSetSpec: TEDITransactionSetSpec);
-    procedure JvEDIDBSpecProfilierAfterProfiledSegment(
+    procedure JvEDIDBSpecProfilerAfterProfiledSegment(
       Segment: TEDIObject);
-    procedure JvEDIDBSEFProfilierAfterProfiledSegment(Segment: TEDIObject);
+    procedure JvEDIDBSEFProfilerAfterProfiledSegment(Segment: TEDIObject);
     procedure rgDemoDatabaseOptionClick(Sender: TObject);
   private
     { Private declarations }
@@ -120,9 +120,9 @@ begin
   case rgDemoDatabaseOption.ItemIndex of
     AdvantageDatabase:
     begin
-      JvEDIDBSEFProfilier.ElementProfiles := ADS70_Data.EProfile;
-      JvEDIDBSEFProfilier.SegmentProfiles := ADS70_Data.SProfile;
-      JvEDIDBSEFProfilier.LoopProfiles := ADS70_Data.LProfile;
+      JvEDIDBSEFProfiler.ElementProfiles := ADS70_Data.EProfile;
+      JvEDIDBSEFProfiler.SegmentProfiles := ADS70_Data.SProfile;
+      JvEDIDBSEFProfiler.LoopProfiles := ADS70_Data.LProfile;
       dbgE.DataSource := ADS70_Data.dsEProfile;
       dbgS.DataSource := ADS70_Data.dsSProfile;
       dbgL.DataSource := ADS70_Data.dsLProfile;
@@ -130,9 +130,9 @@ begin
     end;
     Interbase6020_IBX:
     begin
-      JvEDIDBSEFProfilier.ElementProfiles := Interbase6_IBX_Data.EProfile;
-      JvEDIDBSEFProfilier.SegmentProfiles := Interbase6_IBX_Data.SProfile;
-      JvEDIDBSEFProfilier.LoopProfiles := Interbase6_IBX_Data.LProfile;
+      JvEDIDBSEFProfiler.ElementProfiles := Interbase6_IBX_Data.EProfile;
+      JvEDIDBSEFProfiler.SegmentProfiles := Interbase6_IBX_Data.SProfile;
+      JvEDIDBSEFProfiler.LoopProfiles := Interbase6_IBX_Data.LProfile;
       dbgE.DataSource := Interbase6_IBX_Data.dsEProfile;
       dbgS.DataSource := Interbase6_IBX_Data.dsSProfile;
       dbgL.DataSource := Interbase6_IBX_Data.dsLProfile;
@@ -154,7 +154,7 @@ begin
         ObjectList.Free;
       end;
       //
-      JvEDIDBSEFProfilier.BuildProfile(FEDISEFFile);
+      JvEDIDBSEFProfiler.BuildProfile(FEDISEFFile);
     end
     else
     begin
@@ -166,7 +166,7 @@ begin
           for K := 0 to FEDIFileSpec[I][J].TransactionSetCount - 1 do
             pb.Max := pb.Max + FEDIFileSpec[I][J][K].SegmentCount;
       //
-      JvEDIDBSpecProfilier.BuildProfile(FEDIFileSpec);
+      JvEDIDBSpecProfiler.BuildProfile(FEDIFileSpec);
     end;
     ShowMessage('Profile Done');
   end;
@@ -209,26 +209,26 @@ begin
   ShowMessage('DB Buffer Update done!');
 end;
 
-procedure TFormMain.JvEDIDBSpecProfilier1AfterProfiledSegmentSpec(
+procedure TFormMain.JvEDIDBSpecProfiler1AfterProfiledSegmentSpec(
   EDISegmentSpec: TEDISegmentSpec);
 begin
   pb.StepIt;
 end;
 
-procedure TFormMain.JvEDIDBSpecProfilier1AfterProfiledTransactionSetSpec(
+procedure TFormMain.JvEDIDBSpecProfiler1AfterProfiledTransactionSetSpec(
   EDITransactionSetSpec: TEDITransactionSetSpec);
 begin
 //
 end;
 
-procedure TFormMain.JvEDIDBSpecProfilierAfterProfiledSegment(
+procedure TFormMain.JvEDIDBSpecProfilerAfterProfiledSegment(
   Segment: TEDIObject);
 begin
   pb.StepBy(1);
   Application.ProcessMessages;
 end;
 
-procedure TFormMain.JvEDIDBSEFProfilierAfterProfiledSegment(
+procedure TFormMain.JvEDIDBSEFProfilerAfterProfiledSegment(
   Segment: TEDIObject);
 begin
   pb.StepBy(1);
@@ -240,9 +240,9 @@ begin
   case rgDemoDatabaseOption.ItemIndex of
     AdvantageDatabase:
     begin
-      JvEDIDBSEFProfilier.ElementProfiles := ADS70_Data.EProfile;
-      JvEDIDBSEFProfilier.SegmentProfiles := ADS70_Data.SProfile;
-      JvEDIDBSEFProfilier.LoopProfiles := ADS70_Data.LProfile;
+      JvEDIDBSEFProfiler.ElementProfiles := ADS70_Data.EProfile;
+      JvEDIDBSEFProfiler.SegmentProfiles := ADS70_Data.SProfile;
+      JvEDIDBSEFProfiler.LoopProfiles := ADS70_Data.LProfile;
       dbgE.DataSource := ADS70_Data.dsEProfile;
       dbgS.DataSource := ADS70_Data.dsSProfile;
       dbgL.DataSource := ADS70_Data.dsLProfile;
@@ -250,9 +250,9 @@ begin
     end;
     Interbase6020_IBX:
     begin
-      JvEDIDBSEFProfilier.ElementProfiles := Interbase6_IBX_Data.EProfile;
-      JvEDIDBSEFProfilier.SegmentProfiles := Interbase6_IBX_Data.SProfile;
-      JvEDIDBSEFProfilier.LoopProfiles := Interbase6_IBX_Data.LProfile;
+      JvEDIDBSEFProfiler.ElementProfiles := Interbase6_IBX_Data.EProfile;
+      JvEDIDBSEFProfiler.SegmentProfiles := Interbase6_IBX_Data.SProfile;
+      JvEDIDBSEFProfiler.LoopProfiles := Interbase6_IBX_Data.LProfile;
       dbgE.DataSource := Interbase6_IBX_Data.dsEProfile;
       dbgS.DataSource := Interbase6_IBX_Data.dsSProfile;
       dbgL.DataSource := Interbase6_IBX_Data.dsLProfile;

@@ -42,8 +42,8 @@ procedure Register;
 begin
 { Register Components }
 
- RegisterComponents('Jv EDI', [TJvEDIDBSpecProfilier,
-                              TJvEDIDBSEFProfilier,
+ RegisterComponents('Jv EDI', [TJvEDIDBSpecProfiler,
+                              TJvEDIDBSEFProfiler,
                               TJvEDIDBBuffer{TJvEDITCPServer,TJvEDITCPClient}]);
 
 
