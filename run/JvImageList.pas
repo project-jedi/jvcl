@@ -225,41 +225,41 @@ end;
 
 procedure InstallHandleNeededHook;
 var
-  OrgProc: procedure of object;
+  OrgProc: Pointer;
   NewProc: Pointer;
   Code: TJumpCode;
   n: Cardinal;
 begin
   if not HandleNeededHookInstalled then
   begin
-    OrgProc := TOpenCustomImageList(TCustomImageList).HandleNeeded;
+    OrgProc := @TOpenCustomImageList.HandleNeeded;
     NewProc := @HandleNeededHook;
 
     Code.Jump := $e9;
-    Code.Offset := Integer(NewProc) - Integer(@OrgProc) - SizeOf(Code);
+    Code.Offset := Integer(NewProc) - Integer(OrgProc) - SizeOf(Code);
 
-    if ReadProcessMemory(GetCurrentProcess, @OrgProc, @SavedNeededHookCode, SizeOf(SavedNeededHookCode), n) then
-      if WriteProcessMemory(GetCurrentProcess, @OrgProc, @Code, SizeOf(Code), n) then
+    if ReadProcessMemory(GetCurrentProcess, OrgProc, @SavedNeededHookCode, SizeOf(SavedNeededHookCode), n) then
+      if WriteProcessMemory(GetCurrentProcess, OrgProc, @Code, SizeOf(Code), n) then
       begin
         HandleNeededHookInstalled := True;
-        FlushInstructionCache(GetCurrentProcess, @OrgProc, SizeOf(Code));
+        FlushInstructionCache(GetCurrentProcess, OrgProc, SizeOf(Code));
       end;
   end;
 end;
 
 procedure UninstallHandleNeededHook;
 var
-  OrgProc: procedure of object;
+  OrgProc: Pointer;
   n: Cardinal;
 begin
   if HandleNeededHookInstalled then
   begin
-    OrgProc := TOpenCustomImageList(TCustomImageList).HandleNeeded;
+    OrgProc := @TOpenCustomImageList.HandleNeeded;
 
-    if WriteProcessMemory(GetCurrentProcess, @OrgProc, @SavedNeededHookCode, SizeOf(SavedNeededHookCode), n) then
+    if WriteProcessMemory(GetCurrentProcess, OrgProc, @SavedNeededHookCode, SizeOf(SavedNeededHookCode), n) then
     begin
       HandleNeededHookInstalled := False;
-      FlushInstructionCache(GetCurrentProcess, @OrgProc, SizeOf(SavedNeededHookCode));
+      FlushInstructionCache(GetCurrentProcess, OrgProc, SizeOf(SavedNeededHookCode));
     end;
   end;
 end;
@@ -644,7 +644,7 @@ begin
       begin
         if Trim(FResourceIds[i]) <> '' then
         try
-
+         // load resource
           ResStream := nil;
           try
             try
@@ -663,6 +663,7 @@ begin
             ResStream.Free;
           end;
 
+         // add bitmap 
           if not Bmp.Empty and (Bmp.Width > 0) and (Bmp.Height > 0) then
           begin
             case TransparentMode of
@@ -686,6 +687,7 @@ begin
   end;
 end;
 
+(*
 procedure TJvImageList.DefineProperties(Filer: TFiler);
 {$IFDEF COMPLIB_VCL}
 var
@@ -723,6 +725,28 @@ begin
       end;
     {$ENDIF}
     end
+    else
+      inherited DefineProperties(Filer);
+  finally
+    Dec(FUpdateLock);
+  end;
+end;
+*)
+
+type
+  TOpenComponent = class(TComponent);
+  TDefineProperties = procedure(Self: TComponent; Filer: TFiler);
+
+procedure TJvImageList.DefineProperties(Filer: TFiler);
+begin
+  Inc(FUpdateLock); // no BeginUpdate/EndUpdate here
+  try
+    if (Filer is TWriter) then
+      DoLoadFromFile; // update Picture.Graphic if a filename is specified
+
+    if (Filer is TWriter) and (FPicture.Graphic <> nil) and
+       (not FPicture.Graphic.Empty) and (FMode <> imClassic) then
+      TDefineProperties(@TOpenComponent.DefineProperties)(Self, Filer)
     else
       inherited DefineProperties(Filer);
   finally
