@@ -2745,24 +2745,22 @@ begin
     { Use slide-open effect for combo boxes if wanted. This is also possible
       for D5<, but D5< does not define AnimateWindowProc in Controls.pas. See
       TJvBalloonHint.pas to solve this }
-    SetWindowPos(FDataList.Handle, HWND_TOP, Max(P.X, 0), Y, 0, 0,
-      SWP_NOSIZE or SWP_NOACTIVATE {or SWP_SHOWWINDOW});
-
     SystemParametersInfo(SPI_GETCOMBOBOXANIMATION, 0, @Animate, 0);
-    if Animate then
+    if Assigned(AnimateWindowProc) and Animate then
     begin
+      SetWindowPos(FDataList.Handle, HWND_TOP, Max(P.X, 0), Y, 0, 0,
+        SWP_NOSIZE or SWP_NOACTIVATE {or SWP_SHOWWINDOW});
       if Y < P.Y then
         SlideStyle := AW_VER_NEGATIVE
       else
         SlideStyle := AW_VER_POSITIVE;
       AnimateWindowProc(FDataList.Handle, 150, SlideStyle or AW_SLIDE);
-    end;
-
-    ShowWindow(FDataList.Handle, SW_SHOWNOACTIVATE);
-    {$ELSE}
-    SetWindowPos(FDataList.Handle, HWND_TOP, Max(P.X, 0), Y, 0, 0,
-      SWP_NOSIZE or SWP_NOACTIVATE or SWP_SHOWWINDOW);
+      ShowWindow(FDataList.Handle, SW_SHOWNOACTIVATE);
+    end
+    else
     {$ENDIF COMPILER6_UP}
+      SetWindowPos(FDataList.Handle, HWND_TOP, Max(P.X, 0), Y, 0, 0,
+        SWP_NOSIZE or SWP_NOACTIVATE or SWP_SHOWWINDOW);
 
     FListVisible := True;
     InvalidateText;
