@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2004-03-31:
+- Added JvNavigationPane and related components // peter3
 2004-03-30
 - Removed JCL dependency from JvJCLUtils, JvJVCLUtils, JvWndProcHook, JvMenus // ahuser
 - Moved JvFormPlacement related code from JvJVCLUtils to JvFormPlacement // ahuser
@@ -11,6 +13,7 @@ Changelog for JVCL 3.0
 - Added JvDesktopAlert component + demo // peter3
 - Added TJvComputerInfoEx to JvSystem and also removed TJvDeviceChanged, TJvSystemColors, TJvKeyboardStates, TJvDirectories since they are incorporated in JvComputerInfoEx // peter3
 - Added JvDBFindEdit to JvDB and JvDotNetDBFindEdit to JvDotNetCtrls donated from yul // peter3
+- Added JvColorTrackBar from Stefano Pessina to JvMM // peter3
 - Updated JvMemoryDataset with new properties and events from Claudio F. Zwitkovits // peter3
 2004-03-20
 - JvFtpGrabber moved to Archive, replaced by TJvFtpUrlGrabber  // obones
