@@ -318,7 +318,7 @@ begin
             BitBlt(Handle, R.Left + 3 + ClipW, (ClientHeight - FCheckSize) div 2 + 1 +
               ClipW, FCheckSize - 2 - ClipW * 2, FCheckSize - 2 - ClipW * 2,
               FBgGradient.Canvas.Handle, 0, 0, SRCCOPY);
-            {$ENDIF VCL}
+            {$IFDEF VisualCLX}
             FBgGradient.Canvas.Stop;
             {$ENDIF VisualCLX}
           end

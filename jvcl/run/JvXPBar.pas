@@ -611,7 +611,6 @@ begin
   Result := (Client.AutoCheck = (Action as TCustomAction).AutoCheck);
 end;
 {$ENDIF COMPILER6_UP}
-{$ENDIF}
 
 function TJvXPBarItemActionLink.IsCaptionLinked: Boolean;
 begin
