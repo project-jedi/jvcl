@@ -32,7 +32,7 @@ Known Issues:
         EditMask property enables operation as masked edit, which doesn't
         work properly in a Control Grid, yet, if you set the EditMask.
         You can use it as a generic editor control inside a control grid.
-          -- Warren Postma (warrenpstma@hotmail.com) 
+          -- Warren Postma (warrenpstma@hotmail.com)
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
@@ -42,7 +42,7 @@ unit JvDBControls;
 interface
 
 uses
-  Windows, 
+  Windows,
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
@@ -90,7 +90,6 @@ type
     FCanvas: TControlCanvas;
     FAlignment: TAlignment;
     FFocused: Boolean;
-    FBeepOnError: Boolean; { allows us to get rid of the standard beep on error yuckiness if we want}
 
     {new: Specific to this component}
       // value of text in the edit control at the time
@@ -203,7 +202,7 @@ type
      property OnAcceptNewValue: TJvDbAcceptValueEvent read FOnAcceptNewValue write FOnAcceptNewValue;
 
     {Common JEDI Niceties}
-    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
+    property BeepOnError;
   end;
 
   TJvDBGrid = class(TDBGrid)
@@ -373,7 +372,6 @@ type
     FDataLink: TFieldDataLink;
     FCanvas: TControlCanvas;
     FFocused: Boolean;
-    FBeepOnError: Boolean;
     procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
     function GetCanvas: TCanvas;
@@ -415,7 +413,7 @@ type
     property Align;
     property Action;
     property AutoSelect;
-    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
+    property BeepOnError;
     property BorderStyle;
     property ButtonHint;
     property CharCase;
@@ -481,7 +479,6 @@ type
     FInReset: Boolean; // Polaris
     FDataLink: TFieldDataLink;
     FCanvas: TControlCanvas;
-    FBeepOnError: Boolean;
     procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
     function GetCanvas: TCanvas;
@@ -532,7 +529,7 @@ type
     property Align;
     // Polaris
     property Action;
-    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
+    property BeepOnError;
     property CalendarHints;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
@@ -935,7 +932,6 @@ begin
   FDataLink.OnUpdateData := UpdateData;
   FDataLink.OnActiveChange := ActiveChange;
   // new stuff that isn't in the VCL version.
-  FBeepOnError := True;
   inherited ReadOnly := True;
 end;
 
@@ -981,8 +977,7 @@ begin
   if (Key in [#32..#255]) and (FDataLink.Field <> nil) and
     not FDataLink.Field.IsValidChar(Key) then
   begin
-    if BeepOnError then
-      Beep;
+    DoBeepOnError;
     Key := #0;
   end;
   case Key of
@@ -2834,7 +2829,6 @@ begin
   FDataLink.OnUpdateData := UpdateData;
   inherited SetReadOnly(True);
   AlwaysEnable := True;
-  FBeepOnError := True;
 end;
 
 destructor TJvDBComboEdit.Destroy;
@@ -2875,8 +2869,7 @@ begin
   if (Key in [#32..#255]) and (FDataLink.Field <> nil) and
     not FDataLink.Field.IsValidChar(Key) then
   begin
-    if BeepOnError then
-      Beep;
+    DoBeepOnError;
     Key := #0;
   end;
   case Key of
@@ -3110,7 +3103,6 @@ begin
   AlwaysEnable := True;
   inherited SetReadOnly(True);
   UpdateMask;
-  FBeepOnError := True;
 end;
 
 destructor TJvDBDateEdit.Destroy;
@@ -3154,8 +3146,7 @@ begin
   if (Key in [#32..#255]) and (FDataLink.Field <> nil) and
     not (Key in DigitChars) and (Key <> DateSeparator) then
   begin
-    if BeepOnError then
-      Beep;
+    DoBeepOnError;
     Key := #0;
   end;
   case Key of
