@@ -201,7 +201,6 @@ type
     FOnCustomDraw: TTVCustomDrawEvent;
     FOnCustomDrawItem: TTVCustomDrawItemEvent;
     FOnGetImageIndex: TTVExpandedEvent;
-    FExpanded: Boolean;  { added by zelen }
   protected
     procedure FontChanged; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
@@ -288,7 +287,6 @@ type
     property OnEndDock;
     property OnStartDock;
     property AutoExpand: Boolean read FAutoExpand write FAutoExpand;
-    property Expanded: Boolean read FExpanded write FExpanded default false;     { added by zelen }
     property ChangeDelay: Integer read FChangeDelay write FChangeDelay;
     property HotTrack: Boolean read FHotTrack write FHotTrack;
     property RowSelect: Boolean read FRowSelect write FRowSelect;
@@ -1087,11 +1085,6 @@ begin
     FDataList.FTree.FullCollapse;
     FDataList.FTree.DataChanged; }
     FDataList.SetValue(FListLink.DataSet.Lookup(FKeyFieldName, FKeyValue, FMasterField));
-
-    { added by zelen }
-    if FExpanded then
-      FDataList.FTree.FullExpand;
-    { added by zelen }
 
    // FDataList.KeyValue := KeyValue;
 
