@@ -50,12 +50,13 @@ uses
   JvQTypes, JvQDsgnConsts, JvQJCLUtils, JVQCLVer, JvQComponent,
   JvQActions, JvQActnResForm, JvQJVCLAboutForm, JvQDsgnEditors, JvQIDEZoom,
   JvQJVCLAboutEditor, JvQBaseDlg, JvQBaseDlgEditor, JvQColorEditor, JvQPaintBoxEditor,
-  JvQAppIniStorage, JvQBackgrounds,
+  JvQAppIniStorage,
   {$IFDEF MSWINDOWS}
-  JvQAppRegistryStorage, JvQContextProvider,
-  JvQColorProviderEditors, JvQDataProviderEditors, JvQDataProvider,
-  JvQDataProviderIntf, JvQBackgroundEditors,
+  JvQAppRegistryStorage, 
   {$ENDIF MSWINDOWS}
+  JvQContextProvider,
+  JvQColorProviderEditors, JvQDataProviderEditors, JvQDataProvider,
+  JvQDataProviderIntf, JvQColorProvider, 
   
   JvQAppStorage, JvQAppStorageSelectList;
 
@@ -75,9 +76,11 @@ begin
   
 
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent]);
-  {$IFDEF MSWINDOWS}
   RegisterComponents(RsPaletteNonVisual, [TJvContextProvider,
-    TJvColorProvider, TJvColorMappingProvider, TJvBackground]);
+    TJvColorProvider, TJvColorMappingProvider
+    
+    ]);
+  {$IFDEF MSWINDOWS}
   RegisterComponents(RsPalettePersistence, [TJvAppRegistryStorage]);
   {$ENDIF MSWINDOWS}
   RegisterComponents(RsPalettePersistence, [TJvAppStorage,
@@ -137,10 +140,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TJvColorProviderAddColorStyle), nil, '', TJvColorProviderAddColorStyleEditor);
   RegisterComponentEditor(TJvCustomDataProvider, TJvProviderEditor);
   RegisterComponentEditor(TJvColorProvider, TJvColorProviderEditor);
-
-  RegisterPropertyEditor(TypeInfo(TJvBackgroundClients), TJvBackground,
-    'Clients', TJvClientsProperty);
-
+  
   RegisterActions(RsJVCLActionsCategory, [{$IFDEF MSWINDOWS} TJvSendMailAction, {$ENDIF} TJvWebAction], TJvStandardActions);
   RegisterZoom;
 end;
