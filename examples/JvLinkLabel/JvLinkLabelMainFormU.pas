@@ -48,7 +48,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure lblCloseClick(Sender: TObject);
-    procedure LinkLabelLinkClick(Sender: TObject; LinkNumber: Integer; LinkText: String);
+    procedure LinkLabelLinkClick(Sender: TObject; LinkNumber: Integer; LinkText, LinkParam: string);
   private
     FChooser: TJvCategoryChooser;
     procedure ChooserCatChange(Sender: TObject);
@@ -137,8 +137,8 @@ begin
   Close;
 end;
 
-procedure TJvLinkLabelMainForm.LinkLabelLinkClick(Sender: TObject; LinkNumber: Integer;
-  LinkText: String);
+procedure TJvLinkLabelMainForm.LinkLabelLinkClick(Sender: TObject;
+  LinkNumber: Integer; LinkText, LinkParam: string);
 var
   frmPlay: TfrmPlay;
 
