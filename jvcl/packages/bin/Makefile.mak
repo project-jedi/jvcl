@@ -231,6 +231,7 @@ Installer_nomo:
 	@echo -E"$(JVCLROOT)\bin">>JVCLInstall.cfg
 	@echo -N"$(JVCLROOT)\dcu">>JVCLInstall.cfg
 	@echo -DNO_JCL>>JVCLInstall.cfg
+	@echo -DUSE_DXGETTEXT>>JVCLInstall.cfg
 	#
 	#
 	$(DCC) -B $(DXGETTEXT) -DNO_JCL JVCLInstall.dpr

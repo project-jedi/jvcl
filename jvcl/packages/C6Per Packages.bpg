@@ -9,7 +9,7 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = JvCoreC6R.bpl JvCoreC6D.bpl JvSystemC6R.bpl JvSystemC6D.bpl \
+PROJECTS = Jv3rdC6R.bpl JvCoreC6R.bpl JvCoreC6D.bpl JvSystemC6R.bpl JvSystemC6D.bpl \
   JvStdCtrlsC6R.bpl JvStdCtrlsC6D.bpl JvCtrlsC6R.bpl JvCtrlsC6D.bpl JvCmpC6R.bpl \
   JvCmpC6D.bpl JvCustomC6R.bpl JvCustomC6D.bpl JvDlgsC6R.bpl JvDlgsC6D.bpl \
   JvCryptC6R.bpl JvCryptC6D.bpl JvMMC6R.bpl JvMMC6D.bpl JvNetC6R.bpl JvNetC6D.bpl \
@@ -26,6 +26,10 @@ PROJECTS = JvCoreC6R.bpl JvCoreC6D.bpl JvSystemC6R.bpl JvSystemC6D.bpl \
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
+
+Jv3rdC6R.bpl: c6\Jv3rdC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
 JvCoreC6R.bpl: c6\JvCoreC6R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**

@@ -8,7 +8,7 @@ endif
 MAKE = make -$(MAKEFLAGS) -f$**
 DCC =dcc $<
 #------------------------------------------------------------------------------
-PROJECTS = bplJvQCoreK3R.so bplJvQCoreK3D.so bplJvQSystemK3R.so \
+PROJECTS = bplJvQ3rdK3R.so bplJvQCoreK3R.so bplJvQCoreK3D.so bplJvQSystemK3R.so \
   bplJvQSystemK3D.so bplJvQStdCtrlsK3R.so bplJvQStdCtrlsK3D.so bplJvQCtrlsK3R.so \
   bplJvQCtrlsK3D.so bplJvQCmpK3R.so bplJvQCmpK3D.so bplJvQCustomK3R.so \
   bplJvQCustomK3D.so bplJvQDlgsK3R.so bplJvQDlgsK3D.so bplJvQCryptK3R.so \
@@ -22,6 +22,9 @@ PROJECTS = bplJvQCoreK3R.so bplJvQCoreK3D.so bplJvQSystemK3R.so \
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
+
+bplJvQ3rdK3R.so: k3/JvQ3rdK3R.dpk
+	$(DCC)
 
 bplJvQCoreK3R.so: k3/JvQCoreK3R.dpk
 	$(DCC)
