@@ -352,7 +352,7 @@ begin
     // condition is by looking for it in the DefinesList. If it
     // is there, the line is left untouched. If not, the line
     // is emptied, thus enforcing the absence of the condition 
-    else if (TargetList[GetNonPersoTarget(target)].Env = 'c') then
+    else if (SameText(TargetList[GetNonPersoTarget(target)].Env, 'C')) then
     begin
       if DefinesList.IndexOf(Condition) > -1 then
         Result := line

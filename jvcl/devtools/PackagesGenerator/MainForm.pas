@@ -1,7 +1,7 @@
 {$I jvcl.inc}
 unit MainForm;
 
-interface
+interface    
 
 uses
   Windows, Messages, SysUtils, {$IFDEF COMPILER6_UP}Variants, {$ENDIF}Classes, Graphics, Controls, Forms,
