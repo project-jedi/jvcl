@@ -34,13 +34,15 @@ uses
   Forms, Dialogs, SyncObjs, Contnrs, MTConst;
 
 type
-  TMTSemaphore = class (TSynchroObject)
+  TMTSynchroObject = class (TSynchroObject)
   private
     FHandle: THandle;
     FLastError: Integer;
     FName: string;
+  protected
+    function CreateHandle: THandle; virtual; abstract;
   public
-    constructor Create(InitialCount, MaximumCount: Integer; Name: string = '');
+    constructor Create(Name: string = '');
     destructor Destroy; override;
     procedure Acquire; override;
     procedure Release; override;
@@ -51,14 +53,35 @@ type
     property LastError: Integer read FLastError;
     property Name: string read FName;
   end;
-  
+
+  TMTSimpleEvent = class(TMTSynchroObject)
+  protected
+    function CreateHandle: THandle; override;
+  public
+    procedure Release; override;
+
+    procedure SetEvent;
+    procedure ResetEvent;
+  end;
+
+  TMTSemaphore = class(TMTSynchroObject)
+  private
+    FInitialCount: Integer;
+    FMaximumCount: Integer;
+  protected
+    function CreateHandle: THandle; override;
+  public
+    constructor Create(InitialCount, MaximumCount: Integer; Name: string = '');
+    procedure Release; override;
+  end;
+
   TMTMutex = class (TMTSemaphore)
   public
     constructor Create(Name: string = '');
     procedure Enter;
     procedure Leave;
   end;
-  
+
   TMTCriticalSection = class (TMTMutex)
   private
     FOwnerThread: TObject;
@@ -76,23 +99,23 @@ uses
 
 { TMTSemaphore }
 
-constructor TMTSemaphore.Create(InitialCount, MaximumCount: Integer; Name: 
-  string = '');
+constructor TMTSynchroObject.Create(Name: string = '');
 begin
   if Name = '' then
     FName := ClassName
   else
     FName := Name;
-  FHandle := CreateSemaphore(nil, InitialCount, MaximumCount, '');
+  FHandle := CreateHandle;
+//  FHandle := CreateSemaphore(nil, InitialCount, MaximumCount, '');
 end;
 
-destructor TMTSemaphore.Destroy;
+destructor TMTSynchroObject.Destroy;
 begin
   CloseHandle(FHandle);
   inherited Destroy;
 end;
 
-procedure TMTSemaphore.Acquire;
+procedure TMTSynchroObject.Acquire;
 var
   OldName: string;
 begin
@@ -114,22 +137,22 @@ begin
   end;
 end;
 
-procedure TMTSemaphore.Release;
+procedure TMTSynchroObject.Release;
 begin
-  ReleaseSemaphore(FHandle, 1, nil);
+//  ReleaseSemaphore(FHandle, 1, nil);
 end;
 
-procedure TMTSemaphore.Signal;
+procedure TMTSynchroObject.Signal;
 begin
   Release;
 end;
 
-procedure TMTSemaphore.Wait;
+procedure TMTSynchroObject.Wait;
 begin
   Acquire;
 end;
 
-function TMTSemaphore.WaitFor(Timeout: LongWord): Boolean;
+function TMTSynchroObject.WaitFor(Timeout: LongWord): Boolean;
 var
   HandleArray: array[0..1] of THandle;
   
@@ -192,7 +215,27 @@ begin
       end;
     end;
   end;
-  
+
+end;
+
+{ TMTSemaphore }
+
+constructor TMTSemaphore.Create(InitialCount, MaximumCount: Integer;
+  Name: string);
+begin
+  FInitialCount := InitialCount;
+  FMaximumCount := MaximumCount;
+  inherited Create(Name);
+end;
+
+function TMTSemaphore.CreateHandle: THandle;
+begin
+  Result := CreateSemaphore(nil, FInitialCount, FMaximumCount, '');
+end;
+
+procedure TMTSemaphore.Release;
+begin
+  ReleaseSemaphore(FHandle, 1, nil);
 end;
 
 { TMTMutex }
@@ -241,5 +284,27 @@ begin
   end;
 end;
 
+
+{ TMTSimpleEvent }
+
+function TMTSimpleEvent.CreateHandle: THandle;
+begin
+  Result := CreateEvent(nil, True, False, '');
+end;
+
+procedure TMTSimpleEvent.Release;
+begin
+  SetEvent;
+end;
+
+procedure TMTSimpleEvent.ResetEvent;
+begin
+  Windows.ResetEvent(FHandle);
+end;
+
+procedure TMTSimpleEvent.SetEvent;
+begin
+  Windows.SetEvent(FHandle);
+end;
 
 end.
