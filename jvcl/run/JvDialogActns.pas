@@ -234,12 +234,7 @@ type
     property Dialog: TJvPageSetupTitledDialog read GetDialog;
   end;
 
-procedure Register;
-
 implementation
-
-uses
-  JvActnResForm;
 
 //=== TJvCommonDialogAction ==================================================
 
@@ -493,17 +488,6 @@ end;
 function TJvPageSetupTitledAction.GetDialogClass: TJvCommonDialogClass;
 begin
   Result := TJvPageSetupTitledDialog;
-end;
-
-procedure Register;
-begin
-  RegisterActions('JVCL',
-    [TJvBrowseForFolderAction, TJvSelectDirectoryAction, TJvConnectNetworkAction,
-     TJvFloppyFormatAction, TJvOrganizeFavoritesAction, TJvControlPanelAction,
-     TJvOpenFileAction, TJvSaveFileAction, TJvPageSetupAction,
-     TJvPageSetupTitledAction],
-    // TJvStandardActions is a datamodule with default settings for our actions
-    TJvStandardActions);
 end;
 
 end.
