@@ -61,7 +61,9 @@ cd ..\packages
 : ensure we have pg.exe
 if EXIST ..\devtools\bin\pg.exe goto PgExists
 cd ..\devtools\PackagesGenerator
-dcc32.exe -e..\bin -I"..\..\Common;%JCLDIR%\source" -n"..\Dcu" -U"..\..\Run;..\..\Common;%JCLDIR%\source\common;%JCLDIR%\source\windows;%JCLDIR%\source\vcl;%JCLDIR%\source\visclx;..\Dcu" -q -w -h -m pg.dpr
+SET C5PFLAGS=
+if %VERSIOn%=5 then SET C5PFLAGS=-LUvcl50
+dcc32.exe -e..\bin -I"..\..\Common;%JCLDIR%\source" %C5PFLAGS% -n"..\Dcu" -U"..\..\Run;..\..\Common;%JCLDIR%\source\common;%JCLDIR%\source\windows;%JCLDIR%\source\vcl;%JCLDIR%\source\visclx;..\Dcu" -q -w -h -m pg.dpr
 echo.
 cd ..\..\packages
 
