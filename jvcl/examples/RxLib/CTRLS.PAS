@@ -4,11 +4,11 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, JvPlacemnt, StdCtrls, JvxCtrls, TabNotBk, JvxSlider, ExtCtrls,
-  JvSwitch, Mask, JvToolEdit, Spin, JvCurrEdit, FileCtrl, JvSplit, Grids,
-  Outline, DirOutln, JvDice, JvxClock, JvxAnimate, JvSpin, JvLabel,
+  Forms, Dialogs, StdCtrls, TabNotBk, JvxSlider, ExtCtrls,
+  JvSwitch, Mask, JvToolEdit, Spin, FileCtrl, JvSplit, Grids,
+  Outline, DirOutln, JvDice, JvxClock, JvSpin, JvLabel,
   ComCtrls, JvComponent, JvColorCombo, JvCombobox, JvEdit, JvValidateEdit,
-  JvMaskEdit;
+  JvMaskEdit, JvFormPlacement, JvTextListBox, JvAnimatedImage, JvBaseEdits;
 
 type
   TControlsForm = class(TForm)
@@ -194,7 +194,8 @@ implementation
 
 {$R *.DFM}
 
-uses JvAniFile, JvPickDate, JvDateUtil;
+uses
+  JvAniFile, JvJVCLUtils, JvJCLUtils, JvPickDate;
 
 procedure TControlsForm.FormCreate(Sender: TObject);
 begin
