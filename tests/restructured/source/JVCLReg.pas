@@ -37,9 +37,6 @@ procedure Register;
 implementation
 
 {$R JVCLReg.dcr}
-{.$R JvP3Reg.dcr}
-{.$R jvWinDialogs.dcr}
-
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, Dlgs,
@@ -146,7 +143,7 @@ uses
 
 {$IFNDEF D6PersonalEdition}
   //DB-Aware components
-  JvDBDateTimePicker,
+  JvDBDateTimePicker,  // TODO: JvDBStatusBar, 
 {$ENDIF}
 
   //Editors
@@ -167,7 +164,7 @@ uses
   JvChangeNotify, JvEnterTab, JvFindFiles,
   JvFileInfo, JvItemsPanel, JvDsgnEditors, JvCntScr, JvCmdEdit,
   JvTMTL, JvCalendar, JvUCB, JvChNtfyProperty, JvOLBar, JvOLBarEditor, JvSHFmt,
-  JvInspector;
+  JvInspector, JvHidControllerClass;
 
 {******************************************************************************}
 
@@ -356,12 +353,14 @@ begin
       TJvDirectories,
       TJvSystemColors,
       TJvClipboardViewer,
-      TJvSystemPopup
+      TJvSystemPopup,
+
+    TJvHidDeviceController
       ]);
 
+{$IFNDEF D6PersonalEdition}
   // Jv Data Controls
   // ================
-{$IFNDEF D6PersonalEdition}
   RegisterComponents('Jv Data Controls', [
     TJvDBDateTimePicker,
       TJvDBProgressBar
