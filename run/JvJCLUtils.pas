@@ -7385,7 +7385,9 @@ function AllocMemo(Size: Longint): Pointer;
 begin
   if Size > 0 then
 {$IFDEF MSWINDOWS}
+  {$WARNINGS OFF}
     Result := GlobalAllocPtr(HeapAllocFlags or GMEM_ZEROINIT, Size)
+  {$WARNINGS ON}
 {$ENDIF}
 {$IFDEF LINUX}
     Result := Libc.malloc(Size)
@@ -7397,8 +7399,10 @@ end;
 function ReallocMemo(fpBlock: Pointer; Size: Longint): Pointer;
 begin
 {$IFDEF MSWINDOWS}
+  {$WARNINGS OFF}
   Result := GlobalReallocPtr(fpBlock, Size,
     HeapAllocFlags or GMEM_ZEROINIT);
+  {$WARNINGS ON}
 {$ENDIF}
 {$IFDEF LINUX}
   Result := Libc.realloc(fpBlock, Size);
