@@ -791,6 +791,7 @@ type
   TJvAppStoragePropertyBaseEngineClass = class of TJvAppStoragePropertyBaseEngine;
 
 procedure RegisterAppStoragePropertyEngine(AEngineClass: TJvAppStoragePropertyBaseEngineClass);
+procedure UnregisterAppStoragePropertyEngine(AEngineClass: TJvAppStoragePropertyBaseEngineClass);
 
 // (marcelb) moved back; the constants are useful to the outside world after a call to GetStoredValues
 // (rom) give it better names and delete these comments :-)
@@ -820,6 +821,7 @@ type
   public
     destructor Destroy; override;
     procedure RegisterEngine(AEngineClass: TJvAppStoragePropertyBaseEngineClass);
+    procedure UnregisterEngine(AEngineClass: TJvAppStoragePropertyBaseEngineClass);
     function GetEngine(AObject: TObject; AProperty: TObject): TJvAppStoragePropertyBaseEngine;
     function ReadProperty(AStorage: TJvCustomAppStorage; const APath: string;
       AObject: TObject; AProperty: TObject; const Recursive, ClearFirst: Boolean): Boolean;
@@ -3006,6 +3008,25 @@ begin
   Add(AEngineClass.Create);
 end;
 
+procedure TJvAppStoragePropertyEngineList.UnregisterEngine(AEngineClass: TJvAppStoragePropertyBaseEngineClass);
+var
+  I: Integer;
+  Found: Boolean;
+begin
+  Found := False;
+  I := 0;
+  while (I < Count) and not Found do
+  begin
+    if TObject(Items[I]).ClassType = AEngineClass then
+    begin
+      TJvAppStoragePropertyBaseEngine(Items[I]).Free;
+      Delete(I);
+      Found := True;
+    end;
+    Inc(I);
+  end;
+end;
+
 function TJvAppStoragePropertyEngineList.GetEngine(AObject: TObject; AProperty: TObject): TJvAppStoragePropertyBaseEngine;
 var
   Ind: Integer;
@@ -3047,6 +3068,12 @@ procedure RegisterAppStoragePropertyEngine(AEngineClass: TJvAppStoragePropertyBa
 begin
   if Assigned(RegisteredAppStoragePropertyEngineList) then
     RegisteredAppStoragePropertyEngineList.RegisterEngine(AEngineClass);
+end;
+
+procedure UnregisterAppStoragePropertyEngine(AEngineClass: TJvAppStoragePropertyBaseEngineClass);
+begin
+  if Assigned(RegisteredAppStoragePropertyEngineList) then
+    RegisteredAppStoragePropertyEngineList.UnregisterEngine(AEngineClass);
 end;
 
 procedure CreateAppStoragePropertyEngineList;
