@@ -863,6 +863,7 @@ type
     constructor Create(AOwner: TComponent); override;
     property EditMask;
   published
+    property Date;
     property DateAutoBetween; // Polaris
     property MinDate; // Polaris
     property MaxDate; // Polaris
