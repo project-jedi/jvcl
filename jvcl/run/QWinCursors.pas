@@ -27,10 +27,14 @@
 { OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.         }
 {-------------------------------------------------------------------------------------------------}
 
+{$I jvcl.inc}
+
 unit QWinCursors;
+
 {$R-}
 
 interface
+
 uses
   Classes, SysUtils, Types,
   Qt, QGraphics, QTypes;
@@ -132,13 +136,11 @@ type
      IconCursorId: Word;
   end;
 
-type
   TCustomCursor = record
       Bits: array of Byte;
       Mask: array of Byte;
     end;
 
-type
   tagLocalHeader = packed record
      XHotSpot: Word;
      YHotSpot: Word;
@@ -150,7 +152,6 @@ type
 constructor TWinCursor.Create;
 begin
   inherited Create;
-
   FHandle := nil;
   FWidth := 0;
   FHeight := 0;
@@ -162,7 +163,6 @@ end;
 constructor TWinCursor.Create(AHandle: QCursorH);
 begin
   inherited Create;
-
   FHandle := AHandle;
   FOwnsHandle := False;
 end;
@@ -171,17 +171,16 @@ destructor TWinCursor.Destroy;
 begin
   if FOwnsHandle then
     FreeCursor;
-
   inherited Destroy;
 end;
 
 procedure TWinCursor.LoadFromResourceName(Instance: Cardinal; ResourceName: String);
 var
   ResourceStream: TResourceStream;
-  CURSORDIR: TCURSORDIR;
+  CursorDir: TCURSORDIR;
   ResDir: TResCursorDir;
   BmpInfo: TBITMAPINFOHEADER;
-  localHeader: tagLocalHeader;
+  LocalHeader: tagLocalHeader;
 begin
   ResourceStream := TResourceStream.Create(Instance, ResourceName, PChar(12));
 
@@ -224,7 +223,7 @@ end;
 
 procedure TWinCursor.LoadFromStream(Stream: TStream);
 var
-  CURSORDIR: TCURSORDIR;
+  CursorDir: TCURSORDIR;
   Entry: TCURSORDIRENTRY;
   BitmapInfo: TBITMAPINFOHEADER;
 begin

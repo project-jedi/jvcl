@@ -142,7 +142,7 @@ type
     {$IFDEF VCL}
     property OnSetFocus: TJvFocusChangeEvent read FOnSetFocus write FOnSetFocus;
     property OnKillFocus: TJvFocusChangeEvent read FOnKillFocus write FOnKillFocus;
-    {$ENDIF}
+    {$ENDIF VCL}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -218,13 +218,6 @@ type
 
 implementation
 
-procedure TJvCustomMaskEdit.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
 constructor TJvCustomMaskEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -233,7 +226,6 @@ begin
   FOver := False;
   FCaret := TJvCaret.Create(Self);
   FCaret.OnChanged := CaretChanged;
-  // ControlStyle := ControlStyle + [csAcceptsControls];
   FDisabledColor := clWindow;
   FDisabledTextColor := clGrayText;
   FClipboardCommands := [caCopy..caUndo];
@@ -249,9 +241,16 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvCustomMaskEdit.ParentColorChanged;
+begin
+  inherited ParentColorChanged;
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
+end;
+
 procedure TJvCustomMaskEdit.EnabledChanged;
 begin
-  inherited EnabledChanged; 
+  inherited EnabledChanged;
   Invalidate;
   if Assigned(FOnEnabledChanged) then
     FOnEnabledChanged(Self);
@@ -336,15 +335,11 @@ var
 begin
   if Assigned(Owner) then
     for I := 0 to Owner.ComponentCount - 1 do
-    begin
       if (Owner.Components[i] is TJvCustomMaskEdit) then
         with TJvCustomMaskEdit(Owner.Components[i]) do
-        begin
           if (Name <> Self.Name) and (GroupIndex <> -1) and
-          (GroupIndex = Self.GroupIndex) then
+            (GroupIndex = Self.GroupIndex) then
             Clear;
-        end;
-    end;
 end;
 
 procedure TJvCustomMaskEdit.SetDisabledColor(const Value: TColor);
@@ -369,47 +364,65 @@ end;
 
 {$IFDEF VCL}
 procedure TJvCustomMaskEdit.WMCopy(var Msg: TWMCopy);
-{$ELSE}
-procedure TJvCustomMaskEdit.CopyTopClipboard;
-{$ENDIF VCL}
 begin
   if caCopy in ClipboardCommands then
     inherited;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvCustomMaskEdit.CopyToClipboard;
+begin
+  if caCopy in ClipboardCommands then
+    inherited CopyToClipboard;
+end;
+{$ENDIF VisualCLX}
 
 {$IFDEF VCL}
 procedure TJvCustomMaskEdit.WMCut(var Msg: TWMCut);
-{$ELSE}
-procedure TJvCustomMaskEdit.CutToClipboard;
-{$ENDIF VCL}
 begin
   if caCut in ClipboardCommands then
     inherited;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvCustomMaskEdit.CutToClipboard;
+begin
+  if caCut in ClipboardCommands then
+    inherited CutToClipboard;
+end;
+{$ENDIF VisualCLX}
 
 {$IFDEF VCL}
 procedure TJvCustomMaskEdit.WMPaste(var Msg: TWMPaste);
-{$ELSE}
-procedure TJvCustomMaskEdit.PasteFromClipboard;
-{$ENDIF VCL}
 begin
   if caPaste in ClipboardCommands then
     inherited;
   UpdateEdit;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvCustomMaskEdit.PasteFromClipboard;
+begin
+  if caPaste in ClipboardCommands then
+    inherited PasteFromClipboard;
+  UpdateEdit;
+end;
+{$ENDIF VisualCLX}
 
 {$IFDEF VCL}
+
 procedure TJvCustomMaskEdit.WMUndo(var Msg: TWMUndo);
 begin
   if caUndo in ClipboardCommands then
     inherited;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VCL}
 procedure TJvCustomMaskEdit.WMPaint(var Msg: TWMPaint);
 const
-  AlignmentValues: array[False..True, TAlignment] of TAlignment =
+  AlignmentValues: array [False..True, TAlignment] of TAlignment =
     ((taLeftJustify, taRightJustify, taCenter),
      (taRightJustify, taLeftJustify, taCenter));
 var
@@ -430,7 +443,8 @@ begin
     Style := GetWindowLong(Handle, GWL_STYLE);
     if (Style and ES_RIGHT) <> 0 then
       AAlignment := AlignmentValues[UseRightToLeftAlignment, taRightJustify]
-    else if (Style and ES_CENTER) <> 0 then
+    else
+    if (Style and ES_CENTER) <> 0 then
       AAlignment := taCenter
     else
       AAlignment := AlignmentValues[UseRightToLeftAlignment, taLeftJustify];
@@ -443,13 +457,15 @@ begin
     if ButtonWidth < 0 then ButtonWidth := 0;}
 
     Canvas := nil;
-    if not PaintEdit(Self, Text, AAlignment, False, {ButtonWidth,} FDisabledTextColor,
-       Focused, Canvas, Msg) then
+    if not PaintEdit(Self, Text, AAlignment, False, {ButtonWidth,}
+       FDisabledTextColor, Focused, Canvas, Msg) then
       inherited;
     Canvas.Free;
   end;
 end;
+
 {$ENDIF VCL}
+
 {$IFDEF VisualCLX}
 procedure TJvCustomMaskEdit.Paint;
 begin
@@ -457,13 +473,13 @@ begin
   begin
    // Paint
     if Enabled then
-      inherited
+      inherited Paint
     else
     begin
       ACanvas := nil;
-      if not PaintEdit(Self, Text, taLeftJustify, False, {0,} FDisabledTextColor,
-         Focused, ACanvas) then
-        inherited;
+      if not PaintEdit(Self, Text, taLeftJustify, False, {0,}
+         FDisabledTextColor, Focused, ACanvas) then
+        inherited Paint;
       ACanvas.Free;
     end;
   end;
@@ -493,39 +509,57 @@ end;
 
 {$IFDEF VCL}
 procedure TJvCustomMaskEdit.WMSetFocus(var Msg: TMessage);
-{$ELSE}
-procedure TJvCustomMaskEdit.DoEnter;
-{$ENDIF VCL}
 begin
   FEntering := True;
   try
     inherited;
     FCaret.CreateCaret;
-    {$IFDEF VCL}
     DoSetFocus(FindControl(Msg.WParam));
-    {$ENDIF VCL}
   finally
     FEntering := False;
   end;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvCustomMaskEdit.DoEnter;
+begin
+  FEntering := True;
+  try
+    inherited DoEnter;
+    FCaret.CreateCaret;
+  finally
+    FEntering := False;
+  end;
+end;
+{$ENDIF VisualCLX}
 
 {$IFDEF VCL}
 procedure TJvCustomMaskEdit.WMKillFocus(var Msg: TMessage);
-{$ELSE}
-procedure TJvCustomMaskEdit.DoExit;
-{$ENDIF VCL}
 begin
   FLeaving := True;
   try
     FCaret.DestroyCaret;
     inherited;
-    {$IFDEF VCL}
     DoKillFocus(FindControl(Msg.WParam));
-    {$ENDIF VCL}
   finally
     FLeaving := False;
   end;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvCustomMaskEdit.DoExit;
+begin
+  FLeaving := True;
+  try
+    FCaret.DestroyCaret;
+    inherited DoExit;
+  finally
+    FLeaving := False;
+  end;
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvCustomMaskEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
@@ -570,6 +604,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvCustomMaskEdit.DefaultHandler(var Msg);
 begin
   case TMessage(Msg).Msg of
@@ -593,6 +628,7 @@ begin
   if Assigned(FOnSetFocus) then
     FOnSetFocus(Self, APreviousControl);
 end;
+
 {$ENDIF VCL}
 
 procedure TJvCustomMaskEdit.Change;

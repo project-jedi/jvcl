@@ -92,8 +92,8 @@ type
     Result: Longint;
   end;
 
-
   {$IFDEF VisualCLX}
+
   //  HWND = QWidgetH;
   HCURSOR = QCursorH;
   TControlClass = class of TControl;
@@ -133,12 +133,15 @@ type
   end;
 
   TJvRGBTriple = TRGBQuad; // VisualCLX does not support pf24bit
+
   {$ELSE}
+
   TJvRGBTriple = packed record
     rgbBlue: Byte;
     rgbGreen: Byte;
     rgbRed: Byte;
   end;
+
   {$ENDIF VisualCLX}
 
   PJvRGBArray = ^TJvRGBArray;
@@ -146,17 +149,17 @@ type
   PRGBQuadArray = ^TRGBQuadArray;
   TRGBQuadArray = array [0..MaxPixelCount - 1] of TRGBQuad;
   PRGBPalette = ^TRGBPalette;
-  TRGBPalette = array[Byte] of TRGBQuad;
+  TRGBPalette = array [Byte] of TRGBQuad;
 
   TBalance = 0..100;
 
   TJvVolumeRec = record
-    case Byte of
-      0:
-        (LongVolume: Longint);
-      1:
-        (LeftVolume: Word;
-         RightVolume: Word);
+  case Byte of
+    0:
+      (LongVolume: Longint);
+    1:
+      (LeftVolume: Word;
+       RightVolume: Word);
   end;
 
   { (rom) unused
