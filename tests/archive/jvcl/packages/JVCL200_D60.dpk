@@ -22,8 +22,8 @@ Known Issues:
 
 package JVCL200_D60;
 
-{$R *.res}
-{$ALIGN 8}
+{$R *.RES}
+{$ALIGN ON}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -122,6 +122,8 @@ contains
   JvPluginWizard in '..\source\JvPluginWizard.pas',
   JvPluginParams in '..\source\JvPluginParams.pas' {frmPluginParams},
   JvActnRes in '..\source\JvActnRes.pas' {JvStandardActions: TDataModule},
-  JvDatePickerReg in '..\source\JvDatePickerReg.pas';
+  JvDatePickerReg in '..\source\JvDatePickerReg.pas',
+  JvSchedEvntReg in '..\source\JvSchedEvntReg.pas',
+  ScheduleEditor in '..\source\ScheduleEditor.pas' {frmScheduleEditor};
 
 end.

@@ -22,8 +22,8 @@ Known Issues:
 
 package JVCL200_D70;
 
-{$R *.res}
-{$ALIGN 8}
+{$R *.RES}
+{$ALIGN ON}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -67,7 +67,6 @@ contains
   JvRegAutoEditor in '..\Source\JvRegAutoEditor.pas' {RegEditor},
   JvHTHintEditor in '..\Source\JvHTHintEditor.pas' {HintEditor},
   JvIReg in '..\Source\JvIReg.pas',
-//-------------------------------------
   JVCLReg in '..\Source\JVCLReg.pas',
   JvAlarmsEditor in '..\Source\JvAlarmsEditor.pas',
   JvBaseDlgEditor in '..\Source\JvBaseDlgEditor.pas',
@@ -118,9 +117,9 @@ contains
   JvTimLstEd in '..\source\JvTimLstEd.pas' {JvTimerItemsEditor},
   jvBandObjectDLLWizard in '..\source\JvBandObjectDLLWizard.pas',
   jvBandObjectDLLWizardForm in '..\source\JvBandObjectDLLWizardForm.pas' {zWizardForm},
-
   JvPluginWizard in '..\source\JvPluginWizard.pas',
-  JvPluginParams in '..\source\JvPluginParams.pas' {frmPluginParams};
-
+  JvPluginParams in '..\source\JvPluginParams.pas' {frmPluginParams},
+  JvSchedEvntReg in '..\source\JvSchedEvntReg.pas',
+  ScheduleEditor in '..\source\ScheduleEditor.pas' {frmScheduleEditor};
 
 end.

@@ -97,6 +97,8 @@ contains
   JvPluginWizard in '..\source\JvPluginWizard.pas',
   JvPluginParams in '..\source\JvPluginParams.pas' {frmPluginParams},
   JvActions in '..\source\JvActions.pas',
-  JvActnRes in '..\source\JvActnRes.pas' {JvStandardActions: TDataModule};
+  JvActnRes in '..\source\JvActnRes.pas' {JvStandardActions: TDataModule},
+  JvSchedEvntReg in '..\source\JvSchedEvntReg.pas',
+  ScheduleEditor in '..\source\ScheduleEditor.pas' {frmScheduleEditor};
 
 end.

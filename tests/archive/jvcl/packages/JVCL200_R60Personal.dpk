@@ -1,7 +1,7 @@
 package JVCL200_R60Personal;
 
-{$R *.res}
-{$ALIGN 8}
+{$R *.RES}
+{$ALIGN ON}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -416,9 +416,9 @@ contains
   JvNTEventLog in '..\source\JvNTEventLog.pas',
   JvGroupHeader in '..\source\JvGroupHeader.pas',
   JvFooter in '..\source\JvFooter.pas',
-
   JvPlugin in '..\source\JvPlugin.pas',
   JvPluginMan in '..\source\JvPluginMan.pas',
-  JvPlugCommon in '..\source\JvPlugCommon.pas';  
+  JvPlugCommon in '..\source\JvPlugCommon.pas',
+  JvScheduledEvents in '..\source\JvScheduledEvents.pas';
 
 end.

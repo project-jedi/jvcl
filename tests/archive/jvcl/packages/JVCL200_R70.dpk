@@ -22,8 +22,8 @@ Known Issues:
 
 package JVCL200_R70;
 
-{$R *.res}
-{$ALIGN 8}
+{$R *.RES}
+{$ALIGN ON}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -58,7 +58,7 @@ requires
   vcldb,
   bdertl,
   QRPT,
-  INET,    
+  INET,
   djcl70;
 
 contains
@@ -422,8 +422,6 @@ contains
   JvBandUtils in '..\Source\JvBandUtils.pas',
   JvBandWindows in '..\Source\JvBandWindows.pas',
   JvBandObject in '..\Source\JvBandObject.pas',
-//#------RA Controls----------------------------
-
   JvComponentPanel in '..\Source\JvComponentPanel.pas',
   JvDlg in '..\Source\JvDlg.pas',
   JvDsgnIntf in '..\Source\JvDsgnIntf.pas',
@@ -440,23 +438,16 @@ contains
   JvStrUtil in '..\Source\JvStrUtil.pas',
   JvCtlConst in '..\Source\JvCtlConst.pas',
   JvHLParser in '..\Source\JvHLParser.pas',
-
-//------RA DB Controls----------------------------
-
   JvDBUtil in '..\Source\JvDBUtil.pas',
   JvDBLookupTreeView in '..\Source\JvDBLookupTreeView.pas',
   JvDBMove in '..\Source\JvDBMove.pas',
   JvDBTreeView in '..\Source\JvDBTreeView.pas',
   JvSQLS in '..\Source\JvSQLS.pas',
   JvDBConst in '..\Source\JvDBConst.pas',
-//------RA Interpreter----------------------------
-
   JvInterpreterParser in '..\Source\JvInterpreterParser.pas',
   JvInterpreterFm in '..\Source\JvInterpreterFm.pas',
   JvInterpreterConst in '..\Source\JvInterpreterConst.pas',
   JvInterpreter in '..\source\JvInterpreter.pas',
-
-//------RA Interpreter----------------------------
   JvInterpreter_Windows in '..\Source\JvInterpreter_Windows.pas',
   JvInterpreter_Classes in '..\Source\JvInterpreter_Classes.pas',
   JvInterpreter_ComCtrls in '..\Source\JvInterpreter_ComCtrls.pas',
@@ -486,9 +477,9 @@ contains
   JvNTEventLog in '..\source\JvNTEventLog.pas',
   JvGroupHeader in '..\source\JvGroupHeader.pas',
   JvFooter in '..\source\JvFooter.pas',
-
   JvPlugin in '..\source\JvPlugin.pas',
   JvPluginMan in '..\source\JvPluginMan.pas',
-  JvPlugCommon in '..\source\JvPlugCommon.pas';  
+  JvPlugCommon in '..\source\JvPlugCommon.pas',
+  JvScheduledEvents in '..\source\JvScheduledEvents.pas';
 
 end.

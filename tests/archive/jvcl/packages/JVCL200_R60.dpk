@@ -22,8 +22,8 @@ Known Issues:
 
 package JVCL200_R60;
 
-{$R *.res}
-{$ALIGN 8}
+{$R *.RES}
+{$ALIGN ON}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -483,6 +483,7 @@ contains
   JvDatePickerEdit in '..\source\JvDatePickerEdit.pas',
   JvCheckedMaskEdit in '..\source\JvCheckedMaskEdit.pas',
   JvDropDownForm in '..\source\JvDropDownForm.pas',
-  JvDBDatePickerEdit in '..\source\JvDBDatePickerEdit.pas';
+  JvDBDatePickerEdit in '..\source\JvDBDatePickerEdit.pas',
+  JvScheduledEvents in '..\source\JvScheduledEvents.pas';
 
 end.
