@@ -128,7 +128,7 @@ begin
   writeln('NOTE: if you compiled using Delphi 5 or earlier, CRLF->LF is NOT supported!');
 end;
 
-function ConvertFile(const Filename:string;ToWindows,CompareBeforeWrite:boolean):boolean;
+function ConvertFile(const Filename:string;ToWindows,CompareBeforeWrite,Quiet:boolean):boolean;
 {$IFDEF COMPILER6_UP}
 const
   cStyle:array[boolean] of TTextLineBreakStyle = (tlbsLF,tlbsCRLF);
@@ -151,12 +151,14 @@ begin
       tmp := AdjustLineBreaks(tmp{$IFDEF COMPILER6_UP},cStyle[ToWindows]{$ENDIF});
       if CompareBeforeWrite and (tmp = tmp2) then
       begin
-        writeln(ExtractFilename(Filename), ' not converted');
+        if not Quiet then
+          writeln(ExtractFilename(Filename), ' not converted');
         Exit;
       end;
       F.Size := 0;
       F.Write(tmp[1],Length(tmp));
-      writeln(ExtractFilename(Filename), ' converted');
+      if not Quiet then
+        writeln(ExtractFilename(Filename), ' converted');
     end;
   finally
     F.Free;
@@ -164,7 +166,7 @@ begin
   Result := true;
 end;
 
-function ConvertFiles(const FileMask:string;ToWindows,CompareBeforeWrite,Recurse:boolean):integer;
+function ConvertFiles(const FileMask:string;ToWindows,CompareBeforeWrite,Recurse,Quiet:boolean):integer;
 var
   SearchHandle:DWORD;
   FindData:TWin32FindData;
@@ -180,7 +182,7 @@ begin
       begin
         if (FindData.dwFileAttributes and FILE_ATTRIBUTE_READONLY = FILE_ATTRIBUTE_READONLY) then
           writeln('ERROR: ',FindData.cFileName,' is read-only!')
-        else if ConvertFile(APath + FindData.cFileName,ToWindows,CompareBeforeWrite) then
+        else if ConvertFile(APath + FindData.cFileName,ToWindows,CompareBeforeWrite,Quiet) then
             Inc(Result);
       end;
     until not FindNextFile(SearchHandle,FindData);
@@ -195,7 +197,7 @@ begin
     try
       repeat
         if (FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY = FILE_ATTRIBUTE_DIRECTORY) and (FindData.cFileName[0] <> '.') then
-          Inc(Result,ConvertFiles(IncludeTrailingPathdelimiter(APath + FindData.cFileName) + ExtractFilename(Filemask),ToWindows,CompareBeforeWrite,true));
+          Inc(Result,ConvertFiles(IncludeTrailingPathdelimiter(APath + FindData.cFileName) + ExtractFilename(Filemask),ToWindows,CompareBeforeWrite,true,Quiet));
       until not FindNextFile(SearchHandle,FindData);
     finally
       Windows.FindClose(SearchHandle);
@@ -207,7 +209,7 @@ procedure Run;
 const
   cCurrentOS:array[boolean] of PChar = ('(CRLF->LF)','(LF->CRLF)');
 var
-  ToWindows,CompareBeforeWrite,Recurse:boolean;
+  ToWindows,CompareBeforeWrite,Recurse,Quiet:boolean;
   i,Count:integer;
 begin
   // cmd line: -l *.pas *.dfm *.txt -c -w *.xfm
@@ -230,18 +232,21 @@ begin
   {$IFDEF LINUX}
   ToWindows := false;
   {$ENDIF}
+  Quiet := false;
   for i := 1 to ParamCount do
   begin
     if SameText(ParamStr(i),'/l') or SameText(ParamStr(i),'-l') then
     begin
       ToWindows := false;
-      writeln('Converting ', cCurrentOS[ToWindows],':');
+      if not Quiet then
+        writeln('Converting ', cCurrentOS[ToWindows],':');
       Continue;
     end
     else if SameText(ParamStr(i),'/w') or SameText(ParamStr(i),'-w') then
     begin
       ToWindows := true;
-      writeln('Converting ', cCurrentOS[ToWindows],':');
+      if not Quiet then
+        writeln('Converting ', cCurrentOS[ToWindows],':');
       Continue;
     end
     else if SameText(ParamStr(i),'/?') or SameText(ParamStr(i),'-?') or
@@ -265,8 +270,13 @@ begin
       Recurse := true;
       Continue;
     end
+    else if SameText(ParamStr(i),'/q') or SameText(ParamStr(i),'-q') then
+    begin
+      Quiet := true;
+      Continue;
+    end
     else
-      Inc(Count,ConvertFiles(ExpandUNCFilename(ParamStr(i)),ToWindows,CompareBeforeWrite,Recurse));
+      Inc(Count,ConvertFiles(ExpandUNCFilename(ParamStr(i)),ToWindows,CompareBeforeWrite,Recurse,Quiet));
   end;
   writeln('');
   writeln('Done: ', Count, ' files converted.');
