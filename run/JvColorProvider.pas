@@ -32,7 +32,13 @@ unit JvColorProvider;
 interface
 
 uses
-  Classes, Contnrs, Graphics, Windows,
+  Classes, Contnrs,
+  {$IFDEF VCL}
+  Windows, Graphics, Dialogs,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QWindows, QGraphics, QDialogs, 
+  {$ENDIF VisualCLX}
   JclBase,
   JvDataProvider, JvDataProviderIntf, JvTypes;
 
@@ -505,7 +511,7 @@ uses
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF COMPILER6_UP}
-  SysUtils, Dialogs,
+  SysUtils,
   JclRTTI, JclStrings,
   JvJVCLUtils, JvConsts, JvResources;
 
@@ -2931,12 +2937,18 @@ begin
   begin
     S := GetRenderText;
     R := CurrentRect;
+    {$IFDEF VisualCLX}
+    CurrentCanvas.Start;
+    {$ENDIF VisualCLX}
     OldBkMode := SetBkMode(CurrentCanvas.Handle, TRANSPARENT);
     try
       DrawText(CurrentCanvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_END_ELLIPSIS or
         DT_VCENTER or DT_NOPREFIX);
     finally
       SetBkMode(CurrentCanvas.Handle, OldBkMode);
+      {$IFDEF VisualCLX}
+      CurrentCanvas.Stop;
+      {$ENDIF VisualCLX}
     end;
   end;
 end;
@@ -2953,6 +2965,9 @@ var
 begin
   S := GetRenderText;
   OldFont := TFont.Create;
+  {$IFDEF VisualCLX}
+  CurrentCanvas.Start;
+  {$ENDIF VisualCLX}
   try
     OldFont.Assign(CurrentCanvas.Font);
     try
@@ -3039,6 +3054,9 @@ begin
       CurrentCanvas.Font.Assign(OldFont);
     end;
   finally
+    {$IFDEF VisualCLX}
+    CurrentCanvas.Stop;
+    {$ENDIF VisualCLX}
     OldFont.Free;
   end;
 end;
@@ -3082,8 +3100,14 @@ begin
       Inc(XAdd, CurrentSettings.ColorBoxSettings.Spacing);
     S := GetRenderText;
     R := Rect(0, 0, 0, 0);
+    {$IFDEF VisualCLX}
+    CurrentCanvas.Start;
+    {$ENDIF VisualCLX}
     DrawText(CurrentCanvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_NOPREFIX or
       DT_CALCRECT);
+    {$IFDEF VisualCLX}
+    CurrentCanvas.Stop;
+    {$ENDIF VisualCLX}
     Inc(R.Right, XAdd);
     if R.Right > Size.cx then
       Size.cx := R.Right;
@@ -3167,7 +3191,13 @@ begin
       ChHeight := CanvasMaxTextHeight(ACanvas);
       if ChHeight > Result.cy then
         Result.cy := ChHeight;
+      {$IFDEF VisualCLX}
+      ACanvas.Start;
+      {$ENDIF VisualCLX}
       GetTextMetrics(ACanvas.Handle, Metrics);
+      {$IFDEF VisualCLX}
+      ACanvas.Stop;
+      {$ENDIF VisualCLX}
       ChWdth := Metrics.tmAveCharWidth;
       if CurrentSettings.ColorBoxSettings.Active then
         Result.cx := Result.cx + CurrentSettings.ColorBoxSettings.Spacing + (10 * ChWdth)
@@ -3740,4 +3770,6 @@ initialization
 
 finalization
   MasterColorConsumer := nil;
+
 end.
+

@@ -30,8 +30,15 @@ unit JvDynControlEngineVCL;
 interface
 
 uses
-  Classes, Controls, StdCtrls, ExtCtrls, ComCtrls, Mask, Forms, Graphics,
-  Buttons, Dialogs, FileCtrl,
+  Classes,
+  {$IFDEF VCL}
+  Controls, StdCtrls, ExtCtrls, ComCtrls, Mask, Forms, Graphics,
+  Buttons, Dialogs, FileCtrl, ExtDlgs,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QStdCtrls, QExtCtrls, QComCtrls, QMask, QForms, QGraphics,
+  QButtons, QDialogs, QFileCtrls, QExtDlgs, Types,
+  {$ENDIF VisualCLX}
   JvDynControlEngine, JvDynControlEngineIntf;
 
 type
@@ -440,7 +447,7 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  SysUtils, ExtDlgs;
+  SysUtils;
 
 var
   IntDynControlEngineVCL: TJvDynControlEngine = nil;
@@ -1772,3 +1779,4 @@ finalization
   FreeAndNil(IntDynControlEngineVCL);
 
 end.
+

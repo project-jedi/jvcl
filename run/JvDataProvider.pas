@@ -34,7 +34,20 @@ unit JvDataProvider;
 interface
 
 uses
-  Windows, Classes, SysUtils, Graphics, ImgList, Contnrs,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Libc,
+  {$ENDIF LINUX}
+  {$IFDEF VCL}
+  Graphics, ImgList, Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QWindows, QGraphics, QImgList, QControls,
+  QStdCtrls, // type TOwnerDrawState
+  {$ENDIF VisualCLX}
+  Classes, SysUtils, Contnrs,
   JclBase,
   JvConsts, JvComponent, JvDataProviderIntf;
 
@@ -1184,7 +1197,16 @@ procedure DisabledTextRect(ACanvas: TCanvas; var ARect: TRect; Left, Top: Intege
 implementation
 
 uses
-  ActiveX, Consts, Controls, TypInfo,
+  {$IFDEF MSWINDOWS}
+  ActiveX,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF VCL}
+  Consts, 
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QConsts,
+  {$ENDIF VisualCLX}
+  TypInfo,
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF COMPILER6_UP}
@@ -1262,8 +1284,14 @@ end;
 procedure DisabledTextRect(ACanvas: TCanvas; var ARect: TRect; Left, Top: Integer; Text: string);
 begin
   ACanvas.Font.Color := clGrayText;
+  {$IFDEF VisualCLX}
+  ACanvas.Start;
+  {$ENDIF VisualCLX}
   DrawShadowText(ACanvas.Handle, PChar(Text), Length(Text), ARect, 0, 1, ColorToRGB(clBtnHighlight),
     spRightBottom);
+  {$IFDEF VisualCLX}
+  ACanvas.Stop;
+  {$ENDIF VisualCLX}
 end;
 
 procedure AddItemsToList(AItems: IJvDataItems; ItemList: TStrings; Level: Integer);
@@ -1574,8 +1602,11 @@ var
   iSaveDC: Integer;
   TxtW: Integer;
 begin
+  {$IFDEF VisualCLX}
+  Canvas.Start;
+  {$ENDIF VisualCLX}
   rgn := CreateRectRgn(0,0,0,0);
-  GetClipRgn(Canvas.handle, rgn);
+  GetClipRgn(Canvas.Handle, rgn);
   try
     IntersectClipRect(Canvas.Handle, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom);
     if HasImage then
@@ -1586,18 +1617,31 @@ begin
         case Alignment of
           taLeftJustify:
             begin
+              {$IFDEF VCL}
               Images.Draw(Canvas, Rect.Left, Rect.Top, ImageIndex, HasDisabledImage or not (pdsDisabled in State));
+              {$ELSE}
+              Images.Draw(Canvas, Rect.Left, Rect.Top, ImageIndex, itImage, HasDisabledImage or not (pdsDisabled in State));
+              {$ENDIF VCL}
               Rect.Left := Rect.Left + Images.Width + 2;
             end;
           taRightJustify:
             begin
+              {$IFDEF VCL}
               Images.Draw(Canvas, Rect.Right - Images.Width, Rect.Top, ImageIndex, HasDisabledImage or not (pdsDisabled in State));
+              {$ELSE}
+              Images.Draw(Canvas, Rect.Right - Images.Width, Rect.Top, ImageIndex, itImage, HasDisabledImage or not (pdsDisabled in State));
+              {$ENDIF VCL}
               Rect.Right := Rect.Right - Images.Width - 2;
             end;
           taCenter:
             begin
+              {$IFDEF VCL}
               Images.Draw(Canvas, Rect.Left + ((Rect.Right - Rect.Left - Images.Width) div 2),
                 Rect.Top, ImageIndex, HasDisabledImage or not (pdsDisabled in State));
+              {$ELSE}
+              Images.Draw(Canvas, Rect.Left + ((Rect.Right - Rect.Left - Images.Width) div 2),
+                Rect.Top, ImageIndex, itImage, HasDisabledImage or not (pdsDisabled in State));
+              {$ENDIF VCL}
               Rect.Top := Rect.Top + Images.Height + 2;
               TxtW := Canvas.TextWidth(Text);
               Rect.Left := Rect.Left + ((Rect.Right - Rect.Left - TxtW) div 2);
@@ -1617,6 +1661,9 @@ begin
   finally
     SelectClipRgn(Canvas.Handle, rgn);
     DeleteObject(rgn);
+    {$IFDEF VisualCLX}
+    Canvas.Stop;
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -5442,6 +5489,6 @@ initialization
     TJvDataContexts,
     // Context related
     TJvDataContext, TJvManagedDataContext, TJvFixedDataContext]);
-end.
 
+end.
 

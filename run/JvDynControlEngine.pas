@@ -29,7 +29,13 @@ unit JvDynControlEngine;
 interface
 
 uses
-  Classes, Controls, Forms, StdCtrls, Graphics, Buttons,
+  Classes,
+  {$IFDEF VCL}
+  Controls, Forms, StdCtrls, Graphics, Buttons,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Controls, Forms, StdCtrls, Graphics, Buttons, 
+  {$ENDIF VisualCLX}
   JvDynControlEngineIntf;
 
 type

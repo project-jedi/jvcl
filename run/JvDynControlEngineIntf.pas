@@ -30,8 +30,16 @@ unit JvDynControlEngineIntf;
 interface
 
 uses
-  Classes, Controls, Forms, StdCtrls, ExtCtrls, Graphics, Buttons,
-  FileCtrl, Dialogs;
+  Classes,
+  {$IFDEF VCL}
+  Controls, Forms, StdCtrls, ExtCtrls, Graphics, Buttons, FileCtrl,
+  Dialogs,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QForms, QStdCtrls, QExtCtrls, QGraphics, QButtons, QFileCtrl,
+  QDialogs,
+  {$ENDIF VisualCLX}
+  SysUtils;
 
 type
   IJvDynControl = interface
@@ -122,8 +130,8 @@ type
   IJvDynControlSpin = interface
     ['{7E178DEE-6AC2-47F3-B2F8-D5D68B4EC579}']
     procedure ControlSetIncrement(Value: Integer);
-    procedure ControlSetMinValue(Value: double);
-    procedure ControlSetMaxValue(Value: double);
+    procedure ControlSetMinValue(Value: Double);
+    procedure ControlSetMaxValue(Value: Double);
     procedure ControlSetUseForInteger(Value: Boolean);
   end;
 
