@@ -68,7 +68,7 @@ DBDTPDemo.exe JvDBGridExportDemo.exe JvDbMaskEditDemo.exe JvDialogsDemo.exe JvDo
 JvDotNetDemo.exe DSAExamples.exe MessageDlgEditor.exe JvEdits.exe JvErrorIndicatorDemo.exe FileDirDemo.exe \
 FindReplaceDemo.exe prjControls.exe BasicDemo.exe CollectionDemo.exe SimpleHIDWrite.exe \
 UsagesDemo.exe JvHtmlParserProj.exe JvID3v1Demo.exe JvID3v2Demo.exe Install2LabelDemo.exe \
-JvItemViewerDemo.exe ViewerDemo2.exe JvLinkLabelDemo.exe ListCombDemo.exe JvLogFileDemo.exe MailExample.exe \
+JvItemViewerDemo.exe JvLinkLabelDemo.exe ListCombDemo.exe JvLogFileDemo.exe MailExample.exe \
 JvMarkupLabelDemo.exe JvMenusExample.exe JvMouseGestureDemo.exe JvMruListDemo.exe JvMultiHTTPGrabberDemo.exe \
 EventViewer.exe JvObjPickerDemo.exe JvOLEDragCursorsDemo.exe OLBarDemo.exe pm.exe PageListDemo.exe \
 JvPanelDemo.exe JvParameterListDemo.exe JvPlayListProj.exe JvPrvwDemo.exe ProfilerDemo.exe \
@@ -412,11 +412,6 @@ Install2LabelDemo.exe: "JvInstallLabel\Install2LabelDemo.dpr"
   @cd ..
 
 JvItemViewerDemo.exe: "JvItemViewer\JvItemViewerDemo.dpr"
-  @cd JvItemViewer
-  $(DCC) $&.dpr
-  @cd ..
-
-ViewerDemo2.exe: "JvItemViewer\ViewerDemo2.dpr"
   @cd JvItemViewer
   $(DCC) $&.dpr
   @cd ..
