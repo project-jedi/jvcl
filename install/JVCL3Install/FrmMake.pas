@@ -362,14 +362,13 @@ begin
    // C++BUILDER .dcp creation
    // *****
     i := CaptureExecute(
-                'cmd',
-                '/C makejcldcp4bcb.bat ' +
+                'makejcldcp4bcb.bat',
                 IntToStr(FTarget.MajorVersion)+ ' '+
                 '"' + FTarget.RootDir + '" '+
                 '"' + FTarget.JCLDir + '"',
                 JVCLPackageDir,
                 CaptureLine);
-    Result := True;     // Note: CMD.EXE always returns 1...
+    Result := i=1;     // Note: the batch file returns 1...
 {    // create Delphi packages for BCB .dcp compilation
     Files := TStringList.Create; // files that were created
     try
