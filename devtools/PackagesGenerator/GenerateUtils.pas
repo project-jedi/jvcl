@@ -140,19 +140,39 @@ var
   Env : string;
   Ver : string;
   Typ : string;
+  formatGeneral : string;
+  formatNoLibsuffix : string;
 begin
+  // split the format string if there are two formats
+  // this is done because Delphi 5 and under don't support
+  // the LIBSUFFIX compilation directive. If such a target
+  // is built, the second format will be used instead of
+  // the first, thus allowing a different naming scheme
+  formatGeneral := Format;
+  if Pos(',', formatGeneral) > 0 then
+  begin
+    formatNoLibsuffix := Copy(formatGeneral, Pos(',', formatGeneral)+1, length(formatGeneral));
+    formatGeneral := Copy(formatGeneral, 1, Pos(',', formatGeneral)-1);
+  end
+  else
+    formatNoLibsuffix := formatGeneral;
+
   Suffix := TargetToSuffix(target);
   Env := Suffix[1];
   Ver := Suffix[2];
   Typ := Copy(Name, Length(Name), 1);
   Name := Copy(Name, Length(Prefix)+1, Pos('-', Name)-Length(Prefix)-1);
 
-  StrReplace(Format, '%p', Prefix, [rfReplaceAll]);
-  StrReplace(Format, '%n', Name, [rfReplaceAll]);
-  StrReplace(Format, '%e', Env, [rfReplaceAll]);
-  StrReplace(Format, '%v', Ver, [rfReplaceAll]);
-  StrReplace(Format, '%t', Typ, [rfReplaceAll]);
-  Result := Format;
+  if (StrLower(Env) = 'd') and (Ver < '6') then
+    Result := FormatNoLibSuffix
+  else
+    Result := FormatGeneral;
+
+  StrReplace(Result, '%p', Prefix, [rfReplaceAll]);
+  StrReplace(Result, '%n', Name, [rfReplaceAll]);
+  StrReplace(Result, '%e', Env, [rfReplaceAll]);
+  StrReplace(Result, '%v', Ver, [rfReplaceAll]);
+  StrReplace(Result, '%t', Typ, [rfReplaceAll]);
 end;
 
 function BuildPackageName(packageNode : TJvSimpleXmlElem; target : string; prefix : string; Format : string) : string;
