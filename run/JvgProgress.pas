@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, Messages, Classes, Controls, Graphics, SysUtils, ExtCtrls, Imglist,
-  JvgTypes, JvgCommClasses, JvgUtils, JvComponent;
+  JvgTypes, JvgCommClasses, JvgUtils, JvComponent, JvThemes;
 type
 
   TJvgProgress = class(TJvGraphicControl)
@@ -66,6 +66,7 @@ type
 
     procedure OnSmthChanged(Sender: TObject);
     procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
+    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   protected
     procedure Loaded; override;
     procedure Paint; override;
@@ -123,9 +124,6 @@ resourcestring
   sProgressd = 'progress...[%d%%]';
 
 implementation
-
-uses
-  JvConsts;
 
 //________________________________________________________ Methods _
 
@@ -201,6 +199,11 @@ begin
   Repaint;
 end;
 
+procedure TJvgProgress.CMDenySubClassing(var Msg: TMessage);
+begin
+  Msg.Result := 1;
+end;
+
 procedure TJvgProgress.Paint;
 const
   ShadowDepth = 2;
@@ -221,8 +224,16 @@ begin
   r := ClientRect;
   if (fpoTransparent in Options) and fNeedRebuildBackground then
   begin
+(*{$IFDEF JVCLThemesEnabled}
+    if ThemeServices.ThemesEnabled then
+      PerformEraseBackground(Self, BackImage.Canvas.Handle)
+    else
+{$ENDIF}
     GetParentImageRect(self, Bounds(Left, Top, Width, Height),
-      BackImage.Canvas.Handle);
+      BackImage.Canvas.Handle);*)
+
+    BackImage.Canvas.Brush.Color := Parent.Brush.Color;
+    BackImage.Canvas.FillRect(r);
     fNeedRebuildBackground := false;
   end;
   BitBlt(Image.Canvas.Handle, 0, 0, Width, Height, BackImage.Canvas.Handle, 0,
@@ -234,7 +245,6 @@ begin
     r := DrawBoxEx(Handle, r, [fsdLeft, fsdTop, fsdRight, fsdBottom],
       FBevelInner, FBevelOuter,
       FBevelBold, Colors.Background, fpoTransparent in Options);
-
     //    PercentWidth := trunc( Width * Percent / 100 );
     //    PercentWidth := Width;
     Brush.Color := Colors.Background;
@@ -331,8 +341,14 @@ begin
       nil, nil, Self.Font);
 
   end;
+  Image.Transparent := fpoTransparent in FOptions;
+  Image.TransparentColor := Parent.Brush.Color;
   Canvas.Draw(0, 0, Image);
-
+{$IFDEF JVCLThemesEnabled}
+    if BevelBold and ((BevelInner <> bvNone) or (BevelOuter <> bvNone)) and
+       ThemeServices.ThemesEnabled then
+      DrawThemedBorder(Self);
+{$ENDIF}
 end;
 
 procedure TJvgProgress.OnSmthChanged(Sender: TObject);
@@ -400,6 +416,16 @@ end;
 procedure TJvgProgress.SetOptions(Value: TglProgressOptions);
 begin
   FOptions := Value;
+  if fpoTransparent in FOptions then
+  begin
+    ControlStyle := ControlStyle - [csOpaque];
+    IncludeThemeStyle(Self, [csParentBackground]);
+  end
+  else
+  begin
+    ControlStyle := ControlStyle + [csOpaque];
+    ExcludeThemeStyle(Self, [csParentBackground]);
+  end;
   Repaint;
 end;
 
