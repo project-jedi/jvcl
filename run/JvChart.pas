@@ -133,7 +133,8 @@ type
     constructor Create;
     destructor Destroy; override;
     function DebugStr(ValueIndex: Integer): string; // dump all pens for particular valueindex, as string.
-    procedure Clear; // Resets to zero.
+    procedure Clear; // Resets All Data to zero.
+    procedure ClearPenValues; // Clears all pen values to NaN but does not reset pen definitions etc. 
     procedure Scroll;
     property Value[Pen, ValueIndex: Integer]: Double read GetValue write SetValue; default;
     property Timestamp[ValueIndex: Integer]: TDateTime read GetTimestamp write SetTimestamp;
@@ -730,6 +731,17 @@ begin
       FData[I, J] := 0.0;
   FValueCount := 0;
 end;
+
+
+procedure TJvChartData.ClearPenValues; // Clears all pen values to NaN but does not reset pen definitions etc.
+var
+  I,J : Integer;
+begin
+  for I := 0 to FDataAlloc - 1 do
+    for J := 0 to Length(FData[I]) - 1 do
+      FData[I, J] := 0.0;
+end;
+
 
 //=== TJvChartYAxisOptions ===================================================
 
