@@ -34,6 +34,8 @@ package JvGlobusD5D;
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
+{$I JVCL.INC}
+
 requires
   JvGlobusD5R,
   vcl50,

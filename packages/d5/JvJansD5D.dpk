@@ -34,6 +34,8 @@ package JvJansD5D;
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
+{$I JVCL.INC}
+
 requires
   JvJansD5R,
   vcl50
