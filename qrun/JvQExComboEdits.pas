@@ -46,7 +46,7 @@ interface
 
 uses
   Qt, QGraphics, QControls, QForms, Types, QComboEdits, QWindows,
-  Classes, SysUtils,
+  Classes, SysUtils, QMessages,
   JvQTypes, JvQThemes, JVCLXVer, JvQExControls;
 
 

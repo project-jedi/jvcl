@@ -42,8 +42,9 @@ unit JvQExGrids;
 
 interface
 
-uses  
-  Qt, QGraphics, QControls, QForms, QGrids, Types, QWindows, 
+uses 
+  QGraphics, QControls, QForms, QGrids, 
+  Qt, QWindows, QMessages, 
   Classes, SysUtils,
   JvQTypes, JvQThemes, JVCLXVer, JvQExControls;
 
@@ -76,7 +77,8 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
   private
-    InternalFontChanged: TNotifyEvent;
+//    InternalFontChanged: TNotifyEvent;
+    FFontHeight: integer;
     procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
@@ -145,7 +147,8 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
   private
-    InternalFontChanged: TNotifyEvent;
+//    InternalFontChanged: TNotifyEvent;
+    FFontHeight: integer;
     procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
@@ -219,7 +222,8 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
   private
-    InternalFontChanged: TNotifyEvent;
+//    InternalFontChanged: TNotifyEvent;
+    FFontHeight: integer;
     procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
@@ -297,7 +301,8 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
   private
-    InternalFontChanged: TNotifyEvent;
+//    InternalFontChanged: TNotifyEvent;
+    FFontHeight: integer;
     procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
@@ -430,6 +435,12 @@ procedure TJvExInplaceEdit.OnFontChanged(Sender: TObject);
 var
   FontChangedEvent: QEventH;
 begin
+  ParentFont := False;
+  if Font.Height <> FFontHeight then
+  begin
+    ScalingFlags := ScalingFlags + [sfFont];
+    FFontHeight := Font.Height;
+  end;
   FontChangedEvent := QEvent_create(QEventType_FontChanged);
   if FontChangedEvent <> nil then
     QApplication_postEvent(Handle, FontChangedEvent);
@@ -437,8 +448,9 @@ end;
 
 procedure TJvExInplaceEdit.DoFontChanged(Sender: TObject);
 begin
-  if Assigned(InternalFontChanged) then
-    InternalFontChanged(self);
+//  if Assigned(InternalFontChanged) then
+//    InternalFontChanged(self);
+  FontChanged;
 end;
 
 procedure TJvExInplaceEdit.BoundsChanged;
@@ -523,9 +535,9 @@ begin
   inherited Create(AOwner); 
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  InternalFontChanged := Font.OnChange;
+//  InternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged; 
-  FHintColor := clInfoBk;
+  FHintColor := Application.HintColor;
 end;
 
 
@@ -610,6 +622,12 @@ procedure TJvExCustomGrid.OnFontChanged(Sender: TObject);
 var
   FontChangedEvent: QEventH;
 begin
+  ParentFont := False;
+  if Font.Height <> FFontHeight then
+  begin
+    ScalingFlags := ScalingFlags + [sfFont];
+    FFontHeight := Font.Height;
+  end;
   FontChangedEvent := QEvent_create(QEventType_FontChanged);
   if FontChangedEvent <> nil then
     QApplication_postEvent(Handle, FontChangedEvent);
@@ -617,8 +635,9 @@ end;
 
 procedure TJvExCustomGrid.DoFontChanged(Sender: TObject);
 begin
-  if Assigned(InternalFontChanged) then
-    InternalFontChanged(self);
+//  if Assigned(InternalFontChanged) then
+//    InternalFontChanged(self);
+  FontChanged;
 end;
 
 procedure TJvExCustomGrid.BoundsChanged;
@@ -703,10 +722,11 @@ constructor TJvExCustomGrid.Create(AOwner: TComponent);
 begin
   WindowProc := WndProc;
   inherited Create(AOwner);
-  InternalFontChanged := Font.OnChange;
+//  InternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged;
   
   DoubleBuffered := True;
+  FHintColor := Application.HintColor;
 end;
 
 destructor TJvExCustomGrid.Destroy;
@@ -811,6 +831,12 @@ procedure TJvExDrawGrid.OnFontChanged(Sender: TObject);
 var
   FontChangedEvent: QEventH;
 begin
+  ParentFont := False;
+  if Font.Height <> FFontHeight then
+  begin
+    ScalingFlags := ScalingFlags + [sfFont];
+    FFontHeight := Font.Height;
+  end;
   FontChangedEvent := QEvent_create(QEventType_FontChanged);
   if FontChangedEvent <> nil then
     QApplication_postEvent(Handle, FontChangedEvent);
@@ -818,8 +844,9 @@ end;
 
 procedure TJvExDrawGrid.DoFontChanged(Sender: TObject);
 begin
-  if Assigned(InternalFontChanged) then
-    InternalFontChanged(self);
+//  if Assigned(InternalFontChanged) then
+//    InternalFontChanged(self);
+  FontChanged;
 end;
 
 procedure TJvExDrawGrid.BoundsChanged;
@@ -904,10 +931,11 @@ constructor TJvExDrawGrid.Create(AOwner: TComponent);
 begin
   WindowProc := WndProc;
   inherited Create(AOwner);
-  InternalFontChanged := Font.OnChange;
+//  InternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged;
   
   DoubleBuffered := True;
+  FHintColor := Application.HintColor;
 end;
 
 destructor TJvExDrawGrid.Destroy;
@@ -1018,6 +1046,12 @@ procedure TJvExStringGrid.OnFontChanged(Sender: TObject);
 var
   FontChangedEvent: QEventH;
 begin
+  ParentFont := False;
+  if Font.Height <> FFontHeight then
+  begin
+    ScalingFlags := ScalingFlags + [sfFont];
+    FFontHeight := Font.Height;
+  end;
   FontChangedEvent := QEvent_create(QEventType_FontChanged);
   if FontChangedEvent <> nil then
     QApplication_postEvent(Handle, FontChangedEvent);
@@ -1025,8 +1059,9 @@ end;
 
 procedure TJvExStringGrid.DoFontChanged(Sender: TObject);
 begin
-  if Assigned(InternalFontChanged) then
-    InternalFontChanged(self);
+//  if Assigned(InternalFontChanged) then
+//    InternalFontChanged(self);
+  FontChanged;
 end;
 
 procedure TJvExStringGrid.BoundsChanged;
@@ -1111,10 +1146,11 @@ constructor TJvExStringGrid.Create(AOwner: TComponent);
 begin
   WindowProc := WndProc;
   inherited Create(AOwner);
-  InternalFontChanged := Font.OnChange;
+//  InternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged;
   
   DoubleBuffered := True;
+  FHintColor := Application.HintColor;
 end;
 
 destructor TJvExStringGrid.Destroy;

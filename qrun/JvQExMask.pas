@@ -42,8 +42,9 @@ unit JvQExMask;
 
 interface
 
-uses  
-  Qt, QGraphics, QControls, QForms, QMask, Types, QWindows, 
+uses 
+  QGraphics, QControls, QForms, QMask, 
+  Qt, QWindows, QMessages, 
   Classes, SysUtils,
   JvQTypes, JvQThemes, JVCLXVer, JvQExControls;
 
@@ -67,7 +68,8 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
   private
-    InternalFontChanged: TNotifyEvent;
+//    InternalFontChanged: TNotifyEvent;
+    FFontHeight: integer;
     procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
@@ -159,7 +161,8 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
   private
-    InternalFontChanged: TNotifyEvent;
+//    InternalFontChanged: TNotifyEvent;
+    FFontHeight: integer;
     procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
@@ -313,6 +316,12 @@ procedure TJvExCustomMaskEdit.OnFontChanged(Sender: TObject);
 var
   FontChangedEvent: QEventH;
 begin
+  ParentFont := False;
+  if Font.Height <> FFontHeight then
+  begin
+    ScalingFlags := ScalingFlags + [sfFont];
+    FFontHeight := Font.Height;
+  end;
   FontChangedEvent := QEvent_create(QEventType_FontChanged);
   if FontChangedEvent <> nil then
     QApplication_postEvent(Handle, FontChangedEvent);
@@ -320,8 +329,9 @@ end;
 
 procedure TJvExCustomMaskEdit.DoFontChanged(Sender: TObject);
 begin
-  if Assigned(InternalFontChanged) then
-    InternalFontChanged(self);
+//  if Assigned(InternalFontChanged) then
+//    InternalFontChanged(self);
+  FontChanged;
 end;
 
 procedure TJvExCustomMaskEdit.BoundsChanged;
@@ -406,9 +416,9 @@ begin
   inherited Create(AOwner); 
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  InternalFontChanged := Font.OnChange;
+//  InternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged; 
-  FHintColor := clInfoBk;
+  FHintColor := Application.HintColor;
 end;
 
 
@@ -575,6 +585,12 @@ procedure TJvExMaskEdit.OnFontChanged(Sender: TObject);
 var
   FontChangedEvent: QEventH;
 begin
+  ParentFont := False;
+  if Font.Height <> FFontHeight then
+  begin
+    ScalingFlags := ScalingFlags + [sfFont];
+    FFontHeight := Font.Height;
+  end;
   FontChangedEvent := QEvent_create(QEventType_FontChanged);
   if FontChangedEvent <> nil then
     QApplication_postEvent(Handle, FontChangedEvent);
@@ -582,8 +598,9 @@ end;
 
 procedure TJvExMaskEdit.DoFontChanged(Sender: TObject);
 begin
-  if Assigned(InternalFontChanged) then
-    InternalFontChanged(self);
+//  if Assigned(InternalFontChanged) then
+//    InternalFontChanged(self);
+  FontChanged;
 end;
 
 procedure TJvExMaskEdit.BoundsChanged;
@@ -668,9 +685,9 @@ begin
   inherited Create(AOwner); 
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  InternalFontChanged := Font.OnChange;
+//  InternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged; 
-  FHintColor := clInfoBk;
+  FHintColor := Application.HintColor;
 end;
 
 

@@ -42,9 +42,9 @@ unit JvQExForms;
 
 interface
 
-uses 
-  QGraphics, QControls, QForms, QToolWin, 
-  Qt, Types, QWindows, 
+uses
+  QGraphics, QControls, QForms, QToolWin,
+  Qt, QWindows, QMessages,
   Classes, SysUtils,
   JvQTypes, JvQThemes, JVCLXVer, JvQExControls;
 
@@ -68,7 +68,8 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
   private
-    InternalFontChanged: TNotifyEvent;
+//    InternalFontChanged: TNotifyEvent;
+    FFontHeight: integer;
     procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
@@ -137,7 +138,8 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
   private
-    InternalFontChanged: TNotifyEvent;
+//    InternalFontChanged: TNotifyEvent;
+    FFontHeight: integer;
     procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
@@ -206,7 +208,8 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
   private
-    InternalFontChanged: TNotifyEvent;
+//    InternalFontChanged: TNotifyEvent;
+    FFontHeight: integer;
     procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
@@ -275,7 +278,8 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
   private
-    InternalFontChanged: TNotifyEvent;
+//    InternalFontChanged: TNotifyEvent;
+    FFontHeight: integer;
     procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
@@ -344,7 +348,8 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
   private
-    InternalFontChanged: TNotifyEvent;
+//    InternalFontChanged: TNotifyEvent;
+    FFontHeight: integer;
     procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
@@ -417,7 +422,8 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
   private
-    InternalFontChanged: TNotifyEvent;
+//    InternalFontChanged: TNotifyEvent;
+    FFontHeight: integer;
     procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
@@ -490,7 +496,8 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
   private
-    InternalFontChanged: TNotifyEvent;
+//    InternalFontChanged: TNotifyEvent;
+    FFontHeight: integer;
     procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
@@ -622,6 +629,12 @@ procedure TJvExScrollingWinControl.OnFontChanged(Sender: TObject);
 var
   FontChangedEvent: QEventH;
 begin
+  ParentFont := False;
+  if Font.Height <> FFontHeight then
+  begin
+    ScalingFlags := ScalingFlags + [sfFont];
+    FFontHeight := Font.Height;
+  end;
   FontChangedEvent := QEvent_create(QEventType_FontChanged);
   if FontChangedEvent <> nil then
     QApplication_postEvent(Handle, FontChangedEvent);
@@ -629,8 +642,9 @@ end;
 
 procedure TJvExScrollingWinControl.DoFontChanged(Sender: TObject);
 begin
-  if Assigned(InternalFontChanged) then
-    InternalFontChanged(self);
+//  if Assigned(InternalFontChanged) then
+//    InternalFontChanged(self);
+  FontChanged;
 end;
 
 procedure TJvExScrollingWinControl.BoundsChanged;
@@ -715,9 +729,9 @@ begin
   inherited Create(AOwner); 
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  InternalFontChanged := Font.OnChange;
+//  InternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged; 
-  FHintColor := clInfoBk;
+  FHintColor := Application.HintColor;
 end;
 
 
@@ -802,6 +816,12 @@ procedure TJvExScrollBox.OnFontChanged(Sender: TObject);
 var
   FontChangedEvent: QEventH;
 begin
+  ParentFont := False;
+  if Font.Height <> FFontHeight then
+  begin
+    ScalingFlags := ScalingFlags + [sfFont];
+    FFontHeight := Font.Height;
+  end;
   FontChangedEvent := QEvent_create(QEventType_FontChanged);
   if FontChangedEvent <> nil then
     QApplication_postEvent(Handle, FontChangedEvent);
@@ -809,8 +829,9 @@ end;
 
 procedure TJvExScrollBox.DoFontChanged(Sender: TObject);
 begin
-  if Assigned(InternalFontChanged) then
-    InternalFontChanged(self);
+//  if Assigned(InternalFontChanged) then
+//    InternalFontChanged(self);
+  FontChanged;
 end;
 
 procedure TJvExScrollBox.BoundsChanged;
@@ -895,9 +916,9 @@ begin
   inherited Create(AOwner); 
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  InternalFontChanged := Font.OnChange;
+//  InternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged; 
-  FHintColor := clInfoBk;
+  FHintColor := Application.HintColor;
 end;
 
 
@@ -982,6 +1003,12 @@ procedure TJvExCustomFrame.OnFontChanged(Sender: TObject);
 var
   FontChangedEvent: QEventH;
 begin
+  ParentFont := False;
+  if Font.Height <> FFontHeight then
+  begin
+    ScalingFlags := ScalingFlags + [sfFont];
+    FFontHeight := Font.Height;
+  end;
   FontChangedEvent := QEvent_create(QEventType_FontChanged);
   if FontChangedEvent <> nil then
     QApplication_postEvent(Handle, FontChangedEvent);
@@ -989,8 +1016,9 @@ end;
 
 procedure TJvExCustomFrame.DoFontChanged(Sender: TObject);
 begin
-  if Assigned(InternalFontChanged) then
-    InternalFontChanged(self);
+//  if Assigned(InternalFontChanged) then
+//    InternalFontChanged(self);
+  FontChanged;
 end;
 
 procedure TJvExCustomFrame.BoundsChanged;
@@ -1075,9 +1103,9 @@ begin
   inherited Create(AOwner); 
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  InternalFontChanged := Font.OnChange;
+//  InternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged; 
-  FHintColor := clInfoBk;
+  FHintColor := Application.HintColor;
 end;
 
 
@@ -1162,6 +1190,12 @@ procedure TJvExFrame.OnFontChanged(Sender: TObject);
 var
   FontChangedEvent: QEventH;
 begin
+  ParentFont := False;
+  if Font.Height <> FFontHeight then
+  begin
+    ScalingFlags := ScalingFlags + [sfFont];
+    FFontHeight := Font.Height;
+  end;
   FontChangedEvent := QEvent_create(QEventType_FontChanged);
   if FontChangedEvent <> nil then
     QApplication_postEvent(Handle, FontChangedEvent);
@@ -1169,8 +1203,9 @@ end;
 
 procedure TJvExFrame.DoFontChanged(Sender: TObject);
 begin
-  if Assigned(InternalFontChanged) then
-    InternalFontChanged(self);
+//  if Assigned(InternalFontChanged) then
+//    InternalFontChanged(self);
+  FontChanged;
 end;
 
 procedure TJvExFrame.BoundsChanged;
@@ -1255,9 +1290,9 @@ begin
   inherited Create(AOwner); 
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  InternalFontChanged := Font.OnChange;
+//  InternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged; 
-  FHintColor := clInfoBk;
+  FHintColor := Application.HintColor;
 end;
 
 
@@ -1342,6 +1377,12 @@ procedure TJvExCustomForm.OnFontChanged(Sender: TObject);
 var
   FontChangedEvent: QEventH;
 begin
+  ParentFont := False;
+  if Font.Height <> FFontHeight then
+  begin
+    ScalingFlags := ScalingFlags + [sfFont];
+    FFontHeight := Font.Height;
+  end;
   FontChangedEvent := QEvent_create(QEventType_FontChanged);
   if FontChangedEvent <> nil then
     QApplication_postEvent(Handle, FontChangedEvent);
@@ -1349,8 +1390,9 @@ end;
 
 procedure TJvExCustomForm.DoFontChanged(Sender: TObject);
 begin
-  if Assigned(InternalFontChanged) then
-    InternalFontChanged(self);
+//  if Assigned(InternalFontChanged) then
+//    InternalFontChanged(self);
+  FontChanged;
 end;
 
 procedure TJvExCustomForm.BoundsChanged;
@@ -1433,8 +1475,8 @@ constructor TJvExCustomForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin 
   WindowProc := WndProc; 
   inherited CreateNew(AOwner, Dummy);
-  FHintColor := clInfoBk; 
-  InternalFontChanged := Font.OnChange;
+  FHintColor := Application.HintColor; 
+//  InternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged; 
   
 end;
@@ -1542,6 +1584,12 @@ procedure TJvExForm.OnFontChanged(Sender: TObject);
 var
   FontChangedEvent: QEventH;
 begin
+  ParentFont := False;
+  if Font.Height <> FFontHeight then
+  begin
+    ScalingFlags := ScalingFlags + [sfFont];
+    FFontHeight := Font.Height;
+  end;
   FontChangedEvent := QEvent_create(QEventType_FontChanged);
   if FontChangedEvent <> nil then
     QApplication_postEvent(Handle, FontChangedEvent);
@@ -1549,8 +1597,9 @@ end;
 
 procedure TJvExForm.DoFontChanged(Sender: TObject);
 begin
-  if Assigned(InternalFontChanged) then
-    InternalFontChanged(self);
+//  if Assigned(InternalFontChanged) then
+//    InternalFontChanged(self);
+  FontChanged;
 end;
 
 procedure TJvExForm.BoundsChanged;
@@ -1633,8 +1682,8 @@ constructor TJvExForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin 
   WindowProc := WndProc; 
   inherited CreateNew(AOwner, Dummy);
-  FHintColor := clInfoBk; 
-  InternalFontChanged := Font.OnChange;
+  FHintColor := Application.HintColor; 
+//  InternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged; 
   
 end;
@@ -1742,6 +1791,12 @@ procedure TJvExToolWindow.OnFontChanged(Sender: TObject);
 var
   FontChangedEvent: QEventH;
 begin
+  ParentFont := False;
+  if Font.Height <> FFontHeight then
+  begin
+    ScalingFlags := ScalingFlags + [sfFont];
+    FFontHeight := Font.Height;
+  end;
   FontChangedEvent := QEvent_create(QEventType_FontChanged);
   if FontChangedEvent <> nil then
     QApplication_postEvent(Handle, FontChangedEvent);
@@ -1749,8 +1804,9 @@ end;
 
 procedure TJvExToolWindow.DoFontChanged(Sender: TObject);
 begin
-  if Assigned(InternalFontChanged) then
-    InternalFontChanged(self);
+//  if Assigned(InternalFontChanged) then
+//    InternalFontChanged(self);
+  FontChanged;
 end;
 
 procedure TJvExToolWindow.BoundsChanged;
@@ -1835,9 +1891,9 @@ begin
   inherited Create(AOwner); 
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  InternalFontChanged := Font.OnChange;
+//  InternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged; 
-  FHintColor := clInfoBk;
+  FHintColor := Application.HintColor;
 end;
 
 
