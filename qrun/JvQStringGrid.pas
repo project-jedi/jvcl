@@ -782,8 +782,8 @@ begin
   Result := inherited SelectCell(ACol, ARow);
   if Result then
   begin
-    Col := ACol;
-    Row := ARow;
+//    Col := ACol;    // triggers SelectCell !!
+//    Row := ARow;
     EditorMode := True;
     InplaceEditor.SelectAll;
   end;
@@ -843,8 +843,9 @@ begin
   begin
     FAlignment := Value;
     Invalidate;
-    if Assigned(InplaceEditor) then  
-      TExInplaceEdit(InplaceEditor).RecreateWidget; 
+    if Assigned(InplaceEditor) and
+      not (csRecreating in InplaceEditor.ControlState) then
+      TExInplaceEdit(InplaceEditor).RecreateWidget;
   end;
 end;
 

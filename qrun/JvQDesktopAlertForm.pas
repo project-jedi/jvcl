@@ -92,7 +92,7 @@ type
     procedure WaitTimer(Sender: TObject);
 
     procedure DoMouseTimer(Sender: TObject);
-    procedure FormPaint(Sender: TObject);
+//    procedure FormPaint(Sender: TObject);
   protected
     procedure FadeIn;
     procedure FadeOut;
@@ -101,7 +101,7 @@ type
     procedure DoClose(var Action: TCloseAction); override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
- 
+    procedure BoundsChanged; override;
   public
     imIcon: TImage;
     lblText: TJvLabel;
@@ -219,7 +219,7 @@ begin
   Scaled := False;
   Height := cDefaultAlertFormHeight;
   Width := cDefaultAlertFormWidth;
-  OnPaint := FormPaint;
+//  OnPaint := FormPaint;
 
   imIcon := TImage.Create(Self);
   imIcon.Parent := Self;
@@ -263,12 +263,22 @@ begin
   tbDropDown.Anchors := [akRight, akTop];
 end;
 
-procedure TJvFormDesktopAlert.FormPaint(Sender: TObject);
+//procedure TJvFormDesktopAlert.FormPaint(Sender: TObject);
+procedure TJvFormDesktopAlert.BoundsChanged;
+var
+  Bmp: TBitmap;
 begin
-  DrawDesktopAlertWindow(Canvas, ClientRect, FrameColor, WindowColorFrom, WindowColorTo, CaptionColorFrom, CaptionColorTo, Moveable or MoveAnywhere);
+  HandleNeeded;
+  Bmp := TBitmap.Create;
+  Bmp.Width := Width;
+  Bmp.Height := Height;
+  Bmp.PixelFormat := pf32bit;
+  Bmp.Canvas.Start;
+  DrawDesktopAlertWindow(Bmp.Canvas, ClientRect, FrameColor, WindowColorFrom, WindowColorTo, CaptionColorFrom, CaptionColorTo, Moveable or MoveAnywhere);
+  Bmp.Canvas.Stop;
+  Bitmap.Assign(Bmp);
+  Bmp.Destroy;
 end;
-
-
 
 procedure TJvFormDesktopAlert.acCloseExecute(Sender: TObject);
 begin
@@ -427,8 +437,8 @@ begin
   FadeTimer.OnTimer := WaitTimer;
   FadeTimer.Enabled := WaitTime > 0;
   // NB! If waittime = 0 then we never close - user has to do that manually
-//  if not FadeTimer.Enabled then
-//    FadeOut;
+  if not FadeTimer.Enabled then
+    FadeOut;
 end;
 
 procedure TJvFormDesktopAlert.DoClose(var Action: TCloseAction);

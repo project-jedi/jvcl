@@ -3,15 +3,17 @@ object ProfReport: TProfReport
   Top = 114
   Width = 453
   Height = 300
+  VertScrollBar.Range = 33
   ActiveControl = lvReport
   BorderIcons = [biSystemMenu]
   Caption = 'Profiler Report'
-  Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
+  Color = clButton
   Font.Color = clBlack
-  Font.Height = -11
+  Font.Height = 11
   Font.Name = 'MS Sans Serif'
+  Font.Pitch = fpVariable
   Font.Style = []
+  Font.Weight = 40
   Icon.Data = {
     0000010001002020040000000000E80200001600000028000000200000004000
     0000010004000000000000020000000000000000000000000000000000000000
@@ -37,23 +39,21 @@ object ProfReport: TProfReport
     000380000003C0000007C0000007E000000FE000000FF000001FF000001FF800
     003FF800003FFC00007FFC00007FFE0000FFFE0000FFFF0001FFFF0001FFFF80
     03FFFF8003FFFFC007FFFFC007FFFFE00FFFFFE01FFFFFF07FFFFFF8FFFF}
-  OldCreateOrder = True
+  ParentFont = False
   Position = poScreenCenter
   ShowHint = True
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
+  TextWidth = 6
   object Panel1: TPanel
     Left = 0
-    Top = 237
-    Width = 445
+    Top = 267
+    Width = 453
     Height = 33
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    DesignSize = (
-      445
-      33)
     object SaveBtn: TButton
       Left = 8
       Top = 5
@@ -66,16 +66,13 @@ object ProfReport: TProfReport
       OnClick = SaveBtnClick
     end
     object Panel2: TPanel
-      Left = 270
+      Left = 278
       Top = 0
       Width = 175
       Height = 33
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 1
-      DesignSize = (
-        175
-        33)
       object OKBtn: TButton
         Left = 60
         Top = 6
@@ -106,40 +103,45 @@ object ProfReport: TProfReport
   object lvReport: TListView
     Left = 0
     Top = 0
-    Width = 445
-    Height = 237
+    Width = 453
+    Height = 267
     Hint = 'Click the top column to sort the items'
     Align = alClient
     BorderStyle = bsNone
     Columns = <
       item
         Caption = 'Function / Procedure '
+        Tag = 0
         Width = 160
       end
       item
         Alignment = taRightJustify
         Caption = 'Total time (ms)'
+        Tag = 0
         Width = 80
       end
       item
         Alignment = taRightJustify
         Caption = 'Calls'
+        Tag = 0
         Width = 35
       end
       item
         Alignment = taRightJustify
         Caption = 'Average time (ms)'
+        Tag = 0
         Width = 100
       end
       item
         Alignment = taRightJustify
         Caption = 'Percent (%)'
+        Tag = 0
         Width = 70
       end>
-    GridLines = True
     MultiSelect = True
     RowSelect = True
-    SortType = stText
+    ShowColumnSortIndicators = True
+    Sorted = True
     TabOrder = 1
     ViewStyle = vsReport
     OnColumnClick = lvReportColumnClick

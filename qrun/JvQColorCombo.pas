@@ -441,12 +441,13 @@ begin
       DoGetDisplayName(Index, TColor(Items.Objects[Index]), S);
       if S <> FOther then
       begin
+        AColor := ColorToRGB(TColor(Items.Objects[Index]));
         if coHex in FOptions then
-          S := Format(HexPrefix + '%.6x', [ColorToRGB(TColor(Items.Objects[Index]))])
+          S := Format(HexPrefix + '%.6x', [AColor])
         else
         if coRGB in Foptions then
-          S := Format('(%d,%d,%d)', [GetRValue(TColor(Items.Objects[Index])), GetGValue(TColor(Items.Objects[Index])),
-            GetBValue(TColor(Items.Objects[Index]))]);
+          S := Format('(%d,%d,%d)', [GetRValue(AColor), GetGValue(AColor),
+            GetBValue(AColor)]);
       end;
       R.Left := R.Left + FColWidth + 6;
       R.Right := R.Left + TextWidth(S) + 6;

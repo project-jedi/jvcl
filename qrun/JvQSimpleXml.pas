@@ -35,6 +35,9 @@ unit JvQSimpleXml;
 interface
 
 uses
+  {$IFDEF MSWINDOWS}
+  Windows, // Delphi 2005 inline
+  {$ENDIF MSWINDOWS}
   SysUtils, Classes,
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
