@@ -598,7 +598,7 @@ type
   end;
 
   TJvDynControlJVCLTreeView = class(TJvTreeView, IUnknown,
-    IJvDynControl, IJvDynControlTreeView)
+    IJvDynControl, IJvDynControlTreeView, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -608,6 +608,9 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
     procedure ControlSetHint(const Value: string);
+
+    // IJvDynControlReadOnly
+    procedure ControlSetReadOnly(Value: Boolean);
 
     // IJvDynControlTreeView
     procedure ControlSetAutoExpand(Value: Boolean);
@@ -2434,6 +2437,11 @@ end;
 procedure TJvDynControlJVCLTreeView.ControlSetHint(const Value: string);
 begin
   Hint := Value;
+end;
+
+procedure TJvDynControlJVCLTreeView.ControlSetReadOnly(Value: Boolean);
+begin
+  ReadOnly := Value;
 end;
 
 procedure TJvDynControlJVCLTreeView.ControlSetAutoExpand(Value: Boolean);
