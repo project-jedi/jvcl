@@ -31,7 +31,6 @@ requires
   dclstd50;
 
 contains
-  JvDsgnConsts in '..\..\common\JvDsgnConsts.pas',
   JvJVCLAboutEditor in '..\..\design\JvJVCLAboutEditor.pas',
   JvCoreReg in '..\..\design\JvCoreReg.pas',
   JvDsgnEditors in '..\..\design\JvDsgnEditors.pas',
