@@ -32,7 +32,14 @@ function FileSetDate(const FileName: string; Age: Integer): Integer;
 
 implementation
 
-uses Classes, JclStrings, JclFileUtils, SysUtils;
+uses
+  Classes,
+  {$IFDEF NO_JCL}
+  UtilsJcl,
+  {$ELSE}
+  JclStrings, JclFileUtils,
+  {$ENDIF NO_JCL}
+  SysUtils;
 
 function StrEnsureNoPrefix(prefix : string; str : string) : string;
 var
@@ -100,7 +107,7 @@ begin
       // find the first directory that is not the same
       DiffIndex := 0;
 {$IFDEF MSWINDOWS} // case insensitive
-      while StrSame(OrigList[DiffIndex], DestList[DiffIndex]) do
+      while CompareStr(OrigList[DiffIndex], DestList[DiffIndex]) = 0 do
 {$ELSE}            // case sensitive
       while OrigList[DiffIndex] = DestList[DiffIndex] do
 {$ENDIF}

@@ -41,8 +41,15 @@ var
 
 implementation
 
-uses Windows, SysUtils, JclSysUtils, JclStrings, JclFileUtils, JvSimpleXml,
-    ShellApi, JclDateTime, Contnrs, FileUtils, JclLogic;
+uses
+  Windows, SysUtils, ShellApi, Contnrs, FileUtils,
+  {$IFDEF NO_JCL}
+  UtilsJcl,
+  {$ELSE}
+  JclDateTime, JclStrings, JclFileUtils, JclSysUtils, JclLogic,
+  {$ENDIF NO_JCL}
+  JvSimpleXml;
+
 
 type
   TTarget = class (TObject)
@@ -395,7 +402,7 @@ begin
   Typ := Copy(Name, Length(Name), 1);
   Name := Copy(Name, Length(Prefix)+1, Pos('-', Name)-Length(Prefix)-1);
 
-  if ((StrLower(Env) = 'd') or (StrLower(Env) = 'c')) and (Ver < '6') then
+  if ((AnsiLowerCase(Env) = 'd') or (AnsiLowerCase(Env) = 'c')) and (Ver < '6') then
     Result := FormatNoLibSuffix
   else
     Result := FormatGeneral;
@@ -550,7 +557,7 @@ begin
   // ensure that the path separator stored in the xml file is
   // replaced by the one for the system we are targeting
 
-  target := StrLower(target);
+  target := AnsiLowerCase(target);
 
   // first ensure we only have backslashes
   StrReplace(Name, '/', '\', [rfReplaceAll]);
@@ -576,7 +583,7 @@ begin
   incFileName := fileNode.Properties.ItemNamed['Name'].Value;
 
   unitname := GetUnitName(incFileName);
-  punitname := StrLower(unitname);
+  punitname := AnsiLowerCase(unitname);
   punitname[1] := CharUpper(punitname[1]);
   formpathname := StrEnsureSuffix(PathSeparator, ExtractFilePath(incFileName))+GetUnitName(incFileName);
 
@@ -1350,17 +1357,17 @@ end;
 constructor TTarget.Create(Node: TJvSimpleXmlElem);
 begin
   inherited Create;
-  FName := StrLower(Node.Properties.ItemNamed['name'].Value);
+  FName := AnsiLowerCase(Node.Properties.ItemNamed['name'].Value);
   if Assigned(Node.Properties.ItemNamed['dir']) then
     FDir := Node.Properties.ItemNamed['dir'].Value;
   if Assigned(Node.Properties.ItemNamed['pname']) then
-    FPName := StrLower(Node.Properties.ItemNamed['pname'].Value);
+    FPName := AnsiLowerCase(Node.Properties.ItemNamed['pname'].Value);
   if Assigned(Node.Properties.ItemNamed['pdir']) then
     FPDir := Node.Properties.ItemNamed['pdir'].Value;
   if Assigned(Node.Properties.ItemNamed['env']) then
-    FEnv := StrUpper(Node.Properties.ItemNamed['env'].Value)[1];
+    FEnv := AnsiLowerCase(Node.Properties.ItemNamed['env'].Value)[1];
   if Assigned(Node.Properties.ItemNamed['ver']) then
-    FVer := StrLower(Node.Properties.ItemNamed['ver'].Value)[1];
+    FVer := AnsiLowerCase(Node.Properties.ItemNamed['ver'].Value)[1];
 
   FDefines := TStringList.Create;  
   if Assigned(Node.Properties.ItemNamed['defines']) then
@@ -1389,7 +1396,7 @@ begin
   if FEnv <> '' then
     Result := FEnv
   else
-    Result := StrUpper(Name[1]);
+    Result := AnsiLowerCase(Name[1]);
 end;
 
 function TTarget.GetPDir: string;
@@ -1405,7 +1412,7 @@ begin
   if FVer <> '' then
     Result := FVer
   else if Length(Name)>1 then
-    Result := StrLower(Name[2])
+    Result := AnsiLowerCase(Name[2])
   else
     Result := '';
 end;
@@ -1453,15 +1460,15 @@ end;
 constructor TAlias.Create(Node: TJvSimpleXmlElem);
 begin
   inherited Create;
-  FName := StrLower(Node.Properties.ItemNamed['name'].Value);
-  FValue := StrLower(Node.Properties.ItemNamed['value'].Value);
+  FName := AnsiLowerCase(Node.Properties.ItemNamed['name'].Value);
+  FValue := AnsiLowerCase(Node.Properties.ItemNamed['value'].Value);
   FValueAsTStrings := nil;
 end;
 
 destructor TAlias.Destroy;
 begin
   FValueAsTStrings.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 function TAlias.GetValueAsTStrings: TStrings;
@@ -1587,7 +1594,7 @@ begin
   while (I < Count) and (I < DefineLimit) and not Result do
   begin
     Define := Items[I];
-    Result := SameText(Define.Name, Condition);
+    Result := CompareText(Define.Name, Condition) = 0;
     Inc(I);
   end;
   If I = Count then
