@@ -48,6 +48,17 @@ type
     FMark: TPoint;
     FArea: TRect;
     FPot: TStringList;
+    FScript: string;
+    FIP: Integer;
+    FIPMax: Integer;
+    FSP: Integer;
+    FNSP: Integer;
+    FStack: array of Integer;
+    FNStack: array of Integer;
+    FBackground: string;
+    FFilter: string;
+    FAngleMark: Integer;
+    FImageRect: TRect;
     FOnRepaintRequest: TNotifyEvent;
     FOnRequestBackGround: TRequestBackGroundEvent;
     FOnRequestImageSize: TRequestImageSizeEvent;
@@ -177,9 +188,7 @@ type
     function txFilter: string;
     function StrToPenMode(var Pm: TPenMode; S: string): Boolean;
     function StrToCopyMode(var Cm: TCopyMode; S: string): Boolean;
-
-    procedure TextRotate(X, Y, Angle: Integer; AText: string;
-      AFont: TFont);
+    procedure TextRotate(X, Y, Angle: Integer; AText: string; AFont: TFont);
     procedure SetOnRepaintRequest(const Value: TNotifyEvent);
     procedure SetMark(const Value: TPoint);
     procedure SetArea(const Value: TRect);
@@ -249,24 +258,12 @@ implementation
 uses
   JvConsts, JvTypes;
 
-const
-  cStackMax = 255;
-  cNStackMax = 255;
-
-var
-  Script: string;
-  IP, IPMax, SP, NSP: Integer;
-  Stack: array [0..cStackMax] of Integer;
-  NStack: array [0..cNStackMax] of Integer;
-  Background: string;
-  Filter: string;
-  AngleMark: Integer;
-  ImageRect: TRect;
-
 constructor TJvTurtle.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FPot := TStringList.Create;
+  SetLength(FStack, 256);
+  SetLength(FNStack, 256);
   txDefault;
 end;
 
@@ -277,329 +274,345 @@ begin
 end;
 
 function TJvTurtle.DoCom: string;
+const
+  Mapper: array [0..101] of PChar =
+   (
+    '-',
+    '*',
+    '.and',
+    '.eq',
+    '.ge',
+    '.gt',
+    '.le',
+    '.lt',
+    '.ne',
+    '.not',
+    '.or',
+    '/',
+    '[',
+    ']',
+    '{',
+    '+',
+    '=angle',
+    '=bottom',
+    '=brushcolor',
+    '=left',
+    '=loop',
+    '=markx',
+    '=marky',
+    '=pencolor',
+    '=pensize',
+    '=posx',
+    '=posy',
+    '=right',
+    '=textcolor',
+    '=textsize',
+    '=top',
+    'abs',
+    'addbrushcolor',
+    'addpencolor',
+    'angle',
+    'area',
+    'background',
+    'bold',
+    'brushcolor',
+    'bsclear',
+    'bssolid',
+    'copy',
+    'copymode',
+    'curve',
+    'dec',
+    'default',
+    'diamond',
+    'do',
+    'down',
+    'drop',
+    'dup',
+    'ellipse',
+    'filter',
+    'flood',
+    'go',
+    'gobottom',
+    'gocenter',
+    'goleft',
+    'gomark',
+    'gomarkangle',
+    'goright',
+    'gotop',
+    'if',
+    'in',
+    'inadd',
+    'inc',
+    'indec',
+    'indiv',
+    'ininc',
+    'inmul',
+    'insub',
+    'italic',
+    'left',
+    'lineto',
+    'loop',
+    'mark',
+    'markangle',
+    'max',
+    'min',
+    'move',
+    'neg',
+    'normal',
+    'pencolor',
+    'penmode',
+    'pensize',
+    'polygon',
+    'pos',
+    'rectangle',
+    'right',
+    'roundrect',
+    'sqr',
+    'sqrt',
+    'star',
+    'swap',
+    'text',
+    'textcolor',
+    'textfont',
+    'textout',
+    'textsize',
+    'turn',
+    'underline',
+    'up'
+   );
 var
   Com: string;
+  I, N: Integer;
 begin
   Result := 'ready';
   if not GetToken(Com) then
     Exit;
-  if Com = 'pos' then
-    Result := txPos
-  else
-  if Com = 'in' then
-    Result := txIn
-  else
-  if Com = 'inadd' then
-    Result := txInAdd
-  else
-  if Com = 'insub' then
-    Result := txInSub
-  else
-  if Com = 'inmul' then
-    Result := txInMult
-  else
-  if Com = 'indiv' then
-    Result := txInDiv
-  else
-  if Com = 'ininc' then
-    Result := txInInc
-  else
-  if Com = 'indec' then
-    Result := txInDec
-  else
-  if Com = 'default' then
-    Result := txDefault
-  else
-  if Com = 'angle' then
-    Result := txAngle
-  else
-  if Com = 'down' then
-    Result := txDown
-  else
-  if Com = 'up' then
-    Result := txUp
-  else
-  if Com = 'pensize' then
-    Result := txPenSize
-  else
-  if Com = 'pencolor' then
-    Result := txPenColor
-  else
-  if Com = 'turn' then
-    Result := txTurn
-  else
-  if Com = 'right' then
-    Result := txRight
-  else
-  if Com = 'left' then
-    Result := txLeft
-  else
-  if Com = 'go' then
-    Result := txGo
-  else
-  if Com = 'move' then
-    Result := txMove
-  else
-  if Com = 'lineto' then
-    Result := txLineTo
-  else
-  if Com = 'textfont' then
-    Result := txTextFont
-  else
-  if Com = 'textsize' then
-    Result := txTextSize
-  else
-  if Com = 'textcolor' then
-    Result := txTextColor
-  else
-  if Com = 'addbrushcolor' then
-    Result := txAddBrushColor
-  else
-  if Com = 'addpencolor' then
-    Result := txAddPenColor
-  else
-  if Com = 'text' then
-    Result := txText
-  else
-  if Com = 'bold' then
-    Result := txTextBold
-  else
-  if Com = 'italic' then
-    Result := txTextItalic
-  else
-  if Com = 'underline' then
-    Result := txTextUnderline
-  else
-  if Com = 'normal' then
-    Result := txTextNormal
-  else
-  if Com = 'textout' then
-    Result := txTextOut
-  else
-  if Com = 'bssolid' then
-    Result := txBsSolid
-  else
-  if Com = 'bsclear' then
-    Result := txBsClear
-  else
-  if Com = 'brushcolor' then
-    Result := txBrushColor
-  else
-  if Com = 'rectangle' then
-    Result := txRectangle
-  else
-  if Com = 'roundrect' then
-    Result := txRoundRect
-  else
-  if Com = 'ellipse' then
-    Result := txEllipse
-  else
-  if Com = 'diamond' then
-    Result := txDiamond
-  else
-  if Com = 'polygon' then
-    Result := txPolygon
-  else
-  if Com = 'star' then
-    Result := txStar
-  else
-  if Com = 'curve' then
-    Result := txCurve
-  else
-  if Com = 'mark' then
-    Result := txMark
-  else
-  if Com = 'gomark' then
-    Result := txGoMark
-  else
-  if Com = 'markangle' then
-    Result := txMarkAngle
-  else
-  if Com = 'gomarkangle' then
-    Result := txGoMarkAngle
-  else
-  if Com = 'penmode' then
-    Result := txPenMode
-  else
-  if Com = 'copymode' then
-    Result := txCopyMode
-  else
-  if Com = 'area' then
-    Result := txArea
-  else
-  if Com = 'copy' then
-    Result := txCopy
-  else
-  if Com = 'do' then
-    Result := txDo
-  else
-  if Com = 'loop' then
-    Result := txLoop
-  else
-  if Com = 'flood' then
-    Result := txFlood
-  else
-  if Com = 'background' then
-    Result := txBackground
-  else
-  if Com = 'filter' then
-    Result := txFilter
-  else
-  if Com = '{' then
-    Result := txComment
-  else
-  if Com = '[' then
-    Result := txBlock
-  else
-  if Com = ']' then
-    Result := txReturn
-  else
-  if Com = 'goleft' then
-    Result := txGoLeft
-  else
-  if Com = 'gotop' then
-    Result := txGoTop
-  else
-  if Com = 'goright' then
-    Result := txGoRight
-  else
-  if Com = 'gobottom' then
-    Result := txGoBottom
-  else
-  if Com = 'gocenter' then
-    Result := txGoCenter
-  else
-  if Com = '+' then
-    Result := txAdd
-  else
-  if Com = '-' then
-    Result := txSub
-  else
-  if Com = '*' then
-    Result := txMul
-  else
-  if Com = '/' then
-    Result := txDiv
-  else
-  if Com = '.gt' then
-    Result := txGt
-  else
-  if Com = '.ge' then
-    Result := txGe
-  else
-  if Com = '.lt' then
-    Result := txLt
-  else
-  if Com = '.le' then
-    Result := txLe
-  else
-  if Com = '.eq' then
-    Result := txEq
-  else
-  if Com = '.ne' then
-    Result := txNe
-  else
-  if Com = '.not' then
-    Result := txNot
-  else
-  if Com = '.and' then
-    Result := txAnd
-  else
-  if Com = '.or' then
-    Result := txOr
-  else
-  if Com = 'neg' then
-    Result := txNeg
-  else
-  if Com = 'abs' then
-    Result := txAbs
-  else
-  if Com = 'swap' then
-    Result := txSwap
-  else
-  if Com = 'max' then
-    Result := txMax
-  else
-  if Com = 'min' then
-    Result := txMin
-  else
-  if Com = 'sqr' then
-    Result := txSqr
-  else
-  if Com = 'sqrt' then
-    Result := txSqrt
-  else
-  if Com = 'inc' then
-    Result := txInc
-  else
-  if Com = 'dec' then
-    Result := txDec
-  else
-  if Com = 'if' then
-    Result := txIf
-  else
-  if Com = 'drop' then
-    Result := txDrop
-  else
-  if Com = 'dup' then
-    Result := txDup
-  else
-  if Com = '=posx' then
-    Result := tx_PosX
-  else
-  if Com = '=posy' then
-    Result := tx_PosY
-  else
-  if Com = '=pencolor' then
-    Result := tx_PenColor
-  else
-  if Com = '=pensize' then
-    Result := tx_PenSize
-  else
-  if Com = '=brushcolor' then
-    Result := tx_BrushColor
-  else
-  if Com = '=textcolor' then
-    Result := tx_TextColor
-  else
-  if Com = '=textsize' then
-    Result := tx_TextSize
-  else
-  if Com = '=angle' then
-    Result := tx_Angle
-  else
-  if Com = '=markx' then
-    Result := tx_MarkX
-  else
-  if Com = '=marky' then
-    Result := tx_MarkY
-  else
-  if Com = '=loop' then
-    Result := tx_Loop
-  else
-  if Com = '=right' then
-    Result := tx_Right
-  else
-  if Com = '=left' then
-    Result := tx_Left
-  else
-  if Com = '=top' then
-    Result := tx_Top
-  else
-  if Com = '=bottom' then
-    Result := tx_Bottom
-  else
-  if IsNum(Com) then
-    Result := ''
-  else
-  if IsCol(Com) then
-    Result := ''
-  else
-  if IsVar(Com) then
-    Result := ''
-  else
-    Result := txUser(Com);
 
+  N := -1;
+  for I := Low(Mapper) to High(Mapper) do
+    if Com = Mapper[I] then
+    begin
+      N := I;
+      Break;
+    end;
+
+  case N of
+    0:
+      Result := txSub;
+    1:
+      Result := txMul;
+    2:
+      Result := txAnd;
+    3:
+      Result := txEq;
+    4:
+      Result := txGe;
+    5:
+      Result := txGt;
+    6:
+      Result := txLe;
+    7:
+      Result := txLt;
+    8:
+      Result := txNe;
+    9:
+      Result := txNot;
+    10:
+      Result := txOr;
+    11:
+      Result := txDiv;
+    12:
+      Result := txBlock;
+    13:
+      Result := txReturn;
+    14:
+      Result := txComment;
+    15:
+      Result := txAdd;
+    16:
+      Result := tx_Angle;
+    17:
+      Result := tx_Bottom;
+    18:
+      Result := tx_BrushColor;
+    19:
+      Result := tx_Left;
+    20:
+      Result := tx_Loop;
+    21:
+      Result := tx_MarkX;
+    22:
+      Result := tx_MarkY;
+    23:
+      Result := tx_PenColor;
+    24:
+      Result := tx_PenSize;
+    25:
+      Result := tx_PosX;
+    26:
+      Result := tx_PosY;
+    27:
+      Result := tx_Right;
+    28:
+      Result := tx_TextColor;
+    29:
+      Result := tx_TextSize;
+    30:
+      Result := tx_Top;
+    31:
+      Result := txAbs;
+    32:
+      Result := txAddBrushColor;
+    33:
+      Result := txAddPenColor;
+    34:
+      Result := txAngle;
+    35:
+      Result := txArea;
+    36:
+      Result := txBackground;
+    37:
+      Result := txTextBold;
+    38:
+      Result := txBrushColor;
+    39:
+      Result := txBsClear;
+    40:
+      Result := txBsSolid;
+    41:
+      Result := txCopy;
+    42:
+      Result := txCopyMode;
+    43:
+      Result := txCurve;
+    44:
+      Result := txDec;
+    45:
+      Result := txDefault;
+    46:
+      Result := txDiamond;
+    47:
+      Result := txDo;
+    48:
+      Result := txDown;
+    49:
+      Result := txDrop;
+    50:
+      Result := txDup;
+    51:
+      Result := txEllipse;
+    52:
+      Result := txFilter;
+    53:
+      Result := txFlood;
+    54:
+      Result := txGo;
+    55:
+      Result := txGoBottom;
+    56:
+      Result := txGoCenter;
+    57:
+      Result := txGoLeft;
+    58:
+      Result := txGoMark;
+    59:
+      Result := txGoMarkAngle;
+    60:
+      Result := txGoRight;
+    61:
+      Result := txGoTop;
+    62:
+      Result := txIf;
+    63:
+      Result := txIn;
+    64:
+      Result := txInAdd;
+    65:
+      Result := txInc;
+    66:
+      Result := txInDec;
+    67:
+      Result := txInDiv;
+    68:
+      Result := txInInc;
+    69:
+      Result := txInMult;
+    70:
+      Result := txInSub;
+    71:
+      Result := txTextItalic;
+    72:
+      Result := txLeft;
+    73:
+      Result := txLineTo;
+    74:
+      Result := txLoop;
+    75:
+      Result := txMark;
+    76:
+      Result := txMarkAngle;
+    77:
+      Result := txMax;
+    78:
+      Result := txMin;
+    79:
+      Result := txMove;
+    80:
+      Result := txNeg;
+    81:
+      Result := txTextNormal;
+    82:
+      Result := txPenColor;
+    83:
+      Result := txPenMode;
+    84:
+      Result := txPenSize;
+    85:
+      Result := txPolygon;
+    86:
+      Result := txPos;
+    87:
+      Result := txRectangle;
+    88:
+      Result := txRight;
+    89:
+      Result := txRoundRect;
+    90:
+      Result := txSqr;
+    91:
+      Result := txSqrt;
+    92:
+      Result := txStar;
+    93:
+      Result := txSwap;
+    94:
+      Result := txText;
+    95:
+      Result := txTextColor;
+    96:
+      Result := txTextFont;
+    97:
+      Result := txTextOut;
+    98:
+      Result := txTextSize;
+    99:
+      Result := txTurn;
+    100:
+      Result := txTextUnderline;
+    101:
+      Result := txUp;
+  else
+    if IsNum(Com) then
+      Result := ''
+    else
+    if IsCol(Com) then
+      Result := ''
+    else
+    if IsVar(Com) then
+      Result := ''
+    else
+      Result := txUser(Com);
+  end;
 end;
 
 procedure TJvTurtle.DoRepaintRequest;
@@ -671,31 +684,31 @@ function TJvTurtle.GetTex(var Tex: string): Boolean;
 begin
   Tex := '';
   Result := False;
-  while (IP <= IPMax) and (Script[IP] <> '"') do
-    Inc(IP);
-  if IP > IPMax then
+  while (FIP <= FIPMax) and (FScript[FIP] <> '"') do
+    Inc(FIP);
+  if FIP > FIPMax then
     Exit;
-  Inc(IP);
-  while (IP <= IPMax) and (Script[IP] <> '"') do
+  Inc(FIP);
+  while (FIP <= FIPMax) and (FScript[FIP] <> '"') do
   begin
-    Tex := Tex + Script[IP];
-    Inc(IP);
+    Tex := Tex + FScript[FIP];
+    Inc(FIP);
   end;
-  if IP > IPMax then
+  if FIP > FIPMax then
     Exit;
-  Inc(IP);
+  Inc(FIP);
   Result := Tex <> '';
 end;
 
 function TJvTurtle.GetToken(var Token: string): Boolean;
 begin
   Token := '';
-  while (IP <= IPMax) and (Script[IP] = ' ') do
-    Inc(IP);
-  while (IP <= IPMax) and (Script[IP] <> ' ') do
+  while (FIP <= FIPMax) and (FScript[FIP] = ' ') do
+    Inc(FIP);
+  while (FIP <= FIPMax) and (FScript[FIP] <> ' ') do
   begin
-    Token := Token + Script[IP];
-    Inc(IP);
+    Token := Token + FScript[FIP];
+    Inc(FIP);
   end;
   Result := Token <> '';
 end;
@@ -718,18 +731,18 @@ begin
   S := StringReplace(S, Tab, ' ', [rfReplaceAll]);
   S := StringReplace(S, Cr,  ' ', [rfReplaceAll]);
   S := StringReplace(S, Lf,  ' ', [rfReplaceAll]);
-  Script := S;
-  SP := 0;
-  IP := 1;
-  IPMax := Length(Script);
-  if IPMax > 0 then
+  FScript := S;
+  FSP := 0;
+  FIP := 1;
+  FIPMax := Length(FScript);
+  if FIPMax > 0 then
   begin
     FPot.Clear;
     repeat
       Msg := DoCom;
     until Msg <> '';
     Result := Msg;
-    APos := IP;
+    APos := FIP;
   end
   else
     Result := sEmptyScript;
@@ -782,23 +795,24 @@ end;
 
 function TJvTurtle.Pop(var Num: Integer): Boolean;
 begin
-  Result := False;
-  if SP > 0 then
+  Result := FSP > 0;
+  if Result then
   begin
-    Dec(SP);
-    Num := Stack[SP];
-    Result := True;
+    Dec(FSP);
+    Num := FStack[FSP];
   end;
 end;
 
 function TJvTurtle.Push(Num: Integer): Boolean;
 begin
-  Result := False;
-  if SP < cStackMax then
-  begin
-    Stack[SP] := Num;
-    Inc(SP);
+  try
+    if FSP >= Length(FStack) then
+      SetLength(FStack, Length(FStack) + 256);
+    FStack[FSP] := Num;
+    Inc(FSP);
     Result := True;
+  except
+    Result := False;
   end;
 end;
 
@@ -1318,34 +1332,34 @@ function TJvTurtle.txDo: string;
 var
   Num: Integer;
 begin
-  Result := Format(sNumberExpectedIns, ['do']);
-  if not GetNum(Num) then
-    Exit;
-  Result := sStackOverflow;
-  if not Push(IP) then
-    Exit;
-  if not Push(Num) then
-    Exit;
-  Result := '';
+  if GetNum(Num) then
+  begin
+    Result := sStackOverflow;
+    if Push(FIP) then
+      if not Push(Num) then
+        Result := '';
+  end
+  else
+    Result := Format(sNumberExpectedIns, ['do']);
 end;
 
 function TJvTurtle.txLoop: string;
 var
   Reps, Ret: Integer;
 begin
-  Result := sStackUnderflow;
-  if not Pop(Reps) then
-    Exit;
-  if not Pop(Ret) then
-    Exit;
-  Dec(Reps);
-  if Reps <> 0 then
+  if Pop(Reps) and Pop(Ret) then
   begin
-    IP := Ret;
-    Push(Ret);
-    Push(Reps);
-  end;
-  Result := '';
+    Dec(Reps);
+    if Reps <> 0 then
+    begin
+      FIP := Ret;
+      Push(Ret);
+      Push(Reps);
+    end;
+    Result := '';
+  end
+  else
+    Result := sStackUnderflow;
 end;
 
 function TJvTurtle.txFlood: string;
@@ -1371,7 +1385,7 @@ end;
 procedure TJvTurtle.DoRequestBackground;
 begin
   if Assigned(FOnRequestBackGround) then
-    FOnRequestBackground(Self, Background);
+    FOnRequestBackground(Self, FBackground);
 end;
 
 function TJvTurtle.txBackground: string;
@@ -1380,7 +1394,7 @@ var
 begin
   if GetTex(Name) then
   begin
-    Background := Name;
+    FBackground := Name;
     DoRequestBackground;
     Result := '';
   end
@@ -1429,13 +1443,13 @@ end;
 
 function TJvTurtle.txGoMarkAngle: string;
 begin
-  Heading := AngleMark;
+  Heading := FAngleMark;
   Result := '';
 end;
 
 function TJvTurtle.txMarkAngle: string;
 begin
-  AngleMark := Variant(Heading);
+  FAngleMark := Variant(Heading);
   Result := '';
 end;
 
@@ -1463,11 +1477,11 @@ end;
 
 function TJvTurtle.NPop(var Msg: string; var Num: Integer): Boolean;
 begin
-  Result := NSP > Low(NStack);
+  Result := FNSP > 0;
   if Result then
   begin
-    Dec(NSP);
-    Num := NStack[NSP];
+    Dec(FNSP);
+    Num := FNStack[FNSP];
     Msg := '';
   end
   else
@@ -1476,24 +1490,26 @@ end;
 
 function TJvTurtle.NPush(var Msg: string; Num: Integer): Boolean;
 begin
-  Result := NSP < High(NStack);
-  if Result then
-  begin
-    NStack[NSP] := Num;
-    Inc(NSP);
+  try
+    if FNSP >= Length(FNStack) then
+      SetLength(FNStack, Length(FNStack) + 256);
+    FNStack[FNSP] := Num;
+    Inc(FNSP);
     Msg := '';
-  end
-  else
+    Result := True;
+  except
     Msg := sNumberStackOverflow;
+    Result := False;
+  end;
 end;
 
 function TJvTurtle.txComment: string;
 begin
-  while (IP <= IPMax) and (Script[IP] <> '}') do
-    Inc(IP);
-  if IP <= IPMax then
+  while (FIP <= FIPMax) and (FScript[FIP] <> '}') do
+    Inc(FIP);
+  if FIP <= FIPMax then
   begin
-    Inc(IP);
+    Inc(FIP);
     Result := '';
   end
   else
@@ -1504,16 +1520,16 @@ end;
 function TJvTurtle.SkipBlock: Boolean;
 begin
   Result := False;
-  while (IP <= IPMax) and (Script[IP] <> '[') do
-    Inc(IP);
-  if IP > IPMax then
+  while (FIP <= FIPMax) and (FScript[FIP] <> '[') do
+    Inc(FIP);
+  if FIP > FIPMax then
     Exit;
-  Inc(IP);
-  while (IP <= IPMax) and (Script[IP] <> ']') do
-    Inc(IP);
-  if IP > IPMax then
+  Inc(FIP);
+  while (FIP <= FIPMax) and (FScript[FIP] <> ']') do
+    Inc(FIP);
+  if FIP > FIPMax then
     Exit;
-  Inc(IP);
+  Inc(FIP);
   Result := True;
 end;
 (*)
@@ -1527,7 +1543,7 @@ function TJvTurtle.DoRequestImageSize: Boolean;
 begin
   Result := Assigned(FOnRequestImageSize);
   if Result then
-    FOnRequestImageSize(Self, ImageRect);
+    FOnRequestImageSize(Self, FImageRect);
 end;
 
 function TJvTurtle.txGoBottom: string;
@@ -1536,7 +1552,7 @@ var
 begin
   if DoRequestImageSize then
   begin
-    NewPoint := Point(Position.X, ImageRect.Bottom);
+    NewPoint := Point(Position.X, FImageRect.Bottom);
     DoGo(NewPoint);
     Result := '';
   end
@@ -1550,7 +1566,7 @@ var
 begin
   if DoRequestImageSize then
   begin
-    NewPoint := Point(ImageRect.Left, Position.Y);
+    NewPoint := Point(FImageRect.Left, Position.Y);
     DoGo(NewPoint);
     Result := '';
   end
@@ -1564,7 +1580,7 @@ var
 begin
   if DoRequestImageSize then
   begin
-    NewPoint := Point(ImageRect.Right, Position.Y);
+    NewPoint := Point(FImageRect.Right, Position.Y);
     DoGo(NewPoint);
     Result := '';
   end
@@ -1578,7 +1594,7 @@ var
 begin
   if DoRequestImageSize then
   begin
-    NewPoint := Point(Position.X, ImageRect.Top);
+    NewPoint := Point(Position.X, FImageRect.Top);
     DoGo(NewPoint);
     Result := '';
   end
@@ -1645,8 +1661,8 @@ var
 begin
   if DoRequestImageSize then
   begin
-    CX := (ImageRect.Right - ImageRect.Left) div 2;
-    CY := (ImageRect.Bottom - ImageRect.Top) div 2;
+    CX := (FImageRect.Right - FImageRect.Left) div 2;
+    CY := (FImageRect.Bottom - FImageRect.Top) div 2;
     DoGo(Point(CX, CY));
     Result := '';
   end
@@ -1721,7 +1737,7 @@ end;
 procedure TJvTurtle.DoRequestFilter;
 begin
   if Assigned(FOnRequestFilter) then
-    FOnRequestFilter(Self, Filter);
+    FOnRequestFilter(Self, FFilter);
 end;
 
 function TJvTurtle.txFilter: string;
@@ -1730,7 +1746,7 @@ var
 begin
   if GetTex(AName) then
   begin
-    Filter := AName;
+    FFilter := AName;
     DoRequestFilter;
     Result := '';
   end
@@ -1742,12 +1758,12 @@ function TJvTurtle.txUser(Sym: string): string;
 var
   P: Integer;
 begin
-  P := Pos(Sym, Script);
+  P := Pos(Sym, FScript);
   if P <> 0 then
   begin
-    if Push(IP) then
+    if Push(FIP) then
     begin
-      IP := P + Length(Sym);
+      FIP := P + Length(Sym);
       Result := '';
     end
     else
@@ -1759,11 +1775,11 @@ end;
 
 function TJvTurtle.txBlock: string;
 begin
-  while (IP <= IPMax) and (Script[IP] <> ']') do
-    Inc(IP);
-  if IP <= IPMax then
+  while (FIP <= FIPMax) and (FScript[FIP] <> ']') do
+    Inc(FIP);
+  if FIP <= FIPMax then
   begin
-    Inc(IP);
+    Inc(FIP);
     Result := '';
   end
   else
@@ -1776,7 +1792,7 @@ var
 begin
   if Pop(Num) then
   begin
-    IP := Num;
+    FIP := Num;
     Result := '';
   end
   else
@@ -1794,7 +1810,7 @@ end;
 function TJvTurtle.tx_Bottom: string;
 begin
   if DoRequestImageSize then
-    NPush(Result, ImageRect.Bottom)
+    NPush(Result, FImageRect.Bottom)
   else
     Result := Format(sErrorIns, ['=bottom']);
 end;
@@ -1807,7 +1823,7 @@ end;
 function TJvTurtle.tx_Left: string;
 begin
   if DoRequestImageSize then
-    NPush(Result, ImageRect.Left)
+    NPush(Result, FImageRect.Left)
   else
     Result := Format(sErrorIns, ['=left']);
 end;
@@ -1853,7 +1869,7 @@ end;
 function TJvTurtle.tx_Right: string;
 begin
   if DoRequestImageSize then
-    NPush(Result, ImageRect.Right)
+    NPush(Result, FImageRect.Right)
   else
     Result := Format(sErrorIns, ['=right']);
 end;
@@ -1861,7 +1877,7 @@ end;
 function TJvTurtle.tx_Top: string;
 begin
   if DoRequestImageSize then
-    NPush(Result, ImageRect.Top)
+    NPush(Result, FImageRect.Top)
   else
     Result := Format(sErrorIns, ['=top']);
 end;
