@@ -203,7 +203,7 @@ uses
 
 const
   cDefBlinkCount = 5;
-{$R JvErrProvider.res}
+{$R ..\resources\JvErrProvider.res}
 
 type
   TJvBlinkThreadEvent = procedure(Sender: TObject; Erase: boolean) of object;
