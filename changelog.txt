@@ -25,16 +25,21 @@ Changelog for JVCL 3.0
   * JvContentSCroller.TJvScrollDirection -> renamed to TJvContentScrollDirection
   * JvMovableBevel.TJvScrollTextDirection -> renamed to TJvBevelScrollTextDirection
   // peter3
-  
+
+2003-08-01:
+- Added converted UTF components donated by UIB (now called JvTimeFramework)  
+
 2003-07-29:
 - Renamed properties and events in TJvImageSquare:
     BackColor -> Color
     OnEnter -> OnMouseEnter
     OnExit -> OnMouseLeave
+
 2003-07-28:
 - Removed JVCL components from (mainly) design-time forms to minimize inter-package dependencies. When writing 
   property editors for components in the future, please try to keep the number of JVCL components used as low
   as is absolutely possible (TODO: put this in the docs as well).
+
 2003-07-25:
 - TJvThreadTimer
   * rewritten by Ivo Bauer to enable resetting the thread and handle exceptions better
@@ -191,7 +196,9 @@ Changelog for JVCL 3.0
   * Sources split into a \design folder and a \run folder. Some items are probably incorrectly located at the moment, but this will change as I build the packages
   * All resources (.res and .dcr) are now located in \resources folder
   * All INC and common files are now located in \common
+
 2003-06-15:
 - Added a first set of d7 packages
+
 2003-06-12:
 - Created new dev subfolder on SF for the files (jvcl/dev/JVCL3)

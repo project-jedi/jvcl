@@ -68,14 +68,15 @@ available:</P>
     <th>Package</TH>
     <th>Description</TH>
     <th>Contains</TH>
-    <th>Required JVCL packages (design-time)</TH></TR>
+    <th>Required JVCL packages (required by&nbsp; design-time package)</TH></TR>
   <tr>
     <td>JvCore</TD>
     <td>Contains the core units used by a large part of 
       the JVCL</TD>
     <td>
       <p>Core support units</P>
-      <p>TJvJVCLAboutComponent</P></TD>
+      <p>TJvJVCLAboutComponent<br>
+      TJvContextProvider</P></TD>
     <td>none</TD></TR>
   <tr>
     <td>JvSystem</TD>
@@ -603,30 +604,52 @@ available:</P>
       <p>TJvWizardRouteMapNodes</P>
       <p>TJvWizardRouteMapSteps</P></TD>
     <td>JvCore (if UseJVCL is defined, which it is by 
-      default)</TD></TR></TABLE></P>
+      default)</TD></TR>
+  <tr>
+    <td>JvTimeFramework</TD>
+    <td>Set of PIM components formerly known as UIL Time Framework 2.0</TD>
+    <td>
+      TJvTFAlarm<br>
+      TJvTFScheduleManager<br>
+      TJvTFGlanceTextViewer<br>
+      TJvTFMonths<br>
+      TJvTFWeeks<br>
+      TJvTFDays<br>
+      TJvTFUniversalPrinter<br>
+      TJvTFDaysPrinter</TD>
+    <td>JvCore (if UseJVCL is defined, which it is by default)</TD></TR></TABLE>
 <h4>New components added</H4>
 <p>The following new components and libraries has been 
 added since JVCL 2.10:</P>
 <ul>
   <li>The Globus Library 
   <li>Jans Delphi Components 
-  <li>The UIB Components 
+  <li>The UIB Interbase/Firebird Database Components 
   <li>Print Preview components 
   <li>Validators and Error Provider components 
-  <li>K Wizard component and RouteMaps</LI></UL>
+  <li>K Wizard component and RouteMaps</LI> 
+  <li>UIL Time Framework 2.0</LI> 
+  <li>TJvXMLDatabase</LI> 
+  <li>TJvMouseGesture</LI> 
+  <li>TJvAVICapture</LI> 
+  <li>TJvBlinkingLED</LI></UL>
 <p>&nbsp;</P>
 <h4>Components deprecated, renamed or removed </H4>
-<p>The following components have been removed or are 
-renamed or are deprecated (i.e they will most likely disappear in the near 
+<p>The following components have been removed, renamed or are deprecated (i.e they will most likely disappear in the near 
 future) since JVCL 2.10:<br></P>
 <h5>Removed</H5>
+<blockquote>
 <p>TJvBreatheSkin, TJvCommandEdit, TJvCoupler, TJvCPUUsage, 
 TJvHighLighter, TJvMemoryInfos, TJvMousePositionner, TJvNagScreen, 
 TJvPerforated, TJvPopupMemo,TJvAutoSave, TJvRegAuto, </P>
+</blockquote>
 <p>&nbsp;</P>
 <h5>Renamed</H5>
+<blockquote>
 <p>The following units and classes have been renamed in 
 this version:</P>
+</blockquote>
+<p>&nbsp;</P>
 <table>
   <tr>
     <th>Previous</TH>
@@ -918,8 +941,7 @@ JVCL:</P>
   <p><strong>General</STRONG></P>
   <ul>
     <li>All files have a "Jv" prefix (capital "J", lower 
-    case "v") and we use "Camel Casing" for the file name 
-    (LikeThisForExample.pas).&nbsp; 
+    case "v") and we use "Camel Casing" for the file name (JvLikeThisForExample.pas).&nbsp; 
     <li>All files have an extension in all lower case 
     letters. 
     <li>All units are named using the full name of the 
@@ -929,32 +951,35 @@ JVCL:</P>
     the components in the unit as well as possible. F ex a unit with several 
     database components could be named "JvDBControls.pas" whereas a unit 
     containing a TJvEditor control would be named "JvEditor.pas". 
-    <li>All image files are in all UPPER CASE</LI></UL>
+    <li>All image file names are in ALL UPPER CASE (TJVALARM.BMP)</LI> 
+    <li>All include file names are in ALL UPPER CASE (JVCL.INC)</LI></UL>
   <p>&nbsp;</P>
   <p><strong>Using the word "Form" in 
   filenames</STRONG></P>
   <p>All forms (units with DFM's) are suffixed with the 
-  word "Form" regardless of if whether they contain a dialog or a form. The word 
+  word "Form" regardless of whether they contain a dialog or a form (i.e JvDualListForm.pas). The word 
   "Form" can also be used as a prefix if the component in the unit is acting 
-  upon a form without being one itself (i.e JvFormMagnet) </P>
+  upon a form without being one itself (i.e JvFormMagnet.pas) </P>
   <p>&nbsp;</P>
   <p><strong>Using the word "Dialog" 
   in filenames</STRONG></P>
   <p>The word "Dialog" in a unit name signifies that the 
   unit contains a component that has no UI at designtime but shows a form or 
-  dialog at run time (like the TOpenDialog et al). At the moment, "Dlg" and 
+  dialog at run time (i.e JvObjectPickerDialog.pas). At the moment, "Dlg" and 
   "Dlgs" are accepted but their use is discouraged. </P>
   <p>&nbsp;</P>
   <p><strong>Using the words "Const" 
   and "Consts" in filenames</STRONG></P>
   <p>The words "Const" and "Consts" are only used in units 
-  that contains just type, resourcestring and const declarations and no code. 
+  that contains just type, resourcestring and const declarations and no code (i.e
+  JvConsts.pas). 
   </P>
   <p><strong></STRONG>&nbsp;</P>
   <p><strong>Using the words "Util" 
   and "Utils" in filenames</STRONG></P>
   <p>The word "Util" and "Utils" are only used in units 
-  that contains support routines and classes of more general use. Classes in 
+  that contains support routines and classes of more general use (i.e
+  JvJVCLUtils.pas). Classes in 
   util type units should never be installable. </P>
   <p>&nbsp;</P>
   <p><strong>Design time 
@@ -962,8 +987,8 @@ JVCL:</P>
   <p>Units containing designtime editors should have the 
   same base name as the component they are primarily used to edit and an 
   "Editor" or "Editors" suffix, i.e a property editor unit for the 
-  TJvBehaviorLabel should be called either "JvBehaviorLabelEditor" or 
-  "JvBehaviorLabelEditors". </P>
+  TJvBehaviorLabel should be called either "JvBehaviorLabelEditor" or &quot;JvBehaviorLabelEditors&quot;. </P>
+  <p>&nbsp; </P>
   <p>The base name for the unit is controlled by the name 
   of the component the editor(s) were meant for: if all editors are for the same 
   component, we use the same rule as for a single editor (the plural form), if 
@@ -971,6 +996,7 @@ JVCL:</P>
   editors "family" ("JvDBEditors" contains design editors for DB related 
   components) or according to it's general data type (i.e "JvDateEditors" 
   contains editors used to edit date related properties). </P>
+  <p>&nbsp; </P>
   <p>It doesn't matter (name wise) if a unit contains 
   property, component or any other types of editor. They are all named the same 
   way. If a design editor is implemented in the same unit as a form, the unit is 
@@ -980,21 +1006,24 @@ JVCL:</P>
   moved to a new unit, not the form. The new unit for the editor will then get 
   an appropriate name with a "Editor" suffix but the name of the form will not 
   change. </P>
-  <p>Adding editors to forms is discouraged. We try to keep 
-  editors in their own unit, preferably one editor per unit. Editor units can 
-  contain their own Register procedure but this is also discouraged. The 
-  Register procedure should optimally only be present in specific "Reg" files 
-  for a package. This minimizes confusion and clutter and maximizes reuse, loose 
-  coupling and simplifies maintenance and restructuring. </P>
+  <p>&nbsp; </P>
+  <p>Adding design editors to form units is discouraged. We try to keep 
+  editors in their own unit, preferably one editor per unit. Editor units should
+  not 
+  contain their own Register procedure. The 
+  Register procedure should only be present in specific "Reg" files 
+  for a package (see below). This minimizes confusion and clutter and maximizes reuse, loose 
+  coupling and simplifies maintenance and future restructuring. </P>
   <p><strong></STRONG>&nbsp;</P>
   <p><strong>Registration 
   units</STRONG></P>
   <p>Each design package have it's own registration unit 
   with a Register procedure. The unit is named with the same base name as the 
-  package but with a "Reg" suffix (i.e the reg file for the "JvCore" design 
+  package but with a "Reg" suffix (i.e the reg file for the &quot;JvCore&quot; design 
   package is named "JvCoreReg.pas"). The reg file only contains registrations 
   for the components and design editors. Design editors and other support code 
   is not added to the reg file unless absolutely necessary. </P>
+  <p>&nbsp; </P>
   <p>A matching dcr file is also included in the \resources 
   folder. The dcr file always have the same base name as the reg file but with a 
   dcr file extension (i.e the palette icons for components registered in 
@@ -1066,16 +1095,19 @@ JVCL users in one of the following manners:</P>
   <li>Homepage. Our homepage is located at <a href="http://jvcl.sourceforge.net">http://jvcl.sourceforge.net</a>
       <li>Newsgroups. You can access the JVCL newsgroups at <a href="news://forums.talkto.net/jedi.vcl">
           news://forums.talkto.net/jedi.vcl</a>
+        (preferred)
       <li>Mail lists. There are still some mail lists on Yahoo
         to discuss JVCL but these are gradually being closed down, so please do not
         use these. If you can't access the newsgroups, you can post messages to the
         mail lists on sourceforge. Go to <a href="http://sf.net/projects/jvcl">http://sf.net/projects/jvcl</a>
       and click
-      he "Lists" link to get to the soureforge mail lists.
+      he "Lists" link to get to the soureforge mail lists (deprecated).
       <li>Bug reporting. To report bugs, suggest improvement or
-        new features or donate a component, go to Mantis (our bug tracking software)
+        new features or donate a component, go to Mantis (our on-line bug tracker)
         and post/reply to the reports there. You'll find Mantis at <a href="http://projectjedi.sourceforge.net/mantis">
-          http://projectjedi.sourceforge.net/mantis</a>.</li></UL>
+          http://projectjedi.sourceforge.net/mantis</a>. Please make sure your
+        problem hasn't already been reported and fixed before posting a new bug
+        report!</li></UL>
     <p>&nbsp;</p>
     <p>&nbsp;</p>
     <p>&nbsp;</p>
