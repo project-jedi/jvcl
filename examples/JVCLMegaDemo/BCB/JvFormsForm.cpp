@@ -55,14 +55,14 @@ void __fastcall TfrmJvForms::BitBtn1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TfrmJvForms::BitBtn2Click(TObject *Sender)
 {
-  TheForm := new TfrmAnimatedTitle(NULL);
+  TheForm = new TfrmAnimatedTitle(NULL);
   TheForm->ShowModal();
   delete TheForm;
 }
 //---------------------------------------------------------------------------
 void __fastcall TfrmJvForms::BitBtn4Click(TObject *Sender)
 {
-  TheForm := new TfrmTransparent(NULL);
+  TheForm = new TfrmTransparent(NULL);
   TheForm->ShowModal();
   delete TheForm;
 }
