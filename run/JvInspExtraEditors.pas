@@ -47,22 +47,21 @@ uses
   JvInspector;
 
 type
-
-// In the same spirit as the TJvTypeInfoHelper class in JvInspector.pas
-// we define here a TJvTypeInfoExtraHelper class for the types that
-// are used by the editors in this unit. Please refer to JvInspector.pas
-// for more details on this C++ Builder compatibility issue.
-  TJvTypeInfoExtraHelper = class (TJvTypeInfoHelper)
+  // In the same spirit as the TJvTypeInfoHelper class in JvInspector.pas
+  // we define here a TJvTypeInfoExtraHelper class for the types that
+  // are used by the editors in this unit. Please refer to JvInspector.pas
+  // for more details on this C++ Builder compatibility issue.
+  TJvTypeInfoExtraHelper = class(TJvTypeInfoHelper)
   private
-    FTAlignProp      : TAlign;
-    FTAnchorsProp    : TAnchors;
-    FTColorProp      : TColor;
-    FTImageIndexProp : TImageIndex;
+    FTAlignProp: TAlign;
+    FTAnchorsProp: TAnchors;
+    FTColorProp: TColor;
+    FTImageIndexProp: TImageIndex;
   published
-    property TAlignProp      : TAlign      read FTAlignProp;
-    property TAnchorsProp    : TAnchors    read FTAnchorsProp;
-    property TColorProp      : TColor      read FTColorProp;
-    property TImageIndexProp : TImageIndex read FTImageIndexProp;
+    property TAlignProp: TAlign read FTAlignProp;
+    property TAnchorsProp: TAnchors read FTAnchorsProp;
+    property TColorProp: TColor read FTColorProp;
+    property TImageIndexProp: TImageIndex read FTImageIndexProp;
   end;
 
   { TAlign item editor. Descents from the enumeration item to keep DisplayValue available }
@@ -172,7 +171,9 @@ type
 implementation
 
 uses
-  TypInfo, JclRTTI, JvResources;
+  TypInfo,
+  JclRTTI,
+  JvResources;
 
 type
   TOpenInspector = class(TJvCustomInspector);
@@ -186,6 +187,15 @@ type
   end;
 
 //=== TJvInspectorAlignItem ==================================================
+
+constructor TJvInspectorAlignItem.Create(const AParent: TJvCustomInspectorItem;
+  const AData: TJvCustomInspectorData);
+begin
+  inherited Create(AParent, AData);
+  FUnassignedColor := clGrayText;
+  FNormalColor := clWindowText;
+  FActiveColor := clBlue;
+end;
 
 procedure TJvInspectorAlignItem.EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 var
@@ -332,15 +342,6 @@ begin
   RenderAlign(alLeft, ARect.Left + 2, ARect.Top + 1);
 end;
 
-constructor TJvInspectorAlignItem.Create(const AParent: TJvCustomInspectorItem;
-  const AData: TJvCustomInspectorData);
-begin
-  inherited Create(AParent, AData);
-  FUnassignedColor := clGrayText;
-  FNormalColor := clWindowText;
-  FActiveColor := clBlue;
-end;
-
 procedure TJvInspectorAlignItem.DoneEdit(const CancelEdits: Boolean = False);
 begin
   SetEditing(False);
@@ -387,6 +388,18 @@ begin
 end;
 
 //=== TJvInspectorColorItem ==================================================
+
+constructor TJvInspectorColorItem.Create(const AParent: TJvCustomInspectorItem;
+  const AData: TJvCustomInspectorData);
+begin
+  inherited Create(AParent, AData);
+  FColors := TStringList.Create;
+  FStdColors := TStringList.Create;
+  GetColorValues(AddStdColor);
+  FStdColors.Sort;
+  IncludeStdColors := True;
+  Flags := [iifVisible, iifValueList, iifAllowNonListValues, iifOwnerDrawListVariable];
+end;
 
 procedure TJvInspectorColorItem.AddStdColor(const S: string);
 begin
@@ -549,18 +562,6 @@ begin
   inherited SetRects(RectKind, Value);
 end;
 
-constructor TJvInspectorColorItem.Create(const AParent: TJvCustomInspectorItem;
-  const AData: TJvCustomInspectorData);
-begin
-  inherited Create(AParent, AData);
-  FColors := TStringList.Create;
-  FStdColors := TStringList.Create;
-  GetColorValues(AddStdColor);
-  FStdColors.Sort;
-  IncludeStdColors := True;
-  Flags := [iifVisible, iifValueList, iifAllowNonListValues, iifOwnerDrawListVariable];
-end;
-
 procedure TJvInspectorColorItem.BeforeDestruction;
 begin
   FStdColors.Free;
@@ -626,6 +627,15 @@ end;
 
 //=== TJvInspectorAnchorsItem ================================================
 
+constructor TJvInspectorAnchorsItem.Create(const AParent: TJvCustomInspectorItem;
+  const AData: TJvCustomInspectorData);
+begin
+  inherited Create(AParent, AData);
+  FUnassignedColor := clGrayText;
+  FNormalColor := clWindowText;
+  FActiveColor := clBlue;
+end;
+
 procedure TJvInspectorAnchorsItem.EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 var
   NewAnchors: TAnchors;
@@ -685,7 +695,7 @@ var
     if Side in NewAnchors then
       Exclude(NewAnchors, Side)
     else
-      Include(NewAnchors, Side)
+      Include(NewAnchors, Side);
   end;
 
 begin
@@ -762,15 +772,6 @@ begin
   RenderAnchors(akLeft, ARect.Left + 2, ARect.Top + 1);
 end;
 
-constructor TJvInspectorAnchorsItem.Create(const AParent: TJvCustomInspectorItem;
-  const AData: TJvCustomInspectorData);
-begin
-  inherited Create(AParent, AData);
-  FUnassignedColor := clGrayText;
-  FNormalColor := clWindowText;
-  FActiveColor := clBlue;
-end;
-
 procedure TJvInspectorAnchorsItem.DoneEdit(const CancelEdits: Boolean = False);
 begin
   SetEditing(False);
@@ -820,7 +821,7 @@ procedure TJvInspectorTImageIndexItem.PaintValue(const ImgNum: Integer; const Im
 var
   TH: Integer;
   BoxRect: TRect;
-  BMP: TBitmap;
+  Bmp: TBitmap;
 begin
   TH := Rects[iprValue].Bottom - Rects[iprValue].Top - 2;
   BoxRect.Left := ARect.Left + (ARect.Bottom - ARect.Top - TH) div 2;
@@ -831,12 +832,12 @@ begin
   begin
     if (ImgNum > -1) and (Images <> nil) and (ImgNum < Images.Count) then
     begin
-      BMP := TBitmap.Create;
+      Bmp := TBitmap.Create;
       try
-        Images.GetBitmap(ImgNum, BMP);
-        StretchDraw(BoxRect, BMP);
+        Images.GetBitmap(ImgNum, Bmp);
+        StretchDraw(BoxRect, Bmp);
       finally
-        BMP.Free;
+        Bmp.Free;
       end;
     end;
     TextOut(ARect.Left + (ARect.Bottom - ARect.Top) + 1, BoxRect.Top, ImgName);
@@ -940,8 +941,8 @@ begin
       Idx := Data.AsOrdinal;
     end;
   except
-      S := RsJvInspItemValueException + ExceptObject.ClassName + ': ' +
-        Exception(ExceptObject).Message;
+    S := RsJvInspItemValueException + ExceptObject.ClassName + ': ' +
+      Exception(ExceptObject).Message;
   end;
   ARect := Rects[iprValueArea];
   SafeColor := ACanvas.Brush.Color;

@@ -107,7 +107,7 @@ type
 
   TJvAppStorageOptionsClass = class of TJvCustomAppStorageOptions;
 
-  TJvAppStorageEnumOption  = (
+  TJvAppStorageEnumOption = (
     aeoFolders,           // report folders
     aeoValues,            // report values
     aeoReportListAsValue, // report list as value (a list is actually a folder containing a Count and Item? values)
@@ -572,12 +572,12 @@ type
     function GetOwnerStore: TJvCustomAppStorage;
     function GetDisplayName: string; override;
     procedure SetRootPath(Value: string);
-    procedure SeTJvAppStorage(Value: TJvCustomAppStorage);
+    procedure SetAppStorage(Value: TJvCustomAppStorage);
 
     property OwnerStore: TJvCustomAppStorage read GetOwnerStore;
   published
     property RootPath: string read FRootPath write SetRootPath;
-    property AppStorage: TJvCustomAppStorage read FAppStorage write SeTJvAppStorage;
+    property AppStorage: TJvCustomAppStorage read FAppStorage write SetAppStorage;
   end;
 
   // Base class for all in memory file storage classes.
@@ -602,8 +602,8 @@ type
 
     function GetFullFileName : TFileName;
 
-    property AsString : string read GetAsString write SetAsString;
-    property FileName : TFileName read FFileName write SetFileName;
+    property AsString: string read GetAsString write SetAsString;
+    property FileName: TFileName read FFileName write SetFileName;
     property Location: TFileLocation read FLocation write SetLocation default flExeFile;
   public
     constructor Create(AOwner: TComponent); override;
@@ -612,7 +612,7 @@ type
     procedure Flush; virtual; abstract;
     procedure Reload; virtual; abstract;
 
-    property FullFileName : TFileName read GetFullFileName;
+    property FullFileName: TFileName read GetFullFileName;
   end;
 
 // (marcelb) moved back; the constants are useful to the outside world after a call to GetStoredValues
@@ -704,15 +704,15 @@ function OrdOfEnum(const Value; OrdType: TOrdType): Integer;
 begin
   case OrdType of
     otSByte:
-      Result := ShortInt(Value);
+      Result := Shortint(Value);
     otUByte:
       Result := Byte(Value);
     otSWord:
-      Result := SmallInt(Value);
+      Result := Smallint(Value);
     otUWord:
       Result := Word(Value);
     otSLong, otULong:
-      Result := LongInt(Value);
+      Result := Longint(Value);
     else
       Result := -1;
   end;
@@ -2155,7 +2155,7 @@ begin
       raise EJVCLAppStorageError.CreateFmt(RsENotAUniqueRootPath, [Value]);
 end;
 
-procedure TJvAppSubStorage.SeTJvAppStorage(Value: TJvCustomAppStorage);
+procedure TJvAppSubStorage.SetAppStorage(Value: TJvCustomAppStorage);
 begin
   if Value <> AppStorage then
   begin
@@ -2229,18 +2229,18 @@ begin
   FFileName := ChangeFileExt(ExtractFileName(Application.ExeName), '.' + ADefaultExtension);
 end;  }
 
-{ TJvCustomMemoryFileAppStorage }
+//=== TJvCustomAppMemoryFileStorage ==========================================
 
 constructor TJvCustomAppMemoryFileStorage.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FLocation := flExeFile;
 end;
 
 destructor TJvCustomAppMemoryFileStorage.Destroy;
 begin
   Flush;
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvCustomAppMemoryFileStorage.GetFullFileName: TFileName;
@@ -2279,8 +2279,7 @@ begin
   end;
 end;
 
-procedure TJvCustomAppMemoryFileStorage.SetLocation(
-  const Value: TFileLocation);
+procedure TJvCustomAppMemoryFileStorage.SetLocation(const Value: TFileLocation);
 begin
   if FLocation <> Value then
   begin

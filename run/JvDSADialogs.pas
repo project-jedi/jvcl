@@ -41,9 +41,10 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls, QStdCtrls, QDialogs, QExtCtrls, QForms, QGraphics, QWindows, Types,
-  QClipBrd,
+  QClipbrd,
   {$ENDIF VisualCLX}
-  JclBase, JvConsts, JvComponent, JvTypes, JvDynControlEngine;
+  JclBase,
+  JvConsts, JvComponent, JvTypes, JvDynControlEngine;
 
 type
   TDlgCenterKind = (dckScreen, dckMainForm, dckActiveForm);
@@ -354,9 +355,9 @@ function GetDSACheckMarkText(const ID: TDSACheckTextKind): string;
 //----------------------------------------------------------------------------
 // Standard DSA storage devices
 //----------------------------------------------------------------------------
-{$IFDEF VCL}
+{$IFDEF MSWINDOWS}
 function DSARegStore: TDSARegStorage;
-{$ENDIF VCL}
+{$ENDIF MSWINDOWS}
 function DSAQueueStore: TDSAQueueStorage;
 
 //----------------------------------------------------------------------------
@@ -562,7 +563,7 @@ var
   Data: THandle;
   DataPtr: Pointer;
 begin
-  if OpenClipBoard(0) then
+  if OpenClipboard(0) then
   begin
     try
       Data := GlobalAlloc(GMEM_MOVEABLE + GMEM_DDESHARE, Length(Text) + 1);
@@ -570,7 +571,7 @@ begin
         DataPtr := GlobalLock(Data);
         try
           Move(PChar(Text)^, DataPtr^, Length(Text) + 1);
-          EmptyClipBoard;
+          EmptyClipboard;
           SetClipboardData(CF_TEXT, Data);
         finally
           GlobalUnlock(Data);
@@ -1183,8 +1184,9 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
 //=== TDSARegStorage =========================================================
+
+{$IFDEF MSWINDOWS}
 
 constructor TDSARegStorage.Create(const ARootKey: HKEY; const AKey: string);
 begin
@@ -1301,7 +1303,8 @@ begin
   CreateKey(DSAInfo);
   RegWriteString(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
 end;
-{$ENDIF VCL}
+
+{$ENDIF MSWINDOWS}
 
 //=== TDSAValues =============================================================
 
@@ -1549,7 +1552,7 @@ const
   IconIDs: array [TMsgDlgType] of PChar =
     (IDI_EXCLAMATION, IDI_HAND, IDI_ASTERISK, IDI_QUESTION, nil);
 
-{$IFDEF VCL}
+  {$IFDEF VCL}
   ButtonCaptions: array [TMsgDlgBtn] of string =
    (SMsgDlgYes, SMsgDlgNo, SMsgDlgOK, SMsgDlgCancel, SMsgDlgAbort,
     SMsgDlgRetry, SMsgDlgIgnore, SMsgDlgAll, SMsgDlgNoToAll, SMsgDlgYesToAll,
@@ -1557,20 +1560,17 @@ const
   ModalResults: array [TMsgDlgBtn] of Integer =
    (mrYes, mrNo, mrOk, mrCancel, mrAbort, mrRetry, mrIgnore, mrAll, mrNoToAll,
     mrYesToAll, 0);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-//  TMsgDlgType = (mtCustom, mtInformation, mtWarning, mtError, mtConfirmation);
-//
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  // TMsgDlgType = (mtCustom, mtInformation, mtWarning, mtError, mtConfirmation);
   ButtonCaptions: array [TMsgDlgBtn] of string =
-  (SMsgDlgHelp, SMsgDlgOK, SMsgDlgCancel, SMsgDlgYes,
-   SMsgDlgNo,  SMsgDlgAbort, SMsgDlgRetry, SMsgDlgIgnore,
-   SMsgDlgAll, SMsgDlgNoToAll, SMsgDlgYesToAll);
-
+   (SMsgDlgHelp, SMsgDlgOK, SMsgDlgCancel, SMsgDlgYes,
+    SMsgDlgNo, SMsgDlgAbort, SMsgDlgRetry, SMsgDlgIgnore,
+    SMsgDlgAll, SMsgDlgNoToAll, SMsgDlgYesToAll);
   ModalResults: array [TMsgDlgBtn] of Integer =
-  (0, mrOk, mrCancel, mrYes, mrNo, mrAbort, mrRetry, mrIgnore, mrAll, mrNoToAll,
-   mrYesToAll);
-
-{$ENDIF VisualCLX}
+   (0, mrOk, mrCancel, mrYes, mrNo, mrAbort, mrRetry, mrIgnore, mrAll, mrNoToAll,
+    mrYesToAll);
+  {$ENDIF VisualCLX}
 
 function DlgCaption(const DlgType: TMsgDlgType): string;
 begin
@@ -2045,6 +2045,7 @@ end;
 
 var
   GlobalRegStore: TDSAStorage = nil;
+
 {$IFDEF MSWINDOWS}
 function DSARegStore: TDSARegStorage;
 begin

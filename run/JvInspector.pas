@@ -1301,7 +1301,7 @@ type
     // be output as 'const TForm*' by both the Linker and HPP generator,
     // thus not triggerring any error, even if this doesn't respect the
     // meaning of the Delphi construct which is 'TForm const *'
-    constructor CreatePrim(const AName: string;  ATypeInfo: PTypeInfo);
+    constructor CreatePrim(AName: string; ATypeInfo: PTypeInfo);
     procedure CheckReadAccess; virtual;
     procedure CheckWriteAccess; virtual;
     procedure DoDataChanged;
@@ -1549,7 +1549,7 @@ type
     FKey: string;
     FSection: string;
   protected
-    constructor CreatePrim(const AName, ASection, AKey: string;  ATypeInfo: PTypeInfo);
+    constructor CreatePrim(AName, ASection, AKey: string;  ATypeInfo: PTypeInfo);
     function ExistingValue: Boolean; virtual; abstract;
     function GetAsFloat: Extended; override;
     function GetAsInt64: Int64; override;
@@ -9254,7 +9254,7 @@ end;
 
 //=== TJvCustomInspectorData =================================================
 
-constructor TJvCustomInspectorData.CreatePrim(const AName: string;
+constructor TJvCustomInspectorData.CreatePrim(AName: string;
    ATypeInfo: PTypeInfo);
 begin
   inherited Create;
@@ -10601,8 +10601,8 @@ end;
 
 //=== TJvInspectorCustomConfData =============================================
 
-constructor TJvInspectorCustomConfData.CreatePrim(const AName, ASection, AKey: string;
-   ATypeInfo: PTypeInfo);
+constructor TJvInspectorCustomConfData.CreatePrim(AName, ASection, AKey: string;
+  ATypeInfo: PTypeInfo);
 begin
   inherited CreatePrim(AName, ATypeInfo);
   FKey := AKey;

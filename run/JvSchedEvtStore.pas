@@ -446,18 +446,18 @@ begin
   raise EJVCLException.Create(RsENotImplemented_);
 end;
 
+//=== TBinStore ==============================================================
+
 const
   BinStreamID = 'JVSE';
   BinStreamVer = Word($0001);
 
-//=== TBinStore ==============================================================
-
 type
   TBinStore = class(TJvSchedEvtStore)
   private
-    Stream: TStream;
-    OwnsStream: Boolean;
-    StreamVersion: Word; // Only used for reading
+    FStream: TStream;
+    FOwnsStream: Boolean;
+    FStreamVersion: Word; // Only used for reading
   protected
     // Retrieving items: Schedule
     procedure CheckSignature; override;
@@ -516,14 +516,14 @@ type
 constructor TBinStore.Create(const AStream: TStream; const AOwnsStream: Boolean);
 begin
   inherited Create;
-  Stream := AStream;
-  OwnsStream := AOwnsStream;
+  FStream := AStream;
+  FOwnsStream := AOwnsStream;
 end;
 
 destructor TBinStore.Destroy;
 begin
-  if OwnsStream then
-    FreeAndNil(Stream);
+  if FOwnsStream then
+    FreeAndNil(FStream);
   inherited Destroy;
 end;
 
@@ -532,23 +532,23 @@ var
   S: string;
 begin
   SetLength(S, Length(BinStreamID));
-  Stream.ReadBuffer(S[1], Length(BinStreamID));
+  FStream.ReadBuffer(S[1], Length(BinStreamID));
   if S <> BinStreamID then
     raise EJVCLException.Create(RsENotASchedule);
 end;
 
 procedure TBinStore.CheckVersion;
 begin
-  Stream.ReadBuffer(StreamVersion, SizeOf(StreamVersion));
-  if StreamVersion > BinStreamVer then
-    raise EJVCLException.CreateFmt(RsEUnknownScheduleVersions, [IntToHex(StreamVersion, 4)]);
+  FStream.ReadBuffer(FStreamVersion, SizeOf(FStreamVersion));
+  if FStreamVersion > BinStreamVer then
+    raise EJVCLException.CreateFmt(RsEUnknownScheduleVersions, [IntToHex(FStreamVersion, 4)]);
 end;
 
 procedure TBinStore.RestoreScheduleStart;
 var
   I: TTimeStamp;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
+  FStream.ReadBuffer(I, SizeOf(I));
   Event.Schedule.StartDate := I;
 end;
 
@@ -556,7 +556,7 @@ procedure TBinStore.RestoreScheduleRecurType;
 var
   I: TScheduleRecurringKind;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
+  FStream.ReadBuffer(I, SizeOf(I));
   Event.Schedule.RecurringType := I;
 end;
 
@@ -564,7 +564,7 @@ procedure TBinStore.RestoreScheduleEndType;
 var
   I: TScheduleEndKind;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
+  FStream.ReadBuffer(I, SizeOf(I));
   Event.Schedule.EndType := I;
 end;
 
@@ -572,7 +572,7 @@ procedure TBinStore.RestoreScheduleEndCount;
 var
   I: Cardinal;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
+  FStream.ReadBuffer(I, SizeOf(I));
   Event.Schedule.EndCount := I;
 end;
 
@@ -580,7 +580,7 @@ procedure TBinStore.RestoreScheduleEndDate;
 var
   I: TTimeStamp;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
+  FStream.ReadBuffer(I, SizeOf(I));
   Event.Schedule.EndDate := I;
 end;
 
@@ -588,7 +588,7 @@ procedure TBinStore.RestoreFreqStart;
 var
   I: Cardinal;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
+  FStream.ReadBuffer(I, SizeOf(I));
   (Event.Schedule as IJclScheduleDayFrequency).StartTime := I;
 end;
 
@@ -596,7 +596,7 @@ procedure TBinStore.RestoreFreqEnd;
 var
   I: Cardinal;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
+  FStream.ReadBuffer(I, SizeOf(I));
   (Event.Schedule as IJclScheduleDayFrequency).EndTime := I;
 end;
 
@@ -604,7 +604,7 @@ procedure TBinStore.RestoreFreqInterval;
 var
   I: Cardinal;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
+  FStream.ReadBuffer(I, SizeOf(I));
   (Event.Schedule as IJclScheduleDayFrequency).Interval := I;
 end;
 
@@ -612,7 +612,7 @@ procedure TBinStore.RestoreScheduleDailyWeekdays;
 var
   I: Boolean;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
+  FStream.ReadBuffer(I, SizeOf(I));
   (Event.Schedule as IJclDailySchedule).EveryWeekDay := I;
 end;
 
@@ -620,7 +620,7 @@ procedure TBinStore.RestoreScheduleDailyInterval;
 var
   I: Cardinal;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
+  FStream.ReadBuffer(I, SizeOf(I));
   (Event.Schedule as IJclDailySchedule).Interval := I;
 end;
 
@@ -628,7 +628,7 @@ procedure TBinStore.RestoreScheduleWeeklyDays;
 var
   I: TScheduleWeekDays;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
+  FStream.ReadBuffer(I, SizeOf(I));
   (Event.Schedule as IJclWeeklySchedule).DaysOfWeek := I;
 end;
 
@@ -636,7 +636,7 @@ procedure TBinStore.RestoreScheduleWeeklyInterval;
 var
   I: Cardinal;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
+  FStream.ReadBuffer(I, SizeOf(I));
   (Event.Schedule as IJclWeeklySchedule).Interval := I;
 end;
 
@@ -644,7 +644,7 @@ procedure TBinStore.RestoreScheduleMonthlyDay;
 var
   I: Cardinal;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
+  FStream.ReadBuffer(I, SizeOf(I));
   (Event.Schedule as IJclMonthlySchedule).Day := I;
 end;
 
@@ -652,7 +652,7 @@ procedure TBinStore.RestoreScheduleMonthlyIndexType;
 var
   I: TScheduleIndexKind;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
+  FStream.ReadBuffer(I, SizeOf(I));
   (Event.Schedule as IJclMonthlySchedule).IndexKind := I;
 end;
 
@@ -660,7 +660,7 @@ procedure TBinStore.RestoreScheduleMonthlyIndex;
 var
   I: Integer;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
+  FStream.ReadBuffer(I, SizeOf(I));
   (Event.Schedule as IJclMonthlySchedule).IndexValue := I;
 end;
 
@@ -668,7 +668,7 @@ procedure TBinStore.RestoreScheduleMonthlyInterval;
 var
   I: Cardinal;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
+  FStream.ReadBuffer(I, SizeOf(I));
   (Event.Schedule as IJclMonthlySchedule).Interval := I;
 end;
 
@@ -676,7 +676,7 @@ procedure TBinStore.RestoreScheduleYearlyDay;
 var
   I: Cardinal;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
+  FStream.ReadBuffer(I, SizeOf(I));
   (Event.Schedule as IJclYearlySchedule).Day := I;
 end;
 
@@ -684,7 +684,7 @@ procedure TBinStore.RestoreScheduleYearlyMonth;
 var
   I: Cardinal;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
+  FStream.ReadBuffer(I, SizeOf(I));
   (Event.Schedule as IJclYearlySchedule).Month := I;
 end;
 
@@ -692,7 +692,7 @@ procedure TBinStore.RestoreScheduleYearlyIndexType;
 var
   I: TScheduleIndexKind;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
+  FStream.ReadBuffer(I, SizeOf(I));
   (Event.Schedule as IJclYearlySchedule).IndexKind := I;
 end;
 
@@ -700,7 +700,7 @@ procedure TBinStore.RestoreScheduleYearlyIndex;
 var
   I: Integer;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
+  FStream.ReadBuffer(I, SizeOf(I));
   (Event.Schedule as IJclYearlySchedule).IndexValue := I;
 end;
 
@@ -708,7 +708,7 @@ procedure TBinStore.RestoreScheduleYearlyInterval;
 var
   I: Cardinal;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
+  FStream.ReadBuffer(I, SizeOf(I));
   (Event.Schedule as IJclYearlySchedule).Interval := I;
 end;
 
@@ -717,7 +717,7 @@ var
   S: string;
 begin
   S := BinStreamID;
-  Stream.WriteBuffer(S[1], Length(S));
+  FStream.WriteBuffer(S[1], Length(S));
 end;
 
 procedure TBinStore.StoreVersion;
@@ -725,7 +725,7 @@ var
   W: Word;
 begin
   W := BinStreamVer;
-  Stream.writeBuffer(W, SizeOf(W));
+  FStream.writeBuffer(W, SizeOf(W));
 end;
 
 procedure TBinStore.StoreScheduleStart;
@@ -733,7 +733,7 @@ var
   Stamp: TTimeStamp;
 begin
   Stamp := Event.Schedule.StartDate;
-  Stream.WriteBuffer(Stamp, SizeOf(Stamp));
+  FStream.WriteBuffer(Stamp, SizeOf(Stamp));
 end;
 
 procedure TBinStore.StoreScheduleRecurType;
@@ -741,7 +741,7 @@ var
   RT: TScheduleRecurringKind;
 begin
   RT := Event.Schedule.RecurringType;
-  Stream.WriteBuffer(RT, SizeOf(RT));
+  FStream.WriteBuffer(RT, SizeOf(RT));
 end;
 
 procedure TBinStore.StoreScheduleEndType;
@@ -749,7 +749,7 @@ var
   ET: TScheduleEndKind;
 begin
   ET := Event.Schedule.EndType;
-  Stream.WriteBuffer(ET, SizeOf(ET));
+  FStream.WriteBuffer(ET, SizeOf(ET));
 end;
 
 procedure TBinStore.StoreScheduleEndCount;
@@ -757,7 +757,7 @@ var
   I: Cardinal;
 begin
   I := Event.Schedule.EndCount;
-  Stream.WriteBuffer(I, SizeOf(I));
+  FStream.WriteBuffer(I, SizeOf(I));
 end;
 
 procedure TBinStore.StoreScheduleEndDate;
@@ -765,7 +765,7 @@ var
   Stamp: TTimeStamp;
 begin
   Stamp := Event.Schedule.EndDate;
-  Stream.WriteBuffer(Stamp, SizeOf(Stamp));
+  FStream.WriteBuffer(Stamp, SizeOf(Stamp));
 end;
 
 procedure TBinStore.StoreFreqStart;
@@ -773,7 +773,7 @@ var
   I: Cardinal;
 begin
   I := (Event.Schedule as IJclScheduleDayFrequency).StartTime;
-  Stream.WriteBuffer(I, SizeOf(I));
+  FStream.WriteBuffer(I, SizeOf(I));
 end;
 
 procedure TBinStore.StoreFreqEnd;
@@ -781,7 +781,7 @@ var
   I: Cardinal;
 begin
   I := (Event.Schedule as IJclScheduleDayFrequency).EndTime;
-  Stream.WriteBuffer(I, SizeOf(I));
+  FStream.WriteBuffer(I, SizeOf(I));
 end;
 
 procedure TBinStore.StoreFreqInterval;
@@ -789,7 +789,7 @@ var
   I: Cardinal;
 begin
   I := (Event.Schedule as IJclScheduleDayFrequency).Interval;
-  Stream.WriteBuffer(I, SizeOf(I));
+  FStream.WriteBuffer(I, SizeOf(I));
 end;
 
 procedure TBinStore.StoreScheduleDailyWeekdays;
@@ -797,7 +797,7 @@ var
   EWD: Boolean;
 begin
   EWD := (Event.Schedule as IJclDailySchedule).EveryWeekDay;
-  Stream.WriteBuffer(EWD, SizeOf(EWD));
+  FStream.WriteBuffer(EWD, SizeOf(EWD));
 end;
 
 procedure TBinStore.StoreScheduleDailyInterval;
@@ -805,7 +805,7 @@ var
   I: Cardinal;
 begin
   I := (Event.Schedule as IJclDailySchedule).Interval;
-  Stream.WriteBuffer(I, SizeOf(I));
+  FStream.WriteBuffer(I, SizeOf(I));
 end;
 
 procedure TBinStore.StoreScheduleWeeklyDays;
@@ -813,7 +813,7 @@ var
   WD: TScheduleWeekDays;
 begin
   WD := (Event.Schedule as IJclWeeklySchedule).DaysOfWeek;
-  Stream.WriteBuffer(WD, SizeOf(WD));
+  FStream.WriteBuffer(WD, SizeOf(WD));
 end;
 
 procedure TBinStore.StoreScheduleWeeklyInterval;
@@ -821,7 +821,7 @@ var
   I: Cardinal;
 begin
   I := (Event.Schedule as IJclWeeklySchedule).Interval;
-  Stream.WriteBuffer(I, SizeOf(I));
+  FStream.WriteBuffer(I, SizeOf(I));
 end;
 
 procedure TBinStore.StoreScheduleMonthlyDay;
@@ -829,7 +829,7 @@ var
   I: Cardinal;
 begin
   I := (Event.Schedule as IJclMonthlySchedule).Day;
-  Stream.WriteBuffer(I, SizeOf(I));
+  FStream.WriteBuffer(I, SizeOf(I));
 end;
 
 procedure TBinStore.StoreScheduleMonthlyIndexType;
@@ -837,7 +837,7 @@ var
   I: TScheduleIndexKind;
 begin
   I := (Event.Schedule as IJclMonthlySchedule).IndexKind;
-  Stream.WriteBuffer(I, SizeOf(I));
+  FStream.WriteBuffer(I, SizeOf(I));
 end;
 
 procedure TBinStore.StoreScheduleMonthlyIndex;
@@ -845,7 +845,7 @@ var
   I: Integer;
 begin
   I := (Event.Schedule as IJclMonthlySchedule).IndexValue;
-  Stream.WriteBuffer(I, SizeOf(I));
+  FStream.WriteBuffer(I, SizeOf(I));
 end;
 
 procedure TBinStore.StoreScheduleMonthlyInterval;
@@ -853,7 +853,7 @@ var
   I: Cardinal;
 begin
   I := (Event.Schedule as IJclMonthlySchedule).Interval;
-  Stream.WriteBuffer(I, SizeOf(I));
+  FStream.WriteBuffer(I, SizeOf(I));
 end;
 
 procedure TBinStore.StoreScheduleYearlyDay;
@@ -861,7 +861,7 @@ var
   I: Cardinal;
 begin
   I := (Event.Schedule as IJclYearlySchedule).Day;
-  Stream.WriteBuffer(I, SizeOf(I));
+  FStream.WriteBuffer(I, SizeOf(I));
 end;
 
 procedure TBinStore.StoreScheduleYearlyMonth;
@@ -869,7 +869,7 @@ var
   I: Cardinal;
 begin
   I := (Event.Schedule as IJclYearlySchedule).Month;
-  Stream.WriteBuffer(I, SizeOf(I));
+  FStream.WriteBuffer(I, SizeOf(I));
 end;
 
 procedure TBinStore.StoreScheduleYearlyIndexType;
@@ -877,7 +877,7 @@ var
   I: TScheduleIndexKind;
 begin
   I := (Event.Schedule as IJclYearlySchedule).IndexKind;
-  Stream.WriteBuffer(I, SizeOf(I));
+  FStream.WriteBuffer(I, SizeOf(I));
 end;
 
 procedure TBinStore.StoreScheduleYearlyIndex;
@@ -885,7 +885,7 @@ var
   I: Integer;
 begin
   I := (Event.Schedule as IJclYearlySchedule).IndexValue;
-  Stream.WriteBuffer(I, SizeOf(I));
+  FStream.WriteBuffer(I, SizeOf(I));
 end;
 
 procedure TBinStore.StoreScheduleYearlyInterval;
@@ -893,8 +893,10 @@ var
   I: Integer;
 begin
   I := (Event.Schedule as IJclYearlySchedule).Interval;
-  Stream.WriteBuffer(I, SizeOf(I));
+  FStream.WriteBuffer(I, SizeOf(I));
 end;
+
+//=== TTxtStore ==============================================================
 
 const
   TxtIdentifiers: array [TSchedEvtItemKind] of PChar =
@@ -930,13 +932,11 @@ const
   sTXTID_SchedMonthly = '# Schedule: Monthly info';
   sTXTID_SchedYearly = '# Schedule: Yearly info';
 
-//=== TTxtStore ==============================================================
-
 type
   TTxtStore = class(TJvSchedEvtStore)
   private
-    Stream: TStream;
-    OwnsStream: Boolean;
+    FStream: TStream;
+    FOwnsStream: Boolean;
   protected
     // Retrieving items: Schedule
     procedure CheckSignature; override;
@@ -1017,14 +1017,14 @@ type
 constructor TTxtStore.Create(const AStream: TStream; const AOwnsStream: Boolean);
 begin
   inherited Create;
-  Stream := AStream;
-  OwnsStream := AOwnsStream;
+  FStream := AStream;
+  FOwnsStream := AOwnsStream;
 end;
 
 destructor TTxtStore.Destroy;
 begin
-  if OwnsStream then
-    FreeAndNil(Stream);
+  if FOwnsStream then
+    FreeAndNil(FStream);
   inherited Destroy;
 end;
 
@@ -1042,7 +1042,7 @@ var
   ItemName: string;
   I: Integer;
 begin
-  SPos := Stream.Position;
+  SPos := FStream.Position;
   try
     ReadItem(ItemName);
     I := Pos('.', ItemName);
@@ -1053,7 +1053,7 @@ begin
       not AnsiSameText(ItemName, TxtIdentifiers[Result]) do
       Dec(Result);
   finally
-    Stream.Position := SPos;
+    FStream.Position := SPos;
   end;
 end;
 
@@ -1366,13 +1366,13 @@ var
   SIdx: Integer;
   Done: Boolean;
 begin
-  OrgPos := Stream.Position;
+  OrgPos := FStream.Position;
   Result := '';
   SIdx := 0;
   repeat
     Inc(SIdx);
     SetLength(Result, Length(Result) + 255);
-    SetLength(Result, SIdx + Stream.Read(Result[SIdx], 255));
+    SetLength(Result, SIdx + FStream.Read(Result[SIdx], 255));
     Done := SIdx = Length(Result);
     if not Done then
     begin
@@ -1383,7 +1383,7 @@ begin
         SetLength(Result, SIdx + 1);
     end;
   until Done;
-  Stream.Position := OrgPos + Length(Result);
+  FStream.Position := OrgPos + Length(Result);
   if Copy(Result, Length(Result) - 1, Length(sLineBreak)) = sLineBreak then
     SetLength(Result, Length(Result) - Length(sLineBreak));
 end;
@@ -1392,7 +1392,7 @@ function TTxtStore.ReadNextLine: string;
 begin
   repeat
     Result := ReadLn;
-  until (Trim(Result) <> '') or (Stream.Position = Stream.Size);
+  until (Trim(Result) <> '') or (FStream.Position = FStream.Size);
   Result := Trim(Result);
 end;
 
@@ -1418,7 +1418,7 @@ var
   S2: string;
 begin
   S2 := S + sLineBreak;
-  Stream.WriteBuffer(S2[1], Length(S2));
+  FStream.WriteBuffer(S2[1], Length(S2));
 end;
 
 function TTxtStore.ReadEnum(const AName: string;  TypeInfo: PTypeInfo): Integer;
