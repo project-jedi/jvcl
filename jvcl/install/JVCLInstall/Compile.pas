@@ -105,13 +105,11 @@ type
       Kind: TProgressKind); virtual;
       // DoProgress is called by every DoXxxProgress method
 
-    function CompileProjectGroup(ProjectGroup: TProjectGroup;
-      DebugUnits, ForceJclDcp: Boolean): Boolean;
+    function CompileProjectGroup(ProjectGroup: TProjectGroup; DebugUnits: Boolean): Boolean;
     procedure CreateProjectGroupMakefile(ProjectGroup: TProjectGroup; AutoDepend: Boolean);
     function GenerateResources(TargetConfig: ITargetConfig): Boolean;
     function DeleteFormDataFiles(ProjectGroup: TProjectGroup): Boolean;
     function CopyFormDataFiles(ProjectGroup: TProjectGroup; DebugUnits: Boolean): Boolean;
-    function PrepareJCL(TargetConfig: ITargetConfig; Force: Boolean): Boolean;
 
     function IsCondition(const Condition: string; TargetConfig: ITargetConfig): Boolean;
   public
@@ -120,9 +118,8 @@ type
 
     function GeneratePackages(const Group, Targets, PackagesPath: string): Boolean; overload;
     function GenerateAllPackages: Boolean; overload;
-    function Compile(Force: Boolean = False): Boolean;
-    function CompileTarget(TargetConfig: TTargetConfig;
-      ForceJclDcp: Boolean; DoClx: Boolean): Boolean;
+    function Compile: Boolean;
+    function CompileTarget(TargetConfig: TTargetConfig; DoClx: Boolean): Boolean;
 
     procedure Abort; // abort compile process
 
@@ -155,8 +152,6 @@ uses
   CmdLineUtils, JvConsts, Utils, Core;
 
 resourcestring
-  RsCompilingJCL = 'Compiling JCL dcp files...';
-  RsErrorCompilingJclDcpFiles = 'Error while compiling .dcp files for JCL.';
   RsGeneratingTemplates = 'Generating templates...';
   RsGeneratingPackages = 'Generating packages...';
   RsGeneratingResources = 'Generating resources...';
@@ -347,7 +342,7 @@ end;
 
 /// <summary>
 /// GeneratePackages generates the packages in
-/// PackagesPath for the Group (JVCL, JCL) for the Targets (comma separated
+/// PackagesPath for the Group (JVCL) for the Targets (comma separated
 /// pg.exe target list).
 /// </summary>
 function TCompiler.GeneratePackages(const Group, Targets, PackagesPath: string): Boolean;
@@ -401,93 +396,6 @@ begin
 end;
 
 /// <summary>
-/// PrepareJCL compiles the .dcp files for C++Builder targets where the JVCL
-/// should be installed.
-/// </summary>
-function TCompiler.PrepareJCL(TargetConfig: ITargetConfig; Force: Boolean): Boolean;
-var
-  Args: string;
-  TargetPkgDir, TargetXmlDir, S: string;
-begin
-  Result := False;
-  TargetPkgDir := Format('%s\packages\c%d',
-                         [TargetConfig.JCLDir, TargetConfig.Target.Version]);
-  TargetXmlDir := Format('%s\packages\xml', [TargetConfig.JCLDir]);
-
-  // Are the .dcp files newer than the .lib files? If so we have nothing to do.
-  with TargetConfig do
-  begin
-    if Target.Version = 5 then S := '50' else S := '';
-    if (not Force) and (not Build) and
-       FileExists(Format('%s\CJcl%s.dcp', [BplDir, S])) and
-       FileExists(Format('%s\CJclVcl%s.dcp', [BplDir, S])) then
-    begin
-       if (CompareFileAge('%s\CJcl%s.dcp', [BplDir, S],
-                          '%s\CJcl.lib', [DcpDir]) > 0) and
-          (CompareFileAge('%s\CJclVcl%s.dcp', [BplDir, S],
-                          '%s\CJclVcl.lib', [DcpDir]) > 0) then
-       begin
-         Result := True;
-         Exit; // nothing to do
-       end;
-    end;
-
-    // let the compiler rebuild the dcp files
-    DeleteFile(Format('%s\CJcl%s.dcp', [BplDir, S]));
-    DeleteFile(Format('%s\CJclVcl%s.dcp', [BplDir, S]));
-    DeleteFile(Format('%s\CJclVClx%s.dcp', [BplDir, S]));
-
-    // sometimes the files are in the wrong directory
-    DeleteFile(Format('%s\CJcl%s.dcp', [DcpDir, S]));
-    DeleteFile(Format('%s\CJclVcl%s.dcp', [DcpDir, S]));
-    DeleteFile(Format('%s\CJclVClx%s.dcp', [DcpDir, S]));
-  end;
-
-  // redirect DCPDir to the BPLDir
-  SetEnvironmentVariable('DCPDIR', PChar(TargetConfig.BplDir));
-  SetEnvironmentVariable('JCLROOT', PChar(string(Core.PackageInstaller.Installer.GetJCLDir)));
-  try
-    Args := '-f MakeJCLDcp4BCB.mak';
-
-    DoPackageProgress(nil, RsCompilingJCL, 0, 3);
-    try
-     // copy template for PackageGenerator
-      if Make(TargetConfig, Args + FQuiet + ' Templates', CaptureLine,
-        Data.JVCLPackagesDir + '\bin') <> 0 then
-      begin
-        AbortReason := RsErrorGeneratingTemplates;
-        Exit;
-      end;
-      DoPackageProgress(nil, RsCompilingJCL, 1, 3);
-
-      // generate packages
-      Result := GeneratePackages('JCL', 'c' + IntToStr(TargetConfig.Target.Version),
-        TargetConfig.JCLDir + '\packages');
-      DoPackageProgress(nil, RsCompilingJCL, 2, 3);
-
-      // compile dcp files
-      if Make(TargetConfig, Args + FQuiet, CaptureLine,
-        Data.JVCLPackagesDir + '\bin') <> 0 then
-      begin
-        AbortReason := RsErrorCompilingJclDcpFiles;
-        Exit;
-      end;
-    finally
-      // clean
-      Make(TargetConfig, Args + FQuiet + ' Clean', CaptureLineClean,
-        Data.JVCLPackagesDir + '\bin');
-    end;
-  finally
-    // restore
-    SetEnvironmentVariable('DCPDIR', Pointer(TargetConfig.DcpDir));
-  end;
-
-  DoPackageProgress(nil, '', 0, 100);
-
-  Result := True;
-end;
-
-/// <summary>
 /// GenerateAllPackages generates all JVCL packages
 /// </summary>
 function TCompiler.GenerateAllPackages: Boolean;
@@ -495,7 +403,7 @@ begin
   Result := GeneratePackages('JVCL', 'all', Data.JVCLPackagesDir);
 end;
 
-function TCompiler.Compile(Force: Boolean = False): Boolean;
+function TCompiler.Compile: Boolean;
 var
   i, Index: Integer;
   Frameworks, Count: Integer;
@@ -578,7 +486,7 @@ begin
     DoTargetProgress(TargetConfigs[i], Index, Frameworks);
     if pkVCL in TargetConfigs[i].InstallMode then
     begin
-      Result := CompileTarget(TargetConfigs[i], Force, {CLX:=}False);
+      Result := CompileTarget(TargetConfigs[i], {CLX:=}False);
       if not Result then
         Break;
       Inc(Index);
@@ -586,7 +494,7 @@ begin
     DoTargetProgress(TargetConfigs[i], Index, Frameworks);
     if pkClx in TargetConfigs[i].InstallMode then
     begin
-      Result := CompileTarget(TargetConfigs[i], Force, {CLX:=}True);
+      Result := CompileTarget(TargetConfigs[i], {CLX:=}True);
       if not Result then
         Break;
       Inc(Index);
@@ -599,8 +507,7 @@ end;
 /// CompileTarget starts CompileProjectGroup for all sub targets of the
 /// given target IDE.
 /// </summary>
-function TCompiler.CompileTarget(TargetConfig: TTargetConfig;
-  ForceJclDcp: Boolean; DoClx: Boolean): Boolean;
+function TCompiler.CompileTarget(TargetConfig: TTargetConfig; DoClx: Boolean): Boolean;
 var
   ObjFiles: TStrings;
   i: Integer;
@@ -633,15 +540,13 @@ begin
       // debug units
       if (not TargetConfig.Target.IsBCB) and TargetConfig.DebugUnits then
         Result := CompileProjectGroup(
-          TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], True,
-            ForceJclDcp);
+          TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], True);
     end;
 
     if Result then
       // compile
       Result := CompileProjectGroup(
-        TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], False,
-          ForceJclDcp);
+        TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], False);
 
     if Result or not CmdOptions.KeepFiles then
       Make(TargetConfig, FQuiet + ' Clean', CaptureLineClean);
@@ -665,15 +570,13 @@ begin
       // debug units
       if (not TargetConfig.Target.IsBCB) and TargetConfig.DebugUnits then
         Result := CompileProjectGroup(
-          TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkClx], True,
-            ForceJclDcp);
+          TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkClx], True);
     end;
 
     if Result then
       // compile
       Result := CompileProjectGroup(
-        TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkClx], False,
-          ForceJclDcp);
+        TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkClx], False);
 
     if Result or not CmdOptions.KeepFiles then
       Make(TargetConfig, FQuiet + ' Clean', CaptureLineClean);
@@ -803,8 +706,7 @@ end;
 /// packages generator, calls the GenerateResource method and compiles all
 /// selected packages of the project group.
 /// </summary>
-function TCompiler.CompileProjectGroup(ProjectGroup: TProjectGroup;
-  DebugUnits, ForceJclDcp: Boolean): Boolean;
+function TCompiler.CompileProjectGroup(ProjectGroup: TProjectGroup; DebugUnits: Boolean): Boolean;
 var
   AProjectIndex, i: Integer;
   Args: string;
@@ -997,17 +899,6 @@ begin
     // generate the packages and .cfg files for PkgDir
     if not GeneratePackages('JVCL', Edition, TargetConfig.JVCLPackagesDir) then
       Exit; // AbortReason is set in GeneratePackages
-
-    // *****************************************************************
-
-    if ProjectGroup.Target.IsBCB and Data.CompileJclDcp then
-    begin
-{**}  DoProjectProgress(RsCompilingJCL, GetProjectIndex, ProjectMax);
-      if not PrepareJCL(TargetConfig, ForceJclDcp) then
-        Exit; // AbortReason was set in PrepareJCL
-    end
-    else
-{**}  GetProjectIndex; // increase progress
 
    // *****************************************************************
 

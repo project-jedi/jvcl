@@ -238,7 +238,6 @@ type
     FDxgettextDir: string;
     FJVCLDir: string;
     FDeleteFilesOnUninstall: Boolean;
-    FCompileJclDcp: Boolean;
     FVerbose: Boolean;
     FIgnoreMakeErrors: Boolean;
 
@@ -285,7 +284,6 @@ type
     property GenerateMapFiles: Integer read GetGenerateMapFiles write SetGenerateMapFiles;
 
     property DeleteFilesOnUninstall: Boolean read FDeleteFilesOnUninstall write FDeleteFilesOnUninstall default True;
-    property CompileJclDcp: Boolean read FCompileJclDcp write FCompileJclDcp default True;
     property Verbose: Boolean read FVerbose write FVerbose default False;
     property IgnoreMakeErrors: Boolean read FIgnoreMakeErrors write FIgnoreMakeErrors default False;
 
@@ -349,7 +347,6 @@ var
 begin
   inherited Create;
   FDeleteFilesOnUninstall := True;
-  FCompileJclDcp := True;
   FVerbose := False;
 
   ErrMsg := '';
