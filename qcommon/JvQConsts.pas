@@ -34,7 +34,7 @@ unit JvQConsts;
 interface
 
 uses
-  SysUtils, Classes, QControls, QGraphics, Types, QWindows;
+  SysUtils, Classes, QControls, QGraphics, QWindows;
 
 
 const
@@ -74,6 +74,9 @@ const
   { RALib 1.55 }
   {$IFDEF MSWINDOWS}           
   SDelphiKey = 'Software\Borland\Delphi\7.0';   
+  {$IFDEF DELPHI9}
+  SDelphiKey = 'Software\Borland\BDS\3.0';
+  {$ENDIF DELPHI9}
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   SDelphiKey = '.borland/.jvclx1';
