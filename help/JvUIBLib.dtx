@@ -31,7 +31,7 @@ Description
   lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
   other overloaded functions with the same name.
 Parameters
-  v - Description for this parameter
+  V - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -46,7 +46,7 @@ Description
   lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
   other overloaded functions with the same name.
 Parameters
-  v    - Description for this parameter
+  V    - Description for this parameter
   Date - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
@@ -62,13 +62,13 @@ Description
   lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
   other overloaded functions with the same name.
 Parameters
-  v    - Description for this parameter
+  V    - Description for this parameter
   Date - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@DecodeSQLDate@Integer@SmallInt@Word@Word
+@@DecodeSQLDate@Integer@Smallint@Word@Word
 <TITLE DecodeSQLDate procedure>
 Summary
   Write here a summary (1 line)
@@ -78,7 +78,7 @@ Description
   lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
   other overloaded functions with the same name.
 Parameters
-  v     - Description for this parameter
+  V     - Description for this parameter
   Year  - Description for this parameter
   Month - Description for this parameter
   Day   - Description for this parameter
@@ -93,7 +93,7 @@ Summary
 Description
   Write here a description
 Parameters
-  v         - Description for this parameter
+  V         - Description for this parameter
   Hour      - Description for this parameter
   Minute    - Description for this parameter
   Second    - Description for this parameter
@@ -112,7 +112,7 @@ Description
   lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
   other overloaded functions with the same name.
 Parameters
-  v - Description for this parameter
+  V - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -127,7 +127,7 @@ Description
   lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
   other overloaded functions with the same name.
 Parameters
-  v        - Description for this parameter
+  V        - Description for this parameter
   DateTime - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
@@ -143,7 +143,7 @@ Description
   lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
   other overloaded functions with the same name.
 Parameters
-  v         - Description for this parameter
+  V         - Description for this parameter
   TimeStamp - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
@@ -159,13 +159,13 @@ Description
   lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
   other overloaded functions with the same name.
 Parameters
-  date - Description for this parameter
-  v    - Description for this parameter
+  Date - Description for this parameter
+  V    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@EncodeSQLDate@SmallInt@Word@Word@Integer
+@@EncodeSQLDate@Smallint@Word@Word@Integer
 <TITLE EncodeSQLDate procedure>
 Summary
   Write here a summary (1 line)
@@ -178,7 +178,7 @@ Parameters
   Year  - Description for this parameter
   Month - Description for this parameter
   Day   - Description for this parameter
-  v     - Description for this parameter
+  V     - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -193,8 +193,8 @@ Description
   lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
   other overloaded functions with the same name.
 Parameters
-  date - Description for this parameter
-  v    - Description for this parameter
+  Date - Description for this parameter
+  V    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -210,7 +210,23 @@ Parameters
   Minute    - Description for this parameter
   Second    - Description for this parameter
   Fractions - Description for this parameter
-  v         - Description for this parameter
+  V         - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@EncodeTimeStamp@Cardinal@PISCTimeStamp
+<TITLE EncodeTimeStamp procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Time - Description for this parameter
+  V    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -226,7 +242,7 @@ Description
   other overloaded functions with the same name.
 Parameters
   Date - Description for this parameter
-  v    - Description for this parameter
+  V    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -242,7 +258,7 @@ Description
   other overloaded functions with the same name.
 Parameters
   DateTime - Description for this parameter
-  v        - Description for this parameter
+  V        - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -419,7 +435,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 @@TBlobData
 <TITLE TBlobData type>
 Summary
@@ -519,7 +535,7 @@ See Also
   Description for csWIN1253
 @@TCharacterSet.csWIN1254
   Description for csWIN1254
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 @@TDPBInfo
 <TITLE TDPBInfo type>
 Summary
@@ -533,7 +549,7 @@ See Also
   Description for Name
 @@TDPBInfo.ParamType
   Description for ParamType
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 @@TDSQLInfoData
 <TITLE TDSQLInfoData type>
 Summary
@@ -669,7 +685,7 @@ See Also
 @@TOnGetDBExceptionClass
 <TITLE TOnGetDBExceptionClass type>
 <COMBINE TUIBLibrary.OnGetDBExceptionClass>
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 @@TPageInfo
 <TITLE TPageInfo type>
 Summary
@@ -733,6 +749,17 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TSQLDA.CheckRange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TSQLDA.Data
 Summary
   Write here a summary (1 line)
@@ -768,7 +795,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -991,6 +1018,17 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TSQLParams.AsTime
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TSQLParams.AsWideString
 Summary
   Write here a summary (1 line)
@@ -1008,7 +1046,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1019,7 +1057,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1030,7 +1068,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1041,7 +1079,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1052,7 +1090,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1063,7 +1101,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1074,7 +1112,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1085,7 +1123,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1096,7 +1134,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1107,7 +1145,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1118,7 +1156,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1129,7 +1167,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1140,7 +1178,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1151,7 +1189,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1182,7 +1220,7 @@ Summary
 Description
   This is an overridden method, you don't have to describe these  if it does the same as the inherited method
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -1219,7 +1257,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1359,6 +1397,17 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TSQLResult.AsTime
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TSQLResult.AsVariant
 Summary
   Write here a summary (1 line)
@@ -1396,7 +1445,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1407,7 +1456,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1418,7 +1467,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1429,7 +1478,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1440,7 +1489,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1451,7 +1500,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1462,7 +1511,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1473,7 +1522,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1484,7 +1533,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1495,7 +1544,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1506,7 +1555,18 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TSQLResult.ByNameAsTime
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1517,7 +1577,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1528,7 +1588,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1539,7 +1599,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1550,7 +1610,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1600,6 +1660,19 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TSQLResult.GetBlobSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TSQLResult.GetRecord
 Summary
   Write here a summary (1 line)
@@ -1633,6 +1706,21 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TSQLResult.ReadBlob@string@Pointer
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Name - Description for this parameter
+  Data - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TSQLResult.ReadBlob@string@string
 Summary
   Write here a summary (1 line)
@@ -1642,8 +1730,8 @@ Description
   lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
   other overloaded functions with the same name.
 Parameters
-  name - Description for this parameter
-  str  - Description for this parameter
+  Name - Description for this parameter
+  Str  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1657,7 +1745,7 @@ Description
   lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
   other overloaded functions with the same name.
 Parameters
-  name   - Description for this parameter
+  Name   - Description for this parameter
   Stream - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
@@ -1672,7 +1760,7 @@ Description
   lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
   other overloaded functions with the same name.
 Parameters
-  name  - Description for this parameter
+  Name  - Description for this parameter
   Value - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
@@ -1687,8 +1775,23 @@ Description
   lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
   other overloaded functions with the same name.
 Parameters
-  name - Description for this parameter
-  str  - Description for this parameter
+  Name - Description for this parameter
+  Str  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TSQLResult.ReadBlob@Word@Pointer
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Index - Description for this parameter
+  Data  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1703,7 +1806,7 @@ Description
   other overloaded functions with the same name.
 Parameters
   Index - Description for this parameter
-  str   - Description for this parameter
+  Str   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1748,7 +1851,7 @@ Description
   other overloaded functions with the same name.
 Parameters
   Index - Description for this parameter
-  str   - Description for this parameter
+  Str   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1810,7 +1913,7 @@ Summary
 Description
   Write here a description
 Parameters
-  name - Description for this parameter
+  Name - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1892,7 +1995,7 @@ Parameters
   DBHandle    - Description for this parameter
   TransHandle - Description for this parameter
   ArrayId     - Description for this parameter
-  desc        - Description for this parameter
+  Desc        - Description for this parameter
   DestArray   - Description for this parameter
   SliceLength - Description for this parameter
 See Also
@@ -1924,7 +2027,7 @@ Parameters
   DBHandle    - Description for this parameter
   TransHandle - Description for this parameter
   ArrayId     - Description for this parameter
-  desc        - Description for this parameter
+  Desc        - Description for this parameter
   DestArray   - Description for this parameter
   SliceLength - Description for this parameter
 See Also
@@ -1992,7 +2095,7 @@ Description
   Write here a description
 Parameters
   BlobHandle   - Description for this parameter
-  length       - Description for this parameter
+  Length       - Description for this parameter
   BufferLength - Description for this parameter
   Buffer       - Description for this parameter
 Return value
@@ -2011,7 +2114,7 @@ Parameters
   NumSegments - Description for this parameter
   MaxSegment  - Description for this parameter
   TotalLength - Description for this parameter
-  btype       - Description for this parameter
+  BType       - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -2056,6 +2159,37 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TUIBLibrary.BlobReadSizedBuffer@IscBlobHandle@Pointer
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  BlobHandle - Description for this parameter
+  Buffer     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TUIBLibrary.BlobReadSizedBuffer@IscBlobHandle@Pointer@Cardinal
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  BlobHandle - Description for this parameter
+  Buffer     - Description for this parameter
+  MaxSize    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TUIBLibrary.BlobReadString@IscBlobHandle
 Summary
   Write here a summary (1 line)
@@ -2072,7 +2206,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TUIBLibrary.BlobReadString@IscBlobHandle@String
+@@TUIBLibrary.BlobReadString@IscBlobHandle@string
 Summary
   Write here a summary (1 line)
 Description
@@ -2228,10 +2362,10 @@ Summary
 Description
   Write here a description
 Parameters
-  DBHhandle - Description for this parameter
+  DBHandle  - Description for this parameter
   TraHandle - Description for this parameter
   Statement - Description for this parameter
-  dialect   - Description for this parameter
+  Dialect   - Description for this parameter
   InSqlda   - Description for this parameter
   OutSqlda  - Description for this parameter
 See Also
@@ -2322,7 +2456,7 @@ Summary
 Description
   Write here a description
 Parameters
-  DBHhandle  - Description for this parameter
+  DBHandle   - Description for this parameter
   TraHandle  - Description for this parameter
   StmtHandle - Description for this parameter
   Dialect    - Description for this parameter
@@ -2353,7 +2487,7 @@ Description
 Parameters
   StmtHandle - Description for this parameter
   Items      - Description for this parameter
-  buffer     - Description for this parameter
+  Buffer     - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -2365,6 +2499,20 @@ Description
   Write here a description
 Parameters
   StmtHandle - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TUIBLibrary.DSQLInfoRowsAffected
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  StmtHandle    - Description for this parameter
+  StatementType - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -2466,6 +2614,7 @@ Description
   Write here a description
 Parameters
   Number - Description for this parameter
+  Excep  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -2647,7 +2796,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 @@TUIBSQLDa
 <TITLE TUIBSQLDa type>
 Summary
@@ -2669,7 +2818,7 @@ See Also
   Description for sqld
 @@TUIBSQLDa.sqlvar
   Description for sqlvar
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 @@TUIBSQLVar
 <TITLE TUIBSQLVar type>
 Summary

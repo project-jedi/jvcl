@@ -43,6 +43,14 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TControlClass
+<TITLE TControlClass type>
+Summary
+  Defines the metaclass for TControl.
+Description
+  TControlClass is the metaclass for TControl. Its value is the class reference for
+  TControl or for one of its descendants.
+----------------------------------------------------------------------------------------------------
 @@TJvAfterCreateControl
 <TITLE TJvAfterCreateControl type>
 <COMBINE TJvDynControlEngine.OnAfterCreateControl>
@@ -52,17 +60,6 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.AfterCreateControl
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  AControl - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvDynControlEngine.CreateButton
 Summary
@@ -78,6 +75,22 @@ Parameters
   AOnClick       - Description for this parameter
   ADefault       - Description for this parameter
   ACancel        - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlEngine.CreateButtonEditControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AOwner         - Description for this parameter
+  AParentControl - Description for this parameter
+  AControlName   - Description for this parameter
+  AOnButtonClick - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -427,20 +440,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.GetPropertyValue
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  APersistent   - Description for this parameter
-  APropertyName - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
 @@TJvDynControlEngine.IsControlTypeRegistered
 Summary
   Write here a summary (1 line)
@@ -537,19 +536,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.SetPropertyValue
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  APersistent   - Description for this parameter
-  APropertyName - Description for this parameter
-  AValue        - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
 @@TJvDynControlType
 <TITLE TJvDynControlType type>
 Summary
@@ -599,5 +585,7 @@ See Also
   Description for jctFileNameEdit
 @@TJvDynControlType.jctButton
   Description for jctButton
+@@TJvDynControlType.jctButtonEdit
+  Description for jctButtonEdit
 @@TJvDynControlType.jctForm
   Description for jctForm
