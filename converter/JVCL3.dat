@@ -1,3 +1,7 @@
+TJvFormPlacement=TJvFormStorage
+TJvRegAuto=TJvFormStorage
+TJvaSQLScript=TJvBDESQLScript
+TJvaCaptionButton=TJvCaptionButton
 TDirection=TJvScrollTextDirection
 TOnLinkClick=TJvLinkClickEvent
 TOnDoneFile=TJvDoneFileEvent
