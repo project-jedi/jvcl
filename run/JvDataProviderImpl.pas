@@ -2810,7 +2810,7 @@ procedure TJvCustomDataProvider.Changing(ChangeReason: TDataProviderChangeReason
 var
   I: Integer;
 begin
-  for I := 0 to FNotifiers.Count - 1 do
+  for I := FNotifiers.Count - 1 downto 0 do
     (FNotifiers[I] as IJvDataProviderNotify).DataProviderChanging(Self, ChangeReason, Source);
 end;
 
@@ -2818,7 +2818,7 @@ procedure TJvCustomDataProvider.Changed(ChangeReason: TDataProviderChangeReason;
 var
   I: Integer;
 begin
-  for I := 0 to FNotifiers.Count - 1 do
+  for I := FNotifiers.Count - 1 downto 0 do
     (FNotifiers[I] as IJvDataProviderNotify).DataProviderChanged(Self, ChangeReason, Source);
 end;
 
