@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Christophe Paris.
 
-Last Modified: 2002-10-22
+Last Modified: 2003-08-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -108,6 +108,7 @@ type
   TJvSimpleXmlProps = class(TObject)
   private
     FProperties: THashedStringList;
+    FParent : TJvSimpleXmlElem;
     function GetCount: Integer;
     function GetItemNamed(const Name: string): TJvSimpleXmlProp;
   protected
@@ -116,6 +117,7 @@ type
     procedure Error(const S:string);
     procedure FmtError(const S:string;const Args:array of const);
   public
+    constructor Create(Parent : TJvSimpleXmlElem); reintroduce; overload;
     destructor Destroy; override;
     function Add(const Name, Value: string): TJvSimpleXmlProp; overload;
     function Add(const Name: string; const Value: Int64): TJvSimpleXmlProp; overload;
@@ -205,6 +207,8 @@ type
     FValue: string;
     FPointer: string;
     FData: Pointer;
+    FSimpleXml : TJvSimpleXml;
+    function GetSimpleXml: TJvSimpleXml;
   protected
     function GetIntValue: Int64;
     function GetBoolValue: Boolean;
@@ -222,12 +226,15 @@ type
     procedure Assign(Value: TJvSimpleXmlElem);
     procedure Clear; virtual;
     function SaveToString: string;
+    procedure LoadFromString(Value : string);
     procedure LoadFromStream(const Stream: TStream; Parent: TJvSimpleXml = nil); virtual; abstract;
     procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXml = nil); virtual;
       abstract;
     procedure GetBinaryValue(const Stream: TStream);
     property Data: Pointer read FData write FData;
     function GetChildIndex(const AChild: TJvSimpleXmlElem): Integer;
+
+    property SimpleXml : TJvSimpleXml read GetSimpleXml;
   published
     property Name: string read FName write SetName;
     property Parent: TJvSimpleXmlElem read FParent write FParent;
@@ -290,9 +297,15 @@ type
     procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXml = nil); override;
   end;
 
+  TJvSimpleXmlOptions = set of (sxoAutoCreate, sxoAutoIndent);
+
   TJvSimpleXml = class(TJvComponent)
   private
+    FIndentString: string;
+    procedure SetIndentString(const Value: string);
+  protected
     FFileName: TFileName;
+    FOptions : TJvSimpleXmlOptions;
     FRoot: TJvSimpleXmlElemClassic;
     FOnTagParsed: TJvOnSimpleXmlParsed;
     FOnValue: TJvOnValueParsed;
@@ -300,7 +313,7 @@ type
     FOnSaveProg: TJvOnSimpleProgress;
     FProlog: TJvSimpleXmlElemsProlog;
     FSaveCount, FSaveCurrent: Integer;
-  protected
+    procedure SetRoot(const Value: TJvSimpleXmlElemClassic);
     procedure SetFileName(Value: TFileName);
     procedure DoLoadProgress(const APosition, ATotal: Integer);
     procedure DoSaveProgress;
@@ -317,9 +330,11 @@ type
     procedure SaveToStream(const Stream: TStream);
     function SaveToString: string;
     property Prolog: TJvSimpleXmlElemsProlog read FProlog write FProlog;
-    property Root: TJvSimpleXmlElemClassic read FRoot write FRoot;
+    property Root: TJvSimpleXmlElemClassic read FRoot write SetRoot;
   published
     property FileName: TFileName read FFileName write SetFileName;
+    property IndentString : string read FIndentString write SetIndentString;
+    property Options : TJvSimpleXmlOptions read FOptions write FOptions;
     property OnSaveProgress: TJvOnSimpleProgress read FOnSaveProg write FOnSaveProg;
     property OnLoadProgress: TJvOnSimpleProgress read FOnLoadProg write FOnLoadProg;
     property OnTagParsed: TJvOnSimpleXmlParsed read FOnTagParsed write FOnTagParsed;
@@ -701,7 +716,10 @@ constructor TJvSimpleXml.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FRoot := TJvSimpleXmlElemClassic.Create(nil);
+  FRoot.FSimpleXml := Self;
   FProlog := TJvSimpleXmlElemsProlog.Create;
+  FOptions := [sxoAutoIndent];
+  FIndentString := '  ';
 end;
 
 destructor TJvSimpleXml.Destroy;
@@ -984,8 +1002,28 @@ end;
 function TJvSimpleXmlElem.GetProps: TJvSimpleXmlProps;
 begin
   if FProps = nil then
-    FProps := TJvSimpleXmlProps.Create();
+    FProps := TJvSimpleXmlProps.Create(self);
   Result := FProps;
+end;
+
+function TJvSimpleXmlElem.GetSimpleXml: TJvSimpleXml;
+begin
+  if FParent <> nil then
+    Result := FParent.SimpleXml
+  else
+    Result := FSimpleXml;
+end;
+
+procedure TJvSimpleXmlElem.LoadFromString(Value: string);
+var
+  lStream : TStringStream;
+begin
+  lStream := TStringStream.Create(Value);
+  try
+    LoadFromStream(lStream);
+  finally
+    lStream.Free;
+  end;
 end;
 
 function TJvSimpleXmlElem.SaveToString: string;
@@ -1236,7 +1274,15 @@ begin
     I := FElems.IndexOf(Name);
     if I <> -1 then
       Result := TJvSimpleXmlElem(FElems.Objects[I])
-  end;
+    else if Assigned(Parent) and
+      Assigned(Parent.SimpleXml) and
+      (sxoAutoCreate in Parent.SimpleXml.Options) then
+      Result := Add(Name); 
+  end
+  else if Assigned(Parent) and
+      Assigned(Parent.SimpleXml) and
+      (sxoAutoCreate in Parent.SimpleXml.Options) then
+    Result := Add(Name);
 end;
 
 function TJvSimpleXmlElems.IntValue(const Name: string; Default: Int64): Int64;
@@ -1475,6 +1521,12 @@ begin
   end;
 end;
 
+constructor TJvSimpleXmlProps.Create(Parent: TJvSimpleXmlElem);
+begin
+  inherited Create;
+  FParent := Parent;
+end;
+
 procedure TJvSimpleXmlProps.Delete(const Name: string);
 begin
   if FProperties <> nil then
@@ -1536,6 +1588,16 @@ begin
     I := FProperties.IndexOf(Name);
     if I <> -1 then
       Result := TJvSimpleXmlProp(FProperties.Objects[I])
+    else if Assigned(FParent) and
+      Assigned(FParent.SimpleXml) and
+      (sxoAutoCreate in FParent.SimpleXml.Options) then
+      Result := Add(Name, '');
+  end
+  else if Assigned(FParent) and
+    Assigned(FParent.SimpleXml) and
+    (sxoAutoCreate in FParent.SimpleXml.Options) then
+  begin
+    Result := Add(Name, '');
   end;
 end;
 
@@ -1841,6 +1903,7 @@ end;
 procedure TJvSimpleXmlElemClassic.SaveToStream(const Stream: TStream; const Level: string; Parent: TJvSimpleXml);
 var
   St: string;
+  LevelAdd : string;
 begin
   St := Level + '<' + Name;
   Stream.Write(St[1], Length(St));
@@ -1858,7 +1921,12 @@ begin
   begin
     St := '>' + CrLf;
     Stream.Write(St[1], Length(St));
-    Items.SaveToStream(Stream, Level + ' ', Parent);
+    if Assigned(SimpleXml) and
+      (sxoAutoIndent in SimpleXml.Options) then
+    begin
+      LevelAdd := SimpleXml.IndentString;
+    end;
+    Items.SaveToStream(Stream, Level + LevelAdd, Parent);
     St := Level + '</' + Name + '>' + CrLf;
     Stream.Write(St[1], Length(St));
   end;
@@ -2735,6 +2803,33 @@ procedure TJvSimpleXmlElemsProlog.FmtError(const S: string;
   const Args: array of const);
 begin
   Error(Format(S,Args));
+end;
+
+procedure TJvSimpleXml.SetIndentString(const Value: string);
+var
+  ValueOk : Boolean;
+  I : Integer;
+begin
+  // test if the new value is only made of spaces or tabs
+  ValueOk := True;
+  I := 0;
+  while (I < Length(Value)) and ValueOk do
+  begin
+    Inc(I);
+    ValueOk := (Value[I] = ' ') or (Value[I] = #8);
+  end;
+  if ValueOk then
+    FIndentString := Value;
+end;
+
+procedure TJvSimpleXml.SetRoot(const Value: TJvSimpleXmlElemClassic);
+begin
+  if Value <> FRoot then
+  begin
+    FRoot.FSimpleXml := nil;
+    FRoot := Value;
+    FRoot.FSimpleXml := Self;
+  end;
 end;
 
 initialization
