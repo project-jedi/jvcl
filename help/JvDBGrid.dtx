@@ -1,5 +1,5 @@
 ##Package: DB
-##Status: Completed,Checked (peter3)
+##Status: Completed (peter3), Review 
 ##Skip: TJvDBGrid.DefaultDataCellDraw
 ##Skip: TJvDBGrid.DefaultDrawing
 ##Skip: TJvDBGrid.DisableScroll
@@ -323,17 +323,33 @@ Parameters
   ACol   - The index of the column.
   Field  - The field the column displays.
 ----------------------------------------------------------------------------------------------------
-@@TJvDBGrid.OnTitleHintEvent
+@@TJvDBGrid.OnShowTitleHint
 Summary
   Occurs when a column header wants to display its hint.
 Description
-  Write a handler for this event to provide custom hints for title buttons.
+  Write a handler for this event to provide custom hints for title buttons. This event is
+  only triggered if hints are enabled and ShowTitleHint is true.
 Parameters
-  Sender - The grid that triggered the event.
-  Field  - The field the column displays.
-  aHint  - Set this to the hint text to use.
+  Sender   - The grid that triggered the event.
+  Field    - The field the column displays.
+  AHint    - Set this to the hint text to use.
+  ATimeOut - The number of milliseconds that should pass before the hint window is hidden.
 See Also
-  ShowTitleHint
+  OnShowCellHint, ShowTitleHint
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.OnShowCellHint
+Summary
+  Occurs when a cell in the grid wants to display its hint.
+Description
+  Write a handler for this event to provide custom hints for the cells in the grid. This event is
+  only triggered if hints are enabled and ShowCellHint is true.
+Parameters
+  Sender   - The grid that triggered the event.
+  Field    - The field the column displays.
+  AHint    - Set this to the hint text to use.
+  ATimeOut - The number of milliseconds that should pass before the hint window is hidden.
+See Also
+  OnShowTitleHint, ShowCellHint
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.PostOnEnter
 Summary
@@ -431,9 +447,18 @@ Summary
   Indicates whether hints are displayed for column headers.
 Description
   Use ShowTitleHint to indicate whether title buttons should display their own custom hints. To actually
-  display a hint text, assign a handler to the OnTitleHintEvent property.
+  display a hint text, assign a handler to the OnShowTitleHint event.
 See Also
-  OnTitleHintEvent
+  OnShowTitleHint
+----------------------------------------------------------------------------------------------------
+@@TJvDBGrid.ShowCellHint
+Summary
+  Indicates whether hints are displayed for cells in the grid.
+Description
+  Use ShowCellHint to indicate whether cells in the grid should display their own custom hints. To actually
+  display a hint text, assign a handler to the OnShowCellHint event.
+See Also
+  OnShowCellHint
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.SortedField
 Summary
@@ -547,6 +572,10 @@ Description
 <TITLE TTitleClickEvent type>
 <COMBINE TJvDBGrid.OnTitleBtnClick>
 ----------------------------------------------------------------------------------------------------
-@@TTitleHintEvent
-<TITLE TTitleHintEvent type>
-<COMBINE TJvDBGrid.OnTitleHintEvent>
+@@TJvTitleHintEvent
+<TITLE TJvTitleHintEvent type>
+<COMBINE TJvDBGrid.OnShowTitleHint>
+----------------------------------------------------------------------------------------------------
+@@TJvCellHintEvent
+<TITLE TJvTitleHintEvent type>
+<COMBINE TJvDBGrid.OnShowCellHint>
