@@ -120,9 +120,13 @@ const
   csYUV = TJvColorID(3);
   csHSV = TJvColorID(4);
 
+  RGB_MIN = 0;
   RGB_MAX = 255;
+  CMY_MIN = 0;
   CMY_MAX = 255;
+  HLS_MIN = 0;
   HLS_MAX = 240;
+  HSV_MIN = 0;
   HSV_MAX = 240;
   YUV_MIN = 16;
   YUV_MAX = 235;
@@ -180,6 +184,21 @@ begin
     ((Color and $00FF0000) shr 16);
 end;
 
+procedure SplitColorParts(AColor: TJvFullColor; var Part1, Part2, Part3: Cardinal);
+begin
+  Part1 := AColor and $000000FF;
+  Part2 := (AColor shr 8) and $000000FF;
+  Part3 := (AColor shr 16) and $000000FF;
+end;
+
+function JoinColorParts(Part1, Part2, Part3: Cardinal): TJvFullColor;
+begin
+  Result :=
+    (Part1 and $000000FF) or
+    ((Part2 and $000000FF) shl 8) or
+    ((Part3 and $000000FF) shl 16);
+end;
+
 //=== { TJvRGBColorSpace } ===================================================
 
 function TJvRGBColorSpace.ConvertFromRGB(AColor: TJvFullColor): TJvFullColor;
@@ -204,7 +223,7 @@ end;
 
 function TJvRGBColorSpace.GetAxisMin(Index: TJvAxisIndex): Byte;
 begin
-  Result := 0;
+  Result := RGB_MIN;
 end;
 
 function TJvRGBColorSpace.GetAxisName(Index: TJvAxisIndex): string;
@@ -240,9 +259,7 @@ var
   ColorMax, ColorMin, ColorDiff, ColorSum: Double;
   RedDelta, GreenDelta, BlueDelta: Extended;
 begin
-  Red := (AColor) and $000000FF;
-  Green := (AColor shr 8) and $000000FF;
-  Blue := (AColor shr 16) and $000000FF;
+  SplitColorParts(AColor, Red, Green, Blue);
 
   if Red > Green then
     ColorMax := Red
@@ -287,9 +304,8 @@ begin
     if Hue > HLS_MAX then
       Hue := Hue - HLS_MAX;
 
-    AColor := (Cardinal(Round(Hue) and $000000FF)) or
-      (Cardinal(Round(Lightness) and $000000FF) shl 8) or
-      (Cardinal(Round(Saturation) and $000000FF) shl 16);
+    AColor :=
+      JoinColorParts(Cardinal(Round(Hue)), Cardinal(Round(Lightness)), Cardinal(Round(Saturation)));
   end;
   Result := inherited ConvertFromRGB(AColor);
 end;
@@ -331,9 +347,7 @@ var
   end;
 
 begin
-  Hue := (AColor) and $000000FF;
-  Lightness := (AColor shr 8) and $000000FF;
-  Saturation := (AColor shr 16) and $000000FF;
+  SplitColorParts(AColor, Hue, Lightness, Saturation);
 
   if Saturation = 0 then
   begin
@@ -355,9 +369,8 @@ begin
     Blue := (HueToRGB(Magic1, Magic2, Hue - HLS_MAX_ONE_THIRD) * RGB_MAX + HLS_MAX_HALF) / HLS_MAX;
   end;
 
-  Result := inherited ConvertToRGB(((RoundColor(Red) and $000000FF)) or
-    ((RoundColor(Green) and $000000FF) shl 8) or
-    ((RoundColor(Blue) and $000000FF) shl 16));
+  Result := inherited ConvertToRGB(
+    JoinColorParts(RoundColor(Red), RoundColor(Green), RoundColor(Blue)));
 end;
 
 function TJvHLSColorSpace.GetAxisDefault(Index: TJvAxisIndex): Byte;
@@ -372,7 +385,7 @@ end;
 
 function TJvHLSColorSpace.GetAxisMin(Index: TJvAxisIndex): Byte;
 begin
-  Result := 0;
+  Result := HLS_MIN;
 end;
 
 function TJvHLSColorSpace.GetAxisName(Index: TJvAxisIndex): string;
@@ -403,37 +416,19 @@ end;
 
 function TJvCMYColorSpace.ConvertFromRGB(AColor: TJvFullColor): TJvFullColor;
 var
-  Red, Green, Blue: Integer;
-  Cyan, Magenta, Yellow: Integer;
+  Red, Green, Blue: Cardinal;
 begin
-  Red := (AColor) and $000000FF;
-  Green := (AColor shr 8) and $000000FF;
-  Blue := (AColor shr 16) and $000000FF;
-
-  Cyan := CMY_MAX - Red;
-  Magenta := CMY_MAX - Green;
-  Yellow := CMY_MAX - Blue;
-
-  Result := inherited ConvertFromRGB(((Cyan and $000000FF)) or
-    ((Magenta and $000000FF) shl 8) or
-    ((Yellow and $000000FF) shl 16));
+  SplitColorParts(AColor, Red, Green, Blue);
+  Result := inherited ConvertFromRGB(
+    JoinColorParts(CMY_MAX - Red, CMY_MAX - Green, CMY_MAX - Blue));
 end;
 
 function TJvCMYColorSpace.ConvertToRGB(AColor: TJvFullColor): TJvFullColor;
 var
-  Cyan, Magenta, Yellow: Integer;
-  Red, Green, Blue: Integer;
+  Cyan, Magenta, Yellow: Cardinal;
 begin
-  Cyan := (AColor) and $000000FF;
-  Magenta := (AColor shr 8) and $000000FF;
-  Yellow := (AColor shr 16) and $000000FF;
-
-  Red := CMY_MAX - Cyan;
-  Green := CMY_MAX - Magenta;
-  Blue := CMY_MAX - Yellow;
-  Result := inherited ConvertToRGB(((Red and $000000FF)) or
-    ((Green and $000000FF) shl 8) or
-    ((Blue and $000000FF) shl 16));
+  SplitColorParts(AColor, Cyan, Magenta, Yellow);
+  Result := inherited ConvertToRGB(JoinColorParts(CMY_MAX - Cyan, CMY_MAX - Magenta, CMY_MAX - Yellow));
 end;
 
 function TJvCMYColorSpace.GetAxisDefault(Index: TJvAxisIndex): Byte;
@@ -448,7 +443,7 @@ end;
 
 function TJvCMYColorSpace.GetAxisMin(Index: TJvAxisIndex): Byte;
 begin
-  Result := 0;
+  Result := CMY_MIN;
 end;
 
 function TJvCMYColorSpace.GetAxisName(Index: TJvAxisIndex): string;
@@ -479,12 +474,10 @@ end;
 
 function TJvYUVColorSpace.ConvertFromRGB(AColor: TJvFullColor): TJvFullColor;
 var
-  Y, U, V: Integer;
-  Red, Green, Blue: Integer;
+  Y, U, V: Cardinal;
+  Red, Green, Blue: Cardinal;
 begin
-  Red := (AColor) and $000000FF;
-  Green := (AColor shr 8) and $000000FF;
-  Blue := (AColor shr 16) and $000000FF;
+  SplitColorParts(AColor, Red, Green, Blue);
 
   Y := Round((0.257 * Red) + (0.504 * Green) + (0.098 * Blue)) + 16;
   V := Round((0.439 * Red) - (0.368 * Green) - (0.071 * Blue)) + 128;
@@ -494,19 +487,15 @@ begin
   U := EnsureRange(U, YUV_MIN, YUV_MAX);
   V := EnsureRange(V, YUV_MIN, YUV_MAX);
 
-  Result := inherited ConvertFromRGB(Y or
-    ((U and $000000FF) shl 8) or
-    ((V and $000000FF) shl 16));
+  Result := inherited ConvertFromRGB(JoinColorParts(Y, U, V));
 end;
 
 function TJvYUVColorSpace.ConvertToRGB(AColor: TJvFullColor): TJvFullColor;
 var
-  Red, Green, Blue: Integer;
-  Y, U, V: Integer;
+  Red, Green, Blue: Cardinal;
+  Y, U, V: Cardinal;
 begin
-  Y := (AColor) and $000000FF;
-  U := (AColor shr 8) and $000000FF;
-  V := (AColor shr 16) and $000000FF;
+  SplitColorParts(AColor, Y, U, V);
 
   Y := Y - 16;
   U := U - 128;
@@ -516,13 +505,11 @@ begin
   Green := Round((1.164 * Y) - (0.391 * U) - (0.813 * V));
   Blue := Round((1.164 * Y) + (2.018 * U) - (0.001 * V));
 
-  Red := EnsureRange(Red, 0, RGB_MAX);
-  Green := EnsureRange(Green, 0, RGB_MAX);
-  Blue := EnsureRange(Blue, 0, RGB_MAX);
+  Red := EnsureRange(Red, RGB_MIN, RGB_MAX);
+  Green := EnsureRange(Green, RGB_MIN, RGB_MAX);
+  Blue := EnsureRange(Blue, RGB_MIN, RGB_MAX);
 
-  Result := inherited ConvertToRGB(((Red and $000000FF)) or
-    ((Green and $000000FF) shl 8) or
-    ((Blue and $000000FF) shl 16));
+  Result := inherited ConvertToRGB(JoinColorParts(Red, Green, Blue));
 end;
 
 function TJvYUVColorSpace.GetAxisDefault(Index: TJvAxisIndex): Byte;
@@ -616,20 +603,16 @@ begin
   if Hue > HSV_MAX then
     Hue := Hue - HSV_MAX;
 
-  Result := inherited ConvertFromRGB(((Hue and $000000FF)) or
-    ((Saturation and $000000FF) shl 8) or
-    ((Value and $000000FF) shl 16));
+  Result := inherited ConvertFromRGB(JoinColorParts(Hue, Saturation, Value));
 end;
 
 function TJvHSVColorSpace.ConvertToRGB(AColor: TJvFullColor): TJvFullColor;
 var
-  Hue, Saturation, Value: Integer;
-  Red, Green, Blue: Byte;
-  P, Q, T, Summ, Rest: Integer;
+  Hue, Saturation, Value: Cardinal;
+  Red, Green, Blue: Cardinal;
+  P, Q, T, Summ, Rest: Cardinal;
 begin
-  Hue := AColor and $000000FF;
-  Saturation := (AColor shr 8) and $000000FF;
-  Value := (AColor shr 16) and $000000FF;
+  SplitColorParts(AColor, Hue, Saturation, Value);
 
   if Saturation = 0 then
   begin
@@ -688,9 +671,7 @@ begin
     end;
   end;
 
-  Result := inherited ConvertToRGB(((Red and $000000FF)) or
-    ((Green and $000000FF) shl 8) or
-    ((Blue and $000000FF) shl 16));
+  Result := inherited ConvertToRGB(JoinColorParts(Red, Green, Blue));
 end;
 
 function TJvHSVColorSpace.GetAxisDefault(Index: TJvAxisIndex): Byte;
