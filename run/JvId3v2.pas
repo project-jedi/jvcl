@@ -63,7 +63,7 @@ type
     property BPM: Cardinal index fiBPM read GetNumber write SetNumber stored False;
     property Composer: TStrings index fiComposer read GetList write SetList stored False;
     property Conductor: string index fiConductor read GetText write SetText stored False;
-    property ContentType: string index fiContentType read GetText write SetText stored False;
+    property ContentType: TStrings index fiContentType read GetList write SetList stored False;
     property ContentGroup: string index fiContentGroup read GetText write SetText stored False;
     property Copyright: string index fiCopyright read GetText write SetText stored False;
     property Date: string index fiDate read GetText write SetText stored False;
