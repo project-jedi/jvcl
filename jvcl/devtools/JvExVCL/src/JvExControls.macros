@@ -59,6 +59,8 @@
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   {$ENDIF NeedMouseEnterLeave}
   protected
+    procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
+    procedure DoFocusChanged(Control: TWinControl); dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -94,6 +96,8 @@
 (*$DEFINE JV_WINCONTROL_EVENTS_DECL_COMMON
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
+    procedure DoSetFocus(PreviousControl: TWinControl); dynamic;
+    procedure DoKillFocus(NextControl: TWinControl); dynamic;
 *)
 
 // ********************************************************
@@ -364,6 +368,16 @@ end;
 
 
 (*$DEFINE JV_CONTROL_EVENTS_IMPL_COMMON(ClassName)
+procedure TJvEx##ClassName.CMFocusChanged(var Msg: TCMFocusChanged);
+begin
+  inherited;
+  DoFocusChanged(Msg.Sender);
+end;
+
+procedure TJvEx##ClassName.DoFocusChanged(Control: TWinControl);
+begin
+end;
+
 function TJvEx##ClassName.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   {$IFDEF VCL}
@@ -438,6 +452,14 @@ end;
 
 (*$DEFINE JV_WINCONTROL_EVENTS_IMPL_COMMON(ClassName)
 procedure TJvEx##ClassName.DoGetDlgCode(var Code: TDlgCodes);
+begin
+end;
+
+procedure TJvEx##ClassName.DoSetFocus(PreviousControl: TWinControl);
+begin
+end;
+
+procedure TJvEx##ClassName.DoKillFocus(NextControl: TWinControl);
 begin
 end;
 *) // MACRO END WINCONTROL_COMMON
