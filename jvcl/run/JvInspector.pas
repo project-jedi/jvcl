@@ -2093,7 +2093,6 @@ uses
   {$ENDIF HAS_UNIT_STRUTILS}
   {$IFDEF VCL}
   Consts, Dialogs, Forms, Buttons,
-  JvWndProcHook,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QDialogs, QForms, QButtons, QConsts,
