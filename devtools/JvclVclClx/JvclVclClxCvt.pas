@@ -210,7 +210,7 @@ begin
     TargetList.Add('allclx');
     FModel.ExpandTargets(TargetList);
 
-   // get JCLX compatible all files
+   // get JVCLX compatible all files
     for TargetIndex := 0 to TargetList.Count - 1 do
     begin
       Target := FModel.FindTarget(TargetList[TargetIndex]);
@@ -246,10 +246,10 @@ begin
    // parse the files
     for i := 0 to FileList.Count - 1 do
     begin
+      Filename := FileList[i];
       if Assigned(FOnProgress) then
         FOnProgress(Self, ExtractFileName(ExtractFilePath(Filename)) + ExtractFileName(Filename),
           i, FileList.Count);
-      Filename := FileList[i];
       if (ExtractFileExt(Filename) = '.dfm') then
       begin
         if not FileExists(ChangeFileExt(GetDestFilename(Filename), '.xfm')) then
@@ -261,8 +261,6 @@ begin
         Cvt.ParsePasFile(Filename);
       end;
     end;
-    if Assigned(FOnProgress) then
-      FOnProgress(Self, 'Finished.', FileList.Count, FileList.Count);
   finally
     TargetList.Free;
     FileList.Free;
