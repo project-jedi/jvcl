@@ -60,7 +60,6 @@ type
     FDistanceVertical: Integer;
     FDistanceHorizontal: Integer;
     FShowNotVisibleAtDesignTime: Boolean;
-
     procedure SetWrapControls(Value: Boolean);
     procedure SetAutoArrange(Value: Boolean);
     procedure SetAutoSize(Value: TJvAutoSizePanel);
@@ -68,7 +67,6 @@ type
     procedure SetBorderTop(Value: Integer);
     procedure SetDistanceVertical(Value: Integer);
     procedure SetDistanceHorizontal(Value: Integer);
-
     procedure Rearrange;
   public
     constructor Create(APanel: TJvPanel);
@@ -85,8 +83,9 @@ type
   end;
 
   {$IFDEF VCL}
-  TJvPanelMoveEvent = procedure (Sender:TObject; X, Y:integer; var Allow:boolean) of object;
-  {$ENDIF}
+  TJvPanelMoveEvent = procedure(Sender: TObject; X, Y: Integer; var Allow: Boolean) of object;
+  {$ENDIF VCL}
+
   TJvPanel = class(TJvCustomPanel, IJvDenySubClassing)
   private
     FTransparent: Boolean;
@@ -98,7 +97,6 @@ type
     FSizeable: Boolean;
     FDragging: Boolean;
     FLastPos: TPoint;
-
     FArrangeSettings: TJvArrangeSettings;
     FEnableArrangeCount: Integer;
     FArrangeControlActive: Boolean;
@@ -106,7 +104,8 @@ type
     FArrangeHeight: Integer;
     FOnResizeParent: TJvPanelResizeParentEvent;
     {$IFDEF VCL}
-    FMovable, FWasMoved: boolean;
+    FMovable: Boolean;
+    FWasMoved: Boolean;
     FOnAfterMove: TNotifyEvent;
     FOnBeforeMove: TJvPanelMoveEvent;
     FOnPaint: TNotifyEvent;
@@ -116,7 +115,6 @@ type
     function GetWidth: Integer;
     procedure SetWidth(Value: Integer);
     procedure SetArrangeSettings(Value: TJvArrangeSettings);
-
     procedure SetTransparent(const Value: Boolean);
     procedure SetFlatBorder(const Value: Boolean);
     procedure SetFlatBorderColor(const Value: TColor);
@@ -125,7 +123,6 @@ type
     procedure SetMultiLine(const Value: Boolean);
     procedure SetHotColor(const Value: TColor);
     procedure SetSizeable(const Value: Boolean);
-
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -139,10 +136,10 @@ type
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    procedure WMNCHitTest(var Message: TWMNCHitTest); message WM_NCHITTEST;
-    procedure WMExitSizeMove(var Message: TMessage); message WM_EXITSIZEMOVE;
-    function DoBeforeMove(X,Y:integer):boolean;dynamic;
-    procedure DoAfterMove;dynamic;
+    procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
+    procedure WMExitSizeMove(var Msg: TMessage); message WM_EXITSIZEMOVE;
+    function DoBeforeMove(X, Y: Integer): Boolean; dynamic;
+    procedure DoAfterMove; dynamic;
     {$ENDIF VCL}
     procedure Loaded; override;
     procedure Resize; override;
@@ -153,21 +150,19 @@ type
     procedure Invalidate; override;
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
       AHeight: Integer); override;
-
     procedure ArrangeControls;
     procedure EnableArrange;
     procedure DisableArrange;
     function ArrangeEnabled: Boolean;
     property ArrangeWidth: Integer read FArrangeWidth;
     property ArrangeHeight: Integer read FArrangeHeight;
-
     {$IFDEF VCL}
     property DockManager;
     {$ENDIF VCL}
     property Canvas;
   published
     {$IFDEF VCL}
-    property Movable:boolean read FMovable write FMovable default false;
+    property Movable: Boolean read FMovable write FMovable default False;
     {$ENDIF VCL}
     property Sizeable: Boolean read FSizeable write SetSizeable default False;
     property HintColor;
@@ -183,13 +178,12 @@ type
     property OnAfterMove:TNotifyEvent Read FOnAfterMove write FOnAfterMove;
     {$ENDIF VCL}
     property OnParentColorChange;
-    property OnPaint:TNotifyEvent read FOnPaint write FOnPaint;
+    property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
 
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
     property OnResizeParent: TJvPanelResizeParentEvent read FOnResizeParent write FOnResizeParent;
-
     property Align;
     property Alignment;
     property Anchors;
@@ -250,13 +244,14 @@ type
   end;
 
 implementation
+
 uses
   JvMouseTimer;
 
 const
   BkModeTransparent = TRANSPARENT;
 
-{ TJvArrangeSettings }
+//=== TJvArrangeSettings =====================================================
 
 constructor TJvArrangeSettings.Create(APanel: TJvPanel);
 begin
@@ -357,11 +352,11 @@ end;
 procedure TJvArrangeSettings.Rearrange;
 begin
   if (FPanel <> nil) and (AutoArrange) and
-     not (csLoading in FPanel.ComponentState) then
+    not (csLoading in FPanel.ComponentState) then
     FPanel.ArrangeControls;
 end;
 
-{ TJvPanel }
+//=== TJvPanel ===============================================================
 
 constructor TJvPanel.Create(AOwner: TComponent);
 begin
@@ -384,6 +379,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvPanel.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -401,18 +397,18 @@ begin
   end;
 end;
 
-procedure TJvPanel.WMNCHitTest(var Message: TWMNCHitTest);
+procedure TJvPanel.WMNCHitTest(var Msg: TWMNCHitTest);
 var P:TPoint;
 begin
   inherited;
   if Movable then
   begin
-    P := ScreenToClient(SmallPointToPoint(Message.Pos));
+    P := ScreenToClient(SmallPointToPoint(Msg.Pos));
     with P do
       if (X > 5) and (Y > 5) and (X < Width - 5) and (Y < Height - 5) and DoBeforeMove(P.X,P.Y) then
       begin
-         Message.Result := HTCAPTION;
-         FWasMoved := true;
+         Msg.Result := HTCAPTION;
+         FWasMoved := True;
       end;
   end;
 end;
@@ -422,17 +418,17 @@ begin
   if Assigned(FOnAfterMove) then FOnAfterMove(self);
 end;
 
-procedure TJvPanel.WMExitSizeMove(var Message: TMessage);
+procedure TJvPanel.WMExitSizeMove(var Msg: TMessage);
 begin
   inherited;
   if FWasMoved then
     DoAfterMove;
-  FWasMoved := false;
+  FWasMoved := False;
 end;
 
-function TJvPanel.DoBeforeMove(X,Y:integer): boolean;
+function TJvPanel.DoBeforeMove(X,Y: Integer): Boolean;
 begin
-  Result := true;
+  Result := True;
   if Assigned(FOnBeforeMove) then
     FOnBeforeMove(Self, X, Y, Result);
 end;
@@ -441,7 +437,7 @@ end;
 
 procedure TJvPanel.Paint;
 var
-  X, Y: integer;
+  X, Y: Integer;
 begin
   if Assigned(FOnPaint) then
   begin
@@ -737,7 +733,7 @@ begin
     begin
       if (X1 >= 0) then
         FLastPos.X := X;
-      if (Y1 >= 0) then
+      if Y1 >= 0 then
         FLastPos.Y := Y;
       SetBounds(Left, Top, X1, Y1);
       Refresh;
@@ -753,8 +749,8 @@ begin
   end;
 end;
 
-procedure TJvPanel.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TJvPanel.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 begin
   if FDragging and Sizeable then
   begin
@@ -769,8 +765,9 @@ end;
 
 procedure TJvPanel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
-  inherited;
-  if Transparent then Invalidate;
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
+  if Transparent then
+    Invalidate;
 end;
 
 procedure TJvPanel.Resize;
@@ -778,8 +775,8 @@ begin
   {$IFDEF VisualCLX}
   if Assigned(FArrangeSettings) then
   {$ENDIF VisualCLX}
-  if FArrangeSettings.AutoArrange then
-    ArrangeControls;
+    if FArrangeSettings.AutoArrange then
+      ArrangeControls;
   inherited Resize;
 end;
 
@@ -893,14 +890,14 @@ begin
               if CurrControl.Height > MaxY then
                 MaxY := CurrControl.Height;
               ControlMaxY := AktY + MaxY;
-            end;   {*** if CurrControl.Visible then ***}
-          end;   {*** if CurrControl.TabOrder > LastTabOrder then ***}
-        end;   {*** if Controls[i] is TWinControl then ***}
-      end;   {*** for i := 0 to ControlCount do ***}
+            end;
+          end;
+        end;
+      end;
       if CurrControlCount = LastControlCOunt then
         Break;
       LastControlCount := CurrControlCount;
-    end;  {*** while CurrControlCount < ControlCount do ***}
+    end;
 
     if not (csLoading in ComponentState) then
     begin
@@ -914,7 +911,7 @@ begin
           Height := ControlMaxY + FArrangeSettings.BorderTop
         else
           Height := 0;
-    end;   {*** if not (csLoading in ComponentState) then ***}
+    end;
     FArrangeWidth := ControlMaxX + 2 * FArrangeSettings.BorderLeft;
     FArrangeHeight := ControlMaxY + 2 * FArrangeSettings.BorderTop;
     if OldHeight <> Height then

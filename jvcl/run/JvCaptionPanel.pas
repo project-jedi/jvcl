@@ -607,8 +607,8 @@ var
   Flags: Integer;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  x, y: integer;
-  {$ENDIF}
+  X, Y: Integer;
+  {$ENDIF VisualCLX}
   R: TRect;
   tH, tW: Integer;
 begin
@@ -661,7 +661,7 @@ begin
             if not FIcon.Empty then
               Dec(Y, FIcon.Height + 3)
             else
-              Dec(Y)
+              Dec(Y);
             {$ENDIF VisualCLX}
           end;
         dpTop, dpBottom:
@@ -672,13 +672,13 @@ begin
             if not FIcon.Empty then
               Inc(X, FIcon.Width + 3)
             else
-              Inc(X)
-            {$ENDIF}
+              Inc(X);
+            {$ENDIF VisualCLX}
             {$IFDEF VCL}
             OffsetRect(R, FOffset, tH);
             if not FIcon.Empty then
               Inc(R.Left, FIcon.Width + 2);
-            {$ENDIF}
+            {$ENDIF VCL}
           end;
         dpRight:
           begin

@@ -972,8 +972,7 @@ const
   // (rb) should/can these be put in a seperate resource file?
   sDirXPBmp = 'JV_SEDITXPBMP';
   sFileXPBmp = 'JV_FEDITXPBMP';
-  {$ENDIF}
-
+  {$ENDIF JVCLThemesEnabled}
 
   { TDateHook is used to only have 1 hook per application for monitoring
     date changes;
@@ -984,7 +983,8 @@ const
     later than the forms, controls etc.
   }
 
-  {$IFDEF VCL}
+{$IFDEF VCL}
+
 type
   TDateHook = class(TObject)
   private
@@ -1002,10 +1002,6 @@ type
 
 var
   GDateHook: TDateHook = nil;
-
-{$ENDIF VCL}
-
-{$IFDEF VCL}
 
 type
   TSHAutoComplete = function (hwndEdit: HWnd; dwFlags: DWORD): HResult; stdcall;
@@ -3591,7 +3587,7 @@ begin
     Result := GDirImageIndexXP;
     Exit;
   end;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 
   if GDirImageIndex < 0 then
   begin
@@ -4141,7 +4137,7 @@ begin
     Result := GFileImageIndexXP;
     Exit;
   end;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 
   if GFileImageIndex < 0 then
   begin

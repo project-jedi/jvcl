@@ -123,7 +123,7 @@ type
   protected
     procedure Visiblechanged; override;
     procedure EnabledChanged; override;
-    procedure SetParent({$IFDEF VisualCLX}const{$ENDIF} AParent: TWinControl); override;
+    procedure SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property Align default alTop;
     property Height default 35;
@@ -667,7 +667,7 @@ begin
   FDownRight.Kind := sbRight;
 end;
 
-procedure TJvCustomScrollPanel.SetParent({$IFDEF VisualCLX}const{$ENDIF} AParent: TWinControl);
+procedure TJvCustomScrollPanel.SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl);
 begin
   inherited SetParent(AParent);
   if FUpLeft = nil then

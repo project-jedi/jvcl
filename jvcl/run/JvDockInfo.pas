@@ -790,7 +790,7 @@ begin
   FJvDockInfoStyle := isJVCLReadInfo;
   {$ELSE}
   FJvDockInfoStyle := isReadFileInfo;
-  {$ENDIF}
+  {$ENDIF USEJVCL}
   MiddleScanTree(TopTreeZone);
   FJvDockInfoStyle := isNone;
 end;
@@ -1092,7 +1092,7 @@ begin
   FJvDockInfoStyle := isJVCLWriteInfo;
   {$ELSE}
   FJvDockInfoStyle := isWriteFileInfo;
-  {$ENDIF}
+  {$ENDIF USEJVCL}
   MiddleScanTree(TopTreeZone);
   FJvDockInfoStyle := isNone;
 end;
@@ -1114,7 +1114,6 @@ begin
     DockInfoReg.CloseKey;
   end;
 end;
-
 
 end.
 

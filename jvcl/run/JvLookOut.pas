@@ -145,7 +145,7 @@ type
     procedure EditMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer);
     procedure PaintFrame; virtual;
-    procedure SetParent({$IFDEF VisualCLX}const {$ENDIF}AParent: TWinControl); override;
+    procedure SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl); override;
     procedure Paint; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -336,7 +336,7 @@ type
     procedure CalcArrows; virtual;
     procedure ScrollChildren(Start: Word); virtual;
     procedure AlignControls(Control: TControl; var Rect: TRect); override;
-    procedure SetParent({$IFDEF VisualCLX}const {$ENDIF}AParent: TWinControl); override;
+    procedure SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl); override;
     {$IFDEF VCL}
     procedure CreateWnd; override;
     {$ENDIF VCL}
@@ -1244,7 +1244,7 @@ begin
 
     PaintFrame;
 
-    Flags := DT_END_ELLIPSIS {$IFDEF VCL}or DT_EDITCONTROL{$ENDIF};
+    Flags := DT_END_ELLIPSIS {$IFDEF VCL} or DT_EDITCONTROL {$ENDIF};
 
     if (FImageSize = isSmall) and Assigned(FSmallImages) then
     begin
@@ -1278,7 +1278,7 @@ begin
     if (ImageSize = isSmall) and Assigned(FSmallImages) then
       R.Left := R.Left + FSmallImages.Width + (FSpacing * 3)
     else
-      Flags := DT_END_ELLIPSIS or DT_WORDBREAK or DT_CENTER or DT_VCENTER {$IFDEF VCL}or DT_EDITCONTROL{$ENDIF};
+      Flags := DT_END_ELLIPSIS or DT_WORDBREAK or DT_CENTER or DT_VCENTER {$IFDEF VCL} or DT_EDITCONTROL {$ENDIF};
     if FDown then
       OffsetRect(R, FOffset, FOffset);
     FTextRect := R;
@@ -1540,7 +1540,7 @@ begin
   end;
 end;
 
-procedure TJvCustomLookOutButton.SetParent({$IFDEF VisualCLX}const {$ENDIF}AParent: TWinControl);
+procedure TJvCustomLookOutButton.SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl);
 begin
   if AParent <> Parent then
   begin
@@ -1801,7 +1801,7 @@ begin
     FActiveButton := Value;
 end;
 
-procedure TJvLookOutPage.SetParent({$IFDEF VisualCLX}const {$ENDIF}AParent: TWinControl);
+procedure TJvLookOutPage.SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl);
 begin
   if AParent <> Parent then
   begin

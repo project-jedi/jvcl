@@ -2021,7 +2021,7 @@ begin
     {$IFDEF DEBUGINFO_ON}
     if Self.FData.Count>0 then
       OutputDebugString( 'TJvCustomCsvDataSet.GetFieldData: GetActiveRecordBuffer is nil but table is not empty. (Internal Fault Condition).');
-    {$ENDIF}
+    {$ENDIF DEBUGINFO_ON}
     Exit;
   end;
 
@@ -2899,9 +2899,9 @@ begin
         or ((State = dsEdit) and (keyIndex <> FRecordPos)) then
       begin
         {$IFDEF DEBUGINFO_ON}
-       OutputDebugString(PChar('JvCsvDataSet Uniqueness: keyIndex='+IntToStr(keyIndex)+' '+GetRowAsString(keyIndex) ));
-       OutputDebugString(PChar('JvCsvDataSet Uniqueness: recordPos='+IntToStr(FRecordPos)+' '+GetRowAsString(FRecordPos) ));
-        {$ENDIF}
+        OutputDebugString(PChar('JvCsvDataSet Uniqueness: keyIndex='+IntToStr(keyIndex)+' '+GetRowAsString(keyIndex) ));
+        OutputDebugString(PChar('JvCsvDataSet Uniqueness: recordPos='+IntToStr(FRecordPos)+' '+GetRowAsString(FRecordPos) ));
+        {$ENDIF DEBUGINFO_ON}
         raise EJvCsvKeyError.CreateFmt(RsEKeyNotUnique, [FTableName]);
         Exit; // never get here, since normally JvCsvDatabaseError raises an exception.
       end;

@@ -634,12 +634,16 @@ procedure TJvCustomRollOut.RedrawControl(DrawAll: Boolean);
 begin
   if DrawAll then
   begin
-    {$IFDEF VisualCLX}Canvas.Brush.style := bsSolid;{$ENDIF}
+    {$IFDEF VisualCLX}
+    Canvas.Brush.Style := bsSolid;
+    {$ENDIF VisualCLX}
     Invalidate;
   end
   else
   begin
-    {$IFDEF VisualCLX}Canvas.Brush.style := bsClear;{$ENDIF}
+    {$IFDEF VisualCLX}
+    Canvas.Brush.Style := bsClear;
+    {$ENDIF VisualCLX}
     DrawButtonFrame;
   end;
 end;

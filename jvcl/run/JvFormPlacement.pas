@@ -722,14 +722,14 @@ begin
   if not (csDesigning in ComponentState) and (Owner <> nil) and
     (Owner is TCustomForm) then
     FWinHook.Control := Form;
-  {$ENDIF}
+  {$ENDIF VCL}
 end;
 
 procedure TJvFormPlacement.ReleaseHook;
 begin
   {$IFDEF VCL}
   FWinHook.Control := nil;
-  {$ENDIF}
+  {$ENDIF VCL}
 end;
 
 procedure TJvFormPlacement.CheckToggleHook;
@@ -872,11 +872,11 @@ end;
 procedure TJvFormPlacement.UpdatePlacement;
 const
   {$IFDEF VCL}
-  Metrics: array[bsSingle..bsSizeToolWin] of Word =
+  Metrics: array [bsSingle..bsSizeToolWin] of Word =
     (SM_CXBORDER, SM_CXFRAME, SM_CXDLGFRAME, SM_CXBORDER, SM_CXFRAME);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Metrics: array[fbsSingle..fbsSizeToolWin] of TSysMetrics =
+  Metrics: array [fbsSingle..fbsSizeToolWin] of TSysMetrics =
     (SM_CXBORDER, SM_CXFRAME, SM_CXDLGFRAME, SM_CXBORDER, SM_CXFRAME);
   {$ENDIF ViszalCLX}
 var
@@ -1060,7 +1060,7 @@ end;
 procedure TJvFormPlacement.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  inherited;
+  inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = AppStorage) then
     AppStorage := nil;
 end;
@@ -1139,12 +1139,10 @@ end;
 function TJvWinMinMaxInfo.DefaultMinMaxInfo: Boolean;
 begin
   with FMinMaxInfo do
-  begin
     Result := not ((ptMinTrackSize.X <> 0) or (ptMinTrackSize.Y <> 0) or
       (ptMaxTrackSize.X <> 0) or (ptMaxTrackSize.Y <> 0) or
       (ptMaxSize.X <> 0) or (ptMaxSize.Y <> 0) or
       (ptMaxPosition.X <> 0) or (ptMaxPosition.Y <> 0));
-  end;
 end;
 
 //=== TJvFormStorage =========================================================
@@ -1345,7 +1343,7 @@ begin
     (Collection is TJvStoredValues) and (TJvStoredValues(Collection).IndexOf(Value) >= 0) then
     raise EJVCLException.Create(SDuplicateString);
   FName := Value;
-  inherited;
+  inherited SetDisplayName(Value);
 end;
 
 function TJvStoredValue.GetStoredValues: TJvStoredValues;

@@ -693,7 +693,7 @@ function PtInRectInclusive(R: TRect; Pt: TPoint): Boolean;
 // Works like PtInRect but excludes all edges from comparision
 function PtInRectExclusive(R: TRect; Pt: TPoint): Boolean;
 
-function FourDigitYear: Boolean; {$IFDEF COMPILER6_UP}deprecated;{$ENDIF}
+function FourDigitYear: Boolean; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
 function IsFourDigitYear: Boolean;
 
 { moved from JvJVCLUTils }
@@ -6565,11 +6565,11 @@ begin
   LastError := GetLastError;
   if LastError <> 0 then
   begin
-    St := Format({$IFDEF COMPILER6_UP}SOSError{$ELSE}SWin32Error{$ENDIF},
+    St := Format({$IFDEF COMPILER6_UP} SOSError {$ELSE} SWin32Error {$ENDIF},
       [LastError, SysErrorMessage(LastError)]);
     if Text <> '' then
       St := Text + ':' + St;
-    raise{$IFDEF COMPILER6_UP}EOSError{$ELSE}EWin32Error{$ENDIF}.Create(St);
+    raise {$IFDEF COMPILER6_UP} EOSError{$ELSE} EWin32Error{$ENDIF}.Create(St);
   end;
 end;
 

@@ -707,8 +707,8 @@ end;
 
 { just like DrawText, but draws disabled instead }
 
-function DrawDisabledText(DC: HDC; lpString: {$IFDEF VCL}PChar{$ELSE}PWideChar{$ENDIF}; nCount: Integer; var lpRect: TRect; uFormat: Integer):
-  Integer;
+function DrawDisabledText(DC: HDC; lpString: {$IFDEF VCL} PChar {$ELSE} PWideChar {$ENDIF};
+  nCount: Integer; var lpRect: TRect; uFormat: Integer): Integer;
 var
   OldCol: Integer;
 begin
@@ -1013,7 +1013,7 @@ begin
       {$IFDEF VCL}
       Icon := ImageList_GetIcon(FDisabledList.Handle, FDisabledIndex, ILD_TRANSPARENT);
       ImageList_AddIcon(FImList.Handle, Icon);
-      {$ENDIF}
+      {$ENDIF VCL}
       {$IFDEF VisualCLX}
       FDisabledList.GetBitmap(FDisabledIndex, Bmp);
       FImList.AddMasked(Bmp, Bmp.TransparentColor);
