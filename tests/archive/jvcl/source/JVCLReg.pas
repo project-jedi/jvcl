@@ -165,7 +165,7 @@ uses
 FiltEdit,
   JvTypes, JvArrowBtn, JvBmpAnim, JvCaptionButton,
   JvColorCombo, JvDriveCtrls, JvFindReplace, JvInstallLabel, JvRollOut, JvScrollPanel,
-  JvTransBtn2, JvTimeLine, JvTimeLineEdit, JvShFileOp, JvAppHotKey,
+  JvTransBtn2, JvTimeLine, JvTimeLineEdit, JvShFileOp, JvAppHotKey, JvBalloonHint,
 
   JvCaptionPanel, JvColorBtn, JvColorBox, JvColorForm, JvOutEdit,
   JvImagewindow, JvListComb, JvLookout, JvProfiler32, JvRegTV,
@@ -208,7 +208,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TDate), nil, '', TDateExProperty);
   RegisterPropertyEditor(TypeInfo(TTime), nil, '', TTimeExProperty);
   RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TDateTimeExProperty);
-  
+
     {Thumbview.filter editor}
   RegisterPropertyEditor(typeInfo(string), TJvThumbView, 'Filter', TFilterProperty);
 //  RegisterPropertyEditor(typeinfo(string), TJvAppletDialog,'AppletName',TJvAppletFileProperty);
@@ -485,7 +485,8 @@ begin
       TJvTMTimeline,
       TJvInspector,
       TJvInspectorBorlandPainter,
-      TJvInspectorDotNetPainter
+      TJvInspectorDotNetPainter,
+      TJvBalloonHint
       ]);
 
   // Jv Labels
