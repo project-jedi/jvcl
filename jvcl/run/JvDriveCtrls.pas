@@ -484,7 +484,14 @@ begin
   inherited CreateWnd;
   BuildList;
   if csDesigning in ComponentState then
-    SetDrive('C');
+    SetDrive('C')
+  else if FDrive = #0 then
+  begin
+    if FDrives.IndexOf('C') > 0 then
+      SetDrive('C')
+    else if FDrives.Count > 0 then
+      SetDrive(FDrives[0][1]);
+  end;
 end;
 
 procedure TJvDriveCombo.Refresh;
