@@ -39,15 +39,10 @@ uses
   Variants,
   {$ENDIF COMPILER6_UP}
   {$IFDEF VCL}
-  Windows, Messages, Controls, Forms, Grids, Graphics, Menus, StdCtrls,
-  ExtCtrls, DBGrids,
+  Windows, Messages,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QForms, QGrids, QGraphics, QMenus, QStdCtrls,
-  QExtCtrls, QDBGrids,
-  {$ENDIF VisualCLX}
-  JvAppStorage, JvFormPlacement, JvJCLUtils, JvDBLookup, JvExDBGrids,
-  JvFinalize;
+  Controls, Grids, Graphics, Menus, DBGrids,
+  JvAppStorage, JvFormPlacement, JvExDBGrids;
 
 const
   DefJvGridOptions = [dgEditing, dgTitles, dgIndicator, dgColumnResize,
@@ -337,14 +332,10 @@ implementation
 
 uses
   SysUtils, DbConsts, Math, TypInfo,
-  {$IFDEF VCL}
-  Dialogs,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QDialogs,
-  {$ENDIF VisualCLX}
+  Forms, StdCtrls, Dialogs,
   JvConsts, JvResources, JvTypes,
-  JvDBUtils, JvJVCLUtils, JvDBGridSelectColumnForm;
+  JvDBLookup, JvDBUtils, JvJCLUtils, JvJVCLUtils, JvDBGridSelectColumnForm,
+  JvFinalize;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDBGrid.res}
