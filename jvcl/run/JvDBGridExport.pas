@@ -78,7 +78,7 @@ type
     FColumnCount: Integer;
     FRecordColumns: array of TRecordColumn;
     FCaption: string;
-    FFilename: TFilename;
+    FFileName: TFilename;
     FOnProgress: TJvExportProgressEvent;
     FLastExceptionMessage: string;
     FSilent: Boolean;
@@ -99,7 +99,7 @@ type
     // (p3) these should be published: all exporters must support them
     property Caption: string read FCaption write FCaption;
     property Grid: TDBGrid read FGrid write FGrid;
-    property FileName: TFilename read FFilename write FFilename;
+    property FileName: TFileName read FFileName write FFileName;
     property Silent: Boolean read FSilent write FSilent default True;
     property OnProgress: TJvExportProgressEvent read FOnProgress write FOnProgress;
     property OnException: TNotifyEvent read FOnException write FOnException;
@@ -158,7 +158,7 @@ type
     property Close: TOleServerClose read FClose write FClose default scNewInstance;
     property Visible: Boolean read FVisible write FVisible default False;
     property Orientation: TWordOrientation read FOrientation write FOrientation default woPortrait;
-    property AutoFit:Boolean read FAutoFit write FAutoFit;
+    property AutoFit: Boolean read FAutoFit write FAutoFit;
   end;
 
   TJvDBGridHTMLExport = class(TJvCustomDBGridExport)
@@ -356,6 +356,8 @@ begin
 end;
 
 function TJvDBGridWordExport.DoExport: Boolean;
+const
+  cWordApplication = 'Word.Application';
 var
   I, J, K: Integer;
   lTable: OleVariant;
@@ -368,12 +370,12 @@ begin
   FRunningInstance := True;
   try
     // get running instance
-    FWord := GetActiveOleObject('Word.Application');
+    FWord := GetActiveOleObject(cWordApplication);
   except
     FRunningInstance := False;
     try
       // create new
-      FWord := CreateOLEObject('Word.Application');
+      FWord := CreateOleObject(cWordApplication);
     except
       FWord := Unassigned;
       HandleException;
@@ -401,7 +403,7 @@ begin
     else
       FWord.ActiveDocument.PageSetup.Orientation := 1;
     lTable := FWord.ActiveDocument.Tables.Add(FWord.ActiveDocument.Range, lRowCount + 1, lColVisible);
-    FWord.ActiveDocument.Range.InsertAfter('Date ' + Datetimetostr(Now));
+    FWord.ActiveDocument.Range.InsertAfter('Date ' + DateTimeToStr(Now));
     lTable.AutoFormat(Format := WordFormat); // FormatNum, 1, 1, 1, 1, 1, 0, 0, 0, 1
 
     K := 1;
@@ -513,7 +515,7 @@ end;
 
 function TJvDBGridExcelExport.IndexFieldToExcel(Index: Integer): string;
 begin
-  // Max colonne : ZZ => Index = 702
+  // Max column : ZZ => Index = 702
   if Index > 26 then
     Result := Chr(64 + ((Index - 1) div 26)) + Chr(65 + ((Index - 1) mod 26))
   else
@@ -521,6 +523,8 @@ begin
 end;
 
 function TJvDBGridExcelExport.DoExport: Boolean;
+const
+  cExcelApplication = 'Excel.Application';
 var
   I, J, K: Integer;
   lTable: OleVariant;
@@ -532,12 +536,12 @@ begin
   FRunningInstance := True;
   try
     // get running instance
-    FExcel := GetActiveOleObject('Excel.Application');
+    FExcel := GetActiveOleObject(cExcelApplication);
   except
     FRunningInstance := False;
     try
       // create new instance
-      FExcel := CreateOLEObject('Excel.Application');
+      FExcel := CreateOLEObject(cExcelApplication);
     except
       FExcel := Unassigned;
       HandleException;
@@ -601,7 +605,7 @@ begin
           if not DoProgress(0, lRecCount, ARecNo, Caption) then
             Last;
         end;
-        if FAutoFit then
+        if AutoFit then
           try
             lTable.Columns.AutoFit; // NEW! Autofit!
           except
@@ -754,10 +758,12 @@ var
 
   function FontSubstitute(const Name: string): string;
   const
-    cIsNT: array [Boolean] of PChar = ('SOFTWARE\Microsoft\Windows\CurrentVersion\FontSubstitutes',
+    cFontKey: array [Boolean] of PChar =
+     ('SOFTWARE\Microsoft\Windows\CurrentVersion\FontSubstitutes',
       'SOFTWARE\Microsoft\Windows NT\CurrentVersion\FontSubstitutes');
   begin
-    Result := RegReadStringDef(HKEY_LOCAL_MACHINE, cIsNT[Win32Platform = VER_PLATFORM_WIN32_NT], Name, Name);
+    Result := RegReadStringDef(HKEY_LOCAL_MACHINE,
+      cFontKey[Win32Platform = VER_PLATFORM_WIN32_NT], Name, Name);
   end;
 
   function FontSizeToHTML(PtSize: Integer): Integer;
