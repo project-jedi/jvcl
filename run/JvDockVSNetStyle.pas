@@ -106,13 +106,18 @@ type
     FBlockStartPos: Integer;
     function GetVSPane(Index: Integer): TJvDockVSPane;
     function GetVSPaneCount: Integer;
+    procedure SetActiveDockControl(ADockControl: TWinControl);
   protected
     procedure ResetActiveBlockWidth;
+    procedure AddPane(AControl: TControl; const AWidth: Integer);
     procedure DeletePane(Index: Integer);
+    procedure UpdateActiveDockControl(StartIndex: Integer);
+    { Pane with ActiveDockControl as FDockControl has size ActiveBlockWidth.. }
     property ActiveBlockWidth: Integer read FActiveBlockWidth write FActiveBlockWidth;
+    { ..other panes have size InactiveBlockWidth }
     property InactiveBlockWidth: Integer read FInactiveBlockWidth write FInactiveBlockWidth;
     { Free Notification? }
-    property ActiveDockControl: TWinControl read FActiveDockControl write FActiveDockControl;
+    property ActiveDockControl: TWinControl read FActiveDockControl write SetActiveDockControl;
     property BlockType: TJvDockBlockType read FBlockType;
     { Owner }
     property VSChannel: TJvDockVSChannel read FVSChannel;
@@ -802,9 +807,7 @@ end;
 
 procedure TJvDockVSBlock.AddDockControl(Control: TWinControl);
 var
-  I, PaneWidth: Integer;
-  Icon: TIcon;
-  ADockClient: TJvDockClient;
+  I, PaneWidth, FirstIndex: Integer;
 
   function GetPaneWidth: Integer;
   begin
@@ -826,71 +829,65 @@ begin
     FBlockType := btTabBlock;
     with TJvDockTabHostForm(Control) do
     begin
+      FirstIndex := FVSPaneList.Count;
       for I := 0 to DockableControl.DockClientCount - 1 do
       begin
-        FVSPaneList.Add(TJvDockVSPane.Create(Self, TForm(PageControl.DockClients[I]), PaneWidth, FVSPaneList.Count));
-        if not JvGlobalDockIsLoading then
-        begin
-          { (rb) suspicious }
-          ADockClient := FindDockClient(PageControl.DockClients[I]);
-          if ADockClient <> nil then
-            ADockClient.VSPaneWidth := PaneWidth;
-        end;
-        if TForm(PageControl.DockClients[I]).Icon = nil then
-        begin
-          Icon := TIcon.Create;
-          Icon.Width := 16;
-          Icon.Height := 16;
-          FImageList.AddIcon(Icon);
-          Icon.Free;
-        end
-        else
-          FImageList.AddIcon(TForm(PageControl.DockClients[I]).Icon);
+        AddPane(PageControl.DockClients[i], PaneWidth);
         TJvDockVSNETTabSheet(PageControl.Pages[I]).OldVisible := PageControl.DockClients[I].Visible;
         if PageControl.Pages[I] <> PageControl.ActivePage then
           PageControl.DockClients[I].Visible := False;
       end;
-      for I := 0 to VSPaneCount - 1 do
-        if VSPanes[I].FVisible then
-        begin
-          FActiveDockControl := VSPanes[I].FDockForm;
-          Break;
-        end;
+      UpdateActiveDockControl(FirstIndex);
     end;
   end
   else
   begin
     FBlockType := btConjoinBlock;
-    FVSPaneList.Add(TJvDockVSPane.Create(Self, TForm(Control), PaneWidth, FVSPaneList.Count));
-    if not JvGlobalDockIsLoading then
-    begin
-      ADockClient := FindDockClient(Control);
-      if ADockClient <> nil then
-        ADockClient.VSPaneWidth := PaneWidth;
-    end;
-    if TForm(Control).Icon = nil then
-    begin
-      Icon := TIcon.Create;
-      Icon.Width := 16;
-      Icon.Height := 16;
-      FImageList.AddIcon(Icon);
-      Icon.Free;
-    end
-    else
-      FImageList.AddIcon(TForm(Control).Icon);
-    FActiveDockControl := Control;
+    AddPane(Control, PaneWidth);
+    ActiveDockControl := Control;
   end;
   ResetActiveBlockWidth;
+end;
+
+procedure TJvDockVSBlock.AddPane(AControl: TControl; const AWidth: Integer);
+var
+  Icon: TIcon;
+  ADockClient: TJvDockClient;
+begin
+  { Dangerous? cast }
+  FVSPaneList.Add(TJvDockVSPane.Create(Self, TForm(AControl), AWidth, FVSPaneList.Count));
+  if not JvGlobalDockIsLoading then
+  begin
+    ADockClient := FindDockClient(AControl);
+    if ADockClient <> nil then
+      ADockClient.VSPaneWidth := AWidth;
+  end;
+  { Add the form icon }
+  if TForm(AControl).Icon = nil then
+  begin
+    Icon := TIcon.Create;
+    Icon.Width := 16;
+    Icon.Height := 16;
+    FImageList.AddIcon(Icon);
+    Icon.Free;
+  end
+  else
+    FImageList.AddIcon(TForm(AControl).Icon);
 end;
 
 procedure TJvDockVSBlock.DeletePane(Index: Integer);
 var
   I: Integer;
+  ActiveDockControlRemoved: Boolean;
 begin
   for I := Index to FVSPaneList.Count - 2 do
     VSPanes[I + 1].FIndex := VSPanes[I].FIndex;
+  ActiveDockControlRemoved := VSPanes[Index].FDockForm = Self.ActiveDockControl;
   VSPanes[Index].Free;
   FVSPaneList.Delete(Index);
+  { Remove the form icon }
+  FImageList.Delete(Index);
+  if ActiveDockControlRemoved then UpdateActiveDockControl(Index);
 end;
 
 function TJvDockVSBlock.GetTotalWidth: Integer;
@@ -920,6 +917,28 @@ begin
   for I := 0 to VSPaneCount - 1 do
     FActiveBlockWidth := Max(FActiveBlockWidth, Min(VSChannel.ActivePaneSize,
       TForm(VSChannel.Parent).Canvas.TextWidth(VSPanes[I].FDockForm.Caption) + InactiveBlockWidth + 10));
+end;
+
+procedure TJvDockVSBlock.SetActiveDockControl(ADockControl: TWinControl);
+begin
+  if FActiveDockControl <> ADockControl then
+  begin
+    FActiveDockControl := ADockControl;
+    VSChannel.Invalidate;
+  end;
+end;
+
+procedure TJvDockVSBlock.UpdateActiveDockControl(StartIndex: Integer);
+var
+  I: Integer;
+begin
+  { Start looking at position StartIndex for a visible pane }
+  for I := 0 to VSPaneCount - 1 do
+    if VSPanes[(I + StartIndex) mod VSPaneCount].FVisible then
+    begin
+      ActiveDockControl := VSPanes[(I + StartIndex) mod VSPaneCount].FDockForm;
+      Break;
+    end;
 end;
 
 //=== { TJvDockVSChannel } ===================================================
@@ -1431,8 +1450,8 @@ begin
     FActivePane := Pane;
     FVSPopupPanel.JvDockManager.ResetBounds(True);
 
-    Pane.FBlock.FActiveDockControl := Pane.FDockForm;
-    Invalidate;
+    Pane.FBlock.ActiveDockControl := Pane.FDockForm;
+//    Invalidate;
   end;
 end;
 
@@ -1652,7 +1671,7 @@ begin
       FActivePane := Pane;
       FVSPopupPanel.JvDockManager.ResetBounds(True);
 
-      Pane.FBlock.FActiveDockControl := Pane.FDockForm;
+      Pane.FBlock.ActiveDockControl := Pane.FDockForm;
       //Invalidate;
       VSPopupPanel.BringToFront;
       VSPopupPanelSplitter.BringToFront;
