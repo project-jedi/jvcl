@@ -101,6 +101,7 @@ type
     function GetMake: string;
     function GetBplDir: string;
     function GetDcpDir: string;
+    function GetProjectDir: string;
   public
     constructor Create(const AName, AVersion, ARegSubKey: string);
     destructor Destroy; override;
@@ -150,6 +151,7 @@ type
     property DebugDcuPaths: TStringList read FDebugDcuPaths; // with macros
 
     property BDSProjectsDir: string read FBDSProjectsDir;
+    property ProjectDir: string read GetProjectDir; // Delphi 5-7: RootDir\Projects BDS: BDSProjectDir\Projects
     property BplDir: string read GetBplDir; // macros are expanded
     property DcpDir: string read GetDcpDir; // macros are expanded
 
@@ -164,6 +166,7 @@ type
   public
     function IndexOfFilename(const Filename: string): Integer;
     procedure Add(const Filename, Description: string);
+    procedure Remove(const Filename: string);
 
     property Items[Index: Integer]: TDelphiPackage read GetItems; default;
   end;
@@ -738,6 +741,10 @@ begin
   end;
 end;
 
+var
+  _SHGetSpecialFolderPathA: function(hwndOwner: HWND; lpszPath: PAnsiChar;
+    nFolder: Integer; fCreate: BOOL): BOOL; stdcall;
+
 function TCompileTarget.ReadBDSProjectsDir: string;
 var
   h: HMODULE;
@@ -778,8 +785,11 @@ begin
       end;
     end;
 
+    if not Assigned(_SHGetSpecialFolderPathA) then
+      _SHGetSpecialFolderPathA := GetProcAddress(GetModuleHandle('shell32.dll'), 'SHGetSpecialFolderPathA');
     SetLength(PersDir, MAX_PATH);
-    if SHGetSpecialFolderPath(0, PChar(PersDir), CSIDL_PERSONAL, False) then
+    if Assigned(_SHGetSpecialFolderPathA) and
+       _SHGetSpecialFolderPathA(0, PChar(PersDir), CSIDL_PERSONAL, False) then
     begin
       SetLength(PersDir, StrLen(PChar(PersDir)));
       Result := ExcludeTrailingPathDelimiter(PersDir) + '\' + Result;
@@ -799,14 +809,38 @@ begin
     Result := ChangeFileExt(Filename, '') + IntToStr(Version) + '0' + ExtractFileExt(Filename);
 end;
 
+function TCompileTarget.GetProjectDir: string;
+begin
+  if IsBDS then
+    Result := BDSProjectsDir
+  else
+    Result := RootDir;
+  Result := Result + PathDelim + 'Projects';
+end;
+
 { TDelphiPackageList }
 
 procedure TDelphiPackageList.Add(const Filename, Description: string);
 var
   Item: TDelphiPackage;
 begin
-  Item := TDelphiPackage.Create(Filename, Description);
+  if Description = '' then
+    Item := TDelphiPackage.Create(Filename, ChangeFileExt(ExtractFileName(Filename), ''))
+  else
+    Item := TDelphiPackage.Create(Filename, Description);
   inherited Add(Item);
+end;
+
+procedure TDelphiPackageList.Remove(const Filename: string);
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    if CompareText(Items[i].Filename, Filename) = 0 then
+    begin
+      Delete(i);
+      Exit;
+    end;
 end;
 
 function TDelphiPackageList.GetItems(Index: Integer): TDelphiPackage;

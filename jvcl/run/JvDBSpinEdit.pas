@@ -40,7 +40,6 @@ type
   TJvDBSpinEdit = class(TJvSpinEdit)
   private
     FDataLink: TFieldDataLink;
-    FOnChange: TNotifyEvent;
     FIsNull: Boolean;
     FAllowNull: Boolean;
     procedure DataChange(Sender: TObject);
@@ -76,7 +75,6 @@ type
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
 {$IFDEF UNITVERSIONING}

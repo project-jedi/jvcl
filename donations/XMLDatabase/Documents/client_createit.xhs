@@ -1,4 +1,0 @@
-<%
-  Request("INSERT INTO clients.xml(ClientId, ClientEmail, ClientName) VALUES(NULL, '$email', '$name')");
-  Redirect("client.xhs?id=$lastid");
-%>

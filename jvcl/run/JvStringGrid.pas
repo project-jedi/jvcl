@@ -201,7 +201,7 @@ type
       SortType: TJvSortType = stClassic; BlankTop: Boolean = True);
     // Sort grid using the column inidices in ColOrder. For example if ColOrder contains
     // [1, 3, 0, 2], column 3 is used when the items in column 1 are identical
-    procedure SortGridByCols(ColOrder: array of Integer);
+    procedure SortGridByCols(ColOrder: array of Integer; Fixed: Boolean = False);
     procedure SaveToFile(FileName: string);
     procedure LoadFromFile(FileName: string);
     procedure LoadFromCSV(FileName: string; Separator: Char = ';'; QuoteChar: Char = '"'; StripQuotes: Boolean = True);
@@ -541,26 +541,26 @@ var
             end;
           stNumeric:
             begin
-              TmpF := StrToFloat(St);
-              while StrToFloat(Cells[Column, I]) < TmpF do
+              TmpF := StrToFloatDef(St, 0);
+              while StrToFloatDef(Cells[Column, I], 0) < TmpF do
                 Inc(I);
-              while StrToFloat(Cells[Column, J]) > TmpF do
+              while StrToFloatDef(Cells[Column, J], 0) > TmpF do
                 Dec(J);
             end;
           stDate:
             begin
-              TmpD := StrToDateTime(St);
-              while StrToDateTime(Cells[Column, I]) < TmpD do
+              TmpD := StrToDateTimeDef(St, 0);
+              while StrToDateTimeDef(Cells[Column, I], 0) < TmpD do
                 Inc(I);
-              while StrToDateTime(Cells[Column, J]) > TmpD do
+              while StrToDateTimeDef(Cells[Column, J], 0) > TmpD do
                 Dec(J);
             end;
           stCurrency:
             begin
-              TmpC := StrToCurr(St);
-              while StrToCurr(Cells[Column, I]) < TmpC do
+              TmpC := StrToCurrDef(St, 0);
+              while StrToCurrDef(Cells[Column, I], 0) < TmpC do
                 Inc(I);
-              while StrToCurr(Cells[Column, J]) > TmpC do
+              while StrToCurrDef(Cells[Column, J], 0) > TmpC do
                 Dec(J);
             end;
           stAutomatic:
@@ -589,10 +589,7 @@ var
   var
     I, J: Integer;
   begin
-    if Fixed then
-      I := 0
-    else
-      I := FixedRows;
+    I := FixedRows;
     J := RowCount - 1;
     while I < J do
     begin
@@ -606,10 +603,7 @@ var
   var
     I, J: Integer;
   begin
-    if Fixed then
-      I := 0
-    else
-      I := FixedRows;
+    I := FixedRows;
     Result := I;
     J := RowCount - 1;
     while I <= J do
@@ -628,10 +622,7 @@ var
     I, J: Integer;
     DoSort: Boolean;
   begin
-    if Fixed then
-      I := 0
-    else
-      I := FixedRows;
+    I := FixedRows;
     DoSort := False;
     // avoid empty columns
     for J := I to RowCount - 1 do
@@ -658,10 +649,7 @@ begin
   // make sure you don't do anything in these events
   if (Column >= 0) and (Column < ColCount) and (SortType <> stNone) then
   begin
-    if Fixed then
-      LStart := 0
-    else
-      LStart := FixedRows;
+    LStart := FixedRows;
     LEnd := RowCount - 1;
     if BlankTop then
       LStart := MoveBlankTop;
@@ -1365,9 +1353,9 @@ begin
     FOnSaveProgress(Self, Position, Count);
 end;
 
-procedure TJvStringGrid.SortGridByCols(ColOrder: array of Integer);
+procedure TJvStringGrid.SortGridByCols(ColOrder: array of Integer; Fixed: Boolean);
 var
-  I, J: Integer;
+  I, J, FirstRow: Integer;
   Sorted: Boolean;
 
   function Sort(Row1, Row2: Integer): Integer;
@@ -1389,18 +1377,24 @@ var
 
 begin
   // (p3) is this really necessary? Doesn't seem so to me...
-  if SizeOf(ColOrder) div SizeOf(I) <> ColCount then
-    Exit;
-
+  //      No, it isn't... Removed by Dom
+  //if SizeOf(ColOrder) div SizeOf(I) <> ColCount then
+  //  Exit;
+    
   for I := 0 to High(ColOrder) do
     if (ColOrder[I] < 0) or (ColOrder[I] >= ColCount) then
       Exit;
 
-  J := 0;
+  if Fixed then
+    FirstRow := 0
+  else
+    FirstRow := FixedRows;
+
+  J := FirstRow;
   Sorted := False;
   repeat
     Inc(J);
-    for I := 0 to RowCount - 2 do
+    for I := FirstRow to RowCount - 2 do
       if Sort(I, I + 1) > 0 then
       begin
         MoveRow(I + 1, I);
@@ -1429,4 +1423,6 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+
+
 

@@ -1322,6 +1322,10 @@ var
   NewChange: Boolean;
   //-------------------------------------
 begin
+  {$IFDEF COMPILER6_UP}
+  inherited InternalPost;
+  {$ENDIF COMPILER6_UP}
+
   //------------------------ Added by CFZ -----------------------------------
   NewChange := False;
   if (FApplyMode <> amNone) and not IsLoading then

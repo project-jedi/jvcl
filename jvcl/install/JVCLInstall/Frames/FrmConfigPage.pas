@@ -55,7 +55,6 @@ type
     FrameDirEditBrowseDCP: TFrameDirEditBrowse;
     FrameDirEditBrowseHPP: TFrameDirEditBrowse;
     LblBCBGuide: TLabel;
-    CheckBoxCompileJclDcp: TCheckBox;
     CheckBoxVerbose: TCheckBox;
     CheckBoxGenerateMapFiles: TCheckBox;
     CheckBoxUnitVersioning: TCheckBox;
@@ -147,7 +146,6 @@ procedure TFrameConfigPage.Init;
 var
   i: Integer;
   x: Integer;
-  CommonCompiledJcl, HasBCB: Boolean;
 begin
   Inc(FInitializing);
   try
@@ -163,8 +161,6 @@ begin
     FrameDirEditBrowseHPP.OnChange := HppDirChanged;
     FrameDirEditBrowseHPP.AllowEmpty := True;
 
-    CommonCompiledJcl := True;
-    HasBCB := False;
     with ComboBoxTargetIDE do
     begin
       Items.Clear;
@@ -175,13 +171,6 @@ begin
         begin
           if InstallJVCL then
           begin
-            if Installer.SelTargets[i].Target.IsBCB then
-            begin
-              if not Installer.SelTargets[i].CompiledJCL then
-                CommonCompiledJcl := False;
-              HasBCB := True;
-            end;
-
             Items.AddObject(Target.DisplayName, Installer.SelTargets[i]);
             AddIconFileToImageList(ImageListTargets, Target.Executable);
           end;
@@ -199,12 +188,6 @@ begin
       end;
     end;
     ComboBoxTargetIDEChange(ComboBoxTargetIDE);
-
-    if not CommonCompiledJcl then
-      Installer.Data.CompileJclDcp := True;
-    CheckBoxCompileJclDcp.Checked := Installer.Data.CompileJclDcp;
-    CheckBoxCompileJclDcp.Enabled := CommonCompiledJcl;
-    CheckBoxCompileJclDcp.Visible := HasBCB;
 
     CheckBoxVerbose.Checked := Installer.Data.Verbose;
     CheckBoxIgnoreMakeErrors.Checked := Installer.Data.IgnoreMakeErrors;
@@ -268,9 +251,7 @@ procedure TFrameConfigPage.CheckBoxCompileJclDcpClick(Sender: TObject);
 begin
   if FInitializing > 0 then
     Exit;
-  if Sender = CheckBoxCompileJclDcp then
-    Installer.Data.CompileJclDcp := CheckBoxCompileJclDcp.Checked
-  else if Sender = CheckBoxVerbose then
+  if Sender = CheckBoxVerbose then
     Installer.Data.Verbose := CheckBoxVerbose.Checked
   else if Sender = CheckBoxIgnoreMakeErrors then
     Installer.Data.IgnoreMakeErrors := CheckBoxIgnoreMakeErrors.Checked

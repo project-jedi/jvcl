@@ -58,6 +58,8 @@ type
   TJvCustomTabBar = class;
   TJvTabBarItem = class;
 
+  TJvTabBarOrientation = (toTop, toBottom);
+
   TJvGetModifiedEvent = procedure(Sender: TJvTabBarItem; var Modified: Boolean) of object;
   TJvGetEnabledEvent = procedure(Sender: TJvTabBarItem; var Enabled: Boolean) of object;
 
@@ -72,6 +74,14 @@ type
   end;
 
   {$ENDIF COMPILER5}
+
+  IPageList = interface
+    ['{6BB90183-CFB1-4431-9CFD-E9A032E0C94C}']
+    function CanChange(AIndex: Integer): Boolean;
+    procedure SetActivePageIndex(AIndex: Integer);
+    function GetPageCount: Integer;
+    function GetPageCaption(AIndex: Integer): string;
+  end;
 
   TJvTabBarItem = class(TCollectionItem)
   private
@@ -273,6 +283,7 @@ type
     FAutoFreeClosed: Boolean;
     FAllowUnselected: Boolean;
     FSelectBeforeClose: Boolean;
+    FPageList: TCustomControl;
 
     FOnTabClosing: TJvTabBarClosingEvent;
     FOnTabSelected: TJvTabBarItemEvent;
@@ -292,6 +303,7 @@ type
     FHint: TCaption;
     FFlatScrollButtons: Boolean;
     FAllowTabMoving: Boolean;
+    FOrientation: TJvTabBarOrientation;
 
     function GetLeftTab: TJvTabBarItem;
     procedure SetLeftTab(Value: TJvTabBarItem);
@@ -309,6 +321,8 @@ type
     function FindSelectableTab(Tab: TJvTabBarItem): TJvTabBarItem;
     procedure SetHint(const Value: TCaption);
     procedure SetFlatScrollButtons(const Value: Boolean);
+    procedure SetPageList(const Value: TCustomControl);
+    procedure SetOrientation(const Value: TJvTabBarOrientation);
   protected
     procedure Resize; override;
     procedure CalcTabsRects;
@@ -348,6 +362,7 @@ type
     destructor Destroy; override;
 
     function AddTab(const Caption: string): TJvTabBarItem;
+    function FindTab(const Caption: string): TJvTabBarItem; // returns the first tab with the given Caption
     function TabAt(X, Y: Integer): TJvTabBarItem;
     function MakeVisible(Tab: TJvTabBarItem): Boolean;
     function FindData(Data: TObject): TJvTabBarItem;
@@ -357,6 +372,7 @@ type
     property Tabs: TJvTabBarItems read FTabs write SetTabs;
     property Painter: TJvTabBarPainter read FPainter write SetPainter;
     property Images: TImageList read FImages write SetImages;
+    property PageList: TCustomControl read FPageList write SetPageList;
 
     // Status
     property SelectedTab: TJvTabBarItem read FSelectedTab write SetSelectedTab;
@@ -365,6 +381,7 @@ type
     property ClosingTab: TJvTabBarItem read FClosingTab;
 
     // Options
+    property Orientation: TJvTabBarOrientation read FOrientation write SetOrientation default toTop;
     property CloseButton: Boolean read FCloseButton write SetCloseButton default True;
     property RightClickSelect: Boolean read FRightClickSelect write FRightClickSelect default True;
     property HotTracking: Boolean read FHotTracking write FHotTracking default False;
@@ -393,6 +410,7 @@ type
     property Height default 23;
     property Hint;
 
+    property Orientation;
     property CloseButton;
     property RightClickSelect;
     property HotTracking;
@@ -406,6 +424,7 @@ type
     property Tabs;
     property Painter;
     property Images;
+    property PageList;
 
     property OnTabClosing;
     property OnTabClosed;
@@ -463,6 +482,7 @@ procedure TCanvasX.LineTo(X, Y: Integer);
 var
   C: TColor;
 begin
+  // Should be replaced because GetPixel is not really working under Linux
   C := Pixels[X, Y];
   inherited LineTo(X, Y);
   Pixels[X, Y] := C;
@@ -496,6 +516,7 @@ begin
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := ImagesChanged;
 
+  FOrientation := toTop;
   FRightClickSelect := True;
   FCloseButton := True;
   FAutoFreeClosed := True;
@@ -534,7 +555,10 @@ begin
       Painter := nil
     else
     if Component = FImages then
-      Images := nil;
+      Images := nil
+    else
+    if Component = FPageList then
+      PageList := nil;
   end;
   if Assigned(FTabs) then
     for I := Tabs.Count - 1 downto 0 do
@@ -707,7 +731,14 @@ begin
 end;
 
 procedure TJvCustomTabBar.TabSelected(Tab: TJvTabBarItem);
+var
+  PageListIntf: IPageList;
 begin
+  if Assigned(PageList) and Supports(PageList, IPageList, PageListIntf) then
+  begin
+    PageListIntf.SetActivePageIndex(Tab.Index);
+    PageListIntf := nil; // who knows what OnTabSelected does with the PageList
+  end;
   if Assigned(FOnTabSelected) then
     FOnTabSelected(Self, Tab);
 end;
@@ -885,6 +916,9 @@ begin
           FMouseDownClosingTab := Tab;
           SetClosingTab(Tab);
         end;
+    if (FClosingTab = nil) and AllowTabMoving and
+       ([ssLeft, ssMiddle, ssRight] * Shift = [ssLeft]) then
+      BeginDrag(False);
   end;
   inherited MouseDown(Button, Shift, X, Y);
 end;
@@ -933,9 +967,7 @@ begin
   CalcTabsRects;
   Tab := TabAt(X, Y);
   if HotTracking and ([ssLeft, ssMiddle, ssRight] * Shift = []) then
-    SetHotTab(Tab)
-  else if AllowTabMoving and (SelectedTab <> Tab) and ([ssLeft, ssMiddle, ssRight] * Shift = [ssLeft]) then
-    BeginDrag(True);
+    SetHotTab(Tab);
 
   if CloseButton and Assigned(FMouseDownClosingTab) and (ssLeft in Shift) then
   begin
@@ -978,6 +1010,19 @@ function TJvCustomTabBar.AddTab(const Caption: string): TJvTabBarItem;
 begin
   Result := TJvTabBarItem(Tabs.Add);
   Result.Caption := Caption;
+end;
+
+function TJvCustomTabBar.FindTab(const Caption: string): TJvTabBarItem;
+var
+  i: Integer;
+begin
+  for i := 0 to Tabs.Count - 1 do
+    if Caption = Tabs[i].Caption then
+    begin
+      Result := Tabs[i];
+      Exit;
+    end;
+  Result := nil;
 end;
 
 procedure TJvCustomTabBar.CalcTabsRects;
@@ -1287,6 +1332,40 @@ begin
   end;
 end;
 
+procedure TJvCustomTabBar.SetPageList(const Value: TCustomControl);
+var
+  PageListIntf: IPageList;
+begin
+  if Value <> FPageList then
+  begin
+    if Value <> nil then
+    begin
+      if not Supports(Value, IPageList, PageListIntf) then
+        Exit;
+      if SelectedTab <> nil then
+        PageListIntf.SetActivePageIndex(SelectedTab.Index)
+      else
+        PageListIntf.SetActivePageIndex(0);
+      PageListIntf := nil;
+    end;
+    if Assigned(FPageList) then
+      FPageList.RemoveFreeNotification(Self);
+    FPageList := Value;
+    if Assigned(FPageList) then
+      FPageList.FreeNotification(Self);
+  end;
+end;
+
+procedure TJvCustomTabBar.SetOrientation(const Value: TJvTabBarOrientation);
+begin
+  if Value <> FOrientation then
+  begin
+    FOrientation := Value;
+    CalcTabsRects;
+    Repaint;
+  end;
+end;
+
 //=== { TJvTabBarItem } ======================================================
 
 constructor TJvTabBarItem.Create(Collection: TCollection);
@@ -1354,12 +1433,12 @@ begin
     if FLeft = -1 then
       TabBar.CalcTabsRects; // not initialized
 
-    case TabBar.Align of
-      alBottom:
+    case TabBar.Orientation of
+      toBottom:
           Result := Rect(FLeft, 0,
             FLeft + TabBar.GetTabWidth(Self), 0 + TabBar.GetTabHeight(Self));
     else
-      // Top
+      // toTop
       Result := Rect(FLeft, TabBar.ClientHeight - TabBar.GetTabHeight(Self),
           FLeft + TabBar.GetTabWidth(Self), TabBar.ClientHeight);
     end;
@@ -1637,8 +1716,8 @@ begin
     Brush.Style := bsClear;
     Pen.Color := BorderColor;
     Pen.Width := 1;
-    case TabBar.Align of
-      alBottom:
+    case TabBar.Orientation of
+      toBottom:
         begin
           MoveTo(0, R.Bottom - 1);
           LineTo(0, 0);
@@ -1649,7 +1728,7 @@ begin
           LineTo(0, R.Bottom - 1);
         end;
     else
-      // Top
+      // toTop
       MoveTo(0, R.Bottom - 1);
       LineTo(0, 0);
       LineTo(R.Right - 1, 0);
@@ -1721,8 +1800,8 @@ begin
       FillRect(R);
 
       Pen.Color := ControlDivideColor;
-      case Tab.TabBar.Align of
-        alBottom:
+      case Tab.TabBar.Orientation of
+        toBottom:
           begin
             MoveTo(R.Left, R.Top);
             LineTo(R.Left, R.Bottom - 1);
@@ -1730,12 +1809,20 @@ begin
             LineTo(R.Right - 1, R.Top - 1{end});
           end;
       else
-        // Top
+        // toTop
         MoveTo(R.Left, R.Bottom - 1);
         LineTo(R.Left, R.Top);
         LineTo(R.Right - 1, R.Top);
         LineTo(R.Right - 1, R.Bottom - 1 + 1{end});
       end;
+    end;
+
+    if Tab.Enabled and not Tab.Selected and Tab.Hot then
+    begin
+      // hot
+      Pen.Color := DividerColor;
+      MoveTo(R.Left, R.Top);
+      LineTo(R.Right - 1 - 1, R.Top);
     end;
 
     if Tab.TabBar.CloseButton then
@@ -1745,14 +1832,6 @@ begin
         Brush.Color := CloseColorSelected
       else
         Brush.Color := CloseColor;
-
-      if Tab.Enabled and not Tab.Selected and Tab.Hot then
-      begin
-        // hot
-        Pen.Color := DividerColor;
-        MoveTo(R.Left, R.Top);
-        LineTo(R.Right - 1 - 1, R.Top);
-      end;
 
       CloseR := GetCloseRect(Canvas, Tab, Tab.DisplayRect);
       Pen.Color := CloseRectColor;
@@ -1995,6 +2074,7 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
+
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

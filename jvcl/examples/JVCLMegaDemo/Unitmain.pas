@@ -1,6 +1,6 @@
 {******************************************************************
 
-                       JEDI-VCL Demo
+                       JEDI-VCL Mega Demo
 
  Copyright (C) 2002 Project JEDI
 
@@ -41,7 +41,7 @@ uses
   ExtCtrls, JvExExtCtrls, JvSplitter, JvCtrls, JvCaptionPanel, JvToolBar,
   JvAppStorageBaseMainFrmU, ControlsExampleMainFormU, JvCheckBox,
   JvHtControls, JvStatusBar, JvNetscapeSplitter, JvDbMaskEditDemoForm,
-  JvOutlookBarCustomDrawDemoMainForm;
+  JvOutlookBarCustomDrawDemoMainForm, JvBevel, JvGradient;
 
 type
   TMainform = class(TForm)
@@ -82,8 +82,9 @@ type
     JvLabel4: TJvLabel;
     JvLabel5: TJvLabel;
     StatusBar: TJvStatusBar;
-    JvNavPanelButton1: TJvNavPanelButton;
     JvNetscapeSplitter1: TJvNetscapeSplitter;
+    JvGradient1: TJvGradient;
+    SmallImages: TImageList;
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure CreateDemoForm(const ID: Integer; ShowForm: Boolean = True);
@@ -295,11 +296,7 @@ begin
             aJvBitBtn.ShowHint := False;
             aJvBitBtn.OnClick := CompClick;
             aFileName := gBitmapFilePath + 'T' + compUsedSL[J] + '.BMP';
-            {
-            if not FileExists(AFileName) and (aTabSheet.Caption <> 'none') then
-              MessageDlg('File "' + AFileName + '" for Bitmap not found!', mtError, [mbOk], 0)
-            else
-            }
+            if FileExists(AFileName) then
             try
               if aTabSheet.Caption <> 'none' then
                 aJvBitBtn.Glyph.LoadFromFile(AFileName);
@@ -398,7 +395,10 @@ begin
     62: TheFormArray[ID] := TTMTimeLineMainForm.Create(nil);
     63: TheFormArray[ID] := TTransBtnFormMain.Create(nil);
     64: TheFormArray[ID] := TJvZLibMultipleMainForm.Create(nil);
-    65: TheFormArray[ID] := TWelcomeForm.Create(nil);
+    65: begin
+            TheFormArray[ID] := TWelcomeForm.Create(nil);
+            TheFormArray[ID].Align := alClient;
+        end;
     66: TheFormArray[ID] := TOtherMainForm.Create(nil);
     67: TheFormArray[ID] := TProfiler32MainForm.Create(nil);
     68: TheFormArray[ID] := TFindReplaceMainForm.Create(nil);
@@ -587,83 +587,124 @@ end;
 
 procedure TMainform.CompClick(Sender: TObject);
 
-  procedure addWithFormat(aStr: string);
+  procedure AddNormal(const S: string);
   begin
-    JvRichEditHints.selattributes.style := [fsBold]; // set bold attribute
-    JvRichEditHints.selattributes.Color := clNavy; // color to blue
-    JvRichEditHints.seltext := aStr;
-    JvRichEditHints.selattributes.style := []; // revert to normal
-    JvRichEditHints.selattributes.Color := clBlack;
-  // JvRichEditHints.selstart := JvRichEditHints.getTextLen; // set caret to end of text
+    { Goto end. Length of selection is 0 so the formatting of the insertion
+      point is applied to newly inserted chars }
+    JvRichEditHints.SetSelection(MaxInt, MaxInt, False);
+    { Change the formatting of the inserting point; because the font color of
+      the form itself is set to clNavy in createJvXPBar and ParentFont of the
+      richedit is set to true, we must reapply the default color }
+    JvRichEditHints.SelAttributes.Color := clDefault;
+    JvRichEditHints.SelAttributes.Style := [];
+    JvRichEditHints.SelText := S;
+  end;
+
+  procedure AddBold(const S: string);
+  begin
+    JvRichEditHints.SetSelection(MaxInt, MaxInt, False);
+    JvRichEditHints.SelAttributes.Color := clNavy;
+    JvRichEditHints.SelAttributes.Style := [fsBold];
+    JvRichEditHints.SelText := S;
+  end;
+
+  procedure AddLink(const S: string);
+  begin
+    JvRichEditHints.SetSelection(MaxInt, MaxInt, False);
+    JvRichEditHints.SelAttributes.Link := True;
+    JvRichEditHints.SelText := S;
   end;
 
 var
-  aSL, allSections, tempSL: TStringList;
+  DemoIDs, AllSections, CompsUsed: TStringList;
+  SearchStr: string;
   I, J: Integer;
   IniFile: TIniFile;
 begin
-
-  if (JvListBoxAllDemos.ItemIndex = -1) and (Sender = JvListBoxAllDemos) then // File is loading of nothing is selected
+  if (JvListBoxAllDemos.ItemIndex = -1) and (Sender = JvListBoxAllDemos) then // File is loading or nothing is selected
     Exit;
 
-  aSL := TStringList.Create;
+  DemoIDs := TStringList.Create;
   IniFile := TIniFile.Create(ExtractFilePath(Application.ExeName) + '\data\JvMegaDemoAllDemoForms.ini');
-  JvRichEditHints.Text := '';
+  try
+    JvRichEditHints.Lines.BeginUpdate;
+    try
+      JvRichEditHints.Text := '';
 
- // there are 3 possible callers for his method:
+      // There are 3 possible callers for this method:
 
-  if Sender is TJvXPBarItem then
-    aSL.CommaText := IntToStr(TJvXPBarItem(sender).Tag)
-  else
-  if Sender = JvListBoxAllDemos then
-  begin
-   // we have only the Demo Title, so we have to search for it in the while ini file
-    IniFile.ReadSections(aSL);
-    for I := 0 to aSL.Count - 1 do
-      if IniFile.ReadString(aSL[I], 'Title', '') = JvListBoxAllDemos.Items[JvListBoxAllDemos.ItemIndex] then
+      if Sender is TJvXPBarItem then
+        DemoIDs.Add(IntToStr(TJvXPBarItem(Sender).Tag))
+      else
+      if Sender = JvListBoxAllDemos then
       begin
-        aSL.CommaText := aSL[I];
-        Break;
+        // We have only the demo title, so we have to search for it in the while ini file
+        with JvListBoxAllDemos do
+          SearchStr := Items[ItemIndex];
+
+        AllSections := TStringList.Create;
+        try
+          IniFile.ReadSections(AllSections);
+          for I := 0 to AllSections.Count - 1 do
+            if IniFile.ReadString(AllSections[I], 'Title', '') = SearchStr then
+            begin
+              DemoIDs.Add(AllSections[I]);
+              Break;
+            end;
+        finally
+          AllSections.Free;
+        end;
+      end
+      else
+      if Sender = JvListBoxDemosCompNameSorted then
+      begin
+        with JvListBoxDemosCompNameSorted do
+          SearchStr := Items[ItemIndex];
+
+        AddBold(SearchStr);
+        AddNormal(' is used in the following demos:');
+
+        // We have only the component name, so we have to search the whole ini,
+        // in the comma seperated values
+        AllSections := TStringList.Create;
+        CompsUsed := TStringList.Create;
+        try
+          IniFile.ReadSections(AllSections);
+          for I := 0 to AllSections.Count - 1 do
+          begin
+            CompsUsed.CommaText := IniFile.ReadString(AllSections[I], 'compsUsed', '');
+            for J := 0 to CompsUsed.Count - 1 do
+              if CompsUsed[J] = SearchStr then
+                DemoIDs.Add(AllSections[I]);
+          end;
+        finally
+          AllSections.Free;
+          CompsUsed.Free;
+        end;
+      end
+      else // the comps in the "Comps as in the Delphi IDE"
+      begin
+        // Hint is comma separated
+        DemoIDs.CommaText := (Sender as TControl).Hint;
+        AddBold((Sender as TControl).Name);
+        AddNormal(' is used in the following demos:');
       end;
-  end
-  else
-  if Sender = JvListBoxDemosCompNameSorted then
-  begin
-    addWithFormat(JvListBoxDemosCompNameSorted.Items[JvListBoxDemosCompNameSorted.ItemIndex]);
-    JvRichEditHints.Lines.add(' is used in following Demos:');
-   // we have one the Comonent Name, so we have to search in whole ini, in the comma seperated valuues
-    allSections := TStringList.create;
-    tempSL := TStringList.create;
-    IniFile.ReadSections(allSections);
-    for I := 0 to allSections.Count - 1 do
-    begin
-      tempSL.CommaText := IniFile.ReadString(allSections[I], 'compsUsed', '');
-      for J := 0 to tempSL.count - 1 do
-        if tempSL[J] = JvListBoxDemosCompNameSorted.Items[JvListBoxDemosCompNameSorted.ItemIndex] then
-          aSL.Add(allSections[I]);
+
+      // DemoIDs contains now the ids of all demos
+      for I := 0 to DemoIDs.Count - 1 do
+      begin
+        AddNormal(#13#10#13#10);
+        AddLink(DemoIDs[i] + ': ' + IniFile.ReadString(DemoIDs[I], 'Title', ''));
+        AddNormal(#13#10#13#10);
+        AddNormal(IniFile.ReadString(DemoIDs[I], 'Descr', ''));
+      end;
+    finally
+      JvRichEditHints.Lines.EndUpdate;
     end;
-
-    allSections.Free;
-    tempSL.Free;
-  end
-  else // the comps in the "Comps as in the Delphi IDE"
-  begin
-    aSL.CommaText := (Sender as TControl).Hint;
-    addWithFormat((Sender as TControl).Name);
-    JvRichEditHints.Lines.add(' is used in following Demos:');
+  finally
+    DemoIDs.Free;
+    IniFile.Free;
   end;
-
- // in the CommaText of the StringList aSL are now the DemoFormId[s]
-  for I := 0 to aSL.Count - 1 do
-  begin
-    JvRichEditHints.Lines.Add('');
-    addWithFormat('http:' + aSL[I] + ' ' + IniFile.ReadString(aSL[I], 'Title', ''));
-    JvRichEditHints.Lines.Add('');
-    JvRichEditHints.Lines.Add(IniFile.ReadString(aSL[I], 'Descr', ''));
-  end;
-
-  FreeAndNil(aSL);
-  FreeAndNil(IniFile);
 end;
 
 procedure TMainform.JvNavPanelBtnIdePageCtrlClick(Sender: TObject);
@@ -695,7 +736,7 @@ begin
   // check if aFileName is a real filename
   if (pos('http', aFileName) = 0) and (pos('mailto', aFileName) = 0) then
   begin
-    aFileName := ExtractFileDir(Application.ExeName) + '\' + aFileName;
+    aFileName := ExtractFileDir(Application.ExeName) + '\Data\' + aFileName;
     if not FileExists(aFilename) then
     begin
       MessageDlg('File ''' + aFilename + ''' could not be found!', mtError, [mbOK], 0);
@@ -739,13 +780,30 @@ begin
       TJvXPBar(JvXPContainer1.Controls[I]).collapsed := True;
 end;
 
+function GetNumberPrefix(const S: string): Integer;
+var
+  I: Integer;
+begin
+  I := 1;
+  while (I < Length(S)) and CharIsDigit(S[I]) do
+    Inc(I);
+
+  if I > 1 then
+    Result := StrToInt(Copy(S, 1, I - 1))
+  else
+    Result := -1;
+end;
+
 procedure TMainform.JvRichEditHintsURLClick(Sender: TObject;
   const URLText: string; Button: TMouseButton);
+var
+  DemoID: Integer;
 begin
-  if StrIsDigit(copy(UrlText, 6, 99)) then
-    self.CreateDemoForm(StrToInt(copy(UrlText, 6, 99)))
+  DemoID := GetNumberPrefix(URLText);
+  if DemoID >= 0 then
+    Self.CreateDemoForm(DemoID)
   else
-    ShellExecute(0, nil, PChar('"' + UrlText + '"'), nil, nil, SW_SHOWNORMAL);
+    ShellExecute(0, nil, PChar('"' + URLText + '"'), nil, nil, SW_SHOWNORMAL);
 end;
 
 procedure TMainform.JvListBoxAllDemosChange(Sender: TObject);

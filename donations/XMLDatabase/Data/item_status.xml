@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<ItemStatus>
- <IStatus IStatId="1" StatName="Disponible"/>
- <IStatus IStatId="2" StatName="Dans une boiîte"/>
- <IStatus IStatId="3" StatName="En stérilisation"/>
- <IStatus IStatId="4" StatName="Perdu"/>
-</ItemStatus>

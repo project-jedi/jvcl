@@ -1740,7 +1740,7 @@ function TJvTabControl.DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boo
 begin
   Result := True;
   if Assigned(TabPainter) then
-    TabPainter.DrawTab(Self, Canvas, Images, TabIndex, Tabs[TabIndex].Caption, Rect, TabIndex = Self.TabIndex, Enabled)
+    TabPainter.DrawTab(Self, Canvas, Images, GetImageIndex(TabIndex), Tabs[TabIndex].Caption, Rect, TabIndex = Self.TabIndex, Enabled)
   else
     Result := inherited DrawTab(TabIndex, Rect, Active);
 end;
@@ -1751,7 +1751,7 @@ end;
 procedure TJvTabControl.DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean);
 begin
   if Assigned(TabPainter) then
-    TabPainter.DrawTab(Self, Canvas, Images, TabIndex, Tabs[TabIndex], Rect, TabIndex = Self.TabIndex, Enabled)
+    TabPainter.DrawTab(Self, Canvas, Images, GetImageIndex(TabIndex), Tabs[TabIndex], Rect, TabIndex = Self.TabIndex, Enabled)
   else
     inherited DrawTab(TabIndex, Rect, Active);
 end;

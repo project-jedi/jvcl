@@ -41,6 +41,9 @@ const
   sJvclIncFile = '%s\common\jvcl.inc';
   sBCBIncludeDir = '%s\Include\Vcl';
 
+const
+  CLXSupport = False; { Switch this to True if the Installer should support CLX }
+
 type
   TJVCLData = class;
   TTargetConfig = class;
@@ -80,7 +83,7 @@ type
 
     FJVCLConfig: TJVCLConfig;
 
-    procedure SetInstallMode(const Value: TInstallMode);
+    procedure SetInstallMode(Value: TInstallMode);
     function GetFrameworkCount: Integer;
     function GetDxgettextDir: string;
     function GetDeveloperInstall: Boolean;
@@ -235,7 +238,6 @@ type
     FDxgettextDir: string;
     FJVCLDir: string;
     FDeleteFilesOnUninstall: Boolean;
-    FCompileJclDcp: Boolean;
     FVerbose: Boolean;
     FIgnoreMakeErrors: Boolean;
 
@@ -282,7 +284,6 @@ type
     property GenerateMapFiles: Integer read GetGenerateMapFiles write SetGenerateMapFiles;
 
     property DeleteFilesOnUninstall: Boolean read FDeleteFilesOnUninstall write FDeleteFilesOnUninstall default True;
-    property CompileJclDcp: Boolean read FCompileJclDcp write FCompileJclDcp default True;
     property Verbose: Boolean read FVerbose write FVerbose default False;
     property IgnoreMakeErrors: Boolean read FIgnoreMakeErrors write FIgnoreMakeErrors default False;
 
@@ -346,7 +347,6 @@ var
 begin
   inherited Create;
   FDeleteFilesOnUninstall := True;
-  FCompileJclDcp := True;
   FVerbose := False;
 
   ErrMsg := '';
@@ -711,7 +711,13 @@ begin
     Include(FInstallMode, pkCLX);
     FInstalledJVCLVersion := 3;
   end;
-  if FInstallMode = [] then // if no VCL and no CLX that it is CLX
+  if not CLXSupport then
+  begin
+    Exclude(FInstallMode, pkCLX);
+    Include(FInstallMode, pkVCL);
+  end
+  else
+  if FInstallMode = [] then // if no VCL and no CLX than it is VCL
     Include(FInstallMode, pkVCL);
 
   // identify JCL version
@@ -925,10 +931,12 @@ begin
   Result := GetJVCLDir + Format('\lib\%s%d', [TargetTypes[Target.IsBCB], Target.Version]); // do not localize
 end;
 
-procedure TTargetConfig.SetInstallMode(const Value: TInstallMode);
+procedure TTargetConfig.SetInstallMode(Value: TInstallMode);
 begin
   if Value <> FInstallMode then
   begin
+    if not CLXSupport then
+      Exclude(Value, pkCLX);
     if Value = [] then
       FInstallMode := [pkVcl]
     else
@@ -1153,6 +1161,7 @@ begin
     for Kind := pkFirst to pkLast do
       if Ini.ReadBool(Target.DisplayName, 'InstallMode_' + IntToStr(Integer(Kind)), Kind in InstallMode) then // do not localize
         Include(Mode, Kind);
+
     InstallMode := Mode;
     //AutoDependencies := Ini.ReadBool(Target.DisplayName, 'AutoDependencies', AutoDependencies);
 

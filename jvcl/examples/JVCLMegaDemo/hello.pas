@@ -38,14 +38,14 @@ uses
 
 type
   TWelcomeForm = class(TForm)
-    frmh_st: TJvScrollText;
-    JvImage1: TJvImage;
+    JvclMegaDemoLogoImage: TJvImage;
     JvHotLink2: TJvLabel;
     JvJVCLAboutComp: TJvJVCLAboutComponent;
     JvHotLink3: TJvLabel;
-    JvRichEdit1: TJvRichEdit;
+    WelcomeRichView: TJvRichEdit;
     procedure FormShow(Sender: TObject);
     procedure JvHotLink3Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   end;
 
 implementation
@@ -55,13 +55,24 @@ implementation
 procedure TWelcomeForm.FormShow(Sender: TObject);
 begin
  //Start the scrolling of the ScollText comp
- frmh_st.active := true;
+// frmh_st.active := true;
  self.SetFocus; // Hide cursor from RichEdit
 end;
 
 procedure TWelcomeForm.JvHotLink3Click(Sender: TObject);
 begin
  JvJVCLAboutComp.Execute;
+end;
+
+procedure TWelcomeForm.FormCreate(Sender: TObject);
+begin
+  try
+  WelcomeRichView.Lines.LoadFromFile(ExtractFilePath(Application.ExeName)+'data\welcome.rtf');
+  except
+    on E:Exception do begin
+        WelcomeRichView.Lines.Add('Unable to load welcome.rtf');
+    end;
+  end;
 end;
 
 end.
