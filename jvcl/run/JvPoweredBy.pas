@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvPoweredBy.pas, released on 2005-03-30.
+The Original Code is: JvLED.pas, released on 2005-03-30.
 
 The Initial Developer of the Original Code is Robert Marquardt (robert_marquardt att gmx dott de)
 Portions created by Robert Marquardt are Copyright (C) 2005 Robert Marquardt.

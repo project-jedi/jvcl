@@ -1606,8 +1606,8 @@ resourcestring
 
 //=== JvPoweredBy.pas ========================================================
 resourcestring
-  RsURLPoweredByJCL = 'http://jvcl.sf.net/PoweredByJCL.htm';
-  RsURLPoweredByJVCL = 'http://jvcl.sf.net/PoweredByJVCL.htm';
+  RsURLPoweredByJCL = 'http://homepages.borland.com/jedi/jcl/PoweredByJCL.htm';
+  RsURLPoweredByJVCL = 'http://homepages.borland.com/jedi/jvcl/PoweredByJVCL.htm';
 
 //=== JvProfilerForm.pas =====================================================
 resourcestring
