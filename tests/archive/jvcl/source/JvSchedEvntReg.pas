@@ -81,7 +81,7 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents('JVCL Additional', [TJvScheduledEvents]);
+  RegisterComponents('Jv Additional', [TJvScheduledEvents]);
   RegisterPropertyEditor(TypeInfo(IJclSchedule), TJvEventCollectionItem, 'Schedule', TSchedulePropertyEditor);
   RegisterComponentEditor(TJvCustomScheduledEvents, TSchedEventComponentEditor);
 end;
