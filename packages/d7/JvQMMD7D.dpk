@@ -34,10 +34,13 @@ requires
   designide,
   visualclx,
   JvQCoreD7R,
-  DJcl;
+  DJcl,
+  JvQSystemD7R,
+  JvQCtrlsD7R;
 
 contains
   JvQMMReg in '..\..\qdesign\JvQMMReg.pas',
-  JvQQtKeyEditorForm in '..\..\qdesign\JvQQtKeyEditorForm.pas' {frmJvQtKeyEditor};
+  JvQQtKeyEditorForm in '..\..\qdesign\JvQQtKeyEditorForm.pas' {frmJvQtKeyEditor},
+  JvQIconListForm in '..\..\qdesign\JvQIconListForm.pas';
 
 end.

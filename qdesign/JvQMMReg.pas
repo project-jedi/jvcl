@@ -1,7 +1,3 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
-
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -39,23 +35,25 @@ procedure Register;
 implementation
 
 uses
-  Classes, Graphics, ExtCtrls,
-  
+  Classes, 
+
   DesignEditors, DesignIntf,
 
   JvQDsgnConsts, JvQQtKeyEditorForm,
-  JvQAni, JvQBmpAnimator,
+  JvQAni, JvQBmpAnimator, JvQPicClip, JvQIconList,
   JvQGradient, JvQGradientHeaderPanel, JvQId3v1, JvQId3v2,
   JvQImageRotate, JvQImageTransform, JvQImageSquare, JvQStarfield,
   JvQWaitingGradient, JvQWaitingProgress, JvQWavePlayer, JvQSpecialProgress,
-  JvQSlider, JvQID3v2Base, JvQAnimatedImage, JvQSpecialImage;
+  JvQSlider, JvQID3v2Base, JvQAnimatedImage, JvQSpecialImage,
+  JvQIconListForm {, JvQPictureEditors,  JvQPictureEditForm};
 
-{$R ..\Resources\JvMMReg.dcr}
+
+{$R ../Resources/JvMMReg.dcr}
 
 procedure Register;
 begin
   RegisterComponents(RsPaletteImageAnimator, [TJvBmpAnimator,
-    TJvImageRotate, TJvImageTransform,
+    TJvPicClip, TJvImageRotate, TJvImageTransform,
     TJvImageSquare, TJvStarfield,
     TJvAnimatedImage, TJvSpecialImage]);
   RegisterComponents(RsPaletteBarPanel, [TJvGradientHeaderPanel, TJvGradient,
@@ -63,7 +61,7 @@ begin
   RegisterComponents(RsPaletteNonVisual, [TJvID3v1, TJvID3v2, TJvWavePlayer]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvSlider]);
 
-//  RegisterPropertyEditor(TypeInfo(TJvIconList), nil, '', TIconListProperty);
+  RegisterPropertyEditor(TypeInfo(TJvIconList), nil, '', TIconListProperty);
 //  RegisterPropertyEditor(TypeInfo(TJvDriverIndex), nil, '', TJvDriverIndexEditor);
 //  RegisterPropertyEditor(TypeInfo(TJvQtKey), nil, '', TJvQtKeyEditor);
 //  RegisterPropertyEditor(TypeInfo(TJvID3FileInfo), nil, '', TJvID3FileInfoEditor);
