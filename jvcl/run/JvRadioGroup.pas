@@ -35,7 +35,7 @@ uses
   Windows, Messages, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ToolWin,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
+  Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QTypes, QWindows,
   {$ENDIF VisualCLX}
   JvThemes, JvExControls, JvExExtCtrls;
 
@@ -163,9 +163,17 @@ begin
       else
         R := Rect(R.Right - Canvas.TextWidth(Text) - 8, 0, 0, H);
       Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
+      {$IFDEF VCL}
       DrawText(Handle, PChar(Text), Length(Text), R, Flags or DT_CALCRECT);
       Brush.Color := Color;
       DrawText(Handle, PChar(Text), Length(Text), R, Flags);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      
+      DrawTextW(Handle, PWideChar(Text), Length(Text), R, Flags or DT_CALCRECT);
+      Brush.Color := Color;
+      DrawTextW(Handle, PWideChar(Text), Length(Text), R, Flags);
+      {$ENDIF VisualCLX}
     end;
   end;
 end;

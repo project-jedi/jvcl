@@ -33,13 +33,15 @@ unit JvColorTrackBar;
 interface
 
 uses
-  SysUtils, Classes, JvComponent,
+  SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Messages, Controls, Graphics, Forms;
+  Windows, Messages, Controls, Graphics, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QControls, QGraphics, QForms, QWindows;
+  Types, QControls, QGraphics, QForms, QWindows,
   {$ENDIF VisualCLX}
+  JvComponent;
+
 type
   TJvColorTrackBarIndicator = (tbiArrow, tbiLine);
   TJvColorTrackBarIndicators = set of TJvColorTrackBarIndicator;

@@ -52,10 +52,12 @@ type
     FClient: TJvCustomGraphicButton;
     procedure AssignClient(AClient: TObject); override;
     function IsCheckedLinked: Boolean; override;
+    {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     function IsGroupIndexLinked: Boolean; override;
     procedure SetGroupIndex(Value: Integer); override;
     {$ENDIF COMPILER6_UP}
+    {$ENDIF VCL}
     procedure SetChecked(Value: Boolean); override;
   end;
 
@@ -249,6 +251,7 @@ implementation
 uses
   JvConsts;
 
+
 { create a grayed version of a color bitmap }
 { SLOW! don't use in realtime! }
 
@@ -387,8 +390,8 @@ begin
     Result := false;
 end;
 
+{$IFDEF VCL}
 {$IFDEF COMPILER6_UP}
-
 function TJvTransparentButtonActionLink.IsGroupIndexLinked: Boolean;
 begin
   Result := False;
@@ -398,8 +401,8 @@ procedure TJvTransparentButtonActionLink.SetGroupIndex(Value: Integer);
 begin
   //
 end;
-
 {$ENDIF COMPILER6_UP}
+{$ENDIF VCL}
 
 procedure TJvTransparentButtonActionLink.SetChecked(Value: Boolean);
 begin
@@ -672,19 +675,19 @@ begin
       TmpWidth := FGlyph.Width;
 
     { do top }
-    if TextAlign in [ttaBottomLeft, ttaBottom, ttaBottomRight] then
+    if self.TextAlign in [ttaBottomLeft, ttaBottom, ttaBottomRight] then
       Dest.Top := Spacing
     else
-    if TextAlign in [ttaTopLeft, ttaTop, ttaTopRight] then
+    if self.TextAlign in [ttaTopLeft, ttaTop, ttaTopRight] then
       Dest.Top := Height - FImList.Height - Spacing
     else
       Dest.Top := (Height - FImList.Height) div 2;
 
     { do left }
-    if TextAlign = ttaLeft then
+    if self.TextAlign = ttaLeft then
       Dest.Left := Width - TmpWidth - Spacing
     else
-    if TextAlign = ttaRight then
+    if self.TextAlign = ttaRight then
       Dest.Left := Spacing
     else { left, center, right }
       Dest.Left := (Width - TmpWidth) div 2;
@@ -704,18 +707,28 @@ end;
 
 { just like DrawText, but draws disabled instead }
 
-function DrawDisabledText(HDC: Integer; lpString: PChar; nCount: Integer; var lpRect: TRect; uFormat: Integer):
+function DrawDisabledText(DC: HDC; lpString: {$IFDEF VCL}PChar{$ELSE}PWideChar{$ENDIF}; nCount: Integer; var lpRect: TRect; uFormat: Integer):
   Integer;
 var
   OldCol: Integer;
 begin
-  OldCol := SetTextColor(hDC, ColorToRGB(clBtnHighlight));
+  OldCol := SetTextColor(DC, ColorToRGB(clBtnHighlight));
   OffsetRect(lpRect, 1, 1);
-  DrawText(HDC, lpString, nCount, lpRect, uFormat);
+  {$IFDEF VCL}
+  DrawText(DC, lpString, nCount, lpRect, uFormat);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  DrawTextW(DC, lpString, nCount, lpRect, uFormat);
+  {$ENDIF VisualCLX}
   OffsetRect(lpRect, -1, -1);
-  SetTextColor(HDC, ColorToRGB(clBtnShadow));
-  Result := DrawText(HDC, lpString, nCount, lpRect, uFormat);
-  SetTextColor(HDC, OldCol);
+  SetTextColor(DC, ColorToRGB(clBtnShadow));
+  {$IFDEF VCL}
+  Result := DrawText(DC, lpString, nCount, lpRect, uFormat);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Result := DrawTextW(DC, lpString, nCount, lpRect, uFormat);
+  {$ENDIF VisualCLX}
+  SetTextColor(DC, OldCol);
 end;
 
 { ARect contains the bitmap bounds }
@@ -723,7 +736,7 @@ end;
 procedure TJvTransparentButton.DrawTheText(ARect: TRect; Canvas: TCanvas);
 var
   Flags, MidX, MidY: Integer;
-  DC: THandle; { Col:TColor; }
+  DC: HDC; { Col:TColor; }
   TmpRect: TRect;
 begin
   if (bsMouseInside in MouseStates) and HotTrack then
@@ -740,12 +753,18 @@ begin
   TmpRect := Rect(0, 0, Width, Height);
 
   { calculate width and height of text: }
+
+  {$IFDEF VCL}
   DrawText(DC, PChar(Caption), Length(Caption), TmpRect, Flags or DT_CALCRECT);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  DrawTextW(DC, PWideChar(Caption), Length(Caption), TmpRect, Flags or DT_CALCRECT);
+  {$ENDIF VisualCLX}
   MidY := TmpRect.Bottom - TmpRect.Top;
   MidX := TmpRect.Right - TmpRect.Left;
   Flags := DT_CENTER;
   { div 2 and shr 1 generates the exact same Asm code... }
-  case TextAlign of
+  case self.TextAlign of
     ttaTop:
       OffsetRect(TmpRect, Width div 2 - MidX div 2, ARect.Top - MidY - Spacing);
     ttaTopLeft:
@@ -773,8 +792,8 @@ begin
   if ((bsMouseDown in MouseStates) or Down) and FShowPressed then
     OffsetRect(TmpRect, FOffset, FOffset);
 
+  {$IFDEF VCL}
   SetBkMode(DC, Windows.TRANSPARENT);
-
   if not Enabled then
     DrawDisabledText(DC, PChar(Caption), -1, TmpRect, Flags)
   else
@@ -785,6 +804,21 @@ begin
       SetTextColor(DC, ColorToRGB(Self.Font.Color));
     DrawText(DC, PChar(Caption), -1, TmpRect, Flags);
   end;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  SetBkMode(DC, QWindows.TRANSPARENT);
+  if not Enabled then
+    DrawDisabledText(DC, PWideChar(Caption), -1, TmpRect, Flags)
+  else
+  begin
+    if (bsMouseInside in MouseStates) and HotTrack then
+      SetTextColor(DC, ColorToRGB(HotTrackFont.Color))
+    else
+      SetTextColor(DC, ColorToRGB(Self.Font.Color));
+    DrawTextW(DC, PWideChar(Caption), -1, TmpRect, Flags);
+  end;
+  {$ENDIF VisualCLX}
+
 end;
 
 procedure TJvTransparentButton.DrawTheBitmap(ARect: TRect; Canvas: TCanvas);
@@ -837,9 +871,13 @@ begin
       Canvas.Brush.Bitmap := Pattern;
       Self.Canvas.FillRect(HelpRect);
     end;
-
+    {$IFDEF VCL}
     ImageList_DrawEx(Handle, Index, Canvas.Handle, ARect.Left, ARect.Top, 0, 0,
       clNone, clNone, ILD_TRANSPARENT);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FImList.Draw(Canvas, ARect.Left, ARect.Top, Index);
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -939,7 +977,9 @@ end;
 procedure TJvTransparentButton2.AddGlyphs;
 var
   Bmp: TBitmap;
+  {$IFDEF VCL}
   Icon: HICON;
+  {$ENDIF VCL}
 begin
   Bmp := TBitmap.Create;
   try
@@ -953,17 +993,29 @@ begin
       FImList.Width := FActiveList.Width;
       Bmp.Height := FImList.Height;
       Bmp.Width := FImList.Width;
+      {$IFDEF VCL}
       Icon := ImageList_GetIcon(FActiveList.Handle, FActiveIndex, ILD_TRANSPARENT);
       ImageList_AddIcon(FImList.Handle, Icon);
       DeleteObject(Icon);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      FActiveList.GetBitmap(FActiveIndex, Bmp);
+      FImList.AddMasked(Bmp, Bmp.TransparentColor);
+      {$ENDIF VisualCLX}
     end
     else
       Exit;
 
     if Assigned(FDisabledList) and (FDisabledIndex > -1) then
     begin
+      {$IFDEF VCL}
       Icon := ImageList_GetIcon(FDisabledList.Handle, FDisabledIndex, ILD_TRANSPARENT);
       ImageList_AddIcon(FImList.Handle, Icon);
+      {$ENDIF}
+      {$IFDEF VisualCLX}
+      FDisabledList.GetBitmap(FDisabledIndex, Bmp);
+      FImList.AddMasked(Bmp, Bmp.TransparentColor);
+      {$ENDIF VisualCLX}
     end
     else
     begin
@@ -974,28 +1026,52 @@ begin
 
     if Assigned(FDownList) and (FDownIndex > -1) then
     begin
+      {$IFDEF VCL}
       Icon := ImageList_GetIcon(FDownList.Handle,FDownIndex, ILD_TRANSPARENT);
       ImageList_AddIcon(FImList.Handle, Icon);
       DeleteObject(Icon);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      FDownList.GetBitmap(FDownIndex, Bmp);
+      FImList.AddMasked(Bmp, Bmp.TransparentColor);
+      {$ENDIF VisualCLX}
     end
     else
     begin
+      {$IFDEF VCL}
       Icon := ImageList_GetIcon(FActiveList.Handle,FActiveIndex, ILD_TRANSPARENT);
       ImageList_AddIcon(FImList.Handle, Icon);
       DeleteObject(Icon);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      FActiveList.GetBitmap(FActiveIndex, Bmp);
+      FImList.AddMasked(Bmp, Bmp.TransparentColor);
+      {$ENDIF VisualCLX}
     end;
 
     if Assigned(FGrayList) and (FGrayIndex > -1) then
     begin
+      {$IFDEF VCL}
       Icon := ImageList_GetIcon(FGrayList.Handle,FGrayIndex, ILD_TRANSPARENT);
       ImageList_AddIcon(FImList.Handle, Icon);
       DeleteObject(Icon);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      FGrayList.GetBitmap(FGrayIndex, Bmp);
+      FImList.AddMasked(Bmp, Bmp.TransparentColor);
+      {$ENDIF VisualCLX}
     end
     else
     begin
+      {$IFDEF VCL}
       FActiveList.GetBitmap(FActiveIndex, Bmp);
       GrayBitmap(Bmp, 11, 59, 30);
       FImList.AddMasked(Bmp, Bmp.TransparentColor);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      FActiveList.GetBitmap(FActiveIndex, Bmp);
+      FImList.AddMasked(Bmp, Bmp.TransparentColor);
+      {$ENDIF VisualCLX}
     end;
   finally
     Bmp.Free;
@@ -1311,19 +1387,19 @@ begin
     TmpWidth := FImList.Width;
 
     { do top }
-    if TextAlign in [ttaBottomLeft, ttaBottom, ttaBottomRight] then
+    if self.TextAlign in [ttaBottomLeft, ttaBottom, ttaBottomRight] then
       Dest.Top := Spacing
     else
-    if TextAlign in [ttaTopLeft, ttaTop, ttaTopRight] then
+    if self.TextAlign in [ttaTopLeft, ttaTop, ttaTopRight] then
       Dest.Top := Height - FImList.Height - Spacing
     else
       Dest.Top := (Height - FImList.Height) div 2;
 
     { do left }
-    if TextAlign = ttaLeft then
+    if self.TextAlign = ttaLeft then
       Dest.Left := Width - TmpWidth - Spacing
     else
-    if TextAlign = ttaRight then
+    if self.TextAlign = ttaRight then
       Dest.Left := Spacing
     else { left, center, right }
       Dest.Left := (Width - TmpWidth) div 2;
@@ -1350,7 +1426,7 @@ end;
 procedure TJvTransparentButton2.DrawTheText(ARect: TRect; Canvas: TCanvas);
 var
   Flags, MidX, MidY: Integer;
-  DC: THandle; { Col:TColor; }
+  DC: HDC; { Col:TColor; }
   TmpRect: TRect;
 begin
   if (bsMouseInside in MouseStates) and HotTrack then
@@ -1367,12 +1443,18 @@ begin
   TmpRect := Rect(0, 0, Width, Height);
 
   { calculate width and height of text: }
+  {$IFDEF VCL}
   DrawText(DC, PChar(Caption), Length(Caption), TmpRect, Flags or DT_CALCRECT);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  RequiredState(Canvas, [csHandleValid, csFontValid]);
+  DrawTextW(DC, PWideChar(Caption), Length(Caption), TmpRect, Flags or DT_CALCRECT);
+  {$ENDIF VisualCLX}
   MidY := TmpRect.Bottom - TmpRect.Top;
   MidX := TmpRect.Right - TmpRect.Left;
   Flags := DT_CENTER;
   { div 2 and shr 1 generates the exact same Asm code... }
-  case TextAlign of
+  case self.TextAlign of
     ttaTop:
       OffsetRect(TmpRect, Width div 2 - MidX div 2, ARect.Top - MidY - Spacing);
     ttaTopLeft:
@@ -1400,13 +1482,24 @@ begin
   if ((bsMouseDown in MouseStates)) and FShowPressed then
     OffsetRect(TmpRect, 1, 1);
 
-  SetBkMode(DC, Windows.TRANSPARENT);
 
+  {$IFDEF VCL}
+  SetBkMode(DC, Windows.TRANSPARENT);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  SetBkMode(DC, QWindows.TRANSPARENT);
+  {$ENDIF VisualCLX}
   if not Enabled then
   begin
     SetTextColor(DC, ColorToRGB(clBtnHighlight));
     OffsetRect(TmpRect, 1, 1);
+
+    {$IFDEF VCL}
     DrawText(DC, PChar(Caption), Length(Caption), TmpRect, Flags);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    DrawTextW(DC, PWideChar(Caption), Length(Caption), TmpRect, Flags);
+    {$ENDIF VisualCLX}
     OffsetRect(TmpRect, -1, -1);
     SetTextColor(DC, ColorToRGB(clBtnShadow));
   end
@@ -1415,7 +1508,12 @@ begin
   else
     SetTextColor(DC, ColorToRGB(Self.Font.Color));
 
+  {$IFDEF VCL}
   DrawText(DC, PChar(Caption), Length(Caption), TmpRect, Flags);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  DrawTextW(DC, PWideChar(Caption), Length(Caption), TmpRect, Flags);
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvTransparentButton2.DrawTheBitmap(ARect: TRect; Canvas: TCanvas);

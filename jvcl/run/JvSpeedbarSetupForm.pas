@@ -29,8 +29,15 @@ unit JvSpeedbarSetupForm;
 interface
 
 uses
-  Windows, SysUtils, Messages, Classes, Graphics, Controls, Forms, StdCtrls,
+  SysUtils,  Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, StdCtrls,
   Grids, ExtCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QForms, QStdCtrls,
+  QGrids, QExtCtrls, QWindows,
+  {$ENDIF VisualCLX}
   JvConsts, JvSpeedBar, JvSpeedButton, JvComponent;
 
 type
@@ -88,10 +95,21 @@ procedure ShowSpeedbarSetupWindow(Speedbar: TJvSpeedBar; HelpCtx: THelpContext);
 implementation
 
 uses
-  Consts, Math,
+  Math,
+  {$IFDEF VCL}
+  Consts,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QConsts,
+  {$ENDIF VisualCLX}
   JvJVCLUtils, JvResources;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF VisualCLX}
 
 function FindEditor(Speedbar: TJvSpeedBar): TJvSpeedbarSetupWindow;
 var

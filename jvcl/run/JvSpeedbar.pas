@@ -24,13 +24,20 @@ Known Issues:
 
 {$I jvcl.inc}
 
-unit JvSpeedBar;
+unit JvSpeedbar;
 
 interface
 
 uses
-  Windows, SysUtils, Classes, Messages, Menus, Buttons, Controls,
-  Graphics, Forms, ImgList, ActnList, ExtCtrls, Grids, IniFiles,
+  SysUtils, Classes, IniFiles,
+  {$IFDEF VCL}
+  Windows, Messages, Menus, Buttons, Controls,
+  Graphics, Forms, ImgList, ActnList, ExtCtrls, Grids,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QMenus, QButtons, QControls,
+  QGraphics, QForms, QImgList, QActnList, QExtCtrls, QGrids,
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF COMPILER6_UP}
@@ -220,16 +227,20 @@ type
     property Version: Integer read FVersion write FVersion default 0;
     property Wallpaper: TPicture read FWallpaper write SetWallpaper;
     property Images: TImageList read FImages write SetImages;
+    {$IFDEF VCL}
     property BiDiMode;
-    property Constraints;
+    property DragCursor;
     property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF VCL}
+    property Constraints;
     property BevelInner;
     property BevelOuter;
     property BevelWidth;
     property BorderWidth;
     property BorderStyle;
     property Color;
-    property DragCursor;
     property DragMode;
     property Enabled;
     property Locked;
@@ -256,8 +267,6 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property OnContextPopup;
-    property OnEndDock;
-    property OnStartDock;
     property OnResize;
   {$IFDEF JVCLThemesEnabled}
     property ParentBackground default True;
@@ -459,7 +468,9 @@ type
     procedure SetGlyph(Value: TBitmap);
     procedure SetWordWrap(Value: Boolean);
   protected
+    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
+    {$ENDIF VCL}
     procedure Paint; override;
     procedure DoBoundsChanged; override;
   public
@@ -493,7 +504,13 @@ function NewSpeedItem(AOwner: TComponent; ASpeedbar: TJvSpeedBar; Section: Integ
 implementation
 
 uses
-  Consts, Math,
+  Math,
+  {$IFDEF VCL}
+  Consts,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QConsts,
+  {$ENDIF VisualCLX}
   JvJVCLUtils, JvJCLUtils, JvSpeedbarSetupForm, JvResources;
 
 const
@@ -664,9 +681,11 @@ type
     FItem: TJvSpeedItem;
     FBtn: TJvBtnControl;
     procedure InvalidateGlyph;
-    procedure CMVisibleChanged(var Msg: TMessage); message CM_VISIBLECHANGED;
   protected
+    procedure VisibleChanged; override;
+    {$IFDEF VCL}
     procedure WndProc(var Msg: TMessage); override;
+    {$ENDIF VCL}
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -712,7 +731,7 @@ begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
-procedure TJvSpeedBarButton.CMVisibleChanged(var Msg: TMessage);
+procedure TJvSpeedBarButton.VisibleChanged;
 begin
   if Visible then
     ControlStyle := ControlStyle + [csOpaque]
@@ -721,6 +740,7 @@ begin
   inherited;
 end;
 
+{$IFDEF VCL}
 procedure TJvSpeedBarButton.WndProc(var Msg: TMessage);
 begin
   if FItem.FEditing and (csDesigning in ComponentState) and
@@ -734,6 +754,7 @@ begin
   else
     inherited WndProc(Msg);
 end;
+{$ENDIF VCL}
 
 procedure TJvSpeedBarButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
@@ -810,13 +831,25 @@ begin
       begin
         if not FItem.SpeedBar.AcceptDropItem(FItem, P.X, P.Y) then
         begin
+          {$IFDEF VCL}
           SendMessage(FItem.SpeedBar.FEditWin, CM_SPEEDBARCHANGED, SBR_CHANGED,
             Longint(FItem.SpeedBar));
+          {$ENDIF VCL}
+          {$IFDEF VisualCLX}
+          SendMsg(FItem.SpeedBar.FEditWin, CM_SPEEDBARCHANGED, SBR_CHANGED,
+            Longint(FItem.SpeedBar));
+          {$ENDIF VisualCLX}
         end
         else
         begin
+          {$IFDEF VCL}
           SendMessage(FItem.SpeedBar.FEditWin, CM_SPEEDBARCHANGED, SBR_BTNSELECT,
             Longint(FItem));
+          {$ENDIF VCL}
+          {$IFDEF VisualCLX}
+          SendMsg(FItem.SpeedBar.FEditWin, CM_SPEEDBARCHANGED, SBR_BTNSELECT,
+            Longint(FItem));
+          {$ENDIF VisualCLX}
           Invalidate;
         end;
       end
@@ -824,8 +857,14 @@ begin
       begin
         SendToBack;
         FItem.Visible := False;
+        {$IFDEF VCL}
         SendMessage(FItem.SpeedBar.FEditWin, CM_SPEEDBARCHANGED, SBR_CHANGED,
           Longint(FItem.SpeedBar));
+        {$ENDIF VCL}
+        {$IFDEF VisualCLX}
+        SendMsg(FItem.SpeedBar.FEditWin, CM_SPEEDBARCHANGED, SBR_CHANGED,
+          Longint(FItem.SpeedBar));
+        {$ENDIF VisualCLX}
       end;
     end;
   end

@@ -67,7 +67,9 @@ type
     procedure SetLeftText(const Value: Boolean);
     function GetLinkedControls: TJvLinkedControls;
     procedure SetLinkedControls(const Value: TJvLinkedControls);
+    {$IFDEF VCL}
     procedure BMSetCheck(var Msg:TMessage); message BM_SETCHECK;
+    {$ENDIF VCL}
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);override;
     procedure MouseEnter(AControl: TControl); override;
@@ -75,10 +77,14 @@ type
     procedure TextChanged; override;
     procedure FontChanged; override;
     procedure EnabledChanged;override;
-    procedure SetAutoSize(Value: Boolean); override;
+    procedure SetAutoSize(Value: Boolean);{$IFDEF VCL} override;{$ENDIF}
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure RecreateWnd;
+    procedure Toggle; override;
+    {$ENDIF VisualCLX}
     procedure CalcAutoSize; virtual;
     procedure Loaded; override;
 
@@ -220,8 +226,15 @@ begin
   // This is slower than GetTextExtentPoint but it does consider hotkeys
   if Caption <> '' then
   begin
+    {$IFDEF VCL}
     DrawText(FCanvas.Handle, PChar(Caption), Length(Caption), R,
       Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    RequiredState(FCanvas, [csHandleValid, csFontValid]);
+    DrawTextW(FCanvas.Handle, PWideChar(Caption), Length(Caption), R,
+      Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
+    {$ENDIF VisualCLX}
     AWidth := (R.Right - R.Left) + ASize.cx + 8;
     AHeight := R.Bottom - R.Top;
   end
@@ -346,7 +359,12 @@ begin
   FLinkedControls.Assign(Value);
 end;
 
+{$IFDEF VisualCLX}
+procedure TJvRadioButton.Toggle;
+{$ENDIF VisualCLX}
+{$IFDEF VCL VisualCLX}
 procedure TJvRadioButton.BMSetCheck(var Msg: TMessage);
+{$ENDIF}
 begin
   inherited;
   CheckLinkedControls;
@@ -365,6 +383,14 @@ begin
   if Assigned(FLinkedControls) and not (csDestroying in ComponentState) then
     LinkedControls.Notification(AComponent, Operation);
 end;
+
+{$IFDEF VisualCLX}
+procedure TJvRadioButton.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+{$ENDIF VisualCLX}
+
 
 end.
 

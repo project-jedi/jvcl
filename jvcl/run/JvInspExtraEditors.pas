@@ -207,52 +207,53 @@ begin
       NewAlign := TAlign(Data.AsOrdinal)
     else
       NewAlign := alNone;
-    if Key in [VK_UP, VK_NUMPAD8] then
-    begin
-      if NewAlign = alTop then
-        NewAlign := alNone
-      else
-        NewAlign := alTop;
-    end
-    else
-    if Key in [VK_RIGHT, VK_NUMPAD6] then
+    case Key of
+    VK_UP, VK_NUMPAD8:
+      begin
+        if NewAlign = alTop then
+          NewAlign := alNone
+        else
+          NewAlign := alTop;
+      end;
+    VK_RIGHT, VK_NUMPAD6:
     begin
       if NewAlign = alRight then
         NewAlign := alNone
       else
         NewAlign := alRight;
-    end
-    else
-    if Key in [VK_DOWN, VK_NUMPAD2] then
+    end;
+    VK_DOWN, VK_NUMPAD2:
     begin
       if NewAlign = alBottom then
         NewAlign := alNone
       else
         NewAlign := alBottom;
-    end
-    else
-    if Key in [VK_LEFT, VK_NUMPAD4] then
+    end;
+    VK_LEFT, VK_NUMPAD4:
     begin
       if NewAlign = alLeft then
         NewAlign := alNone
       else
         NewAlign := alLeft;
-    end
-    else
-    if Key in [VK_NUMPAD5, VK_HOME, VK_NUMPAD7] then
+    end;
+    VK_NUMPAD5, VK_HOME, VK_NUMPAD7:
     begin
       if NewAlign = alClient then
         NewAlign := alNone
       else
         NewAlign := alClient;
     end;
-    if Key in [VK_UP, VK_NUMPAD8, VK_RIGHT, VK_NUMPAD6, VK_DOWN, VK_NUMPAD2, VK_LEFT, VK_NUMPAD4, VK_NUMPAD5, VK_HOME, VK_NUMPAD7] then
+    end;
+    case Key of
+    VK_UP, VK_NUMPAD8, VK_RIGHT, VK_NUMPAD6, VK_DOWN, VK_NUMPAD2,
+    VK_LEFT, VK_NUMPAD4, VK_NUMPAD5, VK_HOME, VK_NUMPAD7:
     begin
       Data.AsOrdinal := Ord(NewAlign);
       Key := 0;
-    end
+    end;
     else
       inherited EditKeyDown(Sender, Key, Shift);
+    end;
   end;
 end;
 
@@ -655,32 +656,33 @@ begin
       Data.GetAsSet(NewAnchors)
     else
       NewAnchors := [];
-    if Key in [VK_UP, VK_NUMPAD8] then
-      Toggle(akTop)
-    else
-    if Key in [VK_RIGHT, VK_NUMPAD6] then
-      Toggle(akRight)
-    else
-    if Key in [VK_DOWN, VK_NUMPAD2] then
-      Toggle(akBottom)
-    else
-    if Key in [VK_LEFT, VK_NUMPAD4] then
-      Toggle(akLeft)
-    else
-    if Key in [VK_NUMPAD5, VK_HOME, VK_NUMPAD7] then
-    begin
-      if NewAnchors <> [] then
-        NewAnchors := []
-      else
-        NewAnchors := [akLeft, akTop, akRight, akBottom];
+    case Key of
+    VK_UP, VK_NUMPAD8:
+      Toggle(akTop);
+    VK_RIGHT, VK_NUMPAD6:
+      Toggle(akRight);
+    VK_DOWN, VK_NUMPAD2:
+      Toggle(akBottom);
+    VK_LEFT, VK_NUMPAD4:
+      Toggle(akLeft);
+    VK_NUMPAD5, VK_HOME, VK_NUMPAD7:
+      begin
+        if NewAnchors <> [] then
+          NewAnchors := []
+        else
+          NewAnchors := [akLeft, akTop, akRight, akBottom];
+      end;
     end;
-    if Key in [VK_UP, VK_NUMPAD8, VK_RIGHT, VK_NUMPAD6, VK_DOWN, VK_NUMPAD2, VK_LEFT, VK_NUMPAD4, VK_NUMPAD5, VK_HOME, VK_NUMPAD7] then
-    begin
-      Data.SetAsSet(NewAnchors);
-      Key := 0;
-    end
+    case Key of
+    VK_UP, VK_NUMPAD8, VK_RIGHT, VK_NUMPAD6, VK_DOWN, VK_NUMPAD2, VK_LEFT,
+    VK_NUMPAD4, VK_NUMPAD5, VK_HOME, VK_NUMPAD7:
+      begin
+        Data.SetAsSet(NewAnchors);
+        Key := 0;
+      end;
     else
       inherited EditKeyDown(Sender, Key, Shift);
+    end;
   end;
 end;
 

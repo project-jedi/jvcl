@@ -40,7 +40,7 @@ uses
   Messages, Controls, Forms, StdCtrls, ExtCtrls, Dialogs, Buttons, jpeg,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QDialogs, QButtons,
+  QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QDialogs, QButtons, QWindows,
   {$ENDIF VisualCLX}
   JclSysInfo,
   JVCLVer, JvBaseDlg, JvComponent;

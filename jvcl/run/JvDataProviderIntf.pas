@@ -32,15 +32,14 @@ unit JvDataProviderIntf;
 interface
 
 uses
+  Classes,
   {$IFDEF VCL}
   Windows, Graphics, ImgList,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Types, QGraphics, QImgList,
   {$ENDIF VisuaLCLX}
-  Classes,
-  JclBase,
-  JvTypes;
+  JclBase, JvTypes;
 
 type
   TDataProviderChangeReason =

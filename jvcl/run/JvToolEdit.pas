@@ -944,12 +944,12 @@ uses
 const
   sUnitName = 'JvToolEdit';
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 {$R ..\Resources\JvToolEdit.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$R ../Resources/JvToolEdit.res}
-{$ENDIF LINUX}
+{$ENDIF VisualCLX}
 
 type
   TCustomEditHack = class(TCustomEdit);
@@ -962,7 +962,6 @@ const
   sDateBmp = 'JV_DEDITBMP';  { Date editor button glyph }
 
 
-type
   { TDateHook is used to only have 1 hook per application for monitoring
     date changes;
 
@@ -973,6 +972,7 @@ type
   }
 
   {$IFDEF VCL}
+type
   TDateHook = class(TObject)
   private
     FCount: Integer;
