@@ -70,7 +70,7 @@ Versionhistory:
 
 {$I JVCL.INC}
 
-unit JvPluginMan;
+unit JvPluginManager;
 
 interface
 

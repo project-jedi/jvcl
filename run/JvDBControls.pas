@@ -28,7 +28,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvDBCtrl;
+unit JvDBControls;
 
 interface
 
@@ -42,7 +42,7 @@ uses
   {$IFNDEF COMPILER3_UP}
   DBTables,
   {$ENDIF}
-  JvToolEdit, JvPlacemnt, JvDateUtil, DBCtrls, JvxCtrls, JvCurrEdit;
+  JvToolEdit, JvFormPlacement, JvDateUtil, DBCtrls, JvxCtrls, JvBaseEdits;
 
 { TJvDBGrid }
 

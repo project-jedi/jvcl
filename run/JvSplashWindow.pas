@@ -25,7 +25,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvSplshWnd;
+unit JvSplashWindow;
 
 interface
 
@@ -36,7 +36,7 @@ uses
   WinTypes, WinProcs,
   {$ENDIF}
   SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
-  JvxAnimate;
+  JvAnimatedImage;
 
 type
   TJvSplashWindow = class(TForm)

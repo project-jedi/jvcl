@@ -1037,7 +1037,7 @@ uses
 {$ENDIF JvInterpreter_OLEAUTO}
   JvInterpreterConst, JvUtils, JvStrUtil;
 
-{$R JvInterpreter.res} { error messages }
+{$R ..\resources\JvInterpreter.res} { error messages }
 
 { internal structures }
 type

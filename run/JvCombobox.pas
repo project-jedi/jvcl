@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Dialogs, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JvMaxPixel, JvPropAutoSave, JvItemsSearchs, JVCLVer;
+  JvMaxPixel, JvAutoSave, JvItemsSearchs, JVCLVer;
 
 type
   TJvCustomComboBox = class(TCustomComboBox)

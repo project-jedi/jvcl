@@ -33,7 +33,7 @@ interface
 uses
   Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, ExtCtrls,
-  JVCLVer, JvPropAutoSave;
+  JVCLVer, JvAutoSave;
 
 type
   TJvRadioGroup = class(TRadioGroup)

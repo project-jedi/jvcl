@@ -25,17 +25,13 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvDBSecur;
+unit JvDBSecurity;
 
 interface
 
 uses
-  SysUtils,
-  {$IFNDEF WIN32}
-  WinTypes, WinProcs,
-  {$ENDIF}
-  Classes, DBTables,
-  JvxLogin, JvxLoginDlg, JvChPswDlg;
+  SysUtils, Classes, DBTables,
+  JvLoginForm, JvDBLoginDialog, JvCheckPasswordForm;
 
 type
   TCheckUserEvent = function(UsersTable: TTable;

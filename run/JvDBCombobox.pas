@@ -28,7 +28,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvDBComb;
+unit JvDBCombobox;
 
 interface
 
@@ -37,18 +37,13 @@ uses Windows, DbCtrls,
   VDBConsts,
   {$ENDIF}
   Messages, Menus, Graphics, Classes, Controls, DB,
-  {$IFNDEF COMPILER3_UP}
-  DBTables,
-  {$ENDIF}
   StdCtrls, DBConsts;
 
 type
   TJvCustomDBComboBox = class(TCustomComboBox)
   private
     FDataLink: TFieldDataLink;
-    {$IFDEF WIN32}
     FPaintControl: TPaintControl;
-    {$ENDIF}
     procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
     function GetDataField: string;
@@ -66,12 +61,8 @@ type
     function GetComboText: string; virtual;
     procedure SetComboText(const Value: string); virtual;
     procedure CMExit(var Msg: TCMExit); message CM_EXIT;
-    {$IFDEF WIN32}
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
-    {$ELSE}
-    function GetStyle: TComboBoxStyle;
-    {$ENDIF}
   protected
     procedure Change; override;
     procedure Click; override;
@@ -92,20 +83,15 @@ type
     {$ENDIF}
     procedure WndProc(var Msg: TMessage); override;
     property ComboText: string read GetComboText write SetComboText;
-    {$IFNDEF WIN32}
-    property Style: TComboBoxStyle read GetStyle write SetStyle default csDropDown;
-    {$ENDIF WIN32}
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    {$IFDEF COMPILER4_UP}
     function ExecuteAction(Action: TBasicAction): Boolean; override;
     function UpdateAction(Action: TBasicAction): Boolean; override;
     function UseRightToLeftAlignment: Boolean; override;
-    {$ENDIF}
     property Field: TField read GetField;
     property Items write SetItems;
     property Text;
@@ -141,19 +127,13 @@ type
     property EnableValues: Boolean read FEnableValues write SetEnableValues
       default True; // Polaris
     property Font;
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
-    {$ENDIF}
-    {$IFDEF WIN32}
-    {$IFDEF COMPILER3_UP}
     property ImeMode;
     property ImeName;
-    {$ENDIF}
-    {$ENDIF}
     property ItemHeight;
     property Items;
     property ParentColor;
@@ -182,16 +162,10 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMeasureItem;
-    {$IFDEF WIN32}
     property OnStartDrag;
-    {$ENDIF}
-    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
   end;
 
 implementation
@@ -202,24 +176,18 @@ uses
 constructor TJvCustomDBComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF WIN32}
   ControlStyle := ControlStyle + [csReplicatable];
-  {$ENDIF}
   FDataLink := TFieldDataLink.Create;
   FDataLink.Control := Self;
   FDataLink.OnDataChange := DataChange;
   FDataLink.OnUpdateData := UpdateData;
   FDataLink.OnEditingChange := EditingChange;
-  {$IFDEF WIN32}
   FPaintControl := TPaintControl.Create(Self, 'COMBOBOX');
-  {$ENDIF}
 end;
 
 destructor TJvCustomDBComboBox.Destroy;
 begin
-  {$IFDEF WIN32}
   FPaintControl.Free;
-  {$ENDIF}
   FDataLink.OnDataChange := nil;
   FDataLink.OnUpdateData := nil;
   FDataLink.Free;
@@ -332,9 +300,6 @@ end;
 
 procedure TJvCustomDBComboBox.DropDown;
 begin
-  {$IFNDEF WIN32}
-  FDataLink.Edit;
-  {$ENDIF}
   inherited DropDown;
 end;
 
@@ -345,14 +310,10 @@ end;
 
 procedure TJvCustomDBComboBox.SetDataSource(Value: TDataSource);
 begin
-  {$IFDEF COMPILER4_UP}
   if not (FDataLink.DataSourceFixed and (csLoading in ComponentState)) then
-    {$ENDIF}
     FDataLink.DataSource := Value;
-  {$IFDEF WIN32}
   if Value <> nil then
     Value.FreeNotification(Self);
-  {$ENDIF}
 end;
 
 function TJvCustomDBComboBox.GetDataField: string;
@@ -404,9 +365,6 @@ begin
       begin
         FDataLink.Reset;
         SelectAll;
-        {$IFNDEF WIN32}
-        Key := #0;
-        {$ENDIF}
       end;
   end;
 end;
@@ -419,7 +377,7 @@ end;
 procedure TJvCustomDBComboBox.SetEditReadOnly;
 begin
   if (Style in [csDropDown, csSimple]) and HandleAllocated then
-    SendMessage({$IFDEF WIN32} EditHandle {$ELSE} FEditHandle {$ENDIF},
+    SendMessage(EditHandle,
       EM_SETREADONLY, Ord(not FDataLink.Editing), 0);
 end;
 
@@ -441,10 +399,8 @@ begin
         else
         if not FDataLink.Editing then
           DataChange(Self); {Restore text}
-      {$IFDEF WIN32}
       WM_CREATE, WM_WINDOWPOSCHANGED, CM_FONTCHANGED:
         FPaintControl.DestroyHandle;
-      {$ENDIF}
     end;
   inherited WndProc(Msg);
 end;
@@ -455,11 +411,7 @@ begin
   if not (csDesigning in ComponentState) then
     case Msg.Msg of
       WM_LBUTTONDOWN:
-        {$IFDEF WIN32}
         if (Style = csSimple) and (ComboWnd <> EditHandle) then
-        {$ELSE}
-        if (Style = csSimple) and (ComboWnd <> FEditHandle) then
-        {$ENDIF}
           if not FDataLink.Edit then
             Exit;
     end;
@@ -479,7 +431,6 @@ begin
   inherited;
 end;
 
-{$IFDEF WIN32}
 
 procedure TJvCustomDBComboBox.CMGetDatalink(var Msg: TMessage);
 begin
@@ -526,8 +477,6 @@ begin
     inherited;
 end;
 
-{$ENDIF}
-
 function TJvCustomDBComboBox.GetPaintText: string;
 begin
   if FDataLink.Field <> nil then
@@ -547,31 +496,12 @@ begin
   DataChange(Self);
 end;
 
-{$IFNDEF WIN32}
-
-function TJvCustomDBComboBox.GetStyle: TComboBoxStyle;
-begin
-  Result := inherited Style;
-end;
-{$ENDIF}
-
 procedure TJvCustomDBComboBox.SetStyle(Value: TComboBoxStyle);
 begin
-  {$IFDEF WIN32}
   if (Value = csSimple) and Assigned(FDatalink) and FDatalink.DatasourceFixed then
     _DBError(SNotReplicatable);
   inherited SetStyle(Value);
-  {$ELSE}
-  if Value = csSimple then
-    ControlStyle := ControlStyle - [csFixedHeight]
-  else
-    ControlStyle := ControlStyle + [csFixedHeight];
-  inherited Style := Value;
-  RecreateWnd;
-  {$ENDIF}
 end;
-
-{$IFDEF COMPILER4_UP}
 
 function TJvCustomDBComboBox.UseRightToLeftAlignment: Boolean;
 begin
@@ -589,8 +519,6 @@ begin
   Result := inherited UpdateAction(Action) or (FDataLink <> nil) and
     FDataLink.UpdateAction(Action);
 end;
-
-{$ENDIF}
 
 constructor TJvDBComboBox.Create(AOwner: TComponent);
 begin

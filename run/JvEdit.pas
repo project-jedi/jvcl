@@ -47,7 +47,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms,
-  JvCaret, JvComponent, JvPropAutoSave, JvMaxPixel, JVCLVer, JvToolEdit;
+  JvCaret, JvComponent, JvAutoSave, JvMaxPixel, JVCLVer, JvToolEdit;
 
 type
   TJvCustomEdit = class(TCustomEdit)

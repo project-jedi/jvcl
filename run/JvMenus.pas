@@ -268,7 +268,7 @@ function IsItemPopup(Item: TMenuItem): Boolean;
 implementation
 
 uses{$IFDEF WIN32}CommCtrl, {$ENDIF}Forms, ExtCtrls, Consts, JvConst,
-  JvVCLUtils, JvClipIcon, JvStrUtils, Math;
+  JvVCLUtils, JvIconClipboardUtils, JvStrUtils, Math;
 
 const
   DefMarginColor: TColor = clBlue;

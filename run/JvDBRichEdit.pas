@@ -25,7 +25,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvDBRichEd;
+unit JvDBRichEdit;
 
 interface
 
@@ -34,7 +34,7 @@ interface
 uses
   Windows, Messages, ComCtrls, RichEdit, SysUtils, Classes,
   Graphics, Controls, Menus, StdCtrls, DB, DBCtrls,
-  JvRichEd;
+  JvRichEdit;
 
 type
   TJvDBRichEdit = class(TJvCustomRichEdit)

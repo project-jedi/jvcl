@@ -37,7 +37,7 @@ uses
   WinTypes, WinProcs,
   {$ENDIF}
   SysUtils, Classes, Graphics, Controls, Forms, Menus,
-  JvxAnimate, JvGIF, JvTimer;
+  JvAnimatedImage, JvGIF, JvTimer;
 
 type
   TJvGIFAnimator = class(TJvImageControl)

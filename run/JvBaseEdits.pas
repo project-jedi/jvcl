@@ -29,7 +29,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvCurrEdit;
+unit JvBaseEdits;
 
 interface
 
