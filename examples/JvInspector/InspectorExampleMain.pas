@@ -129,11 +129,11 @@ procedure TfrmInspector.AddFormAndControls;
 var
   InspCat: TJvInspectorCustomCategoryItem;
 begin
-  Application.CreateForm(TfrmTest, frmTest);
+  frmTest := TfrmTest.Create(Self);
   InspCat := TJvInspectorCustomCategoryItem.Create(JvInspector1.Root, nil);
   InspCat.DisplayName := 'Form and controls (published property data).';
   InspCat.SortKind := iskNone;
-  AddCtrl(InspCat, frmTest);
+  AddCtrl(InspCat, frmTest); 
   AddCtrl(InspCat, frmTest.PanelForLabel);
   AddCtrl(InspCat, frmTest.lblTest);
   AddCtrl(InspCat, frmTest.Edit1);
@@ -159,6 +159,7 @@ procedure TfrmInspector.AddCtrl(const Parent: TJvCustomInspectorItem; const Ctrl
 var
   InspCat: TJvInspectorCustomCategoryItem;
   M: TNotifyEvent;
+  i: Integer;
 begin
   InspCat := TJvInspectorCustomCategoryItem.Create(Parent, nil);
   InspCat.DisplayName := Ctrl.Name + ': ' + Ctrl.ClassName;
@@ -228,9 +229,6 @@ procedure TfrmInspector.Edit1Change2(Sender: TObject);
 begin
   frmTest.mmChanges.Lines.Add('Edit1Change2 event');
 end;
-
-type
-  THackInsp = class(TJvCustomInspector);
 
 procedure TfrmInspector.FormCreate(Sender: TObject);
 begin
@@ -388,5 +386,6 @@ initialization
 
 finalization
   RemoveTypeInfo(GeneratedTestEnum);
+
 end.
 
