@@ -1137,7 +1137,7 @@ var
     else
     begin
       ADockClient := FindDockClient(DockParent);
-      if ADockClient <> nil then
+      if (ADockClient <> nil) and (ADockClient.DockStyle <> nil) then
       begin
         ADockClient.DockStyle.ShowDockForm(ADockClient);
         if DockParent.CanFocus then
