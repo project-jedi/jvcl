@@ -1026,11 +1026,12 @@ begin
   try
     AppStoragePath := ConcatPaths ([Self.AppStoragePath, StoredPropsPath]);
     AppStorage := Self.AppStorage;
-    try
-      LoadObjectsProps(Owner, FStoredProps);
-    except
-      { ignore any exceptions }
-    end;
+    if AppStorage.PathExists(AppStoragePath) then
+      try
+        LoadObjectsProps(Owner, FStoredProps);
+      except
+        { ignore any exceptions }
+      end;
   finally
     Free;
   end;
