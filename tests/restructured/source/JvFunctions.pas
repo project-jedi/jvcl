@@ -37,6 +37,7 @@ interface
 uses
   Windows, Graphics, Classes, Messages, Controls,
   ComCtrls, SysUtils, ShellApi, JvTypes, ImgList;
+
 {$IFNDEF DELPHI6_UP}
 type
   EOSError = class (EWin32Error);
@@ -45,9 +46,9 @@ type
 function IconToBitmap(ico: HIcon): TBitmap;
 {$EXTERNALSYM IconToBitmap}
 // Transform an icon to a bitmap using an image list
-function IconToBitmap2(ico: HIcon;Size:integer=32;TransparentColor:TColor=clNone): TBitmap;
+function IconToBitmap2(ico: HIcon; Size: integer = 32; TransparentColor: TColor = clNone): TBitmap;
 {$EXTERNALSYM IconToBitmap2}
-function IconToBitmap3(ico:HIcon; Size:integer=32; TransparentColor: TColor=clNone): TBitmap;
+function IconToBitmap3(ico: HIcon; Size: integer = 32; TransparentColor: TColor = clNone): TBitmap;
 {$EXTERNALSYM IconToBitmap3}
 
 //Open an object with the shell (url or something like that)
@@ -114,7 +115,35 @@ function GetValueBitmap(Value: TBitmap): TBitmap;
 // hides / shows the a forms caption area
 procedure HideFormCaption(FormHandle: THandle; Hide: boolean);
 // launches the specified CPL file
+// format: <Filename> [,@n] or [,,m] or [,@n,m]
+// where @n = zero-based index of the applet to start (if there is more than one
+// m is the zero-based index of the tab to display
 procedure LaunchCpl(FileName: string);
+
+{
+  GetControlPanelApplets retrieves information about all control panel applets in a specified folder.
+  APath is the path to the folder to search and AMask is the filename mask (containing wildcards if necessary) to use.
+
+  The information is returned in the Strings and Images lists according to the following rules:
+   The Display Name and Path to the CPL file is returned in Strings with the following format:
+     '<displayname>=<path>'
+   You can access the DisplayName by using the Strings.Names array and the Path by accessing the Strings.Values array
+   Strings.Objects can contain either of two values depending on if Images is nil or not:
+     * If Images is nil then Strings.Objects contains the image for the applet as a TBitmap. Note that the caller /you)
+     is responsible for freeing the bitmaps in this case
+     * If Images <> nil, then the Strings.Objects array contains the index of the image in the Images array for the selected item.
+       To access and use the Image, typecast Strings.Objects to an int:
+         tmp.Name := Strings.Name[i];
+         tmp.ImageIndex := integer(Strings.Objects[i]);
+  The function returns true if any Control Panel Applets were found (i.e Strings.Count is > 0 when returning)
+}
+
+function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings; Images: TImageList = nil): Boolean;
+{ GetControlPanelApplet works like GetControlPanelApplet, with the difference that it only loads and searches one cpl file (according to AFilename).
+  Note though, that some CPL's contains multiple applets, so the Strings and Images lists can contain multiple return values.
+  The function returns true if any Control Panel Applets were found in AFilename (i.e if items were added to Strings)
+}
+function GetControlPanelApplet(const AFilename: string; Strings: TStrings; Images: TImageList = nil): Boolean;
 
 // execute a program without waiting
 procedure Exec(FileName, Parameters, Directory: string);
@@ -150,7 +179,7 @@ procedure AddToRecentDocs(const Filename: string);
 function RegionFromBitmap(Image: TBitmap): HRGN;
 
 // returns a list of all windows currently visible, the Objects property is filled with their window handle
-procedure GetVisibleWindows(List:Tstrings);
+procedure GetVisibleWindows(List: Tstrings);
 
 // JvComponentFunctions
 {-----------------------------------------------------------------------------
@@ -164,7 +193,6 @@ Comments:
 
   I have tried to group related functions together
 }
-
 
 function CharIsMoney(const ch: char): boolean;
 
@@ -214,7 +242,7 @@ function DateOnly(pcValue: TDateTime): TDate;
 
 type
   TdtKind = (dtkDateOnly, dtkTimeOnly, dtkDateTime);
-{ TDateTime value used to signify Null value}
+  { TDateTime value used to signify Null value}
 const
   NullEquivalentDate: TDateTime = 0.0;
 
@@ -231,8 +259,9 @@ procedure RaiseLastOSError;
 implementation
 uses
   Forms, Registry, ExtCtrls,
-  {$IFDEF DELPHI6_UP}Types, {$ENDIF}MMSystem, JvDirectories,
-  ShlObj, CommCtrl, 
+  {$IFDEF DELPHI6_UP}Types, {$ENDIF}MMSystem,
+  ShlObj, CommCtrl, Cpl,
+  { jvcl} JvDirectories,
   { jcl } JCLStrings;
 
 resourcestring
@@ -252,6 +281,13 @@ const
 var
   ShellVersion: Integer;
 
+{$IFNDEF DELPHI6_UP}
+procedure RaiseLastOSError;
+begin
+  RaiseLastWin32Error;
+end;
+{$ENDIF}
+  
   {*****************************************************}
 
 function IconToBitmap(ico: HIcon): TBitmap;
@@ -267,20 +303,20 @@ begin
   i.Free;
 end;
 
-function IconToBitmap2(ico: HIcon;Size:integer=32;TransparentColor:TColor=clNone): TBitmap;
+function IconToBitmap2(ico: HIcon; Size: integer = 32; TransparentColor: TColor = clNone): TBitmap;
 begin
   // (p3) this seems to generate "better" bitmaps...
-  with TImageList.CreateSize(Size,Size) do
+  with TImageList.CreateSize(Size, Size) do
   try
     Masked := true;
     BkColor := TransparentColor;
-    ImageList_AddIcon(Handle,ico);
+    ImageList_AddIcon(Handle, ico);
     Result := TBitmap.Create;
     Result.PixelFormat := pf24bit;
     if TransparentColor <> clNone then
       Result.TransparentColor := TransparentColor;
-    Result.Transparent := true;
-    GetBitmap(0,Result);
+    Result.Transparent := TransparentColor <> clNone;
+    GetBitmap(0, Result);
   finally
     Free;
   end;
@@ -295,8 +331,8 @@ begin
   try
     Icon.Handle := CopyIcon(ico);
     Result := TBitmap.Create;
-  Result.Width := Icon.Width;
-  Result.Height := Icon.Height;
+    Result.Width := Icon.Width;
+    Result.Height := Icon.Height;
     Result.PixelFormat := pf24bit;
     // fill the bitmap with the transparant color
     Result.Canvas.Brush.Color := TransparentColor;
@@ -304,8 +340,8 @@ begin
     Result.Canvas.Draw(0, 0, Icon);
     Result.TransparentColor := TransparentColor;
     tmp.Assign(Result);
-//    Result.Width := Size;
-//    Result.Height := Size;
+    //    Result.Width := Size;
+    //    Result.Height := Size;
     Result.Canvas.StretchDraw(Rect(0, 0, Result.Width, Result.Height), tmp);
     Result.Transparent := True;
   finally
@@ -708,6 +744,105 @@ begin
   WinExec(PChar(RC_RunCpl + FileName), SW_SHOWNORMAL);
 end;
 
+resourcestring
+  RC_CplAddress = 'CPlApplet';
+
+function GetControlPanelApplet(const AFilename: string; Strings: TStrings; Images: TImageList = nil): Boolean;
+var
+  hLib: HMODULE; // Library Handle to *.cpl file
+  hIco: HICON;
+  CplCall: TCPLApplet; // Pointer to CPlApplet() function
+  i: LongInt;
+  tmpCount, Count: LongInt;
+  S: WideString;
+  // the three types of information that can be returned
+  CPLInfo: TCPLInfo;
+  InfoW: TNewCPLInfoW;
+  InfoA: TNewCPLInfoA;
+begin
+  Result := False;
+  hLib := SafeLoadLibrary(AFilename);
+  if hLib = 0 then
+    Exit;
+  tmpCount := Strings.Count;
+  try
+    @CplCall := GetProcAddress(hLib, PChar(RC_CplAddress));
+    if @CplCall = nil then
+      Exit;
+    CplCall(GetFocus, CPL_INIT, 0, 0); // Init the *.cpl file
+    try
+      Count := CplCall(GetFocus, CPL_GETCOUNT, 0, 0);
+      for i := 0 to Count - 1 do
+      begin
+        FillChar(InfoW, sizeof(InfoW), 0);
+        FillChar(InfoA, sizeof(InfoA), 0);
+        FillChar(CPLInfo, sizeof(CPLInfo), 0);
+        S := '';
+        CplCall(GetFocus, CPL_NEWINQUIRE, i, LongInt(@InfoW));
+        if InfoW.dwSize = sizeof(InfoW) then
+        begin
+          hIco := InfoW.hIcon;
+          S := WideString(InfoW.szName);
+        end
+        else
+        begin
+          if InfoW.dwSize = sizeof(InfoA) then
+          begin
+            Move(InfoW, InfoA, sizeof(InfoA));
+            hIco := CopyIcon(InfoA.hIcon);
+            S := string(InfoA.szName);
+          end
+          else
+          begin
+            CplCall(GetFocus, CPL_INQUIRE, i, LongInt(@CPLInfo));
+            LoadStringA(hLib, CPLInfo.idName, InfoA.szName, sizeof(InfoA.szName));
+            hIco := LoadImage(hLib, PChar(CPLInfo.idIcon), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
+            S := string(InfoA.szName);
+          end;
+        end;
+        if S <> '' then
+        begin
+          S := Format('%s=%s,@%d', [S, AFilename, i]);
+          if Images <> nil then
+          begin
+            ImageList_AddIcon(Images.Handle, CopyIcon(hIco));
+            Strings.AddObject(S, TObject(Images.Count - 1));
+          end
+          else
+            Strings.AddObject(S, IconToBitmap2(hIco, 16, clMenu));
+        end;
+      end;
+      Result := tmpCount < Strings.Count;
+    finally
+      CplCall(GetFocus, CPL_EXIT, 0, 0);
+    end;
+  finally
+    FreeLibrary(hLib);
+  end;
+end;
+
+function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings; Images: TImageList = nil): Boolean;
+var H: THandle; F: TSearchRec;
+begin
+  H := FindFirst(IncludeTrailingPathDelimiter(APath) + AMask, faAnyFile, F);
+  if Images <> nil then
+  begin
+    Images.Clear;
+    Images.BkColor := clMenu;
+  end;
+  if Strings <> nil then
+    Strings.Clear;
+  while H = 0 do
+  begin
+    if F.Attr and faDirectory = 0 then
+      //    if (F.Name <> '.') and (F.Name <> '..') then
+      GetControlPanelApplet(APath + F.Name, Strings, Images);
+    H := FindNext(F);
+  end;
+  FindClose(F);
+  Result := Strings.Count > 0;
+end;
+
 procedure Exec(FileName, Parameters, Directory: string);
 var
   Operation: string;
@@ -1059,17 +1194,17 @@ begin
     st2 := st;
     if (st2 <> '') then
       with TStrings(lParam) do
-        AddObject(st2,TObject(Handle));
+        AddObject(st2, TObject(Handle));
   end;
   Result := True;
 end;
 
-procedure GetVisibleWindows(List:Tstrings);
+procedure GetVisibleWindows(List: Tstrings);
 begin
   List.BeginUpdate;
   try
     List.Clear;
-    EnumWindows(@EnumWindowsProc,integer(List));
+    EnumWindows(@EnumWindowsProc, integer(List));
   finally
     List.EndUpdate;
   end;
@@ -1118,11 +1253,11 @@ begin
   else
     liIndex := StrPosNoCase(psSearch, lsCopy);
   if liIndex = 0 then
-    begin
-      Result := psSource;
-      piUpdatePos := Length(psSource) + 1;
-      exit;
-    end;
+  begin
+    Result := psSource;
+    piUpdatePos := Length(psSource) + 1;
+    exit;
+  end;
 
   Result := Result + StrLeft(lsCopy, liIndex - 1);
   Result := Result + psReplace;
@@ -1178,20 +1313,20 @@ begin
   if lStr = '' then
     Result := Def
   else
-    try
+  try
     { the string '-' fails StrToFloat, but it can be interpreted as 0  }
-      if StrRight(lStr, 1) = '-' then
-        lStr := lStr + '0';
+    if StrRight(lStr, 1) = '-' then
+      lStr := lStr + '0';
 
     { a string that ends in a '.' such as '12.' fails StrToFloat,
      but as far as I am concerned, it may as well be interpreted as 12.0 }
-      if StrRight(lStr, 1) = '.' then
-        lStr := lStr + '0';
+    if StrRight(lStr, 1) = '.' then
+      lStr := lStr + '0';
 
-      Result := StrToFloat(lStr);
-    except
-      Result := Def;
-    end;
+    Result := StrToFloat(lStr);
+  except
+    Result := Def;
+  end;
 end;
 
 function GetChangedText(const Text: string; SelStart, SelLength: integer; Key: char): string;
@@ -1247,14 +1382,14 @@ begin
 
   { turn 2 digit years to 4 digits }
   if (Year >= 0) and (Year < 100) then
-    begin
-      Century := (Pivot div 100) * 100;
+  begin
+    Century := (Pivot div 100) * 100;
 
-      Result := Year + Century; // give the result the same century as the pivot
-      if Result < Pivot then
-//  cannot be lower than the Pivot
-        Result := Result + 100;
-    end
+    Result := Year + Century; // give the result the same century as the pivot
+    if Result < Pivot then
+      //  cannot be lower than the Pivot
+      Result := Result + 100;
+  end
   else
     Result := Year;
 end;
@@ -1266,14 +1401,14 @@ var
 begin
   Result := S <> '';
   for I := 1 to Length(S) do
+  begin
+    ch := S[I];
+    if (not CharIsNumber(ch)) or (ch = DecimalSeparator) then //Az
     begin
-      ch := S[I];
-      if (not CharIsNumber(ch)) or (ch = DecimalSeparator) then //Az
-        begin
-          Result := False;
-          Exit;
-        end;
+      Result := False;
+      Exit;
     end;
+  end;
 end;
 
 function StrIsFloatMoney(const ps: string): boolean;
@@ -1285,26 +1420,25 @@ begin
   liDots := 0;
 
   for liLoop := 1 to Length(ps) do
-    begin
+  begin
     { allow digits, space, currency symbol and one decimal dot }
-      ch := ps[liLoop];
+    ch := ps[liLoop];
 
-      if (ch = DecimalSeparator) then
-        begin
-          inc(liDots);
-          if liDots > 1 then
-            begin
-              Result := False;
-              break;
-            end;
-        end
-      else
-        if not CharIsMoney(ch) then
-          begin
-            Result := False;
-            break;
-          end;
+    if (ch = DecimalSeparator) then
+    begin
+      inc(liDots);
+      if liDots > 1 then
+      begin
+        Result := False;
+        break;
+      end;
+    end
+    else if not CharIsMoney(ch) then
+    begin
+      Result := False;
+      break;
     end;
+  end;
 end;
 
 function StrIsDateTime(const ps: string): boolean;
@@ -1318,16 +1452,16 @@ var
   lbDisqualify: boolean;
 begin
   if Length(ps) < MIN_DATE_TIME_LEN then
-    begin
-      Result := False;
-      exit;
-    end;
+  begin
+    Result := False;
+    exit;
+  end;
 
   if Length(ps) > MAX_DATE_TIME_LEN then
-    begin
-      Result := False;
-      exit;
-    end;
+  begin
+    Result := False;
+    exit;
+  end;
 
   lbDisqualify := False;
   liColons := 0;
@@ -1337,30 +1471,26 @@ begin
   liAlpha := 0;
 
   for liLoop := 1 to Length(ps) do
-    begin
-      ch := ps[liLoop];
+  begin
+    ch := ps[liLoop];
 
-      if (ch = ':') then
-        inc(liColons)
-      else
-        if (ch = AnsiForwardSlash) then
-          inc(liSlashes)
-        else
-          if (ch = AnsiSpace) then
-            inc(liSpaces)
-          else
-            if CharIsDigit(ch) then
-              inc(liDigits)
-            else
-              if CharIsAlpha(ch) then
-                inc(liAlpha)
-              else
-                begin
+    if (ch = ':') then
+      inc(liColons)
+    else if (ch = AnsiForwardSlash) then
+      inc(liSlashes)
+    else if (ch = AnsiSpace) then
+      inc(liSpaces)
+    else if CharIsDigit(ch) then
+      inc(liDigits)
+    else if CharIsAlpha(ch) then
+      inc(liAlpha)
+    else
+    begin
       // no wierd punctuation in dates!
-                  lbDisqualify := True;
-                  break;
-                end;
+      lbDisqualify := True;
+      break;
     end;
+  end;
 
   Result := False;
   if not lbDisqualify then
@@ -1422,10 +1552,10 @@ begin
 
   for liLoop := Low(TRUE_STRINGS) to High(TRUE_STRINGS) do
     if AnsiSameText(ps, TRUE_STRINGS[liLoop]) then
-      begin
-        Result := True;
-        break;
-      end;
+    begin
+      Result := True;
+      break;
+    end;
 end;
 
 function SafeStrToDateTime(const ps: string): TDateTime;
@@ -1435,8 +1565,8 @@ begin
   except
     on E: EConvertError do
       Result := 0.0
-    else
-      raise;
+  else
+    raise;
   end;
 end;
 
@@ -1447,8 +1577,8 @@ begin
   except
     on E: EConvertError do
       Result := 0.0
-    else
-      raise;
+  else
+    raise;
   end;
 end;
 
@@ -1459,8 +1589,8 @@ begin
   except
     on E: EConvertError do
       Result := 0.0
-    else
-      raise;
+  else
+    raise;
   end;
 end;
 
@@ -1469,7 +1599,7 @@ end;
 procedure CenterHeight(const pc, pcParent: TControl);
 begin
   pc.Top := //pcParent.Top +
-    ((pcParent.Height - pc.Height) div 2);
+  ((pcParent.Height - pc.Height) div 2);
 end;
 
 function ToRightOf(const pc: TControl; piSpace: integer): integer;
@@ -1494,7 +1624,8 @@ end;
 
 function OSCheck(RetVal: boolean): boolean;
 begin
-  if not RetVal then RaiseLastOSError;
+  if not RetVal then
+    RaiseLastOSError;
   Result := RetVal;
 end;
 
@@ -1571,16 +1702,16 @@ end;
 function GetListItemColumn(const pcItem: TListItem; piIndex: integer): string;
 begin
   if pcItem = nil then
-    begin
-      Result := '';
-      exit;
-    end;
+  begin
+    Result := '';
+    exit;
+  end;
 
   if (piIndex < 0) or (piIndex > pcItem.SubItems.Count) then
-    begin
-      Result := '';
-      exit;
-    end;
+  begin
+    Result := '';
+    exit;
+  end;
 
   if piIndex = 0 then
     Result := pcItem.Caption
@@ -1606,18 +1737,11 @@ begin
   liPos := StrIPos(psSub, psMain);
 
   while liPos > 0 do
-    begin
-      Result := StrDeleteChars(Result, liPos, Length(psSub));
-      liPos := StrIPos(psSub, Result);
-    end;
+  begin
+    Result := StrDeleteChars(Result, liPos, Length(psSub));
+    liPos := StrIPos(psSub, Result);
+  end;
 end;
-
-{$IFNDEF DELPHI6_UP}
-procedure RaiseLastOSError;
-begin
-  RaiseLastWin32Error;
-end;
-{$ENDIF}
 
 end.
 
