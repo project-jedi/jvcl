@@ -330,7 +330,7 @@ msgstr "Fenster wurde nicht gefunden"
 #. Programmer's name for it: RsEInvalidDockSiteOrientationValue
 #: JvDockGlobals.pas:126
 msgid "Invalid DockSiteOrientation value doNoOrient"
-msgstr ""
+msgstr "Ungültiger DockSiteOrientation-Wert doNoOrient"
 
 #  JvDualListForm..HelpBtn..Caption
 #. JvDualListForm..HelpBtn..Caption
@@ -2114,7 +2114,7 @@ msgstr "Animierter Mauscursor (*.ani)|*.ani|Alle Dateien (*.*)|*.*"
 #. Programmer's name for it: RsEInvalidAnimatedIconImage
 #: JvResources.pas:118
 msgid "Invalid animated icon image"
-msgstr "Ungültes animiertes Icon"
+msgstr "Ungültiges animiertes Icon"
 
 #  Programmer's name for it: RsEID3VersionNotSupported
 #  Programmer's name for it: RsEID3VersionNotSupported
@@ -2310,7 +2310,7 @@ msgstr "Fehler #"
 msgid ""
 "%d is an invalid driver index. The maximum value is %d\n"
 "This may also happen if the device could not be initialized properly."
-msgstr "%d ist ein ungülter Treiberindex. Der Maximalwert ist %d"
+msgstr "%d ist ein ungültiger Treiberindex. Der Maximalwert ist %d"
 
 #. === JvBackgrounds.pas ======================================================
 #. Programmer's name for it: SChainError
@@ -2477,7 +2477,7 @@ msgstr "Letzter Alias"
 #. Programmer's name for it: RsEInvalidReferenceDescriptor
 #: JvResources.pas:221
 msgid "Invalid reference descriptor"
-msgstr ""
+msgstr "Ungültiger Referenz-Deskriptor"
 
 #  === JvBdeUtils.pas =========================================================
 #  Programmer's name for it: RsRetryLogin
@@ -2485,14 +2485,14 @@ msgstr ""
 #. Programmer's name for it: RsRetryLogin
 #: JvResources.pas:225
 msgid "Do you wish to retry the connect to database?"
-msgstr "Wollen Sie die Verbindung zur Datenbank wiederholen?"
+msgstr "Wollen Sie den Verbindungsversuch zur Datenbank wiederholen?"
 
 #  Programmer's name for it: RsETableNotInExclusiveMode
 #  Programmer's name for it: RsETableNotInExclusiveMode
 #. Programmer's name for it: RsETableNotInExclusiveMode
 #: JvResources.pas:227
 msgid "Table must be opened in exclusive mode to add passwords"
-msgstr ""
+msgstr "Die Tabelle muss im Exklusivmodus geöffnet sein, um Passwoerter addieren zu können"
 
 #  Programmer's name for it: RsETableNotOpen
 #  Programmer's name for it: RsETableNotOpen
@@ -2569,7 +2569,7 @@ msgstr "Rechner"
 #. Programmer's name for it: RsEInvalidDateStr
 #: JvResources.pas:251
 msgid "Invalid date specification to TMonthCalStrings (%s)"
-msgstr ""
+msgstr "Ungültige Datumsangabe für TMonthCalStrings (%s)"
 
 #  Programmer's name for it: RsECannotAssign
 #. Programmer's name for it: RsECannotAssign
@@ -2582,7 +2582,7 @@ msgstr "%s kann keinem %s zugewiesen werden"
 #. Programmer's name for it: RsEInvalidArgumentToSetDayStates
 #: JvResources.pas:253
 msgid "Invalid argument to SetDayStates"
-msgstr ""
+msgstr "Ungültiges Argument für SetDayStates"
 
 #  Programmer's name for it: RsEInvalidAppearance
 #  Programmer's name for it: RsEInvalidAppearance
@@ -2667,7 +2667,7 @@ msgstr ""
 #. Programmer's name for it: RsEFmtInvalidPath
 #: JvResources.pas:274
 msgid "Invalid or empty path (%s)"
-msgstr ""
+msgstr "Ungültiger oder leerer Pfad (%s)"
 
 #  Programmer's name for it: RsEFmtMaxCountExceeded
 #  Programmer's name for it: RsEFmtMaxCountExceeded
@@ -2681,7 +2681,7 @@ msgstr ""
 #. Programmer's name for it: RsEFmtInvalidPathAtIndex
 #: JvResources.pas:276
 msgid "Invalid or empty path (\"%s\") at index %d"
-msgstr ""
+msgstr "Ungültiger oder leerer Pfad (\"%s\") bei Index %d"
 
 #  Programmer's name for it: RsENotifyErrorFmt
 #  Programmer's name for it: RsENotifyErrorFmt
@@ -2950,7 +2950,7 @@ msgstr ""
 #. Programmer's name for it: RsEInvalidNameMappingSpecification
 #: JvResources.pas:337
 msgid "Invalid name mapping specification"
-msgstr ""
+msgstr "Ungültige Name Mapping-Angabe"
 
 #  Programmer's name for it: RsEUnknownColor
 #. Programmer's name for it: RsEUnknownColor
@@ -3216,7 +3216,7 @@ msgstr "%s: %s"
 #. Programmer's name for it: RsECsvInvalidSeparatorFmt
 #: JvResources.pas:399
 msgid "Invalid separator character (%s)"
-msgstr ""
+msgstr "Ungültiges Trennzeichen (%s)"
 
 #  Programmer's name for it: RsEProblemReadingRow
 #  Programmer's name for it: RsEProblemReadingRow
@@ -3271,7 +3271,7 @@ msgstr ""
 #. Programmer's name for it: RsEInvalidFieldTypeCharacter
 #: JvResources.pas:407
 msgid "Invalid field type character: %s"
-msgstr ""
+msgstr "Ungültiges Feldtyp-Zeichen: %s"
 
 #  === JvMemoryDataset.pas ====================================================
 #  Programmer's name for it: RsEMemNoRecords
@@ -3301,14 +3301,15 @@ msgstr ""
 #. Programmer's name for it: RsEInvalidCsvKeyDef
 #: JvResources.pas:411
 msgid "Invalid CsvKeyDef property. InternalInitFieldDefs failed"
-msgstr ""
+msgstr "Ungültige CsvKeyDef-Property. InternalIniFieldDefs gescheitert"
 
 #  Programmer's name for it: RsEInternalErrorParsingCsvKeyDef
 #  Programmer's name for it: RsEInternalErrorParsingCsvKeyDef
 #. Programmer's name for it: RsEInternalErrorParsingCsvKeyDef
 #: JvResources.pas:412
 msgid "Internal Error parsing CsvKeyDef. InternalInitFieldDefs failed"
-msgstr ""
+msgstr "Interner Fehler beim Parsieren von CsvKeyDef. "
+"InternalInitFieldDefs gescheitert"
 
 #  Programmer's name for it: RsEContainsField
 #  Programmer's name for it: RsEContainsField
