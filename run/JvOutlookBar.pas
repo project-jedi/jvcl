@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2002-05-26
+Last Modified: 2002-09-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -61,8 +61,10 @@ type
     FImageIndex: Integer;
     FCaption: TCaption;
     FTag: Integer;
+    FDown: Boolean;
     procedure SetCaption(const Value: TCaption);
     procedure SetImageIndex(const Value: Integer);
+    procedure SetDown(const Value: Boolean);
     procedure Change;
   protected
     function GetDisplayName: string; override;
@@ -74,6 +76,7 @@ type
     property Caption: TCaption read FCaption write SetCaption;
     property ImageIndex: Integer read FImageIndex write SetImageIndex;
     property Tag: Integer read FTag write FTag;
+    property Down: Boolean read FDown write SetDown default False;
   end;
 
   TJvOutlookBarButtons = class(TOwnedCollection)
@@ -103,6 +106,7 @@ type
     FTopButtonIndex: Integer;
     FButtons: TJvOutlookBarButtons;
     FFont: TFont;
+    FDownFont: TFont;
     FImageIndex: Integer;
     FAlignment: TAlignment;
     procedure SetButtonSize(const Value: TJvBarButtonSize);
@@ -119,6 +123,11 @@ type
     procedure SetImageIndex(const Value: Integer);
     procedure SetAlignment(const Value: TAlignment);
     procedure DoFontChange(Sender: TObject);
+    procedure SetDownFont(const Value: TFont);
+    function GetDownButton: TJvOutlookBarButton;
+    function GetDownIndex: Integer;
+    procedure SetDownButton(Value: TJvOutlookBarButton);
+    procedure SetDownIndex(const Value: Integer);
   protected
     function GetDisplayName: string; override;
     { TODO: implement ImageIndex and Alignment }
@@ -129,17 +138,20 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure EditCaption;
+    property DownButton: TJvOutlookBarButton read GetDownButton write SetDownButton;
   published
     property Buttons: TJvOutlookBarButtons read FButtons write SetButtons;
     property Caption: TCaption read FCaption write SetCaption;
     property Image: TBitmap read FImage write SetImage;
     property Color: TColor read FColor write SetColor;
     property Font: TFont read FFont write SetFont;
+    property DownFont: TFont read FDownFont write SetDownFont;
     property ButtonSize: TJvBarButtonSize read FButtonSize write SetButtonSize;
     property ParentButtonSize: Boolean read FParentButtonSize write SetParentButtonSize default True;
     property ParentFont: Boolean read FParentFont write SetParentFont default False;
     property ParentColor: Boolean read FParentColor write SetParentColor;
     property TopButtonIndex: Integer read FTopButtonIndex write SetTopButtonIndex;
+    property DownIndex: Integer read GetDownIndex write SetDownIndex stored False;
   end;
 
   TJvOutlookBarPages = class(TOwnedCollection)
@@ -600,6 +612,7 @@ begin
   begin
     Caption := TJvOutlookBarButton(Source).Caption;
     ImageIndex := TJvOutlookBarButton(Source).ImageIndex;
+    Down := TJvOutlookBarButton(Source).Down;
     Tag := TJvOutlookBarButton(Source).Tag;
     Change;
   end
@@ -643,6 +656,20 @@ begin
   if FImageIndex <> Value then
   begin
     FImageIndex := Value;
+    Change;
+  end;
+end;
+
+procedure TJvOutlookBarButton.SetDown(const Value: Boolean);
+var i: Integer;
+begin
+  if Value <> FDown then
+  begin
+    FDown := Value;
+    if FDown then
+      for i := 0 to TJvOutlookBarButtons(Collection).Count - 1 do
+        if TJvOutlookBarButtons(Collection).Items[i] <> Self then
+          TJvOutlookBarButtons(Collection).Items[i].Down := False;
     Change;
   end;
 end;
@@ -714,6 +741,8 @@ begin
   FButtons := TJvOutlookBarButtons.Create(Self);
   FFont := TFont.Create;
   FFont.OnChange := DoFontChange;
+  FDownFont := TFont.Create;
+  FDownFont.OnChange := DoFontChange;
   FParentColor := True;
   FImage := TBitmap.Create;
   FAlignment := taCenter;
@@ -723,6 +752,7 @@ begin
     FButtonSize := TJvCustomOutlookBar(TJvOutlookBarPages(Collection).GetOwner).ButtonSize;
     FColor := TJvCustomOutlookBar(TJvOutlookBarPages(Collection).GetOwner).Color;
     Font := TJvCustomOutlookBar(TJvOutlookBarPages(Collection).GetOwner).Font;
+    DownFont := Font;
   end
   else
   begin
@@ -738,6 +768,7 @@ begin
   FButtons.Free;
   FImage.Free;
   FFont.Free;
+  FDownFont.Free;
   inherited Destroy;
 end;
 
@@ -749,6 +780,7 @@ begin
     Caption := TJvOutlookBarPage(Source).Caption;
     Image := TJvOutlookBarPage(Source).Image;
     Color := TJvOutlookBarPage(Source).Color;
+    DownFont.Assign(TJvOutlookBarPage(Source).DownFont);
     ButtonSize := TJvOutlookBarPage(Source).ButtonSize;
     ParentButtonSize := TJvOutlookBarPage(Source).ParentButtonSize;
     ParentColor := TJvOutlookBarPage(Source).ParentColor;
@@ -891,11 +923,55 @@ begin
   end;
 end;
 
+procedure TJvOutlookBarPage.SetDownFont(const Value: TFont);
+begin
+  if Value <> FDownFont then
+    FDownFont.Assign(Value);
+end;
+
 procedure TJvOutlookBarPage.DoFontChange(Sender: TObject);
 begin
   Change;
-  FParentFont := False;
+  if Sender <> FDownFont then
+    FParentFont := False;
 end;
+
+function TJvOutlookBarPage.GetDownButton: TJvOutlookBarButton;
+var
+  Index: Integer;
+begin
+  Index := DownIndex;
+  if Index <> -1 then
+    Result := Buttons[Index]
+  else
+    Result := nil;
+end;
+
+procedure TJvOutlookBarPage.SetDownButton(Value: TJvOutlookBarButton);
+begin
+  if Value = nil then
+    DownIndex := -1
+  else
+    DownIndex := Value.Index;
+end;
+
+function TJvOutlookBarPage.GetDownIndex: Integer;
+begin
+  for Result := 0 to Buttons.Count - 1 do
+    if Buttons[Result].Down then Exit;
+  Result := -1;
+end;
+
+procedure TJvOutlookBarPage.SetDownIndex(const Value: Integer);
+var
+  Index: Integer;
+begin
+  for Index := 0 to Buttons.Count - 1 do
+    Buttons[Index].Down := Index <> Value;
+  FParentFont := False;
+ end;
+
+
 
 //=== TJvOutlookBarPages =====================================================
 
@@ -1266,6 +1342,11 @@ begin
       if ThemeServices.ThemesEnabled then
         Canvas.Font.Color := ThemedColor;
       {$ENDIF}
+      if Pages[Index].Buttons[I].Down then
+      begin
+        Canvas.Font := Pages[Index].DownFont;
+        DrawButtonFrame(Index, I, I);
+      end;
       case Pages[Index].ButtonSize of
         olbsLarge:
           begin
@@ -1746,7 +1827,7 @@ begin
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
   begin
-    if PressedIndex = ButtonIndex then
+    if (PressedIndex = ButtonIndex) or (Pages[PageIndex].Buttons[ButtonIndex].Down) then
       Details := ThemeServices.GetElementDetails(ttbButtonPressed)
     else
       Details := ThemeServices.GetElementDetails(ttbButtonHot);
@@ -1755,7 +1836,7 @@ begin
   else
   {$ENDIF}
   begin
-    if PressedIndex = ButtonIndex then
+    if (PressedIndex = ButtonIndex) or (Pages[PageIndex].Buttons[ButtonIndex].Down) then
       Frame3D(Canvas, R, clBlack, clWhite, 1)
     else
       Frame3D(Canvas, R, clWhite, clBlack, 1);
