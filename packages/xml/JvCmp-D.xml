@@ -6,7 +6,7 @@
   <Requires>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="JvCmp-R" Targets="all" Condition=""/>
-    <Package Name="JvStdCtrls" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="dclstd50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
