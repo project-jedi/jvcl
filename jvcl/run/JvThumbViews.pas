@@ -70,6 +70,7 @@ type
     FMaxX: Word;
     FMinMemory: Boolean;
     FOnGetTitle: TTitleNotify;
+    FOnChanging: TNotifyEvent;
     FOnChange: TNotifyEvent;
     FOnStartScanning: TProgressStartNotify;
     FOnStopScanning: TNotifyEvent;
@@ -170,6 +171,7 @@ type
     property OnGetTitle: TTitleNotify read FOnGetTitle write FOnGetTitle;
     property OnInvalidImage: TInvalidImageEvent read FOnInvalidImage write FOnInvalidImage;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
     property OnKeyUp: TKeyEvent read FOnKeyUp write FOnKeyUp;
     property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
@@ -474,9 +476,16 @@ begin
           ScrollTo(Number);
       end
     end;
-    if (FSelected <> Number) and (Assigned(FOnChange)) then
-      FOnChange(Self);
-    FSelected := Number;
+    if FSelected <> Number then
+    begin
+      if Assigned(FOnChanging) then
+        FOnChanging(Self);
+
+      FSelected := Number;
+
+      if Assigned(FOnChange) then
+        FOnChange(Self);
+    end;
   end;
 end;
 
