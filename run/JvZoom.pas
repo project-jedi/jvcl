@@ -89,6 +89,9 @@ type
 implementation
 
 uses
+  {$IFDEF VisualCLX}
+  Qt,
+  {$ENDIF VisualCLX}
   JvJVCLUtils;
 
 constructor TJvZoom.Create(AOwner: TComponent);
@@ -102,7 +105,6 @@ begin
   FCrosshairColor := clBlack;
   FCacheOnDeactivate := True;
   FActive := True;
-
   FTimer := TTimer.Create(Self);
   FTimer.OnTimer := PaintMe;
   FTimer.Interval := 100;
@@ -120,6 +122,7 @@ procedure TJvZoom.Cache;
 begin
   if not Assigned(FCacheBitmap) then
     FCacheBitmap := TBitmap.Create;
+
   FCacheBitmap.Width := Width;
   FCacheBitmap.Height := Height;
   FCacheBitmap.Canvas.CopyRect(ClientRect, Canvas, ClientRect);
@@ -161,16 +164,25 @@ begin
 end;
 
 procedure TJvZoom.PaintMe(Sender: TObject);
+{$IFDEF VisualCLX}
+var
+  P: TPoint;
+{$ENDIF VisualCLX}
 begin
+  {$IFDEF VCL}
   { Reading Canvas.Handle will implicitly set the canvas handle to the
     control's device context
     Calling PaintWindow will lock the canvas and call Paint
   }
-  {$IFDEF VCL}
   PaintWindow(Canvas.Handle);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  PaintRequest;
+  GetCursorPos(P);
+  //Only draw if on a different position
+  if (P.X = FLastPoint.X) and (P.Y = FLastPoint.Y) then
+    Exit;
+  else
+    Invalidate;
   {$ENDIF VisualCLX}
 end;
 
@@ -179,7 +191,12 @@ var
   P: TPoint;
   X, Y, Dx, Dy: Integer;
   SourceRect: TRect;
+{$IFDEF VCL}
   DesktopCanvas: TJvDesktopCanvas;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+  bmp: TBitmap;
+{$ENDIF VisualCLX}
 begin
   GetCursorPos(P);
 
@@ -225,10 +242,23 @@ begin
   SourceRect.Right := P.X + X;
   SourceRect.Bottom := P.Y + Y;
 
+  {$IFDEF VCL}
   //Draw the area around the mouse
   DesktopCanvas := TJvDesktopCanvas.Create;
   Canvas.CopyRect(Rect(0, 0, Width, Height), DesktopCanvas, SourceRect);
   DesktopCanvas.Free;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  bmp := TBitmap.Create;
+  bmp.Handle := QPixmap_create;
+  try
+    with SourceRect do
+      QPixmap_grabWindow(bmp.Handle, QWidget_winID(GetDesktopWindow), Left, Top, 2 * X, 2 * Y);
+    CopyRect(Canvas, Rect(0, 0, Width, Height), Bmp.Canvas, Rect(0,0, Bmp.Width, Bmp.Height));
+  finally
+    bmp.free;
+  end;
+  {$ENDIF VisualCLX}
 
   if FCrosshair then
     with Canvas do
