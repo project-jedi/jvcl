@@ -239,6 +239,8 @@ type
 
     { Needs to recalculate all reference points and refresh the entire view }
     property RecalcNeeded: Boolean read FRecalcNeeded;
+  public
+    constructor Create(Collection: TCollection); override;
   end;
 
   TJvBaseSegmentedLEDDigit = class(TJvCustomSegmentedLEDDigit)
@@ -801,6 +803,7 @@ end;
 
 procedure TJvSegmentedLEDDigits.Update(Item: TCollectionItem);
 begin
+  Assert(Display <> nil);
   Display.UpdateBounds;
 end;
 
@@ -937,7 +940,9 @@ end;
 
 function TJvCustomSegmentedLEDDigit.Display: TJvCustomSegmentedLEDDisplay;
 begin
+  Assert(Collection <> nil);
   Result := TJvSegmentedLEDDigits(Collection).Display;
+  Assert(Result <> nil);
 end;
 
 procedure TJvCustomSegmentedLEDDigit.Invalidate;
@@ -961,6 +966,7 @@ begin
 
   SetLength(FSegmentRenderInfo, 0);
   SetLength(FSegmentRenderInfo, SegmentCount);
+  FillChar(FSegmentRenderInfo[0], SegmentCount * SizeOf(FSegmentRenderInfo[0]), 0);
   Display.InvalidateView;
 end;
 
@@ -1002,6 +1008,12 @@ begin
         FSegmentRenderInfo[Index].Points[0].x, FSegmentRenderInfo[Index].Points[0].y,
         FSegmentRenderInfo[Index].Points[1].x, FSegmentRenderInfo[Index].Points[1].y);
   end;
+end;
+
+constructor TJvCustomSegmentedLEDDigit.Create(Collection: TCollection);
+begin
+  inherited Create(Collection);
+  InvalidateRefPoints;
 end;
 
 //===TJvBaseSegmentedLEDDigit=======================================================================
