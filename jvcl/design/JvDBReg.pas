@@ -49,7 +49,7 @@ uses
   {$IFDEF JV_MIDAS}
   JvDBRemoteLogin,
   {$ENDIF JV_MIDAS}
-  JvDBEditors, JvDBMemDatasetEditor, JvDBGridExportEditors;
+  JvDBEditors, JvDBMemDatasetEditor, JvDBGridExportEditors, JvDBGridProp;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDBReg.dcr}
@@ -69,8 +69,9 @@ const
   cLookupField = 'LookupField';
   cSectionField = 'SectionField';
   cValueField = 'ValueField';
-  cRowsHeight = 'RowsHeight';
+  //cRowsHeight = 'RowsHeight';
   //cStartMasterValue = 'StartMasterValue';
+  cEditControls = 'EditControls';
 begin
   RegisterComponents(RsPaletteDBNonVisual, [TJvMemoryData,
     TJvCSVDataSet {$IFDEF JV_MIDAS}, TJvDBRemoteLogin {$ENDIF},
@@ -84,7 +85,7 @@ begin
     TJvDBSearchComboBox, TJvDBFindEdit, TJvDBImage]);
   RegisterComponents(RsPalettePersistence, [TJvAppDBStorage]);
 
-  RegisterPropertyEditor(TypeInfo(Integer), TJvDBGrid, cRowsHeight, nil);
+  //RegisterPropertyEditor(TypeInfo(Integer), TJvDBGrid, cRowsHeight, nil);
   RegisterPropertyEditor(TypeInfo(string), TJvLookupControl, cLookupField, TJvLookupSourceProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBLookupEdit, cLookupField, TJvLookupSourceProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, cItemField, TJvDataFieldProperty);
@@ -105,9 +106,9 @@ begin
   RegisterPropertyEditor(TypeInfo(string), TJvCustomAppDBStorage, cSectionField, TJvDataFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomAppDBStorage, cKeyField, TJvDataFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomAppDBStorage, cValueField, TJvDataFieldProperty);
+  RegisterPropertyEditor(TypeInfo(TJvDBGridControls), TJvDBGrid, cEditControls, TJvDBGridControlsEditor);
 
   RegisterComponentEditor(TJvMemoryData, TJvMemDataSetEditor);
 end;
 
 end.
-
