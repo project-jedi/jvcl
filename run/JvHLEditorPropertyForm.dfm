@@ -225,7 +225,7 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
           'Whitespace'
           'Comment'
           'Reserved word'
-          'Identifer'
+          'Identifier'
           'Symbol'
           'String'
           'Number'
