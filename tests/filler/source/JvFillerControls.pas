@@ -5,7 +5,7 @@ interface
 {$I JVCL.INC}
 
 uses
-  Windows, Classes, StdCtrls, Controls, Graphics, JvFillIntf, JvListBox;
+  Windows, Classes, StdCtrls, Controls, Graphics, JvFillIntf, JvListBox, JvLabel;
 
 type
   TJvFillListBox = class(TJvCustomListBox, IFillerNotify)
@@ -84,11 +84,6 @@ type
     property Visible;
     property OnClick;
     property OnContextPopup;
-    {$IFDEF COMPILER6_UP}
-    property OnData;
-    property OnDataFind;
-    property OnDataObject;
-    {$ENDIF COMPILER6_UP}
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -108,13 +103,20 @@ type
     property OnStartDrag;
   end;
 
-(*  TFillLabel = class(TCustomLabel, IFillerNotify)
+  TJvFillLabel = class(TJvLabel, IFillerNotify)
   private
     FFiller: IFiller;
     FIndex: Integer;
     procedure SetFiller(const Value: IFiller);
+    {$IFNDEF COMPILER6_UP}
+    function GetFillerComp: TComponent;
+    procedure SetFillerComp(Value: TComponent);
+    {$ENDIF COMPILER6_UP}
     procedure SetIndex(const Value: Integer);
   protected
+    { Direct link to actual filler interface. This is done to aid in the implementation (less
+      IFDEF's in the code; always refer to FillerIntf and it's working in all Delphi versions). }
+    function FillerIntf: IFiller;
     procedure FillerChanging(const AFiller: IFiller; AReason: TJvFillerChangeReason);
     procedure FillerChanged(const AFiller: IFiller; AReason: TJvFillerChangeReason);
     procedure UpdateCaption;
@@ -124,7 +126,11 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Filler: IFiller read FFiller write SetFiller;
+    {$IFDEF COMPILER6_UP}
+    property Filler: IFiller read FFiller write setFiller;
+    {$ELSE}
+    property Filler: TComponent read GetFillerComp write SetFillerComp;
+    {$ENDIF COMPILER6_UP}
     property Index: Integer read FIndex write SetIndex;
 
     property Align;
@@ -168,7 +174,7 @@ type
     {$ENDIF COMPILER6_UP}
     property OnStartDock;
     property OnStartDrag;
-  end;*)
+  end;
 
 implementation
 
@@ -369,39 +375,92 @@ begin
 end;
 {$ENDIF COMPILER6_UP}
 
-(*{ TFillLabel }
+{ TJvFillLabel }
 
-constructor TFillLabel.Create(AOwner: TComponent);
+constructor TJvFillLabel.Create(AOwner: TComponent);
 begin
   inherited;
   FIndex := -1;
 end;
 
-destructor TFillLabel.Destroy;
+destructor TJvFillLabel.Destroy;
 begin
   Filler := nil;
   inherited;
 end;
 
-procedure TFillLabel.DoDrawText(var Rect: TRect; Flags: Integer);
+{$IFNDEF COMPILER6_UP}
+function TJvFillLabel.GetFillerComp: TComponent;
+var
+  CompRef: IInterfaceComponentReference;
 begin
-  inherited;
-  if Assigned(Filler) and (fsCanRender in Filler.getSupports) and
-    (FIndex >= 0) and (FIndex < Filler.Count) then
+  if FFiller = nil then
+    Result := nil
+  else
   begin
-    Canvas.Brush.Color := Color;
-    Canvas.Font := Font;
-    Filler.DrawItem(Canvas, Rect, FIndex,[]);
+    if Succeeded(FFiller.QueryInterface(IInterfaceComponentReference, CompRef)) then
+      Result := CompRef.GetComponent
+    else
+      Result := nil;
   end;
 end;
 
-procedure TFillLabel.FillerChanged(const AFiller: IFiller;
+procedure TJvFillLabel.SetFillerComp(Value: TComponent);
+var
+  CompRef: IInterfaceComponentReference;
+  FillerRef: IFiller;
+begin
+  if Value = nil then
+    setFiller(nil)
+  else
+  begin
+    if Value.GetInterface(IInterfaceComponentReference, CompRef) then
+    begin
+      if Value.GetInterface(IFiller, FillerRef) then
+        setFiller(FillerRef)
+      else
+        raise EJVCLException.Create('Component does not support the IFiller interface.');
+    end
+    else
+      raise EJVCLException.Create('Component does not support the IInterfaceComponentReference interface.');
+  end;
+end;
+{$ENDIF COMPILER6_UP}
+
+procedure TJvFillLabel.DoDrawText(var Rect: TRect; Flags: Integer);
+var
+  Tmp: TSize;
+begin
+  if (FillerIntf <> nil) and (fsCanRender in FillerIntf.getSupports) and
+    (FIndex >= 0) and (FIndex < (FillerIntf as IFillerItems).Count) then
+  begin
+    Canvas.Brush.Color := Color;
+    Canvas.Font := Font;
+    if (Flags and DT_CALCRECT <> 0) then
+    begin
+      Tmp := (FillerIntf as IFillerItems).MeasureItem(Canvas, FIndex);
+      Rect.Right := Tmp.cx;
+      Rect.Bottom := Tmp.cy;
+    end
+    else
+      (FillerIntf as IFillerItems).DrawItem(Canvas, Rect, FIndex, []);
+  end
+  else
+    inherited DoDrawText(Rect, Flags);
+end;
+
+function TJvFillLabel.FillerIntf: IFiller;
+begin
+  Result := FFiller;
+end;
+
+procedure TJvFillLabel.FillerChanged(const AFiller: IFiller;
   AReason: TJvFillerChangeReason);
 begin
   UpdateCaption;
 end;
 
-procedure TFillLabel.FillerChanging(const AFiller: IFiller;
+procedure TJvFillLabel.FillerChanging(const AFiller: IFiller;
   AReason: TJvFillerChangeReason);
 begin
   case AReason of
@@ -410,22 +469,25 @@ begin
   end;
 end;
 
-function TFillLabel.GetLabelText: string;
+function TJvFillLabel.GetLabelText: string;
 begin
-  if Assigned(Filler) and (fsText in FFiller.getSupports) and
-    (FIndex >= 0) and (FIndex < Filler.Count) then
-    Result := (FFiller.Items[FIndex] as IFillerItemText).Caption
+  if (FillerIntf <> nil) and (fsText in FillerIntf.getSupports) and
+    (FIndex >= 0) and (FIndex < (FillerIntf as IFillerItems).Count) then
+    Result := ((FillerIntf as IFillerItems).Items[FIndex] as IFillerItemText).Caption
   else
     Result := inherited GetLabelText;
 end;
 
-procedure TFillLabel.SetFiller(const Value: IFiller);
+procedure TJvFillLabel.SetFiller(const Value: IFiller);
 begin
   if FFiller = Value then
     Exit;
 
   if Assigned(FFiller) then
+  begin
     FFiller.UnRegisterChangeNotify(Self);
+    FIndex := -1;
+  end;
 
   FFiller := Value;
 
@@ -434,7 +496,7 @@ begin
   UpdateCaption;
 end;
 
-procedure TFillLabel.SetIndex(const Value: Integer);
+procedure TJvFillLabel.SetIndex(const Value: Integer);
 begin
   if Value <> FIndex then
   begin
@@ -443,12 +505,13 @@ begin
   end;
 end;
 
-procedure TFillLabel.UpdateCaption;
-var tmp:TSize;
+procedure TJvFillLabel.UpdateCaption;
+var
+  tmp: TSize;
 begin
-  if (FFiller <> nil) and not AutoSize then
+  if (FillerIntf <> nil) and not AutoSize then
   begin
-    tmp := FFiller.MeasureItem(Canvas,Index);
+    tmp := (FillerIntf as IFillerItems).MeasureItem(Canvas,Index);
     if (tmp.cy <> 0)  then
       Height := tmp.cy;
     if tmp.cx <> 0 then
@@ -456,6 +519,6 @@ begin
   end;
   Perform(CM_TEXTCHANGED, 0, 0);
 end;
-*)
+
 end.
 
