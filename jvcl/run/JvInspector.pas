@@ -138,7 +138,10 @@ type
   EJvInspectorData = class(EJvInspector);
   EJvInspectorReg = class(EJvInspector);
 
-  TOnSetItemColors = procedure(Item: TJvCustomInspectorItem; Canvas:TCanvas) of Object;
+  TOnJvInspectorSetItemColors = procedure(Item: TJvCustomInspectorItem; Canvas:TCanvas) of Object;
+
+  TOnJvInspectorMouseDown = procedure(Sender:TJvCustomInspector; Item:TJvCustomInspectorItem; Button: TMouseButton;
+                                            Shift: TShiftState;  X, Y: Integer) of Object;
 
 
   TJvCustomInspector = class(TJvCustomControl)
@@ -178,6 +181,17 @@ type
     FUseBands: Boolean;
     FVisible: TStrings;
     FWantTabs: Boolean;
+    { Standard TCustomControl events -WAP}
+    FOnEnter: TNotifyEvent;
+    FOnContextPopup: TContextPopupEvent;
+    FOnKeyDown: TKeyEvent;
+    FOnKeyPress: TKeyPressEvent;
+    FOnKeyUp: TKeyEvent;
+    FOnMouseDown:TOnJvInspectorMouseDown;
+
+//    FOnMouseDown: TInspectorMouseDownEvent;
+
+
   protected
     function CalcImageHeight: Integer; virtual;
     function CalcItemIndex(X, Y: Integer; var Rect: TRect): Integer; virtual;
@@ -228,8 +242,8 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure NotifySort(const Item: TJvCustomInspectorItem); virtual;
     procedure Paint; override;
@@ -317,6 +331,18 @@ type
     function FocusedItem: TJvCustomInspectorItem; virtual;
     function VisibleIndex(const AItem: TJvCustomInspectorItem): Integer; virtual;
     procedure RefreshValues;
+  published
+      { Standard TCustomControl events - these are really events fired by
+        the TEdit control used when editing in a cell! -WAP}
+    property OnEnter: TNotifyEvent read FOnEnter write FOnEnter;
+    property OnContextPopup: TContextPopupEvent read FOnContextPopup write FOnContextPopup;
+    property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
+    property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
+    property OnKeyUp: TKeyEvent read FOnKeyUp write FOnKeyUp;
+    property OnMouseDown:TOnJvInspectorMouseDown read FOnMouseDown write FOnMouseDown;
+
+
+
   end;
 
   TJvInspector = class(TJvCustomInspector)
@@ -463,7 +489,7 @@ type
   TJvInspectorBorlandPainter = class(TJvInspectorBorlandNETBasePainter)
   private
     FDividerLightColor: TColor;
-    FOnSetItemColors : TOnSetItemColors;
+    FOnSetItemColors : TOnJvInspectorSetItemColors;
   protected
     function DividerWidth: Integer; override;
     procedure DoPaint; override;
@@ -479,12 +505,12 @@ type
     property DividerColor default clBtnShadow;
     property DividerLightColor: TColor read GetDividerLightColor write SetDividerLightColor default clBtnHighlight;
     property ValueColor default clNavy;
-    property OnSetItemColors : TOnSetItemColors read FOnSetItemColors write FOnSetItemColors;
+    property OnSetItemColors : TOnJvInspectorSetItemColors read FOnSetItemColors write FOnSetItemColors;
   end;
 
   TJvInspectorDotNETPainter = class(TJvInspectorBorlandNETBasePainter)
   private
-      FOnSetItemColors : TOnSetItemColors;
+      FOnSetItemColors : TOnJvInspectorSetItemColors;
   protected
     procedure ApplyNameFont; override;
     procedure DoPaint; override;
@@ -493,7 +519,7 @@ type
     property DividerColor default clBtnFace;
     property SelectedColor default clHighlight;
     property SelectedTextColor default clHighlightText;
-    property OnSetItemColors : TOnSetItemColors read FOnSetItemColors write FOnSetItemColors; 
+    property OnSetItemColors : TOnJvInspectorSetItemColors read FOnSetItemColors write FOnSetItemColors;
   end;
 
   TJvInspectorItemSizing = class(TPersistent)
@@ -2486,6 +2512,7 @@ begin
     Key := 0;
 end;
 
+
 procedure TJvCustomInspector.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
@@ -2496,6 +2523,7 @@ var
   ItemRect: TRect;
   Item: TJvCustomInspectorItem;
 begin
+  Item := nil; // Make sure bogus Item pointer doesn't get into event.
   inherited MouseDown(Button, Shift, X, Y);
   if UseBands then
   begin
@@ -2564,6 +2592,9 @@ begin
         PtInRect(Item.Rects[iprValueArea], Point(X, Y))) then
       Item.MouseDown(Button, Shift, X, Y);
   end;
+
+  if Assigned(Item) and Assigned(FOnMouseDown) then
+        FOnMouseDown(Self, Item, Button,Shift, X, Y );
 end;
 
 procedure TJvCustomInspector.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -2705,6 +2736,8 @@ begin
   begin
     Canvas.Brush.Color := Color;
     Canvas.FillRect(ClientRect);
+    if csDesigning in Self.ComponentState then
+      Canvas.TextOut(10,10,Name+':'+ClassName );
   end;
 end;
 
@@ -3008,19 +3041,22 @@ begin
       NewItem := VisibleItems[Value]
     else
       NewItem := nil;
-    if DoBeforeItemSelect(NewItem) then
-    begin
-      if Selected <> nil then
-        Selected.DoneEdit(False);
-      FSelectedIndex := Value;
-      if Selected <> nil then
-      begin
-        Selected.ScrollInView;
-        Selected.InitEdit;
-      end;
-      DoItemSelected;
-      InvalidateItem;
-    end;
+
+    if not (csDestroying in ComponentState) then // bugfix WAP.  Why repaint the screen when the component is going away anyways.
+          if DoBeforeItemSelect(NewItem) then
+          begin
+            if Selected <> nil then
+              Selected.DoneEdit(False);
+            FSelectedIndex := Value;
+            if Selected <> nil then
+            begin
+              Selected.ScrollInView;
+              Selected.InitEdit;
+            end;
+            DoItemSelected;
+            InvalidateItem;
+          end;
+          
   end;
 end;
 
@@ -4588,6 +4624,10 @@ end;
 procedure TJvCustomInspectorItem.EditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+   if Assigned(Inspector.FOnKeyDown) then
+        Inspector.FOnKeyDown(Inspector,Key,Shift);
+
+
   if Shift = [] then
   begin
     case Key of
@@ -5153,6 +5193,7 @@ begin
       EditCtrl.Free;
     end;
     FEditCtrl := Value;
+
     if EditCtrl <> nil then
       with TOpenEdit(EditCtrl) do
       begin
@@ -5671,19 +5712,42 @@ begin
 end;
 
 procedure TJvCustomInspectorItem.InitEdit;
+var
+ Edit:TEdit;
+ Memo:TMemo;
 begin
   SetEditing(CanEdit);
   if Editing then
   begin
     if Multiline then
     begin
-      SetEditCtrl(TMemo.Create(Inspector));
-      TMemo(EditCtrl).WordWrap := True;
-      TMemo(EditCtrl).WantReturns := False;
-      TMemo(EditCtrl).ScrollBars := ssVertical;
+      Memo := TMemo.Create(Inspector);
+      if Assigned(Inspector.FOnEnter) then
+         Memo.OnEnter := Inspector.FOnEnter;
+      if Assigned(Inspector.FOnContextPopup) then
+         Memo.OnContextPopup := Inspector.FOnContextPopup;
+      if Assigned(Inspector.FOnKeyUp) then
+          Memo.OnKeyUp := Inspector.FOnKeyUp;
+      if Assigned(Inspector.FOnKeyPress) then
+        Memo.OnKeyPress := Inspector.FOnKeyPress;
+      Memo.WordWrap := True;
+      Memo.WantReturns := False;
+      Memo.ScrollBars := ssVertical;
+      SetEditCtrl(Memo);
     end
-    else
-      SetEditCtrl(TEdit.Create(Inspector));
+    else begin
+      Edit := TEdit.Create(Inspector);
+      if Assigned(Inspector.FOnEnter) then
+         Edit.OnEnter := Inspector.FOnEnter;
+      if Assigned(Inspector.FOnContextPopup) then
+         Edit.OnContextPopup := Inspector.FOnContextPopup;
+      if Assigned(Inspector.FOnKeyUp) then
+         Edit.OnKeyUp := Inspector.FOnKeyUp;
+      if Assigned(Inspector.FOnKeyPress) then
+         Edit.OnKeyPress := Inspector.FOnKeyPress;
+       SetEditCtrl(Edit);
+
+    end;
     if iifEditFixed in Flags then
     begin
       TOpenEdit(EditCtrl).ReadOnly := True;
@@ -5775,6 +5839,10 @@ var
   FirstBand: Integer;
   BandsVisible: Integer;
 begin
+  if not Assigned(Inspector) then exit;
+  if csDestroying in Inspector.ComponentState then exit; // bugfix attempt. WAP.Self
+
+  OutputDebugString(PChar('ScrollIntoView:FDisplayName'));
   ViewIdx := Inspector.VisibleIndex(Self);
   if ViewIdx < 0 then
   begin
