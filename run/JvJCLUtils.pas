@@ -15,8 +15,10 @@ Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
 Contributor(s):
-    Andreas Hausladen
-
+  Andreas Hausladen
+  Ralf Kaiser
+  Vladimir Gaitanoff
+  
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -898,6 +900,7 @@ procedure FreeUnusedOle;
 function GetWindowsVersion: string;
 function LoadDLL(const LibName: string): THandle;
 function RegisterServer(const ModuleName: string): Boolean;
+function UnregisterServer(const ModuleName: string): Boolean;
 {$ENDIF MSWINDOWS}
 
 { String routines }
@@ -7674,24 +7677,44 @@ end;
 
 function RegisterServer(const ModuleName: string): Boolean;
 type
-  TProc = procedure;
+  TCOMFunc = function:HResult;
+const
+  S_OK    = $00000000;
 var
   Handle: THandle;
-  DllRegServ: Pointer;
+  DllRegServ: TCOMFunc;
 begin
-  Result := False;
   Handle := LoadDLL(ModuleName);
   try
     DllRegServ := GetProcAddress(Handle, 'DllRegisterServer');
-    if Assigned(DllRegServ) then
-    begin
-      TProc(DllRegServ);
-      Result := True;
-    end;
+    Result := Assigned(DllRegServ) and (DllRegServ() = S_OK);
   finally
     FreeLibrary(Handle);
   end;
 end;
+
+// UnregisterServer by Ralf Kaiser patterned on RegisterServer
+function UnregisterServer(const ModuleName: string): Boolean;
+type
+  TCOMFunc = function:HResult;
+const
+  S_OK    = $00000000;
+var
+  Handle: THandle;
+  DllUnRegServ: TCOMFunc;
+  DllCanUnloadNow:TCOMFunc;
+begin
+  Handle := LoadDLL(ModuleName);
+  try
+    DllUnRegServ := GetProcAddress(Handle, 'DllUnregisterServer');
+    DllCanUnloadNow := GetProcAddress(Handle, 'DllCanUnloadNow');
+    Result := Assigned(DllCanUnloadNow) and (DllCanUnloadNow() = S_OK)
+      and Assigned(DllUnRegServ) and (DllUnRegServ() = S_OK);
+  finally
+    FreeLibrary(Handle);
+  end;
+end;
+
 
 procedure FreeUnusedOle;
 begin
