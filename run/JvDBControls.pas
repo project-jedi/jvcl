@@ -346,39 +346,45 @@ type
     // Polaris
     property Action;
     property BeepOnError;
-    property CalendarHints;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property AutoSelect;
     property BlanksChar;
     property BorderStyle;
-    {$IFDEF VCL}
-    property Flat;
-    {$ENDIF VCL}
     property ButtonHint;
+    property ButtonFlat;
+    property CalendarHints;
     property CheckOnExit;
     property ClickKey;
     property Color;
     property DefaultToday;
     property DialogTitle;
     property DirectInput;
+    {$IFDEF VCL}
     property DragCursor;
-    property DragMode;
-    property Enabled;
-    property Font;
-    property ImageIndex;
-    property Images;
-    property ImageKind;
-    property ButtonWidth;
-    property HideSelection;
-    property Anchors;
     property BiDiMode;
-    property Constraints;
     property DragKind;
+    property Flat;
     property ParentBiDiMode;
     property ImeMode;
     property ImeName;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF VCL}
+    property DragMode;
+    property Enabled;
+    property Font;
+    property Glyph;
+    property GroupIndex;
+    property ImageIndex;
+    property Images;
+    property ImageKind;
+    property NumGlyphs;
+    property ButtonWidth;
+    property HideSelection;
+    property Anchors;
+    property Constraints;
     property MaxLength;
     property ParentColor;
     property ParentFont;
@@ -388,12 +394,12 @@ type
     property PopupMenu;
     property ShowHint;
     property CalendarStyle;
-    property TabOrder;
-    property TabStop;
     property StartOfWeek;
     property Weekends;
     property WeekendColor;
     property YearDigits;
+    property TabOrder;
+    property TabStop;
     property Visible;
     property OnButtonClick;
     property OnChange;
@@ -404,7 +410,6 @@ type
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-    property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
@@ -412,14 +417,10 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property OnContextPopup;
-    property OnEndDock;
-    property OnStartDock;
-    (* ++ RDB ++ *)
-    property ClipboardCommands;
-    property DisabledTextColor;
-    property DisabledColor;
-    (* -- RDB -- *)
-
+    property ClipboardCommands; // RDB
+    property DisabledTextColor; // RDB
+    property DisabledColor; // RDB
+    property OnKeyDown; // RDB
   end;
 
   TJvDBCalcEdit = class(TJvCalcEdit)
