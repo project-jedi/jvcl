@@ -14,9 +14,6 @@ object JvAppHotKeyDemoMainForm: TJvAppHotKeyDemoMainForm
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
-  DesignSize = (
-    356
-    303)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

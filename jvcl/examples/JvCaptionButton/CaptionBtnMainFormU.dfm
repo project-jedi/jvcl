@@ -15,9 +15,6 @@ object CaptionBtnMainForm: TCaptionBtnMainForm
   OldCreateOrder = True
   Scaled = False
   OnCreate = FormCreate
-  DesignSize = (
-    369
-    467)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

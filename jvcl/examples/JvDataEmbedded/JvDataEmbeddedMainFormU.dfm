@@ -13,9 +13,6 @@ object JvDataEmbeddedMainForm: TJvDataEmbeddedMainForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  DesignSize = (
-    410
-    236)
   PixelsPerInch = 96
   TextHeight = 13
   object Button1: TButton

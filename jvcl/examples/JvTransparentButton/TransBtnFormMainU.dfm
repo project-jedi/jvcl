@@ -16,9 +16,6 @@ object TransBtnFormMain: TTransBtnFormMain
   OnActivate = FormActivate
   OnKeyPress = FormKeyPress
   OnPaint = FormPaint
-  DesignSize = (
-    528
-    355)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -62,7 +59,6 @@ object TransBtnFormMain: TTransBtnFormMain
     Height = 293
     ActivePage = TabSheet1
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabIndex = 0
     TabOrder = 0
     OnChange = PageControl1Change
     object TabSheet1: TTabSheet

@@ -199,9 +199,6 @@ object Form1: TForm1
     Caption = ' '
     Color = clWindow
     TabOrder = 5
-    DesignSize = (
-      476
-      63)
     object lblInfo: TJvLabel
       Left = 14
       Top = 16
