@@ -450,13 +450,13 @@ procedure SaveBitmapToFile(const FileName: string; Bitmap: TBitmap;
 function ScreenPixelFormat: TPixelFormat;
 function ScreenColorCount: Integer;
 
-procedure TileImage(Canvas: TCanvas; Rect: TRect; Image: TGraphic);
-function ZoomImage(ImageW, ImageH, MaxW, MaxH: Integer; Stretch: Boolean):
-  TPoint;
-
 var
   DefaultMappingMethod: TMappingMethod = mmHistogram;
 {$ENDIF VCL}
+
+procedure TileImage(Canvas: TCanvas; Rect: TRect; Image: TGraphic);
+function ZoomImage(ImageW, ImageH, MaxW, MaxH: Integer; Stretch: Boolean):
+  TPoint;
 
 type
   TJvGradientOptions = class(TPersistent)
@@ -2462,23 +2462,24 @@ var
   i, Delta: Integer;
   Brush: HBRUSH;
 begin
-  if IsRectEmpty(ARect) and (GetMapMode(Canvas.Handle) = MM_TEXT) then
-    Exit;
   {$IFDEF VisualCLX}
   Canvas.Start;
   try
   {$ENDIF VisualCLX}
-    if Colors < 2 then
+    if Not (IsRectEmpty(ARect) and
+           (GetMapMode(Canvas.Handle) = MM_TEXT) ) then
     begin
-      Brush := CreateSolidBrush(ColorToRGB(StartColor));
-      FillRect(Canvas.Handle, ARect, Brush);
-      DeleteObject(Brush);
-      Exit;
-    end;
-    StartColor := ColorToRGB(StartColor);
-    EndColor := ColorToRGB(EndColor);
-    case Direction of
-      fdTopToBottom, fdLeftToRight:
+      if Colors < 2 then
+      begin
+        Brush := CreateSolidBrush(ColorToRGB(StartColor));
+        FillRect(Canvas.Handle, ARect, Brush);
+        DeleteObject(Brush);
+        Exit;
+      end;
+      StartColor := ColorToRGB(StartColor);
+      EndColor := ColorToRGB(EndColor);
+      case Direction of
+        fdTopToBottom, fdLeftToRight:
         begin
           { Set the Red, Green and Blue colors }
           StartRGB[0] := GetRValue(StartColor);
@@ -2578,6 +2579,7 @@ begin
       DeleteObject(Brush);
     end;
   {$IFDEF VisualCLX}
+  end;  //  if Not (IsRectEmpty(ARect) and ...
   finally
     Canvas.Stop;
   end;
@@ -5449,6 +5451,7 @@ procedure GrayscaleBitmap(Bitmap: TBitmap);
 begin
   SetBitmapPixelFormat(Bitmap, pf8bit, mmGrayscale);
 end;
+{$ENDIF VCL}
 
 function ZoomImage(ImageW, ImageH, MaxW, MaxH: Integer; Stretch: Boolean):
   TPoint;
@@ -5499,7 +5502,6 @@ begin
     RestoreDC(Canvas.Handle, SaveIndex);
   end;
 end;
-{$ENDIF VCL}
 
 //=== TJvGradientOptions ============================================================
 
