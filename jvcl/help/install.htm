@@ -81,21 +81,27 @@ file containing a version known to build.<br>
 <p align="left">An installer is provided with the JVCL distribution and
 it is the recommended way of installing the JVCL. If using it is not an
 option or it doesn't work for you, please see the section below on
-manual installation. </p>
+manual installation.<br>
+ </p>
 <div class="InfoField">
-<p align="left">Even if you use the installer, you must first remove
+<p align="left"><br>
+Even if you use the installer, you must first remove
 any JVCL (before version 3) and JCL (any version) manually. For
 instructions on manual removal, see the section above titled
 "Uninstalling previous versions of JVCL". For removing a previous
 installation of JVCL version 3, see the section "Uninstalling using the
-Installer" below.</p>
+Installer" below.<br>
+</p>
 </div>
-<p align="left">&nbsp;</p>
+<p align="left"><br>
+&nbsp;</p>
 <div class="InfoField">
-<p align="left">The installer does not copy any files: instead, it
+<p align="left"><br>
+The installer does not copy any files: instead, it
 builds and installs the packages in the Delphi/BCB IDE. So, before
 running the installer, make sure the JVCL (and JCL) files are located
-in the folder where you want them to be.</p>
+in the folder where you want them to be.<br>
+</p>
 </div>
 <p align="left">To use the installer, first make sure Delphi or
 C++Builder are closed (the installer will not be able to run if they
@@ -325,10 +331,11 @@ go through these steps for each version, the only difference being the
 bpg file you load into the IDE.</p>
 <p>&nbsp; <br>
 </p>
-<div class="InfoField"> When closing a package, Delphi will prompt you
-to save the changes to the package. You can answer "No" to this
-question
-since saving only updates the dof file and that is not necessary. <br>
+<div class="InfoField"> <br>
+ When closing a package, Delphi will prompt you
+to save the changes to the package. You <b>MUST </b>answer "No" to this question
+since Delphi removes some conditional defines needed the next time you recompile
+  the package. <br>
 </div>
 <br>
 <h2>Adding JVCL paths to Delphi</h2>
@@ -344,17 +351,27 @@ run-time packages, you need to recompile the packages to see the
 changes
 in the application. To add the source folder locations to Delphi,
 select <b>Tools-Environment
-Options-Library</b> and add the paths to JVCL\run and
-JVCL\common to the Library path.</p>
+Options-Library</b> and add the paths to <b><i> JVCL\run</i></b> and <i><b>
+JVCL\common</b></i> to the Library path.</p>
 <p>&nbsp;</p>
-<p>Adding the pre-compiled DCU paths means that Delphi won't recompile
+<p>Adding the pre-compiled DCU paths means that Delphi won't have to recompile
 the DCU's unless you recompile the packages, so compiling your
 application should be faster. To add the DCU folder location, select <b>Tools-Environment
-Options-Library</b> and add JVCL\lib\XX (where XX is your version
-of Delphi or BCB, i.e for Delphi 6, it's "d6", for BCB 5 it's "c5") and
-JVCL\common (for the INC
-files) to the Library path. If you still want to be able to open the
-JVCL source files in the IDE, add JVCL\run (and maybe even JVCL\design)
+Options-Library</b> and add <i><b> JVCL\lib\XX</b></i> (where XX is your version
+of Delphi or BCB, i.e for Delphi 6, it's "d6", for BCB 5 it's &quot;c5&quot; etc) and
+<i><b>
+JVCL\common</b></i> (for the INC
+files) to the Library path.&nbsp;</p>
+<p>&nbsp;</p>
+<div class="InfoField">
+<b><br>
+</b> When adding the DCU output folder to the Library path, you
+must also copy all dfm files from the \run folder to the DCU&nbsp; folder or
+Delphi won't be able to find them.&nbsp;<br>
+</div>
+<p>&nbsp;</p>
+<p>If you still want to be able to open the
+JVCL source files in the IDE, add <i><b> JVCL\run</b></i> (and maybe even <b><i>JVCL\design</i></b>)
 to the Browsing Path list.</p>
 <p>&nbsp; <br>
 </p>
@@ -542,7 +559,8 @@ have to go through these steps for each version, the only difference
 being the bpg file you load into the IDE.<br>
 <br>
 </p>
-<div class="InfoField">When closing a package, C++&nbsp;Builder will
+<div class="InfoField"><br>
+  When closing a package, C++&nbsp;Builder will
 prompt you to save the changes to the package. You MUST answer "No" to
 this question since saving will most likely render the packages
 unusable
