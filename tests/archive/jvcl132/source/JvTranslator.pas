@@ -158,7 +158,7 @@ var
  var
   i,j: Integer;
  begin
-   with Component as TJvTranslatorStrings do
+   with TJvTranslatorStrings(Component) do
      for i:=0 to Elem.Items.Count-1 do
      begin
        j := TJvTranslatorStrings(Component).IndexOf(Elem.Items[i].Properties.Value('Name'));
@@ -195,7 +195,7 @@ var
  var
   i,j: Integer;
  begin
-   with Component as TFEGXOutlookBar do
+   with TFEGXOutlookBar(Component) do
      for i:=0 to Elem.Items.Count-1 do
      begin
        j := Elem.Items[i].Properties.IntValue('Index',MAXINT);
@@ -206,13 +206,13 @@ var
  {$ENDIF}
 
 begin
-  if Component is TJvTranslatorStrings then
+  if (Component is TJvTranslatorStrings) or (Component.ClassName='TJvTranslatorStrings') then
   begin
     TransVars;
     Exit;
   end;
   {$IFDEF GX_OUTLOOK}
-  if Component is TFEGXOutlookBar then
+  if (Component is TFEGXOutlookBar) or (Component.ClassName='TFEGXOutlookBar') then
   begin
     TransOutlook;
     Exit;
