@@ -139,7 +139,7 @@ begin
   inherited Create(AOwner);
   FOptions := [odStatusAvailable, odNewDialogStyle];
   FOwnerHandle := GetOwnerHandle;
-  FObjectInstance := Classes.MakeObjectInstance(MainWndProc);
+  FObjectInstance := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}MakeObjectInstance(MainWndProc);
 end;
 
 procedure SetDialogPos(AParentHandle, AWndHandle: THandle;
@@ -412,7 +412,7 @@ end;
 destructor TJvBrowseFolder.Destroy;
 begin
   if FObjectInstance <> nil then
-    Classes.FreeObjectInstance(FObjectInstance);
+    {$IFDEF COMPILER6_UP}Classes.{$ENDIF}FreeObjectInstance(FObjectInstance);
   inherited Destroy;
 end;
 
