@@ -166,7 +166,7 @@ begin
       Active := True;
       Caption := SCustomColorsEllipsis;
       ShowHeader := True;
-      AddColorSettings.Style := aisBorland;
+//      AddColorSettings.Style := aisBorland;
       AddColorSettings.Location := ailUseHeader;
     end;
     with ColorSettings.GroupingSettings do
