@@ -6592,7 +6592,7 @@ begin
   I := Length(Result);
   while (I > 0) and (Result[I] = PathDelim) do
     Dec(I);
-  SetLength(Result, I - 1);
+  SetLength(Result, I);
 end;
 
 {$ENDIF !COMPILER6_UP}
