@@ -2042,7 +2042,10 @@ begin
     Exit;
   try
     LastActiveWidget := QApplication_activeWindow(Application.Handle);
-    LastActiveWinId := QWidget_winId(LastActiveWidget);
+    if LastActiveWidget <> nil then
+      LastActiveWinId := QWidget_winId(LastActiveWidget)
+    else
+      LastActiveWinId := 0;
 
     // we must use CLX methods or CLX will be a pain.
     Control := TOpenWidgetControl(FindControl(Wnd));
@@ -2086,7 +2089,7 @@ begin
         Control.AdjustSize;
     end;
 
-    if (uFlags and SWP_NOOWNERZORDER = 0) then
+    if (uFlags and SWP_NOOWNERZORDER = 0) and (uFlags and SWP_NOZORDER = 0) then
       if (not QWidget_isTopLevel(Wnd)) and (QWidget_parentWidget(Wnd) <> nil) then
         SetWindowPos(QWidget_parentWidget(Wnd), WndInsertAfter, 0, 0, 0, 0,
           SWP_NOSIZE or SWP_NOMOVE or SWP_NOREDRAW or SWP_NOACTIVATE or
