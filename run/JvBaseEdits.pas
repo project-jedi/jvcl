@@ -481,8 +481,7 @@ begin
     Key := #0;
   end
   else
-//  if Ord(Key) = VK_ESCAPE then
-  if Key = #27 then
+  if Key = Esc then
   begin
     Reset;
     Key := #0;

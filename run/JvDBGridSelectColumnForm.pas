@@ -72,6 +72,9 @@ type
 
 implementation
 
+uses
+  JvConsts;
+
 {$IFDEF VCL}
 {$R *.dfm}
 {$ENDIF VCL}
@@ -197,7 +200,7 @@ end;
 
 procedure TfrmSelectColumn.FormKeyPress(Sender: TObject; var Key: Char);
 begin
-  if Key = #27 then
+  if Key = Esc then
   begin
     ModalResult := mrCancel;
     FColumnUpdate := False;

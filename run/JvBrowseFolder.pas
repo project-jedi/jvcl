@@ -287,7 +287,7 @@ implementation
 
 uses
   Consts, FileCtrl,
-  JvJVCLUtils, JvTypes, JvResources;
+  JvJVCLUtils, JvConsts, JvResources, JvTypes;
 
 type
   TSHGetFolderPathProc = function(hWnd: HWND; csidl: Integer; hToken: THandle;
@@ -1084,7 +1084,7 @@ begin
   if FTitle = '' then
     BrowseInfo.lpszTitle := PChar(FStatusText)
   else
-    BrowseInfo.lpszTitle := PChar(FTitle + #13 + FStatusText);
+    BrowseInfo.lpszTitle := PChar(FTitle + Cr + FStatusText);
 
   if FRootDirectory = fdNoSpecialFolder then
     BrowseInfo.pidlRoot := CreateIDListFromPath(FRootDirectoryPath)

@@ -349,6 +349,9 @@ type
 
 implementation
 
+uses
+  JvConsts;
+
 type
   // This type is solely for the acccess to the protected MouseDown method
   TCrackTControl = class(TControl);
@@ -1136,7 +1139,7 @@ begin
     Canvas.Font := Font;
     for I := 1 to Length(FText) do
     begin
-      if FText[I] = #10 then
+      if FText[I] = Lf then
       begin
         // Check the width of this line
         FMinWidth := Max([FMinWidth, Canvas.TextWidth(TempStr)]);

@@ -187,7 +187,12 @@ const
   Tab = #9;
   Esc = #27;
   CtrlC = ^C;
+  CtrlH = ^H;
+  CtrlI = ^I;
+  CtrlJ = ^J;
+  CtrlM = ^M;
   CtrlV = ^V;
+  CtrlX = ^X;
   {$IFDEF MSWINDOWS}
   RegPathDelim = '\';
   PathDelim = '\';

@@ -188,7 +188,7 @@ end;
 
 function TJvIParser.Token: string;
 const
-  StSkip = [' ', #10, #13];
+  StSkip = [' ', Lf, Cr];
 var
   P, F: PChar;
   F1: PChar;
@@ -243,7 +243,7 @@ var
       '/':
         if (FStyle in [psPascal, psCpp, psCocoR, psPhp]) and (P[1] = '/') then
         begin
-          F := StrScan(P + 1, #13);
+          F := StrScan(P + 1, Cr);
           if F = nil then
             F := StrEnd(P + 1);
           P := F;
@@ -270,9 +270,9 @@ var
         end;
       '#':
         if (FStyle in [psPython, psPerl]) { and
-           ((P = FpcProgram) or (P[-1] in [#10, #13])) }then
+           ((P = FpcProgram) or (P[-1] in [Lf, Cr])) }then
         begin
-          F := StrScan(P + 1, #13);
+          F := StrScan(P + 1, Cr);
           if F = nil then
             F := StrEnd(P + 1);
           P := F;
@@ -280,7 +280,7 @@ var
       '''':
         if FStyle = psVB then
         begin
-          F := StrScan(P + 1, #13);
+          F := StrScan(P + 1, Cr);
           if F = nil then
             F := StrEnd(P + 1);
           P := F;
@@ -552,7 +552,7 @@ end;
 
 function TJvIParserW.Token: WideString;
 const
-  StSkip = [' ', #10, #13];
+  StSkip = [' ', Lf, Cr];
 var
   P, F: PWideChar;
   F1: PWideChar;
@@ -607,7 +607,7 @@ var
       '/':
         if (FStyle in [psPascal, psCpp, psCocoR, psPhp]) and (P[1] = '/') then
         begin
-          F := StrScanW(P + 1, WideChar(#13));
+          F := StrScanW(P + 1, WideChar(Cr));
           if F = nil then
             F := StrEndW(P + 1);
           P := F;
@@ -634,9 +634,9 @@ var
         end;
       '#':
         if (FStyle in [psPython, psPerl]) { and
-           ((P = FpcProgram) or (P[-1] in [#10, #13])) }then
+           ((P = FpcProgram) or (P[-1] in [Lf, Cr])) }then
         begin
-          F := StrScanW(P + 1, WideChar(#13));
+          F := StrScanW(P + 1, WideChar(Cr));
           if F = nil then
             F := StrEndW(P + 1);
           P := F;
@@ -644,7 +644,7 @@ var
       '''':
         if FStyle = psVB then
         begin
-          F := StrScanW(P + 1, WideChar(#13));
+          F := StrScanW(P + 1, WideChar(Cr));
           if F = nil then
             F := StrEndW(P + 1);
           P := F;

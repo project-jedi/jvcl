@@ -104,7 +104,7 @@ uses
   {$IFDEF LINUX}
   Libc,
   {$ENDIF LINUX}
-  JvResources;
+  JvConsts, JvResources;
 
 //=== TStaticObject ==========================================================
 
@@ -133,7 +133,7 @@ end;
 
 class function TStringTools.RemoveCRLF(const S: string): string;
 begin
-  Result := RemoveChars(S, [#13, #10]);
+  Result := RemoveChars(S, [Cr, Lf]);
 end;
 
 class function TStringTools.EscapeBackslashes(const S: string): string;

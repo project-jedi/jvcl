@@ -394,7 +394,8 @@ type
 implementation
 
 uses
-  Math;
+  Math,
+  JvConsts;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvOutlookBar.res}
@@ -510,7 +511,7 @@ end;
 
 procedure TJvOutlookBarEdit.KeyPress(var Key: Char);
 begin
-  if Key = #13 then
+  if Key = Cr then
     Key := #0; // remove beep
   inherited KeyPress(Key);
 end;

@@ -19,11 +19,15 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+  GIF support is native for VisualCLX so this file is VCL only
 -----------------------------------------------------------------------------}
 // $Id$
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
+{$I vclonly.inc}
+
+// for HeapAllocFlags
+{$WARN SYMBOL_PLATFORM OFF}
 
 unit JvGIF;
 

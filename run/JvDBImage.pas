@@ -162,7 +162,7 @@ implementation
 uses
   Contnrs, // (p3) NB! This might not be available in all SKU's
   DBConsts, jpeg, SysUtils,
-  JvResources;
+  JvConsts, JvResources;
 
 //=== TGraphicSignature ======================================================
 
@@ -621,15 +621,15 @@ end;
 procedure TJvDBImage.KeyPress(var Key: Char);
 begin
   case Key of
-    ^X:
-      CutToClipBoard;
-    ^C:
+    CtrlC:
       CopyToClipBoard;
-    ^V:
+    CtrlV:
       PasteFromClipBoard;
-    #13:
+    CtrlX:
+      CutToClipBoard;
+    Cr:
       LoadPicture;
-    #27:
+    Esc:
       if FDataLink <> nil then
         FDataLink.Reset;
   else // this should be safe, TDBImage doesn't handle any other keys

@@ -144,6 +144,9 @@ type
 
 implementation
 
+uses
+  JvConsts;
+
 //=== TJvDBCustomSearchEdit ==================================================
 
 constructor TJvDBCustomSearchEdit.Create;
@@ -217,7 +220,7 @@ procedure TJvDBCustomSearchEdit.KeyPress(var Key: Char);
 var
   lLength: Integer;
 begin
-  if Key = #8 then
+  if Key = Backspace then
   begin
     lLength := SelLength;
     SelStart := SelStart - 1;

@@ -151,10 +151,8 @@ const
 implementation
 
 uses
-  Math,
-  Consts,
-  JvThemes, JvConsts, JvResources, JvJCLUtils,
-  JvToolEdit, JvSpeedButton;
+  Math, Consts,
+  JvThemes, JvConsts, JvResources, JvJCLUtils, JvToolEdit, JvSpeedButton;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvPickDate.Res}
@@ -278,7 +276,7 @@ var
   //>Polaris
   procedure DefaultDraw;
   begin
-    if TheText <> EmptySTr then
+    if TheText <> '' then
       with ARect, Canvas do
       begin
         Brush.Style := bsClear;
@@ -293,7 +291,7 @@ var
     begin
       if (ARow > 0) and ((FMinDate <> NulLDate) or (FMaxDate <> NulLDate)) then
         if not CellInRange(ACol, ARow) then
-          if TheText <> EmptyStr then
+          if TheText <> '' then
           begin
             Font.Color := clBtnFace;
             if Color = clBtnFace then
@@ -373,7 +371,7 @@ var
   DayNum: Integer;
 begin
   Result := NullDate;
-  if (ARow > 0) and (GetCellText(ACol, ARow) <> EmptyStr) then
+  if (ARow > 0) and (GetCellText(ACol, ARow) <> '') then
   begin
     DayNum := FMonthOffset + ACol + (ARow - 1) * 7;
     if (DayNum < 1) or (DayNum > DaysThisMonth) then

@@ -154,7 +154,7 @@ uses
   {$IFDEF VisualCLX}
   QConsts,
   {$ENDIF VisualCLX}
-  JvJCLUtils, JvTypes;
+  JvJCLUtils, JvConsts, JvTypes;
 
 const
   XorVersion = 1;
@@ -174,7 +174,7 @@ end;
 
 function NameDelimiter(C: Char; Delims: TCharSet): Boolean;
 begin
-  Result := (C in [' ', ',', ';', ')', #13, #10]) or (C in Delims);
+  Result := (C in [' ', ',', ';', ')', Cr, Lf]) or (C in Delims);
 end;
 
 function IsLiteral(C: Char): Boolean;

@@ -82,10 +82,11 @@ type
 
 implementation
 
-{$IFDEF COMPILER6_UP} 
-uses 
-  Variants; 
-{$ENDIF COMPILER6_UP} 
+uses
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF COMPILER6_UP}
+  JvConsts; 
 
 ///////////////////////////////////////////////////////////////////////////
 //constructor TJvDBDateTimePicker.Create
@@ -272,7 +273,7 @@ begin
   case Key of
     #32..#255:
       FDataLink.Edit;
-    #27:
+    Esc:
       begin
         FDataLink.Reset;
         SetFocus;

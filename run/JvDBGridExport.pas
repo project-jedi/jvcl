@@ -249,7 +249,7 @@ uses
   Variants,
   {$ENDIF COMPILER6_UP}
   JclRegistry,
-  JvResources;
+  JvConsts, JvResources;
 
 //=== TJvCustomDBGridExport ==================================================
 
@@ -934,7 +934,7 @@ function TJvDBGridCSVExport.SeparatorToString(ASeparator: TExportSeparator): str
 begin
   case ASeparator of
     esTab:
-      Result := #9;
+      Result := Tab;
     esSemiColon:
       Result := ';';
     esComma:

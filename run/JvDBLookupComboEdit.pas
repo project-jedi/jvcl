@@ -155,6 +155,9 @@ type
 
 implementation
 
+uses
+  JvConsts;
+
 constructor TJvDBLookupComboEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -237,9 +240,9 @@ begin
     Key := #0;
   end;
   case Key of
-    ^H, ^V, ^X, #32..#255:
+    CtrlH, CtrlV, CtrlX, #32..#255:
       FDataLink.Edit;
-    #27:
+    Esc:
       begin
         FDataLink.Reset;
         SelectAll;

@@ -166,6 +166,9 @@ type
 
 implementation
 
+uses
+  JvConsts;
+
 constructor TJvDBRichEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -250,8 +253,10 @@ begin
       Key := #0;
     end;
     case Key of
-      ^H, ^I, ^J, ^M, ^V, ^X, #32..#255: EditCanModify;
-      #27: FDataLink.Reset;
+      CtrlH, CtrlI, CtrlJ, CtrlM, CtrlV, CtrlX, #32..#255:
+        EditCanModify;
+      Esc:
+        FDataLink.Reset;
     end;
   end
   else

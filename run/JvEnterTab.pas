@@ -37,6 +37,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Qt, QGraphics, QControls, QForms, QWindows,
+  JvConsts,
   {$ENDIF VisualCLX}
   JvComponent;
 
@@ -129,12 +130,12 @@ begin
     if ((QKeyEvent_key(QKeyEventH(Event)) = Key_Enter) or
         (QKeyEvent_key(QKeyEventH(Event)) = Key_Return) ) and EnterAsTab then
     begin
-      ws := #9;
+      ws := Tab;
 
       QApplication_postEvent(GetParentForm(Self).Handle,
-        QKeyEvent_create(QEventType_KeyPress, Key_Tab, 9, 0, @ws, False, 1));
+        QKeyEvent_create(QEventType_KeyPress, Key_Tab, Tab, 0, @ws, False, 1));
       QApplication_postEvent(GetParentForm(Self).Handle,
-        QKeyEvent_create(QEventType_KeyRelease, Key_Tab, 9, 0, @ws, False, 1));
+        QKeyEvent_create(QEventType_KeyRelease, Key_Tab, Tab, 0, @ws, False, 1));
 
       Result := True;
     end;

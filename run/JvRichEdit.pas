@@ -1699,7 +1699,7 @@ begin
       if pcb > 0 then
       begin
         pBuff[pcb] := #0;
-        if pBuff[pcb - 1] = #13 then
+        if pBuff[pcb - 1] = Cr then
           pBuff[pcb - 1] := #0;
         pcb := AdjustLineBreaks(Buffer, pBuff);
         Move(Buffer^, pbBuff^, pcb);
@@ -5604,10 +5604,10 @@ begin
   W := SizeOf(Text);
   System.Move(W, Text[0], SizeOf(Word));
   L := SendMessage(FRichEdit.Handle, EM_GETLINE, Index, Longint(@Text));
-  if (Text[L - 2] = #13) and (Text[L - 1] = #10) then
+  if (Text[L - 2] = Cr) and (Text[L - 1] = Lf) then
     Dec(L, 2)
   else
-  if (RichEditVersion >= 2) and (Text[L - 1] = #13) then
+  if (RichEditVersion >= 2) and (Text[L - 1] = Cr) then
     Dec(L);
   SetString(Result, Text, L);
 end;

@@ -882,7 +882,7 @@ begin
     if (Key in [Ord('c'), Ord('C')]) and (ssCtrl in Shift) then
     begin
       for I := 0 to Columns.Count - 1 do
-        st := st + Columns[I].Caption + #9;
+        st := st + Columns[I].Caption + Tab;
       if st <> '' then
         st := st + sLineBreak;
       for I := 0 to Items.Count - 1 do
@@ -890,7 +890,7 @@ begin
         begin
           st := st + Items[I].Caption;
           for J := 0 to Items[I].SubItems.Count - 1 do
-            st := st + #9 + Items[I].SubItems[J];
+            st := st + Tab + Items[I].SubItems[J];
           st := st + sLineBreak;
         end;
       Clipboard.SetTextBuf(PChar(st));
