@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2002-06-03
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -118,6 +118,11 @@ end;
 
 procedure TJvFileNameBox.BtnClick(Sender: TObject);
 begin
+  try
+    //Reselecting last entered filename
+    FChoose.FileName := ExtractFileName(Edit.Text);
+  except
+  end;
   if FChoose.Execute then
   begin
     if ofAllowMultiSelect in FChoose.Options then
