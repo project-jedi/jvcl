@@ -23,6 +23,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 
 program JVCL3Install;
@@ -40,13 +41,16 @@ uses
   JvSimpleXML in '..\..\run\JvSimpleXml.pas',
   AHCompBrowseFolderDlg in 'AHCompBrowseFolderDlg.pas',
   JvComponent in '..\..\run\JvComponent.pas',
+  JvConsts in '..\..\common\JvConsts.pas',
+  JvResources in '..\..\run\JvResources.pas',
+  JvThemes in '..\..\run\JvThemes.pas',
   JvTypes in '..\..\run\JvTypes.pas',
   JVCLVer in '..\..\run\JVCLVer.pas';
 
 {$R *.res}
 
 begin
-  MainConfig.Embeded := True;
+  MainConfig.Embedded := True;
 
   Application.Initialize;
   Application.Title := 'JVCL Package Installer';

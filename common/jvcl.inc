@@ -42,11 +42,11 @@ Known Issues:
   {$ObjExportAll ON}
 {$ENDIF}
 
-{ Activate this define if you are using Delphi 5 Standard or one of the D6/D7 Personal Editions}
+{ Activate this define if you are using Delphi 5 Standard or one of the D6/D7 Personal Editions }
 {.$DEFINE DelphiPersonalEdition}
 
 { Activate this define if you have Mike Lischke's Theme Manager
-  (http:// www.lischke-online.de) installed and available and
+  (http://www.lischke-online.de) installed and available and
   you are using D6/BCB6 or below. The ThemeManager package must
   be compiled as "never-build package". }
 {.$DEFINE JVCLThemesEnabled}
@@ -82,10 +82,6 @@ Known Issues:
   active the ShortDateFormat variable is used instead }
 {$DEFINE USE_FOUR_DIGIT_YEAR}
 
-{ Activate this define to install old BDE lists components for backward
-  compatibility with oldest RxLib versions }
-{.$DEFINE USE_OLD_DBLISTS}
-
 { This define controls whether a popup calendar is used as default
   instead of a modal dialog in TDateEdit, TDBDateEdit components }
 {$DEFINE DEFAULT_POPUP_CALENDAR}
@@ -112,9 +108,6 @@ Known Issues:
 
 { Used by JvTimeFrameWork, see JvTFDays.pas for more info on time blocks }
 {$DEFINE TIMEBLOCKS}
-
-{ This define controls whether JvHLEditor supports a highlighter for NQC. }
-{$DEFINE HL_NOT_QUITE_C}
 
 
 {$IFDEF QUnit}

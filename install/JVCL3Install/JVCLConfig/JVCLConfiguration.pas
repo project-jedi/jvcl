@@ -23,10 +23,13 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 
 unit JVCLConfiguration;
+
 interface
+
 uses
   SysUtils, Classes, Contnrs, dpp_PascalParser;
 
@@ -46,7 +49,6 @@ type
   public
     constructor Create(AOwner: TJVCLConfig; const AComment, ADirective: string;
       ALine: Integer);
-
     property Line: Integer read FLine;
     property Enabled: Boolean read GetEnabled write SetEnabled;
     property Name: string read GetName;
@@ -85,9 +87,13 @@ var
   Len: Integer;
 begin
   Result := Comment;
-  if Result = '' then Exit;
- // remove comment brackets
-  if Result[1] = '{' then Len := 1 else Len := 2;
+  if Result = '' then
+    Exit;
+  // remove comment brackets
+  if Result[1] = '{' then
+    Len := 1
+  else
+    Len := 2;
   Delete(Result, 1, Len);
   Delete(Result, Length(Result) - Len + 1, Len);
 end;
@@ -96,17 +102,17 @@ function IsDirective(S: string; const Directive: string): Boolean;
 begin
   Result := False;
   S := Trim(S);
-  if StrLIComp(PChar(S), PChar(Directive), Length(Directive)) <> 0 then
-    Exit;
-  Result := (S[Length(Directive) + 1] in [#0..#32, '}', '*']);
+  if StrLIComp(PChar(S), PChar(Directive), Length(Directive)) = 0 then
+    Result := S[Length(Directive) + 1] in [#0..#32, '}', '*'];
 end;
 
 
-{ TJVCLConfigItem }
+//=== TJVCLConfigItem ========================================================
 
-constructor TJVCLConfigItem.Create(AOwner: TJVCLConfig; const AComment, ADirective: string;
-   ALine: Integer);
+constructor TJVCLConfigItem.Create(AOwner: TJVCLConfig;
+  const AComment, ADirective: string; ALine: Integer);
 begin
+  inherited Create;
   FOwner := AOwner;
   FLine := ALine;
   FComment := AComment;
@@ -119,13 +125,17 @@ begin
 end;
 
 function TJVCLConfigItem.GetName: string;
-var F, P: PChar;
+var
+  F, P: PChar;
 begin
   P := PChar(FDirective);
-  while (P[0] <> #0) and (P[0] > #32) do Inc(P);
-  while (P[0] <> #0) and (P[0] <= #32) do Inc(P);
+  while (P[0] <> #0) and (P[0] > #32) do
+    Inc(P);
+  while (P[0] <> #0) and (P[0] <= #32) do
+    Inc(P);
   F := P;
-  while (P[0] <> #0) and (P[0] > #32) do Inc(P);
+  while (P[0] <> #0) and (P[0] > #32) do
+    Inc(P);
   SetString(Result, F, P - F);
 end;
 
@@ -142,8 +152,7 @@ begin
   end;
 end;
 
-
-{ TJVCLConfig }
+//=== TJVCLConfig ============================================================
 
 constructor TJVCLConfig.Create;
 begin
@@ -158,24 +167,26 @@ begin
 end;
 
 function TJVCLConfig.GetEnabled(Index: string): Boolean;
-var i: Integer;
+var
+  I: Integer;
 begin
-  for i := 0 to Count - 1 do
-    if CompareText(Index, Items[i].Name) = 0 then
+  for I := 0 to Count - 1 do
+    if CompareText(Index, Items[I].Name) = 0 then
     begin
-      Result := Items[i].Enabled;
+      Result := Items[I].Enabled;
       Exit;
     end;
   Result := False;
 end;
 
 procedure TJVCLConfig.SetEnabled(Index: string; const Value: Boolean);
-var i: Integer;
+var
+  I: Integer;
 begin
-  for i := 0 to Count - 1 do
-    if CompareText(Index, Items[i].Name) = 0 then
+  for I := 0 to Count - 1 do
+    if CompareText(Index, Items[I].Name) = 0 then
     begin
-      Items[i].Enabled := Value;
+      Items[I].Enabled := Value;
       Exit;
     end;
 end;
@@ -229,23 +240,20 @@ begin
   S := Trim(RemoveCommentBrackets(Token.Value));
 
   if IsDirective(S, '$IFDEF') or IsDirective(S, '$IF') or
-     IsDirective(S, '$IFNDEF') then
+    IsDirective(S, '$IFNDEF') then
     Inc(InAutoConfig)
-  else if IsDirective(S, '$ENDIF') or IsDirective(S, '$IFEND') then
+  else
+  if IsDirective(S, '$ENDIF') or IsDirective(S, '$IFEND') then
     Dec(InAutoConfig);
 
   if InAutoConfig = 0 then
-  begin
     if IsDirective(S, '$DEFINE') or IsDirective(S, '.$DEFINE') then
     begin
       Item := TJVCLConfigItem.Create(Self, LastCommentToken, S, Token.StartLine - 1);
       FItems.Add(Item);
     end
     else
-    begin
       LastCommentToken := S;
-    end;
-  end;
 end;
 
 end.
