@@ -84,7 +84,7 @@ begin
     if Assigned(AProperty) and (AProperty is TDBGridColumns) then
       AStorage.ReadCollection(APath, TCollection(AProperty), ClearFirst);
   finally
-    if Assigned(AObject) and (AObject is TDBGrid) then
+    if Assigned(AObject) and (AObject is TCustomDBGrid) then
       TAccessCustomDBGrid(AObject).EndLayout;
   end;
 end;
