@@ -48,16 +48,16 @@ type
   // database field, if anyone is willing to write such
   // a class (nothing much is involved, use the AsString property).
   TJvCustomAppXMLStorage = class(TJvCustomAppMemoryFileStorage)
-  private
-    FWhiteSpaceReplacement: string;
   protected
+    FWhiteSpaceReplacement: string;
     FXml: TJvSimpleXml;
     function GetAsString: string; override;
     procedure SetAsString(const Value: string); override;
 
-    function DefaultExtension : string; override;
-
+    procedure SetWhiteSpaceReplacement(const Value: string);
     function EnsureNoWhiteSpaceInNodeName(NodeName: string): string;
+
+    function DefaultExtension : string; override;
 
     function GetRootNodeName: string;
     procedure SetRootNodeName(const Value: string);
@@ -91,7 +91,7 @@ type
 
     property Xml: TJvSimpleXml read FXml;
     property RootNodeName: string read GetRootNodeName write SetRootNodeName;
-    property WhiteSpaceReplacement: string read FWhiteSpaceReplacement write FWhiteSpaceReplacement;
+    property WhiteSpaceReplacement: string read FWhiteSpaceReplacement write SetWhiteSpaceReplacement;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -704,6 +704,18 @@ end;
 procedure TJvCustomAppXMLStorage.SetAsString(const Value: string);
 begin
   Xml.LoadFromString(Value);
+end;
+
+procedure TJvCustomAppXMLStorage.SetWhiteSpaceReplacement(
+  const Value: string);
+begin
+  if Value <> FWhiteSpaceReplacement then
+  begin
+    if StrContainsChars(Value, AnsiWhiteSpace, True) then
+      raise EJVCLException.CreateRes(@RsEWhiteSpaceReplacementCannotContainSpaces)
+    else
+      FWhiteSpaceReplacement := Value;
+  end
 end;
 
 function TJvCustomAppXMLStorage.DefaultExtension : string;
