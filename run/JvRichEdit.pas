@@ -960,13 +960,13 @@ type
     FTextConvIndex: Integer;
 
     function GetItem(Index: Integer): TJvConverter;
-    procedure SetItem(Index: Integer; const Value: TJvConverter);
+//    procedure SetItem(Index: Integer; const Value: TJvConverter); // (andreas) make Delphi 5 compiler happy
   public
     constructor Create; virtual;
     function GetConverterForFile(const AFileName: string; const Kind: TJvConversionKind): TJvConverter;
     function GetFilter(const AKind: TJvConversionKind): string;
     function DefaultConverter: TJvConverter;
-    property Items[Index: Integer]: TJvConverter read GetItem write SetItem; default;
+    property Items[Index: Integer]: TJvConverter read GetItem {write SetItem}; default; // (andreas) make Delphi 5 compiler happy
   end;
 
   TImageDataObject = class(TInterfacedObject, IDataObject)
@@ -1933,11 +1933,12 @@ begin
   Result := inherited Items[Index] as TJvConverter;
 end;
 
+{ // (andreas) make Delphi 5 compiler happy
 procedure TConversionFormatList.SetItem(Index: Integer;
   const Value: TJvConverter);
 begin
   inherited Items[Index] := Value;
-end;
+end;}
 
 //=== TImageDataObject =======================================================
 
