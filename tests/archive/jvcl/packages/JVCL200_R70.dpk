@@ -488,6 +488,10 @@ contains
   JvInterpreter_JvInterpreter in '..\Source\JvInterpreter_JvInterpreter.pas',
   JvNTEventLog in '..\source\JvNTEventLog.pas',
   JvGroupHeader in '..\source\JvGroupHeader.pas',
-  JvFooter in '..\source\JvFooter.pas';
+  JvFooter in '..\source\JvFooter.pas',
+
+  JvPlugin in '..\source\JvPlugin.pas',
+  JvPluginMan in '..\source\JvPluginMan.pas',
+  JvPlugCommon in '..\source\JvPlugCommon.pas';  
 
 end.

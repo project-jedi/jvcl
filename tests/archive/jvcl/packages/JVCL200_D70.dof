@@ -4,4 +4,4 @@ UnsafeCode=0
 UnsafeCast=0
 [Directories]
 UnitOutputDir=..\lib7
-SearchPath=..\source;..\common
+SearchPath=..\source;..\common;$(DELPHI)\Source\Toolsapi
