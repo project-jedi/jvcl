@@ -645,6 +645,7 @@ const
   ModifyString  = $200000;
 
   pf24bit       = pf32bit;
+  clSystemColor = $FF000000;
   clMoneyGreen  = TColor($C0DCC0);
   clSkyBlue     = TColor($F0CAA6);
   clCream       = TColor($F0FBFF);
@@ -1140,6 +1141,7 @@ function PtInRect(const R: TRect; pt: TPoint): LongBool; overload;
 function PtInRect(const R: TRect; X, Y: integer): LongBool; overload;
 function IntersectRect(var R: TRect; const R1, R2: TRect): LongBool;
 function PointInEllipse(pt: TPoint; BoundingRect: TRect): boolean;
+function PtInEllipse(const R: TRect; pt: TPoint): LongBool;
 
 { brushes }
 function CreateSolidBrush(Color: TColor): QBrushH;
@@ -1463,6 +1465,7 @@ function GetCaretPos(var Pt: TPoint): Boolean;
 function DestroyCaret: Boolean;
 
 procedure SetCursorPos(X, Y: integer);
+function GetCursorPos(var P: TPoint): LongBool;	
 
 function GetDoubleClickTime: Cardinal;
 function SetDoubleClickTime(Interval: Cardinal): LongBool;
@@ -1546,6 +1549,7 @@ function CopyFile(const Source, Destination: string;
 
 function FileGetSize(const FileName: string): Cardinal;
 function FileGetAttr(const FileName: string): Integer;
+function FileGetTime(const FileName: string): Integer;
 function MakeIntResource(Value: Integer): PChar;
 function MakeWord(A, B: Byte): Word;
 function MakeLong(A, B: Word): Longint;
@@ -1570,8 +1574,8 @@ function TerminateThread(ThreadID: TThreadID; RetVal: Integer): LongBool;
  The Windows API's  SuspendThread & ResumeThread are functions.
  With QWindows / Linux these are procedures
 }
-procedure SuspendThread(ThreadID: TThreadID);
-procedure ResumeThread(ThreadID: TThreadID);
+function SuspendThread(ThreadID: TThreadID): LongBool;
+function ResumeThread(ThreadID: TThreadID): LongBool;
 function GetThreadPolicy(ThreadID: TThreadID): Integer;
 procedure SetThreadPolicy(ThreadID: TThreadID; value: Integer);
 function GetThreadPriority(ThreadID: TThreadID): Integer;
@@ -2289,7 +2293,7 @@ begin
     W.rcNormalPosition.Left := R.Left;
     W.rcNormalPosition.Top := R.Top;
     W.rcNormalPosition.Right := R.Right;
-    W.rcNormalPosition.Bottom := R.Left;
+    W.rcNormalPosition.Bottom := R.Bottom;
     if QWidget_isMinimized(Handle) then
       W.showCmd := SW_SHOWMINIMIZED
     else if QWidget_isMaximized(Handle) then
@@ -2734,7 +2738,7 @@ begin
           TempDC := CreateCompatibleDC(DestDC, Width, Height);
           try
             // copy DestDC to pixmap
-            BitBlt(TempDC, 0, 0, Width, Height, DestDC, X, Y,  RasterOp_CopyROP);
+            BitBlt(TempDC, 0, 0, Width, Height, DestDC, X, Y,  RasterOp_XorROP);
             BitBlt(TempDC, 0, 0, Width, Height, TempDC, 0, 0, PATINVERT);  // PDx
             BitBlt(TempDC, 0, 0, Width, Height, SrcDC, XSrc, YSrc, RasterOp_AndROP); // SPDxa
             Result := BitBlt(DestDC, X, Y, Width, Height, TempDC, 0, 0, RasterOp_XorROP); // DSPDxax
@@ -3613,11 +3617,19 @@ begin
   MapPainterLP(Handle, X1, Y1, X2, Y2);
   IntersectRgn := QRegion_create(X1, Y1, X2 - X1, Y2 - Y1, QRegionRegionType_Rectangle);
   try
-    Rgn := QPainter_clipRegion(Handle);
-    if QRegion_isNull(Rgn) then
-      QRegion_unite(Rgn, Rgn, IntersectRgn)
+    if QPainter_hasClipping(Handle) then
+    begin
+      Rgn := QPainter_clipRegion(Handle);
+      if QRegion_isNull(Rgn) then
+        QRegion_unite(Rgn, Rgn, IntersectRgn)
+      else
+        QRegion_intersect(Rgn, Rgn, IntersectRgn);
+    end
     else
-      QRegion_intersect(Rgn, Rgn, IntersectRgn);
+    begin
+      QPainter_setClipRegion(Handle, InterSectRgn);
+      Rgn := QPainter_clipRegion(Handle);
+    end;
     QPainter_setClipping(Handle, True);
     Result := GetRegionType(Rgn);
   except
@@ -3852,17 +3864,20 @@ end;
 function SetWindowRgn(Handle: QWidgetH; Region: QRegionH; Redraw: LongBool): Integer;
 begin
   Result := 0;
-  if (Region <> nil) and (Handle <> nil) then
-  begin
-    try
+  if Handle <> nil then
+  try
+    if Region <> nil then
+    begin
       QWidget_setMask(Handle, Region);
       DeleteObject(Region); // Windows owns the window region
-      if Redraw then
-        UpdateWindow(Handle);
-      Result := 1;
-    except
-      Result := 0;
-    end;
+    end
+    else
+      QWidget_clearMask(Handle);
+    if Redraw then
+      UpdateWindow(Handle);
+    Result := 1;
+  except
+    Result := 0;
   end;
 end;
 
@@ -4429,6 +4444,11 @@ begin
   Result := PtInRect(R, pt.X, Pt.Y);
 end;
 
+function PtInEllipse(const R: TRect; pt: TPoint): LongBool;
+begin
+  Result := PointInEllipse(pt, R);
+end;
+
 function PointInEllipse(pt: TPoint; BoundingRect: TRect): boolean;
 var
   p, q, r, s: integer;
@@ -4441,7 +4461,7 @@ begin
     q := q * q;
     r := Right - Left;
     r := r * r;
-    s := Bottom -Top;
+    s := Bottom - Top;
     s := s * s;
     Result := p * s + q * r <=  s * r ;
  end;
@@ -6337,7 +6357,6 @@ begin
   QWidget_setActiveWindow(Handle);
 end;
 
-
 // maps DT_ alignment flags to Qt (extended) alignment flags
 function Win2QtAlign(Flags: Integer): Integer;
 begin
@@ -6373,7 +6392,7 @@ begin
   if Flags and DT_CALCRECT <> 0 then
     Result := Result or CalcRect
   else
-  begin                            //
+  begin
     if Flags and DT_ELLIPSIS <> 0 then
       Result := Result or ClipName or SingleLine
     else if Flags and DT_PATH_ELLIPSIS <> 0 then
@@ -6467,6 +6486,20 @@ begin
   if valid then
   begin
     Result := sr.size;
+    FindClose(sr);
+  end;
+end;
+
+function FileGetTime(const FileName: string): Integer;
+var
+  sr: TSearchRec;
+  valid: Boolean;
+begin
+  Result := 0;
+  valid := FindFirst(FileName, faAnyFile, sr) = 0;
+  if valid then
+  begin
+    Result := sr.time;
     FindClose(sr);
   end;
 end;
@@ -6630,7 +6663,7 @@ end;
 
 procedure OutputDebugString(OutputString: AnsiString);
 begin
-  WriteLn(ErrOutput, Format('%s %s (%d)', [OutputString, Application.ExeName, GetCurrentThreadID]));
+  WriteLn(ErrOutput, Format('%s %s (%d)', [OutputString, ExtractFilename(Application.ExeName), GetCurrentThreadID]));
 end;
 
 procedure OutputDebugString(lpOutputString: PAnsiChar);
@@ -6662,14 +6695,14 @@ begin
   end;
 end;
 
-procedure SuspendThread(ThreadID: TThreadID);
+function SuspendThread(ThreadID: TThreadID): LongBool;
 begin
-  CheckThreadError(pthread_kill(ThreadID, SIGSTOP));
+  Result := CheckThreadError(pthread_kill(ThreadID, SIGSTOP)) = 0;
 end;
 
-procedure ResumeThread(ThreadID: TThreadID);
+function ResumeThread(ThreadID: TThreadID): LongBool;
 begin
-  CheckThreadError(pthread_kill(ThreadID, SIGCONT));
+  Result := CheckThreadError(pthread_kill(ThreadID, SIGCONT)) = 0;
 end;
 
 function GetThreadPolicy(ThreadID: TThreadID): Integer;
@@ -7781,7 +7814,7 @@ begin
       Info^.Size := dwBytes;
     end;
 
-    PGlobalBlock(hMem - SizeOf(TGlobalBlock))^.Size := dwBytes; 
+    PGlobalBlock(hMem - SizeOf(TGlobalBlock))^.Size := dwBytes;
     if uFlags and GMEM_ZEROINIT <> 0 then
       if CurSize < dwBytes then
         FillChar(P[CurSize], dwBytes - CurSize, 0);
@@ -8162,6 +8195,16 @@ begin
   end;
 end;
 
+function GetCursorPos(var P: TPoint): LongBool;
+begin
+  Result := True;
+  try
+    QCursor_pos(@P);
+  except
+    Result := False;
+  end;
+end;
+
 procedure SetCursorPos(X, Y: integer);
 var
   Value: TPoint;
@@ -8215,7 +8258,10 @@ var
 procedure GlobalCaretNeeded;
 begin
   if GlobalCaret = nil then
+  begin
     GlobalCaret := TEmulatedCaret.Create(nil);
+    OutputDebugString('Global caret created.');
+  end;
 end;
 
 function CreateCaret(Widget: QWidgetH; Pixmap: QPixmapH; Width, Height: Integer): Boolean;
@@ -8566,7 +8612,7 @@ begin
     Msg := MsgId;
     WParam := WPar;
     LParam := LPar;
-    Result := 0; //GetTickCount;
+    Result := 0; //or GetTickCount?;
   end;
   Event := QCustomEvent_Create(QEventType_Message, Mesg);
   try
@@ -8632,7 +8678,6 @@ begin
   QObject_killTimer(TWinControl(Owner).Handle, FQtTimer);
   inherited Destroy;
 end;
-
 
 function FindTimer(Receiver: QWidgetH; QtTimerID: Cardinal): TWinTimer;
 var
