@@ -1213,12 +1213,12 @@ end;
 
 procedure TJvDynControlJVCLDateEdit.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  Date := Value;
 end;
 
 function TJvDynControlJVCLDateEdit.ControlGetValue: Variant;
 begin
-  Result := Text;
+  Result := Date;
 end;
 
 // IJvDynControlDate
@@ -1284,12 +1284,12 @@ end;
 
 procedure TJvDynControlJVCLTimeEdit.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  Time := Value;
 end;
 
 function TJvDynControlJVCLTimeEdit.ControlGetValue: Variant;
 begin
-  Result := Text;
+  Result := Time;
 end;
 
 procedure TJvDynControlJVCLTimeEdit.ControlSetFormat(const Value: string);
