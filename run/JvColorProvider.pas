@@ -340,7 +340,9 @@ type
     FHeaderAlign: TColorGroupHeaderAlign;
     FHeaderStyle: TColorGroupHeaderStyles;
   protected
+    FActiveChanging: Boolean;
     procedure SetActive(Value: Boolean); override;
+    procedure Changed; override;
     procedure SetFlatList(Value: Boolean); virtual;
     procedure SetHeaderAlign(Value: TColorGroupHeaderAlign); virtual;
     procedure SetHeaderStyle(Value: TColorGroupHeaderStyles); virtual;
@@ -360,7 +362,9 @@ type
     FCaption: string;
     FShowHeader: Boolean;
   protected
+    FActiveChanging: Boolean;
     procedure SetActive(Value: Boolean); override;
+    procedure Changed; override;
     procedure SetCaption(Value: string); virtual;
     procedure SetShowHeader(Value: Boolean); virtual;
   public
@@ -993,9 +997,17 @@ procedure TJvColorProviderGroupingSettings.SetActive(Value: Boolean);
 begin
   if Value <> Active then
   begin
+    FActiveChanging := True;
     inherited SetActive(Value);
-    ViewChanged;
+    FActiveChanging := False;
   end;
+end;
+
+procedure TJvColorProviderGroupingSettings.Changed;
+begin
+  if FActiveChanging then
+    ViewChanged;
+  inherited Changed;
 end;
 
 procedure TJvColorProviderGroupingSettings.SetFlatList(Value: Boolean);
@@ -1047,9 +1059,17 @@ procedure TJvColorProviderColorGroupSettings.SetActive(Value: Boolean);
 begin
   if Value <> Active then
   begin
+    FActiveChanging := True;
     inherited SetActive(Value);
-    ViewChanged;
+    FActiveChanging := False;
   end;
+end;
+
+procedure TJvColorProviderColorGroupSettings.Changed;
+begin
+  if FActiveChanging then
+    ViewChanged;
+  inherited Changed;
 end;
 
 procedure TJvColorProviderColorGroupSettings.SetCaption(Value: string);
