@@ -138,7 +138,10 @@ begin
       {$ELSE}
       BorderStyle := fbsDialog;
       {$ENDIF VCL}
-      Position := poScreenCenter;
+      Position := poMainFormCenter;
+      FormStyle := fsStayOnTop;
+      Scaled := false;
+
       FProgressBar := TProgressBar.Create(FForm);
     end;
     with FProgressBar do
@@ -166,7 +169,7 @@ begin
       Parent := FForm;
       Caption := InfoLabel;
       AutoSize := False;
-      SetBounds(8, 8, 293, 13);
+      SetBounds(8, 8, 293, FForm.Canvas.TextHeight('Wq'));
     end;
     with TButton.Create(FForm) do
     begin
