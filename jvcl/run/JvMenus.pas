@@ -132,7 +132,8 @@ type
                   msBtnLowered,         // drawn as a lowered button
                   msBtnRaised,          // drawn as a raised button
                   msOffice,             // drawn as in MSOffice (raising frames around selected images)
-                  msXP                  // drawn as in WinXP (white background, shadow below selected images)
+                  msXP,                 // drawn as in WinXP (white background, shadow below selected images)
+                  msItemPainter         // drawn by the painter in ItemPainter property
                   );
 
   // the state a menu item can get
@@ -165,6 +166,8 @@ type
   TJvMainMenu = class(TMainMenu)
   private
     function GetCanvas: TCanvas;
+    procedure SetItemPainter(const Value: TJvCustomMenuItemPainter);
+    function GetActiveItemPainter: TJvCustomMenuItemPainter;
   protected
     FAboutJVCL      : TJVCLAboutInfo;
     FCursor         : TCursor;
@@ -193,6 +196,11 @@ type
 
     FChangeLinks : TObjectList;
     FCanvas: TControlCanvas;
+
+    // This is one is used if Style is not msItemPainter
+    FStyleItemPainter : TJvCustomMenuItemPainter;
+
+    // This one is for the ItemPainter property
     FItemPainter : TJvCustomMenuItemPainter;
 
     procedure SetImages(Value: TImageList);
@@ -243,6 +251,8 @@ type
 
     // get the canvas of the menu
     property Canvas: TCanvas read GetCanvas;
+    // get the currently used painter
+    property ActiveItemPainter: TJvCustomMenuItemPainter read GetActiveItemPainter;
   published
     // Style MUST BE before ItemPainter for the properties of the
     // painter to be correctly read from the DFM file.
@@ -254,7 +264,7 @@ type
     property Images         : TImageList               read FImages         write SetImages;
     property ImageMargin    : TJvImageMargin           read FImageMargin    write FImageMargin;
     property ImageSize      : TJvMenuImageSize         read FImageSize      write FImageSize;
-    property ItemPainter    : TJvCustomMenuItemPainter read FItemPainter    write FItemPainter;
+    property ItemPainter    : TJvCustomMenuItemPainter read FItemPainter    write SetItemPainter;
     property OwnerDraw stored False;
     property ShowCheckMarks : Boolean                  read FShowCheckMarks write FShowCheckMarks    default False;
     property TextMargin     : Integer                  read FTextMargin     write FTextMargin        default 0;
@@ -275,6 +285,8 @@ type
   TJvPopupMenu = class(TPopupMenu)
   private
     function GetCanvas: TCanvas;
+    procedure SetItemPainter(const Value: TJvCustomMenuItemPainter);
+    function GetActiveItemPainter: TJvCustomMenuItemPainter;
   protected
     FAboutJVCL      : TJVCLAboutInfo;
     FCursor         : TCursor;
@@ -304,6 +316,11 @@ type
     FPopupPoint: TPoint;
     FParentBiDiMode: Boolean;
     FCanvas: TControlCanvas;
+
+    // This is one is used if Style is not msItemPainter
+    FStyleItemPainter : TJvCustomMenuItemPainter;
+
+    // This one is for the ItemPainter property
     FItemPainter : TJvCustomMenuItemPainter;
 
     procedure SetImages(Value: TImageList);
@@ -346,7 +363,10 @@ type
     procedure Popup(X, Y: Integer); override;
     procedure DefaultDrawItem(Item: TMenuItem; Rect: TRect;
       State: TMenuOwnerDrawState);
+
     property Canvas: TCanvas read GetCanvas;
+    // get the currently used painter
+    property ActiveItemPainter: TJvCustomMenuItemPainter read GetActiveItemPainter;
   published
     // Style MUST BE before ItemPainter for the properties of the
     // painter to be correctly read from the DFM file.
@@ -358,7 +378,7 @@ type
     property ImageMargin    : TJvImageMargin           read FImageMargin    write FImageMargin;
     property Images         : TImageList               read FImages         write SetImages;
     property ImageSize      : TJvMenuImageSize         read FImageSize      write FImageSize;
-    property ItemPainter    : TJvCustomMenuItemPainter read FItemPainter    write FItemPainter;
+    property ItemPainter    : TJvCustomMenuItemPainter read FItemPainter    write SetItemPainter;
     property OwnerDraw stored False;
     property ShowCheckMarks : Boolean                  read FShowCheckMarks write FShowCheckMarks    default False;
     property TextMargin     : Integer                  read FTextMargin     write FTextMargin        default 0;
@@ -382,10 +402,13 @@ type
   // instance of one of the descendent which will be be in charge
   // of the painting of menu items. There is one descendent per
   // style in the TJvMenuStyle enumeration
-  TJvCustomMenuItemPainter = class (TJvPersistent)
+  TJvCustomMenuItemPainter = class (TComponent)
   private
     procedure SetLeftMargin(const Value: Cardinal);
     procedure SetImageBackgroundColor(const Value: TColor);
+    function GetMenu: TMenu;
+    procedure SetMenu(const Value: TMenu);
+    function GetCanvas: TCanvas;
   protected
     // property fields
     FImageBackgroundColor : TColor;
@@ -409,7 +432,6 @@ type
 
     function GetTextWidth(Item: TMenuItem): Integer;
 
-    function GetCanvas          : TCanvas;
     function GetCheckMarkHeight : Integer;              virtual;
     function GetCheckMarkWidth  : Integer;              virtual;
     function GetComponentState  : TComponentState;
@@ -513,9 +535,6 @@ type
     procedure DrawLeftMargin(ARect: TRect); virtual;
     procedure DefaultDrawLeftMargin(ARect: TRect; StartColor, EndColor: TColor);
 
-//    property Tag;
-//    property Name;
-    
     // properties read or calculated from the properties of the
     // menu to which the painter is linked
     property Canvas          : TCanvas              read GetCanvas;
@@ -538,13 +557,18 @@ type
     property TextVAlignment  : TJvVerticalAlignment read GetTextVAlignment;
 
     // Left margin properties and events
-    property LeftMargin       : Cardinal               read FLeftMargin       write SetLeftMargin default 0;
-    property OnDrawLeftMargin : TJvDrawLeftMarginEvent read FOnDrawLeftMargin write FOnDrawLeftMargin;
+    property LeftMargin           : Cardinal               read FLeftMargin           write SetLeftMargin default 0;
+    property OnDrawLeftMargin     : TJvDrawLeftMarginEvent read FOnDrawLeftMargin     write FOnDrawLeftMargin;
+    property ImageBackgroundColor : TColor                 read FImageBackgroundColor write SetImageBackgroundColor default DefaultImageBackgroundColor;
   public
-    // constructor, requires the menu to which this painter is linked
-    // will create the objects derived from TPersistent which are
-    // stored here (see UpdateFieldsFromMenu)
-    constructor Create(Menu : TMenu); reintroduce; overload; virtual;
+    // constructor, will create the objects derived from TPersistent
+    // which are stored here (see UpdateFieldsFromMenu)
+    constructor Create(AOwner : TComponent); override;
+
+    // This is the menu to which the painter is linked. It MUST be
+    // set BEFORE calling any painting function, but no check is made
+    // to ensure that this is the case
+    property Menu: TMenu read GetMenu write SetMenu;
 
     // destroys the objects created in create
     destructor Destroy; override;
@@ -560,7 +584,6 @@ type
                     ItemRect : TRect;
                     State: TMenuOwnerDrawState); virtual;
   published
-    property ImageBackgroundColor : TColor read FImageBackgroundColor write SetImageBackgroundColor default DefaultImageBackgroundColor;
   end;
 
   { TJvOfficeMenuItemPainter }
@@ -598,7 +621,8 @@ type
     function  GetGrayColor: TColor; override;
     procedure UpdateFieldsFromMenu; override;
   public
-    constructor Create(Menu : TMenu; Lowered : boolean); overload;
+    constructor Create(AOwner : TComponent); overload; override;
+    constructor Create(AOwner : TComponent; Lowered : boolean); reintroduce; overload;
   published
     property LeftMargin;
     property OnDrawLeftMargin;
@@ -657,7 +681,7 @@ type
     function  GetTextMargin      : Integer; override;
     procedure DrawCheckImage(ARect : TRect); override;
   public
-    constructor Create(Menu : TMenu); override;
+    constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
     procedure Measure(Item: TMenuItem; var Width, Height: Integer); override;
     procedure Paint(Item : TMenuItem;
@@ -702,9 +726,7 @@ begin
     msXP:         Result := TJvXPMenuItemPainter.Create(Menu);
     else          Result := TJvStandardMenuItemPainter.Create(Menu);
   end;
-  {$IFDEF COMPILER6_UP}
-  Result.Name := 'ItemPainter';
-  {$ENDIF COMPILER6_UP}
+  Result.Menu := Menu;
 end;
 
 function IsItemPopup(Item: TMenuItem): Boolean;
@@ -809,10 +831,11 @@ begin
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   RegisterWndProcHook(FindForm, NewWndProc, hoAfterMsg);
+  FStyle := msStandard;
+  FStyleItemPainter := CreateMenuItemPainterFromStyle(FStyle, Self);
   FChangeLinks := TObjectList.Create(false);
   FImageMargin := TJvImageMargin.Create;
   FImageSize := TJvMenuImageSize.Create;
-  FItemPainter := CreateMenuItemPainterFromStyle(FStyle, self);
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
   FDisabledImageChangeLink := TChangeLink.Create;
@@ -829,7 +852,7 @@ begin
   FImageChangeLink.Free;
   FHotImageChangeLink.Free;
   FDisabledImageChangeLink.Free;
-  FItemPainter.Free;
+  FStyleItemPainter.Free;
   FChangeLinks.Free;
   FImageMargin.Free;
   FImageSize.Free;
@@ -875,6 +898,7 @@ begin
     if AComponent = FImages then SetImages(nil);
     if AComponent = FDisabledImages then SetDisabledImages(nil);
     if AComponent = FHotImages then SetHotImages(nil);
+    if AComponent = FItemPainter then ItemPainter := nil;
   end;
 end;
 
@@ -947,11 +971,15 @@ begin
     // store the new style
     FStyle := Value;
 
-    // delete the old painter
-    FItemPainter.Free;
-
-    // create a new painter according to the style
-    FItemPainter := CreateMenuItemPainterFromStyle(Value, Self);
+    // delete the old painter and create a new internal painter
+    // according to the style, but only if the style is not
+    // msItemPainter
+    if Style <> msItemPainter then
+    begin
+      ItemPainter := nil;
+      FStyleItemPainter.Free;
+      FStyleItemPainter := CreateMenuItemPainterFromStyle(Value, Self);
+    end;
 
     // refresh
     RefreshMenu(IsOwnerDrawMenu);
@@ -978,20 +1006,10 @@ end;
 
 procedure TJvMainMenu.DefaultDrawItem(Item: TMenuItem; Rect: TRect;
   State: TMenuOwnerDrawState);
-{var
-  Graphic: TGraphic;
-  BackColor: TColor;
-  NumGlyphs, ImageIndex: Integer;}
 begin
   if Canvas.Handle <> 0 then
   begin
-{    Graphic := nil;
-    BackColor := Canvas.Brush.Color;
-    NumGlyphs := 1;
-    GetItemParams(Item, State, Canvas.Font, BackColor, Graphic, NumGlyphs);
-    ImageIndex := Item.ImageIndex;
-    GetImageIndex(Item, State, ImageIndex);}
-    FItemPainter.Paint(Item, Rect, State);
+    GetActiveItemPainter.Paint(Item, Rect, State);
   end;
 end;
 
@@ -1000,12 +1018,7 @@ procedure TJvMainMenu.DrawItem(Item: TMenuItem; Rect: TRect;
 begin
   if Canvas.Handle <> 0 then
   begin
-// the code below has been removed because the only way to do
-// custom painting is by using the msOwnerDraw style
-{    if Assigned(FOnDrawItem) then
-      FOnDrawItem(Self, Item, Rect, State)
-    else}
-      FItemPainter.Paint(Item, Rect, State);
+    GetActiveItemPainter.Paint(Item, Rect, State);
   end;
 end;
 
@@ -1103,10 +1116,7 @@ end;
 procedure TJvMainMenu.WMMeasureItem(var Message: TWMMeasureItem);
 var
   Item: TMenuItem;
-//  Graphic: TGraphic;
-//  BackColor: TColor;
   DC: HDC;
-//  NumGlyphs, ImageIndex: Integer;
 begin
   with Message.MeasureItemStruct^ do
   begin
@@ -1119,17 +1129,8 @@ begin
         SetDefaultMenuFont(Canvas.Font);
         if Item.Default then
           Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-{        Graphic := nil;
-        BackColor := Canvas.Brush.Color;
-        NumGlyphs := 1;
-        GetItemParams(Item, [], Canvas.Font, BackColor, Graphic, NumGlyphs);
-        ImageIndex := Item.ImageIndex;
-        GetImageIndex(Item, [], ImageIndex);}
 
-        FItemPainter.Measure(Item, Integer(itemWidth), Integer(itemHeight));
-{        MenuMeasureItem(Self, Item, Canvas, FShowCheckMarks, Graphic,
-          NumGlyphs, Integer(itemWidth), Integer(itemHeight), FMinTextOffset,
-            FImages, ImageIndex);}
+        GetActiveItemPainter.Measure(Item, Integer(itemWidth), Integer(itemHeight));
         MeasureItem(Item, Integer(itemWidth), Integer(itemHeight));
       finally
         Canvas.Handle := 0;
@@ -1287,6 +1288,35 @@ begin
     DeallocateHWndEx(Window);
 end;
 
+procedure TJvMainMenu.SetItemPainter(
+  const Value: TJvCustomMenuItemPainter);
+begin
+  if Value <> FItemPainter then
+  begin
+    // Remove menu from current item painter
+    if FItemPainter <> nil then
+      FItemPainter.Menu := nil;
+
+    // set value and if not nil, setup the painter correctly
+    FItemPainter := Value;
+    if FItemPainter <> nil then
+    begin
+      Style := msItemPainter;
+      FItemPainter.FreeNotification(Self);
+      FItemPainter.Menu := Self;
+    end;
+    Refresh;
+  end;
+end;
+
+function TJvMainMenu.GetActiveItemPainter: TJvCustomMenuItemPainter;
+begin
+  if Style = msItemPainter then
+    Result := ItemPainter
+  else
+    Result := FStyleItemPainter;
+end;
+
 { TJvPopupMenu }
 
 constructor TJvPopupMenu.Create(AOwner: TComponent);
@@ -1297,12 +1327,13 @@ begin
     PopupList := TJvPopupList.Create;
     AddFinalizeObjectNil(sUnitName, TObject(PopupList));
   end;
+  FStyle := msStandard;
+  FStyleItemPainter := CreateMenuItemPainterFromStyle(FStyle, Self);
   FCanvas := TControlCanvas.Create;
   FCursor := crDefault;
   FImageMargin := TJvImageMargin.Create;
   FImageSize := TJvMenuImageSize.Create;
   PopupList.Add(Self);
-  FItemPainter := CreateMenuItemPainterFromStyle(FStyle, self);
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
   FDisabledImageChangeLink := TChangeLink.Create;
@@ -1322,7 +1353,7 @@ begin
   FHotImageChangeLink.Free;
   FImageMargin.Free;
   FImageSize.Free;
-  FItemPainter.Free;
+  FStyleItemPainter.Free;
   PopupList.Remove(Self);
   inherited Destroy;
   // (rom) destroy Canvas AFTER inherited Destroy
@@ -1345,8 +1376,12 @@ procedure TJvPopupMenu.Notification(AComponent: TComponent; Operation: TOperatio
 begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
-    if AComponent = FImages then
-      SetImages(nil);
+  begin
+    if AComponent = FImages then SetImages(nil);
+    if AComponent = FDisabledImages then SetDisabledImages(nil);
+    if AComponent = FHotImages then SetHotImages(nil);
+    if AComponent = FItemPainter then ItemPainter := nil;
+  end;
 end;
 
 procedure TJvPopupMenu.ImageListChange(Sender: TObject);
@@ -1502,11 +1537,15 @@ begin
   begin
     FStyle := Value;
 
-    // delete the old painter
-    FItemPainter.Free;
-
-    // create a new painter according to the style
-    FItemPainter := CreateMenuItemPainterFromStyle(Value, Self);
+    // delete the old painter and create a new internal painter
+    // according to the style, but only if the style is not
+    // msItemPainter
+    if Style <> msItemPainter then
+    begin
+      ItemPainter := nil;
+      FStyleItemPainter.Free;
+      FStyleItemPainter := CreateMenuItemPainterFromStyle(Value, Self);
+    end;
 
     RefreshMenu(IsOwnerDrawMenu);
   end;
@@ -1517,7 +1556,7 @@ procedure TJvPopupMenu.DefaultDrawItem(Item: TMenuItem; Rect: TRect;
 begin
   if Canvas.Handle <> 0 then
   begin
-    FItemPainter.Paint(Item, Rect, State);
+    GetActiveItemPainter.Paint(Item, Rect, State);
   end;
 end;
 
@@ -1526,12 +1565,7 @@ procedure TJvPopupMenu.DrawItem(Item: TMenuItem; Rect: TRect;
 begin
   if Canvas.Handle <> 0 then
   begin
-// the code below has been removed because the only way to do
-// custom painting is by using the msOwnerDraw style
-{    if Assigned(FOnDrawItem) then
-      FOnDrawItem(Self, Item, Rect, State)
-    else}
-      FItemPainter.Paint(Item, Rect, State);
+    GetActiveItemPainter.Paint(Item, Rect, State);
   end;
 end;
 
@@ -1617,7 +1651,7 @@ begin
         if Item.Default then
           Canvas.Font.Style := Canvas.Font.Style + [fsBold];
 
-        FItemPainter.Measure(Item, Integer(itemWidth), Integer(itemHeight));
+        GetActiveItemPainter.Measure(Item, Integer(itemWidth), Integer(itemHeight));
         MeasureItem(Item, Integer(itemWidth), Integer(itemHeight));
       finally
         ReleaseDC(0, Canvas.Handle);
@@ -1658,47 +1692,46 @@ begin
 //  Writer.WriteComponent(FJvMenuItemPainter);
 end;
 
+procedure TJvPopupMenu.SetItemPainter(
+  const Value: TJvCustomMenuItemPainter);
+begin
+  if Value <> FItemPainter then
+  begin
+    // Remove menu from current item painter
+    if FItemPainter <> nil then
+      FItemPainter.Menu := nil;
+
+    // set value and if not nil, setup the painter correctly
+    FItemPainter := Value;
+    if FItemPainter <> nil then
+    begin
+      Style := msItemPainter;
+      FItemPainter.FreeNotification(Self);
+      FItemPainter.Menu := Self;
+    end;
+    Refresh;
+  end;
+end;
+
+function TJvPopupMenu.GetActiveItemPainter: TJvCustomMenuItemPainter;
+begin
+  if Style = msItemPainter then
+    Result := ItemPainter
+  else
+    Result := FStyleItemPainter;
+end;
+
 { TJvCustomMenuItemPainter }
 
-constructor TJvCustomMenuItemPainter.Create(Menu: TMenu);
+constructor TJvCustomMenuItemPainter.Create(AOwner: TComponent);
 begin
-  {$IFDEF COMPILER6_UP}
-  inherited Create(Menu);
-  {$ELSE}
-  inherited Create;
-  {$ENDIF COMPILER6_UP}
+  inherited Create(AOwner);
 
   // affect default values that are not 0
   FImageBackgroundColor := DefaultImageBackgroundColor;
 
   FImageMargin := TJvImageMargin.Create;
   FImageSize := TJvMenuImageSize.Create;
-
-  // Only give a name to the ItemPainter if the parent menu
-  // hasn't already got an ItemPainter of its own. This allows
-  // people to create/ ItemPainters outside the JvMenus file.
-  // See the RichEdit demo for an example of such a thing
-
-  if Menu is TJvMainMenu then
-  begin
-    FMainMenu := TJvMainMenu(Menu);
-    {$IFDEF COMPILER6_UP}
-    if FMainMenu.ItemPainter = nil then
-      Name := 'ItemPainter';
-    {$ENDIF COMPILER6_UP}
-    FPopupMenu := nil;
-  end
-  else
-  begin
-    FMainMenu := nil;
-    FPopupMenu := TJvPopupMenu(Menu);
-    {$IFDEF COMPILER6_UP}
-    if FPopupMenu.ItemPainter = nil then
-      Name := 'ItemPainter';
-    {$ENDIF COMPILER6_UP}
-  end;
-
-  UpdateFieldsFromMenu;
 end;
 
 procedure TJvCustomMenuItemPainter.DrawDisabledBitmap(X, Y: Integer; Bitmap: TBitmap);
@@ -1827,14 +1860,6 @@ begin
     Canvas.Brush.Color := SaveColor;
   end;
   Frame3D(Canvas, ARect, GrayColor, clBtnHighlight, 1);
-end;
-
-function TJvCustomMenuItemPainter.GetCanvas: TCanvas;
-begin
-  if Assigned(FMainMenu) then
-    Result := FMainMenu.Canvas
-  else
-    Result := FPopupMenu.Canvas;
 end;
 
 function TJvCustomMenuItemPainter.GetDisabledImages: TImageList;
@@ -2460,12 +2485,58 @@ begin
   FImageBackgroundColor := Value;
 end;
 
+function TJvCustomMenuItemPainter.GetMenu: TMenu;
+begin
+  if Assigned(FMainMenu) then
+    Result := FMainMenu
+  else
+    Result := FPopupMenu;
+end;
+
+procedure TJvCustomMenuItemPainter.SetMenu(const Value: TMenu);
+begin
+  // Note: One may be tempted to store the value of the Canvas
+  // property. This is not a good idea as the Canvas may only be
+  // created when the menu is about to be displayed, thus being
+  // nil right now.
+
+  if Value is TJvMainMenu then
+  begin
+    FMainMenu := TJvMainMenu(Value);
+    FPopupMenu := nil;
+  end
+  else if Value is TJvPopupMenu then
+  begin
+    FMainMenu := nil;
+    FPopupMenu := TJvPopupMenu(Value);
+  end
+  else
+  begin
+    FMainMenu := nil;
+    FPopupMenu := nil;
+  end;
+end;
+
+function TJvCustomMenuItemPainter.GetCanvas: TCanvas;
+begin
+  if Assigned(FMainMenu) then
+    Result := FMainMenu.Canvas
+  else
+    Result := FPopupMenu.Canvas; 
+end;
+
 { TJvBtnMenuItemPainter }
 
-constructor TJvBtnMenuItemPainter.Create(Menu: TMenu; Lowered: boolean);
+constructor TJvBtnMenuItemPainter.Create(AOwner: TComponent; Lowered: boolean);
 begin
-  inherited Create(Menu);
+  inherited Create(AOwner);
   FLowered := Lowered;
+end;
+
+constructor TJvBtnMenuItemPainter.Create(AOwner: TComponent);
+begin
+  inherited;
+  FLowered := True;
 end;
 
 procedure TJvBtnMenuItemPainter.DrawSelectedFrame(ARect : TRect);
@@ -2974,7 +3045,7 @@ begin
              );
 end;
 
-constructor TJvXPMenuItemPainter.Create(Menu: TMenu);
+constructor TJvXPMenuItemPainter.Create(AOwner: TComponent);
 begin
   inherited;
   FSelectionFrameBrush := TBrush.Create;
