@@ -60,6 +60,7 @@ type
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormActivate(Sender: TObject);
+    procedure FormDeactivate(Sender: TObject);
   private
     FOwner: TControl;
     FCDVisible: Boolean;
@@ -78,7 +79,6 @@ type
     procedure CreateWnd; override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    procedure Deactivate; override;
     procedure DoShow; override;
     {$ENDIF VisualCLX}
   public
@@ -113,6 +113,9 @@ begin
   OnActivate := FormActivate;
   OnClose := FormClose;
   OnKeyUp := FormKeyUp;
+  {$IFDEF VisualCLX}
+  OnDeactivate := FormDeactivate;
+  {$ENDIF VisualCLX}
 
   FColorDialog := TOpenColorDialog.Create(Self);
   FCDVisible := False;
@@ -141,18 +144,27 @@ begin
   if Assigned(FOwner) and (FOwner is TJvColorButton) then
     TJvColorButton(FOwner).Color := SelectedColor;
   FColorDialog.Color := SelectedColor;
-  if FColorDialog.Execute then
-  begin
-    FCS.Color := FColorDialog.Color;
-    if FOwner is TJvColorButton then
+  {$IFDEF VisualCLX}
+  OnDeactivate := nil;
+  try
+  {$ENDIF VisualCLX}
+    if FColorDialog.Execute then
     begin
-      TJvColorButton(FOwner).CustomColors.Assign(FColorDialog.CustomColors);
-      TJvColorButton(FOwner).Color := SelectedColor;
-    end;
-    ModalResult := mrOK;
-  end
-  else
-    ModalResult := mrCancel;
+      FCS.Color := FColorDialog.Color;
+      if FOwner is TJvColorButton then
+      begin
+        TJvColorButton(FOwner).CustomColors.Assign(FColorDialog.CustomColors);
+        TJvColorButton(FOwner).Color := SelectedColor;
+      end;
+      ModalResult := mrOK;
+    end
+    else
+      ModalResult := mrCancel;
+  {$IFDEF VisualCLX}
+  finally
+    OnDeactivate := FormDeactivate;
+  end;
+  {$ENDIF VisualCLX}
   Hide;
 end;
 
@@ -160,29 +172,28 @@ end;
 procedure TJvColorForm.WMActivate(var Msg: TWMActivate);
 begin
   inherited;
-  if (Msg.Active = WA_INACTIVE) and not FCDVisible then
-  begin
-    Hide;
-    ModalResult := mrCancel;
-  end;
+  if Msg.Active = WA_INACTIVE then
+    FormDeactivate(Self);
 end;
-{$ELSE}
-procedure TJvColorForm.Deactivate;
+{$ENDIF VCL}
+
+procedure TJvColorForm.FormDeactivate(Sender: TObject);
 begin
-  inherited Deactivate;
   if (not FCDVisible) then
   begin
-    Hide;
+    if Visible then 
+      Hide;
     ModalResult := mrCancel;
   end;
 end;
 
+{$IFDEF VisualCLX}
 procedure TJvColorForm.DoShow;
 begin
   FormActivate(Self);
   inherited DoShow;
 end;
-{$ENDIF VCL}
+{$ENDIF VisualCLX}
 
 procedure TJvColorForm.DoColorClick(Sender: TObject);
 begin

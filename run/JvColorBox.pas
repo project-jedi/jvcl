@@ -445,7 +445,7 @@ begin
   if not Enabled then
     Canvas.Pen.Color := clBtnShadow
   else
-    Canvas.Pen.Color := cl3DDkShadow;
+    Canvas.Pen.Color := {cl3DDkShadow}clWindowText;
 
   Rec.Bottom := (Height div 2) + Increment - 1;
   InflateRect(Rec, -4, 0);
