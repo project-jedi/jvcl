@@ -116,9 +116,9 @@ begin
     Filters := TStringlist.Create;
     Filters.Delimiter := '|';
     Filters.DelimitedText := Filter;
-    if Filters.IndexOf(AllFileMask) < 0 then
+    if Filters.IndexOf(AllFilePattern) < 0 then
     begin
-      Filters.Add(AllFileMask);
+      Filters.Add(AllFilePattern);
     end;
     FilterCombo.Filter := Filters.DelimitedText;
     Filters.Free;
@@ -294,7 +294,7 @@ end;
 procedure TImageForm.PreviewKeyPress(Sender: TObject; var Key: Char);
 begin
 //  if Ord(Key) = VK_ESCAPE then
-  if Ord(Key) = #27 then   //asn: With VisualCLX VK_ESCAPE <> 27
+  if Ord(Key) = 27 then   //asn: With VisualCLX VK_ESCAPE <> 27
     TForm(Sender).Close;
 end;
 
