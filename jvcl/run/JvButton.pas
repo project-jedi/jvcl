@@ -145,7 +145,7 @@ type
     property DropDownMenu: TPopupMenu read FDropDownMenu write FDropDownMenu;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
-    property HotTrackFontOptions:TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultHotTrackOptions;
+    property HotTrackFontOptions:TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FonMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -411,7 +411,7 @@ begin
   FOver := False;
   FWordWrap := true;
   FForceSameSize := false;
-  FHotTrackFontOptions := DefaultHotTrackOptions;
+  FHotTrackFontOptions := DefaultTrackFontOptions;
 end;
 
 destructor TJvCustomButton.Destroy;

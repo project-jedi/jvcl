@@ -43,9 +43,9 @@ type
     BookMark: boolean; //this is not saved
   end;
 
-  TonYearChanged = procedure(sender: Tobject; AYear: integer) of object;
-  TonSelectDate = procedure(sender: Tobject; Adate: TDate; InfoText: string; InfoColor: Tcolor) of object;
-  TonInfoChanging = procedure(sender: Tobject; var InfoText: string; var CanChange: boolean) of object;
+  TOnYearChanged = procedure(sender: Tobject; AYear: integer) of object;
+  TOnSelectDate = procedure(sender: Tobject; Adate: TDate; InfoText: string; InfoColor: Tcolor) of object;
+  TOnInfoChanging = procedure(sender: Tobject; var InfoText: string; var CanChange: boolean) of object;
   TJvYearGrid = class(TDrawGrid)
   private
     GridPop: TPopupMenu;
@@ -54,9 +54,9 @@ type
     FGridYear: integer;
     FonYearChanged: TOnYearChanged;
     FHTMLFontName: string;
-    FonSelectDate: TonselectDate;
+    FonSelectDate: TOnSelectDate;
     FBorderColor: TColor;
-    FonInfoChanging: TonInfoChanging;
+    FonInfoChanging: TOnInfoChanging;
     FBookMarkColor: Tcolor;
     { Private declarations }
 
@@ -65,7 +65,7 @@ type
     procedure MakeHTML(alist: tstringlist; border, filter: boolean);
     procedure SetHTMLBorder(const Value: boolean);
     procedure SetGridYear(const Value: integer);
-    procedure SetonYearChanged(const Value: TOnYearChanged);
+    procedure SeTOnYearChanged(const Value: TOnYearChanged);
     procedure setYear(AYear: word);
     procedure LoadYear;
     procedure SaveYear;
@@ -86,10 +86,10 @@ type
     procedure SaveAsHTML(sender: TObject);
     procedure Launch(Afile: string);
     procedure SetHTMLFontName(const Value: string);
-    procedure SetonSelectDate(const Value: TonselectDate);
+    procedure SeTOnSelectDate(const Value: TOnSelectDate);
     procedure SetBorderColor(const Value: TColor);
     procedure BorderColor1click(sender: TObject);
-    procedure SetonInfoChanging(const Value: TonInfoChanging);
+    procedure SeTOnInfoChanging(const Value: TOnInfoChanging);
     function DateToCell(ADate: TDate; var Acol, aRow: integer): boolean;
     procedure ClearBookMarks;
     procedure SetBookMarkColor(const Value: Tcolor);
@@ -119,9 +119,9 @@ type
     property GridYear: integer read FGridYear write SetGridYear;
     property BorderColor: TColor read FBorderColor write SetBorderColor;
     property BookMarkColor: Tcolor read FBookMarkColor write SetBookMarkColor;
-    property onYearChanged: TOnYearChanged read FonYearChanged write SetonYearChanged;
-    property onSelectDate: TonselectDate read FonSelectDate write SetonSelectDate;
-    property onInfoChanging: TonInfoChanging read FonInfoChanging write SetonInfoChanging;
+    property onYearChanged: TOnYearChanged read FonYearChanged write SeTOnYearChanged;
+    property onSelectDate: TOnSelectDate read FonSelectDate write SeTOnSelectDate;
+    property onInfoChanging: TOnInfoChanging read FonInfoChanging write SeTOnInfoChanging;
   end;
 
 implementation
@@ -304,7 +304,7 @@ begin
   FHTMLBorder := Value;
 end;
 
-procedure TJvYearGrid.SetonYearChanged(const Value: TOnYearChanged);
+procedure TJvYearGrid.SeTOnYearChanged(const Value: TOnYearChanged);
 begin
   FonYearChanged := Value;
 end;
@@ -776,7 +776,7 @@ begin
   YearData[col, row].infotext := s;
 end;
 
-procedure TJvYearGrid.SetonSelectDate(const Value: TonselectDate);
+procedure TJvYearGrid.SeTOnSelectDate(const Value: TOnSelectDate);
 begin
   FonSelectDate := Value;
 end;
@@ -854,7 +854,7 @@ begin
   cd.free;
 end;
 
-procedure TJvYearGrid.SetonInfoChanging(const Value: TonInfoChanging);
+procedure TJvYearGrid.SeTOnInfoChanging(const Value: TOnInfoChanging);
 begin
   FonInfoChanging := Value;
 end;
