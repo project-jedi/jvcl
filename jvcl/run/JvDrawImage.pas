@@ -3279,15 +3279,9 @@ begin
     SetClip(clWhite);
     CopyClip;
     myrect := Rect(X, Y, X + Clip.Width - 1, Y + Clip.Height - 1);
-    {$IFDEF VCL}
-    Canvas.brushcopy(myrect, Clip,
+    With Canvas do
+      BrushCopy({$IFDEF VisualCLX}Canvas,{$ENDIF} myrect, Clip,
       Rect(0, 0, Clip.Width, Clip.Height), RangeTransColor);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Clip.Transparent := True;
-    Clip.TransparentColor := RangeTransColor;
-    Canvas.Draw(X,Y, Clip);
-    {$ENDIF VisualCLX}
     myDraw := False;
   end;
   if Shape = 'cube1' then
