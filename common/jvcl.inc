@@ -60,7 +60,7 @@ Known Issues:
  {$ENDIF}
 {$ENDIF}
 
-{$IFDEF VCL}
+{$IFNDEF VCL}
  {$UNDEF JVCLThemesEnabled}
  {$UNDEF JVCLThemesEnabledD56}
 {$ENDIF}
