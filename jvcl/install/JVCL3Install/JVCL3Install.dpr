@@ -38,7 +38,10 @@ uses
   BuildHelpers in 'BuildHelpers.pas',
   CapExec in 'CapExec.pas',
   JvSimpleXML in '..\..\run\JvSimpleXml.pas',
-  JvBrowseFolder in '..\..\run\JvBrowseFolder.pas';
+  AHCompBrowseFolderDlg in 'AHCompBrowseFolderDlg.pas',
+  JvComponent in '..\..\run\JvComponent.pas',
+  JvTypes in '..\..\run\JvTypes.pas',
+  JVCLVer in '..\..\run\JVCLVer.pas';
 
 {$R *.res}
 

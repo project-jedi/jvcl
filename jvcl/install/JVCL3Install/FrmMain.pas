@@ -139,7 +139,7 @@ var
 
 implementation
 uses
-  MainConfig, JVCLConfiguration, FrmMake, JvBrowseFolder;
+  MainConfig, JVCLConfiguration, FrmMake, AHCompBrowseFolderDlg;
 
 {$R *.dfm}
 
