@@ -97,8 +97,8 @@ var
   DirectCall: Boolean;
 
 const
-  SetArgs = '(const Value: Variant; Args: TArgs)';
-  GetArgs = '(var Value: Variant; Args: TArgs)';
+  SetArgs = '(const Value: Variant; Args: TJvInterpreterArgs)';
+  GetArgs = '(var Value: Variant; Args: TJvInterpreterArgs)';
 
   function CT(S: string): Boolean;
   begin
@@ -277,7 +277,7 @@ const
   begin
     if Params.Count = 0 then
     begin
-      Result := '[0]';
+      Result := '[varEmpty]';
       Exit;
     end;
     Result := '[';
@@ -523,7 +523,7 @@ const
       Adapter.Add('    { ' + Decl + ' }');
       Adapter.Add('    AddDGet(' + ClassName + ', ''' + Name + ''', ' +
         '@' + ClassName + '.' + Name + ', ' + IntToStr(Params.Count) + ', ' + ParamTypStr +
-        ', ' + TS + ', [ccFastCall], ' + ResVar + ');');
+        ', ' + TS + ', ' + ResVar + ', [ccFastCall]);');
     end
     else
     begin
@@ -551,7 +551,7 @@ const
       Adapter.Add('    { ' + Decl + ' }');
       Adapter.Add('    AddDGet(' + ClassName + ', ''' + Name + ''', ' +
         '@' + ClassName + '.' + Name + ', ' + IntToStr(Params.Count) + ', ' + ParamTypStr +
-        ', varEmpty, [ccFastCall], ' + ResVar + ');');
+        ', varEmpty, [ccFastCall]);');
     end
     else
     begin
@@ -618,7 +618,7 @@ const
           Add('  Value := ' + Result2V(ClassName + '(Args.Obj).' + Name + ConvertParams) + ';');
           Add('end;');
           Adapter.Add('    AddGet(' + ClassName + ', ''' + Name + ''', ' +
-            ClassName + '_' + 'Read_' + Name + ', 0, [0], ' + ResVar + ');');
+            ClassName + '_' + 'Read_' + Name + ', 0, [varEmpty], ' + ResVar + ');');
         end
         else
         begin
@@ -631,10 +631,10 @@ const
             '[Args.Values[0]]' {+ ConvertParams}) + ';');
           Add('end;');
           Adapter.Add('    AddIGet(' + ClassName + ', ''' + Name + ''', ' +
-            ClassName + '_' + 'Read_' + Name + ', 1, [0], ' + ResVar + ');');
+            ClassName + '_' + 'Read_' + Name + ', 1, [varEmpty], ' + ResVar + ');');
           if IndexDefault then
             Adapter.Add('    AddIDGet(' + ClassName + ', ' +
-              ClassName + '_' + 'Read_' + Name + ', 1, [0], ' + ResVar + ');');
+              ClassName + '_' + 'Read_' + Name + ', 1, [varEmpty], ' + ResVar + ');');
         end;
       if PropWrite then
         if IndexTyp = '' then
@@ -662,10 +662,10 @@ const
             ' := ' + V2Param('Value', Typ) + ';');
           Add('end;');
           Adapter.Add('    AddISet(' + ClassName + ', ''' + Name + ''', ' +
-            ClassName + '_' + 'Write_' + Name + ', 0, [1], ' + ResVar + ');');
+            ClassName + '_' + 'Write_' + Name + ', 0, [varNull]);');
           if IndexDefault then
             Adapter.Add('    AddIDSet(' + ClassName + ', ' +
-              ClassName + '_' + 'Write_' + Name + ', 0, [1], ' + ResVar + ');');
+              ClassName + '_' + 'Write_' + Name + ', 0, [varNull]);');
         end;
     end;
   end;
@@ -770,7 +770,7 @@ const
         Break;
       S := UnitNameStr;
       AdapterNames.Add(S);
-      Adapter.Add('    AddConst(c' + S + ', ''' + En + ''', Integer(' + En + '));');
+      Adapter.Add('    AddConst(c' + S + ', ''' + En + ''', Ord(' + En + '));');
       if Token = ')' then
         Break;
     end;

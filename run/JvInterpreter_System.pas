@@ -545,21 +545,21 @@ begin
   begin
     { TObject }
     AddClass(cSystem, TObject, 'TObject');
-    AddGet(TObject, 'ClassType', TObject_ClassType, 0, [0], varEmpty);
-    AddGet(TObject, 'ClassName', TObject_ClassName, 0, [0], varEmpty);
+    AddGet(TObject, 'ClassType', TObject_ClassType, 0, [varEmpty], varEmpty);
+    AddGet(TObject, 'ClassName', TObject_ClassName, 0, [varEmpty], varEmpty);
     AddGet(TObject, 'ClassNameIs', TObject_ClassNameIs, 1, [varEmpty], varEmpty);
-    AddGet(TObject, 'ClassParent', TObject_ClassParent, 0, [0], varEmpty);
-    AddGet(TObject, 'ClassInfo', TObject_ClassInfo, 0, [0], varEmpty);
-    AddGet(TObject, 'InstanceSize', TObject_InstanceSize, 0, [0], varEmpty);
+    AddGet(TObject, 'ClassParent', TObject_ClassParent, 0, [varEmpty], varEmpty);
+    AddGet(TObject, 'ClassInfo', TObject_ClassInfo, 0, [varEmpty], varEmpty);
+    AddGet(TObject, 'InstanceSize', TObject_InstanceSize, 0, [varEmpty], varEmpty);
     AddGet(TObject, 'InheritsFrom', TObject_InheritsFrom, 1, [varEmpty], varEmpty);
     // AddGet(TObject, 'GetInterface', TObject_GetInterface, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     { TInterfacedObject }
     AddClass(cSystem, TInterfacedObject, 'TInterfacedObject');
-    AddGet(TInterfacedObject, 'RefCount', TInterfacedObject_Read_RefCount, 0, [0], varEmpty);
+    AddGet(TInterfacedObject, 'RefCount', TInterfacedObject_Read_RefCount, 0, [varEmpty], varEmpty);
     AddFunction(cSystem, 'Move', JvInterpreter_Move, 3, [varEmpty, varByRef, varEmpty], varEmpty);
-    AddFunction(cSystem, 'ParamCount', JvInterpreter_ParamCount, 0, [0], varEmpty);
+    AddFunction(cSystem, 'ParamCount', JvInterpreter_ParamCount, 0, [varEmpty], varEmpty);
     AddFunction(cSystem, 'ParamStr', JvInterpreter_ParamStr, 1, [varEmpty], varEmpty);
-    AddFunction(cSystem, 'Randomize', JvInterpreter_Randomize, 0, [0], varEmpty);
+    AddFunction(cSystem, 'Randomize', JvInterpreter_Randomize, 0, [varEmpty], varEmpty);
     AddFunction(cSystem, 'Random', JvInterpreter_Random, 1, [varInteger], varEmpty);
     AddFunction(cSystem, 'UpCase', JvInterpreter_UpCase, 1, [varEmpty], varEmpty);
     { AddFunction(cSystem, 'WideCharToString', JvInterpreter_WideCharToString, 1, [varEmpty], varEmpty);

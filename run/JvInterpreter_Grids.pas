@@ -198,14 +198,14 @@ begin
     { TInplaceEdit }
     AddClass(cGrids, TInplaceEdit, 'TInplaceEdit');
     AddGet(TInplaceEdit, 'Create', TInplaceEdit_Create, 1, [varEmpty], varEmpty);
-    AddGet(TInplaceEdit, 'Deselect', TInplaceEdit_Deselect, 0, [0], varEmpty);
-    AddGet(TInplaceEdit, 'Hide', TInplaceEdit_Hide, 0, [0], varEmpty);
-    AddGet(TInplaceEdit, 'Invalidate', TInplaceEdit_Invalidate, 0, [0], varEmpty);
+    AddGet(TInplaceEdit, 'Deselect', TInplaceEdit_Deselect, 0, [varEmpty], varEmpty);
+    AddGet(TInplaceEdit, 'Hide', TInplaceEdit_Hide, 0, [varEmpty], varEmpty);
+    AddGet(TInplaceEdit, 'Invalidate', TInplaceEdit_Invalidate, 0, [varEmpty], varEmpty);
     AddGet(TInplaceEdit, 'Move', TInplaceEdit_Move, 1, [varEmpty], varEmpty);
     AddGet(TInplaceEdit, 'PosEqual', TInplaceEdit_PosEqual, 1, [varEmpty], varEmpty);
-    AddGet(TInplaceEdit, 'SetFocus', TInplaceEdit_SetFocus, 0, [0], varEmpty);
+    AddGet(TInplaceEdit, 'SetFocus', TInplaceEdit_SetFocus, 0, [varEmpty], varEmpty);
     AddGet(TInplaceEdit, 'UpdateLoc', TInplaceEdit_UpdateLoc, 1, [varEmpty], varEmpty);
-    AddGet(TInplaceEdit, 'Visible', TInplaceEdit_Visible, 0, [0], varEmpty);
+    AddGet(TInplaceEdit, 'Visible', TInplaceEdit_Visible, 0, [varEmpty], varEmpty);
     { TGridOption }
     AddConst(cGrids, 'goFixedVertLine', Ord(goFixedVertLine));
     AddConst(cGrids, 'goFixedHorzLine', Ord(goFixedHorzLine));
@@ -242,10 +242,10 @@ begin
     { TStringGrid }
     AddClass(cGrids, TStringGrid, 'TStringGrid');
     AddGet(TStringGrid, 'Create', TStringGrid_Create, 1, [varEmpty], varEmpty);
-    AddGet(TStringGrid, 'Cols', TStringGrid_Read_Cols, 1, [0], varEmpty);
-    AddSet(TStringGrid, 'Cols', TStringGrid_Write_Cols, 1, [1]);
-    AddGet(TStringGrid, 'Rows', TStringGrid_Read_Rows, 1, [0], varEmpty);
-    AddSet(TStringGrid, 'Rows', TStringGrid_Write_Rows, 1, [1]);
+    AddGet(TStringGrid, 'Cols', TStringGrid_Read_Cols, 1, [varEmpty], varEmpty);
+    AddSet(TStringGrid, 'Cols', TStringGrid_Write_Cols, 1, [varNull]);
+    AddGet(TStringGrid, 'Rows', TStringGrid_Read_Rows, 1, [varEmpty], varEmpty);
+    AddSet(TStringGrid, 'Rows', TStringGrid_Write_Rows, 1, [varNull]);
   end;
 end;
 

@@ -997,7 +997,7 @@ begin
     AddFunction(cJvUtils, 'FindByTag', JvInterpreter_FindByTag, 3, [varObject, varEmpty, varInteger], varEmpty);
     AddFunction(cJvUtils, 'ControlAtPos2', JvInterpreter_ControlAtPos2, 3, [varObject, varInteger, varInteger], varEmpty);
     AddFunction(cJvUtils, 'RBTag', JvInterpreter_RBTag, 1, [varObject], varEmpty);
-    AddFunction(cJvUtils, 'AppMinimized', JvInterpreter_AppMinimized, 0, [0], varEmpty);
+    AddFunction(cJvUtils, 'AppMinimized', JvInterpreter_AppMinimized, 0, [varEmpty], varEmpty);
     AddFunction(cJvUtils, 'MsgDlg2', JvInterpreter_MsgDlg2, 6, [varString, varString, varEmpty, varEmpty, varInteger,
       varObject], varEmpty);
     AddFunction(cJvUtils, 'MsgDlgDef', JvInterpreter_MsgDlgDef, 7, [varString, varString, varEmpty, varEmpty, varEmpty,
@@ -1061,8 +1061,8 @@ begin
     AddFunction(cJvStrUtil, 'HasAnyChar', JvInterpreter_HasAnyChar, 2, [varString, varString], varEmpty);
     AddFunction(cJvStrUtil, 'CountOfChar', JvInterpreter_CountOfChar, 2, [varEmpty, varString], varEmpty);
     AddFunction(cJvStrUtil, 'DefStr', JvInterpreter_DefStr, 2, [varString, varString], varEmpty);
-    AddFunction(cJvUtils, 'GetWinDir', JvInterpreter_GetWinDir, 0, [0], varEmpty);
-    AddFunction(cJvUtils, 'GetTempDir', JvInterpreter_GetTempDir, 0, [0], varEmpty);
+    AddFunction(cJvUtils, 'GetWinDir', JvInterpreter_GetWinDir, 0, [varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'GetTempDir', JvInterpreter_GetTempDir, 0, [varEmpty], varEmpty);
     AddFunction(cJvUtils, 'GenTempFileName', JvInterpreter_GenTempFileName, 1, [varString], varEmpty);
     AddFunction(cJvUtils, 'GenTempFileNameExt', JvInterpreter_GenTempFileNameExt, 2, [varString, varString], varEmpty);
     AddFunction(cJvUtils, 'ClearDir', JvInterpreter_ClearDir, 1, [varString], varEmpty);
@@ -1088,7 +1088,7 @@ begin
     AddFunction(cJvUtils, 'HasParam', JvInterpreter_HasParam, 1, [varString], varEmpty);
     AddFunction(cJvUtils, 'HasSwitch', JvInterpreter_HasSwitch, 1, [varString], varEmpty);
     AddFunction(cJvUtils, 'Switch', JvInterpreter_Switch, 1, [varString], varEmpty);
-    AddFunction(cJvUtils, 'ExePath', JvInterpreter_ExePath, 0, [0], varEmpty);
+    AddFunction(cJvUtils, 'ExePath', JvInterpreter_ExePath, 0, [varEmpty], varEmpty);
     AddFunction(cJvUtils, 'CopyDir', JvInterpreter_CopyDir, 2, [varEmpty, varEmpty], varEmpty);
     AddFunction(cJvUtils, 'TTFontSelected', JvInterpreter_TTFontSelected, 1, [varEmpty], varEmpty);
     AddFunction(cJvUtils, 'TrueInflateRect', JvInterpreter_TrueInflateRect, 2, [varEmpty, varInteger], varEmpty);
@@ -1104,12 +1104,12 @@ begin
     AddFunction(cJvUtils, 'AnsiStrLIComp', JvInterpreter_AnsiStrLIComp, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddFunction(cJvUtils, 'Var2Type', JvInterpreter_Var2Type, 2, [varEmpty, varInteger], varEmpty);
     AddFunction(cJvUtils, 'VarToInt', JvInterpreter_VarToInt, 1, [varEmpty], varEmpty);
-    AddFunction(cJvUtils, 'GetParameter', JvInterpreter_GetParameter, 0, [0], varEmpty);
+    AddFunction(cJvUtils, 'GetParameter', JvInterpreter_GetParameter, 0, [varEmpty], varEmpty);
     AddFunction(cJvUtils, 'GetLongFileName', JvInterpreter_GetLongFileName, 1, [varString], varEmpty);
     AddFunction(cFileCtrl, 'DirectoryExists', JvInterpreter_DirectoryExists, 1, [varString], varEmpty);
     AddFunction(cFileCtrl, 'ForceDirectories', JvInterpreter_ForceDirectories, 1, [varString], varEmpty);
     AddFunction(cJvUtils, 'FileNewExt', JvInterpreter_FileNewExt, 2, [varEmpty, varEmpty], varEmpty);
-    AddFunction(cJvUtils, 'GetComputerID', JvInterpreter_GetComputerID, 0, [0], varEmpty);
+    AddFunction(cJvUtils, 'GetComputerID', JvInterpreter_GetComputerID, 0, [varEmpty], varEmpty);
   end;
 end;
 

@@ -484,31 +484,31 @@ begin
     AddClass(cExtCtrls, TShape, 'TShape');
     AddGet(TShape, 'Create', TShape_Create, 1, [varEmpty], varEmpty);
     AddGet(TShape, 'StyleChanged', TShape_StyleChanged, 1, [varEmpty], varEmpty);
-    AddGet(TShape, 'Brush', TShape_Read_Brush, 0, [0], varEmpty);
-    AddSet(TShape, 'Brush', TShape_Write_Brush, 0, [0]);
-    AddGet(TShape, 'Pen', TShape_Read_Pen, 0, [0], varEmpty);
-    AddSet(TShape, 'Pen', TShape_Write_Pen, 0, [0]);
-    AddGet(TShape, 'Shape', TShape_Read_Shape, 0, [0], varEmpty);
-    AddSet(TShape, 'Shape', TShape_Write_Shape, 0, [0]);
+    AddGet(TShape, 'Brush', TShape_Read_Brush, 0, [varEmpty], varEmpty);
+    AddSet(TShape, 'Brush', TShape_Write_Brush, 0, [varEmpty]);
+    AddGet(TShape, 'Pen', TShape_Read_Pen, 0, [varEmpty], varEmpty);
+    AddSet(TShape, 'Pen', TShape_Write_Pen, 0, [varEmpty]);
+    AddGet(TShape, 'Shape', TShape_Read_Shape, 0, [varEmpty], varEmpty);
+    AddSet(TShape, 'Shape', TShape_Write_Shape, 0, [varEmpty]);
     { TPaintBox }
     AddClass(cExtCtrls, TPaintBox, 'TPaintBox');
     AddGet(TPaintBox, 'Create', TPaintBox_Create, 1, [varEmpty], varEmpty);
     { TImage }
     AddClass(cExtCtrls, TImage, 'TImage');
     AddGet(TImage, 'Create', TImage_Create, 1, [varEmpty], varEmpty);
-    AddGet(TImage, 'Canvas', TImage_Read_Canvas, 0, [0], varEmpty);
-    AddGet(TImage, 'AutoSize', TImage_Read_AutoSize, 0, [0], varEmpty);
-    AddSet(TImage, 'AutoSize', TImage_Write_AutoSize, 0, [0]);
-    AddGet(TImage, 'Center', TImage_Read_Center, 0, [0], varEmpty);
-    AddSet(TImage, 'Center', TImage_Write_Center, 0, [0]);
-    AddGet(TImage, 'IncrementalDisplay', TImage_Read_IncrementalDisplay, 0, [0], varEmpty);
-    AddSet(TImage, 'IncrementalDisplay', TImage_Write_IncrementalDisplay, 0, [0]);
-    AddGet(TImage, 'Picture', TImage_Read_Picture, 0, [0], varEmpty);
-    AddSet(TImage, 'Picture', TImage_Write_Picture, 0, [0]);
-    AddGet(TImage, 'Stretch', TImage_Read_Stretch, 0, [0], varEmpty);
-    AddSet(TImage, 'Stretch', TImage_Write_Stretch, 0, [0]);
-    AddGet(TImage, 'Transparent', TImage_Read_Transparent, 0, [0], varEmpty);
-    AddSet(TImage, 'Transparent', TImage_Write_Transparent, 0, [0]);
+    AddGet(TImage, 'Canvas', TImage_Read_Canvas, 0, [varEmpty], varEmpty);
+    AddGet(TImage, 'AutoSize', TImage_Read_AutoSize, 0, [varEmpty], varEmpty);
+    AddSet(TImage, 'AutoSize', TImage_Write_AutoSize, 0, [varEmpty]);
+    AddGet(TImage, 'Center', TImage_Read_Center, 0, [varEmpty], varEmpty);
+    AddSet(TImage, 'Center', TImage_Write_Center, 0, [varEmpty]);
+    AddGet(TImage, 'IncrementalDisplay', TImage_Read_IncrementalDisplay, 0, [varEmpty], varEmpty);
+    AddSet(TImage, 'IncrementalDisplay', TImage_Write_IncrementalDisplay, 0, [varEmpty]);
+    AddGet(TImage, 'Picture', TImage_Read_Picture, 0, [varEmpty], varEmpty);
+    AddSet(TImage, 'Picture', TImage_Write_Picture, 0, [varEmpty]);
+    AddGet(TImage, 'Stretch', TImage_Read_Stretch, 0, [varEmpty], varEmpty);
+    AddSet(TImage, 'Stretch', TImage_Write_Stretch, 0, [varEmpty]);
+    AddGet(TImage, 'Transparent', TImage_Read_Transparent, 0, [varEmpty], varEmpty);
+    AddSet(TImage, 'Transparent', TImage_Write_Transparent, 0, [varEmpty]);
     { TBevelStyle }
     AddConst(cExtCtrls, 'bsLowered', Ord(bsLowered));
     AddConst(cExtCtrls, 'bsRaised', Ord(bsRaised));
@@ -522,17 +522,17 @@ begin
     { TBevel }
     AddClass(cExtCtrls, TBevel, 'TBevel');
     AddGet(TBevel, 'Create', TBevel_Create, 1, [varEmpty], varEmpty);
-    AddGet(TBevel, 'Shape', TBevel_Read_Shape, 0, [0], varEmpty);
-    AddSet(TBevel, 'Shape', TBevel_Write_Shape, 0, [0]);
-    AddGet(TBevel, 'Style', TBevel_Read_Style, 0, [0], varEmpty);
-    AddSet(TBevel, 'Style', TBevel_Write_Style, 0, [0]);
+    AddGet(TBevel, 'Shape', TBevel_Read_Shape, 0, [varEmpty], varEmpty);
+    AddSet(TBevel, 'Shape', TBevel_Write_Shape, 0, [varEmpty]);
+    AddGet(TBevel, 'Style', TBevel_Read_Style, 0, [varEmpty], varEmpty);
+    AddSet(TBevel, 'Style', TBevel_Write_Style, 0, [varEmpty]);
    { TTimer }
     AddClass(cExtCtrls, TTimer, 'TTimer');
     AddGet(TTimer, 'Create', TTimer_Create, 1, [varEmpty], varEmpty);
-    AddGet(TTimer, 'Enabled', TTimer_Read_Enabled, 0, [0], varEmpty);
-    AddSet(TTimer, 'Enabled', TTimer_Write_Enabled, 0, [0]);
-    AddGet(TTimer, 'Interval', TTimer_Read_Interval, 0, [0], varEmpty);
-    AddSet(TTimer, 'Interval', TTimer_Write_Interval, 0, [0]);
+    AddGet(TTimer, 'Enabled', TTimer_Read_Enabled, 0, [varEmpty], varEmpty);
+    AddSet(TTimer, 'Enabled', TTimer_Write_Enabled, 0, [varEmpty]);
+    AddGet(TTimer, 'Interval', TTimer_Read_Interval, 0, [varEmpty], varEmpty);
+    AddSet(TTimer, 'Interval', TTimer_Write_Interval, 0, [varEmpty]);
     { TPanelBevel }
     AddConst(cExtCtrls, 'bvNone', Ord(bvNone));
     AddConst(cExtCtrls, 'bvLowered', Ord(bvLowered));
@@ -548,23 +548,23 @@ begin
     { TNotebook }
     AddClass(cExtCtrls, TNotebook, 'TNotebook');
     AddGet(TNotebook, 'Create', TNotebook_Create, 1, [varEmpty], varEmpty);
-    AddGet(TNotebook, 'ActivePage', TNotebook_Read_ActivePage, 0, [0], varEmpty);
-    AddSet(TNotebook, 'ActivePage', TNotebook_Write_ActivePage, 0, [0]);
-    AddGet(TNotebook, 'PageIndex', TNotebook_Read_PageIndex, 0, [0], varEmpty);
-    AddSet(TNotebook, 'PageIndex', TNotebook_Write_PageIndex, 0, [0]);
-    AddIGet(TNotebook, 'Pages', TNotebook_Read_Pages, 0, [0], varEmpty);
-    AddISet(TNotebook, 'Pages', TNotebook_Write_Pages, 0, [0]);
+    AddGet(TNotebook, 'ActivePage', TNotebook_Read_ActivePage, 0, [varEmpty], varEmpty);
+    AddSet(TNotebook, 'ActivePage', TNotebook_Write_ActivePage, 0, [varEmpty]);
+    AddGet(TNotebook, 'PageIndex', TNotebook_Read_PageIndex, 0, [varEmpty], varEmpty);
+    AddSet(TNotebook, 'PageIndex', TNotebook_Write_PageIndex, 0, [varEmpty]);
+    AddIGet(TNotebook, 'Pages', TNotebook_Read_Pages, 0, [varEmpty], varEmpty);
+    AddISet(TNotebook, 'Pages', TNotebook_Write_Pages, 0, [varEmpty]);
     { THeader }
     AddClass(cExtCtrls, THeader, 'THeader');
     AddGet(THeader, 'Create', THeader_Create, 1, [varEmpty], varEmpty);
-    AddGet(THeader, 'SectionWidth', THeader_Read_SectionWidth, 1, [0], varEmpty);
-    AddSet(THeader, 'SectionWidth', THeader_Write_SectionWidth, 1, [1]);
-    AddGet(THeader, 'AllowResize', THeader_Read_AllowResize, 0, [0], varEmpty);
-    AddSet(THeader, 'AllowResize', THeader_Write_AllowResize, 0, [0]);
-    AddGet(THeader, 'BorderStyle', THeader_Read_BorderStyle, 0, [0], varEmpty);
-    AddSet(THeader, 'BorderStyle', THeader_Write_BorderStyle, 0, [0]);
-    AddIGet(THeader, 'Sections', THeader_Read_Sections, 0, [0], varEmpty);
-    AddISet(THeader, 'Sections', THeader_Write_Sections, 0, [0]);
+    AddGet(THeader, 'SectionWidth', THeader_Read_SectionWidth, 1, [varEmpty], varEmpty);
+    AddSet(THeader, 'SectionWidth', THeader_Write_SectionWidth, 1, [varNull]);
+    AddGet(THeader, 'AllowResize', THeader_Read_AllowResize, 0, [varEmpty], varEmpty);
+    AddSet(THeader, 'AllowResize', THeader_Write_AllowResize, 0, [varEmpty]);
+    AddGet(THeader, 'BorderStyle', THeader_Read_BorderStyle, 0, [varEmpty], varEmpty);
+    AddSet(THeader, 'BorderStyle', THeader_Write_BorderStyle, 0, [varEmpty]);
+    AddIGet(THeader, 'Sections', THeader_Read_Sections, 0, [varEmpty], varEmpty);
+    AddISet(THeader, 'Sections', THeader_Write_Sections, 0, [varEmpty]);
     { TCustomRadioGroup }
     AddClass(cExtCtrls, TCustomRadioGroup, 'TCustomRadioGroup');
     { TRadioGroup }
@@ -573,10 +573,10 @@ begin
     { TSplitter }
     AddClass(cExtCtrls, TSplitter, 'TSplitter');
     AddGet(TSplitter, 'Create', TSplitter_Create, 1, [varEmpty], varEmpty);
-    AddGet(TSplitter, 'Beveled', TSplitter_Read_Beveled, 0, [0], varEmpty);
-    AddSet(TSplitter, 'Beveled', TSplitter_Write_Beveled, 0, [0]);
-    AddGet(TSplitter, 'MinSize', TSplitter_Read_MinSize, 0, [0], varEmpty);
-    AddSet(TSplitter, 'MinSize', TSplitter_Write_MinSize, 0, [0]);
+    AddGet(TSplitter, 'Beveled', TSplitter_Read_Beveled, 0, [varEmpty], varEmpty);
+    AddSet(TSplitter, 'Beveled', TSplitter_Write_Beveled, 0, [varEmpty]);
+    AddGet(TSplitter, 'MinSize', TSplitter_Read_MinSize, 0, [varEmpty], varEmpty);
+    AddSet(TSplitter, 'MinSize', TSplitter_Write_MinSize, 0, [varEmpty]);
   end;
   RegisterClasses([TShape, TPaintBox, TImage, TBevel, TTimer, TPanel, TPage,
     TNotebook, THeader, TRadioGroup, TSplitter]);

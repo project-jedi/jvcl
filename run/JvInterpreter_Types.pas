@@ -143,10 +143,10 @@ begin
       RFD('Right', 8, varInteger), RFD('Bottom', 12, varInteger)], nil, nil, nil);
     AddFunction(cTypes, 'Rect', JvInterpreter_Rect, 4, [varInteger, varInteger, varInteger, varInteger], varRecord);
     AddFunction(cTypes, 'Bounds', JvInterpreter_Bounds, 4, [varInteger, varInteger, varInteger, varInteger], varRecord);
-    AddRecGet(cTypes, cTRect, 'TopLeft', TRect_Read_TopLeft, 0, [0], varRecord);
-    AddRecSet(cTypes, cTRect, 'TopLeft', TRect_Write_TopLeft, 0, [0]);
-    AddRecGet(cTypes, cTRect, 'BottomRight', TRect_Read_BottomRight, 0, [0], varRecord);
-    AddRecSet(cTypes, cTRect, 'BottomRight', TRect_Write_BottomRight, 0, [0]);
+    AddRecGet(cTypes, cTRect, 'TopLeft', TRect_Read_TopLeft, 0, [varEmpty], varRecord);
+    AddRecSet(cTypes, cTRect, 'TopLeft', TRect_Write_TopLeft, 0, [varEmpty]);
+    AddRecGet(cTypes, cTRect, 'BottomRight', TRect_Read_BottomRight, 0, [varEmpty], varRecord);
+    AddRecSet(cTypes, cTRect, 'BottomRight', TRect_Write_BottomRight, 0, [varEmpty]);
   end;
 end;
 

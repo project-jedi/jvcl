@@ -1705,66 +1705,66 @@ begin
     AddClass(cControls, TControl, 'TControl');
     AddGet(TControl, 'Create', TControl_Create, 1, [varEmpty], varEmpty);
     AddGet(TControl, 'BeginDrag', TControl_BeginDrag, 1, [varEmpty], varEmpty);
-    AddGet(TControl, 'BringToFront', TControl_BringToFront, 0, [0], varEmpty);
+    AddGet(TControl, 'BringToFront', TControl_BringToFront, 0, [varEmpty], varEmpty);
     AddGet(TControl, 'ClientToScreen', TControl_ClientToScreen, 1, [varEmpty], varEmpty);
-    AddGet(TControl, 'Dragging', TControl_Dragging, 0, [0], varEmpty);
+    AddGet(TControl, 'Dragging', TControl_Dragging, 0, [varEmpty], varEmpty);
     AddGet(TControl, 'DragDrop', TControl_DragDrop, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TControl, 'EndDrag', TControl_EndDrag, 1, [varEmpty], varEmpty);
     {$IFDEF VCL}
     AddGet(TControl, 'GetTextBuf', TControl_GetTextBuf, 2, [varEmpty, varEmpty], varEmpty);
-    AddGet(TControl, 'GetTextLen', TControl_GetTextLen, 0, [0], varEmpty);
+    AddGet(TControl, 'GetTextLen', TControl_GetTextLen, 0, [varEmpty], varEmpty);
     {$ENDIF VCL}
-    AddGet(TControl, 'Hide', TControl_Hide, 0, [0], varEmpty);
-    AddGet(TControl, 'Invalidate', TControl_Invalidate, 0, [0], varEmpty);
+    AddGet(TControl, 'Hide', TControl_Hide, 0, [varEmpty], varEmpty);
+    AddGet(TControl, 'Invalidate', TControl_Invalidate, 0, [varEmpty], varEmpty);
     {$IFDEF VCL}
     AddGet(TControl, 'Perform', TControl_Perform, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     {$ENDIF VCL}
-    AddGet(TControl, 'Refresh', TControl_Refresh, 0, [0], varEmpty);
-    AddGet(TControl, 'Repaint', TControl_Repaint, 0, [0], varEmpty);
+    AddGet(TControl, 'Refresh', TControl_Refresh, 0, [varEmpty], varEmpty);
+    AddGet(TControl, 'Repaint', TControl_Repaint, 0, [varEmpty], varEmpty);
     AddGet(TControl, 'ScreenToClient', TControl_ScreenToClient, 1, [varEmpty], varEmpty);
-    AddGet(TControl, 'SendToBack', TControl_SendToBack, 0, [0], varEmpty);
+    AddGet(TControl, 'SendToBack', TControl_SendToBack, 0, [varEmpty], varEmpty);
     AddGet(TControl, 'SetBounds', TControl_SetBounds, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
     {$IFDEF VCL}
     AddGet(TControl, 'SetTextBuf', TControl_SetTextBuf, 1, [varEmpty], varEmpty);
     {$ENDIF VCL}
-    AddGet(TControl, 'Show', TControl_Show, 0, [0], varEmpty);
-    AddGet(TControl, 'Update', TControl_Update, 0, [0], varEmpty);
-    AddGet(TControl, 'Align', TControl_Read_Align, 0, [0], varEmpty);
-    AddSet(TControl, 'Align', TControl_Write_Align, 0, [0]);
-    AddGet(TControl, 'BoundsRect', TControl_Read_BoundsRect, 0, [0], varEmpty);
-    AddSet(TControl, 'BoundsRect', TControl_Write_BoundsRect, 0, [0]);
-    AddGet(TControl, 'ClientHeight', TControl_Read_ClientHeight, 0, [0], varEmpty);
-    AddSet(TControl, 'ClientHeight', TControl_Write_ClientHeight, 0, [0]);
-    AddGet(TControl, 'ClientOrigin', TControl_Read_ClientOrigin, 0, [0], varEmpty);
-    AddGet(TControl, 'ClientRect', TControl_Read_ClientRect, 0, [0], varEmpty);
-    AddGet(TControl, 'ClientWidth', TControl_Read_ClientWidth, 0, [0], varEmpty);
-    AddSet(TControl, 'ClientWidth', TControl_Write_ClientWidth, 0, [0]);
-    AddGet(TControl, 'ControlState', TControl_Read_ControlState, 0, [0], varEmpty);
-    AddSet(TControl, 'ControlState', TControl_Write_ControlState, 0, [0]);
-    AddGet(TControl, 'ControlStyle', TControl_Read_ControlStyle, 0, [0], varEmpty);
-    AddSet(TControl, 'ControlStyle', TControl_Write_ControlStyle, 0, [0]);
-    AddGet(TControl, 'Parent', TControl_Read_Parent, 0, [0], varEmpty);
-    AddSet(TControl, 'Parent', TControl_Write_Parent, 0, [0]);
-    AddGet(TControl, 'ShowHint', TControl_Read_ShowHint, 0, [0], varEmpty);
-    AddSet(TControl, 'ShowHint', TControl_Write_ShowHint, 0, [0]);
-    AddGet(TControl, 'Visible', TControl_Read_Visible, 0, [0], varEmpty);
-    AddSet(TControl, 'Visible', TControl_Write_Visible, 0, [0]);
-    AddGet(TControl, 'Enabled', TControl_Read_Enabled, 0, [0], varEmpty);
-    AddSet(TControl, 'Enabled', TControl_Write_Enabled, 0, [0]);
-    AddGet(TControl, 'WindowProc', TControl_Read_WindowProc, 0, [0], varEmpty);
-    AddSet(TControl, 'WindowProc', TControl_Write_WindowProc, 0, [0]);
-    AddGet(TControl, 'Left', TControl_Read_Left, 0, [0], varEmpty);
-    AddSet(TControl, 'Left', TControl_Write_Left, 0, [0]);
-    AddGet(TControl, 'Top', TControl_Read_Top, 0, [0], varEmpty);
-    AddSet(TControl, 'Top', TControl_Write_Top, 0, [0]);
-    AddGet(TControl, 'Width', TControl_Read_Width, 0, [0], varEmpty);
-    AddSet(TControl, 'Width', TControl_Write_Width, 0, [0]);
-    AddGet(TControl, 'Height', TControl_Read_Height, 0, [0], varEmpty);
-    AddSet(TControl, 'Height', TControl_Write_Height, 0, [0]);
-    AddGet(TControl, 'Cursor', TControl_Read_Cursor, 0, [0], varEmpty);
-    AddSet(TControl, 'Cursor', TControl_Write_Cursor, 0, [0]);
-    AddGet(TControl, 'Hint', TControl_Read_Hint, 0, [0], varEmpty);
-    AddSet(TControl, 'Hint', TControl_Write_Hint, 0, [0]);
+    AddGet(TControl, 'Show', TControl_Show, 0, [varEmpty], varEmpty);
+    AddGet(TControl, 'Update', TControl_Update, 0, [varEmpty], varEmpty);
+    AddGet(TControl, 'Align', TControl_Read_Align, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'Align', TControl_Write_Align, 0, [varEmpty]);
+    AddGet(TControl, 'BoundsRect', TControl_Read_BoundsRect, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'BoundsRect', TControl_Write_BoundsRect, 0, [varEmpty]);
+    AddGet(TControl, 'ClientHeight', TControl_Read_ClientHeight, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'ClientHeight', TControl_Write_ClientHeight, 0, [varEmpty]);
+    AddGet(TControl, 'ClientOrigin', TControl_Read_ClientOrigin, 0, [varEmpty], varEmpty);
+    AddGet(TControl, 'ClientRect', TControl_Read_ClientRect, 0, [varEmpty], varEmpty);
+    AddGet(TControl, 'ClientWidth', TControl_Read_ClientWidth, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'ClientWidth', TControl_Write_ClientWidth, 0, [varEmpty]);
+    AddGet(TControl, 'ControlState', TControl_Read_ControlState, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'ControlState', TControl_Write_ControlState, 0, [varEmpty]);
+    AddGet(TControl, 'ControlStyle', TControl_Read_ControlStyle, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'ControlStyle', TControl_Write_ControlStyle, 0, [varEmpty]);
+    AddGet(TControl, 'Parent', TControl_Read_Parent, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'Parent', TControl_Write_Parent, 0, [varEmpty]);
+    AddGet(TControl, 'ShowHint', TControl_Read_ShowHint, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'ShowHint', TControl_Write_ShowHint, 0, [varEmpty]);
+    AddGet(TControl, 'Visible', TControl_Read_Visible, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'Visible', TControl_Write_Visible, 0, [varEmpty]);
+    AddGet(TControl, 'Enabled', TControl_Read_Enabled, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'Enabled', TControl_Write_Enabled, 0, [varEmpty]);
+    AddGet(TControl, 'WindowProc', TControl_Read_WindowProc, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'WindowProc', TControl_Write_WindowProc, 0, [varEmpty]);
+    AddGet(TControl, 'Left', TControl_Read_Left, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'Left', TControl_Write_Left, 0, [varEmpty]);
+    AddGet(TControl, 'Top', TControl_Read_Top, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'Top', TControl_Write_Top, 0, [varEmpty]);
+    AddGet(TControl, 'Width', TControl_Read_Width, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'Width', TControl_Write_Width, 0, [varEmpty]);
+    AddGet(TControl, 'Height', TControl_Read_Height, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'Height', TControl_Write_Height, 0, [varEmpty]);
+    AddGet(TControl, 'Cursor', TControl_Read_Cursor, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'Cursor', TControl_Write_Cursor, 0, [varEmpty]);
+    AddGet(TControl, 'Hint', TControl_Read_Hint, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'Hint', TControl_Write_Hint, 0, [varEmpty]);
     {$IFDEF VCL}
     { TImeMode }
     AddConst(cControls, 'imDisable', Ord(imDisable));
@@ -1785,44 +1785,44 @@ begin
     AddGet(TWinControl, 'Create', TWinControl_Create, 1, [varEmpty], varEmpty);
     AddGet(TWinControl, 'CreateParented', TWinControl_CreateParented, 1, [varEmpty], varEmpty);
     AddGet(TWinControl, 'Broadcast', TWinControl_Broadcast, 1, [varByRef], varEmpty);
-    AddGet(TWinControl, 'CanFocus', TWinControl_CanFocus, 0, [0], varEmpty);
+    AddGet(TWinControl, 'CanFocus', TWinControl_CanFocus, 0, [varEmpty], varEmpty);
     AddGet(TWinControl, 'ContainsControl', TWinControl_ContainsControl, 1, [varEmpty], varEmpty);
     AddGet(TWinControl, 'ControlAtPos', TWinControl_ControlAtPos, 2, [varEmpty, varEmpty], varEmpty);
-    AddGet(TWinControl, 'DisableAlign', TWinControl_DisableAlign, 0, [0], varEmpty);
-    AddGet(TWinControl, 'EnableAlign', TWinControl_EnableAlign, 0, [0], varEmpty);
-    AddGet(TWinControl, 'Focused', TWinControl_Focused, 0, [0], varEmpty);
+    AddGet(TWinControl, 'DisableAlign', TWinControl_DisableAlign, 0, [varEmpty], varEmpty);
+    AddGet(TWinControl, 'EnableAlign', TWinControl_EnableAlign, 0, [varEmpty], varEmpty);
+    AddGet(TWinControl, 'Focused', TWinControl_Focused, 0, [varEmpty], varEmpty);
     AddGet(TWinControl, 'GetTabOrderList', TWinControl_GetTabOrderList, 1, [varEmpty], varEmpty);
-    AddGet(TWinControl, 'HandleAllocated', TWinControl_HandleAllocated, 0, [0], varEmpty);
-    AddGet(TWinControl, 'HandleNeeded', TWinControl_HandleNeeded, 0, [0], varEmpty);
+    AddGet(TWinControl, 'HandleAllocated', TWinControl_HandleAllocated, 0, [varEmpty], varEmpty);
+    AddGet(TWinControl, 'HandleNeeded', TWinControl_HandleNeeded, 0, [varEmpty], varEmpty);
     AddGet(TWinControl, 'InsertControl', TWinControl_InsertControl, 1, [varEmpty], varEmpty);
-    AddGet(TWinControl, 'Invalidate', TWinControl_Invalidate, 0, [0], varEmpty);
+    AddGet(TWinControl, 'Invalidate', TWinControl_Invalidate, 0, [varEmpty], varEmpty);
     {$IFDEF VCL}
     AddGet(TWinControl, 'PaintTo', TWinControl_PaintTo, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     {$ENDIF VCL}
     AddGet(TWinControl, 'RemoveControl', TWinControl_RemoveControl, 1, [varEmpty], varEmpty);
-    AddGet(TWinControl, 'Realign', TWinControl_Realign, 0, [0], varEmpty);
-    AddGet(TWinControl, 'Repaint', TWinControl_Repaint, 0, [0], varEmpty);
+    AddGet(TWinControl, 'Realign', TWinControl_Realign, 0, [varEmpty], varEmpty);
+    AddGet(TWinControl, 'Repaint', TWinControl_Repaint, 0, [varEmpty], varEmpty);
     AddGet(TWinControl, 'ScaleBy', TWinControl_ScaleBy, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TWinControl, 'ScrollBy', TWinControl_ScrollBy, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TWinControl, 'SetBounds', TWinControl_SetBounds, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
-    AddGet(TWinControl, 'SetFocus', TWinControl_SetFocus, 0, [0], varEmpty);
-    AddGet(TWinControl, 'Update', TWinControl_Update, 0, [0], varEmpty);
-    AddGet(TWinControl, 'UpdateControlState', TWinControl_UpdateControlState, 0, [0], varEmpty);
-    AddGet(TWinControl, 'Brush', TWinControl_Read_Brush, 0, [0], varEmpty);
-    AddIGet(TWinControl, 'Controls', TWinControl_Read_Controls, 1, [0], varEmpty);
-    AddGet(TWinControl, 'ControlCount', TWinControl_Read_ControlCount, 0, [0], varEmpty);
-    AddGet(TWinControl, 'Handle', TWinControl_Read_Handle, 0, [0], varEmpty);
-    AddGet(TWinControl, 'ParentWindow', TWinControl_Read_ParentWindow, 0, [0], varEmpty);
-    AddSet(TWinControl, 'ParentWindow', TWinControl_Write_ParentWindow, 0, [0]);
-    AddGet(TWinControl, 'ParentWidget', TWinControl_Read_ParentWindow, 0, [0], varEmpty);
-    AddSet(TWinControl, 'ParentWidget', TWinControl_Write_ParentWindow, 0, [0]);
-    AddGet(TWinControl, 'Showing', TWinControl_Read_Showing, 0, [0], varEmpty);
-    AddGet(TWinControl, 'TabOrder', TWinControl_Read_TabOrder, 0, [0], varEmpty);
-    AddSet(TWinControl, 'TabOrder', TWinControl_Write_TabOrder, 0, [0]);
-    AddGet(TWinControl, 'TabStop', TWinControl_Read_TabStop, 0, [0], varEmpty);
-    AddSet(TWinControl, 'TabStop', TWinControl_Write_TabStop, 0, [0]);
-    AddGet(TWinControl, 'HelpContext', TWinControl_Read_HelpContext, 0, [0], varEmpty);
-    AddSet(TWinControl, 'HelpContext', TWinControl_Write_HelpContext, 0, [0]);
+    AddGet(TWinControl, 'SetFocus', TWinControl_SetFocus, 0, [varEmpty], varEmpty);
+    AddGet(TWinControl, 'Update', TWinControl_Update, 0, [varEmpty], varEmpty);
+    AddGet(TWinControl, 'UpdateControlState', TWinControl_UpdateControlState, 0, [varEmpty], varEmpty);
+    AddGet(TWinControl, 'Brush', TWinControl_Read_Brush, 0, [varEmpty], varEmpty);
+    AddIGet(TWinControl, 'Controls', TWinControl_Read_Controls, 1, [varEmpty], varEmpty);
+    AddGet(TWinControl, 'ControlCount', TWinControl_Read_ControlCount, 0, [varEmpty], varEmpty);
+    AddGet(TWinControl, 'Handle', TWinControl_Read_Handle, 0, [varEmpty], varEmpty);
+    AddGet(TWinControl, 'ParentWindow', TWinControl_Read_ParentWindow, 0, [varEmpty], varEmpty);
+    AddSet(TWinControl, 'ParentWindow', TWinControl_Write_ParentWindow, 0, [varEmpty]);
+    AddGet(TWinControl, 'ParentWidget', TWinControl_Read_ParentWindow, 0, [varEmpty], varEmpty);
+    AddSet(TWinControl, 'ParentWidget', TWinControl_Write_ParentWindow, 0, [varEmpty]);
+    AddGet(TWinControl, 'Showing', TWinControl_Read_Showing, 0, [varEmpty], varEmpty);
+    AddGet(TWinControl, 'TabOrder', TWinControl_Read_TabOrder, 0, [varEmpty], varEmpty);
+    AddSet(TWinControl, 'TabOrder', TWinControl_Write_TabOrder, 0, [varEmpty]);
+    AddGet(TWinControl, 'TabStop', TWinControl_Read_TabStop, 0, [varEmpty], varEmpty);
+    AddSet(TWinControl, 'TabStop', TWinControl_Write_TabStop, 0, [varEmpty]);
+    AddGet(TWinControl, 'HelpContext', TWinControl_Read_HelpContext, 0, [varEmpty], varEmpty);
+    AddSet(TWinControl, 'HelpContext', TWinControl_Write_HelpContext, 0, [varEmpty]);
     { TGraphicControl }
     AddClass(cControls, TGraphicControl, 'TGraphicControl');
     AddGet(TGraphicControl, 'Create', TGraphicControl_Create, 1, [varEmpty], varEmpty);
@@ -1830,59 +1830,59 @@ begin
     AddClass(cControls, TCustomControl, 'TCustomControl');
     AddGet(TCustomControl, 'Create', TCustomControl_Create, 1, [varEmpty], varEmpty);
 
-    AddGet(TControl, 'Caption', THackControl_Read_Caption, 0, [0], varEmpty);
-    AddSet(TControl, 'Caption', THackControl_Write_Caption, 0, [0]);
-    AddGet(TControl, 'Color', THackControl_Read_Color, 0, [0], varEmpty);
-    AddSet(TControl, 'Color', THackControl_Write_Color, 0, [0]);
+    AddGet(TControl, 'Caption', THackControl_Read_Caption, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'Caption', THackControl_Write_Caption, 0, [varEmpty]);
+    AddGet(TControl, 'Color', THackControl_Read_Color, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'Color', THackControl_Write_Color, 0, [varEmpty]);
     {$IFDEF VCL}
-    AddGet(TControl, 'DesktopFont', THackControl_Read_DesktopFont, 0, [0], varEmpty);
-    AddSet(TControl, 'DesktopFont', THackControl_Write_DesktopFont, 0, [0]);
-    AddGet(TControl, 'DragCursor', THackControl_Read_DragCursor, 0, [0], varEmpty);
-    AddSet(TControl, 'DragCursor', THackControl_Write_DragCursor, 0, [0]);
+    AddGet(TControl, 'DesktopFont', THackControl_Read_DesktopFont, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'DesktopFont', THackControl_Write_DesktopFont, 0, [varEmpty]);
+    AddGet(TControl, 'DragCursor', THackControl_Read_DragCursor, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'DragCursor', THackControl_Write_DragCursor, 0, [varEmpty]);
     {$ENDIF VCL}
-    AddGet(TControl, 'DragMode', THackControl_Read_DragMode, 0, [0], varEmpty);
-    AddSet(TControl, 'DragMode', THackControl_Write_DragMode, 0, [0]);
-    AddGet(TControl, 'Font', THackControl_Read_Font, 0, [0], varEmpty);
-    AddSet(TControl, 'Font', THackControl_Write_Font, 0, [0]);
+    AddGet(TControl, 'DragMode', THackControl_Read_DragMode, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'DragMode', THackControl_Write_DragMode, 0, [varEmpty]);
+    AddGet(TControl, 'Font', THackControl_Read_Font, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'Font', THackControl_Write_Font, 0, [varEmpty]);
     {$IFDEF VCL}
-    AddGet(TControl, 'IsControl', THackControl_Read_IsControl, 0, [0], varEmpty);
-    AddSet(TControl, 'IsControl', THackControl_Write_IsControl, 0, [0]);
+    AddGet(TControl, 'IsControl', THackControl_Read_IsControl, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'IsControl', THackControl_Write_IsControl, 0, [varEmpty]);
     {$ENDIF VCL}
-    AddGet(TControl, 'MouseCapture', THackControl_Read_MouseCapture, 0, [0], varEmpty);
-    AddSet(TControl, 'MouseCapture', THackControl_Write_MouseCapture, 0, [0]);
-    AddGet(TControl, 'ParentColor', THackControl_Read_ParentColor, 0, [0], varEmpty);
-    AddSet(TControl, 'ParentColor', THackControl_Write_ParentColor, 0, [0]);
-    AddGet(TControl, 'ParentFont', THackControl_Read_ParentFont, 0, [0], varEmpty);
-    AddSet(TControl, 'ParentFont', THackControl_Write_ParentFont, 0, [0]);
-    AddGet(TControl, 'ParentShowHint', THackControl_Read_ParentShowHint, 0, [0], varEmpty);
-    AddSet(TControl, 'ParentShowHint', THackControl_Write_ParentShowHint, 0, [0]);
-    AddGet(TControl, 'PopupMenu', THackControl_Read_PopupMenu, 0, [0], varEmpty);
-    AddSet(TControl, 'PopupMenu', THackControl_Write_PopupMenu, 0, [0]);
-    AddGet(TControl, 'Text', THackControl_Read_Text, 0, [0], varEmpty);
-    AddSet(TControl, 'Text', THackControl_Write_Text, 0, [0]);
+    AddGet(TControl, 'MouseCapture', THackControl_Read_MouseCapture, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'MouseCapture', THackControl_Write_MouseCapture, 0, [varEmpty]);
+    AddGet(TControl, 'ParentColor', THackControl_Read_ParentColor, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'ParentColor', THackControl_Write_ParentColor, 0, [varEmpty]);
+    AddGet(TControl, 'ParentFont', THackControl_Read_ParentFont, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'ParentFont', THackControl_Write_ParentFont, 0, [varEmpty]);
+    AddGet(TControl, 'ParentShowHint', THackControl_Read_ParentShowHint, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'ParentShowHint', THackControl_Write_ParentShowHint, 0, [varEmpty]);
+    AddGet(TControl, 'PopupMenu', THackControl_Read_PopupMenu, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'PopupMenu', THackControl_Write_PopupMenu, 0, [varEmpty]);
+    AddGet(TControl, 'Text', THackControl_Read_Text, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'Text', THackControl_Write_Text, 0, [varEmpty]);
     {$IFDEF VCL}
-    AddGet(TControl, 'WindowText', THackControl_Read_WindowText, 0, [0], varEmpty);
-    AddSet(TControl, 'WindowText', THackControl_Write_WindowText, 0, [0]);
-    AddGet(TWinControl, 'Ctl3D', THackWinControl_Read_Ctl3D, 0, [0], varEmpty);
-    AddSet(TWinControl, 'Ctl3D', THackWinControl_Write_Ctl3D, 0, [0]);
-    AddGet(TWinControl, 'DefWndProc', THackWinControl_Read_DefWndProc, 0, [0], varEmpty);
-    AddSet(TWinControl, 'DefWndProc', THackWinControl_Write_DefWndProc, 0, [0]);
-    AddGet(TWinControl, 'ImeMode', THackWinControl_Read_ImeMode, 0, [0], varEmpty);
-    AddSet(TWinControl, 'ImeMode', THackWinControl_Write_ImeMode, 0, [0]);
-    AddGet(TWinControl, 'ImeName', THackWinControl_Read_ImeName, 0, [0], varEmpty);
-    AddSet(TWinControl, 'ImeName', THackWinControl_Write_ImeName, 0, [0]);
-    AddGet(TWinControl, 'ParentCtl3D', THackWinControl_Read_ParentCtl3D, 0, [0], varEmpty);
-    AddSet(TWinControl, 'ParentCtl3D', THackWinControl_Write_ParentCtl3D, 0, [0]);
-    AddGet(TWinControl, 'WindowHandle', THackWinControl_Read_WindowHandle, 0, [0], varEmpty);
-    AddSet(TWinControl, 'WindowHandle', THackWinControl_Write_WindowHandle, 0, [0]);
+    AddGet(TControl, 'WindowText', THackControl_Read_WindowText, 0, [varEmpty], varEmpty);
+    AddSet(TControl, 'WindowText', THackControl_Write_WindowText, 0, [varEmpty]);
+    AddGet(TWinControl, 'Ctl3D', THackWinControl_Read_Ctl3D, 0, [varEmpty], varEmpty);
+    AddSet(TWinControl, 'Ctl3D', THackWinControl_Write_Ctl3D, 0, [varEmpty]);
+    AddGet(TWinControl, 'DefWndProc', THackWinControl_Read_DefWndProc, 0, [varEmpty], varEmpty);
+    AddSet(TWinControl, 'DefWndProc', THackWinControl_Write_DefWndProc, 0, [varEmpty]);
+    AddGet(TWinControl, 'ImeMode', THackWinControl_Read_ImeMode, 0, [varEmpty], varEmpty);
+    AddSet(TWinControl, 'ImeMode', THackWinControl_Write_ImeMode, 0, [varEmpty]);
+    AddGet(TWinControl, 'ImeName', THackWinControl_Read_ImeName, 0, [varEmpty], varEmpty);
+    AddSet(TWinControl, 'ImeName', THackWinControl_Write_ImeName, 0, [varEmpty]);
+    AddGet(TWinControl, 'ParentCtl3D', THackWinControl_Read_ParentCtl3D, 0, [varEmpty], varEmpty);
+    AddSet(TWinControl, 'ParentCtl3D', THackWinControl_Write_ParentCtl3D, 0, [varEmpty]);
+    AddGet(TWinControl, 'WindowHandle', THackWinControl_Read_WindowHandle, 0, [varEmpty], varEmpty);
+    AddSet(TWinControl, 'WindowHandle', THackWinControl_Write_WindowHandle, 0, [varEmpty]);
     {$ENDIF VCL}
     { TCustomControl }
     AddClass('IH_Controls', THackCustomControl, 'THackCustomControl');
-    AddGet(TCustomControl, 'Paint', THackCustomControl_Paint, 0, [0], varEmpty);
+    AddGet(TCustomControl, 'Paint', THackCustomControl_Paint, 0, [varEmpty], varEmpty);
     {$IFDEF VCL}
     AddGet(TCustomControl, 'PaintWindow', THackCustomControl_PaintWindow, 1, [varEmpty], varEmpty);
     {$ENDIF VCL}
-    AddGet(TCustomControl, 'Canvas', THackCustomControl_Read_Canvas, 0, [0], varEmpty);
+    AddGet(TCustomControl, 'Canvas', THackCustomControl_Read_Canvas, 0, [varEmpty], varEmpty);
 
     {$IFDEF VCL}
     { TDrawingStyle }
@@ -1918,7 +1918,7 @@ begin
     {$ENDIF VCL}
     AddGet(TCustomImageList, 'AddImages', TCustomImageList_AddImages, 1, [varEmpty], varEmpty);
     AddGet(TCustomImageList, 'AddMasked', TCustomImageList_AddMasked, 2, [varEmpty, varEmpty], varEmpty);
-    AddGet(TCustomImageList, 'Clear', TCustomImageList_Clear, 0, [0], varEmpty);
+    AddGet(TCustomImageList, 'Clear', TCustomImageList_Clear, 0, [varEmpty], varEmpty);
     AddGet(TCustomImageList, 'Delete', TCustomImageList_Delete, 1, [varEmpty], varEmpty);
     AddGet(TCustomImageList, 'Draw', TCustomImageList_Draw, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
     {$IFDEF VCL}
@@ -1928,17 +1928,17 @@ begin
     {$ENDIF VCL}
     AddGet(TCustomImageList, 'GetBitmap', TCustomImageList_GetBitmap, 2, [varEmpty, varEmpty], varEmpty);
     {$IFDEF VCL}
-    AddGet(TCustomImageList, 'GetHotSpot', TCustomImageList_GetHotSpot, 0, [0], varEmpty);
+    AddGet(TCustomImageList, 'GetHotSpot', TCustomImageList_GetHotSpot, 0, [varEmpty], varEmpty);
     AddGet(TCustomImageList, 'GetIcon', TCustomImageList_GetIcon, 2, [varEmpty, varEmpty], varEmpty);
-    AddGet(TCustomImageList, 'GetImageBitmap', TCustomImageList_GetImageBitmap, 0, [0], varEmpty);
-    AddGet(TCustomImageList, 'GetMaskBitmap', TCustomImageList_GetMaskBitmap, 0, [0], varEmpty);
+    AddGet(TCustomImageList, 'GetImageBitmap', TCustomImageList_GetImageBitmap, 0, [varEmpty], varEmpty);
+    AddGet(TCustomImageList, 'GetMaskBitmap', TCustomImageList_GetMaskBitmap, 0, [varEmpty], varEmpty);
     {$ENDIF VCL}
     AddGet(TCustomImageList, 'GetResource', TCustomImageList_GetResource, 5, [varEmpty, varEmpty, varEmpty, varEmpty,
       varEmpty], varEmpty);
     AddGet(TCustomImageList, 'GetInstRes', TCustomImageList_GetInstRes, 6, [varEmpty, varEmpty, varEmpty, varEmpty,
       varEmpty, varEmpty], varEmpty);
     {$IFDEF VCL}
-    AddGet(TCustomImageList, 'HandleAllocated', TCustomImageList_HandleAllocated, 0, [0], varEmpty);
+    AddGet(TCustomImageList, 'HandleAllocated', TCustomImageList_HandleAllocated, 0, [varEmpty], varEmpty);
     {$ENDIF VCL}
     AddGet(TCustomImageList, 'Insert', TCustomImageList_Insert, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     {$IFDEF VCL}
@@ -1966,35 +1966,35 @@ begin
     AddGet(TCustomImageList, 'ReplaceMasked', TCustomImageList_ReplaceMasked, 3, [varEmpty, varEmpty, varEmpty],
       varEmpty);
     AddGet(TCustomImageList, 'UnRegisterChanges', TCustomImageList_UnRegisterChanges, 1, [varEmpty], varEmpty);
-    AddGet(TCustomImageList, 'Count', TCustomImageList_Read_Count, 0, [0], varEmpty);
+    AddGet(TCustomImageList, 'Count', TCustomImageList_Read_Count, 0, [varEmpty], varEmpty);
     {$IFDEF VCL}
-    AddGet(TCustomImageList, 'Handle', TCustomImageList_Read_Handle, 0, [0], varEmpty);
-    AddSet(TCustomImageList, 'Handle', TCustomImageList_Write_Handle, 0, [0]);
+    AddGet(TCustomImageList, 'Handle', TCustomImageList_Read_Handle, 0, [varEmpty], varEmpty);
+    AddSet(TCustomImageList, 'Handle', TCustomImageList_Write_Handle, 0, [varEmpty]);
     {$ENDIF VCL}
-    AddGet(TCustomImageList, 'HideDragImage', TCustomImageList_HideDragImage, 0, [0], varEmpty);
+    AddGet(TCustomImageList, 'HideDragImage', TCustomImageList_HideDragImage, 0, [varEmpty], varEmpty);
     AddGet(TCustomImageList, 'SetDragImage', TCustomImageList_SetDragImage, 3, [varEmpty, varEmpty, varEmpty],
       varEmpty);
-    AddGet(TCustomImageList, 'ShowDragImage', TCustomImageList_ShowDragImage, 0, [0], varEmpty);
-    AddGet(TCustomImageList, 'DragCursor', TCustomImageList_Read_DragCursor, 0, [0], varEmpty);
-    AddSet(TCustomImageList, 'DragCursor', TCustomImageList_Write_DragCursor, 0, [0]);
-    AddGet(TCustomImageList, 'Dragging', TCustomImageList_Read_Dragging, 0, [0], varEmpty);
+    AddGet(TCustomImageList, 'ShowDragImage', TCustomImageList_ShowDragImage, 0, [varEmpty], varEmpty);
+    AddGet(TCustomImageList, 'DragCursor', TCustomImageList_Read_DragCursor, 0, [varEmpty], varEmpty);
+    AddSet(TCustomImageList, 'DragCursor', TCustomImageList_Write_DragCursor, 0, [varEmpty]);
+    AddGet(TCustomImageList, 'Dragging', TCustomImageList_Read_Dragging, 0, [varEmpty], varEmpty);
     AddGet(TCustomImageList, 'BeginDrag', TCustomImageList_BeginDrag, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TCustomImageList, 'DragLock', TCustomImageList_DragLock, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TCustomImageList, 'DragMove', TCustomImageList_DragMove, 2, [varEmpty, varEmpty], varEmpty);
-    AddGet(TCustomImageList, 'DragUnlock', TCustomImageList_DragUnlock, 0, [0], varEmpty);
-    AddGet(TCustomImageList, 'EndDrag', TCustomImageList_EndDrag, 0, [0], varEmpty);
+    AddGet(TCustomImageList, 'DragUnlock', TCustomImageList_DragUnlock, 0, [varEmpty], varEmpty);
+    AddGet(TCustomImageList, 'EndDrag', TCustomImageList_EndDrag, 0, [varEmpty], varEmpty);
     {$IFDEF VCL}
-    AddGet(TDragImageList, 'HideDragImage', TCustomImageList_HideDragImage, 0, [0], varEmpty);
+    AddGet(TDragImageList, 'HideDragImage', TCustomImageList_HideDragImage, 0, [varEmpty], varEmpty);
     AddGet(TDragImageList, 'SetDragImage', TCustomImageList_SetDragImage, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddGet(TDragImageList, 'ShowDragImage', TCustomImageList_ShowDragImage, 0, [0], varEmpty);
-    AddGet(TDragImageList, 'DragCursor', TCustomImageList_Read_DragCursor, 0, [0], varEmpty);
-    AddSet(TDragImageList, 'DragCursor', TCustomImageList_Write_DragCursor, 0, [0]);
-    AddGet(TDragImageList, 'Dragging', TCustomImageList_Read_Dragging, 0, [0], varEmpty);
+    AddGet(TDragImageList, 'ShowDragImage', TCustomImageList_ShowDragImage, 0, [varEmpty], varEmpty);
+    AddGet(TDragImageList, 'DragCursor', TCustomImageList_Read_DragCursor, 0, [varEmpty], varEmpty);
+    AddSet(TDragImageList, 'DragCursor', TCustomImageList_Write_DragCursor, 0, [varEmpty]);
+    AddGet(TDragImageList, 'Dragging', TCustomImageList_Read_Dragging, 0, [varEmpty], varEmpty);
     AddGet(TDragImageList, 'BeginDrag', TCustomImageList_BeginDrag, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TDragImageList, 'DragLock', TCustomImageList_DragLock, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TDragImageList, 'DragMove', TCustomImageList_DragMove, 2, [varEmpty, varEmpty], varEmpty);
-    AddGet(TDragImageList, 'DragUnlock', TCustomImageList_DragUnlock, 0, [0], varEmpty);
-    AddGet(TDragImageList, 'EndDrag', TCustomImageList_EndDrag, 0, [0], varEmpty);
+    AddGet(TDragImageList, 'DragUnlock', TCustomImageList_DragUnlock, 0, [varEmpty], varEmpty);
+    AddGet(TDragImageList, 'EndDrag', TCustomImageList_EndDrag, 0, [varEmpty], varEmpty);
     {$ENDIF VCL}
     { TImageList }
     AddClass(cControls, TImageList, 'TImageList');
@@ -2006,10 +2006,10 @@ begin
     AddFunction(cControls, 'FindVCLWindow', JvInterpreter_FindVCLWindow, 1, [varEmpty], varEmpty);
     {$ENDIF VCL}
     AddFunction(cControls, 'FindDragTarget', JvInterpreter_FindDragTarget, 2, [varEmpty, varEmpty], varEmpty);
-    AddFunction(cControls, 'GetCaptureControl', JvInterpreter_GetCaptureControl, 0, [0], varEmpty);
+    AddFunction(cControls, 'GetCaptureControl', JvInterpreter_GetCaptureControl, 0, [varEmpty], varEmpty);
     AddFunction(cControls, 'SetCaptureControl', JvInterpreter_SetCaptureControl, 1, [varEmpty], varEmpty);
     {$IFDEF VCL}
-    AddFunction(cControls, 'CancelDrag', JvInterpreter_CancelDrag, 0, [0], varEmpty);
+    AddFunction(cControls, 'CancelDrag', JvInterpreter_CancelDrag, 0, [varEmpty], varEmpty);
     {$ENDIF VCL}
     AddFunction(cControls, 'CursorToString', JvInterpreter_CursorToString, 1, [varEmpty], varEmpty);
     AddFunction(cControls, 'StringToCursor', JvInterpreter_StringToCursor, 1, [varEmpty], varEmpty);
