@@ -30,12 +30,10 @@ unit JvColorTrackbar;
 interface
 
 uses
-    {$IFDEF VCL}
-  Windows, Messages,
+  Windows,
+  {$IFDEF VCL}
+  Messages,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QWindows,
-  {$ENDIF VisualCLX}
   Classes, Controls, Graphics, Forms,
   JvComponent;
 
@@ -186,6 +184,9 @@ begin
   {$ENDIF VisualCLX}
   GradientFillRect(FBmpImage.Canvas, R, ColorFrom, ColorTo, fdLeftToRight, 255);
   if BorderStyle = bsSingle then
+    {$IFDEF VisualCLX}
+    QWindows.
+    {$ENDIF VisualCLX}
     DrawEdge(FBmpImage.Canvas.Handle, R, EDGE_SUNKEN, BF_TOP or BF_RIGHT or BF_BOTTOM or BF_LEFT);
   {$IFDEF VisualCLX}
   FBmpImage.Canvas.Stop;
@@ -229,12 +230,9 @@ begin
   Canvas.Pen.Color := Color;
   Canvas.Brush.Color := Color;
   {$IFDEF VisualCLX}
-//  Canvas.Draw(WidthOffset div 2, TopOffset, FBmpImage);
   FBmpImage.Canvas.Start;
   {$ENDIF VisualCLX}
-//  {$IFDEF VCL}
   BitBlt(Canvas.Handle, WidthOffset div 2, TopOffset, Width, Height, FBmpImage.Canvas.Handle, 0, 0, SrcCopy);
-//  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   FBmpImage.Canvas.Stop;
   {$ENDIF VisualCLX}

@@ -32,7 +32,11 @@ interface
 
 uses
   Windows, Classes, ComCtrls,
-  JvComCtrls;
+  {$IFDEF VCL}
+  JvComCtrls,
+  {$ENDIF VCL}
+  JvExComCtrls;
+
 
 type
   TJvTVCheckBoxStyle = (cbsNone, cbsNative, cbsJVCL);

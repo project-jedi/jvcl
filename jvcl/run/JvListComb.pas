@@ -754,10 +754,12 @@ var
   TmpR, OrigR: TRect;
   SavedColor: TColor;
 begin
+  {$IFDEF VisualCLX}
+  Result := True;  // Handled
+  {$ENDIF VisualCLX}
   if csDestroying in ComponentState then
     Exit;
   {$IFDEF VisualCLX}
-  Result := True; // handled
   if odSelected in State then
   begin
     Canvas.Brush.Color := FColorHighlight;
@@ -1207,10 +1209,12 @@ function TJvImageListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDraw
 var
   SavedColor: TColor;
 begin
+  {$IFDEF VisualCLX}
+  Result := True;
+  {$ENDIF VisualCLX}
   if csDestroying in ComponentState then
     Exit;
   {$IFDEF VisualCLX}
-  Result := True;
   if odSelected in State then
   begin
     Canvas.Brush.Color := Items[Index].ColorHighlight;

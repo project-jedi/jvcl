@@ -356,8 +356,8 @@ begin
           if not Pages[PageIndex].Enabled then
           begin
             // (p3) TImageList changes the canvas colors when drawing disabled images, so we reset them explicitly
-            Windows.SetBkColor(ACanvas.Handle, BkColor);
-            Windows.SetTextColor(ACanvas.Handle, ColorToRGB(clGrayText));
+            SetBkColor(ACanvas.Handle, BkColor);
+            SetTextColor(ACanvas.Handle, ColorToRGB(clGrayText));
           end;
         end;
       end

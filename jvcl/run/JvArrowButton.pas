@@ -42,7 +42,7 @@ uses
   Windows, Messages, CommCtrl,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QTypes, QImgList, Types, QWindows,
+  QTypes, QImgList, QWindows,
   {$ENDIF VisualCLX}
   Controls, Graphics, Buttons, Menus,
   JvComponent, JvTypes;
@@ -833,6 +833,9 @@ begin
     if (FState in [bsDown, bsExclusive]) or
       (FMouseInControl and (FState <> bsDisabled)) or
       (csDesigning in ComponentState) then
+      {$IFDEF VisualCLX}
+      QWindows.
+      {$ENDIF VisualCLX}
       DrawEdge(Canvas.Handle, PaintRect, DownStyles[FState in [bsDown, bsExclusive]],
         FillStyles[Flat] or BF_RECT);
     InflateRect(PaintRect, -1, -1);
@@ -888,6 +891,9 @@ begin
   end
   else
   if FMouseInControl and Enabled or (csDesigning in ComponentState) then
+    {$IFDEF VisualCLX}
+    QWindows.  
+    {$ENDIF VisualCLX}
     DrawEdge(Canvas.Handle, PaintRect, DownStyles[Push],
       FillStyles[Flat] or BF_RECT);
   { find middle pixel }

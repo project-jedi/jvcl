@@ -29,9 +29,9 @@ interface
 uses
   Windows, 
   {$IFDEF VisualCLX}
-  QTypes, QImgList,
+  QTypes, 
   {$ENDIF VisualCLX}
-  Classes, Graphics, Controls, ExtCtrls,
+  Classes, Graphics, Controls, ExtCtrls, ImgList,
   JvComponent;
 
 type
@@ -345,7 +345,7 @@ type
 implementation
 
 uses
-  SysUtils, ImgList,
+  SysUtils, 
   JvTypes, JvConsts;
 
 type

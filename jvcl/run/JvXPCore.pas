@@ -31,7 +31,7 @@ unit JvXPCore;
 interface
 
 uses
-  Windows, Messages, Controls, Graphics, Forms,
+  Windows, Controls, Graphics, Forms, Messages, // asn: messages after controls for clx
   {$IFDEF USEJVCL}
   JvComponent,
   {$ENDIF USEJVCL}
@@ -165,11 +165,11 @@ type
     FVersion: string;
     procedure SetVersion(Value: string);
     {$ENDIF USEJVCL}
+    procedure CMFocusChanged(var Msg: TMessage); message CM_FOCUSCHANGED;
     {$IFDEF VCL}
     procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMBorderChanged(var Msg: TMessage); message CM_BORDERCHANGED;
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMFocusChanged(var Msg: TMessage); message CM_FOCUSCHANGED;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
@@ -202,7 +202,6 @@ type
     procedure AdjustSize; override;
     procedure BorderChanged; dynamic;
     procedure EnabledChanged; override;
-    procedure FocusChanged; // override;  TODO
     procedure TextChanged; override;
     procedure ParentColorChanged; override;
     procedure ParentFontChanged; override;
@@ -486,6 +485,7 @@ begin
   inherited;
   HookEnabledChanged;
 end;
+{$ENDIF VCL}
 
 procedure TJvXPCustomControl.CMFocusChanged(var Msg: TMessage);
 begin
@@ -494,6 +494,7 @@ begin
   HookFocusedChanged;
 end;
 
+{$IFDEF VCL}
 procedure TJvXPCustomControl.CMMouseEnter(var Msg: TMessage);
 begin
   // delegate message "MouseEnter" to hook.
@@ -573,7 +574,7 @@ end;
 procedure TJvXPCustomControl.BorderChanged;
 begin
   // delegate message "BorderChanged" to hook.
-  inherited BorderChanged;
+//  inherited BorderChanged;
   HookBorderChanged;
 end;
 
@@ -582,13 +583,6 @@ begin
   // delegate message "EnabledChanged" to hook.
   inherited EnabledChanged;
   HookEnabledChanged;
-end;
-
-procedure TJvXPCustomControl.FocusChanged;
-begin
-  // delegate message "FocusChanged" to hook.
-  inherited FocusChanged;
-  HookFocusedChanged;
 end;
 
 procedure TJvXPCustomControl.MouseEnter(AControl: TControl);
