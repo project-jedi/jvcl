@@ -75,7 +75,7 @@ type
     Unused: Longint;
     Result: Longint;
   end;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 
   TJvStandardButton = (tsbNone, tsbClose, tsbHelp, tsbMax, tsbMin, tsbRestore,
     tsbMinimizeToTray {a la e-Mule});
@@ -159,12 +159,10 @@ type
 
     {$IFDEF JVCLThemesEnabled}
     FCaptionActive: Boolean;
-    {$ENDIF}
+    function GetIsThemed: Boolean;
+    {$ENDIF JVCLThemesEnabled}
     function GetAction: TBasicAction;
     function GetIsImageVisible: Boolean;
-    {$IFDEF JVCLThemesEnabled}
-    function GetIsThemed: Boolean;
-    {$ENDIF}
     function GetParentForm: TCustomForm;
     function GetParentFormHandle: THandle;
     function IsCaptionStored: Boolean;
@@ -206,7 +204,7 @@ type
     procedure DrawButton(DC: HDC);
     {$IFDEF JVCLThemesEnabled}
     procedure DrawButtonBackground(ACanvas: TCanvas);
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
     procedure DrawStandardButton(ACanvas: TCanvas);
     procedure DrawNonStandardButton(ACanvas: TCanvas);
     procedure DrawButtonImage(ACanvas: TCanvas; ImageBounds: TRect);
@@ -249,7 +247,7 @@ type
     property IsImageVisible: Boolean read GetIsImageVisible;
     {$IFDEF JVCLThemesEnabled}
     property IsThemed: Boolean read GetIsThemed;
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
     property MouseInControl: Boolean read FMouseInControl;
     property ParentFormHandle: THandle read GetParentFormHandle;
     property ParentForm: TCustomForm read GetParentForm;
@@ -332,28 +330,28 @@ procedure TJvCaptionButton.Assign(Source: TPersistent);
 begin
   if Source is TJvCaptionButton then
   begin
-    Alignment       := TJvCaptionButton(Source).Alignment;
-    ButtonHeight    := TJvCaptionButton(Source).ButtonHeight;
-    ButtonLeft      := TJvCaptionButton(Source).ButtonLeft;
-    ButtonTop       := TJvCaptionButton(Source).ButtonTop;
-    ButtonWidth     := TJvCaptionButton(Source).ButtonWidth;
-    Caption         := TJvCaptionButton(Source).Caption;
-    ShowHint        := TJvCaptionButton(Source).ShowHint;
-    ParentShowHint  := TJvCaptionButton(Source).ParentShowHint;
-    Enabled         := TJvCaptionButton(Source).Enabled;
-    Font            := TJvCaptionButton(Source).Font;
-    Hint            := TJvCaptionButton(Source).Hint;
-    ImageIndex      := TJvCaptionButton(Source).ImageIndex;
-    Images          := TJvCaptionButton(Source).Images;
-    Layout          := TJvCaptionButton(Source).Layout;
-    Margin          := TJvCaptionButton(Source).Margin;
-    Position        := TJvCaptionButton(Source).Position;
-    Spacing         := TJvCaptionButton(Source).Spacing;
-    Standard        := TJvCaptionButton(Source).Standard;
+    Alignment      := TJvCaptionButton(Source).Alignment;
+    ButtonHeight   := TJvCaptionButton(Source).ButtonHeight;
+    ButtonLeft     := TJvCaptionButton(Source).ButtonLeft;
+    ButtonTop      := TJvCaptionButton(Source).ButtonTop;
+    ButtonWidth    := TJvCaptionButton(Source).ButtonWidth;
+    Caption        := TJvCaptionButton(Source).Caption;
+    ShowHint       := TJvCaptionButton(Source).ShowHint;
+    ParentShowHint := TJvCaptionButton(Source).ParentShowHint;
+    Enabled        := TJvCaptionButton(Source).Enabled;
+    Font           := TJvCaptionButton(Source).Font;
+    Hint           := TJvCaptionButton(Source).Hint;
+    ImageIndex     := TJvCaptionButton(Source).ImageIndex;
+    Images         := TJvCaptionButton(Source).Images;
+    Layout         := TJvCaptionButton(Source).Layout;
+    Margin         := TJvCaptionButton(Source).Margin;
+    Position       := TJvCaptionButton(Source).Position;
+    Spacing        := TJvCaptionButton(Source).Spacing;
+    Standard       := TJvCaptionButton(Source).Standard;
     // set toggle before down
-    Toggle          := TJvCaptionButton(Source).Toggle;
-    Down            := TJvCaptionButton(Source).Down;
-    Visible         := TJvCaptionButton(Source).Visible;
+    Toggle         := TJvCaptionButton(Source).Toggle;
+    Down           := TJvCaptionButton(Source).Down;
+    Visible        := TJvCaptionButton(Source).Visible;
     Exit;
   end;
   inherited;
@@ -420,7 +418,7 @@ const
 var
   {$IFDEF JVCLThemesEnabled}
   DoThemed: Boolean;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
   Style: DWORD;
   ExStyle: DWORD;
   FrameSize: TSize;
@@ -440,7 +438,7 @@ begin
   {$IFDEF JVCLThemesEnabled}
   FCaptionActive := (GetActiveWindow = Wnd) and IsForegroundTask;
   DoThemed := IsThemed;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 
   if Style and WS_THICKFRAME = WS_THICKFRAME then
   begin
@@ -468,7 +466,7 @@ begin
   if DoThemed then
     FDefaultButtonWidth := FDefaultButtonHeight
   else
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
   if FHasSmallCaption then
     FDefaultButtonWidth := GetSystemMetrics(SM_CXSMSIZE) - CSpaceBetweenButtons
   else
@@ -494,7 +492,7 @@ begin
                 the CONTEXTHELP button is then never visible }
           Inc(FDefaultButtonLeft, 2 * (FDefaultButtonWidth + CSpaceBetweenButtons))
         else
-        {$ENDIF}
+        {$ENDIF JVCLThemesEnabled}
         begin
           { 4b. If it have Max or Min button, both are visible. }
           Inc(FDefaultButtonLeft, 2 * FDefaultButtonWidth + CSpaceBetweenButtons);
@@ -630,7 +628,6 @@ begin
   if FToolTipHandle <> 0 then
   begin
     DestroyWindow(FToolTipHandle);
-
     FToolTipHandle := 0;
   end;
 end;
@@ -662,7 +659,7 @@ begin
 
     {$IFDEF JVCLThemesEnabled}
     DrawButtonBackground(FBuffer.Canvas);
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
 
     { We do a buffered drawing, otherwise you get flickering on XP, and you
       have to hassle with the clipping rects. }
@@ -709,7 +706,7 @@ begin
   Details := ThemeServices.GetElementDetails(CCaption[FHasSmallCaption, FCaptionActive]);
   ThemeServices.DrawElement(ACanvas.Handle, Details, CaptionRect, @ClipRect);
 end;
-{$ENDIF}
+{$ENDIF JVCLThemesEnabled}
 
 procedure TJvCaptionButton.DrawButtonImage(ACanvas: TCanvas; ImageBounds: TRect);
 begin
@@ -755,7 +752,7 @@ var
   NormalButton: TThemedButton;
   DoThemed: Boolean;
   DrawRgn: HRGN;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -817,7 +814,7 @@ begin
     end;
   end
   else
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
     DrawButtonFace(ACanvas, DrawRect, 1, bsAutoDetect, False, FDown, False);
 
   { 2. Draw the text & picture }
@@ -852,7 +849,7 @@ begin
     SelectClipRgn(ACanvas.Handle, 0);
     DeleteObject(DrawRgn);
   end;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 end;
 
 procedure TJvCaptionButton.DrawStandardButton(ACanvas: TCanvas);
@@ -861,7 +858,7 @@ const
   CElements: array[TJvStandardButton] of TThemedWindow = (
     twWindowDontCare, twCloseButtonNormal, twHelpButtonNormal, twMaxButtonNormal,
     twMinButtonNormal, twRestoreButtonNormal, twMinButtonNormal);
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
   CDrawFlags: array[TJvStandardButton] of Word = (
     0, DFCS_CAPTIONCLOSE, DFCS_CAPTIONHELP, DFCS_CAPTIONMAX, DFCS_CAPTIONMIN,
     DFCS_CAPTIONRESTORE, 0);
@@ -872,7 +869,7 @@ var
   {$IFDEF JVCLThemesEnabled}
   Details: TThemedElementDetails;
   CaptionButton: TThemedWindow;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -966,7 +963,7 @@ function TJvCaptionButton.GetIsThemed: Boolean;
 begin
   Result := ThemeServices.ThemesAvailable and IsThemeActive;
 end;
-{$ENDIF}
+{$ENDIF JVCLThemesEnabled}
 
 function TJvCaptionButton.GetParentForm: TCustomForm;
 begin
@@ -1068,8 +1065,7 @@ begin
   //Result := False;
 end;
 
-function TJvCaptionButton.HandleMouseMove(
-  var Msg: TWMNCHitMessage): Boolean;
+function TJvCaptionButton.HandleMouseMove(var Msg: TWMNCHitMessage): Boolean;
 var
   DoRedraw: Boolean;
   MouseWasInControl: Boolean;
@@ -1106,8 +1102,7 @@ begin
   Redraw(rkDirect);
 end;
 
-procedure TJvCaptionButton.HandleNCMouseMove(
-  var Msg: TWMNCHitMessage);
+procedure TJvCaptionButton.HandleNCMouseMove(var Msg: TWMNCHitMessage);
 var
   IsOnButton: Boolean;
 begin
@@ -1563,14 +1558,14 @@ procedure TJvCaptionButton.SetStandard(Value: TJvStandardButton);
 {$IFDEF JVCLThemesEnabled}
 var
   ButtonSizeChanged: Boolean;
-{$ENDIF}
+{$ENDIF JVCLThemesEnabled}
 begin
   if FStandard <> Value then
   begin
     {$IFDEF JVCLThemesEnabled}
     ButtonSizeChanged := IsThemed and
       ((Value = tsbMinimizeToTray) or (FStandard = tsbMinimizeToTray));
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
     FStandard := Value;
 
     {$IFDEF JVCLThemesEnabled}
@@ -1580,7 +1575,7 @@ begin
     if ButtonSizeChanged and (FStandard = tsbMinimizeToTray) then
       Redraw(rkTotalCaptionBar)
     else
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
       Redraw(rkIndirect);
   end;
 end;
@@ -1674,7 +1669,7 @@ begin
   {$IFDEF JVCLThemesEnabled}
   if (FStandard = tsbMinimizeToTray) and IsThemed then
     Inc(FButtonRect.Top, 2);
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 
   { Click rect is a bit bigger }
   with FButtonRect do
@@ -1689,7 +1684,7 @@ begin
   case Msg.Msg of
     {$IFDEF JVCLThemesEnabled}
     WM_THEMECHANGED,
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
     CM_SYSCOLORCHANGE:
       begin
         FNeedRecalculate := True;

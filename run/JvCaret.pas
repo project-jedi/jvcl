@@ -17,7 +17,7 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: 2000-mm-dd
+Last Modified: 2004-01-06
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -34,13 +34,13 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF}
-  {$IFDEF VisualCLX}
-  QWindows, Qt, QGraphics, QControls, QForms,
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
   Graphics, Controls,
-  {$ENDIF}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QWindows, Qt, QGraphics, QControls, QForms,
+  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JVCLVer, JvTypes;
 
@@ -59,6 +59,7 @@ type
     FGrayCaret: Boolean;
     FCaretOwner: TWinControl;
     FUpdateCount: Integer;
+    FModified: Boolean;
     FOnChanged: TNotifyEvent;
     FCaretCreated: Boolean;
     procedure SetCaretBitmap(const Value: TBitmap);
@@ -98,7 +99,6 @@ implementation
 
 uses
   JvJCLUtils, JvResources;
-
 
 constructor TJvCaret.Create(Owner: TWinControl);
 begin
@@ -141,8 +141,14 @@ end;
 
 procedure TJvCaret.Changed;
 begin
-  if Assigned(FOnChanged) and (FUpdateCount = 0) then
-    FOnChanged(Self);
+  if FUpdateCount = 0 then
+  begin
+    FModified := False;
+    if Assigned(FOnChanged) then
+      FOnChanged(Self);
+  end
+  else
+    FModified := True;
 end;
 
 function TJvCaret.UsingBitmap: Boolean;
@@ -230,7 +236,8 @@ end;
 procedure TJvCaret.EndUpdate;
 begin
   Dec(FUpdateCount);
-  Changed;
+  if (FUpdateCount = 0) and FModified then
+    Changed;
 end;
 
 procedure TJvCaret.SetCaretBitmap(const Value: TBitmap);

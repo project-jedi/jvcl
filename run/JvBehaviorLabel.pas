@@ -43,12 +43,12 @@ unit JvBehaviorLabel;
 
 interface
 uses
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Windows, Messages, Controls, Graphics, StdCtrls, ExtCtrls, Forms,
-{$ENDIF}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QControls, QGraphics, QStdCtrls, QExtCtrls, QForms,
-{$ENDIF}
+  {$ENDIF VisualCLX}
   SysUtils, Classes, JVCLVer, JvExStdCtrls;
 
 type
@@ -130,9 +130,9 @@ type
     FParent: TWinControl;
     FDirection: Integer;
     FTimer: TTimer;
-    FPixels: integer;
+    FPixels: Integer;
     procedure SetInterval(const Value: Cardinal);
-    procedure SetPixels(const Value: integer);
+    procedure SetPixels(const Value: Integer);
     procedure DoTimerEvent(Sender: TObject);
   protected
     procedure Start; override;
@@ -146,7 +146,7 @@ type
     property Interval: Cardinal read FInterval write SetInterval default 20;
     // Pixels specifes the number of pixels the label is moved at each bounce.
     // Lower values will make the label move slower and smoother. Compensate by decreasing the value of Interval
-    property Pixels: integer read FPixels write SetPixels default 6;
+    property Pixels: Integer read FPixels write SetPixels default 6;
   end;
 
   // TJvLabelScroll implements a scrolling behavior, a behavior where the text is scrolled horizontally
@@ -225,7 +225,7 @@ type
   private
     FMakeErrors: Boolean;
     FInterval: Cardinal;
-    FTextPos: integer;
+    FTextPos: Integer;
     FTimer: TTimer;
     FOriginalText: TCaption;
     procedure SetInterval(const Value: Cardinal);
@@ -251,7 +251,7 @@ type
   TJvLabelSpecial = class(TJvLabelBehavior)
   private
     FInterval: Cardinal;
-    FTextPos, FCharValue: integer;
+    FTextPos, FCharValue: Integer;
     FTimer: TTimer;
     FOriginalText: string;
     procedure SetInterval(const Value: Cardinal);
@@ -273,9 +273,9 @@ type
   TJvLabelCodeBreaker = class(TJvLabelBehavior)
   private
     FScratchPad, FOriginal, FDecodedText: string;
-    FInterval, FCurrentPos: integer;
+    FInterval, FCurrentPos: Integer;
     FTimer: TTimer;
-    procedure SetInterval(const Value: integer);
+    procedure SetInterval(const Value: Integer);
     procedure DoTimer(Sender: TObject);
   protected
     procedure Start; override;
@@ -284,7 +284,7 @@ type
     constructor Create(ALabel: TJvCustomBehaviorLabel); override;
   published
     property DecodedText: string read FDecodedText write FDecodedText;
-    property Interval: integer read FInterval write SetInterval default 10;
+    property Interval: Integer read FInterval write SetInterval default 10;
   end;
 
   TJvLabelBehaviorOptionsClass = class of TJvLabelBehavior;
@@ -393,7 +393,7 @@ var
 
 function GetLabelBehaviorOptionsClass(const Name: TJvLabelBehaviorName): TJvLabelBehaviorOptionsClass;
 var
-  i: integer;
+  i: Integer;
 begin
   Result := TJvLabelBehavior;
 
@@ -407,7 +407,7 @@ end;
 
 function GetLabelBehaviorName(BehaviorOptionsClass: TJvLabelBehaviorOptionsClass): string;
 var
-  i: integer;
+  i: Integer;
 begin
   Result := '';
   if (FBehaviorOptions <> nil) then
@@ -745,7 +745,7 @@ begin
   end;
 end;
 
-procedure TJvLabelBounce.SetPixels(const Value: integer);
+procedure TJvLabelBounce.SetPixels(const Value: Integer);
 begin
   if FPixels <> Value then
   begin
@@ -881,7 +881,7 @@ end;
 
 procedure TJvLabelAppear.DoTimerEvent(Sender: TObject);
 var
-  FWidth, FHeight: integer;
+  FWidth, FHeight: Integer;
   FSuspend: Boolean;
 begin
   FWidth := FOriginalRect.Right - FOriginalRect.Left;
@@ -1031,7 +1031,7 @@ end;
 procedure TJvLabelTyping.DoTimerEvent(Sender: TObject);
 var
   tmp: string;
-  i: integer;
+  i: Integer;
 begin
   FTimer.Enabled := False;
   if FTextPos <= Length(FOriginalText) then
@@ -1200,7 +1200,7 @@ begin
   FTimer.Enabled := True;
 end;
 
-procedure TJvLabelCodeBreaker.SetInterval(const Value: integer);
+procedure TJvLabelCodeBreaker.SetInterval(const Value: Integer);
 begin
   if FInterval <> Value then
   begin

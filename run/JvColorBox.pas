@@ -140,7 +140,7 @@ type
     {$ENDIF VCL}
   protected
     {$IFDEF VisualCLX}
-    procedure Resize; override;
+    procedure BoundsChanged; override;
     {$ENDIF VisualCLX}
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -474,7 +474,7 @@ end;
 {$IFDEF VCL}
 procedure TJvCustomDropButton.WMSize(var Msg: TWMSize);
 {$ELSE}
-procedure TJvCustomDropButton.Resize;
+procedure TJvCustomDropButton.BoundsChanged;
 {$ENDIF}
 begin
   inherited;
