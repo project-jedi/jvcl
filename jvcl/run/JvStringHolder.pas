@@ -928,7 +928,7 @@ begin
       Result := MultipleStrings.Items[I];
       Exit;
     end;
-  raise EJvMultiStringHolderException.CreateResFmt(@RsNoItemFoundWithName, [Name]);
+  raise EJvMultiStringHolderException.CreateResFmt(@RsENoItemFoundWithName, [Name]);
 end;
 
 function TJvMultiStringHolder.GetStringsByName(const Name: string): TStrings;

@@ -33,11 +33,10 @@ interface
 
 uses
   Messages, DdeMan, Classes,
-  JclBase,
-  JvComponent;
+  JvComponent, JvTypes;
 
 type
-  EJvADCParserError = class(EJclError);
+  EJvADCParserError = class(EJVCLException);
 
   TJvADCBusyEvent = procedure(Sender: TObject; IsBusy: Boolean) of object;
 

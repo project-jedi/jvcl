@@ -39,10 +39,10 @@ uses
   {$IFDEF VisualCLX}
   Windows, QForms,
   {$ENDIF VisualCLX}
-  JclBase, JvComponent;
+  JvComponent, JvTypes;
 
 type
-  EJvPerfStatException = class(EJclError);
+  EJvPerfStatException = class(EJVCLException);
 
   TJvPerfStat95 = class;
 
@@ -159,7 +159,6 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  JclSysInfo,
   JvJCLUtils, JvJVCLUtils, JvResources;
 
 const

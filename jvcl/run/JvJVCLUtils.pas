@@ -47,11 +47,7 @@ uses
   {$ENDIF VisualCLX}
   Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus,
   Dialogs, ComCtrls, ImgList, Grids, IniFiles,
-  {$IFNDEF NO_JCL}
-  JclBase,
-  {$ENDIF !NO_JCL}
   JvJCLUtils, JvAppStorage, JvTypes;
-
 
 {$IFDEF VisualCLX}
 function Icon2Bitmap(Ico: TIcon): TBitmap;
@@ -6069,11 +6065,7 @@ var
   Button: TToolButton;
 begin
   if AForm.FormStyle = fsMDIForm then
-    {$IFNDEF NO_JCL}
-    raise EJclError.CreateResRec(@RsNotForMdi);
-    {$ELSE}
-    raise Exception.CreateRes(@RsNotForMdi);
-    {$ENDIF !NO_JCL}
+    raise EJVCLException.CreateRes(@RsENotForMdi);
   if AMenu = nil then
     AMenu := AForm.Menu;
   if AMenu = nil then

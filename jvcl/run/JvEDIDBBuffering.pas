@@ -470,7 +470,7 @@ begin
   end;
 end;
 
-//=== { TJclEDIFieldDef } ====================================================
+//=== { TJvEDIFieldDef } =====================================================
 
 constructor TJvEDIFieldDef.Create(Collection: TCollection);
 begin

@@ -32,7 +32,8 @@ interface
 
 uses
   Windows, Classes, Graphics, ImgList,
-  JclBase, JvTypes;
+  JclBase,
+  JvTypes;
 
 type
   TDataProviderChangeReason =

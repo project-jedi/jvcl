@@ -1231,8 +1231,7 @@ resourcestring
 
 //=== JvJVCLUtils.pas ========================================================
 resourcestring
-  RsNotForMdi = 'MDI forms are not allowed';
-
+  RsENotForMdi = 'MDI forms are not allowed';
   RsEPixelFormatNotImplemented = 'BitmapToMemoryStream: pixel format not implemented';
   RsEBitCountNotImplemented = 'BitmapToMemoryStream: bit count not implemented';
   RsECantGetShortCut = 'Target FileName for ShortCut %s not available';
@@ -1663,7 +1662,7 @@ resourcestring
 
 //=== JvStringHolder.pas =====================================================
 resourcestring
-  RsNoItemFoundWithName = 'No item found with name "%s"';
+  RsENoItemFoundWithName = 'No item found with name "%s"';
 
 //=== JvStrings.pas ==========================================================
 resourcestring
