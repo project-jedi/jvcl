@@ -1,4 +1,30 @@
-unit MainForm;
+{******************************************************************
+
+                       JEDI-VCL Demo
+
+ Copyright (C) 2002 Project JEDI
+
+ Original author:
+
+ Contributor(s):
+
+ You may retrieve the latest version of this file at the JEDI-JVCL
+ home page, located at http://jvcl.sourceforge.net
+
+ The contents of this file are used with permission, subject to
+ the Mozilla Public License Version 1.1 (the "License"); you may  
+ not use this file except in compliance with the License. You may 
+ obtain a copy of the License at
+ http://www.mozilla.org/MPL/MPL-1_1Final.html
+
+ Software distributed under the License is distributed on an
+ "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or   
+ implied. See the License for the specific language governing
+ rights and limitations under the License.
+
+******************************************************************}
+
+unit JvAppStorageSelListMainFrmU;
 
 interface
 
@@ -10,7 +36,7 @@ uses
   ShellAPI, Menus, jvDynControlEngine, jvDynControlEngineJVCL;
 
 type
-  TMainFormDlg = class(TForm)
+  TJvAppStorageSelListMainFrm = class(TForm)
     StatusBar1: TStatusBar;
     JvAppIniFileStorage1: TJvAppIniFileStorage;
     JvFormStorage1: TJvFormStorage;
@@ -45,36 +71,32 @@ type
     procedure ToolButton2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 var
-  MainFormDlg: TMainFormDlg;
+  JvAppStorageSelListMainFrm: TJvAppStorageSelListMainFrm;
 
 implementation
 
 {$R *.dfm}
 
-procedure TMainFormDlg.YetAnotherOption1Click(Sender: TObject);
+procedure TJvAppStorageSelListMainFrm.YetAnotherOption1Click(Sender: TObject);
 begin
   if Sender is TMenuItem
      then TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
 end;
 
-procedure TMainFormDlg.ToolButton1Click(Sender: TObject);
+procedure TJvAppStorageSelListMainFrm.ToolButton1Click(Sender: TObject);
 begin
   JvFormStorage1.SaveFormPlacement;
 end;
 
-procedure TMainFormDlg.ToolButton2Click(Sender: TObject);
+procedure TJvAppStorageSelListMainFrm.ToolButton2Click(Sender: TObject);
 begin
   JvFormStorage1.RestoreFormPlacement;
 end;
 
-procedure TMainFormDlg.Button1Click(Sender: TObject);
+procedure TJvAppStorageSelListMainFrm.Button1Click(Sender: TObject);
 var
   FormStorageSelectList: tJvFormStorageSelectList;
 begin
@@ -89,7 +111,7 @@ begin
   end;
 end;
 
-procedure TMainFormDlg.Button2Click(Sender: TObject);
+procedure TJvAppStorageSelListMainFrm.Button2Click(Sender: TObject);
 var
   FormStorageSelectList: tJvFormStorageSelectList;
 begin
@@ -101,7 +123,7 @@ begin
 //    if CheckBox1.Checked
     SetDefaultDynControlEngine(DynControlEngineJVCL);
     FormStorageSelectList.SaveFormStorage;
-      finally
+  finally
     FormStorageSelectList.Free;
   end;
 end;

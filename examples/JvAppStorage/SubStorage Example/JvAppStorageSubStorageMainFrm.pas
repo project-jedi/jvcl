@@ -1,4 +1,30 @@
-unit MainForm;
+{******************************************************************
+
+                       JEDI-VCL Demo
+
+ Copyright (C) 2002 Project JEDI
+
+ Original author:
+
+ Contributor(s):
+
+ You may retrieve the latest version of this file at the JEDI-JVCL
+ home page, located at http://jvcl.sourceforge.net
+
+ The contents of this file are used with permission, subject to
+ the Mozilla Public License Version 1.1 (the "License"); you may  
+ not use this file except in compliance with the License. You may 
+ obtain a copy of the License at
+ http://www.mozilla.org/MPL/MPL-1_1Final.html
+
+ Software distributed under the License is distributed on an
+ "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or   
+ implied. See the License for the specific language governing
+ rights and limitations under the License.
+
+******************************************************************}
+
+unit JvAppStorageSubStorageMainFrm;
 
 interface
 
@@ -10,7 +36,7 @@ uses
   ShellAPI, Menus, jvDynControlEngine, jvDynControlEngineJVCL;
 
 type
-  TMainFormDlg = class(TForm)
+  TJvAppStorageSubStorageMainForm = class(TForm)
     StatusBar1: TStatusBar;
     JvAppIniFileStorage1: TJvAppIniFileStorage;
     JvFormStorage1: TJvFormStorage;
@@ -63,29 +89,29 @@ type
   end;
 
 var
-  MainFormDlg: TMainFormDlg;
+  JvAppStorageSubStorageMainForm: TJvAppStorageSubStorageMainForm;
 
 implementation
 
 {$R *.dfm}
 
-procedure TMainFormDlg.YetAnotherOption1Click(Sender: TObject);
+procedure TJvAppStorageSubStorageMainForm.YetAnotherOption1Click(Sender: TObject);
 begin
   if Sender is TMenuItem
      then TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
 end;
 
-procedure TMainFormDlg.ToolButton1Click(Sender: TObject);
+procedure TJvAppStorageSubStorageMainForm.ToolButton1Click(Sender: TObject);
 begin
   JvFormStorage1.SaveFormPlacement;
 end;
 
-procedure TMainFormDlg.ToolButton2Click(Sender: TObject);
+procedure TJvAppStorageSubStorageMainForm.ToolButton2Click(Sender: TObject);
 begin
   JvFormStorage1.RestoreFormPlacement;
 end;
 
-procedure TMainFormDlg.Button1Click(Sender: TObject);
+procedure TJvAppStorageSubStorageMainForm.Button1Click(Sender: TObject);
 var
   FormStorageSelectList: tJvFormStorageSelectList;
 begin
@@ -100,7 +126,7 @@ begin
   end;
 end;
 
-procedure TMainFormDlg.Button2Click(Sender: TObject);
+procedure TJvAppStorageSubStorageMainForm.Button2Click(Sender: TObject);
 var
   FormStorageSelectList: tJvFormStorageSelectList;
 begin
@@ -115,17 +141,17 @@ begin
   end;
 end;
 
-procedure TMainFormDlg.ToolButton5Click(Sender: TObject);
+procedure TJvAppStorageSubStorageMainForm.ToolButton5Click(Sender: TObject);
 begin
   jvAppStorage1.WriteInteger(StoragePath+'ListBox1Selected', ListBox1.ItemIndex);
 end;
 
-procedure TMainFormDlg.ToolButton6Click(Sender: TObject);
+procedure TJvAppStorageSubStorageMainForm.ToolButton6Click(Sender: TObject);
 begin
   ListBox1.ItemIndex := jvAppStorage1.ReadInteger(StoragePath+'ListBox1Selected', 0);
 end;
 
-procedure TMainFormDlg.CheckStorageKind;
+procedure TJvAppStorageSubStorageMainForm.CheckStorageKind;
 begin
   if rbXML.Checked
      then StoragePath := '\XML\';
@@ -136,12 +162,12 @@ begin
   jvFormStorage1.AppStoragePath := StoragePath;
 end;
 
-procedure TMainFormDlg.jvStorageKindClick(Sender: TObject);
+procedure TJvAppStorageSubStorageMainForm.jvStorageKindClick(Sender: TObject);
 begin
   CheckStorageKind;
 end;
 
-procedure TMainFormDlg.JvFormStorage1RestorePlacement(Sender: TObject);
+procedure TJvAppStorageSubStorageMainForm.JvFormStorage1RestorePlacement(Sender: TObject);
 begin
   CheckStorageKind;
   // here is an excellent place to restore values for a form if they
@@ -149,7 +175,7 @@ begin
   // selection values etc...
 end;
 
-procedure TMainFormDlg.loaded;
+procedure TJvAppStorageSubStorageMainForm.loaded;
 begin
   CheckStorageKind;
 end;

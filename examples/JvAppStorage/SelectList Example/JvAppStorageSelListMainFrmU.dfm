@@ -1,6 +1,6 @@
-object MainFormDlg: TMainFormDlg
-  Left = 321
-  Top = 227
+object JvAppStorageSelListMainFrm: TJvAppStorageSelListMainFrm
+  Left = 370
+  Top = 225
   BorderStyle = bsDialog
   Caption = 'AppStorage Example #2'
   ClientHeight = 324
@@ -145,9 +145,10 @@ object MainFormDlg: TMainFormDlg
         Width = 378
         Height = 99
         Align = alClient
+        Color = clInfoBk
         Lines.Strings = (
           ' This demo of the appstorage components shows how to '
-          '  store and restore property values at runtime')
+          ' store and restore property values at runtime')
         TabOrder = 0
       end
     end
@@ -207,11 +208,12 @@ object MainFormDlg: TMainFormDlg
       end
       item
       end>
-    Left = 200
+    Left = 48
     Top = 120
   end
   object JvFormStorage1: TJvFormStorage
     AppStorage = JvAppIniFileStorage1
+    AppStoragePath = '%FORM_NAME%\'
     StoredProps.Strings = (
       'Option1.Checked'
       'YetAnotherOption1.Checked'
@@ -228,8 +230,8 @@ object MainFormDlg: TMainFormDlg
       'TrackBar1.Position'
       'Memo2.Lines')
     StoredValues = <>
-    Left = 208
-    Top = 88
+    Left = 160
+    Top = 64
   end
   object PopupMenu1: TPopupMenu
     Left = 161
@@ -249,14 +251,14 @@ object MainFormDlg: TMainFormDlg
     end
   end
   object OpenDialog1: TOpenDialog
-    Left = 200
-    Top = 48
+    Left = 280
+    Top = 56
   end
   object JvFormStorageSelectList1: TJvFormStorageSelectList
     AppStorage = JvAppIniFileStorage1
     SelectPath = 'something'
     FormStorage = JvFormStorage1
-    Left = 169
-    Top = 82
+    Left = 49
+    Top = 74
   end
 end
