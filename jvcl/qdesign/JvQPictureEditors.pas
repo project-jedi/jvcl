@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-11-09
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -35,10 +34,15 @@ unit JvQPictureEditors;
 interface
 
 uses
-  Classes, Types, QGraphics, QForms, QControls, QDialogs, QMenus,
-
+  Classes,
+  
+  
+  Types, QGraphics, QForms, QControls, QDialogs, QMenus,
+  
+  
   RTLConsts, DesignIntf, DesignEditors,
-
+  
+  
   JvQPictureEditForm;
 
 type
@@ -62,9 +66,9 @@ type
 
   TJvGraphicsEditor = class(TDefaultEditor)
   public
-
+    
     procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
-
+    
   end;
 
   TJvPictEditor = class(TComponent)
@@ -90,11 +94,12 @@ function EditGraphic(Graphic: TGraphic; AClass: TGraphicClass;
 implementation
 
 uses
-  SysUtils, TypInfo,
-  {$IFDEF MSWINDOWS}
-  LibHelp,
-  {$ENDIF MSWINDOWS}
-  QConsts, JvQTypes, JvQJVCLUtils;
+  SysUtils, TypInfo, LibHelp,
+  
+  
+  QConsts,
+  
+  JvQTypes, JvQJVCLUtils;
 
 //=== Utility routines =======================================================
 
@@ -286,7 +291,6 @@ begin
     begin
       if (GraphicClass = TBitmap) and (FPicDlg.Pic.Graphic is TIcon) then
       begin
-        (*)
         Bmp := CreateBitmapFromIcon(FPicDlg.Pic.Icon, FPicDlg.IconColor);
         try
           if FPicDlg.DecreaseColors then
@@ -295,7 +299,6 @@ begin
         finally
           Bmp.Free;
         end;
-        (*)
       end
       else
         FPicture.Assign(FPicDlg.Pic);

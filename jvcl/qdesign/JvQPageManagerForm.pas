@@ -36,7 +36,7 @@ uses
   SysUtils, Classes,
   
   
-  QGrids, QStdCtrls, QControls, QExtCtrls, QGraphics, Types,
+  QWindows, QGrids, QStdCtrls, QControls, QExtCtrls, QGraphics, Types,
 
   
   RTLConsts, DesignIntf, DesignEditors,

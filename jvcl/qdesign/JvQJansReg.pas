@@ -20,11 +20,11 @@ uses
   
   
   
-  JvQMarkupLabel, JvQMarkupViewer, JvQSAL, {JvQSticker,} JvQSALCore, JvQSALMath,
+  JvQMarkupLabel, JvQMarkupViewer, JvQSAL, JvQSALCore, JvQSALMath,
   JvQYearGrid, JvQTracker, JvQAirBrush, JvQGridFilter, JvQGridPrinter,
   JvQArrayButton, JvQForth, JvQTurtle, JvQPaintFX, JvQDrawImage,
   JvQBitmapButton, JvQSimScope, JvQSimIndicator, JvQSimPID, JvQSIMPIDLinker,
-  JvQSimLogic, JvQSpellerForm, JvQCsvBaseControls, JvQCsvBaseEditor;
+  JvQSimLogic, JvQSpellerForm, JvQCSVBaseControls, JvQCSVBaseEditor;
 
 procedure Register;
 
@@ -46,7 +46,7 @@ begin
   RegisterComponents('Jv Jans', [TJvMarkupLabel, TJvMarkupViewer, TJvSAL,
     {TJvSticker,} TJvSALCore, TJvSALMath, TJvYearGrid, TJvAirBrush, TJvTracker,
     TJvGridFilter, TJvGridPrinter,
-
+    
     TJvPaintFX, TJvDrawImage,
     TJvArrayButton, TJvForthScript, TJvTurtle, TJvBitmapButton, TJvSpeller
     ]);

@@ -46,7 +46,7 @@ uses
   
   JvQBaseDsgnForm, JvQDataProvider, JvQDataProviderItemDesign, JvQDataProviderIntf,
   JvQProviderTreeListFrame, JvQBaseDsgnFrame, JvQBaseDsgnToolbarFrame,
-  JvQStdToolbarDsgnFrame, JvQProviderToolbarFrame, JvQDsgnTypes;
+  JvQStdToolbarDsgnFrame, JvQProviderToolbarFrame, JvQDsgnTypes, QTypes;
 
 type
   TfrmDataProviderDesigner = class(TJvBaseDesign)

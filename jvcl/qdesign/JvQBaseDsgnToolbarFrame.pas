@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -21,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-07-15
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -43,7 +42,7 @@ uses
   
   
   QGraphics, QControls, QForms, QDialogs, QActnList, QMenus, QImgList,
-  QComCtrls, QExtCtrls, Types, JvQConsts,
+  QComCtrls, QExtCtrls, Types,
   
   JvQBaseDsgnFrame, QTypes;
 
@@ -80,7 +79,7 @@ uses
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 uses
-  JVQRegistryIniFile;
+  IniFiles;
 {$ENDIF LINUX}
 
 
@@ -108,7 +107,7 @@ procedure TfmeJvBaseToolbarDesign.StoreSettings;
 begin
   if RegKey <> '' then
     {$IFDEF LINUX}
-    with TJvRegistryIniFile.Create('') do
+    with TIniFile.Create(GetEnvironmentVariable('HOME')+ PathDelim + SDelphiKey) do
     {$ENDIF LINUX}
     {$IFDEF MSWINDOWS}
     with TRegistry.Create do
@@ -133,7 +132,7 @@ procedure TfmeJvBaseToolbarDesign.RestoreSettings;
 begin
   if RegKey <> '' then
     {$IFDEF LINUX}
-    with TJvRegistryIniFile.Create('') do
+    with TIniFile.Create(GetEnvironmentVariable('HOME')+ PathDelim + SDelphiKey) do
     {$ENDIF LINUX}
     {$IFDEF MSWINDOWS}
     with TRegistry.Create do
@@ -160,9 +159,12 @@ var
 begin
   LastVisibleSep := -1;
   ButtonSinceLastSep := False;
-  for I := 0 to tbrToolbar.{$IFDEF VLC}ButtonCount{$ELSE}ControlCount{$ENDIF} - 1 do
+  
+  
+  for I := 0 to tbrToolbar.ControlCount - 1 do
   begin
-    CurItem := TControl(tbrToolbar.{$IFDEF VLC}Buttons{$ELSE}Controls{$ENDIF}[I]);
+    CurItem := TControl(tbrToolbar.Controls[I]);
+  
     if (CurItem is TToolButton) and (TToolButton(CurItem).Style = tbsSeparator) then
     begin
       CurItem.Visible := ButtonSinceLastSep;
@@ -177,8 +179,11 @@ begin
     if not (CurItem is TToolButton) then
       ButtonSinceLastSep := ButtonSinceLastSep or CurItem.Visible;
   end;
+  
+  
   if (LastVisibleSep >= 0) and not ButtonSinceLastSep then
-    tbrToolbar.{$IFDEF VLC}Buttons{$ELSE}Controls{$ENDIF}[LastVisibleSep].Visible := False;
+    tbrToolbar.Controls[LastVisibleSep].Visible := False;
+  
   { For some reason a divider may be drawn while it's invisible. Calling Invalidate didn't help but
     changing the ButtonWidth seems to work. Look into this issue; may have a different cause,
     possibly in this method. }
