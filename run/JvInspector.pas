@@ -66,11 +66,11 @@ resourcestring
 
 const
   { Inspector Row Size constants }
-  irsNoReSize =     $00000000;
-  irsNameHeight =   $10000000;
-  irsValueHeight =  $20000000;
-  irsItemHeight =   $40000000;
-  irsValueMask =    $0FFFFFFF;
+  irsNoReSize = $00000000;
+  irsNameHeight = $10000000;
+  irsValueHeight = $20000000;
+  irsItemHeight = $40000000;
+  irsValueMask = $0FFFFFFF;
 
 type
   TJvCustomInspector = class;
@@ -85,7 +85,7 @@ type
   TJvCustomInspectorRegItem = class;
   TJvInspectorEventData = class;
   TJvInspectorPropData = class;
-  
+
 {$HPPEMIT 'class TJvCustomInspectorItem;'}
 {$HPPEMIT 'class TJvCustomInspectorData;'}
 
@@ -142,11 +142,10 @@ type
   EJvInspectorData = class(EJvInspector);
   EJvInspectorReg = class(EJvInspector);
 
-  TOnJvInspectorSetItemColors = procedure(Item: TJvCustomInspectorItem; Canvas:TCanvas) of Object;
+  TOnJvInspectorSetItemColors = procedure(Item: TJvCustomInspectorItem; Canvas: TCanvas) of object;
 
-  TOnJvInspectorMouseDown = procedure(Sender:TJvCustomInspector; Item:TJvCustomInspectorItem; Button: TMouseButton;
-                                            Shift: TShiftState;  X, Y: Integer) of Object;
-
+  TOnJvInspectorMouseDown = procedure(Sender: TJvCustomInspector; Item: TJvCustomInspectorItem; Button: TMouseButton;
+    Shift: TShiftState; X, Y: Integer) of object;
 
   TJvCustomInspector = class(TJvCustomControl)
   private
@@ -191,12 +190,11 @@ type
     FOnKeyDown: TKeyEvent;
     FOnKeyPress: TKeyPressEvent;
     FOnKeyUp: TKeyEvent;
-    FOnMouseDown:TOnJvInspectorMouseDown;
+    FOnMouseDown: TOnJvInspectorMouseDown;
     FInspectObject: TObject;
     procedure SetInspectObject(const Value: TObject);
 
 //    FOnMouseDown: TInspectorMouseDownEvent;
-
 
   protected
     function CalcImageHeight: Integer; virtual;
@@ -317,7 +315,7 @@ type
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
     property RelativeDivider: Boolean read GetRelativeDivider write SetRelativeDivider;
     property Root: TJvCustomInspectorItem read GetRoot;
-    property InspectObject:TObject read FInspectObject write SetInspectObject;
+    property InspectObject: TObject read FInspectObject write SetInspectObject;
     property RowSizing: Boolean read FRowSizing write FRowSizing;
     property RowSizingItem: TJvCustomInspectorItem read FRowSizingItem write
       FRowSizingItem;
@@ -346,9 +344,7 @@ type
     property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
     property OnKeyUp: TKeyEvent read FOnKeyUp write FOnKeyUp;
-    property OnMouseDown:TOnJvInspectorMouseDown read FOnMouseDown write FOnMouseDown;
-
-
+    property OnMouseDown: TOnJvInspectorMouseDown read FOnMouseDown write FOnMouseDown;
 
   end;
 
@@ -497,7 +493,7 @@ type
   TJvInspectorBorlandPainter = class(TJvInspectorBorlandNETBasePainter)
   private
     FDividerLightColor: TColor;
-    FOnSetItemColors : TOnJvInspectorSetItemColors;
+    FOnSetItemColors: TOnJvInspectorSetItemColors;
   protected
     function DividerWidth: Integer; override;
     procedure DoPaint; override;
@@ -513,12 +509,12 @@ type
     property DividerColor default clBtnShadow;
     property DividerLightColor: TColor read GetDividerLightColor write SetDividerLightColor default clBtnHighlight;
     property ValueColor default clNavy;
-    property OnSetItemColors : TOnJvInspectorSetItemColors read FOnSetItemColors write FOnSetItemColors;
+    property OnSetItemColors: TOnJvInspectorSetItemColors read FOnSetItemColors write FOnSetItemColors;
   end;
 
   TJvInspectorDotNETPainter = class(TJvInspectorBorlandNETBasePainter)
   private
-      FOnSetItemColors : TOnJvInspectorSetItemColors;
+    FOnSetItemColors: TOnJvInspectorSetItemColors;
   protected
     procedure ApplyNameFont; override;
     procedure DoPaint; override;
@@ -527,7 +523,7 @@ type
     property DividerColor default clBtnFace;
     property SelectedColor default clHighlight;
     property SelectedTextColor default clHighlightText;
-    property OnSetItemColors : TOnJvInspectorSetItemColors read FOnSetItemColors write FOnSetItemColors;
+    property OnSetItemColors: TOnJvInspectorSetItemColors read FOnSetItemColors write FOnSetItemColors;
   end;
 
   TJvInspectorItemSizing = class(TPersistent)
@@ -572,7 +568,7 @@ type
     FParent: TJvCustomInspectorItem;
     FLastPaintGen: Integer;
     FPressed: Boolean;
-    FRects: array [TInspectorPaintRect] of TRect;
+    FRects: array[TInspectorPaintRect] of TRect;
     FRowSizing: TJvInspectorItemSizing;
     FSortKind: TInspectorItemSortKind;
     FTracking: Boolean;
@@ -655,7 +651,7 @@ type
       X, Y: Integer); virtual;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); virtual;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
-    procedure NaturalSort; 
+    procedure NaturalSort;
     procedure SelectValue(const Delta: Integer); virtual;
     procedure SetAutoUpdate(const Value: Boolean); virtual;
     procedure SetDisplayIndex(const Value: Integer); virtual;
@@ -681,7 +677,7 @@ type
     procedure SetSortKind(Value: TInspectorItemSortKind); virtual;
     procedure SetVisible(Value: Boolean); virtual;
     procedure StopTracking; dynamic;
-    procedure TrackButton(X,Y: Integer); dynamic;
+    procedure TrackButton(X, Y: Integer); dynamic;
     procedure Undo; virtual;
     procedure UpdateDisplayOrder(const Item: TJvCustomInspectorItem; const NewIndex: Integer); virtual;
     procedure UpdateLastPaintGeneration;
@@ -699,7 +695,7 @@ type
   public
     constructor Create(const AParent: TJvCustomInspectorItem; const AData: TJvCustomInspectorData); virtual;
     destructor Destroy; override;
-    function Add(const Item: TJvCustomInspectorItem): Integer; 
+    function Add(const Item: TJvCustomInspectorItem): Integer;
     procedure BeforeDestruction; override;
     procedure Clear;
     procedure Delete(const Index: Integer); overload; virtual;
@@ -992,7 +988,7 @@ type
     property SortComponents: Boolean read GetSortComponents write SetSortComponents;
     property SortOwners: Boolean read GetSortOwners write SetSortOwners;
   end;
-  
+
   TJvInspectorFontItem = class(TJvInspectorClassItem)
   protected
     procedure Edit; override;
@@ -1250,7 +1246,7 @@ type
     function HasValue: Boolean; override;
     function IsAssigned: Boolean; override;
     function IsInitialized: Boolean; override;
-    class function New(const AParent: TJvCustomInspectorItem; const Ordinal: Integer; const ADataParent: TJvCustomInspectorData): TJvCustomInspectorItem; overload;
+    class function New(const AParent: TJvCustomInspectorItem; const Ordinal: Integer; const ADataParent: TJvCustomInspectorData): TJvCustomInspectorItem; reintroduce; overload;
     procedure SetAsSet(const Buf); override;
     property BitOffset: Integer read FBitOffset;
     property DataParent: TJvCustomInspectorData read FDataParent;
@@ -1280,7 +1276,7 @@ type
     function IsAssigned: Boolean; override;
     function IsInitialized: Boolean; override;
     class function ItemRegister: TJvInspectorRegister; override;
-    class function New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo; const AAddress: Pointer): TJvCustomInspectorItem; overload;
+    class function New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo; const AAddress: Pointer): TJvCustomInspectorItem; reintroduce; overload;
 //    class function New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo; const AVar): TJvCustomInspectorItem; overload;
     procedure SetAsSet(const Buf); override;
     property Address: Pointer read GetAddress write SetAddress;
@@ -1315,22 +1311,22 @@ type
     function IsInitialized: Boolean; override;
     class function ItemRegister: TJvInspectorRegister; override;
     class function New(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
-      const PropInfo: PPropInfo): TJvCustomInspectorItem; overload;
+      const PropInfo: PPropInfo): TJvCustomInspectorItem; reintroduce; overload; 
     class function New(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
-      const PropName: string): TJvCustomInspectorItem; overload;
+      const PropName: string): TJvCustomInspectorItem; reintroduce; overload;
     class function New(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
-      const TypeKinds: TTypeKinds = tkProperties): TJvInspectorItemInstances; overload;
+      const TypeKinds: TTypeKinds = tkProperties): TJvInspectorItemInstances; reintroduce; overload; 
     class function NewByNames(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
       const NameList: array of string; const ExcludeList: Boolean = False;
       const TypeKinds: TTypeKinds = tkProperties): TJvInspectorItemInstances;
     class function New(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
-      const PropInfos: PPropList; const PropCount: Integer): TJvInspectorItemInstances; overload;
+      const PropInfos: PPropList; const PropCount: Integer): TJvInspectorItemInstances; reintroduce; overload; 
     procedure SetAsSet(const Buf); override;
     property Instance: TObject read GetInstance write SetInstance;
     property Prop: PPropInfo read GetProp write SetProp;
   end;
 
-  TJvInspectorEventData  = class(TJvCustomInspectorData)
+  TJvInspectorEventData = class(TJvCustomInspectorData)
   private
     FOnGetAsFloat: TJvInspAsFloat;
     FOnGetAsInt64: TJvInspAsInt64;
@@ -1358,7 +1354,7 @@ type
     procedure DoSetAsOrdinal(Value: Int64);
     procedure DoSetAsString(Value: string);
     procedure DoSetAsSet(const Buf; var BufSize: Integer);
-    function DoSupportsMethodPointers: Boolean; 
+    function DoSupportsMethodPointers: Boolean;
     function GetAsFloat: Extended; override;
     function GetAsInt64: Int64; override;
     function GetAsMethod: TMethod; override;
@@ -1389,7 +1385,7 @@ type
     function HasValue: Boolean; override;
     function IsAssigned: Boolean; override;
     function IsInitialized: Boolean; override;
-    class function New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo): TJvCustomInspectorItem; overload;
+    class function New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo): TJvCustomInspectorItem; reintroduce; overload;
     procedure SetAsSet(const Buf); override;
     property OnGetAsFloat: TJvInspAsFloat read FOnGetAsFloat write SetOnGetAsFloat;
     property OnGetAsInt64: TJvInspAsInt64 read FOnGetAsInt64 write SetOnGetAsInt64;
@@ -1448,12 +1444,12 @@ type
     procedure WriteValue(Value: string); override;
   public
     class function New(const AParent: TJvCustomInspectorItem; const AName, ASection, AKey: string;
-      const ATypeInfo: PTypeInfo; const AINIFile: TCustomIniFile): TJvCustomInspectorItem; overload;
+      const ATypeInfo: PTypeInfo; const AINIFile: TCustomIniFile): TJvCustomInspectorItem; reintroduce;overload;
     class function New(const AParent: TJvCustomInspectorItem; const ASection: string;
-      const AINIFile: TCustomIniFile; const AOnAddKey: TJvInspConfKeyEvent): TJvInspectorItemInstances; overload;
+      const AINIFile: TCustomIniFile; const AOnAddKey: TJvInspConfKeyEvent): TJvInspectorItemInstances; reintroduce;overload;
     class function New(const AParent: TJvCustomInspectorItem; const AINIFile: TCustomIniFile;
       const AOnAddSection: TJvInspConfSectionEvent;
-      const AOnAddKey: TJvInspConfKeyEvent): TJvInspectorItemInstances; overload;
+      const AOnAddKey: TJvInspConfKeyEvent): TJvInspectorItemInstances; reintroduce;overload;
     property INIFile: TCustomIniFile read FINIFile;
   end;
 
@@ -1560,9 +1556,9 @@ implementation
 
 uses
   Consts, Dialogs, ExtCtrls, Forms,
-  {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
   RTLConsts,
-  {$ENDIF}
+{$ENDIF}
   JclRTTI, JclLogic,
   JvWndProcHook;
 
@@ -1839,7 +1835,7 @@ begin
   begin
     SetLength(FInspectors, Length(FInspectors) + 1);
     FInspectors[High(FInspectors)] := Inspector;
-    if Length(FInspectors) = 1 then           
+    if Length(FInspectors) = 1 then
       RegisterWndProcHook(Application.Handle, ApplicationDeactivate, hoBeforeMsg);
   end;
 end;
@@ -2182,8 +2178,7 @@ begin
   begin
     if UseBands then
       Result := (FDivider * BandWidth) div 100
-    else
-    if HandleAllocated then
+    else if HandleAllocated then
       Result := (FDivider * ClientWidth) div 100
     else
       Result := (FDivider * Width) div 100;
@@ -2211,7 +2206,7 @@ end;
 
 function TJvCustomInspector.GetLastFullVisible: Integer;
 begin
-  Result := YToIdx (IdxToY(TopIndex) + Pred(ClientHeight));
+  Result := YToIdx(IdxToY(TopIndex) + Pred(ClientHeight));
   if Result < 0 then
     Result := Pred(VisibleCount)
   else
@@ -2281,7 +2276,7 @@ end;
 
 function TJvCustomInspector.GetVisibleItems(const I: Integer): TJvCustomInspectorItem;
 begin
-  if (I < 0) or (I>= FVisible.Count) then
+  if (I < 0) or (I >= FVisible.Count) then
     Result := nil
   else
     Result := TJvCustomInspectorItem(FVisible.Objects[I]);
@@ -2327,8 +2322,7 @@ procedure TJvCustomInspector.InvalidateItem;
 begin
   if (LockCount = 0) and HandleAllocated then
     UpdateScrollbars
-  else
-  if not NeedRebuild then
+  else if not NeedRebuild then
     NeedRedraw := True;
 end;
 
@@ -2369,16 +2363,14 @@ begin
       VK_LEFT:
         begin
           if Item is TJvInspectorCustomCompoundItem then
-          with Item as TJvInspectorCustomCompoundItem do
-          begin
-            if SelectedColumnIndex > 0 then
-              SelectedColumnIndex := SelectedColumnIndex - 1
-            else
-            if SelectedIndex > 0 then
-              SelectedIndex := SelectedIndex - 1;
-          end
-          else
-          if SelectedIndex > 0 then
+            with Item as TJvInspectorCustomCompoundItem do
+            begin
+              if SelectedColumnIndex > 0 then
+                SelectedColumnIndex := SelectedColumnIndex - 1
+              else if SelectedIndex > 0 then
+                SelectedIndex := SelectedIndex - 1;
+            end
+          else if SelectedIndex > 0 then
             SelectedIndex := SelectedIndex - 1;
           if Item <> Selected then
           begin
@@ -2390,16 +2382,14 @@ begin
       VK_RIGHT:
         begin
           if Item is TJvInspectorCustomCompoundItem then
-          with Item as TJvInspectorCustomCompoundItem do
-          begin
-            if SelectedColumnIndex < Pred(ColumnCount) then
-              SelectedColumnIndex := SelectedColumnIndex + 1
-            else
-            if SelectedIndex < Pred(VisibleCount) then
-              SelectedIndex := SelectedIndex + 1;
-          end
-          else
-          if SelectedIndex < Pred(VisibleCount) then
+            with Item as TJvInspectorCustomCompoundItem do
+            begin
+              if SelectedColumnIndex < Pred(ColumnCount) then
+                SelectedColumnIndex := SelectedColumnIndex + 1
+              else if SelectedIndex < Pred(VisibleCount) then
+                SelectedIndex := SelectedIndex + 1;
+            end
+          else if SelectedIndex < Pred(VisibleCount) then
             SelectedIndex := SelectedIndex + 1;
           if Item <> Selected then
           begin
@@ -2409,10 +2399,9 @@ begin
         end;
       VK_PRIOR:
         begin
-          if SelectedIndex > TopIndex  then
+          if SelectedIndex > TopIndex then
             SelectedIndex := TopIndex
-          else
-          if SelectedIndex > 0 then
+          else if SelectedIndex > 0 then
           begin
             TmpH := VisibleItems[Pred(SelectedIndex)].Height;
             TmpIdx := YToIdx(IdxToY(SelectedIndex) + TmpH - ClientHeight);
@@ -2426,8 +2415,7 @@ begin
           TmpIdx := GetLastFullVisible;
           if SelectedIndex < TmpIdx then
             SelectedIndex := TmpIdx
-          else
-          if SelectedIndex < Pred(VisibleCount) then
+          else if SelectedIndex < Pred(VisibleCount) then
           begin
             TmpH := VisibleItems[SelectedIndex].Height;
             TmpIdx := YToIdx(IdxToY(SelectedIndex) + TmpH + ClientHeight);
@@ -2440,16 +2428,14 @@ begin
         if WantTabs then
         begin
           if Item is TJvInspectorCustomCompoundItem then
-          with Item as TJvInspectorCustomCompoundItem do
-          begin
-            if SelectedColumnIndex < Pred(ColumnCount) then
-              SelectedColumnIndex := SelectedColumnIndex + 1
-            else
-            if SelectedIndex < Pred(VisibleCount) then
-              SelectedIndex := SelectedIndex + 1;
-          end
-          else
-          if SelectedIndex < Pred(VisibleCount) then
+            with Item as TJvInspectorCustomCompoundItem do
+            begin
+              if SelectedColumnIndex < Pred(ColumnCount) then
+                SelectedColumnIndex := SelectedColumnIndex + 1
+              else if SelectedIndex < Pred(VisibleCount) then
+                SelectedIndex := SelectedIndex + 1;
+            end
+          else if SelectedIndex < Pred(VisibleCount) then
             SelectedIndex := SelectedIndex + 1;
           if Item <> Selected then
           begin
@@ -2463,14 +2449,13 @@ begin
       VK_SUBTRACT:
         if Item.Expanded then
           Item.Expanded := False;
-      else
-        IgnoreKey := False;
+    else
+      IgnoreKey := False;
     end;
     if IgnoreKey then
       Key := 0;
   end
-  else
-  if Shift = [ssShift] then
+  else if Shift = [ssShift] then
   begin
     IgnoreKey := True;
     case Key of
@@ -2478,16 +2463,14 @@ begin
         if WantTabs then
         begin
           if Item is TJvInspectorCustomCompoundItem then
-          with Item as TJvInspectorCustomCompoundItem do
-          begin
-            if SelectedColumnIndex > 0 then
-              SelectedColumnIndex := SelectedColumnIndex - 1
-            else
-            if SelectedIndex > 0 then
-              SelectedIndex := SelectedIndex - 1;
-          end
-          else
-          if SelectedIndex > 0 then
+            with Item as TJvInspectorCustomCompoundItem do
+            begin
+              if SelectedColumnIndex > 0 then
+                SelectedColumnIndex := SelectedColumnIndex - 1
+              else if SelectedIndex > 0 then
+                SelectedIndex := SelectedIndex - 1;
+            end
+          else if SelectedIndex > 0 then
             SelectedIndex := SelectedIndex - 1;
           if Item <> Selected then
           begin
@@ -2496,8 +2479,8 @@ begin
                 TJvInspectorCustomCompoundItem(Selected).ColumnCount - 1;
           end;
         end;
-      else
-        IgnoreKey := True;
+    else
+      IgnoreKey := True;
     end;
     if IgnoreKey then
       Key := 0;
@@ -2522,7 +2505,6 @@ begin
     ((Key = VK_TAB) and WantTabs) then
     Key := 0;
 end;
-
 
 procedure TJvCustomInspector.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
@@ -2555,8 +2537,7 @@ begin
     Item := nil;
   if not Focused and ((Item = nil) or (not Item.Editing)) then
     SetFocus
-  else
-  if (Item <> nil) and (Item.Editing) then
+  else if (Item <> nil) and (Item.Editing) then
     Item.SetFocus;
   if Button = mbLeft then
   begin
@@ -2564,8 +2545,7 @@ begin
     if (XB >= Pred(DividerAbs)) and (XB <= Succ(DividerAbs)) then
       DraggingDivider := True
     // Check row sizing
-    else
-    if (ItemIndex < VisibleCount) and (Y >= Pred(ItemRect.Bottom)) and
+    else if (ItemIndex < VisibleCount) and (Y >= Pred(ItemRect.Bottom)) and
       (Y <= Succ(ItemRect.Bottom)) and (Item.RowSizing.SizingFactor <> irsNoReSize) and
       Item.RowSizing.Sizable then
     begin
@@ -2573,16 +2553,14 @@ begin
       RowSizingItem := Item;
     end
     // Check band sizing
-    else
-    if (UseBands and (XB >= BWidth - 3)) and (not UseBands or
+    else if (UseBands and (XB >= BWidth - 3)) and (not UseBands or
       (BandIdx < BandStarts.Count)) then
     begin
       BandSizing := True;
       BandSizingBand := BandIdx - BandStarts.IndexOf(Pointer(TopIndex));
     end
     // Check selecting
-    else
-    if (ItemIndex < VisibleCount) and (ItemIndex <> SelectedIndex) then
+    else if (ItemIndex < VisibleCount) and (ItemIndex <> SelectedIndex) then
     begin
       SelectedIndex := ItemIndex;
       Item := VisibleItems[ItemIndex];
@@ -2591,7 +2569,7 @@ begin
       Selecting := True;
     if (Item <> nil) and
       ((Item.HasViewableItems and not (iifExpanded in Item.Flags)) or
-        (iifExpanded in Item.Flags)) then
+      (iifExpanded in Item.Flags)) then
     begin
       if PtInRect(Item.Rects[iprBtnDstRect], Point(X, Y)) or
         ((ssDouble in Shift) and (XB < Pred(DividerAbs))) then
@@ -2601,12 +2579,12 @@ begin
       end;
     end;
     if (Item <> nil) and (PtInRect(Item.Rects[iprNameArea], Point(X, Y)) or
-        PtInRect(Item.Rects[iprValueArea], Point(X, Y))) then
+      PtInRect(Item.Rects[iprValueArea], Point(X, Y))) then
       Item.MouseDown(Button, Shift, X, Y);
   end;
 
   if Assigned(Item) and Assigned(FOnMouseDown) then
-        FOnMouseDown(Self, Item, Button,Shift, X, Y );
+    FOnMouseDown(Self, Item, Button, Shift, X, Y);
 end;
 
 procedure TJvCustomInspector.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -2632,11 +2610,9 @@ begin
   XB := X mod BWidth;
   if DraggingDivider then
     DividerAbs := XB
-  else
-  if BandSizing then
+  else if BandSizing then
     HandleBandResize(X)
-  else
-  if (((XB >= Pred(DividerAbs)) and (XB <= Succ(DividerAbs))) or
+  else if (((XB >= Pred(DividerAbs)) and (XB <= Succ(DividerAbs))) or
     (UseBands and (XB >= BWidth - 3))) and (not UseBands or
     (BandIdx < BandStarts.Count)) then
     Cursor := crHSplit
@@ -2652,8 +2628,7 @@ begin
         RowSizingItem.Height := Y - ItemRect.Top
       end;
     end
-    else
-    if Selecting then
+    else if Selecting then
     begin
       if (ItemIndex < VisibleCount) and
         (ItemIndex <> SelectedIndex) then
@@ -2676,8 +2651,8 @@ begin
       else
         Item := nil;
       if (Item <> nil) and (Y >= Pred(ItemRect.Bottom)) and
-          (Y <= Succ(ItemRect.Bottom)) and (Item.RowSizing.SizingFactor <> irsNoReSize) and
-          Item.RowSizing.Sizable then
+        (Y <= Succ(ItemRect.Bottom)) and (Item.RowSizing.SizingFactor <> irsNoReSize) and
+        Item.RowSizing.Sizable then
         Cursor := crVSplit
       else
         Cursor := crDefault;
@@ -2701,21 +2676,18 @@ begin
   begin
     if DraggingDivider then
       DraggingDivider := False
-    else
-    if RowSizing then
+    else if RowSizing then
       RowSizing := False
-    else
-    if BandSizing then
+    else if BandSizing then
     begin
       BandSizing := False;
       TopIndex := TopIndex; // resync position
     end
-    else
-    if Selecting then
+    else if Selecting then
       Selecting := False;
   end;
   if (Item <> nil) and (PtInRect(Item.Rects[iprNameArea], Point(X, Y)) or
-      PtInRect(Item.Rects[iprValueArea], Point(X, Y))) then
+    PtInRect(Item.Rects[iprValueArea], Point(X, Y))) then
     Item.MouseUp(Button, Shift, X, Y);
 end;
 
@@ -2729,8 +2701,7 @@ procedure TJvCustomInspector.NotifySort(const Item: TJvCustomInspectorItem);
 begin
   if LockCount = 0 then
     Item.Sort
-  else
-  if (Item <> nil) and (SortNotificationList.IndexOf(Item) = -1) then
+  else if (Item <> nil) and (SortNotificationList.IndexOf(Item) = -1) then
     SortNotificationList.Add(Item);
 end;
 
@@ -2749,7 +2720,7 @@ begin
     Canvas.Brush.Color := Color;
     Canvas.FillRect(ClientRect);
     if csDesigning in Self.ComponentState then
-      Canvas.TextOut(10,10,Name+':'+ClassName );
+      Canvas.TextOut(10, 10, Name + ':' + ClassName);
   end;
 end;
 
@@ -2881,8 +2852,7 @@ procedure TJvCustomInspector.SetCollapseButton(const Value: TBitmap);
 begin
   if Value = nil then
     FreeAndNil(FCollapseButton)
-  else
-  if not Assigned(FCollapseButton) then
+  else if not Assigned(FCollapseButton) then
   begin
     FCollapseButton := TBitmap.Create;
     FCollapseButton.Assign(Value);
@@ -2899,8 +2869,7 @@ begin
     begin
       if UseBands then
         DividerAbs := (Value * BandWidth) div 100
-      else
-      if HandleAllocated then
+      else if HandleAllocated then
         DividerAbs := (Value * ClientWidth) div 100
       else
         DividerAbs := (Value * Width) div 100;
@@ -2916,8 +2885,7 @@ var
 begin
   if UseBands then
     W := BandWidth
-  else
-  if HandleAllocated then
+  else if HandleAllocated then
     W := ClientWidth
   else
     W := Width;
@@ -2927,20 +2895,19 @@ begin
     Value := 2 * ItemHeight;
 {  if DividerAbs <> Value then
   begin}
-    if RelativeDivider then
-    begin
-      if UseBands then
-        FDivider := (Value * 100) div BandWidth
-      else
-      if HandleAllocated then
-        FDivider := (Value * 100) div ClientWidth
-      else
-        FDivider := (Value * 100) div Width;
-    end
+  if RelativeDivider then
+  begin
+    if UseBands then
+      FDivider := (Value * 100) div BandWidth
+    else if HandleAllocated then
+      FDivider := (Value * 100) div ClientWidth
     else
-      FDivider := Value;
-    if HandleAllocated then
-      UpdateScrollbars;
+      FDivider := (Value * 100) div Width;
+  end
+  else
+    FDivider := Value;
+  if HandleAllocated then
+    UpdateScrollbars;
 //  end;
 end;
 
@@ -2948,8 +2915,7 @@ procedure TJvCustomInspector.SetExpandButton(const Value: TBitmap);
 begin
   if Value = nil then
     FreeAndNil(FExpandButton)
-  else
-  if not Assigned(FExpandButton) then
+  else if not Assigned(FExpandButton) then
   begin
     FExpandButton := TBitmap.Create;
     FExpandButton.Assign(Value);
@@ -3055,20 +3021,20 @@ begin
       NewItem := nil;
 
     if not (csDestroying in ComponentState) then // bugfix WAP.  Why repaint the screen when the component is going away anyways.
-          if DoBeforeItemSelect(NewItem) then
-          begin
-            if Selected <> nil then
-              Selected.DoneEdit(False);
-            FSelectedIndex := Value;
-            if Selected <> nil then
-            begin
-              Selected.ScrollInView;
-              Selected.InitEdit;
-            end;
-            DoItemSelected;
-            InvalidateItem;
-          end;
-          
+      if DoBeforeItemSelect(NewItem) then
+      begin
+        if Selected <> nil then
+          Selected.DoneEdit(False);
+        FSelectedIndex := Value;
+        if Selected <> nil then
+        begin
+          Selected.ScrollInView;
+          Selected.InitEdit;
+        end;
+        DoItemSelected;
+        InvalidateItem;
+      end;
+
   end;
 end;
 
@@ -3334,7 +3300,7 @@ begin
   FSortNotificationList.Free;
   FVisible.Free;
 end;
- 
+
 function TJvCustomInspector.BeginUpdate: Integer;
 begin
   Inc(FLockCount);
@@ -3559,7 +3525,7 @@ procedure TJvInspectorPainter.InitializeColors;
 begin
   SetDefaultProp(Self,
     ['BackgroundColor', 'DividerColor', 'NameColor', 'ValueColor',
-     'CategoryColor', 'CategoryTextColor', 'SelectedColor', 'SelectedTextColor']);
+    'CategoryColor', 'CategoryTextColor', 'SelectedColor', 'SelectedTextColor']);
 end;
 
 function TJvInspectorPainter.Loading: Boolean;
@@ -3765,14 +3731,13 @@ begin
     // retrieve button image
     if Item.Expanded then
       ButtonImage := GetCollapseImage
-    else
-    if Item.HasViewableItems then
+    else if Item.HasViewableItems then
       ButtonImage := GetExpandImage
     else
       ButtonImage := nil;
   end
   else
-      ButtonImage := nil;
+    ButtonImage := nil;
 
   // calculate rectangles
   if ItemIndex > -1 then
@@ -4065,7 +4030,7 @@ begin
   Item.DrawName(Canvas);
   ApplyValueFont;
   if Assigned(FOnSetItemColors) then
-       FOnSetItemColors(Item, Canvas); // Custom colors for canvas and font for cells depending on values.
+    FOnSetItemColors(Item, Canvas); // Custom colors for canvas and font for cells depending on values.
 
   Item.DrawValue(Canvas);
 
@@ -4133,8 +4098,7 @@ begin
     Canvas.Brush.Color := SelectedColor;
     Canvas.Font.Color := SelectedTextColor;
   end
-  else
-  if (Item is TJvInspectorCustomCategoryItem) and (Item.Level = 0) then
+  else if (Item is TJvInspectorCustomCategoryItem) and (Item.Level = 0) then
     Canvas.Brush.Color := CategoryColor
   else
     Canvas.Brush.Color := BackgroundColor;
@@ -4176,7 +4140,7 @@ begin
     Canvas.FillRect(CatRect);
     ApplyCanvasState(Canvas, SaveIdx);
   end;
-  
+
   if not (Item is TJvInspectorCustomCategoryItem) or (Item.Level > 0) then
     PaintDivider(Rects[iprItem].Left + Inspector.DividerAbs, Pred(Rects[iprItem].Top),
       Rects[iprItem].Bottom);
@@ -4184,7 +4148,7 @@ begin
   if (Item is TJvInspectorCustomCategoryItem) and (Item.Level = 0) then
     Canvas.Brush.Color := CategoryColor;
   if (Item = Inspector.Selected) and (not (Item is TJvInspectorCustomCompoundItem) or TJvInspectorCustomCompoundItem(Item).SingleName or (TJvInspectorCustomCompoundItem(Item).SelectedColumnIndex = 0)) and ((Item.Level > 0) or
-      not (Item is TJvInspectorCustomCategoryItem)) then
+    not (Item is TJvInspectorCustomCategoryItem)) then
     Canvas.Brush.Color := SelectedColor;
   Canvas.FillRect(PreNameRect);
   ApplyNameFont;
@@ -4193,7 +4157,7 @@ begin
   ApplyCanvasState(Canvas, SaveIdx);
   ApplyValueFont;
   if Assigned(FOnSetItemColors) then
-       FOnSetItemColors(Item, Canvas); // Custom colors for canvas and font for cells depending on values.
+    FOnSetItemColors(Item, Canvas); // Custom colors for canvas and font for cells depending on values.
   Item.DrawValue(Canvas);
   RestoreCanvasState(Canvas, SaveIdx);
 
@@ -4202,7 +4166,7 @@ begin
 
   SaveIdx := SaveCanvasState(Canvas);
   if EndOfCat or ((Item is TJvInspectorCustomCategoryItem) and
-      (Item.Level = 0)) then
+    (Item.Level = 0)) then
     Canvas.Pen.Color := clBtnShadow
   else
     Canvas.Pen.Color := clBtnFace;
@@ -4261,15 +4225,13 @@ begin
   begin
     if SizingFactor <> Value then
       SizingFactor := Value
-    else
-    if MinHeight <> irsItemHeight then
+    else if MinHeight <> irsItemHeight then
     begin
       FMinHeight := irsItemHeight;
       Item.Height := CurHeight;
     end;
   end
-  else
-  if MinHeight <> Value then
+  else if MinHeight <> Value then
   begin
     if SizingFactor = irsNoResize then
       FSizingFactor := irsValueMask;
@@ -4321,7 +4283,7 @@ end;
 function AlphaSortCompare(Item1, Item2: Pointer): Integer;
 begin
   Result := CompareText(TJvCustomInspectorItem(Item1).DisplayName,
-    TJvCustomInspectorItem(Item2).DisplayName); 
+    TJvCustomInspectorItem(Item2).DisplayName);
 end;
 
 var // maybe a threadvar would be better? OTOH, VCL is not threadsafe anyway so why bother?
@@ -4403,7 +4365,7 @@ procedure TJvCustomInspectorItem.ApplyDisplayIndices(const ItemList: TList);
 var
   I: Integer;
 begin
-  for I := ItemList.Count -1 downto 0 do
+  for I := ItemList.Count - 1 downto 0 do
     TJvCustomInspectorItem(ItemList[I]).SetDisplayIndexValue(I);
 end;
 
@@ -4412,9 +4374,9 @@ var
   TempList: TList;
   I: Integer;
   Item: TJvCustomInspectorItem;
-  {$IFNDEF COMPILER6_UP}
+{$IFNDEF COMPILER6_UP}
   J: Integer;
-  {$ENDIF}
+{$ENDIF}
 begin
   TempList := TList.Create;
   try
@@ -4429,13 +4391,13 @@ begin
       else
       begin
         Item.BuildDisplayableList(TempList);
-        {$IFNDEF COMPILER6_UP}
+{$IFNDEF COMPILER6_UP}
         for J := 0 to TempList.Count - 1 do
           if ItemList.IndexOf(TempList[J]) = -1 then
             ItemList.Add(TempList[J]);
-        {$ELSE}
+{$ELSE}
         ItemList.Assign(TempList, laOr);
-        {$ENDIF}
+{$ENDIF}
         TempList.Clear;
       end;
       Inc(I);
@@ -4636,9 +4598,8 @@ end;
 procedure TJvCustomInspectorItem.EditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-   if Assigned(Inspector.FOnKeyDown) then
-        Inspector.FOnKeyDown(Inspector,Key,Shift);
-
+  if Assigned(Inspector.FOnKeyDown) then
+    Inspector.FOnKeyDown(Inspector, Key, Shift);
 
   if Shift = [] then
   begin
@@ -4651,8 +4612,7 @@ begin
     if (Key = VK_RETURN) or (Key = VK_ESCAPE) then
       Key := 0;
   end
-  else
-  if Shift = [ssCtrl] then
+  else if Shift = [ssCtrl] then
     case Key of
       VK_UP:
         if iifValueList in Flags then
@@ -4672,8 +4632,7 @@ begin
           SelectValue(1);
           Key := 0;
         end
-        else
-        if iifEditButton in Flags then
+        else if iifEditButton in Flags then
         begin
           Key := 0;
           ButtonClick(Sender);
@@ -4710,15 +4669,15 @@ var
   begin
     Result := (
       (Message.WParam = VK_LEFT) and (
-        (EditCtrl.SelLength = Length(EditCtrl.Text)) or
-        (EditCtrl.SelStart < 1)
+      (EditCtrl.SelLength = Length(EditCtrl.Text)) or
+      (EditCtrl.SelStart < 1)
       )
-     ) or (
+      ) or (
       (Message.WParam = VK_RIGHT) and (
-        (EditCtrl.SelLength = Length(EditCtrl.Text)) or
-        (EditCtrl.SelStart >= Length(EditCtrl.Text))
+      (EditCtrl.SelLength = Length(EditCtrl.Text)) or
+      (EditCtrl.SelStart >= Length(EditCtrl.Text))
       )
-     );
+      );
   end;
 begin
   ExecInherited := True;
@@ -5057,7 +5016,7 @@ end;
 procedure TJvCustomInspectorItem.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  if (Button = mbLeft) and PtInRect(Rects[iprEditButton], Point(X,Y)) then
+  if (Button = mbLeft) and PtInRect(Rects[iprEditButton], Point(X, Y)) then
   begin
     if DroppedDown then
       CloseUp(False)
@@ -5070,8 +5029,7 @@ begin
         DropDown;
     end;
   end
-  else
-  if (Button = mbLeft) and (ssDouble in Shift) and
+  else if (Button = mbLeft) and (ssDouble in Shift) and
     (iifValueList in Flags) and
     (PtInRect(Rects[iprValueArea], Point(X, Y))) then
     SelectValue(1);
@@ -5131,7 +5089,7 @@ begin
   SL := TStringList.Create;
   try
     GetValueList(SL);
-    if SL.Count>0 then
+    if SL.Count > 0 then
     begin
       I := SL.IndexOf(DisplayValue);
       Inc(I, Delta);
@@ -5241,7 +5199,7 @@ begin
   if (iifOwnerDrawListFixed in NewFlags) and (iifOwnerDrawListVariable in NewFlags) then
     Exclude(NewFlags, iifOwnerDrawListFixed);
   if (iifAllowNonListValues in NewFlags) or (iifOwnerDrawListFixed in NewFlags) or
-      (iifOwnerDrawListVariable in NewFlags) then
+    (iifOwnerDrawListVariable in NewFlags) then
     Include(NewFlags, iifValueList);
   if Flags <> NewFlags then
   begin
@@ -5599,13 +5557,11 @@ begin
     begin
       if not EditCtrl.Enabled then
         BFlags := DFCS_INACTIVE
-      else
-      if Pressed then
+      else if Pressed then
         BFlags := DFCS_FLAT or DFCS_PUSHED;
       DrawFrameControl(ACanvas.Handle, R, DFC_SCROLL, BFlags or DFCS_SCROLLCOMBOBOX);
     end
-    else
-    if iifEditButton in Flags then
+    else if iifEditButton in Flags then
     begin
       if Pressed then
         BFlags := BF_FLAT;
@@ -5622,7 +5578,7 @@ begin
       if G > 3 then
         G := 3;
 
-      BFlags := R.Left + (WidthOf(R) - 3 * W -2 * G) div 2 + Ord(Pressed);
+      BFlags := R.Left + (WidthOf(R) - 3 * W - 2 * G) div 2 + Ord(Pressed);
       I := R.Top + (HeightOf(R) - W) div 2;
       PatBlt(ACanvas.handle, BFlags, I, W, W, BLACKNESS);
       PatBlt(ACanvas.handle, BFlags + G + W, I, W, W, BLACKNESS);
@@ -5651,11 +5607,9 @@ begin
   try
     if not Data.IsInitialized then
       S := sJvInspItemUnInitialized
-    else
-    if not Data.HasValue then
+    else if not Data.HasValue then
       S := sJvInspItemNoValue
-    else
-    if not Data.IsAssigned then
+    else if not Data.IsAssigned then
       S := sJvInspItemUnassigned
     else
       S := DisplayValue;
@@ -5725,8 +5679,8 @@ end;
 
 procedure TJvCustomInspectorItem.InitEdit;
 var
- Edit:TEdit;
- Memo:TMemo;
+  Edit: TEdit;
+  Memo: TMemo;
 begin
   SetEditing(CanEdit);
   if Editing then
@@ -5735,11 +5689,11 @@ begin
     begin
       Memo := TMemo.Create(Inspector);
       if Assigned(Inspector.FOnEnter) then
-         Memo.OnEnter := Inspector.FOnEnter;
+        Memo.OnEnter := Inspector.FOnEnter;
       if Assigned(Inspector.FOnContextPopup) then
-         Memo.OnContextPopup := Inspector.FOnContextPopup;
+        Memo.OnContextPopup := Inspector.FOnContextPopup;
       if Assigned(Inspector.FOnKeyUp) then
-          Memo.OnKeyUp := Inspector.FOnKeyUp;
+        Memo.OnKeyUp := Inspector.FOnKeyUp;
       if Assigned(Inspector.FOnKeyPress) then
         Memo.OnKeyPress := Inspector.FOnKeyPress;
       Memo.WordWrap := True;
@@ -5747,17 +5701,18 @@ begin
       Memo.ScrollBars := ssVertical;
       SetEditCtrl(Memo);
     end
-    else begin
+    else
+    begin
       Edit := TEdit.Create(Inspector);
       if Assigned(Inspector.FOnEnter) then
-         Edit.OnEnter := Inspector.FOnEnter;
+        Edit.OnEnter := Inspector.FOnEnter;
       if Assigned(Inspector.FOnContextPopup) then
-         Edit.OnContextPopup := Inspector.FOnContextPopup;
+        Edit.OnContextPopup := Inspector.FOnContextPopup;
       if Assigned(Inspector.FOnKeyUp) then
-         Edit.OnKeyUp := Inspector.FOnKeyUp;
+        Edit.OnKeyUp := Inspector.FOnKeyUp;
       if Assigned(Inspector.FOnKeyPress) then
-         Edit.OnKeyPress := Inspector.FOnKeyPress;
-       SetEditCtrl(Edit);
+        Edit.OnKeyPress := Inspector.FOnKeyPress;
+      SetEditCtrl(Edit);
 
     end;
     if iifEditFixed in Flags then
@@ -5784,8 +5739,7 @@ begin
       TListBox(ListBox).ItemHeight := 11;
       if iifOwnerDrawListFixed in Flags then
         TListBox(ListBox).Style := lbOwnerDrawFixed
-      else
-      if iifOwnerDrawListVariable in Flags then
+      else if iifOwnerDrawListVariable in Flags then
         TListBox(ListBox).Style := lbOwnerDrawVariable;
       TListBox(ListBox).OnDrawItem := DoDrawListItem;
       TListBox(ListBox).OnMeasureItem := DoMeasureListItem;
@@ -5873,8 +5827,7 @@ begin
     begin
       if Inspector.TopIndex > ViewIdx then
         Inspector.TopIndex := ViewIdx
-      else
-      if (Inspector.IdxToY(ViewIdx) - Inspector.IdxToY(Inspector.TopIndex) +
+      else if (Inspector.IdxToY(ViewIdx) - Inspector.IdxToY(Inspector.TopIndex) +
         Height) > Inspector.ClientHeight then
       begin
         YDelta := (Inspector.IdxToY(ViewIdx) + Height - Inspector.ClientHeight -
@@ -6172,14 +6125,14 @@ end;
 
 function TJvInspectorCustomCompoundItem.IndexOfColumnPrim(const Col: TJvInspectorCompoundColumn): Integer;
 begin
-  Result := ColumnCount -1;
+  Result := ColumnCount - 1;
   while (Result >= 0) and (Columns[Result] <> Col) do
     Dec(Result);
 end;
 
 function TJvInspectorCustomCompoundItem.IndexOfColumnPrim(const Item: TJvCustomInspectorItem): Integer;
 begin
-  Result := ColumnCount -1;
+  Result := ColumnCount - 1;
   while (Result >= 0) and (Columns[Result].Item <> Item) do
     Dec(Result);
 end;
@@ -6287,8 +6240,7 @@ begin
   // Check the difference: if icifSingleName is removed, remove icifSingleNameUseFirstCol as well
   if ((CompoundItemFlags - Value) * [icifSingleName]) <> [] then
     Exclude(Value, icifSingleNameUseFirstCol)
-  else
-  if Value = [icifSingleNameUseFirstCol] then
+  else if Value = [icifSingleNameUseFirstCol] then
     Include(Value, icifSingleName);
   if Value <> CompoundItemFlags then
   begin
@@ -6407,7 +6359,7 @@ begin
   if SelectedColumn <> nil then
     SelectedColumn.Item.DoneEdit(CancelEdits);
 end;
- 
+
 procedure TJvInspectorCustomCompoundItem.DrawEditor(const ACanvas: TCanvas);
 begin
 end;
@@ -6575,13 +6527,13 @@ end;
 
 function TJvInspectorEnumItem.GetDisplayValue: string;
 var
- IntVal:Integer;
+  IntVal: Integer;
 begin
   IntVal := Ord(Data.AsOrdinal);
-  if (IntVal<0) then // prevent GetEnumName crash. WAP.
-     result := IntToStr(IntVal)
+  if (IntVal < 0) then // prevent GetEnumName crash. WAP.
+    result := IntToStr(IntVal)
   else
-     Result := GetEnumName(Data.TypeInfo, IntVal);
+    Result := GetEnumName(Data.TypeInfo, IntVal);
 end;
 
 procedure TJvInspectorEnumItem.GetValueList(const Strings: TStrings);
@@ -6602,12 +6554,13 @@ begin
   OrdVal := GetEnumValue(Data.TypeInfo, Value);
   if OrdVal <> -1 then
     Data.AsOrdinal := GetEnumValue(Data.TypeInfo, Value)
-  else begin
-      OrdVal := StrToIntDef(Value,-1);
-      if (OrdVal>=0) and ( Length(GetEnumName(Data.TypeInfo,OrdVal))>0 ) then
-          Data.AsOrdinal := OrdVal
-      else
-        raise EJvInspectorItem.CreateFmt(sJvInspItemInvalidPropValue, [AnsiQuotedStr(Value, '''')]);
+  else
+  begin
+    OrdVal := StrToIntDef(Value, -1);
+    if (OrdVal >= 0) and (Length(GetEnumName(Data.TypeInfo, OrdVal)) > 0) then
+      Data.AsOrdinal := OrdVal
+    else
+      raise EJvInspectorItem.CreateFmt(sJvInspItemInvalidPropValue, [AnsiQuotedStr(Value, '''')]);
   end;
 end;
 
@@ -6661,7 +6614,7 @@ end;
 
 function TJvInspectorSetMemberData.GetAsOrdinal: Int64;
 var
-  Buf: array [0..31] of Byte;
+  Buf: array[0..31] of Byte;
 begin
   CheckReadAccess;
   DataParent.GetAsSet(Buf);
@@ -6706,7 +6659,7 @@ end;
 
 procedure TJvInspectorSetMemberData.SetAsOrdinal(const Value: Int64);
 var
-  Buf: array [0..31] of Byte;
+  Buf: array[0..31] of Byte;
 begin
   CheckWriteAccess;
   DataParent.GetAsSet(Buf);
@@ -6832,7 +6785,7 @@ end;
 
 function TJvInspectorSetItem.GetDisplayValue: string;
 var
-  SetBuf: array [0..31] of Byte;
+  SetBuf: array[0..31] of Byte;
 begin
   Data.GetAsSet(SetBuf);
   Result := JclSetToStr(Data.TypeInfo, SetBuf, True, False);
@@ -6869,7 +6822,7 @@ end;
 
 procedure TJvInspectorSetItem.SetDisplayValue(const Value: string);
 var
-  SetBuf: array [0..31] of Byte;
+  SetBuf: array[0..31] of Byte;
 begin
   JclStrToSet(Data.TypeInfo, SetBuf[0], Value);
   Data.SetAsSet(SetBuf[0]);
@@ -6926,8 +6879,7 @@ var
 begin
   if Length(Value) > 1 then
     I := StrToInt(Copy(Value, 2, Length(Value)))
-  else
-  if Length(Value) = 1 then
+  else if Length(Value) = 1 then
     I := Ord(Value[1])
   else
     I := 0;
@@ -6969,8 +6921,7 @@ begin
     ItemClassFlags := [icfCreateMemberItems];
     Flags := Flags + [iifValueList];
   end
-  else
-  if GetTypeData(Data.TypeInfo).ClassType.InheritsFrom(TPersistent) then
+  else if GetTypeData(Data.TypeInfo).ClassType.InheritsFrom(TPersistent) then
     ItemClassFlags := [icfCreateMemberItems, icfShowClassName]
   else
     ItemClassFlags := [icfShowClassName];
@@ -7007,7 +6958,7 @@ begin
     try
       for I := Pred(Count) downto 0 do
         if (Items[I].Data is TJvInspectorPropData) and (Items[I].Data.IsInitialized) and
-            (TJvInspectorPropData(Items[I].Data).Instance = FLastMemberInstance) then
+          (TJvInspectorPropData(Items[I].Data).Instance = FLastMemberInstance) then
           Delete(I);
       FLastMemberInstance := nil;
     finally
@@ -7031,7 +6982,7 @@ begin
   if ShowClassName then
   begin
     if Obj <> nil then
-      Result := Result + '('+ Obj.ClassName + ')'
+      Result := Result + '(' + Obj.ClassName + ')'
     else
       Result := Result + '(' + GetTypeData(Data.TypeInfo).ClassType.ClassName + ')';
   end
@@ -7521,7 +7472,7 @@ begin
     ARect.Right := ARect.Left + 13;
     ARect.Bottom := ARect.Top + 13;
     { Remember current clipping region }
-    SaveRgn := CreateRectRgn(0,0,0,0);
+    SaveRgn := CreateRectRgn(0, 0, 0, 0);
     HasRgn := GetClipRgn(ACanvas.Handle, SaveRgn) > 0;
     { Clip all outside of the item rectangle }
     IntersectRect(ClipRect, ARect, Rects[iprValue]);
@@ -7612,7 +7563,7 @@ begin
     case Value[I] of
       'd':
         begin
-          if (DCount = 0) and (I > 1) and (Value[I - 1] <>  DateSeparator) then
+          if (DCount = 0) and (I > 1) and (Value[I - 1] <> DateSeparator) then
             raise EJvInspectorData.Create('A specifier should be placed before and after a separator.');
           if (DCount = 1) and (Value[I - 1] <> 'd') then
             raise EJvInspectorData.Create('''d'' or ''dd'' should appear only once.');
@@ -7622,7 +7573,7 @@ begin
         end;
       'm':
         begin
-          if (MCount = 0) and (I > 1) and (Value[I - 1] <>  DateSeparator) then
+          if (MCount = 0) and (I > 1) and (Value[I - 1] <> DateSeparator) then
             raise EJvInspectorData.Create('A specifier should be placed before and after a separator.');
           if (MCount = 1) and (Value[I - 1] <> 'm') then
             raise EJvInspectorData.Create('''m'' or ''mm'' should appear only once.');
@@ -7632,7 +7583,7 @@ begin
         end;
       'y':
         begin
-          if (MCount = 0) and (I > 1) and (Value[I - 1] <>  DateSeparator) then
+          if (MCount = 0) and (I > 1) and (Value[I - 1] <> DateSeparator) then
             raise EJvInspectorData.Create('A specifier should be placed before and after a separator.');
           if (YCount > 1) and (YCount < 4) and (Value[I - 1] <> 'y') then
             raise EJvInspectorData.Create('''yy'' or ''yyyy'' should appear only once.');
@@ -7640,18 +7591,18 @@ begin
             raise EJvInspectorData.Create('Only ''yy'' or ''yyyy'' are allowed.');
           Inc(YCount);
         end;
+    else
+      if Value[I] = DateSeparator then
+      begin
+        if ((SepCount = 0) and (I = 1)) or
+          ((SepCount = 1) and ((Value[I - 1]) = DateSeparator) or (I = Length(Value))) then
+          raise EJvInspectorData.Create('A specifier should be placed before and after a separator.');
+        if SepCount = 2 then
+          raise EJvInspectorData.Create('Only two separators are allowed.');
+        Inc(SepCount);
+      end
       else
-        if Value[I] = DateSeparator then
-        begin
-          if ((SepCount = 0) and (I = 1)) or
-              ((SepCount = 1) and ((Value[I - 1]) = DateSeparator) or (I = Length(Value))) then
-            raise EJvInspectorData.Create('A specifier should be placed before and after a separator.');
-          if SepCount = 2 then
-            raise EJvInspectorData.Create('Only two separators are allowed.');
-          Inc(SepCount);
-        end
-        else
-          raise EJvInspectorData.CreateFmt('Only ''d'', ''m'', ''y'' and ''%s'' are allowed', [DateSeparator]);
+        raise EJvInspectorData.CreateFmt('Only ''d'', ''m'', ''y'' and ''%s'' are allowed', [DateSeparator]);
     end;
     Inc(I);
   end;
@@ -7887,7 +7838,7 @@ begin
   if not Multiline then
   begin
     if Obj <> nil then
-      Result := Result + '('+ Obj.ClassName + ')'
+      Result := Result + '(' + Obj.ClassName + ')'
     else
       Result := Result + '(' + GetTypeData(Data.TypeInfo).ClassType.ClassName + ')';
   end
@@ -7936,17 +7887,16 @@ begin
   begin
     if Multiline and not (iifEditButton in OldMask) and (iifEditButton in NewMask) then
       inherited SetFlags(Value - [iifMultiline]) // iifEditButton has changed
-    else
-    if not Multiline and (iifEditButton in OldMask) and (iifMultiline in NewMask) then
+    else if not Multiline and (iifEditButton in OldMask) and (iifMultiline in NewMask) then
       inherited SetFlags(Value - [iifEditButton]) // iifMultiline has changed
     else
-      inherited SetFlags(Value);                  // Neither flag has changed. Should never occur.
+      inherited SetFlags(Value); // Neither flag has changed. Should never occur.
   end
-  else                                            // Flags have not changed
+  else // Flags have not changed
     inherited SetFlags(Value);
   if RowSizing <> nil then
   begin
-    RowSizing.Sizable := Multiline;               // Update sizable state
+    RowSizing.Sizable := Multiline; // Update sizable state
     if not Multiline then
       RowSizing.SizingFactor := irsNoReSize
     else
@@ -8017,7 +7967,7 @@ var
 begin
   I := Methods.IndexOf(Name);
   if I <> -1 then
-    DeleteMethod(I); 
+    DeleteMethod(I);
 end;
 
 procedure TInstanceItem.DeleteMethod(const MethodAddr: Pointer);
@@ -8271,7 +8221,7 @@ var
 begin
   Instance := Method.Data;
   InstanceIdx := IndexOfInstance(Instance);
-  MethodIdx :=IndexOfMethod(Method);
+  MethodIdx := IndexOfMethod(Method);
   Result := '';
   if (InstanceIdx <> -1) and (MethodIdx <> -1) then
   begin
@@ -8896,8 +8846,7 @@ begin
       Result := 0;
     end;
   end
-  else
-  if TypeInfo.Kind = tkClass then
+  else if TypeInfo.Kind = tkClass then
     Result := PLongword(Address)^
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Ordinal']);
@@ -8927,7 +8876,7 @@ function TJvInspectorVarData.IsEqualReference(const Ref: TJvCustomInspectorData)
 begin
   Result := (Ref is TJvInspectorVarData) and (TJvInspectorVarData(Ref).Address = Address);
 end;
- 
+
 procedure TJvInspectorVarData.SetAddress(const Value: Pointer);
 begin
   if Value <> Address then
@@ -8967,7 +8916,7 @@ begin
   if TypeInfo.Kind = tkInt64 then
   begin
     if (Value < GetTypeData(TypeInfo).MinInt64Value) or
-        (Value > GetTypeData(TypeInfo).MaxInt64Value) then
+      (Value > GetTypeData(TypeInfo).MaxInt64Value) then
       raise ERangeError.CreateFmt(SOutOfRange, [GetTypeData(TypeInfo).MinValue,
         GetTypeData(TypeInfo).MaxValue]);
     PInt64(Address)^ := Value;
@@ -9048,8 +8997,7 @@ begin
         end;
     end;
   end
-  else
-  if TypeInfo.Kind = tkClass then
+  else if TypeInfo.Kind = tkClass then
     PLongword(Address)^ := Value
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Ordinal']);
@@ -9240,7 +9188,7 @@ end;
 procedure TJvInspectorPropData.NotifyRemoveData(const Instance: TJvCustomInspectorData);
 begin
   if (Instance <> Self) and (Instance.TypeInfo.Kind = tkClass) and
-      (TObject(Instance.AsOrdinal) = Self.Instance) then
+    (TObject(Instance.AsOrdinal) = Self.Instance) then
     Free;
 end;
 
@@ -9618,8 +9566,7 @@ begin
       Result := 0;
     end;
   end
-  else
-  if TypeInfo.Kind = tkClass then
+  else if TypeInfo.Kind = tkClass then
     Result := Longword(DoGetAsOrdinal)
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['ordinal']);
@@ -9657,7 +9604,7 @@ begin
   if TypeInfo.Kind = tkInt64 then
   begin
     if (Value < GetTypeData(TypeInfo).MinInt64Value) or
-        (Value > GetTypeData(TypeInfo).MaxInt64Value) then
+      (Value > GetTypeData(TypeInfo).MaxInt64Value) then
       raise ERangeError.CreateFmt(SOutOfRange, [GetTypeData(TypeInfo).MinValue,
         GetTypeData(TypeInfo).MaxValue]);
     DoSetAsInt64(Value);
@@ -9714,8 +9661,7 @@ begin
         DoSetAsOrdinal(Longword(Value));
     end;
   end
-  else
-  if TypeInfo.Kind = tkClass then
+  else if TypeInfo.Kind = tkClass then
     DoSetAsOrdinal(Longword(Value))
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['ordinal']);
@@ -10003,8 +9949,7 @@ begin
       begin
         if Length(S) > 1 then
           Result := StrToInt(Copy(S, 2, Length(S)))
-        else
-        if Length(S) = 1 then
+        else if Length(S) = 1 then
           Result := Ord(S[1])
         else
           Result := 0;
@@ -10013,8 +9958,8 @@ begin
       Result := GetEnumValue(TypeInfo, S);
     tkSet:
       GetAsSet(Result);
-    else
-      raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['ordinal']);
+  else
+    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['ordinal']);
   end;
 end;
 
@@ -10355,8 +10300,7 @@ begin
     begin
       if Result = nil then
         Result := Items[I]
-      else
-      if Compare(ADataObj, Result, Items[I]) < 0 then
+      else if Compare(ADataObj, Result, Items[I]) < 0 then
         Result := Items[I];
     end;
   end;
@@ -10364,8 +10308,8 @@ begin
   begin
     ParDataClass := TJvInspectorDataClass(DataClass.ClassParent);
     while (ParDataClass <> nil) and
-        ParDataClass.InheritsFrom(TJvCustomInspectorData) and
-        (ParDataClass.ItemRegister = Self) do
+      ParDataClass.InheritsFrom(TJvCustomInspectorData) and
+      (ParDataClass.ItemRegister = Self) do
       ParDataClass := TJvInspectorDataClass(ParDataClass.ClassParent);
     if (ParDataClass <> nil) and
       ParDataClass.InheritsFrom(TJvCustomInspectorData) and
@@ -10373,7 +10317,7 @@ begin
     begin
       ParResult := ParDataClass.ItemRegister.FindMatch(ADataObj);
       if (ParResult <> nil) and (((Result <> nil) and
-          (Result.Compare(ADataObj, ParResult) < 0)) or (Result = nil)) then
+        (Result.Compare(ADataObj, ParResult) < 0)) or (Result = nil)) then
         Result := ParResult;
     end;
   end;
@@ -10467,8 +10411,7 @@ function TJvInspectorTypeInfoRegItem.MatchValue(const ADataObj: TJvCustomInspect
 begin
   if ADataObj.TypeInfo = TypeInfo then
     Result := 100
-  else
-  if (TypeInfo.Kind = tkClass) and (ADataObj.TypeInfo.Kind = tkClass) and
+  else if (TypeInfo.Kind = tkClass) and (ADataObj.TypeInfo.Kind = tkClass) and
     (GetTypeData(ADataObj.TypeInfo).ClassType.InheritsFrom(GetTypeData(TypeInfo).ClassType)) then
     Result := 50
   else
@@ -10602,8 +10545,7 @@ begin
   begin
     if TypeInfo = ADataObj.TypeInfo then
       Result := Result or 2
-    else
-    if TypeInfo.Kind = ADataObj.TypeInfo.Kind then
+    else if TypeInfo.Kind = ADataObj.TypeInfo.Kind then
     begin
       if (TypeInfo.Kind <> tkClass) or (GetTypeData(ADataObj.TypeInfo).ClassType.InheritsFrom(
         GetTypeData(TypeInfo).ClassType)) then
@@ -10630,8 +10572,7 @@ begin
     ObjParentClass := TJvInspectorPropData(ADataObj).Instance.ClassType;
     if ObjParentClass = ObjectClass then
       Result := Result or 32
-    else
-    if (ObjParentClass <> nil) and ObjParentClass.InheritsFrom(ObjectClass) then
+    else if (ObjParentClass <> nil) and ObjParentClass.InheritsFrom(ObjectClass) then
       Result := Result or 16
     else
       GoOn := False;
@@ -10714,8 +10655,8 @@ begin
 end;
 
 const
-  SizingConsts: array [0..3] of TIdentMapEntry =
-   ((Value: irsNoReSize; Name: 'irsNoReSize'),
+  SizingConsts: array[0..3] of TIdentMapEntry =
+  ((Value: irsNoReSize; Name: 'irsNoReSize'),
     (Value: irsNameHeight; Name: 'irsNameHeight'),
     (Value: irsValueHeight; Name: 'irsValueHeight'),
     (Value: irsItemHeight; Name: 'irsItemHeight'));
@@ -10738,7 +10679,7 @@ end;
 procedure TJvCustomInspector.SetInspectObject(const Value: TObject);
 begin
   Root.Clear;
-  TJvInspectorPropData.New(Root,Value);
+  TJvInspectorPropData.New(Root, Value);
   FInspectObject := Value;
 end;
 
@@ -10759,3 +10700,4 @@ finalization
   CanvasStack.Free;
 
 end.
+
