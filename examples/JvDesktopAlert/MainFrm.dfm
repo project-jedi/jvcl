@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 338
-  Top = 115
+  Left = 659
+  Top = 95
   Width = 367
   Height = 452
   Caption = 'JvDesktopAlert Demo'
@@ -1814,28 +1814,6 @@ object frmMain: TfrmMain
     DefaultSection = 'Settings'
     SubStorages = <>
     Left = 152
-    Top = 120
-  end
-  object JvDesktopAlert1: TJvDesktopAlert
-    HeaderFont.Charset = ANSI_CHARSET
-    HeaderFont.Color = clWindowText
-    HeaderFont.Height = -11
-    HeaderFont.Name = 'Tahoma'
-    HeaderFont.Style = [fsBold]
-    ShowHint = False
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    Buttons = <>
-    Location.Top = 0
-    Location.Left = 0
-    FadeInTime = 0
-    FadeOutTime = 0
-    WaitTime = 0
-    Left = 216
     Top = 120
   end
 end

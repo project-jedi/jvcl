@@ -154,11 +154,11 @@ type
     function GetFont: TFont;
     function GetHeaderFont: TFont;
     function GetImage: TPicture;
-    function GetMaxAlphaBlendValue: byte;
+    function GetAlphaBlendValue: byte;
     function GetWaitTime: integer;
     procedure SetFadeInTime(const Value: integer);
     procedure SetFadeOutTime(const Value: integer);
-    procedure SetMaxAlphaBlendValue(const Value: byte);
+    procedure SetAlphaBlendValue(const Value: byte);
     function GetDropDownMenu: TPopUpMenu;
     function GetHeaderText: string;
     function GetMessageText: string;
@@ -174,6 +174,7 @@ type
     procedure SetParentFont(const Value: boolean);
     procedure SetShowHint(const Value: boolean);
     procedure SetWaitTime(const Value: integer);
+    procedure SetOptions(const Value: TJvDesktopAlertOptions);
   protected
     FFormButtons: array of TControl;
     FDesktopForm: TJvFormDesktopAlert;
@@ -193,8 +194,8 @@ type
     property Hint:string read GetHint write SetHint;
     property ShowHint:boolean read GetShowHint write SetShowHint;
     property Font: TFont read GetFont write SetFont;
-    property ParentFont:boolean read GetParentFont write SetParentFont;  
-    property Options: TJvDesktopAlertOptions read FOptions write FOptions default [daoCanClick..daoCanFade];
+    property ParentFont:boolean read GetParentFont write SetParentFont;
+    property Options: TJvDesktopAlertOptions read FOptions write SetOptions default [daoCanClick..daoCanFade];
     property Colors: TJvDesktopAlertColors read FColors write SetColors;
     property Buttons: TJvDesktopAlertButtons read FButtons write SetButtons;
     property Location: TJvDesktopAlertLocation read FLocation write SetLocation;
@@ -206,7 +207,7 @@ type
     property FadeInTime: integer read GetFadeInTime write SetFadeInTime default 25;
     property FadeOutTime: integer read GetFadeOutTime write SetFadeOutTime default 50;
     property WaitTime: integer read GetWaitTime write SetWaitTime default 1400;
-    property MaxAlphaBlendValue: byte read GetMaxAlphaBlendValue write SetMaxAlphaBlendValue default 255;
+    property AlphaBlendValue: byte read GetAlphaBlendValue write SetAlphaBlendValue default 255;
 
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
@@ -417,7 +418,7 @@ begin
   FadeInTime := 25;
   FadeOutTime := 50;
   WaitTime := 1400;
-  MaxAlphaBlendValue := 255;
+  AlphaBlendValue := 255;
 end;
 
 destructor TJvDesktopAlert.Destroy;
@@ -501,7 +502,7 @@ begin
   end;
 
   FDesktopForm.WaitTime := WaitTime;
-  FDesktopForm.MaxAlphaBlendValue := MaxAlphaBlendValue;
+  FDesktopForm.MaxAlphaBlendValue := AlphaBlendValue;
 
   FDesktopForm.tbDropDown.DropDownMenu := DropDownMenu;
   FDesktopForm.imIcon.Picture := Image;
@@ -584,7 +585,7 @@ begin
   Result := FDesktopForm.imIcon.Picture;
 end;
 
-function TJvDesktopAlert.GetMaxAlphaBlendValue: byte;
+function TJvDesktopAlert.GetAlphaBlendValue: byte;
 begin
   Result := FDesktopForm.MaxAlphaBlendValue;
 end;
@@ -763,7 +764,7 @@ begin
   //
 end;
 
-procedure TJvDesktopAlert.SetMaxAlphaBlendValue(const Value: byte);
+procedure TJvDesktopAlert.SetAlphaBlendValue(const Value: byte);
 begin
   FDesktopForm.MaxAlphaBlendValue := Value;
 end;
@@ -797,6 +798,16 @@ end;
 procedure TJvDesktopAlert.SetWaitTime(const Value: integer);
 begin
   FDesktopForm.WaitTime := Value;
+end;
+
+procedure TJvDesktopAlert.SetOptions(const Value: TJvDesktopAlertOptions);
+begin
+  if Foptions <> Value then
+  begin
+    FOptions := Value;
+    if not (daoCanMove in FOptions) then
+      Exclude(FOptions, daoCanMoveAnywhere);
+  end;
 end;
 
 { TJvDesktopAlertStack }
