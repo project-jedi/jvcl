@@ -723,9 +723,12 @@ end;
 procedure TJvXPCustomControl.HookMouseEnter;
 begin
   // this hook is called, if the user moves (hover) the mouse over the control.
-  Include(FDrawState, dsHighlight);
-  if csRedrawMouseEnter in ExControlStyle then
-    InternalRedraw;
+  if not (csDesigning in ComponentState) then
+  begin
+    Include(FDrawState, dsHighlight);
+    if csRedrawMouseEnter in ExControlStyle then
+      InternalRedraw;
+  end;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
@@ -734,9 +737,12 @@ procedure TJvXPCustomControl.HookMouseLeave;
 begin
   // this hook is called, if the user moves the mouse away (unhover) from
   // the control.
-  Exclude(FDrawState, dsHighlight);
-  if csRedrawMouseLeave in ExControlStyle then
-    InternalRedraw;
+  if not (csDesigning in ComponentState) then
+  begin
+    Exclude(FDrawState, dsHighlight);
+    if csRedrawMouseLeave in ExControlStyle then
+      InternalRedraw;
+  end;
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
@@ -744,8 +750,9 @@ end;
 procedure TJvXPCustomControl.HookMouseMove(X: Integer = 0; Y: Integer = 0);
 begin
   // this hook is called if the user moves the mouse inside the control.
-  if csRedrawMouseMove in ExControlStyle then
-    InternalRedraw;
+  if not (csDesigning in ComponentState) then
+    if csRedrawMouseMove in ExControlStyle then
+      InternalRedraw;
 end;
 
 procedure TJvXPCustomControl.HookMouseDown;

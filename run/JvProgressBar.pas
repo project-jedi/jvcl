@@ -115,13 +115,75 @@ type
     property OnMouseUp;
   end;
 
+  TJvBaseGradientProgressBar = class(TJvBaseProgressBar)
+  private
+    FBarColorFrom: TColor;
+    FBarColorTo: TColor;
+    procedure SetBarColorFrom(Value: TColor);
+    procedure SetBarColorTo(const Value: TColor);
+  public
+    property BarColorFrom: TColor read FBarColorFrom write SetBarColorFrom;
+    property BarColorTo: TColor read FBarColorTo write SetBarColorTo;
+  end;
+
+  TJvCustomGradientProgressBar = class(TJvBaseGradientProgressBar)
+  protected
+    procedure DrawBar(ACanvas: TCanvas; BarSize: integer); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+  end;
+
+  TJvGradientProgressBar = class(TJvCustomGradientProgressBar)
+  published
+    property BarColorFrom default clWhite;
+    property BarColorTo default clBlack;
+    property Max;
+    property Min;
+    property Orientation;
+    property Position;
+    property Smooth;
+
+    property Align;
+    property Anchors;
+    property Color default clWindow;
+    property Constraints;
+    property DragKind;
+    property DragCursor;
+    property DragMode;
+    property Hint;
+    property ParentColor default False;
+    property PopupMenu;
+    property ParentShowHint;
+    property ShowHint;
+
+    property OnCanResize;
+    property OnClick;
+    property OnConstrainedResize;
+    property OnContextPopup;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    {$IFDEF COMPILER6_UP}
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
+    {$ENDIF COMPILEr6_UP}
+    property OnStartDock;
+    property OnStartDrag;
+  end;
+
 implementation
 
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JvJCLUtils;
+  JvJCLUtils, JvJVCLUtils;
 
 //=== { TJvBaseProgressBar } =================================================
 
@@ -186,7 +248,8 @@ begin
   if FOrientation <> Value then
   begin
     FOrientation := Value;
-    SetBounds(Left, Top, Height, Width);
+    if not (csLoading in ComponentState) then // fixes property load order
+      SetBounds(Left, Top, Height, Width);
   end;
 end;
 
@@ -374,6 +437,105 @@ begin
 end;
 
 {$ENDIF VCL}
+
+//=== { TJvBaseGradientProgressBar } =========================================
+
+procedure TJvBaseGradientProgressBar.SetBarColorFrom(Value: TColor);
+begin
+  if FBarColorFrom <> Value then
+  begin
+    FBarColorFrom := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvBaseGradientProgressBar.SetBarColorTo(const Value: TColor);
+begin
+  if FBarColorTo <> Value then
+  begin
+    FBarColorTo := Value;
+    Invalidate;
+  end;
+end;
+
+//=== { TJvGradientProgressBar } =============================================
+
+constructor TJvCustomGradientProgressBar.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FBarColorFrom := clWhite;
+  FBarColorTo := clBlack;
+  BlockSize := 6;
+end;
+
+procedure TJvCustomGradientProgressBar.DrawBar(ACanvas: TCanvas; BarSize: integer);
+var
+  R: TRect;
+  ABlockSize:double;
+  i:integer;
+begin
+  R := ClientRect;
+  ACanvas.Brush.Color := Color;
+  ACanvas.FillRect(R);
+  DrawEdge(ACanvas.Handle, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT);
+  InflateRect(R, -1, -1);
+  if Orientation = pbHorizontal then
+  begin
+    R.Right := BarSize;
+    if R.Right > ClientWidth - 2 then
+      R.Right := ClientWidth - 2;
+    GradientFillRect(ACanvas, R, BarColorFrom, BarColorTo, fdLeftToRight, 255);
+  end
+  else
+  begin
+    R.Top := R.Bottom - BarSize;
+    if R.Top < 2 then
+      R.Top := 2;
+    GradientFillRect(ACanvas, R, BarColorFrom, BarColorTo, fdBottomToTop, 255);
+  end;
+  if not Smooth then
+  begin
+    ACanvas.Pen.Color := Color;
+    if Position > 0 then
+      ABlockSize := (GetMaxBarSize * BlockSize - 4) / 100
+    else
+      ABlockSize := 0;
+    i := 0;
+    if Orientation = pbHorizontal then
+    begin
+      R := ClientRect;
+      InflateRect(R, -2, -2);
+      R.Right := R.Left + round(ABlockSize);
+      while R.Left <= BarSize do
+      begin
+        ACanvas.MoveTo(R.Left, R.Top);
+        ACanvas.LineTo(R.Left, R.Bottom);
+        Inc(i);
+        R := ClientRect;
+        InflateRect(R, -2, -2);
+        R.Right := R.Left + round(ABlockSize);
+        OffsetRect(R, round(i * ABlockSize), 0);
+      end;
+    end
+    else
+    begin
+      R := ClientRect;
+      InflateRect(R, -2, -2);
+      R.Top := R.Bottom - round(ABlockSize);
+      while R.Bottom >= GetMaxBarSize - BarSize do
+      begin
+        ACanvas.MoveTo(R.Left, R.Bottom);
+        ACanvas.LineTo(R.Right, R.Bottom);
+        Inc(i);
+        R := ClientRect;
+        InflateRect(R, -2, -2);
+        R.Top := R.Bottom - round(ABlockSize);
+        OffsetRect(R, 0, -round(i * ABlockSize));
+      end;
+    end;
+  end;
+end;
+
 
 {$IFDEF UNITVERSIONING}
 const

@@ -192,7 +192,6 @@ type
   TJvXPToolType =
     (ttArrowLeft, ttArrowRight, ttClose, ttMaximize, ttMinimize, ttPopup, ttRestore, ttImage);
 
-
   TJvXPCustomToolButton = class(TJvXPCustomStyleControl)
   private
     FToolType: TJvXPToolType;
@@ -216,11 +215,9 @@ type
     property DropDownMenu: TPopupMenu read FDropDownMenu write SetDropDownMenu;
     property Images: TCustomImageList read FImages write SetImages;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
   end;
 
   TJvXPToolButton = class(TJvXPCustomToolButton)
