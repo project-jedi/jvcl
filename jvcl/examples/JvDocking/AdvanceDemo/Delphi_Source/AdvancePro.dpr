@@ -6,7 +6,8 @@ uses
   frmDelphiStyle in 'frmDelphiStyle.pas' {Form1},
   frmVCStyle in 'frmVCStyle.pas' {Form2},
   frmVIDStyle in 'frmVIDStyle.pas' {Form3},
-  frmVSNetStyle in 'frmVSNetStyle.pas' {Form4};
+  frmVSNetStyle in 'frmVSNetStyle.pas' {Form4},
+  frmVIDVCStyle in 'frmVIDVCStyle.pas' {Form5};
 
 {$R *.RES}
 
