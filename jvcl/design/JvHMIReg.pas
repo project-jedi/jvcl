@@ -17,7 +17,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvConsts, JvSegmentedLEDDisplay, JvLED, JvRadioControl, 
+  JvConsts, JvSegmentedLEDDisplay, JvLED, JvDialButton,
   JvSegmentedLEDDisplayEditors;
 
 procedure Register;
@@ -28,7 +28,7 @@ begin
     ]);
 
   RegisterComponents(SPaletteHMIControls, [
-    TJvRadioControl]);
+    TJvDialButton]);
 
   RegisterComponents(SPaletteHMINonVisual, [
     TJv7SegmentedLEDCharacterMapper

@@ -1,5 +1,11 @@
 Changelog for JVCL 3.0
 ======================
+2003-08-26:
+- Renamed JvRadioControl to JvDialButton // marcelb
+- Update JVCConvert.dat file for JvRadioControl, JvTransLED and JvBlinkingLED // marcelb
+2003-08-25:
+- Moved JvRadioControl from JvCustom package to JvHMI package // marcelb
+- Supplied palette icon for segmented LED display // marcelb
 2003-08-23:
 - Moved examples from jvcl/examples to dev/JVCL3/examples. Added Jv prefix to folders // peter3
 - Moved jvcl/devtools to dev/JVCL3/devtools // peter3
