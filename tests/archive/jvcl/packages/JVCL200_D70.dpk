@@ -98,7 +98,7 @@ contains
   JvColors in '..\source\JvColors.pas',
   JvDsgn in '..\source\JvDsgn.pas',
   JvCtlReg in '..\source\JvCtlReg.pas',
-  JvTooReg in '..\source\JvTooReg.pas',
+  JvToolReg in '..\source\JvToolReg.pas',
   JvDBReg in '..\source\JvDBReg.pas',
   JvBDEReg in '..\source\JvBDEReg.pas',
   JvImagPrvw in '..\source\JvImagPrvw.pas' {ImageForm},

@@ -15,7 +15,7 @@
       ..\lib5\JvChNtfyProperty.obj ..\lib5\JvLCProperty.obj 
       ..\lib5\JvTipProperty.obj ..\lib5\JvAppletProperty.obj 
       ..\lib5\JvLConst.obj ..\lib5\JvHintProp.obj ..\lib5\JvColors.obj 
-      ..\lib5\JvDsgn.obj ..\lib5\JvCtlReg.obj ..\lib5\JvTooReg.obj 
+      ..\lib5\JvDsgn.obj ..\lib5\JvCtlReg.obj ..\lib5\JvToolReg.obj 
       ..\lib5\JvDBReg.obj ..\lib5\JvBDEReg.obj ..\lib5\JvImagPrvw.obj 
       ..\lib5\JvCheckItm.obj ..\lib5\JvDirFrm.obj 
       ..\lib5\JvFormWallpaperEditor.obj ..\lib5\JvIColEdit.obj 

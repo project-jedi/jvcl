@@ -72,7 +72,7 @@ contains
   JvColors in '..\source\JvColors.pas',
   JvDsgn in '..\source\JvDsgn.pas',
   JvCtlReg in '..\source\JvCtlReg.pas',
-  JvTooReg in '..\source\JvTooReg.pas',
+  JvToolReg in '..\source\JvToolReg.pas',
   JvImagPrvw in '..\source\JvImagPrvw.pas' {ImageForm},
   JvCheckItm in '..\source\JvCheckItm.pas' {JvCheckItemsEditor},
   JvDirFrm in '..\source\JvDirFrm.pas' {JvDirectoryListDialog},
