@@ -26,8 +26,6 @@ Known Issues:
 
 unit JvColorEditor;
 
-{$C PRELOAD}
-
 interface
 
 uses
