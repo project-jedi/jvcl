@@ -57,6 +57,45 @@ Summary
 Description
   This image list allows to use a picture and resource bitmaps as the image list content.
 ----------------------------------------------------------------------------------------------------
+@@TJvImageList.AddItem@TBitmap@TColor
+<TITLE AddItem function>
+Summary
+  Adds a new item to the ItemList.
+Description
+  AddItem adds a bitmap or resource to the ItemList with ATransparentColor as transparent
+  color. If the image list mode is not imItemList the image list is cleared and the mode is
+  set to imItemList.
+See Also
+  Mode
+----------------------------------------------------------------------------------------------------
+@@TJvImageList.AddItem@TBitmap@TColor
+<COMBINE AddItem@TBitmap@TColor>
+----------------------------------------------------------------------------------------------------
+@@TJvImageList.DeleteItem
+Summary
+  Removes an item from the ItemList
+Description
+  DeleteItem deletes the ItemList item that is identified by AIndex. When the ImageList is not
+  in imItenList mode the method raises an RJvImageListError.
+See Also
+  AddItem@TBitmap@TColor
+----------------------------------------------------------------------------------------------------
+@@TJvImageList.ClearItems
+Summary
+  Clears the ItemList
+Description
+  ClearItems clears the ItemList. When the ImageList is not in imItemList mode the method raises
+  an RJvImageListError.
+See Also
+  DeleteItem
+----------------------------------------------------------------------------------------------------
+@@TJvImageList.GetItemInfoStr
+Summary
+  Returns the info string for an item
+Description
+  GetItemInfoStr returns the info string of the ItemList item that is identified by AIndex. When
+  the ImageList is not in imItenList mode the method raises an RJvImageListError.
+----------------------------------------------------------------------------------------------------
 @@TJvImageList.BeginUpdate
 Summary
   Block all OnChange events.
@@ -118,9 +157,10 @@ Description
   imClassic         The image list acts as TImageList. The Filename, Picture and ResourceIds properties are ignored.
   imPicture         The FileName and Picture property are used.
   imResourceIds     The ResourceIds property is used.
+  imItemList        The AddItem, DeleteItem, ClearItems and GetItemInfoStr are used
   </TABLE>
 See Also
-  Picture,FileName,ResourceIds
+  Picture,FileName,ResourceIds,AddItem,DeleteItem,ClearItems,GetItemInfoStr
 ----------------------------------------------------------------------------------------------------
 @@TJvImageList.Picture
 Summary
