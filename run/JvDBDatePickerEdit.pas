@@ -218,10 +218,14 @@ function TJvCustomDBDatePickerEdit.IsEmpty: Boolean;
 begin
   if IsLinked then
   begin
-    if FDataLink.DataSet.State in [dsEdit, dsInsert] then
+    if FDataLink.Editing then
       Result := inherited IsEmpty
     else
-      Result := FDataLink.Field.IsNull;
+      try
+        Result := FDataLink.DataSet.IsEmpty or FDataLink.Field.IsNull;
+      except 
+        Result := True;
+      end;
   end
   else
     Result := True;
@@ -234,7 +238,7 @@ end;
 
 procedure TJvCustomDBDatePickerEdit.DoKillFocus(const ANextControl: TWinControl);
 begin
-  if(FDataLink.Editing) then
+  if(IsLinked and FDataLink.Editing) then
     try
       FDataLink.UpdateRecord;
     except
@@ -269,7 +273,7 @@ end;
 
 procedure TJvCustomDBDatePickerEdit.UpdateData(Sender: TObject);
 begin
-  if IsLinked then
+  if IsLinked and FDataLink.Editing then
     if not Checked then
       FDataLink.Field.Value := NULL
     else
@@ -308,8 +312,9 @@ end;
 function TJvCustomDBDatePickerEdit.GetEnableValidation: Boolean;
 begin
   Result := inherited GetEnableValidation;
-  {if we enabled validation for an unlinked control, we'd have validation errors
-   pop up just from tabbing over the control, therefore we temporary disable it}
+  {if we enabled "as-you-type" validation for an unlinked control, we'd have
+   validation errors pop up just from tabbing over the control, therefore we
+   temporary disable it}
   if InternalChanging or Leaving then
     Result := Result and IsLinked and FDataLink.Editing;
 end;
