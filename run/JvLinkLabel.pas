@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is David Polberger <dpol att swipnet 
 Portions created by David Polberger are Copyright (C) 2002 David Polberger.
 All Rights Reserved.
 
-Contributor(s): ______________________________________.
+Contributor(s): Bianconi, Cetkovsky
 
 Current Version: 2.00
 
@@ -55,7 +55,7 @@ type
   ELinkLabelError = class(EJVCLException);
 
   TLinkClickEvent = procedure(Sender: TObject; LinkNumber: Integer;
-    LinkText: string) of object;
+    LinkText, LinkParam: string) of object;  // added LinkParam by Cetkovsky
   TDynamicTagInitEvent = procedure(Sender: TObject; out Source: string;
     Number: Integer) of object;
 
@@ -121,7 +121,7 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure Resize; override;
     procedure DoCaptionChanged; virtual;
-    procedure DoLinkClicked(LinkNumber: Integer; LinkText: string); virtual;
+    procedure DoLinkClicked(LinkNumber: Integer; LinkText, LinkParam: string); virtual;  // added LinkParam by Cetkovsky
     procedure DoDynamicTagInit(out Source: string; Number: Integer); virtual;
     property Parser: IParser read FParser;
     property Renderer: IRenderer read FRenderer;
@@ -174,6 +174,8 @@ type
     property OnDynamicTagInit;
     property OnCaptionChanged;
     property OnLinkClick;
+
+    property Enabled;                 // Cetkovsky
 
     property Align;
     property Color;
@@ -365,10 +367,11 @@ begin
     FOnDynamicTagInit(Self, Source, Number);
 end;
 
-procedure TJvCustomLinkLabel.DoLinkClicked(LinkNumber: Integer; LinkText: string);
+ // added LinkParam by Cetkovsky
+procedure TJvCustomLinkLabel.DoLinkClicked(LinkNumber: Integer; LinkText, LinkParam: string);
 begin
   if Assigned(FOnLinkClick) then
-    FOnLinkClick(Self, LinkNumber, LinkText);
+    FOnLinkClick(Self, LinkNumber, LinkText, LinkParam);
 end;
 
 function TJvCustomLinkLabel.GetDynamicTagContents(Number: Integer): string;
@@ -475,7 +478,7 @@ begin
   begin
     NodeAtPoint := FNodeTree.GetNodeAtPointOfClass(Pt, TLinkNode) as TLinkNode;
     if Assigned(NodeAtPoint) then
-      DoLinkClicked(NodeAtPoint.Number, NodeAtPoint.Text);
+      DoLinkClicked(NodeAtPoint.Number, NodeAtPoint.Text, NodeAtPoint.Param);  // added LinkParam by Cetkovsky
   end;
 
   DeactivateActiveLinkNode;

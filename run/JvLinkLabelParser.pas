@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is David Polberger <dpol att swipnet 
 Portions created by David Polberger are Copyright (C) 2002 David Polberger.
 All Rights Reserved.
 
-Contributor(s): ______________________________________.
+Contributor(s): Cetkovsky
 
 Current Version: 2.00
 
@@ -250,13 +250,25 @@ var
   CurrentTag: TTag;
   UnknownTag: Boolean;
 
+  //Cetkovsky -->
+  function GetStringFromTag: string;
+  begin
+    if (Pos('=', Tag) > 0) then
+      Result := Copy(Tag, Pos('=', Tag) + 1, Length(Tag))
+    else
+      Result := '';
+  end;
+  //<-- Cetkovsky
+
   // Bianconi
   function GetColorFromTag: TColor;
   var
     sVar: string;
   begin
     Result := clNone;
-    sVar := Copy(Tag, Pos('=', Tag) + 1, Length(Tag));
+    //Cetkovsky -->
+    sVar := GetStringFromTag;
+    //<-- Cetkovsky
     try
       Result := StringToColor(sVar);
     except // Only to avoid raise an exception on invalid color
@@ -271,7 +283,10 @@ var
       'I',
       'U',
       'COLOR=', // Bianconi
-      'LINK',
+//      'LINK',
+    //Cetkovsky -->
+      'LINK=',
+    //<-- Cetkovsky
       'BR',
       'P',
       'DYNAMIC');
@@ -281,7 +296,12 @@ var
     // Bianconi
     for Result := Low(TTag) to High(TTag) do
       if (AnsiUpperCase(Tag) = TagStrings[Result]) or
-        (Copy(AnsiUpperCase(Tag), 1, Length(TagStrings[Result])) = 'COLOR=') then
+//        (Copy(AnsiUpperCase(Tag), 1, Length(TagStrings[Result])) = 'COLOR=')
+        //Cetkovsky -->
+        //We allow <url> style tag without "="
+        ((pos('=', TagStrings[Result]) > 0) and ((Copy(AnsiUpperCase(Tag), 1, Length(TagStrings[Result]) - 1) = Copy(TagStrings[Result], 1, Length(TagStrings[Result]) - 1))))
+        //<-- Cetkovsky
+        then
         Exit;
     //End of Bianconi
     Result := TTag(DontCare); // To get rid of a compiler warning
@@ -309,8 +329,10 @@ begin
       ttColor:
         Result := TColorNode.Create(GetColorFromTag);
       // End of Bianconi
+      //Cetkovsky -->
       ttLink:
-        Result := TLinkNode.Create;
+        Result := TLinkNode.Create(GetStringFromTag);
+      //<-- Cetkovsky
       ttLineBreak:
         Result := TActionNode.Create(atLineBreak);
       ttParagraphBreak:
