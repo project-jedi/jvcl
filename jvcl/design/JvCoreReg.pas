@@ -14,7 +14,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvJCLUtils, JVCLVer, JvComponent, JvActions, JvActnRes, JvJVCLAbout, JvDsgnEditors, JvIDEZoom,
+  JvJCLUtils, JVCLVer, JvComponent, JvActions, JvActnResForm, JvJVCLAboutForm, JvDsgnEditors, JvIDEZoom,
   JvJVCLAboutEditor, JvBaseDlgEditor, JvColorEditor, JvPaintBoxEditor;
 
 {$R ..\resources\JvCoreReg.dcr}

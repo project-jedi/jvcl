@@ -24,7 +24,7 @@ package JvCryptD5D;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Encryption and Compression Designtime Package'}
 {$DESIGNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvCryptD5R;

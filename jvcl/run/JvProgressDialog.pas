@@ -35,7 +35,7 @@ the time interval between calls to OnProgress and you use OnProgress to update t
 display of the dialog. You can set the properties of the component within OnProgress to
 change the display except for Transparent. Since this component relies on the fact that you have
 a class that can handle the OnProgress event, there are times when you can't use it easily
-(f ex displaying a progress dialog on program startup). Try TJvProgressForm instead since it
+(f ex displaying a progress dialog on program startup). Try TJvProgressComponent instead since it
 has methods and properties you can call directly (ProgressStepIt is the most important) to update the dialog.
 
 Methods:
@@ -155,7 +155,7 @@ type
 
 implementation
 uses
-  Controls, JvProgressFrm;
+  Controls, JvProgressForm;
 
 { TJvProgressDialog }
 

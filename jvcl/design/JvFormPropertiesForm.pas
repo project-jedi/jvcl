@@ -37,8 +37,10 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF}
-  JvJVCLUtils, JvxCtrls, JvFormPlacement, JvPropsStorage, JvListBox, JvCtrls;
-
+  JvJVCLUtils, JvFormPlacement, JvPropsStorage;
+{ TODO -oJVCL -cREIMPLEMENT : 
+Add support for "Box" style procedures again but remove dependency on 
+JvxCtrls and JvBoxProcs units }
 type
   {$IFNDEF COMPILER4_UP}
   IDesigner = TDesigner;
@@ -60,9 +62,9 @@ type
     ClearButton: TButton;
     OkBtn: TButton;
     CancelBtn: TButton;
-    ComponentsList: TJvListBox;
-    PropertiesList: TJvListBox;
-    StoredList: TJvListBox;
+    ComponentsList: TListBox;
+    PropertiesList: TListBox;
+    StoredList: TListBox;
     procedure AddButtonClick(Sender: TObject);
     procedure ClearButtonClick(Sender: TObject);
     procedure ListClick(Sender: TObject);
@@ -111,7 +113,7 @@ implementation
 
 uses
   TypInfo,
-  JvBoxProcs, JvConsts;
+  JvConsts;
 
 {$R *.DFM}
 
@@ -228,8 +230,8 @@ procedure TJvFormPropsDlg.ListToIndex(List: TCustomListBox; Idx: Integer);
 
   procedure SetItemIndex(Index: Integer);
   begin
-    if TJvListBox(List).MultiSelect then
-      TJvListBox(List).Selected[Index] := True;
+    if TListBox(List).MultiSelect then
+      TListBox(List).Selected[Index] := True;
     List.ItemIndex := Index;
   end;
 
@@ -491,7 +493,7 @@ end;
 
 procedure TJvFormPropsDlg.UpBtnClick(Sender: TObject);
 begin
-  BoxMoveFocusedItem(StoredList, StoredList.ItemIndex - 1);
+//  BoxMoveFocusedItem(StoredList, StoredList.ItemIndex - 1);
   if FDesigner <> nil then
     FDesigner.Modified;
   CheckButtons;
@@ -499,7 +501,7 @@ end;
 
 procedure TJvFormPropsDlg.DownBtnClick(Sender: TObject);
 begin
-  BoxMoveFocusedItem(StoredList, StoredList.ItemIndex + 1);
+//  BoxMoveFocusedItem(StoredList, StoredList.ItemIndex + 1);
   if FDesigner <> nil then
     FDesigner.Modified;
   CheckButtons;
@@ -508,14 +510,14 @@ end;
 procedure TJvFormPropsDlg.StoredListDragOver(Sender, Source: TObject; X,
   Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-  BoxDragOver(StoredList, Source, X, Y, State, Accept, StoredList.Sorted);
+//  BoxDragOver(StoredList, Source, X, Y, State, Accept, StoredList.Sorted);
   CheckButtons;
 end;
 
 procedure TJvFormPropsDlg.StoredListDragDrop(Sender, Source: TObject; X,
   Y: Integer);
 begin
-  BoxMoveFocusedItem(StoredList, StoredList.ItemAtPos(Point(X, Y), True));
+//  BoxMoveFocusedItem(StoredList, StoredList.ItemAtPos(Point(X, Y), True));
   if FDesigner <> nil then
     FDesigner.Modified;
   CheckButtons;

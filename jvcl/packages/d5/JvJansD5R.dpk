@@ -24,7 +24,7 @@ package JvJansD5R;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Jans Runtime Components'}
 {$RUNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   vcl50,
@@ -56,7 +56,7 @@ contains
   JvButtonUtils in '..\..\run\JvButtonUtils.pas',
   JvPaintFX in '..\..\run\JvPaintFX.pas',
   JvBitmapButton in '..\..\run\JvBitmapButton.pas',
-  JvSpeller in '..\..\run\JvSpeller.pas' {janSpellerF},
+  JvSpellerForm in '..\..\run\JvSpellerForm.pas' {janSpellerF},
   JvSimScope in '..\..\run\JvSimScope.pas',
   JvSimLogic in '..\..\run\JvSimLogic.pas',
   JvSimPID in '..\..\run\JvSimPID.pas',

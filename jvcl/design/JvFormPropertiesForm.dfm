@@ -231,7 +231,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
     ModalResult = 2
     TabOrder = 8
   end
-  object ComponentsList: TJvListBox
+  object ComponentsList: TListBox
     Left = 16
     Top = 80
     Width = 105
@@ -241,7 +241,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
     TabOrder = 1
     OnClick = ListClick
   end
-  object PropertiesList: TJvListBox
+  object PropertiesList: TListBox
     Left = 224
     Top = 80
     Width = 113
@@ -251,7 +251,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
     TabOrder = 3
     OnDblClick = PropertiesListDblClick
   end
-  object StoredList: TJvListBox
+  object StoredList: TListBox
     Left = 16
     Top = 192
     Width = 241

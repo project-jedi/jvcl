@@ -48,7 +48,7 @@ type
   end;
 
 implementation
-uses JvgHelpPanel, JvgRTFPreviewEditor;
+uses JvgHelpPanel, JvgRTFPreviewForm;
 { TJvgHelpPanelEditor }
 
 procedure TJvgHelpPanelEditor.ExecuteVerb(Index: Integer);

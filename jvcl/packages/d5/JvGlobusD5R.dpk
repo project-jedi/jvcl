@@ -24,7 +24,7 @@ package JvGlobusD5R;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL - Globus Extension Library'}
 {$RUNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   vcl50,

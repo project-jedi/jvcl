@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvRegAutoEditor.PAS, released on 2002-07-04.
+The Original Code is: JvRegAutoEditorForm.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
 Copyright (c) 1999, 2002 Andrei Prygounkov
@@ -30,7 +30,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvRegAutoEditor;
+unit JvRegAutoEditorForm;
 
 interface
 
@@ -457,7 +457,7 @@ begin
       except
         on E: Exception do
         begin
-          E.Message := 'JvRegAutoEditor error:' + E.Message;
+          E.Message := 'JvRegAutoEditorForm error:' + E.Message;
           raise;
         end;
       end;
@@ -622,10 +622,10 @@ begin
   with TJvRegAuto.Create(Self) do
   begin
     {$IFDEF DELPHI}
-    RegPath := 'Software\Borland\Delphi\JVCL\JvRegAutoEditor';
+    RegPath := 'Software\Borland\Delphi\JVCL\JvRegAutoEditorForm';
     {$ENDIF DELPHI}
     {$IFDEF CBUILDER}
-    RegPath := 'Software\Borland\C++Builder\JVCL\JvRegAutoEditor';
+    RegPath := 'Software\Borland\C++Builder\JVCL\JvRegAutoEditorForm';
     {$ENDIF CBUILDER}
     AutoMode := True;
     SaveWindowPlace := True;

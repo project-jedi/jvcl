@@ -24,7 +24,7 @@ package JvSystemD7R;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL System Runtime Package'}
 {$RUNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvCoreD7R,

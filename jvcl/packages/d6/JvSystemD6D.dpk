@@ -24,7 +24,7 @@ package JvSystemD6D;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL System Designtime Package'}
 {$DESIGNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvSystemD6R,

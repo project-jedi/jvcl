@@ -24,7 +24,7 @@ package JvBandsD5D;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Band Objects Designtime Package'}
 {$DESIGNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvCoreD5R,

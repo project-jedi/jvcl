@@ -24,7 +24,7 @@ package JvCmpD7D;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Components Designtime Package'}
 {$DESIGNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvCmpD7R,
@@ -37,9 +37,9 @@ contains
   JvCmpReg in '..\..\design\JvCmpReg.pas',
   JvDataEmbeddedEditor in '..\..\design\JvDataEmbeddedEditor.pas',
   JvAlarmsEditor in '..\..\design\JvAlarmsEditor.pas',
-  JvFormAlarms in '..\..\run\JvFormAlarms.pas' {FormAlarm},
+  JvAlarmsForm in '..\..\run\JvAlarmsForm.pas' {FormAlarm},
   JvPatcherEditor in '..\..\design\JvPatcherEditor.pas',
-  JvFormPatch in '..\..\run\JvFormPatch.pas',
+  JvPatchForm in '..\..\run\JvPatchForm.pas',
   JvPageManagerForm in '..\..\design\JvPageManagerForm.pas';
 
 end.

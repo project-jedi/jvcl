@@ -24,7 +24,7 @@ package JvPageCompsD7R;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Page Style Components Run Package for Delphi 6'}
 {$RUNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   rtl,

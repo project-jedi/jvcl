@@ -24,7 +24,7 @@ package JvStdCtrlsD7R;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Standard Controls Runtime Package'}
 {$RUNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvCoreD7R,

@@ -24,7 +24,7 @@ package JvInterpreterD5R;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Interpreter Components Runtime Package'}
 {$RUNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvCoreD5R,

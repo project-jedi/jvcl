@@ -24,7 +24,7 @@ package JvCmpD7R;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Components Runtime Package'}
 {$RUNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvCoreD7R,
@@ -46,6 +46,6 @@ contains
   JvPrint in '..\..\run\JvPrint.pas',
   JvCreateProcess in '..\..\run\JvCreateProcess.pas',
   JvEasterEgg in '..\..\run\JvEasterEgg.pas',
-  JvProfiler32 in '..\..\run\JvProfiler32.pas' {ProfReport};
+  JvProfilerForm in '..\..\run\JvProfilerForm.pas' {ProfReport};
 
 end.

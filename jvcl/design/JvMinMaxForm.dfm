@@ -213,125 +213,77 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
     ShowHint = True
     OnClick = SetCurrentBtnClick
   end
-  object MaxPosLeftEdit: TJvValidateEdit
+  object MaxPosLeftEdit: TEdit
     Left = 162
     Top = 10
     Width = 23
     Height = 21
     AutoSize = False
-    CheckChars = '01234567890'
-    HasMaxValue = True
-    MaxValue = 10000
-    PasswordChar = #0
-    ReadOnly = False
     TabOrder = 3
     Text = '0'
-    Value = 0
   end
-  object MaxPosTopEdit: TJvValidateEdit
+  object MaxPosTopEdit: TEdit
     Left = 242
     Top = 10
     Width = 23
     Height = 21
     AutoSize = False
-    CheckChars = '01234567890'
-    HasMaxValue = True
-    MaxValue = 10000
-    PasswordChar = #0
-    ReadOnly = False
     TabOrder = 4
     Text = '0'
-    Value = 0
   end
-  object MaxSizeWidthEdit: TJvValidateEdit
+  object MaxSizeWidthEdit: TEdit
     Left = 162
     Top = 39
     Width = 23
     Height = 21
     AutoSize = False
-    CheckChars = '01234567890'
-    HasMaxValue = True
-    MaxValue = 10000
-    PasswordChar = #0
-    ReadOnly = False
     TabOrder = 5
     Text = '0'
-    Value = 0
   end
-  object MaxSizeHeightEdit: TJvValidateEdit
+  object MaxSizeHeightEdit: TEdit
     Left = 242
     Top = 39
     Width = 23
     Height = 21
     AutoSize = False
-    CheckChars = '01234567890'
-    HasMaxValue = True
-    MaxValue = 10000
-    PasswordChar = #0
-    ReadOnly = False
     TabOrder = 6
     Text = '0'
-    Value = 0
   end
-  object MaxTrackWidthEdit: TJvValidateEdit
+  object MaxTrackWidthEdit: TEdit
     Left = 162
     Top = 68
     Width = 23
     Height = 21
     AutoSize = False
-    CheckChars = '01234567890'
-    HasMaxValue = True
-    MaxValue = 10000
-    PasswordChar = #0
-    ReadOnly = False
     TabOrder = 7
     Text = '0'
-    Value = 0
   end
-  object MaxTrackHeightEdit: TJvValidateEdit
+  object MaxTrackHeightEdit: TEdit
     Left = 242
     Top = 68
     Width = 23
     Height = 21
     AutoSize = False
-    CheckChars = '01234567890'
-    HasMaxValue = True
-    MaxValue = 10000
-    PasswordChar = #0
-    ReadOnly = False
     TabOrder = 8
     Text = '0'
-    Value = 0
   end
-  object MinTrackWidthEdit: TJvValidateEdit
+  object MinTrackWidthEdit: TEdit
     Left = 162
     Top = 98
     Width = 23
     Height = 21
     AutoSize = False
-    CheckChars = '01234567890'
-    HasMaxValue = True
-    MaxValue = 10000
-    PasswordChar = #0
-    ReadOnly = False
     TabOrder = 9
     Text = '0'
-    Value = 0
   end
-  object MinTrackHeightEdit: TJvValidateEdit
+  object MinTrackHeightEdit: TEdit
     Left = 242
     Top = 98
     Width = 23
     Height = 21
     AutoSize = False
-    CheckChars = '01234567890'
-    HasMaxValue = True
-    MaxValue = 10000
-    PasswordChar = #0
-    ReadOnly = False
     TabOrder = 10
     Text = '0'
-    Value = 0
   end
   object OkBtn: TButton
     Left = 163

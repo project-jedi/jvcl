@@ -55,7 +55,7 @@ type
 implementation
 
 uses
-  JvFormWallpaperEdit, JvConsts;
+  JvWallpaperEditForm, JvConsts;
 
 procedure TJvFormWallpaperEditor.ApplyImage(Sender: TObject);
 begin

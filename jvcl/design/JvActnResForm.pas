@@ -8,44 +8,49 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvgRTFPreviewEditor.PAS, released on 2003-01-15.
+The Original Code is: JvActnResForm.PAS, released on 2002-07-04.
 
-The Initial Developer of the Original Code is Andrey V. Chudin,  [chudin@yandex.ru]
-Portions created by Andrey V. Chudin are Copyright (C) 2003 Andrey V. Chudin.
+The Initial Developers of the Original Code are:
 All Rights Reserved.
 
 Contributor(s):
-Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15
+Last Modified:
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
+
+description :
 
 Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
 
-unit JvgRTFPreviewEditor;
+unit JvActnResForm;
 
 interface
 
 uses
-  Windows, Classes, Forms, ComCtrls, Controls, StdCtrls;
+  SysUtils, Classes, ActnList, ImgList,
+  {$IFNDEF COMPILER6_UP}
+  Forms,
+  {$ENDIF}
+  Controls;
 
 type
-  TJvgRTFPreview = class(TForm)
-    Rich: TRichEdit;
-  private
+  TJvStandardActions = class(TDataModule)
+    ImageList1: TImageList;
+    ActionList1: TActionList;
   public
   end;
 
-var
-  JvgRTFPreview: TJvgRTFPreview;
+// (rom) unused
+// var
+//   JvStandardActions: TJvStandardActions;
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 end.

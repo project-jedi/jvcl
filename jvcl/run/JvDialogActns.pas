@@ -239,7 +239,7 @@ procedure Register;
 implementation
 
 uses
-  JvActnRes;
+  JvActnResForm;
 
 //=== TJvCommonDialogAction ==================================================
 

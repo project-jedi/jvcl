@@ -24,7 +24,7 @@ package JvCoreD6D;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Core Designtime Package'}
 {$DESIGNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvCoreD6R,
@@ -32,7 +32,7 @@ requires
   dclstd;
 
 contains
-  JvJVCLAboutEditor in '..\..\design\JvJVCLAboutEditor.pas',
+  JvJVCLAboutFormEditor in '..\..\design\JvJVCLAboutFormEditor.pas',
   JvCoreReg in '..\..\design\JvCoreReg.pas',
   JvDsgnEditors in '..\..\design\JvDsgnEditors.pas',
   JvDateTimeForm in '..\..\design\JvDateTimeForm.pas' {frmSelectDateTimeDlg},

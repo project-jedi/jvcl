@@ -31,11 +31,7 @@ interface
 
 uses
   SysUtils,
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   Messages, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
   Buttons, Mask,
   {$IFDEF COMPILER6_UP}
@@ -44,7 +40,7 @@ uses
   DsgnIntf,
   {$ENDIF}
   Consts,
-  JvJVCLUtils, JvFormPlacement, JvValidateEdit, JvEdit;
+  JvJVCLUtils, JvFormPlacement;
 
 type
   TMinMaxInfoEditDialog = class(TForm)
@@ -68,14 +64,14 @@ type
     MaxTrackBtn: TSpeedButton;
     MinTrackBtn: TSpeedButton;
     ClearBtn: TButton;
-    MaxPosLeftEdit: TJvValidateEdit;
-    MaxPosTopEdit: TJvValidateEdit;
-    MaxSizeWidthEdit: TJvValidateEdit;
-    MaxSizeHeightEdit: TJvValidateEdit;
-    MaxTrackWidthEdit: TJvValidateEdit;
-    MaxTrackHeightEdit: TJvValidateEdit;
-    MinTrackWidthEdit: TJvValidateEdit;
-    MinTrackHeightEdit: TJvValidateEdit;
+    MaxPosLeftEdit: TEdit;
+    MaxPosTopEdit: TEdit;
+    MaxSizeWidthEdit: TEdit;
+    MaxSizeHeightEdit: TEdit;
+    MaxTrackWidthEdit: TEdit;
+    MaxTrackHeightEdit: TEdit;
+    MinTrackWidthEdit: TEdit;
+    MinTrackHeightEdit: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure SetCurrentBtnClick(Sender: TObject);
@@ -107,6 +103,10 @@ implementation
 {$D-}
 {$ENDIF}
 
+procedure MakeIntEdit(Edit:TCustomEdit);
+begin
+  SetWindowLong(Edit.Handle,GWL_STYLE,GetWindowLong(Edit.Handle,GWL_STYLE) or ES_NUMBER);
+end;
 function EditMinMaxInfo(AComponent: TJvFormPlacement): Boolean;
 begin
   Result := False;
@@ -163,14 +163,14 @@ begin
   FWinMinMaxInfo.Assign(Value);
   with FWinMinMaxInfo do
   begin
-    MaxPosLeftEdit.AsInteger := MaxPosLeft;
-    MaxPosTopEdit.AsInteger := MaxPosTop;
-    MaxSizeWidthEdit.AsInteger := MaxSizeWidth;
-    MaxSizeHeightEdit.AsInteger := MaxSizeHeight;
-    MaxTrackWidthEdit.AsInteger := MaxTrackWidth;
-    MaxTrackHeightEdit.AsInteger := MaxTrackHeight;
-    MinTrackWidthEdit.AsInteger := MinTrackWidth;
-    MinTrackHeightEdit.AsInteger := MinTrackHeight;
+    MaxPosLeftEdit.Text := IntToStr(MaxPosLeft);
+    MaxPosTopEdit.Text := IntToStr(MaxPosTop);
+    MaxSizeWidthEdit.Text := IntToStr(MaxSizeWidth);
+    MaxSizeHeightEdit.Text := IntToStr(MaxSizeHeight);
+    MaxTrackWidthEdit.Text := IntToStr(MaxTrackWidth);
+    MaxTrackHeightEdit.Text := IntToStr(MaxTrackHeight);
+    MinTrackWidthEdit.Text := IntToStr(MinTrackWidth);
+    MinTrackHeightEdit.Text := IntToStr(MinTrackHeight);
   end;
 end;
 
@@ -178,20 +178,24 @@ procedure TMinMaxInfoEditDialog.UpdateMinMaxInfo;
 begin
   with FWinMinMaxInfo do
   begin
-    MaxPosLeft := MaxPosLeftEdit.AsInteger;
-    MaxPosTop := MaxPosTopEdit.AsInteger;
-    MaxSizeWidth := MaxSizeWidthEdit.AsInteger;
-    MaxSizeHeight := MaxSizeHeightEdit.AsInteger;
-    MaxTrackWidth := MaxTrackWidthEdit.AsInteger;
-    MaxTrackHeight := MaxTrackHeightEdit.AsInteger;
-    MinTrackWidth := MinTrackWidthEdit.AsInteger;
-    MinTrackHeight := MinTrackHeightEdit.AsInteger;
+    MaxPosLeft := StrToIntDef(MaxPosLeftEdit.Text,MaxPosLeft);
+    MaxPosTop := StrToIntDef(MaxPosTopEdit.Text,MaxPosTop);
+    MaxSizeWidth := StrToIntDef(MaxSizeWidthEdit.Text,MaxSizeWidth);
+    MaxSizeHeight := StrToIntDef(MaxSizeHeightEdit.Text,MaxSizeHeight);
+    MaxTrackWidth := StrToIntDef(MaxTrackWidthEdit.Text,MaxTrackWidth);
+    MaxTrackHeight := StrToIntDef(MaxTrackHeightEdit.Text,MaxTrackHeight);
+    MinTrackWidth := StrToIntDef(MinTrackWidthEdit.Text,MinTrackWidth);
+    MinTrackHeight := StrToIntDef(MinTrackHeightEdit.Text,MinTrackHeight);
   end;
 end;
 
 procedure TMinMaxInfoEditDialog.FormCreate(Sender: TObject);
+var i:integer;
 begin
   FWinMinMaxInfo := TJvWinMinMaxInfo.Create;
+  for i := 0 to ComponentCount - 1 do
+    if Components[i] is TCustomEdit then
+      MakeIntEdit(TCustomEdit(Components[i]));
 end;
 
 procedure TMinMaxInfoEditDialog.FormDestroy(Sender: TObject);
@@ -205,23 +209,23 @@ begin
     case TComponent(Sender).Tag of
       1:
         begin
-          MaxPosLeftEdit.AsInteger := TForm(FForm).Left;
-          MaxPosTopEdit.AsInteger := TForm(FForm).Top;
+          MaxPosLeftEdit.Text := IntToStr(TForm(FForm).Left);
+          MaxPosTopEdit.Text := IntToStr(TForm(FForm).Top);
         end;
       2:
         begin
-          MaxSizeWidthEdit.AsInteger := TForm(FForm).Width;
-          MaxSizeHeightEdit.AsInteger := TForm(FForm).Height;
+          MaxSizeWidthEdit.Text := IntToStr(TForm(FForm).Width);
+          MaxSizeHeightEdit.Text := IntToStr(TForm(FForm).Height);
         end;
       3:
         begin
-          MaxTrackWidthEdit.AsInteger := TForm(FForm).Width;
-          MaxTrackHeightEdit.AsInteger := TForm(FForm).Height;
+          MaxTrackWidthEdit.Text := IntToStr(TForm(FForm).Width);
+          MaxTrackHeightEdit.Text := IntToStr(TForm(FForm).Height);
         end;
       4:
         begin
-          MinTrackWidthEdit.AsInteger := TForm(FForm).Width;
-          MinTrackHeightEdit.AsInteger := TForm(FForm).Height;
+          MinTrackWidthEdit.Text := IntToStr(TForm(FForm).Width);
+          MinTrackHeightEdit.Text := IntToStr(TForm(FForm).Height);
         end;
     else
       Exit;
@@ -235,14 +239,14 @@ end;
 
 procedure TMinMaxInfoEditDialog.ClearBtnClick(Sender: TObject);
 begin
-  MaxPosLeftEdit.AsInteger := 0;
-  MaxPosTopEdit.AsInteger := 0;
-  MaxSizeWidthEdit.AsInteger := 0;
-  MaxSizeHeightEdit.AsInteger := 0;
-  MaxTrackWidthEdit.AsInteger := 0;
-  MaxTrackHeightEdit.AsInteger := 0;
-  MinTrackWidthEdit.AsInteger := 0;
-  MinTrackHeightEdit.AsInteger := 0;
+  MaxPosLeftEdit.Text := '0';
+  MaxPosTopEdit.Text := '0';
+  MaxSizeWidthEdit.Text := '0';
+  MaxSizeHeightEdit.Text := '0';
+  MaxTrackWidthEdit.Text := '0';
+  MaxTrackHeightEdit.Text := '0';
+  MinTrackWidthEdit.Text := '0';
+  MinTrackHeightEdit.Text := '0';
 end;
 
 end.
