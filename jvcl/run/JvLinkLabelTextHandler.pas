@@ -48,9 +48,9 @@ Description:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvLinkLabelTextHandler;
+
+{$I jvcl.inc}
 
 interface
 

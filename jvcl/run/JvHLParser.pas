@@ -29,8 +29,6 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 {history:
 3.0:
   2003-09-20: (changes by Andreas Hausladen)
@@ -40,11 +38,12 @@ Known Issues:
 
 unit JvHLParser;
 
+{$I jvcl.inc}
+
 interface
 
 uses
-  SysUtils, Classes,
-  Dialogs,
+  SysUtils, Classes, Dialogs,
   JvTypes, JvJCLUtils, JvWStrUtils;
 
 const
@@ -53,7 +52,7 @@ const
 type
   TIParserStyle = (psNone, psPascal, psCpp, psPython, psVB, psHtml, psPerl, psCocoR, psPhp);
 
-  TJvIParser = class
+  TJvIParser = class(TObject)
   protected
     FpcProgram: PChar;
     FpcPos: PChar; // Current position [translated]
@@ -90,7 +89,7 @@ type
     property ReturnComments: Boolean read FReturnComments write FReturnComments;
   end;
 
-  TJvIParserW = class
+  TJvIParserW = class(TObject)
   protected
     FpcProgram: PWideChar;
     FpcPos: PWideChar; // Current position [translated]

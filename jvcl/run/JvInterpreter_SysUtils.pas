@@ -25,10 +25,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-{$I windowsonly.inc}
-
 unit JvInterpreter_SysUtils;
+
+{$I jvcl.inc}
+{$I crossplatform.inc}
 
 interface
 

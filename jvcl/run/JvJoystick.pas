@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvJoystick;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvJoystick;
 
 interface
 

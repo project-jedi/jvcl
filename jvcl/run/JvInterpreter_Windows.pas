@@ -25,14 +25,15 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvInterpreter_Windows;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  Windows, JvInterpreter;
+  Windows,
+  JvInterpreter;
 
 function Point2Var(const Point: TPoint): Variant;
 function Var2Point(const Point: Variant): TPoint;

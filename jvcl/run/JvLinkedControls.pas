@@ -23,11 +23,12 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvLinkedControls;
 
+{$I jvcl.inc}
+
 interface
+
 uses
   SysUtils,
   {$IFDEF VCL}

@@ -25,9 +25,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvInterpreter_DBTables;
+
+{$I jvcl.inc}
 
 interface
 

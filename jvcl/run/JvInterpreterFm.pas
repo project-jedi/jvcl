@@ -26,8 +26,6 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 { history (JVCL Library versions):
   1.10:
    - first release;
@@ -52,6 +50,8 @@ Known Issues:
 }
 
 unit JvInterpreterFm;
+
+{$I jvcl.inc}
 
 interface
 

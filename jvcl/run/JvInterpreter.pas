@@ -169,11 +169,11 @@ Upcoming JVCL 3.00
    - fixed  Character '"' error in SkipToEnd from dejoy 2004-5-25;
 }
 
+unit JvInterpreter;
+
 {$I jvcl.inc}
 
 {.$DEFINE JvInterpreter_DEBUG}
-
-unit JvInterpreter;
 
 interface
 

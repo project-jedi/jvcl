@@ -26,9 +26,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvItemsPanel;
+
+{$I jvcl.inc}
 
 interface
 

@@ -33,9 +33,9 @@ Description:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvLinkLabelParser;
+
+{$I jvcl.inc}
 
 interface
 

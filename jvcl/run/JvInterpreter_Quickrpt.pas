@@ -25,9 +25,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvInterpreter_Quickrpt;
+
+{$I jvcl.inc}
 
 interface
 
@@ -42,7 +42,7 @@ uses
   SysUtils, Classes, Controls, Forms, Graphics, Db,
   {$IFDEF JVCL_UseQuickReport}
   QrPrntr, Quickrpt, QrCtrls,
-  {$ENDIF}
+  {$ENDIF JVCL_UseQuickReport}
   JvInterpreterFm, JvResources, JvTypes;
 
 const

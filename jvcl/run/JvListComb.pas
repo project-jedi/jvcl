@@ -25,15 +25,16 @@ Olivier Sannier [obones att altern dott org]
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A unit to allow display of bitmaps in TComboboxes and TListboxes
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
-{A unit to allow display of bitmaps in TComboboxes and TListboxes }
-
 unit JvListComb;
+
+{$I jvcl.inc}
 
 interface
 

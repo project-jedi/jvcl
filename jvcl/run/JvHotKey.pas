@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvHotKey;
+
 {$I jvcl.inc}
 {$I vclonly.inc}
-
-unit JvHotKey;
 
 interface
 

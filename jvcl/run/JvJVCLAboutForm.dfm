@@ -775,4 +775,3 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
     Top = 272
   end
 end
-
