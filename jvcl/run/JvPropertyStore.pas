@@ -139,7 +139,13 @@ uses
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF COMPILER6_UP}
-  Consts, SysUtils, Typinfo;
+  {$IFDEF VCL}
+  Consts,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QConsts,
+  {$ENDIF}
+  SysUtils, Typinfo;
 
 const
   cLastSaveTime = 'Last Save Time';
