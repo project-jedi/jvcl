@@ -45,21 +45,21 @@ implementation
 uses
   Classes, QControls,
   QTypes, // type TCaption
-  {FiltEdit,} QImgList,
-  DesignEditors, DesignIntf, 
-  JvQDsgnConsts, JvQTypes, Qt,
+  QImgList,
+  DesignEditors, DesignIntf,
+  JvQDsgnConsts, JvQTypes,
+  JvQGauges, JvQStdDsgnEditors, QComCtrlsEx,
   {$IFDEF USEWINDOWS}
   JvQBrowseFolder,
   {$ENDIF USEWINDOWS}
-  JvQColorCombo, JvQComboBox,
-  JvQGauges, QComCtrlsEx, JvQTimeEdit,
+  JvQCombobox, JvQColorCombo,
   JvQSpin, JvQEdit, JvQProgressBar, JvQMaskEdit, JvQBaseEdits, JvQCalc,
   JvQToolEdit, JvQBevel, JvQCheckBox, JvQSpeedButton, JvQSecretPanel,
   JvQCheckListBox, JvQControlBar, JvQCtrls, JvQGroupBox, JvQHeaderControl,
   JvQImage, JvQLabel, JvQRadioButton, JvQRadioGroup, JvQScrollBar, JvQShape,
   JvQStatusBar, JvQGrids, JvQStringGrid, JvQBitBtn, JvQPanel, JvQImageList,
   JvQTransparentPanel, JvQCheckedItemsForm, JvQProgressEditor, JvQDsgnEditors,
-  JvQStdDsgnEditors, JvQCheckedMaskEdit;
+  JvQCheckedMaskEdit;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvStdCtrlsReg.dcr}
@@ -74,37 +74,41 @@ const
   cText = 'Text';
   cOwnerDraw = 'OwnerDraw';
 begin
+  RegisterComponents('Common Controls', [TUpDown]);
   RegisterComponents(RsPaletteVisual, [TJvShape]);
   RegisterComponents(RsPaletteNonVisual, [
     TJvCalculator]);
+  {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteDialog, [TJvBrowseForFolderDialog]);
+  {$ENDIF USEWINDOWS}
   RegisterComponents(RsPaletteButton, [TJvBitBtn, TJvImgBtn, TJvSpeedButton,
     TJvCheckBox, TJvRadioButton, TJvRadioGroup,
-    TJvSpinButton, TUpDown]);
+    TJvSpinButton]);
   RegisterComponents(RsPaletteEdit, [TJvEdit,
     TJvMaskEdit, TJvCheckedMaskEdit, TJvComboEdit, TJvCalcEdit,
     TJvFilenameEdit, TJvDirectoryEdit, TJvSpinEdit,
-    TJvDateEdit, TJvTimeSpin]);
+    TJvDateEdit]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
-  RegisterComponents(RsPaletteBarPanel, [TJvGauge,
-    TJvProgressBar, TJvStatusBar,
+  RegisterComponents(RsPaletteBarPanel, [
+    TJvGauge,
+    TJvProgressBar, TJvStatusBar, 
     TJvControlBar,
     TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
     TJvSecretPanel {, TJvTransparentPanel}]);
-  RegisterComponents(RsPaletteLabel, [TJvLabel
+  RegisterComponents(RsPaletteLabel, [TJvLabel 
     ]);
   RegisterComponents(RsPaletteListComboTree, [
-    TJvComboBox, TJvColorComboBox,
-    TJvCheckListBox,
+    TJvComboBox, 
+    TJvCheckListBox, 
+    TJvColorComboBox,
     TJvDrawGrid, TJvStringGrid]);
-  RegisterComponents(RsPaletteScrollerTracker, [TJvScrollBar ]);
+  RegisterComponents(RsPaletteScrollerTracker, [TJvScrollBar ]); 
 
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'Gauge', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomNumEdit, cText, nil);
   RegisterPropertyEditor(TypeInfo(string), TJvFileDirEdit, cText, TStringProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvCustomDateEdit, cText, TStringProperty);
-//  RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'Filter', TFilterProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCustomDateEdit, cText, TStringProperty); 
   RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'FileName', TJvFilenameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDirectoryEdit, cText, TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomComboEdit, 'ButtonHint', TJvHintProperty); 
