@@ -1,6 +1,6 @@
 object JvChartDemoForm: TJvChartDemoForm
   Left = 218
-  Top = 277
+  Top = 216
   Width = 729
   Height = 489
   VertScrollBar.Range = 35
@@ -13,31 +13,6 @@ object JvChartDemoForm: TJvChartDemoForm
   Font.Pitch = fpVariable
   Font.Style = []
   Font.Weight = 40
-  Icon.Data = {
-    0000010001002020100001001000E80200001600000028000000200000004000
-    0000010004000000000080020000000000000000000000000000000000000000
-    0000000080000080000000808000800000008000800080800000C0C0C0008080
-    80000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF000000
-    0000000000000000000000000000000000000000000000000000000000000000
-    000000BBBBBB000000000000000000000000BBB0000BBB000000000000000000
-    000BB00000000BBB0000000000000000000BB00000000BBB0000000000000000
-    00BBBB0000000BBBB00000000000000000BBBB00000000BBBB00000000000000
-    00BBBBB0000000BBBB0000000000000000BBBBB0000000BBBB00000000000000
-    00BBBBB0000000BBBB00000000000000000BBB00000000BBBB00000000000000
-    00000000000000BBBB0000000000000000000000000000BBBB00000000000000
-    00000000000000BBBB0000000000000000000000000000BBBB00000000000000
-    00000000000000BBBB0000000000000000000000000000BBBB00000000000000
-    00000000000000BBBB0000000000000000000000000000BBBB00000000000000
-    00000000000000BBBB0000000000000000000000000000BBBB00000000000000
-    00000000000000BBBB0000000000000000000000000000BBBB00000000000000
-    00000000000000BBBB0000000000000000000000000000BBBB00000000000000
-    00000000000000BBBB0000000000000000000000000000BBBB00000000000000
-    000000000000BBBBBBB00000000000000000000000BBBBBBBBBBBB0000000000
-    000000000000000000000000000000000000000000000000000000000000FFFF
-    FFFFFFFFFFFFFFC0FFFFFF1E3FFFFE7F8FFFFE7F8FFFFC3F87FFFC3FC3FFFC1F
-    C3FFFC1FC3FFFC1FC3FFFE3FC3FFFFFFC3FFFFFFC3FFFFFFC3FFFFFFC3FFFFFF
-    C3FFFFFFC3FFFFFFC3FFFFFFC3FFFFFFC3FFFFFFC3FFFFFFC3FFFFFFC3FFFFFF
-    C3FFFFFFC3FFFFFFC3FFFFFFC3FFFFFF01FFFFFC003FFFFFFFFFFFFFFFFF}
   Menu = MainMenu1
   ParentFont = False
   Position = poScreenCenter
@@ -47,56 +22,50 @@ object JvChartDemoForm: TJvChartDemoForm
   PixelsPerInch = 96
   TextHeight = 16
   TextWidth = 8
+  object Splitter1: TSplitter
+    Left = 121
+    Top = 35
+    Height = 431
+  end
   object Chart: TJvChart
     Left = 124
     Top = 35
     Width = 605
     Height = 431
     Align = alClient
-    Options.XAxisValuesPerDivision = 10
+    Options.XAxisValuesPerDivision = 0
     Options.XAxisDateTimeMode = False
-    Options.XAxisLegendSkipBy = 2
-    Options.PenCount = 3
     Options.XOrigin = 0
     Options.YOrigin = 0
     Options.YStartOffset = 42
-    Options.PrimaryYAxis.YMax = 20.000000000000000000
-    Options.PrimaryYAxis.YLegendDecimalPlaces = 1
-    Options.SecondaryYAxis.YMax = 140.000000000000000000
+    Options.PrimaryYAxis.YMax = 10.000000000000000000
+    Options.PrimaryYAxis.YLegendDecimalPlaces = 0
+    Options.SecondaryYAxis.YMax = 10.000000000000000000
     Options.SecondaryYAxis.YLegendDecimalPlaces = 0
-    Options.SecondaryYAxis.DefaultYLegends = 60
-    Options.Legend = clChartLegendBelow
-    Options.LegendRowCount = 1
-    Options.PenLineWidth = 2
+    Options.LegendRowCount = 0
     Options.AxisLineWidth = 3
-    Options.XValueCount = 20
-    Options.HeaderFont.Color = clText
+    Options.HeaderFont.Color = clBlack
     Options.HeaderFont.Height = 11
-    Options.HeaderFont.Name = 'MS Sans Serif'
+    Options.HeaderFont.Name = 'MS Shell Dlg'
     Options.HeaderFont.Pitch = fpVariable
     Options.HeaderFont.Style = []
     Options.HeaderFont.Weight = 40
-    Options.LegendFont.Color = clText
+    Options.LegendFont.Color = clBlack
     Options.LegendFont.Height = 11
-    Options.LegendFont.Name = 'MS Sans Serif'
+    Options.LegendFont.Name = 'MS Shell Dlg'
     Options.LegendFont.Pitch = fpVariable
     Options.LegendFont.Style = []
     Options.LegendFont.Weight = 40
-    Options.AxisFont.Color = clText
+    Options.AxisFont.Color = clBlack
     Options.AxisFont.Height = 11
-    Options.AxisFont.Name = 'MS Sans Serif'
+    Options.AxisFont.Name = 'MS Shell Dlg'
     Options.AxisFont.Pitch = fpVariable
     Options.AxisFont.Style = []
     Options.AxisFont.Weight = 40
     Options.PaperColor = clWhite
     Options.AxisLineColor = clBlack
     Options.CursorColor = clBlack
-    Options.CursorStyle = psDot
-  end
-  object Splitter1: TSplitter
-    Left = 121
-    Top = 35
-    Height = 431
+    Options.CursorStyle = psSolid
   end
   object PanelTop: TPanel
     Left = 0
@@ -446,6 +415,10 @@ object JvChartDemoForm: TJvChartDemoForm
         Caption = 'Date/Time Axis Mode'
         OnClick = DateTimeAxisModeClick
       end
+      object MenuNegValueTest: TMenuItem
+        Caption = 'Use Positive and Negative Demo Values (-20..+20)'
+        OnClick = MenuNegValueTestClick
+      end
       object MenuSecondaryAxisMode: TMenuItem
         Caption = '&Plot Markers+Values using Alternate Scale (0-120%)'
         OnClick = MenuSecondaryAxisModeClick
@@ -485,7 +458,7 @@ object JvChartDemoForm: TJvChartDemoForm
     Top = 6
   end
   object PrinterSetupDialog1: TPrinterSetupDialog
-    Left = 168
-    Top = 42
+    Left = 576
+    Top = 8
   end
 end
