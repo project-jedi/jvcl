@@ -361,6 +361,7 @@ resourcestring
   RsEUnableToLocateCSVFileInfo = 'Unable to locate CSV file information for field %s';
   RsEPhysicalLocationOfCSVField = 'Physical location of CSV field %s unknown';
   RsEInvalidFieldTypeCharacter = 'Invalid field type character: %s';
+  RsECsvNoRecord = 'No database record';
   RsEUnexpectedError = 'Unexpected error parsing CSV Field Definitions';
   RsEFieldDefinitionError = 'Field Definition Error. CsvFieldDef, FieldDefs, and file contents must match';
   RsEInvalidCsvKeyDef = 'Invalid CsvKeyDef property. InternalInitFieldDefs failed';

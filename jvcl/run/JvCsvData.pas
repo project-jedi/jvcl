@@ -3161,7 +3161,11 @@ end;
 
 function TJvCsvRows.GetRowPtr(const RowIndex: Integer): PCsvRow;
 begin
-  Result := PCsvRow(Get(RowIndex)); // return pointer to a row item.
+ if (RowIndex>=0) and (RowIndex < Count)then
+    Result := PCsvRow(Get(RowIndex)) // return pointer to a row item.
+ else
+  raise EJvCsvDataSetError.Create(RsECsvNoRecord); { NO Such Record }
+    
 end;
 
 function TJvCsvRows.GetRowStr(const RowIndex: Integer): string;
