@@ -204,18 +204,18 @@ var
   KeyState: TKeyboardState;
 begin
   GetKeyboardState(KeyState);
-  Result := KeyState[Value] = 1;
+  Result := KeyState[Value] = 1; 
 end;
 
 {*****************************************************}
 
 procedure TJvKeyboardStates.SetState(key: Integer; Value: Boolean);
-var
-  KeyState: TKeyboardState;
 begin
-  GetKeyboardState(KeyState);
-  KeyState[key] := Integer(Value);
-  SetKeyboardState(KeyState);
+  if Odd(GetAsyncKeyState( key )) <> Value Then
+  begin
+    keybd_event(key, MapVirtualkey(key, 0), KEYEVENTF_EXTENDEDKEY, 0);
+    keybd_event(key, MapVirtualkey(key, 0), KEYEVENTF_EXTENDEDKEY or KEYEVENTF_KEYUP, 0);
+  end;
 end;
 
 {*****************************************************}
