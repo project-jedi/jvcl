@@ -31,8 +31,7 @@ unit JvSimIndicator;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls;
+  Windows, SysUtils, Classes, Graphics, Controls, ExtCtrls;
 
 type
   TJvSimIndicator = class(TGraphicControl)

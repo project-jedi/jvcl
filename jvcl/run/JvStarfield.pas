@@ -31,8 +31,8 @@ unit JvStarfield;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls, JvTypes,
-  JvImageDrawThread, JVCLVer;
+  Windows, SysUtils, Classes, Graphics, Controls,
+  JvTypes, JvImageDrawThread, JVCLVer;
 
 type
   TJvStars = record
@@ -67,6 +67,8 @@ type
     property Align;
     property Anchors;
     property Constraints;
+    property Height default 100;
+    property Width default 100;
     property Delay: Cardinal read FDelay write SetDelay default 50;
     property Active: Boolean read FActive write SetActive default False;
     property Stars: Word read FStars write SetStars default 100;
@@ -78,7 +80,6 @@ implementation
 constructor TJvStarfield.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Randomize;
 
   FDelay := 50;
   FActive := False;
@@ -86,10 +87,10 @@ begin
 
   FThread := TJvImageDrawThread.Create(True);
   FThread.FreeOnTerminate := False;
-  FThread.Delay := 50;
+  FThread.Delay := FDelay;
   FThread.OnDraw := Refresh;
-  Self.Width := 100;
-  Self.Height := 100;
+  Width := 100;
+  Height := 100;
   FMaxSpeed := 10;
 
   Stars := 100;
@@ -100,7 +101,7 @@ begin
   SetLength(FStarfield, 0);
   FThread.OnDraw := nil;
   FThread.Terminate;
-//  FThread.WaitFor;
+  //FThread.WaitFor;
   FreeAndNil(FThread);
   FBmp.Free;
   inherited Destroy;
@@ -118,8 +119,8 @@ procedure TJvStarfield.SetStars(const Value: Word);
 var
   I, J: Integer;
 begin
+  Randomize;
   FStars := Value;
-
   SetLength(FStarfield, Value);
   for I := 0 to FStars - 1 do
   begin
@@ -145,7 +146,7 @@ begin
     for I := 0 to FStars - 1 do
     begin
       if FStarfield[I].X < Width then
-        FBmp.Canvas.Pixels[Fstarfield[I].X, FStarfield[I].Y] := FStarfield[I].Color;
+        FBmp.Canvas.Pixels[FStarfield[I].X, FStarfield[I].Y] := FStarfield[I].Color;
       FStarfield[I].X := FStarfield[I].X - FStarfield[I].Speed;
       if FStarfield[I].X < 0 then
       begin
