@@ -41,7 +41,7 @@ uses
 type
   TJvOpenDialogAC = (acEdit, acListView);
   TJvOpenDialogAS = (asSmallIcon, asReport);
-
+  TDialogErrorEvent = procedure (Sender:TObject; ErrorCode:Cardinal) of object;
   TJvOpenDialog = class(TOpenDialog)
   private
     FAboutJVCL: TJVCLAboutInfo;
@@ -63,6 +63,7 @@ type
     FHeight: Integer;
     FWidth: Integer;
     FUseUserSize: Boolean;
+    FOnError: TDialogErrorEvent;
     procedure CenterAndSize;
     function DoActiveSetting: Boolean;
     procedure WMNCDestroy(var Msg: TWMNCDestroy); message WM_NCDESTROY;
@@ -79,6 +80,8 @@ type
     procedure UpdateCaptions;
     procedure UpdateControlPos; dynamic;
     procedure WndProc(var Msg: TMessage); override;
+  protected
+    procedure DoError(ErrorCode:Cardinal);virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -98,6 +101,7 @@ type
     {$ENDIF COMPILER5}
     property UseUserSize: Boolean read FUseUserSize write FUseUserSize default False;
     property Width: Integer read FWidth write FWidth;
+    property OnError:TDialogErrorEvent read FOnError write FOnError;
     property OnShareViolation: TCloseQueryEvent read FOnShareViolation write FOnShareViolation;
   end;
 
@@ -430,6 +434,8 @@ begin
   end
   else
     Result := inherited TaskModalDialog(DialogFunc, DialogData);
+  if not Result then
+    DoError(CommDlgExtendedError);
 end;
 
 procedure TJvOpenDialog.UpdateCaptions;
@@ -581,6 +587,12 @@ begin
   inherited;
 end;
 
+procedure TJvOpenDialog.DoError(ErrorCode: Cardinal);
+begin
+  if Assigned(FOnError) then
+    FOnError(Self, ErrorCode);
+end;
+
 //=== { TJvSaveDialog } ======================================================
 
 function TJvSaveDialog.TaskModalDialog(DialogFunc: Pointer; var DialogData): Bool;
@@ -660,6 +672,7 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
+
 
 initialization
   {$IFDEF UNITVERSIONING}
