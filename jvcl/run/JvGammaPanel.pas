@@ -94,12 +94,12 @@ implementation
 uses
   JvResources;
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 {$R ..\Resources\JvGammaPanel.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$R ../Resources/JvGammaPanel.res}
-{$ENDIF LINUX}
+{$ENDIF VisualCLX}
 
 constructor TJvGammaPanel.Create(AOwner: TComponent);
 begin
