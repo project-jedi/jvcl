@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, ExtCtrls, Types,
+  StdCtrls, ExtCtrls, {$IFDEF COMPILER6_UP}Types,{$ENDIF}
   JVCLVer, JvThemes;
 
 type
