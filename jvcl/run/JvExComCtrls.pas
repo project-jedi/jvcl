@@ -42,11 +42,12 @@ uses
 
 {$IFDEF VCL}
  {$DEFINE NeedMouseEnterLeave}
-{$ELSE}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
  {$IF not declared(PatchedVCLX)}
   {$DEFINE NeedMouseEnterLeave}
  {$IFEND}
-{$ENDIF VCL}
+{$ENDIF VisualCLX}
 
 {$DEFINE ANIMATE}
 {$IFDEF COMPILER6_UP}
@@ -914,7 +915,8 @@ type
   {$ENDIF VCL}
   end;
   
-{$ELSE}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
   TJvExProgressBar = class(TProgressBar, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -1841,7 +1843,7 @@ type
   {$ENDIF VCL}
   end;
   
-{$ENDIF VCL}
+{$ENDIF VisualCLX}
 {$IFDEF COMPILER6_UP}
   TJvExCustomHeaderControl = class(TCustomHeaderControl, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -2736,7 +2738,8 @@ type
   {$ENDIF VCL}
   end;
   
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   TJvExAnimate = class(TAnimate,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -2842,7 +2845,7 @@ type
   {$ENDIF VCL}
   end;
   
-  {$ENDIF VCL}
+  {$ENDIF VisualCLX}
 {$ENDIF ANIMATE}
 {$IFDEF VCL}
   TJvExCustomHotKey = class(TCustomHotKey, IJvWinControlEvents, IJvControlEvents)
@@ -6191,7 +6194,8 @@ begin
   
   inherited Destroy;
 end;
-{$ELSE}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$IFDEF VCL}
 procedure TJvExProgressBar.Dispatch(var Msg);
 begin
@@ -8302,7 +8306,7 @@ begin
   
   inherited Destroy;
 end;
-{$ENDIF VCL}
+{$ENDIF VisualCLX}
 {$IFDEF COMPILER6_UP}
 {$IFDEF VCL}
 procedure TJvExCustomHeaderControl.Dispatch(var Msg);
@@ -10421,7 +10425,8 @@ begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
 {$IFDEF VCL}
 procedure TJvExAnimate.Dispatch(var Msg);
 begin
@@ -10663,7 +10668,7 @@ begin
   
   inherited Destroy;
 end;
-  {$ENDIF VCL}
+  {$ENDIF VisualCLX}
 {$ENDIF ANIMATE}
 {$IFDEF VCL}
 {$IFDEF VCL}

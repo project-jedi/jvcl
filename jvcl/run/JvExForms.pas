@@ -42,11 +42,12 @@ uses
 
 {$IFDEF VCL}
  {$DEFINE NeedMouseEnterLeave}
-{$ELSE}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
  {$IF not declared(PatchedVCLX)}
   {$DEFINE NeedMouseEnterLeave}
  {$IFEND}
-{$ENDIF VCL}
+{$ENDIF VisualCLX}
 
 type
   TJvExScrollingWinControl = class(TScrollingWinControl, IJvWinControlEvents, IJvControlEvents)
