@@ -303,6 +303,7 @@ end;
 
 procedure TfrmModels.btnOkClick(Sender: TObject);
 begin
+  SaveModel;
   xml.SaveToFile(filename);
   ModalResult := mrOk;
 end;
