@@ -1073,16 +1073,11 @@ Parameters
                 the key represents.
   Allow -       Initially set to True. Set it to False to prevent this key from being added.
 ----------------------------------------------------------------------------------------------------
---------------------------------------------------------------------------------
-## Painter Objects: Types, Class references
---------------------------------------------------------------------------------
 @@TJvInspectorPainterClass
 Summary
   Painter class reference
 Description
   TJvInspectorPainterClass is the painter class reference.
---------------------------------------------------------------------------------
-## Painter Objects: Base class
 --------------------------------------------------------------------------------
 @@TJvInspectorPainter
 <TITLEIMG TJvInspectorPainter>
@@ -1582,8 +1577,6 @@ Description
 See Also
   NameColor
 --------------------------------------------------------------------------------
-## Painter Objects: Common class for Borland and .NET styles
---------------------------------------------------------------------------------
 @@TJvInspectorBorlandNETBasePainter
 <TITLEIMG TJvInspectorPainter>
 Summary
@@ -1593,8 +1586,6 @@ Description
   Borland and .NET paint styles. It implements many of the methods to setup
   the various item rectangles, fonts and colors in such a way that is common for
   the Borland and .NET styles.
---------------------------------------------------------------------------------
-## Painter Objects: Borland style
 --------------------------------------------------------------------------------
 @@TJvInspectorBorlandPainter
 <TITLEIMG TJvInspectorBorlandPainter>
@@ -1615,8 +1606,6 @@ Description
 See Also
   TJvInspectorPainter.DividerColor, TJvCustomInspector.Divider
 --------------------------------------------------------------------------------
-## Painter Objects: .NET / Visual Studio style
---------------------------------------------------------------------------------
 @@TJvInspectorDotNETPainter
 <TITLEIMG TJvInspectorDotNETPainter>
 Summary
@@ -1624,8 +1613,6 @@ Summary
 Description
   TJvInspectorDotNETPainter is the painter component that implements the .NET/Visual Studio paint
   style.
---------------------------------------------------------------------------------
-## Inspector items: Types and class references
 --------------------------------------------------------------------------------
 @@TJvInspectorItemClass
 Summary
@@ -3913,8 +3900,6 @@ Description
   
   TJvInspectorCustomData registers this item for TStrings class types.
 --------------------------------------------------------------------------------
-## Item registration
---------------------------------------------------------------------------------
 @@TJvInspectorRegister
 Summary
   Inspector item registration database.
@@ -4016,8 +4001,6 @@ Summary
   Reference to the registration items in the database.
 Description
   Items is the array of items in the registration database.
---------------------------------------------------------------------------------
-## Registration items: base class
 --------------------------------------------------------------------------------
 @@TJvCustomInspectorRegItem
 Summary
@@ -4130,8 +4113,6 @@ Description
 Parameters
   ADataObj - Data layer instance use for comparison
 --------------------------------------------------------------------------------
-## Registration items: type info based
---------------------------------------------------------------------------------
 @@TJvInspectorTypeInfoRegItem
 Summary
   Registration item based on type info
@@ -4174,8 +4155,6 @@ Description
   TypeInfo to determine which RTTI pointer is matched or set it to another
   RTTI pointer.
 --------------------------------------------------------------------------------
-## Registration items: type kind based
---------------------------------------------------------------------------------
 @@TJvInspectorTypeKindRegItem
 Summary
   Registration item based on type kinds
@@ -4210,8 +4189,6 @@ Description
   Read TypeKind to determine which type of RTTI is matched or set it to another
   RTTI type.
 --------------------------------------------------------------------------------
-## Registration items: TCaption types
---------------------------------------------------------------------------------
 @@TJvInspectorTCaptionRegItem
 Summary
   Registration item for the TCaption type.
@@ -4219,8 +4196,6 @@ Description
   TJvInspectorTCaptionRegItem is the registration item that specifically matches
   TCaption types. For these types, ApplyDefaults will set the item's
   iifMultiline flag.
---------------------------------------------------------------------------------
-## Registration items: property data layer
 --------------------------------------------------------------------------------
 @@TJvInspectorPropRegItem
 Summary
@@ -4293,8 +4268,6 @@ Description
   TypeInfo holds the type info that's used while matching. If TypeInfo is
   <B>nil</B>, it will not be considered in the match value.
 --------------------------------------------------------------------------------
-## Registration items: database field mapping
---------------------------------------------------------------------------------
 @@TJvInspectorTFieldTypeRegItem
 Summary
   Registration item for mapping TFieldTypes to RTTI.
@@ -4361,15 +4334,11 @@ Description
   TypeInfo holds the type info that should be used when the item matches the
   field.
 --------------------------------------------------------------------------------
-## Data layers: Types, Class references
---------------------------------------------------------------------------------
 @@TJvInspectorDataClass
 Summary
   Class reference for data layers.
 Description
   TJvInspectorDataClass is the class reference for data layer classes.
---------------------------------------------------------------------------------
-## Data layers: Base data layer
 --------------------------------------------------------------------------------
 @@TJvCustomInspectorData
 Summary
@@ -4732,8 +4701,6 @@ Summary
 Description
   RemoveItem will remove the specified item from the list of attached items for this data layer.
 --------------------------------------------------------------------------------
-## Data layers: Set member data layer
---------------------------------------------------------------------------------
 @@TJvInspectorSetMemberData
 Summary
   Data layer for specific set item.
@@ -4768,8 +4735,6 @@ Parameters
   ADataParent - A reference to the parent data instance. Since a set member belongs to a set that is
                 referenced by another data instance, this data instance should be handed over to
                 this instance.
---------------------------------------------------------------------------------
-## Data layers: Variable/heap data layer
 --------------------------------------------------------------------------------
 @@TJvInspectorVarData
 Summary
@@ -4808,8 +4773,6 @@ Parameters
                   use the overloaded version where you can specify a variable.
   AVar -          The variable that holds the data. Alternatively you could use
                   the overloaded version where you can specify an address.
---------------------------------------------------------------------------------
-## Data layers: Class published properties data layer
 --------------------------------------------------------------------------------
 @@TJvInspectorPropData
 Summary
@@ -4896,8 +4859,6 @@ Description
   PPropInfo.
 See Also
   Instance
---------------------------------------------------------------------------------
-## Data layers: Event based data layer
 --------------------------------------------------------------------------------
 @@TJvInspectorEventData
 Summary
@@ -5182,8 +5143,6 @@ Parameters
   Value - The new value to assign.
   BufSize - The number of bytes the buffer contains.
 --------------------------------------------------------------------------------
-## Data layers: Base config data layer
---------------------------------------------------------------------------------
 @@TJvInspectorCustomConfData
 Summary
   Base configuration data layer.
@@ -5255,8 +5214,6 @@ Description
 See Also
   Key, Section, ReadValue
 --------------------------------------------------------------------------------
-## Data layers: INI file data layer
---------------------------------------------------------------------------------
 @@TJvInspectorINIFileData
 Summary
   INI file data layer.
@@ -5308,8 +5265,6 @@ Summary
   Reference to the INI-file object.
 Description
   INIFile holds a reference to the INI-file object linked to the data instance.
---------------------------------------------------------------------------------
-## Data layers: Database data layer
 --------------------------------------------------------------------------------
 @@TJvInspectorDBData
 Summary
