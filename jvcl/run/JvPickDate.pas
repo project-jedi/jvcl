@@ -180,14 +180,14 @@ begin
     with AFont do
     begin
       Color := clWindowText;
-      {$IFDEF MSWINDOWS}
+      {$IFDEF VCL}
       Name := 'MS Sans Serif';
       Size := 8;
-      {$ENDIF MSWINDOWS}
-      {$IFDEF UNIX}
-      Name := 'Verdana'; // asn: or Helvetica ?
+      {$ENDIF VCL}
+      {$IFDEF VISUALCLX}
+      Name := 'Helvetica';
       Height := 11;
-      {$ENDIF UNIX}
+      {$ENDIF VISUALCLX}
       Style := [];
     end;
 end;
