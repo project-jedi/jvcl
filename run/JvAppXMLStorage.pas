@@ -368,7 +368,9 @@ begin
     Name := Node.Name;
     Parent := Node.Parent;
     if Assigned(Parent) then
-      Parent.Items.Delete(Name);
+      Parent.Items.Delete(Name)
+    else
+      Node.Clear;
     if AutoFlush and not IsUpdating then
       Flush;
   end;
