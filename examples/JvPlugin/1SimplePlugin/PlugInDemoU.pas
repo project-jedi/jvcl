@@ -58,7 +58,6 @@ type
     procedure uilPluginManagerBeforeLoad(Sender: TObject; Filename: String;
       var AllowLoad: Boolean);
     procedure uilPluginManagerBeforeLoading(Sender: TObject);
-    procedure uilPluginManagerAfterLoading(Sender: TObject);
     procedure clbPluginsClick(Sender: TObject);
     procedure clbPluginsDblClick(Sender: TObject);
     procedure Exit1Click(Sender: TObject);
@@ -98,13 +97,6 @@ procedure TForm1.uilPluginManagerBeforeLoading(Sender: TObject);
 begin
    lbStatus.Items.Add('Starting to load Plug-ins');
 end;
-
-procedure TForm1.uilPluginManagerAfterLoading(Sender: TObject);
-begin
-//   uilPluginManager.GetLoadedPlugins(clbPlugins.Items);
-   lbStatus.Items.Add('Finished loading Plug-ins');
-end;
-
 
 procedure TForm1.clbPluginsClick(Sender: TObject);
 begin
