@@ -66,6 +66,7 @@ procedure Register;
 begin
   {$IFDEF COMPILER7_UP}
   GroupDescendentsWith(TJvDataEmbedded, TControl);
+  GroupDescendentsWith(TJvComponentEmbedded, TControl);
   GroupDescendentsWith(TJvStrHolder, TControl);
   GroupDescendentsWith(TJvMultiStringHolder, TControl);
   GroupDescendentsWith(TJvPageManager, TControl);
