@@ -258,6 +258,7 @@ type
     FMargin: Integer;
     FAutoFreeClosed: Boolean;
     FAllowUnselected: Boolean;
+    FSelectBeforeClose: Boolean;
 
     FOnTabClosing: TJvTabBarClosingEvent;
     FOnTabSelected: TJvTabBarItemEvent;
@@ -347,6 +348,7 @@ type
     property HotTracking: Boolean read FHotTracking write FHotTracking default False;
     property AutoFreeClosed: Boolean read FAutoFreeClosed write FAutoFreeClosed default True;
     property AllowUnselected: Boolean read FAllowUnselected write FAllowUnselected default False;
+    property SelectBeforeClose: Boolean read FSelectBeforeClose write FSelectBeforeClose default False;
     property Margin: Integer read FMargin write SetMargin default 6;
     property FlatScrollButtons: Boolean read FFlatScrollButtons write SetFlatScrollButtons default False;
     property Hint: TCaption read FHint write SetHint;
@@ -373,6 +375,7 @@ type
     property HotTracking;
     property AutoFreeClosed;
     property AllowUnselected;
+    property SelectBeforeClose;
     property Margin;
 
     property Tabs;
@@ -764,19 +767,22 @@ procedure TJvCustomTabBar.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 var
   Tab: TJvTabBarItem;
+  LastSelected: TJvTabBarItem;
 begin
   if Button = mbLeft then
   begin
     FMouseDownClosingTab := nil;
     SetClosingTab(nil); // no tab should be closed
 
+    LastSelected := SelectedTab;
     Tab := TabAt(X, Y);
     if Assigned(Tab) then
       SelectedTab := Tab;
 
     if Assigned(Tab) and (Tab = SelectedTab) then
     begin
-      if CloseButton and PtInRect(CurrentPainter.GetCloseRect(Canvas, Tab, Tab.DisplayRect), Point(X, Y)) then
+      if CloseButton and (not SelectBeforeClose or (SelectedTab = LastSelected)) and
+         PtInRect(CurrentPainter.GetCloseRect(Canvas, Tab, Tab.DisplayRect), Point(X, Y)) then
       begin
         if TabClosing(Tab) then
         begin
@@ -1179,6 +1185,7 @@ end;
 destructor TJvTabBarItem.Destroy;
 begin
   PopupMenu := nil;
+  FVisible := False; // CanSelect returns false 
   {$IFDEF COMPILER5}
   TOwnedCollection(GetOwner).Notify(Self, cnDeleting);
   {$ENDIF COMPILER5}
@@ -1436,6 +1443,8 @@ begin
       TabBar.SelectedTab := nil;
     if TabBar.HotTab = Item then
       TabBar.SetHotTab(nil);
+    if TabBar.FMouseDownClosingTab = Item then
+      TabBar.FMouseDownClosingTab := nil;
     if TabBar.ClosingTab = Item then
       TabBar.FClosingTab := nil;
   end;
