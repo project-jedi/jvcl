@@ -31,7 +31,6 @@ requires
   rtl,
   vclx,
   vcljpg,
-  DesignIDE,
   dbrtl,
   vcldb;
 
