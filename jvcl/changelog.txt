@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2005-03-30:
+- added new components TJvPoweredByJCL and TJvPoweredByJVCL // (rom)
 2005-03-13:
 - Added TJvTabBar.AllowTabMoving // ahuser
 - Changed default value of TJvTabBar.FlatScrollButtons to True // ahuser
