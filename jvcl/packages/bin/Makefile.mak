@@ -96,12 +96,12 @@ JVCLRESDIRS=$(JVCLROOT)\Resources
 #-------------------------------------------------------------------------------
 
 default: \
+	Preprocess
 	BuildJCLdcpFiles \
 	Resources \
 	pg.exe \
 	Compile \
 	Clean
-
 
 ################################################################################
 BuildJCLdcpFiles:
@@ -194,7 +194,7 @@ Templates:
 	@IF NOT $(MASTEREDITION)! == ! @copy "$(CFGFILE)" "$(PKGDIR_MASTEREDITION)\$(CONFIGFILENAME)"
 
 ################################################################################
-Compile: Bpg2Make.exe CompilePackages
+Compile: Preprocess Bpg2Make.exe CompilePackages
 
 ################################################################################
 CompilePackages:
@@ -220,7 +220,7 @@ MOs:
 	cd ..\packages\bin
 
 ################################################################################
-Installer: MOs Installer_nomo
+Installer: Preprocess MOs Installer_nomo
 
 ################################################################################
 Installer_nomo:
@@ -237,4 +237,10 @@ Installer_nomo:
 	#
 	$(DCC) -B $(DXGETTEXT) -DNO_JCL JVCLInstall.dpr
 	start ..\..\bin\JVCLInstall.exe $(INSTALLOPTIONS)
+
+
+################################################################################
+Preprocess:
+	@echo [Preprocessing JVCL]
+	$(MAKE) $(QUIET) -f Preprocess.mak
 
